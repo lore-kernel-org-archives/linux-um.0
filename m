@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GoR8w-0004xi-4n for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Nov 2006 13:02:34 -0800
+	id 1GoR9M-0004yN-2U for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 26 Nov 2006 13:02:56 -0800
 Received: from 41-052.adsl.zetnet.co.uk
 	([194.247.41.52] helo=mail.esperi.org.uk ident=user54890)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GoR8u-0001EO-La
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GoR9L-0001Je-0U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Nov 2006 13:02:29 -0800
+	Sun, 26 Nov 2006 13:02:55 -0800
 From: Nix <nix@esperi.org.uk>
-Date: Sun, 26 Nov 2006 21:02:22 +0000
-Message-ID: <8764d1aplt.fsf@hades.wkstn.nix>
+Date: Sun, 26 Nov 2006 21:02:52 +0000
+Message-ID: <871wnpapkz.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Subject: [uml-devel] PATCH [00/03]: allow building of UML with skas headers
-	installed via `make headers_install'
+Subject: [uml-devel] PATCH [01/02]: [SKAS] split the skas part of ptrace.h
+	into its own header
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,43 +31,206 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: blaisorblade@yahoo.it
 
-I recently upgraded my glibc to 2.5, and upgraded the userspace headers
-at the same time. As a result, I've had several problems with UML.
+This diff applies against a kernel with the skas patch applied. It
+splits ptrace.h into two pieces, one SKAS and one non-SKAS, and removes
+a now-unused #define: I can reroll the skas patch accordingly if you
+want, but the change is so trivial that it may not be worth it. It
+needs to be on the guest anyway, as far as I can tell (rather icky:
+perhaps there is a better way than this?)
 
-One of these Jeff has seen reported and fixed, although the correct
-cause was not described (the #inclusion of <linux/stddef.h> instead of
-<stddef.h> in user-offsets.c).
+I've tested the i386 and UM parts but can't test the x86-64 parts.
 
-However, other problems are so-far undescribed. There's one trivial one
-(fixed in patch 3 in this series, should be uncontroversial).
+I haven't touched PPC or IA64 because I can't remember if they're still
+meant to work or not. If they are, the same changes should be trivial
+to apply to them.
 
-And then there's this:
+Signed-off-by: Nick Alcock <nix@esperi.org.uk>
 
-  CC      arch/um/os-Linux/process.o
-In file included from arch/um/include/skas_ptrace.h:12,
-                 from arch/um/os-Linux/process.c:23:
-arch/um/include/sysdep/skas_ptrace.h:9: error: redefinition of `struct ptrace_faultinfo'
-arch/um/include/sysdep/skas_ptrace.h:14: error: redefinition of `struct ptrace_ldt'
+ include/asm-i386/Kbuild        |    1 +
+ include/asm-i386/ptrace-skas.h |   29 +++++++++++++++++++++++++++++
+ include/asm-i386/ptrace.h      |   29 +----------------------------
+ 3 files changed, 31 insertions(+), 28 deletions(-)
 
-The problem is that I installed my host kernel's headers, and that
-kernel has the skas patch installed, so the skas ptrace structures
-are already defined in <asm/ptrace.h>. Thankfully it's guarded by a
-#define that we can test, but even so we need to split that SKAS
-section out into a new header. (diff attached, not gitted since
-the SKAS part isn't maintained in git anyway.)
+diff --git a/include/asm-i386/Kbuild b/include/asm-i386/Kbuild
+index b75a348..03f1fa1 100644
+--- a/include/asm-i386/Kbuild
++++ b/include/asm-i386/Kbuild
+@@ -8,3 +8,4 @@ header-y += ucontext.h
+ unifdef-y += mtrr.h
+ unifdef-y += setup.h
+ unifdef-y += vm86.h
++unifdef-y += ptrace-skas.h
+diff --git a/include/asm-i386/ptrace-skas.h b/include/asm-i386/ptrace-skas.h
+new file mode 100644
+index 0000000..6842650
+--- /dev/null
++++ b/include/asm-i386/ptrace-skas.h
+@@ -0,0 +1,29 @@
++#ifndef _I386_PTRACE_SKAS_H
++#define _I386_PTRACE_SKAS_H
++
++/*For SKAS3 support.*/
++
++#define PTRACE_FAULTINFO	  52
++/* 53 was used for PTRACE_SIGPENDING, don't reuse it. */
++#define PTRACE_LDT		  54
++#define PTRACE_SWITCH_MM 	  55
++#define PTRACE_EX_FAULTINFO	  56
++
++struct ptrace_faultinfo {
++	int is_write;
++	unsigned long addr;
++};
++
++struct ptrace_ex_faultinfo {
++	int is_write;
++	unsigned long addr;
++	int trap_no;
++};
++
++struct ptrace_ldt {
++	int func;
++  	void *ptr;
++	unsigned long bytecount;
++};
++
++#endif
+diff --git a/include/asm-i386/ptrace.h b/include/asm-i386/ptrace.h
+index 4be7518..da9eeb5 100644
+--- a/include/asm-i386/ptrace.h
++++ b/include/asm-i386/ptrace.h
+@@ -87,33 +87,6 @@ extern unsigned long profile_pc(struct p
+ #endif
+ #endif /* __KERNEL__ */
+ 
+-/*For SKAS3 support.*/
+-#ifndef _LINUX_PTRACE_STRUCT_DEF
+-#define _LINUX_PTRACE_STRUCT_DEF
+-
+-#define PTRACE_FAULTINFO	  52
+-/* 53 was used for PTRACE_SIGPENDING, don't reuse it. */
+-#define PTRACE_LDT		  54
+-#define PTRACE_SWITCH_MM 	  55
+-#define PTRACE_EX_FAULTINFO	  56
+-
+-struct ptrace_faultinfo {
+-	int is_write;
+-	unsigned long addr;
+-};
+-
+-struct ptrace_ex_faultinfo {
+-	int is_write;
+-	unsigned long addr;
+-	int trap_no;
+-};
+-
+-struct ptrace_ldt {
+-	int func;
+-  	void *ptr;
+-	unsigned long bytecount;
+-};
+-
+-#endif /*ifndef _LINUX_PTRACE_STRUCT_DEF*/
++#include <asm/ptrace-skas.h>
+ 
+ #endif
 
-So the following patches are a terribly provisional way to fix this:
-it works but it may not maintain the separation between skas and
-mainline that you want. At least it points up the existence of the
-problems.
 
-There are two patches in this series: one which splits the skas part of
-ptrace.h into its own header, so that UML can use it, and one that
-uses that header instead of skas_ptrace.h.
+
+!-------------------------------------------------------------flip-
 
-(All diffs against 2.6.18.x: I can respin against 2.6.19-pre if you
-want, but, again, this area changes little so I'd expect things to
-apply reasonably well anyway.)
+
+Likewise for x86-64.
+
+ include/asm-x86_64/Kbuild        |    1 +
+ include/asm-x86_64/ptrace-skas.h |   27 +++++++++++++++++++++++++++
+ include/asm-x86_64/ptrace.h      |   18 +-----------------
+ 3 files changed, 29 insertions(+), 17 deletions(-)
+
+diff --git a/include/asm-x86_64/Kbuild b/include/asm-x86_64/Kbuild
+index 40f2f13..d49d004 100644
+--- a/include/asm-x86_64/Kbuild
++++ b/include/asm-x86_64/Kbuild
+@@ -19,3 +19,4 @@ header-y += vsyscall32.h
+ unifdef-y += mce.h
+ unifdef-y += mtrr.h
+ unifdef-y += vsyscall.h
++unifdef-y += ptrace-skas.h
+diff --git a/include/asm-x86_64/ptrace-skas.h b/include/asm-x86_64/ptrace-skas.h
+new file mode 100644
+index 0000000..7f8ac4b
+--- /dev/null
++++ b/include/asm-x86_64/ptrace-skas.h
+@@ -0,0 +1,27 @@
++#ifndef _X86_64_PTRACE_SKAS_H
++#define _X86_64_PTRACE_SKAS_H
++
++#define PTRACE_FAULTINFO 52
++/* 53 was used for PTRACE_SIGPENDING, don't reuse it. */
++#define PTRACE_LDT 54
++#define PTRACE_SWITCH_MM 55
++#define PTRACE_EX_FAULTINFO	  56
++
++struct ptrace_faultinfo {
++	int is_write;
++	unsigned long addr;
++};
++
++struct ptrace_ex_faultinfo {
++	int is_write;
++	unsigned long addr;
++	int trap_no;
++};
++
++struct ptrace_ldt {
++	int func;
++  	void *ptr;
++	unsigned long bytecount;
++};
++
++#endif
+diff --git a/include/asm-x86_64/ptrace.h b/include/asm-x86_64/ptrace.h
+index 3216236..46e6216 100644
+--- a/include/asm-x86_64/ptrace.h
++++ b/include/asm-x86_64/ptrace.h
+@@ -70,6 +70,7 @@ there is a nasty ciclic include chain.
+ */
+ 
+ #include <asm/types.h>
++#include <asm/ptrace-skas.h>
+ 
+ #define		compat_int_t	s32
+ #define		compat_long_t	s32
+@@ -94,23 +95,6 @@ struct ptrace_ldt32 {
+ 	compat_ulong_t bytecount;
+ };
+ 
+-struct ptrace_faultinfo {
+-	int is_write;
+-	unsigned long addr;
+-};
+-
+-struct ptrace_ex_faultinfo {
+-	int is_write;
+-	unsigned long addr;
+-	int trap_no;
+-};
+-
+-struct ptrace_ldt {
+-	int func;
+-  	void *ptr;
+-	unsigned long bytecount;
+-};
+-
+ #undef	compat_int_t
+ #undef	compat_long_t
+ #undef	compat_uint_t
+
+
+
+!-------------------------------------------------------------flip-
+
+
 
 -- 
 `The main high-level difference between Emacs and (say) UNIX, Windows,
