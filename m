@@ -2,30 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GnkJZ-0002KF-37 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Nov 2006 15:18:37 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GnkJY-0005FF-Iz
+	id 1GoR8w-0004xi-4n for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 26 Nov 2006 13:02:34 -0800
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user54890)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GoR8u-0001EO-La
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 24 Nov 2006 15:18:37 -0800
-Date: Fri, 24 Nov 2006 18:15:04 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061124231504.GB5781@ccure.user-mode-linux.org>
-References: <22a33e9f0611180345w7ec64513l34424a59e1671479@mail.gmail.com>
-	<200611210813.14745.blaisorblade@yahoo.it>
-	<22a33e9f0611211123w3b57d6bdh5e599a87589816c9@mail.gmail.com>
-	<200611220122.24515.blaisorblade@yahoo.it>
-	<22a33e9f0611220004m46ce8d98nc7f21eff09febc89@mail.gmail.com>
-	<20061122164446.GB5120@ccure.user-mode-linux.org>
-	<22a33e9f0611232329g6c8a8614x3472a0da3416aba5@mail.gmail.com>
-	<20061124202512.GD4745@ccure.user-mode-linux.org>
-	<22a33e9f0611241310y42962e8exce5011f2d6b99435@mail.gmail.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <22a33e9f0611241310y42962e8exce5011f2d6b99435@mail.gmail.com>
-Subject: Re: [uml-devel] Problem with newer (>2.6.14) UML kernels hanging
-	under Xen DomU/Centos 4.4
+	Sun, 26 Nov 2006 13:02:29 -0800
+From: Nix <nix@esperi.org.uk>
+Date: Sun, 26 Nov 2006 21:02:22 +0000
+Message-ID: <8764d1aplt.fsf@hades.wkstn.nix>
+MIME-Version: 1.0
+Subject: [uml-devel] PATCH [00/03]: allow building of UML with skas headers
+	installed via `make headers_install'
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,23 +28,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Matt Willsher <matt@monki.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: blaisorblade@yahoo.it
 
-On Fri, Nov 24, 2006 at 09:10:50PM +0000, Matt Willsher wrote:
-> The very same image, uncopied. I have a directory tree set up and
-> scripts I use and all I did was to change the script to call the newer
-> kernel.
+I recently upgraded my glibc to 2.5, and upgraded the userspace headers
+at the same time. As a result, I've had several problems with UML.
 
-OK, a couple experiments to try:
-	add "init=/bin/bash" to the command line and see what that does
+One of these Jeff has seen reported and fixed, although the correct
+cause was not described (the #inclusion of <linux/stddef.h> instead of
+<stddef.h> in user-offsets.c).
 
-	find a statically linked shell in the filesystem and use that
-as the argument to "init=".
+However, other problems are so-far undescribed. There's one trivial one
+(fixed in patch 3 in this series, should be uncontroversial).
 
-				Jeff
+And then there's this:
+
+  CC      arch/um/os-Linux/process.o
+In file included from arch/um/include/skas_ptrace.h:12,
+                 from arch/um/os-Linux/process.c:23:
+arch/um/include/sysdep/skas_ptrace.h:9: error: redefinition of `struct ptrace_faultinfo'
+arch/um/include/sysdep/skas_ptrace.h:14: error: redefinition of `struct ptrace_ldt'
+
+The problem is that I installed my host kernel's headers, and that
+kernel has the skas patch installed, so the skas ptrace structures
+are already defined in <asm/ptrace.h>. Thankfully it's guarded by a
+#define that we can test, but even so we need to split that SKAS
+section out into a new header. (diff attached, not gitted since
+the SKAS part isn't maintained in git anyway.)
+
+So the following patches are a terribly provisional way to fix this:
+it works but it may not maintain the separation between skas and
+mainline that you want. At least it points up the existence of the
+problems.
+
+There are two patches in this series: one which splits the skas part of
+ptrace.h into its own header, so that UML can use it, and one that
+uses that header instead of skas_ptrace.h.
+
+(All diffs against 2.6.18.x: I can respin against 2.6.19-pre if you
+want, but, again, this area changes little so I'd expect things to
+apply reasonably well anyway.)
+
 -- 
-Work email - jdike at linux dot intel dot com
+`The main high-level difference between Emacs and (say) UNIX, Windows,
+ or BeOS... is that Emacs boots quicker.' --- PdS
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
