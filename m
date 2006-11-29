@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GohxD-0004UQ-9R for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Nov 2006 06:59:31 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Gohx9-0008U0-HI
+	id 1GpSPx-00070S-Q5 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 29 Nov 2006 08:36:17 -0800
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GpSPt-0007EY-G6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Nov 2006 06:59:31 -0800
-Date: Mon, 27 Nov 2006 09:55:00 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061127145500.GA4876@ccure.user-mode-linux.org>
-References: <456A58ED.9000106@centecnetworks.com>
-Mime-Version: 1.0
+	Wed, 29 Nov 2006 08:36:17 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Wed, 29 Nov 2006 17:06:42 +0100
+References: <87wt5h9azl.fsf@hades.wkstn.nix>
+In-Reply-To: <87wt5h9azl.fsf@hades.wkstn.nix>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <456A58ED.9000106@centecnetworks.com>
-Subject: Re: [uml-devel] UML crash by SIG_BUS
+Message-Id: <200611291706.42798.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] PATCH [02/03]: eliminate skas_ptrace.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,26 +29,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Miao Qingjun <qmiao@centecnetworks.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Nix <nix@esperi.org.uk>
 
-On Mon, Nov 27, 2006 at 11:18:05AM +0800, Miao Qingjun wrote:
-> my uml is often crashed by SIG_BUS.
-> 
-> Can anybody help me resolve this problem?
-> 
-> The host is 2.6.12fc3-skas3-v9-pre7.
-> And here is a list of error messages:
-> 
-> Kernel panic - not syncing: Kernel mode signal 7
+On Sunday 26 November 2006 22:03, Nix wrote:
+> This diff removes references to the conflicting-with-kernel-headers
+> skas_ptrace.h, and moves skas_ptrace.h into the um header
+> tree.
+Unaccurate - you move skas_ptrace.h into include/asm-i386, right?
 
-Increase the size of your /tmp (or /dev/shm - whichever it is using for its
-physical memory) so that it's larger than the UML physical memory.
+> There are still some trees (PPC, IA64) with a copy of a 
+> skas_ptrace.h left and without ptrace-skas.h broken off from
+> ptrace.h: these may be broken by this change, but I can't test
+> them so I can't tell.
+This change is plain wrong this way, if my reasoning is correct. 
 
-				Jeff
-
+arch/um/os-Linux/start_up.o is in USER_OBJS, so it is compiled against host 
+headers.
+You cannot _depend_ on them including the SKAS patch, as I said. And that 
+header is in arch/um/include to be includable by both kernelspace and 
+userspace files...
 -- 
-Work email - jdike at linux dot intel dot com
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
