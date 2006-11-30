@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GpSPx-00070c-UP for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Nov 2006 08:36:17 -0800
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GpSPu-000897-1Q
+	id 1GpsTO-0002LB-Lm for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Nov 2006 12:25:34 -0800
+Received: from crown.reflexsecurity.com ([72.54.139.163])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GpsTN-0003St-73
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Nov 2006 08:36:17 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Wed, 29 Nov 2006 17:02:20 +0100
-References: <8764d1aplt.fsf@hades.wkstn.nix>
-In-Reply-To: <8764d1aplt.fsf@hades.wkstn.nix>
+	Thu, 30 Nov 2006 12:25:34 -0800
+Date: Thu, 30 Nov 2006 15:24:13 -0500
+From: Jason Lunz <lunz@falooley.org>
+Message-ID: <20061130202411.GA8628@knob.reflex>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200611291702.21439.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] PATCH [00/03]: allow building of UML with skas
-	headers installed via `make headers_install'
+Subject: [uml-devel] [PATCH] fix skas-2.6.19-rc6-v9-pre9 compile for linux
+	2.6.19
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,64 +29,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Nix <nix@esperi.org.uk>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sunday 26 November 2006 22:02, Nix wrote:
-> I recently upgraded my glibc to 2.5, and upgraded the userspace headers
-> at the same time. As a result, I've had several problems with UML.
->
-> One of these Jeff has seen reported and fixed, although the correct
-> cause was not described (the #inclusion of <linux/stddef.h> instead of
-> <stddef.h> in user-offsets.c).
->
-> However, other problems are so-far undescribed. There's one trivial one
-> (fixed in patch 3 in this series, should be uncontroversial).
-Agreed.
 
-> And then there's this:
->
->   CC      arch/um/os-Linux/process.o
-> In file included from arch/um/include/skas_ptrace.h:12,
->                  from arch/um/os-Linux/process.c:23:
-> arch/um/include/sysdep/skas_ptrace.h:9: error: redefinition of `struct
-> ptrace_faultinfo' arch/um/include/sysdep/skas_ptrace.h:14: error:
-> redefinition of `struct ptrace_ldt'
+linux/config.h is now included automatically. #including it by hand is a
+build error in 2.6.19; this removes the three instances in the latest
+skas3-2.6 patch.
 
-> The problem is that I installed my host kernel's headers, and that
-> kernel has the skas patch installed, so the skas ptrace structures
-> are already defined in <asm/ptrace.h>. Thankfully it's guarded by a
-> #define that we can test, but even so we need to split that SKAS
-> section out into a new header. (diff attached, not gitted since
-> the SKAS part isn't maintained in git anyway.)
+Jason
 
-> So the following patches are a terribly provisional way to fix this:
-> it works but it may not maintain the separation between skas and
-> mainline that you want.
-You maybe refer to the problem that without SKAS in host headers the resulting 
-UML tree does not compile? Yes, it is a problem. You are trying to remove all 
-duplications, and probably you should avoid them. Define a macro to test with 
-a more reasonable name (say __UML_SKAS_SUPPORT ...).
+---
+ include/linux/proc_mm.h |    1 -
+ mm/proc_mm-mod.c        |    1 -
+ mm/proc_mm.c            |    1 -
+ 3 files changed, 3 deletions(-)
 
-> At least it points up the existence of the 
-> problems.
-
-> There are two patches in this series: one which splits the skas part of
-> ptrace.h into its own header, so that UML can use it, and one that
-> uses that header instead of skas_ptrace.h.
->
-> (All diffs against 2.6.18.x: I can respin against 2.6.19-pre if you
-> want, but, again, this area changes little so I'd expect things to
-> apply reasonably well anyway.)
-
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+Index: linux-2.6.19/include/linux/proc_mm.h
+===================================================================
+--- linux-2.6.19.orig/include/linux/proc_mm.h
++++ linux-2.6.19/include/linux/proc_mm.h
+@@ -6,7 +6,6 @@
+ #ifndef __PROC_MM_H
+ #define __PROC_MM_H
+ 
+-#include <linux/config.h>
+ #include <linux/sched.h>
+ #include <linux/compiler.h>
+ 
+Index: linux-2.6.19/mm/proc_mm-mod.c
+===================================================================
+--- linux-2.6.19.orig/mm/proc_mm-mod.c
++++ linux-2.6.19/mm/proc_mm-mod.c
+@@ -1,4 +1,3 @@
+-#include <linux/config.h>
+ #include <linux/kernel.h>
+ #include <linux/proc_mm.h>
+ #include <linux/ptrace.h>
+Index: linux-2.6.19/mm/proc_mm.c
+===================================================================
+--- linux-2.6.19.orig/mm/proc_mm.c
++++ linux-2.6.19/mm/proc_mm.c
+@@ -3,7 +3,6 @@
+  * Licensed under the GPL
+  */
+ 
+-#include <linux/config.h>
+ #include <linux/compiler.h>
+ #include <linux/mm.h>
+ #include <linux/init.h>
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
