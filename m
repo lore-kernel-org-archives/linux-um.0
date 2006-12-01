@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GqA6i-0007RE-Ek for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Dec 2006 07:15:22 -0800
+	id 1GqA7z-0007Xo-9w for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Dec 2006 07:16:39 -0800
 Received: from 41-052.adsl.zetnet.co.uk
 	([194.247.41.52] helo=mail.esperi.org.uk ident=user50734)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GqA6g-0002IY-PR
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GqA7w-0006In-8F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Dec 2006 07:15:20 -0800
-References: <8764d1aplt.fsf@hades.wkstn.nix>
-	<200611291702.21439.blaisorblade@yahoo.it>
+	Fri, 01 Dec 2006 07:16:36 -0800
+References: <87wt5h9azl.fsf@hades.wkstn.nix>
+	<200611291706.42798.blaisorblade@yahoo.it>
 From: Nix <nix@esperi.org.uk>
-Date: Fri, 01 Dec 2006 15:15:10 +0000
-In-Reply-To: <200611291702.21439.blaisorblade@yahoo.it>
+Date: Fri, 01 Dec 2006 15:16:33 +0000
+In-Reply-To: <200611291706.42798.blaisorblade@yahoo.it>
 	(blaisorblade@yahoo.it's message of "Wed,
-	29 Nov 2006 17:02:20 +0100")
-Message-ID: <877ixby7ep.fsf@hades.wkstn.nix>
+	29 Nov 2006 17:06:42 +0100")
+Message-ID: <873b7zy7ce.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] PATCH [00/03]: allow building of UML with skas
-	headers installed via `make headers_install'
+Subject: Re: [uml-devel] PATCH [02/03]: eliminate skas_ptrace.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,47 +35,32 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On 29 Nov 2006, blaisorblade@yahoo.it verbalised:
-> On Sunday 26 November 2006 22:02, Nix wrote:
->> However, other problems are so-far undescribed. There's one trivial one
->> (fixed in patch 3 in this series, should be uncontroversial).
-> Agreed.
+On 29 Nov 2006, blaisorblade@yahoo.it uttered the following:
 
-Oh good, that's the only one I was confident of.
+> On Sunday 26 November 2006 22:03, Nix wrote:
+>> This diff removes references to the conflicting-with-kernel-headers
+>> skas_ptrace.h, and moves skas_ptrace.h into the um header
+>> tree.
+> Unaccurate - you move skas_ptrace.h into include/asm-i386, right?
 
->> And then there's this:
->>
->>   CC      arch/um/os-Linux/process.o
->> In file included from arch/um/include/skas_ptrace.h:12,
->>                  from arch/um/os-Linux/process.c:23:
->> arch/um/include/sysdep/skas_ptrace.h:9: error: redefinition of `struct
->> ptrace_faultinfo' arch/um/include/sysdep/skas_ptrace.h:14: error:
->> redefinition of `struct ptrace_ldt'
+Gah. Yes. Sorry, brainfart.
+
+>> There are still some trees (PPC, IA64) with a copy of a 
+>> skas_ptrace.h left and without ptrace-skas.h broken off from
+>> ptrace.h: these may be broken by this change, but I can't test
+>> them so I can't tell.
+> This change is plain wrong this way, if my reasoning is correct. 
 >
->> The problem is that I installed my host kernel's headers, and that
->> kernel has the skas patch installed, so the skas ptrace structures
->> are already defined in <asm/ptrace.h>. Thankfully it's guarded by a
->> #define that we can test, but even so we need to split that SKAS
->> section out into a new header. (diff attached, not gitted since
->> the SKAS part isn't maintained in git anyway.)
->
->> So the following patches are a terribly provisional way to fix this:
->> it works but it may not maintain the separation between skas and
->> mainline that you want.
-> 
-> You maybe refer to the problem that without SKAS in host headers the resulting 
-> UML tree does not compile?
+> arch/um/os-Linux/start_up.o is in USER_OBJS, so it is compiled against host 
+> headers.
+> You cannot _depend_ on them including the SKAS patch, as I said. And that 
+> header is in arch/um/include to be includable by both kernelspace and 
+> userspace files...
 
-I *have* SKAS in the host headers. That's the problem (and it arguably
-shouldn't be).
+Oh, hell, true. The problem is that we'll have to cater for people who
+*have* included the skas headers, including the old ones...
 
->                             Yes, it is a problem. You are trying to remove all 
-> duplications, and probably you should avoid them. Define a macro to test with 
-> a more reasonable name (say __UML_SKAS_SUPPORT ...).
-
-OK, will do. I just thought that cutting the skas-ptrace stuff into its
-own header, rather than duplicating pieces of it between arch/ and
-include/um/, seemed more immediately reasonable.
+... fixed patch coming in a bit (shopping and 2.6.19 upgrade first).
 
 -- 
 `The main high-level difference between Emacs and (say) UNIX, Windows,
