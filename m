@@ -1,34 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Gq2dI-0004Jh-2Y for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Nov 2006 23:16:28 -0800
-Received: from nf-out-0910.google.com ([64.233.182.186])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Gq2dH-0005Wg-KM
+	id 1GqA6i-0007RE-Ek for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Dec 2006 07:15:22 -0800
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user50734)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GqA6g-0002IY-PR
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Nov 2006 23:16:28 -0800
-Received: by nf-out-0910.google.com with SMTP id c31so5476172nfb
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 30 Nov 2006 23:16:26 -0800 (PST)
-Message-ID: <22a33e9f0611302316l14e7eff9h75f0201a56a4a3f7@mail.gmail.com>
-Date: Fri, 1 Dec 2006 07:16:26 +0000
-From: "Matt Willsher" <matt@monki.org.uk>
-In-Reply-To: <20061201002252.GF8331@ccure.user-mode-linux.org>
+	Fri, 01 Dec 2006 07:15:20 -0800
+References: <8764d1aplt.fsf@hades.wkstn.nix>
+	<200611291702.21439.blaisorblade@yahoo.it>
+From: Nix <nix@esperi.org.uk>
+Date: Fri, 01 Dec 2006 15:15:10 +0000
+In-Reply-To: <200611291702.21439.blaisorblade@yahoo.it>
+	(blaisorblade@yahoo.it's message of "Wed,
+	29 Nov 2006 17:02:20 +0100")
+Message-ID: <877ixby7ep.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Content-Disposition: inline
-References: <22a33e9f0611180345w7ec64513l34424a59e1671479@mail.gmail.com>
-	<200611210813.14745.blaisorblade@yahoo.it>
-	<22a33e9f0611211123w3b57d6bdh5e599a87589816c9@mail.gmail.com>
-	<200611220122.24515.blaisorblade@yahoo.it>
-	<22a33e9f0611220004m46ce8d98nc7f21eff09febc89@mail.gmail.com>
-	<20061122164446.GB5120@ccure.user-mode-linux.org>
-	<22a33e9f0611232329g6c8a8614x3472a0da3416aba5@mail.gmail.com>
-	<20061124202512.GD4745@ccure.user-mode-linux.org>
-	<22a33e9f0611241310y42962e8exce5011f2d6b99435@mail.gmail.com>
-	<20061201002252.GF8331@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] Problem with newer (>2.6.14) UML kernels hanging
-	under Xen DomU/Centos 4.4
+Subject: Re: [uml-devel] PATCH [00/03]: allow building of UML with skas
+	headers installed via `make headers_install'
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -42,45 +33,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-The problem I'm having
+On 29 Nov 2006, blaisorblade@yahoo.it verbalised:
+> On Sunday 26 November 2006 22:02, Nix wrote:
+>> However, other problems are so-far undescribed. There's one trivial one
+>> (fixed in patch 3 in this series, should be uncontroversial).
+> Agreed.
 
-On 12/1/06, Jeff Dike <jdike@addtoit.com> wrote:
-> On Fri, Nov 24, 2006 at 09:10:50PM +0000, Matt Willsher wrote:
-> > The very same image, uncopied. I have a directory tree set up and
-> > scripts I use and all I did was to change the script to call the newer
-> > kernel.
+Oh good, that's the only one I was confident of.
+
+>> And then there's this:
+>>
+>>   CC      arch/um/os-Linux/process.o
+>> In file included from arch/um/include/skas_ptrace.h:12,
+>>                  from arch/um/os-Linux/process.c:23:
+>> arch/um/include/sysdep/skas_ptrace.h:9: error: redefinition of `struct
+>> ptrace_faultinfo' arch/um/include/sysdep/skas_ptrace.h:14: error:
+>> redefinition of `struct ptrace_ldt'
 >
-> And the exact same UML binary?  I'm grabbing at straws here, in case
-> somehow the broken one is lacking binfmt support for /sbin/init.
+>> The problem is that I installed my host kernel's headers, and that
+>> kernel has the skas patch installed, so the skas ptrace structures
+>> are already defined in <asm/ptrace.h>. Thankfully it's guarded by a
+>> #define that we can test, but even so we need to split that SKAS
+>> section out into a new header. (diff attached, not gitted since
+>> the SKAS part isn't maintained in git anyway.)
 >
+>> So the following patches are a terribly provisional way to fix this:
+>> it works but it may not maintain the separation between skas and
+>> mainline that you want.
+> 
+> You maybe refer to the problem that without SKAS in host headers the resulting 
+> UML tree does not compile?
 
-Just to recap:
+I *have* SKAS in the host headers. That's the problem (and it arguably
+shouldn't be).
 
-TT mode support under 2.6.12 works fine and I can boot a custom build
-kernel with it. A downloaded, known good 2.6.12 also boots a know good
-linux disk image.
+>                             Yes, it is a problem. You are trying to remove all 
+> duplications, and probably you should avoid them. Define a macro to test with 
+> a more reasonable name (say __UML_SKAS_SUPPORT ...).
 
-2.6.18, either compiled by myself, or a downloaded known good doesn't
-boot either my known good disk image as used with 2.6.12 or one
-downloaded from the web.  The 2.6.18 that doesn't work on my machine
-has been used successfully on someone elses environment boot my known
-good image.
+OK, will do. I just thought that cutting the skas-ptrace stuff into its
+own header, rather than duplicating pieces of it between arch/ and
+include/um/, seemed more immediately reasonable.
 
-My guess is that this issue is related to SKAS0 support in the newer
-kernels. I've been meaning to find the earliest kernel that ships with
-SKAS0 and try both TT mode and SKAS0 mode to see what happens there.
-
-http://user-mode-linux.sourceforge.net/new/problems.html#vdso seems to
-be the problem I'm having but I'm running UML under Xen, and there is
-not /proc/config.gz to check the kernel config, nor do I access to
-Dom0. so I have no way to check CONFIG_COMPAT_VDSO or have it changed
-on my host.
-
-I'm willing to have a go at debugging using gdb etc. but I really
-don't know what I'm looking for there.
+-- 
+`The main high-level difference between Emacs and (say) UNIX, Windows,
+ or BeOS... is that Emacs boots quicker.' --- PdS
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
