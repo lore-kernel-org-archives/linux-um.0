@@ -1,21 +1,31 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GpsTO-0002LB-Lm for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Nov 2006 12:25:34 -0800
-Received: from crown.reflexsecurity.com ([72.54.139.163])
+	id 1GpwEp-0001CD-S0 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Nov 2006 16:26:47 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GpsTN-0003St-73
+	(Exim 4.44) id 1GpwEo-0006BF-BQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Nov 2006 12:25:34 -0800
-Date: Thu, 30 Nov 2006 15:24:13 -0500
-From: Jason Lunz <lunz@falooley.org>
-Message-ID: <20061130202411.GA8628@knob.reflex>
-MIME-Version: 1.0
+	Thu, 30 Nov 2006 16:26:47 -0800
+Date: Thu, 30 Nov 2006 19:22:52 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20061201002252.GF8331@ccure.user-mode-linux.org>
+References: <22a33e9f0611180345w7ec64513l34424a59e1671479@mail.gmail.com>
+	<200611210813.14745.blaisorblade@yahoo.it>
+	<22a33e9f0611211123w3b57d6bdh5e599a87589816c9@mail.gmail.com>
+	<200611220122.24515.blaisorblade@yahoo.it>
+	<22a33e9f0611220004m46ce8d98nc7f21eff09febc89@mail.gmail.com>
+	<20061122164446.GB5120@ccure.user-mode-linux.org>
+	<22a33e9f0611232329g6c8a8614x3472a0da3416aba5@mail.gmail.com>
+	<20061124202512.GD4745@ccure.user-mode-linux.org>
+	<22a33e9f0611241310y42962e8exce5011f2d6b99435@mail.gmail.com>
+Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] fix skas-2.6.19-rc6-v9-pre9 compile for linux
-	2.6.19
+In-Reply-To: <22a33e9f0611241310y42962e8exce5011f2d6b99435@mail.gmail.com>
+Subject: Re: [uml-devel] Problem with newer (>2.6.14) UML kernels hanging
+	under Xen DomU/Centos 4.4
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,55 +39,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
+To: Matt Willsher <matt@monki.org.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Fri, Nov 24, 2006 at 09:10:50PM +0000, Matt Willsher wrote:
+> The very same image, uncopied. I have a directory tree set up and
+> scripts I use and all I did was to change the script to call the newer
+> kernel.
 
-linux/config.h is now included automatically. #including it by hand is a
-build error in 2.6.19; this removes the three instances in the latest
-skas3-2.6 patch.
+And the exact same UML binary?  I'm grabbing at straws here, in case
+somehow the broken one is lacking binfmt support for /sbin/init.
 
-Jason
+				Jeff
 
----
- include/linux/proc_mm.h |    1 -
- mm/proc_mm-mod.c        |    1 -
- mm/proc_mm.c            |    1 -
- 3 files changed, 3 deletions(-)
-
-Index: linux-2.6.19/include/linux/proc_mm.h
-===================================================================
---- linux-2.6.19.orig/include/linux/proc_mm.h
-+++ linux-2.6.19/include/linux/proc_mm.h
-@@ -6,7 +6,6 @@
- #ifndef __PROC_MM_H
- #define __PROC_MM_H
- 
--#include <linux/config.h>
- #include <linux/sched.h>
- #include <linux/compiler.h>
- 
-Index: linux-2.6.19/mm/proc_mm-mod.c
-===================================================================
---- linux-2.6.19.orig/mm/proc_mm-mod.c
-+++ linux-2.6.19/mm/proc_mm-mod.c
-@@ -1,4 +1,3 @@
--#include <linux/config.h>
- #include <linux/kernel.h>
- #include <linux/proc_mm.h>
- #include <linux/ptrace.h>
-Index: linux-2.6.19/mm/proc_mm.c
-===================================================================
---- linux-2.6.19.orig/mm/proc_mm.c
-+++ linux-2.6.19/mm/proc_mm.c
-@@ -3,7 +3,6 @@
-  * Licensed under the GPL
-  */
- 
--#include <linux/config.h>
- #include <linux/compiler.h>
- #include <linux/mm.h>
- #include <linux/init.h>
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
