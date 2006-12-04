@@ -1,24 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GqyXU-00005F-OS for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Dec 2006 13:06:20 -0800
-Received: from smtp-vbr17.xs4all.nl ([194.109.24.37])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GqyXT-00088U-4o
+	id 1GrN2l-0001fd-T6 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Dec 2006 15:16:20 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GrN2l-0005PN-Cj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Dec 2006 13:06:20 -0800
-Received: from localhost.localdomain (cubeadsl.xs4all.nl [82.92.220.254])
-	by smtp-vbr17.xs4all.nl (8.13.8/8.13.8) with ESMTP id kB3L69jr039762
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 3 Dec 2006 22:06:13 +0100 (CET)
-	(envelope-from rsnel@cube.dyndns.org)
-Date: Sun, 3 Dec 2006 22:06:08 +0100
-Message-ID: <20061203210608.GA2704@cube.dyndns.org>
+	Mon, 04 Dec 2006 15:16:15 -0800
+Message-Id: <200612042312.kB4NCMck024566@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-From: rsnel@cube.dyndns.org
-Subject: [uml-devel] ZONE_DMA and dm_create->init_emergency_isa_pool
+Date: Mon, 04 Dec 2006 18:12:22 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 3/4] UML - Size register files correctly
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,55 +27,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Hello,
+We were using the wrong symbol to size register files.
 
-When I want to create a device mapper table in user-mode-linux, I get 
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-BUG: failure at mm/bounce.c:85/init_emergency_isa_pool()!
-(full stack trace below)
+Index: linux-2.6.18-mm/arch/um/include/sysdep-i386/ptrace.h
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/include/sysdep-i386/ptrace.h	2006-11-27 18:55:15.000000000 -0500
++++ linux-2.6.18-mm/arch/um/include/sysdep-i386/ptrace.h	2006-11-29 04:39:05.000000000 -0500
+@@ -75,7 +75,7 @@ union uml_pt_regs {
+ #endif
+ #ifdef UML_CONFIG_MODE_SKAS
+ 	struct skas_regs {
+-		unsigned long regs[HOST_FRAME_SIZE];
++		unsigned long regs[MAX_REG_NR];
+ 		unsigned long fp[HOST_FP_SIZE];
+ 		unsigned long xfp[HOST_XFP_SIZE];
+                 struct faultinfo faultinfo;
+Index: linux-2.6.18-mm/arch/um/include/sysdep-x86_64/ptrace.h
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/include/sysdep-x86_64/ptrace.h	2006-11-27 18:55:15.000000000 -0500
++++ linux-2.6.18-mm/arch/um/include/sysdep-x86_64/ptrace.h	2006-11-29 04:38:13.000000000 -0500
+@@ -108,7 +108,7 @@ union uml_pt_regs {
+ 		 * file size, while i386 uses FRAME_SIZE.  Therefore, we need
+ 		 * to use UM_FRAME_SIZE here instead of HOST_FRAME_SIZE.
+ 		 */
+-		unsigned long regs[UM_FRAME_SIZE];
++		unsigned long regs[MAX_REG_NR];
+ 		unsigned long fp[HOST_FP_SIZE];
+                 struct faultinfo faultinfo;
+ 		long syscall;
 
-I think this behaviour was introduced by:
-[PATCH] uml: get rid of ZONE_DMA use
-
-I got it to work by reversing the patch.
-
-Greetings,
-
-Rik.
-
-Trace:
-BUG: failure at mm/bounce.c:85/init_emergency_isa_pool()!
-Kernel panic - not syncing: BUG!
- 
- EIP: 0073:[<401300c4>] CPU: 0 Not tainted ESP: 007b:bf433948 EFLAGS:
- 00000246
-     Not tainted
-     EAX: ffffffda EBX: 00000003 ECX: c134fd03 EDX: 08050408
-     ESI: 400287c0 EDI: 40026180 EBP: bf433a98 DS: 007b ES: 007b
-     0901bd78:  [<080686b0>] show_regs+0xb4/0xb9
-     0901bda4:  [<0805a4c3>] panic_exit+0x25/0x3f
-     0901bdb8:  [<0807b018>] notifier_call_chain+0x1d/0x3c
-     0901bdd8:  [<0807b0a7>] atomic_notifier_call_chain+0x11/0x13
-     0901bdec:  [<0806f96e>] panic+0x52/0xdd
-     0901be0c:  [<0809b91b>] init_emergency_isa_pool+0x4b/0x5d
-     0901be28:  [<080f3cbd>] blk_queue_bounce_limit+0x33/0x48
-     0901be3c:  [<081106a5>] alloc_dev+0xf4/0x285
-     0901be64:  [<081109c1>] dm_create+0xb/0x20
-     0901be70:  [<08113205>] dev_create+0x3f/0x9b
-     0901be90:  [<08114047>] ctl_ioctl+0xd7/0x10e
-     0901beb8:  [<080ae385>] do_ioctl+0x45/0x5a
-     0901bed8:  [<080ae717>] vfs_ioctl+0x1ec/0x209
-     0901bf00:  [<080ae762>] sys_ioctl+0x2e/0x4c
-     0901bf28:  [<0805ac46>] handle_syscall+0x86/0xa0
-     0901bf74:  [<08065805>] handle_trap+0xbe/0xc7
-     0901bf90:  [<08065bf3>] userspace+0x123/0x166
-     0901bfdc:  [<0805a985>] fork_handler+0x74/0x7c
-     0901bffc:  [<a55a5a5a>] 0xa55a5a5a
-
--- 
-Nothing is ever a total loss; it can always serve as a bad example.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
