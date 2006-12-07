@@ -2,27 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GsFBI-0004xi-1N for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Dec 2006 01:04:40 -0800
-Received: from mail119.messagelabs.com ([216.82.241.179])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GsFBG-00060J-Gj
+	id 1GsIWM-0000lR-EG for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Dec 2006 04:38:39 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GsIWK-0005lo-Jd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Dec 2006 01:04:39 -0800
-Received: from il06exr04.mot.com (il06exr04.mot.com [129.188.137.134])
-	by motgate8.mot.com (8.12.11/Motorola) with ESMTP id kB794VE5004552
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 7 Dec 2006 02:04:31 -0700 (MST)
-Received: from ZMY16EXM67.ds.mot.com (zmy16exm67.ap.mot.com [10.179.4.27])
-	by il06exr04.mot.com (8.13.1/8.13.0) with ESMTP id kB794UoX018545
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 7 Dec 2006 03:04:30 -0600 (CST)
-Content-class: urn:content-classes:message
+	Thu, 07 Dec 2006 04:38:38 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Thu, 7 Dec 2006 13:38:23 +0100
+References: <8764d1aplt.fsf@hades.wkstn.nix>
+	<200611291702.21439.blaisorblade@yahoo.it>
+	<877ixby7ep.fsf@hades.wkstn.nix>
+In-Reply-To: <877ixby7ep.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Date: Thu, 7 Dec 2006 17:04:17 +0800
-Message-ID: <0A01463223B8164194908CAC85B66A1201292E31@ZMY16EXM67.ds.mot.com>
-In-Reply-To: <20061207060624.GA9966@ccure.user-mode-linux.org>
-From: "Krishnappa Abhijith-A21204" <abhijith@motorola.com>
-Subject: Re: [uml-devel] User mode linux Source code
+Content-Disposition: inline
+Message-Id: <200612071338.23974.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] PATCH [00/03]: allow building of UML with skas
+	headers installed via `make headers_install'
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,36 +32,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Nix <nix@esperi.org.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Thanks a lot Jeff.
-To start off with can you pls let me know if there is any document that
-u referred on VMWARE..
-That will be helpful in understanding the concepts easily. 
+On Friday 01 December 2006 16:15, Nix wrote:
+> On 29 Nov 2006, blaisorblade@yahoo.it verbalised:
+> > On Sunday 26 November 2006 22:02, Nix wrote:
+> >> However, other problems are so-far undescribed. There's one trivial one
+> >> (fixed in patch 3 in this series, should be uncontroversial).
+> >
+> > Agreed.
+>
+> Oh good, that's the only one I was confident of.
+>
+> >> And then there's this:
+> >>
+> >>   CC      arch/um/os-Linux/process.o
+> >> In file included from arch/um/include/skas_ptrace.h:12,
+> >>                  from arch/um/os-Linux/process.c:23:
+> >> arch/um/include/sysdep/skas_ptrace.h:9: error: redefinition of `struct
+> >> ptrace_faultinfo' arch/um/include/sysdep/skas_ptrace.h:14: error:
+> >> redefinition of `struct ptrace_ldt'
+> >>
+> >> The problem is that I installed my host kernel's headers, and that
+> >> kernel has the skas patch installed, so the skas ptrace structures
+> >> are already defined in <asm/ptrace.h>. Thankfully it's guarded by a
+> >> #define that we can test, but even so we need to split that SKAS
+> >> section out into a new header. (diff attached, not gitted since
+> >> the SKAS part isn't maintained in git anyway.)
+> >>
+> >> So the following patches are a terribly provisional way to fix this:
+> >> it works but it may not maintain the separation between skas and
+> >> mainline that you want.
+> >
+> > You maybe refer to the problem that without SKAS in host headers the
+> > resulting UML tree does not compile?
+>
+> I *have* SKAS in the host headers. That's the problem (and it arguably
+> shouldn't be).
 
-Thanks a lot for the help.
-Abhijith
+Yes, I understood this, but with your patches the set of people having a 
+problem is complemented (whoever _hasn't_ SKAS in host headers has a 
+problem).
 
------Original Message-----
-From: Jeff Dike [mailto:jdike@addtoit.com] 
-Sent: Thursday, December 07, 2006 11:36 AM
-To: Krishnappa Abhijith-A21204
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Subject: Re: [uml-devel] User mode linux Source code
+> >                             Yes, it is a problem. You are trying to
+> > remove all duplications, and probably you should avoid them. Define a
+> > macro to test with a more reasonable name (say __UML_SKAS_SUPPORT ...).
+>
+> OK, will do. I just thought that cutting the skas-ptrace stuff into its
+> own header, rather than duplicating pieces of it between arch/ and
+> include/um/, seemed more immediately reasonable.
 
-On Thu, Dec 07, 2006 at 12:12:37PM +0800, Krishnappa Abhijith-A21204
-wrote:
-> 			I'm a newbie to UML.Can you ppl let me know from
-where I can 
-> download UML source code ?
+-- 
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
-kernel.org
-
-	Jeff
-
---
-Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
