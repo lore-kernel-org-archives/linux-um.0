@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GsPhF-0000Ku-IY for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Dec 2006 12:18:21 -0800
-Received: from smtp-vbr15.xs4all.nl ([194.109.24.35])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GsPhC-0000Ko-Vl
+	id 1GsfKq-0005h6-A2 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Dec 2006 05:00:16 -0800
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailout.stusta.mhn.de)
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GsfKo-0002xK-Ki
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Dec 2006 12:18:21 -0800
-Date: Thu, 7 Dec 2006 21:18:11 +0100
-Message-ID: <20061207201811.GA30867@cube.dyndns.org>
-References: <20061203210608.GA2704@cube.dyndns.org>
-	<200612072027.46049.blaisorblade@yahoo.it>
-Mime-Version: 1.0
+	Fri, 08 Dec 2006 05:00:16 -0800
+Date: Fri, 8 Dec 2006 13:59:28 +0100
+From: Adrian Bunk <bunk@stusta.de>
+Message-ID: <20061208125928.GA25427@stusta.de>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200612072027.46049.blaisorblade@yahoo.it>
-From: rsnel@cube.dyndns.org
-Subject: Re: [uml-devel] ZONE_DMA and dm_create->init_emergency_isa_pool
+Subject: [uml-devel] UML and fastcall/FASTCALL
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,48 +28,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: jdike@karaya.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Hello,
+UML on i386 is now the only case where fastcall/FASTCALL is not a noop.
 
-On Thu, Dec 07, 2006 at 08:27:45PM +0100, Blaisorblade wrote:
-> On Sunday 03 December 2006 22:06, rsnel@cube.dyndns.org wrote:
-> > When I want to create a device mapper table in user-mode-linux, I get
-> >
-> > BUG: failure at mm/bounce.c:85/init_emergency_isa_pool()!
-> > (full stack trace below)
-> >
-> > I think this behaviour was introduced by:
-> > [PATCH] uml: get rid of ZONE_DMA use
-> >
-> > I got it to work by reversing the patch.
-> Can you detail the used UML version? Thanks.
+There are two use cases for fastcall/FASTCALL in UML on i386:
 
-It happens, for example, with stock 2.6.19+"page.h compilation fix by Jeff".
 
-> >      0901bd78:  [<080686b0>] show_regs+0xb4/0xb9
-> >      0901bda4:  [<0805a4c3>] panic_exit+0x25/0x3f
-> >      0901bdb8:  [<0807b018>] notifier_call_chain+0x1d/0x3c
-> >      0901bdd8:  [<0807b0a7>] atomic_notifier_call_chain+0x11/0x13
-> >      0901bdec:  [<0806f96e>] panic+0x52/0xdd
-> >      0901be0c:  [<0809b91b>] init_emergency_isa_pool+0x4b/0x5d
-> >      0901be28:  [<080f3cbd>] blk_queue_bounce_limit+0x33/0x48
-> >      0901be3c:  [<081106a5>] alloc_dev+0xf4/0x285
-> >      0901be64:  [<081109c1>] dm_create+0xb/0x20
+1. optimization for C code
+A faster calling convention is used for the functions annotated this way.
 
-The failing init_emergency_isa_pool is called from block/ll_rw_blk.c
-because it finds that the system has DMA. With the introduction of 'get
-rid of ZONE_DMA use' init_emergency_isa_pool started giving errors.
-The proper fix probably consists of convincing block/ll_rw_blk.c that it
-doesn't need DMA (<16MB) memory.
 
-Greetings,
+2. interfacing with assembler code
+But include/asm-um/linkage.h contains the following:
 
-Rik.
+<--  snip  -->
+
+#ifndef __ASM_UM_LINKAGE_H
+#define __ASM_UM_LINKAGE_H
+
+#include "asm/arch/linkage.h"
+
+
+/* <linux/linkage.h> will pick sane defaults */
+#ifdef CONFIG_GPROF
+#undef FASTCALL
+#undef fastcall
+#endif
+
+#endif
+
+<--  snip  -->
+
+E.g. if CONFIG_SMP was still available on UML, CONFIG_SMP=y, 
+CONFIG_GPROF=y would have some horrible effects when calling the 
+functions in arch/i386/lib/semaphore.S.
+
+
+Are there any benchmark numbers that the existing fastcall/FASTCALL 
+annotations in the kernel really make a measurable difference for
+C code?
+
+Otherwise, we could use it only for assembler code using this calling 
+convention (if there is any used by UML) - and CONFIG_GPROF mustn't 
+change this.
+
+
+cu
+Adrian
 
 -- 
-Nothing is ever a total loss; it can always serve as a bad example.
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
