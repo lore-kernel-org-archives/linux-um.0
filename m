@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GsfKq-0005h6-A2 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Dec 2006 05:00:16 -0800
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GsfKo-0002xK-Ki
+	id 1Gsiiv-0004xD-EP for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Dec 2006 08:37:21 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Gsiit-0008VO-VI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Dec 2006 05:00:16 -0800
-Date: Fri, 8 Dec 2006 13:59:28 +0100
-From: Adrian Bunk <bunk@stusta.de>
-Message-ID: <20061208125928.GA25427@stusta.de>
-MIME-Version: 1.0
+	Fri, 08 Dec 2006 08:37:21 -0800
+Date: Fri, 8 Dec 2006 11:33:04 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20061208163304.GA5944@ccure.user-mode-linux.org>
+References: <20061208125928.GA25427@stusta.de>
+Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] UML and fastcall/FASTCALL
+In-Reply-To: <20061208125928.GA25427@stusta.de>
+Subject: Re: [uml-devel] UML and fastcall/FASTCALL
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,63 +30,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@karaya.com
+To: Adrian Bunk <bunk@stusta.de>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-UML on i386 is now the only case where fastcall/FASTCALL is not a noop.
+On Fri, Dec 08, 2006 at 01:59:28PM +0100, Adrian Bunk wrote:
+> UML on i386 is now the only case where fastcall/FASTCALL is not a noop.
 
-There are two use cases for fastcall/FASTCALL in UML on i386:
+If i386 doesn't use it any more, then UML shouldn't either.  The only reason
+there's support for it in UML is that I was copying i386.
 
-
-1. optimization for C code
-A faster calling convention is used for the functions annotated this way.
-
-
-2. interfacing with assembler code
-But include/asm-um/linkage.h contains the following:
-
-<--  snip  -->
-
-#ifndef __ASM_UM_LINKAGE_H
-#define __ASM_UM_LINKAGE_H
-
-#include "asm/arch/linkage.h"
-
-
-/* <linux/linkage.h> will pick sane defaults */
-#ifdef CONFIG_GPROF
-#undef FASTCALL
-#undef fastcall
-#endif
-
-#endif
-
-<--  snip  -->
-
-E.g. if CONFIG_SMP was still available on UML, CONFIG_SMP=y, 
-CONFIG_GPROF=y would have some horrible effects when calling the 
-functions in arch/i386/lib/semaphore.S.
-
-
-Are there any benchmark numbers that the existing fastcall/FASTCALL 
-annotations in the kernel really make a measurable difference for
-C code?
-
-Otherwise, we could use it only for assembler code using this calling 
-convention (if there is any used by UML) - and CONFIG_GPROF mustn't 
-change this.
-
-
-cu
-Adrian
+				Jeff
 
 -- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
