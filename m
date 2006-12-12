@@ -1,19 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Gu4GU-0006cM-LK for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Dec 2006 01:49:34 -0800
+	id 1Gu53E-0003E7-K3 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Dec 2006 02:39:56 -0800
 Received: from [80.88.33.193] (helo=vervifontaine.sonycom.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Gu4GT-00022G-9E
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Gu53C-0003Dz-W3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Dec 2006 01:49:34 -0800
-Date: Tue, 12 Dec 2006 10:49:20 +0100 (CET)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <0A01463223B8164194908CAC85B66A12012D2AB8@ZMY16EXM67.ds.mot.com>
-Message-ID: <Pine.LNX.4.62.0612121048340.20902@pademelon.sonytel.be>
-References: <0A01463223B8164194908CAC85B66A12012D2AB8@ZMY16EXM67.ds.mot.com>
+	Tue, 12 Dec 2006 02:39:56 -0800
+Received: from pademelon.sonytel.be (piraat.sonytel.be [43.221.60.197])
+	by vervifontaine.sonycom.com (Postfix) with ESMTP id BE49658ABD
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 12 Dec 2006 11:39:51 +0100 (MET)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
+Date: Tue, 12 Dec 2006 18:12:24 +0800
+Message-ID: <0A01463223B8164194908CAC85B66A1201324F53@ZMY16EXM67.ds.mot.com>
+In-Reply-To: <Pine.LNX.4.62.0612121048340.20902@pademelon.sonytel.be>
+From: "Krishnappa Abhijith-A21204" <abhijith@motorola.com>
+Resent-To: User-mode Linux Kernel Development
+	<user-mode-linux-devel@lists.sourceforge.net>
+ReSent-Message-ID: <Pine.LNX.4.62.0612121139500.20902@pademelon.sonytel.be>
 Subject: Re: [uml-devel] Regarding getpid
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -28,27 +35,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Krishnappa Abhijith-A21204 <abhijith@motorola.com>
-Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Ok Thanks. So actually getpid() doesn't cause mode switch.
+But is it mandatory to execute  getpid()? If yes why
+
+Regards,
+Abhi
+
+-----Original Message-----
+From: geert@sonytel.be [mailto:geert@sonytel.be] On Behalf Of Geert
+Uytterhoeven
+Sent: Tuesday, December 12, 2006 3:19 PM
+To: Krishnappa Abhijith-A21204
+Cc: User-mode Linux Kernel Development
+Subject: Re: [uml-devel] Regarding getpid
 
 On Tue, 12 Dec 2006, Krishnappa Abhijith-A21204 wrote:
->             "Process system calls must be nullified in the host, and
+>             "Process system calls must be nullified in the host, and 
 > this is done by converting them into getpid. "
 > How is system calls  are nullified by converting them to getpid() ?
 
-Instead of calling the actual system call, it just calls getpid(). I.e. the
-actual system call is not executed, and getpid() is more or less a NOP.
+Instead of calling the actual system call, it just calls getpid(). I.e.
+the actual system call is not executed, and getpid() is more or less a
+NOP.
 
 Gr{oetje,eeting}s,
 
 						Geert
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 --
+geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+In personal conversations with technical people, I call myself a hacker.
+But when I'm talking to journalists I just say "programmer" or something
+like that.
+							    -- Linus
+Torvalds
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
