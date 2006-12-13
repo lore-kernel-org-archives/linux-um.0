@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GuH9p-0002d9-T0 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Dec 2006 15:35:33 -0800
-Received: from mailout.stusta.mhn.de ([141.84.69.5])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GuH9o-0007iN-9O
+	id 1GuLdy-0004ER-PP for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Dec 2006 20:22:58 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1GuLdx-0001bP-Au
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Dec 2006 15:35:33 -0800
-Date: Wed, 13 Dec 2006 00:35:33 +0100
-From: Adrian Bunk <bunk@stusta.de>
-Message-ID: <20061212233533.GB28443@stusta.de>
-MIME-Version: 1.0
+	Tue, 12 Dec 2006 20:22:58 -0800
+Date: Tue, 12 Dec 2006 23:18:37 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20061213041837.GA8825@ccure.user-mode-linux.org>
+References: <20061212233533.GB28443@stusta.de>
+Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] RFC: UML: remove MODE_TT?
+In-Reply-To: <20061212233533.GB28443@stusta.de>
+Subject: Re: [uml-devel] RFC: UML: remove MODE_TT?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,24 +30,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@karaya.com
+To: Adrian Bunk <bunk@stusta.de>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-MODE_TT is both marked as deprecated and marked as BROKEN.
+On Wed, Dec 13, 2006 at 12:35:33AM +0100, Adrian Bunk wrote:
+> MODE_TT is both marked as deprecated and marked as BROKEN.
+> 
+> Would a patch to remove MODE_TT, always enable MODE_SKAS, and doing all 
+> possible cleanups after this be accepted?
 
-Would a patch to remove MODE_TT, always enable MODE_SKAS, and doing all 
-possible cleanups after this be accepted?
+Thanks, but not yet.
 
-cu
-Adrian
+I've got that queued up in my tree now, waiting for SMP to work.  SMP is 
+the one remaining justification for TT mode, so I'll get that in, then remove
+MODE_TT and do the associated cleanups.
+
+				Jeff
 
 -- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
