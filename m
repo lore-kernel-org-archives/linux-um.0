@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GuLdy-0004ER-PP for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Dec 2006 20:22:58 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1GuLdx-0001bP-Au
+	id 1GupeR-0001O3-6o for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Dec 2006 04:25:27 -0800
+Received: from smtp.freemail.gr ([81.171.104.107])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1GupeP-0008RB-P5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Dec 2006 20:22:58 -0800
-Date: Tue, 12 Dec 2006 23:18:37 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20061213041837.GA8825@ccure.user-mode-linux.org>
-References: <20061212233533.GB28443@stusta.de>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20061212233533.GB28443@stusta.de>
-Subject: Re: [uml-devel] RFC: UML: remove MODE_TT?
+	Thu, 14 Dec 2006 04:25:27 -0800
+Received: from [192.168.1.33] (athedsl-289018.otenet.gr [85.73.176.152])
+	by smtp.freemail.gr (Postfix) with ESMTP id C8004B7974C
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 14 Dec 2006 14:25:23 +0200 (EET)
+Message-ID: <458142B3.7050807@freemail.gr>
+Date: Thu, 14 Dec 2006 14:25:23 +0200
+From: Constantine Kousoulos <wuwei@freemail.gr>
+MIME-Version: 1.0
+Subject: [uml-devel] porting uml to Hurd
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,25 +30,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Adrian Bunk <bunk@stusta.de>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Dec 13, 2006 at 12:35:33AM +0100, Adrian Bunk wrote:
-> MODE_TT is both marked as deprecated and marked as BROKEN.
-> 
-> Would a patch to remove MODE_TT, always enable MODE_SKAS, and doing all 
-> possible cleanups after this be accepted?
+Hello!
 
-Thanks, but not yet.
+i'm interested in porting uml to GNU/Hurd. Since uml is just 
+"another process" (or many processes), in theory, it could be 
+ported to Hurd's user space. Uml's architecture would remain i386.
 
-I've got that queued up in my tree now, waiting for SMP to work.  SMP is 
-the one remaining justification for TT mode, so I'll get that in, then remove
-MODE_TT and do the associated cleanups.
+Can you supply me with more info (docs, urls, directions to source 
+code, etc) on what needs to be done in order to accomplish the 
+port? Technical details would really help me discover if uml can 
+actually be ported to the Hurd.
 
-				Jeff
 
--- 
-Work email - jdike at linux dot intel dot com
+Thanks,
+Constantine
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
