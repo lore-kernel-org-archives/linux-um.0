@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Gv73e-0007Ox-6x for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Dec 2006 23:00:38 -0800
-Received: from nf-out-0910.google.com ([64.233.182.186])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Gv73d-0004AF-RU
+	id 1Gvhf8-000284-Oc for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Dec 2006 14:05:46 -0800
+Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Gvhf5-0003Hj-K7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Dec 2006 23:00:38 -0800
-Received: by nf-out-0910.google.com with SMTP id c31so1542533nfb
+	Sat, 16 Dec 2006 14:05:45 -0800
+Received: from [192.168.1.128] (tom.theshore.net [68.38.41.235])
+	by www.theshore.net (8.13.6/8.9.1) with ESMTP id kBGM5fJs031278
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 14 Dec 2006 23:00:36 -0800 (PST)
-Message-ID: <e3156df0612142300if4a4d8akabae7f81d0d6695e@mail.gmail.com>
-Date: Fri, 15 Dec 2006 09:00:36 +0200
-From: "Ilkka Tengvall" <ilkka.tengvall@iki.fi>
+	Sat, 16 Dec 2006 17:05:41 -0500
+Message-ID: <45846DC1.80009@theshore.net>
+Date: Sat, 16 Dec 2006 17:05:53 -0500
+From: "Christopher S. Aker" <caker@theshore.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] broken uml_util.spec
+Subject: [uml-devel] SKAS v8.2 for 2.6.19 and beyond?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,54 +32,18 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Howdy,
+Blaisorblade,
 
-I just dowloaded uml and gave it a shot. Seems to work nice on
-2.6.19-rc6. While at it, I fixed the rpm spec file. It had old tag for
-license, incorrect directory name for build and was missing jail_uml
-from files list. I built it on fedora-release-6-89 .
+Any chance you'll be creating a skas v8.2 patch for 2.6.19/20 any time 
+soon?  I'm still weary of this issue with skas-v9pre:
 
-There is also a minor bug in the skas patch, it still uses
-include/config.h in some proc-mm files even config.h is removed from
-19-rc6 version of kernel. Just remove those includes, and it works for
-me...
+http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=116008558424368&w=2
 
-I'm not a subscriber to the list.
+Would it be as simple as taking the broken-out skas-v9 patch for 2.6.19 
+and only patching up to a certain point in the series?
 
-- it
-
-the patch:
----------------------
---- tools-20060323/uml_util.spec.broken 2006-12-15 08:14:52.000000000 +0200
-+++ tools-20060323/uml_util.spec        2006-12-15 08:15:09.000000000 +0200
-@@ -7,7 +7,7 @@
- Name:      uml_utilities
- Version:   %{ver}
- Release:   %{rel}
--Copyright: GPL
-+License:   GPL
- Packager:  Someone
- URL:       http://user-mode-linux.sourceforge.net/index.html
- Source:    http://prdownloads.sourceforge.net/user-mode-linux/uml_utilities_%{ver}.tar.bz2
-@@ -21,7 +21,8 @@ COW, etc.
-
-
- %prep
--%setup -n tools
-+#%setup -n tools
-+%setup -n tools-%{ver}
-
- %build
- make CFLAGS="-g -Wall -O2" DESTDIR=$RPM_BUILD_ROOT
-@@ -31,6 +32,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
-
- %files
- %attr(755,root,root)                   %{_bindir}/jailtest
-+%attr(755,root,root)                   %{_sbindir}/jail_uml
- #%attr(755,root,root)                  %{_bindir}/mkrootfs
- %attr(755,root,root)                   %{_bindir}/tunctl
- %attr(755,root,root)                   %{_bindir}/uml_mconsole
----------------------
+Thanks!
+-Chris
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
