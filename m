@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Gvhf8-000284-Oc for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Dec 2006 14:05:46 -0800
-Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Gvhf5-0003Hj-K7
+	id 1GwjWx-00021t-Hz for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Dec 2006 10:17:35 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1GwjWu-0004Vi-KC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Dec 2006 14:05:45 -0800
-Received: from [192.168.1.128] (tom.theshore.net [68.38.41.235])
-	by www.theshore.net (8.13.6/8.9.1) with ESMTP id kBGM5fJs031278
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 16 Dec 2006 17:05:41 -0500
-Message-ID: <45846DC1.80009@theshore.net>
-Date: Sat, 16 Dec 2006 17:05:53 -0500
-From: "Christopher S. Aker" <caker@theshore.net>
+	Tue, 19 Dec 2006 10:17:35 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Tue, 19 Dec 2006 19:17:08 +0100
+References: <45846DC1.80009@theshore.net>
+In-Reply-To: <45846DC1.80009@theshore.net>
 MIME-Version: 1.0
-Subject: [uml-devel] SKAS v8.2 for 2.6.19 and beyond?
+Content-Disposition: inline
+Message-Id: <200612191917.09250.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] SKAS v8.2 for 2.6.19 and beyond?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,19 +30,34 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: "Christopher S. Aker" <caker@theshore.net>
 
-Blaisorblade,
+On Saturday 16 December 2006 23:05, Christopher S. Aker wrote:
+> Blaisorblade,
+>
+> Any chance you'll be creating a skas v8.2 patch for 2.6.19/20 any time
+> soon?  I'm still weary of this issue with skas-v9pre:
+>
+> http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=116008558424368&w=2
+>
+> Would it be as simple as taking the broken-out skas-v9 patch for 2.6.19
+> and only patching up to a certain point in the series?
+Yes. The right point should also be self-evident from where 
+skas-extraversion-v8_2 *more or less) is placed. Also note that a fix 
+(removing the config.h inclusion) is needed.
 
-Any chance you'll be creating a skas v8.2 patch for 2.6.19/20 any time 
-soon?  I'm still weary of this issue with skas-v9pre:
+For the time being (which should be until at least this whole week) I won't be 
+able to handle these tasks, and I'm very sorry for that, because I'm too 
+busy - but that should change soon (I'm completing a part my nice C++, 
+Boost::Spirit based and time constrained project for university - 
+maintainance is required but I hope it will require less time).
+-- 
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
-http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=116008558424368&w=2
-
-Would it be as simple as taking the broken-out skas-v9 patch for 2.6.19 
-and only patching up to a certain point in the series?
-
-Thanks!
--Chris
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
