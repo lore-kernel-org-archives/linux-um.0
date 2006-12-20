@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1GwjWx-00021t-Hz for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Dec 2006 10:17:35 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1GwjWu-0004Vi-KC
+	id 1Gx5wI-00047U-CQ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 20 Dec 2006 10:13:14 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Gx5wH-00084w-Rc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Dec 2006 10:17:35 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 19 Dec 2006 19:17:08 +0100
-References: <45846DC1.80009@theshore.net>
-In-Reply-To: <45846DC1.80009@theshore.net>
-MIME-Version: 1.0
+	Wed, 20 Dec 2006 10:13:14 -0800
+Date: Wed, 20 Dec 2006 13:08:30 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20061220180830.GE5488@ccure.user-mode-linux.org>
+References: <458142B3.7050807@freemail.gr>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200612191917.09250.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] SKAS v8.2 for 2.6.19 and beyond?
+In-Reply-To: <458142B3.7050807@freemail.gr>
+Subject: Re: [uml-devel] porting uml to Hurd
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,35 +30,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "Christopher S. Aker" <caker@theshore.net>
+To: Constantine Kousoulos <wuwei@freemail.gr>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 16 December 2006 23:05, Christopher S. Aker wrote:
-> Blaisorblade,
->
-> Any chance you'll be creating a skas v8.2 patch for 2.6.19/20 any time
-> soon?  I'm still weary of this issue with skas-v9pre:
->
-> http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=116008558424368&w=2
->
-> Would it be as simple as taking the broken-out skas-v9 patch for 2.6.19
-> and only patching up to a certain point in the series?
-Yes. The right point should also be self-evident from where 
-skas-extraversion-v8_2 *more or less) is placed. Also note that a fix 
-(removing the config.h inclusion) is needed.
+On Thu, Dec 14, 2006 at 02:25:23PM +0200, Constantine Kousoulos wrote:
+> Can you supply me with more info (docs, urls, directions to source 
+> code, etc) on what needs to be done in order to accomplish the 
+> port? Technical details would really help me discover if uml can 
+> actually be ported to the Hurd.
 
-For the time being (which should be until at least this whole week) I won't be 
-able to handle these tasks, and I'm very sorry for that, because I'm too 
-busy - but that should change soon (I'm completing a part my nice C++, 
-Boost::Spirit based and time constrained project for university - 
-maintainance is required but I hope it will require less time).
+There's no documentation to speak of wrt to an OS port.  There is some
+outdated architecture porting information at
+http://user-mode-linux.sourceforge.net/arch-port.html, some of which
+is relevant.
+
+Here's a little list off the top of my head, for a skas-like mode  -
+	interception and nullification of another process system calls
+	ability to change memory mappings of another process
+	interception and nullification of signals received by another
+process
+
+If you can handle those, you are probably in good shape.
+
+If you can't do the second two, then a tt-like mode might be possible,
+where you map the UML kernel into every UML process address space.
+Then those become trivial since "the other process" is a UML process.
+However, in this case, there are other nasty tricks needed, like
+making sure that the host processes have different address spaces, but
+the UML portions are shared.  The kernel data obviously needs to be
+shared across all processes.
+
+Look at the interface declared in arch/um/include/os.h and defined in
+arch/um/os-Linux/.  It's probably unnecessarily wide at this point,
+and contains Linux-isms which shouldn't be there, but that's my
+current stab at an OS abstraction interface.
+
+				Jeff
 -- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
