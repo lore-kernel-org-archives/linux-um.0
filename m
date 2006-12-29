@@ -2,19 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H0RQy-0002xT-OX for user-mode-linux-devel@lists.sourceforge.net;
+	id 1H0RQy-0002xe-TZ for user-mode-linux-devel@lists.sourceforge.net;
 	Fri, 29 Dec 2006 15:46:44 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H0RQy-0007gw-3z
+	(Exim 4.44) id 1H0RQy-0007gx-59
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Fri, 29 Dec 2006 15:46:44 -0800
-Message-Id: <200612292341.kBTNfPGL005524@ccure.user-mode-linux.org>
+Message-Id: <200612292341.kBTNfSLf005539@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Fri, 29 Dec 2006 18:41:25 -0500
+Date: Fri, 29 Dec 2006 18:41:28 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 0/6] UML - Locking, whitespace, style,
-	and hotplug fixes
+Subject: [uml-devel] [PATCH 3/6] UML - Console whitespace and comment tidying
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,21 +30,42 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This stuff is all post-2.6.20 material.
+Some comment and whitespace cleanups in the console and mconsole code.
 
-I'm fixing the locking through UML, and discovering other nastinesses along
-the way.
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
 
-Patches 1, 4, and 5 fix locking in the console and network drivers.
+--
+ arch/um/drivers/stdio_console.c |    2 --
+ arch/um/include/mconsole_kern.h |    2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-I have a huge raft of whitespace and style fixes which I will feed in as I
-fix the locking in the same files.  The first installment of these are patches
-3 and 6.
 
-Patch 2 fixes problems getting hotplug errors back to the host, which I 
-discovered while trolling through that code.
-
-				Jeff
+Index: linux-2.6.18-mm/arch/um/drivers/stdio_console.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/drivers/stdio_console.c	2006-12-29 17:26:54.000000000 -0500
++++ linux-2.6.18-mm/arch/um/drivers/stdio_console.c	2006-12-29 18:20:43.000000000 -0500
+@@ -30,8 +30,6 @@
+ 
+ #define MAX_TTYS (16)
+ 
+-/* ----------------------------------------------------------------------------- */
+-
+ /* Referenced only by tty_driver below - presumably it's locked correctly
+  * by the tty driver.
+  */
+Index: linux-2.6.18-mm/arch/um/include/mconsole_kern.h
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/include/mconsole_kern.h	2006-12-29 17:26:54.000000000 -0500
++++ linux-2.6.18-mm/arch/um/include/mconsole_kern.h	2006-12-29 18:21:37.000000000 -0500
+@@ -20,7 +20,7 @@ struct mc_device {
+ 	char *name;
+ 	int (*config)(char *, char **);
+ 	int (*get_config)(char *, char *, int, char **);
+-        int (*id)(char **, int *, int *);
++	int (*id)(char **, int *, int *);
+ 	int (*remove)(int, char **);
+ };
+ 
 
 
 -------------------------------------------------------------------------
