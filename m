@@ -1,19 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H1TCv-0005oz-Hz for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Jan 2007 11:52:29 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1H1TSD-0007VR-7R for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Jan 2007 12:08:17 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H1TCp-0004xk-VJ
+	(Exim 4.44) id 1H1TSB-0004og-Mn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Jan 2007 11:52:26 -0800
-Message-Id: <200701011947.l01Jl7vp020746@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Date: Mon, 01 Jan 2007 14:47:07 -0500
+	Mon, 01 Jan 2007 12:08:17 -0800
+Date: Mon, 1 Jan 2007 15:03:01 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/8] UML - watchdog driver locking
+Message-ID: <20070101200301.GD20792@ccure.user-mode-linux.org>
+References: <200612292341.kBTNfR3s005529@ccure.user-mode-linux.org>
+	<20061229154802.b0768d6e.rdunlap@xenotime.net>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20061229154802.b0768d6e.rdunlap@xenotime.net>
+Subject: Re: [uml-devel] [PATCH 1/6] UML - Console locking fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,91 +31,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Randy Dunlap <rdunlap@xenotime.net>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Replace BKL use with a spinlock.
+On Fri, Dec 29, 2006 at 03:48:02PM -0800, Randy Dunlap wrote:
+> /*
+>  * Normally, ...
 
-Also fix the control so that open doesn't return holding a lock.
+> 	if (
+> 	(several of these)
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
---
- arch/um/drivers/harddog_kern.c |   23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+Yeah, I'm working off the most blatant style violations at the moment.
 
-Index: linux-2.6.18-mm/arch/um/drivers/harddog_kern.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/drivers/harddog_kern.c	2006-12-29 18:25:36.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/drivers/harddog_kern.c	2006-12-29 21:02:50.000000000 -0500
-@@ -44,12 +44,13 @@
- #include <linux/reboot.h>
- #include <linux/smp_lock.h>
- #include <linux/init.h>
-+#include <linux/spinlock.h>
- #include <asm/uaccess.h>
- #include "mconsole.h"
- 
- MODULE_LICENSE("GPL");
- 
--/* Locked by the BKL in harddog_open and harddog_release */
-+static DEFINE_SPINLOCK(lock);
- static int timer_alive;
- static int harddog_in_fd = -1;
- static int harddog_out_fd = -1;
-@@ -62,12 +63,12 @@ extern int start_watchdog(int *in_fd_ret
- 
- static int harddog_open(struct inode *inode, struct file *file)
- {
--	int err;
-+	int err = -EBUSY;
- 	char *sock = NULL;
- 
--	lock_kernel();
-+	spin_lock(&lock);
- 	if(timer_alive)
--		return -EBUSY;
-+		goto err;
- #ifdef CONFIG_HARDDOG_NOWAYOUT	 
- 	__module_get(THIS_MODULE);
- #endif
-@@ -76,11 +77,15 @@ static int harddog_open(struct inode *in
- 	sock = mconsole_notify_socket();
- #endif
- 	err = start_watchdog(&harddog_in_fd, &harddog_out_fd, sock);
--	if(err) return(err);
-+	if(err)
-+		goto err;
- 
- 	timer_alive = 1;
--	unlock_kernel();
-+	spin_unlock(&lock);
- 	return nonseekable_open(inode, file);
-+err:
-+	spin_unlock(&lock);
-+	return err;
- }
- 
- extern void stop_watchdog(int in_fd, int out_fd);
-@@ -90,14 +95,16 @@ static int harddog_release(struct inode 
- 	/*
- 	 *	Shut off the timer.
- 	 */
--	lock_kernel();
-+
-+	spin_lock(&lock);
- 
- 	stop_watchdog(harddog_in_fd, harddog_out_fd);
- 	harddog_in_fd = -1;
- 	harddog_out_fd = -1;
- 
- 	timer_alive=0;
--	unlock_kernel();
-+	spin_unlock(&lock);
-+
- 	return 0;
- }
- 
+				Jeff
 
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
