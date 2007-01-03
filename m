@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H29n5-0004yN-LC for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Jan 2007 09:20:41 -0800
+	id 1H29n8-0004yT-M2 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Jan 2007 09:20:43 -0800
 Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1H29n1-0004Lu-Eq
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1H29n3-0004Mw-Pb
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Jan 2007 09:20:37 -0800
+	Wed, 03 Jan 2007 09:20:42 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Wed, 3 Jan 2007 17:17:43 +0100
-References: <45846DC1.80009@theshore.net>
-In-Reply-To: <45846DC1.80009@theshore.net>
+Date: Wed, 3 Jan 2007 17:20:15 +0100
+References: <20061130202411.GA8628@knob.reflex>
+In-Reply-To: <20061130202411.GA8628@knob.reflex>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200701031717.43505.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] SKAS v8.2 for 2.6.19 and beyond?
+Message-Id: <200701031720.15508.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] fix skas-2.6.19-rc6-v9-pre9 compile for
+	linux 2.6.19
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,26 +30,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: "Christopher S. Aker" <caker@theshore.net>
+To: Jason Lunz <lunz@falooley.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 16 December 2006 23:05, Christopher S. Aker wrote:
-> Blaisorblade,
+On Thursday 30 November 2006 21:24, Jason Lunz wrote:
+> linux/config.h is now included automatically. #including it by hand is a
+> build error in 2.6.19; this removes the three instances in the latest
+> skas3-2.6 patch.
 >
-> Any chance you'll be creating a skas v8.2 patch for 2.6.19/20 any time
-> soon?  I'm still weary of this issue with skas-v9pre:
->
-> http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=116008558424368&w=2
->
-> Would it be as simple as taking the broken-out skas-v9 patch for 2.6.19
-> and only patching up to a certain point in the series?
->
-> Thanks!
-> -Chris
-Ok, I've done this release, and fixed the problem about including config.h. 
-I'm aware about the other problems but I can't help at the very moment.
-
-Bye!
+> Jason
+I'm sorry to be so late, I've finally fixed this, and released also the 
+2.6.19 -v8.2 patchset.
 -- 
 Inform me of my mistakes, so I can add them to my list!
 Paolo Giarrusso, aka Blaisorblade
