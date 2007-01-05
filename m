@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H2u6U-0001RJ-Os for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Jan 2007 10:47:46 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H2u6U-0007Uh-1R
+	id 1H2ysb-0006KH-Ud for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Jan 2007 15:53:49 -0800
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailout.stusta.mhn.de)
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1H2ysa-0004E4-Tk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Jan 2007 10:47:46 -0800
-Message-Id: <200701051842.l05IgHCa004637@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Date: Fri, 05 Jan 2007 13:42:16 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 7/9] UML - Fix previous console locking
+	Fri, 05 Jan 2007 15:53:45 -0800
+Date: Sat, 6 Jan 2007 00:52:52 +0100
+From: Adrian Bunk <bunk@stusta.de>
+Message-ID: <20070105235251.GW20714@stusta.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] [FYI: 2.6.16 patch] fix the UML compilation
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,125 +28,124 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org
-Cc: Blaisorblade <blaisorblade@yahoo.it>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: jdike@karaya.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Eliminate the open_mutex after complaints from Blaisorblade.  It turns
-out that the tty count provides the information needed to tell whether
-we are the first opener or last closer.
+FYI:
+I've applied the patch below to the 2.6.16 tree to fix the UML 
+compilation on systems with recent kernel headers.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
---
- arch/um/drivers/line.c |   48 ++++++++----------------------------------------
- arch/um/include/line.h |    1 -
- 2 files changed, 8 insertions(+), 41 deletions(-)
-Index: linux-2.6.18-mm/arch/um/drivers/line.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/drivers/line.c	2007-01-03 12:08:02.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/drivers/line.c	2007-01-04 12:02:29.000000000 -0500
-@@ -425,42 +425,15 @@ int line_setup_irq(int fd, int input, in
-  * However, in this case, mconsole requests can come in "from the
-  * side", and race with opens and closes.
-  *
-- * The problem comes from line_setup not wanting to sleep if
-- * the device is open or being opened.  This can happen because the
-- * first opener of a device is responsible for setting it up on the
-- * host, and that can sleep.  The open of a port device will sleep
-- * until someone telnets to it.
-+ * mconsole config requests will want to be sure the device isn't in
-+ * use, and get_config, open, and close will want a stable
-+ * configuration.  The checking and modification of the configuration
-+ * is done under a spinlock.  Checking whether the device is in use is
-+ * line->tty->count > 1, also under the spinlock.
-  *
-- * The obvious solution of putting everything under a mutex fails
-- * because then trying (and failing) to change the configuration of an
-- * open(ing) device will block until the open finishes.  The right
-- * thing to happen is for it to fail immediately.
-- *
-- * We can put the opening (and closing) of the host device under a
-- * separate lock, but that has to be taken before the count lock is
-- * released.  Otherwise, you open a window in which another open can
-- * come through and assume that the host side is opened and working.
-- *
-- * So, if the tty count is one, open will take the open mutex
-- * inside the count lock.  Otherwise, it just returns. This will sleep
-- * if the last close is pending, and will block a setup or get_config,
-- * but that should not last long.
-- *
-- * So, what we end up with is that open and close take the count lock.
-- * If the first open or last close are happening, then the open mutex
-- * is taken inside the count lock and the host opening or closing is done.
-- *
-- * setup and get_config only take the count lock.  setup modifies the
-- * device configuration only if the open count is zero.  Arbitrarily
-- * long blocking of setup doesn't happen because something would have to be
-- * waiting for an open to happen.  However, a second open with
-- * tty->count == 1 can't happen, and a close can't happen until the open
-- * had finished.
-- *
-- * We can't maintain our own count here because the tty layer doesn't
-- * match opens and closes.  It will call close if an open failed, and
-- * a tty hangup will result in excess closes.  So, we rely on
-- * tty->count instead.  It is one on both the first open and last close.
-+ * tty->count serves to decide whether the device should be enabled or
-+ * disabled on the host.  If it's equal to 1, then we are doing the
-+ * first open or last close.  Otherwise, open and close just return.
+Please complain if anything is wrong with it.
+
+cu
+Adrian
+
+
+commit cc0e04780f51553c88a2eb1a33f709346f6d0281
+Author: Adrian Bunk <bunk@stusta.de>
+Date:   Fri Jan 5 03:17:11 2007 +0100
+
+    fix the UML compilation
+    
+    Based on patches from Linus' tree.
+    
+    Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index d261888..a0afd10 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -11,6 +11,7 @@
+ #include <linux/unistd.h>
+ #include <sys/mman.h>
+ #include <sys/wait.h>
++#include <sys/syscall.h>
+ #include "ptrace_user.h"
+ #include "os.h"
+ #include "user.h"
+@@ -139,11 +140,9 @@ void os_usr1_process(int pid)
+  * syscalls, and also breaks with clone(), which does not unshare the TLS.
   */
  
- int line_open(struct line *lines, struct tty_struct *tty)
-@@ -476,7 +449,6 @@ int line_open(struct line *lines, struct
- 	if(tty->count > 1)
- 		goto out_unlock;
+-inline _syscall0(pid_t, getpid)
+-
+ int os_getpid(void)
+ {
+-	return(getpid());
++	return(syscall(__NR_getpid));
+ }
  
--	mutex_lock(&line->open_mutex);
- 	spin_unlock(&line->count_lock);
+ int os_getpgrp(void)
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index bbf34cb..215ef68 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -17,6 +17,7 @@
+ #include <sys/time.h>
+ #include <asm/unistd.h>
+ #include <asm/types.h>
++#include <asm/page.h>
+ #include "user.h"
+ #include "sysdep/ptrace.h"
+ #include "user_util.h"
+diff --git a/arch/um/sys-i386/unmap.c b/arch/um/sys-i386/unmap.c
+index 1b0ad0e..8e55cd5 100644
+--- a/arch/um/sys-i386/unmap.c
++++ b/arch/um/sys-i386/unmap.c
+@@ -5,20 +5,17 @@
  
- 	tty->driver_data = line;
-@@ -493,7 +465,6 @@ int line_open(struct line *lines, struct
- 	chan_window_size(&line->chan_list, &tty->winsize.ws_row,
- 			 &tty->winsize.ws_col);
+ #include <linux/mman.h>
+ #include <asm/unistd.h>
++#include <sys/syscall.h>
  
--	mutex_unlock(&line->open_mutex);
- 	return err;
+-static int errno;
+-
+-static inline _syscall2(int,munmap,void *,start,size_t,len)
+-static inline _syscall6(void *,mmap2,void *,addr,size_t,len,int,prot,int,flags,int,fd,off_t,offset)
+ int switcheroo(int fd, int prot, void *from, void *to, int size)
+ {
+-	if(munmap(to, size) < 0){
++	if (syscall(__NR_munmap, to, size) < 0){
+ 		return(-1);
+ 	}
+-	if(mmap2(to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1 ){
++	if (syscall(__NR_mmap2, to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1 ){
+ 		return(-1);
+ 	}
+-	if(munmap(from, size) < 0){
++	if (syscall(__NR_munmap, from, size) < 0){
+ 		return(-1);
+ 	}
+ 	return(0);
+diff --git a/arch/um/sys-x86_64/unmap.c b/arch/um/sys-x86_64/unmap.c
+index f4a4bff..57c9286 100644
+--- a/arch/um/sys-x86_64/unmap.c
++++ b/arch/um/sys-x86_64/unmap.c
+@@ -5,20 +5,17 @@
  
- out_unlock:
-@@ -523,7 +494,6 @@ void line_close(struct tty_struct *tty, 
- 	if(tty->count > 1)
- 		goto out_unlock;
+ #include <linux/mman.h>
+ #include <asm/unistd.h>
++#include <sys/syscall.h>
  
--	mutex_lock(&line->open_mutex);
- 	spin_unlock(&line->count_lock);
- 
- 	line->tty = NULL;
-@@ -534,7 +504,6 @@ void line_close(struct tty_struct *tty, 
- 		line->sigio = 0;
-         }
- 
--	mutex_unlock(&line->open_mutex);
- 	return;
- 
- out_unlock:
-@@ -755,7 +724,6 @@ void lines_init(struct line *lines, int 
- 	for(i = 0; i < nlines; i++){
- 		line = &lines[i];
- 		INIT_LIST_HEAD(&line->chan_list);
--		mutex_init(&line->open_mutex);
- 
- 		if(line->init_str == NULL)
- 			continue;
-Index: linux-2.6.18-mm/arch/um/include/line.h
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/include/line.h	2007-01-02 13:29:54.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/include/line.h	2007-01-03 16:31:32.000000000 -0500
-@@ -35,7 +35,6 @@ struct line {
- 	spinlock_t count_lock;
- 	int valid;
- 
--	struct mutex open_mutex;
- 	char *init_str;
- 	int init_pri;
- 	struct list_head chan_list;
+-static int errno;
+-
+-static inline _syscall2(int,munmap,void *,start,size_t,len)
+-static inline _syscall6(void *,mmap,void *,addr,size_t,len,int,prot,int,flags,int,fd,off_t,offset)
+ int switcheroo(int fd, int prot, void *from, void *to, int size)
+ {
+-	if(munmap(to, size) < 0){
++	if (syscall(__NR_munmap, to, size) < 0){
+ 		return(-1);
+ 	}
+-	if(mmap(to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1){
++	if (syscall(__NR_mmap, to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1){
+ 		return(-1);
+ 	}
+-	if(munmap(from, size) < 0){
++	if (syscall(__NR_munmap, from, size) < 0){
+ 		return(-1);
+ 	}
+ 	return(0);
 
 
 -------------------------------------------------------------------------
