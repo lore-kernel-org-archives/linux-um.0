@@ -2,19 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H46SR-0006f3-9s for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Jan 2007 18:11:23 -0800
+	id 1H46SM-0006eU-Al for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 08 Jan 2007 18:11:18 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H46SQ-0000zY-Nd
+	(Exim 4.44) id 1H46SL-0000z4-Pk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Jan 2007 18:11:23 -0800
-Message-Id: <200701090205.l0925nDL024406@ccure.user-mode-linux.org>
+	Mon, 08 Jan 2007 18:11:18 -0800
+Message-Id: <200701090205.l0925lx1024391@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Mon, 08 Jan 2007 21:05:49 -0500
+Date: Mon, 08 Jan 2007 21:05:47 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 7/7] UML - Remove code controlled by
-	non-existent config option
+Subject: [uml-devel] [PATCH 4/7] UML - Remove unused variable and function
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,32 +30,53 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-CONFIG_HOST_TASK_SIZE doesn't exist any more.
+syscall_index and next_syscall_index turn out not to be used.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 --
- arch/um/kernel/skas/mem.c |    6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ arch/um/include/kern_util.h |    1 -
+ arch/um/kernel/syscall.c    |   16 ----------------
+ 2 files changed, 17 deletions(-)
 
-Index: linux-2.6.18-mm/arch/um/kernel/skas/mem.c
+Index: linux-2.6.18-mm/arch/um/include/kern_util.h
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/kernel/skas/mem.c	2006-12-29 12:20:14.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/kernel/skas/mem.c	2007-01-08 16:48:42.000000000 -0500
-@@ -14,13 +14,9 @@ unsigned long set_task_sizes_skas(unsign
- 	unsigned long host_task_size = ROUND_4M((unsigned long)
- 						&host_task_size);
- 
--#ifdef CONFIG_HOST_TASK_SIZE
--	*host_size_out = ROUND_4M(CONFIG_HOST_TASK_SIZE);
--	*task_size_out = CONFIG_HOST_TASK_SIZE;
--#else
- 	if (!skas_needs_stub)
- 		*task_size_out = host_task_size;
- 	else *task_size_out = CONFIG_STUB_START & PGDIR_MASK;
--#endif
-+
- 	return host_task_size;
+--- linux-2.6.18-mm.orig/arch/um/include/kern_util.h	2007-01-08 16:15:33.000000000 -0500
++++ linux-2.6.18-mm/arch/um/include/kern_util.h	2007-01-08 16:29:07.000000000 -0500
+@@ -61,7 +61,6 @@ extern int set_signals(int enable);
+ extern void force_sigbus(void);
+ extern int pid_to_processor_id(int pid);
+ extern void deliver_signals(void *t);
+-extern int next_syscall_index(int max);
+ extern int next_trap_index(int max);
+ extern void default_idle(void);
+ extern void finish_fork(void);
+Index: linux-2.6.18-mm/arch/um/kernel/syscall.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/kernel/syscall.c	2006-12-29 12:20:14.000000000 -0500
++++ linux-2.6.18-mm/arch/um/kernel/syscall.c	2007-01-08 16:29:14.000000000 -0500
+@@ -149,22 +149,6 @@ long sys_olduname(struct oldold_utsname 
+ 	return error;
  }
+ 
+-DEFINE_SPINLOCK(syscall_lock);
+-
+-static int syscall_index = 0;
+-
+-int next_syscall_index(int limit)
+-{
+-	int ret;
+-
+-	spin_lock(&syscall_lock);
+-	ret = syscall_index;
+-	if(++syscall_index == limit)
+-		syscall_index = 0;
+-	spin_unlock(&syscall_lock);
+-	return(ret);
+-}
+-
+ int kernel_execve(const char *filename, char *const argv[], char *const envp[])
+ {
+ 	mm_segment_t fs;
 
 
 -------------------------------------------------------------------------
