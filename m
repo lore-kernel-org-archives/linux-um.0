@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H4Yer-0006E0-Uj for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Jan 2007 00:18:06 -0800
-Received: from [80.88.33.193] (helo=vervifontaine.sonycom.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1H4Yep-0002Ey-26
+	id 1H4Zm0-0004jz-N0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Jan 2007 01:29:32 -0800
+Received: from p15198372.pureserver.info ([212.227.95.191])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1H4Zlz-0007Bc-3K
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Jan 2007 00:18:05 -0800
-Date: Wed, 10 Jan 2007 09:17:56 +0100 (CET)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <C1C9B8A8.16C08%pierre.laroche@sbcglobal.net>
-Message-ID: <Pine.LNX.4.62.0701100911500.13394@pademelon.sonytel.be>
-References: <C1C9B8A8.16C08%pierre.laroche@sbcglobal.net>
+	Wed, 10 Jan 2007 01:29:32 -0800
+Message-ID: <20070110102857.9bzdrhzh8g0s04og@webmail.flonatel.org>
+Date: Wed, 10 Jan 2007 10:28:57 +0100
+From: uml@flonatel.org
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Debian user mode linux 2.6.8 and supporting utils
-	don't install
+Content-Disposition: inline
+Subject: [uml-devel] Configuration problem with UML in kernel 2.6.19.1
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,96 +28,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: pierrelaroche <pierre.laroche@sbcglobal.net>
-Cc: Mattia Dongili <malattia@linux.it>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>, pkg-uml-devel@lists.alioth.debian.org
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 9 Jan 2007, pierrelaroche wrote:
-> Here is the apt-get log showing the problem I mentioned,
-> 
-> debian:/etc/apt# apt-get install user-mode-linux
-> Reading Package Lists... Done
-> Building Dependency Tree... Done
-> The following extra packages will be installed:
->   busybox fontconfig fontconfig-config klibc-utils libc6 libc6-dev libcairo2
-> libdbus-1-3 libdbus-glib-1-2 libfontconfig1 libfreetype6 libglib2.0-0
-> libhal-storage1 libhal1 libklibc libncurses5 libpango1.0-0
->   libpango1.0-common libreadline5 libselinux1 libsepol1 libusb-0.1-4
-> libvolume-id0 locales lsb-base makedev module-init-tools readline-common
-> tzdata uml-utilities
-> Suggested packages:
->   glibc-doc libfreetype6-dev ttf-kochi-gothic ttf-kochi-mincho
-> ttf-thryomanes ttf-baekmuk ttf-arphic-gbsn00lp ttf-arphic-bsmi00lp
-> ttf-arphic-gkai00mp ttf-arphic-bkai00mp rootstrap slirp linux-patch-skas
-> Recommended packages:
->   dbus libglib2.0-data x-ttcidfont-conf
-> The following packages will be REMOVED:
->   base-config initrd-tools kernel-image-2.4.27-3-386 kernel-image-2.6-686
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^ ^^^^^^^^^^^^^^^^^^^^
-> kernel-image-2.6.8-3-686
-> The following NEW packages will be installed:
->   busybox fontconfig-config klibc-utils libcairo2 libdbus-1-3
-> libdbus-glib-1-2 libhal-storage1 libhal1 libklibc libvolume-id0
-> readline-common tzdata uml-utilities user-mode-linux
-> The following packages will be upgraded:
->   fontconfig libc6 libc6-dev libfontconfig1 libfreetype6 libglib2.0-0
-> libncurses5 libpango1.0-0 libpango1.0-common libreadline5 libselinux1
-> libsepol1 libusb-0.1-4 locales lsb-base makedev module-init-tools
-> 17 upgraded, 14 newly installed, 5 to remove and 746 not upgraded.
-> Need to get 41.7MB of archives.
-> After unpacking 4974kB disk space will be freed.
-> Do you want to continue? [Y/n]
-> 
-> 
-> note: my sources are pointing to the unstable tree
+Hello!
 
-Testing/Unstable no longer have `kernel-image-*' packages, the new names are of
-the form `linux-image-*'. So these are old packages from stable/sarge.
+I had some problems running linux 2.6.19.1 as client UML.  When  
+starting 'mapping mmap stub failed, errno = -12' is printed - with an  
+additional Kernel panic. In the file arch/um/Kconfig.i386 the  
+definition of STUB_CODE and STUB_DATA depend on the configuration  
+symbol HOST_2G_2G which has gone sometimes in between 2.6.18.6 and  
+2.6.19.1.
 
-The old ``kernel-image-*' packages depend on initrd-tool, but the new libc6
-conflicts with initrd-tools.
+The applied patch solves the problem for me.
 
-So either you'll have to upgrade to a kernel from testing/unstable, or build
-user-mode-linux yourself from source.
+Kind regards
 
-> On 1/9/07 2:16 AM, "Mattia Dongili" <malattia@linux.it> wrote:
-> 
-> > Hi,
-> > 
-> > first of all: do you really mean 2.6.8??
-> > 
-> > On Tue, January 9, 2007 10:55 am, pierrelaroche said:
-> >> These programs, as found in the Debian unstable tree, don't install
-> >> properly
-> >> on my Debian system. Apt-get insists on first removing all my kernel
-> >> images
-> >> claiming a conflict.
-> > 
-> > hmmm, maybe apt gets some dependency wrong, can you share the output of
-> > apt-get?
-> > 
-> >> The installation succeeds however if the .deb files are downloaded first
-> >> before installation (the files are downloaded, and then installed using
-> >> dpkg).
-> >> 
-> >> Also, where can I find the source code and the instructions to recreate
-> >> these binaries? I would like to generate a debug version. I need to know
-> >> the
-> >> system setup, and the uml patches used to create these binaries (2.6.8).
-> > 
-> > apt-get source user-mode-linux
-> > and build it with
-> > DEB_BUILD_OPTIONS=nostrip dpkg-buildpackage -uc -us -b -rfakeroot
+Andreas Florath
 
-Gr{oetje,eeting}s,
 
-						Geert
+diff -u linux-2.6.19.1_orig/arch/um/Kconfig.i386  
+linux-2.6.19.1/arch/um/Kconfig.i386
+--- linux-2.6.19.1_orig/arch/um/Kconfig.i386    2006-12-11  
+20:32:53.000000000 +0100
++++ linux-2.6.19.1/arch/um/Kconfig.i386 2007-01-10 09:32:01.000000000 +0100
+@@ -67,13 +67,13 @@
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+  config STUB_CODE
+         hex
+-       default 0xbfffe000 if !HOST_2G_2G
+-       default 0x7fffe000 if HOST_2G_2G
++       default 0xbfffe000 if !HOST_VMSPLIT_2G
++       default 0x7fffe000 if HOST_VMSPLIT_2G
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+  config STUB_DATA
+         hex
+-       default 0xbffff000 if !HOST_2G_2G
+-       default 0x7ffff000 if HOST_2G_2G
++       default 0xbffff000 if !HOST_VMSPLIT_2G
++       default 0x7ffff000 if HOST_VMSPLIT_2G
+
+  config STUB_START
+         hex
+
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
