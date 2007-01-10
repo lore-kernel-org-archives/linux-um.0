@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H4QrV-0002Fc-2z for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 09 Jan 2007 15:58:37 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1H4QrR-0002zj-20
+	id 1H4VxT-0006me-18 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 09 Jan 2007 21:25:07 -0800
+Received: from smtp108.sbc.mail.mud.yahoo.com ([68.142.198.207])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1H4VxS-00080R-Hq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 09 Jan 2007 15:58:37 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Wed, 10 Jan 2007 00:43:18 +0100
-References: <20070105235251.GW20714@stusta.de>
-In-Reply-To: <20070105235251.GW20714@stusta.de>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200701100043.18831.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [FYI: 2.6.16 patch] fix the UML compilation
+	Tue, 09 Jan 2007 21:25:06 -0800
+Date: Tue, 09 Jan 2007 21:24:56 -0800
+From: pierrelaroche <pierre.laroche@sbcglobal.net>
+Message-ID: <C1C9B8A8.16C08%pierre.laroche@sbcglobal.net>
+In-Reply-To: <35792.80.105.100.166.1168337791.squirrel@picard.linux.it>
+Mime-version: 1.0
+Subject: Re: [uml-devel] Debian user mode linux 2.6.8 and supporting utils
+	don't install
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,104 +28,88 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jdike@karaya.com, Adrian Bunk <bunk@stusta.de>
+To: Mattia Dongili <malattia@linux.it>
+Cc: pkg-uml-devel@lists.alioth.debian.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 06 January 2007 00:52, Adrian Bunk wrote:
-> FYI:
-> I've applied the patch below to the 2.6.16 tree to fix the UML
-> compilation on systems with recent kernel headers.
->
-> Please complain if anything is wrong with it.
->
-> cu
-> Adrian
->
->
-> commit cc0e04780f51553c88a2eb1a33f709346f6d0281
-> Author: Adrian Bunk <bunk@stusta.de>
-> Date:   Fri Jan 5 03:17:11 2007 +0100
->
->     fix the UML compilation
->
->     Based on patches from Linus' tree.
->
->     Signed-off-by: Adrian Bunk <bunk@stusta.de>
->
-I reverted the below two hunks when they were applied on git tree, they're 
-wrong (even because this code is compiled using our headers, not using host 
-ones). In fact both in git HEAD and in 2.6.19 there is the correct code 
-version.
+Hello,
 
-> diff --git a/arch/um/sys-i386/unmap.c b/arch/um/sys-i386/unmap.c
-> index 1b0ad0e..8e55cd5 100644
-> --- a/arch/um/sys-i386/unmap.c
-> +++ b/arch/um/sys-i386/unmap.c
-> @@ -5,20 +5,17 @@
->
->  #include <linux/mman.h>
->  #include <asm/unistd.h>
-> +#include <sys/syscall.h>
->
-> -static int errno;
-> -
-> -static inline _syscall2(int,munmap,void *,start,size_t,len)
-> -static inline _syscall6(void *,mmap2,void
-> *,addr,size_t,len,int,prot,int,flags,int,fd,off_t,offset) int
-> switcheroo(int fd, int prot, void *from, void *to, int size)
->  {
-> -	if(munmap(to, size) < 0){
-> +	if (syscall(__NR_munmap, to, size) < 0){
->  		return(-1);
->  	}
-> -	if(mmap2(to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1 ){
-> +	if (syscall(__NR_mmap2, to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) ==
-> (void*) -1 ){ return(-1);
->  	}
-> -	if(munmap(from, size) < 0){
-> +	if (syscall(__NR_munmap, from, size) < 0){
->  		return(-1);
->  	}
->  	return(0);
-> diff --git a/arch/um/sys-x86_64/unmap.c b/arch/um/sys-x86_64/unmap.c
-> index f4a4bff..57c9286 100644
-> --- a/arch/um/sys-x86_64/unmap.c
-> +++ b/arch/um/sys-x86_64/unmap.c
-> @@ -5,20 +5,17 @@
->
->  #include <linux/mman.h>
->  #include <asm/unistd.h>
-> +#include <sys/syscall.h>
->
-> -static int errno;
-> -
-> -static inline _syscall2(int,munmap,void *,start,size_t,len)
-> -static inline _syscall6(void *,mmap,void
-> *,addr,size_t,len,int,prot,int,flags,int,fd,off_t,offset) int
-> switcheroo(int fd, int prot, void *from, void *to, int size)
->  {
-> -	if(munmap(to, size) < 0){
-> +	if (syscall(__NR_munmap, to, size) < 0){
->  		return(-1);
->  	}
-> -	if(mmap(to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) == (void*) -1){
-> +	if (syscall(__NR_mmap, to, size, prot, MAP_SHARED | MAP_FIXED, fd, 0) ==
-> (void*) -1){ return(-1);
->  	}
-> -	if(munmap(from, size) < 0){
-> +	if (syscall(__NR_munmap, from, size) < 0){
->  		return(-1);
->  	}
->  	return(0);
->
+First, thanks for the very prompt response.
 
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+Also thanks for the build instructions. I now have a uml kernel debug
+environment.
 
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+I was incorrect in stating the uml version. I am installing uml
+2.6.18-1um-2, not 2.6.8.
+
+Here is the apt-get log showing the problem I mentioned,
+
+debian:/etc/apt# apt-get install user-mode-linux
+Reading Package Lists... Done
+Building Dependency Tree... Done
+The following extra packages will be installed:
+  busybox fontconfig fontconfig-config klibc-utils libc6 libc6-dev libcairo2
+libdbus-1-3 libdbus-glib-1-2 libfontconfig1 libfreetype6 libglib2.0-0
+libhal-storage1 libhal1 libklibc libncurses5 libpango1.0-0
+  libpango1.0-common libreadline5 libselinux1 libsepol1 libusb-0.1-4
+libvolume-id0 locales lsb-base makedev module-init-tools readline-common
+tzdata uml-utilities
+Suggested packages:
+  glibc-doc libfreetype6-dev ttf-kochi-gothic ttf-kochi-mincho
+ttf-thryomanes ttf-baekmuk ttf-arphic-gbsn00lp ttf-arphic-bsmi00lp
+ttf-arphic-gkai00mp ttf-arphic-bkai00mp rootstrap slirp linux-patch-skas
+Recommended packages:
+  dbus libglib2.0-data x-ttcidfont-conf
+The following packages will be REMOVED:
+  base-config initrd-tools kernel-image-2.4.27-3-386 kernel-image-2.6-686
+kernel-image-2.6.8-3-686
+The following NEW packages will be installed:
+  busybox fontconfig-config klibc-utils libcairo2 libdbus-1-3
+libdbus-glib-1-2 libhal-storage1 libhal1 libklibc libvolume-id0
+readline-common tzdata uml-utilities user-mode-linux
+The following packages will be upgraded:
+  fontconfig libc6 libc6-dev libfontconfig1 libfreetype6 libglib2.0-0
+libncurses5 libpango1.0-0 libpango1.0-common libreadline5 libselinux1
+libsepol1 libusb-0.1-4 locales lsb-base makedev module-init-tools
+17 upgraded, 14 newly installed, 5 to remove and 746 not upgraded.
+Need to get 41.7MB of archives.
+After unpacking 4974kB disk space will be freed.
+Do you want to continue? [Y/n]
+
+
+note: my sources are pointing to the unstable tree
+
+- Pierre
+
+
+On 1/9/07 2:16 AM, "Mattia Dongili" <malattia@linux.it> wrote:
+
+> Hi,
+> 
+> first of all: do you really mean 2.6.8??
+> 
+> On Tue, January 9, 2007 10:55 am, pierrelaroche said:
+>> These programs, as found in the Debian unstable tree, don't install
+>> properly
+>> on my Debian system. Apt-get insists on first removing all my kernel
+>> images
+>> claiming a conflict.
+> 
+> hmmm, maybe apt gets some dependency wrong, can you share the output of
+> apt-get?
+> 
+>> The installation succeeds however if the .deb files are downloaded first
+>> before installation (the files are downloaded, and then installed using
+>> dpkg).
+>> 
+>> Also, where can I find the source code and the instructions to recreate
+>> these binaries? I would like to generate a debug version. I need to know
+>> the
+>> system setup, and the uml patches used to create these binaries (2.6.8).
+> 
+> apt-get source user-mode-linux
+> and build it with
+> DEB_BUILD_OPTIONS=nostrip dpkg-buildpackage -uc -us -b -rfakeroot
+
 
 
 -------------------------------------------------------------------------
