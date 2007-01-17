@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H74j9-0002wn-1y for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Jan 2007 22:56:55 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H74j7-0000mu-EH
+	id 1H79lj-00005T-OG for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 Jan 2007 04:19:56 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1H79lf-0003WE-Qy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Jan 2007 22:56:55 -0800
-Date: Wed, 17 Jan 2007 01:50:43 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070117065043.GB11894@ccure.user-mode-linux.org>
-References: <20070112203431.GA10573@swingline.cs.wisc.edu>
-Mime-Version: 1.0
+	Wed, 17 Jan 2007 04:19:55 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Wed, 17 Jan 2007 13:19:13 +0100
+References: <20070110102857.9bzdrhzh8g0s04og@webmail.flonatel.org>
+	<20070110214620.GB6062@ccure.user-mode-linux.org>
+In-Reply-To: <20070110214620.GB6062@ccure.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070112203431.GA10573@swingline.cs.wisc.edu>
-Subject: Re: [uml-devel] UML and KVM
+Message-Id: <200701171319.13990.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Configuration problem with UML in kernel 2.6.19.1
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,37 +30,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Erik Paulson <epaulson@cs.wisc.edu>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net, Matt Willsher <matt@monki.org.uk>
+Cc: Jeff Dike <jdike@addtoit.com>
 
-On Fri, Jan 12, 2007 at 02:34:31PM -0600, Erik Paulson wrote:
-> I see that you're going to be giving a talk at linux.conf.au in a
-> few days on integrating UML and KVM:
-> 
-> http://virtminiconf.linux.hp.com/program/uml-kvm-and-hardware-virtualization
-> 
-> This sounds pretty cool - is there a paper to go along with it, or 
-> will the slides (or, even better, a video of the talk) be available for 
-> those of us who can't make it to Oz?
+On Wednesday 10 January 2007 22:46, Jeff Dike wrote:
+> On Wed, Jan 10, 2007 at 10:28:57AM +0100, uml@flonatel.org wrote:
+> > Hello!
+> >
+> > I had some problems running linux 2.6.19.1 as client UML.  When
+> > starting 'mapping mmap stub failed, errno = -12' is printed - with an
+> > additional Kernel panic. In the file arch/um/Kconfig.i386 the
+> > definition of STUB_CODE and STUB_DATA depend on the configuration
+> > symbol HOST_2G_2G which has gone sometimes in between 2.6.18.6 and
+> > 2.6.19.1.
+> >
+> > The applied patch solves the problem for me.
+>
+> Excellent, thanks for chasing that down.
 
-I'll make the slides, with notes available - that will approximate the
-talk if you stand in the front of a room and read them out loud with
-the slides on a screen behind you.
+This means that running UML under Xen should be retested! Setting HOST_VMSPLIT 
+does not fully work without this patch!
 
-> Your abstract mentions KVM needs to support paravirtualzation first - do
-> Ingo's patches provide what you need:
-> 
-> http://sourceforge.net/mailarchive/forum.php?thread_id=31355873&forum_id=50582
+Matt, you were reporting a problem about this, can you try this patch (should 
+also apply on 2.6.18 kernels)?
+After applying the patch, do not forget to give a "make silentoldconfig 
+ARCH=um" before recompiling.
+If you have lost interest just say that, so we'll know we can't test that for 
+now.
 
-No, that seems to be just memory management stuff.  What I need is
-much simpler - VMCALL needs to be acceptable as a VMEXIT reason and
-returned from the KVM_RUN ioctl.  That's not present in the version of
-KVM that I have here (which I pulled a couple of weeks ago).
-
-				Jeff
-
+Bye!
 -- 
-Work email - jdike at linux dot intel dot com
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
