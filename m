@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H7DBJ-0004kH-Sf for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Jan 2007 07:58:33 -0800
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1H7DBB-00083N-IZ
+	id 1H7DDm-00053D-FJ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 Jan 2007 08:01:06 -0800
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1H7DDk-0002k2-AZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Jan 2007 07:58:32 -0800
+	Wed, 17 Jan 2007 08:01:06 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Wed, 17 Jan 2007 16:57:31 +0100
-References: <200701171159003590471@software.ict.ac.cn>
-	<200701171318597188349@software.ict.ac.cn>
-In-Reply-To: <200701171318597188349@software.ict.ac.cn>
+Date: Wed, 17 Jan 2007 17:00:37 +0100
+References: <3cb76b010701160511i1ff30a49k467fc1f4d5887c94@mail.gmail.com>
+In-Reply-To: <3cb76b010701160511i1ff30a49k467fc1f4d5887c94@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200701171657.31546.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] I met a question in building the root_fs of UML
+Message-Id: <200701171700.37908.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] FC4 rootfs - crash
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,53 +30,33 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Qin An <qinan@software.ict.ac.cn>
+Cc: Sapan Bhatia <sapan.bhatia@gmail.com>
 
-On Wednesday 17 January 2007 06:19, Qin An wrote:
-> Hi wstearns,
+On Tuesday 16 January 2007 14:11, Sapan Bhatia wrote:
+> Hi,
 >
-> I now use the UML to do my jobs. However, it is my first time to use the
-> system, and met a problem in building my own root_fs.
+> I'm using UML 2.6.19.2 on a 2.6.19-skas3 host, and observing the following
+> when I try booting with a root fs based on FC4/glibc- 2.6-20. UML gets
+> stuck with a 'Warning: unable to open an initial console'. gdb shows that
+> it's because it gets a stream of infinite segfaults. When I boot off
+> another rootfs and try to chroot into the one with FC4, it segfaults out.
+> strace shows that this happens just after libc is ldopened.. at a call to
+> rt_sigprocmask.
 
-> I downloaded the scripts in http://www.stearns.org/mkrootfs/ and run the
-> commands
->
-> # ./mkrootfs
->
-> It run not very well but  finially finished and got a file 'root_fs'. I
-> booted the UML using the file.
->
-> # linux ubd0=root_fs
->
-> It was so pity that it didn't work and said:
->
-> Kernel panic - not syncing: No init found.  Try passing init= option to
-> kernel.
+Which is the other root_fs? Slackware is way stablere than anything else, 
+since I guess they are much more conservative when building glibc.
 
-Then the root_fs built wasn't correct. Loop mount it and look to see what 
-happened.
+> So I tried regressing glibc, and now (with glibc-2.6.3) chroot works, but
+> UML still gets stuck at the same place when I try to boot.
 
-We cannot diagnose why without the error messages, but I'm not sure whether 
-mkrootfs still works well, and I cannot say whether UML boots at all there 
-(there are buggy releases out there).
+You mean glibc-2.3.6?
+Can an older UML version boot fine on that root_fs? No definitive 
+incompatibility with FC4 exists that I know of.
 
-> How to do next? Could you give me some advices?
+However, there is a similar problem with _host_ glibc >= 2.4. Is this your 
+case?
 
-Download a pre-built root_fs from here:
-http://uml.nagafix.co.uk/
-Or follow the installation log of your chosen root_fs and follow it.
-
-> Thanks a lot~
->
-> -------------
-> Qin An
-> 2007-01-17
->
-> Research Center for Grid and Service Computing
-> Institute of Computing Technology, Chinese Academy of Sciences
-> P.O.Box 2704, 100080, Beijing, China
-> Tel: 86-10-62600974
-> Email: qinan@software.ict.ac.cn
+> Sapan
 
 -- 
 Inform me of my mistakes, so I can add them to my list!
