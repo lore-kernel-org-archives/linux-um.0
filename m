@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H79lj-00005T-OG for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Jan 2007 04:19:56 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1H79lf-0003WE-Qy
+	id 1H7DBJ-0004kH-Sf for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 Jan 2007 07:58:33 -0800
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1H7DBB-00083N-IZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Jan 2007 04:19:55 -0800
+	Wed, 17 Jan 2007 07:58:32 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Wed, 17 Jan 2007 13:19:13 +0100
-References: <20070110102857.9bzdrhzh8g0s04og@webmail.flonatel.org>
-	<20070110214620.GB6062@ccure.user-mode-linux.org>
-In-Reply-To: <20070110214620.GB6062@ccure.user-mode-linux.org>
+Date: Wed, 17 Jan 2007 16:57:31 +0100
+References: <200701171159003590471@software.ict.ac.cn>
+	<200701171318597188349@software.ict.ac.cn>
+In-Reply-To: <200701171318597188349@software.ict.ac.cn>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200701171319.13990.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Configuration problem with UML in kernel 2.6.19.1
+Message-Id: <200701171657.31546.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] I met a question in building the root_fs of UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,35 +30,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, Matt Willsher <matt@monki.org.uk>
-Cc: Jeff Dike <jdike@addtoit.com>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Qin An <qinan@software.ict.ac.cn>
 
-On Wednesday 10 January 2007 22:46, Jeff Dike wrote:
-> On Wed, Jan 10, 2007 at 10:28:57AM +0100, uml@flonatel.org wrote:
-> > Hello!
-> >
-> > I had some problems running linux 2.6.19.1 as client UML.  When
-> > starting 'mapping mmap stub failed, errno = -12' is printed - with an
-> > additional Kernel panic. In the file arch/um/Kconfig.i386 the
-> > definition of STUB_CODE and STUB_DATA depend on the configuration
-> > symbol HOST_2G_2G which has gone sometimes in between 2.6.18.6 and
-> > 2.6.19.1.
-> >
-> > The applied patch solves the problem for me.
+On Wednesday 17 January 2007 06:19, Qin An wrote:
+> Hi wstearns,
 >
-> Excellent, thanks for chasing that down.
+> I now use the UML to do my jobs. However, it is my first time to use the
+> system, and met a problem in building my own root_fs.
 
-This means that running UML under Xen should be retested! Setting HOST_VMSPLIT 
-does not fully work without this patch!
+> I downloaded the scripts in http://www.stearns.org/mkrootfs/ and run the
+> commands
+>
+> # ./mkrootfs
+>
+> It run not very well but  finially finished and got a file 'root_fs'. I
+> booted the UML using the file.
+>
+> # linux ubd0=root_fs
+>
+> It was so pity that it didn't work and said:
+>
+> Kernel panic - not syncing: No init found.  Try passing init= option to
+> kernel.
 
-Matt, you were reporting a problem about this, can you try this patch (should 
-also apply on 2.6.18 kernels)?
-After applying the patch, do not forget to give a "make silentoldconfig 
-ARCH=um" before recompiling.
-If you have lost interest just say that, so we'll know we can't test that for 
-now.
+Then the root_fs built wasn't correct. Loop mount it and look to see what 
+happened.
 
-Bye!
+We cannot diagnose why without the error messages, but I'm not sure whether 
+mkrootfs still works well, and I cannot say whether UML boots at all there 
+(there are buggy releases out there).
+
+> How to do next? Could you give me some advices?
+
+Download a pre-built root_fs from here:
+http://uml.nagafix.co.uk/
+Or follow the installation log of your chosen root_fs and follow it.
+
+> Thanks a lot~
+>
+> -------------
+> Qin An
+> 2007-01-17
+>
+> Research Center for Grid and Service Computing
+> Institute of Computing Technology, Chinese Academy of Sciences
+> P.O.Box 2704, 100080, Beijing, China
+> Tel: 86-10-62600974
+> Email: qinan@software.ict.ac.cn
+
 -- 
 Inform me of my mistakes, so I can add them to my list!
 Paolo Giarrusso, aka Blaisorblade
