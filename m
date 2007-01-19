@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H7KGu-0002Hz-KU for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Jan 2007 15:32:48 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H7KGu-0000Yl-5K
+	id 1H7rTp-0004HX-FY for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 19 Jan 2007 03:00:21 -0800
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1H7rTj-0002CI-Rw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Jan 2007 15:32:48 -0800
-Date: Wed, 17 Jan 2007 18:26:44 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070117232644.GC15745@ccure.user-mode-linux.org>
+	Fri, 19 Jan 2007 03:00:18 -0800
+Message-ID: <45B0A4B7.7050702@nagafix.co.uk>
+Date: Fri, 19 Jan 2007 11:00:07 +0000
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
 References: <200701171715.35504.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200701171715.35504.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] UML/64bit is miscompiled by gcc 4.0.3 on Ubuntu
-	6.06 LTS
+	<45AE684D.7070802@theshore.net> <45AE67C0.5080003@nagafix.co.uk>
+	<45AE7DFC.9050704@nagafix.co.uk>
+In-Reply-To: <45AE7DFC.9050704@nagafix.co.uk>
+Subject: [uml-devel] buggy UML AMD64?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,27 +30,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
+To: Antoine Martin <antoine@nagafix.co.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Jan 17, 2007 at 05:15:35PM +0100, Blaisorblade wrote:
-> kjournald starting.  Commit interval 5 seconds
-> EXT3-fs: mounted filesystem with ordered data mode.
-> VFS: Mounted root (ext3 filesystem) readonly.
-> 
-> it hangs giving the following result at strace -p (I've printed two 
-> consecutive iterations of the same messages to show that they are the same):
+Is anyone else having stability problems on AMD64? Or am I the only one 
+using it?
+Not only is x86 UML broken on AMD64, I am also getting (seemingly) 
+random crashes running 64-bit UML.
+The Gentoo guests in particular randomly fail to compile code - failing 
+in completely random places. When you try again, it might work or just 
+fail later when you run the binary...
+These used to work reliably before so I am not just doing it wrong (as 
+is often the case ;)
+To summarize, that leaves us with:
+* x86 unable to run kernels 2.6 due to a bug in host >2.6.16
+(and most x86 guests require 2.6 to use latest glibc)
+* amd64 unable to run x86 guests
+* amd64 unable to run amd64 guests reliably
+...
 
-I'm chasing something on i386 with the same symptoms, but I think it's
-a different problem.  What I'm seeing is init segfaulting on some
-hosts, but not others.
-
-Figure out what the segfault is, and where it's happening.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Antoine
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
