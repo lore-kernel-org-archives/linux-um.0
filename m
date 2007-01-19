@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H7wlV-0005uP-4p for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 19 Jan 2007 08:38:57 -0800
+	id 1H7wpa-0006QA-Cj for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 19 Jan 2007 08:43:10 -0800
 Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1H7wlS-0003Gr-Og
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1H7wpU-0004bE-RJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 19 Jan 2007 08:38:57 -0800
-Message-ID: <45B0F418.3050601@nagafix.co.uk>
-Date: Fri, 19 Jan 2007 16:38:48 +0000
+	Fri, 19 Jan 2007 08:43:10 -0800
+Message-ID: <45B0F512.6020308@nagafix.co.uk>
+Date: Fri, 19 Jan 2007 16:42:58 +0000
 From: Antoine Martin <antoine@nagafix.co.uk>
 MIME-Version: 1.0
 References: <200701171715.35504.blaisorblade@yahoo.it>	
 	<45AE684D.7070802@theshore.net> <45AE67C0.5080003@nagafix.co.uk>	
-	<45AE7DFC.9050704@nagafix.co.uk> <45B0A4B7.7050702@nagafix.co.uk>
-	<1169222858.11134.52.camel@athena.fprintf.net>
+	<45AE7DFC.9050704@nagafix.co.uk> <45B0A4B7.7050702@nagafix.co.uk>	
+	<1169222858.11134.52.camel@athena.fprintf.net>	
 	<45B0EE71.5040908@nagafix.co.uk>
-In-Reply-To: <45B0EE71.5040908@nagafix.co.uk>
+	<1169224702.11134.71.camel@athena.fprintf.net>
+In-Reply-To: <1169224702.11134.71.camel@athena.fprintf.net>
 Subject: Re: [uml-devel] buggy UML AMD64?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -32,23 +33,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Antoine Martin <antoine@nagafix.co.uk>
+To: Daniel Gryniewicz <dang@gentoo.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
->> Which kernels do you have inside and outside?
-> Host (outside):
-> 2.6.19.2-skas3-v8.2
-Note: skas3 v9 has some problems, but I tried that too.
+>>> Which kernels do you have inside and outside?
+>> Host (outside):
+>> 2.6.19.2-skas3-v8.2
+> 
+> Okay, that's one big difference.  I have a stock kernel (well,
+> gentoo-sources) on the outside, not a SKAS3 patched kernel.  Maybe that
+> makes a difference on amd64?
+I wouldn't think so, as it is always possible to disable skas3 (and in 
+fact you have to disable it as /proc/mm mm64 isn't fully working on 
+amd64) on the command line using skas0 or noprocmm, etc..
+(Which I did)
 
-And I wouldn't blame the guest builds either. These guest kernels have 
-worked for many people in the past, including me. And the image has not 
-changed.
-
-I've tried all the versions you can find on:
-http://uml.nagafix.co.uk/kernels/
-And some of Blaisorblade's kernels too (>2.6.15 as I need TLS)
-
-Any ideas? Anyone?
+>> I have downgraded the x86 boxes to 2.6.15.7 and these are up and running 
+>> again. But I can't do that for all of them, and this is just not an 
+>> option for some of the amd64 boxes.
+> 
+> My setup is:
+Thanks for that. That is very similar to mine.
+I don't think this has anything to do with the guest... So I'll try to 
+remove the skas3 patch from the host and see how it goes.
 
 Antoine
 
