@@ -1,19 +1,12 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H83Se-0006jK-8m for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 19 Jan 2007 15:47:56 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1H83SY-0001NT-LC
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 19 Jan 2007 15:47:56 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 20 Jan 2007 00:47:14 +0100
-MIME-Version: 1.0
+Date: Fri, 19 Jan 2007 18:14:41 -0600
+From: Erik Paulson <epaulson@cs.wisc.edu>
+Message-ID: <20070120001441.GA29806@swingline.cs.wisc.edu>
+References: <200701200047.14586.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200701200047.14586.blaisorblade@yahoo.it>
-Subject: [uml-devel] Using bugzilla for UML bugs?
+In-Reply-To: <200701200047.14586.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [uml-user] Using bugzilla for UML bugs?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,26 +20,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-I used to remember open bugs just because I worked on them so frequently.
-However, that work was too time-consuming, and I'm know trying to use my time 
-more efficiently.
+On Sat, Jan 20, 2007 at 12:47:14AM +0100, Blaisorblade wrote:
+> I used to remember open bugs just because I worked on them so frequently.
+> However, that work was too time-consuming, and I'm know trying to use my time 
+> more efficiently.
+> 
+> One of the things which are probably useful is kernel.org bugzilla. Jeff, what 
+> do you think of this? Could we start _suggesting_ users to do that and using 
+> that as a policy?
+> It's also useful since users doing report don't often follow up to allow 
+> to "close" the bug.
+> 
+> I'm asking even because I'm not sure whether you, Jeff, feel Bugzilla nice or 
+> awkward to use.
 
-One of the things which are probably useful is kernel.org bugzilla. Jeff, what 
-do you think of this? Could we start _suggesting_ users to do that and using 
-that as a policy?
-It's also useful since users doing report don't often follow up to allow 
-to "close" the bug.
+Another idea would be to use the Wiki. A wiki clearly isn't as good of
+a bugtracking system as Bugzilla, but it keeps a lid on the number of
+UML sites on the net, which I think is a good thing.
 
-I'm asking even because I'm not sure whether you, Jeff, feel Bugzilla nice or 
-awkward to use.
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+Taking the idea further, maybe migrating the wiki (I know, it wasn't
+that long ago) to Trac, which might be a better bugtracker+wiki
+system. (There's even a git plugin on trac-hacks, though I don't know
+how well it works)
+
+-Erik
 
 
 -------------------------------------------------------------------------
