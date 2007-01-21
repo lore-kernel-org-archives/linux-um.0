@@ -1,18 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H8SXK-0000Yn-UM for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Jan 2007 18:34:26 -0800
-Received: from web15301.mail.cnb.yahoo.com ([203.209.230.31])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1H8SXI-0008Ns-TV
+	id 1H8Yp4-0000ce-LA for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 21 Jan 2007 01:17:10 -0800
+Received: from gw-e.panasas.com ([65.194.124.178] helo=cassoulet.panasas.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1H8Yp4-0007wo-3i
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Jan 2007 18:34:26 -0800
-Date: Sun, 21 Jan 2007 10:34:11 +0800 (CST)
-From: An Ching <an.ching@yahoo.com.cn>
+	Sun, 21 Jan 2007 01:17:10 -0800
+Message-ID: <45B32F92.80409@panasas.com>
+Date: Sun, 21 Jan 2007 11:17:06 +0200
+From: Boaz Harrosh <bharrosh@panasas.com>
 MIME-Version: 1.0
-Message-ID: <420863.17264.qm@web15301.mail.cnb.yahoo.com>
-Subject: [uml-devel] Something wrong with booting the UML in new kernel
+References: <200701171715.35504.blaisorblade@yahoo.it>		<45AE684D.7070802@theshore.net>
+	<45AE67C0.5080003@nagafix.co.uk>		<45AE7DFC.9050704@nagafix.co.uk>
+	<45B0A4B7.7050702@nagafix.co.uk>		<1169222858.11134.52.camel@athena.fprintf.net>		<45B0EE71.5040908@nagafix.co.uk>	<1169224702.11134.71.camel@athena.fprintf.net>	<45B0F512.6020308@nagafix.co.uk>
+	<45B10106.6060107@nagafix.co.uk> <45B12269.8040203@nagafix.co.uk>
+In-Reply-To: <45B12269.8040203@nagafix.co.uk>
+Subject: Re: [uml-devel] buggy UML AMD64?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,115 +28,90 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1735458886=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+To: Antoine Martin <antoine@nagafix.co.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
---===============1735458886==
-Content-Type: multipart/alternative; boundary="0-1804006600-1169346851=:17264"
+Antoine Martin wrote:
+> Antoine Martin wrote:
+>>>>> I have downgraded the x86 boxes to 2.6.15.7 and these are up and 
+>>>>> running again. But I can't do that for all of them, and this is just 
+>>>>> not an option for some of the amd64 boxes.
+>>>> My setup is:
+>>> Thanks for that. That is very similar to mine.
+>>> I don't think this has anything to do with the guest... So I'll try to 
+>>> remove the skas3 patch from the host and see how it goes.
+>>>
+>> I did, and no improvement... x86 guests still hang.
+>> Could you post a binary guest kernel somewhere so I can try that?
+>> (even if it isn't static - glibc should be similar since we're using 
+>> Gentoo amd64)
+>> If that still does not work then I can be certain that it is something 
+>> to do with the host.
+> I've just tried on 3 more hosts, all AMD64 Gentoo fully up to date, 
+> kernel 2.6.19.2. No skas, no exec shield, no selinux, plain kernel.org:
+> None of them work with any of the 32-bit kernels!
+> It prints nothing, just sits there spinning at 100% cpu.
+> So I am now totally convinced that i haven't got a weird setup.
+> Something else is broken in UML.
+> 
+> On fully up to date Fedora Core 6 x86_64, the kernel does display 
+> something before crashing:
+> # uname -a
+> Linux localhost.localdomain 2.6.18-1.2869.fc6 #1 SMP Wed Dec 20 14:51:34 
+> EST 2006 x86_64 x86_64 x86_64 GNU/Linux
+> # ./kernel32-2.6.19.2
+> Checking that ptrace can change system call numbers...OK
+> Checking syscall emulation patch for ptrace...missing
+> Checking for tmpfs mount on /dev/shm...OK
+> Checking PROT_EXEC mmap in /dev/shm/...OK
+> Checking for the skas3 patch in the host:
+>    - /proc/mm...not found
+>    - PTRACE_FAULTINFO...not found
+>    - PTRACE_LDT...not found
+> UML running in SKAS0 mode
+> 
+> [root@localhost home]#
+> 
+> This is 100% repeatable. Plain Fedora.
+> Many users will have a similar setup and will just give up on UML.
+> So I as I said before, UML is currently unusable for most people out 
+> there running fairly recent systems.
+> 
+> Antoine
+> 
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+I have a 2.6.19, vanila kernel on top of redhat4, host.
+And any kernel between 2.6.17 - 2.6.20-rc5 x86_64 for guests.
+For my iSCSI tests they all run well.
+At the very beginning, I had bad crashes and I solved it with plain gdb.
+The point for us to use UML, from the begging, was to use gdb on our own kernel development.
+At the end it was very easy to find that I have miss-configured the uml kernel, when that was fixed every thing
+ran well.
 
---0-1804006600-1169346851=:17264
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by nerdnet.nl id
-	l0L2YUjb016277
+for me I just do
+#gdb um/vmlinux (was compiled with -O um)
+gdb>run ubd0=/var/opt/FedoraCore5-AMD64-root_fs eth0=tuntap,,,192.168.0.117
+after first trap in gdb
+gdb>handle SIGUSR1 pass nostop noprint
+from than on its strait gdb, tell me if you need a script for loading symbols of kernel modules.
 
-Hi,
+Free Life
+Boaz
 
-I had recompiled my host kernel with setting the EXT2_FS_SECURITY and EXT=
-3_FS_SECURITY in filesystem configuration. My UML is OK before doing this=
-, but now I can not boot the UML in the new-recompiled kernel. It just we=
-nt to the step...
-
-[root@RH9 linux-2.6.17]# ./linux root=3D/dev/sda1 rootflags=3D/ rootfstyp=
-e=3Dhostfs ro con0=3Dfd:0,fd;1 init/bin/sh -l
-Checking that ptrace can change system call numbers...OK
-Checking syscall emulation patch for ptrace...OK
-Checking advanced syscall emulation patch for ptrace...OK
-Checking for tmpfs mount on /dev/shm...OK
-Checking PROT_EXEC mmap in /dev/shm/...OK
-Checking for the skas3 patch in the host:
-  - /proc/mm...not found
-  - PTRACE_FAULTINFO...not found
-  - PTRACE_LDT...not found
-UML running in SKAS0 mode
-Checking that ptrace can change system call numbers...OK
-Checking syscall emulation patch for ptrace...OK
-Checking advanced syscall emulation patch for ptrace...OK
-
-Just down to this step, and not any response next...
-
-I guessed maybe the kernel of UML didn't support the XATTR  of filesystem=
- and then I reconfigured the UML and set EXT2_XATTR, EXT2_FS_SECURITY, EX=
-T3_XATTR, EXT3_FS_SECURITY to "Y". But after I recompiled the kernel of U=
-ML and run it,  I  was given the same  message mentioned above.
-
-What should do  next?   Could anybody  give me some advices?
-
-Thank you very much~
-
-Best Regards,
-
-An  Ching=20
-
- 	=09
----------------------------------
- =D1=C5=BB=A2=C3=E2=B7=D1=D3=CA=CF=E4-3.5G=C8=DD=C1=BF=A3=AC20M=B8=BD=BC=FE
---0-1804006600-1169346851=:17264
-Content-Type: text/html; charset=gb2312
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by nerdnet.nl id
-	l0L2YUjb016277
-
-Hi,<br><br>I had recompiled my host kernel with setting the EXT2_FS_SECUR=
-ITY and EXT3_FS_SECURITY in filesystem configuration. My UML is OK before=
- doing this, but now I can not boot the UML in the new-recompiled kernel.=
- It just went to the step...<br><br>[root@RH9 linux-2.6.17]# ./linux root=
-=3D/dev/sda1 rootflags=3D/ rootfstype=3Dhostfs ro con0=3Dfd:0,fd;1 init/b=
-in/sh -l<br>Checking that ptrace can change system call numbers...OK<br>C=
-hecking syscall emulation patch for ptrace...OK<br>Checking advanced sysc=
-all emulation patch for ptrace...OK<br>Checking for tmpfs mount on /dev/s=
-hm...OK<br>Checking PROT_EXEC mmap in /dev/shm/...OK<br>Checking for the =
-skas3 patch in the host:<br>&nbsp; - /proc/mm...not found<br>&nbsp; - PTR=
-ACE_FAULTINFO...not found<br>&nbsp; - PTRACE_LDT...not found<br>UML runni=
-ng in SKAS0 mode<br>Checking that ptrace can change system call numbers..=
-.OK<br>Checking syscall emulation patch for ptrace...OK<br>Checking advan=
-ced syscall emulation patch for
- ptrace...OK<br><br>Just down to this step, and not any response next...<=
-br><br>I guessed maybe the kernel of UML didn't support the XATTR&nbsp; o=
-f filesystem and then I reconfigured the UML and set EXT2_XATTR, EXT2_FS_=
-SECURITY, EXT3_XATTR, EXT3_FS_SECURITY to "Y". But after I recompiled the=
- kernel of UML and run it,&nbsp; I&nbsp; was given the same&nbsp; message=
- mentioned above.<br><br>What should do&nbsp; next?&nbsp;&nbsp; Could any=
-body&nbsp; give me some advices?<br><br>Thank you very much~<br><br>Best =
-Regards,<br><br>An&nbsp; Ching <br><p>&#32;
-		<hr size=3D1><a href=3D"http://cn.mail.yahoo.com/" target=3Dblank>=20
-=D1=C5=BB=A2=C3=E2=B7=D1=D3=CA=CF=E4-3.5G=C8=DD=C1=BF=A3=AC20M=B8=BD=BC=FE
-</a>
---0-1804006600-1169346851=:17264--
-
-
---===============1735458886==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1735458886==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============1735458886==--
