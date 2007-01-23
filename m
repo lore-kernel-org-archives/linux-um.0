@@ -1,28 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H9A0x-0004JJ-GH for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Jan 2007 16:59:55 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1H9A0w-00040w-5n
+	id 1H9GFF-0006F3-EB for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Jan 2007 23:39:05 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1H9GFD-0000ff-JI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Jan 2007 16:59:55 -0800
-Message-ID: <45B55DFF.9050303@nagafix.co.uk>
-Date: Tue, 23 Jan 2007 00:59:43 +0000
-From: Antoine Martin <antoine@nagafix.co.uk>
+	Mon, 22 Jan 2007 23:39:05 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Tue, 23 Jan 2007 08:37:47 +0100
+References: <200701171724.51671.blaisorblade@yahoo.it>
+	<9d1b82480701170915o38df718bp94896f1b0921e302@mail.gmail.com>
+In-Reply-To: <9d1b82480701170915o38df718bp94896f1b0921e302@mail.gmail.com>
 MIME-Version: 1.0
-References: <45AE7DFC.9050704@nagafix.co.uk> <45B0A4B7.7050702@nagafix.co.uk>
-	<1169222858.11134.52.camel@athena.fprintf.net>
-	<45B0EE71.5040908@nagafix.co.uk>
-	<1169224702.11134.71.camel@athena.fprintf.net>
-	<45B0F512.6020308@nagafix.co.uk> <45B10106.6060107@nagafix.co.uk>
-	<45B12269.8040203@nagafix.co.uk>
-	<Pine.LNX.4.64.0701211534310.3499@ligur.home.jwp.se>
-	<45B37CB4.2050908@nagafix.co.uk>
-	<20070122220936.GH5203@ccure.user-mode-linux.org>
-In-Reply-To: <20070122220936.GH5203@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] buggy UML AMD64?
+Content-Disposition: inline
+Message-Id: <200701230837.47338.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Configuration problem with UML in kernel 2.6.19.1
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,20 +30,61 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Joel Palmius <joel.palmius@miun.se>
+To: Pravin <shindepravin@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
-> On Sun, Jan 21, 2007 at 02:46:12PM +0000, Antoine Martin wrote:
->> Finally someone confirms what I have been seeing for ages!
->> Maybe the devs can find out what is going on now...
-> 
-> OK, can someone give me access to a box where this is happening?
-Sure thing.
-Just let me know when you want to access it and I'll make sure it is 
-available. Also send me your public key and I'll give you ssh root.
+On Wednesday 17 January 2007 18:15, Pravin wrote:
+> Thanx  :-)
+> Its working now.... :-)
+>
+> One more thing that I would like to tell here.
+> I did used same compiled kernel on other machine which was having
+> 2.6.17-1.2187_FC5.
+> And that kernel 2.6.19 without your patch did worked fine....
+>
+> but same kernel 2.6.19 was not working on my machine which is Debian 
+> 2.6.18. After applying your patch and changing the configuration to
+> HOST_2G_2G its working fine now on my Debian machine 2.6.18.
+>
+> Can I know what excatly was the problem... ?
 
-Antoine
+Usually the host kernel "gives"* a certain space (3G) to userspace apps. Some 
+host kernels give less memory (say 2,75G, 2G, or even 1G) to userspace apps 
+(these days, it depends on the CONFIG_VMSPLIT_* settings, before it could be 
+tuned via external patches like -ck patchset or probably others).
+
+Most application use the available memory, but UML, for now, needs to know 
+that it can use a given amount - say 2G. It will run fine when more memory is 
+available, but not when less memory is available.
+
+At last, why different splits? While 3G is usual (normally named 3G/1G), on a 
+host with 1G of RAM you either use HIGHMEM (with a little slowdown) or use a 
+2,75G/1,25G split.
+
+* This is "virtual address space", not a statical split assigning physical RAM 
+to different purposes - but I won't go in the details here.
+
+> My main objective is to run SELinux on UML kernel and test it.
+
+Probably Antoine Martin is the one having more experience on UML+SELinux. This 
+is his page on the argument:
+
+http://uml.nagafix.co.uk/SELinux/
+
+> Let me know if there is anything I can do to help here.
+>
+> On 1/17/07, Blaisorblade <blaisorblade@yahoo.it> wrote:
+> > You mentioned trying to use CONFIG_HOST_VMSPLIT to solve a problem, that
+> > is of little use without this applied, if you run UML in SKAS0 mode.
+> >
+> > ----------  Forwarded Message  ----------
+
+-- 
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
