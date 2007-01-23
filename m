@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H9RPJ-0003Ti-2j for user-mode-linux-devel@lists.sourceforge.net;
+	id 1H9RPJ-0003Ts-O1 for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 23 Jan 2007 11:34:13 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H9RPH-0003Ox-B8
+	(Exim 4.44) id 1H9RPE-0005hM-Vv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Jan 2007 11:34:13 -0800
-Message-Id: <200701231927.l0NJRaQ4005333@ccure.user-mode-linux.org>
+	Tue, 23 Jan 2007 11:34:10 -0800
+Message-Id: <200701231927.l0NJRhZ8005353@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Tue, 23 Jan 2007 14:27:35 -0500
+Date: Tue, 23 Jan 2007 14:27:43 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 0/7] UML - more locking and formatting fixes
+Subject: [uml-devel] [PATCH 4/7] UML - locking comments in startup code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,9 +30,33 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-As usual, these are post-2.6.20 material.
+Add a couple of comments about some non-locked data.
 
-				Jeff
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
+--
+ arch/um/os-Linux/start_up.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+Index: linux-2.6.18-mm/arch/um/os-Linux/start_up.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/os-Linux/start_up.c	2007-01-13 17:50:31.000000000 +1100
++++ linux-2.6.18-mm/arch/um/os-Linux/start_up.c	2007-01-17 12:29:59.000000000 +1100
+@@ -133,6 +133,7 @@ static int stop_ptraced_child(int pid, v
+ 	return ret;
+ }
+ 
++/* Changed only during early boot */
+ int ptrace_faultinfo = 1;
+ int ptrace_ldt = 1;
+ int proc_mm = 1;
+@@ -160,6 +161,7 @@ __uml_setup("mode=skas0", mode_skas0_cmd
+ 		"    specify mode=tt. Note that this was recently added - on \n"
+ 		"    older kernels you must use simply \"skas0\".\n\n");
+ 
++/* Changed only during early boot */
+ static int force_sysemu_disabled = 0;
+ 
+ static int __init nosysemu_cmd_param(char *str, int* add)
 
 
 -------------------------------------------------------------------------
