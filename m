@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H97SV-0005Xy-Jc for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Jan 2007 14:16:11 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H97ST-0001py-2l
+	id 1H9A0x-0004JJ-GH for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Jan 2007 16:59:55 -0800
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1H9A0w-00040w-5n
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Jan 2007 14:16:11 -0800
-Date: Mon, 22 Jan 2007 17:09:36 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070122220936.GH5203@ccure.user-mode-linux.org>
+	Mon, 22 Jan 2007 16:59:55 -0800
+Message-ID: <45B55DFF.9050303@nagafix.co.uk>
+Date: Tue, 23 Jan 2007 00:59:43 +0000
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
 References: <45AE7DFC.9050704@nagafix.co.uk> <45B0A4B7.7050702@nagafix.co.uk>
 	<1169222858.11134.52.camel@athena.fprintf.net>
 	<45B0EE71.5040908@nagafix.co.uk>
@@ -20,9 +20,8 @@ References: <45AE7DFC.9050704@nagafix.co.uk> <45B0A4B7.7050702@nagafix.co.uk>
 	<45B12269.8040203@nagafix.co.uk>
 	<Pine.LNX.4.64.0701211534310.3499@ligur.home.jwp.se>
 	<45B37CB4.2050908@nagafix.co.uk>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <45B37CB4.2050908@nagafix.co.uk>
+	<20070122220936.GH5203@ccure.user-mode-linux.org>
+In-Reply-To: <20070122220936.GH5203@ccure.user-mode-linux.org>
 Subject: Re: [uml-devel] buggy UML AMD64?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -37,19 +36,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Antoine Martin <antoine@nagafix.co.uk>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net, Joel Palmius <joel.palmius@miun.se>
 
-On Sun, Jan 21, 2007 at 02:46:12PM +0000, Antoine Martin wrote:
-> Finally someone confirms what I have been seeing for ages!
-> Maybe the devs can find out what is going on now...
+Jeff Dike wrote:
+> On Sun, Jan 21, 2007 at 02:46:12PM +0000, Antoine Martin wrote:
+>> Finally someone confirms what I have been seeing for ages!
+>> Maybe the devs can find out what is going on now...
+> 
+> OK, can someone give me access to a box where this is happening?
+Sure thing.
+Just let me know when you want to access it and I'll make sure it is 
+available. Also send me your public key and I'll give you ssh root.
 
-OK, can someone give me access to a box where this is happening?
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Antoine
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
