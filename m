@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H9RPJ-0003Ts-O1 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Jan 2007 11:34:13 -0800
+	id 1H9RPM-0003UB-GF for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Jan 2007 11:34:16 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H9RPE-0005hM-Vv
+	(Exim 4.44) id 1H9RPJ-0005jI-GL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Jan 2007 11:34:10 -0800
-Message-Id: <200701231927.l0NJRhZ8005353@ccure.user-mode-linux.org>
+	Tue, 23 Jan 2007 11:34:16 -0800
+Message-Id: <200701231927.l0NJRmUb005368@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Tue, 23 Jan 2007 14:27:43 -0500
+Date: Tue, 23 Jan 2007 14:27:48 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 4/7] UML - locking comments in startup code
+Subject: [uml-devel] [PATCH 7/7] UML - fix style violations
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,33 +30,54 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Add a couple of comments about some non-locked data.
+Fix a bunch of style violations in mem.c.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 --
- arch/um/os-Linux/start_up.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/um/os-Linux/mem.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Index: linux-2.6.18-mm/arch/um/os-Linux/start_up.c
+Index: linux-2.6.18-mm/arch/um/os-Linux/mem.c
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/os-Linux/start_up.c	2007-01-13 17:50:31.000000000 +1100
-+++ linux-2.6.18-mm/arch/um/os-Linux/start_up.c	2007-01-17 12:29:59.000000000 +1100
-@@ -133,6 +133,7 @@ static int stop_ptraced_child(int pid, v
- 	return ret;
+--- linux-2.6.18-mm.orig/arch/um/os-Linux/mem.c	2007-01-17 13:03:12.000000000 +1100
++++ linux-2.6.18-mm/arch/um/os-Linux/mem.c	2007-01-17 13:05:21.000000000 +1100
+@@ -35,7 +35,8 @@ static void __init find_tempdir(void)
+ 	int i;
+ 	char *dir = NULL;
+ 
+-	if(tempdir != NULL) return;	/* We've already been called */
++	if(tempdir != NULL) /* We've already been called */
++		return;
+ 	for(i = 0; dirs[i]; i++){
+ 		dir = getenv(dirs[i]);
+ 		if((dir != NULL) && (*dir != '\0'))
+@@ -193,7 +194,7 @@ int make_tempfile(const char *template, 
+ 	} else {
+ 		free(tempname);
+ 	}
+-	return(fd);
++	return fd;
+ out:
+ 	free(tempname);
+ 	return -1;
+@@ -238,7 +239,7 @@ int create_tmp_file(unsigned long long l
+ 		exit(1);
+ 	}
+ 
+-	return(fd);
++	return fd;
  }
  
-+/* Changed only during early boot */
- int ptrace_faultinfo = 1;
- int ptrace_ldt = 1;
- int proc_mm = 1;
-@@ -160,6 +161,7 @@ __uml_setup("mode=skas0", mode_skas0_cmd
- 		"    specify mode=tt. Note that this was recently added - on \n"
- 		"    older kernels you must use simply \"skas0\".\n\n");
+ int create_mem_file(unsigned long long len)
+@@ -252,7 +253,7 @@ int create_mem_file(unsigned long long l
+ 		errno = -err;
+ 		perror("exec_close");
+ 	}
+-	return(fd);
++	return fd;
+ }
  
-+/* Changed only during early boot */
- static int force_sysemu_disabled = 0;
  
- static int __init nosysemu_cmd_param(char *str, int* add)
 
 
 -------------------------------------------------------------------------
