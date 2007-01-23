@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H9GFF-0006F3-EB for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Jan 2007 23:39:05 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1H9GFD-0000ff-JI
+	id 1H9GZz-0008F5-1m for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Jan 2007 00:00:31 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1H9GZx-0007dU-GO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Jan 2007 23:39:05 -0800
+	Tue, 23 Jan 2007 00:00:31 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 23 Jan 2007 08:37:47 +0100
-References: <200701171724.51671.blaisorblade@yahoo.it>
-	<9d1b82480701170915o38df718bp94896f1b0921e302@mail.gmail.com>
-In-Reply-To: <9d1b82480701170915o38df718bp94896f1b0921e302@mail.gmail.com>
+Date: Tue, 23 Jan 2007 09:00:09 +0100
+References: <420863.17264.qm@web15301.mail.cnb.yahoo.com>
+In-Reply-To: <420863.17264.qm@web15301.mail.cnb.yahoo.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200701230837.47338.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Configuration problem with UML in kernel 2.6.19.1
+Message-Id: <200701230900.10008.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Something wrong with booting the UML in new kernel
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,54 +29,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Pravin <shindepravin@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-On Wednesday 17 January 2007 18:15, Pravin wrote:
-> Thanx  :-)
-> Its working now.... :-)
+On Sunday 21 January 2007 03:34, An Ching wrote:
+> Hi,
 >
-> One more thing that I would like to tell here.
-> I did used same compiled kernel on other machine which was having
-> 2.6.17-1.2187_FC5.
-> And that kernel 2.6.19 without your patch did worked fine....
+> I had recompiled my host kernel with setting the EXT2_FS_SECURITY and
+> EXT3_FS_SECURITY in filesystem configuration. My UML is OK before doing
+> this, but now I can not boot the UML in the new-recompiled kernel. It just
+> went to the step...
 >
-> but same kernel 2.6.19 was not working on my machine which is Debian 
-> 2.6.18. After applying your patch and changing the configuration to
-> HOST_2G_2G its working fine now on my Debian machine 2.6.18.
+> [root@RH9 linux-2.6.17]# ./linux root=/dev/sda1 rootflags=/
+> rootfstype=hostfs ro con0=fd:0,fd;1 init/bin/sh -l Checking that ptrace can
+> change system call numbers...OK
+> Checking syscall emulation patch for ptrace...OK
+> Checking advanced syscall emulation patch for ptrace...OK
+> Checking for tmpfs mount on /dev/shm...OK
+> Checking PROT_EXEC mmap in /dev/shm/...OK
+> Checking for the skas3 patch in the host:
+>   - /proc/mm...not found
+>   - PTRACE_FAULTINFO...not found
+>   - PTRACE_LDT...not found
+> UML running in SKAS0 mode
+> Checking that ptrace can change system call numbers...OK
+> Checking syscall emulation patch for ptrace...OK
+> Checking advanced syscall emulation patch for ptrace...OK
 >
-> Can I know what excatly was the problem... ?
-
-Usually the host kernel "gives"* a certain space (3G) to userspace apps. Some 
-host kernels give less memory (say 2,75G, 2G, or even 1G) to userspace apps 
-(these days, it depends on the CONFIG_VMSPLIT_* settings, before it could be 
-tuned via external patches like -ck patchset or probably others).
-
-Most application use the available memory, but UML, for now, needs to know 
-that it can use a given amount - say 2G. It will run fine when more memory is 
-available, but not when less memory is available.
-
-At last, why different splits? While 3G is usual (normally named 3G/1G), on a 
-host with 1G of RAM you either use HIGHMEM (with a little slowdown) or use a 
-2,75G/1,25G split.
-
-* This is "virtual address space", not a statical split assigning physical RAM 
-to different purposes - but I won't go in the details here.
-
-> My main objective is to run SELinux on UML kernel and test it.
-
-Probably Antoine Martin is the one having more experience on UML+SELinux. This 
-is his page on the argument:
-
-http://uml.nagafix.co.uk/SELinux/
-
-> Let me know if there is anything I can do to help here.
+> Just down to this step, and not any response next...
 >
-> On 1/17/07, Blaisorblade <blaisorblade@yahoo.it> wrote:
-> > You mentioned trying to use CONFIG_HOST_VMSPLIT to solve a problem, that
-> > is of little use without this applied, if you run UML in SKAS0 mode.
-> >
-> > ----------  Forwarded Message  ----------
+> I guessed maybe the kernel of UML didn't support the XATTR  of filesystem
+> and then I reconfigured the UML and set EXT2_XATTR, EXT2_FS_SECURITY,
+> EXT3_XATTR, EXT3_FS_SECURITY to "Y".
+This wouldn't matter, since UML is using hostfs (which does not support XATTR 
+at all, to my knowledge) and not ext2/ext3.
+> But after I recompiled the kernel of 
+> UML and run it,  I  was given the same  message mentioned above.
+>
+> What should do  next?   Could anybody  give me some advices?
 
+There are few reasons usually for using hostfs, normally using a dedicated 
+root_fs is a better solution. And using hostfs on your / can cause trouble to 
+both your host and your guest (well, if you boot with init=/bin/sh then there 
+are less problems).
 -- 
 Inform me of my mistakes, so I can add them to my list!
 Paolo Giarrusso, aka Blaisorblade
