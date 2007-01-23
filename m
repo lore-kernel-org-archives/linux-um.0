@@ -1,27 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H9NRg-0008Pr-C0 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Jan 2007 07:20:24 -0800
-Received: from gw-e.panasas.com ([65.194.124.178] helo=cassoulet.panasas.com)
+	id 1H9RPD-0003TO-8v for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Jan 2007 11:34:07 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1H9NRe-0001YX-9F
+	(Exim 4.44) id 1H9RPC-0003OI-3d
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Jan 2007 07:20:23 -0800
-Message-ID: <45B627A7.7070407@panasas.com>
-Date: Tue, 23 Jan 2007 17:20:07 +0200
-From: Boaz Harrosh <bharrosh@panasas.com>
-MIME-Version: 1.0
-References: <200701171715.35504.blaisorblade@yahoo.it>		<45AE684D.7070802@theshore.net>
-	<45AE67C0.5080003@nagafix.co.uk>		<45AE7DFC.9050704@nagafix.co.uk>
-	<45B0A4B7.7050702@nagafix.co.uk>		<1169222858.11134.52.camel@athena.fprintf.net>		<45B0EE71.5040908@nagafix.co.uk>	<1169224702.11134.71.camel@athena.fprintf.net>	<45B0F512.6020308@nagafix.co.uk>
-	<45B10106.6060107@nagafix.co.uk>
-	<45B12269.8040203@nagafix.co.uk> <45B32F92.80409@panasas.com>
-	<45B364DC.8040405@nagafix.co.uk>
-In-Reply-To: <45B364DC.8040405@nagafix.co.uk>
-Content-Type: multipart/mixed; boundary="------------010106090605080109040302"
-Subject: Re: [uml-devel] buggy UML AMD64?
+	Tue, 23 Jan 2007 11:34:07 -0800
+Message-Id: <200701231927.l0NJRdFx005338@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Date: Tue, 23 Jan 2007 14:27:39 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 1/7] UML - Add per-device queues and locks to
+	ubd driver
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,126 +24,231 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------010106090605080109040302
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Replace global queue and lock with per-device queues and locks.  Mostly a
+straightforward replacement of ubd_io_lock with dev->lock and ubd_queue with
+dev->queue.
 
-Antoine Martin wrote:
->> for me I just do
->> #gdb um/vmlinux (was compiled with -O um)
->> gdb>run ubd0=/var/opt/FedoraCore5-AMD64-root_fs eth0=tuntap,,,192.168.0.117
->> after first trap in gdb
->> gdb>handle SIGUSR1 pass nostop noprint
->> from than on its strait gdb, tell me if you need a script for loading symbols of kernel modules.
->
-> That would be great, it could go on the wiki too.
-> 
-> Thanks
-> Antoine
+Complications -
+	There was no way to get a request struct (and queue) from the
+structure sent to the io_thread, so a pointer to the request was
+added.  This is needed in ubd_handler in order to kick do_ubd_request
+to process another request.
+	Queue initialization is moved from ubd_init to ubd_add.
 
-Attach is a script that works for both uml running in gdb or for kgdb.
-Usage: add-symbol-file module
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
+--
+ arch/um/drivers/ubd_kern.c |   70 +++++++++++++++++++++++++--------------------
+ 1 file changed, 40 insertions(+), 30 deletions(-)
 
-Where module can be just the mod_name or mod_name.ko or a full-path
+Index: linux-2.6.18-mm/arch/um/drivers/ubd_kern.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/drivers/ubd_kern.c	2007-01-17 12:46:25.000000000 +1100
++++ linux-2.6.18-mm/arch/um/drivers/ubd_kern.c	2007-01-17 12:46:28.000000000 +1100
+@@ -56,6 +56,7 @@
+ enum ubd_req { UBD_READ, UBD_WRITE };
+ 
+ struct io_thread_req {
++	struct request *req;
+ 	enum ubd_req op;
+ 	int fds[2];
+ 	unsigned long offsets[2];
+@@ -106,10 +107,6 @@ static inline void ubd_set_bit(__u64 bit
+ 
+ #define DRIVER_NAME "uml-blkdev"
+ 
+-/* Can be taken in interrupt context, and is passed to the block layer to lock
+- * the request queue. Kernel side code knows that. */
+-static DEFINE_SPINLOCK(ubd_io_lock);
+-
+ static DEFINE_MUTEX(ubd_lock);
+ 
+ /* XXX - this made sense in 2.4 days, now it's only used as a boolean, and
+@@ -132,9 +129,6 @@ static const struct block_device_operati
+ 	.getgeo		= ubd_getgeo,
+ };
+ 
+-/* Protected by the queue_lock */
+-static request_queue_t *ubd_queue;
+-
+ /* Protected by ubd_lock */
+ static int fake_major = MAJOR_NR;
+ 
+@@ -178,6 +172,8 @@ struct ubd {
+ 	unsigned no_cow:1;
+ 	struct cow cow;
+ 	struct platform_device pdev;
++	struct request_queue *queue;
++	spinlock_t lock;
+ };
+ 
+ #define DEFAULT_COW { \
+@@ -198,6 +194,7 @@ struct ubd {
+         .no_cow =               0, \
+ 	.shared =		0, \
+         .cow =			DEFAULT_COW, \
++	.lock =			SPIN_LOCK_UNLOCKED,	\
+ }
+ 
+ struct ubd ubd_devs[MAX_DEV] = { [ 0 ... MAX_DEV - 1 ] = DEFAULT_UBD };
+@@ -503,17 +500,20 @@ static void __ubd_finish(struct request 
+  * spin_lock_irq()/spin_lock_irqsave() */
+ static inline void ubd_finish(struct request *req, int error)
+ {
+- 	spin_lock(&ubd_io_lock);
++	struct ubd *dev = req->rq_disk->private_data;
++
++	spin_lock(&dev->lock);
+ 	__ubd_finish(req, error);
+-	spin_unlock(&ubd_io_lock);
++	spin_unlock(&dev->lock);
+ }
+ 
+ /* XXX - move this inside ubd_intr. */
+-/* Called without ubd_io_lock held, and only in interrupt context. */
++/* Called without dev->lock held, and only in interrupt context. */
+ static void ubd_handler(void)
+ {
+ 	struct io_thread_req req;
+-	struct request *rq = elv_next_request(ubd_queue);
++	struct request *rq;
++	struct ubd *dev;
+ 	int n;
+ 
+ 	do_ubd = 0;
+@@ -522,17 +522,17 @@ static void ubd_handler(void)
+ 	if(n != sizeof(req)){
+ 		printk(KERN_ERR "Pid %d - spurious interrupt in ubd_handler, "
+ 		       "err = %d\n", os_getpid(), -n);
+-		spin_lock(&ubd_io_lock);
+-		end_request(rq, 0);
+-		spin_unlock(&ubd_io_lock);
+ 		return;
+ 	}
+ 
++	rq = req.req;
++	dev = rq->rq_disk->private_data;
++
+ 	ubd_finish(rq, req.error);
+-	reactivate_fd(thread_fd, UBD_IRQ);	
+-	spin_lock(&ubd_io_lock);
+-	do_ubd_request(ubd_queue);
+-	spin_unlock(&ubd_io_lock);
++	reactivate_fd(thread_fd, UBD_IRQ);
++	spin_lock(&dev->lock);
++	do_ubd_request(dev->queue);
++	spin_unlock(&dev->lock);
+ }
+ 
+ static irqreturn_t ubd_intr(int irq, void *dev)
+@@ -663,7 +663,7 @@ static int ubd_disk_register(int major, 
+ 	}
+ 
+ 	disk->private_data = &ubd_devs[unit];
+-	disk->queue = ubd_queue;
++	disk->queue = ubd_devs[unit].queue;
+ 	add_disk(disk);
+ 
+ 	*disk_out = disk;
+@@ -688,13 +688,23 @@ static int ubd_add(int n, char **error_o
+ 
+ 	ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
+ 
+-	err = ubd_disk_register(MAJOR_NR, ubd_dev->size, n, &ubd_gendisk[n]);
+-	if(err)
++	err = -ENOMEM;
++	ubd_dev->queue = blk_init_queue(do_ubd_request, &ubd_dev->lock);
++	if (ubd_dev->queue == NULL) {
++		*error_out = "Failed to initialize device queue";
+ 		goto out;
++	}
++	ubd_dev->queue->queuedata = ubd_dev;
++
++	err = ubd_disk_register(MAJOR_NR, ubd_dev->size, n, &ubd_gendisk[n]);
++	if(err){
++		*error_out = "Failed to register device";
++		goto out_cleanup;
++	}
+ 
+ 	if(fake_major != MAJOR_NR)
+ 		ubd_disk_register(fake_major, ubd_dev->size, n,
+-			     &fake_gendisk[n]);
++				  &fake_gendisk[n]);
+ 
+ 	/* perhaps this should also be under the "if (fake_major)" above */
+ 	/* using the fake_disk->disk_name and also the fakehd_set name */
+@@ -704,6 +714,10 @@ static int ubd_add(int n, char **error_o
+ 	err = 0;
+ out:
+ 	return err;
++
++out_cleanup:
++	blk_cleanup_queue(ubd_dev->queue);
++	goto out;
+ }
+ 
+ static int ubd_config(char *str, char **error_out)
+@@ -815,6 +829,7 @@ static int ubd_remove(int n, char **erro
+ 		fake_gendisk[n] = NULL;
+ 	}
+ 
++	blk_cleanup_queue(ubd_dev->queue);
+ 	platform_device_unregister(&ubd_dev->pdev);
+ 	*ubd_dev = ((struct ubd) DEFAULT_UBD);
+ 	err = 0;
+@@ -868,12 +883,6 @@ static int __init ubd_init(void)
+ 	if (register_blkdev(MAJOR_NR, "ubd"))
+ 		return -1;
+ 
+-	ubd_queue = blk_init_queue(do_ubd_request, &ubd_io_lock);
+-	if (!ubd_queue) {
+-		unregister_blkdev(MAJOR_NR, "ubd");
+-		return -1;
+-	}
+-		
+ 	if (fake_major != MAJOR_NR) {
+ 		char name[sizeof("ubd_nnn\0")];
+ 
+@@ -1019,7 +1028,7 @@ static void cowify_req(struct io_thread_
+ 			   req->bitmap_words, bitmap_len);
+ }
+ 
+-/* Called with ubd_io_lock held */
++/* Called with dev->lock held */
+ static int prepare_request(struct request *req, struct io_thread_req *io_req)
+ {
+ 	struct gendisk *disk = req->rq_disk;
+@@ -1038,6 +1047,7 @@ static int prepare_request(struct reques
+ 	offset = ((__u64) req->sector) << 9;
+ 	len = req->current_nr_sectors << 9;
+ 
++	io_req->req = req;
+ 	io_req->fds[0] = (ubd_dev->cow.file != NULL) ? ubd_dev->cow.fd : ubd_dev->fd;
+ 	io_req->fds[1] = ubd_dev->fd;
+ 	io_req->cow_offset = -1;
+@@ -1059,7 +1069,7 @@ static int prepare_request(struct reques
+ 	return(0);
+ }
+ 
+-/* Called with ubd_io_lock held */
++/* Called with dev->lock held */
+ static void do_ubd_request(request_queue_t *q)
+ {
+ 	struct io_thread_req io_req;
 
-What you do is ssh into a running uml, after the module was loaded by the uml, and run the script.
-The printed message is what you need to paste at the gdb command-line. (the first chance you get)
-Note that the path echoed is relative to the uml root. You might need to adjust it for gdb since
-gdb will see the host path. If the module is inside the root_fs file than you will need to point
-gdb to a copy of the module file on the host.
-
-I hope that helps
-Boaz Harrosh
-
---------------010106090605080109040302
-Content-Type: text/plain;
- name="add-symbol-file"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="add-symbol-file"
-
-#!/bin/sh
-#
-# Print gdb command to load a module's symbols
-#
-# Copyright (C) 2006 Panasas, Inc.  All rights reserved.
-# Copyright (C) 2006 Benny Halevy
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# Usage: add-symbol-file module
-#   module can be either the module name or path to the module object.
-#
-# Note: When used in UML, this script must run in UML's context in order
-#       to access /sys/module/$mod/sections/.* to get the dynamic relocation
-#       addresses but the module path must be valid in gdb's context so that
-#       gdb can load the object.
-#
-progname=`basename $0`
-mod=$1
-if [ "$mod" = "" ]; then
-	echo Usage: `$progname` module 1>&2
-	exit 1
-fi
-if [[ -e "$mod" || "$mod" == */* ]]; then
-	obj="$mod"
-else
-	rel=`uname -r`
-	modpath="/lib/modules/$rel/kernel"
-	obj=`find $modpath -name "$mod" -o -name "$mod.ko" -o -name "$mod.o" | head -1`
-	if [ ! -e "$obj" ]; then
-		echo "$progname: $mod was not found in $modpath" 1>&2
-		exit 1
-	fi
-fi
-mod=`basename $mod | sed 's/\..*o$//'`
-dir=/sys/module/$mod/sections
-if [ ! -d $dir ]; then
-	echo "$progname: $dir not found" 1>&2
-	exit 1
-fi
-
-s="`cat $dir/.text`"
-for i in .rodata .data .bss; do
-	s="$s -s $i `cat $dir/$i`"
-done
-
-echo "add-symbol-file $obj $s"
-
---------------010106090605080109040302
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---------------010106090605080109040302
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---------------010106090605080109040302--
