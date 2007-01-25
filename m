@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1H9UD2-00042Y-EJ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Jan 2007 14:33:44 -0800
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1H9UCz-0001Tf-PI
+	id 1H9wHs-0002TT-Cy for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Jan 2007 20:32:36 -0800
+Received: from smtp.osdl.org ([65.172.181.24])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1H9wHs-0008Pn-4A
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Jan 2007 14:33:44 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 23 Jan 2007 23:33:29 +0100
+	Wed, 24 Jan 2007 20:32:36 -0800
+Date: Wed, 24 Jan 2007 20:31:26 -0800
+From: Andrew Morton <akpm@osdl.org>
+Message-Id: <20070124203126.36e78674.akpm@osdl.org>
+In-Reply-To: <200701232333.29655.blaisorblade@yahoo.it>
 References: <20070122201317.GA8594@linuxtv.org>
 	<200701230902.30715.blaisorblade@yahoo.it>
 	<20070123131730.GA9286@linuxtv.org>
-In-Reply-To: <20070123131730.GA9286@linuxtv.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200701232333.29655.blaisorblade@yahoo.it>
+	<200701232333.29655.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Subject: Re: [uml-devel] [PATCH] [UML] fix mknod
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,95 +32,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Johannes Stezenbach <js@linuxtv.org>
-Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@karaya.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Jeff Dike <jdike@karaya.com>, Johannes Stezenbach <js@linuxtv.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 23 January 2007 14:17, Johannes Stezenbach wrote:
-> On Tue, Jan 23, 2007 at 09:02:30AM +0100, Blaisorblade wrote:
-> > On Monday 22 January 2007 21:13, Johannes Stezenbach wrote:
-> > > I was playing with user-mode Linux and found that mknod creates
-> > > devices node in hostfs with wrong major/minor numbers.
-> > > The patch below fixes it for me.
+On Tue, 23 Jan 2007 23:33:29 +0100
+Blaisorblade <blaisorblade@yahoo.it> wrote:
+
+> On Tuesday 23 January 2007 14:17, Johannes Stezenbach wrote:
+> > On Tue, Jan 23, 2007 at 09:02:30AM +0100, Blaisorblade wrote:
+> > > On Monday 22 January 2007 21:13, Johannes Stezenbach wrote:
+> > > > I was playing with user-mode Linux and found that mknod creates
+> > > > devices node in hostfs with wrong major/minor numbers.
+> > > > The patch below fixes it for me.
+> > >
+> > > Hmpf. Still having this bug on hostfs is quite bad. Thanks for reporting.
+> 
+> I've now seen - we never fixed this one, we fixed the analogous problem 
+> on 'ls' output and friends (in init_inode, which is used in many places).
+> 
+> > > It should be hostfs_user.c to take major and minor and to combine them
+> > > correctly - it can use libc's macros.
 > >
-> > Hmpf. Still having this bug on hostfs is quite bad. Thanks for reporting.
+> > Right, below is a better patch.
+> 
+> Exactly what I meant, thanks!
+> I'd say:
+> Acked-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> This can go to 2.6.20, and possibly even to -stable (after either me or Jeff 
+> tests it once).
 
-I've now seen - we never fixed this one, we fixed the analogous problem 
-on 'ls' output and friends (in init_inode, which is used in many places).
-
-> > It should be hostfs_user.c to take major and minor and to combine them
-> > correctly - it can use libc's macros.
->
-> Right, below is a better patch.
-
-Exactly what I meant, thanks!
-I'd say:
-Acked-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-This can go to 2.6.20, and possibly even to -stable (after either me or Jeff 
-tests it once).
-
-> ---
-> Fix UML hostfs mknod(): userspace has differernt
-> dev_t size and encoding than kernel, so extract major/minor
-> and reencode using glibc makedev() macro.
->
-> Signed-off-by: Johannes Stezenbach <js@linuxtv.org>
->
-> diff -rup linux-2.6.19.orig/fs/hostfs/hostfs.h
-> linux-2.6.19/fs/hostfs/hostfs.h ---
-> linux-2.6.19.orig/fs/hostfs/hostfs.h	2006-11-29 22:57:37.000000000 +0100
-> +++ linux-2.6.19/fs/hostfs/hostfs.h	2007-01-23 14:11:03.000000000 +0100 @@
-> -76,7 +76,7 @@ extern int make_symlink(const char *from
->  extern int unlink_file(const char *file);
->  extern int do_mkdir(const char *file, int mode);
->  extern int do_rmdir(const char *file);
-> -extern int do_mknod(const char *file, int mode, int dev);
-> +extern int do_mknod(const char *file, int mode, unsigned int major,
-> unsigned int minor);
-> extern int link_file(const char *from, const char 
-> *to);
->  extern int do_readlink(char *file, char *buf, int size);
->  extern int rename_file(char *from, char *to);
-> diff -rup linux-2.6.19.orig/fs/hostfs/hostfs_kern.c
-> linux-2.6.19/fs/hostfs/hostfs_kern.c ---
-> linux-2.6.19.orig/fs/hostfs/hostfs_kern.c	2006-11-29 22:57:37.000000000
-> +0100 +++ linux-2.6.19/fs/hostfs/hostfs_kern.c	2007-01-23
-> 14:11:20.000000000 +0100 @@ -755,7 +755,7 @@ int hostfs_mknod(struct inode
-> *dir, stru
->  		goto out_put;
->
->  	init_special_inode(inode, mode, dev);
-> -	err = do_mknod(name, mode, dev);
-> +	err = do_mknod(name, mode, MAJOR(dev), MINOR(dev));
->  	if(err)
->  		goto out_free;
->
-> diff -rup linux-2.6.19.orig/fs/hostfs/hostfs_user.c
-> linux-2.6.19/fs/hostfs/hostfs_user.c ---
-> linux-2.6.19.orig/fs/hostfs/hostfs_user.c	2006-11-29 22:57:37.000000000
-> +0100 +++ linux-2.6.19/fs/hostfs/hostfs_user.c	2007-01-23
-> 14:11:39.000000000 +0100 @@ -295,11 +295,11 @@ int do_rmdir(const char
-> *file)
->  	return(0);
->  }
->
-> -int do_mknod(const char *file, int mode, int dev)
-> +int do_mknod(const char *file, int mode, unsigned int major, unsigned int
-> minor) {
->  	int err;
->
-> -	err = mknod(file, mode, dev);
-> +	err = mknod(file, mode, makedev(major, minor));
->  	if(err) return(-errno);
->  	return(0);
->  }
-
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+So..  did you test it?
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
