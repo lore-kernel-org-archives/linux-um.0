@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HASs5-0001IQ-T4 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Jan 2007 07:20:10 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HASs4-0007jO-BH
+	id 1HAWA4-0001re-He for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Jan 2007 10:50:57 -0800
+Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HAWA3-0007xt-QM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Jan 2007 07:20:09 -0800
-Date: Fri, 26 Jan 2007 10:13:28 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070126151328.GA4436@ccure.user-mode-linux.org>
-References: <Pine.LNX.4.64.0701260101250.5924@sparrow>
-Mime-Version: 1.0
+	Fri, 26 Jan 2007 10:50:56 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Fri, 26 Jan 2007 19:49:56 +0100
+References: <20070122201317.GA8594@linuxtv.org>
+	<200701232333.29655.blaisorblade@yahoo.it>
+	<20070124203126.36e78674.akpm@osdl.org>
+In-Reply-To: <20070124203126.36e78674.akpm@osdl.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0701260101250.5924@sparrow>
-Subject: Re: [uml-devel] Possible hostfs uml kernel data corruption with
-	missing host directory (fc6, 2.6.20-rc5-git3 on opteron)
+Message-Id: <200701261949.57042.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] [UML] fix mknod
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,28 +31,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: William Stearns <wstearns@pobox.com>
-Cc: ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@karaya.com>, Johannes Stezenbach <js@linuxtv.org>, linux-kernel@vger.kernel.org
 
-On Fri, Jan 26, 2007 at 04:07:05AM -0500, William Stearns wrote:
-> 	After bisecting the difference between the two root filesystems, 
-> the critical change was a line in /etc/fstab:
-> 
-> none            /mirrors        hostfs  defaults,/home/mirrors  0 0
-> 
-> 	Woah.  
+On Thursday 25 January 2007 05:31, Andrew Morton wrote:
+> On Tue, 23 Jan 2007 23:33:29 +0100
+>
+> Blaisorblade <blaisorblade@yahoo.it> wrote:
+> > On Tuesday 23 January 2007 14:17, Johannes Stezenbach wrote:
+> > > On Tue, Jan 23, 2007 at 09:02:30AM +0100, Blaisorblade wrote:
+> > > > On Monday 22 January 2007 21:13, Johannes Stezenbach wrote:
+> > > > > I was playing with user-mode Linux and found that mknod creates
+> > > > > devices node in hostfs with wrong major/minor numbers.
+> > > > > The patch below fixes it for me.
+> > > >
+> > > > Hmpf. Still having this bug on hostfs is quite bad. Thanks for
+> > > > reporting.
+> >
+> > I've now seen - we never fixed this one, we fixed the analogous problem
+> > on 'ls' output and friends (in init_inode, which is used in many places).
+> >
+> > > > It should be hostfs_user.c to take major and minor and to combine
+> > > > them correctly - it can use libc's macros.
+> > >
+> > > Right, below is a better patch.
+> >
+> > Exactly what I meant, thanks!
+> > I'd say:
+> > Acked-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> > This can go to 2.6.20, and possibly even to -stable (after either me or
+> > Jeff tests it once).
 
+> So..  did you test it?
 
-Hmmm.
+Just tested, I could reproduce the bug and verify the fix works, on 2.6.18; 
+and for me it's enough to merge it, considering that little changes happened 
+on hostfs, and because it's well understood with static review that this fix 
+is needed.
 
-Can you enable all of the memory debugging options under Kernel
-Hacking and try this again?  The slab debugging may trap it closer to
-the actual bug.
-
-				Jeff
-
+It should also be merged in 2.6.16-stable.
 -- 
-Work email - jdike at linux dot intel dot com
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
