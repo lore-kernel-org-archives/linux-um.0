@@ -2,17 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HBwF2-0006m7-0R for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Jan 2007 08:53:56 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HBwEw-00075z-RS
+	id 1HBxqL-0001ff-Gx for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Jan 2007 10:36:33 -0800
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HBxqF-0006iB-DK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Jan 2007 08:53:52 -0800
-Message-Id: <200701301646.l0UGkXd6005828@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Date: Tue, 30 Jan 2007 11:46:32 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH] UML - Fix signal frame alignment
+	Tue, 30 Jan 2007 10:36:30 -0800
+Received: from [192.168.0.6] (82-45-188-29.cable.ubr02.camd.blueyonder.co.uk
+	[82.45.188.29])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mail.nagafix.co.uk (Postfix) with ESMTP id 2080843B1E
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 30 Jan 2007 18:36:16 +0000 (GMT)
+Message-ID: <45BF901F.40206@nagafix.co.uk>
+Date: Tue, 30 Jan 2007 18:36:15 +0000
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
+Subject: [uml-devel] do_syscall_stub: syscall 9 failed
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,55 +33,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@osdl.org, stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-This is both 2.6.20 and -stable material.
+Just caught this in `dmesg`
 
-Use the same signal frame alignment calculations as the underlying
-architecture.  x86_64 appeared to do this, but the "- 8" was really
-subtracting 8 * sizeof(struct rt_sigframe) rather than 8 bytes.
+[42977596.520000] Adding 131064k swap on /dev/ubdb.  Priority:-1 
+extents:1 across:131064k
+[42980169.290000] do_syscall_stub : ret = -12, offset = 548682067984, 
+data = 0000000060b16010
+[42980169.290000] do_syscall_stub: syscall 9 failed, return value = 
+0xfffffffffffffff4, expected return value = 0x477a000
+[42980169.290000]     syscall parameters: 0x477a000 0x1000 0x7 0x11 0x3 
+0xad0c000
+[42980169.290000] fix_range_common: failed, killing current process
 
-UML/i386 might have been OK, but I changed the calculation to match
-i386 just to be sure.
+Whilst trying to compile gcc (big beast) on a 64-bit UML instance.
+Earlier it had failed and triggered OOM, which is why I added the swap, 
+now it may still not have enough (compilation crashed in a similar 
+manner) but this time there is no OOM message.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
---
- arch/um/sys-i386/signal.c   |    3 ++-
- arch/um/sys-x86_64/signal.c |    5 +++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+Any ideas what this is?
 
-Index: linux-2.6.18-mm/arch/um/sys-x86_64/signal.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/sys-x86_64/signal.c	2007-01-29 14:20:57.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/sys-x86_64/signal.c	2007-01-30 11:46:38.000000000 -0500
-@@ -191,8 +191,9 @@ int setup_signal_stack_si(unsigned long 
- 	struct task_struct *me = current;
- 
- 	frame = (struct rt_sigframe __user *)
--		round_down(stack_top - sizeof(struct rt_sigframe), 16) - 8;
--        frame = (struct rt_sigframe __user *) ((unsigned long) frame - 128);
-+		round_down(stack_top - sizeof(struct rt_sigframe), 16);
-+	/* Subtract 128 for a red zone and 8 for proper alignment */
-+        frame = (struct rt_sigframe __user *) ((unsigned long) frame - 128 - 8);
- 
- 	if (!access_ok(VERIFY_WRITE, fp, sizeof(struct _fpstate)))
- 		goto out;
-Index: linux-2.6.18-mm/arch/um/sys-i386/signal.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/sys-i386/signal.c	2007-01-17 06:02:52.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/sys-i386/signal.c	2007-01-30 11:39:10.000000000 -0500
-@@ -219,7 +219,8 @@ int setup_signal_stack_sc(unsigned long 
- 	unsigned long save_sp = PT_REGS_SP(regs);
- 	int err = 0;
- 
--	stack_top &= -8UL;
-+	/* This is the same calculation as i386 - ((sp + 4) & 15) == 0 */
-+	stack_top = ((stack_top + 4) & -16UL) - 4;
- 	frame = (struct sigframe __user *) stack_top - 1;
- 	if (!access_ok(VERIFY_WRITE, frame, sizeof(*frame)))
- 		return 1;
-
+Cheers
+Antoine
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
