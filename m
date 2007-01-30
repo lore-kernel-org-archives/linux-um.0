@@ -2,21 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HBSk9-0003SL-Q8 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Jan 2007 01:24:06 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HBSk7-0005gI-8X
+	id 1HBwF2-0006m7-0R for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Jan 2007 08:53:56 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HBwEw-00075z-RS
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Jan 2007 01:24:05 -0800
-Message-ID: <45BDBD29.3040008@nagafix.co.uk>
-Date: Mon, 29 Jan 2007 09:23:53 +0000
-From: Antoine Martin <antoine@nagafix.co.uk>
-MIME-Version: 1.0
-References: <Pine.LNX.4.64.0701281447490.3498@sparrow>
-	<Pine.LNX.4.64.0701281600140.3159@sparrow>
-In-Reply-To: <Pine.LNX.4.64.0701281600140.3159@sparrow>
-Subject: Re: [uml-devel] Thread (NPTL?) support, 2.6.20-rc5-git3, x86_64,
-	reproducible segmentation fault and possible culprit
+	Tue, 30 Jan 2007 08:53:52 -0800
+Message-Id: <200701301646.l0UGkXd6005828@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Date: Tue, 30 Jan 2007 11:46:32 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH] UML - Fix signal frame alignment
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,44 +26,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: William Stearns <wstearns@pobox.com>
-Cc: Vince Berk <vberk@ists.dartmouth.edu>, ML-uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: akpm@osdl.org, stable@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
->> 	Vince Berk pointed out what appears to be a thread issue with uml. 
->> The "host" command, part of the bind-utils package, uses threads and crashes 
->> when asked to do anything more complex than show its help screen:
->>
->> -bash-3.1# rpm -q bind-libs bind-utils
->> bind-libs-9.3.3-0.1.rc3.fc6
->> bind-utils-9.3.3-0.1.rc3.fc6
->> -bash-3.1# host www.google.com.
->> Segmentation fault
-I believe Jeff is debugging some of these issues.
-Thanks for the test case though, couldn't be more simple!
+This is both 2.6.20 and -stable material.
 
+Use the same signal frame alignment calculations as the underlying
+architecture.  x86_64 appeared to do this, but the "- 8" was really
+subtracting 8 * sizeof(struct rt_sigframe) rather than 8 bytes.
 
->> 	The problem is completely reproducible; the root filesystem and 
->> kernel at http://ford.stearns.org/uml/ give a crash every time you actually 
->> try to look something up with "host".
->> 	Should I be talking to the glibc folks about this?
-I don't think so, it is probably just a TLS issue in UML.
+UML/i386 might have been OK, but I changed the calculation to match
+i386 just to be sure.
 
->  	As a side note, if I try to bypass thread support per the 
-> instructions at http://dag.wieers.com/howto/compatibility/ , I get a 
-> different error (following is with stock "host"):
-> 
-> -bash-3.1# LD_ASSUME_KERNEL=2.4.19 host www.google.com
-> host: error while loading shared libraries: libnsl.so.1: cannot open 
-> shared object file: No such file or directory
-> 
-> -bash-3.1# export LD_ASSUME_KERNEL=2.4.19
-> -bash-3.1# strace -f host www.google.com.
-> strace: error while loading shared libraries: libc.so.6: cannot open 
-> shared object file: No such file or directory
-I think that's because glibc 2.5 does not support kernel 2.4, it only 
-supports nptl (unfortunately).
+Signed-off-by: Jeff Dike <jdike@addtoit.com>
+--
+ arch/um/sys-i386/signal.c   |    3 ++-
+ arch/um/sys-x86_64/signal.c |    5 +++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-Antoine
+Index: linux-2.6.18-mm/arch/um/sys-x86_64/signal.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/sys-x86_64/signal.c	2007-01-29 14:20:57.000000000 -0500
++++ linux-2.6.18-mm/arch/um/sys-x86_64/signal.c	2007-01-30 11:46:38.000000000 -0500
+@@ -191,8 +191,9 @@ int setup_signal_stack_si(unsigned long 
+ 	struct task_struct *me = current;
+ 
+ 	frame = (struct rt_sigframe __user *)
+-		round_down(stack_top - sizeof(struct rt_sigframe), 16) - 8;
+-        frame = (struct rt_sigframe __user *) ((unsigned long) frame - 128);
++		round_down(stack_top - sizeof(struct rt_sigframe), 16);
++	/* Subtract 128 for a red zone and 8 for proper alignment */
++        frame = (struct rt_sigframe __user *) ((unsigned long) frame - 128 - 8);
+ 
+ 	if (!access_ok(VERIFY_WRITE, fp, sizeof(struct _fpstate)))
+ 		goto out;
+Index: linux-2.6.18-mm/arch/um/sys-i386/signal.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/sys-i386/signal.c	2007-01-17 06:02:52.000000000 -0500
++++ linux-2.6.18-mm/arch/um/sys-i386/signal.c	2007-01-30 11:39:10.000000000 -0500
+@@ -219,7 +219,8 @@ int setup_signal_stack_sc(unsigned long 
+ 	unsigned long save_sp = PT_REGS_SP(regs);
+ 	int err = 0;
+ 
+-	stack_top &= -8UL;
++	/* This is the same calculation as i386 - ((sp + 4) & 15) == 0 */
++	stack_top = ((stack_top + 4) & -16UL) - 4;
+ 	frame = (struct sigframe __user *) stack_top - 1;
+ 	if (!access_ok(VERIFY_WRITE, frame, sizeof(*frame)))
+ 		return 1;
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
