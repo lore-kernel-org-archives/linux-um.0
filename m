@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HD2Yb-0002Qs-Tp for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Feb 2007 09:50:43 -0800
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HD2YU-0007Ry-C9
+	id 1HD4si-0001Oy-76 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Feb 2007 12:19:36 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HD4sg-0005m6-M7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Feb 2007 09:50:41 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Fri, 2 Feb 2007 18:48:39 +0100
+	Fri, 02 Feb 2007 12:19:36 -0800
+Date: Fri, 2 Feb 2007 15:12:30 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070202201230.GA8533@ccure.user-mode-linux.org>
 References: <20070131224504.GA7698@ccure.user-mode-linux.org>
-In-Reply-To: <20070131224504.GA7698@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	<200702021848.40114.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200702021848.40114.blaisorblade@yahoo.it>
+In-Reply-To: <200702021848.40114.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [PATCH] x86_64 32-bit ptrace mangles sixth system
 	call argument
 List-Id: The user-mode Linux development list
@@ -30,32 +32,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 31 January 2007 23:45, Jeff Dike wrote:
-> [ This is -mm only until Andi acks it ]
->
-> The 32-bit sysenter entry point mangles the sixth system call argument
-> for both 32-bit and 64-bit ptrace.  In both cases, strace shows the
-> frame pointer (ebp) as the sixth argument.
->
-> Here's a snippet of a 64-bit strace of a 32-bit test program which
-> calls mmap through sysenter:
-Is this a recent regression or did this always happen?
+On Fri, Feb 02, 2007 at 06:48:39PM +0100, Blaisorblade wrote:
+> Is this a recent regression or did this always happen?
 
-Is this the bug diagnosed by Bodo Stroesser time ago, or only it looks 
-similar? I recall vaguely that in that bug RCX was corrupted.
+I haven't looked at the history of the code, but it has the look of
+something that's been there a long time.
 
-And what is the impact on UML (Bodo said his bug would affect SKAS behaviour)?
+> Is this the bug diagnosed by Bodo Stroesser time ago, or only it looks 
+> similar? I recall vaguely that in that bug RCX was corrupted.
 
-Above all, how can UML run in SKAS0 mode with this bug (if it can)?
+No, RCX corruption is different - that happens when a sysexit is done
+from a system call where userspace wasn't prepared to save and restore
+RCX.  sigreturn is the best example.
+
+> Above all, how can UML run in SKAS0 mode with this bug (if it can)?
+
+The impact is limited by several things -
+	it must be a 32-bit UML on a 64-bit host
+	the system call must have 6 arguments - mmap and pselect are
+the only 6-argument system calls that I can find quickly
+	the system call must be made through sysenter - int 0x80 is
+fine
+
+But, a 32-bit UML making mmap calls through sysenter indeed does not run
+very well.
+
+				Jeff
+
 -- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
