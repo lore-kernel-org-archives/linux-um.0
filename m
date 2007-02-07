@@ -1,18 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HEssV-0003rd-SE for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Feb 2007 11:54:51 -0800
+	id 1HEssV-0003rc-OR for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Feb 2007 11:54:52 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HEssU-0002ye-DT
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HEssT-000644-8J
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 07 Feb 2007 11:54:51 -0800
-Message-Id: <200702071947.l17JlnMY006620@ccure.user-mode-linux.org>
+Message-Id: <200702071947.l17JlhGW006605@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Wed, 07 Feb 2007 14:47:49 -0500
+Date: Wed, 07 Feb 2007 14:47:43 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 5/7] UML - ELF locking commentary
+Subject: [uml-devel] [PATCH 2/7] UML - SIGIO locking comment
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,32 +30,25 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Comment the lack of locking of the elf data extracted from the ELF headers
-passed to UML.
+Comment the use of a mysterious-looking lock.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 --
- arch/um/os-Linux/elf_aux.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/um/kernel/sigio.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Index: linux-2.6.18-mm/arch/um/os-Linux/elf_aux.c
+Index: linux-2.6.18-mm/arch/um/kernel/sigio.c
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/os-Linux/elf_aux.c	2006-06-17 21:49:35.000000000 -0400
-+++ linux-2.6.18-mm/arch/um/os-Linux/elf_aux.c	2007-01-09 15:33:31.000000000 -0500
-@@ -21,12 +21,11 @@ typedef Elf32_auxv_t elf_auxv_t;
- typedef Elf64_auxv_t elf_auxv_t;
- #endif
+--- linux-2.6.18-mm.orig/arch/um/kernel/sigio.c	2007-01-10 15:12:51.000000000 -0500
++++ linux-2.6.18-mm/arch/um/kernel/sigio.c	2007-01-10 15:44:08.000000000 -0500
+@@ -42,6 +42,7 @@ int write_sigio_irq(int fd)
+ 	return(0);
+ }
  
-+/* These are initialized very early in boot and never changed */
- char * elf_aux_platform;
- long elf_aux_hwcap;
--
- unsigned long vsyscall_ehdr;
- unsigned long vsyscall_end;
--
- unsigned long __kernel_vsyscall;
++/* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
+ static DEFINE_SPINLOCK(sigio_spinlock);
  
- __init void scan_elf_aux( char **envp)
+ void sigio_lock(void)
 
 
 -------------------------------------------------------------------------
