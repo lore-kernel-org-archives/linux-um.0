@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HEssc-0003s8-Na for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Feb 2007 11:54:58 -0800
+	id 1HEssz-0003xp-Ga for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Feb 2007 11:55:21 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HEssZ-0002zI-L2
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HEssZ-0002zc-7r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Feb 2007 11:54:58 -0800
-Message-Id: <200702071947.l17JlqLf006630@ccure.user-mode-linux.org>
+	Wed, 07 Feb 2007 11:55:21 -0800
+Message-Id: <200702071947.l17Jlo57006625@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Wed, 07 Feb 2007 14:47:52 -0500
+Date: Wed, 07 Feb 2007 14:47:50 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 7/7] UML - AIO locking and tidying
+Subject: [uml-devel] [PATCH 6/7] UML - register handling formatting fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,82 +29,73 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Comment the lack of locking of data that's set up once at boot time.
-
-Also fixed a couple of bogus printks.
+Formatting fixes in the register handling code.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 --
- arch/um/os-Linux/aio.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ arch/um/os-Linux/sys-i386/registers.c   |   14 +++++++-------
+ arch/um/os-Linux/sys-x86_64/registers.c |    6 +++---
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-Index: linux-2.6.18-mm/arch/um/os-Linux/aio.c
+Index: linux-2.6.18-mm/arch/um/os-Linux/sys-i386/registers.c
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/os-Linux/aio.c	2007-01-09 17:08:52.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/os-Linux/aio.c	2007-01-09 17:10:54.000000000 -0500
-@@ -24,9 +24,6 @@ struct aio_thread_req {
- 	struct aio_context *aio;
- };
- 
--static int aio_req_fd_r = -1;
--static int aio_req_fd_w = -1;
--
- #if defined(HAVE_AIO_ABI)
- #include <linux/aio_abi.h>
- 
-@@ -111,6 +108,7 @@ static int do_aio(aio_context_t ctx, enu
- 	return err;
- }
- 
-+/* Initialized in an initcall and unchanged thereafter */
- static aio_context_t ctx = 0;
- 
- static int aio_thread(void *arg)
-@@ -137,7 +135,7 @@ static int aio_thread(void *arg)
- 			err = os_write_file(reply_fd, &reply, sizeof(reply));
- 			if(err != sizeof(reply))
- 				printk("aio_thread - write failed, fd = %d, "
--				       "err = %d\n", aio_req_fd_r, -err);
-+				       "err = %d\n", reply_fd, -err);
- 		}
- 	}
- 	return 0;
-@@ -182,6 +180,11 @@ out:
- 	return err;
- }
- 
-+/* These are initialized in initcalls and not changed */
-+static int aio_req_fd_r = -1;
-+static int aio_req_fd_w = -1;
-+static int aio_pid = -1;
-+
- static int not_aio_thread(void *arg)
+--- linux-2.6.18-mm.orig/arch/um/os-Linux/sys-i386/registers.c	2007-01-09 15:17:55.000000000 -0500
++++ linux-2.6.18-mm/arch/um/os-Linux/sys-i386/registers.c	2007-01-09 15:45:22.000000000 -0500
+@@ -34,27 +34,27 @@ void init_thread_registers(union uml_pt_
+ int save_fp_registers(int pid, unsigned long *fp_regs)
  {
- 	struct aio_thread_req req;
-@@ -208,14 +211,12 @@ static int not_aio_thread(void *arg)
- 		err = os_write_file(req.aio->reply_fd, &reply, sizeof(reply));
- 		if(err != sizeof(reply))
- 			printk("not_aio_thread - write failed, fd = %d, "
--			       "err = %d\n", aio_req_fd_r, -err);
-+			       "err = %d\n", req.aio->reply_fd, -err);
- 	}
- 
- 	return 0;
+ 	if(ptrace(PTRACE_GETFPREGS, pid, 0, fp_regs) < 0)
+-		return(-errno);
+-	return(0);
++		return -errno;
++	return 0;
  }
  
--static int aio_pid = -1;
--
- static int init_aio_24(void)
+ int restore_fp_registers(int pid, unsigned long *fp_regs)
  {
- 	unsigned long stack;
-@@ -308,6 +309,7 @@ static int submit_aio_26(enum aio_type t
+ 	if(ptrace(PTRACE_SETFPREGS, pid, 0, fp_regs) < 0)
+-		return(-errno);
+-	return(0);
++		return -errno;
++	return 0;
  }
- #endif
  
-+/* Initialized in an initcall and unchanged thereafter */
- static int aio_24 = DEFAULT_24_AIO;
+ static int move_registers(int pid, int int_op, union uml_pt_regs *regs,
+ 			  int fp_op, unsigned long *fp_regs)
+ {
+ 	if(ptrace(int_op, pid, 0, regs->skas.regs) < 0)
+-		return(-errno);
++		return -errno;
  
- static int __init set_aio_24(char *name, int *add)
+ 	if(ptrace(fp_op, pid, 0, fp_regs) < 0)
+-		return(-errno);
++		return -errno;
+ 
+-	return(0);
++	return 0;
+ }
+ 
+ void save_registers(int pid, union uml_pt_regs *regs)
+Index: linux-2.6.18-mm/arch/um/os-Linux/sys-x86_64/registers.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/os-Linux/sys-x86_64/registers.c	2007-01-09 15:17:53.000000000 -0500
++++ linux-2.6.18-mm/arch/um/os-Linux/sys-x86_64/registers.c	2007-01-09 15:45:22.000000000 -0500
+@@ -27,12 +27,12 @@ static int move_registers(int pid, int i
+ 			  union uml_pt_regs *regs)
+ {
+ 	if(ptrace(int_op, pid, 0, regs->skas.regs) < 0)
+-		return(-errno);
++		return -errno;
+ 
+ 	if(ptrace(fp_op, pid, 0, regs->skas.fp) < 0)
+-		return(-errno);
++		return -errno;
+ 
+-	return(0);
++	return 0;
+ }
+ 
+ void save_registers(int pid, union uml_pt_regs *regs)
 
 
 -------------------------------------------------------------------------
