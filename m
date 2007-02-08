@@ -1,25 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HFGPS-0006tD-Js for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Feb 2007 13:02:26 -0800
-Received: from ug-out-1314.google.com ([66.249.92.172])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HFGPS-0006TV-3n
+	id 1HFHNb-0004uE-UE for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Feb 2007 14:04:36 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HFHNa-0004w3-1I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Feb 2007 13:02:26 -0800
-Received: by ug-out-1314.google.com with SMTP id z38so584087ugc
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 08 Feb 2007 13:02:17 -0800 (PST)
-Message-ID: <84144f020702081302x351a9937ofc6e722b5c5cada3@mail.gmail.com>
-Date: Thu, 8 Feb 2007 23:02:11 +0200
-From: "Pekka Enberg" <penberg@cs.helsinki.fi>
-In-Reply-To: <20070208195711.GA6607@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-References: <E1HFEIB-0000nJ-00@dorka.pomaz.szeredi.hu>
-	<20070208195711.GA6607@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] UML hang with 100% CPU
+	Thu, 08 Feb 2007 14:04:35 -0800
+Message-Id: <200702082157.l18LvSun007592@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Date: Thu, 08 Feb 2007 16:57:27 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 0/3] UML bug fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,27 +26,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Miklos Szeredi <miklos@szeredi.hu>
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+These are 2.6.21 material.  They fix real bugs in early error reporting,
+x86_64 thread and ptrace support.
 
-On Thu, Feb 08, 2007 at 07:46:47PM +0100, Miklos Szeredi wrote:
-> > It boots fine, then usually just after logging in and before starting
-> > the shell (but sometimes after the shell started) it gets into some
-> > loop.  Looking at the strace shows that two processes are
-> > sending/receiving single '\0' bytes on some sockets endlessly.
-> >
-> > Does this ring a bell?
+				Jeff
 
-On 2/8/07, Jeff Dike <jdike@addtoit.com> wrote:
-> No, it doesn't.  This is a strace on the host, I take it?
->
-> Can you get backtraces from the processes?
-
-Just a datapoint: I had a similar problem with UML hanging on
-2.6.20-rc something _host_ kernel whereas 2.6.19 worked fine. That was
-with Gentoo userspace which I don't have anymore.
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
