@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HFdKj-0003Vb-1P for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Feb 2007 13:31:09 -0800
+	id 1HFdoV-0006ZZ-Bw for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Feb 2007 14:01:53 -0800
 Received: from crown.reflexsecurity.com ([72.54.139.163])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HFdKh-0000sP-3x
+	(Exim 4.44) id 1HFdoU-0008Aq-Tl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Feb 2007 13:31:04 -0800
-Date: Fri, 9 Feb 2007 16:30:51 -0500
+	Fri, 09 Feb 2007 14:01:51 -0800
+Date: Fri, 9 Feb 2007 17:01:44 -0500
 From: Jason Lunz <lunz@falooley.org>
-Message-ID: <20070209213051.GA329@metaxa.reflex>
+Message-ID: <20070209220144.GB30936@metaxa.reflex>
 MIME-Version: 1.0
 Content-Disposition: inline
 Subject: [uml-devel] [UML] fix crash in block layer
@@ -28,9 +28,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade@yahoo.it>, Jens Axboe <axboe@suse.de>
+To: Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade@yahoo.it>, Jens Axboe <jens.axboe@oracle.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+
+[resent, axboe@suse.de bounced]
 
 When the device-mapper DM_DEV_CREATE_CMD ioctl is called to create a new
 device, dev_create()->dm_create()->alloc_dev()->
