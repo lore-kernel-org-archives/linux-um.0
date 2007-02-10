@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HFdoV-0006ZZ-Bw for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Feb 2007 14:01:53 -0800
-Received: from crown.reflexsecurity.com ([72.54.139.163])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HFdoU-0008Aq-Tl
+	id 1HFrOA-0003fp-EC for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Feb 2007 04:31:34 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HFrO5-0001JW-80
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Feb 2007 14:01:51 -0800
-Date: Fri, 9 Feb 2007 17:01:44 -0500
-From: Jason Lunz <lunz@falooley.org>
-Message-ID: <20070209220144.GB30936@metaxa.reflex>
+	Sat, 10 Feb 2007 04:31:34 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sat, 10 Feb 2007 13:31:20 +0100
+References: <200702100944.l1A9iSEp008813@shell0.pdx.osdl.net>
+In-Reply-To: <200702100944.l1A9iSEp008813@shell0.pdx.osdl.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [UML] fix crash in block layer
+Message-Id: <200702101331.20261.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [patch 094/241] uml: fix error output during early
+	boot
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,57 +30,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade@yahoo.it>, Jens Axboe <jens.axboe@oracle.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
+On Saturday 10 February 2007 10:44, akpm@linux-foundation.org wrote:
+> From: Jeff Dike <jdike@addtoit.com>
+>
+> The startup code panics a lot if anything goes wrong early on.  This is
+> wrong for several reasons, like the kernel isn't running, so you can't
+> really be calling into it yet, but the harm comes from useful error
+> messages being trapped in the printk ring where no one will ever see them.
+>
+> This patch changes these panics to perror and printf in wrappers which also
+> exit.  Normal, informational, prints are also wrapped so that
+> fflush(stdout) is called after each one.  This is so the output appears in
+> the correct sequence in the event of an error.
 
-[resent, axboe@suse.de bounced]
+libc's printf has an enormous stack usage, so that my_printf is used for 
+direct output instead of printf; if this is ok because it's bootup code, then 
+*fatal* should be marked as "bootup code only"; otherwise we may reuse 
+vsprintf() and write() or fputs(); this should match what happens in 
+my_printf, to avoid any unlikely problem with libc's buffering.
+-- 
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
-When the device-mapper DM_DEV_CREATE_CMD ioctl is called to create a new
-device, dev_create()->dm_create()->alloc_dev()->
-blk_queue_bounce_limit(md->queue, BLK_BOUNCE_ANY) happens.
-
-blk_queue_bounce_limit(BLK_BOUNCE_ANY) calls init_emergency_isa_pool()
-if blk_max_pfn < blk_max_low_pfn. This is the case on UML, but
-init_emergency_isa_pool() hits BUG_ON(!isa_page_pool) because there
-doesn't seem to be a dma zone on UML for mempool_create() to allocate from.
-
-Most architectures seem to have max_low_pfn == max_pfn, but UML doesn't
-because of the uml_reserved chunk it keeps for itself. From what I can
-see, max_pfn and max_low_pfn don't get much use after the
-bootmem-allocator stops being used anyway, except that they initialize
-the block layer's blk_max_low_pfn/blk_max_pfn.
-
-With this applied I can use lvm to create logical volumes without
-crashing UML.
-
-Signed-off-by: Jason Lunz <lunz@falooley.org>
-
----
- arch/um/kernel/mem.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-Index: linux-2.6.20-rc5-uml/arch/um/kernel/mem.c
-===================================================================
---- linux-2.6.20-rc5-uml.orig/arch/um/kernel/mem.c
-+++ linux-2.6.20-rc5-uml/arch/um/kernel/mem.c
-@@ -63,7 +63,7 @@
- 
- void mem_init(void)
- {
--	max_low_pfn = (high_physmem - uml_physmem) >> PAGE_SHIFT;
-+	max_pfn = max_low_pfn = (high_physmem - uml_physmem) >> PAGE_SHIFT;
- 
-         /* clear the zero-page */
-         memset((void *) empty_zero_page, 0, PAGE_SIZE);
-@@ -84,7 +84,6 @@
- 	totalram_pages += totalhigh_pages;
- #endif
- 	num_physpages = totalram_pages;
--	max_pfn = totalram_pages;
- 	printk(KERN_INFO "Memory: %luk available\n", 
- 	       (unsigned long) nr_free_pages() << (PAGE_SHIFT-10));
- 	kmalloc_ok = 1;
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
