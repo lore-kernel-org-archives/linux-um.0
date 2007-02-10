@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HFrOA-0003fp-EC for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Feb 2007 04:31:34 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HFrO5-0001JW-80
+	id 1HG0iZ-0006UY-Px for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Feb 2007 14:29:16 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HG0iX-0003HH-5t
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Feb 2007 04:31:34 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 10 Feb 2007 13:31:20 +0100
+	Sat, 10 Feb 2007 14:29:15 -0800
+Date: Sat, 10 Feb 2007 17:21:57 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070210222157.GA3750@ccure.user-mode-linux.org>
 References: <200702100944.l1A9iSEp008813@shell0.pdx.osdl.net>
-In-Reply-To: <200702100944.l1A9iSEp008813@shell0.pdx.osdl.net>
-MIME-Version: 1.0
+	<200702101331.20261.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200702101331.20261.blaisorblade@yahoo.it>
+In-Reply-To: <200702101331.20261.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [patch 094/241] uml: fix error output during early
 	boot
 List-Id: The user-mode Linux development list
@@ -30,34 +31,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 10 February 2007 10:44, akpm@linux-foundation.org wrote:
-> From: Jeff Dike <jdike@addtoit.com>
->
-> The startup code panics a lot if anything goes wrong early on.  This is
-> wrong for several reasons, like the kernel isn't running, so you can't
-> really be calling into it yet, but the harm comes from useful error
-> messages being trapped in the printk ring where no one will ever see them.
->
-> This patch changes these panics to perror and printf in wrappers which also
-> exit.  Normal, informational, prints are also wrapped so that
-> fflush(stdout) is called after each one.  This is so the output appears in
-> the correct sequence in the event of an error.
+On Sat, Feb 10, 2007 at 01:31:20PM +0100, Blaisorblade wrote:
+> libc's printf has an enormous stack usage, so that my_printf is used for 
+> direct output instead of printf; if this is ok because it's bootup
+> code, 
 
-libc's printf has an enormous stack usage, so that my_printf is used for 
-direct output instead of printf; if this is ok because it's bootup code, then 
-*fatal* should be marked as "bootup code only"; otherwise we may reuse 
-vsprintf() and write() or fputs(); this should match what happens in 
-my_printf, to avoid any unlikely problem with libc's buffering.
+It is bootup code only.
+
+> then *fatal* should be marked as "bootup code only"; 
+
+OK.
+
+> otherwise
+> we may reuse vsprintf() and write() or fputs(); this should match
+> what happens in my_printf, to avoid any unlikely problem with libc's
+> buffering. 
+
+Offhand, I would say that if we are on a kernel stack, printk is safe
+to use, and should be used, so there's no need for things like
+my_printf.  Maybe there are some exceptions in early boot when the
+kernel is running, but before the console is working, but I can't
+think of any problems we've had like that.
+
+				Jeff
+
 -- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
