@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HHXQi-0004zU-6Q for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Feb 2007 19:37:08 -0800
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HHXQf-0007v2-24
+	id 1HHXX0-0005bE-TK for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Feb 2007 19:43:40 -0800
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HHXWz-0007HJ-B5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Feb 2007 19:37:07 -0800
+	Wed, 14 Feb 2007 19:43:38 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 15 Feb 2007 04:36:54 +0100
-References: <Pine.LNX.4.64.0701260101250.5924@sparrow>
-	<20070126151328.GA4436@ccure.user-mode-linux.org>
-In-Reply-To: <20070126151328.GA4436@ccure.user-mode-linux.org>
+Date: Thu, 15 Feb 2007 04:43:28 +0100
+References: <200701171715.35504.blaisorblade@yahoo.it>
+	<45AE684D.7070802@theshore.net> <45AE67C0.5080003@nagafix.co.uk>
+In-Reply-To: <45AE67C0.5080003@nagafix.co.uk>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_WV90FHB0e0b8BCB"
-Message-Id: <200702150436.54553.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] Possible hostfs uml kernel data corruption with
-	missing host directory (fc6, 2.6.20-rc5-git3 on opteron)
+Content-Disposition: inline
+Message-Id: <200702150443.29074.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] UML/64bit is miscompiled by gcc 4.0.3 on Ubuntu
+	6.06 LTS
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,114 +27,68 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, William Stearns <wstearns@pobox.com>
+Cc: "Christopher S. Aker" <caker@theshore.net>
 
---Boundary-00=_WV90FHB0e0b8BCB
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Friday 26 January 2007 16:13, Jeff Dike wrote:
-> On Fri, Jan 26, 2007 at 04:07:05AM -0500, William Stearns wrote:
-> > 	After bisecting the difference between the two root filesystems,
-> > the critical change was a line in /etc/fstab:
+On Wednesday 17 January 2007 19:15, Antoine Martin wrote:
+> >> ptrace(PTRACE_SETREGS, 31586, 0, 0x6096dac8) = 0
+> >> ptrace(PTRACE_SETFPREGS, 31586, 0, 0x6096dba0) = 0
+> >> ptrace(PTRACE_SYSCALL, 31586, 0, SIG_0) = 0
+> >>
+> >> I'll have to verify whether some code in the stubs is miscompiled. But
+> >> not until... well, I dunno when I'll be back...
+> >>
+> >> Anybody else with the same problem?
 > >
-> > none            /mirrors        hostfs  defaults,/home/mirrors  0 0
-> >
-> > 	Woah.
+> > Isn't this is the same problem we discussed a few months back?  What
+> > I've discovered since then is this is a regression introduced after
+> > 2.6.16 on the _host_.  Any post-2.6.16 host kernel, either skas v8.2 or
+> > v9.pre causes Ubuntu (and other distros, I believe) to hang after "VFS
+> > mounting root".
 
-Ok, I think I have found it from code analisys (no testing done). Please test 
-the attached patch, since the bug is repeatable for you.
+> > http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=116008558424368&w
+> >=2
+> > http://marc.theaimsgroup.com/?l=user-mode-linux-devel&m=116711159414443&w
+> >=2
+>
+> Indeed it is.
+>
+> A fix would be more than welcome. (2.6.16 is a bit dated)
+> I believe a lot of users are hitting this bug now too (and it is a
+> regression) as a lot of distros ship recent kernels.
 
-Ok, we have a double kfree inside hostfs_fill_sb_common; since name is 
-assigned to host_filename, it is owned by the inode, and freed both by dput 
-and by kfree(name).
+> Another regression in 2.6.16 (or later?) is the inability to run 32-bit
+> guests on 64-bit hosts (the same binaries that used to work before -
+> statically compiled). The boot stops very early during the "checking
+> ptrace" step.
 
-The path from dput to the first free is:
-dput->iput->hostfs_destroy_inode->kfree(... ->host_filename)
+Just fixed such a regression in 2.6.18 - patch is 'x86_64: fix 2.6.18 
+regression - PTRACE_OLDSETOPTIONS should be accepted'. Actually, Jeff 
+discovered the same bug today, like me! Please test it to make sure there are 
+no further bugs.
 
-The simplest fix is to clear 'name' after assigning it to ->host_filename. 
-Patch attached - the second hunk is totally optional, it avoids a 
-kfree(NULL);. The goal was maximum simplicity here.
+For the other bug, could you, Antoine and Christopher, open an entry in 
+bugzilla? Going through emails is becoming confusing...
 
-Also, I discovered that in read_inode, failure from file_type (which calls 
-lstat64) is ignored. read_name is subsequently called, it calls lstat again, 
-so this should not be a problem; however, the other call to file_type (in 
-init_inode) is also unchecked, and that is less robust.
+Bye
 -- 
 Inform me of my mistakes, so I can add them to my list!
 Paolo Giarrusso, aka Blaisorblade
 http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
---Boundary-00=_WV90FHB0e0b8BCB
-Content-Type: text/x-diff; charset="iso-8859-1";
-	name="hostfs-fix-double-free.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="hostfs-fix-double-free.diff"
-
-Subject: uml - hostfs: fix double free
-
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-
-Fix double free in the error path - when name is assigned into root_inode we do
-not own it any more and we must not kfree() it - see patch for details.
-
-Thanks to William Stearns for the initial report.
-
-CC: William Stearns <wstearns@pobox.com>
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Index: linux-2.6.git/fs/hostfs/hostfs_kern.c
-===================================================================
---- linux-2.6.git.orig/fs/hostfs/hostfs_kern.c
-+++ linux-2.6.git/fs/hostfs/hostfs_kern.c
-@@ -966,6 +966,9 @@ static int hostfs_fill_sb_common(struct 
- 		goto out_put;
- 
- 	HOSTFS_I(root_inode)->host_filename = name;
-+	/* Avoid that in the error path, iput(root_inode) frees again name through
-+	 * hostfs_destroy_inode! */
-+	name = NULL;
- 
- 	err = -ENOMEM;
- 	sb->s_root = d_alloc_root(root_inode);
-@@ -977,7 +980,7 @@ static int hostfs_fill_sb_common(struct 
-                 /* No iput in this case because the dput does that for us */
-                 dput(sb->s_root);
-                 sb->s_root = NULL;
--		goto out_free;
-+		goto out;
-         }
- 
- 	return(0);
-
---Boundary-00=_WV90FHB0e0b8BCB
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---Boundary-00=_WV90FHB0e0b8BCB
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---Boundary-00=_WV90FHB0e0b8BCB--
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
