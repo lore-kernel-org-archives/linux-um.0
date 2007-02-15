@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HHZXs-0000uU-Rv for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Feb 2007 21:52:41 -0800
-Received: from smtp.osdl.org ([65.172.181.24])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HHZXs-0001Xm-G0
+	id 1HHdXC-00005o-IV for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Feb 2007 02:08:14 -0800
+Received: from mail-gw2.sa.eol.hu ([212.108.200.109])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HHdXA-0005mX-TJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Feb 2007 21:52:40 -0800
-Date: Wed, 14 Feb 2007 21:51:23 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20070214215123.57ef2d4a.akpm@linux-foundation.org>
-In-Reply-To: <200702150443.42287.blaisorblade@yahoo.it>
-References: <11715068631914-git-send-email-blaisorblade@yahoo.it>
-	<20070215025423.GA9300@ccure.user-mode-linux.org>
-	<200702150443.42287.blaisorblade@yahoo.it>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] x86_64: fix 2.6.18 regression -
-	PTRACE_OLDSETOPTIONS should be accepted
+	Thu, 15 Feb 2007 02:08:14 -0800
+In-reply-to: <20070215002205.GA8099@ccure.user-mode-linux.org> (message from
+	Jeff Dike on Wed, 14 Feb 2007 19:22:05 -0500)
+References: <E1HFEIB-0000nJ-00@dorka.pomaz.szeredi.hu>
+	<20070208195711.GA6607@ccure.user-mode-linux.org>
+	<E1HFFeC-0000wJ-00@dorka.pomaz.szeredi.hu>
+	<20070215002205.GA8099@ccure.user-mode-linux.org>
+Message-Id: <E1HHdWm-0005jr-00@dorka.pomaz.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Thu, 15 Feb 2007 11:07:48 +0100
+Subject: Re: [uml-devel] UML hang with 100% CPU
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,42 +27,25 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Andi Kleen <ak@suse.de>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, stable@kernel.org
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 15 Feb 2007 04:43:41 +0100 Blaisorblade <blaisorblade@yahoo.it> wrote:
-
-> > I sent an equivalent patch in earlier today:
-> Doh! Interesting this timing...
+> > Strangely enough after continuing in gdb, UML is back to normal, and I
+> > can't make it hang any more.  It must be something timing related.
 > 
-> > Index: linux-2.6/arch/x86_64/ia32/ptrace32.c
-> > ===================================================================
-> > --- linux-2.6.orig/arch/x86_64/ia32/ptrace32.c
-> > +++ linux-2.6/arch/x86_64/ia32/ptrace32.c
-> > @@ -239,6 +239,8 @@ asmlinkage long sys32_ptrace(long reques
-> >  	__u32 val;
-> >
-> >  	switch (request) {
-> > +	case PTRACE_OLDSETOPTIONS:
-> > +		request = PTRACE_SETOPTIONS;
-> >  	case PTRACE_TRACEME:
-> >  	case PTRACE_ATTACH:
-> >  	case PTRACE_KILL:
-> >
-> > I change the request so that PTRACE_OLDSETOPTIONS doesn't need to
-> > propogate any further.  However, it is present in include/asm-x86_64,
-> > so I guess that counts as being part of the x86_64 ABI.  That being
-> > the case, I guess my patch can be dropped in favor of this one.
-> 
-> It is handled in ptrace_request, unless there are include problems. I'm going 
-> to reboot and test mine for any remaining problem.
+> Can you see if the patch below fixes it?
 
-Whatever happens, please ensure that the final fix makes it into -stable
-as well.  Jeff's version of this patch wasn't cc'ed to stable@kernel.org.
+Yay!  Got my nice fast UML back instead of ugly slow QEmu ;)
+
+Seems to work perfectly now.
+
+Thanks,
+Miklos
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
