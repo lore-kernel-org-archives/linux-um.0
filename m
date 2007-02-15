@@ -2,23 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HGgOj-0002ON-MG for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Feb 2007 10:59:33 -0800
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HGgOc-0003Sh-Uj
+	id 1HHUVQ-0004UY-NE for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Feb 2007 16:29:49 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HHUVM-00072B-QP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Feb 2007 10:59:30 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Mon, 12 Feb 2007 19:59:15 +0100
-References: <200702100944.l1A9iSEp008813@shell0.pdx.osdl.net>
-	<200702101331.20261.blaisorblade@yahoo.it>
-	<20070210222157.GA3750@ccure.user-mode-linux.org>
-In-Reply-To: <20070210222157.GA3750@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	Wed, 14 Feb 2007 16:29:46 -0800
+Date: Wed, 14 Feb 2007 19:22:05 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070215002205.GA8099@ccure.user-mode-linux.org>
+References: <E1HFEIB-0000nJ-00@dorka.pomaz.szeredi.hu>
+	<20070208195711.GA6607@ccure.user-mode-linux.org>
+	<E1HFFeC-0000wJ-00@dorka.pomaz.szeredi.hu>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200702121959.15722.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [patch 094/241] uml: fix error output during early
-	boot
+In-Reply-To: <E1HFFeC-0000wJ-00@dorka.pomaz.szeredi.hu>
+Subject: Re: [uml-devel] UML hang with 100% CPU
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,49 +32,105 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 10 February 2007 23:21, Jeff Dike wrote:
-> On Sat, Feb 10, 2007 at 01:31:20PM +0100, Blaisorblade wrote:
-> > libc's printf has an enormous stack usage, so that my_printf is used for
-> > direct output instead of printf; if this is ok because it's bootup
-> > code,
->
-> It is bootup code only.
->
-> > then *fatal* should be marked as "bootup code only";
->
-> OK.
->
-> > otherwise
-> > we may reuse vsprintf() and write() or fputs(); this should match
-> > what happens in my_printf, to avoid any unlikely problem with libc's
-> > buffering.
->
-> Offhand, I would say that if we are on a kernel stack, printk is safe
-> to use, and should be used, so there's no need for things like
-> my_printf.  Maybe there are some exceptions in early boot when the
-> kernel is running, but before the console is working, but I can't
-> think of any problems we've had like that.
+On Thu, Feb 08, 2007 at 09:13:36PM +0100, Miklos Szeredi wrote:
+> Strangely enough after continuing in gdb, UML is back to normal, and I
+> can't make it hang any more.  It must be something timing related.
 
-It's for no_config_chan (don't recall the right name), i.e. for when the 
-console will never work because of a misconfiguration. Indeed it's static 
-(and otherwise it ought to have a better name!).
+Can you see if the patch below fixes it?
 
+				Jeff
 -- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+Work email - jdike at linux dot intel dot com
 
+
+Index: linux-2.6.18-mm/arch/um/os-Linux/sigio.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/os-Linux/sigio.c	2007-02-08 16:48:00.000000000 -0500
++++ linux-2.6.18-mm/arch/um/os-Linux/sigio.c	2007-02-14 19:16:22.000000000 -0500
+@@ -97,20 +97,22 @@ static int write_sigio_thread(void *unus
+ 
+ static int need_poll(struct pollfds *polls, int n)
+ {
+-	if(n <= polls->size){
+-		polls->used = n;
++	struct pollfd *new;
++
++	if(n <= polls->size)
+ 		return 0;
+-	}
+-	kfree(polls->poll);
+-	polls->poll = um_kmalloc_atomic(n * sizeof(struct pollfd));
+-	if(polls->poll == NULL){
++
++	new = um_kmalloc_atomic(n * sizeof(struct pollfd));
++	if(new == NULL){
+ 		printk("need_poll : failed to allocate new pollfds\n");
+-		polls->size = 0;
+-		polls->used = 0;
+ 		return -ENOMEM;
+ 	}
++
++	memcpy(new, polls->poll, polls->used * sizeof(struct pollfd));
++	kfree(polls->poll);
++
++	polls->poll = new;
+ 	polls->size = n;
+-	polls->used = n;
+ 	return 0;
+ }
+ 
+@@ -171,15 +173,15 @@ int add_sigio_fd(int fd)
+ 			goto out;
+ 	}
+ 
+-	n = current_poll.used + 1;
+-	err = need_poll(&next_poll, n);
++	n = current_poll.used;
++	err = need_poll(&next_poll, n + 1);
+ 	if(err)
+ 		goto out;
+ 
+-	for(i = 0; i < current_poll.used; i++)
+-		next_poll.poll[i] = current_poll.poll[i];
+-
+-	next_poll.poll[n - 1] = *p;
++	memcpy(next_poll.poll, current_poll.poll,
++	       current_poll.used * sizeof(struct pollfd));
++	next_poll.poll[n] = *p;
++	next_poll.used = n + 1;
+ 	update_thread();
+  out:
+ 	sigio_unlock();
+@@ -214,6 +216,7 @@ int ignore_sigio_fd(int fd)
+ 		if(p->fd != fd)
+ 			next_poll.poll[n++] = *p;
+ 	}
++	next_poll.used = current_poll.used - 1;
+ 
+ 	update_thread();
+  out:
+@@ -331,10 +334,9 @@ void maybe_sigio_broken(int fd, int read
+ 
+ 	sigio_lock();
+ 	err = need_poll(&all_sigio_fds, all_sigio_fds.used + 1);
+-	if(err){
+-		printk("maybe_sigio_broken - failed to add pollfd\n");
++	if(err)
+ 		goto out;
+-	}
++
+ 	all_sigio_fds.poll[all_sigio_fds.used++] =
+ 		((struct pollfd) { .fd  	= fd,
+ 				   .events 	= read ? POLLIN : POLLOUT,
 
 -------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier.
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+Take Surveys. Earn Cash. Influence the Future of IT
+Join SourceForge.net's Techsay panel and you'll get the chance to share your
+opinions on IT & business topics through brief surveys-and earn cash
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
