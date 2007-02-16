@@ -2,23 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HI07J-0008Ky-IP for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Feb 2007 02:15:04 -0800
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HI07G-0007lX-Ok
+	id 1HI6Ta-0001AX-Sz for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Feb 2007 09:02:27 -0800
+Received: from crown.reflexsecurity.com ([72.54.139.163])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HI6TZ-0005yl-C1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Feb 2007 02:15:00 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 15 Feb 2007 20:05:56 +0100
-References: <11715068631914-git-send-email-blaisorblade@yahoo.it>
-	<20070214215123.57ef2d4a.akpm@linux-foundation.org>
-	<20070215170154.GA5641@ccure.user-mode-linux.org>
-In-Reply-To: <20070215170154.GA5641@ccure.user-mode-linux.org>
+	Fri, 16 Feb 2007 09:02:26 -0800
+Date: Fri, 16 Feb 2007 12:02:08 -0500
+From: Jason Lunz <lunz@falooley.org>
+Message-ID: <20070216170207.GC2427@metaxa.reflex>
+References: <20070215160001.GA6774@avocado.homenet>
+	<20070215170916.GC5641@ccure.user-mode-linux.org>
+	<200702152029.28670.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200702152005.56594.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] x86_64: fix 2.6.18 regression -
-	PTRACE_OLDSETOPTIONS should be accepted
+In-Reply-To: <200702152029.28670.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [UML] fix crash in block layer
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,34 +32,85 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Jens Axboe <jens.axboe@oracle.com>
 
-On Thursday 15 February 2007 18:01, Jeff Dike wrote:
-> On Wed, Feb 14, 2007 at 09:51:23PM -0800, Andrew Morton wrote:
-> > Whatever happens, please ensure that the final fix makes it into -stable
-> > as well.  Jeff's version of this patch wasn't cc'ed to stable@kernel.org.
+On Thu, Feb 15, 2007 at 08:29:28PM +0100, Blaisorblade wrote:
+> The following could be a suggestion, if max_low_pfn is not used between the 
+> old and the new moment of assignment (and it seems it is not). This is just 
+> an idea however:
+> 
+> mem_init:
+> 
+> -        max_low_pfn = ...
+>         /* this will put all low memory onto the freelists */
+>         totalram_pages = free_all_bootmem();
+> +        max_low_pfn = totalram_pages;
+> #ifdef CONFIG_HIGHMEM
+>         totalhigh_pages = highmem >> PAGE_SHIFT;
+>         totalram_pages += totalhigh_pages;
+> #endif
+>         num_physpages = totalram_pages;
+>         max_pfn = totalram_pages;
 >
-> Paolo's patch was sent to -stable.  His should be used everywhere, and mine
-> should be dropped.
+> Please note that I did not spend a lot of time on this, so everything
+> could be wrong. However, testing cannot help with uml_reserved
+> handling, and this is a dark corner.  So things should be better
+> understood before merging the patch.
 
-Jeff, I verified my patch is _almost_ enough for 2.6.18 for fully booting a 
-32bit UML; on 2.6.18 I had to also add PTRACE_GET/SET_THREAD_AREA (this fix 
-was merged in 2.6.19) to avoid tons of TLS errors.
+I agree - I have only a vague idea about what uml_reserved means.
 
-On 2.6.19, the crash at boot is removed (btw, that crash output no message - I 
-hope that with your fatal/nonfatal/etc. introduction I would get a message) 
-but another one happens when starting init. I'll test 2.6.20 ASAP.
+> The code is too convoluted for a brief look - drawing a picture which
+> explains all those variables would help. Both for UML and for every
+> arch...
 
-Bye
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+blk_queue_bounce_limit() calls init_emergency_isa_pool() to get dma-zone
+pages to use as bounce buffers when its caller passes a dma_addr limit
+that is less than max_low_pfn. The BLK_BOUNCE_ANY macro is supposed to
+mean "never bounce", and it's defined as:
 
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+#define BLK_BOUNCE_ANY          ((u64)blk_max_pfn << PAGE_SHIFT)
 
+So it presumes that max_pfn >= max_low_pfn. uml's mem_init() is
+violating this assumption - when uml_reserved is subtracted from
+max_pfn, we end up with max_pfn < max_low_pfn, so BLK_BOUNCE_ANY has the
+opposite of the intended effect. blk_queue_bounce_limit therefore tries
+to create a mempool with zone-dma pages on a no-dma-zone arch and the
+kernel goes BUG().
+
+So I think your idea is correct. It passes my testing - I can still use
+lvm within uml. I have not tested CONFIG_HIGHMEM, but here's an
+implementation against 2.6.20.
+
+Jeff, please drop my other patch and use this one.
+
+Signed-off-by: Jason Lunz <lunz@falooley.org>
+
+---
+ arch/um/kernel/mem.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+Index: linux-2.6.20-uml/arch/um/kernel/mem.c
+===================================================================
+--- linux-2.6.20-uml.orig/arch/um/kernel/mem.c
++++ linux-2.6.20-uml/arch/um/kernel/mem.c
+@@ -63,8 +63,6 @@
+ 
+ void mem_init(void)
+ {
+-	max_low_pfn = (high_physmem - uml_physmem) >> PAGE_SHIFT;
+-
+         /* clear the zero-page */
+         memset((void *) empty_zero_page, 0, PAGE_SIZE);
+ 
+@@ -79,6 +77,7 @@
+ 
+ 	/* this will put all low memory onto the freelists */
+ 	totalram_pages = free_all_bootmem();
++	max_low_pfn = totalram_pages;
+ #ifdef CONFIG_HIGHMEM
+ 	totalhigh_pages = highmem >> PAGE_SHIFT;
+ 	totalram_pages += totalhigh_pages;
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
