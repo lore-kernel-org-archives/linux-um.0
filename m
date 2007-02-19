@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HJCQW-0003XH-3z for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Feb 2007 09:35:48 -0800
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HJCQR-0006j3-8v
+	id 1HJEgF-00031l-9b for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Feb 2007 12:00:11 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HJEgD-0005Kv-QG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Feb 2007 09:35:48 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Mon, 19 Feb 2007 18:34:42 +0100
+	Mon, 19 Feb 2007 12:00:11 -0800
+Date: Mon, 19 Feb 2007 14:52:11 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070219195211.GA6530@ccure.user-mode-linux.org>
 References: <11711284362893-git-send-email-blaisorblade@yahoo.it>
-In-Reply-To: <11711284362893-git-send-email-blaisorblade@yahoo.it>
-MIME-Version: 1.0
+	<200702191834.42237.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200702191834.42237.blaisorblade@yahoo.it>
+In-Reply-To: <200702191834.42237.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [PATCH] uml: fix pte_mkread setting page read/write
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,28 +31,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 10 February 2007 18:27, Paolo 'Blaisorblade' Giarrusso wrote:
-> Fix the fact that pte_mkread set _PAGE_RW instead of _PAGE_USER (the logic
-> is copied from i386 in most place, so it is really as bad as you're
-> thinking).
->
-> Thus currently page tables are more permissive than they should.
->
-> Such a change may trigger other latent bugs, so be careful with this.
->
-> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Jeff, no answer to this yet? I've just checked and it's not on the patchset 
-page either.
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+On Mon, Feb 19, 2007 at 06:34:42PM +0100, Blaisorblade wrote:
+> Jeff, no answer to this yet? I've just checked and it's not on the patchset 
+> page either.
 
+I already had it in my -mm patchset, minus any attribution, so I guess
+I cooked it up myself.  I've been running with it for a long time, so it's
+fine by me.
+
+I tossed in your description and SOB and I'll get it off to Andrew unless
+you want to send it in first.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
