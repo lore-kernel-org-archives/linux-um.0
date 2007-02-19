@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HIDiZ-0000t9-7N for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Feb 2007 16:46:27 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HIDiV-0006s7-O8
+	id 1HJCQW-0003XH-3z for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Feb 2007 09:35:48 -0800
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HJCQR-0006j3-8v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Feb 2007 16:46:23 -0800
-Date: Fri, 16 Feb 2007 19:38:41 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070217003841.GA9910@ccure.user-mode-linux.org>
-References: <11715068631914-git-send-email-blaisorblade@yahoo.it>
-	<200702152005.56594.blaisorblade@yahoo.it>
-	<20070216190204.GB7481@ccure.user-mode-linux.org>
-	<200702170104.36122.blaisorblade@yahoo.it>
-Mime-Version: 1.0
+	Mon, 19 Feb 2007 09:35:48 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Mon, 19 Feb 2007 18:34:42 +0100
+References: <11711284362893-git-send-email-blaisorblade@yahoo.it>
+In-Reply-To: <11711284362893-git-send-email-blaisorblade@yahoo.it>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200702170104.36122.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] x86_64: fix 2.6.18 regression -
-	PTRACE_OLDSETOPTIONS should be accepted
+Message-Id: <200702191834.42237.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] uml: fix pte_mkread setting page read/write
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,19 +29,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Feb 17, 2007 at 01:04:35AM +0100, Blaisorblade wrote:
-> Which kernel? I've not yet tested 2.6.20. I'll try debugging this 
-> subsequently.
-
-2.6.20-rc6-mm3 on 2.6.20 + patches works for me.
-
-					Jeff
-
+On Saturday 10 February 2007 18:27, Paolo 'Blaisorblade' Giarrusso wrote:
+> Fix the fact that pte_mkread set _PAGE_RW instead of _PAGE_USER (the logic
+> is copied from i386 in most place, so it is really as bad as you're
+> thinking).
+>
+> Thus currently page tables are more permissive than they should.
+>
+> Such a change may trigger other latent bugs, so be careful with this.
+>
+> Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Jeff, no answer to this yet? I've just checked and it's not on the patchset 
+page either.
 -- 
-Work email - jdike at linux dot intel dot com
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
