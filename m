@@ -2,21 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HJwAL-0002dH-23 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Feb 2007 10:26:20 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HJwAI-00019r-OV
+	id 1HJy9E-0007OG-2n for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Feb 2007 12:33:08 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HJy9D-0003Zm-HT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Feb 2007 10:26:08 -0800
-Date: Wed, 21 Feb 2007 13:18:11 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070221181811.GA5845@ccure.user-mode-linux.org>
-References: <20070220212119.GA8090@ccure.user-mode-linux.org>
-	<20070221111228.9CEA21800E4@magilla.sf.frob.com>
+	Wed, 21 Feb 2007 12:33:08 -0800
+Message-Id: <200702212025.l1LKPKRm006789@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20070221111228.9CEA21800E4@magilla.sf.frob.com>
-Subject: Re: [uml-devel] [PATCH] UML utrace support, step 1
+Date: Wed, 21 Feb 2007 15:25:20 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 4/4] UML - lock host ldt retrieval
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,672 +26,106 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Roland McGrath <roland@redhat.com>
+To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Feb 21, 2007 at 03:12:28AM -0800, Roland McGrath wrote:
-> The way I've organized my patch series is with the arch support split up
-> along with the separate infrastructure patches in the series.  That is,
-> just asm/tracehook.h with no utrace_regset stuff in the first patch so that
-> the kernel builds with only utrace-tracehook.patch; then the regset stuff
-> but no arch_ptrace et al in another patch so that it builds with
-> utrace-regset.patch but without the later patches; then arch_ptrace et al
-> in the final arch patch.
+Add some locking to host_ldt_entries to prevent racing when reading
+LDT information from the host.
 
-OK, I'll do it this way.
-
-
-> If you want to divide things up this way, then I'd like just to see a
-> replacement utrace-tracehook-um.patch
-
-Below.
-
-> > +const struct utrace_regset_view utrace_um_native = {
-> > +	.name		= "um",
-> 
-> This name wants to be the subarch name--it's usually the $ARCH or
-> UTS_MACHINE, i.e. the canonical arch name (i386 not i686, but ppc64 or ppc,
-> not powerpc).  In fact, I'm sure you really want to define the
-> utrace_regset_view structs separately somewhere in arch/um/sys-$SUBARCH.
-
-Yup, I'll leave this here, with .name initialized as SUBARCH, with the regsets
-defined in sys-$(ARCH) somewhere.
-
-> > +#define ARCH_HAS_SINGLE_STEP	(1)
-> 
-> Note you'll eventually want to define the block-step macro and functions
-> depending on subarch.  (ia64 supports it, and x86 one day will.)
-
-Fixed.  block-step is hardware-trap-on-branch or something similar?
-
-> You probably just want an extern decl for utrace_native_view here,
-> since what it really does with depend on the subarch.
-
-I'm leaving it here, with pieces imported from the underlying arch.
-
-> > BTW, UML runs on the utrace in -mm (i.e. utrace on the host), which it
-> > didn't with several Fedora kernels.
-> 
-> Oh, really?  That's good, but are you sure?
-
-Yeah, it seems fine to me.  It's been happily running a 64-way kernel build
-loop the last couple of days.  The Fedora kernels I tried couldn't even
-boot UML.
-
-> Have you tried a CONFIG_PREEMPT=y host?
-
-No, this is with preempt off.
-
-> I have plenty of experience debugging ptrace and
-> users of it, but I don't know much of anything about UML's usage pattern
-> and got quickly lost in its code trying to tell what it expected to happen.
-
-I don't think UML's ptrace usage is too strange, just all the stuff around
-it might get in the way conceptually.
-
-If you want some help figuring things out, I'll be happy to help.  Stop
-by #uml in irc.oftc.net.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
-
-
-Step 1 of utrace support.  Add tracehooks.h plus enough other changes to
-get UML to build and run.
+Also fixed some style violations.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 --
- arch/um/kernel/exec.c           |    1 
- arch/um/kernel/process.c        |    6 
- arch/um/kernel/ptrace.c         |  333 +++++-----------------------------------
- arch/um/kernel/signal.c         |    5 
- arch/um/kernel/skas/syscall.c   |    4 
- arch/um/sys-i386/signal.c       |    4 
- include/asm-um/ptrace-generic.h |    3 
- include/asm-um/ptrace-i386.h    |    2 
- include/asm-um/ptrace-x86_64.h  |    2 
- include/asm-um/tracehook.h      |   64 +++++++
- 10 files changed, 117 insertions(+), 307 deletions(-)
+ arch/um/sys-i386/ldt.c |   29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-Index: linux-2.6.18-mm/arch/um/kernel/exec.c
+Index: linux-2.6.18-mm/arch/um/sys-i386/ldt.c
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/kernel/exec.c	2007-02-21 12:53:38.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/kernel/exec.c	2007-02-21 12:53:50.000000000 -0500
-@@ -51,7 +51,6 @@ static long execve1(char *file, char __u
-         error = do_execve(file, argv, env, &current->thread.regs);
-         if (error == 0){
- 		task_lock(current);
--                current->ptrace &= ~PT_DTRACE;
- #ifdef SUBARCH_EXECVE1
- 		SUBARCH_EXECVE1(&current->thread.regs.regs);
- #endif
-Index: linux-2.6.18-mm/arch/um/kernel/process.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/kernel/process.c	2007-02-21 12:53:38.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/kernel/process.c	2007-02-21 12:53:50.000000000 -0500
-@@ -458,11 +458,11 @@ int singlestepping(void * t)
- {
- 	struct task_struct *task = t ? t : current;
- 
--	if ( ! (task->ptrace & PT_DTRACE) )
--		return(0);
-+	if (!test_thread_flag(TIF_SINGLESTEP))
-+		return 0;
- 
- 	if (task->thread.singlestep_syscall)
--		return(1);
-+		return 1;
- 
- 	return 2;
- }
-Index: linux-2.6.18-mm/arch/um/kernel/ptrace.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/kernel/ptrace.c	2007-02-21 12:53:38.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/kernel/ptrace.c	2007-02-21 13:05:30.000000000 -0500
-@@ -3,261 +3,29 @@
-  * Licensed under the GPL
-  */
- 
--#include "linux/sched.h"
--#include "linux/mm.h"
--#include "linux/errno.h"
--#include "linux/smp_lock.h"
--#include "linux/security.h"
--#include "linux/ptrace.h"
--#include "linux/audit.h"
--#ifdef CONFIG_PROC_MM
--#include "linux/proc_mm.h"
--#endif
--#include "asm/ptrace.h"
--#include "asm/uaccess.h"
--#include "kern_util.h"
--#include "skas_ptrace.h"
--#include "sysdep/ptrace.h"
--#include "os.h"
--
--static inline void set_singlestepping(struct task_struct *child, int on)
-+#include <linux/audit.h>
-+#include <linux/elf.h>
-+#include <linux/module.h>
-+#include <linux/ptrace.h>
-+#include <linux/tracehook.h>
-+
-+const struct utrace_regset_view utrace_um_native = {
-+	.name		= SUBARCH,
-+	.e_machine	= ELF_ARCH,
-+	.regsets	= NULL,
-+	.n		= 0,
-+};
-+EXPORT_SYMBOL_GPL(utrace_um_native);
-+
-+int arch_ptrace(long *req, struct task_struct *child,
-+		struct utrace_attached_engine *engine,
-+		unsigned long addr, unsigned long data, long *val)
- {
--        if (on)
--                child->ptrace |= PT_DTRACE;
--        else
--                child->ptrace &= ~PT_DTRACE;
--        child->thread.singlestep_syscall = 0;
--
--#ifdef SUBARCH_SET_SINGLESTEPPING
--        SUBARCH_SET_SINGLESTEPPING(child, on);
--#endif
-+	return -ENOSYS;
- }
- 
--/*
-- * Called by kernel/ptrace.c when detaching..
-- */
--void ptrace_disable(struct task_struct *child)
--{ 
--        set_singlestepping(child,0);
--}
--
--extern int peek_user(struct task_struct * child, long addr, long data);
--extern int poke_user(struct task_struct * child, long addr, long data);
--
--long arch_ptrace(struct task_struct *child, long request, long addr, long data)
--{
--	int i, ret;
--	unsigned long __user *p = (void __user *)(unsigned long)data;
--
--	switch (request) {
--		/* when I and D space are separate, these will need to be fixed. */
--	case PTRACE_PEEKTEXT: /* read word at location addr. */ 
--	case PTRACE_PEEKDATA: {
--		unsigned long tmp;
--		int copied;
--
--		ret = -EIO;
--		copied = access_process_vm(child, addr, &tmp, sizeof(tmp), 0);
--		if (copied != sizeof(tmp))
--			break;
--		ret = put_user(tmp, p);
--		break;
--	}
--
--	/* read the word at location addr in the USER area. */
--        case PTRACE_PEEKUSR:
--                ret = peek_user(child, addr, data);
--                break;
--
--	/* when I and D space are separate, this will have to be fixed. */
--	case PTRACE_POKETEXT: /* write the word at location addr. */
--	case PTRACE_POKEDATA:
--		ret = -EIO;
--		if (access_process_vm(child, addr, &data, sizeof(data), 
--				      1) != sizeof(data))
--			break;
--		ret = 0;
--		break;
--
--	case PTRACE_POKEUSR: /* write the word at location addr in the USER area */
--                ret = poke_user(child, addr, data);
--                break;
--
--	case PTRACE_SYSCALL: /* continue and stop at next (return from) syscall */
--	case PTRACE_CONT: { /* restart after signal. */
--		ret = -EIO;
--		if (!valid_signal(data))
--			break;
--
--                set_singlestepping(child, 0);
--		if (request == PTRACE_SYSCALL) {
--			set_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--		}
--		else {
--			clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--		}
--		child->exit_code = data;
--		wake_up_process(child);
--		ret = 0;
--		break;
--	}
--
--/*
-- * make the child exit.  Best I can do is send it a sigkill. 
-- * perhaps it should be put in the status that it wants to 
-- * exit.
-- */
--	case PTRACE_KILL: {
--		ret = 0;
--		if (child->exit_state == EXIT_ZOMBIE)	/* already dead */
--			break;
--
--                set_singlestepping(child, 0);
--		child->exit_code = SIGKILL;
--		wake_up_process(child);
--		break;
--	}
--
--	case PTRACE_SINGLESTEP: {  /* set the trap flag. */
--		ret = -EIO;
--		if (!valid_signal(data))
--			break;
--		clear_tsk_thread_flag(child, TIF_SYSCALL_TRACE);
--                set_singlestepping(child, 1);
--		child->exit_code = data;
--		/* give it a chance to run. */
--		wake_up_process(child);
--		ret = 0;
--		break;
--	}
--
--	case PTRACE_DETACH:
--		/* detach a process that was attached. */
--		ret = ptrace_detach(child, data);
-- 		break;
--
--#ifdef PTRACE_GETREGS
--	case PTRACE_GETREGS: { /* Get all gp regs from the child. */
--		if (!access_ok(VERIFY_WRITE, p, MAX_REG_OFFSET)) {
--			ret = -EIO;
--			break;
--		}
--		for ( i = 0; i < MAX_REG_OFFSET; i += sizeof(long) ) {
--			__put_user(getreg(child, i), p);
--			p++;
--		}
--		ret = 0;
--		break;
--	}
--#endif
--#ifdef PTRACE_SETREGS
--	case PTRACE_SETREGS: { /* Set all gp regs in the child. */
--		unsigned long tmp = 0;
--		if (!access_ok(VERIFY_READ, p, MAX_REG_OFFSET)) {
--			ret = -EIO;
--			break;
--		}
--		for ( i = 0; i < MAX_REG_OFFSET; i += sizeof(long) ) {
--			__get_user(tmp, p);
--			putreg(child, i, tmp);
--			p++;
--		}
--		ret = 0;
--		break;
--	}
--#endif
--#ifdef PTRACE_GETFPREGS
--	case PTRACE_GETFPREGS: /* Get the child FPU state. */
--		ret = get_fpregs(data, child);
--		break;
--#endif
--#ifdef PTRACE_SETFPREGS
--	case PTRACE_SETFPREGS: /* Set the child FPU state. */
--	        ret = set_fpregs(data, child);
--		break;
--#endif
--#ifdef PTRACE_GETFPXREGS
--	case PTRACE_GETFPXREGS: /* Get the child FPU state. */
--		ret = get_fpxregs(data, child);
--		break;
--#endif
--#ifdef PTRACE_SETFPXREGS
--	case PTRACE_SETFPXREGS: /* Set the child FPU state. */
--		ret = set_fpxregs(data, child);
--		break;
--#endif
--	case PTRACE_GET_THREAD_AREA:
--		ret = ptrace_get_thread_area(child, addr,
--					     (struct user_desc __user *) data);
--		break;
--
--	case PTRACE_SET_THREAD_AREA:
--		ret = ptrace_set_thread_area(child, addr,
--					     (struct user_desc __user *) data);
--		break;
--
--	case PTRACE_FAULTINFO: {
--		/* Take the info from thread->arch->faultinfo,
--		 * but transfer max. sizeof(struct ptrace_faultinfo).
--		 * On i386, ptrace_faultinfo is smaller!
--		 */
--		ret = copy_to_user(p, &child->thread.arch.faultinfo,
--				   sizeof(struct ptrace_faultinfo));
--		if(ret)
--			break;
--		break;
--	}
--
--#ifdef PTRACE_LDT
--	case PTRACE_LDT: {
--		struct ptrace_ldt ldt;
--
--		if(copy_from_user(&ldt, p, sizeof(ldt))){
--			ret = -EIO;
--			break;
--		}
--
--		/* This one is confusing, so just punt and return -EIO for 
--		 * now
--		 */
--		ret = -EIO;
--		break;
--	}
--#endif
--#ifdef CONFIG_PROC_MM
--	case PTRACE_SWITCH_MM: {
--		struct mm_struct *old = child->mm;
--		struct mm_struct *new = proc_mm_get_mm(data);
--
--		if(IS_ERR(new)){
--			ret = PTR_ERR(new);
--			break;
--		}
--
--		atomic_inc(&new->mm_users);
--		child->mm = new;
--		child->active_mm = new;
--		mmput(old);
--		ret = 0;
--		break;
--	}
--#endif
--#ifdef PTRACE_ARCH_PRCTL
--        case PTRACE_ARCH_PRCTL:
--                /* XXX Calls ptrace on the host - needs some SMP thinking */
--                ret = arch_prctl_skas(child, data, (void *) addr);
--                break;
--#endif
--	default:
--		ret = ptrace_request(child, request, addr, data);
--		break;
--	}
--
--	return ret;
--}
--
--void send_sigtrap(struct task_struct *tsk, union uml_pt_regs *regs,
--		  int error_code)
-+static void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs,
-+			 int error_code)
- {
- 	struct siginfo info;
- 
-@@ -266,56 +34,39 @@ void send_sigtrap(struct task_struct *ts
- 	info.si_code = TRAP_BRKPT;
- 
- 	/* User-mode eip? */
--	info.si_addr = UPT_IS_USER(regs) ? (void __user *) UPT_IP(regs) : NULL;
-+	info.si_addr = UPT_IS_USER(&regs->regs) ?
-+		(void __user *) UPT_IP(&regs->regs) : NULL;
- 
- 	/* Send us the fakey SIGTRAP */
- 	force_sig_info(SIGTRAP, &info, tsk);
- }
- 
--/* XXX Check PT_DTRACE vs TIF_SINGLESTEP for singlestepping check and
-- * PT_PTRACED vs TIF_SYSCALL_TRACE for syscall tracing check
-+/* notification of system call entry/exit
-+ * - triggered by current->work.syscall_trace
-  */
--void syscall_trace(union uml_pt_regs *regs, int entryexit)
-+void do_syscall_trace(struct pt_regs *regs, int entryexit)
- {
--	int is_singlestep = (current->ptrace & PT_DTRACE) && entryexit;
--	int tracesysgood;
-+	/* do the secure computing check first */
-+	if (!entryexit)
-+		secure_computing(PT_REGS_SYSCALL_NR(regs));
-+
-+	if (unlikely(current->audit_context) && entryexit)
-+		audit_syscall_exit(AUDITSC_RESULT(UPT_SYSCALL_RET(regs)),
-+				   UPT_SYSCALL_RET(regs));
-+
-+	if (test_thread_flag(TIF_SYSCALL_TRACE))
-+		tracehook_report_syscall(regs, entryexit);
-+
-+	if (test_thread_flag(TIF_SINGLESTEP) && entryexit) {
-+		send_sigtrap(current, regs, 0);	/* XXX */
-+		tracehook_report_syscall_step(regs);
-+	}
- 
--	if (unlikely(current->audit_context)) {
--		if (!entryexit)
--			audit_syscall_entry(HOST_AUDIT_ARCH,
-+	if (unlikely(current->audit_context) && !entryexit)
-+		audit_syscall_entry(HOST_AUDIT_ARCH,
- 					    UPT_SYSCALL_NR(regs),
- 					    UPT_SYSCALL_ARG1(regs),
- 					    UPT_SYSCALL_ARG2(regs),
- 					    UPT_SYSCALL_ARG3(regs),
- 					    UPT_SYSCALL_ARG4(regs));
--		else audit_syscall_exit(AUDITSC_RESULT(UPT_SYSCALL_RET(regs)),
--                                        UPT_SYSCALL_RET(regs));
--	}
--
--	/* Fake a debug trap */
--	if (is_singlestep)
--		send_sigtrap(current, regs, 0);
--
--	if (!test_thread_flag(TIF_SYSCALL_TRACE))
--		return;
--
--	if (!(current->ptrace & PT_PTRACED))
--		return;
--
--	/* the 0x80 provides a way for the tracing parent to distinguish
--	   between a syscall stop and SIGTRAP delivery */
--	tracesysgood = (current->ptrace & PT_TRACESYSGOOD);
--	ptrace_notify(SIGTRAP | (tracesysgood ? 0x80 : 0));
--
--	if (entryexit) /* force do_signal() --> is_syscall() */
--		set_thread_flag(TIF_SIGPENDING);
--
--	/* this isn't the same as continuing with a signal, but it will do
--	 * for normal use.  strace only continues with a signal if the
--	 * stopping signal is not SIGTRAP.  -brl
--	 */
--	if (current->exit_code) {
--		send_sig(current->exit_code, current, 1);
--		current->exit_code = 0;
--	}
- }
-Index: linux-2.6.18-mm/include/asm-um/tracehook.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.18-mm/include/asm-um/tracehook.h	2007-02-21 13:08:31.000000000 -0500
-@@ -0,0 +1,64 @@
-+/*
-+ * Tracing hooks, i386 CPU support
-+ *
-+ * Copyright (C) 2006, 2007 Red Hat, Inc.  All rights reserved.
-+ *
-+ * This copyrighted material is made available to anyone wishing to use,
-+ * modify, copy, or redistribute it subject to the terms and conditions
-+ * of the GNU General Public License v.2.
-+ *
-+ * Red Hat Author: Roland McGrath.
-+ *
-+ * Munged for UML - jdike@{addtoit,linux.intel}.com
-+ */
-+
-+#ifndef _ASM_TRACEHOOK_H
-+#define _ASM_TRACEHOOK_H	1
-+
-+#include <linux/sched.h>
-+#include <asm/ptrace.h>
-+#include <asm/thread_info.h>
-+
-+/*
-+ * See linux/tracehook.h for the descriptions of what these need to do.
-+ */
-+
-+static inline void tracehook_enable_single_step(struct task_struct *tsk)
-+{
-+	set_tsk_thread_flag(tsk, TIF_SINGLESTEP);
-+}
-+
-+static inline void tracehook_disable_single_step(struct task_struct *tsk)
-+{
-+	clear_tsk_thread_flag(tsk, TIF_SINGLESTEP);
-+}
-+
-+static inline int tracehook_single_step_enabled(struct task_struct *tsk)
-+{
-+	return test_tsk_thread_flag(tsk, TIF_SINGLESTEP);
-+}
-+
-+static inline void tracehook_enable_syscall_trace(struct task_struct *tsk)
-+{
-+	set_tsk_thread_flag(tsk, TIF_SYSCALL_TRACE);
-+}
-+
-+static inline void tracehook_disable_syscall_trace(struct task_struct *tsk)
-+{
-+	clear_tsk_thread_flag(tsk, TIF_SYSCALL_TRACE);
-+}
-+
-+static inline void tracehook_abort_syscall(struct pt_regs *regs)
-+{
-+	PT_REGS_SYSCALL_NR(regs) = -1;
-+}
-+
-+extern const struct utrace_regset_view utrace_um_native;
-+static inline const struct utrace_regset_view *
-+utrace_native_view(struct task_struct *tsk)
-+{
-+	return &utrace_um_native;
-+}
-+
-+
-+#endif
-Index: linux-2.6.18-mm/arch/um/kernel/signal.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/kernel/signal.c	2007-02-21 12:53:38.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/kernel/signal.c	2007-02-21 12:53:50.000000000 -0500
-@@ -14,6 +14,7 @@
- #include "linux/tty.h"
- #include "linux/binfmts.h"
- #include "linux/ptrace.h"
-+#include "linux/tracehook.h"
- #include "asm/signal.h"
+--- linux-2.6.18-mm.orig/arch/um/sys-i386/ldt.c	2007-01-14 17:29:35.000000000 +1100
++++ linux-2.6.18-mm/arch/um/sys-i386/ldt.c	2007-01-15 17:03:25.000000000 +1100
+@@ -7,6 +7,7 @@
+ #include "linux/slab.h"
+ #include "linux/types.h"
+ #include "linux/errno.h"
++#include "linux/spinlock.h"
  #include "asm/uaccess.h"
- #include "asm/unistd.h"
-@@ -93,6 +94,8 @@ static int handle_signal(struct pt_regs 
- 			sigaddset(&current->blocked, signr);
- 		recalc_sigpending();
- 		spin_unlock_irq(&current->sighand->siglock);
+ #include "asm/smp.h"
+ #include "asm/ldt.h"
+@@ -386,15 +387,20 @@ static long do_modify_ldt_skas(int func,
+ 	return ret;
+ }
+ 
+-short dummy_list[9] = {0, -1};
+-short * host_ldt_entries = NULL;
++static DEFINE_SPINLOCK(host_ldt_lock);
++static short dummy_list[9] = {0, -1};
++static short * host_ldt_entries = NULL;
+ 
+-void ldt_get_host_info(void)
++static void ldt_get_host_info(void)
+ {
+ 	long ret;
+ 	struct ldt_entry * ldt;
+ 	int i, size, k, order;
+ 
++	spin_lock(&host_ldt_lock);
++	if(host_ldt_entries != NULL)
++		goto out_unlock;
 +
-+		tracehook_report_handle_signal(signr, ka, oldset, regs);
+ 	host_ldt_entries = dummy_list+1;
+ 
+ 	for(i = LDT_PAGES_MAX-1, order=0; i; i>>=1, order++);
+@@ -402,8 +408,9 @@ void ldt_get_host_info(void)
+ 	ldt = (struct ldt_entry *)
+ 	      __get_free_pages(GFP_KERNEL|__GFP_ZERO, order);
+ 	if(ldt == NULL) {
+-		printk("ldt_get_host_info: couldn't allocate buffer for host ldt\n");
+-		return;
++		printk("ldt_get_host_info: couldn't allocate buffer for host "
++		       "ldt\n");
++		goto out_unlock;
  	}
  
- 	return err;
-@@ -148,7 +151,7 @@ static int kern_do_signal(struct pt_regs
- 	 * on the host.  The tracing thread will check this flag and
- 	 * PTRACE_SYSCALL if necessary.
- 	 */
--	if(current->ptrace & PT_DTRACE)
-+	if(test_thread_flag(TIF_SYSCALL_TRACE))
- 		current->thread.singlestep_syscall =
- 			is_syscall(PT_REGS_IP(&current->thread.regs));
+ 	ret = modify_ldt(0, ldt, (1<<order)*PAGE_SIZE);
+@@ -428,7 +435,8 @@ void ldt_get_host_info(void)
+ 		size = (size + 1) * sizeof(dummy_list[0]);
+ 		host_ldt_entries = kmalloc(size, GFP_KERNEL);
+ 		if(host_ldt_entries == NULL) {
+-			printk("ldt_get_host_info: couldn't allocate host ldt list\n");
++			printk("ldt_get_host_info: couldn't allocate host ldt "
++			       "list\n");
+ 			goto out_free;
+ 		}
+ 	}
+@@ -442,6 +450,8 @@ void ldt_get_host_info(void)
  
-Index: linux-2.6.18-mm/arch/um/kernel/skas/syscall.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/kernel/skas/syscall.c	2007-02-21 12:53:38.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/kernel/skas/syscall.c	2007-02-21 12:53:50.000000000 -0500
-@@ -19,8 +19,6 @@ void handle_syscall(union uml_pt_regs *r
- 	long result;
- 	int syscall;
- 
--	syscall_trace(r, 0);
--
- 	current->thread.nsyscalls++;
- 	nsyscalls++;
- 
-@@ -38,6 +36,4 @@ void handle_syscall(union uml_pt_regs *r
- 	else result = EXECUTE_SYSCALL(syscall, regs);
- 
- 	REGS_SET_SYSCALL_RETURN(r->skas.regs, result);
--
--	syscall_trace(r, 1);
+ out_free:
+ 	free_pages((unsigned long)ldt, order);
++out_unlock:
++	spin_unlock(&host_ldt_lock);
  }
-Index: linux-2.6.18-mm/arch/um/sys-i386/signal.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/sys-i386/signal.c	2007-02-21 12:53:38.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/sys-i386/signal.c	2007-02-21 12:53:50.000000000 -0500
-@@ -267,8 +267,6 @@ int setup_signal_stack_sc(unsigned long 
- 	PT_REGS_EDX(regs) = (unsigned long) 0;
- 	PT_REGS_ECX(regs) = (unsigned long) 0;
  
--	if ((current->ptrace & PT_DTRACE) && (current->ptrace & PT_PTRACED))
--		ptrace_notify(SIGTRAP);
- 	return 0;
+ long init_new_ldt(struct mmu_context_skas * new_mm,
+@@ -480,8 +490,7 @@ long init_new_ldt(struct mmu_context_ska
+ 			 * inherited from the host. All ldt-entries found
+ 			 * will be reset in the following loop
+ 			 */
+-			if(host_ldt_entries == NULL)
+-				ldt_get_host_info();
++			ldt_get_host_info();
+ 			for(num_p=host_ldt_entries; *num_p != -1; num_p++){
+ 				desc.entry_number = *num_p;
+ 				err = write_ldt_entry(&new_mm->id, 1, &desc,
+@@ -560,6 +569,6 @@ void free_ldt(struct mmu_context_skas * 
  
- err:
-@@ -324,8 +322,6 @@ int setup_signal_stack_si(unsigned long 
- 	PT_REGS_EDX(regs) = (unsigned long) &frame->info;
- 	PT_REGS_ECX(regs) = (unsigned long) &frame->uc;
- 
--	if ((current->ptrace & PT_DTRACE) && (current->ptrace & PT_PTRACED))
--		ptrace_notify(SIGTRAP);
- 	return 0;
- 
- err:
-Index: linux-2.6.18-mm/include/asm-um/ptrace-generic.h
-===================================================================
---- linux-2.6.18-mm.orig/include/asm-um/ptrace-generic.h	2007-02-21 12:53:38.000000000 -0500
-+++ linux-2.6.18-mm/include/asm-um/ptrace-generic.h	2007-02-21 12:53:50.000000000 -0500
-@@ -44,9 +44,6 @@ extern int set_fpxregs(unsigned long buf
- 
- extern void show_regs(struct pt_regs *regs);
- 
--extern void send_sigtrap(struct task_struct *tsk, union uml_pt_regs *regs,
--			 int error_code);
--
- extern int arch_copy_tls(struct task_struct *new);
- extern void clear_flushed_tls(struct task_struct *task);
- 
-Index: linux-2.6.18-mm/include/asm-um/ptrace-i386.h
-===================================================================
---- linux-2.6.18-mm.orig/include/asm-um/ptrace-i386.h	2006-06-17 21:49:35.000000000 -0400
-+++ linux-2.6.18-mm/include/asm-um/ptrace-i386.h	2007-02-21 13:08:31.000000000 -0500
-@@ -6,6 +6,8 @@
- #ifndef __UM_PTRACE_I386_H
- #define __UM_PTRACE_I386_H
- 
-+#define ARCH_HAS_SINGLE_STEP	(1)
-+
- #define HOST_AUDIT_ARCH AUDIT_ARCH_I386
- 
- #include "linux/compiler.h"
-Index: linux-2.6.18-mm/include/asm-um/ptrace-x86_64.h
-===================================================================
---- linux-2.6.18-mm.orig/include/asm-um/ptrace-x86_64.h	2007-02-19 11:52:47.000000000 -0500
-+++ linux-2.6.18-mm/include/asm-um/ptrace-x86_64.h	2007-02-21 13:07:41.000000000 -0500
-@@ -14,6 +14,8 @@
- #define __FRAME_OFFSETS /* Needed to get the R* macros */
- #include "asm/ptrace-generic.h"
- 
-+#define ARCH_HAS_SINGLE_STEP	(1)
-+
- #define HOST_AUDIT_ARCH AUDIT_ARCH_X86_64
- 
- /* Also defined in sysdep/ptrace.h, so may already be defined. */
+ int sys_modify_ldt(int func, void __user *ptr, unsigned long bytecount)
+ {
+-	return(CHOOSE_MODE_PROC(do_modify_ldt_tt, do_modify_ldt_skas, func,
+-	                        ptr, bytecount));
++	return CHOOSE_MODE_PROC(do_modify_ldt_tt, do_modify_ldt_skas, func,
++	                        ptr, bytecount);
+ }
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
