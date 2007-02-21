@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HJy9E-0007OP-PA for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Feb 2007 12:33:09 -0800
+	id 1HJy9E-0007OF-2H for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Feb 2007 12:33:08 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HJy9D-0003ZN-PU
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HJy9D-0003Zf-HQ
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 21 Feb 2007 12:33:08 -0800
-Message-Id: <200702212025.l1LKPJEA006774@ccure.user-mode-linux.org>
+Message-Id: <200702212025.l1LKPKeG006784@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Wed, 21 Feb 2007 15:25:19 -0500
+Date: Wed, 21 Feb 2007 15:25:20 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 1/4] UML - delete unused code
+Subject: [uml-devel] [PATCH 3/4] UML - host_info tidying
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,182 +29,97 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Get rid of a bunch of unused stuff -
-	cpu_feature had no users
-	linux_prog is little-used, so its declaration is moved to the
-user for easy deletion when the whole file goes away
-	a long-unused debugging aid in helper.c is gone
+Move the host_info string from util.c to um_arch.c, where it is
+actually initialized and used.  Also document its lack of locking.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
 --
- arch/um/include/kern_util.h |    1 -
- arch/um/include/user_util.h |    1 -
- arch/um/kernel/tt/gdb.c     |    2 ++
- arch/um/os-Linux/helper.c   |   11 -----------
- arch/um/os-Linux/main.c     |    8 +-------
- arch/um/sys-i386/bugs.c     |   23 -----------------------
- arch/um/sys-x86_64/bugs.c   |   23 -----------------------
- 7 files changed, 3 insertions(+), 66 deletions(-)
+ arch/um/include/os.h        |    2 +-
+ arch/um/include/user_util.h |    2 --
+ arch/um/kernel/um_arch.c    |    6 +++++-
+ arch/um/os-Linux/util.c     |    8 +++-----
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
+Index: linux-2.6.17/arch/um/include/os.h
+===================================================================
+--- linux-2.6.17.orig/arch/um/include/os.h	2007-02-19 11:39:11.000000000 -0500
++++ linux-2.6.17/arch/um/include/os.h	2007-02-19 12:55:11.000000000 -0500
+@@ -273,7 +273,7 @@ extern void stack_protections(unsigned l
+ extern void task_protections(unsigned long address);
+ extern int raw(int fd);
+ extern void setup_machinename(char *machine_out);
+-extern void setup_hostinfo(void);
++extern void setup_hostinfo(char *buf, int len);
+ extern int setjmp_wrapper(void (*proc)(void *, void *), ...);
+ 
+ /* time.c */
 Index: linux-2.6.17/arch/um/include/user_util.h
 ===================================================================
---- linux-2.6.17.orig/arch/um/include/user_util.h	2007-02-19 11:39:11.000000000 -0500
-+++ linux-2.6.17/arch/um/include/user_util.h	2007-02-19 12:52:22.000000000 -0500
-@@ -62,7 +62,6 @@ extern void kill_child_dead(int pid);
- extern int cont(int pid);
- extern void check_sigio(void);
- extern void arch_check_bugs(void);
--extern int cpu_feature(char *what, char *buf, int len);
- extern int arch_handle_signal(int sig, union uml_pt_regs *regs);
- extern int arch_fixup(unsigned long address, void *sc_ptr);
- extern void arch_init_thread(void);
-Index: linux-2.6.17/arch/um/sys-i386/bugs.c
+--- linux-2.6.17.orig/arch/um/include/user_util.h	2007-02-19 12:52:22.000000000 -0500
++++ linux-2.6.17/arch/um/include/user_util.h	2007-02-19 12:55:36.000000000 -0500
+@@ -36,8 +36,6 @@ extern unsigned long end_vm;
+ extern unsigned long start_vm;
+ extern unsigned long long highmem;
+ 
+-extern char host_info[];
+-
+ extern char saved_command_line[];
+ 
+ extern unsigned long _stext, _etext, _sdata, _edata, __bss_start, _end;
+Index: linux-2.6.17/arch/um/kernel/um_arch.c
 ===================================================================
---- linux-2.6.17.orig/arch/um/sys-i386/bugs.c	2006-12-02 09:56:56.000000000 -0500
-+++ linux-2.6.17/arch/um/sys-i386/bugs.c	2007-02-19 12:52:22.000000000 -0500
-@@ -79,29 +79,6 @@ static int find_cpuinfo_line(int fd, cha
- 	return(0);
+--- linux-2.6.17.orig/arch/um/kernel/um_arch.c	2007-02-19 12:53:54.000000000 -0500
++++ linux-2.6.17/arch/um/kernel/um_arch.c	2007-02-19 12:55:11.000000000 -0500
+@@ -17,6 +17,7 @@
+ #include "linux/seq_file.h"
+ #include "linux/delay.h"
+ #include "linux/module.h"
++#include "linux/utsname.h"
+ #include "asm/page.h"
+ #include "asm/pgtable.h"
+ #include "asm/ptrace.h"
+@@ -68,6 +69,9 @@ unsigned long thread_saved_pc(struct tas
+ 					      task));
  }
  
--int cpu_feature(char *what, char *buf, int len)
--{
--	int fd, ret = 0;
--
--	fd = os_open_file("/proc/cpuinfo", of_read(OPENFLAGS()), 0);
--	if(fd < 0){
--		printk("Couldn't open /proc/cpuinfo, err = %d\n", -fd);
--		return(0);
--	}
--
--	if(!find_cpuinfo_line(fd, what, buf, len)){
--		printk("Couldn't find '%s' line in /proc/cpuinfo\n", what);
--		goto out_close;
--	}
--
--	token(fd, buf, len, '\n');
--	ret = 1;
--
-- out_close:
--	os_close_file(fd);
--	return(ret);
--}
--
- static int check_cpu_flag(char *feature, int *have_it)
- {
- 	char buf[MAXTOKEN], c;
-Index: linux-2.6.17/arch/um/sys-x86_64/bugs.c
-===================================================================
---- linux-2.6.17.orig/arch/um/sys-x86_64/bugs.c	2006-06-17 21:49:35.000000000 -0400
-+++ linux-2.6.17/arch/um/sys-x86_64/bugs.c	2007-02-19 12:52:22.000000000 -0500
-@@ -88,29 +88,6 @@ static int find_cpuinfo_line(int fd, cha
- 	return(0);
- }
- 
--int cpu_feature(char *what, char *buf, int len)
--{
--	int fd, ret = 0;
--
--	fd = os_open_file("/proc/cpuinfo", of_read(OPENFLAGS()), 0);
--	if(fd < 0){
--		printk("Couldn't open /proc/cpuinfo, err = %d\n", -fd);
--		return(0);
--	}
--
--	if(!find_cpuinfo_line(fd, what, buf, len)){
--		printk("Couldn't find '%s' line in /proc/cpuinfo\n", what);
--		goto out_close;
--	}
--
--	token(fd, buf, len, '\n');
--	ret = 1;
--
-- out_close:
--	os_close_file(fd);
--	return(ret);
--}
--
- /* Overrides for Emacs so that we follow Linus's tabbing style.
-  * Emacs will notice this stuff at the end of the file and automatically
-  * adjust the settings for this buffer only.  This must remain at the end
-Index: linux-2.6.17/arch/um/include/kern_util.h
-===================================================================
---- linux-2.6.17.orig/arch/um/include/kern_util.h	2007-02-19 11:39:11.000000000 -0500
-+++ linux-2.6.17/arch/um/include/kern_util.h	2007-02-19 12:52:22.000000000 -0500
-@@ -23,7 +23,6 @@ struct kern_handlers {
- extern const struct kern_handlers handlinfo_kern;
- 
- extern int ncpus;
--extern char *linux_prog;
- extern char *gdb_init;
- extern int kmalloc_ok;
- extern int jail;
-Index: linux-2.6.17/arch/um/kernel/tt/gdb.c
-===================================================================
---- linux-2.6.17.orig/arch/um/kernel/tt/gdb.c	2006-06-17 21:49:35.000000000 -0400
-+++ linux-2.6.17/arch/um/kernel/tt/gdb.c	2007-02-19 12:52:22.000000000 -0500
-@@ -115,6 +115,8 @@ struct gdb_data {
- 	int err;
- };
- 
-+extern char *linux_prog;
++/* Changed in setup_arch, which is called in early boot */
++static char host_info[(__NEW_UTS_LEN + 1) * 5];
 +
- static void config_gdb_cb(void *arg)
+ static int show_cpuinfo(struct seq_file *m, void *v)
  {
- 	struct gdb_data *data = arg;
-Index: linux-2.6.17/arch/um/os-Linux/main.c
-===================================================================
---- linux-2.6.17.orig/arch/um/os-Linux/main.c	2007-02-19 11:39:08.000000000 -0500
-+++ linux-2.6.17/arch/um/os-Linux/main.c	2007-02-19 12:52:22.000000000 -0500
-@@ -25,12 +25,7 @@
- #include "os.h"
- #include "um_malloc.h"
- 
--/* Set in set_stklim, which is called from main and __wrap_malloc.
-- * __wrap_malloc only calls it if main hasn't started.
-- */
--unsigned long stacksizelim;
--
--/* Set in main */
-+/* Set in main, unchanged thereafter */
- char *linux_prog;
- 
- #define PGD_BOUND (4 * 1024 * 1024)
-@@ -52,7 +47,6 @@ static void set_stklim(void)
- 			exit(1);
- 		}
- 	}
--	stacksizelim = (lim.rlim_cur + PGD_BOUND - 1) & ~(PGD_BOUND - 1);
+ 	int index = 0;
+@@ -483,7 +487,7 @@ void __init setup_arch(char **cmdline_p)
+ 	paging_init();
+         strlcpy(saved_command_line, command_line, COMMAND_LINE_SIZE);
+ 	*cmdline_p = command_line;
+-	setup_hostinfo();
++	setup_hostinfo(host_info, sizeof host_info);
  }
  
- static __init void do_uml_initcalls(void)
-Index: linux-2.6.17/arch/um/os-Linux/helper.c
+ void __init check_bugs(void)
+Index: linux-2.6.17/arch/um/os-Linux/util.c
 ===================================================================
---- linux-2.6.17.orig/arch/um/os-Linux/helper.c	2007-02-19 11:39:05.000000000 -0500
-+++ linux-2.6.17/arch/um/os-Linux/helper.c	2007-02-19 12:52:22.000000000 -0500
-@@ -25,23 +25,12 @@ struct helper_data {
- 	char *buf;
- };
+--- linux-2.6.17.orig/arch/um/os-Linux/util.c	2007-02-19 11:39:09.000000000 -0500
++++ linux-2.6.17/arch/um/os-Linux/util.c	2007-02-19 12:55:11.000000000 -0500
+@@ -96,15 +96,13 @@ void setup_machinename(char *machine_out
+ 	strcpy(machine_out, host.machine);
+ }
  
--/* Debugging aid, changed only from gdb */
--int helper_pause = 0;
+-char host_info[(_UTSNAME_LENGTH + 1) * 4 + _UTSNAME_NODENAME_LENGTH + 1];
 -
--static void helper_hup(int sig)
--{
--}
--
- static int helper_child(void *arg)
+-void setup_hostinfo(void)
++void setup_hostinfo(char *buf, int len)
  {
- 	struct helper_data *data = arg;
- 	char **argv = data->argv;
- 	int errval;
+ 	struct utsname host;
  
--	if (helper_pause){
--		signal(SIGHUP, helper_hup);
--		pause();
--	}
- 	if (data->pre_exec != NULL)
- 		(*data->pre_exec)(data->pre_data);
- 	errval = execvp_noalloc(data->buf, argv[0], argv);
+ 	uname(&host);
+-	sprintf(host_info, "%s %s %s %s %s", host.sysname, host.nodename,
+-		host.release, host.version, host.machine);
++	snprintf(buf, len, "%s %s %s %s %s", host.sysname, host.nodename,
++		 host.release, host.version, host.machine);
+ }
+ 
+ int setjmp_wrapper(void (*proc)(void *, void *), ...)
 
 
 -------------------------------------------------------------------------
