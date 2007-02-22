@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HK1Hp-00041O-EM for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Feb 2007 15:54:15 -0800
-Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HK1Ho-0005r8-Te
+	id 1HK1Ut-0005Ln-NJ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Feb 2007 16:07:48 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HK1Uq-00056Q-4G
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Feb 2007 15:54:13 -0800
+	Wed, 21 Feb 2007 16:07:43 -0800
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 22 Feb 2007 00:54:04 +0100
+Date: Thu, 22 Feb 2007 01:07:30 +0100
+References: <200702082157.l18LvVFB007602@ccure.user-mode-linux.org>
+In-Reply-To: <200702082157.l18LvVFB007602@ccure.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200702220054.04938.blaisorblade@yahoo.it>
-Subject: [uml-devel] When opening /tmp/uml.ctl fails, what do we get?
+Message-Id: <200702220107.30766.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 2/3] UML - x86_64 thread fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,37 +29,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: akpm@osdl.org, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, wstearns@pobox.com
 
-I started uml_daemon as root by mistake, so /tmp/uml.ctl even if /dev/net/tun 
-was world-readable. Ok, I did it. This is the result (after trying many times 
-to do 'ifconfig eth0 up' inside UML):
-
-[42949710.290000] Choosing a random ethernet address for device eth0
-[42949710.290000] Netdevice 0 (3a:9d:6f:12:83:b2) : daemon backend (uml_switch 
-version 3) - unix:/tmp/uml.ctl
-[42949710.290000] daemon_open : control connect failed, errno = 13
-(13 = EPERM)
-[42949720.360000] Registering fd 0 twice
-[42949720.360000] Irqs : 2, 5
-[42949720.360000] Ids : 0x0000000061a795f8, 0x0000000061d181c0
-[42949720.360000] uml_net_open: failed to get irq(-12)
-
-(-12 is -ENOMEM, not -13 + 1, but is caused by 'registering XXX twice').
-
-[42949720.360000] Registering fd 0 twice
-[42949720.360000] Irqs : 2, 5
-[42949720.360000] Ids : 0x0000000061a795f8, 0x0000000061d181c0
-[42949720.360000] uml_net_open: failed to get irq(-12)
-
-Looking into the code, I saw that:
-1) daemon_user_init is confusing because it saved any error into pri->fd, 
-instead of returning it to the caller. Also, it would make sense to move this 
-into daemon_open.
-2) connect_to_switch uses the same errno twice - it shouldn't, and we're 
-hitting this. um_interrupt is called with fd => 0 because errno is cleared 
-after printk (verified under debugging, I did not trace it fully to where 
-it's changing but it's sufficient for a patch anyway).
+On Thursday 08 February 2007 22:57, Jeff Dike wrote:
+> x86_64 needs some TLS fixes.  What was missing was remembering the
+> child thread id during clone and stuffing it into the child during
+> each context switch.
+>
+> The %fs value is stored separately in the thread structure since the
+> host controls what effect it has on the actual register file.  The
+> host also needs to store it in its own thread struct, so we need the
+> value kept outside the register file.
+Is there any reason for avoiding this treatment to %gs, apart that TLS code 
+usually does not need it, even if the API allows for it to exist? I _do_ 
+believe this patch fixes bug which can be tested (not verified everything), 
+even if I wonder why you didn't look at the patch I sent to you time ago (I 
+hadn't finished it, in truth, but there was most stuff - it had problems I 
+couldn't debug at that time).
 -- 
 Inform me of my mistakes, so I can add them to my list!
 Paolo Giarrusso, aka Blaisorblade
