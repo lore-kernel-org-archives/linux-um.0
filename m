@@ -2,18 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HKQy7-0002KV-HC for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Feb 2007 19:19:35 -0800
-Received: from [206.18.177.51] (helo=alnrmhc11.comcast.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HKQy5-0000of-DP
+	id 1HKcoc-0002IP-JL for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Feb 2007 07:58:34 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HKcoY-0005EG-4G
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Feb 2007 19:19:35 -0800
-MIME-Version: 1.0
-From: Roland McGrath <roland@redhat.com>
-In-Reply-To: Jeff Dike's message of  Wednesday, 21 February 2007 13:18:11 -0500
-	<20070221181811.GA5845@ccure.user-mode-linux.org>
-Message-Id: <20070223031903.A55241800E4@magilla.sf.frob.com>
-Date: Thu, 22 Feb 2007 19:19:03 -0800 (PST)
+	Fri, 23 Feb 2007 07:58:31 -0800
+Date: Fri, 23 Feb 2007 10:50:31 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070223155031.GD5198@ccure.user-mode-linux.org>
+References: <20070221181811.GA5845@ccure.user-mode-linux.org>
+	<20070223031903.A55241800E4@magilla.sf.frob.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20070223031903.A55241800E4@magilla.sf.frob.com>
 Subject: Re: [uml-devel] [PATCH] UML utrace support, step 1
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -28,43 +31,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Roland McGrath <roland@redhat.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-> OK, I'll do it this way.
+On Thu, Feb 22, 2007 at 07:19:03PM -0800, Roland McGrath wrote:
+> Your replacement patch still has utrace_regset stuff in it, so it doesn't
+> compile without the later patches in the series.  Try applying only
+> utrace-tracehook.patch from the series, then get it to build and make your
+> utrace-tracehook-um.patch.  Then apply only utrace-regset.patch on top of
+> that, and get that building to make utrace-regset-um.patch.  Then apply
+> utrace-core.patch and utrace-ptrace-compat.patch to get ptrace finally
+> working again and make utrace-ptrace-compat-um.patch.
 
-Your replacement patch still has utrace_regset stuff in it, so it doesn't
-compile without the later patches in the series.  Try applying only
-utrace-tracehook.patch from the series, then get it to build and make your
-utrace-tracehook-um.patch.  Then apply only utrace-regset.patch on top of
-that, and get that building to make utrace-regset-um.patch.  Then apply
-utrace-core.patch and utrace-ptrace-compat.patch to get ptrace finally
-working again and make utrace-ptrace-compat-um.patch.
+Ah, I was building with all of utrace, and observing that it didn't compile
+without all the bits in that patch.  I'll back out the bits of utrace
+I don't need yet and send another patch.
 
-> Yup, I'll leave this here, with .name initialized as SUBARCH, with the
-> regsets defined in sys-$(ARCH) somewhere.
+> You'll still find this insufficient when you get to biarch support (x86_64).
+> At least you'll have to add another one elsewhere too, and make
+> utrace_native_view refer to both.
 
-You'll still find this insufficient when you get to biarch support (x86_64).
-At least you'll have to add another one elsewhere too, and make
-utrace_native_view refer to both.
+OK, I'll deal with that when I get to it.
 
-> Fixed.  block-step is hardware-trap-on-branch or something similar?
+> Ok.  We do seem to have a problem when the host has CONFIG_PREEMPT=y, which
+> makes me suspect it might be a race problem that could also hit with enough
+> hardware parallelism.  If you get a chance to try that and can characterize
+> the way it misbehaves at the level of specific ptrace/wait calls, that
+> would be a great help.  Otherwise I'll try to look into it when I get some
+> time, but it's falling down the queue a bit since people don't seem too put
+> out about it right now.
 
-Correct.
+I'll turn on preempt and see what happens.
 
-> No, this is with preempt off.
+				Jeff
 
-Ok.  We do seem to have a problem when the host has CONFIG_PREEMPT=y, which
-makes me suspect it might be a race problem that could also hit with enough
-hardware parallelism.  If you get a chance to try that and can characterize
-the way it misbehaves at the level of specific ptrace/wait calls, that
-would be a great help.  Otherwise I'll try to look into it when I get some
-time, but it's falling down the queue a bit since people don't seem too put
-out about it right now.
-
-
-Thanks very much,
-Roland
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
