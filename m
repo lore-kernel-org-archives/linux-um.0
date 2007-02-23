@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HKcoc-0002IP-JL for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Feb 2007 07:58:34 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HKcoY-0005EG-4G
+	id 1HKfHT-0005CV-Nv for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Feb 2007 10:36:32 -0800
+Received: from smtp.andrew.cmu.edu ([128.2.10.82])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HKfHS-000178-AT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Feb 2007 07:58:31 -0800
-Date: Fri, 23 Feb 2007 10:50:31 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070223155031.GD5198@ccure.user-mode-linux.org>
-References: <20070221181811.GA5845@ccure.user-mode-linux.org>
-	<20070223031903.A55241800E4@magilla.sf.frob.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20070223031903.A55241800E4@magilla.sf.frob.com>
-Subject: Re: [uml-devel] [PATCH] UML utrace support, step 1
+	Fri, 23 Feb 2007 10:36:31 -0800
+Received: from [192.168.0.179] (HARTMANIS.ECE.CMU.EDU [128.2.134.76])
+	by smtp.andrew.cmu.edu (8.13.6/8.13.6) with ESMTP id l1NIaRtf020085
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 23 Feb 2007 13:36:27 -0500
+Mime-Version: 1.0 (Apple Message framework v752.3)
+Message-Id: <16D2BFFB-B00F-4C9D-82E4-9194D37FA95D@cmu.edu>
+From: Bryan Parno <parno@cmu.edu>
+Date: Fri, 23 Feb 2007 13:36:12 -0500
+Subject: [uml-devel] Kernel access to user memory in SKAS
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,42 +30,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Roland McGrath <roland@redhat.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Feb 22, 2007 at 07:19:03PM -0800, Roland McGrath wrote:
-> Your replacement patch still has utrace_regset stuff in it, so it doesn't
-> compile without the later patches in the series.  Try applying only
-> utrace-tracehook.patch from the series, then get it to build and make your
-> utrace-tracehook-um.patch.  Then apply only utrace-regset.patch on top of
-> that, and get that building to make utrace-regset-um.patch.  Then apply
-> utrace-core.patch and utrace-ptrace-compat.patch to get ptrace finally
-> working again and make utrace-ptrace-compat-um.patch.
+Hi,
 
-Ah, I was building with all of utrace, and observing that it didn't compile
-without all the bits in that patch.  I'll back out the bits of utrace
-I don't need yet and send another patch.
+	I'm interested in mediating accesses by the UML guest kernel to  
+memory used by the UML guest processes.  At present, I'm looking at a  
+scenario using SKAS3, so the kernel has an address space distinct  
+from that of the user processes.  I guess I'm a bit confused as to  
+how the guest kernel actually manages to touch guest process memory  
+(e.g., for copying system call arguments).  Looking through /arch/um/ 
+kernel/skas/uaccess.c, it appears that all of these accesses devolve  
+to performing a strncpy or memcpy, but I don't see a translation from  
+an address in the user's address space to one in the kernel's address  
+space.  Does this happen somewhere else, or am I misunderstanding  
+SKAS?  Looking through the documentation on the site, I was unable to  
+find any diagrams or explanations for how the guest kernel actually  
+lays out memory in its address space.  Any comments or suggestions  
+would be greatly appreciated!
 
-> You'll still find this insufficient when you get to biarch support (x86_64).
-> At least you'll have to add another one elsewhere too, and make
-> utrace_native_view refer to both.
 
-OK, I'll deal with that when I get to it.
+                        Bryan
 
-> Ok.  We do seem to have a problem when the host has CONFIG_PREEMPT=y, which
-> makes me suspect it might be a race problem that could also hit with enough
-> hardware parallelism.  If you get a chance to try that and can characterize
-> the way it misbehaves at the level of specific ptrace/wait calls, that
-> would be a great help.  Otherwise I'll try to look into it when I get some
-> time, but it's falling down the queue a bit since people don't seem too put
-> out about it right now.
 
-I'll turn on preempt and see what happens.
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
