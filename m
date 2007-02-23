@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HKMof-0001nY-8g for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Feb 2007 14:53:33 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HKMod-000497-PG
+	id 1HKQy7-0002KV-HC for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Feb 2007 19:19:35 -0800
+Received: from [206.18.177.51] (helo=alnrmhc11.comcast.net)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HKQy5-0000of-DP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Feb 2007 14:53:33 -0800
-Date: Thu, 22 Feb 2007 17:45:27 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070222224527.GA7984@ccure.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/2] UML - add back accidentally removed error
+	Thu, 22 Feb 2007 19:19:35 -0800
+MIME-Version: 1.0
+From: Roland McGrath <roland@redhat.com>
+In-Reply-To: Jeff Dike's message of  Wednesday, 21 February 2007 13:18:11 -0500
+	<20070221181811.GA5845@ccure.user-mode-linux.org>
+Message-Id: <20070223031903.A55241800E4@magilla.sf.frob.com>
+Date: Thu, 22 Feb 2007 19:19:03 -0800 (PST)
+Subject: Re: [uml-devel] [PATCH] UML utrace support, step 1
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,34 +28,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>, Blaisorblade <blaisorblade@yahoo.it>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-In the 2.6.20 hang patch, I accidentally threw out an error message.
-This puts it back.
+> OK, I'll do it this way.
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
---
- arch/um/os-Linux/sigio.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Your replacement patch still has utrace_regset stuff in it, so it doesn't
+compile without the later patches in the series.  Try applying only
+utrace-tracehook.patch from the series, then get it to build and make your
+utrace-tracehook-um.patch.  Then apply only utrace-regset.patch on top of
+that, and get that building to make utrace-regset-um.patch.  Then apply
+utrace-core.patch and utrace-ptrace-compat.patch to get ptrace finally
+working again and make utrace-ptrace-compat-um.patch.
 
-Index: linux-2.6.18-mm/arch/um/os-Linux/sigio.c
-===================================================================
---- linux-2.6.18-mm.orig/arch/um/os-Linux/sigio.c	2007-02-20 16:12:28.000000000 -0500
-+++ linux-2.6.18-mm/arch/um/os-Linux/sigio.c	2007-02-22 13:05:04.000000000 -0500
-@@ -334,8 +334,11 @@ void maybe_sigio_broken(int fd, int read
- 
- 	sigio_lock();
- 	err = need_poll(&all_sigio_fds, all_sigio_fds.used + 1);
--	if(err)
-+	if(err){
-+		printk("maybe_sigio_broken - failed to add pollfd for "
-+		       "descriptor %d\n", fd);
- 		goto out;
-+	}
- 
- 	all_sigio_fds.poll[all_sigio_fds.used++] =
- 		((struct pollfd) { .fd  	= fd,
+> Yup, I'll leave this here, with .name initialized as SUBARCH, with the
+> regsets defined in sys-$(ARCH) somewhere.
+
+You'll still find this insufficient when you get to biarch support (x86_64).
+At least you'll have to add another one elsewhere too, and make
+utrace_native_view refer to both.
+
+> Fixed.  block-step is hardware-trap-on-branch or something similar?
+
+Correct.
+
+> No, this is with preempt off.
+
+Ok.  We do seem to have a problem when the host has CONFIG_PREEMPT=y, which
+makes me suspect it might be a race problem that could also hit with enough
+hardware parallelism.  If you get a chance to try that and can characterize
+the way it misbehaves at the level of specific ptrace/wait calls, that
+would be a great help.  Otherwise I'll try to look into it when I get some
+time, but it's falling down the queue a bit since people don't seem too put
+out about it right now.
+
+
+Thanks very much,
+Roland
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
