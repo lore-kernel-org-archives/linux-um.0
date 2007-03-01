@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HMnk8-00041Z-FV for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Mar 2007 08:02:56 -0800
-Received: from wx-out-0506.google.com ([66.249.82.232])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HMnk6-0004MO-4J
+	id 1HMvAH-0005vF-60 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Mar 2007 15:58:30 -0800
+Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HMvAF-00043K-Gg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Mar 2007 08:02:56 -0800
-Received: by wx-out-0506.google.com with SMTP id i30so736998wxd
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 01 Mar 2007 08:02:53 -0800 (PST)
-Message-ID: <fccbad840703010802k5508d8cfh78ed3e9a08766c85@mail.gmail.com>
-Date: Thu, 1 Mar 2007 13:02:53 -0300
-From: "Felipe T." <ftroncos007@gmail.com>
+	Thu, 01 Mar 2007 15:58:25 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Fri, 2 Mar 2007 00:58:10 +0100
+References: <E1HMdXC-0007w3-Ac@teori.refactor.fi>
+In-Reply-To: <E1HMdXC-0007w3-Ac@teori.refactor.fi>
 MIME-Version: 1.0
-Subject: [uml-devel] Install Sebek 3 in Kernel Uml
+Content-Disposition: inline
+Message-Id: <200703020058.11168.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] fix misleading error message in
+	tools/tunctl/tunctl.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,59 +26,57 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1147123887=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Leonard =?iso-8859-1?q?Norrg=E5rd?= <vinsci@refactor.fi>
 
---===============1147123887==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_15755_16042609.1172764973389"
+On Thursday 01 March 2007 06:08, Leonard Norrg=E5rd wrote:
+> Fix misleading error message.
+>
+> Signed-off-by: Leonard Norrgard <vinsci@refactor.fi>
+>
+> Index: tunctl/tunctl.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/user-mode-linux/tools/tunctl/tunctl.c,v
+> retrieving revision 1.4
+> diff -u -r1.4 tunctl.c
+> --- tunctl/tunctl.c	2 Nov 2002 19:34:19 -0000	1.4
+> +++ tunctl/tunctl.c	1 Mar 2007 05:04:58 -0000
+> @@ -101,7 +101,7 @@
+>        exit(1);
+>      }
+>      if(ioctl(tap_fd, TUNSETOWNER, owner) < 0){
+> -      perror("TUNSETPERSIST");
+> +      perror("TUNSETOWNER");
+>        exit(1);
+>      }
+>      if(brief)
+>
 
-------=_Part_15755_16042609.1172764973389
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Applied in my tree, thanks.
+-- =
 
-Hi!
-Somebody has achieved to installar SEBEK 3 into a Kernel UML?
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! =
 
- I have tried it by long time, but I have problems with the sources within
-Kernel UML.
-
-any recommendation?
-
-------=_Part_15755_16042609.1172764973389
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Hi!<br>Somebody has achieved to installar SEBEK 3 into a Kernel UML?<br><br>&nbsp;I have tried
-it by long time, but I have problems with the sources within Kernel UML.<br><br>any recommendation?<br>
-
-------=_Part_15755_16042609.1172764973389--
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com =
 
 
---===============1147123887==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1147123887==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
+VDEV
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============1147123887==--
