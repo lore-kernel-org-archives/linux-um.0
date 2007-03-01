@@ -2,20 +2,29 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HMWC7-0000EF-LG for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Feb 2007 13:18:41 -0800
-Received: from nemesis.fprintf.net ([66.134.112.218])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HMWC5-0004ro-Vl
+	id 1HMdXg-0005Mc-RH for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Feb 2007 21:09:24 -0800
+Received: from pne-smtpout4-sn2.hy.skanova.net ([81.228.8.154])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HMdXg-0000zw-Cq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Feb 2007 13:18:39 -0800
-From: Daniel Gryniewicz <dang@gentoo.org>
-In-Reply-To: <fccbad840702281309s58f19fb5q26a8c33cc9613fae@mail.gmail.com>
-References: <fccbad840702281309s58f19fb5q26a8c33cc9613fae@mail.gmail.com>
-Date: Wed, 28 Feb 2007 16:15:32 -0500
-Message-Id: <1172697332.12367.36.camel@athena.fprintf.net>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] Sources into UML guest
+	Wed, 28 Feb 2007 21:09:24 -0800
+Received: from mail.refactor.fi (80.220.8.56) by
+	pne-smtpout4-sn2.hy.skanova.net (7.2.075)
+	id 45B62169001F5CAC for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 1 Mar 2007 06:08:55 +0100
+Received: from teori.refactor.fi (teori [192.168.2.2])
+	by mail.refactor.fi (Postfix) with ESMTP id 8CC461BC01A
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu,  1 Mar 2007 07:08:54 +0200 (EET)
+Received: from vinsci by teori.refactor.fi with local (Exim 4.63)
+	(envelope-from <vinsci@refactor.fi>) id 1HMdXC-0007w3-Ac
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Mar 2007 07:08:54 +0200
+Message-Id: <E1HMdXC-0007w3-Ac@teori.refactor.fi>
+From: =?UTF-8?Q?Leonard_Norrg=C3=A5rd?= <vinsci@refactor.fi>
+Date: Thu, 01 Mar 2007 07:08:54 +0200
+Subject: [uml-devel] [PATCH] fix misleading error message in
+	tools/tunctl/tunctl.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,31 +34,33 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "Felipe T." <ftroncos007@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 2007-02-28 at 18:09 -0300, Felipe T. wrote:
-> Hello:
-> I need to install a program into a UML Kernel, this program needs
-> Kernel Sources (Sebek 3) but I don't know how compile this sources. In
-> the Host I used ARCH=um  but if I do the same into guest, get a errors
-> when  do make for the sebek program because doesn't find some .h. For
-> this reason I compile (into guest) without ARCH=um and make sebek it's
-> ok. But I get a error when use insmod (error with the format module),
-> I think for the difference between vermagic values. Someone has some
-> idea 
+Fix misleading error message.
 
-When I've needed to do this, I just mounted the rootfs into my host
-(when the UML isn't running, of course) and copied the built kernel
-source directory into the rootfs.  Then, inside the UML, everything
-works correctly.
+Signed-off-by: Leonard Norrgard <vinsci@refactor.fi>
 
-Daniel
-
+Index: tunctl/tunctl.c
+===================================================================
+RCS file: /cvsroot/user-mode-linux/tools/tunctl/tunctl.c,v
+retrieving revision 1.4
+diff -u -r1.4 tunctl.c
+--- tunctl/tunctl.c	2 Nov 2002 19:34:19 -0000	1.4
++++ tunctl/tunctl.c	1 Mar 2007 05:04:58 -0000
+@@ -101,7 +101,7 @@
+       exit(1);
+     }
+     if(ioctl(tap_fd, TUNSETOWNER, owner) < 0){
+-      perror("TUNSETPERSIST");
++      perror("TUNSETOWNER");
+       exit(1);
+     } 
+     if(brief)
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
