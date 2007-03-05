@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOKGA-0006r5-Qn for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 12:58:34 -0800
-Received: from mbox.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HOKGA-0000K0-1Q
+	id 1HOL0E-0003nx-Ts for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 13:45:55 -0800
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HOL0A-0001EJ-Ne
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 12:58:18 -0800
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Mon, 05 Mar 2007 21:49:02 +0100
-Message-Id: <20070305204902.9072.1224.stgit@americanbeauty.home.lan>
-In-Reply-To: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
-References: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 04/11] uml - hostfs: avoid possible escapes from
-	hostfs=.
+	Mon, 05 Mar 2007 13:45:54 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Mon, 5 Mar 2007 22:45:26 +0100
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200703052245.27260.blaisorblade@yahoo.it>
+Subject: [uml-devel] Remap_file_pages protection support: when to send patches?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,71 +23,85 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>, linux-mm@kvack.org, user-mode-linux-devel@lists.sourceforge.net, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Hi Andrew, I've been resurrecting lately remap_file_pages protection support 
+for UML.
 
-Avoid accepting things like -o .., -o dir/../../dir2, -o dir/../.. .
-This may be considered useless, but YMMV. I consider that this has a limited
-security value, exactly like disabling module support (in many case it is
-useful).
+I've updated it to 2.6.20 and it passes its unit test, and the 
+resulting kernel has no stability problems in my experience on my Dual Core 
+laptop (I've been using it for long time).
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
+Since last time I sent it, I've fixed remaining problems and TODOs, and 
+cleaned up the split (I'm just improving the way patches are split). Now it 
+is a patchset with 13 patches, and the diffstat is attached.
 
- fs/hostfs/hostfs_kern.c |   26 ++++++++++++++++++++++++++
- 1 files changed, 26 insertions(+), 0 deletions(-)
+Now I'm curious about when I should or could better send those patches - i.e. 
+when they bring less noise into the -mm tree?
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 9baf697..0bcf7ac 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -936,6 +936,28 @@ static const struct address_space_operations hostfs_link_aops = {
- 	.readpage	= hostfs_link_readpage,
- };
- 
-+static inline int str_ends_with(const char * str, const char* suffix)
-+{
-+	size_t len = strlen(str), suffix_len = strlen(suffix);
-+	return strcmp(str + len - suffix_len, suffix) == 0;
-+}
-+
-+static int contains_dotdot(const char* path)
-+{
-+	/*
-+	 * Prevent escaping from hostfs=folder, even if this is not useful to
-+	 * jail the UML superuser.
-+	 * Since foo..bar is a valid name, we must look for /../ in the string,
-+	 * or for ../ at the beginning, /.. at the end, or check whether '..' is
-+	 * the complete string.
-+	 */
-+
-+	return  strstr(path, "/../") != NULL ||
-+		strcmp(path, "..") == 0 ||
-+		strncmp(path, "../", strlen("../")) == 0 ||
-+		str_ends_with(path, "/..");
-+}
-+
- static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- {
- 	struct inode *root_inode;
-@@ -951,6 +973,10 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 	if (data == NULL)
- 		data = "";
- 
-+	err = -EINVAL;
-+	if (unlikely(contains_dotdot(data)))
-+		goto out;
-+
- 	err = -ENOMEM;
- 	name = kmalloc(strlen(root_ino) + 1
- 			+ strlen(data) + 1, GFP_KERNEL);
+This would allow me to snapshot the git and/or -mm tree, test the patches 
+against that kernel with my unit testing program, and only then send these 
+patches to get them at least included into -mm.
+
+Any suggestion? Obviously if you want to see the code first, in the standard 
+way, I'll follow usual practice  - just tell it me (and I'll send it shortly 
+anyway, if I get no answer).
+
+Good bye
+
+$ q diff --combine -|diffstat -p1
+ arch/i386/mm/fault.c              |   10 +++
+ arch/um/kernel/trap.c             |   10 ++-
+ arch/x86_64/mm/fault.c            |   13 +++
+ include/asm-alpha/mman.h          |    3
+ include/asm-arm/mman.h            |    3
+ include/asm-arm26/mman.h          |    3
+ include/asm-cris/mman.h           |    3
+ include/asm-frv/mman.h            |    3
+ include/asm-generic/pgtable.h     |   13 +++
+ include/asm-h8300/mman.h          |    3
+ include/asm-i386/mman.h           |    3
+ include/asm-i386/pgtable-2level.h |   11 +--
+ include/asm-i386/pgtable-3level.h |    7 +-
+ include/asm-i386/pgtable.h        |   24 +++++++
+ include/asm-ia64/mman.h           |    3
+ include/asm-m32r/mman.h           |    3
+ include/asm-m68k/mman.h           |    3
+ include/asm-mips/mman.h           |    3
+ include/asm-parisc/mman.h         |    3
+ include/asm-powerpc/mman.h        |    3
+ include/asm-s390/mman.h           |    3
+ include/asm-sh/mman.h             |    3
+ include/asm-sparc/mman.h          |    3
+ include/asm-sparc64/mman.h        |    3
+ include/asm-um/pgtable-2level.h   |   16 +++-
+ include/asm-um/pgtable-3level.h   |   21 ++++--
+ include/asm-um/pgtable.h          |   21 ++++++
+ include/asm-x86_64/mman.h         |    3
+ include/asm-x86_64/pgtable.h      |   29 ++++++++
+ include/asm-xtensa/mman.h         |    3
+ include/linux/bitops.h            |   10 +++
+ include/linux/mm.h                |   43 +++++++++++--
+ include/linux/mman.h              |   25 ++-----
+ include/linux/pagemap.h           |   22 ++++++
+ mm/filemap.c                      |    2
+ mm/fremap.c                       |  100 +++++++++++++++++++++---------
+ mm/memory.c                       |  124 
+++++++++++++++++++++++++++++++++------
+ mm/mprotect.c                     |    7 ++
+ mm/rmap.c                         |    3
+ mm/shmem.c                        |    2
+ 40 files changed, 472 insertions(+), 98 deletions(-)
+
+-- 
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
 
 
 -------------------------------------------------------------------------
