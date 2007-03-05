@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOLSf-00079t-35 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 14:15:17 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HOLSd-00059x-Fq
+	id 1HOLqd-0001Cx-Kw for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 14:40:09 -0800
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HOLqX-0007C7-Ft
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 14:15:16 -0800
-Date: Mon, 5 Mar 2007 17:06:34 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070305220634.GC7702@ccure.user-mode-linux.org>
-References: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
-Mime-Version: 1.0
+	Mon, 05 Mar 2007 14:40:03 -0800
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Mon, 5 Mar 2007 23:39:39 +0100
+References: <e3156df0612142300if4a4d8akabae7f81d0d6695e@mail.gmail.com>
+In-Reply-To: <e3156df0612142300if4a4d8akabae7f81d0d6695e@mail.gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
-Subject: Re: [uml-devel] [PATCH 00/11] Uml simple fixes
+Message-Id: <200703052339.39509.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] broken uml_util.spec
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,19 +29,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Ilkka Tengvall <ilkka.tengvall@iki.fi>
 
-On Mon, Mar 05, 2007 at 09:42:29PM +0100, Paolo 'Blaisorblade' Giarrusso wrote:
-> Some tested UML fixes - should be applied for 2.6.21.
+On Friday 15 December 2006 08:00, Ilkka Tengvall wrote:
+> Howdy,
+>
+> I just dowloaded uml and gave it a shot. Seems to work nice on
+> 2.6.19-rc6. While at it, I fixed the rpm spec file. It had old tag for
+> license, incorrect directory name for build and was missing jail_uml
+> from files list. I built it on fedora-release-6-89 .
 
-ACK on all of these except for 1, which won't apply to current -mm,
-and 4, which might need some more work.
+> There is also a minor bug in the skas patch, it still uses
+> include/config.h in some proc-mm files even config.h is removed from
+> 19-rc6 version of kernel. Just remove those includes, and it works for
+> me...
+(Fixed time ago).
+> I'm not a subscriber to the list.
+Thanks, I've applied this some time ago to my tree, on uml_util.spec.in.
 
-				Jeff
-
+Bye
 -- 
-Work email - jdike at linux dot intel dot com
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
