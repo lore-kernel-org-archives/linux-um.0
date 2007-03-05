@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HNzaF-0005gz-6H for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 04 Mar 2007 14:53:39 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HNzaC-0008MY-Rt
+	id 1HOFbi-0004q8-Vg for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 08:00:15 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOFbg-00022v-Fo
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 04 Mar 2007 14:53:39 -0800
-Message-ID: <45EB4DE7.50608@nagafix.co.uk>
-Date: Sun, 04 Mar 2007 22:53:27 +0000
-From: Antoine Martin <antoine@nagafix.co.uk>
-MIME-Version: 1.0
-References: <20070301230442.GA469@localhost.localdomain>
-	<200703031932.46323.blaisorblade@yahoo.it>
-	<20070304165030.GB6516@localhost.localdomain>
-	<200703041950.36776.blaisorblade@yahoo.it>
-In-Reply-To: <200703041950.36776.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [uml-user] [PATCH] uml hostfs: fix interaction
-	between hostfs=path1 and -o path2 at mount time
+	Mon, 05 Mar 2007 08:00:14 -0800
+Date: Mon, 5 Mar 2007 10:51:26 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070305155126.GA4717@ccure.user-mode-linux.org>
+References: <200702220054.04938.blaisorblade@yahoo.it>
+	<20070222195956.GA6414@ccure.user-mode-linux.org>
+	<200703042013.39584.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200703042013.39584.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] When opening /tmp/uml.ctl fails, what do we get?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,32 +32,46 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, Sylvain Beucler <beuc@beuc.net>, user-mode-linux-devel@lists.sourceforge.net, Christopher Aker <caker@theshore.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Blaisorblade wrote:
-> On Sunday 04 March 2007 17:50, Sylvain Beucler wrote:
->> On Sat, Mar 03, 2007 at 07:32:46PM +0100, Blaisorblade wrote:
->> Hi,
->>
->> I tested and it works.
->>
->> Thanks,
+On Sun, Mar 04, 2007 at 08:13:39PM +0100, Blaisorblade wrote:
+> Have you checked if other calls require that register_netdev was already 
+> called?
+
+Just did, nothing else depends on it.
+
+> Hmm, I'm really not sure about what to do about this. However I'd leave that 
+> for a future cleanup and just add a comment about this.
+> And the reason for which init now returns a value is that pcap_init _can_ 
+> fail, so the switch transport is not the only odd one.
+
+Yeah, that slipped my mind.
+
+> struct uml_net_private {
+> -        int user[1];
+> +        char user[0];
+> };
+
+Neat, that used to be illegal.
+
+> Another note: before of this patch, you should please apply the attached two 
+> ones.
 > 
-> You'll probably also see that -o .. allows bypassing the 'hostfs jail', and 
-> I've just implemented a fix to that. The question is whether this should be 
-> merged.
+> *) The first (net-mac-check-cleanup.diff) checks the validity of assigned MAC 
+> address, but to print a meaningful error message requires adding a local 
+> buffer.
+> *) The second (net_kern-eth_configure...) allows avoiding this local buffer by 
+> moving code around.
 > 
-> Indeed, the root user inside UML can bypass that anyway, if he modifies the 
-> hostfs module, compiles and loads it.
-If security is at stake then the host admin should use non-modular 
-kernels to prevent such tampering.
+> I think I'm excessively paranoid about these two patches and about not yet 
+> merging them, so please give a look and merge them.
 
-> So the host admin really needs to run 
-> UML in a chroot if he needs real security.
-chroot isn't totally foolproof (see chroot-again issue), but when 
-chrooting + changing user (like compartment does), it should be pretty safe.
+I just dropped them in - they look OK at a first glance.
 
-Antoine
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
