@@ -2,17 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOM0J-0002Db-M1 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 14:50:03 -0800
+	id 1HOM0H-0002Bv-8U for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 14:50:01 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOM0I-00015q-1z
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOM0F-00015m-M0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 14:50:03 -0800
-Message-Id: <200703052241.l25MfL46008440@ccure.user-mode-linux.org>
+	Mon, 05 Mar 2007 14:50:01 -0800
+Message-Id: <200703052241.l25MfK4h008430@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Mon, 05 Mar 2007 17:41:21 -0500
+Date: Mon, 05 Mar 2007 17:41:20 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 4/4] UML - Comment the initialization of a global
+Subject: [uml-devel] [PATCH 2/4] UML - Fix formatting violations in signal
+	delivery code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,26 +30,39 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Comment the fact that sig_info is initialized early in boot, and thus doesn't
-need any locking.
+Fix a few formatting bugs in the signal code.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/os-Linux/trap.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/um/kernel/signal.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Index: linux-2.6.18-mm/arch/um/os-Linux/trap.c
+Index: test/arch/um/kernel/signal.c
 ===================================================================
---- linux-2.6.18-mm.orig/arch/um/os-Linux/trap.c	2006-12-30 04:20:14.000000000 +1100
-+++ linux-2.6.18-mm/arch/um/os-Linux/trap.c	2007-01-16 10:38:21.000000000 +1100
-@@ -16,6 +16,7 @@ void usr2_handler(int sig, union uml_pt_
- 	CHOOSE_MODE(syscall_handler_tt(sig, regs), (void) 0);
+--- test.orig/arch/um/kernel/signal.c	2007-03-05 15:07:53.000000000 -0500
++++ test/arch/um/kernel/signal.c	2007-03-05 15:07:54.000000000 -0500
+@@ -161,12 +161,12 @@ static int kern_do_signal(struct pt_regs
+ 		clear_thread_flag(TIF_RESTORE_SIGMASK);
+ 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
+ 	}
+-	return(handled_sig);
++	return handled_sig;
  }
  
-+/* Initialized from linux_main() */
- void (*sig_info[NSIG])(int, union uml_pt_regs *);
+ int do_signal(void)
+ {
+-	return(kern_do_signal(&current->thread.regs));
++	return kern_do_signal(&current->thread.regs);
+ }
  
- void os_fill_handlinfo(struct kern_handlers h)
+ /*
+@@ -189,5 +189,5 @@ long sys_sigsuspend(int history0, int hi
+ 
+ long sys_sigaltstack(const stack_t __user *uss, stack_t __user *uoss)
+ {
+-	return(do_sigaltstack(uss, uoss, PT_REGS_SP(&current->thread.regs)));
++	return do_sigaltstack(uss, uoss, PT_REGS_SP(&current->thread.regs));
+ }
 
 
 -------------------------------------------------------------------------
