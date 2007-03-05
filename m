@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOMaB-00064d-UG for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:27:08 -0800
-Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HOMa8-0001nj-7l
+	id 1HOMmx-0007PB-NB for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 15:40:19 -0800
+Received: from server.ispbrasil.com.br ([209.67.213.238] helo=ispbrasil.com.br)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HOMmv-0000bg-Oz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:27:07 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 6 Mar 2007 00:26:53 +0100
-References: <20070131224504.GA7698@ccure.user-mode-linux.org>
-	<200703060003.26856.blaisorblade@yahoo.it>
-	<20070305231044.GB9525@ccure.user-mode-linux.org>
-In-Reply-To: <20070305231044.GB9525@ccure.user-mode-linux.org>
+	Mon, 05 Mar 2007 15:40:19 -0800
+Message-ID: <007a01c75f7f$9ee595c0$fe0fa8c0@ispbrasil>
+From: "Itamar Reis Peixoto" <itamar@ispbrasil.com.br>
+References: <e3156df0612142300if4a4d8akabae7f81d0d6695e@mail.gmail.com>
+	<200703052339.39509.blaisorblade@yahoo.it>
+Date: Mon, 5 Mar 2007 21:40:10 -0200
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200703060026.53253.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] x86_64 32-bit ptrace mangles sixth system
-	call argument
+Subject: Re: [uml-devel] [PATCH] broken uml_util.spec
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,33 +29,69 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Ilkka Tengvall <ilkka.tengvall@iki.fi>
 
-On Tuesday 06 March 2007 00:10, Jeff Dike wrote:
-> On Tue, Mar 06, 2007 at 12:03:26AM +0100, Blaisorblade wrote:
-> > > No, RCX corruption is different - that happens when a sysexit is done
-> > > from a system call where userspace wasn't prepared to save and restore
-> > > RCX.  sigreturn is the best example.
+about uml_util.spec, this patch have yo fixed the problem of unpackaged file 
+(jail_uml)?
 
-> > Hmm... we should finally fix that, at some point. Or... now that you
-> > explain it this way, it could even seem unfixable... is it? Or maybe
-> > sysreturn should become a syscall where the return must happen through
-> > the slow return path (iret), if that exists for x86_64.
+%attr(755,root,root)                    %{_sbindir}/jail_uml
 
-> This is fixed, and has been for a while.  The fix was, as you suggest,
-> return through iret in this case.
 
-Also the 32bit emulation case? That would be interesting for SKAS with 64bit 
-host and 32bit guest (which I haven't tested for a long time). Also this 
-means that I could test the needed trivial fixes for 64 on 64 (like 
-opening /proc/mm64, using PTRACE_EX_FAULTINFO which I introduced...).
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+--------------------
+
+Itamar Reis Peixoto
+
+e-mail: itamar@ispbrasil.com.br
+msn: itamarjp@starmedia.com
+skype: itamarjp
+icq: 81053601
++55 34 3238 3845
++55 11 4063 5033
+----- Original Message ----- 
+From: "Blaisorblade" <blaisorblade@yahoo.it>
+To: <user-mode-linux-devel@lists.sourceforge.net>
+Cc: "Ilkka Tengvall" <ilkka.tengvall@iki.fi>
+Sent: Monday, March 05, 2007 8:39 PM
+Subject: Re: [uml-devel] [PATCH] broken uml_util.spec
+
+
+> On Friday 15 December 2006 08:00, Ilkka Tengvall wrote:
+>> Howdy,
+>>
+>> I just dowloaded uml and gave it a shot. Seems to work nice on
+>> 2.6.19-rc6. While at it, I fixed the rpm spec file. It had old tag for
+>> license, incorrect directory name for build and was missing jail_uml
+>> from files list. I built it on fedora-release-6-89 .
+>
+>> There is also a minor bug in the skas patch, it still uses
+>> include/config.h in some proc-mm files even config.h is removed from
+>> 19-rc6 version of kernel. Just remove those includes, and it works for
+>> me...
+> (Fixed time ago).
+>> I'm not a subscriber to the list.
+> Thanks, I've applied this some time ago to my tree, on uml_util.spec.in.
+>
+> Bye
+> -- 
+> Inform me of my mistakes, so I can add them to my list!
+> Paolo Giarrusso, aka Blaisorblade
+> http://www.user-mode-linux.org/~blaisorblade
+> Chiacchiera con i tuoi amici in tempo reale!
+> http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com
+>
+>
+> -------------------------------------------------------------------------
+> Take Surveys. Earn Cash. Influence the Future of IT
+> Join SourceForge.net's Techsay panel and you'll get the chance to share 
+> your
+> opinions on IT & business topics through brief surveys-and earn cash
+> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> 
 
 
 -------------------------------------------------------------------------
