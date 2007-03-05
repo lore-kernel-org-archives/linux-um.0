@@ -2,23 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOMDT-0003bu-1Y for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:03:39 -0800
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HOMDR-0004jE-Cg
+	id 1HOMFl-0003ob-Rj for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 15:06:01 -0800
+Received: from smtp.osdl.org ([65.172.181.24])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOMFk-0005Ji-6M
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:03:38 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 6 Mar 2007 00:03:26 +0100
-References: <20070131224504.GA7698@ccure.user-mode-linux.org>
-	<200702021848.40114.blaisorblade@yahoo.it>
-	<20070202201230.GA8533@ccure.user-mode-linux.org>
-In-Reply-To: <20070202201230.GA8533@ccure.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200703060003.26856.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] x86_64 32-bit ptrace mangles sixth system
-	call argument
+	Mon, 05 Mar 2007 15:06:01 -0800
+Date: Mon, 5 Mar 2007 15:05:47 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20070305150547.c30339f5.akpm@linux-foundation.org>
+In-Reply-To: <200703052245.27260.blaisorblade@yahoo.it>
+References: <200703052245.27260.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] Remap_file_pages protection support: when to send
+	patches?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,56 +29,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: linux-mm@kvack.org, Jeff Dike <jdike@addtoit.com>, Ingo@sc8-sf-spam2-b.sourceforge.net, Molnar <mingo@redhat.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Friday 02 February 2007 21:12, Jeff Dike wrote:
-> On Fri, Feb 02, 2007 at 06:48:39PM +0100, Blaisorblade wrote:
-> > Is this a recent regression or did this always happen?
->
-> I haven't looked at the history of the code, but it has the look of
-> something that's been there a long time.
->
-> > Is this the bug diagnosed by Bodo Stroesser time ago, or only it looks
-> > similar? I recall vaguely that in that bug RCX was corrupted.
->
-> No, RCX corruption is different - that happens when a sysexit is done
-> from a system call where userspace wasn't prepared to save and restore
-> RCX.  sigreturn is the best example.
+On Mon, 5 Mar 2007 22:45:26 +0100
+Blaisorblade <blaisorblade@yahoo.it> wrote:
 
-Hmm... we should finally fix that, at some point. Or... now that you explain 
-it this way, it could even seem unfixable... is it? Or maybe sysreturn should 
-become a syscall where the return must happen through the slow return path 
-(iret), if that exists for x86_64.
+> Hi Andrew, I've been resurrecting lately remap_file_pages protection support 
+> for UML.
+> 
+> I've updated it to 2.6.20 and it passes its unit test, and the 
+> resulting kernel has no stability problems in my experience on my Dual Core 
+> laptop (I've been using it for long time).
+> 
+> Since last time I sent it, I've fixed remaining problems and TODOs, and 
+> cleaned up the split (I'm just improving the way patches are split). Now it 
+> is a patchset with 13 patches, and the diffstat is attached.
+> 
+> Now I'm curious about when I should or could better send those patches - i.e. 
+> when they bring less noise into the -mm tree?
+> 
+> This would allow me to snapshot the git and/or -mm tree, test the patches 
+> against that kernel with my unit testing program, and only then send these 
+> patches to get them at least included into -mm.
+> 
+> Any suggestion? Obviously if you want to see the code first, in the standard 
+> way, I'll follow usual practice  - just tell it me (and I'll send it shortly 
+> anyway, if I get no answer).
 
-> > Above all, how can UML run in SKAS0 mode with this bug (if it can)?
->
-> The impact is limited by several things -
-> 	it must be a 32-bit UML on a 64-bit host
-> 	the system call must have 6 arguments - mmap and pselect are
-> the only 6-argument system calls that I can find quickly
-> 	the system call must be made through sysenter - int 0x80 is
-> fine
->
-> But, a 32-bit UML making mmap calls through sysenter indeed does not run
-> very well.
+Just send them out, against next -mm please.  Be sure to cc linux-mm.
 
-Has this been fixed? I've read that Chuck Ebbert had already fixed this in 
-your diary, but not sent the patch.
-
-I'd open an entry in bugzilla for this sort of things. It also seems that 
-Jason Lunz's patch about max_low_pfn is not even in your tree, and that the 
-x86_64 PTRACE_OLDSETOPTIONS fix is not yet in the main git tree. Hmm....
-
-And the udelay() fixes didn't get merged, in the end. Bah, I need more time!
-
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+I'm going to have to ask other developers for more help reviewing and testing
+things like this in the future.  Things just aren't working.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
