@@ -2,17 +2,25 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOMJJ-0004Cw-Q7 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:09:41 -0800
-Received: from mbox.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
+	id 1HOMPR-0004nn-AN for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 15:16:01 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HOMJI-0001qE-2X
+	(Exim 4.44) id 1HOMPP-0003KJ-J5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:09:41 -0800
-From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Tue, 06 Mar 2007 00:08:51 +0100
-Message-Id: <20070305230851.30695.26417.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 1/2] uml: make sigio_lock() irq-safe
+	Mon, 05 Mar 2007 15:16:01 -0800
+Date: Mon, 5 Mar 2007 18:07:11 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070305230711.GA9525@ccure.user-mode-linux.org>
+References: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
+	<20070305204902.9072.1224.stgit@americanbeauty.home.lan>
+	<20070305220334.GB7702@ccure.user-mode-linux.org>
+	<200703052359.13612.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200703052359.13612.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 04/11] uml - hostfs: avoid possible escapes
+	from hostfs=.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,253 +30,30 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+On Mon, Mar 05, 2007 at 11:59:13PM +0100, Blaisorblade wrote:
+> I gave a look, and it's nice. Except that maybe "escapes_jail" would be a 
+> clearer name (there's confusion about the subject of "escaping").
 
-sigio_lock is taken both from process context and from interrupt context. So we
-*must* use irqsave.
+Feel free to change the name.
 
-Then, remove irq disabling from update_thread(), as it's called with
-sigio_lock() held (yes, set_signals(0) is local_irq_save).
+> Also, what about concurrent UML threads caring about current directory? I
+> know that without SMP/preemption we can't have this problem, but
+> when I see this I count a future bug unless this is checked (I think I
+> reason mathematically about correctness, even if not formally).
 
-In fact, I've seen this causing frequent hangs with spinlock debugging enabled
-(I've verified well that the cause was an interrupt causing re-acquiring of
-this lock); however, now it's causing hangs as interrupt disabling causes
-some sleep-inside-spinlock checks to trigger - and then printk deadlocks.
+Good point, yes this does need fixing for SMP.
 
-I've tested this for a long time and it is stable.
-I've also verified that nothing can sleep within this lock; to this purpose,
-I've had to verify everything inside um_request_irq; since it calls again
-write_sigio_workaround(), I've had to make atomic the allocation inside
-setup_initial_poll.
+				Jeff
 
-HOWEVER, request_irq() can sleep, and in write_sigio_irq() thanks to
-IRQF_SAMPLE_RANDOM it _does_ sleep. So a separate patch makes write_sigio_irq()
-be called outside of sigio_lock().
-
-Actually, I'm also quite dubious that an interrupt caused by other interrupts is
-a reliable entropy source, but that is another thing completely.
-
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
----
-
- arch/um/include/sigio.h  |    4 ++--
- arch/um/kernel/sigio.c   |   12 ++++++++----
- arch/um/os-Linux/sigio.c |   36 ++++++++++++++++++++----------------
- 3 files changed, 30 insertions(+), 22 deletions(-)
-
-diff --git a/arch/um/include/sigio.h b/arch/um/include/sigio.h
-index 434f1a9..a58bc1d 100644
---- a/arch/um/include/sigio.h
-+++ b/arch/um/include/sigio.h
-@@ -8,7 +8,7 @@
- 
- extern int write_sigio_irq(int fd);
- extern int register_sigio_fd(int fd);
--extern void sigio_lock(void);
--extern void sigio_unlock(void);
-+extern unsigned long sigio_lock(void);
-+extern void sigio_unlock(unsigned long flags);
- 
- #endif
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index 89f9866..cc54db7 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -45,12 +45,16 @@ int write_sigio_irq(int fd)
- /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
- static DEFINE_SPINLOCK(sigio_spinlock);
- 
--void sigio_lock(void)
-+unsigned long sigio_lock(void)
- {
--	spin_lock(&sigio_spinlock);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&sigio_spinlock, flags);
-+
-+	return flags;
- }
- 
--void sigio_unlock(void)
-+void sigio_unlock(unsigned long flags)
- {
--	spin_unlock(&sigio_spinlock);
-+	spin_unlock_irqrestore(&sigio_spinlock, flags);
- }
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 3fc43b3..88988fb 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -21,6 +21,10 @@
- #include "os.h"
- #include "um_malloc.h"
- 
-+/* Nothing in this file can sleep. I've verified each and every function. The
-+ * only "exception" is write_sigio_thread, which runs in a host thread, so it
-+ * has no chance of sleeping. */
-+
- /* Protected by sigio_lock(), also used by sigio_cleanup, which is an
-  * exitcall.
-  */
-@@ -121,11 +125,9 @@ static int need_poll(struct pollfds *polls, int n)
-  */
- static void update_thread(void)
- {
--	unsigned long flags;
- 	int n;
- 	char c;
- 
--	flags = set_signals(0);
- 	n = os_write_file(sigio_private[0], &c, sizeof(c));
- 	if(n != sizeof(c)){
- 		printk("update_thread : write failed, err = %d\n", -n);
-@@ -138,7 +140,6 @@ static void update_thread(void)
- 		goto fail;
- 	}
- 
--	set_signals(flags);
- 	return;
-  fail:
- 	/* Critical section start */
-@@ -150,15 +151,15 @@ static void update_thread(void)
- 	close(write_sigio_fds[0]);
- 	close(write_sigio_fds[1]);
- 	/* Critical section end */
--	set_signals(flags);
- }
- 
- int add_sigio_fd(int fd)
- {
- 	struct pollfd *p;
- 	int err = 0, i, n;
-+	unsigned long flags;
- 
--	sigio_lock();
-+	flags = sigio_lock();
- 	for(i = 0; i < all_sigio_fds.used; i++){
- 		if(all_sigio_fds.poll[i].fd == fd)
- 			break;
-@@ -184,7 +185,7 @@ int add_sigio_fd(int fd)
- 	next_poll.used = n + 1;
- 	update_thread();
-  out:
--	sigio_unlock();
-+	sigio_unlock(flags);
- 	return err;
- }
- 
-@@ -192,6 +193,7 @@ int ignore_sigio_fd(int fd)
- {
- 	struct pollfd *p;
- 	int err = 0, i, n = 0;
-+	unsigned long flags;
- 
- 	/* This is called from exitcalls elsewhere in UML - if
- 	 * sigio_cleanup has already run, then update_thread will hang
-@@ -200,7 +202,7 @@ int ignore_sigio_fd(int fd)
- 	if(write_sigio_pid == -1)
- 		return -EIO;
- 
--	sigio_lock();
-+	flags = sigio_lock();
- 	for(i = 0; i < current_poll.used; i++){
- 		if(current_poll.poll[i].fd == fd) break;
- 	}
-@@ -220,7 +222,7 @@ int ignore_sigio_fd(int fd)
- 
- 	update_thread();
-  out:
--	sigio_unlock();
-+	sigio_unlock(flags);
- 	return err;
- }
- 
-@@ -228,7 +230,7 @@ static struct pollfd *setup_initial_poll(int fd)
- {
- 	struct pollfd *p;
- 
--	p = um_kmalloc(sizeof(struct pollfd));
-+	p = um_kmalloc_atomic(sizeof(struct pollfd));
- 	if (p == NULL) {
- 		printk("setup_initial_poll : failed to allocate poll\n");
- 		return NULL;
-@@ -247,11 +249,12 @@ static void write_sigio_workaround(void)
- 	int l_write_sigio_fds[2];
- 	int l_sigio_private[2];
- 	int l_write_sigio_pid;
-+	unsigned long flags;
- 
- 	/* We call this *tons* of times - and most ones we must just fail. */
--	sigio_lock();
-+	flags = sigio_lock();
- 	l_write_sigio_pid = write_sigio_pid;
--	sigio_unlock();
-+	sigio_unlock(flags);
- 
- 	if (l_write_sigio_pid != -1)
- 		return;
-@@ -273,7 +276,7 @@ static void write_sigio_workaround(void)
- 	if(!p)
- 		goto out_close2;
- 
--	sigio_lock();
-+	flags = sigio_lock();
- 
- 	/* Did we race? Don't try to optimize this, please, it's not so likely
- 	 * to happen, and no more than once at the boot. */
-@@ -296,7 +299,7 @@ static void write_sigio_workaround(void)
- 	if (write_sigio_pid < 0)
- 		goto out_clear;
- 
--	sigio_unlock();
-+	sigio_unlock(flags);
- 	return;
- 
- out_clear:
-@@ -310,7 +313,7 @@ out_clear_poll:
- 					   .size	= 0,
- 					   .used	= 0 });
- out_free:
--	sigio_unlock();
-+	sigio_unlock(flags);
- 	kfree(p);
- out_close2:
- 	close(l_sigio_private[0]);
-@@ -323,6 +326,7 @@ out_close1:
- void maybe_sigio_broken(int fd, int read)
- {
- 	int err;
-+	unsigned long flags;
- 
- 	if(!isatty(fd))
- 		return;
-@@ -332,7 +336,7 @@ void maybe_sigio_broken(int fd, int read)
- 
- 	write_sigio_workaround();
- 
--	sigio_lock();
-+	flags = sigio_lock();
- 	err = need_poll(&all_sigio_fds, all_sigio_fds.used + 1);
- 	if(err){
- 		printk("maybe_sigio_broken - failed to add pollfd for "
-@@ -345,7 +349,7 @@ void maybe_sigio_broken(int fd, int read)
- 				   .events 	= read ? POLLIN : POLLOUT,
- 				   .revents 	= 0 });
- out:
--	sigio_unlock();
-+	sigio_unlock(flags);
- }
- 
- static void sigio_cleanup(void)
-
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
