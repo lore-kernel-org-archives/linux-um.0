@@ -1,18 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOM0E-0002Bg-6U for user-mode-linux-devel@lists.sourceforge.net;
+	id 1HOM0E-0002Bh-H2 for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 05 Mar 2007 14:49:58 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOM0C-00015d-Km
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HOM0C-0005Xx-Ur
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 05 Mar 2007 14:49:58 -0800
-Message-Id: <200703052241.l25MfItx008420@ccure.user-mode-linux.org>
+Message-Id: <200703052241.l25MfKju008425@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Mon, 05 Mar 2007 17:41:17 -0500
+Date: Mon, 05 Mar 2007 17:41:20 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 0/4] Small UML and audit.h cleanups
+Subject: [uml-devel] [PATCH 1/4] linux/audit.h needs linux/types.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,10 +30,27 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-These are for 2.6.21.  Three are UML cleanups, and one is adding an include
-to linux/audit.h.
+Include linux/types.h here because we need a definition of __u32.  This file
+appears not be exported verbatim by libc, so I think this doesn't have any
+userspace consequences.
 
-				Jeff
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ include/linux/audit.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+Index: linux-2.6.18-mm/include/linux/audit.h
+===================================================================
+--- linux-2.6.18-mm.orig/include/linux/audit.h	2007-02-20 16:16:03.000000000 -0500
++++ linux-2.6.18-mm/include/linux/audit.h	2007-02-20 16:16:25.000000000 -0500
+@@ -24,6 +24,7 @@
+ #ifndef _LINUX_AUDIT_H_
+ #define _LINUX_AUDIT_H_
+ 
++#include <linux/types.h>
+ #include <linux/elf-em.h>
+ 
+ /* The netlink messages for the audit system is divided into blocks:
 
 
 -------------------------------------------------------------------------
