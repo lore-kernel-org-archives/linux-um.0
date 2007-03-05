@@ -1,19 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOM0E-0002Bq-PC for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 14:49:58 -0800
+	id 1HOM0J-0002Db-M1 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 14:50:03 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HOM0D-0005Y3-6j
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOM0I-00015q-1z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 14:49:58 -0800
-Message-Id: <200703052241.l25MfLh5008435@ccure.user-mode-linux.org>
+	Mon, 05 Mar 2007 14:50:03 -0800
+Message-Id: <200703052241.l25MfL46008440@ccure.user-mode-linux.org>
 Mime-Version: 1.0
 Date: Mon, 05 Mar 2007 17:41:21 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 3/4] UML - Add a debugging message
+Subject: [uml-devel] [PATCH 4/4] UML - Comment the initialization of a global
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,31 +29,26 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Add a debugging message in the case that mapping a stub fails.
+Comment the fact that sig_info is initialized early in boot, and thus doesn't
+need any locking.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/os-Linux/skas/process.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/um/os-Linux/trap.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Index: test/arch/um/os-Linux/skas/process.c
+Index: linux-2.6.18-mm/arch/um/os-Linux/trap.c
 ===================================================================
---- test.orig/arch/um/os-Linux/skas/process.c	2007-03-05 15:08:18.000000000 -0500
-+++ test/arch/um/os-Linux/skas/process.c	2007-03-05 16:14:56.000000000 -0500
-@@ -419,9 +419,12 @@ void map_stub_pages(int fd, unsigned lon
- 					  .offset  = code_offset
- 	} } });
- 	n = os_write_file(fd, &mmop, sizeof(mmop));
--	if(n != sizeof(mmop))
-+	if(n != sizeof(mmop)){
-+		printk("mmap args - addr = 0x%lx, fd = %d, offset = %llx\n",
-+		       code, code_fd, (unsigned long long) code_offset);
- 		panic("map_stub_pages : /proc/mm map for code failed, "
- 		      "err = %d\n", -n);
-+	}
+--- linux-2.6.18-mm.orig/arch/um/os-Linux/trap.c	2006-12-30 04:20:14.000000000 +1100
++++ linux-2.6.18-mm/arch/um/os-Linux/trap.c	2007-01-16 10:38:21.000000000 +1100
+@@ -16,6 +16,7 @@ void usr2_handler(int sig, union uml_pt_
+ 	CHOOSE_MODE(syscall_handler_tt(sig, regs), (void) 0);
+ }
  
- 	if ( stack ) {
- 		__u64 map_offset;
++/* Initialized from linux_main() */
+ void (*sig_info[NSIG])(int, union uml_pt_regs *);
+ 
+ void os_fill_handlinfo(struct kern_handlers h)
 
 
 -------------------------------------------------------------------------
