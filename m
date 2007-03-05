@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOKG7-0006qz-2f for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 12:58:28 -0800
+	id 1HOKGA-0006r4-Gs for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 12:58:34 -0800
 Received: from mbox.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HOKG4-0000KN-CK
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOKG3-0004gq-5O
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 12:58:15 -0800
+	Mon, 05 Mar 2007 12:58:18 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Mon, 05 Mar 2007 21:49:03 +0100
-Message-Id: <20070305204903.9072.73019.stgit@americanbeauty.home.lan>
+Date: Mon, 05 Mar 2007 21:49:00 +0100
+Message-Id: <20070305204900.9072.7418.stgit@americanbeauty.home.lan>
 In-Reply-To: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
 References: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 05/11] hostfs: rename some vars for clarity
+Subject: [uml-devel] [PATCH 02/11] uml - hostfs: fix double free
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,80 +33,42 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-* rename name to host_root_path
-* rename data to req_root.
+Fix double free in the error path - when name is assigned into root_inode we do
+not own it any more and we must not kfree() it - see patch for details.
 
+Thanks to William Stearns for the initial report.
+
+CC: William Stearns <wstearns@pobox.com>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- fs/hostfs/hostfs_kern.c |   26 +++++++++++++-------------
- 1 files changed, 13 insertions(+), 13 deletions(-)
+ fs/hostfs/hostfs_kern.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
 diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 0bcf7ac..b4e127b 100644
+index e965eb1..6f10e43 100644
 --- a/fs/hostfs/hostfs_kern.c
 +++ b/fs/hostfs/hostfs_kern.c
-@@ -961,7 +961,7 @@ static int contains_dotdot(const char* path)
- static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- {
- 	struct inode *root_inode;
--	char *name, *data = d;
-+	char *host_root_path, *req_root = d;
- 	int err;
- 
- 	sb->s_blocksize = 1024;
-@@ -970,20 +970,20 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 	sb->s_op = &hostfs_sbops;
- 
- 	/* NULL is printed as <NULL> by sprintf: avoid that. */
--	if (data == NULL)
--		data = "";
-+	if (req_root == NULL)
-+		req_root = "";
- 
- 	err = -EINVAL;
--	if (unlikely(contains_dotdot(data)))
-+	if (unlikely(contains_dotdot(req_root)))
- 		goto out;
- 
- 	err = -ENOMEM;
--	name = kmalloc(strlen(root_ino) + 1
--			+ strlen(data) + 1, GFP_KERNEL);
--	if(name == NULL)
-+	host_root_path = kmalloc(strlen(root_ino) + 1
-+			+ strlen(req_root) + 1, GFP_KERNEL);
-+	if(host_root_path == NULL)
- 		goto out;
- 
--	sprintf(name, "%s/%s", root_ino, data);
-+	sprintf(host_root_path, "%s/%s", root_ino, req_root);
- 
- 	root_inode = iget(sb, 0);
- 	if(root_inode == NULL)
-@@ -993,10 +993,10 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 	if(err)
+@@ -966,6 +966,9 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
  		goto out_put;
  
--	HOSTFS_I(root_inode)->host_filename = name;
--	/* Avoid that in the error path, iput(root_inode) frees again name through
--	 * hostfs_destroy_inode! */
--	name = NULL;
-+	HOSTFS_I(root_inode)->host_filename = host_root_path;
-+	/* Avoid that in the error path, iput(root_inode) frees again
-+	 * host_root_path through hostfs_destroy_inode! */
-+	host_root_path = NULL;
+ 	HOSTFS_I(root_inode)->host_filename = name;
++	/* Avoid that in the error path, iput(root_inode) frees again name through
++	 * hostfs_destroy_inode! */
++	name = NULL;
  
  	err = -ENOMEM;
  	sb->s_root = d_alloc_root(root_inode);
-@@ -1016,7 +1016,7 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
-  out_put:
-         iput(root_inode);
-  out_free:
--	kfree(name);
-+	kfree(host_root_path);
-  out:
- 	return(err);
- }
+@@ -977,7 +980,7 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
+                 /* No iput in this case because the dput does that for us */
+                 dput(sb->s_root);
+                 sb->s_root = NULL;
+-		goto out_free;
++		goto out;
+         }
+ 
+ 	return(0);
+
 
 
 -------------------------------------------------------------------------
