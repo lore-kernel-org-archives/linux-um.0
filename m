@@ -2,19 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOKG9-0006r3-5M for user-mode-linux-devel@lists.sourceforge.net;
+	id 1HOKG6-0006qw-7L for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 05 Mar 2007 12:58:28 -0800
 Received: from mbox.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOKG3-0004hW-Gb
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOKG4-0004hv-IT
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 05 Mar 2007 12:58:14 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Mon, 05 Mar 2007 21:49:01 +0100
-Message-Id: <20070305204901.9072.51033.stgit@americanbeauty.home.lan>
+Date: Mon, 05 Mar 2007 21:49:07 +0100
+Message-Id: <20070305204906.9072.62771.stgit@americanbeauty.home.lan>
 In-Reply-To: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
 References: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 03/11] uml - hostfs: make hostfs= option work as
-	a jail, as intended.
+Subject: [uml-devel] [PATCH 08/11] uml: mark both consoles as CON_ANYTIME
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,53 +33,48 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-When a given host directory is specified to be mounted both in hostfs=path1 and
-with mount option -o path2, we should give access to path1/path2, but this does
-not happen. Fix that in the simpler way.
+Since both UML consoles do not use percpu variables, they may be called when the
+cpu is still offline, and they may be marked CON_ANYTIME (this is documented in
+kernel/printk.c, grep for CON_ANYTIME to find mentions of this).
 
-Also, root_ino can be the empty string, since we use %s/%s as format.
+Works well in testing done with lock debug enabled, should be safe but is
+not needed for next release.
+
+This would probably help also stderr_console.c, but this is yet to test.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- fs/hostfs/hostfs_kern.c |   12 +++++++-----
- 1 files changed, 7 insertions(+), 5 deletions(-)
+ arch/um/drivers/ssl.c           |    2 +-
+ arch/um/drivers/stdio_console.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 6f10e43..9baf697 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -47,7 +47,7 @@ struct dentry_operations hostfs_dentry_ops = {
+diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
+index fc22b9b..4b382a6 100644
+--- a/arch/um/drivers/ssl.c
++++ b/arch/um/drivers/ssl.c
+@@ -179,7 +179,7 @@ static struct console ssl_cons = {
+ 	.write		= ssl_console_write,
+ 	.device		= ssl_console_device,
+ 	.setup		= ssl_console_setup,
+-	.flags		= CON_PRINTBUFFER,
++	.flags		= CON_PRINTBUFFER|CON_ANYTIME,
+ 	.index		= -1,
  };
  
- /* Changed in hostfs_args before the kernel starts running */
--static char *root_ino = "/";
-+static char *root_ino = "";
- static int append = 0;
+diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
+index 7ff0b0f..76d1f1c 100644
+--- a/arch/um/drivers/stdio_console.c
++++ b/arch/um/drivers/stdio_console.c
+@@ -153,7 +153,7 @@ static struct console stdiocons = {
+ 	.write		= uml_console_write,
+ 	.device		= uml_console_device,
+ 	.setup		= uml_console_setup,
+-	.flags		= CON_PRINTBUFFER,
++	.flags		= CON_PRINTBUFFER|CON_ANYTIME,
+ 	.index		= -1,
+ };
  
- #define HOSTFS_SUPER_MAGIC 0x00c0ffee
-@@ -947,15 +947,17 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 	sb->s_magic = HOSTFS_SUPER_MAGIC;
- 	sb->s_op = &hostfs_sbops;
- 
--	if((data == NULL) || (*data == '\0'))
--		data = root_ino;
-+	/* NULL is printed as <NULL> by sprintf: avoid that. */
-+	if (data == NULL)
-+		data = "";
- 
- 	err = -ENOMEM;
--	name = kmalloc(strlen(data) + 1, GFP_KERNEL);
-+	name = kmalloc(strlen(root_ino) + 1
-+			+ strlen(data) + 1, GFP_KERNEL);
- 	if(name == NULL)
- 		goto out;
- 
--	strcpy(name, data);
-+	sprintf(name, "%s/%s", root_ino, data);
- 
- 	root_inode = iget(sb, 0);
- 	if(root_inode == NULL)
 
 
 
