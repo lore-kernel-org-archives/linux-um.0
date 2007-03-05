@@ -2,20 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOMJH-0004Cm-Kx for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:09:39 -0800
+	id 1HOMJJ-0004Cw-Q7 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 15:09:41 -0800
 Received: from mbox.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HOMJE-0001pT-BK
+	(Exim 4.44) id 1HOMJI-0001qE-2X
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:09:39 -0800
+	Mon, 05 Mar 2007 15:09:41 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Tue, 06 Mar 2007 00:08:52 +0100
-Message-Id: <20070305230852.30695.8731.stgit@americanbeauty.home.lan>
-In-Reply-To: <20070305230851.30695.26417.stgit@americanbeauty.home.lan>
-References: <20070305230851.30695.26417.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 2/2] uml: avoid calling request_irq in atomic
-	context
+Date: Tue, 06 Mar 2007 00:08:51 +0100
+Message-Id: <20070305230851.30695.26417.stgit@americanbeauty.home.lan>
+Subject: [uml-devel] [PATCH 1/2] uml: make sigio_lock() irq-safe
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,181 +32,242 @@ Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-To avoid calling request_irq under a spinlock, and to simplify code around, code
-a state machine to allow safely dropping and retaking sigio_lock during
-initialization. The state variable is protected by a spinlock together with much
-other stuff (so there's no reason to use atomic_t). See the long comment for
-further details.
+sigio_lock is taken both from process context and from interrupt context. So we
+*must* use irqsave.
+
+Then, remove irq disabling from update_thread(), as it's called with
+sigio_lock() held (yes, set_signals(0) is local_irq_save).
+
+In fact, I've seen this causing frequent hangs with spinlock debugging enabled
+(I've verified well that the cause was an interrupt causing re-acquiring of
+this lock); however, now it's causing hangs as interrupt disabling causes
+some sleep-inside-spinlock checks to trigger - and then printk deadlocks.
+
+I've tested this for a long time and it is stable.
+I've also verified that nothing can sleep within this lock; to this purpose,
+I've had to verify everything inside um_request_irq; since it calls again
+write_sigio_workaround(), I've had to make atomic the allocation inside
+setup_initial_poll.
+
+HOWEVER, request_irq() can sleep, and in write_sigio_irq() thanks to
+IRQF_SAMPLE_RANDOM it _does_ sleep. So a separate patch makes write_sigio_irq()
+be called outside of sigio_lock().
+
+Actually, I'm also quite dubious that an interrupt caused by other interrupts is
+a reliable entropy source, but that is another thing completely.
 
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- arch/um/os-Linux/sigio.c |   74 +++++++++++++++++++++++++++++-----------------
- 1 files changed, 46 insertions(+), 28 deletions(-)
+ arch/um/include/sigio.h  |    4 ++--
+ arch/um/kernel/sigio.c   |   12 ++++++++----
+ arch/um/os-Linux/sigio.c |   36 ++++++++++++++++++++----------------
+ 3 files changed, 30 insertions(+), 22 deletions(-)
 
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 88988fb..44a2d1f 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -29,6 +29,24 @@
-  * exitcall.
-  */
- static int write_sigio_pid = -1;
-+/* State machine:
-+ *
-+ * write_sigio_workaround transitions from INACTIVE to STARTING; all methods
-+ * exit when they detect the STARTING state, so it's effectively a lock without
-+ * wait possibility. After initialization completes it goes to ACTIVE.
-+ *
-+ * Errors in initialization or in use (say the thread does not answer) move us
-+ * to the BROKEN terminal state; this is a change (we went to INACTIVE), and it
-+ * could be reverted so that we go back to INACTIVE, if this case is handled
-+ * correctly without leaks.
-+ *
-+ * closing the device moves us to the CLOSED terminal state.
-+ *
-+ * The state must be read or written only with sigio_lock() held, even when we
-+ * are in STARTING, to ensure global visibility across CPUs.
-+ */
-+enum {INACTIVE, STARTING, ACTIVE, BROKEN, CLOSED};
-+static int write_sigio_state = INACTIVE;
+diff --git a/arch/um/include/sigio.h b/arch/um/include/sigio.h
+index 434f1a9..a58bc1d 100644
+--- a/arch/um/include/sigio.h
++++ b/arch/um/include/sigio.h
+@@ -8,7 +8,7 @@
  
- /* These arrays are initialized before the sigio thread is started, and
-  * the descriptors closed after it is killed.  So, it can't see them change.
-@@ -121,7 +139,7 @@ static int need_poll(struct pollfds *polls, int n)
+ extern int write_sigio_irq(int fd);
+ extern int register_sigio_fd(int fd);
+-extern void sigio_lock(void);
+-extern void sigio_unlock(void);
++extern unsigned long sigio_lock(void);
++extern void sigio_unlock(unsigned long flags);
+ 
+ #endif
+diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
+index 89f9866..cc54db7 100644
+--- a/arch/um/kernel/sigio.c
++++ b/arch/um/kernel/sigio.c
+@@ -45,12 +45,16 @@ int write_sigio_irq(int fd)
+ /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
+ static DEFINE_SPINLOCK(sigio_spinlock);
+ 
+-void sigio_lock(void)
++unsigned long sigio_lock(void)
+ {
+-	spin_lock(&sigio_spinlock);
++	unsigned long flags;
++
++	spin_lock_irqsave(&sigio_spinlock, flags);
++
++	return flags;
  }
  
- /* Must be called with sigio_lock held, because it's needed by the marked
-- * critical section.
-+ * critical section. The lock could be moved inside, but it is not needed.
+-void sigio_unlock(void)
++void sigio_unlock(unsigned long flags)
+ {
+-	spin_unlock(&sigio_spinlock);
++	spin_unlock_irqrestore(&sigio_spinlock, flags);
+ }
+diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
+index 3fc43b3..88988fb 100644
+--- a/arch/um/os-Linux/sigio.c
++++ b/arch/um/os-Linux/sigio.c
+@@ -21,6 +21,10 @@
+ #include "os.h"
+ #include "um_malloc.h"
+ 
++/* Nothing in this file can sleep. I've verified each and every function. The
++ * only "exception" is write_sigio_thread, which runs in a host thread, so it
++ * has no chance of sleeping. */
++
+ /* Protected by sigio_lock(), also used by sigio_cleanup, which is an
+  * exitcall.
+  */
+@@ -121,11 +125,9 @@ static int need_poll(struct pollfds *polls, int n)
   */
  static void update_thread(void)
  {
-@@ -146,6 +164,9 @@ static void update_thread(void)
- 	if(write_sigio_pid != -1)
- 		os_kill_process(write_sigio_pid, 1);
- 	write_sigio_pid = -1;
-+	/* Since the deinit is not complete, we cannot move into INACTIVE state.
-+	 * Or can we? */
-+	write_sigio_state = BROKEN;
- 	close(sigio_private[0]);
- 	close(sigio_private[1]);
+-	unsigned long flags;
+ 	int n;
+ 	char c;
+ 
+-	flags = set_signals(0);
+ 	n = os_write_file(sigio_private[0], &c, sizeof(c));
+ 	if(n != sizeof(c)){
+ 		printk("update_thread : write failed, err = %d\n", -n);
+@@ -138,7 +140,6 @@ static void update_thread(void)
+ 		goto fail;
+ 	}
+ 
+-	set_signals(flags);
+ 	return;
+  fail:
+ 	/* Critical section start */
+@@ -150,15 +151,15 @@ static void update_thread(void)
  	close(write_sigio_fds[0]);
-@@ -199,7 +220,7 @@ int ignore_sigio_fd(int fd)
+ 	close(write_sigio_fds[1]);
+ 	/* Critical section end */
+-	set_signals(flags);
+ }
+ 
+ int add_sigio_fd(int fd)
+ {
+ 	struct pollfd *p;
+ 	int err = 0, i, n;
++	unsigned long flags;
+ 
+-	sigio_lock();
++	flags = sigio_lock();
+ 	for(i = 0; i < all_sigio_fds.used; i++){
+ 		if(all_sigio_fds.poll[i].fd == fd)
+ 			break;
+@@ -184,7 +185,7 @@ int add_sigio_fd(int fd)
+ 	next_poll.used = n + 1;
+ 	update_thread();
+  out:
+-	sigio_unlock();
++	sigio_unlock(flags);
+ 	return err;
+ }
+ 
+@@ -192,6 +193,7 @@ int ignore_sigio_fd(int fd)
+ {
+ 	struct pollfd *p;
+ 	int err = 0, i, n = 0;
++	unsigned long flags;
+ 
+ 	/* This is called from exitcalls elsewhere in UML - if
  	 * sigio_cleanup has already run, then update_thread will hang
- 	 * or fail because the thread is no longer running.
- 	 */
--	if(write_sigio_pid == -1)
-+	if(write_sigio_state != ACTIVE)
+@@ -200,7 +202,7 @@ int ignore_sigio_fd(int fd)
+ 	if(write_sigio_pid == -1)
  		return -EIO;
  
- 	flags = sigio_lock();
-@@ -246,59 +267,53 @@ static void write_sigio_workaround(void)
- 	unsigned long stack;
+-	sigio_lock();
++	flags = sigio_lock();
+ 	for(i = 0; i < current_poll.used; i++){
+ 		if(current_poll.poll[i].fd == fd) break;
+ 	}
+@@ -220,7 +222,7 @@ int ignore_sigio_fd(int fd)
+ 
+ 	update_thread();
+  out:
+-	sigio_unlock();
++	sigio_unlock(flags);
+ 	return err;
+ }
+ 
+@@ -228,7 +230,7 @@ static struct pollfd *setup_initial_poll(int fd)
+ {
  	struct pollfd *p;
- 	int err;
--	int l_write_sigio_fds[2];
--	int l_sigio_private[2];
--	int l_write_sigio_pid;
- 	unsigned long flags;
+ 
+-	p = um_kmalloc(sizeof(struct pollfd));
++	p = um_kmalloc_atomic(sizeof(struct pollfd));
+ 	if (p == NULL) {
+ 		printk("setup_initial_poll : failed to allocate poll\n");
+ 		return NULL;
+@@ -247,11 +249,12 @@ static void write_sigio_workaround(void)
+ 	int l_write_sigio_fds[2];
+ 	int l_sigio_private[2];
+ 	int l_write_sigio_pid;
++	unsigned long flags;
  
  	/* We call this *tons* of times - and most ones we must just fail. */
- 	flags = sigio_lock();
--	l_write_sigio_pid = write_sigio_pid;
--	sigio_unlock(flags);
--
--	if (l_write_sigio_pid != -1)
-+	if (write_sigio_state != INACTIVE) {
-+		sigio_unlock(flags);
- 		return;
-+	} else {
-+		write_sigio_state = STARTING;
-+	}
+-	sigio_lock();
++	flags = sigio_lock();
+ 	l_write_sigio_pid = write_sigio_pid;
+-	sigio_unlock();
 +	sigio_unlock(flags);
  
--	err = os_pipe(l_write_sigio_fds, 1, 1);
-+	err = os_pipe(write_sigio_fds, 1, 1);
- 	if(err < 0){
- 		printk("write_sigio_workaround - os_pipe 1 failed, "
- 		       "err = %d\n", -err);
+ 	if (l_write_sigio_pid != -1)
  		return;
- 	}
--	err = os_pipe(l_sigio_private, 1, 1);
-+	err = os_pipe(sigio_private, 1, 1);
- 	if(err < 0){
- 		printk("write_sigio_workaround - os_pipe 2 failed, "
- 		       "err = %d\n", -err);
- 		goto out_close1;
- 	}
- 
--	p = setup_initial_poll(l_sigio_private[1]);
-+	p = setup_initial_poll(sigio_private[1]);
+@@ -273,7 +276,7 @@ static void write_sigio_workaround(void)
  	if(!p)
  		goto out_close2;
  
--	flags = sigio_lock();
--
--	/* Did we race? Don't try to optimize this, please, it's not so likely
--	 * to happen, and no more than once at the boot. */
--	if(write_sigio_pid != -1)
--		goto out_free;
-+	if (current_poll.poll)
-+		kfree(current_poll.poll);
+-	sigio_lock();
++	flags = sigio_lock();
  
- 	current_poll = ((struct pollfds) { .poll 	= p,
- 					   .used 	= 1,
- 					   .size 	= 1 });
- 
--	if (write_sigio_irq(l_write_sigio_fds[0]))
-+	if (write_sigio_irq(write_sigio_fds[0]))
- 		goto out_clear_poll;
- 
--	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
--	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
--
- 	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
- 					    CLONE_FILES | CLONE_VM, &stack, 0);
- 
+ 	/* Did we race? Don't try to optimize this, please, it's not so likely
+ 	 * to happen, and no more than once at the boot. */
+@@ -296,7 +299,7 @@ static void write_sigio_workaround(void)
  	if (write_sigio_pid < 0)
  		goto out_clear;
  
-+	flags = sigio_lock();
-+	write_sigio_state = ACTIVE;
- 	sigio_unlock(flags);
+-	sigio_unlock();
++	sigio_unlock(flags);
  	return;
  
-@@ -312,15 +327,17 @@ out_clear_poll:
- 	current_poll = ((struct pollfds) { .poll	= NULL,
+ out_clear:
+@@ -310,7 +313,7 @@ out_clear_poll:
  					   .size	= 0,
  					   .used	= 0 });
--out_free:
--	sigio_unlock(flags);
+ out_free:
+-	sigio_unlock();
++	sigio_unlock(flags);
  	kfree(p);
  out_close2:
--	close(l_sigio_private[0]);
--	close(l_sigio_private[1]);
-+	close(sigio_private[0]);
-+	close(sigio_private[1]);
- out_close1:
--	close(l_write_sigio_fds[0]);
--	close(l_write_sigio_fds[1]);
-+	close(write_sigio_fds[0]);
-+	close(write_sigio_fds[1]);
-+
+ 	close(l_sigio_private[0]);
+@@ -323,6 +326,7 @@ out_close1:
+ void maybe_sigio_broken(int fd, int read)
+ {
+ 	int err;
++	unsigned long flags;
+ 
+ 	if(!isatty(fd))
+ 		return;
+@@ -332,7 +336,7 @@ void maybe_sigio_broken(int fd, int read)
+ 
+ 	write_sigio_workaround();
+ 
+-	sigio_lock();
 +	flags = sigio_lock();
-+	write_sigio_state = BROKEN;
+ 	err = need_poll(&all_sigio_fds, all_sigio_fds.used + 1);
+ 	if(err){
+ 		printk("maybe_sigio_broken - failed to add pollfd for "
+@@ -345,7 +349,7 @@ void maybe_sigio_broken(int fd, int read)
+ 				   .events 	= read ? POLLIN : POLLOUT,
+ 				   .revents 	= 0 });
+ out:
+-	sigio_unlock();
 +	sigio_unlock(flags);
  }
  
- void maybe_sigio_broken(int fd, int read)
-@@ -357,6 +374,7 @@ static void sigio_cleanup(void)
- 	if(write_sigio_pid != -1){
- 		os_kill_process(write_sigio_pid, 1);
- 		write_sigio_pid = -1;
-+		write_sigio_state = CLOSED;
- 	}
- }
- 
+ static void sigio_cleanup(void)
 
 
 -------------------------------------------------------------------------
