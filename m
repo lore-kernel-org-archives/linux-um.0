@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOKGA-0006r4-Gs for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 12:58:34 -0800
+	id 1HOKG6-0006qx-DB for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 12:58:28 -0800
 Received: from mbox.ssc.unict.it ([151.97.230.9] helo=ssc.unict.it)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOKG3-0004gq-5O
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOKG3-0004hG-Ny
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 12:58:18 -0800
+	Mon, 05 Mar 2007 12:58:14 -0800
 From: "Paolo 'Blaisorblade' Giarrusso" <blaisorblade@yahoo.it>
-Date: Mon, 05 Mar 2007 21:49:00 +0100
-Message-Id: <20070305204900.9072.7418.stgit@americanbeauty.home.lan>
+Date: Mon, 05 Mar 2007 21:49:08 +0100
+Message-Id: <20070305204908.9072.72355.stgit@americanbeauty.home.lan>
 In-Reply-To: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
 References: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
-Subject: [uml-devel] [PATCH 02/11] uml - hostfs: fix double free
+Subject: [uml-devel] [PATCH 09/11] uml: fix confusion irq early reenabling
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,41 +33,41 @@ Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Fix double free in the error path - when name is assigned into root_inode we do
-not own it any more and we must not kfree() it - see patch for details.
+Fix confusion about call context - comments and code are inconsistent and plain
+wrong, my fault.
 
-Thanks to William Stearns for the initial report.
-
-CC: William Stearns <wstearns@pobox.com>
 Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 ---
 
- fs/hostfs/hostfs_kern.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+ arch/um/drivers/line.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index e965eb1..6f10e43 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -966,6 +966,9 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 		goto out_put;
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index 01d4ab6..f75d7b0 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -370,10 +370,10 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
+ 	struct tty_struct *tty = line->tty;
+ 	int err;
  
- 	HOSTFS_I(root_inode)->host_filename = name;
-+	/* Avoid that in the error path, iput(root_inode) frees again name through
-+	 * hostfs_destroy_inode! */
-+	name = NULL;
+-	/* Interrupts are enabled here because we registered the interrupt with
++	/* Interrupts are disabled here because we registered the interrupt with
+ 	 * IRQF_DISABLED (see line_setup_irq).*/
  
- 	err = -ENOMEM;
- 	sb->s_root = d_alloc_root(root_inode);
-@@ -977,7 +980,7 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
-                 /* No iput in this case because the dput does that for us */
-                 dput(sb->s_root);
-                 sb->s_root = NULL;
--		goto out_free;
-+		goto out;
-         }
+-	spin_lock_irq(&line->lock);
++	spin_lock(&line->lock);
+ 	err = flush_buffer(line);
+ 	if (err == 0) {
+ 		return IRQ_NONE;
+@@ -381,7 +381,7 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
+ 		line->head = line->buffer;
+ 		line->tail = line->buffer;
+ 	}
+-	spin_unlock_irq(&line->lock);
++	spin_unlock(&line->lock);
  
- 	return(0);
+ 	if(tty == NULL)
+ 		return IRQ_NONE;
 
 
 
