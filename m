@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOMPR-0004nn-AN for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:16:01 -0800
+	id 1HOMSo-0005D8-M3 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Mar 2007 15:19:30 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HOMPP-0003KJ-J5
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOMSn-0008SJ-0d
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:16:01 -0800
-Date: Mon, 5 Mar 2007 18:07:11 -0500
+	Mon, 05 Mar 2007 15:19:30 -0800
+Date: Mon, 5 Mar 2007 18:10:44 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070305230711.GA9525@ccure.user-mode-linux.org>
-References: <20070305204229.9072.17032.stgit@americanbeauty.home.lan>
-	<20070305204902.9072.1224.stgit@americanbeauty.home.lan>
-	<20070305220334.GB7702@ccure.user-mode-linux.org>
-	<200703052359.13612.blaisorblade@yahoo.it>
+Message-ID: <20070305231044.GB9525@ccure.user-mode-linux.org>
+References: <20070131224504.GA7698@ccure.user-mode-linux.org>
+	<200702021848.40114.blaisorblade@yahoo.it>
+	<20070202201230.GA8533@ccure.user-mode-linux.org>
+	<200703060003.26856.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200703052359.13612.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 04/11] uml - hostfs: avoid possible escapes
-	from hostfs=.
+In-Reply-To: <200703060003.26856.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] x86_64 32-bit ptrace mangles sixth system
+	call argument
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,20 +34,33 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Mar 05, 2007 at 11:59:13PM +0100, Blaisorblade wrote:
-> I gave a look, and it's nice. Except that maybe "escapes_jail" would be a 
-> clearer name (there's confusion about the subject of "escaping").
+On Tue, Mar 06, 2007 at 12:03:26AM +0100, Blaisorblade wrote:
+> > No, RCX corruption is different - that happens when a sysexit is done
+> > from a system call where userspace wasn't prepared to save and restore
+> > RCX.  sigreturn is the best example.
+> 
+> Hmm... we should finally fix that, at some point. Or... now that you explain 
+> it this way, it could even seem unfixable... is it? Or maybe sysreturn should
+> become a syscall where the return must happen through the slow return path 
+> (iret), if that exists for x86_64.
 
-Feel free to change the name.
+This is fixed, and has been for a while.  The fix was, as you suggest, return
+through iret in this case.
 
-> Also, what about concurrent UML threads caring about current directory? I
-> know that without SMP/preemption we can't have this problem, but
-> when I see this I count a future bug unless this is checked (I think I
-> reason mathematically about correctness, even if not formally).
+> > But, a 32-bit UML making mmap calls through sysenter indeed does not run
+> > very well.
+> 
+> Has this been fixed? I've read that Chuck Ebbert had already fixed this in 
+> your diary, but not sent the patch.
 
-Good point, yes this does need fixing for SMP.
+Yup, and I'm going to resurrect that patch.
+
+> I'd open an entry in bugzilla for this sort of things. It also seems that 
+> Jason Lunz's patch about max_low_pfn is not even in your tree
+
+It is, I just haven't updated the site with it yet.
 
 				Jeff
 
