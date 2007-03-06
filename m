@@ -1,21 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOMmx-0007PB-NB for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:40:19 -0800
-Received: from server.ispbrasil.com.br ([209.67.213.238] helo=ispbrasil.com.br)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HOMmv-0000bg-Oz
+	id 1HOeag-0007JJ-HK for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Mar 2007 10:40:50 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOeag-0006oh-1r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Mar 2007 15:40:19 -0800
-Message-ID: <007a01c75f7f$9ee595c0$fe0fa8c0@ispbrasil>
-From: "Itamar Reis Peixoto" <itamar@ispbrasil.com.br>
-References: <e3156df0612142300if4a4d8akabae7f81d0d6695e@mail.gmail.com>
-	<200703052339.39509.blaisorblade@yahoo.it>
-Date: Mon, 5 Mar 2007 21:40:10 -0200
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] broken uml_util.spec
+	Tue, 06 Mar 2007 10:40:50 -0800
+Message-Id: <200703061832.l26IW6BK006549@ccure.user-mode-linux.org>
+Mime-Version: 1.0
+Date: Tue, 06 Mar 2007 13:32:06 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Subject: [uml-devel] [PATCH 1/5] UML - Mark tt-mode code for future removal
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,69 +26,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Ilkka Tengvall <ilkka.tengvall@iki.fi>
+To: akpm@osdl.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-about uml_util.spec, this patch have yo fixed the problem of unpackaged file 
-(jail_uml)?
+Mark some tt-mode-only code as such.
 
-%attr(755,root,root)                    %{_sbindir}/jail_uml
+Also cleaned up some formatting.
 
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/sys-i386/ptrace_user.c |   16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
---------------------
-
-Itamar Reis Peixoto
-
-e-mail: itamar@ispbrasil.com.br
-msn: itamarjp@starmedia.com
-skype: itamarjp
-icq: 81053601
-+55 34 3238 3845
-+55 11 4063 5033
------ Original Message ----- 
-From: "Blaisorblade" <blaisorblade@yahoo.it>
-To: <user-mode-linux-devel@lists.sourceforge.net>
-Cc: "Ilkka Tengvall" <ilkka.tengvall@iki.fi>
-Sent: Monday, March 05, 2007 8:39 PM
-Subject: Re: [uml-devel] [PATCH] broken uml_util.spec
-
-
-> On Friday 15 December 2006 08:00, Ilkka Tengvall wrote:
->> Howdy,
->>
->> I just dowloaded uml and gave it a shot. Seems to work nice on
->> 2.6.19-rc6. While at it, I fixed the rpm spec file. It had old tag for
->> license, incorrect directory name for build and was missing jail_uml
->> from files list. I built it on fedora-release-6-89 .
->
->> There is also a minor bug in the skas patch, it still uses
->> include/config.h in some proc-mm files even config.h is removed from
->> 19-rc6 version of kernel. Just remove those includes, and it works for
->> me...
-> (Fixed time ago).
->> I'm not a subscriber to the list.
-> Thanks, I've applied this some time ago to my tree, on uml_util.spec.in.
->
-> Bye
-> -- 
-> Inform me of my mistakes, so I can add them to my list!
-> Paolo Giarrusso, aka Blaisorblade
-> http://www.user-mode-linux.org/~blaisorblade
-> Chiacchiera con i tuoi amici in tempo reale!
-> http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com
->
->
-> -------------------------------------------------------------------------
-> Take Surveys. Earn Cash. Influence the Future of IT
-> Join SourceForge.net's Techsay panel and you'll get the chance to share 
-> your
-> opinions on IT & business topics through brief surveys-and earn cash
-> http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
+Index: linux-2.6.18-mm/arch/um/sys-i386/ptrace_user.c
+===================================================================
+--- linux-2.6.18-mm.orig/arch/um/sys-i386/ptrace_user.c	2007-03-02 21:18:13.000000000 -0500
++++ linux-2.6.18-mm/arch/um/sys-i386/ptrace_user.c	2007-03-02 21:23:19.000000000 -0500
+@@ -1,4 +1,4 @@
+-/* 
++/*
+  * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+  * Licensed under the GPL
+  */
+@@ -45,7 +45,8 @@ int ptrace_setfpregs(long pid, unsigned 
+ 	return 0;
+ }
+ 
+-/* All the below stuff is of interest for TT mode only */
++#ifdef UML_CONFIG_MODE_TT
++
+ static void write_debugregs(int pid, unsigned long *regs)
+ {
+ 	struct user *dummy;
+@@ -128,13 +129,4 @@ void update_debugregs(int seq)
+ }
+ #endif
+ 
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
++#endif
 
 
 -------------------------------------------------------------------------
