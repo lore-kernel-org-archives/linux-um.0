@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOeah-0007Ja-Gb for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Mar 2007 10:40:51 -0800
+	id 1HOeaj-0007JK-Un for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Mar 2007 10:40:54 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOeah-0006q1-2q
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOeag-0006oi-8s
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Mar 2007 10:40:51 -0800
-Message-Id: <200703061832.l26IWDX6006569@ccure.user-mode-linux.org>
+	Tue, 06 Mar 2007 10:40:50 -0800
+Message-Id: <200703061832.l26IW6Ua006554@ccure.user-mode-linux.org>
 Mime-Version: 1.0
-Date: Tue, 06 Mar 2007 13:32:13 -0500
+Date: Tue, 06 Mar 2007 13:32:06 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Subject: [uml-devel] [PATCH 5/5] UML - network interface hotplug error handling
+Subject: [uml-devel] [PATCH 2/5] UML - print coredump limits
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,329 +29,60 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This fixes a number of problems associated with network interface hotplug.
-
-The userspace initialization function can fail in some cases, but the
-failure was never passed back to eth_configure, which proceeded with
-the configuration.  This results in a zombie device that is present,
-but can't work.  This is fixed by allowing the initialization routines
-to return an error, which is checked, and the configuration aborted on
-failure.
-
-eth_configure failed to check for many failures. Even when it did
-check, it didn't undo whatever initializations has already happened,
-so a present, but partially initialized and non-working device could
-result.  It now checks everything that can fail, and bails out,
-undoing whatever had been done.
-
-The return value of eth_configure was always ignored, so it is now
-just void.
+Print out core dump limits at boot time.  This is to allow core dumps
+to be collected if something goes very wrong and to tell if a core
+dump isn't going to happen because of a resource limit.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/drivers/daemon_user.c            |    5 +
- arch/um/drivers/mcast_user.c             |    3 -
- arch/um/drivers/net_kern.c               |   81 +++++++++++++++++--------------
- arch/um/drivers/pcap_user.c              |    5 +
- arch/um/drivers/slip_user.c              |    3 -
- arch/um/drivers/slirp_user.c             |    3 -
- arch/um/include/net_user.h               |    2 
- arch/um/os-Linux/drivers/ethertap_user.c |    3 -
- arch/um/os-Linux/drivers/tuntap_user.c   |    3 -
- 9 files changed, 64 insertions(+), 44 deletions(-)
+ arch/um/os-Linux/start_up.c |   25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-Index: test/arch/um/drivers/daemon_user.c
+Index: test/arch/um/os-Linux/start_up.c
 ===================================================================
---- test.orig/arch/um/drivers/daemon_user.c	2007-03-06 12:10:12.000000000 -0500
-+++ test/arch/um/drivers/daemon_user.c	2007-03-06 12:14:45.000000000 -0500
-@@ -123,7 +123,7 @@ static int connect_to_switch(struct daem
- 	return err;
- }
+--- test.orig/arch/um/os-Linux/start_up.c	2007-03-06 10:21:43.000000000 -0500
++++ test/arch/um/os-Linux/start_up.c	2007-03-06 10:43:02.000000000 -0500
+@@ -17,6 +17,7 @@
+ #include <sys/time.h>
+ #include <sys/wait.h>
+ #include <sys/mman.h>
++#include <sys/resource.h>
+ #include <asm/unistd.h>
+ #include <asm/page.h>
+ #include <sys/types.h>
+@@ -329,8 +330,32 @@ static void __init check_ptrace(void)
  
--static void daemon_user_init(void *data, void *dev)
-+static int daemon_user_init(void *data, void *dev)
- {
- 	struct daemon_data *pri = data;
- 	struct timeval tv;
-@@ -146,7 +146,10 @@ static void daemon_user_init(void *data,
- 	if(pri->fd < 0){
- 		kfree(pri->local_addr);
- 		pri->local_addr = NULL;
-+		return pri->fd;
- 	}
+ extern void check_tmpexec(void);
+ 
++static void check_coredump_limit(void)
++{
++	struct rlimit lim;
++	int err = getrlimit(RLIMIT_CORE, &lim);
 +
-+	return 0;
- }
- 
- static int daemon_open(void *data)
-Index: test/arch/um/drivers/mcast_user.c
-===================================================================
---- test.orig/arch/um/drivers/mcast_user.c	2007-03-06 12:09:57.000000000 -0500
-+++ test/arch/um/drivers/mcast_user.c	2007-03-06 12:14:45.000000000 -0500
-@@ -42,12 +42,13 @@ static struct sockaddr_in *new_addr(char
- 	return sin;
- }
- 
--static void mcast_user_init(void *data, void *dev)
-+static int mcast_user_init(void *data, void *dev)
- {
- 	struct mcast_data *pri = data;
- 
- 	pri->mcast_addr = new_addr(pri->addr, pri->port);
- 	pri->dev = dev;
-+	return 0;
- }
- 
- static void mcast_remove(void *data)
-Index: test/arch/um/drivers/net_kern.c
-===================================================================
---- test.orig/arch/um/drivers/net_kern.c	2007-03-06 12:03:02.000000000 -0500
-+++ test/arch/um/drivers/net_kern.c	2007-03-06 12:14:45.000000000 -0500
-@@ -325,8 +325,8 @@ static struct platform_driver uml_net_dr
- };
- static int driver_registered;
- 
--static int eth_configure(int n, void *init, char *mac,
--			 struct transport *transport)
-+static void eth_configure(int n, void *init, char *mac,
-+			  struct transport *transport)
- {
- 	struct uml_net *device;
- 	struct net_device *dev;
-@@ -339,16 +339,12 @@ static int eth_configure(int n, void *in
- 	device = kzalloc(sizeof(*device), GFP_KERNEL);
- 	if (device == NULL) {
- 		printk(KERN_ERR "eth_configure failed to allocate uml_net\n");
--		return(1);
++	if(err){
++		perror("Getting core dump limit");
 +		return;
- 	}
- 
- 	INIT_LIST_HEAD(&device->list);
- 	device->index = n;
- 
--	spin_lock(&devices_lock);
--	list_add(&device->list, &devices);
--	spin_unlock(&devices_lock);
--
- 	setup_etheraddr(mac, device->mac);
- 
- 	printk(KERN_INFO "Netdevice %d ", n);
-@@ -360,7 +356,7 @@ static int eth_configure(int n, void *in
- 	dev = alloc_etherdev(size);
- 	if (dev == NULL) {
- 		printk(KERN_ERR "eth_configure: failed to allocate device\n");
--		return 1;
-+		goto out_free_device;
- 	}
- 
- 	lp = dev->priv;
-@@ -376,7 +372,8 @@ static int eth_configure(int n, void *in
- 	}
- 	device->pdev.id = n;
- 	device->pdev.name = DRIVER_NAME;
--	platform_device_register(&device->pdev);
-+	if(platform_device_register(&device->pdev))
-+		goto out_free_netdev;
- 	SET_NETDEV_DEV(dev,&device->pdev.dev);
- 
- 	/* If this name ends up conflicting with an existing registered
-@@ -386,31 +383,12 @@ static int eth_configure(int n, void *in
- 	snprintf(dev->name, sizeof(dev->name), "eth%d", n);
- 	device->dev = dev;
- 
-+	/*
-+	 * These just fill in a data structure, so there's no failure
-+	 * to be worried about.
-+	 */
- 	(*transport->kern->init)(dev, init);
- 
--	dev->mtu = transport->user->max_packet;
--	dev->open = uml_net_open;
--	dev->hard_start_xmit = uml_net_start_xmit;
--	dev->stop = uml_net_close;
--	dev->get_stats = uml_net_get_stats;
--	dev->set_multicast_list = uml_net_set_multicast_list;
--	dev->tx_timeout = uml_net_tx_timeout;
--	dev->set_mac_address = uml_net_set_mac;
--	dev->change_mtu = uml_net_change_mtu;
--	dev->ethtool_ops = &uml_net_ethtool_ops;
--	dev->watchdog_timeo = (HZ >> 1);
--	dev->irq = UM_ETH_IRQ;
--
--	rtnl_lock();
--	err = register_netdevice(dev);
--	rtnl_unlock();
--	if (err) {
--		device->dev = NULL;
--		/* XXX: should we call ->remove() here? */
--		free_netdev(dev);
--		return 1;
--	}
--
- 	/* lp.user is the first four bytes of the transport data, which
- 	 * has already been initialized.  This structure assignment will
- 	 * overwrite that, so we make sure that .user gets overwritten with
-@@ -438,12 +416,45 @@ static int eth_configure(int n, void *in
- 	lp->tl.function = uml_net_user_timer_expire;
- 	memcpy(lp->mac, device->mac, sizeof(lp->mac));
- 
--	if (transport->user->init)
--		(*transport->user->init)(&lp->user, dev);
-+	if ((transport->user->init != NULL) &&
-+	    ((*transport->user->init)(&lp->user, dev) != 0))
-+		goto out_unregister;
- 
- 	set_ether_mac(dev, device->mac);
-+	dev->mtu = transport->user->max_packet;
-+	dev->open = uml_net_open;
-+	dev->hard_start_xmit = uml_net_start_xmit;
-+	dev->stop = uml_net_close;
-+	dev->get_stats = uml_net_get_stats;
-+	dev->set_multicast_list = uml_net_set_multicast_list;
-+	dev->tx_timeout = uml_net_tx_timeout;
-+	dev->set_mac_address = uml_net_set_mac;
-+	dev->change_mtu = uml_net_change_mtu;
-+	dev->ethtool_ops = &uml_net_ethtool_ops;
-+	dev->watchdog_timeo = (HZ >> 1);
-+	dev->irq = UM_ETH_IRQ;
- 
--	return 0;
-+	rtnl_lock();
-+	err = register_netdevice(dev);
-+	rtnl_unlock();
-+	if (err)
-+		goto out_undo_user_init;
++	}
 +
-+	spin_lock(&devices_lock);
-+	list_add(&device->list, &devices);
-+	spin_unlock(&devices_lock);
++	printf("Core dump limits :\n\tsoft - ");
++	if(lim.rlim_cur == RLIM_INFINITY)
++		printf("NONE\n");
++	else printf("%lu\n", lim.rlim_cur);
 +
-+	return;
++	printf("\thard - ");
++	if(lim.rlim_max == RLIM_INFINITY)
++		printf("NONE\n");
++	else printf("%lu\n", lim.rlim_max);
++}
 +
-+out_undo_user_init:
-+	if (transport->user->init != NULL)
-+		(*transport->user->remove)(&lp->user);
-+out_unregister:
-+	platform_device_unregister(&device->pdev);
-+out_free_netdev:
-+	free_netdev(dev);
-+out_free_device: ;
-+	kfree(device);
- }
- 
- static struct uml_net *find_device(int n)
-Index: test/arch/um/drivers/pcap_user.c
-===================================================================
---- test.orig/arch/um/drivers/pcap_user.c	2007-03-06 12:09:57.000000000 -0500
-+++ test/arch/um/drivers/pcap_user.c	2007-03-06 12:14:45.000000000 -0500
-@@ -18,7 +18,7 @@
- 
- #define PCAP_FD(p) (*(int *)(p))
- 
--static void pcap_user_init(void *data, void *dev)
-+static int pcap_user_init(void *data, void *dev)
+ void os_early_checks(void)
  {
- 	struct pcap_data *pri = data;
- 	pcap_t *p;
-@@ -28,11 +28,12 @@ static void pcap_user_init(void *data, v
- 	if(p == NULL){
- 		printk("pcap_user_init : pcap_open_live failed - '%s'\n", 
- 		       errors);
--		return;
-+		return -EINVAL;
- 	}
++	/* Print out the core dump limits early */
++	check_coredump_limit();
++
+ 	check_ptrace();
  
- 	pri->dev = dev;
- 	pri->pcap = p;
-+	return 0;
- }
- 
- static int pcap_open(void *data)
-Index: test/arch/um/drivers/slip_user.c
-===================================================================
---- test.orig/arch/um/drivers/slip_user.c	2007-03-06 12:03:02.000000000 -0500
-+++ test/arch/um/drivers/slip_user.c	2007-03-06 12:14:45.000000000 -0500
-@@ -17,11 +17,12 @@
- #include "os.h"
- #include "um_malloc.h"
- 
--void slip_user_init(void *data, void *dev)
-+static int slip_user_init(void *data, void *dev)
- {
- 	struct slip_data *pri = data;
- 
- 	pri->dev = dev;
-+	return 0;
- }
- 
- static int set_up_tty(int fd)
-Index: test/arch/um/drivers/slirp_user.c
-===================================================================
---- test.orig/arch/um/drivers/slirp_user.c	2007-03-06 12:03:02.000000000 -0500
-+++ test/arch/um/drivers/slirp_user.c	2007-03-06 12:14:45.000000000 -0500
-@@ -15,11 +15,12 @@
- #include "slip_common.h"
- #include "os.h"
- 
--void slirp_user_init(void *data, void *dev)
-+static int slirp_user_init(void *data, void *dev)
- {
- 	struct slirp_data *pri = data;
- 
- 	pri->dev = dev;
-+	return 0;
- }
- 
- struct slirp_pre_exec_data {
-Index: test/arch/um/include/net_user.h
-===================================================================
---- test.orig/arch/um/include/net_user.h	2007-03-06 12:03:02.000000000 -0500
-+++ test/arch/um/include/net_user.h	2007-03-06 12:14:45.000000000 -0500
-@@ -14,7 +14,7 @@
- #define UML_NET_VERSION (4)
- 
- struct net_user_info {
--	void (*init)(void *, void *);
-+	int (*init)(void *, void *);
- 	int (*open)(void *);
- 	void (*close)(int, void *);
- 	void (*remove)(void *);
-Index: test/arch/um/os-Linux/drivers/ethertap_user.c
-===================================================================
---- test.orig/arch/um/os-Linux/drivers/ethertap_user.c	2007-03-06 12:09:57.000000000 -0500
-+++ test/arch/um/os-Linux/drivers/ethertap_user.c	2007-03-06 12:14:45.000000000 -0500
-@@ -24,11 +24,12 @@
- 
- #define MAX_PACKET ETH_MAX_PACKET
- 
--void etap_user_init(void *data, void *dev)
-+static int etap_user_init(void *data, void *dev)
- {
- 	struct ethertap_data *pri = data;
- 
- 	pri->dev = dev;
-+	return 0;
- }
- 
- struct addr_change {
-Index: test/arch/um/os-Linux/drivers/tuntap_user.c
-===================================================================
---- test.orig/arch/um/os-Linux/drivers/tuntap_user.c	2007-03-06 12:09:57.000000000 -0500
-+++ test/arch/um/os-Linux/drivers/tuntap_user.c	2007-03-06 12:14:45.000000000 -0500
-@@ -24,11 +24,12 @@
- 
- #define MAX_PACKET ETH_MAX_PACKET
- 
--void tuntap_user_init(void *data, void *dev)
-+static int tuntap_user_init(void *data, void *dev)
- {
- 	struct tuntap_data *pri = data;
- 
- 	pri->dev = dev;
-+	return 0;
- }
- 
- static void tuntap_add_addr(unsigned char *addr, unsigned char *netmask,
+ 	/* Need to check this early because mmapping happens before the
 
 
 -------------------------------------------------------------------------
