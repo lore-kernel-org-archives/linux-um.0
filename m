@@ -2,19 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HOr6j-0003jt-8k for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Mar 2007 00:02:45 -0800
-Received: from rwcrmhc13.comcast.net ([204.127.192.83])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HOr6g-00046B-Az
+	id 1HOysb-0005Wp-CB for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Mar 2007 08:20:42 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HOysY-0008UE-ME
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Mar 2007 00:02:43 -0800
-MIME-Version: 1.0
-From: Roland McGrath <roland@redhat.com>
-In-Reply-To: Jeff Dike's message of  Monday, 5 March 2007 14:21:20 -0500
-	<20070305192120.GA7320@ccure.user-mode-linux.org>
-Message-Id: <20070307080159.F27C41801C4@magilla.sf.frob.com>
-Date: Wed,  7 Mar 2007 00:01:59 -0800 (PST)
-Subject: Re: [uml-devel] [PATCH] UML utrace support, step 1
+	Wed, 07 Mar 2007 08:20:41 -0800
+Date: Wed, 7 Mar 2007 11:11:39 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070307161139.GA3345@ccure.user-mode-linux.org>
+References: <200703061832.l26IWBKi006564@ccure.user-mode-linux.org>
+	<200703062007.16943.blaisorblade@yahoo.it>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200703062007.16943.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 4/5] UML - driver formatting fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,28 +31,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>, akpm@osdl.org
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-> On Thu, Feb 22, 2007 at 07:19:03PM -0800, Roland McGrath wrote:
-> > Your replacement patch still has utrace_regset stuff in it, so it doesn't
-> > compile without the later patches in the series.  Try applying only
-> > utrace-tracehook.patch from the series, then get it to build and make your
-> > utrace-tracehook-um.patch.
-> 
-> Below is a tracehook patch for UML which goes right after
-> utrace-utrace-tracehook.patch.
+On Tue, Mar 06, 2007 at 08:07:16PM +0100, Blaisorblade wrote:
+> The second line should better say -err instead of err.
 
-It does not.  That patch has regset and ptrace stuff in it.  It indeed
-applies fine before or after utrace patches.  But it doesn't close to
-compile without utrace-regset.patch and utrace-core.patch applied,
-and even with utrace-ptrace-compat.patch it still doesn't compile for me
-with a lot of complaints about TIF_SINGLESTEP not being defined where
-it's used in asm/tracehook.h.
+Right, patch below.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 
-Thanks,
-Roland
+My last formatting patch got the sign of an error wrong in a printk.
+
+Thanks to Blaisorblade for the close look.
+
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/drivers/chan_user.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: test/arch/um/drivers/chan_user.c
+===================================================================
+--- test.orig/arch/um/drivers/chan_user.c	2007-03-06 12:10:12.000000000 -0500
++++ test/arch/um/drivers/chan_user.c	2007-03-07 11:14:12.000000000 -0500
+@@ -158,7 +158,7 @@ static int winch_tramp(int fd, struct tt
+ 	 */
+ 	err = run_helper_thread(winch_thread, &data, CLONE_FILES, &stack, 0);
+ 	if(err < 0){
+-		printk("fork of winch_thread failed - errno = %d\n", err);
++		printk("fork of winch_thread failed - errno = %d\n", -err);
+ 		goto out_close;
+ 	}
+ 
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
