@@ -2,24 +2,27 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HPmzO-00033I-RX for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Mar 2007 13:51:03 -0800
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HPmzL-0007D3-Pr
+	id 1HPyRV-0005Zh-OU for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Mar 2007 02:04:49 -0800
+Received: from externalmx-1.sourceforge.net ([12.152.184.25])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HPyRU-0004fj-4U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Mar 2007 13:51:02 -0800
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Fri, 9 Mar 2007 22:50:48 +0100
-References: <20070131224504.GA7698@ccure.user-mode-linux.org>
-	<20070305231044.GB9525@ccure.user-mode-linux.org>
-	<200703060026.53253.blaisorblade@yahoo.it>
-In-Reply-To: <200703060026.53253.blaisorblade@yahoo.it>
+	Sat, 10 Mar 2007 02:04:49 -0800
+Received: from 60-242-28-72.static.tpgi.com.au ([60.242.28.72]
+	helo=syd-pow-pr10.tpgi.com.au)
+	by externalmx-1.sourceforge.net with esmtp (Exim 4.41)
+	id 1HPyRR-0006hR-62 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Mar 2007 02:04:46 -0800
+Received: from dualcorewin (unknown [196.190.83.3])
+	by Comfortxaqm@ashleybanyard.com (Postfix) with ESMTP id AFFA52A83794
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 10 Mar 2007 21:04:47 +1100
+Message-ID: <001301c762fb$82ce25d0$ada607ca@dualcorewin>
+From: "Glynes Comfort" <Comfortxaqm@ashleybanyard.com>
+Date: Sat, 10 Mar 2007 21:04:37 +1100
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_4ad8Fd/w6+qX3X8"
-Message-Id: <200703092250.48861.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] x86_64 32-bit ptrace mangles sixth system
-	call argument
+Subject: [uml-devel] Memory MacCreate
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,208 +32,221 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============1941807911=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, Andi Kleen <ak@suse.de>
-Cc: Jeff Dike <jdike@addtoit.com>
+To: user-mode-linux-devel@lists.sourceforge.net
 
---Boundary-00=_4ad8Fd/w6+qX3X8
+--===============1941807911==
+Content-Type: multipart/related; type="multipart/alternative";
+	boundary="----=_NextPart_000_000F_01C76357.B63E9DD0"
+
+------=_NextPart_000_000F_01C76357.B63E9DD0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0010_01C76357.B63E9DD0"
+
+
+------=_NextPart_001_0010_01C76357.B63E9DD0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-On Tuesday 06 March 2007 00:26, Blaisorblade wrote:
-> On Tuesday 06 March 2007 00:10, Jeff Dike wrote:
-> > On Tue, Mar 06, 2007 at 12:03:26AM +0100, Blaisorblade wrote:
-> > > > No, RCX corruption is different - that happens when a sysexit is done
-> > > > from a system call where userspace wasn't prepared to save and
-> > > > restore RCX.  sigreturn is the best example.
-> > >
-> > > Hmm... we should finally fix that, at some point. Or... now that you
-> > > explain it this way, it could even seem unfixable... is it? Or maybe
-> > > sysreturn should become a syscall where the return must happen through
-> > > the slow return path (iret), if that exists for x86_64.
-> >
-> > This is fixed, and has been for a while.  The fix was, as you suggest,
-> > return through iret in this case.
+Structure tmsg type user.
+Inside, net developers guidebook tools compare, prices find.
+At order, they were, put determines local help remove. Processing every =
+has os calls whenever, special sent. Line stdcall also, variable, would =
+correspond.
+Scan device dependent identifier, driver. Share interested in winning =
+prize your? Whandling waya wdiy dvd cd.
+Switch variables name mainmsg avoid, confusing references another.
+Few like wmcommand wmclose.
+Topics email article info news events. Parameters, was posted cursor =
+position pt pmsg tagmsg. All created apps input. Searching applipopup =
+menu custom item tips.
+News events sitemap reprints.
+Just few like, wmcommand wmclose.
+Buttons types converts them at order they. Tips rssemail diggmost, =
+traffic monitora beginners. Variables name mainmsg avoid confusing =
+references another.
+Pmsg tagmsg packed record uint be processed byte dword.
 
-Hmm, return through IRET is implemented for sys_rt_sigreturn since 2.6.0 (with 
-a couple of changes, yeah, but...).
+------=_NextPart_001_0010_01C76357.B63E9DD0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Was the original Bodo's report bogus? No, he actually found a much harder 
-issue.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Structure tmsg type user.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Inside, net developers guidebook tools =
+compare,=20
+prices find.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>At order, they were, put determines =
+local help=20
+remove. Processing every has os calls whenever, special sent. Line =
+stdcall also,=20
+variable, would correspond.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Scan device dependent identifier, =
+driver. Share=20
+interested in winning prize your? Whandling waya wdiy dvd =
+cd.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Switch variables name mainmsg avoid, =
+confusing=20
+references another.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Few like wmcommand =
+wmclose.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Topics email article info news events. =
+Parameters,=20
+was posted cursor position pt pmsg tagmsg. All created apps input. =
+Searching=20
+applipopup menu custom item tips.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>News events sitemap =
+reprints.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Just few like, wmcommand =
+wmclose.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Buttons types converts them at order =
+they. Tips=20
+rssemail diggmost, traffic monitora beginners. Variables name mainmsg =
+avoid=20
+confusing references another.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Pmsg tagmsg packed record uint be =
+processed byte=20
+dword.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><IMG alt=3D"of" hspace=3D0 =
+src=3D"cid:000e01c762fb$82ce25d0$ada607ca@dualcorewin"=20
+align=3Dcenter border=3D0></DIV></BODY></HTML>
 
-I've attached the log of that IRC here for reference.
+------=_NextPart_001_0010_01C76357.B63E9DD0--
 
-> Also the 32bit emulation case? That would be interesting for SKAS with
-> 64bit host and 32bit guest (which I haven't tested for a long time). Also
-> this means that I could test the needed trivial fixes for 64 on 64 (like
-> opening /proc/mm64, using PTRACE_EX_FAULTINFO which I introduced...).
+------=_NextPart_000_000F_01C76357.B63E9DD0
+Content-Type: image/gif;
+	name="Story.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000e01c762fb$82ce25d0$ada607ca@dualcorewin>
 
-I looked and it doesn't seem to have been fixed. Andi, can you give a look to 
-this problem (sigreturn returning through iret and corrupting ECX for 32-bit 
-processes)?
+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
 
-If I added in arch/x86_64/ia32/ia32_signal.c: sys32_sigreturn() a call to 
-set_thread_flag(TIF_IRET), would that fix the problem?
+------=_NextPart_000_000F_01C76357.B63E9DD0--
 
-I see no use of this in x86_64, even if this flag is defined and it is 
-(implicitly) implemented in *entry.S - it is never mentioned but it is tested 
-though _TIF_WORK_MASK / _TIF_ALLWORK_MASK, and separate stubs are used for 
-execve and sigreturn. Is there a good reason not to use IRET there?
 
-Bye
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-
---Boundary-00=_4ad8Fd/w6+qX3X8
-Content-Type: text/plain;
-  charset="iso-8859-1";
-  name="Bodo_chat_saved"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="Bodo_chat_saved"
-
-[16:08:52] Canali in comune con bodo [~bo@217.115.74.14]: #uml
-[16:09:02] <Blaisorblade> Hey, Bodo!
-[16:09:51] <bodo> Hello Blaisorblade!
-[16:09:59] <Blaisorblade> Ok, so?
-[16:10:14] <Blaisorblade> I've tried guessing the problem:
-[16:10:33] <Blaisorblade> But didn't found it...
-[16:10:34] <bodo> Blaisorblade: First, let us check: entry.S on x86_64 isn't modified by the patch, true?
-[16:10:43] <Blaisorblade> Exactly.
-[16:11:16] <bodo> Blaisorblade: So, assume a process was scheduled out not on a syscall, but on a interrupt
-[16:11:17] <Blaisorblade> But for 32-bit binaries the file to look at is ia32/ia32entry.S. And normal SKAS doesn't touch that file either.
-[16:11:30] <Blaisorblade> Hmm, ok...
-[16:11:44] <Blaisorblade> The interrupt handler will lazely share the MM.
-[16:12:03] <bodo> Blaisorblade: now, assume when it is scheduled next, this will happen on a syscall done by the outgoing process
-[16:12:17] <Blaisorblade> Ok.
-[16:12:40] <bodo> Blaisorblade: in that case, RCX and R11 of the process will be destroyed
-[16:12:55] <Blaisorblade> Hmm...
-[16:13:22] <Blaisorblade> What is the difference between SKAS and normal processes?
-[16:13:53] <bodo> Blaisorblade: SKAS does a UML context-switch while the host-process still is the same
-[16:14:23] <bodo> this happens in SKAS0, too. In case of threads sharing the same mm
-[16:14:25] <Blaisorblade> Yes, exactly... by "outgoing process" you refer to the UML one or the host one.
-[16:14:38] <bodo> host one
-[16:14:48] <bodo> err. UML one
-[16:15:15] <Blaisorblade> Because UML will read the values saved by the interrupt handler context, right?
-[16:15:34] <Blaisorblade> But is the interrupt handler preemptible?
-[16:15:44] <bodo> yes. And *all* registers need to be restored. But this won't be done on a return from syscall
-[16:16:24] <bodo> Blaisorblade: think of timer tick interrupting the process
-[16:16:43] <Blaisorblade> You mean a host interrupt or a UML interrupt, i.e. a signal?
-[16:17:32] <bodo> both.
-[16:17:46] <bodo> think of a timer tick interrupting the host.
-[16:18:12] <bodo> host see an timer running out and queues a SIGALRM for UML-process
-[16:18:44] <bodo> on return from interrupt, this signal will be processed, so the UML kernel is started
-[16:18:48] <Blaisorblade> Ok. A host interrupt must be finished before UML continues running, except on a multiprocessor host...
-[16:19:22] <Blaisorblade> bodo: the UML kernel is started, it does the context switch, and the registers of the process have been saved somewhere on the host...
-[16:19:23] <bodo> UML decides to schedule another process
-[16:20:07] <bodo> and while the kernel runs, the user-process still is "in interrupt"
-[16:20:37] <bodo> as so_signal is called before returning to user
-[16:21:02] <Blaisorblade> bodo: Wait a moment: what you're describing is a race condition on ptrace()...
-[16:21:02] <Blaisorblade> Anyhow, hardware interrupt *don't* send signals anywhere... they must schedule softirqs or something else to do the long work.
-[16:21:09] <bodo> the host schedules out the user-process and schules the kernel-process
-[16:21:20] <bodo> No, no race condition!!!
-[16:21:36] <bodo> let's try again:
-[16:21:46] <bodo> assume in UML process A is running
-[16:21:50] <Blaisorblade> Wait a moment: where do you see the call to do_signal?
-[16:21:59] <bodo> in the host
-[16:22:13] <Blaisorblade> and where in the code?
-[16:22:34] <Blaisorblade> In entry.S this isn't found.
-[16:23:39] <Blaisorblade> Ok, found sysret_signal and do_notify_resume().
-[16:23:57] <Blaisorblade> -> and do_signal.
-[16:24:17] <bodo> retint_signal
-[16:24:59] <bodo> May I try to explain better?
-[16:25:06] <Blaisorblade> Ok, let me look...
-[16:25:29] <Blaisorblade> Ok, go... I'm starting understanding the problem...
-[16:25:52] <bodo> Let's assume, process A on UML is running
-[16:26:18] <bodo> user-process is interrupted by a timer-tick
-[16:26:27] <Blaisorblade> Yes, perfectly... And then it's interrupted by a host timer tick and a SIGALRM sent to UML which then schedules another process, right?
-[16:26:40] <bodo> yes!!!
-[16:27:34] <Blaisorblade> The problem is that in that point, PTRACE_GETREGS will access the interrupt values of the registers, while saving the registers for the old process, right?
-[16:27:34] <bodo> now, UML's process is interrupt while *running*, that means, we have to save *all* regs and also to restore *all* regs later
-[16:28:04] <bodo> Blaisorblade: yes, and that is OK. , as we will read all register values.
-[16:28:28] <bodo> the problem will come up later
-[16:28:39] <bodo> assume, now process B is running on UML
-[16:28:44] <Blaisorblade> Ok, it will be later, so the values we read are correct.
-[16:29:01] <bodo> process B does a syscall, that leads to process A being scheduled
-[16:29:44] <bodo> A's registers are read in a "syscall-context", which is no problem
-[16:29:51] <Blaisorblade> Hmm, ok, this means that we must restore all registers of process A...
-[16:30:23] <Blaisorblade> bodo: You said that we interrupted A while it was inside the *interrupt* code...
-[16:30:43] <bodo> but B's registers are written to a syscall-context, which is wrong, as RCX must contain return-address on syscall and R11 must contain RFLAGS
-[16:31:31] <bodo> yes. we interrupted A while it was inside the *interrupt* code, but we bring it back in syscall-code --> ERROR
-[16:31:58] <bodo> this is specific x86_64
-[16:32:52] <bodo> I don't know, if this is *your* problem, but it is *one* problem
-[16:34:10] <Blaisorblade> Hmm...
-[16:34:31] <Blaisorblade> Ok, what I'm currently testing for now is support for 32-bit binaries...
-[16:34:49] <bodo> AFAICS, Jeff also should see problems with sys_rt_sigreturn, if the process was interrupted while not doing a syscall
-[16:35:22] <Blaisorblade> I.e. I mean 32-bit UML binaries, which run inside ia32entry.S...
-[16:35:51] <Blaisorblade> Wait a moment: what's the problem about B's registers?
-[16:36:16] <bodo> No problem about B, only about A
-[16:36:48] <Blaisorblade> What I understood is that we restored our registers of process A, not the registers of the interrupt handler, thus preventing the interrupt handler from returning, right?
-[16:37:24] <Blaisorblade> bodo: You said "B's registers are written to a syscall context, which is wrong, [.....]RCX[...] R11[...]"
-[16:37:32] <bodo> the registers of the interrupt handler *are* A's registers
-[16:37:53] <bodo> the problem is, on x86_64 a syscall *will* clobber RCX and R11
-[16:38:21] <bodo> a syscall returns using SYSRET, while a interrupt returns using IRET
-[16:39:28] <Blaisorblade> Well, wait a moment, the registers we(UML) saved with ptrace about A are the ones which were on A's stack, right?
-[16:39:41] <bodo> yes.
-[16:40:12] <Blaisorblade> And B is a UML process?
-[16:40:16] <bodo> yes.
-[16:40:42] <Blaisorblade> So B is doing a syscall which is captured by PTRACE_SYSCALL, hmmm, ok...
-[16:40:52] <bodo> yes.
-[16:41:43] <Blaisorblade> on x86_64 a syscall will *save* and clobber RCX and R11, right? And those values will be used by SYSRET.
-[16:41:57] <bodo> yes.
-[16:42:00] <Blaisorblade> The registers we read on A's stack were the ones from the userspace process before the syscall...
-[16:42:26] <Blaisorblade> right?
-[16:42:27] <bodo> yes. And RCX and R11 have to contain the previous value on resume
-[16:43:13] <bodo> But we return from a syscall, that clobbers them
-[16:43:56] <bodo> Unfortunately, I have no x86_64, so all this is from reading the source only.
-[16:44:00] <Blaisorblade> Ok. In normal activity, or even TT or SKAS0, when process A is suspended the host saves again the registers, this time the ones from inside the current frame.
-[16:44:29] <Blaisorblade> bodo: again, would this affect 32bit processes in your opinion?
-[16:44:46] <Blaisorblade> They are handled by ia32entry.S, which is different.
-[16:44:54] <bodo> Wait a moment, I'll try to find out
-[16:46:49] <Blaisorblade> Well, what the hell! It seems that ia32 emulated syscalls through vsyscall page are done by either sysenter or syscall... while the ones in libc are done by int 0x80.
-[16:47:57] <bodo> I see. At least SYSCALL method should be affected, maybe sysenter also, wait a moment
-[16:48:55] <Blaisorblade> Ok, sysenter is enabled only if the vendor is INTEL. arch/x86_64/ia32/syscall32.c
-[16:50:27] <Blaisorblade> So, this means that saving the registers of a tracee while it's in interrupt context will read the ones from syscall context, i.e. the one from userspace (except for a few clobbered ones). I.e. we return abruptly from the interrupt handler.
-[16:51:08] <bodo> Maybe, vsyscall-page will repair all changed values, as for i386-programs, it has to look like a i386
-[16:52:31] <bodo> What are the problems you see on your x86_64?
-[16:52:48] <Blaisorblade> bodo: from looking at arch/i386/kernel/vsyscall-sysenter.S, it seems that a syscall done through sysenter will save and clobber some i386 registers...
-[16:53:19] <Blaisorblade> bodo: the problem I see is IIRC a crash during boot...
-[16:53:46] <Blaisorblade> with a BUG in mmap.c (or memory.c)...
-[16:54:19] <Blaisorblade> For instance, a old 2.4 kernel spit out, some time ago:
-[16:54:19] <Blaisorblade> 
-[16:54:19] <Blaisorblade> VFS: Mounted root (ext2 filesystem) readonly.
-[16:54:19] <Blaisorblade> Unable to load interpreter
-[16:54:19] <Blaisorblade> Kernel panic: kernel BUG at memory.c:377!
-[16:54:21] <bodo> Do you boot an UML/i386 or UML/x86_64
-[16:54:27] <Blaisorblade> UML/i386...
-[16:54:41] <Blaisorblade> I've not yet modified UML/x86_64...
-[16:55:16] <bodo> UML/x86_64 isn't yet ready for SKAS3?
-[16:55:37] <Blaisorblade> The changes are at least:
-[16:55:37] <Blaisorblade> 1) use /proc/mm64
-[16:55:37] <Blaisorblade> 2) use PTRACE_EX_FAULTINFO which also returns trap_no
-[16:55:37] <Blaisorblade> 3) use trap_no
-[16:55:37] <Blaisorblade> 4) do everything else that might be needed, which I must investigate.
-[16:56:06] <Blaisorblade> For 4), I guess that there will be some SKAS specific code in sys-i386 or in sysdep, but I still must find out.
-[16:57:11] <bodo> So, currently you use UML/i386 on a x86_64
-[16:57:22] <Blaisorblade> Exactly...
-[16:57:29] <bodo> and that crashes on boot
-[16:57:52] <Blaisorblade> Yes... actually maybe I missed testing the last version but I think I did...
-[16:58:37] <Blaisorblade> I'll post updated results on the status when I'll have time, but for now I must go back to more urgent stuff, sorry... I have to finish this by today...
-[16:58:54] <Blaisorblade> Thanks for the help anyway, I'll save this chat and look more carefully after...
-[16:59:12] <Blaisorblade> Anyhow, this is something which *can* be solved by fiddling with entry.S, right?
-[16:59:47] <Blaisorblade> I'll understand it more fully when I'll have studied the SYSENTER and SYSCALL instructions, anyhow.
-[17:00:28] <bodo> right. It should use int_ret_from_sys_call. which kind of syscall does the glibc on UML use?
-[17:01:17] <bodo> and don't forget: I couldn't test anything, so maybe I'm totally wrong ...
-[17:02:31] <Blaisorblade> Ok, I'll look at what happens... glibc inside UML uses int 0x80 however...
-[17:02:43] <Blaisorblade> Because I mostly tested with a slack10...
-[17:03:25] <Blaisorblade> Slackware 10.0, which has a old glibc... however maybe I tested with Sarge more recently... earlier tests didn't work for a double >> PAGE_SHIFT problem.
-
---Boundary-00=_4ad8Fd/w6+qX3X8
+--===============1941807911==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -241,7 +257,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---Boundary-00=_4ad8Fd/w6+qX3X8
+--===============1941807911==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -252,7 +268,4 @@ User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
---Boundary-00=_4ad8Fd/w6+qX3X8--
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+--===============1941807911==--
