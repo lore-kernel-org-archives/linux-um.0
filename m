@@ -1,32 +1,31 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HRgVR-0002oJ-MM for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Mar 2007 20:19:58 -0700
-Received: from mail128.messagelabs.com ([216.82.250.131])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HRgVR-0006m3-8E
+	id 1HRpip-0000gu-Kg for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Mar 2007 06:10:23 -0700
+Received: from mail119.messagelabs.com ([216.82.241.179])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HRpio-0003G1-49
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Mar 2007 20:19:57 -0700
+	Thu, 15 Mar 2007 06:10:23 -0700
 Received: from az33exr01.mot.com (az33exr01.mot.com [10.64.251.231])
-	by motgate3.mot.com (8.12.11/Motorola) with ESMTP id l2F3JpvA025503
+	by motgate2.mot.com (8.12.11/Motorola) with ESMTP id l2FDAJKv011265
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 14 Mar 2007 20:19:51 -0700 (MST)
-Received: from az10vts03 (az10vts03.mot.com [10.64.251.244])
-	by az33exr01.mot.com (8.13.1/Vontu) with SMTP id l2F3Jo0w012839
+	Thu, 15 Mar 2007 06:10:19 -0700 (MST)
+Received: from az10vts04 (az10vts04.mot.com [10.64.251.245])
+	by az33exr01.mot.com (8.13.1/Vontu) with SMTP id l2FDAILD012304
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 14 Mar 2007 22:19:50 -0500 (CDT)
+	Thu, 15 Mar 2007 08:10:18 -0500 (CDT)
 Received: from ZMY16EXM67.ds.mot.com (zmy16exm67.ap.mot.com [10.179.4.27])
-	by az33exr01.mot.com (8.13.1/8.13.0) with ESMTP id l2F3Jmun012828
+	by az33exr01.mot.com (8.13.1/8.13.0) with ESMTP id l2FDAGil012266
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 14 Mar 2007 22:19:49 -0500 (CDT)
+	Thu, 15 Mar 2007 08:10:17 -0500 (CDT)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Date: Thu, 15 Mar 2007 11:19:37 +0800
-Message-ID: <0A01463223B8164194908CAC85B66A1201A96E8B@ZMY16EXM67.ds.mot.com>
-In-Reply-To: <20070314141004.GA5116@ccure.user-mode-linux.org>
+Date: Thu, 15 Mar 2007 21:10:05 +0800
+Message-ID: <0A01463223B8164194908CAC85B66A1201A974B0@ZMY16EXM67.ds.mot.com>
 From: "Krishnappa Abhijith-A21204" <abhijith@motorola.com>
-Subject: Re: [uml-devel] Regarding Address space in UML
+Subject: [uml-devel] Regarding UML system call implementation
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,57 +35,132 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0049262638=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Thanks Jeff for your response.
-So Basically when we run a process in UML, the tracing thread enables
-tracing for that process.
-Also I had a query on creation of a corresponding process on host...
-Why it is done in UML... I mean why a corresponding process gets created
-in HOST ? Is it to catch all the signals that host KERNEL delivers ?
+This is a multi-part message in MIME format.
 
-Pls let me know.
+--===============0049262638==
+Content-class: urn:content-classes:message
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C76703.40584BC5"
+
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C76703.40584BC5
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+            I have a question regarding system call implementation on
+Linux
+=20
+In order to execute the system call in user space, the process is made
+to execute the system call switch on its kernel stack=20
+Why this is done... ?
+=20
+Also UML queues a signal ( SIGUSR ) to the process in order to make it
+run on its kernel stack... is this the only reason why UML queue system
+call ?
+=20
+I think by ptracing itself UML will come to know when the system ended
+so that it can fill in the system_ call retrun value to the process
+context.
+=20
+=20
+Please let me know...
+Thanks a lot.
+=20
 Thanks,
-Abhi 
+Abhi
+=20
 
------Original Message-----
-From: Jeff Dike [mailto:jdike@addtoit.com] 
-Sent: Wednesday, March 14, 2007 7:40 PM
-To: Krishnappa Abhijith-A21204
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Subject: Re: [uml-devel] Regarding Address space in UML
+------_=_NextPart_001_01C76703.40584BC5
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 14, 2007 at 09:57:33PM +0800, Krishnappa Abhijith-A21204
-wrote:
-> I had a question on Process address space in UML.
-> Will there be a tracing thread for each process created in UML ? which
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2900.3059" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS"=20
+size=3D2>Hi,</FONT></SPAN></DIV>
+<DIV><SPAN=20
+class=3D145370613-15032007>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;=20
+<FONT face=3D"Trebuchet MS" size=3D2>I have a question regarding system =
+call=20
+implementation on Linux</FONT></SPAN></DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS"=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D145370613-15032007>In order to execute the system =
+call in user=20
+space, the process is made to execute the system call switch on its =
+kernel stack=20
+</SPAN></DIV>
+<DIV><SPAN class=3D145370613-15032007>Why this is done... ?</SPAN></DIV>
+<DIV><SPAN class=3D145370613-15032007></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS" =
+size=3D2>Also <FONT=20
+face=3D"Times New Roman" size=3D3>UML queues a signal ( SIGUSR ) to the =
+process in=20
+order to make it run on its kernel stack... is this the only reason why =
+UML=20
+queue system call ?</FONT></FONT></SPAN></DIV>
+<DIV><SPAN class=3D145370613-15032007></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS" =
+size=3D2>I think by=20
+ptracing itself UML will come to know when the system ended so that it =
+can fill=20
+in the system_ call retrun value to the process =
+context.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS"=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS"=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS" =
+size=3D2>Please let=20
+me know...</FONT></SPAN></DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS" =
+size=3D2>Thanks a=20
+lot.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS"=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS"=20
+size=3D2>Thanks,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D145370613-15032007><FONT face=3D"Trebuchet MS"=20
+size=3D2>Abhi</FONT></SPAN></DIV>
+<DIV><SPAN class=3D145370613-15032007></SPAN>&nbsp;</DIV></BODY></HTML>
 
-> is responsible for system call tracking ?
+------_=_NextPart_001_01C76703.40584BC5--
 
-No.  There is one per virtual CPU which traces the process running on
-that CPU and runs the kernel for that CPU.
 
-> Also will the address space of a process in UML also consists of the 
-> corresponding Tracing thread ?
-
-No, the address space is nearly identical to what it would be on the
-host.
-
-				Jeff
-
---
-Work email - jdike at linux dot intel dot com
+--===============0049262638==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0049262638==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============0049262638==--
