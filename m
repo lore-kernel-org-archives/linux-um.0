@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HSLRF-0008IM-UJ for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Mar 2007 16:02:22 -0700
-Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HSLRE-00087j-9s
+	id 1HSLj7-0001Yz-3v for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Mar 2007 16:20:49 -0700
+Received: from sccrmhc14.comcast.net ([204.127.200.84])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HSLj4-0001WS-P7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Mar 2007 16:02:21 -0700
-Date: Fri, 16 Mar 2007 16:00:31 -0700
-From: Greg KH <greg@kroah.com>
-Message-ID: <20070316230031.GA13798@kroah.com>
-References: <20070316161015.GA7948@c2.user-mode-linux.org>
+	Fri, 16 Mar 2007 16:20:49 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20070316161015.GA7948@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [stable] [PATCH] UML - arch_prctl should set thread fs
+From: Roland McGrath <roland@redhat.com>
+In-Reply-To: Jeff Dike's message of  Friday, 16 March 2007 12:25:52 -0400
+	<20070316162552.GB7948@c2.user-mode-linux.org>
+Message-Id: <20070316232007.0CE881801C5@magilla.sf.frob.com>
+Date: Fri, 16 Mar 2007 16:20:06 -0700 (PDT)
+Subject: Re: [uml-devel] [PATCH] UML utrace support, step 1
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,17 +29,30 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: stable@kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Mar 16, 2007 at 12:10:15PM -0400, Jeff Dike wrote:
-> [ This missed getting into -stable the first time I sent it ]
+> Did I send the right patch?  The one I meant to send (appended below),
+> indeed builds and runs without utrace-regset.patch and
+> utrace-core.patch applied.  It's utrace-1 in the following:
 
-That's because it doesn't apply at all to the current 2.6.20.3 kernel
-tree.  Can you rediff it for that one so that we can apply it properly?
+That is not the same patch I tried before.  This one does apply and build
+fine (after make defconfig ARCH=um).  
 
-thanks,
+Technically utrace_native_view doesn't belong in the tracehook patch (but
+in the regset one to follow it), but it is harmless.
 
-greg k-h
+I've merged it into my current tree.  You can get this via GIT if you like
+that.  I do regular merges from Linus's GIT tree, so any upstream UML
+changes that merge cleanly or have trivial conflict fixes I can do will be
+taken care of automatically.  For future updates, please send me
+incremental changes based on my current stuff; the GIT branches and the
+2.6-current patches on my utrace web page always match up.  My patch set
+generation uses just one fixed log message for utrace-tracehook-um.patch,
+so tell me if you want to adjust it from log text in today's patch.
+
+
+Thanks,
+Roland
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
