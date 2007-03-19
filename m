@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HTOH9-0005mP-8B for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 13:16:15 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTOH4-00029n-Jo
+	id 1HTPMW-0004pb-H0 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Mar 2007 14:25:52 -0700
+Received: from ns2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HTPMV-0007lG-8B
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 13:16:15 -0700
-Date: Mon, 19 Mar 2007 16:12:50 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070319201250.GC12179@c2.user-mode-linux.org>
-References: <20070316161015.GA7948@c2.user-mode-linux.org>
-	<20070316230031.GA13798@kroah.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20070316230031.GA13798@kroah.com>
-Subject: Re: [uml-devel] [stable] [PATCH] UML - arch_prctl should set thread fs
+	Mon, 19 Mar 2007 14:25:52 -0700
+From: <gregkh@suse.de>
+Date: Mon, 19 Mar 2007 14:23:49 -0700
+In-Reply-To: <20070319201250.GC12179@c2.user-mode-linux.org>
+Message-Id: <20070319212538.1262DCB18F7@imap.suse.de>
+Subject: [uml-devel] patch uml-arch_prctl-should-set-thread-fs.patch queued
+	to -stable tree
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,26 +24,36 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: jdike@addtoit.com, greg@kroah.com, gregkh@suse.de, user-mode-linux-devel@lists.sourceforge.net
+Cc: stable@kernel.org
+
+
+This is a note to let you know that we have just queued up the patch titled
+
+     Subject: UML - arch_prctl should set thread fs
+
+to the 2.6.20-stable tree.  Its filename is
+
+     uml-arch_prctl-should-set-thread-fs.patch
+
+A git repo of this tree can be found at 
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+
+From jdike@addtoit.com Mon Mar 19 13:16:13 2007
+From: Jeff Dike <jdike@addtoit.com>
+Date: Mon, 19 Mar 2007 16:12:50 -0400
+Subject: UML - arch_prctl should set thread fs
 To: stable@kernel.org
-Cc: Greg KH <greg@kroah.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Greg KH <greg@kroah.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Message-ID: <20070319201250.GC12179@c2.user-mode-linux.org>
 
-On Fri, Mar 16, 2007 at 04:00:31PM -0700, Greg KH wrote:
-> That's because it doesn't apply at all to the current 2.6.20.3 kernel
-> tree.  Can you rediff it for that one so that we can apply it properly?
-
-My apologies - that depended on a previous patch which I thought had
-made it into -stable.  Below is a combination patch - I think larger
-than normal for -stable, but a good part of it is non-code changes.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
-
+From: Jeff Dike <jdike@addtoit.com>
 
 x86_64 needs some TLS fixes.  What was missing was remembering the child
 thread id during clone and stuffing it into the child during each context
@@ -62,18 +70,8 @@ correct set of registers are changed on the host and restored to the process
 when it runs again.
 
 Signed-off-by: Jeff Dike <jdike@addtoit.com>
---
- arch/um/include/os.h                 |    2 
- arch/um/os-Linux/sys-x86_64/Makefile |    2 
- arch/um/os-Linux/sys-x86_64/prctl.c  |   12 +++++
- arch/um/sys-x86_64/syscalls.c        |   76 ++++++++++++++++++++++++++---------
- arch/um/sys-x86_64/tls.c             |   11 +++--
- include/asm-um/processor-x86_64.h    |    6 +-
- include/asm-um/ptrace-x86_64.h       |    6 --
- 7 files changed, 86 insertions(+), 29 deletions(-)
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
-Index: linux-2.6.20.3/arch/um/include/os.h
-===================================================================
 --- linux-2.6.20.3.orig/arch/um/include/os.h
 +++ linux-2.6.20.3/arch/um/include/os.h
 @@ -341,4 +341,6 @@ extern void maybe_sigio_broken(int fd, i
@@ -295,6 +293,10 @@ Index: linux-2.6.20.3/include/asm-um/ptrace-x86_64.h
 +				struct task_struct *to);
  
  #endif
+
+
+Patches currently in stable-queue which might be from jdike@addtoit.com are
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
