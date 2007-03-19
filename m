@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HTLoZ-0005iu-Lg for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 10:38:37 -0700
+	id 1HTLsW-0006A9-4z for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Mar 2007 10:42:40 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTLoS-00085c-Mt
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTLsV-0001EA-Lk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 10:38:35 -0700
-Date: Mon, 19 Mar 2007 13:36:29 -0400
+	Mon, 19 Mar 2007 10:42:40 -0700
+Date: Mon, 19 Mar 2007 13:40:38 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070319173629.GA11790@c2.user-mode-linux.org>
-References: <0A01463223B8164194908CAC85B66A1201AD3E2E@ZMY16EXM67.ds.mot.com>
+Message-ID: <20070319174038.GB11790@c2.user-mode-linux.org>
+References: <0A01463223B8164194908CAC85B66A1201AD3E57@ZMY16EXM67.ds.mot.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <0A01463223B8164194908CAC85B66A1201AD3E2E@ZMY16EXM67.ds.mot.com>
-Subject: Re: [uml-devel] Regarding System call virtualization
+In-Reply-To: <0A01463223B8164194908CAC85B66A1201AD3E57@ZMY16EXM67.ds.mot.com>
+Subject: Re: [uml-devel] Regarding context switching in UML.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,48 +32,34 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Krishnappa Abhijith-A21204 <abhijith@motorola.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Mar 19, 2007 at 10:38:27AM +0800, Krishnappa Abhijith-A21204 wrote:
->         Is the below flow correct for UML (TT mode)
+On Mon, Mar 19, 2007 at 11:01:40AM +0800, Krishnappa Abhijith-A21204 wrote:
+>         Regarding Context switching in UML.
+> Each process running in UML will have corresponding process in HOST.
 
-Maybe, maybe not - your terminology is somewhat confusing.
+In tt and skas0 mode, roughly yes.
 
-> 1. UML process wants to execute a sys call say open().
-> 2. UML TT comes to know this
+> So when the context switching in HOST happens, UML has to switch the
+> corresponding UML process by saving context etc...
+> will this be done by tracing thread.... Also how does process running in
+> HOST notifies UML to switch ?
 
-By having PTRACE_SYSCALL on the host return status SIGTRAP | 0x80 from wait().
+It does so by calling the UML's schedule().
 
-> annuls with getpid(), and UML TT executes
-> open() on behalf of UML process.
+The actual context switching is done by the outgoing process sleeping
+after waking up the incoming process.
 
-If UML TT refers to the tracing thread, this is wrong.  The TT ptraces
-a set of (UML) kernel register values into the process, and it (not
-the TT) executes the open.
+In tt mode, this is done by using a pipe as a semphore.  A sleeping
+process is sleeping in read on a pipe, and will be woken up when an
+outgoing process writes a byte into the other end.
 
-> 3. UML process executes the getpid() and returns and signals TT.
+> Also I've read in one of the article that UML schedules its process by
+> itself..? How this is done ?
 
-This happened before step 2.
+It has its own scheduler.
 
-> 4. By this time UML TT has finished executing the system call open and
-> has returned back, so TT fills in the registers of UML process.
-
-The system-call-making process finished executing in the UML kernel,
-and signals the TT (by sending itself a signal, which will bump the TT
-out of wait()) that it should return to userspace.
-
-> 5. Now UML process executes normally with the open file descriptor.
->  
-> If the above steps are correct, then How does UML protects host kernel.
-> because even here TT will ask for host kernel services which may corrupt
-> host kernel ? 
-
-The *host* kernel is protected by hardware.  UML is a normal process
-with no more access to the host kernel than ls.
-
-There is a related, good question here, which is how is the UML kernel
-protected, given that it is present, and not protected, in the process
-address space.  The answer is that it isn't, at least not without
-severe performance penalties.  This is largely what led to the skas
-modes.
+The fact that you ask this question, and that you seem to think there
+is some sort of special relationship between UML and the host kernel,
+suggests that you have some basic misunderstandings.
 
 				Jeff
 
