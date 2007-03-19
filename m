@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HTLsW-0006A9-4z for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 10:42:40 -0700
+	id 1HTLvV-0006UU-FS for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Mar 2007 10:45:45 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTLsV-0001EA-Lk
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTLvU-0002NQ-KE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 10:42:40 -0700
-Date: Mon, 19 Mar 2007 13:40:38 -0400
+	Mon, 19 Mar 2007 10:45:45 -0700
+Date: Mon, 19 Mar 2007 13:43:47 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070319174038.GB11790@c2.user-mode-linux.org>
-References: <0A01463223B8164194908CAC85B66A1201AD3E57@ZMY16EXM67.ds.mot.com>
+Message-ID: <20070319174347.GC11790@c2.user-mode-linux.org>
+References: <0A01463223B8164194908CAC85B66A1201AD3E5C@ZMY16EXM67.ds.mot.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <0A01463223B8164194908CAC85B66A1201AD3E57@ZMY16EXM67.ds.mot.com>
-Subject: Re: [uml-devel] Regarding context switching in UML.
+In-Reply-To: <0A01463223B8164194908CAC85B66A1201AD3E5C@ZMY16EXM67.ds.mot.com>
+Subject: Re: [uml-devel] Regarding Virtual Memory Emulation in UML.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,34 +32,32 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Krishnappa Abhijith-A21204 <abhijith@motorola.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Mar 19, 2007 at 11:01:40AM +0800, Krishnappa Abhijith-A21204 wrote:
->         Regarding Context switching in UML.
-> Each process running in UML will have corresponding process in HOST.
+On Mon, Mar 19, 2007 at 11:13:11AM +0800, Krishnappa Abhijith-A21204 wrote:
+>         Regarding Virtual Memory Emulation in UML (TT mode).
+> UML will create a file of Physical mem size and it allocates memory to
+> UML process by mmap() ing it.
+>  
+> Also in Jeff's article I read that Kernel's text and Data are located in
+> the process address space....
 
-In tt and skas0 mode, roughly yes.
+In tt mode, yes.
 
-> So when the context switching in HOST happens, UML has to switch the
-> corresponding UML process by saving context etc...
-> will this be done by tracing thread.... Also how does process running in
-> HOST notifies UML to switch ?
+> Why the kernels text and data will be in UML Process address space ?
 
-It does so by calling the UML's schedule().
+Because there is (or at the time, seemed to be) no other way to change
+address space mappings (mmap, munmap, mprotect) or to get page fault
+information except to have the UML kernel in the same address space as
+the process.
 
-The actual context switching is done by the outgoing process sleeping
-after waking up the incoming process.
+> Normaly kernel is a seprate entity right ?
 
-In tt mode, this is done by using a pipe as a semphore.  A sleeping
-process is sleeping in read on a pipe, and will be woken up when an
-outgoing process writes a byte into the other end.
+Sure, but this is the same situation as on i386.  The host kernel
+occupies the upper 1G of the process address space.
 
-> Also I've read in one of the article that UML schedules its process by
-> itself..? How this is done ?
+> So basically process and kernel address space co-exist.. May I know
+why?
 
-It has its own scheduler.
-
-The fact that you ask this question, and that you seem to think there
-is some sort of special relationship between UML and the host kernel,
-suggests that you have some basic misunderstandings.
+Because it works, but skas0 shows another way to make this work.
 
 				Jeff
 
