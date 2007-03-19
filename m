@@ -2,30 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HTDkd-0005in-Bc for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 02:01:59 -0700
-Received: from cirse.extra.cea.fr ([132.166.172.102])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTDkb-0003gC-Lm
+	id 1HTLoZ-0005iu-Lg for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Mar 2007 10:38:37 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTLoS-00085c-Mt
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 02:01:59 -0700
-Received: from nephilia.intra.cea.fr (nephilia.intra.cea.fr [132.166.88.33])
-	by cirse.extra.cea.fr (8.13.8/8.13.4/CEAnet-Internet.7.0) with ESMTP id
-	l2J91ibm011537 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 19 Mar 2007 10:01:44 +0100 (MET)
-Received: from muguet.saclay.cea.fr (muguet.saclay.cea.fr [132.166.192.6])
-	by nephilia.intra.cea.fr (8.13.8/8.13.8) with ESMTP id l2J91iEo019514
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 19 Mar 2007 10:01:44 +0100 (envelope-from jc.lafoucriere@cea.fr)
-Received: from zia.bruyeres.cea.fr (esteban.dam.intra.cea.fr [132.165.76.10])
-	by muguet.saclay.cea.fr (8.13.8/8.13.4/CEAnet-internes.7.0) with
-	SMTP id l2J91hDF023822
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 19 Mar 2007 10:01:43 +0100 (MET)
-Message-ID: <45FE5141.3030007@cea.fr>
-Date: Mon, 19 Mar 2007 10:00:49 +0100
-From: Jacques-Charles Lafoucriere <jc.lafoucriere@cea.fr>
-MIME-Version: 1.0
-Subject: [uml-devel] 2.6.18 UML machine on FC6 host
+	Mon, 19 Mar 2007 10:38:35 -0700
+Date: Mon, 19 Mar 2007 13:36:29 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070319173629.GA11790@c2.user-mode-linux.org>
+References: <0A01463223B8164194908CAC85B66A1201AD3E2E@ZMY16EXM67.ds.mot.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <0A01463223B8164194908CAC85B66A1201AD3E2E@ZMY16EXM67.ds.mot.com>
+Subject: Re: [uml-devel] Regarding System call virtualization
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,18 +29,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Krishnappa Abhijith-A21204 <abhijith@motorola.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+On Mon, Mar 19, 2007 at 10:38:27AM +0800, Krishnappa Abhijith-A21204 wrote:
+>         Is the below flow correct for UML (TT mode)
 
-I am trying to build and run a UML 2.6.18 machine on a FC6 host. 
-(2.6.18-1.2798)
-I have tried many patches from the list and was not able to be successful
-(hang after VFS: Mounted root (ext3 filesystem) readonly.)
-Does the host need a special patch to run recent UML kernel or is it 
-only an issue in the UML machine ?
+Maybe, maybe not - your terminology is somewhat confusing.
 
-JCL
+> 1. UML process wants to execute a sys call say open().
+> 2. UML TT comes to know this
+
+By having PTRACE_SYSCALL on the host return status SIGTRAP | 0x80 from wait().
+
+> annuls with getpid(), and UML TT executes
+> open() on behalf of UML process.
+
+If UML TT refers to the tracing thread, this is wrong.  The TT ptraces
+a set of (UML) kernel register values into the process, and it (not
+the TT) executes the open.
+
+> 3. UML process executes the getpid() and returns and signals TT.
+
+This happened before step 2.
+
+> 4. By this time UML TT has finished executing the system call open and
+> has returned back, so TT fills in the registers of UML process.
+
+The system-call-making process finished executing in the UML kernel,
+and signals the TT (by sending itself a signal, which will bump the TT
+out of wait()) that it should return to userspace.
+
+> 5. Now UML process executes normally with the open file descriptor.
+>  
+> If the above steps are correct, then How does UML protects host kernel.
+> because even here TT will ask for host kernel services which may corrupt
+> host kernel ? 
+
+The *host* kernel is protected by hardware.  UML is a normal process
+with no more access to the host kernel than ls.
+
+There is a related, good question here, which is how is the UML kernel
+protected, given that it is present, and not protected, in the process
+address space.  The answer is that it isn't, at least not without
+severe performance penalties.  This is largely what led to the skas
+modes.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
