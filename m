@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HTLxR-0006iH-3t for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 10:47:45 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HTLxN-0001Wb-VO
+	id 1HTM0e-00074y-FL for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Mar 2007 10:51:07 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTM0c-0004Mo-VL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 10:47:42 -0700
-Date: Mon, 19 Mar 2007 13:45:37 -0400
+	Mon, 19 Mar 2007 10:51:04 -0700
+Date: Mon, 19 Mar 2007 13:48:57 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070319174537.GD11790@c2.user-mode-linux.org>
-References: <0A01463223B8164194908CAC85B66A1201AD3E65@ZMY16EXM67.ds.mot.com>
+Message-ID: <20070319174857.GE11790@c2.user-mode-linux.org>
+References: <45FE5141.3030007@cea.fr>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <0A01463223B8164194908CAC85B66A1201AD3E65@ZMY16EXM67.ds.mot.com>
-Subject: Re: [uml-devel] Regarding Kernel mode in UML process.
+In-Reply-To: <45FE5141.3030007@cea.fr>
+Subject: Re: [uml-devel] 2.6.18 UML machine on FC6 host
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,24 +29,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Krishnappa Abhijith-A21204 <abhijith@motorola.com>
+To: Jacques-Charles Lafoucriere <jc.lafoucriere@cea.fr>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Mar 19, 2007 at 11:16:38AM +0800, Krishnappa Abhijith-A21204 wrote:
->         Regarding Kernel mode in UML process. This question is on UML TT
-> mode
-> A UML process wil be in Kernel mode only for executing the getpid(), and
-> also some signals is a UML specified stack.
+On Mon, Mar 19, 2007 at 10:00:49AM +0100, Jacques-Charles Lafoucriere wrote:
+> I am trying to build and run a UML 2.6.18 machine on a FC6 host. 
+> (2.6.18-1.2798)
 
-And whenever the UML kernel executes a system call, of which there are
-many.
+Why are you insisting on a 2.6.18 UML?
 
-> Also when UML process enters the KERNEL by the means described above the
-> tracing is turned off, this is done for performance issues only
-> right ?
+> I have tried many patches from the list and was not able to be successful
+> (hang after VFS: Mounted root (ext3 filesystem) readonly.)
 
-No, it's done for security.  A UML process must not be allowed to
-execute system calls on the host.  Only the UML kernel may do that.
+Try 2.6.21-rc4 or this patch:
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=14251809b1921b1216568700f1be2f91a1cbb5c7
+
+> Does the host need a special patch to run recent UML kernel or is it 
+> only an issue in the UML machine ?
+
+It was a bug in UML's handing of newer host VDSOs.
 
 				Jeff
 
