@@ -1,28 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HTYvr-0006U2-6Y for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Mar 2007 00:38:59 -0700
+	id 1HTZTc-0001Vo-17 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Mar 2007 01:13:52 -0700
 Received: from sainfoin.extra.cea.fr ([132.166.172.103])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTYvo-0007TW-Dz
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTZTb-0007yV-7K
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Mar 2007 00:38:59 -0700
+	Tue, 20 Mar 2007 01:13:51 -0700
 Received: from nephilia.intra.cea.fr (nephilia.intra.cea.fr [132.166.88.33])
 	by sainfoin.extra.cea.fr (8.13.7/8.13.4/CEAnet-Internet.7.0) with ESMTP
-	id l2K7cdmZ008755 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 20 Mar 2007 08:38:39 +0100 (MET)
+	id l2K8DcDt022986 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 20 Mar 2007 09:13:38 +0100 (MET)
 Received: from muguet.saclay.cea.fr (muguet.saclay.cea.fr [132.166.192.6])
-	by nephilia.intra.cea.fr (8.13.8/8.13.8) with ESMTP id l2K7ccfK027191
+	by nephilia.intra.cea.fr (8.13.8/8.13.8) with ESMTP id l2K8Db3H003453
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 20 Mar 2007 08:38:38 +0100 (envelope-from jc.lafoucriere@cea.fr)
+	Tue, 20 Mar 2007 09:13:37 +0100 (envelope-from jc.lafoucriere@cea.fr)
 Received: from zia.bruyeres.cea.fr (esteban.dam.intra.cea.fr [132.165.76.10])
 	by muguet.saclay.cea.fr (8.13.8/8.13.4/CEAnet-internes.7.0) with
-	SMTP id l2K7ccXU003004
+	SMTP id l2K8Dbr5013307
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 20 Mar 2007 08:38:38 +0100 (MET)
-Message-ID: <45FF8F49.4040500@cea.fr>
-Date: Tue, 20 Mar 2007 08:37:45 +0100
+	Tue, 20 Mar 2007 09:13:37 +0100 (MET)
+Message-ID: <45FF977C.7050605@cea.fr>
+Date: Tue, 20 Mar 2007 09:12:44 +0100
 From: Jacques-Charles Lafoucriere <jc.lafoucriere@cea.fr>
 MIME-Version: 1.0
 References: <45FE5141.3030007@cea.fr>
@@ -38,22 +38,48 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1755341321=="
+Content-Type: multipart/mixed; boundary="===============0631701865=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
 This is a multi-part message in MIME format.
---===============1755341321==
+--===============0631701865==
 Content-Type: multipart/alternative;
-	boundary="------------020806000109020904090301"
+	boundary="------------030605060009030803010903"
 
 This is a multi-part message in MIME format.
---------------020806000109020904090301
+--------------030605060009030803010903
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
+Hi,
+
+I applied the patch to a 2.6.20 kernel and tried the 2.6.21-rc4 and 
+still have the issue
+
+The UML machine is in an infinite loop
+
+ptrace(PTRACE_GETREGS, 16641, 0, 0x9dc5974) = 0
+ptrace(PTRACE_GETFPXREGS, 16641, 0, 0x9dc5a24) = 0
+ptrace(PTRACE_CONT, 16641, 0, SIGSEGV)  = 0
+waitpid(16641, [{WIFSTOPPED(s) && WSTOPSIG(s) == SIGUSR1}], WSTOPPED) = 
+16641
+--- SIGCHLD (Child exited) @ 0 (0) ---
+ptrace(PTRACE_SETREGS, 16641, 0, 0x9dc5974) = 0
+ptrace(PTRACE_SETFPXREGS, 16641, 0, 0x9dc5a24) = 0
+ptrace(0x1f /* PTRACE_??? */, 16641, 0, 0) = 0
+--- SIGCHLD (Child exited) @ 0 (0) ---
+waitpid(16641, [{WIFSTOPPED(s) && WSTOPSIG(s) == SIGSEGV}], WSTOPPED) = 
+16641
+ptrace(PTRACE_GETREGS, 16641, 0, 0x9dc5974) = 0
+ptrace(PTRACE_GETFPXREGS, 16641, 0, 0x9dc5a24) = 0
+ptrace(PTRACE_CONT, 16641, 0, SIGSEGV)  = 0
+--- SIGCHLD (Child exited) @ 0 (0) ---
+
+Do I have to change things on my host machine ? (I use 2.6.18-1.2798 
+with no skas3 patch)
 
 
 Jeff Dike wrote:
@@ -64,13 +90,7 @@ Jeff Dike wrote:
 >>     
 >
 > Why are you insisting on a 2.6.18 UML?
->   
-I work on some  kernel product that will be available on RHEL5 which 
-uses 2.6.18
-And RHEL5 kernel does not work in the UML target, so a vanilla 2.6.18 is 
-the closest kernel
-I want to avoid a 2.6.20 or later port of the product
-
+>
 >   
 >> I have tried many patches from the list and was not able to be successful
 >> (hang after VFS: Mounted root (ext3 filesystem) readonly.)
@@ -78,10 +98,19 @@ I want to avoid a 2.6.20 or later port of the product
 >
 > Try 2.6.21-rc4 or this patch:
 > http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=14251809b1921b1216568700f1be2f91a1cbb5c7
+>
 >   
-Ok I will try
+>> Does the host need a special patch to run recent UML kernel or is it 
+>> only an issue in the UML machine ?
+>>     
+>
+> It was a bug in UML's handing of newer host VDSOs.
+>
+> 				Jeff
+>
+>   
 
---------------020806000109020904090301
+--------------030605060009030803010903
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
@@ -91,6 +120,32 @@ Content-Transfer-Encoding: 7bit
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 </head>
 <body bgcolor="#ffffff" text="#000000">
+Hi,<br>
+<br>
+I applied the patch to a 2.6.20 kernel and tried the 2.6.21-rc4 and
+still have the issue<br>
+<br>
+The UML machine is in an infinite loop<br>
+<br>
+ptrace(PTRACE_GETREGS, 16641, 0, 0x9dc5974) = 0<br>
+ptrace(PTRACE_GETFPXREGS, 16641, 0, 0x9dc5a24) = 0<br>
+ptrace(PTRACE_CONT, 16641, 0, SIGSEGV)&nbsp; = 0<br>
+waitpid(16641, [{WIFSTOPPED(s) &amp;&amp; WSTOPSIG(s) == SIGUSR1}],
+WSTOPPED) = 16641<br>
+--- SIGCHLD (Child exited) @ 0 (0) ---<br>
+ptrace(PTRACE_SETREGS, 16641, 0, 0x9dc5974) = 0<br>
+ptrace(PTRACE_SETFPXREGS, 16641, 0, 0x9dc5a24) = 0<br>
+ptrace(0x1f /* PTRACE_??? */, 16641, 0, 0) = 0<br>
+--- SIGCHLD (Child exited) @ 0 (0) ---<br>
+waitpid(16641, [{WIFSTOPPED(s) &amp;&amp; WSTOPSIG(s) == SIGSEGV}],
+WSTOPPED) = 16641<br>
+ptrace(PTRACE_GETREGS, 16641, 0, 0x9dc5974) = 0<br>
+ptrace(PTRACE_GETFPXREGS, 16641, 0, 0x9dc5a24) = 0<br>
+ptrace(PTRACE_CONT, 16641, 0, SIGSEGV)&nbsp; = 0<br>
+--- SIGCHLD (Child exited) @ 0 (0) ---<br>
+<br>
+Do I have to change things on my host machine ? (I use 2.6.18-1.2798
+with no skas3 patch)<br>
 <br>
 <br>
 Jeff Dike wrote:
@@ -105,17 +160,7 @@ Jeff Dike wrote:
   </blockquote>
   <pre wrap=""><!---->
 Why are you insisting on a 2.6.18 UML?
-  </pre>
-</blockquote>
-I work on some&nbsp; kernel product that will be available on RHEL5 which
-uses 2.6.18<br>
-And RHEL5 kernel does not work in the UML target, so a vanilla 2.6.18
-is the closest kernel<br>
-I want to avoid a 2.6.20 or later port of the product<br>
-<br>
-<blockquote cite="mid20070319174857.GE11790@c2.user-mode-linux.org"
- type="cite">
-  <pre wrap="">
+
   </pre>
   <blockquote type="cite">
     <pre wrap="">I have tried many patches from the list and was not able to be successful
@@ -125,16 +170,27 @@ I want to avoid a 2.6.20 or later port of the product<br>
   <pre wrap=""><!---->
 Try 2.6.21-rc4 or this patch:
 <a class="moz-txt-link-freetext" href="http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=14251809b1921b1216568700f1be2f91a1cbb5c7">http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=14251809b1921b1216568700f1be2f91a1cbb5c7</a>
+
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">Does the host need a special patch to run recent UML kernel or is it 
+only an issue in the UML machine ?
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+It was a bug in UML's handing of newer host VDSOs.
+
+				Jeff
+
   </pre>
 </blockquote>
-Ok I will try<br>
 </body>
 </html>
 
---------------020806000109020904090301--
+--------------030605060009030803010903--
 
 
---===============1755341321==
+--===============0631701865==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -145,7 +201,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============1755341321==
+--===============0631701865==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -156,4 +212,4 @@ User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
---===============1755341321==--
+--===============0631701865==--
