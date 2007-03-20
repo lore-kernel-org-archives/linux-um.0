@@ -2,21 +2,33 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HTPdQ-0006jD-E3 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 14:43:20 -0700
-Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTPdP-0006FG-El
+	id 1HTYvr-0006U2-6Y for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Mar 2007 00:38:59 -0700
+Received: from sainfoin.extra.cea.fr ([132.166.172.103])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTYvo-0007TW-Dz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Mar 2007 14:43:20 -0700
-Date: Mon, 19 Mar 2007 14:41:24 -0700
-From: Greg KH <gregkh@suse.de>
-Message-ID: <20070319214124.GG9261@kroah.com>
-References: <20070319213047.710101653@mini.kroah.org>
+	Tue, 20 Mar 2007 00:38:59 -0700
+Received: from nephilia.intra.cea.fr (nephilia.intra.cea.fr [132.166.88.33])
+	by sainfoin.extra.cea.fr (8.13.7/8.13.4/CEAnet-Internet.7.0) with ESMTP
+	id l2K7cdmZ008755 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 20 Mar 2007 08:38:39 +0100 (MET)
+Received: from muguet.saclay.cea.fr (muguet.saclay.cea.fr [132.166.192.6])
+	by nephilia.intra.cea.fr (8.13.8/8.13.8) with ESMTP id l2K7ccfK027191
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 20 Mar 2007 08:38:38 +0100 (envelope-from jc.lafoucriere@cea.fr)
+Received: from zia.bruyeres.cea.fr (esteban.dam.intra.cea.fr [132.165.76.10])
+	by muguet.saclay.cea.fr (8.13.8/8.13.4/CEAnet-internes.7.0) with
+	SMTP id l2K7ccXU003004
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 20 Mar 2007 08:38:38 +0100 (MET)
+Message-ID: <45FF8F49.4040500@cea.fr>
+Date: Tue, 20 Mar 2007 08:37:45 +0100
+From: Jacques-Charles Lafoucriere <jc.lafoucriere@cea.fr>
 MIME-Version: 1.0
-Content-Disposition: inline;
-	filename="uml-arch_prctl-should-set-thread-fs.patch"
-In-Reply-To: <20070319213647.GB9261@kroah.com>
-Subject: [uml-devel] [patch 31/31] UML - arch_prctl should set thread fs
+References: <45FE5141.3030007@cea.fr>
+	<20070319174857.GE11790@c2.user-mode-linux.org>
+In-Reply-To: <20070319174857.GE11790@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] 2.6.18 UML machine on FC6 host
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,264 +38,122 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1755341321=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org, stable@kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Greg KH <greg@kroah.com>, Jeff Dike <jdike@addtoit.com>, Justin Forbes <jmforbes@linuxtx.org>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, torvalds@linux-foundation.org, alan@lxorguk.ukuu.org.uk
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
--stable review patch.  If anyone has any objections, please let us know.
+This is a multi-part message in MIME format.
+--===============1755341321==
+Content-Type: multipart/alternative;
+	boundary="------------020806000109020904090301"
 
-------------------
+This is a multi-part message in MIME format.
+--------------020806000109020904090301
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Jeff Dike <jdike@addtoit.com>
 
-x86_64 needs some TLS fixes.  What was missing was remembering the child
-thread id during clone and stuffing it into the child during each context
-switch.
 
-The %fs value is stored separately in the thread structure since the host
-controls what effect it has on the actual register file.  The host also needs
-to store it in its own thread struct, so we need the value kept outside the
-register file.
+Jeff Dike wrote:
+> On Mon, Mar 19, 2007 at 10:00:49AM +0100, Jacques-Charles Lafoucriere wrote:
+>   
+>> I am trying to build and run a UML 2.6.18 machine on a FC6 host. 
+>> (2.6.18-1.2798)
+>>     
+>
+> Why are you insisting on a 2.6.18 UML?
+>   
+I work on some  kernel product that will be available on RHEL5 which 
+uses 2.6.18
+And RHEL5 kernel does not work in the UML target, so a vanilla 2.6.18 is 
+the closest kernel
+I want to avoid a 2.6.20 or later port of the product
 
-arch_prctl_skas was fixed to call PTRACE_ARCH_PRCTL appropriately.  There is
-some saving and restoring of registers in the ARCH_SET_* cases so that the
-correct set of registers are changed on the host and restored to the process
-when it runs again.
+>   
+>> I have tried many patches from the list and was not able to be successful
+>> (hang after VFS: Mounted root (ext3 filesystem) readonly.)
+>>     
+>
+> Try 2.6.21-rc4 or this patch:
+> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=14251809b1921b1216568700f1be2f91a1cbb5c7
+>   
+Ok I will try
 
-Signed-off-by: Jeff Dike <jdike@addtoit.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+--------------020806000109020904090301
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
----
- arch/um/include/os.h                 |    2 
- arch/um/os-Linux/sys-x86_64/Makefile |    2 
- arch/um/os-Linux/sys-x86_64/prctl.c  |   12 +++++
- arch/um/sys-x86_64/syscalls.c        |   76 ++++++++++++++++++++++++++---------
- arch/um/sys-x86_64/tls.c             |   11 +++--
- include/asm-um/processor-x86_64.h    |    6 +-
- include/asm-um/ptrace-x86_64.h       |    6 --
- 7 files changed, 86 insertions(+), 29 deletions(-)
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<br>
+<br>
+Jeff Dike wrote:
+<blockquote cite="mid20070319174857.GE11790@c2.user-mode-linux.org"
+ type="cite">
+  <pre wrap="">On Mon, Mar 19, 2007 at 10:00:49AM +0100, Jacques-Charles Lafoucriere wrote:
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">I am trying to build and run a UML 2.6.18 machine on a FC6 host. 
+(2.6.18-1.2798)
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+Why are you insisting on a 2.6.18 UML?
+  </pre>
+</blockquote>
+I work on some&nbsp; kernel product that will be available on RHEL5 which
+uses 2.6.18<br>
+And RHEL5 kernel does not work in the UML target, so a vanilla 2.6.18
+is the closest kernel<br>
+I want to avoid a 2.6.20 or later port of the product<br>
+<br>
+<blockquote cite="mid20070319174857.GE11790@c2.user-mode-linux.org"
+ type="cite">
+  <pre wrap="">
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">I have tried many patches from the list and was not able to be successful
+(hang after VFS: Mounted root (ext3 filesystem) readonly.)
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+Try 2.6.21-rc4 or this patch:
+<a class="moz-txt-link-freetext" href="http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=14251809b1921b1216568700f1be2f91a1cbb5c7">http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=14251809b1921b1216568700f1be2f91a1cbb5c7</a>
+  </pre>
+</blockquote>
+Ok I will try<br>
+</body>
+</html>
 
---- a/arch/um/include/os.h
-+++ b/arch/um/include/os.h
-@@ -341,4 +341,6 @@ extern void maybe_sigio_broken(int fd, i
- extern void sig_handler_common_skas(int sig, void *sc_ptr);
- extern void user_signal(int sig, union uml_pt_regs *regs, int pid);
- 
-+extern int os_arch_prctl(int pid, int code, unsigned long *addr);
-+
- #endif
---- a/arch/um/os-Linux/sys-x86_64/Makefile
-+++ b/arch/um/os-Linux/sys-x86_64/Makefile
-@@ -3,7 +3,7 @@
- # Licensed under the GPL
- #
- 
--obj-$(CONFIG_MODE_SKAS) = registers.o signal.o
-+obj-$(CONFIG_MODE_SKAS) = registers.o prctl.o signal.o
- 
- USER_OBJS := $(obj-y)
- 
---- /dev/null
-+++ b/arch/um/os-Linux/sys-x86_64/prctl.c
-@@ -0,0 +1,12 @@
-+/*
-+ * Copyright (C) 2007 Jeff Dike (jdike@{addtoit.com,linux.intel.com})
-+ * Licensed under the GPL
-+ */
-+
-+#include <sys/ptrace.h>
-+#include <linux/ptrace.h>
-+
-+int os_arch_prctl(int pid, int code, unsigned long *addr)
-+{
-+	return ptrace(PTRACE_ARCH_PRCTL, pid, (unsigned long) addr, code);
-+}
---- a/arch/um/sys-x86_64/syscalls.c
-+++ b/arch/um/sys-x86_64/syscalls.c
-@@ -16,6 +16,7 @@
- #include "asm/prctl.h" /* XXX This should get the constants from libc */
- #include "choose-mode.h"
- #include "kern.h"
-+#include "os.h"
- 
- asmlinkage long sys_uname64(struct new_utsname __user * name)
- {
-@@ -58,40 +59,70 @@ static long arch_prctl_tt(int code, unsi
- 
- #ifdef CONFIG_MODE_SKAS
- 
--/* XXX: Must also call arch_prctl in the host, beside saving the segment bases! */
--static long arch_prctl_skas(int code, unsigned long addr)
-+static long arch_prctl_skas(int code, unsigned long __user *addr)
- {
--	long ret = 0;
-+	unsigned long *ptr = addr, tmp;
-+	long ret;
-+	int pid = current->mm->context.skas.id.u.pid;
-+
-+	/*
-+	 * With ARCH_SET_FS (and ARCH_SET_GS is treated similarly to
-+	 * be safe), we need to call arch_prctl on the host because
-+	 * setting %fs may result in something else happening (like a
-+	 * GDT being set instead).  So, we let the host fiddle the
-+	 * registers and restore them afterwards.
-+	 *
-+	 * So, the saved registers are stored to the process (this
-+	 * needed because a stub may have been the last thing to run),
-+	 * arch_prctl is run on the host, then the registers are read
-+	 * back.
-+	 */
-+	switch(code){
-+	case ARCH_SET_FS:
-+	case ARCH_SET_GS:
-+		restore_registers(pid, &current->thread.regs.regs);
-+		break;
-+	case ARCH_GET_FS:
-+	case ARCH_GET_GS:
-+		/*
-+		 * With these two, we read to a local pointer and
-+		 * put_user it to the userspace pointer that we were
-+		 * given.  If addr isn't valid (because it hasn't been
-+		 * faulted in or is just bogus), we want put_user to
-+		 * fault it in (or return -EFAULT) instead of having
-+		 * the host return -EFAULT.
-+		 */
-+		ptr = &tmp;
-+	}
-+
-+	ret = os_arch_prctl(pid, code, ptr);
-+	if(ret)
-+		return ret;
- 
- 	switch(code){
- 	case ARCH_SET_FS:
--		current->thread.regs.regs.skas.regs[FS_BASE / sizeof(unsigned long)] = addr;
-+		current->thread.arch.fs = (unsigned long) ptr;
-+		save_registers(pid, &current->thread.regs.regs);
- 		break;
- 	case ARCH_SET_GS:
--		current->thread.regs.regs.skas.regs[GS_BASE / sizeof(unsigned long)] = addr;
-+		save_registers(pid, &current->thread.regs.regs);
- 		break;
- 	case ARCH_GET_FS:
--		ret = put_user(current->thread.regs.regs.skas.
--				regs[FS_BASE / sizeof(unsigned long)],
--				(unsigned long __user *)addr);
--	        break;
-+		ret = put_user(tmp, addr);
-+		break;
- 	case ARCH_GET_GS:
--		ret = put_user(current->thread.regs.regs.skas.
--				regs[GS_BASE / sizeof(unsigned long)],
--				(unsigned long __user *)addr);
--	        break;
--	default:
--		ret = -EINVAL;
-+		ret = put_user(tmp, addr);
- 		break;
- 	}
- 
--	return(ret);
-+	return ret;
- }
- #endif
- 
- long sys_arch_prctl(int code, unsigned long addr)
- {
--	return(CHOOSE_MODE_PROC(arch_prctl_tt, arch_prctl_skas, code, addr));
-+	return CHOOSE_MODE_PROC(arch_prctl_tt, arch_prctl_skas, code,
-+				(unsigned long __user *) addr);
- }
- 
- long sys_clone(unsigned long clone_flags, unsigned long newsp,
-@@ -105,5 +136,14 @@ long sys_clone(unsigned long clone_flags
- 	ret = do_fork(clone_flags, newsp, &current->thread.regs, 0, parent_tid,
- 		      child_tid);
- 	current->thread.forking = 0;
--	return(ret);
-+	return ret;
- }
-+
-+void arch_switch_to_skas(struct task_struct *from, struct task_struct *to)
-+{
-+	if((to->thread.arch.fs == 0) || (to->mm == NULL))
-+		return;
-+
-+	arch_prctl_skas(ARCH_SET_FS, (void __user *) to->thread.arch.fs);
-+}
-+
---- a/arch/um/sys-x86_64/tls.c
-+++ b/arch/um/sys-x86_64/tls.c
-@@ -1,14 +1,17 @@
- #include "linux/sched.h"
- 
--void debug_arch_force_load_TLS(void)
--{
--}
--
- void clear_flushed_tls(struct task_struct *task)
- {
- }
- 
- int arch_copy_tls(struct task_struct *t)
- {
-+	/*
-+	 * If CLONE_SETTLS is set, we need to save the thread id
-+	 * (which is argument 5, child_tid, of clone) so it can be set
-+	 * during context switches.
-+	 */
-+	t->thread.arch.fs = t->thread.regs.regs.skas.regs[R8 / sizeof(long)];
-+
-         return 0;
- }
---- a/include/asm-um/processor-x86_64.h
-+++ b/include/asm-um/processor-x86_64.h
-@@ -13,6 +13,7 @@
- struct arch_thread {
-         unsigned long debugregs[8];
-         int debugregs_seq;
-+	unsigned long fs;
-         struct faultinfo faultinfo;
- };
- 
-@@ -25,8 +26,9 @@ extern inline void rep_nop(void)
- #define cpu_relax()   rep_nop()
- 
- #define INIT_ARCH_THREAD { .debugregs  		= { [ 0 ... 7 ] = 0 }, \
--                           .debugregs_seq	= 0, \
--                           .faultinfo		= { 0, 0, 0 } }
-+			   .debugregs_seq	= 0,			       \
-+			   .fs			= 0, \
-+			   .faultinfo		= { 0, 0, 0 } }
- 
- static inline void arch_flush_thread(struct arch_thread *thread)
- {
---- a/include/asm-um/ptrace-x86_64.h
-+++ b/include/asm-um/ptrace-x86_64.h
-@@ -81,9 +81,7 @@ static inline void arch_switch_to_tt(str
- {
- }
- 
--static inline void arch_switch_to_skas(struct task_struct *from,
--                                       struct task_struct *to)
--{
--}
-+extern void arch_switch_to_skas(struct task_struct *from,
-+				struct task_struct *to);
- 
- #endif
+--------------020806000109020904090301--
 
--- 
+
+--===============1755341321==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1755341321==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============1755341321==--
