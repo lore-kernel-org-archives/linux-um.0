@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HTfM2-0007Ed-3o for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Mar 2007 07:30:26 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTfM0-0002xO-Hm
+	id 1HTklQ-0006Sd-BB for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Mar 2007 13:17:00 -0700
+Received: from smtp14.orange.fr ([193.252.23.69])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTklM-0000FE-By
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Mar 2007 07:30:26 -0700
-Date: Tue, 20 Mar 2007 10:28:02 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070320142802.GA5448@c2.user-mode-linux.org>
+	Tue, 20 Mar 2007 13:17:00 -0700
+Message-ID: <460040F0.9020307@cea.fr>
+Date: Tue, 20 Mar 2007 21:15:44 +0100
+From: Jacques-Charles Lafoucriere <jc.lafoucriere@cea.fr>
+MIME-Version: 1.0
 References: <45FE5141.3030007@cea.fr>
 	<20070319174857.GE11790@c2.user-mode-linux.org>
 	<45FF977C.7050605@cea.fr>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <45FF977C.7050605@cea.fr>
+	<20070320142802.GA5448@c2.user-mode-linux.org>
+In-Reply-To: <20070320142802.GA5448@c2.user-mode-linux.org>
 Subject: Re: [uml-devel] 2.6.18 UML machine on FC6 host
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -27,41 +27,129 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0789309166=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jacques-Charles Lafoucriere <jc.lafoucriere@cea.fr>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Mar 20, 2007 at 09:12:44AM +0100, Jacques-Charles Lafoucriere wrote:
-> I applied the patch to a 2.6.20 kernel and tried the 2.6.21-rc4 and 
-> still have the issue
-> 
-> The UML machine is in an infinite loop
-> 
-> Do I have to change things on my host machine ? (I use 2.6.18-1.2798 
-> with no skas3 patch)
+This is a multi-part message in MIME format.
+--===============0789309166==
+Content-Type: multipart/alternative;
+	boundary="------------080707040502000107090604"
 
+This is a multi-part message in MIME format.
+--------------080707040502000107090604
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+
+Jeff Dike wrote:
+> On Tue, Mar 20, 2007 at 09:12:44AM +0100, Jacques-Charles Lafoucriere wrote:
+>   
+>> I applied the patch to a 2.6.20 kernel and tried the 2.6.21-rc4 and 
+>> still have the issue
+>>
+>> The UML machine is in an infinite loop
+>>
+>> Do I have to change things on my host machine ? (I use 2.6.18-1.2798 
+>> with no skas3 patch)
+>>     
+>
+> No.
+>
+> What is the host?
+>   
+Dell Lattitude D820, Linux IA32
+> Can you send me the -rc4 binary so I can see if I get the same
+> behavior here?  If it works for me, is it possible for me to debug on
+> your host?
+>
+>   
+I send you the kernel directly (too large for a list)
+You cannot access the machine but I can send you traces.
+
+JC
+
+
+--------------080707040502000107090604
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title></title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<br>
+<br>
+Jeff Dike wrote:
+<blockquote cite="mid20070320142802.GA5448@c2.user-mode-linux.org"
+ type="cite">
+  <pre wrap="">On Tue, Mar 20, 2007 at 09:12:44AM +0100, Jacques-Charles Lafoucriere wrote:
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">I applied the patch to a 2.6.20 kernel and tried the 2.6.21-rc4 and 
+still have the issue
+
+The UML machine is in an infinite loop
+
+Do I have to change things on my host machine ? (I use 2.6.18-1.2798 
+with no skas3 patch)
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
 No.
 
 What is the host?
-
+  </pre>
+</blockquote>
+Dell Lattitude D820, Linux IA32<br>
+<blockquote cite="mid20070320142802.GA5448@c2.user-mode-linux.org"
+ type="cite">
+  <pre wrap="">
 Can you send me the -rc4 binary so I can see if I get the same
 behavior here?  If it works for me, is it possible for me to debug on
 your host?
 
-				Jeff
+  </pre>
+</blockquote>
+I send you the kernel directly (too large for a list)<br>
+You cannot access the machine but I can send you traces.<br>
+<br>
+JC<br>
+<br>
+</body>
+</html>
 
--- 
-Work email - jdike at linux dot intel dot com
+--------------080707040502000107090604--
+
+
+
+--===============0789309166==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============0789309166==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============0789309166==--
+
