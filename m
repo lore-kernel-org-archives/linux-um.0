@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HU1IX-0003zH-R0 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Mar 2007 06:56:18 -0700
+	id 1HU1Jd-00046X-Gz for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Mar 2007 06:57:25 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HU1IW-00028j-AK
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HU1JY-0005fP-W7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Mar 2007 06:56:17 -0700
-Date: Wed, 21 Mar 2007 09:53:59 -0400
+	Wed, 21 Mar 2007 06:57:22 -0700
+Date: Wed, 21 Mar 2007 09:55:10 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070321135359.GB5398@c2.user-mode-linux.org>
-References: <0A01463223B8164194908CAC85B66A1201B0EFE5@ZMY16EXM67.ds.mot.com>
+Message-ID: <20070321135510.GC5398@c2.user-mode-linux.org>
+References: <0A01463223B8164194908CAC85B66A1201B0F01D@ZMY16EXM67.ds.mot.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <0A01463223B8164194908CAC85B66A1201B0EFE5@ZMY16EXM67.ds.mot.com>
-Subject: Re: [uml-devel] Regarding VM in UML
+In-Reply-To: <0A01463223B8164194908CAC85B66A1201B0F01D@ZMY16EXM67.ds.mot.com>
+Subject: Re: [uml-devel] Regarding Process creation in UML tracing thread mode
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,15 +32,15 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Krishnappa Abhijith-A21204 <abhijith@motorola.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Mar 21, 2007 at 07:23:28PM +0800, Krishnappa Abhijith-A21204 wrote:
-> Hi,
->         Regarding VM in UML (tracing thread mode).
-> Why we need a seprate VM for UML as we create a new process in host for
-> every process that created in UML and the new HOST address space is
-> provided by Host kernel itself ?
+On Wed, Mar 21, 2007 at 07:51:44PM +0800, Krishnappa Abhijith-A21204 wrote:
+>              Regarding fork() implementation UML in tracing thread (tt)
+> mode
+> Whenever we call fork in UML the following happens:
+>  
+> 2 process gets created 
+> 1 on UML say U_1 and 1 on HOST say H_1
 
-What does "VM" mean?  You're using it in a way which doesn't
-correspond to any of the meanings I'm familiar with.
+No, one process gets created, in which both the process and the kernel run.
 
 				Jeff
 
