@@ -2,22 +2,30 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HTklQ-0006Sd-BB for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Mar 2007 13:17:00 -0700
-Received: from smtp14.orange.fr ([193.252.23.69])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HTklM-0000FE-By
+	id 1HTyum-0005Af-Hx for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Mar 2007 04:23:36 -0700
+Received: from mail153.messagelabs.com ([216.82.253.51])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HTyul-0003Q0-5j
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Mar 2007 13:17:00 -0700
-Message-ID: <460040F0.9020307@cea.fr>
-Date: Tue, 20 Mar 2007 21:15:44 +0100
-From: Jacques-Charles Lafoucriere <jc.lafoucriere@cea.fr>
+	Wed, 21 Mar 2007 04:23:36 -0700
+Received: from az33exr04.mot.com ([10.64.251.234])
+	by ftpbox.mot.com (8.12.11/Motorola) with ESMTP id l2LBNWks005711
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 21 Mar 2007 06:23:32 -0500 (CDT)
+Received: from az10vts01 (az10vts01.mot.com [10.64.251.242])
+	by az33exr04.mot.com (8.13.1/Vontu) with SMTP id l2LBNW59005924
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 21 Mar 2007 06:23:32 -0500 (CDT)
+Received: from ZMY16EXM67.ds.mot.com (zmy16exm67.ap.mot.com [10.179.4.27])
+	by az33exr04.mot.com (8.13.1/8.13.0) with ESMTP id l2LBNUd8005916
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 21 Mar 2007 06:23:31 -0500 (CDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-References: <45FE5141.3030007@cea.fr>
-	<20070319174857.GE11790@c2.user-mode-linux.org>
-	<45FF977C.7050605@cea.fr>
-	<20070320142802.GA5448@c2.user-mode-linux.org>
-In-Reply-To: <20070320142802.GA5448@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] 2.6.18 UML machine on FC6 host
+Date: Wed, 21 Mar 2007 19:23:28 +0800
+Message-ID: <0A01463223B8164194908CAC85B66A1201B0EFE5@ZMY16EXM67.ds.mot.com>
+From: "Krishnappa Abhijith-A21204" <abhijith@motorola.com>
+Subject: [uml-devel] Regarding VM in UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,109 +35,72 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0789309166=="
+Content-Type: multipart/mixed; boundary="===============0359644991=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
 This is a multi-part message in MIME format.
---===============0789309166==
+
+--===============0359644991==
+Content-class: urn:content-classes:message
 Content-Type: multipart/alternative;
-	boundary="------------080707040502000107090604"
+	boundary="----_=_NextPart_001_01C76BAB.55701584"
 
 This is a multi-part message in MIME format.
---------------080707040502000107090604
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+
+------_=_NextPart_001_01C76BAB.55701584
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+        Regarding VM in UML (tracing thread mode).
+Why we need a seprate VM for UML as we create a new process in host for
+every process that created in UML and the new HOST address space is
+provided by Host kernel itself ?
+=20
+Thanks,
+Abhi
+=20
+
+------_=_NextPart_001_01C76BAB.55701584
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2900.3059" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3D"Trebuchet MS" size=3D2><SPAN=20
+class=3D920062211-21032007>Hi,</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Trebuchet MS" size=3D2><SPAN=20
+class=3D920062211-21032007>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+Regarding VM=20
+in UML (tracing thread mode).</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Trebuchet MS" size=3D2><SPAN =
+class=3D920062211-21032007>Why we need=20
+a seprate VM for UML as we create a new process in host for every =
+process that=20
+created in UML and the new HOST address space is provided by Host kernel =
+itself=20
+?</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Trebuchet MS" size=3D2><SPAN=20
+class=3D920062211-21032007></SPAN></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Trebuchet MS" size=3D2><SPAN=20
+class=3D920062211-21032007>Thanks,</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Trebuchet MS" size=3D2><SPAN=20
+class=3D920062211-21032007>Abhi</SPAN></FONT></DIV>
+<DIV><FONT face=3D"Trebuchet MS" size=3D2><SPAN=20
+class=3D920062211-21032007></SPAN></FONT>&nbsp;</DIV></BODY></HTML>
+
+------_=_NextPart_001_01C76BAB.55701584--
 
 
-
-Jeff Dike wrote:
-> On Tue, Mar 20, 2007 at 09:12:44AM +0100, Jacques-Charles Lafoucriere wrote:
->   
->> I applied the patch to a 2.6.20 kernel and tried the 2.6.21-rc4 and 
->> still have the issue
->>
->> The UML machine is in an infinite loop
->>
->> Do I have to change things on my host machine ? (I use 2.6.18-1.2798 
->> with no skas3 patch)
->>     
->
-> No.
->
-> What is the host?
->   
-Dell Lattitude D820, Linux IA32
-> Can you send me the -rc4 binary so I can see if I get the same
-> behavior here?  If it works for me, is it possible for me to debug on
-> your host?
->
->   
-I send you the kernel directly (too large for a list)
-You cannot access the machine but I can send you traces.
-
-JC
-
-
---------------080707040502000107090604
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-  <title></title>
-</head>
-<body bgcolor="#ffffff" text="#000000">
-<br>
-<br>
-Jeff Dike wrote:
-<blockquote cite="mid20070320142802.GA5448@c2.user-mode-linux.org"
- type="cite">
-  <pre wrap="">On Tue, Mar 20, 2007 at 09:12:44AM +0100, Jacques-Charles Lafoucriere wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">I applied the patch to a 2.6.20 kernel and tried the 2.6.21-rc4 and 
-still have the issue
-
-The UML machine is in an infinite loop
-
-Do I have to change things on my host machine ? (I use 2.6.18-1.2798 
-with no skas3 patch)
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-No.
-
-What is the host?
-  </pre>
-</blockquote>
-Dell Lattitude D820, Linux IA32<br>
-<blockquote cite="mid20070320142802.GA5448@c2.user-mode-linux.org"
- type="cite">
-  <pre wrap="">
-Can you send me the -rc4 binary so I can see if I get the same
-behavior here?  If it works for me, is it possible for me to debug on
-your host?
-
-  </pre>
-</blockquote>
-I send you the kernel directly (too large for a list)<br>
-You cannot access the machine but I can send you traces.<br>
-<br>
-JC<br>
-<br>
-</body>
-</html>
-
---------------080707040502000107090604--
-
-
-
---===============0789309166==
+--===============0359644991==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -140,7 +111,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0789309166==
+--===============0359644991==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -151,5 +122,4 @@ User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
---===============0789309166==--
-
+--===============0359644991==--
