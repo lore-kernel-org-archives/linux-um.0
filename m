@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HUPqa-0003HG-2l for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 09:09:04 -0700
+	id 1HUPqb-0003IK-5P for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Mar 2007 09:09:07 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HUPqX-0005JG-5L
+	(Exim 4.44) id 1HUPqX-0005Iq-6w
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 09:09:03 -0700
-Date: Thu, 22 Mar 2007 12:06:43 -0400
+	Thu, 22 Mar 2007 09:09:05 -0700
+Date: Thu, 22 Mar 2007 12:06:41 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070322160643.GA7012@c2.user-mode-linux.org>
+Message-ID: <20070322160641.GA7002@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [ PATCH 4/7 ] UML - create as-layout.h
+Subject: [uml-devel] [ PATCH 2/7 ] UML - Move SIGIO testing to sigio.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,236 +31,362 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-This patch moves all the the symbols defined in um_arch.c, which are
-mostly boundaries between different parts of the UML kernel address
-space, to a new header, as-layout.h.  There are also a few things here
-which aren't really related to address space layout, but which don't
-really have a better place to go.
+This patch narrows the sigio interface.  The boot-time SIGIO testing
+used to be in start_up.c, which meant that pty_output_sigio and
+pty_close_sigio needed to be global.  By moving that code here, those
+can become static and the declarations moved from user_util.h.
+
+os_check_bugs is also here because it only does the SIGIO checking.
+If it does more, it'll probably move back to start_up.c.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/as-layout.h   |   35 +++++++++++++++++++++++++++++++++++
- arch/um/include/user_util.h   |   23 -----------------------
- arch/um/kernel/exec.c         |    1 +
- arch/um/kernel/ksyms.c        |    1 +
- arch/um/kernel/mem.c          |    1 +
- arch/um/kernel/physmem.c      |    1 +
- arch/um/kernel/process.c      |    1 +
- arch/um/kernel/skas/process.c |    1 +
- arch/um/kernel/tlb.c          |    1 +
- arch/um/kernel/trap.c         |    1 +
- arch/um/kernel/um_arch.c      |    1 +
- arch/um/os-Linux/main.c       |    1 +
- arch/um/os-Linux/skas/trap.c  |    1 +
- 13 files changed, 46 insertions(+), 23 deletions(-)
+ arch/um/include/user_util.h |    3 
+ arch/um/os-Linux/sigio.c    |  145 ++++++++++++++++++++++++++++++++++++++++++++
+ arch/um/os-Linux/start_up.c |  145 --------------------------------------------
+ 3 files changed, 145 insertions(+), 148 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/kernel/exec.c
+Index: linux-2.6.21-mm/arch/um/os-Linux/start_up.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/exec.c	2007-03-21 17:33:45.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/exec.c	2007-03-22 11:18:21.000000000 -0400
-@@ -12,6 +12,7 @@
- #include "asm/uaccess.h"
- #include "user_util.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "mem_user.h"
- #include "kern.h"
- #include "irq_user.h"
-Index: linux-2.6.21-mm/arch/um/kernel/mem.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/mem.c	2007-03-21 17:33:45.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/mem.c	2007-03-22 11:18:21.000000000 -0400
-@@ -15,6 +15,7 @@
- #include "asm/pgalloc.h"
- #include "user_util.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "kern.h"
- #include "mem_user.h"
- #include "uml_uaccess.h"
-Index: linux-2.6.21-mm/arch/um/kernel/process.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/process.c	2007-03-21 17:33:45.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/process.c	2007-03-22 11:18:21.000000000 -0400
-@@ -34,6 +34,7 @@
- #include "asm/user.h"
- #include "user_util.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "kern.h"
- #include "signal_kern.h"
- #include "init.h"
-Index: linux-2.6.21-mm/arch/um/kernel/skas/process.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/skas/process.c	2007-03-21 17:33:45.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/skas/process.c	2007-03-22 11:18:21.000000000 -0400
-@@ -13,6 +13,7 @@
- #include "asm/uaccess.h"
- #include "asm/atomic.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "skas.h"
- #include "os.h"
- #include "user_util.h"
-Index: linux-2.6.21-mm/arch/um/os-Linux/main.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/main.c	2007-03-21 17:33:45.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/main.c	2007-03-22 11:18:21.000000000 -0400
-@@ -15,6 +15,7 @@
- #include <asm/page.h>
- #include "user_util.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "mem_user.h"
- #include "irq_user.h"
- #include "user.h"
-Index: linux-2.6.21-mm/arch/um/os-Linux/skas/trap.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/skas/trap.c	2007-03-21 17:33:45.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/skas/trap.c	2007-03-22 11:18:21.000000000 -0400
-@@ -7,6 +7,7 @@
- #include <errno.h>
- #include "user_util.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "task.h"
- #include "sigcontext.h"
- #include "skas.h"
-Index: linux-2.6.21-mm/arch/um/kernel/physmem.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/physmem.c	2007-03-21 17:33:45.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/physmem.c	2007-03-22 11:18:21.000000000 -0400
-@@ -13,6 +13,7 @@
- #include "asm/types.h"
- #include "asm/pgtable.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "user_util.h"
- #include "mode_kern.h"
- #include "mem.h"
-Index: linux-2.6.21-mm/arch/um/kernel/tlb.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/tlb.c	2007-03-21 17:33:45.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/tlb.c	2007-03-22 11:18:21.000000000 -0400
-@@ -9,6 +9,7 @@
- #include "asm/tlbflush.h"
- #include "choose-mode.h"
- #include "mode_kern.h"
-+#include "as-layout.h"
- #include "user_util.h"
- #include "tlb.h"
- #include "mem.h"
-Index: linux-2.6.21-mm/arch/um/kernel/trap.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/trap.c	2007-03-21 17:38:21.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/trap.c	2007-03-22 11:18:21.000000000 -0400
-@@ -20,6 +20,7 @@
- #include "sysdep/sigcontext.h"
- #include "user_util.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "arch.h"
- #include "kern.h"
- #include "chan_kern.h"
-Index: linux-2.6.21-mm/arch/um/kernel/um_arch.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/um_arch.c	2007-03-21 17:38:21.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/um_arch.c	2007-03-22 11:18:21.000000000 -0400
-@@ -28,6 +28,7 @@
- #include "asm/current.h"
- #include "user_util.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "arch.h"
- #include "kern.h"
- #include "mem_user.h"
-Index: linux-2.6.21-mm/arch/um/include/user_util.h
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/user_util.h	2007-03-21 17:38:21.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/user_util.h	2007-03-22 11:18:21.000000000 -0400
-@@ -30,30 +30,7 @@ extern int grantpt(int __fd);
- extern int unlockpt(int __fd);
- extern char *ptsname(int __fd);
- 
--struct cpu_task {
--	int pid;
--	void *task;
+--- linux-2.6.21-mm.orig/arch/um/os-Linux/start_up.c	2007-03-21 15:22:48.000000000 -0400
++++ linux-2.6.21-mm/arch/um/os-Linux/start_up.c	2007-03-21 15:24:33.000000000 -0400
+@@ -553,148 +553,3 @@ int __init parse_iomem(char *str, int *a
+  out:
+ 	return 1;
+ }
+-
+-
+-/* Changed during early boot */
+-int pty_output_sigio = 0;
+-int pty_close_sigio = 0;
+-
+-/* Used as a flag during SIGIO testing early in boot */
+-static volatile int got_sigio = 0;
+-
+-static void __init handler(int sig)
+-{
+-	got_sigio = 1;
+-}
+-
+-struct openpty_arg {
+-	int master;
+-	int slave;
+-	int err;
 -};
 -
--extern struct cpu_task cpu_tasks[];
+-static void openpty_cb(void *arg)
+-{
+-	struct openpty_arg *info = arg;
 -
--extern void (*sig_info[])(int, union uml_pt_regs *);
+-	info->err = 0;
+-	if(openpty(&info->master, &info->slave, NULL, NULL, NULL))
+-		info->err = -errno;
+-}
 -
--extern unsigned long low_physmem;
--extern unsigned long high_physmem;
--extern unsigned long uml_physmem;
--extern unsigned long uml_reserved;
--extern unsigned long end_vm;
--extern unsigned long start_vm;
--extern unsigned long long highmem;
+-static int async_pty(int master, int slave)
+-{
+-	int flags;
 -
--extern unsigned long _stext, _etext, _sdata, _edata, __bss_start, _end;
--extern unsigned long _unprotected_end;
--extern unsigned long brk_start;
+-	flags = fcntl(master, F_GETFL);
+-	if(flags < 0)
+-		return -errno;
 -
- extern void *add_signal_handler(int sig, void (*handler)(int));
--extern int linux_main(int argc, char **argv);
--extern void set_cmdline(char *cmd);
- extern void input_cb(void (*proc)(void *), void *arg, int arg_len);
- extern int get_pty(void);
- extern int switcheroo(int fd, int prot, void *from, void *to, int size);
-Index: linux-2.6.21-mm/arch/um/kernel/ksyms.c
+-	if((fcntl(master, F_SETFL, flags | O_NONBLOCK | O_ASYNC) < 0) ||
+-	   (fcntl(master, F_SETOWN, os_getpid()) < 0))
+-		return -errno;
+-
+-	if((fcntl(slave, F_SETFL, flags | O_NONBLOCK) < 0))
+-		return -errno;
+-
+-	return(0);
+-}
+-
+-static void __init check_one_sigio(void (*proc)(int, int))
+-{
+-	struct sigaction old, new;
+-	struct openpty_arg pty = { .master = -1, .slave = -1 };
+-	int master, slave, err;
+-
+-	initial_thread_cb(openpty_cb, &pty);
+-	if(pty.err){
+-		printk("openpty failed, errno = %d\n", -pty.err);
+-		return;
+-	}
+-
+-	master = pty.master;
+-	slave = pty.slave;
+-
+-	if((master == -1) || (slave == -1)){
+-		printk("openpty failed to allocate a pty\n");
+-		return;
+-	}
+-
+-	/* Not now, but complain so we now where we failed. */
+-	err = raw(master);
+-	if (err < 0)
+-		panic("check_sigio : __raw failed, errno = %d\n", -err);
+-
+-	err = async_pty(master, slave);
+-	if(err < 0)
+-		panic("tty_fds : sigio_async failed, err = %d\n", -err);
+-
+-	if(sigaction(SIGIO, NULL, &old) < 0)
+-		panic("check_sigio : sigaction 1 failed, errno = %d\n", errno);
+-	new = old;
+-	new.sa_handler = handler;
+-	if(sigaction(SIGIO, &new, NULL) < 0)
+-		panic("check_sigio : sigaction 2 failed, errno = %d\n", errno);
+-
+-	got_sigio = 0;
+-	(*proc)(master, slave);
+-
+-	close(master);
+-	close(slave);
+-
+-	if(sigaction(SIGIO, &old, NULL) < 0)
+-		panic("check_sigio : sigaction 3 failed, errno = %d\n", errno);
+-}
+-
+-static void tty_output(int master, int slave)
+-{
+-	int n;
+-	char buf[512];
+-
+-	printk("Checking that host ptys support output SIGIO...");
+-
+-	memset(buf, 0, sizeof(buf));
+-
+-	while(os_write_file(master, buf, sizeof(buf)) > 0) ;
+-	if(errno != EAGAIN)
+-		panic("check_sigio : write failed, errno = %d\n", errno);
+-	while(((n = os_read_file(slave, buf, sizeof(buf))) > 0) && !got_sigio) ;
+-
+-	if(got_sigio){
+-		printk("Yes\n");
+-		pty_output_sigio = 1;
+-	}
+-	else if(n == -EAGAIN) printk("No, enabling workaround\n");
+-	else panic("check_sigio : read failed, err = %d\n", n);
+-}
+-
+-static void tty_close(int master, int slave)
+-{
+-	printk("Checking that host ptys support SIGIO on close...");
+-
+-	close(slave);
+-	if(got_sigio){
+-		printk("Yes\n");
+-		pty_close_sigio = 1;
+-	}
+-	else printk("No, enabling workaround\n");
+-}
+-
+-void __init check_sigio(void)
+-{
+-	if((os_access("/dev/ptmx", OS_ACC_R_OK) < 0) &&
+-	   (os_access("/dev/ptyp0", OS_ACC_R_OK) < 0)){
+-		printk("No pseudo-terminals available - skipping pty SIGIO "
+-		       "check\n");
+-		return;
+-	}
+-	check_one_sigio(tty_output);
+-	check_one_sigio(tty_close);
+-}
+-
+-void os_check_bugs(void)
+-{
+-	check_ptrace();
+-	check_sigio();
+-}
+-
+Index: linux-2.6.21-mm/arch/um/os-Linux/sigio.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/ksyms.c	2007-03-21 17:33:45.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/ksyms.c	2007-03-22 11:18:21.000000000 -0400
-@@ -16,6 +16,7 @@
- #include "asm/page.h"
- #include "asm/tlbflush.h"
- #include "kern_util.h"
-+#include "as-layout.h"
- #include "user_util.h"
- #include "mem_user.h"
+--- linux-2.6.21-mm.orig/arch/um/os-Linux/sigio.c	2007-03-21 15:22:48.000000000 -0400
++++ linux-2.6.21-mm/arch/um/os-Linux/sigio.c	2007-03-21 16:16:50.000000000 -0400
+@@ -8,6 +8,7 @@
+ #include <termios.h>
+ #include <pty.h>
+ #include <signal.h>
++#include <fcntl.h>
+ #include <errno.h>
+ #include <string.h>
+ #include <sched.h>
+@@ -20,6 +21,7 @@
+ #include "sigio.h"
  #include "os.h"
-Index: linux-2.6.21-mm/arch/um/include/as-layout.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21-mm/arch/um/include/as-layout.h	2007-03-22 11:18:04.000000000 -0400
-@@ -0,0 +1,35 @@
-+/*
-+ * Copyright (C) 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ * Licensed under the GPL
-+ */
+ #include "um_malloc.h"
++#include "init.h"
+ 
+ /* Protected by sigio_lock(), also used by sigio_cleanup, which is an
+  * exitcall.
+@@ -320,6 +322,10 @@ out_close1:
+ 	close(l_write_sigio_fds[1]);
+ }
+ 
++/* Changed during early boot */
++static int pty_output_sigio = 0;
++static int pty_close_sigio = 0;
 +
-+#ifndef __START_H__
-+#define __START_H__
+ void maybe_sigio_broken(int fd, int read)
+ {
+ 	int err;
+@@ -357,3 +363,142 @@ static void sigio_cleanup(void)
+ }
+ 
+ __uml_exitcall(sigio_cleanup);
 +
-+#include "sysdep/ptrace.h"
++/* Used as a flag during SIGIO testing early in boot */
++static volatile int got_sigio = 0;
 +
-+struct cpu_task {
-+	int pid;
-+	void *task;
++static void __init handler(int sig)
++{
++	got_sigio = 1;
++}
++
++struct openpty_arg {
++	int master;
++	int slave;
++	int err;
 +};
 +
-+extern struct cpu_task cpu_tasks[];
++static void openpty_cb(void *arg)
++{
++	struct openpty_arg *info = arg;
 +
-+extern unsigned long low_physmem;
-+extern unsigned long high_physmem;
-+extern unsigned long uml_physmem;
-+extern unsigned long uml_reserved;
-+extern unsigned long end_vm;
-+extern unsigned long start_vm;
-+extern unsigned long long highmem;
++	info->err = 0;
++	if(openpty(&info->master, &info->slave, NULL, NULL, NULL))
++		info->err = -errno;
++}
 +
-+extern unsigned long _stext, _etext, _sdata, _edata, __bss_start, _end;
-+extern unsigned long _unprotected_end;
-+extern unsigned long brk_start;
++static int async_pty(int master, int slave)
++{
++	int flags;
 +
-+extern int linux_main(int argc, char **argv);
-+extern void set_cmdline(char *cmd);
++	flags = fcntl(master, F_GETFL);
++	if(flags < 0)
++		return -errno;
 +
-+extern void (*sig_info[])(int, union uml_pt_regs *);
++	if((fcntl(master, F_SETFL, flags | O_NONBLOCK | O_ASYNC) < 0) ||
++	   (fcntl(master, F_SETOWN, os_getpid()) < 0))
++		return -errno;
 +
-+#endif
++	if((fcntl(slave, F_SETFL, flags | O_NONBLOCK) < 0))
++		return -errno;
++
++	return(0);
++}
++
++static void __init check_one_sigio(void (*proc)(int, int))
++{
++	struct sigaction old, new;
++	struct openpty_arg pty = { .master = -1, .slave = -1 };
++	int master, slave, err;
++
++	initial_thread_cb(openpty_cb, &pty);
++	if(pty.err){
++		printk("openpty failed, errno = %d\n", -pty.err);
++		return;
++	}
++
++	master = pty.master;
++	slave = pty.slave;
++
++	if((master == -1) || (slave == -1)){
++		printk("openpty failed to allocate a pty\n");
++		return;
++	}
++
++	/* Not now, but complain so we now where we failed. */
++	err = raw(master);
++	if (err < 0)
++		panic("check_sigio : __raw failed, errno = %d\n", -err);
++
++	err = async_pty(master, slave);
++	if(err < 0)
++		panic("tty_fds : sigio_async failed, err = %d\n", -err);
++
++	if(sigaction(SIGIO, NULL, &old) < 0)
++		panic("check_sigio : sigaction 1 failed, errno = %d\n", errno);
++	new = old;
++	new.sa_handler = handler;
++	if(sigaction(SIGIO, &new, NULL) < 0)
++		panic("check_sigio : sigaction 2 failed, errno = %d\n", errno);
++
++	got_sigio = 0;
++	(*proc)(master, slave);
++
++	close(master);
++	close(slave);
++
++	if(sigaction(SIGIO, &old, NULL) < 0)
++		panic("check_sigio : sigaction 3 failed, errno = %d\n", errno);
++}
++
++static void tty_output(int master, int slave)
++{
++	int n;
++	char buf[512];
++
++	printk("Checking that host ptys support output SIGIO...");
++
++	memset(buf, 0, sizeof(buf));
++
++	while(os_write_file(master, buf, sizeof(buf)) > 0) ;
++	if(errno != EAGAIN)
++		panic("check_sigio : write failed, errno = %d\n", errno);
++	while(((n = os_read_file(slave, buf, sizeof(buf))) > 0) && !got_sigio) ;
++
++	if(got_sigio){
++		printk("Yes\n");
++		pty_output_sigio = 1;
++	}
++	else if(n == -EAGAIN) printk("No, enabling workaround\n");
++	else panic("check_sigio : read failed, err = %d\n", n);
++}
++
++static void tty_close(int master, int slave)
++{
++	printk("Checking that host ptys support SIGIO on close...");
++
++	close(slave);
++	if(got_sigio){
++		printk("Yes\n");
++		pty_close_sigio = 1;
++	}
++	else printk("No, enabling workaround\n");
++}
++
++void __init check_sigio(void)
++{
++	if((os_access("/dev/ptmx", OS_ACC_R_OK) < 0) &&
++	   (os_access("/dev/ptyp0", OS_ACC_R_OK) < 0)){
++		printk("No pseudo-terminals available - skipping pty SIGIO "
++		       "check\n");
++		return;
++	}
++	check_one_sigio(tty_output);
++	check_one_sigio(tty_close);
++}
++
++/* Here because it only does the SIGIO testing for now */
++void __init os_check_bugs(void)
++{
++	check_sigio();
++}
+Index: linux-2.6.21-mm/arch/um/include/user_util.h
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/include/user_util.h	2007-03-21 16:16:43.000000000 -0400
++++ linux-2.6.21-mm/arch/um/include/user_util.h	2007-03-21 16:17:50.000000000 -0400
+@@ -51,9 +51,6 @@ extern unsigned long _stext, _etext, _sd
+ extern unsigned long _unprotected_end;
+ extern unsigned long brk_start;
+ 
+-extern int pty_output_sigio;
+-extern int pty_close_sigio;
+-
+ extern void *add_signal_handler(int sig, void (*handler)(int));
+ extern int linux_main(int argc, char **argv);
+ extern void set_cmdline(char *cmd);
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
