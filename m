@@ -2,18 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HURR1-0005tX-5c for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 10:50:49 -0700
-Received: from smtp.osdl.org ([65.172.181.24])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HURQz-000420-F3
+	id 1HUT1Q-0008Kp-Vb for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Mar 2007 12:32:29 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HUT1N-0006y8-EP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 10:50:45 -0700
-Date: Thu, 22 Mar 2007 09:50:34 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20070322095034.51a16aa5.akpm@linux-foundation.org>
-In-Reply-To: <20070322160640.GA6992@c2.user-mode-linux.org>
+	Thu, 22 Mar 2007 12:32:28 -0700
+Date: Thu, 22 Mar 2007 15:29:56 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070322192956.GA8949@c2.user-mode-linux.org>
 References: <20070322160640.GA6992@c2.user-mode-linux.org>
+	<20070322095034.51a16aa5.akpm@linux-foundation.org>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20070322095034.51a16aa5.akpm@linux-foundation.org>
 Subject: Re: [uml-devel] [ PATCH 0/7 ] UML - Header cleanup
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -28,19 +30,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Andrew Morton <akpm@linux-foundation.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, 22 Mar 2007 12:06:40 -0400 Jeff Dike <jdike@addtoit.com> wrote:
+On Thu, Mar 22, 2007 at 09:50:34AM -0800, Andrew Morton wrote:
+> I have the ARRAY_SIZE change queued for 2.6.22.
+> 
+> It looks like the UML change needs to be folded into the same changeset to
+> avoid build breaks?
 
-> These are post-2.6.21 material, except that if the new definition of
-> ARRAY_SIZE goes to Linus, patch 1 in this series should go as well.
+Yes, that would be great.
 
-I have the ARRAY_SIZE change queued for 2.6.22.
+			Jeff
 
-It looks like the UML change needs to be folded into the same changeset to
-avoid build breaks?
-
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
