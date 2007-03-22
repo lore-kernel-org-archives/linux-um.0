@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HUPqt-0003HE-S7 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 09:09:24 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HUPqX-0005In-4u
+	id 1HURR1-0005tX-5c for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Mar 2007 10:50:49 -0700
+Received: from smtp.osdl.org ([65.172.181.24])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HURQz-000420-F3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 09:09:02 -0700
-Date: Thu, 22 Mar 2007 12:06:40 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070322160640.GA6992@c2.user-mode-linux.org>
+	Thu, 22 Mar 2007 10:50:45 -0700
+Date: Thu, 22 Mar 2007 09:50:34 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20070322095034.51a16aa5.akpm@linux-foundation.org>
+In-Reply-To: <20070322160640.GA6992@c2.user-mode-linux.org>
+References: <20070322160640.GA6992@c2.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [ PATCH 0/7 ] UML - Header cleanup
+Subject: Re: [uml-devel] [ PATCH 0/7 ] UML - Header cleanup
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,31 +28,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-These are post-2.6.21 material, except that if the new definition of
-ARRAY_SIZE goes to Linus, patch 1 in this series should go as well.
+On Thu, 22 Mar 2007 12:06:40 -0400 Jeff Dike <jdike@addtoit.com> wrote:
 
-These patches are a response to the new ARRAY_SIZE.  UML had a
-duplicate definition for the use of the userspace side of things,
-which can't directly use kernel.h.  This header was included
-everywhere, and had a random collection of stuff in it.
+> These are post-2.6.21 material, except that if the new definition of
+> ARRAY_SIZE goes to Linus, patch 1 in this series should go as well.
 
-This series first gets UML building again by replacing the old
-ARRAY_SIZE definition with one that expands to the same token
-sequence.  Then user_util.h is dismantled, primarily into two, more
-coherent headers, and deleted.  ARRAY_SIZE is reintroduced, but in a
-header which is only included in userspace files, and in its old form,
-so this version is lacking the extra typechecking.
+I have the ARRAY_SIZE change queued for 2.6.22.
 
-The final patch in the series is unrelated to the rest - it adds
-__init declarations to some functions which were lacking them.
+It looks like the UML change needs to be folded into the same changeset to
+avoid build breaks?
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
