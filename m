@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HUPqa-0003HF-2W for user-mode-linux-devel@lists.sourceforge.net;
+	id 1HUPqa-0003HD-2j for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 22 Mar 2007 09:09:04 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HUPqX-0005Io-4I
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HUPqW-0001i2-3H
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 22 Mar 2007 09:09:02 -0700
-Date: Thu, 22 Mar 2007 12:06:41 -0400
+Date: Thu, 22 Mar 2007 12:06:42 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070322160641.GA6997@c2.user-mode-linux.org>
+Message-ID: <20070322160642.GA7007@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [ PATCH 1/7 ] UML - Update UML definition of ARRAY_SIZE
+Subject: [uml-devel] [ PATCH 3/7 ] UML - Create arch.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,51 +30,77 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-This is the minimal change needed to keep UML building with the new
-definition of ARRAY_SIZE.  It is defined in user_util.h so that
-userspace files, which can't include kernel.h, can still use
-ARRAY_SIZE.  However, since user_util.h is included everywhere,
-including kernel files, the token sequence of the expansion has to
-match.
-
-This patch copies enough from the kernel headers to make that happen.
-
-However, this is too gross to survive, and so is the entire header.
-Future patches will make this header disappear, but this is a quick
-and simple fix for the problem in case there is a noticable lag
-between this patch and the more extensive patches which tidy this mess.
+This patch moves the declarations of the architecture hooks from
+user_util.h to a new header, arch.c, and adds the necessary includes
+to files which need those declarations.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/user_util.h |   15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ arch/um/include/arch.h      |   15 +++++++++++++++
+ arch/um/include/user_util.h |    4 ----
+ arch/um/kernel/trap.c       |    1 +
+ arch/um/kernel/um_arch.c    |    1 +
+ 4 files changed, 17 insertions(+), 4 deletions(-)
 
+Index: linux-2.6.21-mm/arch/um/include/arch.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21-mm/arch/um/include/arch.h	2007-03-21 17:29:15.000000000 -0400
+@@ -0,0 +1,15 @@
++/*
++ * Copyright (C) 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __ARCH_H__
++#define __ARCH_H__
++
++#include "sysdep/ptrace.h"
++
++extern void arch_check_bugs(void);
++extern int arch_fixup(unsigned long address, void *sc_ptr);
++extern int arch_handle_signal(int sig, union uml_pt_regs *regs);
++
++#endif
+Index: linux-2.6.21-mm/arch/um/kernel/trap.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/trap.c	2007-03-21 16:16:43.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/trap.c	2007-03-21 17:29:15.000000000 -0400
+@@ -20,6 +20,7 @@
+ #include "sysdep/sigcontext.h"
+ #include "user_util.h"
+ #include "kern_util.h"
++#include "arch.h"
+ #include "kern.h"
+ #include "chan_kern.h"
+ #include "mconsole_kern.h"
+Index: linux-2.6.21-mm/arch/um/kernel/um_arch.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/um_arch.c	2007-03-21 16:16:43.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/um_arch.c	2007-03-21 17:29:15.000000000 -0400
+@@ -28,6 +28,7 @@
+ #include "asm/current.h"
+ #include "user_util.h"
+ #include "kern_util.h"
++#include "arch.h"
+ #include "kern.h"
+ #include "mem_user.h"
+ #include "mem.h"
 Index: linux-2.6.21-mm/arch/um/include/user_util.h
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/user_util.h	2007-03-21 10:58:05.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/user_util.h	2007-03-21 11:05:44.000000000 -0400
-@@ -8,8 +8,19 @@
+--- linux-2.6.21-mm.orig/arch/um/include/user_util.h	2007-03-21 16:17:50.000000000 -0400
++++ linux-2.6.21-mm/arch/um/include/user_util.h	2007-03-21 17:29:15.000000000 -0400
+@@ -65,10 +65,6 @@ extern int attach(int pid);
+ extern void kill_child_dead(int pid);
+ extern int cont(int pid);
+ extern void check_sigio(void);
+-extern void arch_check_bugs(void);
+-extern int arch_handle_signal(int sig, union uml_pt_regs *regs);
+-extern int arch_fixup(unsigned long address, void *sc_ptr);
+-extern void arch_init_thread(void);
+ extern int raw(int fd);
  
- #include "sysdep/ptrace.h"
- 
--/* Copied from kernel.h */
--#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-+/* Copied from kernel.h and compiler-gcc.h */
-+
-+/* Force a compilation error if condition is true, but also produce a
-+   result (of value 0 and type size_t), so the expression can be used
-+   e.g. in a structure initializer (or where-ever else comma expressions
-+   aren't permitted). */
-+#define BUILD_BUG_ON_ZERO(e) (sizeof(char[1 - 2 * !!(e)]) - 1)
-+
-+/* &a[0] degrades to a pointer: a different type from an array */
-+#define __must_be_array(a) \
-+  BUILD_BUG_ON_ZERO(__builtin_types_compatible_p(typeof(a), typeof(&a[0])))
-+
-+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
- 
- #define CATCH_EINTR(expr) while ((errno = 0, ((expr) < 0)) && (errno == EINTR))
- 
+ #endif
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
