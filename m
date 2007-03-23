@@ -2,22 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HUjcl-0003y0-P3 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Mar 2007 06:16:07 -0700
+	id 1HUoOt-0005PF-Sa for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Mar 2007 11:22:08 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HUjck-0002zg-Ly
+	(Exim 4.44) id 1HUoOu-0008El-6y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Mar 2007 06:16:09 -0700
-Date: Fri, 23 Mar 2007 09:13:38 -0400
+	Fri, 23 Mar 2007 11:22:09 -0700
+Date: Fri, 23 Mar 2007 14:18:17 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070323131338.GA5130@c2.user-mode-linux.org>
-References: <20070322160643.GA7012@c2.user-mode-linux.org>
-	<200703230747.50306.blaisorblade@yahoo.it>
+Message-ID: <20070323181817.GA8694@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200703230747.50306.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [ PATCH 4/7 ] UML - create as-layout.h
+Subject: [uml-devel] [PATCH] UML - fix epoll
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,23 +28,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>, stable@kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, Mar 23, 2007 at 07:47:50AM +0100, Blaisorblade wrote:
-> Hey, I do like _these_ patches! A nice picture in that header could then be 
-> added (in the very future ;-) ), but at least one knows there are so much of 
-> them. And user_util.h is no more!
+[ This is both 2.6.21 and -stable material ]
 
-Heh :-)
+UML/x86_64 needs the same packing of struct epoll_event as x86_64.
 
-user_util.h has disgusted me for a long time.  The best thing about it
-is looking at the loong list of one-line deletions in that patch.
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ include/linux/eventpoll.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6.21-mm/include/linux/eventpoll.h
+===================================================================
+--- linux-2.6.21-mm.orig/include/linux/eventpoll.h	2007-03-05 13:01:17.000000000 -0500
++++ linux-2.6.21-mm/include/linux/eventpoll.h	2007-03-23 14:03:07.000000000 -0400
+@@ -31,12 +31,19 @@
+ /* 
+  * On x86-64 make the 64bit structure have the same alignment as the
+  * 32bit structure. This makes 32bit emulation easier.
++ *
++ * UML/x86_64 needs the same packing as x86_64 - UML + UML_X86 +
++ * 64_BIT adds up to UML/x86_64.
+  */
+ #ifdef __x86_64__
+ #define EPOLL_PACKED __attribute__((packed))
+ #else
++#if defined(CONFIG_UML) && defined(CONFIG_UML_X86) && defined(CONFIG_64BIT)
++#define EPOLL_PACKED __attribute__((packed))
++#else
+ #define EPOLL_PACKED
+ #endif
++#endif
+ 
+ struct epoll_event {
+ 	__u32 events;
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
