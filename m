@@ -1,16 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HUrDt-00079C-VR for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Mar 2007 14:22:58 -0700
+	id 1HUrHg-0007eL-11 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Mar 2007 14:26:52 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HUrDs-0003Sk-GA
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HUrHe-0000H4-Ay
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Mar 2007 14:22:57 -0700
-Date: Fri, 23 Mar 2007 17:20:27 -0400
+	Fri, 23 Mar 2007 14:26:52 -0700
+Date: Fri, 23 Mar 2007 17:24:21 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070323212027.GA10317@c2.user-mode-linux.org>
+Message-ID: <20070323212421.GB10317@c2.user-mode-linux.org>
 References: <20070323193730.GA9519@c2.user-mode-linux.org>
 	<7B4268E5ACB878429B58D4BE5B780E83012A6D1D@NWS-EXCH2.nws.oregonstate.edu>
 Mime-Version: 1.0
@@ -34,17 +35,10 @@ To: "Brock, Anthony - NET" <Anthony.Brock@oregonstate.edu>
 Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
 On Fri, Mar 23, 2007 at 02:05:42PM -0700, Brock, Anthony - NET wrote:
-> Is this going into stable or devel? If stable, what version? Also, do
-> you know what version of the host kernels introduced this behavior?
+> Is this going into stable or devel? If stable, what version?
 
-It's in mainline (2.6.21-rc4 now).  The mail that you're replying to
-hopefully will get the fix into 2.6.20.4.
-
-> Sorry for all the questions, but I believe this is the bug I've been
-> waiting on for a while (affecting host kernels greater than 2.6.17, or
-> something of that nature). Thanks!
-
-I believe so too, but more confirmation is always welcome.
+I said 2.6.20.4, which just came out, so I guess this will wait until
+2.6.20.5.
 
 				Jeff
 
