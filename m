@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HUdZk-0007Hj-6O for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 23:48:38 -0700
-Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HUdZf-00008Q-JB
+	id 1HUjcl-0003y0-P3 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Mar 2007 06:16:07 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HUjck-0002zg-Ly
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 23:48:36 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Fri, 23 Mar 2007 07:47:50 +0100
+	Fri, 23 Mar 2007 06:16:09 -0700
+Date: Fri, 23 Mar 2007 09:13:38 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070323131338.GA5130@c2.user-mode-linux.org>
 References: <20070322160643.GA7012@c2.user-mode-linux.org>
-In-Reply-To: <20070322160643.GA7012@c2.user-mode-linux.org>
-MIME-Version: 1.0
+	<200703230747.50306.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200703230747.50306.blaisorblade@yahoo.it>
+In-Reply-To: <200703230747.50306.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [ PATCH 4/7 ] UML - create as-layout.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,30 +31,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thursday 22 March 2007 17:06, Jeff Dike wrote:
-> This patch moves all the the symbols defined in um_arch.c, which are
-> mostly boundaries between different parts of the UML kernel address
-> space, to a new header, as-layout.h.  There are also a few things here
-> which aren't really related to address space layout, but which don't
-> really have a better place to go.
+On Fri, Mar 23, 2007 at 07:47:50AM +0100, Blaisorblade wrote:
+> Hey, I do like _these_ patches! A nice picture in that header could then be 
+> added (in the very future ;-) ), but at least one knows there are so much of 
+> them. And user_util.h is no more!
 
-Hey, I do like _these_ patches! A nice picture in that header could then be 
-added (in the very future ;-) ), but at least one knows there are so much of 
-them. And user_util.h is no more!
+Heh :-)
 
-;-)
+user_util.h has disgusted me for a long time.  The best thing about it
+is looking at the loong list of one-line deletions in that patch.
 
-Bye!
+				Jeff
+
 -- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
-Chiacchiera con i tuoi amici in tempo reale! 
- http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
-
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
