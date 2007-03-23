@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HUoOt-0005PF-Sa for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Mar 2007 11:22:08 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HUoOu-0008El-6y
+	id 1HUpdU-0005Jo-OX for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Mar 2007 12:41:20 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HUpdT-00074c-8r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 23 Mar 2007 11:22:09 -0700
-Date: Fri, 23 Mar 2007 14:18:17 -0400
+	Fri, 23 Mar 2007 12:41:16 -0700
+Date: Fri, 23 Mar 2007 15:37:30 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070323181817.GA8694@c2.user-mode-linux.org>
+Message-ID: <20070323193730.GA9519@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] UML - fix epoll
+Subject: [uml-devel] [PATCH] UML - host VDSO fix
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,42 +27,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>, stable@kernel.org
+To: stable@kernel.org
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-[ This is both 2.6.21 and -stable material ]
+This fixes a problem seen by a number of people running UML on newer host
+kernels.  init would hang with an infinite segfault loop.
 
-UML/x86_64 needs the same packing of struct epoll_event as x86_64.
+It turns out that the host kernel was providing a AT_SYSINFO_EHDR of
+0xffffe000, which faked UML into believing that the host VDSO page could be
+reused.  However, AT_SYSINFO pointed into the middle of the address space, and
+was unmapped as a result.  Because UML was providing AT_SYSINFO_EHDR and
+AT_SYSINFO to its own processes, these would branch to nowhere when trying to
+use the VDSO.
+
+The fix is to also check the location of AT_SYSINFO when deciding whether to
+use the host's VDSO.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- include/linux/eventpoll.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/um/os-Linux/elf_aux.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-Index: linux-2.6.21-mm/include/linux/eventpoll.h
+Index: linux-2.6.17/arch/um/os-Linux/elf_aux.c
 ===================================================================
---- linux-2.6.21-mm.orig/include/linux/eventpoll.h	2007-03-05 13:01:17.000000000 -0500
-+++ linux-2.6.21-mm/include/linux/eventpoll.h	2007-03-23 14:03:07.000000000 -0400
-@@ -31,12 +31,19 @@
- /* 
-  * On x86-64 make the 64bit structure have the same alignment as the
-  * 32bit structure. This makes 32bit emulation easier.
-+ *
-+ * UML/x86_64 needs the same packing as x86_64 - UML + UML_X86 +
-+ * 64_BIT adds up to UML/x86_64.
-  */
- #ifdef __x86_64__
- #define EPOLL_PACKED __attribute__((packed))
- #else
-+#if defined(CONFIG_UML) && defined(CONFIG_UML_X86) && defined(CONFIG_64BIT)
-+#define EPOLL_PACKED __attribute__((packed))
-+#else
- #define EPOLL_PACKED
- #endif
-+#endif
- 
- struct epoll_event {
- 	__u32 events;
+--- linux-2.6.17.orig/arch/um/os-Linux/elf_aux.c	2007-02-23 15:00:51.000000000 -0500
++++ linux-2.6.17/arch/um/os-Linux/elf_aux.c	2007-02-23 15:09:58.000000000 -0500
+@@ -39,6 +39,9 @@ __init void scan_elf_aux( char **envp)
+ 		switch ( auxv->a_type ) {
+ 			case AT_SYSINFO:
+ 				__kernel_vsyscall = auxv->a_un.a_val;
++				/* See if the page is under TASK_SIZE */
++				if (__kernel_vsyscall < (unsigned long) envp)
++					__kernel_vsyscall = 0;
+ 				break;
+ 			case AT_SYSINFO_EHDR:
+ 				vsyscall_ehdr = auxv->a_un.a_val;
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
