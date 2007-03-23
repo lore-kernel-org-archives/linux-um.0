@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HUT1Q-0008Kp-Vb for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 12:32:29 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HUT1N-0006y8-EP
+	id 1HUdZk-0007Hj-6O for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Mar 2007 23:48:38 -0700
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HUdZf-00008Q-JB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Mar 2007 12:32:28 -0700
-Date: Thu, 22 Mar 2007 15:29:56 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070322192956.GA8949@c2.user-mode-linux.org>
-References: <20070322160640.GA6992@c2.user-mode-linux.org>
-	<20070322095034.51a16aa5.akpm@linux-foundation.org>
-Mime-Version: 1.0
+	Thu, 22 Mar 2007 23:48:36 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Fri, 23 Mar 2007 07:47:50 +0100
+References: <20070322160643.GA7012@c2.user-mode-linux.org>
+In-Reply-To: <20070322160643.GA7012@c2.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070322095034.51a16aa5.akpm@linux-foundation.org>
-Subject: Re: [uml-devel] [ PATCH 0/7 ] UML - Header cleanup
+Message-Id: <200703230747.50306.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [ PATCH 4/7 ] UML - create as-layout.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,21 +29,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>
 
-On Thu, Mar 22, 2007 at 09:50:34AM -0800, Andrew Morton wrote:
-> I have the ARRAY_SIZE change queued for 2.6.22.
-> 
-> It looks like the UML change needs to be folded into the same changeset to
-> avoid build breaks?
+On Thursday 22 March 2007 17:06, Jeff Dike wrote:
+> This patch moves all the the symbols defined in um_arch.c, which are
+> mostly boundaries between different parts of the UML kernel address
+> space, to a new header, as-layout.h.  There are also a few things here
+> which aren't really related to address space layout, but which don't
+> really have a better place to go.
 
-Yes, that would be great.
+Hey, I do like _these_ patches! A nice picture in that header could then be 
+added (in the very future ;-) ), but at least one knows there are so much of 
+them. And user_util.h is no more!
 
-			Jeff
+;-)
 
+Bye!
 -- 
-Work email - jdike at linux dot intel dot com
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
+Chiacchiera con i tuoi amici in tempo reale! 
+ http://it.yahoo.com/mail_it/foot/*http://it.messenger.yahoo.com 
+
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
