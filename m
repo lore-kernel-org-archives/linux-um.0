@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HVU7r-0007ox-C3 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Mar 2007 07:55:27 -0700
+	id 1HVW3P-0006J6-MR for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Mar 2007 09:58:51 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HVU7p-0007dB-8f
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HVW3O-0004xr-7i
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Mar 2007 07:55:18 -0700
-Date: Sun, 25 Mar 2007 10:52:32 -0400
+	Sun, 25 Mar 2007 09:58:51 -0700
+Date: Sun, 25 Mar 2007 12:54:32 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070325145232.GB4901@c2.user-mode-linux.org>
-References: <1174764836.15059.6.camel@athena.fprintf.net>
-	<20070325012758.GA8260@c2.user-mode-linux.org>
-	<1174793788.5906.16.camel@athena.fprintf.net>
+Message-ID: <20070325165432.GA6232@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1174793788.5906.16.camel@athena.fprintf.net>
-Subject: Re: [uml-devel] missing asm/user.h
+Subject: [uml-devel] [PATCH] UML - Fix static linking
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,39 +28,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Daniel Gryniewicz <dang@gentoo.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>, stable@kernel.org
+Cc: JC.LAFOUCRIERE@CEA.FR, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sat, Mar 24, 2007 at 11:36:28PM -0400, Daniel Gryniewicz wrote:
-> Update:  <asm/elf.h> isn't there either, but <sys/user.h> includes
-> user_regs_struct, so that's sufficient for this problem.
+[ This is both 2.6.21 and -stable material ]
 
-Hummph, I hope that's true of every other distro that people use UML on.
+During a static link, ld has started putting a .note section in the
+.uml.setup.init section.  This has the result that the UML setups
+begin with 32 bytes of garbage and UML crashes immediately on boot.
 
-> The next problem is lack of <asm/page.h>.  Most files failing to build
-> with it can simply have it removed.  I've temporarily replaced PAGE_SIZE
-> with sysconf(_SC_PAGESIZE) for now, and we'll see how that works.
+This patch creates a specific .note section for ld to drop this stuff
+into.
 
-Send patches.
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ include/asm-um/common.lds.S |    1 +
+ 1 file changed, 1 insertion(+)
 
-BTW, the important thing about PAGE_SIZE in the userspace side of UML
-is not that it be the same as sysconf(_SC_PAGESIZE) but that it match
-the value of PAGE_SIZE in the kernelspace side.  Obviously, these
-values will all be the same everywhere that we care about now, but I
-can think of one or two situations where it would matter.  On an
-architecture with a variable page size, the UML kernel can have a
-PAGE_SIZE of 64K but the host's sysconf can report a page size of 4K.
-In this case, it's important that PAGE_SIZE in UML userspace code be
-64K.
-
-So, there's UM_KERN_PAGE_SIZE in kern_constants.h which is derived
-from the kernel's PAGE_SIZE and is usable in userspace files.  Use
-that instead of sysconf().
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6.21-mm/include/asm-um/common.lds.S
+===================================================================
+--- linux-2.6.21-mm.orig/include/asm-um/common.lds.S	2007-03-05 13:03:47.000000000 -0500
++++ linux-2.6.21-mm/include/asm-um/common.lds.S	2007-03-23 23:03:53.000000000 -0400
+@@ -15,6 +15,7 @@
+   PROVIDE (_unprotected_end = .);
+ 
+   . = ALIGN(4096);
++  .note : { *(note.*) }
+   __start___ex_table = .;
+   __ex_table : { *(__ex_table) }
+   __stop___ex_table = .;
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
