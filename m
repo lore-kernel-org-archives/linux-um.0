@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HVJ54-0000Xm-UM for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Mar 2007 20:07:43 -0700
+	id 1HVJed-0003ok-Bi for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 24 Mar 2007 20:44:27 -0700
 Received: from nemesis.fprintf.net ([66.134.112.218])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HVJ53-0008Fm-BV
+	(Exim 4.44) id 1HVJec-0001YC-Rf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Mar 2007 20:07:42 -0700
+	Sat, 24 Mar 2007 20:44:27 -0700
 From: Daniel Gryniewicz <dang@gentoo.org>
 In-Reply-To: <20070325012758.GA8260@c2.user-mode-linux.org>
 References: <1174764836.15059.6.camel@athena.fprintf.net>
 	<20070325012758.GA8260@c2.user-mode-linux.org>
-Date: Sat, 24 Mar 2007 23:06:24 -0400
-Message-Id: <1174791984.5906.13.camel@athena.fprintf.net>
+Date: Sat, 24 Mar 2007 23:36:28 -0400
+Message-Id: <1174793788.5906.16.camel@athena.fprintf.net>
 Mime-Version: 1.0
 Subject: Re: [uml-devel] missing asm/user.h
 List-Id: The user-mode Linux development list
@@ -45,23 +45,13 @@ On Sat, 2007-03-24 at 21:27 -0400, Jeff Dike wrote:
 > this was a botch on their part since other distro headers still
 > included it, and became unusable as a result.
 > 
-> BTW, several of the occurrences are in kernelspace files, which aren't
-> affected by distro libc burps.
 
-These, of course, should be fine.
+Update:  <asm/elf.h> isn't there either, but <sys/user.h> includes
+user_regs_struct, so that's sufficient for this problem.
 
-> I have a patch ready in case this is for real, attached below.  It
-> takes care of the i386 side of things - there's an x86_64 include
-> which I ignored for now.
-
-Thanks for the patch.  I'll try it out.
-
-> Do you believe that this is going to be permanent, or just a gyration
-> in the Gentoo kernel package?
-
-They are adamant that this is the correct thing to do and the headers
-won't be going back in.  This means I'll have to work around the problem
-in the UML package.  Hopefully, your patch will be enough.
+The next problem is lack of <asm/page.h>.  Most files failing to build
+with it can simply have it removed.  I've temporarily replaced PAGE_SIZE
+with sysconf(_SC_PAGESIZE) for now, and we'll see how that works.
 
 Daniel
 
