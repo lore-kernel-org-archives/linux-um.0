@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HVJed-0003ok-Bi for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Mar 2007 20:44:27 -0700
-Received: from nemesis.fprintf.net ([66.134.112.218])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HVJec-0001YC-Rf
+	id 1HVU7r-0007ox-C3 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 25 Mar 2007 07:55:27 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HVU7p-0007dB-8f
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 24 Mar 2007 20:44:27 -0700
-From: Daniel Gryniewicz <dang@gentoo.org>
-In-Reply-To: <20070325012758.GA8260@c2.user-mode-linux.org>
+	Sun, 25 Mar 2007 07:55:18 -0700
+Date: Sun, 25 Mar 2007 10:52:32 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070325145232.GB4901@c2.user-mode-linux.org>
 References: <1174764836.15059.6.camel@athena.fprintf.net>
 	<20070325012758.GA8260@c2.user-mode-linux.org>
-Date: Sat, 24 Mar 2007 23:36:28 -0400
-Message-Id: <1174793788.5906.16.camel@athena.fprintf.net>
+	<1174793788.5906.16.camel@athena.fprintf.net>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1174793788.5906.16.camel@athena.fprintf.net>
 Subject: Re: [uml-devel] missing asm/user.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,31 +31,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Daniel Gryniewicz <dang@gentoo.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 2007-03-24 at 21:27 -0400, Jeff Dike wrote:
-> On Sat, Mar 24, 2007 at 03:33:56PM -0400, Daniel Gryniewicz wrote:
-> > In their infinite wisdom, the Gentoo kernel team has decided to not ship
-> > asm/user.h with the kernel headers package anymore.  Since UML (even, as
-> > far as I can tell, in the most recent versions) uses this in several
-> > places, is there a way around this?  Are there plans to remove this
-> > need, or to use the ones from the UML kernel tree, or something?
-> 
-> This came up on IRC a week or so ago, but the conclusion then was that
-> this was a botch on their part since other distro headers still
-> included it, and became unusable as a result.
-> 
+On Sat, Mar 24, 2007 at 11:36:28PM -0400, Daniel Gryniewicz wrote:
+> Update:  <asm/elf.h> isn't there either, but <sys/user.h> includes
+> user_regs_struct, so that's sufficient for this problem.
 
-Update:  <asm/elf.h> isn't there either, but <sys/user.h> includes
-user_regs_struct, so that's sufficient for this problem.
+Hummph, I hope that's true of every other distro that people use UML on.
 
-The next problem is lack of <asm/page.h>.  Most files failing to build
-with it can simply have it removed.  I've temporarily replaced PAGE_SIZE
-with sysconf(_SC_PAGESIZE) for now, and we'll see how that works.
+> The next problem is lack of <asm/page.h>.  Most files failing to build
+> with it can simply have it removed.  I've temporarily replaced PAGE_SIZE
+> with sysconf(_SC_PAGESIZE) for now, and we'll see how that works.
 
-Daniel
+Send patches.
 
+BTW, the important thing about PAGE_SIZE in the userspace side of UML
+is not that it be the same as sysconf(_SC_PAGESIZE) but that it match
+the value of PAGE_SIZE in the kernelspace side.  Obviously, these
+values will all be the same everywhere that we care about now, but I
+can think of one or two situations where it would matter.  On an
+architecture with a variable page size, the UML kernel can have a
+PAGE_SIZE of 64K but the host's sysconf can report a page size of 4K.
+In this case, it's important that PAGE_SIZE in UML userspace code be
+64K.
+
+So, there's UM_KERN_PAGE_SIZE in kern_constants.h which is derived
+from the kernel's PAGE_SIZE and is usable in userspace files.  Use
+that instead of sysconf().
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
