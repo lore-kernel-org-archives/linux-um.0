@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HWGVx-0001qF-Ge for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2007 11:35:25 -0700
+	id 1HWGx2-0006gm-Q3 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Mar 2007 12:03:26 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HWGRg-000336-BI
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HWGRU-00047u-UT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2007 11:31:01 -0700
-Date: Tue, 27 Mar 2007 14:27:50 -0400
+	Tue, 27 Mar 2007 11:30:49 -0700
+Date: Tue, 27 Mar 2007 14:27:48 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070327182750.GA8421@c2.user-mode-linux.org>
+Message-ID: <20070327182748.GA8405@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 6/6] UML - Fix LVM crash
+Subject: [uml-devel] [PATCH 3/6] UML - Fix device unplug crash
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,58 +29,30 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: Jason Lunz <lunz@falooley.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Jason Lunz <lunz@falooley.org>
+Fix a NULL dereference when unplugging a device.  The default value of
+err_msg wants to be "" in case the driver doesn't modify it.
 
-Permit lvm to create logical volumes without crashing UML.
-
-When device-mapper's DM_DEV_CREATE_CMD ioctl is called to create a new
-device, dev_create()->dm_create()->alloc_dev()->
-blk_queue_bounce_limit(md->queue, BLK_BOUNCE_ANY) is called.
-
-blk_queue_bounce_limit(BLK_BOUNCE_ANY) calls init_emergency_isa_pool()
-if blk_max_pfn < blk_max_low_pfn. This is the case on UML, but
-init_emergency_isa_pool() hits BUG_ON(!isa_page_pool) because there
-doesn't seem to be a dma zone on UML for mempool_create() to allocate
-from.
-
-Most architectures seem to have max_low_pfn == max_pfn, but UML doesn't
-because of the uml_reserved chunk it keeps for itself. From what I can
-see, max_pfn and max_low_pfn don't get much use after the
-bootmem-allocator stops being used anyway, except that they initialize
-the block layer's blk_max_low_pfn/blk_max_pfn.
-
-This ensures init_emergency_isa_pool() doesn't crash uml in this
-situation by setting max_low_pfn == max_pfn in mem_init().
-
-Signed-off-by: Jason Lunz <lunz@falooley.org>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
----
- arch/um/kernel/mem.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+--
+ arch/um/drivers/mconsole_kern.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-Index: linux-2.6.21-mm/arch/um/kernel/mem.c
+Index: linux-2.6.21-mm/arch/um/drivers/mconsole_kern.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/mem.c	2007-03-27 12:25:10.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/mem.c	2007-03-27 12:58:36.000000000 -0400
-@@ -64,8 +64,6 @@ static void setup_highmem(unsigned long 
- 
- void mem_init(void)
- {
--	max_low_pfn = (high_physmem - uml_physmem) >> PAGE_SHIFT;
--
- 	/* clear the zero-page */
- 	memset((void *) empty_zero_page, 0, PAGE_SIZE);
- 
-@@ -80,6 +78,7 @@ void mem_init(void)
- 
- 	/* this will put all low memory onto the freelists */
- 	totalram_pages = free_all_bootmem();
-+	max_low_pfn = totalram_pages;
- #ifdef CONFIG_HIGHMEM
- 	totalhigh_pages = highmem >> PAGE_SHIFT;
- 	totalram_pages += totalhigh_pages;
+--- linux-2.6.21-mm.orig/arch/um/drivers/mconsole_kern.c	2007-03-27 11:35:47.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/mconsole_kern.c	2007-03-27 11:46:28.000000000 -0400
+@@ -614,6 +614,9 @@ void mconsole_remove(struct mc_request *
+ 	err_msg = NULL;
+ 	err = (*dev->remove)(n, &err_msg);
+ 	switch(err){
++	case 0:
++		err_msg = "";
++		break;
+ 	case -ENODEV:
+ 		if(err_msg == NULL)
+ 			err_msg = "Device doesn't exist";
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
