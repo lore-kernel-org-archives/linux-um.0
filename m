@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HWGVs-0001qF-N2 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2007 11:35:21 -0700
+	id 1HWGwt-0006zU-Ki for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Mar 2007 12:03:17 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HWGRS-0002ly-K9
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HWGRV-00049B-UO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2007 11:30:48 -0700
-Date: Tue, 27 Mar 2007 14:27:47 -0400
+	Tue, 27 Mar 2007 11:30:51 -0700
+Date: Tue, 27 Mar 2007 14:27:49 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070327182747.GA8400@c2.user-mode-linux.org>
+Message-ID: <20070327182749.GA8416@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/6] UML - fix compilation problems
+Subject: [uml-devel] [PATCH 5/6] UML - irq locking fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,89 +31,58 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Fix a few miscellaneous compilation problems -
-	an assignment with mismatched types in ldt.c
-	a missing include in mconsole.h which needs a definition of uml_pt_regs
-	when auditing is configured there are some mismatched types in ptrace.c
-	I missed removing an include of user_util.h in hostfs	
+As the comment immediately preceding this points out, this list is
+changed in irq context, so it needs to be protected with
+spin_lock_irqsave in process context when it is processed.
+
+Sometimes, gcc should just compile the comments and forget the code.
+
+The IRQ side of this was better, in the sense that it blocked and
+unblocked interrupts, but it still should have saved and restored
+them.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/mconsole.h |    2 ++
- arch/um/kernel/ptrace.c    |   14 +++++++-------
- arch/um/sys-i386/ldt.c     |    3 ++-
- fs/hostfs/hostfs_kern.c    |    1 -
- 4 files changed, 11 insertions(+), 9 deletions(-)
+ arch/um/drivers/chan_kern.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/sys-i386/ldt.c
+Index: linux-2.6.21-mm/arch/um/drivers/chan_kern.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/sys-i386/ldt.c	2007-03-27 12:25:16.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/sys-i386/ldt.c	2007-03-27 12:28:26.000000000 -0400
-@@ -394,7 +394,8 @@ static short * host_ldt_entries = NULL;
- static void ldt_get_host_info(void)
+--- linux-2.6.21-mm.orig/arch/um/drivers/chan_kern.c	2007-03-27 12:25:09.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/chan_kern.c	2007-03-27 12:56:21.000000000 -0400
+@@ -235,11 +235,11 @@ void free_irqs(void)
+ 	struct chan *chan;
+ 	LIST_HEAD(list);
+ 	struct list_head *ele;
++	unsigned long flags;
+ 
+-	spin_lock_irq(&irqs_to_free_lock);
++	spin_lock_irqsave(&irqs_to_free_lock, flags);
+ 	list_splice_init(&irqs_to_free, &list);
+-	INIT_LIST_HEAD(&irqs_to_free);
+-	spin_unlock_irq(&irqs_to_free_lock);
++	spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+ 
+ 	list_for_each(ele, &list){
+ 		chan = list_entry(ele, struct chan, free_list);
+@@ -254,13 +254,15 @@ void free_irqs(void)
+ 
+ static void close_one_chan(struct chan *chan, int delay_free_irq)
  {
- 	long ret;
--	struct ldt_entry * ldt, *tmp;
-+	struct ldt_entry * ldt;
-+	short *tmp;
- 	int i, size, k, order;
- 
- 	spin_lock(&host_ldt_lock);
-Index: linux-2.6.21-mm/arch/um/include/mconsole.h
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/mconsole.h	2007-03-27 12:25:10.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/mconsole.h	2007-03-27 12:29:28.000000000 -0400
-@@ -12,6 +12,8 @@
- #define u32 uint32_t
- #endif
- 
-+#include "sysdep/ptrace.h"
++	unsigned long flags;
 +
- #define MCONSOLE_MAGIC (0xcafebabe)
- #define MCONSOLE_MAX_DATA (512)
- #define MCONSOLE_VERSION 2
-Index: linux-2.6.21-mm/arch/um/kernel/ptrace.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/ptrace.c	2007-03-27 12:25:18.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/ptrace.c	2007-03-27 12:34:43.000000000 -0400
-@@ -53,8 +53,8 @@ void do_syscall_trace(struct pt_regs *re
- 		secure_computing(PT_REGS_SYSCALL_NR(regs));
+ 	if(!chan->opened)
+ 		return;
  
- 	if (unlikely(current->audit_context) && entryexit)
--		audit_syscall_exit(AUDITSC_RESULT(UPT_SYSCALL_RET(regs)),
--				   UPT_SYSCALL_RET(regs));
-+		audit_syscall_exit(AUDITSC_RESULT(UPT_SYSCALL_RET(&regs->regs)),
-+				   UPT_SYSCALL_RET(&regs->regs));
- 
- 	if (test_thread_flag(TIF_SYSCALL_TRACE))
- 		tracehook_report_syscall(regs, entryexit);
-@@ -66,9 +66,9 @@ void do_syscall_trace(struct pt_regs *re
- 
- 	if (unlikely(current->audit_context) && !entryexit)
- 		audit_syscall_entry(HOST_AUDIT_ARCH,
--					    UPT_SYSCALL_NR(regs),
--					    UPT_SYSCALL_ARG1(regs),
--					    UPT_SYSCALL_ARG2(regs),
--					    UPT_SYSCALL_ARG3(regs),
--					    UPT_SYSCALL_ARG4(regs));
-+				    UPT_SYSCALL_NR(&regs->regs),
-+				    UPT_SYSCALL_ARG1(&regs->regs),
-+				    UPT_SYSCALL_ARG2(&regs->regs),
-+				    UPT_SYSCALL_ARG3(&regs->regs),
-+				    UPT_SYSCALL_ARG4(&regs->regs));
- }
-Index: linux-2.6.21-mm/fs/hostfs/hostfs_kern.c
-===================================================================
---- linux-2.6.21-mm.orig/fs/hostfs/hostfs_kern.c	2007-03-27 12:25:11.000000000 -0400
-+++ linux-2.6.21-mm/fs/hostfs/hostfs_kern.c	2007-03-27 12:34:31.000000000 -0400
-@@ -20,7 +20,6 @@
- #include "hostfs.h"
- #include "kern_util.h"
- #include "kern.h"
--#include "user_util.h"
- #include "init.h"
- 
- struct hostfs_inode_info {
+ 	if(delay_free_irq){
+-		spin_lock_irq(&irqs_to_free_lock);
++		spin_lock_irqsave(&irqs_to_free_lock, flags);
+ 		list_add(&chan->free_list, &irqs_to_free);
+-		spin_unlock_irq(&irqs_to_free_lock);
++		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+ 	}
+ 	else {
+ 		if(chan->input)
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
