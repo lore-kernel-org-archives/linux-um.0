@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HWN7u-0002oh-0E for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2007 18:39:02 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HWGRW-0004B1-Kh
+	id 1HWNXv-00071i-Rh for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Mar 2007 19:05:56 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HWNXv-00026e-8y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2007 11:30:51 -0700
-Date: Tue, 27 Mar 2007 14:27:46 -0400
+	Tue, 27 Mar 2007 19:05:55 -0700
+Date: Tue, 27 Mar 2007 22:02:47 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070327182746.GA8395@c2.user-mode-linux.org>
+Message-ID: <20070328020247.GA12299@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/6] i386 - fix cmpxchg warning
+Subject: [uml-devel] [PATCH] UML - fix I/O hang when multiple devices are in
+	use
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,33 +28,89 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andi Kleen <ak@suse.de>, Andrew Morton <akpm@osdl.org>
+To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-I started getting warnings from atomic.h about cmpxchg not having a
-prototype.  It's declared in system.h, so including that fixes the UML
-build warnings and has no noticable ill effects on the i386 build.
+[ This patch needs to get into 2.6.21, as it fixes a serious bug
+introduced soon after 2.6.20 ]
+
+Commit 62f96cb01e8de7a5daee472e540f726db2801499 introduced per-devices
+queues and locks, which was fine as far as it went, but left in place
+a global which controlled access to submitting requests to the host.
+This should have been made per-device as well, since it causes I/O
+hangs when multiple block devices are in use.
+
+This patch fixes that by replacing the global with an activity flag in
+the device structure in order to tell whether the queue is currently
+being run.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- include/asm-i386/atomic.h |    1 +
- 1 file changed, 1 insertion(+)
+ arch/um/drivers/ubd_kern.c |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
-
-Index: linux-2.6.21-mm/include/asm-i386/atomic.h
+Index: linux-2.6.21-mm/arch/um/drivers/ubd_kern.c
 ===================================================================
---- linux-2.6.21-mm.orig/include/asm-i386/atomic.h	2007-03-27 12:25:16.000000000 -0400
-+++ linux-2.6.21-mm/include/asm-i386/atomic.h	2007-03-27 12:26:38.000000000 -0400
-@@ -3,6 +3,7 @@
+--- linux-2.6.21-mm.orig/arch/um/drivers/ubd_kern.c	2007-03-27 20:27:16.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/ubd_kern.c	2007-03-27 20:28:29.000000000 -0400
+@@ -108,10 +108,6 @@ static inline void ubd_set_bit(__u64 bit
  
- #include <linux/compiler.h>
- #include <asm/processor.h>
-+#include <asm/system.h>
+ static DEFINE_MUTEX(ubd_lock);
  
- /*
-  * Atomic operations that C can't guarantee us.  Useful for
+-/* XXX - this made sense in 2.4 days, now it's only used as a boolean, and
+- * probably it doesn't make sense even for that. */
+-static int do_ubd;
+-
+ static int ubd_open(struct inode * inode, struct file * filp);
+ static int ubd_release(struct inode * inode, struct file * file);
+ static int ubd_ioctl(struct inode * inode, struct file * file,
+@@ -168,6 +164,7 @@ struct ubd {
+ 	struct platform_device pdev;
+ 	struct request_queue *queue;
+ 	spinlock_t lock;
++	int active;
+ };
+ 
+ #define DEFAULT_COW { \
+@@ -189,6 +186,7 @@ struct ubd {
+ 	.shared =		0, \
+         .cow =			DEFAULT_COW, \
+ 	.lock =			SPIN_LOCK_UNLOCKED,	\
++	.active =		0, \
+ }
+ 
+ /* Protected by ubd_lock */
+@@ -506,7 +504,6 @@ static void ubd_handler(void)
+ 	struct ubd *dev;
+ 	int n;
+ 
+-	do_ubd = 0;
+ 	n = os_read_file(thread_fd, &req, sizeof(req));
+ 	if(n != sizeof(req)){
+ 		printk(KERN_ERR "Pid %d - spurious interrupt in ubd_handler, "
+@@ -516,6 +513,7 @@ static void ubd_handler(void)
+ 
+ 	rq = req.req;
+ 	dev = rq->rq_disk->private_data;
++	dev->active = 0;
+ 
+ 	ubd_finish(rq, req.error);
+ 	reactivate_fd(thread_fd, UBD_IRQ);
+@@ -1081,11 +1079,12 @@ static void do_ubd_request(request_queue
+ 		}
+ 	}
+ 	else {
+-		if(do_ubd || (req = elv_next_request(q)) == NULL)
++		struct ubd *dev = q->queuedata;
++		if(dev->active || (req = elv_next_request(q)) == NULL)
+ 			return;
+ 		err = prepare_request(req, &io_req);
+ 		if(!err){
+-			do_ubd = 1;
++			dev->active = 1;
+ 			n = os_write_file(thread_fd, (char *) &io_req,
+ 					 sizeof(io_req));
+ 			if(n != sizeof(io_req))
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
