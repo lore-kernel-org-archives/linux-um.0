@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HWPUN-0000Om-ON for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2007 21:10:24 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HWGRU-00045x-KV
+	id 1HWPt7-0003uc-Ry for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Mar 2007 21:35:58 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HWPt6-0004yU-D6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2007 11:30:50 -0700
-Date: Tue, 27 Mar 2007 14:27:45 -0400
+	Tue, 27 Mar 2007 21:35:57 -0700
+Date: Wed, 28 Mar 2007 00:32:48 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070327182745.GA8426@c2.user-mode-linux.org>
+Message-ID: <20070328043248.GA13428@c2.user-mode-linux.org>
+References: <20070327182745.GA8426@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 0/6] UML - small fixes for 2.6.22
+In-Reply-To: <20070327182745.GA8426@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH 0/6] UML - small fixes for 2.6.22
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,10 +32,12 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-These are all 2.6.22 material.  Patch 1 fixes what appears to be a
-i386 compilation bug, so we'll want Andi's ack on that, probably.
+On Tue, Mar 27, 2007 at 02:27:45PM -0400, Jeff Dike wrote:
+> These are all 2.6.22 material.
 
-				Jeff
+err, I meant 2.6.21...
+
+			Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
