@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HWa7z-0005Jn-TE for user-mode-linux-devel@lists.sourceforge.net;
+	id 1HWa7z-0005Jo-U7 for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 28 Mar 2007 08:32:00 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HWa7x-0001Dp-3l
+	(Exim 4.44) id 1HWa7x-0001Do-6e
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 28 Mar 2007 08:31:59 -0700
-Date: Wed, 28 Mar 2007 11:28:47 -0400
+Date: Wed, 28 Mar 2007 11:28:46 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070328152847.GA6335@c2.user-mode-linux.org>
+Message-ID: <20070328152846.GA6330@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/4] UML - improve checking and diagnostics of
-	ethernet MACs
+Subject: [uml-devel] [PATCH 1/4] UML - hostfs variable renaming
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,124 +33,76 @@ Cc: Blaisorblade <blaisorblade@yahoo.it>, LKML <linux-kernel@vger.kernel.org>, u
 
 From: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
 
-Improve checking and diagnostics for broadcast and multicast Ethernet MAC
-addresses, and distinguish between those cases in output; also make sure the   
-device is assigned a MAC address valid only locally to avoid collisions.
+* rename name to host_root_path
+* rename data to req_root.
 
-Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Signed-off-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it> 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/drivers/net_kern.c  |   38 +++++++++++++++++++++++++++++---------
- include/linux/etherdevice.h |   12 ++++++++++++
- 2 files changed, 41 insertions(+), 9 deletions(-)
+---
 
-Index: linux-2.6.21-mm/arch/um/drivers/net_kern.c
+ fs/hostfs/hostfs_kern.c |   26 +++++++++++++-------------
+ 1 files changed, 13 insertions(+), 13 deletions(-)
+
+Index: linux-2.6.21-mm/fs/hostfs/hostfs_kern.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/net_kern.c	2007-03-21 13:43:12.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/net_kern.c	2007-03-21 13:43:42.000000000 -0400
-@@ -283,7 +283,7 @@ void uml_net_user_timer_expire(unsigned 
- #endif
- }
- 
--static void setup_etheraddr(char *str, unsigned char *addr)
-+static void setup_etheraddr(char *str, unsigned char *addr, char *name)
+--- linux-2.6.21-mm.orig/fs/hostfs/hostfs_kern.c	2007-03-27 12:29:28.000000000 -0400
++++ linux-2.6.21-mm/fs/hostfs/hostfs_kern.c	2007-03-27 12:34:10.000000000 -0400
+@@ -938,7 +938,7 @@ static const struct address_space_operat
+ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
  {
- 	char *end;
- 	int i;
-@@ -302,15 +302,32 @@ static void setup_etheraddr(char *str, u
- 		}
- 		str = end + 1;
- 	}
--	if(addr[0] & 1){
-+	if (is_multicast_ether_addr(addr)) {
- 		printk(KERN_ERR
--		       "Attempt to assign a broadcast ethernet address to a "
-+		       "Attempt to assign a multicast ethernet address to a "
- 		       "device disallowed\n");
- 		goto random;
- 	}
-+	if (!is_valid_ether_addr(addr)) {
-+		printk(KERN_ERR
-+		       "Attempt to assign an invalid ethernet address to a "
-+		       "device disallowed\n");
-+		goto random;
-+	}
-+	if (!is_local_ether_addr(addr)) {
-+		printk(KERN_WARNING
-+		       "Warning: attempt to assign a globally valid ethernet address to a "
-+		       "device\n");
-+		printk(KERN_WARNING "You should better enable the 2nd rightmost bit "
-+		      "in the first byte of the MAC, i.e. "
-+		      "%02x:%02x:%02x:%02x:%02x:%02x\n",
-+		      addr[0] | 0x02, addr[1], addr[2], addr[3], addr[4], addr[5]);
-+	}
- 	return;
+ 	struct inode *root_inode;
+-	char *name, *data = d;
++	char *host_root_path, *req_root = d;
+ 	int err;
  
- random:
-+	printk(KERN_INFO
-+	       "Choosing a random ethernet address for device %s\n", name);
- 	random_ether_addr(addr);
+ 	sb->s_blocksize = 1024;
+@@ -947,16 +947,16 @@ static int hostfs_fill_sb_common(struct 
+ 	sb->s_op = &hostfs_sbops;
+ 
+ 	/* NULL is printed as <NULL> by sprintf: avoid that. */
+-	if (data == NULL)
+-		data = "";
++	if (req_root == NULL)
++		req_root = "";
+ 
+ 	err = -ENOMEM;
+-	name = kmalloc(strlen(root_ino) + 1
+-			+ strlen(data) + 1, GFP_KERNEL);
+-	if(name == NULL)
++	host_root_path = kmalloc(strlen(root_ino) + 1
++				 + strlen(req_root) + 1, GFP_KERNEL);
++	if(host_root_path == NULL)
+ 		goto out;
+ 
+-	sprintf(name, "%s/%s", root_ino, data);
++	sprintf(host_root_path, "%s/%s", root_ino, req_root);
+ 
+ 	root_inode = iget(sb, 0);
+ 	if(root_inode == NULL)
+@@ -966,10 +966,10 @@ static int hostfs_fill_sb_common(struct 
+ 	if(err)
+ 		goto out_put;
+ 
+-	HOSTFS_I(root_inode)->host_filename = name;
+-	/* Avoid that in the error path, iput(root_inode) frees again name through
+-	 * hostfs_destroy_inode! */
+-	name = NULL;
++	HOSTFS_I(root_inode)->host_filename = host_root_path;
++	/* Avoid that in the error path, iput(root_inode) frees again
++	 * host_root_path through hostfs_destroy_inode! */
++	host_root_path = NULL;
+ 
+ 	err = -ENOMEM;
+ 	sb->s_root = d_alloc_root(root_inode);
+@@ -989,7 +989,7 @@ static int hostfs_fill_sb_common(struct 
+  out_put:
+         iput(root_inode);
+  out_free:
+-	kfree(name);
++	kfree(host_root_path);
+  out:
+ 	return(err);
  }
- 
-@@ -331,6 +348,7 @@ static void eth_configure(int n, void *i
- 	struct net_device *dev;
- 	struct uml_net_private *lp;
- 	int save, err, size;
-+	char name[sizeof(dev->name)];
- 
- 	size = transport->private_size + sizeof(struct uml_net_private) +
- 		sizeof(((struct uml_net_private *) 0)->user);
-@@ -344,7 +362,13 @@ static void eth_configure(int n, void *i
- 	INIT_LIST_HEAD(&device->list);
- 	device->index = n;
- 
--	setup_etheraddr(mac, device->mac);
-+	/* If this name ends up conflicting with an existing registered
-+	 * netdevice, that is OK, register_netdev{,ice}() will notice this
-+	 * and fail.
-+	 */
-+	snprintf(name, sizeof(name), "eth%d", n);
-+
-+	setup_etheraddr(mac, device->mac, name);
- 
- 	printk(KERN_INFO "Netdevice %d ", n);
- 	printk("(%02x:%02x:%02x:%02x:%02x:%02x) ",
-@@ -375,11 +399,7 @@ static void eth_configure(int n, void *i
- 		goto out_free_netdev;
- 	SET_NETDEV_DEV(dev,&device->pdev.dev);
- 
--	/* If this name ends up conflicting with an existing registered
--	 * netdevice, that is OK, register_netdev{,ice}() will notice this
--	 * and fail.
--	 */
--	snprintf(dev->name, sizeof(dev->name), "eth%d", n);
-+	strcpy(dev->name, name);
- 	device->dev = dev;
- 
- 	/*
-Index: linux-2.6.21-mm/include/linux/etherdevice.h
-===================================================================
---- linux-2.6.21-mm.orig/include/linux/etherdevice.h	2007-03-20 15:41:35.000000000 -0400
-+++ linux-2.6.21-mm/include/linux/etherdevice.h	2007-03-21 13:43:42.000000000 -0400
-@@ -71,6 +71,18 @@ static inline int is_multicast_ether_add
- }
- 
- /**
-+ * is_local_ether_addr - Determine if the Ethernet address is locally-assigned
-+ * one (IEEE 802).
-+ * @addr: Pointer to a six-byte array containing the Ethernet address
-+ *
-+ * Return true if the address is a local address.
-+ */
-+static inline int is_local_ether_addr(const u8 *addr)
-+{
-+	return (0x02 & addr[0]);
-+}
-+
-+/**
-  * is_broadcast_ether_addr - Determine if the Ethernet address is broadcast
-  * @addr: Pointer to a six-byte array containing the Ethernet address
-  *
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
