@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HWj2p-0000KZ-Ae for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Mar 2007 18:03:17 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HWj2m-0003rP-Df
+	id 1HX5m5-0000RF-2r for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Mar 2007 18:19:29 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HX5m1-0006zm-48
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Mar 2007 18:03:14 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 29 Mar 2007 03:02:43 +0200
+	Thu, 29 Mar 2007 18:19:28 -0700
+Date: Thu, 29 Mar 2007 14:29:20 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070329182920.GB8065@c2.user-mode-linux.org>
 References: <20070328020247.GA12299@c2.user-mode-linux.org>
 	<200703290236.44324.blaisorblade@yahoo.it>
-In-Reply-To: <200703290236.44324.blaisorblade@yahoo.it>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200703290302.43447.blaisorblade@yahoo.it>
+In-Reply-To: <200703290236.44324.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [PATCH] UML - fix I/O hang when multiple devices
 	are in use
 List-Id: The user-mode Linux development list
@@ -27,107 +27,79 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On gioved=EC 29 marzo 2007, Blaisorblade wrote:
-> On mercoled=EC 28 marzo 2007, Jeff Dike wrote:
-> > [ This patch needs to get into 2.6.21, as it fixes a serious bug
-> > introduced soon after 2.6.20 ]
-> >
-> > Commit 62f96cb01e8de7a5daee472e540f726db2801499 introduced per-devices
-> > queues and locks, which was fine as far as it went, but left in place
-> > a global which controlled access to submitting requests to the host.
-> > This should have been made per-device as well, since it causes I/O
-> > hangs when multiple block devices are in use.
-> >
-> > This patch fixes that by replacing the global with an activity flag in
-> > the device structure in order to tell whether the queue is currently
-> > being run.
->
-> Finally that variable has a understandable name. However in a mail from
-> Jens Axboe, titled:
-> "Re: [uml-devel] [PATCH 06/11] uml ubd driver: ubd_io_lock usage fixup" ,
-> with Date: Mon, 30 Oct 2006 09:26:48 +0100, he suggested removing this fl=
-ag
->
-> altogether, so we may explore this for the future:
-> > > Add some comments about requirements for ubd_io_lock and expand its
-> > > use.
-> > >
-> > > When an irq signals that the "controller" (i.e. another thread on the
-> > > host, which does the actual requests and is the only one blocked on I=
-/O
-> > > on the host) has done some work, we call again the request function
-> > > ourselves (do_ubd_request).
-
-> > > We now do that with ubd_io_lock held - that's useful to protect again=
-st
-> > > concurrent calls to elv_next_request and so on.
-
-> > Not only useful, required, as I think I complained about a year or more
-> > ago :-)
-
-> > > XXX: Maybe we shouldn't call at all the request function. Input needed
-> > > on this. Are we supposed to plug and unplug the queue? That code
-> > > "indirectly" does that by setting a flag, called do_ubd, which makes
-> > > the request function return (it's a residual of 2.4 block layer
-> > > interface).
-
+On Thu, Mar 29, 2007 at 02:36:43AM +0200, Blaisorblade wrote:
 > > Sometimes you need to. I'd probably just remove the do_ubd check and
 > > always recall the request function when handling completions, it's
 > > easier and safe.
 
-> Anyway, the main speedups to do on the UBD driver are:
-> * implement write barriers (so much less fsync) - this is performance
-> killer n.1
+If I'm understanding this correctly, this is what happens now.  There
+is still the flag check and return if the queue is being run, but I
+don't see the advantage of removing that.
 
-> * possibly to use the new 2.6 request layout with scatter/gather I/O, and
+> Anyway, the main speedups to do on the UBD driver are:
+> * implement write barriers (so much less fsync) - this is performance killer 
+> n.1
+
+You mean preventing the upper layers from calling fsync?
+
+> * possibly to use the new 2.6 request layout with scatter/gather I/O, and 
 > vectorized I/O on the host
+
+Yeah, this is something I've thought about on occassion but never
+done.
+
 > * while at vectorizing I/O using async I/O
 
-> * to avoid passing requests on pipes (n.2) - on fast disk I/O becomes
-> cpu-bound.
-> To make a different but related example, with a SpeedScale laptop, it's
-> interesting to double CPU frequency and observe tuntap speed double too.
-> (with 1GHz I get on TCP numbers like 150 Mbit/s - 100 Mbit/s, depending
-> whether UML trasmits or receives data; with 2GHz double rates).
-> Update: I now get 150Mbit / 200Mbit (Uml receives/Uml sends) at 1GHz, and
-> still the double at 2Ghz.
-> This is a different UML though.
+I have that, but haven't merged it since I see no performance benefit
+for some reason.
 
-> * using futexes instead of pipes for synchronization (required for previo=
-us
+> * to avoid passing requests on pipes (n.2) - on fast disk I/O becomes 
+> cpu-bound.
+
+Right - I cooked up a scheme a while ago that had the requests on a
+list, being removed from one end and added to the other, with some
+minimal number of bytes going across the pipe to ensure a wakeup if
+the other side was possibly asleep.  But I never implemented it.
+
+> * using futexes instead of pipes for synchronization (required for previous 
 > one).
 
-I forgot one thing: remember ubd=3Dmmap? Something like that could have bee=
-n=20
-done using MAP_PRIVATE, so that write had still to be called explicitly but=
-=20
-unchanged data was shared with the host.
+Yup - for this, we either need to test the host for futuxes and use
+pipes as a fallback or give up on 2.4 as the host.
 
-Once a page gets dirty but is then cleaned, sharing it back is difficult - =
-but=20
-even without that good savings could be achievable. That's to explore for t=
-he=20
-very future though.
---=20
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+> I forgot one thing: remember ubd=mmap? Something like that could have been
+> done using MAP_PRIVATE, so that write had still to be called explicitly but
+> unchanged data was shared with the host.
+
+> Once a page gets dirty but is then cleaned, sharing it back is
+> difficult - but even without that good savings could be
+> achievable. That's to explore for the very future though.
+
+Interesting idea.  That does avoid the formerly fatal mmap problem.
+If you unmap it, the private copy goes away because it lost its last
+reference, and if you map it again, you get the shared version.
+
+That's a lot of mapping and unmapping though.  I wonder if just
+calling mmap would cause the COWed page to be dropped...
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
