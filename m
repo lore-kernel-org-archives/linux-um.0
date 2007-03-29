@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HWhYD-0007pN-8N for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Mar 2007 16:27:43 -0700
-Received: from imail3.gazeta.pl ([193.42.231.137])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HWhYB-0008LK-Ln
+	id 1HWiE9-0003ZT-Dk for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Mar 2007 17:10:53 -0700
+Received: from smtp.osdl.org ([65.172.181.24])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HWiE8-0003oW-2C
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Mar 2007 16:27:33 -0700
-Received: from imail3 (unverified [127.0.0.1]) 
-	by  (imail3.gazeta.pl) with ESMTP id 16766158-1945724 
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 29 Mar 2007 01:27:29 +0200
-From: <aapsik4@gazeta.pl>
-MIME-Version: 1.0
-Date: Thu, 29 Mar 2007 01:27:29 +0200
-Message-ID: <1175124449_245382@imail3.gazeta.pl>
-Subject: [uml-devel] Odpowiedz automatyczna
+	Wed, 28 Mar 2007 17:10:53 -0700
+Date: Wed, 28 Mar 2007 17:10:46 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20070328171046.fb56ae75.akpm@linux-foundation.org>
+In-Reply-To: <20070328152845.GA6350@c2.user-mode-linux.org>
+References: <20070328152845.GA6350@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 0/4] UML - Code cleanups for 2.6.21
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,12 +28,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Blaisorblade <blaisorblade@yahoo.it>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-replay
+On Wed, 28 Mar 2007 11:28:45 -0400
+Jeff Dike <jdike@addtoit.com> wrote:
 
+> These are tidying patches from Blaisorblade - 2.6.21 material.
 
+The three net_kern.c patches invoked a reject storm against mainline,
+presumably because of uml-network-interface-hotplug-error-handling.patch.
 
+So I bumped those three patches into 2.6.22.
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
