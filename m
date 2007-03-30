@@ -2,19 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HXJR3-00069y-BR for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Mar 2007 08:54:41 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HXJR1-0002zk-Hb
+	id 1HXNZV-0001ov-NA for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Mar 2007 13:19:41 -0700
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HXNZU-0003tW-1V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Mar 2007 08:54:41 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Fri, 30 Mar 2007 17:54:27 +0200
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200703301754.27335.blaisorblade@yahoo.it>
-Subject: [uml-devel] "Stracing" guest from gdb on the host and examining its
-	memory.
+	Fri, 30 Mar 2007 13:19:41 -0700
+From: <gregkh@suse.de>
+Date: Fri, 30 Mar 2007 13:17:58 -0700
+In-Reply-To: <20070323181817.GA8694@c2.user-mode-linux.org>
+Message-Id: <20070330201931.71EE0C9F718@imap.suse.de>
+Subject: [uml-devel] patch uml-fix-epoll.patch queued to -stable tree
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,121 +23,74 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com, akpm@osdl.org, gregkh@suse.de, jdike@linux.intel.com, user-mode-linux-devel@lists.sourceforge.net
+Cc: stable@kernel.org
 
-Today I ran -mm as UML.
 
-To debug some hard problems (in the end that udev on Dapper doesn't like -mm 
-kernels, while the one on Breezy does - so /dev/tty* doesn't get created and 
-getty never starts), I found an efficient enough way to strace system calls 
-from the guest.
+This is a note to let you know that we have just queued up the patch titled
 
-Note that YMMV - below I reference various concept which are explained 
-elsewhere without links, and it took me some time to learn how to debug UML 
-efficiently and address the various quirks of gdb.
+     Subject: UML - fix epoll
 
-It's a personal note to remember, but may be useful to motivated hackers. 
-Probably I should put this inside Documentation/ ... 
+to the 2.6.20-stable tree.  Its filename is
 
-Btw, I discovered recently that when you boot UML inside gdb, it's the first 
-break call to confuse gdb: breakpoints set before cease working when that 
-call is done, i.e. very early (I remember that was in init_aio).
+     uml-fix-epoll.patch
 
-The basic idea is to break at handle_syscall, to intercept all syscall, have 
-some nice gdb displays for parameters, and display which is the syscall.
+A git repo of this tree can be found at 
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
-First, let's get some parameters; we want to be able to access current.
 
-1) CONFIG_KERNEL_STACK_ORDER is normally 2, so the stack is 16K wide. Since 
-This means that struct thread_info* current_thread_info() is given by this:
+From stable-bounces@linux.kernel.org Fri Mar 23 11:22:17 2007
+From: Jeff Dike <jdike@addtoit.com>
+Date: Fri, 23 Mar 2007 14:18:17 -0400
+Subject: UML - fix epoll
+To: Andrew Morton <akpm@osdl.org>, stable@kernel.org
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Message-ID: <20070323181817.GA8694@c2.user-mode-linux.org>
+Content-Disposition: inline
 
-((struct thread_info*)((long)$rsp & 0xffffc000))
-As a check, current_thread_info() == current_thread_info()->task->thread_info 
-is always true, so you can verify whether 
-((struct thread_info*)((long)$rsp & 0xffffc000))->task->thread_info ==
-((struct thread_info*)((long)$rsp & 0xffffc000))
+From: Jeff Dike <jdike@addtoit.com>
 
-After this, I can create a display for the pid and name of the current 
-executing process:
+UML/x86_64 needs the same packing of struct epoll_event as x86_64.
 
-display ((struct thread_info*)((long)$rsp & 0xffffc000))->task->pid
-display ((struct thread_info*)((long)$rsp & 0xffffc000))->task->comm
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
-(there is some garbage in comm after the first NULL, that's normal).
-That's for x86_64; on i386 replace $rsp with $esp.
+--- linux-2.6.21-mm.orig/include/linux/eventpoll.h	2007-03-05 13:01:17.000000000 -0500
++++ linux-2.6.21-mm/include/linux/eventpoll.h	2007-03-23 14:03:07.000000000 -0400
+@@ -31,12 +31,19 @@
+ /* 
+  * On x86-64 make the 64bit structure have the same alignment as the
+  * 32bit structure. This makes 32bit emulation easier.
++ *
++ * UML/x86_64 needs the same packing as x86_64 - UML + UML_X86 +
++ * 64_BIT adds up to UML/x86_64.
+  */
+ #ifdef __x86_64__
+ #define EPOLL_PACKED __attribute__((packed))
+ #else
++#if defined(CONFIG_UML) && defined(CONFIG_UML_X86) && defined(CONFIG_64BIT)
++#define EPOLL_PACKED __attribute__((packed))
++#else
+ #define EPOLL_PACKED
+ #endif
++#endif
+ 
+ struct epoll_event {
+ 	__u32 events;
 
-2) I want at times to print the process IP.
+_______________________________________________
+stable mailing list
+stable@linux.kernel.org
+http://linux.kernel.org/mailman/listinfo/stable
 
-I compile with O=$OUT, i.e. using KBUILD_OUTPUT ($OUT points to a folder), to 
-place object files elsewhere than sources.
 
-So to get HOST_IP I can do:
+Patches currently in stable-queue which might be from jdike@addtoit.com are
 
-$ grep -r HOST_IP $OUT/arch/um/
-Currently it is in user_constants, so I can do:
-$ grep HOST_IP $OUT/arch/um/include/user_constants.h
-(if you build without O=, use the following:)
-$ grep HOST_IP arch/um/include/user_constants.h
-
-I get
-#define HOST_IP 16 /* RIP       # */
-
-3) now I break on handle_syscall.
-
-The best for me was to break on "result = EXECUTE_SYSCALL(syscall, regs);".
-
-Here, union uml_pt_regs * r represents the registers of the userspace process.
-To print the current syscall, you can do:
-(gdb) print r->skas->syscall
-to get the syscall number, but
-(gdb) print sys_call_table[r->skas->syscall]
-prints the associated function, and that's clearer.
-
-Finally, the IP is r->skas->regs[HOST_IP], but HOST_IP is a macro, so we need 
-the actual value we got earlier:
-
-display  r->skas->regs[16]
-
-And we have all! By stepping into EXECUTE_SYSCALL, we can also debug the 
-syscall execution and see the parameters (most times you must wait for 
-copy_from_user to see parameters value, if just a pointer is passed).
-
-We can also look at the guest memory - that was thought me by Jeff years ago.
-
-While the given guest process is stopped inside UML:
-1) get the pid of the host process representing the guest process. That's 
-print userspace_pid[$CPU], where $CPU must always be 0 for now (until SMP will 
-be implemented).
-Let that be $PID
-
-2) The child memory is mapped from a deleted temp file, named 
-$TEMP/vm_file-XXXXXX. We must look to the page table, and that's simple 
-through the host. Suppose we want to look at 0x405ac012 (because that's the 
-IP where a process gets a SIGSEGV and dies); first let's split this into page 
-address and offset, getting 0x405ac012 == 0x405ac000 + 0x12.
-
-cat /proc/$PID/maps will show this, like (sample row):
-
-405ac000-405ad000 rwxs 03fb4000 00:13 
-85912                              /tmp/vm_file-IUCpfE (deleted)
-
-The first column is the range mapped with mmap(), the third is the offset 
-inside the file. So 0x405ac012 is located at 0x03fb4000 + 0x12 in that file.
-How to look at it, since it's deleted? Uml has mapped the whole of it, 
-starting from the address stored in uml_physmem onwards.
-
-So in gdb I must just look (with the 'x' or 'disassemble' command) to 
-uml_physmem + 0x03fb4000 + 0x12.
-
-These are the basic ideas, very condensed.
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
