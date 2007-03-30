@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HX5m5-0000RE-2r for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Mar 2007 18:19:29 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HX5m1-0003eB-5G
+	id 1HXDZl-0003Hm-E7 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Mar 2007 02:39:23 -0700
+Received: from imail3.gazeta.pl ([193.42.231.137])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HXDZj-0001Um-Lq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Mar 2007 18:19:28 -0700
-Date: Thu, 29 Mar 2007 14:32:59 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070329183259.GC8065@c2.user-mode-linux.org>
-References: <20070327182746.GA8395@c2.user-mode-linux.org>
-	<200703282105.03832.ak@suse.de>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200703282105.03832.ak@suse.de>
-Subject: Re: [uml-devel] [PATCH 1/6] i386 - fix cmpxchg warning
+	Fri, 30 Mar 2007 02:39:17 -0700
+Received: from imail3 (unverified [127.0.0.1]) 
+	by  (imail3.gazeta.pl) with ESMTP id 17084732-1945724 
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 30 Mar 2007 11:39:10 +0200
+From: <aapsik4@gazeta.pl>
+MIME-Version: 1.0
+Date: Fri, 30 Mar 2007 11:39:10 +0200
+Message-ID: <1175247550_328399@imail3.gazeta.pl>
+Subject: [uml-devel] Odpowiedz automatyczna
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,24 +30,12 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andi Kleen <ak@suse.de>
-Cc: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Mar 28, 2007 at 09:05:03PM +0200, Andi Kleen wrote:
-> 
-> >  #include <linux/compiler.h>
-> >  #include <asm/processor.h>
-> > +#include <asm/system.h>
-> Sorry no. system.h is the header from hell and putting it into a
-> "basic" header like atomic_t will likely cause all kinds of
-> problems.
+replay
 
-OK, I'll figure out someplace else for it.
 
-				Jeff
 
--- 
-Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
