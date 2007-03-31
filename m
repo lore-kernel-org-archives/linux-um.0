@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HXSHe-0008Td-FG for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Mar 2007 18:21:34 -0700
-Received: from smtp008.mail.ukl.yahoo.com ([217.12.11.62])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HXSHb-0000mB-KD
+	id 1HXU4s-0006QW-Rw for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Mar 2007 20:16:33 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HXU4r-0003bO-Cn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 30 Mar 2007 18:21:34 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 31 Mar 2007 03:21:17 +0200
-References: <20070330205938.984247529@mini.kroah.org>
-	<20070330210412.GH29450@kroah.com>
-In-Reply-To: <20070330210412.GH29450@kroah.com>
-MIME-Version: 1.0
+	Fri, 30 Mar 2007 20:16:30 -0700
+Date: Fri, 30 Mar 2007 23:12:52 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070331031252.GA11746@c2.user-mode-linux.org>
+References: <20070331012027.24884.85252.stgit@americanbeauty.home.lan>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200703310321.18453.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [patch 06/37] UML - Fix static linking
+In-Reply-To: <20070331012027.24884.85252.stgit@americanbeauty.home.lan>
+Subject: Re: [uml-devel] [PATCH] [PATCH] uml: fix static linking for real
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,78 +25,32 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Andrew Morton <akpm@osdl.org>, Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, Justin Forbes <jmforbes@linuxtx.org>, Greg KH <gregkh@suse.de>, JC.LAFOUCRIERE@cea.fr, linux-kernel@vger.kernel.org, Chris Wedgwood <reviews@ml.cw.f00f.org>, torvalds@linux-foundation.org, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, Chuck Wolber <chuckw@quantumlinux.com>, stable@kernel.org, alan@lxorguk.ukuu.org.uk
+To: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On venerd=EC 30 marzo 2007, Greg KH wrote:
-> -stable review patch.  If anyone has any objections, please let us know.
+On Sat, Mar 31, 2007 at 03:20:27AM +0200, Paolo 'Blaisorblade' Giarrusso wrote:
+> There was a typo in commit 7632fc8f809a97f9d82ce125e8e3e579390ce2e5, preventing
+> it from working - 32bit binaries crashed hopelessly before the below fix and
+> work perfectly now.
+> Merge for 2.6.21, please.
 
-I have one objection, the fix has a typo! This is the additional fix=20
-(note '.note' instead of 'note'):
+ACK.
 
---- linux-2.6.git.orig/include/asm-um/common.lds.S
-+++ linux-2.6.git/include/asm-um/common.lds.S
-@@ -15,7 +15,7 @@
-   PROVIDE (_unprotected_end =3D .);
+	Jeff
 
-   . =3D ALIGN(4096);
--  .note : { *(note.*) }
-+  .note : { *(.note.*) }
-   __start___ex_table =3D .;
-   __ex_table : { *(__ex_table) }
-   __stop___ex_table =3D .;
-
-With this, the fix should be merged - I just re-hit this bug and rechecked =
-
-everything, now it's ok.
-
-> ------------------
-> From: Jeff Dike <jdike@addtoit.com>
->
-> During a static link, ld has started putting a .note section in the
-> .uml.setup.init section.  This has the result that the UML setups
-> begin with 32 bytes of garbage and UML crashes immediately on boot.
->
-> This patch creates a specific .note section for ld to drop this stuff
-> into.
->
-> Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
->
-> ---
->  include/asm-um/common.lds.S |    1 +
->  1 file changed, 1 insertion(+)
->
-> --- a/include/asm-um/common.lds.S
-> +++ b/include/asm-um/common.lds.S
-> @@ -15,6 +15,7 @@
->    PROVIDE (_unprotected_end =3D .);
->
->    . =3D ALIGN(4096);
-> +  .note : { *(note.*) }
->    __start___ex_table =3D .;
->    __ex_table : { *(__ex_table) }
->    __stop___ex_table =3D .;
-
-
-
---=20
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
