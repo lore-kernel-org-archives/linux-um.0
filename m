@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HXlou-0002aX-20 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 31 Mar 2007 15:13:14 -0700
+	id 1HY2hI-0003zl-Bl for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 Apr 2007 09:14:28 -0700
 Received: from imail3.gazeta.pl ([193.42.231.137])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HXlos-0001sl-Eq
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HY2hG-0001wV-Oe
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 31 Mar 2007 15:13:12 -0700
+	Sun, 01 Apr 2007 09:14:28 -0700
 Received: from imail3 (unverified [127.0.0.1]) 
-	by  (imail3.gazeta.pl) with ESMTP id 17448262-1945724 
+	by  (imail3.gazeta.pl) with ESMTP id 17519938-1945724 
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 01 Apr 2007 00:13:08 +0200
+	Sun, 01 Apr 2007 18:14:22 +0200
 From: <aapsik4@gazeta.pl>
 MIME-Version: 1.0
-Date: Sun, 01 Apr 2007 00:13:08 +0200
-Message-ID: <1175379188_473140@imail3.gazeta.pl>
+Date: Sun, 01 Apr 2007 18:14:22 +0200
+Message-ID: <1175444062_477885@imail3.gazeta.pl>
 Subject: [uml-devel] Odpowiedz automatyczna
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
