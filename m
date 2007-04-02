@@ -2,24 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HYLze-0006Tz-Be for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Apr 2007 05:50:42 -0700
-Received: from adicia.telenet-ops.be ([195.130.132.56])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HYLzc-0005iE-Ux
+	id 1HYLzp-0006US-NM for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Apr 2007 05:50:54 -0700
+Received: from imail3.gazeta.pl ([193.42.231.137])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HYLzo-0005kU-5s
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Apr 2007 05:50:42 -0700
-Date: Mon, 2 Apr 2007 14:50:34 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <Pine.LNX.4.64.0704021318410.1276@anakin>
-Message-ID: <Pine.LNX.4.64.0704021450070.1276@anakin>
-References: <1712880100@web.de> <200704012108.14597.blaisorblade@yahoo.it>
-	<46100EF5.7040802@nagafix.co.uk>
-	<20070402020530.GA589@c2.user-mode-linux.org>
-	<4610D937.20002@nagafix.co.uk>
-	<Pine.LNX.4.64.0704021318410.1276@anakin>
+	Mon, 02 Apr 2007 05:50:53 -0700
+Received: from imail3 (unverified [127.0.0.1]) 
+	by  (imail3.gazeta.pl) with ESMTP id 17667244-1945724 
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 02 Apr 2007 14:50:50 +0200
+From: <aapsik4@gazeta.pl>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [RFC] UML kernel & rootfs bundle with every kernel
-	release ?
+Date: Mon, 02 Apr 2007 14:50:50 +0200
+Message-ID: <1175518250_508528@imail3.gazeta.pl>
+Subject: [uml-devel] Odpowiedz automatyczna
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,26 +30,12 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, devzero@web.de
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 2 Apr 2007, Geert Uytterhoeven wrote:
-> Gerd Kraxel^H^H^H^H^H^HHoffmann did one using plain X11, which worked
-       ^^^^^^
-Sorry, this should have been `Knorr'.
+replay
 
-> great when I gave it a try.
 
-Gr{oetje,eeting}s,
 
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
