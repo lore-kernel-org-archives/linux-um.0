@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HYKbw-00032Z-24 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Apr 2007 04:22:08 -0700
-Received: from astra.telenet-ops.be ([195.130.132.58])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HYKbu-00056H-6r
+	id 1HYLze-0006Tz-Be for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Apr 2007 05:50:42 -0700
+Received: from adicia.telenet-ops.be ([195.130.132.56])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HYLzc-0005iE-Ux
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Apr 2007 04:22:07 -0700
-Date: Mon, 2 Apr 2007 13:22:00 +0200 (CEST)
+	Mon, 02 Apr 2007 05:50:42 -0700
+Date: Mon, 2 Apr 2007 14:50:34 +0200 (CEST)
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <4610D937.20002@nagafix.co.uk>
-Message-ID: <Pine.LNX.4.64.0704021318410.1276@anakin>
+In-Reply-To: <Pine.LNX.4.64.0704021318410.1276@anakin>
+Message-ID: <Pine.LNX.4.64.0704021450070.1276@anakin>
 References: <1712880100@web.de> <200704012108.14597.blaisorblade@yahoo.it>
 	<46100EF5.7040802@nagafix.co.uk>
 	<20070402020530.GA589@c2.user-mode-linux.org>
 	<4610D937.20002@nagafix.co.uk>
+	<Pine.LNX.4.64.0704021318410.1276@anakin>
 MIME-Version: 1.0
 Subject: Re: [uml-devel] [RFC] UML kernel & rootfs bundle with every kernel
 	release ?
@@ -35,37 +36,12 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Antoine Martin <antoine@nagafix.co.uk>
 Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, devzero@web.de
 
-On Mon, 2 Apr 2007, Antoine Martin wrote:
-> Jeff Dike wrote:
-> > On Sun, Apr 01, 2007 at 08:58:45PM +0100, Antoine Martin wrote:
-> >> I reckon that one critical thing which could drastically increase the 
-> >> user base would be to have a working virtual framebuffer implementation.
-> > 
-> > Why?  I've never understood what a framebuffer gives you that you
-> > don't have now.
-> Just like the network auto-configuration via dhcp, it would allow users 
-> to download images+kernel and run them like appliances without 
-> understanding anything about X or UML, just click and run.
-> We are all capable of setting up Xvfb here, but most users are not, 
-> which is why they download ready-made images.
-> It would also make it a lot easier to focus on writing a management UI, 
-> hell if there isn't one shortly after, I'll do one myself!
-> Think of a UML browser image (running IE via wine in a limited image 
-> with just X + wine + IE - I would much prefer that to having wine+IE 
-> installed locally), testing framebuffer apps like gtk-fb/cairo-fb 
-> without risking your dev environment, etc...
+On Mon, 2 Apr 2007, Geert Uytterhoeven wrote:
+> Gerd Kraxel^H^H^H^H^H^HHoffmann did one using plain X11, which worked
+       ^^^^^^
+Sorry, this should have been `Knorr'.
 
-There are patches floating around for a UML frame buffer device.
-Gerd Kraxel^H^H^H^H^H^HHoffmann did one using plain X11, which worked
-great when I gave it a try.
-
-A few years ago I tried doing one myself using gdk/gtk, but it didn't
-work reliably on all systems. My main motivation was doing development for
-different frame buffer memory organizations (think Amiga and Atari bitplanes)
-on UML.
-
-I suggest taking a look at Gerd's patches. IIRC, he posted them to lkml
-last year.
+> great when I gave it a try.
 
 Gr{oetje,eeting}s,
 
