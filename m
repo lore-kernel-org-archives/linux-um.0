@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HYnCl-00082X-3K for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Apr 2007 10:54:03 -0700
+	id 1HYsko-0000gc-0E for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Apr 2007 16:49:34 -0700
 Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HYnCj-0000bk-GK
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HYskl-00037r-Is
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Apr 2007 10:54:03 -0700
-Message-ID: <461294B0.5010303@nagafix.co.uk>
-Date: Tue, 03 Apr 2007 18:53:52 +0100
+	Tue, 03 Apr 2007 16:49:34 -0700
+Message-ID: <4612E802.7000302@nagafix.co.uk>
+Date: Wed, 04 Apr 2007 00:49:22 +0100
 From: Antoine Martin <antoine@nagafix.co.uk>
 MIME-Version: 1.0
-References: <1712880100@web.de> <20070402020530.GA589@c2.user-mode-linux.org>
+References: <1712880100@web.de> <200704012108.14597.blaisorblade@yahoo.it>
+	<46100EF5.7040802@nagafix.co.uk>
+	<20070402020530.GA589@c2.user-mode-linux.org>
 	<4610D937.20002@nagafix.co.uk>
-	<200704031943.15001.blaisorblade@yahoo.it>
-In-Reply-To: <200704031943.15001.blaisorblade@yahoo.it>
+	<Pine.LNX.4.64.0704021318410.1276@anakin>
+	<20070402145300.GA6179@c2.user-mode-linux.org>
+	<461124A9.7080609@nagafix.co.uk>
+In-Reply-To: <461124A9.7080609@nagafix.co.uk>
 Subject: Re: [uml-devel] [RFC] UML kernel & rootfs bundle with every kernel
 	release ?
 List-Id: The user-mode Linux development list
@@ -27,92 +31,56 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Content-Transfer-Encoding: quoted-printable
-To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Jeff Dike <jdike@addtoit.com>, devzero@web.de, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Antoine Martin <antoine@nagafix.co.uk>
+Cc: devzero@web.de, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, kraxel@suse.de, Blaisorblade <blaisorblade@yahoo.it>
 
-Blaisorblade wrote:
-> On luned=EC 2 aprile 2007, Antoine Martin wrote:
->> Jeff Dike wrote:
->>> On Sun, Apr 01, 2007 at 08:58:45PM +0100, Antoine Martin wrote:
->>>> I reckon that one critical thing which could drastically increase the
->>>> user base would be to have a working virtual framebuffer implementatio=
-n.
->>> Why?  I've never understood what a framebuffer gives you that you
->>> don't have now.
->> Just like the network auto-configuration via dhcp,
-> Hmm... for that to be completely plug-and-play you need to make sure a dh=
-cp=20
-> server on the host exists.
->=20
-> Vmware runs a separate DHCP server exactly for this, even if we should av=
-oid=20
-> that as much as possible.
-It is trivial to write a shell script that takes care of setting up the=20
-interface and checks for the presence of a dhcp server. (the dhcpd.conf=20
-can be generated easily)
-
-The problem lies with the configuration options, I have got a bunch of=20
-shell scripts to take care of that, but it is quite hard to make them=20
-suitable for global consumption by the average user:
-* even with just tap networking, I use 4 different ways of hooking them=20
-up the outside world
-* firewalling and mac address filtering
-* bridging issues and ebtables
-* tmpfs and memory issues
-* selinux and chrooting issues...
-etc...
-
-[snip]
-> although it stopped working for me ages ago (probably for some UML bug). =
-I=20
-> built a Mandrake image (that I now lost) with Xnest configured. With a sc=
-ript=20
-> on the host which passes the host IP and that calls xhost, it should work=
-=20
-> easily. And btw, we need a standard startup script anyway.
-It would work, but it's not a pretty solution, it requires=20
-customizations to the guest and it would not be intuitive to new users.
-I would much prefer the ability to just run any distro (even framebuffer=20
-based ones) without modifications using the virtual framebuffer.
-
->> It would also make it a lot easier to focus on writing a management UI,
->> hell if there isn't one shortly after, I'll do one myself!
->=20
-> Why not one management UI running from the host, a-la vmware?
-Yes ,that was what I had in mind.
-> Possibly, with=20
-> as much code as possible in scripting languages, for better transparency.
-Definitely, (see above)
-
-The management tools I have written export the guests' settings to the=20
-filesystem in the form of a shell script file, all the utility scripts=20
-just read those settings and do their stuff. (all in simple shell)
-Antoine
-
-
->> Think of a UML browser image (running IE via wine in a limited image
->> with just X + wine + IE - I would much prefer that to having wine+IE
->> installed locally), testing framebuffer apps like gtk-fb/cairo-fb
->> without risking your dev environment, etc...
+Antoine Martin wrote:
+> Jeff Dike wrote:
+>> On Mon, Apr 02, 2007 at 01:22:00PM +0200, Geert Uytterhoeven wrote:
+>>> There are patches floating around for a UML frame buffer device.
+>>> Gerd Kraxel^H^H^H^H^H^HHoffmann did one using plain X11, which worked
+>>> great when I gave it a try.
+>>>
+>>> I suggest taking a look at Gerd's patches. IIRC, he posted them to lkml
+>>> last year.
 >>
->> Antoine
->=20
->=20
->=20
+>> I have Gerd's patch sitting in my tree, but it's never really worked
+>> for me, so I haven't pushed it.
+> Yep, I tried them and it didn't work for me either, I'll try again though.
+I did try again, and I found this patch:
+http://dl.bytesex.org/patches/uml-2.6.11/uml-x11-fb
+Which applied (2 rejects by hand), but failed with
+"Mapping memory: Cannot allocate memory"
+in mmap64:
+os_map_memory [...]
+   at arch/um/os-Linux/process.c:164
 
+and this one:
+http://www.suse.de/~kraxel/uml/patches/2.6.18-rc4/uml-x11-fb
+which applied cleanly, but is not letting me set the option - Kconfig is 
+beyond me:
+
+arch/um/Kconfig:144:warning: 'select' used by config symbol 'X11_FB' 
+refer to undefined symbol 'FB_CFB_FILLRECT'
+arch/um/Kconfig:145:warning: 'select' used by config symbol 'X11_FB' 
+refer to undefined symbol 'FB_CFB_COPYAREA'
+arch/um/Kconfig:146:warning: 'select' used by config symbol 'X11_FB' 
+refer to undefined symbol 'FB_CFB_IMAGEBLIT'
+
+So that's a non-starter for me...
+
+Antoine
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=3Djoin.php&p=3Dsourceforge&CID=3DDE=
-VDEV
+http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
