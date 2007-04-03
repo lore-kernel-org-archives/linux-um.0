@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HYn2x-0006nK-FV for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Apr 2007 10:43:59 -0700
-Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HYn2u-0005kF-Ca
+	id 1HYn9M-0007dD-PL for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Apr 2007 10:50:33 -0700
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HYn9H-0007FH-7u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Apr 2007 10:43:55 -0700
+	Tue, 03 Apr 2007 10:50:32 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 3 Apr 2007 19:43:14 +0200
-References: <1712880100@web.de> <20070402020530.GA589@c2.user-mode-linux.org>
-	<4610D937.20002@nagafix.co.uk>
-In-Reply-To: <4610D937.20002@nagafix.co.uk>
+Date: Tue, 3 Apr 2007 19:50:16 +0200
+References: <20070402165011.GA7616@c2.user-mode-linux.org>
+In-Reply-To: <20070402165011.GA7616@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200704031943.15001.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [RFC] UML kernel & rootfs bundle with every kernel
-	release ?
+Message-Id: <200704031950.17109.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 2/4] UML - tidy process.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,66 +25,43 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Content-Transfer-Encoding: quoted-printable
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: Jeff Dike <jdike@addtoit.com>, devzero@web.de, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>
 
-On luned=EC 2 aprile 2007, Antoine Martin wrote:
-> Jeff Dike wrote:
-> > On Sun, Apr 01, 2007 at 08:58:45PM +0100, Antoine Martin wrote:
-> >> I reckon that one critical thing which could drastically increase the
-> >> user base would be to have a working virtual framebuffer implementatio=
-n.
-> >
-> > Why?  I've never understood what a framebuffer gives you that you
-> > don't have now.
+On luned=EC 2 aprile 2007, Jeff Dike wrote:
+> Clean up arch/um/kernel/process.c -
+> 	lots of return(x); -> return x; conversions
+> 	a number of the small functions are either unused, in which
+> case they are gone, along any declarations in a header, or could be
+> made static.
+
+> 	current_pid is ifdefed on CONFIG_MODE_TT and its declaration
+> is ifdefed on both CONFIG_MODE_TT and UML_CONFIG_MODE_TT because we
+> don't know whether it's being used in a userspace or kernel file.
+
+Please, simply include uml-config.h and use just UML_CONFIG_MODE_TT.
+
+> Index: linux-2.6.21-mm/arch/um/include/kern_util.h
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-2.6.21-mm.orig/arch/um/include/kern_util.h	2007-03-30
+> 16:01:21.000000000 -0400 +++
+> linux-2.6.21-mm/arch/um/include/kern_util.h	2007-04-02 12:07:48.000000000
+> -0400 @@ -33,7 +33,9 @@ extern int nsyscalls;
+>  	UML_ROUND_DOWN(((unsigned long) addr) + PAGE_SIZE - 1)
 >
-> Just like the network auto-configuration via dhcp,
-Hmm... for that to be completely plug-and-play you need to make sure a dhcp=
-=20
-server on the host exists.
-
-Vmware runs a separate DHCP server exactly for this, even if we should avoi=
-d=20
-that as much as possible.
-
-> it would allow users=20
-> to download images+kernel and run them like appliances without
-> understanding anything about X or UML, just click and run.
-
-> We are all capable of setting up Xvfb here, but most users are not,
-> which is why they download ready-made images.
-
-What about installing and pre-configuring Xnest on the image? With a suitab=
-le=20
-script calling xhost on the host, it just works.
-
-This project did it:
-http://umlbuilder.sourceforge.net/
-
-although it stopped working for me ages ago (probably for some UML bug). I =
-
-built a Mandrake image (that I now lost) with Xnest configured. With a scri=
-pt=20
-on the host which passes the host IP and that calls xhost, it should work=20
-easily. And btw, we need a standard startup script anyway.
-
-> It would also make it a lot easier to focus on writing a management UI,
-> hell if there isn't one shortly after, I'll do one myself!
-
-Why not one management UI running from the host, a-la vmware? Possibly, wit=
-h=20
-as much code as possible in scripting languages, for better transparency.
-
-> Think of a UML browser image (running IE via wine in a limited image
-> with just X + wine + IE - I would much prefer that to having wine+IE
-> installed locally), testing framebuffer apps like gtk-fb/cairo-fb
-> without risking your dev environment, etc...
->
-> Antoine
+>  extern int kernel_fork(unsigned long flags, int (*fn)(void *), void *
+> arg); +#if defined(CONFIG_MODE_TT) || defined(UML_CONFIG_MODE_TT)
+>  extern unsigned long stack_sp(unsigned long page);
+> +#endif
+>  extern int kernel_thread_proc(void *data);
+>  extern void syscall_segv(int sig);
+>  extern int current_pid(void);
 
 
 
