@@ -1,24 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HYUO1-0002DP-SL for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Apr 2007 14:48:31 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HYUO0-0001fu-4Q
+	id 1HYasw-0001ym-VV for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Apr 2007 21:44:47 -0700
+Received: from crown.reflexsecurity.com ([72.54.139.163])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HYasv-0007QV-KE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Apr 2007 14:48:25 -0700
-Date: Mon, 2 Apr 2007 17:44:34 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070402214434.GA10205@c2.user-mode-linux.org>
+	Mon, 02 Apr 2007 21:44:46 -0700
+Date: Tue, 3 Apr 2007 00:44:47 -0400
+From: Jason Lunz <lunz@falooley.org>
+Message-ID: <20070403044447.GB14297@falooley.org>
 References: <1712880100@web.de> <200704012108.14597.blaisorblade@yahoo.it>
 	<46100EF5.7040802@nagafix.co.uk>
 	<20070402020530.GA589@c2.user-mode-linux.org>
 	<4610D937.20002@nagafix.co.uk>
 	<005601c77567$1ceddb60$eeeea8c0@aldipc>
-Mime-Version: 1.0
+	<20070402214434.GA10205@c2.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <005601c77567$1ceddb60$eeeea8c0@aldipc>
+In-Reply-To: <20070402214434.GA10205@c2.user-mode-linux.org>
 Subject: Re: [uml-devel] [RFC] UML kernel & rootfs bundle with every kernel
 	release ?
 List-Id: The user-mode Linux development list
@@ -34,27 +36,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: roland <devzero@web.de>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: roland <devzero@web.de>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-On Mon, Apr 02, 2007 at 10:40:10PM +0200, roland wrote:
-> btw - i think besides that packaged uml+rootfs, the same thing could be 
-> distributed in other formats, i.e. qemu, vmware, M$ virtual pc (add your 
-> favourite v12n solution here)
+On Mon, Apr 02, 2007 at 05:44:34PM -0400, Jeff Dike wrote:
+> There are sites (http://uml.nagafix.co.uk/ being the best one I know
+> of) where, with two downloads, two uncompressions, and one command
+> line later, you have a booted UML.
+> 
+> The only way I know of to improve on this, aside from inprovements in
+> the booted distro, is to package the filesystem as a rootfs within the
+> UML kernel binary.  I've considered this, but haven't done anything
+> with it.
 
-There are sites (http://uml.nagafix.co.uk/ being the best one I know
-of) where, with two downloads, two uncompressions, and one command
-line later, you have a booted UML.
+I've done the converse: package the uml kernel within the rootfs image,
+and use a script that plays the part of bootloader. With ext2 at least,
+it's fairly easy to use the debugfs 'cat' command for this.
 
-The only way I know of to improve on this, aside from inprovements in
-the booted distro, is to package the filesystem as a rootfs within the
-UML kernel binary.  I've considered this, but haven't done anything
-with it.
+That way, you simply distribute the fs image with a companion script
+that can boot any number of such images.
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Jason
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
