@@ -1,23 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HZUwY-0004aE-91 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Apr 2007 09:36:14 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HZUwW-0003lT-Ho
+	id 1HZYZw-00031a-V7 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Apr 2007 13:29:09 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HZYZw-0004o1-6V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Apr 2007 09:36:14 -0700
-Date: Thu, 5 Apr 2007 12:31:59 -0400
+	Thu, 05 Apr 2007 13:29:08 -0700
+Date: Thu, 5 Apr 2007 16:24:54 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070405163159.GA7117@c2.user-mode-linux.org>
-References: <20070402165011.GA7616@c2.user-mode-linux.org>
-	<200704031950.17109.blaisorblade@yahoo.it>
+Message-ID: <20070405202454.GA8939@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200704031950.17109.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 2/4] UML - tidy process.c
+Subject: [uml-devel] [PATCH 4/4] UML - Speed up page table walking
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,46 +27,258 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>, Blaisorblade <blaisorblade@yahoo.it>
-Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, Apr 03, 2007 at 07:50:16PM +0200, Blaisorblade wrote:
-> Please, simply include uml-config.h and use just UML_CONFIG_MODE_TT.
+The previous page table walking code was horribly inefficient.  This
+patch replaces it with code taken from elsewhere in the kernel.
 
-okok :-)
-
-	Jeff
-
-
-
-Use only one ifdef to mark stack_sp as being tt mode only.
+forking from bash is now ~5% faster and page faults are handled ~10%
+faster.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/kern_util.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/um/kernel/tlb.c |  202 ++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 120 insertions(+), 82 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/include/kern_util.h
+Index: linux-2.6.21-mm/arch/um/kernel/tlb.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/kern_util.h	2007-04-03 13:14:38.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/kern_util.h	2007-04-05 12:24:36.000000000 -0400
-@@ -8,6 +8,7 @@
+--- linux-2.6.21-mm.orig/arch/um/kernel/tlb.c	2007-04-05 12:38:43.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/tlb.c	2007-04-05 12:39:12.000000000 -0400
+@@ -6,6 +6,7 @@
+ #include "linux/mm.h"
+ #include "asm/page.h"
+ #include "asm/pgalloc.h"
++#include "asm/pgtable.h"
+ #include "asm/tlbflush.h"
+ #include "choose-mode.h"
+ #include "mode_kern.h"
+@@ -123,106 +124,143 @@ static int add_mprotect(unsigned long ad
  
- #include "sysdep/ptrace.h"
- #include "sysdep/faultinfo.h"
-+#include "uml-config.h"
+ #define ADD_ROUND(n, inc) (((n) + (inc)) & ~((inc) - 1))
  
- typedef void (*kern_hndl)(int, union uml_pt_regs *);
++static inline int update_pte_range(pmd_t *pmd, unsigned long addr,
++				   unsigned long end, struct host_vm_op *ops,
++				   int last_op, int *op_index, int force,
++				   union mm_context *mmu, void **flush,
++				   int (*do_ops)(union mm_context *,
++						 struct host_vm_op *, int, int,
++						 void **))
++{
++	pte_t *pte;
++	int r, w, x, ret = 0;
++
++	pte = pte_offset_kernel(pmd, addr);
++	do {
++		r = pte_read(*pte);
++		w = pte_write(*pte);
++		x = pte_exec(*pte);
++		if (!pte_young(*pte)) {
++			r = 0;
++			w = 0;
++		} else if (!pte_dirty(*pte)) {
++			w = 0;
++		}
++		if(force || pte_newpage(*pte)){
++			if(pte_present(*pte))
++				ret = add_mmap(addr, pte_val(*pte) & PAGE_MASK,
++					       PAGE_SIZE, r, w, x, ops,
++					       op_index, last_op, mmu, flush,
++					       do_ops);
++			else ret = add_munmap(addr, PAGE_SIZE, ops, op_index,
++					      last_op, mmu, flush, do_ops);
++		}
++		else if(pte_newprot(*pte))
++			ret = add_mprotect(addr, PAGE_SIZE, r, w, x, ops,
++					   op_index, last_op, mmu, flush,
++					   do_ops);
++		*pte = pte_mkuptodate(*pte);
++	} while (pte++, addr += PAGE_SIZE, ((addr != end) && !ret));
++	return ret;
++}
++
++static inline int update_pmd_range(pud_t *pud, unsigned long addr,
++				   unsigned long end, struct host_vm_op *ops,
++				   int last_op, int *op_index, int force,
++				   union mm_context *mmu, void **flush,
++				   int (*do_ops)(union mm_context *,
++						 struct host_vm_op *, int, int,
++						 void **))
++{
++	pmd_t *pmd;
++	unsigned long next;
++	int ret = 0;
++
++	pmd = pmd_offset(pud, addr);
++	do {
++		next = pmd_addr_end(addr, end);
++		if(!pmd_present(*pmd)){
++			if(force || pmd_newpage(*pmd)){
++				ret = add_munmap(addr, next - addr, ops,
++						 op_index, last_op, mmu,
++						 flush, do_ops);
++				pmd_mkuptodate(*pmd);
++			}
++		}
++		else ret = update_pte_range(pmd, addr, next, ops, last_op,
++					    op_index, force, mmu, flush,
++					    do_ops);
++	} while (pmd++, addr = next, ((addr != end) && !ret));
++	return ret;
++}
++
++static inline int update_pud_range(pgd_t *pgd, unsigned long addr,
++				   unsigned long end, struct host_vm_op *ops,
++				   int last_op, int *op_index, int force,
++				   union mm_context *mmu, void **flush,
++				   int (*do_ops)(union mm_context *,
++						 struct host_vm_op *, int, int,
++						 void **))
++{
++	pud_t *pud;
++	unsigned long next;
++	int ret = 0;
++
++	pud = pud_offset(pgd, addr);
++	do {
++		next = pud_addr_end(addr, end);
++		if(!pud_present(*pud)){
++			if(force || pud_newpage(*pud)){
++				ret = add_munmap(addr, next - addr, ops,
++						 op_index, last_op, mmu,
++						 flush, do_ops);
++				pud_mkuptodate(*pud);
++			}
++		}
++		else ret = update_pmd_range(pud, addr, next, ops, last_op,
++					    op_index, force, mmu, flush,
++					    do_ops);
++	} while (pud++, addr = next, ((addr != end) && !ret));
++	return ret;
++}
++
+ void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+ 		      unsigned long end_addr, int force,
+ 		      int (*do_ops)(union mm_context *, struct host_vm_op *,
+ 				    int, int, void **))
+ {
+-	pgd_t *npgd;
+-	pud_t *npud;
+-	pmd_t *npmd;
+-	pte_t *npte;
++	pgd_t *pgd;
+ 	union mm_context *mmu = &mm->context;
+-	unsigned long addr, end;
+-	int r, w, x;
+ 	struct host_vm_op ops[1];
++	unsigned long addr = start_addr, next;
++	int ret = 0, last_op = ARRAY_SIZE(ops) - 1, op_index = -1;
+ 	void *flush = NULL;
+-	int op_index = -1, last_op = ARRAY_SIZE(ops) - 1;
+-	int ret = 0;
+-
+-	if(mm == NULL)
+-		return;
++	unsigned long long start_time, end_time;
  
-@@ -33,7 +34,7 @@ extern int nsyscalls;
- 	UML_ROUND_DOWN(((unsigned long) addr) + PAGE_SIZE - 1)
++	start_time = os_nsecs();
+ 	ops[0].type = NONE;
+-	for(addr = start_addr; addr < end_addr && !ret;){
+-		npgd = pgd_offset(mm, addr);
+-		if(!pgd_present(*npgd)){
+-			end = ADD_ROUND(addr, PGDIR_SIZE);
+-			if(end > end_addr)
+-				end = end_addr;
+-			if(force || pgd_newpage(*npgd)){
+-				ret = add_munmap(addr, end - addr, ops,
+-						 &op_index, last_op, mmu,
+-						 &flush, do_ops);
+-				pgd_mkuptodate(*npgd);
+-			}
+-			addr = end;
+-			continue;
+-		}
+-
+-		npud = pud_offset(npgd, addr);
+-		if(!pud_present(*npud)){
+-			end = ADD_ROUND(addr, PUD_SIZE);
+-			if(end > end_addr)
+-				end = end_addr;
+-			if(force || pud_newpage(*npud)){
+-				ret = add_munmap(addr, end - addr, ops,
+-						 &op_index, last_op, mmu,
+-						 &flush, do_ops);
+-				pud_mkuptodate(*npud);
+-			}
+-			addr = end;
+-			continue;
+-		}
+-
+-		npmd = pmd_offset(npud, addr);
+-		if(!pmd_present(*npmd)){
+-			end = ADD_ROUND(addr, PMD_SIZE);
+-			if(end > end_addr)
+-				end = end_addr;
+-			if(force || pmd_newpage(*npmd)){
+-				ret = add_munmap(addr, end - addr, ops,
++	pgd = pgd_offset(mm, addr);
++	do {
++		next = pgd_addr_end(addr, end_addr);
++		if(!pgd_present(*pgd)){
++			if (force || pgd_newpage(*pgd)){
++				ret = add_munmap(addr, next - addr, ops,
+ 						 &op_index, last_op, mmu,
+ 						 &flush, do_ops);
+-				pmd_mkuptodate(*npmd);
++				pgd_mkuptodate(*pgd);
+ 			}
+-			addr = end;
+-			continue;
+ 		}
++		else ret = update_pud_range(pgd, addr, next, ops, last_op,
++					    &op_index, force, mmu, &flush,
++					    do_ops);
++	} while (pgd++, addr = next, ((addr != end_addr) && !ret));
++	end_time = os_nsecs();
++	log_info("total flush time - %Ld nsecs\n", end_time - start_time);
  
- extern int kernel_fork(unsigned long flags, int (*fn)(void *), void * arg);
--#if defined(CONFIG_MODE_TT) || defined(UML_CONFIG_MODE_TT)
-+#ifdef UML_CONFIG_MODE_TT
- extern unsigned long stack_sp(unsigned long page);
- #endif
- extern int kernel_thread_proc(void *data);
+-		npte = pte_offset_kernel(npmd, addr);
+-		r = pte_read(*npte);
+-		w = pte_write(*npte);
+-		x = pte_exec(*npte);
+-		if (!pte_young(*npte)) {
+-			r = 0;
+-			w = 0;
+-		} else if (!pte_dirty(*npte)) {
+-			w = 0;
+-		}
+-		if(force || pte_newpage(*npte)){
+-			if(pte_present(*npte))
+-				ret = add_mmap(addr,
+-					       pte_val(*npte) & PAGE_MASK,
+-					       PAGE_SIZE, r, w, x, ops,
+-					       &op_index, last_op, mmu,
+-					       &flush, do_ops);
+-			else ret = add_munmap(addr, PAGE_SIZE, ops,
+-					      &op_index, last_op, mmu,
+-					      &flush, do_ops);
+-		}
+-		else if(pte_newprot(*npte))
+-			ret = add_mprotect(addr, PAGE_SIZE, r, w, x, ops,
+-					   &op_index, last_op, mmu,
+-					   &flush, do_ops);
+-
+-		*npte = pte_mkuptodate(*npte);
+-		addr += PAGE_SIZE;
+-	}
+ 	if(!ret)
+ 		ret = (*do_ops)(mmu, ops, op_index, 1, &flush);
+ 
+-/* This is not an else because ret is modified above */
++	/* This is not an else because ret is modified above */
+ 	if(ret) {
+ 		printk("fix_range_common: failed, killing current process\n");
+ 		force_sig(SIGKILL, current);
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
