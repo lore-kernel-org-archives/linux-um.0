@@ -2,18 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HZYZw-00031V-Qm for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Apr 2007 13:29:08 -0700
+	id 1HZYZx-00031g-It for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Apr 2007 13:29:09 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HZYZw-0004o2-6R
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HZYZx-0004p2-2w
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Apr 2007 13:29:08 -0700
-Date: Thu, 5 Apr 2007 16:24:52 -0400
+	Thu, 05 Apr 2007 13:29:09 -0700
+Date: Thu, 5 Apr 2007 16:24:53 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070405202452.GA8923@c2.user-mode-linux.org>
+Message-ID: <20070405202453.GA8934@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/4] UML - drivers get release methods
+Subject: [uml-devel] [PATCH 3/4] UML - Dump registers on ptrace or wait failure
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,121 +30,79 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Define release methods for the ubd and net drivers.  They contain as
-much of the remove methods as make sense.  All error checking must
-have already been done as well as anything else that might be holding
-a reference on the device kobject.
+Provide a register dump if handle_trap fails.
+Abstract out ptrace_dump_regs since it now has two callers.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/drivers/net_kern.c |   19 +++++++++++++++----
- arch/um/drivers/ubd_kern.c |   17 ++++++++++++-----
- 2 files changed, 27 insertions(+), 9 deletions(-)
+ arch/um/os-Linux/skas/process.c |   37 +++++++++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 12 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/drivers/ubd_kern.c
+Index: linux-2.6.21-mm/arch/um/os-Linux/skas/process.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/ubd_kern.c	2007-04-05 12:39:08.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/ubd_kern.c	2007-04-05 12:39:11.000000000 -0400
-@@ -622,6 +622,14 @@ static int ubd_open_dev(struct ubd *ubd_
- 	return(err);
+--- linux-2.6.21-mm.orig/arch/um/os-Linux/skas/process.c	2007-04-05 12:38:43.000000000 -0400
++++ linux-2.6.21-mm/arch/um/os-Linux/skas/process.c	2007-04-05 12:39:12.000000000 -0400
+@@ -44,6 +44,22 @@ int is_skas_winch(int pid, int fd, void 
+ 	return(1);
  }
  
-+static void ubd_device_release(struct device *dev)
++static int ptrace_dump_regs(int pid)
 +{
-+	struct ubd *ubd_dev = dev->driver_data;
++        unsigned long regs[MAX_REG_NR];
++        int i;
 +
-+	blk_cleanup_queue(ubd_dev->queue);
-+	*ubd_dev = ((struct ubd) DEFAULT_UBD);
++        if(ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
++                return -errno;
++        else {
++                printk("Stub registers -\n");
++                for(i = 0; i < ARRAY_SIZE(regs); i++)
++                        printk("\t%d - %lx\n", i, regs[i]);
++        }
++
++        return 0;
 +}
 +
- static int ubd_disk_register(int major, u64 size, int unit,
- 			     struct gendisk **disk_out)
+ void wait_stub_done(int pid, int sig, char * fname)
  {
-@@ -644,6 +652,8 @@ static int ubd_disk_register(int major, 
- 	if (major == MAJOR_NR) {
- 		ubd_devs[unit].pdev.id   = unit;
- 		ubd_devs[unit].pdev.name = DRIVER_NAME;
-+		ubd_devs[unit].pdev.dev.release = ubd_device_release;
-+		ubd_devs[unit].pdev.dev.driver_data = &ubd_devs[unit];
- 		platform_device_register(&ubd_devs[unit].pdev);
- 		disk->driverfs_dev = &ubd_devs[unit].pdev.dev;
+ 	int n, status, err;
+@@ -67,18 +83,10 @@ void wait_stub_done(int pid, int sig, ch
+ 
+ 	if((n < 0) || !WIFSTOPPED(status) ||
+ 	   (WSTOPSIG(status) != SIGUSR1 && WSTOPSIG(status) != SIGTRAP)){
+-		unsigned long regs[MAX_REG_NR];
+-
+-		if(ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
++		err = ptrace_dump_regs(pid);
++		if(err)
+ 			printk("Failed to get registers from stub, "
+-			       "errno = %d\n", errno);
+-		else {
+-			int i;
+-
+-			printk("Stub registers -\n");
+-			for(i = 0; i < ARRAY_SIZE(regs); i++)
+-				printk("\t%d - %lx\n", i, regs[i]);
+-		}
++			       "errno = %d\n", -err);
+ 		panic("%s : failed to wait for SIGUSR1/SIGTRAP, "
+ 		      "pid = %d, n = %d, errno = %d, status = 0x%x\n",
+ 		      fname, pid, n, errno, status);
+@@ -142,9 +150,14 @@ static void handle_trap(int pid, union u
+ 
+ 		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED));
+ 		if((err < 0) || !WIFSTOPPED(status) ||
+-		   (WSTOPSIG(status) != SIGTRAP + 0x80))
++		   (WSTOPSIG(status) != SIGTRAP + 0x80)){
++                        err = ptrace_dump_regs(pid);
++                        if(err)
++                                printk("Failed to get registers from process, "
++                                       "errno = %d\n", -err);
+ 			panic("handle_trap - failed to wait at end of syscall, "
+ 			      "errno = %d, status = %d\n", errno, status);
++                }
  	}
-@@ -787,7 +797,7 @@ static int ubd_id(char **str, int *start
  
- static int ubd_remove(int n, char **error_out)
- {
--	struct gendisk *disk;
-+	struct gendisk *disk = ubd_gendisk[n];
- 	struct ubd *ubd_dev;
- 	int err = -ENODEV;
- 
-@@ -803,7 +813,6 @@ static int ubd_remove(int n, char **erro
- 	if(ubd_dev->count > 0)
- 		goto out;
- 
-- 	disk = ubd_gendisk[n];
-  	ubd_gendisk[n] = NULL;
- 	if(disk != NULL){
- 		del_gendisk(disk);
-@@ -816,10 +825,8 @@ static int ubd_remove(int n, char **erro
- 		fake_gendisk[n] = NULL;
- 	}
- 
--	blk_cleanup_queue(ubd_dev->queue);
--	platform_device_unregister(&ubd_dev->pdev);
--	*ubd_dev = ((struct ubd) DEFAULT_UBD);
- 	err = 0;
-+	platform_device_unregister(&ubd_dev->pdev);
- out:
- 	mutex_unlock(&ubd_lock);
- 	return err;
-Index: linux-2.6.21-mm/arch/um/drivers/net_kern.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/net_kern.c	2007-04-05 12:38:43.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/net_kern.c	2007-04-05 12:39:11.000000000 -0400
-@@ -341,6 +341,19 @@ static struct platform_driver uml_net_dr
- };
- static int driver_registered;
- 
-+static void net_device_release(struct device *dev)
-+{
-+	struct uml_net *device = dev->driver_data;
-+	struct net_device *netdev = device->dev;
-+	struct uml_net_private *lp = netdev->priv;
-+
-+	if(lp->remove != NULL)
-+		(*lp->remove)(&lp->user);
-+	list_del(&device->list);
-+	kfree(device);
-+	free_netdev(netdev);
-+}
-+
- static void eth_configure(int n, void *init, char *mac,
- 			  struct transport *transport)
- {
-@@ -396,6 +409,8 @@ static void eth_configure(int n, void *i
- 	}
- 	device->pdev.id = n;
- 	device->pdev.name = DRIVER_NAME;
-+	device->pdev.dev.release = net_device_release;
-+	device->pdev.dev.driver_data = device;
- 	if(platform_device_register(&device->pdev))
- 		goto out_free_netdev;
- 	SET_NETDEV_DEV(dev,&device->pdev.dev);
-@@ -689,13 +704,9 @@ static int net_remove(int n, char **erro
- 	lp = dev->priv;
- 	if(lp->fd > 0)
- 		return -EBUSY;
--	if(lp->remove != NULL) (*lp->remove)(&lp->user);
- 	unregister_netdev(dev);
- 	platform_device_unregister(&device->pdev);
- 
--	list_del(&device->list);
--	kfree(device);
--	free_netdev(dev);
- 	return 0;
- }
- 
+ 	handle_syscall(regs);
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
