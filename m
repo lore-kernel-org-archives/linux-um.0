@@ -1,20 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HbfL6-00025H-4x for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Apr 2007 09:06:32 -0700
+	id 1HbhSg-0008Rb-MI for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 11 Apr 2007 11:22:32 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HbfL5-0001U4-J8
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HbhSe-00038n-SK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Apr 2007 09:06:32 -0700
-Date: Wed, 11 Apr 2007 12:01:26 -0400
+	Wed, 11 Apr 2007 11:22:30 -0700
+Date: Wed, 11 Apr 2007 14:17:21 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070411160126.GA6329@c2.user-mode-linux.org>
+Message-ID: <20070411181721.GA14517@c2.user-mode-linux.org>
+References: <20070411160126.GA6324@c2.user-mode-linux.org>
+	<75b57c110704111005w6b605d0cv921f3b2c6a6c4eae@mail.gmail.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 3/4] UML - Dump core on panic
+In-Reply-To: <75b57c110704111005w6b605d0cv921f3b2c6a6c4eae@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH 2/4] UML - Send pointers instead of
+	structures to I/O thread
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,58 +31,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Gerb Stralko <gerb.stralko@gmail.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Dump core after a panic.  This will provide better debugging
-information than is currently available.
+On Wed, Apr 11, 2007 at 01:05:16PM -0400, Gerb Stralko wrote:
+> Is this wrong?  you declare io_reg as a pointer but then you pass him
+> to os_write_file_k by  reference of a pointer? Should you just do this
+> instead:
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/include/os.h     |    1 +
- arch/um/kernel/um_arch.c |    2 +-
- arch/um/os-Linux/util.c  |    6 ++++++
- 3 files changed, 8 insertions(+), 1 deletion(-)
+Intentional, I'm writing pointers, not structures, down the pipe.
 
-Index: linux-2.6.21-mm/arch/um/include/os.h
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/os.h	2007-04-06 10:36:33.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/os.h	2007-04-06 10:38:54.000000000 -0400
-@@ -281,6 +281,7 @@ extern void setup_machinename(char *mach
- extern void setup_hostinfo(char *buf, int len);
- extern int setjmp_wrapper(void (*proc)(void *, void *), ...);
- extern void os_log_info(char *fmt, va_list ap);
-+extern void os_dump_core(void);
- 
- /* time.c */
- #define BILLION (1000 * 1000 * 1000)
-Index: linux-2.6.21-mm/arch/um/kernel/um_arch.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/um_arch.c	2007-04-06 10:37:48.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/um_arch.c	2007-04-06 10:38:05.000000000 -0400
-@@ -474,7 +474,7 @@ static int panic_exit(struct notifier_bl
- 	show_regs(&(current->thread.regs));
- 	bust_spinlocks(0);
- 	uml_exitcode = 1;
--	machine_halt();
-+	os_dump_core();
- 	return 0;
- }
- 
-Index: linux-2.6.21-mm/arch/um/os-Linux/util.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/util.c	2007-04-05 13:25:28.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/util.c	2007-04-06 10:57:55.000000000 -0400
-@@ -148,3 +148,9 @@ void os_log_info(char *fmt, va_list ap)
- 	vsnprintf(&logging_buf[len], sizeof(logging_buf) - len, fmt, ap);
- 	write(logging_fd, logging_buf, strlen(logging_buf));
- }
-+
-+void os_dump_core(void)
-+{
-+	signal(SIGSEGV, SIG_DFL);
-+	abort();
-+}
+Tx for the review, BTW.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
