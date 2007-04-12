@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hc2EZ-0002Ap-Bu for user-mode-linux-devel@lists.sourceforge.net;
+	id 1Hc2EZ-0002Aq-CH for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 12 Apr 2007 09:33:19 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Hc2EX-0000fk-Op
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Hc2EX-0000fl-QP
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 12 Apr 2007 09:33:19 -0700
-Date: Thu, 12 Apr 2007 12:28:03 -0400
+Date: Thu, 12 Apr 2007 12:28:02 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070412162803.GA7245@c2.user-mode-linux.org>
+Message-ID: <20070412162802.GA7260@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [ PATCH 4/6 ] UML - Remove debugging remnants
+Subject: [uml-devel] [ PATCH 0/6 ] UML - Finish host file I/O fix,
+	page fault speedup
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,35 +31,24 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-I accidentally left the remnants of some debugging in an earlier patch.
+These are 2.6.22 material.
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/kernel/tlb.c |    3 ---
- 1 file changed, 3 deletions(-)
+The first three finish getting rid of the bogus host file I/O code.
+It turns out that all callers of the old code could have just used the
+new code.  I don't know why I was unable to log in when I earlier just
+did the quick and simple conversion.
 
-Index: linux-2.6.21-mm/arch/um/kernel/tlb.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/tlb.c	2007-04-12 11:34:40.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/tlb.c	2007-04-12 11:46:27.000000000 -0400
-@@ -235,9 +235,7 @@ void fix_range_common(struct mm_struct *
- 	unsigned long addr = start_addr, next;
- 	int ret = 0, last_op = ARRAY_SIZE(ops) - 1, op_index = -1;
- 	void *flush = NULL;
--	unsigned long long start_time, end_time;
- 
--	start_time = os_nsecs();
- 	ops[0].type = NONE;
- 	pgd = pgd_offset(mm, addr);
- 	do {
-@@ -254,7 +252,6 @@ void fix_range_common(struct mm_struct *
- 					    &op_index, force, mmu, &flush,
- 					    do_ops);
- 	} while (pgd++, addr = next, ((addr != end_addr) && !ret));
--	end_time = os_nsecs();
- 
- 	if(!ret)
- 		ret = (*do_ops)(mmu, ops, op_index, 1, &flush);
+Patch 4 removes some debugging code accidentally included in the
+rewrite of the page table walking code.
+
+Patch 5 is a bit of deadlock avoidance.
+
+Patch 6 redoes the host side of page fault handling, with a noticable
+performance improvement on a kernel build.
+
+				Jeff
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
