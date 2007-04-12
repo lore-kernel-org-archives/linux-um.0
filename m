@@ -1,22 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HbpEu-0007L0-Ib for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Apr 2007 19:40:48 -0700
+	id 1Hc2EY-0002AY-D8 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 12 Apr 2007 09:33:18 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HbpEu-0003WL-3k
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Apr 2007 19:40:48 -0700
-Date: Wed, 11 Apr 2007 22:35:35 -0400
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Hc2EX-0000fi-Q8
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 12 Apr 2007 09:33:18 -0700
+Date: Thu, 12 Apr 2007 12:28:05 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070412023535.GA18095@c2.user-mode-linux.org>
-References: <3aab51dc0704111910p54a3066aref3663180003d671@mail.gmail.com>
+Message-ID: <20070412162805.GA7250@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <3aab51dc0704111910p54a3066aref3663180003d671@mail.gmail.com>
-Subject: Re: [uml-devel] Question about trap handling in UML kernel
+Subject: [uml-devel] [ PATCH 5/6 ] UML - AIO deadlock avoidance
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,49 +27,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Haifeng He <hehaifeng@gmail.com>
-Cc: User-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, Apr 11, 2007 at 07:10:36PM -0700, Haifeng He wrote:
+Allow deadlocks to be avoided in the AIO code by setting the pipe to
+the I/O thread non-blocking.
 
-> I have a question about trap handling in UML kernel, particularly in the
-> skas0 mode.
-> My understanding is that, UML will fork a kernel thread for each user
-> process
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/os-Linux/aio.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-UML will fork a host process for each UML address space.
-
-> and
-> this thread will go to a loop (in userspace()) and wait for signal from user
-> process using
-> ptrace. If a signal occurs, it will call the signal handler to handle the
-> interrupt.
-> Is it correct?
-
-Yes.
-
-> My second question is, how many kernel threads are there in skas0 mode or I
-> should
-> ask how many different kinds of kernel threads will be created? Is there any
-> kernel thread
-> in UML other than those created for user process?
-
-There are these kinds, assuming you mean host threads -
-	kernel process, runs kernel code - one per virtual CPU
-	user process, runs userspace code, one per address space
-	utility threads, things that are useful to have in separate
-threads, like the I/O thread and SIGIO thread.
-
-> My last question is, given a kernel thread, if it is possible that the
-> execution of a thread will
-> be interrupted by others other than by scheduler?
-
-If I understand the question, no.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6.21-mm/arch/um/os-Linux/aio.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/os-Linux/aio.c	2007-04-12 11:34:40.000000000 -0400
++++ linux-2.6.21-mm/arch/um/os-Linux/aio.c	2007-04-12 11:47:14.000000000 -0400
+@@ -221,6 +221,11 @@ static int init_aio_24(void)
+ 
+ 	aio_req_fd_w = fds[0];
+ 	aio_req_fd_r = fds[1];
++
++	err = os_set_fd_block(aio_req_fd_w, 0);
++	if(err)
++		goto out_close_pipe;
++
+ 	err = run_helper_thread(not_aio_thread, NULL,
+ 				CLONE_FILES | CLONE_VM | SIGCHLD, &stack, 0);
+ 	if(err < 0)
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
