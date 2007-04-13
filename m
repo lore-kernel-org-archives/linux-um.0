@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HcQ3v-0007if-3L for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Apr 2007 10:59:55 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HcQ3t-00085D-M1
+	id 1HcQYt-0002hl-Lq for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 13 Apr 2007 11:31:55 -0700
+Received: from mail.windriver.com ([147.11.1.11] helo=mail.wrs.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HcQYr-0008Fz-2A
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Apr 2007 10:59:55 -0700
-Date: Fri, 13 Apr 2007 13:59:01 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070413175901.GB10624@c2.user-mode-linux.org>
-References: <3aab51dc0704122214g6be916fdm148a7ff52d4e369c@mail.gmail.com>
-	<20070413135447.GA4975@c2.user-mode-linux.org>
-	<3aab51dc0704130931q782ce158r134c6b73d4945625@mail.gmail.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <3aab51dc0704130931q782ce158r134c6b73d4945625@mail.gmail.com>
-Subject: Re: [uml-devel] Strange segmentation fault
+	Fri, 13 Apr 2007 11:31:55 -0700
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.wrs.com (8.13.6/8.13.6) with ESMTP id l3DIVOeT018235
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 13 Apr 2007 11:31:24 -0700 (PDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Fri, 13 Apr 2007 11:31:23 -0700
+Message-ID: <AF1602CB2550CE4381C0C75118A7856BE60A5F@ala-mail02.corp.ad.wrs.com>
+From: "Stephens, Allan" <allan.stephens@windriver.com>
+Subject: [uml-devel] Does UML Currently Emulate SMP?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,34 +31,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Haifeng He <hehaifeng@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Apr 13, 2007 at 09:31:16AM -0700, Haifeng He wrote:
-> Yes. So that is the problem. Is there any other place which may cause
-> similar problems?
+What is the status of SMP support in UML?  (That is, can I start up a
+UML session that uses separate processes on my uniprocessor host to
+emulate a machine with multiple CPUs?)
 
-If you're going to be sprinking code randomly around UML, you need to
-be cognizant of what stack the surrounding code runs on.
+Jeff Dike's "User Mode Linux" text indicates that this sort of support
+was once available, but it seems to have died out.  (I can't find any
+way of enabling it in a 2.6.20 kernel.)  Has this capability been
+dropped due to lack of interest?  If so, what was the most recent kernel
+that did suppport it?
 
-You hit code which is setting up a new process, and is running on a
-non-kernel stack in the context of the new process.
-
-init_thread_cb runs on the initial UML process stack.
-
-The stubs run on a stack in the upper two pages of the process address
-space.
-
-These bits of code can't run kernel code, since they aren't on a
-kernel stack, and current() et al won't be valid.
-
-Pretty much everything else is on a kernel stack, and what you're
-doing should be fine.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Thanks,
+Al
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
