@@ -1,21 +1,8 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HcQYt-0002hl-Lq for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Apr 2007 11:31:55 -0700
-Received: from mail.windriver.com ([147.11.1.11] helo=mail.wrs.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HcQYr-0008Fz-2A
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Apr 2007 11:31:55 -0700
-Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
-	by mail.wrs.com (8.13.6/8.13.6) with ESMTP id l3DIVOeT018235
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 13 Apr 2007 11:31:24 -0700 (PDT)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Date: Fri, 13 Apr 2007 11:31:23 -0700
-Message-ID: <AF1602CB2550CE4381C0C75118A7856BE60A5F@ala-mail02.corp.ad.wrs.com>
+Date: Wed, 18 Apr 2007 07:47:19 -0700
+Message-ID: <AF1602CB2550CE4381C0C75118A7856BE6151C@ala-mail02.corp.ad.wrs.com>
 From: "Stephens, Allan" <allan.stephens@windriver.com>
 Subject: [uml-devel] Does UML Currently Emulate SMP?
 List-Id: The user-mode Linux development list
@@ -31,7 +18,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+
+[Apologies if you've received this twice.  My earlier posting appears to
+have been lost.]
 
 What is the status of SMP support in UML?  (That is, can I start up a
 UML session that uses separate processes on my uniprocessor host to
@@ -47,10 +38,10 @@ Thanks,
 Al
 
 -------------------------------------------------------------------------
-Take Surveys. Earn Cash. Influence the Future of IT
-Join SourceForge.net's Techsay panel and you'll get the chance to share your
-opinions on IT & business topics through brief surveys-and earn cash
-http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+This SF.net email is sponsored by DB2 Express
+Download DB2 Express C - the FREE version of DB2 express and take
+control of your XML. No limits. Just data. Click to get it now.
+http://sourceforge.net/powerbar/db2/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
