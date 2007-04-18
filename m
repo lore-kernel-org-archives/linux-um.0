@@ -1,10 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1HeFT2-0002Ge-JJ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Apr 2007 12:05:24 -0700
+Received: from nz-out-0506.google.com ([64.233.162.232])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HeFT1-0000Mn-7U
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 18 Apr 2007 12:05:24 -0700
+Received: by nz-out-0506.google.com with SMTP id i11so523625nzi
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 18 Apr 2007 12:05:22 -0700 (PDT)
+Message-ID: <79cbe6750704181205o4794f765x12a3bd7e4292c777@mail.gmail.com>
+Date: Wed, 18 Apr 2007 12:05:21 -0700
+From: kewlemer <kewlemer@gmail.com>
+In-Reply-To: <AF1602CB2550CE4381C0C75118A7856BE6151C@ala-mail02.corp.ad.wrs.com>
 MIME-Version: 1.0
-Date: Wed, 18 Apr 2007 07:47:19 -0700
-Message-ID: <AF1602CB2550CE4381C0C75118A7856BE6151C@ala-mail02.corp.ad.wrs.com>
-From: "Stephens, Allan" <allan.stephens@windriver.com>
-Subject: [uml-devel] Does UML Currently Emulate SMP?
+Content-Disposition: inline
+References: <AF1602CB2550CE4381C0C75118A7856BE6151C@ala-mail02.corp.ad.wrs.com>
+Subject: Re: [uml-devel] [uml-user] Does UML Currently Emulate SMP?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,24 +32,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+To: "Stephens, Allan" <allan.stephens@windriver.com>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-[Apologies if you've received this twice.  My earlier posting appears to
-have been lost.]
+> What is the status of SMP support in UML?  (That is, can I start up a
+> UML session that uses separate processes on my uniprocessor host to
+> emulate a machine with multiple CPUs?)
+>
+http://marc.info/?l=user-mode-linux-user&m=117630269322060&w=2
 
-What is the status of SMP support in UML?  (That is, can I start up a
-UML session that uses separate processes on my uniprocessor host to
-emulate a machine with multiple CPUs?)
-
-Jeff Dike's "User Mode Linux" text indicates that this sort of support
-was once available, but it seems to have died out.  (I can't find any
-way of enabling it in a 2.6.20 kernel.)  Has this capability been
-dropped due to lack of interest?  If so, what was the most recent kernel
-that did suppport it?
-
-Thanks,
-Al
+From the UML homepage -
+"Searchable list archives exist at MARC (uml-user, uml-devel) and
+gmane ( uml-user, uml-devel)."
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
