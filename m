@@ -1,11 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1Hfh25-0001w4-87 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Apr 2007 11:43:33 -0700
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Hfh22-0000IM-T7
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Apr 2007 11:43:33 -0700
+Received: from [192.168.0.6] (82-45-252-239.cable.ubr02.camd.blueyonder.co.uk
+	[82.45.252.239])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: antoine@nagafix.co.uk)
+	by mail.nagafix.co.uk (Postfix) with ESMTP id 97CE2C7A78
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 22 Apr 2007 19:43:22 +0100 (BST)
+Message-ID: <462BACC9.7010303@nagafix.co.uk>
+Date: Sun, 22 Apr 2007 19:43:21 +0100
+From: Antoine Martin <antoine@nagafix.co.uk>
 MIME-Version: 1.0
-Date: Fri, 20 Apr 2007 05:30:22 -0700
-Message-ID: <AF1602CB2550CE4381C0C75118A7856BECB893@ala-mail02.corp.ad.wrs.com>
-In-Reply-To: <79cbe6750704181205o4794f765x12a3bd7e4292c777@mail.gmail.com>
-From: "Stephens, Allan" <allan.stephens@windriver.com>
-Subject: Re: [uml-devel] [uml-user] Does UML Currently Emulate SMP?
+Subject: [uml-devel] regression: pcap broken in 2.6.20.x
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,37 +34,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
-Cc: kewlemer <kewlemer@gmail.com>
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-OK, I've got an answer to the first half of my query.  Thanks!
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-Now, does anyone know the latest kernel version where SMP support
-worked?
+Using the exact same kernel config with 2.6.19.x works but not with 2.6.20.x
 
-Regards,
-Al 
+# ifconfig eth1 0.0.0.0 promisc up
+SIOCSIFADDR: No such device
+eth1: unknown interface: No such device
+eth1: unknown interface: No such device
+eth1: unknown interface: No such device
 
+Antoine
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.3 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-> -----Original Message-----
-> From: kewlemer [mailto:kewlemer@gmail.com] 
-> Sent: Wednesday, April 18, 2007 3:05 PM
-> To: Stephens, Allan
-> Cc: Jeff Dike; user-mode-linux-user@lists.sourceforge.net; 
-> user-mode-linux-devel@lists.sourceforge.net
-> Subject: Re: [uml-user] Does UML Currently Emulate SMP?
-> 
-> > What is the status of SMP support in UML?  (That is, can I 
-> start up a 
-> > UML session that uses separate processes on my uniprocessor host to 
-> > emulate a machine with multiple CPUs?)
-> >
-> http://marc.info/?l=user-mode-linux-user&m=117630269322060&w=2
-> 
-> From the UML homepage -
-> "Searchable list archives exist at MARC (uml-user, uml-devel) 
-> and gmane ( uml-user, uml-devel)."
-> 
+iD8DBQFGK6zIGK2zHPGK1rsRCvlWAJ4mPnP1dQQgol4Bpx4+CFt/bnEHOgCfQfDC
+7KG75RhnxZiS98gsVA+nURE=
+=wsN+
+-----END PGP SIGNATURE-----
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
