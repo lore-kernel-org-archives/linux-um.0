@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hh4nQ-0008SQ-Hn for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Apr 2007 07:18:08 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Hh4nP-0002g0-UO
+	id 1Hh4is-0007t0-VZ for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Apr 2007 07:13:27 -0700
+Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Hh4ir-0000YA-8G
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Apr 2007 07:18:08 -0700
+	Thu, 26 Apr 2007 07:13:26 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 26 Apr 2007 16:17:30 +0200
-References: <1177579328.5349.10.camel@xaustrobit>
-In-Reply-To: <1177579328.5349.10.camel@xaustrobit>
+Date: Thu, 26 Apr 2007 16:12:40 +0200
+References: <462BACC9.7010303@nagafix.co.uk>
+	<20070425204849.GA9505@c2.user-mode-linux.org>
+	<462FC142.1010907@nagafix.co.uk>
+In-Reply-To: <462FC142.1010907@nagafix.co.uk>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200704261617.31010.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] uml crashes when producing large files
+Message-Id: <200704261612.40356.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] regression: pcap broken in 2.6.20.x
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,56 +32,36 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Content-Transfer-Encoding: quoted-printable
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-On gioved=EC 26 aprile 2007, Herbert Volkmann wrote:
-> Hi List,
+On mercoled=EC 25 aprile 2007, Antoine Martin wrote:
+> Jeff Dike wrote:
+> > On Sun, Apr 22, 2007 at 07:43:21PM +0100, Antoine Martin wrote:
+> >> Using the exact same kernel config with 2.6.19.x works but not with
+> >> 2.6.20.x
+> >>
+> >> # ifconfig eth1 0.0.0.0 promisc up
+> >> SIOCSIFADDR: No such device
+> >> eth1: unknown interface: No such device
+> >> eth1: unknown interface: No such device
+> >> eth1: unknown interface: No such device
+> >
+> > Works here - what do ifconfig -a and dmesg say?
 >
-> i ran in the following problem:
-Very strange...
-> when i produce files (with dd) or copy files to or from the uml machine,
-Which filesystems are involved? Can you give a sample command?
+> Ah, DOH!
+> Could it be that the randomization of the mac address made it appear as
+> eth4 and not eth1... (why eth4 and not eth3 or eth2, beats me)
+> Until now all kernels made it appear as eth1.
 
-> i can see (with top),
-Run on the guest (i.e. UML) I guess, right?
-> that the used memory and the cached things=20
-> increases, while the unused memory will go down.
-That is reasonable, but the cache should not make the system stop.
-> shortly before memory=20
-> will come to zero, the uml stops working completely without any messages
-> in the /var/log/* files on uml or host system.
->
-> if i do in between a "echo 3 > /proc/sys/vm/drop_caches"
-On the guest (i.e. UML) I assume, right?
->
-> it cleans caches, frees memory and works fine! but i have to do this all
-> 10 seconds when i use dd for producing large files ;-(
->
-> these are the components i use:
-> - debian etch on host with debian kernel patched with skas3 from debian
-32bit system, right?
-> - 1024 MB RAM on host
-> - RAID5 System with 3ware Controller (5x2G) almost 1 TB
-> - on uml i use debian etch, with bridged networking, 512MB RAM for uml
-Which UML kernel release? That's the most important thing.
-> - 6G root_fs for uml and 256M swap
->
-> here is the command with which i start the uml:
-> sudo -u uml /usr/bin/linux.uml umid=3Duml mem=3D512M eth0=3Dtuntap,tap1
-> ubd0=3D/usr/media/uml-linux/root_fs_2007_04_23
-> ubd1=3D/usr/media/uml-linux/swap_fs con=3Dnull root=3D/dev/ubda uml_dir=
-=3D/tmp/
->
-> I would be really happy if someone could tell me what i can test more to
-> find out why this system is instable with i/o operations and caches.
+Hmm... Ubuntu renames interfaces based on their MAC address, which are list=
+ed=20
+in /etc/iftab. Dunno about other distributions.
 
-I have only a doubt: if you are filling a shmfs/tmpfs filesystem (which is =
-
-backed by ram), that's an almost normal behaviour, and can happen even on=20
-host systems.
-
-> thanx for any reply,
-> Herbert
-
+If there are so many interfaces and they were just reordered, this could be=
+=20
+caused by a (non-existant) change in link order. Or (I don't know how) it=20
+could derive some way from the fact that interfaces are initialized later=20
+(instead of __initcall, late_initcall is now used).
 --=20
 Inform me of my mistakes, so I can add them to my list!
 Paolo Giarrusso, aka Blaisorblade
