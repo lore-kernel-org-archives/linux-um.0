@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HhA85-0005FA-0t for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Apr 2007 12:59:55 -0700
+	id 1HhA80-0005F3-GK for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 26 Apr 2007 12:59:51 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HhA7z-0002Fd-33
+	(Exim 4.44) id 1HhA7z-0002Fb-2z
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 26 Apr 2007 12:59:43 -0700
-Date: Thu, 26 Apr 2007 15:56:21 -0400
+Date: Thu, 26 Apr 2007 15:56:24 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070426195621.GA9558@c2.user-mode-linux.org>
+Message-ID: <20070426195624.GA9578@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/5] UML - Eliminate a piece of debugging code
+Subject: [uml-devel] [PATCH 3/5] UML - Only flush areas covered by VMA
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,25 +31,33 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-I missed removing another piece of debugging in an earlier patch.
+When doing a full address space flush, only look at areas covered by a VMA.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/kernel/tlb.c |    1 -
- 1 file changed, 1 deletion(-)
+ arch/um/kernel/skas/tlb.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/kernel/tlb.c
+Index: linux-2.6.21-mm/arch/um/kernel/skas/tlb.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/tlb.c	2007-04-25 13:34:08.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/tlb.c	2007-04-25 13:34:27.000000000 -0400
-@@ -252,7 +252,6 @@ void fix_range_common(struct mm_struct *
- 					    &op_index, force, mmu, &flush,
- 					    do_ops);
- 	} while (pgd++, addr = next, ((addr != end_addr) && !ret));
--	log_info("total flush time - %Ld nsecs\n", end_time - start_time);
+--- linux-2.6.21-mm.orig/arch/um/kernel/skas/tlb.c	2007-04-17 12:20:05.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/skas/tlb.c	2007-04-17 12:55:38.000000000 -0400
+@@ -89,8 +89,13 @@ void flush_tlb_mm_skas(struct mm_struct 
  
- 	if(!ret)
- 		ret = (*do_ops)(mmu, ops, op_index, 1, &flush);
+ void force_flush_all_skas(void)
+ {
+-	unsigned long end = proc_mm ? task_size : CONFIG_STUB_START;
+-        fix_range(current->mm, 0, end, 1);
++	struct mm_struct *mm = current->mm;
++	struct vm_area_struct *vma = mm->mmap;
++
++	while(vma != NULL) {
++		fix_range(mm, vma->vm_start, vma->vm_end, 1);
++		vma = vma->vm_next;
++	}
+ }
+ 
+ void flush_tlb_page_skas(struct vm_area_struct *vma, unsigned long address)
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
