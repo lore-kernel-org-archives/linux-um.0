@@ -2,22 +2,25 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hh4is-0007t0-VZ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Apr 2007 07:13:27 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Hh4ir-0000YA-8G
+	id 1Hgszp-0004Je-LB for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 25 Apr 2007 18:42:10 -0700
+Received: from wx-out-0506.google.com ([66.249.82.239])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Hgszp-0004DW-19
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Apr 2007 07:13:26 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 26 Apr 2007 16:12:40 +0200
-References: <462BACC9.7010303@nagafix.co.uk>
-	<20070425204849.GA9505@c2.user-mode-linux.org>
-	<462FC142.1010907@nagafix.co.uk>
-In-Reply-To: <462FC142.1010907@nagafix.co.uk>
+	Wed, 25 Apr 2007 18:42:09 -0700
+Received: by wx-out-0506.google.com with SMTP id i30so774616wxd
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 25 Apr 2007 18:42:08 -0700 (PDT)
+Date: Wed, 25 Apr 2007 22:43:07 -0300
+From: Alberto Bertogli <albertito@gmail.com>
+Message-ID: <20070426014307.GE31191@gmail.com>
+References: <11774247864122-git-send-email-albertito@gmail.com>
+	<200704251751.11461.blaisorblade@yahoo.it>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200704261612.40356.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] regression: pcap broken in 2.6.20.x
+In-Reply-To: <200704251751.11461.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] Make hostfs_setattr() support operations	on
+	closed files.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,41 +34,103 @@ Content-Type: text/plain; charset="iso-8859-1"
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On mercoled=EC 25 aprile 2007, Antoine Martin wrote:
-> Jeff Dike wrote:
-> > On Sun, Apr 22, 2007 at 07:43:21PM +0100, Antoine Martin wrote:
-> >> Using the exact same kernel config with 2.6.19.x works but not with
-> >> 2.6.20.x
-> >>
-> >> # ifconfig eth1 0.0.0.0 promisc up
-> >> SIOCSIFADDR: No such device
-> >> eth1: unknown interface: No such device
-> >> eth1: unknown interface: No such device
-> >> eth1: unknown interface: No such device
+On Wed, Apr 25, 2007 at 05:51:10PM +0200, Blaisorblade wrote:
+> On marted=EC 24 aprile 2007, Alberto Bertogli wrote:
+> > This patch allows hostfs_setattr() to work on closed files by calling
+> > set_attr() (the userspace part) with the inode's fd.
 > >
-> > Works here - what do ifconfig -a and dmesg say?
->
-> Ah, DOH!
-> Could it be that the randomization of the mac address made it appear as
-> eth4 and not eth1... (why eth4 and not eth3 or eth2, beats me)
-> Until now all kernels made it appear as eth1.
+> > Without this, applications that depend on doing attribute changes to
+> > closed files will fail.
+> >
+> > It works by using the fd versions instead of the path ones (for example
+> > fchmod() instead of chmod(), fchown() instead of chown()) when an fd is
+> > available.
+> >
+> >
+> > Signed-off-by: Alberto Bertogli <albertito@gmail.com>
+> > ---
+> This makes sense and is useful - but:
+> 1) when I read the examples, I understood you meant 'unlinked open files'=
+,=20
+> not 'closed files'. Right?
 
-Hmm... Ubuntu renames interfaces based on their MAC address, which are list=
-ed=20
-in /etc/iftab. Dunno about other distributions.
+Right, sorry about that, the terminology I used is completely
+misleading. I'll change the description.
 
-If there are so many interfaces and they were just reordered, this could be=
+
+> The patch is of good quality; I've not seen any single bug, which is rare=
+ in=20
+> such submission, but before merging, some little things should be fixed u=
+p=20
+> (either by you or by Jeff).
+>=20
+> 2) if (...) return ...; on a single line is horrible style, should be=20
+> corrected (I see sometimes the original code uses it, well it shouldn't).
+
+I couldn't agree more. I did it that way because I tried to follow the
+coding style of the original code.
+
+
+> > In the host fchmod() changes f1 and not f1.tmp, but maybe the open() in=
+ the
+> > middle got hostfs confused. Luckily this is not the case and it works f=
+ine;
+> > but as I'm not familiar with hostfs there may be other issues.
+>=20
+> I guess the patch would make this work, right?
+
+Yes, that case works with the patch.
+
+
+> > diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+> > index fd301a9..c704d9c 100644
+>=20
+> > @@ -817,8 +817,14 @@ int hostfs_permission(struct inode *ino, int desir=
+ed,
+> > struct nameidata *nd) int hostfs_setattr(struct dentry *dentry, struct
+> > iattr *attr)
+> >  {
+> >  	struct hostfs_iattr attrs;
+> > +	struct hostfs_inode_info *iinfo;
+> >  	char *name;
+> >  	int err;
+> > +	int fd =3D -1;
+> > +
+> > +	iinfo =3D HOSTFS_I(dentry->d_inode);
+> > +	if (iinfo !=3D NULL)
+> > +		fd =3D iinfo->fd;
+>=20
+> iinfo cannot be NULL, so please remove that if. HOSTFS_I does not access =
+a=20
+> field of d_inode; rather, d_inode points to a field of iinfo, i.e. the=20
+> vfs_inode field of struct hostfs_inode_info.
+
+That's good to know =3D) I'll fix it.
+
+
+> I do not like the below code. The different code is for setting buf; what=
 =20
-caused by a (non-existant) change in link order. Or (I don't know how) it=20
-could derive some way from the fact that interfaces are initialized later=20
-(instead of __initcall, late_initcall is now used).
---=20
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+> follows that is common to all cases, and the conversion probably should b=
+e=20
+> factored out into a conversion function for better clarity: verifying wha=
+t=20
+> the code does is difficult here.
+
+I agree. I tried to make the changes to look as much as possible to the
+original, but if you want me to reorganize that code a bit, I'll be glad
+to give it a try.
+
+
+I'll address all these issues and post and updated patch (probably
+tomorrow).
+
+Thanks a lot,
+		Alberto
+
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
