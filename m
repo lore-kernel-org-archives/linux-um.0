@@ -2,20 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HhTjN-0006Y0-PM for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Apr 2007 09:55:38 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HhTjN-0007tv-EE
+	id 1HhT9e-0002Ra-SU for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Apr 2007 09:18:43 -0700
+Received: from mail-gw3.sa.ew.hu ([212.108.200.82])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HhT9d-00042F-2z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Apr 2007 09:55:37 -0700
-Message-ID: <46322AFE.40801@nagafix.co.uk>
-Date: Fri, 27 Apr 2007 17:55:26 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
-MIME-Version: 1.0
-References: <462BACC9.7010303@nagafix.co.uk>	<20070425204849.GA9505@c2.user-mode-linux.org>	<462FC142.1010907@nagafix.co.uk>	<200704261612.40356.blaisorblade@yahoo.it>	<20070427151051.GB6019@c2.user-mode-linux.org>	<463214E7.5080605@nagafix.co.uk>	<20070427155024.GA8329@c2.user-mode-linux.org>
-	<463224F8.6080009@nagafix.co.uk> <463228E5.6080904@nagafix.co.uk>
-In-Reply-To: <463228E5.6080904@nagafix.co.uk>
-Subject: Re: [uml-devel] regression: pcap broken in 2.6.20.x
+	Fri, 27 Apr 2007 09:18:42 -0700
+MIME-version: 1.0
+Message-Id: <E1HhT90-0001dW-00@dorka.pomaz.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Fri, 27 Apr 2007 18:18:02 +0200
+Subject: [uml-devel] [patch] uml: fix cmpxchg warnings in -mm
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,45 +23,43 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: Jeff Dike <jdike@addtoit.com>, Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+Content-Transfer-Encoding: 8bit
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
 
-Antoine Martin wrote:
-> Antoine Martin wrote:
->> Jeff Dike wrote:
->>> On Fri, Apr 27, 2007 at 04:21:11PM +0100, Antoine Martin wrote:
->>>> Question remains as to why the mac address was the same until 2.6.20 and
->>>> is now different.
->>> We started providing randomized MACs at bootup instead of deriving
->>> them from the IP when the interface was brought up.  The old behavior
->>> broke when distros started bringing interfaces up without assigning
->>> IPs to them.
->>>> Except, pcap doesn't have the option.
->>> Hmmm that would be a problem.
->> :)
->> I've got a patch - coming soon (tm)
-> Attached.
-> 
-Also here (after some thought, I prefer the second one):
-http://uml.nagafix.co.uk/pcap-macaddr.patch
-Any objections to merging?
+From: Miklos Szeredi <mszeredi@suse.cz>
 
-Antoine
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.3 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+I get lot's of these on i386:
 
-iD8DBQFGMir+GK2zHPGK1rsRCsAiAJ9NHPOvA2ZAiSWiMrjQCZtJy1Q58ACdHmxN
-3se61pCBjtdJy6FAbasHkTY=
-=WltA
------END PGP SIGNATURE-----
+In file included from include/asm/atomic.h:10,
+                 from include/linux/file.h:9,
+                 from mm/fadvise.c:12:
+include/asm/arch/atomic.h: In function ‘atomic_add_unless’:
+include/asm/arch/atomic.h:240: warning: implicit declaration of function ‘cmpxchg’
+[...]
+
+The problem seems to be that <asm-i386/atomic.h> assumes that
+<asm/processor.h> pulls in <asm/system.h>.
+
+Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+---
+
+Index: linux/include/asm-um/processor-i386.h
+===================================================================
+--- linux.orig/include/asm-um/processor-i386.h	2007-04-26 15:16:47.000000000 +0200
++++ linux/include/asm-um/processor-i386.h	2007-04-27 17:58:25.000000000 +0200
+@@ -9,6 +9,7 @@
+ #include "linux/string.h"
+ #include "asm/host_ldt.h"
+ #include "asm/segment.h"
++#include "asm/system.h"
+ 
+ extern int host_has_xmm;
+ extern int host_has_cmov;
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
