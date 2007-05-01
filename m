@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hix2y-0000wv-4X for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 May 2007 11:25:56 -0700
+	id 1Hix2z-0000x5-K7 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 01 May 2007 11:25:57 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Hix2w-0006Ef-Ix
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Hix2y-0008Ec-3Y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 May 2007 11:25:56 -0700
-Date: Tue, 1 May 2007 14:21:58 -0400
+	Tue, 01 May 2007 11:25:57 -0700
+Date: Tue, 1 May 2007 14:21:59 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070501182158.GA8358@c2.user-mode-linux.org>
+Message-ID: <20070501182159.GA8368@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 4/6] UML - free() wrapper should call libc free
+Subject: [uml-devel] [PATCH /6] UML - pcap devices should get MACs from
+	command line
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,72 +31,28 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: akpm@osdl.org
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-The libc free wrapper wasn't correctly detecting buffers obtained with
-malloc().  This is now done by seeing if the page was reserved.  This is
-the case for memory which is left aside for libc and isn't given to
-the page allocator.  If we free a pointer in a reserved page, it is
-given to free() rather than kfree().
+Allow a pcap device to be assigned a MAC on the command line.  They
+don't really need one, but it is handy to be able to do when your
+distro assigns a new ethernet device whenever it sees a new MAC.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/user.h   |    1 +
- arch/um/kernel/um_arch.c |    7 +++++++
- arch/um/os-Linux/main.c  |    6 +++++-
- 3 files changed, 13 insertions(+), 1 deletion(-)
+ arch/um/drivers/pcap_kern.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: linux-2.6.21-mm/arch/um/include/user.h
+Index: linux-2.6.21-mm/arch/um/drivers/pcap_kern.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/user.h	2007-04-26 17:33:01.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/user.h	2007-04-27 14:21:35.000000000 -0400
-@@ -27,5 +27,6 @@ extern int in_aton(char *str);
- extern int open_gdb_chan(void);
- extern size_t strlcpy(char *, const char *, size_t);
- extern size_t strlcat(char *, const char *, size_t);
-+extern int reserved_address(void *addr);
+--- linux-2.6.21-mm.orig/arch/um/drivers/pcap_kern.c	2007-04-27 16:15:41.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/pcap_kern.c	2007-04-27 16:15:57.000000000 -0400
+@@ -70,7 +70,7 @@ int pcap_setup(char *str, char **mac_out
+ 		  .filter 	= NULL });
  
- #endif
-Index: linux-2.6.21-mm/arch/um/kernel/um_arch.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/um_arch.c	2007-04-26 17:41:21.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/um_arch.c	2007-04-27 14:30:36.000000000 -0400
-@@ -500,6 +500,13 @@ void __init check_bugs(void)
- 	os_check_bugs();
- }
- 
-+int reserved_address(void *addr)
-+{
-+	struct page *page = virt_to_page(addr);
-+
-+	return(PageReserved(page));
-+}
-+
- void apply_alternatives(struct alt_instr *start, struct alt_instr *end)
- {
- }
-Index: linux-2.6.21-mm/arch/um/os-Linux/main.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/main.c	2007-04-26 17:41:10.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/main.c	2007-04-27 14:30:31.000000000 -0400
-@@ -266,6 +266,8 @@ void __wrap_free(void *ptr)
- 	/* We need to know how the allocation happened, so it can be correctly
- 	 * freed.  This is done by seeing what region of memory the pointer is
- 	 * in -
-+	 *	in a reserved page - free, assume the pointer was
-+	 *	    acquired with malloc, since it couldn't have been kmalloced.
- 	 * 	physical memory - kmalloc/kfree
- 	 *	kernel virtual memory - vmalloc/vfree
- 	 * 	anywhere else - malloc/free
-@@ -281,7 +283,9 @@ void __wrap_free(void *ptr)
- 	 * there is a possibility for memory leaks.
- 	 */
- 
--	if((addr >= uml_physmem) && (addr < high_physmem)){
-+	if(kmalloc_ok && reserved_address(ptr))
-+		__real_free(ptr);
-+	else if((addr >= uml_physmem) && (addr < high_physmem)){
- 		if(CAN_KMALLOC())
- 			kfree(ptr);
- 	}
+ 	remain = split_if_spec(str, &host_if, &init->filter,
+-			       &options[0], &options[1], NULL);
++			       &options[0], &options[1], mac_out, NULL);
+ 	if(remain != NULL){
+ 		printk(KERN_ERR "pcap_setup - Extra garbage on "
+ 		       "specification : '%s'\n", remain);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
