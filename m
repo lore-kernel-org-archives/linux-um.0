@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HjBIZ-0002yW-Vl for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 May 2007 02:39:00 -0700
-Received: from cantor.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	id 1HjH1L-0004ky-Dt for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 May 2007 08:45:35 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HjBIX-00079K-M3
+	(Exim 4.44) id 1HjH1K-0001Yx-Ux
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 May 2007 02:38:59 -0700
-From: Andi Kleen <ak@novell.com>
-Date: Wed, 2 May 2007 11:37:48 +0200
-References: <20070501182157.GA8348@c2.user-mode-linux.org>
-In-Reply-To: <20070501182157.GA8348@c2.user-mode-linux.org>
-MIME-Version: 1.0
+	Wed, 02 May 2007 08:45:35 -0700
+Date: Wed, 2 May 2007 11:41:31 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070502154131.GE6752@c2.user-mode-linux.org>
+References: <20070501182158.GA8358@c2.user-mode-linux.org>
+	<4637FC1D.4040300@yahoo.com.au>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200705021137.48675.ak@novell.com>
-Subject: Re: [uml-devel] [PATCH 2/6] Create asm-i386/cmpxchg.h
+In-Reply-To: <4637FC1D.4040300@yahoo.com.au>
+Subject: Re: [uml-devel] [PATCH 4/6] UML - free() wrapper should call libc free
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,26 +31,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Nick Piggin <nickpiggin@yahoo.com.au>
 Cc: akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tuesday 01 May 2007 20:21:57 Jeff Dike wrote:
-> Rearrange the i386 cmpxchg code to allow atomic.h to get it without
-> needing to include system.h.  This kills warnings in the UML build
-> from atomic.h about implicit declarations of cmpxchg symbols.  The
-> i386 build presumably isn't seeing this because a separate inclusion
-> of system.h is covering it over.
-> 
-> The cmpxchg stuff is moved to asm-i386/cmpxchg.h, with an include left
-> in system.h for the benefit of generic code which expects cmpxchg
-> there.
-> 
-> Meanwhile, atomic.h includes cmpxchg.h.
+On Wed, May 02, 2007 at 12:49:01PM +1000, Nick Piggin wrote:
+> I want to get rid of PG_reserved eventually. Is it possible to use PG_arch_1
+> for this?
 
-Doesn't apply against the latest ff tree. Can you please regenerate,
-not losing whatever change caused it to reject?
+Yup.
 
--Andi
+Andrew - Feel free to drop this or just sit on it until I send a
+replacement.  Whichever is easier.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
