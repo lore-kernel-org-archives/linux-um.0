@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HjIRo-0002aM-1q for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 May 2007 10:17:00 -0700
-Received: from pfx2.jmh.fr ([194.153.89.55])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HjIRh-00022z-2Q
+	id 1HjUVN-0001lK-5n for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 May 2007 23:09:29 -0700
+Received: from smtp1.linux-foundation.org ([65.172.181.25])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HjUVL-0004AM-IE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 May 2007 10:16:54 -0700
-Date: Wed, 2 May 2007 17:55:22 +0200
-From: Eric Dumazet <dada1@cosmosbay.com>
-Message-Id: <20070502175522.a430f216.dada1@cosmosbay.com>
-In-Reply-To: <20070502153847.GC6752@c2.user-mode-linux.org>
-References: <20070501182157.GA8348@c2.user-mode-linux.org>
-	<200705021137.48675.ak@novell.com>
-	<20070502153847.GC6752@c2.user-mode-linux.org>
+	Wed, 02 May 2007 23:09:28 -0700
+Date: Wed, 2 May 2007 23:09:19 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20070502230919.cb6864df.akpm@linux-foundation.org>
+In-Reply-To: <20070501193646.GA9482@c2.user-mode-linux.org>
+References: <20070501193646.GA9482@c2.user-mode-linux.org>
 Mime-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 2/6] Create asm-i386/cmpxchg.h
+Subject: Re: [uml-devel] [PATCH] UML - forgot asm-um/cmpxchg.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,22 +30,32 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: akpm@osdl.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>, Andi Kleen <ak@novell.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, 2 May 2007 11:38:47 -0400
-Jeff Dike <jdike@addtoit.com> wrote:
+On Tue, 1 May 2007 15:36:46 -0400 Jeff Dike <jdike@addtoit.com> wrote:
 
-> On Wed, May 02, 2007 at 11:37:48AM +0200, Andi Kleen wrote:
-> > Doesn't apply against the latest ff tree. Can you please regenerate,
-> > not losing whatever change caused it to reject?
+> The i386 and x86_64 cmpxchg patches require an asm-um/cmpxchg.h for
+> the UML build.
 > 
-> What's the ff tree?  Is 'f' next to 'm' on your keyboard?
+> Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+> --
+>  include/asm-um/cmpxchg.h |    6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
->
+> Index: linux-2.6.21-mm/include/asm-um/cmpxchg.h
+> ===================================================================
+> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
+> +++ linux-2.6.21-mm/include/asm-um/cmpxchg.h	2007-05-01 15:31:09.000000000 -0400
+> @@ -0,0 +1,6 @@
+> +#ifndef __UM_CMPXCHG_H
+> +#define __UM_CMPXCHG_H
+> +
+> +#include "asm/arch/cmpxchg.h"
+> +
+> +#endif
 
-My guess is ff means firstfloor :) 
-
-https://www.x86-64.org/pipermail/discuss/2006-January/007467.html
+OK, I clumped all three patches into one as I think that's required for
+git-bisect friendliness.
 
 
 -------------------------------------------------------------------------
