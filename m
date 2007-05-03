@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HjUVN-0001lK-5n for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 May 2007 23:09:29 -0700
-Received: from smtp1.linux-foundation.org ([65.172.181.25])
+	id 1HjcAh-0003mx-Nj for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 May 2007 07:20:39 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HjUVL-0004AM-IE
+	(Exim 4.44) id 1HjcAh-0001aN-8J
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 May 2007 23:09:28 -0700
-Date: Wed, 2 May 2007 23:09:19 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20070502230919.cb6864df.akpm@linux-foundation.org>
-In-Reply-To: <20070501193646.GA9482@c2.user-mode-linux.org>
-References: <20070501193646.GA9482@c2.user-mode-linux.org>
+	Thu, 03 May 2007 07:20:39 -0700
+Date: Thu, 3 May 2007 10:16:28 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070503141628.GB5522@c2.user-mode-linux.org>
+References: <20070501182159.GA8363@c2.user-mode-linux.org>
+	<200705031532.44157.blaisorblade@yahoo.it>
 Mime-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] UML - forgot asm-um/cmpxchg.h
+Content-Disposition: inline
+In-Reply-To: <200705031532.44157.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 5/6] UML - Network and pcap cleanup
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,34 +31,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, 1 May 2007 15:36:46 -0400 Jeff Dike <jdike@addtoit.com> wrote:
-
-> The i386 and x86_64 cmpxchg patches require an asm-um/cmpxchg.h for
-> the UML build.
+On Thu, May 03, 2007 at 03:32:43PM +0200, Blaisorblade wrote:
+> This is due to patch:
+> "uml: drivers get release methods"
+> this could be useful to check whether other such changes are needed, by 
+> grepping for platform_device_unregister in exit paths, also for ubd driver.
 > 
-> Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-> --
->  include/asm-um/cmpxchg.h |    6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> Index: linux-2.6.21-mm/include/asm-um/cmpxchg.h
-> ===================================================================
-> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-> +++ linux-2.6.21-mm/include/asm-um/cmpxchg.h	2007-05-01 15:31:09.000000000 -0400
-> @@ -0,0 +1,6 @@
-> +#ifndef __UM_CMPXCHG_H
-> +#define __UM_CMPXCHG_H
-> +
-> +#include "asm/arch/cmpxchg.h"
-> +
-> +#endif
+> That patch only fixed net_remove() and ubd_remove().
 
-OK, I clumped all three patches into one as I think that's required for
-git-bisect friendliness.
+Yeah, good point - I'll have a look.
 
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
