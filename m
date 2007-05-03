@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hjc95-0003f1-9G for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 May 2007 07:18:59 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Hjc92-0002gq-7p
+	id 1HjbR8-0000aY-Sc for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 May 2007 06:33:34 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HjbR3-0005Um-Md
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 May 2007 07:18:57 -0700
-Date: Thu, 3 May 2007 10:14:05 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070503141405.GA5522@c2.user-mode-linux.org>
-References: <20070501193646.GA9482@c2.user-mode-linux.org>
-	<20070502230919.cb6864df.akpm@linux-foundation.org>
-Mime-Version: 1.0
+	Thu, 03 May 2007 06:33:34 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Thu, 3 May 2007 15:32:43 +0200
+References: <20070501182159.GA8363@c2.user-mode-linux.org>
+In-Reply-To: <20070501182159.GA8363@c2.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070502230919.cb6864df.akpm@linux-foundation.org>
-Subject: Re: [uml-devel] [PATCH] UML - forgot asm-um/cmpxchg.h
+Message-Id: <200705031532.44157.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 5/6] UML - Network and pcap cleanup
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,29 +25,45 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Content-Transfer-Encoding: quoted-printable
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, May 02, 2007 at 11:09:19PM -0700, Andrew Morton wrote:
-> OK, I clumped all three patches into one as I think that's required for
-> git-bisect friendliness.
+On marted=EC 1 maggio 2007, Jeff Dike wrote:
+> [ Paolo - could you eyeball the globally valid MAC piece of this and
+> see if you think it's OK? ]
 
-OK - I separated the i386 and x86_64 bits to make it easy to drop the
-x86_64 part.
+Done, the patch can be accepted (I've not looked at the PCAP part). I've a =
 
-Plus, I think it doesn't make any difference - the headers behave the
-same as seen from the outside, except that UML needs the uml-cmpxchg
-patch in order to build.  So, putting that first, then the other two
-separately results in a patchset that builds at all stages, I believe.
+note on the other fix there (the additional return).
 
-				Jeff
+> Some network device cleanup.
+>
+> When setup_etheraddr found a globally valid MAC being assigned to an
+> interface, it went ahead and used it rather than assigning a random
+> MAC like the other cases do.  This isn't really an error like the
+> others, but it seems consistent to make it behave the same.
+Fine, agreed. For this, you can add my Acked-by. Probably at that time MAC =
 
--- 
-Work email - jdike at linux dot intel dot com
+randomization wasn't implemented.
+
+> We were getting some duplicate kfree() in the error case in
+> eth_configure because platform_device_unregister frees buffers that
+> the error cases following tried to free again.
+
+This is due to patch:
+"uml: drivers get release methods"
+this could be useful to check whether other such changes are needed, by=20
+grepping for platform_device_unregister in exit paths, also for ubd driver.
+
+That patch only fixed net_remove() and ubd_remove().
+--=20
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
@@ -60,3 +74,4 @@ _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
