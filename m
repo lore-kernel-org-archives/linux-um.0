@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hk1pV-00053z-EL for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 May 2007 10:44:29 -0700
+	id 1Hk1pT-00053e-12 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 May 2007 10:44:27 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Hk1pU-0003Y6-Nv
+	(Exim 4.44) id 1Hk1pS-0004zv-GY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 May 2007 10:44:29 -0700
-Date: Fri, 4 May 2007 13:39:57 -0400
+	Fri, 04 May 2007 10:44:26 -0700
+Date: Fri, 4 May 2007 13:39:58 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070504173957.GA7953@c2.user-mode-linux.org>
+Message-ID: <20070504173958.GA7948@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/3] UML - Make hostfs_setattr() support
-	operations on unlinked open files.
+Subject: [uml-devel] [PATCH 3/3] UML - An idle system should have zero load
+	average
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,224 +30,40 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: Alberto Bertogli <albertito@gmail.com>, Blaisorblade <blaisorblade@yahoo.it>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>, caker@linode.com
 
-From: Alberto Bertogli <albertito@gmail.com>
+The ever-vigilant users of linode.com noticed that an idle 2.6 UML has
+a persistent load average of ~.4.
 
-This patch allows hostfs_setattr() to work on unlinked open files by
-calling set_attr() (the userspace part) with the inode's fd.
+It turns out that because the UML timer handler processed softirqs
+before actually delivering the tick, the tick was counted in the
+context of the idle thread about half the time.
 
-Without this, applications that depend on doing attribute changes to
-unlinked open files will fail.
-
-It works by using the fd versions instead of the path ones (for example
-fchmod() instead of chmod(), fchown() instead of chown()) when an fd is
-available.
-
-Signed-off-by: Alberto Bertogli <albertito@gmail.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- fs/hostfs/hostfs.h      |    4 -
- fs/hostfs/hostfs_kern.c |    6 +-
- fs/hostfs/hostfs_user.c |  106 ++++++++++++++++++++++++++++++------------------
- 3 files changed, 73 insertions(+), 43 deletions(-)
+ arch/um/kernel/time.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Index: linux-2.6.21-mm/fs/hostfs/hostfs.h
+Index: linux-2.6.21-mm/arch/um/kernel/time.c
 ===================================================================
---- linux-2.6.21-mm.orig/fs/hostfs/hostfs.h	2007-02-04 13:44:54.000000000 -0500
-+++ linux-2.6.21-mm/fs/hostfs/hostfs.h	2007-05-01 15:10:39.000000000 -0400
-@@ -55,7 +55,7 @@ extern int stat_file(const char *path, u
- 		     int *mode_out, int *nlink_out, int *uid_out, int *gid_out,
- 		     unsigned long long *size_out, struct timespec *atime_out,
- 		     struct timespec *mtime_out, struct timespec *ctime_out,
--		     int *blksize_out, unsigned long long *blocks_out);
-+		     int *blksize_out, unsigned long long *blocks_out, int fd);
- extern int access_file(char *path, int r, int w, int x);
- extern int open_file(char *path, int r, int w, int append);
- extern int file_type(const char *path, int *maj, int *min);
-@@ -71,7 +71,7 @@ extern int lseek_file(int fd, long long 
- extern int fsync_file(int fd, int datasync);
- extern int file_create(char *name, int ur, int uw, int ux, int gr,
- 		       int gw, int gx, int or, int ow, int ox);
--extern int set_attr(const char *file, struct hostfs_iattr *attrs);
-+extern int set_attr(const char *file, struct hostfs_iattr *attrs, int fd);
- extern int make_symlink(const char *from, const char *to);
- extern int unlink_file(const char *file);
- extern int do_mkdir(const char *file, int mode);
-Index: linux-2.6.21-mm/fs/hostfs/hostfs_kern.c
-===================================================================
---- linux-2.6.21-mm.orig/fs/hostfs/hostfs_kern.c	2007-04-27 11:27:15.000000000 -0400
-+++ linux-2.6.21-mm/fs/hostfs/hostfs_kern.c	2007-05-01 15:10:39.000000000 -0400
-@@ -147,7 +147,7 @@ static int read_name(struct inode *ino, 
+--- linux-2.6.21-mm.orig/arch/um/kernel/time.c	2007-05-04 12:40:52.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/time.c	2007-05-04 13:13:39.000000000 -0400
+@@ -177,6 +177,8 @@ int do_settimeofday(struct timespec *tv)
  
- 	err = stat_file(name, &i_ino, &i_mode, &i_nlink, &ino->i_uid,
- 			&ino->i_gid, &i_size, &ino->i_atime, &ino->i_mtime,
--			&ino->i_ctime, &i_blksize, &i_blocks);
-+			&ino->i_ctime, &i_blksize, &i_blocks, -1);
- 	if(err)
- 		return(err);
- 
-@@ -820,6 +820,8 @@ int hostfs_setattr(struct dentry *dentry
- 	char *name;
- 	int err;
- 
-+	int fd = HOSTFS_I(dentry->d_inode)->fd;
-+
- 	err = inode_change_ok(dentry->d_inode, attr);
- 	if (err)
- 		return err;
-@@ -864,7 +866,7 @@ int hostfs_setattr(struct dentry *dentry
- 	}
- 	name = dentry_name(dentry, 0);
- 	if(name == NULL) return(-ENOMEM);
--	err = set_attr(name, &attrs);
-+	err = set_attr(name, &attrs, fd);
- 	kfree(name);
- 	if(err)
- 		return(err);
-Index: linux-2.6.21-mm/fs/hostfs/hostfs_user.c
-===================================================================
---- linux-2.6.21-mm.orig/fs/hostfs/hostfs_user.c	2007-04-26 17:41:19.000000000 -0400
-+++ linux-2.6.21-mm/fs/hostfs/hostfs_user.c	2007-05-01 15:10:39.000000000 -0400
-@@ -21,12 +21,16 @@ int stat_file(const char *path, unsigned
- 	      int *nlink_out, int *uid_out, int *gid_out,
- 	      unsigned long long *size_out, struct timespec *atime_out,
- 	      struct timespec *mtime_out, struct timespec *ctime_out,
--	      int *blksize_out, unsigned long long *blocks_out)
-+	      int *blksize_out, unsigned long long *blocks_out, int fd)
+ void timer_handler(int sig, union uml_pt_regs *regs)
  {
- 	struct stat64 buf;
- 
--	if(lstat64(path, &buf) < 0)
-+	if(fd >= 0) {
-+		if (fstat64(fd, &buf) < 0)
-+			return(-errno);
-+	} else if(lstat64(path, &buf) < 0) {
- 		return(-errno);
-+	}
- 
- 	if(inode_out != NULL) *inode_out = buf.st_ino;
- 	if(mode_out != NULL) *mode_out = buf.st_mode;
-@@ -202,58 +206,82 @@ int file_create(char *name, int ur, int 
- 	return(fd);
++	if(current_thread->cpu == 0)
++		timer_irq(regs);
+ 	local_irq_disable();
+ 	irq_enter();
+ 	update_process_times(CHOOSE_MODE(
+@@ -184,6 +186,4 @@ void timer_handler(int sig, union uml_pt
+ 			     (regs)->skas.is_user));
+ 	irq_exit();
+ 	local_irq_enable();
+-	if(current_thread->cpu == 0)
+-		timer_irq(regs);
  }
- 
--int set_attr(const char *file, struct hostfs_iattr *attrs)
-+int set_attr(const char *file, struct hostfs_iattr *attrs, int fd)
- {
--	struct utimbuf buf;
-+	struct timeval times[2];
-+	struct timespec atime_ts, mtime_ts;
- 	int err, ma;
- 
--	if(attrs->ia_valid & HOSTFS_ATTR_MODE){
--		if(chmod(file, attrs->ia_mode) != 0) return(-errno);
--	}
--	if(attrs->ia_valid & HOSTFS_ATTR_UID){
--		if(chown(file, attrs->ia_uid, -1)) return(-errno);
-+	if (attrs->ia_valid & HOSTFS_ATTR_MODE) {
-+		if (fd >= 0) {
-+			if (fchmod(fd, attrs->ia_mode) != 0)
-+				return (-errno);
-+		} else if (chmod(file, attrs->ia_mode) != 0) {
-+			return (-errno);
-+		}
- 	}
--	if(attrs->ia_valid & HOSTFS_ATTR_GID){
--		if(chown(file, -1, attrs->ia_gid)) return(-errno);
-+	if (attrs->ia_valid & HOSTFS_ATTR_UID) {
-+		if (fd >= 0) {
-+			if (fchown(fd, attrs->ia_uid, -1))
-+				return (-errno);
-+		} else if(chown(file, attrs->ia_uid, -1)) {
-+			return (-errno);
-+		}
- 	}
--	if(attrs->ia_valid & HOSTFS_ATTR_SIZE){
--		if(truncate(file, attrs->ia_size)) return(-errno);
-+	if (attrs->ia_valid & HOSTFS_ATTR_GID) {
-+		if (fd >= 0) {
-+			if (fchown(fd, -1, attrs->ia_gid))
-+				return (-errno);
-+		} else if (chown(file, -1, attrs->ia_gid)) {
-+			return (-errno);
-+		}
- 	}
--	ma = HOSTFS_ATTR_ATIME_SET | HOSTFS_ATTR_MTIME_SET;
--	if((attrs->ia_valid & ma) == ma){
--		buf.actime = attrs->ia_atime.tv_sec;
--		buf.modtime = attrs->ia_mtime.tv_sec;
--		if(utime(file, &buf) != 0) return(-errno);
-+	if (attrs->ia_valid & HOSTFS_ATTR_SIZE) {
-+		if (fd >= 0) {
-+			if (ftruncate(fd, attrs->ia_size))
-+				return (-errno);
-+		} else if (truncate(file, attrs->ia_size)) {
-+			return (-errno);
-+		}
- 	}
--	else {
--		struct timespec ts;
- 
--		if(attrs->ia_valid & HOSTFS_ATTR_ATIME_SET){
--			err = stat_file(file, NULL, NULL, NULL, NULL, NULL,
--					NULL, NULL, &ts, NULL, NULL, NULL);
--			if(err != 0)
--				return(err);
--			buf.actime = attrs->ia_atime.tv_sec;
--			buf.modtime = ts.tv_sec;
--			if(utime(file, &buf) != 0)
--				return(-errno);
-+	/* Update accessed and/or modified time, in two parts: first set
-+	 * times according to the changes to perform, and then call futimes()
-+	 * or utimes() to apply them. */
-+	ma = (HOSTFS_ATTR_ATIME_SET | HOSTFS_ATTR_MTIME_SET);
-+	if (attrs->ia_valid & ma) {
-+		err = stat_file(file, NULL, NULL, NULL, NULL, NULL, NULL,
-+				&atime_ts, &mtime_ts, NULL, NULL, NULL, fd);
-+		if (err != 0)
-+			return err;
-+
-+		times[0].tv_sec = atime_ts.tv_sec;
-+		times[0].tv_usec = atime_ts.tv_nsec * 1000;
-+		times[1].tv_sec = mtime_ts.tv_sec;
-+		times[1].tv_usec = mtime_ts.tv_nsec * 1000;
-+
-+		if (attrs->ia_valid & HOSTFS_ATTR_ATIME_SET) {
-+			times[0].tv_sec = attrs->ia_atime.tv_sec;
-+			times[0].tv_usec = attrs->ia_atime.tv_nsec * 1000;
- 		}
--		if(attrs->ia_valid & HOSTFS_ATTR_MTIME_SET){
--			err = stat_file(file, NULL, NULL, NULL, NULL, NULL,
--					NULL, &ts, NULL, NULL, NULL, NULL);
--			if(err != 0)
--				return(err);
--			buf.actime = ts.tv_sec;
--			buf.modtime = attrs->ia_mtime.tv_sec;
--			if(utime(file, &buf) != 0)
--				return(-errno);
-+		if (attrs->ia_valid & HOSTFS_ATTR_MTIME_SET) {
-+			times[1].tv_sec = attrs->ia_mtime.tv_sec;
-+			times[1].tv_usec = attrs->ia_mtime.tv_nsec * 1000;
-+		}
-+
-+		if (fd >= 0) {
-+			if (futimes(fd, times) != 0)
-+				return (-errno);
-+		} else if (utimes(file, times) != 0) {
-+			return (-errno);
- 		}
- 	}
-+
- 	if(attrs->ia_valid & HOSTFS_ATTR_CTIME) ;
- 	if(attrs->ia_valid & (HOSTFS_ATTR_ATIME | HOSTFS_ATTR_MTIME)){
- 		err = stat_file(file, NULL, NULL, NULL, NULL, NULL, NULL,
- 				&attrs->ia_atime, &attrs->ia_mtime, NULL,
--				NULL, NULL);
-+				NULL, NULL, fd);
- 		if(err != 0) return(err);
- 	}
- 	return(0);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
