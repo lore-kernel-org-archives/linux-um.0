@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hlspx-0008K7-C0 for user-mode-linux-devel@lists.sourceforge.net;
+	id 1Hlspx-0008Jz-2G for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 09 May 2007 13:32:37 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Hlspu-0003VY-37
+	(Exim 4.44) id 1Hlspu-0003VW-34
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 09 May 2007 13:32:37 -0700
-Date: Wed, 9 May 2007 16:27:21 -0400
+Date: Wed, 9 May 2007 16:27:19 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070509202721.GA22454@c2.user-mode-linux.org>
+Message-ID: <20070509202719.GA22444@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 3/6] UML - Tidy IRQ code
+Subject: [uml-devel] [PATCH 1/6] UML - Remove task_protections
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,107 +31,125 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Some tidying of the irq code before introducing irq stacks.  Mostly
-style fixes, but the timer handler calls the timer code directly
-rather than going through the generic sig_handler_common_skas.
+Replaced task_protections with stack_protections since they do the same
+thing, and task_protections was misnamed anyway.
+
+This needs THREAD_SIZE, so that's imported via common-offsets.h
+
+Also tidied up the code in the vicinity.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/kernel/init_task.c      |   11 -----------
- arch/um/kernel/irq.c            |    4 ++--
- arch/um/os-Linux/signal.c       |   10 +++++++---
- arch/um/os-Linux/skas/process.c |    6 ++++--
- 4 files changed, 13 insertions(+), 18 deletions(-)
+ arch/um/include/common-offsets.h |    2 ++
+ arch/um/include/os.h             |    1 -
+ arch/um/kernel/tt/exec_kern.c    |    2 +-
+ arch/um/kernel/tt/process_kern.c |    2 +-
+ arch/um/kernel/um_arch.c         |    2 +-
+ arch/um/os-Linux/util.c          |   23 +++--------------------
+ 6 files changed, 8 insertions(+), 24 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/kernel/init_task.c
+Index: linux-2.6.21-mm/arch/um/include/os.h
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/init_task.c	2007-05-07 14:52:28.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/init_task.c	2007-05-07 14:56:24.000000000 -0400
-@@ -46,14 +46,3 @@ void unprotect_stack(unsigned long stack
- {
- 	os_protect_memory((void *) stack, THREAD_SIZE, 1, 1, 0);
- }
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.21-mm/arch/um/kernel/irq.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/kernel/irq.c	2007-05-07 14:52:28.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/kernel/irq.c	2007-05-07 14:56:24.000000000 -0400
-@@ -1,4 +1,4 @@
--/* 
-+/*
-  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
-  * Licensed under the GPL
-  * Derived (i.e. mostly copied) from arch/i386/kernel/irq.c:
-@@ -53,7 +53,7 @@ int show_interrupts(struct seq_file *p, 
- 	if (i < NR_IRQS) {
- 		spin_lock_irqsave(&irq_desc[i].lock, flags);
- 		action = irq_desc[i].action;
--		if (!action) 
-+		if (!action)
- 			goto skip;
- 		seq_printf(p, "%3d: ",i);
- #ifndef CONFIG_SMP
-Index: linux-2.6.21-mm/arch/um/os-Linux/signal.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/signal.c	2007-05-07 14:52:28.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/signal.c	2007-05-07 14:56:24.000000000 -0400
-@@ -61,15 +61,19 @@ void sig_handler(int sig, struct sigcont
+--- linux-2.6.21-mm.orig/arch/um/include/os.h	2007-05-07 15:01:10.000000000 -0400
++++ linux-2.6.21-mm/arch/um/include/os.h	2007-05-07 15:37:28.000000000 -0400
+@@ -272,7 +272,6 @@ extern void do_longjmp(void *p, int val)
  
- static void real_alarm_handler(int sig, struct sigcontext *sc)
+ /* util.c */
+ extern void stack_protections(unsigned long address);
+-extern void task_protections(unsigned long address);
+ extern int raw(int fd);
+ extern void setup_machinename(char *machine_out);
+ extern void setup_hostinfo(char *buf, int len);
+Index: linux-2.6.21-mm/arch/um/kernel/tt/exec_kern.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/tt/exec_kern.c	2007-05-07 15:01:10.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/tt/exec_kern.c	2007-05-07 15:37:29.000000000 -0400
+@@ -57,7 +57,7 @@ void flush_thread_tt(void)
+ 	enable_timer();
+ 	free_page(stack);
+ 	protect_memory(uml_reserved, high_physmem - uml_reserved, 1, 1, 0, 1);
+-	task_protections((unsigned long) current_thread);
++	stack_protections((unsigned long) current_thread);
+ 	force_flush_all();
+ 	unblock_signals();
+ }
+Index: linux-2.6.21-mm/arch/um/kernel/tt/process_kern.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/tt/process_kern.c	2007-05-07 15:01:10.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/tt/process_kern.c	2007-05-07 15:37:29.000000000 -0400
+@@ -209,7 +209,7 @@ void finish_fork_handler(int sig)
+ 	if(current->mm != current->parent->mm)
+ 		protect_memory(uml_reserved, high_physmem - uml_reserved, 1, 
+ 			       1, 0, 1);
+-	task_protections((unsigned long) current_thread);
++	stack_protections((unsigned long) current_thread);
+ 
+ 	free_page(current->thread.temp_stack);
+ 	local_irq_disable();
+Index: linux-2.6.21-mm/arch/um/kernel/um_arch.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/um_arch.c	2007-05-07 15:02:04.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/um_arch.c	2007-05-07 15:37:29.000000000 -0400
+@@ -459,7 +459,7 @@ int __init linux_main(int argc, char **a
+ 
+ 	uml_postsetup();
+ 
+-	task_protections((unsigned long) &init_thread_info);
++	stack_protections((unsigned long) &init_thread_info);
+ 	os_flush_stdout();
+ 
+ 	return CHOOSE_MODE(start_uml_tt(), start_uml_skas());
+Index: linux-2.6.21-mm/arch/um/os-Linux/util.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/os-Linux/util.c	2007-05-07 15:01:10.000000000 -0400
++++ linux-2.6.21-mm/arch/um/os-Linux/util.c	2007-05-07 15:37:29.000000000 -0400
+@@ -33,25 +33,8 @@
+ 
+ void stack_protections(unsigned long address)
  {
-+	union uml_pt_regs regs;
+-	int prot = PROT_READ | PROT_WRITE | PROT_EXEC;
+-
+-	if(mprotect((void *) address, UM_KERN_PAGE_SIZE, prot) < 0)
+-		panic("protecting stack failed, errno = %d", errno);
+-}
+-
+-void task_protections(unsigned long address)
+-{
+-	unsigned long guard = address + UM_KERN_PAGE_SIZE;
+-	unsigned long stack = guard + UM_KERN_PAGE_SIZE;
+-	int prot = 0, pages;
+-
+-#ifdef notdef
+-	if(mprotect((void *) stack, UM_KERN_PAGE_SIZE, prot) < 0)
+-		panic("protecting guard page failed, errno = %d", errno);
+-#endif
+-	pages = (1 << UML_CONFIG_KERNEL_STACK_ORDER) - 2;
+-	prot = PROT_READ | PROT_WRITE | PROT_EXEC;
+-	if(mprotect((void *) stack, pages * UM_KERN_PAGE_SIZE, prot) < 0)
++	if(mprotect((void *) address, UM_THREAD_SIZE,
++		    PROT_READ | PROT_WRITE | PROT_EXEC) < 0)
+ 		panic("protecting stack failed, errno = %d", errno);
+ }
+ 
+@@ -72,7 +55,7 @@ int raw(int fd)
+ 
+ 	/* XXX tcsetattr could have applied only some changes
+ 	 * (and cfmakeraw() is a set of changes) */
+-	return(0);
++	return 0;
+ }
+ 
+ void setup_machinename(char *machine_out)
+Index: linux-2.6.21-mm/arch/um/include/common-offsets.h
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/include/common-offsets.h	2007-05-07 15:01:10.000000000 -0400
++++ linux-2.6.21-mm/arch/um/include/common-offsets.h	2007-05-08 10:05:16.000000000 -0400
+@@ -28,3 +28,5 @@ DEFINE(UM_NR_CPUS, NR_CPUS);
+ 
+ /* For crypto assembler code. */
+ DEFINE(crypto_tfm_ctx_offset, offsetof(struct crypto_tfm, __crt_ctx));
 +
- 	if(sig == SIGALRM)
- 		switch_timers(0);
- 
--	CHOOSE_MODE_PROC(sig_handler_common_tt, sig_handler_common_skas,
--			 sig, sc);
-+	if(sc != NULL)
-+		copy_sc(&regs, sc);
-+	regs.skas.is_user = 0;
-+	unblock_signals();
-+	timer_handler(sig, &regs);
- 
- 	if(sig == SIGALRM)
- 		switch_timers(1);
--
- }
- 
- void alarm_handler(int sig, struct sigcontext *sc)
-Index: linux-2.6.21-mm/arch/um/os-Linux/skas/process.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/skas/process.c	2007-05-07 14:52:28.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/skas/process.c	2007-05-07 14:56:24.000000000 -0400
-@@ -288,7 +288,8 @@ int start_userspace(unsigned long stub_s
- void userspace(union uml_pt_regs *regs)
- {
- 	int err, status, op, pid = userspace_pid[0];
--	int local_using_sysemu; /*To prevent races if using_sysemu changes under us.*/
-+	/* To prevent races if using_sysemu changes under us.*/
-+	int local_using_sysemu;
- 
- 	while(1){
- 		restore_registers(pid, regs);
-@@ -296,7 +297,8 @@ void userspace(union uml_pt_regs *regs)
- 		/* Now we set local_using_sysemu to be used for one loop */
- 		local_using_sysemu = get_using_sysemu();
- 
--		op = SELECT_PTRACE_OPERATION(local_using_sysemu, singlestepping(NULL));
-+		op = SELECT_PTRACE_OPERATION(local_using_sysemu,
-+					     singlestepping(NULL));
- 
- 		err = ptrace(op, pid, 0, 0);
- 		if(err)
++DEFINE(UM_THREAD_SIZE, THREAD_SIZE);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
