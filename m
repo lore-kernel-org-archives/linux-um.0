@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HlzwX-0000Sp-Fo for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 May 2007 21:07:54 -0700
-Received: from smtp1.linux-foundation.org ([65.172.181.25])
+	id 1Hm7Kh-0005Gd-HD for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 May 2007 05:01:19 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HlzwW-0001lL-3i
+	(Exim 4.44) id 1Hm7Kf-0001r0-W0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 May 2007 21:07:53 -0700
-Date: Wed, 9 May 2007 21:07:38 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20070509210738.a06b005a.akpm@linux-foundation.org>
-In-Reply-To: <20070509202722.GA22464@c2.user-mode-linux.org>
+	Thu, 10 May 2007 05:01:19 -0700
+Date: Thu, 10 May 2007 07:55:29 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070510115529.GA4969@c2.user-mode-linux.org>
 References: <20070509202722.GA22464@c2.user-mode-linux.org>
+	<20070509210738.a06b005a.akpm@linux-foundation.org>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20070509210738.a06b005a.akpm@linux-foundation.org>
 Subject: Re: [uml-devel] [PATCH 5/6] UML - Monitor stack usage
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,18 +31,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Andrew Morton <akpm@linux-foundation.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, 9 May 2007 16:27:22 -0400 Jeff Dike <jdike@addtoit.com> wrote:
+On Wed, May 09, 2007 at 09:07:38PM -0700, Andrew Morton wrote:
+> but, but.  We already have CONFIG_DEBUG_STACK_USAGE?
 
-> In preparation for reducing stack size, add a machanism to see how
-> much of a kernel stack is used.  This fills a new stack with 0x6b on
-> allocation and sees where the lowest non-0x6b byte is on process
-> exit.  It keeps track of the lowest value and logs values as they get
-> lower.
+Whoops, that's not exactly what I want, but it's close enough to let
+me throw out some code.
 
-but, but.  We already have CONFIG_DEBUG_STACK_USAGE?
+Drop that and I'll send a fixed version.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
