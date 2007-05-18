@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hnmb2-00044S-Vv for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 May 2007 19:17:05 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Hnmay-0006Vb-6i
+	id 1HoxGA-0003L1-0A for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 May 2007 00:52:22 -0700
+Received: from mailout1-7.pacific.net.au ([61.8.2.214]
+	helo=mailout1.pacific.net.au)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HoxG6-000296-3M
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 May 2007 19:17:04 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 15 May 2007 04:16:51 +0200
-References: <alpine.DEB.0.99.0705111619000.15552@chino.kir.corp.google.com>
-In-Reply-To: <alpine.DEB.0.99.0705111619000.15552@chino.kir.corp.google.com>
+	Fri, 18 May 2007 00:52:21 -0700
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200705150416.51779.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [patch] um: use __used attribute
+Date: Fri, 18 May 2007 17:51:21 +1000
+Message-ID: <7EDC24AB1ED682439657D3B7790609D395B358@deepthought.Elpro.local>
+From: "Andrew Sinclair" <Andrew.Sinclair@elprotech.com>
+Subject: Re: [uml-devel] 2.6.18 UML machine on FC6 host
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,19 +29,75 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@karaya.com>, David Rientjes <rientjes@google.com>
+Cc: sivakumar.kuppusamy@yahoo.co.in
 
-On sabato 12 maggio 2007, David Rientjes wrote:
-> Use the newly introduced __used attribute in place of the deprecated
-> __attribute_used__.  Functionally the same.
+Hi there,
+
+I've been trying to run UML on FC6 (kernel 2.6.20-1.2933.fc6) and appear
+to have encountered the same issue as described in the following
+threads:
+
+http://www.mail-archive.com/user-mode-linux-devel@lists.sourceforge.net/
+msg04571.html
+
+http://www.mail-archive.com/user-mode-linux-user@lists.sourceforge.net/m
+sg04479.html
+
+Has there been any further resolution of trying to get UML to run on
+FC6? The system hangs when I get to "VFS: Mounted root (ext3 filesystem)
+readonly."
+
+I have applied patches described in both threads to kernel 2.6.19 and
+rebuilt and still encounter issues. I have also tried pre-built kernels
+2.6.21.1 downloaded via http://uml.nagafix.co.uk/, and 2.6.13.4-bs5,
+2.6.16.9-bs2, 2.6.18.1-bb2 from
+http://www.user-mode-linux.org/~blaisorblade/binaries/
+
+I have attempted loads of prebuilt rootfs Busybox 1.5.0, 1.1.0, Debian
+4.0 from http://uml.nagafix.co.uk/, and also a hostfs rootfs with most
+of the kernels. 
+
+I am able to get pre-built kernel and rootfs operating on Mepis (using
+kernel 2.6.18.1-bb2 and rootfs busybox-1.5.0) or Red Hat 7.3 (using
+kernel 2.4.32-bs3 and rootfs busybox-1.1.1)
+
+
+My command line has been something like
+./linux rootfstype=hostfs init=/bin/sh
+
+or 
+
+./linux ubd0=./rootfs init=/bin/sh
+
+I have also various other switches described in
+http://uml.nagafix.co.uk/ and http://www.landley.net/code/UML.html
+
+Can anyone help? 
+
+Kind Regards
+
+Andrew Sinclair
+
+> Antoine Martin wrote:
+>>> Downgrading to skas-v8.2 makes things work fine again.
+>> Ah, did you get around to generate a v8.2 patch for 2.6.19?
 >
-> Signed-off-by: David Rientjes <rientjes@google.com>
-Acked-by: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+> http://www.theshore.net/~caker/uml/patches/skas-2.6.19.1-v8.2.patch
+>
+> So far so good.  I've got a few hosts running it now, but only a few 
+> UMLs on each one.  Still too early to tell if we'll run into the hang 
+> with certain filesystems...
+>
+>>> I think the key to reproducing this is a skas-v9 host.  It doesn't 
+>>> happen for me on every file system, which is somewhat interesting.
+>> Yep, it seems like a nptl/glibc issue (just a guess though)
+>
+> BTW, stay away from 2.6.19.1 if you use ebtables -- there's a BUG. 
+> 2.6.19 works, and the above patch will apply just fine.
+>
+> -Chris
 
--- 
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
