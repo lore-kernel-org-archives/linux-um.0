@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hp1FX-0004Nw-Ft for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 May 2007 05:07:59 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Hp1FV-0007Nw-La
+	id 1HplnX-0006it-Mx for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 May 2007 06:50:11 -0700
+Received: from smtp6-g19.free.fr ([212.27.42.36])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HplnW-0007SF-9P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 May 2007 05:07:59 -0700
-Message-ID: <464D9713.3090904@nagafix.co.uk>
-Date: Fri, 18 May 2007 13:07:47 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
+	Sun, 20 May 2007 06:50:11 -0700
+Message-ID: <465052A5.9020602@free.fr>
+Date: Sun, 20 May 2007 15:52:37 +0200
+From: "Jean-Yves Didier" <jydidier@free.fr>
 MIME-Version: 1.0
-References: <7EDC24AB1ED682439657D3B7790609D395B358@deepthought.Elpro.local>
-In-Reply-To: <7EDC24AB1ED682439657D3B7790609D395B358@deepthought.Elpro.local>
-Subject: Re: [uml-devel] 2.6.18 UML machine on FC6 host
+Subject: [uml-devel] [PATCH] User-mode Linux: Port driver host system
+	independence strengthened.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,94 +27,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Sinclair <Andrew.Sinclair@elprotech.com>
-Cc: sivakumar.kuppusamy@yahoo.co.in, user-mode-linux-devel@lists.sourceforge.net
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
-
-Andrew Sinclair wrote:
-> Hi there,
-> 
-> I've been trying to run UML on FC6 (kernel 2.6.20-1.2933.fc6) and appear
-> to have encountered the same issue as described in the following
-> threads:
-You need to upgrade your host kernel.
-Try 2.6.21 or >= 2.6.20.8
-
-Antoine
+To: Jeff Dike <jdike@karaya.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 
-> 
-> http://www.mail-archive.com/user-mode-linux-devel@lists.sourceforge.net/
-> msg04571.html
-> 
-> http://www.mail-archive.com/user-mode-linux-user@lists.sourceforge.net/m
-> sg04479.html
-> 
-> Has there been any further resolution of trying to get UML to run on
-> FC6? The system hangs when I get to "VFS: Mounted root (ext3 filesystem)
-> readonly."
-> 
-> I have applied patches described in both threads to kernel 2.6.19 and
-> rebuilt and still encounter issues. I have also tried pre-built kernels
-> 2.6.21.1 downloaded via http://uml.nagafix.co.uk/, and 2.6.13.4-bs5,
-> 2.6.16.9-bs2, 2.6.18.1-bb2 from
-> http://www.user-mode-linux.org/~blaisorblade/binaries/
-> 
-> I have attempted loads of prebuilt rootfs Busybox 1.5.0, 1.1.0, Debian
-> 4.0 from http://uml.nagafix.co.uk/, and also a hostfs rootfs with most
-> of the kernels. 
-> 
-> I am able to get pre-built kernel and rootfs operating on Mepis (using
-> kernel 2.6.18.1-bb2 and rootfs busybox-1.5.0) or Red Hat 7.3 (using
-> kernel 2.4.32-bs3 and rootfs busybox-1.1.1)
-> 
-> 
-> My command line has been something like
-> /linux rootfstype=hostfs init=/bin/sh
-> 
-> or 
-> 
-> /linux ubd0=./rootfs init=/bin/sh
-> 
-> I have also various other switches described in
-> http://uml.nagafix.co.uk/ and http://www.landley.net/code/UML.html
-> 
-> Can anyone help? 
-> 
-> Kind Regards
-> 
-> Andrew Sinclair
-> 
->> Antoine Martin wrote:
->>>> Downgrading to skas-v8.2 makes things work fine again.
->>> Ah, did you get around to generate a v8.2 patch for 2.6.19?
->> http://www.theshore.net/~caker/uml/patches/skas-2.6.19.1-v8.2.patch
->>
->> So far so good.  I've got a few hosts running it now, but only a few 
->> UMLs on each one.  Still too early to tell if we'll run into the hang 
->> with certain filesystems...
->>
->>>> I think the key to reproducing this is a skas-v9 host.  It doesn't 
->>>> happen for me on every file system, which is somewhat interesting.
->>> Yep, it seems like a nptl/glibc issue (just a guess though)
->> BTW, stay away from 2.6.19.1 if you use ebtables -- there's a BUG. 
->> 2.6.19 works, and the above patch will apply just fine.
->>
->> -Chris
-> 
-> 
-> 
+Port driver no longer need a telnet daemon and port-helper at fixed 
+locations on the host system. Fixed locations are still checked. If 
+detection failed, it will look for links or programs named uml.telnetd 
+and port-helper in user pathes list.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.4 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+Signed-off-by: Jean-Yves Didier <jydidier@free.fr>
+---
+--- linux-2.6.21.1/arch/um/drivers/port_user.c.orig     2007-05-20 
+13:57:31.000000000 +0200
++++ linux-2.6.21.1/arch/um/drivers/port_user.c  2007-05-20 
+13:59:23.000000000 +0200
+@@ -177,6 +177,12 @@ int port_connection(int fd, int *socket,
+                         "/usr/lib/uml/port-helper", NULL };
+        struct port_pre_exec_data data;
 
-iD8DBQFGTZcTGK2zHPGK1rsRCs8AAJ9YPCCKTlIS+407eF7khjb0GCOJlwCfStBB
-R6J3uQ6OiNyuBwhiVLLpFG0=
-=xq45
------END PGP SIGNATURE-----
++       if(os_access(argv[0], OS_ACC_X_OK) < 0)
++               argv[0] = "uml.telnetd";
++
++       if(os_access(argv[2], OS_ACC_X_OK) < 0)
++               argv[2] = "port-helper";
++
+        new = os_accept_connection(fd);
+        if(new < 0)
+                return new;
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
