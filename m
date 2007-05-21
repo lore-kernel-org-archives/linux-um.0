@@ -1,18 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HplnX-0006it-Mx for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 May 2007 06:50:11 -0700
-Received: from smtp6-g19.free.fr ([212.27.42.36])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HplnW-0007SF-9P
+	id 1HqF26-0006M6-Dj for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 May 2007 14:03:10 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HqF24-00005i-SV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 May 2007 06:50:11 -0700
-Message-ID: <465052A5.9020602@free.fr>
-Date: Sun, 20 May 2007 15:52:37 +0200
-From: "Jean-Yves Didier" <jydidier@free.fr>
-MIME-Version: 1.0
-Subject: [uml-devel] [PATCH] User-mode Linux: Port driver host system
+	Mon, 21 May 2007 14:03:10 -0700
+Date: Mon, 21 May 2007 16:56:47 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070521205647.GA9929@c2.user-mode-linux.org>
+References: <465052A5.9020602@free.fr>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <465052A5.9020602@free.fr>
+Subject: Re: [uml-devel] [PATCH] User-mode Linux: Port driver host system
 	independence strengthened.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -27,35 +31,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@karaya.com>
+To: Jean-Yves Didier <jydidier@free.fr>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Sun, May 20, 2007 at 03:52:37PM +0200, Jean-Yves Didier wrote:
+> 
+> Port driver no longer need a telnet daemon and port-helper at fixed 
+> locations on the host system. Fixed locations are still checked. If 
+> detection failed, it will look for links or programs named uml.telnetd 
+> and port-helper in user pathes list.
 
-Port driver no longer need a telnet daemon and port-helper at fixed 
-locations on the host system. Fixed locations are still checked. If 
-detection failed, it will look for links or programs named uml.telnetd 
-and port-helper in user pathes list.
+I suppose... I take it this is useful when you can't convince your
+system manager to install stuff?
 
-Signed-off-by: Jean-Yves Didier <jydidier@free.fr>
----
---- linux-2.6.21.1/arch/um/drivers/port_user.c.orig     2007-05-20 
-13:57:31.000000000 +0200
-+++ linux-2.6.21.1/arch/um/drivers/port_user.c  2007-05-20 
-13:59:23.000000000 +0200
-@@ -177,6 +177,12 @@ int port_connection(int fd, int *socket,
-                         "/usr/lib/uml/port-helper", NULL };
-        struct port_pre_exec_data data;
+				Jeff
 
-+       if(os_access(argv[0], OS_ACC_X_OK) < 0)
-+               argv[0] = "uml.telnetd";
-+
-+       if(os_access(argv[2], OS_ACC_X_OK) < 0)
-+               argv[2] = "port-helper";
-+
-        new = os_accept_connection(fd);
-        if(new < 0)
-                return new;
-
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
