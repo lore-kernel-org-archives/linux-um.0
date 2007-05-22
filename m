@@ -2,22 +2,32 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HqF26-0006M6-Dj for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 21 May 2007 14:03:10 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1HqYp6-0008Vf-5o for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 May 2007 11:11:04 -0700
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HqF24-00005i-SV
+	(Exim 4.44) id 1HqYp2-0000KC-P7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 21 May 2007 14:03:10 -0700
-Date: Mon, 21 May 2007 16:56:47 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070521205647.GA9929@c2.user-mode-linux.org>
-References: <465052A5.9020602@free.fr>
+	Tue, 22 May 2007 11:11:02 -0700
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1HqYo6-0004HE-OR for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 May 2007 20:10:03 +0200
+Received: from web01-l1d01-bc01.isus.emc.com ([128.221.197.21])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 22 May 2007 20:10:02 +0200
+Received: from angilly by web01-l1d01-bc01.isus.emc.com with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 22 May 2007 20:10:02 +0200
+From: Ryan Angilly <angilly@gmail.com>
+Date: Tue, 22 May 2007 18:04:22 +0000 (UTC)
+Message-ID: <loom.20070522T200258-554@post.gmane.org>
+References: <7EDC24AB1ED682439657D3B7790609D395B358@deepthought.Elpro.local>
+	<464D9713.3090904@nagafix.co.uk>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <465052A5.9020602@free.fr>
-Subject: Re: [uml-devel] [PATCH] User-mode Linux: Port driver host system
-	independence strengthened.
+Subject: Re: [uml-devel] 2.6.18 UML machine on FC6 host
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,23 +41,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jean-Yves Didier <jydidier@free.fr>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, May 20, 2007 at 03:52:37PM +0200, Jean-Yves Didier wrote:
+Do you know why exactly the kernel needs to be upgraded?  Just curious.
+
+Antoine Martin <antoine <at> nagafix.co.uk> writes:
+> > I've been trying to run UML on FC6 (kernel 2.6.20-1.2933.fc6) and appear
+> > to have encountered the same issue as described in the following
+> > threads:
+> You need to upgrade your host kernel.
+> Try 2.6.21 or >= 2.6.20.8
 > 
-> Port driver no longer need a telnet daemon and port-helper at fixed 
-> locations on the host system. Fixed locations are still checked. If 
-> detection failed, it will look for links or programs named uml.telnetd 
-> and port-helper in user pathes list.
+> Antoine
 
-I suppose... I take it this is useful when you can't convince your
-system manager to install stuff?
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
