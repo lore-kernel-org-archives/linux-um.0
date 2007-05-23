@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HqyzF-0004Hw-6r for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 May 2007 15:07:23 -0700
-Received: from smtp002.mail.ukl.yahoo.com ([217.12.11.33])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Hqyz9-00022u-UT
+	id 1Hqz1u-0004Vc-5R for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 May 2007 15:10:02 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1Hqz1t-0002aF-DE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 May 2007 15:07:16 -0700
+	Wed, 23 May 2007 15:10:01 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 24 May 2007 00:06:48 +0200
-References: <dec0fd580705230534ga1614a8y464bd23be785cabe@mail.gmail.com>
-In-Reply-To: <dec0fd580705230534ga1614a8y464bd23be785cabe@mail.gmail.com>
+Date: Thu, 24 May 2007 00:09:43 +0200
+References: <7694D1D9D7B18142A440B52FA1E4AB9702A207C3@CHN-SNR-MBX01.wipro.com>
+In-Reply-To: <7694D1D9D7B18142A440B52FA1E4AB9702A207C3@CHN-SNR-MBX01.wipro.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200705240006.48889.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [uml-user] Doubt regarding UML
+Message-Id: <200705240009.43991.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] doubt in debugging.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,42 +29,51 @@ Content-Type: text/plain; charset="iso-8859-1"
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-user@lists.sourceforge.net
-Cc: user-mode-linux-devel@lists.sourceforge.net, battipatisainagendra Bhavaniprasad <sainagendrabhavaniprasad@gmail.com>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: jdike@karaya.com, rajasekhar.pulluru@wipro.com, user-mode-linux-user@lists.sourceforge.net
 
-On mercoled=EC 23 maggio 2007, battipatisainagendra Bhavaniprasad wrote:
-> Hi All,
->            This is prasad,I am new to UML.Can any one clearfy the
->  following doubts....
-> 1.What is skas patch,is it required for 2.6 kernel or i comes with
->  built in and if apply skas patch for my host kernel ,is it required to
->  recompile the hole kernel and then install UML.
+On mercoled=EC 23 maggio 2007, rajasekhar.pulluru@wipro.com wrote:
+> Hi Guys,
+>
+> Am a newbie to linux and UML.I have installed UML(mandrake) in my linux
+> system. And I started UML from my host linux system using the command:
+>
+>     ./linux ubd0=3Droot_fs eth0=3Dtuntap,,,10.145.93.183 debug
+>
+> I get the gdb xterm and another one for uml.
+>
+> I have written a basic character ram disk driver( which writes n read
+> one byte of ram).This .c is in  /root/raj/chardev/ directory
 
-No vanilla kernel (nor 2.4 nor 2.6) contains already the SKAS3 patch.
-But recent UML kernel can run on any host in SKAS0 mode, slightly slower bu=
-t=20
-good for normal use.
-Otherwise, you can recompile the host kernel after applying on it the SKAS =
+> in uml=20
+You see? It's only in UML.
+> and =20
+> I stored it as chardriver.c and compiled it with proper kernel flags to
+> get chardriver.o
+>
+> This chardriver.o is in uml now.
+> Then I insmoded it and it got loaded.
+>
+> When I typed print *module_list in gdb, it said chardriver is loaded.
+> then i typed:
+> printf "0x%08x", (int)module_list + module_list->size_of_struct
+> it gave me 0xa307b060
+> but when i asked gdb to add the symbols by:
+> add-symbol-file /root/raj/chardev/chardriver.o 0xa307b060
 
-patch and UML kernels will automatically use the faster SKAS3 mode.
+> adding symbol tabel from file "chardriver.o" at .text_addr =3D 0xa307b060
+> (y or n)  yes
+> to which it replied
+> chardriver.o: No such file or directory
+> how to proceed ? kindly help me out.
 
-> 2.I have downloaded linux 2.4.27 from kernel.org and applyed
-> uml-patch-2.4.27-1.bz2 to it.
->   after giving following command ......
->   make menuconfig ARCH=3Dum
->   I have got a prompt to select SKAS mode in gendral setup option.
+Your problem seems just that gdb does not find the file chardriver.o, which=
+ is=20
+probably inside the guest (you say that in the mail). Gdb has no special=20
+access to files inside the VM.
 
->  My doubt is will linux 2.4.20(which is my host kernel) will have
-> already skas patch built in?
-
-No vanilla kernel (nor 2.4 nor 2.6) contains already the SKAS3 patch.
-
-> 3.Is there any document to debug kernel by mounting gdb from host kernel.
-There are. Go to this page:
-http://user-mode-linux.sourceforge.net/
-and look for "debugging" in _that_ page. Then follow the "debugging in SKAS=
-=20
-mode".
+Btw, since you have a .o module I assume you are _STILL_ using a 2.4 UML=20
+kernel, right?
 --=20
 Inform me of my mistakes, so I can add them to my list!
 Paolo Giarrusso, aka Blaisorblade
