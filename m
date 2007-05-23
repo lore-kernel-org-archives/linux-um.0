@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hqts6-0003uE-J0 for user-mode-linux-devel@lists.sourceforge.net;
+	id 1Hqts6-0003uF-J1 for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 23 May 2007 09:39:34 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Hqts6-0001dV-3b
+	(Exim 4.44) id 1Hqts6-0001dW-3c
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 23 May 2007 09:39:34 -0700
-Date: Wed, 23 May 2007 12:32:57 -0400
+Date: Wed, 23 May 2007 12:33:01 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070523163257.GA5568@c2.user-mode-linux.org>
+Message-ID: <20070523163301.GA5563@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 0/2] UML - Two bug fixes for 2.6.22
+Subject: [uml-devel] [PATCH 2/2] UML - Fix ubd_add error reporting
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,16 +31,26 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-One of them is really more a workaround for a host bug than a UML bug
-fix, but it does robustify the early boot checks a bit, and makes UML
-boot on current FC6, so it's worth going in 2.6.22.
+ubd_add returns 0 when there could actually be an error to report.
 
-The other is a trivial error return fix in the ubd driver.
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/drivers/ubd_kern.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6.21-mm/arch/um/drivers/ubd_kern.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/ubd_kern.c	2007-05-22 11:55:48.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/ubd_kern.c	2007-05-22 12:03:48.000000000 -0400
+@@ -766,7 +766,7 @@ static int ubd_add(int n, char **error_o
+ 		make_ide_entries(ubd_gendisk[n]->disk_name);
+ 
+ out:
+-	return 0;
++	return err;
+ 
+ out_cleanup:
+ 	blk_cleanup_queue(ubd_dev->queue);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
