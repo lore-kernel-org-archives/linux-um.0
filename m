@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hqz1u-0004Vc-5R for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 May 2007 15:10:02 -0700
-Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1Hqz1t-0002aF-DE
+	id 1Hr0fM-0006JU-OK for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 May 2007 16:54:52 -0700
+Received: from mailout2-6.pacific.net.au ([61.8.2.229]
+	helo=mailout2.pacific.net.au)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Hr0fL-0006xw-5L
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 May 2007 15:10:01 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Thu, 24 May 2007 00:09:43 +0200
-References: <7694D1D9D7B18142A440B52FA1E4AB9702A207C3@CHN-SNR-MBX01.wipro.com>
-In-Reply-To: <7694D1D9D7B18142A440B52FA1E4AB9702A207C3@CHN-SNR-MBX01.wipro.com>
+	Wed, 23 May 2007 16:54:52 -0700
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200705240009.43991.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] doubt in debugging.
+Date: Thu, 24 May 2007 09:54:04 +1000
+Message-ID: <7EDC24AB1ED682439657D3B7790609D395B82D@deepthought.Elpro.local>
+In-Reply-To: <465391F1.1070403@nagafix.co.uk>
+References: <7EDC24AB1ED682439657D3B7790609D395B358@deepthought.Elpro.local>	<464D9713.3090904@nagafix.co.uk><loom.20070522T200258-554@post.gmane.org>
+	<465391F1.1070403@nagafix.co.uk>
+From: "Andrew Sinclair" <Andrew.Sinclair@elprotech.com>
+Subject: Re: [uml-devel] 2.6.18 UML machine on FC6 host
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,59 +27,83 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Content-Transfer-Encoding: quoted-printable
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jdike@karaya.com, rajasekhar.pulluru@wipro.com, user-mode-linux-user@lists.sourceforge.net
+To: Antoine Martin <antoine@nagafix.co.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On mercoled=EC 23 maggio 2007, rajasekhar.pulluru@wipro.com wrote:
-> Hi Guys,
->
-> Am a newbie to linux and UML.I have installed UML(mandrake) in my linux
-> system. And I started UML from my host linux system using the command:
->
->     ./linux ubd0=3Droot_fs eth0=3Dtuntap,,,10.145.93.183 debug
->
-> I get the gdb xterm and another one for uml.
->
-> I have written a basic character ram disk driver( which writes n read
-> one byte of ram).This .c is in  /root/raj/chardev/ directory
+Thanks Antoine. Upgrading kernel to 2.6.21 has resolved the problem.
 
-> in uml=20
-You see? It's only in UML.
-> and =20
-> I stored it as chardriver.c and compiled it with proper kernel flags to
-> get chardriver.o
->
-> This chardriver.o is in uml now.
-> Then I insmoded it and it got loaded.
->
-> When I typed print *module_list in gdb, it said chardriver is loaded.
-> then i typed:
-> printf "0x%08x", (int)module_list + module_list->size_of_struct
-> it gave me 0xa307b060
-> but when i asked gdb to add the symbols by:
-> add-symbol-file /root/raj/chardev/chardriver.o 0xa307b060
+Kind Regards
 
-> adding symbol tabel from file "chardriver.o" at .text_addr =3D 0xa307b060
-> (y or n)  yes
-> to which it replied
-> chardriver.o: No such file or directory
-> how to proceed ? kindly help me out.
+Andrew Sinclair
 
-Your problem seems just that gdb does not find the file chardriver.o, which=
- is=20
-probably inside the guest (you say that in the mail). Gdb has no special=20
-access to files inside the VM.
+-----Original Message-----
+From: user-mode-linux-devel-bounces@lists.sourceforge.net
+[mailto:user-mode-linux-devel-bounces@lists.sourceforge.net] On Behalf
+Of Antoine Martin
+Sent: Wednesday, 23 May 2007 10:59 AM
+To: Ryan Angilly
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] 2.6.18 UML machine on FC6 host
 
-Btw, since you have a .o module I assume you are _STILL_ using a 2.4 UML=20
-kernel, right?
---=20
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Ryan Angilly wrote:
+> Do you know why exactly the kernel needs to be upgraded?  Just
+curious.
+Some bugs that were fixed in the host code.
+circa 2.6.20.2
+
+> 
+> Antoine Martin <antoine <at> nagafix.co.uk> writes:
+>>> I've been trying to run UML on FC6 (kernel 2.6.20-1.2933.fc6) and 
+>>> appear to have encountered the same issue as described in the 
+>>> following
+>>> threads:
+>> You need to upgrade your host kernel.
+>> Try 2.6.21 or >= 2.6.20.8
+>>
+>> Antoine
+> 
+> 
+> ----------------------------------------------------------------------
+> --- This SF.net email is sponsored by DB2 Express Download DB2 Express
+
+> C - the FREE version of DB2 express and take control of your XML. No 
+> limits. Just data. Click to get it now.
+> http://sourceforge.net/powerbar/db2/
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> 
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.4 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFGU5HxGK2zHPGK1rsRClekAJ0SbywS6SoVqqU1qrdz6WMd1JpuTQCfVLcP
+s1+7Uy6i1YCKyhkJUBSrXzE=
+=dO3v
+-----END PGP SIGNATURE-----
+
+------------------------------------------------------------------------
+-
+This SF.net email is sponsored by DB2 Express Download DB2 Express C -
+the FREE version of DB2 express and take control of your XML. No limits.
+Just data. Click to get it now.
+http://sourceforge.net/powerbar/db2/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
@@ -88,4 +114,3 @@ _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
