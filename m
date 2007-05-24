@@ -1,14 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Date: Thu, 24 May 2007 16:51:41 +0530
-Message-ID: <7694D1D9D7B18142A440B52FA1E4AB9702A20E09@CHN-SNR-MBX01.wipro.com>
-In-Reply-To: <46557295.1080608@nagafix.co.uk>
-References: <7694D1D9D7B18142A440B52FA1E4AB9702A207C3@CHN-SNR-MBX01.wipro.com>	<200705240009.43991.blaisorblade@yahoo.it>
-	<dec0fd580705232245y1e5c8a27y889c6b23230023cb@mail.gmail.com>
-	<46557295.1080608@nagafix.co.uk>
-From: <rajasekhar.pulluru@wipro.com>
-Subject: Re: [uml-devel] doubt in debugging.
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1Hr9dA-0002oQ-7m for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 May 2007 02:29:12 -0700
+Received: from adsl-63-197-69-248.dsl.snfc21.pacbell.net ([63.197.69.248]
+	helo=nsd.dyndns.org)
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1Hr9d8-0002nz-Sf
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 May 2007 02:29:12 -0700
+Received: from n-dade by nsd.dyndns.org with local (Exim 3.35 #1)
+	id 1Hr9d2-00011l-00 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 May 2007 02:29:04 -0700
+Date: Thu, 24 May 2007 02:29:04 -0700
+Message-ID: <20070524092904.GB3768@sparc20.esperanza>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="oyUTqETQ0mS9luUI"
+Content-Disposition: inline
+From: "Nicolas S. Dade" <n-dade@nsd.dyndns.org>
+Subject: [uml-devel] fix SEGV in handle_page_fault() when current->mm is NULL
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,70 +29,60 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: antoine@nagafix.co.uk, sainagendrabhavaniprasad@gmail.com
-Cc: jdike@karaya.com, blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
-Thanks for your response. The actual problem is I dint compile the
-module with -g option, that is wy it could nt load the symbols. Its
-solved now. 
-Thanks guyz. 
 
------Original Message-----
-From: Antoine Martin [mailto:antoine@nagafix.co.uk] 
-Sent: Thursday, May 24, 2007 4:40 PM
-To: battipatisainagendra Bhavaniprasad
-Cc: Blaisorblade; jdike@karaya.com; Rajasekhar Pulluru (WT01 -
-Computing, Storage & Software Products);
-user-mode-linux-user@lists.sourceforge.net;
-user-mode-linux-devel@lists.sourceforge.net
-Subject: Re: [uml-devel] doubt in debugging.
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
+In a non-uml kernel a get_user() when current->mm is NULL (kernel thread, or
+userspace process being torn down) returns error. In uml it SEGVs. The bug is
+that handle_page_fault() does not check for NULL before using mm. The
+trivial attached patch fixes this.
 
-battipatisainagendra Bhavaniprasad wrote:
-> Hi,
->       Does Suse linux consist of skas patch bult in???
-No, I am not aware of any vendor kernels that contain the skas patch.
+-Nicolas Dade
 
-Antoine
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="fix.patch"
 
-> 
-> rgds,
-> Prasad
-> 
-> ----------------------------------------------------------------------
-> --- This SF.net email is sponsored by DB2 Express Download DB2 Express
+--- linux-2.6.21.2/arch/um/kernel/trap.c.orig	2007-05-24 02:22:42.000000000 -0700
++++ linux-2.6.21.2/arch/um/kernel/trap.c	2007-05-24 02:23:45.000000000 -0700
+@@ -51,6 +51,9 @@
+ 	 * fail. */
+ 	if (in_atomic())
+ 		goto out_nosemaphore;
++	/* If we have no user-space just fail */
++	if (!mm)
++		goto out_nosemaphore;
+ 
+ 	down_read(&mm->mmap_sem);
+ 	vma = find_vma(mm, address);
 
-> C - the FREE version of DB2 express and take control of your XML. No 
-> limits. Just data. Click to get it now.
-> http://sourceforge.net/powerbar/db2/
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-> 
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.4 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFGVXKVGK2zHPGK1rsRCuGVAJ4mnCXhI0o7kNMWEkf0TjdveLZ7WQCbBzqj
-mOTNylYXEU8bZS8ZMieDOWI=
-=1OBq
------END PGP SIGNATURE-----
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
 Download DB2 Express C - the FREE version of DB2 express and take
 control of your XML. No limits. Just data. Click to get it now.
 http://sourceforge.net/powerbar/db2/
+--oyUTqETQ0mS9luUI
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--oyUTqETQ0mS9luUI--
+
