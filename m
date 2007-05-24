@@ -1,11 +1,13 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Message-ID: <46557295.1080608@nagafix.co.uk>
-Date: Thu, 24 May 2007 12:10:13 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
+Date: Thu, 24 May 2007 16:51:41 +0530
+Message-ID: <7694D1D9D7B18142A440B52FA1E4AB9702A20E09@CHN-SNR-MBX01.wipro.com>
+In-Reply-To: <46557295.1080608@nagafix.co.uk>
 References: <7694D1D9D7B18142A440B52FA1E4AB9702A207C3@CHN-SNR-MBX01.wipro.com>	<200705240009.43991.blaisorblade@yahoo.it>
 	<dec0fd580705232245y1e5c8a27y889c6b23230023cb@mail.gmail.com>
-In-Reply-To: <dec0fd580705232245y1e5c8a27y889c6b23230023cb@mail.gmail.com>
+	<46557295.1080608@nagafix.co.uk>
+From: <rajasekhar.pulluru@wipro.com>
 Subject: Re: [uml-devel] doubt in debugging.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -20,8 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: battipatisainagendra Bhavaniprasad <sainagendrabhavaniprasad@gmail.com>
-Cc: jdike@karaya.com, Blaisorblade <blaisorblade@yahoo.it>, rajasekhar.pulluru@wipro.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+To: antoine@nagafix.co.uk, sainagendrabhavaniprasad@gmail.com
+Cc: jdike@karaya.com, blaisorblade@yahoo.it, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+
+Hi,
+Thanks for your response. The actual problem is I dint compile the
+module with -g option, that is wy it could nt load the symbols. Its
+solved now. 
+Thanks guyz. 
+
+-----Original Message-----
+From: Antoine Martin [mailto:antoine@nagafix.co.uk] 
+Sent: Thursday, May 24, 2007 4:40 PM
+To: battipatisainagendra Bhavaniprasad
+Cc: Blaisorblade; jdike@karaya.com; Rajasekhar Pulluru (WT01 -
+Computing, Storage & Software Products);
+user-mode-linux-user@lists.sourceforge.net;
+user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] doubt in debugging.
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA512
@@ -37,10 +55,11 @@ Antoine
 > rgds,
 > Prasad
 > 
-> -------------------------------------------------------------------------
-> This SF.net email is sponsored by DB2 Express
-> Download DB2 Express C - the FREE version of DB2 express and take
-> control of your XML. No limits. Just data. Click to get it now.
+> ----------------------------------------------------------------------
+> --- This SF.net email is sponsored by DB2 Express Download DB2 Express
+
+> C - the FREE version of DB2 express and take control of your XML. No 
+> limits. Just data. Click to get it now.
 > http://sourceforge.net/powerbar/db2/
 > _______________________________________________
 > User-mode-linux-devel mailing list
