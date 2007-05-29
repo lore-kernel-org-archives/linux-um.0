@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HsnXS-0004B2-Bz for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 May 2007 15:18:07 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HsnXQ-00046U-Sh
+	id 1Ht1xG-0004wl-KA for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 May 2007 06:41:42 -0700
+Received: from an-out-0708.google.com ([209.85.132.245])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ht1x6-0000e8-EH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 May 2007 15:18:06 -0700
-Date: Mon, 28 May 2007 18:10:44 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070528221044.GA9367@c2.user-mode-linux.org>
-References: <dec0fd580705280707g69b0e966r692a7d8c0fef14a3@mail.gmail.com>
-Mime-Version: 1.0
+	Tue, 29 May 2007 06:41:42 -0700
+Received: by an-out-0708.google.com with SMTP id b38so561508ana
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 29 May 2007 06:41:28 -0700 (PDT)
+Message-ID: <75b57c110705290641q29566b14l4bb56f11ffd3b1d7@mail.gmail.com>
+Date: Tue, 29 May 2007 09:41:27 -0400
+From: "Gerb Stralko" <gerb.stralko@gmail.com>
+In-Reply-To: <dec0fd580705250143v60944d53vd195a587ff425887@mail.gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <dec0fd580705280707g69b0e966r692a7d8c0fef14a3@mail.gmail.com>
-Subject: Re: [uml-devel] diffrence between swap partition and swap file?
+References: <dec0fd580705250143v60944d53vd195a587ff425887@mail.gmail.com>
+Subject: Re: [uml-devel] help needed regarding UML installation
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,37 +35,24 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: battipatisainagendra Bhavaniprasad <sainagendrabhavaniprasad@gmail.com>
 Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Mon, May 28, 2007 at 10:07:18AM -0400, battipatisainagendra Bhavaniprasad wrote:
-> 1.What is the diffrence between swap partition and swap file?
+On 5/25/07, battipatisainagendra Bhavaniprasad
+<sainagendrabhavaniprasad@gmail.com> wrote:
+> Hi all,
+>            This is Prasad,I am trying to install UML on SuSE linux 10.I have
+> down loaded " user_mode_linux-2.4.19.5um-0.i386.rpm" and
+> "Debian-3.0r0.ext2".
+>
+> After installing rpm package, I got "linux" in /usr/bin and i have copied
+> "linux" in to /home/user1 and gave following command....
+> linux ubd0=Debian-3.0r0.ext2 but i have got the following error.
+>
 
-Swapping on a disk partition vs swapping into a file.
+This is a mailing list discussing the development of uml.  You would
+have much better luck at a linux forum (e.g linuxquestions.org).   And
+please _don't_post the same question TWICE that is the quickest way to
+get your mail filtered to > /dev/null.
 
-> 2.If i create swap file, will it reside in host kernel?
-
-Of course - everything on the system resides in the host kernel.
-
-> 3.Is it possible to create swap partition(disk partition) for UML?
-
-Sure.
-
-> 4.I am trying to mount a file from host kernel to guest kernel.....can any
-> one give me a way to do that?
-
-host% uml_mconsole <umid> config ubdb /path/to/host/file
-
-UML# mount /dev/ubdb /mnt
-
-> 5.What is the diffrence between skas0 and skas3?
-
-skas3 requires a patch to the host kernel, skas0 does not, and will
-run on a stock host.
-
-OTOH, some operations are faster on a skas3 host.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Thanks
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
