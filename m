@@ -1,20 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ht4Up-0008OI-6k for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 May 2007 09:24:32 -0700
-Received: from pne-smtpout3-sn2.hy.skanova.net ([81.228.8.111])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ht4Uo-0000Un-QA
+	id 1HtQGB-0002Gh-R4 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 May 2007 08:38:55 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HtQFz-0008Df-B4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 May 2007 09:24:31 -0700
-Message-ID: <465C53A6.1060800@jjkola.tk>
-Date: Tue, 29 May 2007 19:24:06 +0300
-From: Jyrki Jaakkola <jyrki@jjkola.tk>
-MIME-Version: 1.0
-References: <7694D1D9D7B18142A440B52FA1E4AB9702AA5C64@CHN-SNR-MBX01.wipro.com>
-In-Reply-To: <7694D1D9D7B18142A440B52FA1E4AB9702AA5C64@CHN-SNR-MBX01.wipro.com>
-Subject: Re: [uml-devel] modprobe: Can't locate module scsi_debug
+	Wed, 30 May 2007 08:38:41 -0700
+Date: Wed, 30 May 2007 11:30:57 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070530153057.GA6940@c2.user-mode-linux.org>
+References: <20070524092904.GB3768@sparc20.esperanza>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20070524092904.GB3768@sparc20.esperanza>
+Subject: Re: [uml-devel] fix SEGV in handle_page_fault() when current->mm is
+	NULL
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,18 +31,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: rajasekhar.pulluru@wipro.com
+To: "Nicolas S. Dade" <n-dade@nsd.dyndns.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hello,
+On Thu, May 24, 2007 at 02:29:04AM -0700, Nicolas S. Dade wrote:
+> In a non-uml kernel a get_user() when current->mm is NULL (kernel thread, or
+> userspace process being torn down) returns error. In uml it SEGVs. The bug is
+> that handle_page_fault() does not check for NULL before using mm. The
+> trivial attached patch fixes this.
 
-Please, do not double post. The question which you asked is only 
-appropriate on uml-user list as uml-devel list is only meant for 
-discussion regarding development of uml.
+Can I have a Signed-off-by on this?
 
-Regards,
+				Jeff
 
-Jyrki Jaakkola
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
