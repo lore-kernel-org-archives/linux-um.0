@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HtpMe-0002To-VH for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 May 2007 11:27:16 -0700
+	id 1Htp8P-00011F-0P for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 31 May 2007 11:12:30 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HtpMe-0003HI-EP
+	(Exim 4.44) id 1Htp8O-0008CI-F8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 May 2007 11:27:12 -0700
-Date: Thu, 31 May 2007 14:19:23 -0400
+	Thu, 31 May 2007 11:12:28 -0700
+Date: Thu, 31 May 2007 14:04:29 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070531181923.GA9904@c2.user-mode-linux.org>
+Message-ID: <20070531180429.GA9782@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] Syslets - Fix cachemiss_thread return value
+Subject: [uml-devel] [PATCH 1/3] syslet demos - add more includes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,39 +31,44 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Zach Brown <zach.brown@oracle.com>, Ingo Molnar <mingo@elte.hu>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-cachemiss_thread should explicitly return 0 or error instead of
-task_ret_reg(current) (which is -ENOSYS anyway) because
-async_thread_helper is careful to put the return value in eax anyway.
-
-On x86_64, it looks like async_child_rip is similarly careful.
+Add a bunch of includes to sys.h and syslet.h to kill off compilation warnings.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- kernel/async.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sys.h    |    7 +++++++
+ syslet.h |    2 ++
+ 2 files changed, 9 insertions(+)
 
-Index: linux-2.6/kernel/async.c
+Index: async-test-v5/sys.h
 ===================================================================
---- linux-2.6.orig/kernel/async.c	2007-05-29 20:11:11.000000000 -0400
-+++ linux-2.6/kernel/async.c	2007-05-31 14:12:49.000000000 -0400
-@@ -575,7 +575,7 @@ static long cachemiss_thread(void *data)
- 	struct task_struct *t = current;
- 	struct async_head *ah = args->ah;
- 	struct async_thread *at;
--	int ret;
-+	int ret = 0;
+--- async-test-v5.orig/sys.h	2007-02-28 14:32:16.000000000 -0500
++++ async-test-v5/sys.h	2007-05-31 13:29:57.000000000 -0400
+@@ -1,5 +1,12 @@
  
- 	at = &t->__at;
- 	async_thread_init(t, at, ah);
-@@ -607,7 +607,7 @@ static long cachemiss_thread(void *data)
- 	complete(&ah->start_done);
+ #include <assert.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/syscall.h>
++#include <sys/time.h>
++#include <sys/types.h>
++
++#include "syslet.h"
  
- 	async_cachemiss_loop(at, ah, t);
--	return task_ret_reg(t);
-+	return ret;
- }
+ #if DEBUG
+ # define pr(x...) do { printf("%d: ", sys_gettid()); printf(x); fflush(stdout); } while (0)
+Index: async-test-v5/syslet.h
+===================================================================
+--- async-test-v5.orig/syslet.h	2007-02-28 14:32:16.000000000 -0500
++++ async-test-v5/syslet.h	2007-05-30 12:32:44.000000000 -0400
+@@ -10,6 +10,8 @@
+  * User-space API/ABI definitions:
+  */
  
- /**
++#include "common.h"
++
+ #ifndef __user
+ # define __user
+ #endif
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
