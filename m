@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Htsp5-0007rj-9S for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 May 2007 15:08:48 -0700
-Received: from rgminet01.oracle.com ([148.87.113.118])
+	id 1Htsq3-0007xu-N0 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 31 May 2007 15:09:52 -0700
+Received: from agminet01.oracle.com ([141.146.126.228])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Htsp3-0000MV-TW
+	(Exim 4.44) id 1Htsq2-0000ph-Ad
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 May 2007 15:08:47 -0700
-Date: Thu, 31 May 2007 15:07:16 -0700
+	Thu, 31 May 2007 15:09:47 -0700
+Date: Thu, 31 May 2007 15:08:57 -0700
 From: Zach Brown <zach.brown@oracle.com>
-Message-ID: <20070531220716.GL5488@mami.zabbo.net>
-References: <20070531181923.GA9904@c2.user-mode-linux.org>
+Message-ID: <20070531220857.GM5488@mami.zabbo.net>
+References: <20070531180429.GA9782@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070531181923.GA9904@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] Syslets - Fix cachemiss_thread return value
+In-Reply-To: <20070531180429.GA9782@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH 1/3] syslet demos - add more includes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,24 +33,12 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
 Cc: Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-> cachemiss_thread should explicitly return 0 or error instead of
-> task_ret_reg(current) (which is -ENOSYS anyway) because
-> async_thread_helper is careful to put the return value in eax anyway.
+> Add a bunch of includes to sys.h and syslet.h to kill off compilation warnings.
 
-Can you explain what motivated you to send out this patch?
+This, and the patches which add tests, all look great to me.
 
-It used to return 0.  It was changed because, unlike the syslet
-syscalls, sys_io_submit() doesn't have a simple 0 value to indicate
-success.  The current implementation wants to return the number of iocbs
-that were processed, including the one which blocked, from the cachemiss
-thread.  So before calling into an operation it sets task_ret_ret() so
-that the cachemiss thread can return it if it takes over.
-task_ret_reg() is holding a return value that is being returned by the
-cachemiss thread on behalf of a sys_io_submit() which blocked.
-
-When I made the change I didn't really audit its effect on the other
-paths.  I suppose it's time to do that, and you could help by telling me
-if you saw something bad happen :).
+Ingo, are you patching up your tests or do you want me to take care of
+these?
 
 - z
 
