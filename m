@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Htp8Q-00011G-5w for user-mode-linux-devel@lists.sourceforge.net;
+	id 1Htp8Q-00011H-E7 for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 31 May 2007 11:12:30 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Htp8P-0004Fg-EZ
+	(Exim 4.44) id 1Htp8P-0008Dr-R4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 May 2007 11:12:29 -0700
-Date: Thu, 31 May 2007 14:04:31 -0400
+	Thu, 31 May 2007 11:12:30 -0700
+Date: Thu, 31 May 2007 14:04:30 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070531180431.GA9792@c2.user-mode-linux.org>
+Message-ID: <20070531180430.GA9787@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 3/3] syslet demos - collecting timer expirations
-	and child status
+Subject: [uml-devel] [PATCH 2/3] syslet demos - AIO file reading
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,39 +31,47 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Zach Brown <zach.brown@oracle.com>, Ingo Molnar <mingo@elte.hu>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-wait-sleep uses the async_exec mechanism to collect timer expirations
-and child process wait status.  It randomly fires off a number of
-sleeps and forks, waiting for them to finish, and firing off something
-new to replace anything that finishes.
+aio-read uses the async_exec mechanism to queue reads of pages of a
+file.  As completions come in, new reads are queued until all pages in
+the file have requests queued or finished.  When that has happened, it
+just waits for the remaining completions to come in.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- Makefile     |    4 +
- wait-sleep.c |  123 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 127 insertions(+)
+ Makefile   |    6 ++-
+ aio-read.c |  114 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 118 insertions(+), 2 deletions(-)
 
 Index: async-test-v5/Makefile
 ===================================================================
---- async-test-v5.orig/Makefile	2007-05-31 13:30:17.000000000 -0400
-+++ async-test-v5/Makefile	2007-05-31 13:45:35.000000000 -0400
-@@ -17,3 +17,7 @@ evserver_epoll_threadlet: evserver_epoll
+--- async-test-v5.orig/Makefile	2007-05-31 13:28:42.000000000 -0400
++++ async-test-v5/Makefile	2007-05-31 13:46:14.000000000 -0400
+@@ -1,5 +1,4 @@
+-
+-all: hello syslet-test threadlet-test evserver_threadlet evserver_epoll evserver_epoll_threadlet
++all: hello syslet-test threadlet-test evserver_threadlet evserver_epoll evserver_epoll_threadlet aio-read
+ 	@echo version: async
  
- aio-read: aio-read.c syslet.h sys.h Makefile
- 	gcc -O2 -g -Wall -o aio-read aio-read.c -fomit-frame-pointer
+ clean:
+@@ -15,3 +14,6 @@ evserver_threadlet: evserver_threadlet.c
+ 	gcc -O2 -g -Wall -o evserver_threadlet evserver_threadlet.c -fomit-frame-pointer
+ evserver_epoll_threadlet: evserver_epoll_threadlet.c syslet.h sys.h threadlet.h Makefile
+ 	gcc -O2 -g -Wall -o evserver_epoll_threadlet evserver_epoll_threadlet.c -fomit-frame-pointer
 +
-+wait-sleep: wait-sleep.c syslet.h sys.h Makefile
-+	gcc -O2 -g -Wall -o wait-sleep wait-sleep.c -fomit-frame-pointer
-+
-Index: async-test-v5/wait-sleep.c
++aio-read: aio-read.c syslet.h sys.h Makefile
++	gcc -O2 -g -Wall -o aio-read aio-read.c -fomit-frame-pointer
+Index: async-test-v5/aio-read.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ async-test-v5/wait-sleep.c	2007-05-31 13:32:39.000000000 -0400
-@@ -0,0 +1,123 @@
++++ async-test-v5/aio-read.c	2007-05-31 13:31:00.000000000 -0400
+@@ -0,0 +1,114 @@
 +#include <stdio.h>
 +#include <stdlib.h>
 +#include <errno.h>
-+#include <sys/time.h>
-+#include <sys/wait.h>
++#include <string.h>
++#include <unistd.h>
++#include <sys/fcntl.h>
++#include <sys/stat.h>
 +#include "sys.h"
 +
 +/*
@@ -74,8 +81,7 @@ Index: async-test-v5/wait-sleep.c
 +init_atom(struct syslet_uatom *atom, int nr,
 +	  void *arg_ptr0, void *arg_ptr1, void *arg_ptr2,
 +	  void *arg_ptr3, void *arg_ptr4, void *arg_ptr5,
-+	  void *ret_ptr, unsigned long flags, struct syslet_uatom *next,
-+	  void *private)
++	  void *ret_ptr, unsigned long flags, struct syslet_uatom *next)
 +{
 +	atom->nr = nr;
 +	atom->arg_ptr[0] = (u64)(unsigned long)arg_ptr0;
@@ -87,101 +93,91 @@ Index: async-test-v5/wait-sleep.c
 +	atom->ret_ptr = (u64)(unsigned long)ret_ptr;
 +	atom->flags = flags;
 +	atom->next = (u64)(unsigned long)next;
-+	atom->private = (u64) (u32) private;
-+}
-+
-+struct something {
-+	enum { SLEEPER, RUNNER } type;
-+	int time;
-+	int status;
-+};
-+
-+void start_something(struct syslet_uatom *atom, struct something *s)
-+{
-+	struct syslet_uatom *done;
-+
-+	s->time = rand() % 10 + 1;
-+	if((rand() % 2) == 0){
-+		struct timespec ts = { s->time, 0 }, *timeptr = &ts;
-+		struct timespec *rem = NULL;
-+
-+		s->type = SLEEPER;
-+		printf("0x%p : Sleeping for %d seconds\n", atom, s->time);
-+		init_atom(atom, __NR_sys_nanosleep, &timeptr, &rem,
-+			  NULL, NULL, NULL, NULL, NULL, 0, NULL, s);
-+	}
-+	else {
-+		int pid = fork();
-+		if(pid < 0){
-+			perror("fork");
-+			exit(1);
-+		}
-+		else if(pid > 0){
-+			int *stat = &s->status, flags = 0;
-+			s->type = RUNNER;
-+			init_atom(atom, __NR_sys_waitpid, &pid, &stat,
-+				  &flags, NULL, NULL, NULL, NULL, 0, NULL, s);
-+		}
-+		else {
-+			int status = rand() % 128;
-+			sleep(s->time);
-+			printf("0x%p : child %d exiting with status %d\n", atom,
-+			       getpid(), status);
-+			exit(status);
-+		}
-+	}
-+	if(async_head.new_thread_stack == 0)
-+		async_head.new_thread_stack = thread_stack_alloc();
-+	done = sys_async_exec(atom, &async_head);
-+	if(done == atom){
-+		printf("something finished too fast\n");
-+		exit(1);
-+	}
 +}
 +
 +#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 +
++static int collect_status()
++{
++	int n = 0;
++
++	sys_async_wait(1, async_head.user_ring_idx, &async_head);
++	while(completion_ring[async_head.user_ring_idx] != 0){
++		completion_ring[async_head.user_ring_idx++] = 0;
++		async_head.user_ring_idx %= ARRAY_SIZE(completion_ring);
++		n++;
++	}
++
++	return n;
++}
++
 +int main(int argc, char *argv[])
 +{
-+	struct something something[ARRAY_SIZE(completion_ring)], *s;
-+	struct syslet_uatom atoms[ARRAY_SIZE(completion_ring)], *done;
-+	int err, i;
++	struct syslet_uatom *atoms, *done;
++	struct stat stbuf;
++	char *file, *buf;
++	int fd, err, npages, i, len, async, sync;
++
++	if(argc < 2){
++		fprintf(stderr, "Usage : aio-read file\n");
++		exit(1);
++	}
++
++	file = argv[1];
++	fd = open(file, O_RDONLY);
++	if(fd < 0){
++		perror("open");
++		exit(1);
++	}
++
++	err = fstat(fd, &stbuf);
++	if(err < 0){
++		perror("stat");
++		exit(1);
++	}
++
++	buf = malloc(stbuf.st_size);
++	if(buf == NULL){
++		perror("malloc");
++		exit(1);
++	}
++
++	len = getpagesize();
++	npages = (stbuf.st_size + len - 1) / len;
++	atoms = malloc(npages * sizeof(struct syslet_uatom));
++	if(atoms == NULL){
++		perror("malloc atoms");
++		exit(1);
++	}
 +
 +	async_head_init();
-+	for(i = 0; i < ARRAY_SIZE(atoms); i++){
-+		start_something(&atoms[i], &something[i]);
++	async = 0;
++	sync = 0;
++	for(i = 0; i < npages; i++){
++		char *ptr = &buf[i * len];
++		init_atom(&atoms[i], __NR_sys_read, &fd, &ptr, &len,
++			  NULL, NULL, NULL, NULL, 0, NULL);
++		if(async_head.new_thread_stack == 0)
++			async_head.new_thread_stack = thread_stack_alloc();
++		done = sys_async_exec(&atoms[i], &async_head);
++		if(done == &atoms[i]){
++			sync++;
++			continue;
++		}
++		else if(done < 0)
++			perror("sys_async_exec");
++
++		async++;
++		if(async < ARRAY_SIZE(completion_ring))
++			continue;
++
++		async -= collect_status();
 +	}
 +
-+	while(1){
-+		err = sys_async_wait(1, async_head.user_ring_idx, &async_head);
-+		if(err){
-+			perror("sys_async_wait");
-+			exit(1);
-+		}
-+		while(completion_ring[async_head.user_ring_idx] != 0){
-+			done = (struct syslet_uatom *) (u32)
-+				completion_ring[async_head.user_ring_idx];
-+			completion_ring[async_head.user_ring_idx++] = 0;
-+			async_head.user_ring_idx %= ARRAY_SIZE(completion_ring);
-+			s = (struct something *) (u32) done->private;
-+			switch(s->type){
-+			case SLEEPER:
-+				printf("0x%p : Slept for %d seconds\n", done,
-+				       s->time);
-+				break;
-+			case RUNNER:
-+				printf("0x%p : Slept for %d seconds, then "
-+				       "exited with status %d\n", done, s->time,
-+				       WEXITSTATUS(s->status));
-+				break;
-+			default:
-+				fprintf(stderr, "Bad something type - %d\n",
-+					s->type);
-+				exit(1);
-+			}
-+			start_something(done, &something[done - atoms]);
-+		}
-+	}
++	while(async)
++		async -= collect_status();
++
++	return 0;
 +}
 
 -------------------------------------------------------------------------
