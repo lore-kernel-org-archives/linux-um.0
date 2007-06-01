@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Htsq3-0007xu-N0 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 May 2007 15:09:52 -0700
+	id 1Htua7-0002EJ-Pj for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 31 May 2007 17:01:27 -0700
 Received: from agminet01.oracle.com ([141.146.126.228])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Htsq2-0000ph-Ad
+	(Exim 4.44) id 1Htua6-0004U7-Dt
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 May 2007 15:09:47 -0700
-Date: Thu, 31 May 2007 15:08:57 -0700
+	Thu, 31 May 2007 17:01:27 -0700
+Date: Thu, 31 May 2007 17:00:29 -0700
 From: Zach Brown <zach.brown@oracle.com>
-Message-ID: <20070531220857.GM5488@mami.zabbo.net>
-References: <20070531180429.GA9782@c2.user-mode-linux.org>
+Message-ID: <20070601000029.GN5488@mami.zabbo.net>
+References: <20070531181923.GA9904@c2.user-mode-linux.org>
+	<20070531220716.GL5488@mami.zabbo.net>
+	<20070531233946.GA12493@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070531180429.GA9782@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH 1/3] syslet demos - add more includes
+In-Reply-To: <20070531233946.GA12493@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] [PATCH] Syslets - Fix cachemiss_thread return value
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,12 +35,11 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
 Cc: Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-> Add a bunch of includes to sys.h and syslet.h to kill off compilation warnings.
+> the demos I sent out.  Dunno about the existing ones, but I bet they do
+> the same.
 
-This, and the patches which add tests, all look great to me.
-
-Ingo, are you patching up your tests or do you want me to take care of
-these?
+Hmm, they didn't when I ran them, but I'll give yours a try and take a
+closer look.  Thanks for taking the time to bring it up.
 
 - z
 
