@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hvg7g-00011M-Ie for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Jun 2007 13:59:24 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1HvgEd-0001ZJ-No for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Jun 2007 14:06:35 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Hvg7g-0006ub-56
+	(Exim 4.44) id 1HvgEd-0000J0-5y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Jun 2007 13:59:24 -0700
-Date: Tue, 5 Jun 2007 16:50:54 -0400
+	Tue, 05 Jun 2007 14:06:35 -0700
+Date: Tue, 5 Jun 2007 16:57:50 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070605205054.GA9765@c2.user-mode-linux.org>
+Message-ID: <20070605205750.GA9851@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/2] UML - Fix request->sector update
+Subject: [uml-devel] [PATCH] UML - Improve host PTRACE_SYSEMU check
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,66 +28,69 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
+To: stable@kernel.org
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-[ This is post-2.6.22 material - it fixes a bug, but not one that I
-think has been seen in the wild, plus an earlier version of this fix
-caused file corruption ]
+Make the PTRACE_SYSEMU checking more robust.  It will make sure that
+system call numbers are reported correctly.  If there is a problem, it
+will disable PTRACE_SYSEMU use and use PTRACE_SYSCALL instead.
 
-It is theoretically possible for a request to finish and be freed
-between writing it to the I/O thread and updating the sector count.
-In this case, the update will dereference a freed pointer.
-
-To avoid this, I delay the update until processing the next sg
-segment, when the request pointer is known to be good.
+This fixes a hang on boot on FC6 hosts with a broken PTRACE_SYSEMU.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/drivers/ubd_kern.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/um/os-Linux/start_up.c |   24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/drivers/ubd_kern.c
+Index: linux-2.6.17/arch/um/os-Linux/start_up.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/ubd_kern.c	2007-06-02 12:13:50.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/ubd_kern.c	2007-06-02 22:23:41.000000000 -0400
-@@ -1082,7 +1082,7 @@ static void do_ubd_request(request_queue
+--- linux-2.6.17.orig/arch/um/os-Linux/start_up.c	2007-06-05 16:53:41.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/start_up.c	2007-06-05 16:54:21.000000000 -0400
+@@ -144,9 +144,7 @@ static int stop_ptraced_child(int pid, v
+ 		int exit_with = WEXITSTATUS(status);
+ 		if (exit_with == 2)
+ 			non_fatal("check_ptrace : child exited with status 2. "
+-				  "Serious trouble happening! Try updating "
+-				  "your host skas patch!\nDisabling SYSEMU "
+-				  "support.");
++				  "\nDisabling SYSEMU support.\n");
+ 		non_fatal("check_ptrace : child exited with exitcode %d, while "
+ 			  "expecting %d; status 0x%x\n", exit_with,
+ 			  exitcode, status);
+@@ -209,6 +207,7 @@ __uml_setup("nosysemu", nosysemu_cmd_par
+ static void __init check_sysemu(void)
  {
- 	struct io_thread_req *io_req;
- 	struct request *req;
--	int n;
-+	int n, last_sectors;
+ 	void *stack;
++	unsigned long regs[MAX_REG_NR];
+ 	int pid, n, status, count=0;
  
- 	while(1){
- 		struct ubd *dev = q->queuedata;
-@@ -1098,9 +1098,11 @@ static void do_ubd_request(request_queue
- 		}
+ 	non_fatal("Checking syscall emulation patch for ptrace...");
+@@ -225,11 +224,20 @@ static void __init check_sysemu(void)
+ 		fatal("check_sysemu : expected SIGTRAP, got status = %d",
+ 		      status);
  
- 		req = dev->request;
-+		last_sectors = 0;
- 		while(dev->start_sg < dev->end_sg){
- 			struct scatterlist *sg = &dev->sg[dev->start_sg];
+-	n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET,
+-		   os_getpid());
+-	if(n < 0)
+-		fatal_perror("check_sysemu : failed to modify system call "
+-			     "return");
++	if(ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
++		fatal_perror("check_sysemu : PTRACE_GETREGS failed");
++	if(PT_SYSCALL_NR(regs) != __NR_getpid){
++		non_fatal("check_sysemu got system call number %d, "
++			  "expected %d...", PT_SYSCALL_NR(regs), __NR_getpid);
++		goto fail;
++	}
++
++	n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET, os_getpid());
++	if(n < 0){
++		non_fatal("check_sysemu : failed to modify system call "
++			  "return");
++		goto fail;
++	}
  
-+			req->sector += last_sectors;
- 			io_req = kmalloc(sizeof(struct io_thread_req),
- 					 GFP_ATOMIC);
- 			if(io_req == NULL){
-@@ -1112,6 +1114,7 @@ static void do_ubd_request(request_queue
- 					(unsigned long long) req->sector << 9,
- 					sg->offset, sg->length, sg->page);
- 
-+			last_sectors = sg->length >> 9;
- 			n = os_write_file(thread_fd, &io_req,
- 					  sizeof(struct io_thread_req *));
- 			if(n != sizeof(struct io_thread_req *)){
-@@ -1123,7 +1126,6 @@ static void do_ubd_request(request_queue
- 				return;
- 			}
- 
--			req->sector += sg->length >> 9;
- 			dev->start_sg++;
- 		}
- 		dev->end_sg = 0;
+ 	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
+ 		goto fail_stopped;
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
