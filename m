@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hvg7h-00011R-IH for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Jun 2007 13:59:25 -0700
+	id 1Hvg7g-00011M-Ie for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Jun 2007 13:59:24 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Hvg7g-0006uc-52
+	(Exim 4.44) id 1Hvg7g-0006ub-56
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Jun 2007 13:59:25 -0700
-Date: Tue, 5 Jun 2007 16:50:55 -0400
+	Tue, 05 Jun 2007 13:59:24 -0700
+Date: Tue, 5 Jun 2007 16:50:54 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070605205055.GA9770@c2.user-mode-linux.org>
+Message-ID: <20070605205054.GA9765@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/2] UML - Fix kernel stack size on x86_64
+Subject: [uml-devel] [PATCH 1/2] UML - Fix request->sector update
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,28 +31,63 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-[ This is 2.6.22 material ]
+[ This is post-2.6.22 material - it fixes a bug, but not one that I
+think has been seen in the wild, plus an earlier version of this fix
+caused file corruption ]
 
-Having KERNEL_STACK_ORDER in defconfig overrides the value provided by
-Kconfig, breaking UML/x86_64, which wants 2 page stacks.
+It is theoretically possible for a request to finish and be freed
+between writing it to the I/O thread and updating the sector count.
+In this case, the update will dereference a freed pointer.
+
+To avoid this, I delay the update until processing the next sg
+segment, when the request pointer is known to be good.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/defconfig |    1 -
- 1 file changed, 1 deletion(-)
+ arch/um/drivers/ubd_kern.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/defconfig
+Index: linux-2.6.21-mm/arch/um/drivers/ubd_kern.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/defconfig	2007-06-05 12:18:35.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/defconfig	2007-06-05 12:19:12.000000000 -0400
-@@ -86,7 +86,6 @@ CONFIG_MCONSOLE=y
- # CONFIG_MAGIC_SYSRQ is not set
- CONFIG_NEST_LEVEL=0
- # CONFIG_HIGHMEM is not set
--CONFIG_KERNEL_STACK_ORDER=0
- CONFIG_UML_REAL_TIME_CLOCK=y
+--- linux-2.6.21-mm.orig/arch/um/drivers/ubd_kern.c	2007-06-02 12:13:50.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/ubd_kern.c	2007-06-02 22:23:41.000000000 -0400
+@@ -1082,7 +1082,7 @@ static void do_ubd_request(request_queue
+ {
+ 	struct io_thread_req *io_req;
+ 	struct request *req;
+-	int n;
++	int n, last_sectors;
  
- #
+ 	while(1){
+ 		struct ubd *dev = q->queuedata;
+@@ -1098,9 +1098,11 @@ static void do_ubd_request(request_queue
+ 		}
+ 
+ 		req = dev->request;
++		last_sectors = 0;
+ 		while(dev->start_sg < dev->end_sg){
+ 			struct scatterlist *sg = &dev->sg[dev->start_sg];
+ 
++			req->sector += last_sectors;
+ 			io_req = kmalloc(sizeof(struct io_thread_req),
+ 					 GFP_ATOMIC);
+ 			if(io_req == NULL){
+@@ -1112,6 +1114,7 @@ static void do_ubd_request(request_queue
+ 					(unsigned long long) req->sector << 9,
+ 					sg->offset, sg->length, sg->page);
+ 
++			last_sectors = sg->length >> 9;
+ 			n = os_write_file(thread_fd, &io_req,
+ 					  sizeof(struct io_thread_req *));
+ 			if(n != sizeof(struct io_thread_req *)){
+@@ -1123,7 +1126,6 @@ static void do_ubd_request(request_queue
+ 				return;
+ 			}
+ 
+-			req->sector += sg->length >> 9;
+ 			dev->start_sg++;
+ 		}
+ 		dev->end_sg = 0;
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
