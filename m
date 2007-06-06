@@ -1,25 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HvxJO-00026E-RJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jun 2007 08:20:38 -0700
+	id 1HvxWk-0003jo-Dz for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Jun 2007 08:34:26 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HvxJN-0008Ah-34
+	(Exim 4.44) id 1HvxWj-00050m-SQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jun 2007 08:20:38 -0700
-Date: Wed, 6 Jun 2007 11:11:34 -0400
+	Wed, 06 Jun 2007 08:34:26 -0700
+Date: Wed, 6 Jun 2007 11:25:57 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070606151134.GA5972@c2.user-mode-linux.org>
-References: <20070605205055.GA9770@c2.user-mode-linux.org>
-	<20070605170001.c8b2110e.akpm@linux-foundation.org>
-	<20070606003752.GA11511@c2.user-mode-linux.org>
-	<20070605182024.003502d4.akpm@linux-foundation.org>
+Message-ID: <20070606152557.GA7234@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070605182024.003502d4.akpm@linux-foundation.org>
-Subject: Re: [uml-devel] [PATCH 2/2] UML - Fix kernel stack size on x86_64
+Subject: [uml-devel] [PATCH] UML - Get declaration of simple_strtoul
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,54 +28,136 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
+To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, Jun 05, 2007 at 06:20:24PM -0700, Andrew Morton wrote:
-> If you do
-> 
-> -	int "Kernel stack size order"
-> +	int
-> 
-> then this rule will no longer be offered to the user and `make oldconfig'
-> (actually anythingconfig) will override whatever happens to be in .config
-> for KERNEL_STACK_ORDER.
+Include linux/kernel.h wherever simple_strtoul is used.  This kills a
+compile warning in stderr_console.c and potential ones in the other
+files.
 
-You're saying that making an option user-visible changes whether
-*config overrides .config?  That's non-intuitive.
-
-> I'm not sure if that's actually what you want, but if the current situation
-> is that a random CONFIG_KERNEL_STACK_ORDER=0 left over in .config will
-> break the kernel at runtime then I think something sterner than editing
-> defconfig is needed?
-
-That's a good point, but I think I do want it user-visible.  If
-someone sees someething I suspect to be a stack overflow, I'd like to
-be able to tell them to bump KERNEL_STACK_ORDER and see if the problem
-goes away.
-
-As for something sterner, it turns out that Kbuild provides some
-support for this.  So, drop the previous patch in favor of this one:
-
-Force KERNEL_STACK_ORDER to be at least 1 on UML/x86_64.
+This also fixes a bunch of style violations in exitcode.c.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ arch/um/drivers/line.c           |    1 +
+ arch/um/drivers/stderr_console.c |    1 +
+ arch/um/drivers/ubd_kern.c       |    1 +
+ arch/um/kernel/exitcode.c        |   39 +++++++++++++++++----------------------
+ 4 files changed, 20 insertions(+), 22 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/Kconfig
+Index: linux-2.6.21-mm/arch/um/drivers/stderr_console.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/Kconfig	2007-06-06 09:28:13.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/Kconfig	2007-06-06 11:08:49.000000000 -0400
-@@ -278,6 +278,7 @@ config HIGHMEM
- config KERNEL_STACK_ORDER
- 	int "Kernel stack size order"
- 	default 1 if 64BIT
-+	range 1 10 if 64BIT
- 	default 0 if !64BIT
- 	help
- 	This option determines the size of UML kernel stacks.  They will
+--- linux-2.6.21-mm.orig/arch/um/drivers/stderr_console.c	2007-05-28 11:06:27.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/stderr_console.c	2007-06-06 09:31:06.000000000 -0400
+@@ -1,3 +1,4 @@
++#include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/console.h>
+ 
+Index: linux-2.6.21-mm/arch/um/drivers/line.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/line.c	2007-06-06 09:28:13.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/line.c	2007-06-06 11:13:03.000000000 -0400
+@@ -3,6 +3,7 @@
+  * Licensed under the GPL
+  */
+ 
++#include "linux/kernel.h"
+ #include "linux/sched.h"
+ #include "linux/slab.h"
+ #include "linux/list.h"
+Index: linux-2.6.21-mm/arch/um/drivers/ubd_kern.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/ubd_kern.c	2007-06-06 09:28:47.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/ubd_kern.c	2007-06-06 11:13:42.000000000 -0400
+@@ -20,6 +20,7 @@
+ #define MAJOR_NR UBD_MAJOR
+ #define UBD_SHIFT 4
+ 
++#include "linux/kernel.h"
+ #include "linux/module.h"
+ #include "linux/blkdev.h"
+ #include "linux/hdreg.h"
+Index: linux-2.6.21-mm/arch/um/kernel/exitcode.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/exitcode.c	2007-05-28 11:06:28.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/exitcode.c	2007-06-06 11:23:09.000000000 -0400
+@@ -1,8 +1,9 @@
+-/* 
++/*
+  * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+  * Licensed under the GPL
+  */
+ 
++#include "linux/kernel.h"
+ #include "linux/init.h"
+ #include "linux/ctype.h"
+ #include "linux/proc_fs.h"
+@@ -24,11 +25,14 @@ static int read_proc_exitcode(char *page
+ 	val = uml_exitcode;
+ 	len = sprintf(page, "%d\n", val);
+ 	len -= off;
+-	if(len <= off+count) *eof = 1;
++	if(len <= off+count)
++		*eof = 1;
+ 	*start = page + off;
+-	if(len > count) len = count;
+-	if(len < 0) len = 0;
+-	return(len);
++	if(len > count)
++		len = count;
++	if(len < 0)
++		len = 0;
++	return len;
+ }
+ 
+ static int write_proc_exitcode(struct file *file, const char __user *buffer,
+@@ -38,12 +42,14 @@ static int write_proc_exitcode(struct fi
+ 	int tmp;
+ 
+ 	if(copy_from_user(buf, buffer, count))
+-		return(-EFAULT);
++		return -EFAULT;
++
+ 	tmp = simple_strtol(buf, &end, 0);
+ 	if((*end != '\0') && !isspace(*end))
+-		return(-EINVAL);
++		return -EINVAL;
++
+ 	uml_exitcode = tmp;
+-	return(count);
++	return count;
+ }
+ 
+ static int make_proc_exitcode(void)
+@@ -54,24 +60,13 @@ static int make_proc_exitcode(void)
+ 	if(ent == NULL){
+ 		printk(KERN_WARNING "make_proc_exitcode : Failed to register "
+ 		       "/proc/exitcode\n");
+-		return(0);
++		return 0;
+ 	}
+ 
+ 	ent->read_proc = read_proc_exitcode;
+ 	ent->write_proc = write_proc_exitcode;
+-	
+-	return(0);
++
++	return 0;
+ }
+ 
+ __initcall(make_proc_exitcode);
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
