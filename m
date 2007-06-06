@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HvvLl-0007ib-9U for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jun 2007 06:14:57 -0700
+	id 1Hvx22-000838-4Q for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Jun 2007 08:02:42 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HvvLj-0006hf-Q7
+	(Exim 4.44) id 1Hvx1z-0001Vy-8Z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jun 2007 06:14:57 -0700
-Date: Wed, 6 Jun 2007 09:06:27 -0400
+	Wed, 06 Jun 2007 08:02:41 -0700
+Date: Wed, 6 Jun 2007 10:54:06 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070606130627.GB5491@c2.user-mode-linux.org>
+Message-ID: <20070606145406.GA7087@c2.user-mode-linux.org>
 References: <dec0fd580706060422w255ea6e9l52d6f6784252814b@mail.gmail.com>
+	<20070606130627.GB5491@c2.user-mode-linux.org>
+	<dec0fd580706060632i6ba612bw1c92d96810d610a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <dec0fd580706060422w255ea6e9l52d6f6784252814b@mail.gmail.com>
+In-Reply-To: <dec0fd580706060632i6ba612bw1c92d96810d610a@mail.gmail.com>
 Subject: Re: [uml-devel] doubt regarding UML instlation please help me.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,21 +33,24 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: battipatisainagendra Bhavaniprasad <sainagendrabhavaniprasad@gmail.com>
-Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, Jun 06, 2007 at 04:52:25PM +0530, battipatisainagendra Bhavaniprasad wrote:
-> next i went with the latest kernel i.e..linux-2.6.21.tar.bz2
-> but when i run command i.e...make ARCH=um
+On Wed, Jun 06, 2007 at 07:17:45PM +0545, battipatisainagendra Bhavaniprasad wrote:
+>                 I have downloaded kernel 2.6.21 merror from following url
 > 
-> it's going on exexuting the same sequence of things....
+>  http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.21.tar.gz
+> 
+> the following commands are given.......to run uml
+> 
+> make defconfig ARCH=um
+> 
+> make ARCH=um
+> 
+> when make ARCH=um is given i found that it is in a loop finally i
+> could not get "linux" bin file.
 
-What same sequence of things?  The JB_* errors?  That's impossible,
-since those are gone in 2.6.21.
-
-> please suggest me which kernel mirror to use which has already uml
-> patch built in....
-
-Any mirror which carries 2.6.21.
+The kernel build can't loop.  How about providing a build log instead
+of your vague impressions of what it's doing?
 
 				Jeff
 
