@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HvgEd-0001ZJ-No for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Jun 2007 14:06:35 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1Hviwm-0001Yo-B4 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Jun 2007 17:00:34 -0700
+Received: from smtp2.linux-foundation.org ([207.189.120.14])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HvgEd-0000J0-5y
+	(Exim 4.44) id 1Hviwm-0001ZE-4H
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Jun 2007 14:06:35 -0700
-Date: Tue, 5 Jun 2007 16:57:50 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070605205750.GA9851@c2.user-mode-linux.org>
+	Tue, 05 Jun 2007 17:00:20 -0700
+Date: Tue, 5 Jun 2007 17:00:01 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20070605170001.c8b2110e.akpm@linux-foundation.org>
+In-Reply-To: <20070605205055.GA9770@c2.user-mode-linux.org>
+References: <20070605205055.GA9770@c2.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] UML - Improve host PTRACE_SYSEMU check
+Subject: Re: [uml-devel] [PATCH 2/2] UML - Fix kernel stack size on x86_64
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,69 +29,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: stable@kernel.org
+To: Jeff Dike <jdike@addtoit.com>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Make the PTRACE_SYSEMU checking more robust.  It will make sure that
-system call numbers are reported correctly.  If there is a problem, it
-will disable PTRACE_SYSEMU use and use PTRACE_SYSCALL instead.
+On Tue, 5 Jun 2007 16:50:55 -0400
+Jeff Dike <jdike@addtoit.com> wrote:
 
-This fixes a hang on boot on FC6 hosts with a broken PTRACE_SYSEMU.
+> [ This is 2.6.22 material ]
+> 
+> Having KERNEL_STACK_ORDER in defconfig overrides the value provided by
+> Kconfig, breaking UML/x86_64, which wants 2 page stacks.
+> 
+> Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+> --
+>  arch/um/defconfig |    1 -
+>  1 file changed, 1 deletion(-)
+> 
+> Index: linux-2.6.21-mm/arch/um/defconfig
+> ===================================================================
+> --- linux-2.6.21-mm.orig/arch/um/defconfig	2007-06-05 12:18:35.000000000 -0400
+> +++ linux-2.6.21-mm/arch/um/defconfig	2007-06-05 12:19:12.000000000 -0400
+> @@ -86,7 +86,6 @@ CONFIG_MCONSOLE=y
+>  # CONFIG_MAGIC_SYSRQ is not set
+>  CONFIG_NEST_LEVEL=0
+>  # CONFIG_HIGHMEM is not set
+> -CONFIG_KERNEL_STACK_ORDER=0
+>  CONFIG_UML_REAL_TIME_CLOCK=y
+>  
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/os-Linux/start_up.c |   24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
-
-Index: linux-2.6.17/arch/um/os-Linux/start_up.c
-===================================================================
---- linux-2.6.17.orig/arch/um/os-Linux/start_up.c	2007-06-05 16:53:41.000000000 -0400
-+++ linux-2.6.17/arch/um/os-Linux/start_up.c	2007-06-05 16:54:21.000000000 -0400
-@@ -144,9 +144,7 @@ static int stop_ptraced_child(int pid, v
- 		int exit_with = WEXITSTATUS(status);
- 		if (exit_with == 2)
- 			non_fatal("check_ptrace : child exited with status 2. "
--				  "Serious trouble happening! Try updating "
--				  "your host skas patch!\nDisabling SYSEMU "
--				  "support.");
-+				  "\nDisabling SYSEMU support.\n");
- 		non_fatal("check_ptrace : child exited with exitcode %d, while "
- 			  "expecting %d; status 0x%x\n", exit_with,
- 			  exitcode, status);
-@@ -209,6 +207,7 @@ __uml_setup("nosysemu", nosysemu_cmd_par
- static void __init check_sysemu(void)
- {
- 	void *stack;
-+	unsigned long regs[MAX_REG_NR];
- 	int pid, n, status, count=0;
- 
- 	non_fatal("Checking syscall emulation patch for ptrace...");
-@@ -225,11 +224,20 @@ static void __init check_sysemu(void)
- 		fatal("check_sysemu : expected SIGTRAP, got status = %d",
- 		      status);
- 
--	n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET,
--		   os_getpid());
--	if(n < 0)
--		fatal_perror("check_sysemu : failed to modify system call "
--			     "return");
-+	if(ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
-+		fatal_perror("check_sysemu : PTRACE_GETREGS failed");
-+	if(PT_SYSCALL_NR(regs) != __NR_getpid){
-+		non_fatal("check_sysemu got system call number %d, "
-+			  "expected %d...", PT_SYSCALL_NR(regs), __NR_getpid);
-+		goto fail;
-+	}
-+
-+	n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET, os_getpid());
-+	if(n < 0){
-+		non_fatal("check_sysemu : failed to modify system call "
-+			  "return");
-+		goto fail;
-+	}
- 
- 	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
- 		goto fail_stopped;
+That means the Kconfig rules are wrong, surely?
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
