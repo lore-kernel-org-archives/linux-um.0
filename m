@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hvtav-0003bo-0W for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jun 2007 04:22:30 -0700
-Received: from mu-out-0910.google.com ([209.85.134.188])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Hvtat-0005HW-Dq
+	id 1HvuFQ-0000Dx-Ms for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Jun 2007 05:04:20 -0700
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HvuFP-0000Lq-7B
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jun 2007 04:22:28 -0700
-Received: by mu-out-0910.google.com with SMTP id w9so108412mue
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 06 Jun 2007 04:22:25 -0700 (PDT)
-Message-ID: <dec0fd580706060422w255ea6e9l52d6f6784252814b@mail.gmail.com>
-Date: Wed, 6 Jun 2007 16:52:25 +0530
-From: "battipatisainagendra Bhavaniprasad" <sainagendrabhavaniprasad@gmail.com>
+	Wed, 06 Jun 2007 05:04:20 -0700
+Message-ID: <4666A2BA.8000301@nagafix.co.uk>
+Date: Wed, 06 Jun 2007 13:04:10 +0100
+From: Antoine Martin <antoine@nagafix.co.uk>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] doubt regarding UML instlation please help me.
+References: <dec0fd580706060422w255ea6e9l52d6f6784252814b@mail.gmail.com>
+In-Reply-To: <dec0fd580706060422w255ea6e9l52d6f6784252814b@mail.gmail.com>
+Subject: Re: [uml-devel] doubt regarding UML instlation please help me.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,58 +28,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: battipatisainagendra Bhavaniprasad <sainagendrabhavaniprasad@gmail.com>
+Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Hello sir,
-              This is Prasad working on UML.I have tried running UML
-with latest source from www.kernel.org but I could not get.
-the problem was as followes....
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-with 2.6.16 kernel i have given the following commands....
+[snip]
+> arch/um/os-Linux/sys-i386/registers.c:139: error: 'JB_BP' undeclared
+> (first use in this function)
+> 
+> make[2]: *** [arch/um/os-Linux/sys-i386/registers.o] Error 1
+> 
+> make[1]: *** [arch/um/os-Linux/sys-i386] Error 2
+> 
+> 
+> next i went with the latest kernel i.e..linux-2.6.21.tar.bz2
+> but when i run command i.e...make ARCH=um
+> 
+> it's going on exexuting the same sequence of things....finally i could
+> NOT get the linux bin image.
+> 
+> 
+> please suggest me which kernel mirror to use which has already uml
+> patch built in....
+Try this:
 
-1.make defconfig ARCH=um
-2.make ARCH=um
+http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.17/patches/jmpbuf
 
-but i am getting an error which is as followes...
+Antoine
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.4 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-arch/um/os-Linux/sys-i386/registers.c: In function 'get_thread_regs':
-
-
-arch/um/os-Linux/sys-i386/registers.c:137: error: 'JB_PC' undeclared
-(first use in this function)
-
-arch/um/os-Linux/sys-i386/registers.c:137: error: (Each undeclared
-identifier is reported only once
-
-arch/um/os-Linux/sys-i386/registers.c:137: error: for each function it
-appears in.)
-
-arch/um/os-Linux/sys-i386/registers.c:138: error: 'JB_SP' undeclared
-(first use in this function)
-
-arch/um/os-Linux/sys-i386/registers.c:139: error: 'JB_BP' undeclared
-(first use in this function)
-
-make[2]: *** [arch/um/os-Linux/sys-i386/registers.o] Error 1
-
-make[1]: *** [arch/um/os-Linux/sys-i386] Error 2
-
-
-next i went with the latest kernel i.e..linux-2.6.21.tar.bz2
-but when i run command i.e...make ARCH=um
-
-it's going on exexuting the same sequence of things....finally i could
-NOT get the linux bin image.
-
-
-please suggest me which kernel mirror to use which has already uml
-patch built in....
-
-waiting for your reply.....
-
-thank you,
-rgds,
-prasad
+iD8DBQFGZqK6GK2zHPGK1rsRCmiZAJ9dpqlC1yk7Ikc0t1jT3dgKUih2OACeKtW/
+zjnT6NYYv8CKgsZalZzpdbU=
+=O+VI
+-----END PGP SIGNATURE-----
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
