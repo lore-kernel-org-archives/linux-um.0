@@ -2,17 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HvuFQ-0000Dx-Ms for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jun 2007 05:04:20 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HvuFP-0000Lq-7B
+	id 1HvvLl-0007ib-9U for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Jun 2007 06:14:57 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HvvLj-0006hf-Q7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Jun 2007 05:04:20 -0700
-Message-ID: <4666A2BA.8000301@nagafix.co.uk>
-Date: Wed, 06 Jun 2007 13:04:10 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
-MIME-Version: 1.0
+	Wed, 06 Jun 2007 06:14:57 -0700
+Date: Wed, 6 Jun 2007 09:06:27 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070606130627.GB5491@c2.user-mode-linux.org>
 References: <dec0fd580706060422w255ea6e9l52d6f6784252814b@mail.gmail.com>
+Mime-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <dec0fd580706060422w255ea6e9l52d6f6784252814b@mail.gmail.com>
 Subject: Re: [uml-devel] doubt regarding UML instlation please help me.
 List-Id: The user-mode Linux development list
@@ -31,40 +33,24 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: battipatisainagendra Bhavaniprasad <sainagendrabhavaniprasad@gmail.com>
 Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
-
-[snip]
-> arch/um/os-Linux/sys-i386/registers.c:139: error: 'JB_BP' undeclared
-> (first use in this function)
-> 
-> make[2]: *** [arch/um/os-Linux/sys-i386/registers.o] Error 1
-> 
-> make[1]: *** [arch/um/os-Linux/sys-i386] Error 2
-> 
-> 
+On Wed, Jun 06, 2007 at 04:52:25PM +0530, battipatisainagendra Bhavaniprasad wrote:
 > next i went with the latest kernel i.e..linux-2.6.21.tar.bz2
 > but when i run command i.e...make ARCH=um
 > 
-> it's going on exexuting the same sequence of things....finally i could
-> NOT get the linux bin image.
-> 
-> 
+> it's going on exexuting the same sequence of things....
+
+What same sequence of things?  The JB_* errors?  That's impossible,
+since those are gone in 2.6.21.
+
 > please suggest me which kernel mirror to use which has already uml
 > patch built in....
-Try this:
 
-http://user-mode-linux.sourceforge.net/work/current/2.6/2.6.17/patches/jmpbuf
+Any mirror which carries 2.6.21.
 
-Antoine
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.4 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+				Jeff
 
-iD8DBQFGZqK6GK2zHPGK1rsRCmiZAJ9dpqlC1yk7Ikc0t1jT3dgKUih2OACeKtW/
-zjnT6NYYv8CKgsZalZzpdbU=
-=O+VI
------END PGP SIGNATURE-----
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
