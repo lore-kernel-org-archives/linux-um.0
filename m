@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HwDvA-0000ND-4Q for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2007 02:04:44 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HwDv8-0003mg-Fn
+	id 1HwCZI-0008TI-5p for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jun 2007 00:38:04 -0700
+Received: from 42.mail-out.ovh.net ([213.251.189.42])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1HwCZH-0006xI-3G
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2007 02:04:44 -0700
-Message-ID: <4667CA21.80506@nagafix.co.uk>
-Date: Thu, 07 Jun 2007 10:04:33 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
+	Thu, 07 Jun 2007 00:38:04 -0700
+Date: Thu, 7 Jun 2007 09:37:57 +0200
+From: Sylvain Beucler <beuc@beuc.net>
+Message-ID: <20070607073757.GA11121@perso.beuc.net>
+References: <20070523123435.GA5426@c2.user-mode-linux.org>
 MIME-Version: 1.0
-References: <7EDC24AB1ED682439657D3B7790609D39825E6@deepthought.Elpro.local>
-In-Reply-To: <7EDC24AB1ED682439657D3B7790609D39825E6@deepthought.Elpro.local>
-Subject: Re: [uml-devel] Building a UML uClinux(Busybox/uClibc) filesystem
+Content-Disposition: inline
+In-Reply-To: <20070523123435.GA5426@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] [uml-user] Hang on FC6 after mounting root filesystem
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,59 +29,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Sinclair <Andrew.Sinclair@elprotech.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-user@lists.sourceforge.net, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
+On Wed, May 23, 2007 at 08:34:35AM -0400, Jeff Dike wrote:
+> I figured out what was happening.  FC6 has a broken PTRACE_SYSEMU,
+> resulting in system call interception being completely broken, and
+> init going into an infinite segfault loop.
+> 
+> The patch below is a workaround, and fixes it for me.  I would
+> appreciate anyone seeing early boot hangs trying this and let me know
+> what happens.
 
-Andrew Sinclair wrote:
-> Hello all,
-> 
-> I've been able to use the pre-built Busybox 1.5.0 filesystem at
-> http://uml.nagafix.co.uk/ perfectly with the same UML kernel I am using.
-> 
-> 
-> Unfortunately, when trying to generate my own filesystem, my kernel no
-> longer works. It basically stops after mounting the filesystem. 
-You may want to diff the config I used with yours:
-http://uml.nagafix.co.uk/BusyBox-1.5.0/amd64.config
-And see if anything major turns up.
+It works for me as well, it fixes my long-running freeze with FC6.
 
-> When I try and use gdb to debug I get stuck in
-> arch/um/include/um_uaccess.h:50
-> 
-> static inline int copy_to_user(void __user *to, const void *from, int n)
-> {
->         return(CHOOSE_MODE_PROC(copy_to_user_tt, copy_to_user_skas, to, 
->                                 from, n));
-> }
-> 
-> If I put the kernel in tracing thread mode, to avoid this, it falls over
-> even with the prebuilt nagafix filesystem.
-> 
-> I have been unable to build the automated Busybox root filesystem
-> builder (based on buildroot) on
-> http://user-mode-linux.sourceforge.net/contrib.html
-> A number of the package download links in the makefile no longer exist,
-> so I searched the web for the packages from other locations. Perhaps I
-> have the wrong packages. I have got it to the point where it is looking
-> for a uml-gcc that is not in the build folder.
-> 
-> I've noticed that the nagafix prebuilt filesystem has no lib folder. I
-> guess this means that the pre-built filesystem was built with glibc?
-> (Unlike the mine or the buildroot variant which use uClibc)
-IIRC, that's because it was built with the static option.
+I compiled UML 2.6.21.3 with and without the check-sysemu patch, on a
+FC6/2.6.18-1.2849.fc6.
 
-Antoine
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.4 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+Without: hangs at "VFS: mount root (ext3 filesystem) readonly."
+With: works like a charm :)
 
-iD8DBQFGZ8ohGK2zHPGK1rsRCsvVAJ41jb7jbHZw43BDZOFcijTAcOdqiQCcCac2
-sAL2R+IFI5FTd4IbGmrdRnA=
-=ODDY
------END PGP SIGNATURE-----
+Thanks,
+
+-- 
+Sylvain
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
