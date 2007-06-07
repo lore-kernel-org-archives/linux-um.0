@@ -1,22 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HwHsZ-0000xq-KZ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2007 06:18:19 -0700
+	id 1HwIcm-00061G-UK for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jun 2007 07:06:05 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HwHsY-0002MX-52
+	(Exim 4.44) id 1HwIcm-0002AQ-3r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2007 06:18:19 -0700
-Date: Thu, 7 Jun 2007 09:09:12 -0400
+	Thu, 07 Jun 2007 07:06:04 -0700
+Date: Thu, 7 Jun 2007 09:56:52 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070607130912.GA5408@c2.user-mode-linux.org>
-References: <7EDC24AB1ED682439657D3B7790609D39825E6@deepthought.Elpro.local>
+Message-ID: <20070607135652.GC5613@c2.user-mode-linux.org>
+References: <dec0fd580706060422w255ea6e9l52d6f6784252814b@mail.gmail.com>
+	<20070606130627.GB5491@c2.user-mode-linux.org>
+	<dec0fd580706060632i6ba612bw1c92d96810d610a@mail.gmail.com>
+	<20070606145406.GA7087@c2.user-mode-linux.org>
+	<dec0fd580706070013y26b4c550o3c47928c1e2d6837@mail.gmail.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <7EDC24AB1ED682439657D3B7790609D39825E6@deepthought.Elpro.local>
-Subject: Re: [uml-devel] Building a UML uClinux(Busybox/uClibc) filesystem
+In-Reply-To: <dec0fd580706070013y26b4c550o3c47928c1e2d6837@mail.gmail.com>
+Subject: Re: [uml-devel] doubt regarding UML instlation please help me.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,27 +34,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Sinclair <Andrew.Sinclair@elprotech.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: battipatisainagendra Bhavaniprasad <sainagendrabhavaniprasad@gmail.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Jun 07, 2007 at 05:57:19PM +1000, Andrew Sinclair wrote:
-> Unfortunately, when trying to generate my own filesystem, my kernel no
-> longer works. It basically stops after mounting the filesystem. 
-> 
-> When I try and use gdb to debug I get stuck in
-> arch/um/include/um_uaccess.h:50
-> 
-> static inline int copy_to_user(void __user *to, const void *from, int n)
-> {
->         return(CHOOSE_MODE_PROC(copy_to_user_tt, copy_to_user_skas, to, 
->                                 from, n));
-> }
+On Thu, Jun 07, 2007 at 02:13:10AM -0500, battipatisainagendra Bhavaniprasad wrote:
+> this is the log that i found........likewise this gets executed
+> repetedlly.......
 
-I'm guessing gdb is stopping because it sees a segfault there:
+OK, so it does loop.
 
-(gdb) handle SIGSEGV pass nostop noprint
+> make: Warning: File `/root/Desktop/linux-2.6.21/arch/um/Makefile-os-Linux'
+> has modification time 2e+08 s in the future
+> make[1]: Warning: File 
+> `/root/Desktop/linux-2.6.21/arch/um/Makefile-os-Linux'
+> has modification time 2e+08 s in the future
+> make[2]: Warning: File `scripts/Makefile.host' has modification time 2e+08 s
+> in the future
 
-Segfaults within UML are normal, and gdb should just ignore them.
+You didn't mention this timestamp nonsense.
+
+How did you think I was going to provide a fix if you don't provide
+any information?
+
+And, have you thought about figuring out what's wrong with your system's
+clock, and fixing it?
 
 				Jeff
 
