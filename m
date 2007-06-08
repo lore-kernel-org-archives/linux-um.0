@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HwROk-0005ot-Sj for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2007 16:28:11 -0700
-Received: from agminet01.oracle.com ([141.146.126.228])
+	id 1HwYof-0008NT-4p for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Jun 2007 00:23:25 -0700
+Received: from 216-99-217-87.dsl.aracnet.com ([216.99.217.87]
+	helo=sous-sol.org)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HwROk-00019p-F2
+	(Exim 4.44) id 1HwYoe-0003ND-O3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2007 16:28:10 -0700
-Date: Thu, 7 Jun 2007 16:27:33 -0700
-From: Zach Brown <zach.brown@oracle.com>
-Message-ID: <20070607232733.GM17082@mami.zabbo.net>
-References: <20070531181923.GA9904@c2.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20070531181923.GA9904@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] Syslets - Fix cachemiss_thread return value
+	Fri, 08 Jun 2007 00:23:25 -0700
+Message-Id: <20070608072217.582992000@sous-sol.org>
+References: <20070608072127.352723000@sous-sol.org>
+Date: Fri, 08 Jun 2007 00:21:59 -0700
+From: Chris Wright <chrisw@sous-sol.org>
+Content-Disposition: inline;
+	filename=uml-improve-host-ptrace_sysemu-check.patch
+Subject: [uml-devel] [patch 32/54] UML - Improve host PTRACE_SYSEMU check
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,142 +26,81 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Ingo Molnar <mingo@elte.hu>, Chris Mason <chris.mason@oracle.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: linux-kernel@vger.kernel.org, stable@kernel.org
+Cc: Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Greg Kroah-Hartman <gregkh@suse.de>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, alan@lxorguk.ukuu.org.uk
 
-On Thu, May 31, 2007 at 02:19:23PM -0400, Jeff Dike wrote:
-> cachemiss_thread should explicitly return 0 or error instead of
-> task_ret_reg(current) (which is -ENOSYS anyway) because
-> async_thread_helper is careful to put the return value in eax anyway.
+-stable review patch.  If anyone has any objections, please let us know.
+---------------------
 
-Here's the fix I came up with for this.  Untested (my test boxes are
-busy doing some aio+syslet perf runs :)).  What do you guys think?
+From: Jeff Dike <jdike@addtoit.com>
 
-- z
+Make the PTRACE_SYSEMU checking more robust.  It will make sure that
+system call numbers are reported correctly.  If there is a problem, it
+will disable PTRACE_SYSEMU use and use PTRACE_SYSCALL instead.
 
-- - -
+This fixes a hang on boot on FC6 hosts with a broken PTRACE_SYSEMU.
 
-async: return task_ret_reg() from async_cachemiss_loop()
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Signed-off-by: Chris Wright <chrisw@sous-sol.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+--
+ arch/um/os-Linux/start_up.c |   24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-When a thread blocks in __async_schedule() it finds a thread waiting in
-async_cachemiss_loop() to return to userspace.  The return value of
-async_cachemiss_loop() is propagated to userspace as the return code of the
-call which the thread blocked in.
-
-Previously this return code was hard-coded to 0 and -1, which worked fine for
-the first syslet syscall APIs.  sys_io_submit() wants a different return call
-convention when it uses syslets.  So cachemiss_thread() was changed to return
-task_ret_reg(), sys_io_submit() would set it to the value it wanted returned to
-userspace.
-
-But this, by itself, was buggy.  The syslet syscall APIs didn't set
-task_ret_reg() like sys_io_submit() did, so they got garbage returned.  Both
-Jeff Dike and Chris Mason saw this in testing, though I was lucky enough to
-have my returned garbage pass the tests I initially tried.  It also didn't
-catch the other callers of async_cachemiss_loop() which would be returning to
-userspace on behalf of calls which blocked in __async_schedule().  This would
-be a problem, say, if people mixed sys_threadlet_on() and sys_io_submit() in
-the same task.
-
-So this patch fixes those up.
-
-We always return task_ret_reg() from async_cachemiss_loop().  If we're
-returning to the user's stack and IP instead of on behalf of a blocking call we
-set task_ret_reg() to -1 and then return it.
-
-__exec_atom() sets task_ret_reg() to NULL if there's a chance that it will
-block while executing the syscall in the atom.
-
-Signed-off-by: Zach Brown <zach.brown@oracle.com>
-
-diff -r f0d8ee165e2e kernel/async.c
---- a/kernel/async.c	Thu Jun 07 14:32:31 2007 -0700
-+++ b/kernel/async.c	Thu Jun 07 16:14:16 2007 -0700
-@@ -206,6 +206,13 @@ static long __exec_atom(struct task_stru
- 
- 	if (unlikely(atom->nr >= atom->nr_syscalls))
- 		return -ENOSYS;
-+
-+	/*
-+	 * If the syslet goes asynchronous then we want the cachemiss
-+	 * thread to return NULL to userspace on our behalf.
-+	 */
-+	if (likely(t->async_ready))
-+		task_ret_reg(t) = 0;
- 
- 	ret = atom->call_table[atom->nr](atom->args[0], atom->args[1],
- 					 atom->args[2], atom->args[3],
-@@ -515,7 +522,22 @@ exec_atom(struct async_head *ah, struct 
- 
- 	return last_uatom;
- }
--
-+/**
-+ * async_cachemiss_loop - wait as a "cachemiss" thread
-+ * @at:	this thread's async_thread in its task_struct
-+ * @ah:	The async_head for this thread's group of threads
-+ * @t:	this thread's task_struct
-+ *
-+ * Sleep as a ready async "cachemiss" thread.  If another thread in our
-+ * async_head blocks then __async_schedule may block that thread and transfer
-+ * its userspace over to us to return in to.
-+ *
-+ * Before threads get to __async_schedule() they set task_ret_reg() to the
-+ * value that should be returned to userspace if they block.  We return it so
-+ * that our caller can return it to userspace, either through the usual syscall
-+ * return path or through the helper which cachemiss_thread() returns to after
-+ * being created.
-+ */
- long async_cachemiss_loop(struct async_thread *at, struct async_head *ah,
- 			  struct task_struct *t)
+--- linux-2.6.21.4.orig/arch/um/os-Linux/start_up.c
++++ linux-2.6.21.4/arch/um/os-Linux/start_up.c
+@@ -144,9 +144,7 @@ static int stop_ptraced_child(int pid, v
+ 		int exit_with = WEXITSTATUS(status);
+ 		if (exit_with == 2)
+ 			non_fatal("check_ptrace : child exited with status 2. "
+-				  "Serious trouble happening! Try updating "
+-				  "your host skas patch!\nDisabling SYSEMU "
+-				  "support.");
++				  "\nDisabling SYSEMU support.\n");
+ 		non_fatal("check_ptrace : child exited with exitcode %d, while "
+ 			  "expecting %d; status 0x%x\n", exit_with,
+ 			  exitcode, status);
+@@ -209,6 +207,7 @@ __uml_setup("nosysemu", nosysemu_cmd_par
+ static void __init check_sysemu(void)
  {
-@@ -542,10 +564,13 @@ long async_cachemiss_loop(struct async_t
- 		 */
- 		set_task_stack_reg(t, at->user_stack);
- 		task_ip_reg(t) = at->user_ip;
--
--		return -1;
--	}
--	return 0;
-+		/*
-+		 * We're not returning on behalf of some call, communicate
-+		 * that.
-+		 */
-+		task_ret_reg(t) = -1;
+ 	void *stack;
++	unsigned long regs[MAX_REG_NR];
+ 	int pid, n, status, count=0;
+ 
+ 	non_fatal("Checking syscall emulation patch for ptrace...");
+@@ -225,11 +224,20 @@ static void __init check_sysemu(void)
+ 		fatal("check_sysemu : expected SIGTRAP, got status = %d",
+ 		      status);
+ 
+-	n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET,
+-		   os_getpid());
+-	if(n < 0)
+-		fatal_perror("check_sysemu : failed to modify system call "
+-			     "return");
++	if(ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
++		fatal_perror("check_sysemu : PTRACE_GETREGS failed");
++	if(PT_SYSCALL_NR(regs) != __NR_getpid){
++		non_fatal("check_sysemu got system call number %d, "
++			  "expected %d...", PT_SYSCALL_NR(regs), __NR_getpid);
++		goto fail;
 +	}
-+	return task_ret_reg(t);
- }
++
++	n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET, os_getpid());
++	if(n < 0){
++		non_fatal("check_sysemu : failed to modify system call "
++			  "return");
++		goto fail;
++	}
  
- struct cachemiss_args {
-@@ -559,14 +584,6 @@ struct cachemiss_args {
-  * first time: initialize, pick up the user stack/IP addresses from
-  * the head and then execute the cachemiss loop. If the cachemiss
-  * loop returns then we return back to user-space.
-- *
-- * Our return code overwrites the task_ret_reg() in ptregs in the assembly
-- * stub which execution returns to before returning to userspace.  We may
-- * be returning to userspace on behalf of an interrupted call which might
-- * want us to return something specific to user space.  We return 
-- * task_ret_reg() from this function so that the tasks we're returning
-- * on behalf of can use it to pass return codes to userspace.  Perhaps
-- * we shouldn't have the asm stub overwrite task_ret_reg() instead..
-  */
- static long cachemiss_thread(void *data)
- {
-@@ -606,8 +623,7 @@ static long cachemiss_thread(void *data)
- 	}
- 	complete(&ah->start_done);
- 
--	async_cachemiss_loop(at, ah, t);
--	return task_ret_reg(t);
-+	return async_cachemiss_loop(at, ah, t);
- }
- 
- /**
+ 	if (stop_ptraced_child(pid, stack, 0, 0) < 0)
+ 		goto fail_stopped;
+
+-- 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
