@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Hy9XX-0003LL-46 for user-mode-linux-devel@lists.sourceforge.net;
+	id 1Hy9XX-0003LM-4c for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 12 Jun 2007 09:48:19 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Hy9XV-0000zj-M2
+	(Exim 4.44) id 1Hy9XV-0000zh-Lx
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 12 Jun 2007 09:48:19 -0700
-Date: Tue, 12 Jun 2007 12:48:05 -0400
+Date: Tue, 12 Jun 2007 12:48:07 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070612164805.GA7512@c2.user-mode-linux.org>
+Message-ID: <20070612164807.GA7522@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 0/2] UML compile fixes
+Subject: [uml-devel] [PATCH 2/2] UML - kill x86_64 STACK_TOP_MAX
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,12 +31,26 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-These are a couple of UML build fixes for 2.6.22.
+The x86_64 a.out.h got a definition of STACK_TOP_MAX, which interferes
+with the UML version.  So, just undef it like STACK_TOP.
 
-				Jeff
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ include/asm-um/a.out.h |    1 +
+ 1 file changed, 1 insertion(+)
 
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6.21-mm/include/asm-um/a.out.h
+===================================================================
+--- linux-2.6.21-mm.orig/include/asm-um/a.out.h	2007-06-06 09:28:48.000000000 -0400
++++ linux-2.6.21-mm/include/asm-um/a.out.h	2007-06-06 15:51:02.000000000 -0400
+@@ -5,6 +5,7 @@
+ #include "choose-mode.h"
+ 
+ #undef STACK_TOP
++#undef STACK_TOP_MAX
+ 
+ extern unsigned long stacksizelim;
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
