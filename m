@@ -1,24 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HyHbJ-000704-IG for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jun 2007 18:24:47 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1HyU3f-00026k-Bj for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Jun 2007 07:42:55 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HyHbH-0005TP-Nl
+	(Exim 4.44) id 1HyU3d-0006l2-Q8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jun 2007 18:24:45 -0700
-Date: Tue, 12 Jun 2007 21:24:32 -0400
+	Wed, 13 Jun 2007 07:42:51 -0700
+Date: Wed, 13 Jun 2007 10:42:44 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070613012432.GA12102@c2.user-mode-linux.org>
-References: <010701c7ace0$f98b0d80$d8c8a8c0@angel4>
-	<20070612150405.GA7102@c2.user-mode-linux.org>
-	<036601c7ad52$4b0c76a0$d8c8a8c0@angel4>
+Message-ID: <20070613144244.GA5772@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <036601c7ad52$4b0c76a0$d8c8a8c0@angel4>
-Subject: Re: [uml-devel] UDP vs. TCP performance over UML
+Subject: [uml-devel] [PATCH 0/2] UML bug fixes and cleanups
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,17 +28,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: George Hadjichristofi <gh@winlab.rutgers.edu>
-Cc: 'shruti singhal' <shruti20@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, Jun 12, 2007 at 08:32:15PM -0400, George Hadjichristofi wrote:
-> In the case of A to B (with UML on A) there are packets dropped. Based on
-> Ifconfig on the host kernel the packets seem to drop between tap0 and eth0
-> on the host kernel. (i.e., the number of packets on tap0 is higher than
-> eth0).
-
-ifconfig tells you directly how many packets are dropped.  What does the
-"dropped:" field say?
+These two are for 2.6.22.  We have a patch which makes UML boot with
+DEBUG_SHIRQ enabled and one which cleans up the xterm driver.
 
 				Jeff
 
