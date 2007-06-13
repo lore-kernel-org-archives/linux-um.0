@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HyDqd-0007ya-ME for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jun 2007 14:24:20 -0700
-Received: from mx1.redhat.com ([66.187.233.31])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1HyDqc-00018R-AG
+	id 1HyGmq-00022u-4l for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Jun 2007 17:32:36 -0700
+Received: from winmain.rutgers.edu ([128.6.230.194] helo=liman.rutgers.edu)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1HyGmo-0007yI-F3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jun 2007 14:24:19 -0700
-Date: Tue, 12 Jun 2007 17:24:03 -0400
-From: Dave Jones <davej@redhat.com>
-Message-ID: <20070612212403.GD15041@redhat.com>
-References: <20070612164806.GA7517@c2.user-mode-linux.org>
-	<20070612140544.40123d0c.akpm@linux-foundation.org>
+	Tue, 12 Jun 2007 17:32:36 -0700
+From: "George Hadjichristofi" <gh@winlab.rutgers.edu>
+References: <010701c7ace0$f98b0d80$d8c8a8c0@angel4>
+	<20070612150405.GA7102@c2.user-mode-linux.org>
+Date: Tue, 12 Jun 2007 20:32:15 -0400
+Message-ID: <036601c7ad52$4b0c76a0$d8c8a8c0@angel4>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20070612140544.40123d0c.akpm@linux-foundation.org>
-Subject: Re: [uml-devel] [PATCH 1/2] UML - Remove PAGE_SIZE from libc code
+In-Reply-To: <20070612150405.GA7102@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] UDP vs. TCP performance over UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,24 +30,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: 'Jeff Dike' <jdike@addtoit.com>, 'George Hadjichristofi' <gh@winlab.rutgers.edu>
+Cc: 'shruti singhal' <shruti20@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Jun 12, 2007 at 02:05:44PM -0700, Andrew Morton wrote:
- > On Tue, 12 Jun 2007 12:48:06 -0400
- > Jeff Dike <jdike@addtoit.com> wrote:
- > 
- > > Distros seem to be removing PAGE_SIZE from asm/page.h
- > 
- > They do?  That seems like a strange thing to do.  I wonder why, and I
- > wonder why such a change isn't needed in the mainline tree.
+Hi Jeff,
 
-From userland includes, yes.  User apps should be using getpagesize()
+We took some more measurements. This is what we have:
+A to B with UML: 46Mbps with UDP, 147Mbps with TCP
+A to B from Host kernel: 285 Mbps for both UDP and TCP
 
-	Dave
+In the case of A to B (with UML on A) there are packets dropped. Based on
+Ifconfig on the host kernel the packets seem to drop between tap0 and eth0
+on the host kernel. (i.e., the number of packets on tap0 is higher than
+eth0).
+
+Hope that was clear enough. 
+
+Thank you,
+George
+
+
+
+-----Original Message-----
+From: user-mode-linux-devel-bounces@lists.sourceforge.net
+[mailto:user-mode-linux-devel-bounces@lists.sourceforge.net] On Behalf Of
+Jeff Dike
+Sent: Tuesday, June 12, 2007 11:04 AM
+To: George Hadjichristofi
+Cc: 'shruti singhal'; user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] UDP vs. TCP performance over UML
+
+On Tue, Jun 12, 2007 at 07:01:05AM -0400, George Hadjichristofi wrote:
+>  When we use TCP the throughput is 100 Mbps from the UML instance of node
+A
+> to the host kernel of node B and 100 Mbps from the host kernel of node A
+to
+> the host kernel of node B.  However, when we use UDP the throughput is
+only
+> 26 Mbps from the UML instance on node A to the host kernel of node B, but
+> 100 Mbps from the host kernel of node A to the host kernel of node B.  We
+> also notice that a large number of packets were dropped in the case of UDP
+> over UML.
+
+At what interface are the packets being dropped?
+
+				Jeff
 
 -- 
-http://www.codemonkey.org.uk
+Work email - jdike at linux dot intel dot com
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by DB2 Express
+Download DB2 Express C - the FREE version of DB2 express and take
+control of your XML. No limits. Just data. Click to get it now.
+http://sourceforge.net/powerbar/db2/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
