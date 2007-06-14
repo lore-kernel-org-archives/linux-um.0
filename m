@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HyvuH-0000pA-Ga for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jun 2007 13:27:01 -0700
+	id 1HyvuH-0000q4-Un for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Jun 2007 13:27:02 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HyvuF-00053A-6U
+	(Exim 4.44) id 1HyvuF-00052j-6b
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 14 Jun 2007 13:27:01 -0700
-Date: Thu, 14 Jun 2007 16:26:55 -0400
+Date: Thu, 14 Jun 2007 16:26:49 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070614202655.GA9647@c2.user-mode-linux.org>
+Message-ID: <20070614202649.GA9635@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 4/5] UML - Simplify helper stack handling
+Subject: [uml-devel] [PATCH 2/5] UML - handle errors on opening host side of
+	consoles
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,342 +32,151 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-run_helper and run_helper_thread had arguments which were the same in
-all callers.  run_helper's stack_out was always NULL and
-run_helper_thread's stack_order was always 0.  These are now gone, and
-the constants folded into the code.
+If the host side of a console can't be opened, this will now produce
+visible error messages.
 
-Also fixed leaks of the helper stack in the AIO and SIGIO code.
+enable_chan now returns a status and this is passed up to con_open and
+ssl_open, which will complain if anything went wrong.
+
+The default host device for the serial line driver is now a pts device
+rather than a pty device since lots of hosts have LEGACY_PTYS
+disabled.  This had always been failing on such hosts, but silently.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/drivers/chan_user.c              |    2 +-
- arch/um/drivers/harddog_user.c           |    2 +-
- arch/um/drivers/net_user.c               |    2 +-
- arch/um/drivers/port_user.c              |    2 +-
- arch/um/drivers/slip_user.c              |    2 +-
- arch/um/drivers/slirp_user.c             |    2 +-
- arch/um/drivers/xterm.c                  |    2 +-
- arch/um/include/os.h                     |    6 ++----
- arch/um/os-Linux/aio.c                   |   11 ++++++-----
- arch/um/os-Linux/drivers/ethertap_user.c |    2 +-
- arch/um/os-Linux/drivers/tuntap_user.c   |    2 +-
- arch/um/os-Linux/helper.c                |   19 +++++++------------
- arch/um/os-Linux/sigio.c                 |   19 ++++++++++++-------
- 13 files changed, 36 insertions(+), 37 deletions(-)
+ arch/um/defconfig               |    2 +-
+ arch/um/drivers/chan_kern.c     |   23 +++++++++++++++++++----
+ arch/um/drivers/line.c          |    5 ++++-
+ arch/um/drivers/ssl.c           |    8 +++++++-
+ arch/um/drivers/stdio_console.c |    7 ++++++-
+ arch/um/include/chan_kern.h     |    2 +-
+ 6 files changed, 38 insertions(+), 9 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/drivers/harddog_user.c
+Index: linux-2.6.21-mm/arch/um/drivers/chan_kern.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/harddog_user.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/harddog_user.c	2007-06-13 18:44:41.000000000 -0400
-@@ -68,7 +68,7 @@ int start_watchdog(int *in_fd_ret, int *
- 		args = pid_args;
+--- linux-2.6.21-mm.orig/arch/um/drivers/chan_kern.c	2007-06-14 15:40:01.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/chan_kern.c	2007-06-14 16:00:23.000000000 -0400
+@@ -203,22 +203,37 @@ void chan_enable_winch(struct list_head 
  	}
- 
--	pid = run_helper(pre_exec, &data, args, NULL);
-+	pid = run_helper(pre_exec, &data, args);
- 
- 	os_close_file(out_fds[0]);
- 	os_close_file(in_fds[1]);
-Index: linux-2.6.21-mm/arch/um/drivers/net_user.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/net_user.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/net_user.c	2007-06-14 11:20:36.000000000 -0400
-@@ -187,7 +187,7 @@ static int change_tramp(char **argv, cha
- 	}
- 	pe_data.close_me = fds[0];
- 	pe_data.stdout = fds[1];
--	pid = run_helper(change_pre_exec, &pe_data, argv, NULL);
-+	pid = run_helper(change_pre_exec, &pe_data, argv);
- 
- 	if (pid > 0)	/* Avoid hang as we won't get data in failure case. */
- 		read_output(fds[0], output, output_len);
-Index: linux-2.6.21-mm/arch/um/drivers/port_user.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/port_user.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/port_user.c	2007-06-14 11:20:36.000000000 -0400
-@@ -188,7 +188,7 @@ int port_connection(int fd, int *socket,
- 		{ .sock_fd  		= new,
- 		  .pipe_fd 		= socket[1] });
- 
--	err = run_helper(port_pre_exec, &data, argv, NULL);
-+	err = run_helper(port_pre_exec, &data, argv);
- 	if(err < 0)
- 		goto out_shutdown;
- 
-Index: linux-2.6.21-mm/arch/um/drivers/slip_user.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/slip_user.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/slip_user.c	2007-06-14 11:20:36.000000000 -0400
-@@ -85,7 +85,7 @@ static int slip_tramp(char **argv, int f
- 	pe_data.stdin = fd;
- 	pe_data.stdout = fds[1];
- 	pe_data.close_me = fds[0];
--	err = run_helper(slip_pre_exec, &pe_data, argv, NULL);
-+	err = run_helper(slip_pre_exec, &pe_data, argv);
- 	if(err < 0)
- 		goto out_close;
- 	pid = err;
-Index: linux-2.6.21-mm/arch/um/drivers/slirp_user.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/slirp_user.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/slirp_user.c	2007-06-13 18:44:41.000000000 -0400
-@@ -42,7 +42,7 @@ static int slirp_tramp(char **argv, int 
- 
- 	pe_data.stdin = fd;
- 	pe_data.stdout = fd;
--	pid = run_helper(slirp_pre_exec, &pe_data, argv, NULL);
-+	pid = run_helper(slirp_pre_exec, &pe_data, argv);
- 
- 	return(pid);
- }
-Index: linux-2.6.21-mm/arch/um/drivers/xterm.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/xterm.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/xterm.c	2007-06-13 18:44:41.000000000 -0400
-@@ -132,7 +132,7 @@ static int xterm_open(int input, int out
- 	}
- 
- 	sprintf(title, data->title, data->device);
--	pid = run_helper(NULL, NULL, argv, NULL);
-+	pid = run_helper(NULL, NULL, argv);
- 	if (pid < 0) {
- 		err = pid;
- 		printk(UM_KERN_ERR "xterm_open : run_helper failed, "
-Index: linux-2.6.21-mm/arch/um/include/os.h
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/os.h	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/os.h	2007-06-13 18:44:41.000000000 -0400
-@@ -239,11 +239,9 @@ extern unsigned long __do_user_copy(void
- /* execvp.c */
- extern int execvp_noalloc(char *buf, const char *file, char *const argv[]);
- /* helper.c */
--extern int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv,
--		      unsigned long *stack_out);
-+extern int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv);
- extern int run_helper_thread(int (*proc)(void *), void *arg,
--			     unsigned int flags, unsigned long *stack_out,
--			     int stack_order);
-+			     unsigned int flags, unsigned long *stack_out);
- extern int helper_wait(int pid);
- 
- 
-Index: linux-2.6.21-mm/arch/um/os-Linux/aio.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/aio.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/aio.c	2007-06-13 18:44:41.000000000 -0400
-@@ -177,6 +177,7 @@ static int do_not_aio(struct aio_thread_
- static int aio_req_fd_r = -1;
- static int aio_req_fd_w = -1;
- static int aio_pid = -1;
-+static unsigned long aio_stack;
- 
- static int not_aio_thread(void *arg)
- {
-@@ -212,7 +213,6 @@ static int not_aio_thread(void *arg)
- 
- static int init_aio_24(void)
- {
--	unsigned long stack;
- 	int fds[2], err;
- 
- 	err = os_pipe(fds, 1, 1);
-@@ -227,7 +227,7 @@ static int init_aio_24(void)
- 		goto out_close_pipe;
- 
- 	err = run_helper_thread(not_aio_thread, NULL,
--				CLONE_FILES | CLONE_VM | SIGCHLD, &stack, 0);
-+				CLONE_FILES | CLONE_VM | SIGCHLD, &aio_stack);
- 	if(err < 0)
- 		goto out_close_pipe;
- 
-@@ -252,7 +252,6 @@ out:
- #define DEFAULT_24_AIO 0
- static int init_aio_26(void)
- {
--	unsigned long stack;
- 	int err;
- 
- 	if(io_setup(256, &ctx)){
-@@ -263,7 +262,7 @@ static int init_aio_26(void)
- 	}
- 
- 	err = run_helper_thread(aio_thread, NULL,
--				CLONE_FILES | CLONE_VM | SIGCHLD, &stack, 0);
-+				CLONE_FILES | CLONE_VM | SIGCHLD, &aio_stack);
- 	if(err < 0)
- 		return err;
- 
-@@ -365,8 +364,10 @@ __initcall(init_aio);
- 
- static void exit_aio(void)
- {
--	if(aio_pid != -1)
-+	if (aio_pid != -1) {
- 		os_kill_process(aio_pid, 1);
-+		free_stack(aio_stack, 0);
-+	}
  }
  
- __uml_exitcall(exit_aio);
-Index: linux-2.6.21-mm/arch/um/os-Linux/drivers/ethertap_user.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/drivers/ethertap_user.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/drivers/ethertap_user.c	2007-06-14 11:20:36.000000000 -0400
-@@ -117,7 +117,7 @@ static int etap_tramp(char *dev, char *g
- 	pe_data.control_remote = control_remote;
- 	pe_data.control_me = control_me;
- 	pe_data.data_me = data_me;
--	pid = run_helper(etap_pre_exec, &pe_data, args, NULL);
-+	pid = run_helper(etap_pre_exec, &pe_data, args);
- 
- 	if(pid < 0)
- 		err = pid;
-Index: linux-2.6.21-mm/arch/um/os-Linux/drivers/tuntap_user.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/drivers/tuntap_user.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/drivers/tuntap_user.c	2007-06-13 18:44:41.000000000 -0400
-@@ -83,7 +83,7 @@ static int tuntap_open_tramp(char *gate,
- 	data.stdout = remote;
- 	data.close_me = me;
- 
--	pid = run_helper(tuntap_pre_exec, &data, argv, NULL);
-+	pid = run_helper(tuntap_pre_exec, &data, argv);
- 
- 	if(pid < 0)
- 		return -pid;
-Index: linux-2.6.21-mm/arch/um/os-Linux/helper.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/helper.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/helper.c	2007-06-14 11:20:36.000000000 -0400
-@@ -44,17 +44,13 @@ static int helper_child(void *arg)
- /* Returns either the pid of the child process we run or -E* on failure.
-  * XXX The alloc_stack here breaks if this is called in the tracing thread, so
-  * we need to receive a preallocated stack (a local buffer is ok). */
--int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv,
--	       unsigned long *stack_out)
-+int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
+-void enable_chan(struct line *line)
++int enable_chan(struct line *line)
  {
- 	struct helper_data data;
- 	unsigned long stack, sp;
- 	int pid, fds[2], ret, n;
+ 	struct list_head *ele;
+ 	struct chan *chan;
++	int err;
  
--	if ((stack_out != NULL) && (*stack_out != 0))
--		stack = *stack_out;
--	else
--		stack = alloc_stack(0, __cant_sleep());
-+	stack = alloc_stack(0, __cant_sleep());
- 	if (stack == 0)
- 		return -ENOMEM;
- 
-@@ -113,22 +109,21 @@ out_close:
- 		close(fds[1]);
- 	close(fds[0]);
- out_free:
--	if ((stack_out == NULL) || (*stack_out == 0))
--		free_stack(stack, 0);
-+	free_stack(stack, 0);
- 	return ret;
- }
- 
- int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
--		      unsigned long *stack_out, int stack_order)
-+		      unsigned long *stack_out)
- {
- 	unsigned long stack, sp;
- 	int pid, status, err;
- 
--	stack = alloc_stack(stack_order, __cant_sleep());
-+	stack = alloc_stack(0, __cant_sleep());
- 	if (stack == 0)
- 		return -ENOMEM;
- 
--	sp = stack + (UM_KERN_PAGE_SIZE << stack_order) - sizeof(void *);
-+	sp = stack + UM_KERN_PAGE_SIZE - sizeof(void *);
- 	pid = clone(proc, (void *) sp, flags | SIGCHLD, arg);
- 	if (pid < 0) {
- 		err = -errno;
-@@ -147,7 +142,7 @@ int run_helper_thread(int (*proc)(void *
- 		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0))
- 			printk("run_helper_thread - thread returned status "
- 			       "0x%x\n", status);
--		free_stack(stack, stack_order);
-+		free_stack(stack, 0);
- 	} else
- 		*stack_out = stack;
- 	return pid;
-Index: linux-2.6.21-mm/arch/um/os-Linux/sigio.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/sigio.c	2007-06-13 17:13:42.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/sigio.c	2007-06-14 11:20:36.000000000 -0400
-@@ -26,6 +26,7 @@
-  * exitcall.
-  */
- static int write_sigio_pid = -1;
-+static unsigned long write_sigio_stack;
- 
- /* These arrays are initialized before the sigio thread is started, and
-  * the descriptors closed after it is killed.  So, it can't see them change.
-@@ -144,8 +145,10 @@ static void update_thread(void)
- 	return;
-  fail:
- 	/* Critical section start */
--	if(write_sigio_pid != -1)
-+	if (write_sigio_pid != -1) {
- 		os_kill_process(write_sigio_pid, 1);
-+		free_stack(write_sigio_stack, 0);
-+	}
- 	write_sigio_pid = -1;
- 	close(sigio_private[0]);
- 	close(sigio_private[1]);
-@@ -243,7 +246,6 @@ static struct pollfd *setup_initial_poll
- 
- static void write_sigio_workaround(void)
- {
--	unsigned long stack;
- 	struct pollfd *p;
- 	int err;
- 	int l_write_sigio_fds[2];
-@@ -293,7 +295,8 @@ static void write_sigio_workaround(void)
- 	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
- 
- 	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
--					    CLONE_FILES | CLONE_VM, &stack, 0);
-+					    CLONE_FILES | CLONE_VM,
-+					    &write_sigio_stack);
- 
- 	if (write_sigio_pid < 0)
- 		goto out_clear;
-@@ -356,10 +359,12 @@ out:
- 
- static void sigio_cleanup(void)
- {
--	if(write_sigio_pid != -1){
--		os_kill_process(write_sigio_pid, 1);
--		write_sigio_pid = -1;
--	}
-+	if (write_sigio_pid == -1)
-+		return;
+ 	list_for_each(ele, &line->chan_list){
+ 		chan = list_entry(ele, struct chan, list);
+-		if(open_one_chan(chan))
++		err = open_one_chan(chan);
++		if (err) {
++			if (chan->primary)
++				goto out_close;
 +
-+	os_kill_process(write_sigio_pid, 1);
-+	free_stack(write_sigio_stack, 0);
-+	write_sigio_pid = -1;
+ 			continue;
++		}
+ 
+ 		if(chan->enabled)
+ 			continue;
+-		line_setup_irq(chan->fd, chan->input, chan->output, line,
+-			       chan);
++		err = line_setup_irq(chan->fd, chan->input, chan->output, line,
++				     chan);
++		if (err)
++			goto out_close;
++
+ 		chan->enabled = 1;
+ 	}
++
++	return 0;
++
++ out_close:
++	close_chan(&line->chan_list, 0);
++	return err;
  }
  
- __uml_exitcall(sigio_cleanup);
-Index: linux-2.6.21-mm/arch/um/drivers/chan_user.c
+ /* Items are added in IRQ context, when free_irq can't be called, and
+Index: linux-2.6.21-mm/arch/um/drivers/line.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/chan_user.c	2007-06-13 18:44:36.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/chan_user.c	2007-06-13 18:44:41.000000000 -0400
-@@ -161,7 +161,7 @@ static int winch_tramp(int fd, struct tt
- 	 * problem with /dev/net/tun, which if held open by this
- 	 * thread, prevents the TUN/TAP device from being reused.
- 	 */
--	err = run_helper_thread(winch_thread, &data, CLONE_FILES, stack_out, 0);
-+	err = run_helper_thread(winch_thread, &data, CLONE_FILES, stack_out);
- 	if(err < 0){
- 		printk("fork of winch_thread failed - errno = %d\n", -err);
- 		goto out_close;
+--- linux-2.6.21-mm.orig/arch/um/drivers/line.c	2007-06-14 15:40:01.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/line.c	2007-06-14 16:00:23.000000000 -0400
+@@ -454,7 +454,10 @@ int line_open(struct line *lines, struct
+ 	tty->driver_data = line;
+ 	line->tty = tty;
+ 
+-	enable_chan(line);
++	err = enable_chan(line);
++	if (err)
++		return err;
++
+ 	INIT_DELAYED_WORK(&line->task, line_timer_cb);
+ 
+ 	if(!line->sigio){
+Index: linux-2.6.21-mm/arch/um/drivers/ssl.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/ssl.c	2007-06-14 15:40:01.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/ssl.c	2007-06-14 16:00:23.000000000 -0400
+@@ -97,7 +97,13 @@ static int ssl_remove(int n, char **erro
+ 
+ static int ssl_open(struct tty_struct *tty, struct file *filp)
+ {
+-	return line_open(serial_lines, tty);
++	int err = line_open(serial_lines, tty);
++
++	if (err)
++		printk(KERN_ERR "Failed to open serial line %d, err = %d\n",
++		       tty->index, err);
++
++	return err;
+ }
+ 
+ #if 0
+Index: linux-2.6.21-mm/arch/um/drivers/stdio_console.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/stdio_console.c	2007-06-14 15:40:01.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/stdio_console.c	2007-06-14 16:00:23.000000000 -0400
+@@ -99,7 +99,12 @@ static int con_remove(int n, char **erro
+ 
+ static int con_open(struct tty_struct *tty, struct file *filp)
+ {
+-	return line_open(vts, tty);
++	int err = line_open(vts, tty);
++	if (err)
++		printk(KERN_ERR "Failed to open console %d, err = %d\n",
++		       tty->index, err);
++
++	return err;
+ }
+ 
+ /* Set in an initcall, checked in an exitcall */
+Index: linux-2.6.21-mm/arch/um/include/chan_kern.h
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/include/chan_kern.h	2007-06-14 15:40:01.000000000 -0400
++++ linux-2.6.21-mm/arch/um/include/chan_kern.h	2007-06-14 16:00:23.000000000 -0400
+@@ -40,7 +40,7 @@ extern int console_open_chan(struct line
+ extern void deactivate_chan(struct list_head *chans, int irq);
+ extern void reactivate_chan(struct list_head *chans, int irq);
+ extern void chan_enable_winch(struct list_head *chans, struct tty_struct *tty);
+-extern void enable_chan(struct line *line);
++extern int enable_chan(struct line *line);
+ extern void close_chan(struct list_head *chans, int delay_free_irq);
+ extern int chan_window_size(struct list_head *chans, 
+ 			     unsigned short *rows_out, 
+Index: linux-2.6.21-mm/arch/um/defconfig
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/defconfig	2007-06-14 15:40:01.000000000 -0400
++++ linux-2.6.21-mm/arch/um/defconfig	2007-06-14 16:00:23.000000000 -0400
+@@ -189,7 +189,7 @@ CONFIG_XTERM_CHAN=y
+ # CONFIG_NOCONFIG_CHAN is not set
+ CONFIG_CON_ZERO_CHAN="fd:0,fd:1"
+ CONFIG_CON_CHAN="xterm"
+-CONFIG_SSL_CHAN="pty"
++CONFIG_SSL_CHAN="pts"
+ CONFIG_UNIX98_PTYS=y
+ CONFIG_LEGACY_PTYS=y
+ CONFIG_LEGACY_PTY_COUNT=256
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
