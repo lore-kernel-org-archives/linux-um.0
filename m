@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HyvuH-0000q4-Un for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jun 2007 13:27:02 -0700
+	id 1HyvuG-0000oq-Us for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Jun 2007 13:27:00 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1HyvuF-00052j-6b
+	(Exim 4.44) id 1HyvuF-00052k-5s
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Jun 2007 13:27:01 -0700
-Date: Thu, 14 Jun 2007 16:26:49 -0400
+	Thu, 14 Jun 2007 13:27:00 -0700
+Date: Thu, 14 Jun 2007 16:26:51 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070614202649.GA9635@c2.user-mode-linux.org>
+Message-ID: <20070614202651.GA9652@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/5] UML - handle errors on opening host side of
-	consoles
+Subject: [uml-devel] [PATCH 5/5] UML - Eliminate kernel allocator wrappers
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,151 +31,324 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-If the host side of a console can't be opened, this will now produce
-visible error messages.
+UML had two wrapper procedures for kmalloc, um_kmalloc and
+um_kmalloc_atomic because the flag constants weren't available in
+userspace code.  kern_constants.h had made kernel constants available
+for a long time, so there is no need for these wrappers any more.
+Rather, userspace code calls kmalloc directly with the userspace
+versions of the gfp flags.
 
-enable_chan now returns a status and this is passed up to con_open and
-ssl_open, which will complain if anything went wrong.
+kmalloc isn't a real procedure, so I had to essentially copy the
+inline wrapper around __kmalloc.
 
-The default host device for the serial line driver is now a pts device
-rather than a pty device since lots of hosts have LEGACY_PTYS
-disabled.  This had always been failing on such hosts, but silently.
+vmalloc also had its own wrapper for no good reason.  This is now gone.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/defconfig               |    2 +-
- arch/um/drivers/chan_kern.c     |   23 +++++++++++++++++++----
- arch/um/drivers/line.c          |    5 ++++-
- arch/um/drivers/ssl.c           |    8 +++++++-
- arch/um/drivers/stdio_console.c |    7 ++++++-
- arch/um/include/chan_kern.h     |    2 +-
- 6 files changed, 38 insertions(+), 9 deletions(-)
+ arch/um/drivers/cow_sys.h                |    2 +-
+ arch/um/drivers/daemon_user.c            |    4 ++--
+ arch/um/drivers/fd.c                     |    2 +-
+ arch/um/drivers/mcast_user.c             |    2 +-
+ arch/um/drivers/net_user.c               |    2 +-
+ arch/um/drivers/port_user.c              |    2 +-
+ arch/um/drivers/pty.c                    |    2 +-
+ arch/um/drivers/slip_user.c              |    2 +-
+ arch/um/drivers/tty.c                    |    2 +-
+ arch/um/include/common-offsets.h         |    3 +++
+ arch/um/include/um_malloc.h              |   12 +++++++++---
+ arch/um/kernel/irq.c                     |    1 -
+ arch/um/kernel/process.c                 |   16 ----------------
+ arch/um/os-Linux/drivers/ethertap_user.c |    4 ++--
+ arch/um/os-Linux/helper.c                |    4 ++--
+ arch/um/os-Linux/main.c                  |    4 ++--
+ arch/um/os-Linux/sigio.c                 |    4 ++--
+ 17 files changed, 30 insertions(+), 38 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/drivers/chan_kern.c
+Index: linux-2.6.21-mm/arch/um/drivers/cow_sys.h
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/chan_kern.c	2007-06-14 15:40:01.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/chan_kern.c	2007-06-14 16:00:23.000000000 -0400
-@@ -203,22 +203,37 @@ void chan_enable_winch(struct list_head 
+--- linux-2.6.21-mm.orig/arch/um/drivers/cow_sys.h	2007-06-14 15:33:34.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/cow_sys.h	2007-06-14 16:08:07.000000000 -0400
+@@ -8,7 +8,7 @@
+ 
+ static inline void *cow_malloc(int size)
+ {
+-	return um_kmalloc(size);
++	return kmalloc(size, UM_GFP_KERNEL);
+ }
+ 
+ static inline void cow_free(void *ptr)
+Index: linux-2.6.21-mm/arch/um/drivers/daemon_user.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/daemon_user.c	2007-06-14 15:33:34.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/daemon_user.c	2007-06-14 16:08:07.000000000 -0400
+@@ -35,7 +35,7 @@ static struct sockaddr_un *new_addr(void
+ {
+ 	struct sockaddr_un *sun;
+ 
+-	sun = um_kmalloc(sizeof(struct sockaddr_un));
++	sun = kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
+ 	if(sun == NULL){
+ 		printk("new_addr: allocation of sockaddr_un failed\n");
+ 		return NULL;
+@@ -83,7 +83,7 @@ static int connect_to_switch(struct daem
+ 		goto out_close;
  	}
- }
  
--void enable_chan(struct line *line)
-+int enable_chan(struct line *line)
- {
- 	struct list_head *ele;
- 	struct chan *chan;
-+	int err;
- 
- 	list_for_each(ele, &line->chan_list){
- 		chan = list_entry(ele, struct chan, list);
--		if(open_one_chan(chan))
-+		err = open_one_chan(chan);
-+		if (err) {
-+			if (chan->primary)
-+				goto out_close;
-+
- 			continue;
-+		}
- 
- 		if(chan->enabled)
- 			continue;
--		line_setup_irq(chan->fd, chan->input, chan->output, line,
--			       chan);
-+		err = line_setup_irq(chan->fd, chan->input, chan->output, line,
-+				     chan);
-+		if (err)
-+			goto out_close;
-+
- 		chan->enabled = 1;
+-	sun = um_kmalloc(sizeof(struct sockaddr_un));
++	sun = kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
+ 	if(sun == NULL){
+ 		printk("new_addr: allocation of sockaddr_un failed\n");
+ 		err = -ENOMEM;
+Index: linux-2.6.21-mm/arch/um/drivers/fd.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/fd.c	2007-06-14 15:33:34.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/fd.c	2007-06-14 16:08:07.000000000 -0400
+@@ -37,7 +37,7 @@ static void *fd_init(char *str, int devi
+ 		printk("fd_init : couldn't parse file descriptor '%s'\n", str);
+ 		return(NULL);
  	}
-+
-+	return 0;
-+
-+ out_close:
-+	close_chan(&line->chan_list, 0);
-+	return err;
- }
- 
- /* Items are added in IRQ context, when free_irq can't be called, and
-Index: linux-2.6.21-mm/arch/um/drivers/line.c
+-	data = um_kmalloc(sizeof(*data));
++	data = kmalloc(sizeof(*data), UM_GFP_KERNEL);
+ 	if(data == NULL) return(NULL);
+ 	*data = ((struct fd_chan) { .fd  	= n,
+ 				    .raw  	= opts->raw });
+Index: linux-2.6.21-mm/arch/um/drivers/mcast_user.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/line.c	2007-06-14 15:40:01.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/line.c	2007-06-14 16:00:23.000000000 -0400
-@@ -454,7 +454,10 @@ int line_open(struct line *lines, struct
- 	tty->driver_data = line;
- 	line->tty = tty;
- 
--	enable_chan(line);
-+	err = enable_chan(line);
-+	if (err)
-+		return err;
-+
- 	INIT_DELAYED_WORK(&line->task, line_timer_cb);
- 
- 	if(!line->sigio){
-Index: linux-2.6.21-mm/arch/um/drivers/ssl.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/ssl.c	2007-06-14 15:40:01.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/ssl.c	2007-06-14 16:00:23.000000000 -0400
-@@ -97,7 +97,13 @@ static int ssl_remove(int n, char **erro
- 
- static int ssl_open(struct tty_struct *tty, struct file *filp)
+--- linux-2.6.21-mm.orig/arch/um/drivers/mcast_user.c	2007-06-14 15:33:34.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/mcast_user.c	2007-06-14 16:08:07.000000000 -0400
+@@ -30,7 +30,7 @@ static struct sockaddr_in *new_addr(char
  {
--	return line_open(serial_lines, tty);
-+	int err = line_open(serial_lines, tty);
-+
-+	if (err)
-+		printk(KERN_ERR "Failed to open serial line %d, err = %d\n",
-+		       tty->index, err);
-+
-+	return err;
- }
+ 	struct sockaddr_in *sin;
  
- #if 0
-Index: linux-2.6.21-mm/arch/um/drivers/stdio_console.c
+-	sin = um_kmalloc(sizeof(struct sockaddr_in));
++	sin = kmalloc(sizeof(struct sockaddr_in), UM_GFP_KERNEL);
+ 	if(sin == NULL){
+ 		printk("new_addr: allocation of sockaddr_in failed\n");
+ 		return NULL;
+Index: linux-2.6.21-mm/arch/um/drivers/net_user.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/stdio_console.c	2007-06-14 15:40:01.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/stdio_console.c	2007-06-14 16:00:23.000000000 -0400
-@@ -99,7 +99,12 @@ static int con_remove(int n, char **erro
+--- linux-2.6.21-mm.orig/arch/um/drivers/net_user.c	2007-06-14 16:07:30.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/net_user.c	2007-06-14 16:08:07.000000000 -0400
+@@ -217,7 +217,7 @@ static void change(char *dev, char *what
+ 		netmask[2], netmask[3]);
  
- static int con_open(struct tty_struct *tty, struct file *filp)
+ 	output_len = UM_KERN_PAGE_SIZE;
+-	output = um_kmalloc(output_len);
++	output = kmalloc(output_len, UM_GFP_KERNEL);
+ 	if(output == NULL)
+ 		printk("change : failed to allocate output buffer\n");
+ 
+Index: linux-2.6.21-mm/arch/um/drivers/pty.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/pty.c	2007-06-14 15:35:13.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/pty.c	2007-06-14 16:08:07.000000000 -0400
+@@ -29,7 +29,7 @@ static void *pty_chan_init(char *str, in
  {
--	return line_open(vts, tty);
-+	int err = line_open(vts, tty);
-+	if (err)
-+		printk(KERN_ERR "Failed to open console %d, err = %d\n",
-+		       tty->index, err);
+ 	struct pty_chan *data;
+ 
+-	data = um_kmalloc(sizeof(*data));
++	data = kmalloc(sizeof(*data), UM_GFP_KERNEL);
+ 	if (data == NULL)
+ 		return NULL;
+ 
+Index: linux-2.6.21-mm/arch/um/drivers/slip_user.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/slip_user.c	2007-06-14 16:07:30.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/slip_user.c	2007-06-14 16:08:07.000000000 -0400
+@@ -91,7 +91,7 @@ static int slip_tramp(char **argv, int f
+ 	pid = err;
+ 
+ 	output_len = UM_KERN_PAGE_SIZE;
+-	output = um_kmalloc(output_len);
++	output = kmalloc(output_len, UM_GFP_KERNEL);
+ 	if(output == NULL){
+ 		printk("slip_tramp : failed to allocate output buffer\n");
+ 		os_kill_process(pid, 1);
+Index: linux-2.6.21-mm/arch/um/drivers/tty.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/tty.c	2007-06-14 15:33:34.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/tty.c	2007-06-14 16:08:07.000000000 -0400
+@@ -29,7 +29,7 @@ static void *tty_chan_init(char *str, in
+ 	}
+ 	str++;
+ 
+-	data = um_kmalloc(sizeof(*data));
++	data = kmalloc(sizeof(*data), UM_GFP_KERNEL);
+ 	if(data == NULL)
+ 		return NULL;
+ 	*data = ((struct tty_chan) { .dev 	= str,
+Index: linux-2.6.21-mm/arch/um/include/common-offsets.h
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/include/common-offsets.h	2007-06-14 16:00:19.000000000 -0400
++++ linux-2.6.21-mm/arch/um/include/common-offsets.h	2007-06-14 16:08:07.000000000 -0400
+@@ -27,6 +27,9 @@ DEFINE(UM_ELFCLASS64, ELFCLASS64);
+ 
+ DEFINE(UM_NR_CPUS, NR_CPUS);
+ 
++DEFINE(UM_GFP_KERNEL, GFP_KERNEL);
++DEFINE(UM_GFP_ATOMIC, GFP_ATOMIC);
 +
-+	return err;
+ /* For crypto assembler code. */
+ DEFINE(crypto_tfm_ctx_offset, offsetof(struct crypto_tfm, __crt_ctx));
+ 
+Index: linux-2.6.21-mm/arch/um/include/um_malloc.h
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/include/um_malloc.h	2007-06-14 15:33:34.000000000 -0400
++++ linux-2.6.21-mm/arch/um/include/um_malloc.h	2007-06-14 16:08:07.000000000 -0400
+@@ -6,11 +6,17 @@
+ #ifndef __UM_MALLOC_H__
+ #define __UM_MALLOC_H__
+ 
+-extern void *um_kmalloc(int size);
+-extern void *um_kmalloc_atomic(int size);
++#include "kern_constants.h"
++
++extern void *__kmalloc(int size, int flags);
++static inline void *kmalloc(int size, int flags)
++{
++	return __kmalloc(size, flags);
++}
++
+ extern void kfree(const void *ptr);
+ 
+-extern void *um_vmalloc(int size);
++extern void *vmalloc(unsigned long size);
+ extern void vfree(void *ptr);
+ 
+ #endif /* __UM_MALLOC_H__ */
+Index: linux-2.6.21-mm/arch/um/kernel/irq.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/irq.c	2007-06-14 15:33:34.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/irq.c	2007-06-14 16:08:07.000000000 -0400
+@@ -30,7 +30,6 @@
+ #include "irq_kern.h"
+ #include "os.h"
+ #include "sigio.h"
+-#include "um_malloc.h"
+ #include "misc_constants.h"
+ #include "as-layout.h"
+ 
+Index: linux-2.6.21-mm/arch/um/kernel/process.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/process.c	2007-06-14 15:33:34.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/process.c	2007-06-14 16:08:07.000000000 -0400
+@@ -46,7 +46,6 @@
+ #include "mode.h"
+ #include "mode_kern.h"
+ #include "choose-mode.h"
+-#include "um_malloc.h"
+ 
+ /* This is a per-cpu array.  A processor only modifies its entry and it only
+  * cares about its entry, so it's OK if another processor is modifying its
+@@ -262,21 +261,6 @@ void dump_thread(struct pt_regs *regs, s
+ {
  }
  
- /* Set in an initcall, checked in an exitcall */
-Index: linux-2.6.21-mm/arch/um/include/chan_kern.h
+-void *um_kmalloc(int size)
+-{
+-	return kmalloc(size, GFP_KERNEL);
+-}
+-
+-void *um_kmalloc_atomic(int size)
+-{
+-	return kmalloc(size, GFP_ATOMIC);
+-}
+-
+-void *um_vmalloc(int size)
+-{
+-	return vmalloc(size);
+-}
+-
+ int __cant_sleep(void) {
+ 	return in_atomic() || irqs_disabled() || in_interrupt();
+ 	/* Is in_interrupt() really needed? */
+Index: linux-2.6.21-mm/arch/um/os-Linux/drivers/ethertap_user.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/chan_kern.h	2007-06-14 15:40:01.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/chan_kern.h	2007-06-14 16:00:23.000000000 -0400
-@@ -40,7 +40,7 @@ extern int console_open_chan(struct line
- extern void deactivate_chan(struct list_head *chans, int irq);
- extern void reactivate_chan(struct list_head *chans, int irq);
- extern void chan_enable_winch(struct list_head *chans, struct tty_struct *tty);
--extern void enable_chan(struct line *line);
-+extern int enable_chan(struct line *line);
- extern void close_chan(struct list_head *chans, int delay_free_irq);
- extern int chan_window_size(struct list_head *chans, 
- 			     unsigned short *rows_out, 
-Index: linux-2.6.21-mm/arch/um/defconfig
+--- linux-2.6.21-mm.orig/arch/um/os-Linux/drivers/ethertap_user.c	2007-06-14 16:07:30.000000000 -0400
++++ linux-2.6.21-mm/arch/um/os-Linux/drivers/ethertap_user.c	2007-06-14 16:08:07.000000000 -0400
+@@ -54,7 +54,7 @@ static void etap_change(int op, unsigned
+ 		return;
+ 	}
+ 
+-	output = um_kmalloc(UM_KERN_PAGE_SIZE);
++	output = kmalloc(UM_KERN_PAGE_SIZE, UM_GFP_KERNEL);
+ 	if(output == NULL)
+ 		printk("etap_change : Failed to allocate output buffer\n");
+ 	read_output(fd, output, UM_KERN_PAGE_SIZE);
+@@ -166,7 +166,7 @@ static int etap_open(void *data)
+ 	err = etap_tramp(pri->dev_name, pri->gate_addr, control_fds[0], 
+ 			 control_fds[1], data_fds[0], data_fds[1]);
+ 	output_len = UM_KERN_PAGE_SIZE;
+-	output = um_kmalloc(output_len);
++	output = kmalloc(output_len, UM_GFP_KERNEL);
+ 	read_output(control_fds[0], output, output_len);
+ 
+ 	if(output == NULL)
+Index: linux-2.6.21-mm/arch/um/os-Linux/helper.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/defconfig	2007-06-14 15:40:01.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/defconfig	2007-06-14 16:00:23.000000000 -0400
-@@ -189,7 +189,7 @@ CONFIG_XTERM_CHAN=y
- # CONFIG_NOCONFIG_CHAN is not set
- CONFIG_CON_ZERO_CHAN="fd:0,fd:1"
- CONFIG_CON_CHAN="xterm"
--CONFIG_SSL_CHAN="pty"
-+CONFIG_SSL_CHAN="pts"
- CONFIG_UNIX98_PTYS=y
- CONFIG_LEGACY_PTYS=y
- CONFIG_LEGACY_PTY_COUNT=256
+--- linux-2.6.21-mm.orig/arch/um/os-Linux/helper.c	2007-06-14 16:07:30.000000000 -0400
++++ linux-2.6.21-mm/arch/um/os-Linux/helper.c	2007-06-14 16:08:07.000000000 -0400
+@@ -72,8 +72,8 @@ int run_helper(void (*pre_exec)(void *),
+ 	data.pre_data = pre_data;
+ 	data.argv = argv;
+ 	data.fd = fds[1];
+-	data.buf = __cant_sleep() ? um_kmalloc_atomic(PATH_MAX) :
+-					um_kmalloc(PATH_MAX);
++	data.buf = __cant_sleep() ? kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
++					kmalloc(PATH_MAX, UM_GFP_KERNEL);
+ 	pid = clone(helper_child, (void *) sp, CLONE_VM | SIGCHLD, &data);
+ 	if (pid < 0) {
+ 		ret = -errno;
+Index: linux-2.6.21-mm/arch/um/os-Linux/main.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/os-Linux/main.c	2007-06-14 16:00:19.000000000 -0400
++++ linux-2.6.21-mm/arch/um/os-Linux/main.c	2007-06-14 16:08:07.000000000 -0400
+@@ -235,8 +235,8 @@ void *__wrap_malloc(int size)
+ 		return __real_malloc(size);
+ 	else if(size <= UM_KERN_PAGE_SIZE)
+ 		/* finding contiguous pages can be hard*/
+-		ret = um_kmalloc(size);
+-	else ret = um_vmalloc(size);
++		ret = kmalloc(size, UM_GFP_KERNEL);
++	else ret = vmalloc(size);
+ 
+ 	/* glibc people insist that if malloc fails, errno should be
+ 	 * set by malloc as well. So we do.
+Index: linux-2.6.21-mm/arch/um/os-Linux/sigio.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/os-Linux/sigio.c	2007-06-14 16:07:30.000000000 -0400
++++ linux-2.6.21-mm/arch/um/os-Linux/sigio.c	2007-06-14 16:08:07.000000000 -0400
+@@ -105,7 +105,7 @@ static int need_poll(struct pollfds *pol
+ 	if(n <= polls->size)
+ 		return 0;
+ 
+-	new = um_kmalloc_atomic(n * sizeof(struct pollfd));
++	new = kmalloc(n * sizeof(struct pollfd), UM_GFP_ATOMIC);
+ 	if(new == NULL){
+ 		printk("need_poll : failed to allocate new pollfds\n");
+ 		return -ENOMEM;
+@@ -233,7 +233,7 @@ static struct pollfd *setup_initial_poll
+ {
+ 	struct pollfd *p;
+ 
+-	p = um_kmalloc(sizeof(struct pollfd));
++	p = kmalloc(sizeof(struct pollfd), UM_GFP_KERNEL);
+ 	if (p == NULL) {
+ 		printk("setup_initial_poll : failed to allocate poll\n");
+ 		return NULL;
+Index: linux-2.6.21-mm/arch/um/drivers/port_user.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/port_user.c	2007-06-14 16:07:30.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/port_user.c	2007-06-14 16:08:07.000000000 -0400
+@@ -50,7 +50,7 @@ static void *port_init(char *str, int de
+ 	if(kern_data == NULL)
+ 		return NULL;
+ 
+-	data = um_kmalloc(sizeof(*data));
++	data = kmalloc(sizeof(*data), UM_GFP_KERNEL);
+ 	if(data == NULL)
+ 		goto err;
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
