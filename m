@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1HzLSa-0007oi-5G for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Jun 2007 16:44:08 -0700
-Received: from smtp006.mail.ukl.yahoo.com ([217.12.11.95])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1HzLSX-000092-Aa
+	id 1I0ifJ-0005ZC-Fc for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Jun 2007 11:42:57 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1I0ifH-0001TC-Py
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Jun 2007 16:44:08 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sat, 16 Jun 2007 01:43:49 +0200
-References: <20070614110816.5e579766944bbcab97407204a2c9ea3e.78a7ca2535.wbe@email.secureserver.net>
-	<20070614215822.GA12047@c2.user-mode-linux.org>
-	<7.0.1.0.2.20070614183558.0379e470@baretoes.net>
-In-Reply-To: <7.0.1.0.2.20070614183558.0379e470@baretoes.net>
-MIME-Version: 1.0
+	Tue, 19 Jun 2007 11:42:57 -0700
+Date: Tue, 19 Jun 2007 14:42:44 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070619184244.GA10557@c2.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200706160143.50034.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [uml-user] ppp and UML -possible? why or why not?
+Subject: [uml-devel] [PATCH 0/2] UML stack tweaks
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,40 +24,22 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Mark Lidd <mark@baretoes.net>, Jeff Dike <jdike@addtoit.com>
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On venerd=EC 15 giugno 2007, Mark Lidd wrote:
-> I want the UML to send data out the host's serial port so the UML
-> process can setup a ppp session to something connected to the hosts
-> serial port. --not talk to the host.
->
-> I know I can run pppd on the host and give the UML a network connect
-> to it, but I don't want to do the connect that way.  I want as much
-> of the processing as possible to be in a jailed UML.
->
-> I gather that I can give the UML the /dev/ttyS0 connection to the
-> serial port and have the UML pppd connect to ss1, etc.
->
-> Thanks,
-> Mark
+These can wait till 2.6.23.
 
-You can test if it works, but I believe that UML serial driver does not =
+They use get_free_page instead of kmalloc to allocate kernel stacks
+and add some stack usage monitoring under CONFIG_DEBUG_STACK_USAGE.
 
-implement many of the ioctl's needed for a proper serial port, so it's =
+				Jeff
 
-difficult it will work.
-
-Bye
--- =
-
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
