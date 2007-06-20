@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1I11wj-0007Ct-RZ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Jun 2007 08:18:14 -0700
+	id 1I11z0-0007Zn-Pp for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 20 Jun 2007 08:20:34 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1I11wf-0008Iy-Qx
+	(Exim 4.44) id 1I11z0-0005Sv-8A
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Jun 2007 08:18:13 -0700
-Date: Wed, 20 Jun 2007 11:17:53 -0400
+	Wed, 20 Jun 2007 08:20:34 -0700
+Date: Wed, 20 Jun 2007 11:20:29 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070620151753.GA6728@c2.user-mode-linux.org>
+Message-ID: <20070620152029.GB6728@c2.user-mode-linux.org>
 References: <20070619184245.GA10567@c2.user-mode-linux.org>
-	<20070619195003.GA11718@c2.user-mode-linux.org>
-	<20070619131441.01b5ae4b.akpm@linux-foundation.org>
-	<200706201606.58331.blaisorblade@yahoo.it>
+	<20070619115422.de61abd5.akpm@linux-foundation.org>
+	<200706201618.56604.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200706201606.58331.blaisorblade@yahoo.it>
+In-Reply-To: <200706201618.56604.blaisorblade@yahoo.it>
 Subject: Re: [uml-devel] [PATCH 2/2] UML - Add stack usage monitoring
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -36,12 +35,21 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Blaisorblade <blaisorblade@yahoo.it>
 Cc: Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Jun 20, 2007 at 04:06:58PM +0200, Blaisorblade wrote:
-> Oh, it's exactly what CONFIG_DEBUG_STACK_USAGE does for i386... (not sure if 
-> you were still wondering...).
+On Wed, Jun 20, 2007 at 04:18:56PM +0200, Blaisorblade wrote:
+> In Italy we say "habits are hard to die"...
 
-Where?  The only usage in i386 that I see is thread_info.h zeroing stacks
-as they are allocated.
+"Old habits are hard to kill"
+
+I'm working on it.
+
+> In the end: are you interested in this stuff? I'm busy right now but
+> can work to apply these changes after this thursday
+> (i.e. tomorrow). I'd need to get Jeff's patchset to fix it.
+
+I actually prefer to do them by hand (although that does have
+disadvantages, as we've just seen).  The reason is that it makes me
+look at the code line-by-line, and I often see other things which need
+fixing.
 
 				Jeff
 
