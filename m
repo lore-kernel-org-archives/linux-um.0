@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1I14q4-0003rX-GC for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Jun 2007 11:23:33 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1I14q2-0004jK-PU
+	id 1I18km-00046X-9H for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 20 Jun 2007 15:34:20 -0700
+Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1I18kh-0001Hr-Hg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Jun 2007 11:23:32 -0700
-Date: Wed, 20 Jun 2007 14:23:12 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070620182312.GA7856@c2.user-mode-linux.org>
+	Wed, 20 Jun 2007 15:34:20 -0700
+From: Blaisorblade <blaisorblade_spam@yahoo.it>
+Date: Wed, 20 Jun 2007 22:20:15 +0200
 References: <20070619184245.GA10567@c2.user-mode-linux.org>
-	<20070619115422.de61abd5.akpm@linux-foundation.org>
-	<20070619195003.GA11718@c2.user-mode-linux.org>
-	<20070619131441.01b5ae4b.akpm@linux-foundation.org>
-Mime-Version: 1.0
+	<200706201606.58331.blaisorblade@yahoo.it>
+	<20070620151753.GA6728@c2.user-mode-linux.org>
+In-Reply-To: <20070620151753.GA6728@c2.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070619131441.01b5ae4b.akpm@linux-foundation.org>
+Message-Id: <200706202220.15777.blaisorblade_spam@yahoo.it>
 Subject: Re: [uml-devel] [PATCH 2/2] UML - Add stack usage monitoring
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,139 +27,46 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>
 
-On Tue, Jun 19, 2007 at 01:14:41PM -0700, Andrew Morton wrote:
-> Oh well.  Your new code should really be generic, utilising the
-> stack-page-zeroing which CONFIG_DEBUG_STACK_USAGE enables.  There's nothing
-> UML-specific about it.
-> 
-> low_water_lock and lowest_to_date should be static to check_stack_usage(),
-> btw..
+On mercoled=EC 20 giugno 2007, Jeff Dike wrote:
+> On Wed, Jun 20, 2007 at 04:06:58PM +0200, Blaisorblade wrote:
+> > Oh, it's exactly what CONFIG_DEBUG_STACK_USAGE does for i386... (not su=
+re
+> > if you were still wondering...).
+>
+> Where?  The only usage in i386 that I see is thread_info.h zeroing stacks
+> as they are allocated.
 
-OK, here's a fixed version.  Dunno if the prink wants to be more elaborate.
+I only looked at docs. But Andrew Morton said:
 
-If this is OK, then drop the UML version.
+"Your new code should really be generic, utilising the
+stack-page-zeroing which CONFIG_DEBUG_STACK_USAGE enables."
 
-				Jeff
+In fact, the other reference is in kernel/sched.c. You may (or may not) joi=
+n =
 
--- 
-Work email - jdike at linux dot intel dot com
+the two stack walking (I would) and match a bit descriptions.
 
+Personally, I'd put the Kconfig option in lib/Kconfig.debug and have a Kcon=
+fig =
 
+flag named DEBUG_STACK_USAGE_SUPPORT, much like LOCKDEP_SUPPORT (defined on=
+ly =
 
-Add generic exit-time stack-depth checking to CONFIG_DEBUG_STACK_USAGE.
+by architectures supporting the option), but have no time right now.
 
-This also adds UML support.
+Bye
+-- =
 
-Tested on UML and i386.
-
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/Kconfig.debug        |    9 +++++++++
- arch/um/defconfig            |    1 +
- include/asm-um/thread_info.h |    9 +++++++++
- kernel/exit.c                |   24 ++++++++++++++++++++++++
- 4 files changed, 43 insertions(+)
-
-Index: linux-2.6.21-mm/kernel/exit.c
-===================================================================
---- linux-2.6.21-mm.orig/kernel/exit.c	2007-06-20 11:57:07.000000000 -0400
-+++ linux-2.6.21-mm/kernel/exit.c	2007-06-20 13:53:20.000000000 -0400
-@@ -867,6 +867,27 @@ static void exit_notify(struct task_stru
- 		release_task(tsk);
- }
- 
-+#ifdef CONFIG_DEBUG_STACK_USAGE
-+static void check_stack_usage(void)
-+{
-+	static DEFINE_SPINLOCK(low_water_lock);
-+	static int lowest_to_date = THREAD_SIZE;
-+	unsigned long *n = end_of_stack(current), free;
-+
-+	while (*n == 0)
-+		n++;
-+	free = (unsigned long)n - (unsigned long)end_of_stack(current);
-+
-+	spin_lock(&low_water_lock);
-+	if (free < lowest_to_date) {
-+		printk(KERN_WARNING "Greatest stack depth - %ld bytes left\n",
-+		       free);
-+		lowest_to_date = free;
-+	}
-+	spin_unlock(&low_water_lock);
-+}
-+#endif
-+
- fastcall NORET_TYPE void do_exit(long code)
- {
- 	struct task_struct *tsk = current;
-@@ -942,6 +963,9 @@ fastcall NORET_TYPE void do_exit(long co
- 	exit_sem(tsk);
- 	__exit_files(tsk);
- 	__exit_fs(tsk);
-+#ifdef CONFIG_DEBUG_STACK_USAGE
-+	check_stack_usage();
-+#endif
- 	exit_thread();
- 	container_exit(tsk, 1);
- 	exit_keys(tsk);
-Index: linux-2.6.21-mm/arch/um/Kconfig.debug
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/Kconfig.debug	2007-06-20 11:57:13.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/Kconfig.debug	2007-06-20 11:59:43.000000000 -0400
-@@ -47,4 +47,13 @@ config GCOV
-         If you're involved in UML kernel development and want to use gcov,
-         say Y.  If you're unsure, say N.
- 
-+config DEBUG_STACK_USAGE
-+	bool "Stack utilization instrumentation"
-+	default N
-+	help
-+	  Track the maximum kernel stack usage - this will look at each
-+	  kernel stack at process exit and log it if it's the deepest
-+	  stack seen so far.
-+
-+	  This option will slow down process creation and destruction somewhat.
- endmenu
-Index: linux-2.6.21-mm/arch/um/defconfig
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/defconfig	2007-06-20 11:57:13.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/defconfig	2007-06-20 11:58:29.000000000 -0400
-@@ -527,3 +527,4 @@ CONFIG_FORCED_INLINING=y
- # CONFIG_RCU_TORTURE_TEST is not set
- # CONFIG_GPROF is not set
- # CONFIG_GCOV is not set
-+# CONFIG_DEBUG_STACK_USAGE is not set
-Index: linux-2.6.21-mm/include/asm-um/thread_info.h
-===================================================================
---- linux-2.6.21-mm.orig/include/asm-um/thread_info.h	2007-06-20 11:57:13.000000000 -0400
-+++ linux-2.6.21-mm/include/asm-um/thread_info.h	2007-06-20 14:17:22.000000000 -0400
-@@ -52,10 +52,19 @@ static inline struct thread_info *curren
- 	return ti;
- }
- 
-+#ifdef CONFIG_DEBUG_STACK_USAGE
-+
-+#define alloc_thread_info(tsk) \
-+	((struct thread_info *) __get_free_pages(GFP_KERNEL | __GFP_ZERO, \
-+						 CONFIG_KERNEL_STACK_ORDER))
-+#else
-+
- /* thread information allocation */
- #define alloc_thread_info(tsk) \
- 	((struct thread_info *) __get_free_pages(GFP_KERNEL, \
- 						 CONFIG_KERNEL_STACK_ORDER))
-+#endif
-+
- #define free_thread_info(ti) \
- 	free_pages((unsigned long)(ti),CONFIG_KERNEL_STACK_ORDER)
- 
+Inform me of my mistakes, so I can add them to my list!
+Paolo Giarrusso, aka Blaisorblade
+http://www.user-mode-linux.org/~blaisorblade
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
