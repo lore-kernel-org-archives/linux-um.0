@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1I18km-00046X-9H for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Jun 2007 15:34:20 -0700
-Received: from smtp009.mail.ukl.yahoo.com ([217.12.11.63])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1I18kh-0001Hr-Hg
+	id 1I3HmN-00005Z-Gh for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Jun 2007 13:36:52 -0700
+Received: from smtp2.linux-foundation.org ([207.189.120.14])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1I3HmL-0003MS-Gl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Jun 2007 15:34:20 -0700
-From: Blaisorblade <blaisorblade_spam@yahoo.it>
-Date: Wed, 20 Jun 2007 22:20:15 +0200
-References: <20070619184245.GA10567@c2.user-mode-linux.org>
-	<200706201606.58331.blaisorblade@yahoo.it>
-	<20070620151753.GA6728@c2.user-mode-linux.org>
-In-Reply-To: <20070620151753.GA6728@c2.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200706202220.15777.blaisorblade_spam@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 2/2] UML - Add stack usage monitoring
+	Tue, 26 Jun 2007 13:36:50 -0700
+Date: Tue, 26 Jun 2007 13:35:50 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20070626133550.4a607fe8.akpm@linux-foundation.org>
+In-Reply-To: <20070614202655.GA9647@c2.user-mode-linux.org>
+References: <20070614202655.GA9647@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 4/5] UML - Simplify helper stack handling
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,46 +25,32 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On mercoled=EC 20 giugno 2007, Jeff Dike wrote:
-> On Wed, Jun 20, 2007 at 04:06:58PM +0200, Blaisorblade wrote:
-> > Oh, it's exactly what CONFIG_DEBUG_STACK_USAGE does for i386... (not su=
-re
-> > if you were still wondering...).
->
-> Where?  The only usage in i386 that I see is thread_info.h zeroing stacks
-> as they are allocated.
+On Thu, 14 Jun 2007 16:26:55 -0400
+Jeff Dike <jdike@addtoit.com> wrote:
 
-I only looked at docs. But Andrew Morton said:
+> --- linux-2.6.21-mm.orig/arch/um/drivers/xterm.c	2007-06-13 17:13:42.000000000 -0400
+> +++ linux-2.6.21-mm/arch/um/drivers/xterm.c	2007-06-13 18:44:41.000000000 -0400
+> @@ -132,7 +132,7 @@ static int xterm_open(int input, int out
+>  	}
+>  
+>  	sprintf(title, data->title, data->device);
+> -	pid = run_helper(NULL, NULL, argv, NULL);
+> +	pid = run_helper(NULL, NULL, argv);
+>  	if (pid < 0) {
+>  		err = pid;
+>  		printk(UM_KERN_ERR "xterm_open : run_helper failed, "
 
-"Your new code should really be generic, utilising the
-stack-page-zeroing which CONFIG_DEBUG_STACK_USAGE enables."
+Something's gone wrong here.  My copy of this file has
 
-In fact, the other reference is in kernel/sched.c. You may (or may not) joi=
-n =
+        pid = run_helper(NULL, NULL, argv, &stack);
 
-the two stack walking (I would) and match a bit descriptions.
-
-Personally, I'd put the Kconfig option in lib/Kconfig.debug and have a Kcon=
-fig =
-
-flag named DEBUG_STACK_USAGE_SUPPORT, much like LOCKDEP_SUPPORT (defined on=
-ly =
-
-by architectures supporting the option), but have no time right now.
-
-Bye
--- =
-
-Inform me of my mistakes, so I can add them to my list!
-Paolo Giarrusso, aka Blaisorblade
-http://www.user-mode-linux.org/~blaisorblade
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
