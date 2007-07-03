@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1I5kJC-000435-8u for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jul 2007 08:28:58 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1I5kJ8-0006ok-Cw
+	id 1I5kmg-0000Ek-N3 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Jul 2007 08:59:22 -0700
+Received: from smtp007.mail.ukl.yahoo.com ([217.12.11.96])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1I5kma-0001Lj-Vx
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jul 2007 08:28:54 -0700
+	Tue, 03 Jul 2007 08:59:22 -0700
 From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Tue, 3 Jul 2007 17:28:30 +0200
-References: <20070614202655.GA9647@c2.user-mode-linux.org>
-	<20070627233701.8e53f3cb.akpm@linux-foundation.org>
-In-Reply-To: <20070627233701.8e53f3cb.akpm@linux-foundation.org>
+Date: Tue, 3 Jul 2007 17:47:18 +0200
+References: <9604cc9f0706291214y92b1d49w198c59a5563acded@mail.gmail.com>
+In-Reply-To: <9604cc9f0706291214y92b1d49w198c59a5563acded@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <200707031728.36472.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 4/5] UML - Simplify helper stack handling
+Message-Id: <200707031747.19179.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] Deadlock when calling securityfs_create_dir
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,78 +24,137 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0984312972=="
+Content-Type: multipart/mixed; boundary="===============0501513405=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Andrew Morton <akpm@linux-foundation.org>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: kototama kototama <kototamo@gmail.com>
 
---===============0984312972==
-Content-Type: multipart/signed; boundary="nextPart1472843.a5S91qz8GL";
+--===============0501513405==
+Content-Type: multipart/signed; boundary="nextPart4481313.aFnGhm3CXs";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart1472843.a5S91qz8GL
+--nextPart4481313.aFnGhm3CXs
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-On gioved=EC 28 giugno 2007, Andrew Morton wrote:
-> So I'm running the generic version of this on i386 with 8k stacks (below),
-> with a quick LTP run.
+On venerd=EC 29 giugno 2007, kototama kototama wrote:
+> Hello,
 >
-> Holy cow, either we use a _lot_ of stack or these numbers are off:
+> After mounting securityfs like this:
 >
-> vmm:/home/akpm> dmesg -s 1000000|grep 'bytes left'
-> khelper used greatest stack depth: 7176 bytes left
-> khelper used greatest stack depth: 7064 bytes left
-> khelper used greatest stack depth: 6840 bytes left
-> khelper used greatest stack depth: 6812 bytes left
-> hostname used greatest stack depth: 6636 bytes left
-> uname used greatest stack depth: 6592 bytes left
-> uname used greatest stack depth: 6284 bytes left
-> hotplug used greatest stack depth: 5568 bytes left
-> rpc.nfsd used greatest stack depth: 5136 bytes left
-> chown02 used greatest stack depth: 4956 bytes left
-> fchown01 used greatest stack depth: 4892 bytes left
-
-> That's the sum of process stack and interrupt stack, but I doubt if this
-> little box is using much interrupt stack space.
+> uml# mount securityfs -t securityfs /sys/kernel/security
 >
-> No wonder people are still getting stack overflows with 4k stacks...
+> I load a module which performs these operations:
+>
+>
+> static void securityfs_init(void)
+> {
+>         struct dentry *de;
+>
+>
+>         printk(KERN_ALERT "securityfs_init\n");
+>         de =3D securityfs_create_dir("berlinfw2", NULL);
+>         if(!de) {
+>                 printk(KERN_ALERT "Can't create security directory\n");
+>         }
+> }
+>
+>
+> Then I've got a deadlock, interruption uml, and showing the stackstrace
+> gives that:
+>
+> #0  hard_handler (sig=3D11) at arch/um/os-Linux/sys-i386/signal.c:11
+> #1  <signal handler called>
+> #2  0x081b76da in mutex_lock (lock=3D0x40162068) at
+> include/asm/arch/atomic.h:189
+> #3  0x0812dfbb in create_by_name (name=3D0xa81b09c "<1>securityfs_init\n",
+> mode=3D16877, parent=3D0x95a3f1c,
+>     dentry=3D0x95a3ec8) at security/inode.c:173
+> #4  0x0812e0e0 in securityfs_create_file (name=3D0xa81b09c
+> "<1>securityfs_init\n", mode=3D16877, parent=3D0x95a3f1c,
+>     data=3D0x0, fops=3D0x0) at security/inode.c:231
+> #5  0x0812e160 in securityfs_create_dir (name=3D0xa81b09c
+> "<1>securityfs_init\n", parent=3D0x95a3f1c)
+>     at security/inode.c:272
+> #6  0x0a81b04a in ?? ()
+> #7  0x0a81b09c in ?? ()
+> #8  0x095a3f1c in ?? ()
+> #9  0x0809de76 in sys_init_module (umod=3D0x821aab4, len=3D1, uargs=3D0xa=
+81b440
+> "\001") at kernel/module.c:1991
+>
+> The module works fine on the host.
 
-=46irst, those numbers pretend to be _unused_ stack space.
+Hmm, it's possible, but this does not seem UML's fault either. Have you tri=
+ed=20
+to get a backtrace through uml_mconsole?
 
-Well, UML tends to use more stack space than the rest of kernel. Apart it h=
-as=20
-a bit more layering (even if less than in the past), we must use libc's=20
-function too, and they're not written to be executed on an 8k stack.
+A note: the check for errors is wrong, you should also check IS_ERR(de).=20
+Actually I also see this cannot cause a deadlock (nor can the NULL argument=
+).
 
-We've reimplemented libc's printf() in terms of kernel sprintf() because it=
+When CONFIG_SECURITY is disabled, this implementation from=20
+include/linux/security.h is used:
+
+static inline struct dentry *securityfs_create_dir(const char *name,
+                                        struct dentry *parent)
+{
+        return ERR_PTR(-ENODEV);
+}
+
+Possibly you just disabled CONFIG_SECURITY on the host (well, the default=20
+Ubuntu kernel has it enabled).
+
+> The host kernel is=20
+> 2.6.20-16-generic(ubuntu feisty fawn), the uml kernel is compiled from
+> ubuntu sources.
+>
+> It seems there is a memory problem in the frame #5, the argument of the
+> call is wrong!
+
+Never fully trust gdb output, when running optimized binaries. It may help =
+to=20
+compile UML replacing -O2 with -O1 or even -O0 (in the latter case, it may=
 =20
-used 32K of stack.
+even not compile successfully).
+
+If you add a breakpoint on securityfs_create_dir and singlestep to look at=
+=20
+what happens (which you should do), you'll probably see that a bit after th=
+e=20
+breakpoint gdb shows the correct value (it often does not at breakpoint's=20
+time), and later the value will change when the space is reused.
+
+Btw, breakpoints will work better if you attach to UML after boot rather th=
+an=20
+starting UML from inside gdb.
+
+Bye
 =2D-=20
 Inform me of my mistakes, so I can add them to my list!
 Paolo Giarrusso, aka Blaisorblade
 http://www.user-mode-linux.org/~blaisorblade
 
---nextPart1472843.a5S91qz8GL
+--nextPart4481313.aFnGhm3CXs
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.6 (GNU/Linux)
 
-iD8DBQBGimskqH9OHC+5NscRAoa3AJ0aoVZAsSCUack5plKhHUgAuIP1cgCfVkUo
-AYs4QvjRsHgXU75C5JT9SDI=
-=YpvS
+iD8DBQBGim+HqH9OHC+5NscRAjkEAJ4gXEzlGp4WUKqrsQP7+XdbDOAozACfVo/q
+IYKnCB9JlQGslCtAY3sbYJE=
+=ORGe
 -----END PGP SIGNATURE-----
 
---nextPart1472843.a5S91qz8GL--
+--nextPart4481313.aFnGhm3CXs--
 
 
---===============0984312972==
+--===============0501513405==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -107,7 +165,7 @@ This SF.net email is sponsored by DB2 Express
 Download DB2 Express C - the FREE version of DB2 express and take
 control of your XML. No limits. Just data. Click to get it now.
 http://sourceforge.net/powerbar/db2/
---===============0984312972==
+--===============0501513405==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -118,5 +176,5 @@ User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
---===============0984312972==--
+--===============0501513405==--
 
