@@ -1,26 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1I9IyM-0008Ku-4m for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Jul 2007 04:06:14 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1I9IyK-0006Hm-Ua
+	id 1I9MHf-0006sm-QY for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 13 Jul 2007 07:38:16 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1I9MHe-0008Ca-AB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Jul 2007 04:06:05 -0700
-Received: from [192.168.1.132] (AMarseille-252-1-56-155.w86-193.abo.wanadoo.fr
-	[86.193.151.155])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: antoine@nagafix.co.uk)
-	by mail.nagafix.co.uk (Postfix) with ESMTP id AF44243BC9
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 13 Jul 2007 12:05:43 +0100 (BST)
-Message-ID: <46975C78.5010903@nagafix.co.uk>
-Date: Fri, 13 Jul 2007 12:05:28 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
-MIME-Version: 1.0
-Subject: [uml-devel] link failure, multiple definition of 'in6addr_any'
+	Fri, 13 Jul 2007 07:38:15 -0700
+Date: Fri, 13 Jul 2007 10:37:55 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070713143755.GA6244@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH 2/3] UML - Limit request size on COWed devices
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,41 +28,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: Nix <nix@esperi.org.uk>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
+COWed devices can't handle more than 32 (64 on x86_64) sectors in one
+request due to the size of the bitmap being carried around in the
+io_thread_req.
 
-  CC      init/version.o
-  LD      init/built-in.o
-  LD      .tmp_vmlinux1
-arch/um/drivers/built-in.o: In function `pcap_nametoaddrinfo':
-(.text+0x1143f): warning: Using 'getaddrinfo' in statically linked 
-applications requires at runtime the shared libraries from the glibc 
-version used for linking
-arch/um/drivers/built-in.o: In function `pcap_nametoaddr':
-(.text+0x11465): warning: Using 'gethostbyname' in statically linked 
-applications requires at runtime the shared libraries from the glibc 
-version used for linking
-arch/um/drivers/built-in.o: In function `pcap_nametonetaddr':
-(.text+0x113e5): warning: Using 'getnetbyname' in statically linked 
-applications requires at runtime the shared libraries from the glibc 
-version used for linking
-arch/um/drivers/built-in.o: In function `pcap_nametoproto':
-(.text+0x111f5): warning: Using 'getprotobyname' in statically linked 
-applications requires at runtime the shared libraries from the glibc 
-version used for linking
-arch/um/drivers/built-in.o: In function `pcap_nametoport':
-(.text+0x11239): warning: Using 'getservbyname' in statically linked 
-applications requires at runtime the shared libraries from the glibc 
-version used for linking
-/usr/lib/gcc/x86_64-pc-linux-gnu/4.1.2/../../../../lib64/libc.a(in6_addr.o):(.rodata+0x0): 
-multiple definition of `in6addr_any'
-net/built-in.o:(.rodata+0x5380): first defined here
-collect2: ld returned 1 exit status
+Enforce that by telling the block layer not to put too many sectors in
+requests to COWed devices.
 
-This is from a known "good" config upgraded to 2.6.22 with oldconfig.
-I removed IPv6 support and all is well.
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/drivers/ubd_kern.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-Antoine
+Index: linux-2.6.17/arch/um/drivers/ubd_kern.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/drivers/ubd_kern.c	2007-07-09 08:53:09.000000000 -0400
++++ linux-2.6.17/arch/um/drivers/ubd_kern.c	2007-07-09 18:08:33.000000000 -0400
+@@ -712,6 +712,8 @@ static int ubd_add(int n, char **error_o
+ 	ubd_dev->queue->queuedata = ubd_dev;
+ 
+ 	blk_queue_max_hw_segments(ubd_dev->queue, MAX_SG);
++	if(ubd_dev->cow.file != NULL)
++		blk_queue_max_sectors(ubd_dev->queue, 8 * sizeof(long));
+ 	err = ubd_disk_register(MAJOR_NR, ubd_dev->size, n, &ubd_gendisk[n]);
+ 	if(err){
+ 		*error_out = "Failed to register device";
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
