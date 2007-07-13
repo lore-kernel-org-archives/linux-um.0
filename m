@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1I9VXs-0005wb-BE for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Jul 2007 17:31:36 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user54250)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1I9VXq-0004qu-Ln
+	id 1I9S1y-0008OV-MR for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 13 Jul 2007 13:46:26 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1I9S1x-00013Z-6P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Jul 2007 17:31:36 -0700
+	Fri, 13 Jul 2007 13:46:26 -0700
+Date: Fri, 13 Jul 2007 16:46:16 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070713204616.GA10094@c2.user-mode-linux.org>
 References: <20070713143755.GA6244@c2.user-mode-linux.org>
 	<87odigw2ma.fsf@hades.wkstn.nix>
-	<20070713204616.GA10094@c2.user-mode-linux.org>
-From: Nix <nix@esperi.org.uk>
-Date: Sat, 14 Jul 2007 01:31:19 +0100
-In-Reply-To: <20070713204616.GA10094@c2.user-mode-linux.org> (Jeff Dike's
-	message of "Fri, 13 Jul 2007 16:46:16 -0400")
-Message-ID: <87sl7r967c.fsf@hades.wkstn.nix>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87odigw2ma.fsf@hades.wkstn.nix>
 Subject: Re: [uml-devel] [PATCH 2/3] UML - Limit request size on COWed devices
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -32,20 +31,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Nix <nix@esperi.org.uk>
+Cc: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On 13 Jul 2007, Jeff Dike outgrape:
+On Fri, Jul 13, 2007 at 08:00:13PM +0100, Nix wrote:
+> This feels like a -stable candidate to me.
 
-> On Fri, Jul 13, 2007 at 08:00:13PM +0100, Nix wrote:
->> This feels like a -stable candidate to me.
->
-> Right you are - that's the first place I sent it.
+Right you are - that's the first place I sent it.
 
-Ah. So, first I report a bug two days *after* you post a fix, and then I
-recommend you send it somewhere you've already sent it.
+				Jeff
 
-I think I need to go and dig a hole and crawl inside for a while. :/
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
