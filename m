@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1I90vB-0000R1-0v for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 12 Jul 2007 08:49:37 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user54027)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1I90vA-0004BN-9c
+	id 1I9K2L-0007CI-Id for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 13 Jul 2007 05:14:19 -0700
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1I9K2J-0004gz-Tr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 12 Jul 2007 08:49:36 -0700
-References: <87odihsrvs.fsf@hades.wkstn.nix> <87bqehsp3x.fsf@hades.wkstn.nix>
-	<20070712150859.GA6950@c2.user-mode-linux.org>
-From: Nix <nix@esperi.org.uk>
-Date: Thu, 12 Jul 2007 16:49:20 +0100
-In-Reply-To: <20070712150859.GA6950@c2.user-mode-linux.org> (Jeff Dike's
-	message of "Thu, 12 Jul 2007 11:08:59 -0400")
-Message-ID: <87sl7twrjz.fsf@hades.wkstn.nix>
+	Fri, 13 Jul 2007 05:14:17 -0700
+Message-ID: <46976C6B.3090702@nagafix.co.uk>
+Date: Fri, 13 Jul 2007 13:13:31 +0100
+From: Antoine Martin <antoine@nagafix.co.uk>
 MIME-Version: 1.0
-Subject: [SPAM] Re: [uml-devel] block layer request length increases break
-	2.6.22.* COW ubd
+References: <87odihsrvs.fsf@hades.wkstn.nix> <87bqehsp3x.fsf@hades.wkstn.nix>
+In-Reply-To: <87bqehsp3x.fsf@hades.wkstn.nix>
+Subject: Re: [uml-devel] block layer request length increases break 2.6.22.*
+	COW ubd
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,25 +29,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Nix <nix@esperi.org.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On 12 Jul 2007, Jeff Dike uttered the following:
 
-> On Thu, Jul 12, 2007 at 02:55:46PM +0100, Nix wrote:
->> ... aaand Jeff solved it two days ago and I didn't notice. Er, oops?
+> Here, have a skas-v9-pre9 patch forward-ported to 2.6.22 in restitution
+> of my idiocy.
 >
-> Heh - it's good to have this in the list archives anyway.  The only
-> other place you'll find a mention of this is in the #uml logs, which I
-> think most people won't find.
+> (The 2.6.20 patch, the most recent I could find, collided with paravirt
+> and the header-inclusion reduction work. My fix to the latter is
+> especially ugly, since it means that <linux/mm.h> is including
+> <asm/current.h> and <linux/sched.h> again.  Probably the right fix is
+> for do_mmap_pgoff() to no longer be inlined, but I'm not sure what
+> performance implications that might have.)
+>
+>   
+Thanks for that.
+For those who find it difficult to extract patches from emails (like me 
+on a laptop), I've copied it here:
+http://uml.nagafix.co.uk/skas-2.6.22-v9-pre9.patch.bz2
+(also compile tested)
 
-Well, it was also implied by your patch which solved it, but I suppose
-now we have strings in the archives which people can google for in order
-to find the fix :)
+Anyone fancy doing the same work to v8? I remember having severe 
+problems with v9...
 
-> ... and thanks for the skas update
+Antoine
 
-(now runtime-tested, it works)
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
