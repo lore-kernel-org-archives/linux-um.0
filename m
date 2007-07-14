@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1I9Q8C-0003mw-GI for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Jul 2007 11:44:44 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1I9Q8B-0005wr-Iz
+	id 1I9VXs-0005wb-BE for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 13 Jul 2007 17:31:36 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user54250)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1I9VXq-0004qu-Ln
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Jul 2007 11:44:44 -0700
-Date: Fri, 13 Jul 2007 14:44:41 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070713184441.GB9472@c2.user-mode-linux.org>
-References: <46975CD0.5020709@nagafix.co.uk> <46976A09.9070906@nagafix.co.uk>
-	<20070713155723.GA7468@c2.user-mode-linux.org>
-	<4697B944.6030203@nagafix.co.uk>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4697B944.6030203@nagafix.co.uk>
-Subject: Re: [uml-devel] ARCH=um SUBARCH=i386 breakage?
+	Fri, 13 Jul 2007 17:31:36 -0700
+References: <20070713143755.GA6244@c2.user-mode-linux.org>
+	<87odigw2ma.fsf@hades.wkstn.nix>
+	<20070713204616.GA10094@c2.user-mode-linux.org>
+From: Nix <nix@esperi.org.uk>
+Date: Sat, 14 Jul 2007 01:31:19 +0100
+In-Reply-To: <20070713204616.GA10094@c2.user-mode-linux.org> (Jeff Dike's
+	message of "Fri, 13 Jul 2007 16:46:16 -0400")
+Message-ID: <87sl7r967c.fsf@hades.wkstn.nix>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 2/3] UML - Limit request size on COWed devices
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,54 +32,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, Jul 13, 2007 at 06:41:24PM +0100, Antoine Martin wrote:
-> >Could you check this there by seeing if something like this builds
-> >(with user.h removed):
-> >
-> >#include <asm/elf.h>
-> >
-> >int main(void){
-> >	printf("%d %d\n", sizeof(elf_fpregset_t), sizeof(elf_fpxregset_t));
-> >  
-> My kernel headers are also missing elf.h, so this doesn't work either...
+On 13 Jul 2007, Jeff Dike outgrape:
 
-elf.h is supposedly exported in 2.6.22, although I guess someone took the
-comment seriously:
+> On Fri, Jul 13, 2007 at 08:00:13PM +0100, Nix wrote:
+>> This feels like a -stable candidate to me.
+>
+> Right you are - that's the first place I sent it.
 
-	# These probably shouldn't be exported
-	unifdef-y += shmparam.h
-	unifdef-y += elf.h
-	unifdef-y += page.h
+Ah. So, first I report a bug two days *after* you post a fix, and then I
+recommend you send it somewhere you've already sent it.
 
-So, I have no idea how userspace is supposed to figure out how big a
-buffer to pass to PTRACE_GETFPREGS and PTRACE_GETFPXREGS.  I think the
-headers are broken here.
-
-> It is included in page.h:
-> 
->  CC      arch/um/sys-i386/user-offsets.s
-> In file included from /usr/include/asm/user.h:5,
->                 from arch/um/sys-i386/user-offsets.c:7:
-> /usr/include/asm/page.h:4:25: error: linux/const.h: No such file or 
-> directory
-
-This is just broken, then.  The headers should at least have no
-dangling includes.
-
-> I get the same error as above because user.h includes  asm/page.h
-
-Hummm, I guess the header tidying people need to fix a bunch of
-things.  I'll make whatever changes needed in UML to not use illicit
-headers, but I do need complete interface definitions, as with the FP
-stuff.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+I think I need to go and dig a hole and crawl inside for a while. :/
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
