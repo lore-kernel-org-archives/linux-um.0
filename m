@@ -2,24 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1I9gIc-0005xc-VN for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 14 Jul 2007 05:00:35 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1I9gIb-0002ll-Gt
+	id 1IA7an-0008S7-Q4 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 15 Jul 2007 10:09:10 -0700
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IA7am-0008Uv-Cn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 14 Jul 2007 05:00:34 -0700
-Date: Sat, 14 Jul 2007 08:00:29 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070714120029.GA4421@c2.user-mode-linux.org>
+	Sun, 15 Jul 2007 10:09:09 -0700
+Message-ID: <469A54A5.2010102@nagafix.co.uk>
+Date: Sun, 15 Jul 2007 18:08:53 +0100
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
 References: <46975CD0.5020709@nagafix.co.uk> <46976A09.9070906@nagafix.co.uk>
 	<20070713155723.GA7468@c2.user-mode-linux.org>
 	<4697B944.6030203@nagafix.co.uk>
 	<20070713184441.GB9472@c2.user-mode-linux.org>
 	<4698960D.8070100@nagafix.co.uk>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4698960D.8070100@nagafix.co.uk>
+	<20070714120029.GA4421@c2.user-mode-linux.org>
+In-Reply-To: <20070714120029.GA4421@c2.user-mode-linux.org>
 Subject: Re: [uml-devel] ARCH=um SUBARCH=i386 breakage?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -34,21 +33,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Antoine Martin <antoine@nagafix.co.uk>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Jul 14, 2007 at 10:23:25AM +0100, Antoine Martin wrote:
-> I don't mind bugging people to get to the bottom of this, do you know 
-> where to knock?
-> I can't find anything in MAINTAINERS.
+Jeff Dike wrote:
+> On Sat, Jul 14, 2007 at 10:23:25AM +0100, Antoine Martin wrote:
+>   
+>> I don't mind bugging people to get to the bottom of this, do you know 
+>> where to knock?
+>> I can't find anything in MAINTAINERS.
+>>     
+>
+> Did you install the headers directly from a kernel tree, or is this
+> the result of a distro upgrade?
+>   
+These are the Gentoo packages which are very close to mainline and I 
+can't find the upstream location for the headers so I guess I will be 
+filing a bug with Gentoo... We'll see where that leads.
 
-Did you install the headers directly from a kernel tree, or is this
-the result of a distro upgrade?
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Antoine
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
