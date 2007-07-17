@@ -2,24 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IA7an-0008S7-Q4 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 15 Jul 2007 10:09:10 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IA7am-0008Uv-Cn
+	id 1IAlC1-0000FD-Ih for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Jul 2007 04:26:16 -0700
+Received: from nic.netdirect.ca ([216.16.235.2] helo=rubicon.netdirect.ca)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IAlBy-0007Vw-My
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 15 Jul 2007 10:09:09 -0700
-Message-ID: <469A54A5.2010102@nagafix.co.uk>
-Date: Sun, 15 Jul 2007 18:08:53 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
+	Tue, 17 Jul 2007 04:26:13 -0700
+Date: Tue, 17 Jul 2007 07:24:09 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+Message-ID: <Pine.LNX.4.64.0707170723170.21802@localhost.localdomain>
 MIME-Version: 1.0
-References: <46975CD0.5020709@nagafix.co.uk> <46976A09.9070906@nagafix.co.uk>
-	<20070713155723.GA7468@c2.user-mode-linux.org>
-	<4697B944.6030203@nagafix.co.uk>
-	<20070713184441.GB9472@c2.user-mode-linux.org>
-	<4698960D.8070100@nagafix.co.uk>
-	<20070714120029.GA4421@c2.user-mode-linux.org>
-In-Reply-To: <20070714120029.GA4421@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] ARCH=um SUBARCH=i386 breakage?
+Subject: [uml-devel] potentially dead CONFIG variables under arch/um
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,25 +27,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@karaya.com>
 
-Jeff Dike wrote:
-> On Sat, Jul 14, 2007 at 10:23:25AM +0100, Antoine Martin wrote:
->   
->> I don't mind bugging people to get to the bottom of this, do you know 
->> where to knock?
->> I can't find anything in MAINTAINERS.
->>     
->
-> Did you install the headers directly from a kernel tree, or is this
-> the result of a distro upgrade?
->   
-These are the Gentoo packages which are very close to mainline and I 
-can't find the upstream location for the headers so I guess I will be 
-filing a bug with Gentoo... We'll see where that leads.
 
-Antoine
+========== HARDDOG_NOWAYOUT ==========
+arch/um/drivers/harddog_kern.c:72:#ifdef CONFIG_HARDDOG_NOWAYOUT
+========== PROC_MM ==========
+arch/um/kernel/ptrace.c:13:#ifdef CONFIG_PROC_MM
+arch/um/kernel/ptrace.c:227:#ifdef CONFIG_PROC_MM
+========== TTY_LOG ==========
+arch/um/os-Linux/Makefile:15:obj-$(CONFIG_TTY_LOG) += tty_log.o
+arch/um/os-Linux/Makefile:16:user-objs-$(CONFIG_TTY_LOG) += tty_log.o
+arch/um/kernel/exec.c:34:#ifdef CONFIG_TTY_LOG
+arch/um/kernel/exec.c:42:#ifdef CONFIG_TTY_LOG
+
+rday
+
+-- 
+========================================================================
+Robert P. J. Day
+Linux Consulting, Training and Annoying Kernel Pedantry
+Waterloo, Ontario, CANADA
+
+http://fsdev.net/wiki/index.php?title=Main_Page
+========================================================================
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by DB2 Express
