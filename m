@@ -2,26 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IBKlw-0002k3-Ca for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jul 2007 18:25:40 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IBKlu-0003pj-TL
+	id 1IBc4z-0000IA-Ub for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 19 Jul 2007 12:54:30 -0700
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IBc4y-0000lb-Gl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 18 Jul 2007 18:25:40 -0700
-Date: Wed, 18 Jul 2007 21:25:25 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070719012525.GA12468@c2.user-mode-linux.org>
-References: <46975CD0.5020709@nagafix.co.uk> <46976A09.9070906@nagafix.co.uk>
-	<20070713155723.GA7468@c2.user-mode-linux.org>
-	<4697B944.6030203@nagafix.co.uk>
-	<20070713184441.GB9472@c2.user-mode-linux.org>
-	<4698960D.8070100@nagafix.co.uk>
-	<20070714120029.GA4421@c2.user-mode-linux.org>
+	Thu, 19 Jul 2007 12:54:29 -0700
+Message-ID: <469FC166.6050209@nagafix.co.uk>
+Date: Thu, 19 Jul 2007 20:54:14 +0100
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
+References: <46975CD0.5020709@nagafix.co.uk>	 <46976A09.9070906@nagafix.co.uk>	
+	<20070713155723.GA7468@c2.user-mode-linux.org>	
+	<4697B944.6030203@nagafix.co.uk>	
+	<20070713184441.GB9472@c2.user-mode-linux.org>	
+	<4698960D.8070100@nagafix.co.uk>	
+	<20070714120029.GA4421@c2.user-mode-linux.org>	
 	<469A54A5.2010102@nagafix.co.uk>
 	<1184807588.7782.1.camel@athena.fprintf.net>
-Mime-Version: 1.0
-Content-Disposition: inline
 In-Reply-To: <1184807588.7782.1.camel@athena.fprintf.net>
 Subject: Re: [uml-devel] ARCH=um SUBARCH=i386 breakage?
 List-Id: The user-mode Linux development list
@@ -38,36 +36,59 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Daniel Gryniewicz <dang@gentoo.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Jul 18, 2007 at 09:13:08PM -0400, Daniel Gryniewicz wrote:
+Daniel Gryniewicz wrote:
+> On Sun, 2007-07-15 at 18:08 +0100, Antoine Martin wrote:
+>   
+>> Jeff Dike wrote:
+>>     
+>>> On Sat, Jul 14, 2007 at 10:23:25AM +0100, Antoine Martin wrote:
+>>>   
+>>>       
+>>>> I don't mind bugging people to get to the bottom of this, do you know 
+>>>> where to knock?
+>>>> I can't find anything in MAINTAINERS.
+>>>>     
+>>>>         
+>>> Did you install the headers directly from a kernel tree, or is this
+>>> the result of a distro upgrade?
+>>>   
+>>>       
+>> These are the Gentoo packages which are very close to mainline and I 
+>> can't find the upstream location for the headers so I guess I will be 
+>> filing a bug with Gentoo... We'll see where that leads.
+>>
+>>     
+>
 > Actually, the Gentoo headers are not particularly close to the kernel
-> headers.  They are heavily "sanitized", meaning that all kinds of things
-> that userspace is "not supposed to use" are removed.  This makes it very
+> headers. 
+My mistake.
+>  They are heavily "sanitized", meaning that all kinds of things
+> that userspace is "not supposed to use" are removed. 
+So in a sense, Gentoo kernel headers are ahead of the game. Which means 
+that these changes are likely to become an issue not just for Gentoo 
+users in the future.
+
+>  This makes it very
 > hard for things like UML, that are heavily tied to the kernel, to build.
+>   
+As Jeff pointed out, this is part of the userspace api:
+"the elimination of user.h makes it impossible to use 
+PTRACE_SETFP[X]REGS, as there is no way to tell what size buffer should 
+be passed in."
 
-UML isn't heavily tied to the kernel in the way that you mean, I think.
+Can you suggest a way to code around this issue or is this going to require an update to the Gentoo kernel headers?
+Let me know if I can help.
 
-However, it does explore some obscure parts of the API.  For example,
-the elimination of user.h makes it impossible to use
-PTRACE_SETFP[X]REGS, as there is no way to tell what size buffer
-should be passed in.
+Thanks
+Antoine
 
-I'm all for minimizing the headers exported to userspace (and have
-made a small contribution in that direction - ptrace-abi.h).  I'm
-happy to make UML stop using things it shouldn't.  At the same time,
-it should be possible to use the full userspace API.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
-This SF.net email is sponsored by DB2 Express
-Download DB2 Express C - the FREE version of DB2 express and take
-control of your XML. No limits. Just data. Click to get it now.
-http://sourceforge.net/powerbar/db2/
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2005.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
