@@ -2,26 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IBc4z-0000IA-Ub for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 Jul 2007 12:54:30 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IBc4y-0000lb-Gl
+	id 1ICWNn-0000Q5-5c for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Jul 2007 01:01:39 -0700
+Received: from smtp-out.google.com ([216.239.33.17])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1ICWNl-0002pf-Dt
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 19 Jul 2007 12:54:29 -0700
-Message-ID: <469FC166.6050209@nagafix.co.uk>
-Date: Thu, 19 Jul 2007 20:54:14 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
+	Sun, 22 Jul 2007 01:01:38 -0700
+Date: Sun, 22 Jul 2007 01:01:12 -0700 (PDT)
+From: David Rientjes <rientjes@google.com>
+Message-ID: <alpine.DEB.0.99.0707220100410.4908@chino.kir.corp.google.com>
 MIME-Version: 1.0
-References: <46975CD0.5020709@nagafix.co.uk>	 <46976A09.9070906@nagafix.co.uk>	
-	<20070713155723.GA7468@c2.user-mode-linux.org>	
-	<4697B944.6030203@nagafix.co.uk>	
-	<20070713184441.GB9472@c2.user-mode-linux.org>	
-	<4698960D.8070100@nagafix.co.uk>	
-	<20070714120029.GA4421@c2.user-mode-linux.org>	
-	<469A54A5.2010102@nagafix.co.uk>
-	<1184807588.7782.1.camel@athena.fprintf.net>
-In-Reply-To: <1184807588.7782.1.camel@athena.fprintf.net>
-Subject: Re: [uml-devel] ARCH=um SUBARCH=i386 breakage?
+Subject: [uml-devel] [patch] um: replace __attribute_used__ with __used
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,60 +27,73 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Daniel Gryniewicz <dang@gentoo.org>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@karaya.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Daniel Gryniewicz wrote:
-> On Sun, 2007-07-15 at 18:08 +0100, Antoine Martin wrote:
->   
->> Jeff Dike wrote:
->>     
->>> On Sat, Jul 14, 2007 at 10:23:25AM +0100, Antoine Martin wrote:
->>>   
->>>       
->>>> I don't mind bugging people to get to the bottom of this, do you know 
->>>> where to knock?
->>>> I can't find anything in MAINTAINERS.
->>>>     
->>>>         
->>> Did you install the headers directly from a kernel tree, or is this
->>> the result of a distro upgrade?
->>>   
->>>       
->> These are the Gentoo packages which are very close to mainline and I 
->> can't find the upstream location for the headers so I guess I will be 
->> filing a bug with Gentoo... We'll see where that leads.
->>
->>     
->
-> Actually, the Gentoo headers are not particularly close to the kernel
-> headers. 
-My mistake.
->  They are heavily "sanitized", meaning that all kinds of things
-> that userspace is "not supposed to use" are removed. 
-So in a sense, Gentoo kernel headers are ahead of the game. Which means 
-that these changes are likely to become an issue not just for Gentoo 
-users in the future.
+Replaces the deprecated __attribute_used__ with __used.
 
->  This makes it very
-> hard for things like UML, that are heavily tied to the kernel, to build.
->   
-As Jeff pointed out, this is part of the userspace api:
-"the elimination of user.h makes it impossible to use 
-PTRACE_SETFP[X]REGS, as there is no way to tell what size buffer should 
-be passed in."
+Cc: Jeff Dike <jdike@karaya.com>
+Signed-off-by: David Rientjes <rientjes@google.com>
+---
+ arch/um/include/init.h |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
 
-Can you suggest a way to code around this issue or is this going to require an update to the Gentoo kernel headers?
-Let me know if I can help.
-
-Thanks
-Antoine
-
+diff --git a/arch/um/include/init.h b/arch/um/include/init.h
+--- a/arch/um/include/init.h
++++ b/arch/um/include/init.h
+@@ -45,12 +45,12 @@ typedef void (*exitcall_t)(void);
+ #define __init		__attribute__ ((__section__ (".init.text")))
+ #define __initdata	__attribute__ ((__section__ (".init.data")))
+ #define __exitdata	__attribute__ ((__section__(".exit.data")))
+-#define __exit_call	__attribute_used__ __attribute__ ((__section__ (".exitcall.exit")))
++#define __exit_call	__used __attribute__ ((__section__ (".exitcall.exit")))
+ 
+ #ifdef MODULE
+ #define __exit		__attribute__ ((__section__(".exit.text")))
+ #else
+-#define __exit		__attribute_used__ __attribute__ ((__section__(".exit.text")))
++#define __exit		__used __attribute__ ((__section__(".exit.text")))
+ #endif
+ 
+ #endif
+@@ -103,16 +103,16 @@ extern struct uml_param __uml_setup_start, __uml_setup_end;
+  * Mark functions and data as being only used at initialization
+  * or exit time.
+  */
+-#define __uml_init_setup	__attribute_used__ __attribute__ ((__section__ (".uml.setup.init")))
+-#define __uml_setup_help	__attribute_used__ __attribute__ ((__section__ (".uml.help.init")))
+-#define __uml_init_call		__attribute_used__ __attribute__ ((__section__ (".uml.initcall.init")))
+-#define __uml_postsetup_call	__attribute_used__ __attribute__ ((__section__ (".uml.postsetup.init")))
+-#define __uml_exit_call		__attribute_used__ __attribute__ ((__section__ (".uml.exitcall.exit")))
++#define __uml_init_setup	__used __attribute__ ((__section__ (".uml.setup.init")))
++#define __uml_setup_help	__used __attribute__ ((__section__ (".uml.help.init")))
++#define __uml_init_call		__used __attribute__ ((__section__ (".uml.initcall.init")))
++#define __uml_postsetup_call	__used __attribute__ ((__section__ (".uml.postsetup.init")))
++#define __uml_exit_call		__used __attribute__ ((__section__ (".uml.exitcall.exit")))
+ 
+ #ifndef __KERNEL__
+ 
+ #define __define_initcall(level,fn) \
+-	static initcall_t __initcall_##fn __attribute_used__ \
++	static initcall_t __initcall_##fn __used \
+ 	__attribute__((__section__(".initcall" level ".init"))) = fn
+ 
+ /* Userspace initcalls shouldn't depend on anything in the kernel, so we'll
+@@ -122,7 +122,7 @@ extern struct uml_param __uml_setup_start, __uml_setup_end;
+ 
+ #define __exitcall(fn) static exitcall_t __exitcall_##fn __exit_call = fn
+ 
+-#define __init_call	__attribute_used__ __attribute__ ((__section__ (".initcall.init")))
++#define __init_call	__used __attribute__ ((__section__ (".initcall.init")))
+ 
+ #endif
+ 
 
 -------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2005.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+This SF.net email is sponsored by: Splunk Inc.
+Still grepping through log files to find problems?  Stop.
+Now Search log events and configuration files using AJAX and a browser.
+Download your FREE copy of Splunk now >>  http://get.splunk.com/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
