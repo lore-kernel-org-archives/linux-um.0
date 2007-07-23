@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ID3f5-0005qz-Qe for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Jul 2007 12:33:43 -0700
+	id 1ID3eg-0005q1-3F for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 23 Jul 2007 12:33:20 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1ID3f5-0006Ie-A0
+	(Exim 4.44) id 1ID3ee-0002Uv-Hz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Jul 2007 12:33:43 -0700
-Date: Mon, 23 Jul 2007 15:33:12 -0400
+	Mon, 23 Jul 2007 12:33:18 -0700
+Date: Mon, 23 Jul 2007 15:33:11 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070723193312.GA12388@c2.user-mode-linux.org>
+Message-ID: <20070723193311.GA12383@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/3] UML - Fix aio compilation bug
+Subject: [uml-devel] [PATCH 1/3] UML - Fix string exporting on UML/i386
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,102 +29,56 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: Ulrich Drepper <drepper@redhat.com>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Al Viro <viro@ftp.linux.org.uk>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Restructure do_aio thanks to commments from Ulrich and Al.
+In 2.6.23-rc1, i386 fiddled its string support such that UML started
+getting undefined references from modules.  The UML asm/string.h was
+including the i386 string.h, which defined __HAVE_ARCH_STR*, but the
+corresponding implementations weren't being pulled in.
 
-Uli started this by seeing that UML's initialization of a struct iocb
-initialized fields that it shouldn't.
+This is fixed by adding arch/i386/lib/string.h to the list of host
+architecture files to be pulled in to UML.
 
-Al followed up by adding the following cleanups:
-	eliminating a variable by just using an anonymous structure in
-its place.
-	hoisting a duplicated line out of the switch.
-	simplifying the error checking at the end.
-
-I added a severity to the printk.
+A complication is that the libc exports file assumed that the generic
+strlen and strstr weren't in use (i.e. __HAVE_ARCH_STR is defined),
+then they aren't exported.  This is untrue for strlen, which is
+exported in either case, so this logic is not needed.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/os-Linux/aio.c |   47 +++++++++++++++++------------------------------
- 1 file changed, 17 insertions(+), 30 deletions(-)
+ arch/um/os-Linux/user_syms.c |    5 +----
+ arch/um/sys-i386/Makefile    |    2 +-
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-Index: linux-2.6.17/arch/um/os-Linux/aio.c
+Index: linux-2.6.17/arch/um/sys-i386/Makefile
 ===================================================================
---- linux-2.6.17.orig/arch/um/os-Linux/aio.c	2007-07-23 14:58:18.000000000 -0400
-+++ linux-2.6.17/arch/um/os-Linux/aio.c	2007-07-23 14:59:13.000000000 -0400
-@@ -14,6 +14,7 @@
- #include "init.h"
- #include "user.h"
- #include "mode.h"
-+#include "kern_constants.h"
+--- linux-2.6.17.orig/arch/um/sys-i386/Makefile	2007-07-23 14:58:46.000000000 -0400
++++ linux-2.6.17/arch/um/sys-i386/Makefile	2007-07-23 14:58:56.000000000 -0400
+@@ -4,7 +4,7 @@ obj-y = bug.o bugs.o checksum.o delay.o 
  
- struct aio_thread_req {
- 	enum aio_type type;
-@@ -65,47 +66,33 @@ static long io_getevents(aio_context_t c
- static int do_aio(aio_context_t ctx, enum aio_type type, int fd, char *buf,
- 		  int len, unsigned long long offset, struct aio_context *aio)
- {
--	struct iocb iocb, *iocbp = &iocb;
-+	struct iocb *iocbp = & ((struct iocb) {
-+				    .aio_data       = (unsigned long) aio,
-+				    .aio_fildes     = fd,
-+				    .aio_buf        = (unsigned long) buf,
-+				    .aio_nbytes     = len,
-+				    .aio_offset     = offset
-+			     });
- 	char c;
--	int err;
--
--	iocb = ((struct iocb) { .aio_data 	= (unsigned long) aio,
--				.aio_reqprio	= 0,
--				.aio_fildes	= fd,
--				.aio_buf	= (unsigned long) buf,
--				.aio_nbytes	= len,
--				.aio_offset	= offset,
--				.aio_reserved1	= 0,
--				.aio_reserved2	= 0,
--				.aio_reserved3	= 0 });
+ obj-$(CONFIG_MODE_SKAS) += stub.o stub_segv.o
  
--	switch(type){
-+	switch (type) {
- 	case AIO_READ:
--		iocb.aio_lio_opcode = IOCB_CMD_PREAD;
--		err = io_submit(ctx, 1, &iocbp);
-+		iocbp->aio_lio_opcode = IOCB_CMD_PREAD;
- 		break;
- 	case AIO_WRITE:
--		iocb.aio_lio_opcode = IOCB_CMD_PWRITE;
--		err = io_submit(ctx, 1, &iocbp);
-+		iocbp->aio_lio_opcode = IOCB_CMD_PWRITE;
- 		break;
- 	case AIO_MMAP:
--		iocb.aio_lio_opcode = IOCB_CMD_PREAD;
--		iocb.aio_buf = (unsigned long) &c;
--		iocb.aio_nbytes = sizeof(c);
--		err = io_submit(ctx, 1, &iocbp);
-+		iocbp->aio_lio_opcode = IOCB_CMD_PREAD;
-+		iocbp->aio_buf = (unsigned long) &c;
-+		iocbp->aio_nbytes = sizeof(c);
- 		break;
- 	default:
--		printk("Bogus op in do_aio - %d\n", type);
--		err = -EINVAL;
--		break;
-+		printk(UM_KERN_ERR "Bogus op in do_aio - %d\n", type);
-+		return -EINVAL;
- 	}
+-subarch-obj-y = lib/bitops.o lib/semaphore.o
++subarch-obj-y = lib/bitops.o lib/semaphore.o lib/string.o
+ subarch-obj-$(CONFIG_HIGHMEM) += mm/highmem.o
+ subarch-obj-$(CONFIG_MODULES) += kernel/module.o
  
--	if(err > 0)
--		err = 0;
--	else
--		err = -errno;
--
--	return err;
-+	return (io_submit(ctx, 1, &iocbp) > 0) ? 0 : -errno;
- }
+Index: linux-2.6.17/arch/um/os-Linux/user_syms.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/os-Linux/user_syms.c	2007-07-23 14:58:18.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/user_syms.c	2007-07-23 14:59:22.000000000 -0400
+@@ -19,10 +19,7 @@ extern void *memmove(void *, const void 
+ extern void *memset(void *, int, size_t);
+ extern int printf(const char *, ...);
  
- /* Initialized in an initcall and unchanged thereafter */
+-/* If they're not defined, the export is included in lib/string.c.*/
+-#ifdef __HAVE_ARCH_STRLEN
+-EXPORT_SYMBOL(strlen);
+-#endif
++/* If it's not defined, the export is included in lib/string.c.*/
+ #ifdef __HAVE_ARCH_STRSTR
+ EXPORT_SYMBOL(strstr);
+ #endif
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
