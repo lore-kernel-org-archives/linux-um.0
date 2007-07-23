@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ID3eg-0005q0-0s for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Jul 2007 12:33:20 -0700
+	id 1ID3f5-0005qz-Qe for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 23 Jul 2007 12:33:43 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1ID3ee-0002Uu-I0
+	(Exim 4.44) id 1ID3f5-0006Ie-A0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Jul 2007 12:33:18 -0700
-Date: Mon, 23 Jul 2007 15:33:11 -0400
+	Mon, 23 Jul 2007 12:33:43 -0700
+Date: Mon, 23 Jul 2007 15:33:12 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070723193311.GA12378@c2.user-mode-linux.org>
+Message-ID: <20070723193312.GA12388@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 0/3] UML - Three small fixes for 2.6.23
+Subject: [uml-devel] [PATCH 2/3] UML - Fix aio compilation bug
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,15 +29,102 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Ulrich Drepper <drepper@redhat.com>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Al Viro <viro@ftp.linux.org.uk>
 
-These fix various build problems that cropped up in -rc1, and they
-should go into 2.6.23.
+Restructure do_aio thanks to commments from Ulrich and Al.
 
-				Jeff
+Uli started this by seeing that UML's initialization of a struct iocb
+initialized fields that it shouldn't.
 
--- 
-Work email - jdike at linux dot intel dot com
+Al followed up by adding the following cleanups:
+	eliminating a variable by just using an anonymous structure in
+its place.
+	hoisting a duplicated line out of the switch.
+	simplifying the error checking at the end.
+
+I added a severity to the printk.
+
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/os-Linux/aio.c |   47 +++++++++++++++++------------------------------
+ 1 file changed, 17 insertions(+), 30 deletions(-)
+
+Index: linux-2.6.17/arch/um/os-Linux/aio.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/os-Linux/aio.c	2007-07-23 14:58:18.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/aio.c	2007-07-23 14:59:13.000000000 -0400
+@@ -14,6 +14,7 @@
+ #include "init.h"
+ #include "user.h"
+ #include "mode.h"
++#include "kern_constants.h"
+ 
+ struct aio_thread_req {
+ 	enum aio_type type;
+@@ -65,47 +66,33 @@ static long io_getevents(aio_context_t c
+ static int do_aio(aio_context_t ctx, enum aio_type type, int fd, char *buf,
+ 		  int len, unsigned long long offset, struct aio_context *aio)
+ {
+-	struct iocb iocb, *iocbp = &iocb;
++	struct iocb *iocbp = & ((struct iocb) {
++				    .aio_data       = (unsigned long) aio,
++				    .aio_fildes     = fd,
++				    .aio_buf        = (unsigned long) buf,
++				    .aio_nbytes     = len,
++				    .aio_offset     = offset
++			     });
+ 	char c;
+-	int err;
+-
+-	iocb = ((struct iocb) { .aio_data 	= (unsigned long) aio,
+-				.aio_reqprio	= 0,
+-				.aio_fildes	= fd,
+-				.aio_buf	= (unsigned long) buf,
+-				.aio_nbytes	= len,
+-				.aio_offset	= offset,
+-				.aio_reserved1	= 0,
+-				.aio_reserved2	= 0,
+-				.aio_reserved3	= 0 });
+ 
+-	switch(type){
++	switch (type) {
+ 	case AIO_READ:
+-		iocb.aio_lio_opcode = IOCB_CMD_PREAD;
+-		err = io_submit(ctx, 1, &iocbp);
++		iocbp->aio_lio_opcode = IOCB_CMD_PREAD;
+ 		break;
+ 	case AIO_WRITE:
+-		iocb.aio_lio_opcode = IOCB_CMD_PWRITE;
+-		err = io_submit(ctx, 1, &iocbp);
++		iocbp->aio_lio_opcode = IOCB_CMD_PWRITE;
+ 		break;
+ 	case AIO_MMAP:
+-		iocb.aio_lio_opcode = IOCB_CMD_PREAD;
+-		iocb.aio_buf = (unsigned long) &c;
+-		iocb.aio_nbytes = sizeof(c);
+-		err = io_submit(ctx, 1, &iocbp);
++		iocbp->aio_lio_opcode = IOCB_CMD_PREAD;
++		iocbp->aio_buf = (unsigned long) &c;
++		iocbp->aio_nbytes = sizeof(c);
+ 		break;
+ 	default:
+-		printk("Bogus op in do_aio - %d\n", type);
+-		err = -EINVAL;
+-		break;
++		printk(UM_KERN_ERR "Bogus op in do_aio - %d\n", type);
++		return -EINVAL;
+ 	}
+ 
+-	if(err > 0)
+-		err = 0;
+-	else
+-		err = -errno;
+-
+-	return err;
++	return (io_submit(ctx, 1, &iocbp) > 0) ? 0 : -errno;
+ }
+ 
+ /* Initialized in an initcall and unchanged thereafter */
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
