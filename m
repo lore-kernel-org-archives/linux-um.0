@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IERfi-0003eL-Ov for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jul 2007 08:24:07 -0700
+	id 1IESnO-00060m-2V for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Jul 2007 09:36:06 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IERff-0005Yn-DC
+	(Exim 4.44) id 1IESnL-0004Hx-1T
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jul 2007 08:24:06 -0700
-Date: Fri, 27 Jul 2007 11:23:44 -0400
+	Fri, 27 Jul 2007 09:36:06 -0700
+Date: Fri, 27 Jul 2007 12:35:41 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070727152344.GA6776@c2.user-mode-linux.org>
+Message-ID: <20070727163541.GA6930@c2.user-mode-linux.org>
+References: <200707270945.LAA17372@ifs.emn.fr>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] UML - Console should handle spurious IRQS
+In-Reply-To: <200707270945.LAA17372@ifs.emn.fr>
+Subject: Re: [uml-devel] [PATCH 18/68] 0 -> NULL, for arch/um
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,44 +30,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Yoann Padioleau <padator@wanadoo.fr>
+Cc: akpm@linux-foundation.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-The previous DEBUG_SHIRQ patch missed one case.  The console doesn't
-set its host descriptors non-blocking.
+On Fri, Jul 27, 2007 at 11:45:56AM +0200, Yoann Padioleau wrote:
+> When comparing a pointer, it's clearer to compare it to NULL than to 0.
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/drivers/chan_kern.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ACK
 
-Index: linux-2.6.21-mm/arch/um/drivers/chan_kern.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/chan_kern.c	2007-07-27 10:52:02.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/chan_kern.c	2007-07-27 11:09:12.000000000 -0400
-@@ -157,7 +157,7 @@ static void tty_receive_char(struct tty_
- 
- static int open_one_chan(struct chan *chan)
- {
--	int fd;
-+	int fd, err;
- 
- 	if(chan->opened)
- 		return 0;
-@@ -168,6 +168,13 @@ static int open_one_chan(struct chan *ch
- 				     chan->data, &chan->dev);
- 	if(fd < 0)
- 		return fd;
-+
-+	err = os_set_fd_block(fd, 0);
-+	if (err) {
-+		(*chan->ops->close)(fd, chan->data);
-+		return err;
-+	}
-+
- 	chan->fd = fd;
- 
- 	chan->opened = 1;
+>  sys-i386/fault.c   |    2 +-
+>  sys-x86_64/fault.c |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+
+Except you should probably diff from the top of the kernel tree.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
