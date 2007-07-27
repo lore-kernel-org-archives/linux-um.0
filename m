@@ -1,17 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IEMbl-00033O-BO for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jul 2007 02:59:41 -0700
-Received: from sicnat3.emn.fr ([193.54.76.194] helo=ron.emn.fr)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IEMT0-0000PK-7q
+	id 1IERfi-0003eL-Ov for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Jul 2007 08:24:07 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IERff-0005Yn-DC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jul 2007 02:50:40 -0700
-Date: Fri, 27 Jul 2007 11:45:56 +0200 (MEST)
-Message-Id: <200707270945.LAA17372@ifs.emn.fr>
-From: Yoann Padioleau <padator@wanadoo.fr>
-Subject: [uml-devel] [PATCH 18/68] 0 -> NULL, for arch/um
+	Fri, 27 Jul 2007 08:24:06 -0700
+Date: Fri, 27 Jul 2007 11:23:44 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070727152344.GA6776@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH] UML - Console should handle spurious IRQS
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,72 +24,48 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: kernel-janitors@vger.kernel.org
-Cc: jdike@karaya.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
+The previous DEBUG_SHIRQ patch missed one case.  The console doesn't
+set its host descriptors non-blocking.
 
-When comparing a pointer, it's clearer to compare it to NULL than to 0.
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/drivers/chan_kern.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Here is an excerpt of the semantic patch: 
-
-@@
-expression *E;
-@@
-
-  E ==
-- 0
-+ NULL
-
-@@
-expression *E;
-@@
-
-  E !=
-- 0
-+ NULL
-
-Signed-off-by: Yoann Padioleau <padator@wanadoo.fr>
-Cc: jdike@karaya.com
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: akpm@linux-foundation.org
----
-
- sys-i386/fault.c   |    2 +-
- sys-x86_64/fault.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/sys-i386/fault.c b/arch/um/sys-i386/fault.c
-index 745b4fd..8004023 100644
---- a/arch/um/sys-i386/fault.c
-+++ b/arch/um/sys-i386/fault.c
-@@ -20,7 +20,7 @@ int arch_fixup(unsigned long address, un
- 	const struct exception_table_entry *fixup;
+Index: linux-2.6.21-mm/arch/um/drivers/chan_kern.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/chan_kern.c	2007-07-27 10:52:02.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/chan_kern.c	2007-07-27 11:09:12.000000000 -0400
+@@ -157,7 +157,7 @@ static void tty_receive_char(struct tty_
  
- 	fixup = search_exception_tables(address);
--	if(fixup != 0){
-+	if(fixup != NULL){
- 		UPT_IP(regs) = fixup->fixup;
- 		return(1);
- 	}
-diff --git a/arch/um/sys-x86_64/fault.c b/arch/um/sys-x86_64/fault.c
-index 4636b14..67d4a19 100644
---- a/arch/um/sys-x86_64/fault.c
-+++ b/arch/um/sys-x86_64/fault.c
-@@ -19,7 +19,7 @@ int arch_fixup(unsigned long address, un
- 	const struct exception_table_entry *fixup;
+ static int open_one_chan(struct chan *chan)
+ {
+-	int fd;
++	int fd, err;
  
- 	fixup = search_exception_tables(address);
--	if(fixup != 0){
-+	if(fixup != NULL){
- 		UPT_IP(regs) = fixup->fixup;
- 		return(1);
- 	}
-
+ 	if(chan->opened)
+ 		return 0;
+@@ -168,6 +168,13 @@ static int open_one_chan(struct chan *ch
+ 				     chan->data, &chan->dev);
+ 	if(fd < 0)
+ 		return fd;
++
++	err = os_set_fd_block(fd, 0);
++	if (err) {
++		(*chan->ops->close)(fd, chan->data);
++		return err;
++	}
++
+ 	chan->fd = fd;
+ 
+ 	chan->opened = 1;
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
