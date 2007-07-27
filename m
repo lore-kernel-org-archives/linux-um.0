@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IET1v-0007fj-NO for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jul 2007 09:51:07 -0700
-Received: from sicnat3.emn.fr ([193.54.76.194] helo=ron.emn.fr)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IET1t-0001Au-Jt
+	id 1IEVKd-0006uH-0m for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Jul 2007 12:18:35 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IEVKb-0001uJ-B0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jul 2007 09:51:07 -0700
-From: Yoann Padioleau <padator@wanadoo.fr>
-References: <200707270945.LAA17372@ifs.emn.fr>
-	<20070727163541.GA6930@c2.user-mode-linux.org>
-Date: Fri, 27 Jul 2007 18:49:54 +0200
-In-Reply-To: <20070727163541.GA6930@c2.user-mode-linux.org> (Jeff Dike's
-	message of "Fri, 27 Jul 2007 12:35:41 -0400")
-Message-ID: <871wet7pvx.fsf@wanadoo.fr>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 18/68] 0 -> NULL, for arch/um
+	Fri, 27 Jul 2007 12:18:34 -0700
+Date: Fri, 27 Jul 2007 15:18:31 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070727191831.GC8409@c2.user-mode-linux.org>
+References: <46AA353B.9090907@nagafix.co.uk>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <46AA353B.9090907@nagafix.co.uk>
+Subject: Re: [uml-devel] aio vs gentoo headers
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,30 +30,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: kernel-janitors@vger.kernel.org, akpm@linux-foundation.org, Yoann Padioleau <padator@wanadoo.fr>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Antoine Martin <antoine@nagafix.co.uk>
+Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-Jeff Dike <jdike@addtoit.com> writes:
+On Fri, Jul 27, 2007 at 07:11:07PM +0100, Antoine Martin wrote:
+> I needed the tiny change below to be able to build on amd64 with gentoo 
+> kernel headers. 
 
-> On Fri, Jul 27, 2007 at 11:45:56AM +0200, Yoann Padioleau wrote:
->> When comparing a pointer, it's clearer to compare it to NULL than to 0.
->
-> ACK
->
->>  sys-i386/fault.c   |    2 +-
->>  sys-x86_64/fault.c |    2 +-
->>  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> Except you should probably diff from the top of the kernel tree.
+Already in -mm -
+	http://marc.info/?l=user-mode-linux-devel&m=118521982227031&q=raw
 
-Sorry. I will use diffstat -p1  from now on.
+				Jeff
 
->
-> 				Jeff
->
-> -- 
-> Work email - jdike at linux dot intel dot com
-
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
