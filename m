@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IEVKd-0006uH-0m for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jul 2007 12:18:35 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IEVKb-0001uJ-B0
+	id 1IEoWk-0004al-Kj for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 28 Jul 2007 08:48:22 -0700
+Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IEoWk-0003bX-2u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Jul 2007 12:18:34 -0700
-Date: Fri, 27 Jul 2007 15:18:31 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070727191831.GC8409@c2.user-mode-linux.org>
-References: <46AA353B.9090907@nagafix.co.uk>
-Mime-Version: 1.0
+	Sat, 28 Jul 2007 08:48:22 -0700
+Date: Sat, 28 Jul 2007 17:47:05 +0200
+From: Adrian Bunk <bunk@stusta.de>
+Message-ID: <20070728154705.GB30976@stusta.de>
+References: <20061212233533.GB28443@stusta.de>
+	<20061213041837.GA8825@ccure.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <46AA353B.9090907@nagafix.co.uk>
-Subject: Re: [uml-devel] aio vs gentoo headers
+In-Reply-To: <20061213041837.GA8825@ccure.user-mode-linux.org>
+Subject: Re: [uml-devel] RFC: UML: remove MODE_TT?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,20 +30,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Antoine Martin <antoine@nagafix.co.uk>
-Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Jul 27, 2007 at 07:11:07PM +0100, Antoine Martin wrote:
-> I needed the tiny change below to be able to build on amd64 with gentoo 
-> kernel headers. 
+On Tue, Dec 12, 2006 at 11:18:37PM -0500, Jeff Dike wrote:
+> On Wed, Dec 13, 2006 at 12:35:33AM +0100, Adrian Bunk wrote:
+> > MODE_TT is both marked as deprecated and marked as BROKEN.
+> > 
+> > Would a patch to remove MODE_TT, always enable MODE_SKAS, and doing all 
+> > possible cleanups after this be accepted?
+> 
+> Thanks, but not yet.
+> 
+> I've got that queued up in my tree now, waiting for SMP to work.  SMP is 
+> the one remaining justification for TT mode, so I'll get that in, then remove
+> MODE_TT and do the associated cleanups.
 
-Already in -mm -
-	http://marc.info/?l=user-mode-linux-devel&m=118521982227031&q=raw
+MODE_TT is still marked as broken and still not compiling...
 
-				Jeff
+Will anyone fix it or can it finally be removed?
+
+> 				Jeff
+
+cu
+Adrian
 
 -- 
-Work email - jdike at linux dot intel dot com
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
