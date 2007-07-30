@@ -2,21 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IEoWk-0004al-Kj for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 28 Jul 2007 08:48:22 -0700
-Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IEoWk-0003bX-2u
+	id 1IFYxZ-0000Yw-Rj for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Jul 2007 10:23:11 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IFYkG-0006gM-Nh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 28 Jul 2007 08:48:22 -0700
-Date: Sat, 28 Jul 2007 17:47:05 +0200
-From: Adrian Bunk <bunk@stusta.de>
-Message-ID: <20070728154705.GB30976@stusta.de>
-References: <20061212233533.GB28443@stusta.de>
-	<20061213041837.GA8825@ccure.user-mode-linux.org>
-MIME-Version: 1.0
+	Mon, 30 Jul 2007 10:09:25 -0700
+Date: Mon, 30 Jul 2007 13:09:11 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070730170911.GA7687@c2.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20061213041837.GA8825@ccure.user-mode-linux.org>
-Subject: Re: [uml-devel] RFC: UML: remove MODE_TT?
+Subject: [uml-devel] [PATCH 1/4] UML - Move userspace code to userspace file
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,38 +28,138 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, Dec 12, 2006 at 11:18:37PM -0500, Jeff Dike wrote:
-> On Wed, Dec 13, 2006 at 12:35:33AM +0100, Adrian Bunk wrote:
-> > MODE_TT is both marked as deprecated and marked as BROKEN.
-> > 
-> > Would a patch to remove MODE_TT, always enable MODE_SKAS, and doing all 
-> > possible cleanups after this be accepted?
-> 
-> Thanks, but not yet.
-> 
-> I've got that queued up in my tree now, waiting for SMP to work.  SMP is 
-> the one remaining justification for TT mode, so I'll get that in, then remove
-> MODE_TT and do the associated cleanups.
+Move some code from a kernelspace file to a userspace file where it
+fits better.  This enables some tidying which is the subject of a
+later patch.
 
-MODE_TT is still marked as broken and still not compiling...
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/drivers/chan_kern.c |   48 -------------------------------------------
+ arch/um/drivers/chan_user.c |   49 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 48 deletions(-)
 
-Will anyone fix it or can it finally be removed?
-
-> 				Jeff
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+Index: linux-2.6.21-mm/arch/um/drivers/chan_kern.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/chan_kern.c	2007-07-27 11:34:20.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/chan_kern.c	2007-07-27 11:35:30.000000000 -0400
+@@ -89,54 +89,6 @@ static const struct chan_ops not_configg
+ };
+ #endif /* CONFIG_NOCONFIG_CHAN */
+ 
+-void generic_close(int fd, void *unused)
+-{
+-	os_close_file(fd);
+-}
+-
+-int generic_read(int fd, char *c_out, void *unused)
+-{
+-	int n;
+-
+-	n = os_read_file(fd, c_out, sizeof(*c_out));
+-
+-	if(n == -EAGAIN)
+-		return 0;
+-	else if(n == 0)
+-		return -EIO;
+-	return n;
+-}
+-
+-/* XXX Trivial wrapper around os_write_file */
+-
+-int generic_write(int fd, const char *buf, int n, void *unused)
+-{
+-	return os_write_file(fd, buf, n);
+-}
+-
+-int generic_window_size(int fd, void *unused, unsigned short *rows_out,
+-			unsigned short *cols_out)
+-{
+-	int rows, cols;
+-	int ret;
+-
+-	ret = os_window_size(fd, &rows, &cols);
+-	if(ret < 0)
+-		return ret;
+-
+-	ret = ((*rows_out != rows) || (*cols_out != cols));
+-
+-	*rows_out = rows;
+-	*cols_out = cols;
+-
+-	return ret;
+-}
+-
+-void generic_free(void *data)
+-{
+-	kfree(data);
+-}
+-
+ static void tty_receive_char(struct tty_struct *tty, char ch)
+ {
+ 	if(tty == NULL) return;
+Index: linux-2.6.21-mm/arch/um/drivers/chan_user.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/chan_user.c	2007-07-27 11:34:20.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/chan_user.c	2007-07-27 11:42:55.000000000 -0400
+@@ -19,6 +19,55 @@
+ #include "os.h"
+ #include "choose-mode.h"
+ #include "mode.h"
++#include "um_malloc.h"
++
++void generic_close(int fd, void *unused)
++{
++	os_close_file(fd);
++}
++
++int generic_read(int fd, char *c_out, void *unused)
++{
++	int n;
++
++	n = os_read_file(fd, c_out, sizeof(*c_out));
++
++	if(n == -EAGAIN)
++		return 0;
++	else if(n == 0)
++		return -EIO;
++	return n;
++}
++
++/* XXX Trivial wrapper around os_write_file */
++
++int generic_write(int fd, const char *buf, int n, void *unused)
++{
++	return os_write_file(fd, buf, n);
++}
++
++int generic_window_size(int fd, void *unused, unsigned short *rows_out,
++			unsigned short *cols_out)
++{
++	int rows, cols;
++	int ret;
++
++	ret = os_window_size(fd, &rows, &cols);
++	if(ret < 0)
++		return ret;
++
++	ret = ((*rows_out != rows) || (*cols_out != cols));
++
++	*rows_out = rows;
++	*cols_out = cols;
++
++	return ret;
++}
++
++void generic_free(void *data)
++{
++	kfree(data);
++}
+ 
+ int generic_console_write(int fd, const char *buf, int n)
+ {
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
