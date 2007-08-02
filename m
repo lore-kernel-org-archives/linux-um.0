@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IGhqj-0003bH-7A for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Aug 2007 14:04:49 -0700
+	id 1IGhqh-0003as-Us for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Aug 2007 14:04:47 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IGhqi-0000cK-7c
+	(Exim 4.44) id 1IGhqh-0000cH-4u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Aug 2007 14:04:49 -0700
-Date: Thu, 2 Aug 2007 17:04:36 -0400
+	Thu, 02 Aug 2007 14:04:47 -0700
+Date: Thu, 2 Aug 2007 17:04:38 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070802210436.GA11169@c2.user-mode-linux.org>
+Message-ID: <20070802210438.GA11184@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/6] UML - Stop using libc asm/page.h
+Subject: [uml-devel] [PATCH 4/6] UML - Stop specially protecting kernel stacks
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,103 +31,85 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Remove includes of asm/page.h from libc code.  This header seems to be
-disappearing, and UML doesn't make much use of it anyway.
+Map all of physical memory as executable to avoid having to change
+stack protections during fork and exit.
 
-The one use, PAGE_SHIFT in stub.h, is handled by copying the constant
-from the kernel side of the house in common_offsets.h.
+unprotect_stack is now called only from MODE_TT code, so it is marked
+as such.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/common-offsets.h   |    1 +
- arch/um/include/sysdep-i386/stub.h |    3 +--
- arch/um/os-Linux/main.c            |    1 -
- arch/um/os-Linux/skas/mem.c        |    1 -
- arch/um/os-Linux/start_up.c        |    1 -
- arch/um/os-Linux/tt.c              |    1 -
- 6 files changed, 2 insertions(+), 6 deletions(-)
+ arch/um/include/kern_util.h |    2 ++
+ arch/um/kernel/init_task.c  |    2 ++
+ arch/um/kernel/physmem.c    |    2 +-
+ arch/um/kernel/process.c    |    5 ++---
+ 4 files changed, 7 insertions(+), 4 deletions(-)
 
-Index: linux-2.6.21-mm/arch/um/include/sysdep-i386/stub.h
+Index: linux-2.6.21-mm/arch/um/kernel/physmem.c
 ===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/sysdep-i386/stub.h	2007-08-02 16:43:17.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/sysdep-i386/stub.h	2007-08-02 16:43:20.000000000 -0400
-@@ -9,7 +9,6 @@
- #include <sys/mman.h>
- #include <asm/ptrace.h>
- #include <asm/unistd.h>
--#include <asm/page.h>
- #include "stub-data.h"
- #include "kern_constants.h"
- #include "uml-config.h"
-@@ -19,7 +18,7 @@ extern void stub_clone_handler(void);
+--- linux-2.6.21-mm.orig/arch/um/kernel/physmem.c	2007-08-02 16:43:17.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/physmem.c	2007-08-02 16:43:25.000000000 -0400
+@@ -105,7 +105,7 @@ void __init setup_physmem(unsigned long 
  
- #define STUB_SYSCALL_RET EAX
- #define STUB_MMAP_NR __NR_mmap2
--#define MMAP_OFFSET(o) ((o) >> PAGE_SHIFT)
-+#define MMAP_OFFSET(o) ((o) >> UM_KERN_PAGE_SHIFT)
+ 	offset = uml_reserved - uml_physmem;
+ 	err = os_map_memory((void *) uml_reserved, physmem_fd, offset,
+-			    len - offset, 1, 1, 0);
++			    len - offset, 1, 1, 1);
+ 	if(err < 0){
+ 		os_print_error(err, "Mapping memory");
+ 		exit(1);
+Index: linux-2.6.21-mm/arch/um/kernel/process.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/process.c	2007-08-02 16:43:17.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/process.c	2007-08-02 16:43:25.000000000 -0400
+@@ -82,9 +82,9 @@ unsigned long alloc_stack(int order, int
+ 	if (atomic)
+ 		flags = GFP_ATOMIC;
+ 	page = __get_free_pages(flags, order);
+-	if(page == 0)
++	if (page == 0)
+ 		return 0;
+-	stack_protections(page);
++
+ 	return page;
+ }
  
- static inline long stub_syscall0(long syscall)
+@@ -141,7 +141,6 @@ void release_thread(struct task_struct *
+ 
+ void exit_thread(void)
  {
-Index: linux-2.6.21-mm/arch/um/os-Linux/main.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/main.c	2007-08-02 16:43:17.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/main.c	2007-08-02 16:43:20.000000000 -0400
-@@ -12,7 +12,6 @@
- #include <sys/resource.h>
- #include <sys/mman.h>
- #include <sys/user.h>
--#include <asm/page.h>
- #include "kern_util.h"
- #include "as-layout.h"
- #include "mem_user.h"
-Index: linux-2.6.21-mm/arch/um/os-Linux/skas/mem.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/skas/mem.c	2007-08-02 16:43:17.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/skas/mem.c	2007-08-02 16:43:20.000000000 -0400
-@@ -9,7 +9,6 @@
- #include <unistd.h>
- #include <sys/mman.h>
- #include <sys/wait.h>
--#include <asm/page.h>
- #include <asm/unistd.h>
- #include "mem_user.h"
- #include "mem.h"
-Index: linux-2.6.21-mm/arch/um/os-Linux/start_up.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/start_up.c	2007-08-02 16:43:17.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/start_up.c	2007-08-02 16:43:20.000000000 -0400
-@@ -19,7 +19,6 @@
- #include <sys/mman.h>
- #include <sys/resource.h>
- #include <asm/unistd.h>
--#include <asm/page.h>
- #include <sys/types.h>
- #include "kern_util.h"
- #include "user.h"
-Index: linux-2.6.21-mm/arch/um/os-Linux/tt.c
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/os-Linux/tt.c	2007-08-02 16:43:17.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/os-Linux/tt.c	2007-08-02 16:43:20.000000000 -0400
-@@ -17,7 +17,6 @@
- #include <sys/mman.h>
- #include <asm/ptrace.h>
- #include <asm/unistd.h>
--#include <asm/page.h>
- #include "kern_util.h"
- #include "user.h"
- #include "signal_kern.h"
-Index: linux-2.6.21-mm/arch/um/include/common-offsets.h
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/include/common-offsets.h	2007-08-02 16:43:17.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/include/common-offsets.h	2007-08-02 16:43:20.000000000 -0400
-@@ -10,6 +10,7 @@ OFFSET(HOST_TASK_PID, task_struct, pid);
+-	unprotect_stack((unsigned long) current_thread);
+ }
  
- DEFINE(UM_KERN_PAGE_SIZE, PAGE_SIZE);
- DEFINE(UM_KERN_PAGE_MASK, PAGE_MASK);
-+DEFINE(UM_KERN_PAGE_SHIFT, PAGE_SHIFT);
- DEFINE(UM_NSEC_PER_SEC, NSEC_PER_SEC);
+ void *get_current(void)
+Index: linux-2.6.21-mm/arch/um/include/kern_util.h
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/include/kern_util.h	2007-08-02 16:43:17.000000000 -0400
++++ linux-2.6.21-mm/arch/um/include/kern_util.h	2007-08-02 16:43:25.000000000 -0400
+@@ -82,7 +82,9 @@ extern void check_stack_overflow(void *p
+ extern void relay_signal(int sig, union uml_pt_regs *regs);
+ extern int user_context(unsigned long sp);
+ extern void timer_irq(union uml_pt_regs *regs);
++#ifdef CONFIG_MODE_TT
+ extern void unprotect_stack(unsigned long stack);
++#endif
+ extern void do_uml_exitcalls(void);
+ extern int attach_debugger(int idle_pid, int pid, int stop);
+ extern int config_gdb(char *str);
+Index: linux-2.6.21-mm/arch/um/kernel/init_task.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/kernel/init_task.c	2007-08-02 16:43:17.000000000 -0400
++++ linux-2.6.21-mm/arch/um/kernel/init_task.c	2007-08-02 16:43:25.000000000 -0400
+@@ -47,7 +47,9 @@ union thread_union cpu0_irqstack
+ 	__attribute__((__section__(".data.init_irqstack"))) =
+ 		{ INIT_THREAD_INFO(init_task) };
  
- DEFINE_STR(UM_KERN_EMERG, KERN_EMERG);
++#ifdef CONFIG_MODE_TT
+ void unprotect_stack(unsigned long stack)
+ {
+ 	os_protect_memory((void *) stack, THREAD_SIZE, 1, 1, 0);
+ }
++#endif
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
