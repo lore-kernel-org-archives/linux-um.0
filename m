@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IH1LZ-0004tl-B1 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Aug 2007 10:53:57 -0700
+	id 1IH1tv-0000Yt-QM for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 03 Aug 2007 11:29:31 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IH1LY-00089d-87
+	(Exim 4.44) id 1IH1tu-0000Pb-A0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Aug 2007 10:53:57 -0700
-Date: Fri, 3 Aug 2007 13:53:40 -0400
+	Fri, 03 Aug 2007 11:29:27 -0700
+Date: Fri, 3 Aug 2007 14:29:21 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070803175340.GA8430@c2.user-mode-linux.org>
+Message-ID: <20070803182921.GA8597@c2.user-mode-linux.org>
 References: <46975C78.5010903@nagafix.co.uk>
 	<20070713160500.GB7468@c2.user-mode-linux.org>
 	<4697BFCB.2060701@nagafix.co.uk>
@@ -39,19 +39,17 @@ To: Antoine Martin <antoine@nagafix.co.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
 On Tue, Jul 31, 2007 at 06:46:39PM +0100, Antoine Martin wrote:
-> If it doesn't crash on emerge --sync (when I reboot it doesn't always
-> crash), try building something big (like glibc or gcc: emerge glibc gcc)
-> It does look like an fd leak or something: the connection stays alive,
-> processes already started can still receive keyboard input, but no way
-> to login or run any commands.
+> If it doesn't crash on emerge --sync
 
-OK, so I get this:
+Nevermind that last, I figured it out.
 
-	Welcome to viper.nagafix.co.uk
+>  (when I reboot it doesn't always crash), 
 
-	@ERROR: access denied to gentoo-portage from pool-72-70-38-233.bstnma.fios.verizon.net (72.70.38.233)
+Didn't you say this was 100%? :-)  Anyway, it works fine here.
 
-What are the public servers that I can sync against, and where do I put them?
+> try building something big (like glibc or gcc: emerge glibc gcc)
+
+That's running as I type, apparently happily.
 
 				Jeff
 
