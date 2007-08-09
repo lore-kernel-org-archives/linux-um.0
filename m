@@ -1,20 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IInt0-0005Ps-W1 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Aug 2007 08:55:51 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IInss-0003Ps-MK
+	id 1IJ6xH-0006z8-Ar for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 09 Aug 2007 05:17:31 -0700
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IJ6xF-0008Ee-RN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Aug 2007 08:55:48 -0700
-Date: Wed, 8 Aug 2007 11:55:15 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070808155515.GA7634@c2.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] UML - Add VDE networking support
+	Thu, 09 Aug 2007 05:17:31 -0700
+Message-ID: <46BB05D2.7010501@nagafix.co.uk>
+Date: Thu, 09 Aug 2007 13:17:22 +0100
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
+References: <46975C78.5010903@nagafix.co.uk>
+	<20070713160500.GB7468@c2.user-mode-linux.org>
+	<4697BFCB.2060701@nagafix.co.uk>
+	<20070713184545.GC9472@c2.user-mode-linux.org>
+	<46AF757F.9080103@nagafix.co.uk>
+	<20070803175340.GA8430@c2.user-mode-linux.org>
+In-Reply-To: <20070803175340.GA8430@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] 2.6.21.5 crashes [was link failure,
+	multiple definition of 'in6addr_any']
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,416 +34,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-[ This is 2.6.24 material ]
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-Added vde network backend in uml to introduce native Virtual Distributed
-Ethernet support (using libvdeplug).
+Jeff Dike wrote:
+> On Tue, Jul 31, 2007 at 06:46:39PM +0100, Antoine Martin wrote:
+>> If it doesn't crash on emerge --sync (when I reboot it doesn't always
+>> crash), try building something big (like glibc or gcc: emerge glibc gcc)
+>> It does look like an fd leak or something: the connection stays alive,
+>> processes already started can still receive keyboard input, but no way
+>> to login or run any commands.
+> 
+> OK, so I get this:
+> 
+> 	Welcome to viper.nagafix.co.uk
+> 
+> 	@ERROR: access denied to gentoo-portage from pool-72-70-38-233.bstnma.fios.verizon.net (72.70.38.233)
+> 
+> What are the public servers that I can sync against, and where do I put them?
+Ooops, my update script seems to have been interrupted in the past and
+failed to remove the "SYNC=XXX" line it places in /etc/make.conf
+Script now fixed and the images have been updated too.
 
-[ jdike - minor cleanups ]
+Antoine
 
-Signed-Off-By: Luca Bigliardi <shammash@artha.org>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/Kconfig.net        |   22 +++++++
- arch/um/drivers/Makefile   |   10 ++-
- arch/um/drivers/vde.h      |   32 ++++++++++
- arch/um/drivers/vde_kern.c |  136 +++++++++++++++++++++++++++++++++++++++++++++
- arch/um/drivers/vde_user.c |  136 +++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 334 insertions(+), 2 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.5 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-Index: linux-2.6.21-mm/arch/um/Kconfig.net
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/Kconfig.net	2007-02-04 13:44:54.000000000 -0500
-+++ linux-2.6.21-mm/arch/um/Kconfig.net	2007-07-27 12:38:21.000000000 -0400
-@@ -108,6 +108,28 @@ config UML_NET_DAEMON
-         more than one without conflict.  If you don't need UML networking,
-         say N.
- 
-+config UML_NET_VDE
-+	bool "VDE transport"
-+	depends on UML_NET
-+	help
-+	This User-Mode Linux network transport allows one or more running
-+	UMLs on a single host to communicate with each other and also
-+	with the rest of the world using Virtual Distributed Ethernet,
-+	an improved fork of uml_switch.
-+
-+	You must have libvdeplug installed in order to build the vde
-+	transport into UML.
-+
-+	To use this form of networking, you will need to run vde_switch
-+	on the host.
-+
-+	For more information, see <http://wiki.virtualsquare.org/>
-+	That site has a good overview of what VDE is and also examples
-+	of the UML command line to use to enable VDE networking.
-+
-+	If you need UML networking with VDE,
-+	say Y.
-+
- config UML_NET_MCAST
- 	bool "Multicast transport"
- 	depends on UML_NET
-Index: linux-2.6.21-mm/arch/um/drivers/Makefile
-===================================================================
---- linux-2.6.21-mm.orig/arch/um/drivers/Makefile	2007-06-28 16:11:29.000000000 -0400
-+++ linux-2.6.21-mm/arch/um/drivers/Makefile	2007-07-30 12:36:17.000000000 -0400
-@@ -18,11 +18,16 @@ port-objs := port_kern.o port_user.o
- harddog-objs := harddog_kern.o harddog_user.o
- 
- LDFLAGS_pcap.o := -r $(shell $(CC) $(CFLAGS) -print-file-name=libpcap.a)
-+LDFLAGS_vde.o := -r $(shell $(CC) $(CFLAGS) -print-file-name=libvdeplug.a)
- 
--targets := pcap_kern.o pcap_user.o
-+targets := pcap_kern.o pcap_user.o vde_kern.o vde_user.o
- 
- $(obj)/pcap.o: $(obj)/pcap_kern.o $(obj)/pcap_user.o
- 	$(LD) -r -dp -o $@ $^ $(LDFLAGS) $(LDFLAGS_pcap.o)
-+
-+$(obj)/vde.o: $(obj)/vde_kern.o $(obj)/vde_user.o
-+	$(LD) -r -dp -o $@ $^ $(LDFLAGS) $(LDFLAGS_vde.o)
-+
- #XXX: The call below does not work because the flags are added before the
- # object name, so nothing from the library gets linked.
- #$(call if_changed,ld)
-@@ -37,6 +42,7 @@ obj-$(CONFIG_STDERR_CONSOLE) += stderr_c
- obj-$(CONFIG_UML_NET_SLIP) += slip.o slip_common.o
- obj-$(CONFIG_UML_NET_SLIRP) += slirp.o slip_common.o
- obj-$(CONFIG_UML_NET_DAEMON) += daemon.o 
-+obj-$(CONFIG_UML_NET_VDE) += vde.o
- obj-$(CONFIG_UML_NET_MCAST) += mcast.o 
- obj-$(CONFIG_UML_NET_PCAP) += pcap.o
- obj-$(CONFIG_UML_NET) += net.o 
-@@ -54,6 +60,6 @@ obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_
- obj-$(CONFIG_UML_RANDOM) += random.o
- 
- # pcap_user.o must be added explicitly.
--USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o
-+USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o vde_user.o
- 
- include arch/um/scripts/Makefile.rules
-Index: linux-2.6.21-mm/arch/um/drivers/vde_user.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21-mm/arch/um/drivers/vde_user.c	2007-07-27 12:51:35.000000000 -0400
-@@ -0,0 +1,136 @@
-+/*
-+ * Copyright (C) 2007 Luca Bigliardi (shammash@artha.org).
-+ * Licensed under the GPL.
-+ */
-+
-+#include <errno.h>
-+#include <unistd.h>
-+#include <libvdeplug.h>
-+#include "net_user.h"
-+#include "kern_util.h"
-+#include "kern_constants.h"
-+#include "user.h"
-+#include "os.h"
-+#include "um_malloc.h"
-+#include "vde.h"
-+
-+#define MAX_PACKET (ETH_MAX_PACKET + ETH_HEADER_OTHER)
-+
-+static int vde_user_init(void *data, void *dev)
-+{
-+	struct vde_data *pri = data;
-+	VDECONN *conn = NULL;
-+	int err = -EINVAL;
-+
-+	pri->dev = dev;
-+
-+	conn = vde_open(pri->vde_switch, pri->descr, pri->args);
-+
-+	if (conn == NULL) {
-+		err = -errno;
-+		printk(UM_KERN_ERR "vde_user_init: vde_open failed, "
-+		       "errno = %d\n", errno);
-+		return err;
-+	}
-+
-+	printk(UM_KERN_INFO "vde backend - connection opened\n");
-+
-+	pri->conn = conn;
-+
-+	return 0;
-+}
-+
-+static int vde_user_open(void *data)
-+{
-+	struct vde_data *pri = data;
-+
-+	if (pri->conn != NULL)
-+		return vde_datafd(pri->conn);
-+
-+	printk(UM_KERN_WARNING "vde_open - we have no VDECONN to open");
-+	return -EINVAL;
-+}
-+
-+static void vde_remove(void *data)
-+{
-+	struct vde_data *pri = data;
-+
-+	if (pri->conn != NULL) {
-+		printk(UM_KERN_INFO "vde backend - closing connection\n");
-+		vde_close(pri->conn);
-+		pri->conn = NULL;
-+		kfree(pri->args);
-+		pri->args = NULL;
-+		return;
-+	}
-+
-+	printk(UM_KERN_WARNING "vde_remove - we have no VDECONN to remove");
-+}
-+
-+static int vde_set_mtu(int mtu, void *data)
-+{
-+	return mtu;
-+}
-+
-+const struct net_user_info vde_user_info = {
-+	.init		= vde_user_init,
-+	.open		= vde_user_open,
-+	.close	 	= NULL,
-+	.remove	 	= vde_remove,
-+	.set_mtu	= vde_set_mtu,
-+	.add_address	= NULL,
-+	.delete_address = NULL,
-+	.max_packet	= MAX_PACKET - ETH_HEADER_OTHER
-+};
-+
-+void vde_init_libstuff(struct vde_data *vpri, struct vde_init *init)
-+{
-+	struct vde_open_args *args;
-+
-+	vpri->args = kmalloc(sizeof(struct vde_open_args), UM_GFP_KERNEL);
-+	if (vpri->args == NULL) {
-+		printk(UM_KERN_ERR "vde_init_libstuff - vde_open_args"
-+		       "allocation failed");
-+		return;
-+	}
-+
-+	args = vpri->args;
-+
-+	args->port = init->port;
-+	args->group = init->group;
-+	args->mode = init->mode ? init->mode : 0700;
-+
-+	args->port ?  printk(UM_KERN_INFO "port %d", args->port) :
-+		printk(UM_KERN_INFO "undefined port");
-+}
-+
-+int vde_user_read(void *conn, void *buf, int len)
-+{
-+	VDECONN *vconn = conn;
-+	int rv;
-+
-+	if (vconn == NULL)
-+		return 0;
-+
-+	rv = vde_recv(vconn, buf, len, 0);
-+	if (rv < 0) {
-+		if (errno == EAGAIN)
-+			return 0;
-+		return -errno;
-+	}
-+	else if (rv == 0)
-+		return -ENOTCONN;
-+
-+	return rv;
-+}
-+
-+int vde_user_write(void *conn, void *buf, int len)
-+{
-+	VDECONN *vconn = conn;
-+
-+	if (vconn == NULL)
-+		return 0;
-+
-+	return vde_send(vconn, buf, len, 0);
-+}
-+
-Index: linux-2.6.21-mm/arch/um/drivers/vde.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21-mm/arch/um/drivers/vde.h	2007-07-27 12:44:35.000000000 -0400
-@@ -0,0 +1,32 @@
-+/*
-+ * Copyright (C) 2007 Luca Bigliardi (shammash@artha.org).
-+ * Licensed under the GPL.
-+ */
-+
-+#ifndef __UM_VDE_H__
-+#define __UM_VDE_H__
-+
-+struct vde_data {
-+	char *vde_switch;
-+	char *descr;
-+	void *args;
-+	void *conn;
-+	void *dev;
-+};
-+
-+struct vde_init {
-+	char *vde_switch;
-+	char *descr;
-+	int port;
-+	char *group;
-+	int mode;
-+};
-+
-+extern const struct net_user_info vde_user_info;
-+
-+extern void vde_init_libstuff(struct vde_data *vpri, struct vde_init *init);
-+
-+extern int vde_user_read(void *conn, void *buf, int len);
-+extern int vde_user_write(void *conn, void *buf, int len);
-+
-+#endif
-Index: linux-2.6.21-mm/arch/um/drivers/vde_kern.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21-mm/arch/um/drivers/vde_kern.c	2007-07-27 12:49:09.000000000 -0400
-@@ -0,0 +1,136 @@
-+/*
-+ * Copyright (C) 2007 Luca Bigliardi (shammash@artha.org).
-+ * Licensed under the GPL.
-+ *
-+ * Transport usage:
-+ *  ethN=vde,<vde_switch>,<mac addr>,<port>,<group>,<mode>,<description>
-+ *
-+ */
-+
-+#include "linux/kernel.h"
-+#include "linux/init.h"
-+#include "linux/netdevice.h"
-+#include "linux/etherdevice.h"
-+#include "net_kern.h"
-+#include "net_user.h"
-+#include "vde.h"
-+
-+static void vde_init(struct net_device *dev, void *data)
-+{
-+	struct vde_init *init = data;
-+	struct uml_net_private *pri;
-+	struct vde_data *vpri;
-+
-+	pri = dev->priv;
-+	vpri = (struct vde_data *) pri->user;
-+
-+	vpri->vde_switch = init->vde_switch;
-+	vpri->descr = init->descr ? init->descr : "UML vde_transport";
-+	vpri->args = NULL;
-+	vpri->conn = NULL;
-+	vpri->dev = dev;
-+
-+	printk(KERN_INFO "vde backend - %s, ", vpri->vde_switch ?
-+	       vpri->vde_switch : "(default socket)");
-+
-+	vde_init_libstuff(vpri, init);
-+
-+	printk(KERN_INFO "\n");
-+}
-+
-+static int vde_read(int fd, struct sk_buff **skb, struct uml_net_private *lp)
-+{
-+	struct vde_data *pri = (struct vde_data *) &lp->user;
-+
-+	if (pri->conn != NULL) {
-+		*skb = ether_adjust_skb(*skb, ETH_HEADER_OTHER);
-+		if (*skb == NULL)
-+			return -ENOMEM;
-+
-+		return vde_user_read(pri->conn, skb_mac_header(*skb),
-+				     (*skb)->dev->mtu + ETH_HEADER_OTHER);
-+	}
-+
-+	printk(KERN_ERR "vde_read - we have no VDECONN to read from");
-+	return -EBADF;
-+}
-+
-+static int vde_write(int fd, struct sk_buff **skb, struct uml_net_private *lp)
-+{
-+	struct vde_data *pri = (struct vde_data *) &lp->user;
-+
-+	if (pri->conn != NULL)
-+		return vde_user_write((void *)pri->conn, (*skb)->data,
-+				      (*skb)->len);
-+
-+	printk(KERN_ERR "vde_write - we have no VDECONN to write to");
-+	return -EBADF;
-+}
-+
-+static const struct net_kern_info vde_kern_info = {
-+	.init			= vde_init,
-+	.protocol		= eth_protocol,
-+	.read			= vde_read,
-+	.write			= vde_write,
-+};
-+
-+static int vde_setup(char *str, char **mac_out, void *data)
-+{
-+	struct vde_init *init = data;
-+	char *remain, *port_str = NULL, *mode_str = NULL, *last;
-+
-+	*init = ((struct vde_init)
-+		{ .vde_switch		= NULL,
-+		  .descr		= NULL,
-+		  .port			= 0,
-+		  .group		= NULL,
-+		  .mode			= 0 });
-+
-+	remain = split_if_spec(str, &init->vde_switch, mac_out, &port_str,
-+				&init->group, &mode_str, &init->descr, NULL);
-+
-+	if (remain != NULL)
-+		printk(KERN_WARNING "vde_setup - Ignoring extra data :"
-+		       "'%s'\n", remain);
-+
-+	if (port_str != NULL) {
-+		init->port = simple_strtoul(port_str, &last, 10);
-+		if ((*last != '\0') || (last == port_str)) {
-+			printk(KERN_ERR "vde_setup - Bad port : '%s'\n",
-+						port_str);
-+			return 0;
-+		}
-+	}
-+
-+	if (mode_str != NULL) {
-+		init->mode = simple_strtoul(mode_str, &last, 8);
-+		if ((*last != '\0') || (last == mode_str)) {
-+			printk(KERN_ERR "vde_setup - Bad mode : '%s'\n",
-+						mode_str);
-+			return 0;
-+		}
-+	}
-+
-+	printk(KERN_INFO "Configured vde device: %s\n", init->vde_switch ?
-+	       init->vde_switch : "(default socket)");
-+
-+	return 1;
-+}
-+
-+static struct transport vde_transport = {
-+	.list 		= LIST_HEAD_INIT(vde_transport.list),
-+	.name 		= "vde",
-+	.setup  	= vde_setup,
-+	.user 		= &vde_user_info,
-+	.kern 		= &vde_kern_info,
-+	.private_size 	= sizeof(struct vde_data),
-+	.setup_size 	= sizeof(struct vde_init),
-+};
-+
-+static int register_vde(void)
-+{
-+	register_transport(&vde_transport);
-+	return 0;
-+}
-+
-+late_initcall(register_vde);
+iD8DBQFGuwXSGK2zHPGK1rsRCpWHAJ986mjSod2gLW11+jI9iYgoQI6gqACeMm8A
+B+9MBfr2My/xrpFswM2ZuCE=
+=ETyK
+-----END PGP SIGNATURE-----
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
