@@ -2,25 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IJ6xH-0006z8-Ar for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Aug 2007 05:17:31 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IJ6xF-0008Ee-RN
+	id 1IKB5V-0002oY-N1 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Aug 2007 03:54:25 -0700
+Received: from smtp010.mail.ukl.yahoo.com ([217.12.11.79])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1IKB5R-0003yU-PQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Aug 2007 05:17:31 -0700
-Message-ID: <46BB05D2.7010501@nagafix.co.uk>
-Date: Thu, 09 Aug 2007 13:17:22 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
+	Sun, 12 Aug 2007 03:54:25 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Sun, 12 Aug 2007 12:54:05 +0200
+References: <20070725143227.GO5115@pintsize>
+	<20070725160700.GA7607@c2.user-mode-linux.org>
+In-Reply-To: <20070725160700.GA7607@c2.user-mode-linux.org>
 MIME-Version: 1.0
-References: <46975C78.5010903@nagafix.co.uk>
-	<20070713160500.GB7468@c2.user-mode-linux.org>
-	<4697BFCB.2060701@nagafix.co.uk>
-	<20070713184545.GC9472@c2.user-mode-linux.org>
-	<46AF757F.9080103@nagafix.co.uk>
-	<20070803175340.GA8430@c2.user-mode-linux.org>
-In-Reply-To: <20070803175340.GA8430@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] 2.6.21.5 crashes [was link failure,
-	multiple definition of 'in6addr_any']
+Message-Id: <200708121254.10137.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [RFC PATCH] vde network backend
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,52 +25,73 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1673125434=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
+--===============1673125434==
+Content-Type: multipart/signed; boundary="nextPart1186930963.zWHiZe1SIv";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Jeff Dike wrote:
-> On Tue, Jul 31, 2007 at 06:46:39PM +0100, Antoine Martin wrote:
->> If it doesn't crash on emerge --sync (when I reboot it doesn't always
->> crash), try building something big (like glibc or gcc: emerge glibc gcc)
->> It does look like an fd leak or something: the connection stays alive,
->> processes already started can still receive keyboard input, but no way
->> to login or run any commands.
-> 
-> OK, so I get this:
-> 
-> 	Welcome to viper.nagafix.co.uk
-> 
-> 	@ERROR: access denied to gentoo-portage from pool-72-70-38-233.bstnma.fios.verizon.net (72.70.38.233)
-> 
-> What are the public servers that I can sync against, and where do I put them?
-Ooops, my update script seems to have been interrupted in the past and
-failed to remove the "SYNC=XXX" line it places in /etc/make.conf
-Script now fixed and the images have been updated too.
+--nextPart1186930963.zWHiZe1SIv
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Antoine
+On mercoled=EC 25 luglio 2007, Jeff Dike wrote:
+> 	style violations :
+
+> 		if( blah ){ should be if(blah) {
+Hmm - I know I'm a bit too late, but that should be "if (blah) {", with a=20
+space after if (or after for, or after while (blah) { ).
+
+Bye
+=2D-=20
+"Doh!" (cit.), I've made another another mistake!
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
+
+--nextPart1186930963.zWHiZe1SIv
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.5 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+Version: GnuPG v1.4.6 (GNU/Linux)
 
-iD8DBQFGuwXSGK2zHPGK1rsRCpWHAJ986mjSod2gLW11+jI9iYgoQI6gqACeMm8A
-B+9MBfr2My/xrpFswM2ZuCE=
-=ETyK
+iD8DBQBGvubSqH9OHC+5NscRAodgAJ4nyPbct7uS3RIAhtQBhv9yaxr6yQCdFj7Z
+VBvuiyqbpjG8qfkmSt23Cms=
+=dMA8
 -----END PGP SIGNATURE-----
+
+--nextPart1186930963.zWHiZe1SIv--
+
+
+--===============1673125434==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
 Still grepping through log files to find problems?  Stop.
 Now Search log events and configuration files using AJAX and a browser.
 Download your FREE copy of Splunk now >>  http://get.splunk.com/
+--===============1673125434==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============1673125434==--
+
