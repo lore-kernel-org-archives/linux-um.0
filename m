@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IL47t-0001aj-SD for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Aug 2007 14:40:34 -0700
+	id 1IL47s-0001aF-Vu for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 14 Aug 2007 14:40:33 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IL47r-0008B3-Bu
+	(Exim 4.44) id 1IL47p-00089w-5l
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Aug 2007 14:40:33 -0700
-Date: Tue, 14 Aug 2007 17:40:25 -0400
+	Tue, 14 Aug 2007 14:40:32 -0700
+Date: Tue, 14 Aug 2007 17:40:26 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070814214025.GA17544@c2.user-mode-linux.org>
+Message-ID: <20070814214026.GA17554@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 11/14] UML - Rename pt_regs general-purpose
-	register file
+Subject: [uml-devel] [PATCH 13/14] UML - Remove os_* usage from userspace files
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,382 +31,800 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Before the removal of tt mode, access to a register on the skas-mode
-side of a pt_regs struct looked like pt_regs.regs.skas.regs.regs[FOO].
-This was bad enough, but it became pt_regs.regs.regs.regs[FOO] with
-the removal of the union from the middle.  To get rid of the run of
-three "regs", the last field is renamed to "gp".
+This patch fixes some userspace files which were calling libc through
+the os_* wrappers.
+
+It turns out that there was only one user of os_new_tty_pgrp, so it
+can be deleted.
+
+There are also some style and whitespace fixes in here.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/sysdep-i386/ptrace.h   |   36 +++++++++---------
- arch/um/include/sysdep-x86_64/ptrace.h |   60 +++++++++++++++---------------
- arch/um/kernel/process.c               |    4 +-
- arch/um/kernel/skas/syscall.c          |    2 -
- arch/um/os-Linux/registers.c           |    6 +--
- arch/um/os-Linux/skas/process.c        |    4 +-
- arch/um/sys-i386/signal.c              |   64 ++++++++++++++++-----------------
- arch/um/sys-x86_64/signal.c            |    6 +--
- arch/um/sys-x86_64/tls.c               |    2 -
- 9 files changed, 92 insertions(+), 92 deletions(-)
+ arch/um/drivers/chan_user.c            |   37 ++++----
+ arch/um/drivers/harddog_user.c         |   54 +++++------
+ arch/um/include/mconsole.h             |   13 --
+ arch/um/include/os.h                   |    1 
+ arch/um/include/sysdep-i386/ptrace.h   |    3 
+ arch/um/include/sysdep-x86_64/ptrace.h |  152 ++++++++++++++++-----------------
+ arch/um/kernel/skas/uaccess.c          |  134 +++++++++++++----------------
+ arch/um/os-Linux/file.c                |   11 --
+ 8 files changed, 186 insertions(+), 219 deletions(-)
 
-Index: linux-2.6.22/arch/um/include/sysdep-i386/ptrace.h
+Index: linux-2.6.22/arch/um/drivers/chan_user.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/include/sysdep-i386/ptrace.h	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/include/sysdep-i386/ptrace.h	2007-08-13 16:58:20.000000000 -0400
-@@ -53,7 +53,7 @@ extern int sysemu_supported;
- #endif
+--- linux-2.6.22.orig/arch/um/drivers/chan_user.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/drivers/chan_user.c	2007-08-13 13:45:03.000000000 -0400
+@@ -134,12 +134,12 @@ static int winch_thread(void *arg)
+ 	struct winch_data *data = arg;
+ 	sigset_t sigs;
+ 	int pty_fd, pipe_fd;
+-	int count, err;
++	int count;
+ 	char c = 1;
  
- struct uml_pt_regs {
--	unsigned long regs[MAX_REG_NR];
-+	unsigned long gp[MAX_REG_NR];
- 	unsigned long fp[HOST_FP_SIZE];
- 	unsigned long xfp[HOST_XFP_SIZE];
- 	struct faultinfo faultinfo;
-@@ -63,23 +63,23 @@ struct uml_pt_regs {
+ 	pty_fd = data->pty_fd;
+ 	pipe_fd = data->pipe_fd;
+-	count = os_write_file(pipe_fd, &c, sizeof(c));
++	count = write(pipe_fd, &c, sizeof(c));
+ 	if (count != sizeof(c))
+ 		printk(UM_KERN_ERR "winch_thread : failed to write "
+ 		       "synchronization byte, err = %d\n", -count);
+@@ -167,10 +167,15 @@ static int winch_thread(void *arg)
+ 		exit(1);
+ 	}
  
- #define EMPTY_UML_PT_REGS { }
+-	err = os_new_tty_pgrp(pty_fd, os_getpid());
+-	if (err < 0) {
+-		printk(UM_KERN_ERR "winch_thread : new_tty_pgrp failed on "
+-		       "fd %d err = %d\n", pty_fd, -err);
++	if(ioctl(pty_fd, TIOCSCTTY, 0) < 0){
++		printk(UM_KERN_ERR "winch_thread : TIOCSCTTY failed on "
++		       "fd %d err = %d\n", pty_fd, errno);
++		exit(1);
++	}
++
++	if(tcsetpgrp(pty_fd, os_getpid()) < 0){
++		printk(UM_KERN_ERR "winch_thread : tcsetpgrp failed on "
++		       "fd %d err = %d\n", pty_fd, errno);
+ 		exit(1);
+ 	}
  
--#define UPT_IP(r) REGS_IP((r)->regs)
--#define UPT_SP(r) REGS_SP((r)->regs)
--#define UPT_EFLAGS(r) REGS_EFLAGS((r)->regs)
--#define UPT_EAX(r) REGS_EAX((r)->regs)
--#define UPT_EBX(r) REGS_EBX((r)->regs)
--#define UPT_ECX(r) REGS_ECX((r)->regs)
--#define UPT_EDX(r) REGS_EDX((r)->regs)
--#define UPT_ESI(r) REGS_ESI((r)->regs)
--#define UPT_EDI(r) REGS_EDI((r)->regs)
--#define UPT_EBP(r) REGS_EBP((r)->regs)
-+#define UPT_IP(r) REGS_IP((r)->gp)
-+#define UPT_SP(r) REGS_SP((r)->gp)
-+#define UPT_EFLAGS(r) REGS_EFLAGS((r)->gp)
-+#define UPT_EAX(r) REGS_EAX((r)->gp)
-+#define UPT_EBX(r) REGS_EBX((r)->gp)
-+#define UPT_ECX(r) REGS_ECX((r)->gp)
-+#define UPT_EDX(r) REGS_EDX((r)->gp)
-+#define UPT_ESI(r) REGS_ESI((r)->gp)
-+#define UPT_EDI(r) REGS_EDI((r)->gp)
-+#define UPT_EBP(r) REGS_EBP((r)->gp)
- #define UPT_ORIG_EAX(r) ((r)->syscall)
--#define UPT_CS(r) REGS_CS((r)->regs)
--#define UPT_SS(r) REGS_SS((r)->regs)
--#define UPT_DS(r) REGS_DS((r)->regs)
--#define UPT_ES(r) REGS_ES((r)->regs)
--#define UPT_FS(r) REGS_FS((r)->regs)
--#define UPT_GS(r) REGS_GS((r)->regs)
-+#define UPT_CS(r) REGS_CS((r)->gp)
-+#define UPT_SS(r) REGS_SS((r)->gp)
-+#define UPT_DS(r) REGS_DS((r)->gp)
-+#define UPT_ES(r) REGS_ES((r)->gp)
-+#define UPT_FS(r) REGS_FS((r)->gp)
-+#define UPT_GS(r) REGS_GS((r)->gp)
+@@ -180,10 +185,10 @@ static int winch_thread(void *arg)
+ 	 * kernel semaphores. We don't use SysV semaphores because they are
+ 	 * persistent.
+ 	 */
+-	count = os_read_file(pipe_fd, &c, sizeof(c));
++	count = read(pipe_fd, &c, sizeof(c));
+ 	if (count != sizeof(c))
+ 		printk(UM_KERN_ERR "winch_thread : failed to read "
+-		       "synchronization byte, err = %d\n", -count);
++		       "synchronization byte, err = %d\n", errno);
  
- #define UPT_SYSCALL_ARG1(r) UPT_EBX(r)
- #define UPT_SYSCALL_ARG2(r) UPT_ECX(r)
-@@ -161,7 +161,7 @@ struct syscall_args {
- #define UPT_SET_SYSCALL_RETURN(r, res) \
- 	REGS_SET_SYSCALL_RETURN((r)->regs, (res))
+ 	while(1) {
+ 		/*
+@@ -192,10 +197,10 @@ static int winch_thread(void *arg)
+ 		 */
+ 		sigsuspend(&sigs);
  
--#define UPT_RESTART_SYSCALL(r) REGS_RESTART_SYSCALL((r)->regs)
-+#define UPT_RESTART_SYSCALL(r) REGS_RESTART_SYSCALL((r)->gp)
- 
- #define UPT_ORIG_SYSCALL(r) UPT_EAX(r)
- #define UPT_SYSCALL_NR(r) UPT_ORIG_EAX(r)
-Index: linux-2.6.22/arch/um/include/sysdep-x86_64/ptrace.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/sysdep-x86_64/ptrace.h	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/include/sysdep-x86_64/ptrace.h	2007-08-13 16:58:20.000000000 -0400
-@@ -85,7 +85,7 @@
- #define REGS_ERR(r) ((r)->fault_type)
- 
- struct uml_pt_regs {
--	unsigned long regs[MAX_REG_NR];
-+	unsigned long gp[MAX_REG_NR];
- 	unsigned long fp[HOST_FP_SIZE];
- 	struct faultinfo faultinfo;
- 	long syscall;
-@@ -94,36 +94,36 @@ struct uml_pt_regs {
- 
- #define EMPTY_UML_PT_REGS { }
- 
--#define UPT_RBX(r) REGS_RBX((r)->regs)
--#define UPT_RCX(r) REGS_RCX((r)->regs)
--#define UPT_RDX(r) REGS_RDX((r)->regs)
--#define UPT_RSI(r) REGS_RSI((r)->regs)
--#define UPT_RDI(r) REGS_RDI((r)->regs)
--#define UPT_RBP(r) REGS_RBP((r)->regs)
--#define UPT_RAX(r) REGS_RAX((r)->regs)
--#define UPT_R8(r) REGS_R8((r)->regs)
--#define UPT_R9(r) REGS_R9((r)->regs)
--#define UPT_R10(r) REGS_R10((r)->regs)
--#define UPT_R11(r) REGS_R11((r)->regs)
--#define UPT_R12(r) REGS_R12((r)->regs)
--#define UPT_R13(r) REGS_R13((r)->regs)
--#define UPT_R14(r) REGS_R14((r)->regs)
--#define UPT_R15(r) REGS_R15((r)->regs)
--#define UPT_CS(r) REGS_CS((r)->regs)
--#define UPT_FS_BASE(r) REGS_FS_BASE((r)->regs)
--#define UPT_FS(r) REGS_FS((r)->regs)
--#define UPT_GS_BASE(r) REGS_GS_BASE((r)->regs)
--#define UPT_GS(r) REGS_GS((r)->regs)
--#define UPT_DS(r) REGS_DS((r)->regs)
--#define UPT_ES(r) REGS_ES((r)->regs)
--#define UPT_CS(r) REGS_CS((r)->regs)
--#define UPT_SS(r) REGS_SS((r)->regs)
--#define UPT_ORIG_RAX(r) REGS_ORIG_RAX((r)->regs)
-+#define UPT_RBX(r) REGS_RBX((r)->gp)
-+#define UPT_RCX(r) REGS_RCX((r)->gp)
-+#define UPT_RDX(r) REGS_RDX((r)->gp)
-+#define UPT_RSI(r) REGS_RSI((r)->gp)
-+#define UPT_RDI(r) REGS_RDI((r)->gp)
-+#define UPT_RBP(r) REGS_RBP((r)->gp)
-+#define UPT_RAX(r) REGS_RAX((r)->gp)
-+#define UPT_R8(r) REGS_R8((r)->gp)
-+#define UPT_R9(r) REGS_R9((r)->gp)
-+#define UPT_R10(r) REGS_R10((r)->gp)
-+#define UPT_R11(r) REGS_R11((r)->gp)
-+#define UPT_R12(r) REGS_R12((r)->gp)
-+#define UPT_R13(r) REGS_R13((r)->gp)
-+#define UPT_R14(r) REGS_R14((r)->gp)
-+#define UPT_R15(r) REGS_R15((r)->gp)
-+#define UPT_CS(r) REGS_CS((r)->gp)
-+#define UPT_FS_BASE(r) REGS_FS_BASE((r)->gp)
-+#define UPT_FS(r) REGS_FS((r)->gp)
-+#define UPT_GS_BASE(r) REGS_GS_BASE((r)->gp)
-+#define UPT_GS(r) REGS_GS((r)->gp)
-+#define UPT_DS(r) REGS_DS((r)->gp)
-+#define UPT_ES(r) REGS_ES((r)->gp)
-+#define UPT_CS(r) REGS_CS((r)->gp)
-+#define UPT_SS(r) REGS_SS((r)->gp)
-+#define UPT_ORIG_RAX(r) REGS_ORIG_RAX((r)->gp)
- 
--#define UPT_IP(r) REGS_IP((r)->regs)
--#define UPT_SP(r) REGS_SP((r)->regs)
-+#define UPT_IP(r) REGS_IP((r)->gp)
-+#define UPT_SP(r) REGS_SP((r)->gp)
- 
--#define UPT_EFLAGS(r) REGS_EFLAGS((r)->regs)
-+#define UPT_EFLAGS(r) REGS_EFLAGS((r)->gp)
- #define UPT_SYSCALL_NR(r) ((r)->syscall)
- #define UPT_SYSCALL_RET(r) UPT_RAX(r)
- 
-@@ -228,7 +228,7 @@ struct syscall_args {
- #define UPT_SET_SYSCALL_RETURN(r, res) \
- 	REGS_SET_SYSCALL_RETURN((r)->regs, (res))
- 
--#define UPT_RESTART_SYSCALL(r) REGS_RESTART_SYSCALL((r)->regs)
-+#define UPT_RESTART_SYSCALL(r) REGS_RESTART_SYSCALL((r)->gp)
- 
- #define UPT_SEGV_IS_FIXABLE(r) REGS_SEGV_IS_FIXABLE(&r->skas)
- 
-Index: linux-2.6.22/arch/um/kernel/process.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/process.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/process.c	2007-08-13 16:58:20.000000000 -0400
-@@ -201,9 +201,9 @@ int copy_thread(int nr, unsigned long cl
- 	if (current->thread.forking) {
- 	  	memcpy(&p->thread.regs.regs, &regs->regs,
- 		       sizeof(p->thread.regs.regs));
--		REGS_SET_SYSCALL_RETURN(p->thread.regs.regs.regs, 0);
-+		REGS_SET_SYSCALL_RETURN(p->thread.regs.regs.gp, 0);
- 		if (sp != 0)
--			REGS_SP(p->thread.regs.regs.regs) = sp;
-+			REGS_SP(p->thread.regs.regs.gp) = sp;
- 
- 		handler = fork_handler;
- 
-Index: linux-2.6.22/arch/um/kernel/skas/syscall.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/skas/syscall.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/skas/syscall.c	2007-08-13 16:58:20.000000000 -0400
-@@ -34,7 +34,7 @@ void handle_syscall(struct uml_pt_regs *
- 		result = -ENOSYS;
- 	else result = EXECUTE_SYSCALL(syscall, regs);
- 
--	REGS_SET_SYSCALL_RETURN(r->regs, result);
-+	REGS_SET_SYSCALL_RETURN(r->gp, result);
- 
- 	syscall_trace(r, 1);
- }
-Index: linux-2.6.22/arch/um/os-Linux/registers.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/registers.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/registers.c	2007-08-13 16:58:20.000000000 -0400
-@@ -16,14 +16,14 @@ static unsigned long exec_regs[MAX_REG_N
- 
- void init_thread_registers(struct uml_pt_regs *to)
- {
--	memcpy(to->regs, exec_regs, sizeof(to->regs));
-+	memcpy(to->gp, exec_regs, sizeof(to->gp));
- }
- 
- void save_registers(int pid, struct uml_pt_regs *regs)
- {
- 	int err;
- 
--	err = ptrace(PTRACE_GETREGS, pid, 0, regs->regs);
-+	err = ptrace(PTRACE_GETREGS, pid, 0, regs->gp);
- 	if (err < 0)
- 		panic("save_registers - saving registers failed, errno = %d\n",
- 		      errno);
-@@ -33,7 +33,7 @@ void restore_registers(int pid, struct u
- {
- 	int err;
- 
--	err = ptrace(PTRACE_SETREGS, pid, 0, regs->regs);
-+	err = ptrace(PTRACE_SETREGS, pid, 0, regs->gp);
- 	if (err < 0)
- 		panic("restore_registers - saving registers failed, "
- 		      "errno = %d\n", errno);
-Index: linux-2.6.22/arch/um/os-Linux/skas/process.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/skas/process.c	2007-08-13 16:33:26.000000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/skas/process.c	2007-08-13 16:59:28.000000000 -0400
-@@ -138,7 +138,7 @@ static void handle_trap(int pid, struct 
- 	int err, status;
- 
- 	/* Mark this as a syscall */
--	UPT_SYSCALL_NR(regs) = PT_SYSCALL_NR(regs->regs);
-+	UPT_SYSCALL_NR(regs) = PT_SYSCALL_NR(regs->gp);
- 
- 	if (!local_using_sysemu)
- 	{
-@@ -352,7 +352,7 @@ void userspace(struct uml_pt_regs *regs)
- 
- 			/* Avoid -ERESTARTSYS handling in host */
- 			if (PT_SYSCALL_NR_OFFSET != PT_SYSCALL_RET_OFFSET)
--				PT_SYSCALL_NR(regs->regs) = -1;
-+				PT_SYSCALL_NR(regs->gp) = -1;
- 		}
+-		count = os_write_file(pipe_fd, &c, sizeof(c));
++		count = write(pipe_fd, &c, sizeof(c));
+ 		if (count != sizeof(c))
+ 			printk(UM_KERN_ERR "winch_thread : write failed, "
+-			       "err = %d\n", -count);
++			       "err = %d\n", errno);
  	}
  }
-Index: linux-2.6.22/arch/um/sys-i386/signal.c
+ 
+@@ -229,11 +234,11 @@ static int winch_tramp(int fd, struct tt
+ 	}
+ 
+ 	*fd_out = fds[0];
+-	n = os_read_file(fds[0], &c, sizeof(c));
++	n = read(fds[0], &c, sizeof(c));
+ 	if (n != sizeof(c)) {
+ 		printk(UM_KERN_ERR "winch_tramp : failed to read "
+ 		       "synchronization byte\n");
+-		printk(UM_KERN_ERR "read failed, err = %d\n", -n);
++		printk(UM_KERN_ERR "read failed, err = %d\n", errno);
+ 		printk(UM_KERN_ERR "fd %d will not support SIGWINCH\n", fd);
+ 		err = -EINVAL;
+ 		goto out_close;
+@@ -248,8 +253,8 @@ static int winch_tramp(int fd, struct tt
+ 	return err;
+ 
+  out_close:
+-	os_close_file(fds[1]);
+-	os_close_file(fds[0]);
++	close(fds[1]);
++	close(fds[0]);
+  out:
+ 	return err;
+ }
+@@ -271,9 +276,9 @@ void register_winch(int fd, struct tty_s
+ 
+ 		register_winch_irq(thread_fd, fd, thread, tty, stack);
+ 
+-		count = os_write_file(thread_fd, &c, sizeof(c));
++		count = write(thread_fd, &c, sizeof(c));
+ 		if (count != sizeof(c))
+ 			printk(UM_KERN_ERR "register_winch : failed to write "
+-			       "synchronization byte, err = %d\n", -count);
++			       "synchronization byte, err = %d\n", errno);
+ 	}
+ }
+Index: linux-2.6.22/arch/um/include/os.h
 ===================================================================
---- linux-2.6.22.orig/arch/um/sys-i386/signal.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/sys-i386/signal.c	2007-08-13 16:58:20.000000000 -0400
-@@ -14,22 +14,22 @@ void copy_sc(struct uml_pt_regs *regs, v
+--- linux-2.6.22.orig/arch/um/include/os.h	2007-08-13 13:44:53.000000000 -0400
++++ linux-2.6.22/arch/um/include/os.h	2007-08-13 13:45:03.000000000 -0400
+@@ -132,7 +132,6 @@ extern void os_print_error(int error, co
+ extern int os_get_exec_close(int fd, int *close_on_exec);
+ extern int os_set_exec_close(int fd, int close_on_exec);
+ extern int os_ioctl_generic(int fd, unsigned int cmd, unsigned long arg);
+-extern int os_new_tty_pgrp(int fd, int pid);
+ extern int os_get_ifname(int fd, char *namebuf);
+ extern int os_set_slip(int fd);
+ extern int os_set_owner(int fd, int pid);
+Index: linux-2.6.22/arch/um/os-Linux/file.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/file.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/file.c	2007-08-13 13:45:03.000000000 -0400
+@@ -101,17 +101,6 @@ int os_ioctl_generic(int fd, unsigned in
+ 	return err;
+ }
+ 
+-int os_new_tty_pgrp(int fd, int pid)
+-{
+-	if(ioctl(fd, TIOCSCTTY, 0) < 0)
+-		return -errno;
+-
+-	if(tcsetpgrp(fd, pid) < 0)
+-		return -errno;
+-
+-	return 0;
+-}
+-
+ /* FIXME: ensure namebuf in os_get_if_name is big enough */
+ int os_get_ifname(int fd, char* namebuf)
  {
- 	struct sigcontext *sc = from;
+Index: linux-2.6.22/arch/um/drivers/harddog_user.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/drivers/harddog_user.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/drivers/harddog_user.c	2007-08-13 13:45:03.000000000 -0400
+@@ -1,14 +1,13 @@
+ /*
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++ * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
  
--	REGS_GS(regs->regs) = sc->gs;
--	REGS_FS(regs->regs) = sc->fs;
--	REGS_ES(regs->regs) = sc->es;
--	REGS_DS(regs->regs) = sc->ds;
--	REGS_EDI(regs->regs) = sc->edi;
--	REGS_ESI(regs->regs) = sc->esi;
--	REGS_EBP(regs->regs) = sc->ebp;
--	REGS_SP(regs->regs) = sc->esp;
--	REGS_EBX(regs->regs) = sc->ebx;
--	REGS_EDX(regs->regs) = sc->edx;
--	REGS_ECX(regs->regs) = sc->ecx;
--	REGS_EAX(regs->regs) = sc->eax;
--	REGS_IP(regs->regs) = sc->eip;
--	REGS_CS(regs->regs) = sc->cs;
--	REGS_EFLAGS(regs->regs) = sc->eflags;
--	REGS_SS(regs->regs) = sc->ss;
-+	REGS_GS(regs->gp) = sc->gs;
-+	REGS_FS(regs->gp) = sc->fs;
-+	REGS_ES(regs->gp) = sc->es;
-+	REGS_DS(regs->gp) = sc->ds;
-+	REGS_EDI(regs->gp) = sc->edi;
-+	REGS_ESI(regs->gp) = sc->esi;
-+	REGS_EBP(regs->gp) = sc->ebp;
-+	REGS_SP(regs->gp) = sc->esp;
-+	REGS_EBX(regs->gp) = sc->ebx;
-+	REGS_EDX(regs->gp) = sc->edx;
-+	REGS_ECX(regs->gp) = sc->ecx;
-+	REGS_EAX(regs->gp) = sc->eax;
-+	REGS_IP(regs->gp) = sc->eip;
-+	REGS_CS(regs->gp) = sc->cs;
-+	REGS_EFLAGS(regs->gp) = sc->eflags;
-+	REGS_SS(regs->gp) = sc->ss;
+ #include <stdio.h>
+ #include <unistd.h>
+ #include <errno.h>
+-#include "user.h"
+-#include "mconsole.h"
+ #include "os.h"
++#include "user.h"
+ 
+ struct dog_data {
+ 	int stdin;
+@@ -23,10 +22,10 @@ static void pre_exec(void *d)
+ 	dup2(data->stdin, 0);
+ 	dup2(data->stdout, 1);
+ 	dup2(data->stdout, 2);
+-	os_close_file(data->stdin);
+-	os_close_file(data->stdout);
+-	os_close_file(data->close_me[0]);
+-	os_close_file(data->close_me[1]);
++	close(data->stdin);
++	close(data->stdout);
++	close(data->close_me[0]);
++	close(data->close_me[1]);
  }
  
- static int copy_sc_from_user(struct pt_regs *regs,
-@@ -65,23 +65,23 @@ static int copy_sc_to_user(struct sigcon
- 	struct faultinfo * fi = &current->thread.arch.faultinfo;
- 	int err;
+ int start_watchdog(int *in_fd_ret, int *out_fd_ret, char *sock)
+@@ -40,13 +39,13 @@ int start_watchdog(int *in_fd_ret, int *
+ 	char **args = NULL;
  
--	sc.gs = REGS_GS(regs->regs.regs);
--	sc.fs = REGS_FS(regs->regs.regs);
--	sc.es = REGS_ES(regs->regs.regs);
--	sc.ds = REGS_DS(regs->regs.regs);
--	sc.edi = REGS_EDI(regs->regs.regs);
--	sc.esi = REGS_ESI(regs->regs.regs);
--	sc.ebp = REGS_EBP(regs->regs.regs);
-+	sc.gs = REGS_GS(regs->regs.gp);
-+	sc.fs = REGS_FS(regs->regs.gp);
-+	sc.es = REGS_ES(regs->regs.gp);
-+	sc.ds = REGS_DS(regs->regs.gp);
-+	sc.edi = REGS_EDI(regs->regs.gp);
-+	sc.esi = REGS_ESI(regs->regs.gp);
-+	sc.ebp = REGS_EBP(regs->regs.gp);
- 	sc.esp = sp;
--	sc.ebx = REGS_EBX(regs->regs.regs);
--	sc.edx = REGS_EDX(regs->regs.regs);
--	sc.ecx = REGS_ECX(regs->regs.regs);
--	sc.eax = REGS_EAX(regs->regs.regs);
--	sc.eip = REGS_IP(regs->regs.regs);
--	sc.cs = REGS_CS(regs->regs.regs);
--	sc.eflags = REGS_EFLAGS(regs->regs.regs);
--	sc.esp_at_signal = regs->regs.regs[UESP];
--	sc.ss = regs->regs.regs[SS];
-+	sc.ebx = REGS_EBX(regs->regs.gp);
-+	sc.edx = REGS_EDX(regs->regs.gp);
-+	sc.ecx = REGS_ECX(regs->regs.gp);
-+	sc.eax = REGS_EAX(regs->regs.gp);
-+	sc.eip = REGS_IP(regs->regs.gp);
-+	sc.cs = REGS_CS(regs->regs.gp);
-+	sc.eflags = REGS_EFLAGS(regs->regs.gp);
-+	sc.esp_at_signal = regs->regs.gp[UESP];
-+	sc.ss = regs->regs.gp[SS];
- 	sc.cr2 = fi->cr2;
- 	sc.err = fi->error_code;
- 	sc.trapno = fi->trap_no;
-Index: linux-2.6.22/arch/um/sys-x86_64/signal.c
-===================================================================
---- linux-2.6.22.orig/arch/um/sys-x86_64/signal.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/sys-x86_64/signal.c	2007-08-13 16:58:20.000000000 -0400
-@@ -16,7 +16,7 @@ void copy_sc(struct uml_pt_regs *regs, v
- 	struct sigcontext *sc = from;
+ 	err = os_pipe(in_fds, 1, 0);
+-	if(err < 0){
++	if (err < 0) {
+ 		printk("harddog_open - os_pipe failed, err = %d\n", -err);
+ 		goto out;
+ 	}
  
- #define GETREG(regs, regno, sc, regname)				\
--	(regs)->regs[(regno) / sizeof(unsigned long)] = (sc)->regname
-+	(regs)->gp[(regno) / sizeof(unsigned long)] = (sc)->regname
+ 	err = os_pipe(out_fds, 1, 0);
+-	if(err < 0){
++	if (err < 0) {
+ 		printk("harddog_open - os_pipe failed, err = %d\n", -err);
+ 		goto out_close_in;
+ 	}
+@@ -56,7 +55,7 @@ int start_watchdog(int *in_fd_ret, int *
+ 	data.close_me[0] = out_fds[1];
+ 	data.close_me[1] = in_fds[0];
  
- 	GETREG(regs, R8, sc, r8);
- 	GETREG(regs, R9, sc, r9);
-@@ -47,7 +47,7 @@ static int copy_sc_from_user(struct pt_r
- 	int err = 0;
+-	if(sock != NULL){
++	if (sock != NULL) {
+ 		mconsole_args[2] = sock;
+ 		args = mconsole_args;
+ 	}
+@@ -68,25 +67,25 @@ int start_watchdog(int *in_fd_ret, int *
  
- #define GETREG(regs, regno, sc, regname)				\
--	__get_user((regs)->regs.regs[(regno) / sizeof(unsigned long)],	\
-+	__get_user((regs)->regs.gp[(regno) / sizeof(unsigned long)],	\
- 		   &(sc)->regname)
+ 	pid = run_helper(pre_exec, &data, args);
  
- 	err |= GETREG(regs, R8, from, r8);
-@@ -86,7 +86,7 @@ static int copy_sc_to_user(struct sigcon
- 	err |= __put_user(0, &to->fs);
+-	os_close_file(out_fds[0]);
+-	os_close_file(in_fds[1]);
++	close(out_fds[0]);
++	close(in_fds[1]);
  
- #define PUTREG(regs, regno, sc, regname)				\
--	__put_user((regs)->regs.regs[(regno) / sizeof(unsigned long)],	\
-+	__put_user((regs)->regs.gp[(regno) / sizeof(unsigned long)],	\
- 		   &(sc)->regname)
+-	if(pid < 0){
++	if (pid < 0) {
+ 		err = -pid;
+ 		printk("harddog_open - run_helper failed, errno = %d\n", -err);
+ 		goto out_close_out;
+ 	}
  
- 	err |= PUTREG(regs, RDI, to, rdi);
-Index: linux-2.6.22/arch/um/sys-x86_64/tls.c
-===================================================================
---- linux-2.6.22.orig/arch/um/sys-x86_64/tls.c	2007-08-13 15:24:34.000000000 -0400
-+++ linux-2.6.22/arch/um/sys-x86_64/tls.c	2007-08-13 16:58:20.000000000 -0400
-@@ -11,7 +11,7 @@ int arch_copy_tls(struct task_struct *t)
- 	 * (which is argument 5, child_tid, of clone) so it can be set
- 	 * during context switches.
- 	 */
--	t->thread.arch.fs = t->thread.regs.regs.regs[R8 / sizeof(long)];
-+	t->thread.arch.fs = t->thread.regs.regs.gp[R8 / sizeof(long)];
- 
+-	n = os_read_file(in_fds[0], &c, sizeof(c));
+-	if(n == 0){
++	n = read(in_fds[0], &c, sizeof(c));
++	if (n == 0) {
+ 		printk("harddog_open - EOF on watchdog pipe\n");
+ 		helper_wait(pid);
+ 		err = -EIO;
+ 		goto out_close_out;
+ 	}
+-	else if(n < 0){
++	else if (n < 0) {
+ 		printk("harddog_open - read of watchdog pipe failed, "
+-		       "err = %d\n", -n);
++		       "err = %d\n", errno);
+ 		helper_wait(pid);
+ 		err = n;
+ 		goto out_close_out;
+@@ -96,19 +95,19 @@ int start_watchdog(int *in_fd_ret, int *
  	return 0;
+ 
+  out_close_in:
+-	os_close_file(in_fds[0]);
+-	os_close_file(in_fds[1]);
++	close(in_fds[0]);
++	close(in_fds[1]);
+  out_close_out:
+-	os_close_file(out_fds[0]);
+-	os_close_file(out_fds[1]);
++	close(out_fds[0]);
++	close(out_fds[1]);
+  out:
+ 	return err;
  }
+ 
+ void stop_watchdog(int in_fd, int out_fd)
+ {
+-	os_close_file(in_fd);
+-	os_close_file(out_fd);
++	close(in_fd);
++	close(out_fd);
+ }
+ 
+ int ping_watchdog(int fd)
+@@ -116,10 +115,11 @@ int ping_watchdog(int fd)
+ 	int n;
+ 	char c = '\n';
+ 
+-	n = os_write_file(fd, &c, sizeof(c));
+-	if(n != sizeof(c)){
+-		printk("ping_watchdog - write failed, err = %d\n", -n);
+-		if(n < 0)
++	n = write(fd, &c, sizeof(c));
++	if (n != sizeof(c)) {
++		printk("ping_watchdog - write failed, ret = %d, err = %d\n",
++		       n, errno);
++		if (n < 0)
+ 			return n;
+ 		return -EIO;
+ 	}
+Index: linux-2.6.22/arch/um/include/mconsole.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/mconsole.h	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/include/mconsole.h	2007-08-13 13:45:03.000000000 -0400
+@@ -1,6 +1,6 @@
+ /*
+  * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org)
+- * Copyright (C) 2001, 2002 Jeff Dike (jdike@karaya.com)
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+ 
+@@ -96,14 +96,3 @@ extern void lock_notify(void);
+ extern void unlock_notify(void);
+ 
+ #endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.22/arch/um/include/sysdep-i386/ptrace.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/sysdep-i386/ptrace.h	2007-08-13 13:45:02.000000000 -0400
++++ linux-2.6.22/arch/um/include/sysdep-i386/ptrace.h	2007-08-13 13:45:03.000000000 -0400
+@@ -1,4 +1,4 @@
+-/* 
++/*
+  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+@@ -130,7 +130,6 @@ struct syscall_args {
+ 		} \
+ 	        val; \
+ 	})
+-	
+ 
+ #define UPT_SET(regs, reg, val) \
+ 	do { \
+Index: linux-2.6.22/arch/um/include/sysdep-x86_64/ptrace.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/sysdep-x86_64/ptrace.h	2007-08-13 13:45:02.000000000 -0400
++++ linux-2.6.22/arch/um/include/sysdep-x86_64/ptrace.h	2007-08-13 13:45:03.000000000 -0400
+@@ -143,87 +143,87 @@ struct syscall_args {
+ };
+ 
+ #define SYSCALL_ARGS(r) ((struct syscall_args) \
+-                        { .args = { UPT_SYSCALL_ARG1(r), \
+-                                    UPT_SYSCALL_ARG2(r), \
+- 			            UPT_SYSCALL_ARG3(r), \
+-                                    UPT_SYSCALL_ARG4(r), \
+-		                    UPT_SYSCALL_ARG5(r), \
+-                                    UPT_SYSCALL_ARG6(r) } } )
++			 { .args = { UPT_SYSCALL_ARG1(r),	 \
++				     UPT_SYSCALL_ARG2(r),	 \
++				     UPT_SYSCALL_ARG3(r),	 \
++				     UPT_SYSCALL_ARG4(r),	 \
++				     UPT_SYSCALL_ARG5(r),	 \
++				     UPT_SYSCALL_ARG6(r) } } )
+ 
+ #define UPT_REG(regs, reg) \
+-        ({      unsigned long val; \
+-                switch(reg){ \
+-		case R8: val = UPT_R8(regs); break; \
+-		case R9: val = UPT_R9(regs); break; \
+-		case R10: val = UPT_R10(regs); break; \
+-		case R11: val = UPT_R11(regs); break; \
+-		case R12: val = UPT_R12(regs); break; \
+-		case R13: val = UPT_R13(regs); break; \
+-		case R14: val = UPT_R14(regs); break; \
+-		case R15: val = UPT_R15(regs); break; \
+-                case RIP: val = UPT_IP(regs); break; \
+-                case RSP: val = UPT_SP(regs); break; \
+-                case RAX: val = UPT_RAX(regs); break; \
+-                case RBX: val = UPT_RBX(regs); break; \
+-                case RCX: val = UPT_RCX(regs); break; \
+-                case RDX: val = UPT_RDX(regs); break; \
+-                case RSI: val = UPT_RSI(regs); break; \
+-                case RDI: val = UPT_RDI(regs); break; \
+-                case RBP: val = UPT_RBP(regs); break; \
+-                case ORIG_RAX: val = UPT_ORIG_RAX(regs); break; \
+-                case CS: val = UPT_CS(regs); break; \
+-                case SS: val = UPT_SS(regs); break; \
+-		case FS_BASE: val = UPT_FS_BASE(regs); break; \
+-                case GS_BASE: val = UPT_GS_BASE(regs); break; \
+-                case DS: val = UPT_DS(regs); break; \
+-                case ES: val = UPT_ES(regs); break; \
+-                case FS : val = UPT_FS (regs); break; \
+-		case GS: val = UPT_GS(regs); break;	    \
+-                case EFLAGS: val = UPT_EFLAGS(regs); break; \
+-                default :  \
+-                        panic("Bad register in UPT_REG : %d\n", reg);  \
+-                        val = -1; \
+-                } \
+-                val; \
+-        })
++	({      unsigned long val;		\
++		switch(reg){						\
++		case R8: val = UPT_R8(regs); break;			\
++		case R9: val = UPT_R9(regs); break;			\
++		case R10: val = UPT_R10(regs); break;			\
++		case R11: val = UPT_R11(regs); break;			\
++		case R12: val = UPT_R12(regs); break;			\
++		case R13: val = UPT_R13(regs); break;			\
++		case R14: val = UPT_R14(regs); break;			\
++		case R15: val = UPT_R15(regs); break;			\
++		case RIP: val = UPT_IP(regs); break;			\
++		case RSP: val = UPT_SP(regs); break;			\
++		case RAX: val = UPT_RAX(regs); break;			\
++		case RBX: val = UPT_RBX(regs); break;			\
++		case RCX: val = UPT_RCX(regs); break;			\
++		case RDX: val = UPT_RDX(regs); break;			\
++		case RSI: val = UPT_RSI(regs); break;			\
++		case RDI: val = UPT_RDI(regs); break;			\
++		case RBP: val = UPT_RBP(regs); break;			\
++		case ORIG_RAX: val = UPT_ORIG_RAX(regs); break;		\
++		case CS: val = UPT_CS(regs); break;			\
++		case SS: val = UPT_SS(regs); break;			\
++		case FS_BASE: val = UPT_FS_BASE(regs); break;		\
++		case GS_BASE: val = UPT_GS_BASE(regs); break;		\
++		case DS: val = UPT_DS(regs); break;			\
++		case ES: val = UPT_ES(regs); break;			\
++		case FS : val = UPT_FS (regs); break;			\
++		case GS: val = UPT_GS(regs); break;			\
++		case EFLAGS: val = UPT_EFLAGS(regs); break;		\
++		default :						\
++			panic("Bad register in UPT_REG : %d\n", reg);	\
++			val = -1;					\
++		}							\
++		val;							\
++	})
+ 
+ 
+ #define UPT_SET(regs, reg, val) \
+-        ({      unsigned long __upt_val = val; \
+-                switch(reg){ \
+-                case R8: UPT_R8(regs) = __upt_val; break; \
+-                case R9: UPT_R9(regs) = __upt_val; break; \
+-                case R10: UPT_R10(regs) = __upt_val; break; \
+-                case R11: UPT_R11(regs) = __upt_val; break; \
+-                case R12: UPT_R12(regs) = __upt_val; break; \
+-                case R13: UPT_R13(regs) = __upt_val; break; \
+-                case R14: UPT_R14(regs) = __upt_val; break; \
+-                case R15: UPT_R15(regs) = __upt_val; break; \
+-                case RIP: UPT_IP(regs) = __upt_val; break; \
+-                case RSP: UPT_SP(regs) = __upt_val; break; \
+-                case RAX: UPT_RAX(regs) = __upt_val; break; \
+-                case RBX: UPT_RBX(regs) = __upt_val; break; \
+-                case RCX: UPT_RCX(regs) = __upt_val; break; \
+-                case RDX: UPT_RDX(regs) = __upt_val; break; \
+-                case RSI: UPT_RSI(regs) = __upt_val; break; \
+-                case RDI: UPT_RDI(regs) = __upt_val; break; \
+-                case RBP: UPT_RBP(regs) = __upt_val; break; \
+-                case ORIG_RAX: UPT_ORIG_RAX(regs) = __upt_val; break; \
+-                case CS: UPT_CS(regs) = __upt_val; break; \
+-                case SS: UPT_SS(regs) = __upt_val; break; \
+-                case FS_BASE: UPT_FS_BASE(regs) = __upt_val; break; \
+-                case GS_BASE: UPT_GS_BASE(regs) = __upt_val; break; \
+-                case DS: UPT_DS(regs) = __upt_val; break; \
+-                case ES: UPT_ES(regs) = __upt_val; break; \
+-                case FS: UPT_FS(regs) = __upt_val; break; \
+-                case GS: UPT_GS(regs) = __upt_val; break; \
+-                case EFLAGS: UPT_EFLAGS(regs) = __upt_val; break; \
+-                default :  \
+-                        panic("Bad register in UPT_SET : %d\n", reg);  \
+-			break; \
+-                } \
+-                __upt_val; \
+-        })
++	({      unsigned long __upt_val = val;	\
++		switch(reg){						\
++		case R8: UPT_R8(regs) = __upt_val; break;		\
++		case R9: UPT_R9(regs) = __upt_val; break;		\
++		case R10: UPT_R10(regs) = __upt_val; break;		\
++		case R11: UPT_R11(regs) = __upt_val; break;		\
++		case R12: UPT_R12(regs) = __upt_val; break;		\
++		case R13: UPT_R13(regs) = __upt_val; break;		\
++		case R14: UPT_R14(regs) = __upt_val; break;		\
++		case R15: UPT_R15(regs) = __upt_val; break;		\
++		case RIP: UPT_IP(regs) = __upt_val; break;		\
++		case RSP: UPT_SP(regs) = __upt_val; break;		\
++		case RAX: UPT_RAX(regs) = __upt_val; break;		\
++		case RBX: UPT_RBX(regs) = __upt_val; break;		\
++		case RCX: UPT_RCX(regs) = __upt_val; break;		\
++		case RDX: UPT_RDX(regs) = __upt_val; break;		\
++		case RSI: UPT_RSI(regs) = __upt_val; break;		\
++		case RDI: UPT_RDI(regs) = __upt_val; break;		\
++		case RBP: UPT_RBP(regs) = __upt_val; break;		\
++		case ORIG_RAX: UPT_ORIG_RAX(regs) = __upt_val; break;	\
++		case CS: UPT_CS(regs) = __upt_val; break;		\
++		case SS: UPT_SS(regs) = __upt_val; break;		\
++		case FS_BASE: UPT_FS_BASE(regs) = __upt_val; break;	\
++		case GS_BASE: UPT_GS_BASE(regs) = __upt_val; break;	\
++		case DS: UPT_DS(regs) = __upt_val; break;		\
++		case ES: UPT_ES(regs) = __upt_val; break;		\
++		case FS: UPT_FS(regs) = __upt_val; break;		\
++		case GS: UPT_GS(regs) = __upt_val; break;		\
++		case EFLAGS: UPT_EFLAGS(regs) = __upt_val; break;	\
++		default :						\
++			panic("Bad register in UPT_SET : %d\n", reg);	\
++			break;						\
++		}							\
++		__upt_val;						\
++	})
+ 
+ #define UPT_SET_SYSCALL_RETURN(r, res) \
+ 	REGS_SET_SYSCALL_RETURN((r)->regs, (res))
+Index: linux-2.6.22/arch/um/kernel/skas/uaccess.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/skas/uaccess.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/skas/uaccess.c	2007-08-13 13:45:03.000000000 -0400
+@@ -1,18 +1,14 @@
+ /*
+- * Copyright (C) 2002 - 2003 Jeff Dike (jdike@addtoit.com)
++ * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/compiler.h"
+-#include "linux/stddef.h"
+-#include "linux/kernel.h"
+-#include "linux/string.h"
+-#include "linux/fs.h"
+-#include "linux/hardirq.h"
++#include "linux/err.h"
+ #include "linux/highmem.h"
++#include "linux/mm.h"
++#include "asm/current.h"
+ #include "asm/page.h"
+ #include "asm/pgtable.h"
+-#include "asm/uaccess.h"
+ #include "kern_util.h"
+ #include "os.h"
+ 
+@@ -27,16 +23,16 @@ static unsigned long maybe_map(unsigned 
+ 	void *phys = um_virt_to_phys(current, virt, &pte);
+ 	int dummy_code;
+ 
+-	if(IS_ERR(phys) || (is_write && !pte_write(pte))){
++	if (IS_ERR(phys) || (is_write && !pte_write(pte))) {
+ 		err = handle_page_fault(virt, 0, is_write, 1, &dummy_code);
+-		if(err)
+-			return(-1UL);
++		if (err)
++			return -1UL;
+ 		phys = um_virt_to_phys(current, virt, NULL);
+ 	}
+-        if(IS_ERR(phys))
+-                phys = (void *) -1;
++	if (IS_ERR(phys))
++		phys = (void *) -1;
+ 
+-	return((unsigned long) phys);
++	return (unsigned long) phys;
+ }
+ 
+ static int do_op_one_page(unsigned long addr, int len, int is_write,
+@@ -46,17 +42,18 @@ static int do_op_one_page(unsigned long 
+ 	int n;
+ 
+ 	addr = maybe_map(addr, is_write);
+-	if(addr == -1UL)
+-		return(-1);
++	if (addr == -1UL)
++		return -1;
+ 
+ 	page = phys_to_page(addr);
+-	addr = (unsigned long) kmap_atomic(page, KM_UML_USERCOPY) + (addr & ~PAGE_MASK);
++	addr = (unsigned long) kmap_atomic(page, KM_UML_USERCOPY) +
++		(addr & ~PAGE_MASK);
+ 
+ 	n = (*op)(addr, len, arg);
+ 
+ 	kunmap_atomic(page, KM_UML_USERCOPY);
+ 
+-	return(n);
++	return n;
+ }
+ 
+ static void do_buffer_op(void *jmpbuf, void *arg_ptr)
+@@ -81,21 +78,21 @@ static void do_buffer_op(void *jmpbuf, v
+ 
+ 	current->thread.fault_catcher = jmpbuf;
+ 	n = do_op_one_page(addr, size, is_write, op, arg);
+-	if(n != 0){
++	if (n != 0) {
+ 		*res = (n < 0 ? remain : 0);
+ 		goto out;
+ 	}
+ 
+ 	addr += size;
+ 	remain -= size;
+-	if(remain == 0){
++	if (remain == 0) {
+ 		*res = 0;
+ 		goto out;
+ 	}
+ 
+-	while(addr < ((addr + remain) & PAGE_MASK)){
++	while(addr < ((addr + remain) & PAGE_MASK)) {
+ 		n = do_op_one_page(addr, PAGE_SIZE, is_write, op, arg);
+-		if(n != 0){
++		if (n != 0) {
+ 			*res = (n < 0 ? remain : 0);
+ 			goto out;
+ 		}
+@@ -103,13 +100,13 @@ static void do_buffer_op(void *jmpbuf, v
+ 		addr += PAGE_SIZE;
+ 		remain -= PAGE_SIZE;
+ 	}
+-	if(remain == 0){
++	if (remain == 0) {
+ 		*res = 0;
+ 		goto out;
+ 	}
+ 
+ 	n = do_op_one_page(addr, remain, is_write, op, arg);
+-	if(n != 0)
++	if (n != 0)
+ 		*res = (n < 0 ? remain : 0);
+ 	else *res = 0;
+  out:
+@@ -124,10 +121,10 @@ static int buffer_op(unsigned long addr,
+ 
+ 	faulted = setjmp_wrapper(do_buffer_op, addr, len, is_write, op, arg,
+ 				 &res);
+-	if(!faulted)
+-		return(res);
++	if (!faulted)
++		return res;
+ 
+-	return(addr + len - (unsigned long) current->thread.fault_addr);
++	return addr + len - (unsigned long) current->thread.fault_addr;
+ }
+ 
+ static int copy_chunk_from_user(unsigned long from, int len, void *arg)
+@@ -136,19 +133,19 @@ static int copy_chunk_from_user(unsigned
+ 
+ 	memcpy((void *) to, (void *) from, len);
+ 	*to_ptr += len;
+-	return(0);
++	return 0;
+ }
+ 
+ int copy_from_user(void *to, const void __user *from, int n)
+ {
+-	if(segment_eq(get_fs(), KERNEL_DS)){
++	if (segment_eq(get_fs(), KERNEL_DS)) {
+ 		memcpy(to, (__force void*)from, n);
+-		return(0);
++		return 0;
+ 	}
+ 
+-	return(access_ok(VERIFY_READ, from, n) ?
++	return access_ok(VERIFY_READ, from, n) ?
+ 	       buffer_op((unsigned long) from, n, 0, copy_chunk_from_user, &to):
+-	       n);
++	       n;
+ }
+ 
+ static int copy_chunk_to_user(unsigned long to, int len, void *arg)
+@@ -157,19 +154,19 @@ static int copy_chunk_to_user(unsigned l
+ 
+ 	memcpy((void *) to, (void *) from, len);
+ 	*from_ptr += len;
+-	return(0);
++	return 0;
+ }
+ 
+ int copy_to_user(void __user *to, const void *from, int n)
+ {
+-	if(segment_eq(get_fs(), KERNEL_DS)){
+-		memcpy((__force void*)to, from, n);
+-		return(0);
++	if (segment_eq(get_fs(), KERNEL_DS)) {
++		memcpy((__force void *) to, from, n);
++		return 0;
+ 	}
+ 
+-	return(access_ok(VERIFY_WRITE, to, n) ?
++	return access_ok(VERIFY_WRITE, to, n) ?
+ 	       buffer_op((unsigned long) to, n, 1, copy_chunk_to_user, &from) :
+-	       n);
++	       n;
+ }
+ 
+ static int strncpy_chunk_from_user(unsigned long from, int len, void *arg)
+@@ -181,9 +178,9 @@ static int strncpy_chunk_from_user(unsig
+ 	n = strnlen(to, len);
+ 	*to_ptr += n;
+ 
+-	if(n < len)
+-	        return(1);
+-	return(0);
++	if (n < len)
++	        return 1;
++	return 0;
+ }
+ 
+ int strncpy_from_user(char *dst, const char __user *src, int count)
+@@ -191,41 +188,41 @@ int strncpy_from_user(char *dst, const c
+ 	int n;
+ 	char *ptr = dst;
+ 
+-	if(segment_eq(get_fs(), KERNEL_DS)){
+-		strncpy(dst, (__force void*)src, count);
+-		return(strnlen(dst, count));
++	if (segment_eq(get_fs(), KERNEL_DS)) {
++		strncpy(dst, (__force void *) src, count);
++		return strnlen(dst, count);
+ 	}
+ 
+-	if(!access_ok(VERIFY_READ, src, 1))
+-		return(-EFAULT);
++	if (!access_ok(VERIFY_READ, src, 1))
++		return -EFAULT;
+ 
+ 	n = buffer_op((unsigned long) src, count, 0, strncpy_chunk_from_user,
+ 		      &ptr);
+-	if(n != 0)
+-		return(-EFAULT);
+-	return(strnlen(dst, count));
++	if (n != 0)
++		return -EFAULT;
++	return strnlen(dst, count);
+ }
+ 
+ static int clear_chunk(unsigned long addr, int len, void *unused)
+ {
+ 	memset((void *) addr, 0, len);
+-	return(0);
++	return 0;
+ }
+ 
+ int __clear_user(void __user *mem, int len)
+ {
+-	return(buffer_op((unsigned long) mem, len, 1, clear_chunk, NULL));
++	return buffer_op((unsigned long) mem, len, 1, clear_chunk, NULL);
+ }
+ 
+ int clear_user(void __user *mem, int len)
+ {
+-	if(segment_eq(get_fs(), KERNEL_DS)){
++	if (segment_eq(get_fs(), KERNEL_DS)) {
+ 		memset((__force void*)mem, 0, len);
+-		return(0);
++		return 0;
+ 	}
+ 
+-	return(access_ok(VERIFY_WRITE, mem, len) ?
+-	       buffer_op((unsigned long) mem, len, 1, clear_chunk, NULL) : len);
++	return access_ok(VERIFY_WRITE, mem, len) ?
++	       buffer_op((unsigned long) mem, len, 1, clear_chunk, NULL) : len;
+ }
+ 
+ static int strnlen_chunk(unsigned long str, int len, void *arg)
+@@ -235,31 +232,20 @@ static int strnlen_chunk(unsigned long s
+ 	n = strnlen((void *) str, len);
+ 	*len_ptr += n;
+ 
+-	if(n < len)
+-		return(1);
+-	return(0);
++	if (n < len)
++		return 1;
++	return 0;
+ }
+ 
+ int strnlen_user(const void __user *str, int len)
+ {
+ 	int count = 0, n;
+ 
+-	if(segment_eq(get_fs(), KERNEL_DS))
+-		return(strnlen((__force char*)str, len) + 1);
++	if (segment_eq(get_fs(), KERNEL_DS))
++		return strnlen((__force char*)str, len) + 1;
+ 
+ 	n = buffer_op((unsigned long) str, len, 0, strnlen_chunk, &count);
+-	if(n == 0)
+-		return(count + 1);
+-	return(-EFAULT);
++	if (n == 0)
++		return count + 1;
++	return -EFAULT;
+ }
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
