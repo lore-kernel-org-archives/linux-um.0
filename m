@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IL47s-0001aB-Eq for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Aug 2007 14:40:33 -0700
+	id 1IL47q-0001a3-V9 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 14 Aug 2007 14:40:31 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IL47o-0001DD-Jj
+	(Exim 4.44) id 1IL47o-0001Cb-FU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Aug 2007 14:40:31 -0700
-Date: Tue, 14 Aug 2007 17:40:24 -0400
+	Tue, 14 Aug 2007 14:40:29 -0700
+Date: Tue, 14 Aug 2007 17:40:23 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070814214024.GA17539@c2.user-mode-linux.org>
+Message-ID: <20070814214023.GA17559@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 10/14] UML - Fold mmu_context_skas into mm_context
+Subject: [uml-devel] [PATCH 9/14] UML - Get rid of do_longjmp
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,425 +31,231 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-This patch folds mmu_context_skas into struct mm_context, changing all
-users of these structures as needed.
+do_longjmp used to be needed when UML didn't have its own
+implementation of setjmp and longjmp.  They came from libc, and
+couldn't be called directly from kernel code, as the libc jmp_buf
+couldn't be imported there.  do_longjmp was a userspace function which
+served to provide longjmp access to kernel code.
+
+This is gone, and a number of void * pointers can now be jmp_buf *.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/skas/mmu-skas.h |   23 ---------------------
- arch/um/include/tlb.h           |    2 -
- arch/um/include/um_mmu.h        |   18 +++++++++++++---
- arch/um/kernel/exec.c           |    4 +--
- arch/um/kernel/reboot.c         |    2 -
- arch/um/kernel/skas/mmu.c       |   12 +++++------
- arch/um/kernel/skas/process.c   |    2 -
- arch/um/kernel/tlb.c            |   43 +++++++++++++++++++---------------------
- arch/um/sys-i386/ldt.c          |   17 +++++++--------
- arch/um/sys-x86_64/syscalls.c   |    2 -
- include/asm-um/ldt.h            |    4 ---
- include/asm-um/mmu_context.h    |    4 +--
- 12 files changed, 58 insertions(+), 75 deletions(-)
+ arch/um/include/os.h               |    5 ++---
+ arch/um/include/um_uaccess.h       |    4 ++++
+ arch/um/include/uml_uaccess.h      |   24 ------------------------
+ arch/um/kernel/exec.c              |    2 +-
+ arch/um/kernel/mem.c               |    2 +-
+ arch/um/kernel/trap.c              |    6 +++---
+ arch/um/kernel/uaccess.c           |    2 +-
+ arch/um/os-Linux/process.c         |    2 +-
+ arch/um/os-Linux/trap.c            |    7 -------
+ arch/um/os-Linux/uaccess.c         |    2 +-
+ include/asm-um/processor-generic.h |    4 ++--
+ 11 files changed, 16 insertions(+), 44 deletions(-)
 
-Index: linux-2.6.22/arch/um/include/tlb.h
+Index: linux-2.6.22/arch/um/include/os.h
 ===================================================================
---- linux-2.6.22.orig/arch/um/include/tlb.h	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/include/tlb.h	2007-08-13 16:57:03.000000000 -0400
-@@ -33,7 +33,7 @@ struct host_vm_op {
- extern void force_flush_all(void);
- extern void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
-                              unsigned long end_addr, int force,
--			     int (*do_ops)(union mm_context *,
-+			     int (*do_ops)(struct mm_context *,
- 					   struct host_vm_op *, int, int,
- 					   void **));
- extern int flush_tlb_kernel_range_common(unsigned long start,
-Index: linux-2.6.22/arch/um/include/um_mmu.h
+--- linux-2.6.22.orig/arch/um/include/os.h	2007-08-13 13:44:46.000000000 -0400
++++ linux-2.6.22/arch/um/include/os.h	2007-08-13 13:44:53.000000000 -0400
+@@ -193,7 +193,7 @@ extern int os_getpid(void);
+ extern int os_getpgrp(void);
+ 
+ extern void init_new_thread_signals(void);
+-extern int run_kernel_thread(int (*fn)(void *), void *arg, void **jmp_ptr);
++extern int run_kernel_thread(int (*fn)(void *), void *arg, jmp_buf **jmp_ptr);
+ 
+ extern int os_map_memory(void *virt, int fd, unsigned long long off,
+ 			 unsigned long len, int r, int w, int x);
+@@ -206,7 +206,7 @@ extern void os_flush_stdout(void);
+ 
+ /* uaccess.c */
+ extern unsigned long __do_user_copy(void *to, const void *from, int n,
+-				    void **fault_addr, void **fault_catcher,
++				    void **fault_addr, jmp_buf **fault_catcher,
+ 				    void (*op)(void *to, const void *from,
+ 					       int n), int *faulted_out);
+ 
+@@ -240,7 +240,6 @@ extern int set_signals(int enable);
+ 
+ /* trap.c */
+ extern void os_fill_handlinfo(struct kern_handlers h);
+-extern void do_longjmp(void *p, int val);
+ 
+ /* util.c */
+ extern void stack_protections(unsigned long address);
+Index: linux-2.6.22/arch/um/include/um_uaccess.h
 ===================================================================
---- linux-2.6.22.orig/arch/um/include/um_mmu.h	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/include/um_mmu.h	2007-08-13 16:57:03.000000000 -0400
-@@ -7,10 +7,22 @@
- #define __ARCH_UM_MMU_H
+--- linux-2.6.22.orig/arch/um/include/um_uaccess.h	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/include/um_uaccess.h	2007-08-13 13:44:53.000000000 -0400
+@@ -30,6 +30,10 @@
+ extern int copy_from_user(void *to, const void __user *from, int n);
+ extern int copy_to_user(void __user *to, const void *from, int n);
  
- #include "uml-config.h"
--#include "mmu-skas.h"
-+#include "mm_id.h"
-+#include "asm/ldt.h"
- 
--typedef union mm_context {
--	struct mmu_context_skas skas;
-+typedef struct mm_context {
-+	struct mm_id id;
-+	unsigned long last_page_table;
-+#ifdef CONFIG_3_LEVEL_PGTABLES
-+	unsigned long last_pmd;
-+#endif
-+	struct uml_ldt ldt;
- } mm_context_t;
- 
-+extern void __switch_mm(struct mm_id * mm_idp);
++extern int __do_copy_to_user(void *to, const void *from, int n,
++			     void **fault_addr, jmp_buf **fault_catcher);
++extern void __do_copy(void *to, const void *from, int n);
 +
-+/* Avoid tangled inclusion with asm/ldt.h */
-+extern long init_new_ldt(struct mm_context *to_mm, struct mm_context *from_mm);
-+extern void free_ldt(struct mm_context *mm);
-+
- #endif
-Index: linux-2.6.22/arch/um/kernel/tlb.c
+ /*
+  * strncpy_from_user: - Copy a NUL terminated string from userspace.
+  * @dst:   Destination address, in kernel space.  This buffer must be at
+Index: linux-2.6.22/arch/um/include/uml_uaccess.h
 ===================================================================
---- linux-2.6.22.orig/arch/um/kernel/tlb.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/tlb.c	2007-08-13 16:57:03.000000000 -0400
-@@ -14,8 +14,8 @@
- 
- static int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
- 		    unsigned int prot, struct host_vm_op *ops, int *index,
--		    int last_filled, union mm_context *mmu, void **flush,
--		    int (*do_ops)(union mm_context *, struct host_vm_op *,
-+		    int last_filled, struct mm_context *mmu, void **flush,
-+		    int (*do_ops)(struct mm_context *, struct host_vm_op *,
- 				  int, int, void **))
- {
- 	__u64 offset;
-@@ -52,8 +52,8 @@ static int add_mmap(unsigned long virt, 
- 
- static int add_munmap(unsigned long addr, unsigned long len,
- 		      struct host_vm_op *ops, int *index, int last_filled,
--		      union mm_context *mmu, void **flush,
--		      int (*do_ops)(union mm_context *, struct host_vm_op *,
-+		      struct mm_context *mmu, void **flush,
-+		      int (*do_ops)(struct mm_context *, struct host_vm_op *,
- 				    int, int, void **))
- {
- 	struct host_vm_op *last;
-@@ -82,8 +82,8 @@ static int add_munmap(unsigned long addr
- 
- static int add_mprotect(unsigned long addr, unsigned long len,
- 			unsigned int prot, struct host_vm_op *ops, int *index,
--			int last_filled, union mm_context *mmu, void **flush,
--			int (*do_ops)(union mm_context *, struct host_vm_op *,
-+			int last_filled, struct mm_context *mmu, void **flush,
-+			int (*do_ops)(struct mm_context *, struct host_vm_op *,
- 				      int, int, void **))
- {
- 	struct host_vm_op *last;
-@@ -117,8 +117,8 @@ static int add_mprotect(unsigned long ad
- static inline int update_pte_range(pmd_t *pmd, unsigned long addr,
- 				   unsigned long end, struct host_vm_op *ops,
- 				   int last_op, int *op_index, int force,
--				   union mm_context *mmu, void **flush,
--				   int (*do_ops)(union mm_context *,
-+				   struct mm_context *mmu, void **flush,
-+				   int (*do_ops)(struct mm_context *,
- 						 struct host_vm_op *, int, int,
- 						 void **))
- {
-@@ -157,8 +157,8 @@ static inline int update_pte_range(pmd_t
- static inline int update_pmd_range(pud_t *pud, unsigned long addr,
- 				   unsigned long end, struct host_vm_op *ops,
- 				   int last_op, int *op_index, int force,
--				   union mm_context *mmu, void **flush,
--				   int (*do_ops)(union mm_context *,
-+				   struct mm_context *mmu, void **flush,
-+				   int (*do_ops)(struct mm_context *,
- 						 struct host_vm_op *, int, int,
- 						 void **))
- {
-@@ -187,8 +187,8 @@ static inline int update_pmd_range(pud_t
- static inline int update_pud_range(pgd_t *pgd, unsigned long addr,
- 				   unsigned long end, struct host_vm_op *ops,
- 				   int last_op, int *op_index, int force,
--				   union mm_context *mmu, void **flush,
--				   int (*do_ops)(union mm_context *,
-+				   struct mm_context *mmu, void **flush,
-+				   int (*do_ops)(struct mm_context *,
- 						 struct host_vm_op *, int, int,
- 						 void **))
- {
-@@ -216,11 +216,11 @@ static inline int update_pud_range(pgd_t
- 
- void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
- 		      unsigned long end_addr, int force,
--		      int (*do_ops)(union mm_context *, struct host_vm_op *,
-+		      int (*do_ops)(struct mm_context *, struct host_vm_op *,
- 				    int, int, void **))
- {
- 	pgd_t *pgd;
--	union mm_context *mmu = &mm->context;
-+	struct mm_context *mmu = &mm->context;
- 	struct host_vm_op ops[1];
- 	unsigned long addr = start_addr, next;
- 	int ret = 0, last_op = ARRAY_SIZE(ops) - 1, op_index = -1;
-@@ -375,7 +375,7 @@ void flush_tlb_page(struct vm_area_struc
- 		w = 0;
- 	}
- 
--	mm_id = &mm->context.skas.id;
-+	mm_id = &mm->context.id;
- 	prot = ((r ? UM_PROT_READ : 0) | (w ? UM_PROT_WRITE : 0) |
- 		(x ? UM_PROT_EXEC : 0));
- 	if (pte_newpage(*pte)) {
-@@ -453,7 +453,7 @@ void __flush_tlb_one(unsigned long addr)
- 	flush_tlb_kernel_range_common(addr, addr + PAGE_SIZE);
- }
- 
--static int do_ops(union mm_context *mmu, struct host_vm_op *ops, int last,
-+static int do_ops(struct mm_context *mmu, struct host_vm_op *ops, int last,
- 		  int finished, void **flush)
- {
- 	struct host_vm_op *op;
-@@ -463,17 +463,16 @@ static int do_ops(union mm_context *mmu,
- 	op = &ops[i];
- 		switch(op->type) {
- 		case MMAP:
--			ret = map(&mmu->skas.id, op->u.mmap.addr,
--				  op->u.mmap.len, op->u.mmap.prot,
--				  op->u.mmap.fd, op->u.mmap.offset, finished,
--				  flush);
-+			ret = map(&mmu->id, op->u.mmap.addr, op->u.mmap.len,
-+				  op->u.mmap.prot, op->u.mmap.fd,
-+				  op->u.mmap.offset, finished, flush);
- 			break;
- 		case MUNMAP:
--			ret = unmap(&mmu->skas.id, op->u.munmap.addr,
-+			ret = unmap(&mmu->id, op->u.munmap.addr,
- 				    op->u.munmap.len, finished, flush);
- 			break;
- 		case MPROTECT:
--			ret = protect(&mmu->skas.id, op->u.mprotect.addr,
-+			ret = protect(&mmu->id, op->u.mprotect.addr,
- 				      op->u.mprotect.len, op->u.mprotect.prot,
- 				      finished, flush);
- 			break;
-Index: linux-2.6.22/arch/um/kernel/exec.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/exec.c	2007-08-13 16:57:00.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/exec.c	2007-08-13 16:57:03.000000000 -0400
-@@ -23,14 +23,14 @@ void flush_thread(void)
- 
- 	arch_flush_thread(&current->thread.arch);
- 
--	ret = unmap(&current->mm->context.skas.id, 0, end, 1, &data);
-+	ret = unmap(&current->mm->context.id, 0, end, 1, &data);
- 	if (ret) {
- 		printk(KERN_ERR "flush_thread - clearing address space failed, "
- 		       "err = %d\n", ret);
- 		force_sig(SIGKILL, current);
- 	}
- 
--	__switch_mm(&current->mm->context.skas.id);
-+	__switch_mm(&current->mm->context.id);
- }
- 
- void start_thread(struct pt_regs *regs, unsigned long eip, unsigned long esp)
-Index: linux-2.6.22/arch/um/kernel/reboot.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/reboot.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/reboot.c	2007-08-13 16:57:03.000000000 -0400
-@@ -25,7 +25,7 @@ static void kill_off_processes(void)
- 			if(p->mm == NULL)
- 				continue;
- 
--			pid = p->mm->context.skas.id.u.pid;
-+			pid = p->mm->context.id.u.pid;
- 			os_kill_ptraced_process(pid, 1);
- 		}
- 	}
-Index: linux-2.6.22/arch/um/kernel/skas/mmu.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/skas/mmu.c	2007-08-13 15:44:10.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/skas/mmu.c	2007-08-13 16:58:12.000000000 -0400
-@@ -47,9 +47,9 @@ static int init_stub_pte(struct mm_struc
- 	 * destroy_context_skas.
- 	 */
- 
--	mm->context.skas.last_page_table = pmd_page_vaddr(*pmd);
-+	mm->context.last_page_table = pmd_page_vaddr(*pmd);
- #ifdef CONFIG_3_LEVEL_PGTABLES
--	mm->context.skas.last_pmd = (unsigned long) __va(pud_val(*pud));
-+	mm->context.last_pmd = (unsigned long) __va(pud_val(*pud));
- #endif
- 
- 	*pte = mk_pte(virt_to_page(kernel), __pgprot(_PAGE_PRESENT));
-@@ -66,8 +66,8 @@ static int init_stub_pte(struct mm_struc
- 
- int init_new_context(struct task_struct *task, struct mm_struct *mm)
- {
--	struct mmu_context_skas *from_mm = NULL;
--	struct mmu_context_skas *to_mm = &mm->context.skas;
-+ 	struct mm_context *from_mm = NULL;
-+	struct mm_context *to_mm = &mm->context;
- 	unsigned long stack = 0;
- 	int ret = -ENOMEM;
- 
-@@ -97,7 +97,7 @@ int init_new_context(struct task_struct 
- 
- 	to_mm->id.stack = stack;
- 	if (current->mm != NULL && current->mm != &init_mm)
--		from_mm = &current->mm->context.skas;
-+		from_mm = &current->mm->context;
- 
- 	if (proc_mm) {
- 		ret = new_mm(stack);
-@@ -133,7 +133,7 @@ int init_new_context(struct task_struct 
- 
- void destroy_context(struct mm_struct *mm)
- {
--	struct mmu_context_skas *mmu = &mm->context.skas;
-+	struct mm_context *mmu = &mm->context;
- 
- 	if (proc_mm)
- 		os_close_file(mmu->id.u.mm_fd);
-Index: linux-2.6.22/arch/um/kernel/skas/process.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/skas/process.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/skas/process.c	2007-08-13 16:57:03.000000000 -0400
-@@ -65,5 +65,5 @@ unsigned long current_stub_stack(void)
- 	if (current->mm == NULL)
- 		return 0;
- 
--	return current->mm->context.skas.id.stack;
-+	return current->mm->context.id.stack;
- }
-Index: linux-2.6.22/arch/um/sys-i386/ldt.c
-===================================================================
---- linux-2.6.22.orig/arch/um/sys-i386/ldt.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/sys-i386/ldt.c	2007-08-13 16:57:03.000000000 -0400
-@@ -33,7 +33,7 @@ long write_ldt_entry(struct mm_id * mm_i
- 		 * Note: I'm unsure: should interrupts be disabled here?
- 		 */
- 		if (!current->active_mm || current->active_mm == &init_mm ||
--		    mm_idp != &current->active_mm->context.skas.id)
-+		    mm_idp != &current->active_mm->context.id)
- 			__switch_mm(mm_idp);
- 	}
- 
-@@ -79,8 +79,8 @@ long write_ldt_entry(struct mm_id * mm_i
- 		 * PTRACE_LDT possible to implement.
- 		 */
- 		if (current->active_mm && current->active_mm != &init_mm &&
--		    mm_idp != &current->active_mm->context.skas.id)
--			__switch_mm(&current->active_mm->context.skas.id);
-+		    mm_idp != &current->active_mm->context.id)
-+			__switch_mm(&current->active_mm->context.id);
- 	}
- 
- 	return res;
-@@ -135,7 +135,7 @@ static int read_ldt(void __user * ptr, u
- {
- 	int i, err = 0;
- 	unsigned long size;
--	uml_ldt_t * ldt = &current->mm->context.skas.ldt;
-+	uml_ldt_t * ldt = &current->mm->context.ldt;
- 
- 	if (!ldt->entry_count)
- 		goto out;
-@@ -203,8 +203,8 @@ static int read_default_ldt(void __user 
- 
- static int write_ldt(void __user * ptr, unsigned long bytecount, int func)
- {
--	uml_ldt_t * ldt = &current->mm->context.skas.ldt;
--	struct mm_id * mm_idp = &current->mm->context.skas.id;
-+	uml_ldt_t * ldt = &current->mm->context.ldt;
-+	struct mm_id * mm_idp = &current->mm->context.id;
- 	int i, err;
- 	struct user_desc ldt_info;
- 	struct ldt_entry entry0, *ldt_p;
-@@ -384,8 +384,7 @@ out_free:
- 	free_pages((unsigned long)ldt, order);
- }
- 
--long init_new_ldt(struct mmu_context_skas * new_mm,
--		  struct mmu_context_skas * from_mm)
-+long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
- {
- 	struct user_desc desc;
- 	short * num_p;
-@@ -483,7 +482,7 @@ long init_new_ldt(struct mmu_context_ska
- }
- 
- 
--void free_ldt(struct mmu_context_skas * mm)
-+void free_ldt(struct mm_context *mm)
- {
- 	int i;
- 
-Index: linux-2.6.22/include/asm-um/ldt.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/ldt.h	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/include/asm-um/ldt.h	2007-08-13 16:57:03.000000000 -0400
-@@ -11,11 +11,7 @@
- #include "asm/semaphore.h"
- #include "asm/host_ldt.h"
- 
--struct mmu_context_skas;
- extern void ldt_host_info(void);
--extern long init_new_ldt(struct mmu_context_skas * to_mm,
--			 struct mmu_context_skas * from_mm);
--extern void free_ldt(struct mmu_context_skas * mm);
- 
- #define LDT_PAGES_MAX \
- 	((LDT_ENTRIES * LDT_ENTRY_SIZE)/PAGE_SIZE)
-Index: linux-2.6.22/include/asm-um/mmu_context.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/mmu_context.h	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/include/asm-um/mmu_context.h	2007-08-13 16:57:03.000000000 -0400
-@@ -29,7 +29,7 @@ static inline void activate_mm(struct mm
- 	 * possible.
- 	 */
- 	if (old != new && (current->flags & PF_BORROWED_MM))
--		__switch_mm(&new->context.skas.id);
-+		__switch_mm(&new->context.id);
- }
- 
- static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, 
-@@ -41,7 +41,7 @@ static inline void switch_mm(struct mm_s
- 		cpu_clear(cpu, prev->cpu_vm_mask);
- 		cpu_set(cpu, next->cpu_vm_mask);
- 		if(next != &init_mm)
--			__switch_mm(&next->context.skas.id);
-+			__switch_mm(&next->context.id);
- 	}
- }
- 
-Index: linux-2.6.22/arch/um/include/skas/mmu-skas.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/skas/mmu-skas.h	2007-08-13 15:16:57.000000000 -0400
+--- linux-2.6.22.orig/arch/um/include/uml_uaccess.h	2007-08-13 13:44:23.000000000 -0400
 +++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,23 +0,0 @@
+@@ -1,24 +0,0 @@
 -/*
-- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+- * Copyright (C) 2001 Jeff Dike (jdike@karaya.com)
 - * Licensed under the GPL
 - */
 -
--#ifndef __SKAS_MMU_H
--#define __SKAS_MMU_H
+-#ifndef __UML_UACCESS_H__
+-#define __UML_UACCESS_H__
 -
--#include "mm_id.h"
--#include "asm/ldt.h"
--
--struct mmu_context_skas {
--	struct mm_id id;
--	unsigned long last_page_table;
--#ifdef CONFIG_3_LEVEL_PGTABLES
--	unsigned long last_pmd;
--#endif
--	uml_ldt_t ldt;
--};
--
--extern void __switch_mm(struct mm_id * mm_idp);
+-extern int __do_copy_to_user(void *to, const void *from, int n,
+-			     void **fault_addr, void **fault_catcher);
+-void __do_copy(void *to, const void *from, int n);
 -
 -#endif
-Index: linux-2.6.22/arch/um/sys-x86_64/syscalls.c
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.22/arch/um/kernel/exec.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/sys-x86_64/syscalls.c	2007-08-13 15:16:57.000000000 -0400
-+++ linux-2.6.22/arch/um/sys-x86_64/syscalls.c	2007-08-13 16:57:03.000000000 -0400
-@@ -30,7 +30,7 @@ long arch_prctl(struct task_struct *task
- {
- 	unsigned long *ptr = addr, tmp;
- 	long ret;
--	int pid = task->mm->context.skas.id.u.pid;
-+	int pid = task->mm->context.id.u.pid;
+--- linux-2.6.22.orig/arch/um/kernel/exec.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/exec.c	2007-08-13 13:44:56.000000000 -0400
+@@ -75,7 +75,7 @@ long um_execve(char *file, char __user *
  
- 	/*
- 	 * With ARCH_SET_FS (and ARCH_SET_GS is treated similarly to
+ 	err = execve1(file, argv, env);
+ 	if (!err)
+-		do_longjmp(current->thread.exec_buf, 1);
++		UML_LONGJMP(current->thread.exec_buf, 1);
+ 	return err;
+ }
+ 
+Index: linux-2.6.22/arch/um/kernel/mem.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/mem.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/mem.c	2007-08-13 13:44:53.000000000 -0400
+@@ -17,7 +17,7 @@
+ #include "as-layout.h"
+ #include "kern.h"
+ #include "mem_user.h"
+-#include "uml_uaccess.h"
++#include "um_uaccess.h"
+ #include "os.h"
+ #include "linux/types.h"
+ #include "linux/string.h"
+Index: linux-2.6.22/arch/um/kernel/trap.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/trap.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/trap.c	2007-08-13 13:44:53.000000000 -0400
+@@ -149,7 +149,7 @@ unsigned long segv(struct faultinfo fi, 
+ 		   struct uml_pt_regs *regs)
+ {
+ 	struct siginfo si;
+-	void *catcher;
++	jmp_buf *catcher;
+ 	int err;
+ 	int is_write = FAULT_WRITE(fi);
+ 	unsigned long address = FAULT_ADDRESS(fi);
+@@ -181,7 +181,7 @@ unsigned long segv(struct faultinfo fi, 
+ 		return 0;
+ 	else if (catcher != NULL) {
+ 		current->thread.fault_addr = (void *) address;
+-		do_longjmp(catcher, 1);
++		UML_LONGJMP(catcher, 1);
+ 	}
+ 	else if (current->thread.fault_addr != NULL)
+ 		panic("fault_addr set but no fault catcher");
+@@ -233,7 +233,7 @@ void relay_signal(int sig, struct uml_pt
+ static void bus_handler(int sig, struct uml_pt_regs *regs)
+ {
+ 	if (current->thread.fault_catcher != NULL)
+-		do_longjmp(current->thread.fault_catcher, 1);
++		UML_LONGJMP(current->thread.fault_catcher, 1);
+ 	else relay_signal(sig, regs);
+ }
+ 
+Index: linux-2.6.22/arch/um/kernel/uaccess.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/uaccess.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/uaccess.c	2007-08-13 13:44:53.000000000 -0400
+@@ -18,7 +18,7 @@ void __do_copy(void *to, const void *fro
+ 
+ 
+ int __do_copy_to_user(void *to, const void *from, int n,
+-		      void **fault_addr, void **fault_catcher)
++		      void **fault_addr, jmp_buf **fault_catcher)
+ {
+ 	unsigned long fault;
+ 	int faulted;
+Index: linux-2.6.22/arch/um/os-Linux/process.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/process.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/process.c	2007-08-13 13:44:53.000000000 -0400
+@@ -249,7 +249,7 @@ void init_new_thread_signals(void)
+ 	init_irq_signals(1);
+ }
+ 
+-int run_kernel_thread(int (*fn)(void *), void *arg, void **jmp_ptr)
++int run_kernel_thread(int (*fn)(void *), void *arg, jmp_buf **jmp_ptr)
+ {
+ 	jmp_buf buf;
+ 	int n;
+Index: linux-2.6.22/arch/um/os-Linux/trap.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/trap.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/trap.c	2007-08-13 13:44:53.000000000 -0400
+@@ -22,10 +22,3 @@ void os_fill_handlinfo(struct kern_handl
+ 	sig_info[SIGVTALRM] = h.timer_handler;
+ 	sig_info[SIGALRM] = h.timer_handler;
+ }
+-
+-void do_longjmp(void *b, int val)
+-{
+-	jmp_buf *buf = b;
+-
+-	UML_LONGJMP(buf, val);
+-}
+Index: linux-2.6.22/include/asm-um/processor-generic.h
+===================================================================
+--- linux-2.6.22.orig/include/asm-um/processor-generic.h	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/include/asm-um/processor-generic.h	2007-08-13 13:44:53.000000000 -0400
+@@ -30,10 +30,10 @@ struct thread_struct {
+ 	struct pt_regs regs;
+ 	int singlestep_syscall;
+ 	void *fault_addr;
+-	void *fault_catcher;
++	jmp_buf *fault_catcher;
+ 	struct task_struct *prev_sched;
+ 	unsigned long temp_stack;
+-	void *exec_buf;
++	jmp_buf *exec_buf;
+ 	struct arch_thread arch;
+ 	jmp_buf switch_buf;
+ 	int mm_count;
+Index: linux-2.6.22/arch/um/os-Linux/uaccess.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/uaccess.c	2007-08-13 13:44:23.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/uaccess.c	2007-08-13 13:44:53.000000000 -0400
+@@ -8,7 +8,7 @@
+ #include "longjmp.h"
+ 
+ unsigned long __do_user_copy(void *to, const void *from, int n,
+-			     void **fault_addr, void **fault_catcher,
++			     void **fault_addr, jmp_buf **fault_catcher,
+ 			     void (*op)(void *to, const void *from,
+ 					int n), int *faulted_out)
+ {
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
