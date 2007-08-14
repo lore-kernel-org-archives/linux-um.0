@@ -1,9 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Sun, 12 Aug 2007 23:39:11 -0700
-From: joe@perches.com
-Message-ID: <46bffc8f.k8F7SBEYGP7ozPij%joe@perches.com>
-MIME-Version: 1.0
-Subject: [uml-devel] [PATCH] [525/2many] MAINTAINERS - USER-MODE LINUX
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1IL47q-0001a4-0h for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 14 Aug 2007 14:40:31 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IL47p-00089c-5l
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 14 Aug 2007 14:40:30 -0700
+Date: Tue, 14 Aug 2007 17:40:25 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070814214025.GA17601@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH 12/14] UML - Free LDT state on process exit
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,26 +28,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, jdike@karaya.com, akpm@linux-foundation.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Add file pattern to MAINTAINER entry
+The space allocated for a process LDT wasn't being freed when the
+process exited.
 
-Signed-off-by: Joe Perches <joe@perches.com>
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/kernel/skas/mmu.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c50b6b1..7d1f87d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4964,6 +4964,9 @@ L:	user-mode-linux-devel@lists.sourceforge.net
- L:	user-mode-linux-user@lists.sourceforge.net
- W:	http://user-mode-linux.sourceforge.net
- S:	Maintained
-+F:	Documentation/uml/UserModeLinux-HOWTO.txt
-+F:	arch/um/
-+F:	include/asm-um/
- 
- FAT/VFAT/MSDOS FILESYSTEM:
- P:	OGAWA Hirofumi
+Index: linux-2.6.22/arch/um/kernel/skas/mmu.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/skas/mmu.c	2007-08-13 16:58:12.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/skas/mmu.c	2007-08-13 16:59:32.000000000 -0400
+@@ -149,4 +149,6 @@ void destroy_context(struct mm_struct *m
+ 		pmd_free((pmd_t *) mmu->last_pmd);
+ #endif
+ 	}
++
++	free_ldt(mmu);
+ }
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
