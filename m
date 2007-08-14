@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IL47p-0001a2-96 for user-mode-linux-devel@lists.sourceforge.net;
+	id 1IL47q-0001a0-Sf for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 14 Aug 2007 14:40:31 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IL47l-0001AF-BN
+	(Exim 4.44) id 1IL47l-0001Bl-9U
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Tue, 14 Aug 2007 14:40:28 -0700
-Date: Tue, 14 Aug 2007 17:40:17 -0400
+Date: Tue, 14 Aug 2007 17:40:21 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070814214017.GA17285@c2.user-mode-linux.org>
+Message-ID: <20070814214021.GA17305@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/14] UML - Remove sysdep/thread.h
+Subject: [uml-devel] [PATCH 8/14] UML - Remove __u64 usage from physical
+	memory subsystem
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,78 +32,104 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-This patch removes thread.h, which turns out not to be needed any more.
+Eliminate some uses of __u64 in the physical memory support.  It's
+hard to get a definition of __u64 in both kernel and userspace code on
+x86_64, so this changes them to unsigned long long.
+
+There are also a copyright update and formatting comment removal from
+the affected header.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/sysdep-i386/kernel-offsets.h |    1 -
- arch/um/include/sysdep-i386/sigcontext.h     |    3 ++-
- arch/um/include/sysdep-i386/thread.h         |    8 --------
- arch/um/include/sysdep-x86_64/thread.h       |    6 ------
- arch/um/sys-i386/ptrace_user.c               |    1 -
- 5 files changed, 2 insertions(+), 17 deletions(-)
+ arch/um/include/mem.h           |   21 ++-------------------
+ arch/um/kernel/physmem.c        |    2 +-
+ arch/um/os-Linux/skas/process.c |    6 +++---
+ 3 files changed, 6 insertions(+), 23 deletions(-)
 
-Index: linux-2.6.22/arch/um/include/sysdep-i386/sigcontext.h
+Index: linux-2.6.22/arch/um/include/mem.h
 ===================================================================
---- linux-2.6.22.orig/arch/um/include/sysdep-i386/sigcontext.h	2007-08-09 13:25:53.000000000 -0400
-+++ linux-2.6.22/arch/um/include/sysdep-i386/sigcontext.h	2007-08-09 14:27:51.000000000 -0400
-@@ -7,7 +7,8 @@
- #define __SYS_SIGCONTEXT_I386_H
+--- linux-2.6.22.orig/arch/um/include/mem.h	2007-07-08 19:32:17.000000000 -0400
++++ linux-2.6.22/arch/um/include/mem.h	2007-08-14 13:27:12.000000000 -0400
+@@ -1,18 +1,12 @@
+ /* 
+- * Copyright (C) 2002, 2003 Jeff Dike (jdike@addtoit.com)
++ * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
  
- #include "uml-config.h"
--#include <sysdep/sc.h>
-+#include "skas.h"
-+#include "sysdep/sc.h"
+ #ifndef __MEM_H__
+ #define __MEM_H__
  
- #define IP_RESTART_SYSCALL(ip) ((ip) -= 2)
+-#include "linux/types.h"
+-
+-extern int phys_mapping(unsigned long phys, __u64 *offset_out);
+-extern int physmem_subst_mapping(void *virt, int fd, __u64 offset, int w);
+-extern int is_remapped(void *virt);
+-extern int physmem_remove_mapping(void *virt);
+-extern void physmem_forget_descriptor(int fd);
++extern int phys_mapping(unsigned long phys, unsigned long long *offset_out);
  
-Index: linux-2.6.22/arch/um/include/sysdep-i386/kernel-offsets.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/sysdep-i386/kernel-offsets.h	2007-07-08 19:32:17.000000000 -0400
-+++ linux-2.6.22/arch/um/include/sysdep-i386/kernel-offsets.h	2007-08-09 14:43:15.000000000 -0400
-@@ -17,6 +17,5 @@
- 
- void foo(void)
- {
--	OFFSET(HOST_TASK_DEBUGREGS, task_struct, thread.arch.debugregs);
- #include <common-offsets.h>
+ extern unsigned long uml_physmem;
+ static inline unsigned long to_phys(void *virt)
+@@ -26,14 +20,3 @@ static inline void *to_virt(unsigned lon
  }
-Index: linux-2.6.22/arch/um/include/sysdep-i386/thread.h
+ 
+ #endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6.22/arch/um/kernel/physmem.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/include/sysdep-i386/thread.h	2007-08-09 13:25:53.000000000 -0400
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,8 +0,0 @@
--#ifndef __UM_THREAD_H
--#define __UM_THREAD_H
--
--#include <kern_constants.h>
--
--#define TASK_DEBUGREGS(task) ((unsigned long *) &(((char *) (task))[HOST_TASK_DEBUGREGS]))
--
--#endif
-Index: linux-2.6.22/arch/um/sys-i386/ptrace_user.c
+--- linux-2.6.22.orig/arch/um/kernel/physmem.c	2007-08-14 13:25:59.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/physmem.c	2007-08-14 13:27:12.000000000 -0400
+@@ -115,7 +115,7 @@ void __init setup_physmem(unsigned long 
+ 		     len - bootmap_size - reserve);
+ }
+ 
+-int phys_mapping(unsigned long phys, __u64 *offset_out)
++int phys_mapping(unsigned long phys, unsigned long long *offset_out)
+ {
+ 	int fd = -1;
+ 
+Index: linux-2.6.22/arch/um/os-Linux/skas/process.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/sys-i386/ptrace_user.c	2007-08-09 13:25:53.000000000 -0400
-+++ linux-2.6.22/arch/um/sys-i386/ptrace_user.c	2007-08-09 14:44:17.000000000 -0400
-@@ -11,7 +11,6 @@
- /* Grr, asm/user.h includes asm/ptrace.h, so has to follow ptrace_user.h */
- #include <asm/user.h>
- #include "kern_util.h"
--#include "sysdep/thread.h"
- #include "user.h"
- #include "os.h"
- #include "uml-config.h"
-Index: linux-2.6.22/arch/um/include/sysdep-x86_64/thread.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/sysdep-x86_64/thread.h	2007-08-09 13:25:53.000000000 -0400
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,6 +0,0 @@
--#ifndef __UM_THREAD_H
--#define __UM_THREAD_H
--
--#include <kern_constants.h>
--
--#endif
+--- linux-2.6.22.orig/arch/um/os-Linux/skas/process.c	2007-08-14 13:25:59.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/skas/process.c	2007-08-14 13:27:12.000000000 -0400
+@@ -382,7 +382,7 @@ int copy_context_skas0(unsigned long new
+ 	unsigned long current_stack = current_stub_stack();
+ 	struct stub_data *data = (struct stub_data *) current_stack;
+ 	struct stub_data *child_data = (struct stub_data *) new_stack;
+-	__u64 new_offset;
++	unsigned long long new_offset;
+ 	int new_fd = phys_mapping(to_phys((void *)new_stack), &new_offset);
+ 
+ 	/*
+@@ -444,7 +444,7 @@ void map_stub_pages(int fd, unsigned lon
+ {
+ 	struct proc_mm_op mmop;
+ 	int n;
+-	__u64 code_offset;
++	unsigned long long code_offset;
+ 	int code_fd = phys_mapping(to_phys((void *) &__syscall_stub_start),
+ 				   &code_offset);
+ 
+@@ -469,7 +469,7 @@ void map_stub_pages(int fd, unsigned lon
+ 	}
+ 
+ 	if (stack) {
+-		__u64 map_offset;
++		unsigned long long map_offset;
+ 		int map_fd = phys_mapping(to_phys((void *)stack), &map_offset);
+ 		mmop = ((struct proc_mm_op)
+ 				{ .op        = MM_MMAP,
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
