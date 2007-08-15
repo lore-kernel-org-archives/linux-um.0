@@ -2,24 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ILKgG-0000Ca-5F for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Aug 2007 08:21:08 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1ILKgE-0003Ly-Iw
+	id 1ILLED-00067f-OV for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Aug 2007 08:56:13 -0700
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1ILLEB-0002u2-8o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Aug 2007 08:21:08 -0700
-Date: Wed, 15 Aug 2007 11:20:53 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070815152053.GB6889@c2.user-mode-linux.org>
-References: <20070725143227.GO5115@pintsize>
-	<20070725160700.GA7607@c2.user-mode-linux.org>
-	<200708121254.10137.blaisorblade@yahoo.it>
-	<20070812121019.GL23105@pintsize>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20070812121019.GL23105@pintsize>
-Subject: Re: [uml-devel] [RFC PATCH] vde network backend
+	Wed, 15 Aug 2007 08:56:12 -0700
+Message-ID: <46C31489.9040704@nagafix.co.uk>
+Date: Wed, 15 Aug 2007 15:58:17 +0100
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
+References: <46975C78.5010903@nagafix.co.uk>	<20070713160500.GB7468@c2.user-mode-linux.org>	<4697BFCB.2060701@nagafix.co.uk>	<20070713184545.GC9472@c2.user-mode-linux.org>	<46AF757F.9080103@nagafix.co.uk>	<20070807152131.GB6141@c2.user-mode-linux.org>
+	<46B8980A.6010902@nagafix.co.uk>
+In-Reply-To: <46B8980A.6010902@nagafix.co.uk>
+Subject: Re: [uml-devel] 2.6.21.5 crashes [was link failure,
+	multiple definition of 'in6addr_any']
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,22 +30,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Luca Bigliardi <shammash@artha.org>
-Cc: Blaisorblade <blaisorblade@yahoo.it>, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Aug 12, 2007 at 02:10:19PM +0200, Luca Bigliardi wrote:
-> Thank you, I'm attaching a new patch with proper changes.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-What did you change?  BB was right to comment on my changelog, but I
-don't see any examples of if( blah ) { anywhere in the vde code.
+Antoine Martin wrote:
+> Jeff Dike wrote:
+>> On Tue, Jul 31, 2007 at 06:46:39PM +0100, Antoine Martin wrote:
+>>> If it doesn't crash on emerge --sync (when I reboot it doesn't
+>>> always crash), try building something big (like glibc or gcc:
+>>> emerge glibc gcc)
+>> Well, I did that, and it finished fine.
+> Damn, so maybe it is interacting with apache. This guest has got
+> apache running and it crashes every few days (usually when doing an
+> emerge sync but not always).
+> 
+> 
+>> Does this happen with a current UML?  Do you have any stack traces
+>> or core dumps for me to look at?
+> No core dumps but I'll try getting some stack traces using SysRq next
+>  time it crashes.
 
-Since the main patch is in -mm, if you have changes, send incremental
-patches, not updated full patches.
+SysRq doesn't dump anything anymore (or did it ever? IIRC it did)
+This crash is 100% reproducible in my systems. Just emerging stuff
+triggers it.
+Can you try with one of the guests on my site (say 2.6.20.x?)
+When it dies, the existing shells are still there - but are unable to
+spawn any new processes.
 
-				Jeff
+Antoine
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.5 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
--- 
-Work email - jdike at linux dot intel dot com
+iD8DBQFGwxSJGK2zHPGK1rsRCvcNAJ4wlrfDnxuQVhvw89YXtk9SZSfewQCaA6Xu
+bMix9qFnAfAk5lsmoTkxiJw=
+=j4Zv
+-----END PGP SIGNATURE-----
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
