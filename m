@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ILLED-00067f-OV for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Aug 2007 08:56:13 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1ILLEB-0002u2-8o
+	id 1ILQZl-00071n-3n for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Aug 2007 14:38:49 -0700
+Received: from nef2.ens.fr ([129.199.96.40])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1ILQZj-00033x-HW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Aug 2007 08:56:12 -0700
-Message-ID: <46C31489.9040704@nagafix.co.uk>
-Date: Wed, 15 Aug 2007 15:58:17 +0100
-From: Antoine Martin <antoine@nagafix.co.uk>
-MIME-Version: 1.0
-References: <46975C78.5010903@nagafix.co.uk>	<20070713160500.GB7468@c2.user-mode-linux.org>	<4697BFCB.2060701@nagafix.co.uk>	<20070713184545.GC9472@c2.user-mode-linux.org>	<46AF757F.9080103@nagafix.co.uk>	<20070807152131.GB6141@c2.user-mode-linux.org>
-	<46B8980A.6010902@nagafix.co.uk>
-In-Reply-To: <46B8980A.6010902@nagafix.co.uk>
-Subject: Re: [uml-devel] 2.6.21.5 crashes [was link failure,
-	multiple definition of 'in6addr_any']
+	Wed, 15 Aug 2007 14:38:49 -0700
+Date: Wed, 15 Aug 2007 23:38:25 +0200
+From: Nicolas George <nicolas.george@normalesup.org>
+Message-ID: <20070815213825.GA26490@clipper.ens.fr>
+References: <20070813124247.GA7414@she-seel.salle-s.org>
+	<20070815171247.GA7948@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20070815171247.GA7948@c2.user-mode-linux.org>
+Subject: [uml-devel] [PATCH] UML: BLKGETSIZE takes a long, not an int
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,44 +31,40 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
+The BLKGETSIZE ioctl expects a pointer to a long, os_file_size was providing
+an int. Therefore, ubd access to host block devices caused a segmentation
+fault on 64 bits systems.
 
-Antoine Martin wrote:
-> Jeff Dike wrote:
->> On Tue, Jul 31, 2007 at 06:46:39PM +0100, Antoine Martin wrote:
->>> If it doesn't crash on emerge --sync (when I reboot it doesn't
->>> always crash), try building something big (like glibc or gcc:
->>> emerge glibc gcc)
->> Well, I did that, and it finished fine.
-> Damn, so maybe it is interacting with apache. This guest has got
-> apache running and it crashes every few days (usually when doing an
-> emerge sync but not always).
-> 
-> 
->> Does this happen with a current UML?  Do you have any stack traces
->> or core dumps for me to look at?
-> No core dumps but I'll try getting some stack traces using SysRq next
->  time it crashes.
+Signed-off-by: Nicolas George <nicolas.george@normalesup.org>
 
-SysRq doesn't dump anything anymore (or did it ever? IIRC it did)
-This crash is 100% reproducible in my systems. Just emerging stuff
-triggers it.
-Can you try with one of the guests on my site (say 2.6.20.x?)
-When it dies, the existing shells are still there - but are unable to
-spawn any new processes.
+---
 
-Antoine
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.5 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+Jeff Dike wrote:
+> Looks sane, can I have a properly Signed-off-by: version of the patch?
 
-iD8DBQFGwxSJGK2zHPGK1rsRCvcNAJ4wlrfDnxuQVhvw89YXtk9SZSfewQCaA6Xu
-bMix9qFnAfAk5lsmoTkxiJw=
-=j4Zv
------END PGP SIGNATURE-----
+Of course. I should have sent it correctly the first time. And I am terribly
+sorry for the mess my mailer have done with my second mail.
+
+Here is the hopefully correct patch, against current git.
+
+Regards.
+
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index 6f92f73..c3ecc2a 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -320,7 +320,8 @@ int os_file_size(char *file, unsigned long long *size_out)
+ 	}
+ 
+ 	if(S_ISBLK(buf.ust_mode)){
+-		int fd, blocks;
++		int fd;
++		long blocks;
+ 
+ 		fd = os_open_file(file, of_read(OPENFLAGS()), 0);
+ 		if(fd < 0){
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
