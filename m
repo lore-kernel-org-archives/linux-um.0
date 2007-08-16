@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ILiNi-00060p-7j for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Aug 2007 09:39:34 -0700
-Received: from 216-99-217-87.dsl.aracnet.com ([216.99.217.87]
-	helo=sous-sol.org)
+	id 1ILi9M-0003u1-AG for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Aug 2007 09:24:44 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1ILiNe-0002BI-U5
+	(Exim 4.44) id 1ILi9J-00056N-PM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Aug 2007 09:39:34 -0700
-Date: Thu, 16 Aug 2007 09:39:06 -0700
-From: Chris Wright <chrisw@sous-sol.org>
-Message-ID: <20070816163906.GF3672@sequoia.sous-sol.org>
-References: <20070816162428.GA8128@c2.user-mode-linux.org>
-MIME-Version: 1.0
+	Thu, 16 Aug 2007 09:24:44 -0700
+Date: Thu, 16 Aug 2007 12:24:27 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070816162427.GA8123@c2.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070816162428.GA8128@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [stable] [PATCH] UML - Add a .note.SuSE section
+Subject: [uml-devel] [PATCH] UML - Fix previous request size limit fix
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,19 +28,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Andrew Morton <akpm@osdl.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Alberto Pires de Oliveira Neto <apon1@terra.com.br>, giedrius@su.lt, LKML <linux-kernel@vger.kernel.org>, stable@kernel.org
+To: Andrew Morton <akpm@osdl.org>, stable@kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-* Jeff Dike (jdike@addtoit.com) wrote:
-> [ This is both 2.6.24 and -stable material ]
-> 
-> SuSE seems to require that binaries have a .note.SuSE section.
-> Without it, UML segfaults if any parameters are passed on the command
-> line.
+[ This is both 2.6.24 and -stable material ]
 
-Huh!?  Why do we need a SuSE section?
-thanks,
--chris
+The previous patch which limited the number of sectors in a single
+request to a COWed device was correct in concept, but the limit was
+implemented in the wrong place.
+
+By putting it in ubd_add, it covered the cases where the COWing was
+specified on the command line.  However, when the command line only
+has the COW file specified, the fact that it's a COW file isn't known
+until it's opened, so the limit is missed in these cases.
+
+This patch moves the sector limit from ubd_add to ubd_open_dev.
+
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ arch/um/drivers/ubd_kern.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+Index: linux-2.6.21-mm/arch/um/drivers/ubd_kern.c
+===================================================================
+--- linux-2.6.21-mm.orig/arch/um/drivers/ubd_kern.c	2007-08-07 13:25:47.000000000 -0400
++++ linux-2.6.21-mm/arch/um/drivers/ubd_kern.c	2007-08-09 13:08:20.000000000 -0400
+@@ -612,6 +612,8 @@ static int ubd_open_dev(struct ubd *ubd_
+ 	ubd_dev->fd = fd;
+ 
+ 	if(ubd_dev->cow.file != NULL){
++		blk_queue_max_sectors(ubd_dev->queue, 8 * sizeof(long));
++
+ 		err = -ENOMEM;
+ 		ubd_dev->cow.bitmap = (void *) vmalloc(ubd_dev->cow.bitmap_len);
+ 		if(ubd_dev->cow.bitmap == NULL){
+@@ -712,8 +714,6 @@ static int ubd_add(int n, char **error_o
+ 	ubd_dev->queue->queuedata = ubd_dev;
+ 
+ 	blk_queue_max_hw_segments(ubd_dev->queue, MAX_SG);
+-	if(ubd_dev->cow.file != NULL)
+-		blk_queue_max_sectors(ubd_dev->queue, 8 * sizeof(long));
+ 	err = ubd_disk_register(MAJOR_NR, ubd_dev->size, n, &ubd_gendisk[n]);
+ 	if(err){
+ 		*error_out = "Failed to register device";
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
