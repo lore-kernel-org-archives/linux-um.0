@@ -1,22 +1,12 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ILQZl-00071n-3n for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Aug 2007 14:38:49 -0700
-Received: from nef2.ens.fr ([129.199.96.40])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1ILQZj-00033x-HW
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Aug 2007 14:38:49 -0700
-Date: Wed, 15 Aug 2007 23:38:25 +0200
-From: Nicolas George <nicolas.george@normalesup.org>
-Message-ID: <20070815213825.GA26490@clipper.ens.fr>
-References: <20070813124247.GA7414@she-seel.salle-s.org>
-	<20070815171247.GA7948@c2.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20070815171247.GA7948@c2.user-mode-linux.org>
-Subject: [uml-devel] [PATCH] UML: BLKGETSIZE takes a long, not an int
+Message-ID: <46C3B428.4000003@intel.com>
+Date: Wed, 15 Aug 2007 19:19:20 -0700
+From: "Kok, Auke" <auke-jan.h.kok@intel.com>
+MIME-Version: 1.0
+References: <20070815235825.GB17004@redhat.com>
+	<1187224811.5906.55.camel@localhost>
+In-Reply-To: <1187224811.5906.55.camel@localhost>
+Subject: Re: [uml-devel] drivers/infiniband/mlx/mad.c misplaced ;
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,41 +20,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Joe Perches <joe@perches.com>, Andy Whitcroft <apw@shadowen.org>, "Randy.Dunlap" <rdunlap@xenotime.net>, Joel Schopp <jschopp@austin.ibm.com>
+Cc: Chas Williams <chas@cmf.nrl.navy.mil>, linux-s390@vger.kernel.org, coreteam@netfilter.org, user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com, mikep@linuxtr.net, netdev@vger.kernel.org, netfilter-devel@lists.netfilter.org, Linux Kernel <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>, isdn4linux@listserv.isdn4linux.de, user-mode-linux-user@lists.sourceforge.net, linux390@de.ibm.com, Dave Jones <davej@redhat.com>, rolandd@cisco.com, swen@vnet.ibm.com
 
-The BLKGETSIZE ioctl expects a pointer to a long, os_file_size was providing
-an int. Therefore, ubd access to host block devices caused a segmentation
-fault on 64 bits systems.
+Joe Perches wrote:
+> On Wed, 2007-08-15 at 19:58 -0400, Dave Jones wrote:
+>> Signed-off-by: Dave Jones <davej@redhat.com>
+>>
+>> diff --git a/drivers/infiniband/hw/mlx4/mad.c b/drivers/infiniband/hw/mlx4/mad.c
+>> index 3330917..0ed02b7 100644
+>> --- a/drivers/infiniband/hw/mlx4/mad.c
+>> +++ b/drivers/infiniband/hw/mlx4/mad.c
+>> @@ -109,7 +109,7 @@ int mlx4_MAD_IFC(struct mlx4_ib_dev *dev, int ignore_mkey, int ignore_bkey,
+>>  			   in_modifier, op_modifier,
+>>  			   MLX4_CMD_MAD_IFC, MLX4_CMD_TIME_CLASS_C);
+>>  
+>> -	if (!err);
+>> +	if (!err)
+> 
+> There's more than a few of these (not inspected).
+> 
+> $ egrep -r --include=*.c "\bif[[:space:]]*\([^\)]*\)[[:space:]]*\;" * 
+> arch/sh/boards/se/7343/io.c:    if (0) ;
+> drivers/atm/iphase.c:     if (!desc1) ;
+> drivers/infiniband/hw/mlx4/mad.c:       if (!err);
+> drivers/isdn/capi/capiutil.c:   else if (c <= 0x0f);
+> drivers/net/tokenring/ibmtr.c:  else if (ti->shared_ram_paging == 0xf);  /* No paging in adapter */
+> drivers/s390/scsi/zfcp_erp.c:           if (status == ZFCP_ERP_SUCCEEDED) ;     /* no further action */
+> fs/hostfs/hostfs_user.c:        if(attrs->ia_valid & HOSTFS_ATTR_CTIME) ;
+> net/netfilter/xt_u32.c:         if (skb->len < 4 || pos > skb->len - 4);
+> sound/pci/au88x0/au88x0_synth.c:                                if (eax == 0) ;
 
-Signed-off-by: Nicolas George <nicolas.george@normalesup.org>
+sounds like an excellent candidate check for checkpatch.pl !!!
 
----
+Cheers,
 
-Jeff Dike wrote:
-> Looks sane, can I have a properly Signed-off-by: version of the patch?
-
-Of course. I should have sent it correctly the first time. And I am terribly
-sorry for the mess my mailer have done with my second mail.
-
-Here is the hopefully correct patch, against current git.
-
-Regards.
-
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index 6f92f73..c3ecc2a 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -320,7 +320,8 @@ int os_file_size(char *file, unsigned long long *size_out)
- 	}
- 
- 	if(S_ISBLK(buf.ust_mode)){
--		int fd, blocks;
-+		int fd;
-+		long blocks;
- 
- 		fd = os_open_file(file, of_read(OPENFLAGS()), 0);
- 		if(fd < 0){
+Auke
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
