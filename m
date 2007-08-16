@@ -1,20 +1,12 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ILi9O-0003uC-Kw for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Aug 2007 09:24:48 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1ILi9M-00057q-3i
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Aug 2007 09:24:46 -0700
-Date: Thu, 16 Aug 2007 12:24:28 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070816162428.GA8128@c2.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] UML - Add a .note.SuSE section
+Message-ID: <46C45996.6060802@shadowen.org>
+Date: Thu, 16 Aug 2007 15:05:10 +0100
+From: Andy Whitcroft <apw@shadowen.org>
+MIME-Version: 1.0
+References: <20070815235825.GB17004@redhat.com>
+	<1187224811.5906.55.camel@localhost> <46C3B428.4000003@intel.com>
+In-Reply-To: <46C3B428.4000003@intel.com>
+Subject: Re: [uml-devel] drivers/infiniband/mlx/mad.c misplaced ;
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,32 +20,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>, stable@kernel.org
-Cc: Alberto Pires de Oliveira Neto <apon1@terra.com.br>, giedrius@su.lt, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: "Kok, Auke" <auke-jan.h.kok@intel.com>
+Cc: Joel Schopp <jschopp@austin.ibm.com>, Chas Williams <chas@cmf.nrl.navy.mil>, coreteam@netfilter.org, user-mode-linux-devel@lists.sourceforge.net, linux-s390@vger.kernel.org, mikep@linuxtr.net, netdev@vger.kernel.org, jdike@karaya.com, netfilter-devel@lists.netfilter.org, Linux Kernel <linux-kernel@vger.kernel.org>, "Randy.Dunlap" <rdunlap@xenotime.net>, Paul Mundt <lethal@linux-sh.org>, isdn4linux@listserv.isdn4linux.de, user-mode-linux-user@lists.sourceforge.net, linux390@de.ibm.com, Joe Perches <joe@perches.com>, Dave Jones <davej@redhat.com>, rolandd@cisco.com, swen@vnet.ibm.com
 
-[ This is both 2.6.24 and -stable material ]
+Kok, Auke wrote:
+> Joe Perches wrote:
+>> On Wed, 2007-08-15 at 19:58 -0400, Dave Jones wrote:
+>>> Signed-off-by: Dave Jones <davej@redhat.com>
+>>>
+>>> diff --git a/drivers/infiniband/hw/mlx4/mad.c
+>>> b/drivers/infiniband/hw/mlx4/mad.c
+>>> index 3330917..0ed02b7 100644
+>>> --- a/drivers/infiniband/hw/mlx4/mad.c
+>>> +++ b/drivers/infiniband/hw/mlx4/mad.c
+>>> @@ -109,7 +109,7 @@ int mlx4_MAD_IFC(struct mlx4_ib_dev *dev, int
+>>> ignore_mkey, int ignore_bkey,
+>>>                 in_modifier, op_modifier,
+>>>                 MLX4_CMD_MAD_IFC, MLX4_CMD_TIME_CLASS_C);
+>>>  
+>>> -    if (!err);
+>>> +    if (!err)
+>>
+>> There's more than a few of these (not inspected).
+>>
+>> $ egrep -r --include=*.c "\bif[[:space:]]*\([^\)]*\)[[:space:]]*\;" *
+>> arch/sh/boards/se/7343/io.c:    if (0) ;
+>> drivers/atm/iphase.c:     if (!desc1) ;
+>> drivers/infiniband/hw/mlx4/mad.c:       if (!err);
+>> drivers/isdn/capi/capiutil.c:   else if (c <= 0x0f);
+>> drivers/net/tokenring/ibmtr.c:  else if (ti->shared_ram_paging ==
+>> 0xf);  /* No paging in adapter */
+>> drivers/s390/scsi/zfcp_erp.c:           if (status ==
+>> ZFCP_ERP_SUCCEEDED) ;     /* no further action */
+>> fs/hostfs/hostfs_user.c:        if(attrs->ia_valid & HOSTFS_ATTR_CTIME) ;
+>> net/netfilter/xt_u32.c:         if (skb->len < 4 || pos > skb->len - 4);
+>> sound/pci/au88x0/au88x0_synth.c:                                if
+>> (eax == 0) ;
+> 
+> sounds like an excellent candidate check for checkpatch.pl !!!
 
-SuSE seems to require that binaries have a .note.SuSE section.
-Without it, UML segfaults if any parameters are passed on the command
-line.
+Yep.  My scan of 2.6.23-rc3 with a checkpatch with this new test added,
+found 6 which seemed wrong.
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/kernel/dyn.lds.S |    1 +
- 1 file changed, 1 insertion(+)
-
-Index: linux-2.6.22/arch/um/kernel/dyn.lds.S
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/dyn.lds.S	2007-08-15 10:39:39.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/dyn.lds.S	2007-08-15 12:07:10.000000000 -0400
-@@ -10,6 +10,7 @@ SECTIONS
-   PROVIDE (__executable_start = START);
-   . = START + SIZEOF_HEADERS;
-   .interp         : { *(.interp) }
-+  .note.SuSE	  : { *(.note.SuSE) }
-   __binary_start = .;
-   . = ALIGN(4096);		/* Init code and data */
-   _text = .;
+-apw
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
