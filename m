@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IMCOB-0008Pv-1W for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Aug 2007 17:42:03 -0700
+	id 1IMCON-0008U9-Mx for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Aug 2007 17:42:16 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IMCO6-0001x3-Dd
+	(Exim 4.44) id 1IMCON-00045h-7b
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Aug 2007 17:41:59 -0700
-Date: Fri, 17 Aug 2007 15:43:39 -0400
+	Fri, 17 Aug 2007 17:42:15 -0700
+Date: Fri, 17 Aug 2007 15:43:42 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070817194339.GA8764@c2.user-mode-linux.org>
+Message-ID: <20070817194342.GA8744@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 0/6] UML - Code cleanups for 2.6.24
+Subject: [uml-devel] [PATCH 5/6] UML - Remove unneeded if from hostfs
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,16 +29,29 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Satyam Sharma <satyam@infradead.org>
 
-These patches are 2.6.24 material.
+Get rid of an empty if statement which might look like a bug to a
+casual reader.
 
-They are code cleanup, plus a minor bug fix.
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+--
+ fs/hostfs/hostfs_user.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6.22/fs/hostfs/hostfs_user.c
+===================================================================
+--- linux-2.6.22.orig/fs/hostfs/hostfs_user.c	2007-08-17 13:36:34.000000000 -0400
++++ linux-2.6.22/fs/hostfs/hostfs_user.c	2007-08-17 13:37:45.000000000 -0400
+@@ -283,7 +283,7 @@ int set_attr(const char *file, struct ho
+ 		}
+ 	}
+ 
+-	if(attrs->ia_valid & HOSTFS_ATTR_CTIME) ;
++	/* Note: ctime is not handled */
+ 	if(attrs->ia_valid & (HOSTFS_ATTR_ATIME | HOSTFS_ATTR_MTIME)){
+ 		err = stat_file(file, NULL, NULL, NULL, NULL, NULL, NULL,
+ 				&attrs->ia_atime, &attrs->ia_mtime, NULL,
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
