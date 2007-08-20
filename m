@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1INDNC-0001Mi-FN for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Aug 2007 12:57:14 -0700
-Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1INDN9-0004nU-Lh
+	id 1IND7j-0007ut-HC for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Aug 2007 12:41:15 -0700
+Received: from smtp2.linux-foundation.org ([207.189.120.14])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IND7i-0005i3-52
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Aug 2007 12:57:14 -0700
-Date: Mon, 20 Aug 2007 21:55:22 +0200
-From: Adrian Bunk <bunk@stusta.de>
-Message-ID: <20070820195522.GG32595@stusta.de>
+	Mon, 20 Aug 2007 12:41:15 -0700
+Date: Mon, 20 Aug 2007 12:40:30 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20070820124030.d603b928.akpm@linux-foundation.org>
+In-Reply-To: <20070817194340.GA8734@c2.user-mode-linux.org>
 References: <20070817194340.GA8734@c2.user-mode-linux.org>
-	<20070820124030.d603b928.akpm@linux-foundation.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20070820124030.d603b928.akpm@linux-foundation.org>
+Mime-Version: 1.0
 Subject: Re: [uml-devel] [PATCH 1/6] UML - Fix inlines
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,41 +29,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jeff Dike <jdike@addtoit.com>, Adrian Bunk <bunk@kernel.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Adrian Bunk <bunk@kernel.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Mon, Aug 20, 2007 at 12:40:30PM -0700, Andrew Morton wrote:
-> On Fri, 17 Aug 2007 15:43:40 -0400
-> Jeff Dike <jdike@addtoit.com> wrote:
-> 
-> > "extern inline" will have different semantics with gcc 4.3.
-> 
-> What are these different semantics?
+On Fri, 17 Aug 2007 15:43:40 -0400
+Jeff Dike <jdike@addtoit.com> wrote:
 
-With gcc <= 4.2, when using "extern inline" in no case the function is
-compiled on its own, not even if you refer to its address explicitly.  
-Such an address becomes an external reference, as if you had only 
-declared the function, and had not defined it.
+> "extern inline" will have different semantics with gcc 4.3.
 
-In C99 (and therefore in gcc >= 4.3), "extern inline" means that the 
-function should be compiled inline where the inline definition is seen, 
-and that the compiler should also emit a copy of the function body with 
-an externally visible symbol.
-
-Except for the Alpha port all users in the kernel used "extern inline" 
-only for getting "static inline" semantics (older gcc versions didn't 
-offer the always_inline function attribute).
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
+What are these different semantics?
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
