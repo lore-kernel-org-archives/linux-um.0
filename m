@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IN9aT-00053R-Ci for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Aug 2007 08:54:42 -0700
-Received: from apollo.fprintf.net ([208.75.87.34])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IN9aQ-0006MJ-Vp
+	id 1INDNC-0001Mi-FN for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Aug 2007 12:57:14 -0700
+Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1INDN9-0004nU-Lh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Aug 2007 08:54:41 -0700
-From: Daniel Gryniewicz <dang@gentoo.org>
-In-Reply-To: <20070820141102.GA5833@c2.user-mode-linux.org>
-References: <200708191142.57281.toralf.foerster@gmx.de>
-	<20070819155746.GA5896@c2.user-mode-linux.org>
-	<200708191812.35947.toralf.foerster@gmx.de>
-	<20070820141102.GA5833@c2.user-mode-linux.org>
-Date: Mon, 20 Aug 2007 11:55:22 -0400
-Message-Id: <1187625322.28647.171.camel@athena.fprintf.net>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] build error of an UML kernel with 2.6.2x sources
+	Mon, 20 Aug 2007 12:57:14 -0700
+Date: Mon, 20 Aug 2007 21:55:22 +0200
+From: Adrian Bunk <bunk@stusta.de>
+Message-ID: <20070820195522.GG32595@stusta.de>
+References: <20070817194340.GA8734@c2.user-mode-linux.org>
+	<20070820124030.d603b928.akpm@linux-foundation.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20070820124030.d603b928.akpm@linux-foundation.org>
+Subject: Re: [uml-devel] [PATCH 1/6] UML - Fix inlines
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,31 +26,52 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Toralf =?ISO-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>, user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jeff Dike <jdike@addtoit.com>, Adrian Bunk <bunk@kernel.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Ck9uIE1vbiwgMjAwNy0wOC0yMCBhdCAxMDoxMSAtMDQwMCwgSmVmZiBEaWtlIHdyb3RlOgo+IE9u
-IFN1biwgQXVnIDE5LCAyMDA3IGF0IDA2OjEyOjMzUE0gKzAyMDAsIFRvcmFsZiBGw7Zyc3RlciB3
-cm90ZToKPiA+IEkgZm91bmQgYSBkZWZpbml0aW9uIG9mIGVsZl9mcHJlZ3NldF90IHdpdGhpbiBp
-bmNsdWNlIGZpbGVzIGZyb20gdGhlIGdsaWJjCj4gPiBwYWNrYWdlOgo+ID4gCj4gPiB0Zm9lcnN0
-ZUBuMjIgL3Vzci9pbmNsdWRlICQgZ3JlcCAtSGlyIHVzZXJfaTM4N19zdHJ1Y3QgKgo+ID4gCj4g
-PiB0Zm9lcnN0ZUBuMjIgL3Vzci9pbmNsdWRlICQgZ3JlcCAtSGlyIGVsZl9mcHJlZ3NldF90ICoK
-PiA+IHN5cy9wcm9jZnMuaDp0eXBlZGVmIHN0cnVjdCB1c2VyX2ZwcmVnc19zdHJ1Y3QgZWxmX2Zw
-cmVnc2V0X3Q7Cj4gPiBzeXMvcHJvY2ZzLmg6dHlwZWRlZiBlbGZfZnByZWdzZXRfdCBwcmZwcmVn
-c2V0X3Q7Cj4gCj4gVGhpcyBkb2Vzbid0IGhlbHAgc28gZmFyIC0geW91IG5vdyBuZWVkIHRvIGZp
-bmQgYSBkZWZpbml0aW9uIG9mIHN0cnVjdAo+IHVzZXJfZnByZWdzX3N0cnVjdC4KPiAKPiAJCQkJ
-SmVmZgo+IAoKSXRzIGluIDxzeXMvdXNlci5oPiBoZXJlLiAgSSBoYXZlIGxpbnV4LWhlYWRlcnMt
-Mi42LjIyLXIyLgoKRGFuaWVsCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBp
-cyBzcG9uc29yZWQgYnk6IFNwbHVuayBJbmMuClN0aWxsIGdyZXBwaW5nIHRocm91Z2ggbG9nIGZp
-bGVzIHRvIGZpbmQgcHJvYmxlbXM/ICBTdG9wLgpOb3cgU2VhcmNoIGxvZyBldmVudHMgYW5kIGNv
-bmZpZ3VyYXRpb24gZmlsZXMgdXNpbmcgQUpBWCBhbmQgYSBicm93c2VyLgpEb3dubG9hZCB5b3Vy
-IEZSRUUgY29weSBvZiBTcGx1bmsgbm93ID4+ICBodHRwOi8vZ2V0LnNwbHVuay5jb20vCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51
-eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2Vy
-LW1vZGUtbGludXgtZGV2ZWwK
+On Mon, Aug 20, 2007 at 12:40:30PM -0700, Andrew Morton wrote:
+> On Fri, 17 Aug 2007 15:43:40 -0400
+> Jeff Dike <jdike@addtoit.com> wrote:
+> 
+> > "extern inline" will have different semantics with gcc 4.3.
+> 
+> What are these different semantics?
+
+With gcc <= 4.2, when using "extern inline" in no case the function is
+compiled on its own, not even if you refer to its address explicitly.  
+Such an address becomes an external reference, as if you had only 
+declared the function, and had not defined it.
+
+In C99 (and therefore in gcc >= 4.3), "extern inline" means that the 
+function should be compiled inline where the inline definition is seen, 
+and that the compiler should also emit a copy of the function body with 
+an externally visible symbol.
+
+Except for the Alpha port all users in the kernel used "extern inline" 
+only for getting "static inline" semantics (older gcc versions didn't 
+offer the always_inline function attribute).
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc.
+Still grepping through log files to find problems?  Stop.
+Now Search log events and configuration files using AJAX and a browser.
+Download your FREE copy of Splunk now >>  http://get.splunk.com/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
