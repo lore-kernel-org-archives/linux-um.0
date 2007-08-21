@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1INFfl-0000P3-9x for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Aug 2007 15:24:34 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1INFfk-0002EK-Jj
+	id 1INXBF-0001Fx-QE for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 21 Aug 2007 10:06:13 -0700
+Received: from smtp004.mail.ukl.yahoo.com ([217.12.11.35])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1INXBB-0003qa-FN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Aug 2007 15:24:33 -0700
-Date: Mon, 20 Aug 2007 12:05:37 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070820160537.GA3874@localhost.localdomain>
-References: <200708191142.57281.toralf.foerster@gmx.de>
-	<200708191812.35947.toralf.foerster@gmx.de>
-	<20070820141102.GA5833@c2.user-mode-linux.org>
-	<200708201730.37648.toralf.foerster@gmx.de>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200708201730.37648.toralf.foerster@gmx.de>
-Subject: Re: [uml-devel] build error of an UML kernel with 2.6.2x sources
+	Tue, 21 Aug 2007 10:06:13 -0700
+From: Blaisorblade <blaisorblade@yahoo.it>
+Date: Tue, 21 Aug 2007 19:05:53 +0200
+References: <20070816162428.GA8128@c2.user-mode-linux.org>
+	<20070816200455.GA14424@uranus.ravnborg.org>
+	<20070816210508.GA10559@c2.user-mode-linux.org>
+In-Reply-To: <20070816210508.GA10559@c2.user-mode-linux.org>
+MIME-Version: 1.0
+Message-Id: <200708211905.59128.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] UML - Add a .note.SuSE section
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,92 +26,91 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============1836668011=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>
 
-On Mon, Aug 20, 2007 at 05:30:37PM +0200, Toralf F=F6rster wrote:
-> I found this in /usr/include/sys/user.h (the file was installed from
-> glibc-2.5-r4): =
+--===============1836668011==
+Content-Type: multipart/signed; boundary="nextPart1914961.14RVcPcfuq";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart1914961.14RVcPcfuq
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+On gioved=EC 16 agosto 2007, Jeff Dike wrote:
+> On Thu, Aug 16, 2007 at 10:04:55PM +0200, Sam Ravnborg wrote:
+> > On Thu, Aug 16, 2007 at 03:26:39PM -0400, Jeff Dike wrote:
+> > > The crash is in this section:
+> > >
+> > >   __uml_setup_start =3D .;
+> > >   .uml.setup.init : { *(.uml.setup.init) }
+> > >   __uml_setup_end =3D .;
+> >
+> > This looks like a classic bug.
+> > You wanted this:
+> > .uml.setup.init : {
+> > 	__uml_setup_start =3D .;
+> > 	*(.uml.setup.init)
+> > 	__uml_setup_end =3D .;
+> > }
+>
+> Ooh, this sounds promising, thanks.
+
+It's not the first time we hit effects of such bugs, is it? The .note.ABI-t=
+ag=20
+fix, time ago, may be about the same problem. Can you double-check all UML=
+=20
+linker scripts for more instances of this bug?
+
+Bye
+=2D-=20
+"Doh!" (cit.), I've made another another mistake!
+Paolo Giarrusso, aka Blaisorblade
+Linux registered user n. 292729
+http://www.user-mode-linux.org/~blaisorblade
+
+--nextPart1914961.14RVcPcfuq
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBGyxt3qH9OHC+5NscRAv9OAJ4uGxMJokZ8Igr16+S/2imQlz3WhwCePqk+
+DPzNzb/bpjuIHoXy3elKWtY=
+=Q7PU
+-----END PGP SIGNATURE-----
+
+--nextPart1914961.14RVcPcfuq--
 
 
-sys/user works for me - try the patch below.
-
-				Jeff
-
--- =
-
-Work email - jdike at linux dot intel dot com
-
-Index: linux-2.6.22/arch/um/sys-i386/user-offsets.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.6.22.orig/arch/um/sys-i386/user-offsets.c
-+++ linux-2.6.22/arch/um/sys-i386/user-offsets.c
-@@ -2,9 +2,9 @@
- #include <stddef.h>
- #include <signal.h>
- #include <sys/poll.h>
-+#include <sys/user.h>
- #include <sys/mman.h>
- #include <asm/ptrace.h>
--#include <asm/user.h>
- =
-
- #define DEFINE(sym, val) \
- 	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
-@@ -48,8 +48,8 @@ void foo(void)
- 	OFFSET(HOST_SC_FP_ST, _fpstate, _st);
- 	OFFSET(HOST_SC_FXSR_ENV, _fpstate, _fxsr_env);
- =
-
--	DEFINE_LONGS(HOST_FP_SIZE, sizeof(struct user_i387_struct));
--	DEFINE_LONGS(HOST_XFP_SIZE, sizeof(struct user_fxsr_struct));
-+	DEFINE_LONGS(HOST_FP_SIZE, sizeof(struct user_fpregs_struct));
-+	DEFINE_LONGS(HOST_XFP_SIZE, sizeof(struct user_fpxregs_struct));
- =
-
- 	DEFINE(HOST_IP, EIP);
- 	DEFINE(HOST_SP, UESP);
-Index: linux-2.6.22/arch/um/sys-x86_64/user-offsets.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.6.22.orig/arch/um/sys-x86_64/user-offsets.c
-+++ linux-2.6.22/arch/um/sys-x86_64/user-offsets.c
-@@ -3,17 +3,10 @@
- #include <signal.h>
- #include <sys/poll.h>
- #include <sys/mman.h>
-+#include <sys/user.h>
- #define __FRAME_OFFSETS
- #include <asm/ptrace.h>
- #include <asm/types.h>
--/* For some reason, x86_64 defines u64 and u32 only in <pci/types.h>, whic=
-h I
-- * refuse to include here, even though they're used throughout the headers.
-- * These are used in asm/user.h, and that include can't be avoided because=
- of
-- * the sizeof(struct user_regs_struct) below.
-- */
--typedef __u64 u64;
--typedef __u32 u32;
--#include <asm/user.h>
- =
-
- #define DEFINE(sym, val) \
-         asm volatile("\n->" #sym " %0 " #val : : "i" (val))
+--===============1836668011==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
 Still grepping through log files to find problems?  Stop.
 Now Search log events and configuration files using AJAX and a browser.
 Download your FREE copy of Splunk now >>  http://get.splunk.com/
+--===============1836668011==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============1836668011==--
+
