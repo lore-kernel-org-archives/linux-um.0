@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1INxhw-0002G6-IG for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Aug 2007 14:25:44 -0700
+	id 1INxhp-0002Fi-Db for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Aug 2007 14:25:37 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1INxhv-0008KC-U4
+	(Exim 4.44) id 1INxho-0008HX-QN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Aug 2007 14:25:44 -0700
-Date: Wed, 22 Aug 2007 17:25:28 -0400
+	Wed, 22 Aug 2007 14:25:37 -0700
+Date: Wed, 22 Aug 2007 17:25:30 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070822212528.GA14473@c2.user-mode-linux.org>
+Message-ID: <20070822212530.GA14478@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/2] UML - Fix linker script alignment bugs
+Subject: [uml-devel] [PATCH 2/2] UML - Fix x86_64 core dump crash
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,239 +29,132 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: giedrius@su.lt, Alberto Pires de Oliveira Neto <apon1@terra.com.br>, Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Alberto Pires de Oliveira Neto <apon1@terra.com.br>, vberk@ists.dartmouth.edu, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Fix a class of bugs in the UML linker scripts which caused section
-boundary variables to sometimes not line up with their sections.
+Stop UML crashing when trying to dump a process core on x86_64.  This
+is the minimal fix to stop the crash - more things are broken here,
+and patches are forthcoming.
+
+The immediate thing to do is define ELF_CORE_COPY_REGS and
+ELF_CORE_COPY_FPREGS.  Defining ELF_CORE_COPY_FPREGS allows dump_fpu
+to go away.  It is defined in terms of save_fp_registers, so that
+needs to be added.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/kernel/dyn.lds.S    |   12 ++--
- arch/um/kernel/uml.lds.S    |   11 ++-
- include/asm-um/common.lds.S |  128 +++++++++++++++++++++++++++-----------------
- 3 files changed, 92 insertions(+), 59 deletions(-)
+ arch/um/os-Linux/sys-x86_64/registers.c |   16 ++++++++++++
+ arch/um/sys-x86_64/ptrace.c             |    6 ----
+ include/asm-um/elf-x86_64.h             |   40 ++++++++++++++++++++++++++++++++
+ 3 files changed, 56 insertions(+), 6 deletions(-)
 
-Index: linux-2.6.22/arch/um/kernel/dyn.lds.S
+Index: linux-2.6.22/include/asm-um/elf-x86_64.h
 ===================================================================
---- linux-2.6.22.orig/arch/um/kernel/dyn.lds.S	2007-08-17 13:36:34.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/dyn.lds.S	2007-08-17 13:37:30.000000000 -0400
-@@ -69,11 +69,13 @@ SECTIONS
-     *(.gnu.warning)
+--- linux-2.6.22.orig/include/asm-um/elf-x86_64.h	2007-08-22 16:55:38.000000000 -0400
++++ linux-2.6.22/include/asm-um/elf-x86_64.h	2007-08-22 16:56:20.000000000 -0400
+@@ -6,7 +6,9 @@
+ #ifndef __UM_ELF_X86_64_H
+ #define __UM_ELF_X86_64_H
  
-     . = ALIGN(4096);
--    __syscall_stub_start = .;
--    *(.__syscall_stub*)
--    __syscall_stub_end = .;
--    . = ALIGN(4096);
-   } =0x90909090
-+  . = ALIGN(4096);
-+  .syscall_stub : {
-+	__syscall_stub_start = .;
-+	*(.__syscall_stub*)
-+	__syscall_stub_end = .;
-+  }
-   .fini           : {
-     KEEP (*(.fini))
-   } =0x90909090
-@@ -136,8 +138,8 @@ SECTIONS
-   .got            : { *(.got.plt) *(.got) }
-   _edata = .;
-   PROVIDE (edata = .);
--  __bss_start = .;
-   .bss            : {
-+   __bss_start = .;
-    *(.dynbss)
-    *(.bss .bss.* .gnu.linkonce.b.*)
-    *(COMMON)
-Index: linux-2.6.22/arch/um/kernel/uml.lds.S
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/uml.lds.S	2007-08-17 13:36:34.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/uml.lds.S	2007-08-17 13:37:30.000000000 -0400
-@@ -37,12 +37,13 @@ SECTIONS
-     /* .gnu.warning sections are handled specially by elf32.em.  */
-     *(.gnu.warning)
-     *(.gnu.linkonce.t*)
-+  }
++#include <linux/sched.h>
+ #include <asm/user.h>
++#include "skas.h"
  
--    . = ALIGN(4096);
--    __syscall_stub_start = .;
--    *(.__syscall_stub*)
--    __syscall_stub_end = .;
--    . = ALIGN(4096);
-+  . = ALIGN(4096);
-+  .syscall_stub : {
-+	__syscall_stub_start = .;
-+	*(.__syscall_stub*)
-+	__syscall_stub_end = .;
-   }
+ /* x86-64 relocation types, taken from asm-x86_64/elf.h */
+ #define R_X86_64_NONE		0	/* No reloc */
+@@ -64,6 +66,44 @@ typedef struct { } elf_fpregset_t;
+ 	PT_REGS_R15(regs) = 0; \
+ } while (0)
  
-   #include "asm/common.lds.S"
-Index: linux-2.6.22/include/asm-um/common.lds.S
-===================================================================
---- linux-2.6.22.orig/include/asm-um/common.lds.S	2007-08-17 13:36:34.000000000 -0400
-+++ linux-2.6.22/include/asm-um/common.lds.S	2007-08-17 13:37:30.000000000 -0400
-@@ -16,82 +16,112 @@
- 
-   . = ALIGN(4096);
-   .note : { *(.note.*) }
--  __start___ex_table = .;
--  __ex_table : { *(__ex_table) }
--  __stop___ex_table = .;
-+  __ex_table : {
-+	__start___ex_table = .;
-+	*(__ex_table)
-+	__stop___ex_table = .;
-+  }
- 
-   BUG_TABLE
- 
--  __uml_setup_start = .;
--  .uml.setup.init : { *(.uml.setup.init) }
--  __uml_setup_end = .;
-+  .uml.setup.init : {
-+	__uml_setup_start = .;
-+	*(.uml.setup.init)
-+	__uml_setup_end = .;
-+  }
- 	
--  __uml_help_start = .;
--  .uml.help.init : { *(.uml.help.init) }
--  __uml_help_end = .;
-+  .uml.help.init : {
-+	__uml_help_start = .;
-+	*(.uml.help.init)
-+	__uml_help_end = .;
-+  }
- 	
--  __uml_postsetup_start = .;
--  .uml.postsetup.init : { *(.uml.postsetup.init) }
--  __uml_postsetup_end = .;
-+  .uml.postsetup.init : {
-+	__uml_postsetup_start = .;
-+	*(.uml.postsetup.init)
-+	__uml_postsetup_end = .;
-+  }
- 	
--  __setup_start = .;
--  .init.setup : { *(.init.setup) }
--  __setup_end = .;
-+  .init.setup : {
-+	__setup_start = .;
-+	*(.init.setup)
-+	__setup_end = .;
-+  }
- 
-   . = ALIGN(32);
--  __per_cpu_start = . ; 
--  .data.percpu : { *(.data.percpu) }
--  __per_cpu_end = . ;
-+  .data.percpu : {
-+	__per_cpu_start = . ;
-+	*(.data.percpu)
-+	__per_cpu_end = . ;
-+  }
- 	
--  __initcall_start = .;
-   .initcall.init : {
-+	__initcall_start = .;
- 	INITCALLS
-+	__initcall_end = .;
-+  }
++#define ELF_CORE_COPY_REGS(pr_reg, regs)		\
++	(pr_reg)[0] = (regs)->regs.gp[0];			\
++	(pr_reg)[1] = (regs)->regs.gp[1];			\
++	(pr_reg)[2] = (regs)->regs.gp[2];			\
++	(pr_reg)[3] = (regs)->regs.gp[3];			\
++	(pr_reg)[4] = (regs)->regs.gp[4];			\
++	(pr_reg)[5] = (regs)->regs.gp[5];			\
++	(pr_reg)[6] = (regs)->regs.gp[6];			\
++	(pr_reg)[7] = (regs)->regs.gp[7];			\
++	(pr_reg)[8] = (regs)->regs.gp[8];			\
++	(pr_reg)[9] = (regs)->regs.gp[9];			\
++	(pr_reg)[10] = (regs)->regs.gp[10];			\
++	(pr_reg)[11] = (regs)->regs.gp[11];			\
++	(pr_reg)[12] = (regs)->regs.gp[12];			\
++	(pr_reg)[13] = (regs)->regs.gp[13];			\
++	(pr_reg)[14] = (regs)->regs.gp[14];			\
++	(pr_reg)[15] = (regs)->regs.gp[15];			\
++	(pr_reg)[16] = (regs)->regs.gp[16];			\
++	(pr_reg)[17] = (regs)->regs.gp[17];			\
++	(pr_reg)[18] = (regs)->regs.gp[18];			\
++	(pr_reg)[19] = (regs)->regs.gp[19];			\
++	(pr_reg)[20] = (regs)->regs.gp[20];			\
++	(pr_reg)[21] = current->thread.arch.fs;			\
++	(pr_reg)[22] = 0;					\
++	(pr_reg)[23] = 0;					\
++	(pr_reg)[24] = 0;					\
++	(pr_reg)[25] = 0;					\
++	(pr_reg)[26] = 0;
 +
-+  .con_initcall.init : {
-+	__con_initcall_start = .;
-+	*(.con_initcall.init)
-+	__con_initcall_end = .;
-   }
--  __initcall_end = .;
- 
--  __con_initcall_start = .;
--  .con_initcall.init : { *(.con_initcall.init) }
--  __con_initcall_end = .;
--
--  __uml_initcall_start = .;
--  .uml.initcall.init : { *(.uml.initcall.init) }
--  __uml_initcall_end = .;
-+  .uml.initcall.init : {
-+	__uml_initcall_start = .;
-+	*(.uml.initcall.init)
-+	__uml_initcall_end = .;
-+  }
-   __init_end = .;
- 
-   SECURITY_INIT
- 
--  __exitcall_begin = .;
--  .exitcall : { *(.exitcall.exit) }
--  __exitcall_end = .;
--
--  __uml_exitcall_begin = .;
--  .uml.exitcall : { *(.uml.exitcall.exit) }
--  __uml_exitcall_end = .;
-+  .exitcall : {
-+	__exitcall_begin = .;
-+	*(.exitcall.exit)
-+	__exitcall_end = .;
-+  }
++static inline int elf_core_copy_fpregs(struct task_struct *t,
++				       elf_fpregset_t *fpu)
++{
++	int cpu = current_thread->cpu;
++	return save_fp_registers(userspace_pid[cpu], (unsigned long *) fpu);
++}
 +
-+  .uml.exitcall : {
-+	__uml_exitcall_begin = .;
-+	*(.uml.exitcall.exit)
-+	__uml_exitcall_end = .;
-+  }
++#define ELF_CORE_COPY_FPREGS(t, fpu) elf_core_copy_fpregs(t, fpu)
++
+ #ifdef TIF_IA32 /* XXX */
+ #error XXX, indeed
+         clear_thread_flag(TIF_IA32);
+Index: linux-2.6.22/arch/um/os-Linux/sys-x86_64/registers.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/sys-x86_64/registers.c	2007-08-22 16:55:38.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/sys-x86_64/registers.c	2007-08-22 16:56:20.000000000 -0400
+@@ -3,11 +3,27 @@
+  * Licensed under the GPL
+  */
  
-   . = ALIGN(4);
--  __alt_instructions = .;
--  .altinstructions : { *(.altinstructions) }
--  __alt_instructions_end = .;
-+  .altinstructions : {
-+	__alt_instructions = .;
-+	*(.altinstructions)
-+	__alt_instructions_end = .;
-+  }
-   .altinstr_replacement : { *(.altinstr_replacement) }
-   /* .exit.text is discard at runtime, not link time, to deal with references
-      from .altinstructions and .eh_frame */
-   .exit.text : { *(.exit.text) }
-   .exit.data : { *(.exit.data) }
++#include <errno.h>
++#include <sys/ptrace.h>
+ #define __FRAME_OFFSETS
+ #include <asm/ptrace.h>
+ #include "longjmp.h"
+ #include "user.h"
  
--  __preinit_array_start = .;
--  .preinit_array : { *(.preinit_array) }
--  __preinit_array_end = .;
--  __init_array_start = .;
--  .init_array : { *(.init_array) }
--  __init_array_end = .;
--  __fini_array_start = .;
--  .fini_array : { *(.fini_array) }
--  __fini_array_end = .;
-+  .preinit_array : {
-+	__preinit_array_start = .;
-+	*(.preinit_array)
-+	__preinit_array_end = .;
-+  }
-+  .init_array : {
-+	__init_array_start = .;
-+	*(.init_array)
-+	__init_array_end = .;
-+  }
-+  .fini_array : {
-+	__fini_array_start = .;
-+	*(.fini_array)
-+	__fini_array_end = .;
-+  }
++int save_fp_registers(int pid, unsigned long *fp_regs)
++{
++	if(ptrace(PTRACE_GETFPREGS, pid, 0, fp_regs) < 0)
++		return -errno;
++	return 0;
++}
++
++int restore_fp_registers(int pid, unsigned long *fp_regs)
++{
++	if(ptrace(PTRACE_SETFPREGS, pid, 0, fp_regs) < 0)
++		return -errno;
++	return 0;
++}
++
+ unsigned long get_thread_reg(int reg, jmp_buf *buf)
+ {
+ 	switch(reg){
+Index: linux-2.6.22/arch/um/sys-x86_64/ptrace.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/sys-x86_64/ptrace.c	2007-08-22 16:55:38.000000000 -0400
++++ linux-2.6.22/arch/um/sys-x86_64/ptrace.c	2007-08-22 16:56:20.000000000 -0400
+@@ -156,12 +156,6 @@ int is_syscall(unsigned long addr)
+ 	return(instr == 0x050f);
+ }
  
-    . = ALIGN(4096);
--  __initramfs_start = .;
--  .init.ramfs : { *(.init.ramfs) }
--  __initramfs_end = .;
-+  .init.ramfs : {
-+	__initramfs_start = .;
-+	*(.init.ramfs)
-+	__initramfs_end = .;
-+  }
- 
-   /* Sections to be discarded */
-   /DISCARD/ : {
+-int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fpu )
+-{
+-	panic("dump_fpu");
+-	return(1);
+-}
+-
+ int get_fpregs(unsigned long buf, struct task_struct *child)
+ {
+ 	panic("get_fpregs");
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
