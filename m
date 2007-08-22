@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1INgGa-0006V0-Ey for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Aug 2007 19:48:20 -0700
-Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1INgGa-0002wM-4k
+	id 1INtD6-0005I6-HT for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Aug 2007 09:37:36 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1INtD5-0007nh-0l
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 21 Aug 2007 19:48:20 -0700
-Received: from landley.net (localhost [127.0.0.1])
-	by grelber.thyrsus.com (Postfix) with ESMTP id 06EFA7392E
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 21 Aug 2007 22:50:24 -0400 (EDT)
-From: Rob Landley <rob@landley.net>
-Date: Tue, 21 Aug 2007 21:48:05 -0500
-MIME-Version: 1.0
+	Wed, 22 Aug 2007 09:37:36 -0700
+Date: Wed, 22 Aug 2007 12:37:29 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070822163729.GB11022@c2.user-mode-linux.org>
+References: <20070816162428.GA8128@c2.user-mode-linux.org>
+	<20070816200455.GA14424@uranus.ravnborg.org>
+	<20070816210508.GA10559@c2.user-mode-linux.org>
+	<200708211905.59128.blaisorblade@yahoo.it>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200708212148.05392.rob@landley.net>
-Subject: [uml-devel] UML doesn't build in 2.6.23-rc3.
+In-Reply-To: <200708211905.59128.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH] UML - Add a .note.SuSE section
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,25 +33,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-I fixed it for me with the following patch, just in case anybody else had this 
-problem:
+On Tue, Aug 21, 2007 at 07:05:53PM +0200, Blaisorblade wrote:
+> It's not the first time we hit effects of such bugs, is it? 
 
---- linux-2.6.23-rc3/arch/um/kernel/smp.c	2007-08-12 23:25:24.000000000 -0500
-+++ linux-2.6.23-new/arch/um/kernel/smp.c	2007-08-21 21:39:00.000000000 -0500
-@@ -5,6 +5,7 @@
- 
- #include "linux/percpu.h"
- #include "asm/pgalloc.h"
-+#include "linux/pagemap.h"
- #include "asm/tlb.h"
- 
- /* For some reason, mmu_gathers are referenced when CONFIG_SMP is off. */
+I don't remember seeing this before.
+
+> The .note.ABI-tag fix, time ago, may be about the same problem. 
+
+Are you referring to
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=c35e584c087381aaa5f1ed40a28b978535c18fb2;hp=a5bd1786fb30abe663b904f6d79bba413e9ba883?
+If so, I never understood that - it just came in saying "this fixes
+static building", so I sent it along.  BTW, that commit was singled
+out by git-bisect as "causing" this particular problem.
+
+> Can you
+> double-check all UML linker scripts for more instances of this bug?
+
+I did, I have a patch, and it's been verified to fix the problem.
+
+				Jeff
 
 -- 
-"One of my most productive days was throwing away 1000 lines of code."
-  - Ken Thompson.
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
