@@ -1,25 +1,14 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1INtD6-0005I6-HT for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Aug 2007 09:37:36 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1INtD5-0007nh-0l
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Aug 2007 09:37:36 -0700
-Date: Wed, 22 Aug 2007 12:37:29 -0400
+Date: Wed, 22 Aug 2007 12:25:08 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070822163729.GB11022@c2.user-mode-linux.org>
-References: <20070816162428.GA8128@c2.user-mode-linux.org>
-	<20070816200455.GA14424@uranus.ravnborg.org>
-	<20070816210508.GA10559@c2.user-mode-linux.org>
-	<200708211905.59128.blaisorblade@yahoo.it>
+Message-ID: <20070822162508.GA11022@c2.user-mode-linux.org>
+References: <1187561903.4200.138.camel@localhost>
+	<200708211909.23027.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200708211905.59128.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH] UML - Add a .note.SuSE section
+In-Reply-To: <200708211909.23027.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] [PATCH 1/5] um/... convert #include "linux/..." to
+	#include	<linux/...>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,25 +23,23 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Blaisorblade <blaisorblade@yahoo.it>
-Cc: Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Miklos Szeredi <mszeredi@suse.cz>, Maxim Krasnyansky <maxk@qualcomm.com>, Jeff Dike <jdike@karaya.com>, kernel-janitors@vger.kernel.org, Jason Lunz <lunz@falooley.org>, Jan Beulich <jbeulich@novell.com>, Andi Kleen <ak@suse.de>, vtun@office.satix.net, Jens Axboe <jens.axboe@oracle.com>, Stephen Hemminger <shemminger@linux-foundation.org>, Nick Piggin <npiggin@suse.de>, Davide Brini <davide.brini@unibo.it>, Fernando Luis Vazquez Cao <fernando@oss.ntt.co.jp>, virtualization@lists.osdl.org, Ingo Molnar <mingo@elte.hu>, Alexey Dobriyan <adobriyan@gmail.com>, Zachary Amsden <zach@vmware.com>, Peter Zijlstra <a.p.zijlstra@chello.nl>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Rusty Russell <rusty@rustcorp.com.au>, Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, Chris Wright <chrisw@sous-sol.org>, user-mode-linux-user@lists.sourceforge.net, Jeff Dike <jdike@linux.intel.com>, Arnaldo Carvalho de Melo <acme@redhat.com>, Jeremy Fitzhardinge <jeremy@xensource.com>, Haavard Skinnemoen <hskinnemoen@atmel.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Kyle McMartin <kyle@mcmartin.ca>, Ollie Wild <aaw@google.com>, Joe Perches <joe@perches.com>, "David S. Miller" <davem@davemloft.net>
 
-On Tue, Aug 21, 2007 at 07:05:53PM +0200, Blaisorblade wrote:
-> It's not the first time we hit effects of such bugs, is it? 
+On Tue, Aug 21, 2007 at 07:09:17PM +0200, Blaisorblade wrote:
+> Wait, this patch may or may not be sane (Jeff will tell more I guess).
 
-I don't remember seeing this before.
+It's sane.
 
-> The .note.ABI-tag fix, time ago, may be about the same problem. 
+> Since 
+> we use two different sets of headers (the host ones from userspace and the 
+> guest ones from Linux), this peculiar style has been used till now to make 
+> clear the difference (#include <file> is used for host headers) - at least 
+> that's what I think (I've never asked to Jeff, but I silently deduced this 
+> and followed this practice).
 
-Are you referring to
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=c35e584c087381aaa5f1ed40a28b978535c18fb2;hp=a5bd1786fb30abe663b904f6d79bba413e9ba883?
-If so, I never understood that - it just came in saying "this fixes
-static building", so I sent it along.  BTW, that commit was singled
-out by git-bisect as "causing" this particular problem.
-
-> Can you
-> double-check all UML linker scripts for more instances of this bug?
-
-I did, I have a patch, and it's been verified to fix the problem.
+Yeah, and it makes some sense to extend the practice to the kernel
+side, where <> is used for generic headers and "" for UML-specific
+ones.
 
 				Jeff
 
