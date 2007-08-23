@@ -1,24 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IOMwT-00056h-PE for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Aug 2007 17:22:25 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IOMwS-0005cd-7s
+	id 1IOMNv-00011F-5f for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Aug 2007 16:46:43 -0700
+Received: from fk-out-0910.google.com ([209.85.128.189])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IOMNt-00026G-R2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Aug 2007 17:22:25 -0700
-Date: Thu, 23 Aug 2007 20:22:17 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070824002217.GA11648@c2.user-mode-linux.org>
+	Thu, 23 Aug 2007 16:46:43 -0700
+Received: by fk-out-0910.google.com with SMTP id 19so551130fkr
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 23 Aug 2007 16:46:40 -0700 (PDT)
+Resent-To: Jesper Juhl <jesper.juhl@gmail.com>
+Resent-Message-ID: <200708240142.34082.jesper.juhl@gmail.com>
+Message-Id: <9c32c87607b7e38a8bdfd5a9e536d42f259c7f64.1187912217.git.jesper.juhl@gmail.com>
+In-Reply-To: <1554af80879a7ef2f78a4d654f23c248203500d9.1187912217.git.jesper.juhl@gmail.com>
 References: <1554af80879a7ef2f78a4d654f23c248203500d9.1187912217.git.jesper.juhl@gmail.com>
-	<9c32c87607b7e38a8bdfd5a9e536d42f259c7f64.1187912217.git.jesper.juhl@gmail.com>
-Mime-Version: 1.0
+From: Jesper Juhl <jesper.juhl@gmail.com>
+Date: Fri, 24 Aug 2007 01:43:49 +0200
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <9c32c87607b7e38a8bdfd5a9e536d42f259c7f64.1187912217.git.jesper.juhl@gmail.com>
-Subject: Re: [uml-devel] [PATCH 03/30] um: Don't unnecessarily cast
-	allocation return value in ubd_kern.c
+Subject: [uml-devel] [PATCH 03/30] um: Don't unnecessarily cast allocation
+	return value in ubd_kern.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,18 +35,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jesper Juhl <jesper.juhl@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Jeff Dike <jdike@karaya.com>, Jesper Juhl <jesper.juhl@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Aug 24, 2007 at 01:43:49AM +0200, Jesper Juhl wrote:
-> vmalloc() returns a void pointer, so casting to (void *) is pretty pointless.
+vmalloc() returns a void pointer, so casting to (void *) is pretty pointless.
 
-Righto, I'll take care of this.
+Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
+---
+ arch/um/drivers/ubd_kern.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-			Jeff
-
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 0eabe73..25b248a 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -615,7 +615,7 @@ static int ubd_open_dev(struct ubd *ubd_dev)
+ 		blk_queue_max_sectors(ubd_dev->queue, 8 * sizeof(long));
+ 
+ 		err = -ENOMEM;
+-		ubd_dev->cow.bitmap = (void *) vmalloc(ubd_dev->cow.bitmap_len);
++		ubd_dev->cow.bitmap = vmalloc(ubd_dev->cow.bitmap_len);
+ 		if(ubd_dev->cow.bitmap == NULL){
+ 			printk(KERN_ERR "Failed to vmalloc COW bitmap\n");
+ 			goto error;
 -- 
-Work email - jdike at linux dot intel dot com
+1.5.2.2
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
