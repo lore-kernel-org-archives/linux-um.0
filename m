@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IOKNY-00052Q-Th for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Aug 2007 14:38:13 -0700
+	id 1IOKNv-00053P-Ln for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Aug 2007 14:38:35 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IOKNY-0006nR-E3
+	(Exim 4.44) id 1IOKNt-00086G-PJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Aug 2007 14:38:12 -0700
-Date: Thu, 23 Aug 2007 17:38:10 -0400
+	Thu, 23 Aug 2007 14:38:35 -0700
+Date: Thu, 23 Aug 2007 17:38:06 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070823213810.GA9120@c2.user-mode-linux.org>
+Message-ID: <20070823213806.GA9090@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 7/7] UML - Eliminate floating point state from
-	register file
+Subject: [uml-devel] [PATCH 1/7] UML - Don't use glibc asm/user.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,42 +29,71 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-The floating point fields in the pt_regs register file aren't used, so
-they are deleted.
+Stop including asm/user.h from libc - it seems to be disappearing from
+distros.  It's replaced with sys/user.h which defines
+user_fpregs_struct and user_fpxregs_struct instead of user_i387_struct
+and struct user_fxsr_struct on i386.
+
+As a bonus, on x86_64, I get to dump some stupid typedefs which were
+needed in order to get asm/user.h to compile.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/include/sysdep-i386/ptrace.h   |    2 --
- arch/um/include/sysdep-x86_64/ptrace.h |    1 -
- 2 files changed, 3 deletions(-)
+ arch/um/sys-i386/user-offsets.c   |    6 +++---
+ arch/um/sys-x86_64/user-offsets.c |    9 +--------
+ 2 files changed, 4 insertions(+), 11 deletions(-)
 
-Index: linux-2.6.22/arch/um/include/sysdep-i386/ptrace.h
+Index: linux-2.6.22/arch/um/sys-i386/user-offsets.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/include/sysdep-i386/ptrace.h	2007-08-23 15:05:36.000000000 -0400
-+++ linux-2.6.22/arch/um/include/sysdep-i386/ptrace.h	2007-08-23 15:17:14.000000000 -0400
-@@ -54,8 +54,6 @@ extern int sysemu_supported;
+--- linux-2.6.22.orig/arch/um/sys-i386/user-offsets.c	2007-08-22 09:48:38.000000000 -0400
++++ linux-2.6.22/arch/um/sys-i386/user-offsets.c	2007-08-22 09:48:44.000000000 -0400
+@@ -2,9 +2,9 @@
+ #include <stddef.h>
+ #include <signal.h>
+ #include <sys/poll.h>
++#include <sys/user.h>
+ #include <sys/mman.h>
+ #include <asm/ptrace.h>
+-#include <asm/user.h>
  
- struct uml_pt_regs {
- 	unsigned long gp[MAX_REG_NR];
--	unsigned long fp[HOST_FP_SIZE];
--	unsigned long xfp[HOST_XFP_SIZE];
- 	struct faultinfo faultinfo;
- 	long syscall;
- 	int is_user;
-Index: linux-2.6.22/arch/um/include/sysdep-x86_64/ptrace.h
+ #define DEFINE(sym, val) \
+ 	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
+@@ -48,8 +48,8 @@ void foo(void)
+ 	OFFSET(HOST_SC_FP_ST, _fpstate, _st);
+ 	OFFSET(HOST_SC_FXSR_ENV, _fpstate, _fxsr_env);
+ 
+-	DEFINE_LONGS(HOST_FP_SIZE, sizeof(struct user_i387_struct));
+-	DEFINE_LONGS(HOST_XFP_SIZE, sizeof(struct user_fxsr_struct));
++	DEFINE_LONGS(HOST_FP_SIZE, sizeof(struct user_fpregs_struct));
++	DEFINE_LONGS(HOST_XFP_SIZE, sizeof(struct user_fpxregs_struct));
+ 
+ 	DEFINE(HOST_IP, EIP);
+ 	DEFINE(HOST_SP, UESP);
+Index: linux-2.6.22/arch/um/sys-x86_64/user-offsets.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/include/sysdep-x86_64/ptrace.h	2007-08-23 15:05:36.000000000 -0400
-+++ linux-2.6.22/arch/um/include/sysdep-x86_64/ptrace.h	2007-08-23 15:17:39.000000000 -0400
-@@ -86,7 +86,6 @@
+--- linux-2.6.22.orig/arch/um/sys-x86_64/user-offsets.c	2007-08-22 09:48:38.000000000 -0400
++++ linux-2.6.22/arch/um/sys-x86_64/user-offsets.c	2007-08-22 12:22:33.000000000 -0400
+@@ -3,17 +3,10 @@
+ #include <signal.h>
+ #include <sys/poll.h>
+ #include <sys/mman.h>
++#include <sys/user.h>
+ #define __FRAME_OFFSETS
+ #include <asm/ptrace.h>
+ #include <asm/types.h>
+-/* For some reason, x86_64 defines u64 and u32 only in <pci/types.h>, which I
+- * refuse to include here, even though they're used throughout the headers.
+- * These are used in asm/user.h, and that include can't be avoided because of
+- * the sizeof(struct user_regs_struct) below.
+- */
+-typedef __u64 u64;
+-typedef __u32 u32;
+-#include <asm/user.h>
  
- struct uml_pt_regs {
- 	unsigned long gp[MAX_REG_NR];
--	unsigned long fp[HOST_FP_SIZE];
- 	struct faultinfo faultinfo;
- 	long syscall;
- 	int is_user;
+ #define DEFINE(sym, val) \
+         asm volatile("\n->" #sym " %0 " #val : : "i" (val))
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
