@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IPLux-0001yX-Tm for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Aug 2007 10:28:55 -0700
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1IPLut-00043m-UH
+	id 1IPedN-0001nr-Pj for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 27 Aug 2007 06:28:10 -0700
+Received: from mail.gmx.net ([213.165.64.20])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1IPedK-0007Rl-JH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 26 Aug 2007 10:28:55 -0700
-From: Blaisorblade <blaisorblade@yahoo.it>
-Date: Sun, 26 Aug 2007 19:28:28 +0200
-References: <20070817194341.GA8754@c2.user-mode-linux.org>
-In-Reply-To: <20070817194341.GA8754@c2.user-mode-linux.org>
+	Mon, 27 Aug 2007 06:28:01 -0700
+Message-ID: <46D2D0E2.9060408@gmx.net>
+Date: Mon, 27 Aug 2007 15:25:54 +0200
+From: Michael Kerrisk <mtk-manpages@gmx.net>
 MIME-Version: 1.0
-Message-Id: <200708261928.33082.blaisorblade@yahoo.it>
-Subject: Re: [uml-devel] [PATCH 3/6] UML - Userspace files should call libc
-	directly
+References: <20070814092942.GA14324@clipper.ens.fr>
+In-Reply-To: <20070814092942.GA14324@clipper.ens.fr>
+Subject: Re: [uml-devel] UML/man: BLKGETSIZE takes a long, not an int
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,87 +24,67 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0788544651=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>
+To: Nicolas George <nicolas.george@ens.fr>
+Cc: jdike@linux.intel.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
---===============0788544651==
-Content-Type: multipart/signed; boundary="nextPart1308845.BBC9Uh8dEh";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Hello Nicolas,
 
---nextPart1308845.BBC9Uh8dEh
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+> I fear that my bug-report yesterday was very badly written, with me writing
+> to the wrong mailing-list and all.
+> 
+> I was saying:
+> 
+>> I found a type mismatch in UML that makes host block devices unusable as ubd
+>> devices on x86_64 and other 64 bits systems (segfault of the mm subsystem):
+>>
+>> In block/ioctl.c, the following lines show that the BLKGETSIZE ioctl expects
+>> a pointer to a long:
+>>
+>> 	case BLKGETSIZE:
+>> 		if ((bdev->bd_inode->i_size >> 9) > ~0UL)
+>> 			return -EFBIG;
+>> 		return put_ulong(arg, bdev->bd_inode->i_size >> 9);
+>>
+>> In arch/um/os-Linux/file.c, os_file_size calls it with an int.
+>>
+>> The ioctl_list man page should be fixed as well.
 
-On venerd=EC 17 agosto 2007, Jeff Dike wrote:
-> A number of files that were changed in the recent removal of tt mode
-> are userspace files which call the os_* wrappers instead of calling
-> libc directly.  A few other files were affected by this, through
+manual page changed for 2.65:
 
-> os_print_error has no remaining callers, so it is deleted.
+--- ioctl_list.2
++++ ioctl_list.2        (working copy)
+@@ -243,7 +243,7 @@
+ 0x0000125D  BLKROSET                   const int *
+ 0x0000125E  BLKROGET                   int *
+ 0x0000125F  BLKRRPART                  void
+-0x00001260  BLKGETSIZE                 int *
++0x00001260  BLKGETSIZE                 unsigned long *
+ 0x00001261  BLKFLSBUF                  void
+ 0x00001262  BLKRASET                   int
+ 0x00001263  BLKRAGET                   int *
 
-Actually, os_print_error() (or some other interface to perror()) should be=
-=20
-reintroduced and used more for error messages (and also strsignal() should=
-=20
-be, for "Kernel mode signal N"). Problem debugging is hard, but there is no=
-=20
-reason make it harder (or rather, not to simplify it for users).
+Thanks,
 
-Btw, the inlined abs() call is not very nice; on the other hand, it's a sim=
-ple=20
-solution to make it robust, and we do not to be extra-optimal on these debu=
-g=20
-code paths.
+Michael
 
-Bye
-=2D-=20
-"Doh!" (cit.), I've made another mistake!
-Paolo Giarrusso, aka Blaisorblade
-Linux registered user n. 292729
-http://www.user-mode-linux.org/~blaisorblade
+-- 
+Michael Kerrisk
+maintainer of Linux man pages Sections 2, 3, 4, 5, and 7
 
---nextPart1308845.BBC9Uh8dEh
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBG0bhBqH9OHC+5NscRApv2AJ977THK+aBgVvnWB0zcitovTju7jgCglalY
-3u+udiiweE+VZlpqtOYoOz4=
-=9Msy
------END PGP SIGNATURE-----
-
---nextPart1308845.BBC9Uh8dEh--
-
-
---===============0788544651==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Want to help with man page maintenance?  Grab the latest tarball at
+http://www.kernel.org/pub/linux/docs/manpages/
+read the HOWTOHELP file and grep the source files for 'FIXME'.
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
 Still grepping through log files to find problems?  Stop.
 Now Search log events and configuration files using AJAX and a browser.
 Download your FREE copy of Splunk now >>  http://get.splunk.com/
---===============0788544651==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============0788544651==--
-
