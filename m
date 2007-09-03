@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ISXfa-0006qz-GL for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Sep 2007 05:38:14 -0700
-Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1ISXfa-0008LH-6w
+	id 1ISBAg-0001gx-Az for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Sep 2007 05:36:50 -0700
+Received: from rzcomm22.rz.tu-bs.de ([134.169.9.68])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1ISBAe-0005XM-Ni
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 04 Sep 2007 05:38:14 -0700
-From: Rob Landley <rob@landley.net>
-Date: Tue, 4 Sep 2007 07:37:54 -0500
-References: <200708212148.05392.rob@landley.net>
-	<200708222047.01962.rob@landley.net>
-	<20070823034413.GB17185@c2.user-mode-linux.org>
-In-Reply-To: <20070823034413.GB17185@c2.user-mode-linux.org>
+	Mon, 03 Sep 2007 05:36:50 -0700
+Message-ID: <46DBFFB0.3080204@l4x.org>
+Date: Mon, 03 Sep 2007 14:36:00 +0200
+From: Jan Dittmer <jdi@l4x.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200709040737.54516.rob@landley.net>
-Subject: Re: [uml-devel] UML doesn't build in 2.6.23-rc3.
+References: <20070903104619.GR16016@stusta.de>
+In-Reply-To: <20070903104619.GR16016@stusta.de>
+Subject: Re: [uml-devel] 2.6.23-rc5 regression: uml on x86_64 compile error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,35 +25,72 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+To: Adrian Bunk <bunk@kernel.org>
+Cc: Jeff Dike <jdike@linux.intel.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wednesday 22 August 2007 10:44:13 pm Jeff Dike wrote:
-> On Wed, Aug 22, 2007 at 08:47:01PM -0500, Rob Landley wrote:
-> > Does that reproduce it for you?
->
-> Yup, but it's somewhat non-obvious why.  Anyway, it seems clear that
-> asm-generic/tlb.h is missing an include.
->
-> 				Jeff
-
-I still need the patch I posted to build -rc5.  Just FYI.
-
-Rob
--- 
-"One of my most productive days was throwing away 1000 lines of code."
-  - Ken Thompson.
-
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc.
-Still grepping through log files to find problems?  Stop.
-Now Search log events and configuration files using AJAX and a browser.
-Download your FREE copy of Splunk now >>  http://get.splunk.com/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+QWRyaWFuIEJ1bmsgd3JvdGU6Cj4gQ29tbWl0IGQxMjU0YjEyYzkzZTFlNTg2MTM3YTJmZmVmNzFm
+ZDMzY2YyNzNmMzUgY2F1c2VzIHRoZSBmb2xsb3dpbmcgCj4gY29tcGlsZSBlcnJvciAoZm91bmQg
+YXQgWzFdKToKPiAKPiA8LS0gIHNuaXAgIC0tPgo+IAo+IC4uLgo+IENDICAgICAgZnMvYmluZm10
+X2VsZi5vCj4gSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGZzL2JpbmZtdF9lbGYuYzozMDoKPiBpbmNs
+dWRlL2xpbnV4L2VsZmNvcmUuaDogSW4gZnVuY3Rpb24g4oCYZWxmX2NvcmVfY29weV9yZWdz4oCZ
+Ogo+IGluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9y
+ZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKPiBpbmNsdWRlL2xpbnV4L2VsZmNv
+cmUuaDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5h
+bWVkIOKAmGdw4oCZCj4gaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5p
+b24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQo+IGluY2x1ZGUv
+bGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBu
+byBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKPiBpbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVy
+cm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZ
+Cj4gaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3Jl
+Z3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQo+IGluY2x1ZGUvbGludXgvZWxmY29y
+ZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFt
+ZWQg4oCYZ3DigJkKPiBpbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlv
+biB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCj4gaW5jbHVkZS9s
+aW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5v
+IG1lbWJlciBuYW1lZCDigJhncOKAmQo+IGluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJy
+b3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkK
+PiBpbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVn
+c+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCj4gaW5jbHVkZS9saW51eC9lbGZjb3Jl
+Lmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1l
+ZCDigJhncOKAmQo+IGluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9u
+IHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKPiBpbmNsdWRlL2xp
+bnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8g
+bWVtYmVyIG5hbWVkIOKAmGdw4oCZCj4gaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJv
+cjog4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQo+
+IGluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz
+4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKPiBpbmNsdWRlL2xpbnV4L2VsZmNvcmUu
+aDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVk
+IOKAmGdw4oCZCj4gaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24g
+dW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQo+IGluY2x1ZGUvbGlu
+dXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBt
+ZW1iZXIgbmFtZWQg4oCYZ3DigJkKPiBpbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9y
+OiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCj4g
+aW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3Pi
+gJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQo+IG1ha2VbMl06ICoqKiBbZnMvYmluZm10
+X2VsZi5vXSBFcnJvciAxCgpUaGF0IG1heSBhY3R1YWxseSBiZSBhIHRvb2xjaGFpbi9idWlsZCBz
+eXN0ZW0gcHJvYmxlbS4gSXQncyBhIGk0ODYgY2hyb290IGluCndoaWNoIHRoZSBjb21waWxlIGhh
+cHBlbnMuIEhvc3QgaXMgeDg2XzY0IHRob3VnaCBhcyByZXBvcnRlZCBieSB1bmFtZS4gQW5kIEkK
+dXNlIGdjYyA0LjAgYXMgSE9TVENDLCB3aGlsZSBDQyBpcyBnY2MgNC4xLjIuCgojIGdjYyAtdgpV
+c2luZyBidWlsdC1pbiBzcGVjcy4KVGFyZ2V0OiBpNDg2LWxpbnV4LWdudQpDb25maWd1cmVkIHdp
+dGg6IC4uL3NyYy9jb25maWd1cmUgLXYgCi0tZW5hYmxlLWxhbmd1YWdlcz1jLGMrKyxmb3J0cmFu
+LG9iamMsb2JqLWMrKyx0cmVlbGFuZyAtLXByZWZpeD0vdXNyIAotLWVuYWJsZS1zaGFyZWQgLS13
+aXRoLXN5c3RlbS16bGliIC0tbGliZXhlY2Rpcj0vdXNyL2xpYiAKLS13aXRob3V0LWluY2x1ZGVk
+LWdldHRleHQgLS1lbmFibGUtdGhyZWFkcz1wb3NpeCAtLWVuYWJsZS1ubHMgCi0tcHJvZ3JhbS1z
+dWZmaXg9LTQuMSAtLWVuYWJsZS1fX2N4YV9hdGV4aXQgLS1lbmFibGUtY2xvY2FsZT1nbnUgCi0t
+ZW5hYmxlLWxpYnN0ZGN4eC1kZWJ1ZyAtLWVuYWJsZS1tcGZyIC0td2l0aC10dW5lPWk2ODYgCi0t
+ZW5hYmxlLWNoZWNraW5nPXJlbGVhc2UgaTQ4Ni1saW51eC1nbnUKVGhyZWFkIG1vZGVsOiBwb3Np
+eApnY2MgdmVyc2lvbiA0LjEuMiAyMDA2MTExNSAocHJlcmVsZWFzZSkgKERlYmlhbiA0LjEuMS0y
+MSkKIyB1bmFtZSAtbQp4ODZfNjQKCgpKYW4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQg
+ZW1haWwgaXMgc3BvbnNvcmVkIGJ5OiBTcGx1bmsgSW5jLgpTdGlsbCBncmVwcGluZyB0aHJvdWdo
+IGxvZyBmaWxlcyB0byBmaW5kIHByb2JsZW1zPyAgU3RvcC4KTm93IFNlYXJjaCBsb2cgZXZlbnRz
+IGFuZCBjb25maWd1cmF0aW9uIGZpbGVzIHVzaW5nIEFKQVggYW5kIGEgYnJvd3Nlci4KRG93bmxv
+YWQgeW91ciBGUkVFIGNvcHkgb2YgU3BsdW5rIG5vdyA+PiAgaHR0cDovL2dldC5zcGx1bmsuY29t
+LwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1v
+ZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
+Zm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
