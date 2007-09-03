@@ -1,26 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IQWyf-00063Q-EY for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Aug 2007 16:29:37 -0700
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailhub.stusta.mhn.de)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IQWye-0007Bb-KK
+	id 1ISBr0-00064b-0Q for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Sep 2007 06:20:34 -0700
+Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IS9Ro-0000dl-Ci
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 29 Aug 2007 16:29:37 -0700
-Date: Thu, 30 Aug 2007 01:29:28 +0200
+	Mon, 03 Sep 2007 03:46:28 -0700
+Date: Mon, 3 Sep 2007 12:46:19 +0200
 From: Adrian Bunk <bunk@kernel.org>
-Message-ID: <20070829232928.GY26410@stusta.de>
-References: <20070801131051.GO3972@stusta.de>
-	<20070801190753.GB5763@martell.zuzino.mipt.ru>
-	<20070801191037.GR3972@stusta.de>
-	<20070819230136.GE32595@stusta.de>
-	<20070820001646.GB10087@one.firstfloor.org>
+Message-ID: <20070903104619.GR16016@stusta.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070820001646.GB10087@one.firstfloor.org>
-Subject: [uml-devel] [2.6 patch] rename .i assembler includes to .h
+Subject: [uml-devel] 2.6.23-rc5 regression: uml on x86_64 compile error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,301 +23,63 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andi Kleen <andi@firstfloor.org>, jdike@karaya.com
-Cc: discuss@x86-64.org, Andrew Morton <akpm@linux-foundation.org>, Alexey Dobriyan <adobriyan@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Jeff Dike <jdike@linux.intel.com>
+Cc: Jan Dittmer <jdi@l4x.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Aug 20, 2007 at 02:16:46AM +0200, Andi Kleen wrote:
-> On Mon, Aug 20, 2007 at 01:01:36AM +0200, Adrian Bunk wrote:
-> > On Wed, Aug 01, 2007 at 09:10:37PM +0200, Adrian Bunk wrote:
-> > > On Wed, Aug 01, 2007 at 11:07:53PM +0400, Alexey Dobriyan wrote:
-> > > > On Wed, Aug 01, 2007 at 03:10:51PM +0200, Adrian Bunk wrote:
-> > > > > --- linux-2.6.23-rc1-mm2/.gitignore.old
-> > > > > +++ linux-2.6.23-rc1-mm2/.gitignore
-> > > > > @@ -14,18 +14,25 @@
-> > > > >  *.so
-> > > > >  *.mod.c
-> > > > >  *.i
-> > > > > +!include/asm-*/*.i
-> > > > 
-> > > > I think these should be renamed to .S and let .i alone for preprocessed
-> > > > stuff.
-> > > >...
-> > > 
-> > > Fine with me if Andi agrees.
-> > 
-> > Andi?
-> 
-> Hmm, perhaps rename alternative-asm.i to .h and stick a #ifdef __ASSEMBLY__
-> around it.
-
-Patch below.
-
-> There is actually only one includer currently, but there might
-> be more in the future again.
-> 
-> -Andi
-
-cu
-Adrian
-
-
-<--  snip  -->
-
-
-.i is an ending used for preprocessed stuff.
-
-This patch therefore renames assembler include files to .h and guards 
-the contents with an #ifdef __ASSEMBLY__.
-
-Signed-off-by: Adrian Bunk <bunk@kernel.org>
-
----
-
- arch/i386/lib/semaphore.S            |    4 ++--
- arch/x86_64/lib/rwlock.S             |    2 +-
- include/asm-i386/alternative-asm.h   |   16 ++++++++++++++++
- include/asm-i386/alternative-asm.i   |   12 ------------
- include/asm-i386/frame.h             |   27 +++++++++++++++++++++++++++
- include/asm-i386/frame.i             |   23 -----------------------
- include/asm-um/alternative-asm.h     |    6 ++++++
- include/asm-um/alternative-asm.i     |    6 ------
- include/asm-um/frame.h               |    6 ++++++
- include/asm-um/frame.i               |    6 ------
- include/asm-x86_64/alternative-asm.h |   16 ++++++++++++++++
- include/asm-x86_64/alternative-asm.i |   12 ------------
- 12 files changed, 74 insertions(+), 62 deletions(-)
-
-7b64536780b39820b13bebd144983c3c8c9ae64c 
-diff --git a/arch/i386/lib/semaphore.S b/arch/i386/lib/semaphore.S
-index c01eb39..444fba4 100644
---- a/arch/i386/lib/semaphore.S
-+++ b/arch/i386/lib/semaphore.S
-@@ -15,8 +15,8 @@
- 
- #include <linux/linkage.h>
- #include <asm/rwlock.h>
--#include <asm/alternative-asm.i>
--#include <asm/frame.i>
-+#include <asm/alternative-asm.h>
-+#include <asm/frame.h>
- #include <asm/dwarf2.h>
- 
- /*
-diff --git a/arch/x86_64/lib/rwlock.S b/arch/x86_64/lib/rwlock.S
-index 0cde1f8..05ea55f 100644
---- a/arch/x86_64/lib/rwlock.S
-+++ b/arch/x86_64/lib/rwlock.S
-@@ -2,7 +2,7 @@
- 
- #include <linux/linkage.h>
- #include <asm/rwlock.h>
--#include <asm/alternative-asm.i>
-+#include <asm/alternative-asm.h>
- #include <asm/dwarf2.h>
- 
- /* rdi:	pointer to rwlock_t */
-diff --git a/include/asm-i386/alternative-asm.h b/include/asm-i386/alternative-asm.h
-new file mode 100644
-index 0000000..c478a03
---- /dev/null
-+++ b/include/asm-i386/alternative-asm.h
-@@ -0,0 +1,16 @@
-+#ifdef __ASSEMBLY__
-+
-+#ifdef CONFIG_SMP
-+	.macro LOCK_PREFIX
-+1:	lock
-+	.section .smp_locks,"a"
-+	.align 4
-+	.long 1b
-+	.previous
-+	.endm
-+#else
-+	.macro LOCK_PREFIX
-+	.endm
-+#endif
-+
-+#endif  /*  __ASSEMBLY__  */
-diff --git a/include/asm-i386/alternative-asm.i b/include/asm-i386/alternative-asm.i
-deleted file mode 100644
-index f051020..0000000
---- a/include/asm-i386/alternative-asm.i
-+++ /dev/null
-@@ -1,12 +0,0 @@
--#ifdef CONFIG_SMP
--	.macro LOCK_PREFIX
--1:	lock
--	.section .smp_locks,"a"
--	.align 4
--	.long 1b
--	.previous
--	.endm
--#else
--	.macro LOCK_PREFIX
--	.endm
--#endif
-diff --git a/include/asm-i386/frame.h b/include/asm-i386/frame.h
-new file mode 100644
-index 0000000..06850a7
---- /dev/null
-+++ b/include/asm-i386/frame.h
-@@ -0,0 +1,27 @@
-+#ifdef __ASSEMBLY__
-+
-+#include <asm/dwarf2.h>
-+
-+/* The annotation hides the frame from the unwinder and makes it look
-+   like a ordinary ebp save/restore. This avoids some special cases for
-+   frame pointer later */
-+#ifdef CONFIG_FRAME_POINTER
-+	.macro FRAME
-+	pushl %ebp
-+	CFI_ADJUST_CFA_OFFSET 4
-+	CFI_REL_OFFSET ebp,0
-+	movl %esp,%ebp
-+	.endm
-+	.macro ENDFRAME
-+	popl %ebp
-+	CFI_ADJUST_CFA_OFFSET -4
-+	CFI_RESTORE ebp
-+	.endm
-+#else
-+	.macro FRAME
-+	.endm
-+	.macro ENDFRAME
-+	.endm
-+#endif
-+
-+#endif  /*  __ASSEMBLY__  */
-diff --git a/include/asm-i386/frame.i b/include/asm-i386/frame.i
-deleted file mode 100644
-index 0362025..0000000
---- a/include/asm-i386/frame.i
-+++ /dev/null
-@@ -1,23 +0,0 @@
--#include <asm/dwarf2.h>
--
--/* The annotation hides the frame from the unwinder and makes it look
--   like a ordinary ebp save/restore. This avoids some special cases for
--   frame pointer later */
--#ifdef CONFIG_FRAME_POINTER
--	.macro FRAME
--	pushl %ebp
--	CFI_ADJUST_CFA_OFFSET 4
--	CFI_REL_OFFSET ebp,0
--	movl %esp,%ebp
--	.endm
--	.macro ENDFRAME
--	popl %ebp
--	CFI_ADJUST_CFA_OFFSET -4
--	CFI_RESTORE ebp
--	.endm
--#else
--	.macro FRAME
--	.endm
--	.macro ENDFRAME
--	.endm
--#endif
-diff --git a/include/asm-um/alternative-asm.h b/include/asm-um/alternative-asm.h
-new file mode 100644
-index 0000000..9aa9fa2
---- /dev/null
-+++ b/include/asm-um/alternative-asm.h
-@@ -0,0 +1,6 @@
-+#ifndef __UM_ALTERNATIVE_ASM_I
-+#define __UM_ALTERNATIVE_ASM_I
-+
-+#include "asm/arch/alternative-asm.h"
-+
-+#endif
-diff --git a/include/asm-um/alternative-asm.i b/include/asm-um/alternative-asm.i
-deleted file mode 100644
-index cae9fac..0000000
---- a/include/asm-um/alternative-asm.i
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef __UM_ALTERNATIVE_ASM_I
--#define __UM_ALTERNATIVE_ASM_I
--
--#include "asm/arch/alternative-asm.i"
--
--#endif
-diff --git a/include/asm-um/frame.h b/include/asm-um/frame.h
-new file mode 100644
-index 0000000..8a8c1cb
---- /dev/null
-+++ b/include/asm-um/frame.h
-@@ -0,0 +1,6 @@
-+#ifndef __UM_FRAME_I
-+#define __UM_FRAME_I
-+
-+#include "asm/arch/frame.h"
-+
-+#endif
-diff --git a/include/asm-um/frame.i b/include/asm-um/frame.i
-deleted file mode 100644
-index 09d5dca..0000000
---- a/include/asm-um/frame.i
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef __UM_FRAME_I
--#define __UM_FRAME_I
--
--#include "asm/arch/frame.i"
--
--#endif
-diff --git a/include/asm-x86_64/alternative-asm.h b/include/asm-x86_64/alternative-asm.h
-new file mode 100644
-index 0000000..b598daf
---- /dev/null
-+++ b/include/asm-x86_64/alternative-asm.h
-@@ -0,0 +1,16 @@
-+#ifdef __ASSEMBLY__
-+
-+#ifdef CONFIG_SMP
-+	.macro LOCK_PREFIX
-+1:	lock
-+	.section .smp_locks,"a"
-+	.align 8
-+	.quad 1b
-+	.previous
-+	.endm
-+#else
-+	.macro LOCK_PREFIX
-+	.endm
-+#endif
-+
-+#endif  /*  __ASSEMBLY__  */
-diff --git a/include/asm-x86_64/alternative-asm.i b/include/asm-x86_64/alternative-asm.i
-deleted file mode 100644
-index 0b3f1a2..0000000
---- a/include/asm-x86_64/alternative-asm.i
-+++ /dev/null
-@@ -1,12 +0,0 @@
--#ifdef CONFIG_SMP
--	.macro LOCK_PREFIX
--1:	lock
--	.section .smp_locks,"a"
--	.align 8
--	.quad 1b
--	.previous
--	.endm
--#else
--	.macro LOCK_PREFIX
--	.endm
--#endif
-
-
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Splunk Inc.
-Still grepping through log files to find problems?  Stop.
-Now Search log events and configuration files using AJAX and a browser.
-Download your FREE copy of Splunk now >>  http://get.splunk.com/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Q29tbWl0IGQxMjU0YjEyYzkzZTFlNTg2MTM3YTJmZmVmNzFmZDMzY2YyNzNmMzUgY2F1c2VzIHRo
+ZSBmb2xsb3dpbmcgCmNvbXBpbGUgZXJyb3IgKGZvdW5kIGF0IFsxXSk6Cgo8LS0gIHNuaXAgIC0t
+PgoKLi4uCkNDICAgICAgZnMvYmluZm10X2VsZi5vCkluIGZpbGUgaW5jbHVkZWQgZnJvbSBmcy9i
+aW5mbXRfZWxmLmM6MzA6CmluY2x1ZGUvbGludXgvZWxmY29yZS5oOiBJbiBmdW5jdGlvbiDigJhl
+bGZfY29yZV9jb3B5X3JlZ3PigJk6CmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6
+IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKaW5j
+bHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkg
+aGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6
+IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw
+4oCZCmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9y
+ZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKaW5jbHVkZS9saW51eC9lbGZjb3Jl
+Lmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1l
+ZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlvbiB1
+bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCmluY2x1ZGUvbGludXgv
+ZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1i
+ZXIgbmFtZWQg4oCYZ3DigJkKaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCY
+dW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNsdWRl
+L2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMg
+bm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJy
+b3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkK
+aW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3Pi
+gJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDox
+MDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKA
+mGdw4oCZCmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9w
+dF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKaW5jbHVkZS9saW51eC9lbGZj
+b3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBu
+YW1lZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlv
+biB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCmluY2x1ZGUvbGlu
+dXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBt
+ZW1iZXIgbmFtZWQg4oCYZ3DigJkKaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog
+4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNs
+dWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBo
+YXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzog
+ZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3Di
+gJkKaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3Jl
+Z3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUu
+aDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVk
+IOKAmGdw4oCZCm1ha2VbMl06ICoqKiBbZnMvYmluZm10X2VsZi5vXSBFcnJvciAxCgo8LS0gIHNu
+aXAgIC0tPgoKY3UKQWRyaWFuCgpbMV0gaHR0cDovL2w0eC5vcmcvay8/ZD0zMzkyNiNlcnIKCi0t
+IAoKICAgICAgICJJcyB0aGVyZSBub3QgcHJvbWlzZSBvZiByYWluPyIgTGluZyBUYW4gYXNrZWQg
+c3VkZGVubHkgb3V0CiAgICAgICAgb2YgdGhlIGRhcmtuZXNzLiBUaGVyZSBoYWQgYmVlbiBuZWVk
+IG9mIHJhaW4gZm9yIG1hbnkgZGF5cy4KICAgICAgICJPbmx5IGEgcHJvbWlzZSwiIExhbyBFciBz
+YWlkLgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBQZWFybCBTLiBCdWNr
+IC0gRHJhZ29uIFNlZWQKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YubmV0IGVtYWlsIGlzIHNw
+b25zb3JlZCBieTogU3BsdW5rIEluYy4KU3RpbGwgZ3JlcHBpbmcgdGhyb3VnaCBsb2cgZmlsZXMg
+dG8gZmluZCBwcm9ibGVtcz8gIFN0b3AuCk5vdyBTZWFyY2ggbG9nIGV2ZW50cyBhbmQgY29uZmln
+dXJhdGlvbiBmaWxlcyB1c2luZyBBSkFYIGFuZCBhIGJyb3dzZXIuCkRvd25sb2FkIHlvdXIgRlJF
+RSBjb3B5IG9mIFNwbHVuayBub3cgPj4gIGh0dHA6Ly9nZXQuc3BsdW5rLmNvbS8KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRl
+dmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9k
+ZS1saW51eC1kZXZlbAo=
