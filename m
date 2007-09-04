@@ -1,19 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ISBr0-00064b-0Q for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Sep 2007 06:20:34 -0700
-Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IS9Ro-0000dl-Ci
+	id 1ISXfa-0006qz-GL for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 04 Sep 2007 05:38:14 -0700
+Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1ISXfa-0008LH-6w
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Sep 2007 03:46:28 -0700
-Date: Mon, 3 Sep 2007 12:46:19 +0200
-From: Adrian Bunk <bunk@kernel.org>
-Message-ID: <20070903104619.GR16016@stusta.de>
+	Tue, 04 Sep 2007 05:38:14 -0700
+From: Rob Landley <rob@landley.net>
+Date: Tue, 4 Sep 2007 07:37:54 -0500
+References: <200708212148.05392.rob@landley.net>
+	<200708222047.01962.rob@landley.net>
+	<20070823034413.GB17185@c2.user-mode-linux.org>
+In-Reply-To: <20070823034413.GB17185@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] 2.6.23-rc5 regression: uml on x86_64 compile error
+Message-Id: <200709040737.54516.rob@landley.net>
+Subject: Re: [uml-devel] UML doesn't build in 2.6.23-rc3.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,63 +28,35 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@linux.intel.com>
-Cc: Jan Dittmer <jdi@l4x.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
-Q29tbWl0IGQxMjU0YjEyYzkzZTFlNTg2MTM3YTJmZmVmNzFmZDMzY2YyNzNmMzUgY2F1c2VzIHRo
-ZSBmb2xsb3dpbmcgCmNvbXBpbGUgZXJyb3IgKGZvdW5kIGF0IFsxXSk6Cgo8LS0gIHNuaXAgIC0t
-PgoKLi4uCkNDICAgICAgZnMvYmluZm10X2VsZi5vCkluIGZpbGUgaW5jbHVkZWQgZnJvbSBmcy9i
-aW5mbXRfZWxmLmM6MzA6CmluY2x1ZGUvbGludXgvZWxmY29yZS5oOiBJbiBmdW5jdGlvbiDigJhl
-bGZfY29yZV9jb3B5X3JlZ3PigJk6CmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6
-IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKaW5j
-bHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkg
-aGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6
-IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw
-4oCZCmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9y
-ZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKaW5jbHVkZS9saW51eC9lbGZjb3Jl
-Lmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1l
-ZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlvbiB1
-bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCmluY2x1ZGUvbGludXgv
-ZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1i
-ZXIgbmFtZWQg4oCYZ3DigJkKaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCY
-dW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNsdWRl
-L2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMg
-bm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJy
-b3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkK
-aW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3Pi
-gJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDox
-MDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKA
-mGdw4oCZCmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9w
-dF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3DigJkKaW5jbHVkZS9saW51eC9lbGZj
-b3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBu
-YW1lZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlv
-biB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCmluY2x1ZGUvbGlu
-dXgvZWxmY29yZS5oOjEwMzogZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBt
-ZW1iZXIgbmFtZWQg4oCYZ3DigJkKaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog
-4oCYdW5pb24gdW1sX3B0X3JlZ3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNs
-dWRlL2xpbnV4L2VsZmNvcmUuaDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBo
-YXMgbm8gbWVtYmVyIG5hbWVkIOKAmGdw4oCZCmluY2x1ZGUvbGludXgvZWxmY29yZS5oOjEwMzog
-ZXJyb3I6IOKAmHVuaW9uIHVtbF9wdF9yZWdz4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYZ3Di
-gJkKaW5jbHVkZS9saW51eC9lbGZjb3JlLmg6MTAzOiBlcnJvcjog4oCYdW5pb24gdW1sX3B0X3Jl
-Z3PigJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJhncOKAmQppbmNsdWRlL2xpbnV4L2VsZmNvcmUu
-aDoxMDM6IGVycm9yOiDigJh1bmlvbiB1bWxfcHRfcmVnc+KAmSBoYXMgbm8gbWVtYmVyIG5hbWVk
-IOKAmGdw4oCZCm1ha2VbMl06ICoqKiBbZnMvYmluZm10X2VsZi5vXSBFcnJvciAxCgo8LS0gIHNu
-aXAgIC0tPgoKY3UKQWRyaWFuCgpbMV0gaHR0cDovL2w0eC5vcmcvay8/ZD0zMzkyNiNlcnIKCi0t
-IAoKICAgICAgICJJcyB0aGVyZSBub3QgcHJvbWlzZSBvZiByYWluPyIgTGluZyBUYW4gYXNrZWQg
-c3VkZGVubHkgb3V0CiAgICAgICAgb2YgdGhlIGRhcmtuZXNzLiBUaGVyZSBoYWQgYmVlbiBuZWVk
-IG9mIHJhaW4gZm9yIG1hbnkgZGF5cy4KICAgICAgICJPbmx5IGEgcHJvbWlzZSwiIExhbyBFciBz
-YWlkLgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBQZWFybCBTLiBCdWNr
-IC0gRHJhZ29uIFNlZWQKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YubmV0IGVtYWlsIGlzIHNw
-b25zb3JlZCBieTogU3BsdW5rIEluYy4KU3RpbGwgZ3JlcHBpbmcgdGhyb3VnaCBsb2cgZmlsZXMg
-dG8gZmluZCBwcm9ibGVtcz8gIFN0b3AuCk5vdyBTZWFyY2ggbG9nIGV2ZW50cyBhbmQgY29uZmln
-dXJhdGlvbiBmaWxlcyB1c2luZyBBSkFYIGFuZCBhIGJyb3dzZXIuCkRvd25sb2FkIHlvdXIgRlJF
-RSBjb3B5IG9mIFNwbHVuayBub3cgPj4gIGh0dHA6Ly9nZXQuc3BsdW5rLmNvbS8KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRl
-dmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9k
-ZS1saW51eC1kZXZlbAo=
+On Wednesday 22 August 2007 10:44:13 pm Jeff Dike wrote:
+> On Wed, Aug 22, 2007 at 08:47:01PM -0500, Rob Landley wrote:
+> > Does that reproduce it for you?
+>
+> Yup, but it's somewhat non-obvious why.  Anyway, it seems clear that
+> asm-generic/tlb.h is missing an include.
+>
+> 				Jeff
+
+I still need the patch I posted to build -rc5.  Just FYI.
+
+Rob
+-- 
+"One of my most productive days was throwing away 1000 lines of code."
+  - Ken Thompson.
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc.
+Still grepping through log files to find problems?  Stop.
+Now Search log events and configuration files using AJAX and a browser.
+Download your FREE copy of Splunk now >>  http://get.splunk.com/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
