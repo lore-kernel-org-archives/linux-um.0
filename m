@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ITItm-0003Bu-J0 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Sep 2007 08:04:02 -0700
+	id 1ITJ2J-0004CB-J8 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Sep 2007 08:12:53 -0700
 Received: from ns.theshore.net ([67.18.92.50] helo=www.theshore.net)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1ITItl-0007Ud-IN
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1ITIyQ-0001k8-Jj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Sep 2007 08:04:02 -0700
+	Thu, 06 Sep 2007 08:08:50 -0700
 Received: from cakers-MacBook-Pro.local (mothership.theshore.net
 	[71.59.102.47])
-	by www.theshore.net (8.13.6/8.9.1) with ESMTP id l86F3u0A021990
+	by www.theshore.net (8.13.6/8.9.1) with ESMTP id l86F8mc1022224
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 6 Sep 2007 11:03:57 -0400
-Message-ID: <46E016D8.4000803@theshore.net>
-Date: Thu, 06 Sep 2007 11:03:52 -0400
+	Thu, 6 Sep 2007 11:08:49 -0400
+Message-ID: <46E017FC.9000906@theshore.net>
+Date: Thu, 06 Sep 2007 11:08:44 -0400
 From: "Christopher S. Aker" <caker@theshore.net>
 MIME-Version: 1.0
-Subject: [uml-devel] init_new_context_skas - new_mm failed, errno = -24
+Subject: [uml-devel] swapper: page allocation failure. order:0, mode:0x20
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,40 +33,60 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
-2.6.22.6-um
+2.6.21.1-um
 
-init_new_context_skas - new_mm failed, errno = -24
-init_new_context_skas - new_mm failed, errno = -24
-init_new_context_skas - new_mm failed, errno = -24
-Kernel panic - not syncing: switch_mm_skas - PTRACE_SWITCH_MM failed, 
-errno = 9
+Mem-info:
+Normal per-cpu:
+CPU 0: Hot: hi: 90, btch: 15 usd: 14 Cold: hi: 30, btch: 7 usd: 24
+Active:62085 inactive:6442 dirty:4693 writeback:2791 unstable:0
+free:196 slab:3980 mapped:12235 pagetables:241 bounce:0
+Normal free:784kB min:2208kB low:2760kB high:3312kB active:248340kB 
+inactive:25768kB present:304800kB pages_scanned:1220 all_unreclaimable? no
+lowmem_reserve[]: 0
+Normal: 0*4kB 0*8kB 1*16kB 0*32kB 0*64kB 0*128kB 1*256kB 1*512kB 
+0*1024kB 0*2048kB 0*4096kB = 784kB
+Swap cache: add 2548, delete 2451, find 38/63, race 0+0
+Free swap = 1037112kB
+Total swap = 1046504kB
+Free swap: 1037112kB
+76800 pages of RAM
+0 pages of HIGHMEM
+2795 reserved pages
+27381 pages shared
+97 pages swap cached
+swapper: page allocation failure. order:0, mode:0x20
+0858ba28: [<08065c76>] dump_stack+0x22/0x26
+0858ba40: [<080a773f>] __alloc_pages+0x219/0x30d
+0858ba90: [<080bb4f3>] kmem_getpages+0x22/0x80
+0858baa0: [<080bc2be>] cache_grow+0x166/0x180
+0858bad8: [<080bc41c>] cache_alloc_refill+0x144/0x1c0
+0858bb08: [<080bc7e3>] __kmalloc+0x6c/0x70
+0858bb20: [<0835f5cd>] __alloc_skb+0x55/0x104
+0858bb3c: [<0806b0f8>] uml_net_rx+0x38/0x161
+0858bb64: [<0806b26e>] uml_net_interrupt+0x32/0x76
+0858bb80: [<080a1297>] handle_IRQ_event+0x25/0x60
+0858bb9c: [<080a1324>] __do_IRQ+0x52/0xa2
+0858bbbc: [<080631d8>] do_IRQ+0x1f/0x32
+0858bbc8: [<08062d4c>] sigio_handler+0x56/0x6a
+0858bbe0: [<08079114>] sig_handler_common_skas+0x94/0xe5
+0858bc04: [<08075742>] sig_handler+0x32/0x53
+0858bc1c: [<08077816>] hard_handler+0x1a/0x20
+0858bc2c: [<08450828>] __restore+0x0/0x8
+0858bf24: [<08064645>] default_idle+0x26/0x2f
+0858bf38: [<08067afd>] init_idle_skas+0x28/0x2f
+0858bf48: [<08064656>] cpu_idle+0x8/0xa
+0858bf50: [<0806211c>] rest_init+0x2c/0x30
+0858bf64: [<0804876b>] start_kernel+0x1b1/0x212
+0858bf84: [<08067b30>] start_kernel_proc+0x2c/0x32
+0858bf90: [<08074f4d>] run_kernel_thread+0x50/0x57
+0858bfcc: [<080678a7>] new_thread_handler+0x80/0xcd
+0858bffc: [<00000000>] nosmp+0xf7fb7f4c/0x14
 
+Thoughts?
 
-EIP: 0000:[<00000000>] CPU: 0 Not tainted EFLAGS: 00000000
-     Not tainted
-EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000000
-ESI: 00000000 EDI: 00000000 EBP: 00000000 DS: 0000 ES: 0000
-085dbdfc:  [<080818fb>] show_regs+0xeb/0x110
-085dbe18:  [<0806b41c>] panic_exit+0x2c/0x50
-085dbe28:  [<080973fe>] notifier_call_chain+0x3e/0x60
-085dbe48:  [<080974dd>] __atomic_notifier_call_chain+0x2d/0x40
-085dbe64:  [<0809751e>] atomic_notifier_call_chain+0x2e/0x40
-085dbe80:  [<08087fd2>] panic+0x72/0x110
-085dbe9c:  [<0807e85c>] switch_mm_skas+0x5c/0x60
-085dbeb4:  [<084b98f4>] schedule+0x2b4/0x5a0
-085dbf24:  [<0806837d>] default_idle+0x2d/0x30
-085dbf38:  [<0806bc78>] init_idle_skas+0x28/0x30
-085dbf48:  [<08068388>] cpu_idle+0x8/0x10
-085dbf50:  [<084b92fb>] rest_init+0x5b/0x60
-085dbf64:  [<0804889d>] start_kernel+0x1bd/0x220
-085dbf84:  [<0806bcac>] start_kernel_proc+0x2c/0x40
-085dbf90:  [<0807a190>] run_kernel_thread+0x50/0x60
-085dbfcc:  [<0806b9fe>] new_thread_handler+0x7e/0xd0
-085dbffc:  [<00000000>] _stext+0xf7fb7f4c/0xc
-
-Is this cause by a still-too-low max_map_count value?
-
+Thanks,
 -Chris
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
