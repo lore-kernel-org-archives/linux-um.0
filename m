@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ITyEy-0005ow-Nx for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Sep 2007 04:12:47 -0700
-Received: from fk-out-0910.google.com ([209.85.128.188])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1ITyEt-0001tf-6C
+	id 1IUlca-0005hG-GY for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Sep 2007 08:56:21 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IUlcY-0002h1-Rz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Sep 2007 04:12:38 -0700
-Received: by fk-out-0910.google.com with SMTP id 19so899970fkr
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 08 Sep 2007 04:12:31 -0700 (PDT)
-Message-ID: <46E28343.1030002@googlemail.com>
-Date: Sat, 08 Sep 2007 13:10:59 +0200
-MIME-Version: 1.0
-From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Subject: [uml-devel] [1/4] 2.6.23-rc5: known regressions v2
+	Mon, 10 Sep 2007 08:56:20 -0700
+Date: Mon, 10 Sep 2007 11:55:46 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070910155546.GA14107@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH] UML - Fix ELF_CORE_COPY_REGS build botch
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,101 +29,75 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jakub Jelinek <jakub@redhat.com>, Len Brown <len.brown@intel.com>, Adrian Bunk <bunk@kernel.org>, Jeff Chua <jeff.chua.linux@gmail.com>, "Antonino A. Daplas" <adaplas@gmail.com>, Stefan Becker <Stefan.Becker@nokia.com>, "H. Peter Anvin" <hpa@zytor.com>, LKML <linux-kernel@vger.kernel.org>, Andi Kleen <ak@suse.de>, Markus <lists4me@web.de>, tglx@linutronix.de, Pavel Machek <pavel@ucw.cz>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Dave Jones <davej@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Jeff Dike <jdike@linux.intel.com>, Ingo Molnar <mingo@elte.hu>
+Cc: Adrian Bunk <bunk@kernel.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
 
-Hi all,
+[ This needs to go into 2.6.23 ]
 
-Here is a list of some known regressions in 2.6.23-rc5.
+The earlier crash dump fix on x86_64 depended on patches in -mm which
+are intended for post-2.6.23.  Without those, it broke the build when
+it went into 2.6.23-rc5.
 
-Feel free to add new regressions/remove fixed etc.
-http://kernelnewbies.org/known_regressions
+This patch changes the field references in ELF_CORE_COPY_REGS back to
+those still used in mainline.
 
-List of Aces
-
-Name                    Regressions fixed since 21-Jun-2007
-Adrian Bunk                            10
-Linus Torvalds                         6
-Andi Kleen                             5
-Hugh Dickins                           5
-Trond Myklebust                        5
-Andrew Morton                          4
-Al Viro                                3
-Alan Stern                             3
-Alexey Starikovskiy                    3
-Cornelia Huck                          3
-David S. Miller                        3
-Jens Axboe                             3
-Stephen Hemminger                      3
-Tejun Heo                              3
-
-
-
-Unclassified
-
-Subject         : x86_64 vdso patch is broken somehow?
-References      : http://lkml.org/lkml/2007/8/29/136
-Last known good : ?
-Submitter       : Chuck Ebbert <cebbert@redhat.com>
-Caused-By       : Andi Kleen <ak@suse.de>
-                  commit 2aae950b21e4bc789d1fc6668faf67e8748300b7
-Handled-By      : ?
-Status          : unknown
-
-Subject         : cpu hotplug support broken in 2.6.23-rc3/highres timers break cpu hotplug in 2.6.23-rc5
-References      : http://lkml.org/lkml/2007/8/27/58
-                  http://lkml.org/lkml/2007/9/3/65
-Last known good : ?
-Submitter       : Pavel Machek <pavel@ucw.cz>
-Caused-By       : ?
-Handled-By      : ?
-Status          : problem is being debugged
-
-Subject         : 2.6.23-rc3-git1 crash/stuck on VIA CN700 system
-References      : http://lkml.org/lkml/2007/8/20/174
-Last known good : ?
-Submitter       : Stefan Becker <Stefan.Becker@nokia.com>
-Caused-By       : Andi Kleen <ak@suse.de>
-                  commit 19d36ccdc34f5ed444f8a6af0cbfdb6790eb1177
-Handled-By      : Andi Kleen <ak@suse.de>
-                  Dave Jones <davej@redhat.com>
-Workaround      : http://lkml.org/lkml/2007/9/5/221
-Status          : problem is being debugged
-
-Subject         : console is messed up after resume from s2ram or switching to console from X
-References      : http://lkml.org/lkml/2007/8/4/6
-Last known good : ?
-Submitter       : Jeff Chua <jeff.chua.linux@gmail.com>
-Caused-By       : ?
-Handled-By      : H. Peter Anvin <hpa@zytor.com>
-                  Antonino A. Daplas <adaplas@gmail.com>
-Workaround      : "s2ram --force --acpi_sleep 1 --vbe_mode"
-Status          : problem is being debugged
-
-Subject         : konqueror suddenly vanishing, "konqueror: Fatal IO error: client killed"
-References      : http://lkml.org/lkml/2007/7/22/86
-Last known good : ?
-Submitter       : Markus <lists4me@web.de>
-Caused-By       : ?
-Handled-By      : Ingo Molnar <mingo@elte.hu>
-Status          : problem is being debugged
-
-Subject         : uml on x86_64 compile error
-References      : http://lkml.org/lkml/2007/9/3/86
-Last known good : ?
-Submitter       : Adrian Bunk <bunk@kernel.org>
-Caused-By       : Jeff Dike <jdike@linux.intel.com>
-                  commit d1254b12c93e1e586137a2ffef71fd33cf273f35
-Handled-By      : ?
-Status          : unknown
-
-
-
-Regards,
-Michal
-
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
-LOG
-http://www.stardust.webpages.pl/log/
+ include/asm-um/elf-x86_64.h |   42 +++++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
+
+Index: linux-2.6.17/include/asm-um/elf-x86_64.h
+===================================================================
+--- linux-2.6.17.orig/include/asm-um/elf-x86_64.h	2007-09-04 18:22:48.000000000 -0400
++++ linux-2.6.17/include/asm-um/elf-x86_64.h	2007-09-10 11:48:25.000000000 -0400
+@@ -67,27 +67,27 @@ typedef struct { } elf_fpregset_t;
+ } while (0)
+ 
+ #define ELF_CORE_COPY_REGS(pr_reg, regs)		\
+-	(pr_reg)[0] = (regs)->regs.gp[0];			\
+-	(pr_reg)[1] = (regs)->regs.gp[1];			\
+-	(pr_reg)[2] = (regs)->regs.gp[2];			\
+-	(pr_reg)[3] = (regs)->regs.gp[3];			\
+-	(pr_reg)[4] = (regs)->regs.gp[4];			\
+-	(pr_reg)[5] = (regs)->regs.gp[5];			\
+-	(pr_reg)[6] = (regs)->regs.gp[6];			\
+-	(pr_reg)[7] = (regs)->regs.gp[7];			\
+-	(pr_reg)[8] = (regs)->regs.gp[8];			\
+-	(pr_reg)[9] = (regs)->regs.gp[9];			\
+-	(pr_reg)[10] = (regs)->regs.gp[10];			\
+-	(pr_reg)[11] = (regs)->regs.gp[11];			\
+-	(pr_reg)[12] = (regs)->regs.gp[12];			\
+-	(pr_reg)[13] = (regs)->regs.gp[13];			\
+-	(pr_reg)[14] = (regs)->regs.gp[14];			\
+-	(pr_reg)[15] = (regs)->regs.gp[15];			\
+-	(pr_reg)[16] = (regs)->regs.gp[16];			\
+-	(pr_reg)[17] = (regs)->regs.gp[17];			\
+-	(pr_reg)[18] = (regs)->regs.gp[18];			\
+-	(pr_reg)[19] = (regs)->regs.gp[19];			\
+-	(pr_reg)[20] = (regs)->regs.gp[20];			\
++	(pr_reg)[0] = (regs)->regs.skas.regs[0];			\
++	(pr_reg)[1] = (regs)->regs.skas.regs[1];			\
++	(pr_reg)[2] = (regs)->regs.skas.regs[2];			\
++	(pr_reg)[3] = (regs)->regs.skas.regs[3];			\
++	(pr_reg)[4] = (regs)->regs.skas.regs[4];			\
++	(pr_reg)[5] = (regs)->regs.skas.regs[5];			\
++	(pr_reg)[6] = (regs)->regs.skas.regs[6];			\
++	(pr_reg)[7] = (regs)->regs.skas.regs[7];			\
++	(pr_reg)[8] = (regs)->regs.skas.regs[8];			\
++	(pr_reg)[9] = (regs)->regs.skas.regs[9];			\
++	(pr_reg)[10] = (regs)->regs.skas.regs[10];			\
++	(pr_reg)[11] = (regs)->regs.skas.regs[11];			\
++	(pr_reg)[12] = (regs)->regs.skas.regs[12];			\
++	(pr_reg)[13] = (regs)->regs.skas.regs[13];			\
++	(pr_reg)[14] = (regs)->regs.skas.regs[14];			\
++	(pr_reg)[15] = (regs)->regs.skas.regs[15];			\
++	(pr_reg)[16] = (regs)->regs.skas.regs[16];			\
++	(pr_reg)[17] = (regs)->regs.skas.regs[17];			\
++	(pr_reg)[18] = (regs)->regs.skas.regs[18];			\
++	(pr_reg)[19] = (regs)->regs.skas.regs[19];			\
++	(pr_reg)[20] = (regs)->regs.skas.regs[20];			\
+ 	(pr_reg)[21] = current->thread.arch.fs;			\
+ 	(pr_reg)[22] = 0;					\
+ 	(pr_reg)[23] = 0;					\
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
