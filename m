@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IUn9R-0000Bu-Ca for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Sep 2007 10:34:27 -0700
+	id 1IUn9P-0000Bo-8X for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Sep 2007 10:34:26 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IUn9L-0006K1-UF
+	(Exim 4.44) id 1IUn9O-00015H-9b
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 10 Sep 2007 10:34:18 -0700
-Date: Mon, 10 Sep 2007 11:59:43 -0400
+Date: Mon, 10 Sep 2007 12:14:00 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070910155943.GA14112@c2.user-mode-linux.org>
-References: <20070904214521.GB5417@c2.user-mode-linux.org>
-	<296838.33596.qm@web52009.mail.re2.yahoo.com>
+Message-ID: <20070910161400.GF14112@c2.user-mode-linux.org>
+References: <46E016D8.4000803@theshore.net>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <296838.33596.qm@web52009.mail.re2.yahoo.com>
-Subject: Re: [uml-devel] [uml-user] Hanging using 'iptables -L' in UML vm
-	booted with con0=pts
+In-Reply-To: <46E016D8.4000803@theshore.net>
+Subject: Re: [uml-devel] init_new_context_skas - new_mm failed, errno = -24
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,18 +30,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Andrews <bbmaj7@yahoo.com.au>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: "Christopher S. Aker" <caker@theshore.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Sep 05, 2007 at 09:00:51AM +1000, Richard Andrews wrote:
-> There is an outstanding kernel + mod_utils bug I am tracking via RedHat that
-> exhibits similar behaviour - lockup with 100% CPU in modprobe.
+On Thu, Sep 06, 2007 at 11:03:52AM -0400, Christopher S. Aker wrote:
+> 2.6.22.6-um
 > 
-> https://bugzilla.redhat.com/show_bug.cgi?id=212922
+> init_new_context_skas - new_mm failed, errno = -24
+> init_new_context_skas - new_mm failed, errno = -24
+> init_new_context_skas - new_mm failed, errno = -24
+> Kernel panic - not syncing: switch_mm_skas - PTRACE_SWITCH_MM failed, 
+> errno = 9
 
-This one seems not to have anything to do with UML, while the bug that
-we're talking about here seems to, as modprobe sometimes works and
-sometimes doesn't.
+> Is this cause by a still-too-low max_map_count value?
+
+Could be - what was the host's max_map_count?
 
 				Jeff
 
