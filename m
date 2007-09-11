@@ -2,19 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IV76L-0006jD-7V for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Sep 2007 07:52:30 -0700
+	id 1IV7Ca-0007VC-MN for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Sep 2007 07:58:56 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IV76J-0007mC-Fr
+	(Exim 4.44) id 1IV7CZ-00030v-5b
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Sep 2007 07:52:29 -0700
-Date: Tue, 11 Sep 2007 10:52:20 -0400
+	Tue, 11 Sep 2007 07:58:56 -0700
+Date: Tue, 11 Sep 2007 10:58:52 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070911145220.GA6313@c2.user-mode-linux.org>
+Message-ID: <20070911145852.GB7551@c2.user-mode-linux.org>
+References: <46E016D8.4000803@theshore.net>
+	<20070910161400.GF14112@c2.user-mode-linux.org>
+	<46E5CE03.6000009@theshore.net>
+	<200709111601.03376.blaisorblade@yahoo.it>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [ PATCH 1/3 ] UML - Remove unneeded void * cast
+In-Reply-To: <200709111601.03376.blaisorblade@yahoo.it>
+Subject: Re: [uml-devel] init_new_context_skas - new_mm failed, errno = -24
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,30 +33,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: Jesper Juhl <jesper.juhl@gmail.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Blaisorblade <blaisorblade@yahoo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, "Christopher S. Aker" <caker@theshore.net>
 
-vmalloc() returns a void pointer, so casting to (void *) is pretty pointless.   
+On Tue, Sep 11, 2007 at 04:00:58PM +0200, Blaisorblade wrote:
+> errno = 24 means EMFILE (too many open files).
 
-Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/drivers/ubd_kern.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Whoops, I mentally turned that into -ENOMEM.
 
-Index: linux-2.6.22/arch/um/drivers/ubd_kern.c
-===================================================================
---- linux-2.6.22.orig/arch/um/drivers/ubd_kern.c	2007-08-23 20:22:40.000000000 -0400
-+++ linux-2.6.22/arch/um/drivers/ubd_kern.c	2007-08-30 16:27:33.000000000 -0400
-@@ -615,7 +615,7 @@ static int ubd_open_dev(struct ubd *ubd_
- 		blk_queue_max_sectors(ubd_dev->queue, 8 * sizeof(long));
- 
- 		err = -ENOMEM;
--		ubd_dev->cow.bitmap = (void *) vmalloc(ubd_dev->cow.bitmap_len);
-+		ubd_dev->cow.bitmap = vmalloc(ubd_dev->cow.bitmap_len);
- 		if(ubd_dev->cow.bitmap == NULL){
- 			printk(KERN_ERR "Failed to vmalloc COW bitmap\n");
- 			goto error;
+Maybe we should resurrect os_print_error as you suggested and start
+using it.  The current habit of using raw errnos dates from very
+early, when perror (or strerror - I don't remember which) gave me
+undebuggable segfaults deep inside libc.  Probably, that's not a
+problem any more.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
