@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IVZZp-00024c-Rn for user-mode-linux-devel@lists.sourceforge.net;
+	id 1IVZZo-00024X-Vj for user-mode-linux-devel@lists.sourceforge.net;
 	Wed, 12 Sep 2007 14:16:49 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IVZZp-0000Yx-8S
+	(Exim 4.44) id 1IVZZo-0000YQ-DL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Sep 2007 14:16:49 -0700
-Date: Wed, 12 Sep 2007 17:16:47 -0400
+	Wed, 12 Sep 2007 14:16:48 -0700
+Date: Wed, 12 Sep 2007 17:16:45 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070912211647.GA10282@c2.user-mode-linux.org>
+Message-ID: <20070912211645.GA10242@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 5/11] UML - GENERIC_TIME support
+Subject: [uml-devel] [PATCH 3/11] UML - tidy set_interval
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,107 +31,78 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Enable CONFIG_GENERIC_TIME.
-
-As a side-effect of this, the UML implementations of do_gettimeofday
-and do_settimeofday go away, as these are provided by generic code.
-set_time also goes away since it was only used by do_settimeofday.
+set_interval took a timer type as an argument, but it always specified
+a virtual timer.  So, it is not needed, and it is gone, and
+set_interval is simplified appropriately.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 --
- arch/um/Kconfig        |    5 +++++
- arch/um/kernel/ksyms.c |    3 ---
- arch/um/kernel/time.c  |   40 ----------------------------------------
- 3 files changed, 5 insertions(+), 43 deletions(-)
+ arch/um/include/os.h            |    2 +-
+ arch/um/kernel/time.c           |    2 +-
+ arch/um/os-Linux/skas/process.c |    2 +-
+ arch/um/os-Linux/time.c         |    5 ++---
+ 4 files changed, 5 insertions(+), 6 deletions(-)
 
-Index: linux-2.6.22/arch/um/Kconfig
+Index: linux-2.6.22/arch/um/include/os.h
 ===================================================================
---- linux-2.6.22.orig/arch/um/Kconfig	2007-09-12 14:53:25.000000000 -0400
-+++ linux-2.6.22/arch/um/Kconfig	2007-09-12 14:58:02.000000000 -0400
-@@ -55,6 +55,10 @@ config GENERIC_BUG
- 	default y
- 	depends on BUG
+--- linux-2.6.22.orig/arch/um/include/os.h	2007-08-30 16:30:49.000000000 -0400
++++ linux-2.6.22/arch/um/include/os.h	2007-08-30 16:31:15.000000000 -0400
+@@ -252,7 +252,7 @@ extern void os_dump_core(void);
  
-+config GENERIC_TIME
-+	bool
-+	default y
-+
- # Used in kernel/irq/manage.c and include/linux/irq.h
- config IRQ_RELEASE_METHOD
- 	bool
-@@ -75,6 +79,7 @@ config STATIC_LINK
- 
- source "arch/um/Kconfig.arch"
- source "mm/Kconfig"
-+source "kernel/time/Kconfig"
- 
- config LD_SCRIPT_STATIC
- 	bool
-Index: linux-2.6.22/arch/um/kernel/ksyms.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/ksyms.c	2007-09-12 14:53:25.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/ksyms.c	2007-09-12 14:58:02.000000000 -0400
-@@ -67,9 +67,6 @@ EXPORT_SYMBOL(run_helper);
- EXPORT_SYMBOL(start_thread);
- EXPORT_SYMBOL(dump_thread);
- 
--EXPORT_SYMBOL(do_gettimeofday);
--EXPORT_SYMBOL(do_settimeofday);
--
- #ifdef CONFIG_SMP
- 
- /* required for SMP */
+ extern int switch_timers(int to_real);
+ extern void idle_sleep(int secs);
+-extern int set_interval(int is_virtual);
++extern int set_interval(void);
+ extern void disable_timer(void);
+ extern void uml_idle_timer(void);
+ extern unsigned long long os_nsecs(void);
 Index: linux-2.6.22/arch/um/kernel/time.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/kernel/time.c	2007-09-12 14:55:39.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/time.c	2007-09-12 14:58:02.000000000 -0400
-@@ -123,46 +123,6 @@ void time_init(void)
- 	late_time_init = register_timer;
- }
+--- linux-2.6.22.orig/arch/um/kernel/time.c	2007-08-30 16:30:13.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/time.c	2007-08-30 16:31:15.000000000 -0400
+@@ -102,7 +102,7 @@ static void register_timer(void)
+ 		printk(KERN_ERR "register_timer : request_irq failed - "
+ 		       "errno = %d\n", -err);
  
--void do_gettimeofday(struct timeval *tv)
--{
--#ifdef CONFIG_UML_REAL_TIME_CLOCK
--	unsigned long long nsecs = get_time();
--#else
--	unsigned long long nsecs = (unsigned long long) xtime.tv_sec * BILLION +
--		xtime.tv_nsec;
--#endif
--	tv->tv_sec = nsecs / NSEC_PER_SEC;
--	/*
--	 * Careful about calculations here - this was originally done as
--	 * (nsecs - tv->tv_sec * NSEC_PER_SEC) / NSEC_PER_USEC
--	 * which gave bogus (> 1000000) values.  Dunno why, suspect gcc
--	 * (4.0.0) miscompiled it, or there's a subtle 64/32-bit conversion
--	 * problem that I missed.
--	 */
--	nsecs -= tv->tv_sec * NSEC_PER_SEC;
--	tv->tv_usec = (unsigned long) nsecs / NSEC_PER_USEC;
--}
--
--static inline void set_time(unsigned long long nsecs)
--{
--	unsigned long long now;
--	unsigned long flags;
--
--	spin_lock_irqsave(&timer_spinlock, flags);
--	now = os_nsecs();
--	local_offset = nsecs - now;
--	spin_unlock_irqrestore(&timer_spinlock, flags);
--
--	clock_was_set();
--}
--
--int do_settimeofday(struct timespec *tv)
--{
--	set_time((unsigned long long) tv->tv_sec * NSEC_PER_SEC + tv->tv_nsec);
--
--	return 0;
--}
--
- void timer_handler(int sig, struct uml_pt_regs *regs)
+-	err = set_interval(1);
++	err = set_interval();
+ 	if (err != 0)
+ 		printk(KERN_ERR "register_timer : set_interval failed - "
+ 		       "errno = %d\n", -err);
+Index: linux-2.6.22/arch/um/os-Linux/skas/process.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/skas/process.c	2007-08-30 16:30:13.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/skas/process.c	2007-08-30 16:31:15.000000000 -0400
+@@ -178,7 +178,7 @@ static int userspace_tramp(void *stack)
+ 	ptrace(PTRACE_TRACEME, 0, 0, 0);
+ 
+ 	init_new_thread_signals();
+-	err = set_interval(1);
++	err = set_interval();
+ 	if (err)
+ 		panic("userspace_tramp - setting timer failed, errno = %d\n",
+ 		      err);
+Index: linux-2.6.22/arch/um/os-Linux/time.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/time.c	2007-08-30 16:30:49.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/time.c	2007-08-30 16:31:15.000000000 -0400
+@@ -14,14 +14,13 @@
+ 
+ static int is_real_timer = 0;
+ 
+-int set_interval(int is_virtual)
++int set_interval(void)
  {
- 	if (current_thread->cpu == 0)
+ 	int usec = 1000000/UM_HZ;
+-	int timer_type = is_virtual ? ITIMER_VIRTUAL : ITIMER_REAL;
+ 	struct itimerval interval = ((struct itimerval) { { 0, usec },
+ 							  { 0, usec } });
+ 
+-	if (setitimer(timer_type, &interval, NULL) == -1)
++	if (setitimer(ITIMER_VIRTUAL, &interval, NULL) == -1)
+ 		return -errno;
+ 
+ 	return 0;
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
