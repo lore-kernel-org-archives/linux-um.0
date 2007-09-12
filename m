@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IVZZs-00024u-HG for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Sep 2007 14:16:52 -0700
+	id 1IVZZo-00024N-8u for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Sep 2007 14:16:48 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IVZZr-0000Zr-AS
+	(Exim 4.44) id 1IVZZn-0000Y8-Nf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Sep 2007 14:16:52 -0700
-Date: Wed, 12 Sep 2007 17:16:44 -0400
+	Wed, 12 Sep 2007 14:16:48 -0700
+Date: Wed, 12 Sep 2007 17:16:42 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070912211644.GA10231@c2.user-mode-linux.org>
+Message-ID: <20070912211642.GA10267@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/11] UML - Eliminate hz()
+Subject: [uml-devel] [PATCH 0/11] UML - Tickless and timekeeping update
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,104 +31,16 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Eliminate hz() since its only purpose was to provide a kernel-space
-constant to userspace code.  This can be done instead by providing the
-constant directly through kernel_constants.h.
+This patchset modernizes UML's timekeeping system.  There are a number
+of cleanups, but the major items are clockevent and clocksource
+support, followed by tickless support.
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/include/common-offsets.h |    2 ++
- arch/um/include/kern_util.h      |    1 -
- arch/um/kernel/time.c            |    5 -----
- arch/um/os-Linux/skas/process.c  |    5 +++--
- arch/um/os-Linux/time.c          |    7 +++----
- 5 files changed, 8 insertions(+), 12 deletions(-)
+This is obviously 2.6.24 material.
 
-Index: linux-2.6.22/arch/um/include/common-offsets.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/common-offsets.h	2007-08-30 21:27:32.000000000 +0100
-+++ linux-2.6.22/arch/um/include/common-offsets.h	2007-08-30 21:30:13.000000000 +0100
-@@ -32,3 +32,5 @@ DEFINE(UM_GFP_ATOMIC, GFP_ATOMIC);
- DEFINE(crypto_tfm_ctx_offset, offsetof(struct crypto_tfm, __crt_ctx));
- 
- DEFINE(UM_THREAD_SIZE, THREAD_SIZE);
-+
-+DEFINE(UM_HZ, HZ);
-Index: linux-2.6.22/arch/um/include/kern_util.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/kern_util.h	2007-08-30 21:27:33.000000000 +0100
-+++ linux-2.6.22/arch/um/include/kern_util.h	2007-08-30 21:30:13.000000000 +0100
-@@ -64,7 +64,6 @@ extern void paging_init(void);
- extern void init_flush_vm(void);
- extern void *syscall_sp(void *t);
- extern void syscall_trace(struct uml_pt_regs *regs, int entryexit);
--extern int hz(void);
- extern unsigned int do_IRQ(int irq, struct uml_pt_regs *regs);
- extern void interrupt_end(void);
- extern void initial_thread_cb(void (*proc)(void *), void *arg);
-Index: linux-2.6.22/arch/um/kernel/time.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/time.c	2007-08-30 21:27:32.000000000 +0100
-+++ linux-2.6.22/arch/um/kernel/time.c	2007-09-02 19:01:28.000000000 +0100
-@@ -11,11 +11,6 @@
- #include "kern_util.h"
- #include "os.h"
- 
--int hz(void)
--{
--	return HZ;
--}
--
- /*
-  * Scheduler clock - returns current time in nanosec units.
-  */
-Index: linux-2.6.22/arch/um/os-Linux/skas/process.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/skas/process.c	2007-08-30 21:27:32.000000000 +0100
-+++ linux-2.6.22/arch/um/os-Linux/skas/process.c	2007-09-02 19:01:28.000000000 +0100
-@@ -392,8 +392,9 @@ int copy_context_skas0(unsigned long new
- 	*data = ((struct stub_data) { .offset	= MMAP_OFFSET(new_offset),
- 				      .fd	= new_fd,
- 				      .timer    = ((struct itimerval)
--					            { { 0, 1000000 / hz() },
--						      { 0, 1000000 / hz() }})});
-+					            { { 0, 1000000 / UM_HZ },
-+						      { 0, 1000000 / UM_HZ }})
-+				 });
- 	err = ptrace_setregs(pid, thread_regs);
- 	if (err < 0)
- 		panic("copy_context_skas0 : PTRACE_SETREGS failed, "
-Index: linux-2.6.22/arch/um/os-Linux/time.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/time.c	2007-08-30 21:27:32.000000000 +0100
-+++ linux-2.6.22/arch/um/os-Linux/time.c	2007-09-02 19:01:28.000000000 +0100
-@@ -8,14 +8,13 @@
- #include <signal.h>
- #include <time.h>
- #include <sys/time.h>
--#include "kern_util.h"
- #include "kern_constants.h"
- #include "os.h"
- #include "user.h"
- 
- int set_interval(int is_virtual)
- {
--	int usec = 1000000/hz();
-+	int usec = 1000000/UM_HZ;
- 	int timer_type = is_virtual ? ITIMER_VIRTUAL : ITIMER_REAL;
- 	struct itimerval interval = ((struct itimerval) { { 0, usec },
- 							  { 0, usec } });
-@@ -43,8 +42,8 @@ void disable_timer(void)
- void switch_timers(int to_real)
- {
- 	struct itimerval disable = ((struct itimerval) { { 0, 0 }, { 0, 0 }});
--	struct itimerval enable = ((struct itimerval) { { 0, 1000000/hz() },
--							{ 0, 1000000/hz() }});
-+	struct itimerval enable = ((struct itimerval) { { 0, 1000000/UM_HZ },
-+							{ 0, 1000000/UM_HZ }});
- 	int old, new;
- 
- 	if (to_real) {
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
