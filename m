@@ -1,23 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IVWBQ-00056K-IT for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Sep 2007 10:39:24 -0700
-Received: from ug-out-1314.google.com ([66.249.92.171])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IVWBP-0000lE-Fa
+	id 1IVYr3-00060X-S3 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Sep 2007 13:30:34 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IVYr2-0000uf-BT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Sep 2007 10:39:24 -0700
-Received: by ug-out-1314.google.com with SMTP id m2so275987uge
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 12 Sep 2007 10:39:21 -0700 (PDT)
-Message-ID: <46E82417.8020501@googlemail.com>
-Date: Wed, 12 Sep 2007 19:38:31 +0200
-MIME-Version: 1.0
-References: <46E81AC6.3000306@googlemail.com> <1189617555.4513.3.camel@chaos>
-In-Reply-To: <1189617555.4513.3.camel@chaos>
-From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Subject: Re: [uml-devel] [1/4] 2.6.23-rc6: known regressions
+	Wed, 12 Sep 2007 13:30:33 -0700
+Date: Wed, 12 Sep 2007 16:30:02 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070912203002.GA9725@c2.user-mode-linux.org>
+References: <46DDAD83.4030004@cttc.es>
+	<20070904214521.GB5417@c2.user-mode-linux.org>
+	<46DE8F70.4070404@cttc.es>
+	<20070910160238.GC14112@c2.user-mode-linux.org>
+	<46E71F58.6050301@cttc.es> <46E85FA0.9040405@cttc.es>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <46E85FA0.9040405@cttc.es>
+Subject: Re: [uml-devel] [uml-user] Hanging using 'iptables -L' in UML vm
+	booted with con0=pts
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,58 +31,44 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jakub Jelinek <jakub@redhat.com>, Len Brown <len.brown@intel.com>, "Adrian Bunk \"\"" <bunk@kernel.org>, Michal Piotrowski <michal.k.k.piotrowski@gmail.com>, Jeff Chua <jeff.chua.linux@gmail.com>, Stefan Becker <Stefan.Becker@nokia.com>, LKML <linux-kernel@vger.kernel.org>, Andi Kleen <ak@suse.de>, Markus <lists4me@web.de>, Pavel Machek <pavel@ucw.cz>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Dave Jones <davej@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Jeff Dike <jdike@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, "Antonino A. Daplas" <adaplas@gmail.com>
+To: =?iso-8859-1?Q?Ferm=EDn_Gal=E1n_M=E1rquez?= <fermin.galan@cttc.es>
+Cc: UML-user <user-mode-linux-devel@lists.sourceforge.net>
 
-Thomas Gleixner pisze:
-> On Wed, 2007-09-12 at 18:58 +0200, Michal Piotrowski wrote: 
->> Subject         : x86_64 vdso patch is broken somehow?
->> References      : http://lkml.org/lkml/2007/8/29/136
->> Last known good : ?
->> Submitter       : Chuck Ebbert <cebbert@redhat.com>
->> Caused-By       : Andi Kleen <ak@suse.de>
->>                   commit 2aae950b21e4bc789d1fc6668faf67e8748300b7
->> Handled-By      : ?
->> Status          : unknown
-> 
-> Patch available:
-> http://lkml.org/lkml/2007/9/11/161
+On Wed, Sep 12, 2007 at 11:52:32PM +0200, Ferm=EDn Gal=E1n M=E1rquez wrote:
+> This is the trace (as you can see I're repeated the experiment twice, =
 
-It is already fixed ;)
+> the result is basically the same), hoping it could be useful to diagnose =
 
-> 
->> Subject         : cpu hotplug support broken in 2.6.23-rc3/highres timers break cpu hotplug in 2.6.23-rc5
->> References      : http://lkml.org/lkml/2007/8/27/58
->>                   http://lkml.org/lkml/2007/9/3/65
->> Last known good : ?
->> Submitter       : Pavel Machek <pavel@ucw.cz>
->> Caused-By       : ?
->> Handled-By      : ?
->> Status          : problem is being debugged
-> 
-> This might be the same problem as the jinxed VAIO suspend/resume thingy,
-> which is a regression as well.
-> 
-> Please assign the Handled-By to me.
+> the problem and fix eventual bugs in the UML kernel. See below regarding =
 
-Ok.
+> the test procedure.
+> =
 
-> 
-> Thanks,
-> 
-> 	tglx
-> 
+> (gdb) bt
+> #0  0xb7f9d7f2 in ?? () from /lib/ld-linux.so.2
+> #1  0xb7f19ab0 in tcsetattr () from /lib/i686/cmov/libc.so.6
+> #2  0x080610d5 in generic_console_write (fd=3D7,
+>     buf=3D0x828fc13 "ip_tables: (C) 2000-2006 Netfilter Core Team\n", n=
+=3D45)
+>     at arch/um/drivers/chan_user.c:37
+> #3  0x0806096e in console_write_chan (chans=3D0x82756f0,
+>     buf=3D0x828fc13 "ip_tables: (C) 2000-2006 Netfilter Core Team\n", len=
+=3D45)
+>     at arch/um/drivers/chan_kern.c:352
 
-Regards,
-Michal
+Are you capturing UML output with a script or something?  This is the
+signature of the script not reading from the pty, so everything just
+backs up, waiting for the pty to clear up.
 
--- 
-LOG
-http://www.stardust.webpages.pl/log/
+				Jeff
+
+-- =
+
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
