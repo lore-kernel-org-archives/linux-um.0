@@ -2,19 +2,26 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IVZaS-0002At-2I for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Sep 2007 14:17:28 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1IVbBs-0003dL-Ih for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Sep 2007 16:00:12 -0700
+Received: from scorpius.cttc.es ([84.88.62.197])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IVZaR-0000pO-E8
+	(Exim 4.44) id 1IVbBp-0003OS-PT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Sep 2007 14:17:28 -0700
-Date: Wed, 12 Sep 2007 17:17:18 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070912211718.GA10262@c2.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH 11/11] UML - Use *_PER_* definitions
+	Wed, 12 Sep 2007 16:00:12 -0700
+Message-ID: <46E88B64.7090705@cttc.es>
+Date: Thu, 13 Sep 2007 02:59:16 +0200
+From: =?ISO-8859-1?Q?Ferm=EDn_Gal=E1n_M=E1rquez?= <fermin.galan@cttc.es>
+MIME-Version: 1.0
+References: <46DDAD83.4030004@cttc.es>
+	<20070904214521.GB5417@c2.user-mode-linux.org>
+	<46DE8F70.4070404@cttc.es>
+	<20070910160238.GC14112@c2.user-mode-linux.org>
+	<46E71F58.6050301@cttc.es> <46E85FA0.9040405@cttc.es>
+	<20070912203002.GA9725@c2.user-mode-linux.org>
+In-Reply-To: <20070912203002.GA9725@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] [uml-user] Hanging using 'iptables -L' in UML vm
+	booted with con0=pts
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,143 +31,143 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: UML-user <user-mode-linux-devel@lists.sourceforge.net>
 
-There are various uses of powers of 1000, plus the odd BILLION
-constant in the time code.  However, there are perfectly good definitions of
-*SEC_PER_*SEC in linux/time.h which can be used instaed.
+Dear Jeff,
 
-These are replaced directly in kernel code.  Userspace code imports
-those constants as UM_*SEC_PER_*SEC and uses these.
+Jeff Dike wrote:
+> On Wed, Sep 12, 2007 at 11:52:32PM +0200, Ferm=EDn Gal=E1n M=E1rquez wrot=
+e:
+>> This is the trace (as you can see I're repeated the experiment twice, =
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
---
- arch/um/include/common-offsets.h |    4 ++++
- arch/um/include/os.h             |    2 --
- arch/um/kernel/time.c            |    9 +++++----
- arch/um/os-Linux/skas/process.c  |    2 +-
- arch/um/os-Linux/time.c          |   16 ++++++++--------
- 5 files changed, 18 insertions(+), 15 deletions(-)
+>> the result is basically the same), hoping it could be useful to diagnose =
 
-Index: linux-2.6.22/arch/um/kernel/time.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/time.c	2007-09-12 15:47:42.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/time.c	2007-09-12 15:51:25.000000000 -0400
-@@ -17,7 +17,7 @@
-  */
- unsigned long long sched_clock(void)
- {
--	return (unsigned long long)jiffies_64 * (1000000000 / HZ);
-+	return (unsigned long long)jiffies_64 * (NSEC_PER_SEC / HZ);
- }
- 
- void timer_handler(int sig, struct uml_pt_regs *regs)
-@@ -119,8 +119,9 @@ void __init time_init(void)
- 	long long nsecs;
- 
- 	nsecs = os_nsecs();
--	set_normalized_timespec(&wall_to_monotonic, -nsecs / BILLION,
--				-nsecs % BILLION);
--	set_normalized_timespec(&xtime, nsecs / BILLION, nsecs % BILLION);
-+	set_normalized_timespec(&wall_to_monotonic, -nsecs / NSEC_PER_SEC,
-+				-nsecs % NSEC_PER_SEC);
-+	set_normalized_timespec(&xtime, nsecs / NSEC_PER_SEC,
-+				nsecs % NSEC_PER_SEC);
- 	late_time_init = setup_itimer;
- }
-Index: linux-2.6.22/arch/um/os-Linux/time.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/time.c	2007-09-12 15:41:43.000000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/time.c	2007-09-12 15:52:19.000000000 -0400
-@@ -14,7 +14,7 @@
- 
- int set_interval(void)
- {
--	int usec = 1000000/UM_HZ;
-+	int usec = UM_USEC_PER_SEC / UM_HZ;
- 	struct itimerval interval = ((struct itimerval) { { 0, usec },
- 							  { 0, usec } });
- 
-@@ -26,11 +26,11 @@ int set_interval(void)
- 
- int timer_one_shot(int ticks)
- {
--	unsigned long usec = ticks * 1000000 / UM_HZ;
--	unsigned long sec = usec / 1000000;
-+	unsigned long usec = ticks * UM_USEC_PER_SEC / UM_HZ;
-+	unsigned long sec = usec / UM_USEC_PER_SEC;
- 	struct itimerval interval;
- 
--	usec %= 1000000;
-+	usec %= UM_USEC_PER_SEC;
- 	interval = ((struct itimerval) { { 0, 0 }, { sec, usec } });
- 
- 	if (setitimer(ITIMER_VIRTUAL, &interval, NULL) == -1)
-@@ -47,8 +47,8 @@ static inline unsigned long long tv_to_n
- 	 * return.
- 	 */
- 
--	return ((unsigned long long) tv->tv_sec) * BILLION +
--		tv->tv_usec * 1000;
-+	return ((unsigned long long) tv->tv_sec) * UM_NSEC_PER_SEC +
-+		tv->tv_usec * UM_NSEC_PER_SEC;
- }
- 
- unsigned long long disable_timer(void)
-@@ -74,8 +74,8 @@ extern void alarm_handler(int sig, struc
- 
- void idle_sleep(unsigned long long nsecs)
- {
--	struct timespec ts = { .tv_sec	= nsecs / BILLION,
--			       .tv_nsec = nsecs % BILLION };
-+	struct timespec ts = { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
-+			       .tv_nsec = nsecs % UM_NSEC_PER_SEC };
- 
- 	if (nanosleep(&ts, &ts) == 0)
- 		alarm_handler(SIGVTALRM, NULL);
-Index: linux-2.6.22/arch/um/os-Linux/skas/process.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/skas/process.c	2007-09-12 15:47:42.000000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/skas/process.c	2007-09-12 15:52:57.000000000 -0400
-@@ -378,7 +378,7 @@ __initcall(init_thread_regs);
- 
- int copy_context_skas0(unsigned long new_stack, int pid)
- {
--	struct timeval tv = { .tv_sec = 0, .tv_usec = 1000000 / UM_HZ };
-+	struct timeval tv = { .tv_sec = 0, .tv_usec = UM_USEC_PER_SEC / UM_HZ };
- 	int err;
- 	unsigned long current_stack = current_stub_stack();
- 	struct stub_data *data = (struct stub_data *) current_stack;
-Index: linux-2.6.22/arch/um/include/common-offsets.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/common-offsets.h	2007-09-11 13:36:15.000000000 -0400
-+++ linux-2.6.22/arch/um/include/common-offsets.h	2007-09-12 15:51:25.000000000 -0400
-@@ -34,3 +34,7 @@ DEFINE(crypto_tfm_ctx_offset, offsetof(s
- DEFINE(UM_THREAD_SIZE, THREAD_SIZE);
- 
- DEFINE(UM_HZ, HZ);
-+
-+DEFINE(UM_USEC_PER_SEC, USEC_PER_SEC);
-+DEFINE(UM_NSEC_PER_SEC, NSEC_PER_SEC);
-+DEFINE(UM_NSEC_PER_USEC, NSEC_PER_USEC);
-Index: linux-2.6.22/arch/um/include/os.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/os.h	2007-09-12 15:41:04.000000000 -0400
-+++ linux-2.6.22/arch/um/include/os.h	2007-09-12 15:51:25.000000000 -0400
-@@ -250,8 +250,6 @@ extern void os_dump_core(void);
- extern void os_log_info(char *fmt, va_list ap);
- 
- /* time.c */
--#define BILLION (1000 * 1000 * 1000)
--
- extern void idle_sleep(unsigned long long nsecs);
- extern int set_interval(void);
- extern int timer_one_shot(int ticks);
+>> the problem and fix eventual bugs in the UML kernel. See below regarding =
+
+>> the test procedure.
+>>
+>> (gdb) bt
+>> #0  0xb7f9d7f2 in ?? () from /lib/ld-linux.so.2
+>> #1  0xb7f19ab0 in tcsetattr () from /lib/i686/cmov/libc.so.6
+>> #2  0x080610d5 in generic_console_write (fd=3D7,
+>>     buf=3D0x828fc13 "ip_tables: (C) 2000-2006 Netfilter Core Team\n", n=
+=3D45)
+>>     at arch/um/drivers/chan_user.c:37
+>> #3  0x0806096e in console_write_chan (chans=3D0x82756f0,
+>>     buf=3D0x828fc13 "ip_tables: (C) 2000-2006 Netfilter Core Team\n", le=
+n=3D45)
+>>     at arch/um/drivers/chan_kern.c:352
+> =
+
+> Are you capturing UML output with a script or something?  This is the
+> signature of the script not reading from the pty, so everything just
+> backs up, waiting for the pty to clear up.
+
+AFAIK, no script is capturing (I understand you refers to the output of =
+
+the UML linux executable) and, as a matter of fact, I'm getting some =
+
+output when execute ./linux. To be precise, this is the exact command =
+
+(and the output) I get:
+
+cibeles:/tmp# ./linux ubd0=3D/tmp/root_fs_debug con=3Dnull con0=3Dpts =
+
+uml_dir=3D/tmp umid=3Drun
+Core dump limits :
+         soft - 0
+         hard - NONE
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+Checking for tmpfs mount on /dev/shm...OK
+Checking PROT_EXEC mmap in /dev/shm/...OK
+Checking for the skas3 patch in the host:
+   - /proc/mm...not found: No such file or directory
+   - PTRACE_FAULTINFO...not found
+   - PTRACE_LDT...not found
+UML running in SKAS0 mode
+[no more output, no new prompt]
+
+Then, in a second terminal in the host, I get the pts device and open a =
+
+screen in the vm:
+
+cibeles:/tmp# uml_mconsole run/mconsole config con0
+Warning: couldn't stat file: /root/.uml/run/mconsole/mconsole - No such =
+
+file or directory
+Warning: couldn't stat file: /tmp/uml/run/mconsole/mconsole - No such =
+
+file or directory
+OK pts:/dev/pts/1
+cibeles:/tmp# screen /dev/pts/1
+[the terminal "goes into" the vm. I use it to cause the fail, as seen below]
+Debian GNU/Linux lenny/sid vm tty0
+
+vm login: root
+Password:
+Last login: Wed Sep 12 23:32:36 2007 on tty0
+Linux vm 2.6.22.4-xt-2m #1 Wed Sep 12 20:24:20 CEST 2007 i686
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+vm:~# iptables -L
+[no output, linux process reach 100% CPU usage in the host]
+
+In a third host terminal I run gdb:
+
+cibeles:/tmp# cat run/pid
+6627
+cibeles:/tmp# gdb ./linux 6627
+
+GNU gdb 6.4.90-debian
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain =
+
+conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i486-linux-gnu"...Using host libthread_db =
+
+library "/lib/i686/cmov/libthread_db.so.1".
+
+Attaching to program: /tmp/linux, process 6627
+Reading symbols from /lib/i686/cmov/libutil.so.1...done.
+Loaded symbols for /lib/i686/cmov/libutil.so.1
+Reading symbols from /lib/i686/cmov/libc.so.6...done.
+Loaded symbols for /lib/i686/cmov/libc.so.6
+Reading symbols from /lib/ld-linux.so.2...done.
+Loaded symbols for /lib/ld-linux.so.2
+0xb7f947f2 in ?? () from /lib/ld-linux.so.2
+(gdb) bt
+[showing the trace I've already sent in the other mail]
+
+Maybe there are "other outputs" apart of the output that the ./linux =
+
+produces which could be causing the problem?
+
+Best regards,
+
+--------------------
+Ferm=EDn Gal=E1n M=E1rquez
+CTTC - Centre Tecnol=F2gic de Telecomunicacions de Catalunya
+Parc Mediterrani de la Tecnologia, Av. del Canal Ol=EDmpic s/n, 08860
+Castelldefels, Spain
+Room 1.02
+Tel : +34 93 645 29 12
+Fax : +34 93 645 29 01
+Email address: fermin dot galan at cttc dot es
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
