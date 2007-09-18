@@ -2,25 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IXeeq-0001Ef-0u for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Sep 2007 08:06:36 -0700
-Received: from hu-out-0506.google.com ([72.14.214.231])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IXeen-0006nv-6N
+	id 1IXmZf-0007kJ-Hr for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 18 Sep 2007 16:33:47 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IXmZe-0001tu-VT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Sep 2007 08:06:35 -0700
-Received: by hu-out-0506.google.com with SMTP id 28so849559hub
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 18 Sep 2007 08:06:27 -0700 (PDT)
-From: Paolo Giarrusso <p.giarrusso@gmail.com>
-Date: Tue, 18 Sep 2007 17:06:18 +0200
-References: <46DDAD83.4030004@cttc.es>
-	<200709131909.01286.blaisorblade@yahoo.it>
-	<46E9A824.3010808@cttc.es>
-In-Reply-To: <46E9A824.3010808@cttc.es>
-MIME-Version: 1.0
-Message-Id: <200709181706.22905.p.giarrusso@gmail.com>
-Subject: Re: [uml-devel] (Workarounded) Hanging using 'iptables -L' in UML
-	vm booted with con0=pts
+	Tue, 18 Sep 2007 16:33:47 -0700
+Date: Tue, 18 Sep 2007 19:33:36 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070918233336.GA9746@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH] UML - Fix irqstack crash
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,142 +24,120 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1342548314=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: David =?utf-8?q?Fern=C3=A1ndez?= <david@dit.upm.es>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
---===============1342548314==
-Content-Type: multipart/signed; boundary="nextPart7005074.tcL2Thid2Y";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+This patch fixes a crash caused by an interrupt coming in when an IRQ
+stack is being torn down.  When this happens, handle_signal will loop,
+setting up the IRQ stack again because the tearing down had finished,
+and handling whatever signals had come in.
 
---nextPart7005074.tcL2Thid2Y
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+However, to_irq_stack returns a mask of pending signals to be handled,
+plus bit zero is set if the IRQ stack was already active, and thus
+shouldn't be torn down.  This causes a problem because when
+handle_signal goes around the loop, sig will be zero, and to_irq_stack
+will duly set bit zero in the returned mask, faking handle_signal into
+believing that it shouldn't tear down the IRQ stack and return
+thread_info pointers back to their original values.
 
-On gioved=EC 13 settembre 2007, Ferm=EDn Gal=E1n M=E1rquez wrote:
-> Hi,
->
-> After some more debugging I think I've solved the problem (at least :)
-> An explanation follows.
->
-> First, although apparently it seemed that the modules causing the
-> problem were the ones related with networking (as David Fern=E1ndez said
-> in his mail) that assumption was wrong. In fact, the modules causing the
-> problem are the ones that print some message in the "kernel message
-> buffer" (I don't know what is the right name, but I'm referring to the
-> message log that appears when the dmesg command is used) when modprobe
-> load them. For example, ip_tables prints something like "ip_tables: (C)
-> 2000-2006 Netfilter Core Team".
+This will eventually cause a crash, as the IRQ stack thread_info will
+continue pointing to the original task_struct and an interrupt will
+look into it after it has been freed.
 
-> The solution to the problem is using con1 instead of con0, I mean:
->
-> ./linux ubd0=3D/tmp/root_fs_debug con=3Dnull con1=3Dpts uml_dir=3D/tmp um=
-id=3Drun
->
-> instead of
->
-> ./linux ubd0=3D/tmp/root_fs_debug con=3Dnull con1=3Dpts uml_dir=3D/tmp um=
-id=3Drun
+The fix is to stop passing a signal number into to_irq_stack.  Rather,
+the pending signals mask is initialized beforehand with the bit for
+sig already set.  References to sig in to_irq_stack can be replaced
+with references to the mask.
 
-This was con0=3Dpts, I checked your other mail. Right?
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/include/kern_util.h |    2 +-
+ arch/um/kernel/irq.c        |    7 ++++---
+ arch/um/os-Linux/signal.c   |    4 ++--
+ 3 files changed, 7 insertions(+), 6 deletions(-)
 
-> In that case you can 'iptables -L' works without problems.
-
-> Why? When the module is loaded it prints its message not only in the
-> internal kernel message buffer but also in con0 (this can be checked
-> running simply "./linux ubd0=3D/tmp/root_fs_debug", without con=3D
-> redirectors). When con0 is redirected to null (con0=3Dnull) there is no
-> problem, but if con0 is redirected to a pts (con0=3Dpts) I guess that, in
-> the moment of printing the message, some problem occurs with the output
-> (as Jeff suggest in its mail) thus causing the vm hang.
-
-> This explains also why putting the module in /etc/modules works. The
-> loading of the list of modules in /etc/modules is performed before UML
-> assign virtual console to pts devices (the sequence can be checked
-> observing the booting log).
-
-> I think that my solution is more a workaround that a definitive
-> solution. Why when con0 is assigned to a pts modules can not (because of
-> it hangs the vm) print its message but when it is assigned to null it
-> works? Is there a bug in the UML kernel that need to be fixed? Or maybe
-> the bug is in modprobe? I leave the question open for the experts in the
-> UML internals... :)
-The problem does not lie in modprobe nor iptables - it is the behaviour of =
-the=20
-system console wrt. the pts driver.
-
-The only really strange thing is the 100% cpu usage - like if the operation=
-=20
-were retried in a loop. And, well, there is a loop there - CATCH_EINTR (whi=
-ch=20
-I added)!
-
-Now, what's unexpected is getting EINTR on that operation. That's really=20
-strange. However, I'll leave debugging to Jeff. If he cannot reproduce the=
-=20
-problem he'll ask you more, I guess.
-
-> Regarding the tests suggested by Paolo:
-> > Please try logging in via SSH and reproducing the problem and the
-> > stacktrace, and also removing con=3Dnull - also have you double checked
-> > con=3Dnull is ok (maybe it was con=3Dnone, I'm not sure). I'm not sure =
-screen
-> > is perfectly safe to use (it should be).
->
-> Do you really need that I perform these test or considers the report
-> above is enough? If it's really needed I can do them, but it would take
-> me some time (and maybe now it isn't a good idea because of they won't
-> provide additional useful information :)
-
-No, I just needed a proof that the problem was indeed with the output on a=
-=20
-pts.
-
-Thank you for you help
-=2D-=20
-"Doh!" (cit.), I've made another mistake!
-Paolo Giarrusso, aka Blaisorblade
-
---nextPart7005074.tcL2Thid2Y
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBG7+luqH9OHC+5NscRAg07AJoCBbhO4wdP2v1NuHlXSuIbAiBCjACfWiUL
-F8eNSQWqbQ41rdrfycY5thU=
-=IdG3
------END PGP SIGNATURE-----
-
---nextPart7005074.tcL2Thid2Y--
-
-
---===============1342548314==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Index: linux-2.6.17/arch/um/include/kern_util.h
+===================================================================
+--- linux-2.6.17.orig/arch/um/include/kern_util.h	2007-09-11 10:12:26.000000000 -0400
++++ linux-2.6.17/arch/um/include/kern_util.h	2007-09-18 12:31:28.000000000 -0400
+@@ -117,7 +117,7 @@ extern void sigio_handler(int sig, union
+ 
+ extern void copy_sc(union uml_pt_regs *regs, void *from);
+ 
+-unsigned long to_irq_stack(int sig, unsigned long *mask_out);
++extern unsigned long to_irq_stack(unsigned long *mask_out);
+ unsigned long from_irq_stack(int nested);
+ 
+ #endif
+Index: linux-2.6.17/arch/um/kernel/irq.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/kernel/irq.c	2007-09-11 10:14:09.000000000 -0400
++++ linux-2.6.17/arch/um/kernel/irq.c	2007-09-18 12:32:08.000000000 -0400
+@@ -518,13 +518,13 @@ int init_aio_irq(int irq, char *name, ir
+ 
+ static unsigned long pending_mask;
+ 
+-unsigned long to_irq_stack(int sig, unsigned long *mask_out)
++unsigned long to_irq_stack(unsigned long *mask_out)
+ {
+ 	struct thread_info *ti;
+ 	unsigned long mask, old;
+ 	int nested;
+ 
+-	mask = xchg(&pending_mask, 1 << sig);
++	mask = xchg(&pending_mask, *mask_out);
+ 	if(mask != 0){
+ 		/* If any interrupts come in at this point, we want to
+ 		 * make sure that their bits aren't lost by our
+@@ -534,7 +534,7 @@ unsigned long to_irq_stack(int sig, unsi
+ 		 * and pending_mask contains a bit for each interrupt
+ 		 * that came in.
+ 		 */
+-		old = 1 << sig;
++		old = *mask_out;
+ 		do {
+ 			old |= mask;
+ 			mask = xchg(&pending_mask, old);
+@@ -550,6 +550,7 @@ unsigned long to_irq_stack(int sig, unsi
+ 
+ 		task = cpu_tasks[ti->cpu].task;
+ 		tti = task_thread_info(task);
++
+ 		*ti = *tti;
+ 		ti->real_thread = tti;
+ 		task->stack = ti;
+Index: linux-2.6.17/arch/um/os-Linux/signal.c
+===================================================================
+--- linux-2.6.17.orig/arch/um/os-Linux/signal.c	2007-09-09 11:15:37.000000000 -0400
++++ linux-2.6.17/arch/um/os-Linux/signal.c	2007-09-18 12:32:40.000000000 -0400
+@@ -119,7 +119,7 @@ void (*handlers[_NSIG])(int sig, struct 
+ 
+ void handle_signal(int sig, struct sigcontext *sc)
+ {
+-	unsigned long pending = 0;
++	unsigned long pending = 1 << sig;
+ 
+ 	do {
+ 		int nested, bail;
+@@ -134,7 +134,7 @@ void handle_signal(int sig, struct sigco
+ 		 * have to return, and the upper handler will deal
+ 		 * with this interrupt.
+ 		 */
+-		bail = to_irq_stack(sig, &pending);
++		bail = to_irq_stack(&pending);
+ 		if(bail)
+ 			return;
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
 Defy all challenges. Microsoft(R) Visual Studio 2005.
 http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
---===============1342548314==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============1342548314==--
-
