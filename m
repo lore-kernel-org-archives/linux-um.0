@@ -1,20 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IY2wd-0006PW-Fw for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Sep 2007 10:02:35 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1IY5VK-0006wA-3s for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Sep 2007 12:46:34 -0700
+Received: from scorpius.cttc.es ([84.88.62.197])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IY2wY-0006uB-Nj
+	(Exim 4.44) id 1IY5VC-0006SV-5u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Sep 2007 10:02:34 -0700
-Date: Wed, 19 Sep 2007 13:02:24 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070919170224.GA10181@c2.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH 5/11] UML - GENERIC_TIME support
+	Wed, 19 Sep 2007 12:46:28 -0700
+Message-ID: <46F17B9D.7010404@cttc.es>
+Date: Wed, 19 Sep 2007 21:42:21 +0200
+From: =?ISO-8859-1?Q?Ferm=EDn_Gal=E1n_M=E1rquez?= <fermin.galan@cttc.es>
+MIME-Version: 1.0
+References: <46DDAD83.4030004@cttc.es>
+	<200709131909.01286.blaisorblade@yahoo.it>
+	<46E9A824.3010808@cttc.es>
+	<200709181706.22905.p.giarrusso@gmail.com>
+In-Reply-To: <200709181706.22905.p.giarrusso@gmail.com>
+Subject: Re: [uml-devel] (Workarounded) Hanging using 'iptables -L' in UML
+	vm booted with con0=pts
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,114 +29,41 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Paolo Giarrusso <p.giarrusso@gmail.com>
+Cc: =?ISO-8859-1?Q?David_?=@sc8-sf-spam2-b.sourceforge.net, =?ISO-8859-1?Q?Fern=E1ndez?= <david@dit.upm.es>, user-mode-linux-devel@lists.sourceforge.net
 
-Enable CONFIG_GENERIC_TIME.
+Dear Paolo,
 
-As a side-effect of this, the UML implementations of do_gettimeofday
-and do_settimeofday go away, as these are provided by generic code.
-set_time also goes away since it was only used by do_settimeofday.
+>> The solution to the problem is using con1 instead of con0, I mean:
+>>
+>> ./linux ubd0=3D/tmp/root_fs_debug con=3Dnull con1=3Dpts uml_dir=3D/tmp u=
+mid=3Drun
+>>
+>> instead of
+>>
+>> ./linux ubd0=3D/tmp/root_fs_debug con=3Dnull con1=3Dpts uml_dir=3D/tmp u=
+mid=3Drun
+> =
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
----
- arch/um/Kconfig        |    5 +++++
- arch/um/kernel/ksyms.c |    3 ---
- arch/um/kernel/time.c  |   40 ----------------------------------------
- 3 files changed, 5 insertions(+), 43 deletions(-)
+> This was con0=3Dpts, I checked your other mail. Right?
 
-Index: linux-2.6.20/arch/um/Kconfig
-===================================================================
---- linux-2.6.20.orig/arch/um/Kconfig	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/Kconfig	2007-09-19 12:25:06.000000000 -0400
-@@ -55,6 +55,10 @@ config GENERIC_BUG
- 	default y
- 	depends on BUG
- 
-+config GENERIC_TIME
-+	bool
-+	default y
-+
- # Used in kernel/irq/manage.c and include/linux/irq.h
- config IRQ_RELEASE_METHOD
- 	bool
-@@ -75,6 +79,7 @@ config STATIC_LINK
- 
- source "arch/um/Kconfig.arch"
- source "mm/Kconfig"
-+source "kernel/time/Kconfig"
- 
- config LD_SCRIPT_STATIC
- 	bool
-Index: linux-2.6.20/arch/um/kernel/ksyms.c
-===================================================================
---- linux-2.6.20.orig/arch/um/kernel/ksyms.c	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/kernel/ksyms.c	2007-09-19 12:25:06.000000000 -0400
-@@ -67,9 +67,6 @@ EXPORT_SYMBOL(run_helper);
- EXPORT_SYMBOL(start_thread);
- EXPORT_SYMBOL(dump_thread);
- 
--EXPORT_SYMBOL(do_gettimeofday);
--EXPORT_SYMBOL(do_settimeofday);
--
- #ifdef CONFIG_SMP
- 
- /* required for SMP */
-Index: linux-2.6.20/arch/um/kernel/time.c
-===================================================================
---- linux-2.6.20.orig/arch/um/kernel/time.c	2007-09-19 12:25:06.000000000 -0400
-+++ linux-2.6.20/arch/um/kernel/time.c	2007-09-19 12:25:06.000000000 -0400
-@@ -123,46 +123,6 @@ void time_init(void)
- 	late_time_init = register_timer;
- }
- 
--void do_gettimeofday(struct timeval *tv)
--{
--#ifdef CONFIG_UML_REAL_TIME_CLOCK
--	unsigned long long nsecs = get_time();
--#else
--	unsigned long long nsecs = (unsigned long long) xtime.tv_sec * BILLION +
--		xtime.tv_nsec;
--#endif
--	tv->tv_sec = nsecs / NSEC_PER_SEC;
--	/*
--	 * Careful about calculations here - this was originally done as
--	 * (nsecs - tv->tv_sec * NSEC_PER_SEC) / NSEC_PER_USEC
--	 * which gave bogus (> 1000000) values.  Dunno why, suspect gcc
--	 * (4.0.0) miscompiled it, or there's a subtle 64/32-bit conversion
--	 * problem that I missed.
--	 */
--	nsecs -= tv->tv_sec * NSEC_PER_SEC;
--	tv->tv_usec = (unsigned long) nsecs / NSEC_PER_USEC;
--}
--
--static inline void set_time(unsigned long long nsecs)
--{
--	unsigned long long now;
--	unsigned long flags;
--
--	spin_lock_irqsave(&timer_spinlock, flags);
--	now = os_nsecs();
--	local_offset = nsecs - now;
--	spin_unlock_irqrestore(&timer_spinlock, flags);
--
--	clock_was_set();
--}
--
--int do_settimeofday(struct timespec *tv)
--{
--	set_time((unsigned long long) tv->tv_sec * NSEC_PER_SEC + tv->tv_nsec);
--
--	return 0;
--}
--
- void timer_handler(int sig, struct uml_pt_regs *regs)
- {
- 	if (current_thread->cpu == 0)
+Absolutely :)
+
+Best regards,
+
+--------------------
+Ferm=EDn Gal=E1n M=E1rquez
+CTTC - Centre Tecnol=F2gic de Telecomunicacions de Catalunya
+Parc Mediterrani de la Tecnologia, Av. del Canal Ol=EDmpic s/n, 08860
+Castelldefels, Spain
+Room 1.02
+Tel : +34 93 645 29 12
+Fax : +34 93 645 29 01
+Email address: fermin dot galan at cttc dot es
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
