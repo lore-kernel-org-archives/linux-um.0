@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IXn6Z-0002WX-D9 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Sep 2007 17:07:50 -0700
-Received: from smtp2.linux-foundation.org ([207.189.120.14])
+	id 1IXoPX-0002CP-V2 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 18 Sep 2007 18:31:28 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IXn6Y-0005xa-0r
+	(Exim 4.44) id 1IXoPX-0006y6-44
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Sep 2007 17:07:47 -0700
-Date: Tue, 18 Sep 2007 17:07:33 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20070918170733.c6399124.akpm@linux-foundation.org>
-In-Reply-To: <20070918233336.GA9746@c2.user-mode-linux.org>
-References: <20070918233336.GA9746@c2.user-mode-linux.org>
+	Tue, 18 Sep 2007 18:31:27 -0700
+Date: Tue, 18 Sep 2007 21:31:22 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20070919013122.GA10817@c2.user-mode-linux.org>
 Mime-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] UML - Fix irqstack crash
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH 0/2] UML - Two x86_64 build fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,23 +28,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, 18 Sep 2007 19:33:36 -0400
-Jeff Dike <jdike@addtoit.com> wrote:
+These two patches fix UML build breakages on x86_64.
 
-> ===================================================================
-> --- linux-2.6.17.orig/arch/um/os-Linux/signal.c	2007-09-09 11:15:37.000000000 -0400
-> +++ linux-2.6.17/arch/um/os-Linux/signal.c	2007-09-18 12:32:40.000000000 -0400
-> @@ -119,7 +119,7 @@ void (*handlers[_NSIG])(int sig, struct 
->  
->  void handle_signal(int sig, struct sigcontext *sc)
->  {
-> -	unsigned long pending = 0;
-> +	unsigned long pending = 1 << sig;
+They are -mm-specific, so don't need to go to mainline until 2.6.24.
 
-You want 1UL there.
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
