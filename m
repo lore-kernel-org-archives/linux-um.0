@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IY2wY-0006Ox-Eq for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Sep 2007 10:02:30 -0700
+	id 1IY2wi-0006Pk-V3 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Sep 2007 10:02:41 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IY2wV-0006sd-Iu
+	(Exim 4.44) id 1IY2wi-0006w6-3K
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Sep 2007 10:02:30 -0700
-Date: Wed, 19 Sep 2007 13:02:25 -0400
+	Wed, 19 Sep 2007 10:02:40 -0700
+Date: Wed, 19 Sep 2007 13:02:29 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070919170225.GA10186@c2.user-mode-linux.org>
+Message-ID: <20070919170229.GA10208@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 6/11] UML - GENERIC_CLOCKEVENTS support
+Subject: [uml-devel] [PATCH 10/11] UML - Eliminate SIGALRM
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,227 +31,207 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Enable CONFIG_GENERIC_CLOCKEVENTS.
+Now that ITIMER_REAL is no longer used, there is no need for any use
+of SIGALRM whatsoever.  This patch removes all mention of it.
 
-timer_irq gets its name changed to timer_handler, and becomes the
-recipient of timer signals.
-
-The clock_event_device is set up to imitate the current ticking clock,
-i.e. CLOCK_EVT_FEAT_ONESHOT is not enabled yet.
-
-disable_timer now doesn't ignore SIGALRM and SIGVTALRM because that
-breaks delay calibration.
+In addition, real_alarm_handler took a signal argument which is now
+always SIGVTALRM.  So, that is gone.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/Kconfig         |    4 +
- arch/um/defconfig       |    3 +
- arch/um/kernel/time.c   |   99 ++++++++++++++++++++++--------------------------
- arch/um/os-Linux/time.c |    4 -
- 4 files changed, 54 insertions(+), 56 deletions(-)
+ arch/um/os-Linux/irq.c          |    2 +-
+ arch/um/os-Linux/main.c         |    2 +-
+ arch/um/os-Linux/process.c      |   10 +++++-----
+ arch/um/os-Linux/signal.c       |   28 +++++++---------------------
+ arch/um/os-Linux/skas/process.c |    4 +---
+ arch/um/os-Linux/skas/trap.c    |    5 ++---
+ arch/um/os-Linux/trap.c         |    1 -
+ 7 files changed, 17 insertions(+), 35 deletions(-)
 
-Index: linux-2.6.20/arch/um/Kconfig
+Index: linux-2.6.20/arch/um/os-Linux/skas/process.c
 ===================================================================
---- linux-2.6.20.orig/arch/um/Kconfig	2007-09-19 12:25:06.000000000 -0400
-+++ linux-2.6.20/arch/um/Kconfig	2007-09-19 12:25:07.000000000 -0400
-@@ -59,6 +59,10 @@ config GENERIC_TIME
- 	bool
- 	default y
+--- linux-2.6.20.orig/arch/um/os-Linux/skas/process.c	2007-09-19 12:25:07.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/skas/process.c	2007-09-19 12:25:08.000000000 -0400
+@@ -222,7 +222,6 @@ static int userspace_tramp(void *stack)
+ 		sigemptyset(&sa.sa_mask);
+ 		sigaddset(&sa.sa_mask, SIGIO);
+ 		sigaddset(&sa.sa_mask, SIGWINCH);
+-		sigaddset(&sa.sa_mask, SIGALRM);
+ 		sigaddset(&sa.sa_mask, SIGVTALRM);
+ 		sigaddset(&sa.sa_mask, SIGUSR1);
+ 		sa.sa_flags = SA_ONSTACK;
+@@ -539,8 +538,7 @@ int start_idle_thread(void *stack, jmp_b
+ 	int n;
  
-+config GENERIC_CLOCKEVENTS
-+	bool
-+	default y
-+
- # Used in kernel/irq/manage.c and include/linux/irq.h
- config IRQ_RELEASE_METHOD
- 	bool
-Index: linux-2.6.20/arch/um/kernel/time.c
+ 	set_handler(SIGWINCH, (__sighandler_t) sig_handler,
+-		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGALRM,
+-		    SIGVTALRM, -1);
++		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGVTALRM, -1);
+ 
+ 	/*
+ 	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
+Index: linux-2.6.20/arch/um/os-Linux/irq.c
 ===================================================================
---- linux-2.6.20.orig/arch/um/kernel/time.c	2007-09-19 12:25:06.000000000 -0400
-+++ linux-2.6.20/arch/um/kernel/time.c	2007-09-19 12:25:07.000000000 -0400
-@@ -3,6 +3,7 @@
-  * Licensed under the GPL
-  */
+--- linux-2.6.20.orig/arch/um/os-Linux/irq.c	2007-09-19 12:25:06.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/irq.c	2007-09-19 12:25:08.000000000 -0400
+@@ -146,6 +146,6 @@ void init_irq_signals(int on_sigstack)
+ 	flags = on_sigstack ? SA_ONSTACK : 0;
  
-+#include "linux/clockchips.h"
- #include "linux/interrupt.h"
- #include "linux/jiffies.h"
- #include "linux/threads.h"
-@@ -24,9 +25,10 @@ static unsigned long long prev_nsecs[NR_
- static long long delta[NR_CPUS];		/* Deviation per interval */
- #endif
+ 	set_handler(SIGIO, (__sighandler_t) sig_handler, flags | SA_RESTART,
+-		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
++		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
+ 	signal(SIGWINCH, SIG_IGN);
+ }
+Index: linux-2.6.20/arch/um/os-Linux/main.c
+===================================================================
+--- linux-2.6.20.orig/arch/um/os-Linux/main.c	2007-09-19 12:24:52.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/main.c	2007-09-19 12:25:08.000000000 -0400
+@@ -161,7 +161,7 @@ int __init main(int argc, char **argv, c
+ 	 * some time) and cause a segfault.
+ 	 */
  
--void timer_irq(struct uml_pt_regs *regs)
-+void timer_handler(int sig, struct uml_pt_regs *regs)
+-	/* stop timers and set SIG*ALRM to be ignored */
++	/* stop timers and set SIGVTALRM to be ignored */
+ 	disable_timer();
+ 
+ 	/* disable SIGIO for the fds and set SIGIO to be ignored */
+Index: linux-2.6.20/arch/um/os-Linux/process.c
+===================================================================
+--- linux-2.6.20.orig/arch/um/os-Linux/process.c	2007-09-19 12:24:52.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/process.c	2007-09-19 12:25:08.000000000 -0400
+@@ -238,15 +238,15 @@ out:
+ void init_new_thread_signals(void)
  {
- 	unsigned long long ticks = 0;
-+	unsigned long flags;
- #ifdef CONFIG_UML_REAL_TIME_CLOCK
- 	int c = cpu();
- 	if (prev_nsecs[c]) {
-@@ -47,89 +49,82 @@ void timer_irq(struct uml_pt_regs *regs)
- #else
- 	ticks = 1;
- #endif
-+
-+	local_irq_save(flags);
- 	while (ticks > 0) {
- 		do_IRQ(TIMER_IRQ, regs);
- 		ticks--;
+ 	set_handler(SIGSEGV, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
++		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
+ 	set_handler(SIGTRAP, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
++		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
+ 	set_handler(SIGFPE, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
++		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
+ 	set_handler(SIGILL, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
++		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
+ 	set_handler(SIGBUS, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGUSR1, SIGIO, SIGWINCH, SIGALRM, SIGVTALRM, -1);
++		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
+ 	signal(SIGHUP, SIG_IGN);
+ 
+ 	init_irq_signals(1);
+Index: linux-2.6.20/arch/um/os-Linux/signal.c
+===================================================================
+--- linux-2.6.20.orig/arch/um/os-Linux/signal.c	2007-09-19 12:25:08.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/signal.c	2007-09-19 12:25:08.000000000 -0400
+@@ -15,8 +15,7 @@
+ #include "user.h"
+ 
+ /*
+- * These are the asynchronous signals.  SIGVTALRM and SIGARLM are handled
+- * together under SIGVTALRM_BIT.  SIGPROF is excluded because we want to
++ * These are the asynchronous signals.  SIGPROF is excluded because we want to
+  * be able to profile all of UML, not just the non-critical sections.  If
+  * profiling is not thread-safe, then that is not my problem.  We can disable
+  * profiling when SMP is enabled in that case.
+@@ -27,9 +26,6 @@
+ #define SIGVTALRM_BIT 1
+ #define SIGVTALRM_MASK (1 << SIGVTALRM_BIT)
+ 
+-#define SIGALRM_BIT 2
+-#define SIGALRM_MASK (1 << SIGALRM_BIT)
+-
+ /*
+  * These are used by both the signal handlers and
+  * block/unblock_signals.  I don't want modifications cached in a
+@@ -55,7 +51,7 @@ void sig_handler(int sig, struct sigcont
+ 	set_signals(enabled);
+ }
+ 
+-static void real_alarm_handler(int sig, struct sigcontext *sc)
++static void real_alarm_handler(struct sigcontext *sc)
+ {
+ 	struct uml_pt_regs regs;
+ 
+@@ -63,7 +59,7 @@ static void real_alarm_handler(int sig, 
+ 		copy_sc(&regs, sc);
+ 	regs.is_user = 0;
+ 	unblock_signals();
+-	timer_handler(sig, &regs);
++	timer_handler(SIGVTALRM, &regs);
+ }
+ 
+ void alarm_handler(int sig, struct sigcontext *sc)
+@@ -72,27 +68,20 @@ void alarm_handler(int sig, struct sigco
+ 
+ 	enabled = signals_enabled;
+ 	if (!signals_enabled) {
+-		if (sig == SIGVTALRM)
+-			pending |= SIGVTALRM_MASK;
+-		else pending |= SIGALRM_MASK;
+-
++		pending |= SIGVTALRM_MASK;
+ 		return;
  	}
-+	local_irq_restore(flags);
+ 
+ 	block_signals();
+ 
+-	real_alarm_handler(sig, sc);
++	real_alarm_handler(sc);
+ 	set_signals(enabled);
  }
  
--/* Protects local_offset */
--static DEFINE_SPINLOCK(timer_spinlock);
--static unsigned long long local_offset = 0;
--
--static inline unsigned long long get_time(void)
-+static void itimer_set_mode(enum clock_event_mode mode,
-+			    struct clock_event_device *evt)
+ void timer_init(void)
  {
--	unsigned long long nsecs;
--	unsigned long flags;
--
--	spin_lock_irqsave(&timer_spinlock, flags);
--	nsecs = os_nsecs();
--	nsecs += local_offset;
--	spin_unlock_irqrestore(&timer_spinlock, flags);
-+	switch(mode) {
-+	case CLOCK_EVT_MODE_PERIODIC:
-+		set_interval();
-+		break;
-+
-+	case CLOCK_EVT_MODE_SHUTDOWN:
-+	case CLOCK_EVT_MODE_UNUSED:
-+		disable_timer();
-+		break;
-+	case CLOCK_EVT_MODE_ONESHOT:
-+		BUG();
-+		break;
- 
--	return nsecs;
-+	case CLOCK_EVT_MODE_RESUME:
-+		break;
-+	}
+ 	set_handler(SIGVTALRM, (__sighandler_t) alarm_handler,
+-		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH,
+-		    SIGALRM, -1);
+-	set_handler(SIGALRM, (__sighandler_t) alarm_handler,
+-		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH,
+-		    SIGALRM, -1);
++		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH, -1);
  }
  
--irqreturn_t um_timer(int irq, void *dev)
--{
--	unsigned long long nsecs;
--	unsigned long flags;
--
--	write_seqlock_irqsave(&xtime_lock, flags);
-+static struct clock_event_device itimer_clockevent = {
-+	.name		= "itimer",
-+	.rating		= 250,
-+	.cpumask	= CPU_MASK_ALL,
-+	.features	= CLOCK_EVT_FEAT_PERIODIC,
-+	.set_mode	= itimer_set_mode,
-+	.set_next_event = NULL,
-+	.shift		= 32,
-+	.irq		= 0,
-+};
+ void set_sigstack(void *sig_stack, int size)
+@@ -267,11 +256,8 @@ void unblock_signals(void)
+ 		if (save_pending & SIGIO_MASK)
+ 			sig_handler_common_skas(SIGIO, NULL);
  
--	do_timer(1);
+-		if (save_pending & SIGALRM_MASK)
+-			real_alarm_handler(SIGALRM, NULL);
 -
--#ifdef CONFIG_UML_REAL_TIME_CLOCK
--	nsecs = get_time();
--#else
--	nsecs = (unsigned long long) xtime.tv_sec * BILLION + xtime.tv_nsec +
--		BILLION / HZ;
--#endif
--	xtime.tv_sec = nsecs / NSEC_PER_SEC;
--	xtime.tv_nsec = nsecs - xtime.tv_sec * NSEC_PER_SEC;
--
--	write_sequnlock_irqrestore(&xtime_lock, flags);
-+static irqreturn_t um_timer(int irq, void *dev)
-+{
-+	(*itimer_clockevent.event_handler)(&itimer_clockevent);
- 
- 	return IRQ_HANDLED;
+ 		if (save_pending & SIGVTALRM_MASK)
+-			real_alarm_handler(SIGVTALRM, NULL);
++			real_alarm_handler(NULL);
+ 	}
  }
  
--static void register_timer(void)
-+static void __init setup_itimer(void)
- {
- 	int err;
- 
--	timer_init();
--
- 	err = request_irq(TIMER_IRQ, um_timer, IRQF_DISABLED, "timer", NULL);
- 	if (err != 0)
- 		printk(KERN_ERR "register_timer : request_irq failed - "
- 		       "errno = %d\n", -err);
- 
--	err = set_interval();
--	if (err != 0)
--		printk(KERN_ERR "register_timer : set_interval failed - "
--		       "errno = %d\n", -err);
-+	itimer_clockevent.mult = div_sc(HZ, NSEC_PER_SEC, 32);
-+	itimer_clockevent.max_delta_ns =
-+		clockevent_delta2ns(60 * HZ, &itimer_clockevent);
-+	itimer_clockevent.min_delta_ns =
-+		clockevent_delta2ns(1, &itimer_clockevent);
-+	clockevents_register_device(&itimer_clockevent);
- }
- 
- extern void (*late_time_init)(void);
- 
--void time_init(void)
-+void __init time_init(void)
- {
- 	long long nsecs;
- 
-+	timer_init();
-+
- 	nsecs = os_nsecs();
- 	set_normalized_timespec(&wall_to_monotonic, -nsecs / BILLION,
- 				-nsecs % BILLION);
- 	set_normalized_timespec(&xtime, nsecs / BILLION, nsecs % BILLION);
--	late_time_init = register_timer;
--}
--
--void timer_handler(int sig, struct uml_pt_regs *regs)
--{
--	if (current_thread->cpu == 0)
--		timer_irq(regs);
--	local_irq_disable();
--	irq_enter();
--	update_process_times(regs->is_user);
--	irq_exit();
--	local_irq_enable();
-+	late_time_init = setup_itimer;
- }
-Index: linux-2.6.20/arch/um/defconfig
+Index: linux-2.6.20/arch/um/os-Linux/skas/trap.c
 ===================================================================
---- linux-2.6.20.orig/arch/um/defconfig	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/defconfig	2007-09-19 12:25:07.000000000 -0400
-@@ -73,6 +73,9 @@ CONFIG_FLATMEM=y
- CONFIG_FLAT_NODE_MEM_MAP=y
- # CONFIG_SPARSEMEM_STATIC is not set
- CONFIG_SPLIT_PTLOCK_CPUS=4
-+# CONFIG_TICK_ONESHOT is not set
-+# CONFIG_NO_HZ is not set
-+CONFIG_HIGH_RES_TIMERS=y
- CONFIG_LD_SCRIPT_DYN=y
- CONFIG_NET=y
- CONFIG_BINFMT_ELF=y
-Index: linux-2.6.20/arch/um/os-Linux/time.c
-===================================================================
---- linux-2.6.20.orig/arch/um/os-Linux/time.c	2007-09-19 12:25:05.000000000 -0400
-+++ linux-2.6.20/arch/um/os-Linux/time.c	2007-09-19 12:25:07.000000000 -0400
-@@ -34,10 +34,6 @@ void disable_timer(void)
- 	    (setitimer(ITIMER_REAL, &disable, NULL) < 0))
- 		printk(UM_KERN_ERR "disable_timer - setitimer failed, "
- 		       "errno = %d\n", errno);
--
--	/* If there are signals already queued, after unblocking ignore them */
--	signal(SIGALRM, SIG_IGN);
--	signal(SIGVTALRM, SIG_IGN);
- }
+--- linux-2.6.20.orig/arch/um/os-Linux/skas/trap.c	2007-09-19 12:24:52.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/skas/trap.c	2007-09-19 12:25:08.000000000 -0400
+@@ -58,9 +58,8 @@ void sig_handler_common_skas(int sig, vo
  
- int switch_timers(int to_real)
+ 	handler = sig_info[sig];
+ 
+-	/* unblock SIGALRM, SIGVTALRM, SIGIO if sig isn't IRQ signal */
+-	if (sig != SIGIO && sig != SIGWINCH &&
+-	    sig != SIGVTALRM && sig != SIGALRM)
++	/* unblock SIGVTALRM, SIGIO if sig isn't IRQ signal */
++	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGVTALRM))
+ 		unblock_signals();
+ 
+ 	handler(sig, r);
+Index: linux-2.6.20/arch/um/os-Linux/trap.c
+===================================================================
+--- linux-2.6.20.orig/arch/um/os-Linux/trap.c	2007-09-19 12:24:52.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/trap.c	2007-09-19 12:25:08.000000000 -0400
+@@ -20,5 +20,4 @@ void os_fill_handlinfo(struct kern_handl
+ 	sig_info[SIGSEGV] = h.page_fault;
+ 	sig_info[SIGIO] = h.sigio_handler;
+ 	sig_info[SIGVTALRM] = h.timer_handler;
+-	sig_info[SIGALRM] = h.timer_handler;
+ }
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
