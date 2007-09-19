@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IY2wd-0006PV-FS for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Sep 2007 10:02:35 -0700
+	id 1IY2wh-0006Pf-SY for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Sep 2007 10:02:40 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IY2wY-0006u4-BP
+	(Exim 4.44) id 1IY2we-000421-MV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Sep 2007 10:02:34 -0700
-Date: Wed, 19 Sep 2007 13:02:22 -0400
+	Wed, 19 Sep 2007 10:02:39 -0700
+Date: Wed, 19 Sep 2007 13:02:30 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070919170222.GA10166@c2.user-mode-linux.org>
+Message-ID: <20070919170230.GA10213@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/11] UML - Fix timer switching
+Subject: [uml-devel] [PATCH 11/11] UML - Use *SEC_PER_*SEC constants
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,168 +31,160 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Fix up the switching between virtual and real timers.  The idle loop
-sleeps, so the timer at that point must be real time.  At all other
-times, the timer must be virtual.  Even when userspace is running, and
-the kernel is asleep, the virtual timer is correct because the process
-timer will be running and the process timer will be firing.
+There are various uses of powers of 1000, plus the odd BILLION
+constant in the time code.  However, there are perfectly good definitions of
+*SEC_PER_*SEC in linux/time.h which can be used instaed.
 
-The timer switch used to be in the context switch and timer handler
-code.  This is moved to the idle loop and the signal handler, making
-it much more clear why it is happening.
-
-switch_timers now returns the old timer type so that it may be
-restored.  The signal handler uses this in order to restore the
-previous timer type when it returns.
+These are replaced directly in kernel code.  Userspace code imports
+those constants as UM_*SEC_PER_*SEC and uses these.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/include/os.h      |    2 +-
- arch/um/kernel/process.c  |    9 ++-------
- arch/um/os-Linux/signal.c |    9 +++------
- arch/um/os-Linux/time.c   |   27 ++++++++++++++++++++-------
- 4 files changed, 26 insertions(+), 21 deletions(-)
+ arch/um/include/common-offsets.h |    4 ++++
+ arch/um/include/os.h             |    2 --
+ arch/um/kernel/time.c            |    9 +++++----
+ arch/um/os-Linux/skas/process.c  |   12 +++++++-----
+ arch/um/os-Linux/time.c          |   16 ++++++++--------
+ 5 files changed, 24 insertions(+), 19 deletions(-)
 
-Index: linux-2.6.20/arch/um/include/os.h
+Index: linux-2.6.20/arch/um/kernel/time.c
 ===================================================================
---- linux-2.6.20.orig/arch/um/include/os.h	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/include/os.h	2007-09-19 12:25:05.000000000 -0400
-@@ -250,7 +250,7 @@ extern void os_dump_core(void);
- /* time.c */
- #define BILLION (1000 * 1000 * 1000)
- 
--extern void switch_timers(int to_real);
-+extern int switch_timers(int to_real);
- extern void idle_sleep(int secs);
- extern int set_interval(int is_virtual);
- extern void disable_timer(void);
-Index: linux-2.6.20/arch/um/kernel/process.c
-===================================================================
---- linux-2.6.20.orig/arch/um/kernel/process.c	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/kernel/process.c	2007-09-19 12:25:05.000000000 -0400
-@@ -95,18 +95,11 @@ void *_switch_to(void *prev, void *next,
- 	do {
- 		current->thread.saved_task = NULL;
- 
--		/* XXX need to check runqueues[cpu].idle */
--		if (current->pid == 0)
--			switch_timers(0);
--
- 		switch_threads(&from->thread.switch_buf,
- 			       &to->thread.switch_buf);
- 
- 		arch_switch_to(current->thread.prev_sched, current);
- 
--		if (current->pid == 0)
--			switch_timers(1);
--
- 		if (current->thread.saved_task)
- 			show_regs(&(current->thread.regs));
- 		next= current->thread.saved_task;
-@@ -251,7 +244,9 @@ void default_idle(void)
- 		if (need_resched())
- 			schedule();
- 
-+		switch_timers(1);
- 		idle_sleep(10);
-+		switch_timers(0);
- 	}
- }
- 
-Index: linux-2.6.20/arch/um/os-Linux/signal.c
-===================================================================
---- linux-2.6.20.orig/arch/um/os-Linux/signal.c	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/os-Linux/signal.c	2007-09-19 12:25:05.000000000 -0400
-@@ -59,17 +59,11 @@ static void real_alarm_handler(int sig, 
+--- linux-2.6.20.orig/arch/um/kernel/time.c	2007-09-19 12:25:07.000000000 -0400
++++ linux-2.6.20/arch/um/kernel/time.c	2007-09-19 12:25:08.000000000 -0400
+@@ -17,7 +17,7 @@
+  */
+ unsigned long long sched_clock(void)
  {
- 	struct uml_pt_regs regs;
- 
--	if (sig == SIGALRM)
--		switch_timers(0);
--
- 	if (sc != NULL)
- 		copy_sc(&regs, sc);
- 	regs.is_user = 0;
- 	unblock_signals();
- 	timer_handler(sig, &regs);
--
--	if (sig == SIGALRM)
--		switch_timers(1);
+-	return (unsigned long long)jiffies_64 * (1000000000 / HZ);
++	return (unsigned long long)jiffies_64 * (NSEC_PER_SEC / HZ);
  }
  
- void alarm_handler(int sig, struct sigcontext *sc)
-@@ -116,6 +110,7 @@ void (*handlers[_NSIG])(int sig, struct 
- void handle_signal(int sig, struct sigcontext *sc)
- {
- 	unsigned long pending = 0;
-+	int timer = switch_timers(0);
+ void timer_handler(int sig, struct uml_pt_regs *regs)
+@@ -119,8 +119,9 @@ void __init time_init(void)
+ 	timer_init();
  
- 	do {
- 		int nested, bail;
-@@ -152,6 +147,8 @@ void handle_signal(int sig, struct sigco
- 		if (!nested)
- 			pending = from_irq_stack(nested);
- 	} while (pending);
-+
-+	switch_timers(timer);
+ 	nsecs = os_nsecs();
+-	set_normalized_timespec(&wall_to_monotonic, -nsecs / BILLION,
+-				-nsecs % BILLION);
+-	set_normalized_timespec(&xtime, nsecs / BILLION, nsecs % BILLION);
++	set_normalized_timespec(&wall_to_monotonic, -nsecs / NSEC_PER_SEC,
++				-nsecs % NSEC_PER_SEC);
++	set_normalized_timespec(&xtime, nsecs / NSEC_PER_SEC,
++				nsecs % NSEC_PER_SEC);
+ 	late_time_init = setup_itimer;
  }
- 
- extern void hard_handler(int sig);
 Index: linux-2.6.20/arch/um/os-Linux/time.c
 ===================================================================
---- linux-2.6.20.orig/arch/um/os-Linux/time.c	2007-09-19 12:25:05.000000000 -0400
-+++ linux-2.6.20/arch/um/os-Linux/time.c	2007-09-19 12:25:05.000000000 -0400
-@@ -12,6 +12,8 @@
- #include "os.h"
- #include "user.h"
+--- linux-2.6.20.orig/arch/um/os-Linux/time.c	2007-09-19 12:25:08.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/time.c	2007-09-19 12:25:08.000000000 -0400
+@@ -14,7 +14,7 @@
  
-+static int is_real_timer = 0;
-+
- int set_interval(int is_virtual)
+ int set_interval(void)
  {
- 	int usec = 1000000/UM_HZ;
-@@ -39,12 +41,14 @@ void disable_timer(void)
- 	signal(SIGVTALRM, SIG_IGN);
+-	int usec = 1000000/UM_HZ;
++	int usec = UM_USEC_PER_SEC / UM_HZ;
+ 	struct itimerval interval = ((struct itimerval) { { 0, usec },
+ 							  { 0, usec } });
+ 
+@@ -26,11 +26,11 @@ int set_interval(void)
+ 
+ int timer_one_shot(int ticks)
+ {
+-	unsigned long usec = ticks * 1000000 / UM_HZ;
+-	unsigned long sec = usec / 1000000;
++	unsigned long usec = ticks * UM_USEC_PER_SEC / UM_HZ;
++	unsigned long sec = usec / UM_USEC_PER_SEC;
+ 	struct itimerval interval;
+ 
+-	usec %= 1000000;
++	usec %= UM_USEC_PER_SEC;
+ 	interval = ((struct itimerval) { { 0, 0 }, { sec, usec } });
+ 
+ 	if (setitimer(ITIMER_VIRTUAL, &interval, NULL) == -1)
+@@ -47,8 +47,8 @@ static inline unsigned long long tv_to_n
+ 	 * return.
+ 	 */
+ 
+-	return ((unsigned long long) tv->tv_sec) * BILLION +
+-		tv->tv_usec * 1000;
++	return ((unsigned long long) tv->tv_sec) * UM_NSEC_PER_SEC +
++		tv->tv_usec * UM_NSEC_PER_USEC;
  }
  
--void switch_timers(int to_real)
-+int switch_timers(int to_real)
+ unsigned long long disable_timer(void)
+@@ -74,8 +74,8 @@ extern void alarm_handler(int sig, struc
+ 
+ void idle_sleep(unsigned long long nsecs)
  {
- 	struct itimerval disable = ((struct itimerval) { { 0, 0 }, { 0, 0 }});
--	struct itimerval enable = ((struct itimerval) { { 0, 1000000/UM_HZ },
--							{ 0, 1000000/UM_HZ }});
--	int old, new;
-+	struct itimerval enable;
-+	int old, new, old_type = is_real_timer;
-+
-+	if(to_real == old_type)
-+		return to_real;
+-	struct timespec ts = { .tv_sec	= nsecs / BILLION,
+-			       .tv_nsec = nsecs % BILLION };
++	struct timespec ts = { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
++			       .tv_nsec = nsecs % UM_NSEC_PER_SEC };
  
- 	if (to_real) {
- 		old = ITIMER_VIRTUAL;
-@@ -55,10 +59,19 @@ void switch_timers(int to_real)
- 		new = ITIMER_VIRTUAL;
- 	}
+ 	if (nanosleep(&ts, &ts) == 0)
+ 		alarm_handler(SIGVTALRM, NULL);
+Index: linux-2.6.20/arch/um/os-Linux/skas/process.c
+===================================================================
+--- linux-2.6.20.orig/arch/um/os-Linux/skas/process.c	2007-09-19 12:25:08.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/skas/process.c	2007-09-19 12:25:08.000000000 -0400
+@@ -294,8 +294,8 @@ void userspace(struct uml_pt_regs *regs)
  
--	if ((setitimer(old, &disable, NULL) < 0) ||
--	    (setitimer(new, &enable, NULL)))
--		printk(UM_KERN_ERR "switch_timers - setitimer failed, "
-+	if (setitimer(old, &disable, &enable) < 0)
-+		printk(UM_KERN_ERR "switch_timers - setitimer disable failed, "
-+		       "errno = %d\n", errno);
-+
-+	if((enable.it_value.tv_sec == 0) && (enable.it_value.tv_usec == 0))
-+		enable.it_value = enable.it_interval;
-+
-+	if (setitimer(new, &enable, NULL))
-+		printk(UM_KERN_ERR "switch_timers - setitimer enable failed, "
- 		       "errno = %d\n", errno);
-+
-+	is_real_timer = to_real;
-+	return old_type;
- }
+ 	if (getitimer(ITIMER_VIRTUAL, &timer))
+ 		printk("Failed to get itimer, errno = %d\n", errno);
+-	nsecs = timer.it_value.tv_sec * BILLION +
+-		timer.it_value.tv_usec * 1000;
++	nsecs = timer.it_value.tv_sec * UM_NSEC_PER_SEC +
++		timer.it_value.tv_usec * UM_NSEC_PER_USEC;
+ 	nsecs += os_nsecs();
  
- unsigned long long os_nsecs(void)
+ 	while (1) {
+@@ -347,8 +347,10 @@ void userspace(struct uml_pt_regs *regs)
+ 				block_signals();
+ 				(*sig_info[sig])(sig, regs);
+ 				unblock_signals();
+-				nsecs = timer.it_value.tv_sec * BILLION +
+-					timer.it_value.tv_usec * 1000;
++				nsecs = timer.it_value.tv_sec *
++					UM_NSEC_PER_SEC +
++					timer.it_value.tv_usec *
++					UM_NSEC_PER_USEC;
+ 				nsecs += os_nsecs();
+ 				break;
+ 			case SIGIO:
+@@ -395,7 +397,7 @@ __initcall(init_thread_regs);
+ 
+ int copy_context_skas0(unsigned long new_stack, int pid)
+ {
+-	struct timeval tv = { .tv_sec = 0, .tv_usec = 1000000 / UM_HZ };
++	struct timeval tv = { .tv_sec = 0, .tv_usec = UM_USEC_PER_SEC / UM_HZ };
+ 	int err;
+ 	unsigned long current_stack = current_stub_stack();
+ 	struct stub_data *data = (struct stub_data *) current_stack;
+Index: linux-2.6.20/arch/um/include/common-offsets.h
+===================================================================
+--- linux-2.6.20.orig/arch/um/include/common-offsets.h	2007-09-19 12:25:05.000000000 -0400
++++ linux-2.6.20/arch/um/include/common-offsets.h	2007-09-19 12:25:08.000000000 -0400
+@@ -34,3 +34,7 @@ DEFINE(crypto_tfm_ctx_offset, offsetof(s
+ DEFINE(UM_THREAD_SIZE, THREAD_SIZE);
+ 
+ DEFINE(UM_HZ, HZ);
++
++DEFINE(UM_USEC_PER_SEC, USEC_PER_SEC);
++DEFINE(UM_NSEC_PER_SEC, NSEC_PER_SEC);
++DEFINE(UM_NSEC_PER_USEC, NSEC_PER_USEC);
+Index: linux-2.6.20/arch/um/include/os.h
+===================================================================
+--- linux-2.6.20.orig/arch/um/include/os.h	2007-09-19 12:25:08.000000000 -0400
++++ linux-2.6.20/arch/um/include/os.h	2007-09-19 12:25:08.000000000 -0400
+@@ -249,8 +249,6 @@ extern int setjmp_wrapper(void (*proc)(v
+ extern void os_dump_core(void);
+ 
+ /* time.c */
+-#define BILLION (1000 * 1000 * 1000)
+-
+ extern void idle_sleep(unsigned long long nsecs);
+ extern int set_interval(void);
+ extern int timer_one_shot(int ticks);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
