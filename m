@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IY2wV-0006OT-KS for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Sep 2007 10:02:27 -0700
+	id 1IY2wY-0006Ox-Eq for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Sep 2007 10:02:30 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IY2wT-0006rR-V5
+	(Exim 4.44) id 1IY2wV-0006sd-Iu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Sep 2007 10:02:27 -0700
-Date: Wed, 19 Sep 2007 13:02:22 -0400
+	Wed, 19 Sep 2007 10:02:30 -0700
+Date: Wed, 19 Sep 2007 13:02:25 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070919170222.GA10161@c2.user-mode-linux.org>
+Message-ID: <20070919170225.GA10186@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/11] UML - Eliminate hz()
+Subject: [uml-devel] [PATCH 6/11] UML - GENERIC_CLOCKEVENTS support
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,104 +31,227 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Eliminate hz() since its only purpose was to provide a kernel-space
-constant to userspace code.  This can be done instead by providing the
-constant directly through kernel_constants.h.
+Enable CONFIG_GENERIC_CLOCKEVENTS.
+
+timer_irq gets its name changed to timer_handler, and becomes the
+recipient of timer signals.
+
+The clock_event_device is set up to imitate the current ticking clock,
+i.e. CLOCK_EVT_FEAT_ONESHOT is not enabled yet.
+
+disable_timer now doesn't ignore SIGALRM and SIGVTALRM because that
+breaks delay calibration.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/include/common-offsets.h |    2 ++
- arch/um/include/kern_util.h      |    1 -
- arch/um/kernel/time.c            |    5 -----
- arch/um/os-Linux/skas/process.c  |    5 +++--
- arch/um/os-Linux/time.c          |    7 +++----
- 5 files changed, 8 insertions(+), 12 deletions(-)
+ arch/um/Kconfig         |    4 +
+ arch/um/defconfig       |    3 +
+ arch/um/kernel/time.c   |   99 ++++++++++++++++++++++--------------------------
+ arch/um/os-Linux/time.c |    4 -
+ 4 files changed, 54 insertions(+), 56 deletions(-)
 
-Index: linux-2.6.20/arch/um/include/common-offsets.h
+Index: linux-2.6.20/arch/um/Kconfig
 ===================================================================
---- linux-2.6.20.orig/arch/um/include/common-offsets.h	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/include/common-offsets.h	2007-09-19 12:25:05.000000000 -0400
-@@ -32,3 +32,5 @@ DEFINE(UM_GFP_ATOMIC, GFP_ATOMIC);
- DEFINE(crypto_tfm_ctx_offset, offsetof(struct crypto_tfm, __crt_ctx));
+--- linux-2.6.20.orig/arch/um/Kconfig	2007-09-19 12:25:06.000000000 -0400
++++ linux-2.6.20/arch/um/Kconfig	2007-09-19 12:25:07.000000000 -0400
+@@ -59,6 +59,10 @@ config GENERIC_TIME
+ 	bool
+ 	default y
  
- DEFINE(UM_THREAD_SIZE, THREAD_SIZE);
++config GENERIC_CLOCKEVENTS
++	bool
++	default y
 +
-+DEFINE(UM_HZ, HZ);
-Index: linux-2.6.20/arch/um/include/kern_util.h
-===================================================================
---- linux-2.6.20.orig/arch/um/include/kern_util.h	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/include/kern_util.h	2007-09-19 12:25:05.000000000 -0400
-@@ -64,7 +64,6 @@ extern void paging_init(void);
- extern void init_flush_vm(void);
- extern void *syscall_sp(void *t);
- extern void syscall_trace(struct uml_pt_regs *regs, int entryexit);
--extern int hz(void);
- extern unsigned int do_IRQ(int irq, struct uml_pt_regs *regs);
- extern void interrupt_end(void);
- extern void initial_thread_cb(void (*proc)(void *), void *arg);
+ # Used in kernel/irq/manage.c and include/linux/irq.h
+ config IRQ_RELEASE_METHOD
+ 	bool
 Index: linux-2.6.20/arch/um/kernel/time.c
 ===================================================================
---- linux-2.6.20.orig/arch/um/kernel/time.c	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/kernel/time.c	2007-09-19 12:25:05.000000000 -0400
-@@ -11,11 +11,6 @@
- #include "kern_util.h"
- #include "os.h"
+--- linux-2.6.20.orig/arch/um/kernel/time.c	2007-09-19 12:25:06.000000000 -0400
++++ linux-2.6.20/arch/um/kernel/time.c	2007-09-19 12:25:07.000000000 -0400
+@@ -3,6 +3,7 @@
+  * Licensed under the GPL
+  */
  
--int hz(void)
++#include "linux/clockchips.h"
+ #include "linux/interrupt.h"
+ #include "linux/jiffies.h"
+ #include "linux/threads.h"
+@@ -24,9 +25,10 @@ static unsigned long long prev_nsecs[NR_
+ static long long delta[NR_CPUS];		/* Deviation per interval */
+ #endif
+ 
+-void timer_irq(struct uml_pt_regs *regs)
++void timer_handler(int sig, struct uml_pt_regs *regs)
+ {
+ 	unsigned long long ticks = 0;
++	unsigned long flags;
+ #ifdef CONFIG_UML_REAL_TIME_CLOCK
+ 	int c = cpu();
+ 	if (prev_nsecs[c]) {
+@@ -47,89 +49,82 @@ void timer_irq(struct uml_pt_regs *regs)
+ #else
+ 	ticks = 1;
+ #endif
++
++	local_irq_save(flags);
+ 	while (ticks > 0) {
+ 		do_IRQ(TIMER_IRQ, regs);
+ 		ticks--;
+ 	}
++	local_irq_restore(flags);
+ }
+ 
+-/* Protects local_offset */
+-static DEFINE_SPINLOCK(timer_spinlock);
+-static unsigned long long local_offset = 0;
+-
+-static inline unsigned long long get_time(void)
++static void itimer_set_mode(enum clock_event_mode mode,
++			    struct clock_event_device *evt)
+ {
+-	unsigned long long nsecs;
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&timer_spinlock, flags);
+-	nsecs = os_nsecs();
+-	nsecs += local_offset;
+-	spin_unlock_irqrestore(&timer_spinlock, flags);
++	switch(mode) {
++	case CLOCK_EVT_MODE_PERIODIC:
++		set_interval();
++		break;
++
++	case CLOCK_EVT_MODE_SHUTDOWN:
++	case CLOCK_EVT_MODE_UNUSED:
++		disable_timer();
++		break;
++	case CLOCK_EVT_MODE_ONESHOT:
++		BUG();
++		break;
+ 
+-	return nsecs;
++	case CLOCK_EVT_MODE_RESUME:
++		break;
++	}
+ }
+ 
+-irqreturn_t um_timer(int irq, void *dev)
 -{
--	return HZ;
+-	unsigned long long nsecs;
+-	unsigned long flags;
+-
+-	write_seqlock_irqsave(&xtime_lock, flags);
++static struct clock_event_device itimer_clockevent = {
++	.name		= "itimer",
++	.rating		= 250,
++	.cpumask	= CPU_MASK_ALL,
++	.features	= CLOCK_EVT_FEAT_PERIODIC,
++	.set_mode	= itimer_set_mode,
++	.set_next_event = NULL,
++	.shift		= 32,
++	.irq		= 0,
++};
+ 
+-	do_timer(1);
+-
+-#ifdef CONFIG_UML_REAL_TIME_CLOCK
+-	nsecs = get_time();
+-#else
+-	nsecs = (unsigned long long) xtime.tv_sec * BILLION + xtime.tv_nsec +
+-		BILLION / HZ;
+-#endif
+-	xtime.tv_sec = nsecs / NSEC_PER_SEC;
+-	xtime.tv_nsec = nsecs - xtime.tv_sec * NSEC_PER_SEC;
+-
+-	write_sequnlock_irqrestore(&xtime_lock, flags);
++static irqreturn_t um_timer(int irq, void *dev)
++{
++	(*itimer_clockevent.event_handler)(&itimer_clockevent);
+ 
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void register_timer(void)
++static void __init setup_itimer(void)
+ {
+ 	int err;
+ 
+-	timer_init();
+-
+ 	err = request_irq(TIMER_IRQ, um_timer, IRQF_DISABLED, "timer", NULL);
+ 	if (err != 0)
+ 		printk(KERN_ERR "register_timer : request_irq failed - "
+ 		       "errno = %d\n", -err);
+ 
+-	err = set_interval();
+-	if (err != 0)
+-		printk(KERN_ERR "register_timer : set_interval failed - "
+-		       "errno = %d\n", -err);
++	itimer_clockevent.mult = div_sc(HZ, NSEC_PER_SEC, 32);
++	itimer_clockevent.max_delta_ns =
++		clockevent_delta2ns(60 * HZ, &itimer_clockevent);
++	itimer_clockevent.min_delta_ns =
++		clockevent_delta2ns(1, &itimer_clockevent);
++	clockevents_register_device(&itimer_clockevent);
+ }
+ 
+ extern void (*late_time_init)(void);
+ 
+-void time_init(void)
++void __init time_init(void)
+ {
+ 	long long nsecs;
+ 
++	timer_init();
++
+ 	nsecs = os_nsecs();
+ 	set_normalized_timespec(&wall_to_monotonic, -nsecs / BILLION,
+ 				-nsecs % BILLION);
+ 	set_normalized_timespec(&xtime, nsecs / BILLION, nsecs % BILLION);
+-	late_time_init = register_timer;
 -}
 -
- /*
-  * Scheduler clock - returns current time in nanosec units.
-  */
-Index: linux-2.6.20/arch/um/os-Linux/skas/process.c
+-void timer_handler(int sig, struct uml_pt_regs *regs)
+-{
+-	if (current_thread->cpu == 0)
+-		timer_irq(regs);
+-	local_irq_disable();
+-	irq_enter();
+-	update_process_times(regs->is_user);
+-	irq_exit();
+-	local_irq_enable();
++	late_time_init = setup_itimer;
+ }
+Index: linux-2.6.20/arch/um/defconfig
 ===================================================================
---- linux-2.6.20.orig/arch/um/os-Linux/skas/process.c	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/os-Linux/skas/process.c	2007-09-19 12:25:05.000000000 -0400
-@@ -392,8 +392,9 @@ int copy_context_skas0(unsigned long new
- 	*data = ((struct stub_data) { .offset	= MMAP_OFFSET(new_offset),
- 				      .fd	= new_fd,
- 				      .timer    = ((struct itimerval)
--					            { { 0, 1000000 / hz() },
--						      { 0, 1000000 / hz() }})});
-+					            { { 0, 1000000 / UM_HZ },
-+						      { 0, 1000000 / UM_HZ }})
-+				 });
- 	err = ptrace_setregs(pid, thread_regs);
- 	if (err < 0)
- 		panic("copy_context_skas0 : PTRACE_SETREGS failed, "
+--- linux-2.6.20.orig/arch/um/defconfig	2007-09-19 12:24:52.000000000 -0400
++++ linux-2.6.20/arch/um/defconfig	2007-09-19 12:25:07.000000000 -0400
+@@ -73,6 +73,9 @@ CONFIG_FLATMEM=y
+ CONFIG_FLAT_NODE_MEM_MAP=y
+ # CONFIG_SPARSEMEM_STATIC is not set
+ CONFIG_SPLIT_PTLOCK_CPUS=4
++# CONFIG_TICK_ONESHOT is not set
++# CONFIG_NO_HZ is not set
++CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_LD_SCRIPT_DYN=y
+ CONFIG_NET=y
+ CONFIG_BINFMT_ELF=y
 Index: linux-2.6.20/arch/um/os-Linux/time.c
 ===================================================================
---- linux-2.6.20.orig/arch/um/os-Linux/time.c	2007-09-19 12:24:52.000000000 -0400
-+++ linux-2.6.20/arch/um/os-Linux/time.c	2007-09-19 12:25:05.000000000 -0400
-@@ -8,14 +8,13 @@
- #include <signal.h>
- #include <time.h>
- #include <sys/time.h>
--#include "kern_util.h"
- #include "kern_constants.h"
- #include "os.h"
- #include "user.h"
+--- linux-2.6.20.orig/arch/um/os-Linux/time.c	2007-09-19 12:25:05.000000000 -0400
++++ linux-2.6.20/arch/um/os-Linux/time.c	2007-09-19 12:25:07.000000000 -0400
+@@ -34,10 +34,6 @@ void disable_timer(void)
+ 	    (setitimer(ITIMER_REAL, &disable, NULL) < 0))
+ 		printk(UM_KERN_ERR "disable_timer - setitimer failed, "
+ 		       "errno = %d\n", errno);
+-
+-	/* If there are signals already queued, after unblocking ignore them */
+-	signal(SIGALRM, SIG_IGN);
+-	signal(SIGVTALRM, SIG_IGN);
+ }
  
- int set_interval(int is_virtual)
- {
--	int usec = 1000000/hz();
-+	int usec = 1000000/UM_HZ;
- 	int timer_type = is_virtual ? ITIMER_VIRTUAL : ITIMER_REAL;
- 	struct itimerval interval = ((struct itimerval) { { 0, usec },
- 							  { 0, usec } });
-@@ -43,8 +42,8 @@ void disable_timer(void)
- void switch_timers(int to_real)
- {
- 	struct itimerval disable = ((struct itimerval) { { 0, 0 }, { 0, 0 }});
--	struct itimerval enable = ((struct itimerval) { { 0, 1000000/hz() },
--							{ 0, 1000000/hz() }});
-+	struct itimerval enable = ((struct itimerval) { { 0, 1000000/UM_HZ },
-+							{ 0, 1000000/UM_HZ }});
- 	int old, new;
- 
- 	if (to_real) {
+ int switch_timers(int to_real)
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
