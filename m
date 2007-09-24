@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IZu8E-0000ul-33 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Sep 2007 13:02:14 -0700
+	id 1IZtyI-000875-UV for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Sep 2007 12:51:59 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IZu8B-0001HU-Ct
+	(Exim 4.44) id 1IZtyB-0004PU-CP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Sep 2007 13:02:13 -0700
-Date: Mon, 24 Sep 2007 16:01:27 -0400
+	Mon, 24 Sep 2007 12:51:53 -0700
+Date: Mon, 24 Sep 2007 15:50:47 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070924200127.GB25202@c2.user-mode-linux.org>
-References: <20070918233336.GA9746@c2.user-mode-linux.org>
-	<20070918170733.c6399124.akpm@linux-foundation.org>
-	<200709201757.56298.p.giarrusso@gmail.com>
+Message-ID: <20070924195047.GA25202@c2.user-mode-linux.org>
+References: <5A9C383ECECEEE4F82BD5E7DCCD318E9C570CC@MABOSEVS1.ets.enterasys.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200709201757.56298.p.giarrusso@gmail.com>
-Subject: Re: [uml-devel] [PATCH] UML - Fix irqstack crash
+In-Reply-To: <5A9C383ECECEEE4F82BD5E7DCCD318E9C570CC@MABOSEVS1.ets.enterasys.com>
+Subject: Re: [uml-devel] sigwinch in 2.6.14.7 UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,20 +30,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo Giarrusso <p.giarrusso@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: "Bradshaw, James" <jbradsha@enterasys.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Sep 20, 2007 at 05:57:49PM +0200, Paolo Giarrusso wrote:
-> Yes, indeed - or sign extension on 64bit machines would set to 1 the whole 
-> high-word.
-> 
-> But using long for that mask makes no difference; either int or long
-> long (or  better, either u32 or u64) should be used, given that the
-> used signal range  is the same on 32 and 64bit machines, it should
-> be u32 for normal signals or u64 if RT-signals are also allowed.
+On Fri, Sep 21, 2007 at 05:18:11PM -0400, Bradshaw, James wrote:
+> Sigwinch appears to trigger a panic in 2.6.14.7. Here's the GDB
+> backtrace
 
-We don't use RT signals for anything, so we could use u32.  I don't
-see it making much difference though.
+I realize that you probably specifically need a 2.6.14 kernel, but
+that's so old (kernel.org says Oct 2005) that it'll be hard to find
+someone interested in figuring out what's wrong with it.
 
 				Jeff
 
