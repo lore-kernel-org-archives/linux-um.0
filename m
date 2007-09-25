@@ -2,21 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IZtyI-000875-UV for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Sep 2007 12:51:59 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1IaEMT-0001wW-HX for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Sep 2007 10:38:17 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IZtyB-0004PU-CP
+	(Exim 4.44) id 1IaEMQ-0004L2-RE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Sep 2007 12:51:53 -0700
-Date: Mon, 24 Sep 2007 15:50:47 -0400
+	Tue, 25 Sep 2007 10:38:17 -0700
+Date: Tue, 25 Sep 2007 13:37:13 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070924195047.GA25202@c2.user-mode-linux.org>
-References: <5A9C383ECECEEE4F82BD5E7DCCD318E9C570CC@MABOSEVS1.ets.enterasys.com>
+Message-ID: <20070925173713.GA8262@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5A9C383ECECEEE4F82BD5E7DCCD318E9C570CC@MABOSEVS1.ets.enterasys.com>
-Subject: Re: [uml-devel] sigwinch in 2.6.14.7 UML
+Subject: [uml-devel] [PATCH] UML - time build fix
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,21 +28,83 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "Bradshaw, James" <jbradsha@enterasys.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, Sep 21, 2007 at 05:18:11PM -0400, Bradshaw, James wrote:
-> Sigwinch appears to trigger a panic in 2.6.14.7. Here's the GDB
-> backtrace
+Put back an implementation of timeval_to_ns in
+arch/um/os-Linux/time.c.  tglx pointed out in his review of tickless
+support that there was a perfectly good implementation of it in
+linux/time.h.  The problem is that this is userspace code which can't
+pull in kernel headers and there doesn't seem to be a libc version.
 
-I realize that you probably specifically need a 2.6.14 kernel, but
-that's so old (kernel.org says Oct 2005) that it'll be hard to find
-someone interested in figuring out what's wrong with it.
+So, I'm copying the version from linux/time.h rather than resurrecting
+my version.  This causes some declaration changes as it now returns a
+signed value rather than an unsigned value.
 
-				Jeff
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/include/os.h    |    4 ++--
+ arch/um/os-Linux/time.c |   22 +++++++++++++++++++---
+ 2 files changed, 21 insertions(+), 5 deletions(-)
 
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6.22/arch/um/include/os.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/os.h	2007-09-25 09:26:42.000000000 -0400
++++ linux-2.6.22/arch/um/include/os.h	2007-09-25 09:28:42.000000000 -0400
+@@ -252,9 +252,9 @@ extern void os_dump_core(void);
+ extern void idle_sleep(unsigned long long nsecs);
+ extern int set_interval(void);
+ extern int timer_one_shot(int ticks);
+-extern unsigned long long disable_timer(void);
++extern long long disable_timer(void);
+ extern void uml_idle_timer(void);
+-extern unsigned long long os_nsecs(void);
++extern long long os_nsecs(void);
+ 
+ /* skas/mem.c */
+ extern long run_syscall_stub(struct mm_id * mm_idp,
+Index: linux-2.6.22/arch/um/os-Linux/time.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/time.c	2007-09-25 09:26:42.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/time.c	2007-09-25 09:28:42.000000000 -0400
+@@ -39,7 +39,23 @@ int timer_one_shot(int ticks)
+ 	return 0;
+ }
+ 
+-unsigned long long disable_timer(void)
++/**
++ * timeval_to_ns - Convert timeval to nanoseconds
++ * @ts:		pointer to the timeval variable to be converted
++ *
++ * Returns the scalar nanosecond representation of the timeval
++ * parameter.
++ *
++ * Ripped from linux/time.h because it's a kernel header, and thus
++ * unusable from here.
++ */
++static inline long long timeval_to_ns(const struct timeval *tv)
++{
++	return ((long long) tv->tv_sec * UM_NSEC_PER_SEC) +
++		tv->tv_usec * UM_NSEC_PER_USEC;
++}
++
++long long disable_timer(void)
+ {
+ 	struct itimerval time = ((struct itimerval) { { 0, 0 }, { 0, 0 } });
+ 
+@@ -47,10 +63,10 @@ unsigned long long disable_timer(void)
+ 		printk(UM_KERN_ERR "disable_timer - setitimer failed, "
+ 		       "errno = %d\n", errno);
+ 
+-	return tv_to_nsec(&time.it_value);
++	return timeval_to_ns(&time.it_value);
+ }
+ 
+-unsigned long long os_nsecs(void)
++long long os_nsecs(void)
+ {
+ 	struct timeval tv;
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
