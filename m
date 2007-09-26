@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IaIau-0006EE-6s for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Sep 2007 15:09:28 -0700
-Received: from www.tglx.de ([213.239.205.147] helo=mail.tglx.de)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IaIat-0007yM-OF
+	id 1IaPzM-0000YI-3M for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Sep 2007 23:03:12 -0700
+Received: from wa-out-1112.google.com ([209.85.146.182])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IaPzL-0007wT-Kw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 25 Sep 2007 15:09:28 -0700
-From: Thomas Gleixner <tglx@linutronix.de>
-In-Reply-To: <20070925215629.GA10926@c2.user-mode-linux.org>
-References: <20070925173713.GA8262@c2.user-mode-linux.org>
-	<1190750055.17409.38.camel@chaos>
-	<20070925215629.GA10926@c2.user-mode-linux.org>
-Date: Wed, 26 Sep 2007 00:08:47 +0200
-Message-Id: <1190758127.17409.81.camel@chaos>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] UML - time build fix
+	Tue, 25 Sep 2007 23:03:12 -0700
+Received: by wa-out-1112.google.com with SMTP id k22so3142203waf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 25 Sep 2007 23:03:11 -0700 (PDT)
+Message-ID: <ea9232d10709252303w3c372a9exf91a8062b9446aba@mail.gmail.com>
+Date: Wed, 26 Sep 2007 08:03:07 +0200
+From: "Karol Swietlicki" <karol@freedroid.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] A possible bug in User Mode Linux.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,36 +30,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff,
+Good morning.
+I have just switched to a 2.6.23-rc7 host linux kernel, and UML stopped working.
+Here is the message that I get:
 
-On Tue, 2007-09-25 at 17:56 -0400, Jeff Dike wrote:
-> On Tue, Sep 25, 2007 at 09:54:15PM +0200, Thomas Gleixner wrote:
-> > On Tue, 2007-09-25 at 13:37 -0400, Jeff Dike wrote:
-> > > Put back an implementation of timeval_to_ns in
-> > > arch/um/os-Linux/time.c.  tglx pointed out in his review of tickless
-> > > support that there was a perfectly good implementation of it in
-> > > linux/time.h.  The problem is that this is userspace code which can't
-> > > pull in kernel headers and there doesn't seem to be a libc version.
-> > 
-> > Oops. Did not notice. 
-> 
-> It's a UML peculiarity...
-> 
-> > Can't we move it into some header file which is accessible from everywhere ?
-> 
-> Not in the generic kernel.  UML has some generally includable headers
-> of its own, but that doesn't really help.
-> 
-> The one thing that would help is a libc timeval_to_ns.
-
-Fair enough.
-
-	tglx
+Kernel panic - not syncing: start_userspace : expected SIGSTOP, got status = 256
 
 
+I did some research, and it seems like this is not supposed to happen,
+and that it might be relating to my VMSPLIT settings. Here are the
+interesting bits from my .config:
+
+# CONFIG_VMSPLIT_3G is not set
+CONFIG_VMSPLIT_3G_OPT=y
+# CONFIG_VMSPLIT_2G is not set
+# CONFIG_VMSPLIT_2G_OPT is not set
+# CONFIG_VMSPLIT_1G is not set
+
+After setting this back to the default setting (CONFIG_VMSPLIT_3G=y)
+the problem went away.
+I am afraid I do not know C well enough to submit a patch. I wish I could.
+If there is something else I can do to help you, please tell me.
+
+Thank you for writing this bit of software, this is my favourite
+virtual machine and I learned a lot by using it.
+
+Karol Swietlicki
+
+-- 
+The way of all things alive.
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
