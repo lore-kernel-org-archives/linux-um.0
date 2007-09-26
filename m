@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IadzR-0008BT-7s for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Sep 2007 14:00:13 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user5475)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IadzQ-0003ER-MK
+	id 1Iaf6B-00079c-Uy for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 26 Sep 2007 15:11:16 -0700
+Received: from smtp2.linux-foundation.org ([207.189.120.14])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Iaf6B-0005Dm-3G
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 26 Sep 2007 14:00:13 -0700
-From: Nix <nix@esperi.org.uk>
-Date: Wed, 26 Sep 2007 21:59:47 +0100
-Message-ID: <87ejglqh18.fsf@hades.wkstn.nix>
-MIME-Version: 1.0
-Subject: [uml-devel] Is commit da3e30e78ed9652322dccb49fa149e7b4e985f74 a
-	candidate for -stable?
+	Wed, 26 Sep 2007 15:11:15 -0700
+Date: Wed, 26 Sep 2007 15:10:51 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20070926151051.802008d5.akpm@linux-foundation.org>
+In-Reply-To: <20070926214613.GA11547@c2.user-mode-linux.org>
+References: <20070926214613.GA11547@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 3/3] UML - Correctly handle skb allocation
+	failures
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,19 +30,135 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: caker@linode.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Without this commit, you can't compile UML on a system with 2.6.22
-kernel headers (the reserved2 and reserved3 fields have been
-renamed). With it, you can use 2.6.22 or older as you like.
+On Wed, 26 Sep 2007 17:46:13 -0400
+Jeff Dike <jdike@addtoit.com> wrote:
 
-(not forwarding to -stable because it seems importunate of me to do so:
-is this being too cautious?)
+> Handle memory allocation failures when reading packets.
+> 
+> We have to read something from the host, even if we can't allocate any
+> memory.  If we don't, the host side of the device may fill up and stop
+> delivering interrupts because no new packets can be queued.
+> 
+> A single sk_buff is allocated whenever an MTU is seen which is larger
+> than any seen earlier.  This is used to read packets if there is a
+> memory allocation failure.
+> 
+> The large MTU check is done from eth_configure, which is called when a
+> interface is added to the system, and from uml_net_change_mtu, which
+> is called when an existing interface has its MTU changed.
+> 
+> Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+> ---
+>  arch/um/drivers/net_kern.c |   60 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+> 
+> Index: linux-2.6.20/arch/um/drivers/net_kern.c
+> ===================================================================
+> --- linux-2.6.20.orig/arch/um/drivers/net_kern.c	2007-09-26 16:48:21.000000000 -0400
+> +++ linux-2.6.20/arch/um/drivers/net_kern.c	2007-09-26 16:56:16.000000000 -0400
+> @@ -34,6 +34,48 @@ static inline void set_ether_mac(struct 
+>  static DEFINE_SPINLOCK(opened_lock);
+>  static LIST_HEAD(opened);
+>  
+> +/*
+> + * The throwaway skb is used when we can't allocate an skb.  The
+> + * packet is read into throwaway in order to get the data off the
+> + * connection to the host.
+> + * It is reallocated whenever an MTU is seen which is larger than
+> + * anything seen before.  update_throwaway_skb is called from
+> + * eth_configure for new interfaces and from uml_net_change_mtu for
+> + * MTU changes on existing interfaces.
+> + */
+> +static DEFINE_SPINLOCK(throwaway_lock);
+> +static struct sk_buff *throwaway;
+> +static int throwaway_max;
+> +
+> +static int update_throwaway_skb(int max)
+> +{
+> +	struct sk_buff *new;
+> +	int err = 0;
+> +
+> +	spin_lock(&throwaway_lock);
+> +
+> +	if (max <= throwaway_max)
+> +		goto out;
+> +
+> +	err = -ENOMEM;
+> +	new = dev_alloc_skb(max);
+> +	if (new == NULL)
+> +		goto out;
+> +
+> +	skb_put(new, max);
+> +
+> +	kfree_skb(throwaway);
+> +	throwaway = new;
+> +	throwaway_max = max;
+> +	err = 0;
+> +out:
+> +	spin_unlock(&throwaway_lock);
+> +
+> +	return err;
+> +}
+> +
+> +int npackets = 0;
 
--- 
-`Some people don't think performance issues are "real bugs", and I think 
-such people shouldn't be allowed to program.' --- Linus Torvalds
+Unneeded initialisation?
+
+Maybe not a good name for a global symbol ;)
+
+I worry that the memory at "throwaway" can get thrown away...
+
+>  static int uml_net_rx(struct net_device *dev)
+>  {
+>  	struct uml_net_private *lp = dev->priv;
+> @@ -42,7 +84,14 @@ static int uml_net_rx(struct net_device 
+>  
+>  	/* If we can't allocate memory, try again next round. */
+>  	skb = dev_alloc_skb(lp->max_packet);
+> +	if ((++npackets % 100) == 0){
+> +		kfree_skb(skb);
+> +		skb = NULL;
+> +	}
+> +
+>  	if (skb == NULL) {
+> +		throwaway->dev = dev;
+> +		(*lp->read)(lp->fd, throwaway, lp);
+
+...  while other code is still using it.  Are you sure we don't need
+throwaway_lock here?
+
+
+>  		lp->stats.rx_dropped++;
+>  		return 0;
+>  	}
+> @@ -240,6 +289,13 @@ static int uml_net_set_mac(struct net_de
+>  
+>  static int uml_net_change_mtu(struct net_device *dev, int new_mtu)
+>  {
+> +	struct uml_net_private *lp = dev->priv;
+> +	int err;
+> +
+> +	err = update_throwaway_skb(lp->max_packet);
+> +	if (err)
+> +		return err;
+> +
+>  	dev->mtu = new_mtu;
+>  
+>  	return 0;
+> @@ -447,6 +503,10 @@ static void eth_configure(int n, void *i
+>  	dev->watchdog_timeo = (HZ >> 1);
+>  	dev->irq = UM_ETH_IRQ;
+>  
+> +	err = update_throwaway_skb(lp->max_packet);
+> +	if (err)
+> +		goto out_undo_user_init;
+> +
+>  	rtnl_lock();
+>  	err = register_netdevice(dev);
+>  	rtnl_unlock();
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
