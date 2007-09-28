@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IbHHl-0000aA-KW for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Sep 2007 07:57:45 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1IbHNm-0001Cg-Hl for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Sep 2007 08:03:59 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IbHHk-0005Z7-3L
+	(Exim 4.44) id 1IbHNk-0004Ig-UL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Sep 2007 07:57:45 -0700
-Date: Fri, 28 Sep 2007 10:57:34 -0400
+	Fri, 28 Sep 2007 08:03:58 -0700
+Date: Fri, 28 Sep 2007 11:03:53 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070928145734.GA7010@c2.user-mode-linux.org>
-References: <a6f02da10709280506v2d897a36w24e3887cce1048d5@mail.gmail.com>
-	<a6f02da10709280509q39bfb9bavecc02bc67a5e304f@mail.gmail.com>
+Message-ID: <20070928150353.GC7010@c2.user-mode-linux.org>
+References: <20070927220923.96887EDE@kernel>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <a6f02da10709280509q39bfb9bavecc02bc67a5e304f@mail.gmail.com>
-Subject: Re: [uml-devel] Fwd: How can I write a programm on host to ptrace
-	processes on uml in SKAS mode
+In-Reply-To: <20070927220923.96887EDE@kernel>
+Subject: Re: [uml-devel] [PATCH] make UML call dentry_open() with a valid
+	vfsmount
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,22 +31,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: fang zheng <benbencan@gmail.com>
+To: Dave Hansen <haveblue@us.ibm.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Sep 28, 2007 at 08:09:06PM +0800, fang zheng wrote:
-> How can I write a programm on host to ptrace processes on uml in SKAS mode  ?
+On Thu, Sep 27, 2007 at 03:09:23PM -0700, Dave Hansen wrote:
+> 
+> I'm trying to enforce the convention that you may not call
+> dentry_open() with a NULL vfsmount.  This is so that the
+> r/o bind mount patches can consistenty acquire write access
+> to the mounts there.
+> 
+> This patch fixes up UML's HPPFS to track both the vfsmount
+> and the dentry for its files.  Compile, but not runtime
+> tested.
 
-skas3 or skas0?  Sounds like you're interested in skas3.
+Can I get a Signed-off-by:?
 
-But why does it have to be done from the host rather than from inside UML?
-
-> Is there is some examples about ptrace(PTRACE_SWITCH_MM,
-> userspace_pid, 0, mm_fd)?
-
-In UML, sure.  But it looks like you found that.
-
-				Jeff
+			Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
