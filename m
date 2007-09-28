@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IbJ0M-0007cU-J4 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Sep 2007 09:47:55 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1IbKYY-00019m-4G for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Sep 2007 11:27:18 -0700
+Received: from smtp2.linux-foundation.org ([207.189.120.14])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IbJ0M-0003b8-4o
+	(Exim 4.44) id 1IbKYW-0001Nv-Km
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Sep 2007 09:47:54 -0700
-Date: Fri, 28 Sep 2007 12:47:48 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070928164748.GB7986@c2.user-mode-linux.org>
-References: <20070927220923.96887EDE@kernel>
-	<20070928150353.GC7010@c2.user-mode-linux.org>
-	<1190995215.7344.67.camel@localhost>
+	Fri, 28 Sep 2007 11:27:17 -0700
+Date: Fri, 28 Sep 2007 11:26:34 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20070928112634.0bef9525.akpm@linux-foundation.org>
+In-Reply-To: <20070928154314.GA7185@c2.user-mode-linux.org>
+References: <20070928154314.GA7185@c2.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1190995215.7344.67.camel@localhost>
-Subject: Re: [uml-devel] [PATCH] make UML call dentry_open() with a valid
-	vfsmount
+Subject: Re: [uml-devel] [PATCH] UML - Fix locking in skb alloction failure fix
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,19 +29,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Dave Hansen <haveblue@us.ibm.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, Sep 28, 2007 at 09:00:14AM -0700, Dave Hansen wrote:
-> One more thing... have you had any problems getting
-> arch/um/os-Linux/time.c to compile because of a lack of tv_to_nsec()?
+On Fri, 28 Sep 2007 11:43:14 -0400 Jeff Dike <jdike@addtoit.com> wrote:
 
-That should be fixed in current -mm.
+> Add _irqsave/_irqrestore to the locking in update_drop_skb to keep
+> uml_net_rx out while the drop skb is being messed with.
+> 
+> Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+> ---
+>  arch/um/drivers/net_kern.c |    5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> Index: linux-2.6.22/arch/um/drivers/net_kern.c
+> ===================================================================
+> --- linux-2.6.22.orig/arch/um/drivers/net_kern.c	2007-09-28 11:10:19.000000000 -0400
+> +++ linux-2.6.22/arch/um/drivers/net_kern.c	2007-09-28 11:13:58.000000000 -0400
+> @@ -49,9 +49,10 @@ static int drop_max;
+>  static int update_drop_skb(int max)
+>  {
+>  	struct sk_buff *new;
+> +	unsigned long flags;
+>  	int err = 0;
+>  
+> -	spin_lock(&drop_lock);
+> +	spin_lock_irqsave(&drop_lock, flags);
+>  
+>  	if (max <= drop_max)
+>  		goto out;
+> @@ -68,7 +69,7 @@ static int update_drop_skb(int max)
+>  	drop_max = max;
+>  	err = 0;
+>  out:
+> -	spin_unlock(&drop_lock);
+> +	spin_unlock_irqrestore(&drop_lock, flags);
+>  
+>  	return err;
+>  }
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Doesn't this assume that the arch is only ever uniprocessor, which I don't think is
+true on i386 UML??
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
