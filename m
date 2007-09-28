@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ib4Y7-00055s-6O for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Sep 2007 18:21:47 -0700
+	id 1IbHHl-0000aA-KW for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 28 Sep 2007 07:57:45 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ib4Y6-0007mT-Ml
+	(Exim 4.44) id 1IbHHk-0005Z7-3L
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Sep 2007 18:21:47 -0700
-Date: Thu, 27 Sep 2007 21:21:32 -0400
+	Fri, 28 Sep 2007 07:57:45 -0700
+Date: Fri, 28 Sep 2007 10:57:34 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20070928012132.GA10302@c2.user-mode-linux.org>
-References: <20070927170126.GA6542@c2.user-mode-linux.org>
-	<20070927165340.fd5dc2d0.akpm@linux-foundation.org>
+Message-ID: <20070928145734.GA7010@c2.user-mode-linux.org>
+References: <a6f02da10709280506v2d897a36w24e3887cce1048d5@mail.gmail.com>
+	<a6f02da10709280509q39bfb9bavecc02bc67a5e304f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20070927165340.fd5dc2d0.akpm@linux-foundation.org>
-Subject: Re: [uml-devel] [PATCH] UML - Correctly handle skb allocation failures
+In-Reply-To: <a6f02da10709280509q39bfb9bavecc02bc67a5e304f@mail.gmail.com>
+Subject: Re: [uml-devel] Fwd: How can I write a programm on host to ptrace
+	processes on uml in SKAS mode
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,18 +32,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: fang zheng <benbencan@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Sep 27, 2007 at 04:53:40PM -0700, Andrew Morton wrote:
-> Still wanna know why it is safe for uml_net_rx to be playing with
-> drop_skb when update_drop_skb() could be concurrently reallocating
-> and freeing it.
+On Fri, Sep 28, 2007 at 08:09:06PM +0800, fang zheng wrote:
+> How can I write a programm on host to ptrace processes on uml in SKAS mode  ?
 
-Ah, yes, I missed that point in the horror of my botch last night.
+skas3 or skas0?  Sounds like you're interested in skas3.
 
-I'll add irqsave/irqrestore to the locking - keep this patch, and I'll
-send in a fix.
+But why does it have to be done from the host rather than from inside UML?
+
+> Is there is some examples about ptrace(PTRACE_SWITCH_MM,
+> userspace_pid, 0, mm_fd)?
+
+In UML, sure.  But it looks like you found that.
 
 				Jeff
 
