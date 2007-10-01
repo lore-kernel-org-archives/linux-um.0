@@ -2,16 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IcNn9-0005Ev-86 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Oct 2007 09:06:43 -0700
-Received: from mx1.redhat.com ([66.187.233.31])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IcNn7-00073N-L4
+	id 1IcSje-0004HM-5b for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Oct 2007 14:23:26 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IcSjc-0008Sl-Eq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Oct 2007 09:06:43 -0700
-Date: Mon, 1 Oct 2007 12:06:32 -0400
-From: dhowells@redhat.com
-Message-Id: <200710011606.l91G6Woc028541@pobox.devel.redhat.com>
-Subject: [uml-devel] (no subject)
+	Mon, 01 Oct 2007 14:23:26 -0700
+Date: Mon, 1 Oct 2007 17:23:06 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071001212306.GA10113@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH 1/3] UML - Fix stub address calculations
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,201 +24,590 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: 
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Magotari@gail.com
 
-From dhowells  Mon Oct  1 14: 11:57 2007
-Return-Path: <dhowells@redhat.com>
-Received: from localhost.localdomain [127.0.0.1]
-	by warthog.procyon.org.uk with IMAP (fetchmail-6.3.7)
-	for <dhowells@localhost> (single-drop); Mon, 01 Oct 2007 14:11:57 +0100 (BST)
-Received: from pobox.devel.redhat.com ([unix socket])
-	 by pobox.devel.redhat.com (Cyrus v2.2.12-Invoca-RPM-2.2.12-8.1.RHEL4) with LMTPA;
-	 Mon, 01 Oct 2007 09:11:45 -0400
-X-Sieve: CMU Sieve 2.2
-Received: from warthog.cambridge.redhat.com (devserv.devel.redhat.com [10.10.36.72])
-	by pobox.devel.redhat.com (8.13.1/8.13.1) with ESMTP id l91DBimG031190;
-	Mon, 1 Oct 2007 09:11:45 -0400
-Received: from [127.0.0.1] (helo=warthog.procyon.org.uk)
-	by warthog.cambridge.redhat.com with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IcL3p-0007hp-1L; Mon, 01 Oct 2007 14:11:45 +0100
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-Subject: [PATCH 28/30] IGET: Stop HOSTFS from using iget() and read_inode()
-To: hch@infradead.org, viro@ftp.linux.org.uk, torvalds@osdl.org,
-    akpm@osdl.org
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-    dhowells@redhat.com
-Date: Mon, 01 Oct 2007 14:11:45 +0100
-Message-ID: <20071001131144.29339.30718.stgit@warthog.procyon.org.uk>
-In-Reply-To: <20071001130921.29339.72876.stgit@warthog.procyon.org.uk>
-References: <20071001130921.29339.72876.stgit@warthog.procyon.org.uk>
-User-Agent: StGIT/0.13
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Resent-To: user-mode-linux-devel@lists.sourceforge.net
-Resent-cc: jdike@karaya.com
-Resent-Date: Mon, 01 Oct 2007 17:06:27 +0100
-Resent-Message-ID: <19182.1191254787@redhat.com>
-Resent-From: David Howells <dhowells@redhat.com>
+The calculation of CONFIG_STUB_CODE and CONFIG_STUB_DATA didn't take
+into account anything but 3G/1G and 2G/2G, leaving the other vmsplits
+out in the cold.
 
-Stop the HOSTFS filesystem from using iget() and read_inode().  Provide
-hostfs_iget(), and call that instead of iget().  hostfs_iget() then uses
-iget_locked() directly and returns a proper error code instead of an inode in
-the event of an error.
+I'd rather not duplicate the four known host vmsplit cases for each of
+these symbols.  I'd also like to calculate them based on the highest
+userspace address.
 
-hostfs_fill_sb_common() returns any error incurred when getting the root inode
-instead of EINVAL.
+The Kconfig language seems not to allow calculation of hex constants,
+so I moved this to as-layout.h.  CONFIG_STUB_CODE, CONFIG_STUB_DATA,
+and CONFIG_STUB_START are now gone.  In their place are STUB_CODE,
+STUB_DATA, and STUB_START in as-layout.h.
 
-Note that the contents of hostfs_kern.c need to be examined:
+i386 and x86_64 seem to differ as to whether an unadorned constant is
+an int or a long, so I cast them to unsigned long so they can be
+printed consistently.  However, they are also used in stub.S, where C
+types don't work so well.  So, there are ASM_ versions of these
+constants for use in stub.S.  I also ifdef-ed the non-asm-friendly
+portion of as-layout.h.
 
- (*) hostfs_iget() should perhaps subsume init_inode() and hostfs_read_inode().
+With this in place, most of the rest of this patch is changing
+CONFIG_STUB_* to STUB_*, except in stub.S, where they are changed to
+ASM_STUB_*.
 
- (*) It would appear that all hostfs inodes are the same inode because iget()
-     was being called with inode number 0 - which forms the lookup key.
+defconfig has the old symbols deleted.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
+I also print these addresses out in case there is any problem mapping
+them on the host.
+
+The two stub.S files had some trailing whitespace, so that is cleaned
+up here.
+
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
+ arch/um/Kconfig.i386                 |   14 --------------
+ arch/um/Kconfig.x86_64               |   14 +-------------
+ arch/um/defconfig                    |    3 ---
+ arch/um/include/as-layout.h          |   24 ++++++++++++++++++++++++
+ arch/um/include/sysdep-i386/stub.h   |   11 ++++++-----
+ arch/um/include/sysdep-x86_64/stub.h |   13 +++++++------
+ arch/um/kernel/exec.c                |    3 ++-
+ arch/um/kernel/skas/clone.c          |    6 +++---
+ arch/um/kernel/skas/mmu.c            |    5 +++--
+ arch/um/kernel/skas/process.c        |    2 +-
+ arch/um/kernel/tlb.c                 |    6 +++---
+ arch/um/kernel/um_arch.c             |    2 +-
+ arch/um/os-Linux/skas/mem.c          |    8 ++++----
+ arch/um/os-Linux/skas/process.c      |   21 +++++++++++----------
+ arch/um/sys-i386/stub.S              |    9 +++++----
+ arch/um/sys-i386/stub_segv.c         |    4 ++--
+ arch/um/sys-x86_64/stub.S            |    9 +++++----
+ arch/um/sys-x86_64/stub_segv.c       |    3 ++-
+ 18 files changed, 80 insertions(+), 77 deletions(-)
 
- fs/hostfs/hostfs_kern.c |   58 ++++++++++++++++++++++++++++++++---------------
- 1 files changed, 39 insertions(+), 19 deletions(-)
-
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index c778620..c6a456a 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -208,7 +208,7 @@ static char *follow_link(char *link)
- 	return ERR_PTR(n);
- }
+Index: linux-2.6.22/arch/um/os-Linux/skas/process.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/skas/process.c	2007-10-01 12:16:07.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/skas/process.c	2007-10-01 16:41:26.000000000 -0400
+@@ -191,22 +191,23 @@ static int userspace_tramp(void *stack)
+ 		int fd;
+ 		unsigned long long offset;
+ 		fd = phys_mapping(to_phys(&__syscall_stub_start), &offset);
+-		addr = mmap64((void *) UML_CONFIG_STUB_CODE, UM_KERN_PAGE_SIZE,
++		addr = mmap64((void *) STUB_CODE, UM_KERN_PAGE_SIZE,
+ 			      PROT_EXEC, MAP_FIXED | MAP_PRIVATE, fd, offset);
+ 		if (addr == MAP_FAILED) {
+-			printk(UM_KERN_ERR "mapping mmap stub failed, "
+-			       "errno = %d\n", errno);
++			printk(UM_KERN_ERR "mapping mmap stub at 0x%lx failed, "
++			       "errno = %d\n", STUB_CODE, errno);
+ 			exit(1);
+ 		}
  
--static int read_inode(struct inode *ino)
-+static int hostfs_read_inode(struct inode *ino)
+ 		if (stack != NULL) {
+ 			fd = phys_mapping(to_phys(stack), &offset);
+-			addr = mmap((void *) UML_CONFIG_STUB_DATA,
++			addr = mmap((void *) STUB_DATA,
+ 				    UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
+ 				    MAP_FIXED | MAP_SHARED, fd, offset);
+ 			if (addr == MAP_FAILED) {
+ 				printk(UM_KERN_ERR "mapping segfault stack "
+-				       "failed, errno = %d\n", errno);
++				       "at 0x%lx failed, errno = %d\n",
++				       STUB_DATA, errno);
+ 				exit(1);
+ 			}
+ 		}
+@@ -214,11 +215,11 @@ static int userspace_tramp(void *stack)
+ 	if (!ptrace_faultinfo && (stack != NULL)) {
+ 		struct sigaction sa;
+ 
+-		unsigned long v = UML_CONFIG_STUB_CODE +
++		unsigned long v = STUB_CODE +
+ 				  (unsigned long) stub_segv_handler -
+ 				  (unsigned long) &__syscall_stub_start;
+ 
+-		set_sigstack((void *) UML_CONFIG_STUB_DATA, UM_KERN_PAGE_SIZE);
++		set_sigstack((void *) STUB_DATA, UM_KERN_PAGE_SIZE);
+ 		sigemptyset(&sa.sa_mask);
+ 		sigaddset(&sa.sa_mask, SIGIO);
+ 		sigaddset(&sa.sa_mask, SIGWINCH);
+@@ -382,10 +383,10 @@ static int __init init_thread_regs(void)
  {
- 	char *name;
- 	int err = 0;
-@@ -238,6 +238,25 @@ static int read_inode(struct inode *ino)
- 	return err;
- }
+ 	get_safe_registers(thread_regs);
+ 	/* Set parent's instruction pointer to start of clone-stub */
+-	thread_regs[REGS_IP_INDEX] = UML_CONFIG_STUB_CODE +
++	thread_regs[REGS_IP_INDEX] = STUB_CODE +
+ 				(unsigned long) stub_clone_handler -
+ 				(unsigned long) &__syscall_stub_start;
+-	thread_regs[REGS_SP_INDEX] = UML_CONFIG_STUB_DATA + UM_KERN_PAGE_SIZE -
++	thread_regs[REGS_SP_INDEX] = STUB_DATA + UM_KERN_PAGE_SIZE -
+ 		sizeof(void *);
+ #ifdef __SIGNAL_FRAMESIZE
+ 	thread_regs[REGS_SP_INDEX] -= __SIGNAL_FRAMESIZE;
+@@ -443,7 +444,7 @@ int copy_context_skas0(unsigned long new
+ 	 * child's stack and check it.
+ 	 */
+ 	wait_stub_done(pid);
+-	if (child_data->err != UML_CONFIG_STUB_DATA)
++	if (child_data->err != STUB_DATA)
+ 		panic("copy_context_skas0 - stub-child reports error %ld\n",
+ 		      child_data->err);
  
-+static struct inode *hostfs_iget(struct super_block *sb)
-+{
-+	struct inode *inode;
-+	long ret;
-+
-+	inode = iget_locked(sb, 0);
-+	if (!inode)
-+		return ERR_PTR(-ENOMEM);
-+	if (inode->i_state & I_NEW) {
-+		ret = hostfs_read_inode(inode);
-+		if (ret < 0) {
-+			iget_failed(inode);
-+			return ERR_PTR(ret);
-+		}
-+		unlock_new_inode(inode);
-+	}
-+	return inode;
-+}
-+
- int hostfs_statfs(struct dentry *dentry, struct kstatfs *sf)
- {
- 	/* do_statfs uses struct statfs64 internally, but the linux kernel
-@@ -305,17 +324,11 @@ static void hostfs_destroy_inode(struct inode *inode)
- 	kfree(HOSTFS_I(inode));
- }
+Index: linux-2.6.22/arch/um/Kconfig.i386
+===================================================================
+--- linux-2.6.22.orig/arch/um/Kconfig.i386	2007-07-08 19:32:17.000000000 -0400
++++ linux-2.6.22/arch/um/Kconfig.i386	2007-10-01 13:44:18.000000000 -0400
+@@ -65,20 +65,6 @@ config 3_LEVEL_PGTABLES
+ 	However, this it experimental on 32-bit architectures, so if unsure say
+ 	N (on x86-64 it's automatically enabled, instead, as it's safe there).
  
--static void hostfs_read_inode(struct inode *inode)
--{
--	read_inode(inode);
--}
+-config STUB_CODE
+-	hex
+-	default 0xbfffe000 if !HOST_VMSPLIT_2G
+-	default 0x7fffe000 if HOST_VMSPLIT_2G
 -
- static const struct super_operations hostfs_sbops = {
- 	.alloc_inode	= hostfs_alloc_inode,
- 	.drop_inode	= generic_delete_inode,
- 	.delete_inode   = hostfs_delete_inode,
- 	.destroy_inode	= hostfs_destroy_inode,
--	.read_inode	= hostfs_read_inode,
- 	.statfs		= hostfs_statfs,
- };
+-config STUB_DATA
+-	hex
+-	default 0xbffff000 if !HOST_VMSPLIT_2G
+-	default 0x7ffff000 if HOST_VMSPLIT_2G
+-
+-config STUB_START
+-	hex
+-	default STUB_CODE
+-
+ config ARCH_HAS_SC_SIGNALS
+ 	bool
+ 	default y
+Index: linux-2.6.22/arch/um/include/as-layout.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/as-layout.h	2007-09-27 11:47:22.000000000 -0400
++++ linux-2.6.22/arch/um/include/as-layout.h	2007-10-01 16:41:26.000000000 -0400
+@@ -6,6 +6,28 @@
+ #ifndef __START_H__
+ #define __START_H__
  
-@@ -584,9 +597,11 @@ int hostfs_create(struct inode *dir, struct dentry *dentry, int mode,
- 	char *name;
- 	int error, fd;
++#include "uml-config.h"
++#include "kern_constants.h"
++
++/*
++ * Assembly doesn't want any casting, but C does, so define these
++ * without casts here, and define new symbols with casts inside the C
++ * section.
++ */
++#define ASM_STUB_CODE (UML_CONFIG_TOP_ADDR - 2 * UM_KERN_PAGE_SIZE)
++#define ASM_STUB_DATA (UML_CONFIG_TOP_ADDR - UM_KERN_PAGE_SIZE)
++#define ASM_STUB_START ASM_STUB_CODE
++
++/*
++ * This file is included by the assembly stubs, which just want the
++ * definitions above.
++ */
++#ifndef __ASSEMBLY__
++
++#define STUB_CODE ((unsigned long) ASM_STUB_CODE)
++#define STUB_DATA ((unsigned long) ASM_STUB_DATA)
++#define STUB_START ((unsigned long) ASM_STUB_START)
++
+ #include "sysdep/ptrace.h"
  
--	error = -ENOMEM;
--	inode = iget(dir->i_sb, 0);
--	if(inode == NULL) goto out;
-+	inode = hostfs_iget(dir->i_sb);
-+	if (IS_ERR(inode)) {
-+		error = PTR_ERR(inode);
-+		goto out;
-+	}
+ struct cpu_task {
+@@ -32,3 +54,5 @@ extern int linux_main(int argc, char **a
+ extern void (*sig_info[])(int, struct uml_pt_regs *);
  
- 	error = init_inode(inode, dentry);
- 	if(error)
-@@ -627,10 +642,11 @@ struct dentry *hostfs_lookup(struct inode *ino, struct dentry *dentry,
- 	char *name;
- 	int err;
- 
--	err = -ENOMEM;
--	inode = iget(ino->i_sb, 0);
--	if(inode == NULL)
-+	inode = hostfs_iget(ino->i_sb);
-+	if (IS_ERR(inode)) {
-+		err = PTR_ERR(inode);
- 		goto out;
-+	}
- 
- 	err = init_inode(inode, dentry);
- 	if(err)
-@@ -748,11 +764,13 @@ int hostfs_mknod(struct inode *dir, struct dentry *dentry, int mode, dev_t dev)
+ #endif
++
++#endif
+Index: linux-2.6.22/arch/um/include/sysdep-i386/stub.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/sysdep-i386/stub.h	2007-09-27 11:47:22.000000000 -0400
++++ linux-2.6.22/arch/um/include/sysdep-i386/stub.h	2007-10-01 13:59:56.000000000 -0400
+@@ -9,6 +9,7 @@
+ #include <sys/mman.h>
+ #include <asm/ptrace.h>
+ #include <asm/unistd.h>
++#include "as-layout.h"
+ #include "stub-data.h"
+ #include "kern_constants.h"
+ #include "uml-config.h"
+@@ -89,12 +90,12 @@ static inline void remap_stack(int fd, u
  {
- 	struct inode *inode;
- 	char *name;
--	int err = -ENOMEM;
-+	int err;
+ 	__asm__ volatile ("movl %%eax,%%ebp ; movl %0,%%eax ; int $0x80 ;"
+ 			  "movl %7, %%ebx ; movl %%eax, (%%ebx)"
+-			  : : "g" (STUB_MMAP_NR), "b" (UML_CONFIG_STUB_DATA), 
+-			    "c" (UM_KERN_PAGE_SIZE), 
++			  : : "g" (STUB_MMAP_NR), "b" (STUB_DATA),
++			    "c" (UM_KERN_PAGE_SIZE),
+ 			    "d" (PROT_READ | PROT_WRITE),
+-			    "S" (MAP_FIXED | MAP_SHARED), "D" (fd), 
+-			    "a" (offset), 
+-			    "i" (&((struct stub_data *) UML_CONFIG_STUB_DATA)->err) 
++			    "S" (MAP_FIXED | MAP_SHARED), "D" (fd),
++			    "a" (offset),
++			    "i" (&((struct stub_data *) STUB_DATA)->err)
+ 			  : "memory");
+ }
  
--	inode = iget(dir->i_sb, 0);
--	if(inode == NULL)
-+	inode = hostfs_iget(dir->i_sb);
-+	if (IS_ERR(inode)) {
-+		err = PTR_ERR(inode);
+Index: linux-2.6.22/arch/um/include/sysdep-x86_64/stub.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/sysdep-x86_64/stub.h	2007-07-08 19:32:17.000000000 -0400
++++ linux-2.6.22/arch/um/include/sysdep-x86_64/stub.h	2007-10-01 13:59:40.000000000 -0400
+@@ -9,6 +9,7 @@
+ #include <sys/mman.h>
+ #include <asm/unistd.h>
+ #include <sysdep/ptrace_user.h>
++#include "as-layout.h"
+ #include "stub-data.h"
+ #include "kern_constants.h"
+ #include "uml-config.h"
+@@ -94,13 +95,13 @@ static inline void remap_stack(long fd, 
+ {
+ 	__asm__ volatile ("movq %4,%%r10 ; movq %5,%%r8 ; "
+ 			  "movq %6, %%r9; " __syscall "; movq %7, %%rbx ; "
+-			  "movq %%rax, (%%rbx)": 
+-			  : "a" (STUB_MMAP_NR), "D" (UML_CONFIG_STUB_DATA), 
+-			    "S" (UM_KERN_PAGE_SIZE), 
+-			    "d" (PROT_READ | PROT_WRITE), 
+-                            "g" (MAP_FIXED | MAP_SHARED), "g" (fd), 
++			  "movq %%rax, (%%rbx)":
++			  : "a" (STUB_MMAP_NR), "D" (STUB_DATA),
++			    "S" (UM_KERN_PAGE_SIZE),
++			    "d" (PROT_READ | PROT_WRITE),
++                            "g" (MAP_FIXED | MAP_SHARED), "g" (fd),
+ 			    "g" (offset),
+-			    "i" (&((struct stub_data *) UML_CONFIG_STUB_DATA)->err)
++			    "i" (&((struct stub_data *) STUB_DATA)->err)
+ 			  : __syscall_clobber, "r10", "r8", "r9" );
+ }
+ 
+Index: linux-2.6.22/arch/um/kernel/exec.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/exec.c	2007-09-27 11:51:43.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/exec.c	2007-10-01 13:46:06.000000000 -0400
+@@ -11,6 +11,7 @@
+ #include "asm/current.h"
+ #include "asm/processor.h"
+ #include "asm/uaccess.h"
++#include "as-layout.h"
+ #include "mem_user.h"
+ #include "skas.h"
+ #include "os.h"
+@@ -18,7 +19,7 @@
+ void flush_thread(void)
+ {
+ 	void *data = NULL;
+-	unsigned long end = proc_mm ? task_size : CONFIG_STUB_START;
++	unsigned long end = proc_mm ? task_size : STUB_START;
+ 	int ret;
+ 
+ 	arch_flush_thread(&current->thread.arch);
+Index: linux-2.6.22/arch/um/kernel/skas/clone.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/skas/clone.c	2007-09-27 11:51:43.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/skas/clone.c	2007-10-01 13:49:09.000000000 -0400
+@@ -4,6 +4,7 @@
+ #include <sys/time.h>
+ #include <asm/unistd.h>
+ #include <asm/page.h>
++#include "as-layout.h"
+ #include "ptrace_user.h"
+ #include "skas.h"
+ #include "stub-data.h"
+@@ -21,12 +22,11 @@
+ void __attribute__ ((__section__ (".__syscall_stub")))
+ stub_clone_handler(void)
+ {
+-	struct stub_data *data = (struct stub_data *) UML_CONFIG_STUB_DATA;
++	struct stub_data *data = (struct stub_data *) STUB_DATA;
+ 	long err;
+ 
+ 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
+-			    UML_CONFIG_STUB_DATA + UM_KERN_PAGE_SIZE / 2 -
+-			    sizeof(void *));
++			    STUB_DATA + UM_KERN_PAGE_SIZE / 2 - sizeof(void *));
+ 	if(err != 0)
  		goto out;
-+	}
  
- 	err = init_inode(inode, dentry);
- 	if(err)
-@@ -973,9 +991,11 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
+Index: linux-2.6.22/arch/um/kernel/skas/mmu.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/skas/mmu.c	2007-09-27 11:51:44.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/skas/mmu.c	2007-10-01 13:49:50.000000000 -0400
+@@ -7,6 +7,7 @@
+ #include "linux/sched.h"
+ #include "asm/pgalloc.h"
+ #include "asm/pgtable.h"
++#include "as-layout.h"
+ #include "os.h"
+ #include "skas.h"
  
- 	sprintf(host_root_path, "%s/%s", root_ino, req_root);
+@@ -83,12 +84,12 @@ int init_new_context(struct task_struct 
+ 		 */
+ 		mm->pgd[USER_PTRS_PER_PGD] = __pgd(0);
  
--	root_inode = iget(sb, 0);
--	if(root_inode == NULL)
-+	root_inode = hostfs_iget(sb);
-+	if (IS_ERR(root_inode)) {
-+		err = PTR_ERR(root_inode);
- 		goto out_free;
-+	}
+-		ret = init_stub_pte(mm, CONFIG_STUB_CODE,
++		ret = init_stub_pte(mm, STUB_CODE,
+ 				    (unsigned long) &__syscall_stub_start);
+ 		if (ret)
+ 			goto out_free;
  
- 	err = init_inode(root_inode, NULL);
- 	if(err)
-@@ -991,7 +1011,7 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 	if(sb->s_root == NULL)
- 		goto out_put;
+-		ret = init_stub_pte(mm, CONFIG_STUB_DATA, stack);
++		ret = init_stub_pte(mm, STUB_DATA, stack);
+ 		if (ret)
+ 			goto out_free;
  
--	err = read_inode(root_inode);
-+	err = hostfs_read_inode(root_inode);
- 	if(err){
- 		/* No iput in this case because the dput does that for us */
- 		dput(sb->s_root);
-
+Index: linux-2.6.22/arch/um/kernel/skas/process.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/skas/process.c	2007-09-27 11:51:43.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/skas/process.c	2007-10-01 13:50:12.000000000 -0400
+@@ -18,7 +18,7 @@ int new_mm(unsigned long stack)
+ 		return fd;
+ 
+ 	if (skas_needs_stub)
+-		map_stub_pages(fd, CONFIG_STUB_CODE, CONFIG_STUB_DATA, stack);
++		map_stub_pages(fd, STUB_CODE, STUB_DATA, stack);
+ 
+ 	return fd;
+ }
+Index: linux-2.6.22/arch/um/kernel/tlb.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/tlb.c	2007-09-27 11:47:22.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/tlb.c	2007-10-01 13:46:37.000000000 -0400
+@@ -485,8 +485,8 @@ void __flush_tlb_one(unsigned long addr)
+ static void fix_range(struct mm_struct *mm, unsigned long start_addr,
+ 		      unsigned long end_addr, int force)
+ {
+-	if (!proc_mm && (end_addr > CONFIG_STUB_START))
+-		end_addr = CONFIG_STUB_START;
++	if (!proc_mm && (end_addr > STUB_START))
++		end_addr = STUB_START;
+ 
+ 	fix_range_common(mm, start_addr, end_addr, force);
+ }
+@@ -510,7 +510,7 @@ void flush_tlb_mm(struct mm_struct *mm)
+ 	if (atomic_read(&mm->mm_users) == 0)
+ 		return;
+ 
+-	end = proc_mm ? task_size : CONFIG_STUB_START;
++	end = proc_mm ? task_size : STUB_START;
+ 	fix_range(mm, 0, end, 0);
+ }
+ 
+Index: linux-2.6.22/arch/um/kernel/um_arch.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/um_arch.c	2007-10-01 12:16:06.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/um_arch.c	2007-10-01 13:46:55.000000000 -0400
+@@ -242,7 +242,7 @@ static unsigned long set_task_sizes_skas
+ 
+ 	if (!skas_needs_stub)
+ 		*task_size_out = host_task_size;
+-	else *task_size_out = CONFIG_STUB_START & PGDIR_MASK;
++	else *task_size_out = STUB_START & PGDIR_MASK;
+ 
+ 	return host_task_size;
+ }
+Index: linux-2.6.22/arch/um/os-Linux/skas/mem.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/skas/mem.c	2007-09-27 11:51:43.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/skas/mem.c	2007-10-01 13:51:13.000000000 -0400
+@@ -10,6 +10,7 @@
+ #include <sys/mman.h>
+ #include "init.h"
+ #include "kern_constants.h"
++#include "as-layout.h"
+ #include "mm_id.h"
+ #include "os.h"
+ #include "proc_mm.h"
+@@ -40,7 +41,7 @@ static unsigned long syscall_regs[MAX_RE
+ static int __init init_syscall_regs(void)
+ {
+ 	get_safe_registers(syscall_regs);
+-	syscall_regs[REGS_IP_INDEX] = UML_CONFIG_STUB_CODE +
++	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
+ 		((unsigned long) &batch_syscall_stub -
+ 		 (unsigned long) &__syscall_stub_start);
+ 	return 0;
+@@ -93,8 +94,7 @@ static inline long do_syscall_stub(struc
+ 	ret = *((unsigned long *) mm_idp->stack);
+ 	offset = *((unsigned long *) mm_idp->stack + 1);
+ 	if (offset) {
+-		data = (unsigned long *)(mm_idp->stack +
+-					 offset - UML_CONFIG_STUB_DATA);
++		data = (unsigned long *)(mm_idp->stack + offset - STUB_DATA);
+ 		printk(UM_KERN_ERR "do_syscall_stub : ret = %ld, offset = %ld, "
+ 		       "data = %p\n", ret, offset, data);
+ 		syscall = (unsigned long *)((unsigned long)data + data[0]);
+@@ -182,7 +182,7 @@ long syscall_stub_data(struct mm_id * mm
+ 	memcpy(stack + 1, data, data_count * sizeof(long));
+ 
+ 	*stub_addr = (void *)(((unsigned long)(stack + 1) &
+-			       ~UM_KERN_PAGE_MASK) + UML_CONFIG_STUB_DATA);
++			       ~UM_KERN_PAGE_MASK) + STUB_DATA);
+ 
+ 	return 0;
+ }
+Index: linux-2.6.22/arch/um/sys-i386/stub.S
+===================================================================
+--- linux-2.6.22.orig/arch/um/sys-i386/stub.S	2007-07-08 19:32:17.000000000 -0400
++++ linux-2.6.22/arch/um/sys-i386/stub.S	2007-10-01 16:41:26.000000000 -0400
+@@ -1,4 +1,5 @@
+ #include "uml-config.h"
++#include "as-layout.h"
+ 
+ 	.globl syscall_stub
+ .section .__syscall_stub, "x"
+@@ -6,7 +7,7 @@
+ 	.globl batch_syscall_stub
+ batch_syscall_stub:
+ 	/* load pointer to first operation */
+-	mov	$(UML_CONFIG_STUB_DATA+8), %esp
++	mov	$(ASM_STUB_DATA+8), %esp
+ 
+ again:
+ 	/* load length of additional data */
+@@ -14,12 +15,12 @@ again:
+ 
+ 	/* if(length == 0) : end of list */
+ 	/* write possible 0 to header */
+-	mov	%eax, UML_CONFIG_STUB_DATA+4
++	mov	%eax, ASM_STUB_DATA+4
+ 	cmpl	$0, %eax
+ 	jz	done
+ 
+ 	/* save current pointer */
+-	mov	%esp, UML_CONFIG_STUB_DATA+4
++	mov	%esp, ASM_STUB_DATA+4
+ 
+ 	/* skip additional data */
+ 	add	%eax, %esp
+@@ -45,7 +46,7 @@ again:
+ 
+ done:
+ 	/* save return value */
+-	mov	%eax, UML_CONFIG_STUB_DATA
++	mov	%eax, ASM_STUB_DATA
+ 
+ 	/* stop */
+ 	int3
+Index: linux-2.6.22/arch/um/sys-i386/stub_segv.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/sys-i386/stub_segv.c	2007-07-08 19:32:17.000000000 -0400
++++ linux-2.6.22/arch/um/sys-i386/stub_segv.c	2007-10-01 13:53:18.000000000 -0400
+@@ -6,6 +6,7 @@
+ #include <signal.h>
+ #include <sys/select.h> /* The only way I can see to get sigset_t */
+ #include <asm/unistd.h>
++#include "as-layout.h"
+ #include "uml-config.h"
+ #include "sysdep/stub.h"
+ #include "sysdep/sigcontext.h"
+@@ -17,8 +18,7 @@ stub_segv_handler(int sig)
+ 	struct sigcontext *sc = (struct sigcontext *) (&sig + 1);
+ 	int pid;
+ 
+-	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) UML_CONFIG_STUB_DATA),
+-			      sc);
++	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) STUB_DATA), sc);
+ 
+ 	pid = stub_syscall0(__NR_getpid);
+ 	stub_syscall2(__NR_kill, pid, SIGUSR1);
+Index: linux-2.6.22/arch/um/sys-x86_64/stub.S
+===================================================================
+--- linux-2.6.22.orig/arch/um/sys-x86_64/stub.S	2007-07-08 19:32:17.000000000 -0400
++++ linux-2.6.22/arch/um/sys-x86_64/stub.S	2007-10-01 16:41:26.000000000 -0400
+@@ -1,4 +1,5 @@
+ #include "uml-config.h"
++#include "as-layout.h"
+ 
+ 	.globl syscall_stub
+ .section .__syscall_stub, "x"
+@@ -7,18 +8,18 @@ syscall_stub:
+ 	/* We don't have 64-bit constants, so this constructs the address
+ 	 * we need.
+ 	 */
+-	movq	$(UML_CONFIG_STUB_DATA >> 32), %rbx
++	movq	$(ASM_STUB_DATA >> 32), %rbx
+ 	salq	$32, %rbx
+-	movq	$(UML_CONFIG_STUB_DATA & 0xffffffff), %rcx
++	movq	$(ASM_STUB_DATA & 0xffffffff), %rcx
+ 	or	%rcx, %rbx
+ 	movq	%rax, (%rbx)
+ 	int3
+ 
+ 	.globl batch_syscall_stub
+ batch_syscall_stub:
+-	mov	$(UML_CONFIG_STUB_DATA >> 32), %rbx
++	mov	$(ASM_STUB_DATA >> 32), %rbx
+ 	sal	$32, %rbx
+-	mov	$(UML_CONFIG_STUB_DATA & 0xffffffff), %rax
++	mov	$(ASM_STUB_DATA & 0xffffffff), %rax
+ 	or	%rax, %rbx
+ 	/* load pointer to first operation */
+ 	mov	%rbx, %rsp
+Index: linux-2.6.22/arch/um/sys-x86_64/stub_segv.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/sys-x86_64/stub_segv.c	2007-07-08 19:32:17.000000000 -0400
++++ linux-2.6.22/arch/um/sys-x86_64/stub_segv.c	2007-10-01 13:53:39.000000000 -0400
+@@ -6,6 +6,7 @@
+ #include <stddef.h>
+ #include <signal.h>
+ #include <asm/unistd.h>
++#include "as-layout.h"
+ #include "uml-config.h"
+ #include "sysdep/sigcontext.h"
+ #include "sysdep/faultinfo.h"
+@@ -33,7 +34,7 @@ stub_segv_handler(int sig)
+         int pid;
+ 
+ 	__asm__ __volatile__("movq %%rdx, %0" : "=g" (uc) :);
+-	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) UML_CONFIG_STUB_DATA),
++	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) STUB_DATA),
+ 			      &uc->uc_mcontext);
+ 
+ 	pid = stub_syscall0(__NR_getpid);
+Index: linux-2.6.22/arch/um/Kconfig.x86_64
+===================================================================
+--- linux-2.6.22.orig/arch/um/Kconfig.x86_64	2007-09-27 11:51:43.000000000 -0400
++++ linux-2.6.22/arch/um/Kconfig.x86_64	2007-10-01 16:41:26.000000000 -0400
+@@ -17,24 +17,12 @@ config SEMAPHORE_SLEEPERS
+ 
+ config TOP_ADDR
+  	hex
+-	default 0x80000000
++	default 0x7fc0000000
+ 
+ config 3_LEVEL_PGTABLES
+        bool
+        default y
+ 
+-config STUB_CODE
+-	hex
+-	default 0x7fbfffe000
+-
+-config STUB_DATA
+-	hex
+-	default 0x7fbffff000
+-
+-config STUB_START
+-	hex
+-	default STUB_CODE
+-
+ config ARCH_HAS_SC_SIGNALS
+ 	bool
+ 	default n
+Index: linux-2.6.22/arch/um/defconfig
+===================================================================
+--- linux-2.6.22.orig/arch/um/defconfig	2007-09-27 16:21:00.000000000 -0400
++++ linux-2.6.22/arch/um/defconfig	2007-10-01 16:56:15.000000000 -0400
+@@ -59,9 +59,6 @@ CONFIG_SEMAPHORE_SLEEPERS=y
+ # CONFIG_HOST_2G_2G is not set
+ CONFIG_TOP_ADDR=0xc0000000
+ # CONFIG_3_LEVEL_PGTABLES is not set
+-CONFIG_STUB_CODE=0xbfffe000
+-CONFIG_STUB_DATA=0xbffff000
+-CONFIG_STUB_START=0xbfffe000
+ CONFIG_ARCH_HAS_SC_SIGNALS=y
+ CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA=y
+ CONFIG_GENERIC_HWEIGHT=y
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
