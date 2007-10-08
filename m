@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IeuCp-0006aa-El for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Oct 2007 08:07:39 -0700
+	id 1IeuqV-0004Ri-AM for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 08 Oct 2007 08:48:39 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IeuCo-0001Oy-Tw
+	(Exim 4.44) id 1IeuqS-0003CU-Ki
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 Oct 2007 08:07:39 -0700
-Date: Mon, 8 Oct 2007 11:07:24 -0400
+	Mon, 08 Oct 2007 08:48:38 -0700
+Date: Mon, 8 Oct 2007 11:47:53 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071008150724.GE5279@c2.user-mode-linux.org>
-References: <200710041438.57150.rrs@researchut.com>
+Message-ID: <20071008154753.GA6495@c2.user-mode-linux.org>
+References: <20071001212306.GA10113@c2.user-mode-linux.org>
+	<Pine.LNX.4.64.0710020841411.28398@anakin>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200710041438.57150.rrs@researchut.com>
-Subject: Re: [uml-devel] SKAS as a module
+In-Reply-To: <Pine.LNX.4.64.0710020841411.28398@anakin>
+Subject: Re: [uml-devel] [PATCH 1/3] UML - Fix stub address calculations
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,27 +31,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Ritesh Raj Sarraf <rrs@researchut.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Magotari@gail.com
 
-On Thu, Oct 04, 2007 at 02:38:51PM +0530, Ritesh Raj Sarraf wrote:
-> Performance of UML improves a lot when used with SKAS. But SKAS is not in the 
-> standard kernels shipped by most distributions. Probably because it isn't 
-> included upstream.
+On Tue, Oct 02, 2007 at 08:43:00AM +0200, Geert Uytterhoeven wrote:
+> Hmm, perhaps you can use _AC() (from <linux/const.h>) to defined the original
+> constants instead, so you don't need the #ifdefs?
 
-Probably, although it is in SuSE kernels.
-
-> Is there a possibility of turning the patch to be used as a kernel module ?
-> If yes, I guess distributors will be able to ship it separately. And users 
-> will be able to use it with their standard kernels shipped by the 
-> distributors.
-
-It has been done, a long time ago.  I think the major problem is that
-there are interfaces that the skas module would need to call that
-aren't exported to modules.
-
-This being the case, there would need to be a patch to the kernel to
-export those interfaces as well as the actual module.
+Ah, neat.  Those are exactly what I need.
 
 				Jeff
 
