@@ -1,28 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Iibck-0006j4-IT for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Oct 2007 13:05:42 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Iibch-0005we-FC
+	id 1IicJj-0002im-NW for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Oct 2007 13:50:07 -0700
+Received: from wa-out-1112.google.com ([209.85.146.176])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IicJi-0002sc-Hd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Oct 2007 13:05:42 -0700
-Date: Thu, 18 Oct 2007 16:04:32 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071018200432.GA9204@c2.user-mode-linux.org>
-References: <1f154f440710161936h4800b0c5nb3140ff504212625@mail.gmail.com>
-	<20071017155504.GD9497@c2.user-mode-linux.org>
-	<1f154f440710170916j4fdb857fw40c9b2fd2b66f63f@mail.gmail.com>
-	<20071017171920.GA10388@c2.user-mode-linux.org>
-	<1f154f440710171243x40898f8bq386c91c59789fb42@mail.gmail.com>
-	<20071017204527.GB12812@c2.user-mode-linux.org>
-	<1f154f440710171629meb5a3ces92b8fdeacc371857@mail.gmail.com>
-Mime-Version: 1.0
+	Thu, 18 Oct 2007 13:50:07 -0700
+Received: by wa-out-1112.google.com with SMTP id k22so544972waf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 18 Oct 2007 13:50:06 -0700 (PDT)
+Message-ID: <ea9232d10710181350v1330e008w2b2cd436602025c5@mail.gmail.com>
+Date: Thu, 18 Oct 2007 22:50:05 +0200
+From: Magotari <magotari@gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1f154f440710171629meb5a3ces92b8fdeacc371857@mail.gmail.com>
-Subject: Re: [uml-devel] Dramatic drop in C3 state residency with NO_HZ patches
+Subject: [uml-devel] [PATCH] UML: Gprof needs frame pointers.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,36 +30,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Hrishikesh <hrishikesh.amur@gmail.com>
+To: jdike@addtoit.com
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Oct 17, 2007 at 07:29:47PM -0400, Hrishikesh wrote:
-> No, I think I haven't been clear enough. The story is right :-) When it is
-> "busy-looping" like in the second case is when the C3 residency comes down,
-> as expected. Like you said, it looks broken, and has to be fixed.
+This is a short Kconfig fix for a problem in User Mode Linux.
+Frame pointers are required for gprof support to work.
 
-Yes, your original post was a bit confusing:
+Karol Swietlicki
 
-> This happens when you run a
-> patched kernel but without the NO_HZ and HR timers options disabled.
+Signed-off-by: Karol Swietlicki <magotari@gmail.com>
 
-To my highly logical mind, that double-negative says that you saw the
-C3 drop with NO_HZ and hrtimers enabled.
+---
 
-There was also this, which I paid insufficient attention to:
+--- linux-2.6.23-mm1/arch/um/Kconfig.debug	2007-10-18 22:24:13.000000000 +0200
++++ linux-2.6.23-mm1.local/arch/um/Kconfig.debug	2007-10-18
+22:04:04.000000000 +0200
+@@ -4,7 +4,7 @@
 
-> This does not happen when the tickless option _is_ enabled.
-
-However, it does look like the tickless support induces UML into a
-busy loop when NO_HZ is disabled.
-
-BTW, can you measure C3 time with a before-NO_HZ UML, so we can see
-that NO_HZ has some sort of benefit on power consumption?
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+ config GPROF
+ 	bool "Enable gprof support"
+-	depends on DEBUG_INFO
++	depends on DEBUG_INFO && FRAME_POINTER
+ 	help
+ 	  This allows profiling of a User-Mode Linux kernel with the gprof
+ 	  utility.
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
