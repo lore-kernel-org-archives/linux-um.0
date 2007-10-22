@@ -2,15 +2,15 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ik6fT-000539-O3 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 16:26:44 -0700
+	id 1Ik784-0007q7-PE for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Oct 2007 16:56:17 -0700
 Received: from gw.goop.org ([64.81.55.164] helo=mail.goop.org)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ik6fT-0006t3-BS
+	(Exim 4.44) id 1Ik783-0007X9-Gq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 16:26:43 -0700
-Message-ID: <471D31B2.6060009@goop.org>
-Date: Mon, 22 Oct 2007 16:26:42 -0700
+	Mon, 22 Oct 2007 16:56:16 -0700
+Message-ID: <471D389E.40609@goop.org>
+Date: Mon, 22 Oct 2007 16:56:14 -0700
 From: Jeremy Fitzhardinge <jeremy@goop.org>
 MIME-Version: 1.0
 References: <20071022061245.GG2998@hacking> <87d4v7fy5i.fsf@hades.wkstn.nix>
@@ -56,10 +56,10 @@ Ingo Molnar wrote:
 >>     
 >
 > yes, yes, yes. :-) It was a nightmare to sort it out in -rt (and still 
-> is). It's also good documentation - it pinpoints functions that are 
-> called from assembly.
->
->   
+> is). 
+
+Do you have a patch to do this already?
+
 >> Andi argued we should remove them since x86 is unconditionally regparm 
 >> now anyway - and they're pretty ugly syntactically.
 >>     
@@ -67,12 +67,9 @@ Ingo Molnar wrote:
 > Sure, it doesnt make things prettier, but i didnt see any particular 
 > ugliness.
 
-One thought I had is that "fastcall" doesn't really mean the right
-thing.  The speed or otherwise of the call is a side-effect, but what we
-really mean is something like "regparm".  Ie, document the actual
-calling convention used, rather than an effect of the calling convention.
-
-I guess "fastcall" has enough history now.
+Hm, how can we get gcc to complain about inconsistent use of fastcall? 
+It doesn't generate any warnings if the function and its pointer are
+inconsistent, presumably because everything is regparm(3) anyway...
 
     J
 
