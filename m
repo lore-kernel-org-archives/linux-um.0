@@ -2,26 +2,28 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IjrEs-0002m0-Ve for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Oct 2007 23:58:16 -0700
-Received: from pasmtpa.tele.dk ([80.160.77.114])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IjrEr-0006Ng-K1
+	id 1Ijrh1-0005Rl-Tz for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Oct 2007 00:27:25 -0700
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Ijrgz-00084t-3n
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Oct 2007 23:58:14 -0700
-Date: Mon, 22 Oct 2007 08:59:43 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
-Message-ID: <20071022065943.GC10864@uranus.ravnborg.org>
-References: <87y7dyhv2u.fsf@hades.wkstn.nix> <20071021114854.GF2455@hacking>
+	Mon, 22 Oct 2007 00:27:19 -0700
+Date: Mon, 22 Oct 2007 08:27:09 +0100
+From: Al Viro <viro@ftp.linux.org.uk>
+Message-ID: <20071022072709.GZ8181@ftp.linux.org.uk>
+References: <200710111754.46854.rob@landley.net>
+	<200710200252.37919.p.giarrusso@gmail.com>
+	<87y7dyhv2u.fsf@hades.wkstn.nix> <20071021114854.GF2455@hacking>
 	<20071021130848.GA4621@c2.user-mode-linux.org>
 	<20071021132031.GI2455@hacking>
 	<20071021154346.GW8181@ftp.linux.org.uk>
 	<20071022043746.GF2998@hacking>
 	<20071022052214.GY8181@ftp.linux.org.uk>
-	<20071022061245.GG2998@hacking> <87d4v7fy5i.fsf@hades.wkstn.nix>
-	<20071022065202.GI2998@hacking>
+	<20071022061245.GG2998@hacking>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071022065202.GI2998@hacking>
+In-Reply-To: <20071022061245.GG2998@hacking>
 Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -37,36 +39,32 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, Al Viro <viro@ftp.linux.org.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>
 
-On Mon, Oct 22, 2007 at 02:52:02PM +0800, WANG Cong wrote:
-> On Mon, Oct 22, 2007 at 07:42:33AM +0100, Nix wrote:
-> >On 22 Oct 2007, WANG Cong uttered the following:
-> >> I build UML for non-SMP x86. But I don't know about UML_NET_VDE. ;(
-> >>
-> >> Errors threw out by gcc (too many) are put here:
-> >> 	http://wangcong.org/down/errors.txt
-> >
-> >It's hard to tell without LOCALE=C, but those are the sorts of results
-> >I'd expect if you had run make {old,menu,x}config without specifying
-> >ARCH=um, so you've configured for one architecture and are now trying
-> >to build another.
-> >
-> >Where is the include/asm symlink pointing to in your build tree?
+On Mon, Oct 22, 2007 at 02:12:46PM +0800, WANG Cong wrote:
+> I build UML for non-SMP x86. But I don't know about UML_NET_VDE. ;(
 > 
-> $ ls -l include/asm
-> lrwxrwxrwx 1 wangcong wangcong 6 2007-10-22 12:34 include/asm -> asm-um
+> Errors threw out by gcc (too many) are put here:
+> 	http://wangcong.org/down/errors.txt
 > 
-> OK. Let me do the following:
+> And my .config is located here:
+> 	http://wangcong.org/down/dot_config
 > 
-> 	$ make mrproper
+> (Errors look like same as without your patch.)
 
-Please try
-make ARCH=um mrproper
+Er...  That patch is on top of the current mainline, including
+commit 2b8232ce512105e28453f301d1510de8363bccd1.  Check if what
+you are applying it against the recent tree.  By the look of your
+build log you are missing
+-       $(Q)ln -fsn $(srctree)/include/asm-$(SUBARCH) include/asm-um/arch
++       $(Q)ln -fsn $(srctree)/include/asm-$(HEADER_ARCH) include/asm-um/arch
+ else
+-       $(Q)cd $(TOPDIR)/include/asm-um && ln -sf ../asm-$(SUBARCH) arch
++       $(Q)cd $(TOPDIR)/include/asm-um && ln -sf ../asm-$(HEADER_ARCH) arch
+in arch/um/Makefile.
 
-this will clean up the additional uml symlinks.
+That, or you simply need to do make mrproper...
 
-	Sam
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
