@@ -1,19 +1,14 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ijqaz-0007Na-Q6 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Oct 2007 23:17:01 -0700
-Received: from ag-out-0708.google.com ([72.14.246.245])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ijqaw-0006B2-Al
+	id 1Ijr0I-0001O5-0A for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 21 Oct 2007 23:43:11 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user26962)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ijr0G-0001ga-9W
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Oct 2007 23:17:01 -0700
-Received: by ag-out-0708.google.com with SMTP id 23so2141046agd
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 21 Oct 2007 23:16:57 -0700 (PDT)
-Date: Mon, 22 Oct 2007 14:12:46 +0800
-From: WANG Cong <xiyou.wangcong@gmail.com>
-Message-ID: <20071022061245.GG2998@hacking>
+	Sun, 21 Oct 2007 23:43:09 -0700
 References: <200710111754.46854.rob@landley.net>
 	<200710200252.37919.p.giarrusso@gmail.com>
 	<87y7dyhv2u.fsf@hades.wkstn.nix> <20071021114854.GF2455@hacking>
@@ -22,11 +17,14 @@ References: <200710111754.46854.rob@landley.net>
 	<20071021154346.GW8181@ftp.linux.org.uk>
 	<20071022043746.GF2998@hacking>
 	<20071022052214.GY8181@ftp.linux.org.uk>
+	<20071022061245.GG2998@hacking>
+From: Nix <nix@esperi.org.uk>
+Date: Mon, 22 Oct 2007 07:42:33 +0100
+In-Reply-To: <20071022061245.GG2998@hacking> (WANG Cong's message of "Mon,
+	22 Oct 2007 14:12:46 +0800")
+Message-ID: <87d4v7fy5i.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20071022052214.GY8181@ftp.linux.org.uk>
-Subject: Re: [uml-devel] User Mode Linux still doesn't build in	2.6.23-final.
-Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
+Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,38 +38,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Al Viro <viro@ftp.linux.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, WANG Cong <xiyou.wangcong@gmail.com>
+To: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Rob Landley <rob@landley.net>, Al Viro <viro@ftp.linux.org.uk>
 
-On Mon, Oct 22, 2007 at 06:22:14AM +0100, Al Viro wrote:
->On Mon, Oct 22, 2007 at 12:37:46PM +0800, WANG Cong wrote:
->> >Fallout continues; I've got a preliminary patch for it.  Basically, we
->> >need to stop doing -U__i386__ et.al.
->> >
->> 
->> Hi, Al.
->> 
->> I applied your patch and recompiled the kernel. But it failed again.
->> ;(
+On 22 Oct 2007, WANG Cong uttered the following:
+> I build UML for non-SMP x86. But I don't know about UML_NET_VDE. ;(
 >
->Details would be welcome...  Notes: SMP on UML is no more; UML_NET_VDE
->depends on having some userland library installed.  Aside of those two
->it ought to build.
->
->Build log on failing build would be nice, along with .config.
+> Errors threw out by gcc (too many) are put here:
+> 	http://wangcong.org/down/errors.txt
 
-I build UML for non-SMP x86. But I don't know about UML_NET_VDE. ;(
+It's hard to tell without LOCALE=C, but those are the sorts of results
+I'd expect if you had run make {old,menu,x}config without specifying
+ARCH=um, so you've configured for one architecture and are now trying
+to build another.
 
-Errors threw out by gcc (too many) are put here:
-	http://wangcong.org/down/errors.txt
+Where is the include/asm symlink pointing to in your build tree?
 
-And my .config is located here:
-	http://wangcong.org/down/dot_config
-
-(Errors look like same as without your patch.)
+(FWIW I get a coredump if I try to use the skas patch, but with noprocmm
+UML in 2.6.23.1 builds and runs perfectly well on x86-32. I haven't
+tried 2.6.23, but I see no reason why it should act any differently.)
 
 -- 
-May the Source Be With You.
+`Some people don't think performance issues are "real bugs", and I think 
+such people shouldn't be allowed to program.' --- Linus Torvalds
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
