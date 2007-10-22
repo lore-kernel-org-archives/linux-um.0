@@ -2,26 +2,29 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ik3pZ-0004G7-Rx for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 13:24:57 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1Ik6TY-0003y4-3u for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Oct 2007 16:14:24 -0700
+Received: from gw.goop.org ([64.81.55.164] helo=mail.goop.org)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ik3pZ-0000ck-0O
+	(Exim 4.44) id 1Ik6TV-0006Ef-Lk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 13:24:57 -0700
-Date: Mon, 22 Oct 2007 16:24:06 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071022202406.GA9556@c2.user-mode-linux.org>
-References: <200710111754.46854.rob@landley.net>
-	<200710200252.37919.p.giarrusso@gmail.com>
-	<87y7dyhv2u.fsf@hades.wkstn.nix> <20071021114854.GF2455@hacking>
-	<20071021130848.GA4621@c2.user-mode-linux.org>
-	<20071021132031.GI2455@hacking>
-	<20071021154346.GW8181@ftp.linux.org.uk>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20071021154346.GW8181@ftp.linux.org.uk>
-Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
+	Mon, 22 Oct 2007 16:14:23 -0700
+Message-ID: <471D2ECC.6090209@goop.org>
+Date: Mon, 22 Oct 2007 16:14:20 -0700
+From: Jeremy Fitzhardinge <jeremy@goop.org>
+MIME-Version: 1.0
+References: <20071022043746.GF2998@hacking>
+	<20071022052214.GY8181@ftp.linux.org.uk>
+	<20071022061245.GG2998@hacking> <87d4v7fy5i.fsf@hades.wkstn.nix>
+	<20071022065202.GI2998@hacking>
+	<20071022065943.GC10864@uranus.ravnborg.org>
+	<20071022074823.GJ2998@hacking>
+	<20071022113600.GA8181@ftp.linux.org.uk>
+	<20071022122504.GL2998@hacking>
+	<20071022124322.GB8181@ftp.linux.org.uk>
+	<20071022124551.GA7438@elte.hu>
+In-Reply-To: <20071022124551.GA7438@elte.hu>
+Subject: Re: [uml-devel] User Mode Linux still doesn't build in	2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,50 +38,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Al Viro <viro@ftp.linux.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, WANG Cong <xiyou.wangcong@gmail.com>
+To: Ingo Molnar <mingo@elte.hu>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, Al Viro <viro@ftp.linux.org.uk>, WANG Cong <xiyou.wangcong@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
 
-On Sun, Oct 21, 2007 at 04:43:46PM +0100, Al Viro wrote:
-> Fallout continues; I've got a preliminary patch for it.  Basically, we
-> need to stop doing -U__i386__ et.al.
+Ingo Molnar wrote:
+> we should kill it there too.
+>
+> the only place where we should _please_ keep those annotations are for 
+> functions that get called from assembly code. This makes life immensely 
+> easier for -pg (CONFIG_FUNCTION_TRACING) kernels.
 
-Thanks, Al.  You need the patch below in order to get a working UML -
-feel free to fold it into this.
+Should we re-add them for the function pointers in asm-x86/paravirt.h? 
+Andi argued we should remove them since x86 is unconditionally regparm
+now anyway - and they're pretty ugly syntactically.
 
-				Jeff
+    J
 
--- 
-Work email - jdike at linux dot intel dot com
-
-
-KERNEL_DEFINES needs whitespace trimmed, otherwise this whitespace
-crunching done by make fools the patsubst which is used to remove
-KERNEL_DEFINES from USER_CFLAGS.
-
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
----
- arch/um/Makefile |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-Index: linux-2.6/arch/um/Makefile
-===================================================================
---- linux-2.6.orig/arch/um/Makefile	2007-10-22 16:19:38.000000000 -0400
-+++ linux-2.6/arch/um/Makefile	2007-10-22 16:19:44.000000000 -0400
-@@ -70,9 +70,12 @@ include $(srctree)/$(ARCH_DIR)/Makefile-
- # in KBUILD_CFLAGS.  Otherwise, it would cause ld to complain about the two different
- # errnos.
- # These apply to kernelspace only.
-+#
-+# strip leading and trailing whitespace to make the USER_CFLAGS removal of these
-+# defines more robust
- 
--KERNEL_DEFINES = -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
--	-Dmktime=kernel_mktime $(ARCH_KERNEL_DEFINES)
-+KERNEL_DEFINES = $(strip -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
-+			 -Dmktime=kernel_mktime $(ARCH_KERNEL_DEFINES))
- KBUILD_CFLAGS += $(KERNEL_DEFINES)
- KBUILD_CFLAGS += $(call cc-option,-fno-unit-at-a-time,)
- 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
