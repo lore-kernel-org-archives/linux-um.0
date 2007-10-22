@@ -2,29 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IjzIi-0005kN-Ps for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 08:34:45 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IjzIf-0000NH-V7
+	id 1Ik2y8-0007F9-LD for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Oct 2007 12:29:45 -0700
+Received: from wa-out-1112.google.com ([209.85.146.176])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ik2y6-0000eT-5l
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 08:34:44 -0700
-Date: Mon, 22 Oct 2007 11:33:43 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071022153343.GA7117@c2.user-mode-linux.org>
-References: <20071022043746.GF2998@hacking>
-	<20071022052214.GY8181@ftp.linux.org.uk>
-	<20071022061245.GG2998@hacking> <87d4v7fy5i.fsf@hades.wkstn.nix>
-	<20071022065202.GI2998@hacking>
-	<20071022065943.GC10864@uranus.ravnborg.org>
-	<20071022074823.GJ2998@hacking>
-	<20071022113600.GA8181@ftp.linux.org.uk>
-	<20071022122504.GL2998@hacking>
-	<20071022124322.GB8181@ftp.linux.org.uk>
-Mime-Version: 1.0
+	Mon, 22 Oct 2007 12:29:44 -0700
+Received: by wa-out-1112.google.com with SMTP id k22so1867544waf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 22 Oct 2007 12:29:41 -0700 (PDT)
+Message-ID: <ea9232d10710221229l286faacan75b0e3a2bb0d959b@mail.gmail.com>
+Date: Mon, 22 Oct 2007 21:29:41 +0200
+From: Magotari <magotari@gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071022124322.GB8181@ftp.linux.org.uk>
-Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
+Subject: [uml-devel] [PATCH] uml: Updating outdated links to the uml website.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,24 +30,141 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Al Viro <viro@ftp.linux.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, WANG Cong <xiyou.wangcong@gmail.com>, Ingo Molar <mingo@elte.hu>, Sam Ravnborg <sam@ravnborg.org>
+To: jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Oct 22, 2007 at 01:43:22PM +0100, Al Viro wrote:
-> FWIW, I would simply kill the damn fastcall thing - right now the only
-> user is uml/i386; everything else either has it #defined to nothing or
-> (as i386 does) passes -mregparm=3 while having fastcall expand to
-> __attribute__((regparm(3))) - i.e. has all functions fastcall.
-> 
-> Do we really need it on uml/i386 enough to keep bothering with that mess?
+This patch updates links which broke during the transition to the new
+UML website.
 
-No, there was only that instance in linkage.h and I just got rid of
-it.
+Karol Swietlicki
 
-				Jeff
+Signed-off-by: Karol Swietlicki <magotari@gmail.com>
 
--- 
-Work email - jdike at linux dot intel dot com
+---
+diff -uprN linux-2.6.23-mm1/arch/um/Kconfig
+linux-2.6.23-mm1.local/arch/um/Kconfig
+--- linux-2.6.23-mm1/arch/um/Kconfig	2007-10-18 22:24:13.000000000 +0200
++++ linux-2.6.23-mm1.local/arch/um/Kconfig	2007-10-22 19:27:13.000000000 +0200
+@@ -145,7 +145,7 @@ config HPPFS
+ 	  by removing or changing anything in /proc which gives away the
+ 	  identity of a UML.
+
+-	  See <http://user-mode-linux.sf.net/hppfs.html> for more information.
++	  See <http://user-mode-linux.sf.net/old/hppfs.html> for more information.
+
+ 	  You only need this if you are setting up a UML honeypot.  Otherwise,
+ 	  it is safe to say 'N' here.
+diff -uprN linux-2.6.23-mm1/arch/um/Kconfig.char
+linux-2.6.23-mm1.local/arch/um/Kconfig.char
+--- linux-2.6.23-mm1/arch/um/Kconfig.char	2007-10-18 22:24:13.000000000 +0200
++++ linux-2.6.23-mm1.local/arch/um/Kconfig.char	2007-10-22
+19:28:22.000000000 +0200
+@@ -18,7 +18,7 @@ config SSL
+           lines on the UML that are usually made to show up on the host as
+           ttys or ptys.
+
+-          See <http://user-mode-linux.sourceforge.net/input.html> for more
++          See <http://user-mode-linux.sourceforge.net/old/input.html> for more
+           information and command line examples of how to use this facility.
+
+           Unless you have a specific reason for disabling this, say Y.
+diff -uprN linux-2.6.23-mm1/arch/um/Kconfig.debug
+linux-2.6.23-mm1.local/arch/um/Kconfig.debug
+--- linux-2.6.23-mm1/arch/um/Kconfig.debug	2007-10-18 22:46:35.000000000 +0200
++++ linux-2.6.23-mm1.local/arch/um/Kconfig.debug	2007-10-22
+19:29:29.000000000 +0200
+@@ -9,7 +9,7 @@ config GPROF
+ 	  This allows profiling of a User-Mode Linux kernel with the gprof
+ 	  utility.
+
+-	  See <http://user-mode-linux.sourceforge.net/gprof.html> for more
++	  See <http://user-mode-linux.sourceforge.net/old/gprof.html> for more
+ 	  details.
+
+ 	  If you're involved in UML kernel development and want to use gprof,
+@@ -22,7 +22,7 @@ config GCOV
+ 	  This option allows developers to retrieve coverage data from a UML
+ 	  session.
+
+-	  See <http://user-mode-linux.sourceforge.net/gprof.html> for more
++	  See <http://user-mode-linux.sourceforge.net/old/gprof.html> for more
+ 	  details.
+
+ 	  If you're involved in UML kernel development and want to use gcov,
+diff -uprN linux-2.6.23-mm1/arch/um/Kconfig.net
+linux-2.6.23-mm1.local/arch/um/Kconfig.net
+--- linux-2.6.23-mm1/arch/um/Kconfig.net	2007-10-18 22:24:13.000000000 +0200
++++ linux-2.6.23-mm1.local/arch/um/Kconfig.net	2007-10-22
+19:32:22.000000000 +0200
+@@ -14,7 +14,7 @@ config UML_NET
+
+         For more information, including explanations of the networking and
+         sample configurations, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>.
++        <http://user-mode-linux.sourceforge.net/old/networking.html>.
+
+         If you'd like to be able to enable networking in the User-Mode
+         linux environment, say Y; otherwise say N.  Note that you must
+@@ -38,7 +38,7 @@ config UML_NET_ETHERTAP
+         CONFIG_NETLINK_DEV configured as Y or M.
+
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+         has examples of the UML command line to use to enable Ethertap
+         networking.
+
+@@ -72,7 +72,7 @@ config UML_NET_SLIP
+         To use this, your host must support slip devices.
+
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>.  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>.
+ That site
+         has examples of the UML command line to use to enable slip
+         networking, and details of a few quirks with it.
+
+@@ -96,7 +96,7 @@ config UML_NET_DAEMON
+         networking daemon on the host.
+
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+         has examples of the UML command line to use to enable Daemon
+         networking.
+
+@@ -144,7 +144,7 @@ config UML_NET_MCAST
+         To use this, your host kernel(s) must support IP Multicasting.
+
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+         has examples of the UML command line to use to enable Multicast
+         networking, and notes about the security of this approach.
+
+@@ -165,7 +165,7 @@ config UML_NET_PCAP
+ 	installed in order to build the pcap transport into UML.
+
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+         has examples of the UML command line to use to enable this option.
+
+ 	If you intend to use UML as a network monitor for the host, say
+diff -uprN linux-2.6.23-mm1/arch/um/include/chan_user.h
+linux-2.6.23-mm1.local/arch/um/include/chan_user.h
+--- linux-2.6.23-mm1/arch/um/include/chan_user.h	2007-10-18
+22:24:13.000000000 +0200
++++ linux-2.6.23-mm1.local/arch/um/include/chan_user.h	2007-10-22
+19:38:34.000000000 +0200
+@@ -48,7 +48,7 @@ extern void register_winch_irq(int fd, i
+ #define __channel_help(fn, prefix) \
+ __uml_help(fn, prefix "[0-9]*=<channel description>\n" \
+ "    Attach a console or serial line to a host channel.  See\n" \
+-"    http://user-mode-linux.sourceforge.net/input.html for a complete\n" \
++"    http://user-mode-linux.sourceforge.net/old/input.html for a complete\n" \
+ "    description of this switch.\n\n" \
+ );
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
