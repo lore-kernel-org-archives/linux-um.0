@@ -2,18 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IjwQy-0001n0-Mi for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 05:31:04 -0700
+	id 1IjwfZ-0003G9-VZ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 22 Oct 2007 05:46:13 -0700
 Received: from mx2.mail.elte.hu ([157.181.151.9])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IjwQx-0000rL-Sh
+	(Exim 4.44) id 1IjwfY-0006CX-Hl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 05:31:04 -0700
-Date: Mon, 22 Oct 2007 14:30:41 +0200
+	Mon, 22 Oct 2007 05:46:09 -0700
+Date: Mon, 22 Oct 2007 14:45:51 +0200
 From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20071022123041.GA4990@elte.hu>
-References: <20071021154346.GW8181@ftp.linux.org.uk>
-	<20071022043746.GF2998@hacking>
+Message-ID: <20071022124551.GA7438@elte.hu>
+References: <20071022043746.GF2998@hacking>
 	<20071022052214.GY8181@ftp.linux.org.uk>
 	<20071022061245.GG2998@hacking> <87d4v7fy5i.fsf@hades.wkstn.nix>
 	<20071022065202.GI2998@hacking>
@@ -21,9 +20,10 @@ References: <20071021154346.GW8181@ftp.linux.org.uk>
 	<20071022074823.GJ2998@hacking>
 	<20071022113600.GA8181@ftp.linux.org.uk>
 	<20071022122504.GL2998@hacking>
+	<20071022124322.GB8181@ftp.linux.org.uk>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071022122504.GL2998@hacking>
+In-Reply-To: <20071022124322.GB8181@ftp.linux.org.uk>
 Subject: Re: [uml-devel] User Mode Linux still doesn't build in	2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -34,106 +34,40 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, Al Viro <viro@ftp.linux.org.uk>, Sam Ravnborg <sam@ravnborg.org>
+To: Al Viro <viro@ftp.linux.org.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, WANG Cong <xiyou.wangcong@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
 
-CiogV0FORyBDb25nIDx4aXlvdS53YW5nY29uZ0BnbWFpbC5jb20+IHdyb3RlOgoKPiBPbiBNb24s
-IE9jdCAyMiwgMjAwNyBhdCAxMjozNjowMFBNICswMTAwLCBBbCBWaXJvIHdyb3RlOgo+ID5PbiBN
-b24sIE9jdCAyMiwgMjAwNyBhdCAwMzo0ODoyM1BNICswODAwLCBXQU5HIENvbmcgd3JvdGU6Cj4g
-Pj4gSSBqdXN0IGZvbGxvd2VkIHdoYXQgU2FtIHRvbGQgbWUsIGVycm9ycyBhcmUgbXVjaCBmZXdl
-ciB0aGlzIHRpbWUsCj4gPj4gYnV0IHN0aWxsIGV4aXN0LiBFcnJvciBtZXNzYWdlcyBhcmU6Cj4g
-Pj4gCj4gPj4gICBDQyAgICAgIGFyY2gvdW0va2VybmVsL3N5c2NhbGwubwo+ID4+ICAgQ0MgICAg
-ICBhcmNoL3VtL2tlcm5lbC9zeXNycS5vCj4gPj4gYXJjaC91bS9rZXJuZWwvc3lzcnEuYzogSW4g
-ZnVuY3Rpb24gPz8/c2hvd19zdGFjaz8/PzoKPiA+PiBhcmNoL3VtL2tlcm5lbC9zeXNycS5jOjYz
-OiBlcnJvcjogPz8/VUVTUD8/PyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlv
-bikKPiA+PiBhcmNoL3VtL2tlcm5lbC9zeXNycS5jOjYzOiBlcnJvcjogKEVhY2ggdW5kZWNsYXJl
-ZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZQo+ID4+IGFyY2gvdW0va2VybmVsL3N5
-c3JxLmM6NjM6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluLikKPiA+PiBt
-YWtlWzFdOiAqKiogW2FyY2gvdW0va2VybmVsL3N5c3JxLm9dIEVycm9yIDEKPiA+PiBtYWtlOiAq
-KiogW2FyY2gvdW0va2VybmVsXSBFcnJvciAyCj4gPj4gCj4gPj4gT3IgSSBtaXNzZWQgc29tZXRo
-aW5nIGFnYWluPwo+ID4+IAo+ID4+IEFuZCBJIHVzZSBgbWFrZSBkZWZjb25maWcgQVJDSD11bScg
-dG8gZ2VuZXJhdGUgLmNvbmZpZywgbXkgdHJlZQo+ID4+IGlzIDIuNi4yMy1naXQxNiAoQWwsIGlz
-IHRoaXMgT0s/KS4KPiA+Cj4gPk5vdyBhcHBseSB0aGUgcGF0Y2ggdXB0aHJlYWQsIGl0IHNob3Vs
-ZCd2ZSBmaXhlZCB0aGF0IG9uZSAoYW5kIHllcywgeW91Cj4gPmFyZSBkb3duIHRvIHRoZSBzdHVm
-ZiB0aGlzIHBhdGNoIGlzIHN1cHBvc2VkIHRvIGZpeCAtIGFuZCBkb2VzIHNvIGhlcmUpLgo+IAo+
-IFllcywgdGhpcyBvbmUgaXMgZml4ZWQuIFRoYW5rcyBmb3IgeW91ciBwYXRjaC4KPiAKPiBCdXQg
-YW5vdGhlciBvbmUgY29tZXMgb3V0LiA7KAo+IAo+ICAgQ0MgICAgICBrZXJuZWwvc2NoZWQubwo+
-IGtlcm5lbC9zY2hlZC5jOjM5MDI6IGVycm9yOiBjb25mbGljdGluZyB0eXBlcyBmb3Ig4oCYd2Fp
-dF9mb3JfY29tcGxldGlvbl9pbnRlcnJ1cHRpYmxl4oCZCj4gaW5jbHVkZS9saW51eC9jb21wbGV0
-aW9uLmg6NDY6IGVycm9yOiBwcmV2aW91cyBkZWNsYXJhdGlvbiBvZiDigJh3YWl0X2Zvcl9jb21w
-bGV0aW9uX2ludGVycnVwdGlibGXigJkgd2FzIGhlcmUKPiBrZXJuZWwvc2NoZWQuYzozOTA4OiBl
-cnJvcjogY29uZmxpY3RpbmcgdHlwZXMgZm9yIOKAmHdhaXRfZm9yX2NvbXBsZXRpb25faW50ZXJy
-dXB0aWJsZeKAmQo+IGluY2x1ZGUvbGludXgvY29tcGxldGlvbi5oOjQ2OiBlcnJvcjogcHJldmlv
-dXMgZGVjbGFyYXRpb24gb2Yg4oCYd2FpdF9mb3JfY29tcGxldGlvbl9pbnRlcnJ1cHRpYmxl4oCZ
-IHdhcyBoZXJlCj4gbWFrZVsxXTogKioqIFtrZXJuZWwvc2NoZWQub10gRXJyb3IgMQo+IG1ha2U6
-ICoqKiBba2VybmVsXSBFcnJvciAyCgpkb2VzIHRoZSBwYXRjaCBiZWxvdyBvbnRvcCBvZiBsYXRl
-c3QgLWdpdCBoZWxwPwoKCUluZ28KCi0tLS0tLS0tLS0tLS0tLS0+ClN1YmplY3Q6IHNjaGVkOiBm
-aXggZmFzdGNhbGwgbWlzbWF0Y2ggaW4gY29tcGxldGlvbiBBUElzCkZyb206IEluZ28gTW9sbmFy
-IDxtaW5nb0BlbHRlLmh1PgoKSmVmZiBEaWtlIG5vdGljZWQgdGhhdCB3YWl0X2Zvcl9jb21wbGV0
-aW9uX2ludGVycnVwdGlibGUoKSdzIHByb3RvdHlwZQpoYWQgYSBtaXNtYXRjaGVkIGZhc3RjYWxs
-LgoKRml4IHRoaXMgYnkgcmVtb3ZpbmcgdGhlIGZhc3RjYWxsIGF0dHJpYnV0ZXMgZnJvbSBhbGwg
-dGhlIGNvbXBsZXRpb24gQVBJcy4KCkZvdW5kLWJ5OiBKZWZmIERpa2UgPGpkaWtlQGxpbnV4Lmlu
-dGVsLmNvbT4KU2lnbmVkLW9mZi1ieTogSW5nbyBNb2xuYXIgPG1pbmdvQGVsdGUuaHU+Ci0tLQog
-aW5jbHVkZS9saW51eC9jb21wbGV0aW9uLmggfCAgIDE2ICsrKysrKysrLS0tLS0tLS0KIGtlcm5l
-bC9zY2hlZC5jICAgICAgICAgICAgIHwgICAxMCArKysrKy0tLS0tCiAyIGZpbGVzIGNoYW5nZWQs
-IDEzIGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQoKSW5kZXg6IGxpbnV4L2luY2x1ZGUv
-bGludXgvY29tcGxldGlvbi5oCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGxpbnV4Lm9yaWcvaW5jbHVkZS9saW51
-eC9jb21wbGV0aW9uLmgKKysrIGxpbnV4L2luY2x1ZGUvbGludXgvY29tcGxldGlvbi5oCkBAIC00
-MiwxNSArNDIsMTUgQEAgc3RhdGljIGlubGluZSB2b2lkIGluaXRfY29tcGxldGlvbihzdHJ1Ywog
-CWluaXRfd2FpdHF1ZXVlX2hlYWQoJngtPndhaXQpOwogfQogCi1leHRlcm4gdm9pZCBGQVNUQ0FM
-TCh3YWl0X2Zvcl9jb21wbGV0aW9uKHN0cnVjdCBjb21wbGV0aW9uICopKTsKLWV4dGVybiBpbnQg
-RkFTVENBTEwod2FpdF9mb3JfY29tcGxldGlvbl9pbnRlcnJ1cHRpYmxlKHN0cnVjdCBjb21wbGV0
-aW9uICp4KSk7Ci1leHRlcm4gdW5zaWduZWQgbG9uZyBGQVNUQ0FMTCh3YWl0X2Zvcl9jb21wbGV0
-aW9uX3RpbWVvdXQoc3RydWN0IGNvbXBsZXRpb24gKngsCi0JCQkJCQkgICB1bnNpZ25lZCBsb25n
-IHRpbWVvdXQpKTsKLWV4dGVybiB1bnNpZ25lZCBsb25nIEZBU1RDQUxMKHdhaXRfZm9yX2NvbXBs
-ZXRpb25faW50ZXJydXB0aWJsZV90aW1lb3V0KAotCQkJc3RydWN0IGNvbXBsZXRpb24gKngsIHVu
-c2lnbmVkIGxvbmcgdGltZW91dCkpOworZXh0ZXJuIHZvaWQgd2FpdF9mb3JfY29tcGxldGlvbihz
-dHJ1Y3QgY29tcGxldGlvbiAqKTsKK2V4dGVybiBpbnQgd2FpdF9mb3JfY29tcGxldGlvbl9pbnRl
-cnJ1cHRpYmxlKHN0cnVjdCBjb21wbGV0aW9uICp4KTsKK2V4dGVybiB1bnNpZ25lZCBsb25nIHdh
-aXRfZm9yX2NvbXBsZXRpb25fdGltZW91dChzdHJ1Y3QgY29tcGxldGlvbiAqeCwKKwkJCQkJCSAg
-IHVuc2lnbmVkIGxvbmcgdGltZW91dCk7CitleHRlcm4gdW5zaWduZWQgbG9uZyB3YWl0X2Zvcl9j
-b21wbGV0aW9uX2ludGVycnVwdGlibGVfdGltZW91dCgKKwkJCXN0cnVjdCBjb21wbGV0aW9uICp4
-LCB1bnNpZ25lZCBsb25nIHRpbWVvdXQpOwogCi1leHRlcm4gdm9pZCBGQVNUQ0FMTChjb21wbGV0
-ZShzdHJ1Y3QgY29tcGxldGlvbiAqKSk7Ci1leHRlcm4gdm9pZCBGQVNUQ0FMTChjb21wbGV0ZV9h
-bGwoc3RydWN0IGNvbXBsZXRpb24gKikpOworZXh0ZXJuIHZvaWQgY29tcGxldGUoc3RydWN0IGNv
-bXBsZXRpb24gKik7CitleHRlcm4gdm9pZCBjb21wbGV0ZV9hbGwoc3RydWN0IGNvbXBsZXRpb24g
-Kik7CiAKICNkZWZpbmUgSU5JVF9DT01QTEVUSU9OKHgpCSgoeCkuZG9uZSA9IDApCiAKSW5kZXg6
-IGxpbnV4L2tlcm5lbC9zY2hlZC5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGxpbnV4Lm9yaWcva2VybmVsL3Nj
-aGVkLmMKKysrIGxpbnV4L2tlcm5lbC9zY2hlZC5jCkBAIC0zODIxLDcgKzM4MjEsNyBAQCBfX3dh
-a2VfdXBfc3luYyh3YWl0X3F1ZXVlX2hlYWRfdCAqcSwgdW5zCiB9CiBFWFBPUlRfU1lNQk9MX0dQ
-TChfX3dha2VfdXBfc3luYyk7CS8qIEZvciBpbnRlcm5hbCB1c2Ugb25seSAqLwogCi12b2lkIGZh
-c3RjYWxsIGNvbXBsZXRlKHN0cnVjdCBjb21wbGV0aW9uICp4KQordm9pZCBjb21wbGV0ZShzdHJ1
-Y3QgY29tcGxldGlvbiAqeCkKIHsKIAl1bnNpZ25lZCBsb25nIGZsYWdzOwogCkBAIC0zODMzLDcg
-KzM4MzMsNyBAQCB2b2lkIGZhc3RjYWxsIGNvbXBsZXRlKHN0cnVjdCBjb21wbGV0aW9uCiB9CiBF
-WFBPUlRfU1lNQk9MKGNvbXBsZXRlKTsKIAotdm9pZCBmYXN0Y2FsbCBjb21wbGV0ZV9hbGwoc3Ry
-dWN0IGNvbXBsZXRpb24gKngpCit2b2lkIGNvbXBsZXRlX2FsbChzdHJ1Y3QgY29tcGxldGlvbiAq
-eCkKIHsKIAl1bnNpZ25lZCBsb25nIGZsYWdzOwogCkBAIC0zODg1LDEzICszODg1LDEzIEBAIHdh
-aXRfZm9yX2NvbW1vbihzdHJ1Y3QgY29tcGxldGlvbiAqeCwgbG8KIAlyZXR1cm4gdGltZW91dDsK
-IH0KIAotdm9pZCBmYXN0Y2FsbCBfX3NjaGVkIHdhaXRfZm9yX2NvbXBsZXRpb24oc3RydWN0IGNv
-bXBsZXRpb24gKngpCit2b2lkIF9fc2NoZWQgd2FpdF9mb3JfY29tcGxldGlvbihzdHJ1Y3QgY29t
-cGxldGlvbiAqeCkKIHsKIAl3YWl0X2Zvcl9jb21tb24oeCwgTUFYX1NDSEVEVUxFX1RJTUVPVVQs
-IFRBU0tfVU5JTlRFUlJVUFRJQkxFKTsKIH0KIEVYUE9SVF9TWU1CT0wod2FpdF9mb3JfY29tcGxl
-dGlvbik7CiAKLXVuc2lnbmVkIGxvbmcgZmFzdGNhbGwgX19zY2hlZAordW5zaWduZWQgbG9uZyBf
-X3NjaGVkCiB3YWl0X2Zvcl9jb21wbGV0aW9uX3RpbWVvdXQoc3RydWN0IGNvbXBsZXRpb24gKngs
-IHVuc2lnbmVkIGxvbmcgdGltZW91dCkKIHsKIAlyZXR1cm4gd2FpdF9mb3JfY29tbW9uKHgsIHRp
-bWVvdXQsIFRBU0tfVU5JTlRFUlJVUFRJQkxFKTsKQEAgLTM5MDcsNyArMzkwNyw3IEBAIGludCBf
-X3NjaGVkIHdhaXRfZm9yX2NvbXBsZXRpb25faW50ZXJydXAKIH0KIEVYUE9SVF9TWU1CT0wod2Fp
-dF9mb3JfY29tcGxldGlvbl9pbnRlcnJ1cHRpYmxlKTsKIAotdW5zaWduZWQgbG9uZyBmYXN0Y2Fs
-bCBfX3NjaGVkCit1bnNpZ25lZCBsb25nIF9fc2NoZWQKIHdhaXRfZm9yX2NvbXBsZXRpb25faW50
-ZXJydXB0aWJsZV90aW1lb3V0KHN0cnVjdCBjb21wbGV0aW9uICp4LAogCQkJCQkgIHVuc2lnbmVk
-IGxvbmcgdGltZW91dCkKIHsKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgZW1haWwgaXMg
-c3BvbnNvcmVkIGJ5OiBTcGx1bmsgSW5jLgpTdGlsbCBncmVwcGluZyB0aHJvdWdoIGxvZyBmaWxl
-cyB0byBmaW5kIHByb2JsZW1zPyAgU3RvcC4KTm93IFNlYXJjaCBsb2cgZXZlbnRzIGFuZCBjb25m
-aWd1cmF0aW9uIGZpbGVzIHVzaW5nIEFKQVggYW5kIGEgYnJvd3Nlci4KRG93bmxvYWQgeW91ciBG
-UkVFIGNvcHkgb2YgU3BsdW5rIG5vdyA+PiBodHRwOi8vZ2V0LnNwbHVuay5jb20vCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1k
-ZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1v
-ZGUtbGludXgtZGV2ZWwK
+
+* Al Viro <viro@ftp.linux.org.uk> wrote:
+
+> in kernel/sched.c
+> 
+> FWIW, I would simply kill the damn fastcall thing - right now the only 
+> user is uml/i386; everything else either has it #defined to nothing or 
+> (as i386 does) passes -mregparm=3 while having fastcall expand to 
+> __attribute__((regparm(3))) - i.e. has all functions fastcall.
+> 
+> Do we really need it on uml/i386 enough to keep bothering with that 
+> mess?
+
+we should kill it there too.
+
+the only place where we should _please_ keep those annotations are for 
+functions that get called from assembly code. This makes life immensely 
+easier for -pg (CONFIG_FUNCTION_TRACING) kernels.
+
+	Ingo
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc.
+Still grepping through log files to find problems?  Stop.
+Now Search log events and configuration files using AJAX and a browser.
+Download your FREE copy of Splunk now >> http://get.splunk.com/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
