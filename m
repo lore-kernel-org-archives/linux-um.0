@@ -2,26 +2,28 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IkLRk-0003qA-Rw for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Oct 2007 08:13:32 -0700
-Received: from mx2.mail.elte.hu ([157.181.151.9])
+	id 1IkKKR-0004HZ-1Z for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Oct 2007 07:01:59 -0700
+Received: from mx1.suse.de ([195.135.220.2])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IkLRi-0003fA-QW
+	(Exim 4.44) id 1IkKKO-0006kP-FC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Oct 2007 08:13:32 -0700
-Date: Tue, 23 Oct 2007 17:13:09 +0200
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20071023151309.GA14998@elte.hu>
-References: <20071022124551.GA7438@elte.hu> <471D2ECC.6090209@goop.org>
+	Tue, 23 Oct 2007 07:01:54 -0700
+From: Andi Kleen <andi@firstfloor.org>
+References: <20071022074823.GJ2998@hacking>
+	<20071022113600.GA8181@ftp.linux.org.uk>
+	<20071022122504.GL2998@hacking>
+	<20071022124322.GB8181@ftp.linux.org.uk>
+	<20071022124551.GA7438@elte.hu> <471D2ECC.6090209@goop.org>
 	<20071022231927.GA30814@elte.hu> <471D389E.40609@goop.org>
 	<20071023084546.GA17007@elte.hu> <p73wste7zy5.fsf@bingen.suse.de>
-	<20071023131009.GA32298@elte.hu> <p73sl427wvu.fsf@bingen.suse.de>
-	<20071023142006.GA9961@elte.hu>
-	<20071023144852.GA27956@one.firstfloor.org>
+	<20071023131009.GA32298@elte.hu>
+Date: Tue, 23 Oct 2007 16:01:41 +0200
+In-Reply-To: <20071023131009.GA32298@elte.hu> (Ingo Molnar's message of "Tue\, 
+	23 Oct 2007 15\:10\:09 +0200")
+Message-ID: <p73sl427wvu.fsf@bingen.suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20071023144852.GA27956@one.firstfloor.org>
-Subject: Re: [uml-devel] User Mode Linux still doesn't build in	2.6.23-final.
+Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,47 +37,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andi Kleen <andi@firstfloor.org>
-Cc: Jeremy Fitzhardinge <jeremy@goop.org>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, Al Viro <viro@ftp.linux.org.uk>, WANG Cong <xiyou.wangcong@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
+To: Ingo Molnar <mingo@elte.hu>
+Cc: Jeremy Fitzhardinge <jeremy@goop.org>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Andi Kleen <andi@firstfloor.org>, Rob Landley <rob@landley.net>, Al Viro <viro@ftp.linux.org.uk>, WANG Cong <xiyou.wangcong@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
 
+Ingo Molnar <mingo@elte.hu> writes:
 
-* Andi Kleen <andi@firstfloor.org> wrote:
+> * Andi Kleen <andi@firstfloor.org> wrote:
+>
+>> > so this patch adds back fastcall annotations. This serves as 
+>> > documentation for assembly calling-convention dependencies as well.
+>> 
+>> You should rename it then to "asmcall" or something.
+>
+> if then that should be a separate renaming patch.
 
-> On Tue, Oct 23, 2007 at 04:20:06PM +0200, Ingo Molnar wrote:
-> > 
-> > * Andi Kleen <andi@firstfloor.org> wrote:
-> > 
-> > > >> You should rename it then to "asmcall" or something.
-> > > >
-> > > > if then that should be a separate renaming patch.
-> > > 
-> > > Well you're asking for the ugly hacks for out of tree code.  [...]
-> > 
-> > nice word-bending there. I'm asking for pre-existing annotations to 
-> > survive. 
-> 
-> What I'm objecting to is that you ask for this for your out of tree 
-> code without any justification on why exactly -- -pg should in theory 
-> work with -mregparms.
+Well you're asking for the ugly hacks for out of tree code.  Any clean
+ups needed should be your duty  (and it's still unclear why exactly
+regparm should not work with -pg anyways -- before readding ugly
+stuff perhaps that should be clarified too)
 
-last i checked it didnt work - i'll re-check that.
-
-but even taking the latency tracer completely out of the picture, 
-maintaining this information is useful - at least for some time.
-
-> It's standard policy to require very good reasons for changes that are 
-> only useful for out of tree code. [...]
-
-it's not just for out of tree code - it's to keep the information of the 
-calling convention maintained - we could need it in the future.
-
-> Is it just because you didn't want to adapt the tracer for i386 
-> regparm? [...]
-
-uhm, thank you for such accusations and personal attacks :-( How did i 
-deserve that?
-
-	Ingo
+-Andi
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
