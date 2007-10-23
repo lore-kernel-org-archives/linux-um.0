@@ -2,28 +2,27 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ik784-0007q7-PE for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 16:56:17 -0700
-Received: from gw.goop.org ([64.81.55.164] helo=mail.goop.org)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ik783-0007X9-Gq
+	id 1IkJlA-0000Zh-1J for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Oct 2007 06:25:28 -0700
+Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IkJl7-0000qK-CF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Oct 2007 16:56:16 -0700
-Message-ID: <471D389E.40609@goop.org>
-Date: Mon, 22 Oct 2007 16:56:14 -0700
-From: Jeremy Fitzhardinge <jeremy@goop.org>
-MIME-Version: 1.0
-References: <20071022061245.GG2998@hacking> <87d4v7fy5i.fsf@hades.wkstn.nix>
-	<20071022065202.GI2998@hacking>
-	<20071022065943.GC10864@uranus.ravnborg.org>
+	Tue, 23 Oct 2007 06:25:27 -0700
+Date: Tue, 23 Oct 2007 15:25:01 +0200
+From: Adrian Bunk <bunk@stusta.de>
+Message-ID: <20071023132501.GT30533@stusta.de>
+References: <20071022065943.GC10864@uranus.ravnborg.org>
 	<20071022074823.GJ2998@hacking>
 	<20071022113600.GA8181@ftp.linux.org.uk>
 	<20071022122504.GL2998@hacking>
 	<20071022124322.GB8181@ftp.linux.org.uk>
 	<20071022124551.GA7438@elte.hu> <471D2ECC.6090209@goop.org>
-	<20071022231927.GA30814@elte.hu>
-In-Reply-To: <20071022231927.GA30814@elte.hu>
-Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
+	<20071022231927.GA30814@elte.hu> <471D389E.40609@goop.org>
+	<20071023084546.GA17007@elte.hu>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20071023084546.GA17007@elte.hu>
+Subject: Re: [uml-devel] User Mode Linux still doesn't build in	2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,40 +37,55 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Ingo Molnar <mingo@elte.hu>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, Al Viro <viro@ftp.linux.org.uk>, WANG Cong <xiyou.wangcong@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
+Cc: Jeremy Fitzhardinge <jeremy@goop.org>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, Al Viro <viro@ftp.linux.org.uk>, WANG Cong <xiyou.wangcong@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
 
-Ingo Molnar wrote:
+On Tue, Oct 23, 2007 at 10:45:46AM +0200, Ingo Molnar wrote:
+> 
 > * Jeremy Fitzhardinge <jeremy@goop.org> wrote:
->
->   
->> Ingo Molnar wrote:
->>     
->>> we should kill it there too.
->>>
->>> the only place where we should _please_ keep those annotations are for 
->>> functions that get called from assembly code. This makes life immensely 
->>> easier for -pg (CONFIG_FUNCTION_TRACING) kernels.
->>>       
->> Should we re-add them for the function pointers in asm-x86/paravirt.h?
->>     
->
-> yes, yes, yes. :-) It was a nightmare to sort it out in -rt (and still 
-> is). 
+> 
+> > >> Should we re-add them for the function pointers in 
+> > >> asm-x86/paravirt.h?
+> > >
+> > > yes, yes, yes. :-) It was a nightmare to sort it out in -rt (and 
+> > > still is).
+> > 
+> > Do you have a patch to do this already?
+> 
+> yes, attached. Ack?
+> 
+> 	Ingo
+> 
+> ---------------------------->
+> Subject: [patch] paravirt: mark assembly dependencies as fastcall
+> From: Ingo Molnar <mingo@elte.hu>
+> 
+> the 'fastcall removal' changes to paravirt.c were over-eager: they
+> removed fastcall annotations from functions that are (or might be)
+> implemented in assembly. So if someone changes the compiler model,
+> such as -pg which disables regparm, the kernel breaks in nasty ways.
+> 
+> so this patch adds back fastcall annotations. This serves as
+> documentation for assembly calling-convention dependencies as
+> well.
+>...
 
-Do you have a patch to do this already?
+I see a point in annotating all C code called from assembler code with 
+either fastcall or asmlinkage, but how will these annotations be 
+maintained?
 
->> Andi argued we should remove them since x86 is unconditionally regparm 
->> now anyway - and they're pretty ugly syntactically.
->>     
->
-> Sure, it doesnt make things prettier, but i didnt see any particular 
-> ugliness.
+Without anything giving at least a warning these annotations will simply 
+bitrot.
 
-Hm, how can we get gcc to complain about inconsistent use of fastcall? 
-It doesn't generate any warnings if the function and its pointer are
-inconsistent, presumably because everything is regparm(3) anyway...
+cu
+Adrian
 
-    J
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
