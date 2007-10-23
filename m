@@ -1,30 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IkJIK-0005my-9z for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Oct 2007 05:55:40 -0700
-Received: from ns2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+	id 1IkJWf-0007Ve-Se for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Oct 2007 06:10:30 -0700
+Received: from mx3.mail.elte.hu ([157.181.1.138])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IkJII-0007vl-Qz
+	(Exim 4.44) id 1IkJWe-0003nl-Cg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Oct 2007 05:55:40 -0700
-From: Andi Kleen <andi@firstfloor.org>
-References: <20071022065202.GI2998@hacking>
-	<20071022065943.GC10864@uranus.ravnborg.org>
-	<20071022074823.GJ2998@hacking>
+	Tue, 23 Oct 2007 06:10:29 -0700
+Date: Tue, 23 Oct 2007 15:10:09 +0200
+From: Ingo Molnar <mingo@elte.hu>
+Message-ID: <20071023131009.GA32298@elte.hu>
+References: <20071022074823.GJ2998@hacking>
 	<20071022113600.GA8181@ftp.linux.org.uk>
 	<20071022122504.GL2998@hacking>
 	<20071022124322.GB8181@ftp.linux.org.uk>
 	<20071022124551.GA7438@elte.hu> <471D2ECC.6090209@goop.org>
 	<20071022231927.GA30814@elte.hu> <471D389E.40609@goop.org>
-	<20071023084546.GA17007@elte.hu>
-Date: Tue, 23 Oct 2007 14:55:30 +0200
-In-Reply-To: <20071023084546.GA17007@elte.hu> (Ingo Molnar's message of "Tue\, 
-	23 Oct 2007 10\:45\:46 +0200")
-Message-ID: <p73wste7zy5.fsf@bingen.suse.de>
+	<20071023084546.GA17007@elte.hu> <p73wste7zy5.fsf@bingen.suse.de>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
+Content-Disposition: inline
+In-Reply-To: <p73wste7zy5.fsf@bingen.suse.de>
+Subject: Re: [uml-devel] User Mode Linux still doesn't build in	2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,27 +36,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Ingo Molnar <mingo@elte.hu>
+To: Andi Kleen <andi@firstfloor.org>
 Cc: Jeremy Fitzhardinge <jeremy@goop.org>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Paolo Giarrusso <p.giarrusso@gmail.com>, linux-kernel@vger.kernel.org, Nix <nix@esperi.org.uk>, Rob Landley <rob@landley.net>, Al Viro <viro@ftp.linux.org.uk>, WANG Cong <xiyou.wangcong@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
 
-Ingo Molnar <mingo@elte.hu> writes:
->
-> the 'fastcall removal' changes to paravirt.c were over-eager: they
-> removed fastcall annotations from functions that are (or might be)
-> implemented in assembly. So if someone changes the compiler model,
-> such as -pg which disables regparm, the kernel breaks in nasty ways.
 
-It would be probably better to just not disable -mregparms. I don't
-think the compiler forces this. And e.g. on x86-64 regparms & -pg 
-work just fine, why should it not on i386?
+* Andi Kleen <andi@firstfloor.org> wrote:
 
-> so this patch adds back fastcall annotations. This serves as
-> documentation for assembly calling-convention dependencies as
-> well.
+> > so this patch adds back fastcall annotations. This serves as 
+> > documentation for assembly calling-convention dependencies as well.
+> 
+> You should rename it then to "asmcall" or something.
 
-You should rename it then to "asmcall" or something.
+if then that should be a separate renaming patch.
 
--Andi
+	Ingo
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
