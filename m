@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Iki4T-0005MH-FB for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Oct 2007 08:23:01 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Iki4S-0006jR-Fi
+	id 1Ikn8s-0002Or-6i for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Oct 2007 13:47:54 -0700
+Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ikn8q-0004Zz-FS
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Oct 2007 08:23:01 -0700
-Date: Wed, 24 Oct 2007 11:22:40 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071024152240.GA7733@c2.user-mode-linux.org>
+	Wed, 24 Oct 2007 13:47:54 -0700
+From: Rob Landley <rob@landley.net>
+Date: Wed, 24 Oct 2007 16:46:54 -0500
 References: <200710111754.46854.rob@landley.net>
-Mime-Version: 1.0
+	<20071024152240.GA7733@c2.user-mode-linux.org>
+In-Reply-To: <20071024152240.GA7733@c2.user-mode-linux.org>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200710111754.46854.rob@landley.net>
+Message-Id: <200710241646.54942.rob@landley.net>
 Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,31 +31,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Rob Landley <rob@landley.net>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: linux-kernel@vger.kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Oct 11, 2007 at 05:54:46PM -0500, Rob Landley wrote:
-> Guess what?  I still need this patch to build the final 2.6.23, months later.
-> 
-> I know it may not be the right fix, but the build breaks for me without this 
-> patch. The .config that breaks is attached.  ARCH=um.
+On Wednesday 24 October 2007 10:22:40 am Jeff Dike wrote:
+> I poked around a bit for a sparc cross-toolchain, didn't find one, so
+> I couldn't see what exactly the problem was.
 
-Can I get a Signed-off-by: on that?
+Prebuilt for Ubuntu 7.04:
+http://landley.net/code/firmware/downloads/cross-compiler/host-i686/cross-compiler-sparc.tar.bz2
 
-It's not the right fix - the base of the problem is in swap.h, which
-has this comment: 
-	/* only sparc can not include linux/pagemap.h in this file
-	 * so leave page_cache_release and release_pages undeclared... */
+Source code:
+Or http://landley.net/code/firmware/downloads/firmware-0.2.2.tar.bz2
 
-I poked around a bit for a sparc cross-toolchain, didn't find one, so
-I couldn't see what exactly the problem was.
+For the second one, extract it, cd into it, "./build.sh sparc", and when it 
+finishes your sparc-gcc should be in "build/cross-compiler-sparc/bin".
 
-So, I'll take this fix.
+You can move the cross-compiler-sparc directory anywhere you want in the 
+filesystem, and it should still work.  Just add the "bin" subdirectory of it 
+to $PATH and CROSS_COMPILE=sparc-
 
-				Jeff
-
+Rob
 -- 
-Work email - jdike at linux dot intel dot com
+"One of my most productive days was throwing away 1000 lines of code."
+  - Ken Thompson.
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
