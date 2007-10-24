@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ike1U-0003No-HL for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Oct 2007 04:03:40 -0700
-Received: from brick.kernel.dk ([87.55.233.238] helo=kernel.dk)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ike1S-0007CU-9d
+	id 1IkirB-0007s0-Ib for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Oct 2007 09:13:21 -0700
+Received: from pasmtpa.tele.dk ([80.160.77.114])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ikir9-0003UG-3y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Oct 2007 04:03:40 -0700
-Date: Wed, 24 Oct 2007 13:03:23 +0200
-From: Jens Axboe <jens.axboe@oracle.com>
-Message-ID: <20071024110323.GO14671@kernel.dk>
-References: <alpine.LFD.0.999.0710232057080.30120@woody.linux-foundation.org>
-	<20071024081047.GC2464@hacking>
-MIME-Version: 1.0
+	Wed, 24 Oct 2007 09:13:21 -0700
+Date: Wed, 24 Oct 2007 18:14:48 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
+Message-ID: <20071024161448.GA3166@uranus.ravnborg.org>
+References: <200710111754.46854.rob@landley.net>
+	<20071024152240.GA7733@c2.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071024081047.GC2464@hacking>
-Subject: Re: [uml-devel] [Git Patch] arch/um/drivers/ubd_kern.c: fix a
-	building error
+In-Reply-To: <20071024152240.GA7733@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,25 +30,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: Andrew Morton <akpm@osdl.org>, jdike@karaya.com, Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>, sparclinux@vger.kernel.org
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel@vger.kernel.org, Rob Landley <rob@landley.net>
 
-On Wed, Oct 24 2007, WANG Cong wrote:
+Hi Jeff.
+
+On Wed, Oct 24, 2007 at 11:22:40AM -0400, Jeff Dike wrote:
+> On Thu, Oct 11, 2007 at 05:54:46PM -0500, Rob Landley wrote:
+> > Guess what?  I still need this patch to build the final 2.6.23, months later.
+> > 
+> > I know it may not be the right fix, but the build breaks for me without this 
+> > patch. The .config that breaks is attached.  ARCH=um.
 > 
-> Fix this uml building error:
-> arch/um/drivers/ubd_kern.c: In function 'do_ubd_request':
-> arch/um/drivers/ubd_kern.c:1118: error: implicit declaration of function 'sg_page'
-> arch/um/drivers/ubd_kern.c:1118: warning: passing argument 6 of 'prepare_request' makes pointer from integer without a cast
-> make[1]: *** [arch/um/drivers/ubd_kern.o] Error 1
-> make: *** [arch/um/drivers] Error 2
+> Can I get a Signed-off-by: on that?
 > 
-> Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+> It's not the right fix - the base of the problem is in swap.h, which
+> has this comment: 
+> 	/* only sparc can not include linux/pagemap.h in this file
+> 	 * so leave page_cache_release and release_pages undeclared... */
+> 
+> I poked around a bit for a sparc cross-toolchain, didn't find one, so
+> I couldn't see what exactly the problem was.
+> 
+> So, I'll take this fix.
 
-Thanks, applied!
+Dan Kegel's crosstool builds sparc just fine.
+And for sparc issues I recommend cc:ing the sparc ML.
 
--- 
-Jens Axboe
+[Original mail (with patch) is here: http://lkml.org/lkml/2007/10/11/288]
 
+	Sam
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
