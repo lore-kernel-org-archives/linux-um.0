@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ikn8s-0002Or-6i for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Oct 2007 13:47:54 -0700
-Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ikn8q-0004Zz-FS
+	id 1IkqpA-0007ot-Af for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Oct 2007 17:43:48 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Ikqp8-0006FV-E0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Oct 2007 13:47:54 -0700
-From: Rob Landley <rob@landley.net>
-Date: Wed, 24 Oct 2007 16:46:54 -0500
+	Wed, 24 Oct 2007 17:43:48 -0700
+Date: Wed, 24 Oct 2007 20:43:29 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071025004329.GA12372@c2.user-mode-linux.org>
 References: <200710111754.46854.rob@landley.net>
 	<20071024152240.GA7733@c2.user-mode-linux.org>
-In-Reply-To: <20071024152240.GA7733@c2.user-mode-linux.org>
-MIME-Version: 1.0
+	<200710241646.54942.rob@landley.net>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200710241646.54942.rob@landley.net>
+In-Reply-To: <200710241646.54942.rob@landley.net>
 Subject: Re: [uml-devel] User Mode Linux still doesn't build in 2.6.23-final.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,30 +32,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Rob Landley <rob@landley.net>
+Cc: sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wednesday 24 October 2007 10:22:40 am Jeff Dike wrote:
-> I poked around a bit for a sparc cross-toolchain, didn't find one, so
-> I couldn't see what exactly the problem was.
+On Wed, Oct 24, 2007 at 04:46:54PM -0500, Rob Landley wrote:
+> Prebuilt for Ubuntu 7.04:
+> http://landley.net/code/firmware/downloads/cross-compiler/host-i686/cross-compiler-sparc.tar.bz2
+> 
+> Source code:
+> Or http://landley.net/code/firmware/downloads/firmware-0.2.2.tar.bz2
 
-Prebuilt for Ubuntu 7.04:
-http://landley.net/code/firmware/downloads/cross-compiler/host-i686/cross-compiler-sparc.tar.bz2
+Thanks - I already got Dan Kegel's crosstools, and they did the trick.
 
-Source code:
-Or http://landley.net/code/firmware/downloads/firmware-0.2.2.tar.bz2
+What I'd like to do is have linux/swap.h include linux/pagemap.h, but
+there's this scary comment about that not working on sparc.
 
-For the second one, extract it, cd into it, "./build.sh sparc", and when it 
-finishes your sparc-gcc should be in "build/cross-compiler-sparc/bin".
+When I fix this bug "correctly", sparc expodes into a mess of
+interconnected headers which seem to boil down to sparc including
+swap.h in pgtable.h when no one else does.
 
-You can move the cross-compiler-sparc directory anywhere you want in the 
-filesystem, and it should still work.  Just add the "bin" subdirectory of it 
-to $PATH and CROSS_COMPILE=sparc-
+The thing is, sparc looks like it's doing things more correctly than
+anyone else.  asm/pgtable.h (i386 and UML, and probably everyone
+else except sparc) refers to swp_entry_t, which is defined in
+linux/swap.h, without including swap.h and that's somehow OK.
 
-Rob
+So, from a quick look, it seems like this is a case of our headers
+being too interconnected and sparc had to opt out in order to do
+things more correctly.
+
+				Jeff
+
 -- 
-"One of my most productive days was throwing away 1000 lines of code."
-  - Ken Thompson.
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
