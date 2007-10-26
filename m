@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IlS9E-0000LI-CB for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Oct 2007 09:35:01 -0700
+	id 1IlSDw-0000xC-Oe for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Oct 2007 09:39:53 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IlS9B-0004TO-R6
+	(Exim 4.44) id 1IlSDw-00061T-9U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Oct 2007 09:35:00 -0700
-Date: Fri, 26 Oct 2007 12:34:47 -0400
+	Fri, 26 Oct 2007 09:39:52 -0700
+Date: Fri, 26 Oct 2007 12:39:45 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071026163447.GD7770@c2.user-mode-linux.org>
-References: <ea9232d10710251210n31cdd93w79f175af403cd6ad@mail.gmail.com>
+Message-ID: <20071026163945.GF7770@c2.user-mode-linux.org>
+References: <Pine.LNX.4.64.0710260247060.27287@localhost.localdomain>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ea9232d10710251210n31cdd93w79f175af403cd6ad@mail.gmail.com>
-Subject: Re: [uml-devel] [PATCH] uml: removing xmm detection
+In-Reply-To: <Pine.LNX.4.64.0710260247060.27287@localhost.localdomain>
+Subject: Re: [uml-devel] infinite symlink loop for "sysdep-i386"
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,21 +30,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Magotari <magotari@gmail.com>
+To: "Robert P. J. Day" <rpjday@crashcourse.ca>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Oct 25, 2007 at 09:10:25PM +0200, Magotari wrote:
-> This patch removes some code which ran at every boot, but does not
-> seem to do anything anymore. Please test. It works for me but mistakes
-> can happen.
-> 
-> Karol Swietlicki
-> 
-> Signed-off-by: Karol Swietlicki <magotari@gmail.com>
+On Fri, Oct 26, 2007 at 02:48:21AM -0400, Robert P. J. Day wrote:
+>   in arch/um/include/sysdep-i386:
 
-Thanks, this is in my tree.
+> lrwxrwxrwx 1 rpjday rpjday   11 2007-10-22 04:08 sysdep-i386 -> sysdep-i386   ?????
 
-			Jeff
+Sorry about the delay...
+
+I don't have any such animal here - can you make this happen on a clean tree?
+
+				Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
