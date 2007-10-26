@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Il867-0000t6-9v for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Oct 2007 12:10:27 -0700
-Received: from nz-out-0506.google.com ([64.233.162.232])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Il866-0005J0-Vx
+	id 1IlJ2I-0007NN-Ha for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 25 Oct 2007 23:51:15 -0700
+Received: from astoria.ccjclearline.com ([64.235.106.9])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IlJ2F-0008GC-MQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Oct 2007 12:10:27 -0700
-Received: by nz-out-0506.google.com with SMTP id f1so1993883nzc
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 25 Oct 2007 12:10:26 -0700 (PDT)
-Message-ID: <ea9232d10710251210n31cdd93w79f175af403cd6ad@mail.gmail.com>
-Date: Thu, 25 Oct 2007 21:10:25 +0200
-From: Magotari <magotari@gmail.com>
+	Thu, 25 Oct 2007 23:51:12 -0700
+Received: from [99.236.101.138] (helo=crashcourse.ca)
+	by astoria.ccjclearline.com with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.68) (envelope-from <rpjday@crashcourse.ca>)
+	id 1IlJ2C-00089l-RT for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Oct 2007 02:51:09 -0400
+Date: Fri, 26 Oct 2007 02:48:21 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+Message-ID: <Pine.LNX.4.64.0710260247060.27287@localhost.localdomain>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] uml: removing xmm detection
+Subject: [uml-devel] infinite symlink loop for "sysdep-i386"
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,54 +32,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-This patch removes some code which ran at every boot, but does not
-seem to do anything anymore. Please test. It works for me but mistakes
-can happen.
 
-Karol Swietlicki
+  in arch/um/include/sysdep-i386:
 
-Signed-off-by: Karol Swietlicki <magotari@gmail.com>
----
+$ ls -l
+total 96
+-rw-rw-r-- 1 rpjday rpjday  363 2007-08-28 06:10 archsetjmp.h
+-rw-rw-r-- 1 rpjday rpjday  281 2007-08-28 06:10 barrier.h
+-rw-rw-r-- 1 rpjday rpjday 5080 2007-08-28 06:10 checksum.h
+-rw-rw-r-- 1 rpjday rpjday  903 2007-08-28 06:10 faultinfo.h
+-rw-rw-r-- 1 rpjday rpjday  468 2007-10-16 13:42 kernel-offsets.h
+-rw-rw-r-- 1 rpjday rpjday 4897 2007-10-16 13:42 ptrace.h
+-rw-rw-r-- 1 rpjday rpjday 1669 2007-08-28 06:10 ptrace_user.h
+-rw-rw-r-- 1 rpjday rpjday 1757 2007-08-28 06:10 sc.h
+-rw-rw-r-- 1 rpjday rpjday  615 2007-10-16 13:42 sigcontext.h
+-rw-rw-r-- 1 rpjday rpjday  374 2007-08-28 06:10 skas_ptrace.h
+-rw-rw-r-- 1 rpjday rpjday 2199 2007-10-16 13:42 stub.h
+-rw-rw-r-- 1 rpjday rpjday  731 2007-08-28 06:10 syscalls.h
+lrwxrwxrwx 1 rpjday rpjday   11 2007-10-22 04:08 sysdep-i386 -> sysdep-i386   ?????
+-rw-rw-r-- 1 rpjday rpjday  769 2007-08-28 06:10 tls.h
+$
 
-diff -uprN linux-2.6.23-mm1/arch/um/sys-i386/bugs.c
-linux-2.6.23-mm1.local/arch/um/sys-i386/bugs.c
---- linux-2.6.23-mm1/arch/um/sys-i386/bugs.c	2007-10-18 22:24:13.000000000 +0200
-+++ linux-2.6.23-mm1.local/arch/um/sys-i386/bugs.c	2007-10-25
-18:57:28.000000000 +0200
-@@ -15,7 +15,6 @@
+rday
 
- /* Set during early boot */
- int host_has_cmov = 1;
--int host_has_xmm = 0;
+-- 
+========================================================================
+Robert P. J. Day
+Linux Consulting, Training and Annoying Kernel Pedantry
+Waterloo, Ontario, CANADA
 
-  static char token(int fd, char *buf, int len, char stop)
- {
-@@ -163,8 +162,6 @@ void arch_check_bugs(void)
- 	}
-  	if (check_cpu_flag("cmov", &have_it))
- 		host_has_cmov = have_it;
--	if (check_cpu_flag("xmm", &have_it))
--		host_has_xmm = have_it;
- }
-
-  int arch_handle_signal(int sig, struct uml_pt_regs *regs)
-diff -uprN linux-2.6.23-mm1/include/asm-um/processor-i386.h
-linux-2.6.23-mm1.local/include/asm-um/processor-i386.h
---- linux-2.6.23-mm1/include/asm-um/processor-i386.h	2007-10-18
-22:24:26.000000000 +0200
-+++ linux-2.6.23-mm1.local/include/asm-um/processor-i386.h	2007-10-25
-18:59:15.000000000 +0200
-@@ -10,7 +10,6 @@
-  #include "asm/host_ldt.h"
-  #include "asm/segment.h"
-
--extern int host_has_xmm;
-  extern int host_has_cmov;
-
-  /* include faultinfo structure */
+http://crashcourse.ca
+========================================================================
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
