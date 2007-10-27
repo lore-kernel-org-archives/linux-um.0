@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IlSuB-0005WM-21 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Oct 2007 10:23:31 -0700
-Received: from astoria.ccjclearline.com ([64.235.106.9])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IlSu8-0001ua-N2
+	id 1Ilc3R-0000xW-5T for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Oct 2007 20:09:41 -0700
+Received: from ro-out-1112.google.com ([72.14.202.178])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ilc3Q-0007vJ-Ru
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Oct 2007 10:23:30 -0700
-Date: Fri, 26 Oct 2007 13:20:32 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-In-Reply-To: <20071026163945.GF7770@c2.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.64.0710261317030.32320@localhost.localdomain>
-References: <Pine.LNX.4.64.0710260247060.27287@localhost.localdomain>
-	<20071026163945.GF7770@c2.user-mode-linux.org>
+	Fri, 26 Oct 2007 20:09:41 -0700
+Received: by ro-out-1112.google.com with SMTP id o35so435222rog
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 26 Oct 2007 20:09:40 -0700 (PDT)
+Date: Sat, 27 Oct 2007 11:04:55 +0800
+From: WANG Cong <xiyou.wangcong@gmail.com>
+Message-ID: <20071027030455.GA2506@hacking>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] infinite symlink loop for "sysdep-i386"
+Content-Disposition: inline
+Subject: [uml-devel] [Git Patch]arch/um/drivers/ubd_kern.c: a warning fix
+Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,35 +31,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@karaya.com>
+Cc: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 26 Oct 2007, Jeff Dike wrote:
 
-> On Fri, Oct 26, 2007 at 02:48:21AM -0400, Robert P. J. Day wrote:
-> >   in arch/um/include/sysdep-i386:
->
-> > lrwxrwxrwx 1 rpjday rpjday   11 2007-10-22 04:08 sysdep-i386 -> sysdep-i386   ?????
->
-> Sorry about the delay...
->
-> I don't have any such animal here - can you make this happen on a clean tree?
+Fix an incompatible-pointer warning.
 
-ok, i just cleaned my git clone of everything but the .git directory,
-did a "git pull" to make sure i'm up to date, then checked everything
-out again with "git checkout -f", and now it's gone.  weird.  i'll try
-to figure out what i was doing that caused it, since i'm not doing
-*anything* with UML at the moment.
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
 
-rday
--- 
-========================================================================
-Robert P. J. Day
-Linux Consulting, Training and Annoying Kernel Pedantry
-Waterloo, Ontario, CANADA
+---
+ arch/um/drivers/ubd_kern.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-http://crashcourse.ca
-========================================================================
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index e184b44..7e6cdde 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -705,7 +705,7 @@ static int ubd_add(int n, char **error_out)
+ 	ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
+ 
+ 	INIT_LIST_HEAD(&ubd_dev->restart);
+-	sg_init_table(&ubd_dev->sg, MAX_SG);
++	sg_init_table(ubd_dev->sg, MAX_SG);
+ 
+ 	err = -ENOMEM;
+ 	ubd_dev->queue = blk_init_queue(do_ubd_request, &ubd_dev->lock);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
