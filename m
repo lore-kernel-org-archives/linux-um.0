@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ilz44-00080v-1N for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Oct 2007 20:43:52 -0700
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ilz42-0004iO-L8
+	id 1Im2oP-0004AR-Da for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 28 Oct 2007 00:43:57 -0700
+Received: from ro-out-1112.google.com ([72.14.202.179])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Im2oO-00064r-Ol
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Oct 2007 20:43:52 -0700
-Date: Sun, 28 Oct 2007 03:43:43 +0000
-From: Al Viro <viro@ftp.linux.org.uk>
-Message-ID: <20071028034343.GV8181@ftp.linux.org.uk>
-References: <20071028032441.GB2502@hacking>
-Mime-Version: 1.0
+	Sun, 28 Oct 2007 00:43:57 -0700
+Received: by ro-out-1112.google.com with SMTP id o35so717471rog
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 28 Oct 2007 00:43:56 -0700 (PDT)
+Date: Sun, 28 Oct 2007 15:38:43 +0800
+From: WANG Cong <xiyou.wangcong@gmail.com>
+Message-ID: <20071028073843.GD2502@hacking>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071028032441.GB2502@hacking>
-Subject: Re: [uml-devel] UML building failed in current Linus-tree
+Subject: [uml-devel] [Git Patch] arch/um/os-Linux/: varied improvements and
+	fixes
+Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,46 +32,226 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: jdike@karaya.com, sam@ravnborg.org, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Andrew Morton <akpm@osdl.org>, Jeff Dike <jdike@karaya.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Oct 28, 2007 at 11:24:41AM +0800, WANG Cong wrote:
-> 
-> Hi, Jeff, Sam!
-> 
-> I just pulled from Linus-tree, and got the following error when building uml.
-> 
-> $ make defconfig ARCH=um
-> /home/wangcong/projects/linux-2.6/arch/um/Makefile-i386:32: /home/wangcong/projects/linux-2.6/arch/i386/Makefile.cpu: No such file or directory
-> make: *** No rule to make target `/home/wangcong/projects/linux-2.6/arch/i386/Makefile.cpu'.  Stop.
-> 
-> Is this a known problem? Yesterday's Linus-tree was fine.
 
-diff --git a/arch/um/Kconfig.i386 b/arch/um/Kconfig.i386
-index 9876d80..e0ac74e 100644
---- a/arch/um/Kconfig.i386
-+++ b/arch/um/Kconfig.i386
-@@ -1,6 +1,6 @@
- menu "Host processor type and features"
+Hi, Jeff.
+
+This patch contains varied fixes and improvements for some files under
+arch/um/os-Linux/, such as a typo fix in a perror message, a missing
+argument fix for a printf, some constifying for pointers and so on.
+
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: Jeff Dike <jdike@karaya.com>
+
+---
+ arch/um/include/os.h        |   12 ++++++------
+ arch/um/os-Linux/file.c     |   14 +++++++-------
+ arch/um/os-Linux/main.c     |   12 ++++++++----
+ arch/um/os-Linux/mem.c      |    5 ++++-
+ arch/um/os-Linux/signal.c   |    3 ++-
+ arch/um/os-Linux/start_up.c |    2 +-
+ 6 files changed, 28 insertions(+), 20 deletions(-)
+
+diff --git a/arch/um/include/os.h b/arch/um/include/os.h
+index fbf0a87..93f3a70 100644
+--- a/arch/um/include/os.h
++++ b/arch/um/include/os.h
+@@ -137,24 +137,24 @@ extern int os_set_owner(int fd, int pid);
+ extern int os_mode_fd(int fd, int mode);
  
--source "arch/i386/Kconfig.cpu"
-+source "arch/x86/Kconfig.cpu"
+ extern int os_seek_file(int fd, unsigned long long offset);
+-extern int os_open_file(char *file, struct openflags flags, int mode);
++extern int os_open_file(const char *file, struct openflags flags, int mode);
+ extern int os_read_file(int fd, void *buf, int len);
+ extern int os_write_file(int fd, const void *buf, int count);
+-extern int os_file_size(char *file, unsigned long long *size_out);
+-extern int os_file_modtime(char *file, unsigned long *modtime);
++extern int os_file_size(const char *file, unsigned long long *size_out);
++extern int os_file_modtime(const char *file, unsigned long *modtime);
+ extern int os_pipe(int *fd, int stream, int close_on_exec);
+ extern int os_set_fd_async(int fd, int owner);
+ extern int os_clear_fd_async(int fd);
+ extern int os_set_fd_block(int fd, int blocking);
+ extern int os_accept_connection(int fd);
+-extern int os_create_unix_socket(char *file, int len, int close_on_exec);
++extern int os_create_unix_socket(const char *file, int len, int close_on_exec);
+ extern int os_shutdown_socket(int fd, int r, int w);
+ extern void os_close_file(int fd);
+ extern int os_rcv_fd(int fd, int *helper_pid_out);
+ extern int create_unix_socket(char *file, int len, int close_on_exec);
+-extern int os_connect_socket(char *name);
++extern int os_connect_socket(const char *name);
+ extern int os_file_type(char *file);
+-extern int os_file_mode(char *file, struct openflags *mode_out);
++extern int os_file_mode(const char *file, struct openflags *mode_out);
+ extern int os_lock_file(int fd, int excl);
+ extern void os_flush_stdout(void);
+ extern int os_stat_filesystem(char *path, long *bsize_out,
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index b542a3a..d8f26be 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -19,7 +19,7 @@
+ #include "user.h"
+ #include "kern_util.h"
  
- endmenu
+-static void copy_stat(struct uml_stat *dst, struct stat64 *src)
++static void copy_stat(struct uml_stat *dst, const struct stat64 *src)
+ {
+ 	*dst = ((struct uml_stat) {
+ 		.ust_dev     = src->st_dev,     /* device */
+@@ -168,7 +168,7 @@ int os_file_type(char *file)
+ 	else return OS_TYPE_FILE;
+ }
  
-diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-i386
-index 08433f8..b01dfb0 100644
---- a/arch/um/Makefile-i386
-+++ b/arch/um/Makefile-i386
-@@ -28,7 +28,7 @@ CONFIG_X86_32		:= y
- export CONFIG_X86_32
+-int os_file_mode(char *file, struct openflags *mode_out)
++int os_file_mode(const char *file, struct openflags *mode_out)
+ {
+ 	int err;
  
- # First of all, tune CFLAGS for the specific CPU. This actually sets cflags-y.
--include $(srctree)/arch/i386/Makefile.cpu
-+include $(srctree)/arch/x86/Makefile_32.cpu
+@@ -189,7 +189,7 @@ int os_file_mode(char *file, struct openflags *mode_out)
+ 	return err;
+ }
  
- # prevent gcc from keeping the stack 16 byte aligned. Taken from i386.
- cflags-y += $(call cc-option,-mpreferred-stack-boundary=2)
+-int os_open_file(char *file, struct openflags flags, int mode)
++int os_open_file(const char *file, struct openflags flags, int mode)
+ {
+ 	int fd, err, f = 0;
+ 
+@@ -216,7 +216,7 @@ int os_open_file(char *file, struct openflags flags, int mode)
+ 	return fd;
+ }
+ 
+-int os_connect_socket(char *name)
++int os_connect_socket(const char *name)
+ {
+ 	struct sockaddr_un sock;
+ 	int fd, err;
+@@ -277,7 +277,7 @@ int os_write_file(int fd, const void *buf, int len)
+ 	return n;
+ }
+ 
+-int os_file_size(char *file, unsigned long long *size_out)
++int os_file_size(const char *file, unsigned long long *size_out)
+ {
+ 	struct uml_stat buf;
+ 	int err;
+@@ -314,7 +314,7 @@ int os_file_size(char *file, unsigned long long *size_out)
+ 	return 0;
+ }
+ 
+-int os_file_modtime(char *file, unsigned long *modtime)
++int os_file_modtime(const char *file, unsigned long *modtime)
+ {
+ 	struct uml_stat buf;
+ 	int err;
+@@ -515,7 +515,7 @@ int os_rcv_fd(int fd, int *helper_pid_out)
+ 	return new;
+ }
+ 
+-int os_create_unix_socket(char *file, int len, int close_on_exec)
++int os_create_unix_socket(const char *file, int len, int close_on_exec)
+ {
+ 	struct sockaddr_un addr;
+ 	int sock, err;
+diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+index 82c3778..de664e7 100644
+--- a/arch/um/os-Linux/main.c
++++ b/arch/um/os-Linux/main.c
+@@ -73,7 +73,7 @@ static void install_fatal_handler(int sig)
+ 	action.sa_handler = last_ditch_exit;
+ 	if (sigaction(sig, &action, NULL) < 0) {
+ 		printf("failed to install handler for signal %d - errno = %d\n",
+-		       errno);
++		       sig, errno);
+ 		exit(1);
+ 	}
+ }
+@@ -92,7 +92,8 @@ static void setup_env_path(void)
+ 	 * just use the default + /usr/lib/uml
+ 	 */
+ 	if (!old_path || (path_len = strlen(old_path)) == 0) {
+-		putenv("PATH=:/bin:/usr/bin/" UML_LIB_PATH);
++		if (putenv("PATH=:/bin:/usr/bin/" UML_LIB_PATH))
++			perror("couldn't putenv");
+ 		return;
+ 	}
+ 
+@@ -100,11 +101,14 @@ static void setup_env_path(void)
+ 	path_len += strlen("PATH=" UML_LIB_PATH) + 1;
+ 	new_path = malloc(path_len);
+ 	if (!new_path) {
+-		perror("coudn't malloc to set a new PATH");
++		perror("couldn't malloc to set a new PATH");
+ 		return;
+ 	}
+ 	snprintf(new_path, path_len, "PATH=%s" UML_LIB_PATH, old_path);
+-	putenv(new_path);
++	if (putenv(new_path)) {
++		perror("couldn't putenv to set a new PATH");
++		free(new_path);
++	}
+ }
+ 
+ extern int uml_exitcode;
+diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
+index 436f8d2..c3b736a 100644
+--- a/arch/um/os-Linux/mem.c
++++ b/arch/um/os-Linux/mem.c
+@@ -172,13 +172,15 @@ int __init make_tempfile(const char *template, char **out_tempname,
+ 
+ 	which_tmpdir();
+ 	tempname = malloc(MAXPATHLEN);
++	if (!tempname)
++		goto out;
+ 
+ 	find_tempdir();
+ 	if (template[0] != '/')
+ 		strcpy(tempname, tempdir);
+ 	else
+ 		tempname[0] = '\0';
+-	strcat(tempname, template);
++	strncat(tempname, template, MAXPATHLEN-1-strlen(tempname));
+ 	fd = mkstemp(tempname);
+ 	if(fd < 0){
+ 		fprintf(stderr, "open - cannot create %s: %s\n", tempname,
+@@ -268,6 +270,7 @@ void __init check_tmpexec(void)
+ 	if(addr == MAP_FAILED){
+ 		err = errno;
+ 		perror("failed");
++		close(fd);
+ 		if(err == EPERM)
+ 			printf("%s must be not mounted noexec\n",tempdir);
+ 		exit(1);
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index e9800b0..5354057 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -183,7 +183,8 @@ int change_sig(int signal, int on)
+ 
+ 	sigemptyset(&sigset);
+ 	sigaddset(&sigset, signal);
+-	sigprocmask(on ? SIG_UNBLOCK : SIG_BLOCK, &sigset, &old);
++	if (sigprocmask(on ? SIG_UNBLOCK : SIG_BLOCK, &sigset, &old) < 0)
++		return -1;
+ 	return !sigismember(&old, signal);
+ }
+ 
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 7b81f6c..c6cf648 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -63,7 +63,7 @@ static int ptrace_child(void)
+ 	_exit(ret);
+ }
+ 
+-static void fatal_perror(char *str)
++static void fatal_perror(const char *str)
+ {
+ 	perror(str);
+ 	exit(1);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
