@@ -2,25 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Im0jB-0000Xd-Vu for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Oct 2007 22:30:26 -0700
-Received: from ro-out-1112.google.com ([72.14.202.177])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Im0j8-0005fM-Ip
+	id 1ImXdg-0006Sz-Lf for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Oct 2007 09:38:56 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1ImXdg-00028C-71
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Oct 2007 22:30:25 -0700
-Received: by ro-out-1112.google.com with SMTP id o35so696527rog
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 27 Oct 2007 22:30:21 -0700 (PDT)
-Date: Sun, 28 Oct 2007 13:25:19 +0800
-From: WANG Cong <xiyou.wangcong@gmail.com>
-Message-ID: <20071028052518.GC2502@hacking>
-References: <20071028032441.GB2502@hacking>
-	<20071028034343.GV8181@ftp.linux.org.uk>
-MIME-Version: 1.0
+	Mon, 29 Oct 2007 09:38:56 -0700
+Date: Mon, 29 Oct 2007 12:38:40 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071029163840.GA7656@c2.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071028034343.GV8181@ftp.linux.org.uk>
-Subject: Re: [uml-devel] UML building failed in current Linus-tree
-Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
+Subject: [uml-devel] [PATCH] UML - Fix incompatible types warning in
+	previous SG fix
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,40 +29,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Al Viro <viro@ftp.linux.org.uk>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>, sam@ravnborg.org, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sun, Oct 28, 2007 at 03:43:43AM +0000, Al Viro wrote:
->On Sun, Oct 28, 2007 at 11:24:41AM +0800, WANG Cong wrote:
->> 
->> Hi, Jeff, Sam!
->> 
->> I just pulled from Linus-tree, and got the following error when building uml.
->> 
->> $ make defconfig ARCH=um
->> /home/wangcong/projects/linux-2.6/arch/um/Makefile-i386:32: /home/wangcong/projects/linux-2.6/arch/i386/Makefile.cpu: No such file or directory
->> make: *** No rule to make target `/home/wangcong/projects/linux-2.6/arch/i386/Makefile.cpu'.  Stop.
->> 
->> Is this a known problem? Yesterday's Linus-tree was fine.
->
->diff --git a/arch/um/Kconfig.i386 b/arch/um/Kconfig.i386
->index 9876d80..e0ac74e 100644
->--- a/arch/um/Kconfig.i386
->+++ b/arch/um/Kconfig.i386
+From: WANG Cong <xiyou.wangcong@gmail.com>
 
-Thanks, Al.
+Fix an incompatible-pointer warning.
 
-With your patch, it works fine.
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/drivers/ubd_kern.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jeff, could you please consider pushing this and Al's another patch[1] into
-Linus-tree? UML in Linus-tree can't work for a long time. ;(
-
-[1] http://lkml.org/lkml/2007/10/21/118
-
-Regards.
-
-WANG Cong
-
+Index: linux-2.6/arch/um/drivers/ubd_kern.c
+===================================================================
+--- linux-2.6.orig/arch/um/drivers/ubd_kern.c	2007-10-29 11:30:02.000000000 -0400
++++ linux-2.6/arch/um/drivers/ubd_kern.c	2007-10-29 12:06:46.000000000 -0400
+@@ -705,7 +705,7 @@ static int ubd_add(int n, char **error_o
+ 	ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
+ 
+ 	INIT_LIST_HEAD(&ubd_dev->restart);
+-	sg_init_table(&ubd_dev->sg, MAX_SG);
++	sg_init_table(ubd_dev->sg, MAX_SG);
+ 
+ 	err = -ENOMEM;
+ 	ubd_dev->queue = blk_init_queue(do_ubd_request, &ubd_dev->lock);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
