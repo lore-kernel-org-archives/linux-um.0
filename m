@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1ImXdg-0006Sz-Lf for user-mode-linux-devel@lists.sourceforge.net;
+	id 1ImXdg-0006Su-E4 for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 29 Oct 2007 09:38:56 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1ImXdg-00028C-71
+	(Exim 4.44) id 1ImXdb-0005mX-Jx
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 29 Oct 2007 09:38:56 -0700
-Date: Mon, 29 Oct 2007 12:38:40 -0400
+Date: Mon, 29 Oct 2007 12:38:41 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071029163840.GA7656@c2.user-mode-linux.org>
+Message-ID: <20071029163841.GA7661@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] UML - Fix incompatible types warning in
-	previous SG fix
+Subject: [uml-devel] [PATCH] Correctly strip kernel defines from userspace
+	CFLAGS
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,31 +30,36 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: WANG Cong <xiyou.wangcong@gmail.com>
+KERNEL_DEFINES needs whitespace trimmed, otherwise the whitespace
+crunching done by make fools the patsubst which is used to remove
+KERNEL_DEFINES from USER_CFLAGS.
 
-Fix an incompatible-pointer warning.
-
-Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/drivers/ubd_kern.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/Makefile |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Index: linux-2.6/arch/um/drivers/ubd_kern.c
+Index: linux-2.6/arch/um/Makefile
 ===================================================================
---- linux-2.6.orig/arch/um/drivers/ubd_kern.c	2007-10-29 11:30:02.000000000 -0400
-+++ linux-2.6/arch/um/drivers/ubd_kern.c	2007-10-29 12:06:46.000000000 -0400
-@@ -705,7 +705,7 @@ static int ubd_add(int n, char **error_o
- 	ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
+--- linux-2.6.orig/arch/um/Makefile	2007-10-22 16:19:38.000000000 -0400
++++ linux-2.6/arch/um/Makefile	2007-10-22 16:19:44.000000000 -0400
+@@ -70,9 +70,12 @@ include $(srctree)/$(ARCH_DIR)/Makefile-
+ # in KBUILD_CFLAGS.  Otherwise, it would cause ld to complain about the two different
+ # errnos.
+ # These apply to kernelspace only.
++#
++# strip leading and trailing whitespace to make the USER_CFLAGS removal of these
++# defines more robust
  
- 	INIT_LIST_HEAD(&ubd_dev->restart);
--	sg_init_table(&ubd_dev->sg, MAX_SG);
-+	sg_init_table(ubd_dev->sg, MAX_SG);
+-KERNEL_DEFINES = -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
+-	-Dmktime=kernel_mktime $(ARCH_KERNEL_DEFINES)
++KERNEL_DEFINES = $(strip -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
++			 -Dmktime=kernel_mktime $(ARCH_KERNEL_DEFINES))
+ KBUILD_CFLAGS += $(KERNEL_DEFINES)
+ KBUILD_CFLAGS += $(call cc-option,-fno-unit-at-a-time,)
  
- 	err = -ENOMEM;
- 	ubd_dev->queue = blk_init_queue(do_ubd_request, &ubd_dev->lock);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
