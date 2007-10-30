@@ -2,18 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Imv60-0003D5-Nk for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Oct 2007 10:41:45 -0700
-Received: from dsl022.labridge.com ([206.117.136.22] helo=perches.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Imv5z-0008Km-Ak
+	id 1ImvKQ-0004n3-8d for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 30 Oct 2007 10:56:38 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1ImvKO-0006UW-Oi
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Oct 2007 10:41:44 -0700
-From: Joe Perches <joe@perches.com>
-In-Reply-To: <20071030172849.GA8367@c2.user-mode-linux.org>
+	Tue, 30 Oct 2007 10:56:38 -0700
+Date: Tue, 30 Oct 2007 13:56:28 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071030175628.GA9279@c2.user-mode-linux.org>
 References: <20071030172849.GA8367@c2.user-mode-linux.org>
-Date: Tue, 30 Oct 2007 10:40:46 -0700
-Message-Id: <1193766046.24844.19.camel@localhost>
+	<1193766046.24844.19.camel@localhost>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1193766046.24844.19.camel@localhost>
 Subject: Re: [uml-devel] [PATCH 3/4] UML - Implement get_wchan
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -28,58 +31,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Joe Perches <joe@perches.com>
 Cc: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, 2007-10-30 at 13:28 -0400, Jeff Dike wrote:
-> +unsigned long get_wchan(struct task_struct *p)
-> +{
-> +	unsigned long stack_page, sp, ip, count = 0;
-
-Perhaps instead of unsigned long?
-
-bool skipped_ip;	//delayed initialization
-
-> +
-> +	if ((p == NULL) || (p == current) || (p->state == TASK_RUNNING))
-> +		return 0;
-> +
-> +	stack_page = (unsigned long) task_stack_page(p);
-> +	/* Bail if the process has no kernel stack for some reason */
-> +	if (stack_page == 0)
-> +		return 0;
-> +
-> +	sp = p->thread.switch_buf->JB_SP;
-> +	/*
-> +	 * Bail if the stack pointer is below the bottom of the kernel
-> +	 * stack for some reason
-> +	 */
-> +	if (sp < stack_page)
-> +		return 0;
-> +
-
-	skipped_ip = false;
-
-> +	while (sp < stack_page + THREAD_SIZE) {
-> +		ip = *((unsigned long *) sp);
-> +		if (kernel_text_address(ip) && !in_sched_functions(ip)) {
-> +			/*
-> +			 * Skip one valid IP, which will be the low-level UML
-> +			 * context switcher.
-> +			 */
-> +			if (count++ == 1)
-> +				return ip;
-
-			if (skipped_ip)
-				return ip;
-			skipped_ip = true;
+On Tue, Oct 30, 2007 at 10:40:46AM -0700, Joe Perches wrote:
+> Perhaps instead of unsigned long?
 > 
-> +		}
-> +
-> +		sp += sizeof(unsigned long);
-> +	}
+> bool skipped_ip;	//delayed initialization
 
+Ooh, I forgot we had bool.  I'll fix that in a later patch.
 
+			Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
