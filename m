@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1InJj7-0005Xm-JF for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 31 Oct 2007 12:59:45 -0700
+	id 1InJjE-0005YF-Ix for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 31 Oct 2007 12:59:52 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1InJj7-00054J-0a
+	(Exim 4.44) id 1InJjB-00058N-Sd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 31 Oct 2007 12:59:45 -0700
-Date: Wed, 31 Oct 2007 15:59:38 -0400
+	Wed, 31 Oct 2007 12:59:52 -0700
+Date: Wed, 31 Oct 2007 15:59:39 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071031195938.GA9630@c2.user-mode-linux.org>
+Message-ID: <20071031195939.GA9640@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/4] UML - Fix spurious IRQ testing
+Subject: [uml-devel] [PATCH 3/4] UML - Fix build for !CONFIG_TCP
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,45 +29,61 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Magotari <magotari@gmail.com>
 
-The spurious IRQ testing in request_irq is mishandled in
-um_request_irq, which sets the incoming file descriptors non-blocking
-only after request_irq succeeds.  This results in the spurious irq
-calling read on a blocking descriptor, and a hang.
-
-Fixed by reversing the O_NONBLOCK setting and the request_irq call.
+Make UML build in the absence of CONFIG_INET by making the
+inetaddr_notifier registration depend on it.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/kernel/irq.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/um/drivers/net_kern.c |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-Index: linux-2.6.22/arch/um/kernel/irq.c
+Index: linux-2.6.22/arch/um/drivers/net_kern.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/kernel/irq.c	2007-10-25 12:23:09.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/irq.c	2007-10-29 13:00:18.000000000 -0400
-@@ -347,14 +347,15 @@ int um_request_irq(unsigned int irq, int
- {
- 	int err;
+--- linux-2.6.22.orig/arch/um/drivers/net_kern.c	2007-10-12 12:09:00.000000000 -0400
++++ linux-2.6.22/arch/um/drivers/net_kern.c	2007-10-18 23:43:39.000000000 -0400
+@@ -753,6 +753,7 @@ static struct mc_device net_mc = {
+ 	.remove		= net_remove,
+ };
  
--	err = request_irq(irq, handler, irqflags, devname, dev_id);
--	if (err)
--		return err;
--
--	if (fd != -1)
-+	if (fd != -1) {
- 		err = activate_fd(irq, fd, type, dev_id);
--	return err;
-+		if (err)
-+			return err;
-+	}
-+
-+	return request_irq(irq, handler, irqflags, devname, dev_id);
++#ifdef CONFIG_INET
+ static int uml_inetaddr_event(struct notifier_block *this, unsigned long event,
+ 			      void *ptr)
+ {
+@@ -789,14 +790,13 @@ struct notifier_block uml_inetaddr_notif
+ 	.notifier_call		= uml_inetaddr_event,
+ };
+ 
+-static int uml_net_init(void)
++static void inet_register(void)
+ {
+ 	struct list_head *ele;
+ 	struct uml_net_private *lp;
+ 	struct in_device *ip;
+ 	struct in_ifaddr *in;
+ 
+-	mconsole_register_dev(&net_mc);
+ 	register_inetaddr_notifier(&uml_inetaddr_notifier);
+ 
+ 	/* Devices may have been opened already, so the uml_inetaddr_notifier
+@@ -816,7 +816,17 @@ static int uml_net_init(void)
+ 		}
+ 	}
+ 	spin_unlock(&opened_lock);
++}
++#else
++static inline void inet_register(void)
++{
++}
++#endif
+ 
++static int uml_net_init(void)
++{
++	mconsole_register_dev(&net_mc);
++	inet_register();
+ 	return 0;
  }
-+
- EXPORT_SYMBOL(um_request_irq);
- EXPORT_SYMBOL(reactivate_fd);
  
 
 -------------------------------------------------------------------------
