@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IndhA-0001DY-Nj for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 10:19:05 -0700
-Received: from ug-out-1314.google.com ([66.249.92.173])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Indh9-0003F3-PB
+	id 1Ing6u-00006A-Cg for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Nov 2007 12:53:48 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Ing6r-0006w5-On
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 10:19:04 -0700
-Received: by ug-out-1314.google.com with SMTP id m2so526945uge
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 01 Nov 2007 10:19:02 -0700 (PDT)
-From: Alon Bar-Lev <alon.barlev@gmail.com>
-Date: Thu, 1 Nov 2007 19:18:34 +0200
-MIME-Version: 1.0
+	Thu, 01 Nov 2007 12:53:48 -0700
+Date: Thu, 1 Nov 2007 15:53:25 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071101195325.GA8871@c2.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200711011918.36294.alon.barlev@gmail.com>
-Subject: [uml-devel] [PATCH] tunctl add group support
+Subject: [uml-devel] [PATCH 1/4] UML - Stop using libc asm/page.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,90 +28,128 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: stable@kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
+commit cd56e0945db8a5cd3176dcff2319f9e0c96bcb50
+Author: Jeff Dike <jdike@addtoit.com>
+Date:   Tue Oct 16 01:26:44 2007 -0700
 
-Add support for -g (group) parameter to set permission of group
-based.
-
-Signed-off-by: Alon Bar-Lev <alon.barlev@gmail.com>
-
+    uml: stop using libc asm/page.h
+    
+    Remove includes of asm/page.h from libc code.  This header seems to be
+    disappearing, and UML doesn't make much use of it anyway.
+    
+    The one use, PAGE_SHIFT in stub.h, is handled by copying the constant from the
+    kernel side of the house in common_offsets.h.
+    
+    [ jdike - added arch/um/kernel/skas/clone.c for -stable ]
+    
+    Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
-
-diff -urNp tools-20060323.org/tunctl/tunctl.c tools-20060323/tunctl/tunctl.c
---- tools-20060323.org/tunctl/tunctl.c	2002-09-11 01:18:06.000000000 +0300
-+++ tools-20060323/tunctl/tunctl.c	2007-11-01 17:05:09.000000000 +0200
-@@ -9,13 +9,14 @@
- #include <fcntl.h>
+ arch/um/include/common-offsets.h   |    1 +
+ arch/um/include/sysdep-i386/stub.h |    3 +--
+ arch/um/kernel/skas/clone.c        |    1 -
+ arch/um/os-Linux/main.c            |    1 -
+ arch/um/os-Linux/skas/mem.c        |    1 -
+ arch/um/os-Linux/start_up.c        |    1 -
+ arch/um/os-Linux/tt.c              |    1 -
+ 7 files changed, 2 insertions(+), 7 deletions(-)
+diff --git a/arch/um/include/common-offsets.h b/arch/um/include/common-offsets.h
+index 6eee343..2378ff4 100644
+--- a/arch/um/include/common-offsets.h
++++ b/arch/um/include/common-offsets.h
+@@ -10,6 +10,7 @@ OFFSET(HOST_TASK_PID, task_struct, pid);
+ 
+ DEFINE(UM_KERN_PAGE_SIZE, PAGE_SIZE);
+ DEFINE(UM_KERN_PAGE_MASK, PAGE_MASK);
++DEFINE(UM_KERN_PAGE_SHIFT, PAGE_SHIFT);
+ DEFINE(UM_NSEC_PER_SEC, NSEC_PER_SEC);
+ 
+ DEFINE_STR(UM_KERN_EMERG, KERN_EMERG);
+diff --git a/arch/um/include/sysdep-i386/stub.h b/arch/um/include/sysdep-i386/stub.h
+index 4fffae7..19c85f3 100644
+--- a/arch/um/include/sysdep-i386/stub.h
++++ b/arch/um/include/sysdep-i386/stub.h
+@@ -9,7 +9,6 @@
+ #include <sys/mman.h>
+ #include <asm/ptrace.h>
+ #include <asm/unistd.h>
+-#include <asm/page.h>
+ #include "stub-data.h"
+ #include "kern_constants.h"
+ #include "uml-config.h"
+@@ -19,7 +18,7 @@ extern void stub_clone_handler(void);
+ 
+ #define STUB_SYSCALL_RET EAX
+ #define STUB_MMAP_NR __NR_mmap2
+-#define MMAP_OFFSET(o) ((o) >> PAGE_SHIFT)
++#define MMAP_OFFSET(o) ((o) >> UM_KERN_PAGE_SHIFT)
+ 
+ static inline long stub_syscall0(long syscall)
+ {
+diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
+index 47b812b..885a125 100644
+--- a/arch/um/kernel/skas/clone.c
++++ b/arch/um/kernel/skas/clone.c
+@@ -3,7 +3,6 @@
+ #include <sys/mman.h>
+ #include <sys/time.h>
+ #include <asm/unistd.h>
+-#include <asm/page.h>
+ #include "ptrace_user.h"
+ #include "skas.h"
+ #include "stub-data.h"
+diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+index e85f499..919c25b 100644
+--- a/arch/um/os-Linux/main.c
++++ b/arch/um/os-Linux/main.c
+@@ -12,7 +12,6 @@
+ #include <sys/resource.h>
+ #include <sys/mman.h>
+ #include <sys/user.h>
+-#include <asm/page.h>
+ #include "kern_util.h"
+ #include "as-layout.h"
+ #include "mem_user.h"
+diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
+index 0f7df4e..9fbf210 100644
+--- a/arch/um/os-Linux/skas/mem.c
++++ b/arch/um/os-Linux/skas/mem.c
+@@ -9,7 +9,6 @@
  #include <unistd.h>
- #include <pwd.h>
-+#include <grp.h>
- #include <net/if.h>
- #include <sys/ioctl.h>
- #include <linux/if_tun.h>
- 
- static void Usage(char *name)
- {
--  fprintf(stderr, "Create: %s [-b] [-u owner] [-t device-name] "
-+  fprintf(stderr, "Create: %s [-b] [ -g group ] [-u owner] [-t device-name] "
- 	  "[-f tun-clone-device]\n", name);
-   fprintf(stderr, "Delete: %s -d device-name [-f tun-clone-device]\n\n", 
- 	  name);
-@@ -29,11 +30,13 @@ int main(int argc, char **argv)
- {
-   struct ifreq ifr;
-   struct passwd *pw;
-+  struct group *gr;
-   long owner = geteuid();
-+  long group = getegid();
-   int tap_fd, opt, delete = 0, brief = 0;
-   char *tun = "", *file = "/dev/net/tun", *name = argv[0], *end;
- 
--  while((opt = getopt(argc, argv, "bd:f:t:u:")) > 0){
-+  while((opt = getopt(argc, argv, "bd:f:t:u:g:")) > 0){
-     switch(opt) {
-       case 'b':
-         brief = 1;
-@@ -58,6 +61,19 @@ int main(int argc, char **argv)
- 	  Usage(name);
- 	}
-         break;
-+      case 'g':
-+	gr = getgrnam(optarg);
-+	if(gr != NULL){
-+	  group = gr->gr_gid;
-+	  break;
-+	}
-+        group = strtol(optarg, &end, 0);
-+	if(*end != '\0'){
-+	  fprintf(stderr, "'%s' is neither a groupname nor a numeric gid.\n",
-+		  optarg);
-+	  Usage(name);
-+	}
-+        break;
-       case 't':
-         tun = optarg;
-         break;
-@@ -104,10 +120,17 @@ int main(int argc, char **argv)
-       perror("TUNSETPERSIST");
-       exit(1);
-     } 
-+#ifndef TUNSETGROUP
-+#define TUNSETGROUP   _IOW('T', 206, int)
-+#endif
-+    if(ioctl(tap_fd, TUNSETGROUP, group) < 0){
-+      perror("TUNSETGROUP");
-+      group=-1;
-+    } 
-     if(brief)
-       printf("%s\n", ifr.ifr_name);
--    else printf("Set '%s' persistent and owned by uid %ld\n", ifr.ifr_name, 
--		owner);
-+    else printf("Set '%s' persistent and owned by gid %ld uid %ld\n",
-+		ifr.ifr_name, group, owner);
-   }
-   return(0);
- }
+ #include <sys/mman.h>
+ #include <sys/wait.h>
+-#include <asm/page.h>
+ #include <asm/unistd.h>
+ #include "mem_user.h"
+ #include "mem.h"
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 46f6139..f4f2981 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -19,7 +19,6 @@
+ #include <sys/mman.h>
+ #include <sys/resource.h>
+ #include <asm/unistd.h>
+-#include <asm/page.h>
+ #include <sys/types.h>
+ #include "kern_util.h"
+ #include "user.h"
+diff --git a/arch/um/os-Linux/tt.c b/arch/um/os-Linux/tt.c
+index bcf9359..5dc113d 100644
+--- a/arch/um/os-Linux/tt.c
++++ b/arch/um/os-Linux/tt.c
+@@ -17,7 +17,6 @@
+ #include <sys/mman.h>
+ #include <asm/ptrace.h>
+ #include <asm/unistd.h>
+-#include <asm/page.h>
+ #include "kern_util.h"
+ #include "user.h"
+ #include "signal_kern.h"
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
