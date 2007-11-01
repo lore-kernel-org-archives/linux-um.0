@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ing6v-00006F-Aa for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 12:53:49 -0700
+	id 1Ing70-00006P-SR for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Nov 2007 12:53:54 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ing6u-0006yT-IQ
+	(Exim 4.44) id 1Ing6y-0006xL-83
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 12:53:49 -0700
-Date: Thu, 1 Nov 2007 15:53:27 -0400
+	Thu, 01 Nov 2007 12:53:54 -0700
+Date: Thu, 1 Nov 2007 15:53:26 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071101195327.GA8882@c2.user-mode-linux.org>
+Message-ID: <20071101195326.GA8888@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 4/4] UML - kill subprocesses on exit
+Subject: [uml-devel] [PATCH 2/4] UML - Fix kernel vs libc symbols clash
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,96 +29,41 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: stable@kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Lepton Wu <ytht.net@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-commit 5161a303c94d812dc854278b58faa1885a669a48
-Author: Lepton Wu <ytht.net@gmail.com>
-Date:   Tue Oct 16 01:27:35 2007 -0700
+commit 2a772652c3971745228a2e40e6575ae594c88365
+Author: Jeff Dike <jdike@addtoit.com>
+Date:   Tue Oct 16 01:26:45 2007 -0700
 
-    uml: definitively kill subprocesses on panic
+    uml: fix an IPV6 libc vs kernel symbol clash
     
-    In a stock 2.6.22.6 kernel, poweroff a user mode linux guest (2.6.22.6 running
-    in skas0 mode) will halt the host linux.  I think the reason is the kernel
-    thread abort because of a bug.  Then the sys_reboot in process of user mode
-    linux guest is not trapped by the user mode linux kernel and is executed by
-    host.  I think it is better to make sure all of our children process to quit
-    when user mode linux kernel abort.
+    On some systems, with IPV6 configured, there is a clash between the kernel's
+    in6addr_any and the one in libc.
     
-    [ jdike - the kernel process needs to ignore SIGTERM, plus the waitpid/kill
-    loop is needed to make sure that all of our children are dead before the
-    kernel exits ]
+    This is handled in the usual (gross) way of defining the kernel symbol out of
+    the way on the gcc command line.
     
-    Signed-off-by: Lepton Wu <ytht.net@gmail.com>
     Signed-off-by: Jeff Dike <jdike@linux.intel.com>
     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- arch/um/os-Linux/skas/process.c |    2 +-
- arch/um/os-Linux/util.c         |   38 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+), 1 deletion(-)
+ arch/um/Makefile |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index ba9af8d..607d2b8 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -182,7 +182,7 @@ static int userspace_tramp(void *stack)
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 989224f..c3a399e 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -60,7 +60,8 @@ SYS_DIR		:= $(ARCH_DIR)/include/sysdep-$(SUBARCH)
  
- 	ptrace(PTRACE_TRACEME, 0, 0, 0);
+ CFLAGS += $(CFLAGS-y) -D__arch_um__ -DSUBARCH=\"$(SUBARCH)\"	\
+ 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
+-	-Din6addr_loopback=kernel_in6addr_loopback
++	-Din6addr_loopback=kernel_in6addr_loopback \
++	-Din6addr_any=kernel_in6addr_any
  
--	init_new_thread_signals();
-+	signal(SIGTERM, SIG_DFL);
- 	err = set_interval(1);
- 	if(err)
- 		panic("userspace_tramp - setting timer failed, errno = %d\n",
-diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
-index 7cbcf48..ef09543 100644
---- a/arch/um/os-Linux/util.c
-+++ b/arch/um/os-Linux/util.c
-@@ -105,6 +105,44 @@ int setjmp_wrapper(void (*proc)(void *, void *), ...)
+ AFLAGS += $(ARCH_INCLUDE)
  
- void os_dump_core(void)
- {
-+	int pid;
-+
- 	signal(SIGSEGV, SIG_DFL);
-+
-+	/*
-+	 * We are about to SIGTERM this entire process group to ensure that
-+	 * nothing is around to run after the kernel exits.  The
-+	 * kernel wants to abort, not die through SIGTERM, so we
-+	 * ignore it here.
-+	 */
-+
-+	signal(SIGTERM, SIG_IGN);
-+	kill(0, SIGTERM);
-+	/*
-+	 * Most of the other processes associated with this UML are
-+	 * likely sTopped, so give them a SIGCONT so they see the
-+	 * SIGTERM.
-+	 */
-+	kill(0, SIGCONT);
-+
-+	/*
-+	 * Now, having sent signals to everyone but us, make sure they
-+	 * die by ptrace.  Processes can survive what's been done to
-+	 * them so far - the mechanism I understand is receiving a
-+	 * SIGSEGV and segfaulting immediately upon return.  There is
-+	 * always a SIGSEGV pending, and (I'm guessing) signals are
-+	 * processed in numeric order so the SIGTERM (signal 15 vs
-+	 * SIGSEGV being signal 11) is never handled.
-+	 *
-+	 * Run a waitpid loop until we get some kind of error.
-+	 * Hopefully, it's ECHILD, but there's not a lot we can do if
-+	 * it's something else.  Tell os_kill_ptraced_process not to
-+	 * wait for the child to report its death because there's
-+	 * nothing reasonable to do if that fails.
-+	 */
-+
-+	while ((pid = waitpid(-1, NULL, WNOHANG)) > 0)
-+		os_kill_ptraced_process(pid, 0);
-+
- 	abort();
- }
 
 
 -------------------------------------------------------------------------
