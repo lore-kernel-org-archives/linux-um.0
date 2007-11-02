@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1InzIH-0006Aj-OS for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Nov 2007 09:22:50 -0700
-Received: from swingline.cs.wisc.edu ([128.105.121.52])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1InzIF-0007Fk-Cu
+	id 1Io0Gs-0004Rt-Sq for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Nov 2007 10:25:26 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Io0Gr-0002s9-7X
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Nov 2007 09:22:47 -0700
-Date: Fri, 2 Nov 2007 11:22:44 -0500
-From: Erik Paulson <epaulson@cs.wisc.edu>
-Message-ID: <20071102162239.GA13481@swingline.cs.wisc.edu>
+	Fri, 02 Nov 2007 10:25:26 -0700
+Date: Fri, 2 Nov 2007 13:25:16 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071102172516.GA11400@c2.user-mode-linux.org>
 References: <20071102022749.GB8583@swingline.cs.wisc.edu>
 	<20071102155131.GB5760@c2.user-mode-linux.org>
+	<20071102162239.GA13481@swingline.cs.wisc.edu>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071102155131.GB5760@c2.user-mode-linux.org>
+In-Reply-To: <20071102162239.GA13481@swingline.cs.wisc.edu>
 Subject: Re: [uml-devel] building 2.6.24-rc1 with VDE in a non-standard
 	location?
 List-Id: The user-mode Linux development list
@@ -31,79 +33,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Erik Paulson <epaulson@cs.wisc.edu>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Nov 02, 2007 at 11:51:31AM -0400, Jeff Dike wrote:
-> On Thu, Nov 01, 2007 at 09:27:49PM -0500, Erik Paulson wrote:
-> > I'm trying to build UML with VDE support turned on. However, I don't
-> > have root on my host machine, so when I installed VDE I put it in a 
-> > non-standard location. 
-> > 
-> > How do you pass extra -L and -I flags to the kernel build process? I
-> > tried adding
-> > 
-> > make linux ARCH=um CFLAGS=-I/path/to/my/vde/include 
-> > with no go, and I tried adding the include path to
-> > HOSTCFLAGS in the top level Makefile rules, but that also didn't
-> > work.
-> 
-> How recent a kernel tree are you playing with?  This patch seems to do
-> what you want for CFLAGS -
-> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=52bcc3308ae3344266f55bf98a22c1ac0201eda7
-> 
+On Fri, Nov 02, 2007 at 11:22:44AM -0500, Erik Paulson wrote:
+> include/asm/ptrace.h:50: warning: "struct user_fxsr_struct" declared inside parameter list
+> include/asm/ptrace.h:50: warning: its scope is only this definition or declaration, which is probably not what you want
+> include/asm/ptrace.h:52: warning: "struct user_fxsr_struct" declared inside parameter list
 
-2.6.24-rc1 (2.6.23 plus the patch for rc1, plus the patch you mentioned on
-the 25th:
-   http://marc.info/?l=linux-kernel&m=119332492222601&q=raw
+Humm.  Looks to me like you should be getting user_fxsr_struct into
+ptrace.h as follows:
+	defined in include/asm-x86/user_32.h
+		included from include/asm-x86/user.h
+		included from include/asm-um/user.h
+		included from include/asm-um/ptrace-i386.h
 
-With basically just using 'defconfig' (I turned on VDE, but otherwise touched
-nothing in menuconfig).
+The sticky point I suspect is the user_32.h, which depends on
+__i386__, which Al Viro sent in patches removing.  However, it all
+works here.
 
-I used:
-swingline(10)% gcc -v
-Reading specs from /usr/lib/gcc/i386-redhat-linux/3.4.6/specs
-Configured with: ../configure --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --enable-shared --enable-threads=posix --disable-checking --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-java-awt=gtk --host=i386-redhat-linux
-Thread model: posix
-gcc version 3.4.6 20060404 (Red Hat 3.4.6-8)
+				Jeff
 
-running:
-make linux ARCH=um CFLAGS=-I/scratch/epaulson/vde/include
-
-I get:
-<the below error message repeated many times>
-  CC      arch/um/kernel/skas/mmu.o
-In file included from include/asm/processor-generic.h:13,
-                 from include/asm/processor.h:77,
-                 from include/asm/thread_info.h:11,
-                 from include/linux/thread_info.h:21,
-                 from include/linux/preempt.h:9,
-                 from include/linux/spinlock.h:49,
-                 from include/linux/mmzone.h:7,
-                 from include/linux/gfp.h:4,
-                 from include/linux/mm.h:8,
-                 from arch/um/kernel/skas/mmu.c:6:
-include/asm/ptrace.h:50: warning: "struct user_fxsr_struct" declared inside parameter list
-include/asm/ptrace.h:50: warning: its scope is only this definition or declaration, which is probably not what you want
-include/asm/ptrace.h:52: warning: "struct user_fxsr_struct" declared inside parameter list
-In file included from include/linux/timer.h:5,
-                 from include/linux/sched.h:87,
-                 from include/asm/pgtable.h:11,
-                 from include/linux/mm.h:37,
-                 from arch/um/kernel/skas/mmu.c:6:
-include/linux/ktime.h: In function `ktime_set':
-include/linux/ktime.h:84: warning: comparison is always false due to limited range of data type
-/tmp/cc8wIDJP.s: Assembler messages:
-/tmp/cc8wIDJP.s:485: Error: suffix or operands invalid for `dec'
-/tmp/cc8wIDJP.s:496: Error: suffix or operands invalid for `dec'
-make[2]: *** [arch/um/kernel/skas/mmu.o] Error 1
-make[1]: *** [arch/um/kernel/skas] Error 2
-make: *** [arch/um/kernel] Error 2
-
-I'll try rc1-git11 this afternoon.
-
--Erik
-
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
