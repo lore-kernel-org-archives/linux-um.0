@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1InyiF-0001A5-Jo for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Nov 2007 08:45:35 -0700
+	id 1InydE-0000BZ-9Y for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Nov 2007 08:40:24 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Inyi9-0000Rx-5Z
+	(Exim 4.44) id 1Inyd8-0005nD-Kr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Nov 2007 08:45:30 -0700
-Date: Fri, 2 Nov 2007 11:40:13 -0400
+	Fri, 02 Nov 2007 08:40:19 -0700
+Date: Fri, 2 Nov 2007 11:40:15 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071102154013.GA10268@c2.user-mode-linux.org>
+Message-ID: <20071102154015.GA10288@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/6] UML - Fix URLs in Kconfig and help strings
+Subject: [uml-devel] [PATCH 6/6] UML - get_wchan fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,142 +29,56 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Karol Swietlicki <magotari@gmail.com>
+Cc: Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Karol Swietlicki <magotari@gmail.com>
+[ This can be merged with uml-implement-get_wchan.patch ]
 
-This patch updates links which broke during the transition to the new 
-UML website.
+The previous get_wchan patch needed some more work.  Joe Perches
+suggested the use of bool where I was using a counter.  It also turned
+out not to work so well on x86_64, so I changed the algorithm a bit.
+Instead of skipping one frame and looking for the next non-sched
+symbol, it now looks for at least one scheduler frame, then returns
+the first symbol seen above that.
 
-Signed-off-by: Karol Swietlicki <magotari@gmail.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/Kconfig             |    2 +-
- arch/um/Kconfig.char        |    2 +-
- arch/um/Kconfig.debug       |    4 ++--
- arch/um/Kconfig.net         |   12 ++++++------
- arch/um/include/chan_user.h |    2 +-
- 5 files changed, 11 insertions(+), 11 deletions(-)
+ arch/um/kernel/process.c |   16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-Index: linux-2.6.22/arch/um/Kconfig
+Index: linux-2.6.22/arch/um/kernel/process.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/Kconfig	2007-10-25 12:23:06.000000000 -0400
-+++ linux-2.6.22/arch/um/Kconfig	2007-10-26 15:38:03.000000000 -0400
-@@ -145,7 +145,7 @@ config HPPFS
- 	  by removing or changing anything in /proc which gives away the
- 	  identity of a UML.
+--- linux-2.6.22.orig/arch/um/kernel/process.c	2007-10-31 13:16:40.000000000 -0400
++++ linux-2.6.22/arch/um/kernel/process.c	2007-10-31 13:17:00.000000000 -0400
+@@ -462,7 +462,8 @@ unsigned long arch_align_stack(unsigned 
  
--	  See <http://user-mode-linux.sf.net/hppfs.html> for more information.
-+	  See <http://user-mode-linux.sf.net/old/hppfs.html> for more information.
+ unsigned long get_wchan(struct task_struct *p)
+ {
+-	unsigned long stack_page, sp, ip, count = 0;
++	unsigned long stack_page, sp, ip;
++	bool seen_sched = 0;
  
- 	  You only need this if you are setting up a UML honeypot.  Otherwise,
- 	  it is safe to say 'N' here.
-Index: linux-2.6.22/arch/um/Kconfig.char
-===================================================================
---- linux-2.6.22.orig/arch/um/Kconfig.char	2007-10-18 23:39:13.000000000 -0400
-+++ linux-2.6.22/arch/um/Kconfig.char	2007-10-26 15:38:03.000000000 -0400
-@@ -18,7 +18,7 @@ config SSL
-           lines on the UML that are usually made to show up on the host as
-           ttys or ptys.
+ 	if ((p == NULL) || (p == current) || (p->state == TASK_RUNNING))
+ 		return 0;
+@@ -482,14 +483,11 @@ unsigned long get_wchan(struct task_stru
  
--          See <http://user-mode-linux.sourceforge.net/input.html> for more
-+          See <http://user-mode-linux.sourceforge.net/old/input.html> for more
-           information and command line examples of how to use this facility.
+ 	while (sp < stack_page + THREAD_SIZE) {
+ 		ip = *((unsigned long *) sp);
+-		if (kernel_text_address(ip) && !in_sched_functions(ip)) {
+-			/*
+-			 * Skip one valid IP, which will be the low-level UML
+-			 * context switcher.
+-			 */
+-			if (count++ == 1)
+-				return ip;
+-		}
++		if (in_sched_functions(ip))
++			/* Ignore everything until we're above the scheduler */
++			seen_sched = 1;
++		else if (kernel_text_address(ip) && seen_sched)
++			return ip;
  
-           Unless you have a specific reason for disabling this, say Y.
-Index: linux-2.6.22/arch/um/Kconfig.debug
-===================================================================
---- linux-2.6.22.orig/arch/um/Kconfig.debug	2007-10-18 23:39:13.000000000 -0400
-+++ linux-2.6.22/arch/um/Kconfig.debug	2007-10-26 15:38:03.000000000 -0400
-@@ -9,7 +9,7 @@ config GPROF
- 	  This allows profiling of a User-Mode Linux kernel with the gprof
- 	  utility.
- 
--	  See <http://user-mode-linux.sourceforge.net/gprof.html> for more
-+	  See <http://user-mode-linux.sourceforge.net/old/gprof.html> for more
- 	  details.
- 
- 	  If you're involved in UML kernel development and want to use gprof,
-@@ -22,7 +22,7 @@ config GCOV
- 	  This option allows developers to retrieve coverage data from a UML
- 	  session.
- 
--	  See <http://user-mode-linux.sourceforge.net/gprof.html> for more
-+	  See <http://user-mode-linux.sourceforge.net/old/gprof.html> for more
- 	  details.
- 
- 	  If you're involved in UML kernel development and want to use gcov,
-Index: linux-2.6.22/arch/um/Kconfig.net
-===================================================================
---- linux-2.6.22.orig/arch/um/Kconfig.net	2007-10-12 12:09:00.000000000 -0400
-+++ linux-2.6.22/arch/um/Kconfig.net	2007-10-26 15:38:03.000000000 -0400
-@@ -14,7 +14,7 @@ config UML_NET
- 
-         For more information, including explanations of the networking and
-         sample configurations, see
--        <http://user-mode-linux.sourceforge.net/networking.html>.
-+        <http://user-mode-linux.sourceforge.net/old/networking.html>.
- 
-         If you'd like to be able to enable networking in the User-Mode
-         linux environment, say Y; otherwise say N.  Note that you must
-@@ -38,7 +38,7 @@ config UML_NET_ETHERTAP
-         CONFIG_NETLINK_DEV configured as Y or M.
- 
-         For more information, see
--        <http://user-mode-linux.sourceforge.net/networking.html>  That site
-+        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
-         has examples of the UML command line to use to enable Ethertap
-         networking.
- 
-@@ -72,7 +72,7 @@ config UML_NET_SLIP
-         To use this, your host must support slip devices.
- 
-         For more information, see
--        <http://user-mode-linux.sourceforge.net/networking.html>.  That site
-+        <http://user-mode-linux.sourceforge.net/old/networking.html>.
-         has examples of the UML command line to use to enable slip
-         networking, and details of a few quirks with it.
- 
-@@ -96,7 +96,7 @@ config UML_NET_DAEMON
-         networking daemon on the host.
- 
-         For more information, see
--        <http://user-mode-linux.sourceforge.net/networking.html>  That site
-+        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
-         has examples of the UML command line to use to enable Daemon
-         networking.
- 
-@@ -144,7 +144,7 @@ config UML_NET_MCAST
-         To use this, your host kernel(s) must support IP Multicasting.
- 
-         For more information, see
--        <http://user-mode-linux.sourceforge.net/networking.html>  That site
-+        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
-         has examples of the UML command line to use to enable Multicast
-         networking, and notes about the security of this approach.
- 
-@@ -165,7 +165,7 @@ config UML_NET_PCAP
- 	installed in order to build the pcap transport into UML.
- 
-         For more information, see
--        <http://user-mode-linux.sourceforge.net/networking.html>  That site
-+        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
-         has examples of the UML command line to use to enable this option.
- 
- 	If you intend to use UML as a network monitor for the host, say
-Index: linux-2.6.22/arch/um/include/chan_user.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/chan_user.h	2007-10-12 12:06:56.000000000 -0400
-+++ linux-2.6.22/arch/um/include/chan_user.h	2007-10-26 15:38:03.000000000 -0400
-@@ -48,7 +48,7 @@ extern void register_winch_irq(int fd, i
- #define __channel_help(fn, prefix) \
- __uml_help(fn, prefix "[0-9]*=<channel description>\n" \
- "    Attach a console or serial line to a host channel.  See\n" \
--"    http://user-mode-linux.sourceforge.net/input.html for a complete\n" \
-+"    http://user-mode-linux.sourceforge.net/old/input.html for a complete\n" \
- "    description of this switch.\n\n" \
- );
- 
+ 		sp += sizeof(unsigned long);
+ 	}
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
