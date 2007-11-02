@@ -2,23 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IniAH-0004m8-3y for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 15:05:26 -0700
-Received: from jade.aracnet.com ([216.99.193.136])
+	id 1InmEM-00046i-S3 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Nov 2007 19:25:54 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IniAF-000476-69
+	(Exim 4.44) id 1InmEL-0001JV-9P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 15:05:24 -0700
-Received: from [192.168.0.4] (216-99-213-225.dsl.aracnet.com [216.99.213.225])
-	(authenticated bits=0)
-	by jade.aracnet.com (8.13.6/8.12.8) with ESMTP id lA1M5HdO009281
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 1 Nov 2007 15:05:21 -0700
-Message-ID: <472A4DAC.3060104@BitWagon.com>
-Date: Thu, 01 Nov 2007 15:05:32 -0700
-From: John Reiser <jreiser@BitWagon.com>
-MIME-Version: 1.0
-Subject: [uml-devel] why allocate page for stack in clone(, stack,
+	Thu, 01 Nov 2007 19:25:54 -0700
+Date: Thu, 1 Nov 2007 22:25:40 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071102022540.GA12253@c2.user-mode-linux.org>
+References: <472A4DAC.3060104@BitWagon.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <472A4DAC.3060104@BitWagon.com>
+Subject: Re: [uml-devel] why allocate page for stack in clone(, stack,
 	~CLONE_VM & (...)) ?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -33,22 +31,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: John Reiser <jreiser@BitWagon.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-In arch/um/os/start_up.c, function start_ptraced_child() does:
-        pid = clone(ptrace_child, (void *) sp, SIGCHLD, NULL);
-where sp points into a newly- mmap()ed page.  Instead, why not
-avoid the mmap() entirely via:
-        pid = clone(ptrace_child, NULL,        SIGCHLD, NULL);
+On Thu, Nov 01, 2007 at 03:05:32PM -0700, John Reiser wrote:
+> In arch/um/os/start_up.c, function start_ptraced_child() does:
+>         pid = clone(ptrace_child, (void *) sp, SIGCHLD, NULL);
+> where sp points into a newly- mmap()ed page.  Instead, why not
+> avoid the mmap() entirely via:
+>         pid = clone(ptrace_child, NULL,        SIGCHLD, NULL);
+> 
+> Because the flags to clone() do not contain CLONE_VM, then the clone()
+> is equivalent to a fork() with respect to address space.
 
-Because the flags to clone() do not contain CLONE_VM, then the clone()
-is equivalent to a fork() with respect to address space.  The child does not
-share VM with the parent, and using the same addresses for the stack
-causes no overwrites.  Perhaps the Dcache efficiency is slightly
-less, but much less costly than mmap() and the eventual munmap().
+If you look at what's currently in mainline, you'll see it does
+exactly what you suggest - the patch in question is this one:
+	http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=3cdaf45578b9aa1eb748d0a32678ee5a0180575b
+
+				Jeff
 
 -- 
-John Reiser, jreiser@BitWagon.com
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
