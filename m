@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1InydJ-0000CZ-TT for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Nov 2007 08:40:30 -0700
+	id 1InyiF-0001A5-Jo for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Nov 2007 08:45:35 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1InydH-0005Ue-9R
+	(Exim 4.44) id 1Inyi9-0000Rx-5Z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Nov 2007 08:40:29 -0700
-Date: Fri, 2 Nov 2007 11:40:14 -0400
+	Fri, 02 Nov 2007 08:45:30 -0700
+Date: Fri, 2 Nov 2007 11:40:13 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071102154014.GA10263@c2.user-mode-linux.org>
+Message-ID: <20071102154013.GA10268@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 3/6] UML - Improve detection of host cmov
+Subject: [uml-devel] [PATCH 1/6] UML - Fix URLs in Kconfig and help strings
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,82 +33,138 @@ Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.
 
 From: Karol Swietlicki <magotari@gmail.com>
 
-This patch introduces a new way of checking for the cmov instruction.
-I use signal handling instead of reading /proc/cpuinfo.
-
-[ jdike - Fiddled the asm to make it obvious that it didn't mess with
-any in-use registers and made test_for_host_cmov void ]
+This patch updates links which broke during the transition to the new 
+UML website.
 
 Signed-off-by: Karol Swietlicki <magotari@gmail.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/sys-i386/bugs.c |   41 ++++++++++++++++++++++++++++++++---------
- 1 file changed, 32 insertions(+), 9 deletions(-)
+ arch/um/Kconfig             |    2 +-
+ arch/um/Kconfig.char        |    2 +-
+ arch/um/Kconfig.debug       |    4 ++--
+ arch/um/Kconfig.net         |   12 ++++++------
+ arch/um/include/chan_user.h |    2 +-
+ 5 files changed, 11 insertions(+), 11 deletions(-)
 
-Index: linux-2.6.22/arch/um/sys-i386/bugs.c
+Index: linux-2.6.22/arch/um/Kconfig
 ===================================================================
---- linux-2.6.22.orig/arch/um/sys-i386/bugs.c	2007-10-30 12:31:35.000000000 -0400
-+++ linux-2.6.22/arch/um/sys-i386/bugs.c	2007-10-31 11:24:45.000000000 -0400
-@@ -10,11 +10,42 @@
- #include "os.h"
- #include "task.h"
- #include "user.h"
-+#include "sysdep/archsetjmp.h"
+--- linux-2.6.22.orig/arch/um/Kconfig	2007-10-25 12:23:06.000000000 -0400
++++ linux-2.6.22/arch/um/Kconfig	2007-10-26 15:38:03.000000000 -0400
+@@ -145,7 +145,7 @@ config HPPFS
+ 	  by removing or changing anything in /proc which gives away the
+ 	  identity of a UML.
  
- #define MAXTOKEN 64
+-	  See <http://user-mode-linux.sf.net/hppfs.html> for more information.
++	  See <http://user-mode-linux.sf.net/old/hppfs.html> for more information.
  
- /* Set during early boot */
- int host_has_cmov = 1;
-+static jmp_buf cmov_test_return;
-+
-+static void cmov_sigill_test_handler(int sig)
-+{
-+	host_has_cmov = 0;
-+	longjmp(cmov_test_return, 1);
-+}
-+
-+static void test_for_host_cmov(void)
-+{
-+	struct sigaction old, new;
-+
-+	printk(UM_KERN_INFO "Checking for host processor cmov support...");
-+	new.sa_handler = cmov_sigill_test_handler;
-+
-+	/* Make sure that SIGILL is enabled after the handler longjmps back */
-+	new.sa_flags = SA_NODEFER;
-+	sigemptyset(&new.sa_mask);
-+	sigaction(SIGILL, &new, &old);
-+
-+	if (setjmp(cmov_test_return) == 0) {
-+		unsigned long foo = 0;
-+		__asm__ __volatile__("cmovz %0, %1" : "=r" (foo) : "0" (foo));
-+		printk("Yes\n");
-+	}
-+	else
-+		printk("No\n");
-+
-+	sigaction(SIGILL, &old, &new);
-+}
+ 	  You only need this if you are setting up a UML honeypot.  Otherwise,
+ 	  it is safe to say 'N' here.
+Index: linux-2.6.22/arch/um/Kconfig.char
+===================================================================
+--- linux-2.6.22.orig/arch/um/Kconfig.char	2007-10-18 23:39:13.000000000 -0400
++++ linux-2.6.22/arch/um/Kconfig.char	2007-10-26 15:38:03.000000000 -0400
+@@ -18,7 +18,7 @@ config SSL
+           lines on the UML that are usually made to show up on the host as
+           ttys or ptys.
  
- static char token(int fd, char *buf, int len, char stop)
- {
-@@ -153,15 +184,7 @@ void arch_init_thread(void)
+-          See <http://user-mode-linux.sourceforge.net/input.html> for more
++          See <http://user-mode-linux.sourceforge.net/old/input.html> for more
+           information and command line examples of how to use this facility.
  
- void arch_check_bugs(void)
- {
--	int have_it;
--
--	if (os_access("/proc/cpuinfo", OS_ACC_R_OK) < 0) {
--		printk(UM_KERN_ERR "/proc/cpuinfo not available - skipping CPU "
--		       "capability checks\n");
--		return;
--	}
--	if (check_cpu_flag("cmov", &have_it))
--		host_has_cmov = have_it;
-+	test_for_host_cmov();
- }
+           Unless you have a specific reason for disabling this, say Y.
+Index: linux-2.6.22/arch/um/Kconfig.debug
+===================================================================
+--- linux-2.6.22.orig/arch/um/Kconfig.debug	2007-10-18 23:39:13.000000000 -0400
++++ linux-2.6.22/arch/um/Kconfig.debug	2007-10-26 15:38:03.000000000 -0400
+@@ -9,7 +9,7 @@ config GPROF
+ 	  This allows profiling of a User-Mode Linux kernel with the gprof
+ 	  utility.
  
- int arch_handle_signal(int sig, struct uml_pt_regs *regs)
+-	  See <http://user-mode-linux.sourceforge.net/gprof.html> for more
++	  See <http://user-mode-linux.sourceforge.net/old/gprof.html> for more
+ 	  details.
+ 
+ 	  If you're involved in UML kernel development and want to use gprof,
+@@ -22,7 +22,7 @@ config GCOV
+ 	  This option allows developers to retrieve coverage data from a UML
+ 	  session.
+ 
+-	  See <http://user-mode-linux.sourceforge.net/gprof.html> for more
++	  See <http://user-mode-linux.sourceforge.net/old/gprof.html> for more
+ 	  details.
+ 
+ 	  If you're involved in UML kernel development and want to use gcov,
+Index: linux-2.6.22/arch/um/Kconfig.net
+===================================================================
+--- linux-2.6.22.orig/arch/um/Kconfig.net	2007-10-12 12:09:00.000000000 -0400
++++ linux-2.6.22/arch/um/Kconfig.net	2007-10-26 15:38:03.000000000 -0400
+@@ -14,7 +14,7 @@ config UML_NET
+ 
+         For more information, including explanations of the networking and
+         sample configurations, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>.
++        <http://user-mode-linux.sourceforge.net/old/networking.html>.
+ 
+         If you'd like to be able to enable networking in the User-Mode
+         linux environment, say Y; otherwise say N.  Note that you must
+@@ -38,7 +38,7 @@ config UML_NET_ETHERTAP
+         CONFIG_NETLINK_DEV configured as Y or M.
+ 
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+         has examples of the UML command line to use to enable Ethertap
+         networking.
+ 
+@@ -72,7 +72,7 @@ config UML_NET_SLIP
+         To use this, your host must support slip devices.
+ 
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>.  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>.
+         has examples of the UML command line to use to enable slip
+         networking, and details of a few quirks with it.
+ 
+@@ -96,7 +96,7 @@ config UML_NET_DAEMON
+         networking daemon on the host.
+ 
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+         has examples of the UML command line to use to enable Daemon
+         networking.
+ 
+@@ -144,7 +144,7 @@ config UML_NET_MCAST
+         To use this, your host kernel(s) must support IP Multicasting.
+ 
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+         has examples of the UML command line to use to enable Multicast
+         networking, and notes about the security of this approach.
+ 
+@@ -165,7 +165,7 @@ config UML_NET_PCAP
+ 	installed in order to build the pcap transport into UML.
+ 
+         For more information, see
+-        <http://user-mode-linux.sourceforge.net/networking.html>  That site
++        <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+         has examples of the UML command line to use to enable this option.
+ 
+ 	If you intend to use UML as a network monitor for the host, say
+Index: linux-2.6.22/arch/um/include/chan_user.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/chan_user.h	2007-10-12 12:06:56.000000000 -0400
++++ linux-2.6.22/arch/um/include/chan_user.h	2007-10-26 15:38:03.000000000 -0400
+@@ -48,7 +48,7 @@ extern void register_winch_irq(int fd, i
+ #define __channel_help(fn, prefix) \
+ __uml_help(fn, prefix "[0-9]*=<channel description>\n" \
+ "    Attach a console or serial line to a host channel.  See\n" \
+-"    http://user-mode-linux.sourceforge.net/input.html for a complete\n" \
++"    http://user-mode-linux.sourceforge.net/old/input.html for a complete\n" \
+ "    description of this switch.\n\n" \
+ );
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
