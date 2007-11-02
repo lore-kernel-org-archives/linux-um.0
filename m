@@ -1,23 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1InmEM-00046i-S3 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 19:25:54 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1InmEL-0001JV-9P
+	id 1InmGI-0004IL-N6 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 Nov 2007 19:27:54 -0700
+Received: from swingline.cs.wisc.edu ([128.105.121.52])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1InmGH-0000nL-Bc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 19:25:54 -0700
-Date: Thu, 1 Nov 2007 22:25:40 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071102022540.GA12253@c2.user-mode-linux.org>
-References: <472A4DAC.3060104@BitWagon.com>
+	Thu, 01 Nov 2007 19:27:54 -0700
+Received: from swingline.cs.wisc.edu (localhost [127.0.0.1])
+	by swingline.cs.wisc.edu (8.13.6/8.13.6) with ESMTP id lA22RnDh008669
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 1 Nov 2007 21:27:49 -0500
+Received: (from epaulson@localhost)
+	by swingline.cs.wisc.edu (8.13.6/8.13.6/Submit) id lA22RnlS008668
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 1 Nov 2007 21:27:49 -0500
+Date: Thu, 1 Nov 2007 21:27:49 -0500
+From: Erik Paulson <epaulson@cs.wisc.edu>
+Message-ID: <20071102022749.GB8583@swingline.cs.wisc.edu>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <472A4DAC.3060104@BitWagon.com>
-Subject: Re: [uml-devel] why allocate page for stack in clone(, stack,
-	~CLONE_VM & (...)) ?
+Subject: [uml-devel] building 2.6.24-rc1 with VDE in a non-standard location?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,27 +35,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: John Reiser <jreiser@BitWagon.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Nov 01, 2007 at 03:05:32PM -0700, John Reiser wrote:
-> In arch/um/os/start_up.c, function start_ptraced_child() does:
->         pid = clone(ptrace_child, (void *) sp, SIGCHLD, NULL);
-> where sp points into a newly- mmap()ed page.  Instead, why not
-> avoid the mmap() entirely via:
->         pid = clone(ptrace_child, NULL,        SIGCHLD, NULL);
-> 
-> Because the flags to clone() do not contain CLONE_VM, then the clone()
-> is equivalent to a fork() with respect to address space.
+I'm trying to build UML with VDE support turned on. However, I don't
+have root on my host machine, so when I installed VDE I put it in a 
+non-standard location. 
 
-If you look at what's currently in mainline, you'll see it does
-exactly what you suggest - the patch in question is this one:
-	http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=3cdaf45578b9aa1eb748d0a32678ee5a0180575b
+How do you pass extra -L and -I flags to the kernel build process? I
+tried adding
 
-				Jeff
+make linux ARCH=um CFLAGS=-I/path/to/my/vde/include 
+with no go, and I tried adding the include path to
+HOSTCFLAGS in the top level Makefile rules, but that also didn't
+work.
 
--- 
-Work email - jdike at linux dot intel dot com
+I got it to build by just sticking the right -I and -L flags in 
+arch/um/drivers/Makefile
+
+Is there another, more standard Linux kernel way that's equivalent to
+./configure --with-package=/path/
+
+Thanks,
+
+-Erik
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
