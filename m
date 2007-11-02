@@ -2,26 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1InmGI-0004IL-N6 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 19:27:54 -0700
-Received: from swingline.cs.wisc.edu ([128.105.121.52])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1InmGH-0000nL-Bc
+	id 1InyoK-0002IW-HS for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Nov 2007 08:51:52 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1InyoH-0003kr-RD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 Nov 2007 19:27:54 -0700
-Received: from swingline.cs.wisc.edu (localhost [127.0.0.1])
-	by swingline.cs.wisc.edu (8.13.6/8.13.6) with ESMTP id lA22RnDh008669
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 1 Nov 2007 21:27:49 -0500
-Received: (from epaulson@localhost)
-	by swingline.cs.wisc.edu (8.13.6/8.13.6/Submit) id lA22RnlS008668
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 1 Nov 2007 21:27:49 -0500
-Date: Thu, 1 Nov 2007 21:27:49 -0500
-From: Erik Paulson <epaulson@cs.wisc.edu>
-Message-ID: <20071102022749.GB8583@swingline.cs.wisc.edu>
+	Fri, 02 Nov 2007 08:51:52 -0700
+Date: Fri, 2 Nov 2007 11:51:31 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071102155131.GB5760@c2.user-mode-linux.org>
+References: <20071102022749.GB8583@swingline.cs.wisc.edu>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] building 2.6.24-rc1 with VDE in a non-standard location?
+In-Reply-To: <20071102022749.GB8583@swingline.cs.wisc.edu>
+Subject: Re: [uml-devel] building 2.6.24-rc1 with VDE in a non-standard
+	location?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,30 +31,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Erik Paulson <epaulson@cs.wisc.edu>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-I'm trying to build UML with VDE support turned on. However, I don't
-have root on my host machine, so when I installed VDE I put it in a 
-non-standard location. 
+On Thu, Nov 01, 2007 at 09:27:49PM -0500, Erik Paulson wrote:
+> I'm trying to build UML with VDE support turned on. However, I don't
+> have root on my host machine, so when I installed VDE I put it in a 
+> non-standard location. 
+> 
+> How do you pass extra -L and -I flags to the kernel build process? I
+> tried adding
+> 
+> make linux ARCH=um CFLAGS=-I/path/to/my/vde/include 
+> with no go, and I tried adding the include path to
+> HOSTCFLAGS in the top level Makefile rules, but that also didn't
+> work.
 
-How do you pass extra -L and -I flags to the kernel build process? I
-tried adding
+How recent a kernel tree are you playing with?  This patch seems to do
+what you want for CFLAGS -
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=52bcc3308ae3344266f55bf98a22c1ac0201eda7
 
-make linux ARCH=um CFLAGS=-I/path/to/my/vde/include 
-with no go, and I tried adding the include path to
-HOSTCFLAGS in the top level Makefile rules, but that also didn't
-work.
+It's been in mainline since 10/15.  I think we'd need to do something
+similar for LFLAGS since the rest of the kernel doesn't care so much
+about libraries.
 
-I got it to build by just sticking the right -I and -L flags in 
-arch/um/drivers/Makefile
+				Jeff
 
-Is there another, more standard Linux kernel way that's equivalent to
-./configure --with-package=/path/
-
-Thanks,
-
--Erik
-
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
