@@ -2,22 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1InyoK-0002IW-HS for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Nov 2007 08:51:52 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1InydO-0000Dh-NV for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 Nov 2007 08:40:34 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1InyoH-0003kr-RD
+	(Exim 4.44) id 1InydN-0005bR-H6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 Nov 2007 08:51:52 -0700
-Date: Fri, 2 Nov 2007 11:51:31 -0400
+	Fri, 02 Nov 2007 08:40:34 -0700
+Date: Fri, 2 Nov 2007 11:40:13 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071102155131.GB5760@c2.user-mode-linux.org>
-References: <20071102022749.GB8583@swingline.cs.wisc.edu>
+Message-ID: <20071102154013.GA10273@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071102022749.GB8583@swingline.cs.wisc.edu>
-Subject: Re: [uml-devel] building 2.6.24-rc1 with VDE in a non-standard
-	location?
+Subject: [uml-devel] [PATCH 2/6] UML - Document new ubd flag
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,34 +28,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Erik Paulson <epaulson@cs.wisc.edu>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>, caker@linode.com
 
-On Thu, Nov 01, 2007 at 09:27:49PM -0500, Erik Paulson wrote:
-> I'm trying to build UML with VDE support turned on. However, I don't
-> have root on my host machine, so when I installed VDE I put it in a 
-> non-standard location. 
-> 
-> How do you pass extra -L and -I flags to the kernel build process? I
-> tried adding
-> 
-> make linux ARCH=um CFLAGS=-I/path/to/my/vde/include 
-> with no go, and I tried adding the include path to
-> HOSTCFLAGS in the top level Makefile rules, but that also didn't
-> work.
+The ubd help message didn't document the 'c' flag.
 
-How recent a kernel tree are you playing with?  This patch seems to do
-what you want for CFLAGS -
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=52bcc3308ae3344266f55bf98a22c1ac0201eda7
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/drivers/ubd_kern.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-It's been in mainline since 10/15.  I think we'd need to do something
-similar for LFLAGS since the rest of the kernel doesn't care so much
-about libraries.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6/arch/um/drivers/ubd_kern.c
+===================================================================
+--- linux-2.6.orig/arch/um/drivers/ubd_kern.c	2007-11-02 10:59:18.000000000 -0400
++++ linux-2.6/arch/um/drivers/ubd_kern.c	2007-11-02 10:59:59.000000000 -0400
+@@ -437,7 +437,10 @@ __uml_help(ubd_setup,
+ "    machine by running 'dd' on the device. <n> must be in the range\n"
+ "    0 to 7. Appending an 'r' to the number will cause that device\n"
+ "    to be mounted read-only. For example ubd1r=./ext_fs. Appending\n"
+-"    an 's' will cause data to be written to disk on the host immediately.\n\n"
++"    an 's' will cause data to be written to disk on the host immediately.\n"
++"    'c' will cause the device to be treated as being shared between multiple\n"
++"    UMLs and file locking will be turned off - this is appropriate for a\n"
++"    cluster filesystem and inappropriate at almost all other times.\n\n"
+ );
+ 
+ static int udb_setup(char *str)
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
