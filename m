@@ -2,24 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ip6Cp-0005ky-DP for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Nov 2007 09:57:47 -0800
-Received: from swingline.cs.wisc.edu ([128.105.121.52])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ip6Cm-0005t9-W1
+	id 1Ip7c2-0006lE-Qu for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Nov 2007 11:27:54 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Ip7c1-00058H-VX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Nov 2007 09:57:47 -0800
-Date: Mon, 5 Nov 2007 11:57:40 -0600
-From: Erik Paulson <epaulson@cs.wisc.edu>
-Message-ID: <20071105175740.GB14135@swingline.cs.wisc.edu>
-References: <20071102022749.GB8583@swingline.cs.wisc.edu>
-	<20071102155131.GB5760@c2.user-mode-linux.org>
-	<20071102162239.GA13481@swingline.cs.wisc.edu>
-	<20071105171213.GA7296@c2.user-mode-linux.org>
+	Mon, 05 Nov 2007 11:27:54 -0800
+Date: Mon, 5 Nov 2007 14:27:46 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071105192746.GA8788@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071105171213.GA7296@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] building 2.6.24-rc1 with VDE in a non-standard
-	location?
+Subject: [uml-devel] [PATCH 2/6] UML - SMP needs to depend on BROKEN for now
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,35 +28,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Mon, Nov 05, 2007 at 12:12:13PM -0500, Jeff Dike wrote:
-> 
-> >   CC      arch/um/kernel/skas/mmu.o
-> > In file included from include/asm/processor-generic.h:13,
-> >                  from include/asm/processor.h:77,
-> >                  from include/asm/thread_info.h:11,
-> >                  from include/linux/thread_info.h:21,
-> >                  from include/linux/preempt.h:9,
-> >                  from include/linux/spinlock.h:49,
-> >                  from include/linux/mmzone.h:7,
-> >                  from include/linux/gfp.h:4,
-> >                  from include/linux/mm.h:8,
-> >                  from arch/um/kernel/skas/mmu.c:6:
-> > include/asm/ptrace.h:50: warning: "struct user_fxsr_struct" declared inside parameter list
-> > include/asm/ptrace.h:50: warning: its scope is only this definition or declaration, which is probably not what you want
-> > include/asm/ptrace.h:52: warning: "struct user_fxsr_struct" declared
-> > inside parameter list
-> 
-> Does this happen with plain old defconfig?
-> 
+SMP still needs to depend on BROKEN for now.
 
-Yes, both with 2.6.24-rc1 and 2.6.24-rc1-git14. 
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/Kconfig |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
--git14 with defconfig and no CFLAGS builds fine.
-
--Erik
+Index: linux-2.6/arch/um/Kconfig
+===================================================================
+--- linux-2.6.orig/arch/um/Kconfig	2007-11-05 14:08:07.000000000 -0500
++++ linux-2.6/arch/um/Kconfig	2007-11-05 14:12:35.000000000 -0500
+@@ -189,8 +189,7 @@ config MAGIC_SYSRQ
+ config SMP
+ 	bool "Symmetric multi-processing support (EXPERIMENTAL)"
+ 	default n
+-	#SMP_BROKEN is for x86_64.
+-	depends on EXPERIMENTAL && (!SMP_BROKEN || (BROKEN && SMP_BROKEN))
++	depends on BROKEN
+ 	help
+ 	  This option enables UML SMP support.
+ 	  It is NOT related to having a real SMP box. Not directly, at least.
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
