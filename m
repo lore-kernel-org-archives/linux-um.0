@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IpMvK-0003xG-AN for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 03:48:50 -0800
-Received: from ro-out-1112.google.com ([72.14.202.183])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IpMvH-0002jj-I0
+	id 1IpP9o-00023D-C0 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Nov 2007 06:11:56 -0800
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IpP9m-0006By-7S
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 03:48:50 -0800
-Received: by ro-out-1112.google.com with SMTP id o35so2071228rog
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 06 Nov 2007 03:48:46 -0800 (PST)
-Date: Tue, 6 Nov 2007 19:46:02 +0800
-From: WANG Cong <xiyou.wangcong@gmail.com>
-Message-ID: <20071106114602.GB7652@hacking>
-MIME-Version: 1.0
+	Tue, 06 Nov 2007 06:11:55 -0800
+Date: Tue, 6 Nov 2007 14:11:43 +0000
+From: Al Viro <viro@ftp.linux.org.uk>
+Message-ID: <20071106141143.GI8181@ftp.linux.org.uk>
+References: <20071106114602.GB7652@hacking>
+Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] UML defconfig building failed again
-Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
+In-Reply-To: <20071106114602.GB7652@hacking>
+Subject: Re: [uml-devel] UML defconfig building failed again
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,45 +26,55 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: jdike@karaya.com, user-mode-linux-devel@lists.sourceforge.net
+To: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: jdike@karaya.com, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-CkhpLCBKZWZmIQoKSSB1c2VkIHRvZGF5J3MgbGludXMtdHJlZSBhbmQgZGVmY29uZmlnIHRvIGNv
-bXBpbGUgdW1sLCBidXQgaXQgZmFpbGVkLiBFcnJvciBtZXNzYWdlcyBhcmUKdGhpbmdzIGxpa2U6
-CgpJbiBmaWxlIGluY2x1ZGVkIGZyb20gaW5jbHVkZS9hc20vcHJvY2Vzc29yLWdlbmVyaWMuaDox
-MywKICAgICAgICAgICAgICAgICBmcm9tIGluY2x1ZGUvYXNtL3Byb2Nlc3Nvci5oOjc3LAogICAg
-ICAgICAgICAgICAgIGZyb20gaW5jbHVkZS9hc20vdGhyZWFkX2luZm8uaDoxMSwKICAgICAgICAg
-ICAgICAgICBmcm9tIGluY2x1ZGUvbGludXgvdGhyZWFkX2luZm8uaDoyMSwKICAgICAgICAgICAg
-ICAgICBmcm9tIGluY2x1ZGUvbGludXgvcHJlZW1wdC5oOjksCiAgICAgICAgICAgICAgICAgZnJv
-bSBpbmNsdWRlL2xpbnV4L3NwaW5sb2NrLmg6NDksCiAgICAgICAgICAgICAgICAgZnJvbSBpbmNs
-dWRlL2xpbnV4L3NlcWxvY2suaDoyOSwKICAgICAgICAgICAgICAgICBmcm9tIGluY2x1ZGUvbGlu
-dXgvdGltZS5oOjgsCiAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRlL2xpbnV4L3RpbWV4Lmg6
-NTcsCiAgICAgICAgICAgICAgICAgZnJvbSBpbmNsdWRlL2xpbnV4L3NjaGVkLmg6NTMsCiAgICAg
-ICAgICAgICAgICAgZnJvbSBhcmNoL3VtL2luY2x1ZGUvc3lzZGVwL2tlcm5lbC1vZmZzZXRzLmg6
-MiwKICAgICAgICAgICAgICAgICBmcm9tIGFyY2gvdW0va2VybmVsL2FzbS1vZmZzZXRzLmM6MToK
-aW5jbHVkZS9hc20vcHRyYWNlLmg6NTA6IHdhcm5pbmc6IOKAmHN0cnVjdCB1c2VyX2Z4c3Jfc3Ry
-dWN04oCZIGRlY2xhcmVkIGluc2lkZSBwYXJhbWV0ZXIgbGlzdAppbmNsdWRlL2FzbS9wdHJhY2Uu
-aDo1MDogd2FybmluZzogaXRzIHNjb3BlIGlzIG9ubHkgdGhpcyBkZWZpbml0aW9uIG9yIGRlY2xh
-cmF0aW9uLCB3aGljaCBpcyBwcm9iYWJseSBub3Qgd2hhdCB5b3Ugd2FudAppbmNsdWRlL2FzbS9w
-dHJhY2UuaDo1Mjogd2FybmluZzog4oCYc3RydWN0IHVzZXJfZnhzcl9zdHJ1Y3TigJkgZGVjbGFy
-ZWQgaW5zaWRlIHBhcmFtZXRlciBsaXN0CkluIGZpbGUgaW5jbHVkZWQgZnJvbSBpbmNsdWRlL2xp
-bnV4L3RpbWVyLmg6NSwKICAgICAgICAgICAgICAgICBmcm9tIGluY2x1ZGUvbGludXgvc2NoZWQu
-aDo4NywKICAgICAgICAgICAgICAgICBmcm9tIGFyY2gvdW0vaW5jbHVkZS9zeXNkZXAva2VybmVs
-LW9mZnNldHMuaDoyLAogICAgICAgICAgICAgICAgIGZyb20gYXJjaC91bS9rZXJuZWwvYXNtLW9m
-ZnNldHMuYzoxOgppbmNsdWRlL2xpbnV4L2t0aW1lLmg6IEluIGZ1bmN0aW9uIOKAmGt0aW1lX3Nl
-dOKAmToKaW5jbHVkZS9saW51eC9rdGltZS5oOjg0OiB3YXJuaW5nOiBjb21wYXJpc29uIGlzIGFs
-d2F5cyBmYWxzZSBkdWUgdG8gbGltaXRlZCByYW5nZSBvZiBkYXRhIHR5cGUKCntzbmlwfQoKSXQg
-c2VlbXMgbGlrZSBDT05GSUdfWDg2XzMyIHdhcyBub3Qgc2V0LiBBbnkgaWRlYXM/CgpUaGFua3Mu
-CgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5OiBT
-cGx1bmsgSW5jLgpTdGlsbCBncmVwcGluZyB0aHJvdWdoIGxvZyBmaWxlcyB0byBmaW5kIHByb2Js
-ZW1zPyAgU3RvcC4KTm93IFNlYXJjaCBsb2cgZXZlbnRzIGFuZCBjb25maWd1cmF0aW9uIGZpbGVz
-IHVzaW5nIEFKQVggYW5kIGEgYnJvd3Nlci4KRG93bmxvYWQgeW91ciBGUkVFIGNvcHkgb2YgU3Bs
-dW5rIG5vdyA+PiBodHRwOi8vZ2V0LnNwbHVuay5jb20vCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxp
-c3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xp
-c3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+On Tue, Nov 06, 2007 at 07:46:02PM +0800, WANG Cong wrote:
+> 
+> Hi, Jeff!
+> 
+> I used today's linus-tree and defconfig to compile uml, but it failed. Error messages are
+> things like:
+> 
+> In file included from include/asm/processor-generic.h:13,
+>                  from include/asm/processor.h:77,
+>                  from include/asm/thread_info.h:11,
+>                  from include/linux/thread_info.h:21,
+>                  from include/linux/preempt.h:9,
+>                  from include/linux/spinlock.h:49,
+>                  from include/linux/seqlock.h:29,
+>                  from include/linux/time.h:8,
+>                  from include/linux/timex.h:57,
+>                  from include/linux/sched.h:53,
+>                  from arch/um/include/sysdep/kernel-offsets.h:2,
+>                  from arch/um/kernel/asm-offsets.c:1:
+> include/asm/ptrace.h:50: warning: ???struct user_fxsr_struct??? declared inside parameter list
+> include/asm/ptrace.h:50: warning: its scope is only this definition or declaration, which is probably not what you want
+> include/asm/ptrace.h:52: warning: ???struct user_fxsr_struct??? declared inside parameter list
+> In file included from include/linux/timer.h:5,
+>                  from include/linux/sched.h:87,
+>                  from arch/um/include/sysdep/kernel-offsets.h:2,
+>                  from arch/um/kernel/asm-offsets.c:1:
+> include/linux/ktime.h: In function ???ktime_set???:
+> include/linux/ktime.h:84: warning: comparison is always false due to limited range of data type
+> 
+> {snip}
+> 
+> It seems like CONFIG_X86_32 was not set. Any ideas?
+
+Sigh...  Kbuild breakage this time...  See if %s/\<[AC]FLAGS\>/KBUILD_&/g
+in arch/um/Makefile-i386 helps.
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Splunk Inc.
+Still grepping through log files to find problems?  Stop.
+Now Search log events and configuration files using AJAX and a browser.
+Download your FREE copy of Splunk now >> http://get.splunk.com/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
