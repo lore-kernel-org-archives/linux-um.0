@@ -2,16 +2,15 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IpQu1-00064M-6z for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 08:03:45 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IpQtz-0002Qh-K6
+	id 1IpQwe-0006RR-NX for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Nov 2007 08:06:31 -0800
+Received: from pasmtpb.tele.dk ([80.160.77.98])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IpQwc-00044R-8X
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 08:03:45 -0800
-Date: Tue, 6 Nov 2007 11:02:50 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071106160250.GB6637@c2.user-mode-linux.org>
+	Tue, 06 Nov 2007 08:06:28 -0800
+Date: Tue, 6 Nov 2007 17:07:55 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+Message-ID: <20071106160755.GA8345@uranus.ravnborg.org>
 References: <20071106114602.GB7652@hacking>
 	<20071106141143.GI8181@ftp.linux.org.uk>
 Mime-Version: 1.0
@@ -31,38 +30,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Al Viro <viro@ftp.linux.org.uk>, Sam Ravnborg <sam@ravnborg.org>, Linus Torvalds <torvalds@linux-foundation.org>
+To: Al Viro <viro@ftp.linux.org.uk>
 Cc: WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
 
 On Tue, Nov 06, 2007 at 02:11:43PM +0000, Al Viro wrote:
+> On Tue, Nov 06, 2007 at 07:46:02PM +0800, WANG Cong wrote:
+> > 
+> > Hi, Jeff!
+> > 
+> > I used today's linus-tree and defconfig to compile uml, but it failed. Error messages are
+> > things like:
+> > 
+> > In file included from include/asm/processor-generic.h:13,
+> >                  from include/asm/processor.h:77,
+> >                  from include/asm/thread_info.h:11,
+> >                  from include/linux/thread_info.h:21,
+> >                  from include/linux/preempt.h:9,
+> >                  from include/linux/spinlock.h:49,
+> >                  from include/linux/seqlock.h:29,
+> >                  from include/linux/time.h:8,
+> >                  from include/linux/timex.h:57,
+> >                  from include/linux/sched.h:53,
+> >                  from arch/um/include/sysdep/kernel-offsets.h:2,
+> >                  from arch/um/kernel/asm-offsets.c:1:
+> > include/asm/ptrace.h:50: warning: ???struct user_fxsr_struct??? declared inside parameter list
+> > include/asm/ptrace.h:50: warning: its scope is only this definition or declaration, which is probably not what you want
+> > include/asm/ptrace.h:52: warning: ???struct user_fxsr_struct??? declared inside parameter list
+> > In file included from include/linux/timer.h:5,
+> >                  from include/linux/sched.h:87,
+> >                  from arch/um/include/sysdep/kernel-offsets.h:2,
+> >                  from arch/um/kernel/asm-offsets.c:1:
+> > include/linux/ktime.h: In function ???ktime_set???:
+> > include/linux/ktime.h:84: warning: comparison is always false due to limited range of data type
+> > 
+> > {snip}
+> > 
+> > It seems like CONFIG_X86_32 was not set. Any ideas?
+> 
 > Sigh...  Kbuild breakage this time...  See if %s/\<[AC]FLAGS\>/KBUILD_&/g
 > in arch/um/Makefile-i386 helps.
+Ups - my bad.
+I have somehow overlooked those two assignments in the middle.
 
-Yup, this fixes it:
-
-
-     [AC]FLAGS -> KBUILD_[AC]FLAGS conversion in Makefile-i386.
-
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
----
- arch/um/Makefile-i386 |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-i386
-index b01dfb0..6729011 100644
---- a/arch/um/Makefile-i386
-+++ b/arch/um/Makefile-i386
-@@ -22,8 +22,8 @@ export LDFLAGS HOSTCFLAGS HOSTLDFLAGS UML_OBJCOPYFLAGS
- endif
- endif
- 
--CFLAGS			+= -DCONFIG_X86_32
--AFLAGS			+= -DCONFIG_X86_32
-+KBUILD_CFLAGS		+= -DCONFIG_X86_32
-+KBUILD_AFLAGS		+= -DCONFIG_X86_32
- CONFIG_X86_32		:= y
- export CONFIG_X86_32
-
+	Sam
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
