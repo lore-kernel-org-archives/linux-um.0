@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IpSlA-0006FZ-LJ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 10:02:44 -0800
+	id 1IpQu1-00064M-6z for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Nov 2007 08:03:45 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IpSl6-0003zb-HA
+	(Exim 4.44) id 1IpQtz-0002Qh-K6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 10:02:44 -0800
-Date: Tue, 6 Nov 2007 13:02:30 -0500
+	Tue, 06 Nov 2007 08:03:45 -0800
+Date: Tue, 6 Nov 2007 11:02:50 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071106180230.GA13370@c2.user-mode-linux.org>
-References: <1f154f440710161936h4800b0c5nb3140ff504212625@mail.gmail.com>
-	<20071017155504.GD9497@c2.user-mode-linux.org>
-	<1f154f440710170916j4fdb857fw40c9b2fd2b66f63f@mail.gmail.com>
-	<20071017171920.GA10388@c2.user-mode-linux.org>
-	<1f154f440710171243x40898f8bq386c91c59789fb42@mail.gmail.com>
+Message-ID: <20071106160250.GB6637@c2.user-mode-linux.org>
+References: <20071106114602.GB7652@hacking>
+	<20071106141143.GI8181@ftp.linux.org.uk>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1f154f440710171243x40898f8bq386c91c59789fb42@mail.gmail.com>
-Subject: Re: [uml-devel] Dramatic drop in C3 state residency with NO_HZ patches
+In-Reply-To: <20071106141143.GI8181@ftp.linux.org.uk>
+Subject: Re: [uml-devel] UML defconfig building failed again
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,30 +31,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Hrishikesh <hrishikesh.amur@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Al Viro <viro@ftp.linux.org.uk>, Sam Ravnborg <sam@ravnborg.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
 
-On Wed, Oct 17, 2007 at 03:43:01PM -0400, Hrishikesh wrote:
-> for the case where the kernel is patched, but NO_HZ is __not__ enabled,
-> there is a do_nanosleep() every 100 or so us.
-> 
-> setitimer(ITIMER_VIRTUAL, {it_interval={0, 0}, it_value={0, 0}},
-> {it_interval={0, 0}, it_value={0, 0}}) = 0
-> nanosleep({0, 0}, {0, 0})               = 0
+On Tue, Nov 06, 2007 at 02:11:43PM +0000, Al Viro wrote:
+> Sigh...  Kbuild breakage this time...  See if %s/\<[AC]FLAGS\>/KBUILD_&/g
+> in arch/um/Makefile-i386 helps.
 
-Can you reproduce this with current mainline?  I can't:
+Yup, this fixes it:
 
-1194371604.120203 setitimer(ITIMER_VIRTUAL, {it_interval={0, 0}, it_value={0, 10000}}, NULL) = 0
-1194371604.120256 setitimer(ITIMER_VIRTUAL, {it_interval={0, 0}, it_value={0, 0}}, {it_interval={0, 0}, it_value={0, 11998}}) = 0
-1194371604.120306 nanosleep({0, 11998000}, {0, 11998000}) = 0
 
-It's correctly reading the current alarm and sleeping for that long.
-It could be more efficient, but this isn't a busy loop.
+     [AC]FLAGS -> KBUILD_[AC]FLAGS conversion in Makefile-i386.
 
-				Jeff
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/Makefile-i386 |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
--- 
-Work email - jdike at linux dot intel dot com
+diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-i386
+index b01dfb0..6729011 100644
+--- a/arch/um/Makefile-i386
++++ b/arch/um/Makefile-i386
+@@ -22,8 +22,8 @@ export LDFLAGS HOSTCFLAGS HOSTLDFLAGS UML_OBJCOPYFLAGS
+ endif
+ endif
+ 
+-CFLAGS			+= -DCONFIG_X86_32
+-AFLAGS			+= -DCONFIG_X86_32
++KBUILD_CFLAGS		+= -DCONFIG_X86_32
++KBUILD_AFLAGS		+= -DCONFIG_X86_32
+ CONFIG_X86_32		:= y
+ export CONFIG_X86_32
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
