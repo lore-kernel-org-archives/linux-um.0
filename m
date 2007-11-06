@@ -1,22 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IpP9o-00023D-C0 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 06:11:56 -0800
-Received: from zeniv.linux.org.uk ([195.92.253.2])
+	id 1IpSlA-0006FZ-LJ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 Nov 2007 10:02:44 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IpP9m-0006By-7S
+	(Exim 4.44) id 1IpSl6-0003zb-HA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 06:11:55 -0800
-Date: Tue, 6 Nov 2007 14:11:43 +0000
-From: Al Viro <viro@ftp.linux.org.uk>
-Message-ID: <20071106141143.GI8181@ftp.linux.org.uk>
-References: <20071106114602.GB7652@hacking>
+	Tue, 06 Nov 2007 10:02:44 -0800
+Date: Tue, 6 Nov 2007 13:02:30 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071106180230.GA13370@c2.user-mode-linux.org>
+References: <1f154f440710161936h4800b0c5nb3140ff504212625@mail.gmail.com>
+	<20071017155504.GD9497@c2.user-mode-linux.org>
+	<1f154f440710170916j4fdb857fw40c9b2fd2b66f63f@mail.gmail.com>
+	<20071017171920.GA10388@c2.user-mode-linux.org>
+	<1f154f440710171243x40898f8bq386c91c59789fb42@mail.gmail.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071106114602.GB7652@hacking>
-Subject: Re: [uml-devel] UML defconfig building failed again
+In-Reply-To: <1f154f440710171243x40898f8bq386c91c59789fb42@mail.gmail.com>
+Subject: Re: [uml-devel] Dramatic drop in C3 state residency with NO_HZ patches
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,44 +34,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: jdike@karaya.com, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Hrishikesh <hrishikesh.amur@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Nov 06, 2007 at 07:46:02PM +0800, WANG Cong wrote:
+On Wed, Oct 17, 2007 at 03:43:01PM -0400, Hrishikesh wrote:
+> for the case where the kernel is patched, but NO_HZ is __not__ enabled,
+> there is a do_nanosleep() every 100 or so us.
 > 
-> Hi, Jeff!
-> 
-> I used today's linus-tree and defconfig to compile uml, but it failed. Error messages are
-> things like:
-> 
-> In file included from include/asm/processor-generic.h:13,
->                  from include/asm/processor.h:77,
->                  from include/asm/thread_info.h:11,
->                  from include/linux/thread_info.h:21,
->                  from include/linux/preempt.h:9,
->                  from include/linux/spinlock.h:49,
->                  from include/linux/seqlock.h:29,
->                  from include/linux/time.h:8,
->                  from include/linux/timex.h:57,
->                  from include/linux/sched.h:53,
->                  from arch/um/include/sysdep/kernel-offsets.h:2,
->                  from arch/um/kernel/asm-offsets.c:1:
-> include/asm/ptrace.h:50: warning: ???struct user_fxsr_struct??? declared inside parameter list
-> include/asm/ptrace.h:50: warning: its scope is only this definition or declaration, which is probably not what you want
-> include/asm/ptrace.h:52: warning: ???struct user_fxsr_struct??? declared inside parameter list
-> In file included from include/linux/timer.h:5,
->                  from include/linux/sched.h:87,
->                  from arch/um/include/sysdep/kernel-offsets.h:2,
->                  from arch/um/kernel/asm-offsets.c:1:
-> include/linux/ktime.h: In function ???ktime_set???:
-> include/linux/ktime.h:84: warning: comparison is always false due to limited range of data type
-> 
-> {snip}
-> 
-> It seems like CONFIG_X86_32 was not set. Any ideas?
+> setitimer(ITIMER_VIRTUAL, {it_interval={0, 0}, it_value={0, 0}},
+> {it_interval={0, 0}, it_value={0, 0}}) = 0
+> nanosleep({0, 0}, {0, 0})               = 0
 
-Sigh...  Kbuild breakage this time...  See if %s/\<[AC]FLAGS\>/KBUILD_&/g
-in arch/um/Makefile-i386 helps.
+Can you reproduce this with current mainline?  I can't:
+
+1194371604.120203 setitimer(ITIMER_VIRTUAL, {it_interval={0, 0}, it_value={0, 10000}}, NULL) = 0
+1194371604.120256 setitimer(ITIMER_VIRTUAL, {it_interval={0, 0}, it_value={0, 0}}, {it_interval={0, 0}, it_value={0, 11998}}) = 0
+1194371604.120306 nanosleep({0, 11998000}, {0, 11998000}) = 0
+
+It's correctly reading the current alarm and sleeping for that long.
+It could be more efficient, but this isn't a busy loop.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
