@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ippln-00007d-1G for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Nov 2007 10:36:56 -0800
+	id 1Ipplh-00007R-4r for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Nov 2007 10:36:49 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ipplk-0004P5-Cu
+	(Exim 4.44) id 1Ipple-0004Kd-D1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Nov 2007 10:36:55 -0800
-Date: Wed, 7 Nov 2007 13:36:38 -0500
+	Wed, 07 Nov 2007 10:36:49 -0800
+Date: Wed, 7 Nov 2007 13:36:37 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071107183638.GA8467@c2.user-mode-linux.org>
+Message-ID: <20071107183637.GA8457@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/5] UML - Allow LFLAGS on command line
+Subject: [uml-devel] [PATCH 0/5] UML - Cleanups for 2.6.25
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,30 +29,14 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Allow LFLAGS to be given to make and have the expected effect.
+These are code cleanups for 2.6.25, plus reverting a chunk of an
+earlier patch which caused a warning I didn't notice at the time.
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
----
- arch/um/Makefile |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-Index: linux-2.6/arch/um/Makefile
-===================================================================
---- linux-2.6.orig/arch/um/Makefile	2007-11-06 10:46:55.000000000 -0500
-+++ linux-2.6/arch/um/Makefile	2007-11-07 12:44:29.000000000 -0500
-@@ -130,7 +130,9 @@ CPPFLAGS_vmlinux.lds = -U$(SUBARCH) -DST
- # The wrappers will select whether using "malloc" or the kernel allocator.
- LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
- 
--CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS)
-+LD_FLAGS_CMDLINE = $(foreach opt,$(LFLAGS),-Wl,$(opt))
-+
-+CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
- define cmd_vmlinux__
- 	$(CC) $(CFLAGS_vmlinux) -o $@ \
- 	-Wl,-T,$(vmlinux-lds) $(vmlinux-init) \
+				Jeff
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
