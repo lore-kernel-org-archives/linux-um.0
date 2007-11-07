@@ -2,21 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IpQwe-0006RR-NX for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 08:06:31 -0800
-Received: from pasmtpb.tele.dk ([80.160.77.98])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IpQwc-00044R-8X
+	id 1Ippln-00007d-1G for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Nov 2007 10:36:56 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Ipplk-0004P5-Cu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 Nov 2007 08:06:28 -0800
-Date: Tue, 6 Nov 2007 17:07:55 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-Message-ID: <20071106160755.GA8345@uranus.ravnborg.org>
-References: <20071106114602.GB7652@hacking>
-	<20071106141143.GI8181@ftp.linux.org.uk>
+	Wed, 07 Nov 2007 10:36:55 -0800
+Date: Wed, 7 Nov 2007 13:36:38 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071107183638.GA8467@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071106141143.GI8181@ftp.linux.org.uk>
-Subject: Re: [uml-devel] UML defconfig building failed again
+Subject: [uml-devel] [PATCH 2/5] UML - Allow LFLAGS on command line
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,49 +28,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Al Viro <viro@ftp.linux.org.uk>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, jdike@karaya.com
+To: Andrew Morton <akpm@osdl.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, Nov 06, 2007 at 02:11:43PM +0000, Al Viro wrote:
-> On Tue, Nov 06, 2007 at 07:46:02PM +0800, WANG Cong wrote:
-> > 
-> > Hi, Jeff!
-> > 
-> > I used today's linus-tree and defconfig to compile uml, but it failed. Error messages are
-> > things like:
-> > 
-> > In file included from include/asm/processor-generic.h:13,
-> >                  from include/asm/processor.h:77,
-> >                  from include/asm/thread_info.h:11,
-> >                  from include/linux/thread_info.h:21,
-> >                  from include/linux/preempt.h:9,
-> >                  from include/linux/spinlock.h:49,
-> >                  from include/linux/seqlock.h:29,
-> >                  from include/linux/time.h:8,
-> >                  from include/linux/timex.h:57,
-> >                  from include/linux/sched.h:53,
-> >                  from arch/um/include/sysdep/kernel-offsets.h:2,
-> >                  from arch/um/kernel/asm-offsets.c:1:
-> > include/asm/ptrace.h:50: warning: ???struct user_fxsr_struct??? declared inside parameter list
-> > include/asm/ptrace.h:50: warning: its scope is only this definition or declaration, which is probably not what you want
-> > include/asm/ptrace.h:52: warning: ???struct user_fxsr_struct??? declared inside parameter list
-> > In file included from include/linux/timer.h:5,
-> >                  from include/linux/sched.h:87,
-> >                  from arch/um/include/sysdep/kernel-offsets.h:2,
-> >                  from arch/um/kernel/asm-offsets.c:1:
-> > include/linux/ktime.h: In function ???ktime_set???:
-> > include/linux/ktime.h:84: warning: comparison is always false due to limited range of data type
-> > 
-> > {snip}
-> > 
-> > It seems like CONFIG_X86_32 was not set. Any ideas?
-> 
-> Sigh...  Kbuild breakage this time...  See if %s/\<[AC]FLAGS\>/KBUILD_&/g
-> in arch/um/Makefile-i386 helps.
-Ups - my bad.
-I have somehow overlooked those two assignments in the middle.
+Allow LFLAGS to be given to make and have the expected effect.
 
-	Sam
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/Makefile |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+Index: linux-2.6/arch/um/Makefile
+===================================================================
+--- linux-2.6.orig/arch/um/Makefile	2007-11-06 10:46:55.000000000 -0500
++++ linux-2.6/arch/um/Makefile	2007-11-07 12:44:29.000000000 -0500
+@@ -130,7 +130,9 @@ CPPFLAGS_vmlinux.lds = -U$(SUBARCH) -DST
+ # The wrappers will select whether using "malloc" or the kernel allocator.
+ LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
+ 
+-CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS)
++LD_FLAGS_CMDLINE = $(foreach opt,$(LFLAGS),-Wl,$(opt))
++
++CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
+ define cmd_vmlinux__
+ 	$(CC) $(CFLAGS_vmlinux) -o $@ \
+ 	-Wl,-T,$(vmlinux-lds) $(vmlinux-init) \
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
