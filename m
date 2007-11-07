@@ -1,20 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ipplz-0000D4-6m for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Nov 2007 10:37:07 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ipply-0007pA-8f
+	id 1Ipt5k-00068S-Ow for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 Nov 2007 14:09:46 -0800
+Received: from wa-out-1112.google.com ([209.85.146.181])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ipt5i-0005Be-6W
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 07 Nov 2007 10:37:06 -0800
-Date: Wed, 7 Nov 2007 13:36:37 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071107183637.GA8462@c2.user-mode-linux.org>
-Mime-Version: 1.0
+	Wed, 07 Nov 2007 14:09:44 -0800
+Received: by wa-out-1112.google.com with SMTP id k22so4207250waf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 07 Nov 2007 14:09:40 -0800 (PST)
+Message-ID: <ea9232d10711071409i349826aao20aa2f3694d87994@mail.gmail.com>
+Date: Wed, 7 Nov 2007 23:09:34 +0100
+From: Magotari <magotari@gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/5] UML - Delete some unused headers
+Subject: [uml-devel] [PATCH] uml: remove an unused variable in
+	arch_switch_{to, tls}
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,73 +31,103 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: "Robert P. J. Day" <rpjday@crashcourse.ca>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Robert Day noticed a few unused headers in UML, so this gets rid of them.
+This patch removes a variable which was not used in two functions.
+Yet another code cleanup, nothing really significant.
 
-Cc: "Robert P. J. Day" <rpjday@crashcourse.ca>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Please note that I could not test this on x86_64. I don't have the
+hardware for it.
+
+Karol Swietlicki
+
+Signed-off-by: Karol Swietlicki <magotari@gmail.com>
 ---
- arch/um/include/misc_constants.h |    6 ------
- arch/um/include/signal_kern.h    |   22 ----------------------
- arch/um/include/skas/mode-skas.h |   11 -----------
- 3 files changed, 39 deletions(-)
 
-Index: linux-2.6/arch/um/include/misc_constants.h
-===================================================================
---- linux-2.6.orig/arch/um/include/misc_constants.h	2007-03-27 17:07:26.000000000 -0400
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,6 +0,0 @@
--#ifndef __MISC_CONSTANT_H_
--#define __MISC_CONSTANT_H_
--
--#include <user_constants.h>
--
--#endif
-Index: linux-2.6/arch/um/include/signal_kern.h
-===================================================================
---- linux-2.6.orig/arch/um/include/signal_kern.h	2007-03-27 17:07:26.000000000 -0400
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,22 +0,0 @@
--/* 
-- * Copyright (C) 2001, 2002 Jeff Dike (jdike@karaya.com)
-- * Licensed under the GPL
-- */
--
--#ifndef __SIGNAL_KERN_H__
--#define __SIGNAL_KERN_H__
--
--extern int have_signals(void *t);
--
--#endif
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6/arch/um/include/skas/mode-skas.h
-===================================================================
---- linux-2.6.orig/arch/um/include/skas/mode-skas.h	2007-11-05 14:01:47.000000000 -0500
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,11 +0,0 @@
--/*
-- * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{linux.intel,addtoit}.com)
-- * Licensed under the GPL
-- */
--
--#ifndef __MODE_SKAS_H__
--#define __MODE_SKAS_H__
--
--extern void kill_off_processes_skas(void);
--
--#endif
+diff -upNr linux-2.6.24-rc1/arch/um/kernel/process.c
+linux-2.6.23/arch/um/kernel/process.c
+--- linux-2.6.24-rc1/arch/um/kernel/process.c	2007-10-24
+05:50:57.000000000 +0200
++++ linux-2.6.23/arch/um/kernel/process.c	2007-11-07 19:01:28.000000000 +0100
+@@ -83,7 +83,7 @@ static inline void set_current(struct ta
+ 		{ external_pid(task), task });
+ }
+
+-extern void arch_switch_to(struct task_struct *from, struct task_struct *to);
++extern void arch_switch_to(struct task_struct *to);
+
+ void *_switch_to(void *prev, void *next, void *last)
+ {
+@@ -99,7 +99,7 @@ void *_switch_to(void *prev, void *next,
+ 		switch_threads(&from->thread.switch_buf,
+ 			       &to->thread.switch_buf);
+
+-		arch_switch_to(current->thread.prev_sched, current);
++		arch_switch_to(current);
+
+ 		if (current->thread.saved_task)
+ 			show_regs(&(current->thread.regs));
+@@ -173,7 +170,7 @@ void fork_handler(void)
+ 	 * arch_switch_to isn't needed. We could want to apply this to
+ 	 * improve performance. -bb
+ 	 */
+-	arch_switch_to(current->thread.prev_sched, current);
++	arch_switch_to(current);
+
+ 	current->thread.prev_sched = NULL;
+
+ int arch_handle_signal(int sig, struct uml_pt_regs *regs)
+diff -upNr linux-2.6.24-rc1/arch/um/sys-i386/ptrace.c
+linux-2.6.23/arch/um/sys-i386/ptrace.c
+--- linux-2.6.24-rc1/arch/um/sys-i386/ptrace.c	2007-10-24
+05:50:57.000000000 +0200
++++ linux-2.6.23/arch/um/sys-i386/ptrace.c	2007-11-07 19:00:52.000000000 +0100
+@@ -8,11 +8,11 @@
+ #include "asm/uaccess.h"
+ #include "skas.h"
+
+-extern int arch_switch_tls(struct task_struct *from, struct task_struct *to);
++extern int arch_switch_tls(struct task_struct *to);
+
+-void arch_switch_to(struct task_struct *from, struct task_struct *to)
++void arch_switch_to(struct task_struct *to)
+ {
+-	int err = arch_switch_tls(from, to);
++	int err = arch_switch_tls(to);
+ 	if (!err)
+ 		return;
+
+diff -upNr linux-2.6.24-rc1/arch/um/sys-i386/tls.c
+linux-2.6.23/arch/um/sys-i386/tls.c
+--- linux-2.6.24-rc1/arch/um/sys-i386/tls.c	2007-10-24 05:50:57.000000000 +0200
++++ linux-2.6.23/arch/um/sys-i386/tls.c	2007-11-07 19:01:56.000000000 +0100
+@@ -172,7 +172,7 @@ void clear_flushed_tls(struct task_struc
+  * SKAS patch.
+  */
+
+-int arch_switch_tls(struct task_struct *from, struct task_struct *to)
++int arch_switch_tls(struct task_struct *to)
+ {
+ 	if (!host_supports_tls)
+ 		return 0;
+Files linux-2.6.24-rc1/arch/um/sys-i386/user-offsets.gcno and
+linux-2.6.23/arch/um/sys-i386/user-offsets.gcno differ
+diff -upNr linux-2.6.24-rc1/arch/um/sys-x86_64/syscalls.c
+linux-2.6.23/arch/um/sys-x86_64/syscalls.c
+--- linux-2.6.24-rc1/arch/um/sys-x86_64/syscalls.c	2007-10-24
+05:50:57.000000000 +0200
++++ linux-2.6.23/arch/um/sys-x86_64/syscalls.c	2007-11-07
+18:57:42.000000000 +0100
+@@ -105,7 +105,7 @@ long sys_clone(unsigned long clone_flags
+ 	return ret;
+ }
+
+-void arch_switch_to(struct task_struct *from, struct task_struct *to)
++void arch_switch_to(struct task_struct *to)
+ {
+ 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
+ 		return;
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
