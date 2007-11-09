@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IqaRd-0000QD-9k for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Nov 2007 12:27:32 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IqaRb-0007Pm-MR
+	id 1Iqao1-0002i6-6u for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Nov 2007 12:50:21 -0800
+Received: from nz-out-0506.google.com ([64.233.162.227])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Iqao0-0001je-6i
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Nov 2007 12:27:13 -0800
-Date: Fri, 9 Nov 2007 15:26:37 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071109202637.GA7652@c2.user-mode-linux.org>
-Mime-Version: 1.0
+	Fri, 09 Nov 2007 12:50:20 -0800
+Received: by nz-out-0506.google.com with SMTP id f1so2124459nzc
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 09 Nov 2007 12:50:19 -0800 (PST)
+Message-ID: <ea9232d10711091250w699db72eh1b7254b02defc116@mail.gmail.com>
+Date: Fri, 9 Nov 2007 21:50:16 +0100
+From: Magotari <magotari@gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] UML - Fix symlink loops
+Subject: [uml-devel] [PATCH] uml: cleanup unused return values
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,52 +30,87 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-[ This should go into 2.6.24 - it's simple enough and people are
-complaining about this ]
+This patch changes a few functions into returning void.
+The return values were not used anyway, so I think it should not be a problem.
+Also removed a little leftover bit from TT mode.
 
-symlinks to directories in the non-O= case were lacking -n, which
-meant that, when the link already existed, a new link pointing at
-itself was created in the target directory.
+Karol Swietlicki
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Signed-off-by: Karol Swietlicki <magotari@gmail.com>
+
 ---
- arch/um/Makefile |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+diff -rupN linux-2.6.23.orig/arch/um/include/os.h
+linux-2.6.23/arch/um/include/os.h
+--- linux-2.6.23.orig/arch/um/include/os.h	2007-11-04 14:50:57.000000000 +0100
++++ linux-2.6.23/arch/um/include/os.h	2007-11-04 14:54:39.000000000 +0100
+@@ -168,14 +168,10 @@ extern int os_fchange_dir(int fd);
 
-Index: linux-2.6/arch/um/Makefile
-===================================================================
---- linux-2.6.orig/arch/um/Makefile	2007-11-09 14:32:36.000000000 -0500
-+++ linux-2.6/arch/um/Makefile	2007-11-09 14:34:05.000000000 -0500
-@@ -168,7 +168,7 @@ ifneq ($(KBUILD_SRC),)
- 	$(Q)mkdir -p $(objtree)/include/asm-um
- 	$(Q)ln -fsn $(srctree)/include/asm-$(HEADER_ARCH) include/asm-um/arch
- else
--	$(Q)cd $(TOPDIR)/include/asm-um && ln -sf ../asm-$(HEADER_ARCH) arch
-+	$(Q)cd $(TOPDIR)/include/asm-um && ln -fsn ../asm-$(SUBARCH) arch
- endif
- 
- $(objtree)/$(ARCH_DIR)/include:
-@@ -180,7 +180,7 @@ $(ARCH_DIR)/include/sysdep: $(objtree)/$
- ifneq ($(KBUILD_SRC),)
- 	$(Q)ln -fsn $(srctree)/$(ARCH_DIR)/include/sysdep-$(SUBARCH) $(ARCH_DIR)/include/sysdep
- else
--	$(Q)cd $(ARCH_DIR)/include && ln -sf sysdep-$(SUBARCH) sysdep
-+	$(Q)cd $(ARCH_DIR)/include && ln -fsn sysdep-$(SUBARCH) sysdep
- endif
- 
- $(ARCH_DIR)/os:
-@@ -188,7 +188,7 @@ $(ARCH_DIR)/os:
- ifneq ($(KBUILD_SRC),)
- 	$(Q)ln -fsn $(srctree)/$(ARCH_DIR)/os-$(OS) $(ARCH_DIR)/os
- else
--	$(Q)cd $(ARCH_DIR) && ln -sf os-$(OS) os
-+	$(Q)cd $(ARCH_DIR) && ln -fsn os-$(OS) os
- endif
- 
- # Generated files
+ /* start_up.c */
+ extern void os_early_checks(void);
+-extern int can_do_skas(void);
++extern void can_do_skas(void);
+ extern void os_check_bugs(void);
+ extern void check_host_supports_tls(int *supports_tls, int *tls_min);
+
+-/* Make sure they are clear when running in TT mode. Required by
+- * SEGV_MAYBE_FIXABLE */
+-#define clear_can_do_skas() do { ptrace_faultinfo = proc_mm = 0; } while (0)
+-
+ /* mem.c */
+ extern int create_mem_file(unsigned long long len);
+
+diff -rupN linux-2.6.23.orig/arch/um/kernel/um_arch.c
+linux-2.6.23/arch/um/kernel/um_arch.c
+--- linux-2.6.23.orig/arch/um/kernel/um_arch.c	2007-11-04
+14:50:57.000000000 +0100
++++ linux-2.6.23/arch/um/kernel/um_arch.c	2007-11-09 21:39:50.000000000 +0100
+@@ -197,7 +197,7 @@ __uml_setup("--help", Usage,
+ "    Prints this message.\n\n"
+ );
+
+-static int __init uml_checksetup(char *line, int *add)
++static void __init uml_checksetup(char *line, int *add)
+ {
+ 	struct uml_param *p;
+
+@@ -207,10 +207,9 @@ static int __init uml_checksetup(char *l
+
+ 		n = strlen(p->str);
+ 		if (!strncmp(line, p->str, n) && p->setup_func(line + n, add))
+-			return 1;
++			return;
+ 		p++;
+ 	}
+-	return 0;
+ }
+
+ static void __init uml_postsetup(void)
+diff -rupN linux-2.6.23.orig/arch/um/os-Linux/start_up.c
+linux-2.6.23/arch/um/os-Linux/start_up.c
+--- linux-2.6.23.orig/arch/um/os-Linux/start_up.c	2007-11-04
+14:50:57.000000000 +0100
++++ linux-2.6.23/arch/um/os-Linux/start_up.c	2007-11-04 14:55:36.000000000 +0100
+@@ -466,7 +466,7 @@ static inline void check_skas3_proc_mm(v
+ 	else non_fatal("found\n");
+ }
+
+-int can_do_skas(void)
++void can_do_skas(void)
+ {
+ 	non_fatal("Checking for the skas3 patch in the host:\n");
+
+@@ -476,8 +476,6 @@ int can_do_skas(void)
+
+ 	if (!proc_mm || !ptrace_faultinfo || !ptrace_ldt)
+ 		skas_needs_stub = 1;
+-
+-	return 1;
+ }
+
+ int __init parse_iomem(char *str, int *add)
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
