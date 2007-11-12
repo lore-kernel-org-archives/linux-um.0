@@ -2,26 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IrcAA-0006hl-0W for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Nov 2007 08:29:26 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IrcA7-0004o2-AO
+	id 1IrhGv-0007gh-Bn for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 12 Nov 2007 13:56:49 -0800
+Received: from wa-out-1112.google.com ([209.85.146.182])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IrhGu-0003DM-DI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Nov 2007 08:29:25 -0800
-Date: Mon, 12 Nov 2007 11:29:15 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071112162915.GA6862@c2.user-mode-linux.org>
-References: <20071102022749.GB8583@swingline.cs.wisc.edu>
-	<20071102155131.GB5760@c2.user-mode-linux.org>
-	<20071102162239.GA13481@swingline.cs.wisc.edu>
-	<20071105171213.GA7296@c2.user-mode-linux.org>
-	<20071111194711.GA16100@swingline.cs.wisc.edu>
-Mime-Version: 1.0
+	Mon, 12 Nov 2007 13:56:44 -0800
+Received: by wa-out-1112.google.com with SMTP id k22so2002448waf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 12 Nov 2007 13:56:43 -0800 (PST)
+Message-ID: <ea9232d10711121356v5e6076dcs7d94b2ecab0add5c@mail.gmail.com>
+Date: Mon, 12 Nov 2007 22:56:43 +0100
+From: Magotari <magotari@gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071111194711.GA16100@swingline.cs.wisc.edu>
-Subject: Re: [uml-devel] building 2.6.24-rc1 with VDE in a non-standard
-	location?
+Subject: [uml-devel] [PATCH] UML - Remove an unused variable.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,28 +30,104 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Erik Paulson <epaulson@cs.wisc.edu>
+To: jdike@addtoit.com
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Nov 11, 2007 at 01:47:16PM -0600, Erik Paulson wrote:
-> Good news - this doesn't happen with 2.6.24-rc2. defconfig builds with
-> a CFLAGS on the commandline
+This patch gets rid of an unused variable in a few functions.
+Compile and run tested.
 
-We seem to have cleared up the x86/kbuild breakage for now.
+Karol Swietlicki
 
-> Unfortunately, VDE still doesn't compile - the CFLAGS aren't being passed 
-> along to arch/um/drivers:
+Signed-off-by: Karol Swietlicki <magotari@gmail.com>
+---
+diff -rupN linux-2.6.24-rc2.orig/arch/um/drivers/chan_kern.c
+linux-2.6.24-rc2/arch/um/drivers/chan_kern.c
+--- linux-2.6.24-rc2.orig/arch/um/drivers/chan_kern.c	2007-11-06
+22:57:46.000000000 +0100
++++ linux-2.6.24-rc2/arch/um/drivers/chan_kern.c	2007-11-12
+22:15:51.000000000 +0100
+@@ -383,8 +382,7 @@ static void free_chan(struct list_head *
+ 	}
+ }
 
-Yeah, it's not obvious why - I need to look into this.
+-static int one_chan_config_string(struct chan *chan, char *str, int size,
+-				  char **error_out)
++static int one_chan_config_string(struct chan *chan, char *str, int size)
+ {
+ 	int n = 0;
 
-> make linux ARCH=um CFLAGS=-I/scratch/epaulson/vde/include LDFLAGS=-L/scratch/epaulson/vde/lib V=1
+@@ -407,11 +405,11 @@ static int one_chan_config_string(struct
+ }
 
-BTW, I misspelled LDFLAGS - you'll have to use LFLAGS until I fix this.
+ static int chan_pair_config_string(struct chan *in, struct chan *out,
+-				   char *str, int size, char **error_out)
++				   char *str, int size)
+ {
+ 	int n;
 
-				Jeff
+-	n = one_chan_config_string(in, str, size, error_out);
++	n = one_chan_config_string(in, str, size);
+ 	str += n;
+ 	size -= n;
 
--- 
-Work email - jdike at linux dot intel dot com
+@@ -421,7 +419,7 @@ static int chan_pair_config_string(struc
+ 	}
+
+ 	CONFIG_CHUNK(str, size, n, ",", 1);
+-	n = one_chan_config_string(out, str, size, error_out);
++	n = one_chan_config_string(out, str, size);
+ 	str += n;
+ 	size -= n;
+ 	CONFIG_CHUNK(str, size, n, "", 1);
+@@ -429,8 +427,7 @@ static int chan_pair_config_string(struc
+ 	return n;
+ }
+
+-int chan_config_string(struct list_head *chans, char *str, int size,
+-		       char **error_out)
++int chan_config_string(struct list_head *chans, char *str, int size)
+ {
+ 	struct list_head *ele;
+ 	struct chan *chan, *in = NULL, *out = NULL;
+@@ -445,7 +442,7 @@ int chan_config_string(struct list_head
+ 			out = chan;
+ 	}
+
+-	return chan_pair_config_string(in, out, str, size, error_out);
++	return chan_pair_config_string(in, out, str, size);
+ }
+
+ struct chan_type {
+diff -rupN linux-2.6.24-rc2.orig/arch/um/drivers/line.c
+linux-2.6.24-rc2/arch/um/drivers/line.c
+--- linux-2.6.24-rc2.orig/arch/um/drivers/line.c	2007-11-06
+22:57:46.000000000 +0100
++++ linux-2.6.24-rc2/arch/um/drivers/line.c	2007-11-12 22:42:35.000000000 +0100
+@@ -642,7 +642,8 @@ int line_get_config(char *name, struct l
+ 		CONFIG_CHUNK(str, size, n, "none", 1);
+ 	else if (line->tty == NULL)
+ 		CONFIG_CHUNK(str, size, n, line->init_str, 1);
+-	else n = chan_config_string(&line->chan_list, str, size, error_out);
++	else
++		n = chan_config_string(&line->chan_list, str, size);
+ 	spin_unlock(&line->count_lock);
+
+ 	return n;
+diff -rupN linux-2.6.24-rc2.orig/arch/um/include/chan_kern.h
+linux-2.6.24-rc2/arch/um/include/chan_kern.h
+--- linux-2.6.24-rc2.orig/arch/um/include/chan_kern.h	2007-11-06
+22:57:46.000000000 +0100
++++ linux-2.6.24-rc2/arch/um/include/chan_kern.h	2007-11-12
+22:17:15.000000000 +0100
+@@ -46,7 +46,6 @@ extern int chan_window_size(struct list_
+ 			     unsigned short *rows_out,
+ 			     unsigned short *cols_out);
+ extern int chan_out_fd(struct list_head *chans);
+-extern int chan_config_string(struct list_head *chans, char *str, int size,
+-			      char **error_out);
++extern int chan_config_string(struct list_head *chans, char *str, int size);
+
+ #endif
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
