@@ -1,20 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IrbUC-0008TV-6N for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Nov 2007 07:46:04 -0800
+	id 1IrcAA-0006hl-0W for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 12 Nov 2007 08:29:26 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IrbU9-0005l5-9b
+	(Exim 4.44) id 1IrcA7-0004o2-AO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Nov 2007 07:46:04 -0800
-Date: Mon, 12 Nov 2007 10:45:42 -0500
+	Mon, 12 Nov 2007 08:29:25 -0800
+Date: Mon, 12 Nov 2007 11:29:15 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071112154542.GA5581@c2.user-mode-linux.org>
+Message-ID: <20071112162915.GA6862@c2.user-mode-linux.org>
+References: <20071102022749.GB8583@swingline.cs.wisc.edu>
+	<20071102155131.GB5760@c2.user-mode-linux.org>
+	<20071102162239.GA13481@swingline.cs.wisc.edu>
+	<20071105171213.GA7296@c2.user-mode-linux.org>
+	<20071111194711.GA16100@swingline.cs.wisc.edu>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 0/2] UML - Two for 2.6.24
+In-Reply-To: <20071111194711.GA16100@swingline.cs.wisc.edu>
+Subject: Re: [uml-devel] building 2.6.24-rc1 with VDE in a non-standard
+	location?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,10 +35,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Erik Paulson <epaulson@cs.wisc.edu>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-These two patches are bug fixes which need to get into 2.6.24.
+On Sun, Nov 11, 2007 at 01:47:16PM -0600, Erik Paulson wrote:
+> Good news - this doesn't happen with 2.6.24-rc2. defconfig builds with
+> a CFLAGS on the commandline
+
+We seem to have cleared up the x86/kbuild breakage for now.
+
+> Unfortunately, VDE still doesn't compile - the CFLAGS aren't being passed 
+> along to arch/um/drivers:
+
+Yeah, it's not obvious why - I need to look into this.
+
+> make linux ARCH=um CFLAGS=-I/scratch/epaulson/vde/include LDFLAGS=-L/scratch/epaulson/vde/lib V=1
+
+BTW, I misspelled LDFLAGS - you'll have to use LFLAGS until I fix this.
 
 				Jeff
 
