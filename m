@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Is6lc-0006QU-TA for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Nov 2007 17:10:09 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Is6lb-0008Eu-Bj
+	id 1IsFbO-0001U6-Hl for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Nov 2007 02:36:10 -0800
+Received: from fxip-0047f.externet.hu ([88.209.222.127]
+	helo=dorka.pomaz.szeredi.hu)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IsFbM-0000We-Q9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Nov 2007 17:10:08 -0800
-Date: Tue, 13 Nov 2007 20:10:02 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071114011002.GA11477@c2.user-mode-linux.org>
+	Wed, 14 Nov 2007 02:36:10 -0800
+In-reply-to: <20071114011002.GA11477@c2.user-mode-linux.org> (message from
+	Jeff Dike on Tue, 13 Nov 2007 20:10:02 -0500)
 References: <E1Is5FL-00078H-00@dorka.pomaz.szeredi.hu>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <E1Is5FL-00078H-00@dorka.pomaz.szeredi.hu>
+	<20071114011002.GA11477@c2.user-mode-linux.org>
+Message-Id: <E1IsFbA-0007y2-00@dorka.pomaz.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Wed, 14 Nov 2007 11:35:56 +0100
 Subject: Re: [uml-devel] uml doesn't work on 2.6.24-rc2
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,30 +26,35 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com
+Cc: tglx@linutronix.de, mingo@elte.hu, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Nov 14, 2007 at 12:32:43AM +0100, Miklos Szeredi wrote:
-> UML doesn't run on 2.6.24-rc2 as host (config attached).  Guest is
-> 2.6.23-mm1, but I guess it's irrelevant.  2.6.23 as host was OK.
+> On Wed, Nov 14, 2007 at 12:32:43AM +0100, Miklos Szeredi wrote:
+> > UML doesn't run on 2.6.24-rc2 as host (config attached).  Guest is
+> > 2.6.23-mm1, but I guess it's irrelevant.  2.6.23 as host was OK.
+> > 
+> > When booting there are zillions of lines like this:
+> > 
+> > "arch_switch_tls failed, errno = EINVAL"
 > 
-> When booting there are zillions of lines like this:
-> 
-> "arch_switch_tls failed, errno = EINVAL"
+> This is PTRACE_ARCH_PRCTL failing and the only EINVAL I see is
+> do_arch_prctl getting a bogus operation - something other than
+> ARCH_[GS]ET_[FG]S, which is strange because UML never would have
+> worked if it were passing in bogus arguments.
 
-This is PTRACE_ARCH_PRCTL failing and the only EINVAL I see is
-do_arch_prctl getting a bogus operation - something other than
-ARCH_[GS]ET_[FG]S, which is strange because UML never would have
-worked if it were passing in bogus arguments.
+Note, this is 32bit UML on 64bit host, to complicate matters.  So I
+think it's not PTRACE_ARCH_PRCTL, but PTRACE_SET_THREAD_AREA.
 
-				Jeff
+Maybe this is a fallout from the x86 architecture merge?
 
--- 
-Work email - jdike at linux dot intel dot com
+Tglx and mingo cc-d.
+
+Miklos
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Splunk Inc.
