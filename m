@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1It8xY-0000Ba-KB for user-mode-linux-devel@lists.sourceforge.net;
+	id 1It8xY-0000BS-6A for user-mode-linux-devel@lists.sourceforge.net;
 	Fri, 16 Nov 2007 13:42:44 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1It8xX-0007we-PC
+	(Exim 4.44) id 1It8xX-0000ep-E8
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Fri, 16 Nov 2007 13:42:44 -0800
-Date: Fri, 16 Nov 2007 16:42:26 -0500
+Date: Fri, 16 Nov 2007 16:42:24 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071116214226.GA13862@c2.user-mode-linux.org>
+Message-ID: <20071116214224.GA13847@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 4/8] UML - current.h cleanup
+Subject: [uml-devel] [PATCH 1/8] UML - Move um_virt_to_phys
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,218 +31,167 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Tidy current-related stuff.  There was a comment in current.h saying
-that current_thread was obsolete, so this patch turns all instances of
-current_thread into current_thread_info().  There's some simplifying
-of the result in arch/um/sys-i386/signal.c.
+This patchset makes UML build and run with three-level page tables on
+32-bit hosts.  This is an uncommon use case, but the code here needed
+fixing and cleaning up, so 32-bit three-level pages tables were tested
+to make sure the changes are good.
 
-current.h and thread_info also get style cleanups.
+Patch 1 - code movement
+Patch 2 - header untangling
+Patch 3 - style fixups in files affected so far
+Patch 4 - clean up use of current.h
+Patch 5 - fix sizes of types that are different between 2 and 3-level
+	page tables - three-level page table support should build at
+	this point
+Patch 6 - tidy (i.e. eliminate much of) the code that figures out how
+	big the address space is
+Patch 7 - change um_virt_to_phys into virt_to_pte, clean its
+	interface, and clean its (so far) one caller
+Patch 8 - the stub pages are covered with a VMA, allowing some nasty
+	code to be thrown out - three-level page tables now work
+
+This patch:
+
+um_virt_to_phys only has one user, so it can be moved to the same file
+and made static.  Its declarations in pgtable.h and ksyms.c are also
+gone.
+
+current_cmd was another apparent user, but it itself isn't used, so it
+is deleted.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/kernel/process.c     |    8 ++++----
- arch/um/sys-i386/signal.c    |   18 ++++++++----------
- arch/um/sys-x86_64/signal.c  |    4 ++--
- include/asm-um/current.h     |   23 ++---------------------
- include/asm-um/thread_info.h |    8 ++++----
- 5 files changed, 20 insertions(+), 41 deletions(-)
+ arch/um/kernel/ksyms.c        |    1 
+ arch/um/kernel/process.c      |   43 ------------------------------------------
+ arch/um/kernel/skas/uaccess.c |   34 +++++++++++++++++++++++++++++++--
+ include/asm-um/pgtable.h      |    3 --
+ 4 files changed, 32 insertions(+), 49 deletions(-)
 
 Index: linux-2.6.22/arch/um/kernel/process.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/kernel/process.c	2007-11-16 13:30:15.000000000 -0500
-+++ linux-2.6.22/arch/um/kernel/process.c	2007-11-16 14:01:21.000000000 -0500
-@@ -252,7 +252,7 @@ void default_idle(void)
- 
- void cpu_idle(void)
- {
--	cpu_tasks[current_thread->cpu].pid = os_getpid();
-+	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
+--- linux-2.6.22.orig/arch/um/kernel/process.c	2007-11-15 16:34:14.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/process.c	2007-11-16 13:14:41.000000000 -0500
+@@ -256,49 +256,6 @@ void cpu_idle(void)
  	default_idle();
  }
  
-@@ -266,7 +266,7 @@ int user_context(unsigned long sp)
- 	unsigned long stack;
- 
- 	stack = sp & (PAGE_MASK << CONFIG_KERNEL_STACK_ORDER);
--	return stack != (unsigned long) current_thread;
-+	return stack != (unsigned long) current_thread_info();
- }
- 
- extern exitcall_t __uml_exitcall_begin, __uml_exitcall_end;
-@@ -308,7 +308,7 @@ int strlen_user_proc(char __user *str)
- int smp_sigio_handler(void)
- {
- #ifdef CONFIG_SMP
--	int cpu = current_thread->cpu;
-+	int cpu = current_thread_info()->cpu;
- 	IPI_handler(cpu);
- 	if (cpu != 0)
- 		return 1;
-@@ -318,7 +318,7 @@ int smp_sigio_handler(void)
- 
- int cpu(void)
- {
--	return current_thread->cpu;
-+	return current_thread_info()->cpu;
- }
- 
- static atomic_t using_sysemu = ATOMIC_INIT(0);
-Index: linux-2.6.22/arch/um/sys-i386/signal.c
-===================================================================
---- linux-2.6.22.orig/arch/um/sys-i386/signal.c	2007-11-16 13:14:40.000000000 -0500
-+++ linux-2.6.22/arch/um/sys-i386/signal.c	2007-11-16 14:04:27.000000000 -0500
-@@ -168,12 +168,13 @@ static int copy_sc_from_user(struct pt_r
- 			     struct sigcontext __user *from)
- {
- 	struct sigcontext sc;
--	int err;
-+	int err, pid;
- 
- 	err = copy_from_user(&sc, from, sizeof(sc));
- 	if (err)
- 		return err;
- 
-+	pid = userspace_pid[current_thread_info()->cpu];
- 	copy_sc(&regs->regs, &sc);
- 	if (have_fpx_regs) {
- 		struct user_fxsr_struct fpx;
-@@ -187,8 +188,7 @@ static int copy_sc_from_user(struct pt_r
- 		if (err)
- 			return 1;
- 
--		err = restore_fpx_registers(userspace_pid[current_thread->cpu],
--					    (unsigned long *) &fpx);
-+		err = restore_fpx_registers(pid, (unsigned long *) &fpx);
- 		if (err < 0) {
- 			printk(KERN_ERR "copy_sc_from_user - "
- 			       "restore_fpx_registers failed, errno = %d\n",
-@@ -204,8 +204,7 @@ static int copy_sc_from_user(struct pt_r
- 		if (err)
- 			return 1;
- 
--		err = restore_fp_registers(userspace_pid[current_thread->cpu],
--					   (unsigned long *) &fp);
-+		err = restore_fp_registers(pid, (unsigned long *) &fp);
- 		if (err < 0) {
- 			printk(KERN_ERR "copy_sc_from_user - "
- 			       "restore_fp_registers failed, errno = %d\n",
-@@ -223,7 +222,7 @@ static int copy_sc_to_user(struct sigcon
- {
- 	struct sigcontext sc;
- 	struct faultinfo * fi = &current->thread.arch.faultinfo;
--	int err;
-+	int err, pid;
- 
- 	sc.gs = REGS_GS(regs->regs.gp);
- 	sc.fs = REGS_FS(regs->regs.gp);
-@@ -249,11 +248,11 @@ static int copy_sc_to_user(struct sigcon
- 	to_fp = (to_fp ? to_fp : (struct _fpstate __user *) (to + 1));
- 	sc.fpstate = to_fp;
- 
-+	pid = userspace_pid[current_thread_info()->cpu];
- 	if (have_fpx_regs) {
- 		struct user_fxsr_struct fpx;
- 
--		err = save_fpx_registers(userspace_pid[current_thread->cpu],
--					 (unsigned long *) &fpx);
-+		err = save_fpx_registers(pid, (unsigned long *) &fpx);
- 		if (err < 0){
- 			printk(KERN_ERR "copy_sc_to_user - save_fpx_registers "
- 			       "failed, errno = %d\n", err);
-@@ -276,8 +275,7 @@ static int copy_sc_to_user(struct sigcon
- 	else {
- 		struct user_i387_struct fp;
- 
--		err = save_fp_registers(userspace_pid[current_thread->cpu],
--					(unsigned long *) &fp);
-+		err = save_fp_registers(pid, (unsigned long *) &fp);
- 		if (copy_to_user(to_fp, &fp, sizeof(struct user_i387_struct)))
- 			return 1;
- 	}
-Index: linux-2.6.22/arch/um/sys-x86_64/signal.c
-===================================================================
---- linux-2.6.22.orig/arch/um/sys-x86_64/signal.c	2007-11-16 13:14:40.000000000 -0500
-+++ linux-2.6.22/arch/um/sys-x86_64/signal.c	2007-11-16 14:01:21.000000000 -0500
-@@ -81,7 +81,7 @@ static int copy_sc_from_user(struct pt_r
- 	if (err)
- 		return 1;
- 
--	err = restore_fp_registers(userspace_pid[current_thread->cpu],
-+	err = restore_fp_registers(userspace_pid[current_thread_info()->cpu],
- 				   (unsigned long *) &fp);
- 	if (err < 0) {
- 		printk(KERN_ERR "copy_sc_from_user - "
-@@ -143,7 +143,7 @@ static int copy_sc_to_user(struct sigcon
- 	if (err)
- 		return 1;
- 
--	err = save_fp_registers(userspace_pid[current_thread->cpu],
-+	err = save_fp_registers(userspace_pid[current_thread_info()->cpu],
- 				(unsigned long *) &fp);
- 	if (err < 0) {
- 		printk(KERN_ERR "copy_sc_from_user - restore_fp_registers "
-Index: linux-2.6.22/include/asm-um/current.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/current.h	2007-11-16 13:14:40.000000000 -0500
-+++ linux-2.6.22/include/asm-um/current.h	2007-11-16 14:01:21.000000000 -0500
-@@ -1,32 +1,13 @@
--/* 
-- * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
-+/*
-+ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
- 
- #ifndef __UM_CURRENT_H
- #define __UM_CURRENT_H
- 
--#ifndef __ASSEMBLY__
+-void *um_virt_to_phys(struct task_struct *task, unsigned long addr,
+-		      pte_t *pte_out)
+-{
+-	pgd_t *pgd;
+-	pud_t *pud;
+-	pmd_t *pmd;
+-	pte_t *pte;
+-	pte_t ptent;
 -
--#include "asm/page.h"
- #include "linux/thread_info.h"
- 
- #define current (current_thread_info()->task)
- 
--/*Backward compatibility - it's used inside arch/um.*/
--#define current_thread current_thread_info()
+-	if (task->mm == NULL)
+-		return ERR_PTR(-EINVAL);
+-	pgd = pgd_offset(task->mm, addr);
+-	if (!pgd_present(*pgd))
+-		return ERR_PTR(-EINVAL);
 -
--#endif /* __ASSEMBLY__ */
+-	pud = pud_offset(pgd, addr);
+-	if (!pud_present(*pud))
+-		return ERR_PTR(-EINVAL);
 -
- #endif
+-	pmd = pmd_offset(pud, addr);
+-	if (!pmd_present(*pmd))
+-		return ERR_PTR(-EINVAL);
 -
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6.22/include/asm-um/thread_info.h
+-	pte = pte_offset_kernel(pmd, addr);
+-	ptent = *pte;
+-	if (!pte_present(ptent))
+-		return ERR_PTR(-EINVAL);
+-
+-	if (pte_out != NULL)
+-		*pte_out = ptent;
+-	return (void *) (pte_val(ptent) & PAGE_MASK) + (addr & ~PAGE_MASK);
+-}
+-
+-char *current_cmd(void)
+-{
+-#if defined(CONFIG_SMP) || defined(CONFIG_HIGHMEM)
+-	return "(Unknown)";
+-#else
+-	void *addr = um_virt_to_phys(current, current->mm->arg_start, NULL);
+-	return IS_ERR(addr) ? "(Unknown)": __va((unsigned long) addr);
+-#endif
+-}
+-
+ int __cant_sleep(void) {
+ 	return in_atomic() || irqs_disabled() || in_interrupt();
+ 	/* Is in_interrupt() really needed? */
+Index: linux-2.6.22/arch/um/kernel/skas/uaccess.c
 ===================================================================
---- linux-2.6.22.orig/include/asm-um/thread_info.h	2007-11-16 13:30:15.000000000 -0500
-+++ linux-2.6.22/include/asm-um/thread_info.h	2007-11-16 14:01:21.000000000 -0500
-@@ -1,5 +1,5 @@
--/* 
-- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-+/*
-+ * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
+--- linux-2.6.22.orig/arch/um/kernel/skas/uaccess.c	2007-11-15 16:34:14.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/skas/uaccess.c	2007-11-16 13:14:41.000000000 -0500
+@@ -12,8 +12,38 @@
+ #include "kern_util.h"
+ #include "os.h"
  
-@@ -76,8 +76,8 @@ static inline struct thread_info *curren
- #define TIF_SYSCALL_TRACE	0	/* syscall trace active */
- #define TIF_SIGPENDING		1	/* signal pending */
- #define TIF_NEED_RESCHED	2	/* rescheduling necessary */
--#define TIF_POLLING_NRFLAG      3       /* true if poll_idle() is polling 
--					 * TIF_NEED_RESCHED 
-+#define TIF_POLLING_NRFLAG      3       /* true if poll_idle() is polling
-+					 * TIF_NEED_RESCHED
- 					 */
- #define TIF_RESTART_BLOCK 	4
- #define TIF_MEMDIE	 	5
+-extern void *um_virt_to_phys(struct task_struct *task, unsigned long addr,
+-			     pte_t *pte_out);
++static void *um_virt_to_phys(struct task_struct *task, unsigned long addr,
++			     pte_t *pte_out)
++{
++	pgd_t *pgd;
++	pud_t *pud;
++	pmd_t *pmd;
++	pte_t *pte;
++	pte_t ptent;
++
++	if (task->mm == NULL)
++		return ERR_PTR(-EINVAL);
++	pgd = pgd_offset(task->mm, addr);
++	if (!pgd_present(*pgd))
++		return ERR_PTR(-EINVAL);
++
++	pud = pud_offset(pgd, addr);
++	if (!pud_present(*pud))
++		return ERR_PTR(-EINVAL);
++
++	pmd = pmd_offset(pud, addr);
++	if (!pmd_present(*pmd))
++		return ERR_PTR(-EINVAL);
++
++	pte = pte_offset_kernel(pmd, addr);
++	ptent = *pte;
++	if (!pte_present(ptent))
++		return ERR_PTR(-EINVAL);
++
++	if (pte_out != NULL)
++		*pte_out = ptent;
++	return (void *) (pte_val(ptent) & PAGE_MASK) + (addr & ~PAGE_MASK);
++}
+ 
+ static unsigned long maybe_map(unsigned long virt, int is_write)
+ {
+Index: linux-2.6.22/include/asm-um/pgtable.h
+===================================================================
+--- linux-2.6.22.orig/include/asm-um/pgtable.h	2007-11-15 16:34:14.000000000 -0500
++++ linux-2.6.22/include/asm-um/pgtable.h	2007-11-16 13:14:41.000000000 -0500
+@@ -31,9 +31,6 @@
+ 
+ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+ 
+-extern void *um_virt_to_phys(struct task_struct *task, unsigned long virt,
+-			     pte_t *pte_out);
+-
+ /* zero page used for uninitialized stuff */
+ extern unsigned long *empty_zero_page;
+ 
+Index: linux-2.6.22/arch/um/kernel/ksyms.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/ksyms.c	2007-11-15 16:34:14.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/ksyms.c	2007-11-16 13:14:39.000000000 -0500
+@@ -25,7 +25,6 @@ EXPORT_SYMBOL(get_kmem_end);
+ 
+ EXPORT_SYMBOL(high_physmem);
+ EXPORT_SYMBOL(empty_zero_page);
+-EXPORT_SYMBOL(um_virt_to_phys);
+ EXPORT_SYMBOL(handle_page_fault);
+ EXPORT_SYMBOL(find_iomem);
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
