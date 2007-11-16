@@ -2,23 +2,27 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Iss3K-0007Aw-3t for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Nov 2007 19:39:34 -0800
+	id 1It4eR-0004Mc-AM for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Nov 2007 09:06:44 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IsrpY-0004kK-6s
+	(Exim 4.44) id 1It4eP-0004ze-50
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Nov 2007 19:25:21 -0800
-Date: Thu, 15 Nov 2007 22:25:04 -0500
+	Fri, 16 Nov 2007 09:06:42 -0800
+Date: Fri, 16 Nov 2007 12:06:30 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071116032504.GA12516@c2.user-mode-linux.org>
-References: <20071114192049.GA9083@c2.user-mode-linux.org>
-	<20071115161521.21c4b7f5.akpm@linux-foundation.org>
+Message-ID: <20071116170630.GA9299@c2.user-mode-linux.org>
+References: <E1Is5FL-00078H-00@dorka.pomaz.szeredi.hu>
+	<20071114011002.GA11477@c2.user-mode-linux.org>
+	<E1IsFbA-0007y2-00@dorka.pomaz.szeredi.hu>
+	<20071114142247.GA5848@c2.user-mode-linux.org>
+	<E1IsK83-0008CJ-00@dorka.pomaz.szeredi.hu>
+	<20071114173639.GA7899@c2.user-mode-linux.org>
+	<E1IsPo5-0008RU-00@dorka.pomaz.szeredi.hu>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071115161521.21c4b7f5.akpm@linux-foundation.org>
-Subject: Re: [uml-devel] [PATCH 2/4] UML - Remove unused variables in the
-	context switcher
+In-Reply-To: <E1IsPo5-0008RU-00@dorka.pomaz.szeredi.hu>
+Subject: Re: [uml-devel] uml doesn't work on 2.6.24-rc2
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,14 +36,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, magotari@gmail.com
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Nov 15, 2007 at 04:15:21PM -0800, Andrew Morton wrote:
-> I assumed from the above that Karol was the author of this patch.  Please
-> let me know if that was wrong.
+On Wed, Nov 14, 2007 at 10:29:57PM +0100, Miklos Szeredi wrote:
+> Config attached.
 
-He is - I forgot the From line...
+Thanks - this reproduces it for me.
+
+BTW, you can work around this by enabling NO_HZ.
 
 				Jeff
 
