@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1It8xa-0000Bp-9F for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Nov 2007 13:42:46 -0800
+	id 1It8xY-0000Ba-KB for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 16 Nov 2007 13:42:44 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1It8xY-0007wU-OB
+	(Exim 4.44) id 1It8xX-0007we-PC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Nov 2007 13:42:46 -0800
-Date: Fri, 16 Nov 2007 16:42:25 -0500
+	Fri, 16 Nov 2007 13:42:44 -0800
+Date: Fri, 16 Nov 2007 16:42:26 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071116214225.GA13852@c2.user-mode-linux.org>
+Message-ID: <20071116214226.GA13862@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/8] UML - header untangling
+Subject: [uml-devel] [PATCH 4/8] UML - current.h cleanup
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,390 +31,218 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Untangle UML headers somewhat and add some includes where they were
-needed explicitly, but gotten accidentally via some other header.
+Tidy current-related stuff.  There was a comment in current.h saying
+that current_thread was obsolete, so this patch turns all instances of
+current_thread into current_thread_info().  There's some simplifying
+of the result in arch/um/sys-i386/signal.c.
 
-arch/um/include/um_uaccess.h loses asm/fixmap.h because it uses no
-fixmap stuff and gains elf.h, because it needs FIXADDR_USER_*, and
-archsetjmp.h, because it needs jmp_buf.
-
-pmd_alloc_one is uninlined because it needs mm_struct, and that's
-inconvenient to provide in asm-um/pgtable-3level.h.
-
-elf_core_copy_fpregs is also uninlined from elf-i386.h and
-elf-x86_64.h, which duplicated the code anyway, to
-arch/um/kernel/process.c, so that the reference to current_thread
-doesn't pull sched.h or anything related into asm/elf.h.
-
-arch/um/sys-i386/ldt.c, arch/um/kernel/tlb.c and
-arch/um/kernel/skas/uaccess.c got sched.h because they dereference
-task_structs.  Its includes of linux and asm headers got turned from
-"" to <>.
-
-arch/um/sys-i386/bug.c gets asm/errno.h because it needs errno
-constants.
-
-asm/elf-i386 gets asm/user.h because it needs user_regs_struct.
-
-asm/fixmap.h gets page.h because it needs PAGE_SIZE and PAGE_MASK and
-system.h for BUG_ON.
-
-asm/pgtable doesn't need sched.h.
-
-asm/processor-generic.h defined mm_segment_t, but didn't use it.  So,
-that definition is moved to uaccess.h, which defines a bunch of
-mm_segment_t-related stuff.  thread_info.h uses mm_segment_t, and
-includes uaccess.h, which causes a recursion.  So, the definition is
-placed above the include of thread_info. in uaccess.h.  thread_info.h
-also gets page.h because it needs PAGE_SIZE.
-
-ObCheckpatchViolationJustification - I'm not adding a typedef; I'm
-moving mm_segment_t from one place to another.
+current.h and thread_info also get style cleanups.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/drivers/random.c           |    1 +
- arch/um/include/um_uaccess.h       |    3 ++-
- arch/um/kernel/mem.c               |   21 ++++++++++++++++-----
- arch/um/kernel/process.c           |    8 ++++++++
- arch/um/kernel/skas/uaccess.c      |   13 +++++++------
- arch/um/kernel/tlb.c               |    7 ++++---
- arch/um/sys-i386/bug.c             |    1 +
- arch/um/sys-i386/ldt.c             |    5 +++--
- include/asm-um/elf-i386.h          |    9 ++-------
- include/asm-um/elf-x86_64.h        |    8 +-------
- include/asm-um/fixmap.h            |    3 ++-
- include/asm-um/pgtable-3level.h    |   11 ++---------
- include/asm-um/pgtable.h           |    1 -
- include/asm-um/processor-generic.h |    5 +----
- include/asm-um/thread_info.h       |    3 ++-
- include/asm-um/uaccess.h           |   10 +++++++++-
- 16 files changed, 61 insertions(+), 48 deletions(-)
+ arch/um/kernel/process.c     |    8 ++++----
+ arch/um/sys-i386/signal.c    |   18 ++++++++----------
+ arch/um/sys-x86_64/signal.c  |    4 ++--
+ include/asm-um/current.h     |   23 ++---------------------
+ include/asm-um/thread_info.h |    8 ++++----
+ 5 files changed, 20 insertions(+), 41 deletions(-)
 
-Index: linux-2.6.22/arch/um/drivers/random.c
-===================================================================
---- linux-2.6.22.orig/arch/um/drivers/random.c	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/arch/um/drivers/random.c	2007-11-16 13:30:15.000000000 -0500
-@@ -5,6 +5,7 @@
-  * This software may be used and distributed according to the terms
-  * of the GNU General Public License, incorporated herein by reference.
-  */
-+#include <linux/sched.h>
- #include <linux/module.h>
- #include <linux/fs.h>
- #include <linux/miscdevice.h>
-Index: linux-2.6.22/arch/um/include/um_uaccess.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/um_uaccess.h	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/arch/um/include/um_uaccess.h	2007-11-16 13:33:28.000000000 -0500
-@@ -6,7 +6,8 @@
- #ifndef __ARCH_UM_UACCESS_H
- #define __ARCH_UM_UACCESS_H
- 
--#include "asm/fixmap.h"
-+#include "asm/elf.h"
-+#include "sysdep/archsetjmp.h"
- 
- #define __under_task_size(addr, size) \
- 	(((unsigned long) (addr) < TASK_SIZE) && \
-Index: linux-2.6.22/arch/um/kernel/mem.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/mem.c	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/arch/um/kernel/mem.c	2007-11-16 15:18:34.000000000 -0500
-@@ -152,7 +152,7 @@ pgprot_t kmap_prot;
- 
- #define kmap_get_fixmap_pte(vaddr)					\
- 	pte_offset_kernel(pmd_offset(pud_offset(pgd_offset_k(vaddr), (vaddr)),\
-- 			  (vaddr)), (vaddr))
-+				     (vaddr)), (vaddr))
- 
- static void __init kmap_init(void)
- {
-@@ -278,7 +278,8 @@ struct page *arch_validate(struct page *
- 	goto again;
- }
- 
--/* This can't do anything because nothing in the kernel image can be freed
-+/*
-+ * This can't do anything because nothing in the kernel image can be freed
-  * since it's not in kernel physical memory.
-  */
- 
-@@ -331,9 +332,7 @@ void show_mem(void)
- 	printk("%d pages swap cached\n", cached);
- }
- 
--/*
-- * Allocate and free page tables.
-- */
-+/* Allocate and free page tables. */
- 
- pgd_t *pgd_alloc(struct mm_struct *mm)
- {
-@@ -370,3 +369,15 @@ pgtable_t pte_alloc_one(struct mm_struct
- 		pgtable_page_ctor(pte);
- 	return pte;
- }
-+
-+#ifdef CONFIG_3_LEVEL_PGTABLES
-+pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
-+{
-+	pmd_t *pmd = (pmd_t *) __get_free_page(GFP_KERNEL);
-+
-+	if (pmd)
-+		memset(pmd, 0, PAGE_SIZE);
-+
-+	return pmd;
-+}
-+#endif
 Index: linux-2.6.22/arch/um/kernel/process.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/kernel/process.c	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/arch/um/kernel/process.c	2007-11-16 15:16:54.000000000 -0500
-@@ -443,3 +443,11 @@ unsigned long get_wchan(struct task_stru
+--- linux-2.6.22.orig/arch/um/kernel/process.c	2007-11-16 13:30:15.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/process.c	2007-11-16 14:01:21.000000000 -0500
+@@ -252,7 +252,7 @@ void default_idle(void)
  
- 	return 0;
- }
-+
-+int elf_core_copy_fpregs(struct task_struct *t, elf_fpregset_t *fpu)
-+{
-+	int cpu = current_thread_info()->cpu;
-+
-+	return save_fp_registers(userspace_pid[cpu], (unsigned long *) fpu);
-+}
-+
-Index: linux-2.6.22/arch/um/kernel/skas/uaccess.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/skas/uaccess.c	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/arch/um/kernel/skas/uaccess.c	2007-11-16 15:16:54.000000000 -0500
-@@ -3,12 +3,13 @@
-  * Licensed under the GPL
-  */
- 
--#include "linux/err.h"
--#include "linux/highmem.h"
--#include "linux/mm.h"
--#include "asm/current.h"
--#include "asm/page.h"
--#include "asm/pgtable.h"
-+#include <linux/err.h>
-+#include <linux/highmem.h>
-+#include <linux/mm.h>
-+#include <linux/sched.h>
-+#include <asm/current.h>
-+#include <asm/page.h>
-+#include <asm/pgtable.h>
- #include "kern_util.h"
- #include "os.h"
- 
-Index: linux-2.6.22/arch/um/kernel/tlb.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/tlb.c	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/arch/um/kernel/tlb.c	2007-11-16 15:16:54.000000000 -0500
-@@ -3,9 +3,10 @@
-  * Licensed under the GPL
-  */
- 
--#include "linux/mm.h"
--#include "asm/pgtable.h"
--#include "asm/tlbflush.h"
-+#include <linux/mm.h>
-+#include <linux/sched.h>
-+#include <asm/pgtable.h>
-+#include <asm/tlbflush.h>
- #include "as-layout.h"
- #include "mem_user.h"
- #include "os.h"
-Index: linux-2.6.22/arch/um/sys-i386/bug.c
-===================================================================
---- linux-2.6.22.orig/arch/um/sys-i386/bug.c	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/arch/um/sys-i386/bug.c	2007-11-16 13:30:15.000000000 -0500
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/uaccess.h>
-+#include <asm/errno.h>
- 
- /* Mostly copied from i386/x86_86 - eliminated the eip < PAGE_OFFSET because
-  * that's not relevant in skas mode.
-Index: linux-2.6.22/arch/um/sys-i386/ldt.c
-===================================================================
---- linux-2.6.22.orig/arch/um/sys-i386/ldt.c	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/arch/um/sys-i386/ldt.c	2007-11-16 13:41:19.000000000 -0500
-@@ -3,8 +3,9 @@
-  * Licensed under the GPL
-  */
- 
--#include "linux/mm.h"
--#include "asm/unistd.h"
-+#include <linux/mm.h>
-+#include <linux/sched.h>
-+#include <asm/unistd.h>
- #include "os.h"
- #include "proc_mm.h"
- #include "skas.h"
-Index: linux-2.6.22/include/asm-um/elf-i386.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/elf-i386.h	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/include/asm-um/elf-i386.h	2007-11-16 15:16:54.000000000 -0500
-@@ -5,7 +5,7 @@
- #ifndef __UM_ELF_I386_H
- #define __UM_ELF_I386_H
- 
--#include <linux/sched.h>
-+#include <asm/user.h>
- #include "skas.h"
- 
- #define R_386_NONE	0
-@@ -76,12 +76,7 @@ typedef struct user_i387_struct elf_fpre
- 	pr_reg[16] = PT_REGS_SS(regs);		\
- } while(0);
- 
--static inline int elf_core_copy_fpregs(struct task_struct *t,
--				       elf_fpregset_t *fpu)
--{
--	int cpu = ((struct thread_info *) t->stack)->cpu;
--	return save_fp_registers(userspace_pid[cpu], (unsigned long *) fpu);
--}
-+extern int elf_core_copy_fpregs(struct task_struct *t, elf_fpregset_t *fpu);
- 
- #define ELF_CORE_COPY_FPREGS(t, fpu) elf_core_copy_fpregs(t, fpu)
- 
-Index: linux-2.6.22/include/asm-um/fixmap.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/fixmap.h	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/include/asm-um/fixmap.h	2007-11-16 15:16:54.000000000 -0500
-@@ -1,9 +1,10 @@
- #ifndef __UM_FIXMAP_H
- #define __UM_FIXMAP_H
- 
-+#include <asm/system.h>
- #include <asm/kmap_types.h>
- #include <asm/archparam.h>
--#include <asm/elf.h>
-+#include <asm/page.h>
- 
- /*
-  * Here we define all the compile-time 'special' virtual
-Index: linux-2.6.22/include/asm-um/pgtable-3level.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/pgtable-3level.h	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/include/asm-um/pgtable-3level.h	2007-11-16 15:16:54.000000000 -0500
-@@ -60,15 +60,8 @@ static inline void pgd_mkuptodate(pgd_t 
- 
- #define set_pmd(pmdptr, pmdval) set_64bit((phys_t *) (pmdptr), pmd_val(pmdval))
- 
--static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
--{
--        pmd_t *pmd = (pmd_t *) __get_free_page(GFP_KERNEL);
--
--        if(pmd)
--                memset(pmd, 0, PAGE_SIZE);
--
--        return pmd;
--}
-+struct mm_struct;
-+extern pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address);
- 
- static inline void pud_clear (pud_t *pud)
+ void cpu_idle(void)
  {
-Index: linux-2.6.22/include/asm-um/pgtable.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/pgtable.h	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/include/asm-um/pgtable.h	2007-11-16 15:16:54.000000000 -0500
-@@ -8,7 +8,6 @@
- #ifndef __UM_PGTABLE_H
- #define __UM_PGTABLE_H
- 
--#include "linux/sched.h"
- #include <asm/fixmap.h>
- 
- #define _PAGE_PRESENT	0x001
-Index: linux-2.6.22/include/asm-um/processor-generic.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/processor-generic.h	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/include/asm-um/processor-generic.h	2007-11-16 15:16:54.000000000 -0500
-@@ -11,6 +11,7 @@ struct pt_regs;
- struct task_struct;
- 
- #include "asm/ptrace.h"
-+#include "asm/pgtable.h"
- #include "registers.h"
- #include "sysdep/archsetjmp.h"
- 
-@@ -68,10 +69,6 @@ struct thread_struct {
- 	.request		= { 0 } \
+-	cpu_tasks[current_thread->cpu].pid = os_getpid();
++	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
+ 	default_idle();
  }
  
--typedef struct {
--	unsigned long seg;
--} mm_segment_t;
--
- extern struct task_struct *alloc_task_struct(void);
+@@ -266,7 +266,7 @@ int user_context(unsigned long sp)
+ 	unsigned long stack;
  
- static inline void release_thread(struct task_struct *task)
-Index: linux-2.6.22/include/asm-um/uaccess.h
+ 	stack = sp & (PAGE_MASK << CONFIG_KERNEL_STACK_ORDER);
+-	return stack != (unsigned long) current_thread;
++	return stack != (unsigned long) current_thread_info();
+ }
+ 
+ extern exitcall_t __uml_exitcall_begin, __uml_exitcall_end;
+@@ -308,7 +308,7 @@ int strlen_user_proc(char __user *str)
+ int smp_sigio_handler(void)
+ {
+ #ifdef CONFIG_SMP
+-	int cpu = current_thread->cpu;
++	int cpu = current_thread_info()->cpu;
+ 	IPI_handler(cpu);
+ 	if (cpu != 0)
+ 		return 1;
+@@ -318,7 +318,7 @@ int smp_sigio_handler(void)
+ 
+ int cpu(void)
+ {
+-	return current_thread->cpu;
++	return current_thread_info()->cpu;
+ }
+ 
+ static atomic_t using_sysemu = ATOMIC_INIT(0);
+Index: linux-2.6.22/arch/um/sys-i386/signal.c
 ===================================================================
---- linux-2.6.22.orig/include/asm-um/uaccess.h	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/include/asm-um/uaccess.h	2007-11-16 13:30:15.000000000 -0500
-@@ -6,7 +6,15 @@
- #ifndef __UM_UACCESS_H
- #define __UM_UACCESS_H
+--- linux-2.6.22.orig/arch/um/sys-i386/signal.c	2007-11-16 13:14:40.000000000 -0500
++++ linux-2.6.22/arch/um/sys-i386/signal.c	2007-11-16 14:04:27.000000000 -0500
+@@ -168,12 +168,13 @@ static int copy_sc_from_user(struct pt_r
+ 			     struct sigcontext __user *from)
+ {
+ 	struct sigcontext sc;
+-	int err;
++	int err, pid;
  
--#include "linux/sched.h"
-+#include <asm/errno.h>
-+#include <asm/processor.h>
-+
-+/* thread_info has a mm_segment_t in it, so put the definition up here */
-+typedef struct {
-+	unsigned long seg;
-+} mm_segment_t;
-+
-+#include "linux/thread_info.h"
+ 	err = copy_from_user(&sc, from, sizeof(sc));
+ 	if (err)
+ 		return err;
  
- #define VERIFY_READ 0
- #define VERIFY_WRITE 1
++	pid = userspace_pid[current_thread_info()->cpu];
+ 	copy_sc(&regs->regs, &sc);
+ 	if (have_fpx_regs) {
+ 		struct user_fxsr_struct fpx;
+@@ -187,8 +188,7 @@ static int copy_sc_from_user(struct pt_r
+ 		if (err)
+ 			return 1;
+ 
+-		err = restore_fpx_registers(userspace_pid[current_thread->cpu],
+-					    (unsigned long *) &fpx);
++		err = restore_fpx_registers(pid, (unsigned long *) &fpx);
+ 		if (err < 0) {
+ 			printk(KERN_ERR "copy_sc_from_user - "
+ 			       "restore_fpx_registers failed, errno = %d\n",
+@@ -204,8 +204,7 @@ static int copy_sc_from_user(struct pt_r
+ 		if (err)
+ 			return 1;
+ 
+-		err = restore_fp_registers(userspace_pid[current_thread->cpu],
+-					   (unsigned long *) &fp);
++		err = restore_fp_registers(pid, (unsigned long *) &fp);
+ 		if (err < 0) {
+ 			printk(KERN_ERR "copy_sc_from_user - "
+ 			       "restore_fp_registers failed, errno = %d\n",
+@@ -223,7 +222,7 @@ static int copy_sc_to_user(struct sigcon
+ {
+ 	struct sigcontext sc;
+ 	struct faultinfo * fi = &current->thread.arch.faultinfo;
+-	int err;
++	int err, pid;
+ 
+ 	sc.gs = REGS_GS(regs->regs.gp);
+ 	sc.fs = REGS_FS(regs->regs.gp);
+@@ -249,11 +248,11 @@ static int copy_sc_to_user(struct sigcon
+ 	to_fp = (to_fp ? to_fp : (struct _fpstate __user *) (to + 1));
+ 	sc.fpstate = to_fp;
+ 
++	pid = userspace_pid[current_thread_info()->cpu];
+ 	if (have_fpx_regs) {
+ 		struct user_fxsr_struct fpx;
+ 
+-		err = save_fpx_registers(userspace_pid[current_thread->cpu],
+-					 (unsigned long *) &fpx);
++		err = save_fpx_registers(pid, (unsigned long *) &fpx);
+ 		if (err < 0){
+ 			printk(KERN_ERR "copy_sc_to_user - save_fpx_registers "
+ 			       "failed, errno = %d\n", err);
+@@ -276,8 +275,7 @@ static int copy_sc_to_user(struct sigcon
+ 	else {
+ 		struct user_i387_struct fp;
+ 
+-		err = save_fp_registers(userspace_pid[current_thread->cpu],
+-					(unsigned long *) &fp);
++		err = save_fp_registers(pid, (unsigned long *) &fp);
+ 		if (copy_to_user(to_fp, &fp, sizeof(struct user_i387_struct)))
+ 			return 1;
+ 	}
+Index: linux-2.6.22/arch/um/sys-x86_64/signal.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/sys-x86_64/signal.c	2007-11-16 13:14:40.000000000 -0500
++++ linux-2.6.22/arch/um/sys-x86_64/signal.c	2007-11-16 14:01:21.000000000 -0500
+@@ -81,7 +81,7 @@ static int copy_sc_from_user(struct pt_r
+ 	if (err)
+ 		return 1;
+ 
+-	err = restore_fp_registers(userspace_pid[current_thread->cpu],
++	err = restore_fp_registers(userspace_pid[current_thread_info()->cpu],
+ 				   (unsigned long *) &fp);
+ 	if (err < 0) {
+ 		printk(KERN_ERR "copy_sc_from_user - "
+@@ -143,7 +143,7 @@ static int copy_sc_to_user(struct sigcon
+ 	if (err)
+ 		return 1;
+ 
+-	err = save_fp_registers(userspace_pid[current_thread->cpu],
++	err = save_fp_registers(userspace_pid[current_thread_info()->cpu],
+ 				(unsigned long *) &fp);
+ 	if (err < 0) {
+ 		printk(KERN_ERR "copy_sc_from_user - restore_fp_registers "
+Index: linux-2.6.22/include/asm-um/current.h
+===================================================================
+--- linux-2.6.22.orig/include/asm-um/current.h	2007-11-16 13:14:40.000000000 -0500
++++ linux-2.6.22/include/asm-um/current.h	2007-11-16 14:01:21.000000000 -0500
+@@ -1,32 +1,13 @@
+-/* 
+- * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
++/*
++ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+ 
+ #ifndef __UM_CURRENT_H
+ #define __UM_CURRENT_H
+ 
+-#ifndef __ASSEMBLY__
+-
+-#include "asm/page.h"
+ #include "linux/thread_info.h"
+ 
+ #define current (current_thread_info()->task)
+ 
+-/*Backward compatibility - it's used inside arch/um.*/
+-#define current_thread current_thread_info()
+-
+-#endif /* __ASSEMBLY__ */
+-
+ #endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 Index: linux-2.6.22/include/asm-um/thread_info.h
 ===================================================================
---- linux-2.6.22.orig/include/asm-um/thread_info.h	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/include/asm-um/thread_info.h	2007-11-16 15:16:54.000000000 -0500
-@@ -8,8 +8,9 @@
+--- linux-2.6.22.orig/include/asm-um/thread_info.h	2007-11-16 13:30:15.000000000 -0500
++++ linux-2.6.22/include/asm-um/thread_info.h	2007-11-16 14:01:21.000000000 -0500
+@@ -1,5 +1,5 @@
+-/* 
+- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
++/*
++ * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
  
- #ifndef __ASSEMBLY__
- 
--#include <asm/processor.h>
- #include <asm/types.h>
-+#include <asm/page.h>
-+#include <asm/uaccess.h>
- 
- struct thread_info {
- 	struct task_struct	*task;		/* main task structure */
-Index: linux-2.6.22/include/asm-um/elf-x86_64.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/elf-x86_64.h	2007-11-16 13:30:12.000000000 -0500
-+++ linux-2.6.22/include/asm-um/elf-x86_64.h	2007-11-16 13:30:15.000000000 -0500
-@@ -7,7 +7,6 @@
- #ifndef __UM_ELF_X86_64_H
- #define __UM_ELF_X86_64_H
- 
--#include <linux/sched.h>
- #include <asm/user.h>
- #include "skas.h"
- 
-@@ -96,12 +95,7 @@ typedef struct user_i387_struct elf_fpre
- 	(pr_reg)[25] = 0;					\
- 	(pr_reg)[26] = 0;
- 
--static inline int elf_core_copy_fpregs(struct task_struct *t,
--				       elf_fpregset_t *fpu)
--{
--	int cpu = current_thread->cpu;
--	return save_fp_registers(userspace_pid[cpu], (unsigned long *) fpu);
--}
-+extern int elf_core_copy_fpregs(struct task_struct *t, elf_fpregset_t *fpu);
- 
- #define ELF_CORE_COPY_FPREGS(t, fpu) elf_core_copy_fpregs(t, fpu)
- 
+@@ -76,8 +76,8 @@ static inline struct thread_info *curren
+ #define TIF_SYSCALL_TRACE	0	/* syscall trace active */
+ #define TIF_SIGPENDING		1	/* signal pending */
+ #define TIF_NEED_RESCHED	2	/* rescheduling necessary */
+-#define TIF_POLLING_NRFLAG      3       /* true if poll_idle() is polling 
+-					 * TIF_NEED_RESCHED 
++#define TIF_POLLING_NRFLAG      3       /* true if poll_idle() is polling
++					 * TIF_NEED_RESCHED
+ 					 */
+ #define TIF_RESTART_BLOCK 	4
+ #define TIF_MEMDIE	 	5
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
