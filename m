@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1It8xY-0000BM-0m for user-mode-linux-devel@lists.sourceforge.net;
+	id 1It8xY-0000Bd-Md for user-mode-linux-devel@lists.sourceforge.net;
 	Fri, 16 Nov 2007 13:42:44 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1It8xX-0000fS-E6
+	(Exim 4.44) id 1It8xX-0007x1-P9
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Fri, 16 Nov 2007 13:42:44 -0800
-Date: Fri, 16 Nov 2007 16:42:27 -0500
+Date: Fri, 16 Nov 2007 16:42:28 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071116214227.GA13877@c2.user-mode-linux.org>
+Message-ID: <20071116214228.GA13882@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 7/8] UML - add virt_to_pte
+Subject: [uml-devel] [PATCH 8/8] UML - Cover stubs with a VMA
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,129 +31,301 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Turn um_virt_to_phys into virt_to_pte, cleaning up a horrid interface.
+Give the stubs a VMA.  This allows the removal of a truly nasty kludge
+to make sure that mm->nr_ptes was correct in exit_mmap.  The
+underlying problem was always that the stubs, which have ptes, and
+thus allocated a page table, weren't covered by a VMA.
 
-It's also made non-static and declared in pgtable.h because it'll be
-needed when the stubs get a vma.
+This patch fixes that by using install_special_mapping in
+arch_dup_mmap and activate_context to create the VMA.  The stubs have
+to be moved, since shift_arg_pages seems to assume that the stack is
+the only VMA present at that point during exec, and uses vma_adjust to
+fiddle its VMA.  However, that extends the stub VMA by the amount
+removed from the stack VMA.
+
+To avoid this problem, the stubs were moved to a different fixed
+location at the start of the address space.
+
+arch_exit_mmap is used to clear the stub ptes at exit time.
+
+The STUB_* constants in as-layout.h no longer depend on UM_TASK_SIZE,
+so that definition is removed, along with the comments complaining
+about gcc.
+
+Because the stubs are no longer at the top of the address space, some
+care is needed while flushing TLBs.  update_pte_range checks for
+addresses in the stub range and skips them.  flush_thread now issues
+two unmaps, one for the range before STUB_START and one for the range
+after STUB_END.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/kernel/skas/uaccess.c |   56 +++++++++++++++++-------------------------
- include/asm-um/pgtable.h      |    3 ++
- 2 files changed, 26 insertions(+), 33 deletions(-)
+ arch/um/include/as-layout.h      |   19 +-------
+ arch/um/include/common-offsets.h |    3 -
+ arch/um/kernel/exec.c            |    5 +-
+ arch/um/kernel/skas/mmu.c        |   86 ++++++++++++++++++++++-----------------
+ arch/um/kernel/tlb.c             |   11 +---
+ include/asm-um/mmu_context.h     |    7 ++-
+ 6 files changed, 66 insertions(+), 65 deletions(-)
 
-Index: linux-2.6.22/arch/um/kernel/skas/uaccess.c
+Index: linux-2.6.22/arch/um/kernel/skas/mmu.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/kernel/skas/uaccess.c	2007-11-16 15:16:54.000000000 -0500
-+++ linux-2.6.22/arch/um/kernel/skas/uaccess.c	2007-11-16 15:40:25.000000000 -0500
-@@ -13,70 +13,60 @@
- #include "kern_util.h"
- #include "os.h"
+--- linux-2.6.22.orig/arch/um/kernel/skas/mmu.c	2007-11-16 15:16:54.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/skas/mmu.c	2007-11-16 15:41:07.000000000 -0500
+@@ -34,25 +34,6 @@ static int init_stub_pte(struct mm_struc
+ 	if (!pte)
+ 		goto out_pte;
  
--static void *um_virt_to_phys(struct task_struct *task, unsigned long addr,
--			     pte_t *pte_out)
-+pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
- {
- 	pgd_t *pgd;
- 	pud_t *pud;
- 	pmd_t *pmd;
--	pte_t *pte;
--	pte_t ptent;
- 
--	if (task->mm == NULL)
--		return ERR_PTR(-EINVAL);
--	pgd = pgd_offset(task->mm, addr);
-+	if (mm == NULL)
-+		return NULL;
-+
-+	pgd = pgd_offset(mm, addr);
- 	if (!pgd_present(*pgd))
--		return ERR_PTR(-EINVAL);
-+		return NULL;
- 
- 	pud = pud_offset(pgd, addr);
- 	if (!pud_present(*pud))
--		return ERR_PTR(-EINVAL);
-+		return NULL;
- 
- 	pmd = pmd_offset(pud, addr);
- 	if (!pmd_present(*pmd))
--		return ERR_PTR(-EINVAL);
+-	/*
+-	 * There's an interaction between the skas0 stub pages, stack
+-	 * randomization, and the BUG at the end of exit_mmap.  exit_mmap
+-	 * checks that the number of page tables freed is the same as had
+-	 * been allocated.  If the stack is on the last page table page,
+-	 * then the stack pte page will be freed, and if not, it won't.  To
+-	 * avoid having to know where the stack is, or if the process mapped
+-	 * something at the top of its address space for some other reason,
+-	 * we set TASK_SIZE to end at the start of the last page table.
+-	 * This keeps exit_mmap off the last page, but introduces a leak
+-	 * of that page.  So, we hang onto it here and free it in
+-	 * destroy_context_skas.
+-	 */
 -
--	pte = pte_offset_kernel(pmd, addr);
--	ptent = *pte;
--	if (!pte_present(ptent))
--		return ERR_PTR(-EINVAL);
-+		return NULL;
- 
--	if (pte_out != NULL)
--		*pte_out = ptent;
--	return (void *) (pte_val(ptent) & PAGE_MASK) + (addr & ~PAGE_MASK);
-+	return pte_offset_kernel(pmd, addr);
- }
- 
--static unsigned long maybe_map(unsigned long virt, int is_write)
-+static pte_t *maybe_map(unsigned long virt, int is_write)
- {
--	pte_t pte;
--	int err;
-+	pte_t *pte = virt_to_pte(current->mm, virt);
-+	int err, dummy_code;
- 
--	void *phys = um_virt_to_phys(current, virt, &pte);
--	int dummy_code;
+-	mm->context.last_page_table = pmd_page_vaddr(*pmd);
+-#ifdef CONFIG_3_LEVEL_PGTABLES
+-	mm->context.last_pmd = (unsigned long) __va(pud_val(*pud));
+-#endif
 -
--	if (IS_ERR(phys) || (is_write && !pte_write(pte))) {
-+	if ((pte == NULL) || !pte_present(*pte) ||
-+	    (is_write && !pte_write(*pte))) {
- 		err = handle_page_fault(virt, 0, is_write, 1, &dummy_code);
- 		if (err)
--			return -1UL;
--		phys = um_virt_to_phys(current, virt, NULL);
-+			return NULL;
-+		pte = virt_to_pte(current->mm, virt);
+ 	*pte = mk_pte(virt_to_page(kernel), __pgprot(_PAGE_PRESENT));
+ 	*pte = pte_mkread(*pte);
+ 	return 0;
+@@ -77,13 +58,6 @@ int init_new_context(struct task_struct 
+ 		if (stack == 0)
+ 			goto out;
+ 
+-		/*
+-		 * This zeros the entry that pgd_alloc didn't, needed since
+-		 * we are about to reinitialize it, and want mm.nr_ptes to
+-		 * be accurate.
+-		 */
+-		mm->pgd[USER_PTRS_PER_PGD] = __pgd(0);
+-
+ 		ret = init_stub_pte(mm, STUB_CODE,
+ 				    (unsigned long) &__syscall_stub_start);
+ 		if (ret)
+@@ -92,8 +66,6 @@ int init_new_context(struct task_struct 
+ 		ret = init_stub_pte(mm, STUB_DATA, stack);
+ 		if (ret)
+ 			goto out_free;
+-
+-		mm->nr_ptes--;
  	}
--	if (IS_ERR(phys))
--		phys = (void *) -1;
-+	if (!pte_present(*pte))
-+		pte = NULL;
  
--	return (unsigned long) phys;
-+	return pte;
+ 	to_mm->id.stack = stack;
+@@ -132,6 +104,55 @@ int init_new_context(struct task_struct 
+ 	return ret;
  }
  
- static int do_op_one_page(unsigned long addr, int len, int is_write,
- 		 int (*op)(unsigned long addr, int len, void *arg), void *arg)
- {
- 	struct page *page;
-+	pte_t *pte;
- 	int n;
- 
--	addr = maybe_map(addr, is_write);
--	if (addr == -1UL)
-+	pte = maybe_map(addr, is_write);
-+	if (pte == NULL)
- 		return -1;
- 
--	page = phys_to_page(addr);
-+	page = pte_page(*pte);
- 	addr = (unsigned long) kmap_atomic(page, KM_UML_USERCOPY) +
- 		(addr & ~PAGE_MASK);
- 
-Index: linux-2.6.22/include/asm-um/pgtable.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/pgtable.h	2007-11-16 15:35:38.000000000 -0500
-+++ linux-2.6.22/include/asm-um/pgtable.h	2007-11-16 15:39:44.000000000 -0500
-@@ -323,6 +323,9 @@ static inline pte_t pte_modify(pte_t pte
- #define pte_unmap(pte) do { } while (0)
- #define pte_unmap_nested(pte) do { } while (0)
- 
-+struct mm_struct;
-+extern pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr);
++void arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
++{
++	struct page **pages;
++	int err;
 +
- #define update_mmu_cache(vma,address,pte) do ; while (0)
++	if (!skas_needs_stub)
++		return;
++
++	pages = kmalloc(2 * sizeof(struct page *), GFP_KERNEL);
++	if (pages == NULL) {
++		printk(KERN_ERR "arch_dup_mmap failed to allocate 2 page "
++		       "pointers\n");
++		goto out;
++	}
++
++	pages[0] = virt_to_page(&__syscall_stub_start);
++	pages[1] = virt_to_page(mm->context.id.stack);
++
++	/* dup_mmap already holds mmap_sem */
++	err = install_special_mapping(mm, STUB_START, STUB_END - STUB_START,
++				      VM_READ | VM_MAYREAD | VM_EXEC |
++				      VM_MAYEXEC | VM_DONTCOPY, pages);
++	if (err) {
++		printk(KERN_ERR "install_special_mapping returned %d\n", err);
++		goto out_free;
++	}
++	return;
++
++out_free:
++	kfree(pages);
++out:
++	force_sigsegv(SIGSEGV, current);
++}
++
++void arch_exit_mmap(struct mm_struct *mm)
++{
++	pte_t *pte;
++
++	pte = virt_to_pte(mm, STUB_CODE);
++	if (pte != NULL)
++		pte_clear(mm, STUB_CODE, pte);
++
++	pte = virt_to_pte(mm, STUB_DATA);
++	if (pte == NULL)
++		return;
++
++	pte_clear(mm, STUB_DATA, pte);
++}
++
+ void destroy_context(struct mm_struct *mm)
+ {
+ 	struct mm_context *mmu = &mm->context;
+@@ -141,15 +162,8 @@ void destroy_context(struct mm_struct *m
+ 	else
+ 		os_kill_ptraced_process(mmu->id.u.pid, 1);
  
- /* Encode and de-code a swap entry */
+-	if (!proc_mm || !ptrace_faultinfo) {
++	if (skas_needs_stub)
+ 		free_page(mmu->id.stack);
+-		pte_lock_deinit(virt_to_page(mmu->last_page_table));
+-		pte_free_kernel(mm, (pte_t *) mmu->last_page_table);
+-		dec_zone_page_state(virt_to_page(mmu->last_page_table), NR_PAGETABLE);
+-#ifdef CONFIG_3_LEVEL_PGTABLES
+-		pmd_free(mm, (pmd_t *) mmu->last_pmd);
+-#endif
+-	}
+ 
+ 	free_ldt(mmu);
+ }
+Index: linux-2.6.22/include/asm-um/mmu_context.h
+===================================================================
+--- linux-2.6.22.orig/include/asm-um/mmu_context.h	2007-11-16 15:16:54.000000000 -0500
++++ linux-2.6.22/include/asm-um/mmu_context.h	2007-11-16 15:40:36.000000000 -0500
+@@ -6,11 +6,12 @@
+ #ifndef __UM_MMU_CONTEXT_H
+ #define __UM_MMU_CONTEXT_H
+ 
+-#include <asm-generic/mm_hooks.h>
+-
+ #include "linux/sched.h"
+ #include "um_mmu.h"
+ 
++extern void arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm);
++extern void arch_exit_mmap(struct mm_struct *mm);
++
+ #define get_mmu_context(task) do ; while(0)
+ #define activate_context(tsk) do ; while(0)
+ 
+@@ -30,6 +31,8 @@ static inline void activate_mm(struct mm
+ 	 */
+ 	if (old != new && (current->flags & PF_BORROWED_MM))
+ 		__switch_mm(&new->context.id);
++
++	arch_dup_mmap(old, new);
+ }
+ 
+ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, 
+Index: linux-2.6.22/arch/um/include/as-layout.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/as-layout.h	2007-11-16 15:39:36.000000000 -0500
++++ linux-2.6.22/arch/um/include/as-layout.h	2007-11-16 15:40:36.000000000 -0500
+@@ -29,21 +29,10 @@
+ #define _AC(X, Y)	__AC(X, Y)
+ #endif
+ 
+-/*
+- * The "- 1"'s are to avoid gcc complaining about integer overflows
+- * and unrepresentable decimal constants.  With 3-level page tables,
+- * TASK_SIZE is 0x80000000, which gets turned into its signed decimal
+- * equivalent in asm-offsets.s.  gcc then complains about that being
+- * unsigned only in C90.  To avoid that, UM_TASK_SIZE is defined as
+- * TASK_SIZE - 1.  To compensate, we need to add the 1 back here.
+- * However, adding it back to UM_TASK_SIZE produces more gcc
+- * complaints.  So, I adjust the thing being subtracted from
+- * UM_TASK_SIZE instead.  Bah.
+- */
+-#define STUB_CODE _AC((unsigned long), \
+-		      UM_TASK_SIZE - (2 * UM_KERN_PAGE_SIZE - 1))
+-#define STUB_DATA _AC((unsigned long), UM_TASK_SIZE - (UM_KERN_PAGE_SIZE - 1))
+-#define STUB_START _AC(, STUB_CODE)
++#define STUB_START _AC(, 0x100000)
++#define STUB_CODE _AC((unsigned long), STUB_START)
++#define STUB_DATA _AC((unsigned long), STUB_CODE + UM_KERN_PAGE_SIZE)
++#define STUB_END _AC((unsigned long), STUB_DATA + UM_KERN_PAGE_SIZE)
+ 
+ #ifndef __ASSEMBLY__
+ 
+Index: linux-2.6.22/arch/um/kernel/exec.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/exec.c	2007-11-16 15:39:36.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/exec.c	2007-11-16 15:40:36.000000000 -0500
+@@ -19,12 +19,13 @@
+ void flush_thread(void)
+ {
+ 	void *data = NULL;
+-	unsigned long end = proc_mm ? TASK_SIZE : STUB_START;
+ 	int ret;
+ 
+ 	arch_flush_thread(&current->thread.arch);
+ 
+-	ret = unmap(&current->mm->context.id, 0, end, 1, &data);
++	ret = unmap(&current->mm->context.id, 0, STUB_START, 0, &data);
++	ret = ret || unmap(&current->mm->context.id, STUB_END,
++			   TASK_SIZE - STUB_END, 1, &data);
+ 	if (ret) {
+ 		printk(KERN_ERR "flush_thread - clearing address space failed, "
+ 		       "err = %d\n", ret);
+Index: linux-2.6.22/arch/um/kernel/tlb.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/tlb.c	2007-11-16 15:39:36.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/tlb.c	2007-11-16 15:40:36.000000000 -0500
+@@ -184,6 +184,9 @@ static inline int update_pte_range(pmd_t
+ 
+ 	pte = pte_offset_kernel(pmd, addr);
+ 	do {
++		if ((addr >= STUB_START) && (addr < STUB_END))
++			continue;
++
+ 		r = pte_read(*pte);
+ 		w = pte_write(*pte);
+ 		x = pte_exec(*pte);
+@@ -486,9 +489,6 @@ void __flush_tlb_one(unsigned long addr)
+ static void fix_range(struct mm_struct *mm, unsigned long start_addr,
+ 		      unsigned long end_addr, int force)
+ {
+-	if (!proc_mm && (end_addr > STUB_START))
+-		end_addr = STUB_START;
+-
+ 	fix_range_common(mm, start_addr, end_addr, force);
+ }
+ 
+@@ -502,8 +502,6 @@ void flush_tlb_range(struct vm_area_stru
+ 
+ void flush_tlb_mm(struct mm_struct *mm)
+ {
+-	unsigned long end;
+-
+ 	/*
+ 	 * Don't bother flushing if this address space is about to be
+ 	 * destroyed.
+@@ -511,8 +509,7 @@ void flush_tlb_mm(struct mm_struct *mm)
+ 	if (atomic_read(&mm->mm_users) == 0)
+ 		return;
+ 
+-	end = proc_mm ? TASK_SIZE : STUB_START;
+-	fix_range(mm, 0, end, 0);
++	fix_range(mm, 0, TASK_SIZE, 0);
+ }
+ 
+ void force_flush_all(void)
+Index: linux-2.6.22/arch/um/include/common-offsets.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/common-offsets.h	2007-11-16 15:39:36.000000000 -0500
++++ linux-2.6.22/arch/um/include/common-offsets.h	2007-11-16 15:40:36.000000000 -0500
+@@ -39,6 +39,3 @@ DEFINE(UM_HZ, HZ);
+ DEFINE(UM_USEC_PER_SEC, USEC_PER_SEC);
+ DEFINE(UM_NSEC_PER_SEC, NSEC_PER_SEC);
+ DEFINE(UM_NSEC_PER_USEC, NSEC_PER_USEC);
+-
+-/* See as-layout.h for an explanation of the "- 1".  Bah. */
+-DEFINE(UM_TASK_SIZE, TASK_SIZE - 1);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
