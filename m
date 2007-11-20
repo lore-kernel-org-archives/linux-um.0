@@ -2,24 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IuLfW-000835-1y for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Nov 2007 21:29:06 -0800
-Received: from ro-out-1112.google.com ([72.14.202.183])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IuLfS-00017O-Mu
+	id 1IuUTS-0005wV-Aw for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Nov 2007 06:53:14 -0800
+Received: from kilimandjaro.dyndns.org ([212.85.147.17])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IuUTQ-0005XH-NO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Nov 2007 21:29:05 -0800
-Received: by ro-out-1112.google.com with SMTP id o35so2088186rog
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 19 Nov 2007 21:29:01 -0800 (PST)
-Date: Tue, 20 Nov 2007 13:26:25 +0800
-From: WANG Cong <xiyou.wangcong@gmail.com>
-Message-ID: <20071120052625.GF2472@hacking>
-References: <20071119190224.GA7723@c2.user-mode-linux.org>
+	Tue, 20 Nov 2007 06:53:14 -0800
+Message-ID: <4742F40B.1030508@quatravaux.org>
+Date: Tue, 20 Nov 2007 15:49:47 +0100
+From: Dominique Quatravaux <dominique@quatravaux.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20071119190224.GA7723@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] Keep UML Kconfig in sync with x86
-Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
+Content-Type: multipart/mixed; boundary="------------060908050509030109010902"
+Subject: [uml-devel] [PATCH] Fixed hostfs tv_usec / tv_nsec conversion in
+	2.6.22.9
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,35 +24,98 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-On Mon, Nov 19, 2007 at 02:02:24PM -0500, Jeff Dike wrote:
->Fix a 2.6.24-rc3 UML build breakage introduced by commit
->1032c0ba9da5c5b53173ad2dcf8b2a2da78f8b17 - it introduces X86_32, with
->many things which UML needs depending on it.
->
->This patch adds definitions of X86_32 and RWSEM_XCHGADD_ALGORITHM to
->the UML/i386 Kconfig.
->
->Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+This is a multi-part message in MIME format.
+--------------060908050509030109010902
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Tested-by: WANG Cong <xiyou.wangcong@gmail.com>
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Thanks, Jeff. With this and that patch[1], uml building works fine. ;)
+Dear UML developpers and users,
 
-[1] http://lkml.org/lkml/2007/11/15/231
+The attached patch against Linux 2.6.22.9 fixes an issue with
+emulating the utimes() and futimes() system calls, that used to cause
+- -EINVAL to be returned from such.
 
+Regards,
+
+- --
+<< Tout n'y est pas parfait, mais on y honore certainement les
+jardiniers >>
+
+            Dominique Quatravaux <dominique@quatravaux.org>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iQCVAwUBR0L0CvTYH7KfeIIFAQJYuAP/a6gUhIS8rTd6daU55XZa+j4B7cnGFxvX
+lVXUZYzznsgWP77TZBDkhiisBJPiUJ67Lvnsaq883xjebOteaZ6QjxRMszV7N16o
+WOxq9Qu0+bLZjiYuQWuGvw/4j2NJ6BSO9dA+8Lu6siSIxuH8FgNvPnZgXXV0npNg
+KgAzwvEmmDE=
+=yC7D
+-----END PGP SIGNATURE-----
+
+
+--------------060908050509030109010902
+Content-Type: text/x-patch;
+ name="UML-usec-nsec.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="UML-usec-nsec.diff"
+
+diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
+--- a/fs/hostfs/hostfs_user.c
++++ b/fs/hostfs/hostfs_user.c
+@@ -262,17 +262,17 @@ int set_attr(const char *file, struct ho
+ 			return err;
+ 
+ 		times[0].tv_sec = atime_ts.tv_sec;
+-		times[0].tv_usec = atime_ts.tv_nsec * 1000;
++		times[0].tv_usec = atime_ts.tv_nsec / 1000;
+ 		times[1].tv_sec = mtime_ts.tv_sec;
+-		times[1].tv_usec = mtime_ts.tv_nsec * 1000;
++		times[1].tv_usec = mtime_ts.tv_nsec / 1000;
+ 
+ 		if (attrs->ia_valid & HOSTFS_ATTR_ATIME_SET) {
+ 			times[0].tv_sec = attrs->ia_atime.tv_sec;
+-			times[0].tv_usec = attrs->ia_atime.tv_nsec * 1000;
++			times[0].tv_usec = attrs->ia_atime.tv_nsec / 1000;
+ 		}
+ 		if (attrs->ia_valid & HOSTFS_ATTR_MTIME_SET) {
+ 			times[1].tv_sec = attrs->ia_mtime.tv_sec;
+-			times[1].tv_usec = attrs->ia_mtime.tv_nsec * 1000;
++			times[1].tv_usec = attrs->ia_mtime.tv_nsec / 1000;
+ 		}
+ 
+ 		if (fd >= 0) {
+
+--------------060908050509030109010902
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
 Defy all challenges. Microsoft(R) Visual Studio 2005.
 http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+--------------060908050509030109010902
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--------------060908050509030109010902--
+
+
