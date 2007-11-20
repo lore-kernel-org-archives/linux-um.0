@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IuXoB-0007aj-9G for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Nov 2007 10:26:52 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1Iuabc-0001A7-DH for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Nov 2007 13:26:04 -0800
+Received: from smtp2.linux-foundation.org ([207.189.120.14])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IuXo9-0005vY-JM
+	(Exim 4.44) id 1Iuabb-0000Al-Uk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Nov 2007 10:26:51 -0800
-Date: Tue, 20 Nov 2007 13:26:33 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071120182633.GA7699@c2.user-mode-linux.org>
+	Tue, 20 Nov 2007 13:26:04 -0800
+Date: Tue, 20 Nov 2007 13:25:55 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20071120132555.75af5112.akpm@linux-foundation.org>
+In-Reply-To: <20071120182633.GA7694@c2.user-mode-linux.org>
+References: <20071120182633.GA7694@c2.user-mode-linux.org>
 Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH 4/4] UML - add missing space
+Subject: Re: [uml-devel] [PATCH 3/4] UML - kill processes instead of
+	panicing kernel
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,32 +30,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Joe Perches <joe@perches.com>
+On Tue, 20 Nov 2007 13:26:33 -0500
+Jeff Dike <jdike@addtoit.com> wrote:
 
-Add missing space between merged string constants.
+> +extern void os_dump_core(void) __attribute__ ((noreturn));
 
-Signed-off-by: Joe Perches <joe@perches.com>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
----
- arch/um/drivers/vde_user.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We have a __noreturn helper for this.
 
-Index: linux-2.6.22/arch/um/drivers/vde_user.c
-===================================================================
---- linux-2.6.22.orig/arch/um/drivers/vde_user.c	2007-11-20 13:03:52.000000000 -0500
-+++ linux-2.6.22/arch/um/drivers/vde_user.c	2007-11-20 13:09:46.000000000 -0500
-@@ -80,7 +80,7 @@ void vde_init_libstuff(struct vde_data *
- 
- 	vpri->args = kmalloc(sizeof(struct vde_open_args), UM_GFP_KERNEL);
- 	if (vpri->args == NULL) {
--		printk(UM_KERN_ERR "vde_init_libstuff - vde_open_args"
-+		printk(UM_KERN_ERR "vde_init_libstuff - vde_open_args "
- 		       "allocation failed");
- 		return;
- 	}
+I'd have expected checkpatch to have a little whine about the space-before-(,
+but it didn't.
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
