@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IuUTS-0005wV-Aw for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Nov 2007 06:53:14 -0800
-Received: from kilimandjaro.dyndns.org ([212.85.147.17])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IuUTQ-0005XH-NO
+	id 1IuWWX-0006ig-6n for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Nov 2007 09:04:33 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IuWWT-0001sN-Qk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Nov 2007 06:53:14 -0800
-Message-ID: <4742F40B.1030508@quatravaux.org>
-Date: Tue, 20 Nov 2007 15:49:47 +0100
-From: Dominique Quatravaux <dominique@quatravaux.org>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060908050509030109010902"
-Subject: [uml-devel] [PATCH] Fixed hostfs tv_usec / tv_nsec conversion in
-	2.6.22.9
+	Tue, 20 Nov 2007 09:04:32 -0800
+Date: Tue, 20 Nov 2007 12:04:22 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071120170422.GA7211@c2.user-mode-linux.org>
+References: <200711192009419379282@163.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200711192009419379282@163.com>
+Subject: Re: [uml-devel] about skas
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,98 +26,27 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
+To: =?utf-8?B?5p2O5oWn6Zy4?= <magazine.lihuiba@163.com>
+Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---------------060908050509030109010902
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-Dear UML developpers and users,
-
-The attached patch against Linux 2.6.22.9 fixes an issue with
-emulating the utimes() and futimes() system calls, that used to cause
-- -EINVAL to be returned from such.
-
-Regards,
-
-- --
-<< Tout n'y est pas parfait, mais on y honore certainement les
-jardiniers >>
-
-            Dominique Quatravaux <dominique@quatravaux.org>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iQCVAwUBR0L0CvTYH7KfeIIFAQJYuAP/a6gUhIS8rTd6daU55XZa+j4B7cnGFxvX
-lVXUZYzznsgWP77TZBDkhiisBJPiUJ67Lvnsaq883xjebOteaZ6QjxRMszV7N16o
-WOxq9Qu0+bLZjiYuQWuGvw/4j2NJ6BSO9dA+8Lu6siSIxuH8FgNvPnZgXXV0npNg
-KgAzwvEmmDE=
-=yC7D
------END PGP SIGNATURE-----
-
-
---------------060908050509030109010902
-Content-Type: text/x-patch;
- name="UML-usec-nsec.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="UML-usec-nsec.diff"
-
-diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
---- a/fs/hostfs/hostfs_user.c
-+++ b/fs/hostfs/hostfs_user.c
-@@ -262,17 +262,17 @@ int set_attr(const char *file, struct ho
- 			return err;
- 
- 		times[0].tv_sec = atime_ts.tv_sec;
--		times[0].tv_usec = atime_ts.tv_nsec * 1000;
-+		times[0].tv_usec = atime_ts.tv_nsec / 1000;
- 		times[1].tv_sec = mtime_ts.tv_sec;
--		times[1].tv_usec = mtime_ts.tv_nsec * 1000;
-+		times[1].tv_usec = mtime_ts.tv_nsec / 1000;
- 
- 		if (attrs->ia_valid & HOSTFS_ATTR_ATIME_SET) {
- 			times[0].tv_sec = attrs->ia_atime.tv_sec;
--			times[0].tv_usec = attrs->ia_atime.tv_nsec * 1000;
-+			times[0].tv_usec = attrs->ia_atime.tv_nsec / 1000;
- 		}
- 		if (attrs->ia_valid & HOSTFS_ATTR_MTIME_SET) {
- 			times[1].tv_sec = attrs->ia_mtime.tv_sec;
--			times[1].tv_usec = attrs->ia_mtime.tv_nsec * 1000;
-+			times[1].tv_usec = attrs->ia_mtime.tv_nsec / 1000;
- 		}
- 
- 		if (fd >= 0) {
-
---------------060908050509030109010902
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2005.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
---------------060908050509030109010902
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---------------060908050509030109010902--
-
-
+T24gTW9uLCBOb3YgMTksIDIwMDcgYXQgMDg6MDk6NDJQTSArMDgwMCwK5p2O5oWn6Zy4IHdyb3Rl
+OiAKPiBIZWxsbywgSSdtIG5ldyB0byBVTUwsIGFuZCBJJ20gdmVyeSBpbnRlcmVzdGVkIGluIHRo
+ZSBpZGVhIHRoYXQKPiBhZGRyZXNzIHNwYWNlIGJlIGNyZWF0ZWQgYW5kIG1hbmlwdWxhdGVkIChz
+a2FzKS4gCj4gU28sIGlzIHRoZXJlIGFueSBkZXRhaWxlZCBtYXRlcmlhbCBvbiB0aGF0IGlkZWE/
+IAo+IE9yLCBjb3VsZCB5b3UgZ2l2ZSBtZSBzb21lIGd1aWRhbmNlIGZvciByZWFkaW5nIHRoZSBz
+b3VyY2UgY29kZT8KClRoZXJlIGlzIHJlYWxseSBvbmx5IHRoZSBzb3VyY2UgY29kZS4KCkknZCBy
+ZWNvbW1lbmQgcmVhZGluZyBpdCwgYW5kIGlmIHRoZXJlJ3Mgc29tZXRoaW5nIHlvdSBkb24ndAp1
+bmRlcnN0YW5kLCBhc2sgYWJvdXQgaXQgaGVyZS4KCgkJCQlKZWZmCgotLSAKV29yayBlbWFpbCAt
+IGpkaWtlIGF0IGxpbnV4IGRvdCBpbnRlbCBkb3QgY29tCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMg
+U0YubmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieTogTWljcm9zb2Z0CkRlZnkgYWxsIGNoYWxsZW5n
+ZXMuIE1pY3Jvc29mdChSKSBWaXN1YWwgU3R1ZGlvIDIwMDUuCmh0dHA6Ly9jbGsuYXRkbXQuY29t
+L01SVC9nby92c2UwMTIwMDAwMDcwbXJ0L2RpcmVjdC8wMS8KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcg
+bGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
+bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZl
+bAo=
