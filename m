@@ -2,21 +2,28 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IvDKo-0003ln-20 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Nov 2007 06:47:18 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1IvGU2-0002ZZ-KR for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Nov 2007 10:09:02 -0800
+Received: from fxip-0047f.externet.hu ([88.209.222.127]
+	helo=dorka.pomaz.szeredi.hu)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IvDKm-000635-J2
+	(Exim 4.44) id 1IvGU0-0005Aw-Uo
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Nov 2007 06:47:18 -0800
-Date: Thu, 22 Nov 2007 09:47:13 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071122144713.GC4813@c2.user-mode-linux.org>
-References: <474575F8.3070400@gmail.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <474575F8.3070400@gmail.com>
-Subject: Re: [uml-devel] uml git tree
+	Thu, 22 Nov 2007 10:09:02 -0800
+In-reply-to: <20071116170630.GA9299@c2.user-mode-linux.org> (message from Jeff
+	Dike on Fri, 16 Nov 2007 12:06:30 -0500)
+References: <E1Is5FL-00078H-00@dorka.pomaz.szeredi.hu>
+	<20071114011002.GA11477@c2.user-mode-linux.org>
+	<E1IsFbA-0007y2-00@dorka.pomaz.szeredi.hu>
+	<20071114142247.GA5848@c2.user-mode-linux.org>
+	<E1IsK83-0008CJ-00@dorka.pomaz.szeredi.hu>
+	<20071114173639.GA7899@c2.user-mode-linux.org>
+	<E1IsPo5-0008RU-00@dorka.pomaz.szeredi.hu>
+	<20071116170630.GA9299@c2.user-mode-linux.org>
+Message-Id: <E1IvGTn-0007cC-7q@dorka.pomaz.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Thu, 22 Nov 2007 19:08:47 +0100
+Subject: Re: [uml-devel] uml doesn't work on 2.6.24-rc2
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,28 +33,25 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Nov 22, 2007 at 01:28:40PM +0100, Jiri Olsa wrote:
-> I'd like to ask if there's any UML git repository.
+> On Wed, Nov 14, 2007 at 10:29:57PM +0100, Miklos Szeredi wrote:
+> > Config attached.
+> 
+> Thanks - this reproduces it for me.
+> 
+> BTW, you can work around this by enabling NO_HZ.
 
-No, I keep track of my patches with quilt.
+Thanks.  My other problem is (probably you are aware) that recent -mm
+kernels don't compile for UML.
 
-> If there isnt, whats the devel process. How often you merge to Linus tree?
-
-I send stuff to -mm for testing.  Bug fixes I request be sent to Linus
-in the current release.  Non-urgent stuff sits in -mm until the next
-merge window.  Patches go to Andrew on a near-daily basis.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Miklos
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
