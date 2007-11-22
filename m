@@ -2,24 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Iutuy-0007G1-PF for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Nov 2007 10:03:20 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Iutuw-0007jl-Sg
+	id 1Iv7lx-0001Cv-Sn for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Nov 2007 00:50:58 -0800
+Received: from ug-out-1314.google.com ([66.249.92.170])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Iv7lv-0001dC-NF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 Nov 2007 10:03:20 -0800
-Date: Wed, 21 Nov 2007 13:03:09 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071121180309.GA7312@c2.user-mode-linux.org>
-References: <4742F40B.1030508@quatravaux.org>
-	<20071120170726.GC7211@c2.user-mode-linux.org>
-	<47440E58.5060008@quatravaux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <47440E58.5060008@quatravaux.org>
-Subject: Re: [uml-devel] [uml-user] [PATCH] Fixed hostfs tv_usec / tv_nsec
-	conversion in 2.6.22.9
+	Thu, 22 Nov 2007 00:50:57 -0800
+Received: by ug-out-1314.google.com with SMTP id m2so288725uge
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 22 Nov 2007 00:50:53 -0800 (PST)
+Message-ID: <474542EA.9080608@gmail.com>
+Date: Thu, 22 Nov 2007 09:50:50 +0100
+From: Jiri Olsa <olsajiri@gmail.com>
+MIME-Version: 1.0
+Subject: [uml-devel] [PATCH] UML : adding X86_32 config to UML's Kconfig
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,21 +29,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Dominique Quatravaux <dominique@quatravaux.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, jdike@karaya.com
+Cc: user-mode-linux-user@lists.sourceforge.net
 
-On Wed, Nov 21, 2007 at 11:54:16AM +0100, Dominique Quatravaux wrote:
-> Sure thing, although I was not planning on asserting copyright on a
-> grand total of 4 slashes...
+Hi,
 
-It's the thought that counts :-)
+I noticed UM config is not working properly for CPU selection. 
+I bisected following commit as a source:
 
-Thanks.
+commit 1032c0ba9da5c5b53173ad2dcf8b2a2da78f8b17
+Author: Sam Ravnborg <sam@ravnborg.org>
+Date:   Tue Nov 6 21:35:08 2007 +0100
 
-				Jeff
+    x86: arch/x86/Kconfig.cpu unification
+    
+    Move all CPU definitions to Kconfig.cpu
+    Always define X86_MINIMUM_CPU_FAMILY and do the
+    obvious code cleanup in boot/cpucheck.c
+    
+    Comments from: Adrian Bunk <bunk@kernel.org> incorporated.
+    
+    Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+    Cc: Adrian Bunk <bunk@kernel.org>
+    Cc: Brian Gerst <bgerst@didntduck.org>
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: Ingo Molnar <mingo@redhat.com>
+    Cc: "H. Peter Anvin" <hpa@zytor.com>
 
--- 
-Work email - jdike at linux dot intel dot com
+
+snip
+
+
+diff --git a/arch/x86/Kconfig.cpu b/arch/x86/Kconfig.cpu
+index 0e2adad..c301622 100644
+--- a/arch/x86/Kconfig.cpu
++++ b/arch/x86/Kconfig.cpu
+@@ -3,11 +3,12 @@ if !X86_ELAN
+ 
+ choice
+        prompt "Processor family"
+-       default M686
++       default M686 if X86_32
++       default GENERIC_CPU if X86_64
+
+
+snip
+
+
+I'm not sure if this is the right way but following patch is working for me.
+
+Signed-off-by: Jiri Olsa <olsajiri@gmail.com>
+---
+ arch/um/Kconfig |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index dd1689b..3dcc17c 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -68,6 +68,10 @@ config IRQ_RELEASE_METHOD
+ 	bool
+ 	default y
+ 
++config X86_32
++	bool
++	def_bool !64BIT
++
+ menu "UML-specific options"
+ 
+ config STATIC_LINK
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
