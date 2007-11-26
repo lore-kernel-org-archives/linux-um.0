@@ -2,27 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Iwi35-0002OM-LD for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Nov 2007 09:47:11 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Iwi33-00028g-6U
+	id 1IwkrX-0004yS-Tx for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Nov 2007 12:47:28 -0800
+Received: from wa-out-1112.google.com ([209.85.146.180])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IwkrW-0006El-MZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Nov 2007 09:47:11 -0800
-Date: Mon, 26 Nov 2007 12:47:02 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071126174702.GA10143@c2.user-mode-linux.org>
-References: <E1Is5FL-00078H-00@dorka.pomaz.szeredi.hu>
-	<20071114011002.GA11477@c2.user-mode-linux.org>
-	<E1IsFbA-0007y2-00@dorka.pomaz.szeredi.hu>
-	<20071114142247.GA5848@c2.user-mode-linux.org>
-	<E1IsK83-0008CJ-00@dorka.pomaz.szeredi.hu>
-	<20071114173639.GA7899@c2.user-mode-linux.org>
-	<E1IsPo5-0008RU-00@dorka.pomaz.szeredi.hu>
-Mime-Version: 1.0
+	Mon, 26 Nov 2007 12:47:27 -0800
+Received: by wa-out-1112.google.com with SMTP id k22so1011868waf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 26 Nov 2007 12:47:26 -0800 (PST)
+Message-ID: <ea9232d10711261247y6c4a929of3fe88338e2ce659@mail.gmail.com>
+Date: Mon, 26 Nov 2007 21:47:26 +0100
+From: "Karol Swietlicki" <magotari@gmail.com>
+In-Reply-To: <474A9701.4040908@gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <E1IsPo5-0008RU-00@dorka.pomaz.szeredi.hu>
-Subject: Re: [uml-devel] uml doesn't work on 2.6.24-rc2
+References: <474A9701.4040908@gmail.com>
+Subject: Re: [uml-devel] PROC_MM
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,23 +32,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Jeff Dike <jdike@addtoit.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, Nov 14, 2007 at 10:29:57PM +0100, Miklos Szeredi wrote:
-> nanosleep({0, 0}, {0, 0})               = 0
-> gettimeofday({1195075504, 182333}, NULL) = 0
-> setitimer(ITIMER_VIRTUAL, {it_interval={0, 0}, it_value={0, 0}}, {it_interval={0, 0}, it_value={0, 0}}) = 0
-> nanosleep({0, 0}, {0, 0})               = 0
+On 26/11/2007, Jiri Olsa <olsajiri@gmail.com> wrote:
+> Hi,
+>
+> I see some code related to PROC_MM
 
-Can you see if this still happens with rc3-mm1?
+<snip>
 
-I can't reproduce it any more, which gets in the way of debugging it.
+> I did not find PROC_MM config option in the kernel or any other way to get /proc/mm file.
+> Is it just old code pending for removal, or am I missing smth... :)
 
-				Jeff
+There exists a patchset which allows you to run UML in skas3 mode. The
+said mode uses /proc/mm.
+I suppose the bit you are seeing is a small part of that patchset
+which did get to the mainline.
 
--- 
-Work email - jdike at linux dot intel dot com
+Karol Swietlicki
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
