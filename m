@@ -1,22 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Iwbdd-0006DH-Lz for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Nov 2007 02:56:29 -0800
-Received: from zeniv.linux.org.uk ([195.92.253.2])
+	id 1IwiPe-00057V-RF for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Nov 2007 10:10:31 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Iwbdd-0007Tr-9J
+	(Exim 4.44) id 1IwiPd-0005g4-Ax
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Nov 2007 02:56:29 -0800
-Date: Mon, 26 Nov 2007 10:56:19 +0000
-From: Al Viro <viro@ftp.linux.org.uk>
-Message-ID: <20071126105619.GR8181@ftp.linux.org.uk>
-References: <20071119190224.GA7723@c2.user-mode-linux.org>
+	Mon, 26 Nov 2007 10:10:30 -0800
+Date: Mon, 26 Nov 2007 13:10:23 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071126181023.GA10280@c2.user-mode-linux.org>
+References: <E1Is5FL-00078H-00@dorka.pomaz.szeredi.hu>
+	<20071114011002.GA11477@c2.user-mode-linux.org>
+	<E1IsFbA-0007y2-00@dorka.pomaz.szeredi.hu>
+	<20071114142247.GA5848@c2.user-mode-linux.org>
+	<E1IsK83-0008CJ-00@dorka.pomaz.szeredi.hu>
+	<20071114173639.GA7899@c2.user-mode-linux.org>
+	<E1IsPo5-0008RU-00@dorka.pomaz.szeredi.hu>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20071119190224.GA7723@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] Keep UML Kconfig in sync with x86
+In-Reply-To: <E1IsPo5-0008RU-00@dorka.pomaz.szeredi.hu>
+Subject: Re: [uml-devel] uml doesn't work on 2.6.24-rc2
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,57 +36,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>, Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Nov 19, 2007 at 02:02:24PM -0500, Jeff Dike wrote:
-> Fix a 2.6.24-rc3 UML build breakage introduced by commit
-> 1032c0ba9da5c5b53173ad2dcf8b2a2da78f8b17 - it introduces X86_32, with
-> many things which UML needs depending on it.
-> 
-> This patch adds definitions of X86_32 and RWSEM_XCHGADD_ALGORITHM to
-> the UML/i386 Kconfig.
+On Wed, Nov 14, 2007 at 10:29:57PM +0100, Miklos Szeredi wrote:
+> nanosleep({0, 0}, {0, 0})               = 0
+> gettimeofday({1195075504, 182333}, NULL) = 0
+> setitimer(ITIMER_VIRTUAL, {it_interval={0, 0}, it_value={0, 0}}, {it_interval={0, 0}, it_value={0, 0}}) = 0
+> nanosleep({0, 0}, {0, 0})               = 0
 
-That's not enough, unfortunately.  If we go that way, we need to add
-dependencies on !UML for several options.
+nevermind - I had accidentally done a defconfig and turned NO_HZ back
+on.  With you config put back, I can reproduce this again.
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 5fd6688..ddd3a25 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -12,7 +12,7 @@ if CRYPTO_HW
- 
- config CRYPTO_DEV_PADLOCK
- 	tristate "Support for VIA PadLock ACE"
--	depends on X86_32
-+	depends on X86_32 && !UML
- 	select CRYPTO_ALGAPI
- 	help
- 	  Some VIA processors come with an integrated crypto engine
-diff --git a/kernel/Kconfig.instrumentation b/kernel/Kconfig.instrumentation
-index f5f2c76..2ea1e34 100644
---- a/kernel/Kconfig.instrumentation
-+++ b/kernel/Kconfig.instrumentation
-@@ -21,7 +21,7 @@ config PROFILING
- config OPROFILE
- 	tristate "OProfile system profiling (EXPERIMENTAL)"
- 	depends on PROFILING
--	depends on ALPHA || ARM || BLACKFIN || X86_32 || IA64 || M32R || MIPS || PARISC || PPC || S390 || SUPERH || SPARC || X86_64
-+	depends on (ALPHA || ARM || BLACKFIN || X86_32 || IA64 || M32R || MIPS || PARISC || PPC || S390 || SUPERH || SPARC || X86_64) && !UML
- 	help
- 	  OProfile is a profiling system capable of profiling the
- 	  whole system, include the kernel, kernel modules, libraries,
-@@ -32,7 +32,7 @@ config OPROFILE
- config KPROBES
- 	bool "Kprobes"
- 	depends on KALLSYMS && MODULES
--	depends on X86_32 || IA64 || PPC || S390 || SPARC64 || X86_64 || AVR32
-+	depends on (X86_32 || IA64 || PPC || S390 || SPARC64 || X86_64 || AVR32) && !UML
- 	help
- 	  Kprobes allows you to trap at almost any kernel address and
- 	  execute a callback function.  register_kprobe() establishes
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
