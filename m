@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IwiPe-00057V-RF for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Nov 2007 10:10:31 -0800
+	id 1Iwi35-0002OM-LD for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Nov 2007 09:47:11 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IwiPd-0005g4-Ax
+	(Exim 4.44) id 1Iwi33-00028g-6U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Nov 2007 10:10:30 -0800
-Date: Mon, 26 Nov 2007 13:10:23 -0500
+	Mon, 26 Nov 2007 09:47:11 -0800
+Date: Mon, 26 Nov 2007 12:47:02 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071126181023.GA10280@c2.user-mode-linux.org>
+Message-ID: <20071126174702.GA10143@c2.user-mode-linux.org>
 References: <E1Is5FL-00078H-00@dorka.pomaz.szeredi.hu>
 	<20071114011002.GA11477@c2.user-mode-linux.org>
 	<E1IsFbA-0007y2-00@dorka.pomaz.szeredi.hu>
@@ -45,8 +45,9 @@ On Wed, Nov 14, 2007 at 10:29:57PM +0100, Miklos Szeredi wrote:
 > setitimer(ITIMER_VIRTUAL, {it_interval={0, 0}, it_value={0, 0}}, {it_interval={0, 0}, it_value={0, 0}}) = 0
 > nanosleep({0, 0}, {0, 0})               = 0
 
-nevermind - I had accidentally done a defconfig and turned NO_HZ back
-on.  With you config put back, I can reproduce this again.
+Can you see if this still happens with rc3-mm1?
+
+I can't reproduce it any more, which gets in the way of debugging it.
 
 				Jeff
 
