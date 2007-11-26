@@ -1,18 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IwQAk-0003s9-0v for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Nov 2007 14:41:59 -0800
-Received: from websiteout12.httpserveur.net ([67.15.80.77])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1IwQAi-0003NK-MS
+	id 1IwacQ-00084u-4s for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Nov 2007 01:51:10 -0800
+Received: from ug-out-1314.google.com ([66.249.92.173])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IwacO-0006oj-H7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 25 Nov 2007 14:41:54 -0800
-Message-ID: <4749FA27.6010102@club-internet.fr>
-Date: Sun, 25 Nov 2007 23:41:43 +0100
-From: clowncoder <vincent-perrier@club-internet.fr>
+	Mon, 26 Nov 2007 01:51:10 -0800
+Received: by ug-out-1314.google.com with SMTP id m2so924694uge
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 26 Nov 2007 01:51:06 -0800 (PST)
+Message-ID: <474A9701.4040908@gmail.com>
+Date: Mon, 26 Nov 2007 10:50:57 +0100
+From: Jiri Olsa <olsajiri@gmail.com>
 MIME-Version: 1.0
-Subject: [uml-devel] uml_clownix: new network utility
+Subject: [uml-devel] PROC_MM
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,20 +29,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Hello,
-A complete solution, for networking with uml is now availlable at 
-http://clownix.net
-it consists of a 200Mega compressed file system, the uml kernel 
-2.6.23.8, and
-a new networking layer called uml_clownix.
-This platforme was made to test ipv6 mobility, the links between uml 
-machines can be
-broken and set back in operation.
-The file-system is equiped with tshark and has all the latest softwares
-(gcc-4.2.2, glibc-2.7 ...)
-Regards
+Hi,
+
+I see some code related to PROC_MM 
+
+
+static inline void check_skas3_proc_mm(void)
+{
+        non_fatal("  - /proc/mm...");
+        if (access("/proc/mm", W_OK) < 0) {
+                proc_mm = 0;  
+                perror("not found");
+        }   
+        else if (!proc_mm)
+                non_fatal("found but disabled on command line\n");
+        else non_fatal("found\n");
+}
+
+
+I did not find PROC_MM config option in the kernel or any other way to get /proc/mm file.
+Is it just old code pending for removal, or am I missing smth... :)
+
+thanks,
+Jirka
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
