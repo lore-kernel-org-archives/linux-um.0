@@ -2,23 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ix73t-0002sb-9j for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Nov 2007 12:29:41 -0800
-Received: from fxip-0047f.externet.hu ([88.209.222.127]
-	helo=dorka.pomaz.szeredi.hu)
+	id 1Ix9Qh-0002Gh-EX for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Nov 2007 15:01:23 -0800
+Received: from smtp2.linux-foundation.org ([207.189.120.14])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ix73r-0002Co-BS
+	(Exim 4.44) id 1Ix9Qg-0001jW-0v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Nov 2007 12:29:41 -0800
-In-reply-to: <20071127201105.GA9332@c2.user-mode-linux.org> (message from Jeff
-	Dike on Tue, 27 Nov 2007 15:11:05 -0500)
-References: <E1Ix3Du-0002aL-Ac@dorka.pomaz.szeredi.hu>
-	<E1Ix58o-0004J5-Mz@dorka.pomaz.szeredi.hu>
-	<20071127201105.GA9332@c2.user-mode-linux.org>
-Message-Id: <E1Ix73b-0004aI-Px@dorka.pomaz.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Tue, 27 Nov 2007 21:29:23 +0100
-Subject: Re: [uml-devel] leak in do_ubd_request
+	Tue, 27 Nov 2007 15:01:23 -0800
+Date: Tue, 27 Nov 2007 15:01:08 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20071127150108.fb94aaca.akpm@linux-foundation.org>
+In-Reply-To: <20071127200347.GA8847@c2.user-mode-linux.org>
+References: <20071127200347.GA8847@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH] UML - Fix !NO_HZ busy-loop
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,30 +25,120 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, miklos@szeredi.hu
 
-> On Tue, Nov 27, 2007 at 07:26:38PM +0100, Miklos Szeredi wrote:
-> > +				kfree(io_req);
+On Tue, 27 Nov 2007 15:03:47 -0500
+Jeff Dike <jdike@addtoit.com> wrote:
+
+> [ This one needs to get into 2.6.24 ]
 > 
-> Whoops, nice catch.
+> With NO_HZ disabled, the UML idle loop effectively becomes a busy
+> loop, as it will sleep for no time.
 > 
-> Can you sign that off for me?
+> The cause was forgetting to restart the tick after waking up from
+> sleep.  It was disabled before sleeping, and the remaining time used
+> as the interval to sleep.  So, the tick needs to be restarted when
+> nanosleep finishes.
+> 
+> This is done by introducing after_sleep_interval, which is empty in
+> the NO_HZ case, but which sets the tick starting in the !NO_HZ case.
+> 
+> Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+> ---
+>  arch/um/os-Linux/time.c |   54 +++++++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 51 insertions(+), 3 deletions(-)
+> 
+> Index: linux-2.6.22/arch/um/os-Linux/time.c
+> ===================================================================
+> --- linux-2.6.22.orig/arch/um/os-Linux/time.c	2007-11-14 10:33:29.000000000 -0500
+> +++ linux-2.6.22/arch/um/os-Linux/time.c	2007-11-26 15:50:46.000000000 -0500
+> @@ -59,7 +59,7 @@ long long disable_timer(void)
+>  {
+>  	struct itimerval time = ((struct itimerval) { { 0, 0 }, { 0, 0 } });
+>  
+> -	if(setitimer(ITIMER_VIRTUAL, &time, &time) < 0)
+> +	if (setitimer(ITIMER_VIRTUAL, &time, &time) < 0)
+>  		printk(UM_KERN_ERR "disable_timer - setitimer failed, "
+>  		       "errno = %d\n", errno);
+>  
+> @@ -74,13 +74,61 @@ long long os_nsecs(void)
+>  	return timeval_to_ns(&tv);
+>  }
+>  
+> +#ifdef UML_CONFIG_NO_HZ
 
-Sure.  The patch works for me, but please check that it also makes
-sense.
+Nothing ever defines this?
 
-Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+> +static int after_sleep_interval(struct timespec *ts)
+> +{
+> +}
+> +#else
+> +static inline long long timespec_to_us(const struct timespec *ts)
+> +{
+> +	return ((long long) ts->tv_sec * UM_USEC_PER_SEC) +
+> +		ts->tv_nsec / UM_NSEC_PER_USEC;
+> +}
+> +
+> +static int after_sleep_interval(struct timespec *ts)
+> +{
+> +	int usec = UM_USEC_PER_SEC / UM_HZ;
+> +	long long start_usecs = timespec_to_us(ts);
+> +	struct timeval tv;
+> +	struct itimerval interval;
+> +
+> +	/*
+> +	 * It seems that rounding can increase the value returned from
+> +	 * setitimer to larger than the one passed in.  Over time,
+> +	 * this will cause the remaining time to be greater than the
+> +	 * tick interval.  If this happens, then just reduce the first
+> +	 * tick to the interval value.
+> +	 */
+> +	if (start_usecs > usec)
+> +		start_usecs = usec;
+> +	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
+> +				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
+> +	interval = ((struct itimerval) { { 0, usec }, tv });
+> +
+> +	if (setitimer(ITIMER_VIRTUAL, &interval, NULL) == -1)
+> +		return -errno;
+> +
+> +	return 0;
+> +}
+> +#endif
+> +
+>  extern void alarm_handler(int sig, struct sigcontext *sc);
+>  
+>  void idle_sleep(unsigned long long nsecs)
+>  {
+> -	struct timespec ts = { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
+> -			       .tv_nsec = nsecs % UM_NSEC_PER_SEC };
+> +	struct timespec ts;
+> +
+> +	/*
+> +	 * nsecs can come in as zero, in which case, this starts a
+> +	 * busy loop.  To prevent this, reset nsecs to the tick
+> +	 * interval if it is zero.
+> +	 */
+> +	if (nsecs == 0)
+> +		nsecs = UM_NSEC_PER_SEC / UM_HZ;
+> +	ts = ((struct timespec) { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
+> +				  .tv_nsec	= nsecs % UM_NSEC_PER_SEC });
+>  
+>  	if (nanosleep(&ts, &ts) == 0)
+>  		alarm_handler(SIGVTALRM, NULL);
+> +	after_sleep_interval(&ts);
+>  }
 
 -------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2005.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+SF.Net email is sponsored by: The Future of Linux Business White Paper
+from Novell.  From the desktop to the data center, Linux is going
+mainstream.  Let it simplify your IT future.
+http://altfarm.mediaplex.com/ad/ck/8857-50307-18918-4
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
