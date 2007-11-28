@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IxSDM-0001QZ-Ko for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 11:04:56 -0800
+	id 1IxSDD-0001Q0-Ty for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Nov 2007 11:04:44 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IxSDK-000398-Oo
+	(Exim 4.44) id 1IxSDC-00034N-Ur
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 11:04:52 -0800
-Date: Wed, 28 Nov 2007 14:04:39 -0500
+	Wed, 28 Nov 2007 11:04:43 -0800
+Date: Wed, 28 Nov 2007 14:04:38 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071128190439.GA8303@c2.user-mode-linux.org>
+Message-ID: <20071128190438.GA8298@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/4] UML - Add !UML dependencies
+Subject: [uml-devel] [PATCH 1/4] UML - Keep UML Kconfig in sync with x86
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,58 +29,38 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+Fix a UML build breakage introduced by commit
+1032c0ba9da5c5b53173ad2dcf8b2a2da78f8b17 - it introduces X86_32, with
+many things which UML needs depending on it.
 
-That's not enough, unfortunately.  If we go that way, we need to add
-dependencies on !UML for several options.
+This patch adds definitions of X86_32 and RWSEM_XCHGADD_ALGORITHM to
+the UML/i386 Kconfig.
 
-[ jdike - "not enough" refers to my patch which enables X86_32 and
-RWSEM_XCHGADD_ALGORITHM in UML's Kconfig.i386 ]
-
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- drivers/crypto/Kconfig         |    2 +-
- kernel/Kconfig.instrumentation |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/um/Kconfig.i386 |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Index: linux-2.6.22/drivers/crypto/Kconfig
+Index: linux-2.6/arch/um/Kconfig.i386
 ===================================================================
---- linux-2.6.22.orig/drivers/crypto/Kconfig	2007-11-21 11:49:37.000000000 -0500
-+++ linux-2.6.22/drivers/crypto/Kconfig	2007-11-26 11:54:18.000000000 -0500
-@@ -12,7 +12,7 @@ if CRYPTO_HW
+--- linux-2.6.orig/arch/um/Kconfig.i386	2007-11-19 12:49:30.000000000 -0500
++++ linux-2.6/arch/um/Kconfig.i386	2007-11-19 13:56:37.000000000 -0500
+@@ -8,6 +8,13 @@ config UML_X86
+ 	bool
+ 	default y
  
- config CRYPTO_DEV_PADLOCK
- 	tristate "Support for VIA PadLock ACE"
--	depends on X86_32
-+	depends on X86_32 && !UML
- 	select CRYPTO_ALGAPI
- 	help
- 	  Some VIA processors come with an integrated crypto engine
-Index: linux-2.6.22/kernel/Kconfig.instrumentation
-===================================================================
---- linux-2.6.22.orig/kernel/Kconfig.instrumentation	2007-11-14 10:33:42.000000000 -0500
-+++ linux-2.6.22/kernel/Kconfig.instrumentation	2007-11-26 11:54:18.000000000 -0500
-@@ -21,7 +21,7 @@ config PROFILING
- config OPROFILE
- 	tristate "OProfile system profiling (EXPERIMENTAL)"
- 	depends on PROFILING
--	depends on ALPHA || ARM || BLACKFIN || X86_32 || IA64 || M32R || MIPS || PARISC || PPC || S390 || SUPERH || SPARC || X86_64
-+	depends on (ALPHA || ARM || BLACKFIN || X86_32 || IA64 || M32R || MIPS || PARISC || PPC || S390 || SUPERH || SPARC || X86_64) && !UML
- 	help
- 	  OProfile is a profiling system capable of profiling the
- 	  whole system, include the kernel, kernel modules, libraries,
-@@ -32,7 +32,7 @@ config OPROFILE
- config KPROBES
- 	bool "Kprobes"
- 	depends on KALLSYMS && MODULES
--	depends on X86_32 || IA64 || PPC || S390 || SPARC64 || X86_64 || AVR32
-+	depends on (X86_32 || IA64 || PPC || S390 || SPARC64 || X86_64 || AVR32) && !UML
- 	help
- 	  Kprobes allows you to trap at almost any kernel address and
- 	  execute a callback function.  register_kprobe() establishes
++config X86_32
++       bool
++       default y
++
++config RWSEM_XCHGADD_ALGORITHM
++	def_bool y
++
+ config 64BIT
+ 	bool
+ 	default n
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
