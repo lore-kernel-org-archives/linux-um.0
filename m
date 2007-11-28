@@ -1,23 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IxAUq-0000fb-2F for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Nov 2007 16:09:44 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1IxJN6-0005cs-VG for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Nov 2007 01:38:21 -0800
+Received: from fxip-0047f.externet.hu ([88.209.222.127]
+	helo=dorka.pomaz.szeredi.hu)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IxAUo-0002XC-IF
+	(Exim 4.44) id 1IxJN5-0005P0-BL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Nov 2007 16:09:43 -0800
-Date: Tue, 27 Nov 2007 19:09:21 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071128000921.GA11012@c2.user-mode-linux.org>
-References: <20071127200347.GA8847@c2.user-mode-linux.org>
-	<20071127150108.fb94aaca.akpm@linux-foundation.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20071127150108.fb94aaca.akpm@linux-foundation.org>
-Subject: Re: [uml-devel] [PATCH] UML - Fix !NO_HZ busy-loop
+	Wed, 28 Nov 2007 01:38:20 -0800
+In-reply-to: <20071127213801.4def3c23.akpm@linux-foundation.org> (message from
+	Andrew Morton on Tue, 27 Nov 2007 21:38:01 -0800)
+References: <E1Ix3Du-0002aL-Ac@dorka.pomaz.szeredi.hu>
+	<E1Ix58o-0004J5-Mz@dorka.pomaz.szeredi.hu>
+	<20071127201105.GA9332@c2.user-mode-linux.org>
+	<E1Ix73b-0004aI-Px@dorka.pomaz.szeredi.hu>
+	<20071127222020.GA10096@c2.user-mode-linux.org>
+	<20071127213801.4def3c23.akpm@linux-foundation.org>
+Message-Id: <E1IxJMf-00067v-2r@dorka.pomaz.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Wed, 28 Nov 2007 10:37:53 +0100
+Subject: Re: [uml-devel] leak in do_ubd_request
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,28 +31,31 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, miklos@szeredi.hu
+To: akpm@linux-foundation.org
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Nov 27, 2007 at 03:01:08PM -0800, Andrew Morton wrote:
-> > +#ifdef UML_CONFIG_NO_HZ
+> On Tue, 27 Nov 2007 17:20:20 -0500 Jeff Dike <jdike@addtoit.com> wrote:
 > 
-> Nothing ever defines this?
+> > On Tue, Nov 27, 2007 at 09:29:23PM +0100, Miklos Szeredi wrote:
+> > > Sure.  The patch works for me, but please check that it also makes
+> > > sense.
+> > 
+> > I did - it's a straight-forward leak and fix.
+> > 
+> 
+> Do we have any idea which patch this patch fixes?
 
-$ grep HZ obj/arch/um/include/uml-config.h 
-#define UML_CONFIG_NO_HZ 1
+I seems like a mainline bug, and has been present for some time
+(forever?).
 
-uml-config.h is auto-generated to provide the config definitions to the
-userspace side of UML.
+I have no idea why this wasn't noticed earlier.
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Miklos
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
