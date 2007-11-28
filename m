@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IxMlO-00023z-QN for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 05:15:39 -0800
+	id 1IxMlf-00024U-0k for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Nov 2007 05:15:58 -0800
 Received: from mx3.mail.elte.hu ([157.181.1.138])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IxMlN-0002tB-Cu
+	(Exim 4.44) id 1IxMld-0002xb-Dr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 05:15:38 -0800
-Date: Wed, 28 Nov 2007 14:15:18 +0100
+	Wed, 28 Nov 2007 05:15:54 -0800
+Date: Wed, 28 Nov 2007 14:15:41 +0100
 From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20071128131518.GA3193@elte.hu>
+Message-ID: <20071128131541.GA4467@elte.hu>
 References: <E1IxMK0-0006ae-2s@dorka.pomaz.szeredi.hu>
 	<20071128125030.GB21791@elte.hu>
 	<E1IxMfh-0006fN-HQ@dorka.pomaz.szeredi.hu>
+	<20071128131518.GA3193@elte.hu>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <E1IxMfh-0006fN-HQ@dorka.pomaz.szeredi.hu>
+In-Reply-To: <20071128131518.GA3193@elte.hu>
 Subject: Re: [uml-devel] -rt doesn't compile for UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -36,24 +37,20 @@ To: Miklos Szeredi <miklos@szeredi.hu>
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-* Miklos Szeredi <miklos@szeredi.hu> wrote:
+* Ingo Molnar <mingo@elte.hu> wrote:
 
-> > so there's no forced need to use -rt.
+> >   CC      kernel/latency_trace.o
+> > kernel/latency_trace.c:28:21: error: asm/rtc.h: No such file or directory
+> > kernel/latency_trace.c:63:3: error: #error Implement cycles_to_usecs.
+> > kernel/latency_trace.c: In function ???____trace???:
+> > kernel/latency_trace.c:658: error: implicit declaration of function ???irqs_disabled_flags???
+> > make[1]: *** [kernel/latency_trace.o] Error 1
 > 
-> Ah, forgotten about that.
-> 
-> Unfortunately the latency tracer patch doesn't compile either:
-> 
->   CC      kernel/latency_trace.o
-> kernel/latency_trace.c:28:21: error: asm/rtc.h: No such file or directory
-> kernel/latency_trace.c:63:3: error: #error Implement cycles_to_usecs.
-> kernel/latency_trace.c: In function ???____trace???:
-> kernel/latency_trace.c:658: error: implicit declaration of function ???irqs_disabled_flags???
-> make[1]: *** [kernel/latency_trace.o] Error 1
+> hm, just fill those functions in - should be fairly trivial and we can 
+> carry those patches in -rt. (I'd suggest to create an empty 
+> asm-um/rtc.h stub as well, for consistency.)
 
-hm, just fill those functions in - should be fairly trivial and we can 
-carry those patches in -rt. (I'd suggest to create an empty asm-um/rtc.h 
-stub as well, for consistency.)
+trivial == 'far easier than porting -rt to UML' :-)
 
 	Ingo
 
