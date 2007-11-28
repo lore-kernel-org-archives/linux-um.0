@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IxSDD-0001Q0-Ty for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 11:04:44 -0800
+	id 1IxSDF-0001Q7-JM for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Nov 2007 11:04:45 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IxSDC-00034N-Ur
+	(Exim 4.44) id 1IxSDC-000059-Uh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 11:04:43 -0800
-Date: Wed, 28 Nov 2007 14:04:38 -0500
+	Wed, 28 Nov 2007 11:04:45 -0800
+Date: Wed, 28 Nov 2007 14:04:40 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071128190438.GA8298@c2.user-mode-linux.org>
+Message-ID: <20071128190440.GA8313@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/4] UML - Keep UML Kconfig in sync with x86
+Subject: [uml-devel] [PATCH 4/4] UML - Work around host tcsetattr bug
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,36 +31,55 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Fix a UML build breakage introduced by commit
-1032c0ba9da5c5b53173ad2dcf8b2a2da78f8b17 - it introduces X86_32, with
-many things which UML needs depending on it.
+Under the conditions that UML uses it, tcgetattr is guaranteed to
+return -EINTR when the console is attached to /dev/ptmx, making
+generic_console_write hang because it loops, calling tcgetattr until
+it succeeds.  This is a host bug - see
+http://marc.info/?l=linux-kernel&m=119618990807182&w=2 for the
+details.
 
-This patch adds definitions of X86_32 and RWSEM_XCHGADD_ALGORITHM to
-the UML/i386 Kconfig.
+This patch works around it by blocking SIGIO while the terminal
+attributes are being fiddled.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/Kconfig.i386 |    7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/um/drivers/chan_user.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Index: linux-2.6/arch/um/Kconfig.i386
+Index: linux-2.6.22/arch/um/drivers/chan_user.c
 ===================================================================
---- linux-2.6.orig/arch/um/Kconfig.i386	2007-11-19 12:49:30.000000000 -0500
-+++ linux-2.6/arch/um/Kconfig.i386	2007-11-19 13:56:37.000000000 -0500
-@@ -8,6 +8,13 @@ config UML_X86
- 	bool
- 	default y
+--- linux-2.6.22.orig/arch/um/drivers/chan_user.c	2007-11-21 11:43:50.000000000 -0500
++++ linux-2.6.22/arch/um/drivers/chan_user.c	2007-11-27 14:03:10.000000000 -0500
+@@ -74,10 +74,16 @@ void generic_free(void *data)
  
-+config X86_32
-+       bool
-+       default y
+ int generic_console_write(int fd, const char *buf, int n)
+ {
++	sigset_t old, no_sigio;
+ 	struct termios save, new;
+ 	int err;
+ 
+ 	if (isatty(fd)) {
++		sigemptyset(&no_sigio);
++		sigaddset(&no_sigio, SIGIO);
++		if (sigprocmask(SIG_BLOCK, &no_sigio, &old))
++			goto error;
 +
-+config RWSEM_XCHGADD_ALGORITHM
-+	def_bool y
+ 		CATCH_EINTR(err = tcgetattr(fd, &save));
+ 		if (err)
+ 			goto error;
+@@ -97,8 +103,11 @@ int generic_console_write(int fd, const 
+ 	 * Restore raw mode, in any case; we *must* ignore any error apart
+ 	 * EINTR, except for debug.
+ 	 */
+-	if (isatty(fd))
++	if (isatty(fd)) {
+ 		CATCH_EINTR(tcsetattr(fd, TCSAFLUSH, &save));
++		sigprocmask(SIG_SETMASK, &old, NULL);
++	}
 +
- config 64BIT
- 	bool
- 	default n
+ 	return err;
+ error:
+ 	return -errno;
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
