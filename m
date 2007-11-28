@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IxOVA-0005H4-3W for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 07:07:00 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1IxOwm-0008NV-SC for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Nov 2007 07:35:33 -0800
+Received: from fxip-0047f.externet.hu ([88.209.222.127]
+	helo=dorka.pomaz.szeredi.hu)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IxOV8-0002pZ-Ft
+	(Exim 4.44) id 1IxOwk-0007IH-D7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 07:06:59 -0800
-Date: Wed, 28 Nov 2007 10:06:37 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071128150637.GA5518@c2.user-mode-linux.org>
+	Wed, 28 Nov 2007 07:35:32 -0800
+In-reply-to: <20071128150637.GA5518@c2.user-mode-linux.org> (message from Jeff
+	Dike on Wed, 28 Nov 2007 10:06:37 -0500)
 References: <E1IxMK0-0006ae-2s@dorka.pomaz.szeredi.hu>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <E1IxMK0-0006ae-2s@dorka.pomaz.szeredi.hu>
+	<20071128150637.GA5518@c2.user-mode-linux.org>
+Message-Id: <E1IxOwS-000752-HF@dorka.pomaz.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Wed, 28 Nov 2007 16:35:12 +0100
 Subject: Re: [uml-devel] -rt doesn't compile for UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,27 +27,35 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Miklos Szeredi <miklos@szeredi.hu>
+To: jdike@addtoit.com
 Cc: mingo@elte.hu, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Nov 28, 2007 at 01:47:20PM +0100, Miklos Szeredi wrote:
-> When writing a big file to a ubd disk, everything in uml slows down to
-> a crawl, even though CPU usage is minimal.
+> > When writing a big file to a ubd disk, everything in uml slows down to
+> > a crawl, even though CPU usage is minimal.
+> 
+> What exactly is your test case?
 
-What exactly is your test case?
+Something like:
 
-I have some patches which theoretically should help I/O performance
-which I've been sitting on because I can't find a case where they
-help.
+  dd if=/host/tmp/bigfile of=/tmp/bigfile bs=1048576 count=100
 
-			Jeff
+and run 'top' or 'watch something' in another terminal, which
+sometimes completely stops updating during the write.
 
--- 
-Work email - jdike at linux dot intel dot com
+> I have some patches which theoretically should help I/O performance
+> which I've been sitting on because I can't find a case where they
+> help.
+
+It's not I/O performance I'm worried about, but scheduling latencies.
+CPU use inside and outside the UML is minimal, so I can't see where
+this slowdown comes from.
+
+Miklos
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
