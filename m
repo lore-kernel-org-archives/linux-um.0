@@ -2,22 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IxOWz-0005UA-2M for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 07:08:53 -0800
+	id 1IxOVA-0005H4-3W for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 28 Nov 2007 07:07:00 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IxOWy-0003Re-HB
+	(Exim 4.44) id 1IxOV8-0002pZ-Ft
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Nov 2007 07:08:52 -0800
-Date: Wed, 28 Nov 2007 10:08:40 -0500
+	Wed, 28 Nov 2007 07:06:59 -0800
+Date: Wed, 28 Nov 2007 10:06:37 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071128150840.GB5518@c2.user-mode-linux.org>
+Message-ID: <20071128150637.GA5518@c2.user-mode-linux.org>
 References: <E1IxMK0-0006ae-2s@dorka.pomaz.szeredi.hu>
-	<20071128125030.GB21791@elte.hu>
-	<E1IxMfh-0006fN-HQ@dorka.pomaz.szeredi.hu>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <E1IxMfh-0006fN-HQ@dorka.pomaz.szeredi.hu>
+In-Reply-To: <E1IxMK0-0006ae-2s@dorka.pomaz.szeredi.hu>
 Subject: Re: [uml-devel] -rt doesn't compile for UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -35,14 +33,17 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Miklos Szeredi <miklos@szeredi.hu>
 Cc: mingo@elte.hu, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Nov 28, 2007 at 02:09:45PM +0100, Miklos Szeredi wrote:
-> kernel/latency_trace.c:28:21: error: asm/rtc.h: No such file or directory
+On Wed, Nov 28, 2007 at 01:47:20PM +0100, Miklos Szeredi wrote:
+> When writing a big file to a ubd disk, everything in uml slows down to
+> a crawl, even though CPU usage is minimal.
 
-For things like this, look at the host's asm/foo.h and see if it's
-usable in UML (and contains things that you need).  If it is, just
-make a asm-um/foo.h which just includes "asm/arch/foo.h".
+What exactly is your test case?
 
-				Jeff
+I have some patches which theoretically should help I/O performance
+which I've been sitting on because I can't find a case where they
+help.
+
+			Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
