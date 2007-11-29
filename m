@@ -2,21 +2,28 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ixlf1-0005ZX-NN for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Nov 2007 07:50:43 -0800
-Received: from nz-out-0506.google.com ([64.233.162.229])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ixlf0-0002oc-Eh
+	id 1IxlvP-0007bF-Th for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Nov 2007 08:07:40 -0800
+Received: from fxip-0047f.externet.hu ([88.209.222.127]
+	helo=dorka.pomaz.szeredi.hu)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1IxlvP-0001in-3c
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Nov 2007 07:50:43 -0800
-Received: by nz-out-0506.google.com with SMTP id f1so5681639nzc
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 29 Nov 2007 07:50:42 -0800 (PST)
-Message-ID: <ea9232d10711290750u5368e696qeb6c41a6da64637a@mail.gmail.com>
-Date: Thu, 29 Nov 2007 16:50:41 +0100
-From: "Karol Swietlicki" <magotari@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] uml: Remove an unused variable from mconsole_stack
+	Thu, 29 Nov 2007 08:07:39 -0800
+In-reply-to: <20071129105744.GI10577@elte.hu> (message from Ingo Molnar on
+	Thu, 29 Nov 2007 11:57:44 +0100)
+References: <E1IxMK0-0006ae-2s@dorka.pomaz.szeredi.hu>
+	<20071128150637.GA5518@c2.user-mode-linux.org>
+	<E1IxOwS-000752-HF@dorka.pomaz.szeredi.hu>
+	<20071128182935.GA8048@c2.user-mode-linux.org>
+	<E1IxRv7-0007e8-Dq@dorka.pomaz.szeredi.hu>
+	<E1IxgUe-00011b-Sl@dorka.pomaz.szeredi.hu>
+	<20071129105744.GI10577@elte.hu>
+Message-Id: <E1Ixlv9-0001rb-U7@dorka.pomaz.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Thu, 29 Nov 2007 17:07:23 +0100
+Subject: Re: [uml-devel] scheduling anomaly on uml (was: -rt doesn't compile
+	for UML)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,46 +33,55 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: mingo@elte.hu
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This patch removes one more unused variable from the uml code.
-This time the variable is removed from mconsole_stack.
+> > I can't say I'm understading these traces very well, but here's a 
+> > snippet that looks a bit strange.  I'm running 'while true; do date; 
+> > done' in parallel with the dd.
+> > 
+> > For some time it is doing 100% CPU as expected, then it goes into a 
+> > second or so of mosty idle (afaics), and then returns to the normal 
+> > pattern again.
+> 
+> try:
+> 
+>   echo 1 > /proc/sys/kernel/stackframe_tracing
+> 
+> to get symbolic stack backdumps for the wakeup points, and add 
+> trace_special_sym() calls to generate extra stackdump entries at 
+> arbitrary places. schedule() does not have it right now - it might make 
+> sense to add it.
 
-I tested this together with my mconsole stopping patch, so it should
-work just fine.
+OK, this helped.
 
-Karol Swietlicki
+It looks like the delays are caused by the page allocator, and not
+UML.  Which is good news, because I'm supposed to understand memory
+management better than scheduling.
 
-Signed-off-by: Karol Swietlicki <magotari@gmail.com>
+Thanks,
+Miklos
 
----
-diff -rupN orig/arch/um/drivers/mconsole_kern.c
-linux-2.6.24-rc3-mm2/arch/um/drivers/mconsole_kern.c
---- orig/arch/um/drivers/mconsole_kern.c	2007-11-29 12:56:06.000000000 +0100
-+++ linux-2.6.24-rc3-mm2/arch/um/drivers/mconsole_kern.c	2007-11-29
-16:35:39.000000000 +0100
-@@ -741,7 +753,6 @@ void mconsole_stack(struct mc_request *r
- {
- 	char *ptr = req->request.data;
- 	int pid_requested= -1;
--	struct task_struct *from = NULL;
- 	struct task_struct *to = NULL;
 
- 	/*
-@@ -763,8 +774,6 @@ void mconsole_stack(struct mc_request *r
- 		return;
- 	}
 
--	from = current;
--
- 	to = find_task_by_pid(pid_requested);
- 	if ((to == NULL) || (pid_requested == 0)) {
- 		mconsole_reply(req, "Couldn't find that pid", 1, 0);
+    bash-504   0.... 6312803us!: schedule <kswapd0-33> (-5 0)
+    bash-504   0.... 6313820us : userspace()<-fork_handler()<-<2f0a3670>()<-(    0)()
+    bash-504   0.... 6313821us+: (    0)()<-(    0)()<-(    0)()<-(    0)()
+    date-5726  0.... 6315334us+: pipe_read()<-do_sync_read()<-vfs_read()<-sys_read()
+    date-5726  0.... 6315336us : handle_syscall()<-handle_trap()<-userspace()<-fork_handler()
+    bash-504   0.... 6315340us!: schedule <date-5726> (0 0)
+    bash-504   0.... 6315731us+: io_schedule_timeout()<-congestion_wait()<-throttle_vm_writeout()<-shrink_zone()
+    bash-504   0.... 6315733us : shrink_zones()<-try_to_free_pages()<-__alloc_pages()<-do_wp_page()
+  <idle>-0     0.... 6315738us!: schedule <bash-504> (0 20)
+  <idle>-0     0.Nh. 6476223us+: __trace_start_sched_wakeup <bash-504> (120 -1)
+  <idle>-0     0.Nh. 6476228us+: __trace_start_sched_wakeup <kswapd0-33> (115 -1)
+  <idle>-0     0.Nh. 6476232us+: __trace_start_sched_wakeup <dd-5155> (120 -1)
+  <idle>-0     0.... 6476256us+: cpu_idle()<-rest_init()<-start_kernel()<-start_kernel_proc()
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
