@@ -1,30 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ixhua-00060Y-GF for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Nov 2007 03:50:33 -0800
-Received: from mx2.mail.elte.hu ([157.181.151.9])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1IxhuV-0001IN-W6
+	id 1Ixkfw-0007Qg-5A for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Nov 2007 06:47:36 -0800
+Received: from wa-out-1112.google.com ([209.85.146.182])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Ixkfu-0000gX-Sd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Nov 2007 03:50:32 -0800
-Date: Thu, 29 Nov 2007 12:50:11 +0100
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20071129115011.GA30208@elte.hu>
-References: <E1IxMK0-0006ae-2s@dorka.pomaz.szeredi.hu>
-	<20071128150637.GA5518@c2.user-mode-linux.org>
-	<E1IxOwS-000752-HF@dorka.pomaz.szeredi.hu>
-	<20071128182935.GA8048@c2.user-mode-linux.org>
-	<E1IxRv7-0007e8-Dq@dorka.pomaz.szeredi.hu>
-	<E1IxgUe-00011b-Sl@dorka.pomaz.szeredi.hu>
-	<20071129105744.GI10577@elte.hu>
-	<E1Ixhgf-0001CF-MC@dorka.pomaz.szeredi.hu>
+	Thu, 29 Nov 2007 06:47:36 -0800
+Received: by wa-out-1112.google.com with SMTP id k22so2378316waf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 29 Nov 2007 06:47:34 -0800 (PST)
+Message-ID: <ea9232d10711290647q284f5cf7w94858828b4e7230c@mail.gmail.com>
+Date: Thu, 29 Nov 2007 15:47:34 +0100
+From: "Karol Swietlicki" <magotari@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <E1Ixhgf-0001CF-MC@dorka.pomaz.szeredi.hu>
-Subject: Re: [uml-devel] scheduling anomaly on uml (was: -rt doesn't compile
-	for UML)
+Subject: [uml-devel] [PATCH] uml: Fix stopping uml via mconsole.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,33 +30,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
+[I forgot to cc the uml-devel list while sending the patch.]
 
-* Miklos Szeredi <miklos@szeredi.hu> wrote:
+This patch brings back the functionality of stopping user mode linux
+with the help of mconsole.
 
-> > how come UML idled for 30 msecs here, while the workload was 
-> > supposed to be CPU-bound? It's not IO bound anywhere, right? No SMP 
-> > artifacts either, right?
-> 
-> Yes.  The UML kernel is UP, and I don't think 'date' or 'bash' want to 
-> do any disk I/O.
-> 
-> Could disk I/O be blocking the tty?  I think UML uses separate threads 
-> for these, but I don't know the details.
+I tested it for six hours and read the code which could be impacted by
+this change, so it should work fine, but I am very inexperienced and
+new to the kernel and C, so I could have made a mistake somewhere.
 
-even if the workload is fully CPU bound externally - internally a 
-request to the external (CPU-bound) thread will look like an asynchonous 
-request - so small amounts of idle time can be within UML, legitimately. 
-(for the amount of time it takes for the external thread to service the 
-request)
+I had two ideas, and this one was the less invasive of the two. If
+this is not the right way to fix this, I can send in my second idea in
+a few days.
 
-30 msecs already sounds a bit excessive (this is on your T60 with 
-Core2Duo, right?), and 1-2 seconds noticeable latency is definitely 
-excessive.
+Karol Swietlicki
 
-	Ingo
+Signed-off-by: Karol Swietlicki <magotari@gmail.com>
+---
+
+diff -rupN orig/arch/um/drivers/mconsole_user.c
+linux-2.6.24-rc3-mm2/arch/um/drivers/mconsole_user.c
+--- orig/arch/um/drivers/mconsole_user.c        2007-11-29
+15:11:56.000000000 +0100
++++ linux-2.6.24-rc3-mm2/arch/um/drivers/mconsole_user.c        2007-11-28
+21:39:04.000000000 +0100
+@@ -83,9 +83,8 @@ int mconsole_get_request(int fd, struct
+       int len;
+
+       req->originlen = sizeof(req->origin);
+-       req->len = recvfrom(fd, &req->request, sizeof(req->request),
+-                           MSG_DONTWAIT, (struct sockaddr *) req->origin,
+-                           &req->originlen);
++       req->len = recvfrom(fd, &req->request, sizeof(req->request), 0,
++                           (struct sockaddr *) req->origin, &req->originlen);
+       if (req->len < 0)
+               return 0;
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
