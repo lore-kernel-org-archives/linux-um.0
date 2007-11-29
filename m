@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ixnln-0006wC-DP for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Nov 2007 10:05:51 -0800
-Received: from fxip-0047f.externet.hu ([88.209.222.127]
-	helo=dorka.pomaz.szeredi.hu)
+	id 1Ixp2A-0006qm-OS for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Nov 2007 11:26:50 -0800
+Received: from mx3.mail.elte.hu ([157.181.1.138])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ixnlm-0001uj-SZ
+	(Exim 4.44) id 1Ixp29-0001dh-AE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Nov 2007 10:05:51 -0800
-In-reply-to: <20071129162556.GA4268@elte.hu> (message from Ingo Molnar on Thu, 
-	29 Nov 2007 17:25:56 +0100)
+	Thu, 29 Nov 2007 11:26:50 -0800
+Date: Thu, 29 Nov 2007 20:26:35 +0100
+From: Ingo Molnar <mingo@elte.hu>
+Message-ID: <20071129192635.GE5238@elte.hu>
 References: <E1IxMK0-0006ae-2s@dorka.pomaz.szeredi.hu>
 	<20071128150637.GA5518@c2.user-mode-linux.org>
 	<E1IxOwS-000752-HF@dorka.pomaz.szeredi.hu>
@@ -21,9 +21,10 @@ References: <E1IxMK0-0006ae-2s@dorka.pomaz.szeredi.hu>
 	<20071129105744.GI10577@elte.hu>
 	<E1Ixlv9-0001rb-U7@dorka.pomaz.szeredi.hu>
 	<20071129162556.GA4268@elte.hu>
-Message-Id: <E1Ixnla-0002Ey-By@dorka.pomaz.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Thu, 29 Nov 2007 19:05:38 +0100
+	<E1Ixnla-0002Ey-By@dorka.pomaz.szeredi.hu>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <E1Ixnla-0002Ey-By@dorka.pomaz.szeredi.hu>
 Subject: Re: [uml-devel] scheduling anomaly on uml (was: -rt doesn't compile
 	for UML)
 List-Id: The user-mode Linux development list
@@ -35,32 +36,27 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: mingo@elte.hu
+To: Miklos Szeredi <miklos@szeredi.hu>
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-> > > to get symbolic stack backdumps for the wakeup points, and add 
-> > > trace_special_sym() calls to generate extra stackdump entries at 
-> > > arbitrary places. schedule() does not have it right now - it might 
-> > > make sense to add it.
-> > 
-> > OK, this helped.
-> > 
-> > It looks like the delays are caused by the page allocator, and not 
-> > UML.  Which is good news, because I'm supposed to understand memory 
-> > management better than scheduling.
+
+* Miklos Szeredi <miklos@szeredi.hu> wrote:
+
+> > heh :-) Scheduling isnt hard either - and looking at traces 
+> > (especially with mcount_enabled=1) certainly helps.
 > 
-> heh :-) Scheduling isnt hard either - and looking at traces (especially 
-> with mcount_enabled=1) certainly helps.
+> I still don't know what mcount_enabled=1 should do.  I didn't see any 
+> difference in the trace after enabling it.
 
-I still don't know what mcount_enabled=1 should do.  I didn't see any
-difference in the trace after enabling it.
+if you build with CONFIG_FUNCTION_TRACING then you should see a trace of 
+*every* function call done within the kernel. Warning: reading it can be 
+very addictive ;-)
 
-Miklos
+	Ingo
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
