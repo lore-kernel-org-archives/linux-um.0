@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IzEZu-0004GU-Bm for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Dec 2007 08:55:30 -0800
-Received: from mx1.redhat.com ([66.187.233.31])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IzEZu-0005WV-0S
+	id 1IzGR7-0008Fq-RM for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Dec 2007 10:54:36 -0800
+Received: from tetsuo.zabbo.net ([207.173.201.20])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IzGR6-0003yT-J9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Dec 2007 08:55:30 -0800
-References: <E1IzDHv-0003xj-Af@dorka.pomaz.szeredi.hu>
-From: Jeff Moyer <jmoyer@redhat.com>
-Date: Mon, 03 Dec 2007 11:55:16 -0500
-In-Reply-To: <E1IzDHv-0003xj-Af@dorka.pomaz.szeredi.hu> (Miklos Szeredi's
-	message of "Mon\, 03 Dec 2007 16\:32\:51 +0100")
-Message-ID: <x49ir3fhg5n.fsf@segfault.boston.devel.redhat.com>
+	Mon, 03 Dec 2007 10:54:33 -0800
+Message-ID: <475450A1.9000103@oracle.com>
+Date: Mon, 03 Dec 2007 10:53:21 -0800
+From: Zach Brown <zach.brown@oracle.com>
 MIME-Version: 1.0
+References: <E1IzDHv-0003xj-Af@dorka.pomaz.szeredi.hu>
+	<x49ir3fhg5n.fsf@segfault.boston.devel.redhat.com>
+In-Reply-To: <x49ir3fhg5n.fsf@segfault.boston.devel.redhat.com>
 Subject: Re: [uml-devel] [2.6.24 BUG] 100% iowait on host while UML is running
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,33 +29,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com, linux-kernel@vger.kernel.org, zach.brown@oracle.com, torvalds@linux-foundation.org, akpm@linux-foundation.org
-
-Miklos Szeredi <miklos@szeredi.hu> writes:
-
-> On 2.6.24, top started showing 100% iowait on one CPU when a UML
-> instance was running (but completely idle).  I've traced it to this
-> commit [1].  Reverting it cures the problem.
-
-Hi,
-
-The UML code sits in io_getevents waiting for an event to be submitted
-and completed.  This is a case I completely overlooked when putting
-together the referenced patch.
-
-We could check ctx->reqs_active before scheduling to determine whether
-or not we are waiting for I/O, but this would require taking the
-context lock in order to be accurate.  Given that the test would be
-only for the sake of book keeping, it might be okay to do it outside
-of the lock.
-
-Zach, what are your thoughts on this?
-
--Jeff
+To: Jeff Moyer <jmoyer@redhat.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Miklos Szeredi <miklos@szeredi.hu>, jdike@addtoit.com, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, torvalds@linux-foundation.org
 
 
-[1] commit 41d10da3717409de33d5441f2f6d8f072ab3fbb6
+> We could check ctx->reqs_active before scheduling to determine whether
+> or not we are waiting for I/O, but this would require taking the
+> context lock in order to be accurate.  Given that the test would be
+> only for the sake of book keeping, it might be okay to do it outside
+> of the lock.
+> 
+> Zach, what are your thoughts on this?
+
+I agree that it'd be OK to test it outside the lock, though we'll want
+some commentary:
+
+	/* Try to only show up in io wait if there are ops in flight */
+	if (ctx->reqs_active)
+		io_schedule();
+	else
+		schedule();
+
+It's cheap, safe, and accurate the overwhelming majority of the time :).
+
+We only need it in read_events().  The other two io_schedule() calls are
+only reached to wait on pending reqs specifically.
+
+It still won't make sense for iocbs which aren't performing IO, but I
+guess that's one more bridge to cross when we come to it.
+
+Do you want to throw this tiny patch together and submit it?
+
+- z
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
