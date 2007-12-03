@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IzH35-0003o1-9x for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Dec 2007 11:33:47 -0800
-Received: from mx1.redhat.com ([66.187.233.31])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IzH34-0007BG-Ta
+	id 1IzKkg-0003id-Cw for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Dec 2007 15:31:02 -0800
+Received: from wa-out-1112.google.com ([209.85.146.179])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IzKke-0002lN-L2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Dec 2007 11:33:47 -0800
-References: <E1IzDHv-0003xj-Af@dorka.pomaz.szeredi.hu>
-	<x49ir3fhg5n.fsf@segfault.boston.devel.redhat.com>
-	<475450A1.9000103@oracle.com>
-From: Jeff Moyer <jmoyer@redhat.com>
-Date: Mon, 03 Dec 2007 14:33:06 -0500
-In-Reply-To: <475450A1.9000103@oracle.com> (Zach Brown's message of "Mon\,
-	03 Dec 2007 10\:53\:21 -0800")
-Message-ID: <x49zlwrfua5.fsf@segfault.boston.devel.redhat.com>
+	Mon, 03 Dec 2007 15:31:02 -0800
+Received: by wa-out-1112.google.com with SMTP id k22so6101102waf
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 03 Dec 2007 15:31:00 -0800 (PST)
+Message-ID: <ea9232d10712031530v2e8ff2e9k323b51ede7d87e1f@mail.gmail.com>
+Date: Tue, 4 Dec 2007 00:30:59 +0100
+From: "Karol Swietlicki" <magotari@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [2.6.24 BUG] 100% iowait on host while UML is running
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH] uml: Fix NET appearing twice in Kconfig.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,73 +30,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Zach Brown <zach.brown@oracle.com>, akpm@linux-foundation.org
-Cc: jdike@addtoit.com, torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Miklos Szeredi <miklos@szeredi.hu>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Zach Brown <zach.brown@oracle.com> writes:
+This patch fixes the repetition of the NET symbol. It was once in UML
+specific options and once in networking. I removed the first
+occurrence, as it makes more sense to me to keep it only in
+networking.
 
->> We could check ctx->reqs_active before scheduling to determine whether
->> or not we are waiting for I/O, but this would require taking the
->> context lock in order to be accurate.  Given that the test would be
->> only for the sake of book keeping, it might be okay to do it outside
->> of the lock.
->> 
->> Zach, what are your thoughts on this?
->
-> I agree that it'd be OK to test it outside the lock, though we'll want
-> some commentary:
->
-> 	/* Try to only show up in io wait if there are ops in flight */
-> 	if (ctx->reqs_active)
-> 		io_schedule();
-> 	else
-> 		schedule();
->
-> It's cheap, safe, and accurate the overwhelming majority of the time :).
->
-> We only need it in read_events().  The other two io_schedule() calls are
-> only reached to wait on pending reqs specifically.
->
-> It still won't make sense for iocbs which aren't performing IO, but I
-> guess that's one more bridge to cross when we come to it.
->
-> Do you want to throw this tiny patch together and submit it?
+Compile and run tested.
 
-Sure.  I tested this on a system that I used to reproduce the problem,
-and it shows I/O Wait back at normal levels on an idle system with 1
-uml guest running.
+Karol Swietlicki
 
-Andrew, do you need a separate email with a [patch] heading or will
-this do?
+Signed-off-by: Karol Swietlicki <magotari@gmail.com>
+---
+diff -rupN linux-2.6.24-rc3-mm2.orig/arch/um/Kconfig
+linux-2.6.24-rc3-mm2/arch/um/Kconfig
+--- linux-2.6.24-rc3-mm2.orig/arch/um/Kconfig	2007-12-03
+22:43:52.000000000 +0100
++++ linux-2.6.24-rc3-mm2/arch/um/Kconfig	2007-12-03 22:46:08.000000000 +0100
+@@ -95,23 +95,6 @@ config LD_SCRIPT_DYN
+ 	default y
+ 	depends on !LD_SCRIPT_STATIC
 
-Cheers,
+-config NET
+-	bool "Networking support"
+-	help
+-	  Unless you really know what you are doing, you should say Y here.
+-	  The reason is that some programs need kernel networking support even
+-	  when running on a stand-alone machine that isn't connected to any
+-	  other computer. If you are upgrading from an older kernel, you
+-	  should consider updating your networking tools too because changes
+-	  in the kernel and the tools often go hand in hand. The tools are
+-	  contained in the package net-tools, the location and version number
+-	  of which are given in <file:Documentation/Changes>.
+-
+-	  For a general introduction to Linux networking, it is highly
+-	  recommended to read the NET-HOWTO, available from
+-	  <http://www.tldp.org/docs.html#howto>.
+-
+-
+  source "fs/Kconfig.binfmt"
 
-Jeff
-
-Only account I/O wait time in read_events if there are active
-requests.
-
-Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
-
-diff --git a/fs/aio.c b/fs/aio.c
-index f12db41..9dec7d2 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -1161,7 +1161,12 @@ retry:
- 			ret = 0;
- 			if (to.timed_out)	/* Only check after read evt */
- 				break;
--			io_schedule();
-+			/* Try to only show up in io wait if there are ops
-+			 *  in flight */
-+			if (ctx->reqs_active)
-+				io_schedule();
-+			else
-+				schedule();
- 			if (signal_pending(tsk)) {
- 				ret = -EINTR;
- 				break;
-
+  config HOSTFS
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
