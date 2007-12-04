@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1IzKkg-0003id-Cw for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Dec 2007 15:31:02 -0800
-Received: from wa-out-1112.google.com ([209.85.146.179])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IzKke-0002lN-L2
+	id 1IzLH6-00075o-Dr for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Dec 2007 16:04:32 -0800
+Received: from wa-out-1112.google.com ([209.85.146.178])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1IzLH6-0000m3-0L
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Dec 2007 15:31:02 -0800
-Received: by wa-out-1112.google.com with SMTP id k22so6101102waf
+	Mon, 03 Dec 2007 16:04:32 -0800
+Received: by wa-out-1112.google.com with SMTP id k22so6126263waf
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 03 Dec 2007 15:31:00 -0800 (PST)
-Message-ID: <ea9232d10712031530v2e8ff2e9k323b51ede7d87e1f@mail.gmail.com>
-Date: Tue, 4 Dec 2007 00:30:59 +0100
+	Mon, 03 Dec 2007 16:04:29 -0800 (PST)
+Message-ID: <ea9232d10712031604q30abb48cu1380abd4f661d0c7@mail.gmail.com>
+Date: Tue, 4 Dec 2007 01:04:29 +0100
 From: "Karol Swietlicki" <magotari@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] uml: Fix NET appearing twice in Kconfig.
+Subject: [uml-devel] [PATCH] uml: Get rid of arch/um/Makefile-tt
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,46 +33,22 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
 Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-This patch fixes the repetition of the NET symbol. It was once in UML
-specific options and once in networking. I removed the first
-occurrence, as it makes more sense to me to keep it only in
-networking.
-
+This patch removes a mostly empty file which is not used anymore.
 Compile and run tested.
 
 Karol Swietlicki
 
 Signed-off-by: Karol Swietlicki <magotari@gmail.com>
 ---
-diff -rupN linux-2.6.24-rc3-mm2.orig/arch/um/Kconfig
-linux-2.6.24-rc3-mm2/arch/um/Kconfig
---- linux-2.6.24-rc3-mm2.orig/arch/um/Kconfig	2007-12-03
-22:43:52.000000000 +0100
-+++ linux-2.6.24-rc3-mm2/arch/um/Kconfig	2007-12-03 22:46:08.000000000 +0100
-@@ -95,23 +95,6 @@ config LD_SCRIPT_DYN
- 	default y
- 	depends on !LD_SCRIPT_STATIC
-
--config NET
--	bool "Networking support"
--	help
--	  Unless you really know what you are doing, you should say Y here.
--	  The reason is that some programs need kernel networking support even
--	  when running on a stand-alone machine that isn't connected to any
--	  other computer. If you are upgrading from an older kernel, you
--	  should consider updating your networking tools too because changes
--	  in the kernel and the tools often go hand in hand. The tools are
--	  contained in the package net-tools, the location and version number
--	  of which are given in <file:Documentation/Changes>.
+diff -rupN orig/arch/um/Makefile-tt orig2/arch/um/Makefile-tt
+--- orig/arch/um/Makefile-tt	2007-11-29 12:56:05.000000000 +0100
++++ orig2/arch/um/Makefile-tt	1970-01-01 01:00:00.000000000 +0100
+@@ -1,5 +0,0 @@
+-#
+-# Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
+-# Licensed under the GPL
+-#
 -
--	  For a general introduction to Linux networking, it is highly
--	  recommended to read the NET-HOWTO, available from
--	  <http://www.tldp.org/docs.html#howto>.
--
--
-  source "fs/Kconfig.binfmt"
-
-  config HOSTFS
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
