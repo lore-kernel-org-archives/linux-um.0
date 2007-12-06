@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J06C1-0003Pw-G4 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Dec 2007 18:10:25 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1J08UN-0000d9-2L for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 05 Dec 2007 20:37:31 -0800
+Received: from jade.aracnet.com ([216.99.193.136])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J06C0-0003Yb-Hz
+	(Exim 4.44) id 1J08UL-00006m-OI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Dec 2007 18:10:25 -0800
-Date: Wed, 5 Dec 2007 21:10:16 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071206021016.GB10961@c2.user-mode-linux.org>
-References: <4755E360.4030505@BitWagon.com>
-	<20071205002223.GC10763@c2.user-mode-linux.org>
-	<4755F4EC.4050902@BitWagon.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4755F4EC.4050902@BitWagon.com>
+	Wed, 05 Dec 2007 20:37:31 -0800
+Message-ID: <47577C8A.8060104@BitWagon.com>
+Date: Wed, 05 Dec 2007 20:37:30 -0800
+From: John Reiser <jreiser@BitWagon.com>
+MIME-Version: 1.0
+References: <4755E360.4030505@BitWagon.com>	<20071205002223.GC10763@c2.user-mode-linux.org>	<4755F4EC.4050902@BitWagon.com>
+	<20071206021016.GB10961@c2.user-mode-linux.org>
+In-Reply-To: <20071206021016.GB10961@c2.user-mode-linux.org>
 Subject: Re: [uml-devel] reading uninit memory in do_io (ubd_kern.c)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -32,42 +30,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: John Reiser <jreiser@BitWagon.com>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Tue, Dec 04, 2007 at 04:46:36PM -0800, John Reiser wrote:
-> and enough changes
-> to valgrind to tolerate more forms of clone() 
+Jeff Dike wrote:
+> It'll be easier to let the userspace child escape - invent an
+> annotation for "don't follow this clone".
 
-I was going to ask whether you were treating the clone that creates
-the userspace process differently from other clones, but I guess the
-bit below answers that question:
+Thanks for the tip.  I was getting stuck trying to figure out the
+ptrace() shenanigans involved with the stub [skas0 mode] that turns
+SIGSEGV into SIGUSR1.  Valgrind has its own ideas about what
+should happen with signals, and the ptracing gets complicated.
 
-> **24577** new_thread_handler  fn=0x807FD8C  arg=0x822AF48
->   [snip: panic due to SIGSEGV seen from wait_stub_done()]
+> Longer-term, following this clone and allowing full-system analysis
+> would require some thought.  The first problem, of course, is that
+> about the first the stub does in the new process is unmap everything
+> but itself, including valgrind.
 
-And I guess it's not treated differently and valgrind continues
-grinding the child, and it craps out when it unmaps everything in the
-child address space except the stubs.
-
-Whether you want the userspace process to escape valgrind or not
-depends on whether you want full-system analysis (which some people
-do, and cachegrind in particular would be very interesting on a full
-system) or whether you want to smoke out kernel bugs (which is my main
-interest here).
-
-It'll be easier to let the userspace child escape - invent an
-annotation for "don't follow this clone".
-
-Longer-term, following this clone and allowing full-system analysis
-would require some thought.  The first problem, of course, is that
-about the first the stub does in the new process is unmap everything
-but itself, including valgrind.
-
-				Jeff
+The very first thing that the skas0 stub does is field SIGSEGV because
+the page which contains the entry point of the PT_INTERP of /sbin/init
+is not present.   The signal handler in the stub forwards this SIGSGEV
+to uml as SIGUSR1, and the ptrace()ing code inside uml "understands"
+what the child is doing.  Not so when valgrind (or any other
+virtualization) is involved.  Perhaps valgrind could recognize the
+skas0 stub (SIGSEGV.sa_handler >= 0xbffe0000, etc.) and adapt,
+or perhaps both valgrind and uml should cooperate here.  I'm still
+puzzling over this one.
 
 -- 
-Work email - jdike at linux dot intel dot com
+John Reiser, jreiser@BitWagon.com
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
