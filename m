@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J0Mgh-0006Ww-4Z for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Dec 2007 11:47:11 -0800
-Received: from smtp2.linux-foundation.org ([207.189.120.14])
+	id 1J0NCd-0001eT-UA for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Dec 2007 12:20:13 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J0Mgc-0008AM-KU
+	(Exim 4.44) id 1J0NCb-0000i6-7S
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Dec 2007 11:47:09 -0800
-Date: Thu, 6 Dec 2007 11:46:42 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20071206114642.555a0749.akpm@linux-foundation.org>
-In-Reply-To: <20071206170640.GA7420@c2.user-mode-linux.org>
+	Thu, 06 Dec 2007 12:20:11 -0800
+Date: Thu, 6 Dec 2007 15:19:29 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071206201929.GA9366@c2.user-mode-linux.org>
 References: <20071206170640.GA7420@c2.user-mode-linux.org>
+	<20071206114642.555a0749.akpm@linux-foundation.org>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20071206114642.555a0749.akpm@linux-foundation.org>
 Subject: Re: [uml-devel] [PATCH 1/6] UML - Customize tlb.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,110 +31,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 6 Dec 2007 12:06:40 -0500
-Jeff Dike <jdike@addtoit.com> wrote:
-
-> Customize the hooks in tlb.h to optimize TLB flushing some more.
+On Thu, Dec 06, 2007 at 11:46:42AM -0800, Andrew Morton wrote:
+> > +void flush_tlb_mm(struct mm_struct *mm)
+> > +{
+> > +	struct vm_area_struct *vma = mm->mmap;
+> > +
+> > +	if (atomic_read(&mm->mm_users) == 0)
+> > +		return;
 > 
-> Add start and end fields to tlb_gather_mmu, which are used to limit
-> the address space range scanned when a region is unmapped.
-> 
-> The interfaces which just free page tables, without actually changing
-> mappings, don't need to cause a TLB flush.
-> 
-> ...
->
-> +void flush_tlb_mm(struct mm_struct *mm)
-> +{
-> +	struct vm_area_struct *vma = mm->mmap;
-> +
-> +	if (atomic_read(&mm->mm_users) == 0)
-> +		return;
+> Under which circumstances does this test succeed?
 
-Under which circumstances does this test succeed?
+Sigh, none.  The other copy obviously succeeds during exit - this one
+isn't needed.
 
-> +	while (vma != NULL) {
-> +		fix_range(mm, vma->vm_start, vma->vm_end, 0);
-> +		vma = vma->vm_next;
-> +	}
->  }
->  
->  void force_flush_all(void)
-> Index: linux-2.6-git/include/asm-um/tlb.h
-> ===================================================================
-> --- linux-2.6-git.orig/include/asm-um/tlb.h	2007-12-06 10:34:31.000000000 -0500
-> +++ linux-2.6-git/include/asm-um/tlb.h	2007-12-06 10:58:34.000000000 -0500
-> @@ -1,6 +1,125 @@
->  #ifndef __UM_TLB_H
->  #define __UM_TLB_H
->  
-> -#include <asm/arch/tlb.h>
-> +#include <linux/swap.h>
-> +#include <asm/pgalloc.h>
-> +#include <asm/tlbflush.h>
-> +
-> +#define tlb_start_vma(tlb, vma) do { } while (0)
-> +#define tlb_end_vma(tlb, vma) do { } while (0)
-> +#define tlb_flush(tlb) flush_tlb_mm((tlb)->mm)
-> +
-> +/* struct mmu_gather is an opaque type used by the mm code for passing around
-> + * any data needed by arch specific code for tlb_remove_page.
-> + */
-> +struct mmu_gather {
-> +	struct mm_struct	*mm;
-> +	unsigned int		need_flush; /* Really unmapped some ptes? */
-> +	unsigned long		start;
-> +	unsigned long		end;
-> +	unsigned int		fullmm; /* non-zero means full mm flush */
-> +};
-> +
-> +/* Users of the generic TLB shootdown code must declare this storage space. */
-> +DECLARE_PER_CPU(struct mmu_gather, mmu_gathers);
-> +
-> +static inline void __tlb_remove_tlb_entry(struct mmu_gather *tlb, pte_t *ptep,
-> +					  unsigned long address)
-> +{
-> +	if (tlb->start > address)
-> +		tlb->start = address;
-> +	if (tlb->end < address + PAGE_SIZE)
-> +		tlb->end = address + PAGE_SIZE;
-> +}
-> +
-> +static inline void init_tlb_gather(struct mmu_gather *tlb)
-> +{
-> +	tlb->need_flush = 0;
-> +
-> +	tlb->start = TASK_SIZE;
-> +	tlb->end = 0;
-> +
-> +	if (tlb->fullmm) {
-> +		tlb->start = 0;
-> +		tlb->end = TASK_SIZE;
-> +	}
-> +}
-> +
-> +/* tlb_gather_mmu
-> + *	Return a pointer to an initialized struct mmu_gather.
-> + */
-> +static inline struct mmu_gather *
-> +tlb_gather_mmu(struct mm_struct *mm, unsigned int full_mm_flush)
-> +{
-> +	struct mmu_gather *tlb = &get_cpu_var(mmu_gathers);
-> +
-> +	tlb->mm = mm;
-> +	tlb->fullmm = full_mm_flush;
-> +
-> +	init_tlb_gather(tlb);
-> +
-> +	return tlb;
-> +}
+> This file rather needs an inclusion of percpu.h.  I guess you got
+> lucky.
 
-This file rather needs an inclusion of percpu.h.  I guess you got lucky.
+Yup, drop this, and I'll send a fixed version.
 
+				Jeff
 
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: 
