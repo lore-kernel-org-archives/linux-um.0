@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J05i5-0000GM-Hd for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Dec 2007 17:39:29 -0800
+	id 1J06C1-0003Pw-G4 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 05 Dec 2007 18:10:25 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J05i3-0002AZ-Uo
+	(Exim 4.44) id 1J06C0-0003Yb-Hz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Dec 2007 17:39:29 -0800
-Date: Wed, 5 Dec 2007 20:39:20 -0500
+	Wed, 05 Dec 2007 18:10:25 -0800
+Date: Wed, 5 Dec 2007 21:10:16 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071206013920.GA10961@c2.user-mode-linux.org>
-References: <200712051853.45801.stf_xl@wp.pl>
+Message-ID: <20071206021016.GB10961@c2.user-mode-linux.org>
+References: <4755E360.4030505@BitWagon.com>
+	<20071205002223.GC10763@c2.user-mode-linux.org>
+	<4755F4EC.4050902@BitWagon.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200712051853.45801.stf_xl@wp.pl>
-Subject: Re: [uml-devel] [PATCH] Avoid not intended gdb breakpoints removal
+In-Reply-To: <4755F4EC.4050902@BitWagon.com>
+Subject: Re: [uml-devel] reading uninit memory in do_io (ubd_kern.c)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +32,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Stanislaw Gruszka <stf_xl@wp.pl>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: John Reiser <jreiser@BitWagon.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, Dec 05, 2007 at 06:53:45PM +0100, Stanislaw Gruszka wrote:
-> Sometimes when UML is debugged gdb miss breakpoints.  
+On Tue, Dec 04, 2007 at 04:46:36PM -0800, John Reiser wrote:
+> and enough changes
+> to valgrind to tolerate more forms of clone() 
 
-> So I do fix for UML,
-> it simply do not call clone() with both SIGCHLD and CLONE_VM flags together. 
-> Additionally __WALL flag is used for waitpid() to assure not miss clone
-> and normal process events.
+I was going to ask whether you were treating the clone that creates
+the userspace process differently from other clones, but I guess the
+bit below answers that question:
 
-Woo!  You're my favorite person this week[1].
+> **24577** new_thread_handler  fn=0x807FD8C  arg=0x822AF48
+>   [snip: panic due to SIGSEGV seen from wait_stub_done()]
 
-This has bugged me forever, and I was too scared to go into gdb to
-figure out what its problem was.
+And I guess it's not treated differently and valgrind continues
+grinding the child, and it craps out when it unmaps everything in the
+child address space except the stubs.
 
-A couple of comments:
-1 - I think I would prefer to use __WCLONE instead of __WALL since
-we know what type of process we are creating, and it seems clearer in
-the code to say specifically what we want
+Whether you want the userspace process to escape valgrind or not
+depends on whether you want full-system analysis (which some people
+do, and cachegrind in particular would be very interesting on a full
+system) or whether you want to smoke out kernel bugs (which is my main
+interest here).
 
-1a - I think I would like to stick all those waits under some API in
-helper.c as we already have an interface for creating children, and as
-it stands now, the callers have knowlege about the internal aspects of
-child creation that they probably shouldn't.
+It'll be easier to let the userspace child escape - invent an
+annotation for "don't follow this clone".
 
-2 - I want to get this into mainline quickly, and I need a
-Signed-off-by: from you before it goes anywhere.
-
+Longer-term, following this clone and allowing full-system analysis
+would require some thought.  The first problem, of course, is that
+about the first the stub does in the new process is unmap everything
+but itself, including valgrind.
 
 				Jeff
-
-[1] Narrowly beating out John Reiser, who will be my favorite person
-of the week that he manages to boot UML under valgrind.
 
 -- 
 Work email - jdike at linux dot intel dot com
