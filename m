@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J0KBS-0005l8-BM for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Dec 2007 09:06:46 -0800
+	id 1J0KBV-0005lt-H6 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Dec 2007 09:06:50 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J0KBQ-0004qW-Ik
+	(Exim 4.44) id 1J0KBU-0008VV-SE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Dec 2007 09:06:45 -0800
-Date: Thu, 6 Dec 2007 12:06:40 -0500
+	Thu, 06 Dec 2007 09:06:49 -0800
+Date: Thu, 6 Dec 2007 12:06:43 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071206170640.GA7420@c2.user-mode-linux.org>
+Message-ID: <20071206170643.GA7445@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/6] UML - Customize tlb.h
+Subject: [uml-devel] [PATCH 6/6] UML - 64-bit tlb fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,211 +31,102 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Customize the hooks in tlb.h to optimize TLB flushing some more.
-
-Add start and end fields to tlb_gather_mmu, which are used to limit
-the address space range scanned when a region is unmapped.
-
-The interfaces which just free page tables, without actually changing
-mappings, don't need to cause a TLB flush.
+Some 64-bit tlb fixes -
+	moved pmd_page_vaddr to pgtable.h since it's the same for both
+2-level and 3-level page tables
+	fixed a bogus cast on pud_page_vaddr
+	made the address checking in update_*_range more careful
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/kernel/tlb.c |   28 ++++++++---
- include/asm-um/tlb.h |  121 ++++++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 141 insertions(+), 8 deletions(-)
+ arch/um/kernel/tlb.c            |    8 ++++----
+ include/asm-um/pgtable-2level.h |    3 ---
+ include/asm-um/pgtable-3level.h |    3 +--
+ include/asm-um/pgtable.h        |    3 +++
+ 4 files changed, 8 insertions(+), 9 deletions(-)
 
 Index: linux-2.6-git/arch/um/kernel/tlb.c
 ===================================================================
---- linux-2.6-git.orig/arch/um/kernel/tlb.c	2007-12-06 10:34:31.000000000 -0500
-+++ linux-2.6-git/arch/um/kernel/tlb.c	2007-12-06 10:34:41.000000000 -0500
-@@ -193,18 +193,18 @@ static inline int update_pte_range(pmd_t
- 		if (!pte_young(*pte)) {
- 			r = 0;
- 			w = 0;
--		} else if (!pte_dirty(*pte)) {
-+		} else if (!pte_dirty(*pte))
- 			w = 0;
--		}
-+
- 		prot = ((r ? UM_PROT_READ : 0) | (w ? UM_PROT_WRITE : 0) |
- 			(x ? UM_PROT_EXEC : 0));
- 		if (hvc->force || pte_newpage(*pte)) {
- 			if (pte_present(*pte))
- 				ret = add_mmap(addr, pte_val(*pte) & PAGE_MASK,
- 					       PAGE_SIZE, prot, hvc);
--			else ret = add_munmap(addr, PAGE_SIZE, hvc);
--		}
--		else if (pte_newprot(*pte))
-+			else
-+				ret = add_munmap(addr, PAGE_SIZE, hvc);
-+		} else if (pte_newprot(*pte))
+--- linux-2.6-git.orig/arch/um/kernel/tlb.c	2007-12-06 10:34:41.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/tlb.c	2007-12-06 11:26:20.000000000 -0500
+@@ -207,7 +207,7 @@ static inline int update_pte_range(pmd_t
+ 		} else if (pte_newprot(*pte))
  			ret = add_mprotect(addr, PAGE_SIZE, prot, hvc);
  		*pte = pte_mkuptodate(*pte);
- 	} while (pte++, addr += PAGE_SIZE, ((addr != end) && !ret));
-@@ -500,7 +500,8 @@ void flush_tlb_range(struct vm_area_stru
- 	else fix_range(vma->vm_mm, start, end, 0);
+-	} while (pte++, addr += PAGE_SIZE, ((addr != end) && !ret));
++	} while (pte++, addr += PAGE_SIZE, ((addr < end) && !ret));
+ 	return ret;
  }
  
--void flush_tlb_mm(struct mm_struct *mm)
-+void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
-+			unsigned long end)
- {
- 	/*
- 	 * Don't bother flushing if this address space is about to be
-@@ -509,7 +510,20 @@ void flush_tlb_mm(struct mm_struct *mm)
- 	if (atomic_read(&mm->mm_users) == 0)
- 		return;
- 
--	fix_range(mm, 0, TASK_SIZE, 0);
-+	fix_range(mm, start, end, 0);
-+}
-+
-+void flush_tlb_mm(struct mm_struct *mm)
-+{
-+	struct vm_area_struct *vma = mm->mmap;
-+
-+	if (atomic_read(&mm->mm_users) == 0)
-+		return;
-+
-+	while (vma != NULL) {
-+		fix_range(mm, vma->vm_start, vma->vm_end, 0);
-+		vma = vma->vm_next;
-+	}
+@@ -229,7 +229,7 @@ static inline int update_pmd_range(pud_t
+ 			}
+ 		}
+ 		else ret = update_pte_range(pmd, addr, next, hvc);
+-	} while (pmd++, addr = next, ((addr != end) && !ret));
++	} while (pmd++, addr = next, ((addr < end) && !ret));
+ 	return ret;
  }
  
- void force_flush_all(void)
-Index: linux-2.6-git/include/asm-um/tlb.h
+@@ -251,7 +251,7 @@ static inline int update_pud_range(pgd_t
+ 			}
+ 		}
+ 		else ret = update_pmd_range(pud, addr, next, hvc);
+-	} while (pud++, addr = next, ((addr != end) && !ret));
++	} while (pud++, addr = next, ((addr < end) && !ret));
+ 	return ret;
+ }
+ 
+@@ -274,7 +274,7 @@ void fix_range_common(struct mm_struct *
+ 			}
+ 		}
+ 		else ret = update_pud_range(pgd, addr, next, &hvc);
+-	} while (pgd++, addr = next, ((addr != end_addr) && !ret));
++	} while (pgd++, addr = next, ((addr < end_addr) && !ret));
+ 
+ 	if (!ret)
+ 		ret = do_ops(&hvc, hvc.index, 1);
+Index: linux-2.6-git/include/asm-um/pgtable-2level.h
 ===================================================================
---- linux-2.6-git.orig/include/asm-um/tlb.h	2007-12-06 10:34:31.000000000 -0500
-+++ linux-2.6-git/include/asm-um/tlb.h	2007-12-06 10:58:34.000000000 -0500
-@@ -1,6 +1,125 @@
- #ifndef __UM_TLB_H
- #define __UM_TLB_H
+--- linux-2.6-git.orig/include/asm-um/pgtable-2level.h	2007-12-03 23:57:24.000000000 -0500
++++ linux-2.6-git/include/asm-um/pgtable-2level.h	2007-12-06 11:26:20.000000000 -0500
+@@ -41,9 +41,6 @@ static inline void pgd_mkuptodate(pgd_t 
+ #define pfn_pte(pfn, prot) __pte(pfn_to_phys(pfn) | pgprot_val(prot))
+ #define pfn_pmd(pfn, prot) __pmd(pfn_to_phys(pfn) | pgprot_val(prot))
  
--#include <asm/arch/tlb.h>
-+#include <linux/swap.h>
-+#include <asm/pgalloc.h>
-+#include <asm/tlbflush.h>
-+
-+#define tlb_start_vma(tlb, vma) do { } while (0)
-+#define tlb_end_vma(tlb, vma) do { } while (0)
-+#define tlb_flush(tlb) flush_tlb_mm((tlb)->mm)
-+
-+/* struct mmu_gather is an opaque type used by the mm code for passing around
-+ * any data needed by arch specific code for tlb_remove_page.
-+ */
-+struct mmu_gather {
-+	struct mm_struct	*mm;
-+	unsigned int		need_flush; /* Really unmapped some ptes? */
-+	unsigned long		start;
-+	unsigned long		end;
-+	unsigned int		fullmm; /* non-zero means full mm flush */
-+};
-+
-+/* Users of the generic TLB shootdown code must declare this storage space. */
-+DECLARE_PER_CPU(struct mmu_gather, mmu_gathers);
-+
-+static inline void __tlb_remove_tlb_entry(struct mmu_gather *tlb, pte_t *ptep,
-+					  unsigned long address)
-+{
-+	if (tlb->start > address)
-+		tlb->start = address;
-+	if (tlb->end < address + PAGE_SIZE)
-+		tlb->end = address + PAGE_SIZE;
-+}
-+
-+static inline void init_tlb_gather(struct mmu_gather *tlb)
-+{
-+	tlb->need_flush = 0;
-+
-+	tlb->start = TASK_SIZE;
-+	tlb->end = 0;
-+
-+	if (tlb->fullmm) {
-+		tlb->start = 0;
-+		tlb->end = TASK_SIZE;
-+	}
-+}
-+
-+/* tlb_gather_mmu
-+ *	Return a pointer to an initialized struct mmu_gather.
-+ */
-+static inline struct mmu_gather *
-+tlb_gather_mmu(struct mm_struct *mm, unsigned int full_mm_flush)
-+{
-+	struct mmu_gather *tlb = &get_cpu_var(mmu_gathers);
-+
-+	tlb->mm = mm;
-+	tlb->fullmm = full_mm_flush;
-+
-+	init_tlb_gather(tlb);
-+
-+	return tlb;
-+}
-+
-+extern void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
-+			       unsigned long end);
-+
-+static inline void
-+tlb_flush_mmu(struct mmu_gather *tlb, unsigned long start, unsigned long end)
-+{
-+	if (!tlb->need_flush)
-+		return;
-+
-+	flush_tlb_mm_range(tlb->mm, tlb->start, tlb->end);
-+	init_tlb_gather(tlb);
-+}
-+
-+/* tlb_finish_mmu
-+ *	Called at the end of the shootdown operation to free up any resources
-+ *	that were required.
-+ */
-+static inline void
-+tlb_finish_mmu(struct mmu_gather *tlb, unsigned long start, unsigned long end)
-+{
-+	tlb_flush_mmu(tlb, start, end);
-+
-+	/* keep the page table cache within bounds */
-+	check_pgt_cache();
-+
-+	put_cpu_var(mmu_gathers);
-+}
-+
-+/* tlb_remove_page
-+ *	Must perform the equivalent to __free_pte(pte_get_and_clear(ptep)),
-+ *	while handling the additional races in SMP caused by other CPUs
-+ *	caching valid mappings in their TLBs.
-+ */
-+static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page)
-+{
-+	tlb->need_flush = 1;
-+	free_page_and_swap_cache(page);
-+	return;
-+}
-+
-+/**
-+ * tlb_remove_tlb_entry - remember a pte unmapping for later tlb invalidation.
-+ *
-+ * Record the fact that pte's were really umapped in ->need_flush, so we can
-+ * later optimise away the tlb invalidate.   This helps when userspace is
-+ * unmapping already-unmapped pages, which happens quite a lot.
-+ */
-+#define tlb_remove_tlb_entry(tlb, ptep, address)		\
-+	do {							\
-+		tlb->need_flush = 1;				\
-+		__tlb_remove_tlb_entry(tlb, ptep, address);	\
-+	} while (0)
-+
-+#define pte_free_tlb(tlb, ptep) __pte_free_tlb(tlb, ptep)
-+
-+#define pud_free_tlb(tlb, pudp) __pud_free_tlb(tlb, pudp)
-+
-+#define pmd_free_tlb(tlb, pmdp) __pmd_free_tlb(tlb, pmdp)
-+
-+#define tlb_migrate_finish(mm) do {} while (0)
+-#define pmd_page_vaddr(pmd) \
+-	((unsigned long) __va(pmd_val(pmd) & PAGE_MASK))
+-
+ /*
+  * Bits 0 through 4 are taken
+  */
+Index: linux-2.6-git/include/asm-um/pgtable-3level.h
+===================================================================
+--- linux-2.6-git.orig/include/asm-um/pgtable-3level.h	2007-12-06 10:32:12.000000000 -0500
++++ linux-2.6-git/include/asm-um/pgtable-3level.h	2007-12-06 11:26:20.000000000 -0500
+@@ -87,8 +87,7 @@ static inline void pud_clear (pud_t *pud
+ }
  
- #endif
+ #define pud_page(pud) phys_to_page(pud_val(pud) & PAGE_MASK)
+-#define pud_page_vaddr(pud) \
+-	((struct page *) __va(pud_val(pud) & PAGE_MASK))
++#define pud_page_vaddr(pud) ((unsigned long) __va(pud_val(pud) & PAGE_MASK))
+ 
+ /* Find an entry in the second-level page table.. */
+ #define pmd_offset(pud, address) ((pmd_t *) pud_page_vaddr(*(pud)) + \
+Index: linux-2.6-git/include/asm-um/pgtable.h
+===================================================================
+--- linux-2.6-git.orig/include/asm-um/pgtable.h	2007-12-06 10:32:12.000000000 -0500
++++ linux-2.6-git/include/asm-um/pgtable.h	2007-12-06 11:26:20.000000000 -0500
+@@ -307,6 +307,9 @@ static inline pte_t pte_modify(pte_t pte
+  */
+ #define pmd_index(address) (((address) >> PMD_SHIFT) & (PTRS_PER_PMD-1))
+ 
++#define pmd_page_vaddr(pmd) \
++	((unsigned long) __va(pmd_val(pmd) & PAGE_MASK))
++
+ /*
+  * the pte page can be thought of an array like this: pte_t[PTRS_PER_PTE]
+  *
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: The Future of Linux Business White Paper
