@@ -2,23 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J111I-0002vI-Pw for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Dec 2007 06:51:08 -0800
-Received: from wa-out-1112.google.com ([209.85.146.177])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1J111I-0001DE-Hh
+	id 1J10Wq-0008H1-Tj for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 08 Dec 2007 06:19:41 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1J10Wq-0004xL-BI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Dec 2007 06:51:08 -0800
-Received: by wa-out-1112.google.com with SMTP id k22so2304461waf
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 08 Dec 2007 06:51:08 -0800 (PST)
-Message-ID: <ea9232d10712080651g133631bcxd001c2f0d53712c8@mail.gmail.com>
-Date: Sat, 8 Dec 2007 15:51:08 +0100
-From: "Karol Swietlicki" <magotari@gmail.com>
-In-Reply-To: <20071208141753.GA4667@c2.user-mode-linux.org>
-MIME-Version: 1.0
+	Sat, 08 Dec 2007 06:19:40 -0800
+Date: Sat, 8 Dec 2007 09:19:34 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071208141934.GB4667@c2.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Disposition: inline
-References: <20071208141753.GA4667@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] SKAS3 for 2.6.23
+Subject: [uml-devel] Diff against old 2.6.23 SKAS3
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,27 +28,88 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: greg@enjellic.com, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, greg@enjellic.com
 
-On 08/12/2007, Jeff Dike <jdike@addtoit.com> wrote:
-> A skas3 patch which works on 2.6.23 is below.  There were a couple of
-> problems that I fixed which are described in the changelog.  With
-> this on the host and a UML close to what's currently in -mm, I get ~85%
-> of native performance on a kernel build.  With skas0, the best I've
-> seen is ~75%.
->
-> Thanks to greg@enjellic.com for sending me a patch that patched
-> cleanly into 2.6.23.
->
-> 2.6.24 is going to be even more interesting, given the x86 merge.
->
->                                 Jeff
+And for anyone who's interested, below are the changes which I made to
+the original skas patch.
 
-This has just made my day. I just wish I had access to my main work machine now.
-I can't wait to test this.
+				Jeff
 
-Karol Swietlicki
+-- 
+Work email - jdike at linux dot intel dot com
+
+Index: linux-2.6-host/include/linux/mm.h
+===================================================================
+--- linux-2.6-host.orig/include/linux/mm.h	2007-12-07 00:37:20.000000000 -0500
++++ linux-2.6-host/include/linux/mm.h	2007-12-07 22:53:15.000000000 -0500
+@@ -1077,8 +1077,8 @@ static inline unsigned long do_mmap_pgof
+ 	return __do_mmap_pgoff(current->mm, file, addr, len, prot, flag, pgoff);
+ }
+ 
+-extern unsigned long mmap_region(struct file *file, unsigned long addr,
+-	unsigned long len, unsigned long flags,
++extern unsigned long mmap_region(struct mm_struct *mm, struct file *file,
++	unsigned long addr, unsigned long len, unsigned long flags,
+ 	unsigned int vm_flags, unsigned long pgoff,
+ 	int accountable);
+ 
+Index: linux-2.6-host/mm/fremap.c
+===================================================================
+--- linux-2.6-host.orig/mm/fremap.c	2007-12-07 00:36:08.000000000 -0500
++++ linux-2.6-host/mm/fremap.c	2007-12-07 22:54:54.000000000 -0500
+@@ -190,8 +190,9 @@ asmlinkage long sys_remap_file_pages(uns
+ 			unsigned long addr;
+ 
+ 			flags &= MAP_NONBLOCK;
+-			addr = mmap_region(vma->vm_file, start, size,
+-					flags, vma->vm_flags, pgoff, 1);
++			addr = mmap_region(current->mm, vma->vm_file, start,
++					   size, flags, vma->vm_flags, pgoff,
++					   1);
+ 			if (IS_ERR_VALUE(addr)) {
+ 				err = addr;
+ 			} else {
+Index: linux-2.6-host/mm/mmap.c
+===================================================================
+--- linux-2.6-host.orig/mm/mmap.c	2007-12-07 00:37:20.000000000 -0500
++++ linux-2.6-host/mm/mmap.c	2007-12-07 22:55:26.000000000 -0500
+@@ -1023,7 +1023,7 @@ unsigned long __do_mmap_pgoff(struct mm_
+ 	if (error)
+ 		return error;
+ 
+-	return mmap_region(file, addr, len, flags, vm_flags, pgoff,
++	return mmap_region(mm, file, addr, len, flags, vm_flags, pgoff,
+ 			   accountable);
+ }
+ EXPORT_SYMBOL(__do_mmap_pgoff);
+@@ -1062,12 +1062,12 @@ int vma_wants_writenotify(struct vm_area
+ }
+ 
+ 
+-unsigned long mmap_region(struct file *file, unsigned long addr,
++unsigned long mmap_region(struct mm_struct *mm,
++			  struct file *file, unsigned long addr,
+ 			  unsigned long len, unsigned long flags,
+ 			  unsigned int vm_flags, unsigned long pgoff,
+ 			  int accountable)
+ {
+-	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma, *prev;
+ 	int correct_wcount = 0;
+ 	int error;
+Index: linux-2.6-host/mm/proc_mm.c
+===================================================================
+--- linux-2.6-host.orig/mm/proc_mm.c	2007-12-07 16:21:06.000000000 -0500
++++ linux-2.6-host/mm/proc_mm.c	2007-12-07 16:22:07.000000000 -0500
+@@ -209,7 +209,7 @@ struct mm_struct *proc_mm_get_mm(int fd)
+ 		goto out;
+ 
+ 	ret = ERR_PTR(-EINVAL);
+-	if(file->f_op != &proc_mm_fops)
++	if(PDE(file->f_path.dentry->d_inode)->proc_fops != &proc_mm_fops)
+ 		goto out_fput;
+ 
+ 	ret = file->private_data;
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: 
