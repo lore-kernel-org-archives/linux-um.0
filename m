@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J1mvi-0007GN-D8 for user-mode-linux-devel@lists.sourceforge.net;
+	id 1J1mvi-0007GO-D8 for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 10 Dec 2007 10:00:34 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J1mvh-0006Uj-Ic
+	(Exim 4.44) id 1J1mvh-0006Ui-Id
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 10 Dec 2007 10:00:34 -0800
-Date: Mon, 10 Dec 2007 13:00:08 -0500
+Date: Mon, 10 Dec 2007 13:00:07 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071210180008.GA9343@c2.user-mode-linux.org>
+Message-ID: <20071210180007.GA9323@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 3/5] UML - Eliminate setjmp_wrapper
+Subject: [uml-devel] [PATCH 1/5] UML - Customize tlb.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,187 +31,212 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-setjmp_wrapper existed to provide setjmp to kernel code when UML used
-libc's setjmp and longjmp.  Now that UML has its own implementation,
-this isn't needed and kernel code can invoke setjmp directly.
+[ Removed the check of mm_users which can't succeed and gave tlb.h an
+include of percpu.h ]
 
-do_buffer_op is massively cleaned up since it is no longer a callback
-from setjmp_wrapper and given a va_list from which it must extract its
-arguments.
+Customize the hooks in tlb.h to optimize TLB flushing some more.
 
-The actual setjmp is moved from buffer_op to do_op_one_page because
-the copy operation is inside an atomic section (kmap_atomic to
-kunmap_atomic) and it shouldn't be longjmp-ed out of.
+Add start and end fields to tlb_gather_mmu, which are used to limit
+the address space range scanned when a region is unmapped.
+
+The interfaces which just free page tables, without actually changing
+mappings, don't need to cause a TLB flush.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/include/os.h          |    1 
- arch/um/kernel/skas/uaccess.c |   73 +++++++++++++++---------------------------
- arch/um/os-Linux/util.c       |   15 --------
- 3 files changed, 27 insertions(+), 62 deletions(-)
+ arch/um/kernel/tlb.c |   25 +++++++---
+ include/asm-um/tlb.h |  122 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 139 insertions(+), 8 deletions(-)
 
-Index: linux-2.6-git/arch/um/include/os.h
+Index: linux-2.6-git/arch/um/kernel/tlb.c
 ===================================================================
---- linux-2.6-git.orig/arch/um/include/os.h	2007-12-10 12:37:04.000000000 -0500
-+++ linux-2.6-git/arch/um/include/os.h	2007-12-10 12:37:59.000000000 -0500
-@@ -237,7 +237,6 @@ extern void stack_protections(unsigned l
- extern int raw(int fd);
- extern void setup_machinename(char *machine_out);
- extern void setup_hostinfo(char *buf, int len);
--extern int setjmp_wrapper(void (*proc)(void *, void *), ...);
- extern void os_dump_core(void);
- 
- /* time.c */
-Index: linux-2.6-git/arch/um/kernel/skas/uaccess.c
-===================================================================
---- linux-2.6-git.orig/arch/um/kernel/skas/uaccess.c	2007-12-10 12:36:31.000000000 -0500
-+++ linux-2.6-git/arch/um/kernel/skas/uaccess.c	2007-12-10 12:37:59.000000000 -0500
-@@ -58,9 +58,10 @@ static pte_t *maybe_map(unsigned long vi
- static int do_op_one_page(unsigned long addr, int len, int is_write,
- 		 int (*op)(unsigned long addr, int len, void *arg), void *arg)
- {
-+	jmp_buf buf;
- 	struct page *page;
- 	pte_t *pte;
--	int n;
-+	int n, faulted;
- 
- 	pte = maybe_map(addr, is_write);
- 	if (pte == NULL)
-@@ -70,82 +71,62 @@ static int do_op_one_page(unsigned long 
- 	addr = (unsigned long) kmap_atomic(page, KM_UML_USERCOPY) +
- 		(addr & ~PAGE_MASK);
- 
--	n = (*op)(addr, len, arg);
-+	current->thread.fault_catcher = &buf;
+--- linux-2.6-git.orig/arch/um/kernel/tlb.c	2007-12-07 14:35:55.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/tlb.c	2007-12-07 16:34:12.000000000 -0500
+@@ -193,18 +193,18 @@ static inline int update_pte_range(pmd_t
+ 		if (!pte_young(*pte)) {
+ 			r = 0;
+ 			w = 0;
+-		} else if (!pte_dirty(*pte)) {
++		} else if (!pte_dirty(*pte))
+ 			w = 0;
+-		}
 +
-+	faulted = UML_SETJMP(&buf);
-+	if (faulted == 0)
-+		n = (*op)(addr, len, arg);
-+	else
-+		n = -1;
-+
-+	current->thread.fault_catcher = NULL;
- 
- 	kunmap_atomic(page, KM_UML_USERCOPY);
- 
- 	return n;
+ 		prot = ((r ? UM_PROT_READ : 0) | (w ? UM_PROT_WRITE : 0) |
+ 			(x ? UM_PROT_EXEC : 0));
+ 		if (hvc->force || pte_newpage(*pte)) {
+ 			if (pte_present(*pte))
+ 				ret = add_mmap(addr, pte_val(*pte) & PAGE_MASK,
+ 					       PAGE_SIZE, prot, hvc);
+-			else ret = add_munmap(addr, PAGE_SIZE, hvc);
+-		}
+-		else if (pte_newprot(*pte))
++			else
++				ret = add_munmap(addr, PAGE_SIZE, hvc);
++		} else if (pte_newprot(*pte))
+ 			ret = add_mprotect(addr, PAGE_SIZE, prot, hvc);
+ 		*pte = pte_mkuptodate(*pte);
+ 	} while (pte++, addr += PAGE_SIZE, ((addr != end) && !ret));
+@@ -500,7 +500,8 @@ void flush_tlb_range(struct vm_area_stru
+ 	else fix_range(vma->vm_mm, start, end, 0);
  }
  
--static void do_buffer_op(void *jmpbuf, void *arg_ptr)
-+static int buffer_op(unsigned long addr, int len, int is_write,
-+		     int (*op)(unsigned long, int, void *), void *arg)
+-void flush_tlb_mm(struct mm_struct *mm)
++void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
++			unsigned long end)
  {
--	va_list args;
--	unsigned long addr;
--	int len, is_write, size, remain, n;
--	int (*op)(unsigned long, int, void *);
--	void *arg;
--	int *res;
--
--	va_copy(args, *(va_list *)arg_ptr);
--	addr = va_arg(args, unsigned long);
--	len = va_arg(args, int);
--	is_write = va_arg(args, int);
--	op = va_arg(args, void *);
--	arg = va_arg(args, void *);
--	res = va_arg(args, int *);
--	va_end(args);
-+	int size, remain, n;
+ 	/*
+ 	 * Don't bother flushing if this address space is about to be
+@@ -509,7 +510,17 @@ void flush_tlb_mm(struct mm_struct *mm)
+ 	if (atomic_read(&mm->mm_users) == 0)
+ 		return;
+ 
+-	fix_range(mm, 0, TASK_SIZE, 0);
++	fix_range(mm, start, end, 0);
++}
 +
- 	size = min(PAGE_ALIGN(addr) - addr, (unsigned long) len);
- 	remain = len;
- 
--	current->thread.fault_catcher = jmpbuf;
- 	n = do_op_one_page(addr, size, is_write, op, arg);
- 	if (n != 0) {
--		*res = (n < 0 ? remain : 0);
-+		remain = (n < 0 ? remain : 0);
- 		goto out;
- 	}
- 
- 	addr += size;
- 	remain -= size;
--	if (remain == 0) {
--		*res = 0;
-+	if (remain == 0)
- 		goto out;
--	}
- 
--	while(addr < ((addr + remain) & PAGE_MASK)) {
-+	while (addr < ((addr + remain) & PAGE_MASK)) {
- 		n = do_op_one_page(addr, PAGE_SIZE, is_write, op, arg);
- 		if (n != 0) {
--			*res = (n < 0 ? remain : 0);
-+			remain = (n < 0 ? remain : 0);
- 			goto out;
- 		}
- 
- 		addr += PAGE_SIZE;
- 		remain -= PAGE_SIZE;
- 	}
--	if (remain == 0) {
--		*res = 0;
-+	if (remain == 0)
- 		goto out;
--	}
- 
- 	n = do_op_one_page(addr, remain, is_write, op, arg);
--	if (n != 0)
--		*res = (n < 0 ? remain : 0);
--	else *res = 0;
-- out:
--	current->thread.fault_catcher = NULL;
--}
--
--static int buffer_op(unsigned long addr, int len, int is_write,
--		     int (*op)(unsigned long addr, int len, void *arg),
--		     void *arg)
--{
--	int faulted, res;
--
--	faulted = setjmp_wrapper(do_buffer_op, addr, len, is_write, op, arg,
--				 &res);
--	if (!faulted)
--		return res;
-+	if (n != 0) {
-+		remain = (n < 0 ? remain : 0);
-+		goto out;
++void flush_tlb_mm(struct mm_struct *mm)
++{
++	struct vm_area_struct *vma = mm->mmap;
++
++	while (vma != NULL) {
++		fix_range(mm, vma->vm_start, vma->vm_end, 0);
++		vma = vma->vm_next;
 +	}
- 
--	return addr + len - (unsigned long) current->thread.fault_addr;
-+	return 0;
-+ out:
-+	return remain;
  }
  
- static int copy_chunk_from_user(unsigned long from, int len, void *arg)
-Index: linux-2.6-git/arch/um/os-Linux/util.c
+ void force_flush_all(void)
+Index: linux-2.6-git/include/asm-um/tlb.h
 ===================================================================
---- linux-2.6-git.orig/arch/um/os-Linux/util.c	2007-12-10 12:36:31.000000000 -0500
-+++ linux-2.6-git/arch/um/os-Linux/util.c	2007-12-10 12:37:59.000000000 -0500
-@@ -88,21 +88,6 @@ void setup_hostinfo(char *buf, int len)
- 		 host.release, host.version, host.machine);
- }
+--- linux-2.6-git.orig/include/asm-um/tlb.h	2007-12-07 00:09:56.000000000 -0500
++++ linux-2.6-git/include/asm-um/tlb.h	2007-12-07 14:37:30.000000000 -0500
+@@ -1,6 +1,126 @@
+ #ifndef __UM_TLB_H
+ #define __UM_TLB_H
  
--int setjmp_wrapper(void (*proc)(void *, void *), ...)
--{
--	va_list args;
--	jmp_buf buf;
--	int n;
--
--	n = UML_SETJMP(&buf);
--	if(n == 0){
--		va_start(args, proc);
--		(*proc)(&buf, &args);
--	}
--	va_end(args);
--	return n;
--}
--
- void os_dump_core(void)
- {
- 	int pid;
+-#include <asm/arch/tlb.h>
++#include <linux/swap.h>
++#include <asm/percpu.h>
++#include <asm/pgalloc.h>
++#include <asm/tlbflush.h>
++
++#define tlb_start_vma(tlb, vma) do { } while (0)
++#define tlb_end_vma(tlb, vma) do { } while (0)
++#define tlb_flush(tlb) flush_tlb_mm((tlb)->mm)
++
++/* struct mmu_gather is an opaque type used by the mm code for passing around
++ * any data needed by arch specific code for tlb_remove_page.
++ */
++struct mmu_gather {
++	struct mm_struct	*mm;
++	unsigned int		need_flush; /* Really unmapped some ptes? */
++	unsigned long		start;
++	unsigned long		end;
++	unsigned int		fullmm; /* non-zero means full mm flush */
++};
++
++/* Users of the generic TLB shootdown code must declare this storage space. */
++DECLARE_PER_CPU(struct mmu_gather, mmu_gathers);
++
++static inline void __tlb_remove_tlb_entry(struct mmu_gather *tlb, pte_t *ptep,
++					  unsigned long address)
++{
++	if (tlb->start > address)
++		tlb->start = address;
++	if (tlb->end < address + PAGE_SIZE)
++		tlb->end = address + PAGE_SIZE;
++}
++
++static inline void init_tlb_gather(struct mmu_gather *tlb)
++{
++	tlb->need_flush = 0;
++
++	tlb->start = TASK_SIZE;
++	tlb->end = 0;
++
++	if (tlb->fullmm) {
++		tlb->start = 0;
++		tlb->end = TASK_SIZE;
++	}
++}
++
++/* tlb_gather_mmu
++ *	Return a pointer to an initialized struct mmu_gather.
++ */
++static inline struct mmu_gather *
++tlb_gather_mmu(struct mm_struct *mm, unsigned int full_mm_flush)
++{
++	struct mmu_gather *tlb = &get_cpu_var(mmu_gathers);
++
++	tlb->mm = mm;
++	tlb->fullmm = full_mm_flush;
++
++	init_tlb_gather(tlb);
++
++	return tlb;
++}
++
++extern void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
++			       unsigned long end);
++
++static inline void
++tlb_flush_mmu(struct mmu_gather *tlb, unsigned long start, unsigned long end)
++{
++	if (!tlb->need_flush)
++		return;
++
++	flush_tlb_mm_range(tlb->mm, tlb->start, tlb->end);
++	init_tlb_gather(tlb);
++}
++
++/* tlb_finish_mmu
++ *	Called at the end of the shootdown operation to free up any resources
++ *	that were required.
++ */
++static inline void
++tlb_finish_mmu(struct mmu_gather *tlb, unsigned long start, unsigned long end)
++{
++	tlb_flush_mmu(tlb, start, end);
++
++	/* keep the page table cache within bounds */
++	check_pgt_cache();
++
++	put_cpu_var(mmu_gathers);
++}
++
++/* tlb_remove_page
++ *	Must perform the equivalent to __free_pte(pte_get_and_clear(ptep)),
++ *	while handling the additional races in SMP caused by other CPUs
++ *	caching valid mappings in their TLBs.
++ */
++static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page)
++{
++	tlb->need_flush = 1;
++	free_page_and_swap_cache(page);
++	return;
++}
++
++/**
++ * tlb_remove_tlb_entry - remember a pte unmapping for later tlb invalidation.
++ *
++ * Record the fact that pte's were really umapped in ->need_flush, so we can
++ * later optimise away the tlb invalidate.   This helps when userspace is
++ * unmapping already-unmapped pages, which happens quite a lot.
++ */
++#define tlb_remove_tlb_entry(tlb, ptep, address)		\
++	do {							\
++		tlb->need_flush = 1;				\
++		__tlb_remove_tlb_entry(tlb, ptep, address);	\
++	} while (0)
++
++#define pte_free_tlb(tlb, ptep) __pte_free_tlb(tlb, ptep)
++
++#define pud_free_tlb(tlb, pudp) __pud_free_tlb(tlb, pudp)
++
++#define pmd_free_tlb(tlb, pmdp) __pmd_free_tlb(tlb, pmdp)
++
++#define tlb_migrate_finish(mm) do {} while (0)
+ 
+ #endif
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: 
