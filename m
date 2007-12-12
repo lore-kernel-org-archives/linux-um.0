@@ -2,19 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J2YV8-0001ba-6Z for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Dec 2007 12:48:18 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1J2Ybl-0002Nx-Kk for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 12 Dec 2007 12:55:09 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J2YV6-0006rb-IN
+	(Exim 4.44) id 1J2Ybd-0003qs-Ur
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Dec 2007 12:48:18 -0800
-Date: Wed, 12 Dec 2007 15:47:58 -0500
+	Wed, 12 Dec 2007 12:55:04 -0800
+Date: Wed, 12 Dec 2007 15:54:55 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071212204758.GA9124@c2.user-mode-linux.org>
+Message-ID: <20071212205455.GB9244@c2.user-mode-linux.org>
+References: <ea9232d10712111618i652ed952s6c6545bec24e05e6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/6] UML - don't kill pid 0
+In-Reply-To: <ea9232d10712111618i652ed952s6c6545bec24e05e6@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH] uml: Fix unintentional resumes in mconsole
+	stop code.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,49 +31,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Karol Swietlicki <magotari@gmail.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-A bit of defensive programming - during development, it ocassionally
-happens that a call to init_new_context is missed, resulting in
-context holding a host pid of zero.  When that address space is torn
-down, destroy_context does a kill(0), which instantly kills the whole
-UML without any errors whatsoever.
+On Wed, Dec 12, 2007 at 01:18:51AM +0100, Karol Swietlicki wrote:
+> This patch takes care of a problem with the stopping code.
 
-This patch add a check for pids less than 2, to also catch 1 and
-negative pids.
+Thanks, I'll send this in in the next few days.
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
----
- arch/um/kernel/skas/mmu.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+				Jeff
 
-Index: linux-2.6-git/arch/um/kernel/skas/mmu.c
-===================================================================
---- linux-2.6-git.orig/arch/um/kernel/skas/mmu.c	2007-12-12 15:06:14.000000000 -0500
-+++ linux-2.6-git/arch/um/kernel/skas/mmu.c	2007-12-12 15:12:11.000000000 -0500
-@@ -164,8 +164,20 @@ void destroy_context(struct mm_struct *m
- 
- 	if (proc_mm)
- 		os_close_file(mmu->id.u.mm_fd);
--	else
-+	else {
-+		/*
-+		 * If init_new_context wasn't called, this will be
-+		 * zero, resulting in a kill(0), which will result in the
-+		 * whole UML suddenly dying.  Also, cover negative and
-+		 * 1 cases, since they shouldn't happen either.
-+		 */
-+		if (mmu->id.u.pid < 2) {
-+			printk(KERN_ERR "corrupt mm_context - pid = %d\n",
-+			       mmu->id.u.pid);
-+			return;
-+		}
- 		os_kill_ptraced_process(mmu->id.u.pid, 1);
-+	}
- 
- 	if (skas_needs_stub)
- 		free_page(mmu->id.stack);
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by:
