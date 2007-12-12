@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J28eK-0008WE-Dp for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Dec 2007 09:12:04 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J28eJ-0005ol-83
+	id 1J2FJN-0005SI-FN for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Dec 2007 16:18:53 -0800
+Received: from an-out-0708.google.com ([209.85.132.243])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1J2FJM-0007NF-3h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 11 Dec 2007 09:12:04 -0800
-Date: Tue, 11 Dec 2007 12:11:56 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071211171156.GA6656@c2.user-mode-linux.org>
-References: <20071208141753.GA4667@c2.user-mode-linux.org>
-	<1197301533.6483.440.camel@athena.fprintf.net>
-	<1197343606.6483.484.camel@athena.fprintf.net>
-Mime-Version: 1.0
+	Tue, 11 Dec 2007 16:18:53 -0800
+Received: by an-out-0708.google.com with SMTP id b38so6392ana.6
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 11 Dec 2007 16:18:51 -0800 (PST)
+Message-ID: <ea9232d10712111618i652ed952s6c6545bec24e05e6@mail.gmail.com>
+Date: Wed, 12 Dec 2007 01:18:51 +0100
+From: "Karol Swietlicki" <magotari@gmail.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1197343606.6483.484.camel@athena.fprintf.net>
-Subject: Re: [uml-devel] SKAS3 for 2.6.23
+Subject: [uml-devel] [PATCH] uml: Fix unintentional resumes in mconsole stop
+	code.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,21 +31,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Daniel Gryniewicz <dang@fprintf.net>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Mon, Dec 10, 2007 at 10:26:46PM -0500, Daniel Gryniewicz wrote:
-> Okay, attached is a patch against 2.6.23.9 + skas3 patch to make it
-> build (and run) as a UML guest.  I've only tested it on x86_64 (but I
-> did use SUBARCH=i386).  I went the route of minimal changes to get it to
-> build, as just including things from asm/arch/ didn't work very well.
+This patch takes care of a problem with the stopping code.
 
-Thanks, I've dropped this into my tree.
+The function inside the while condition returns 0 to signify a problem.
+A problem could be for example a bad command or a bad version of the
+mconsole client.
+A bad command would terminate the stopping loop and resume the kernel.
+This is a problem.
 
-				Jeff
+A better solution is to make the loop infinite and don't leave it
+until we are explicitly told to.
 
--- 
-Work email - jdike at linux dot intel dot com
+Karol Swietlicki
+
+Signed-off-by: Karol Swietlicki <magotari@gmail.com>
+---
+diff -rupN linux-2.6.24-rc4.orig/arch/um/drivers/mconsole_kern.c
+linux-2.6.24-rc4/arch/um/drivers/mconsole_kern.c
+--- linux-2.6.24-rc4.orig/arch/um/drivers/mconsole_kern.c	2007-12-12
+00:58:17.000000000 +0100
++++ linux-2.6.24-rc4/arch/um/drivers/mconsole_kern.c	2007-12-12
+01:00:33.000000000 +0100
+@@ -305,7 +305,9 @@ void mconsole_stop(struct mc_request *re
+ 	deactivate_fd(req->originating_fd, MCONSOLE_IRQ);
+ 	os_set_fd_block(req->originating_fd, 1);
+ 	mconsole_reply(req, "stopped", 0, 0);
+-	while (mconsole_get_request(req->originating_fd, req)) {
++	for (;;) {
++		if (!mconsole_get_request(req->originating_fd, req))
++			continue;
+ 		if (req->cmd->handler == mconsole_go)
+ 			break;
+ 		if (req->cmd->handler == mconsole_stop) {
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by: 
