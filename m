@@ -1,20 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J2t62-0003Av-TX for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Dec 2007 10:47:49 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1J2t5q-0007Q3-7u
+	id 1J2xEy-0006YE-OF for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Dec 2007 15:13:16 -0800
+Received: from an-out-0708.google.com ([209.85.132.250])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1J2xEy-0003Ag-3o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Dec 2007 10:47:36 -0800
-Message-ID: <47617E3A.2000409@nagafix.co.uk>
-Date: Thu, 13 Dec 2007 18:47:22 +0000
-From: Antoine Martin <antoine@nagafix.co.uk>
+	Thu, 13 Dec 2007 15:13:16 -0800
+Received: by an-out-0708.google.com with SMTP id b38so277009ana.6
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 13 Dec 2007 15:13:15 -0800 (PST)
+Message-ID: <ea9232d10712131513l65d1a2adh1a85fba97fcda114@mail.gmail.com>
+Date: Fri, 14 Dec 2007 00:13:15 +0100
+From: "Karol Swietlicki" <magotari@gmail.com>
+In-Reply-To: <47617E3A.2000409@nagafix.co.uk>
 MIME-Version: 1.0
-References: <20071207182146.2b6f5176@mistral.stie>	<20071208040335.GA21495@c2.user-mode-linux.org>	<20071209212731.24bd6f01@mistral.stie>	<475DB98D.10001@nagafix.co.uk>	<20071210193441.1161c8ce@mistral.stie>	<475EDFA7.8020204@nagafix.co.uk>
+Content-Disposition: inline
+References: <20071207182146.2b6f5176@mistral.stie>
+	<20071208040335.GA21495@c2.user-mode-linux.org>
+	<20071209212731.24bd6f01@mistral.stie> <475DB98D.10001@nagafix.co.uk>
+	<20071210193441.1161c8ce@mistral.stie>
+	<475EDFA7.8020204@nagafix.co.uk>
 	<20071211195413.53b122d6@mistral.stie>
-In-Reply-To: <20071211195413.53b122d6@mistral.stie>
+	<47617E3A.2000409@nagafix.co.uk>
 Subject: Re: [uml-devel] [uml-user] 64 bit host ?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,38 +38,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: lanas <lanas@securenet.net>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Jeff Dike <jdike@addtoit.com>
+To: Antoine Martin <antoine@nagafix.co.uk>
+Cc: Jeff Dike <jdike@addtoit.com>, lanas <lanas@securenet.net>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
+On 13/12/2007, Antoine Martin <antoine@nagafix.co.uk> wrote:
 
-lanas wrote:
->>> Even then, I'm surely missing something.  The Fedora Core x86_64
->>> binary is a mere 2 MB.  Shouldn't be a UML-patched kernel about the
->>> same size ?
-> 
->> Hmmm, not sure.
->> Looks like the debug info is big indeed.
->> The config files are available, so you should be able to figure out
->> what makes it so fat. (frame-pointers?)
-> 
-[snip]
-> 
-> On the other hand, I downloaded today the source code of kernel
-> 2.6.23-something and it was about 45 MB all in all.  Hard to imagine
-> that a compiled kernel would be of the same size, no ?
-Hah, yes. thinking about it, 45MB is a tad excessive!
+I follow only one list, uml-devel, so my reply is only based only on
+the context that I have from this mail.
 
-Antoine
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.7 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+> lanas wrote:
+> >>> Even then, I'm surely missing something.  The Fedora Core x86_64
+> >>> binary is a mere 2 MB.  Shouldn't be a UML-patched kernel about the
+> >>> same size ?
 
-iD8DBQFHYX45GK2zHPGK1rsRCjM6AJ4glZK9D0X0tbV27AHQuICywbFcMACbBwLD
-Gam+fu8qTiKjC9nHnBBKlXo=
-=O6ne
------END PGP SIGNATURE-----
+It is. In a way.
+karol@BlackBox ~/expe $ du linux
+22056   linux
+karol@BlackBox ~/expe $ strip linux
+karol@BlackBox ~/expe $ du linux
+1868    linux
+
+> >> Hmmm, not sure.
+> >> Looks like the debug info is big indeed.
+> >> The config files are available, so you should be able to figure out
+> >> what makes it so fat. (frame-pointers?)
+
+Not at all. Actually, as far as I know it is the lack of frame
+pointers that makes the code bigger. Either way, it would never make
+it bloat extremely.
+
+> > On the other hand, I downloaded today the source code of kernel
+> > 2.6.23-something and it was about 45 MB all in all.  Hard to imagine
+> > that a compiled kernel would be of the same size, no ?
+> Hah, yes. thinking about it, 45MB is a tad excessive!
+
+Not really. The debug information is really plentiful.
+Add in a few libraries with static compiling and you have a
+monster-sized kernel on your hands.
+
+> Antoine
+
+Karol Swietlicki
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by:
