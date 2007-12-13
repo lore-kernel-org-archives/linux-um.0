@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J2pDQ-0005bu-4J for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Dec 2007 06:39:08 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J2pDO-00074V-7Y
+	id 1J2t62-0003Av-TX for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Dec 2007 10:47:49 -0800
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1J2t5q-0007Q3-7u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 13 Dec 2007 06:39:08 -0800
-Date: Thu, 13 Dec 2007 09:38:57 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071213143857.GA5768@c2.user-mode-linux.org>
-References: <4761327D.8020301@dasistemi.it>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4761327D.8020301@dasistemi.it>
-Subject: Re: [uml-devel] Serial Line ioct and set_termios bypassing
+	Thu, 13 Dec 2007 10:47:36 -0800
+Message-ID: <47617E3A.2000409@nagafix.co.uk>
+Date: Thu, 13 Dec 2007 18:47:22 +0000
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
+References: <20071207182146.2b6f5176@mistral.stie>	<20071208040335.GA21495@c2.user-mode-linux.org>	<20071209212731.24bd6f01@mistral.stie>	<475DB98D.10001@nagafix.co.uk>	<20071210193441.1161c8ce@mistral.stie>	<475EDFA7.8020204@nagafix.co.uk>
+	<20071211195413.53b122d6@mistral.stie>
+In-Reply-To: <20071211195413.53b122d6@mistral.stie>
+Subject: Re: [uml-devel] [uml-user] 64 bit host ?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,29 +29,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: tcappellari <tcappellari@dasistemi.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: lanas <lanas@securenet.net>, User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Jeff Dike <jdike@addtoit.com>
 
-On Thu, Dec 13, 2007 at 02:24:13PM +0100, tcappellari wrote:
-> I'm developing an application that I want to run inside UML system. This 
-> application use the serial line, and I need to set/reset the control 
-> signals RTS/DTR and read CTS/DSR and also I need to set up the baud rate.
-> Into UML kernel the line_ioctl and line_set_termio functions are 
-> essentialy empty, so I guess that what I need is intentionally not 
-> implemented for divide the Guest system from the Host. (please correct 
-> me if I wrong).
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-I'll implement them if you'll test patches and tell me if they work.
+lanas wrote:
+>>> Even then, I'm surely missing something.  The Fedora Core x86_64
+>>> binary is a mere 2 MB.  Shouldn't be a UML-patched kernel about the
+>>> same size ?
+> 
+>> Hmmm, not sure.
+>> Looks like the debug info is big indeed.
+>> The config files are available, so you should be able to figure out
+>> what makes it so fat. (frame-pointers?)
+> 
+[snip]
+> 
+> On the other hand, I downloaded today the source code of kernel
+> 2.6.23-something and it was about 45 MB all in all.  Hard to imagine
+> that a compiled kernel would be of the same size, no ?
+Hah, yes. thinking about it, 45MB is a tad excessive!
 
-The thing about serial ioctls is that few things use them and it's not
-obvious what they are supposed to do.
+Antoine
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.7 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-What ioctls in particular are you missing?
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+iD8DBQFHYX45GK2zHPGK1rsRCjM6AJ4glZK9D0X0tbV27AHQuICywbFcMACbBwLD
+Gam+fu8qTiKjC9nHnBBKlXo=
+=O6ne
+-----END PGP SIGNATURE-----
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by:
