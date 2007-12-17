@@ -1,23 +1,9 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J3FhP-0000jv-2x for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Dec 2007 10:55:51 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J3FhM-0003MK-Kb
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 14 Dec 2007 10:55:51 -0800
-Date: Fri, 14 Dec 2007 13:55:11 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071214185511.GA7852@c2.user-mode-linux.org>
-References: <20071214161647.GA5802@c2.user-mode-linux.org>
-	<20071214095840.28736204.akpm@linux-foundation.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20071214095840.28736204.akpm@linux-foundation.org>
-Subject: Re: [uml-devel] [PATCH] UML - Add asm/fixmap.h include
+From: Joe Perches <joe@perches.com>
+Date: Mon, 17 Dec 2007 11:30:23 -0800
+Message-Id: <1197919875-5288-24-git-send-email-joe@perches.com>
+Message-Id: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918890.git.joe@perches.com>
+Subject: [uml-devel] [PATCH] arch/um: Spelling fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,24 +13,36 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: linux-kernel@vger.kernel.org
+Cc: user-mode-linux-user@lists.sourceforge.net, Andrew Morton <akpm@linux-foundation.org>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Dec 14, 2007 at 09:58:40AM -0800, Andrew Morton wrote:
-> arch/um/include/um_uaccess.h already includes fixmap.h.  Is this a -mm-only
-> fix?
 
-Whoops, it is.  The include was removed by uml-header-untangling.patch,
-so folding this into that would work.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ arch/um/sys-x86_64/signal.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-				Jeff
-
+diff --git a/arch/um/sys-x86_64/signal.c b/arch/um/sys-x86_64/signal.c
+index 1778d33..3a63862 100644
+--- a/arch/um/sys-x86_64/signal.c
++++ b/arch/um/sys-x86_64/signal.c
+@@ -112,7 +112,7 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ 	err |= PUTREG(regs, RSI, to, rsi);
+ 	err |= PUTREG(regs, RBP, to, rbp);
+ 	/*
+-	 * Must use orignal RSP, which is passed in, rather than what's in
++	 * Must use original RSP, which is passed in, rather than what's in
+ 	 * the pt_regs, because that's already been updated to point at the
+ 	 * signal frame.
+ 	 */
 -- 
-Work email - jdike at linux dot intel dot com
+1.5.3.7.949.g2221a6
+
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by:
