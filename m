@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J4hRq-0007Dy-Ib for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Dec 2007 10:45:53 -0800
-Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1J4hRq-00021e-5U
+	id 1J4i8J-0003Ou-7e for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 18 Dec 2007 11:29:39 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1J4i8H-0001TA-Jw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Dec 2007 10:45:46 -0800
-Received: from landley.net (localhost [127.0.0.1])
-	by grelber.thyrsus.com (Postfix) with ESMTP id 413962C83D0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 18 Dec 2007 13:47:21 -0500 (EST)
-From: Rob Landley <rob@landley.net>
-Date: Tue, 18 Dec 2007 12:45:23 -0600
-MIME-Version: 1.0
+	Tue, 18 Dec 2007 11:29:39 -0800
+Date: Tue, 18 Dec 2007 14:29:11 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20071218192911.GA7940@c2.user-mode-linux.org>
+References: <200712181245.23753.rob@landley.net>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200712181245.23753.rob@landley.net>
-Subject: [uml-devel] Loopback mounting jffs2 under UML?
+In-Reply-To: <200712181245.23753.rob@landley.net>
+Subject: Re: [uml-devel] Loopback mounting jffs2 under UML?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,32 +30,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Rob Landley <rob@landley.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-I want to loopback mount a jffs2 filesystem, and this filesystem has 
-incestuous knowledge of flash devices for wear levelling and stuff, so it 
-will only mount an actual flash device and not a normal block device.
+On Tue, Dec 18, 2007 at 12:45:23PM -0600, Rob Landley wrote:
+> There's a way to make a loopback device look like a flash device, letting 
+> you loopback mount jffs2, but it involves recompiling the kerenel to add 
+> support for it, and of course I went "User Mode Linux"...  Except
+> that UML disables  the flash menu entirely.
 
-There's a way to make a loopback device look like a flash device, letting you 
-loopback mount jffs2, but it involves recompiling the kerenel to add support 
-for it, and of course I went "User Mode Linux"...  Except that UML disables 
-the flash menu entirely.
+> Suggestions?
 
-Basically, I need to be able to enable MTD_BLOCK so I can go:
+I see this in menuconfig:
 
-  losetup /dev/loop0 /path/to/imagefile.jffs2
-  insmod blkmtd erasesz=256 device=/dev/loop0
-  mount -t jffs2 /dev/mtdblock0 /mnt
+Symbol: MTD [=n]                                                      
+   Prompt: Memory Technology Device (MTD) support                     
+     Defined at drivers/mtd/Kconfig:3                                  
+     Depends on: BROKEN && HAS_IOMEM
 
-This shouldn't need any actual flash hardware.  It's just layering another 
-translation layer on top of loopback.
+You could try removing the dependencies on BROKEN and HAS_IOMEM and
+see what happens...
 
-Suggestions?
+				Jeff
 
-Rob
 -- 
-"One of my most productive days was throwing away 1000 lines of code."
-  - Ken Thompson.
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 SF.Net email is sponsored by:
