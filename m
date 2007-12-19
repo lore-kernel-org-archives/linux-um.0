@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J4jPl-0003Nl-13 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Dec 2007 12:51:45 -0800
-Received: from smtp.bluecom.no ([193.75.75.28])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1J4jPi-0002E6-CU
+	id 1J4nTl-0003rn-Rq for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 18 Dec 2007 17:12:13 -0800
+Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1J4nTk-0001YV-O6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 18 Dec 2007 12:51:44 -0800
-From: Stian Skjelstad <stian@nixia.no>
-In-Reply-To: <200712181245.23753.rob@landley.net>
+	Tue, 18 Dec 2007 17:12:09 -0800
+From: Rob Landley <rob@landley.net>
+Date: Tue, 18 Dec 2007 18:03:25 -0600
 References: <200712181245.23753.rob@landley.net>
-Date: Tue, 18 Dec 2007 20:14:15 +0100
-Message-Id: <1198005255.7293.6.camel@localhost>
-Mime-Version: 1.0
+	<20071218192911.GA7940@c2.user-mode-linux.org>
+In-Reply-To: <20071218192911.GA7940@c2.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200712181803.28516.rob@landley.net>
 Subject: Re: [uml-devel] Loopback mounting jffs2 under UML?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -24,54 +27,93 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Rob Landley <rob@landley.net>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-I did try UML + blkmtd and jffs statically compiled in a couple of years
-ago and it then almost worked out of the box. It failed then for me due
-to a very small issue: the initializers in the different drivers
-initialized in the wrong order, so I got a panic due to a
-null-dereference. (driver initialization does/didn't have depencies).
-
-Just me five cents :-)
-
-Stian
-
-On Tue, 2007-12-18 at 12:45 -0600, Rob Landley wrote:
-> I want to loopback mount a jffs2 filesystem, and this filesystem has 
-> incestuous knowledge of flash devices for wear levelling and stuff, so it 
-> will only mount an actual flash device and not a normal block device.
-> 
-> There's a way to make a loopback device look like a flash device, letting you 
-> loopback mount jffs2, but it involves recompiling the kerenel to add support 
-> for it, and of course I went "User Mode Linux"...  Except that UML disables 
-> the flash menu entirely.
-> 
-> Basically, I need to be able to enable MTD_BLOCK so I can go:
-> 
->   losetup /dev/loop0 /path/to/imagefile.jffs2
->   insmod blkmtd erasesz=256 device=/dev/loop0
->   mount -t jffs2 /dev/mtdblock0 /mnt
-> 
-> This shouldn't need any actual flash hardware.  It's just layering another 
-> translation layer on top of loopback.
-> 
-> Suggestions?
-> 
-> Rob
-
-
--------------------------------------------------------------------------
-SF.Net email is sponsored by:
-Check out the new SourceForge.net Marketplace.
-It's the best place to buy or sell services
-for just about anything Open Source.
-http://ad.doubleclick.net/clk;164216239;13503038;w?http://sf.net/marketplace
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gVHVlc2RheSAxOCBEZWNlbWJlciAyMDA3IDEzOjI5OjExIEplZmYgRGlrZSB3cm90ZToKPiBP
+biBUdWUsIERlYyAxOCwgMjAwNyBhdCAxMjo0NToyM1BNIC0wNjAwLCBSb2IgTGFuZGxleSB3cm90
+ZToKPiA+IFRoZXJlJ3MgYSB3YXkgdG8gbWFrZSBhIGxvb3BiYWNrIGRldmljZSBsb29rIGxpa2Ug
+YSBmbGFzaCBkZXZpY2UsIGxldHRpbmcKPiA+IHlvdSBsb29wYmFjayBtb3VudCBqZmZzMiwgYnV0
+IGl0IGludm9sdmVzIHJlY29tcGlsaW5nIHRoZSBrZXJlbmVsIHRvIGFkZAo+ID4gc3VwcG9ydCBm
+b3IgaXQsIGFuZCBvZiBjb3Vyc2UgSSB3ZW50ICJVc2VyIE1vZGUgTGludXgiLi4uICBFeGNlcHQK
+PiA+IHRoYXQgVU1MIGRpc2FibGVzICB0aGUgZmxhc2ggbWVudSBlbnRpcmVseS4KPiA+Cj4gPiBT
+dWdnZXN0aW9ucz8KPgo+IEkgc2VlIHRoaXMgaW4gbWVudWNvbmZpZzoKPgo+IFN5bWJvbDogTVRE
+IFs9bl0KPiAgICBQcm9tcHQ6IE1lbW9yeSBUZWNobm9sb2d5IERldmljZSAoTVREKSBzdXBwb3J0
+Cj4gICAgICBEZWZpbmVkIGF0IGRyaXZlcnMvbXRkL0tjb25maWc6Mwo+ICAgICAgRGVwZW5kcyBv
+bjogQlJPS0VOICYmIEhBU19JT01FTQo+Cj4gWW91IGNvdWxkIHRyeSByZW1vdmluZyB0aGUgZGVw
+ZW5kZW5jaWVzIG9uIEJST0tFTiBhbmQgSEFTX0lPTUVNIGFuZAo+IHNlZSB3aGF0IGhhcHBlbnMu
+Li4KCgpBY3R1YWxseSwgaW4gLXJjNCAod2hhdCBJIGhhdmUgbHlpbmcgYXJvdW5kKSwgdGhlIGRl
+cGVuZHMgaXMganVzdCBvbiBIQVNfSU9NRU0sIGFuZCB0aGUgaW5jbHVkZSBpbiBhcmNoL3VtL0tj
+b25maWcgaXMgZ3VhcmRlZCBieSAiaWYgQlJPS0VOIi4KCkJ1aWxkaW5nIGl0LCBJIGhpdCB0aGUg
+c2FtZSBkYXJuIGVycm9yIEkndmUgYmVlbiBwYXRjaGluZyBteSB3YXkgYXJvdW5kIGZvciBtb250
+aHM6Cgo+ICAgQ0MgICAgICBhcmNoL3VtL2tlcm5lbC9zbXAubwo+IEluIGZpbGUgaW5jbHVkZWQg
+ZnJvbSBpbmNsdWRlL2FzbS9hcmNoL3RsYi5oOjksCj4gICAgICAgICAgICAgICAgICBmcm9tIGlu
+Y2x1ZGUvYXNtL3RsYi5oOjQsCj4gICAgICAgICAgICAgICAgICBmcm9tIGFyY2gvdW0va2VybmVs
+L3NtcC5jOjg6Cj4gaW5jbHVkZS9hc20tZ2VuZXJpYy90bGIuaDogSW4gZnVuY3Rpb24g4oCYdGxi
+X2ZsdXNoX21tdeKAmToKPiBpbmNsdWRlL2FzbS1nZW5lcmljL3RsYi5oOjc2OiBlcnJvcjogaW1w
+bGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24KPiDigJhyZWxlYXNlX3BhZ2Vz4oCZIGluY2x1
+ZGUvYXNtLWdlbmVyaWMvdGxiLmg6IEluIGZ1bmN0aW9uIOKAmHRsYl9yZW1vdmVfcGFnZeKAmToK
+PiBpbmNsdWRlL2FzbS1nZW5lcmljL3RsYi5oOjEwNTogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0
+aW9uIG9mIGZ1bmN0aW9uCj4g4oCYcGFnZV9jYWNoZV9yZWxlYXNl4oCZIG1ha2VbMV06ICoqKiBb
+YXJjaC91bS9rZXJuZWwvc21wLm9dIEVycm9yIDEKPiBtYWtlOiAqKiogW2FyY2gvdW0va2VybmVs
+XSBFcnJvciAyCgpQYXRjaCB0aGF0LCBhbmQgdGhlbiBpdCBicmVha3Mgd2l0aDoKCj4gICBDQyAg
+ICAgIGRyaXZlcnMvbXRkL2NoaXBzL2NoaXByZWcubwo+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSBk
+cml2ZXJzL210ZC9jaGlwcy9jaGlwcmVnLmM6MTM6Cj4gaW5jbHVkZS9saW51eC9tdGQvbWFwLmg6
+IEluIGZ1bmN0aW9uIOKAmGlubGluZV9tYXBfcmVhZOKAmToKPiBpbmNsdWRlL2xpbnV4L210ZC9t
+YXAuaDozNzg6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbgo+IOKAmF9f
+cmF3X3JlYWRi4oCZIGluY2x1ZGUvbGludXgvbXRkL21hcC5oOjM4MDogZXJyb3I6IGltcGxpY2l0
+IGRlY2xhcmF0aW9uIG9mCj4gZnVuY3Rpb24g4oCYX19yYXdfcmVhZHfigJkgaW5jbHVkZS9saW51
+eC9tdGQvbWFwLmg6MzgyOiBlcnJvcjogaW1wbGljaXQKPiBkZWNsYXJhdGlvbiBvZiBmdW5jdGlv
+biDigJhfX3Jhd19yZWFkbOKAmSBpbmNsdWRlL2xpbnV4L210ZC9tYXAuaDozODU6IGVycm9yOgo+
+IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmF9fcmF3X3JlYWRx4oCZIGluY2x1
+ZGUvbGludXgvbXRkL21hcC5oOjM4ODoKPiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2Yg
+ZnVuY3Rpb24g4oCYbWVtY3B5X2Zyb21pb+KAmQo+IGluY2x1ZGUvbGludXgvbXRkL21hcC5oOiBJ
+biBmdW5jdGlvbiDigJhpbmxpbmVfbWFwX3dyaXRl4oCZOgo+IGluY2x1ZGUvbGludXgvbXRkL21h
+cC5oOjQwNjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uCj4g4oCYbWVt
+Y3B5X3RvaW/igJkgbWFrZVszXTogKioqIFtkcml2ZXJzL210ZC9jaGlwcy9jaGlwcmVnLm9dIEVy
+cm9yIDEKPiBtYWtlWzJdOiAqKiogW2RyaXZlcnMvbXRkL2NoaXBzXSBFcnJvciAyCj4gbWFrZVsx
+XTogKioqIFtkcml2ZXJzL210ZF0gRXJyb3IgMgoKQWxsIEkgZW5hYmxlZCB3YXMgQ09ORklHX01U
+RF9CTE9DSy4KClRvIHJlcHJvZHVjZSB3aGF0IEkgZGlkLCB5YW5rIHRoZXNlIGxpbmVzOgoKZGlm
+ZiAtcnUgbGludXgtMi42LjI0LXJjNC9hcmNoL3VtL0tjb25maWcgbGludXgtdGVtcC9hcmNoL3Vt
+L0tjb25maWcKLS0tIGxpbnV4LTIuNi4yNC1yYzQvYXJjaC91bS9LY29uZmlnCTIwMDctMTItMDMg
+MjI6MjY6MTAuMDAwMDAwMDAwIC0wNjAwCisrKyBsaW51eC10ZW1wL2FyY2gvdW0vS2NvbmZpZwky
+MDA3LTEyLTE4IDE1OjI4OjQ5LjAwMDAwMDAwMCAtMDYwMApAQCAtMjgwLDkgKzI4MCw3IEBACiAK
+IHNvdXJjZSAiZHJpdmVycy9tZC9LY29uZmlnIgogCi1pZiBCUk9LRU4KIAlzb3VyY2UgImRyaXZl
+cnMvbXRkL0tjb25maWciCi1lbmRpZgogCiAjVGhpcyBpcyBqdXN0IHRvIHNodXQgdXAgc29tZSBL
+Y29uZmlnIHdhcm5pbmdzLCBzbyBubyBwcm9tcHQuCiBjb25maWcgSU5QVVQKZGlmZiAtcnUgbGlu
+dXgtMi42LjI0LXJjNC9hcmNoL3VtL2tlcm5lbC9zbXAuYyBsaW51eC10ZW1wL2FyY2gvdW0va2Vy
+bmVsL3NtcC5jCi0tLSBsaW51eC0yLjYuMjQtcmM0L2FyY2gvdW0va2VybmVsL3NtcC5jCTIwMDct
+MTItMDMgMjI6MjY6MTAuMDAwMDAwMDAwIC0wNjAwCisrKyBsaW51eC10ZW1wL2FyY2gvdW0va2Vy
+bmVsL3NtcC5jCTIwMDctMTItMTggMTU6MzA6NDkuMDAwMDAwMDAwIC0wNjAwCkBAIC01LDYgKzUs
+NyBAQAogCiAjaW5jbHVkZSAibGludXgvcGVyY3B1LmgiCiAjaW5jbHVkZSAiYXNtL3BnYWxsb2Mu
+aCIKKyNpbmNsdWRlICJsaW51eC9wYWdlbWFwLmgiCiAjaW5jbHVkZSAiYXNtL3RsYi5oIgogCiAv
+KiBGb3Igc29tZSByZWFzb24sIG1tdV9nYXRoZXJzIGFyZSByZWZlcmVuY2VkIHdoZW4gQ09ORklH
+X1NNUCBpcyBvZmYuICovCmRpZmYgLXJ1IGxpbnV4LTIuNi4yNC1yYzQvZHJpdmVycy9tdGQvS2Nv
+bmZpZyBsaW51eC10ZW1wL2RyaXZlcnMvbXRkL0tjb25maWcKLS0tIGxpbnV4LTIuNi4yNC1yYzQv
+ZHJpdmVycy9tdGQvS2NvbmZpZwkyMDA3LTEyLTAzIDIyOjI2OjEwLjAwMDAwMDAwMCAtMDYwMAor
+KysgbGludXgtdGVtcC9kcml2ZXJzL210ZC9LY29uZmlnCTIwMDctMTItMTggMTU6MjQ6NDEuMDAw
+MDAwMDAwIC0wNjAwCkBAIC0yLDcgKzIsNiBAQAogCiBtZW51Y29uZmlnIE1URAogCXRyaXN0YXRl
+ICJNZW1vcnkgVGVjaG5vbG9neSBEZXZpY2UgKE1URCkgc3VwcG9ydCIKLQlkZXBlbmRzIG9uIEhB
+U19JT01FTQogCWhlbHAKIAkgIE1lbW9yeSBUZWNobm9sb2d5IERldmljZXMgYXJlIGZsYXNoLCBS
+QU0gYW5kIHNpbWlsYXIgY2hpcHMsIG9mdGVuCiAJICB1c2VkIGZvciBzb2xpZCBzdGF0ZSBmaWxl
+IHN5c3RlbXMgb24gZW1iZWRkZWQgZGV2aWNlcy4gVGhpcyBvcHRpb24KCgpBbmQgdGhlbiBjb25m
+aWd1cmUgYW5kIGJ1aWxkIGxpa2Ugc286CgpjYXQgPiBtaW5pLmNvbmYgPDwgRU9GCkNPTkZJR19C
+SU5GTVRfRUxGPXkKQ09ORklHX0hPU1RGUz15CkNPTkZJR19CTEtfREVWPXkKQ09ORklHX0JMS19E
+RVZfTE9PUD15CkNPTkZJR19TVERFUlJfQ09OU09MRT15CkNPTkZJR19VTklYOThfUFRZUz15CkNP
+TkZJR19FWFQyX0ZTPXkKQ09ORklHX01URD15CkNPTkZJR19NVERfQkxPQ0s9eQpFT0YKbWFrZSBB
+UkNIPXVtIGFsbG5vY29uZmlnIEtDT05GSUdfQUxMQ09ORklHPW1pbmkuY29uZgptYWtlIEFSQ0g9
+dW0KClJvYgotLSAKIk9uZSBvZiBteSBtb3N0IHByb2R1Y3RpdmUgZGF5cyB3YXMgdGhyb3dpbmcg
+YXdheSAxMDAwIGxpbmVzIG9mIGNvZGUuIgogIC0gS2VuIFRob21wc29uLgoKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQpTRi5OZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5OgpDaGVjayBvdXQgdGhlIG5ldyBTb3Vy
+Y2VGb3JnZS5uZXQgTWFya2V0cGxhY2UuCkl0J3MgdGhlIGJlc3QgcGxhY2UgdG8gYnV5IG9yIHNl
+bGwgc2VydmljZXMKZm9yIGp1c3QgYWJvdXQgYW55dGhpbmcgT3BlbiBTb3VyY2UuCmh0dHA6Ly9h
+ZC5kb3VibGVjbGljay5uZXQvY2xrOzE2NDIxNjIzOTsxMzUwMzAzODt3P2h0dHA6Ly9zZi5uZXQv
+bWFya2V0cGxhY2UKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2
+ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
+c3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
