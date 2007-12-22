@@ -2,22 +2,26 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J66b6-0006Qv-WA for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Dec 2007 07:49:09 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1J6CxV-0008PN-BT for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 22 Dec 2007 14:36:43 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1J66b6-0008OM-Co
+	(Exim 4.44) id 1J6CxS-0000Z6-MP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Dec 2007 07:49:08 -0800
-Date: Sat, 22 Dec 2007 10:49:01 -0500
+	Sat, 22 Dec 2007 14:36:41 -0800
+Date: Sat, 22 Dec 2007 17:36:31 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20071222154901.GA4756@c2.user-mode-linux.org>
+Message-ID: <20071222223631.GA7032@c2.user-mode-linux.org>
 References: <ea11fea30712200923j3f6e73dal46b158f7fd084303@mail.gmail.com>
 	<20071221213413.GA8405@c2.user-mode-linux.org>
 	<ea11fea30712220611v7f4a87fcpafa151ec25734bfd@mail.gmail.com>
+	<20071222154901.GA4756@c2.user-mode-linux.org>
+	<ea11fea30712220900m12d18266ic115a517d2ee8196@mail.gmail.com>
+	<20071222174013.GA5949@c2.user-mode-linux.org>
+	<ea11fea30712221106s377111fepbdea5bb7d30437e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ea11fea30712220611v7f4a87fcpafa151ec25734bfd@mail.gmail.com>
+In-Reply-To: <ea11fea30712221106s377111fepbdea5bb7d30437e@mail.gmail.com>
 Subject: Re: [uml-devel] [uml-user] Error mounting filesystems on -o loop
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -35,24 +39,11 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Manish Katiyar <mkatiyar@gmail.com>
 Cc: UML-user <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sat, Dec 22, 2007 at 07:41:09PM +0530, Manish Katiyar wrote:
-> Hi Jeff,
-> 
-> I chose the default options while kernel building. Do I need to do
-> anything specific to enable loop support ? ..What should i check to
-> see if it is enabled or not ?. 
+On Sun, Dec 23, 2007 at 12:36:02AM +0530, Manish Katiyar wrote:
+> Why is it not able to allocate memory ??/
 
-% grep LOOP arch/um/defconfig
-CONFIG_BLK_DEV_LOOP=m
-
-So you can either modprobe the module or configure it as built-in.
-
-> also
-> http://user-mode-linux.sourceforge.net/dl-ists.html link is not
-> working to download the patches. Could you please check if the link is
-> broken.
-
-Those links are all obsolete anyway.
+The obvious reason - there is no memory to allocate and you gave it no
+swap?  So give it more memory or some swap space.
 
 				Jeff
 
