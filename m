@@ -1,17 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-list2-new-b.sourceforge.net ([10.3.1.94]
-	helo=sc8-sf-list2-new.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J9WQX-0003oL-KC for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 31 Dec 2007 18:00:21 -0800
-Date: Mon, 31 Dec 2007 21:00:09 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080101020009.GB19579@c2.user-mode-linux.org>
-References: <4773F11D.7060803@BitWagon.com>
-Mime-Version: 1.0
+	id 1J9bOX-0000Tp-Nx for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 31 Dec 2007 23:18:37 -0800
+Received: from po-out-1718.google.com ([72.14.252.158])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1J9bOX-0000Zs-C2
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 31 Dec 2007 23:18:37 -0800
+Received: by po-out-1718.google.com with SMTP id y22so3044186pof.2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 31 Dec 2007 23:18:36 -0800 (PST)
+Date: Tue, 1 Jan 2008 15:18:46 +0800
+From: WANG Cong <xiyou.wangcong@gmail.com>
+Message-ID: <20080101071846.GB2496@hacking>
+References: <20080101071311.GA2496@hacking>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4773F11D.7060803@BitWagon.com>
-Subject: Re: [uml-devel] running UserModeLinux under Valgrind(memcheck)
+In-Reply-To: <20080101071311.GA2496@hacking>
+Subject: [uml-devel] [Patch 1/8] UML: Remove 'TOPDIR' from Makefiles
+Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,49 +33,105 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: John Reiser <jreiser@BitWagon.com>
-Cc: valgrind-developers@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Andrew Morton <akpm@osdl.org>, jdike@addtoit.com, Sam Ravnborg <sam@ravnborg.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org
 
-On Thu, Dec 27, 2007 at 10:38:21AM -0800, John Reiser wrote:
-> Patches have been developed which enable UserModeLinux for i686 to
-> run under the memcheck tool of Valgrind on i686.  Thus it is possible
-> to check dynamically the memory accesses made by a running Linux kernel
-> against memcheck's model of allowed behavior.  This work was supported
-> by Google Inc.
-> 
-> The goods:
 
-Nice!
+TOPDIR is obsolete, use objtree instead.
+This patch removes TOPDIR from all UML Makefiles.
 
-Did you find anything needing fixing besides the ubd and random
-drivers reading uninitialized stuff and the random bytes that UML uses
-to communicate with itself being uninitialized?
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
 
-I did a quick scan of the UML patch, and didn't see any unexpected
-fixes there.
+---
 
-> On the UML side, there is a significant technical issue: the semantics
-> of kmalloc+kfree do not match the semantics of malloc+free.  The kernel
-> slab allocator caches and re-issues identified objects, which accumulate
-> state and retain it throughout execution, including from kfree to kmalloc.
-> In contrast, a region that is passed to free() loses both its contents
-> and its identity.  Also, size is an important parameter to malloc,
-> but is implicit to kmalloc.  The initial patches finesse these issues
-> (for instance: by supplying the size as trailing parameter to kmalloc,
-> and by noticing that SLAB_POISON ==> free()), but there will be
-> significant discussion and work in resolving the differences.
-
-Any problem with supporting these sorts of allocation models in
-valgrind?  Not all the world is malloc and free (although maybe 99%
-is).
-
-Can we pass the allocation size through a valgrind annotation rather
-than add the parameter to kmem_cache_alloc?  
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index ba6813a..57491af 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -158,7 +158,7 @@ ifneq ($(KBUILD_SRC),)
+ 	$(Q)mkdir -p $(objtree)/include/asm-um
+ 	$(Q)ln -fsn $(srctree)/include/asm-um/$(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $@
+ else
+-	$(Q)cd $(TOPDIR)/$(dir $@) ; \
++	$(Q)cd $(objtree)/$(dir $@) ; \
+ 	ln -sf $(basename $(notdir $@))-$(SUBARCH)$(suffix $@) $(notdir $@)
+ endif
+ 
+@@ -168,7 +168,7 @@ ifneq ($(KBUILD_SRC),)
+ 	$(Q)mkdir -p $(objtree)/include/asm-um
+ 	$(Q)ln -fsn $(srctree)/include/asm-$(HEADER_ARCH) include/asm-um/arch
+ else
+-	$(Q)cd $(TOPDIR)/include/asm-um && ln -fsn ../asm-$(HEADER_ARCH) arch
++	$(Q)cd $(objtree)/include/asm-um && ln -fsn ../asm-$(HEADER_ARCH) arch
+ endif
+ 
+ $(objtree)/$(ARCH_DIR)/include:
+diff --git a/arch/um/sys-ppc/Makefile b/arch/um/sys-ppc/Makefile
+index a9814a7..a3cfae7 100644
+--- a/arch/um/sys-ppc/Makefile
++++ b/arch/um/sys-ppc/Makefile
+@@ -6,7 +6,7 @@ OBJ = built-in.o
+ OBJS = ptrace.o sigcontext.o semaphore.o checksum.o miscthings.o misc.o \
+ 	ptrace_user.o sysrq.o
+ 
+-EXTRA_AFLAGS := -DCONFIG_PPC32 -I. -I$(TOPDIR)/arch/ppc/kernel
++EXTRA_AFLAGS := -DCONFIG_PPC32 -I. -I$(objtree)/arch/ppc/kernel
+ 
+ all: $(OBJ)
+ 
+@@ -22,25 +22,25 @@ sigcontext.o: sigcontext.c
+ 
+ semaphore.c:
+ 	rm -f $@
+-	ln -s $(TOPDIR)/arch/ppc/kernel/$@ $@
++	ln -s $(objtree)/arch/ppc/kernel/$@ $@
+ 
+ checksum.S:
+ 	rm -f $@
+-	ln -s $(TOPDIR)/arch/ppc/lib/$@ $@
++	ln -s $(objtree)/arch/ppc/lib/$@ $@
+ 
+ mk_defs.c:
+ 	rm -f $@
+-	ln -s $(TOPDIR)/arch/ppc/kernel/$@ $@
++	ln -s $(objtree)/arch/ppc/kernel/$@ $@
+ 
+ ppc_defs.head:
+ 	rm -f $@
+-	ln -s $(TOPDIR)/arch/ppc/kernel/$@ $@
++	ln -s $(objtree)/arch/ppc/kernel/$@ $@
+ 
+ ppc_defs.h: mk_defs.c ppc_defs.head \
+-		$(TOPDIR)/include/asm-ppc/mmu.h \
+-		$(TOPDIR)/include/asm-ppc/processor.h \
+-		$(TOPDIR)/include/asm-ppc/pgtable.h \
+-		$(TOPDIR)/include/asm-ppc/ptrace.h
++		$(objtree)/include/asm-ppc/mmu.h \
++		$(objtree)/include/asm-ppc/processor.h \
++		$(objtree)/include/asm-ppc/pgtable.h \
++		$(objtree)/include/asm-ppc/ptrace.h
+ #	$(CC) $(CFLAGS) -S mk_defs.c
+ 	cp ppc_defs.head ppc_defs.h
+ # for bk, this way we can write to the file even if it's not checked out
+@@ -56,13 +56,13 @@ ppc_defs.h: mk_defs.c ppc_defs.head \
+ 
+ checksum.o: checksum.S
+ 	rm -f asm
+-	ln -s $(TOPDIR)/include/asm-ppc asm
++	ln -s $(objtree)/include/asm-ppc asm
+ 	$(CC) $(EXTRA_AFLAGS) $(KBUILD_AFLAGS) -D__ASSEMBLY__ -D__UM_PPC__ -c $< -o $*.o
+ 	rm -f asm
+ 
+ misc.o: misc.S ppc_defs.h
+ 	rm -f asm
+-	ln -s $(TOPDIR)/include/asm-ppc asm
++	ln -s $(objtree)/include/asm-ppc asm
+ 	$(CC) $(EXTRA_AFLAGS) $(KBUILD_AFLAGS) -D__ASSEMBLY__ -D__UM_PPC__ -c $< -o $*.o
+ 	rm -f asm
+ 
+diff --git a/arch/x86/Makefile_32 b/arch/x86/Makefile_32
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
