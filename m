@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JA9tX-0005WH-L8 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Jan 2008 12:08:56 -0800
+	id 1JA9tZ-0005Wa-L7 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Jan 2008 12:08:57 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JA9tW-0001Yz-Kf
+	(Exim 4.44) id 1JA9tY-00049g-5l
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Jan 2008 12:08:55 -0800
+	Wed, 02 Jan 2008 12:08:57 -0800
 Date: Wed, 2 Jan 2008 15:08:52 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080102200852.GA7944@c2.user-mode-linux.org>
+Message-ID: <20080102200852.GA7959@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/7] UML - Remove current_thread
+Subject: [uml-devel] [PATCH 3/7] UML - Style fixes in arch/um/kernel
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,186 +29,51 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Tidy current-related stuff.  There was a comment in current.h saying
-that current_thread was obsolete, so this patch turns all instances of
-current_thread into current_thread_info().  There's some simplifying
-of the result in arch/um/sys-i386/signal.c.
+Joe Perches noticed some printks in smp.c that needed fixing.
 
-current.h and thread_info.h also get style cleanups.
+While I was in there, I did the usual tidying in arch/um/kernel, which
+should be fairly style-clean at this point:
+	copyright updates
+	emacs formatting comments removal
+	include tidying
+	style fixes
 
+Cc: Joe Perches <joe@perches.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/kernel/process.c     |    8 ++++----
- arch/um/sys-i386/signal.c    |   18 ++++++++----------
- arch/um/sys-x86_64/signal.c  |    4 ++--
- include/asm-um/current.h     |   23 ++---------------------
- include/asm-um/thread_info.h |    8 ++++----
- 5 files changed, 20 insertions(+), 41 deletions(-)
+ arch/um/kernel/exitcode.c   |   31 ++++++++++++++++--------------
+ arch/um/kernel/gmon_syms.c  |   11 +++++-----
+ arch/um/kernel/gprof_syms.c |   13 ------------
+ arch/um/kernel/process.c    |   41 +++++++++++++++++++++-------------------
+ arch/um/kernel/reboot.c     |    6 ++---
+ arch/um/kernel/sigio.c      |   18 +++++------------
+ arch/um/kernel/signal.c     |   16 +++++++--------
+ arch/um/kernel/smp.c        |    7 ++----
+ arch/um/kernel/sysrq.c      |   45 ++++++++++++++++++++------------------------
+ arch/um/kernel/time.c       |   14 ++++++-------
+ arch/um/kernel/tlb.c        |    2 -
+ arch/um/kernel/uaccess.c    |   11 ++++++----
+ arch/um/kernel/um_arch.c    |   26 ++++++++++++-------------
+ arch/um/kernel/umid.c       |   15 ++++++--------
+ 14 files changed, 122 insertions(+), 134 deletions(-)
 
-Index: linux-2.6/arch/um/kernel/process.c
+Index: linux-2.6-git/arch/um/kernel/gprof_syms.c
 ===================================================================
---- linux-2.6.orig/arch/um/kernel/process.c	2007-11-20 11:28:00.000000000 -0500
-+++ linux-2.6/arch/um/kernel/process.c	2007-11-20 11:54:11.000000000 -0500
-@@ -251,7 +251,7 @@ void default_idle(void)
- 
- void cpu_idle(void)
- {
--	cpu_tasks[current_thread->cpu].pid = os_getpid();
-+	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
- 	default_idle();
- }
- 
-@@ -269,7 +269,7 @@ int user_context(unsigned long sp)
- 	unsigned long stack;
- 
- 	stack = sp & (PAGE_MASK << CONFIG_KERNEL_STACK_ORDER);
--	return stack != (unsigned long) current_thread;
-+	return stack != (unsigned long) current_thread_info();
- }
- 
- extern exitcall_t __uml_exitcall_begin, __uml_exitcall_end;
-@@ -311,7 +311,7 @@ int strlen_user_proc(char __user *str)
- int smp_sigio_handler(void)
- {
- #ifdef CONFIG_SMP
--	int cpu = current_thread->cpu;
-+	int cpu = current_thread_info()->cpu;
- 	IPI_handler(cpu);
- 	if (cpu != 0)
- 		return 1;
-@@ -321,7 +321,7 @@ int smp_sigio_handler(void)
- 
- int cpu(void)
- {
--	return current_thread->cpu;
-+	return current_thread_info()->cpu;
- }
- 
- static atomic_t using_sysemu = ATOMIC_INIT(0);
-Index: linux-2.6/arch/um/sys-i386/signal.c
-===================================================================
---- linux-2.6.orig/arch/um/sys-i386/signal.c	2007-11-20 11:22:34.000000000 -0500
-+++ linux-2.6/arch/um/sys-i386/signal.c	2007-11-20 11:54:11.000000000 -0500
-@@ -168,12 +168,13 @@ static int copy_sc_from_user(struct pt_r
- 			     struct sigcontext __user *from)
- {
- 	struct sigcontext sc;
--	int err;
-+	int err, pid;
- 
- 	err = copy_from_user(&sc, from, sizeof(sc));
- 	if (err)
- 		return err;
- 
-+	pid = userspace_pid[current_thread_info()->cpu];
- 	copy_sc(&regs->regs, &sc);
- 	if (have_fpx_regs) {
- 		struct user_fxsr_struct fpx;
-@@ -187,8 +188,7 @@ static int copy_sc_from_user(struct pt_r
- 		if (err)
- 			return 1;
- 
--		err = restore_fpx_registers(userspace_pid[current_thread->cpu],
--					    (unsigned long *) &fpx);
-+		err = restore_fpx_registers(pid, (unsigned long *) &fpx);
- 		if (err < 0) {
- 			printk(KERN_ERR "copy_sc_from_user - "
- 			       "restore_fpx_registers failed, errno = %d\n",
-@@ -204,8 +204,7 @@ static int copy_sc_from_user(struct pt_r
- 		if (err)
- 			return 1;
- 
--		err = restore_fp_registers(userspace_pid[current_thread->cpu],
--					   (unsigned long *) &fp);
-+		err = restore_fp_registers(pid, (unsigned long *) &fp);
- 		if (err < 0) {
- 			printk(KERN_ERR "copy_sc_from_user - "
- 			       "restore_fp_registers failed, errno = %d\n",
-@@ -223,7 +222,7 @@ static int copy_sc_to_user(struct sigcon
- {
- 	struct sigcontext sc;
- 	struct faultinfo * fi = &current->thread.arch.faultinfo;
--	int err;
-+	int err, pid;
- 
- 	sc.gs = REGS_GS(regs->regs.gp);
- 	sc.fs = REGS_FS(regs->regs.gp);
-@@ -249,11 +248,11 @@ static int copy_sc_to_user(struct sigcon
- 	to_fp = (to_fp ? to_fp : (struct _fpstate __user *) (to + 1));
- 	sc.fpstate = to_fp;
- 
-+	pid = userspace_pid[current_thread_info()->cpu];
- 	if (have_fpx_regs) {
- 		struct user_fxsr_struct fpx;
- 
--		err = save_fpx_registers(userspace_pid[current_thread->cpu],
--					 (unsigned long *) &fpx);
-+		err = save_fpx_registers(pid, (unsigned long *) &fpx);
- 		if (err < 0){
- 			printk(KERN_ERR "copy_sc_to_user - save_fpx_registers "
- 			       "failed, errno = %d\n", err);
-@@ -276,8 +275,7 @@ static int copy_sc_to_user(struct sigcon
- 	else {
- 		struct user_i387_struct fp;
- 
--		err = save_fp_registers(userspace_pid[current_thread->cpu],
--					(unsigned long *) &fp);
-+		err = save_fp_registers(pid, (unsigned long *) &fp);
- 		if (copy_to_user(to_fp, &fp, sizeof(struct user_i387_struct)))
- 			return 1;
- 	}
-Index: linux-2.6/arch/um/sys-x86_64/signal.c
-===================================================================
---- linux-2.6.orig/arch/um/sys-x86_64/signal.c	2007-11-20 11:22:34.000000000 -0500
-+++ linux-2.6/arch/um/sys-x86_64/signal.c	2007-11-20 11:54:11.000000000 -0500
-@@ -81,7 +81,7 @@ static int copy_sc_from_user(struct pt_r
- 	if (err)
- 		return 1;
- 
--	err = restore_fp_registers(userspace_pid[current_thread->cpu],
-+	err = restore_fp_registers(userspace_pid[current_thread_info()->cpu],
- 				   (unsigned long *) &fp);
- 	if (err < 0) {
- 		printk(KERN_ERR "copy_sc_from_user - "
-@@ -143,7 +143,7 @@ static int copy_sc_to_user(struct sigcon
- 	if (err)
- 		return 1;
- 
--	err = save_fp_registers(userspace_pid[current_thread->cpu],
-+	err = save_fp_registers(userspace_pid[current_thread_info()->cpu],
- 				(unsigned long *) &fp);
- 	if (err < 0) {
- 		printk(KERN_ERR "copy_sc_from_user - restore_fp_registers "
-Index: linux-2.6/include/asm-um/current.h
-===================================================================
---- linux-2.6.orig/include/asm-um/current.h	2007-11-20 11:22:34.000000000 -0500
-+++ linux-2.6/include/asm-um/current.h	2007-11-20 11:54:11.000000000 -0500
-@@ -1,32 +1,13 @@
--/* 
-- * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
-+/*
-+ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+--- linux-2.6-git.orig/arch/um/kernel/gprof_syms.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/gprof_syms.c	2008-01-02 11:38:16.000000000 -0500
+@@ -1,5 +1,5 @@
+ /* 
+- * Copyright (C) 2001, 2002 Jeff Dike (jdike@karaya.com)
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
   * Licensed under the GPL
   */
  
- #ifndef __UM_CURRENT_H
- #define __UM_CURRENT_H
+@@ -7,14 +7,3 @@
  
--#ifndef __ASSEMBLY__
--
--#include "asm/page.h"
- #include "linux/thread_info.h"
- 
- #define current (current_thread_info()->task)
- 
--/*Backward compatibility - it's used inside arch/um.*/
--#define current_thread current_thread_info()
--
--#endif /* __ASSEMBLY__ */
--
- #endif
+ extern void mcount(void);
+ EXPORT_SYMBOL(mcount);
 -
 -/*
 - * Overrides for Emacs so that we follow Linus's tabbing style.
@@ -220,29 +85,577 @@ Index: linux-2.6/include/asm-um/current.h
 - * c-file-style: "linux"
 - * End:
 - */
-Index: linux-2.6/include/asm-um/thread_info.h
+Index: linux-2.6-git/arch/um/kernel/smp.c
 ===================================================================
---- linux-2.6.orig/include/asm-um/thread_info.h	2007-11-20 11:28:00.000000000 -0500
-+++ linux-2.6/include/asm-um/thread_info.h	2007-11-20 11:54:11.000000000 -0500
-@@ -1,5 +1,5 @@
--/* 
+--- linux-2.6-git.orig/arch/um/kernel/smp.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/smp.c	2008-01-02 11:38:16.000000000 -0500
+@@ -60,7 +60,7 @@ void smp_send_stop(void)
+ 			continue;
+ 		os_write_file(cpu_data[i].ipi_pipe[1], "S", 1);
+ 	}
+-	printk(KERN_INFO "done\n");
++	printk(KERN_CONT "done\n");
+ }
+ 
+ static cpumask_t smp_commenced_mask = CPU_MASK_NONE;
+@@ -140,9 +140,8 @@ void smp_prepare_cpus(unsigned int maxcp
+ 		while (waittime-- && !cpu_isset(cpu, cpu_callin_map))
+ 			cpu_relax();
+ 
+-		if (cpu_isset(cpu, cpu_callin_map))
+-			printk(KERN_INFO "done\n");
+-		else printk(KERN_INFO "failed\n");
++		printk(KERN_INFO "%s\n",
++		       cpu_isset(cpu, cpu_calling_map) ? "done" : "failed");
+ 	}
+ }
+ 
+Index: linux-2.6-git/arch/um/kernel/sigio.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/sigio.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/sigio.c	2008-01-02 11:38:16.000000000 -0500
+@@ -1,18 +1,12 @@
+ /*
+- * Copyright (C) 2002 - 2003 Jeff Dike (jdike@addtoit.com)
++ * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{linux.intel,addtoit}.com)
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/kernel.h"
+-#include "linux/list.h"
+-#include "linux/slab.h"
+-#include "linux/signal.h"
+-#include "linux/interrupt.h"
+-#include "init.h"
+-#include "sigio.h"
+-#include "irq_user.h"
++#include <linux/interrupt.h>
+ #include "irq_kern.h"
+ #include "os.h"
++#include "sigio.h"
+ 
+ /* Protected by sigio_lock() called from write_sigio_workaround */
+ static int sigio_irq_fd = -1;
+@@ -33,9 +27,9 @@ int write_sigio_irq(int fd)
+ 	err = um_request_irq(SIGIO_WRITE_IRQ, fd, IRQ_READ, sigio_interrupt,
+ 			     IRQF_DISABLED|IRQF_SAMPLE_RANDOM, "write sigio",
+ 			     NULL);
+-	if(err){
+-		printk("write_sigio_irq : um_request_irq failed, err = %d\n",
+-		       err);
++	if (err) {
++		printk(KERN_ERR "write_sigio_irq : um_request_irq failed, "
++		       "err = %d\n", err);
+ 		return -1;
+ 	}
+ 	sigio_irq_fd = fd;
+Index: linux-2.6-git/arch/um/kernel/exitcode.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/exitcode.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/exitcode.c	2008-01-02 11:38:16.000000000 -0500
+@@ -1,15 +1,17 @@
+ /*
 - * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-+/*
 + * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
   * Licensed under the GPL
   */
  
-@@ -76,8 +76,8 @@ static inline struct thread_info *curren
- #define TIF_SYSCALL_TRACE	0	/* syscall trace active */
- #define TIF_SIGPENDING		1	/* signal pending */
- #define TIF_NEED_RESCHED	2	/* rescheduling necessary */
--#define TIF_POLLING_NRFLAG      3       /* true if poll_idle() is polling 
--					 * TIF_NEED_RESCHED 
-+#define TIF_POLLING_NRFLAG      3       /* true if poll_idle() is polling
-+					 * TIF_NEED_RESCHED
- 					 */
- #define TIF_RESTART_BLOCK 	4
- #define TIF_MEMDIE	 	5
+-#include "linux/kernel.h"
+-#include "linux/init.h"
+-#include "linux/ctype.h"
+-#include "linux/proc_fs.h"
+-#include "asm/uaccess.h"
++#include <linux/ctype.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/proc_fs.h>
++#include <linux/types.h>
++#include <asm/uaccess.h>
+ 
+-/* If read and write race, the read will still atomically read a valid
++/*
++ * If read and write race, the read will still atomically read a valid
+  * value.
+  */
+ int uml_exitcode = 0;
+@@ -19,18 +21,19 @@ static int read_proc_exitcode(char *page
+ {
+ 	int len, val;
+ 
+-	/* Save uml_exitcode in a local so that we don't need to guarantee
++	/*
++	 * Save uml_exitcode in a local so that we don't need to guarantee
+ 	 * that sprintf accesses it atomically.
+ 	 */
+ 	val = uml_exitcode;
+ 	len = sprintf(page, "%d\n", val);
+ 	len -= off;
+-	if(len <= off+count)
++	if (len <= off+count)
+ 		*eof = 1;
+ 	*start = page + off;
+-	if(len > count)
++	if (len > count)
+ 		len = count;
+-	if(len < 0)
++	if (len < 0)
+ 		len = 0;
+ 	return len;
+ }
+@@ -41,11 +44,11 @@ static int write_proc_exitcode(struct fi
+ 	char *end, buf[sizeof("nnnnn\0")];
+ 	int tmp;
+ 
+-	if(copy_from_user(buf, buffer, count))
++	if (copy_from_user(buf, buffer, count))
+ 		return -EFAULT;
+ 
+ 	tmp = simple_strtol(buf, &end, 0);
+-	if((*end != '\0') && !isspace(*end))
++	if ((*end != '\0') && !isspace(*end))
+ 		return -EINVAL;
+ 
+ 	uml_exitcode = tmp;
+@@ -57,7 +60,7 @@ static int make_proc_exitcode(void)
+ 	struct proc_dir_entry *ent;
+ 
+ 	ent = create_proc_entry("exitcode", 0600, &proc_root);
+-	if(ent == NULL){
++	if (ent == NULL) {
+ 		printk(KERN_WARNING "make_proc_exitcode : Failed to register "
+ 		       "/proc/exitcode\n");
+ 		return 0;
+Index: linux-2.6-git/arch/um/kernel/gmon_syms.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/gmon_syms.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/gmon_syms.c	2008-01-02 11:38:16.000000000 -0500
+@@ -1,5 +1,5 @@
+-/* 
+- * Copyright (C) 2001, 2002 Jeff Dike (jdike@karaya.com)
++/*
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+ 
+@@ -8,12 +8,13 @@
+ extern void __bb_init_func(void *)  __attribute__((weak));
+ EXPORT_SYMBOL(__bb_init_func);
+ 
+-/* This is defined (and referred to in profiling stub code) only by some GCC
++/*
++ * This is defined (and referred to in profiling stub code) only by some GCC
+  * versions in libgcov.
+  *
+  * Since SuSE backported the fix, we cannot handle it depending on GCC version.
+- * So, unconditionally export it. But also give it a weak declaration, which will
+- * be overridden by any other one.
++ * So, unconditionally export it. But also give it a weak declaration, which
++ * will be overridden by any other one.
+  */
+ 
+ extern void __gcov_init(void *) __attribute__((weak));
+Index: linux-2.6-git/arch/um/kernel/sysrq.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/sysrq.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/sysrq.c	2008-01-02 11:42:39.000000000 -0500
+@@ -1,38 +1,37 @@
+-/* 
+- * Copyright (C) 2001 Jeff Dike (jdike@karaya.com)
++/*
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/sched.h"
+-#include "linux/kernel.h"
+-#include "linux/module.h"
+-#include "linux/kallsyms.h"
+-#include "asm/page.h"
+-#include "asm/processor.h"
++#include <linux/kallsyms.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/sched.h>
+ #include "sysrq.h"
+ 
+ /* Catch non-i386 SUBARCH's. */
+ #if !defined(CONFIG_UML_X86) || defined(CONFIG_64BIT)
+ void show_trace(struct task_struct *task, unsigned long * stack)
+ {
+-        unsigned long addr;
++	unsigned long addr;
+ 
+-        if (!stack) {
++	if (!stack) {
+ 		stack = (unsigned long*) &stack;
+ 		WARN_ON(1);
+ 	}
+ 
+-        printk("Call Trace: \n");
+-        while (((long) stack & (THREAD_SIZE-1)) != 0) {
+-                addr = *stack;
++	printk(KERN_INFO "Call Trace: \n");
++	while (((long) stack & (THREAD_SIZE-1)) != 0) {
++		addr = *stack;
+ 		if (__kernel_text_address(addr)) {
+-			printk("%08lx:  [<%08lx>]", (unsigned long) stack, addr);
+-			print_symbol(" %s", addr);
+-			printk("\n");
+-                }
+-                stack++;
+-        }
+-        printk("\n");
++			printk(KERN_INFO "%08lx:  [<%08lx>]",
++			       (unsigned long) stack, addr);
++			print_symbol(KERN_CONT " %s", addr);
++			printk(KERN_CONT "\n");
++		}
++		stack++;
++	}
++	printk(KERN_INFO "\n");
+ }
+ #endif
+ 
+@@ -67,14 +66,13 @@ void show_stack(struct task_struct *task
+ 	}
+ 
+ 	stack = esp;
+-	for(i = 0; i < kstack_depth_to_print; i++) {
++	for (i = 0; i < kstack_depth_to_print; i++) {
+ 		if (kstack_end(stack))
+ 			break;
+ 		if (i && ((i % 8) == 0))
+-			printk("\n       ");
++			printk("\n" KERN_INFO "       ");
+ 		printk("%08lx ", *stack++);
+ 	}
+ 
+-	printk("Call Trace: \n");
+ 	show_trace(task, esp);
+ }
+Index: linux-2.6-git/arch/um/kernel/umid.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/umid.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/umid.c	2008-01-02 11:38:16.000000000 -0500
+@@ -1,13 +1,12 @@
+-/* 
+- * Copyright (C) 2001, 2002 Jeff Dike (jdike@karaya.com)
++/*
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+ 
+-#include "asm/errno.h"
++#include <asm/errno.h>
+ #include "init.h"
+-#include "os.h"
+ #include "kern.h"
+-#include "linux/kernel.h"
++#include "os.h"
+ 
+ /* Changed by set_umid_arg */
+ static int umid_inited = 0;
+@@ -16,16 +15,16 @@ static int __init set_umid_arg(char *nam
+ {
+ 	int err;
+ 
+-	if(umid_inited){
++	if (umid_inited) {
+ 		printf("umid already set\n");
+ 		return 0;
+ 	}
+ 
+ 	*add = 0;
+ 	err = set_umid(name);
+-	if(err == -EEXIST)
++	if (err == -EEXIST)
+ 		printf("umid '%s' already in use\n", name);
+-	else if(!err)
++	else if (!err)
+ 		umid_inited = 1;
+ 
+ 	return 0;
+Index: linux-2.6-git/arch/um/kernel/process.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/process.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/process.c	2008-01-02 11:38:16.000000000 -0500
+@@ -4,19 +4,21 @@
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/stddef.h"
+-#include "linux/err.h"
+-#include "linux/hardirq.h"
+-#include "linux/mm.h"
+-#include "linux/personality.h"
+-#include "linux/proc_fs.h"
+-#include "linux/ptrace.h"
+-#include "linux/random.h"
+-#include "linux/sched.h"
+-#include "linux/tick.h"
+-#include "linux/threads.h"
+-#include "asm/pgtable.h"
+-#include "asm/uaccess.h"
++#include <linux/stddef.h>
++#include <linux/err.h>
++#include <linux/hardirq.h>
++#include <linux/gfp.h>
++#include <linux/mm.h>
++#include <linux/personality.h>
++#include <linux/proc_fs.h>
++#include <linux/ptrace.h>
++#include <linux/random.h>
++#include <linux/sched.h>
++#include <linux/tick.h>
++#include <linux/threads.h>
++#include <asm/current.h>
++#include <asm/pgtable.h>
++#include <asm/uaccess.h>
+ #include "as-layout.h"
+ #include "kern_util.h"
+ #include "os.h"
+@@ -40,7 +42,7 @@ int pid_to_processor_id(int pid)
+ {
+ 	int i;
+ 
+-	for(i = 0; i < ncpus; i++) {
++	for (i = 0; i < ncpus; i++) {
+ 		if (cpu_tasks[i].pid == pid)
+ 			return i;
+ 	}
+@@ -94,14 +96,15 @@ void *_switch_to(void *prev, void *next,
+ 	do {
+ 		current->thread.saved_task = NULL;
+ 
+-		switch_threads(&from->thread.switch_buf, &to->thread.switch_buf);
++		switch_threads(&from->thread.switch_buf,
++			       &to->thread.switch_buf);
+ 
+ 		arch_switch_to(current);
+ 
+ 		if (current->thread.saved_task)
+ 			show_regs(&(current->thread.regs));
+-		next = current->thread.saved_task;
+-		prev = current;
++		to = current->thread.saved_task;
++		from = current;
+ 	} while (current->thread.saved_task);
+ 
+ 	return current->thread.prev_sched;
+@@ -232,7 +235,7 @@ void default_idle(void)
+ {
+ 	unsigned long long nsecs;
+ 
+-	while(1) {
++	while (1) {
+ 		/* endless idle loop with no priority at all */
+ 
+ 		/*
+@@ -387,7 +390,7 @@ int singlestepping(void * t)
+ {
+ 	struct task_struct *task = t ? t : current;
+ 
+-	if ( ! (task->ptrace & PT_DTRACE) )
++	if (!(task->ptrace & PT_DTRACE))
+ 		return 0;
+ 
+ 	if (task->thread.singlestep_syscall)
+Index: linux-2.6-git/arch/um/kernel/reboot.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/reboot.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/reboot.c	2008-01-02 11:38:16.000000000 -0500
+@@ -12,7 +12,7 @@ void (*pm_power_off)(void);
+ 
+ static void kill_off_processes(void)
+ {
+-	if(proc_mm)
++	if (proc_mm)
+ 		/*
+ 		 * FIXME: need to loop over userspace_pids
+ 		 */
+@@ -22,8 +22,8 @@ static void kill_off_processes(void)
+ 		int pid, me;
+ 
+ 		me = os_getpid();
+-		for_each_process(p){
+-			if(p->mm == NULL)
++		for_each_process(p) {
++			if (p->mm == NULL)
+ 				continue;
+ 
+ 			pid = p->mm->context.id.u.pid;
+Index: linux-2.6-git/arch/um/kernel/uaccess.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/uaccess.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/uaccess.c	2008-01-02 11:38:16.000000000 -0500
+@@ -1,10 +1,11 @@
+ /*
+  * Copyright (C) 2001 Chris Emerson (cemerson@chiark.greenend.org.uk)
+- * Copyright (C) 2001, 2002 Jeff Dike (jdike@karaya.com)
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+ 
+-/* These are here rather than tt/uaccess.c because skas mode needs them in
++/*
++ * These are here rather than tt/uaccess.c because skas mode needs them in
+  * order to do SIGBUS recovery when a tmpfs mount runs out of room.
+  */
+ 
+@@ -25,6 +26,8 @@ int __do_copy_to_user(void *to, const vo
+ 
+ 	fault = __do_user_copy(to, from, n, fault_addr, fault_catcher,
+ 			       __do_copy, &faulted);
+-	if(!faulted) return(0);
+-	else return(n - (fault - (unsigned long) to));
++	if (!faulted)
++		return 0;
++	else
++		return n - (fault - (unsigned long) to);
+ }
+Index: linux-2.6-git/arch/um/kernel/um_arch.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/um_arch.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/um_arch.c	2008-01-02 11:38:16.000000000 -0500
+@@ -3,23 +3,23 @@
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/delay.h"
+-#include "linux/mm.h"
+-#include "linux/module.h"
+-#include "linux/seq_file.h"
+-#include "linux/string.h"
+-#include "linux/utsname.h"
+-#include "asm/pgtable.h"
+-#include "asm/processor.h"
+-#include "asm/setup.h"
+-#include "arch.h"
++#include <linux/delay.h>
++#include <linux/init.h>
++#include <linux/mm.h>
++#include <linux/module.h>
++#include <linux/seq_file.h>
++#include <linux/string.h>
++#include <linux/utsname.h>
++#include <asm/pgtable.h>
++#include <asm/processor.h>
++#include <asm/setup.h>
+ #include "as-layout.h"
++#include "arch.h"
+ #include "init.h"
+ #include "kern.h"
+ #include "kern_util.h"
+ #include "mem_user.h"
+ #include "os.h"
+-#include "skas.h"
+ 
+ #define DEFAULT_COMMAND_LINE "root=98:0"
+ 
+@@ -201,7 +201,7 @@ static void __init uml_checksetup(char *
+ 	struct uml_param *p;
+ 
+ 	p = &__uml_setup_start;
+-	while(p < &__uml_setup_end) {
++	while (p < &__uml_setup_end) {
+ 		int n;
+ 
+ 		n = strlen(p->str);
+@@ -216,7 +216,7 @@ static void __init uml_postsetup(void)
+ 	initcall_t *p;
+ 
+ 	p = &__uml_postsetup_start;
+-	while(p < &__uml_postsetup_end) {
++	while (p < &__uml_postsetup_end) {
+ 		(*p)();
+ 		p++;
+ 	}
+Index: linux-2.6-git/arch/um/kernel/signal.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/signal.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/signal.c	2008-01-02 11:38:16.000000000 -0500
+@@ -3,12 +3,12 @@
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/module.h"
+-#include "linux/ptrace.h"
+-#include "linux/sched.h"
+-#include "asm/siginfo.h"
+-#include "asm/signal.h"
+-#include "asm/unistd.h"
++#include <linux/module.h>
++#include <linux/ptrace.h>
++#include <linux/sched.h>
++#include <asm/siginfo.h>
++#include <asm/signal.h>
++#include <asm/unistd.h>
+ #include "frame_kern.h"
+ #include "kern_util.h"
+ #include "sigcontext.h"
+@@ -36,7 +36,7 @@ static int handle_signal(struct pt_regs 
+ 	/* Did we come from a system call? */
+ 	if (PT_REGS_SYSCALL_NR(regs) >= 0) {
+ 		/* If so, check system call restarting.. */
+-		switch(PT_REGS_SYSCALL_RET(regs)) {
++		switch (PT_REGS_SYSCALL_RET(regs)) {
+ 		case -ERESTART_RESTARTBLOCK:
+ 		case -ERESTARTNOHAND:
+ 			PT_REGS_SYSCALL_RET(regs) = -EINTR;
+@@ -116,7 +116,7 @@ static int kern_do_signal(struct pt_regs
+ 	/* Did we come from a system call? */
+ 	if (!handled_sig && (PT_REGS_SYSCALL_NR(regs) >= 0)) {
+ 		/* Restart the system call - no handlers present */
+-		switch(PT_REGS_SYSCALL_RET(regs)) {
++		switch (PT_REGS_SYSCALL_RET(regs)) {
+ 		case -ERESTARTNOHAND:
+ 		case -ERESTARTSYS:
+ 		case -ERESTARTNOINTR:
+Index: linux-2.6-git/arch/um/kernel/time.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/time.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/time.c	2008-01-02 11:38:16.000000000 -0500
+@@ -3,12 +3,12 @@
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/clockchips.h"
+-#include "linux/interrupt.h"
+-#include "linux/jiffies.h"
+-#include "linux/threads.h"
+-#include "asm/irq.h"
+-#include "asm/param.h"
++#include <linux/clockchips.h>
++#include <linux/interrupt.h>
++#include <linux/jiffies.h>
++#include <linux/threads.h>
++#include <asm/irq.h>
++#include <asm/param.h>
+ #include "kern_util.h"
+ #include "os.h"
+ 
+@@ -32,7 +32,7 @@ void timer_handler(int sig, struct uml_p
+ static void itimer_set_mode(enum clock_event_mode mode,
+ 			    struct clock_event_device *evt)
+ {
+-	switch(mode) {
++	switch (mode) {
+ 	case CLOCK_EVT_MODE_PERIODIC:
+ 		set_interval();
+ 		break;
+Index: linux-2.6-git/arch/um/kernel/tlb.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/tlb.c	2008-01-02 11:37:43.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/tlb.c	2008-01-02 11:38:16.000000000 -0500
+@@ -57,7 +57,7 @@ static int do_ops(struct host_vm_change 
+ 
+ 	for (i = 0; i < end && !ret; i++) {
+ 		op = &hvc->ops[i];
+-		switch(op->type) {
++		switch (op->type) {
+ 		case MMAP:
+ 			ret = map(hvc->id, op->u.mmap.addr, op->u.mmap.len,
+ 				  op->u.mmap.prot, op->u.mmap.fd,
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
