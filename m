@@ -1,26 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
+Received: from sc8-sf-list2-new-b.sourceforge.net ([10.3.1.94]
+	helo=sc8-sf-list2-new.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JA585-0001hm-Hd for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Jan 2008 07:03:37 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JA584-0007km-VK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Jan 2008 07:03:37 -0800
-Date: Wed, 2 Jan 2008 10:02:55 -0500
+	id 1JA5XG-0004ac-18 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Jan 2008 07:29:38 -0800
+Date: Wed, 2 Jan 2008 10:28:38 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080102150255.GA5567@c2.user-mode-linux.org>
-References: <20080101071311.GA2496@hacking> <20080101071846.GB2496@hacking>
-	<20080101103342.GH28913@uranus.ravnborg.org>
-	<20080101104942.GI28913@uranus.ravnborg.org>
-	<20080101130125.GA2499@hacking>
+Message-ID: <20080102152838.GA5629@c2.user-mode-linux.org>
+References: <4773F11D.7060803@BitWagon.com> <477AAFA1.9060807@BitWagon.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20080101130125.GA2499@hacking>
-Subject: Re: [uml-devel] (Try #2) [Patch 1/8] UML: Remove 'TOPDIR' from
-	Makefiles
+In-Reply-To: <477AAFA1.9060807@BitWagon.com>
+Subject: Re: [uml-devel] running UserModeLinux under Valgrind(memcheck)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,14 +25,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: Andrew Morton <akpm@osdl.org>, Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org
+To: John Reiser <jreiser@BitWagon.com>
+Cc: valgrind-developers@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Jan 01, 2008 at 09:01:25PM +0800, WANG Cong wrote:
-> TOPDIR is obsolete, use srctree instead.
-> This patch removes TOPDIR from all UML Makefiles.
+On Tue, Jan 01, 2008 at 01:24:49PM -0800, John Reiser wrote:
+> The web page  http://bitwagon.com/valgrind+uml/index.html
+> now exists with news, history, commentary, scripts, links
+> on getting User Mode Linux for i686 to run under memcheck on i686.
 
-Thanks, I'll send this to Andrew.
+You refer to kmalloc and kfree as keeping object state intact between
+kfree and kmalloc, thus not being semantically the same as malloc and
+free.  However, this is true of kmem_cache_alloc and kmem_cache_free,
+not kmalloc and kfree.
+
+Object contents are destroyed between kfree and kmalloc.
+
+As far as kmem_cache_alloc and kmem_cache_free are concerned, would it
+work to say that they are like malloc and free, except that if there's
+a constructor, it is always called before kmem_cache_alloc returns?
 
 				Jeff
 
