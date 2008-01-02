@@ -1,22 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JA6Dj-0001rD-6b for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Jan 2008 08:13:31 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JA6Dg-0008Tb-Et
+	id 1JA7N6-0004mv-MV for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Jan 2008 09:27:16 -0800
+Received: from pasmtpb.tele.dk ([80.160.77.98])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JA7N5-0007UL-Ac
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Jan 2008 08:13:29 -0800
-Date: Wed, 2 Jan 2008 11:13:03 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080102161303.GD5629@c2.user-mode-linux.org>
-References: <60483.75.187.56.77.1196993256.squirrel@wdyllc.com>
+	Wed, 02 Jan 2008 09:27:16 -0800
+Date: Wed, 2 Jan 2008 18:27:01 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+Message-ID: <20080102172701.GB9772@uranus.ravnborg.org>
+References: <20080101071311.GA2496@hacking> <20080101071846.GB2496@hacking>
+	<20080101103342.GH28913@uranus.ravnborg.org>
+	<20080101104942.GI28913@uranus.ravnborg.org>
+	<20080101130125.GA2499@hacking>
+	<20080102150255.GA5567@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <60483.75.187.56.77.1196993256.squirrel@wdyllc.com>
-Subject: Re: [uml-devel] PATCH - .spec file repair
+In-Reply-To: <20080102150255.GA5567@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] (Try #2) [Patch 1/8] UML: Remove 'TOPDIR' from
+	Makefiles
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,21 +34,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Bill Schwanitz <bilsch@bilsch.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Andrew Morton <akpm@osdl.org>, WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org
 
-On Thu, Dec 06, 2007 at 09:07:36PM -0500, Bill Schwanitz wrote:
-> I wanted to install the uml tools as an rpm on my cent5 box and the .spec
-> file was not quite functional.
+On Wed, Jan 02, 2008 at 10:02:55AM -0500, Jeff Dike wrote:
+> On Tue, Jan 01, 2008 at 09:01:25PM +0800, WANG Cong wrote:
+> > TOPDIR is obsolete, use srctree instead.
+> > This patch removes TOPDIR from all UML Makefiles.
 > 
-> Attached is a diff against the 20070815 release.
+> Thanks, I'll send this to Andrew.
 
-Thanks, I dropped that into my tree.
+Thanks Jeff.
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+	Sam
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
