@@ -1,17 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-list2-new-b.sourceforge.net ([10.3.1.94]
-	helo=sc8-sf-list2-new.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JA5XG-0004ac-18 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Jan 2008 07:29:38 -0800
-Date: Wed, 2 Jan 2008 10:28:38 -0500
+	id 1JA5fJ-0005TT-LT for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Jan 2008 07:38:00 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JA5fI-0002fm-Sj
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Jan 2008 07:37:57 -0800
+Date: Wed, 2 Jan 2008 10:37:52 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080102152838.GA5629@c2.user-mode-linux.org>
-References: <4773F11D.7060803@BitWagon.com> <477AAFA1.9060807@BitWagon.com>
+Message-ID: <20080102153752.GC5629@c2.user-mode-linux.org>
+References: <4772D501.6050306@gmail.com>
+	<20071227004239.GB8218@c2.user-mode-linux.org>
+	<47730E4A.3000007@gmail.com>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <477AAFA1.9060807@BitWagon.com>
-Subject: Re: [uml-devel] running UserModeLinux under Valgrind(memcheck)
+In-Reply-To: <47730E4A.3000007@gmail.com>
+Subject: Re: [uml-devel] __attribute_used__ error on 2.6.23.9
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,24 +32,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: John Reiser <jreiser@BitWagon.com>
-Cc: valgrind-developers@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+To: Todd Jackson <quantum.skyline@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Jan 01, 2008 at 01:24:49PM -0800, John Reiser wrote:
-> The web page  http://bitwagon.com/valgrind+uml/index.html
-> now exists with news, history, commentary, scripts, links
-> on getting User Mode Linux for i686 to run under memcheck on i686.
+On Wed, Dec 26, 2007 at 06:30:34PM -0800, Todd Jackson wrote:
+> That patch didn't work...I'm still seeing the same error with the patch 
+> applied.
 
-You refer to kmalloc and kfree as keeping object state intact between
-kfree and kmalloc, thus not being semantically the same as malloc and
-free.  However, this is true of kmem_cache_alloc and kmem_cache_free,
-not kmalloc and kfree.
-
-Object contents are destroyed between kfree and kmalloc.
-
-As far as kmem_cache_alloc and kmem_cache_free are concerned, would it
-work to say that they are like malloc and free, except that if there's
-a constructor, it is always called before kmem_cache_alloc returns?
+Can you make aio.i and send it to me?
 
 				Jeff
 
