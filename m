@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JA9tY-0005WJ-Qc for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Jan 2008 12:08:57 -0800
+	id 1JA9tb-0005Wr-Fd for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Jan 2008 12:08:59 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JA9tY-00049R-5i
+	(Exim 4.44) id 1JA9tZ-0001aL-Q9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 02 Jan 2008 12:08:56 -0800
-Date: Wed, 2 Jan 2008 15:08:53 -0500
+	Wed, 02 Jan 2008 12:08:59 -0800
+Date: Wed, 2 Jan 2008 15:08:54 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080102200853.GA7954@c2.user-mode-linux.org>
+Message-ID: <20080102200854.GA7964@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 4/7] UML - Signal handling tidying
+Subject: [uml-devel] [PATCH 6/7] UML - Remove init_irq_signals
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,118 +31,65 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-This patch tidies the signal handling code slightly.
-
-pending is renamed to signals_pending for symmetry with signals_enabled.
-
-remove_sigstack was unused, so can be deleted.
-
-The value of change_sig was never used, so it is now void and the
-return value is not calculated any more.
+init_irq_signals doesn't need to be called from the context of a new
+process.  It initializes handlers, which are useless in process
+context.  With that call gone, init_irq_signals has only one caller,
+so it can be inlined into init_new_thread_signals.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/os-Linux/signal.c |   31 +++++++++++--------------------
- 1 file changed, 11 insertions(+), 20 deletions(-)
+ arch/um/include/os.h       |    1 -
+ arch/um/os-Linux/irq.c     |   11 -----------
+ arch/um/os-Linux/process.c |    5 ++++-
+ 3 files changed, 4 insertions(+), 13 deletions(-)
 
-Index: linux-2.6-git/arch/um/os-Linux/signal.c
+Index: linux-2.6-git/arch/um/include/os.h
 ===================================================================
---- linux-2.6-git.orig/arch/um/os-Linux/signal.c	2007-12-14 10:29:21.000000000 -0500
-+++ linux-2.6-git/arch/um/os-Linux/signal.c	2007-12-14 10:41:00.000000000 -0500
-@@ -63,7 +63,7 @@ static void sig_handler_common(int sig, 
- #define SIGVTALRM_MASK (1 << SIGVTALRM_BIT)
+--- linux-2.6-git.orig/arch/um/include/os.h	2007-12-13 12:43:29.000000000 -0500
++++ linux-2.6-git/arch/um/include/os.h	2007-12-13 17:48:06.000000000 -0500
+@@ -285,7 +285,6 @@ extern void os_free_irq_later(struct irq
+ extern int os_get_pollfd(int i);
+ extern void os_set_pollfd(int i, int fd);
+ extern void os_set_ioignore(void);
+-extern void init_irq_signals(int on_sigstack);
  
- static int signals_enabled;
--static unsigned int pending;
-+static unsigned int signals_pending;
- 
- void sig_handler(int sig, struct sigcontext *sc)
+ /* sigio.c */
+ extern int add_sigio_fd(int fd);
+Index: linux-2.6-git/arch/um/os-Linux/irq.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/os-Linux/irq.c	2007-12-13 12:43:21.000000000 -0500
++++ linux-2.6-git/arch/um/os-Linux/irq.c	2007-12-13 17:48:06.000000000 -0500
+@@ -136,14 +136,3 @@ void os_set_ioignore(void)
  {
-@@ -71,7 +71,7 @@ void sig_handler(int sig, struct sigcont
- 
- 	enabled = signals_enabled;
- 	if (!enabled && (sig == SIGIO)) {
--		pending |= SIGIO_MASK;
-+		signals_pending |= SIGIO_MASK;
- 		return;
- 	}
- 
-@@ -99,7 +99,7 @@ void alarm_handler(int sig, struct sigco
- 
- 	enabled = signals_enabled;
- 	if (!signals_enabled) {
--		pending |= SIGVTALRM_MASK;
-+		signals_pending |= SIGVTALRM_MASK;
- 		return;
- 	}
- 
-@@ -125,16 +125,6 @@ void set_sigstack(void *sig_stack, int s
- 		panic("enabling signal stack failed, errno = %d\n", errno);
+ 	signal(SIGIO, SIG_IGN);
  }
- 
--void remove_sigstack(void)
+-
+-void init_irq_signals(int on_sigstack)
 -{
--	stack_t stack = ((stack_t) { .ss_flags	= SS_DISABLE,
--				     .ss_sp	= NULL,
--				     .ss_size	= 0 });
+-	int flags;
 -
--	if (sigaltstack(&stack, NULL) != 0)
--		panic("disabling signal stack failed, errno = %d\n", errno);
+-	flags = on_sigstack ? SA_ONSTACK : 0;
+-
+-	set_handler(SIGIO, (__sighandler_t) sig_handler, flags | SA_RESTART,
+-		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
+-	signal(SIGWINCH, SIG_IGN);
 -}
--
- void (*handlers[_NSIG])(int sig, struct sigcontext *sc);
+Index: linux-2.6-git/arch/um/os-Linux/process.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/os-Linux/process.c	2007-12-13 12:42:57.000000000 -0500
++++ linux-2.6-git/arch/um/os-Linux/process.c	2007-12-13 17:48:06.000000000 -0500
+@@ -249,7 +249,10 @@ void init_new_thread_signals(void)
+ 		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
+ 	signal(SIGHUP, SIG_IGN);
  
- void handle_signal(int sig, struct sigcontext *sc)
-@@ -213,13 +203,14 @@ void set_handler(int sig, void (*handler
- 
- int change_sig(int signal, int on)
- {
--	sigset_t sigset, old;
-+	sigset_t sigset;
- 
- 	sigemptyset(&sigset);
- 	sigaddset(&sigset, signal);
--	if (sigprocmask(on ? SIG_UNBLOCK : SIG_BLOCK, &sigset, &old) < 0)
-+	if (sigprocmask(on ? SIG_UNBLOCK : SIG_BLOCK, &sigset, NULL) < 0)
- 		return -errno;
--	return !sigismember(&old, signal);
-+
-+	return 0;
+-	init_irq_signals(1);
++	set_handler(SIGIO, (__sighandler_t) sig_handler,
++		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH, SIGALRM,
++		    SIGVTALRM, -1);
++	signal(SIGWINCH, SIG_IGN);
  }
  
- void block_signals(void)
-@@ -244,26 +235,26 @@ void unblock_signals(void)
- 	/*
- 	 * We loop because the IRQ handler returns with interrupts off.  So,
- 	 * interrupts may have arrived and we need to re-enable them and
--	 * recheck pending.
-+	 * recheck signals_pending.
- 	 */
- 	while(1) {
- 		/*
- 		 * Save and reset save_pending after enabling signals.  This
--		 * way, pending won't be changed while we're reading it.
-+		 * way, signals_pending won't be changed while we're reading it.
- 		 */
- 		signals_enabled = 1;
- 
- 		/*
--		 * Setting signals_enabled and reading pending must
-+		 * Setting signals_enabled and reading signals_pending must
- 		 * happen in this order.
- 		 */
- 		barrier();
- 
--		save_pending = pending;
-+		save_pending = signals_pending;
- 		if (save_pending == 0)
- 			return;
- 
--		pending = 0;
-+		signals_pending = 0;
- 
- 		/*
- 		 * We have pending interrupts, so disable signals, as the
+ int run_kernel_thread(int (*fn)(void *), void *arg, jmp_buf **jmp_ptr)
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
