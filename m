@@ -1,16 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-list2-new-b.sourceforge.net ([10.3.1.94]
-	helo=sc8-sf-list2-new.sourceforge.net)
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1J9obG-0004VG-NC for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 01 Jan 2008 13:24:38 -0800
-Message-ID: <477AAFA1.9060807@BitWagon.com>
-Date: Tue, 01 Jan 2008 13:24:49 -0800
-From: John Reiser <jreiser@BitWagon.com>
-MIME-Version: 1.0
-References: <4773F11D.7060803@BitWagon.com>
-In-Reply-To: <4773F11D.7060803@BitWagon.com>
-Subject: Re: [uml-devel] running UserModeLinux under Valgrind(memcheck)
+	id 1JA585-0001hm-Hd for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Jan 2008 07:03:37 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JA584-0007km-VK
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 02 Jan 2008 07:03:37 -0800
+Date: Wed, 2 Jan 2008 10:02:55 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080102150255.GA5567@c2.user-mode-linux.org>
+References: <20080101071311.GA2496@hacking> <20080101071846.GB2496@hacking>
+	<20080101103342.GH28913@uranus.ravnborg.org>
+	<20080101104942.GI28913@uranus.ravnborg.org>
+	<20080101130125.GA2499@hacking>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20080101130125.GA2499@hacking>
+Subject: Re: [uml-devel] (Try #2) [Patch 1/8] UML: Remove 'TOPDIR' from
+	Makefiles
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,19 +34,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, valgrind-developers@lists.sourceforge.net
+To: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: Andrew Morton <akpm@osdl.org>, Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org
 
-The web page  http://bitwagon.com/valgrind+uml/index.html
-now exists with news, history, commentary, scripts, links
-on getting User Mode Linux for i686 to run under memcheck on i686.
+On Tue, Jan 01, 2008 at 09:01:25PM +0800, WANG Cong wrote:
+> TOPDIR is obsolete, use srctree instead.
+> This patch removes TOPDIR from all UML Makefiles.
 
-A standalone patch  http://bitwagon.com/valgrind+uml/mc_main-asap.patch
-to valgrind-3.3.0 implements "--complain-asap=yes" independently of
-the other changes.  See  http://bitwagon.com/glibc-audit/glibc-audit.html
-about getting a "quiet" glibc.
+Thanks, I'll send this to Andrew.
+
+				Jeff
 
 -- 
-John Reiser, jreiser@BitWagon.com
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
