@@ -1,25 +1,14 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JAPcV-0007vJ-PH for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Jan 2008 04:56:23 -0800
-Received: from fxip-0047f.externet.hu ([88.209.222.127]
-	helo=pomaz-ex.szeredi.hu)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JAPcU-0001Ok-38
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Jan 2008 04:56:23 -0800
-In-reply-to: <20080102220519.GA10137@c2.user-mode-linux.org> (message from
-	Jeff Dike on Wed, 2 Jan 2008 17:05:19 -0500)
-References: <E1JA7m0-0007nP-Fi@pomaz-ex.szeredi.hu>
-	<20080102200621.GB8847@c2.user-mode-linux.org>
-	<E1JAAZt-0008F8-An@pomaz-ex.szeredi.hu>
-	<20080102220519.GA10137@c2.user-mode-linux.org>
-Message-Id: <E1JAPc5-00011g-JJ@pomaz-ex.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Thu, 03 Jan 2008 13:55:57 +0100
-Subject: Re: [uml-devel] UML woes in 2.6.24-rc6-mm1
+Date: Thu, 3 Jan 2008 17:08:23 +0100 (CET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+In-Reply-To: <20080103051857.GA12453@c2.user-mode-linux.org>
+Message-ID: <Pine.LNX.4.64.0801031706000.27528@anakin>
+References: <4773F11D.7060803@BitWagon.com> <477AAFA1.9060807@BitWagon.com>
+	<20080102152838.GA5629@c2.user-mode-linux.org>
+	<477C134C.3080107@BitWagon.com>
+	<20080103051857.GA12453@c2.user-mode-linux.org>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] running UserModeLinux under Valgrind(memcheck)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,32 +18,42 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: valgrind-developers@lists.sourceforge.net, John Reiser <jreiser@BitWagon.com>, user-mode-linux-devel@lists.sourceforge.net
 
-> > 32bit UML, 64bit host, config attached.
+On Thu, 3 Jan 2008, Jeff Dike wrote:
+> On Wed, Jan 02, 2008 at 02:42:20PM -0800, John Reiser wrote:
+> > In particular, I'm confused by allocations
+> > which return a "page": either "struct page *", or a "char *" with
+> > an aligned group of char of size PAGE_SIZE in the virtual address space.
+> > Help?
 > 
-> Hadn't tried that, but that works here too.
-> 
-> I'll see if your config reproduces it.
-> 
-> > Can't reproduce with plain -rc6.
-> 
-> Feel like bisecting -mm1?
+> Examples?  I don't know what exactly you're referring to, nor what the
+> problem is.
 
-This is the one: uml-runtime-detection-of-host-vmsplit-on-i386.patch
+I think he means how to handle the following from include/linux/gfp.h in
+valgrind:
 
-The relevant log line (both for successful and failed boots):
+    struct page *alloc_pages(gfp_t gfp_mask, unsigned int order);
+    unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order);
 
-Locating the top of the address space ... 0xffc00000
+    void __free_pages(struct page *page, unsigned int order);
+    void free_pages(unsigned long addr, unsigned int order);
 
-Miklos
+Gr{oetje,eeting}s,
 
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
