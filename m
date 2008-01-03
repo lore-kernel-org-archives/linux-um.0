@@ -1,11 +1,13 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Message-ID: <477C134C.3080107@BitWagon.com>
-Date: Wed, 02 Jan 2008 14:42:20 -0800
-From: John Reiser <jreiser@BitWagon.com>
-MIME-Version: 1.0
+Date: Thu, 3 Jan 2008 00:18:57 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080103051857.GA12453@c2.user-mode-linux.org>
 References: <4773F11D.7060803@BitWagon.com> <477AAFA1.9060807@BitWagon.com>
 	<20080102152838.GA5629@c2.user-mode-linux.org>
-In-Reply-To: <20080102152838.GA5629@c2.user-mode-linux.org>
+	<477C134C.3080107@BitWagon.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <477C134C.3080107@BitWagon.com>
 Subject: Re: [uml-devel] running UserModeLinux under Valgrind(memcheck)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -20,107 +22,119 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: John Reiser <jreiser@BitWagon.com>
 Cc: valgrind-developers@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike responded:
- John Reiser wrote:
->>The web page  http://bitwagon.com/valgrind+uml/index.html
->>now exists with news, history, commentary, scripts, links
-
-> You refer to kmalloc and kfree as keeping object state intact between
-> kfree and kmalloc, thus not being semantically the same as malloc and
-> free.  However, this is true of kmem_cache_alloc and kmem_cache_free,
-> not kmalloc and kfree.
+On Wed, Jan 02, 2008 at 02:42:20PM -0800, John Reiser wrote:
+> It looks more complicated to me.
 > 
-> Object contents are destroyed between kfree and kmalloc.
+> When include/linux/slab.h is in view, then I trace
+> (where indentation indicates logical call [inline, or physical call]):
+>   kmalloc   include/linux/slab.h
+>     __kmalloc   mm/slab.c
+>       __do_kmalloc  mm/slab.c
+>         __cache_alloc   mm/slab.c
+>           __do_cache_alloc   mm/slab.c
+>             ____cache_alloc   mm/slab.c
+>               cpu_cache_get   mm/slab.c
 
-It looks more complicated to me.
+You're paying way too much attention to the implementation.
 
-When include/linux/slab.h is in view, then I trace
-(where indentation indicates logical call [inline, or physical call]):
-  kmalloc   include/linux/slab.h
-    __kmalloc   mm/slab.c
-      __do_kmalloc  mm/slab.c
-        __cache_alloc   mm/slab.c
-          __do_cache_alloc   mm/slab.c
-            ____cache_alloc   mm/slab.c
-              cpu_cache_get   mm/slab.c
+The rules are simple:
+	1 - kmalloc and kfree and just like malloc and free - an object's
+contents are destroyed between kfree and kmalloc
+	2 - kmem_cache_alloc and kmem_cache_free are just like malloc and
+free, except that an object may come out of kmem_cache_alloc partially
+initialized
 
-When include/linux/slab_def.h is in view, then I trace:
-  For a size that is constant at compile time [very often the case],
-  then I trace:
+There is another requirement on kmem_cache_free - that an object be
+passed in in the same initialization state as the constructor would
+create.  You can interpret this as state being preserved between
+kmem_cache_free and kmem_cache_alloc, which is how it is actually
+implemented, or as the constructor always being called before
+kmem_cache_alloc returns.  The second makes it look more like malloc
+and free.
 
-    kmalloc   include/linux/slab_def.h
-      kmem_cache_alloc   mm/slab.c
-        __cache_alloc   mm/slab.c
-          <<and continues as in first case above>>
+> When include/linux/slab_def.h is in view, then I trace:
+>   For a size that is constant at compile time [very often the case],
+>   then I trace:
+> 
+>     kmalloc   include/linux/slab_def.h
+>       kmem_cache_alloc   mm/slab.c
+>         __cache_alloc   mm/slab.c
+>           <<and continues as in first case above>>
 
-  If the size is non-constant at compile time, then I trace:
+Yes, kmalloc implements its size buckets as kmem_cache_alloc slabs.
+So what?  If you look at /proc/slabinfo, the size-n slabs you see
+belong to kmalloc.  But that's an implementation detail that has
+nothing to do with the contract you make when calling kmalloc.
 
-    kmalloc   include/linux/slab_def.h
-      __kmalloc   mm/slab.c
-        <<and continues as in first case above>>
+> The slab allocator is by far the most used case.  slub and slob
+> have not yet been used during my explorations, as far as I can tell.
 
-My tracking of kfree is much simpler:
-  kfree   mm/slab.c
-    __cache_free   mm/slab.c
+Right now, it's configurable, and the default configuration uses slab.
 
-The net effect is that the slab allocator always calls __cache_alloc,
-thus re-using a kfree()d object and its accumulated contents.
+> Under DEBUG, then cache_init_objs() in mm/slab.c does not call the ctor
+> if SLAB_POISON.  Under no-DEBUG, then cache_init_objs() always calls
+> the ctor.  So here is an exception to the proposed rule, and quite
+> different *semantics* for DEBUG versus no-DEBUG.  Also, cache_init_objs
+> is not the allocator, but only the initial condition.
 
-The slab allocator is by far the most used case.  slub and slob
-have not yet been used during my explorations, as far as I can tell.
+No, there is no semantic difference here, only a difference in when
+the objects are constructed depending on slab poisoning.  When
+poisoning is in effect, the objects are constructed as late as
+possible.  When it's not, they are contructed earlier.
 
-> As far as kmem_cache_alloc and kmem_cache_free are concerned, would it
-> work to say that they are like malloc and free, except that if there's
-> a constructor, it is always called before kmem_cache_alloc returns?
+> Under DEBUG, then cache_alloc_debugcheck_after() in mm/slab.c calls
+> the ctor if SLAB_POISON.  Under no-DEBUG, then cache_alloc_debugcheck_after()
+> is a no-op.  Again, a difference in *semantics* between DEBUG and
+> no-DEBUG.
 
-Under DEBUG, then cache_init_objs() in mm/slab.c does not call the ctor
-if SLAB_POISON.  Under no-DEBUG, then cache_init_objs() always calls
-the ctor.  So here is an exception to the proposed rule, and quite
-different *semantics* for DEBUG versus no-DEBUG.  Also, cache_init_objs
-is not the allocator, but only the initial condition.
+No, these two supposed semantics differences combine to make no
+semantic difference.
 
-Under DEBUG, then cache_alloc_debugcheck_after() in mm/slab.c calls
-the ctor if SLAB_POISON.  Under no-DEBUG, then cache_alloc_debugcheck_after()
-is a no-op.  Again, a difference in *semantics* between DEBUG and no-DEBUG.
+> Altogether: the slab ctor is called once per object; except if DEBUG and
+> SLAB_POISON, when kfree() is considered to destroy the old object and
+> kmalloc is considered to create a new object (yet the two objects occupy
+> identical address space.)  In the case of no-DEBUG slab, then the ctor
+> is never called as a result of calling kmalloc.
 
-Altogether: the slab ctor is called once per object; except if DEBUG and
-SLAB_POISON, when kfree() is considered to destroy the old object and
-kmalloc is considered to create a new object (yet the two objects occupy
-identical address space.)  In the case of no-DEBUG slab, then the ctor
-is never called as a result of calling kmalloc.
+The kmalloc slabs have no constructor, so of course no constructor is
+called as a result of calling kmalloc.
 
-So kmalloc+kfree is distinctly different in semantics from malloc+free,
-at least as implemented by slab, the most common case.
+> So kmalloc+kfree is distinctly different in semantics from malloc+free,
+> at least as implemented by slab, the most common case.
 
+No, they are identical.
 
-Now, in my patches, I CHANGED the semantics of slab __cache_alloc
-so that it calls the ctor always, ignoring both no-DEBUG and SLAB_POISON.
-If there is a ctor, then this makes kmalloc+kfree closer to malloc+free.
-But if there is no ctor, then things are murky again.  Should the result
-of kmalloc() be marked as if it were returned from malloc() or not?
-[I.e., are the contents undefined or defined?]
-At least some clients act that way (under DEBUG and SLAB_POISON),
-and in general it would be simpler for memcheck if it were so.
-The patch acts as if it *is* so:
-        VALGRIND_MALLOCLIKE_BLOCK(objp, size, 0, 0);
-In particular, the contents are considered to be undefined.
-[Then the ctor, if it exists, defines some or all.]
+> Now, in my patches, I CHANGED the semantics of slab __cache_alloc
 
-Obviously this is open for corrections, debate, and better understanding!
-I had difficulty understanding what I observed, and still I search ...
-The existing patches are the result of trial-and-error to find something
-which could survive for a complete session of boot+login+halt while
-respecting at least some intent of memcheck.  But probably I missed
-an important point or two.  In particular, I'm confused by allocations
-which return a "page": either "struct page *", or a "char *" with
-an aligned group of char of size PAGE_SIZE in the virtual address space.
-Help?
+__cache_alloc is an implementation detail - you don't describe it to
+valgrind any more that you would describe some internal malloc
+function.  You need to describe kmalloc/kfree and
+kmem_cache_alloc/kmem_cache_free, which are both fairly close
+(kmalloc/kfree being identical) to malloc/free.
+
+> so that it calls the ctor always, ignoring both no-DEBUG and SLAB_POISON.
+> If there is a ctor, then this makes kmalloc+kfree closer to malloc+free.
+> But if there is no ctor, then things are murky again.  Should the result
+> of kmalloc() be marked as if it were returned from malloc() or not?
+> [I.e., are the contents undefined or defined?]
+
+Undefined.
+
+> In particular, I'm confused by allocations
+> which return a "page": either "struct page *", or a "char *" with
+> an aligned group of char of size PAGE_SIZE in the virtual address space.
+> Help?
+
+Examples?  I don't know what exactly you're referring to, nor what the
+problem is.
+
+				Jeff
 
 -- 
-John Reiser, jreiser@BitWagon.com
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
