@@ -1,13 +1,15 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Thu, 3 Jan 2008 17:08:23 +0100 (CET)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <20080103051857.GA12453@c2.user-mode-linux.org>
-Message-ID: <Pine.LNX.4.64.0801031706000.27528@anakin>
+Date: Fri, 4 Jan 2008 11:37:11 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080104163711.GA5743@c2.user-mode-linux.org>
 References: <4773F11D.7060803@BitWagon.com> <477AAFA1.9060807@BitWagon.com>
 	<20080102152838.GA5629@c2.user-mode-linux.org>
 	<477C134C.3080107@BitWagon.com>
 	<20080103051857.GA12453@c2.user-mode-linux.org>
-MIME-Version: 1.0
+	<Pine.LNX.4.64.0801031706000.27528@anakin>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0801031706000.27528@anakin>
 Subject: Re: [uml-devel] running UserModeLinux under Valgrind(memcheck)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -22,38 +24,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: valgrind-developers@lists.sourceforge.net, John Reiser <jreiser@BitWagon.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 3 Jan 2008, Jeff Dike wrote:
-> On Wed, Jan 02, 2008 at 02:42:20PM -0800, John Reiser wrote:
-> > In particular, I'm confused by allocations
-> > which return a "page": either "struct page *", or a "char *" with
-> > an aligned group of char of size PAGE_SIZE in the virtual address space.
-> > Help?
+On Thu, Jan 03, 2008 at 05:08:23PM +0100, Geert Uytterhoeven wrote:
+> I think he means how to handle the following from include/linux/gfp.h in
+> valgrind:
 > 
-> Examples?  I don't know what exactly you're referring to, nor what the
-> problem is.
+>     struct page *alloc_pages(gfp_t gfp_mask, unsigned int order);
+>     unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order);
+> 
+>     void __free_pages(struct page *page, unsigned int order);
+>     void free_pages(unsigned long addr, unsigned int order);
 
-I think he means how to handle the following from include/linux/gfp.h in
-valgrind:
+Oh yeah, good point.
 
-    struct page *alloc_pages(gfp_t gfp_mask, unsigned int order);
-    unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order);
+The unsigned long ones are easy - they are addresses disguised as
+numbers.
 
-    void __free_pages(struct page *page, unsigned int order);
-    void free_pages(unsigned long addr, unsigned int order);
+You have to tell valgrind somehow that the object size is
+	(1 << order) * PAGE_SIZE
 
-Gr{oetje,eeting}s,
+About the struct page ones - I see two possibilities.
 
-						Geert
+1 - You communicate to valgrind somehow that there is a mapping
+between the page struct and the virtual address it represents.  There
+is a is no page_to_virt (although there is a virt_to_page), but one
+would be easy to add.  For UML, it amounts to
+	uml_physmem + (page - mem_map) * PAGE_SIZE
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2 - You can insist that UML defines WANT_PAGE_VIRTUAL which, if I'm
+reading the code correctly, will set page->virtual to the address
+represented by the page.  Valgrind then somehow has to know how to
+reach into the page struct and get the address.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
