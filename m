@@ -1,28 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JCj7V-00055L-NB for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Jan 2008 14:09:57 -0800
+	id 1JCj7X-00055r-72 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Jan 2008 14:09:59 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JCj7U-0000tk-Up
+	(Exim 4.44) id 1JCj7W-0007x5-GF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Jan 2008 14:09:57 -0800
+	Wed, 09 Jan 2008 14:09:59 -0800
 Received: from c2.user-mode-linux.org (littleton.addtoit.com [198.99.130.129])
-	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id m09M9qcm000404
+	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id m09M9ss9000411
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 9 Jan 2008 17:09:52 -0500
+	Wed, 9 Jan 2008 17:09:54 -0500
 Received: from c2.user-mode-linux.org (localhost.localdomain [127.0.0.1])
-	by c2.user-mode-linux.org (8.14.1/8.13.8) with ESMTP id m09M9qeh009314
+	by c2.user-mode-linux.org (8.14.1/8.13.8) with ESMTP id m09M9sOO009329
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 9 Jan 2008 17:09:52 -0500
-Date: Wed, 9 Jan 2008 17:09:52 -0500
+	Wed, 9 Jan 2008 17:09:54 -0500
+Date: Wed, 9 Jan 2008 17:09:54 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080109220952.GA9119@c2.user-mode-linux.org>
+Message-ID: <20080109220954.GA9134@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 5/9] SKAS4 - start_up.c preparation
+Subject: [uml-devel] [RFC PATCH 8/9] SKAS4 - rename new_mm
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,220 +38,60 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Tidy arch/um/os-Linux/start_up.c in preparation for host SKAS4 testing.
+UML already had a new_mm().  This is renamed to make_new_mm().
 
-There are now explicit variables for disabling any particular host
-capability.
-
-init_registers is moved out of the skas3 testing because it needs to
-happen every time, and the skas3 checks will become optional.
-
-Index: linux-2.6-skas4/arch/um/os-Linux/start_up.c
+Index: linux-2.6-skas4/arch/um/include/skas/skas.h
 ===================================================================
---- linux-2.6-skas4.orig/arch/um/os-Linux/start_up.c	2008-01-08 15:56:31.000000000 -0500
-+++ linux-2.6-skas4/arch/um/os-Linux/start_up.c	2008-01-08 16:13:48.000000000 -0500
-@@ -23,6 +23,7 @@
- #include "mem_user.h"
- #include "ptrace_user.h"
- #include "registers.h"
-+#include "skas.h"
- #include "skas_ptrace.h"
- 
- static int ptrace_child(void)
-@@ -141,14 +142,27 @@ static int stop_ptraced_child(int pid, i
- }
- 
- /* Changed only during early boot */
--int ptrace_faultinfo = 1;
--int ptrace_ldt = 1;
--int proc_mm = 1;
--int skas_needs_stub = 0;
-+int ptrace_faultinfo;
-+static int disable_ptrace_faultinfo;
-+
-+int ptrace_ldt;
-+static int disable_ptrace_ldt;
-+
-+int proc_mm;
-+static int disable_proc_mm;
-+
-+int have_switch_mm;
-+static int disable_switch_mm;
-+
-+int skas_needs_stub;
- 
- static int __init skas0_cmd_param(char *str, int* add)
- {
--	ptrace_faultinfo = proc_mm = 0;
-+	disable_ptrace_faultinfo = 1;
-+	disable_ptrace_ldt = 1;
-+	disable_proc_mm = 1;
-+	disable_switch_mm = 1;
-+
- 	return 0;
- }
- 
-@@ -158,15 +172,12 @@ static int __init mode_skas0_cmd_param(c
- 	__attribute__((alias("skas0_cmd_param")));
- 
- __uml_setup("skas0", skas0_cmd_param,
--		"skas0\n"
--		"    Disables SKAS3 usage, so that SKAS0 is used, unless \n"
--	        "    you specify mode=tt.\n\n");
-+"skas0\n"
-+"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used\n\n");
- 
- __uml_setup("mode=skas0", mode_skas0_cmd_param,
--		"mode=skas0\n"
--		"    Disables SKAS3 usage, so that SKAS0 is used, unless you \n"
--		"    specify mode=tt. Note that this was recently added - on \n"
--		"    older kernels you must use simply \"skas0\".\n\n");
-+"mode=skas0\n"
-+"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used.\n\n");
- 
- /* Changed only during early boot */
- static int force_sysemu_disabled = 0;
-@@ -341,6 +352,8 @@ static void __init check_coredump_limit(
- 
- void __init os_early_checks(void)
- {
-+	int pid;
-+
- 	/* Print out the core dump limits early */
- 	check_coredump_limit();
- 
-@@ -350,11 +363,15 @@ void __init os_early_checks(void)
- 	 * kernel is running.
- 	 */
- 	check_tmpexec();
-+
-+	pid = start_ptraced_child();
-+	init_registers(pid);
-+	stop_ptraced_child(pid, 1, 1);
- }
- 
- static int __init noprocmm_cmd_param(char *str, int* add)
- {
--	proc_mm = 0;
-+	disable_proc_mm = 1;
- 	return 0;
- }
- 
-@@ -366,7 +383,7 @@ __uml_setup("noprocmm", noprocmm_cmd_par
- 
- static int __init noptracefaultinfo_cmd_param(char *str, int* add)
- {
--	ptrace_faultinfo = 0;
-+	disable_ptrace_faultinfo = 1;
- 	return 0;
- }
- 
-@@ -378,7 +395,7 @@ __uml_setup("noptracefaultinfo", noptrac
- 
- static int __init noptraceldt_cmd_param(char *str, int* add)
- {
--	ptrace_ldt = 0;
-+	disable_ptrace_ldt = 1;
- 	return 0;
- }
- 
-@@ -398,20 +415,18 @@ static inline void check_skas3_ptrace_fa
- 
- 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
- 	if (n < 0) {
--		ptrace_faultinfo = 0;
- 		if (errno == EIO)
- 			non_fatal("not found\n");
- 		else
- 			perror("not found");
- 	}
-+	else if (disable_ptrace_faultinfo)
-+		non_fatal("found but disabled on command line\n");
- 	else {
--		if (!ptrace_faultinfo)
--			non_fatal("found but disabled on command line\n");
--		else
--			non_fatal("found\n");
-+		ptrace_faultinfo = 1;
-+		non_fatal("found\n");
- 	}
- 
--	init_registers(pid);
- 	stop_ptraced_child(pid, 1, 1);
- }
- 
-@@ -435,38 +450,32 @@ static inline void check_skas3_ptrace_ld
- 		else {
- 			perror("not found");
- 		}
--		ptrace_ldt = 0;
- 	}
-+	else if (disable_ptrace_ldt)
-+		non_fatal("found, but use is disabled\n");
- 	else {
--		if (ptrace_ldt)
--			non_fatal("found\n");
--		else
--			non_fatal("found, but use is disabled\n");
-+		ptrace_ldt = 1;
-+		non_fatal("found\n");
- 	}
- 
- 	stop_ptraced_child(pid, 1, 1);
--#else
--	/* PTRACE_LDT might be disabled via cmdline option.
--	 * We want to override this, else we might use the stub
--	 * without real need
--	 */
--	ptrace_ldt = 1;
- #endif
- }
- 
- static inline void check_skas3_proc_mm(void)
- {
- 	non_fatal("  - /proc/mm...");
--	if (access("/proc/mm", W_OK) < 0) {
--		proc_mm = 0;
-+	if (access("/proc/mm", W_OK) < 0)
- 		perror("not found");
--	}
--	else if (!proc_mm)
-+	else if (disable_proc_mm)
- 		non_fatal("found but disabled on command line\n");
--	else non_fatal("found\n");
-+	else {
-+		proc_mm = 1;
-+		non_fatal("found\n");
-+	}
- }
- 
--int can_do_skas(void)
-+void can_do_skas(void)
- {
- 	non_fatal("Checking for the skas3 patch in the host:\n");
- 
-@@ -476,8 +485,6 @@ int can_do_skas(void)
- 
- 	if (!proc_mm || !ptrace_faultinfo || !ptrace_ldt)
- 		skas_needs_stub = 1;
--
--	return 1;
- }
- 
- int __init parse_iomem(char *str, int *add)
-Index: linux-2.6-skas4/arch/um/include/os.h
+--- linux-2.6-skas4.orig/arch/um/include/skas/skas.h	2008-01-09 16:22:13.000000000 -0500
++++ linux-2.6-skas4/arch/um/include/skas/skas.h	2008-01-09 16:22:57.000000000 -0500
+@@ -15,7 +15,7 @@ extern int skas_needs_stub;
+ extern int user_thread(unsigned long stack, int flags);
+ extern void new_thread_handler(void);
+ extern void handle_syscall(struct uml_pt_regs *regs);
+-extern int new_mm(unsigned long stack);
++extern int make_new_mm(unsigned long stack);
+ extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
+ extern long execute_syscall_skas(void *r);
+ extern unsigned long current_stub_stack(void);
+Index: linux-2.6-skas4/arch/um/kernel/skas/mmu.c
 ===================================================================
---- linux-2.6-skas4.orig/arch/um/include/os.h	2008-01-08 15:56:31.000000000 -0500
-+++ linux-2.6-skas4/arch/um/include/os.h	2008-01-08 16:13:00.000000000 -0500
-@@ -168,7 +168,7 @@ extern int os_fchange_dir(int fd);
+--- linux-2.6-skas4.orig/arch/um/kernel/skas/mmu.c	2008-01-09 16:22:13.000000000 -0500
++++ linux-2.6-skas4/arch/um/kernel/skas/mmu.c	2008-01-09 16:24:05.000000000 -0500
+@@ -101,7 +101,7 @@ int init_new_context(struct task_struct 
+ 		from_mm = &current->mm->context;
  
- /* start_up.c */
- extern void os_early_checks(void);
--extern int can_do_skas(void);
-+extern void can_do_skas(void);
- extern void os_check_bugs(void);
- extern void check_host_supports_tls(int *supports_tls, int *tls_min);
+ 	if (proc_mm) {
+-		ret = new_mm(stack);
++		ret = make_new_mm(stack);
+ 		if (ret < 0) {
+ 			printk(KERN_ERR "init_new_context_skas - "
+ 			       "new_mm failed, errno = %d\n", ret);
+Index: linux-2.6-skas4/arch/um/kernel/skas/process.c
+===================================================================
+--- linux-2.6-skas4.orig/arch/um/kernel/skas/process.c	2008-01-09 16:22:13.000000000 -0500
++++ linux-2.6-skas4/arch/um/kernel/skas/process.c	2008-01-09 16:24:05.000000000 -0500
+@@ -9,7 +9,7 @@
+ #include "os.h"
+ #include "skas.h"
  
+-int new_mm(unsigned long stack)
++int make_new_mm(unsigned long stack)
+ {
+ 	int fd;
+ 
+Index: linux-2.6-skas4/arch/um/sys-i386/ldt.c
+===================================================================
+--- linux-2.6-skas4.orig/arch/um/sys-i386/ldt.c	2008-01-09 16:22:13.000000000 -0500
++++ linux-2.6-skas4/arch/um/sys-i386/ldt.c	2008-01-09 16:24:05.000000000 -0500
+@@ -436,7 +436,7 @@ long init_new_ldt(struct mm_context *new
+ 		/*
+ 		 * We have a valid from_mm, so we now have to copy the LDT of
+ 		 * from_mm to new_mm, because using proc_mm an new mm with
+-		 * an empty/default LDT was created in new_mm()
++		 * an empty/default LDT was created in make_new_mm()
+ 		 */
+ 		copy = ((struct proc_mm_op) { .op 	= MM_COPY_SEGMENTS,
+ 					      .u 	=
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
