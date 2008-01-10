@@ -2,20 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JCruA-0000dN-Vh for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Jan 2008 23:32:47 -0800
-Received: from mx2.mail.elte.hu ([157.181.151.9])
+	id 1JCtMj-0001s9-9b for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Jan 2008 01:06:21 -0800
+Received: from fxip-0047f.externet.hu ([88.209.222.127]
+	helo=pomaz-ex.szeredi.hu)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JCruA-0002AK-8X
+	(Exim 4.44) id 1JCtMh-00048G-Sj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Jan 2008 23:32:46 -0800
-Date: Thu, 10 Jan 2008 08:32:16 +0100
-From: Ingo Molnar <mingo@elte.hu>
-Message-ID: <20080110073215.GA11506@elte.hu>
+	Thu, 10 Jan 2008 01:06:21 -0800
+In-reply-to: <20080110073215.GA11506@elte.hu> (message from Ingo Molnar on
+	Thu, 10 Jan 2008 08:32:16 +0100)
 References: <E1JCi3M-0006hO-7i@pomaz-ex.szeredi.hu>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <E1JCi3M-0006hO-7i@pomaz-ex.szeredi.hu>
+	<20080110073215.GA11506@elte.hu>
+MIME-version: 1.0
+Message-Id: <E1JCtMI-0007jw-5U@pomaz-ex.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Thu, 10 Jan 2008 10:05:54 +0100
 Subject: Re: [uml-devel] uml and -regparm=3
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,146 +28,122 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Miklos Szeredi <miklos@szeredi.hu>
+To: mingo@elte.hu
 Cc: jdike@addtoit.com, akpm@linux-foundation.org, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-
-* Miklos Szeredi <miklos@szeredi.hu> wrote:
-
-> FASTCALL is defined empty in -mm, but UML is not compiled with =
-
-> -mregparm=3D3 and so this breaks things (I noticed problems with =
-
-> rwsem_down_write_failed).
-> =
-
-> Tried recompiling UML with -mregparm=3D3, but that resulted in a strange =
-
-> failure immediately after startup:
-> =
-
-> |=1B%G=EF=BF=BD=1B%@: Invalid argument
-> =
-
-> What's up?
-
-Miklos, could you try the fix below?
-
-In general most FASTCALL/fastcall uses are bogus, except for code where =
-
-a function that takes parameters is implemented in assembly with a =
-
-regparm calling convention. The fix is to introduce the "asmregparm" =
-
-attribute to mark such function prototypes with regparm(3). This is the =
-
-opposite of asmlinkage. [asmlinkage forced regparm(0)]
-
-	Ingo
-
------------->
-Subject: x86: fix UML calling convention
-From: Ingo Molnar <mingo@elte.hu>
-
-introduce the "asmregparm" calling convention: for functions
-implemented in assembly with a fixed regparm input parameters
-calling convention.
-
-mark the semaphore and rwsem slowpath functions with that.
-
-Reported-by: Miklos Szeredi <miklos@szeredi.hu>
-Signed-off-by: Ingo Molnar <mingo@elte.hu>
----
- include/asm-x86/linkage.h      |    5 +++++
- include/asm-x86/rwsem.h        |   12 ++++++++----
- include/asm-x86/semaphore_32.h |    8 ++++----
- 3 files changed, 17 insertions(+), 8 deletions(-)
-
-Index: linux-x86.q/include/asm-x86/linkage.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-x86.q.orig/include/asm-x86/linkage.h
-+++ linux-x86.q/include/asm-x86/linkage.h
-@@ -9,6 +9,11 @@
- #ifdef CONFIG_X86_32
- #define asmlinkage CPP_ASMLINKAGE __attribute__((regparm(0)))
- #define prevent_tail_call(ret) __asm__ ("" : "=3Dr" (ret) : "0" (ret))
-+/*
-+ * For 32-bit UML - mark functions implemented in assembly that use
-+ * regparm input parameters:
-+ */
-+#define asmregparm __attribute__((regparm(3)))
- #endif
- =
-
- #ifdef CONFIG_X86_ALIGNMENT_16
-Index: linux-x86.q/include/asm-x86/rwsem.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-x86.q.orig/include/asm-x86/rwsem.h
-+++ linux-x86.q/include/asm-x86/rwsem.h
-@@ -44,10 +44,14 @@
- =
-
- struct rwsem_waiter;
- =
-
--extern struct rw_semaphore *FASTCALL(rwsem_down_read_failed(struct rw_sema=
-phore *sem));
--extern struct rw_semaphore *FASTCALL(rwsem_down_write_failed(struct rw_sem=
-aphore *sem));
--extern struct rw_semaphore *FASTCALL(rwsem_wake(struct rw_semaphore *));
--extern struct rw_semaphore *FASTCALL(rwsem_downgrade_wake(struct rw_semaph=
-ore *sem));
-+extern asmregparm struct rw_semaphore *
-+ rwsem_down_read_failed(struct rw_semaphore *sem);
-+extern asmregparm struct rw_semaphore *
-+ rwsem_down_write_failed(struct rw_semaphore *sem);
-+extern asmregparm struct rw_semaphore *
-+ rwsem_wake(struct rw_semaphore *);
-+extern asmregparm struct rw_semaphore *
-+ rwsem_downgrade_wake(struct rw_semaphore *sem);
- =
-
- /*
-  * the semaphore definition
-Index: linux-x86.q/include/asm-x86/semaphore_32.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-x86.q.orig/include/asm-x86/semaphore_32.h
-+++ linux-x86.q/include/asm-x86/semaphore_32.h
-@@ -83,10 +83,10 @@ static inline void init_MUTEX_LOCKED (st
- 	sema_init(sem, 0);
- }
- =
-
--void __down_failed(void /* special register calling convention */);
--int  __down_failed_interruptible(void  /* params in registers */);
--int  __down_failed_trylock(void  /* params in registers */);
--void __up_wakeup(void /* special register calling convention */);
-+extern asmregparm void __down_failed(atomic_t *count_ptr);
-+extern asmregparm int  __down_failed_interruptible(atomic_t *count_ptr);
-+extern asmregparm int  __down_failed_trylock(atomic_t *count_ptr);
-+extern asmregparm void __up_wakeup(atomic_t *count_ptr);
- =
-
- /*
-  * This is ugly, but we want the default case to fall through.
-
-
--------------------------------------------------------------------------
-Check out the new SourceForge.net Marketplace.
-It's the best place to buy or sell services for
-just about anything Open Source.
-http://ad.doubleclick.net/clk;164216239;13503038;w?http://sf.net/marketplace
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+PiAqIE1pa2xvcyBTemVyZWRpIDxtaWtsb3NAc3plcmVkaS5odT4gd3JvdGU6Cj4gCj4gPiBGQVNU
+Q0FMTCBpcyBkZWZpbmVkIGVtcHR5IGluIC1tbSwgYnV0IFVNTCBpcyBub3QgY29tcGlsZWQgd2l0
+aCAKPiA+IC1tcmVncGFybT0zIGFuZCBzbyB0aGlzIGJyZWFrcyB0aGluZ3MgKEkgbm90aWNlZCBw
+cm9ibGVtcyB3aXRoIAo+ID4gcndzZW1fZG93bl93cml0ZV9mYWlsZWQpLgo+ID4gCj4gPiBUcmll
+ZCByZWNvbXBpbGluZyBVTUwgd2l0aCAtbXJlZ3Bhcm09MywgYnV0IHRoYXQgcmVzdWx0ZWQgaW4g
+YSBzdHJhbmdlIAo+ID4gZmFpbHVyZSBpbW1lZGlhdGVseSBhZnRlciBzdGFydHVwOgo+ID4gCj4g
+PiB8GyVHw6/Cv8K9GyVAOiBJbnZhbGlkIGFyZ3VtZW50Cj4gPiAKPiA+IFdoYXQncyB1cD8KPiAK
+PiBNaWtsb3MsIGNvdWxkIHlvdSB0cnkgdGhlIGZpeCBiZWxvdz8KPiAKPiBJbiBnZW5lcmFsIG1v
+c3QgRkFTVENBTEwvZmFzdGNhbGwgdXNlcyBhcmUgYm9ndXMsIGV4Y2VwdCBmb3IgY29kZSB3aGVy
+ZSAKPiBhIGZ1bmN0aW9uIHRoYXQgdGFrZXMgcGFyYW1ldGVycyBpcyBpbXBsZW1lbnRlZCBpbiBh
+c3NlbWJseSB3aXRoIGEgCj4gcmVncGFybSBjYWxsaW5nIGNvbnZlbnRpb24uIFRoZSBmaXggaXMg
+dG8gaW50cm9kdWNlIHRoZSAiYXNtcmVncGFybSIgCj4gYXR0cmlidXRlIHRvIG1hcmsgc3VjaCBm
+dW5jdGlvbiBwcm90b3R5cGVzIHdpdGggcmVncGFybSgzKS4gVGhpcyBpcyB0aGUgCj4gb3Bwb3Np
+dGUgb2YgYXNtbGlua2FnZS4gW2FzbWxpbmthZ2UgZm9yY2VkIHJlZ3Bhcm0oMCldCgpUaGFua3Mu
+ICBQYXRjaCB3b3JrcywgYnV0IG5lZWRlZCB0byBhZGQgYXNtcmVncGFybSB0byB0aGUgZGVmaW5p
+dGlvbnMKYXMgd2VsbCwgcGx1cyBhZGRlZCBkZWZhdWx0IGRlZmluZSBpbnRvIDxsaW51eC9saW5r
+YWdlLmg+ICh1cGRhdGVkCnBhdGNoIGJlbG93KS4KCk1pa2xvcwotLS0tCgpTdWJqZWN0OiB4ODY6
+IGZpeCBVTUwgY2FsbGluZyBjb252ZW50aW9uCkZyb206IEluZ28gTW9sbmFyIDxtaW5nb0BlbHRl
+Lmh1PgoKaW50cm9kdWNlIHRoZSAiYXNtcmVncGFybSIgY2FsbGluZyBjb252ZW50aW9uOiBmb3Ig
+ZnVuY3Rpb25zCmltcGxlbWVudGVkIGluIGFzc2VtYmx5IHdpdGggYSBmaXhlZCByZWdwYXJtIGlu
+cHV0IHBhcmFtZXRlcnMKY2FsbGluZyBjb252ZW50aW9uLgoKbWFyayB0aGUgc2VtYXBob3JlIGFu
+ZCByd3NlbSBzbG93cGF0aCBmdW5jdGlvbnMgd2l0aCB0aGF0LgoKU2lnbmVkLW9mZi1ieTogSW5n
+byBNb2xuYXIgPG1pbmdvQGVsdGUuaHU+ClNpZ25lZC1vZmYtYnk6IE1pa2xvcyBTemVyZWRpIDxt
+c3plcmVkaUBzdXNlLmN6PgotLS0KCkluZGV4OiBsaW51eC9pbmNsdWRlL2FzbS14ODYvbGlua2Fn
+ZS5oCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT0KLS0tIGxpbnV4Lm9yaWcvaW5jbHVkZS9hc20teDg2L2xpbmthZ2UuaAky
+MDA4LTAxLTA5IDIxOjE2OjI5LjAwMDAwMDAwMCArMDEwMAorKysgbGludXgvaW5jbHVkZS9hc20t
+eDg2L2xpbmthZ2UuaAkyMDA4LTAxLTEwIDA5OjM4OjE3LjAwMDAwMDAwMCArMDEwMApAQCAtOSw2
+ICs5LDExIEBACiAjaWZkZWYgQ09ORklHX1g4Nl8zMgogI2RlZmluZSBhc21saW5rYWdlIENQUF9B
+U01MSU5LQUdFIF9fYXR0cmlidXRlX18oKHJlZ3Bhcm0oMCkpKQogI2RlZmluZSBwcmV2ZW50X3Rh
+aWxfY2FsbChyZXQpIF9fYXNtX18gKCIiIDogIj1yIiAocmV0KSA6ICIwIiAocmV0KSkKKy8qCisg
+KiBGb3IgMzItYml0IFVNTCAtIG1hcmsgZnVuY3Rpb25zIGltcGxlbWVudGVkIGluIGFzc2VtYmx5
+IHRoYXQgdXNlCisgKiByZWdwYXJtIGlucHV0IHBhcmFtZXRlcnM6CisgKi8KKyNkZWZpbmUgYXNt
+cmVncGFybSBfX2F0dHJpYnV0ZV9fKChyZWdwYXJtKDMpKSkKICNlbmRpZgogCiAjaWZkZWYgQ09O
+RklHX1g4Nl9BTElHTk1FTlRfMTYKSW5kZXg6IGxpbnV4L2luY2x1ZGUvYXNtLXg4Ni9yd3NlbS5o
+Cj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT0KLS0tIGxpbnV4Lm9yaWcvaW5jbHVkZS9hc20teDg2L3J3c2VtLmgJMjAwOC0w
+MS0wOSAyMToxNjoyOS4wMDAwMDAwMDAgKzAxMDAKKysrIGxpbnV4L2luY2x1ZGUvYXNtLXg4Ni9y
+d3NlbS5oCTIwMDgtMDEtMTAgMDk6NTU6MDcuMDAwMDAwMDAwICswMTAwCkBAIC00NCwxMCArNDQs
+MTQgQEAKIAogc3RydWN0IHJ3c2VtX3dhaXRlcjsKIAotZXh0ZXJuIHN0cnVjdCByd19zZW1hcGhv
+cmUgKkZBU1RDQUxMKHJ3c2VtX2Rvd25fcmVhZF9mYWlsZWQoc3RydWN0IHJ3X3NlbWFwaG9yZSAq
+c2VtKSk7Ci1leHRlcm4gc3RydWN0IHJ3X3NlbWFwaG9yZSAqRkFTVENBTEwocndzZW1fZG93bl93
+cml0ZV9mYWlsZWQoc3RydWN0IHJ3X3NlbWFwaG9yZSAqc2VtKSk7Ci1leHRlcm4gc3RydWN0IHJ3
+X3NlbWFwaG9yZSAqRkFTVENBTEwocndzZW1fd2FrZShzdHJ1Y3Qgcndfc2VtYXBob3JlICopKTsK
+LWV4dGVybiBzdHJ1Y3Qgcndfc2VtYXBob3JlICpGQVNUQ0FMTChyd3NlbV9kb3duZ3JhZGVfd2Fr
+ZShzdHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0pKTsKK2V4dGVybiBhc21yZWdwYXJtIHN0cnVjdCBy
+d19zZW1hcGhvcmUgKgorIHJ3c2VtX2Rvd25fcmVhZF9mYWlsZWQoc3RydWN0IHJ3X3NlbWFwaG9y
+ZSAqc2VtKTsKK2V4dGVybiBhc21yZWdwYXJtIHN0cnVjdCByd19zZW1hcGhvcmUgKgorIHJ3c2Vt
+X2Rvd25fd3JpdGVfZmFpbGVkKHN0cnVjdCByd19zZW1hcGhvcmUgKnNlbSk7CitleHRlcm4gYXNt
+cmVncGFybSBzdHJ1Y3Qgcndfc2VtYXBob3JlICoKKyByd3NlbV93YWtlKHN0cnVjdCByd19zZW1h
+cGhvcmUgKik7CitleHRlcm4gYXNtcmVncGFybSBzdHJ1Y3Qgcndfc2VtYXBob3JlICoKKyByd3Nl
+bV9kb3duZ3JhZGVfd2FrZShzdHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0pOwogCiAvKgogICogdGhl
+IHNlbWFwaG9yZSBkZWZpbml0aW9uCkluZGV4OiBsaW51eC9pbmNsdWRlL2FzbS14ODYvc2VtYXBo
+b3JlXzMyLmgKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PQotLS0gbGludXgub3JpZy9pbmNsdWRlL2FzbS14ODYvc2VtYXBo
+b3JlXzMyLmgJMjAwOC0wMS0wOSAyMToxNjoyOS4wMDAwMDAwMDAgKzAxMDAKKysrIGxpbnV4L2lu
+Y2x1ZGUvYXNtLXg4Ni9zZW1hcGhvcmVfMzIuaAkyMDA4LTAxLTEwIDA5OjM4OjE3LjAwMDAwMDAw
+MCArMDEwMApAQCAtODMsMTAgKzgzLDEwIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBpbml0X01VVEVY
+X0xPQ0tFRCAoc3QKIAlzZW1hX2luaXQoc2VtLCAwKTsKIH0KIAotdm9pZCBfX2Rvd25fZmFpbGVk
+KHZvaWQgLyogc3BlY2lhbCByZWdpc3RlciBjYWxsaW5nIGNvbnZlbnRpb24gKi8pOwotaW50ICBf
+X2Rvd25fZmFpbGVkX2ludGVycnVwdGlibGUodm9pZCAgLyogcGFyYW1zIGluIHJlZ2lzdGVycyAq
+Lyk7Ci1pbnQgIF9fZG93bl9mYWlsZWRfdHJ5bG9jayh2b2lkICAvKiBwYXJhbXMgaW4gcmVnaXN0
+ZXJzICovKTsKLXZvaWQgX191cF93YWtldXAodm9pZCAvKiBzcGVjaWFsIHJlZ2lzdGVyIGNhbGxp
+bmcgY29udmVudGlvbiAqLyk7CitleHRlcm4gYXNtcmVncGFybSB2b2lkIF9fZG93bl9mYWlsZWQo
+YXRvbWljX3QgKmNvdW50X3B0cik7CitleHRlcm4gYXNtcmVncGFybSBpbnQgIF9fZG93bl9mYWls
+ZWRfaW50ZXJydXB0aWJsZShhdG9taWNfdCAqY291bnRfcHRyKTsKK2V4dGVybiBhc21yZWdwYXJt
+IGludCAgX19kb3duX2ZhaWxlZF90cnlsb2NrKGF0b21pY190ICpjb3VudF9wdHIpOworZXh0ZXJu
+IGFzbXJlZ3Bhcm0gdm9pZCBfX3VwX3dha2V1cChhdG9taWNfdCAqY291bnRfcHRyKTsKIAogLyoK
+ICAqIFRoaXMgaXMgdWdseSwgYnV0IHdlIHdhbnQgdGhlIGRlZmF1bHQgY2FzZSB0byBmYWxsIHRo
+cm91Z2guCkluZGV4OiBsaW51eC9saWIvcndzZW0uYwo9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsaW51eC5vcmln
+L2xpYi9yd3NlbS5jCTIwMDgtMDEtMDkgMjE6MTY6MzAuMDAwMDAwMDAwICswMTAwCisrKyBsaW51
+eC9saWIvcndzZW0uYwkyMDA4LTAxLTEwIDA5OjU1OjU1LjAwMDAwMDAwMCArMDEwMApAQCAtMTg3
+LDcgKzE4Nyw3IEBAIHJ3c2VtX2Rvd25fZmFpbGVkX2NvbW1vbihzdHJ1Y3Qgcndfc2VtYXAKIC8q
+CiAgKiB3YWl0IGZvciB0aGUgcmVhZCBsb2NrIHRvIGJlIGdyYW50ZWQKICAqLwotc3RydWN0IHJ3
+X3NlbWFwaG9yZSBfX3NjaGVkICoKK2FzbXJlZ3Bhcm0gc3RydWN0IHJ3X3NlbWFwaG9yZSBfX3Nj
+aGVkICoKIHJ3c2VtX2Rvd25fcmVhZF9mYWlsZWQoc3RydWN0IHJ3X3NlbWFwaG9yZSAqc2VtKQog
+ewogCXN0cnVjdCByd3NlbV93YWl0ZXIgd2FpdGVyOwpAQCAtMjAxLDcgKzIwMSw3IEBAIHJ3c2Vt
+X2Rvd25fcmVhZF9mYWlsZWQoc3RydWN0IHJ3X3NlbWFwaG8KIC8qCiAgKiB3YWl0IGZvciB0aGUg
+d3JpdGUgbG9jayB0byBiZSBncmFudGVkCiAgKi8KLXN0cnVjdCByd19zZW1hcGhvcmUgX19zY2hl
+ZCAqCithc21yZWdwYXJtIHN0cnVjdCByd19zZW1hcGhvcmUgX19zY2hlZCAqCiByd3NlbV9kb3du
+X3dyaXRlX2ZhaWxlZChzdHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0pCiB7CiAJc3RydWN0IHJ3c2Vt
+X3dhaXRlciB3YWl0ZXI7CkBAIC0yMTYsNyArMjE2LDcgQEAgcndzZW1fZG93bl93cml0ZV9mYWls
+ZWQoc3RydWN0IHJ3X3NlbWFwaAogICogaGFuZGxlIHdha2luZyB1cCBhIHdhaXRlciBvbiB0aGUg
+c2VtYXBob3JlCiAgKiAtIHVwX3JlYWQvdXBfd3JpdGUgaGFzIGRlY3JlbWVudGVkIHRoZSBhY3Rp
+dmUgcGFydCBvZiBjb3VudCBpZiB3ZSBjb21lIGhlcmUKICAqLwotc3RydWN0IHJ3X3NlbWFwaG9y
+ZSAqcndzZW1fd2FrZShzdHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0pCithc21yZWdwYXJtIHN0cnVj
+dCByd19zZW1hcGhvcmUgKnJ3c2VtX3dha2Uoc3RydWN0IHJ3X3NlbWFwaG9yZSAqc2VtKQogewog
+CXVuc2lnbmVkIGxvbmcgZmxhZ3M7CiAKQEAgLTIzNiw3ICsyMzYsNyBAQCBzdHJ1Y3Qgcndfc2Vt
+YXBob3JlICpyd3NlbV93YWtlKHN0cnVjdCByCiAgKiAtIGNhbGxlciBpbmNyZW1lbnRlZCB3YWl0
+aW5nIHBhcnQgb2YgY291bnQgYW5kIGRpc2NvdmVyZWQgaXQgc3RpbGwgbmVnYXRpdmUKICAqIC0g
+anVzdCB3YWtlIHVwIGFueSByZWFkZXJzIGF0IHRoZSBmcm9udCBvZiB0aGUgcXVldWUKICAqLwot
+c3RydWN0IHJ3X3NlbWFwaG9yZSAqcndzZW1fZG93bmdyYWRlX3dha2Uoc3RydWN0IHJ3X3NlbWFw
+aG9yZSAqc2VtKQorYXNtcmVncGFybSBzdHJ1Y3Qgcndfc2VtYXBob3JlICpyd3NlbV9kb3duZ3Jh
+ZGVfd2FrZShzdHJ1Y3Qgcndfc2VtYXBob3JlICpzZW0pCiB7CiAJdW5zaWduZWQgbG9uZyBmbGFn
+czsKIApJbmRleDogbGludXgvaW5jbHVkZS9saW51eC9saW5rYWdlLmgKPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0g
+bGludXgub3JpZy9pbmNsdWRlL2xpbnV4L2xpbmthZ2UuaAkyMDA4LTAxLTA5IDIxOjE2OjA0LjAw
+MDAwMDAwMCArMDEwMAorKysgbGludXgvaW5jbHVkZS9saW51eC9saW5rYWdlLmgJMjAwOC0wMS0x
+MCAxMDowMTo1Mi4wMDAwMDAwMDAgKzAxMDAKQEAgLTEzLDYgKzEzLDEwIEBACiAjZGVmaW5lIGFz
+bWxpbmthZ2UgQ1BQX0FTTUxJTktBR0UKICNlbmRpZgogCisjaWZuZGVmIGFzbXJlZ3Bhcm0KKyNk
+ZWZpbmUgYXNtcmVncGFybQorI2VuZGlmCisKICNpZm5kZWYgcHJldmVudF90YWlsX2NhbGwKICMg
+ZGVmaW5lIHByZXZlbnRfdGFpbF9jYWxsKHJldCkgZG8geyB9IHdoaWxlICgwKQogI2VuZGlmCgot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCkNoZWNrIG91dCB0aGUgbmV3IFNvdXJjZUZvcmdlLm5ldCBNYXJrZXRw
+bGFjZS4KSXQncyB0aGUgYmVzdCBwbGFjZSB0byBidXkgb3Igc2VsbCBzZXJ2aWNlcyBmb3IKanVz
+dCBhYm91dCBhbnl0aGluZyBPcGVuIFNvdXJjZS4KaHR0cDovL2FkLmRvdWJsZWNsaWNrLm5ldC9j
+bGs7MTY0MjE2MjM5OzEzNTAzMDM4O3c/aHR0cDovL3NmLm5ldC9tYXJrZXRwbGFjZQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgt
+ZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1t
+b2RlLWxpbnV4LWRldmVsCg==
