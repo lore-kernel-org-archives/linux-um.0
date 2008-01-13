@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JDxvE-0007EZ-S7 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 13 Jan 2008 00:10:25 -0800
-Received: from rv-out-0910.google.com ([209.85.198.188])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JDxvE-0004cZ-9q
+	id 1JE2Ub-0008Nc-NV for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 13 Jan 2008 05:03:15 -0800
+Received: from rv-out-0910.google.com ([209.85.198.190])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JE2UT-0003tt-18
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 13 Jan 2008 00:10:24 -0800
-Received: by rv-out-0910.google.com with SMTP id g11so4749269rvb.22
+	Sun, 13 Jan 2008 05:03:07 -0800
+Received: by rv-out-0910.google.com with SMTP id g11so4880610rvb.22
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 13 Jan 2008 00:10:23 -0800 (PST)
-Message-ID: <4789C771.5070100@finnie.org>
-Date: Sun, 13 Jan 2008 00:10:25 -0800
+	Sun, 13 Jan 2008 05:03:03 -0800 (PST)
+Message-ID: <478A0C0C.9030503@finnie.org>
+Date: Sun, 13 Jan 2008 05:03:08 -0800
 From: Ryan Finnie <ryan@finnie.org>
 MIME-Version: 1.0
-Subject: [uml-devel] [RFC PATCH] SKAS3 for 2.6.24-rc7
+References: <4789C771.5070100@finnie.org>
+In-Reply-To: <4789C771.5070100@finnie.org>
+Subject: [uml-devel] [RFC PATCH] SKAS3 for 2.6.24-rc7 (2nd try)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,58 +27,53 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1362675307=="
+Content-Type: multipart/mixed; boundary="===============2078393179=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============1362675307==
+--===============2078393179==
 Content-Type: multipart/signed; micalg=pgp-sha1;
 	protocol="application/pgp-signature";
-	boundary="------------enig1F993DE614A15D14A0FF33E5"
+	boundary="------------enig872499539DB8D1A52697E642"
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig1F993DE614A15D14A0FF33E5
-Content-Type: multipart/mixed; boundary="------------050803020801080000090209"
+--------------enig872499539DB8D1A52697E642
+Content-Type: multipart/mixed; boundary="------------050903080600090103000809"
 
 This is a multi-part message in MIME format.
---------------050803020801080000090209
+--------------050903080600090103000809
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Please find attached a SKAS3 patch against Linux 2.6.24-rc7, based on
-Jeff Dike's 2007-12-08 patch for 2.6.23.
+Ryan Finnie wrote:
+> sysdep-i386/skas_ptrace.h and sysdep-x86_64/skas_ptrace.h are nearly
+> identical, so I can't figure out why ptrace_faultinfo and ptrace_ldt ar=
+e
+> being defined in the first place.
 
-Quoteth Jeff:
-> 2.6.24 is going to be even more interesting, given the x86 merge.
+Looks like they were added to include/asm-um/ptrace-x86_64.h to solve a
+disparity in x86_64 that the x86 merge fixed.  Removing them let
+skas_ptrace.h define them, as in i386.
 
-Indeed it is.  This patch is not perfect and I need some help.  Host
-i386 and x86_64 build with CONFIG_PROC_MM (I tested i386 and it works,
-but for x86_64 I just made sure it compiles defconfig).  Guest i386
-builds correctly and runs fine, but I cannot figure this out when
-building guest x86_64:
+So here we go, attached is an updated version.  I also changed
+CONFIG_PROC_MM_BROWSABLE to depend on CONFIG_PROC_MM.  Again, the i386
+host and guest build and test properly, but I have only tested building
+x86_64 host and guest using defconfig.  They build correctly, but I
+haven't test booted them.  (I have x86_64 hardware, but don't have a
+guest userland handy to test with.)  Please give it a spin and let me
+know how it works.
 
-  CC      arch/um/kernel/ptrace.o
-In file included from arch/um/include/skas_ptrace.h:12,
-                 from arch/um/kernel/ptrace.c:13:
-arch/um/include/sysdep/skas_ptrace.h:9: error: redefinition of =E2=80=98s=
-truct
-ptrace_faultinfo=E2=80=99
-arch/um/include/sysdep/skas_ptrace.h:14: error: redefinition of =E2=80=98=
-struct
-ptrace_ldt=E2=80=99
-make[1]: *** [arch/um/kernel/ptrace.o] Error 1
-make: *** [arch/um/kernel] Error 2
-
-sysdep-i386/skas_ptrace.h and sysdep-x86_64/skas_ptrace.h are nearly
-identical, so I can't figure out why ptrace_faultinfo and ptrace_ldt are
-being defined in the first place.
+Oh, and let me remind the world: I am not really a C programmer, let
+alone a kernel programmer.  It's quite possible this patch will eat your
+dog.  Hopefully someone like Jeff can chime in Monday and let me know
+that I did a horrible job porting the patch.
 
 RF
 
  arch/um/sys-i386/ldt.c           |    2
- arch/x86/Kconfig                 |   20 ++
+ arch/x86/Kconfig                 |   21 ++
  arch/x86/ia32/ptrace32.c         |   68 +++++++
  arch/x86/ia32/sys_ia32.c         |   16 +
  arch/x86/kernel/ldt_32.c         |   58 +++---
@@ -90,7 +87,7 @@ RF
  include/asm-um/compat.h          |    9
  include/asm-um/proc_mm_32.h      |    1
  include/asm-um/proc_mm_64.h      |    1
- include/asm-um/ptrace-x86_64.h   |   11 +
+ include/asm-um/ptrace-x86_64.h   |    1
  include/asm-x86/desc_32.h        |    3
  include/asm-x86/desc_64.h        |    3
  include/asm-x86/mmu_context_32.h |   19 +
@@ -107,21 +104,21 @@ RF
  mm/mprotect.c                    |   20 +-
  mm/proc_mm-mod.c                 |   50 +++++
  mm/proc_mm.c                     |  299 +++++++++++++++++++++++++++++++
- 32 files changed, 1133 insertions(+), 84 deletions(-)
+ 32 files changed, 1124 insertions(+), 84 deletions(-)
 
 
---------------050803020801080000090209
+--------------050903080600090103000809
 Content-Type: text/x-patch;
- name="2.6.24-rc7-skas3.20080113.patch"
+ name="2.6.24-rc7-skas3.20080113-2.patch"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline;
- filename="2.6.24-rc7-skas3.20080113.patch"
+ filename="2.6.24-rc7-skas3.20080113-2.patch"
 
 diff -ruN linux-2.6.24-rc7.orig/arch/um/sys-i386/ldt.c linux-2.6.24-rc7/a=
 rch/um/sys-i386/ldt.c
 --- linux-2.6.24-rc7.orig/arch/um/sys-i386/ldt.c	2008-01-11 22:47:26.0000=
 00000 -0800
-+++ linux-2.6.24-rc7/arch/um/sys-i386/ldt.c	2008-01-12 23:48:48.000000000=
++++ linux-2.6.24-rc7/arch/um/sys-i386/ldt.c	2008-01-13 02:41:21.000000000=
  -0800
 @@ -6,7 +6,7 @@
  #include "linux/mm.h"
@@ -287,9 +284,9 @@ diff -ruN linux-2.6.24-rc7.orig/arch/x86/Kconfig linux-2.6.24-rc7/arch/x8=
 6/Kconfig
 --- linux-2.6.24-rc7.orig/arch/x86/Kconfig	2008-01-11 22:47:26.000000000 =
 -0800
-+++ linux-2.6.24-rc7/arch/x86/Kconfig	2008-01-12 23:45:33.000000000 -0800=
++++ linux-2.6.24-rc7/arch/x86/Kconfig	2008-01-13 03:23:11.000000000 -0800=
 
-@@ -813,6 +813,26 @@
+@@ -813,6 +813,27 @@
  	  has the cost of more pagetable lookup overhead, and also
  	  consumes more pagetable space per process.
 =20
@@ -300,6 +297,7 @@ diff -ruN linux-2.6.24-rc7.orig/arch/x86/Kconfig linux-2.6.24-rc7/arch/x8=
 +config PROC_MM_DUMPABLE
 +	bool "Make UML childs /proc/<pid> completely browsable"
 +	default n
++	depends on PROC_MM
 +	help
 +	  If in doubt, say N.
 +
@@ -1094,23 +1092,13 @@ diff -ruN linux-2.6.24-rc7.orig/include/asm-um/ptrace-x86_64.h linux-2.6.=
 24-rc7/include/asm-um/ptrace-x86_64.h
 --- linux-2.6.24-rc7.orig/include/asm-um/ptrace-x86_64.h	2008-01-11 22:47=
 :29.000000000 -0800
-+++ linux-2.6.24-rc7/include/asm-um/ptrace-x86_64.h	2008-01-12 23:45:33.0=
++++ linux-2.6.24-rc7/include/asm-um/ptrace-x86_64.h	2008-01-13 03:08:10.0=
 00000000 -0800
-@@ -78,4 +78,15 @@
+@@ -78,4 +78,5 @@
 =20
  extern long arch_prctl(struct task_struct *task, int code,
  		       unsigned long __user *addr);
 +
-+struct ptrace_faultinfo {
-+	int is_write;
-+	unsigned long addr;
-+};
-+
-+struct ptrace_ldt {
-+	int func;
-+  	void *ptr;
-+	unsigned long bytecount;
-+};
  #endif
 diff -ruN linux-2.6.24-rc7.orig/include/asm-x86/desc_32.h linux-2.6.24-rc=
 7/include/asm-x86/desc_32.h
@@ -1378,7 +1366,7 @@ diff -ruN linux-2.6.24-rc7.orig/include/asm-x86/ptrace.h linux-2.6.24-rc7=
 /include/asm-x86/ptrace.h
 --- linux-2.6.24-rc7.orig/include/asm-x86/ptrace.h	2008-01-11 22:47:29.00=
 0000000 -0800
-+++ linux-2.6.24-rc7/include/asm-x86/ptrace.h	2008-01-12 23:45:33.0000000=
++++ linux-2.6.24-rc7/include/asm-x86/ptrace.h	2008-01-13 03:13:33.0000000=
 00 -0800
 @@ -139,4 +139,69 @@
  #endif /* !__i386__ */
@@ -2130,9 +2118,9 @@ setof(struct type, member))
 +
 +module_init(debug_printoffsets);
 
---------------050803020801080000090209--
+--------------050903080600090103000809--
 
---------------enig1F993DE614A15D14A0FF33E5
+--------------enig872499539DB8D1A52697E642
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -2141,15 +2129,15 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1.4.6 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQFHicd2KZYQqSA+yiURAtzEAJ9E+w0yZJmTmpTNOietz60MccesQACgjQg7
-0Ar7ZeD3/By0SpujRB+XLZc=
-=Wqxm
+iD8DBQFHigwPKZYQqSA+yiURAl0aAJsHt3ed0uxf8xbFoetuzPRHxiSiMQCgi3/4
+xKpsoiE19t1Bhf2bihG9bXU=
+=9MZP
 -----END PGP SIGNATURE-----
 
---------------enig1F993DE614A15D14A0FF33E5--
+--------------enig872499539DB8D1A52697E642--
 
 
---===============1362675307==
+--===============2078393179==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -2160,7 +2148,7 @@ Check out the new SourceForge.net Marketplace.
 It's the best place to buy or sell services for
 just about anything Open Source.
 http://ad.doubleclick.net/clk;164216239;13503038;w?http://sf.net/marketplace
---===============1362675307==
+--===============2078393179==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -2171,5 +2159,5 @@ User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
---===============1362675307==--
+--===============2078393179==--
 
