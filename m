@@ -1,29 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JEWyx-0000eX-Kw for user-mode-linux-devel@lists.sourceforge.net;
+	id 1JEWyx-0000eV-4y for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 14 Jan 2008 13:36:39 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JEWyw-00086R-VU
+	(Exim 4.44) id 1JEWyw-0004u9-HS
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 14 Jan 2008 13:36:35 -0800
 Received: from c2.user-mode-linux.org (littleton.addtoit.com [198.99.130.129])
-	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id m0ELaT1K021915
+	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id m0ELaUTB021916
 	for <user-mode-linux-devel@lists.sourceforge.net>;
 	Mon, 14 Jan 2008 16:36:31 -0500
 Received: from c2.user-mode-linux.org (localhost.localdomain [127.0.0.1])
-	by c2.user-mode-linux.org (8.14.1/8.13.8) with ESMTP id m0ELaTXP002592
+	by c2.user-mode-linux.org (8.14.1/8.13.8) with ESMTP id m0ELaT4J002598
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 14 Jan 2008 16:36:29 -0500
+	Mon, 14 Jan 2008 16:36:30 -0500
 Date: Mon, 14 Jan 2008 16:36:29 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080114213629.GA2464@c2.user-mode-linux.org>
+Message-ID: <20080114213629.GA2516@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 2/10] SKAS4 - Macroize stub system call
-	execution loop
+Subject: [uml-devel] [RFC PATCH 3/10] SKAS4 - Host SIGSEGV siginfo_t extensions
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,214 +38,143 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: UML-user <user-mode-linux-devel@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-    Extract the system call execution loop in the stubs into a macro.
-    
-    A later patch will need this loop, so this makes it available.
+    Add CPU trap number and error code to siginfo_t in the SIGSEGV case for x86.
 
-diff --git a/arch/um/sys-i386/stub.S b/arch/um/sys-i386/stub.S
-index e730772..890dc50 100644
---- a/arch/um/sys-i386/stub.S
-+++ b/arch/um/sys-i386/stub.S
-@@ -1,52 +1,45 @@
- #include "uml-config.h"
- #include "as-layout.h"
+diff --git a/arch/x86/ia32/ia32_signal.c b/arch/x86/ia32/ia32_signal.c
+index 6ea19c2..2f74adf 100644
+--- a/arch/x86/ia32/ia32_signal.c
++++ b/arch/x86/ia32/ia32_signal.c
+@@ -65,6 +65,8 @@ int copy_siginfo_to_user32(compat_siginfo_t __user *to, siginfo_t *from)
+ 		err |= __put_user(from->_sifields._pad[0], &to->_sifields._pad[0]);
+ 		switch (from->si_code >> 16) {
+ 		case __SI_FAULT >> 16:
++			err |= __put_user(from->si_trapno, &to->si_trapno);
++			err |= __put_user(from->si_error, &to->si_error);
+ 			break;
+ 		case __SI_CHLD >> 16:
+ 			err |= __put_user(from->si_utime, &to->si_utime);
+diff --git a/arch/x86/mm/fault_32.c b/arch/x86/mm/fault_32.c
+index a2273d4..0e7940d 100644
+--- a/arch/x86/mm/fault_32.c
++++ b/arch/x86/mm/fault_32.c
+@@ -211,6 +211,8 @@ static noinline void force_sig_info_fault(int si_signo, int si_code,
+ 	info.si_errno = 0;
+ 	info.si_code = si_code;
+ 	info.si_addr = (void __user *)address;
++	info.si_trapno = tsk->thread.trap_no;
++	info.si_error = tsk->thread.error_code;
+ 	force_sig_info(si_signo, &info, tsk);
+ }
  
-+#define PROCESS_LIST \
-+	/* load pointer to first operation */ \
-+	mov	$(ASM_STUB_DATA + 8), %esp; \
-+1: \
-+	/* load length of additional data */ \
-+	mov	0x0(%esp), %eax; \
-+	/* if(length == 0) : end of list */ \
-+	/* write possible 0 to header */ \
-+	mov	%eax, ASM_STUB_DATA + 4; \
-+	cmpl	$0, %eax; \
-+	jz	2f; \
-+	/* save current pointer */ \
-+	mov	%esp, ASM_STUB_DATA + 4; \
-+	/* skip additional data */ \
-+	add	%eax, %esp; \
-+	/* load syscall-# */ \
-+	pop	%eax; \
-+	/* load syscall params */ \
-+	pop	%ebx; \
-+	pop	%ecx; \
-+	pop	%edx; \
-+	pop	%esi; \
-+ 	pop	%edi; \
-+	pop	%ebp; \
-+	/* execute syscall */ \
-+	int	$0x80; \
-+	/* check return value */ \
-+	pop	%ebx; \
-+	cmp	%ebx, %eax; \
-+	je	1b; \
-+2: \
-+	/* save return value */ \
-+	mov	%eax, ASM_STUB_DATA;
+diff --git a/arch/x86/mm/fault_64.c b/arch/x86/mm/fault_64.c
+index 0e26230..6365ba8 100644
+--- a/arch/x86/mm/fault_64.c
++++ b/arch/x86/mm/fault_64.c
+@@ -502,6 +502,8 @@ bad_area_nosemaphore:
+ 		info.si_errno = 0;
+ 		/* info.si_code has been set above */
+ 		info.si_addr = (void __user *)address;
++		info.si_trapno = tsk->thread.trap_no;
++		info.si_error = tsk->thread.error_code;
+ 		force_sig_info(SIGSEGV, &info, tsk);
+ 		return;
+ 	}
+@@ -577,6 +579,8 @@ do_sigbus:
+ 	info.si_errno = 0;
+ 	info.si_code = BUS_ADRERR;
+ 	info.si_addr = (void __user *)address;
++	info.si_trapno = tsk->thread.trap_no;
++	info.si_error = tsk->thread.error_code;
+ 	force_sig_info(SIGBUS, &info, tsk);
+ 	return;
+ }
+diff --git a/include/asm-generic/siginfo.h b/include/asm-generic/siginfo.h
+index 8786e01..b295e86 100644
+--- a/include/asm-generic/siginfo.h
++++ b/include/asm-generic/siginfo.h
+@@ -82,6 +82,9 @@ typedef struct siginfo {
+ #ifdef __ARCH_SI_TRAPNO
+ 			int _trapno;	/* TRAP # which caused the signal */
+ #endif
++#ifdef __ARCH_SI_ERROR
++			int _error;	/* CPU error code */
++#endif
+ 		} _sigfault;
+ 
+ 		/* SIGPOLL */
+@@ -112,6 +115,9 @@ typedef struct siginfo {
+ #ifdef __ARCH_SI_TRAPNO
+ #define si_trapno	_sifields._sigfault._trapno
+ #endif
++#ifdef __ARCH_SI_ERROR
++#define si_error	_sifields._sigfault._error
++#endif
+ #define si_band		_sifields._sigpoll._band
+ #define si_fd		_sifields._sigpoll._fd
+ 
+diff --git a/include/asm-x86/ia32.h b/include/asm-x86/ia32.h
+index 0190b7c..afc75c3 100644
+--- a/include/asm-x86/ia32.h
++++ b/include/asm-x86/ia32.h
+@@ -119,6 +119,8 @@ typedef struct compat_siginfo{
+ 		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
+ 		struct {
+ 			unsigned int _addr;	/* faulting insn/memory ref. */
++			int _trapno;	/* TRAP # which caused the signal */
++			int _error;	/* CPU error code */
+ 		} _sigfault;
+ 
+ 		/* SIGPOLL */
+diff --git a/include/asm-x86/siginfo.h b/include/asm-x86/siginfo.h
+index a477bea..59c8d37 100644
+--- a/include/asm-x86/siginfo.h
++++ b/include/asm-x86/siginfo.h
+@@ -5,6 +5,9 @@
+ # define __ARCH_SI_PREAMBLE_SIZE	(4 * sizeof(int))
+ #endif
+ 
++#define __ARCH_SI_TRAPNO
++#define __ARCH_SI_ERROR
 +
- 	.globl syscall_stub
- .section .__syscall_stub, "x"
+ #include <asm-generic/siginfo.h>
  
- 	.globl batch_syscall_stub
- batch_syscall_stub:
--	/* load pointer to first operation */
--	mov	$(ASM_STUB_DATA+8), %esp
--
--again:
--	/* load length of additional data */
--	mov	0x0(%esp), %eax
--
--	/* if(length == 0) : end of list */
--	/* write possible 0 to header */
--	mov	%eax, ASM_STUB_DATA+4
--	cmpl	$0, %eax
--	jz	done
--
--	/* save current pointer */
--	mov	%esp, ASM_STUB_DATA+4
--
--	/* skip additional data */
--	add	%eax, %esp
--
--	/* load syscall-# */
--	pop	%eax
--
--	/* load syscall params */
--	pop	%ebx
--	pop	%ecx
--	pop	%edx
--	pop	%esi
-- 	pop	%edi
--	pop	%ebp
--
--	/* execute syscall */
--	int	$0x80
--
--	/* check return value */
--	pop	%ebx
--	cmp	%ebx, %eax
--	je	again
--
--done:
--	/* save return value */
--	mov	%eax, ASM_STUB_DATA
--
-+	PROCESS_LIST
- 	/* stop */
- 	int3
-diff --git a/arch/um/sys-x86_64/stub.S b/arch/um/sys-x86_64/stub.S
-index 4afe204..143a16c 100644
---- a/arch/um/sys-x86_64/stub.S
-+++ b/arch/um/sys-x86_64/stub.S
-@@ -1,67 +1,48 @@
- #include "uml-config.h"
- #include "as-layout.h"
+ #endif
+diff --git a/include/linux/signalfd.h b/include/linux/signalfd.h
+index 86f9b1e..71e3c45 100644
+--- a/include/linux/signalfd.h
++++ b/include/linux/signalfd.h
+@@ -26,6 +26,8 @@ struct signalfd_siginfo {
+ 	__u64 ssi_utime;
+ 	__u64 ssi_stime;
+ 	__u64 ssi_addr;
++	__u32 ssi_trap_no;
++	__u32 ssi_error_code;
  
--	.globl syscall_stub
--.section .__syscall_stub, "x"
--syscall_stub:
--	syscall
--	/* We don't have 64-bit constants, so this constructs the address
--	 * we need.
--	 */
--	movq	$(ASM_STUB_DATA >> 32), %rbx
--	salq	$32, %rbx
--	movq	$(ASM_STUB_DATA & 0xffffffff), %rcx
--	or	%rcx, %rbx
--	movq	%rax, (%rbx)
--	int3
-+#define PROCESS_LIST \
-+	mov	$(ASM_STUB_DATA >> 32), %rbx; \
-+	sal	$32, %rbx; \
-+	mov	$(ASM_STUB_DATA & 0xffffffff), %rax; \
-+	or	%rax, %rbx; \
-+	/* load pointer to first operation */ \
-+	mov	%rbx, %rsp; \
-+	add	$0x10, %rsp; \
-+1: \
-+	/* load length of additional data */ \
-+	mov	0x0(%rsp), %rax; \
-+	/* if(length == 0) : end of list */ \
-+	/* write possible 0 to header */ \
-+	mov	%rax, 8(%rbx); \
-+	cmp	$0, %rax; \
-+	jz	2f; \
-+	/* save current pointer */ \
-+	mov	%rsp, 8(%rbx); \
-+	/* skip additional data */ \
-+	add	%rax, %rsp; \
-+	/* load syscall-# */ \
-+	pop	%rax; \
-+	/* load syscall params */ \
-+	pop	%rdi; \
-+	pop	%rsi; \
-+	pop	%rdx; \
-+	pop	%r10; \
-+ 	pop	%r8; \
-+	pop	%r9; \
-+	/* execute syscall */ \
-+	syscall; \
-+	/* check return value */ \
-+	pop	%rcx; \
-+	cmp	%rcx, %rax; \
-+	je	1b; \
-+2: \
-+	/* save return value */ \
-+	mov	%rax, (%rbx); \
+ 	/*
+ 	 * Pad strcture to 128 bytes. Remember to update the
+@@ -36,7 +38,7 @@ struct signalfd_siginfo {
+ 	 * comes out of a read(2) and we really don't want to have
+ 	 * a compat on read(2).
+ 	 */
+-	__u8 __pad[48];
++	__u8 __pad[40];
+ };
  
-+.section .__syscall_stub, "x"
- 	.globl batch_syscall_stub
- batch_syscall_stub:
--	mov	$(ASM_STUB_DATA >> 32), %rbx
--	sal	$32, %rbx
--	mov	$(ASM_STUB_DATA & 0xffffffff), %rax
--	or	%rax, %rbx
--	/* load pointer to first operation */
--	mov	%rbx, %rsp
--	add	$0x10, %rsp
--again:
--	/* load length of additional data */
--	mov	0x0(%rsp), %rax
--
--	/* if(length == 0) : end of list */
--	/* write possible 0 to header */
--	mov	%rax, 8(%rbx)
--	cmp	$0, %rax
--	jz	done
--
--	/* save current pointer */
--	mov	%rsp, 8(%rbx)
--
--	/* skip additional data */
--	add	%rax, %rsp
--
--	/* load syscall-# */
--	pop	%rax
--
--	/* load syscall params */
--	pop	%rdi
--	pop	%rsi
--	pop	%rdx
--	pop	%r10
-- 	pop	%r8
--	pop	%r9
--
--	/* execute syscall */
--	syscall
--
--	/* check return value */
--	pop	%rcx
--	cmp	%rcx, %rax
--	je	again
--
--done:
--	/* save return value */
--	mov	%rax, (%rbx)
--
-+	PROCESS_LIST
- 	/* stop */
- 	int3
+ 
+diff --git a/kernel/signal.c b/kernel/signal.c
+index afa4f78..1e067a1 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2108,6 +2108,9 @@ int copy_siginfo_to_user(siginfo_t __user *to, siginfo_t *from)
+ #ifdef __ARCH_SI_TRAPNO
+ 		err |= __put_user(from->si_trapno, &to->si_trapno);
+ #endif
++#ifdef __ARCH_SI_ERROR
++		err |= __put_user(from->si_error, &to->si_error);
++#endif
+ 		break;
+ 	case __SI_CHLD:
+ 		err |= __put_user(from->si_pid, &to->si_pid);
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
