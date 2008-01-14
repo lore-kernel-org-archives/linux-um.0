@@ -1,28 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JEWyx-0000eW-8V for user-mode-linux-devel@lists.sourceforge.net;
+	id 1JEWz1-0000eb-6r for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 14 Jan 2008 13:36:39 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JEWyw-0004uR-IW
+	(Exim 4.44) id 1JEWyx-00087S-Cw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Jan 2008 13:36:35 -0800
+	Mon, 14 Jan 2008 13:36:36 -0800
 Received: from c2.user-mode-linux.org (littleton.addtoit.com [198.99.130.129])
-	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id m0ELaV6i021926
+	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id m0ELaXmI021929
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 14 Jan 2008 16:36:32 -0500
+	Mon, 14 Jan 2008 16:36:33 -0500
 Received: from c2.user-mode-linux.org (localhost.localdomain [127.0.0.1])
-	by c2.user-mode-linux.org (8.14.1/8.13.8) with ESMTP id m0ELaVCH002608
+	by c2.user-mode-linux.org (8.14.1/8.13.8) with ESMTP id m0ELaXWo002613
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 14 Jan 2008 16:36:31 -0500
-Date: Mon, 14 Jan 2008 16:36:31 -0500
+	Mon, 14 Jan 2008 16:36:33 -0500
+Date: Mon, 14 Jan 2008 16:36:33 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080114213631.GA2485@c2.user-mode-linux.org>
+Message-ID: <20080114213633.GA2495@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 5/10] SKAS4 - start_up.c preparation
+Subject: [uml-devel] [RFC PATCH 6/10] SKAS4 - Add guest support for using
+	PTRACE_GETSIGINFO.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,220 +39,387 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: UML-user <user-mode-linux-devel@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-    Tidy arch/um/os-Linux/start_up.c in preparation for host SKAS4 testing.
-    
-    There are now explicit variables for disabling any particular host
-    capability.
-    
-    init_registers is moved out of the skas3 testing because it needs to
-    happen every time, and the skas3 checks will become optional.
+    The nastiness in arch/um/include/siginfo_segv.h is defining the new
+    siginfo_t structure in place of the old one, which requires using CPP
+    to rename the old one out of the way.
 
-diff --git a/arch/um/include/os.h b/arch/um/include/os.h
-index 6f0d1c7..f1c26f5 100644
---- a/arch/um/include/os.h
-+++ b/arch/um/include/os.h
-@@ -168,7 +168,7 @@ extern int os_fchange_dir(int fd);
+diff --git a/arch/um/include/siginfo_segv.h b/arch/um/include/siginfo_segv.h
+new file mode 100644
+index 0000000..c000267
+--- /dev/null
++++ b/arch/um/include/siginfo_segv.h
+@@ -0,0 +1,133 @@
++/*
++ * Copyright (C) 2002- 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __SIGINFO_SIGSEGV_H_
++#define __SIGINFO_SIGSEGV_H_
++
++/*
++ * Provide signal.h, except for replacing siginfo_t with one that has
++ * the CPU trap number and error code in the SIGSEGV case.
++ */
++
++#include <time.h>
++
++/* Rename the signal.h siginfo and siginfo_t out of the way */
++#define siginfo old_siginfo
++#define siginfo_t old_siginfo_t
++
++#include <signal.h>
++
++#undef siginfo
++#undef siginfo_t
++
++#define __ARCH_SI_TRAPNO
++#define __ARCH_SI_ERROR
++
++/* The new siginfo_t, plus associated definitions */
++
++/*
++ * This is the size (including padding) of the part of the
++ * struct siginfo that is before the union.
++ */
++#ifndef __ARCH_SI_PREAMBLE_SIZE
++#define __ARCH_SI_PREAMBLE_SIZE	(3 * sizeof(int))
++#endif
++
++#define SI_MAX_SIZE	128
++#ifndef SI_PAD_SIZE
++#define SI_PAD_SIZE	((SI_MAX_SIZE - __ARCH_SI_PREAMBLE_SIZE) / sizeof(int))
++#endif
++
++#ifndef __ARCH_SI_UID_T
++#define __ARCH_SI_UID_T	uid_t
++#endif
++
++/*
++ * The default "si_band" type is "long", as specified by POSIX.
++ * However, some architectures want to override this to "int"
++ * for historical compatibility reasons, so we allow that.
++ */
++#ifndef __ARCH_SI_BAND_T
++#define __ARCH_SI_BAND_T long
++#endif
++
++#define __user
++
++typedef struct siginfo {
++	int si_signo;
++	int si_errno;
++	int si_code;
++
++	union {
++		int _pad[SI_PAD_SIZE];
++
++		/* kill() */
++		struct {
++			pid_t _pid;		/* sender's pid */
++			__ARCH_SI_UID_T _uid;	/* sender's uid */
++		} _kill;
++
++		/* POSIX.1b timers */
++		struct {
++			timer_t _tid;		/* timer id */
++			int _overrun;		/* overrun count */
++			char _pad[sizeof( __ARCH_SI_UID_T) - sizeof(int)];
++			sigval_t _sigval;	/* same as below */
++			int _sys_private;       /* not to be passed to user */
++		} _timer;
++
++		/* POSIX.1b signals */
++		struct {
++			pid_t _pid;		/* sender's pid */
++			__ARCH_SI_UID_T _uid;	/* sender's uid */
++			sigval_t _sigval;
++		} _rt;
++
++		/* SIGCHLD */
++		struct {
++			pid_t _pid;		/* which child */
++			__ARCH_SI_UID_T _uid;	/* sender's uid */
++			int _status;		/* exit code */
++			clock_t _utime;
++			clock_t _stime;
++		} _sigchld;
++
++		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
++		struct {
++			void __user *_addr; /* faulting insn/memory ref. */
++#ifdef __ARCH_SI_TRAPNO
++			int _trapno;	/* TRAP # which caused the signal */
++#endif
++#ifdef __ARCH_SI_ERROR
++			int _error;	/* CPU error code */
++#endif
++		} _sigfault;
++
++		/* SIGPOLL */
++		struct {
++			__ARCH_SI_BAND_T _band;	/* POLL_IN, POLL_OUT, POLL_MSG */
++			int _fd;
++		} _sigpoll;
++	} _sifields;
++} siginfo_t;
++
++#ifdef __ARCH_SI_TRAPNO
++#define si_trapno	_sifields._sigfault._trapno
++#endif
++#ifdef __ARCH_SI_ERROR
++#define si_error	_sifields._sigfault._error
++#endif
++
++#undef si_addr
++#define si_addr	_sifields._sigfault._addr
++
++#define GET_FAULTINFO_FROM_SI(fi, si) \
++	{ \
++		(fi).cr2 = (unsigned long) (si).si_addr; \
++		(fi).error_code = (si).si_error; \
++		(fi).trap_no = (si).si_trapno; \
++	}
++
++#endif
+diff --git a/arch/um/include/skas/skas.h b/arch/um/include/skas/skas.h
+index b073f8a..d6cbb4f 100644
+--- a/arch/um/include/skas/skas.h
++++ b/arch/um/include/skas/skas.h
+@@ -8,6 +8,8 @@
  
- /* start_up.c */
- extern void os_early_checks(void);
--extern int can_do_skas(void);
-+extern void can_do_skas(void);
- extern void os_check_bugs(void);
- extern void check_host_supports_tls(int *supports_tls, int *tls_min);
+ #include "sysdep/ptrace.h"
  
++extern int have_siginfo_segv;
++
+ extern int userspace_pid[];
+ extern int proc_mm, ptrace_faultinfo, ptrace_ldt;
+ extern int skas_needs_stub;
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index e8b7a97..82a0780 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -3,6 +3,9 @@
+  * Licensed under the GPL
+  */
+ 
++/* Include this first, before anything else includes <signal.h> */
++#include "siginfo_segv.h"
++
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <sched.h>
+@@ -91,11 +94,23 @@ bad_wait:
+ 
+ extern unsigned long current_stub_stack(void);
+ 
++#ifndef PTRACE_GETSIGINFO
++#define PTRACE_GETSIGINFO	0x4202
++#endif
++
+ void get_skas_faultinfo(int pid, struct faultinfo * fi)
+ {
++	siginfo_t si;
+ 	int err;
+ 
+-	if (ptrace_faultinfo) {
++	if(have_siginfo_segv){
++		err = ptrace(PTRACE_GETSIGINFO, pid, 0, &si);
++		if(err)
++			printk("PTRACE_GETSIGINFO failed, err = %d\n", errno);
++
++		GET_FAULTINFO_FROM_SI(*fi, si);
++	}
++	else if (ptrace_faultinfo) {
+ 		err = ptrace(PTRACE_FAULTINFO, pid, 0, fi);
+ 		if (err)
+ 			panic("get_skas_faultinfo - PTRACE_FAULTINFO failed, "
 diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 7b81f6c..2576d70 100644
+index 2576d70..0e0f738 100644
 --- a/arch/um/os-Linux/start_up.c
 +++ b/arch/um/os-Linux/start_up.c
-@@ -23,6 +23,7 @@
- #include "mem_user.h"
- #include "ptrace_user.h"
+@@ -3,6 +3,9 @@
+  * Licensed under the GPL
+  */
+ 
++/* Include this first, before anything else includes <signal.h> */
++#include "siginfo_segv.h"
++
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <stdarg.h>
+@@ -25,6 +28,7 @@
  #include "registers.h"
-+#include "skas.h"
+ #include "skas.h"
  #include "skas_ptrace.h"
++#include "sysdep/sigcontext.h"
  
  static int ptrace_child(void)
-@@ -141,14 +142,27 @@ static int stop_ptraced_child(int pid, int exitcode, int mustexit)
- }
+ {
+@@ -154,6 +158,9 @@ static int disable_proc_mm;
+ int have_switch_mm;
+ static int disable_switch_mm;
  
- /* Changed only during early boot */
--int ptrace_faultinfo = 1;
--int ptrace_ldt = 1;
--int proc_mm = 1;
--int skas_needs_stub = 0;
-+int ptrace_faultinfo;
-+static int disable_ptrace_faultinfo;
++int have_siginfo_segv;
++static int disable_siginfo_segv;
 +
-+int ptrace_ldt;
-+static int disable_ptrace_ldt;
-+
-+int proc_mm;
-+static int disable_proc_mm;
-+
-+int have_switch_mm;
-+static int disable_switch_mm;
-+
-+int skas_needs_stub;
+ int skas_needs_stub;
  
  static int __init skas0_cmd_param(char *str, int* add)
- {
--	ptrace_faultinfo = proc_mm = 0;
-+	disable_ptrace_faultinfo = 1;
-+	disable_ptrace_ldt = 1;
-+	disable_proc_mm = 1;
-+	disable_switch_mm = 1;
+@@ -162,6 +169,7 @@ static int __init skas0_cmd_param(char *str, int* add)
+ 	disable_ptrace_ldt = 1;
+ 	disable_proc_mm = 1;
+ 	disable_switch_mm = 1;
++	disable_siginfo_segv = 1;
+ 
+ 	return 0;
+ }
+@@ -475,6 +483,137 @@ static inline void check_skas3_proc_mm(void)
+ 	}
+ }
+ 
++static void *fault_address;
 +
- 	return 0;
- }
- 
-@@ -158,15 +172,12 @@ static int __init mode_skas0_cmd_param(char *str, int* add)
- 	__attribute__((alias("skas0_cmd_param")));
- 
- __uml_setup("skas0", skas0_cmd_param,
--		"skas0\n"
--		"    Disables SKAS3 usage, so that SKAS0 is used, unless \n"
--	        "    you specify mode=tt.\n\n");
-+"skas0\n"
-+"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used\n\n");
- 
- __uml_setup("mode=skas0", mode_skas0_cmd_param,
--		"mode=skas0\n"
--		"    Disables SKAS3 usage, so that SKAS0 is used, unless you \n"
--		"    specify mode=tt. Note that this was recently added - on \n"
--		"    older kernels you must use simply \"skas0\".\n\n");
-+"mode=skas0\n"
-+"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used.\n\n");
- 
- /* Changed only during early boot */
- static int force_sysemu_disabled = 0;
-@@ -341,6 +352,8 @@ static void __init check_coredump_limit(void)
- 
- void __init os_early_checks(void)
- {
-+	int pid;
++static int check_fault_info(struct faultinfo *fi)
++{
++	return (FAULT_ADDRESS(*fi) == (unsigned long) fault_address) &&
++		FAULT_WRITE(*fi) && SEGV_IS_FIXABLE(fi);
++}
 +
- 	/* Print out the core dump limits early */
- 	check_coredump_limit();
- 
-@@ -350,11 +363,15 @@ void __init os_early_checks(void)
- 	 * kernel is running.
- 	 */
- 	check_tmpexec();
++static jmp_buf siginfo_buf;
 +
-+	pid = start_ptraced_child();
-+	init_registers(pid);
-+	stop_ptraced_child(pid, 1, 1);
- }
- 
- static int __init noprocmm_cmd_param(char *str, int* add)
- {
--	proc_mm = 0;
-+	disable_proc_mm = 1;
- 	return 0;
- }
- 
-@@ -366,7 +383,7 @@ __uml_setup("noprocmm", noprocmm_cmd_param,
- 
- static int __init noptracefaultinfo_cmd_param(char *str, int* add)
- {
--	ptrace_faultinfo = 0;
-+	disable_ptrace_faultinfo = 1;
- 	return 0;
- }
- 
-@@ -378,7 +395,7 @@ __uml_setup("noptracefaultinfo", noptracefaultinfo_cmd_param,
- 
- static int __init noptraceldt_cmd_param(char *str, int* add)
- {
--	ptrace_ldt = 0;
-+	disable_ptrace_ldt = 1;
- 	return 0;
- }
- 
-@@ -398,20 +415,18 @@ static inline void check_skas3_ptrace_faultinfo(void)
- 
- 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
- 	if (n < 0) {
--		ptrace_faultinfo = 0;
- 		if (errno == EIO)
- 			non_fatal("not found\n");
- 		else
- 			perror("not found");
- 	}
-+	else if (disable_ptrace_faultinfo)
-+		non_fatal("found but disabled on command line\n");
- 	else {
--		if (!ptrace_faultinfo)
--			non_fatal("found but disabled on command line\n");
--		else
--			non_fatal("found\n");
-+		ptrace_faultinfo = 1;
-+		non_fatal("found\n");
- 	}
- 
--	init_registers(pid);
- 	stop_ptraced_child(pid, 1, 1);
- }
- 
-@@ -435,38 +450,32 @@ static inline void check_skas3_ptrace_ldt(void)
- 		else {
- 			perror("not found");
- 		}
--		ptrace_ldt = 0;
- 	}
-+	else if (disable_ptrace_ldt)
-+		non_fatal("found, but use is disabled\n");
- 	else {
--		if (ptrace_ldt)
--			non_fatal("found\n");
--		else
--			non_fatal("found, but use is disabled\n");
-+		ptrace_ldt = 1;
-+		non_fatal("found\n");
- 	}
- 
- 	stop_ptraced_child(pid, 1, 1);
--#else
--	/* PTRACE_LDT might be disabled via cmdline option.
--	 * We want to override this, else we might use the stub
--	 * without real need
--	 */
--	ptrace_ldt = 1;
- #endif
- }
- 
- static inline void check_skas3_proc_mm(void)
- {
- 	non_fatal("  - /proc/mm...");
--	if (access("/proc/mm", W_OK) < 0) {
--		proc_mm = 0;
-+	if (access("/proc/mm", W_OK) < 0)
- 		perror("not found");
--	}
--	else if (!proc_mm)
-+	else if (disable_proc_mm)
- 		non_fatal("found but disabled on command line\n");
--	else non_fatal("found\n");
++static void segv_handler(int sig, siginfo_t *si, void *foo)
++{
++	struct faultinfo fi;
++	int n;
++
++	GET_FAULTINFO_FROM_SI(fi, *si);
++	n = check_fault_info(&fi) ? 1 : 2;
++	longjmp(siginfo_buf, n);
++}
++
++static int fault(void)
++{
++	struct sigaction sa, old;
++	int err, n;
++
++	/*
++	 * The cast is needed because the CPP manipulations of
++	 * siginfo_t resulted in sa_sigaction having an old_siginfo_t
++	 * parameter.
++	 */
++	sa.sa_sigaction = (void (*)(int, old_siginfo_t *, void *)) segv_handler;
++	sigemptyset(&sa.sa_mask);
++	sa.sa_flags = SA_SIGINFO | SA_NODEFER;
++
++	err = sigaction(SIGSEGV, &sa, &old);
++	if (err)
++		fatal_perror("sigaction");
++
++	/*
++	 * Provide a guaranteed invalid address by mapping a page into
++	 * a hole in the address space and then unmapping it.
++	 */
++	fault_address = mmap(NULL, UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
++		    MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	if (fault_address == MAP_FAILED)
++		fatal_perror("mmap failed");
++
++	if (munmap(fault_address, UM_KERN_PAGE_SIZE) < 0)
++		fatal_perror("munmap failed");
++
++	n = setjmp(siginfo_buf);
++	if (n == 0)
++		*((unsigned long *) fault_address) = 0;
++
++	err = sigaction(SIGSEGV, &old, NULL);
++
++	return n;
++}
++
++static int __init nogetsiginfo_cmd_param(char *str, int *add)
++{
++	disable_siginfo_segv = 1;
++	return 0;
++}
++
++__uml_setup("nogetsiginfo", nogetsiginfo_cmd_param,
++"nogetsiginfo\n"
++"    Turns off usage of PTRACE_GETSIGINFO to read page fault information\n"
++"    from a child process, even if the host supports it.\n\n");
++
++#ifndef PTRACE_GETSIGINFO
++#define PTRACE_GETSIGINFO	0x4202
++#endif
++
++static int check_siginfo(void)
++{
++	siginfo_t si;
++	struct faultinfo fi;
++	int ok, pid, err, status;
++
++	non_fatal("\tFull CPU fault information in siginfo_t ... ");
++	ok = fault();
++	if (ok)
++		non_fatal("OK\n");
 +	else {
-+		proc_mm = 1;
-+		non_fatal("found\n");
++		non_fatal("Failed\n");
++		return 0;
 +	}
- }
- 
--int can_do_skas(void)
-+void can_do_skas(void)
++
++	non_fatal("\tFull CPU fault information in PTRACE_GETSIGINFO ... ");
++
++	pid = fork();
++	if (pid < 0)
++		fatal_perror("fork failed");
++	else if (pid == 0) {
++		ptrace(PTRACE_TRACEME, 0, 0, 0);
++		fault();
++		exit(1);
++	}
++
++	while(1){
++		err = waitpid(pid, &status, WUNTRACED);
++		if (err < 0)
++			fatal_perror("wait failed");
++
++		if (WIFSTOPPED(status) && (WSTOPSIG(status) == SIGSEGV))
++			break;
++	}
++
++	err = ptrace(PTRACE_GETSIGINFO, pid, 0, &si);
++	if (err < 0)
++		fatal_perror("PTRACE_GETSIGINFO failed");
++
++	ptrace(PTRACE_KILL, pid, 0, 0);
++
++	GET_FAULTINFO_FROM_SI(fi, si);
++	ok = check_fault_info(&fi);
++	if (ok)
++		non_fatal("OK\n");
++	else
++		non_fatal("Failed\n");
++
++	if (disable_siginfo_segv)
++		non_fatal("Extended PTRACE_GETSIGINFO disabled on command "
++			  "line");
++	else
++		have_siginfo_segv = 1;
++
++	return ok;
++}
++
+ void can_do_skas(void)
  {
  	non_fatal("Checking for the skas3 patch in the host:\n");
- 
-@@ -476,8 +485,6 @@ int can_do_skas(void)
+@@ -482,6 +621,7 @@ void can_do_skas(void)
+ 	check_skas3_proc_mm();
+ 	check_skas3_ptrace_faultinfo();
+ 	check_skas3_ptrace_ldt();
++	check_siginfo();
  
  	if (!proc_mm || !ptrace_faultinfo || !ptrace_ldt)
  		skas_needs_stub = 1;
--
--	return 1;
- }
- 
- int __init parse_iomem(char *str, int *add)
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
