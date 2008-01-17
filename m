@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JFcU7-00018r-7w for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:15 -0800
+	id 1JFcTp-00011y-SX for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jan 2008 13:40:58 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JFcU6-0001pM-HL
+	(Exim 4.44) id 1JFcTp-0001a7-5F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:15 -0800
-Date: Thu, 17 Jan 2008 16:40:45 -0500
+	Thu, 17 Jan 2008 13:40:57 -0800
+Date: Thu, 17 Jan 2008 16:40:40 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080117214045.GA6757@c2.user-mode-linux.org>
+Message-ID: <20080117214040.GA6707@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 14/20] UML - Remove map_cb
+Subject: [uml-devel] [PATCH 5/20] UML - Remove fakehd
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,44 +29,53 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: John Reiser <jreiser@BitWagon.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-John Reiser noticed that a physical memory region was being mapped twice.
+The fakehd switch lost its implementation at some point.  Since no one is
+screaming for it, we might as well remove it.
 
-This patch fixes that, and it inlines the responsible function, as
-that had only one caller.
-
-Cc: John Reiser <jreiser@BitWagon.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/kernel/mem.c |    8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ arch/um/drivers/ubd_kern.c |   20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
 
-Index: linux-2.6.22/arch/um/kernel/mem.c
+Index: linux-2.6.22/arch/um/drivers/ubd_kern.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/kernel/mem.c	2008-01-02 11:44:36.000000000 -0500
-+++ linux-2.6.22/arch/um/kernel/mem.c	2008-01-02 12:08:45.000000000 -0500
-@@ -36,11 +36,6 @@ int kmalloc_ok = 0;
- /* Used during early boot */
- static unsigned long brk_end;
+--- linux-2.6.22.orig/arch/um/drivers/ubd_kern.c	2007-12-14 11:28:06.000000000 -0500
++++ linux-2.6.22/arch/um/drivers/ubd_kern.c	2007-12-14 12:33:26.000000000 -0500
+@@ -460,20 +460,6 @@ __uml_help(udb_setup,
+ "    in the boot output.\n\n"
+ );
  
--static void map_cb(void *unused)
+-static int fakehd_set = 0;
+-static int fakehd(char *str)
 -{
--	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
+-	printk(KERN_INFO "fakehd : Changing ubd name to \"hd\".\n");
+-	fakehd_set = 1;
+-	return 1;
 -}
 -
- #ifdef CONFIG_HIGHMEM
- static void setup_highmem(unsigned long highmem_start,
- 			  unsigned long highmem_len)
-@@ -68,8 +63,7 @@ void __init mem_init(void)
- 	 * to be turned on.
- 	 */
- 	brk_end = (unsigned long) UML_ROUND_UP(sbrk(0));
--	map_cb(NULL);
--	initial_thread_cb(map_cb, NULL);
-+	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
- 	free_bootmem(__pa(brk_end), uml_reserved - brk_end);
- 	uml_reserved = brk_end;
+-__setup("fakehd", fakehd);
+-__uml_help(fakehd,
+-"fakehd\n"
+-"    Change the ubd device name to \"hd\".\n\n"
+-);
+-
+ static void do_ubd_request(struct request_queue * q);
+ 
+ /* Only changed by ubd_init, which is an initcall. */
+@@ -730,8 +716,10 @@ static int ubd_add(int n, char **error_o
+ 		ubd_disk_register(fake_major, ubd_dev->size, n,
+ 				  &fake_gendisk[n]);
+ 
+-	/* perhaps this should also be under the "if (fake_major)" above */
+-	/* using the fake_disk->disk_name and also the fakehd_set name */
++	/*
++	 * Perhaps this should also be under the "if (fake_major)" above
++	 * using the fake_disk->disk_name
++	 */
+ 	if (fake_ide)
+ 		make_ide_entries(ubd_gendisk[n]->disk_name);
  
 
 -------------------------------------------------------------------------
