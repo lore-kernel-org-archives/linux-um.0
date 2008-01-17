@@ -2,19 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JFcU1-00018B-RD for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:09 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JFcU0-00014q-Ox
+	id 1JFbZ9-0003E1-S3 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jan 2008 12:42:23 -0800
+Received: from xdsl-664.zgora.dialog.net.pl ([81.168.226.152] helo=tuxland.pl)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JFbZ9-0001QJ-Br
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:09 -0800
-Date: Thu, 17 Jan 2008 16:40:50 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080117214050.GA6782@c2.user-mode-linux.org>
-Mime-Version: 1.0
+	Thu, 17 Jan 2008 12:42:23 -0800
+From: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
+Date: Thu, 17 Jan 2008 21:42:12 +0100
+References: <20080117023514.9df393cf.akpm@linux-foundation.org>
+	<20080117105606.ff89e9e9.akpm@linux-foundation.org>
+	<924EFEDD5F540B4284297C4DC59F3DEE5E90DF@orsmsx423.amr.corp.intel.com>
+In-Reply-To: <924EFEDD5F540B4284297C4DC59F3DEE5E90DF@orsmsx423.amr.corp.intel.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 19/20] UML - port mutex conversion
+Message-Id: <200801172142.14326.m.kozlowski@tuxland.pl>
+Subject: Re: [uml-devel] [-mm Patch] uml: fix a building error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,60 +31,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: Daniel Walker <dwalker@mvista.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: "Pallipadi, Venkatesh" <venkatesh.pallipadi@intel.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, Ingo Molnar <mingo@elte.hu>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, sparclinux@vger.kernel.org, WANG Cong <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>
 
-From: Daniel Walker <dwalker@mvista.com>
+Hello,
 
-The port_sem is already used as a mutex since it's using DECLARE_MUTEX(),
-but the underlying construct is still a semaphore .. This patch switches
-it over to a struct mutex.
+> >> > This patch fixes this building error:
+> >> > ...
+> >> > drivers/char/mem.c: In function 'read_mem':
+> >> > drivers/char/mem.c:136: error: implicit declaration of 
+> >function 'unxlate_dev_mem_ptr'
+> >> > ...
+> >> 
+> >> I see this on sparc64 as well:
+> >> 
+> >>   CC      drivers/char/mem.o
+> >> drivers/char/mem.c: In function 'read_mem':
+> >> drivers/char/mem.c:136: error: implicit declaration of 
+> >function 'unxlate_dev_mem_ptr'
+> >> make[2]: *** [drivers/char/mem.o] Error 1
+> >> make[1]: *** [drivers/char] Error 2
+> >> make: *** [drivers] Error 2
+> >> 
+> >> Does sparc64 need similar fix?
+> >> 
+> >
+> >The PAT patches strike again.
+> >
+> >Ingo, I think you might need to toss some cross-compilers into 
+> >that build
+> >test setup of yours.
+> 
+> These functions were defined for other archs in asm-generic/iomap.h.
+> We need all archs including it in io.h. I now see only few archs are
+> including it..
+>
+> Apart from unxlate, there is also ioremap_wc which is defined in the
+> same way.
+> 
+> I can send a patch for this. But, I don't have cross compiler setup for
+> all archs to test. Andrew, I will need your help.
 
-Signed-off-by: Daniel Walker <dwalker@mvista.com>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
----
- arch/um/drivers/port_kern.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+I can confirm that this fixes the build problem for sparc64 here.
 
-Index: linux-2.6.22/arch/um/drivers/port_kern.c
-===================================================================
---- linux-2.6.22.orig/arch/um/drivers/port_kern.c	2008-01-17 13:44:46.000000000 -0500
-+++ linux-2.6.22/arch/um/drivers/port_kern.c	2008-01-17 13:47:39.000000000 -0500
-@@ -6,6 +6,7 @@
- #include "linux/completion.h"
- #include "linux/interrupt.h"
- #include "linux/list.h"
-+#include "linux/mutex.h"
- #include "asm/atomic.h"
- #include "init.h"
- #include "irq_kern.h"
-@@ -120,7 +121,7 @@ static int port_accept(struct port_list 
- 	return 0;
- }
- 
--static DECLARE_MUTEX(ports_sem);
-+static DEFINE_MUTEX(ports_mutex);
- static LIST_HEAD(ports);
- 
- static void port_work_proc(struct work_struct *unused)
-@@ -161,7 +162,7 @@ void *port_data(int port_num)
- 	struct port_dev *dev = NULL;
- 	int fd;
- 
--	down(&ports_sem);
-+	mutex_lock(&ports_mutex);
- 	list_for_each(ele, &ports) {
- 		port = list_entry(ele, struct port_list, list);
- 		if (port->port == port_num)
-@@ -216,7 +217,7 @@ void *port_data(int port_num)
-  out_free:
- 	kfree(port);
-  out:
--	up(&ports_sem);
-+	mutex_unlock(&ports_mutex);
- 	return dev;
- }
- 
+Regards,
+
+	Mariusz
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
