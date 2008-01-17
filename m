@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JFcU1-00017v-DF for user-mode-linux-devel@lists.sourceforge.net;
+	id 1JFcU1-00017u-DE for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 17 Jan 2008 13:41:09 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JFcU0-0001lU-Pq
+	(Exim 4.44) id 1JFcU0-00014r-Op
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Thu, 17 Jan 2008 13:41:09 -0800
-Date: Thu, 17 Jan 2008 16:40:46 -0500
+Date: Thu, 17 Jan 2008 16:40:49 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080117214046.GA6762@c2.user-mode-linux.org>
+Message-ID: <20080117214049.GA6777@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 15/20] UML - Fix infinite mconsole loop
+Subject: [uml-devel] [PATCH 18/20] UML - mconsole mutex conversion
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,42 +29,59 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Karol Swietlicki <magotari@gmail.com>
+Cc: Daniel Walker <dwalker@mvista.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Karol Swietlicki <magotari@gmail.com>
+From: Daniel Walker <dwalker@mvista.com>
 
-This patch takes care of a problem with the stopping code.
+The plug_mem_mutex is already used as a mutex since it's using DECLARE_MUTEX(),
+but the underlying construct is still a semaphore .. This patch switches
+it over to a struct mutex.
 
-The function inside the while condition returns 0 to signify a problem.
-A problem could be for example a bad command or a bad version of the
-mconsole client.
-A bad command would terminate the stopping loop and resume the kernel.
-This is a problem.
-
-A better solution is to make the loop infinite and don't leave it
-until we are explicitly told to.
-
-Signed-off-by: Karol Swietlicki <magotari@gmail.com>
+Signed-off-by: Daniel Walker <dwalker@mvista.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/drivers/mconsole_kern.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/um/drivers/mconsole_kern.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Index: linux-2.6.22/arch/um/drivers/mconsole_kern.c
+Index: linux-2.6-git/arch/um/drivers/mconsole_kern.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/drivers/mconsole_kern.c	2007-12-12 13:44:20.000000000 -0500
-+++ linux-2.6.22/arch/um/drivers/mconsole_kern.c	2007-12-12 15:53:08.000000000 -0500
-@@ -305,7 +305,9 @@ void mconsole_stop(struct mc_request *re
- 	deactivate_fd(req->originating_fd, MCONSOLE_IRQ);
- 	os_set_fd_block(req->originating_fd, 1);
- 	mconsole_reply(req, "stopped", 0, 0);
--	while (mconsole_get_request(req->originating_fd, req)) {
-+	for (;;) {
-+		if (!mconsole_get_request(req->originating_fd, req))
-+			continue;
- 		if (req->cmd->handler == mconsole_go)
- 			break;
- 		if (req->cmd->handler == mconsole_stop) {
+--- linux-2.6-git.orig/arch/um/drivers/mconsole_kern.c	2008-01-17 14:35:43.000000000 -0500
++++ linux-2.6-git/arch/um/drivers/mconsole_kern.c	2008-01-17 14:37:29.000000000 -0500
+@@ -17,6 +17,7 @@
+ #include "linux/syscalls.h"
+ #include "linux/utsname.h"
+ #include "linux/workqueue.h"
++#include "linux/mutex.h"
+ #include "asm/uaccess.h"
+ #include "init.h"
+ #include "irq_kern.h"
+@@ -360,7 +361,7 @@ struct unplugged_pages {
+ 	void *pages[UNPLUGGED_PER_PAGE];
+ };
+ 
+-static DECLARE_MUTEX(plug_mem_mutex);
++static DEFINE_MUTEX(plug_mem_mutex);
+ static unsigned long long unplugged_pages_count = 0;
+ static LIST_HEAD(unplugged_pages);
+ static int unplug_index = UNPLUGGED_PER_PAGE;
+@@ -396,7 +397,7 @@ static int mem_config(char *str, char **
+ 
+ 	diff /= PAGE_SIZE;
+ 
+-	down(&plug_mem_mutex);
++	mutex_lock(&plug_mem_mutex);
+ 	for (i = 0; i < diff; i++) {
+ 		struct unplugged_pages *unplugged;
+ 		void *addr;
+@@ -453,7 +454,7 @@ static int mem_config(char *str, char **
+ 
+ 	err = 0;
+ out_unlock:
+-	up(&plug_mem_mutex);
++	mutex_unlock(&plug_mem_mutex);
+ out:
+ 	return err;
+ }
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
