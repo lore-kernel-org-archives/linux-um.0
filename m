@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JFcU4-00018k-Ms for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:12 -0800
+	id 1JFcTq-000123-2t for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jan 2008 13:41:01 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JFcU4-00014t-4I
+	(Exim 4.44) id 1JFcTp-0001aK-5O
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:12 -0800
-Date: Thu, 17 Jan 2008 16:40:47 -0500
+	Thu, 17 Jan 2008 13:40:58 -0800
+Date: Thu, 17 Jan 2008 16:40:39 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080117214047.GA6772@c2.user-mode-linux.org>
+Message-ID: <20080117214039.GA6697@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 17/20] UML - LDT mutex conversion
+Subject: [uml-devel] [PATCH 3/20] UML - SMP locking commentary
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,109 +29,106 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: Daniel Walker <dwalker@mvista.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Daniel Walker <dwalker@mvista.com>
+Add some more commentary about various pieces of global data not
+needing locking.
 
-The ldt.semaphore conforms to the new struct mutex requirments,
-so I converted it to use the new API and changed the name.
+Also got rid of unmap_physmem since that is no longer used.
 
-Signed-off-by: Daniel Walker <dwalker@mvista.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/sys-i386/ldt.c |   14 +++++++-------
- include/asm-um/ldt.h   |    4 ++--
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ arch/um/drivers/net_kern.c |    7 ++++++-
+ arch/um/include/mem_user.h |    1 -
+ arch/um/kernel/mem.c       |   13 ++++++++-----
+ arch/um/kernel/physmem.c   |    6 +++---
+ 4 files changed, 17 insertions(+), 10 deletions(-)
 
-Index: linux-2.6.22/arch/um/sys-i386/ldt.c
+Index: linux-2.6.22/arch/um/include/mem_user.h
 ===================================================================
---- linux-2.6.22.orig/arch/um/sys-i386/ldt.c	2008-01-17 13:44:46.000000000 -0500
-+++ linux-2.6.22/arch/um/sys-i386/ldt.c	2008-01-17 13:45:32.000000000 -0500
-@@ -147,7 +147,7 @@ static int read_ldt(void __user * ptr, u
- 	if (ptrace_ldt)
- 		return read_ldt_from_host(ptr, bytecount);
+--- linux-2.6.22.orig/arch/um/include/mem_user.h	2007-12-14 10:45:27.000000000 -0500
++++ linux-2.6.22/arch/um/include/mem_user.h	2007-12-14 11:19:06.000000000 -0500
+@@ -56,7 +56,6 @@ extern void setup_physmem(unsigned long 
+ 			  unsigned long len, unsigned long long highmem);
+ extern void add_iomem(char *name, int fd, unsigned long size);
+ extern unsigned long phys_offset(unsigned long phys);
+-extern void unmap_physmem(void);
+ extern void map_memory(unsigned long virt, unsigned long phys,
+ 		       unsigned long len, int r, int w, int x);
  
--	down(&ldt->semaphore);
-+	mutex_lock(&ldt->lock);
- 	if (ldt->entry_count <= LDT_DIRECT_ENTRIES) {
- 		size = LDT_ENTRY_SIZE*LDT_DIRECT_ENTRIES;
- 		if (size > bytecount)
-@@ -171,7 +171,7 @@ static int read_ldt(void __user * ptr, u
- 			ptr += size;
- 		}
- 	}
--	up(&ldt->semaphore);
-+	mutex_unlock(&ldt->lock);
+Index: linux-2.6.22/arch/um/kernel/mem.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/mem.c	2007-12-14 10:45:27.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/mem.c	2007-12-14 11:20:01.000000000 -0500
+@@ -22,17 +22,20 @@
+ unsigned long *empty_zero_page = NULL;
+ /* allocated in paging_init and unchanged thereafter */
+ unsigned long *empty_bad_page = NULL;
++
++/*
++ * Initialized during boot, and readonly for initializing page tables
++ * afterwards
++ */
+ pgd_t swapper_pg_dir[PTRS_PER_PGD];
++
++/* Initialized at boot time, and readonly after that */
+ unsigned long long highmem;
+ int kmalloc_ok = 0;
  
- 	if (bytecount == 0 || err == -EFAULT)
- 		goto out;
-@@ -229,7 +229,7 @@ static int write_ldt(void __user * ptr, 
- 	}
++/* Used during early boot */
+ static unsigned long brk_end;
  
- 	if (!ptrace_ldt)
--		down(&ldt->semaphore);
-+		mutex_lock(&ldt->lock);
+-void unmap_physmem(void)
+-{
+-	os_unmap_memory((void *) brk_end, uml_reserved - brk_end);
+-}
+-
+ static void map_cb(void *unused)
+ {
+ 	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
+Index: linux-2.6.22/arch/um/kernel/physmem.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/physmem.c	2007-12-14 10:45:27.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/physmem.c	2007-12-14 11:19:06.000000000 -0500
+@@ -164,10 +164,10 @@ __uml_setup("iomem=", parse_iomem,
+  * setup_iomem, both of which run during early boot.  Afterwards, it's
+  * unchanged.
+  */
+-struct iomem_region *iomem_regions = NULL;
++struct iomem_region *iomem_regions;
  
- 	err = write_ldt_entry(mm_idp, func, &ldt_info, &addr, 1);
- 	if (err)
-@@ -289,7 +289,7 @@ static int write_ldt(void __user * ptr, 
- 	err = 0;
+-/* Initialized in parse_iomem */
+-int iomem_size = 0;
++/* Initialized in parse_iomem and unchanged thereafter */
++int iomem_size;
  
- out_unlock:
--	up(&ldt->semaphore);
-+	mutex_unlock(&ldt->lock);
- out:
- 	return err;
+ unsigned long find_iomem(char *driver, unsigned long *len_out)
+ {
+Index: linux-2.6.22/arch/um/drivers/net_kern.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/drivers/net_kern.c	2007-12-14 10:45:27.000000000 -0500
++++ linux-2.6.22/arch/um/drivers/net_kern.c	2007-12-14 11:19:06.000000000 -0500
+@@ -368,7 +368,6 @@ static struct platform_driver uml_net_dr
+ 		.name  = DRIVER_NAME,
+ 	},
+ };
+-static int driver_registered;
+ 
+ static void net_device_release(struct device *dev)
+ {
+@@ -383,6 +382,12 @@ static void net_device_release(struct de
+ 	free_netdev(netdev);
  }
-@@ -396,7 +396,7 @@ long init_new_ldt(struct mm_context *new
  
- 
- 	if (!ptrace_ldt)
--		init_MUTEX(&new_mm->ldt.semaphore);
-+		mutex_init(&new_mm->ldt.lock);
- 
- 	if (!from_mm) {
- 		memset(&desc, 0, sizeof(desc));
-@@ -456,7 +456,7 @@ long init_new_ldt(struct mm_context *new
- 		 * i.e., we have to use the stub for modify_ldt, which
- 		 * can't handle the big read buffer of up to 64kB.
- 		 */
--		down(&from_mm->ldt.semaphore);
-+		mutex_lock(&from_mm->ldt.lock);
- 		if (from_mm->ldt.entry_count <= LDT_DIRECT_ENTRIES)
- 			memcpy(new_mm->ldt.u.entries, from_mm->ldt.u.entries,
- 			       sizeof(new_mm->ldt.u.entries));
-@@ -475,7 +475,7 @@ long init_new_ldt(struct mm_context *new
- 			}
- 		}
- 		new_mm->ldt.entry_count = from_mm->ldt.entry_count;
--		up(&from_mm->ldt.semaphore);
-+		mutex_unlock(&from_mm->ldt.lock);
- 	}
- 
-     out:
-Index: linux-2.6.22/include/asm-um/ldt.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/ldt.h	2007-11-14 10:33:41.000000000 -0500
-+++ linux-2.6.22/include/asm-um/ldt.h	2008-01-17 13:45:32.000000000 -0500
-@@ -8,7 +8,7 @@
- #ifndef __ASM_LDT_H
- #define __ASM_LDT_H
- 
--#include "asm/semaphore.h"
-+#include <linux/mutex.h>
- #include "asm/host_ldt.h"
- 
- extern void ldt_host_info(void);
-@@ -27,7 +27,7 @@ struct ldt_entry {
- 
- typedef struct uml_ldt {
- 	int entry_count;
--	struct semaphore semaphore;
-+	struct mutex lock;
- 	union {
- 		struct ldt_entry * pages[LDT_PAGES_MAX];
- 		struct ldt_entry entries[LDT_DIRECT_ENTRIES];
++/*
++ * Ensures that platform_driver_register is called only once by
++ * eth_configure.  Will be set in an initcall.
++ */
++static int driver_registered;
++
+ static void eth_configure(int n, void *init, char *mac,
+ 			  struct transport *transport)
+ {
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
