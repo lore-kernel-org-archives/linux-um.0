@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JFcU1-00017t-C1 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:09 -0800
+	id 1JFcTz-00017l-FG for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jan 2008 13:41:07 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JFcU0-0001kX-P1
+	(Exim 4.44) id 1JFcTy-00013w-IP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:09 -0800
-Date: Thu, 17 Jan 2008 16:40:44 -0500
+	Thu, 17 Jan 2008 13:41:07 -0800
+Date: Thu, 17 Jan 2008 16:40:43 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080117214044.GA6737@c2.user-mode-linux.org>
+Message-ID: <20080117214043.GA6732@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 10/20] UML - Move register initialization
+Subject: [uml-devel] [PATCH 9/20] UML - Add newlines to printks
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,49 +31,52 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Calling init_registers inside the skas3 checking causes mysterious
-crashes if it doesn't happen because the skas3 checking is bypassed.
-This patch moves it to os_early_checks.
+Some printks were missing newlines.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/os-Linux/start_up.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/um/os-Linux/skas/process.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Index: linux-2.6.22/arch/um/os-Linux/start_up.c
+Index: linux-2.6.22/arch/um/os-Linux/skas/process.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/start_up.c	2007-12-19 13:15:22.000000000 -0500
-+++ linux-2.6.22/arch/um/os-Linux/start_up.c	2007-12-19 13:16:08.000000000 -0500
-@@ -342,6 +342,8 @@ static void __init check_coredump_limit(
- 
- void __init os_early_checks(void)
- {
-+	int pid;
-+
- 	/* Print out the core dump limits early */
- 	check_coredump_limit();
- 
-@@ -351,6 +353,11 @@ void __init os_early_checks(void)
- 	 * kernel is running.
- 	 */
- 	check_tmpexec();
-+
-+	pid = start_ptraced_child();
-+	if (init_registers(pid))
-+		fatal("Failed to initialize default registers");
-+	stop_ptraced_child(pid, 1, 1);
- }
- 
- static int __init noprocmm_cmd_param(char *str, int* add)
-@@ -412,9 +419,6 @@ static inline void check_skas3_ptrace_fa
- 			non_fatal("found\n");
+--- linux-2.6.22.orig/arch/um/os-Linux/skas/process.c	2007-12-19 13:13:54.000000000 -0500
++++ linux-2.6.22/arch/um/os-Linux/skas/process.c	2007-12-19 13:14:16.000000000 -0500
+@@ -273,7 +273,7 @@ int start_userspace(unsigned long stub_s
+ 	if (stack == MAP_FAILED) {
+ 		err = -errno;
+ 		printk(UM_KERN_ERR "start_userspace : mmap failed, "
+-		       "errno = %d", errno);
++		       "errno = %d\n", errno);
+ 		return err;
  	}
  
--	if (init_registers(pid))
--		fatal("Failed to initialize default registers");
--
- 	stop_ptraced_child(pid, 1, 1);
- }
+@@ -289,7 +289,7 @@ int start_userspace(unsigned long stub_s
+ 	if (pid < 0) {
+ 		err = -errno;
+ 		printk(UM_KERN_ERR "start_userspace : clone failed, "
+-		       "errno = %d", errno);
++		       "errno = %d\n", errno);
+ 		return err;
+ 	}
+ 
+@@ -298,7 +298,7 @@ int start_userspace(unsigned long stub_s
+ 		if (n < 0) {
+ 			err = -errno;
+ 			printk(UM_KERN_ERR "start_userspace : wait failed, "
+-			       "errno = %d", errno);
++			       "errno = %d\n", errno);
+ 			goto out_kill;
+ 		}
+ 	} while (WIFSTOPPED(status) && (WSTOPSIG(status) == SIGVTALRM));
+@@ -306,7 +306,7 @@ int start_userspace(unsigned long stub_s
+ 	if (!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGSTOP)) {
+ 		err = -EINVAL;
+ 		printk(UM_KERN_ERR "start_userspace : expected SIGSTOP, got "
+-		       "status = %d", status);
++		       "status = %d\n", status);
+ 		goto out_kill;
+ 	}
  
 
 -------------------------------------------------------------------------
