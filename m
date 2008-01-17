@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JFcTq-000120-0H for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:01 -0800
+	id 1JFcU1-00017t-C1 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jan 2008 13:41:09 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JFcTp-0001a6-5U
+	(Exim 4.44) id 1JFcU0-0001kX-P1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:40:57 -0800
-Date: Thu, 17 Jan 2008 16:40:41 -0500
+	Thu, 17 Jan 2008 13:41:09 -0800
+Date: Thu, 17 Jan 2008 16:40:44 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080117214041.GA6717@c2.user-mode-linux.org>
+Message-ID: <20080117214044.GA6737@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 7/20] UML - Add back CONFIG_HZ
+Subject: [uml-devel] [PATCH 10/20] UML - Move register initialization
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,50 +29,52 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, "H. Peter Anvin" <hpa@zytor.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-avoid-overflows-in-kernel-timec.patch makes CONFIG_HZ necessary for a
-successful build.  UML lacks a definition, so this patch adds one.  It
-also changes the hard-wired definition of HZ to CONFIG_HZ.
+Calling init_registers inside the skas3 checking causes mysterious
+crashes if it doesn't happen because the skas3 checking is bypassed.
+This patch moves it to os_early_checks.
 
-Note: this patch is a good idea even in the absence of hpa's time
-fixes.
-
-Cc: "H. Peter Anvin" <hpa@zytor.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/Kconfig        |    4 ++++
- include/asm-um/param.h |    2 +-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ arch/um/os-Linux/start_up.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Index: linux-2.6.22/arch/um/Kconfig
+Index: linux-2.6.22/arch/um/os-Linux/start_up.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/Kconfig	2008-01-01 17:32:04.000000000 -0500
-+++ linux-2.6.22/arch/um/Kconfig	2008-01-02 11:16:44.000000000 -0500
-@@ -68,6 +68,10 @@ config IRQ_RELEASE_METHOD
- 	bool
- 	default y
+--- linux-2.6.22.orig/arch/um/os-Linux/start_up.c	2007-12-19 13:15:22.000000000 -0500
++++ linux-2.6.22/arch/um/os-Linux/start_up.c	2007-12-19 13:16:08.000000000 -0500
+@@ -342,6 +342,8 @@ static void __init check_coredump_limit(
  
-+config HZ
-+	int
-+	default 100
+ void __init os_early_checks(void)
+ {
++	int pid;
 +
- menu "UML-specific options"
+ 	/* Print out the core dump limits early */
+ 	check_coredump_limit();
  
- config STATIC_LINK
-Index: linux-2.6.22/include/asm-um/param.h
-===================================================================
---- linux-2.6.22.orig/include/asm-um/param.h	2007-07-08 19:32:17.000000000 -0400
-+++ linux-2.6.22/include/asm-um/param.h	2008-01-02 11:18:44.000000000 -0500
-@@ -10,7 +10,7 @@
- #define MAXHOSTNAMELEN  64      /* max length of hostname */
+@@ -351,6 +353,11 @@ void __init os_early_checks(void)
+ 	 * kernel is running.
+ 	 */
+ 	check_tmpexec();
++
++	pid = start_ptraced_child();
++	if (init_registers(pid))
++		fatal("Failed to initialize default registers");
++	stop_ptraced_child(pid, 1, 1);
+ }
  
- #ifdef __KERNEL__
--#define HZ 100
-+#define HZ CONFIG_HZ
- #define USER_HZ	100	   /* .. some user interfaces are in "ticks" */
- #define CLOCKS_PER_SEC (USER_HZ)  /* frequency at which times() counts */
- #endif
+ static int __init noprocmm_cmd_param(char *str, int* add)
+@@ -412,9 +419,6 @@ static inline void check_skas3_ptrace_fa
+ 			non_fatal("found\n");
+ 	}
+ 
+-	if (init_registers(pid))
+-		fatal("Failed to initialize default registers");
+-
+ 	stop_ptraced_child(pid, 1, 1);
+ }
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
