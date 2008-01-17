@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JFcTq-000122-2L for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:41:01 -0800
+	id 1JFcU1-000186-OK for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jan 2008 13:41:09 -0800
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JFcTp-0001aI-5L
+	(Exim 4.44) id 1JFcU0-00014M-Ot
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 13:40:58 -0800
-Date: Thu, 17 Jan 2008 16:40:37 -0500
+	Thu, 17 Jan 2008 13:41:09 -0800
+Date: Thu, 17 Jan 2008 16:40:44 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080117214037.GA6727@c2.user-mode-linux.org>
+Message-ID: <20080117214044.GA6742@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 0/20] UML - Lots of patches for 2.6.25
+Subject: [uml-devel] [PATCH 11/20] UML - Remove unused fields from mm_context
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,15 +31,29 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-This is a lot of cleanup.  There are style fixes, printk fixes,
-spelling fixes, mutex conversions, and small bug fixes.
+The 3-level page table fixes forgot to remove a couple now-unused
+fields from struct mm_context.
 
-This is all obviously for 2.6.25.
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/include/um_mmu.h |    4 ----
+ 1 file changed, 4 deletions(-)
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6.22/arch/um/include/um_mmu.h
+===================================================================
+--- linux-2.6.22.orig/arch/um/include/um_mmu.h	2007-12-19 13:17:20.000000000 -0500
++++ linux-2.6.22/arch/um/include/um_mmu.h	2007-12-19 19:34:49.000000000 -0500
+@@ -12,10 +12,6 @@
+ 
+ typedef struct mm_context {
+ 	struct mm_id id;
+-	unsigned long last_page_table;
+-#ifdef CONFIG_3_LEVEL_PGTABLES
+-	unsigned long last_pmd;
+-#endif
+ 	struct uml_ldt ldt;
+ } mm_context_t;
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
