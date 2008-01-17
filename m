@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JFZD8-0003xq-En for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 10:11:30 -0800
-Received: from xdsl-664.zgora.dialog.net.pl ([81.168.226.152] helo=tuxland.pl)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JFZD6-0006GT-TY
+	id 1JFcU7-00018r-7w for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 17 Jan 2008 13:41:15 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JFcU6-0001pM-HL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 17 Jan 2008 10:11:30 -0800
-From: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
-Date: Thu, 17 Jan 2008 19:11:13 +0100
-References: <20080117023514.9df393cf.akpm@linux-foundation.org>
-	<20080117135641.GD2693@hacking>
-In-Reply-To: <20080117135641.GD2693@hacking>
-MIME-Version: 1.0
+	Thu, 17 Jan 2008 13:41:15 -0800
+Date: Thu, 17 Jan 2008 16:40:45 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080117214045.GA6757@c2.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200801171911.16230.m.kozlowski@tuxland.pl>
-Subject: Re: [uml-devel] [-mm Patch] uml: fix a building error
+Subject: [uml-devel] [PATCH 14/20] UML - Remove map_cb
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,28 +24,56 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, David Miller <davem@davemloft.net>
+To: Andrew Morton <akpm@osdl.org>
+Cc: John Reiser <jreiser@BitWagon.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-SGVsbG8sCgo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBidWlsZGluZyBlcnJvcjoKPiAuLi4KPiBk
-cml2ZXJzL2NoYXIvbWVtLmM6IEluIGZ1bmN0aW9uIOKAmHJlYWRfbWVt4oCZOgo+IGRyaXZlcnMv
-Y2hhci9tZW0uYzoxMzY6IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDi
-gJh1bnhsYXRlX2Rldl9tZW1fcHRy4oCZCj4gLi4uCgpJIHNlZSB0aGlzIG9uIHNwYXJjNjQgYXMg
-d2VsbDoKCiAgQ0MgICAgICBkcml2ZXJzL2NoYXIvbWVtLm8KZHJpdmVycy9jaGFyL21lbS5jOiBJ
-biBmdW5jdGlvbiAncmVhZF9tZW0nOgpkcml2ZXJzL2NoYXIvbWVtLmM6MTM2OiBlcnJvcjogaW1w
-bGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24gJ3VueGxhdGVfZGV2X21lbV9wdHInCm1ha2Vb
-Ml06ICoqKiBbZHJpdmVycy9jaGFyL21lbS5vXSBFcnJvciAxCm1ha2VbMV06ICoqKiBbZHJpdmVy
-cy9jaGFyXSBFcnJvciAyCm1ha2U6ICoqKiBbZHJpdmVyc10gRXJyb3IgMgoKRG9lcyBzcGFyYzY0
-IG5lZWQgc2ltaWxhciBmaXg/CgpSZWdhcmRzLAoKCU1hcml1c3oKCi0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-VGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5OiBNaWNyb3NvZnQKRGVmeSBhbGwgY2hh
-bGxlbmdlcy4gTWljcm9zb2Z0KFIpIFZpc3VhbCBTdHVkaW8gMjAwOC4KaHR0cDovL2Nsay5hdGRt
-dC5jb20vTVJUL2dvL3ZzZTAxMjAwMDAwNzBtcnQvZGlyZWN0LzAxLwpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFp
-bGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
-cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4
-LWRldmVsCg==
+John Reiser noticed that a physical memory region was being mapped twice.
+
+This patch fixes that, and it inlines the responsible function, as
+that had only one caller.
+
+Cc: John Reiser <jreiser@BitWagon.com>
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/kernel/mem.c |    8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+Index: linux-2.6.22/arch/um/kernel/mem.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/kernel/mem.c	2008-01-02 11:44:36.000000000 -0500
++++ linux-2.6.22/arch/um/kernel/mem.c	2008-01-02 12:08:45.000000000 -0500
+@@ -36,11 +36,6 @@ int kmalloc_ok = 0;
+ /* Used during early boot */
+ static unsigned long brk_end;
+ 
+-static void map_cb(void *unused)
+-{
+-	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
+-}
+-
+ #ifdef CONFIG_HIGHMEM
+ static void setup_highmem(unsigned long highmem_start,
+ 			  unsigned long highmem_len)
+@@ -68,8 +63,7 @@ void __init mem_init(void)
+ 	 * to be turned on.
+ 	 */
+ 	brk_end = (unsigned long) UML_ROUND_UP(sbrk(0));
+-	map_cb(NULL);
+-	initial_thread_cb(map_cb, NULL);
++	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
+ 	free_bootmem(__pa(brk_end), uml_reserved - brk_end);
+ 	uml_reserved = brk_end;
+ 
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
