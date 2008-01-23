@@ -1,11 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Wed, 23 Jan 2008 12:12:26 -0500
+Date: Wed, 23 Jan 2008 12:12:28 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080123171226.GA7604@c2.user-mode-linux.org>
+Message-ID: <20080123171228.GA7614@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [SPAM] [uml-devel] [RFC PATCH 1/10] SKAS4 - Fix x86_64
-	arch_copy_thread
+Subject: [SPAM] [uml-devel] [RFC PATCH 5/10] SKAS4 - start_up.c preparation
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,21 +20,220 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: UML-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Fix a bug which will be important later.  x86_64 copy_thread needs to
-copy %fs from parent to child.
+Tidy arch/um/os-Linux/start_up.c in preparation for host SKAS4 testing.
+    
+There are now explicit variables for disabling any particular host
+capability.
+    
+init_registers is moved out of the skas3 testing because it needs to
+happen every time, and the skas3 checks will become optional.
 
-diff --git a/include/asm-um/processor-x86_64.h b/include/asm-um/processor-x86_64.h
-index d946bf2..0528d9e 100644
---- a/include/asm-um/processor-x86_64.h
-+++ b/include/asm-um/processor-x86_64.h
-@@ -37,6 +37,7 @@ static inline void arch_flush_thread(struct arch_thread *thread)
- static inline void arch_copy_thread(struct arch_thread *from,
-                                     struct arch_thread *to)
- {
-+	to->fs = from->fs;
+diff --git a/arch/um/include/os.h b/arch/um/include/os.h
+index 6f0d1c7..f1c26f5 100644
+--- a/arch/um/include/os.h
++++ b/arch/um/include/os.h
+@@ -168,7 +168,7 @@ extern int os_fchange_dir(int fd);
+ 
+ /* start_up.c */
+ extern void os_early_checks(void);
+-extern int can_do_skas(void);
++extern void can_do_skas(void);
+ extern void os_check_bugs(void);
+ extern void check_host_supports_tls(int *supports_tls, int *tls_min);
+ 
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 7b81f6c..2576d70 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -23,6 +23,7 @@
+ #include "mem_user.h"
+ #include "ptrace_user.h"
+ #include "registers.h"
++#include "skas.h"
+ #include "skas_ptrace.h"
+ 
+ static int ptrace_child(void)
+@@ -141,14 +142,27 @@ static int stop_ptraced_child(int pid, int exitcode, int mustexit)
  }
  
- #include "asm/arch/user.h"
+ /* Changed only during early boot */
+-int ptrace_faultinfo = 1;
+-int ptrace_ldt = 1;
+-int proc_mm = 1;
+-int skas_needs_stub = 0;
++int ptrace_faultinfo;
++static int disable_ptrace_faultinfo;
++
++int ptrace_ldt;
++static int disable_ptrace_ldt;
++
++int proc_mm;
++static int disable_proc_mm;
++
++int have_switch_mm;
++static int disable_switch_mm;
++
++int skas_needs_stub;
+ 
+ static int __init skas0_cmd_param(char *str, int* add)
+ {
+-	ptrace_faultinfo = proc_mm = 0;
++	disable_ptrace_faultinfo = 1;
++	disable_ptrace_ldt = 1;
++	disable_proc_mm = 1;
++	disable_switch_mm = 1;
++
+ 	return 0;
+ }
+ 
+@@ -158,15 +172,12 @@ static int __init mode_skas0_cmd_param(char *str, int* add)
+ 	__attribute__((alias("skas0_cmd_param")));
+ 
+ __uml_setup("skas0", skas0_cmd_param,
+-		"skas0\n"
+-		"    Disables SKAS3 usage, so that SKAS0 is used, unless \n"
+-	        "    you specify mode=tt.\n\n");
++"skas0\n"
++"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used\n\n");
+ 
+ __uml_setup("mode=skas0", mode_skas0_cmd_param,
+-		"mode=skas0\n"
+-		"    Disables SKAS3 usage, so that SKAS0 is used, unless you \n"
+-		"    specify mode=tt. Note that this was recently added - on \n"
+-		"    older kernels you must use simply \"skas0\".\n\n");
++"mode=skas0\n"
++"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used.\n\n");
+ 
+ /* Changed only during early boot */
+ static int force_sysemu_disabled = 0;
+@@ -341,6 +352,8 @@ static void __init check_coredump_limit(void)
+ 
+ void __init os_early_checks(void)
+ {
++	int pid;
++
+ 	/* Print out the core dump limits early */
+ 	check_coredump_limit();
+ 
+@@ -350,11 +363,15 @@ void __init os_early_checks(void)
+ 	 * kernel is running.
+ 	 */
+ 	check_tmpexec();
++
++	pid = start_ptraced_child();
++	init_registers(pid);
++	stop_ptraced_child(pid, 1, 1);
+ }
+ 
+ static int __init noprocmm_cmd_param(char *str, int* add)
+ {
+-	proc_mm = 0;
++	disable_proc_mm = 1;
+ 	return 0;
+ }
+ 
+@@ -366,7 +383,7 @@ __uml_setup("noprocmm", noprocmm_cmd_param,
+ 
+ static int __init noptracefaultinfo_cmd_param(char *str, int* add)
+ {
+-	ptrace_faultinfo = 0;
++	disable_ptrace_faultinfo = 1;
+ 	return 0;
+ }
+ 
+@@ -378,7 +395,7 @@ __uml_setup("noptracefaultinfo", noptracefaultinfo_cmd_param,
+ 
+ static int __init noptraceldt_cmd_param(char *str, int* add)
+ {
+-	ptrace_ldt = 0;
++	disable_ptrace_ldt = 1;
+ 	return 0;
+ }
+ 
+@@ -398,20 +415,18 @@ static inline void check_skas3_ptrace_faultinfo(void)
+ 
+ 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
+ 	if (n < 0) {
+-		ptrace_faultinfo = 0;
+ 		if (errno == EIO)
+ 			non_fatal("not found\n");
+ 		else
+ 			perror("not found");
+ 	}
++	else if (disable_ptrace_faultinfo)
++		non_fatal("found but disabled on command line\n");
+ 	else {
+-		if (!ptrace_faultinfo)
+-			non_fatal("found but disabled on command line\n");
+-		else
+-			non_fatal("found\n");
++		ptrace_faultinfo = 1;
++		non_fatal("found\n");
+ 	}
+ 
+-	init_registers(pid);
+ 	stop_ptraced_child(pid, 1, 1);
+ }
+ 
+@@ -435,38 +450,32 @@ static inline void check_skas3_ptrace_ldt(void)
+ 		else {
+ 			perror("not found");
+ 		}
+-		ptrace_ldt = 0;
+ 	}
++	else if (disable_ptrace_ldt)
++		non_fatal("found, but use is disabled\n");
+ 	else {
+-		if (ptrace_ldt)
+-			non_fatal("found\n");
+-		else
+-			non_fatal("found, but use is disabled\n");
++		ptrace_ldt = 1;
++		non_fatal("found\n");
+ 	}
+ 
+ 	stop_ptraced_child(pid, 1, 1);
+-#else
+-	/* PTRACE_LDT might be disabled via cmdline option.
+-	 * We want to override this, else we might use the stub
+-	 * without real need
+-	 */
+-	ptrace_ldt = 1;
+ #endif
+ }
+ 
+ static inline void check_skas3_proc_mm(void)
+ {
+ 	non_fatal("  - /proc/mm...");
+-	if (access("/proc/mm", W_OK) < 0) {
+-		proc_mm = 0;
++	if (access("/proc/mm", W_OK) < 0)
+ 		perror("not found");
+-	}
+-	else if (!proc_mm)
++	else if (disable_proc_mm)
+ 		non_fatal("found but disabled on command line\n");
+-	else non_fatal("found\n");
++	else {
++		proc_mm = 1;
++		non_fatal("found\n");
++	}
+ }
+ 
+-int can_do_skas(void)
++void can_do_skas(void)
+ {
+ 	non_fatal("Checking for the skas3 patch in the host:\n");
+ 
+@@ -476,8 +485,6 @@ int can_do_skas(void)
+ 
+ 	if (!proc_mm || !ptrace_faultinfo || !ptrace_ldt)
+ 		skas_needs_stub = 1;
+-
+-	return 1;
+ }
+ 
+ int __init parse_iomem(char *str, int *add)
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
