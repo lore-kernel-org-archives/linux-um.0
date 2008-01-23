@@ -1,11 +1,11 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Wed, 23 Jan 2008 12:12:30 -0500
+Date: Wed, 23 Jan 2008 12:12:26 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080123171230.GA7619@c2.user-mode-linux.org>
+Message-ID: <20080123171226.GA7609@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [SPAM] [uml-devel] [RFC PATCH 8/10] SKAS4 - stub management
-	preparation
+Subject: [SPAM] [uml-devel] [RFC PATCH 2/10] SKAS4 - Macroize stub system call
+	execution loop
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,232 +21,214 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: UML-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Tidy the existing stub code so that the skas4 code can be dropped in.
+Extract the system call execution loop in the stubs into a macro
+    
+A later patch will need this loop, so this makes it available.
 
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 484e68f..efda5e1 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -40,35 +40,69 @@ static unsigned long syscall_regs[MAX_REG_NR];
+diff --git a/arch/um/sys-i386/stub.S b/arch/um/sys-i386/stub.S
+index e730772..890dc50 100644
+--- a/arch/um/sys-i386/stub.S
++++ b/arch/um/sys-i386/stub.S
+@@ -1,52 +1,45 @@
+ #include "uml-config.h"
+ #include "as-layout.h"
  
- static int __init init_syscall_regs(void)
- {
-+	unsigned long *stub_entry;
++#define PROCESS_LIST \
++	/* load pointer to first operation */ \
++	mov	$(ASM_STUB_DATA + 8), %esp; \
++1: \
++	/* load length of additional data */ \
++	mov	0x0(%esp), %eax; \
++	/* if(length == 0) : end of list */ \
++	/* write possible 0 to header */ \
++	mov	%eax, ASM_STUB_DATA + 4; \
++	cmpl	$0, %eax; \
++	jz	2f; \
++	/* save current pointer */ \
++	mov	%esp, ASM_STUB_DATA + 4; \
++	/* skip additional data */ \
++	add	%eax, %esp; \
++	/* load syscall-# */ \
++	pop	%eax; \
++	/* load syscall params */ \
++	pop	%ebx; \
++	pop	%ecx; \
++	pop	%edx; \
++	pop	%esi; \
++ 	pop	%edi; \
++	pop	%ebp; \
++	/* execute syscall */ \
++	int	$0x80; \
++	/* check return value */ \
++	pop	%ebx; \
++	cmp	%ebx, %eax; \
++	je	1b; \
++2: \
++	/* save return value */ \
++	mov	%eax, ASM_STUB_DATA;
 +
- 	get_safe_registers(syscall_regs);
-+	stub_entry = &batch_syscall_stub;
-+
- 	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
--		((unsigned long) &batch_syscall_stub -
-+		((unsigned long) stub_entry -
- 		 (unsigned long) &__syscall_stub_start);
- 	return 0;
- }
+ 	.globl syscall_stub
+ .section .__syscall_stub, "x"
  
- __initcall(init_syscall_regs);
- 
--extern int proc_mm;
-+static int syscall_stub_done(unsigned long stack)
-+{
-+	unsigned long *syscall, *data, offset;
-+	int ret, n;
-+
-+	/*
-+	 * When the stub stops, we find the following values on the
-+	 * beginning of the stack:
-+	 * (long) return_value
-+	 * (long) offset to failed sycall data (0 if no error)
-+	 */
-+	ret = *((unsigned long *) stack);
-+	offset = *((unsigned long *) stack + 1);
-+	if (offset == 0)
-+		return 0;
- 
--int single_count = 0;
--int multi_count = 0;
--int multi_op_count = 0;
-+	data = (unsigned long *)(stack + offset - STUB_DATA);
-+	printk(UM_KERN_ERR "syscall_stub_done : ret = %d, offset = %ld, "
-+	       "data = %p\n", ret, offset, data);
-+	syscall = (unsigned long *)((unsigned long)data + data[0]);
-+	printk(UM_KERN_ERR "syscall_stub_done : syscall %ld failed, "
-+	       "return value = 0x%x, expected return value = 0x%lx\n",
-+	       syscall[0], ret, syscall[7]);
-+	printk(UM_KERN_ERR "    syscall parameters: "
-+	       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
-+	       syscall[1], syscall[2], syscall[3],
-+	       syscall[4], syscall[5], syscall[6]);
-+	for (n = 1; n < data[0]/sizeof(long); n++) {
-+		if (n == 1)
-+			printk(UM_KERN_ERR "    additional syscall "
-+			       "data:");
-+		if (n % 4 == 1)
-+			printk("\n" UM_KERN_ERR "      ");
-+		printk("  0x%lx", data[n]);
-+	}
-+	if (n > 1)
-+		printk("\n");
- 
--static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
-+	return ret;
-+}
-+
-+static long do_syscall_stub(struct mm_id *mm_idp, void **addr)
- {
--	int n, i;
--	long ret, offset;
--	unsigned long * data;
--	unsigned long * syscall;
--	int err, pid = mm_idp->u.pid;
-+	long ret;
-+	int n, i, err, pid = mm_idp->u.pid;
- 
- 	if (proc_mm)
- 		/* FIXME: Need to look up userspace_pid by cpu */
- 		pid = userspace_pid[0];
- 
--	multi_count++;
+ 	.globl batch_syscall_stub
+ batch_syscall_stub:
+-	/* load pointer to first operation */
+-	mov	$(ASM_STUB_DATA+8), %esp
 -
- 	n = ptrace_setregs(pid, syscall_regs);
- 	if (n < 0) {
- 		printk(UM_KERN_ERR "Registers - \n");
-@@ -85,52 +119,39 @@ static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
- 
- 	wait_stub_done(pid);
- 
--	/*
--	 * When the stub stops, we find the following values on the
--	 * beginning of the stack:
--	 * (long )return_value
--	 * (long )offset to failed sycall-data (0, if no error)
--	 */
--	ret = *((unsigned long *) mm_idp->stack);
--	offset = *((unsigned long *) mm_idp->stack + 1);
--	if (offset) {
--		data = (unsigned long *)(mm_idp->stack + offset - STUB_DATA);
--		printk(UM_KERN_ERR "do_syscall_stub : ret = %ld, offset = %ld, "
--		       "data = %p\n", ret, offset, data);
--		syscall = (unsigned long *)((unsigned long)data + data[0]);
--		printk(UM_KERN_ERR "do_syscall_stub: syscall %ld failed, "
--		       "return value = 0x%lx, expected return value = 0x%lx\n",
--		       syscall[0], ret, syscall[7]);
--		printk(UM_KERN_ERR "    syscall parameters: "
--		       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
--		       syscall[1], syscall[2], syscall[3],
--		       syscall[4], syscall[5], syscall[6]);
--		for (n = 1; n < data[0]/sizeof(long); n++) {
--			if (n == 1)
--				printk(UM_KERN_ERR "    additional syscall "
--				       "data:");
--			if (n % 4 == 1)
--				printk("\n" UM_KERN_ERR "      ");
--			printk("  0x%lx", data[n]);
--		}
--		if (n > 1)
--			printk("\n");
--	}
--	else ret = 0;
-+	ret = syscall_stub_done(mm_idp->stack);
- 
- 	*addr = check_init_stack(mm_idp, NULL);
- 
- 	return ret;
- }
- 
--long run_syscall_stub(struct mm_id * mm_idp, int syscall,
-+static int flush_syscalls(struct mm_id *mm_idp, void **addr, int extra)
-+{
-+	unsigned long *stack = check_init_stack(mm_idp, *addr);
-+	int current, end;
-+
-+	current = ((unsigned long) stack) & ~UM_KERN_PAGE_MASK;
-+	end = UM_KERN_PAGE_SIZE;
-+
-+	if (current + (10 + extra) * sizeof(long) < end)
-+		return 0;
-+
-+	return do_syscall_stub(mm_idp, addr);
-+}
-+
-+long run_syscall_stub(struct mm_id *mm_idp, int syscall,
- 		      unsigned long *args, long expected, void **addr,
- 		      int done)
- {
--	unsigned long *stack = check_init_stack(mm_idp, *addr);
-+	unsigned long *stack;
-+	int ret;
- 
--	if (done && *addr == NULL)
--		single_count++;
-+	ret = flush_syscalls(mm_idp, addr, 0);
-+	if (ret)
-+		return ret;
-+
-+	stack = check_init_stack(mm_idp, *addr);
- 
- 	*stack += sizeof(long);
- 	stack += *stack / sizeof(long);
-@@ -144,45 +165,32 @@ long run_syscall_stub(struct mm_id * mm_idp, int syscall,
- 	*stack++ = args[5];
- 	*stack++ = expected;
- 	*stack = 0;
--	multi_op_count++;
- 
--	if (!done && ((((unsigned long) stack) & ~UM_KERN_PAGE_MASK) <
--		     UM_KERN_PAGE_SIZE - 10 * sizeof(long))) {
--		*addr = stack;
--		return 0;
--	}
-+	if (done)
-+		return do_syscall_stub(mm_idp, addr);
- 
--	return do_syscall_stub(mm_idp, addr);
-+	*addr = stack;
-+
-+	return 0;
- }
- 
--long syscall_stub_data(struct mm_id * mm_idp,
--		       unsigned long *data, int data_count,
--		       void **addr, void **stub_addr)
-+long syscall_stub_data(struct mm_id *mm_idp, unsigned long *data,
-+		       int data_count, void **addr, void **stub_addr)
- {
- 	unsigned long *stack;
--	int ret = 0;
-+	int ret;
- 
--	/*
--	 * If *addr still is uninitialized, it *must* contain NULL.
--	 * Thus in this case do_syscall_stub correctly won't be called.
--	 */
--	if ((((unsigned long) *addr) & ~UM_KERN_PAGE_MASK) >=
--	   UM_KERN_PAGE_SIZE - (10 + data_count) * sizeof(long)) {
--		ret = do_syscall_stub(mm_idp, addr);
--		/* in case of error, don't overwrite data on stack */
--		if (ret)
--			return ret;
--	}
-+	ret = flush_syscalls(mm_idp, addr, data_count);
-+	if (ret)
-+		return ret;
- 
- 	stack = check_init_stack(mm_idp, *addr);
--	*addr = stack;
+-again:
+-	/* load length of additional data */
+-	mov	0x0(%esp), %eax
 -
--	*stack = data_count * sizeof(long);
-+	*stack++ = data_count * sizeof(long);
+-	/* if(length == 0) : end of list */
+-	/* write possible 0 to header */
+-	mov	%eax, ASM_STUB_DATA+4
+-	cmpl	$0, %eax
+-	jz	done
+-
+-	/* save current pointer */
+-	mov	%esp, ASM_STUB_DATA+4
+-
+-	/* skip additional data */
+-	add	%eax, %esp
+-
+-	/* load syscall-# */
+-	pop	%eax
+-
+-	/* load syscall params */
+-	pop	%ebx
+-	pop	%ecx
+-	pop	%edx
+-	pop	%esi
+- 	pop	%edi
+-	pop	%ebp
+-
+-	/* execute syscall */
+-	int	$0x80
+-
+-	/* check return value */
+-	pop	%ebx
+-	cmp	%ebx, %eax
+-	je	again
+-
+-done:
+-	/* save return value */
+-	mov	%eax, ASM_STUB_DATA
+-
++	PROCESS_LIST
+ 	/* stop */
+ 	int3
+diff --git a/arch/um/sys-x86_64/stub.S b/arch/um/sys-x86_64/stub.S
+index 4afe204..143a16c 100644
+--- a/arch/um/sys-x86_64/stub.S
++++ b/arch/um/sys-x86_64/stub.S
+@@ -1,67 +1,48 @@
+ #include "uml-config.h"
+ #include "as-layout.h"
  
--	memcpy(stack + 1, data, data_count * sizeof(long));
-+	memcpy(stack, data, data_count * sizeof(long));
+-	.globl syscall_stub
+-.section .__syscall_stub, "x"
+-syscall_stub:
+-	syscall
+-	/* We don't have 64-bit constants, so this constructs the address
+-	 * we need.
+-	 */
+-	movq	$(ASM_STUB_DATA >> 32), %rbx
+-	salq	$32, %rbx
+-	movq	$(ASM_STUB_DATA & 0xffffffff), %rcx
+-	or	%rcx, %rbx
+-	movq	%rax, (%rbx)
+-	int3
++#define PROCESS_LIST \
++	mov	$(ASM_STUB_DATA >> 32), %rbx; \
++	sal	$32, %rbx; \
++	mov	$(ASM_STUB_DATA & 0xffffffff), %rax; \
++	or	%rax, %rbx; \
++	/* load pointer to first operation */ \
++	mov	%rbx, %rsp; \
++	add	$0x10, %rsp; \
++1: \
++	/* load length of additional data */ \
++	mov	0x0(%rsp), %rax; \
++	/* if(length == 0) : end of list */ \
++	/* write possible 0 to header */ \
++	mov	%rax, 8(%rbx); \
++	cmp	$0, %rax; \
++	jz	2f; \
++	/* save current pointer */ \
++	mov	%rsp, 8(%rbx); \
++	/* skip additional data */ \
++	add	%rax, %rsp; \
++	/* load syscall-# */ \
++	pop	%rax; \
++	/* load syscall params */ \
++	pop	%rdi; \
++	pop	%rsi; \
++	pop	%rdx; \
++	pop	%r10; \
++ 	pop	%r8; \
++	pop	%r9; \
++	/* execute syscall */ \
++	syscall; \
++	/* check return value */ \
++	pop	%rcx; \
++	cmp	%rcx, %rax; \
++	je	1b; \
++2: \
++	/* save return value */ \
++	mov	%rax, (%rbx); \
  
--	*stub_addr = (void *)(((unsigned long)(stack + 1) &
--			       ~UM_KERN_PAGE_MASK) + STUB_DATA);
-+	*stub_addr = (void *)(((unsigned long) stack & ~UM_KERN_PAGE_MASK) +
-+			      STUB_DATA);
- 
- 	return 0;
- }
++.section .__syscall_stub, "x"
+ 	.globl batch_syscall_stub
+ batch_syscall_stub:
+-	mov	$(ASM_STUB_DATA >> 32), %rbx
+-	sal	$32, %rbx
+-	mov	$(ASM_STUB_DATA & 0xffffffff), %rax
+-	or	%rax, %rbx
+-	/* load pointer to first operation */
+-	mov	%rbx, %rsp
+-	add	$0x10, %rsp
+-again:
+-	/* load length of additional data */
+-	mov	0x0(%rsp), %rax
+-
+-	/* if(length == 0) : end of list */
+-	/* write possible 0 to header */
+-	mov	%rax, 8(%rbx)
+-	cmp	$0, %rax
+-	jz	done
+-
+-	/* save current pointer */
+-	mov	%rsp, 8(%rbx)
+-
+-	/* skip additional data */
+-	add	%rax, %rsp
+-
+-	/* load syscall-# */
+-	pop	%rax
+-
+-	/* load syscall params */
+-	pop	%rdi
+-	pop	%rsi
+-	pop	%rdx
+-	pop	%r10
+- 	pop	%r8
+-	pop	%r9
+-
+-	/* execute syscall */
+-	syscall
+-
+-	/* check return value */
+-	pop	%rcx
+-	cmp	%rcx, %rax
+-	je	again
+-
+-done:
+-	/* save return value */
+-	mov	%rax, (%rbx)
+-
++	PROCESS_LIST
+ 	/* stop */
+ 	int3
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
