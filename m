@@ -1,11 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Wed, 23 Jan 2008 12:12:29 -0500
+Date: Wed, 23 Jan 2008 12:12:30 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080123171229.GA7629@c2.user-mode-linux.org>
+Message-ID: <20080123171230.GA7634@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [SPAM] [uml-devel] [RFC PATCH 6/10] SKAS4 - Guest support for using
-	PTRACE_GETSIGINFO
+Subject: [SPAM] [uml-devel] [RFC PATCH 9/10] SKAS4 - rename new_mm
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,248 +20,60 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: UML-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-The nastiness in arch/um/include/siginfo_segv.h is defining the new
-siginfo_t structure in place of the old one, which requires using CPP
-to rename the old one out of the way.
+UML already had a new_mm().  This is renamed to make_new_mm().
 
 diff --git a/arch/um/include/skas/skas.h b/arch/um/include/skas/skas.h
-index b073f8a..d6cbb4f 100644
+index d6cbb4f..061a362 100644
 --- a/arch/um/include/skas/skas.h
 +++ b/arch/um/include/skas/skas.h
-@@ -8,6 +8,8 @@
- 
- #include "sysdep/ptrace.h"
- 
-+extern int have_siginfo_segv;
-+
- extern int userspace_pid[];
- extern int proc_mm, ptrace_faultinfo, ptrace_ldt;
- extern int skas_needs_stub;
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index e8b7a97..82a0780 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -3,6 +3,9 @@
-  * Licensed under the GPL
-  */
- 
-+/* Include this first, before anything else includes <signal.h> */
-+#include "siginfo_segv.h"
-+
- #include <stdlib.h>
- #include <unistd.h>
- #include <sched.h>
-@@ -91,11 +94,23 @@ bad_wait:
- 
+@@ -17,7 +17,7 @@ extern int skas_needs_stub;
+ extern int user_thread(unsigned long stack, int flags);
+ extern void new_thread_handler(void);
+ extern void handle_syscall(struct uml_pt_regs *regs);
+-extern int new_mm(unsigned long stack);
++extern int make_new_mm(unsigned long stack);
+ extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
+ extern long execute_syscall_skas(void *r);
  extern unsigned long current_stub_stack(void);
+diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+index f859ec3..3426711 100644
+--- a/arch/um/kernel/skas/mmu.c
++++ b/arch/um/kernel/skas/mmu.c
+@@ -101,7 +101,7 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+ 		from_mm = &current->mm->context;
  
-+#ifndef PTRACE_GETSIGINFO
-+#define PTRACE_GETSIGINFO	0x4202
-+#endif
-+
- void get_skas_faultinfo(int pid, struct faultinfo * fi)
- {
-+	siginfo_t si;
- 	int err;
- 
--	if (ptrace_faultinfo) {
-+	if(have_siginfo_segv){
-+		err = ptrace(PTRACE_GETSIGINFO, pid, 0, &si);
-+		if(err)
-+			printk("PTRACE_GETSIGINFO failed, err = %d\n", errno);
-+
-+		GET_FAULTINFO_FROM_SI(*fi, si);
-+	}
-+	else if (ptrace_faultinfo) {
- 		err = ptrace(PTRACE_FAULTINFO, pid, 0, fi);
- 		if (err)
- 			panic("get_skas_faultinfo - PTRACE_FAULTINFO failed, "
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 2576d70..0e0f738 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -3,6 +3,9 @@
-  * Licensed under the GPL
-  */
- 
-+/* Include this first, before anything else includes <signal.h> */
-+#include "siginfo_segv.h"
-+
- #include <stdio.h>
- #include <stdlib.h>
- #include <stdarg.h>
-@@ -25,6 +28,7 @@
- #include "registers.h"
+ 	if (proc_mm) {
+-		ret = new_mm(stack);
++		ret = make_new_mm(stack);
+ 		if (ret < 0) {
+ 			printk(KERN_ERR "init_new_context_skas - "
+ 			       "new_mm failed, errno = %d\n", ret);
+diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
+index fce389c..2c6de0a 100644
+--- a/arch/um/kernel/skas/process.c
++++ b/arch/um/kernel/skas/process.c
+@@ -9,7 +9,7 @@
+ #include "os.h"
  #include "skas.h"
- #include "skas_ptrace.h"
-+#include "sysdep/sigcontext.h"
  
- static int ptrace_child(void)
+-int new_mm(unsigned long stack)
++int make_new_mm(unsigned long stack)
  {
-@@ -154,6 +158,9 @@ static int disable_proc_mm;
- int have_switch_mm;
- static int disable_switch_mm;
+ 	int fd;
  
-+int have_siginfo_segv;
-+static int disable_siginfo_segv;
-+
- int skas_needs_stub;
- 
- static int __init skas0_cmd_param(char *str, int* add)
-@@ -162,6 +169,7 @@ static int __init skas0_cmd_param(char *str, int* add)
- 	disable_ptrace_ldt = 1;
- 	disable_proc_mm = 1;
- 	disable_switch_mm = 1;
-+	disable_siginfo_segv = 1;
- 
- 	return 0;
- }
-@@ -475,6 +483,137 @@ static inline void check_skas3_proc_mm(void)
- 	}
- }
- 
-+static void *fault_address;
-+
-+static int check_fault_info(struct faultinfo *fi)
-+{
-+	return (FAULT_ADDRESS(*fi) == (unsigned long) fault_address) &&
-+		FAULT_WRITE(*fi) && SEGV_IS_FIXABLE(fi);
-+}
-+
-+static jmp_buf siginfo_buf;
-+
-+static void segv_handler(int sig, siginfo_t *si, void *foo)
-+{
-+	struct faultinfo fi;
-+	int n;
-+
-+	GET_FAULTINFO_FROM_SI(fi, *si);
-+	n = check_fault_info(&fi) ? 1 : 2;
-+	longjmp(siginfo_buf, n);
-+}
-+
-+static int fault(void)
-+{
-+	struct sigaction sa, old;
-+	int err, n;
-+
-+	/*
-+	 * The cast is needed because the CPP manipulations of
-+	 * siginfo_t resulted in sa_sigaction having an old_siginfo_t
-+	 * parameter.
-+	 */
-+	sa.sa_sigaction = (void (*)(int, old_siginfo_t *, void *)) segv_handler;
-+	sigemptyset(&sa.sa_mask);
-+	sa.sa_flags = SA_SIGINFO | SA_NODEFER;
-+
-+	err = sigaction(SIGSEGV, &sa, &old);
-+	if (err)
-+		fatal_perror("sigaction");
-+
-+	/*
-+	 * Provide a guaranteed invalid address by mapping a page into
-+	 * a hole in the address space and then unmapping it.
-+	 */
-+	fault_address = mmap(NULL, UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	if (fault_address == MAP_FAILED)
-+		fatal_perror("mmap failed");
-+
-+	if (munmap(fault_address, UM_KERN_PAGE_SIZE) < 0)
-+		fatal_perror("munmap failed");
-+
-+	n = setjmp(siginfo_buf);
-+	if (n == 0)
-+		*((unsigned long *) fault_address) = 0;
-+
-+	err = sigaction(SIGSEGV, &old, NULL);
-+
-+	return n;
-+}
-+
-+static int __init nogetsiginfo_cmd_param(char *str, int *add)
-+{
-+	disable_siginfo_segv = 1;
-+	return 0;
-+}
-+
-+__uml_setup("nogetsiginfo", nogetsiginfo_cmd_param,
-+"nogetsiginfo\n"
-+"    Turns off usage of PTRACE_GETSIGINFO to read page fault information\n"
-+"    from a child process, even if the host supports it.\n\n");
-+
-+#ifndef PTRACE_GETSIGINFO
-+#define PTRACE_GETSIGINFO	0x4202
-+#endif
-+
-+static int check_siginfo(void)
-+{
-+	siginfo_t si;
-+	struct faultinfo fi;
-+	int ok, pid, err, status;
-+
-+	non_fatal("\tFull CPU fault information in siginfo_t ... ");
-+	ok = fault();
-+	if (ok)
-+		non_fatal("OK\n");
-+	else {
-+		non_fatal("Failed\n");
-+		return 0;
-+	}
-+
-+	non_fatal("\tFull CPU fault information in PTRACE_GETSIGINFO ... ");
-+
-+	pid = fork();
-+	if (pid < 0)
-+		fatal_perror("fork failed");
-+	else if (pid == 0) {
-+		ptrace(PTRACE_TRACEME, 0, 0, 0);
-+		fault();
-+		exit(1);
-+	}
-+
-+	while(1){
-+		err = waitpid(pid, &status, WUNTRACED);
-+		if (err < 0)
-+			fatal_perror("wait failed");
-+
-+		if (WIFSTOPPED(status) && (WSTOPSIG(status) == SIGSEGV))
-+			break;
-+	}
-+
-+	err = ptrace(PTRACE_GETSIGINFO, pid, 0, &si);
-+	if (err < 0)
-+		fatal_perror("PTRACE_GETSIGINFO failed");
-+
-+	ptrace(PTRACE_KILL, pid, 0, 0);
-+
-+	GET_FAULTINFO_FROM_SI(fi, si);
-+	ok = check_fault_info(&fi);
-+	if (ok)
-+		non_fatal("OK\n");
-+	else
-+		non_fatal("Failed\n");
-+
-+	if (disable_siginfo_segv)
-+		non_fatal("Extended PTRACE_GETSIGINFO disabled on command "
-+			  "line");
-+	else
-+		have_siginfo_segv = 1;
-+
-+	return ok;
-+}
-+
- void can_do_skas(void)
- {
- 	non_fatal("Checking for the skas3 patch in the host:\n");
-@@ -482,6 +621,7 @@ void can_do_skas(void)
- 	check_skas3_proc_mm();
- 	check_skas3_ptrace_faultinfo();
- 	check_skas3_ptrace_ldt();
-+	check_siginfo();
- 
- 	if (!proc_mm || !ptrace_faultinfo || !ptrace_ldt)
- 		skas_needs_stub = 1;
+diff --git a/arch/um/sys-i386/ldt.c b/arch/um/sys-i386/ldt.c
+index 67c0958..c06c66c 100644
+--- a/arch/um/sys-i386/ldt.c
++++ b/arch/um/sys-i386/ldt.c
+@@ -436,7 +436,7 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+ 		/*
+ 		 * We have a valid from_mm, so we now have to copy the LDT of
+ 		 * from_mm to new_mm, because using proc_mm an new mm with
+-		 * an empty/default LDT was created in new_mm()
++		 * an empty/default LDT was created in make_new_mm()
+ 		 */
+ 		copy = ((struct proc_mm_op) { .op 	= MM_COPY_SEGMENTS,
+ 					      .u 	=
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
