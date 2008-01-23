@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JHoYe-0003m3-GF for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Jan 2008 14:59:00 -0800
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JHoYb-0000LD-9d
+	id 1JHowA-0006Km-Gw for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Jan 2008 15:23:18 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JHow9-0004Kp-01
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 23 Jan 2008 14:58:59 -0800
-Received: from [192.168.0.6] (80-195-236-49.cable.ubr02.camd.blueyonder.co.uk
-	[80.195.236.49])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: antoine@nagafix.co.uk)
-	by mail.nagafix.co.uk (Postfix) with ESMTP id 071C643A08
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 23 Jan 2008 22:58:45 +0000 (GMT)
-Message-ID: <4797C6A5.1030408@nagafix.co.uk>
-Date: Wed, 23 Jan 2008 22:58:45 +0000
-From: Antoine Martin <antoine@nagafix.co.uk>
-MIME-Version: 1.0
-Subject: [uml-devel] console and do_syscall_stub
+	Wed, 23 Jan 2008 15:23:18 -0800
+Date: Wed, 23 Jan 2008 18:23:13 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080123232313.GA11799@c2.user-mode-linux.org>
+References: <4797C6A5.1030408@nagafix.co.uk>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4797C6A5.1030408@nagafix.co.uk>
+Subject: Re: [uml-devel] console and do_syscall_stub
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,42 +30,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+To: Antoine Martin <antoine@nagafix.co.uk>
+Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
+On Wed, Jan 23, 2008 at 10:58:45PM +0000, Antoine Martin wrote:
+> [42949466.740000] do_syscall_stub : ret = -12, offset = 548682067984,
+> data = 00000000606b1010
 
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] Failed to open console 12, err = -2
-[42949466.740000] do_syscall_stub : ret = -12, offset = 548682067984,
-data = 00000000606b1010
-[42949466.740000] do_syscall_stub: syscall 9 failed, return value =
-0xfffffffffffffff4, expected return value = 0x17c17000
-[42949466.740000]     syscall parameters: 0x17c17000 0x1000 0x7 0x11 0x3
-0x3e19000
-[42949466.740000] Failed to flush page for address 0x17c17000
+This usually means that a UML process hit the host's vm_area_struct limit.
 
+Look at the host's /proc/sys/vm/max_map_count - the default is 64K,
+which, given UML's propensity to map memory one page at a time, covers
+256M of resident memory for a UML process.
 
-Linux localhost 2.6.23.12 #5 Tue Dec 25 14:26:58 GMT 2007 x86_64 UML
-User Mode Linux GNU/Linux
+I'd say double or quadruple it, depending on how much memory you think
+a process can use.  To be absolutely safe, make it big enough to cover
+all of a UML's physical memory, since a process RSS can't exceed that.
 
-Any ideas?
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.7 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+				Jeff
 
-iD8DBQFHl8alGK2zHPGK1rsRCnm/AJ9HmHmE7vK4RdFamfM/wVmt72qEdQCfcY7s
-hXzAKIdkAh7VDZ+BjxsUP8U=
-=gd57
------END PGP SIGNATURE-----
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
