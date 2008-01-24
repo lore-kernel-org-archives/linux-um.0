@@ -1,7 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Thu, 24 Jan 2008 15:35:13 -0500
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1JI8o5-0004Qu-QP for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Jan 2008 12:36:21 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JI8o5-0007Jl-8n
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Jan 2008 12:36:17 -0800
+Received: from c2.user-mode-linux.org (littleton.addtoit.com [198.99.130.129])
+	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id m0OKaFuX011916
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 24 Jan 2008 15:36:15 -0500
+Received: from c2.user-mode-linux.org (localhost.localdomain [127.0.0.1])
+	by c2.user-mode-linux.org (8.14.1/8.13.8) with ESMTP id m0OKaF7S008554
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 24 Jan 2008 15:36:15 -0500
+Date: Thu, 24 Jan 2008 15:36:15 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080124203513.GA8525@c2.user-mode-linux.org>
+Message-ID: <20080124203615.GB8525@c2.user-mode-linux.org>
 References: <20080123171225.GA7654@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
@@ -20,283 +38,149 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: UML-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: UML-user <user-mode-linux-devel@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, Jan 23, 2008 at 12:12:25PM -0500, Jeff Dike wrote:
-> Major changes since version 2 -
-
-Also forgot to tell git about a couple of new files, without which
-this totally won't work.
-
-Below is mm/mfs.c - just drop it into your tree.
+... and here is arch/um/include/siginfo_segv.h...
 
 				Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
 
-#define __FRAME_OFFSETS
-#include <linux/file.h>
-#include <linux/fs.h>
-#include <linux/mount.h>
-#include <linux/sched.h>
-#include <asm/mmu_context.h>
-#include <asm/ptrace.h>
-#include <asm/uaccess.h>
-#include <asm/user.h>
-
-static int release_mm(struct inode *inode, struct file *file)
-{
-	struct mm_struct *mm = file->private_data;
-
-	mmput(mm);
-	return 0;
-}
-
-#define MM_MAGIC 0xE0AAC500
-
-static int mm_get_sb(struct file_system_type *fs_type,
-		     int flags, const char *dev_name, void *data,
-		     struct vfsmount *mnt)
-{
-	return get_sb_pseudo(fs_type, "mm:", NULL, MM_MAGIC, mnt);
-}
-
-static struct vfsmount *mm_mnt;
-
-static struct file_system_type mm_fs_type = {
-	.name		= "mm",
-	.get_sb		= mm_get_sb,
-	.kill_sb	= kill_anon_super,
-};
-
-static int __init init_mm_fs(void)
-{
-	int err;
-
-	err = register_filesystem(&mm_fs_type);
-	if (err)
-		return err;
-
-	mm_mnt = kern_mount(&mm_fs_type);
-	if (IS_ERR(mm_mnt)) {
-		err = PTR_ERR(mm_mnt);
-		unregister_filesystem(&mm_fs_type);
-	}
-
-	return err;
-}
-
-static void __exit exit_mm_fs(void)
-{
-	unregister_filesystem(&mm_fs_type);
-	mntput(mm_mnt);
-}
-
-fs_initcall(init_mm_fs);
-module_exit(exit_mm_fs);
-
-static int mm_delete_dentry(struct dentry *dentry)
-{
-	/*
-	 * At creation time, we pretended this dentry was hashed
-	 * (by clearing DCACHE_UNHASHED bit in d_flags)
-	 * At delete time, we restore the truth : not hashed.
-	 * (so that dput() can proceed correctly)
-	 */
-	dentry->d_flags |= DCACHE_UNHASHED;
-	return 0;
-}
 
 /*
- * pipefs_dname() is called from d_path().
+ * Copyright (C) 2002- 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+ * Licensed under the GPL
  */
-static char *mm_dname(struct dentry *dentry, char *buffer, int buflen)
-{
-	return dynamic_dname(dentry, buffer, buflen, "mm:[%lu]",
-			     dentry->d_inode->i_ino);
-}
 
-static struct dentry_operations mm_dentry_operations = {
-	.d_delete	= mm_delete_dentry,
-	.d_dname	= mm_dname,
-};
+#ifndef __SIGINFO_SIGSEGV_H_
+#define __SIGINFO_SIGSEGV_H_
 
-static struct file_operations mm_fops = {
-	.release	= release_mm,
-};
+/*
+ * Provide signal.h, except for replacing siginfo_t with one that has
+ * the CPU trap number and error code in the SIGSEGV case.
+ */
 
-#define MM_FLAGS_MASK 1
-#define MM_INIT_MASK 1
+#include <time.h>
 
-#define MM_COPY 0
-#define MM_EMPTY 1
+/* Rename the signal.h siginfo and siginfo_t out of the way */
+#define siginfo old_siginfo
+#define siginfo_t old_siginfo_t
 
-asmlinkage long sys_new_mm(int flags)
-{
-	struct file *file;
-	struct mm_struct *mm;
-	struct inode *inode;
-	struct dentry *dentry;
-	struct qstr name = { .name = "" };
-	int err, fd;
+#include <signal.h>
 
-	if ((flags & ~MM_FLAGS_MASK) != 0)
-		return -EINVAL;
+#undef siginfo
+#undef siginfo_t
 
-	if ((flags & MM_INIT_MASK) == MM_COPY) {
-		mm = dup_mm(current);
-		if (mm == NULL)
-			return -ENOMEM;
-	}
-	else
-		return -EINVAL;
+#define __ARCH_SI_TRAPNO
+#define __ARCH_SI_ERROR
 
-	fd = get_unused_fd();
-	if (fd < 0) {
-		err = fd;
-		goto out_free;
-	}
+/* The new siginfo_t, plus associated definitions */
 
-	err = -ENOMEM;
-	dentry = d_alloc(mm_mnt->mnt_sb->s_root, &name);
-	if (dentry == NULL)
-		goto out_put;
+/*
+ * This is the size (including padding) of the part of the
+ * struct siginfo that is before the union.
+ */
+#ifndef __ARCH_SI_PREAMBLE_SIZE
+#define __ARCH_SI_PREAMBLE_SIZE	(3 * sizeof(int))
+#endif
 
-	dentry->d_op = &mm_dentry_operations;
-	dentry->d_flags &= ~DCACHE_UNHASHED;
+#define SI_MAX_SIZE	128
+#ifndef SI_PAD_SIZE
+#define SI_PAD_SIZE	((SI_MAX_SIZE - __ARCH_SI_PREAMBLE_SIZE) / sizeof(int))
+#endif
 
-	inode = new_inode(mm_mnt->mnt_sb);
-	if (inode == NULL)
-		goto out_dput;
+#ifndef __ARCH_SI_UID_T
+#define __ARCH_SI_UID_T	uid_t
+#endif
 
-	inode->i_mode = S_IRUSR;
-	inode->i_uid = current->fsuid;
-	inode->i_gid = current->fsgid;
-	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+/*
+ * The default "si_band" type is "long", as specified by POSIX.
+ * However, some architectures want to override this to "int"
+ * for historical compatibility reasons, so we allow that.
+ */
+#ifndef __ARCH_SI_BAND_T
+#define __ARCH_SI_BAND_T long
+#endif
 
-	d_instantiate(dentry, inode);
+#define __user
 
-	file = alloc_file(mm_mnt, dentry, FMODE_READ, &mm_fops);
-	if (file == NULL)
-		goto out_dput;
+typedef struct siginfo {
+	int si_signo;
+	int si_errno;
+	int si_code;
 
-	file->f_flags = O_RDONLY;
-	file->private_data = mm;
+	union {
+		int _pad[SI_PAD_SIZE];
 
-	fd_install(fd, file);
+		/* kill() */
+		struct {
+			pid_t _pid;		/* sender's pid */
+			__ARCH_SI_UID_T _uid;	/* sender's uid */
+		} _kill;
 
-	return fd;
+		/* POSIX.1b timers */
+		struct {
+			timer_t _tid;		/* timer id */
+			int _overrun;		/* overrun count */
+			char _pad[sizeof( __ARCH_SI_UID_T) - sizeof(int)];
+			sigval_t _sigval;	/* same as below */
+			int _sys_private;       /* not to be passed to user */
+		} _timer;
 
- out_dput:
-	dput(dentry);
- out_put:
-	put_unused_fd(fd);
- out_free:
-	mmput(mm);
-	return err;
-}
+		/* POSIX.1b signals */
+		struct {
+			pid_t _pid;		/* sender's pid */
+			__ARCH_SI_UID_T _uid;	/* sender's uid */
+			sigval_t _sigval;
+		} _rt;
 
-extern const struct file_operations proc_pid_mm_operations;
+		/* SIGCHLD */
+		struct {
+			pid_t _pid;		/* which child */
+			__ARCH_SI_UID_T _uid;	/* sender's uid */
+			int _status;		/* exit code */
+			clock_t _utime;
+			clock_t _stime;
+		} _sigchld;
 
-/* Returns with an extra reference on mm */
-struct mm_struct *fd_to_mm(int fd)
-{
-	struct mm_struct *mm;
-	struct file *file = fget(fd);
+		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
+		struct {
+			void __user *_addr; /* faulting insn/memory ref. */
+#ifdef __ARCH_SI_TRAPNO
+			int _trapno;	/* TRAP # which caused the signal */
+#endif
+#ifdef __ARCH_SI_ERROR
+			int _error;	/* CPU error code */
+#endif
+		} _sigfault;
 
-	if (!file)
-		return ERR_PTR(-EBADF);
+		/* SIGPOLL */
+		struct {
+			__ARCH_SI_BAND_T _band;	/* POLL_IN, POLL_OUT, POLL_MSG */
+			int _fd;
+		} _sigpoll;
+	} _sifields;
+} siginfo_t;
 
-	if ((file->f_op != &mm_fops) &&
-	    (file->f_op != &proc_pid_mm_operations))
-		mm = ERR_PTR(-EINVAL);
-	else {
-		mm = file->private_data;
-		atomic_inc(&mm->mm_users);
-	}
+#ifdef __ARCH_SI_TRAPNO
+#define si_trapno	_sifields._sigfault._trapno
+#endif
+#ifdef __ARCH_SI_ERROR
+#define si_error	_sifields._sigfault._error
+#endif
 
-	fput(file);
+#undef si_addr
+#define si_addr	_sifields._sigfault._addr
 
-	return mm;
-}
-
-void do_switch(struct task_struct *task, struct mm_struct *mm)
-{
-	struct mm_struct *old = task->mm;
-
-	task_lock(task);
-
-	atomic_inc(&mm->mm_users);
-	task->mm = mm;
-	task->active_mm = mm;
-
-	if(task == current)
-		switch_mm(old, task->mm, task);
-
-	task_unlock(task);
-
-	mmput(old);
-}
-
-#define MM_SWITCH_MASK 3
-#define MM_REGS_MASK 3
-
-#define MM_ALL_REGS 0
-#define MM_SP_IP 1
-#define MM_SAME 2
-
-long do_switch_mm(int fd, unsigned long flags, long __user *new,
-		  long __user *save, struct pt_regs *regs)
-{
-	struct user_regs new_regs;
-	struct mm_struct *old_mm, *new_mm;
-	int regs_init, ret = 0;
-
-	if ((flags & ~MM_SWITCH_MASK) != 0)
-		return -EINVAL;
-
-	regs_init = flags & MM_SWITCH_MASK;
-	if (regs_init > MM_SAME)
-		return -EINVAL;
-
-	old_mm = current->mm;
-	if (old_mm == NULL)
-		return -EINVAL;
-
-	if ((new == NULL) && (regs_init != MM_SAME))
-		return -EINVAL;
-	if (copyin_user_regs(&new_regs, new))
-		return -EFAULT;
-
-	new_mm = fd_to_mm(fd);
-	if (IS_ERR(new_mm))
-		return PTR_ERR(new_mm);
-
-	atomic_inc(&old_mm->mm_users);
-	do_switch(current, new_mm);
-
-	mmput(new_mm);
-
-	if ((save != NULL) && pt_regs_to_ptrace(save, regs)) {
-		do_switch(current, old_mm);
-		ret = EFAULT;
-		goto out;
+#define GET_FAULTINFO_FROM_SI(fi, si) \
+	{ \
+		(fi).cr2 = (unsigned long) (si).si_addr; \
+		(fi).error_code = (si).si_error; \
+		(fi).trap_no = (si).si_trapno; \
 	}
 
-	if (regs_init == MM_SP_IP) {
-		pt_regs_ip(*regs) = ptrace_ip(&new_regs);
-		pt_regs_sp(*regs) = ptrace_sp(&new_regs);
-	}
-	else if (regs_init == MM_SAME)
-		ret = 1;
-	else
-		ret = ptrace_to_pt_regs(regs, &new_regs);
-
- out:
-	mmput(old_mm);
-	return ret;
-}
+#endif
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
