@@ -1,30 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JI8o5-0004Qu-QP for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Jan 2008 12:36:21 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JI8o5-0007Jl-8n
+	id 1JIBND-0004SH-BI for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 24 Jan 2008 15:20:43 -0800
+Received: from mail.nagafix.co.uk ([194.145.196.85])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JIBN9-0006JS-A7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Jan 2008 12:36:17 -0800
-Received: from c2.user-mode-linux.org (littleton.addtoit.com [198.99.130.129])
-	by saraswathi.solana.com (8.13.1/8.13.1) with ESMTP id m0OKaFuX011916
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 24 Jan 2008 15:36:15 -0500
-Received: from c2.user-mode-linux.org (localhost.localdomain [127.0.0.1])
-	by c2.user-mode-linux.org (8.14.1/8.13.8) with ESMTP id m0OKaF7S008554
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 24 Jan 2008 15:36:15 -0500
-Date: Thu, 24 Jan 2008 15:36:15 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080124203615.GB8525@c2.user-mode-linux.org>
-References: <20080123171225.GA7654@c2.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20080123171225.GA7654@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [RFC PATCH 0/10] SKAS4
+	Thu, 24 Jan 2008 15:20:42 -0800
+Message-ID: <47991D3C.50303@nagafix.co.uk>
+Date: Thu, 24 Jan 2008 23:20:28 +0000
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
+References: <4797C6A5.1030408@nagafix.co.uk>
+	<20080123232313.GA11799@c2.user-mode-linux.org>
+In-Reply-To: <20080123232313.GA11799@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] console and do_syscall_stub
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,149 +29,98 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: UML-user <user-mode-linux-devel@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-... and here is arch/um/include/siginfo_segv.h...
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-				Jeff
+Jeff Dike wrote:
+> On Wed, Jan 23, 2008 at 10:58:45PM +0000, Antoine Martin wrote:
+>> [42949466.740000] do_syscall_stub : ret = -12, offset = 548682067984,
+>> data = 00000000606b1010
+> 
+> This usually means that a UML process hit the host's vm_area_struct limit.
+> 
+> Look at the host's /proc/sys/vm/max_map_count - the default is 64K,
+> which, given UML's propensity to map memory one page at a time, covers
+> 256M of resident memory for a UML process.
+> 
+> I'd say double or quadruple it, depending on how much memory you think
+> a process can use.  To be absolutely safe, make it big enough to cover
+> all of a UML's physical memory, since a process RSS can't exceed that.
+> 
+Thanks, hasn't happened since.
 
--- 
-Work email - jdike at linux dot intel dot com
+Any idea about this console thing?
+(....)
+[42949547.530000] Failed to open console 12, err = -2
+[42949547.530000] Failed to open console 12, err = -2
+[42949547.530000] Failed to open console 12, err = -2
+[42949547.990000] Failed to open console 12, err = -2
+[42949548.160000] Failed to open console 12, err = -2
+[42949548.190000] Failed to open console 12, err = -2
+[42949548.740000] Failed to open console 12, err = -2
+[42949549.390000] Failed to open console 12, err = -2
+[42949550.270000] Failed to open console 12, err = -2
+[42949551.710000] Failed to open console 12, err = -2
+[42949555.500000] Failed to open console 12, err = -2
+[42949559.010000] Failed to open console 12, err = -2
+[42949566.330000] Failed to open console 12, err = -2
+[42949572.620000] Failed to open console 12, err = -2
+[42949593.450000] syslog-ng invoked oom-killer: gfp_mask=0xa01d2,
+order=0, oomkilladj=0
+[42949593.450000] Call Trace:
+[42949593.450000] 7f2afb18:  [<60047774>] printk_ratelimit+0x15/0x17
+[42949593.450000] 7f2afb28:  [<6006eb0f>] out_of_memory+0x7c/0xf9
+[42949593.450000] 7f2afb68:  [<6006fc5f>] __alloc_pages+0x229/0x2b4
+[42949593.450000] 7f2afbe8:  [<60071bb3>]
+__do_page_cache_readahead+0xb5/0x167
+[42949593.450000] 7f2afc20:  [<60059c5f>] wake_bit_function+0x0/0x2a
+[42949593.450000] 7f2afc58:  [<60071d40>] do_page_cache_readahead+0x52/0x5f
+[42949593.450000] 7f2afc88:  [<6006cb5a>] filemap_fault+0x151/0x272
+[42949593.450000] 7f2afce8:  [<60078c4d>] __do_fault+0x86/0x375
+[42949593.450000] 7f2afd68:  [<60078f70>] do_linear_fault+0x34/0x36
+[42949593.450000] 7f2afd88:  [<60079228>] handle_mm_fault+0x13e/0x23d
+[42949593.450000] 7f2afde8:  [<6001794f>] handle_page_fault+0x11f/0x242
+[42949593.450000] 7f2afe48:  [<60017c00>] segv+0xb4/0x2b8
+[42949593.450000] 7f2aff28:  [<60017b46>] segv_handler+0x68/0x6e
+[42949593.450000] 7f2aff48:  [<6003a7a5>] get_skas_faultinfo+0x9c/0xa1
+[42949593.450000] 7f2aff68:  [<6003ad4f>] userspace+0x13a/0x19d
+[42949593.450000] 7f2affc8:  [<600186d6>] fork_handler+0x86/0x8d
+[42949593.450000]
+[42949593.450000] Mem-info:
+[42949593.450000] Normal per-cpu:
+[42949593.450000] CPU    0: Hot: hi:  186, btch:  31 usd:  22   Cold:
+hi:   62, btch:  15 usd:  30
+[42949593.450000] Active:122119 inactive:48 dirty:0 writeback:0 unstable:0
+[42949593.450000]  free:719 slab:1833 mapped:3 pagetables:317 bounce:0
+[42949593.450000] Normal free:2876kB min:2876kB low:3592kB high:4312kB
+active:488476kB inactive:192kB present:517120kB pages_scanned:734521
+all_unreclaimable? yes
+[42949593.450000] lowmem_reserve[]: 0 0
+[42949593.450000] Normal: 25*4kB 3*8kB 0*16kB 0*32kB 1*64kB 1*128kB
+0*256kB 1*512kB 0*1024kB 1*2048kB 0*4096kB = 2876kB
+[42949593.450000] Swap cache: add 0, delete 0, find 0/0, race 0+0
+[42949593.450000] Free swap  = 0kB
+[42949593.450000] Total swap = 0kB
+[42949593.450000] Free swap:            0kB
+[42949593.450000] 131072 pages of RAM
+[42949593.450000] 0 pages of HIGHMEM
+[42949593.450000] 5658 reserved pages
+[42949593.450000] 23 pages shared
+[42949593.450000] 0 pages swap cached
+[42949593.450000] Out of memory: kill process 2939 (syslog-ng) score
+7875 or a child
+[42949593.450000] Killed process 2939 (syslog-ng)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.7 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-
-/*
- * Copyright (C) 2002- 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
- * Licensed under the GPL
- */
-
-#ifndef __SIGINFO_SIGSEGV_H_
-#define __SIGINFO_SIGSEGV_H_
-
-/*
- * Provide signal.h, except for replacing siginfo_t with one that has
- * the CPU trap number and error code in the SIGSEGV case.
- */
-
-#include <time.h>
-
-/* Rename the signal.h siginfo and siginfo_t out of the way */
-#define siginfo old_siginfo
-#define siginfo_t old_siginfo_t
-
-#include <signal.h>
-
-#undef siginfo
-#undef siginfo_t
-
-#define __ARCH_SI_TRAPNO
-#define __ARCH_SI_ERROR
-
-/* The new siginfo_t, plus associated definitions */
-
-/*
- * This is the size (including padding) of the part of the
- * struct siginfo that is before the union.
- */
-#ifndef __ARCH_SI_PREAMBLE_SIZE
-#define __ARCH_SI_PREAMBLE_SIZE	(3 * sizeof(int))
-#endif
-
-#define SI_MAX_SIZE	128
-#ifndef SI_PAD_SIZE
-#define SI_PAD_SIZE	((SI_MAX_SIZE - __ARCH_SI_PREAMBLE_SIZE) / sizeof(int))
-#endif
-
-#ifndef __ARCH_SI_UID_T
-#define __ARCH_SI_UID_T	uid_t
-#endif
-
-/*
- * The default "si_band" type is "long", as specified by POSIX.
- * However, some architectures want to override this to "int"
- * for historical compatibility reasons, so we allow that.
- */
-#ifndef __ARCH_SI_BAND_T
-#define __ARCH_SI_BAND_T long
-#endif
-
-#define __user
-
-typedef struct siginfo {
-	int si_signo;
-	int si_errno;
-	int si_code;
-
-	union {
-		int _pad[SI_PAD_SIZE];
-
-		/* kill() */
-		struct {
-			pid_t _pid;		/* sender's pid */
-			__ARCH_SI_UID_T _uid;	/* sender's uid */
-		} _kill;
-
-		/* POSIX.1b timers */
-		struct {
-			timer_t _tid;		/* timer id */
-			int _overrun;		/* overrun count */
-			char _pad[sizeof( __ARCH_SI_UID_T) - sizeof(int)];
-			sigval_t _sigval;	/* same as below */
-			int _sys_private;       /* not to be passed to user */
-		} _timer;
-
-		/* POSIX.1b signals */
-		struct {
-			pid_t _pid;		/* sender's pid */
-			__ARCH_SI_UID_T _uid;	/* sender's uid */
-			sigval_t _sigval;
-		} _rt;
-
-		/* SIGCHLD */
-		struct {
-			pid_t _pid;		/* which child */
-			__ARCH_SI_UID_T _uid;	/* sender's uid */
-			int _status;		/* exit code */
-			clock_t _utime;
-			clock_t _stime;
-		} _sigchld;
-
-		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
-		struct {
-			void __user *_addr; /* faulting insn/memory ref. */
-#ifdef __ARCH_SI_TRAPNO
-			int _trapno;	/* TRAP # which caused the signal */
-#endif
-#ifdef __ARCH_SI_ERROR
-			int _error;	/* CPU error code */
-#endif
-		} _sigfault;
-
-		/* SIGPOLL */
-		struct {
-			__ARCH_SI_BAND_T _band;	/* POLL_IN, POLL_OUT, POLL_MSG */
-			int _fd;
-		} _sigpoll;
-	} _sifields;
-} siginfo_t;
-
-#ifdef __ARCH_SI_TRAPNO
-#define si_trapno	_sifields._sigfault._trapno
-#endif
-#ifdef __ARCH_SI_ERROR
-#define si_error	_sifields._sigfault._error
-#endif
-
-#undef si_addr
-#define si_addr	_sifields._sigfault._addr
-
-#define GET_FAULTINFO_FROM_SI(fi, si) \
-	{ \
-		(fi).cr2 = (unsigned long) (si).si_addr; \
-		(fi).error_code = (si).si_error; \
-		(fi).trap_no = (si).si_trapno; \
-	}
-
-#endif
+iD8DBQFHmR07GK2zHPGK1rsRChM2AJsFWORF7/7RsEbEZrgtwvWrpHOAWgCfZm+8
+gpvM9JRNUPgTeUYUc2ba4Q0=
+=dEeA
+-----END PGP SIGNATURE-----
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
