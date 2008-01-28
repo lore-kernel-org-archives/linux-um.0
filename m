@@ -1,10 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Mon, 28 Jan 2008 16:38:33 -0500
+Date: Mon, 28 Jan 2008 16:38:27 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080128213833.GA10276@c2.user-mode-linux.org>
+Message-ID: <20080128213827.GA10234@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 9/10] SKAS4 - rename new_mm
+Subject: [uml-devel] [RFC PATCH 1/10] SKAS4 - Fix x86_64 arch_copy_thread
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,64 +20,21 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-UML already had a new_mm().  This is renamed to make_new_mm().
+Fix a bug which will be important later.  x86_64 copy_thread needs to
+copy %fs from parent to child.
 
-diff --git a/arch/um/include/skas/skas.h b/arch/um/include/skas/skas.h
-index d6cbb4f..061a362 100644
---- a/arch/um/include/skas/skas.h
-+++ b/arch/um/include/skas/skas.h
-@@ -17,7 +17,7 @@ extern int skas_needs_stub;
- extern int user_thread(unsigned long stack, int flags);
- extern void new_thread_handler(void);
- extern void handle_syscall(struct uml_pt_regs *regs);
--extern int new_mm(unsigned long stack);
-+extern int make_new_mm(unsigned long stack);
- extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
- extern long execute_syscall_skas(void *r);
- extern unsigned long current_stub_stack(void);
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index f859ec3..7595f77 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -101,10 +101,10 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 		from_mm = &current->mm->context;
- 
- 	if (proc_mm) {
--		ret = new_mm(stack);
-+		ret = make_new_mm(stack);
- 		if (ret < 0) {
- 			printk(KERN_ERR "init_new_context_skas - "
--			       "new_mm failed, errno = %d\n", ret);
-+			       "make_new_mm failed, errno = %d\n", ret);
- 			goto out_free;
- 		}
- 		to_mm->id.u.mm_fd = ret;
-diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
-index fce389c..2c6de0a 100644
---- a/arch/um/kernel/skas/process.c
-+++ b/arch/um/kernel/skas/process.c
-@@ -9,7 +9,7 @@
- #include "os.h"
- #include "skas.h"
- 
--int new_mm(unsigned long stack)
-+int make_new_mm(unsigned long stack)
+diff --git a/include/asm-um/processor-x86_64.h b/include/asm-um/processor-x86_64.h
+index d946bf2..0528d9e 100644
+--- a/include/asm-um/processor-x86_64.h
++++ b/include/asm-um/processor-x86_64.h
+@@ -37,6 +37,7 @@ static inline void arch_flush_thread(struct arch_thread *thread)
+ static inline void arch_copy_thread(struct arch_thread *from,
+                                     struct arch_thread *to)
  {
- 	int fd;
++	to->fs = from->fs;
+ }
  
-diff --git a/arch/um/sys-i386/ldt.c b/arch/um/sys-i386/ldt.c
-index 67c0958..c06c66c 100644
---- a/arch/um/sys-i386/ldt.c
-+++ b/arch/um/sys-i386/ldt.c
-@@ -436,7 +436,7 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
- 		/*
- 		 * We have a valid from_mm, so we now have to copy the LDT of
- 		 * from_mm to new_mm, because using proc_mm an new mm with
--		 * an empty/default LDT was created in new_mm()
-+		 * an empty/default LDT was created in make_new_mm()
- 		 */
- 		copy = ((struct proc_mm_op) { .op 	= MM_COPY_SEGMENTS,
- 					      .u 	=
+ #include "asm/arch/user.h"
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
