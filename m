@@ -1,19 +1,12 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JKK6b-0002FO-Fh for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Jan 2008 13:04:25 -0800
-Received: from w12a.httpserveur.net ([67.15.80.77]
-	helo=websiteout12.httpserveur.net)
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1JKK6a-0008JL-17
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 30 Jan 2008 13:04:25 -0800
-Message-ID: <47A0E650.6090705@club-internet.fr>
-Date: Wed, 30 Jan 2008 22:04:16 +0100
-From: clowncoder <vincent-perrier@club-internet.fr>
-MIME-Version: 1.0
-Subject: [uml-devel] uml and firefox
+Date: Wed, 30 Jan 2008 17:37:06 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080130223706.GA15818@c2.user-mode-linux.org>
+References: <47A0E650.6090705@club-internet.fr>
+Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <47A0E650.6090705@club-internet.fr>
+Subject: Re: [uml-devel] uml and firefox
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,21 +20,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: User-mode-linux-devel@lists.sourceforge.net, User-mode-linux-user@lists.sourceforge.net
+To: clowncoder <vincent-perrier@club-internet.fr>
+Cc: User-mode-linux-user@lists.sourceforge.net, User-mode-linux-devel@lists.sourceforge.net
 
-Hello,
-I get a strange behaviour as far as isolation is concerned between an 
-uml machine
-and the host, my uml machine is isolated from any network,
-if firefox is already running in the host, running firefox in the uml 
-machine creates
-an instance of firefox that is not isolated: the browser can browse the net.
-if firefox is not already running in the host, then the firefox in the 
-uml reacts normaly,
-that is, it cannot get to the network.
-What can be the cause of this or did I dream it?
-Regards
-Vincent Perrier
+On Wed, Jan 30, 2008 at 10:04:16PM +0100, clowncoder wrote:
+> I get a strange behaviour as far as isolation is concerned between an 
+> uml machine
+> and the host, my uml machine is isolated from any network,
+> if firefox is already running in the host, running firefox in the uml 
+> machine creates
+> an instance of firefox that is not isolated: the browser can browse the net.
+> if firefox is not already running in the host, then the firefox in the 
+> uml reacts normaly,
+> that is, it cannot get to the network.
+> What can be the cause of this or did I dream it?
+
+Firefox has this odd behavior that if you run it, and it sees there is
+already a firefox instance running on that dispay *even if it is
+running on a different system*, it will send a message to the existing
+firefox asking it to open up a new window.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
