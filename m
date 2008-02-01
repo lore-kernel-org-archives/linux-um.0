@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JKbDC-0005OE-9z for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 Jan 2008 07:20:22 -0800
-Received: from qb-out-0506.google.com ([72.14.204.235])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JKbDB-0002SB-Tx
+	id 1JKziL-0004L9-9e for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Feb 2008 09:30:09 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JKziJ-00009C-Jy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 Jan 2008 07:20:22 -0800
-Received: by qb-out-0506.google.com with SMTP id c8so737771qbc.4
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 31 Jan 2008 07:20:20 -0800 (PST)
-Date: Thu, 31 Jan 2008 23:17:41 +0800
-From: WANG Cong <xiyou.wangcong@gmail.com>
-Message-ID: <20080131151741.GE2471@hacking>
-MIME-Version: 1.0
+	Fri, 01 Feb 2008 09:30:09 -0800
+Date: Fri, 1 Feb 2008 12:29:55 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080201172955.GA6897@c2.user-mode-linux.org>
+References: <20080131150634.GC2471@hacking>
+Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [git Patch] UML: a build error fix
-Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
+In-Reply-To: <20080131150634.GC2471@hacking>
+Subject: Re: [uml-devel] [Patch] arch/um/include/init.h: Fix missing macro
+	definitions
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,61 +31,80 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Jeff Dike <jdike@karaya.com>, user-mode-linux-devel@lists.sourceforge.net
+To: WANG Cong <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@osdl.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+
+On Thu, Jan 31, 2008 at 11:06:34PM +0800, WANG Cong wrote:
+> This patch fixed the following build error in current -git tree.
+> 
+> arch/um/kernel/config.c:10: error: expected declaration specifiers or '...' before '.' token
+> ...
+
+This is close to uml-arch-um-include-inith-needs-a-definition-of-__used.patch
+that's currently in -mm.
+
+Andrew, could you replace
+uml-arch-um-include-inith-needs-a-definition-of-__used.patch with the
+version below and push it to Linus?
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 
-This patch fixed this error:
+init.h started breaking now for some reason.  It turns out that there wasn't a
+definition of __used.  Fixed this by copying the relevant stuff from
+compiler.h in the userspace case, and including compiler.h in the kernel case.
 
-arch/um/kernel/skas/syscall.c: In function 'handle_syscall':
-arch/um/kernel/skas/syscall.c:33: error: 'NR_syscalls' undeclared (first use in this function)
-arch/um/kernel/skas/syscall.c:33: error: (Each undeclared identifier is reported only once
-arch/um/kernel/skas/syscall.c:33: error: for each function it appears in.)
-make[2]: *** [arch/um/kernel/skas/syscall.o] Error 1
-make[1]: *** [arch/um/kernel/skas] Error 2
-make: *** [arch/um/kernel] Error 2
+From WANG Cong <xiyou.wangcong@gmail.com> - added definition of __section
 
-
-Cc: Jeff Dike <jdike@karaya.com>
-Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
-
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Cc: WANG Cong <xiyou.wangcong@gmail.com>
 ---
+ arch/um/include/init.h |   25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
 
-diff --git a/arch/um/include/sysdep-i386/kernel-offsets.h b/arch/um/include/sysdep-i386/kernel-offsets.h
-index 5868526..da820d2 100644
---- a/arch/um/include/sysdep-i386/kernel-offsets.h
-+++ b/arch/um/include/sysdep-i386/kernel-offsets.h
-@@ -15,7 +15,11 @@
- #define OFFSET(sym, str, mem) \
- 	DEFINE(sym, offsetof(struct str, mem));
+Index: linux-2.6-git/arch/um/include/init.h
+===================================================================
+--- linux-2.6-git.orig/arch/um/include/init.h	2008-02-01 10:41:14.000000000 -0500
++++ linux-2.6-git/arch/um/include/init.h	2008-02-01 10:52:34.000000000 -0500
+@@ -40,6 +40,20 @@
+ typedef int (*initcall_t)(void);
+ typedef void (*exitcall_t)(void);
  
-+static char syscalls[] = {
-+#include <asm/arch/unistd.h>
-+};
- void foo(void)
- {
- #include <common-offsets.h>
-+DEFINE(UM_NR_syscall_max, sizeof(syscalls) - 1);
- }
-diff --git a/arch/um/include/sysdep-i386/syscalls.h b/arch/um/include/sysdep-i386/syscalls.h
-index 57bd79e..fb1fd94 100644
---- a/arch/um/include/sysdep-i386/syscalls.h
-+++ b/arch/um/include/sysdep-i386/syscalls.h
-@@ -5,6 +5,7 @@
- 
- #include "asm/unistd.h"
- #include "sysdep/ptrace.h"
-+#include "kern_constants.h"
- 
- typedef long syscall_handler_t(struct pt_regs);
- 
-@@ -23,3 +24,6 @@ extern syscall_handler_t *sys_call_table[];
- extern long sys_mmap2(unsigned long addr, unsigned long len,
- 		      unsigned long prot, unsigned long flags,
- 		      unsigned long fd, unsigned long pgoff);
++#ifndef __KERNEL__
++#ifndef __section
++# define __section(S) __attribute__ ((__section__(#S)))
++#endif
 +
-+#define NR_syscalls (UM_NR_syscall_max + 1)
++#if __GNUC_MINOR__ >= 3
++# define __used			__attribute__((__used__))
++#else
++# define __used			__attribute__((__unused__))
++#endif
 +
++#else
++#include <linux/compiler.h>
++#endif
+ /* These are for everybody (although not all archs will actually
+    discard it in modules) */
+ #define __init		__section(.init.text)
+@@ -127,14 +141,3 @@ extern struct uml_param __uml_setup_star
+ #endif
+ 
+ #endif /* _LINUX_UML_INIT_H */
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
