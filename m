@@ -1,26 +1,11 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JMQn3-0001x2-Fj for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Feb 2008 08:36:57 -0800
-Received: from po-out-1718.google.com ([72.14.252.158])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JMQfT-0002sR-Fj
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Feb 2008 08:29:07 -0800
-Received: by po-out-1718.google.com with SMTP id c31so2835050poi.2
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 05 Feb 2008 08:29:06 -0800 (PST)
-Date: Wed, 6 Feb 2008 00:25:57 +0800
-From: WANG Cong <xiyou.wangcong@gmail.com>
-Message-ID: <20080205162557.GC2966@hacking>
-References: <20080203171634.58ab668b.akpm@linux-foundation.org>
-MIME-Version: 1.0
+Date: Tue, 5 Feb 2008 11:46:27 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080205164627.GA7805@c2.user-mode-linux.org>
+Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20080203171634.58ab668b.akpm@linux-foundation.org>
-Subject: [uml-devel] [-mm Patch] arch/um/kernel/initrd.c: fix a missed
-	conversion	specifier
-Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
+Subject: [uml-devel] [RFC PATCH 4/11] SKAS4 - Work around compat
+	PTRACE_GETSIGINFO bug
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,31 +19,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jeff Dike <jdike@karaya.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
+copy_siginfo_to_user correctly strips off the high bits of si->si_code
+before copying it to userspace.
+    
+Unfortunately, ptrace32_siginfo calls copy_siginfo_to_user to put the
+siginfo into a temporary userspace buffer and counts on the high bits
+still being present so that it may initialize the union in the final
+32-bit siginfo.
+    
+This patch works around this problem by having copy_siginfo_to_user
+copy si->si_code intact to userspace.  This introduces a bug in native
+64-bit PTRACE_GETSIGINFO, but I haven't noticed anything being
+bothered by it.
 
-Fix a missed conversion specifier of a printk in
-arch/um/kernel/initrd.c.
-
-Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: Jeff Dike <jdike@karaya.com>
-
----
-
-Index: linux/arch/um/kernel/initrd.c
-===================================================================
---- linux.orig/arch/um/kernel/initrd.c
-+++ linux/arch/um/kernel/initrd.c
-@@ -32,7 +32,7 @@ static int __init read_initrd(void)
- 	 * ask for no memory.
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 1e067a1..28813b1 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2088,7 +2088,7 @@ int copy_siginfo_to_user(siginfo_t __user *to, siginfo_t *from)
  	 */
- 	if (size == 0) {
--		printk(KERN_ERR "\"%\" is a zero-size initrd\n");
-+		printk(KERN_ERR "\"%s\" is a zero-size initrd\n", initrd);
- 		return 0;
- 	}
- 
+ 	err = __put_user(from->si_signo, &to->si_signo);
+ 	err |= __put_user(from->si_errno, &to->si_errno);
+-	err |= __put_user((short)from->si_code, &to->si_code);
++	err |= __put_user(from->si_code, &to->si_code);
+ 	switch (from->si_code & __SI_MASK) {
+ 	case __SI_KILL:
+ 		err |= __put_user(from->si_pid, &to->si_pid);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
