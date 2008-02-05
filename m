@@ -1,10 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Tue, 5 Feb 2008 11:46:30 -0500
+Date: Tue, 5 Feb 2008 11:46:24 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080205164630.GA7835@c2.user-mode-linux.org>
+Message-ID: <20080205164624.GA7790@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 10/11] SKAS4 - Introduce STUB_ADDR
+Subject: [uml-devel] [RFC PATCH 1/11] SKAS4 - Fix x86_64 arch_copy_thread
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,66 +20,21 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-There were a number of repetitions of the calculation of an stub
-address in a process address space.  This introduces STUB_ADDR to
-eliminate the common code.
+Fix a bug which will be important later.  x86_64 copy_thread needs to
+copy %fs from parent to child.
 
-diff --git a/arch/um/include/skas/skas.h b/arch/um/include/skas/skas.h
-index 061a362..331f343 100644
---- a/arch/um/include/skas/skas.h
-+++ b/arch/um/include/skas/skas.h
-@@ -10,6 +10,9 @@
- 
- extern int have_siginfo_segv;
- 
-+#define STUB_ADDR(x) (STUB_CODE + (unsigned long) (x) - \
-+		      (unsigned long) &__syscall_stub_start)
-+
- extern int userspace_pid[];
- extern int proc_mm, ptrace_faultinfo, ptrace_ldt;
- extern int skas_needs_stub;
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index efda5e1..a737d6d 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -45,9 +45,7 @@ static int __init init_syscall_regs(void)
- 	get_safe_registers(syscall_regs);
- 	stub_entry = &batch_syscall_stub;
- 
--	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
--		((unsigned long) stub_entry -
--		 (unsigned long) &__syscall_stub_start);
-+	syscall_regs[REGS_IP_INDEX] = STUB_ADDR(stub_entry);
- 	return 0;
+diff --git a/include/asm-um/processor-x86_64.h b/include/asm-um/processor-x86_64.h
+index d946bf2..0528d9e 100644
+--- a/include/asm-um/processor-x86_64.h
++++ b/include/asm-um/processor-x86_64.h
+@@ -37,6 +37,7 @@ static inline void arch_flush_thread(struct arch_thread *thread)
+ static inline void arch_copy_thread(struct arch_thread *from,
+                                     struct arch_thread *to)
+ {
++	to->fs = from->fs;
  }
  
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 522d0f1..fc92a5d 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -229,10 +229,7 @@ static int userspace_tramp(void *stack)
- 	}
- 	if (!ptrace_faultinfo && (stack != NULL)) {
- 		struct sigaction sa;
--
--		unsigned long v = STUB_CODE +
--				  (unsigned long) stub_segv_handler -
--				  (unsigned long) &__syscall_stub_start;
-+		unsigned long v = STUB_ADDR(stub_segv_handler);
- 
- 		set_sigstack((void *) STUB_DATA, UM_KERN_PAGE_SIZE);
- 		sigemptyset(&sa.sa_mask);
-@@ -400,9 +397,7 @@ static int __init init_thread_regs(void)
- {
- 	get_safe_registers(thread_regs);
- 	/* Set parent's instruction pointer to start of clone-stub */
--	thread_regs[REGS_IP_INDEX] = STUB_CODE +
--				(unsigned long) stub_clone_handler -
--				(unsigned long) &__syscall_stub_start;
-+	thread_regs[REGS_IP_INDEX] = STUB_ADDR(stub_clone_handler);
- 	thread_regs[REGS_SP_INDEX] = STUB_DATA + UM_KERN_PAGE_SIZE -
- 		sizeof(void *);
- #ifdef __SIGNAL_FRAMESIZE
+ #include "asm/arch/user.h"
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
