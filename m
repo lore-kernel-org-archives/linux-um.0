@@ -1,11 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Tue, 5 Feb 2008 11:46:27 -0500
+Date: Tue, 5 Feb 2008 11:46:29 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080205164627.GA7805@c2.user-mode-linux.org>
+Message-ID: <20080205164629.GA7815@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 4/11] SKAS4 - Work around compat
-	PTRACE_GETSIGINFO bug
+Subject: [uml-devel] [RFC PATCH 8/11] SKAS4 - stub management preparation
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,32 +20,232 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-copy_siginfo_to_user correctly strips off the high bits of si->si_code
-before copying it to userspace.
-    
-Unfortunately, ptrace32_siginfo calls copy_siginfo_to_user to put the
-siginfo into a temporary userspace buffer and counts on the high bits
-still being present so that it may initialize the union in the final
-32-bit siginfo.
-    
-This patch works around this problem by having copy_siginfo_to_user
-copy si->si_code intact to userspace.  This introduces a bug in native
-64-bit PTRACE_GETSIGINFO, but I haven't noticed anything being
-bothered by it.
+Tidy the existing stub code so that the skas4 code can be dropped in.
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 1e067a1..28813b1 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2088,7 +2088,7 @@ int copy_siginfo_to_user(siginfo_t __user *to, siginfo_t *from)
- 	 */
- 	err = __put_user(from->si_signo, &to->si_signo);
- 	err |= __put_user(from->si_errno, &to->si_errno);
--	err |= __put_user((short)from->si_code, &to->si_code);
-+	err |= __put_user(from->si_code, &to->si_code);
- 	switch (from->si_code & __SI_MASK) {
- 	case __SI_KILL:
- 		err |= __put_user(from->si_pid, &to->si_pid);
+diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
+index 484e68f..efda5e1 100644
+--- a/arch/um/os-Linux/skas/mem.c
++++ b/arch/um/os-Linux/skas/mem.c
+@@ -40,35 +40,69 @@ static unsigned long syscall_regs[MAX_REG_NR];
+ 
+ static int __init init_syscall_regs(void)
+ {
++	unsigned long *stub_entry;
++
+ 	get_safe_registers(syscall_regs);
++	stub_entry = &batch_syscall_stub;
++
+ 	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
+-		((unsigned long) &batch_syscall_stub -
++		((unsigned long) stub_entry -
+ 		 (unsigned long) &__syscall_stub_start);
+ 	return 0;
+ }
+ 
+ __initcall(init_syscall_regs);
+ 
+-extern int proc_mm;
++static int syscall_stub_done(unsigned long stack)
++{
++	unsigned long *syscall, *data, offset;
++	int ret, n;
++
++	/*
++	 * When the stub stops, we find the following values on the
++	 * beginning of the stack:
++	 * (long) return_value
++	 * (long) offset to failed sycall data (0 if no error)
++	 */
++	ret = *((unsigned long *) stack);
++	offset = *((unsigned long *) stack + 1);
++	if (offset == 0)
++		return 0;
+ 
+-int single_count = 0;
+-int multi_count = 0;
+-int multi_op_count = 0;
++	data = (unsigned long *)(stack + offset - STUB_DATA);
++	printk(UM_KERN_ERR "syscall_stub_done : ret = %d, offset = %ld, "
++	       "data = %p\n", ret, offset, data);
++	syscall = (unsigned long *)((unsigned long)data + data[0]);
++	printk(UM_KERN_ERR "syscall_stub_done : syscall %ld failed, "
++	       "return value = 0x%x, expected return value = 0x%lx\n",
++	       syscall[0], ret, syscall[7]);
++	printk(UM_KERN_ERR "    syscall parameters: "
++	       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
++	       syscall[1], syscall[2], syscall[3],
++	       syscall[4], syscall[5], syscall[6]);
++	for (n = 1; n < data[0]/sizeof(long); n++) {
++		if (n == 1)
++			printk(UM_KERN_ERR "    additional syscall "
++			       "data:");
++		if (n % 4 == 1)
++			printk("\n" UM_KERN_ERR "      ");
++		printk("  0x%lx", data[n]);
++	}
++	if (n > 1)
++		printk("\n");
+ 
+-static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
++	return ret;
++}
++
++static long do_syscall_stub(struct mm_id *mm_idp, void **addr)
+ {
+-	int n, i;
+-	long ret, offset;
+-	unsigned long * data;
+-	unsigned long * syscall;
+-	int err, pid = mm_idp->u.pid;
++	long ret;
++	int n, i, err, pid = mm_idp->u.pid;
+ 
+ 	if (proc_mm)
+ 		/* FIXME: Need to look up userspace_pid by cpu */
+ 		pid = userspace_pid[0];
+ 
+-	multi_count++;
+-
+ 	n = ptrace_setregs(pid, syscall_regs);
+ 	if (n < 0) {
+ 		printk(UM_KERN_ERR "Registers - \n");
+@@ -85,52 +119,39 @@ static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
+ 
+ 	wait_stub_done(pid);
+ 
+-	/*
+-	 * When the stub stops, we find the following values on the
+-	 * beginning of the stack:
+-	 * (long )return_value
+-	 * (long )offset to failed sycall-data (0, if no error)
+-	 */
+-	ret = *((unsigned long *) mm_idp->stack);
+-	offset = *((unsigned long *) mm_idp->stack + 1);
+-	if (offset) {
+-		data = (unsigned long *)(mm_idp->stack + offset - STUB_DATA);
+-		printk(UM_KERN_ERR "do_syscall_stub : ret = %ld, offset = %ld, "
+-		       "data = %p\n", ret, offset, data);
+-		syscall = (unsigned long *)((unsigned long)data + data[0]);
+-		printk(UM_KERN_ERR "do_syscall_stub: syscall %ld failed, "
+-		       "return value = 0x%lx, expected return value = 0x%lx\n",
+-		       syscall[0], ret, syscall[7]);
+-		printk(UM_KERN_ERR "    syscall parameters: "
+-		       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
+-		       syscall[1], syscall[2], syscall[3],
+-		       syscall[4], syscall[5], syscall[6]);
+-		for (n = 1; n < data[0]/sizeof(long); n++) {
+-			if (n == 1)
+-				printk(UM_KERN_ERR "    additional syscall "
+-				       "data:");
+-			if (n % 4 == 1)
+-				printk("\n" UM_KERN_ERR "      ");
+-			printk("  0x%lx", data[n]);
+-		}
+-		if (n > 1)
+-			printk("\n");
+-	}
+-	else ret = 0;
++	ret = syscall_stub_done(mm_idp->stack);
+ 
+ 	*addr = check_init_stack(mm_idp, NULL);
+ 
+ 	return ret;
+ }
+ 
+-long run_syscall_stub(struct mm_id * mm_idp, int syscall,
++static int flush_syscalls(struct mm_id *mm_idp, void **addr, int extra)
++{
++	unsigned long *stack = check_init_stack(mm_idp, *addr);
++	int current, end;
++
++	current = ((unsigned long) stack) & ~UM_KERN_PAGE_MASK;
++	end = UM_KERN_PAGE_SIZE;
++
++	if (current + (10 + extra) * sizeof(long) < end)
++		return 0;
++
++	return do_syscall_stub(mm_idp, addr);
++}
++
++long run_syscall_stub(struct mm_id *mm_idp, int syscall,
+ 		      unsigned long *args, long expected, void **addr,
+ 		      int done)
+ {
+-	unsigned long *stack = check_init_stack(mm_idp, *addr);
++	unsigned long *stack;
++	int ret;
+ 
+-	if (done && *addr == NULL)
+-		single_count++;
++	ret = flush_syscalls(mm_idp, addr, 0);
++	if (ret)
++		return ret;
++
++	stack = check_init_stack(mm_idp, *addr);
+ 
+ 	*stack += sizeof(long);
+ 	stack += *stack / sizeof(long);
+@@ -144,45 +165,32 @@ long run_syscall_stub(struct mm_id * mm_idp, int syscall,
+ 	*stack++ = args[5];
+ 	*stack++ = expected;
+ 	*stack = 0;
+-	multi_op_count++;
+ 
+-	if (!done && ((((unsigned long) stack) & ~UM_KERN_PAGE_MASK) <
+-		     UM_KERN_PAGE_SIZE - 10 * sizeof(long))) {
+-		*addr = stack;
+-		return 0;
+-	}
++	if (done)
++		return do_syscall_stub(mm_idp, addr);
+ 
+-	return do_syscall_stub(mm_idp, addr);
++	*addr = stack;
++
++	return 0;
+ }
+ 
+-long syscall_stub_data(struct mm_id * mm_idp,
+-		       unsigned long *data, int data_count,
+-		       void **addr, void **stub_addr)
++long syscall_stub_data(struct mm_id *mm_idp, unsigned long *data,
++		       int data_count, void **addr, void **stub_addr)
+ {
+ 	unsigned long *stack;
+-	int ret = 0;
++	int ret;
+ 
+-	/*
+-	 * If *addr still is uninitialized, it *must* contain NULL.
+-	 * Thus in this case do_syscall_stub correctly won't be called.
+-	 */
+-	if ((((unsigned long) *addr) & ~UM_KERN_PAGE_MASK) >=
+-	   UM_KERN_PAGE_SIZE - (10 + data_count) * sizeof(long)) {
+-		ret = do_syscall_stub(mm_idp, addr);
+-		/* in case of error, don't overwrite data on stack */
+-		if (ret)
+-			return ret;
+-	}
++	ret = flush_syscalls(mm_idp, addr, data_count);
++	if (ret)
++		return ret;
+ 
+ 	stack = check_init_stack(mm_idp, *addr);
+-	*addr = stack;
+-
+-	*stack = data_count * sizeof(long);
++	*stack++ = data_count * sizeof(long);
+ 
+-	memcpy(stack + 1, data, data_count * sizeof(long));
++	memcpy(stack, data, data_count * sizeof(long));
+ 
+-	*stub_addr = (void *)(((unsigned long)(stack + 1) &
+-			       ~UM_KERN_PAGE_MASK) + STUB_DATA);
++	*stub_addr = (void *)(((unsigned long) stack & ~UM_KERN_PAGE_MASK) +
++			      STUB_DATA);
+ 
+ 	return 0;
+ }
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
