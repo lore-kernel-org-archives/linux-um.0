@@ -1,11 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Tue, 5 Feb 2008 11:46:25 -0500
+Date: Tue, 5 Feb 2008 11:46:30 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080205164625.GA7795@c2.user-mode-linux.org>
+Message-ID: <20080205164630.GA7830@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 2/11] SKAS4 - Macroize stub system call
-	execution loop
+Subject: [uml-devel] [RFC PATCH 9/11] SKAS4 - rename new_mm
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,213 +20,64 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Extract the system call execution loop in the stubs into a macro
-A later patch will need this loop, so this makes it available.
+UML already had a new_mm().  This is renamed to make_new_mm().
 
-diff --git a/arch/um/sys-i386/stub.S b/arch/um/sys-i386/stub.S
-index e730772..890dc50 100644
---- a/arch/um/sys-i386/stub.S
-+++ b/arch/um/sys-i386/stub.S
-@@ -1,52 +1,45 @@
- #include "uml-config.h"
- #include "as-layout.h"
+diff --git a/arch/um/include/skas/skas.h b/arch/um/include/skas/skas.h
+index d6cbb4f..061a362 100644
+--- a/arch/um/include/skas/skas.h
++++ b/arch/um/include/skas/skas.h
+@@ -17,7 +17,7 @@ extern int skas_needs_stub;
+ extern int user_thread(unsigned long stack, int flags);
+ extern void new_thread_handler(void);
+ extern void handle_syscall(struct uml_pt_regs *regs);
+-extern int new_mm(unsigned long stack);
++extern int make_new_mm(unsigned long stack);
+ extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
+ extern long execute_syscall_skas(void *r);
+ extern unsigned long current_stub_stack(void);
+diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+index f859ec3..7595f77 100644
+--- a/arch/um/kernel/skas/mmu.c
++++ b/arch/um/kernel/skas/mmu.c
+@@ -101,10 +101,10 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+ 		from_mm = &current->mm->context;
  
-+#define PROCESS_LIST \
-+	/* load pointer to first operation */ \
-+	mov	$(ASM_STUB_DATA + 8), %esp; \
-+1: \
-+	/* load length of additional data */ \
-+	mov	0x0(%esp), %eax; \
-+	/* if(length == 0) : end of list */ \
-+	/* write possible 0 to header */ \
-+	mov	%eax, ASM_STUB_DATA + 4; \
-+	cmpl	$0, %eax; \
-+	jz	2f; \
-+	/* save current pointer */ \
-+	mov	%esp, ASM_STUB_DATA + 4; \
-+	/* skip additional data */ \
-+	add	%eax, %esp; \
-+	/* load syscall-# */ \
-+	pop	%eax; \
-+	/* load syscall params */ \
-+	pop	%ebx; \
-+	pop	%ecx; \
-+	pop	%edx; \
-+	pop	%esi; \
-+ 	pop	%edi; \
-+	pop	%ebp; \
-+	/* execute syscall */ \
-+	int	$0x80; \
-+	/* check return value */ \
-+	pop	%ebx; \
-+	cmp	%ebx, %eax; \
-+	je	1b; \
-+2: \
-+	/* save return value */ \
-+	mov	%eax, ASM_STUB_DATA;
-+
- 	.globl syscall_stub
- .section .__syscall_stub, "x"
+ 	if (proc_mm) {
+-		ret = new_mm(stack);
++		ret = make_new_mm(stack);
+ 		if (ret < 0) {
+ 			printk(KERN_ERR "init_new_context_skas - "
+-			       "new_mm failed, errno = %d\n", ret);
++			       "make_new_mm failed, errno = %d\n", ret);
+ 			goto out_free;
+ 		}
+ 		to_mm->id.u.mm_fd = ret;
+diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
+index fce389c..2c6de0a 100644
+--- a/arch/um/kernel/skas/process.c
++++ b/arch/um/kernel/skas/process.c
+@@ -9,7 +9,7 @@
+ #include "os.h"
+ #include "skas.h"
  
- 	.globl batch_syscall_stub
- batch_syscall_stub:
--	/* load pointer to first operation */
--	mov	$(ASM_STUB_DATA+8), %esp
--
--again:
--	/* load length of additional data */
--	mov	0x0(%esp), %eax
--
--	/* if(length == 0) : end of list */
--	/* write possible 0 to header */
--	mov	%eax, ASM_STUB_DATA+4
--	cmpl	$0, %eax
--	jz	done
--
--	/* save current pointer */
--	mov	%esp, ASM_STUB_DATA+4
--
--	/* skip additional data */
--	add	%eax, %esp
--
--	/* load syscall-# */
--	pop	%eax
--
--	/* load syscall params */
--	pop	%ebx
--	pop	%ecx
--	pop	%edx
--	pop	%esi
-- 	pop	%edi
--	pop	%ebp
--
--	/* execute syscall */
--	int	$0x80
--
--	/* check return value */
--	pop	%ebx
--	cmp	%ebx, %eax
--	je	again
--
--done:
--	/* save return value */
--	mov	%eax, ASM_STUB_DATA
--
-+	PROCESS_LIST
- 	/* stop */
- 	int3
-diff --git a/arch/um/sys-x86_64/stub.S b/arch/um/sys-x86_64/stub.S
-index 4afe204..143a16c 100644
---- a/arch/um/sys-x86_64/stub.S
-+++ b/arch/um/sys-x86_64/stub.S
-@@ -1,67 +1,48 @@
- #include "uml-config.h"
- #include "as-layout.h"
+-int new_mm(unsigned long stack)
++int make_new_mm(unsigned long stack)
+ {
+ 	int fd;
  
--	.globl syscall_stub
--.section .__syscall_stub, "x"
--syscall_stub:
--	syscall
--	/* We don't have 64-bit constants, so this constructs the address
--	 * we need.
--	 */
--	movq	$(ASM_STUB_DATA >> 32), %rbx
--	salq	$32, %rbx
--	movq	$(ASM_STUB_DATA & 0xffffffff), %rcx
--	or	%rcx, %rbx
--	movq	%rax, (%rbx)
--	int3
-+#define PROCESS_LIST \
-+	mov	$(ASM_STUB_DATA >> 32), %rbx; \
-+	sal	$32, %rbx; \
-+	mov	$(ASM_STUB_DATA & 0xffffffff), %rax; \
-+	or	%rax, %rbx; \
-+	/* load pointer to first operation */ \
-+	mov	%rbx, %rsp; \
-+	add	$0x10, %rsp; \
-+1: \
-+	/* load length of additional data */ \
-+	mov	0x0(%rsp), %rax; \
-+	/* if(length == 0) : end of list */ \
-+	/* write possible 0 to header */ \
-+	mov	%rax, 8(%rbx); \
-+	cmp	$0, %rax; \
-+	jz	2f; \
-+	/* save current pointer */ \
-+	mov	%rsp, 8(%rbx); \
-+	/* skip additional data */ \
-+	add	%rax, %rsp; \
-+	/* load syscall-# */ \
-+	pop	%rax; \
-+	/* load syscall params */ \
-+	pop	%rdi; \
-+	pop	%rsi; \
-+	pop	%rdx; \
-+	pop	%r10; \
-+ 	pop	%r8; \
-+	pop	%r9; \
-+	/* execute syscall */ \
-+	syscall; \
-+	/* check return value */ \
-+	pop	%rcx; \
-+	cmp	%rcx, %rax; \
-+	je	1b; \
-+2: \
-+	/* save return value */ \
-+	mov	%rax, (%rbx); \
- 
-+.section .__syscall_stub, "x"
- 	.globl batch_syscall_stub
- batch_syscall_stub:
--	mov	$(ASM_STUB_DATA >> 32), %rbx
--	sal	$32, %rbx
--	mov	$(ASM_STUB_DATA & 0xffffffff), %rax
--	or	%rax, %rbx
--	/* load pointer to first operation */
--	mov	%rbx, %rsp
--	add	$0x10, %rsp
--again:
--	/* load length of additional data */
--	mov	0x0(%rsp), %rax
--
--	/* if(length == 0) : end of list */
--	/* write possible 0 to header */
--	mov	%rax, 8(%rbx)
--	cmp	$0, %rax
--	jz	done
--
--	/* save current pointer */
--	mov	%rsp, 8(%rbx)
--
--	/* skip additional data */
--	add	%rax, %rsp
--
--	/* load syscall-# */
--	pop	%rax
--
--	/* load syscall params */
--	pop	%rdi
--	pop	%rsi
--	pop	%rdx
--	pop	%r10
-- 	pop	%r8
--	pop	%r9
--
--	/* execute syscall */
--	syscall
--
--	/* check return value */
--	pop	%rcx
--	cmp	%rcx, %rax
--	je	again
--
--done:
--	/* save return value */
--	mov	%rax, (%rbx)
--
-+	PROCESS_LIST
- 	/* stop */
- 	int3
+diff --git a/arch/um/sys-i386/ldt.c b/arch/um/sys-i386/ldt.c
+index 67c0958..c06c66c 100644
+--- a/arch/um/sys-i386/ldt.c
++++ b/arch/um/sys-i386/ldt.c
+@@ -436,7 +436,7 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+ 		/*
+ 		 * We have a valid from_mm, so we now have to copy the LDT of
+ 		 * from_mm to new_mm, because using proc_mm an new mm with
+-		 * an empty/default LDT was created in new_mm()
++		 * an empty/default LDT was created in make_new_mm()
+ 		 */
+ 		copy = ((struct proc_mm_op) { .op 	= MM_COPY_SEGMENTS,
+ 					      .u 	=
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
