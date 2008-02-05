@@ -1,10 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Tue, 5 Feb 2008 11:46:30 -0500
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1JMR9K-0005YT-MC for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Feb 2008 08:59:58 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JMR9H-0008WD-80
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Feb 2008 08:59:58 -0800
+Date: Tue, 5 Feb 2008 11:59:43 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080205164630.GA7830@c2.user-mode-linux.org>
+Message-ID: <20080205165943.GA9694@c2.user-mode-linux.org>
+References: <20080203171634.58ab668b.akpm@linux-foundation.org>
+	<20080205162557.GC2966@hacking>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 9/11] SKAS4 - rename new_mm
+In-Reply-To: <20080205162557.GC2966@hacking>
+Subject: Re: [uml-devel] [-mm Patch] arch/um/kernel/initrd.c: fix a missed
+	conversion specifier
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -18,66 +32,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-UML already had a new_mm().  This is renamed to make_new_mm().
+On Wed, Feb 06, 2008 at 12:25:57AM +0800, WANG Cong wrote:
+> 
+> Fix a missed conversion specifier of a printk in
+> arch/um/kernel/initrd.c.
+> 
+> Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+> Cc: Jeff Dike <jdike@karaya.com>
 
-diff --git a/arch/um/include/skas/skas.h b/arch/um/include/skas/skas.h
-index d6cbb4f..061a362 100644
---- a/arch/um/include/skas/skas.h
-+++ b/arch/um/include/skas/skas.h
-@@ -17,7 +17,7 @@ extern int skas_needs_stub;
- extern int user_thread(unsigned long stack, int flags);
- extern void new_thread_handler(void);
- extern void handle_syscall(struct uml_pt_regs *regs);
--extern int new_mm(unsigned long stack);
-+extern int make_new_mm(unsigned long stack);
- extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
- extern long execute_syscall_skas(void *r);
- extern unsigned long current_stub_stack(void);
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index f859ec3..7595f77 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -101,10 +101,10 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 		from_mm = &current->mm->context;
- 
- 	if (proc_mm) {
--		ret = new_mm(stack);
-+		ret = make_new_mm(stack);
- 		if (ret < 0) {
- 			printk(KERN_ERR "init_new_context_skas - "
--			       "new_mm failed, errno = %d\n", ret);
-+			       "make_new_mm failed, errno = %d\n", ret);
- 			goto out_free;
- 		}
- 		to_mm->id.u.mm_fd = ret;
-diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
-index fce389c..2c6de0a 100644
---- a/arch/um/kernel/skas/process.c
-+++ b/arch/um/kernel/skas/process.c
-@@ -9,7 +9,7 @@
- #include "os.h"
- #include "skas.h"
- 
--int new_mm(unsigned long stack)
-+int make_new_mm(unsigned long stack)
- {
- 	int fd;
- 
-diff --git a/arch/um/sys-i386/ldt.c b/arch/um/sys-i386/ldt.c
-index 67c0958..c06c66c 100644
---- a/arch/um/sys-i386/ldt.c
-+++ b/arch/um/sys-i386/ldt.c
-@@ -436,7 +436,7 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
- 		/*
- 		 * We have a valid from_mm, so we now have to copy the LDT of
- 		 * from_mm to new_mm, because using proc_mm an new mm with
--		 * an empty/default LDT was created in new_mm()
-+		 * an empty/default LDT was created in make_new_mm()
- 		 */
- 		copy = ((struct proc_mm_op) { .op 	= MM_COPY_SEGMENTS,
- 					      .u 	=
+ACK - 2.6.25 material.  Sigh.
+
+		Jeff
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
