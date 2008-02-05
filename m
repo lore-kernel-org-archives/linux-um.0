@@ -1,10 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Tue, 5 Feb 2008 11:46:29 -0500
+Date: Tue, 5 Feb 2008 11:46:27 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080205164629.GA7815@c2.user-mode-linux.org>
+Message-ID: <20080205164627.GA7810@c2.user-mode-linux.org>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 8/11] SKAS4 - stub management preparation
+Subject: [uml-devel] [RFC PATCH 5/11] SKAS4 - start_up.c preparation
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,232 +20,220 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Tidy the existing stub code so that the skas4 code can be dropped in.
+Tidy arch/um/os-Linux/start_up.c in preparation for host SKAS4 testing.
+    
+    There are now explicit variables for disabling any particular host
+    capability.
+    
+    init_registers is moved out of the skas3 testing because it needs to
+    happen every time, and the skas3 checks will become optional.
 
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 484e68f..efda5e1 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -40,35 +40,69 @@ static unsigned long syscall_regs[MAX_REG_NR];
+diff --git a/arch/um/include/os.h b/arch/um/include/os.h
+index 6f0d1c7..f1c26f5 100644
+--- a/arch/um/include/os.h
++++ b/arch/um/include/os.h
+@@ -168,7 +168,7 @@ extern int os_fchange_dir(int fd);
  
- static int __init init_syscall_regs(void)
+ /* start_up.c */
+ extern void os_early_checks(void);
+-extern int can_do_skas(void);
++extern void can_do_skas(void);
+ extern void os_check_bugs(void);
+ extern void check_host_supports_tls(int *supports_tls, int *tls_min);
+ 
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 7b81f6c..2576d70 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -23,6 +23,7 @@
+ #include "mem_user.h"
+ #include "ptrace_user.h"
+ #include "registers.h"
++#include "skas.h"
+ #include "skas_ptrace.h"
+ 
+ static int ptrace_child(void)
+@@ -141,14 +142,27 @@ static int stop_ptraced_child(int pid, int exitcode, int mustexit)
+ }
+ 
+ /* Changed only during early boot */
+-int ptrace_faultinfo = 1;
+-int ptrace_ldt = 1;
+-int proc_mm = 1;
+-int skas_needs_stub = 0;
++int ptrace_faultinfo;
++static int disable_ptrace_faultinfo;
++
++int ptrace_ldt;
++static int disable_ptrace_ldt;
++
++int proc_mm;
++static int disable_proc_mm;
++
++int have_switch_mm;
++static int disable_switch_mm;
++
++int skas_needs_stub;
+ 
+ static int __init skas0_cmd_param(char *str, int* add)
  {
-+	unsigned long *stub_entry;
+-	ptrace_faultinfo = proc_mm = 0;
++	disable_ptrace_faultinfo = 1;
++	disable_ptrace_ldt = 1;
++	disable_proc_mm = 1;
++	disable_switch_mm = 1;
 +
- 	get_safe_registers(syscall_regs);
-+	stub_entry = &batch_syscall_stub;
-+
- 	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
--		((unsigned long) &batch_syscall_stub -
-+		((unsigned long) stub_entry -
- 		 (unsigned long) &__syscall_stub_start);
  	return 0;
  }
  
- __initcall(init_syscall_regs);
+@@ -158,15 +172,12 @@ static int __init mode_skas0_cmd_param(char *str, int* add)
+ 	__attribute__((alias("skas0_cmd_param")));
  
--extern int proc_mm;
-+static int syscall_stub_done(unsigned long stack)
-+{
-+	unsigned long *syscall, *data, offset;
-+	int ret, n;
-+
-+	/*
-+	 * When the stub stops, we find the following values on the
-+	 * beginning of the stack:
-+	 * (long) return_value
-+	 * (long) offset to failed sycall data (0 if no error)
-+	 */
-+	ret = *((unsigned long *) stack);
-+	offset = *((unsigned long *) stack + 1);
-+	if (offset == 0)
-+		return 0;
+ __uml_setup("skas0", skas0_cmd_param,
+-		"skas0\n"
+-		"    Disables SKAS3 usage, so that SKAS0 is used, unless \n"
+-	        "    you specify mode=tt.\n\n");
++"skas0\n"
++"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used\n\n");
  
--int single_count = 0;
--int multi_count = 0;
--int multi_op_count = 0;
-+	data = (unsigned long *)(stack + offset - STUB_DATA);
-+	printk(UM_KERN_ERR "syscall_stub_done : ret = %d, offset = %ld, "
-+	       "data = %p\n", ret, offset, data);
-+	syscall = (unsigned long *)((unsigned long)data + data[0]);
-+	printk(UM_KERN_ERR "syscall_stub_done : syscall %ld failed, "
-+	       "return value = 0x%x, expected return value = 0x%lx\n",
-+	       syscall[0], ret, syscall[7]);
-+	printk(UM_KERN_ERR "    syscall parameters: "
-+	       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
-+	       syscall[1], syscall[2], syscall[3],
-+	       syscall[4], syscall[5], syscall[6]);
-+	for (n = 1; n < data[0]/sizeof(long); n++) {
-+		if (n == 1)
-+			printk(UM_KERN_ERR "    additional syscall "
-+			       "data:");
-+		if (n % 4 == 1)
-+			printk("\n" UM_KERN_ERR "      ");
-+		printk("  0x%lx", data[n]);
-+	}
-+	if (n > 1)
-+		printk("\n");
+ __uml_setup("mode=skas0", mode_skas0_cmd_param,
+-		"mode=skas0\n"
+-		"    Disables SKAS3 usage, so that SKAS0 is used, unless you \n"
+-		"    specify mode=tt. Note that this was recently added - on \n"
+-		"    older kernels you must use simply \"skas0\".\n\n");
++"mode=skas0\n"
++"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used.\n\n");
  
--static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
-+	return ret;
-+}
-+
-+static long do_syscall_stub(struct mm_id *mm_idp, void **addr)
+ /* Changed only during early boot */
+ static int force_sysemu_disabled = 0;
+@@ -341,6 +352,8 @@ static void __init check_coredump_limit(void)
+ 
+ void __init os_early_checks(void)
  {
--	int n, i;
--	long ret, offset;
--	unsigned long * data;
--	unsigned long * syscall;
--	int err, pid = mm_idp->u.pid;
-+	long ret;
-+	int n, i, err, pid = mm_idp->u.pid;
++	int pid;
++
+ 	/* Print out the core dump limits early */
+ 	check_coredump_limit();
  
- 	if (proc_mm)
- 		/* FIXME: Need to look up userspace_pid by cpu */
- 		pid = userspace_pid[0];
+@@ -350,11 +363,15 @@ void __init os_early_checks(void)
+ 	 * kernel is running.
+ 	 */
+ 	check_tmpexec();
++
++	pid = start_ptraced_child();
++	init_registers(pid);
++	stop_ptraced_child(pid, 1, 1);
+ }
  
--	multi_count++;
--
- 	n = ptrace_setregs(pid, syscall_regs);
+ static int __init noprocmm_cmd_param(char *str, int* add)
+ {
+-	proc_mm = 0;
++	disable_proc_mm = 1;
+ 	return 0;
+ }
+ 
+@@ -366,7 +383,7 @@ __uml_setup("noprocmm", noprocmm_cmd_param,
+ 
+ static int __init noptracefaultinfo_cmd_param(char *str, int* add)
+ {
+-	ptrace_faultinfo = 0;
++	disable_ptrace_faultinfo = 1;
+ 	return 0;
+ }
+ 
+@@ -378,7 +395,7 @@ __uml_setup("noptracefaultinfo", noptracefaultinfo_cmd_param,
+ 
+ static int __init noptraceldt_cmd_param(char *str, int* add)
+ {
+-	ptrace_ldt = 0;
++	disable_ptrace_ldt = 1;
+ 	return 0;
+ }
+ 
+@@ -398,20 +415,18 @@ static inline void check_skas3_ptrace_faultinfo(void)
+ 
+ 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
  	if (n < 0) {
- 		printk(UM_KERN_ERR "Registers - \n");
-@@ -85,52 +119,39 @@ static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
+-		ptrace_faultinfo = 0;
+ 		if (errno == EIO)
+ 			non_fatal("not found\n");
+ 		else
+ 			perror("not found");
+ 	}
++	else if (disable_ptrace_faultinfo)
++		non_fatal("found but disabled on command line\n");
+ 	else {
+-		if (!ptrace_faultinfo)
+-			non_fatal("found but disabled on command line\n");
+-		else
+-			non_fatal("found\n");
++		ptrace_faultinfo = 1;
++		non_fatal("found\n");
+ 	}
  
- 	wait_stub_done(pid);
- 
--	/*
--	 * When the stub stops, we find the following values on the
--	 * beginning of the stack:
--	 * (long )return_value
--	 * (long )offset to failed sycall-data (0, if no error)
--	 */
--	ret = *((unsigned long *) mm_idp->stack);
--	offset = *((unsigned long *) mm_idp->stack + 1);
--	if (offset) {
--		data = (unsigned long *)(mm_idp->stack + offset - STUB_DATA);
--		printk(UM_KERN_ERR "do_syscall_stub : ret = %ld, offset = %ld, "
--		       "data = %p\n", ret, offset, data);
--		syscall = (unsigned long *)((unsigned long)data + data[0]);
--		printk(UM_KERN_ERR "do_syscall_stub: syscall %ld failed, "
--		       "return value = 0x%lx, expected return value = 0x%lx\n",
--		       syscall[0], ret, syscall[7]);
--		printk(UM_KERN_ERR "    syscall parameters: "
--		       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
--		       syscall[1], syscall[2], syscall[3],
--		       syscall[4], syscall[5], syscall[6]);
--		for (n = 1; n < data[0]/sizeof(long); n++) {
--			if (n == 1)
--				printk(UM_KERN_ERR "    additional syscall "
--				       "data:");
--			if (n % 4 == 1)
--				printk("\n" UM_KERN_ERR "      ");
--			printk("  0x%lx", data[n]);
--		}
--		if (n > 1)
--			printk("\n");
--	}
--	else ret = 0;
-+	ret = syscall_stub_done(mm_idp->stack);
- 
- 	*addr = check_init_stack(mm_idp, NULL);
- 
- 	return ret;
+-	init_registers(pid);
+ 	stop_ptraced_child(pid, 1, 1);
  }
  
--long run_syscall_stub(struct mm_id * mm_idp, int syscall,
-+static int flush_syscalls(struct mm_id *mm_idp, void **addr, int extra)
-+{
-+	unsigned long *stack = check_init_stack(mm_idp, *addr);
-+	int current, end;
-+
-+	current = ((unsigned long) stack) & ~UM_KERN_PAGE_MASK;
-+	end = UM_KERN_PAGE_SIZE;
-+
-+	if (current + (10 + extra) * sizeof(long) < end)
-+		return 0;
-+
-+	return do_syscall_stub(mm_idp, addr);
-+}
-+
-+long run_syscall_stub(struct mm_id *mm_idp, int syscall,
- 		      unsigned long *args, long expected, void **addr,
- 		      int done)
- {
--	unsigned long *stack = check_init_stack(mm_idp, *addr);
-+	unsigned long *stack;
-+	int ret;
+@@ -435,38 +450,32 @@ static inline void check_skas3_ptrace_ldt(void)
+ 		else {
+ 			perror("not found");
+ 		}
+-		ptrace_ldt = 0;
+ 	}
++	else if (disable_ptrace_ldt)
++		non_fatal("found, but use is disabled\n");
+ 	else {
+-		if (ptrace_ldt)
+-			non_fatal("found\n");
+-		else
+-			non_fatal("found, but use is disabled\n");
++		ptrace_ldt = 1;
++		non_fatal("found\n");
+ 	}
  
--	if (done && *addr == NULL)
--		single_count++;
-+	ret = flush_syscalls(mm_idp, addr, 0);
-+	if (ret)
-+		return ret;
-+
-+	stack = check_init_stack(mm_idp, *addr);
- 
- 	*stack += sizeof(long);
- 	stack += *stack / sizeof(long);
-@@ -144,45 +165,32 @@ long run_syscall_stub(struct mm_id * mm_idp, int syscall,
- 	*stack++ = args[5];
- 	*stack++ = expected;
- 	*stack = 0;
--	multi_op_count++;
- 
--	if (!done && ((((unsigned long) stack) & ~UM_KERN_PAGE_MASK) <
--		     UM_KERN_PAGE_SIZE - 10 * sizeof(long))) {
--		*addr = stack;
--		return 0;
--	}
-+	if (done)
-+		return do_syscall_stub(mm_idp, addr);
- 
--	return do_syscall_stub(mm_idp, addr);
-+	*addr = stack;
-+
-+	return 0;
+ 	stop_ptraced_child(pid, 1, 1);
+-#else
+-	/* PTRACE_LDT might be disabled via cmdline option.
+-	 * We want to override this, else we might use the stub
+-	 * without real need
+-	 */
+-	ptrace_ldt = 1;
+ #endif
  }
  
--long syscall_stub_data(struct mm_id * mm_idp,
--		       unsigned long *data, int data_count,
--		       void **addr, void **stub_addr)
-+long syscall_stub_data(struct mm_id *mm_idp, unsigned long *data,
-+		       int data_count, void **addr, void **stub_addr)
+ static inline void check_skas3_proc_mm(void)
  {
- 	unsigned long *stack;
--	int ret = 0;
-+	int ret;
- 
--	/*
--	 * If *addr still is uninitialized, it *must* contain NULL.
--	 * Thus in this case do_syscall_stub correctly won't be called.
--	 */
--	if ((((unsigned long) *addr) & ~UM_KERN_PAGE_MASK) >=
--	   UM_KERN_PAGE_SIZE - (10 + data_count) * sizeof(long)) {
--		ret = do_syscall_stub(mm_idp, addr);
--		/* in case of error, don't overwrite data on stack */
--		if (ret)
--			return ret;
+ 	non_fatal("  - /proc/mm...");
+-	if (access("/proc/mm", W_OK) < 0) {
+-		proc_mm = 0;
++	if (access("/proc/mm", W_OK) < 0)
+ 		perror("not found");
 -	}
-+	ret = flush_syscalls(mm_idp, addr, data_count);
-+	if (ret)
-+		return ret;
+-	else if (!proc_mm)
++	else if (disable_proc_mm)
+ 		non_fatal("found but disabled on command line\n");
+-	else non_fatal("found\n");
++	else {
++		proc_mm = 1;
++		non_fatal("found\n");
++	}
+ }
  
- 	stack = check_init_stack(mm_idp, *addr);
--	*addr = stack;
+-int can_do_skas(void)
++void can_do_skas(void)
+ {
+ 	non_fatal("Checking for the skas3 patch in the host:\n");
+ 
+@@ -476,8 +485,6 @@ int can_do_skas(void)
+ 
+ 	if (!proc_mm || !ptrace_faultinfo || !ptrace_ldt)
+ 		skas_needs_stub = 1;
 -
--	*stack = data_count * sizeof(long);
-+	*stack++ = data_count * sizeof(long);
- 
--	memcpy(stack + 1, data, data_count * sizeof(long));
-+	memcpy(stack, data, data_count * sizeof(long));
- 
--	*stub_addr = (void *)(((unsigned long)(stack + 1) &
--			       ~UM_KERN_PAGE_MASK) + STUB_DATA);
-+	*stub_addr = (void *)(((unsigned long) stack & ~UM_KERN_PAGE_MASK) +
-+			      STUB_DATA);
- 
- 	return 0;
+-	return 1;
  }
+ 
+ int __init parse_iomem(char *str, int *add)
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
