@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JMQo8-0002Or-8w for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Feb 2008 08:38:04 -0800
-Received: from qb-out-0506.google.com ([72.14.204.224])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JMQZr-00089g-N9
+	id 1JMQn3-0001x2-Fj for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Feb 2008 08:36:57 -0800
+Received: from po-out-1718.google.com ([72.14.252.158])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JMQfT-0002sR-Fj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Feb 2008 08:23:19 -0800
-Received: by qb-out-0506.google.com with SMTP id c8so3387871qbc.4
+	Tue, 05 Feb 2008 08:29:07 -0800
+Received: by po-out-1718.google.com with SMTP id c31so2835050poi.2
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 05 Feb 2008 08:23:18 -0800 (PST)
-Date: Wed, 6 Feb 2008 00:20:09 +0800
+	Tue, 05 Feb 2008 08:29:06 -0800 (PST)
+Date: Wed, 6 Feb 2008 00:25:57 +0800
 From: WANG Cong <xiyou.wangcong@gmail.com>
-Message-ID: <20080205162009.GB2966@hacking>
+Message-ID: <20080205162557.GC2966@hacking>
 References: <20080203171634.58ab668b.akpm@linux-foundation.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20080203171634.58ab668b.akpm@linux-foundation.org>
-Subject: [uml-devel] [-mm Patch] arch/um/kernel/mem.c: fix a shadowed variable
+Subject: [uml-devel] [-mm Patch] arch/um/kernel/initrd.c: fix a missed
+	conversion	specifier
 Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -34,48 +35,30 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jeff Dike <jdike@linux.intel.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@karaya.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-Fix a shadowed variable in arch/um/kernel/mem.c,
-since there is a global variable has the same name.
+Fix a missed conversion specifier of a printk in
+arch/um/kernel/initrd.c.
 
-Cc: Jeff Dike <jdike@linux.intel.com>
 Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: Jeff Dike <jdike@karaya.com>
 
 ---
 
-Index: linux/arch/um/kernel/mem.c
+Index: linux/arch/um/kernel/initrd.c
 ===================================================================
---- linux.orig/arch/um/kernel/mem.c
-+++ linux/arch/um/kernel/mem.c
-@@ -299,7 +299,7 @@ void show_mem(void)
- {
- 	int pfn, total = 0, reserved = 0;
- 	int shared = 0, cached = 0;
--	int highmem = 0;
-+	int high_mem = 0;
- 	struct page *page;
- 
- 	printk(KERN_INFO "Mem-info:\n");
-@@ -311,7 +311,7 @@ void show_mem(void)
- 		page = pfn_to_page(pfn);
- 		total++;
- 		if (PageHighMem(page))
--			highmem++;
-+			high_mem++;
- 		if (PageReserved(page))
- 			reserved++;
- 		else if (PageSwapCache(page))
-@@ -320,7 +320,7 @@ void show_mem(void)
- 			shared += page_count(page) - 1;
+--- linux.orig/arch/um/kernel/initrd.c
++++ linux/arch/um/kernel/initrd.c
+@@ -32,7 +32,7 @@ static int __init read_initrd(void)
+ 	 * ask for no memory.
+ 	 */
+ 	if (size == 0) {
+-		printk(KERN_ERR "\"%\" is a zero-size initrd\n");
++		printk(KERN_ERR "\"%s\" is a zero-size initrd\n", initrd);
+ 		return 0;
  	}
- 	printk(KERN_INFO "%d pages of RAM\n", total);
--	printk(KERN_INFO "%d pages of HIGHMEM\n", highmem);
-+	printk(KERN_INFO "%d pages of HIGHMEM\n", high_mem);
- 	printk(KERN_INFO "%d reserved pages\n", reserved);
- 	printk(KERN_INFO "%d pages shared\n", shared);
- 	printk(KERN_INFO "%d pages swap cached\n", cached);
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
