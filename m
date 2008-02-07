@@ -2,19 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JMoKY-0004v5-Jh for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Feb 2008 09:45:06 -0800
+	id 1JMyZQ-0001b5-H5 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Feb 2008 20:41:08 -0800
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JMoKY-0005ns-2X
+	(Exim 4.44) id 1JMyZO-000502-Gg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Feb 2008 09:45:06 -0800
-Date: Wed, 6 Feb 2008 12:44:48 -0500
+	Wed, 06 Feb 2008 20:41:07 -0800
+Date: Wed, 6 Feb 2008 23:40:59 -0500
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080206174448.GA7851@c2.user-mode-linux.org>
+Message-ID: <20080207044059.GA13768@c2.user-mode-linux.org>
+References: <20080207035309.GA1345@lst.de>
 Mime-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 5/5] UML - Fix mm_context memory leak
+In-Reply-To: <20080207035309.GA1345@lst.de>
+Subject: Re: [uml-devel] uml defconfig needs an update
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,65 +30,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Miklos Szeredi <miklos@szeredi.hu>
+To: Christoph Hellwig <hch@lst.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-[ Spotted by Miklos ]
+On Thu, Feb 07, 2008 at 04:53:09AM +0100, Christoph Hellwig wrote:
+> arch/um/defconfig in current mainline is totally out of date, any chance
+> someone could send an update to Linus?
 
-Fix a memory leak in init_new_context.  The struct page ** buffer
-allocated for install_special_mapping was never recorded, and thus
-leaked when the mm_struct was freed.  Fix it by saving the pointer in
-mm_context_t and freeing it in arch_exit_mmap.
+Be more specific?
 
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>
----
- arch/um/include/um_mmu.h  |    1 +
- arch/um/kernel/skas/mmu.c |    5 +++++
- 2 files changed, 6 insertions(+)
+I just sent some defconfig changes in, but they're nothing that would
+fix any outdatedness.
 
-Index: linux-2.6-git/arch/um/include/um_mmu.h
-===================================================================
---- linux-2.6-git.orig/arch/um/include/um_mmu.h	2008-02-06 12:15:05.000000000 -0500
-+++ linux-2.6-git/arch/um/include/um_mmu.h	2008-02-06 12:24:08.000000000 -0500
-@@ -13,6 +13,7 @@
- typedef struct mm_context {
- 	struct mm_id id;
- 	struct uml_ldt ldt;
-+	struct page **stub_pages;
- } mm_context_t;
- 
- extern void __switch_mm(struct mm_id * mm_idp);
-Index: linux-2.6-git/arch/um/kernel/skas/mmu.c
-===================================================================
---- linux-2.6-git.orig/arch/um/kernel/skas/mmu.c	2008-02-06 12:15:05.000000000 -0500
-+++ linux-2.6-git/arch/um/kernel/skas/mmu.c	2008-02-06 12:24:31.000000000 -0500
-@@ -91,6 +91,8 @@ int init_new_context(struct task_struct 
- 		goto out_free;
- 	}
- 
-+	to_mm->stub_pages = NULL;
-+
- 	return 0;
- 
-  out_free:
-@@ -126,6 +128,7 @@ void arch_dup_mmap(struct mm_struct *old
- 
- 	pages[0] = virt_to_page(&__syscall_stub_start);
- 	pages[1] = virt_to_page(mm->context.id.stack);
-+	mm->context.stub_pages = pages;
- 
- 	/* dup_mmap already holds mmap_sem */
- 	err = install_special_mapping(mm, STUB_START, STUB_END - STUB_START,
-@@ -147,6 +150,8 @@ void arch_exit_mmap(struct mm_struct *mm
- {
- 	pte_t *pte;
- 
-+	if (mm->context.stub_pages != NULL)
-+		kfree(mm->context.stub_pages);
- 	pte = virt_to_pte(mm, STUB_CODE);
- 	if (pte != NULL)
- 		pte_clear(mm, STUB_CODE, pte);
+				Jeff
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
