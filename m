@@ -2,21 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JMyZQ-0001b5-H5 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Feb 2008 20:41:08 -0800
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JMyZO-000502-Gg
+	id 1JMxpH-0005Yg-GF for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Feb 2008 19:53:27 -0800
+Received: from verein.lst.de ([213.95.11.210])
+	by mail.sourceforge.net with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.44) id 1JMxpG-0008Cb-0g
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Feb 2008 20:41:07 -0800
-Date: Wed, 6 Feb 2008 23:40:59 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080207044059.GA13768@c2.user-mode-linux.org>
-References: <20080207035309.GA1345@lst.de>
+	Wed, 06 Feb 2008 19:53:27 -0800
+Date: Thu, 7 Feb 2008 04:53:09 +0100
+From: Christoph Hellwig <hch@lst.de>
+Message-ID: <20080207035309.GA1345@lst.de>
 Mime-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20080207035309.GA1345@lst.de>
-Subject: Re: [uml-devel] uml defconfig needs an update
+Subject: [uml-devel] uml defconfig needs an update
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,21 +28,13 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Christoph Hellwig <hch@lst.de>
+To: jdike@addtoit.com
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Feb 07, 2008 at 04:53:09AM +0100, Christoph Hellwig wrote:
-> arch/um/defconfig in current mainline is totally out of date, any chance
-> someone could send an update to Linus?
+Hi folks,
 
-Be more specific?
-
-I just sent some defconfig changes in, but they're nothing that would
-fix any outdatedness.
-
-				Jeff
--- 
-Work email - jdike at linux dot intel dot com
+arch/um/defconfig in current mainline is totally out of date, any chance
+someone could send an update to Linus?
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
