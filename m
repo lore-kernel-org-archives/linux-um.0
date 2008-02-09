@@ -2,20 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JNdEl-0003UC-2K for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Feb 2008 16:06:31 -0800
-Received: from twin.jikos.cz ([213.151.79.26] ident=root)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JNdEi-0004k2-D6
+	id 1JNyF6-00078f-Vx for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Feb 2008 14:32:25 -0800
+Received: from mail.gmx.net ([213.165.64.20])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1JNyF2-0002of-8D
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Feb 2008 16:06:30 -0800
-Date: Sat, 9 Feb 2008 01:05:15 +0100 (CET)
-From: Jiri Kosina <jkosina@suse.cz>
-In-Reply-To: <20080208223228.GD6505@cs181133002.pp.htv.fi>
-Message-ID: <Pine.LNX.4.64.0802090102590.30873@twin.jikos.cz>
-References: <20080208223228.GD6505@cs181133002.pp.htv.fi>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] uml compile error
+	Sat, 09 Feb 2008 14:32:13 -0800
+From: Johann Felix Soden <johfel@gmx.de>
+Date: Sat, 09 Feb 2008 23:31:54 +0100
+Message-Id: <1202596314.22512.38.camel@localhost>
+Mime-Version: 1.0
+Subject: [uml-devel] [PATCH] uml: add missing include <linux/pagemap.h>
+	to	include/asm-um/tlb.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,43 +27,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Adrian Bunk <bunk@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, jdike@addtoit.com, Miklos Szeredi <mszeredi@suse.cz>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@linux.intel.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 9 Feb 2008, Adrian Bunk wrote:
+From: Johann Felix Soden <johfel@users.sourceforge.net>
 
-> Commit dd2cc4dff3b08ab54c4c177a080046bcc84ac41d broke uml:
-> <-- snip  -->
-> ...
->   CC      fs/hostfs/hostfs_kern.o
-> /home/bunk/linux/kernel-2.6/git/linux-2.6/fs/hostfs/hostfs_kern.c: In function 'hostfs_show_options':
-> /home/bunk/linux/kernel-2.6/git/linux-2.6/fs/hostfs/hostfs_kern.c:328: error: dereferencing pointer to incomplete type
-> make[3]: *** [fs/hostfs/hostfs_kern.o] Error 1
+Reason is build error:
+In file included from arch/um/kernel/smp.c:8:
+include/asm/tlb.h: In function 'tlb_remove_page':
+include/asm/tlb.h:101: error: implicit declaration of function 'page_cache_release'
 
-I guess we need this one?
+Signed-off-by: Johann Felix Soden <johfel@users.sourceforge.net>
+---
+ include/asm-um/tlb.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/include/asm-um/tlb.h b/include/asm-um/tlb.h
+index 39fc475..7febf85 100644
+--- a/include/asm-um/tlb.h
++++ b/include/asm-um/tlb.h
+@@ -2,6 +2,7 @@
+ #define __UM_TLB_H
+ 
+ #include <linux/swap.h>
++#include <linux/pagemap.h>
+ #include <asm/percpu.h>
+ #include <asm/pgalloc.h>
+ #include <asm/tlbflush.h>
+-- 
+1.5.4
 
 
 
-From: Jiri Kosina <jkosina@suse.cz>
-
-UML: fix hostfs build
-
-We need to include mount.h to get vfsmount.
-
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index d0549cb..5222345 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -12,6 +12,7 @@
- #include <linux/pagemap.h>
- #include <linux/statfs.h>
- #include <linux/seq_file.h>
-+#include <linux/mount.h>
- #include "hostfs.h"
- #include "init.h"
- #include "kern.h"
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
