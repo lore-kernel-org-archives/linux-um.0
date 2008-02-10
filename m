@@ -1,19 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JNyF6-00078f-Vx for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Feb 2008 14:32:25 -0800
+	id 1JOIBb-0005a7-MQ for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Feb 2008 11:50:00 -0800
 Received: from mail.gmx.net ([213.165.64.20])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1JNyF2-0002of-8D
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1JOIBZ-0008Kk-By
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Feb 2008 14:32:13 -0800
+	Sun, 10 Feb 2008 11:49:59 -0800
 From: Johann Felix Soden <johfel@gmx.de>
-Date: Sat, 09 Feb 2008 23:31:54 +0100
-Message-Id: <1202596314.22512.38.camel@localhost>
+Date: Sun, 10 Feb 2008 20:49:42 +0100
+Message-Id: <1202672982.28562.2.camel@localhost>
 Mime-Version: 1.0
-Subject: [uml-devel] [PATCH] uml: add missing include <linux/pagemap.h>
-	to	include/asm-um/tlb.h
+Subject: [uml-devel] [PATCH] uml: Fix calls of helper_wait in harddog_user.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,28 +31,39 @@ Cc: user-mode-linux-devel@lists.sourceforge.net
 
 From: Johann Felix Soden <johfel@users.sourceforge.net>
 
-Reason is build error:
-In file included from arch/um/kernel/smp.c:8:
-include/asm/tlb.h: In function 'tlb_remove_page':
-include/asm/tlb.h:101: error: implicit declaration of function 'page_cache_release'
+In 1aa351a308d2c3ddb92b6cc45083fc54271d0010 the arguments of helper_wait() were
+changed. The adaptation of harddog_user.c was forgotten, so this errors occur:
+
+/arch/um/drivers/harddog_user.c: In function 'start_watchdog':
+/arch/um/drivers/harddog_user.c:82: error: too many arguments to function 'helper_wait'
+/arch/um/drivers/harddog_user.c:89: error: too many arguments to function 'helper_wait'
 
 Signed-off-by: Johann Felix Soden <johfel@users.sourceforge.net>
 ---
- include/asm-um/tlb.h |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ arch/um/drivers/harddog_user.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/asm-um/tlb.h b/include/asm-um/tlb.h
-index 39fc475..7febf85 100644
---- a/include/asm-um/tlb.h
-+++ b/include/asm-um/tlb.h
-@@ -2,6 +2,7 @@
- #define __UM_TLB_H
- 
- #include <linux/swap.h>
-+#include <linux/pagemap.h>
- #include <asm/percpu.h>
- #include <asm/pgalloc.h>
- #include <asm/tlbflush.h>
+diff --git a/arch/um/drivers/harddog_user.c b/arch/um/drivers/harddog_user.c
+index 448ba59..b56f8e0 100644
+--- a/arch/um/drivers/harddog_user.c
++++ b/arch/um/drivers/harddog_user.c
+@@ -79,14 +79,14 @@ int start_watchdog(int *in_fd_ret, int *out_fd_ret, char *sock)
+ 	n = read(in_fds[0], &c, sizeof(c));
+ 	if (n == 0) {
+ 		printk("harddog_open - EOF on watchdog pipe\n");
+-		helper_wait(pid, 1, NULL);
++		helper_wait(pid);
+ 		err = -EIO;
+ 		goto out_close_out;
+ 	}
+ 	else if (n < 0) {
+ 		printk("harddog_open - read of watchdog pipe failed, "
+ 		       "err = %d\n", errno);
+-		helper_wait(pid, 1, NULL);
++		helper_wait(pid);
+ 		err = n;
+ 		goto out_close_out;
+ 	}
 -- 
 1.5.4
 
