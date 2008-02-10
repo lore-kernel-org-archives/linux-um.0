@@ -2,17 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JOIBb-0005a7-MQ for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Feb 2008 11:50:00 -0800
-Received: from mail.gmx.net ([213.165.64.20])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1JOIBZ-0008Kk-By
+	id 1JOIRK-0007BI-Tr for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Feb 2008 12:06:14 -0800
+Received: from fg-out-1718.google.com ([72.14.220.154])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JOIRJ-0005YN-1t
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Feb 2008 11:49:59 -0800
-From: Johann Felix Soden <johfel@gmx.de>
-Date: Sun, 10 Feb 2008 20:49:42 +0100
-Message-Id: <1202672982.28562.2.camel@localhost>
-Mime-Version: 1.0
-Subject: [uml-devel] [PATCH] uml: Fix calls of helper_wait in harddog_user.c
+	Sun, 10 Feb 2008 12:06:14 -0800
+Received: by fg-out-1718.google.com with SMTP id d23so3597797fga.32
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 10 Feb 2008 12:06:11 -0800 (PST)
+Message-ID: <47AF5930.5080907@gmail.com>
+Date: Sun, 10 Feb 2008 21:06:08 +0100
+From: Jiri Olsa <olsajiri@gmail.com>
+MIME-Version: 1.0
+Subject: [uml-devel] compile problem
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,49 +29,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@linux.intel.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Johann Felix Soden <johfel@users.sourceforge.net>
+Hi,
 
-In 1aa351a308d2c3ddb92b6cc45083fc54271d0010 the arguments of helper_wait() were
-changed. The adaptation of harddog_user.c was forgotten, so this errors occur:
+I have problem with last Linus' git tree:
 
-/arch/um/drivers/harddog_user.c: In function 'start_watchdog':
-/arch/um/drivers/harddog_user.c:82: error: too many arguments to function 'helper_wait'
-/arch/um/drivers/harddog_user.c:89: error: too many arguments to function 'helper_wait'
-
-Signed-off-by: Johann Felix Soden <johfel@users.sourceforge.net>
----
- arch/um/drivers/harddog_user.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/drivers/harddog_user.c b/arch/um/drivers/harddog_user.c
-index 448ba59..b56f8e0 100644
---- a/arch/um/drivers/harddog_user.c
-+++ b/arch/um/drivers/harddog_user.c
-@@ -79,14 +79,14 @@ int start_watchdog(int *in_fd_ret, int *out_fd_ret, char *sock)
- 	n = read(in_fds[0], &c, sizeof(c));
- 	if (n == 0) {
- 		printk("harddog_open - EOF on watchdog pipe\n");
--		helper_wait(pid, 1, NULL);
-+		helper_wait(pid);
- 		err = -EIO;
- 		goto out_close_out;
- 	}
- 	else if (n < 0) {
- 		printk("harddog_open - read of watchdog pipe failed, "
- 		       "err = %d\n", errno);
--		helper_wait(pid, 1, NULL);
-+		helper_wait(pid);
- 		err = n;
- 		goto out_close_out;
- 	}
--- 
-1.5.4
+scripts/kconfig/conf -s arch/um/Kconfig
+  SYMLINK arch/um/include/kern_constants.h
+  SYMLINK arch/um/include/sysdep
+  CHK     arch/um/include/uml-config.h
+  UPD     arch/um/include/uml-config.h
+  CC      arch/um/sys-i386/user-offsets.s
+In file included from /usr/include/asm/ptrace.h:5,
+                 from arch/um/sys-i386/user-offsets.c:7:
+/usr/include/asm/ptrace-abi.h:92: error: expected specifier-qualifier-list before 'u32'
+arch/um/sys-i386/user-offsets.c: In function 'foo':
+arch/um/sys-i386/user-offsets.c:20: error: 'struct sigcontext' has no member named 'eip'
+arch/um/sys-i386/user-offsets.c:21: error: 'struct sigcontext' has no member named 'esp'
+arch/um/sys-i386/user-offsets.c:28: error: 'struct sigcontext' has no member named 'eflags'
+arch/um/sys-i386/user-offsets.c:29: error: 'struct sigcontext' has no member named 'eax'
+arch/um/sys-i386/user-offsets.c:30: error: 'struct sigcontext' has no member named 'ebx'
+arch/um/sys-i386/user-offsets.c:31: error: 'struct sigcontext' has no member named 'ecx'
+arch/um/sys-i386/user-offsets.c:32: error: 'struct sigcontext' has no member named 'edx'
+arch/um/sys-i386/user-offsets.c:33: error: 'struct sigcontext' has no member named 'edi'
+arch/um/sys-i386/user-offsets.c:34: error: 'struct sigcontext' has no member named 'esi'
+arch/um/sys-i386/user-offsets.c:35: error: 'struct sigcontext' has no member named 'ebp'
+make[1]: *** [arch/um/sys-i386/user-offsets.s] Error 1
+make: *** [arch/um/sys-i386/user-offsets.s] Error 2
 
 
+v2.6.24 is working for me...
 
+thanks,
+Jiri Olsa
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
