@@ -1,18 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JOIWq-0007fd-Ih for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Feb 2008 12:11:56 -0800
-Received: from mail.gmx.net ([213.165.64.20])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1JOIWo-0001ux-Td
+	id 1JOhun-0003AY-BW for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Feb 2008 15:18:21 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JOhuk-0005Sy-Oc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Feb 2008 12:11:56 -0800
-From: Johann Felix Soden <johfel@gmx.de>
-Date: Sun, 10 Feb 2008 21:11:42 +0100
-Message-Id: <1202674302.28562.5.camel@localhost>
+	Mon, 11 Feb 2008 15:18:20 -0800
+Date: Mon, 11 Feb 2008 18:18:12 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080211231812.GC10369@c2.user-mode-linux.org>
+References: <47AF5930.5080907@gmail.com>
 Mime-Version: 1.0
-Subject: [uml-devel] [PATCH] uml: Fix printk in initrd.c
+Content-Disposition: inline
+In-Reply-To: <47AF5930.5080907@gmail.com>
+Subject: Re: [uml-devel] compile problem
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,36 +30,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@linux.intel.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Johann Felix Soden <johfel@users.sourceforge.net>
+On Sun, Feb 10, 2008 at 09:06:08PM +0100, Jiri Olsa wrote:
+> Hi,
+> 
+> I have problem with last Linus' git tree:
+> 
+> scripts/kconfig/conf -s arch/um/Kconfig
+>   SYMLINK arch/um/include/kern_constants.h
+>   SYMLINK arch/um/include/sysdep
+>   CHK     arch/um/include/uml-config.h
+>   UPD     arch/um/include/uml-config.h
+>   CC      arch/um/sys-i386/user-offsets.s
+> In file included from /usr/include/asm/ptrace.h:5,
+>                  from arch/um/sys-i386/user-offsets.c:7:
+> /usr/include/asm/ptrace-abi.h:92: error: expected specifier-qualifier-list before 'u32'
 
-If the initrd file has zero-length, the error message should contain the filepath.
+This looks like a bug in your headers.  ptrace-abi includes
+<asm/types.h>, apparently to get the likes of u32, but they're not
+there.
 
-Signed-off-by: Johann Felix Soden <johfel@users.sourceforge.net>
----
- arch/um/kernel/initrd.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> arch/um/sys-i386/user-offsets.c: In function 'foo':
+> arch/um/sys-i386/user-offsets.c:20: error: 'struct sigcontext' has
+> no member named 'eip'
 
-diff --git a/arch/um/kernel/initrd.c b/arch/um/kernel/initrd.c
-index fa01556..b703cd5 100644
---- a/arch/um/kernel/initrd.c
-+++ b/arch/um/kernel/initrd.c
-@@ -32,7 +32,7 @@ static int __init read_initrd(void)
- 	 * ask for no memory.
- 	 */
- 	if (size == 0) {
--		printk(KERN_ERR "\"%\" is a zero-size initrd\n");
-+		printk(KERN_ERR "\"%s\" is a zero-size initrd\n",initrd);
- 		return 0;
- 	}
- 
+This is a bit of a problem.  You installed new headers, which have the
+'e' removed from the register names, but I can't just change UML
+because that will break compilation on current hosts with existing
+headers.
+
+				Jeff
+
 -- 
-1.5.4
-
-
-
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
