@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JP2eR-0002rF-Ua for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Feb 2008 13:26:53 -0800
+	id 1JP2eL-0002r2-KB for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Feb 2008 13:26:46 -0800
 Received: from fg-out-1718.google.com ([72.14.220.157])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JP2eQ-0000ur-Hp
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JP2eJ-0000ur-TI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Feb 2008 13:26:51 -0800
+	Tue, 12 Feb 2008 13:26:45 -0800
 Received: by fg-out-1718.google.com with SMTP id d23so4187370fga.32
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 12 Feb 2008 13:26:49 -0800 (PST)
-Message-ID: <47B20F17.3050308@gmail.com>
-Date: Tue, 12 Feb 2008 22:26:47 +0100
+	Tue, 12 Feb 2008 13:26:42 -0800 (PST)
+Message-ID: <47B20F0F.3050401@gmail.com>
+Date: Tue, 12 Feb 2008 22:26:39 +0100
 From: Jiri Olsa <olsajiri@gmail.com>
 MIME-Version: 1.0
-Subject: [uml-devel] [PATCH] uml: adding include/asm generate rule
+References: <47AF5930.5080907@gmail.com>
+	<20080211231812.GC10369@c2.user-mode-linux.org>
+In-Reply-To: <20080211231812.GC10369@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] compile problem
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,28 +37,70 @@ Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
 Hi,
 
-I noticed UML does not create include/asm symlink automatically.
-I found this during solving another issue, so I dont know if this
-really helps or it is useless..
+<asm/types.h> declares u32 only if there's __KERNEL__ defined, which is not case
+of UML compile.
 
-Signed-off-by: Jiri Olsa <olsajiri@gmail.com>
----
- arch/um/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+I found out the ptrace-abi.h is changed in the 2.6.24.1 and differs with the Linus
+tree among others with adding following structure:
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index dbeab15..8708a56 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -29,7 +29,7 @@ SYMLINK_HEADERS := $(foreach header,$(SYMLINK_HEADERS),include/asm-um/$(header))
- # These are cleaned up during mrproper. Please DO NOT fix it again, this is
- # the Correct Thing(tm) to do!
- ARCH_SYMLINKS = include/asm-um/arch $(ARCH_DIR)/include/sysdep $(ARCH_DIR)/os \
--	$(SYMLINK_HEADERS) $(ARCH_DIR)/include/uml-config.h
-+	$(SYMLINK_HEADERS) $(ARCH_DIR)/include/uml-config.h include/asm
- 
- MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/skas
- 
+struct ptrace_bts_config {
+        /* requested or actual size of BTS buffer in bytes */
+        u32 size;
+        /* bitmask of below flags */
+        u32 flags;
+        /* buffer overflow signal */
+        u32 signal;
+        /* actual size of bts_struct in bytes */
+        u32 bts_size;
+};
+
+so thats where the u32 cames from in the Linus' tree.
+
+Now when I know why my Linus' tree wont compile, I'd like to know why yours does :)
+(I used your patch regarding the foo function errors as well...)
+Maybe I have smth wrong with my headers, I use following symlinks:
+
+/usr/include/linux -> $(kernel)/include/linux
+/usr/include/asm -> $(kernel)/include/asm-x86
+/usr/include/asm-generic -> $(kernel)/include/asm-generic
+
+
+thanks,
+jirka
+
+
+Jeff Dike wrote:
+> On Sun, Feb 10, 2008 at 09:06:08PM +0100, Jiri Olsa wrote:
+>> Hi,
+>>
+>> I have problem with last Linus' git tree:
+>>
+>> scripts/kconfig/conf -s arch/um/Kconfig
+>>   SYMLINK arch/um/include/kern_constants.h
+>>   SYMLINK arch/um/include/sysdep
+>>   CHK     arch/um/include/uml-config.h
+>>   UPD     arch/um/include/uml-config.h
+>>   CC      arch/um/sys-i386/user-offsets.s
+>> In file included from /usr/include/asm/ptrace.h:5,
+>>                  from arch/um/sys-i386/user-offsets.c:7:
+>> /usr/include/asm/ptrace-abi.h:92: error: expected specifier-qualifier-list before 'u32'
+> 
+> This looks like a bug in your headers.  ptrace-abi includes
+> <asm/types.h>, apparently to get the likes of u32, but they're not
+> there.
+> 
+>> arch/um/sys-i386/user-offsets.c: In function 'foo':
+>> arch/um/sys-i386/user-offsets.c:20: error: 'struct sigcontext' has
+>> no member named 'eip'
+> 
+> This is a bit of a problem.  You installed new headers, which have the
+> 'e' removed from the register names, but I can't just change UML
+> because that will break compilation on current hosts with existing
+> headers.
+> 
+> 				Jeff
+> 
+
 
 
 -------------------------------------------------------------------------
