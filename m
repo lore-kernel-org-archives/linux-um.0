@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JP0I2-0004OP-9r for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Feb 2008 10:55:34 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JP0Hz-0002ht-QV
+	id 1JP2eR-0002rF-Ua for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 12 Feb 2008 13:26:53 -0800
+Received: from fg-out-1718.google.com ([72.14.220.157])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JP2eQ-0000ur-Hp
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Feb 2008 10:55:34 -0800
-Date: Tue, 12 Feb 2008 13:55:28 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080212185528.GA2074@c2.user-mode-linux.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH 3/4] UML - Fix helper_wait calls in watchdog
+	Tue, 12 Feb 2008 13:26:51 -0800
+Received: by fg-out-1718.google.com with SMTP id d23so4187370fga.32
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 12 Feb 2008 13:26:49 -0800 (PST)
+Message-ID: <47B20F17.3050308@gmail.com>
+Date: Tue, 12 Feb 2008 22:26:47 +0100
+From: Jiri Olsa <olsajiri@gmail.com>
+MIME-Version: 1.0
+Subject: [uml-devel] [PATCH] uml: adding include/asm generate rule
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,45 +29,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: Johann Felix Soden <johfel@users.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Johann Felix Soden <johfel@users.sourceforge.net>
+Hi,
 
-In 1aa351a308d2c3ddb92b6cc45083fc54271d0010 the arguments of helper_wait() were
-changed. The adaptation of harddog_user.c was forgotten, so this errors occur:
+I noticed UML does not create include/asm symlink automatically.
+I found this during solving another issue, so I dont know if this
+really helps or it is useless..
 
-/arch/um/drivers/harddog_user.c: In function 'start_watchdog':
-/arch/um/drivers/harddog_user.c:82: error: too many arguments to function 'helper_wait'
-/arch/um/drivers/harddog_user.c:89: error: too many arguments to function 'helper_wait'
-
-Signed-off-by: Johann Felix Soden <johfel@users.sourceforge.net>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Signed-off-by: Jiri Olsa <olsajiri@gmail.com>
 ---
- arch/um/drivers/harddog_user.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/um/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Index: linux-2.6.22/arch/um/drivers/harddog_user.c
-===================================================================
---- linux-2.6.22.orig/arch/um/drivers/harddog_user.c	2008-01-17 12:50:20.000000000 -0500
-+++ linux-2.6.22/arch/um/drivers/harddog_user.c	2008-02-11 18:46:05.000000000 -0500
-@@ -79,14 +79,14 @@ int start_watchdog(int *in_fd_ret, int *
- 	n = read(in_fds[0], &c, sizeof(c));
- 	if (n == 0) {
- 		printk("harddog_open - EOF on watchdog pipe\n");
--		helper_wait(pid, 1, NULL);
-+		helper_wait(pid);
- 		err = -EIO;
- 		goto out_close_out;
- 	}
- 	else if (n < 0) {
- 		printk("harddog_open - read of watchdog pipe failed, "
- 		       "err = %d\n", errno);
--		helper_wait(pid, 1, NULL);
-+		helper_wait(pid);
- 		err = n;
- 		goto out_close_out;
- 	}
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index dbeab15..8708a56 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -29,7 +29,7 @@ SYMLINK_HEADERS := $(foreach header,$(SYMLINK_HEADERS),include/asm-um/$(header))
+ # These are cleaned up during mrproper. Please DO NOT fix it again, this is
+ # the Correct Thing(tm) to do!
+ ARCH_SYMLINKS = include/asm-um/arch $(ARCH_DIR)/include/sysdep $(ARCH_DIR)/os \
+-	$(SYMLINK_HEADERS) $(ARCH_DIR)/include/uml-config.h
++	$(SYMLINK_HEADERS) $(ARCH_DIR)/include/uml-config.h include/asm
+ 
+ MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/skas
+ 
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
