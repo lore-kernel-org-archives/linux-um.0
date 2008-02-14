@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JPQ47-0005WD-F3 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Feb 2008 14:26:57 -0800
-Received: from ogre.sisk.pl ([217.79.144.158])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JPQ44-0002Xx-Qz
+	id 1JPS7w-0001pI-Nk for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 13 Feb 2008 16:39:00 -0800
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JPS7v-0002Lo-5M
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Feb 2008 14:26:54 -0800
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Date: Wed, 13 Feb 2008 23:24:31 +0100
-References: <20080208223228.GD6505@cs181133002.pp.htv.fi>
-In-Reply-To: <20080208223228.GD6505@cs181133002.pp.htv.fi>
-MIME-Version: 1.0
+	Wed, 13 Feb 2008 16:39:00 -0800
+Date: Wed, 13 Feb 2008 19:38:53 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080214003853.GA15952@c2.user-mode-linux.org>
+References: <47B34BA0.30006@club-internet.fr>
+Mime-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200802132324.32114.rjw@sisk.pl>
-Subject: [SPAM] Re: [uml-devel] uml compile error
+In-Reply-To: <47B34BA0.30006@club-internet.fr>
+Subject: Re: [uml-devel] g_timeout_add
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,27 +26,38 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Adrian Bunk <bunk@kernel.org>
-Cc: jdike@addtoit.com, Miklos Szeredi <mszeredi@suse.cz>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: clowncoder <vincent-perrier@club-internet.fr>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-T24gRnJpZGF5LCA4IG9mIEZlYnJ1YXJ5IDIwMDgsIEFkcmlhbiBCdW5rIHdyb3RlOgo+IENvbW1p
-dCBkZDJjYzRkZmYzYjA4YWI1NGM0YzE3N2EwODAwNDZiY2M4NGFjNDFkIGJyb2tlIHVtbDoKPiAK
-PiA8LS0gc25pcCAgLS0+Cj4gCj4gLi4uCj4gICBDQyAgICAgIGZzL2hvc3Rmcy9ob3N0ZnNfa2Vy
-bi5vCj4gL2hvbWUvYnVuay9saW51eC9rZXJuZWwtMi42L2dpdC9saW51eC0yLjYvZnMvaG9zdGZz
-L2hvc3Rmc19rZXJuLmM6IEluIGZ1bmN0aW9uIOKAmGhvc3Rmc19zaG93X29wdGlvbnPigJk6Cj4g
-L2hvbWUvYnVuay9saW51eC9rZXJuZWwtMi42L2dpdC9saW51eC0yLjYvZnMvaG9zdGZzL2hvc3Rm
-c19rZXJuLmM6MzI4OiBlcnJvcjogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvIGluY29tcGxldGUg
-dHlwZQo+IG1ha2VbM106ICoqKiBbZnMvaG9zdGZzL2hvc3Rmc19rZXJuLm9dIEVycm9yIDEKPiAK
-PiA8LS0gIHNuaXAgIC0tPgoKSGFzIGl0IGJlZW4gZml4ZWQgaW4gdGhlIG1haW5saW5lPwoKUmFm
-YWVsCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YubmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieTog
-TWljcm9zb2Z0CkRlZnkgYWxsIGNoYWxsZW5nZXMuIE1pY3Jvc29mdChSKSBWaXN1YWwgU3R1ZGlv
-IDIwMDguCmh0dHA6Ly9jbGsuYXRkbXQuY29tL01SVC9nby92c2UwMTIwMDAwMDcwbXJ0L2RpcmVj
-dC8wMS8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNl
-ci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+On Wed, Feb 13, 2008 at 08:57:20PM +0100, clowncoder wrote:
+> It seems that g_timeout_add glib timeouts are not accurate
+> when there is no gtk activity on an uml target.
+> 
+> This may be a glib problem since I cannot check
+> that it does not occur on my host.
+> 
+> When gtk events occur through mouse moves, then
+> the timeout is good (a 5 sec timeout) if no graphical
+> activity exists, the timeout takes an average of 12 sec,
+> even if there is console activity on the uml machine.
+
+You're going to need to tell me what's happening at the system call
+level - i.e. strace it and see what is doing something it shouldn't.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
