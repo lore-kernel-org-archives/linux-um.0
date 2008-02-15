@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JPmNy-0006AT-Tm for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Feb 2008 14:16:54 -0800
-Received: from w12a.httpserveur.net ([67.15.80.77]
-	helo=websiteout12.httpserveur.net)
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1JPmNx-0005EB-I9
+	id 1JQ1I7-0003vp-OS for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 15 Feb 2008 06:11:51 -0800
+Received: from ag-out-0708.google.com ([72.14.246.241])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JQ1I7-0005Vj-8N
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Feb 2008 14:16:54 -0800
-Message-ID: <47B4BDCD.4080605@club-internet.fr>
-Date: Thu, 14 Feb 2008 23:16:45 +0100
-From: clowncoder <vincent-perrier@club-internet.fr>
-MIME-Version: 1.0
-References: <47B34BA0.30006@club-internet.fr>
-	<20080214003853.GA15952@c2.user-mode-linux.org>
-In-Reply-To: <20080214003853.GA15952@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] g_timeout_add
+	Fri, 15 Feb 2008 06:11:51 -0800
+Received: by ag-out-0708.google.com with SMTP id 35so18518949aga.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 15 Feb 2008 06:11:50 -0800 (PST)
+Date: Fri, 15 Feb 2008 22:07:42 +0800 (CST)
+Message-Id: <20080215.220742.106815696.xiyou.wangcong@gmail.com>
+From: WANG Cong <xiyou.wangcong@gmail.com>
+Mime-Version: 1.0
+Subject: [uml-devel] [Patch] arch/um/kernel/um_arch.c: some small improvements
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,55 +29,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-
-With strace, when I do nothing on the gtk screen, we get
-what is under, it seems that the poll has a 5000 milli-sec
-timeout, but takes 10 sec to wake.
-
-When I move the mouse on the gtk screen, there are too many
-events on the screen to see anything but I can send it if you
-need it.
-
-gettimeofday({1203026980, 431960}, NULL) = 0
-poll([{fd=3, events=POLLIN}], 1, 5000)  = 0
-gettimeofday({1203026990, 459054}, NULL) = 0
-gettimeofday({1203026990, 459250}, NULL) = 0
-write(1, "1203026990\n", 111203026990
-)            = 11
-read(3, 0x809e004, 4096)                = -1 EAGAIN (Resource 
-temporarily unavailable)
-gettimeofday({1203026990, 459871}, NULL) = 0
-poll([{fd=3, events=POLLIN}], 1, 5000)  = 0
-gettimeofday({1203027000, 470939}, NULL) = 0
-gettimeofday({1203027000, 471136}, NULL) = 0
-write(1, "1203027000\n", 111203027000
-)            = 11
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Andrew Morton <akpm@osdl.org>, dike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
 
-Jeff Dike wrote:
-> On Wed, Feb 13, 2008 at 08:57:20PM +0100, clowncoder wrote:
->   
->> It seems that g_timeout_add glib timeouts are not accurate
->> when there is no gtk activity on an uml target.
->>
->> This may be a glib problem since I cannot check
->> that it does not occur on my host.
->>
->> When gtk events occur through mouse moves, then
->> the timeout is good (a 5 sec timeout) if no graphical
->> activity exists, the timeout takes an average of 12 sec,
->> even if there is console activity on the uml machine.
->>     
->
-> You're going to need to tell me what's happening at the system call
-> level - i.e. strace it and see what is doing something it shouldn't.
->
-> 				Jeff
->
->   
+Make some small improvements for arch/um/kernel/um_arch.c.
 
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+
+---
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index a6c1dd1..56deed6 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -115,7 +115,7 @@ static int have_root __initdata = 0;
+ /* Set in uml_mem_setup and modified in linux_main */
+ long long physmem_size = 32 * 1024 * 1024;
+ 
+-static char *usage_string =
++static const char *usage_string =
+ "User Mode Linux v%s\n"
+ "	available at http://user-mode-linux.sourceforge.net/\n\n";
+ 
+@@ -202,7 +202,7 @@ static void __init uml_checksetup(char *line, int *add)
+ 
+ 	p = &__uml_setup_start;
+ 	while (p < &__uml_setup_end) {
+-		int n;
++		size_t n;
+ 
+ 		n = strlen(p->str);
+ 		if (!strncmp(line, p->str, n) && p->setup_func(line + n, add))
+@@ -258,7 +258,8 @@ int __init linux_main(int argc, char **argv)
+ {
+ 	unsigned long avail, diff;
+ 	unsigned long virtmem_size, max_physmem;
+-	unsigned int i, add;
++	unsigned int i;
++	int add;
+ 	char * mode;
+ 
+ 	for (i = 1; i < argc; i++) {
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
