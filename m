@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JQ1I7-0003vp-OS for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Feb 2008 06:11:51 -0800
-Received: from ag-out-0708.google.com ([72.14.246.241])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JQ1I7-0005Vj-8N
+	id 1JQ30x-00077y-Ec for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 15 Feb 2008 08:02:15 -0800
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JQ30v-0008KP-PO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Feb 2008 06:11:51 -0800
-Received: by ag-out-0708.google.com with SMTP id 35so18518949aga.10
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 15 Feb 2008 06:11:50 -0800 (PST)
-Date: Fri, 15 Feb 2008 22:07:42 +0800 (CST)
-Message-Id: <20080215.220742.106815696.xiyou.wangcong@gmail.com>
-From: WANG Cong <xiyou.wangcong@gmail.com>
+	Fri, 15 Feb 2008 08:02:15 -0800
+Date: Fri, 15 Feb 2008 11:02:05 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080215160205.GA6082@c2.user-mode-linux.org>
+References: <47B34BA0.30006@club-internet.fr>
+	<20080214003853.GA15952@c2.user-mode-linux.org>
+	<47B4BDCD.4080605@club-internet.fr>
 Mime-Version: 1.0
-Subject: [uml-devel] [Patch] arch/um/kernel/um_arch.c: some small improvements
+Content-Disposition: inline
+In-Reply-To: <47B4BDCD.4080605@club-internet.fr>
+Subject: Re: [uml-devel] g_timeout_add
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,48 +32,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Andrew Morton <akpm@osdl.org>, dike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+To: clowncoder <vincent-perrier@club-internet.fr>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Thu, Feb 14, 2008 at 11:16:45PM +0100, clowncoder wrote:
+> With strace, when I do nothing on the gtk screen, we get
+> what is under, it seems that the poll has a 5000 milli-sec
+> timeout, but takes 10 sec to wake.
 
-Make some small improvements for arch/um/kernel/um_arch.c.
+Can you show that with timestamps (strace -ttt)?
 
-Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: Jeff Dike <jdike@addtoit.com>
+				Jeff
 
----
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index a6c1dd1..56deed6 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -115,7 +115,7 @@ static int have_root __initdata = 0;
- /* Set in uml_mem_setup and modified in linux_main */
- long long physmem_size = 32 * 1024 * 1024;
- 
--static char *usage_string =
-+static const char *usage_string =
- "User Mode Linux v%s\n"
- "	available at http://user-mode-linux.sourceforge.net/\n\n";
- 
-@@ -202,7 +202,7 @@ static void __init uml_checksetup(char *line, int *add)
- 
- 	p = &__uml_setup_start;
- 	while (p < &__uml_setup_end) {
--		int n;
-+		size_t n;
- 
- 		n = strlen(p->str);
- 		if (!strncmp(line, p->str, n) && p->setup_func(line + n, add))
-@@ -258,7 +258,8 @@ int __init linux_main(int argc, char **argv)
- {
- 	unsigned long avail, diff;
- 	unsigned long virtmem_size, max_physmem;
--	unsigned int i, add;
-+	unsigned int i;
-+	int add;
- 	char * mode;
- 
- 	for (i = 1; i < argc; i++) {
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
