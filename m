@@ -1,21 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JRaLL-0003Ej-JE for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Feb 2008 13:49:39 -0800
-Received: from ug-out-1314.google.com ([66.249.92.171])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JRaLJ-0002Ga-L5
+	id 1JRgHk-0006L2-T8 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Feb 2008 20:10:21 -0800
+Received: from web32213.mail.mud.yahoo.com ([68.142.207.144])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1JRgHj-000342-G5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Feb 2008 13:49:39 -0800
-Received: by ug-out-1314.google.com with SMTP id m2so632795uge.28
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 19 Feb 2008 13:49:36 -0800 (PST)
-Message-ID: <47BB4EED.7020109@gmail.com>
-Date: Tue, 19 Feb 2008 22:49:33 +0100
-From: Jiri Olsa <olsajiri@gmail.com>
+	Tue, 19 Feb 2008 20:10:20 -0800
+Date: Tue, 19 Feb 2008 20:10:13 -0800 (PST)
+From: Stephen Su <ssu_7@yahoo.com>
 MIME-Version: 1.0
-Subject: [uml-devel] [PATCH] uml: use DIV_ROUND_UP
+Message-ID: <287505.46914.qm@web32213.mail.mud.yahoo.com>
+Subject: [uml-devel] sleep() calls blocks forever after settimeofday()
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,44 +22,63 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0682414951=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>, kernel-janitors@vger.kernel.org
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+--===============0682414951==
+Content-Type: multipart/alternative; boundary="0-352478729-1203480613=:46914"
+Content-Transfer-Encoding: 8bit
 
-I just saw similar patches in the janitor kernel's list,
-and spotted place it fits.
+--0-352478729-1203480613=:46914
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-Signed-off-by: Jiri Olsa <olsajiri@gmail.com>
----
- arch/um/drivers/ubd_kern.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+Hi Jeff,
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index b1a77b1..1e579e4 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1020,8 +1020,7 @@ static void cowify_bitmap(__u64 io_offset, int length, unsigned long *cow_mask,
- 	 * by one word.  Thanks to Lynn Kerby for the fix and James McMechan
- 	 * for the original diagnosis.
- 	 */
--	if(*cow_offset == ((bitmap_len + sizeof(unsigned long) - 1) /
--			   sizeof(unsigned long) - 1))
-+	if(*cow_offset == (DIV_ROUND_UP(bitmap_len, sizeof(unsigned long)) - 1))
- 		(*cow_offset)--;
- 
- 	bitmap_words[0] = bitmap[*cow_offset];
+I am still on Linux kernel 2.6.17.4, I ran into sleep() calls blocks forever after change date of time. Please help!
 
+Thanks,
+-steve
+
+
+
+
+
+       
+---------------------------------
+Looking for last minute shopping deals?  Find them fast with Yahoo! Search.
+--0-352478729-1203480613=:46914
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+
+Hi Jeff,<br><br>I am still on Linux kernel 2.6.17.4, I ran into sleep() calls blocks forever after change date of time. Please help!<br><br>Thanks,<br>-steve<br><br><br><br><br><p>&#32;
+      <hr size=1>Looking for last minute shopping deals? <a href="http://us.rd.yahoo.com/evt=51734/*http://tools.search.yahoo.com/newsearch/category.php?category=shopping"> 
+Find them fast with Yahoo! Search.</a>
+--0-352478729-1203480613=:46914--
+
+
+--===============0682414951==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
 Defy all challenges. Microsoft(R) Visual Studio 2008.
 http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+--===============0682414951==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============0682414951==--
+
