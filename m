@@ -2,25 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JQ5ad-0001Pu-0Q for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Feb 2008 10:47:15 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JQ5aW-0007WG-HZ
+	id 1JRf1W-0007EJ-Jp for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Feb 2008 18:49:30 -0800
+Received: from qb-out-0506.google.com ([72.14.204.236])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JRf1V-0005aq-Sy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Feb 2008 10:47:09 -0800
-Date: Fri, 15 Feb 2008 13:46:50 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080215184650.GA8810@c2.user-mode-linux.org>
-References: <47B34BA0.30006@club-internet.fr>
-	<20080214003853.GA15952@c2.user-mode-linux.org>
-	<47B4BDCD.4080605@club-internet.fr>
-	<20080215160205.GA6082@c2.user-mode-linux.org>
-	<47B5CE40.9000005@club-internet.fr>
+	Tue, 19 Feb 2008 18:49:30 -0800
+Received: by qb-out-0506.google.com with SMTP id c8so2365937qbc.4
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 19 Feb 2008 18:49:28 -0800 (PST)
+Date: Wed, 20 Feb 2008 10:44:44 +0800 (CST)
+Message-Id: <20080220.104444.124086115.xiyou.wangcong@gmail.com>
+From: WANG Cong <xiyou.wangcong@gmail.com>
+In-Reply-To: <47BB4EED.7020109@gmail.com>
+References: <47BB4EED.7020109@gmail.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <47B5CE40.9000005@club-internet.fr>
-Subject: Re: [uml-devel] g_timeout_add
+Subject: Re: [uml-devel] [PATCH] uml: use DIV_ROUND_UP
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,29 +31,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: clowncoder <vincent-perrier@club-internet.fr>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: olsajiri@gmail.com
+Cc: jdike@addtoit.com, kernel-janitors@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Feb 15, 2008 at 06:39:12PM +0100, clowncoder wrote:
-> By the way, do you use other very interresting tools such as strace?
-> if so could you give me names?
+From: Jiri Olsa <olsajiri@gmail.com>
+Subject: [PATCH] uml: use DIV_ROUND_UP
+Date: Tue, 19 Feb 2008 22:49:33 +0100
+Message-ID: <47BB4EED.7020109@gmail.com>
 
-strace is the major one.
+> Hi,
+> 
+> I just saw similar patches in the janitor kernel's list,
+> and spotted place it fits.
+> 
+> Signed-off-by: Jiri Olsa <olsajiri@gmail.com>
+> ---
+>  arch/um/drivers/ubd_kern.c |    3 +--
+>  1 files changed, 1 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index b1a77b1..1e579e4 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -1020,8 +1020,7 @@ static void cowify_bitmap(__u64 io_offset, int length, unsigned long *cow_mask,
+>  	 * by one word.  Thanks to Lynn Kerby for the fix and James McMechan
+>  	 * for the original diagnosis.
+>  	 */
+> -	if(*cow_offset == ((bitmap_len + sizeof(unsigned long) - 1) /
+> -			   sizeof(unsigned long) - 1))
+> +	if(*cow_offset == (DIV_ROUND_UP(bitmap_len, sizeof(unsigned long)) - 1))
 
-> 1203096946.933947 poll([{fd=3, events=POLLIN}, {fd=4, events=POLLIN}], 
-> 2, 4996) = 0
-> 1203096958.157856 gettimeofday({1203096958, 158538}, NULL) = 0
-
-The smoking gun - a poll that should have timed out in .5 sec slept
-for 12.
-
-Now, can you do it again, but strace UML on the host at the same time,
-with -ttt?
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Looks good for me. ACK.
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
