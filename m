@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JRren-00051Z-2X for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Feb 2008 08:18:53 -0800
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JRrel-0002hB-EZ
+	id 1JSJVZ-0005Th-Ao for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Feb 2008 14:03:18 -0800
+Received: from w12a.httpserveur.net ([67.15.80.77]
+	helo=websiteout12.httpserveur.net)
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1JSJVV-0006tf-Oi
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Feb 2008 08:18:53 -0800
-Date: Wed, 20 Feb 2008 11:18:43 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080220161843.GB8828@c2.user-mode-linux.org>
-References: <47BB4EED.7020109@gmail.com>
-	<20080220.104444.124086115.xiyou.wangcong@gmail.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20080220.104444.124086115.xiyou.wangcong@gmail.com>
-Subject: Re: [uml-devel] [PATCH] uml: use DIV_ROUND_UP
+	Thu, 21 Feb 2008 14:03:13 -0800
+Message-ID: <47BDF50E.3070404@club-internet.fr>
+Date: Thu, 21 Feb 2008 23:02:54 +0100
+From: clowncoder <vincent-perrier@club-internet.fr>
+MIME-Version: 1.0
+References: <47B34BA0.30006@club-internet.fr>
+	<20080214003853.GA15952@c2.user-mode-linux.org>
+In-Reply-To: <20080214003853.GA15952@c2.user-mode-linux.org>
+Subject: [uml-devel] Timeout in the select
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,18 +30,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Feb 20, 2008 at 10:44:44AM +0800, WANG Cong wrote:
-> Looks good for me. ACK.
-
-Me too, I'll send it on if Andrew doesn't pick it up on his own.
-
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Hello,
+At http://clownix.net, my new machine has the select timeout
+problem, if you download it, the file 
+/usr/src/clownix_liv_feb_2008/jeff_tst.c
+in the virtual machine has a piece of software not behaving as
+it should,  the 1 second timeout of the select is doubled.
+Could you tell me if this is specific to my machine or if others
+have the same problem.
+Regards
+Vincent Perrier
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
