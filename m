@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JUsBL-0000OZ-VI for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Feb 2008 15:29:02 -0800
-Received: from wx-out-0506.google.com ([66.249.82.232])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JUsBK-0006FI-N7
+	id 1JVQbo-0006ts-1C for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 01 Mar 2008 04:14:32 -0800
+Received: from astoria.ccjclearline.com ([64.235.106.9])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JVQbl-000684-G0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Feb 2008 15:28:55 -0800
-Received: by wx-out-0506.google.com with SMTP id h31so3861062wxd.4
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 28 Feb 2008 15:28:53 -0800 (PST)
-Message-ID: <88e04e60802281528j302b61bbv2780c23f2614e8cd@mail.gmail.com>
-Date: Thu, 28 Feb 2008 18:28:53 -0500
-From: "Weiming Liu" <runemass.cse@gmail.com>
+	Sat, 01 Mar 2008 04:14:31 -0800
+Date: Sat, 1 Mar 2008 07:14:19 -0500 (EST)
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+Message-ID: <alpine.LFD.1.00.0803010711200.5500@AU52T-1.iHotel.ca>
 MIME-Version: 1.0
-Subject: [uml-devel] questions about mconsole driver and process address space
+Subject: [uml-devel] [PATCH] USER-MODE LINUX: Add BLOCK dependency for
+	RAW_DRIVER.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,74 +24,57 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1906839933=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-
---===============1906839933==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_14857_2072452.1204241333576"
-
-------=_Part_14857_2072452.1204241333576
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Hi. I am doing some experiment on mconsole driver. My wish is to create a
-new user process from mconsole driver, modifying its address space, changing
-its file mapping... Eventually may be I can migrate a process from host or
-between UML instances. I am a newbie to both kernel and UML, and I have
-several questions on implementation:
-
-1. create a new process from a kernel thread. It seems that mconsole uses a
-work queque, and requests are processed at kevents thread. Right now what I
-am doing is, creating a new kernel thread and letting it call sys_ececve().
-I then find its task_struct by looking for its name and its parent. It seems
-stupid and maybe not correct. Is there any better way to do this?
-
-2. I need to manipulate the process' address space (memory segments, file
-mappings) like what flush_old_exec() and do_mmap() are doing. I cannot find
-a way to call those functions since I am in a kernel thread, and it seems
-too complicated by working directly on page tables and memory. How can this
-be done in a convenient way?
-
-Thanks,
-Weiming Liu
-
-------=_Part_14857_2072452.1204241333576
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Hi. I am doing some experiment on mconsole driver. My wish is to create a new user process from mconsole driver, modifying its address space, changing its file mapping... Eventually may be I can migrate a process from host or between UML instances. I am a newbie to both kernel and UML, and I have several questions on implementation:<br>
-<br>1. create a new process from a kernel thread. It seems that mconsole uses a work queque, and requests are processed at kevents thread. Right now what I am doing is, creating a new kernel thread and letting it call sys_ececve(). I then find its task_struct by looking for its name and its parent. It seems stupid and maybe not correct. Is there any better way to do this?<br>
-<br>2. I need to manipulate the process&#39; address space (memory segments, file mappings) like what flush_old_exec() and do_mmap() are doing. I cannot find a way to call those functions since I am in a kernel thread, and it seems too complicated by working directly on page tables and memory. How can this be done in a convenient way?<br>
-<br>Thanks,<br>Weiming Liu<br>
-
-------=_Part_14857_2072452.1204241333576--
+Cc: Jeff Dike <jdike@karaya.com>
 
 
---===============1906839933==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Add the BLOCK dependency for RAW_DRIVER, to match what's in
+drivers/char/Kconfig.  Also, while we're there, update the alleged
+obsolesence of RAW_DRIVER since it doesn't seem to be going away any
+time soon.
+
+Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
+
+---
+diff --git a/arch/um/Kconfig.char b/arch/um/Kconfig.char
+index 3a4b396..1b238eb 100644
+--- a/arch/um/Kconfig.char
++++ b/arch/um/Kconfig.char
+@@ -145,14 +145,14 @@ config LEGACY_PTYS
+ 	  systems, it is safe to say N.
+
+ config RAW_DRIVER
+-        tristate "RAW driver (/dev/raw/rawN) (OBSOLETE)"
++        tristate "RAW driver (/dev/raw/rawN)"
++	depends on BLOCK
+         help
+           The raw driver permits block devices to be bound to /dev/raw/rawN.
+           Once bound, I/O against /dev/raw/rawN uses efficient zero-copy I/O.
+           See the raw(8) manpage for more details.
+
+-          The raw driver is deprecated and will be removed soon.
+-          Applications should simply open the device (eg /dev/hda1)
++          Applications should preferably open the device (eg /dev/hda1)
+           with the O_DIRECT flag.
+
+ config MAX_RAW_DEVS
+========================================================================
+Robert P. J. Day
+Linux Consulting, Training and Annoying Kernel Pedantry:
+    Have classroom, will lecture.
+
+http://crashcourse.ca                          Waterloo, Ontario, CANADA
+========================================================================
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
 Defy all challenges. Microsoft(R) Visual Studio 2008.
 http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
---===============1906839933==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============1906839933==--
-
