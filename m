@@ -1,20 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JaZhZ-0007Pg-A7 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 15 Mar 2008 09:57:45 -0700
-Received: from astoria.ccjclearline.com ([64.235.106.9])
+	id 1JbIBg-0004bE-5U for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 Mar 2008 09:27:50 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JaZhX-0000Cy-1f
+	(Exim 4.44) id 1JbIBe-0001wT-K4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 15 Mar 2008 09:57:45 -0700
-Date: Sat, 15 Mar 2008 12:57:29 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-Message-ID: <alpine.LFD.1.00.0803151255530.24311@localhost.localdomain>
+	Mon, 17 Mar 2008 09:27:48 -0700
+Date: Mon, 17 Mar 2008 12:27:04 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080317162704.GA9536@c2.user-mode-linux.org>
+References: <47B34BA0.30006@club-internet.fr>
+	<20080214003853.GA15952@c2.user-mode-linux.org>
+	<47B4BDCD.4080605@club-internet.fr>
+	<20080215160205.GA6082@c2.user-mode-linux.org>
+	<47B5CE40.9000005@club-internet.fr>
+	<20080215184650.GA8810@c2.user-mode-linux.org>
+	<87y78kx640.fsf_-_@hades.wkstn.nix>
 MIME-Version: 1.0
-Subject: [uml-devel] [PATCH] UML:  Use newer,
-	non-deprecated __SPIN_LOCK_UNLOCKED macro.
+Content-Disposition: inline
+In-Reply-To: <87y78kx640.fsf_-_@hades.wkstn.nix>
+Subject: Re: [uml-devel] [2.6.24.x] UML select()/poll() oversleeping
+	reproducibly (was	Re: g_timeout_add)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,42 +37,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@karaya.com>
+To: Nix <nix@esperi.org.uk>
+Cc: Thomas Gleixner <tglx@timesys.com>, linux-kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
+On Fri, Mar 14, 2008 at 11:01:35PM +0000, Nix wrote:
+> On a 1.4GHz Athlon IV using the tsc clocksource, I see consistent
+> oversleeps, but not enormous ones:
 
-Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
+> bash-3.2# ./select-sleep 10
+> Slept for 13 seconds.
 
----
+I'm seeing the same thing with tickless disabled on current UML - stay
+tuned...
 
-  not compile tested, it seems pretty straightforward.
+				Jeff
 
-
-diff --git a/arch/um/include/line.h b/arch/um/include/line.h
-index 1223f2c..3791031 100644
---- a/arch/um/include/line.h
-+++ b/arch/um/include/line.h
-@@ -58,11 +58,11 @@ struct line {
- };
-
- #define LINE_INIT(str, d) \
--	{ .count_lock =	SPIN_LOCK_UNLOCKED, \
-+	{ .count_lock =	__SPIN_LOCK_UNLOCKED((str).count_lock), \
- 	  .init_str =	str,	\
- 	  .init_pri =	INIT_STATIC, \
- 	  .valid =	1, \
--	  .lock =	SPIN_LOCK_UNLOCKED, \
-+	  .lock =	__SPIN_LOCK_UNLOCKED((str).lock), \
- 	  .driver =	d }
-
- extern void line_close(struct tty_struct *tty, struct file * filp);
-========================================================================
-Robert P. J. Day
-Linux Consulting, Training and Annoying Kernel Pedantry:
-    Have classroom, will lecture.
-
-http://crashcourse.ca                          Waterloo, Ontario, CANADA
-========================================================================
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
