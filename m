@@ -2,19 +2,28 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JbJOs-0004xu-3O for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 Mar 2008 10:45:30 -0700
-Received: from triton.rz.uni-saarland.de ([134.96.7.25])
+	id 1JbL6e-0007ps-Gi for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 Mar 2008 12:34:48 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JbJOq-0007tr-EW
+	(Exim 4.44) id 1JbL6c-0003Bj-MB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 Mar 2008 10:45:30 -0700
-Date: Mon, 17 Mar 2008 16:38:00 +0100
-From: Alexander van Heukelum <heukelum@mailshack.com>
-Message-ID: <20080317153800.GA4450@mailshack.com>
-Mime-Version: 1.0
+	Mon, 17 Mar 2008 12:34:48 -0700
+Date: Mon, 17 Mar 2008 15:34:15 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080317193415.GA12234@c2.user-mode-linux.org>
+References: <47B34BA0.30006@club-internet.fr>
+	<20080214003853.GA15952@c2.user-mode-linux.org>
+	<47B4BDCD.4080605@club-internet.fr>
+	<20080215160205.GA6082@c2.user-mode-linux.org>
+	<47B5CE40.9000005@club-internet.fr>
+	<20080215184650.GA8810@c2.user-mode-linux.org>
+	<87y78kx640.fsf_-_@hades.wkstn.nix>
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] uml compile fixes
+In-Reply-To: <87y78kx640.fsf_-_@hades.wkstn.nix>
+Subject: Re: [uml-devel] [2.6.24.x] UML select()/poll() oversleeping
+	reproducibly (was	Re: g_timeout_add)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,75 +37,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
-Cc: heukelum@fastmail.fm
+To: Nix <nix@esperi.org.uk>
+Cc: Thomas Gleixner <tglx@timesys.com>, linux-kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-Hi all,
+Below is the same patch with another kluge, which cuts down the
+requested sleep by 10% in hopes of getting the actual sleep closer to
+what's wanted.
 
-I need the following two changes to get my favourite uml config
-to compile (and run):
+This is unusable in anything resembling mainline, but I'd like to see
+how your various systems react to it.  I'm getting very close to the
+sleeps I asked for (with slight undersleeping, which is a bug).
 
-make ARCH=um SUBARCH=i386 KCONFIG_ALLCONFIG=mini.config allnoconfig
+       	       	   Jeff
 
-with mini.config:
-CONFIG_BINFMT_ELF=y
-CONFIG_BLK_DEV_INITRD=y
-CONFIG_INITRAMFS_SOURCE="../initramfs"
-CONFIG_EMBEDDED=y
-CONFIG_KALLSYMS=y
-CONFIG_PRINTK=y
-CONFIG_BUG=y
-CONFIG_SLOB=y
-CONFIG_MODULES=y
-CONFIG_MODULE_UNLOAD=y
-CONFIG_XTERM_CHAN=y
-CONFIG_PROC_FS=y
-CONFIG_SYSFS=y
+-- 
+Work email - jdike at linux dot intel dot com
 
-Please review/comment (or create a better patch for this yourself!).
-
-(If you need one:) 
-Signed-off-by: Alexander van Heukelum <heukelum@fastmail.fm>
-
-diff --git a/arch/um/include/um_malloc.h b/arch/um/include/um_malloc.h
-index 0ad17cb..e5b09fa 100644
---- a/arch/um/include/um_malloc.h
-+++ b/arch/um/include/um_malloc.h
-@@ -8,11 +8,19 @@
- 
- #include "kern_constants.h"
- 
-+#ifdef UML_CONFIG_SLOB
-+extern void *__kmalloc_node(int size, int flags, int node);
-+static inline void *kmalloc(int size, int flags)
-+{
-+	return __kmalloc_node(size, flags, -1);
-+}
-+#else
- extern void *__kmalloc(int size, int flags);
- static inline void *kmalloc(int size, int flags)
+Index: linux-2.6.22/arch/um/os-Linux/time.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/time.c	2008-02-18 11:53:51.000000000 -0500
++++ linux-2.6.22/arch/um/os-Linux/time.c	2008-03-17 15:11:51.000000000 -0400
+@@ -58,12 +58,17 @@ static inline long long timeval_to_ns(co
+ long long disable_timer(void)
  {
- 	return __kmalloc(size, flags);
+ 	struct itimerval time = ((struct itimerval) { { 0, 0 }, { 0, 0 } });
++	int remain, max = UM_NSEC_PER_SEC / UM_HZ;
+ 
+ 	if (setitimer(ITIMER_VIRTUAL, &time, &time) < 0)
+ 		printk(UM_KERN_ERR "disable_timer - setitimer failed, "
+ 		       "errno = %d\n", errno);
+ 
+-	return timeval_to_ns(&time.it_value);
++	remain = timeval_to_ns(&time.it_value);
++	if (remain > max)
++		remain = max;
++
++	return remain;
  }
-+#endif
  
- extern void kfree(const void *ptr);
+ long long os_nsecs(void)
+@@ -126,6 +131,8 @@ void idle_sleep(unsigned long long nsecs
+ 	 */
+ 	if (nsecs == 0)
+ 		nsecs = UM_NSEC_PER_SEC / UM_HZ;
++
++	nsecs = nsecs * 9 / 10;
+ 	ts = ((struct timespec) { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
+ 				  .tv_nsec	= nsecs % UM_NSEC_PER_SEC });
  
-diff --git a/arch/um/kernel/ksyms.c b/arch/um/kernel/ksyms.c
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-diff --git a/include/asm-um/tlb.h b/include/asm-um/tlb.h
-index 39fc475..7febf85 100644
---- a/include/asm-um/tlb.h
-+++ b/include/asm-um/tlb.h
-@@ -2,6 +2,7 @@
- #define __UM_TLB_H
- 
- #include <linux/swap.h>
-+#include <linux/pagemap.h>
- #include <asm/percpu.h>
- #include <asm/pgalloc.h>
- #include <asm/tlbflush.h>
-
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
