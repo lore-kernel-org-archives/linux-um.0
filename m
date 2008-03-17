@@ -1,17 +1,14 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JbL6e-0007ps-Gi for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 Mar 2008 12:34:48 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JbL6c-0003Bj-MB
+	id 1JbMZS-0000qQ-Ho for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 Mar 2008 14:08:38 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user43400)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JbMZP-0006ws-Rx
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 17 Mar 2008 12:34:48 -0700
-Date: Mon, 17 Mar 2008 15:34:15 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080317193415.GA12234@c2.user-mode-linux.org>
+	Mon, 17 Mar 2008 14:08:38 -0700
 References: <47B34BA0.30006@club-internet.fr>
 	<20080214003853.GA15952@c2.user-mode-linux.org>
 	<47B4BDCD.4080605@club-internet.fr>
@@ -19,11 +16,15 @@ References: <47B34BA0.30006@club-internet.fr>
 	<47B5CE40.9000005@club-internet.fr>
 	<20080215184650.GA8810@c2.user-mode-linux.org>
 	<87y78kx640.fsf_-_@hades.wkstn.nix>
+	<20080317193415.GA12234@c2.user-mode-linux.org>
+From: Nix <nix@esperi.org.uk>
+Date: Mon, 17 Mar 2008 21:08:16 +0000
+In-Reply-To: <20080317193415.GA12234@c2.user-mode-linux.org> (Jeff Dike's
+	message of "Mon, 17 Mar 2008 15:34:15 -0400")
+Message-ID: <87k5k112kf.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87y78kx640.fsf_-_@hades.wkstn.nix>
 Subject: Re: [uml-devel] [2.6.24.x] UML select()/poll() oversleeping
-	reproducibly (was	Re: g_timeout_add)
+	reproducibly
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,54 +38,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Nix <nix@esperi.org.uk>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: Thomas Gleixner <tglx@timesys.com>, linux-kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-Below is the same patch with another kluge, which cuts down the
-requested sleep by 10% in hopes of getting the actual sleep closer to
-what's wanted.
+On 17 Mar 2008, Jeff Dike verbalised:
 
-This is unusable in anything resembling mainline, but I'd like to see
-how your various systems react to it.  I'm getting very close to the
-sleeps I asked for (with slight undersleeping, which is a bug).
+> Below is the same patch with another kluge, which cuts down the
+> requested sleep by 10% in hopes of getting the actual sleep closer to
+> what's wanted.
 
-       	       	   Jeff
+Eeuuuuw. :)
+
+> This is unusable in anything resembling mainline, but I'd like to see
+> how your various systems react to it.  I'm getting very close to the
+> sleeps I asked for (with slight undersleeping, which is a bug).
+
+OK.
+
+Tests on host with clocksource pit:
+
+bash-3.2# bin/select-sleep 5
+Slept for 5 seconds.
+bash-3.2# bin/select-sleep 10
+Slept for 11 seconds.
+bash-3.2# bin/select-sleep 30
+Slept for 31 seconds.
+bash-3.2# bin/select-sleep 60
+Slept for 61 seconds.
+
+... so much better than the 4x error without this patch.
+
+Tests on host with clocksource tsc:
+
+bash-3.2# bin/select-sleep 5
+Slept for 5 seconds.
+bash-3.2# bin/select-sleep 10
+Slept for 10 seconds.
+bash-3.2# bin/select-sleep 30
+Slept for 30 seconds.
+bash-3.2# bin/select-sleep 60
+Slept for 61 seconds.
+
+Distinctly better than without this patch.
+
+(Am I the only person who finds it strange that (some) clocksource
+hackers are arguing about accuracy problems in the ppm range while we're
+glad to get an error of `only' single seconds per minute out of it? 
+Maybe next year we can invent the `pendulum' clocksource :) )
 
 -- 
-Work email - jdike at linux dot intel dot com
-
-Index: linux-2.6.22/arch/um/os-Linux/time.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/time.c	2008-02-18 11:53:51.000000000 -0500
-+++ linux-2.6.22/arch/um/os-Linux/time.c	2008-03-17 15:11:51.000000000 -0400
-@@ -58,12 +58,17 @@ static inline long long timeval_to_ns(co
- long long disable_timer(void)
- {
- 	struct itimerval time = ((struct itimerval) { { 0, 0 }, { 0, 0 } });
-+	int remain, max = UM_NSEC_PER_SEC / UM_HZ;
- 
- 	if (setitimer(ITIMER_VIRTUAL, &time, &time) < 0)
- 		printk(UM_KERN_ERR "disable_timer - setitimer failed, "
- 		       "errno = %d\n", errno);
- 
--	return timeval_to_ns(&time.it_value);
-+	remain = timeval_to_ns(&time.it_value);
-+	if (remain > max)
-+		remain = max;
-+
-+	return remain;
- }
- 
- long long os_nsecs(void)
-@@ -126,6 +131,8 @@ void idle_sleep(unsigned long long nsecs
- 	 */
- 	if (nsecs == 0)
- 		nsecs = UM_NSEC_PER_SEC / UM_HZ;
-+
-+	nsecs = nsecs * 9 / 10;
- 	ts = ((struct timespec) { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
- 				  .tv_nsec	= nsecs % UM_NSEC_PER_SEC });
- 
+`The rest is a tale of post and counter-post.' --- Ian Rawlings
+                                                   describes USENET
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
