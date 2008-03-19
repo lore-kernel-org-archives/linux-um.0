@@ -2,24 +2,31 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jc4Aq-00080V-Kw for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Mar 2008 12:42:09 -0700
-Received: from lana.hrz.tu-chemnitz.de ([134.109.132.3])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Jc4Ap-00052s-84
+	id 1Jc6YH-0007Kf-Mo for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Mar 2008 15:14:29 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user52366)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jc6YF-0004Yt-1r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Mar 2008 12:42:08 -0700
-Received: from csn-server.csn.tu-chemnitz.de ([134.109.101.249]
-	helo=gondor.middle-earth.priv)
-	by lana.hrz.tu-chemnitz.de with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.66) (envelope-from <chkr@plauener.de>) id 1Jc4Al-00046O-2S
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Mar 2008 20:42:03 +0100
-Message-ID: <47E16C87.8080705@plauener.de>
-Date: Wed, 19 Mar 2008 20:41:59 +0100
-From: Christian Krause <chkr@plauener.de>
+	Wed, 19 Mar 2008 15:14:29 -0700
+References: <47B34BA0.30006@club-internet.fr>
+	<20080214003853.GA15952@c2.user-mode-linux.org>
+	<47B4BDCD.4080605@club-internet.fr>
+	<20080215160205.GA6082@c2.user-mode-linux.org>
+	<47B5CE40.9000005@club-internet.fr>
+	<20080215184650.GA8810@c2.user-mode-linux.org>
+	<87y78kx640.fsf_-_@hades.wkstn.nix>
+	<20080317193415.GA12234@c2.user-mode-linux.org>
+	<87k5k112kf.fsf@hades.wkstn.nix>
+	<20080318170019.GA8747@c2.user-mode-linux.org>
+From: Nix <nix@esperi.org.uk>
+Date: Wed, 19 Mar 2008 22:14:14 +0000
+In-Reply-To: <20080318170019.GA8747@c2.user-mode-linux.org> (Jeff Dike's
+	message of "Tue, 18 Mar 2008 13:00:19 -0400")
+Message-ID: <87od9apdjd.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Subject: [uml-devel] small patch for small install problem of uml_utilities
+Subject: Re: [uml-devel] [2.6.24.x] UML select()/poll() oversleeping
+	reproducibly
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,40 +40,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Thomas Gleixner <tglx@timesys.com>, linux-kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+On 18 Mar 2008, Jeff Dike told this:
+> This version keeps track of the time between ticks (as reported by the
+> host's gettimeofday) and adjusts its sleeping and reporting ticks
+> accordingly.
 
-During packaging of uml_utilities I've found a small problem during 
-"make install":
+I can confirm that, as expected, this patch works well enough that
+timing problems don't break dhclient anymore (which requires a 2x
+oversleep, which you're a long way from now).
 
-in tools-20070815/humsify/Makefile the binary is installed via
-"install -o 0755 $(BIN) $(DESTDIR)$(BIN_DIR)".
-It looks like that "-o" is just a typo and that the intention was to set 
-the mode with "-m 0755" and not the owner (with -o 0755, which makes no 
-sense ;-) ).
+At last I can upgrade my firewall :)
 
-Here is my patch I've used to fix the problem. Probably you can apply it 
-to the official sources as well:
-
-diff -uNr tools-20070815.orig/humfsify/Makefile 
-tools-20070815/humfsify/Makefile
---- tools-20070815.orig/humfsify/Makefile       2006-05-25 
-20:37:01.000000000 +0200
-+++ tools-20070815/humfsify/Makefile    2008-03-19 20:29:50.000000000 +0100
-@@ -4,7 +4,7 @@
-
- install:
-        install -d $(DESTDIR)$(BIN_DIR)
--       install -o 0755 $(BIN) $(DESTDIR)$(BIN_DIR)
-+       install -m 0755 $(BIN) $(DESTDIR)$(BIN_DIR)
-
- clean:
-        rm -f *~
-
-
-Thanks & Best regards,
-Christian
+-- 
+`The rest is a tale of post and counter-post.' --- Ian Rawlings
+                                                   describes USENET
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
