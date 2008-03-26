@@ -1,32 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jc6YH-0007Kf-Mo for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Mar 2008 15:14:29 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user52366)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jc6YF-0004Yt-1r
+	id 1JeOqC-0002Gh-Rf for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 25 Mar 2008 23:10:28 -0700
+Received: from srv5.dvmed.net ([207.36.208.214] helo=mail.dvmed.net)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JeOqB-00060Z-GZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 Mar 2008 15:14:29 -0700
-References: <47B34BA0.30006@club-internet.fr>
-	<20080214003853.GA15952@c2.user-mode-linux.org>
-	<47B4BDCD.4080605@club-internet.fr>
-	<20080215160205.GA6082@c2.user-mode-linux.org>
-	<47B5CE40.9000005@club-internet.fr>
-	<20080215184650.GA8810@c2.user-mode-linux.org>
-	<87y78kx640.fsf_-_@hades.wkstn.nix>
-	<20080317193415.GA12234@c2.user-mode-linux.org>
-	<87k5k112kf.fsf@hades.wkstn.nix>
-	<20080318170019.GA8747@c2.user-mode-linux.org>
-From: Nix <nix@esperi.org.uk>
-Date: Wed, 19 Mar 2008 22:14:14 +0000
-In-Reply-To: <20080318170019.GA8747@c2.user-mode-linux.org> (Jeff Dike's
-	message of "Tue, 18 Mar 2008 13:00:19 -0400")
-Message-ID: <87od9apdjd.fsf@hades.wkstn.nix>
+	Tue, 25 Mar 2008 23:10:28 -0700
+Message-ID: <47E9E8CD.1060408@garzik.org>
+Date: Wed, 26 Mar 2008 02:10:21 -0400
+From: Jeff Garzik <jeff@garzik.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [2.6.24.x] UML select()/poll() oversleeping
-	reproducibly
+References: <47E9E331.1010105@trash.net>
+In-Reply-To: <47E9E331.1010105@trash.net>
+Subject: Re: [uml-devel] [UML]: uml-net: don't set IFF_ALLMULTI in
+	set_multicast_list
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,28 +30,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Thomas Gleixner <tglx@timesys.com>, linux-kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Patrick McHardy <kaber@trash.net>
+Cc: Linux Netdev List <netdev@vger.kernel.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-On 18 Mar 2008, Jeff Dike told this:
-> This version keeps track of the time between ticks (as reported by the
-> host's gettimeofday) and adjusts its sleeping and reporting ticks
-> accordingly.
+>  static void uml_net_set_multicast_list(struct net_device *dev)
+>  {
+> -	if (dev->flags & IFF_PROMISC)
+> -		return;
+> -	else if (dev->mc_count)
+> -		dev->flags |= IFF_ALLMULTI;
+> -	else dev->flags &= ~IFF_ALLMULTI;
+> +	return;
+>  }
 
-I can confirm that, as expected, this patch works well enough that
-timing problems don't break dhclient anymore (which requires a 2x
-oversleep, which you're a long way from now).
 
-At last I can upgrade my firewall :)
 
--- 
-`The rest is a tale of post and counter-post.' --- Ian Rawlings
-                                                   describes USENET
+Might as well just delete the hook at that point...
+
+	Jeff
+
+
 
 -------------------------------------------------------------------------
-This SF.net email is sponsored by: Microsoft
-Defy all challenges. Microsoft(R) Visual Studio 2008.
-http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+Check out the new SourceForge.net Marketplace.
+It's the best place to buy or sell services for
+just about anything Open Source.
+http://ad.doubleclick.net/clk;164216239;13503038;w?http://sf.net/marketplace
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
