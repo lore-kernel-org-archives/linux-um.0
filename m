@@ -1,26 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JfNJ5-0002n8-V8 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Mar 2008 15:44:20 -0700
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JfNJ4-0006XG-IM
+	id 1Jg6Cl-0007Qy-7q for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 30 Mar 2008 15:40:47 -0700
+Received: from smtp6.pp.htv.fi ([213.243.153.40])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jg6Ci-0000Qn-Qo
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Mar 2008 15:44:19 -0700
-Received: from [192.168.2.100] (77-103-4-42.cable.ubr02.camd.blueyonder.co.uk
-	[77.103.4.42])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: antoine@nagafix.co.uk)
-	by mail.nagafix.co.uk (Postfix) with ESMTP id 1F393439A6
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 28 Mar 2008 22:44:09 +0000 (GMT)
-Message-ID: <47ED74B8.8060602@nagafix.co.uk>
-Date: Fri, 28 Mar 2008 22:44:08 +0000
-From: Antoine Martin <antoine@nagafix.co.uk>
+	Sun, 30 Mar 2008 15:40:47 -0700
+Date: Mon, 31 Mar 2008 01:40:31 +0300
+From: Adrian Bunk <bunk@kernel.org>
+Message-ID: <20080330224031.GG28445@cs181133002.pp.htv.fi>
 MIME-Version: 1.0
-Subject: [uml-devel] syscall failed
+Content-Disposition: inline
+Subject: [uml-devel] [2.6 patch] remove include/asm-um/keyboard.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,39 +27,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-FYI: (skas4 host)
+This patch removes the unused and broken (the normal asm/keyboard.h 
+files no longer exists) include/asm-um/keyboard.h
 
-[43492659.840000] syscall_stub_done : ret = -12, offset = 548682067984,
-data = 000000007f115010
-[43492659.840000] syscall_stub_done : syscall 9 failed, return value =
-0xfffffff4, expected return value = 0x47a0000
-[43492659.840000]     syscall parameters: 0x47a0000 0x1000 0x7 0x11 0x3
-0xc4c9000
-[43492659.840000] Failed to flush page for address 0x47a0000
-[43531234.700000] syscall_stub_done : ret = -12, offset = 548682067984,
-data = 000000007f6a8010
-[43531234.700000] syscall_stub_done : syscall 9 failed, return value =
-0xfffffff4, expected return value = 0x4e9e2000
-[43531234.700000]     syscall parameters: 0x4e9e2000 0x1000 0x7 0x11 0x3
-0x1db9c000
-[43531234.700000] Failed to flush page for address 0x4e9e2000
-[43580225.490000] syscall_stub_done : ret = -12, offset = 548682067984,
-data = 000000007f7ca010
-[43580225.490000] syscall_stub_done : syscall 9 failed, return value =
-0xfffffff4, expected return value = 0x6178000
-[43580225.490000]     syscall parameters: 0x6178000 0x1000 0x7 0x11 0x3
-0x8d02000
-[43580225.490000] Failed to flush page for address 0x6178000
-[43604789.740000] line_write_room: tty0: no room left in buffer
-[43607449.300000] syscall_stub_done : ret = -12, offset = 548682067984,
-data = 000000007f0d2010
-[43607449.300000] syscall_stub_done : syscall 9 failed, return value =
-0xfffffff4, expected return value = 0x514b4000
-[43607449.300000]     syscall parameters: 0x514b4000 0x1000 0x7 0x11 0x3
-0x1157d000
-[43607449.300000] Failed to flush page for address 0x514b4000
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
+
+---
+
+ include/asm-um/keyboard.h |    6 ------
+ 1 file changed, 6 deletions(-)
+
+bd6cdb1ee8faecc525ce49b25115f2ca21be8981 diff --git a/include/asm-um/keyboard.h b/include/asm-um/keyboard.h
+deleted file mode 100644
+index ee2e230..0000000
+--- a/include/asm-um/keyboard.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef __UM_KEYBOARD_H
+-#define __UM_KEYBOARD_H
+-
+-#include "asm/arch/keyboard.h"
+-
+-#endif
+
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
