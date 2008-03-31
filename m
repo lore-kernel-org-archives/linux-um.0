@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JgO5k-0005fl-Su for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 31 Mar 2008 10:46:44 -0700
-Received: from stinky.trash.net ([213.144.137.162])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JgO5j-0005vw-Gq
+	id 1JgQIr-0003TG-JH for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 31 Mar 2008 13:08:25 -0700
+Received: from mail43.e.nsc.no ([193.213.115.43])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JgQIn-0005rP-Ku
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 31 Mar 2008 10:46:44 -0700
-Message-ID: <47F1235F.4000704@trash.net>
-Date: Mon, 31 Mar 2008 19:46:07 +0200
-From: Patrick McHardy <kaber@trash.net>
-MIME-Version: 1.0
-References: <47E9E331.1010105@trash.net>
-	<20080331140930.GD6540@c2.user-mode-linux.org>
-In-Reply-To: <20080331140930.GD6540@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [UML]: uml-net: don't set IFF_ALLMULTI in
-	set_multicast_list
+	Mon, 31 Mar 2008 13:08:25 -0700
+From: Stian Skjelstad <stian@nixia.no>
+In-Reply-To: <20080331145036.GH6540@c2.user-mode-linux.org>
+References: <47ED74B8.8060602@nagafix.co.uk>
+	<20080331145036.GH6540@c2.user-mode-linux.org>
+Date: Mon, 31 Mar 2008 22:06:51 +0200
+Message-Id: <1206994011.6886.19.camel@localhost>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] syscall failed
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,16 +30,26 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: Linux Netdev List <netdev@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Jeff Dike wrote:
-> On Wed, Mar 26, 2008 at 06:46:25AM +0100, Patrick McHardy wrote:
->>     [UML]: uml-net: don't set IFF_ALLMULTI in set_multicast_list
+If this is a common issue/problem, perhaps an informativ error-message
+can be written when this occure, hinting the user to a possible
+solution.
+
+Stian
+
+On Mon, 2008-03-31 at 10:50 -0400, Jeff Dike wrote:
+> On Fri, Mar 28, 2008 at 10:44:08PM +0000, Antoine Martin wrote:
+> > [43492659.840000] syscall_stub_done : ret = -12, offset = 548682067984,
+> > data = 000000007f115010
+> > [43492659.840000] syscall_stub_done : syscall 9 failed, return value =
+> > 0xfffffff4, expected return value = 0x47a0000
 > 
-> I don't really understand this, but the people who do seem to like it,
-> so I'll drop it in my tree and forward it along if no one else does.
+> is just mmap returning -ENOMEM, which we've seen elsewhere with large
+> UML processes hitting the host's /proc/sys/vm/max_map_count limit.
+> Have you checked that?
 
-Thanks, its already in Linus' tree.
+
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
