@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JhupH-0001gT-C6 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Apr 2008 15:56:03 -0700
-Received: from fmmailgate04.web.de ([217.72.192.242])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JhupF-00005K-52
+	id 1JhvJ0-0004bG-Uh for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Apr 2008 16:26:46 -0700
+Received: from fmmailgate05.web.de ([217.72.192.243])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JhvIz-0000Vd-FE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Apr 2008 15:56:03 -0700
+	Fri, 04 Apr 2008 16:26:46 -0700
 Received: from web.de 
-	by fmmailgate04.web.de (Postfix) with SMTP id B30D851B7432
+	by fmmailgate05.web.de (Postfix) with SMTP id 0804D4B2D6F8
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat,  5 Apr 2008 00:55:27 +0200 (CEST)
-Date: Sat, 05 Apr 2008 00:55:26 +0200
-Message-Id: <226197483@web.de>
+	Sat,  5 Apr 2008 00:53:59 +0200 (CEST)
+Date: Sat, 05 Apr 2008 00:53:57 +0200
+Message-Id: <226194606@web.de>
 MIME-Version: 1.0
 From: devzero@web.de
-Subject: [uml-devel] FW: cosmetic issue - segfault when uml kernel panics
+Subject: [uml-devel] allyesconfig/allmodconfig broken for 2.6.25-rc8-git3
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,56 +32,50 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
-sorry for crossposting, but this was meant for user-mode-linux-devel, not user-mode-linux-user
+hi !
 
-
-
-hi there, 
-
-i never gave much about this, and iirc, it has always been like this - but it just came to my mind, so i`d like to give a comment here.
-
-if you start uml just by executing ./linux, besides that kernel panic you get a rather long error message and a segmentation fault in the end.
-
-just wondering if an end user should see that at all - is this inentional or is it just misbehaviour which not yet has been adressed ?
+this maybe minor issue, but it seems that with 2.6.25-rc8-git3, allyesconfig and allmodconfig doesn`t build for ARCH=um
 
 regards
 roland
 
 
-
-Initialized stdio console driver
-Console initialized on /dev/tty0
-console [tty0] enabled
-Initializing software serial port version 1
-console [mc-1] enabled
-Couldn't stat "root_fs" : err = 2
-Failed to initialize ubd device 0 :Couldn't determine size of device's file
-VFS: Cannot open root device "98:0" or unknown-block(98,0)
-Please append a correct "root=" boot option; here are the available partitions:
-Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(98,0)
-
-EIP: 0073:[<ffffe410>] CPU: 0 Not tainted ESP: 007b:bffde5f8 EFLAGS: 00000246
- Not tainted
-EAX: 00000000 EBX: 00002a61 ECX: 00000013 EDX: 00002a61
-ESI: 00002a5d EDI: 00000001 EBP: bffde61c DS: 007b ES: 007b
-09c5ae70: [<08069a34>] show_regs+0xb4/0xb9
-09c5ae9c: [<0805889f>] panic_exit+0x25/0x3b
-09c5aeb0: [<0808478c>] notifier_call_chain+0x21/0x46
-09c5aed0: [<08084827>] __atomic_notifier_call_chain+0x17/0x19
-09c5aeec: [<0808483e>] atomic_notifier_call_chain+0x15/0x17
-09c5af08: [<080705f6>] panic+0x52/0xdd
-09c5af28: [<08049a59>] mount_block_root+0xf8/0x10e
-09c5af7c: [<08049abb>] mount_root+0x4c/0x54
-09c5afa0: [<08049bcf>] prepare_namespace+0x10c/0x133
-09c5afa8: [<08049787>] kernel_init+0x68/0x71
-09c5afb4: [<08063d25>] run_kernel_thread+0x37/0x42
-09c5afe0: [<08056562>] new_thread_handler+0x57/0x7e
-09c5affc: [<00000000>] 0x0
-
-Segmentation fault
-_____________________________________________________________________
-Der WEB.DE SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!
-http://smartsurfer.web.de/?mc=100071&distributionid=000000000066
+# configuration written to .config
+#
+scripts/kconfig/conf -s arch/um/Kconfig
+  SYMLINK arch/um/include/sysdep
+  CHK     arch/um/include/uml-config.h
+  UPD     arch/um/include/uml-config.h
+make[2]: `arch/um/sys-i386/user-offsets.s' is up to date.
+  CHK     include/linux/version.h
+  CHK     include/linux/utsrelease.h
+  CALL    scripts/checksyscalls.sh
+  CC      init/main.o
+In file included from arch/um/include/um_uaccess.h:10,
+                 from include/asm/uaccess.h:41,
+                 from include/asm/thread_info.h:13,
+                 from include/linux/thread_info.h:35,
+                 from include/linux/preempt.h:9,
+                 from include/linux/spinlock.h:49,
+                 from include/linux/seqlock.h:29,
+                 from include/linux/time.h:8,
+                 from include/linux/stat.h:60,
+                 from include/linux/module.h:10,
+                 from init/main.c:13:
+include/asm/fixmap.h:38: error: `NR_CPUS' undeclared here (not in a function)
+include/asm/fixmap.h:38: error: enumerator value for `FIX_KMAP_END' not integer constant
+In file included from include/linux/rmap.h:9,
+                 from init/main.c:49:
+include/linux/mm.h: In function `is_vmalloc_addr':
+include/linux/mm.h:249: error: `PKMAP_BASE' undeclared (first use in this function)
+include/linux/mm.h:249: error: (Each undeclared identifier is reported only once
+include/linux/mm.h:249: error: for each function it appears in.)
+make[2]: *** [init/main.o] Error 1
+make[1]: *** [init] Error 2
+make: *** [linux] Error 2
+_________________________________________________________________________
+In 5 Schritten zur eigenen Homepage. Jetzt Domain sichern und gestalten! 
+Nur 3,99 EUR/Monat! http://www.maildomain.web.de/?mc=021114
 
 
 -------------------------------------------------------------------------
