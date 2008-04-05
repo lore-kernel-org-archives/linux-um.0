@@ -1,24 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jhyvb-00011V-45 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Apr 2008 20:18:51 -0700
-Received: from qb-out-0506.google.com ([72.14.204.239])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jhyva-0003HN-Py
+	id 1JiBWa-00021Q-Tf for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 05 Apr 2008 09:45:56 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user36276)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JiBWX-00056P-AV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Apr 2008 20:18:51 -0700
-Received: by qb-out-0506.google.com with SMTP id c8so118154qbc.4
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 04 Apr 2008 20:18:49 -0700 (PDT)
-Date: Sat, 05 Apr 2008 11:15:46 +0800 (CST)
-Message-Id: <20080405.111546.71557462.xiyou.wangcong@gmail.com>
-From: WANG Cong <xiyou.wangcong@gmail.com>
-In-Reply-To: <20080404154901.GB11545@c2.user-mode-linux.org>
-References: <20080401.230641.146239754.xiyou.wangcong@gmail.com>
-	<20080404154901.GB11545@c2.user-mode-linux.org>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] [Patch] arch/um/os-Linux/main.c: Fix memory leaks.
+	Sat, 05 Apr 2008 09:45:52 -0700
+From: Nix <nix@esperi.org.uk>
+Date: Sat, 05 Apr 2008 17:45:39 +0100
+Message-ID: <87k5jcqmh8.fsf@hades.wkstn.nix>
+MIME-Version: 1.0
+Subject: [uml-devel] Lockups with the fixed timer code :/
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,23 +27,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com
-Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@timesys.com>
 
-From: Jeff Dike <jdike@addtoit.com>
-Date: Fri, 4 Apr 2008 11:49:01 -0400
+The fixed timer patch you posted a few weeks back has indeed fixed my
+select()-based timeout woes.
 
-> On Tue, Apr 01, 2008 at 11:06:41PM +0800, WANG Cong wrote:
-> > 
-> > This patch fixes possible memory leaks in the main() function of
-> > arch/um/os-Linux/main.c.
-> 
-> I'm somewhat dubious about this - the memory is freed immediately
-> before exiting, making this patch have no practical effect.
-> 
+Unfortunately, both with the old kludgy approach and with the new
+remain-versus-max estimator code, I see intermittent tight lockups of
+the UML kernel-space ptrace thread, with that thread chewing all
+available CPU time and the virtual machine, unsurprisingly, going
+unresponsive. sysprof seems unwilling to extract anything out of this,
+even though it has debugging info; gdb-attachment is somewhat more
+informative. A few snapshots a few seconds apart in an instance that had
+been looping for some time:
 
-I think all memory leaks indicate our logic is not right, although
-this one maybe harmless.
+0x080836c2 in update_wall_time ()
+0x080836b3 in update_wall_time ()
+0x08083b32 in current_tick_length ()
+0x08083644 in update_wall_time ()
+0x0808368e in update_wall_time ()
+
+I'm willing to bet that, in the loop in update_wall_time(), `offset' is
+somehow going negative: and as it's an unsigned value that's a bit
+problematic. Unfortunately I can't see any way that could happen, unless
+something is smashing it or changing clock->cycle_interval and racing
+with the loop conditional test.
+
+I'll instrument that loop and try to figure it out.
+
+-- 
+`The rest is a tale of post and counter-post.' --- Ian Rawlings
+                                                   describes USENET
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
