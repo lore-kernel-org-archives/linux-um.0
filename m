@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JhvJ0-0004bG-Uh for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Apr 2008 16:26:46 -0700
-Received: from fmmailgate05.web.de ([217.72.192.243])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JhvIz-0000Vd-FE
+	id 1Jhyvb-00011V-45 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 04 Apr 2008 20:18:51 -0700
+Received: from qb-out-0506.google.com ([72.14.204.239])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jhyva-0003HN-Py
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 04 Apr 2008 16:26:46 -0700
-Received: from web.de 
-	by fmmailgate05.web.de (Postfix) with SMTP id 0804D4B2D6F8
+	Fri, 04 Apr 2008 20:18:51 -0700
+Received: by qb-out-0506.google.com with SMTP id c8so118154qbc.4
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat,  5 Apr 2008 00:53:59 +0200 (CEST)
-Date: Sat, 05 Apr 2008 00:53:57 +0200
-Message-Id: <226194606@web.de>
-MIME-Version: 1.0
-From: devzero@web.de
-Subject: [uml-devel] allyesconfig/allmodconfig broken for 2.6.25-rc8-git3
+	Fri, 04 Apr 2008 20:18:49 -0700 (PDT)
+Date: Sat, 05 Apr 2008 11:15:46 +0800 (CST)
+Message-Id: <20080405.111546.71557462.xiyou.wangcong@gmail.com>
+From: WANG Cong <xiyou.wangcong@gmail.com>
+In-Reply-To: <20080404154901.GB11545@c2.user-mode-linux.org>
+References: <20080401.230641.146239754.xiyou.wangcong@gmail.com>
+	<20080404154901.GB11545@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [Patch] arch/um/os-Linux/main.c: Fix memory leaks.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,53 +32,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-hi !
+From: Jeff Dike <jdike@addtoit.com>
+Date: Fri, 4 Apr 2008 11:49:01 -0400
 
-this maybe minor issue, but it seems that with 2.6.25-rc8-git3, allyesconfig and allmodconfig doesn`t build for ARCH=um
+> On Tue, Apr 01, 2008 at 11:06:41PM +0800, WANG Cong wrote:
+> > 
+> > This patch fixes possible memory leaks in the main() function of
+> > arch/um/os-Linux/main.c.
+> 
+> I'm somewhat dubious about this - the memory is freed immediately
+> before exiting, making this patch have no practical effect.
+> 
 
-regards
-roland
-
-
-# configuration written to .config
-#
-scripts/kconfig/conf -s arch/um/Kconfig
-  SYMLINK arch/um/include/sysdep
-  CHK     arch/um/include/uml-config.h
-  UPD     arch/um/include/uml-config.h
-make[2]: `arch/um/sys-i386/user-offsets.s' is up to date.
-  CHK     include/linux/version.h
-  CHK     include/linux/utsrelease.h
-  CALL    scripts/checksyscalls.sh
-  CC      init/main.o
-In file included from arch/um/include/um_uaccess.h:10,
-                 from include/asm/uaccess.h:41,
-                 from include/asm/thread_info.h:13,
-                 from include/linux/thread_info.h:35,
-                 from include/linux/preempt.h:9,
-                 from include/linux/spinlock.h:49,
-                 from include/linux/seqlock.h:29,
-                 from include/linux/time.h:8,
-                 from include/linux/stat.h:60,
-                 from include/linux/module.h:10,
-                 from init/main.c:13:
-include/asm/fixmap.h:38: error: `NR_CPUS' undeclared here (not in a function)
-include/asm/fixmap.h:38: error: enumerator value for `FIX_KMAP_END' not integer constant
-In file included from include/linux/rmap.h:9,
-                 from init/main.c:49:
-include/linux/mm.h: In function `is_vmalloc_addr':
-include/linux/mm.h:249: error: `PKMAP_BASE' undeclared (first use in this function)
-include/linux/mm.h:249: error: (Each undeclared identifier is reported only once
-include/linux/mm.h:249: error: for each function it appears in.)
-make[2]: *** [init/main.o] Error 1
-make[1]: *** [init] Error 2
-make: *** [linux] Error 2
-_________________________________________________________________________
-In 5 Schritten zur eigenen Homepage. Jetzt Domain sichern und gestalten! 
-Nur 3,99 EUR/Monat! http://www.maildomain.web.de/?mc=021114
-
+I think all memory leaks indicate our logic is not right, although
+this one maybe harmless.
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
