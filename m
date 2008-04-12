@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JkbvS-0002Rw-Vo for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Apr 2008 02:21:35 -0700
-Received: from qb-out-0506.google.com ([72.14.204.235])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JkbvS-0006FP-IO
+	id 1JkcOE-0005KZ-NR for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Apr 2008 02:51:18 -0700
+Received: from qb-out-0506.google.com ([72.14.204.237])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JkcOE-0007c8-Dk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Apr 2008 02:21:34 -0700
-Received: by qb-out-0506.google.com with SMTP id c8so846433qbc.4
+	Sat, 12 Apr 2008 02:51:18 -0700
+Received: by qb-out-0506.google.com with SMTP id c8so851770qbc.4
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 12 Apr 2008 02:21:33 -0700 (PDT)
-Date: Sat, 12 Apr 2008 17:17:47 +0800 (CST)
-Message-Id: <20080412.171747.26924099.xiyou.wangcong@gmail.com>
+	Sat, 12 Apr 2008 02:51:15 -0700 (PDT)
+Date: Sat, 12 Apr 2008 17:47:33 +0800 (CST)
+Message-Id: <20080412.174733.133433510.xiyou.wangcong@gmail.com>
 From: WANG Cong <xiyou.wangcong@gmail.com>
 Mime-Version: 1.0
-Subject: [uml-devel] [Patch] arch/um/os-Linux/sys-i386/task_size.c: improve
-	a bit
+Subject: [uml-devel] [Patch] uml: compile error fix
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,61 +25,55 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1188025975=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: linux-kernel@vger.kernel.org
 Cc: akpm@osdl.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
+--===============1188025975==
+Content-Type: Text/Plain; charset=gb2312
+Content-Transfer-Encoding: base64
 
-Improve this code a bit: check sigaction's return value and remove a useless
-fflush().
+DQpUaGlzIHBhdGNoIGZpeGVzIHRoaXMgZXJyb3I6DQoNCiAgQ0MgICAgICBhcmNoL3VtL2tlcm5l
+bC9zbXAubw0KSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC9ob21lL3dhbmdjb25nL3Byb2plY3RzL2xp
+bnV4LTIuNi9hcmNoL3VtL2tlcm5lbC9zbXAuYzo5Og0KaW5jbHVkZTIvYXNtL3RsYi5oOiBJbiBm
+dW5jdGlvbiChrnRsYl9yZW1vdmVfcGFnZaGvOg0KaW5jbHVkZTIvYXNtL3RsYi5oOjEwMTogZXJy
+b3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIKGucGFnZV9jYWNoZV9yZWxlYXNl
+oa8NCm1ha2VbMl06ICoqKiBbYXJjaC91bS9rZXJuZWwvc21wLm9dIEVycm9yIDENCm1ha2VbMV06
+ICoqKiBbYXJjaC91bS9rZXJuZWxdIEVycm9yIDINCm1ha2U6ICoqKiBbc3ViLW1ha2VdIEVycm9y
+IDINCg0KQW5kIHNpbmNlIGluY2x1ZGluZyA8bGludXgvcGFnZW1hcC5oPiBpbiA8bGludXgvc3dh
+cC5oPiB3aWxsIGJyZWFrIHNwYXJjLA0Kd2UgYWRkIHRoaXMgI2luY2x1ZGUgaW4gdW1sJ3Mgb3du
+IGhlYWRlci4NCg0KQ2M6IEplZmYgRGlrZSA8amRpa2VAYWRkdG9pdC5jb20+DQpTaWduZWQtb2Zm
+LWJ5OiBXQU5HIENvbmcgPHdhbmdjb25nQHpldXV4Lm9yZz4NCg0KLS0tDQpkaWZmIC0tZ2l0IGEv
+aW5jbHVkZS9hc20tdW0vdGxiLmggYi9pbmNsdWRlL2FzbS11bS90bGIuaA0KaW5kZXggMzlmYzQ3
+NS4uNTI0MGZhMSAxMDA2NDQNCi0tLSBhL2luY2x1ZGUvYXNtLXVtL3RsYi5oDQorKysgYi9pbmNs
+dWRlL2FzbS11bS90bGIuaA0KQEAgLTEsNiArMSw3IEBADQogI2lmbmRlZiBfX1VNX1RMQl9IDQog
+I2RlZmluZSBfX1VNX1RMQl9IDQogDQorI2luY2x1ZGUgPGxpbnV4L3BhZ2VtYXAuaD4NCiAjaW5j
+bHVkZSA8bGludXgvc3dhcC5oPg0KICNpbmNsdWRlIDxhc20vcGVyY3B1Lmg+DQogI2luY2x1ZGUg
+PGFzbS9wZ2FsbG9jLmg+DQo=
 
-Cc: Jeff Dike <jdike@addtoit.com>
-Signed-off-by: WANG Cong <wangcong@zeuux.org>
 
----
-
-diff --git a/arch/um/os-Linux/sys-i386/task_size.c b/arch/um/os-Linux/sys-i386/task_size.c
-index 48d211b..2b5bba5 100644
---- a/arch/um/os-Linux/sys-i386/task_size.c
-+++ b/arch/um/os-Linux/sys-i386/task_size.c
-@@ -88,7 +88,10 @@ unsigned long os_get_task_size(void)
- 	sa.sa_handler = segfault;
- 	sigemptyset(&sa.sa_mask);
- 	sa.sa_flags = SA_NODEFER;
--	sigaction(SIGSEGV, &sa, &old);
-+	if (sigaction(SIGSEGV, &sa, &old)) {
-+		perror("os_get_task_size");
-+		exit(1);
-+	}
- 
- 	if (!page_ok(bottom)) {
- 		fprintf(stderr, "Address 0x%x no good?\n",
-@@ -110,11 +113,12 @@ unsigned long os_get_task_size(void)
- 
- out:
- 	/* Restore the old SIGSEGV handling */
--	sigaction(SIGSEGV, &old, NULL);
--
-+	if (sigaction(SIGSEGV, &old, NULL)) {
-+		perror("os_get_task_size");
-+		exit(1);
-+	}
- 	top <<= UM_KERN_PAGE_SHIFT;
- 	printf("0x%x\n", top);
--	fflush(stdout);
- 
- 	return top;
- }
+--===============1188025975==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
 Don't miss this year's exciting event. There's still time to save $100. 
 Use priority code J8TL2D2. 
 http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone
+--===============1188025975==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============1188025975==--
