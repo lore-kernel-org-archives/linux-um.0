@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JiBWa-00021Q-Tf for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Apr 2008 09:45:56 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user36276)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JiBWX-00056P-AV
+	id 1JkbvS-0002Rw-Vo for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Apr 2008 02:21:35 -0700
+Received: from qb-out-0506.google.com ([72.14.204.235])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JkbvS-0006FP-IO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Apr 2008 09:45:52 -0700
-From: Nix <nix@esperi.org.uk>
-Date: Sat, 05 Apr 2008 17:45:39 +0100
-Message-ID: <87k5jcqmh8.fsf@hades.wkstn.nix>
-MIME-Version: 1.0
-Subject: [uml-devel] Lockups with the fixed timer code :/
+	Sat, 12 Apr 2008 02:21:34 -0700
+Received: by qb-out-0506.google.com with SMTP id c8so846433qbc.4
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 12 Apr 2008 02:21:33 -0700 (PDT)
+Date: Sat, 12 Apr 2008 17:17:47 +0800 (CST)
+Message-Id: <20080412.171747.26924099.xiyou.wangcong@gmail.com>
+From: WANG Cong <xiyou.wangcong@gmail.com>
+Mime-Version: 1.0
+Subject: [uml-devel] [Patch] arch/um/os-Linux/sys-i386/task_size.c: improve
+	a bit
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,43 +30,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@timesys.com>
+To: linux-kernel@vger.kernel.org
+Cc: akpm@osdl.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-The fixed timer patch you posted a few weeks back has indeed fixed my
-select()-based timeout woes.
 
-Unfortunately, both with the old kludgy approach and with the new
-remain-versus-max estimator code, I see intermittent tight lockups of
-the UML kernel-space ptrace thread, with that thread chewing all
-available CPU time and the virtual machine, unsurprisingly, going
-unresponsive. sysprof seems unwilling to extract anything out of this,
-even though it has debugging info; gdb-attachment is somewhat more
-informative. A few snapshots a few seconds apart in an instance that had
-been looping for some time:
+Improve this code a bit: check sigaction's return value and remove a useless
+fflush().
 
-0x080836c2 in update_wall_time ()
-0x080836b3 in update_wall_time ()
-0x08083b32 in current_tick_length ()
-0x08083644 in update_wall_time ()
-0x0808368e in update_wall_time ()
+Cc: Jeff Dike <jdike@addtoit.com>
+Signed-off-by: WANG Cong <wangcong@zeuux.org>
 
-I'm willing to bet that, in the loop in update_wall_time(), `offset' is
-somehow going negative: and as it's an unsigned value that's a bit
-problematic. Unfortunately I can't see any way that could happen, unless
-something is smashing it or changing clock->cycle_interval and racing
-with the loop conditional test.
+---
 
-I'll instrument that loop and try to figure it out.
-
--- 
-`The rest is a tale of post and counter-post.' --- Ian Rawlings
-                                                   describes USENET
+diff --git a/arch/um/os-Linux/sys-i386/task_size.c b/arch/um/os-Linux/sys-i386/task_size.c
+index 48d211b..2b5bba5 100644
+--- a/arch/um/os-Linux/sys-i386/task_size.c
++++ b/arch/um/os-Linux/sys-i386/task_size.c
+@@ -88,7 +88,10 @@ unsigned long os_get_task_size(void)
+ 	sa.sa_handler = segfault;
+ 	sigemptyset(&sa.sa_mask);
+ 	sa.sa_flags = SA_NODEFER;
+-	sigaction(SIGSEGV, &sa, &old);
++	if (sigaction(SIGSEGV, &sa, &old)) {
++		perror("os_get_task_size");
++		exit(1);
++	}
+ 
+ 	if (!page_ok(bottom)) {
+ 		fprintf(stderr, "Address 0x%x no good?\n",
+@@ -110,11 +113,12 @@ unsigned long os_get_task_size(void)
+ 
+ out:
+ 	/* Restore the old SIGSEGV handling */
+-	sigaction(SIGSEGV, &old, NULL);
+-
++	if (sigaction(SIGSEGV, &old, NULL)) {
++		perror("os_get_task_size");
++		exit(1);
++	}
+ 	top <<= UM_KERN_PAGE_SHIFT;
+ 	printf("0x%x\n", top);
+-	fflush(stdout);
+ 
+ 	return top;
+ }
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
-Register now and save $200. Hurry, offer ends at 11:59 p.m., 
-Monday, April 7! Use priority code J8TLD2. 
+Don't miss this year's exciting event. There's still time to save $100. 
+Use priority code J8TL2D2. 
 http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone
 _______________________________________________
 User-mode-linux-devel mailing list
