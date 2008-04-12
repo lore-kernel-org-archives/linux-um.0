@@ -2,20 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JkiQn-0007oJ-Qt for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Apr 2008 09:18:22 -0700
-Received: from qb-out-0506.google.com ([72.14.204.226])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JkiQn-0005c3-CI
+	id 1Jkj4p-0003eG-Bc for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Apr 2008 09:59:43 -0700
+Received: from qb-out-0506.google.com ([72.14.204.234])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jkj4o-0004H6-Hx
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Apr 2008 09:18:21 -0700
-Received: by qb-out-0506.google.com with SMTP id c8so927110qbc.4
+	Sat, 12 Apr 2008 09:59:43 -0700
+Received: by qb-out-0506.google.com with SMTP id a33so259562qbd.0
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 12 Apr 2008 09:18:20 -0700 (PDT)
-Date: Sun, 13 Apr 2008 00:14:39 +0800 (CST)
-Message-Id: <20080413.001439.130519292.xiyou.wangcong@gmail.com>
+	Sat, 12 Apr 2008 09:59:41 -0700 (PDT)
+Date: Sun, 13 Apr 2008 00:55:59 +0800 (CST)
+Message-Id: <20080413.005559.143852921.xiyou.wangcong@gmail.com>
 From: WANG Cong <xiyou.wangcong@gmail.com>
 Mime-Version: 1.0
-Subject: [uml-devel] [Patch] UML: Make several things static.
+Subject: [uml-devel] [Patch] UML: Clean up arch/um/drivers/ubd_kern.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,92 +33,452 @@ To: linux-kernel@vger.kernel.org
 Cc: akpm@osdl.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
 
-Make several things static, because they no longer need to be global.
+Make some global functions and variables static.
+
+And remove some useless declarations for local functions, since we just
+need to move their definitions ahead.
+
+Compile testing passed.
 
 Cc: Jeff Dike <jdike@addtoit.com>
 Signed-off-by: WANG Cong <wangcong@zeuux.org>
 
 ---
- arch/um/drivers/net_kern.c      |    6 +++---
- arch/um/drivers/slip_kern.c     |    4 ++--
- arch/um/drivers/stdio_console.c |    4 ++--
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ arch/um/drivers/ubd_kern.c |  379 +++++++++++++++++++++-----------------------
+ 1 files changed, 184 insertions(+), 195 deletions(-)
 
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 1d43bdf..5b4ca8d 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -116,7 +116,7 @@ static void uml_dev_close(struct work_struct *work)
- 	dev_close(lp->dev);
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index be3a279..df5aa37 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -72,18 +72,6 @@ struct io_thread_req {
+ 	int error;
+ };
+ 
+-extern int open_ubd_file(char *file, struct openflags *openflags, int shared,
+-			 char **backing_file_out, int *bitmap_offset_out,
+-			 unsigned long *bitmap_len_out, int *data_offset_out,
+-			 int *create_cow_out);
+-extern int create_cow_file(char *cow_file, char *backing_file,
+-			   struct openflags flags, int sectorsize,
+-			   int alignment, int *bitmap_offset_out,
+-			   unsigned long *bitmap_len_out,
+-			   int *data_offset_out);
+-extern int read_cow_bitmap(int fd, void *buf, int offset, int len);
+-extern void do_io(struct io_thread_req *req);
+-
+ static inline int ubd_test_bit(__u64 bit, unsigned char *data)
+ {
+ 	__u64 n;
+@@ -200,7 +188,7 @@ struct ubd {
  }
  
--irqreturn_t uml_net_interrupt(int irq, void *dev_id)
-+static irqreturn_t uml_net_interrupt(int irq, void *dev_id)
- {
- 	struct net_device *dev = dev_id;
- 	struct uml_net_private *lp = dev->priv;
-@@ -296,7 +296,7 @@ static struct ethtool_ops uml_net_ethtool_ops = {
- 	.get_link	= ethtool_op_get_link,
- };
+ /* Protected by ubd_lock */
+-struct ubd ubd_devs[MAX_DEV] = { [ 0 ... MAX_DEV - 1 ] = DEFAULT_UBD };
++static struct ubd ubd_devs[MAX_DEV] = { [ 0 ... MAX_DEV - 1 ] = DEFAULT_UBD };
  
--void uml_net_user_timer_expire(unsigned long _conn)
-+static void uml_net_user_timer_expire(unsigned long _conn)
+ /* Only changed by fake_ide_setup which is a setup */
+ static int fake_ide = 0;
+@@ -463,7 +451,7 @@ __uml_help(udb_setup,
+ static void do_ubd_request(struct request_queue * q);
+ 
+ /* Only changed by ubd_init, which is an initcall. */
+-int thread_fd = -1;
++static int thread_fd = -1;
+ 
+ static void ubd_end_request(struct request *req, int bytes, int error)
  {
- #ifdef undef
- 	struct connection *conn = (struct connection *)_conn;
-@@ -786,7 +786,7 @@ static int uml_inetaddr_event(struct notifier_block *this, unsigned long event,
+@@ -531,7 +519,7 @@ static irqreturn_t ubd_intr(int irq, void *dev)
+ /* Only changed by ubd_init, which is an initcall. */
+ static int io_pid = -1;
+ 
+-void kill_io_thread(void)
++static void kill_io_thread(void)
+ {
+ 	if(io_pid != -1)
+ 		os_kill_process(io_pid, 1);
+@@ -547,6 +535,186 @@ static inline int ubd_file_size(struct ubd *ubd_dev, __u64 *size_out)
+ 	return os_file_size(file, size_out);
  }
  
- /* uml_net_init shouldn't be called twice on two CPUs at the same time */
--struct notifier_block uml_inetaddr_notifier = {
-+static struct notifier_block uml_inetaddr_notifier = {
- 	.notifier_call		= uml_inetaddr_event,
- };
- 
-diff --git a/arch/um/drivers/slip_kern.c b/arch/um/drivers/slip_kern.c
-index 6b4a0f9..d19faec 100644
---- a/arch/um/drivers/slip_kern.c
-+++ b/arch/um/drivers/slip_kern.c
-@@ -13,7 +13,7 @@ struct slip_init {
- 	char *gate_addr;
- };
- 
--void slip_init(struct net_device *dev, void *data)
-+static void slip_init(struct net_device *dev, void *data)
++static int read_cow_bitmap(int fd, void *buf, int offset, int len)
++{
++	int err;
++
++	err = os_seek_file(fd, offset);
++	if(err < 0)
++		return err;
++
++	err = os_read_file(fd, buf, len);
++	if(err < 0)
++		return err;
++
++	return 0;
++}
++
++static int backing_file_mismatch(char *file, __u64 size, time_t mtime)
++{
++	unsigned long modtime;
++	unsigned long long actual;
++	int err;
++
++	err = os_file_modtime(file, &modtime);
++	if(err < 0){
++		printk("Failed to get modification time of backing file "
++		       "\"%s\", err = %d\n", file, -err);
++		return err;
++	}
++
++	err = os_file_size(file, &actual);
++	if(err < 0){
++		printk("Failed to get size of backing file \"%s\", "
++		       "err = %d\n", file, -err);
++		return err;
++	}
++
++	if(actual != size){
++		/*__u64 can be a long on AMD64 and with %lu GCC complains; so
++		 * the typecast.*/
++		printk("Size mismatch (%llu vs %llu) of COW header vs backing "
++		       "file\n", (unsigned long long) size, actual);
++		return -EINVAL;
++	}
++	if(modtime != mtime){
++		printk("mtime mismatch (%ld vs %ld) of COW header vs backing "
++		       "file\n", mtime, modtime);
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int path_requires_switch(char *from_cmdline, char *from_cow, char *cow)
++{
++	struct uml_stat buf1, buf2;
++	int err;
++
++	if(from_cmdline == NULL)
++		return 0;
++	if(!strcmp(from_cmdline, from_cow))
++		return 0;
++
++	err = os_stat_file(from_cmdline, &buf1);
++	if(err < 0){
++		printk("Couldn't stat '%s', err = %d\n", from_cmdline, -err);
++		return 0;
++	}
++	err = os_stat_file(from_cow, &buf2);
++	if(err < 0){
++		printk("Couldn't stat '%s', err = %d\n", from_cow, -err);
++		return 1;
++	}
++	if((buf1.ust_dev == buf2.ust_dev) && (buf1.ust_ino == buf2.ust_ino))
++		return 0;
++
++	printk("Backing file mismatch - \"%s\" requested,\n"
++	       "\"%s\" specified in COW header of \"%s\"\n",
++	       from_cmdline, from_cow, cow);
++	return 1;
++}
++
++static int open_ubd_file(char *file, struct openflags *openflags, int shared,
++		  char **backing_file_out, int *bitmap_offset_out,
++		  unsigned long *bitmap_len_out, int *data_offset_out,
++		  int *create_cow_out)
++{
++	time_t mtime;
++	unsigned long long size;
++	__u32 version, align;
++	char *backing_file;
++	int fd, err, sectorsize, asked_switch, mode = 0644;
++
++	fd = os_open_file(file, *openflags, mode);
++	if (fd < 0) {
++		if ((fd == -ENOENT) && (create_cow_out != NULL))
++			*create_cow_out = 1;
++		if (!openflags->w ||
++		    ((fd != -EROFS) && (fd != -EACCES)))
++			return fd;
++		openflags->w = 0;
++		fd = os_open_file(file, *openflags, mode);
++		if (fd < 0)
++			return fd;
++	}
++
++	if(shared)
++		printk("Not locking \"%s\" on the host\n", file);
++	else {
++		err = os_lock_file(fd, openflags->w);
++		if(err < 0){
++			printk("Failed to lock '%s', err = %d\n", file, -err);
++			goto out_close;
++		}
++	}
++
++	/* Successful return case! */
++	if(backing_file_out == NULL)
++		return fd;
++
++	err = read_cow_header(file_reader, &fd, &version, &backing_file, &mtime,
++			      &size, &sectorsize, &align, bitmap_offset_out);
++	if(err && (*backing_file_out != NULL)){
++		printk("Failed to read COW header from COW file \"%s\", "
++		       "errno = %d\n", file, -err);
++		goto out_close;
++	}
++	if(err)
++		return fd;
++
++	asked_switch = path_requires_switch(*backing_file_out, backing_file, file);
++
++	/* Allow switching only if no mismatch. */
++	if (asked_switch && !backing_file_mismatch(*backing_file_out, size, mtime)) {
++		printk("Switching backing file to '%s'\n", *backing_file_out);
++		err = write_cow_header(file, fd, *backing_file_out,
++				       sectorsize, align, &size);
++		if (err) {
++			printk("Switch failed, errno = %d\n", -err);
++			goto out_close;
++		}
++	} else {
++		*backing_file_out = backing_file;
++		err = backing_file_mismatch(*backing_file_out, size, mtime);
++		if (err)
++			goto out_close;
++	}
++
++	cow_sizes(version, size, sectorsize, align, *bitmap_offset_out,
++		  bitmap_len_out, data_offset_out);
++
++	return fd;
++ out_close:
++	os_close_file(fd);
++	return err;
++}
++
++static int create_cow_file(char *cow_file, char *backing_file,
++		    struct openflags flags,
++		    int sectorsize, int alignment, int *bitmap_offset_out,
++		    unsigned long *bitmap_len_out, int *data_offset_out)
++{
++	int err, fd;
++
++	flags.c = 1;
++	fd = open_ubd_file(cow_file, &flags, 0, NULL, NULL, NULL, NULL, NULL);
++	if(fd < 0){
++		err = fd;
++		printk("Open of COW file '%s' failed, errno = %d\n", cow_file,
++		       -err);
++		goto out;
++	}
++
++	err = init_cow_file(fd, cow_file, backing_file, sectorsize, alignment,
++			    bitmap_offset_out, bitmap_len_out,
++			    data_offset_out);
++	if(!err)
++		return fd;
++	os_close_file(fd);
++ out:
++	return err;
++}
++
+ static void ubd_close_dev(struct ubd *ubd_dev)
  {
- 	struct uml_net_private *private;
- 	struct slip_data *spri;
-@@ -57,7 +57,7 @@ static int slip_write(int fd, struct sk_buff *skb, struct uml_net_private *lp)
- 			       (struct slip_data *) &lp->user);
+ 	os_close_file(ubd_dev->fd);
+@@ -1166,185 +1334,6 @@ static int ubd_ioctl(struct inode * inode, struct file * file,
+ 	return -EINVAL;
  }
  
--const struct net_kern_info slip_kern_info = {
-+static const struct net_kern_info slip_kern_info = {
- 	.init			= slip_init,
- 	.protocol		= slip_protocol,
- 	.read			= slip_read,
-diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
-index cec0c33..49266f6 100644
---- a/arch/um/drivers/stdio_console.c
-+++ b/arch/um/drivers/stdio_console.c
-@@ -34,7 +34,7 @@
- 
- static struct tty_driver *console_driver;
- 
--void stdio_announce(char *dev_name, int dev)
-+static void stdio_announce(char *dev_name, int dev)
+-static int path_requires_switch(char *from_cmdline, char *from_cow, char *cow)
+-{
+-	struct uml_stat buf1, buf2;
+-	int err;
+-
+-	if(from_cmdline == NULL)
+-		return 0;
+-	if(!strcmp(from_cmdline, from_cow))
+-		return 0;
+-
+-	err = os_stat_file(from_cmdline, &buf1);
+-	if(err < 0){
+-		printk("Couldn't stat '%s', err = %d\n", from_cmdline, -err);
+-		return 0;
+-	}
+-	err = os_stat_file(from_cow, &buf2);
+-	if(err < 0){
+-		printk("Couldn't stat '%s', err = %d\n", from_cow, -err);
+-		return 1;
+-	}
+-	if((buf1.ust_dev == buf2.ust_dev) && (buf1.ust_ino == buf2.ust_ino))
+-		return 0;
+-
+-	printk("Backing file mismatch - \"%s\" requested,\n"
+-	       "\"%s\" specified in COW header of \"%s\"\n",
+-	       from_cmdline, from_cow, cow);
+-	return 1;
+-}
+-
+-static int backing_file_mismatch(char *file, __u64 size, time_t mtime)
+-{
+-	unsigned long modtime;
+-	unsigned long long actual;
+-	int err;
+-
+-	err = os_file_modtime(file, &modtime);
+-	if(err < 0){
+-		printk("Failed to get modification time of backing file "
+-		       "\"%s\", err = %d\n", file, -err);
+-		return err;
+-	}
+-
+-	err = os_file_size(file, &actual);
+-	if(err < 0){
+-		printk("Failed to get size of backing file \"%s\", "
+-		       "err = %d\n", file, -err);
+-		return err;
+-	}
+-
+-	if(actual != size){
+-		/*__u64 can be a long on AMD64 and with %lu GCC complains; so
+-		 * the typecast.*/
+-		printk("Size mismatch (%llu vs %llu) of COW header vs backing "
+-		       "file\n", (unsigned long long) size, actual);
+-		return -EINVAL;
+-	}
+-	if(modtime != mtime){
+-		printk("mtime mismatch (%ld vs %ld) of COW header vs backing "
+-		       "file\n", mtime, modtime);
+-		return -EINVAL;
+-	}
+-	return 0;
+-}
+-
+-int read_cow_bitmap(int fd, void *buf, int offset, int len)
+-{
+-	int err;
+-
+-	err = os_seek_file(fd, offset);
+-	if(err < 0)
+-		return err;
+-
+-	err = os_read_file(fd, buf, len);
+-	if(err < 0)
+-		return err;
+-
+-	return 0;
+-}
+-
+-int open_ubd_file(char *file, struct openflags *openflags, int shared,
+-		  char **backing_file_out, int *bitmap_offset_out,
+-		  unsigned long *bitmap_len_out, int *data_offset_out,
+-		  int *create_cow_out)
+-{
+-	time_t mtime;
+-	unsigned long long size;
+-	__u32 version, align;
+-	char *backing_file;
+-	int fd, err, sectorsize, asked_switch, mode = 0644;
+-
+-	fd = os_open_file(file, *openflags, mode);
+-	if (fd < 0) {
+-		if ((fd == -ENOENT) && (create_cow_out != NULL))
+-			*create_cow_out = 1;
+-		if (!openflags->w ||
+-		    ((fd != -EROFS) && (fd != -EACCES)))
+-			return fd;
+-		openflags->w = 0;
+-		fd = os_open_file(file, *openflags, mode);
+-		if (fd < 0)
+-			return fd;
+-	}
+-
+-	if(shared)
+-		printk("Not locking \"%s\" on the host\n", file);
+-	else {
+-		err = os_lock_file(fd, openflags->w);
+-		if(err < 0){
+-			printk("Failed to lock '%s', err = %d\n", file, -err);
+-			goto out_close;
+-		}
+-	}
+-
+-	/* Successful return case! */
+-	if(backing_file_out == NULL)
+-		return fd;
+-
+-	err = read_cow_header(file_reader, &fd, &version, &backing_file, &mtime,
+-			      &size, &sectorsize, &align, bitmap_offset_out);
+-	if(err && (*backing_file_out != NULL)){
+-		printk("Failed to read COW header from COW file \"%s\", "
+-		       "errno = %d\n", file, -err);
+-		goto out_close;
+-	}
+-	if(err)
+-		return fd;
+-
+-	asked_switch = path_requires_switch(*backing_file_out, backing_file, file);
+-
+-	/* Allow switching only if no mismatch. */
+-	if (asked_switch && !backing_file_mismatch(*backing_file_out, size, mtime)) {
+-		printk("Switching backing file to '%s'\n", *backing_file_out);
+-		err = write_cow_header(file, fd, *backing_file_out,
+-				       sectorsize, align, &size);
+-		if (err) {
+-			printk("Switch failed, errno = %d\n", -err);
+-			goto out_close;
+-		}
+-	} else {
+-		*backing_file_out = backing_file;
+-		err = backing_file_mismatch(*backing_file_out, size, mtime);
+-		if (err)
+-			goto out_close;
+-	}
+-
+-	cow_sizes(version, size, sectorsize, align, *bitmap_offset_out,
+-		  bitmap_len_out, data_offset_out);
+-
+-	return fd;
+- out_close:
+-	os_close_file(fd);
+-	return err;
+-}
+-
+-int create_cow_file(char *cow_file, char *backing_file, struct openflags flags,
+-		    int sectorsize, int alignment, int *bitmap_offset_out,
+-		    unsigned long *bitmap_len_out, int *data_offset_out)
+-{
+-	int err, fd;
+-
+-	flags.c = 1;
+-	fd = open_ubd_file(cow_file, &flags, 0, NULL, NULL, NULL, NULL, NULL);
+-	if(fd < 0){
+-		err = fd;
+-		printk("Open of COW file '%s' failed, errno = %d\n", cow_file,
+-		       -err);
+-		goto out;
+-	}
+-
+-	err = init_cow_file(fd, cow_file, backing_file, sectorsize, alignment,
+-			    bitmap_offset_out, bitmap_len_out,
+-			    data_offset_out);
+-	if(!err)
+-		return fd;
+-	os_close_file(fd);
+- out:
+-	return err;
+-}
+-
+ static int update_bitmap(struct io_thread_req *req)
  {
- 	printk(KERN_INFO "Virtual console %d assigned device '%s'\n", dev,
- 	       dev_name);
-@@ -158,7 +158,7 @@ static struct console stdiocons = {
- 	.index		= -1,
- };
+ 	int n;
+@@ -1369,7 +1358,7 @@ static int update_bitmap(struct io_thread_req *req)
+ 	return 0;
+ }
  
--int stdio_init(void)
-+static int stdio_init(void)
+-void do_io(struct io_thread_req *req)
++static void do_io(struct io_thread_req *req)
  {
- 	char *new_title;
- 
+ 	char *buf;
+ 	unsigned long len;
 -- 
 1.5.2.4
 
