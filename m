@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JkhsY-0003yu-25 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Apr 2008 08:42:58 -0700
-Received: from qb-out-0506.google.com ([72.14.204.231])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JkhsX-0001vS-OY
+	id 1Jkhnq-0003UX-A6 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Apr 2008 08:38:06 -0700
+Received: from qb-out-0506.google.com ([72.14.204.237])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jkhnp-0004ch-B7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Apr 2008 08:42:58 -0700
-Received: by qb-out-0506.google.com with SMTP id a33so241017qbd.0
+	Sat, 12 Apr 2008 08:38:06 -0700
+Received: by qb-out-0506.google.com with SMTP id c8so917455qbc.4
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 12 Apr 2008 08:42:56 -0700 (PDT)
-Date: Sat, 12 Apr 2008 23:39:14 +0800 (CST)
-Message-Id: <20080412.233914.54446044.xiyou.wangcong@gmail.com>
+	Sat, 12 Apr 2008 08:38:04 -0700 (PDT)
+Date: Sat, 12 Apr 2008 23:34:23 +0800 (CST)
+Message-Id: <20080412.233423.112727172.xiyou.wangcong@gmail.com>
 From: WANG Cong <xiyou.wangcong@gmail.com>
 Mime-Version: 1.0
-Subject: [uml-devel] [Patch] UML: Fix another build error
+Subject: [uml-devel] [Patch] UML: Make three functions static
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,46 +25,81 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: linux-kernel@vger.kernel.org
 Cc: akpm@osdl.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-DQpUaGlzIHBhdGNoIGZpeGVzIHRoZSBmb2xsb3dpbmcgYnVpbGQgZXJyb3IuDQoNCiAgQ0MgICAg
-ICBhcmNoL3VtL2RyaXZlcnMvbWNvbnNvbGVfa2Vybi5vDQovaG9tZS93YW5nY29uZy9wcm9qZWN0
-cy9saW51eC0yLjYvYXJjaC91bS9kcml2ZXJzL21jb25zb2xlX2tlcm4uYzozMzc6IGVycm9yOiBy
-ZWRlZmluaXRpb24gb2Yg4oCYbWNvbnNvbGVfcmVnaXN0ZXJfZGV24oCZDQovaG9tZS93YW5nY29u
-Zy9wcm9qZWN0cy9saW51eC0yLjYvYXJjaC91bS9pbmNsdWRlL21jb25zb2xlX2tlcm4uaDo0Nzog
-ZXJyb3I6IHByZXZpb3VzIGRlZmluaXRpb24gb2Yg4oCYbWNvbnNvbGVfcmVnaXN0ZXJfZGV24oCZ
-IHdhcyBoZXJlDQptYWtlWzJdOiAqKiogW2FyY2gvdW0vZHJpdmVycy9tY29uc29sZV9rZXJuLm9d
-IEVycm9yIDENCm1ha2VbMV06ICoqKiBbYXJjaC91bS9kcml2ZXJzL21jb25zb2xlX2tlcm4ua29d
-IEVycm9yIDINCm1ha2U6ICoqKiBbc3ViLW1ha2VdIEVycm9yIDINCg0KQ29tcGlsZSB0ZXN0aW5n
-IHBhc3NlZC4NCg0KQ2M6IEplZmYgRGlrZSA8amRpa2VAYWRkdG9pdC5jb20+DQpTaWduZWQtb2Zm
-LWJ5OiBXQU5HIENvbmcgPHdhbmdjb25nQHpldXV4Lm9yZz4NCg0KLS0tDQogYXJjaC91bS9kcml2
-ZXJzL21jb25zb2xlX2tlcm4uYyB8ICAgIDYgKysrKystDQogMSBmaWxlcyBjaGFuZ2VkLCA1IGlu
-c2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9hcmNoL3VtL2RyaXZl
-cnMvbWNvbnNvbGVfa2Vybi5jIGIvYXJjaC91bS9kcml2ZXJzL21jb25zb2xlX2tlcm4uYw0KaW5k
-ZXggMTlkNTc5ZC4uZTk0Y2NiOCAxMDA2NDQNCi0tLSBhL2FyY2gvdW0vZHJpdmVycy9tY29uc29s
-ZV9rZXJuLmMNCisrKyBiL2FyY2gvdW0vZHJpdmVycy9tY29uc29sZV9rZXJuLmMNCkBAIC0zMzAs
-OSArMzMwLDEyIEBAIHZvaWQgbWNvbnNvbGVfc3RvcChzdHJ1Y3QgbWNfcmVxdWVzdCAqcmVxKQ0K
-IAltY29uc29sZV9yZXBseShyZXEsICIiLCAwLCAwKTsNCiB9DQogDQotc3RhdGljIERFRklORV9T
-UElOTE9DSyhtY19kZXZpY2VzX2xvY2spOw0KIHN0YXRpYyBMSVNUX0hFQUQobWNvbnNvbGVfZGV2
-aWNlcyk7DQogDQorI2lmZGVmIENPTkZJR19NQ09OU09MRQ0KKw0KK3N0YXRpYyBERUZJTkVfU1BJ
-TkxPQ0sobWNfZGV2aWNlc19sb2NrKTsNCisNCiB2b2lkIG1jb25zb2xlX3JlZ2lzdGVyX2Rldihz
-dHJ1Y3QgbWNfZGV2aWNlICpuZXcpDQogew0KIAlzcGluX2xvY2soJm1jX2RldmljZXNfbG9jayk7
-DQpAQCAtMzQwLDYgKzM0Myw3IEBAIHZvaWQgbWNvbnNvbGVfcmVnaXN0ZXJfZGV2KHN0cnVjdCBt
-Y19kZXZpY2UgKm5ldykNCiAJbGlzdF9hZGQoJm5ldy0+bGlzdCwgJm1jb25zb2xlX2RldmljZXMp
-Ow0KIAlzcGluX3VubG9jaygmbWNfZGV2aWNlc19sb2NrKTsNCiB9DQorI2VuZGlmDQogDQogc3Rh
-dGljIHN0cnVjdCBtY19kZXZpY2UgKm1jb25zb2xlX2ZpbmRfZGV2KGNoYXIgKm5hbWUpDQogew0K
-LS0gDQoxLjUuMi40DQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5uZXQgZW1haWwgaXMgc3Bv
-bnNvcmVkIGJ5IHRoZSAyMDA4IEphdmFPbmUoU00pIENvbmZlcmVuY2UgCkRvbid0IG1pc3MgdGhp
-cyB5ZWFyJ3MgZXhjaXRpbmcgZXZlbnQuIFRoZXJlJ3Mgc3RpbGwgdGltZSB0byBzYXZlICQxMDAu
-IApVc2UgcHJpb3JpdHkgY29kZSBKOFRMMkQyLiAKaHR0cDovL2FkLmRvdWJsZWNsaWNrLm5ldC9j
-bGs7MTk4NzU3NjczOzEzNTAzMDM4O3A/aHR0cDovL2phdmEuc3VuLmNvbS9qYXZhb25lCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51
-eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2Vy
-LW1vZGUtbGludXgtZGV2ZWwK
+
+Make the following three functions static, since they don't need to be
+global.
+
+arch/um/drivers/mcast_kern.c::mcast_setup()
+arch/um/drivers/mconsole_user.c::mconsole_reply_v0()
+arch/um/drivers/port_user.c::port_pre_exec()
+
+Compile testing passed.
+
+Cc: Jeff Dike <jdike@addtoit.com>
+Signed-off-by: WANG Cong <wangcong@zeuux.org>
+
+---
+ arch/um/drivers/mcast_kern.c    |    2 +-
+ arch/um/drivers/mconsole_user.c |    2 +-
+ arch/um/drivers/port_user.c     |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/um/drivers/mcast_kern.c b/arch/um/drivers/mcast_kern.c
+index 822092f..8c4378a 100644
+--- a/arch/um/drivers/mcast_kern.c
++++ b/arch/um/drivers/mcast_kern.c
+@@ -58,7 +58,7 @@ static const struct net_kern_info mcast_kern_info = {
+ 	.write			= mcast_write,
+ };
+ 
+-int mcast_setup(char *str, char **mac_out, void *data)
++static int mcast_setup(char *str, char **mac_out, void *data)
+ {
+ 	struct mcast_init *init = data;
+ 	char *port_str = NULL, *ttl_str = NULL, *remain;
+diff --git a/arch/um/drivers/mconsole_user.c b/arch/um/drivers/mconsole_user.c
+index 13af2f0..f8cf4c8 100644
+--- a/arch/um/drivers/mconsole_user.c
++++ b/arch/um/drivers/mconsole_user.c
+@@ -39,7 +39,7 @@ static struct mconsole_command commands[] = {
+ /* Initialized in mconsole_init, which is an initcall */
+ char mconsole_socket_name[256];
+ 
+-int mconsole_reply_v0(struct mc_request *req, char *reply)
++static int mconsole_reply_v0(struct mc_request *req, char *reply)
+ {
+ 	struct iovec iov;
+ 	struct msghdr msg;
+diff --git a/arch/um/drivers/port_user.c b/arch/um/drivers/port_user.c
+index addd759..d269ca3 100644
+--- a/arch/um/drivers/port_user.c
++++ b/arch/um/drivers/port_user.c
+@@ -153,7 +153,7 @@ struct port_pre_exec_data {
+ 	int pipe_fd;
+ };
+ 
+-void port_pre_exec(void *arg)
++static void port_pre_exec(void *arg)
+ {
+ 	struct port_pre_exec_data *data = arg;
+ 
+-- 
+1.5.2.4
+
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
+Don't miss this year's exciting event. There's still time to save $100. 
+Use priority code J8TL2D2. 
+http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
