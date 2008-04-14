@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JlQFb-0000ik-HM for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Apr 2008 08:05:43 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1JlQrw-0006Uy-A6 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Apr 2008 08:45:20 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JlQEM-0004j2-2E
+	(Exim 4.44) id 1JlQrs-0005UC-Cu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Apr 2008 08:05:38 -0700
-Date: Mon, 14 Apr 2008 11:03:58 -0400
+	Mon, 14 Apr 2008 08:45:18 -0700
+Date: Mon, 14 Apr 2008 11:44:58 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080414150358.GD7186@c2.user-mode-linux.org>
-References: <20080412.174733.133433510.xiyou.wangcong@gmail.com>
+Message-ID: <20080414154458.GB9434@c2.user-mode-linux.org>
+References: <20080413.005559.143852921.xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20080412.174733.133433510.xiyou.wangcong@gmail.com>
-Subject: Re: [uml-devel] [Patch] uml: compile error fix
+In-Reply-To: <20080413.005559.143852921.xiyou.wangcong@gmail.com>
+Subject: Re: [uml-devel] [Patch] UML: Clean up arch/um/drivers/ubd_kern.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,33 +26,27 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: WANG Cong <xiyou.wangcong@gmail.com>
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-T24gU2F0LCBBcHIgMTIsIDIwMDggYXQgMDU6NDc6MzNQTSArMDgwMCwgV0FORyBDb25nIHdyb3Rl
-Ogo+IAo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBlcnJvcjoKPiAKPiAgIENDICAgICAgYXJjaC91
-bS9rZXJuZWwvc21wLm8KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gL2hvbWUvd2FuZ2NvbmcvcHJv
-amVjdHMvbGludXgtMi42L2FyY2gvdW0va2VybmVsL3NtcC5jOjk6Cj4gaW5jbHVkZTIvYXNtL3Rs
-Yi5oOiBJbiBmdW5jdGlvbiDigJh0bGJfcmVtb3ZlX3BhZ2XigJk6Cj4gaW5jbHVkZTIvYXNtL3Rs
-Yi5oOjEwMTogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmHBhZ2Vf
-Y2FjaGVfcmVsZWFzZeKAmQo+IG1ha2VbMl06ICoqKiBbYXJjaC91bS9rZXJuZWwvc21wLm9dIEVy
-cm9yIDEKPiBtYWtlWzFdOiAqKiogW2FyY2gvdW0va2VybmVsXSBFcnJvciAyCj4gbWFrZTogKioq
-IFtzdWItbWFrZV0gRXJyb3IgMgo+IAo+IEFuZCBzaW5jZSBpbmNsdWRpbmcgPGxpbnV4L3BhZ2Vt
-YXAuaD4gaW4gPGxpbnV4L3N3YXAuaD4gd2lsbCBicmVhayBzcGFyYywKPiB3ZSBhZGQgdGhpcyAj
-aW5jbHVkZSBpbiB1bWwncyBvd24gaGVhZGVyLgoKU2lnaCwgQUNLLgoKSSB0b29rIGEgc3RhYiBh
-dCBmaXhpbmcgdGhpcyBwcm9ibGVtIGZvciByZWFsIGEgd2hpbGUgYWdvIGJ5CnVudGFuZ2xpbmcg
-dGhlIGhlYWRlcnMgaW52b2x2ZWQsIGJ1dCBmYWlsZWQuCgoJICAgICAgIAkgICAgICAgCQkgSmVm
-ZgoKLS0gCldvcmsgZW1haWwgLSBqZGlrZSBhdCBsaW51eCBkb3QgaW50ZWwgZG90IGNvbQoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnkgdGhlIDIwMDgg
-SmF2YU9uZShTTSkgQ29uZmVyZW5jZSAKRG9uJ3QgbWlzcyB0aGlzIHllYXIncyBleGNpdGluZyBl
-dmVudC4gVGhlcmUncyBzdGlsbCB0aW1lIHRvIHNhdmUgJDEwMC4gClVzZSBwcmlvcml0eSBjb2Rl
-IEo4VEwyRDIuIApodHRwOi8vYWQuZG91YmxlY2xpY2submV0L2NsazsxOTg3NTc2NzM7MTM1MDMw
-Mzg7cD9odHRwOi8vamF2YS5zdW4uY29tL2phdmFvbmUKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlz
-dApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlz
-dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+These are all fine, except for the mconsole one for which I need some more
+explanation.
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
+Don't miss this year's exciting event. There's still time to save $100. 
+Use priority code J8TL2D2. 
+http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
