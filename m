@@ -2,21 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JlPvV-0006sP-0T for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Apr 2008 07:44:57 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1JlQAA-0008Ov-6h for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Apr 2008 08:00:06 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JlPvQ-0004oK-OC
+	(Exim 4.44) id 1JlQ9p-0002ax-Cm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Apr 2008 07:44:56 -0700
-Date: Mon, 14 Apr 2008 10:40:52 -0400
+	Mon, 14 Apr 2008 07:59:50 -0700
+Date: Mon, 14 Apr 2008 10:59:17 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080414144052.GA7186@c2.user-mode-linux.org>
-References: <87k5jcqmh8.fsf@hades.wkstn.nix>
+Message-ID: <20080414145917.GC7186@c2.user-mode-linux.org>
+References: <20080412.171747.26924099.xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87k5jcqmh8.fsf@hades.wkstn.nix>
-Subject: Re: [uml-devel] Lockups with the fixed timer code :/
+In-Reply-To: <20080412.171747.26924099.xiyou.wangcong@gmail.com>
+Subject: Re: [uml-devel] [Patch] arch/um/os-Linux/sys-i386/task_size.c:
+	improve a bit
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,59 +31,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Nix <nix@esperi.org.uk>
-Cc: Thomas Gleixner <tglx@timesys.com>, user-mode-linux-devel@lists.sourceforge.net
+To: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Apr 05, 2008 at 05:45:39PM +0100, Nix wrote:
-> The fixed timer patch you posted a few weeks back has indeed fixed my
-> select()-based timeout woes.
-> 
-> Unfortunately, both with the old kludgy approach and with the new
-> remain-versus-max estimator code, I see intermittent tight lockups of
-> the UML kernel-space ptrace thread, with that thread chewing all
-> available CPU time and the virtual machine, unsurprisingly, going
-> unresponsive. 
+On Sat, Apr 12, 2008 at 05:17:47PM +0800, WANG Cong wrote:
+> Improve this code a bit: check sigaction's return value and remove a useless
+> fflush().
 
-Below is another patch for you to try.  I spent most of last week
-chasing this one.  The symptoms are somewhat similar to yours -
-intermittent UML hangs, although not with UML spinning, and it still
-pings.
+This looks fine.  BTW, some of the fflushing is on purpose, although
+the one you removed does indeed look useless.  I want all output from
+early boot to hit the screen as soon as possible, even in the absence
+(so far) of a newline.  So, if there's any doubt about whether a
+printf has a newline in it, it's flushed.
 
-The problem is NTP adjusting the multiplier part of the clock-provided
-cycles-to-ns conversion function.  UML pretended to have a ns clock,
-with a multiplier of 1.  When NTP adjusted that down in order to slow
-down the clock, that became 0, and time stopped.
-
-The fix below is to switch to a usec clock, with a multiplier of 1000,
-which can be adjusted with much more granualarity.
-
-      	     	      Jeff
+       	     	     Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
-
-Index: linux-2.6.22/arch/um/kernel/time.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/time.c	2008-04-10 12:53:32.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/time.c	2008-04-14 10:30:00.000000000 -0400
-@@ -75,7 +75,7 @@ static irqreturn_t um_timer(int irq, voi
- 
- static cycle_t itimer_read(void)
- {
--	return os_nsecs();
-+	return os_nsecs() / 1000;
- }
- 
- static struct clocksource itimer_clocksource = {
-@@ -83,7 +83,7 @@ static struct clocksource itimer_clockso
- 	.rating		= 300,
- 	.read		= itimer_read,
- 	.mask		= CLOCKSOURCE_MASK(64),
--	.mult		= 1,
-+	.mult		= 1000,
- 	.shift		= 0,
- 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
- };
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
