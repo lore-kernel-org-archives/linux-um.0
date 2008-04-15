@@ -1,22 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JlQqj-0006JI-E1 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Apr 2008 08:44:05 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JlQqg-0004iD-JI
+	id 1JlYqd-0000RK-7w for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 14 Apr 2008 17:16:31 -0700
+Received: from vdsdev1.thna.net ([208.39.233.91] helo=dev2.reno.12h)
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1JlYqb-0006Ne-RB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Apr 2008 08:44:05 -0700
-Date: Mon, 14 Apr 2008 11:43:42 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080414154342.GA9434@c2.user-mode-linux.org>
-References: <20080412.233914.54446044.xiyou.wangcong@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20080412.233914.54446044.xiyou.wangcong@gmail.com>
-Subject: Re: [uml-devel] [Patch] UML: Fix another build error
+	Mon, 14 Apr 2008 17:16:31 -0700
+Date: 14 Apr 2008 17:16:28 -0700
+Message-ID: <20080415001628.1145.qmail@dev2.reno.12h>
+From: "Ryan Finnie" <ryan@finnie.org>
+Subject: [uml-devel] [PATCH] SKAS4 - Clean up command line disable output
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,38 +21,58 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-T24gU2F0LCBBcHIgMTIsIDIwMDggYXQgMTE6Mzk6MTRQTSArMDgwMCwgV0FORyBDb25nIHdyb3Rl
-Ogo+IAo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhlIGZvbGxvd2luZyBidWlsZCBlcnJvci4KPiAKPiAg
-IENDICAgICAgYXJjaC91bS9kcml2ZXJzL21jb25zb2xlX2tlcm4ubwo+IC9ob21lL3dhbmdjb25n
-L3Byb2plY3RzL2xpbnV4LTIuNi9hcmNoL3VtL2RyaXZlcnMvbWNvbnNvbGVfa2Vybi5jOjMzNzog
-ZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiDigJhtY29uc29sZV9yZWdpc3Rlcl9kZXbigJkKPiAvaG9t
-ZS93YW5nY29uZy9wcm9qZWN0cy9saW51eC0yLjYvYXJjaC91bS9pbmNsdWRlL21jb25zb2xlX2tl
-cm4uaDo0NzogZXJyb3I6IHByZXZpb3VzIGRlZmluaXRpb24gb2Yg4oCYbWNvbnNvbGVfcmVnaXN0
-ZXJfZGV24oCZIHdhcyBoZXJlCj4gbWFrZVsyXTogKioqIFthcmNoL3VtL2RyaXZlcnMvbWNvbnNv
-bGVfa2Vybi5vXSBFcnJvciAxCj4gbWFrZVsxXTogKioqIFthcmNoL3VtL2RyaXZlcnMvbWNvbnNv
-bGVfa2Vybi5rb10gRXJyb3IgMgo+IG1ha2U6ICoqKiBbc3ViLW1ha2VdIEVycm9yIDIKClRoaXMg
-b25lIGlzIGZpc2h5LiAgRm9yIG9uZSB0aGluZywgaXQgbG9va3MgbGlrZSB5b3UgcmVwcm9kdWNl
-IHRoaXMKd2l0aCAhQ09ORklHX01DT05TT0xFLCBidXQgSSBqdXN0IHN1Y2Nlc3NmdWxseSBidWls
-dCBhCiFDT05GSUdfTUNPTlNPTEUgVU1MLgoKU2Vjb25kLCB0aGUgYXJjaC91bS9kcml2ZXJzL01h
-a2VmaWxlIGxvb2tzIHRvIG1lIChhbmQgdGhlIGJ1aWxkIGxvZwpjb25maXJtcykgdGhhdCBtY29u
-c29sZV9rZXJuLmMgaXNuJ3QgY29tcGlsZWQgd2l0aCAhQ09ORklHX01DT05TT0xFLgoKVGhpcmQs
-IHlvdSBzaG91bGQgYXNrIHlvdXJzZWxmIGlmIHRoZXJlIG1pZ2h0IGJlIGEgZGVlcGVyIHByb2Js
-ZW0gdGhhdApuZWVkcyBmaXhpbmcgaWYgeW91IGZpbmQgeW91cnNlbGYgcHV0dGluZyAjaWZkZWYg
-Q09ORklHX0ZPTyBpbiBmaWxlcwp3aGljaCBpbXBsZW1lbnQgRk9PLgoKCQkJCUplZmYKCi0tIApX
-b3JrIGVtYWlsIC0gamRpa2UgYXQgbGludXggZG90IGludGVsIGRvdCBjb20KCi0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KVGhpcyBTRi5uZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IHRoZSAyMDA4IEphdmFPbmUo
-U00pIENvbmZlcmVuY2UgCkRvbid0IG1pc3MgdGhpcyB5ZWFyJ3MgZXhjaXRpbmcgZXZlbnQuIFRo
-ZXJlJ3Mgc3RpbGwgdGltZSB0byBzYXZlICQxMDAuIApVc2UgcHJpb3JpdHkgY29kZSBKOFRMMkQy
-LiAKaHR0cDovL2FkLmRvdWJsZWNsaWNrLm5ldC9jbGs7MTk4NzU3NjczOzEzNTAzMDM4O3A/aHR0
-cDovL2phdmEuc3VuLmNvbS9qYXZhb25lCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1t
-b2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
-ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+The PTRACE_GETSIGINFO notice was missing a linefeed.  In addition, tab 
+and wrap each SKAS4 "disabled" message in parens so it doesn't break up 
+the indendation within the switch_mm check block.
+
+diff -ruN linux-2.6.24.orig/arch/um/os-Linux/start_up.c linux-2.6.24/arch/um/os-Linux/start_up.c
+--- linux-2.6.24.orig/arch/um/os-Linux/start_up.c	2008-04-14 16:21:37.000000000 -0700
++++ linux-2.6.24/arch/um/os-Linux/start_up.c	2008-04-14 16:47:39.000000000 -0700
+@@ -623,8 +623,8 @@
+ 		non_fatal("Failed\n");
+ 
+ 	if (disable_siginfo_segv)
+-		non_fatal("Extended PTRACE_GETSIGINFO disabled on command "
+-			  "line");
++		non_fatal("\t(Extended PTRACE_GETSIGINFO disabled on "
++			  "command line)\n");
+ 	else
+ 		have_siginfo_segv = 1;
+ 
+@@ -688,7 +688,7 @@
+ 	close(there);
+ 
+ 	if (disable_switch_mm)
+-		non_fatal("switch_mm support disabled on command line\n");
++		non_fatal("\t(switch_mm support disabled on command line)\n");
+ 	else
+ 		have_switch_mm = 1;
+ 
+@@ -782,8 +782,8 @@
+ 	else non_fatal("OK\n");
+ 
+ 	if (disable_ptrace_switch_mm)
+-		non_fatal("PTRACE_SWITCH_MM support disabled on command "
+-			  "line\n");
++		non_fatal("\t(PTRACE_SWITCH_MM support disabled on command "
++			  "line)\n");
+ 	else
+ 		have_ptrace_switch_mm = 1;
+ 
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
+Don't miss this year's exciting event. There's still time to save $100. 
+Use priority code J8TL2D2. 
+http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
