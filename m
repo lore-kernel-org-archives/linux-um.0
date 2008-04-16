@@ -2,25 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JlsFk-0002Au-WD for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Apr 2008 13:59:45 -0700
-Received: from an-out-0708.google.com ([209.85.132.240])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JlsFh-0000mD-Id
+	id 1Jm0QR-0003Gz-0A for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Apr 2008 22:43:19 -0700
+Received: from qb-out-0506.google.com ([72.14.204.237])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jm0QQ-0008B2-No
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Apr 2008 13:59:44 -0700
-Received: by an-out-0708.google.com with SMTP id b38so612333ana.6
+	Tue, 15 Apr 2008 22:43:18 -0700
+Received: by qb-out-0506.google.com with SMTP id c8so2660731qbc.4
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 15 Apr 2008 13:59:40 -0700 (PDT)
-Message-ID: <cfa94dc20804151359h6dc1bf20l1c2bab38f734a595@mail.gmail.com>
-Date: Tue, 15 Apr 2008 13:59:39 -0700
-From: "Ryan Finnie" <ryan@finnie.org>
-In-Reply-To: <87y77elx37.fsf@hades.wkstn.nix>
-MIME-Version: 1.0
-Content-Disposition: inline
-References: <87k5jcqmh8.fsf@hades.wkstn.nix>
-	<20080414144052.GA7186@c2.user-mode-linux.org>
-	<87y77elx37.fsf@hades.wkstn.nix>
-Subject: Re: [uml-devel] Lockups with the fixed timer code :/
+	Tue, 15 Apr 2008 22:43:17 -0700 (PDT)
+Date: Wed, 16 Apr 2008 13:39:19 +0800 (CST)
+Message-Id: <20080416.133919.133424295.xiyou.wangcong@gmail.com>
+From: WANG Cong <xiyou.wangcong@gmail.com>
+In-Reply-To: <20080415133325.GA7882@c2.user-mode-linux.org>
+References: <20080413.005559.143852921.xiyou.wangcong@gmail.com>
+	<20080414234237.48ac4609.akpm@linux-foundation.org>
+	<20080415133325.GA7882@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [Patch] UML: Clean up arch/um/drivers/ubd_kern.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,30 +33,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Nix <nix@esperi.org.uk>
-Cc: Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@timesys.com>, user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Apr 15, 2008 at 12:47 PM, Nix <nix@esperi.org.uk> wrote:
->  > The problem is NTP adjusting the multiplier part of the clock-provided
->  > cycles-to-ns conversion function.  UML pretended to have a ns clock,
->  > with a multiplier of 1.  When NTP adjusted that down in order to slow
->  > down the clock, that became 0, and time stopped.
->
->  ... hang on, wouldn't this only happen if you had NTP running on your
->  guest? (I don't. For that matter, *why* would you have NTP running on
->  your guest? The guest just gets the time of day from the host anyway!)
+From: Jeff Dike <jdike@addtoit.com>
+Date: Tue, 15 Apr 2008 09:33:25 -0400
+> On Mon, Apr 14, 2008 at 11:42:37PM -0700, Andrew Morton wrote:
+> > omg, when checkpatch bit into this patch my CPU melted.
+> 
+> Yeah, I've been scared to do a checkpatch run over that file.  I think
+> it's the only core file left in UML which hasn't been tidied.  Sorry.
 
-Yes, ntpd would be required to trigger (or anything that adjusts mult,
-but I can't think of anything other than ntpd that would.
+Oh, I thought I have checked all the patch with checkpatch.pl, it seems
+that this one was missing. Sorry. ;(
 
-(Anyway, this would be my doing; I was the only who reported the
-hanging a few weeks ago, and Jeff had been banging on on my test
-server, where with a dozen or so guests running concurrently, at least
-one of them would trigger within an hour.  And the reason I have ntpd
-running on UML guests is I use the same deployment script for both UML
-guests and physical dedicated servers.)
+> 
+> Drop this one, and I'll send a another one which at least is tidied up
+> around the changed areas.
+> 
 
-RF
+Please feel free to do that.
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
