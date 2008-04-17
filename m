@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JmDZ0-0008Tn-Bt for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Apr 2008 12:45:02 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user21505)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JmDYy-0001mY-82
+	id 1JmLZa-000100-Bk for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 16 Apr 2008 21:18:10 -0700
+Received: from qb-out-0506.google.com ([72.14.204.234])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JmLZa-0006Dp-1K
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Apr 2008 12:45:01 -0700
-References: <87k5jcqmh8.fsf@hades.wkstn.nix>
-	<20080414144052.GA7186@c2.user-mode-linux.org>
-	<87y77elx37.fsf@hades.wkstn.nix>
-From: Nix <nix@esperi.org.uk>
-Date: Wed, 16 Apr 2008 20:44:44 +0100
-In-Reply-To: <87y77elx37.fsf@hades.wkstn.nix> (nix@esperi.org.uk's message of
-	"Tue, 15 Apr 2008 20:47:08 +0100")
-Message-ID: <87ve2hfutv.fsf@hades.wkstn.nix>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] Lockups with the fixed timer code :/
+	Wed, 16 Apr 2008 21:18:10 -0700
+Received: by qb-out-0506.google.com with SMTP id c8so3164295qbc.4
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 16 Apr 2008 21:18:09 -0700 (PDT)
+Date: Thu, 17 Apr 2008 12:13:56 +0800 (CST)
+Message-Id: <20080417.121356.08390959.xiyou.wangcong@gmail.com>
+From: WANG Cong <xiyou.wangcong@gmail.com>
+In-Reply-To: <20080416152019.GA8693@c2.user-mode-linux.org>
+References: <20080415133325.GA7882@c2.user-mode-linux.org>
+	<20080416.133919.133424295.xiyou.wangcong@gmail.com>
+	<20080416152019.GA8693@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [Patch] UML: Clean up arch/um/drivers/ubd_kern.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,26 +33,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Thomas Gleixner <tglx@timesys.com>, user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On 15 Apr 2008, nix@esperi.org.uk said:
-> OK, trying that. (I'll extend the instrumentation patch to watch for
-> zero cycle_interval as well, and see what happens. With luck nothing
-> will happen except that the crashes will stop... except that they
-> already *have* stopped for me. Annoying.)
+From: Jeff Dike <jdike@addtoit.com>
+Date: Wed, 16 Apr 2008 11:20:19 -0400
+> On Wed, Apr 16, 2008 at 01:39:19PM +0800, WANG Cong wrote:
+> > From: Jeff Dike <jdike@addtoit.com>
+> > Date: Tue, 15 Apr 2008 09:33:25 -0400
+> > > On Mon, Apr 14, 2008 at 11:42:37PM -0700, Andrew Morton wrote:
+> > > > omg, when checkpatch bit into this patch my CPU melted.
+> 
+> Here's a cleaned up version.
+> 
+>        	 	    Jeff
 
-Hard-spinning again, inside gettimeofday() inside os_nsecs(). (The stack
-above that point is corrupt, or at least gdb 6.7.1 won't show
-it. Nonetheless if it's not stuck inside idle_sleep() I'll eat my
-hat. Note that I am *not* running CONFIG_NO_HZ because, hah, I thought
-that as rather new code it might be unstable...)
-
-This *is* a change in behaviour: the backtrace is different! Yay! :)
-
--- 
-`The rest is a tale of post and counter-post.' --- Ian Rawlings
-                                                   describes USENET
+Looks OK for me. Thank you!
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
