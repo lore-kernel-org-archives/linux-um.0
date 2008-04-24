@@ -2,24 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JmLZa-000100-Bk for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Apr 2008 21:18:10 -0700
-Received: from qb-out-0506.google.com ([72.14.204.234])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JmLZa-0006Dp-1K
+	id 1JouyH-00033z-9U for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Apr 2008 23:30:17 -0700
+Received: from rv-out-0506.google.com ([209.85.198.228])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JouyF-0000al-Vj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Apr 2008 21:18:10 -0700
-Received: by qb-out-0506.google.com with SMTP id c8so3164295qbc.4
+	Wed, 23 Apr 2008 23:30:17 -0700
+Received: by rv-out-0506.google.com with SMTP id g37so1493911rvb.22
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 16 Apr 2008 21:18:09 -0700 (PDT)
-Date: Thu, 17 Apr 2008 12:13:56 +0800 (CST)
-Message-Id: <20080417.121356.08390959.xiyou.wangcong@gmail.com>
+	Wed, 23 Apr 2008 23:30:15 -0700 (PDT)
+Date: Thu, 24 Apr 2008 14:29:40 +0800 (CST)
+Message-Id: <20080424.142940.45152084.xiyou.wangcong@gmail.com>
 From: WANG Cong <xiyou.wangcong@gmail.com>
-In-Reply-To: <20080416152019.GA8693@c2.user-mode-linux.org>
-References: <20080415133325.GA7882@c2.user-mode-linux.org>
-	<20080416.133919.133424295.xiyou.wangcong@gmail.com>
-	<20080416152019.GA8693@c2.user-mode-linux.org>
 Mime-Version: 1.0
-Subject: Re: [uml-devel] [Patch] UML: Clean up arch/um/drivers/ubd_kern.c
+Subject: [uml-devel] [Patch] arch/um/kernel/irq.c: clean up some functions
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,22 +29,113 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org
+Cc: akpm@osdl.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-From: Jeff Dike <jdike@addtoit.com>
-Date: Wed, 16 Apr 2008 11:20:19 -0400
-> On Wed, Apr 16, 2008 at 01:39:19PM +0800, WANG Cong wrote:
-> > From: Jeff Dike <jdike@addtoit.com>
-> > Date: Tue, 15 Apr 2008 09:33:25 -0400
-> > > On Mon, Apr 14, 2008 at 11:42:37PM -0700, Andrew Morton wrote:
-> > > > omg, when checkpatch bit into this patch my CPU melted.
-> 
-> Here's a cleaned up version.
-> 
->        	 	    Jeff
 
-Looks OK for me. Thank you!
+Make activate_fd() and free_irq_by_irq_and_dev() static.
+Remove init_aio_irq() since it has no users.
+
+Compile testing passed.
+
+Cc: Jeff Dike <jdike@addtoit.com>
+Signed-off-by: WANG Cong <wangcong@zeuux.org>
+
+---
+ arch/um/include/irq_kern.h |    2 --
+ arch/um/include/irq_user.h |    2 --
+ arch/um/kernel/irq.c       |   35 ++---------------------------------
+ 3 files changed, 2 insertions(+), 37 deletions(-)
+
+diff --git a/arch/um/include/irq_kern.h b/arch/um/include/irq_kern.h
+index 4f77559..fba3895 100644
+--- a/arch/um/include/irq_kern.h
++++ b/arch/um/include/irq_kern.h
+@@ -13,8 +13,6 @@ extern int um_request_irq(unsigned int irq, int fd, int type,
+ 			  irq_handler_t handler,
+ 			  unsigned long irqflags,  const char * devname,
+ 			  void *dev_id);
+-extern int init_aio_irq(int irq, char *name,
+-			irq_handler_t handler);
+ 
+ #endif
+ 
+diff --git a/arch/um/include/irq_user.h b/arch/um/include/irq_user.h
+index e60b318..c6c784d 100644
+--- a/arch/um/include/irq_user.h
++++ b/arch/um/include/irq_user.h
+@@ -21,8 +21,6 @@ struct irq_fd {
+ enum { IRQ_READ, IRQ_WRITE };
+ 
+ extern void sigio_handler(int sig, struct uml_pt_regs *regs);
+-extern int activate_fd(int irq, int fd, int type, void *dev_id);
+-extern void free_irq_by_irq_and_dev(unsigned int irq, void *dev_id);
+ extern void free_irq_by_fd(int fd);
+ extern void reactivate_fd(int fd, int irqnum);
+ extern void deactivate_fd(int fd, int irqnum);
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 91587f8..3d7aad0 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -102,7 +102,7 @@ void sigio_handler(int sig, struct uml_pt_regs *regs)
+ 
+ static DEFINE_SPINLOCK(irq_lock);
+ 
+-int activate_fd(int irq, int fd, int type, void *dev_id)
++static int activate_fd(int irq, int fd, int type, void *dev_id)
+ {
+ 	struct pollfd *tmp_pfd;
+ 	struct irq_fd *new_fd, *irq_fd;
+@@ -216,7 +216,7 @@ static int same_irq_and_dev(struct irq_fd *irq, void *d)
+ 	return ((irq->irq == data->irq) && (irq->id == data->dev));
+ }
+ 
+-void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
++static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
+ {
+ 	struct irq_and_dev data = ((struct irq_and_dev) { .irq  = irq,
+ 							  .dev  = dev });
+@@ -403,37 +403,6 @@ void __init init_IRQ(void)
+ 	}
+ }
+ 
+-int init_aio_irq(int irq, char *name, irq_handler_t handler)
+-{
+-	int fds[2], err;
+-
+-	err = os_pipe(fds, 1, 1);
+-	if (err) {
+-		printk(KERN_ERR "init_aio_irq - os_pipe failed, err = %d\n",
+-		       -err);
+-		goto out;
+-	}
+-
+-	err = um_request_irq(irq, fds[0], IRQ_READ, handler,
+-			     IRQF_DISABLED | IRQF_SAMPLE_RANDOM, name,
+-			     (void *) (long) fds[0]);
+-	if (err) {
+-		printk(KERN_ERR "init_aio_irq - : um_request_irq failed, "
+-		       "err = %d\n",
+-		       err);
+-		goto out_close;
+-	}
+-
+-	err = fds[1];
+-	goto out;
+-
+- out_close:
+-	os_close_file(fds[0]);
+-	os_close_file(fds[1]);
+- out:
+-	return err;
+-}
+-
+ /*
+  * IRQ stack entry and exit:
+  *
+-- 
+1.5.2.4
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
