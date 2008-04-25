@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JpSA3-0003kT-VK for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 10:56:40 -0700
+	id 1JpSAH-0003lU-BK for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Apr 2008 10:56:56 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JpS9v-0005OO-KS
+	(Exim 4.44) id 1JpS9v-0005OM-Jo
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 10:56:34 -0700
-Date: Fri, 25 Apr 2008 13:56:08 -0400
+	Fri, 25 Apr 2008 10:56:41 -0700
+Date: Fri, 25 Apr 2008 13:56:09 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080425175606.GA11176@c2.user-mode-linux.org>
+Message-ID: <20080425175608.GA11184@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 3/19] UML - Style fixes
+Subject: [uml-devel] [PATCH 5/19] UML - random driver style fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,81 +30,145 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-A few random style fixes.
+Give random.c a style workover while I'm changing it.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/include/skas_ptrace.h            |   13 +------------
- arch/um/include/sysdep-i386/sigcontext.h |    2 +-
- arch/um/kernel/um_arch.c                 |    2 +-
- arch/um/os-Linux/skas/process.c          |    2 +-
- 4 files changed, 4 insertions(+), 15 deletions(-)
+ arch/um/drivers/random.c |   77 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 40 insertions(+), 37 deletions(-)
 
-Index: linux-2.6-git/arch/um/include/skas_ptrace.h
+Index: linux-2.6-git/arch/um/drivers/random.c
 ===================================================================
---- linux-2.6-git.orig/arch/um/include/skas_ptrace.h	2008-02-21 18:47:34.000000000 -0500
-+++ linux-2.6-git/arch/um/include/skas_ptrace.h	2008-03-06 09:46:19.000000000 -0500
-@@ -1,5 +1,5 @@
- /* 
-- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
-+ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
- 
-@@ -12,14 +12,3 @@
- #include "sysdep/skas_ptrace.h"
- 
- #endif
--
--/*
-- * Overrides for Emacs so that we follow Linus's tabbing style.
-- * Emacs will notice this stuff at the end of the file and automatically
-- * adjust the settings for this buffer only.  This must remain at the end
-- * of the file.
-- * ---------------------------------------------------------------------------
-- * Local variables:
-- * c-file-style: "linux"
-- * End:
-- */
-Index: linux-2.6-git/arch/um/os-Linux/skas/process.c
-===================================================================
---- linux-2.6-git.orig/arch/um/os-Linux/skas/process.c	2008-02-26 10:26:40.000000000 -0500
-+++ linux-2.6-git/arch/um/os-Linux/skas/process.c	2008-03-06 09:46:19.000000000 -0500
-@@ -442,7 +442,7 @@ void userspace(struct uml_pt_regs *regs)
- 				unblock_signals();
- 				break;
- 			default:
--			        printk(UM_KERN_ERR "userspace - child stopped "
-+				printk(UM_KERN_ERR "userspace - child stopped "
- 				       "with signal %d\n", sig);
- 				fatal_sigsegv();
- 			}
-Index: linux-2.6-git/arch/um/include/sysdep-i386/sigcontext.h
-===================================================================
---- linux-2.6-git.orig/arch/um/include/sysdep-i386/sigcontext.h	2008-02-21 18:47:34.000000000 -0500
-+++ linux-2.6-git/arch/um/include/sysdep-i386/sigcontext.h	2008-03-06 09:46:19.000000000 -0500
-@@ -10,7 +10,7 @@
- 
- #define IP_RESTART_SYSCALL(ip) ((ip) -= 2)
- 
--#define GET_FAULTINFO_FROM_SC(fi,sc) \
-+#define GET_FAULTINFO_FROM_SC(fi, sc) \
- 	{ \
- 		(fi).cr2 = SC_CR2(sc); \
- 		(fi).error_code = SC_ERR(sc); \
-Index: linux-2.6-git/arch/um/kernel/um_arch.c
-===================================================================
---- linux-2.6-git.orig/arch/um/kernel/um_arch.c	2008-02-21 18:47:34.000000000 -0500
-+++ linux-2.6-git/arch/um/kernel/um_arch.c	2008-03-06 09:46:19.000000000 -0500
-@@ -150,7 +150,7 @@ __uml_setup("root=", uml_root_setup,
- static int __init no_skas_debug_setup(char *line, int *add)
- {
- 	printf("'debug' is not necessary to gdb UML in skas mode - run \n");
--	printf("'gdb linux'");
-+	printf("'gdb linux'\n");
+--- linux-2.6-git.orig/arch/um/drivers/random.c	2008-02-06 12:20:23.000000000 -0500
++++ linux-2.6-git/arch/um/drivers/random.c	2008-02-06 12:24:05.000000000 -0500
+@@ -1,4 +1,5 @@
+-/* Copyright (C) 2005 Jeff Dike <jdike@addtoit.com> */
++/* Copyright (C) 2005 - 2008 Jeff Dike <jdike@{linux.intel,addtoit}.com> */
++
+ /* Much of this ripped from drivers/char/hw_random.c, see there for other
+  * copyright.
+  *
+@@ -35,7 +36,7 @@ static int rng_dev_open (struct inode *i
+ 	/* enforce read-only access to this chrdev */
+ 	if ((filp->f_mode & FMODE_READ) == 0)
+ 		return -EINVAL;
+-	if (filp->f_mode & FMODE_WRITE)
++	if ((filp->f_mode & FMODE_WRITE) != 0)
+ 		return -EINVAL;
  
  	return 0;
+@@ -44,31 +45,31 @@ static int rng_dev_open (struct inode *i
+ static atomic_t host_sleep_count = ATOMIC_INIT(0);
+ 
+ static ssize_t rng_dev_read (struct file *filp, char __user *buf, size_t size,
+-                             loff_t * offp)
++			     loff_t *offp)
+ {
+-        u32 data;
+-        int n, ret = 0, have_data;
++	u32 data;
++	int n, ret = 0, have_data;
+ 
+-        while(size){
+-                n = os_read_file(random_fd, &data, sizeof(data));
+-                if(n > 0){
+-                        have_data = n;
+-                        while (have_data && size) {
+-                                if (put_user((u8)data, buf++)) {
+-                                        ret = ret ? : -EFAULT;
+-                                        break;
+-                                }
+-                                size--;
+-                                ret++;
+-                                have_data--;
+-                                data>>=8;
+-                        }
+-                }
+-                else if(n == -EAGAIN){
++	while (size) {
++		n = os_read_file(random_fd, &data, sizeof(data));
++		if (n > 0) {
++			have_data = n;
++			while (have_data && size) {
++				if (put_user((u8) data, buf++)) {
++					ret = ret ? : -EFAULT;
++					break;
++				}
++				size--;
++				ret++;
++				have_data--;
++				data >>= 8;
++			}
++		}
++		else if (n == -EAGAIN) {
+ 			DECLARE_WAITQUEUE(wait, current);
+ 
+-                        if (filp->f_flags & O_NONBLOCK)
+-                                return ret ? : -EAGAIN;
++			if (filp->f_flags & O_NONBLOCK)
++				return ret ? : -EAGAIN;
+ 
+ 			atomic_inc(&host_sleep_count);
+ 			reactivate_fd(random_fd, RANDOM_IRQ);
+@@ -85,8 +86,10 @@ static ssize_t rng_dev_read (struct file
+ 				ignore_sigio_fd(random_fd);
+ 				deactivate_fd(random_fd, RANDOM_IRQ);
+ 			}
+-                }
+-                else return n;
++		}
++		else
++			return n;
++
+ 		if (signal_pending (current))
+ 			return ret ? : -ERESTARTSYS;
+ 	}
+@@ -120,33 +123,33 @@ static int __init rng_init (void)
+ {
+ 	int err;
+ 
+-        err = os_open_file("/dev/random", of_read(OPENFLAGS()), 0);
+-        if(err < 0)
+-                goto out;
++	err = os_open_file("/dev/random", of_read(OPENFLAGS()), 0);
++	if (err < 0)
++		goto out;
+ 
+-        random_fd = err;
++	random_fd = err;
+ 
+ 	err = um_request_irq(RANDOM_IRQ, random_fd, IRQ_READ, random_interrupt,
+ 			     IRQF_DISABLED | IRQF_SAMPLE_RANDOM, "random",
+ 			     NULL);
+-        if(err)
++	if (err)
+ 		goto err_out_cleanup_hw;
+ 
+ 	sigio_broken(random_fd, 1);
+ 
+ 	err = misc_register (&rng_miscdev);
+ 	if (err) {
+-		printk (KERN_ERR RNG_MODULE_NAME ": misc device register failed\n");
++		printk (KERN_ERR RNG_MODULE_NAME ": misc device register "
++			"failed\n");
+ 		goto err_out_cleanup_hw;
+ 	}
++out:
++	return err;
+ 
+- out:
+-        return err;
+-
+- err_out_cleanup_hw:
++err_out_cleanup_hw:
+ 	os_close_file(random_fd);
+-        random_fd = -1;
+-        goto out;
++	random_fd = -1;
++	goto out;
  }
+ 
+ /*
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
