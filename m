@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JpSA0-0003kX-1R for user-mode-linux-devel@lists.sourceforge.net;
+	id 1JpSA0-0003kg-SW for user-mode-linux-devel@lists.sourceforge.net;
 	Fri, 25 Apr 2008 10:56:36 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JpS9v-0000pj-Tj
+	(Exim 4.44) id 1JpS9v-0005ON-Jl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 10:56:35 -0700
-Date: Fri, 25 Apr 2008 13:56:03 -0400
+	Fri, 25 Apr 2008 10:56:36 -0700
+Date: Fri, 25 Apr 2008 13:56:08 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080425175602.GA11170@c2.user-mode-linux.org>
+Message-ID: <20080425175607.GA11178@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/19] UML - Redo host capability detection and
-	disabling
+Subject: [uml-devel] [PATCH 4/19] UML - Random driver fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,183 +30,324 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Redo how host capabilities are recorded at startup and disabled on the
-command line.
+The random driver would essentially hang if the host's /dev/random
+returned -EAGAIN.  There was a test of need_resched followed by a
+schedule inside the loop, but that didn't help and it's the wrong way
+to work anyway.
 
-There are now explicit variables saying what's been disabled by the
-command line rather than the implicitness of the have_* variable being
-zero.  The capability variables now start at zero and are set to one
-as their capabilities are found to be present on the host.
+The right way is to ask for an interrupt when there is input available
+from the host and handle it then rather than polling.
+
+Now, when the host's /dev/random returns -EAGAIN, the driver asks for
+a wakeup when there's randomness available again and sleeps.  The
+interrupt routine just wakes up whatever processes are sleeping on
+host_read_wait.
+
+There is an atomic_t, host_sleep_count, which counts the number of
+processes waiting for randomness.  When this reaches zero, the
+interrupt is disabled.
+
+An added complication is that async I/O notification was only recently
+added to /dev/random (by me), so essentially all hosts will lack it.
+So, we use the sigio workaround here, which is to have a separate
+thread poll on the descriptor and send an interrupt when there is
+input on it.  This mechanism is activated when a process gets -EAGAIN
+(activating this multiple times is harmless, if a bit wasteful) and
+deactivated by the last process still waiting.
+
+The module name was changed from "random" to "hw_random" in order for
+udev to recognize it.
+
+The sigio workaround needed some changes.  sigio_broken was added for
+cases when we know that async notification doesn't work.  This is now
+called from maybe_sigio_broken, which deals with pts devices.
+
+While I was in sigio.c, I unvolatiled a variable, sticking a barrier()
+in instead.  I moved the definition of barrier to process.h and
+cleaned that up while I was there.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/os-Linux/start_up.c |   81 ++++++++++++++++++++++----------------------
- 1 file changed, 41 insertions(+), 40 deletions(-)
+ arch/um/drivers/random.c  |   41 +++++++++++++++++++++++++++++++++++++----
+ arch/um/include/os.h      |    1 +
+ arch/um/include/process.h |   20 ++++++--------------
+ arch/um/os-Linux/sigio.c  |   35 +++++++++++++++++++++--------------
+ arch/um/os-Linux/signal.c |    1 +
+ include/asm-um/irq.h      |    3 ++-
+ 6 files changed, 68 insertions(+), 33 deletions(-)
 
-Index: linux-2.6-git/arch/um/os-Linux/start_up.c
+Index: linux-2.6-git/arch/um/drivers/random.c
 ===================================================================
---- linux-2.6-git.orig/arch/um/os-Linux/start_up.c	2008-04-24 16:06:01.000000000 -0400
-+++ linux-2.6-git/arch/um/os-Linux/start_up.c	2008-04-24 16:08:31.000000000 -0400
-@@ -23,6 +23,7 @@
- #include "mem_user.h"
- #include "ptrace_user.h"
- #include "registers.h"
-+#include "skas.h"
- #include "skas_ptrace.h"
+--- linux-2.6-git.orig/arch/um/drivers/random.c	2008-04-25 11:22:26.000000000 -0400
++++ linux-2.6-git/arch/um/drivers/random.c	2008-04-25 11:28:25.000000000 -0400
+@@ -8,16 +8,18 @@
+ #include <linux/sched.h>
+ #include <linux/module.h>
+ #include <linux/fs.h>
++#include <linux/interrupt.h>
+ #include <linux/miscdevice.h>
+ #include <linux/delay.h>
+ #include <asm/uaccess.h>
++#include "irq_kern.h"
+ #include "os.h"
  
- static int ptrace_child(void)
-@@ -142,14 +143,27 @@ static int stop_ptraced_child(int pid, i
- }
+ /*
+  * core module and version information
+  */
+ #define RNG_VERSION "1.0.0"
+-#define RNG_MODULE_NAME "random"
++#define RNG_MODULE_NAME "hw_random"
  
- /* Changed only during early boot */
--int ptrace_faultinfo = 1;
--int ptrace_ldt = 1;
--int proc_mm = 1;
--int skas_needs_stub = 0;
-+int ptrace_faultinfo;
-+static int disable_ptrace_faultinfo;
-+
-+int ptrace_ldt;
-+static int disable_ptrace_ldt;
-+
-+int proc_mm;
-+static int disable_proc_mm;
-+
-+int have_switch_mm;
-+static int disable_switch_mm;
-+
-+int skas_needs_stub;
+ #define RNG_MISCDEV_MINOR		183 /* official */
  
- static int __init skas0_cmd_param(char *str, int* add)
+@@ -26,6 +28,7 @@
+  * protects against a module being loaded twice at the same time.
+  */
+ static int random_fd = -1;
++static DECLARE_WAIT_QUEUE_HEAD(host_read_wait);
+ 
+ static int rng_dev_open (struct inode *inode, struct file *filp)
  {
--	ptrace_faultinfo = proc_mm = 0;
-+	disable_ptrace_faultinfo = 1;
-+	disable_ptrace_ldt = 1;
-+	disable_proc_mm = 1;
-+	disable_switch_mm = 1;
-+
+@@ -38,6 +41,8 @@ static int rng_dev_open (struct inode *i
  	return 0;
  }
  
-@@ -159,15 +173,12 @@ static int __init mode_skas0_cmd_param(c
- 	__attribute__((alias("skas0_cmd_param")));
- 
- __uml_setup("skas0", skas0_cmd_param,
--		"skas0\n"
--		"    Disables SKAS3 usage, so that SKAS0 is used, unless \n"
--	        "    you specify mode=tt.\n\n");
-+"skas0\n"
-+"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used\n\n");
- 
- __uml_setup("mode=skas0", mode_skas0_cmd_param,
--		"mode=skas0\n"
--		"    Disables SKAS3 usage, so that SKAS0 is used, unless you \n"
--		"    specify mode=tt. Note that this was recently added - on \n"
--		"    older kernels you must use simply \"skas0\".\n\n");
-+"mode=skas0\n"
-+"    Disables SKAS3 and SKAS4 usage, so that SKAS0 is used.\n\n");
- 
- /* Changed only during early boot */
- static int force_sysemu_disabled = 0;
-@@ -362,7 +373,7 @@ void __init os_early_checks(void)
- 
- static int __init noprocmm_cmd_param(char *str, int* add)
++static atomic_t host_sleep_count = ATOMIC_INIT(0);
++
+ static ssize_t rng_dev_read (struct file *filp, char __user *buf, size_t size,
+                              loff_t * offp)
  {
--	proc_mm = 0;
-+	disable_proc_mm = 1;
- 	return 0;
+@@ -60,11 +65,26 @@ static ssize_t rng_dev_read (struct file
+                         }
+                 }
+                 else if(n == -EAGAIN){
++			DECLARE_WAITQUEUE(wait, current);
++
+                         if (filp->f_flags & O_NONBLOCK)
+                                 return ret ? : -EAGAIN;
+ 
+-                        if(need_resched())
+-                                schedule_timeout_interruptible(1);
++			atomic_inc(&host_sleep_count);
++			reactivate_fd(random_fd, RANDOM_IRQ);
++			add_sigio_fd(random_fd);
++
++			add_wait_queue(&host_read_wait, &wait);
++			set_task_state(current, TASK_INTERRUPTIBLE);
++
++			schedule();
++			set_task_state(current, TASK_RUNNING);
++			remove_wait_queue(&host_read_wait, &wait);
++
++			if (atomic_dec_and_test(&host_sleep_count)) {
++				ignore_sigio_fd(random_fd);
++				deactivate_fd(random_fd, RANDOM_IRQ);
++			}
+                 }
+                 else return n;
+ 		if (signal_pending (current))
+@@ -86,6 +106,13 @@ static struct miscdevice rng_miscdev = {
+ 	&rng_chrdev_ops,
+ };
+ 
++static irqreturn_t random_interrupt(int irq, void *data)
++{
++	wake_up(&host_read_wait);
++
++	return IRQ_HANDLED;
++}
++
+ /*
+  * rng_init - initialize RNG module
+  */
+@@ -99,10 +126,14 @@ static int __init rng_init (void)
+ 
+         random_fd = err;
+ 
+-        err = os_set_fd_block(random_fd, 0);
++	err = um_request_irq(RANDOM_IRQ, random_fd, IRQ_READ, random_interrupt,
++			     IRQF_DISABLED | IRQF_SAMPLE_RANDOM, "random",
++			     NULL);
+         if(err)
+ 		goto err_out_cleanup_hw;
+ 
++	sigio_broken(random_fd, 1);
++
+ 	err = misc_register (&rng_miscdev);
+ 	if (err) {
+ 		printk (KERN_ERR RNG_MODULE_NAME ": misc device register failed\n");
+@@ -113,6 +144,7 @@ static int __init rng_init (void)
+         return err;
+ 
+  err_out_cleanup_hw:
++	os_close_file(random_fd);
+         random_fd = -1;
+         goto out;
+ }
+@@ -122,6 +154,7 @@ static int __init rng_init (void)
+  */
+ static void __exit rng_cleanup (void)
+ {
++	os_close_file(random_fd);
+ 	misc_deregister (&rng_miscdev);
  }
  
-@@ -374,7 +385,7 @@ __uml_setup("noprocmm", noprocmm_cmd_par
+Index: linux-2.6-git/arch/um/os-Linux/sigio.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/os-Linux/sigio.c	2008-04-25 11:22:26.000000000 -0400
++++ linux-2.6-git/arch/um/os-Linux/sigio.c	2008-04-25 11:30:18.000000000 -0400
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Copyright (C) 2002 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
  
- static int __init noptracefaultinfo_cmd_param(char *str, int* add)
- {
--	ptrace_faultinfo = 0;
-+	disable_ptrace_faultinfo = 1;
- 	return 0;
+@@ -15,6 +15,7 @@
+ #include "kern_util.h"
+ #include "init.h"
+ #include "os.h"
++#include "process.h"
+ #include "sigio.h"
+ #include "um_malloc.h"
+ #include "user.h"
+@@ -338,20 +339,10 @@ out_close1:
+ 	close(l_write_sigio_fds[1]);
  }
  
-@@ -386,7 +397,7 @@ __uml_setup("noptracefaultinfo", noptrac
- 
- static int __init noptraceldt_cmd_param(char *str, int* add)
+-/* Changed during early boot */
+-static int pty_output_sigio = 0;
+-static int pty_close_sigio = 0;
+-
+-void maybe_sigio_broken(int fd, int read)
++void sigio_broken(int fd, int read)
  {
--	ptrace_ldt = 0;
-+	disable_ptrace_ldt = 1;
- 	return 0;
+ 	int err;
+ 
+-	if (!isatty(fd))
+-		return;
+-
+-	if ((read || pty_output_sigio) && (!read || pty_close_sigio))
+-		return;
+-
+ 	write_sigio_workaround();
+ 
+ 	sigio_lock();
+@@ -370,6 +361,21 @@ out:
+ 	sigio_unlock();
  }
  
-@@ -406,17 +417,15 @@ static inline void check_skas3_ptrace_fa
++/* Changed during early boot */
++static int pty_output_sigio;
++static int pty_close_sigio;
++
++void maybe_sigio_broken(int fd, int read)
++{
++	if (!isatty(fd))
++		return;
++
++	if ((read || pty_output_sigio) && (!read || pty_close_sigio))
++		return;
++
++	sigio_broken(fd, read);
++}
++
+ static void sigio_cleanup(void)
+ {
+ 	if (write_sigio_pid == -1)
+@@ -383,7 +389,7 @@ static void sigio_cleanup(void)
+ __uml_exitcall(sigio_cleanup);
  
- 	n = ptrace(PTRACE_FAULTINFO, pid, 0, &fi);
- 	if (n < 0) {
--		ptrace_faultinfo = 0;
- 		if (errno == EIO)
- 			non_fatal("not found\n");
- 		else
- 			perror("not found");
--	}
-+	} else if (disable_ptrace_faultinfo)
-+		non_fatal("found but disabled on command line\n");
- 	else {
--		if (!ptrace_faultinfo)
--			non_fatal("found but disabled on command line\n");
--		else
--			non_fatal("found\n");
-+		ptrace_faultinfo = 1;
-+		non_fatal("found\n");
- 	}
+ /* Used as a flag during SIGIO testing early in boot */
+-static volatile int got_sigio = 0;
++static int got_sigio;
  
- 	stop_ptraced_child(pid, 1, 1);
-@@ -439,38 +448,30 @@ static inline void check_skas3_ptrace_ld
- 	if (n < 0) {
- 		if (errno == EIO)
- 			non_fatal("not found\n");
--		else {
-+		else
- 			perror("not found");
--		}
--		ptrace_ldt = 0;
--	}
-+	} else if (disable_ptrace_ldt)
-+		non_fatal("found, but use is disabled\n");
- 	else {
--		if (ptrace_ldt)
--			non_fatal("found\n");
--		else
--			non_fatal("found, but use is disabled\n");
-+		ptrace_ldt = 1;
-+		non_fatal("found\n");
- 	}
+ static void __init handler(int sig)
+ {
+@@ -498,7 +504,8 @@ static void tty_output(int master, int s
+ 	if (errno != EAGAIN)
+ 		printk(UM_KERN_ERR "tty_output : write failed, errno = %d\n",
+ 		       errno);
+-	while (((n = read(slave, buf, sizeof(buf))) > 0) && !got_sigio)
++	while (((n = read(slave, buf, sizeof(buf))) > 0) &&
++	       !({ barrier(); got_sigio; }))
+ 		;
  
- 	stop_ptraced_child(pid, 1, 1);
--#else
--	/* PTRACE_LDT might be disabled via cmdline option.
--	 * We want to override this, else we might use the stub
--	 * without real need
--	 */
--	ptrace_ldt = 1;
+ 	if (got_sigio) {
+Index: linux-2.6-git/include/asm-um/irq.h
+===================================================================
+--- linux-2.6-git.orig/include/asm-um/irq.h	2008-04-25 11:22:26.000000000 -0400
++++ linux-2.6-git/include/asm-um/irq.h	2008-04-25 11:28:25.000000000 -0400
+@@ -15,8 +15,9 @@
+ #define SIGIO_WRITE_IRQ 	11
+ #define TELNETD_IRQ 		12
+ #define XTERM_IRQ 		13
++#define RANDOM_IRQ 		14
+ 
+-#define LAST_IRQ XTERM_IRQ
++#define LAST_IRQ RANDOM_IRQ
+ #define NR_IRQS (LAST_IRQ + 1)
+ 
  #endif
- }
+Index: linux-2.6-git/arch/um/include/os.h
+===================================================================
+--- linux-2.6-git.orig/arch/um/include/os.h	2008-04-25 11:22:26.000000000 -0400
++++ linux-2.6-git/arch/um/include/os.h	2008-04-25 11:28:25.000000000 -0400
+@@ -290,6 +290,7 @@ extern void os_set_ioignore(void);
+ extern int add_sigio_fd(int fd);
+ extern int ignore_sigio_fd(int fd);
+ extern void maybe_sigio_broken(int fd, int read);
++extern void sigio_broken(int fd, int read);
  
- static inline void check_skas3_proc_mm(void)
- {
- 	non_fatal("  - /proc/mm...");
--	if (access("/proc/mm", W_OK) < 0) {
--		proc_mm = 0;
-+	if (access("/proc/mm", W_OK) < 0)
- 		perror("not found");
--	}
--	else if (!proc_mm)
-+	else if (disable_proc_mm)
- 		non_fatal("found but disabled on command line\n");
--	else non_fatal("found\n");
-+	else {
-+		proc_mm = 1;
-+		non_fatal("found\n");
-+	}
- }
+ /* sys-x86_64/prctl.c */
+ extern int os_arch_prctl(int pid, int code, unsigned long *addr);
+Index: linux-2.6-git/arch/um/include/process.h
+===================================================================
+--- linux-2.6-git.orig/arch/um/include/process.h	2008-04-25 11:22:26.000000000 -0400
++++ linux-2.6-git/arch/um/include/process.h	2008-04-25 11:28:25.000000000 -0400
+@@ -1,5 +1,5 @@
+ /* 
+- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
++ * Copyright (C) 2000 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
  
- void can_do_skas(void)
+@@ -8,18 +8,10 @@
+ 
+ #include <signal.h>
+ 
+-extern void sig_handler(int sig, struct sigcontext sc);
+-extern void alarm_handler(int sig, struct sigcontext sc);
++/* Copied from linux/compiler-gcc.h since we can't include it directly */
++#define barrier() __asm__ __volatile__("": : :"memory")
+ 
+-#endif
++extern void sig_handler(int sig, struct sigcontext *sc);
++extern void alarm_handler(int sig, struct sigcontext *sc);
+ 
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
++#endif
+Index: linux-2.6-git/arch/um/os-Linux/signal.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/os-Linux/signal.c	2008-04-25 11:22:26.000000000 -0400
++++ linux-2.6-git/arch/um/os-Linux/signal.c	2008-04-25 11:28:25.000000000 -0400
+@@ -12,6 +12,7 @@
+ #include "as-layout.h"
+ #include "kern_util.h"
+ #include "os.h"
++#include "process.h"
+ #include "sysdep/barrier.h"
+ #include "sysdep/sigcontext.h"
+ #include "user.h"
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
