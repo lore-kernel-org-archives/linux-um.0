@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JpSAS-0003nc-Lg for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 10:57:04 -0700
+	id 1JpSAx-0003uZ-VL for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Apr 2008 10:57:35 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JpSAP-0005al-QJ
+	(Exim 4.44) id 1JpS9v-0005Og-KL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 10:57:04 -0700
-Date: Fri, 25 Apr 2008 13:56:15 -0400
+	Fri, 25 Apr 2008 10:57:35 -0700
+Date: Fri, 25 Apr 2008 13:56:06 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080425175615.GA11198@c2.user-mode-linux.org>
+Message-ID: <20080425175606.GA11174@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 14/19] UML - Fix bad NTP interaction with clock
+Subject: [uml-devel] [PATCH 2/19] UML - Tidy stub management code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,42 +30,244 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-UML's supposed nanosecond clock interacts badly with NTP when NTP
-decides that the clock has drifted ahead and needs to be slowed down.
-Slowing down the clock is done by decrementing the cycle-to-nanosecond
-multiplier, which is 1.  Decrementing that gives you 0 and time is
-stopped.
+Restructure the stub management code to make it simpler.
 
-This is fixed by switching to a microsecond clock, with a multiplier
-of 1000.
+syscall_stub_done is extracted from do_syscall_stub.
+
+The counters are gone since I never looked at them.
+
+The common code in run_syscall_stub and syscall_stub_data is extracted
+into flush_syscalls.
 
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/kernel/time.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/um/os-Linux/skas/mem.c |  162 +++++++++++++++++++++++---------------------
+ 1 file changed, 85 insertions(+), 77 deletions(-)
 
-Index: linux-2.6-git/arch/um/kernel/time.c
+Index: linux-2.6-git/arch/um/os-Linux/skas/mem.c
 ===================================================================
---- linux-2.6-git.orig/arch/um/kernel/time.c	2008-02-15 11:43:41.000000000 -0500
-+++ linux-2.6-git/arch/um/kernel/time.c	2008-04-24 16:01:35.000000000 -0400
-@@ -74,7 +74,7 @@ static irqreturn_t um_timer(int irq, voi
+--- linux-2.6-git.orig/arch/um/os-Linux/skas/mem.c	2008-04-25 11:36:59.000000000 -0400
++++ linux-2.6-git/arch/um/os-Linux/skas/mem.c	2008-04-25 11:39:07.000000000 -0400
+@@ -40,35 +40,69 @@ static unsigned long syscall_regs[MAX_RE
  
- static cycle_t itimer_read(void)
+ static int __init init_syscall_regs(void)
  {
--	return os_nsecs();
-+	return os_nsecs() / 1000;
++	unsigned long *stub_entry;
++
+ 	get_safe_registers(syscall_regs);
++	stub_entry = &batch_syscall_stub;
++
+ 	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
+-		((unsigned long) &batch_syscall_stub -
++		((unsigned long) stub_entry -
+ 		 (unsigned long) &__syscall_stub_start);
+ 	return 0;
  }
  
- static struct clocksource itimer_clocksource = {
-@@ -82,7 +82,7 @@ static struct clocksource itimer_clockso
- 	.rating		= 300,
- 	.read		= itimer_read,
- 	.mask		= CLOCKSOURCE_MASK(64),
--	.mult		= 1,
-+	.mult		= 1000,
- 	.shift		= 0,
- 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
- };
+ __initcall(init_syscall_regs);
+ 
+-extern int proc_mm;
++static int syscall_stub_done(unsigned long stack)
++{
++	unsigned long *syscall, *data, offset;
++	int ret, n;
++
++	/*
++	 * When the stub stops, we find the following values on the
++	 * beginning of the stack:
++	 * (long) return_value
++	 * (long) offset to failed sycall data (0 if no error)
++	 */
++	ret = *((unsigned long *) stack);
++	offset = *((unsigned long *) stack + 1);
++	if (offset == 0)
++		return 0;
+ 
+-int single_count = 0;
+-int multi_count = 0;
+-int multi_op_count = 0;
++	data = (unsigned long *)(stack + offset - STUB_DATA);
++	printk(UM_KERN_ERR "syscall_stub_done : ret = %d, offset = %ld, "
++	       "data = %p\n", ret, offset, data);
++	syscall = (unsigned long *)((unsigned long)data + data[0]);
++	printk(UM_KERN_ERR "syscall_stub_done : syscall %ld failed, "
++	       "return value = 0x%x, expected return value = 0x%lx\n",
++	       syscall[0], ret, syscall[7]);
++	printk(UM_KERN_ERR "    syscall parameters: "
++	       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
++	       syscall[1], syscall[2], syscall[3],
++	       syscall[4], syscall[5], syscall[6]);
++	for (n = 1; n < data[0]/sizeof(long); n++) {
++		if (n == 1)
++			printk(UM_KERN_ERR "    additional syscall "
++			       "data:");
++		if (n % 4 == 1)
++			printk(UM_KERN_CONT "\n" UM_KERN_ERR "      ");
++		printk(UM_KERN_CONT "  0x%lx", data[n]);
++	}
++	if (n > 1)
++		printk("\n");
+ 
+-static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
++	return ret;
++}
++
++static long do_syscall_stub(struct mm_id *mm_idp, void **addr)
+ {
+-	int n, i;
+-	long ret, offset;
+-	unsigned long * data;
+-	unsigned long * syscall;
+-	int err, pid = mm_idp->u.pid;
++	long ret;
++	int n, i, err, pid = mm_idp->u.pid;
+ 
+ 	if (proc_mm)
+ 		/* FIXME: Need to look up userspace_pid by cpu */
+ 		pid = userspace_pid[0];
+ 
+-	multi_count++;
+-
+ 	n = ptrace_setregs(pid, syscall_regs);
+ 	if (n < 0) {
+ 		printk(UM_KERN_ERR "Registers - \n");
+@@ -85,52 +119,39 @@ static inline long do_syscall_stub(struc
+ 
+ 	wait_stub_done(pid);
+ 
+-	/*
+-	 * When the stub stops, we find the following values on the
+-	 * beginning of the stack:
+-	 * (long )return_value
+-	 * (long )offset to failed sycall-data (0, if no error)
+-	 */
+-	ret = *((unsigned long *) mm_idp->stack);
+-	offset = *((unsigned long *) mm_idp->stack + 1);
+-	if (offset) {
+-		data = (unsigned long *)(mm_idp->stack + offset - STUB_DATA);
+-		printk(UM_KERN_ERR "do_syscall_stub : ret = %ld, offset = %ld, "
+-		       "data = %p\n", ret, offset, data);
+-		syscall = (unsigned long *)((unsigned long)data + data[0]);
+-		printk(UM_KERN_ERR "do_syscall_stub: syscall %ld failed, "
+-		       "return value = 0x%lx, expected return value = 0x%lx\n",
+-		       syscall[0], ret, syscall[7]);
+-		printk(UM_KERN_ERR "    syscall parameters: "
+-		       "0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
+-		       syscall[1], syscall[2], syscall[3],
+-		       syscall[4], syscall[5], syscall[6]);
+-		for (n = 1; n < data[0]/sizeof(long); n++) {
+-			if (n == 1)
+-				printk(UM_KERN_ERR "    additional syscall "
+-				       "data:");
+-			if (n % 4 == 1)
+-				printk("\n" UM_KERN_ERR "      ");
+-			printk("  0x%lx", data[n]);
+-		}
+-		if (n > 1)
+-			printk("\n");
+-	}
+-	else ret = 0;
++	ret = syscall_stub_done(mm_idp->stack);
+ 
+ 	*addr = check_init_stack(mm_idp, NULL);
+ 
+ 	return ret;
+ }
+ 
+-long run_syscall_stub(struct mm_id * mm_idp, int syscall,
++static int flush_syscalls(struct mm_id *mm_idp, void **addr, int extra)
++{
++	unsigned long *stack = check_init_stack(mm_idp, *addr);
++	int current, end;
++
++	current = ((unsigned long) stack) & ~UM_KERN_PAGE_MASK;
++	end = UM_KERN_PAGE_SIZE;
++
++	if (current + (10 + extra) * sizeof(long) < end)
++		return 0;
++
++	return do_syscall_stub(mm_idp, addr);
++}
++
++long run_syscall_stub(struct mm_id *mm_idp, int syscall,
+ 		      unsigned long *args, long expected, void **addr,
+ 		      int done)
+ {
+-	unsigned long *stack = check_init_stack(mm_idp, *addr);
++	unsigned long *stack;
++	int ret;
+ 
+-	if (done && *addr == NULL)
+-		single_count++;
++	ret = flush_syscalls(mm_idp, addr, 0);
++	if (ret)
++		return ret;
++
++	stack = check_init_stack(mm_idp, *addr);
+ 
+ 	*stack += sizeof(long);
+ 	stack += *stack / sizeof(long);
+@@ -144,45 +165,32 @@ long run_syscall_stub(struct mm_id * mm_
+ 	*stack++ = args[5];
+ 	*stack++ = expected;
+ 	*stack = 0;
+-	multi_op_count++;
+ 
+-	if (!done && ((((unsigned long) stack) & ~UM_KERN_PAGE_MASK) <
+-		     UM_KERN_PAGE_SIZE - 10 * sizeof(long))) {
+-		*addr = stack;
+-		return 0;
+-	}
++	if (done)
++		return do_syscall_stub(mm_idp, addr);
+ 
+-	return do_syscall_stub(mm_idp, addr);
++	*addr = stack;
++
++	return 0;
+ }
+ 
+-long syscall_stub_data(struct mm_id * mm_idp,
+-		       unsigned long *data, int data_count,
+-		       void **addr, void **stub_addr)
++long syscall_stub_data(struct mm_id *mm_idp, unsigned long *data,
++		       int data_count, void **addr, void **stub_addr)
+ {
+ 	unsigned long *stack;
+-	int ret = 0;
++	int ret;
+ 
+-	/*
+-	 * If *addr still is uninitialized, it *must* contain NULL.
+-	 * Thus in this case do_syscall_stub correctly won't be called.
+-	 */
+-	if ((((unsigned long) *addr) & ~UM_KERN_PAGE_MASK) >=
+-	   UM_KERN_PAGE_SIZE - (10 + data_count) * sizeof(long)) {
+-		ret = do_syscall_stub(mm_idp, addr);
+-		/* in case of error, don't overwrite data on stack */
+-		if (ret)
+-			return ret;
+-	}
++	ret = flush_syscalls(mm_idp, addr, data_count);
++	if (ret)
++		return ret;
+ 
+ 	stack = check_init_stack(mm_idp, *addr);
+-	*addr = stack;
+-
+-	*stack = data_count * sizeof(long);
++	*stack++ = data_count * sizeof(long);
+ 
+-	memcpy(stack + 1, data, data_count * sizeof(long));
++	memcpy(stack, data, data_count * sizeof(long));
+ 
+-	*stub_addr = (void *)(((unsigned long)(stack + 1) &
+-			       ~UM_KERN_PAGE_MASK) + STUB_DATA);
++	*stub_addr = (void *)(((unsigned long) stack & ~UM_KERN_PAGE_MASK) +
++			      STUB_DATA);
+ 
+ 	return 0;
+ }
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
