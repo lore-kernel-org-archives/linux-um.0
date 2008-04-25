@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JpSAB-0003km-Kf for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 10:56:47 -0700
+	id 1JpSA6-0003lV-Tb for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Apr 2008 10:56:43 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JpS9w-0005Pp-Jn
+	(Exim 4.44) id 1JpSA1-0005Pz-QM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 10:56:37 -0700
-Date: Fri, 25 Apr 2008 13:55:59 -0400
+	Fri, 25 Apr 2008 10:56:41 -0700
+Date: Fri, 25 Apr 2008 13:56:18 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080425175559.GA11172@c2.user-mode-linux.org>
+Message-ID: <20080425175618.GA11208@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 0/19] UML - Cleanups and fixes for 2.6.26
+Subject: [uml-devel] [PATCH 19/19] UML - Physical memory shouldn't include
+	initial stack
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,17 +30,41 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: "Christopher S. Aker" <caker@theshore.net>
 
-Here's the stuff I have accumulated for 2.6.26.  Cleanups and fixes of
-varying sizes.
+The top of physical memory should be below the initial process stack,
+not the top of the address space, at least for as long as the stack
+isn't known to the kernel VM system and appropriately reserved.
 
-Patch 8 fiddles the includes of a bunch of the asm/futex.h's, so isn't
-UML-specific.
+Cc: "Christopher S. Aker" <caker@theshore.net>
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/kernel/um_arch.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+Index: linux-2.6-git/arch/um/kernel/um_arch.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/um_arch.c	2008-04-24 15:16:52.000000000 -0400
++++ linux-2.6-git/arch/um/kernel/um_arch.c	2008-04-24 16:04:52.000000000 -0400
+@@ -258,6 +258,7 @@ int __init linux_main(int argc, char **a
+ {
+ 	unsigned long avail, diff;
+ 	unsigned long virtmem_size, max_physmem;
++	unsigned long stack;
+ 	unsigned int i, add;
+ 	char * mode;
+ 
+@@ -347,7 +348,9 @@ int __init linux_main(int argc, char **a
+ 	}
+ 
+ 	virtmem_size = physmem_size;
+-	avail = TASK_SIZE - start_vm;
++	stack = (unsigned long) argv;
++	stack &= ~(1024 * 1024 - 1);
++	avail = stack - start_vm;
+ 	if (physmem_size > avail)
+ 		virtmem_size = avail;
+ 	end_vm = start_vm + virtmem_size;
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
