@@ -1,26 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jp9mk-0003dO-IX for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Apr 2008 15:19:23 -0700
-Received: from 41-052.adsl.zetnet.co.uk ([194.247.41.52]
-	helo=mail.esperi.org.uk)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jp9mi-0005bC-PW
+	id 1JpSAB-0003km-Kf for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Apr 2008 10:56:47 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JpS9w-0005Pp-Jn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Apr 2008 15:19:22 -0700
-References: <87k5jcqmh8.fsf@hades.wkstn.nix>
-	<20080414144052.GA7186@c2.user-mode-linux.org>
-	<87y77elx37.fsf@hades.wkstn.nix> <87ve2hfutv.fsf@hades.wkstn.nix>
-	<87bq3z81q5.fsf@hades.wkstn.nix>
-	<20080424203732.GA11688@c2.user-mode-linux.org>
-From: Nix <nix@esperi.org.uk>
-Date: Thu, 24 Apr 2008 23:18:59 +0100
-In-Reply-To: <20080424203732.GA11688@c2.user-mode-linux.org> (Jeff Dike's
-	message of "Thu, 24 Apr 2008 16:37:32 -0400")
-Message-ID: <87y7727v70.fsf@hades.wkstn.nix>
+	Fri, 25 Apr 2008 10:56:37 -0700
+Date: Fri, 25 Apr 2008 13:55:59 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080425175559.GA11172@c2.user-mode-linux.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] Lockups with the fixed timer code :/
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH 0/19] UML - Cleanups and fixes for 2.6.26
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,27 +28,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Thomas Gleixner <tglx@timesys.com>, user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On 24 Apr 2008, Jeff Dike uttered the following:
-> OK, yell if it starts happening again...
+Here's the stuff I have accumulated for 2.6.26.  Cleanups and fixes of
+varying sizes.
 
-I tempted fate, and lo, it happens within the hour...
+Patch 8 fiddles the includes of a bunch of the asm/futex.h's, so isn't
+UML-specific.
 
-(gdb) bt
-#0  0x08083e3a in getnstimeofday ()
+				Jeff
 
-I will now do what I should have done long since and turn on frame
-pointers and debugging info so I can get a damn backtrace. (I really
-thought that was on, but apparently not...)
-
-
-One 2.6.25 improvement: in 2.6.24, whenever this happened the TUN/TAP
-driver seemed to get some sort of nasty lock taken out, all future
-packets sent over it vanished into the aether rather than going over the
-(virtual) ether(net), and I had to reboot the host to fix it. No
-longer. :)
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
