@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JpSAK-0003lj-7H for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 10:56:56 -0700
+	id 1JpSA3-0003kT-VK for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 Apr 2008 10:56:40 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JpSA5-0000vG-6S
+	(Exim 4.44) id 1JpS9v-0005OO-KS
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 10:56:45 -0700
-Date: Fri, 25 Apr 2008 13:56:16 -0400
+	Fri, 25 Apr 2008 10:56:34 -0700
+Date: Fri, 25 Apr 2008 13:56:08 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080425175616.GA11202@c2.user-mode-linux.org>
+Message-ID: <20080425175606.GA11176@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 16/19] UML - Fix CONFIG_RAW dependencies
+Subject: [uml-devel] [PATCH 3/19] UML - Style fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,43 +29,82 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: "Robert P. J. Day" <rpjday@crashcourse.ca>
 
-From: Robert P. J. Day <rpjday@crashcourse.ca>
+A few random style fixes.
 
-Add the BLOCK dependency for RAW_DRIVER, to match what's in
-drivers/char/Kconfig.  Also, while we're there, update the alleged
-obsolesence of RAW_DRIVER since it doesn't seem to be going away any
-time soon.
-
-Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/Kconfig.char |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/um/include/skas_ptrace.h            |   13 +------------
+ arch/um/include/sysdep-i386/sigcontext.h |    2 +-
+ arch/um/kernel/um_arch.c                 |    2 +-
+ arch/um/os-Linux/skas/process.c          |    2 +-
+ 4 files changed, 4 insertions(+), 15 deletions(-)
 
-Index: linux-2.6.22/arch/um/Kconfig.char
+Index: linux-2.6-git/arch/um/include/skas_ptrace.h
 ===================================================================
---- linux-2.6.22.orig/arch/um/Kconfig.char	2008-02-20 11:23:30.000000000 -0500
-+++ linux-2.6.22/arch/um/Kconfig.char	2008-03-07 11:57:18.000000000 -0500
-@@ -145,14 +145,14 @@ config LEGACY_PTYS
- 	  systems, it is safe to say N.
+--- linux-2.6-git.orig/arch/um/include/skas_ptrace.h	2008-02-21 18:47:34.000000000 -0500
++++ linux-2.6-git/arch/um/include/skas_ptrace.h	2008-03-06 09:46:19.000000000 -0500
+@@ -1,5 +1,5 @@
+ /* 
+- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
++ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
  
- config RAW_DRIVER
--        tristate "RAW driver (/dev/raw/rawN) (OBSOLETE)"
-+        tristate "RAW driver (/dev/raw/rawN)"
-+	depends on BLOCK
-         help
-           The raw driver permits block devices to be bound to /dev/raw/rawN.
-           Once bound, I/O against /dev/raw/rawN uses efficient zero-copy I/O.
-           See the raw(8) manpage for more details.
+@@ -12,14 +12,3 @@
+ #include "sysdep/skas_ptrace.h"
  
--          The raw driver is deprecated and will be removed soon.
--          Applications should simply open the device (eg /dev/hda1)
-+          Applications should preferably open the device (eg /dev/hda1)
-           with the O_DIRECT flag.
+ #endif
+-
+-/*
+- * Overrides for Emacs so that we follow Linus's tabbing style.
+- * Emacs will notice this stuff at the end of the file and automatically
+- * adjust the settings for this buffer only.  This must remain at the end
+- * of the file.
+- * ---------------------------------------------------------------------------
+- * Local variables:
+- * c-file-style: "linux"
+- * End:
+- */
+Index: linux-2.6-git/arch/um/os-Linux/skas/process.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/os-Linux/skas/process.c	2008-02-26 10:26:40.000000000 -0500
++++ linux-2.6-git/arch/um/os-Linux/skas/process.c	2008-03-06 09:46:19.000000000 -0500
+@@ -442,7 +442,7 @@ void userspace(struct uml_pt_regs *regs)
+ 				unblock_signals();
+ 				break;
+ 			default:
+-			        printk(UM_KERN_ERR "userspace - child stopped "
++				printk(UM_KERN_ERR "userspace - child stopped "
+ 				       "with signal %d\n", sig);
+ 				fatal_sigsegv();
+ 			}
+Index: linux-2.6-git/arch/um/include/sysdep-i386/sigcontext.h
+===================================================================
+--- linux-2.6-git.orig/arch/um/include/sysdep-i386/sigcontext.h	2008-02-21 18:47:34.000000000 -0500
++++ linux-2.6-git/arch/um/include/sysdep-i386/sigcontext.h	2008-03-06 09:46:19.000000000 -0500
+@@ -10,7 +10,7 @@
  
- config MAX_RAW_DEVS
+ #define IP_RESTART_SYSCALL(ip) ((ip) -= 2)
+ 
+-#define GET_FAULTINFO_FROM_SC(fi,sc) \
++#define GET_FAULTINFO_FROM_SC(fi, sc) \
+ 	{ \
+ 		(fi).cr2 = SC_CR2(sc); \
+ 		(fi).error_code = SC_ERR(sc); \
+Index: linux-2.6-git/arch/um/kernel/um_arch.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/kernel/um_arch.c	2008-02-21 18:47:34.000000000 -0500
++++ linux-2.6-git/arch/um/kernel/um_arch.c	2008-03-06 09:46:19.000000000 -0500
+@@ -150,7 +150,7 @@ __uml_setup("root=", uml_root_setup,
+ static int __init no_skas_debug_setup(char *line, int *add)
+ {
+ 	printf("'debug' is not necessary to gdb UML in skas mode - run \n");
+-	printf("'gdb linux'");
++	printf("'gdb linux'\n");
+ 
+ 	return 0;
+ }
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
