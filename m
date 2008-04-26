@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JpW3s-00049S-0f for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 15:06:32 -0700
-Received: from 41-052.adsl.zetnet.co.uk ([194.247.41.52]
-	helo=mail.esperi.org.uk)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JpW3o-00023m-5P
+	id 1JpgpW-0001WW-Cf for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 26 Apr 2008 02:36:26 -0700
+Received: from wa-out-1112.google.com ([209.85.146.180])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JpgpU-0004qG-LE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 Apr 2008 15:06:31 -0700
-References: <877iel7ljp.fsf@hades.wkstn.nix>
-From: Nix <nix@esperi.org.uk>
-Date: Fri, 25 Apr 2008 23:06:17 +0100
-In-Reply-To: <877iel7ljp.fsf@hades.wkstn.nix> (nix@esperi.org.uk's message of
-	"Fri, 25 Apr 2008 20:59:38 +0100")
-Message-ID: <87ve256146.fsf@hades.wkstn.nix>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
+	Sat, 26 Apr 2008 02:36:26 -0700
+Received: by wa-out-1112.google.com with SMTP id k22so7671403waf.18
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 26 Apr 2008 02:36:24 -0700 (PDT)
+Date: Sat, 26 Apr 2008 17:35:38 +0800 (CST)
+Message-Id: <20080426.173538.195417245.xiyou.wangcong@gmail.com>
+From: WANG Cong <xiyou.wangcong@gmail.com>
+In-Reply-To: <20080425175610.GA11188@c2.user-mode-linux.org>
+References: <20080425175610.GA11188@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 9/19] UML - Tidy ptrace interface
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,54 +31,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@linux.intel.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On 25 Apr 2008, nix@esperi.org.uk told this:
+From: Jeff Dike <jdike@addtoit.com>
+Date: Fri, 25 Apr 2008 13:56:10 -0400
+> Tidy the ptrace interface code.  Removed a bunch of unused macros.
+> Started converting register sets from arrays of longs to structures.
 
-> I suspect this can go wrong anywhere, but it happens to have been a
-> CBQ-triggered gettimeofday() while sending an arp that did it. (My ADSL
-> router pretty much bombs the poor damn machine with ARP packets all the
-> time.)
+Could you please explain a bit why do this? I think long arrary is OK.
 
-Woo, it's happening a lot tonight.
+Thanks.
 
-The CBQ/ARP problem recurred, and also this:
-
-(gdb) bt
-#0  0xb7f87410 in __kernel_vsyscall ()
-#1  0x45f27b36 in gettimeofday () from /lib/libc.so.6
-#2  0x08065417 in os_nsecs () at arch/um/os-Linux/time.c:79
-#3  0x080590fc in itimer_read () at arch/um/kernel/time.c:77
-#4  0x08084a5f in update_wall_time () at include/linux/clocksource.h:167
-#5  0x08077ba1 in do_timer (ticks=1) at kernel/timer.c:929
-#6  0x08086350 in tick_periodic (cpu=0) at kernel/time/tick-common.c:66
-#7  0x08086382 in tick_handle_periodic (dev=0x821d384) at kernel/time/tick-common.c:82
-#8  0x080590ed in um_timer (irq=0, dev=0x0) at arch/um/kernel/time.c:70
-#9  0x0808d42f in handle_IRQ_event (irq=0, action=0xdc49480) at kernel/irq/handle.c:140
-#10 0x0808d4ad in __do_IRQ (irq=0) at kernel/irq/handle.c:236
-#11 0x080576f8 in do_IRQ (irq=0, regs=0x8217ec4) at arch/um/kernel/irq.c:335
-#12 0x080590a0 in timer_handler (sig=26, regs=0x8217ec4) at arch/um/kernel/time.c:28
-#13 0x08064c84 in real_alarm_handler (sc=0x0) at arch/um/os-Linux/signal.c:93
-#14 0x08064cac in alarm_handler (sig=26, sc=0x0) at arch/um/os-Linux/signal.c:108
-#15 0x080654a0 in deliver_alarm () at arch/um/os-Linux/time.c:117
-#16 0x08065640 in idle_sleep (nsecs=<value optimized out>) at arch/um/os-Linux/time.c:181
-#17 0x080580d4 in default_idle () at arch/um/kernel/process.c:248
-#18 0x080580fe in cpu_idle () at arch/um/kernel/process.c:256
-#19 0x081afdee in rest_init () at init/main.c:453
-#20 0x0804953b in start_kernel () at init/main.c:650
-#21 0x0804a7e1 in start_kernel_proc (unused=0x0) at arch/um/kernel/skas/process.c:46
-#22 0x08064261 in run_kernel_thread (fn=0x804a7b5 <start_kernel_proc>, arg=0x0, jmp_ptr=0x821d184) at arch/um/os-Linux/process.c:267
-#23 0x08057ee0 in new_thread_handler () at arch/um/kernel/process.c:151
-#24 0x00000000 in ?? ()
-
-It looks to me like os_nsecs()/gettimeofday()/et al are the only really
-important parts of this backtrace.
-
--- 
-`If you are having a "ua luea luea le ua le" kind of day, I can only
- assume that you are doing no work due [to] incapacitating nausea caused 
- by numerous lazy demons.' --- Frossie
+Cong
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
