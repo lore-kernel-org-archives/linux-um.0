@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JphEG-00040f-0x for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Apr 2008 03:02:00 -0700
-Received: from wa-out-1112.google.com ([209.85.146.182])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JphEE-0006Ss-NF
+	id 1JpgYN-00086Q-06 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 26 Apr 2008 02:18:43 -0700
+Received: from wa-out-1112.google.com ([209.85.146.176])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JpgYM-0004U5-9q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Apr 2008 03:01:59 -0700
-Received: by wa-out-1112.google.com with SMTP id k22so7684529waf.18
+	Sat, 26 Apr 2008 02:18:42 -0700
+Received: by wa-out-1112.google.com with SMTP id k22so7662242waf.18
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 26 Apr 2008 03:01:58 -0700 (PDT)
-Date: Sat, 26 Apr 2008 18:01:12 +0800 (CST)
-Message-Id: <20080426.180112.184545994.xiyou.wangcong@gmail.com>
+	Sat, 26 Apr 2008 02:18:41 -0700 (PDT)
+Date: Sat, 26 Apr 2008 17:17:55 +0800 (CST)
+Message-Id: <20080426.171755.99884416.xiyou.wangcong@gmail.com>
 From: WANG Cong <xiyou.wangcong@gmail.com>
-In-Reply-To: <20080425175606.GA11174@c2.user-mode-linux.org>
-References: <20080425175606.GA11174@c2.user-mode-linux.org>
+In-Reply-To: <20080425175609.GA11180@c2.user-mode-linux.org>
+References: <20080425175609.GA11180@c2.user-mode-linux.org>
 Mime-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 2/19] UML - Tidy stub management code
+Subject: Re: [uml-devel] [PATCH 7/19] UML - Move hppfs_kern.c to hppfs.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,64 +35,615 @@ To: jdike@addtoit.com
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Jeff Dike <jdike@addtoit.com>
-Date: Fri, 25 Apr 2008 13:56:06 -0400
-> Restructure the stub management code to make it simpler.
-> 
-> syscall_stub_done is extracted from do_syscall_stub.
-> 
-> The counters are gone since I never looked at them.
-> 
-> The common code in run_syscall_stub and syscall_stub_data is extracted
-> into flush_syscalls.
+Date: Fri, 25 Apr 2008 13:56:09 -0400
+> There's no reason for the _kern in hppfs_kern.c, so move it to hppfs.c.
 > 
 > Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 > ---
->  arch/um/os-Linux/skas/mem.c |  162 +++++++++++++++++++++++---------------------
->  1 file changed, 85 insertions(+), 77 deletions(-)
+>  fs/hppfs/Makefile     |    6 
+>  fs/hppfs/hppfs.c      |  771 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/hppfs/hppfs_kern.c |  771 --------------------------------------------------
+>  3 files changed, 774 insertions(+), 774 deletions(-)
 > 
-> Index: linux-2.6-git/arch/um/os-Linux/skas/mem.c
+> Index: linux-2.6-git/fs/hppfs/hppfs.c
 > ===================================================================
-> --- linux-2.6-git.orig/arch/um/os-Linux/skas/mem.c	2008-04-25 11:36:59.000000000 -0400
-> +++ linux-2.6-git/arch/um/os-Linux/skas/mem.c	2008-04-25 11:39:07.000000000 -0400
-> @@ -40,35 +40,69 @@ static unsigned long syscall_regs[MAX_RE
->  
->  static int __init init_syscall_regs(void)
->  {
-> +	unsigned long *stub_entry;
+> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
+> +++ linux-2.6-git/fs/hppfs/hppfs.c	2008-04-24 15:36:51.000000000 -0400
+> @@ -0,0 +1,771 @@
+> +/*
+> + * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+> + * Licensed under the GPL
+> + */
 > +
->  	get_safe_registers(syscall_regs);
-> +	stub_entry = &batch_syscall_stub;
+> +#include <linux/ctype.h>
+> +#include <linux/dcache.h>
+> +#include <linux/file.h>
+> +#include <linux/fs.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/list.h>
+> +#include <linux/module.h>
+> +#include <linux/mount.h>
+> +#include <linux/slab.h>
+> +#include <linux/statfs.h>
+> +#include <linux/types.h>
+> +#include <asm/uaccess.h>
+> +#include "os.h"
 > +
->  	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
-> -		((unsigned long) &batch_syscall_stub -
-> +		((unsigned long) stub_entry -
->  		 (unsigned long) &__syscall_stub_start);
->  	return 0;
->  }
->  
->  __initcall(init_syscall_regs);
->  
-> -extern int proc_mm;
-> +static int syscall_stub_done(unsigned long stack)
+> +static struct inode *get_inode(struct super_block *, struct dentry *);
+> +
+> +struct hppfs_data {
+> +	struct list_head list;
+> +	char contents[PAGE_SIZE - sizeof(struct list_head)];
+> +};
+> +
+> +struct hppfs_private {
+> +	struct file *proc_file;
+> +	int host_fd;
+> +	loff_t len;
+> +	struct hppfs_data *contents;
+> +};
+> +
+> +struct hppfs_inode_info {
+> +	struct dentry *proc_dentry;
+> +	struct inode vfs_inode;
+> +};
+> +
+> +static inline struct hppfs_inode_info *HPPFS_I(struct inode *inode)
 > +{
-> +	unsigned long *syscall, *data, offset;
-> +	int ret, n;
+> +	return container_of(inode, struct hppfs_inode_info, vfs_inode);
+> +}
 > +
-> +	/*
-> +	 * When the stub stops, we find the following values on the
-> +	 * beginning of the stack:
-> +	 * (long) return_value
-> +	 * (long) offset to failed sycall data (0 if no error)
-> +	 */
-> +	ret = *((unsigned long *) stack);
+> +#define HPPFS_SUPER_MAGIC 0xb00000ee
 
 
-I am afraid the value will be truncated on 64bit machine, since
-'ret' is 'int' while 'stack' points to an 'unsigned long'.
+These can be put into a single header, e.g. hppfs.h.
 
-Is this expected?
+> +
+> +static const struct super_operations hppfs_sbops;
+> +
+> +static int is_pid(struct dentry *dentry)
+> +{
+> +	struct super_block *sb;
+> +	int i;
+> +
+> +	sb = dentry->d_sb;
+> +	if (dentry->d_parent != sb->s_root)
+> +		return 0;
+> +
+> +	for (i = 0; i < dentry->d_name.len; i++) {
+> +		if (!isdigit(dentry->d_name.name[i]))
+> +			return 0;
+> +	}
+> +	return 1;
+> +}
+> +
+> +static char *dentry_name(struct dentry *dentry, int extra)
+> +{
+> +	struct dentry *parent;
+> +	char *root, *name;
+> +	const char *seg_name;
+> +	int len, seg_len;
+> +
+> +	len = 0;
+> +	parent = dentry;
 
-Thanks.
+These can be put into initialization, I think, that's more readable.
+
+
+> +	while (parent->d_parent != parent) {
+> +		if (is_pid(parent))
+> +			len += strlen("pid") + 1;
+> +		else len += parent->d_name.len + 1;
+> +		parent = parent->d_parent;
+> +	}
+> +
+> +	root = "proc";
+
+This can be put into initialization of 'root', too.
+
+
+> +	len += strlen(root);
+> +	name = kmalloc(len + extra + 1, GFP_KERNEL);
+> +	if (name == NULL)
+> +		return NULL;
+> +
+> +	name[len] = '\0';
+> +	parent = dentry;
+> +	while (parent->d_parent != parent) {
+> +		if (is_pid(parent)) {
+> +			seg_name = "pid";
+> +			seg_len = strlen("pid");
+> +		}
+> +		else {
+> +			seg_name = parent->d_name.name;
+> +			seg_len = parent->d_name.len;
+> +		}
+> +
+> +		len -= seg_len + 1;
+> +		name[len] = '/';
+> +		strncpy(&name[len + 1], seg_name, seg_len);
+> +		parent = parent->d_parent;
+> +	}
+> +	strncpy(name, root, strlen(root));
+> +	return name;
+> +}
+> +
+> +static int file_removed(struct dentry *dentry, const char *file)
+> +{
+> +	char *host_file;
+> +	int extra, fd;
+> +
+> +	extra = 0;
+> +	if (file != NULL)
+> +		extra += strlen(file) + 1;
+> +
+> +	host_file = dentry_name(dentry, extra + strlen("/remove"));
+> +	if (host_file == NULL) {
+> +		printk(KERN_ERR "file_removed : allocation failed\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	if (file != NULL) {
+> +		strcat(host_file, "/");
+> +		strcat(host_file, file);
+> +	}
+> +	strcat(host_file, "/remove");
+> +
+> +	fd = os_open_file(host_file, of_read(OPENFLAGS()), 0);
+> +	kfree(host_file);
+> +	if (fd > 0) {
+> +		os_close_file(fd);
+> +		return 1;
+> +	}
+
+
+How about 'fd < 0' ?
+
+
+> +	return 0;
+> +}
+> +
+> +static struct dentry *hppfs_lookup(struct inode *ino, struct dentry *dentry,
+> +				   struct nameidata *nd)
+> +{
+> +	struct dentry *proc_dentry, *new, *parent;
+> +	struct inode *inode;
+> +	int err, deleted;
+> +
+> +	deleted = file_removed(dentry, NULL);
+> +	if (deleted < 0)
+> +		return ERR_PTR(deleted);
+> +	else if (deleted)
+> +		return ERR_PTR(-ENOENT);
+> +
+> +	err = -ENOMEM;
+> +	parent = HPPFS_I(ino)->proc_dentry;
+> +	mutex_lock(&parent->d_inode->i_mutex);
+> +	proc_dentry = d_lookup(parent, &dentry->d_name);
+> +	if (proc_dentry == NULL) {
+> +		proc_dentry = d_alloc(parent, &dentry->d_name);
+> +		if (proc_dentry == NULL) {
+> +			mutex_unlock(&parent->d_inode->i_mutex);
+> +			goto out;
+> +		}
+> +		new = (*parent->d_inode->i_op->lookup)(parent->d_inode,
+> +						       proc_dentry, NULL);
+> +		if (new) {
+> +			dput(proc_dentry);
+> +			proc_dentry = new;
+> +		}
+> +	}
+> +	mutex_unlock(&parent->d_inode->i_mutex);
+> +
+> +	if (IS_ERR(proc_dentry))
+> +		return proc_dentry;
+> +
+> +	err = -ENOMEM;
+> +	inode = get_inode(ino->i_sb, proc_dentry);
+> +	if (!inode)
+> +		goto out_dput;
+> +
+> + 	d_add(dentry, inode);
+> +	return NULL;
+> +
+> + out_dput:
+> +	dput(proc_dentry);
+> + out:
+> +	return ERR_PTR(err);
+> +}
+> +
+> +static const struct inode_operations hppfs_file_iops = {
+> +};
+> +
+> +static ssize_t read_proc(struct file *file, char __user *buf, ssize_t count,
+> +			 loff_t *ppos, int is_user)
+> +{
+> +	ssize_t (*read)(struct file *, char __user *, size_t, loff_t *);
+> +	ssize_t n;
+> +
+> +	read = file->f_path.dentry->d_inode->i_fop->read;
+> +
+> +	if (!is_user)
+> +		set_fs(KERNEL_DS);
+> +
+> +	n = (*read)(file, buf, count, &file->f_pos);
+> +
+> +	if (!is_user)
+> +		set_fs(USER_DS);
+> +
+> +	if (ppos)
+> +		*ppos = file->f_pos;
+> +	return n;
+> +}
+> +
+> +static ssize_t hppfs_read_file(int fd, char __user *buf, ssize_t count)
+> +{
+> +	ssize_t n;
+> +	int cur, err;
+> +	char *new_buf;
+> +
+> +	n = -ENOMEM;
+
+This can be put into initialization.
+
+
+> +	new_buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+> +	if (new_buf == NULL) {
+> +		printk(KERN_ERR "hppfs_read_file : kmalloc failed\n");
+> +		goto out;
+> +	}
+> +	n = 0;
+> +	while (count > 0) {
+> +		cur = min_t(ssize_t, count, PAGE_SIZE);
+> +		err = os_read_file(fd, new_buf, cur);
+> +		if (err < 0) {
+> +			printk(KERN_ERR "hppfs_read : read failed, "
+> +			       "errno = %d\n", err);
+> +			n = err;
+> +			goto out_free;
+> +		} else if (err == 0)
+> +			break;
+> +
+> +		if (copy_to_user(buf, new_buf, err)) {
+> +			n = -EFAULT;
+> +			goto out_free;
+> +		}
+> +		n += err;
+> +		count -= err;
+> +	}
+> + out_free:
+> +	kfree(new_buf);
+> + out:
+> +	return n;
+> +}
+> +
+> +static ssize_t hppfs_read(struct file *file, char __user *buf, size_t count,
+> +			  loff_t *ppos)
+> +{
+> +	struct hppfs_private *hppfs = file->private_data;
+> +	struct hppfs_data *data;
+> +	loff_t off;
+> +	int err;
+> +
+> +	if (hppfs->contents != NULL) {
+> +		int rem;
+> +
+> +		if (*ppos >= hppfs->len)
+> +			return 0;
+> +
+> +		data = hppfs->contents;
+> +		off = *ppos;
+> +		while (off >= sizeof(data->contents)) {
+> +			data = list_entry(data->list.next, struct hppfs_data,
+> +					  list);
+> +			off -= sizeof(data->contents);
+> +		}
+> +
+> +		if (off + count > hppfs->len)
+> +			count = hppfs->len - off;
+> +		rem = copy_to_user(buf, &data->contents[off], count);
+> +		*ppos += count - rem;
+> +		if (rem > 0)
+> +			return -EFAULT;
+> +	} else if (hppfs->host_fd != -1) {
+> +		err = os_seek_file(hppfs->host_fd, *ppos);
+> +		if (err) {
+> +			printk(KERN_ERR "hppfs_read : seek failed, "
+> +			       "errno = %d\n", err);
+> +			return err;
+> +		}
+> +		count = hppfs_read_file(hppfs->host_fd, buf, count);
+> +		if (count > 0)
+> +			*ppos += count;
+> +	}
+> +	else count = read_proc(hppfs->proc_file, buf, count, ppos, 1);
+> +
+> +	return count;
+> +}
+> +
+> +static ssize_t hppfs_write(struct file *file, const char __user *buf,
+> +			   size_t len, loff_t *ppos)
+> +{
+> +	struct hppfs_private *data = file->private_data;
+> +	struct file *proc_file = data->proc_file;
+> +	ssize_t (*write)(struct file *, const char __user *, size_t, loff_t *);
+> +
+> +	write = proc_file->f_path.dentry->d_inode->i_fop->write;
+> +	return (*write)(proc_file, buf, len, ppos);
+> +}
+> +
+> +static int open_host_sock(char *host_file, int *filter_out)
+> +{
+> +	char *end;
+> +	int fd;
+> +
+> +	end = &host_file[strlen(host_file)];
+> +	strcpy(end, "/rw");
+> +	*filter_out = 1;
+> +	fd = os_connect_socket(host_file);
+> +	if (fd > 0)
+> +		return fd;
+> +
+> +	strcpy(end, "/r");
+> +	*filter_out = 0;
+> +	fd = os_connect_socket(host_file);
+> +	return fd;
+> +}
+> +
+> +static void free_contents(struct hppfs_data *head)
+> +{
+> +	struct hppfs_data *data;
+> +	struct list_head *ele, *next;
+> +
+> +	if (head == NULL)
+> +		return;
+> +
+> +	list_for_each_safe(ele, next, &head->list) {
+> +		data = list_entry(ele, struct hppfs_data, list);
+> +		kfree(data);
+> +	}
+> +	kfree(head);
+> +}
+> +
+> +static struct hppfs_data *hppfs_get_data(int fd, int filter,
+> +					 struct file *proc_file,
+> +					 struct file *hppfs_file,
+> +					 loff_t *size_out)
+> +{
+> +	struct hppfs_data *data, *new, *head;
+> +	int n, err;
+> +
+> +	err = -ENOMEM;
+> +	data = kmalloc(sizeof(*data), GFP_KERNEL);
+> +	if (data == NULL) {
+> +		printk(KERN_ERR "hppfs_get_data : head allocation failed\n");
+> +		goto failed;
+> +	}
+> +
+> +	INIT_LIST_HEAD(&data->list);
+> +
+> +	head = data;
+> +	*size_out = 0;
+> +
+> +	if (filter) {
+> +		while ((n = read_proc(proc_file, data->contents,
+> +				      sizeof(data->contents), NULL, 0)) > 0)
+> +			os_write_file(fd, data->contents, n);
+> +		err = os_shutdown_socket(fd, 0, 1);
+> +		if (err) {
+> +			printk(KERN_ERR "hppfs_get_data : failed to shut down "
+> +			       "socket\n");
+> +			goto failed_free;
+> +		}
+> +	}
+> +	while (1) {
+> +		n = os_read_file(fd, data->contents, sizeof(data->contents));
+> +		if (n < 0) {
+> +			err = n;
+> +			printk(KERN_ERR "hppfs_get_data : read failed, "
+> +			       "errno = %d\n", err);
+> +			goto failed_free;
+> +		} else if (n == 0)
+> +			break;
+> +
+> +		*size_out += n;
+> +
+> +		if (n < sizeof(data->contents))
+> +			break;
+> +
+> +		new = kmalloc(sizeof(*data), GFP_KERNEL);
+> +		if (new == 0) {
+
+
+Using NULL is better, at least sparse complains about this. ;)
+
+
+> +			printk(KERN_ERR "hppfs_get_data : data allocation "
+> +			       "failed\n");
+> +			err = -ENOMEM;
+> +			goto failed_free;
+> +		}
+> +
+> +		INIT_LIST_HEAD(&new->list);
+> +		list_add(&new->list, &data->list);
+> +		data = new;
+> +	}
+> +	return head;
+> +
+> + failed_free:
+> +	free_contents(head);
+> + failed:
+> +	return ERR_PTR(err);
+> +}
+> +
+> +static struct hppfs_private *hppfs_data(void)
+> +{
+> +	struct hppfs_private *data;
+> +
+> +	data = kmalloc(sizeof(*data), GFP_KERNEL);
+> +	if (data == NULL)
+> +		return data;
+> +
+> +	*data = ((struct hppfs_private ) { .host_fd  		= -1,
+> +					   .len  		= -1,
+> +					   .contents 		= NULL } );
+> +	return data;
+> +}
+> +
+> +static int file_mode(int fmode)
+> +{
+> +	if (fmode == (FMODE_READ | FMODE_WRITE))
+> +		return O_RDWR;
+> +	if (fmode == FMODE_READ)
+> +		return O_RDONLY;
+> +	if (fmode == FMODE_WRITE)
+> +		return O_WRONLY;
+> +	return 0;
+> +}
+> +
+> +static int hppfs_open(struct inode *inode, struct file *file)
+> +{
+> +	struct hppfs_private *data;
+> +	struct vfsmount *proc_mnt;
+> +	struct dentry *proc_dentry;
+> +	char *host_file;
+> +	int err, fd, type, filter;
+> +
+> +	err = -ENOMEM;
+> +	data = hppfs_data();
+> +	if (data == NULL)
+> +		goto out;
+> +
+> +	host_file = dentry_name(file->f_path.dentry, strlen("/rw"));
+> +	if (host_file == NULL)
+> +		goto out_free2;
+> +
+> +	proc_dentry = HPPFS_I(inode)->proc_dentry;
+> +	proc_mnt = inode->i_sb->s_fs_info;
+> +
+> +	/* XXX This isn't closed anywhere */
+> +	data->proc_file = dentry_open(dget(proc_dentry), mntget(proc_mnt),
+> +				      file_mode(file->f_mode));
+> +	err = PTR_ERR(data->proc_file);
+> +	if (IS_ERR(data->proc_file))
+> +		goto out_free1;
+> +
+> +	type = os_file_type(host_file);
+> +	if (type == OS_TYPE_FILE) {
+> +		fd = os_open_file(host_file, of_read(OPENFLAGS()), 0);
+> +		if (fd >= 0)
+> +			data->host_fd = fd;
+> +		else
+> +			printk(KERN_ERR "hppfs_open : failed to open '%s', "
+> +			       "errno = %d\n", host_file, -fd);
+> +
+> +		data->contents = NULL;
+> +	} else if (type == OS_TYPE_DIR) {
+> +		fd = open_host_sock(host_file, &filter);
+> +		if (fd > 0) {
+> +			data->contents = hppfs_get_data(fd, filter,
+> +							data->proc_file,
+> +							file, &data->len);
+> +			if (!IS_ERR(data->contents))
+> +				data->host_fd = fd;
+> +		} else
+> +			printk(KERN_ERR "hppfs_open : failed to open a socket "
+> +			       "in '%s', errno = %d\n", host_file, -fd);
+> +	}
+> +	kfree(host_file);
+> +
+> +	file->private_data = data;
+> +	return 0;
+> +
+> + out_free1:
+> +	kfree(host_file);
+> + out_free2:
+> +	free_contents(data->contents);
+> +	kfree(data);
+> + out:
+> +	return err;
+> +}
+> +
+> +static int hppfs_dir_open(struct inode *inode, struct file *file)
+> +{
+> +	struct hppfs_private *data;
+> +	struct vfsmount *proc_mnt;
+> +	struct dentry *proc_dentry;
+> +	int err;
+> +
+> +	err = -ENOMEM;
+> +	data = hppfs_data();
+> +	if (data == NULL)
+> +		goto out;
+> +
+> +	proc_dentry = HPPFS_I(inode)->proc_dentry;
+> +	proc_mnt = inode->i_sb->s_fs_info;
+> +	data->proc_file = dentry_open(dget(proc_dentry), mntget(proc_mnt),
+> +				      file_mode(file->f_mode));
+> +	err = PTR_ERR(data->proc_file);
+> +	if (IS_ERR(data->proc_file))
+> +		goto out_free;
+> +
+> +	file->private_data = data;
+> +	return 0;
+> +
+> + out_free:
+> +	kfree(data);
+> + out:
+> +	return err;
+> +}
+> +
+> +static loff_t hppfs_llseek(struct file *file, loff_t off, int where)
+> +{
+> +	struct hppfs_private *data = file->private_data;
+> +	struct file *proc_file = data->proc_file;
+> +	loff_t (*llseek)(struct file *, loff_t, int);
+> +	loff_t ret;
+> +
+> +	llseek = proc_file->f_path.dentry->d_inode->i_fop->llseek;
+> +	if (llseek != NULL) {
+> +		ret = (*llseek)(proc_file, off, where);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	return default_llseek(file, off, where);
+> +}
+> +
+> +static const struct file_operations hppfs_file_fops = {
+> +	.owner		= NULL,
+> +	.llseek		= hppfs_llseek,
+> +	.read		= hppfs_read,
+> +	.write		= hppfs_write,
+> +	.open		= hppfs_open,
+> +};
+> +
+> +struct hppfs_dirent {
+> +	void *vfs_dirent;
+> +	filldir_t filldir;
+> +	struct dentry *dentry;
+> +};
+> +
+> +static int hppfs_filldir(void *d, const char *name, int size,
+> +			 loff_t offset, u64 inode, unsigned int type)
+> +{
+> +	struct hppfs_dirent *dirent = d;
+> +
+> +	if (file_removed(dirent->dentry, name))
+> +		return 0;
+
+If returning 0 indicates success, this is wrong, since file_removed() may
+return -ENOMEM.
+
+Or I miss something that is too obvious? ;-)
+
+
+<snip>
+
+Thanks!
+
+Cong
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
