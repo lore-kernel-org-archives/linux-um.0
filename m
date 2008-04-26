@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JpgpW-0001WW-Cf for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Apr 2008 02:36:26 -0700
-Received: from wa-out-1112.google.com ([209.85.146.180])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JpgpU-0004qG-LE
+	id 1JphEG-00040f-0x for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 26 Apr 2008 03:02:00 -0700
+Received: from wa-out-1112.google.com ([209.85.146.182])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JphEE-0006Ss-NF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Apr 2008 02:36:26 -0700
-Received: by wa-out-1112.google.com with SMTP id k22so7671403waf.18
+	Sat, 26 Apr 2008 03:01:59 -0700
+Received: by wa-out-1112.google.com with SMTP id k22so7684529waf.18
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 26 Apr 2008 02:36:24 -0700 (PDT)
-Date: Sat, 26 Apr 2008 17:35:38 +0800 (CST)
-Message-Id: <20080426.173538.195417245.xiyou.wangcong@gmail.com>
+	Sat, 26 Apr 2008 03:01:58 -0700 (PDT)
+Date: Sat, 26 Apr 2008 18:01:12 +0800 (CST)
+Message-Id: <20080426.180112.184545994.xiyou.wangcong@gmail.com>
 From: WANG Cong <xiyou.wangcong@gmail.com>
-In-Reply-To: <20080425175610.GA11188@c2.user-mode-linux.org>
-References: <20080425175610.GA11188@c2.user-mode-linux.org>
+In-Reply-To: <20080425175606.GA11174@c2.user-mode-linux.org>
+References: <20080425175606.GA11174@c2.user-mode-linux.org>
 Mime-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 9/19] UML - Tidy ptrace interface
+Subject: Re: [uml-devel] [PATCH 2/19] UML - Tidy stub management code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,15 +35,64 @@ To: jdike@addtoit.com
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 From: Jeff Dike <jdike@addtoit.com>
-Date: Fri, 25 Apr 2008 13:56:10 -0400
-> Tidy the ptrace interface code.  Removed a bunch of unused macros.
-> Started converting register sets from arrays of longs to structures.
+Date: Fri, 25 Apr 2008 13:56:06 -0400
+> Restructure the stub management code to make it simpler.
+> 
+> syscall_stub_done is extracted from do_syscall_stub.
+> 
+> The counters are gone since I never looked at them.
+> 
+> The common code in run_syscall_stub and syscall_stub_data is extracted
+> into flush_syscalls.
+> 
+> Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+> ---
+>  arch/um/os-Linux/skas/mem.c |  162 +++++++++++++++++++++++---------------------
+>  1 file changed, 85 insertions(+), 77 deletions(-)
+> 
+> Index: linux-2.6-git/arch/um/os-Linux/skas/mem.c
+> ===================================================================
+> --- linux-2.6-git.orig/arch/um/os-Linux/skas/mem.c	2008-04-25 11:36:59.000000000 -0400
+> +++ linux-2.6-git/arch/um/os-Linux/skas/mem.c	2008-04-25 11:39:07.000000000 -0400
+> @@ -40,35 +40,69 @@ static unsigned long syscall_regs[MAX_RE
+>  
+>  static int __init init_syscall_regs(void)
+>  {
+> +	unsigned long *stub_entry;
+> +
+>  	get_safe_registers(syscall_regs);
+> +	stub_entry = &batch_syscall_stub;
+> +
+>  	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
+> -		((unsigned long) &batch_syscall_stub -
+> +		((unsigned long) stub_entry -
+>  		 (unsigned long) &__syscall_stub_start);
+>  	return 0;
+>  }
+>  
+>  __initcall(init_syscall_regs);
+>  
+> -extern int proc_mm;
+> +static int syscall_stub_done(unsigned long stack)
+> +{
+> +	unsigned long *syscall, *data, offset;
+> +	int ret, n;
+> +
+> +	/*
+> +	 * When the stub stops, we find the following values on the
+> +	 * beginning of the stack:
+> +	 * (long) return_value
+> +	 * (long) offset to failed sycall data (0 if no error)
+> +	 */
+> +	ret = *((unsigned long *) stack);
 
-Could you please explain a bit why do this? I think long arrary is OK.
+
+I am afraid the value will be truncated on 64bit machine, since
+'ret' is 'int' while 'stack' points to an 'unsigned long'.
+
+Is this expected?
 
 Thanks.
-
-Cong
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
