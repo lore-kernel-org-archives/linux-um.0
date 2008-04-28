@@ -2,16 +2,16 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JqV6Y-0005rN-DN for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 08:17:22 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1JqVNz-00086e-NI for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Apr 2008 08:35:24 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JqV6F-0003Ig-T8
+	(Exim 4.44) id 1JqVNo-0004AU-4p
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 08:17:07 -0700
-Date: Mon, 28 Apr 2008 11:16:04 -0400
+	Mon, 28 Apr 2008 08:35:17 -0700
+Date: Mon, 28 Apr 2008 11:29:40 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080428151604.GB7334@c2.user-mode-linux.org>
+Message-ID: <20080428152940.GA7465@c2.user-mode-linux.org>
 References: <20080425175608.GA11182@c2.user-mode-linux.org>
 	<20080426.163132.194697674.xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
@@ -35,31 +35,19 @@ To: WANG Cong <xiyou.wangcong@gmail.com>
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 On Sat, Apr 26, 2008 at 04:31:32PM +0800, WANG Cong wrote:
-> > -		copy_to_user(buf, &data->contents[off], count);
-> > -		*ppos += count;
 > > +		rem = copy_to_user(buf, &data->contents[off], count);
 > > +		*ppos += count - rem;
 > > +		if (rem > 0)
 > > +			return -EFAULT;
 > 
-> 
 > Could you please explain why check 'rem' after using it here?
 
-Because I'm an idiot.  Will fix.
+Actually, this isn't as wrong as it looks. copy_to_user returns what
+hasn't been copied (rem == remaining).  So, I think the mistake is to
+return -EFAULT here.  Returning the short count would be right, unless
+rem == count, in which case we return -EFAULT.
 
-> >  static int hppfs_open(struct inode *inode, struct file *file)
-> >  {
-> >  	struct hppfs_private *data;
-> > -	struct dentry *proc_dentry;
-> >  	struct vfsmount *proc_mnt;
-> > +	struct dentry *proc_dentry;
-> 
-> And what does this kind of change mean?
-
-It means I culdn't make up my mind.  I first got rid of the dentrys,
-then put them back, but in a different place.
-
-     	      	    Jeff
+       	      	 Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
