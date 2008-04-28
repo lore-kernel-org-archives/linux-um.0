@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JqVgE-0001sM-QS for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 08:54:14 -0700
-Received: from an-out-0708.google.com ([209.85.132.243])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JqVfu-00056c-85
+	id 1JqWTp-0007tp-7O for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Apr 2008 09:45:29 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JqWTW-00030N-0R
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 08:54:04 -0700
-Received: by an-out-0708.google.com with SMTP id b38so1260971ana.6
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 28 Apr 2008 08:53:48 -0700 (PDT)
-Message-ID: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
-Date: Mon, 28 Apr 2008 23:53:48 +0800
-From: "Peter Teoh" <htmldeveloper@gmail.com>
+	Mon, 28 Apr 2008 09:45:14 -0700
+Date: Mon, 28 Apr 2008 12:44:44 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080428164443.GB9628@c2.user-mode-linux.org>
+References: <877iel7ljp.fsf@hades.wkstn.nix> <87ve256146.fsf@hades.wkstn.nix>
+	<871w4sqxgv.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
+In-Reply-To: <871w4sqxgv.fsf@hades.wkstn.nix>
+Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,27 +31,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Nix <nix@esperi.org.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-What is the following errors:
+On Sat, Apr 26, 2008 at 07:31:44PM +0100, Nix wrote:
+> The cause of this is almost certainly time-skewing on the *host* via
+> adjtimex(). I stopped ntpd and there were no problems for half a day: I
+> restarted it, and as soon as ntpd had synched and begun slewing the time
+> (within a second of slewing beginning, probably less than that), *wham*:
 
-make defconfig ARCH=um
-/sda4/download/linux_linus/linux-2.6/arch/um/Makefile:100: *** missing
-separator.  Stop.
+Can you try the patch below?  Time should definitely not go backwards
+- it's a bug if it happens.  If you want more a more definite
+indication about whether this is having an effect, stick a printk in
+that test and see if it shows up.
 
-I was not able to find anything relevant from Internet, please advise?
-
-Other infor:
-
-/sda4/download/linux_linus/linux-2.6>uname -r
-2.6.25-rc9
-
-/sda4/download/linux_linus/linux-2.6>cat include/config/kernel.release
-2.6.25-rc9
+     	      	  Jeff
 
 -- 
-Regards,
-Peter Teoh
+Work email - jdike at linux dot intel dot com
+
+Index: linux-2.6.22/arch/um/os-Linux/time.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/os-Linux/time.c	2008-04-24 13:21:28.000000000 -0400
++++ linux-2.6.22/arch/um/os-Linux/time.c	2008-04-28 12:41:37.000000000 -0400
+@@ -107,6 +107,10 @@ static void deliver_alarm(void)
+ 	unsigned long long this_tick = os_nsecs();
+ 	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
+ 
++	/* Protection against the host's time going backwards */
++	if ((last_tick != 0) && (this_tick < last_tick))
++		this_tick = last_tick;
++
+ 	if (last_tick == 0)
+ 		last_tick = this_tick - one_tick;
+ 
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
