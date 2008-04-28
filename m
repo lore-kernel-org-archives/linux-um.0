@@ -2,21 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JqYVW-0005q5-6S for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 11:55:22 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JqYVS-0001j7-2D
+	id 1JqbcV-0002AP-No for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Apr 2008 15:14:47 -0700
+Received: from feh.colobox.com ([209.177.154.210] ident=qmailr)
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1JqbcR-0007yW-Bp
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 11:55:22 -0700
-Date: Mon, 28 Apr 2008 14:55:05 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080428185505.GA11160@c2.user-mode-linux.org>
-References: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
-Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
+	Mon, 28 Apr 2008 15:14:47 -0700
+Date: 28 Apr 2008 15:14:41 -0700
+Message-ID: <20080428221441.13847.qmail@feh.colobox.com>
+From: "Ryan Finnie" <ryan@finnie.org>
+In-Reply-To: <20080428172840.GF9628@c2.user-mode-linux.org>
+Subject: [uml-devel] [PATCH] SKAS4 - Clean up command line disable output
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,26 +22,60 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Peter Teoh <htmldeveloper@gmail.com>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Apr 28, 2008 at 11:53:48PM +0800, Peter Teoh wrote:
-> What is the following errors:
-> 
-> make defconfig ARCH=um
-> /sda4/download/linux_linus/linux-2.6/arch/um/Makefile:100: *** missing
-> separator.  Stop.
+The PTRACE_GETSIGINFO notice was missing a linefeed.  In addition, tab 
+and wrap each SKAS4 "disabled" message in parens so it doesn't break up 
+the indendation within the switch_mm check block.
 
-What version of UML?
+Signed-off-by: Ryan Finnie <ryan@finnie.org>
+---
 
-     	     Jeff
+ start_up.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
--- 
-Work email - jdike at linux dot intel dot com
+
+diff -ruN linux-2.6.24.orig/arch/um/os-Linux/start_up.c linux-2.6.24/arch/um/os-Linux/start_up.c
+--- linux-2.6.24.orig/arch/um/os-Linux/start_up.c	2008-04-14 16:21:37.000000000 -0700
++++ linux-2.6.24/arch/um/os-Linux/start_up.c	2008-04-14 16:47:39.000000000 -0700
+@@ -623,8 +623,8 @@
+ 		non_fatal("Failed\n");
+ 
+ 	if (disable_siginfo_segv)
+-		non_fatal("Extended PTRACE_GETSIGINFO disabled on command "
+-			  "line");
++		non_fatal("\t(Extended PTRACE_GETSIGINFO disabled on "
++			  "command line)\n");
+ 	else
+ 		have_siginfo_segv = 1;
+ 
+@@ -688,7 +688,7 @@
+ 	close(there);
+ 
+ 	if (disable_switch_mm)
+-		non_fatal("switch_mm support disabled on command line\n");
++		non_fatal("\t(switch_mm support disabled on command line)\n");
+ 	else
+ 		have_switch_mm = 1;
+ 
+@@ -782,8 +782,8 @@
+ 	else non_fatal("OK\n");
+ 
+ 	if (disable_ptrace_switch_mm)
+-		non_fatal("PTRACE_SWITCH_MM support disabled on command "
+-			  "line\n");
++		non_fatal("\t(PTRACE_SWITCH_MM support disabled on command "
++			  "line)\n");
+ 	else
+ 		have_ptrace_switch_mm = 1;
+ 
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
