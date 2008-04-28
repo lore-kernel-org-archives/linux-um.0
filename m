@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JqVVK-0000Tw-P4 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 08:42:58 -0700
+	id 1JqVY0-0000oP-FM for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Apr 2008 08:45:44 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JqVVH-0000Dz-JA
+	(Exim 4.44) id 1JqVXp-0001Zz-R2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 08:42:58 -0700
-Date: Mon, 28 Apr 2008 11:42:40 -0400
+	Mon, 28 Apr 2008 08:45:39 -0700
+Date: Mon, 28 Apr 2008 11:45:24 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080428154240.GD7334@c2.user-mode-linux.org>
-References: <20080425175610.GA11188@c2.user-mode-linux.org>
-	<20080426.173538.195417245.xiyou.wangcong@gmail.com>
+Message-ID: <20080428154524.GE7334@c2.user-mode-linux.org>
+References: <20080425175606.GA11174@c2.user-mode-linux.org>
+	<20080426.180112.184545994.xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20080426.173538.195417245.xiyou.wangcong@gmail.com>
-Subject: Re: [uml-devel] [PATCH 9/19] UML - Tidy ptrace interface
+In-Reply-To: <20080426.180112.184545994.xiyou.wangcong@gmail.com>
+Subject: Re: [uml-devel] [PATCH 2/19] UML - Tidy stub management code
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,30 +34,26 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: WANG Cong <xiyou.wangcong@gmail.com>
 Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Apr 26, 2008 at 05:35:38PM +0800, WANG Cong wrote:
-> From: Jeff Dike <jdike@addtoit.com>
-> Date: Fri, 25 Apr 2008 13:56:10 -0400
-> > Tidy the ptrace interface code.  Removed a bunch of unused macros.
-> > Started converting register sets from arrays of longs to structures.
+On Sat, Apr 26, 2008 at 06:01:12PM +0800, WANG Cong wrote:
+> > +	/*
+> > +	 * When the stub stops, we find the following values on the
+> > +	 * beginning of the stack:
+> > +	 * (long) return_value
+> > +	 * (long) offset to failed sycall data (0 if no error)
+> > +	 */
+> > +	ret = *((unsigned long *) stack);
 > 
-> Could you please explain a bit why do this? I think long arrary is OK.
+> 
+> I am afraid the value will be truncated on 64bit machine, since
+> 'ret' is 'int' while 'stack' points to an 'unsigned long'.
+> 
+> Is this expected?
 
-It's wrong on x86_64.  There, FRAME_SIZE is 168 -
-     #define FRAME_SIZE 
-and SS is the last register defined -
-    #define SS 160
-but there are a number of registers beyond that in the user_regs_struct:
-	unsigned long	ss;
-	unsigned long	fs_base;
-	unsigned long	gs_base;
-	unsigned long	ds;
-	unsigned long	es;
-	unsigned long	fs;
-	unsigned long	gs;
+That's dubious, but I don't think it breaks anything.  On LE, *(int *)
+and *(long *) will give you the same answer, and the value here is an
+error code, which fits into 32 bits.
 
-The effect of GETREGS into a long[FRAME_SIZE] will be stack corruption.
-
-    	      	      Jeff
+      	    	       Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
