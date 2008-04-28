@@ -1,27 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jq7oR-0005x6-Os for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Apr 2008 07:25:08 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user55488)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jq7oQ-00057C-23
+	id 1JqV6Y-0005rN-DN for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Apr 2008 08:17:22 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JqV6F-0003Ig-T8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 27 Apr 2008 07:25:07 -0700
-Received: from esperi.org.uk (nix@hades.wkstn.nix [192.168.14.18])
-	by mail.esperi.org.uk (8.12.11.20060614/8.12.11) with ESMTP id
-	m3RE3mkk000427 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 27 Apr 2008 15:03:48 +0100
-References: <877iel7ljp.fsf@hades.wkstn.nix> <87ve256146.fsf@hades.wkstn.nix>
-	<871w4sqxgv.fsf@hades.wkstn.nix>
-From: Nix <nix@esperi.org.uk>
-Date: Sun, 27 Apr 2008 15:02:33 +0100
-In-Reply-To: <871w4sqxgv.fsf@hades.wkstn.nix> (nix@esperi.org.uk's message of
-	"Sat, 26 Apr 2008 19:31:44 +0100")
-Message-ID: <87wsmjbdl2.fsf@hades.wkstn.nix>
+	Mon, 28 Apr 2008 08:17:07 -0700
+Date: Mon, 28 Apr 2008 11:16:04 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080428151604.GB7334@c2.user-mode-linux.org>
+References: <20080425175608.GA11182@c2.user-mode-linux.org>
+	<20080426.163132.194697674.xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
+Content-Disposition: inline
+In-Reply-To: <20080426.163132.194697674.xiyou.wangcong@gmail.com>
+Subject: Re: [uml-devel] [PATCH 6/19] UML - hppfs fixes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,36 +31,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@linux.intel.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On 26 Apr 2008, nix@esperi.org.uk uttered the following:
+On Sat, Apr 26, 2008 at 04:31:32PM +0800, WANG Cong wrote:
+> > -		copy_to_user(buf, &data->contents[off], count);
+> > -		*ppos += count;
+> > +		rem = copy_to_user(buf, &data->contents[off], count);
+> > +		*ppos += count - rem;
+> > +		if (rem > 0)
+> > +			return -EFAULT;
+> 
+> 
+> Could you please explain why check 'rem' after using it here?
 
-> On 25 Apr 2008, nix@esperi.org.uk uttered the following:
->
->> On 25 Apr 2008, nix@esperi.org.uk told this:
->>
->>> I suspect this can go wrong anywhere, but it happens to have been a
->>> CBQ-triggered gettimeofday() while sending an arp that did it. (My ADSL
->>> router pretty much bombs the poor damn machine with ARP packets all the
->>> time.)
->>
->> Woo, it's happening a lot tonight.
->
-> The cause of this is almost certainly time-skewing on the *host* via
-> adjtimex(). I stopped ntpd and there were no problems for half a day: I
-> restarted it, and as soon as ntpd had synched and begun slewing the time
-> (within a second of slewing beginning, probably less than that), *wham*:
+Because I'm an idiot.  Will fix.
 
-Time-stepping on the host is enough to cause trouble. I switched to
-using ntpdate -b to keep time in synch, and since then my UML instances
-have gone into mad loops only on the hour, when the ntpdate time-step
-should take place.
+> >  static int hppfs_open(struct inode *inode, struct file *file)
+> >  {
+> >  	struct hppfs_private *data;
+> > -	struct dentry *proc_dentry;
+> >  	struct vfsmount *proc_mnt;
+> > +	struct dentry *proc_dentry;
+> 
+> And what does this kind of change mean?
+
+It means I culdn't make up my mind.  I first got rid of the dentrys,
+then put them back, but in a different place.
+
+     	      	    Jeff
 
 -- 
-`If you are having a "ua luea luea le ua le" kind of day, I can only
- assume that you are doing no work due [to] incapacitating nausea caused 
- by numerous lazy demons.' --- Frossie
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
