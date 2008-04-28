@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JqX9p-0004ao-Lc for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 10:28:53 -0700
+	id 1JqYVW-0005q5-6S for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Apr 2008 11:55:22 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JqX9k-000757-IE
+	(Exim 4.44) id 1JqYVS-0001j7-2D
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 28 Apr 2008 10:28:53 -0700
-Date: Mon, 28 Apr 2008 13:28:40 -0400
+	Mon, 28 Apr 2008 11:55:22 -0700
+Date: Mon, 28 Apr 2008 14:55:05 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080428172840.GF9628@c2.user-mode-linux.org>
-References: <20080415001628.1145.qmail@dev2.reno.12h>
+Message-ID: <20080428185505.GA11160@c2.user-mode-linux.org>
+References: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20080415001628.1145.qmail@dev2.reno.12h>
-Subject: Re: [uml-devel] [PATCH] SKAS4 - Clean up command line disable	output
+In-Reply-To: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
+Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,17 +30,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Ryan Finnie <ryan@finnie.org>
+To: Peter Teoh <htmldeveloper@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Apr 14, 2008 at 05:16:28PM -0700, Ryan Finnie wrote:
-> The PTRACE_GETSIGINFO notice was missing a linefeed.  In addition, tab 
-> and wrap each SKAS4 "disabled" message in parens so it doesn't break up 
-> the indendation within the switch_mm check block.
+On Mon, Apr 28, 2008 at 11:53:48PM +0800, Peter Teoh wrote:
+> What is the following errors:
+> 
+> make defconfig ARCH=um
+> /sda4/download/linux_linus/linux-2.6/arch/um/Makefile:100: *** missing
+> separator.  Stop.
 
-Looks good, but I'm going to want a Signed-off-by from you on these...
+What version of UML?
 
-      	    	    Jeff
+     	     Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
