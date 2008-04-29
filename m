@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JqoXo-00030K-17 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Apr 2008 05:02:51 -0700
-Received: from wx-out-0506.google.com ([66.249.82.239])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JqoXh-0006jj-6t
+	id 1JqruD-0001OB-IC for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Apr 2008 08:38:09 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Jqru6-0005AJ-Ex
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Apr 2008 05:02:42 -0700
-Received: by wx-out-0506.google.com with SMTP id h31so4415816wxd.4
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 29 Apr 2008 05:02:40 -0700 (PDT)
-Message-ID: <804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
-Date: Tue, 29 Apr 2008 20:02:06 +0800
-From: "Peter Teoh" <htmldeveloper@gmail.com>
-In-Reply-To: <20080428185505.GA11160@c2.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
+	Tue, 29 Apr 2008 08:38:08 -0700
+Date: Tue, 29 Apr 2008 11:37:46 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080429153746.GB9143@c2.user-mode-linux.org>
 References: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
 	<20080428185505.GA11160@c2.user-mode-linux.org>
+	<804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
 Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -33,62 +32,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Peter Teoh <htmldeveloper@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Apr 29, 2008 at 2:55 AM, Jeff Dike <jdike@addtoit.com> wrote:
-> On Mon, Apr 28, 2008 at 11:53:48PM +0800, Peter Teoh wrote:
->  > What is the following errors:
->  >
->  > make defconfig ARCH=um
->  > /sda4/download/linux_linus/linux-2.6/arch/um/Makefile:100: *** missing
->  > separator.  Stop.
->
->  What version of UML?
->
+On Tue, Apr 29, 2008 at 08:02:06PM +0800, Peter Teoh wrote:
+> Erh....I don't understand, is there something specifically called
+> "UML" with a version to it?
 
-Erh....I don't understand, is there something specifically called
-"UML" with a version to it?
+What I meant was the kernel version.
 
-What I did was this:
+> /mnt/hd0/download/linux-2.6-latest>cat include/config/kernel.release
+> 2.6.25
+> 
+> Is this the correct procedure?   I suspect something is wrong, as i
+> did a few times in all other different git tree all similar results.
 
-a.   Followed the steps here:
-http://user-mode-linux.sourceforge.net/source.html, except that the
-linux kernel is from linus's git tree (from the .git/config file):
+Looks right to me.
 
-[core]
-        repositoryformatversion = 0
-        filemode = true
-        bare = false
-        logallrefupdates = true
-[remote "origin"]
-        url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
-        fetch = +refs/heads/*:refs/remotes/origin/*
-[branch "master"]
-        remote = origin
-        merge = refs/heads/master
+I'm suspecting that Makefile is mangled somehow.  Does git-diff show
+it as being changed?  The md5sum I have here is
 
-b.   and then I just did a make defconfig ARCH=um.
+   md5sum arch/um/Makefile
+   9088cdab1c0b725568e8f269636dc6df  arch/um/Makefile
 
-c.   the version of the kernel is this:
-
-/mnt/hd0/download/linux-2.6-latest>cat include/config/kernel.release
-2.6.25
-
-Is this the correct procedure?   I suspect something is wrong, as i
-did a few times in all other different git tree all similar results.
-
->              Jeff
->
->  --
->  Work email - jdike at linux dot intel dot com
->
-
-
+			Jeff
 
 -- 
-Regards,
-Peter Teoh
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
