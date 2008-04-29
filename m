@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jql01-0002Dx-4e for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Apr 2008 01:15:41 -0700
-Received: from rv-out-0506.google.com ([209.85.198.226])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jqkzz-0005nw-PB
+	id 1JqoXo-00030K-17 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 29 Apr 2008 05:02:51 -0700
+Received: from wx-out-0506.google.com ([66.249.82.239])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JqoXh-0006jj-6t
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Apr 2008 01:15:41 -0700
-Received: by rv-out-0506.google.com with SMTP id g37so2640965rvb.22
+	Tue, 29 Apr 2008 05:02:42 -0700
+Received: by wx-out-0506.google.com with SMTP id h31so4415816wxd.4
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 29 Apr 2008 01:15:37 -0700 (PDT)
-Date: Tue, 29 Apr 2008 16:14:25 +0800 (CST)
-In-Reply-To: <20080428154240.GD7334@c2.user-mode-linux.org>
-Message-ID: <alpine.LFD.1.00.0804291613570.2548@localhost.localdomain>
-References: <20080425175610.GA11188@c2.user-mode-linux.org>
-	<20080426.173538.195417245.xiyou.wangcong@gmail.com>
-	<20080428154240.GD7334@c2.user-mode-linux.org>
+	Tue, 29 Apr 2008 05:02:40 -0700 (PDT)
+Message-ID: <804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
+Date: Tue, 29 Apr 2008 20:02:06 +0800
+From: "Peter Teoh" <htmldeveloper@gmail.com>
+In-Reply-To: <20080428185505.GA11160@c2.user-mode-linux.org>
 MIME-Version: 1.0
-From: WANG Cong <xiyou.wangcong@gmail.com>
-Subject: Re: [uml-devel] [PATCH 9/19] UML - Tidy ptrace interface
+Content-Disposition: inline
+References: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
+	<20080428185505.GA11160@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,39 +34,61 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: akpm@osdl.org, WANG Cong <xiyou.wangcong@gmail.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, 28 Apr 2008, Jeff Dike wrote:
-
-> On Sat, Apr 26, 2008 at 05:35:38PM +0800, WANG Cong wrote:
->> From: Jeff Dike <jdike@addtoit.com>
->> Date: Fri, 25 Apr 2008 13:56:10 -0400
->> > Tidy the ptrace interface code.  Removed a bunch of unused macros.
->> > Started converting register sets from arrays of longs to structures.
->> 
->> Could you please explain a bit why do this? I think long arrary is OK.
+On Tue, Apr 29, 2008 at 2:55 AM, Jeff Dike <jdike@addtoit.com> wrote:
+> On Mon, Apr 28, 2008 at 11:53:48PM +0800, Peter Teoh wrote:
+>  > What is the following errors:
+>  >
+>  > make defconfig ARCH=um
+>  > /sda4/download/linux_linus/linux-2.6/arch/um/Makefile:100: *** missing
+>  > separator.  Stop.
 >
-> It's wrong on x86_64.  There, FRAME_SIZE is 168 -
->     #define FRAME_SIZE 
-> and SS is the last register defined -
->    #define SS 160
-> but there are a number of registers beyond that in the user_regs_struct:
-> 	unsigned long	ss;
-> 	unsigned long	fs_base;
-> 	unsigned long	gs_base;
-> 	unsigned long	ds;
-> 	unsigned long	es;
-> 	unsigned long	fs;
-> 	unsigned long	gs;
->
-> The effect of GETREGS into a long[FRAME_SIZE] will be stack corruption.
+>  What version of UML?
 >
 
-Thanks for teaching this. ;-)
+Erh....I don't understand, is there something specifically called
+"UML" with a version to it?
 
---
-Hi, I'm a .signature virus, please copy/paste me to help me spread
-all over the world.
+What I did was this:
+
+a.   Followed the steps here:
+http://user-mode-linux.sourceforge.net/source.html, except that the
+linux kernel is from linus's git tree (from the .git/config file):
+
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+[remote "origin"]
+        url = git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+        remote = origin
+        merge = refs/heads/master
+
+b.   and then I just did a make defconfig ARCH=um.
+
+c.   the version of the kernel is this:
+
+/mnt/hd0/download/linux-2.6-latest>cat include/config/kernel.release
+2.6.25
+
+Is this the correct procedure?   I suspect something is wrong, as i
+did a few times in all other different git tree all similar results.
+
+>              Jeff
+>
+>  --
+>  Work email - jdike at linux dot intel dot com
+>
+
+
+
+-- 
+Regards,
+Peter Teoh
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
