@@ -2,22 +2,28 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JqwSL-0005ga-7K for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Apr 2008 13:29:41 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JqwSK-0005tp-I0
+	id 1JrDrj-0008SE-Ep for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 30 Apr 2008 08:05:03 -0700
+Received: from wx-out-0506.google.com ([66.249.82.224])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JrDrg-0003vy-8D
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 29 Apr 2008 13:29:41 -0700
-Date: Tue, 29 Apr 2008 16:29:25 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080429202924.GA13602@c2.user-mode-linux.org>
-References: <20080425175613.GA11192@c2.user-mode-linux.org>
-	<877iegcx11.fsf@hades.wkstn.nix>
+	Wed, 30 Apr 2008 08:05:02 -0700
+Received: by wx-out-0506.google.com with SMTP id h31so537521wxd.4
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 30 Apr 2008 08:04:59 -0700 (PDT)
+Message-ID: <804dabb00804300804g403ac7d5w191ccfabcdef1331@mail.gmail.com>
+Date: Wed, 30 Apr 2008 23:04:59 +0800
+From: "Peter Teoh" <htmldeveloper@gmail.com>
+In-Reply-To: <20080429172922.GA11849@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <877iegcx11.fsf@hades.wkstn.nix>
-Subject: Re: [uml-devel] [PATCH 11/19] UML - Track and make up lost ticks
+References: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
+	<20080428185505.GA11160@c2.user-mode-linux.org>
+	<804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
+	<20080429153746.GB9143@c2.user-mode-linux.org>
+	<804dabb00804290915gcd3ca3oa7043a32b530ac68@mail.gmail.com>
+	<20080429172922.GA11849@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,51 +33,56 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Nix <nix@esperi.org.uk>
-Cc: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-T24gVHVlLCBBcHIgMjksIDIwMDggYXQgMDc6NTQ6MDJQTSArMDEwMCwgTml4IHdyb3RlOgo+IE9u
-IDI1IEFwciAyMDA4LCBKZWZmIERpa2Ugc3RhdGVkLCBpbiBwYXJ0Ogo+ID4gSW5kZXg6IGxpbnV4
-LTIuNi1naXQvYXJjaC91bS9vcy1MaW51eC90aW1lLmMKPiA+ID09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiA+IC0tLSBs
-aW51eC0yLjYtZ2l0Lm9yaWcvYXJjaC91bS9vcy1MaW51eC90aW1lLmMJMjAwOC0wNC0yNSAxMDo0
-MjoxMi4wMDAwMDAwMDAgLTA0MDAKPiA+ICsrKyBsaW51eC0yLjYtZ2l0L2FyY2gvdW0vb3MtTGlu
-dXgvdGltZS5jCTIwMDgtMDQtMjUgMTE6MTk6MjYuMDAwMDAwMDAwIC0wNDAwCj4gPiArCWFsYXJt
-X2hhbmRsZXIoU0lHVlRBTFJNLCBOVUxMKTsKPiA+ICsJCWFsYXJtX2hhbmRsZXIoU0lHVlRBTFJN
-LCBOVUxMKTsKPiA+IC1leHRlcm4gdm9pZCBhbGFybV9oYW5kbGVyKGludCBzaWcsIHN0cnVjdCBz
-aWdjb250ZXh0ICpzYyk7Cj4gPiAtCQlhbGFybV9oYW5kbGVyKFNJR1ZUQUxSTSwgTlVMTCk7Cj4g
-Cj4gWWV0LCBpbiBhcmNoL3VtL2luY2x1ZGUvcHJvY2Vzcy5oLCB3ZSBzZWUsIHVuY2hhbmdlZCBz
-aW5jZSB0aGUgeWVhciBkb3QsIHRoZQo+IG9idmlvdXNseSB3cm9uZyBwcm90b3R5cGU6Cj4gCj4g
-ZXh0ZXJuIHZvaWQgYWxhcm1faGFuZGxlcihpbnQgc2lnLCBzdHJ1Y3Qgc2lnY29udGV4dCBzYyk7
-Cj4gCj4gSGVuY2U6Cj4gCj4gICBDQyAgICAgIGFyY2gvdW0vb3MtTGludXgvdGltZS5vCj4gYXJj
-aC91bS9vcy1MaW51eC90aW1lLmM6IEluIGZ1bmN0aW9uIOKAmGRlbGl2ZXJfYWxhcm3igJk6Cj4g
-YXJjaC91bS9vcy1MaW51eC90aW1lLmM6MTE5OiBlcnJvcjogaW5jb21wYXRpYmxlIHR5cGUgZm9y
-IGFyZ3VtZW50IDIgb2Yg4oCYYWxhcm1faGFuZGxlcuKAmQo+IG1ha2VbMV06ICoqKiBbYXJjaC91
-bS9vcy1MaW51eC90aW1lLm9dIEVycm9yIDEKPiBtYWtlOiAqKiogW2FyY2gvdW0vb3MtTGludXhd
-IEVycm9yIDIKPiAKPiBGaXggdHJpdmlhbDoKPiAKPiBTaWduZWQtb2ZmLWJ5OiBOaWNrIEFsY29j
-ayA8bml4QGVzcGVyaS5vcmcudWs+Cj4gLS0gCj4gSW5kZXg6IGxpbnV4L2FyY2gvdW0vaW5jbHVk
-ZS9wcm9jZXNzLmgKPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09Cj4gLS0tIGxpbnV4Lm9yaWcvYXJjaC91bS9pbmNsdWRl
-L3Byb2Nlc3MuaAkyMDA2LTA3LTA5IDE0OjE5OjUyLjAwMDAwMDAwMCArMDEwMAo+ICsrKyBsaW51
-eC9hcmNoL3VtL2luY2x1ZGUvcHJvY2Vzcy5oCTIwMDgtMDQtMjkgMTk6NDk6NDkuMDAwMDAwMDAw
-ICswMTAwCj4gQEAgLTgsOCArOCw4IEBACj4gIAo+ICAjaW5jbHVkZSA8c2lnbmFsLmg+Cj4gIAo+
-IC1leHRlcm4gdm9pZCBzaWdfaGFuZGxlcihpbnQgc2lnLCBzdHJ1Y3Qgc2lnY29udGV4dCBzYyk7
-Cj4gLWV4dGVybiB2b2lkIGFsYXJtX2hhbmRsZXIoaW50IHNpZywgc3RydWN0IHNpZ2NvbnRleHQg
-c2MpOwo+ICtleHRlcm4gdm9pZCBzaWdfaGFuZGxlcihpbnQgc2lnLCBzdHJ1Y3Qgc2lnY29udGV4
-dCAqc2MpOwo+ICtleHRlcm4gdm9pZCBhbGFybV9oYW5kbGVyKGludCBzaWcsIHN0cnVjdCBzaWdj
-b250ZXh0ICpzYyk7Cj4gIAo+ICAjZW5kaWYKCkNyYXAsIEkgZml4ZWQgdGhhdCwgYnV0IGZvcmdv
-dCB0byBxdWlsdCBhZGQgaXQsIEkgZ3Vlc3MuCgpBQ0suCgoJCQlKZWZmCgotLSAKV29yayBlbWFp
-bCAtIGpkaWtlIGF0IGxpbnV4IGRvdCBpbnRlbCBkb3QgY29tCgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRo
-aXMgU0YubmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieSB0aGUgMjAwOCBKYXZhT25lKFNNKSBDb25m
-ZXJlbmNlIApEb24ndCBtaXNzIHRoaXMgeWVhcidzIGV4Y2l0aW5nIGV2ZW50LiBUaGVyZSdzIHN0
-aWxsIHRpbWUgdG8gc2F2ZSAkMTAwLiAKVXNlIHByaW9yaXR5IGNvZGUgSjhUTDJEMi4gCmh0dHA6
-Ly9hZC5kb3VibGVjbGljay5uZXQvY2xrOzE5ODc1NzY3MzsxMzUwMzAzODtwP2h0dHA6Ly9qYXZh
-LnN1bi5jb20vamF2YW9uZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51
-eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+Erh...I think I found the error.   I did "make oldconfig arch=um", it
+works.   And now I did "make arch=um" it started compiling.   Is this
+correct?   Documentation every says "make xxxconfig ARCH=um" where the
+ARCH is capitals,  which gave me error.   Thanks.
+
+On Wed, Apr 30, 2008 at 1:29 AM, Jeff Dike <jdike@addtoit.com> wrote:
+> On Wed, Apr 30, 2008 at 12:15:26AM +0800, Peter Teoh wrote:
+>  > > Looks right to me.
+>  > >
+>  > >  I'm suspecting that Makefile is mangled somehow.  Does git-diff show
+>  > >  it as being changed?  The md5sum I have here is
+>  > >
+>  > >    md5sum arch/um/Makefile
+>  > >    9088cdab1c0b725568e8f269636dc6df  arch/um/Makefile
+>  > >
+>  > >
+>  >
+>  > I think I saw from the webpage that 2.6.18 and higher up are not
+>  > supported, right?
+>
+>  UML?  Of course it's supported.  And if you thought 2.6.25 wasn't, why
+>  are you trying to build it?
+>
+>
+>
+>                   Jeff
+>
+>  --
+>  Work email - jdike at linux dot intel dot com
+>
+
+
+
+-- 
+Regards,
+Peter Teoh
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
+Don't miss this year's exciting event. There's still time to save $100. 
+Use priority code J8TL2D2. 
+http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
