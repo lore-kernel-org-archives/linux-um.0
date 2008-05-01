@@ -1,25 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JraU4-0000rH-Tx for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 May 2008 08:14:08 -0700
+	id 1JraVw-0001Cz-PZ for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 May 2008 08:16:05 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JraU3-0007A5-Ao
+	(Exim 4.44) id 1JraVu-0001q4-Rf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 May 2008 08:14:08 -0700
-Date: Thu, 1 May 2008 11:13:51 -0400
+	Thu, 01 May 2008 08:16:04 -0700
+Date: Thu, 1 May 2008 11:15:51 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080501151351.GA6303@c2.user-mode-linux.org>
-References: <877iel7ljp.fsf@hades.wkstn.nix> <87ve256146.fsf@hades.wkstn.nix>
-	<871w4sqxgv.fsf@hades.wkstn.nix>
-	<20080428164443.GB9628@c2.user-mode-linux.org>
-	<871w4n9fo8.fsf@hades.wkstn.nix>
+Message-ID: <20080501151551.GB6303@c2.user-mode-linux.org>
+References: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
+	<20080428185505.GA11160@c2.user-mode-linux.org>
+	<804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
+	<20080429153746.GB9143@c2.user-mode-linux.org>
+	<804dabb00804300924p3b1e1113vcbec90129ffa0f12@mail.gmail.com>
+	<20080430184746.GA12021@c2.user-mode-linux.org>
+	<804dabb00804301635s2b82a7f8hff4689d2952721dd@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <871w4n9fo8.fsf@hades.wkstn.nix>
-Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
+In-Reply-To: <804dabb00804301635s2b82a7f8hff4689d2952721dd@mail.gmail.com>
+Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,21 +36,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Nix <nix@esperi.org.uk>
+To: Peter Teoh <htmldeveloper@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Apr 30, 2008 at 10:49:27PM +0100, Nix wrote:
-> Done, and tested by stepping the time (five seconds --- five seconds per
-> day! I have pendulum clocks that keep better time than that!), and,
-> oops, instant loop as before, with this debugging patch applied, which
-> did not fire...
+On Thu, May 01, 2008 at 07:35:32AM +0800, Peter Teoh wrote:
+> /mnt/hd0/download/linux-2.6-latest>make -v
+> GNU Make 3.81
+> Copyright (C) 2006  Free Software Foundation, Inc.
+> This is free software; see the source for copying conditions.
+> There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+> PARTICULAR PURPOSE.
+> 
+> This program built for i686-redhat-linux-gnu
+> /mnt/hd0/download/linux-2.6-latest>which make
+> /usr/bin/make
+> 
+> Any ideas?   
 
-Hmmm.  I stepped the time (date -set "now+5sec") and nothing bad
-happened.  Is that more or less what you did?
+No.  Something must be odd on your end.  Can you script a session
+where you download the source and make this happen, then post it?  I'd
+like to see a completely from-scratch session.
 
-Can you send me your config?
-
-    	     	Jeff
+      	  	       Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
