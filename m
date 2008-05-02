@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JriJ3-0003k5-TA for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 May 2008 16:35:18 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user2638)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JriJ2-0001rW-VH
+	id 1Jroxc-0000Yn-K1 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 01 May 2008 23:41:36 -0700
+Received: from rv-out-0708.google.com ([209.85.198.245])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jroxc-0002zU-5F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 May 2008 16:35:17 -0700
-References: <877iel7ljp.fsf@hades.wkstn.nix> <87ve256146.fsf@hades.wkstn.nix>
-	<871w4sqxgv.fsf@hades.wkstn.nix>
-	<20080428164443.GB9628@c2.user-mode-linux.org>
-	<871w4n9fo8.fsf@hades.wkstn.nix>
-	<20080501151351.GA6303@c2.user-mode-linux.org>
-From: Nix <nix@esperi.org.uk>
-Date: Fri, 02 May 2008 00:34:54 +0100
-In-Reply-To: <20080501151351.GA6303@c2.user-mode-linux.org> (Jeff Dike's
-	message of "Thu, 1 May 2008 11:13:51 -0400")
-Message-ID: <87prs57g4h.fsf@hades.wkstn.nix>
+	Thu, 01 May 2008 23:41:36 -0700
+Received: by rv-out-0708.google.com with SMTP id f25so24978rvb.22
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 01 May 2008 23:41:35 -0700 (PDT)
+Date: Fri, 2 May 2008 14:45:39 +0800 (CST)
+Message-ID: <alpine.LFD.1.10.0805021443050.3349@localhost.localdomain>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
+From: WANG Cong <xiyou.wangcong@gmail.com>
+Subject: [SPAM] [uml-devel] [Patch] (Resend) UML: make several more things
+	static
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,301 +30,236 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org
+Cc: akpm@osdl.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-On 1 May 2008, Jeff Dike outgrape:
 
-> On Wed, Apr 30, 2008 at 10:49:27PM +0100, Nix wrote:
->> Done, and tested by stepping the time (five seconds --- five seconds per
->> day! I have pendulum clocks that keep better time than that!), and,
->> oops, instant loop as before, with this debugging patch applied, which
->> did not fire...
->
-> Hmmm.  I stepped the time (date -set "now+5sec") and nothing bad
-> happened.  Is that more or less what you did?
+Make some variables and functions static, since they don't need
+to be global.
 
-loki:/tmp# /usr/bin/ntpdate -bv hades
-30 Apr 22:45:52 ntpdate[8833]: ntpdate 4.2.4p4@1.1520-o Fri Feb 22 18:37:11 UTC 2008 (1)
-30 Apr 22:45:52 ntpdate[8833]: step time server 192.168.14.18 offset -5.728539 sec
+Remove an unused function - arch/um/kernel/time.c::sched_clock().
 
-so in effect yes :)
+Clean the style a bit as complained by checkpatch.pl.
 
-Hm. A five-second skip forwards via date --set works fine. A five-second
-skip *backwards*, and instant boom.
+Cc: Jeff Dike <jdike@addtoit.com>
+Signed-off-by: WANG Cong <wangcong@zeuux.org>
 
-(I suspect from earlier failures that sometimes time-slewing can cause
-this too, because normally I run ntpd all the time, and that should only
-slew the time under normal circumstances, never skip it: yet UML
-2.6.24+ visited hang city every few days.)
 
-I've been busy birthdaying today, but tomorrow I'll instrument things
-and figure out just where a backward skip hangs and why (assuming you
-haven't already done so: it's my own damn fault for being so laggardly,
-I should have done this weeks ago).
+---
+  arch/um/include/skas/skas.h     |    1 -
+  arch/um/include/um_uaccess.h    |    1 -
+  arch/um/kernel/physmem.c        |    2 +-
+  arch/um/kernel/ptrace.c         |    2 +-
+  arch/um/kernel/time.c           |    8 --------
+  arch/um/kernel/uaccess.c        |    2 +-
+  arch/um/os-Linux/sigio.c        |    2 +-
+  arch/um/os-Linux/signal.c       |    2 +-
+  arch/um/os-Linux/skas/process.c |    2 +-
+  arch/um/os-Linux/umid.c         |    2 +-
+  arch/um/sys-i386/bugs.c         |    2 +-
+  arch/um/sys-i386/checksum.S     |    5 ++---
+  arch/um/sys-i386/ldt.c          |    4 ++--
+  include/asm-um/ptrace-generic.h |    3 ---
+  14 files changed, 12 insertions(+), 26 deletions(-)
 
-> Can you send me your config?
+diff --git a/arch/um/include/skas/skas.h b/arch/um/include/skas/skas.h
+index b073f8a..64d2c74 100644
+--- a/arch/um/include/skas/skas.h
++++ b/arch/um/include/skas/skas.h
+@@ -16,7 +16,6 @@ extern int user_thread(unsigned long stack, int flags);
+  extern void new_thread_handler(void);
+  extern void handle_syscall(struct uml_pt_regs *regs);
+  extern int new_mm(unsigned long stack);
+-extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
+  extern long execute_syscall_skas(void *r);
+  extern unsigned long current_stub_stack(void);
 
-Here:
+diff --git a/arch/um/include/um_uaccess.h b/arch/um/include/um_uaccess.h
+index 2b6fc8e..45c0499 100644
+--- a/arch/um/include/um_uaccess.h
++++ b/arch/um/include/um_uaccess.h
+@@ -34,7 +34,6 @@ extern int copy_to_user(void __user *to, const void *from, int n);
 
-CONFIG_DEFCONFIG_LIST="arch/$ARCH/defconfig"
-CONFIG_GENERIC_HARDIRQS=y
-CONFIG_UML=y
-CONFIG_MMU=y
-CONFIG_NO_IOMEM=y
-CONFIG_LOCKDEP_SUPPORT=y
-CONFIG_GENERIC_CALIBRATE_DELAY=y
-CONFIG_GENERIC_BUG=y
-CONFIG_GENERIC_TIME=y
-CONFIG_GENERIC_CLOCKEVENTS=y
-CONFIG_IRQ_RELEASE_METHOD=y
-CONFIG_HZ=100
-CONFIG_MPENTIUMIII=y
-CONFIG_X86_CMPXCHG=y
-CONFIG_X86_L1_CACHE_SHIFT=5
-CONFIG_X86_XADD=y
-CONFIG_X86_WP_WORKS_OK=y
-CONFIG_X86_INVLPG=y
-CONFIG_X86_BSWAP=y
-CONFIG_X86_POPAD_OK=y
-CONFIG_X86_GOOD_APIC=y
-CONFIG_X86_INTEL_USERCOPY=y
-CONFIG_X86_USE_PPRO_CHECKSUM=y
-CONFIG_X86_P6_NOP=y
-CONFIG_X86_TSC=y
-CONFIG_X86_CMOV=y
-CONFIG_X86_MINIMUM_CPU_FAMILY=6
-CONFIG_X86_DEBUGCTLMSR=y
-CONFIG_UML_X86=y
-CONFIG_X86_32=y
-CONFIG_RWSEM_XCHGADD_ALGORITHM=y
-CONFIG_SEMAPHORE_SLEEPERS=y
-CONFIG_ARCH_HAS_SC_SIGNALS=y
-CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA=y
-CONFIG_GENERIC_HWEIGHT=y
-CONFIG_ARCH_SUPPORTS_AOUT=y
-CONFIG_SELECT_MEMORY_MODEL=y
-CONFIG_FLATMEM_MANUAL=y
-CONFIG_FLATMEM=y
-CONFIG_FLAT_NODE_MEM_MAP=y
-CONFIG_SPLIT_PTLOCK_CPUS=4
-CONFIG_ZONE_DMA_FLAG=0
-CONFIG_VIRT_TO_BUS=y
-CONFIG_GENERIC_CLOCKEVENTS_BUILD=y
-CONFIG_LD_SCRIPT_DYN=y
-CONFIG_BINFMT_ELF=y
-CONFIG_MCONSOLE=y
-CONFIG_KERNEL_STACK_ORDER=2
-CONFIG_EXPERIMENTAL=y
-CONFIG_BROKEN_ON_SMP=y
-CONFIG_INIT_ENV_ARG_LIMIT=128
-CONFIG_LOCALVERSION=""
-CONFIG_SYSVIPC=y
-CONFIG_SYSVIPC_SYSCTL=y
-CONFIG_POSIX_MQUEUE=y
-CONFIG_BSD_PROCESS_ACCT=y
-CONFIG_LOG_BUF_SHIFT=14
-CONFIG_CGROUPS=y
-CONFIG_GROUP_SCHED=y
-CONFIG_FAIR_GROUP_SCHED=y
-CONFIG_RT_GROUP_SCHED=y
-CONFIG_USER_SCHED=y
-CONFIG_RELAY=y
-CONFIG_NAMESPACES=y
-CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-CONFIG_SYSCTL=y
-CONFIG_UID16=y
-CONFIG_SYSCTL_SYSCALL=y
-CONFIG_KALLSYMS=y
-CONFIG_HOTPLUG=y
-CONFIG_PRINTK=y
-CONFIG_BUG=y
-CONFIG_ELF_CORE=y
-CONFIG_BASE_FULL=y
-CONFIG_FUTEX=y
-CONFIG_ANON_INODES=y
-CONFIG_EPOLL=y
-CONFIG_SIGNALFD=y
-CONFIG_TIMERFD=y
-CONFIG_EVENTFD=y
-CONFIG_SHMEM=y
-CONFIG_VM_EVENT_COUNTERS=y
-CONFIG_SLAB=y
-CONFIG_PROC_PAGE_MONITOR=y
-CONFIG_SLABINFO=y
-CONFIG_RT_MUTEXES=y
-CONFIG_BASE_SMALL=0
-CONFIG_BLOCK=y
-CONFIG_BLK_DEV_IO_TRACE=y
-CONFIG_IOSCHED_NOOP=y
-CONFIG_IOSCHED_DEADLINE=y
-CONFIG_DEFAULT_DEADLINE=y
-CONFIG_DEFAULT_IOSCHED="deadline"
-CONFIG_CLASSIC_RCU=y
-CONFIG_BLK_DEV=y
-CONFIG_BLK_DEV_UBD=y
-CONFIG_BLK_DEV_COW_COMMON=y
-CONFIG_STDERR_CONSOLE=y
-CONFIG_STDIO_CONSOLE=y
-CONFIG_SSL=y
-CONFIG_NULL_CHAN=y
-CONFIG_PORT_CHAN=y
-CONFIG_PTY_CHAN=y
-CONFIG_TTY_CHAN=y
-CONFIG_XTERM_CHAN=y
-CONFIG_CON_ZERO_CHAN="fd:0,fd:1"
-CONFIG_CON_CHAN="tty"
-CONFIG_SSL_CHAN="pty"
-CONFIG_UNIX98_PTYS=y
-CONFIG_UML_RANDOM=y
-CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
-CONFIG_STANDALONE=y
-CONFIG_PREVENT_FIRMWARE_BUILD=y
-CONFIG_NET=y
-CONFIG_PACKET=y
-CONFIG_PACKET_MMAP=y
-CONFIG_UNIX=y
-CONFIG_INET=y
-CONFIG_IP_MULTICAST=y
-CONFIG_IP_ADVANCED_ROUTER=y
-CONFIG_ASK_IP_FIB_HASH=y
-CONFIG_IP_FIB_HASH=y
-CONFIG_IP_MULTIPLE_TABLES=y
-CONFIG_SYN_COOKIES=y
-CONFIG_INET_DIAG=y
-CONFIG_INET_TCP_DIAG=y
-CONFIG_TCP_CONG_ADVANCED=y
-CONFIG_TCP_CONG_CUBIC=y
-CONFIG_DEFAULT_CUBIC=y
-CONFIG_DEFAULT_TCP_CONG="cubic"
-CONFIG_NETFILTER=y
-CONFIG_NETFILTER_ADVANCED=y
-CONFIG_NF_CONNTRACK=y
-CONFIG_NF_CT_ACCT=y
-CONFIG_NF_CONNTRACK_MARK=y
-CONFIG_NF_CT_PROTO_UDPLITE=y
-CONFIG_NF_CONNTRACK_FTP=y
-CONFIG_NF_CONNTRACK_IRC=y
-CONFIG_NF_CONNTRACK_SIP=y
-CONFIG_NETFILTER_XTABLES=y
-CONFIG_NETFILTER_XT_TARGET_CLASSIFY=y
-CONFIG_NETFILTER_XT_TARGET_MARK=y
-CONFIG_NETFILTER_XT_TARGET_NFQUEUE=y
-CONFIG_NETFILTER_XT_MATCH_CONNLIMIT=y
-CONFIG_NETFILTER_XT_MATCH_CONNMARK=y
-CONFIG_NETFILTER_XT_MATCH_HELPER=y
-CONFIG_NETFILTER_XT_MATCH_IPRANGE=y
-CONFIG_NETFILTER_XT_MATCH_LIMIT=y
-CONFIG_NETFILTER_XT_MATCH_MARK=y
-CONFIG_NETFILTER_XT_MATCH_OWNER=y
-CONFIG_NETFILTER_XT_MATCH_MULTIPORT=y
-CONFIG_NETFILTER_XT_MATCH_QUOTA=y
-CONFIG_NETFILTER_XT_MATCH_STATE=y
-CONFIG_NETFILTER_XT_MATCH_HASHLIMIT=y
-CONFIG_NF_CONNTRACK_IPV4=y
-CONFIG_NF_CONNTRACK_PROC_COMPAT=y
-CONFIG_IP_NF_IPTABLES=y
-CONFIG_IP_NF_MATCH_RECENT=y
-CONFIG_IP_NF_MATCH_ADDRTYPE=y
-CONFIG_IP_NF_FILTER=y
-CONFIG_IP_NF_TARGET_REJECT=y
-CONFIG_IP_NF_TARGET_LOG=y
-CONFIG_NF_NAT=y
-CONFIG_NF_NAT_NEEDED=y
-CONFIG_IP_NF_TARGET_REDIRECT=y
-CONFIG_NF_NAT_FTP=y
-CONFIG_NF_NAT_IRC=y
-CONFIG_NF_NAT_SIP=y
-CONFIG_IP_NF_MANGLE=y
-CONFIG_IP_NF_TARGET_ECN=y
-CONFIG_NET_SCHED=y
-CONFIG_NET_SCH_CBQ=y
-CONFIG_NET_SCH_HTB=y
-CONFIG_NET_SCH_HFSC=y
-CONFIG_NET_SCH_PRIO=y
-CONFIG_NET_SCH_RED=y
-CONFIG_NET_SCH_SFQ=y
-CONFIG_NET_SCH_TEQL=y
-CONFIG_NET_SCH_TBF=y
-CONFIG_NET_SCH_GRED=y
-CONFIG_NET_SCH_DSMARK=y
-CONFIG_NET_SCH_INGRESS=y
-CONFIG_NET_CLS=y
-CONFIG_NET_CLS_BASIC=y
-CONFIG_NET_CLS_TCINDEX=y
-CONFIG_NET_CLS_ROUTE4=y
-CONFIG_NET_CLS_ROUTE=y
-CONFIG_NET_CLS_FW=y
-CONFIG_NET_CLS_U32=y
-CONFIG_CLS_U32_PERF=y
-CONFIG_CLS_U32_MARK=y
-CONFIG_NET_CLS_RSVP=y
-CONFIG_NET_EMATCH=y
-CONFIG_NET_EMATCH_STACK=32
-CONFIG_NET_EMATCH_CMP=y
-CONFIG_NET_EMATCH_NBYTE=y
-CONFIG_NET_EMATCH_U32=y
-CONFIG_NET_EMATCH_META=y
-CONFIG_NET_CLS_ACT=y
-CONFIG_NET_ACT_POLICE=y
-CONFIG_NET_ACT_GACT=y
-CONFIG_NET_ACT_PEDIT=y
-CONFIG_NET_SCH_FIFO=y
-CONFIG_FIB_RULES=y
-CONFIG_UML_NET=y
-CONFIG_UML_NET_TUNTAP=y
-CONFIG_NETDEVICES=y
-CONFIG_DUMMY=y
-CONFIG_TUN=y
-CONFIG_EXT2_FS=y
-CONFIG_EXT2_FS_XATTR=y
-CONFIG_EXT2_FS_POSIX_ACL=y
-CONFIG_EXT2_FS_SECURITY=y
-CONFIG_FS_MBCACHE=y
-CONFIG_FS_POSIX_ACL=y
-CONFIG_DNOTIFY=y
-CONFIG_INOTIFY=y
-CONFIG_INOTIFY_USER=y
-CONFIG_QUOTA=y
-CONFIG_PRINT_QUOTA_WARNING=y
-CONFIG_QUOTACTL=y
-CONFIG_GENERIC_ACL=y
-CONFIG_PROC_FS=y
-CONFIG_PROC_SYSCTL=y
-CONFIG_SYSFS=y
-CONFIG_TMPFS=y
-CONFIG_TMPFS_POSIX_ACL=y
-CONFIG_CONFIGFS_FS=y
-CONFIG_NETWORK_FILESYSTEMS=y
-CONFIG_NFS_FS=y
-CONFIG_NFS_V3=y
-CONFIG_NFS_V3_ACL=y
-CONFIG_LOCKD=y
-CONFIG_LOCKD_V4=y
-CONFIG_NFS_ACL_SUPPORT=y
-CONFIG_NFS_COMMON=y
-CONFIG_SUNRPC=y
-CONFIG_MSDOS_PARTITION=y
-CONFIG_KEYS=y
-CONFIG_SECURITY=y
-CONFIG_SECURITY_CAPABILITIES=y
-CONFIG_SECURITY_FILE_CAPABILITIES=y
-CONFIG_SECURITY_DEFAULT_MMAP_MIN_ADDR=16384
-CONFIG_CRYPTO=y
-CONFIG_CRYPTO_ALGAPI=y
-CONFIG_CRYPTO_MANAGER=y
-CONFIG_CRYPTO_SHA1=y
-CONFIG_BITREVERSE=y
-CONFIG_CRC32=y
-CONFIG_PLIST=y
-CONFIG_HAS_DMA=y
-CONFIG_ENABLE_WARN_DEPRECATED=y
-CONFIG_ENABLE_MUST_CHECK=y
-CONFIG_DEBUG_FS=y
-CONFIG_DEBUG_KERNEL=y
-CONFIG_DEBUG_BUGVERBOSE=y
-CONFIG_DEBUG_INFO=y
-CONFIG_FRAME_POINTER=y
+  extern int __do_copy_to_user(void *to, const void *from, int n,
+  			     void **fault_addr, jmp_buf **fault_catcher);
+-extern void __do_copy(void *to, const void *from, int n);
+
+  /*
+   * strncpy_from_user: - Copy a NUL terminated string from userspace.
+diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+index 9757085..a1a9090 100644
+--- a/arch/um/kernel/physmem.c
++++ b/arch/um/kernel/physmem.c
+@@ -185,7 +185,7 @@ unsigned long find_iomem(char *driver, unsigned long *len_out)
+  	return 0;
+  }
+
+-int setup_iomem(void)
++static int setup_iomem(void)
+  {
+  	struct iomem_region *region = iomem_regions;
+  	unsigned long iomem_start = high_physmem + PAGE_SIZE;
+diff --git a/arch/um/kernel/ptrace.c b/arch/um/kernel/ptrace.c
+index 47b57b4..15e8b7c 100644
+--- a/arch/um/kernel/ptrace.c
++++ b/arch/um/kernel/ptrace.c
+@@ -225,7 +225,7 @@ long arch_ptrace(struct task_struct *child, long request, long addr, long data)
+  	return ret;
+  }
+
+-void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs,
++static void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs,
+  		  int error_code)
+  {
+  	struct siginfo info;
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index e066e84..353c174 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -12,14 +12,6 @@
+  #include "kern_util.h"
+  #include "os.h"
+
+-/*
+- * Scheduler clock - returns current time in nanosec units.
+- */
+-unsigned long long sched_clock(void)
+-{
+-	return (unsigned long long)jiffies_64 * (NSEC_PER_SEC / HZ);
+-}
+-
+  void timer_handler(int sig, struct uml_pt_regs *regs)
+  {
+  	unsigned long flags;
+diff --git a/arch/um/kernel/uaccess.c b/arch/um/kernel/uaccess.c
+index f0f4b04..dd33f04 100644
+--- a/arch/um/kernel/uaccess.c
++++ b/arch/um/kernel/uaccess.c
+@@ -12,7 +12,7 @@
+  #include <linux/string.h>
+  #include "os.h"
+
+-void __do_copy(void *to, const void *from, int n)
++static void __do_copy(void *to, const void *from, int n)
+  {
+  	memcpy(to, from, n);
+  }
+diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
+index abf47a7..07705c1 100644
+--- a/arch/um/os-Linux/sigio.c
++++ b/arch/um/os-Linux/sigio.c
+@@ -523,7 +523,7 @@ static void tty_close(int master, int slave)
+  		printk(UM_KERN_CONT "No, enabling workaround\n");
+  }
+
+-void __init check_sigio(void)
++static void __init check_sigio(void)
+  {
+  	if ((access("/dev/ptmx", R_OK) < 0) &&
+  	    (access("/dev/ptyp0", R_OK) < 0)) {
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index 3f1694b..1a3d233 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -125,7 +125,7 @@ void set_sigstack(void *sig_stack, int size)
+  		panic("enabling signal stack failed, errno = %d\n", errno);
+  }
+
+-void (*handlers[_NSIG])(int sig, struct sigcontext *sc);
++static void (*handlers[_NSIG])(int sig, struct sigcontext *sc);
+
+  void handle_signal(int sig, struct sigcontext *sc)
+  {
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 1e8cba6..87d05fb 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -96,7 +96,7 @@ bad_wait:
+
+  extern unsigned long current_stub_stack(void);
+
+-void get_skas_faultinfo(int pid, struct faultinfo * fi)
++static void get_skas_faultinfo(int pid, struct faultinfo *fi)
+  {
+  	int err;
+
+diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
+index 106fa86..a27defb 100644
+--- a/arch/um/os-Linux/umid.c
++++ b/arch/um/os-Linux/umid.c
+@@ -245,7 +245,7 @@ int __init set_umid(char *name)
+  /* Changed in make_umid, which is called during early boot */
+  static int umid_setup = 0;
+
+-int __init make_umid(void)
++static int __init make_umid(void)
+  {
+  	int fd, err;
+  	char tmp[256];
+diff --git a/arch/um/sys-i386/bugs.c b/arch/um/sys-i386/bugs.c
+index a74442d..2c6d0d7 100644
+--- a/arch/um/sys-i386/bugs.c
++++ b/arch/um/sys-i386/bugs.c
+@@ -12,7 +12,7 @@
+  #include "sysdep/ptrace.h"
+
+  /* Set during early boot */
+-int host_has_cmov = 1;
++static int host_has_cmov = 1;
+  static jmp_buf cmov_test_return;
+
+  static void cmov_sigill_test_handler(int sig)
+diff --git a/arch/um/sys-i386/checksum.S b/arch/um/sys-i386/checksum.S
+index 62c7e56..f058d2f 100644
+--- a/arch/um/sys-i386/checksum.S
++++ b/arch/um/sys-i386/checksum.S
+@@ -243,13 +243,12 @@ unsigned int csum_partial_copy_generic (const char *src, char *dst,
+  	.previous
+
+  .align 4
+-.globl csum_partial_copy_generic_i386
+- 
++
+  #ifndef CONFIG_X86_USE_PPRO_CHECKSUM
+
+  #define ARGBASE 16
+  #define FP		12
+- 
++
+  csum_partial_copy_generic_i386:
+  	subl  $4,%esp
+  	pushl %edi
+diff --git a/arch/um/sys-i386/ldt.c b/arch/um/sys-i386/ldt.c
+index a34263e..a4846a8 100644
+--- a/arch/um/sys-i386/ldt.c
++++ b/arch/um/sys-i386/ldt.c
+@@ -14,8 +14,8 @@
+
+  extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
+
+-long write_ldt_entry(struct mm_id * mm_idp, int func, struct user_desc * desc,
+-		     void **addr, int done)
++static long write_ldt_entry(struct mm_id *mm_idp, int func,
++		     struct user_desc *desc, void **addr, int done)
+  {
+  	long res;
+
+diff --git a/include/asm-um/ptrace-generic.h b/include/asm-um/ptrace-generic.h
+index 6aefcd3..3157497 100644
+--- a/include/asm-um/ptrace-generic.h
++++ b/include/asm-um/ptrace-generic.h
+@@ -47,9 +47,6 @@ extern int set_fpregs(struct user_i387_struct __user *buf,
+
+  extern void show_regs(struct pt_regs *regs);
+
+-extern void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs,
+-			 int error_code);
+-
+  extern int arch_copy_tls(struct task_struct *new);
+  extern void clear_flushed_tls(struct task_struct *task);
+
+-- 
+1.5.2.4
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
