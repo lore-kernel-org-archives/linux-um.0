@@ -2,25 +2,26 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jry9e-0006FR-9v for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 09:30:38 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Jry9b-0007H1-Nw
+	id 1Js0Pj-00064Y-OG for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 May 2008 11:55:24 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user76455)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Js0Pi-0000qj-14
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 09:30:38 -0700
-Date: Fri, 2 May 2008 12:30:20 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080502163020.GB7843@c2.user-mode-linux.org>
+	Fri, 02 May 2008 11:55:23 -0700
 References: <877iel7ljp.fsf@hades.wkstn.nix> <87ve256146.fsf@hades.wkstn.nix>
 	<871w4sqxgv.fsf@hades.wkstn.nix>
 	<20080428164443.GB9628@c2.user-mode-linux.org>
 	<871w4n9fo8.fsf@hades.wkstn.nix>
 	<20080501151351.GA6303@c2.user-mode-linux.org>
 	<87prs57g4h.fsf@hades.wkstn.nix>
+	<20080502163020.GB7843@c2.user-mode-linux.org>
+From: Nix <nix@esperi.org.uk>
+Date: Fri, 02 May 2008 19:55:11 +0100
+In-Reply-To: <20080502163020.GB7843@c2.user-mode-linux.org> (Jeff Dike's
+	message of "Fri, 2 May 2008 12:30:20 -0400")
+Message-ID: <87bq3o5yeo.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87prs57g4h.fsf@hades.wkstn.nix>
 Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -35,62 +36,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Nix <nix@esperi.org.uk>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, May 02, 2008 at 12:34:54AM +0100, Nix wrote:
-> loki:/tmp# /usr/bin/ntpdate -bv hades
-> 30 Apr 22:45:52 ntpdate[8833]: ntpdate 4.2.4p4@1.1520-o Fri Feb 22 18:37:11 UTC 2008 (1)
-> 30 Apr 22:45:52 ntpdate[8833]: step time server 192.168.14.18 offset -5.728539 sec
-> 
-> so in effect yes :)
-> 
-> Hm. A five-second skip forwards via date --set works fine. A five-second
-> skip *backwards*, and instant boom.
+On 2 May 2008, Jeff Dike verbalised:
+> With your config, I'm seeing a hang until the system time catches up
+> to what UML thought it should have been in the first place.  But it's
+> only a few seconds, not forever.
 
-I tried both directions for the hell of it.
+This is true sometimes, but not always: I just tried twice and got
+a rapid recovery the first time, but not the second. Trace the second
+time:
 
-With your config, I'm seeing a hang until the system time catches up
-to what UML thought it should have been in the first place.  But it's
-only a few seconds, not forever.
+0x08084b89 in update_wall_time () at kernel/time/timekeeping.c:475
+475                     clock->error -= clock->xtime_interval << (TICK_LENGTH_SHIFT - clock->shift);
+(gdb) bt
+#0  0x08084b89 in update_wall_time () at kernel/time/timekeeping.c:475
+#1  0x08077bd1 in do_timer (ticks=1) at kernel/timer.c:929
+#2  0x08086314 in tick_periodic (cpu=0) at kernel/time/tick-common.c:66
+#3  0x08086346 in tick_handle_periodic (dev=0x821d384) at kernel/time/tick-common.c:82
+#4  0x080590ed in um_timer (irq=0, dev=0x0) at arch/um/kernel/time.c:70
+#5  0x0808d3f3 in handle_IRQ_event (irq=0, action=0xdc49480) at kernel/irq/handle.c:140
+#6  0x0808d471 in __do_IRQ (irq=0) at kernel/irq/handle.c:236
+#7  0x080576f8 in do_IRQ (irq=0, regs=0x821bc80) at arch/um/kernel/irq.c:335
+#8  0x080590a0 in timer_handler (sig=26, regs=0x821bc80) at arch/um/kernel/time.c:28
+#9  0x08064c84 in real_alarm_handler (sc=0x821bd24) at arch/um/os-Linux/signal.c:93
+#10 0x08064cac in alarm_handler (sig=26, sc=0x821bd24) at arch/um/os-Linux/signal.c:108
+#11 0x08064d67 in handle_signal (sig=32, sc=0x821bd24) at arch/um/os-Linux/signal.c:157
+#12 0x08066263 in hard_handler (sig=26) at arch/um/os-Linux/sys-i386/signal.c:12
+#13 <signal handler called>
+#14 getnstimeofday (ts=0xde3beec) at include/linux/time.h:182
+#15 0x08084306 in do_gettimeofday (tv=0xde3bf04) at kernel/time/timekeeping.c:118
+#16 0x0807396c in sys_gettimeofday (tv=0xbf8a4ad8, tz=0x0) at kernel/time.c:103
+#17 0x0805a55c in handle_syscall (r=0xde66e28) at arch/um/kernel/skas/syscall.c:35
+#18 0x08066cdf in handle_trap (pid=13310, regs=0xde66e28, local_using_sysemu=2) at arch/um/os-Linux/skas/process.c:202
+#19 0x0806716b in userspace (regs=0xde66e28) at arch/um/os-Linux/skas/process.c:418
+#20 0x08057f5a in fork_handler () at arch/um/kernel/process.c:179
+#21 0x00000000 in ?? ()
+(gdb) quit
 
-However, stracing it did reveal a bogus interval trying to be set,
-which the patch below fixes.  It doesn't cause any behavior change
-here, so YMMV.
+> However, stracing it did reveal a bogus interval trying to be set,
+> which the patch below fixes.  It doesn't cause any behavior change
+> here, so YMMV.
+>
+> This includes the previous patch, which I think is a good idea anyway,
+> so back that out and drop this in its place.
 
-This includes the previous patch, which I think is a good idea anyway,
-so back that out and drop this in its place.
+No behavioural change :(
 
-			Jeff
-
-Index: linux-2.6.22/arch/um/os-Linux/time.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/time.c	2008-04-24 13:21:28.000000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/time.c	2008-05-02 12:21:01.000000000 -0400
-@@ -107,6 +107,10 @@ static void deliver_alarm(void)
- 	unsigned long long this_tick = os_nsecs();
- 	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
- 
-+	/* Protection against the host's time going backwards */
-+	if ((last_tick != 0) && (this_tick < last_tick))
-+		this_tick = last_tick;
-+
- 	if (last_tick == 0)
- 		last_tick = this_tick - one_tick;
- 
-@@ -149,6 +153,9 @@ static int after_sleep_interval(struct t
- 		start_usecs = usec;
- 
- 	start_usecs -= skew / UM_NSEC_PER_USEC;
-+	if (start_usecs < 0)
-+		start_usecs = 0;
-+
- 	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
- 				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
- 	interval = ((struct itimerval) { { 0, usec }, tv });
+I'm trying something else now, arranging for os_nsecs() itself to do the
+never-backwards stuff on the assumption that something depends on
+monotonic timers not skipping backwards which presently they might
+(there are callers of os_nsecs() outside of os-Linux/time.c, notably in
+kernel/time.c, and currently they see an unadjusted time, jumping
+backwards and forwards and whatever).
 
 -- 
-Work email - jdike at linux dot intel dot com
+`If you are having a "ua luea luea le ua le" kind of day, I can only
+ assume that you are doing no work due [to] incapacitating nausea caused 
+ by numerous lazy demons.' --- Frossie
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
