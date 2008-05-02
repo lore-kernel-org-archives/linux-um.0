@@ -2,27 +2,32 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Js0Pj-00064Y-OG for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 11:55:24 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user76455)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Js0Pi-0000qj-14
+	id 1JrzOA-00068R-3C for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 May 2008 10:49:42 -0700
+Received: from an-out-0708.google.com ([209.85.132.246])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JrzO9-0001DG-Lq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 11:55:23 -0700
-References: <877iel7ljp.fsf@hades.wkstn.nix> <87ve256146.fsf@hades.wkstn.nix>
-	<871w4sqxgv.fsf@hades.wkstn.nix>
-	<20080428164443.GB9628@c2.user-mode-linux.org>
-	<871w4n9fo8.fsf@hades.wkstn.nix>
-	<20080501151351.GA6303@c2.user-mode-linux.org>
-	<87prs57g4h.fsf@hades.wkstn.nix>
-	<20080502163020.GB7843@c2.user-mode-linux.org>
-From: Nix <nix@esperi.org.uk>
-Date: Fri, 02 May 2008 19:55:11 +0100
-In-Reply-To: <20080502163020.GB7843@c2.user-mode-linux.org> (Jeff Dike's
-	message of "Fri, 2 May 2008 12:30:20 -0400")
-Message-ID: <87bq3o5yeo.fsf@hades.wkstn.nix>
+	Fri, 02 May 2008 10:49:42 -0700
+Received: by an-out-0708.google.com with SMTP id b21so332128ana.6
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 02 May 2008 10:49:40 -0700 (PDT)
+Message-ID: <804dabb00805021049q773ddee8i1f2a21a05368b74e@mail.gmail.com>
+Date: Sat, 3 May 2008 01:49:40 +0800
+From: "Peter Teoh" <htmldeveloper@gmail.com>
+In-Reply-To: <20080502155058.GA7843@c2.user-mode-linux.org>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
+Content-Disposition: inline
+References: <804dabb00804280853ld50a9f3o333f0f8d46f2a2ea@mail.gmail.com>
+	<804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
+	<20080429153746.GB9143@c2.user-mode-linux.org>
+	<804dabb00804300924p3b1e1113vcbec90129ffa0f12@mail.gmail.com>
+	<20080430184746.GA12021@c2.user-mode-linux.org>
+	<804dabb00804301635s2b82a7f8hff4689d2952721dd@mail.gmail.com>
+	<20080501151551.GB6303@c2.user-mode-linux.org>
+	<804dabb00805010913q547d115fpfd51f47c1c92f5e4@mail.gmail.com>
+	<804dabb00805010918q68741b64s5c7fd7b6bc006d17@mail.gmail.com>
+	<20080502155058.GA7843@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,62 +44,124 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On 2 May 2008, Jeff Dike verbalised:
-> With your config, I'm seeing a hang until the system time catches up
-> to what UML thought it should have been in the first place.  But it's
-> only a few seconds, not forever.
+Not sure why, but your current instructions works!!!
 
-This is true sometimes, but not always: I just tried twice and got
-a rapid recovery the first time, but not the second. Trace the second
-time:
-
-0x08084b89 in update_wall_time () at kernel/time/timekeeping.c:475
-475                     clock->error -= clock->xtime_interval << (TICK_LENGTH_SHIFT - clock->shift);
-(gdb) bt
-#0  0x08084b89 in update_wall_time () at kernel/time/timekeeping.c:475
-#1  0x08077bd1 in do_timer (ticks=1) at kernel/timer.c:929
-#2  0x08086314 in tick_periodic (cpu=0) at kernel/time/tick-common.c:66
-#3  0x08086346 in tick_handle_periodic (dev=0x821d384) at kernel/time/tick-common.c:82
-#4  0x080590ed in um_timer (irq=0, dev=0x0) at arch/um/kernel/time.c:70
-#5  0x0808d3f3 in handle_IRQ_event (irq=0, action=0xdc49480) at kernel/irq/handle.c:140
-#6  0x0808d471 in __do_IRQ (irq=0) at kernel/irq/handle.c:236
-#7  0x080576f8 in do_IRQ (irq=0, regs=0x821bc80) at arch/um/kernel/irq.c:335
-#8  0x080590a0 in timer_handler (sig=26, regs=0x821bc80) at arch/um/kernel/time.c:28
-#9  0x08064c84 in real_alarm_handler (sc=0x821bd24) at arch/um/os-Linux/signal.c:93
-#10 0x08064cac in alarm_handler (sig=26, sc=0x821bd24) at arch/um/os-Linux/signal.c:108
-#11 0x08064d67 in handle_signal (sig=32, sc=0x821bd24) at arch/um/os-Linux/signal.c:157
-#12 0x08066263 in hard_handler (sig=26) at arch/um/os-Linux/sys-i386/signal.c:12
-#13 <signal handler called>
-#14 getnstimeofday (ts=0xde3beec) at include/linux/time.h:182
-#15 0x08084306 in do_gettimeofday (tv=0xde3bf04) at kernel/time/timekeeping.c:118
-#16 0x0807396c in sys_gettimeofday (tv=0xbf8a4ad8, tz=0x0) at kernel/time.c:103
-#17 0x0805a55c in handle_syscall (r=0xde66e28) at arch/um/kernel/skas/syscall.c:35
-#18 0x08066cdf in handle_trap (pid=13310, regs=0xde66e28, local_using_sysemu=2) at arch/um/os-Linux/skas/process.c:202
-#19 0x0806716b in userspace (regs=0xde66e28) at arch/um/os-Linux/skas/process.c:418
-#20 0x08057f5a in fork_handler () at arch/um/kernel/process.c:179
-#21 0x00000000 in ?? ()
-(gdb) quit
-
-> However, stracing it did reveal a bogus interval trying to be set,
-> which the patch below fixes.  It doesn't cause any behavior change
-> here, so YMMV.
+On 5/2/08, Jeff Dike <jdike@addtoit.com> wrote:
+> On Fri, May 02, 2008 at 12:18:34AM +0800, Peter Teoh wrote:
+>  > In case if anyone is wondering what this line 107 means in the arch/um/Makefile:
+>  >
+>  >     104 ifneq ($(KBUILD_SRC),)
+>  >     105 $(shell mkdir -p $(ARCH_DIR) && ln -fsn
+>  > $(srctree)/$(ARCH_DIR)/Kconfig.$(SUBARCH) $(ARCH_DIR)/Kconfig.arch)
+>  >     106 else
+>  >     107 $(shell cd $(ARCH_DIR) && ln -sf Kconfig.$(SUBARCH) Kconfig.arch)
+>  >     108 endif
+>  >
+>  > Different version of Linux kernel tried, will always end up at the
+>  > same line above, btw, although the line number can be different.
 >
-> This includes the previous patch, which I think is a good idea anyway,
-> so back that out and drop this in its place.
+>
+> Color me clueless as to what's going on.  However, since the offending
+>  line is conditional on !KBUILD_SRC, you can try
+>      mkdir obj ; make ARCH=um O=obj
+>  and see if the behavior changes.  Maybe it'll produce a different and
+>  more informative error.
+>
+>  I suspect you'll get exactly the same error because make is failing to
+>  parse the Makefile and hasn't got around to actually interpretting
+>  it.  If so, then just delete that line and see what happens.
+>
+>
+>                  Jeff
+>
+>  --
+>  Work email - jdike at linux dot intel dot com
+>
 
-No behavioural change :(
+This is what I have done, not sure if anything wrong:
 
-I'm trying something else now, arranging for os_nsecs() itself to do the
-never-backwards stuff on the assumption that something depends on
-monotonic timers not skipping backwards which presently they might
-(there are callers of os_nsecs() outside of os-Linux/time.c, notably in
-kernel/time.c, and currently they see an unadjusted time, jumping
-backwards and forwards and whatever).
+a.   mkdir obj;make oldconfig ARCH=um O=obj
+
+This created one file in obj, but after that created infinite number
+of make -C processes running in the background.....I stopped that.
+
+ps -ef and the following repeated MANY MANY TIMES:
+
+root     32742 32658  0 01:13 pts/2    00:00:00 make -C
+/mnt/hd0/download/linux-2.6-latest KBUILD_SRC= oldconfig
+root     32745 32742  0 01:13 pts/2    00:00:00 make -C
+/mnt/hd0/download/linux-2.6-latest/obj
+/mnt/hd0/download/linux-2.6-latest/obj KBUILD_SRC=/mnt/hd0/dow
+
+So, not okay.
+
+b.   mkdir obj; make ARCH=um O=obj
+
+As per instructed.....it works except it complained no config file (in
+obj directory), and suggested to do a mrproper for the current parent
+directory.   So I copied the .config to obj directory, make mrproper
+in parent directory, and then cd to obj and make oldconfig there, and
+then "make":
+
+cp .config obj
+make mrproper
+cd obj
+make oldconfig ARCH=um
+make ARCH=um
+
+Now it gives error:
+
+  HOSTCC  scripts/kallsyms
+  CC      init/main.o
+In file included from
+/mnt/hd0/download/linux-2.6-latest/arch/um/include/um_uaccess.h:10,
+                 from include2/asm/uaccess.h:41,
+                 from include2/asm/thread_info.h:13,
+                 from
+/mnt/hd0/download/linux-2.6-latest/include/linux/thread_info.h:47,
+                 from
+/mnt/hd0/download/linux-2.6-latest/include/linux/preempt.h:9,
+                 from
+/mnt/hd0/download/linux-2.6-latest/include/linux/spinlock.h:49,
+                 from
+/mnt/hd0/download/linux-2.6-latest/include/linux/seqlock.h:29,
+                 from /mnt/hd0/download/linux-2.6-latest/include/linux/time.h:8,
+                 from
+/mnt/hd0/download/linux-2.6-latest/include/linux/stat.h:60,
+                 from
+/mnt/hd0/download/linux-2.6-latest/include/linux/module.h:10,
+                 from /mnt/hd0/download/linux-2.6-latest/init/main.c:13:
+include2/asm/fixmap.h:38: error: 'NR_CPUS' undeclared here (not in a function)
+In file included from /mnt/hd0/download/linux-2.6-latest/include/linux/rmap.h:9,
+                 from /mnt/hd0/download/linux-2.6-latest/init/main.c:49:
+/mnt/hd0/download/linux-2.6-latest/include/linux/mm.h: In function
+'is_vmalloc_addr':
+/mnt/hd0/download/linux-2.6-latest/include/linux/mm.h:266: error:
+'PKMAP_BASE' undeclared (first use in this function)
+/mnt/hd0/download/linux-2.6-latest/include/linux/mm.h:266: error:
+(Each undeclared identifier is reported only once
+/mnt/hd0/download/linux-2.6-latest/include/linux/mm.h:266: error: for
+each function it appears in.)
+/mnt/hd0/download/linux-2.6-latest/include/linux/mm.h:270: warning:
+control reaches end of non-void function
+make[3]: *** [init/main.o] Error 1
+make[2]: *** [init] Error 2
+make[1]: *** [sub-make] Error 2
+make: *** [all] Error 2
+
+
+Just to ask this:
+
+Noticed that I cd to obj, and everything from that subdirectory is
+appended with ARCH=um, correct?
+
+Taking away the ARCH=um, it naturally compiled to the end without
+error, but it is not right, as there is no UM coming out from the
+built - correct?
 
 -- 
-`If you are having a "ua luea luea le ua le" kind of day, I can only
- assume that you are doing no work due [to] incapacitating nausea caused 
- by numerous lazy demons.' --- Frossie
+Regards,
+Peter Teoh
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
