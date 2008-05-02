@@ -1,31 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Js1JB-0003Eh-AK for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 12:52:41 -0700
+	id 1Js1Np-0003j1-SU for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 May 2008 12:57:29 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Js1J9-0006L3-R5
+	(Exim 4.44) id 1Js1No-0003ke-DG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 12:52:41 -0700
-Date: Fri, 2 May 2008 15:52:30 -0400
+	Fri, 02 May 2008 12:57:29 -0700
+Date: Fri, 2 May 2008 15:57:20 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080502195230.GA10369@c2.user-mode-linux.org>
-References: <804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
-	<20080429153746.GB9143@c2.user-mode-linux.org>
-	<804dabb00804300924p3b1e1113vcbec90129ffa0f12@mail.gmail.com>
-	<20080430184746.GA12021@c2.user-mode-linux.org>
-	<804dabb00804301635s2b82a7f8hff4689d2952721dd@mail.gmail.com>
-	<20080501151551.GB6303@c2.user-mode-linux.org>
-	<804dabb00805010913q547d115fpfd51f47c1c92f5e4@mail.gmail.com>
-	<804dabb00805010918q68741b64s5c7fd7b6bc006d17@mail.gmail.com>
-	<20080502155058.GA7843@c2.user-mode-linux.org>
-	<804dabb00805021049q773ddee8i1f2a21a05368b74e@mail.gmail.com>
+Message-ID: <20080502195720.GB10369@c2.user-mode-linux.org>
+References: <877iel7ljp.fsf@hades.wkstn.nix> <87ve256146.fsf@hades.wkstn.nix>
+	<871w4sqxgv.fsf@hades.wkstn.nix>
+	<20080428164443.GB9628@c2.user-mode-linux.org>
+	<871w4n9fo8.fsf@hades.wkstn.nix>
+	<20080501151351.GA6303@c2.user-mode-linux.org>
+	<87prs57g4h.fsf@hades.wkstn.nix>
+	<20080502163020.GB7843@c2.user-mode-linux.org>
+	<87bq3o5yeo.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <804dabb00805021049q773ddee8i1f2a21a05368b74e@mail.gmail.com>
-Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
+In-Reply-To: <87bq3o5yeo.fsf@hades.wkstn.nix>
+Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,49 +37,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Peter Teoh <htmldeveloper@gmail.com>
+To: Nix <nix@esperi.org.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, May 03, 2008 at 01:49:40AM +0800, Peter Teoh wrote:
-> This is what I have done, not sure if anything wrong:
-> 
-> a.   mkdir obj;make oldconfig ARCH=um O=obj
-> 
-> This created one file in obj, but after that created infinite number
-> of make -C processes running in the background.....I stopped that.
-> 
-> ps -ef and the following repeated MANY MANY TIMES:
-> 
-> root     32742 32658  0 01:13 pts/2    00:00:00 make -C
-> /mnt/hd0/download/linux-2.6-latest KBUILD_SRC= oldconfig
-> root     32745 32742  0 01:13 pts/2    00:00:00 make -C
-> /mnt/hd0/download/linux-2.6-latest/obj
-> /mnt/hd0/download/linux-2.6-latest/obj KBUILD_SRC=/mnt/hd0/dow
+On Fri, May 02, 2008 at 07:55:11PM +0100, Nix wrote:
+> No behavioural change :(
 
-The only thing that makes any sense to me is that you have a severely
-broken make.
+Oh well.
 
-> So, not okay.
-> 
-> b.   mkdir obj; make ARCH=um O=obj
-> 
-> As per instructed.....it works except it complained no config file (in
-> obj directory), and suggested to do a mrproper for the current parent
-> directory.   So I copied the .config to obj directory, make mrproper
-> in parent directory, and then cd to obj and make oldconfig there, and
-> then "make":
-> 
-> cp .config obj
-> make mrproper
-> cd obj
+> I'm trying something else now, arranging for os_nsecs() itself to do the
+> never-backwards stuff on the assumption that something depends on
+> monotonic timers not skipping backwards which presently they might
+> (there are callers of os_nsecs() outside of os-Linux/time.c, notably in
+> kernel/time.c, and currently they see an unadjusted time, jumping
+> backwards and forwards and whatever).
 
-Why did you do this?  You're never supposed to cd to the object
-directory and run make in it.
+This sounds like a reasonable idea.
 
-Also, you should have ARCH=um on all make commands, including
-mrproper.
+Another thing you might try is the following:
+	get two extra windows
+	in one, get a "strace -p uml-pid -o strace.out -tt" ready
+	in two, get a "date ; sudo date -s "now-5 sec" ; date" ready
+	hit return in one, then in two, then in your UML window
+	when the UML gives you another prompt (or you've decided it's
+hung), ^C the strace
 
-				Jeff
+Look at the times reported by the dates, find the time change in the
+strace log, and send the section following that (and a bit before) to
+me.
+
+			Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
