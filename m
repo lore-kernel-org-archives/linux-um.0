@@ -1,33 +1,31 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JsB5E-0002Yg-8f for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 23:18:56 -0700
-Received: from an-out-0708.google.com ([209.85.132.247])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JsB5C-0005hF-Qx
+	id 1JsEfg-0008KM-NZ for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 03 May 2008 03:08:48 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user46158)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JsEff-0007VB-0R
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 23:18:56 -0700
-Received: by an-out-0708.google.com with SMTP id b21so380063ana.6
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 02 May 2008 23:18:54 -0700 (PDT)
-Message-ID: <804dabb00805022318j636e7d3cya6b0922914fe8d33@mail.gmail.com>
-Date: Sat, 3 May 2008 14:18:54 +0800
-From: "Peter Teoh" <htmldeveloper@gmail.com>
-In-Reply-To: <20080502195230.GA10369@c2.user-mode-linux.org>
+	Sat, 03 May 2008 03:08:48 -0700
+References: <87ve256146.fsf@hades.wkstn.nix> <871w4sqxgv.fsf@hades.wkstn.nix>
+	<20080428164443.GB9628@c2.user-mode-linux.org>
+	<871w4n9fo8.fsf@hades.wkstn.nix>
+	<20080501151351.GA6303@c2.user-mode-linux.org>
+	<87prs57g4h.fsf@hades.wkstn.nix>
+	<20080502163020.GB7843@c2.user-mode-linux.org>
+	<87bq3o5yeo.fsf@hades.wkstn.nix>
+	<20080502195720.GB10369@c2.user-mode-linux.org>
+	<87k5ic47is.fsf@hades.wkstn.nix>
+	<20080503005631.GA12599@c2.user-mode-linux.org>
+From: Nix <nix@esperi.org.uk>
+Date: Sat, 03 May 2008 11:08:24 +0100
+In-Reply-To: <20080503005631.GA12599@c2.user-mode-linux.org> (Jeff Dike's
+	message of "Fri, 2 May 2008 20:56:31 -0400")
+Message-ID: <877ieb4s4n.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Content-Disposition: inline
-References: <804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
-	<804dabb00804300924p3b1e1113vcbec90129ffa0f12@mail.gmail.com>
-	<20080430184746.GA12021@c2.user-mode-linux.org>
-	<804dabb00804301635s2b82a7f8hff4689d2952721dd@mail.gmail.com>
-	<20080501151551.GB6303@c2.user-mode-linux.org>
-	<804dabb00805010913q547d115fpfd51f47c1c92f5e4@mail.gmail.com>
-	<804dabb00805010918q68741b64s5c7fd7b6bc006d17@mail.gmail.com>
-	<20080502155058.GA7843@c2.user-mode-linux.org>
-	<804dabb00805021049q773ddee8i1f2a21a05368b74e@mail.gmail.com>
-	<20080502195230.GA10369@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
+Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -44,60 +42,44 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, May 3, 2008 at 3:52 AM, Jeff Dike <jdike@addtoit.com> wrote:
-> On Sat, May 03, 2008 at 01:49:40AM +0800, Peter Teoh wrote:
->  > This is what I have done, not sure if anything wrong:
->  >
->  > a.   mkdir obj;make oldconfig ARCH=um O=obj
->  >
->  > This created one file in obj, but after that created infinite number
->  > of make -C processes running in the background.....I stopped that.
->  >
->  > ps -ef and the following repeated MANY MANY TIMES:
->  >
->  > root     32742 32658  0 01:13 pts/2    00:00:00 make -C
->  > /mnt/hd0/download/linux-2.6-latest KBUILD_SRC= oldconfig
->  > root     32745 32742  0 01:13 pts/2    00:00:00 make -C
->  > /mnt/hd0/download/linux-2.6-latest/obj
->  > /mnt/hd0/download/linux-2.6-latest/obj KBUILD_SRC=/mnt/hd0/dow
+On 3 May 2008, Jeff Dike told this:
+> On Sat, May 03, 2008 at 12:21:15AM +0100, Nix wrote:
+>> With this patch (migrating most of the work into os_nsecs(), with a
+>> non-NO_HZ version doing skew computations too, atop your first patch,
+>> and making a couple of variables static for good measure), I still had
+>> no luck:
 >
->  The only thing that makes any sense to me is that you have a severely
->  broken make.
->
->
->  > So, not okay.
->  >
->  > b.   mkdir obj; make ARCH=um O=obj
->  >
->  > As per instructed.....it works except it complained no config file (in
->  > obj directory), and suggested to do a mrproper for the current parent
->  > directory.   So I copied the .config to obj directory, make mrproper
->  > in parent directory, and then cd to obj and make oldconfig there, and
->  > then "make":
->  >
->  > cp .config obj
->  > make mrproper
->  > cd obj
->
->  Why did you do this?  You're never supposed to cd to the object
->  directory and run make in it.
->
->  Also, you should have ARCH=um on all make commands, including
->  mrproper.
->
+>>From a quick look, this seems right.  And this would be the gold
+> standard of preventing UML from seeing time going backwards.
 
-After trying countless combinations....I found that it is not my
-machine specific problem, as I was finally (whew...!) able to compile
-(following your instructions....thank you very much :-)) and that
-version is 2.6.23-rc5 stable.
+Oh. And it still doesn't work. Damn.
 
-After the successful steps, I used the same steps for the linus git
-tree, and it failed.   So ok, in the same machine, i have at least one
-success.   Let me continue further now....thanks!!!
+>> So there's basically nothing unusual here. The first gettimeofday() call
+>> after the jump, and *whoompf* we're off into the magic land of looping
+>> with no extra syscalls to speak of at all.
+>
+> This was with a solid hang?  The thing is still handling page faults
+> from something at the end of that trace.  I would try again, making
+> sure it's a solid hang, and including enough of the trace so that you
+> stop seeing page faults:
+>      waitpid(9963, [{WIFSTOPPED(s) && WSTOPSIG(s) == SIGSEGV}])
+> and system calls (WSTOPSIG(s) == 133) and see what's happening at that
+> point.
+
+I gave it thirty seconds after the time change. After that
+gettimeofday() there is *nothing* (which is unsurprising; the kernel
+thread is stuck in a tight loop trying to decrement 2^64 down to 0 by
+repeated subtraction... there's not much time for syscalls there.)
+
+> And if you never stop seeing page faults or system calls, then that's
+> interesting too.
+
+Howzabout if we never see any after that gettimeofday()? :/
 
 -- 
-Regards,
-Peter Teoh
+`If you are having a "ua luea luea le ua le" kind of day, I can only
+ assume that you are doing no work due [to] incapacitating nausea caused 
+ by numerous lazy demons.' --- Frossie
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
