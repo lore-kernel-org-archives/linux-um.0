@@ -2,29 +2,32 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Js63S-00073c-Rx for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 17:56:46 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Js63Q-0008BD-TR
+	id 1JsB5E-0002Yg-8f for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 02 May 2008 23:18:56 -0700
+Received: from an-out-0708.google.com ([209.85.132.247])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JsB5C-0005hF-Qx
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2008 17:56:46 -0700
-Date: Fri, 2 May 2008 20:56:31 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080503005631.GA12599@c2.user-mode-linux.org>
-References: <87ve256146.fsf@hades.wkstn.nix> <871w4sqxgv.fsf@hades.wkstn.nix>
-	<20080428164443.GB9628@c2.user-mode-linux.org>
-	<871w4n9fo8.fsf@hades.wkstn.nix>
-	<20080501151351.GA6303@c2.user-mode-linux.org>
-	<87prs57g4h.fsf@hades.wkstn.nix>
-	<20080502163020.GB7843@c2.user-mode-linux.org>
-	<87bq3o5yeo.fsf@hades.wkstn.nix>
-	<20080502195720.GB10369@c2.user-mode-linux.org>
-	<87k5ic47is.fsf@hades.wkstn.nix>
+	Fri, 02 May 2008 23:18:56 -0700
+Received: by an-out-0708.google.com with SMTP id b21so380063ana.6
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 02 May 2008 23:18:54 -0700 (PDT)
+Message-ID: <804dabb00805022318j636e7d3cya6b0922914fe8d33@mail.gmail.com>
+Date: Sat, 3 May 2008 14:18:54 +0800
+From: "Peter Teoh" <htmldeveloper@gmail.com>
+In-Reply-To: <20080502195230.GA10369@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87k5ic47is.fsf@hades.wkstn.nix>
-Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
+References: <804dabb00804290502m771fe2cfm21f7be4534d56b65@mail.gmail.com>
+	<804dabb00804300924p3b1e1113vcbec90129ffa0f12@mail.gmail.com>
+	<20080430184746.GA12021@c2.user-mode-linux.org>
+	<804dabb00804301635s2b82a7f8hff4689d2952721dd@mail.gmail.com>
+	<20080501151551.GB6303@c2.user-mode-linux.org>
+	<804dabb00805010913q547d115fpfd51f47c1c92f5e4@mail.gmail.com>
+	<804dabb00805010918q68741b64s5c7fd7b6bc006d17@mail.gmail.com>
+	<20080502155058.GA7843@c2.user-mode-linux.org>
+	<804dabb00805021049q773ddee8i1f2a21a05368b74e@mail.gmail.com>
+	<20080502195230.GA10369@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] arch/um/Makefile:100: *** missing separator. Stop.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,42 +41,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Nix <nix@esperi.org.uk>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, May 03, 2008 at 12:21:15AM +0100, Nix wrote:
-> With this patch (migrating most of the work into os_nsecs(), with a
-> non-NO_HZ version doing skew computations too, atop your first patch,
-> and making a couple of variables static for good measure), I still had
-> no luck:
+On Sat, May 3, 2008 at 3:52 AM, Jeff Dike <jdike@addtoit.com> wrote:
+> On Sat, May 03, 2008 at 01:49:40AM +0800, Peter Teoh wrote:
+>  > This is what I have done, not sure if anything wrong:
+>  >
+>  > a.   mkdir obj;make oldconfig ARCH=um O=obj
+>  >
+>  > This created one file in obj, but after that created infinite number
+>  > of make -C processes running in the background.....I stopped that.
+>  >
+>  > ps -ef and the following repeated MANY MANY TIMES:
+>  >
+>  > root     32742 32658  0 01:13 pts/2    00:00:00 make -C
+>  > /mnt/hd0/download/linux-2.6-latest KBUILD_SRC= oldconfig
+>  > root     32745 32742  0 01:13 pts/2    00:00:00 make -C
+>  > /mnt/hd0/download/linux-2.6-latest/obj
+>  > /mnt/hd0/download/linux-2.6-latest/obj KBUILD_SRC=/mnt/hd0/dow
+>
+>  The only thing that makes any sense to me is that you have a severely
+>  broken make.
+>
+>
+>  > So, not okay.
+>  >
+>  > b.   mkdir obj; make ARCH=um O=obj
+>  >
+>  > As per instructed.....it works except it complained no config file (in
+>  > obj directory), and suggested to do a mrproper for the current parent
+>  > directory.   So I copied the .config to obj directory, make mrproper
+>  > in parent directory, and then cd to obj and make oldconfig there, and
+>  > then "make":
+>  >
+>  > cp .config obj
+>  > make mrproper
+>  > cd obj
+>
+>  Why did you do this?  You're never supposed to cd to the object
+>  directory and run make in it.
+>
+>  Also, you should have ARCH=um on all make commands, including
+>  mrproper.
+>
 
-From a quick look, this seems right.  And this would be the gold
-standard of preventing UML from seeing time going backwards.
+After trying countless combinations....I found that it is not my
+machine specific problem, as I was finally (whew...!) able to compile
+(following your instructions....thank you very much :-)) and that
+version is 2.6.23-rc5 stable.
 
-> *slap* why didn't I think of that?
-  ....
-> ... unfortunately it's not terribly informative. Here, with an earlier
-> gettimeofday() included for context:
-> 
-> So there's basically nothing unusual here. The first gettimeofday() call
-> after the jump, and *whoompf* we're off into the magic land of looping
-> with no extra syscalls to speak of at all.
-
-This was with a solid hang?  The thing is still handling page faults
-from something at the end of that trace.  I would try again, making
-sure it's a solid hang, and including enough of the trace so that you
-stop seeing page faults:
-     waitpid(9963, [{WIFSTOPPED(s) && WSTOPSIG(s) == SIGSEGV}])
-and system calls (WSTOPSIG(s) == 133) and see what's happening at that
-point.
-
-And if you never stop seeing page faults or system calls, then that's
-interesting too.
-
-				Jeff
+After the successful steps, I used the same steps for the linus git
+tree, and it failed.   So ok, in the same machine, i have at least one
+success.   Let me continue further now....thanks!!!
 
 -- 
-Work email - jdike at linux dot intel dot com
+Regards,
+Peter Teoh
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
