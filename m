@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jsl83-0002Et-Gt for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 04 May 2008 13:48:15 -0700
-Received: from nelson.telenet-ops.be ([195.130.133.66])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jsl82-0002lM-57
+	id 1JtU4o-0006TT-CT for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 May 2008 13:47:54 -0700
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JtU4k-0000Gz-TA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 04 May 2008 13:48:15 -0700
-Date: Sun, 4 May 2008 22:48:03 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <200805031518.11029.rob@landley.net>
-Message-ID: <Pine.LNX.4.64.0805042247320.2615@anakin>
-References: <200805031518.11029.rob@landley.net>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] make quiet suppress parse_chan_pair boot
-	messages
+	Tue, 06 May 2008 13:47:54 -0700
+Date: Tue, 6 May 2008 13:46:55 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20080506134655.4cac1014.akpm@linux-foundation.org>
+In-Reply-To: <20080429202924.GA13602@c2.user-mode-linux.org>
+References: <20080425175613.GA11192@c2.user-mode-linux.org>
+	<877iegcx11.fsf@hades.wkstn.nix>
+	<20080429202924.GA13602@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 11/19] UML - Track and make up lost ticks
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,36 +27,55 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Rob Landley <rob@landley.net>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: nix@esperi.org.uk, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, 3 May 2008, Rob Landley wrote:
-> +	printk(KERN_WARNING "Using a channel type which is configured out of "
-> +	       "UML\n");
-
-If you would use pr_warning(), it would fit nicely on a single line.
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
-
--------------------------------------------------------------------------
-This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
-Don't miss this year's exciting event. There's still time to save $100. 
-Use priority code J8TL2D2. 
-http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gVHVlLCAyOSBBcHIgMjAwOCAxNjoyOToyNSAtMDQwMApKZWZmIERpa2UgPGpkaWtlQGFkZHRv
+aXQuY29tPiB3cm90ZToKCj4gT24gVHVlLCBBcHIgMjksIDIwMDggYXQgMDc6NTQ6MDJQTSArMDEw
+MCwgTml4IHdyb3RlOgo+ID4gT24gMjUgQXByIDIwMDgsIEplZmYgRGlrZSBzdGF0ZWQsIGluIHBh
+cnQ6Cj4gPiA+IEluZGV4OiBsaW51eC0yLjYtZ2l0L2FyY2gvdW0vb3MtTGludXgvdGltZS5jCj4g
+PiA+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT0KPiA+ID4gLS0tIGxpbnV4LTIuNi1naXQub3JpZy9hcmNoL3VtL29zLUxp
+bnV4L3RpbWUuYwkyMDA4LTA0LTI1IDEwOjQyOjEyLjAwMDAwMDAwMCAtMDQwMAo+ID4gPiArKysg
+bGludXgtMi42LWdpdC9hcmNoL3VtL29zLUxpbnV4L3RpbWUuYwkyMDA4LTA0LTI1IDExOjE5OjI2
+LjAwMDAwMDAwMCAtMDQwMAo+ID4gPiArCWFsYXJtX2hhbmRsZXIoU0lHVlRBTFJNLCBOVUxMKTsK
+PiA+ID4gKwkJYWxhcm1faGFuZGxlcihTSUdWVEFMUk0sIE5VTEwpOwo+ID4gPiAtZXh0ZXJuIHZv
+aWQgYWxhcm1faGFuZGxlcihpbnQgc2lnLCBzdHJ1Y3Qgc2lnY29udGV4dCAqc2MpOwo+ID4gPiAt
+CQlhbGFybV9oYW5kbGVyKFNJR1ZUQUxSTSwgTlVMTCk7Cj4gPiAKPiA+IFlldCwgaW4gYXJjaC91
+bS9pbmNsdWRlL3Byb2Nlc3MuaCwgd2Ugc2VlLCB1bmNoYW5nZWQgc2luY2UgdGhlIHllYXIgZG90
+LCB0aGUKPiA+IG9idmlvdXNseSB3cm9uZyBwcm90b3R5cGU6Cj4gPiAKPiA+IGV4dGVybiB2b2lk
+IGFsYXJtX2hhbmRsZXIoaW50IHNpZywgc3RydWN0IHNpZ2NvbnRleHQgc2MpOwo+ID4gCj4gPiBI
+ZW5jZToKPiA+IAo+ID4gICBDQyAgICAgIGFyY2gvdW0vb3MtTGludXgvdGltZS5vCj4gPiBhcmNo
+L3VtL29zLUxpbnV4L3RpbWUuYzogSW4gZnVuY3Rpb24g4oCYZGVsaXZlcl9hbGFybeKAmToKPiA+
+IGFyY2gvdW0vb3MtTGludXgvdGltZS5jOjExOTogZXJyb3I6IGluY29tcGF0aWJsZSB0eXBlIGZv
+ciBhcmd1bWVudCAyIG9mIOKAmGFsYXJtX2hhbmRsZXLigJkKPiA+IG1ha2VbMV06ICoqKiBbYXJj
+aC91bS9vcy1MaW51eC90aW1lLm9dIEVycm9yIDEKPiA+IG1ha2U6ICoqKiBbYXJjaC91bS9vcy1M
+aW51eF0gRXJyb3IgMgo+ID4gCj4gPiBGaXggdHJpdmlhbDoKPiA+IAo+ID4gU2lnbmVkLW9mZi1i
+eTogTmljayBBbGNvY2sgPG5peEBlc3Blcmkub3JnLnVrPgo+ID4gLS0gCj4gPiBJbmRleDogbGlu
+dXgvYXJjaC91bS9pbmNsdWRlL3Byb2Nlc3MuaAo+ID4gPT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+ID4gLS0tIGxpbnV4
+Lm9yaWcvYXJjaC91bS9pbmNsdWRlL3Byb2Nlc3MuaAkyMDA2LTA3LTA5IDE0OjE5OjUyLjAwMDAw
+MDAwMCArMDEwMAo+ID4gKysrIGxpbnV4L2FyY2gvdW0vaW5jbHVkZS9wcm9jZXNzLmgJMjAwOC0w
+NC0yOSAxOTo0OTo0OS4wMDAwMDAwMDAgKzAxMDAKPiA+IEBAIC04LDggKzgsOCBAQAo+ID4gIAo+
+ID4gICNpbmNsdWRlIDxzaWduYWwuaD4KPiA+ICAKPiA+IC1leHRlcm4gdm9pZCBzaWdfaGFuZGxl
+cihpbnQgc2lnLCBzdHJ1Y3Qgc2lnY29udGV4dCBzYyk7Cj4gPiAtZXh0ZXJuIHZvaWQgYWxhcm1f
+aGFuZGxlcihpbnQgc2lnLCBzdHJ1Y3Qgc2lnY29udGV4dCBzYyk7Cj4gPiArZXh0ZXJuIHZvaWQg
+c2lnX2hhbmRsZXIoaW50IHNpZywgc3RydWN0IHNpZ2NvbnRleHQgKnNjKTsKPiA+ICtleHRlcm4g
+dm9pZCBhbGFybV9oYW5kbGVyKGludCBzaWcsIHN0cnVjdCBzaWdjb250ZXh0ICpzYyk7Cj4gPiAg
+Cj4gPiAgI2VuZGlmCj4gCj4gQ3JhcCwgSSBmaXhlZCB0aGF0LCBidXQgZm9yZ290IHRvIHF1aWx0
+IGFkZCBpdCwgSSBndWVzcy4KPiAKPiBBQ0suCj4gCgpUaGlzIGZpeCB3YXMgYWxyZWFkeSBwcmVz
+ZW50IGluIHlvdXIgIltQQVRDSCA0LzE5XSBVTUwgLSBSYW5kb20gZHJpdmVyIGZpeGVzIi4KClBl
+cmhhcHMgd2UgYnJva2UgYmlzZWN0aW9uPwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBl
+bWFpbCBpcyBzcG9uc29yZWQgYnkgdGhlIDIwMDggSmF2YU9uZShTTSkgQ29uZmVyZW5jZSAKRG9u
+J3QgbWlzcyB0aGlzIHllYXIncyBleGNpdGluZyBldmVudC4gVGhlcmUncyBzdGlsbCB0aW1lIHRv
+IHNhdmUgJDEwMC4gClVzZSBwcmlvcml0eSBjb2RlIEo4VEwyRDIuIApodHRwOi8vYWQuZG91Ymxl
+Y2xpY2submV0L2NsazsxOTg3NTc2NzM7MTM1MDMwMzg7cD9odHRwOi8vamF2YS5zdW4uY29tL2ph
+dmFvbmUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNl
+ci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
+c3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
