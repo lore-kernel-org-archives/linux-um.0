@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JtU4o-0006TT-CT for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 May 2008 13:47:54 -0700
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	id 1JtUyE-00046P-No for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 May 2008 14:45:10 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JtU4k-0000Gz-TA
+	(Exim 4.44) id 1JtUyD-0003kS-5p
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 May 2008 13:47:54 -0700
-Date: Tue, 6 May 2008 13:46:55 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20080506134655.4cac1014.akpm@linux-foundation.org>
-In-Reply-To: <20080429202924.GA13602@c2.user-mode-linux.org>
+	Tue, 06 May 2008 14:45:10 -0700
+Date: Tue, 6 May 2008 17:44:35 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080506214435.GA12998@c2.user-mode-linux.org>
 References: <20080425175613.GA11192@c2.user-mode-linux.org>
 	<877iegcx11.fsf@hades.wkstn.nix>
 	<20080429202924.GA13602@c2.user-mode-linux.org>
-Mime-Version: 1.0
+	<20080506134655.4cac1014.akpm@linux-foundation.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20080506134655.4cac1014.akpm@linux-foundation.org>
 Subject: Re: [uml-devel] [PATCH 11/19] UML - Track and make up lost ticks
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -27,55 +29,33 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Andrew Morton <akpm@linux-foundation.org>
 Cc: nix@esperi.org.uk, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-T24gVHVlLCAyOSBBcHIgMjAwOCAxNjoyOToyNSAtMDQwMApKZWZmIERpa2UgPGpkaWtlQGFkZHRv
-aXQuY29tPiB3cm90ZToKCj4gT24gVHVlLCBBcHIgMjksIDIwMDggYXQgMDc6NTQ6MDJQTSArMDEw
-MCwgTml4IHdyb3RlOgo+ID4gT24gMjUgQXByIDIwMDgsIEplZmYgRGlrZSBzdGF0ZWQsIGluIHBh
-cnQ6Cj4gPiA+IEluZGV4OiBsaW51eC0yLjYtZ2l0L2FyY2gvdW0vb3MtTGludXgvdGltZS5jCj4g
-PiA+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT0KPiA+ID4gLS0tIGxpbnV4LTIuNi1naXQub3JpZy9hcmNoL3VtL29zLUxp
-bnV4L3RpbWUuYwkyMDA4LTA0LTI1IDEwOjQyOjEyLjAwMDAwMDAwMCAtMDQwMAo+ID4gPiArKysg
-bGludXgtMi42LWdpdC9hcmNoL3VtL29zLUxpbnV4L3RpbWUuYwkyMDA4LTA0LTI1IDExOjE5OjI2
-LjAwMDAwMDAwMCAtMDQwMAo+ID4gPiArCWFsYXJtX2hhbmRsZXIoU0lHVlRBTFJNLCBOVUxMKTsK
-PiA+ID4gKwkJYWxhcm1faGFuZGxlcihTSUdWVEFMUk0sIE5VTEwpOwo+ID4gPiAtZXh0ZXJuIHZv
-aWQgYWxhcm1faGFuZGxlcihpbnQgc2lnLCBzdHJ1Y3Qgc2lnY29udGV4dCAqc2MpOwo+ID4gPiAt
-CQlhbGFybV9oYW5kbGVyKFNJR1ZUQUxSTSwgTlVMTCk7Cj4gPiAKPiA+IFlldCwgaW4gYXJjaC91
-bS9pbmNsdWRlL3Byb2Nlc3MuaCwgd2Ugc2VlLCB1bmNoYW5nZWQgc2luY2UgdGhlIHllYXIgZG90
-LCB0aGUKPiA+IG9idmlvdXNseSB3cm9uZyBwcm90b3R5cGU6Cj4gPiAKPiA+IGV4dGVybiB2b2lk
-IGFsYXJtX2hhbmRsZXIoaW50IHNpZywgc3RydWN0IHNpZ2NvbnRleHQgc2MpOwo+ID4gCj4gPiBI
-ZW5jZToKPiA+IAo+ID4gICBDQyAgICAgIGFyY2gvdW0vb3MtTGludXgvdGltZS5vCj4gPiBhcmNo
-L3VtL29zLUxpbnV4L3RpbWUuYzogSW4gZnVuY3Rpb24g4oCYZGVsaXZlcl9hbGFybeKAmToKPiA+
-IGFyY2gvdW0vb3MtTGludXgvdGltZS5jOjExOTogZXJyb3I6IGluY29tcGF0aWJsZSB0eXBlIGZv
-ciBhcmd1bWVudCAyIG9mIOKAmGFsYXJtX2hhbmRsZXLigJkKPiA+IG1ha2VbMV06ICoqKiBbYXJj
-aC91bS9vcy1MaW51eC90aW1lLm9dIEVycm9yIDEKPiA+IG1ha2U6ICoqKiBbYXJjaC91bS9vcy1M
-aW51eF0gRXJyb3IgMgo+ID4gCj4gPiBGaXggdHJpdmlhbDoKPiA+IAo+ID4gU2lnbmVkLW9mZi1i
-eTogTmljayBBbGNvY2sgPG5peEBlc3Blcmkub3JnLnVrPgo+ID4gLS0gCj4gPiBJbmRleDogbGlu
-dXgvYXJjaC91bS9pbmNsdWRlL3Byb2Nlc3MuaAo+ID4gPT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+ID4gLS0tIGxpbnV4
-Lm9yaWcvYXJjaC91bS9pbmNsdWRlL3Byb2Nlc3MuaAkyMDA2LTA3LTA5IDE0OjE5OjUyLjAwMDAw
-MDAwMCArMDEwMAo+ID4gKysrIGxpbnV4L2FyY2gvdW0vaW5jbHVkZS9wcm9jZXNzLmgJMjAwOC0w
-NC0yOSAxOTo0OTo0OS4wMDAwMDAwMDAgKzAxMDAKPiA+IEBAIC04LDggKzgsOCBAQAo+ID4gIAo+
-ID4gICNpbmNsdWRlIDxzaWduYWwuaD4KPiA+ICAKPiA+IC1leHRlcm4gdm9pZCBzaWdfaGFuZGxl
-cihpbnQgc2lnLCBzdHJ1Y3Qgc2lnY29udGV4dCBzYyk7Cj4gPiAtZXh0ZXJuIHZvaWQgYWxhcm1f
-aGFuZGxlcihpbnQgc2lnLCBzdHJ1Y3Qgc2lnY29udGV4dCBzYyk7Cj4gPiArZXh0ZXJuIHZvaWQg
-c2lnX2hhbmRsZXIoaW50IHNpZywgc3RydWN0IHNpZ2NvbnRleHQgKnNjKTsKPiA+ICtleHRlcm4g
-dm9pZCBhbGFybV9oYW5kbGVyKGludCBzaWcsIHN0cnVjdCBzaWdjb250ZXh0ICpzYyk7Cj4gPiAg
-Cj4gPiAgI2VuZGlmCj4gCj4gQ3JhcCwgSSBmaXhlZCB0aGF0LCBidXQgZm9yZ290IHRvIHF1aWx0
-IGFkZCBpdCwgSSBndWVzcy4KPiAKPiBBQ0suCj4gCgpUaGlzIGZpeCB3YXMgYWxyZWFkeSBwcmVz
-ZW50IGluIHlvdXIgIltQQVRDSCA0LzE5XSBVTUwgLSBSYW5kb20gZHJpdmVyIGZpeGVzIi4KClBl
-cmhhcHMgd2UgYnJva2UgYmlzZWN0aW9uPwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBl
-bWFpbCBpcyBzcG9uc29yZWQgYnkgdGhlIDIwMDggSmF2YU9uZShTTSkgQ29uZmVyZW5jZSAKRG9u
-J3QgbWlzcyB0aGlzIHllYXIncyBleGNpdGluZyBldmVudC4gVGhlcmUncyBzdGlsbCB0aW1lIHRv
-IHNhdmUgJDEwMC4gClVzZSBwcmlvcml0eSBjb2RlIEo4VEwyRDIuIApodHRwOi8vYWQuZG91Ymxl
-Y2xpY2submV0L2NsazsxOTg3NTc2NzM7MTM1MDMwMzg7cD9odHRwOi8vamF2YS5zdW4uY29tL2ph
-dmFvbmUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNl
-ci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+On Tue, May 06, 2008 at 01:46:55PM -0700, Andrew Morton wrote:
+> This fix was already present in your "[PATCH 4/19] UML - Random driver fixes".
+
+Ah, so that's where it ended up.
+
+> Perhaps we broke bisection?
+
+No doubt.  Drop those two and I'll send fixed ones.
+
+   	   	      Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
+Don't miss this year's exciting event. There's still time to save $100. 
+Use priority code J8TL2D2. 
+http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
