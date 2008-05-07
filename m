@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JtXC9-00010G-UV for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 May 2008 17:07:41 -0700
+	id 1JtXJu-0001lo-HB for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 May 2008 17:15:42 -0700
 Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JtXC8-0000rr-L9
+	(Exim 4.44) id 1JtXJt-0005Jc-5t
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 May 2008 17:07:41 -0700
-Date: Tue, 6 May 2008 17:06:40 -0700 (PDT)
+	Tue, 06 May 2008 17:15:42 -0700
+Date: Tue, 6 May 2008 17:15:15 -0700 (PDT)
 From: Linus Torvalds <torvalds@linux-foundation.org>
-In-Reply-To: <4820EC0E.1030603@redhat.com>
-Message-ID: <alpine.LFD.1.10.0805061655590.32269@woody.linux-foundation.org>
+In-Reply-To: <alpine.LFD.1.10.0805061655590.32269@woody.linux-foundation.org>
+Message-ID: <alpine.LFD.1.10.0805061712380.32269@woody.linux-foundation.org>
 References: <200805062304.m46N4h6d007206@devserv.devel.redhat.com>
 	<alpine.LFD.1.10.0805061625090.32269@woody.linux-foundation.org>
 	<4820EC0E.1030603@redhat.com>
+	<alpine.LFD.1.10.0805061655590.32269@woody.linux-foundation.org>
 MIME-Version: 1.0
 Subject: Re: [uml-devel] [PATCH] fix UML on x86-64
 List-Id: The user-mode Linux development list
@@ -36,23 +37,14 @@ Cc: user-mode-linux-devel@lists.sourceforge.net, Linux Kernel Mailing List <linu
 
 
 
-On Tue, 6 May 2008, Ulrich Drepper wrote:
+On Tue, 6 May 2008, Linus Torvalds wrote:
 > 
-> Linus Torvalds wrote:
-> > It breaks things how?
-> 
-> A crash on startup:
+> Yes, I'll revert that commit
 
-Some UML person should really take a look. It might be a compiler bug that 
-is triggered by -fno-unit-at-a-time, but considering that x86 is the most 
-tested architecture by far and apparently does *not* hit that problem, it 
-sounds more likely that it's UML-related and the compiler just triggers a 
-bug in UML.
-
-Anybody?
-
-Yes, I'll revert that commit, but just reverting it without somebody 
-trying to figure out what is wrong with UML isn't good.
+And btw, a revert is what I'm going to do, not just bump the gcc version 
+up as in Uli's patch. As mentioned, if it was about gcc versions, matching 
+the x86 choice should have been the much better tested one than picking 
+another version at random.
 
 		Linus
 
