@@ -1,20 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JtWke-0006kZ-MV for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 May 2008 16:39:16 -0700
-Received: from mx1.redhat.com ([66.187.233.31])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JtWke-00054k-6i
+	id 1JtYnE-0002I6-Tw for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 06 May 2008 18:50:05 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JtYnC-0002yK-8T
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 May 2008 16:39:16 -0700
-Message-ID: <4820EC0E.1030603@redhat.com>
-Date: Tue, 06 May 2008 16:38:54 -0700
-From: Ulrich Drepper <drepper@redhat.com>
-MIME-Version: 1.0
+	Tue, 06 May 2008 18:50:04 -0700
+Date: Tue, 6 May 2008 21:48:57 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080507014857.GB14912@c2.user-mode-linux.org>
 References: <200805062304.m46N4h6d007206@devserv.devel.redhat.com>
 	<alpine.LFD.1.10.0805061625090.32269@woody.linux-foundation.org>
-In-Reply-To: <alpine.LFD.1.10.0805061625090.32269@woody.linux-foundation.org>
+	<4820EC0E.1030603@redhat.com>
+	<alpine.LFD.1.10.0805061655590.32269@woody.linux-foundation.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.1.10.0805061655590.32269@woody.linux-foundation.org>
 Subject: Re: [uml-devel] [PATCH] fix UML on x86-64
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -25,83 +29,35 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: akpm@linux-foundation.org, mingo@elte.hu, tglx@linutronix.de, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ulrich Drepper <drepper@redhat.com>, tglx@linutronix.de, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEExCgpMaW51cyBUb3J2
-YWxkcyB3cm90ZToKPiBJdCBicmVha3MgdGhpbmdzIGhvdz8KCkEgY3Jhc2ggb24gc3RhcnR1cDoK
-ClByb2dyYW0gcmVjZWl2ZWQgc2lnbmFsIFNJR1RFUk0sIFRlcm1pbmF0ZWQuCjB4MDAwMDAwMzhk
-NjQzMTM1NyBpbiBraWxsICgpIGZyb20gL2xpYjY0L2xpYmMuc28uNgpNaXNzaW5nIHNlcGFyYXRl
-IGRlYnVnaW5mb3MsIHVzZTogZGVidWdpbmZvLWluc3RhbGwgZ2xpYmMueDg2XzY0CihnZGIpIGJ0
-CiMwICAweDAwMDAwMDM4ZDY0MzEzNTcgaW4ga2lsbCAoKSBmcm9tIC9saWI2NC9saWJjLnNvLjYK
-IzEgIDB4MDAwMDAwMDA2MDAyMDFlZiBpbiBvc19kdW1wX2NvcmUgKCkgYXQgYXJjaC91bS9vcy1M
-aW51eC91dGlsLmM6OTIKIzIgIDB4MDAwMDAwMDA2MDAxMzc5ZiBpbiBwYW5pY19leGl0IChzZWxm
-PTx2YWx1ZSBvcHRpbWl6ZWQgb3V0PiwKdW51c2VkMT08dmFsdWUgb3B0aW1pemVkIG91dD4sIHVu
-dXNlZDI9PHZhbHVlIG9wdGltaXplZCBvdXQ+KQogICAgYXQgYXJjaC91bS9rZXJuZWwvdW1fYXJj
-aC5jOjIzMwojMyAgMHgwMDAwMDAwMDYwMDQwOWM1IGluIG5vdGlmaWVyX2NhbGxfY2hhaW4gKG5s
-PTx2YWx1ZSBvcHRpbWl6ZWQgb3V0PiwKdmFsPTAsIHY9MHg2MDIyYzljMCwgbnJfdG9fY2FsbD0t
-MiwgbnJfY2FsbHM9MHgwKQogICAgYXQga2VybmVsL25vdGlmaWVyLmM6ODUKIzQgIDB4MDAwMDAw
-MDA2MDA0MDlmNiBpbiBfX2F0b21pY19ub3RpZmllcl9jYWxsX2NoYWluIChuaD0weDAsIHZhbD0x
-NSwKdj0weDYwMDFlNGUxLCBucl90b19jYWxsPS0xLCBucl9jYWxscz0weDYxYzFmNmUwKQogICAg
-YXQga2VybmVsL25vdGlmaWVyLmM6MTc0CiM1ICAweDAwMDAwMDAwNjAwNDBhMDcgaW4gYXRvbWlj
-X25vdGlmaWVyX2NhbGxfY2hhaW4gKG5oPTB4MCwgdmFsPTE1LAp2PTB4NjAwMWU0ZTEpIGF0IGtl
-cm5lbC9ub3RpZmllci5jOjE4MwojNiAgMHgwMDAwMDAwMDYwMDJiMTk5IGluIHBhbmljIChmbXQ9
-MHg2MDE5ODlhMSAiQXR0ZW1wdGVkIHRvIGtpbGwKaW5pdCEiKSBhdCBrZXJuZWwvcGFuaWMuYzox
-MDEKIzcgIDB4MDAwMDAwMDA2MDAyZTU5MyBpbiBkb19leGl0IChjb2RlPTExKSBhdCBrZXJuZWwv
-ZXhpdC5jOjk2NQojOCAgMHgwMDAwMDAwMDYwMDJlYzI0IGluIGRvX2dyb3VwX2V4aXQgKGV4aXRf
-Y29kZT0xMSkgYXQga2VybmVsL2V4aXQuYzoxMTQzCiM5ICAweDAwMDAwMDAwNjAwMzc2NDcgaW4g
-Z2V0X3NpZ25hbF90b19kZWxpdmVyIChpbmZvPTB4NjFjMWZhMzAsCnJldHVybl9rYT0weDYxYzFm
-YWIwLCByZWdzPTB4NjFjMWNhNzAsCiAgICBjb29raWU9PHZhbHVlIG9wdGltaXplZCBvdXQ+KSBh
-dCBrZXJuZWwvc2lnbmFsLmM6MTgzMQojMTAgMHgwMDAwMDAwMDYwMDExYzAxIGluIGRvX3NpZ25h
-bCAoKSBhdCBhcmNoL3VtL2tlcm5lbC9zaWduYWwuYzoxMDAKIzExIDB4MDAwMDAwMDA2MDAxMzVl
-ZSBpbiBmYXRhbF9zaWdzZWd2ICgpIGF0IGFyY2gvdW0va2VybmVsL3RyYXAuYzoxMzUKIzEyIDB4
-MDAwMDAwMDA2MDAyMTkxNyBpbiB3YWl0X3N0dWJfZG9uZSAocGlkPTQzODQpIGF0CmFyY2gvdW0v
-b3MtTGludXgvc2thcy9wcm9jZXNzLmM6OTQKIzEzIDB4MDAwMDAwMDA2MDAyMTBhMCBpbiBkb19z
-eXNjYWxsX3N0dWIgKG1tX2lkcD0weDYxZjRmZDI4LAphZGRyPTB4NjFjMWZkMTgpIGF0IGFyY2gv
-dW0vb3MtTGludXgvc2thcy9tZW0uYzo4NgojMTQgMHgwMDAwMDAwMDYwMDIxMzAyIGluIHJ1bl9z
-eXNjYWxsX3N0dWIgKG1tX2lkcD0weDYxZjRmZDI4LApzeXNjYWxsPTE1NCwgYXJncz0weDYxYzFm
-YzAwLCBleHBlY3RlZD0wLCBhZGRyPTB4NjFjMWZkMTgsIGRvbmU9MSkKICAgIGF0IGFyY2gvdW0v
-b3MtTGludXgvc2thcy9tZW0uYzoxNTUKIzE1IDB4MDAwMDAwMDA2MDAyMjY2NiBpbiB3cml0ZV9s
-ZHRfZW50cnkgKG1tX2lkcD0weDYxZjRmZDI4LCBmdW5jPTEsCmRlc2M9PHZhbHVlIG9wdGltaXpl
-ZCBvdXQ+LCBhZGRyPTB4NjFjMWZkMTgsIGRvbmU9MSkKICAgIGF0IGFyY2gvdW0vc3lzLXg4Nl82
-NC8uLi9zeXMtaTM4Ni9sZHQuYzo3MgojMTYgMHgwMDAwMDAwMDYwMDIyOGI0IGluIGluaXRfbmV3
-X2xkdCAobmV3X21tPTB4NjFmNGZkMjgsCmZyb21fbW09PHZhbHVlIG9wdGltaXplZCBvdXQ+KQog
-ICAgYXQgYXJjaC91bS9zeXMteDg2XzY0Ly4uL3N5cy1pMzg2L2xkdC5jOjQyNQojMTcgMHgwMDAw
-MDAwMDYwMDEzYjZjIGluIGluaXRfbmV3X2NvbnRleHQgKHRhc2s9PHZhbHVlIG9wdGltaXplZCBv
-dXQ+LAptbT08dmFsdWUgb3B0aW1pemVkIG91dD4pIGF0IGFyY2gvdW0va2VybmVsL3NrYXMvbW11
-LmM6ODcKIzE4IDB4MDAwMDAwMDA2MDA2ZDY2ZSBpbiBicHJtX21tX2luaXQgKGJwcm09MHg2MWM2
-MmRjMCkgYXQgZnMvZXhlYy5jOjM0NgojMTkgMHgwMDAwMDAwMDYwMDZlMzNhIGluIGRvX2V4ZWN2
-ZSAoZmlsZW5hbWU9MHg2MDE5MWMxYyAiL2Jpbi9zaCIsCmFyZ3Y9MHg2MDFjNjQ0MCwgZW52cD0w
-eDYwMWM2MDIwLCByZWdzPTB4NjFjMWNhNzApCiAgICBhdCBmcy9leGVjLmM6MTI4NwojMjAgMHgw
-MDAwMDAwMDYwMDBmZTJmIGluIGV4ZWN2ZTEgKGZpbGU9MHgwLCBhcmd2PTB4ZiwgZW52PTB4NjAw
-MWU0ZTEpCmF0IGFyY2gvdW0va2VybmVsL2V4ZWMuYzo2MgojMjEgMHgwMDAwMDAwMDYwMDBmZWE3
-IGluIHVtX2V4ZWN2ZSAoZmlsZT0weDAsIGFyZ3Y9MHhmLCBlbnY9MHg2MDAxZTRlMSkKYXQgYXJj
-aC91bS9rZXJuZWwvZXhlYy5jOjc4CiMyMiAweDAwMDAwMDAwNjAwMTFmMjggaW4ga2VybmVsX2V4
-ZWN2ZSAoZmlsZW5hbWU9MHgwLCBhcmd2PTB4ZiwKZW52cD0weDYwMDFlNGUxKSBhdCBhcmNoL3Vt
-L2tlcm5lbC9zeXNjYWxsLmM6MTI5CiMyMyAweDAwMDAwMDAwNjAwMGZiZjIgaW4gcnVuX2luaXRf
-cHJvY2VzcyAoaW5pdF9maWxlbmFtZT0weDApIGF0CmluaXQvbWFpbi5jOjc4OQojMjQgMHgwMDAw
-MDAwMDYwMDBmY2M3IGluIGluaXRfcG9zdCAoKSBhdCBpbml0L21haW4uYzo4MzEKIzI1IDB4MDAw
-MDAwMDA2MDAwMTU0NiBpbiBrZXJuZWxfaW5pdCAodW51c2VkPTx2YWx1ZSBvcHRpbWl6ZWQgb3V0
-PikgYXQKaW5pdC9tYWluLmM6ODg0CiMyNiAweDAwMDAwMDAwNjAwMWU1ZTEgaW4gcnVuX2tlcm5l
-bF90aHJlYWQgKGZuPTB4NjAwMDEzOWMKPGtlcm5lbF9pbml0PiwgYXJnPTB4MCwgam1wX3B0cj08
-dmFsdWUgb3B0aW1pemVkIG91dD4pCiAgICBhdCBhcmNoL3VtL29zLUxpbnV4L3Byb2Nlc3MuYzoy
-NjcKIzI3IDB4MDAwMDAwMDA2MDAxMTA5NCBpbiBuZXdfdGhyZWFkX2hhbmRsZXIgKCkgYXQKYXJj
-aC91bS9rZXJuZWwvcHJvY2Vzcy5jOjE1MQojMjggMHgwMDAwMDAwMDAwMDAwMDAwIGluID8/ICgp
-CgoKLSAtLQrinqcgVWxyaWNoIERyZXBwZXIg4p6nIFJlZCBIYXQsIEluYy4g4p6nIDQ0NCBDYXN0
-cm8gU3Qg4p6nIE1vdW50YWluIFZpZXcsIENBIOKdlgotLS0tLUJFR0lOIFBHUCBTSUdOQVRVUkUt
-LS0tLQpWZXJzaW9uOiBHbnVQRyB2MS40LjcgKEdOVS9MaW51eCkKCmlEOERCUUZJSU93TjJpakNP
-bm4vUkhRUkFxSWJBSjQ4TTR4Z09HQk9XYUtkTmNXSWw3WkVOSmFZRVFDZmNjSk0KT1M3VTNtYzQ4
-ejRVcG9kcGFnVHd0Mk09Cj1GdjQ1Ci0tLS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQoKLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnkgdGhlIDIwMDggSmF2
-YU9uZShTTSkgQ29uZmVyZW5jZSAKRG9uJ3QgbWlzcyB0aGlzIHllYXIncyBleGNpdGluZyBldmVu
-dC4gVGhlcmUncyBzdGlsbCB0aW1lIHRvIHNhdmUgJDEwMC4gClVzZSBwcmlvcml0eSBjb2RlIEo4
-VEwyRDIuIApodHRwOi8vYWQuZG91YmxlY2xpY2submV0L2NsazsxOTg3NTc2NzM7MTM1MDMwMzg7
-cD9odHRwOi8vamF2YS5zdW4uY29tL2phdmFvbmUKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApV
-c2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
-c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+On Tue, May 06, 2008 at 05:06:40PM -0700, Linus Torvalds wrote:
+> Some UML person should really take a look. It might be a compiler bug that 
+> is triggered by -fno-unit-at-a-time, but considering that x86 is the most 
+> tested architecture by far and apparently does *not* hit that problem, it 
+> sounds more likely that it's UML-related and the compiler just triggers a 
+> bug in UML.
+> 
+> Anybody?
+
+I think that's likely true.
+
+  	       	      Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
+Don't miss this year's exciting event. There's still time to save $100. 
+Use priority code J8TL2D2. 
+http://ad.doubleclick.net/clk;198757673;13503038;p?http://java.sun.com/javaone
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
