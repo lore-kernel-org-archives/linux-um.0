@@ -2,21 +2,25 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jtaq5-0006aH-EG for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 May 2008 21:01:09 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Jtaq3-0003Km-V0
+	id 1JtkCm-0000QW-9Y for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 07 May 2008 07:01:12 -0700
+Received: from smtp-1.orange.nl ([193.252.22.241])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JtkCZ-00019p-Sl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 06 May 2008 21:01:09 -0700
-Date: Wed, 7 May 2008 00:00:20 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080507040020.GA15972@c2.user-mode-linux.org>
-References: <200805062304.m46N4h6d007206@devserv.devel.redhat.com>
+	Wed, 07 May 2008 07:01:01 -0700
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf6007.orange.nl (SMTP Server) with ESMTP id 1F11C700009A
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed,  7 May 2008 16:00:43 +0200 (CEST)
+Received: from [127.0.0.1] (c529de59c.cable.wanadoo.nl [82.157.229.156])
+	by mwinf6007.orange.nl (SMTP Server) with ESMTP id 04D0E7000081
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed,  7 May 2008 16:00:42 +0200 (CEST)
+Message-ID: <4821B5FC.40307@vulnscan.org>
+Date: Wed, 07 May 2008 16:00:28 +0200
+From: "Bram Matthys (Syzop)" <syzop@vulnscan.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200805062304.m46N4h6d007206@devserv.devel.redhat.com>
-Subject: Re: [uml-devel] [PATCH] fix UML on x86-64
+Subject: [uml-devel] umls unresponsive & consuming 100% cpu time
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,26 +34,108 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Ulrich Drepper <drepper@redhat.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, mingo@elte.hu, linux-kernel@vger.kernel.org, tglx@linutronix.de, torvalds@linux-foundation.org, akpm@linux-foundation.org
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, May 06, 2008 at 07:04:43PM -0400, Ulrich Drepper wrote:
-> This patch breaks UML for me on x86-64 running Fedora 8 (gcc 4.1.2):
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Two odd things -
-    I'm using what appears to be the same environment - F8, gcc 4.1.2
-	gcc version 4.1.2 20070925 (Red Hat 4.1.2-33)
-and I've seen nothing like this
+Hi,
 
-    --showconfig doesn't work.  This is implemented in
-arch/um/kernel/config.c.in (which becomes config.c after some
-preprocessing), and as far as I can tell, it's just not in the
-binary.  So, I'm wondering whether there's something odd with __used.
+I'm experiencing the following problem:
+I upgraded from 2.6.20.1 to 2.6.25 on both the host and the uml's.
+Now, after some time (unsure how soon), the uml's appear to hang.
+It seems though, that they are not completely freezed, but just very very
+very slow (or rather.. 99% unresponsive).
 
-	     	 	   Jeff
+top:
+~  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+~ 5434 virt      20   0  128m  89m  89m R   99  4.5 269:40.81 linux
+..so consuming nearly 100% cpu.
 
--- 
-Work email - jdike at linux dot intel dot com
+When typing a letter at the console (I run the umls in a screen), it goes
+slow, sometimes it takes up to a minute or so... so I can hardly login
+(actually it does process/buffer my line, but by the time the username is
+entered and it prompts for the password the login time of 60s is exceeded).
+Also, there are no errors (like kernel warnings) displayed on the console.
+
+When pinging I get:
+PING slave (192.168.22.11) 56(84) bytes of data.
+~From slave (192.168.22.1) icmp_seq=2 Destination Host Unreachable
+~From slave (192.168.22.1) icmp_seq=3 Destination Host Unreachable
+- -more more-
+64 bytes from slave (192.168.22.11): icmp_seq=26 ttl=64 time=111 ms
+- -yes, just one.. then delay... and then..-
+ping: sendmsg: No buffer space available
+ping: sendmsg: No buffer space available
+- -more-
+
+When doing a version request using uml_mconsole I get a respond after delay
+of like 25 seconds, then quick subsequent requests work too, then they no
+longer do for like 34 seconds, then a reply, etc etc etc.
+
+I'm not sure if this is actually correct (I know the 'linux' image
+corresponds to the running slave kernel but I'm unsure about the backtrace
+it shows), but here's some gdb stuff:
+- -gdb-
+srv1:/home/virt# gdb linux 5434
+GNU gdb 6.4.90-debian
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i486-linux-gnu"...Using host libthread_db
+library "/lib/tls/i686/cmov/libthread_db.so.1".
+
+Attaching to program: /home/virt/linux, process 5434
+0x0809647a in update_xtime_cache ()
+(gdb) bt
+#0  0x0809647a in update_xtime_cache ()
+(gdb) c
+Continuing.
+^C
+Program received signal SIGINT, Interrupt.
+0x08096477 in update_xtime_cache ()
+(gdb) bt
+#0  0x08096477 in update_xtime_cache ()
+(gdb) c
+Continuing.
+^C
+Program received signal SIGINT, Interrupt.
+0x0809645a in update_xtime_cache ()
+(gdb) bt
+#0  0x0809645a in update_xtime_cache ()
+(gdb) c
+Continuing.
+^C
+Program received signal SIGINT, Interrupt.
+0x0809645d in update_xtime_cache ()
+(gdb) bt
+#0  0x0809645d in update_xtime_cache ()
+(gdb)
+..so each time I ctrl+c after a few secs to see where it's at, it's in there..
+
+Any ideas what this could be?
+
+Or any help on how to get additional / useful info?
+
+TIA,
+
+	Bram.
+
+- --
+Bram Matthys
+Software developer/IT consultant        syzop@vulnscan.org
+PGP key:                       www.vulnscan.org/pubkey.asc
+PGP fp: 8DD4 437E 9BA8 09AA 0A8D  1811 E1C3 D65F E6ED 2AA2
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (MingW32)
+
+iD8DBQFIIbX846ioc5305a8RAtiMAJ9/MJaGN/6k+711lFVxoX9sUgt5vACgxXgr
+qyheRL6nPMJmat49fDS828k=
+=0Ra0
+-----END PGP SIGNATURE-----
+
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
