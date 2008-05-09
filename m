@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from [10.3.1.92] (helo=mail.sourceforge.net)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JuVsl-00020r-3J for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 May 2008 09:55:44 -0700
+	id 1JuVsf-000242-3P for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 May 2008 09:55:37 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JuVs8-00061S-AU
+	(Exim 4.44) id 1JuVsU-0006Dd-44
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 May 2008 09:55:13 -0700
-Date: Fri, 9 May 2008 12:54:17 -0400
+	Fri, 09 May 2008 09:55:31 -0700
+Date: Fri, 9 May 2008 12:54:18 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080509165417.GA10627@c2.user-mode-linux.org>
+Message-ID: <20080509165418.GA10629@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/3] UML - Style fixes in the random driver
+Subject: [uml-devel] [PATCH 3/3] UML - Track and make up lost ticks
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,146 +29,157 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Nix <nix@esperi.org.uk>
 
-Give random.c a style workover while I'm changing it.
+Alarm delivery could be noticably late in the !CONFIG_NOHZ case
+because lost ticks weren't being taken into account.  This is now
+treated more carefully, with the time between ticks being calculated
+and the appropriate number of ticks delivered to the timekeeping system.
 
+Cc: Nix <nix@esperi.org.uk>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/drivers/random.c |   77 ++++++++++++++++++++++++-----------------------
- 1 file changed, 40 insertions(+), 37 deletions(-)
+ arch/um/include/process.h |    4 +--
+ arch/um/os-Linux/signal.c |    1 
+ arch/um/os-Linux/time.c   |   54 ++++++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 53 insertions(+), 6 deletions(-)
 
-Index: linux-2.6-git/arch/um/drivers/random.c
+Index: linux-2.6-git/arch/um/os-Linux/time.c
 ===================================================================
---- linux-2.6-git.orig/arch/um/drivers/random.c	2008-05-09 12:14:49.000000000 -0400
-+++ linux-2.6-git/arch/um/drivers/random.c	2008-05-09 12:15:15.000000000 -0400
-@@ -1,4 +1,5 @@
--/* Copyright (C) 2005 Jeff Dike <jdike@addtoit.com> */
-+/* Copyright (C) 2005 - 2008 Jeff Dike <jdike@{linux.intel,addtoit}.com> */
-+
- /* Much of this ripped from drivers/char/hw_random.c, see there for other
-  * copyright.
-  *
-@@ -35,7 +36,7 @@ static int rng_dev_open (struct inode *i
- 	/* enforce read-only access to this chrdev */
- 	if ((filp->f_mode & FMODE_READ) == 0)
- 		return -EINVAL;
--	if (filp->f_mode & FMODE_WRITE)
-+	if ((filp->f_mode & FMODE_WRITE) != 0)
- 		return -EINVAL;
+--- linux-2.6-git.orig/arch/um/os-Linux/time.c	2008-05-09 12:18:06.000000000 -0400
++++ linux-2.6-git/arch/um/os-Linux/time.c	2008-05-09 12:30:23.000000000 -0400
+@@ -9,7 +9,9 @@
+ #include <time.h>
+ #include <sys/time.h>
+ #include "kern_constants.h"
++#include "kern_util.h"
+ #include "os.h"
++#include "process.h"
+ #include "user.h"
  
- 	return 0;
-@@ -44,31 +45,31 @@ static int rng_dev_open (struct inode *i
- static atomic_t host_sleep_count = ATOMIC_INIT(0);
- 
- static ssize_t rng_dev_read (struct file *filp, char __user *buf, size_t size,
--                             loff_t * offp)
-+			     loff_t *offp)
+ int set_interval(void)
+@@ -58,12 +60,17 @@ static inline long long timeval_to_ns(co
+ long long disable_timer(void)
  {
--        u32 data;
--        int n, ret = 0, have_data;
-+	u32 data;
-+	int n, ret = 0, have_data;
+ 	struct itimerval time = ((struct itimerval) { { 0, 0 }, { 0, 0 } });
++	int remain, max = UM_NSEC_PER_SEC / UM_HZ;
  
--        while(size){
--                n = os_read_file(random_fd, &data, sizeof(data));
--                if(n > 0){
--                        have_data = n;
--                        while (have_data && size) {
--                                if (put_user((u8)data, buf++)) {
--                                        ret = ret ? : -EFAULT;
--                                        break;
--                                }
--                                size--;
--                                ret++;
--                                have_data--;
--                                data>>=8;
--                        }
--                }
--                else if(n == -EAGAIN){
-+	while (size) {
-+		n = os_read_file(random_fd, &data, sizeof(data));
-+		if (n > 0) {
-+			have_data = n;
-+			while (have_data && size) {
-+				if (put_user((u8) data, buf++)) {
-+					ret = ret ? : -EFAULT;
-+					break;
-+				}
-+				size--;
-+				ret++;
-+				have_data--;
-+				data >>= 8;
-+			}
-+		}
-+		else if (n == -EAGAIN) {
- 			DECLARE_WAITQUEUE(wait, current);
+ 	if (setitimer(ITIMER_VIRTUAL, &time, &time) < 0)
+ 		printk(UM_KERN_ERR "disable_timer - setitimer failed, "
+ 		       "errno = %d\n", errno);
  
--                        if (filp->f_flags & O_NONBLOCK)
--                                return ret ? : -EAGAIN;
-+			if (filp->f_flags & O_NONBLOCK)
-+				return ret ? : -EAGAIN;
- 
- 			atomic_inc(&host_sleep_count);
- 			reactivate_fd(random_fd, RANDOM_IRQ);
-@@ -85,8 +86,10 @@ static ssize_t rng_dev_read (struct file
- 				ignore_sigio_fd(random_fd);
- 				deactivate_fd(random_fd, RANDOM_IRQ);
- 			}
--                }
--                else return n;
-+		}
-+		else
-+			return n;
+-	return timeval_to_ns(&time.it_value);
++	remain = timeval_to_ns(&time.it_value);
++	if (remain > max)
++		remain = max;
 +
- 		if (signal_pending (current))
- 			return ret ? : -ERESTARTSYS;
- 	}
-@@ -120,33 +123,33 @@ static int __init rng_init (void)
- {
- 	int err;
- 
--        err = os_open_file("/dev/random", of_read(OPENFLAGS()), 0);
--        if(err < 0)
--                goto out;
-+	err = os_open_file("/dev/random", of_read(OPENFLAGS()), 0);
-+	if (err < 0)
-+		goto out;
- 
--        random_fd = err;
-+	random_fd = err;
- 
- 	err = um_request_irq(RANDOM_IRQ, random_fd, IRQ_READ, random_interrupt,
- 			     IRQF_DISABLED | IRQF_SAMPLE_RANDOM, "random",
- 			     NULL);
--        if(err)
-+	if (err)
- 		goto err_out_cleanup_hw;
- 
- 	sigio_broken(random_fd, 1);
- 
- 	err = misc_register (&rng_miscdev);
- 	if (err) {
--		printk (KERN_ERR RNG_MODULE_NAME ": misc device register failed\n");
-+		printk (KERN_ERR RNG_MODULE_NAME ": misc device register "
-+			"failed\n");
- 		goto err_out_cleanup_hw;
- 	}
-+out:
-+	return err;
- 
-- out:
--        return err;
--
-- err_out_cleanup_hw:
-+err_out_cleanup_hw:
- 	os_close_file(random_fd);
--        random_fd = -1;
--        goto out;
-+	random_fd = -1;
-+	goto out;
++	return remain;
  }
  
- /*
+ long long os_nsecs(void)
+@@ -79,7 +86,44 @@ static int after_sleep_interval(struct t
+ {
+ 	return 0;
+ }
++
++static void deliver_alarm(void)
++{
++	alarm_handler(SIGVTALRM, NULL);
++}
++
++static unsigned long long sleep_time(unsigned long long nsecs)
++{
++	return nsecs;
++}
++
+ #else
++unsigned long long last_tick;
++unsigned long long skew;
++
++static void deliver_alarm(void)
++{
++	unsigned long long this_tick = os_nsecs();
++	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
++
++	if (last_tick == 0)
++		last_tick = this_tick - one_tick;
++
++	skew += this_tick - last_tick;
++
++	while (skew >= one_tick) {
++		alarm_handler(SIGVTALRM, NULL);
++		skew -= one_tick;
++	}
++
++	last_tick = this_tick;
++}
++
++static unsigned long long sleep_time(unsigned long long nsecs)
++{
++	return nsecs > skew ? nsecs - skew : 0;
++}
++
+ static inline long long timespec_to_us(const struct timespec *ts)
+ {
+ 	return ((long long) ts->tv_sec * UM_USEC_PER_SEC) +
+@@ -102,6 +146,8 @@ static int after_sleep_interval(struct t
+ 	 */
+ 	if (start_usecs > usec)
+ 		start_usecs = usec;
++
++	start_usecs -= skew / UM_NSEC_PER_USEC;
+ 	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
+ 				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
+ 	interval = ((struct itimerval) { { 0, usec }, tv });
+@@ -113,8 +159,6 @@ static int after_sleep_interval(struct t
+ }
+ #endif
+ 
+-extern void alarm_handler(int sig, struct sigcontext *sc);
+-
+ void idle_sleep(unsigned long long nsecs)
+ {
+ 	struct timespec ts;
+@@ -126,10 +170,12 @@ void idle_sleep(unsigned long long nsecs
+ 	 */
+ 	if (nsecs == 0)
+ 		nsecs = UM_NSEC_PER_SEC / UM_HZ;
++
++	nsecs = sleep_time(nsecs);
+ 	ts = ((struct timespec) { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
+ 				  .tv_nsec	= nsecs % UM_NSEC_PER_SEC });
+ 
+ 	if (nanosleep(&ts, &ts) == 0)
+-		alarm_handler(SIGVTALRM, NULL);
++		deliver_alarm();
+ 	after_sleep_interval(&ts);
+ }
+Index: linux-2.6-git/arch/um/include/process.h
+===================================================================
+--- linux-2.6-git.orig/arch/um/include/process.h	2008-05-09 12:30:56.000000000 -0400
++++ linux-2.6-git/arch/um/include/process.h	2008-05-09 12:31:04.000000000 -0400
+@@ -11,7 +11,7 @@
+ /* Copied from linux/compiler-gcc.h since we can't include it directly */
+ #define barrier() __asm__ __volatile__("": : :"memory")
+ 
+-extern void sig_handler(int sig, struct sigcontext sc);
+-extern void alarm_handler(int sig, struct sigcontext sc);
++extern void sig_handler(int sig, struct sigcontext *sc);
++extern void alarm_handler(int sig, struct sigcontext *sc);
+ 
+ #endif
+Index: linux-2.6-git/arch/um/os-Linux/signal.c
+===================================================================
+--- linux-2.6-git.orig/arch/um/os-Linux/signal.c	2008-05-09 12:21:29.000000000 -0400
++++ linux-2.6-git/arch/um/os-Linux/signal.c	2008-05-09 12:30:29.000000000 -0400
+@@ -12,6 +12,7 @@
+ #include "as-layout.h"
+ #include "kern_util.h"
+ #include "os.h"
++#include "process.h"
+ #include "sysdep/barrier.h"
+ #include "sysdep/sigcontext.h"
+ #include "user.h"
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by the 2008 JavaOne(SM) Conference 
