@@ -2,16 +2,13 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JwNpM-0007Wp-5J for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 13:43:56 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JwNpI-0001ZF-KW
+	id 1JwP3Z-0007F6-RE for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 May 2008 15:02:42 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user31156)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JwP3V-0003yB-3o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 13:43:54 -0700
-Date: Wed, 14 May 2008 16:43:41 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080514204341.GA12452@c2.user-mode-linux.org>
+	Wed, 14 May 2008 15:02:41 -0700
 References: <20080502195720.GB10369@c2.user-mode-linux.org>
 	<87k5ic47is.fsf@hades.wkstn.nix>
 	<20080503005631.GA12599@c2.user-mode-linux.org>
@@ -22,9 +19,13 @@ References: <20080502195720.GB10369@c2.user-mode-linux.org>
 	<1210789757.25724.3.camel@localhost>
 	<20080514193912.GA11531@c2.user-mode-linux.org>
 	<87r6c4y7ab.fsf@hades.wkstn.nix>
+	<20080514204341.GA12452@c2.user-mode-linux.org>
+From: Nix <nix@esperi.org.uk>
+Date: Wed, 14 May 2008 23:02:23 +0100
+In-Reply-To: <20080514204341.GA12452@c2.user-mode-linux.org> (Jeff Dike's
+	message of "Wed, 14 May 2008 16:43:41 -0400")
+Message-ID: <87iqxgy26o.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87r6c4y7ab.fsf@hades.wkstn.nix>
 Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -39,24 +40,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Nix <nix@esperi.org.uk>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, May 14, 2008 at 09:12:12PM +0100, Nix wrote:
-> Oh, and, it's pedantic of me, I know, but what does this do if time goes
-> backwards in the NO_HZ case? (Or is handling that a 2.6.26 thing?)
+On 14 May 2008, Jeff Dike verbalised:
 
-In all cases, it holds time steady until the host catches up with what
-the guest thinks the time should be.
+> On Wed, May 14, 2008 at 09:12:12PM +0100, Nix wrote:
+>> Oh, and, it's pedantic of me, I know, but what does this do if time goes
+>> backwards in the NO_HZ case? (Or is handling that a 2.6.26 thing?)
+>
+> In all cases, it holds time steady until the host catches up with what
+> the guest thinks the time should be.
 
-I noticed you wrapped last_tick business in one of the ifdefs - I
-didn't look carefully to see whether that would explain the behavior
-difference.  I just made it unconditional.
+Yeah, that's what I was doing too: but mine didn't work. Odd.
 
-	       	    	 Jeff
+> I noticed you wrapped last_tick business in one of the ifdefs - I
+> didn't look carefully to see whether that would explain the behavior
+> difference.  I just made it unconditional.
 
--- 
-Work email - jdike at linux dot intel dot com
+The only reason I wrapped it in the ifdefs was because the !NO_HZ case
+had to keep the skew calculations up to date, while the NO_HZ case
+didn't have to bother. It shouldn't have affected anything else.
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft 
