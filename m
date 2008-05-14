@@ -1,13 +1,13 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JwLYP-00085W-2a for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 11:18:17 -0700
-Received: from relay-cv.club-internet.fr ([194.158.96.103])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JwLYN-0002uf-Lo
+	id 1JwLjE-0000sG-Qg for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 May 2008 11:29:28 -0700
+Received: from relay-dm.club-internet.fr ([194.158.104.222])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JwLjD-0001xF-EW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 11:18:17 -0700
+	Wed, 14 May 2008 11:29:28 -0700
 From: vincent-perrier <vincent-perrier@club-internet.fr>
 In-Reply-To: <20080514172347.GA10283@c2.user-mode-linux.org>
 References: <20080501151351.GA6303@c2.user-mode-linux.org>
@@ -21,8 +21,8 @@ References: <20080501151351.GA6303@c2.user-mode-linux.org>
 	<20080509151604.GC10169@c2.user-mode-linux.org>
 	<1210353202.31648.8.camel@localhost>
 	<20080514172347.GA10283@c2.user-mode-linux.org>
-Date: Wed, 14 May 2008 20:18:13 +0200
-Message-Id: <1210789093.25558.10.camel@localhost>
+Date: Wed, 14 May 2008 20:29:17 +0200
+Message-Id: <1210789757.25724.3.camel@localhost>
 Mime-Version: 1.0
 Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
 List-Id: The user-mode Linux development list
@@ -41,15 +41,32 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
 Cc: Nix <nix@esperi.org.uk>, user-mode-linux-devel@lists.sourceforge.net
 
-I forgot to tell you, if you launch the daemon as a normal user,
-the RSA files of this normal user will be used, and not the root
-ones.
-And also, the daemon has to mount a file when it creates the ubdb 
-config file, one more reason to have the root sticky bit.
+Sorry if you receive this message twice, but I sent 2 messages
+following each other by a few minutes, and received only the 
+second one, this was the first one:
 
-This tool is made for network study and tests, a standalone PC
-is good enough to use it and observe routing daemons at work.
- 
+
+Hello,
+I know that I should not work as root, but I am too used to it,
+so my example is done with the root user.
+
+I am not sure that the network simulator works with another user
+for the version you have, but I have checked that for next one, 
+a normal user will do as long as the daemon is owned by root and
+is suid root.
+
+The daemon has to create taps, open a socket to ping, and configure
+an ip address for tap, so it will always have to be suid root even
+for a normal user.
+
+The RSA files are copied into the machines at startup so as to be 
+able to scp or ssh the machine without any password.
+Those files are given to the machines through an ubdb config file
+at uml start.
+
+I can garantee that the software does nothing nasty with those files.
+
+
 
 On Wed, 2008-05-14 at 13:23 -0400, Jeff Dike wrote:
 > On Fri, May 09, 2008 at 07:13:22PM +0200, vincent-perrier wrote:
