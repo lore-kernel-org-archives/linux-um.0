@@ -1,22 +1,31 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JwCYD-0000bZ-77 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 01:41:29 -0700
-Received: from gw02.mail.saunalahti.fi ([195.197.172.116])
+	id 1JwKi1-0001va-Cc for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 May 2008 10:24:09 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JwCYB-000739-6N
+	(Exim 4.44) id 1JwKhy-0002d0-SH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 01:41:28 -0700
-Message-ID: <482AA5AE.3000900@saunalahti.fi>
-Date: Wed, 14 May 2008 11:41:18 +0300
-From: Sakari Ailus <sakari.ailus@saunalahti.fi>
+	Wed, 14 May 2008 10:24:09 -0700
+Date: Wed, 14 May 2008 13:23:47 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080514172347.GA10283@c2.user-mode-linux.org>
+References: <20080501151351.GA6303@c2.user-mode-linux.org>
+	<87prs57g4h.fsf@hades.wkstn.nix>
+	<20080502163020.GB7843@c2.user-mode-linux.org>
+	<87bq3o5yeo.fsf@hades.wkstn.nix>
+	<20080502195720.GB10369@c2.user-mode-linux.org>
+	<87k5ic47is.fsf@hades.wkstn.nix>
+	<20080503005631.GA12599@c2.user-mode-linux.org>
+	<877ieb4s4n.fsf@hades.wkstn.nix>
+	<20080509151604.GC10169@c2.user-mode-linux.org>
+	<1210353202.31648.8.camel@localhost>
 MIME-Version: 1.0
-References: <4821B5FC.40307@vulnscan.org>	<20080509154552.GH10169@c2.user-mode-linux.org>
-	<48255FC4.4040805@vulnscan.org>
-In-Reply-To: <48255FC4.4040805@vulnscan.org>
-Subject: Re: [uml-devel] umls unresponsive & consuming 100% cpu time
+Content-Disposition: inline
+In-Reply-To: <1210353202.31648.8.camel@localhost>
+Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,64 +39,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "Bram Matthys (Syzop)" <syzop@vulnscan.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: vincent-perrier <vincent-perrier@club-internet.fr>
+Cc: Nix <nix@esperi.org.uk>, user-mode-linux-devel@lists.sourceforge.net
 
-Bram Matthys (Syzop) wrote:
-> Thanks for your reply.
+On Fri, May 09, 2008 at 07:13:22PM +0200, vincent-perrier wrote:
+> The download is long, the untar too, but the freeze is garanteed!
 > 
-> $ grep HZ .config
-> CONFIG_HZ=100
-> # CONFIG_NO_HZ is not set
+> to start after download: 
 > 
-> I've applied your patch against my 2.6.25 (vanilla)...
-> patching file arch/um/os-Linux/time.c
-> patching file arch/um/kernel/time.c
-> Hunk #1 succeeded at 74 (offset -1 lines).
-> Hunk #2 succeeded at 82 (offset -1 lines).
-> and recompiled etc..
+> "./start_clownix_net virtual_platform_configs/single_machine"
 > 
-> I saw vincent's issue, and when I set the time like 5 seconds back.. the UML
-> freezes and uses 100% cpu and doesn't respond at all. This is however not
-> entirely the same as what I had, because i still had it somewhat responsive...
+> Hope you try it!
 
-Hi,
+Why is it mucking with root's ssh keys:
 
-I think I have experienced the same problem. I don't have time now to 
-investigate it further, but I have some info which may or may not be 
-useful in debugging. So this is mainly just FYI.
+  RSA_PUB=/root/.ssh/id_rsa.pub
+  RSA_PRIV=/root/.ssh/id_rsa
 
-I have three UML instances running on a host. First, they all were 
-unresponsive simultaneously using all CPU time they could get. After a 
-while they became responsive again. I could log in through SSH. The 
-funny thing is that the date command showed correct date and time (as 
-far as I remember, can't test it now as they are hung again) while the 
-time in bash prompt was constant showing the time around the initial 
-hang, which is the same on all three instances.
-
-I think there was some NTP related activity on the host while this 
-happened. The time the UMLs were showing was 23:xx:xx, don't know 
-exactly. :(
-
----
-May 13 22:58:56 retiisi ntpd[20630]: synchronized to 192.26.119.7, stratum 2
-May 13 22:58:56 retiisi ntpd[20630]: time reset -5.151310 s
-May 13 22:58:56 retiisi ntpd[20630]: kernel time sync enabled 0001
-May 13 22:58:52 retiisi kernel: set_rtc_mmss: can't update from 1 to 58
-May 13 22:58:56 retiisi last message repeated 4 times
-May 13 22:59:27 retiisi kernel: set_rtc_mmss: can't update from 1 to 59
-May 13 22:59:40 retiisi last message repeated 13 times
-May 13 22:59:41 retiisi kernel: set_rtc_mmss: can't update from 2 to 59
-May 13 22:59:59 retiisi last message repeated 18 times
-May 13 23:02:29 retiisi ntpd[20630]: synchronized to 192.26.119.7, stratum 2
----
-
-The host is 2.6.24 (skas4) and the clients are vanilla 2.6.24. Oh dear, 
-I seem to have CONFIG_NO_HZ enabled...
+			Jeff
 
 -- 
-Sakari Ailus
-sakari.ailus@saunalahti.fi
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft 
