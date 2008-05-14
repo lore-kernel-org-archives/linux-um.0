@@ -2,16 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JwNdW-0006AT-Rn for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 13:31:43 -0700
-Received: from 41-052.adsl.zetnet.co.uk
-	([194.247.41.52] helo=mail.esperi.org.uk ident=user92331)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JwNdU-0005EE-2E
+	id 1JwNpM-0007Wp-5J for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 May 2008 13:43:56 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JwNpI-0001ZF-KW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 13:31:42 -0700
-References: <20080502163020.GB7843@c2.user-mode-linux.org>
-	<87bq3o5yeo.fsf@hades.wkstn.nix>
-	<20080502195720.GB10369@c2.user-mode-linux.org>
+	Wed, 14 May 2008 13:43:54 -0700
+Date: Wed, 14 May 2008 16:43:41 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080514204341.GA12452@c2.user-mode-linux.org>
+References: <20080502195720.GB10369@c2.user-mode-linux.org>
 	<87k5ic47is.fsf@hades.wkstn.nix>
 	<20080503005631.GA12599@c2.user-mode-linux.org>
 	<877ieb4s4n.fsf@hades.wkstn.nix>
@@ -21,12 +22,9 @@ References: <20080502163020.GB7843@c2.user-mode-linux.org>
 	<1210789757.25724.3.camel@localhost>
 	<20080514193912.GA11531@c2.user-mode-linux.org>
 	<87r6c4y7ab.fsf@hades.wkstn.nix>
-From: Nix <nix@esperi.org.uk>
-Date: Wed, 14 May 2008 21:31:31 +0100
-In-Reply-To: <87r6c4y7ab.fsf@hades.wkstn.nix> (nix@esperi.org.uk's message of
-	"Wed, 14 May 2008 21:12:12 +0100")
-Message-ID: <87mymsy6e4.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87r6c4y7ab.fsf@hades.wkstn.nix>
 Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -41,33 +39,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Nix <nix@esperi.org.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-[vincent-perrier <vincent-perrier@club-internet.fr> removed from Cc;,
- his MTA says `Client host rejected: AP0002 Please use your ISP mailserver'
- only I don't *have* an ISP mailserver.]
+On Wed, May 14, 2008 at 09:12:12PM +0100, Nix wrote:
+> Oh, and, it's pedantic of me, I know, but what does this do if time goes
+> backwards in the NO_HZ case? (Or is handling that a 2.6.26 thing?)
 
-On 14 May 2008, nix@esperi.org.uk verbalised:
-> Annoyingly, now I've upgraded the host to 2.6.25 (hence sans skas3),
-> timings or something have changed such that I now can't make the freeze
-> happen at all. I'll reboot the host into 2.6.24.x shortly to get skas
-> back and try again.
+In all cases, it holds time steady until the host catches up with what
+the guest thinks the time should be.
 
-It seems to fix it with a 2.6.24 host too, but I still can't see why it
-works when my previous fix didn't. (Actually, while I'm trying it with
-lots of differently mangled variations on a host .config theme, is there
-a skas3 or skas4 against 2.6.25? I may as well add that into the mix and
-see if things still work.)
+I noticed you wrapped last_tick business in one of the ifdefs - I
+didn't look carefully to see whether that would explain the behavior
+difference.  I just made it unconditional.
 
-I'll keep ntpd running here for a day or so as well, and see if it stalls
-out. (The host loses nearly half a minute a day without ntpd, it's
-awful.)
+	       	    	 Jeff
 
 -- 
-`If you are having a "ua luea luea le ua le" kind of day, I can only
- assume that you are doing no work due [to] incapacitating nausea caused 
- by numerous lazy demons.' --- Frossie
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft 
