@@ -2,21 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JvwcV-0002Xe-1c for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 May 2008 08:40:53 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1JwCYD-0000bZ-77 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 May 2008 01:41:29 -0700
+Received: from gw02.mail.saunalahti.fi ([195.197.172.116])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JvwcR-0004cK-QZ
+	(Exim 4.44) id 1JwCYB-000739-6N
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 May 2008 08:40:50 -0700
-Date: Tue, 13 May 2008 11:40:33 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080513154033.GA8867@c2.user-mode-linux.org>
-References: <4821B5FC.40307@vulnscan.org>
-	<20080509154552.GH10169@c2.user-mode-linux.org>
-	<48255FC4.4040805@vulnscan.org>
+	Wed, 14 May 2008 01:41:28 -0700
+Message-ID: <482AA5AE.3000900@saunalahti.fi>
+Date: Wed, 14 May 2008 11:41:18 +0300
+From: Sakari Ailus <sakari.ailus@saunalahti.fi>
 MIME-Version: 1.0
-Content-Disposition: inline
+References: <4821B5FC.40307@vulnscan.org>	<20080509154552.GH10169@c2.user-mode-linux.org>
+	<48255FC4.4040805@vulnscan.org>
 In-Reply-To: <48255FC4.4040805@vulnscan.org>
 Subject: Re: [uml-devel] umls unresponsive & consuming 100% cpu time
 List-Id: The user-mode Linux development list
@@ -35,62 +33,61 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: "Bram Matthys (Syzop)" <syzop@vulnscan.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, May 10, 2008 at 10:41:40AM +0200, Bram Matthys (Syzop) wrote:
-> I also saw this on my console (which does not react either btw), not sure
-> when it appeared.. at or very short after/before the time setting:
-> Stub registers -
-> ~        0 - 621a
-> ~        1 - 13
-> ~        2 - 621a
-> ~        3 - 6215
-> ~        4 - 8
-> ~        5 - bfae182c
-> ~        6 - 0
-> ~        7 - 7b
-> ~        8 - 7b
-> ~        9 - 0
-> ~        10 - 0
-> ~        11 - ffffffff
-> ~        12 - 1000be
-> ~        13 - 73
-> ~        14 - 200246
-> ~        15 - bfae1810
-> ~        16 - 7b
-> wait_stub_done : failed to wait for SIGTRAP, pid = 26141, n = 26141, errno =
-> 0, status = 0x1c7f
+Bram Matthys (Syzop) wrote:
+> Thanks for your reply.
+> 
+> $ grep HZ .config
+> CONFIG_HZ=100
+> # CONFIG_NO_HZ is not set
+> 
+> I've applied your patch against my 2.6.25 (vanilla)...
+> patching file arch/um/os-Linux/time.c
+> patching file arch/um/kernel/time.c
+> Hunk #1 succeeded at 74 (offset -1 lines).
+> Hunk #2 succeeded at 82 (offset -1 lines).
+> and recompiled etc..
+> 
+> I saw vincent's issue, and when I set the time like 5 seconds back.. the UML
+> freezes and uses 100% cpu and doesn't respond at all. This is however not
+> entirely the same as what I had, because i still had it somewhat responsive...
 
-For this one, try this patch:
+Hi,
 
-Index: linux-2.6.22/arch/um/os-Linux/skas/process.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/skas/process.c	2008-04-14 10:44:33.000000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/skas/process.c	2008-05-13 11:37:35.000000000 -0400
-@@ -55,7 +55,7 @@ static int ptrace_dump_regs(int pid)
-  * Signals that are OK to receive in the stub - we'll just continue it.
-  * SIGWINCH will happen when UML is inside a detached screen.
-  */
--#define STUB_SIG_MASK (1 << SIGVTALRM)
-+#define STUB_SIG_MASK ((1 << SIGVTALRM) | (1 << SIGWINCH))
- 
- /* Signals that the stub will finish with - anything else is an error */
- #define STUB_DONE_MASK (1 << SIGTRAP)
+I think I have experienced the same problem. I don't have time now to 
+investigate it further, but I have some info which may or may not be 
+useful in debugging. So this is mainly just FYI.
 
-I doubt it will fix the time problem.  I'm going to chase vincent's
-problem on the assusmption that you're seeing the same thing.  When I
-figure that out, we'll see how true that is.
+I have three UML instances running on a host. First, they all were 
+unresponsive simultaneously using all CPU time they could get. After a 
+while they became responsive again. I could log in through SSH. The 
+funny thing is that the date command showed correct date and time (as 
+far as I remember, can't test it now as they are hung again) while the 
+time in bash prompt was constant showing the time around the initial 
+hang, which is the same on all three instances.
 
+I think there was some NTP related activity on the host while this 
+happened. The time the UMLs were showing was 23:xx:xx, don't know 
+exactly. :(
 
-> The old 2.6.20.1 uml's react fine when setting time backwards, btw (well..
-> within reasonable limits)
+---
+May 13 22:58:56 retiisi ntpd[20630]: synchronized to 192.26.119.7, stratum 2
+May 13 22:58:56 retiisi ntpd[20630]: time reset -5.151310 s
+May 13 22:58:56 retiisi ntpd[20630]: kernel time sync enabled 0001
+May 13 22:58:52 retiisi kernel: set_rtc_mmss: can't update from 1 to 58
+May 13 22:58:56 retiisi last message repeated 4 times
+May 13 22:59:27 retiisi kernel: set_rtc_mmss: can't update from 1 to 59
+May 13 22:59:40 retiisi last message repeated 13 times
+May 13 22:59:41 retiisi kernel: set_rtc_mmss: can't update from 2 to 59
+May 13 22:59:59 retiisi last message repeated 18 times
+May 13 23:02:29 retiisi ntpd[20630]: synchronized to 192.26.119.7, stratum 2
+---
 
-UML got its timekeeping redone as part of the tickless work and I'm
-still shaking out bugs...
-
-       	    	       Jeff
-
+The host is 2.6.24 (skas4) and the clients are vanilla 2.6.24. Oh dear, 
+I seem to have CONFIG_NO_HZ enabled...
 
 -- 
-Work email - jdike at linux dot intel dot com
+Sakari Ailus
+sakari.ailus@saunalahti.fi
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft 
