@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JwLjE-0000sG-Qg for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 11:29:28 -0700
-Received: from relay-dm.club-internet.fr ([194.158.104.222])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JwLjD-0001xF-EW
+	id 1JwMp4-0000Pq-2b for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 May 2008 12:39:34 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JwMp1-000653-7p
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 May 2008 11:29:28 -0700
-From: vincent-perrier <vincent-perrier@club-internet.fr>
-In-Reply-To: <20080514172347.GA10283@c2.user-mode-linux.org>
-References: <20080501151351.GA6303@c2.user-mode-linux.org>
-	<87prs57g4h.fsf@hades.wkstn.nix>
-	<20080502163020.GB7843@c2.user-mode-linux.org>
+	Wed, 14 May 2008 12:39:34 -0700
+Date: Wed, 14 May 2008 15:39:12 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080514193912.GA11531@c2.user-mode-linux.org>
+References: <20080502163020.GB7843@c2.user-mode-linux.org>
 	<87bq3o5yeo.fsf@hades.wkstn.nix>
 	<20080502195720.GB10369@c2.user-mode-linux.org>
 	<87k5ic47is.fsf@hades.wkstn.nix>
@@ -21,9 +21,10 @@ References: <20080501151351.GA6303@c2.user-mode-linux.org>
 	<20080509151604.GC10169@c2.user-mode-linux.org>
 	<1210353202.31648.8.camel@localhost>
 	<20080514172347.GA10283@c2.user-mode-linux.org>
-Date: Wed, 14 May 2008 20:29:17 +0200
-Message-Id: <1210789757.25724.3.camel@localhost>
-Mime-Version: 1.0
+	<1210789757.25724.3.camel@localhost>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1210789757.25724.3.camel@localhost>
 Subject: Re: [uml-devel] actually useful backtrace from a CPU-chewing hang
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -38,54 +39,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: vincent-perrier <vincent-perrier@club-internet.fr>
 Cc: Nix <nix@esperi.org.uk>, user-mode-linux-devel@lists.sourceforge.net
 
-Sorry if you receive this message twice, but I sent 2 messages
-following each other by a few minutes, and received only the 
-second one, this was the first one:
+I finally reproduced this using 2.6.25.1 (2.6.25-mm1 was no good) with
+your config.
 
+The patch below fixes it for me.  You'll notice a certain similarity
+between this and a previous patch that you posted.  It's not clear to
+me why yours didn't work.
 
-Hello,
-I know that I should not work as root, but I am too used to it,
-so my example is done with the root user.
+       	     	    Jeff
 
-I am not sure that the network simulator works with another user
-for the version you have, but I have checked that for next one, 
-a normal user will do as long as the daemon is owned by root and
-is suid root.
+-- 
+Work email - jdike at linux dot intel dot com
 
-The daemon has to create taps, open a socket to ping, and configure
-an ip address for tap, so it will always have to be suid root even
-for a normal user.
-
-The RSA files are copied into the machines at startup so as to be 
-able to scp or ssh the machine without any password.
-Those files are given to the machines through an ubdb config file
-at uml start.
-
-I can garantee that the software does nothing nasty with those files.
-
-
-
-On Wed, 2008-05-14 at 13:23 -0400, Jeff Dike wrote:
-> On Fri, May 09, 2008 at 07:13:22PM +0200, vincent-perrier wrote:
-> > The download is long, the untar too, but the freeze is garanteed!
-> > 
-> > to start after download: 
-> > 
-> > "./start_clownix_net virtual_platform_configs/single_machine"
-> > 
-> > Hope you try it!
-> 
-> Why is it mucking with root's ssh keys:
-> 
->   RSA_PUB=/root/.ssh/id_rsa.pub
->   RSA_PRIV=/root/.ssh/id_rsa
-> 
-> 			Jeff
-> 
-
+Index: 2.6/stable/arch/um/os-Linux/time.c
+===================================================================
+--- 2.6.orig/stable/arch/um/os-Linux/time.c	2008-05-14 14:55:56.000000000 -0400
++++ 2.6/stable/arch/um/os-Linux/time.c	2008-05-14 15:30:48.000000000 -0400
+@@ -66,12 +66,21 @@ long long disable_timer(void)
+ 	return timeval_to_ns(&time.it_value);
+ }
+ 
++static long long last_time;
++
+ long long os_nsecs(void)
+ {
+ 	struct timeval tv;
++	long long ret;
+ 
+ 	gettimeofday(&tv, NULL);
+-	return timeval_to_ns(&tv);
++	ret = timeval_to_ns(&tv);
++
++	if((last_time != 0) && (last_time > ret))
++		ret = last_time;
++
++	last_time = ret;
++	return ret;
+ }
+ 
+ #ifdef UML_CONFIG_NO_HZ
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft 
