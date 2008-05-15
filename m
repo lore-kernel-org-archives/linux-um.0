@@ -1,10 +1,11 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Thu, 15 May 2008 16:11:22 -0400
+Date: Thu, 15 May 2008 16:11:16 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080515201122.GA12351@c2.user-mode-linux.org>
+Message-ID: <20080515201116.GA12339@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 10/12] SKAS4 - Introduce STUB_ADDR
+Subject: [uml-devel] [RFC PATCH 1/12] SKAS4 - Work around compat
+	PTRACE_GETSIGINFO bug
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -20,67 +21,32 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-There were a number of repetitions of the calculation of an stub
-address in a process address space.  This introduces STUB_ADDR to
-eliminate the common code.
+copy_siginfo_to_user correctly strips off the high bits of si->si_code
+before copying it to userspace.
+    
+Unfortunately, ptrace32_siginfo calls copy_siginfo_to_user to put the
+siginfo into a temporary userspace buffer and counts on the high bits
+still being present so that it may initialize the union in the final
+32-bit siginfo.
+    
+This patch works around this problem by having copy_siginfo_to_user
+copy si->si_code intact to userspace.  This introduces a bug in native
+64-bit PTRACE_GETSIGINFO, but I haven't noticed anything being
+bothered by it.
 
-diff --git a/arch/um/include/skas/skas.h b/arch/um/include/skas/skas.h
-index 061a362..331f343 100644
---- a/arch/um/include/skas/skas.h
-+++ b/arch/um/include/skas/skas.h
-@@ -10,6 +10,9 @@
- 
- extern int have_siginfo_segv;
- 
-+#define STUB_ADDR(x) (STUB_CODE + (unsigned long) (x) - \
-+		      (unsigned long) &__syscall_stub_start)
-+
- extern int userspace_pid[];
- extern int proc_mm, ptrace_faultinfo, ptrace_ldt;
- extern int skas_needs_stub;
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 5f09a9b..384e43b 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -45,9 +45,8 @@ static int __init init_syscall_regs(void)
- 	get_safe_registers(syscall_regs);
- 	stub_entry = &batch_syscall_stub;
- 
--	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
--		((unsigned long) stub_entry -
--		 (unsigned long) &__syscall_stub_start);
-+	syscall_regs[REGS_IP_INDEX] = STUB_ADDR(stub_entry);
-+
- 	return 0;
- }
- 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 7cb760b..08297ae 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -264,10 +264,7 @@ static int userspace_tramp(void *stack)
- 	}
- 	if (!ptrace_faultinfo && (stack != NULL)) {
- 		struct sigaction sa;
--
--		unsigned long v = STUB_CODE +
--				  (unsigned long) stub_segv_handler -
--				  (unsigned long) &__syscall_stub_start;
-+		unsigned long v = STUB_ADDR(stub_segv_handler);
- 
- 		set_sigstack((void *) STUB_DATA, UM_KERN_PAGE_SIZE);
- 		sigemptyset(&sa.sa_mask);
-@@ -482,9 +479,7 @@ static int __init init_thread_regs(void)
- {
- 	get_safe_registers(thread_regs);
- 	/* Set parent's instruction pointer to start of clone-stub */
--	thread_regs[REGS_IP_INDEX] = STUB_CODE +
--				(unsigned long) stub_clone_handler -
--				(unsigned long) &__syscall_stub_start;
-+	thread_regs[REGS_IP_INDEX] = STUB_ADDR(stub_clone_handler);
- 	thread_regs[REGS_SP_INDEX] = STUB_DATA + UM_KERN_PAGE_SIZE -
- 		sizeof(void *);
- #ifdef __SIGNAL_FRAMESIZE
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 6af1210..e023d4a 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2106,7 +2106,7 @@ int copy_siginfo_to_user(siginfo_t __user *to, siginfo_t *from)
+ 	 */
+ 	err = __put_user(from->si_signo, &to->si_signo);
+ 	err |= __put_user(from->si_errno, &to->si_errno);
+-	err |= __put_user((short)from->si_code, &to->si_code);
++	err |= __put_user(from->si_code, &to->si_code);
+ 	switch (from->si_code & __SI_MASK) {
+ 	case __SI_KILL:
+ 		err |= __put_user(from->si_pid, &to->si_pid);
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft 
