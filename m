@@ -1,11 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Thu, 15 May 2008 16:11:22 -0400
+Date: Thu, 15 May 2008 16:11:17 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080515201122.GA12353@c2.user-mode-linux.org>
+Message-ID: <20080515201117.GA12337@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [RFC PATCH 11/12] SKAS4 - Guest get_mm and switch_mm
-	support
+Subject: [uml-devel] [RFC PATCH 4/12] SKAS4 - Host VCPU support
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,822 +20,848 @@ Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-UML guest SKAS4 support.
+This patch implements sys_vcpu, which allows a process to enter a new
+mode in which a signal or system call will cause a return to the
+original context.
 
-diff --git a/arch/um/include/as-layout.h b/arch/um/include/as-layout.h
-index cac542d..929d053 100644
---- a/arch/um/include/as-layout.h
-+++ b/arch/um/include/as-layout.h
-@@ -23,16 +23,15 @@
-  */
+diff --git a/arch/um/include/kern_util.h b/arch/um/include/kern_util.h
+index 3c34122..0a91cb1 100644
+--- a/arch/um/include/kern_util.h
++++ b/arch/um/include/kern_util.h
+@@ -20,7 +20,7 @@ extern int kmalloc_ok;
+ extern unsigned long alloc_stack(int order, int atomic);
+ extern void free_stack(unsigned long stack, int order);
  
- #ifdef __ASSEMBLY__
--#define _AC(X, Y)	(Y)
-+#define _C(Y)	(Y)
- #else
--#define __AC(X, Y)	(X (Y))
--#define _AC(X, Y)	__AC(X, Y)
-+#define _C(Y)	((unsigned long) (Y))
- #endif
+-extern int do_signal(void);
++extern void do_signal(void);
+ extern void copy_sc(struct uml_pt_regs *regs, void *from);
+ extern void interrupt_end(void);
+ extern void relay_signal(int sig, struct uml_pt_regs *regs);
+diff --git a/arch/um/include/sysdep-i386/ptrace.h b/arch/um/include/sysdep-i386/ptrace.h
+index 11c0896..510c80f 100644
+--- a/arch/um/include/sysdep-i386/ptrace.h
++++ b/arch/um/include/sysdep-i386/ptrace.h
+@@ -156,7 +156,7 @@ struct syscall_args {
+ 	} while (0)
  
--#define STUB_START _AC(, 0x100000)
--#define STUB_CODE _AC((unsigned long), STUB_START)
--#define STUB_DATA _AC((unsigned long), STUB_CODE + UM_KERN_PAGE_SIZE)
--#define STUB_END _AC((unsigned long), STUB_DATA + UM_KERN_PAGE_SIZE)
-+#define STUB_START _C(0x100000)
-+#define STUB_CODE STUB_START
-+#define STUB_DATA (STUB_CODE + UM_KERN_PAGE_SIZE)
-+#define STUB_END (STUB_DATA + UM_KERN_PAGE_SIZE)
+ #define UPT_SET_SYSCALL_RETURN(r, res) \
+-	REGS_SET_SYSCALL_RETURN((r)->regs, (res))
++	REGS_SET_SYSCALL_RETURN((r)->gp, (res))
  
- #ifndef __ASSEMBLY__
+ #define UPT_RESTART_SYSCALL(r) REGS_RESTART_SYSCALL((r)->gp)
  
-diff --git a/arch/um/include/skas/mm_id.h b/arch/um/include/skas/mm_id.h
-index 48dd098..a2e7643 100644
---- a/arch/um/include/skas/mm_id.h
-+++ b/arch/um/include/skas/mm_id.h
-@@ -7,7 +7,7 @@
- #define __MM_ID_H
+diff --git a/arch/um/include/sysdep-x86_64/ptrace.h b/arch/um/include/sysdep-x86_64/ptrace.h
+index 9ea44d1..d3d1dda 100644
+--- a/arch/um/include/sysdep-x86_64/ptrace.h
++++ b/arch/um/include/sysdep-x86_64/ptrace.h
+@@ -225,11 +225,11 @@ struct syscall_args {
+ 	})
  
- struct mm_id {
--	union {
-+	struct {
- 		int mm_fd;
- 		int pid;
- 	} u;
-diff --git a/arch/um/include/skas/skas.h b/arch/um/include/skas/skas.h
-index 331f343..ea56428 100644
---- a/arch/um/include/skas/skas.h
-+++ b/arch/um/include/skas/skas.h
-@@ -6,9 +6,25 @@
- #ifndef __SKAS_H
- #define __SKAS_H
+ #define UPT_SET_SYSCALL_RETURN(r, res) \
+-	REGS_SET_SYSCALL_RETURN((r)->regs, (res))
++	REGS_SET_SYSCALL_RETURN((r)->gp, (res))
  
--#include "sysdep/ptrace.h"
-+#ifndef __KERNEL__
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+#endif
-+#include "uml-config.h"
+ #define UPT_RESTART_SYSCALL(r) REGS_RESTART_SYSCALL((r)->gp)
  
--extern int have_siginfo_segv;
-+#ifdef UML_CONFIG_X86_32
-+#define __NR_new_mm             327
-+#define __NR_switch_mm          328
-+#else
-+#define __NR_new_mm             288
-+#define __NR_switch_mm          289
-+#endif
-+
-+#define PTRACE_SWITCH_MM 34
-+
-+#ifndef __ASSEMBLY__
-+
-+#include "sysdep/ptrace.h"
+-#define UPT_SEGV_IS_FIXABLE(r) REGS_SEGV_IS_FIXABLE(&r->skas)
++#define UPT_SEGV_IS_FIXABLE(r) REGS_SEGV_IS_FIXABLE(&(r)->skas)
  
- #define STUB_ADDR(x) (STUB_CODE + (unsigned long) (x) - \
- 		      (unsigned long) &__syscall_stub_start)
-@@ -17,6 +33,11 @@ extern int userspace_pid[];
- extern int proc_mm, ptrace_faultinfo, ptrace_ldt;
- extern int skas_needs_stub;
+ #define UPT_FAULTINFO(r) (&(r)->faultinfo)
  
-+extern int have_switch_mm;
-+extern int have_ptrace_switch_mm;
-+extern int have_siginfo_segv;
-+extern int self_mm_fd;
-+
- extern int user_thread(unsigned long stack, int flags);
- extern void new_thread_handler(void);
- extern void handle_syscall(struct uml_pt_regs *regs);
-@@ -25,4 +46,45 @@ extern void get_skas_faultinfo(int pid, struct faultinfo * fi);
- extern long execute_syscall_skas(void *r);
- extern unsigned long current_stub_stack(void);
- 
-+#ifndef __KERNEL__
-+#include <errno.h>
-+#include <asm/user.h>
-+
-+struct user_regs {
-+	unsigned long regs[MAX_REG_NR];
-+#ifdef UML_CONFIG_X86_32
-+	struct user_fxsr_struct *fp_state;
-+	struct user_fxsr_struct fpregs;
-+#else
-+	struct user_i387_struct *fp_state;
-+	struct user_i387_struct fpregs;
-+#endif
-+};
-+
-+static inline long new_mm(void)
-+{
-+	int ret = syscall(__NR_new_mm, 0, 0, 0, 0, 0, 0);
-+
-+	if (ret < 0)
-+		return -errno;
-+
-+	return ret;
-+}
-+
-+static inline long switch_mm(int mm_fd, struct user_regs *save_regs,
-+			     struct user_regs *new_regs, unsigned long ip,
-+			     unsigned long sp)
-+{
-+	int ret = syscall(__NR_switch_mm, mm_fd, save_regs, new_regs, ip, sp,
-+			  0);
-+
-+	if (ret < 0)
-+		return -errno;
-+
-+	return 0;
-+}
-+#endif
-+
-+#endif
-+
- #endif
-diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
-index 00197d3..a597b5d 100644
---- a/arch/um/kernel/reboot.c
-+++ b/arch/um/kernel/reboot.c
-@@ -12,7 +12,7 @@ void (*pm_power_off)(void);
- 
- static void kill_off_processes(void)
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index e8cb9ff..0963fcd 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -115,7 +115,7 @@ void interrupt_end(void)
  {
--	if (proc_mm)
-+	if (proc_mm || have_switch_mm)
- 		/*
- 		 * FIXME: need to loop over userspace_pids
- 		 */
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 412fadc..5f4c32e 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -46,6 +46,9 @@ static int init_stub_pte(struct mm_struct *mm, unsigned long proc,
- 	return -ENOMEM;
+ 	if (need_resched())
+ 		schedule();
+-	if (test_tsk_thread_flag(current, TIF_SIGPENDING))
++	if (test_thread_flag(TIF_SIGPENDING))
+ 		do_signal();
  }
  
-+extern int copy_context_skas4(struct mm_id *id);
-+extern int get_new_mm(void);
-+
- int init_new_context(struct task_struct *task, struct mm_struct *mm)
- {
-  	struct mm_context *from_mm = NULL;
-@@ -71,6 +74,19 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 			goto out_free;
- 		}
- 		to_mm->id.u.mm_fd = ret;
-+	} else if (have_switch_mm) {
-+		to_mm->id.u.mm_fd = get_new_mm();
-+		if (to_mm->id.u.mm_fd < 0) {
-+			ret = to_mm->id.u.mm_fd;
-+			goto out_free;
-+		}
-+
-+		ret = copy_context_skas4(&to_mm->id);
-+		if (ret < 0) {
-+			os_close_file(to_mm->id.u.mm_fd);
-+			to_mm->id.u.mm_fd = -1;
-+			goto out_free;
-+		}
- 	}
- 	else {
- 		if (from_mm)
-@@ -167,7 +183,7 @@ void destroy_context(struct mm_struct *mm)
- {
- 	struct mm_context *mmu = &mm->context;
- 
--	if (proc_mm)
-+	if (proc_mm || have_switch_mm)
- 		os_close_file(mmu->id.u.mm_fd);
- 	else {
- 		/*
-diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
-index 4f63928..32e84d7 100644
---- a/arch/um/kernel/skas/process.c
-+++ b/arch/um/kernel/skas/process.c
-@@ -55,7 +55,7 @@ int __init start_uml(void)
- {
- 	stack_protections((unsigned long) &cpu0_irqstack);
- 	set_sigstack(cpu0_irqstack, THREAD_SIZE);
--	if (proc_mm) {
-+	if (proc_mm || have_switch_mm) {
- 		userspace_pid[0] = start_userspace(0);
- 		if (userspace_pid[0] < 0) {
- 			printf("start_uml - start_userspace returned %d\n",
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index a6c1dd1..d00ebbd 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -284,7 +284,9 @@ int __init linux_main(int argc, char **argv)
- 
- 	can_do_skas();
- 
--	if (proc_mm && ptrace_faultinfo)
-+	if (have_switch_mm)
-+		mode = "SKAS4";
-+	else if (proc_mm && ptrace_faultinfo)
- 		mode = "SKAS3";
- 	else
- 		mode = "SKAS0";
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 384e43b..42a3026 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -6,6 +6,7 @@
- #include <stddef.h>
- #include <unistd.h>
- #include <errno.h>
-+#include <signal.h>
- #include <string.h>
- #include <sys/mman.h>
- #include "init.h"
-@@ -22,7 +23,7 @@
- #include "sysdep/stub.h"
- #include "uml-config.h"
- 
--extern unsigned long batch_syscall_stub, __syscall_stub_start;
-+extern unsigned long batch_syscall_stub, switch_mm_stub, __syscall_stub_start;
- 
- extern void wait_stub_done(int pid);
- 
-@@ -40,13 +41,9 @@ static unsigned long syscall_regs[MAX_REG_NR];
- 
- static int __init init_syscall_regs(void)
- {
--	unsigned long *stub_entry;
--
- 	get_safe_registers(syscall_regs);
--	stub_entry = &batch_syscall_stub;
--
--	syscall_regs[REGS_IP_INDEX] = STUB_ADDR(stub_entry);
- 
-+	syscall_regs[REGS_IP_INDEX] = STUB_ADDR(&batch_syscall_stub);
- 	return 0;
- }
- 
-@@ -125,6 +122,32 @@ static long do_syscall_stub(struct mm_id *mm_idp, void **addr)
- 	return ret;
- }
- 
-+long do_syscall_stub_skas4(struct mm_id *mm_idp, void **addr, unsigned long ip,
-+			   unsigned long sp)
-+{
-+	long ret;
-+	struct user_regs return_regs;
-+	unsigned long *ptr;
-+	int err;
-+	sigset_t sigs, old;
-+
-+	ptr = (unsigned long *) (mm_idp->stack + UM_KERN_PAGE_SIZE -
-+				 sizeof(long));
-+	*ptr = (unsigned long) &return_regs;
-+	*(ptr - 1) = self_mm_fd;
-+
-+	sigfillset(&sigs);
-+	sigprocmask(SIG_SETMASK, &sigs, &old);
-+	err = switch_mm(mm_idp->u.mm_fd, &return_regs, NULL, ip, sp);
-+	sigprocmask(SIG_SETMASK, &old, NULL);
-+
-+	ret = syscall_stub_done(mm_idp->stack);
-+
-+	*addr = check_init_stack(mm_idp, NULL);
-+
-+	return ret;
-+}
-+
- static int flush_syscalls(struct mm_id *mm_idp, void **addr, int extra)
- {
- 	unsigned long *stack = check_init_stack(mm_idp, *addr);
-@@ -133,10 +156,17 @@ static int flush_syscalls(struct mm_id *mm_idp, void **addr, int extra)
- 	current = ((unsigned long) stack) & ~UM_KERN_PAGE_MASK;
- 	end = UM_KERN_PAGE_SIZE;
- 
-+	if (have_switch_mm)
-+		end -= 2 * sizeof(long);
-+
- 	if (current + (10 + extra) * sizeof(long) < end)
- 		return 0;
- 
--	return do_syscall_stub(mm_idp, addr);
-+	if (have_switch_mm)
-+		return do_syscall_stub_skas4(mm_idp, addr,
-+					     STUB_ADDR(&switch_mm_stub), 0);
-+	else
-+		return do_syscall_stub(mm_idp, addr);
- }
- 
- long run_syscall_stub(struct mm_id *mm_idp, int syscall,
-@@ -165,11 +195,18 @@ long run_syscall_stub(struct mm_id *mm_idp, int syscall,
- 	*stack++ = expected;
- 	*stack = 0;
- 
--	if (done)
-+	if (!done) {
-+		*addr = stack;
-+		return 0;
-+	}
-+
-+	if (have_switch_mm)
-+		return do_syscall_stub_skas4(mm_idp, addr,
-+					     STUB_ADDR(&switch_mm_stub), 0);
-+	else
- 		return do_syscall_stub(mm_idp, addr);
- 
- 	*addr = stack;
--
- 	return 0;
- }
- 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 08297ae..23a9b42 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -262,7 +262,7 @@ static int userspace_tramp(void *stack)
- 			}
- 		}
- 	}
--	if (!ptrace_faultinfo && (stack != NULL)) {
-+	if (!ptrace_faultinfo) {
- 		struct sigaction sa;
- 		unsigned long v = STUB_ADDR(stub_segv_handler);
- 
-@@ -306,7 +306,7 @@ int start_userspace(unsigned long stub_stack)
- 	sp = (unsigned long) stack + UM_KERN_PAGE_SIZE - sizeof(void *);
- 
- 	flags = CLONE_FILES;
--	if (proc_mm)
-+	if (proc_mm || have_switch_mm)
- 		flags |= CLONE_VM;
- 	else
- 		flags |= SIGCHLD;
-@@ -569,6 +569,56 @@ int copy_context_skas0(unsigned long new_stack, int pid)
+diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
+index b0fce72..b1fcfde 100644
+--- a/arch/um/kernel/signal.c
++++ b/arch/um/kernel/signal.c
+@@ -85,8 +85,11 @@ static int handle_signal(struct pt_regs *regs, unsigned long signr,
  	return err;
  }
  
-+extern unsigned long switch_mm_stub;
-+extern long task_size;
+-static int kern_do_signal(struct pt_regs *regs)
++extern int unvcpu(struct pt_regs *regs, siginfo_t *siginfo);
 +
-+static void unmap_new_as(void)
++void do_signal(void)
+ {
++	struct pt_regs *regs = &current->thread.regs;
+ 	struct k_sigaction ka_copy;
+ 	siginfo_t info;
+ 	sigset_t *oldset;
+@@ -98,6 +101,11 @@ static int kern_do_signal(struct pt_regs *regs)
+ 		oldset = &current->blocked;
+ 
+ 	while ((sig = get_signal_to_deliver(&info, &ka_copy, regs, NULL)) > 0) {
++		if (test_thread_flag(TIF_VCPU)) {
++			PT_REGS_SET_SYSCALL_RETURN(regs, unvcpu(regs, &info));
++			return;
++		}
++
+ 		handled_sig = 1;
+ 		/* Whee!  Actually deliver the signal.  */
+ 		if (!handle_signal(regs, sig, &ka_copy, &info, oldset)) {
+@@ -150,12 +158,6 @@ static int kern_do_signal(struct pt_regs *regs)
+ 		clear_thread_flag(TIF_RESTORE_SIGMASK);
+ 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
+ 	}
+-	return handled_sig;
+-}
+-
+-int do_signal(void)
+-{
+-	return kern_do_signal(&current->thread.regs);
+ }
+ 
+ /*
+diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
+index 4e3b820..c677b8e 100644
+--- a/arch/um/kernel/skas/syscall.c
++++ b/arch/um/kernel/skas/syscall.c
+@@ -12,12 +12,19 @@
+ extern int syscall_table_size;
+ #define NR_syscalls (syscall_table_size / sizeof(void *))
+ 
++extern int unvcpu(struct pt_regs *regs, siginfo_t *siginfo);
++
+ void handle_syscall(struct uml_pt_regs *r)
+ {
+ 	struct pt_regs *regs = container_of(r, struct pt_regs, regs);
+ 	long result;
+ 	int syscall;
+ 
++	if (test_thread_flag(TIF_VCPU)) {
++		REGS_SET_SYSCALL_RETURN(r->gp, unvcpu(regs, NULL));
++		return;
++	}
++
+ 	syscall_trace(r, 0);
+ 
+ 	/*
+diff --git a/arch/um/kernel/syscall.c b/arch/um/kernel/syscall.c
+index a9c2f6f..63c782d 100644
+--- a/arch/um/kernel/syscall.c
++++ b/arch/um/kernel/syscall.c
+@@ -1,17 +1,17 @@
+ /*
+- * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Copyright (C) 2000 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+ 
+-#include "linux/file.h"
+-#include "linux/fs.h"
+-#include "linux/mm.h"
+-#include "linux/sched.h"
+-#include "linux/utsname.h"
+-#include "asm/current.h"
+-#include "asm/mman.h"
+-#include "asm/uaccess.h"
+-#include "asm/unistd.h"
++#include <linux/file.h>
++#include <linux/fs.h>
++#include <linux/mm.h>
++#include <linux/sched.h>
++#include <linux/utsname.h>
++#include <asm/current.h>
++#include <asm/mman.h>
++#include <asm/uaccess.h>
++#include <asm/unistd.h>
+ 
+ long sys_fork(void)
+ {
+@@ -158,3 +158,11 @@ long sys_switch_mm(int fd, long __user *save, long __user *new,
+ {
+ 	return do_switch_mm(fd, save, new, ip, sp, &current->thread.regs);
+ }
++
++extern long do_vcpu(int mm_fd, struct vcpu_user __user *new,
++		    struct pt_regs *regs);
++
++long sys_vcpu(int mm_fd, struct vcpu_user __user *new)
 +{
-+	void (*p)(void);
-+	void *addr;
-+	unsigned long stack = (unsigned long) &stack & ~(UM_KERN_PAGE_SIZE - 1);
-+	unsigned long long data_offset, code_offset;
-+	int fd = phys_mapping(to_phys((void *) stack), &data_offset);
-+
-+	addr = mmap((void *) STUB_DATA, UM_KERN_PAGE_SIZE,
-+		    PROT_READ | PROT_WRITE, MAP_SHARED | MAP_FIXED, fd,
-+		    data_offset);
-+	if (addr == MAP_FAILED)
-+		panic("Failed to remap stack");
-+
-+	fd = phys_mapping(to_phys(&__syscall_stub_start), &code_offset);
-+	addr = mmap((void *) STUB_CODE, UM_KERN_PAGE_SIZE,
-+		    PROT_READ | PROT_WRITE, MAP_SHARED | MAP_FIXED, fd,
-+		    code_offset);
-+	if (addr == MAP_FAILED)
-+		panic("Failed to remap code");
-+
-+	p = (void (*)(void)) (STUB_ADDR(&switch_mm_stub));
-+	(*p)();
++	return do_vcpu(mm_fd, new, &current->thread.regs);
 +}
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index cbb7986..21e24ba 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -446,8 +446,14 @@ void userspace(struct uml_pt_regs *regs)
+ 				       "with signal %d\n", sig);
+ 				fatal_sigsegv();
+ 			}
+-			pid = userspace_pid[0];
 +
-+extern long do_syscall_stub_skas4(struct mm_id *mm_idp, void **addr,
-+				  unsigned long ip, unsigned long sp);
++			/*
++			 * userspace_pid can change in in_interrupt since
++			 * PTRACE_SWITCH_MM can cause a process to change
++			 * address spaces
++			 */
+ 			interrupt_end();
++			pid = userspace_pid[0];
+ 
+ 			/* Avoid -ERESTARTSYS handling in host */
+ 			if (PT_SYSCALL_NR_OFFSET != PT_SYSCALL_RET_OFFSET)
+diff --git a/arch/um/sys-x86_64/syscall_table.c b/arch/um/sys-x86_64/syscall_table.c
+index 8b5c216..9bb72fc 100644
+--- a/arch/um/sys-x86_64/syscall_table.c
++++ b/arch/um/sys-x86_64/syscall_table.c
+@@ -40,6 +40,7 @@
+ #define stub_sigaltstack sys_sigaltstack
+ #define stub_rt_sigreturn sys_rt_sigreturn
+ #define stub_switch_mm sys_switch_mm
++#define stub_vcpu sys_vcpu
+ 
+ #define __SYSCALL(nr, sym) extern asmlinkage void sym(void) ;
+ #undef _ASM_X86_64_UNISTD_H_
+diff --git a/arch/x86/kernel/entry_32.S b/arch/x86/kernel/entry_32.S
+index 4b87c32..1e2adae 100644
+--- a/arch/x86/kernel/entry_32.S
++++ b/arch/x86/kernel/entry_32.S
+@@ -371,7 +371,7 @@ ENTRY(system_call)
+ 	GET_THREAD_INFO(%ebp)
+ 					# system call tracing in operation / emulation
+ 	/* Note, _TIF_SECCOMP is bit number 8, and so it needs testw and not testb */
+-	testw $(_TIF_SYSCALL_EMU|_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT),TI_flags(%ebp)
++	testl $(_TIF_SYSCALL_EMU|_TIF_SYSCALL_TRACE|_TIF_SECCOMP|_TIF_SYSCALL_AUDIT|_TIF_VCPU),TI_flags(%ebp)
+ 	jnz syscall_trace_entry
+ 	cmpl $(nr_syscalls), %eax
+ 	jae syscall_badsys
+diff --git a/arch/x86/kernel/entry_64.S b/arch/x86/kernel/entry_64.S
+index bb573ef..f3f403a 100644
+--- a/arch/x86/kernel/entry_64.S
++++ b/arch/x86/kernel/entry_64.S
+@@ -244,7 +244,7 @@ ENTRY(system_call_after_swapgs)
+ 	movq  %rcx,RIP-ARGOFFSET(%rsp)
+ 	CFI_REL_OFFSET rip,RIP-ARGOFFSET
+ 	GET_THREAD_INFO(%rcx)
+-	testl $(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT|_TIF_SECCOMP),threadinfo_flags(%rcx)
++	testl $(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT|_TIF_SECCOMP|_TIF_VCPU),threadinfo_flags(%rcx)
+ 	jnz tracesys
+ 	cmpq $__NR_syscall_max,%rax
+ 	ja badsys
+@@ -323,6 +323,12 @@ tracesys:
+ 	FIXUP_TOP_OF_STACK %rdi
+ 	movq %rsp,%rdi
+ 	call syscall_trace_enter
++	testl %eax, %eax
++	jz 2f
++	LOAD_ARGS ARGOFFSET  /* reload args from stack in case ptrace changed it */
++	RESTORE_REST
++	jmp int_ret_from_sys_call
++2:
+ 	LOAD_ARGS ARGOFFSET  /* reload args from stack in case ptrace changed it */
+ 	RESTORE_REST
+ 	cmpq $__NR_syscall_max,%rax
+@@ -482,6 +488,23 @@ ENTRY(stub_rt_sigreturn)
+ END(stub_rt_sigreturn)
+ 
+ /*
++ * vcpu is special too
++ */
++ENTRY(stub_vcpu)
++	CFI_STARTPROC
++	addq $8, %rsp
++	CFI_ADJUST_CFA_OFFSET	-8
++	SAVE_REST
++	movq %rsp,%rdx
++	FIXUP_TOP_OF_STACK %r11
++	call sys_vcpu
++	movq %rax,RAX(%rsp) # fixme, this could be done at the higher layer
++	RESTORE_REST
++	jmp int_ret_from_sys_call
++	CFI_ENDPROC
++END(stub_vcpu)
 +
-+int copy_context_skas4(struct mm_id *id)
++/*
+  * initial frame state for interrupts and exceptions
+  */
+ 	.macro _frame ref
+diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
+index de84950..44334e2 100644
+--- a/arch/x86/kernel/ptrace.c
++++ b/arch/x86/kernel/ptrace.c
+@@ -1453,6 +1453,8 @@ void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs, int error_code)
+ 	force_sig_info(SIGTRAP, &info, tsk);
+ }
+ 
++extern int unvcpu(struct pt_regs *regs, siginfo_t *siginfo);
++
+ /* notification of system call entry/exit
+  * - triggered by current->work.syscall_trace
+  */
+@@ -1489,6 +1491,14 @@ int do_syscall_trace(struct pt_regs *regs, int entryexit)
+ 			goto out;
+ 	}
+ 
++	if (test_thread_flag(TIF_VCPU)) {
++		if (entryexit)
++			return 0;
++
++		regs->ax = unvcpu(regs, NULL);
++		return 1;
++	}
++
+ 	if (!(current->ptrace & PT_PTRACED))
+ 		goto out;
+ 
+@@ -1616,11 +1626,18 @@ static void syscall_trace(struct pt_regs *regs)
+ 	}
+ }
+ 
+-asmlinkage void syscall_trace_enter(struct pt_regs *regs)
++extern int unvcpu(struct pt_regs *regs, siginfo_t *siginfo);
++
++asmlinkage int syscall_trace_enter(struct pt_regs *regs)
+ {
+ 	/* do the secure computing check first */
+ 	secure_computing(regs->orig_ax);
+ 
++	if (test_thread_flag(TIF_VCPU)) {
++		regs->ax = unvcpu(regs, NULL);
++		return 1;
++	}
++
+ 	if (test_thread_flag(TIF_SYSCALL_TRACE)
+ 	    && (current->ptrace & PT_PTRACED))
+ 		syscall_trace(regs);
+@@ -1638,6 +1655,8 @@ asmlinkage void syscall_trace_enter(struct pt_regs *regs)
+ 					    regs->dx, regs->r10);
+ 		}
+ 	}
++
++	return 0;
+ }
+ 
+ asmlinkage void syscall_trace_leave(struct pt_regs *regs)
+diff --git a/arch/x86/kernel/signal_32.c b/arch/x86/kernel/signal_32.c
+index 0157a6f..73b5d21 100644
+--- a/arch/x86/kernel/signal_32.c
++++ b/arch/x86/kernel/signal_32.c
+@@ -573,6 +573,8 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
+ 	return ret;
+ }
+ 
++extern int unvcpu(struct pt_regs *regs, siginfo_t *siginfo);
++
+ /*
+  * Note that 'init' is a special process: it doesn't get signals it doesn't
+  * want to handle. Thus you cannot kill init even with a SIGKILL even by
+@@ -603,6 +605,11 @@ static void do_signal(struct pt_regs *regs)
+ 
+ 	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+ 	if (signr > 0) {
++		if (test_thread_flag(TIF_VCPU)) {
++			regs->ax = unvcpu(regs, &info);
++			return;
++		}
++
+ 		/* Re-enable any watchpoints before delivering the
+ 		 * signal to user space. The processor register will
+ 		 * have been cleared if the watchpoint triggered
+diff --git a/arch/x86/kernel/signal_64.c b/arch/x86/kernel/signal_64.c
+index 1c83e51..8978b40 100644
+--- a/arch/x86/kernel/signal_64.c
++++ b/arch/x86/kernel/signal_64.c
+@@ -407,6 +407,8 @@ handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
+ 	return ret;
+ }
+ 
++extern int unvcpu(struct pt_regs *regs, siginfo_t *siginfo);
++
+ /*
+  * Note that 'init' is a special process: it doesn't get signals it doesn't
+  * want to handle. Thus you cannot kill init even with a SIGKILL even by
+@@ -435,6 +437,11 @@ static void do_signal(struct pt_regs *regs)
+ 
+ 	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+ 	if (signr > 0) {
++		if (test_thread_flag(TIF_VCPU)) {
++			regs->ax = unvcpu(regs, &info);
++			return;
++		}
++
+ 		/* Re-enable any watchpoints before delivering the
+ 		 * signal to user space. The processor register will
+ 		 * have been cleared if the watchpoint triggered
+diff --git a/arch/x86/kernel/sys_i386_32.c b/arch/x86/kernel/sys_i386_32.c
+index 23f6aff..d5d54f6 100644
+--- a/arch/x86/kernel/sys_i386_32.c
++++ b/arch/x86/kernel/sys_i386_32.c
+@@ -273,3 +273,17 @@ asmlinkage long sys_switch_mm(struct pt_regs regs)
+ 			    (struct __user user_regs *) regs.dx, regs.si,
+ 			    regs.di, &regs);
+ }
++
++extern long do_vcpu(int mm_fd, struct vcpu_user __user *new,
++		    struct pt_regs *regs);
++
++asmlinkage long sys_vcpu(struct pt_regs regs)
 +{
-+	void *data = NULL;
 +	int err;
 +
-+	err = unmap(id, 0, STUB_START, 0, &data);
++	err = do_vcpu(regs.bx, (struct vcpu_user __user *) regs.cx, &regs);
 +	if (err)
 +		return err;
 +
-+	if (STUB_END < task_size) {
-+		err = unmap(id, STUB_END, task_size - STUB_END, 0, &data);
++	return regs.ax;
++}
+diff --git a/arch/x86/kernel/sys_x86_64.c b/arch/x86/kernel/sys_x86_64.c
+index b3c98f5..aab9121 100644
+--- a/arch/x86/kernel/sys_x86_64.c
++++ b/arch/x86/kernel/sys_x86_64.c
+@@ -262,3 +262,18 @@ asmlinkage long sys_switch_mm(int fd, struct __user user_regs *save,
+ {
+ 	return do_switch_mm(fd, save, new, ip, sp, regs);
+ }
++
++extern long do_vcpu(int mm_fd, struct vcpu_user __user *new,
++		    struct pt_regs *regs);
++
++asmlinkage long sys_vcpu(int mm_fd, struct vcpu_user __user *new,
++			 struct pt_regs *regs)
++{
++	int err;
++
++	err = do_vcpu(mm_fd, new, regs);
++	if (err)
++		return err;
++
++	return regs->ax;
++}
+diff --git a/arch/x86/kernel/syscall_table_32.S b/arch/x86/kernel/syscall_table_32.S
+index 27f20f0..5b9803a 100644
+--- a/arch/x86/kernel/syscall_table_32.S
++++ b/arch/x86/kernel/syscall_table_32.S
+@@ -328,3 +328,4 @@ ENTRY(sys_call_table)
+ 	.long sys_timerfd_gettime
+ 	.long sys_new_mm
+ 	.long sys_switch_mm
++	.long sys_vcpu
+diff --git a/include/asm-um/desc.h b/include/asm-um/desc.h
+index 4ec34a5..efbabaf 100644
+--- a/include/asm-um/desc.h
++++ b/include/asm-um/desc.h
+@@ -1,6 +1,11 @@
+ #ifndef __UM_DESC_H
+ #define __UM_DESC_H
+ 
++#ifdef CONFIG_64BIT
++#define LM(info) (info)->lm == 0
++#else
++#define LM(info) (1)
++#endif
+ /* Taken from asm-i386/desc.h, it's the only thing we need. The rest wouldn't
+  * compile, and has never been used. */
+ #define LDT_empty(info) (\
+@@ -11,6 +16,7 @@
+ 	(info)->seg_32bit	== 0	&& \
+ 	(info)->limit_in_pages	== 0	&& \
+ 	(info)->seg_not_present	== 1	&& \
++	LM(info)			&& \
+ 	(info)->useable		== 0	)
+ 
+ #endif
+diff --git a/include/asm-um/host_ldt-i386.h b/include/asm-um/host_ldt-i386.h
+index b27cb0a..e2ad59c 100644
+--- a/include/asm-um/host_ldt-i386.h
++++ b/include/asm-um/host_ldt-i386.h
+@@ -1,7 +1,8 @@
+ #ifndef __ASM_HOST_LDT_I386_H
+ #define __ASM_HOST_LDT_I386_H
+ 
+-#include "asm/arch/ldt.h"
++#include <asm/desc.h>
++#include <asm/arch/ldt.h>
+ 
+ /*
+  * macros stolen from include/asm-i386/desc.h
+@@ -21,14 +22,4 @@
+ 	((info)->useable << 20) | \
+ 	0x7000)
+ 
+-#define LDT_empty(info) (\
+-	(info)->base_addr	== 0	&& \
+-	(info)->limit		== 0	&& \
+-	(info)->contents	== 0	&& \
+-	(info)->read_exec_only	== 1	&& \
+-	(info)->seg_32bit	== 0	&& \
+-	(info)->limit_in_pages	== 0	&& \
+-	(info)->seg_not_present	== 1	&& \
+-	(info)->useable		== 0	)
+-
+ #endif
+diff --git a/include/asm-um/host_ldt-x86_64.h b/include/asm-um/host_ldt-x86_64.h
+index 74a63f7..585c162 100644
+--- a/include/asm-um/host_ldt-x86_64.h
++++ b/include/asm-um/host_ldt-x86_64.h
+@@ -1,7 +1,8 @@
+ #ifndef __ASM_HOST_LDT_X86_64_H
+ #define __ASM_HOST_LDT_X86_64_H
+ 
+-#include "asm/arch/ldt.h"
++#include <asm/desc.h>
++#include <asm/arch/ldt.h>
+ 
+ /*
+  * macros stolen from include/asm-x86_64/desc.h
+@@ -24,15 +25,4 @@
+ 	/* ((info)->lm << 21) | */ \
+ 	0x7000)
+ 
+-#define LDT_empty(info) (\
+-	(info)->base_addr	== 0	&& \
+-	(info)->limit		== 0	&& \
+-	(info)->contents	== 0	&& \
+-	(info)->read_exec_only	== 1	&& \
+-	(info)->seg_32bit	== 0	&& \
+-	(info)->limit_in_pages	== 0	&& \
+-	(info)->seg_not_present	== 1	&& \
+-	(info)->useable		== 0	&& \
+-	(info)->lm              == 0)
+-
+ #endif
+diff --git a/include/asm-um/thread_info.h b/include/asm-um/thread_info.h
+index 356b83e..6aa19f3 100644
+--- a/include/asm-um/thread_info.h
++++ b/include/asm-um/thread_info.h
+@@ -83,6 +83,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define TIF_MEMDIE	 	5
+ #define TIF_SYSCALL_AUDIT	6
+ #define TIF_RESTORE_SIGMASK	7
++#define TIF_VCPU		8
+ 
+ #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
+ #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+@@ -91,5 +92,6 @@ static inline struct thread_info *current_thread_info(void)
+ #define _TIF_MEMDIE		(1 << TIF_MEMDIE)
+ #define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
+ #define _TIF_RESTORE_SIGMASK	(1 << TIF_RESTORE_SIGMASK)
++#define _TIF_VCPU		(1 << TIF_VCPU)
+ 
+ #endif
+diff --git a/include/asm-x86/thread_info_32.h b/include/asm-x86/thread_info_32.h
+index 5bd5082..920c94a 100644
+--- a/include/asm-x86/thread_info_32.h
++++ b/include/asm-x86/thread_info_32.h
+@@ -142,6 +142,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define TIF_DEBUGCTLMSR		22	/* uses thread_struct.debugctlmsr */
+ #define TIF_DS_AREA_MSR 	23      /* uses thread_struct.ds_area_msr */
+ #define TIF_BTS_TRACE_TS        24      /* record scheduling event timestamps */
++#define TIF_VCPU		25
+ 
+ #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
+ #define _TIF_SIGPENDING		(1<<TIF_SIGPENDING)
+@@ -161,6 +162,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define _TIF_DEBUGCTLMSR	(1<<TIF_DEBUGCTLMSR)
+ #define _TIF_DS_AREA_MSR	(1<<TIF_DS_AREA_MSR)
+ #define _TIF_BTS_TRACE_TS	(1<<TIF_BTS_TRACE_TS)
++#define _TIF_VCPU		(1<<TIF_VCPU)
+ 
+ /* work to do on interrupt/exception return */
+ #define _TIF_WORK_MASK \
+diff --git a/include/asm-x86/thread_info_64.h b/include/asm-x86/thread_info_64.h
+index 6c9b214..179d036 100644
+--- a/include/asm-x86/thread_info_64.h
++++ b/include/asm-x86/thread_info_64.h
+@@ -125,6 +125,7 @@ static inline struct thread_info *stack_thread_info(void)
+ #define TIF_DEBUGCTLMSR		25	/* uses thread_struct.debugctlmsr */
+ #define TIF_DS_AREA_MSR		26      /* uses thread_struct.ds_area_msr */
+ #define TIF_BTS_TRACE_TS	27      /* record scheduling event timestamps */
++#define TIF_VCPU		28
+ 
+ #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
+ #define _TIF_SIGPENDING		(1<<TIF_SIGPENDING)
+@@ -146,6 +147,7 @@ static inline struct thread_info *stack_thread_info(void)
+ #define _TIF_DEBUGCTLMSR	(1<<TIF_DEBUGCTLMSR)
+ #define _TIF_DS_AREA_MSR	(1<<TIF_DS_AREA_MSR)
+ #define _TIF_BTS_TRACE_TS	(1<<TIF_BTS_TRACE_TS)
++#define _TIF_VCPU		(1<<TIF_VCPU)
+ 
+ /* work to do on interrupt/exception return */
+ #define _TIF_WORK_MASK \
+diff --git a/include/asm-x86/unistd_32.h b/include/asm-x86/unistd_32.h
+index 5f8f291..cadbdb1 100644
+--- a/include/asm-x86/unistd_32.h
++++ b/include/asm-x86/unistd_32.h
+@@ -334,6 +334,7 @@
+ #define __NR_timerfd_gettime	326
+ #define __NR_new_mm		327
+ #define __NR_switch_mm		328
++#define __NR_vcpu		329
+ 
+ #ifdef __KERNEL__
+ 
+diff --git a/include/asm-x86/unistd_64.h b/include/asm-x86/unistd_64.h
+index a674098..51bd17c 100644
+--- a/include/asm-x86/unistd_64.h
++++ b/include/asm-x86/unistd_64.h
+@@ -643,6 +643,8 @@ __SYSCALL(__NR_timerfd_gettime, sys_timerfd_gettime)
+ __SYSCALL(__NR_new_mm, sys_new_mm)
+ #define __NR_switch_mm				289
+ __SYSCALL(__NR_switch_mm, stub_switch_mm)
++#define __NR_vcpu				290
++__SYSCALL(__NR_vcpu, stub_vcpu)
+ 
+ 
+ #ifndef __NO_STUBS
+diff --git a/include/linux/init_task.h b/include/linux/init_task.h
+index 1f74e1d..5ed65eb 100644
+--- a/include/linux/init_task.h
++++ b/include/linux/init_task.h
+@@ -193,6 +193,7 @@ extern struct group_info init_groups;
+ 		[PIDTYPE_SID]  = INIT_PID_LINK(PIDTYPE_SID),		\
+ 	},								\
+ 	.dirties = INIT_PROP_LOCAL_SINGLE(dirties),			\
++	.vcpu		= NULL,						\
+ 	INIT_IDS							\
+ 	INIT_TRACE_IRQFLAGS						\
+ 	INIT_LOCKDEP							\
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 7360fde..5759bba 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -65,6 +65,7 @@ struct sched_param {
+ #include <asm/page.h>
+ #include <asm/ptrace.h>
+ #include <asm/cputime.h>
++#include <asm/ldt.h>
+ 
+ #include <linux/smp.h>
+ #include <linux/sem.h>
+@@ -991,6 +992,24 @@ struct sched_rt_entity {
+ #endif
+ };
+ 
++struct vcpu_user {
++	enum { VCPU_SYSCALL, VCPU_SIGNAL } event;
++	struct user_regs regs;
++	siginfo_t siginfo;
++#if defined(CONFIG_X86_32) && !defined(CONFIG_UML)
++	struct user_desc tls_array[GDT_ENTRY_TLS_ENTRIES];
++#endif
++};
++
++struct vcpu {
++	struct vcpu_user user;
++	struct mm_struct *mm;
++	struct vcpu_user __user *state;
++#if defined(CONFIG_X86_32) && !defined(CONFIG_UML)
++	struct user_desc tls[GDT_ENTRY_TLS_ENTRIES];
++#endif
++};
++
+ struct task_struct {
+ 	volatile long state;	/* -1 unrunnable, 0 runnable, >0 stopped */
+ 	void *stack;
+@@ -1103,6 +1122,7 @@ struct task_struct {
+   	cputime_t it_prof_expires, it_virt_expires;
+ 	unsigned long long it_sched_expires;
+ 	struct list_head cpu_timers[3];
++	struct vcpu *vcpu;
+ 
+ /* process credentials */
+ 	uid_t uid,euid,suid,fsuid;
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 6c584c5..0119a37 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -9,7 +9,7 @@ obj-y     = sched.o fork.o exec_domain.o panic.o printk.o profile.o \
+ 	    rcupdate.o extable.o params.o posix-timers.o \
+ 	    kthread.o wait.o kfifo.o sys_ni.o posix-cpu-timers.o mutex.o \
+ 	    hrtimer.o rwsem.o nsproxy.o srcu.o \
+-	    notifier.o ksysfs.o pm_qos_params.o
++	    notifier.o ksysfs.o pm_qos_params.o vcpu.o
+ 
+ obj-$(CONFIG_SYSCTL) += sysctl_check.o
+ obj-$(CONFIG_STACKTRACE) += stacktrace.o
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 073005b..bda5e7f 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -175,6 +175,11 @@ repeat:
+ 
+ 	write_unlock_irq(&tasklist_lock);
+ 	release_thread(p);
++
++	if (p->vcpu && p->vcpu->mm)
++		mmput(p->vcpu->mm);
++	kfree(p->vcpu);
++
+ 	call_rcu(&p->rcu, delayed_put_task_struct);
+ 
+ 	p = leader;
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 4ca580a..3b8ed4c 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1086,6 +1086,8 @@ static struct task_struct *copy_process(unsigned long clone_flags,
+ 	clear_tsk_thread_flag(p, TIF_SIGPENDING);
+ 	init_sigpending(&p->pending);
+ 
++	p->vcpu = NULL;
++
+ 	p->utime = cputime_zero;
+ 	p->stime = cputime_zero;
+ 	p->gtime = cputime_zero;
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 6025e33..67b5ec5 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1785,6 +1785,9 @@ relock:
+ 		if (!signr)
+ 			break; /* will return 0 */
+ 
++		if (test_thread_flag(TIF_VCPU))
++			break;
++
+ 		if ((current->ptrace & PT_PTRACED) && signr != SIGKILL) {
+ 			ptrace_signal_deliver(regs, cookie);
+ 
+diff --git a/kernel/vcpu.c b/kernel/vcpu.c
+new file mode 100644
+index 0000000..5ca259e
+--- /dev/null
++++ b/kernel/vcpu.c
+@@ -0,0 +1,129 @@
++/*
++ * Copyright (C) 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Licensed under the GPL
++ */
++
++#include <linux/sched.h>
++#include <asm/uaccess.h>
++#include <asm/desc.h>
++
++extern asmlinkage int sys_get_thread_area(struct user_desc __user *u_info);
++extern asmlinkage int sys_set_thread_area(struct user_desc __user *u_info);
++extern int do_switch(struct task_struct *task, int fd);
++
++long do_vcpu(int mm_fd, struct vcpu_user __user *new, struct pt_regs *regs)
++{
++	mm_segment_t fs;
++	struct vcpu *vcpu;
++	int err;
++
++	if (current->vcpu == NULL) {
++		current->vcpu = kmalloc(sizeof(struct vcpu), GFP_KERNEL);
++		if (current->vcpu == NULL)
++			return -ENOMEM;
++	}
++
++	vcpu = current->vcpu;
++	vcpu->mm = NULL;
++	vcpu->state = new;
++
++	fs = get_fs();
++	set_fs(KERNEL_DS);
++	err = pt_regs_to_ptrace(&vcpu->user.regs, regs);
++	set_fs(fs);
++	if (err)
++		return err;
++
++	err = ptrace_to_pt_regs(regs, &new->regs);
++	if (err)
++		return err;
++
++#if defined(CONFIG_X86_32) && !defined(CONFIG_UML)
++	{ int i;
++
++	memcpy(vcpu->tls, current->thread.tls_array, sizeof(vcpu->tls));
++	for (i = 0; i < ARRAY_SIZE(new->tls_array); i++){
++		fs = get_fs();
++		set_fs(KERNEL_DS);
++		vcpu->tls[i].entry_number = GDT_ENTRY_TLS_MIN + i;
++		err = sys_get_thread_area(&vcpu->tls[i]);
++		set_fs(fs);
++		if (err)
++			return err;
++
++		err = sys_set_thread_area(&new->tls_array[i]);
++		if (err)
++			return err;
++	}
++	}
++#endif
++
++	if (mm_fd != -1) {
++		vcpu->mm = current->mm;
++		atomic_inc(&vcpu->mm->mm_users);
++
++		err = do_switch(current, mm_fd);
 +		if (err)
 +			return err;
 +	}
 +
-+	return do_syscall_stub_skas4(id, &data, (unsigned long) unmap_new_as,
-+				     id->stack + UM_KERN_PAGE_SIZE / 2);
++#if defined(CONFIG_X86_32) && !defined(CONFIG_UML)
++	loadsegment(gs, current->thread.gs);
++#endif
++	set_thread_flag(TIF_VCPU);
++
++	return 0;
 +}
 +
- /*
-  * This is used only, if stub pages are needed, while proc_mm is
-  * available. Opening /proc/mm creates a new mm_context, which lacks
-@@ -738,6 +788,11 @@ void __switch_mm(struct mm_id *mm_idp)
- 			       "failed, errno = %d\n", errno);
- 			fatal_sigsegv();
- 		}
--	}
--	else userspace_pid[0] = mm_idp->u.pid;
-+	} else if (have_ptrace_switch_mm) {
-+		err = ptrace(PTRACE_SWITCH_MM, userspace_pid[0], 0,
-+			     mm_idp->u.mm_fd);
++extern void do_switch_mm_struct(struct task_struct *task,
++				struct mm_struct *new);
++
++int unvcpu(struct pt_regs *regs, siginfo_t *siginfo)
++{
++	mm_segment_t fs;
++	struct vcpu *vcpu;
++	int err, event;
++
++	clear_thread_flag(TIF_VCPU);
++
++	vcpu = current->vcpu;
++	if (vcpu->mm != NULL) {
++		do_switch_mm_struct(current, vcpu->mm);
++		mmput(vcpu->mm);
++		vcpu->mm = NULL;
++	}
++
++	err = pt_regs_to_ptrace(&vcpu->state->regs, regs);
++	if (err)
++		return err;
++
++	err = -EFAULT;
++	if ((siginfo != NULL) &&
++	    (copy_to_user(&vcpu->state->siginfo, siginfo,
++			  sizeof(siginfo_t)) != 0))
++		return err;
++
++	event = (siginfo != NULL) ? VCPU_SIGNAL : VCPU_SYSCALL;
++	if (copy_to_user(&vcpu->state->event, &event, sizeof(event)) != 0)
++		return err;
++
++#if defined(CONFIG_X86_32) && !defined(CONFIG_UML)
++	{ int i;
++	for (i = 0; i < ARRAY_SIZE(vcpu->state->tls_array); i++){
++		fs = get_fs();
++		set_fs(KERNEL_DS);
++		err = sys_set_thread_area(&vcpu->tls[i]);
++		set_fs(fs);
 +		if (err)
-+			panic("__switch_mm - PTRACE_SWITCH_MM "
-+			      "failed, errno = %d\n", errno);
-+	} else userspace_pid[0] = mm_idp->u.pid;
- }
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 81e1333..021d41c 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -162,6 +162,9 @@ static int disable_switch_mm;
- int have_siginfo_segv;
- static int disable_siginfo_segv;
- 
-+int have_ptrace_switch_mm;
-+static int disable_ptrace_switch_mm;
-+
- int skas_needs_stub;
- 
- static int __init skas0_cmd_param(char *str, int* add)
-@@ -169,8 +172,10 @@ static int __init skas0_cmd_param(char *str, int* add)
- 	disable_ptrace_faultinfo = 1;
- 	disable_ptrace_ldt = 1;
- 	disable_proc_mm = 1;
-+
- 	disable_switch_mm = 1;
- 	disable_siginfo_segv = 1;
-+	disable_ptrace_switch_mm = 1;
- 
- 	return 0;
- }
-@@ -415,7 +420,7 @@ __uml_setup("noptraceldt", noptraceldt_cmd_param,
- "    To support PTRACE_LDT, the host needs to be patched using\n"
- "    the current skas3 patch.\n\n");
- 
--static inline void check_skas3_ptrace_faultinfo(void)
-+static inline void __init check_skas3_ptrace_faultinfo(void)
- {
- 	struct ptrace_faultinfo fi;
- 	int pid, n;
-@@ -439,7 +444,7 @@ static inline void check_skas3_ptrace_faultinfo(void)
- 	stop_ptraced_child(pid, 1, 1);
- }
- 
--static inline void check_skas3_ptrace_ldt(void)
-+static inline void __init check_skas3_ptrace_ldt(void)
- {
- #ifdef PTRACE_LDT
- 	int pid, n;
-@@ -470,7 +475,7 @@ static inline void check_skas3_ptrace_ldt(void)
- #endif
- }
- 
--static inline void check_skas3_proc_mm(void)
-+static inline void __init check_skas3_proc_mm(void)
- {
- 	non_fatal("  - /proc/mm...");
- 	if (access("/proc/mm", W_OK) < 0)
-@@ -483,6 +488,19 @@ static inline void check_skas3_proc_mm(void)
- 	}
- }
- 
-+static void __init can_do_skas3(void)
-+{
-+	non_fatal("Checking for the skas3 patch in the host:\n");
-+
-+	check_skas3_proc_mm();
-+	check_skas3_ptrace_faultinfo();
-+	check_skas3_ptrace_ldt();
-+
-+	if (!proc_mm || (!ptrace_faultinfo && !have_siginfo_segv) ||
-+	    !ptrace_ldt)
-+		skas_needs_stub = 1;
-+}
-+
- static void *fault_address;
- 
- static int check_fault_info(struct faultinfo *fi)
-@@ -493,7 +511,7 @@ static int check_fault_info(struct faultinfo *fi)
- 
- static jmp_buf siginfo_buf;
- 
--static void segv_handler(int sig, siginfo_t *si, void *foo)
-+static void __init segv_handler(int sig, siginfo_t *si, void *foo)
- {
- 	struct faultinfo fi;
- 	int n;
-@@ -503,7 +521,7 @@ static void segv_handler(int sig, siginfo_t *si, void *foo)
- 	longjmp(siginfo_buf, n);
- }
- 
--static int fault(void)
-+static int __init fault(void)
- {
- 	struct sigaction sa, old;
- 	int err, n;
-@@ -557,7 +575,7 @@ __uml_setup("nogetsiginfo", nogetsiginfo_cmd_param,
- #define PTRACE_GETSIGINFO	0x4202
- #endif
- 
--static int check_siginfo(void)
-+static int __init check_siginfo(void)
- {
- 	siginfo_t si;
- 	struct faultinfo fi;
-@@ -607,25 +625,213 @@ static int check_siginfo(void)
- 
- 	if (disable_siginfo_segv)
- 		non_fatal("Extended PTRACE_GETSIGINFO disabled on command "
--			  "line");
-+			  "line\n");
- 	else
- 		have_siginfo_segv = 1;
- 
- 	return ok;
- }
- 
--void can_do_skas(void)
-+static struct user_regs return_regs;
-+int self_mm_fd;
-+
-+static int switch_mm_works;
-+
-+static void after_switch(void)
- {
--	non_fatal("Checking for the skas3 patch in the host:\n");
-+	/*
-+	 * If we are really in a new address space, setting this to
-+	 * zero won't affect the value of 1 already set in the old
-+	 * address space.
-+	 */
-+	switch_mm_works = 0;
- 
--	check_skas3_proc_mm();
--	check_skas3_ptrace_faultinfo();
--	check_skas3_ptrace_ldt();
--	check_siginfo();
-+	switch_mm(self_mm_fd, NULL, &return_regs, 0, 0);
-+}
- 
--	if (!proc_mm || (!ptrace_faultinfo && !have_siginfo_segv) ||
--	    !ptrace_ldt)
-+static int __init check_switch_mm(void)
-+{
-+	char *mm_stack;
-+	int err, there = -1;
-+
-+	non_fatal("\t/proc/self/mm ... ");
-+	self_mm_fd = open("/proc/self/mm", O_RDONLY);
-+	if (self_mm_fd < 0)
-+		goto bad;
-+	non_fatal("OK\n");
-+
-+	mm_stack = mmap(NULL, UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	if (mm_stack == MAP_FAILED)
-+		goto bad;
-+
-+	non_fatal("\tnew_mm ... ");
-+	there = new_mm();
-+	if (there < 0)
-+		goto bad_unmap;
-+	non_fatal("OK\n");
-+
-+	switch_mm_works = 1;
-+
-+	non_fatal("\tswitching over ... ");
-+	err = switch_mm(there, &return_regs, NULL, (unsigned long) after_switch,
-+			((unsigned long) &mm_stack[UM_KERN_PAGE_SIZE]) -
-+			sizeof(void *));
-+	if (err < 0)
-+		goto bad_close;
-+	non_fatal("switched back ... ");
-+	if (!switch_mm_works)
-+		goto bad_close;
-+	else
-+		non_fatal("OK\n");
-+
-+	munmap(mm_stack, UM_KERN_PAGE_SIZE);
-+	close(there);
-+
-+	if (disable_switch_mm)
-+		non_fatal("switch_mm support disabled on command line\n");
-+	else
-+		have_switch_mm = 1;
-+
-+	return 1;
-+ bad_close:
-+	if (there > 0)
-+		close(there);
-+ bad_unmap:
-+	munmap(mm_stack, UM_KERN_PAGE_SIZE);
-+ bad:
-+	non_fatal("Failed - \n");
-+	perror("");
-+	return 0;
-+}
-+
-+static int ptrace_switch_mm_works;
-+
-+static int __init after_ptrace_switch(void)
-+{
-+	ptrace_switch_mm_works = 1;
-+	exit(0);
-+}
-+
-+static int __init check_ptrace_switch_mm(void)
-+{
-+	void *stack;
-+	unsigned long regs[MAX_REG_NR];
-+	int pid, here, err, status;
-+
-+	non_fatal("\tPTRACE_SWITCH_MM ... ");
-+	pid = fork();
-+	if (pid == 0){
-+		ptrace(PTRACE_TRACEME, 0, 0, 0);
-+		kill(getpid(), SIGSTOP);
-+
-+		exit(0);
++			return err;
 +	}
-+	else if (pid < 0)
-+		goto bad;
-+
-+	stack = mmap(NULL, UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
-+		     MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+	if (stack == MAP_FAILED)
-+		goto bad;
-+
-+	here = open("/proc/self/mm", O_RDONLY);
-+	if (here < 0)
-+		goto bad_unmap;
-+
-+	err = waitpid(pid, &status, WUNTRACED);
-+	if (err < 0)
-+		goto bad_close;
-+	else if (err != pid) {
-+		non_fatal("waitpid returned %d, expected %d\n", err, pid);
-+		goto bad_close;
-+	} else if (!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGSTOP)) {
-+		non_fatal("waitpid returned status 0x%d\n", status);
-+		goto bad_close;
 +	}
++#endif
 +
-+	err = ptrace(PTRACE_GETREGS, pid, 0, regs);
-+	if (err < 0)
-+		goto bad_close;
-+
-+	regs[REGS_IP_INDEX] = (unsigned long) after_ptrace_switch;
-+	regs[REGS_SP_INDEX] = (unsigned long) stack + UM_KERN_PAGE_SIZE -
-+		sizeof(void *);
-+
-+	if (ptrace(PTRACE_SETREGS, pid, 0, regs) < 0)
-+		goto bad_close;
-+
-+	if (ptrace(PTRACE_SWITCH_MM, pid, NULL, here) < 0)
-+		goto bad_close;
-+
-+	if (ptrace(PTRACE_CONT, pid, NULL, 0) < 0)
-+		goto bad_close;
-+
-+	err = waitpid(pid, &status, WUNTRACED);
-+	if (err < 0)
-+		goto bad_close;
-+	else if(err != pid) {
-+		non_fatal("waitpid returned %d, expected %d\n", err, pid);
-+		goto bad_close;
-+	} else if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0)) {
-+		non_fatal("waitpid returned status 0x%d\n", status);
-+		goto bad_close;
-+	}
-+
-+	if (!ptrace_switch_mm_works)
-+		goto bad_close;
-+	else
-+		non_fatal("OK\n");
-+
-+	if (disable_ptrace_switch_mm)
-+		non_fatal("PTRACE_SWITCH_MM support disabled on command "
-+			  "line\n");
-+	else
-+		have_ptrace_switch_mm = 1;
-+
-+	close(here);
-+	munmap(stack, UM_KERN_PAGE_SIZE);
-+
-+	return 1;
-+
-+ bad_close:
-+	close(here);
-+ bad_unmap:
-+	munmap(stack, UM_KERN_PAGE_SIZE);
-+ bad:
-+	non_fatal("Failed - \n");
-+	perror("");
-+	return 0;
-+}
-+
-+static int __init can_do_skas4(void)
-+{
-+	int ret;
-+
-+	non_fatal("Checking for SKAS4 support in the host:\n");
-+
-+	ret = check_switch_mm() && check_ptrace_switch_mm() && check_siginfo();
-+	if (ret)
- 		skas_needs_stub = 1;
-+
-+	return ret;
-+}
-+
-+void __init can_do_skas(void)
-+{
-+	if (!can_do_skas4())
-+		can_do_skas3();
-+}
-+
-+int get_new_mm(void)
-+{
-+	int err;
-+
-+	err = new_mm();
-+	if (err < 0)
-+		err = -errno;
++	fs = get_fs();
++	set_fs(KERNEL_DS);
++	err = ptrace_to_pt_regs(regs, &vcpu->user.regs);
++	set_fs(fs);
 +
 +	return err;
- }
- 
- int __init parse_iomem(char *str, int *add)
-diff --git a/arch/um/sys-i386/stub.S b/arch/um/sys-i386/stub.S
-index a63397f..117462e 100644
---- a/arch/um/sys-i386/stub.S
-+++ b/arch/um/sys-i386/stub.S
-@@ -1,5 +1,6 @@
- #include "uml-config.h"
- #include "as-layout.h"
-+#include "skas/skas.h"
- 
- #define PROCESS_LIST \
- 	/* load pointer to first operation */ \
-@@ -43,3 +44,17 @@ batch_syscall_stub:
- 	PROCESS_LIST
- 	/* stop */
- 	int3
-+
-+ 	.globl switch_mm_stub
-+switch_mm_stub:
-+	PROCESS_LIST
-+
-+	mov	$__NR_switch_mm, %eax
-+	mov	STUB_DATA + UM_KERN_PAGE_SIZE - 8, %ebx
-+	xor	%ecx, %ecx
-+	mov	STUB_DATA + UM_KERN_PAGE_SIZE - 4, %edx
-+	xor	%esi, %esi
-+	xor	%edi, %edi
-+	int	$0x80
-+
-+	int3
-diff --git a/arch/um/sys-x86_64/stub.S b/arch/um/sys-x86_64/stub.S
-index 69460e6..b4043b0 100644
---- a/arch/um/sys-x86_64/stub.S
-+++ b/arch/um/sys-x86_64/stub.S
-@@ -1,5 +1,6 @@
- #include "uml-config.h"
- #include "as-layout.h"
-+#include "skas/skas.h"
- 
- #define PROCESS_LIST \
- 	mov	$(STUB_DATA >> 32), %rbx; \
-@@ -46,3 +47,22 @@ batch_syscall_stub:
- 	PROCESS_LIST
- 	/* stop */
- 	int3
-+
-+ 	.globl switch_mm_stub
-+switch_mm_stub:
-+	PROCESS_LIST
-+
-+	mov	$__NR_switch_mm, %rax
-+	mov	$(STUB_DATA >> 32), %rdi
-+	sal	$32, %rdi
-+	mov	$(STUB_DATA & 0xffffffff + 4096 - 8), %rsi
-+	add	%rdi, %rsi
-+	mov	(%rsi), %rdx
-+	sub	$8, %rsi
-+	mov	(%rsi), %rdi
-+	xor	%rsi, %rsi
-+	xor	%r10, %r10
-+	xor	%r8, %r8
-+	syscall
-+
-+	int3
-diff --git a/arch/um/sys-x86_64/syscalls.c b/arch/um/sys-x86_64/syscalls.c
-index f1199fd..e861ad6 100644
---- a/arch/um/sys-x86_64/syscalls.c
-+++ b/arch/um/sys-x86_64/syscalls.c
-@@ -30,7 +30,7 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- {
- 	unsigned long *ptr = addr, tmp;
- 	long ret;
--	int pid = task->mm->context.id.u.pid;
-+	int pid = userspace_pid[0];
- 
- 	/*
- 	 * With ARCH_SET_FS (and ARCH_SET_GS is treated similarly to
++}
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft 
