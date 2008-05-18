@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JxRmJ-0000ec-JD for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 May 2008 12:09:12 -0700
-Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
-	helo=grelber.thyrsus.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JxRmI-0003VV-Sd
+	id 1Jxer4-0002Lf-RG for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 May 2008 02:06:59 -0700
+Received: from an-out-0708.google.com ([209.85.132.241])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jxer2-00017V-IG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 17 May 2008 12:09:11 -0700
-From: Rob Landley <rob@landley.net>
-Date: Sat, 17 May 2008 14:08:51 -0500
-References: <200805031518.11029.rob@landley.net>
-	<20080509152217.GF10169@c2.user-mode-linux.org>
-In-Reply-To: <20080509152217.GF10169@c2.user-mode-linux.org>
+	Sun, 18 May 2008 02:06:57 -0700
+Received: by an-out-0708.google.com with SMTP id b21so363188ana.6
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 18 May 2008 02:06:56 -0700 (PDT)
+Message-ID: <804dabb00805180206wc937036x8e50336967f78ee3@mail.gmail.com>
+Date: Sun, 18 May 2008 17:06:55 +0800
+From: "Peter Teoh" <htmldeveloper@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200805171408.51880.rob@landley.net>
-Subject: Re: [uml-devel] =?iso-8859-1?q?=5BPATCH=5D_make_quiet_suppress_parse?=
-	=?iso-8859-1?q?=5Fchan=5Fpair_boot=09messages?=
+Subject: [uml-devel] =?windows-1252?q?=91struct_thread=5Fstruct=92_has_no_?=
+	=?windows-1252?q?member_named_=91mode=92?=
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,30 +32,59 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
 
-On Friday 09 May 2008 10:22:17 Jeff Dike wrote:
-> On Sat, May 03, 2008 at 03:18:10PM -0500, Rob Landley wrote:
-> > I usually use UML as a better fakeroot, meaning I run it with a command
-> > line like "rootfstype=hostfs rw quiet
-> > init=/path/to/some_shell_script.sh".  In this context, filling the screen
-> > with parse_chan_pair error messages which don't actually hurt anything
-> > defeats the purpose of "quiet".
-> >
-> > The patch turns several KERN_ERR into KERN_WARNING.  While I was there, I
-> > merged the redundant printk() statements into a function, and added one
-> > "else" after a test-for-null that did a printk but didn't do a continue.
->
-> Looks reasonable.
+I downloaded 2.6.24.2.tar.bz2 and make:
 
-Do I have to do anything to follow up, or is it queued to go upstream?  (I can 
-redo the printk() with pr_warning(), it's just the original didn't and I 
-didn't change it...)
+/mnt/hd0/download/linux-2.6.24.2>make ARCH=um O=obj
+make[1]: Nothing to be done for `/mnt/hd0/download/linux-2.6.24.2/obj'.
+/mnt/hd0/download/linux-2.6.24.2>make linux ARCH=um O=obj
+make[1]: Nothing to be done for `/mnt/hd0/download/linux-2.6.24.2/obj'.
+  SYMLINK arch/um/include/sysdep
+make[2]: `arch/um/sys-i386/user-offsets.s' is up to date.
+  Using /mnt/hd0/download/linux-2.6.24.2 as source for kernel
+  GEN     /mnt/hd0/download/linux-2.6.24.2/obj/Makefile
+  CHK     include/linux/version.h
+  CHK     include/linux/utsrelease.h
+  CALL    /mnt/hd0/download/linux-2.6.24.2/scripts/checksyscalls.sh
+  CHK     include/linux/compile.h
+  CC      arch/um/kernel/smp.o
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c: In function 'idle_proc':
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:79: error:
+'struct thread_struct' has no member named 'mode'
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c: In function
+'idle_thread':
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:106: error:
+'cpu_tasks' undeclared (first use in this function)
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:106: error:
+(Each undeclared identifier is reported only once
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:106: error: for
+each function it appears in.)
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:107: error:
+unknown field 'pid' specified in initializer
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:107: error:
+'struct thread_struct' has no member named 'mode'
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:107: warning:
+excess elements in struct initializer
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:107: warning:
+(near initialization for '(anonymous)')
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:108: error:
+unknown field 'task' specified in initializer
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:108: warning:
+excess elements in struct initializer
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:108: warning:
+(near initialization for '(anonymous)')
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c: In function
+'smp_prepare_cpus':
+/mnt/hd0/download/linux-2.6.24.2/arch/um/kernel/smp.c:133: error:
+'struct thread_struct' has no member named 'mode'
+make[2]: *** [arch/um/kernel/smp.o] Error 1
+make[1]: *** [arch/um/kernel] Error 2
+make: *** [sub-make] Error 2
 
-Rob
+What is happening, appreciate very much for any help rendered :-).
 -- 
-"One of my most productive days was throwing away 1000 lines of code."
-  - Ken Thompson.
+Regards,
+Peter Teoh
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft 
