@@ -2,24 +2,30 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jy7zE-0005r8-0m for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 May 2008 09:13:20 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Jy7z6-00074i-JR
+	id 1JyAVc-0000iw-FC for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 May 2008 11:54:56 -0700
+Received: from relay-bm.club-internet.fr ([194.158.104.68])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1JyAVb-0002JP-1v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 May 2008 09:13:19 -0700
-Date: Mon, 19 May 2008 12:12:30 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080519161230.GB17500@c2.user-mode-linux.org>
-References: <200805031518.11029.rob@landley.net>
-	<20080509152217.GF10169@c2.user-mode-linux.org>
-	<200805171408.51880.rob@landley.net>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200805171408.51880.rob@landley.net>
-Subject: Re: [uml-devel] [PATCH] make quiet suppress
-	parse_chan_pair	boot?messages
+	Mon, 19 May 2008 11:54:56 -0700
+From: vincent-perrier <vincent-perrier@club-internet.fr>
+In-Reply-To: <1210789757.25724.3.camel@localhost>
+References: <20080501151351.GA6303@c2.user-mode-linux.org>
+	<87prs57g4h.fsf@hades.wkstn.nix>
+	<20080502163020.GB7843@c2.user-mode-linux.org>
+	<87bq3o5yeo.fsf@hades.wkstn.nix>
+	<20080502195720.GB10369@c2.user-mode-linux.org>
+	<87k5ic47is.fsf@hades.wkstn.nix>
+	<20080503005631.GA12599@c2.user-mode-linux.org>
+	<877ieb4s4n.fsf@hades.wkstn.nix>
+	<20080509151604.GC10169@c2.user-mode-linux.org>
+	<1210353202.31648.8.camel@localhost>
+	<20080514172347.GA10283@c2.user-mode-linux.org>
+	<1210789757.25724.3.camel@localhost>
+Date: Mon, 19 May 2008 20:54:19 +0200
+Message-Id: <1211223259.5412.7.camel@localhost>
+Mime-Version: 1.0
+Subject: [uml-devel] plug_and_play_clownix_network
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,25 +39,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Nix <nix@esperi.org.uk>, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, May 17, 2008 at 02:08:51PM -0500, Rob Landley wrote:
-> Do I have to do anything to follow up, or is it queued to go
-> upstream? 
+You are right, the private key is useless for my purposes, the clownix
+daemon just has to copy the public key to the ssh authorized keys file
+inside the UML guest machines, then the access to the UML guests can
+be done without password.
+In my next version of the clownix network, I will not "muck" with the
+private rsa key. 
+> > 
+> > Why is it mucking with root's ssh keys:
+> > 
+> >   RSA_PUB=/root/.ssh/id_rsa.pub
+> >   RSA_PRIV=/root/.ssh/id_rsa
+> > 
+> > 			Jeff
+> > 
 
-It's queued for mainline.
-
-> (I can  
-> redo the printk() with pr_warning(), it's just the original didn't and I 
-> didn't change it...)
-
-I made the pr_warning change.
-
-       	   	      Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft 
