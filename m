@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jys5E-0004G8-89 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 May 2008 10:26:36 -0700
-Received: from fg-out-1718.google.com ([72.14.220.159])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jys59-0002Qn-Nt
+	id 1JyuYy-0005jy-GA for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 May 2008 13:05:28 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1JyuYw-00020r-Gw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 May 2008 10:26:36 -0700
-Received: by fg-out-1718.google.com with SMTP id d23so2349125fga.32
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 21 May 2008 10:26:26 -0700 (PDT)
-Message-ID: <48345B31.50904@googlemail.com>
-Date: Wed, 21 May 2008 19:26:09 +0200
-From: Gabriel C <nix.or.die@googlemail.com>
+	Wed, 21 May 2008 13:05:28 -0700
+Date: Wed, 21 May 2008 16:05:15 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080521200515.GB12373@c2.user-mode-linux.org>
+References: <48345B31.50904@googlemail.com>
 MIME-Version: 1.0
-Subject: [SPAM]  [uml-devel] linux-next: UML build error
+Content-Disposition: inline
+In-Reply-To: <48345B31.50904@googlemail.com>
+Subject: Re: [uml-devel] linux-next: UML build error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,29 +30,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com
+To: Gabriel C <nix.or.die@googlemail.com>
 Cc: linux-next@vger.kernel.org, Linux Kernel list <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+On Wed, May 21, 2008 at 07:26:09PM +0200, Gabriel C wrote:
+>   CC      arch/um/sys-x86_64/ksyms.o
+> arch/um/sys-x86_64/ksyms.c:5: error: '__memcpy' undeclared here (not in a function)
+> arch/um/sys-x86_64/ksyms.c:5: warning: type defaults to 'int' in declaration of '__memcpy'
 
-I get the following UML compile error on linux-next-20080521 , 64bit box :
+Does the patch below help?  There's gcc-version-dependent logic in
+include/asm-x86/string_64.h which decides whether to declare memcpy or
+__memcpy and it looks like you're hitting that.
 
-...
+	     	      Jeff
 
-  CC      arch/um/sys-x86_64/ksyms.o
-arch/um/sys-x86_64/ksyms.c:5: error: '__memcpy' undeclared here (not in a function)
-arch/um/sys-x86_64/ksyms.c:5: warning: type defaults to 'int' in declaration of '__memcpy'
-make[1]: *** [arch/um/sys-x86_64/ksyms.o] Error 1
-make: *** [arch/um/sys-x86_64] Error 2
+-- 
+Work email - jdike at linux dot intel dot com
 
-...
-
-config is UM's defconfig.
-
-
-Regards,
-
-Gabriel 
+Index: linux-2.6.22/arch/um/sys-x86_64/ksyms.c
+===================================================================
+--- linux-2.6.22.orig/arch/um/sys-x86_64/ksyms.c	2008-04-23 13:07:23.000000000 -0400
++++ linux-2.6.22/arch/um/sys-x86_64/ksyms.c	2008-05-21 16:03:03.000000000 -0400
+@@ -2,4 +2,8 @@
+ #include "asm/string.h"
+ 
+ /*XXX: we need them because they would be exported by x86_64 */
++#if (__GNUC__ == 4 && __GNUC_MINOR__ >= 3) || __GNUC__ > 4
++EXPORT_SYMBOL(memcpy);
++#else
+ EXPORT_SYMBOL(__memcpy);
++#endif
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
