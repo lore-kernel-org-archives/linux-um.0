@@ -2,21 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1JyuYy-0005jy-GA for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 May 2008 13:05:28 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1JyuYw-00020r-Gw
+	id 1Jyunz-0007WN-NF for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 May 2008 13:20:59 -0700
+Received: from gv-out-0910.google.com ([216.239.58.189])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jyuny-00009R-4B
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 May 2008 13:05:28 -0700
-Date: Wed, 21 May 2008 16:05:15 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080521200515.GB12373@c2.user-mode-linux.org>
-References: <48345B31.50904@googlemail.com>
+	Wed, 21 May 2008 13:20:59 -0700
+Received: by gv-out-0910.google.com with SMTP id i36so858528gve.17
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 21 May 2008 13:20:55 -0700 (PDT)
+Message-ID: <48348417.9090103@googlemail.com>
+Date: Wed, 21 May 2008 22:20:39 +0200
+From: Gabriel C <nix.or.die@googlemail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <48345B31.50904@googlemail.com>
-Subject: Re: [uml-devel] linux-next: UML build error
+References: <48345B31.50904@googlemail.com>
+	<20080521200515.GB12373@c2.user-mode-linux.org>
+In-Reply-To: <20080521200515.GB12373@c2.user-mode-linux.org>
+Subject: [SPAM]  Re: [uml-devel] linux-next: UML build error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,36 +32,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Gabriel C <nix.or.die@googlemail.com>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: linux-next@vger.kernel.org, Linux Kernel list <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, May 21, 2008 at 07:26:09PM +0200, Gabriel C wrote:
->   CC      arch/um/sys-x86_64/ksyms.o
-> arch/um/sys-x86_64/ksyms.c:5: error: '__memcpy' undeclared here (not in a function)
-> arch/um/sys-x86_64/ksyms.c:5: warning: type defaults to 'int' in declaration of '__memcpy'
+Jeff Dike wrote:
 
-Does the patch below help?  There's gcc-version-dependent logic in
-include/asm-x86/string_64.h which decides whether to declare memcpy or
-__memcpy and it looks like you're hitting that.
+> On Wed, May 21, 2008 at 07:26:09PM +0200, Gabriel C wrote:
+>>   CC      arch/um/sys-x86_64/ksyms.o
+>> arch/um/sys-x86_64/ksyms.c:5: error: '__memcpy' undeclared here (not in a function)
+>> arch/um/sys-x86_64/ksyms.c:5: warning: type defaults to 'int' in declaration of '__memcpy'
+> 
+> Does the patch below help?  There's gcc-version-dependent logic in
+> include/asm-x86/string_64.h which decides whether to declare memcpy or
+> __memcpy and it looks like you're hitting that.
 
-	     	      Jeff
 
--- 
-Work email - jdike at linux dot intel dot com
+Yes is fixes this error , however I get now another one but this one seems to be an compiler bug.
 
-Index: linux-2.6.22/arch/um/sys-x86_64/ksyms.c
-===================================================================
---- linux-2.6.22.orig/arch/um/sys-x86_64/ksyms.c	2008-04-23 13:07:23.000000000 -0400
-+++ linux-2.6.22/arch/um/sys-x86_64/ksyms.c	2008-05-21 16:03:03.000000000 -0400
-@@ -2,4 +2,8 @@
- #include "asm/string.h"
- 
- /*XXX: we need them because they would be exported by x86_64 */
-+#if (__GNUC__ == 4 && __GNUC_MINOR__ >= 3) || __GNUC__ > 4
-+EXPORT_SYMBOL(memcpy);
-+#else
- EXPORT_SYMBOL(__memcpy);
-+#endif
+...
+ CC      arch/um/sys-x86_64/um_module.o
+  LD      arch/um/sys-x86_64/subarch.o
+  LD      arch/um/sys-x86_64/built-in.o
+  LD      arch/x86/crypto/built-in.o
+  CC      kernel/sched.o
+In file included from kernel/sched.c:1842:
+kernel/sched_idletask.c: In function 'check_preempt_curr_idle':
+kernel/sched_idletask.c:20: internal compiler error: in cgraph_estimate_size_after_inlining, at ipa-inline.c:188
+
+...
+
+This is gcc 4.3.0 ( with backports of some known fixed bugs ).
+I try to build latest snapshot of gcc 4.3* later on today and try with this one. 
+
+> 
+> 	     	      Jeff
+> 
+
+
+
+Gabriel
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
