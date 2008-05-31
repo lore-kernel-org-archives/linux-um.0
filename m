@@ -2,23 +2,30 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Jyunz-0007WN-NF for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 May 2008 13:20:59 -0700
-Received: from gv-out-0910.google.com ([216.239.58.189])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Jyuny-00009R-4B
+	id 1K2ND5-0007GE-Kz for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 31 May 2008 02:17:11 -0700
+Received: from smtp-1.orange.nl ([193.252.22.241])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1K2ND4-0000LO-5W
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 21 May 2008 13:20:59 -0700
-Received: by gv-out-0910.google.com with SMTP id i36so858528gve.17
+	Sat, 31 May 2008 02:17:11 -0700
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf6004.orange.nl (SMTP Server) with ESMTP id 198E21C000A5
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 21 May 2008 13:20:55 -0700 (PDT)
-Message-ID: <48348417.9090103@googlemail.com>
-Date: Wed, 21 May 2008 22:20:39 +0200
-From: Gabriel C <nix.or.die@googlemail.com>
+	Sat, 31 May 2008 11:17:02 +0200 (CEST)
+Received: from [192.168.5.24] (c529de59c.cable.wanadoo.nl [82.157.229.156])
+	by mwinf6004.orange.nl (SMTP Server) with ESMTP id EF2581C0009A
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 31 May 2008 11:17:01 +0200 (CEST)
+Message-ID: <48411788.8020709@vulnscan.org>
+Date: Sat, 31 May 2008 11:16:56 +0200
+From: "Bram Matthys (Syzop)" <syzop@vulnscan.org>
 MIME-Version: 1.0
-References: <48345B31.50904@googlemail.com>
-	<20080521200515.GB12373@c2.user-mode-linux.org>
-In-Reply-To: <20080521200515.GB12373@c2.user-mode-linux.org>
-Subject: [SPAM]  Re: [uml-devel] linux-next: UML build error
+References: <4821B5FC.40307@vulnscan.org>
+	<20080509154552.GH10169@c2.user-mode-linux.org>
+	<48255FC4.4040805@vulnscan.org> <482AA5AE.3000900@saunalahti.fi>
+	<20080519161613.GC17500@c2.user-mode-linux.org>
+In-Reply-To: <20080519161613.GC17500@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] umls unresponsive & consuming 100% cpu time
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,45 +39,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-next@vger.kernel.org, Linux Kernel list <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi Jeff,
+
+Sorry for my late reply.
+
+Just tried, and I think your patch fixed it (at least a test with 'date'
+setting the time 2 seconds back on the host no longer causes it to hang).
+If it causes any trouble in the next few days I'll let you know.
+
+Regards,
+
+	Bram.
 
 Jeff Dike wrote:
+| On Wed, May 14, 2008 at 11:41:18AM +0300, Sakari Ailus wrote:
+|> I have three UML instances running on a host. First, they all were
+|> unresponsive simultaneously using all CPU time they could get. After a
+|> while they became responsive again. I could log in through SSH. The
+|> funny thing is that the date command showed correct date and time (as
+|> far as I remember, can't test it now as they are hung again) while the
+|> time in bash prompt was constant showing the time around the initial
+|> hang, which is the same on all three instances.
+|
+| I reproduced and debugged a similar problem, resulting in the patch
+| below.  See if it makes any difference for you...
+|
+| 	       	  	Jeff
+|
 
-> On Wed, May 21, 2008 at 07:26:09PM +0200, Gabriel C wrote:
->>   CC      arch/um/sys-x86_64/ksyms.o
->> arch/um/sys-x86_64/ksyms.c:5: error: '__memcpy' undeclared here (not in a function)
->> arch/um/sys-x86_64/ksyms.c:5: warning: type defaults to 'int' in declaration of '__memcpy'
-> 
-> Does the patch below help?  There's gcc-version-dependent logic in
-> include/asm-x86/string_64.h which decides whether to declare memcpy or
-> __memcpy and it looks like you're hitting that.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (MingW32)
 
+iD8DBQFIQReI46ioc5305a8RAqQpAKC0j9HcBGFxRgaT2yvXPC9E3W1FXACgg6q6
+LAYiR6Z0MMuwIZfTax6ojhc=
+=tSsa
+-----END PGP SIGNATURE-----
 
-Yes is fixes this error , however I get now another one but this one seems to be an compiler bug.
-
-...
- CC      arch/um/sys-x86_64/um_module.o
-  LD      arch/um/sys-x86_64/subarch.o
-  LD      arch/um/sys-x86_64/built-in.o
-  LD      arch/x86/crypto/built-in.o
-  CC      kernel/sched.o
-In file included from kernel/sched.c:1842:
-kernel/sched_idletask.c: In function 'check_preempt_curr_idle':
-kernel/sched_idletask.c:20: internal compiler error: in cgraph_estimate_size_after_inlining, at ipa-inline.c:188
-
-...
-
-This is gcc 4.3.0 ( with backports of some known fixed bugs ).
-I try to build latest snapshot of gcc 4.3* later on today and try with this one. 
-
-> 
-> 	     	      Jeff
-> 
-
-
-
-Gabriel
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
