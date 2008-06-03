@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1K3bmm-00062e-7M for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 12:03:08 -0700
+	id 1K3bmz-00063T-4G for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Jun 2008 12:03:21 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1K3bml-0008O6-JD
+	(Exim 4.44) id 1K3bmx-0004wK-Hi
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 12:03:08 -0700
-Date: Tue, 3 Jun 2008 15:02:37 -0400
+	Tue, 03 Jun 2008 12:03:21 -0700
+Date: Tue, 3 Jun 2008 15:02:35 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080603190237.GA9517@c2.user-mode-linux.org>
+Message-ID: <20080603190235.GA9511@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 4/6] UML - memcpy export needs to follow host
-	declaration
+Subject: [uml-devel] [PATCH 1/6] UML - Deal with host time going backwards
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,31 +29,43 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Gabriel C <nix.or.die@googlemail.com>
+Cc: Nix <nix@esperi.org.uk>
 
-x86_64 defines either memcpy or __memcpy depending on the gcc version,
-and it looks like UML needs to follow that in its exporting.
+Protection against the host's time going backwards - keep track of the
+time at the last tick and if it's greater than the current time, keep
+time stopped until the host catches up.
 
-Cc: Gabriel C <nix.or.die@googlemail.com>
+Cc: Nix <nix@esperi.org.uk>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/sys-x86_64/ksyms.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/um/os-Linux/time.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Index: linux-2.6-git/arch/um/sys-x86_64/ksyms.c
+Index: linux-2.6-git/arch/um/os-Linux/time.c
 ===================================================================
---- linux-2.6-git.orig/arch/um/sys-x86_64/ksyms.c	2008-05-28 12:32:34.000000000 -0400
-+++ linux-2.6-git/arch/um/sys-x86_64/ksyms.c	2008-06-02 15:49:43.000000000 -0400
-@@ -3,5 +3,9 @@
- #include <asm/checksum.h>
+--- linux-2.6-git.orig/arch/um/os-Linux/time.c	2008-05-14 10:44:02.000000000 -0400
++++ linux-2.6-git/arch/um/os-Linux/time.c	2008-06-02 15:43:53.000000000 -0400
+@@ -106,6 +106,10 @@ static void deliver_alarm(void)
+ 	unsigned long long this_tick = os_nsecs();
+ 	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
  
- /*XXX: we need them because they would be exported by x86_64 */
-+#if (__GNUC__ == 4 && __GNUC_MINOR__ >= 3) || __GNUC__ > 4
-+EXPORT_SYMBOL(memcpy);
-+#else
- EXPORT_SYMBOL(__memcpy);
-+#endif
- EXPORT_SYMBOL(csum_partial);
++	/* Protection against the host's time going backwards */
++	if ((last_tick != 0) && (this_tick < last_tick))
++		this_tick = last_tick;
++
+ 	if (last_tick == 0)
+ 		last_tick = this_tick - one_tick;
+ 
+@@ -148,6 +152,9 @@ static int after_sleep_interval(struct t
+ 		start_usecs = usec;
+ 
+ 	start_usecs -= skew / UM_NSEC_PER_USEC;
++	if (start_usecs < 0)
++		start_usecs = 0;
++
+ 	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
+ 				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
+ 	interval = ((struct itimerval) { { 0, usec }, tv });
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
