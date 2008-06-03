@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1K3ddd-0001sH-Cu for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 14:02:05 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1K3ddZ-0003MN-F3
+	id 1K3cQn-00022O-1o for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Jun 2008 12:44:29 -0700
+Received: from keil-draco.com ([216.193.185.50] helo=mail.keil-draco.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1K3cQj-0005st-My
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 14:01:46 -0700
-Date: Tue, 3 Jun 2008 17:00:48 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080603210048.GA12182@c2.user-mode-linux.org>
+	Tue, 03 Jun 2008 12:44:27 -0700
+From: Daniel Hazelton <dhazelton@enter.net>
+Date: Tue, 3 Jun 2008 15:43:56 -0400
 References: <20080603190235.GA9511@c2.user-mode-linux.org>
 	<20080603123211.e129c222.akpm@linux-foundation.org>
-	<200806031543.56864.dhazelton@enter.net>
-	<878wxmfg99.fsf@hades.wkstn.nix>
-	<20080603130709.fcf6a751.akpm@linux-foundation.org>
+In-Reply-To: <20080603123211.e129c222.akpm@linux-foundation.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20080603130709.fcf6a751.akpm@linux-foundation.org>
+Message-Id: <200806031543.56864.dhazelton@enter.net>
 Subject: Re: [uml-devel] [PATCH 1/6] UML - Deal with host time going backwards
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -35,19 +31,29 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Nix <nix@esperi.org.uk>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, dhazelton@enter.net
+Cc: nix@esperi.org.uk, Jeff Dike <jdike@addtoit.com>, akpm@linuxfoundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Jun 03, 2008 at 01:07:09PM -0700, Andrew Morton wrote:
-> So if I change the host's time by an hour, the time will not advance at all
-> on the guest for the next hour? Sounds suboptimal :)
+On Tuesday 03 June 2008 03:32:11 pm Andrew Morton wrote:
+> On Tue, 3 Jun 2008 15:02:35 -0400
+>
+> Jeff Dike <jdike@addtoit.com> wrote:
+> > Protection against the host's time going backwards - keep track of the
+> > time at the last tick and if it's greater than the current time, keep
+> > time stopped until the host catches up.
+>
+> Strange.  What would cause the host's time (or at least UML's perception
+> of it) to go backwards?
 
-It is, but if the host is whacked, the guest just has to do the best that
-it can...
+A wild guess would be that the UML process is running "fast" at some point and 
+its expectation of the host's time is skewed forward because of that.
 
-			Jeff
+Another possibility is that the hosts clock got reset between the times UML 
+has checked it and the correction was a negative one.
+
+DRH
 
 -- 
-Work email - jdike at linux dot intel dot com
+Dialup is like pissing through a pipette. Slow and excruciatingly painful.
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
