@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1K3bmr-000633-9Q for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 12:03:13 -0700
+	id 1K3bn0-00063f-TI for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Jun 2008 12:03:23 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1K3bmp-0008Pg-NR
+	(Exim 4.44) id 1K3bmz-0004x8-9S
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 12:03:13 -0700
-Date: Tue, 3 Jun 2008 15:02:36 -0400
+	Tue, 03 Jun 2008 12:03:22 -0700
+Date: Tue, 3 Jun 2008 15:02:38 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080603190236.GA9513@c2.user-mode-linux.org>
+Message-ID: <20080603190237.GA9521@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/6] UML - Remove a duplicate include
+Subject: [uml-devel] [PATCH 6/6] UML - PATH_MAX needs limits.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,31 +29,30 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Huang Weiyi <weiyi.huang@gmail.com>
+Cc: Ingo Molnar <mingo@elte.hu>
 
-From: Huang Weiyi <weiyi.huang@gmail.com>
+From: Ingo Molnar <mingo@elte.hu>
 
-Removed duplicated include file "kern_util.h" in 
-arch/um/drivers/ubd_kern.c.
+Include limits.h to get a definition of PATH_MAX.
 
-Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@elte.hu>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 ---
- arch/um/drivers/ubd_kern.c |    1 -
- 1 file changed, 1 deletion(-)
+ arch/um/os-Linux/helper.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Index: linux-2.6.22/arch/um/drivers/ubd_kern.c
+Index: linux-2.6-git/arch/um/os-Linux/helper.c
 ===================================================================
---- linux-2.6.22.orig/arch/um/drivers/ubd_kern.c	2008-04-24 13:22:04.000000000 -0400
-+++ linux-2.6.22/arch/um/drivers/ubd_kern.c	2008-05-09 11:12:09.000000000 -0400
-@@ -49,7 +49,6 @@
- #include "irq_user.h"
- #include "irq_kern.h"
- #include "ubd_user.h"
--#include "kern_util.h"
- #include "os.h"
- #include "mem.h"
- #include "mem_kern.h"
+--- linux-2.6-git.orig/arch/um/os-Linux/helper.c	2008-05-14 10:44:02.000000000 -0400
++++ linux-2.6-git/arch/um/os-Linux/helper.c	2008-06-02 15:50:10.000000000 -0400
+@@ -7,6 +7,7 @@
+ #include <unistd.h>
+ #include <errno.h>
+ #include <sched.h>
++#include <linux/limits.h>
+ #include <sys/socket.h>
+ #include <sys/wait.h>
+ #include "kern_constants.h"
 
 -------------------------------------------------------------------------
 This SF.net email is sponsored by: Microsoft
