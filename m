@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1K3cQn-00022O-1o for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 12:44:29 -0700
+	id 1K3dGe-0007pm-5E for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Jun 2008 13:38:04 -0700
 Received: from keil-draco.com ([216.193.185.50] helo=mail.keil-draco.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1K3cQj-0005st-My
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1K3dGc-0006QW-Gm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 12:44:27 -0700
+	Tue, 03 Jun 2008 13:38:03 -0700
 From: Daniel Hazelton <dhazelton@enter.net>
-Date: Tue, 3 Jun 2008 15:43:56 -0400
+Date: Tue, 3 Jun 2008 16:37:52 -0400
 References: <20080603190235.GA9511@c2.user-mode-linux.org>
-	<20080603123211.e129c222.akpm@linux-foundation.org>
-In-Reply-To: <20080603123211.e129c222.akpm@linux-foundation.org>
+	<878wxmfg99.fsf@hades.wkstn.nix>
+	<20080603130709.fcf6a751.akpm@linux-foundation.org>
+In-Reply-To: <20080603130709.fcf6a751.akpm@linux-foundation.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200806031543.56864.dhazelton@enter.net>
+Message-Id: <200806031637.52992.dhazelton@enter.net>
 Subject: Re: [uml-devel] [PATCH 1/6] UML - Deal with host time going backwards
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,24 +32,46 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Andrew Morton <akpm@linux-foundation.org>
-Cc: nix@esperi.org.uk, Jeff Dike <jdike@addtoit.com>, akpm@linuxfoundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Nix <nix@esperi.org.uk>, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 03 June 2008 03:32:11 pm Andrew Morton wrote:
-> On Tue, 3 Jun 2008 15:02:35 -0400
+On Tuesday 03 June 2008 04:07:09 pm Andrew Morton wrote:
+> On Tue, 03 Jun 2008 20:52:18 +0100
 >
-> Jeff Dike <jdike@addtoit.com> wrote:
-> > Protection against the host's time going backwards - keep track of the
-> > time at the last tick and if it's greater than the current time, keep
-> > time stopped until the host catches up.
+> Nix <nix@esperi.org.uk> wrote:
+> > On 3 Jun 2008, Daniel Hazelton said:
+> > > On Tuesday 03 June 2008 03:32:11 pm Andrew Morton wrote:
+> > >> On Tue, 3 Jun 2008 15:02:35 -0400
+> > >>
+> > >> Jeff Dike <jdike@addtoit.com> wrote:
+> > >> > Protection against the host's time going backwards - keep track of
+> > >> > the time at the last tick and if it's greater than the current time,
+> > >> > keep time stopped until the host catches up.
+> > >>
+> > >> Strange.  What would cause the host's time (or at least UML's
+> > >> perception of it) to go backwards?
+> > >
+> > > A wild guess would be that the UML process is running "fast" at some
+> > > point and its expectation of the host's time is skewed forward because
+> > > of that.
+> >
+> > Quite so. Simply running ntp on the host (in slew-only mode, no less!)
+> > can cause this.
+> >
+> > > Another possibility is that the hosts clock got reset between the times
+> > > UML has checked it and the correction was a negative one.
+> >
+> > That too.
 >
-> Strange.  What would cause the host's time (or at least UML's perception
-> of it) to go backwards?
+> So if I change the host's time by an hour, the time will not advance at all
+> on the guest for the next hour? Sounds suboptimal :)
 
-A wild guess would be that the UML process is running "fast" at some point and 
-its expectation of the host's time is skewed forward because of that.
+I agree. But like I said originally - it's a wild guess. I don't even know how 
+accurate it is. 
 
-Another possibility is that the hosts clock got reset between the times UML 
-has checked it and the correction was a negative one.
+> I suppose the guest should be running an ntp client synced to something
+> sane anyway?
+
+That might be helpful :)
 
 DRH
 
