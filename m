@@ -2,26 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1K3jU5-00050C-IK for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 20:16:21 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1K3jU3-0007ID-Un
+	id 1K3iAC-00051q-Uw for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Jun 2008 18:51:44 -0700
+Received: from out01.mta.xmission.com ([166.70.13.231])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1K3iAB-0006HO-M0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 20:16:21 -0700
-Date: Tue, 3 Jun 2008 23:15:21 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080604031521.GA15327@c2.user-mode-linux.org>
+	Tue, 03 Jun 2008 18:51:44 -0700
+From: ebiederm@xmission.com (Eric W. Biederman)
 References: <20080603190235.GA9511@c2.user-mode-linux.org>
 	<20080603123211.e129c222.akpm@linux-foundation.org>
 	<200806031543.56864.dhazelton@enter.net>
 	<878wxmfg99.fsf@hades.wkstn.nix>
 	<20080603130709.fcf6a751.akpm@linux-foundation.org>
 	<20080603210048.GA12182@c2.user-mode-linux.org>
-	<m1zlq2vuh2.fsf@frodo.ebiederm.org>
+Date: Tue, 03 Jun 2008 18:50:49 -0700
+In-Reply-To: <20080603210048.GA12182@c2.user-mode-linux.org> (Jeff Dike's
+	message of "Tue, 3 Jun 2008 17:00:48 -0400")
+Message-ID: <m1zlq2vuh2.fsf@frodo.ebiederm.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <m1zlq2vuh2.fsf@frodo.ebiederm.org>
 Subject: Re: [uml-devel] [PATCH 1/6] UML - Deal with host time going backwards
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -36,19 +34,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: Nix <nix@esperi.org.uk>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, dhazelton@enter.net
 
-On Tue, Jun 03, 2008 at 06:50:49PM -0700, Eric W. Biederman wrote:
-> Could using a CLOCK_MONOTONIC time source fix this?  Those timers do not
-> change when we change the time on the host.
+Jeff Dike <jdike@addtoit.com> writes:
 
-Hmmm, maybe.  The man page looks promising...
+> On Tue, Jun 03, 2008 at 01:07:09PM -0700, Andrew Morton wrote:
+>> So if I change the host's time by an hour, the time will not advance at all
+>> on the guest for the next hour? Sounds suboptimal :)
+>
+> It is, but if the host is whacked, the guest just has to do the best that
+> it can...
 
-      	      	      Jeff
+Could using a CLOCK_MONOTONIC time source fix this?  Those timers do not
+change when we change the time on the host.
 
--- 
-Work email - jdike at linux dot intel dot com
+Eric
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
