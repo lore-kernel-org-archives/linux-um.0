@@ -2,24 +2,26 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1K3u2b-00087n-GD for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jun 2008 07:32:41 -0700
-Received: from gw.goop.org ([64.81.55.164] helo=mail.goop.org)
+	id 1K3yoG-0002Mx-N2 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Jun 2008 12:38:12 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1K3u2a-000463-7w
+	(Exim 4.44) id 1K3yoE-0004sM-KP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Jun 2008 07:32:41 -0700
-Message-ID: <4846A75E.40305@goop.org>
-Date: Wed, 04 Jun 2008 15:31:58 +0100
-From: Jeremy Fitzhardinge <jeremy@goop.org>
-MIME-Version: 1.0
+	Wed, 04 Jun 2008 12:38:12 -0700
+Date: Wed, 4 Jun 2008 15:37:15 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080604193715.GA11943@c2.user-mode-linux.org>
 References: <20080603190235.GA9511@c2.user-mode-linux.org>
 	<20080603123211.e129c222.akpm@linux-foundation.org>
 	<200806031543.56864.dhazelton@enter.net>
 	<878wxmfg99.fsf@hades.wkstn.nix>
 	<20080603130709.fcf6a751.akpm@linux-foundation.org>
 	<20080603210048.GA12182@c2.user-mode-linux.org>
-In-Reply-To: <20080603210048.GA12182@c2.user-mode-linux.org>
+	<4846A75E.40305@goop.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4846A75E.40305@goop.org>
 Subject: Re: [uml-devel] [PATCH 1/6] UML - Deal with host time going backwards
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -34,23 +36,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
+To: Jeremy Fitzhardinge <jeremy@goop.org>
 Cc: Nix <nix@esperi.org.uk>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, dhazelton@enter.net
 
-Jeff Dike wrote:
-> On Tue, Jun 03, 2008 at 01:07:09PM -0700, Andrew Morton wrote:
->   
->> So if I change the host's time by an hour, the time will not advance at all
->> on the guest for the next hour? Sounds suboptimal :)
->>     
->
-> It is, but if the host is whacked, the guest just has to do the best that
-> it can...
->   
+On Wed, Jun 04, 2008 at 03:31:58PM +0100, Jeremy Fitzhardinge wrote:
+> Shouldn't UML use a monotonic host clock for guest timekeeping?
 
-Shouldn't UML use a monotonic host clock for guest timekeeping?
+Indeed, Eric pointed out the posix timers, which I had forgotten
+about.  On the face of it, a monotonic timer should do the trick, but
+it's not obvious how to get it to behave like a monotonic
+gettimeofday...
 
-    J
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
