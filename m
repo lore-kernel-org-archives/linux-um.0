@@ -2,21 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1K3lIi-0007bw-FP for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 22:12:44 -0700
-Received: from keil-draco.com ([216.193.185.50] helo=mail.keil-draco.com)
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1K3lIh-0006As-3N
+	id 1K3u2b-00087n-GD for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Jun 2008 07:32:41 -0700
+Received: from gw.goop.org ([64.81.55.164] helo=mail.goop.org)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1K3u2a-000463-7w
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2008 22:12:44 -0700
-From: Daniel Hazelton <dhazelton@enter.net>
-Date: Wed, 4 Jun 2008 01:12:34 -0400
-References: <20080603190235.GA9511@c2.user-mode-linux.org>
-	<20080603210048.GA12182@c2.user-mode-linux.org>
-	<m1zlq2vuh2.fsf@frodo.ebiederm.org>
-In-Reply-To: <m1zlq2vuh2.fsf@frodo.ebiederm.org>
+	Wed, 04 Jun 2008 07:32:41 -0700
+Message-ID: <4846A75E.40305@goop.org>
+Date: Wed, 04 Jun 2008 15:31:58 +0100
+From: Jeremy Fitzhardinge <jeremy@goop.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200806040112.35245.dhazelton@enter.net>
+References: <20080603190235.GA9511@c2.user-mode-linux.org>
+	<20080603123211.e129c222.akpm@linux-foundation.org>
+	<200806031543.56864.dhazelton@enter.net>
+	<878wxmfg99.fsf@hades.wkstn.nix>
+	<20080603130709.fcf6a751.akpm@linux-foundation.org>
+	<20080603210048.GA12182@c2.user-mode-linux.org>
+In-Reply-To: <20080603210048.GA12182@c2.user-mode-linux.org>
 Subject: Re: [uml-devel] [PATCH 1/6] UML - Deal with host time going backwards
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,31 +34,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Nix <nix@esperi.org.uk>, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Nix <nix@esperi.org.uk>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, dhazelton@enter.net
 
-On Tuesday 03 June 2008 09:50:49 pm Eric W. Biederman wrote:
-> Jeff Dike <jdike@addtoit.com> writes:
-> > On Tue, Jun 03, 2008 at 01:07:09PM -0700, Andrew Morton wrote:
-> >> So if I change the host's time by an hour, the time will not advance at
-> >> all on the guest for the next hour? Sounds suboptimal :)
-> >
-> > It is, but if the host is whacked, the guest just has to do the best that
-> > it can...
+Jeff Dike wrote:
+> On Tue, Jun 03, 2008 at 01:07:09PM -0700, Andrew Morton wrote:
+>   
+>> So if I change the host's time by an hour, the time will not advance at all
+>> on the guest for the next hour? Sounds suboptimal :)
+>>     
 >
-> Could using a CLOCK_MONOTONIC time source fix this?  Those timers do not
-> change when we change the time on the host.
->
-> Eric
+> It is, but if the host is whacked, the guest just has to do the best that
+> it can...
+>   
 
-I'm not all that familiar with the specifics of the code - my original 
-statements about possible causes were barely more than wild guesses - but 
-this does sound like it would work.
+Shouldn't UML use a monotonic host clock for guest timekeeping?
 
-DRH
-
--- 
-Dialup is like pissing through a pipette. Slow and excruciatingly painful.
+    J
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
