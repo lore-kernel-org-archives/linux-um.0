@@ -1,17 +1,14 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1K4HQh-0005xG-L3 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Jun 2008 08:31:07 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1K4HQg-0001qg-67
+	id 1K4Jzd-0001Mc-HR for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Jun 2008 11:15:21 -0700
+Received: from 41-052.adsl.zetnet.co.uk
+	([194.247.41.52] helo=mail.esperi.org.uk ident=user37973)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1K4Jzb-0000EV-C8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Jun 2008 08:31:07 -0700
-Date: Thu, 5 Jun 2008 11:30:08 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080605153008.GC7311@c2.user-mode-linux.org>
+	Thu, 05 Jun 2008 11:15:21 -0700
 References: <20080603190235.GA9511@c2.user-mode-linux.org>
 	<20080603123211.e129c222.akpm@linux-foundation.org>
 	<200806031543.56864.dhazelton@enter.net>
@@ -21,9 +18,13 @@ References: <20080603190235.GA9511@c2.user-mode-linux.org>
 	<4846A75E.40305@goop.org>
 	<20080604193715.GA11943@c2.user-mode-linux.org>
 	<4846F577.10603@goop.org>
+	<20080605153008.GC7311@c2.user-mode-linux.org>
+From: Nix <nix@esperi.org.uk>
+Date: Thu, 05 Jun 2008 19:14:30 +0100
+In-Reply-To: <20080605153008.GC7311@c2.user-mode-linux.org> (Jeff Dike's
+	message of "Thu, 5 Jun 2008 11:30:08 -0400")
+Message-ID: <87k5h392bd.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4846F577.10603@goop.org>
 Subject: Re: [uml-devel] [PATCH 1/6] UML - Deal with host time going backwards
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -38,169 +39,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Nix <nix@esperi.org.uk>, dhazelton@enter.net
-Cc: Andrew Morton <akpm@linux-foundation.org>, Jeremy Fitzhardinge <jeremy@goop.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jeremy Fitzhardinge <jeremy@goop.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, dhazelton@enter.net
 
-On Wed, Jun 04, 2008 at 09:05:11PM +0100, Jeremy Fitzhardinge wrote:
-> You can either read the monotonic clock directly, or use it as a time 
-> source for a monotonic timer.  clock_gettime(CLOCK_MONOTONIC, &ts) will 
-> return the time in ns, and you can just feed that directly into the guest 
-> as a clocksource.
+On 5 Jun 2008, Jeff Dike verbalised:
+> Aha, I was looking at timer_* and not getting reasonable-looking
+> results.  The one questionable aspect of this is that I need to pull
+> in a new library (librt) and I wonder how many people don't have it
+> installed...
 
-Aha, I was looking at timer_* and not getting reasonable-looking
-results.  The one questionable aspect of this is that I need to pull
-in a new library (librt) and I wonder how many people don't have it
-installed...
+It comes with glibc, and even ls uses it (for clock_gettime(), to
+determine what format to use for date display).
 
-Anyway, the patch below seems to make the guest behave reasonably in
-the face of the host time doing funky things...
+I'd say using it is about as safe as can be.
 
-Give it a spin and let me know how it does.  If there aren't any
-problems, I'll get it into mainline.
+> Anyway, the patch below seems to make the guest behave reasonably in
+> the face of the host time doing funky things...
+>
+> Give it a spin and let me know how it does.  If there aren't any
+> problems, I'll get it into mainline.
 
-    	    	Jeff
+Rebuilding for a test now.
 
 -- 
-Work email - jdike at linux dot intel dot com
-
-Index: linux-2.6.22/arch/um/os-Linux/time.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/time.c	2008-06-02 15:38:34.000000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/time.c	2008-06-04 19:49:16.000000000 -0400
-@@ -56,6 +56,11 @@ static inline long long timeval_to_ns(co
- 		tv->tv_usec * UM_NSEC_PER_USEC;
- }
- 
-+static inline long long timespec_to_ns(const struct timespec *ts)
-+{
-+	return ((long long) ts->tv_sec * UM_NSEC_PER_SEC) + ts->tv_nsec;
-+}
-+
- long long disable_timer(void)
- {
- 	struct itimerval time = ((struct itimerval) { { 0, 0 }, { 0, 0 } });
-@@ -72,12 +77,22 @@ long long disable_timer(void)
- 	return remain;
- }
- 
--long long os_nsecs(void)
-+static inline long long nsecs(int clock)
- {
--	struct timeval tv;
-+	struct timespec ts;
-+
-+	clock_gettime(clock, &ts);
-+	return timespec_to_ns(&ts);
-+}
-+
-+long long os_wall_nsecs(void)
-+{
-+	return nsecs(CLOCK_REALTIME);
-+}
- 
--	gettimeofday(&tv, NULL);
--	return timeval_to_ns(&tv);
-+long long os_mono_nsecs(void)
-+{
-+	return nsecs(CLOCK_MONOTONIC);
- }
- 
- extern void alarm_handler(int sig, struct sigcontext *sc);
-@@ -104,13 +119,9 @@ unsigned long long skew;
- 
- static void deliver_alarm(void)
- {
--	unsigned long long this_tick = os_nsecs();
-+	unsigned long long this_tick = os_mono_nsecs();
- 	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
- 
--	/* Protection against the host's time going backwards */
--	if ((last_tick != 0) && (this_tick < last_tick))
--		this_tick = last_tick;
--
- 	if (last_tick == 0)
- 		last_tick = this_tick - one_tick;
- 
-Index: linux-2.6.22/arch/um/Makefile
-===================================================================
---- linux-2.6.22.orig/arch/um/Makefile	2008-05-29 11:21:25.000000000 -0400
-+++ linux-2.6.22/arch/um/Makefile	2008-06-04 19:42:09.000000000 -0400
-@@ -126,7 +126,7 @@ define cmd_vmlinux__
- 	$(CC) $(CFLAGS_vmlinux) -o $@ \
- 	-Wl,-T,$(vmlinux-lds) $(vmlinux-init) \
- 	-Wl,--start-group $(vmlinux-main) -Wl,--end-group \
--	-lutil \
-+	-lutil -lrt \
- 	$(filter-out $(vmlinux-lds) $(vmlinux-init) $(vmlinux-main) vmlinux.o \
- 	FORCE ,$^) ; rm -f linux
- endef
-Index: linux-2.6.22/arch/um/include/os.h
-===================================================================
---- linux-2.6.22.orig/arch/um/include/os.h	2008-06-02 15:38:34.000000000 -0400
-+++ linux-2.6.22/arch/um/include/os.h	2008-06-04 19:51:55.000000000 -0400
-@@ -244,7 +244,8 @@ extern int set_interval(void);
- extern int timer_one_shot(int ticks);
- extern long long disable_timer(void);
- extern void uml_idle_timer(void);
--extern long long os_nsecs(void);
-+extern long long os_wall_nsecs(void);
-+extern long long os_mono_nsecs(void);
- 
- /* skas/mem.c */
- extern long run_syscall_stub(struct mm_id * mm_idp,
-Index: linux-2.6.22/arch/um/kernel/time.c
-===================================================================
---- linux-2.6.22.orig/arch/um/kernel/time.c	2008-06-02 15:38:33.000000000 -0400
-+++ linux-2.6.22/arch/um/kernel/time.c	2008-06-04 19:51:59.000000000 -0400
-@@ -74,7 +74,7 @@ static irqreturn_t um_timer(int irq, voi
- 
- static cycle_t itimer_read(void)
- {
--	return os_nsecs() / 1000;
-+	return os_mono_nsecs() / 1000;
- }
- 
- static struct clocksource itimer_clocksource = {
-@@ -117,7 +117,7 @@ void __init time_init(void)
- 
- 	timer_init();
- 
--	nsecs = os_nsecs();
-+	nsecs = os_wall_nsecs();
- 	set_normalized_timespec(&wall_to_monotonic, -nsecs / NSEC_PER_SEC,
- 				-nsecs % NSEC_PER_SEC);
- 	set_normalized_timespec(&xtime, nsecs / NSEC_PER_SEC,
-Index: linux-2.6.22/arch/um/os-Linux/skas/process.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/skas/process.c	2008-06-04 19:51:05.000000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/skas/process.c	2008-06-04 19:51:59.000000000 -0400
-@@ -359,7 +359,7 @@ void userspace(struct uml_pt_regs *regs)
- 		printk(UM_KERN_ERR "Failed to get itimer, errno = %d\n", errno);
- 	nsecs = timer.it_value.tv_sec * UM_NSEC_PER_SEC +
- 		timer.it_value.tv_usec * UM_NSEC_PER_USEC;
--	nsecs += os_nsecs();
-+	nsecs += os_mono_nsecs();
- 
- 	while (1) {
- 		/*
-@@ -420,7 +420,7 @@ void userspace(struct uml_pt_regs *regs)
- 				relay_signal(SIGTRAP, regs);
- 				break;
- 			case SIGVTALRM:
--				now = os_nsecs();
-+				now = os_mono_nsecs();
- 				if (now < nsecs)
- 					break;
- 				block_signals();
-@@ -430,7 +430,7 @@ void userspace(struct uml_pt_regs *regs)
- 					UM_NSEC_PER_SEC +
- 					timer.it_value.tv_usec *
- 					UM_NSEC_PER_USEC;
--				nsecs += os_nsecs();
-+				nsecs += os_mono_nsecs();
- 				break;
- 			case SIGIO:
- 			case SIGILL:
+`If you are having a "ua luea luea le ua le" kind of day, I can only
+ assume that you are doing no work due [to] incapacitating nausea caused 
+ by numerous lazy demons.' --- Frossie
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
