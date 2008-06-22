@@ -1,20 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1K6pfb-0003FV-Hn for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 12 Jun 2008 09:29:03 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1K6pfa-00025j-CO
+	id 1KAMeF-00015A-2u for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Jun 2008 03:18:15 -0700
+Received: from an-out-0708.google.com ([209.85.132.249])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KAMeC-00007H-At
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 12 Jun 2008 09:29:03 -0700
-Date: Thu, 12 Jun 2008 12:28:41 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080612162841.GA8404@c2.user-mode-linux.org>
+	Sun, 22 Jun 2008 03:18:14 -0700
+Received: by an-out-0708.google.com with SMTP id b21so472889ana.6
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 22 Jun 2008 03:18:11 -0700 (PDT)
+Message-ID: <fc593b510806220318q7cca3494lc7bbb36637d3aa47@mail.gmail.com>
+Date: Sun, 22 Jun 2008 12:18:10 +0200
+From: "Laurent Wandrebeck" <l.wandrebeck@gmail.com>
+In-Reply-To: <20080621223401.C97C.WEIYI.HUANG@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 1/2] UML - Remove include of asm/user.h
+References: <20080621223401.C97C.WEIYI.HUANG@gmail.com>
+Subject: Re: [uml-devel] [uml-user] arch/um/os-Linux/helper.c: Removed
+	duplicated include
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,38 +33,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Huang Weiyi <weiyi.huang@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-I allowed an include of asm/user.h to sneak back in.  This patch
-replaces it with sys/user.h.
-
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
----
- arch/um/os-Linux/sys-i386/registers.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-Index: linux-2.6.22/arch/um/os-Linux/sys-i386/registers.c
-===================================================================
---- linux-2.6.22.orig/arch/um/os-Linux/sys-i386/registers.c	2008-06-10 11:42:06.000000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/sys-i386/registers.c	2008-06-10 11:55:54.000000000 -0400
-@@ -6,7 +6,7 @@
- 
- #include <errno.h>
- #include <sys/ptrace.h>
--#include <asm/user.h>
-+#include <sys/user.h>
- #include "kern_constants.h"
- #include "longjmp.h"
- #include "user.h"
-@@ -76,7 +76,7 @@ int put_fp_registers(int pid, unsigned l
- 
- void arch_init_registers(int pid)
- {
--	struct user_fxsr_struct fpx_regs;
-+	struct user_fpxregs_struct fpx_regs;
- 	int err;
- 
- 	err = ptrace(PTRACE_GETFPXREGS, pid, 0, &fpx_regs);
+2008/6/21 Huang Weiyi <weiyi.huang@gmail.com>:
+> Removed duplicated include file <linux/limits.h> in
+> arch/um/os-Linux/helper.c.
+>
+> Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
+Thanks for spotting it, I added your patch to my tree.
+You can git clone
+git://gitorious.org/low-unofficial-linux-uml-hacking-tree/mainline.git
+or http://git.gitorious.org/low-unofficial-linux-uml-hacking-tree/mainline.git
+if you're willing to test latest linus-git tree plus skas4.
+Regards,
+Laurent.
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
