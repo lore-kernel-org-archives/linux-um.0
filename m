@@ -2,23 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KAcoh-0004Pr-FP for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Jun 2008 20:34:07 -0700
-Received: from qb-out-1314.google.com ([72.14.204.173])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KAcof-0001l6-Tn
+	id 1KB3q7-0007dc-W9 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 24 Jun 2008 01:25:24 -0700
+Received: from mgw1.diku.dk ([130.225.96.91])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KB3q7-0000mN-9a
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Jun 2008 20:34:07 -0700
-Received: by qb-out-1314.google.com with SMTP id d2so6924067qbc.32
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 22 Jun 2008 20:34:03 -0700 (PDT)
-Date: Mon, 23 Jun 2008 05:34:00 +0200
-From: Iustin Pop <iusty@k1024.org>
-Message-ID: <20080623033400.GA3822@teal.hq.k1024.org>
-References: <804dabb00806221905q676e9fa8k6e8c97eb0a547681@mail.gmail.com>
+	Tue, 24 Jun 2008 01:25:23 -0700
+Date: Tue, 24 Jun 2008 10:25:17 +0200 (CEST)
+From: Julia Lawall <julia@diku.dk>
+Message-ID: <Pine.LNX.4.64.0806241024580.26777@ask.diku.dk>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <804dabb00806221905q676e9fa8k6e8c97eb0a547681@mail.gmail.com>
-Subject: Re: [uml-devel] How to trace early booting in 64bit Linux Kernel?
+Subject: [uml-devel] [PATCH 10/14] arch/um: Eliminate NULL test and memset
+	after alloc_bootmem
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,19 +28,91 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Peter Teoh <htmldeveloper@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: akinobu.mita@gmail.com, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 
-On Mon, Jun 23, 2008 at 10:05:37AM +0800, Peter Teoh wrote:
-> QEMU running on 64bit host is still not available yet, although it can
-> emulate 64bit kernel.
+From: Julia Lawall <julia@diku.dk>
 
-Uh, why do you say so? Unless I'm mistaken, I've been running qemu in
-64bit mode for a couple of years now (the binary is called
-qemu-system-x86_64).
+As noted by Akinobu Mita in patch b1fceac2b9e04d278316b2faddf276015fc06e3b,
+alloc_bootmem and related functions never return NULL and always return a
+zeroed region of memory.  Thus a NULL test or memset after calls to these
+functions is unnecessary.
 
-thanks,
-iustin
+ arch/um/drivers/net_kern.c |    4 ----
+ arch/um/kernel/initrd.c    |    2 --
+ arch/um/kernel/physmem.c   |    3 ---
+ 3 files changed, 9 deletions(-)
+
+This was fixed using the following semantic patch.
+(http://www.emn.fr/x-info/coccinelle/)
+
+// <smpl>
+@@
+expression E;
+statement S;
+@@
+
+E = \(alloc_bootmem\|alloc_bootmem_low\|alloc_bootmem_pages\|alloc_bootmem_low_pages\)(...)
+... when != E
+(
+- BUG_ON (E == NULL);
+|
+- if (E == NULL) S
+)
+
+@@
+expression E,E1;
+@@
+
+E = \(alloc_bootmem\|alloc_bootmem_low\|alloc_bootmem_pages\|alloc_bootmem_low_pages\)(...)
+... when != E
+- memset(E,0,E1);
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+---
+
+diff -u -p a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -668,10 +668,6 @@ static int __init eth_setup(char *str)
+ 	}
+ 
+ 	new = alloc_bootmem(sizeof(*new));
+-	if (new == NULL) {
+-		printk(KERN_ERR "eth_init : alloc_bootmem failed\n");
+-		return 1;
+-	}
+ 
+ 	INIT_LIST_HEAD(&new->list);
+ 	new->index = n;
+diff -u -p a/arch/um/kernel/initrd.c b/arch/um/kernel/initrd.c
+--- a/arch/um/kernel/initrd.c
++++ b/arch/um/kernel/initrd.c
+@@ -37,8 +37,6 @@ static int __init read_initrd(void)
+ 	}
+ 
+ 	area = alloc_bootmem(size);
+-	if (area == NULL)
+-		return 0;
+ 
+ 	if (load_initrd(initrd, area, size) == -1)
+ 		return 0;
+diff -u -p a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+--- a/arch/um/kernel/physmem.c
++++ b/arch/um/kernel/physmem.c
+@@ -41,12 +41,9 @@ int __init init_maps(unsigned long physm
+ 	total_len = phys_len + iomem_len + highmem_len;
+ 
+ 	map = alloc_bootmem_low_pages(total_len);
+-	if (map == NULL)
+-		return -ENOMEM;
+ 
+ 	for (i = 0; i < total_pages; i++) {
+ 		p = &map[i];
+-		memset(p, 0, sizeof(struct page));
+ 		SetPageReserved(p);
+ 		INIT_LIST_HEAD(&p->lru);
+ 	}
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
