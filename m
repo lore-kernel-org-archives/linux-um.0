@@ -2,24 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KBJ6w-0004IW-8P for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Jun 2008 17:43:46 -0700
-Received: from an-out-0708.google.com ([209.85.132.250])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KBJ6u-0000uZ-VP
+	id 1KCHUT-00005t-R0 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Jun 2008 10:12:05 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KCHUQ-0003vX-MP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Jun 2008 17:43:46 -0700
-Received: by an-out-0708.google.com with SMTP id b21so766576ana.6
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 24 Jun 2008 17:43:44 -0700 (PDT)
-Message-ID: <804dabb00806241743v72bbfa0fx8a555d8d2f500a08@mail.gmail.com>
-Date: Wed, 25 Jun 2008 08:43:44 +0800
-From: "Peter Teoh" <htmldeveloper@gmail.com>
-In-Reply-To: <20080623033400.GA3822@teal.hq.k1024.org>
+	Fri, 27 Jun 2008 10:12:05 -0700
+Date: Fri, 27 Jun 2008 12:26:45 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080627162645.GC8381@c2.user-mode-linux.org>
+References: <1214488251-20927-1-git-send-email-bhalevy@panasas.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-References: <804dabb00806221905q676e9fa8k6e8c97eb0a547681@mail.gmail.com>
-	<20080623033400.GA3822@teal.hq.k1024.org>
-Subject: Re: [uml-devel] How to trace early booting in 64bit Linux Kernel?
+In-Reply-To: <1214488251-20927-1-git-send-email-bhalevy@panasas.com>
+Subject: Re: [uml-devel] [PATCH] fix extern inline errors with gcc 4.3.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,32 +30,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Iustin Pop <iusty@k1024.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Benny Halevy <bhalevy@panasas.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Sorry for my mistake - I just read the source code for kqemu and they
-do compile for x86_64, so the 64bit host version is supported.
+On Thu, Jun 26, 2008 at 04:50:51PM +0300, Benny Halevy wrote:
+> -KBUILD_CFLAGS += $(call cc-option,-fno-unit-at-a-time,)
+> +# Disable unit-at-a-time mode on pre-gcc-4.3 compilers, it makes gcc use
+> +# a lot more stack due to the lack of sharing of stacklots:
+> +# gcc 4.3.0 needs -funit-at-a-time for extern inline functions
+> +KBUILD_CFLAGS += $(shell if [ $(call cc-version) -lt 0403 ] ; then \
+> +			echo $(call cc-option,-fno-unit-at-a-time); fi ;)
 
-My mistake.
+How do we know that this patch won't cause the same crash reported in
+http://marc.info/?l=linux-kernel&m=121011722806093&w=2?
 
-
-On Mon, Jun 23, 2008 at 11:34 AM, Iustin Pop <iusty@k1024.org> wrote:
-> On Mon, Jun 23, 2008 at 10:05:37AM +0800, Peter Teoh wrote:
->> QEMU running on 64bit host is still not available yet, although it can
->> emulate 64bit kernel.
->
-> Uh, why do you say so? Unless I'm mistaken, I've been running qemu in
-> 64bit mode for a couple of years now (the binary is called
-> qemu-system-x86_64).
->
-> thanks,
-> iustin
->
-
-
+				Jeff
 
 -- 
-Regards,
-Peter Teoh
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Check out the new SourceForge.net Marketplace.
