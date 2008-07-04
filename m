@@ -2,22 +2,33 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KEPIs-0007IU-QF for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Jul 2008 06:56:55 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1KEZky-00029C-LE for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 03 Jul 2008 18:06:36 -0700
+Received: from smtp-out.google.com ([216.239.33.17])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KEPIp-00044t-QK
+	(Exim 4.44) id 1KEZkx-0001CR-Q0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 03 Jul 2008 06:56:53 -0700
-Date: Thu, 3 Jul 2008 09:56:39 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080703135639.GA8262@c2.user-mode-linux.org>
-References: <5df78e1d0807030053x8a9bfabo582ea78e74b2c65b@mail.gmail.com>
+	Thu, 03 Jul 2008 18:06:36 -0700
+Received: from zps75.corp.google.com (zps75.corp.google.com [172.25.146.75])
+	by smtp-out.google.com with ESMTP id m6416SCd023841
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 4 Jul 2008 02:06:28 +0100
+Received: from rv-out-0506.google.com (rvbf6.prod.google.com [10.140.82.6])
+	by zps75.corp.google.com with ESMTP id m6416RBU015289
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 3 Jul 2008 18:06:27 -0700
+Received: by rv-out-0506.google.com with SMTP id f6so1105653rvb.53
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 03 Jul 2008 18:06:27 -0700 (PDT)
+Message-ID: <5df78e1d0807031806s74c13c84idadc62c1d1e0e93b@mail.gmail.com>
+Date: Fri, 4 Jul 2008 09:06:27 +0800
+From: "Jiaying Zhang" <jiayingz@google.com>
+In-Reply-To: <20080703135639.GA8262@c2.user-mode-linux.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5df78e1d0807030053x8a9bfabo582ea78e74b2c65b@mail.gmail.com>
+References: <5df78e1d0807030053x8a9bfabo582ea78e74b2c65b@mail.gmail.com>
+	<20080703135639.GA8262@c2.user-mode-linux.org>
 Subject: [SPAM] Re: [uml-devel] 2.6.25 uml kernel crashes when it calls down()
-	on	a semaphore with zero counter
+	on a semaphore with zero counter
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,33 +38,133 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0693587354=="
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jiaying Zhang <jiayingz@google.com>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Jul 03, 2008 at 12:53:46AM -0700, Jiaying Zhang wrote:
-> I found since 2.6.25 kernels, uml crashes when it calls down() on a
-> semaphore with
-> zero counter.
+--===============0693587354==
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_18284_29897119.1215133587301"
 
-What's the stack trace?
+------=_Part_18284_29897119.1215133587301
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Can you bisect it?
+The stack trace isn't very helpful. Here it is.
 
-		Jeff
+EIP: 0073:[<d84156c5>] CPU: 0 Not tainted ESP: 007b:0be3ea78 EFLAGS:
+00210206
+    Not tainted
+EAX: 0be548d8 EBX: 08325b54 ECX: 08325b58 EDX: 0be548cc
+ESI: 00000001 EDI: 080598c6 EBP: 0be3ea98 DS: 007b ES: 007b
+08323b6c:  [<0806a718>] show_regs+0xc4/0xc9
+08323b98:  [<080594b3>] segv+0x20e/0x226
+08323c3c:  [<080592a0>] segv_handler+0x4f/0x54
+08323c5c:  [<0806537b>] sig_handler_common+0x63/0x72
+08323cd4:  [<080653b8>] sig_handler+0x2e/0x3e
+08323cec:  [<080654dd>] handle_signal+0x4d/0x7a
+08323d0c:  [<08066ebf>] hard_handler+0xf/0x14
+08323d1c:  [<b7fff420>] 0xb7fff420
 
--- 
-Work email - jdike at linux dot intel dot com
+Kernel panic - not syncing: Kernel mode fault at addr 0xd84156c5, ip
+0xd84156c5
+
+EIP: 0073:[<40146334>] CPU: 0 Not tainted ESP: 007b:bfaf2378 EFLAGS:
+00200246
+    Not tainted
+EAX: ffffffda EBX: 00000003 ECX: c134fd09 EDX: 08050368
+ESI: 4002b7c0 EDI: 40029180 EBP: bfaf24c8 DS: 007b ES: 007b
+08323ad8:  [<0806a718>] show_regs+0xc4/0xc9
+08323b04:  [<080596ed>] panic_exit+0x23/0x39
+08323b18:  [<080849d0>] notifier_call_chain+0x21/0x4d
+08323b38:  [<08084a72>] __atomic_notifier_call_chain+0x17/0x19
+08323b54:  [<08084a89>] atomic_notifier_call_chain+0x15/0x17
+08323b70:  [<0807116f>] panic+0x4f/0xd1
+08323b8c:  [<080594c1>] segv+0x21c/0x226
+08323c3c:  [<080592a0>] segv_handler+0x4f/0x54
+08323c5c:  [<0806537b>] sig_handler_common+0x63/0x72
+08323cd4:  [<080653b8>] sig_handler+0x2e/0x3e
+08323cec:  [<080654dd>] handle_signal+0x4d/0x7a
+08323d0c:  [<08066ebf>] hard_handler+0xf/0x14
+08323d1c:  [<b7fff420>] 0xb7fff420
+
+Segmentation fault
+
+Jiaying
+
+On Thu, Jul 3, 2008 at 9:56 PM, Jeff Dike <jdike@addtoit.com> wrote:
+
+> On Thu, Jul 03, 2008 at 12:53:46AM -0700, Jiaying Zhang wrote:
+> > I found since 2.6.25 kernels, uml crashes when it calls down() on a
+> > semaphore with
+> > zero counter.
+>
+> What's the stack trace?
+>
+> Can you bisect it?
+>
+>                Jeff
+>
+> --
+> Work email - jdike at linux dot intel dot com
+>
+
+------=_Part_18284_29897119.1215133587301
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+The stack trace isn&#39;t very helpful. Here it is.<br><br>EIP: 0073:[&lt;d84156c5&gt;] CPU: 0 Not tainted ESP: 007b:0be3ea78 EFLAGS: 00210206<br>&nbsp;&nbsp;&nbsp; Not tainted<br>EAX: 0be548d8 EBX: 08325b54 ECX: 08325b58 EDX: 0be548cc<br>
+ESI: 00000001 EDI: 080598c6 EBP: 0be3ea98 DS: 007b ES: 007b<br>08323b6c:&nbsp; [&lt;0806a718&gt;] show_regs+0xc4/0xc9<br>08323b98:&nbsp; [&lt;080594b3&gt;] segv+0x20e/0x226<br>08323c3c:&nbsp; [&lt;080592a0&gt;] segv_handler+0x4f/0x54<br>
+08323c5c:&nbsp; [&lt;0806537b&gt;] sig_handler_common+0x63/0x72<br>08323cd4:&nbsp; [&lt;080653b8&gt;] sig_handler+0x2e/0x3e<br>08323cec:&nbsp; [&lt;080654dd&gt;] handle_signal+0x4d/0x7a<br>08323d0c:&nbsp; [&lt;08066ebf&gt;] hard_handler+0xf/0x14<br>
+08323d1c:&nbsp; [&lt;b7fff420&gt;] 0xb7fff420<br><br>Kernel panic - not syncing: Kernel mode fault at addr 0xd84156c5, ip 0xd84156c5<br><br>EIP: 0073:[&lt;40146334&gt;] CPU: 0 Not tainted ESP: 007b:bfaf2378 EFLAGS: 00200246<br>
+&nbsp;&nbsp;&nbsp; Not tainted<br>EAX: ffffffda EBX: 00000003 ECX: c134fd09 EDX: 08050368<br>ESI: 4002b7c0 EDI: 40029180 EBP: bfaf24c8 DS: 007b ES: 007b<br>08323ad8:&nbsp; [&lt;0806a718&gt;] show_regs+0xc4/0xc9<br>08323b04:&nbsp; [&lt;080596ed&gt;] panic_exit+0x23/0x39<br>
+08323b18:&nbsp; [&lt;080849d0&gt;] notifier_call_chain+0x21/0x4d<br>08323b38:&nbsp; [&lt;08084a72&gt;] __atomic_notifier_call_chain+0x17/0x19<br>08323b54:&nbsp; [&lt;08084a89&gt;] atomic_notifier_call_chain+0x15/0x17<br>08323b70:&nbsp; [&lt;0807116f&gt;] panic+0x4f/0xd1<br>
+08323b8c:&nbsp; [&lt;080594c1&gt;] segv+0x21c/0x226<br>08323c3c:&nbsp; [&lt;080592a0&gt;] segv_handler+0x4f/0x54<br>08323c5c:&nbsp; [&lt;0806537b&gt;] sig_handler_common+0x63/0x72<br>08323cd4:&nbsp; [&lt;080653b8&gt;] sig_handler+0x2e/0x3e<br>
+08323cec:&nbsp; [&lt;080654dd&gt;] handle_signal+0x4d/0x7a<br>08323d0c:&nbsp; [&lt;08066ebf&gt;] hard_handler+0xf/0x14<br>08323d1c:&nbsp; [&lt;b7fff420&gt;] 0xb7fff420<br><br>Segmentation fault<br><br>Jiaying<br><br><div class="gmail_quote">
+On Thu, Jul 3, 2008 at 9:56 PM, Jeff Dike &lt;<a href="mailto:jdike@addtoit.com">jdike@addtoit.com</a>&gt; wrote:<br><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<div class="Ih2E3d">On Thu, Jul 03, 2008 at 12:53:46AM -0700, Jiaying Zhang wrote:<br>
+&gt; I found since 2.6.25 kernels, uml crashes when it calls down() on a<br>
+&gt; semaphore with<br>
+&gt; zero counter.<br>
+<br>
+</div>What&#39;s the stack trace?<br>
+<br>
+Can you bisect it?<br>
+<br>
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Jeff<br>
+<font color="#888888"><br>
+--<br>
+Work email - jdike at linux dot intel dot com<br>
+</font></blockquote></div><br>
+
+------=_Part_18284_29897119.1215133587301--
+
+
+--===============0693587354==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Sponsored by: SourceForge.net Community Choice Awards: VOTE NOW!
 Studies have shown that voting for your favorite open source project,
 along with a healthy diet, reduces your potential for chronic lameness
 and boredom. Vote Now at http://www.sourceforge.net/community/cca08
+--===============0693587354==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============0693587354==--
+
