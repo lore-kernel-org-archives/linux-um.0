@@ -2,26 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KFu2f-0001LX-JA for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Jul 2008 09:58:21 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1KFuf2-0005jr-QX for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Jul 2008 10:38:00 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KFu2f-0000VW-32
+	(Exim 4.44) id 1KFuf2-0006P0-7N
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Jul 2008 09:58:21 -0700
-Date: Mon, 7 Jul 2008 12:58:02 -0400
+	Mon, 07 Jul 2008 10:38:00 -0700
+Date: Mon, 7 Jul 2008 13:36:56 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080707165802.GA7747@c2.user-mode-linux.org>
-References: <1214488251-20927-1-git-send-email-bhalevy@panasas.com>
-	<20080627162645.GC8381@c2.user-mode-linux.org>
-	<7225594ED4A1304C9E43D030A886D221050BE1@daytona.int.panasas.com>
-	<48673A9B.8050907@panasas.com>
-	<20080630162201.GC6643@c2.user-mode-linux.org>
-	<48690BC7.5060809@panasas.com>
+Message-ID: <20080707173656.GB7747@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <48690BC7.5060809@panasas.com>
-Subject: Re: [uml-devel] [PATCH] fix extern inline errors with gcc 4.3.0
+Subject: [uml-devel] [PATCH] UML - fix gcc ICEs and unresolved externs
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,19 +28,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Benny Halevy <bhalevy@panasas.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Benny Halevy <bhalevy@panasas.com>, Ingo Molnar <mingo@elte.hu>, Ulrich Drepper <drepper@redhat.com>
 
-On Mon, Jun 30, 2008 at 07:37:27PM +0300, Benny Halevy wrote:
-> This isn't exactly aligned with the comment above.
-> Should be -lt 0400, as in 22eecde2f9034764a3fd095eecfa3adfb8ec9a98?
+[ This patch needs to get into 2.6.26 ]
 
-Oops, right.
+There are various constraints on the use of unit-at-a-time:
+        i386 uses no-unit-at-a-time for pre-4.0 (not 4.3)
+        x86_64 uses unit-at-a-time always
 
-			Jeff
+        Uli reported a crash on x86_64 with gcc 4.1.2 with
+unit-at-a-time, resulting in commit c0a18111e571138747a98af18b3a2124df56a0d1
+        Ingo reported a gcc internal error with gcc 4.3 with
+no-unit-at-a-timem, resulting in 22eecde2f9034764a3fd095eecfa3adfb8ec9a98
+         Benny Halevy <bhalevy@panasas.com> is seeing extern inlines
+not resolved with gcc 4.3 with no-unit-at-a-time
 
--- 
-Work email - jdike at linux dot intel dot com
+This patch reintroduces unit-at-a-time for gcc >= 4.0, bringing back
+the possibility of Uli's crash.  If that happens, we'll debug it.
+
+I started seeing both the internal compiler errors and unresolved
+inlines on Fedora 9.  This patch fixes both problems, without so far
+reintroducing the crash reported by Uli.
+	
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+---
+ arch/um/Makefile        |    1 -
+ arch/um/Makefile-i386   |    7 +++++++
+ arch/um/Makefile-x86_64 |    3 +++
+ 3 files changed, 10 insertions(+), 1 deletion(-)
+
+Index: linux-2.6.22/arch/um/Makefile-i386
+===================================================================
+--- linux-2.6.22.orig/arch/um/Makefile-i386	2008-05-29 11:21:25.000000000 -0400
++++ linux-2.6.22/arch/um/Makefile-i386	2008-07-07 13:11:10.000000000 -0400
+@@ -32,4 +32,11 @@ cflags-y += $(call cc-option,-mpreferred
+ # an unresolved reference.
+ cflags-y += -ffreestanding
+ 
++# Disable unit-at-a-time mode on pre-gcc-4.0 compilers, it makes gcc use
++# a lot more stack due to the lack of sharing of stacklots.  Also, gcc
++# 4.3.0 needs -funit-at-a-time for extern inline functions.
++KBUILD_CFLAGS += $(shell if [ $(call cc-version) -lt 0400 ] ; then \
++			echo $(call cc-option,-fno-unit-at-a-time); \
++			else echo $(call cc-option,-funit-at-a-time); fi ;)
++
+ KBUILD_CFLAGS += $(cflags-y)
+Index: linux-2.6.22/arch/um/Makefile-x86_64
+===================================================================
+--- linux-2.6.22.orig/arch/um/Makefile-x86_64	2008-05-29 11:21:25.000000000 -0400
++++ linux-2.6.22/arch/um/Makefile-x86_64	2008-06-30 12:21:01.000000000 -0400
+@@ -21,3 +21,6 @@ HEADER_ARCH := x86
+ 
+ LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
+ LINK-y += -m64
++
++# Do unit-at-a-time unconditionally on x86_64, following the host
++KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
+Index: linux-2.6.22/arch/um/Makefile
+===================================================================
+--- linux-2.6.22.orig/arch/um/Makefile	2008-06-10 11:35:40.000000000 -0400
++++ linux-2.6.22/arch/um/Makefile	2008-07-07 12:54:13.000000000 -0400
+@@ -77,7 +77,6 @@ include $(srctree)/$(ARCH_DIR)/Makefile-
+ KERNEL_DEFINES = $(strip -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
+ 			 -Dmktime=kernel_mktime $(ARCH_KERNEL_DEFINES))
+ KBUILD_CFLAGS += $(KERNEL_DEFINES)
+-KBUILD_CFLAGS += $(call cc-option,-fno-unit-at-a-time,)
+ 
+ PHONY += linux
+ 
 
 -------------------------------------------------------------------------
 Sponsored by: SourceForge.net Community Choice Awards: VOTE NOW!
