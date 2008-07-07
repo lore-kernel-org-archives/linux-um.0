@@ -1,18 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KFCmP-0003SH-W7 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Jul 2008 11:46:42 -0700
-Received: from mail.gmx.net ([213.165.64.20])
-	by mail.sourceforge.net with smtp (Exim 4.44) id 1KFCmO-0007pv-E8
+	id 1KFu2f-0001LX-JA for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 07 Jul 2008 09:58:21 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KFu2f-0000VW-32
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 05 Jul 2008 11:46:41 -0700
-Message-ID: <486FC187.6010802@gmx.de>
-Date: Sat, 05 Jul 2008 20:46:31 +0200
-From: Ingo van Lil <inguin@gmx.de>
+	Mon, 07 Jul 2008 09:58:21 -0700
+Date: Mon, 7 Jul 2008 12:58:02 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080707165802.GA7747@c2.user-mode-linux.org>
+References: <1214488251-20927-1-git-send-email-bhalevy@panasas.com>
+	<20080627162645.GC8381@c2.user-mode-linux.org>
+	<7225594ED4A1304C9E43D030A886D221050BE1@daytona.int.panasas.com>
+	<48673A9B.8050907@panasas.com>
+	<20080630162201.GC6643@c2.user-mode-linux.org>
+	<48690BC7.5060809@panasas.com>
 MIME-Version: 1.0
-Subject: [uml-devel] hostfs oddities
+Content-Disposition: inline
+In-Reply-To: <48690BC7.5060809@panasas.com>
+Subject: Re: [uml-devel] [PATCH] fix extern inline errors with gcc 4.3.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,51 +35,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Benny Halevy <bhalevy@panasas.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Hi there,
+On Mon, Jun 30, 2008 at 07:37:27PM +0300, Benny Halevy wrote:
+> This isn't exactly aligned with the comment above.
+> Should be -lt 0400, as in 22eecde2f9034764a3fd095eecfa3adfb8ec9a98?
 
-I noticed two little misfeatures in the hostfs file system. The first 
-one is most certainly a bug, the second one might be functioning as 
-intended.
+Oops, right.
 
-1. If a file is held read-only by one process it cannot by creat()'ed by 
-another one:
+			Jeff
 
-   [root@localhost ~]# mount -t hostfs none /mnt
-   [root@localhost ~]# cd /mnt/tmp
-   [root@localhost tmp]# touch foo
-   [root@localhost tmp]# tail -f foo &
-   [1] 895
-   [root@localhost tmp]# > foo
-   -bash: foo: Invalid argument
-   [root@localhost tmp]# kill 895
-   [1]+  Terminated              tail -f foo
-   [root@localhost tmp]# > foo
-
-I tracked that problem down to the set_attr() function in hostfs_user.c: 
-It tries to ftruncate() the read-only file descriptor. The file should 
-be re-opened writable before changing its length.
-
-2. As long as a file is held open changes made outside the UML kernel 
-(i.e. on the host side) may not be visible:
-
-   [root@localhost tmp]# tail -f foo &
-   [1] 897
-   # Host system: echo "Hello World" > /tmp/foo
-   [root@localhost tmp]# cat foo
-   [root@localhost tmp]# kill 897
-   [1]+  Terminated              tail -f foo
-   [root@localhost tmp]# cat foo
-   Hello World
-
-I guess this is some kind of caching effect, because strace shows that 
-there is only a single read to the actual physical file. Maybe hostfs 
-should check whether the outside file has changed and invalidate the 
-cache if necessary.
-
-Cheers,
-Ingo
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 Sponsored by: SourceForge.net Community Choice Awards: VOTE NOW!
