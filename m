@@ -2,20 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KGDUB-0001z3-PN for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Jul 2008 06:44:03 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KGDUA-00079W-8e
+	id 1KGDyW-0005Y7-Ph for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Jul 2008 07:15:24 -0700
+Received: from mail.gmx.net ([213.165.64.20])
+	by mail.sourceforge.net with smtp (Exim 4.44) id 1KGDyV-0003AB-Ue
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Jul 2008 06:44:03 -0700
-Date: Mon, 7 Jul 2008 16:39:12 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080707203912.GB7648@c2.user-mode-linux.org>
-References: <486FC187.6010802@gmx.de>
+	Tue, 08 Jul 2008 07:15:24 -0700
+Message-ID: <48737664.3000608@gmx.de>
+Date: Tue, 08 Jul 2008 16:15:00 +0200
+From: Ingo van Lil <inguin@gmx.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <486FC187.6010802@gmx.de>
+References: <486FC187.6010802@gmx.de>
+	<20080707203912.GB7648@c2.user-mode-linux.org>
+In-Reply-To: <20080707203912.GB7648@c2.user-mode-linux.org>
 Subject: Re: [uml-devel] hostfs oddities
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,58 +29,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Ingo van Lil <inguin@gmx.de>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Jul 05, 2008 at 08:46:31PM +0200, Ingo van Lil wrote:
-> 1. If a file is held read-only by one process it cannot by creat()'ed by 
-> another one:
+Jeff Dike wrote:
+
+>> 1. If a file is held read-only by one process it cannot by creat()'ed by 
+>> another one:
+>>
+[...]
+>>
+>> I tracked that problem down to the set_attr() function in hostfs_user.c: 
+>> It tries to ftruncate() the read-only file descriptor. The file should 
+>> be re-opened writable before changing its length.
 > 
->    [root@localhost ~]# mount -t hostfs none /mnt
->    [root@localhost ~]# cd /mnt/tmp
->    [root@localhost tmp]# touch foo
->    [root@localhost tmp]# tail -f foo &
->    [1] 895
->    [root@localhost tmp]# > foo
->    -bash: foo: Invalid argument
->    [root@localhost tmp]# kill 895
->    [1]+  Terminated              tail -f foo
->    [root@localhost tmp]# > foo
-> 
-> I tracked that problem down to the set_attr() function in hostfs_user.c: 
-> It tries to ftruncate() the read-only file descriptor. The file should 
-> be re-opened writable before changing its length.
+> Looks like a good diagnosis.  There is code in host_file_open which is
+> supposed to handle this case, but it's not being hit when the shell
+> opens the file, which I don't understand.
 
-Looks like a good diagnosis.  There is code in host_file_open which is
-supposed to handle this case, but it's not being hit when the shell
-opens the file, which I don't understand.
+I tracked that down step-by-step on Saturday: If the O_TRUNC flag is set 
+in the open() syscall the file will first be truncated and then opened.
 
-> 2. As long as a file is held open changes made outside the UML kernel 
-> (i.e. on the host side) may not be visible:
-> 
->    [root@localhost tmp]# tail -f foo &
->    [1] 897
->    # Host system: echo "Hello World" > /tmp/foo
->    [root@localhost tmp]# cat foo
->    [root@localhost tmp]# kill 897
->    [1]+  Terminated              tail -f foo
->    [root@localhost tmp]# cat foo
->    Hello World
-> 
-> I guess this is some kind of caching effect, because strace shows that 
-> there is only a single read to the actual physical file. Maybe hostfs 
-> should check whether the outside file has changed and invalidate the 
-> cache if necessary.
+The call stack for truncating the file:
 
-Correct.  I've pondered using [id]notify to track changes on the host
-and either invalidate the UML cache or update it.  Both involve
-interactions with the page cache that I'm not entirely comfortable
-with right now.
+  - sys_open (fs/open.c)
+  - do_sys_open (fs/open.c)
+  - do_filp_open (fs/open.c)
+  - open_namei (fs/namei.c)
+  - may_open (fs/namei.c)
+  - do_truncate (fs/open.c)
 
-				Jeff
+And the call stack for actually opening the file:
 
--- 
-Work email - jdike at linux dot intel dot com
+  - sys_open (fs/open.c)
+  - do_sys_open (fs/open.c)
+  - do_filp_open (fs/open.c)
+  - nameidata_to_filp (fs/open.c)
+  - __dentry_open (fs/open.c)
+
+Maybe that helps.
+
+
+> Correct.  I've pondered using [id]notify to track changes on the host
+> and either invalidate the UML cache or update it.  Both involve
+> interactions with the page cache that I'm not entirely comfortable
+> with right now.
+
+That problem is actually more severe for my UML use case: I'm developing 
+firmware for an embedded device, and I'm using UML because it's quicker 
+and more convenient than developing on the target hardware. Now, if I 
+re-compile some library which is still in use by another process the 
+changes will not be visible until I reboot (or kill these background 
+processes).
+How do similar filesystems (e.g. NFS) solve that problem?
+
+Cheers,
+Ingo
+
 
 -------------------------------------------------------------------------
 Sponsored by: SourceForge.net Community Choice Awards: VOTE NOW!
