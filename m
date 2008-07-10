@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KH1Fq-0007yv-0i for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Jul 2008 11:52:34 -0700
+	id 1KH1qn-00041x-TU for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 10 Jul 2008 12:30:45 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KH1Fo-0006nf-Tp
+	(Exim 4.44) id 1KH1ql-0003u1-Vn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 10 Jul 2008 11:52:34 -0700
-Date: Thu, 10 Jul 2008 14:52:21 -0400
+	Thu, 10 Jul 2008 12:30:45 -0700
+Date: Thu, 10 Jul 2008 15:30:19 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080710185221.GI18429@c2.user-mode-linux.org>
+Message-ID: <20080710193019.GA20112@c2.user-mode-linux.org>
 References: <200807101619.54052.toralf.foerster@gmx.de>
-	<20080710165811.GA18429@c2.user-mode-linux.org>
-	<200807101934.33636.toralf.foerster@gmx.de>
+	<20080710163514.GA17561@c2.user-mode-linux.org>
+	<200807102010.02772.toralf.foerster@gmx.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200807101934.33636.toralf.foerster@gmx.de>
-Subject: Re: [uml-devel] UML kernel failed to start betvee 2.6.8-rc8
-	and	current git sources
+In-Reply-To: <200807102010.02772.toralf.foerster@gmx.de>
+Subject: Re: [uml-devel] UML kernel failed to start betvee 2.6.8-rc8 and
+	current git	sources
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,29 +34,54 @@ Content-Transfer-Encoding: quoted-printable
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Jul 10, 2008 at 07:34:29PM +0200, Toralf F=F6rster wrote:
-> At Thursday 10 July 2008 18:58:11 Jeff Dike wrote :
-> > On Thu, Jul 10, 2008 at 04:19:51PM +0200, Toralf F=F6rster wrote:
-> > > from v2.6.26-rc8 to v2.6.26-rc9-56-g6329d30 sth. affected UML, b/c my=
- user mode linux kernel produces this :
-> > =
+On Thu, Jul 10, 2008 at 08:09:59PM +0200, Toralf F=F6rster wrote:
+> At Thursday 10 July 2008 18:35:15 Jeff Dike wrote :
+> =
 
-> > That UML runs fine here.  Did you also upgrade the host kernel between
-> > rc8 and now?
-> > =
+> > What's the host?
+> =
 
-> Yes, but that's not the reason. The UML crashes both under host kernel
-> 2.6.24-gentoo-r8 and 2.6.25-gentoo-r6. The last (available) working UML k=
-ernel
-> is linux-v2.6.26-rc8-227 (tested under host kernel 2.6.25-gentoo-r6).
+> tfoerste@n22 ~ $ uname -a
+> Linux n22 2.6.25-gentoo-r6 #4 Thu Jul 10 19:49:36 CEST 2008 i686 Intel(R)=
+ Pentium(R) M processor 1700MHz GenuineIntel GNU/Linux
+> =
 
-Can you send me your crashing UML binary?
+> BTW,  this works fine and shows only the config :
+> n22 ~ # linux-v2.6.26-rc8-227 --showconfig =
 
-Also, can you bisect this and see where something broke?
+> =
 
-      	      	     	  Jeff
+> whereas this failed:
+> =
+
+> n22 ~ # linux-v2.6.26-rc9-56 --showconfig
+> Locating the bottom of the address space ... 0x0
+> Locating the top of the address space ... 0xc0000000
+
+OK, I believe you're seeing the same bug as Uli saw here:
+
+    http://marc.info/?l=3Dlinux-kernel&m=3D121011518003727&w=3D2
+
+More precise symptoms are here:
+
+     http://marc.info/?l=3Dlinux-kernel&m=3D121011722806093&w=3D2
+
+I never did figure that one out.  I had the same kernel version, same
+toolchain, same everything as far as I could see, and I couldn't
+reproduce it, except with a binary that he gave me.
+
+You're seeing it on i386, whereas he saw it on x86_64.
+
+The underlying problem is that somehow the UML initcalls aren't being
+run, which is why you're seeing all zeros in the register dump.
+
+If you bisect this, I bet you end up at the no-unit-at-a-time patch
+that he ended up at.  And I have no idea what that has to do with
+anything.
+
+				Jeff
 
 -- =
 
