@@ -1,32 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KIStC-0002sW-BS for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Jul 2008 11:35:10 -0700
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	id 1KInJy-0007X4-DW for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Jul 2008 09:24:10 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KIStA-0006PF-HD
+	(Exim 4.44) id 1KInJw-0008Fo-QG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Jul 2008 11:35:10 -0700
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1KISt4-0006Oc-7E for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 14 Jul 2008 18:35:02 +0000
-Received: from c-67-160-201-246.hsd1.ca.comcast.net ([67.160.201.246])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 14 Jul 2008 18:35:02 +0000
-Received: from dpejesh by c-67-160-201-246.hsd1.ca.comcast.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 14 Jul 2008 18:35:02 +0000
-From: David Shane Holden <dpejesh@yahoo.com>
-Date: Mon, 14 Jul 2008 11:30:15 -0700
-Message-ID: <g5g5vo$hok$1@ger.gmane.org>
+	Tue, 15 Jul 2008 09:24:10 -0700
+Date: Tue, 15 Jul 2008 12:24:00 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080715162400.GC12154@c2.user-mode-linux.org>
 References: <1214488251-20927-1-git-send-email-bhalevy@panasas.com>
-Mime-Version: 1.0
-In-Reply-To: <1214488251-20927-1-git-send-email-bhalevy@panasas.com>
+	<g5g5vo$hok$1@ger.gmane.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <g5g5vo$hok$1@ger.gmane.org>
 Subject: Re: [uml-devel] [PATCH] fix extern inline errors with gcc 4.3.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -37,68 +27,41 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: David Shane Holden <dpejesh@yahoo.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-SSB0cmllZCB0byBidWlsZCBhIFVNTCAyLjYuMjYga2VybmVsIG9uIERlYmlhbiAoMzItYml0KSBh
-bmQgcmFuIGludG8gdGhlIApzYW1lIHByb2JsZW0gcmVwb3J0ZWQgaGVyZSBodHRwOi8vbWFyYy5p
-bmZvLz90PTEyMTAxMTUzMzUwMDAwMiZyPTEmdz0yLiAKICBJZiBJIHVzZSBnY2MgNC4zIGV2ZXJ5
-dGhpbmcgd29ya3MgZmluZSwgYnV0IGlmIEkgdXNlIGdjYyA0LjEgb3IgNC4yLCAKVU1MIGNyYXNo
-ZXMgb24gc3RhcnR1cC4gIEkgY2hhbmdlZCB0aGUgZ2NjIHZlcnNpb24gY2hlY2sgdG8gMDQzMCBh
-bmQgCmJvdGggNC4xIGFuZCA0LjIgY29tcGlsZWQga2VybmVscyB3b3JrZWQgZmluZS4KCkFsc28s
-IGlzIHRoZXJlIGFueSBjaGFuY2Ugb2YgZ2V0dGluZyBhIFNLQVM0IHBhdGNoIGFnYWluc3QgMi42
-LjI2PyAgSSAKd2FzIHRyeWluZyB0byB0ZXN0IGl0IGFnYWluc3QgMi42LjI1LjEwIGFuZCBoYWQg
-c29tZSBzdHJhbmdlIGlzc3Vlcy4gIEkgCndhcyBydW5uaW5nIERlYmlhbiBFdGNoIGluc2lkZSBW
-TVdhcmUgd2l0aCBhIDIuNi4yNS4xMCBTS0FTNC1lbmFibGVkIAprZXJuZWwuICBXaGVuIEkgdHJp
-ZWQgdG8gc3RhcnQgdXAgYSBVTUwgaW5zdGFuY2UgZnJvbSByb290IG9yIGEgbm9uLXJvb3QgCmFj
-Y291bnQgSSB3YXMgZ2V0dGluZyB0aGUgc2FtZSBwcm9ibGVtIHJlcG9ydGVkIGhlcmUuLiAKaHR0
-cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUubGludXgudW1sLnVzZXIvMTMwNDUvZm9jdXM9MTMw
-NTkuICBOb3cgdGhlIAp3ZWlyZCBwYXJ0IGlzIGlmIEkgc3RhcnRlZCBVTUwgdmlhIHN1ZG8gZnJv
-bSBhIG5vbi1yb290IGFjY291bnQgSSdkIGdldCAKYSBzZWdmYXVsdCBzb21ld2hlcmUgaW4gbGli
-YyBidXQgdGhlbiBVTUwgd291bGQgYm9vdCB1cCBpbnRvIGEgd29ya2luZyAKTGludXggZW52aXJv
-bm1lbnQgc2F5aW5nIFNLQVM0IHdhcyBlbmFibGVkLiAgV2FzIGhvcGluZyB0byB0cnkgYW5kIHRl
-c3QgCml0IHNvbWUgbW9yZSBvbiBhIG5ld2VyIGtlcm5lbCBpZiB0aGVyZSdzIGEgcGF0Y2ggYXZh
-aWxhYmxlLgoKQmVubnkgSGFsZXZ5IHdyb3RlOgo+IGdjYyA0LjMuMCBuZWVkcyAtZnVuaXQtYXQt
-YS10aW1lIGZvciBleHRlcm4gaW5saW5lIGZ1bmN0aW9ucwo+IG90aGVyd2lzZSBpdCBkb2Vzbid0
-IGZpbmQgdGhlaXIgYm9keS4KPiAKPiBGb3IgZXhhbXBsZToKPiAkIGdjYyAtLXZlcnNpb24KPiBn
-Y2MgKEdDQykgNC4zLjAgMjAwODA0MjggKFJlZCBIYXQgNC4zLjAtOCkKPiAKPiAvdXNyMC9leHBv
-cnQvZGV2L2JoYWxldnkvZ2l0L2xpbnV4LXBuZnMtYmgtbmZzNDEvZnMvYnVmZmVyLmM6IEluIGZ1
-bmN0aW9uIOKAmGFsbG9jX3BhZ2VfYnVmZmVyc+KAmToKPiAvdXNyMC9leHBvcnQvZGV2L2JoYWxl
-dnkvZ2l0L2xpbnV4LXBuZnMtYmgtbmZzNDEvZnMvYnVmZmVyLmM6NTE6IHNvcnJ5LCB1bmltcGxl
-bWVudGVkOiBpbmxpbmluZyBmYWlsZWQgaW4gY2FsbCB0byDigJhpbml0X2J1ZmZlcuKAmTogZnVu
-Y3Rpb24gYm9keSBub3QgYXZhaWxhYmxlCj4gL3VzcjAvZXhwb3J0L2Rldi9iaGFsZXZ5L2dpdC9s
-aW51eC1wbmZzLWJoLW5mczQxL2ZzL2J1ZmZlci5jOjk0ODogc29ycnksIHVuaW1wbGVtZW50ZWQ6
-IGNhbGxlZCBmcm9tIGhlcmUKPiAKPiBGaXggZm9sbG93cyB0aGUgbGluZXMgb2YgY29tbWl0IDIy
-ZWVjZGUyZjkwMzQ3NjRhM2ZkMDk1ZWVjZmEzYWRmYjhlYzlhOTgKPiB0aGF0IHdhcyByZXZlcnRl
-ZCBieSBjb21taXQgYzBhMTgxMTFlNTcxMTM4NzQ3YTk4YWYxOGIzYTIxMjRkZjU2YTBkMSwKPiBq
-dXN0IGxpbWl0aW5nIHRoZSBmbGFnIGZvciBwcmUtIGdjYyA0LjMuMCByYXRoZXIgdGhhbiA0LjAu
-Cj4gCj4gU2lnbmVkLW9mZi1ieTogQmVubnkgSGFsZXZ5IDxiaGFsZXZ5QHBhbmFzYXMuY29tPgo+
-IC0tLQo+ICBhcmNoL3VtL01ha2VmaWxlIHwgICAgNiArKysrKy0KPiAgMSBmaWxlcyBjaGFuZ2Vk
-LCA1IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2FyY2gv
-dW0vTWFrZWZpbGUgYi9hcmNoL3VtL01ha2VmaWxlCj4gaW5kZXggZGJlYWIxNS4uZTdlZDM3YiAx
-MDA2NDQKPiAtLS0gYS9hcmNoL3VtL01ha2VmaWxlCj4gKysrIGIvYXJjaC91bS9NYWtlZmlsZQo+
-IEBAIC03Nyw3ICs3NywxMSBAQCBpbmNsdWRlICQoc3JjdHJlZSkvJChBUkNIX0RJUikvTWFrZWZp
-bGUtb3MtJChPUykKPiAgS0VSTkVMX0RFRklORVMgPSAkKHN0cmlwIC1EZXJybm89a2VybmVsX2Vy
-cm5vIC1Ec2lncHJvY21hc2s9a2VybmVsX3NpZ3Byb2NtYXNrIFwKPiAgCQkJIC1EbWt0aW1lPWtl
-cm5lbF9ta3RpbWUgJChBUkNIX0tFUk5FTF9ERUZJTkVTKSkKPiAgS0JVSUxEX0NGTEFHUyArPSAk
-KEtFUk5FTF9ERUZJTkVTKQo+IC1LQlVJTERfQ0ZMQUdTICs9ICQoY2FsbCBjYy1vcHRpb24sLWZu
-by11bml0LWF0LWEtdGltZSwpCj4gKyMgRGlzYWJsZSB1bml0LWF0LWEtdGltZSBtb2RlIG9uIHBy
-ZS1nY2MtNC4zIGNvbXBpbGVycywgaXQgbWFrZXMgZ2NjIHVzZQo+ICsjIGEgbG90IG1vcmUgc3Rh
-Y2sgZHVlIHRvIHRoZSBsYWNrIG9mIHNoYXJpbmcgb2Ygc3RhY2tsb3RzOgo+ICsjIGdjYyA0LjMu
-MCBuZWVkcyAtZnVuaXQtYXQtYS10aW1lIGZvciBleHRlcm4gaW5saW5lIGZ1bmN0aW9ucwo+ICtL
-QlVJTERfQ0ZMQUdTICs9ICQoc2hlbGwgaWYgWyAkKGNhbGwgY2MtdmVyc2lvbikgLWx0IDA0MDMg
-XSA7IHRoZW4gXAo+ICsJCQllY2hvICQoY2FsbCBjYy1vcHRpb24sLWZuby11bml0LWF0LWEtdGlt
-ZSk7IGZpIDspCj4gIAo+ICBQSE9OWSArPSBsaW51eAo+ICAKCgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClNw
-b25zb3JlZCBieTogU291cmNlRm9yZ2UubmV0IENvbW11bml0eSBDaG9pY2UgQXdhcmRzOiBWT1RF
-IE5PVyEKU3R1ZGllcyBoYXZlIHNob3duIHRoYXQgdm90aW5nIGZvciB5b3VyIGZhdm9yaXRlIG9w
-ZW4gc291cmNlIHByb2plY3QsCmFsb25nIHdpdGggYSBoZWFsdGh5IGRpZXQsIHJlZHVjZXMgeW91
-ciBwb3RlbnRpYWwgZm9yIGNocm9uaWMgbGFtZW5lc3MKYW5kIGJvcmVkb20uIFZvdGUgTm93IGF0
-IGh0dHA6Ly93d3cuc291cmNlZm9yZ2UubmV0L2NvbW11bml0eS9jY2EwOApfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwg
-bWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxp
-bnV4LWRldmVsCg==
+On Mon, Jul 14, 2008 at 11:30:15AM -0700, David Shane Holden wrote:
+> I tried to build a UML 2.6.26 kernel on Debian (32-bit) and ran into the 
+> same problem reported here http://marc.info/?t=121011533500002&r=1&w=2. 
+
+It's really 2.6.26, and not something from a day or two earlier?  I
+fixed the compilation bugs, supposedly, just before 2.6.26.
+
+>   If I use gcc 4.3 everything works fine, but if I use gcc 4.1 or 4.2, 
+> UML crashes on startup.
+
+If the crash says ptrace in it, then I'm currently trying to figure
+out what's happening with that.
+
+> Also, is there any chance of getting a SKAS4 patch against 2.6.26?
+
+Yup, I'm working on it...
+
+     	 	    Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
+
+-------------------------------------------------------------------------
+This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
+Build the coolest Linux based applications with Moblin SDK & win great prizes
+Grand prize is a trip for two to an Open Source event anywhere in the world
+http://moblin-contest.org/redirect.php?banner_id=100&url=/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
