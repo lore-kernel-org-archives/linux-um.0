@@ -2,22 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KInJy-0007X4-DW for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Jul 2008 09:24:10 -0700
+	id 1KInRv-00005P-Qn for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 15 Jul 2008 09:32:23 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KInJw-0008Fo-QG
+	(Exim 4.44) id 1KInRv-0003Hx-Am
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 15 Jul 2008 09:24:10 -0700
-Date: Tue, 15 Jul 2008 12:24:00 -0400
+	Tue, 15 Jul 2008 09:32:23 -0700
+Date: Tue, 15 Jul 2008 12:32:16 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080715162400.GC12154@c2.user-mode-linux.org>
-References: <1214488251-20927-1-git-send-email-bhalevy@panasas.com>
-	<g5g5vo$hok$1@ger.gmane.org>
+Message-ID: <20080715163216.GD12154@c2.user-mode-linux.org>
+References: <6d291e080807110053r3980a9dav226c6ea9d8e0b9af@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <g5g5vo$hok$1@ger.gmane.org>
-Subject: Re: [uml-devel] [PATCH] fix extern inline errors with gcc 4.3.0
+In-Reply-To: <6d291e080807110053r3980a9dav226c6ea9d8e0b9af@mail.gmail.com>
+Subject: Re: [uml-devel] Build Errors
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,27 +30,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: David Shane Holden <dpejesh@yahoo.com>
+To: Stoyan Gaydarov <stoyboyker@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Jul 14, 2008 at 11:30:15AM -0700, David Shane Holden wrote:
-> I tried to build a UML 2.6.26 kernel on Debian (32-bit) and ran into the 
-> same problem reported here http://marc.info/?t=121011533500002&r=1&w=2. 
+On Fri, Jul 11, 2008 at 02:53:09AM -0500, Stoyan Gaydarov wrote:
+> If I did these builds wrong then do let me know what I can
+> do to fix them and re-run them so that I can provide some useful
+> information in the future. 
 
-It's really 2.6.26, and not something from a day or two earlier?  I
-fixed the compilation bugs, supposedly, just before 2.6.26.
+There's not a lot of point to tarring up 17 logs when there are only
+four distinct failures.  Two of them were due to you not having pcap
+or VDE installed on the host.
 
->   If I use gcc 4.3 everything works fine, but if I use gcc 4.1 or 4.2, 
-> UML crashes on startup.
+The next most common one looks like SMP getting turned on somehow.
 
-If the crash says ptrace in it, then I'm currently trying to figure
-out what's happening with that.
+There's one with some undefined symbols at the very end, which I have
+never seen before.
 
-> Also, is there any chance of getting a SKAS4 patch against 2.6.26?
-
-Yup, I'm working on it...
-
-     	 	    Jeff
+			Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
