@@ -2,22 +2,30 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KJwzU-0001A9-Sc for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Jul 2008 13:55:49 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1KJwxd-0000wB-1j for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 Jul 2008 13:53:53 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KJwzT-0004H6-Cc
+	(Exim 4.44) id 1KJwxZ-0003el-LM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Jul 2008 13:55:48 -0700
-Date: Fri, 18 Jul 2008 16:55:32 -0400
+	Fri, 18 Jul 2008 13:53:52 -0700
+Date: Fri, 18 Jul 2008 16:53:42 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080718205532.GG13572@c2.user-mode-linux.org>
-References: <804dabb00807181222r2e80126fp75bf7bdd9c4cac73@mail.gmail.com>
+Message-ID: <20080718205342.GE13572@c2.user-mode-linux.org>
+References: <5df78e1d0807030053x8a9bfabo582ea78e74b2c65b@mail.gmail.com>
+	<20080703135639.GA8262@c2.user-mode-linux.org>
+	<5df78e1d0807031806s74c13c84idadc62c1d1e0e93b@mail.gmail.com>
+	<5df78e1d0807091925q64c0121fk3d33c37df8d80d18@mail.gmail.com>
+	<20080710170210.GB18429@c2.user-mode-linux.org>
+	<5df78e1d0807140206m43291128t32f1489177ad6e3d@mail.gmail.com>
+	<20080714144612.GA5751@c2.user-mode-linux.org>
+	<5df78e1d0807160252j1b610c41la1a2f5092ae04be7@mail.gmail.com>
+	<5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <804dabb00807181222r2e80126fp75bf7bdd9c4cac73@mail.gmail.com>
-Subject: Re: [uml-devel] Kernel panic - not syncing: do_syscall_stub
-	:	PTRACE_SETREGS failed, errno = 5
+In-Reply-To: <5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
+Subject: Re: [uml-devel] 2.6.25 uml kernel crashes when it calls down() on	a
+	semaphore with zero counter
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,39 +39,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Peter Teoh <htmldeveloper@gmail.com>
+To: Jiaying Zhang <jiayingz@google.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Jul 19, 2008 at 03:22:58AM +0800, Peter Teoh wrote:
-> Next I checkout the 2.6.26 branch (current master), and generated a
-> UML guest for it.  Now the guest have the same version as the host -
-> 2.6.26.   But bootup with errors:
+On Thu, Jul 17, 2008 at 12:55:09PM +0800, Jiaying Zhang wrote:
+> The patch below solves the 2.6.25 uml crash problem for me. Looks like the
+> problem should be away in 2.6.26 kernel because down_interruptible has
+> changed to the C code since 2.6.26. But I got kernel panic while booting
+> the 2.6.26 kernel :(.
 > 
-> EXT3-fs: mounted filesystem with ordered data mode.
-> VFS: Mounted root (ext3 filesystem) readonly.
-> Registers -
->         0       0x0
->         1       0x0
->         2       0x0
->         3       0x0
->         4       0x0
->         5       0x0
->         6       0x0
->         7       0x0
->         8       0x0
->         9       0x0
->         10      0x0
->         11      0x0
->         12      0x0
->         13      0x0
->         14      0x0
->         15      0x0
->         16      0x0
-> Kernel panic - not syncing: do_syscall_stub : PTRACE_SETREGS failed, errno = 5
+> --- linux-2.6.25.4/lib/semaphore-sleepers.c     2008-05-15
+> 23:00:12.000000000 +0800
+> +++ linux-2.6.25.4-new/lib/semaphore-sleepers.c 2008-07-17
+> 12:20:47.000000000 +0800
+> @@ -48,12 +48,12 @@
+>   *    we cannot lose wakeup events.
+>   */
+> 
+> -void __up(struct semaphore *sem)
+> +asmregparm void __up(struct semaphore *sem)
+>  {
+>         wake_up(&sem->wait);
+>  }
 
-I'm working on it - so far no big clues yet...
+You continue to ignore a few important facts:
 
-    	       	    Jeff
+    1 - There are a ton of semaphores in UML
+    2 - They all work, except for yours
+    Therefore, a patch which changes all semphores across all
+architectures for which asmregparam has meaning can't possibly be the
+correct fix.
+
+However, you might have treated this as an important clue, and looked
+at whether your broken semaphore has a different set of declarations
+in force than those in the rest of the kernel.
+
+   	      	       Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
