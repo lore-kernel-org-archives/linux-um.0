@@ -2,39 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KJLWR-0004Ev-Ho for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Jul 2008 21:55:19 -0700
-Received: from smtp-out.google.com ([216.239.33.17])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KJLWO-0002ey-KC
+	id 1KJvXi-00084h-2R for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 Jul 2008 12:23:02 -0700
+Received: from hs-out-0708.google.com ([64.233.178.250])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KJvXf-0005XW-4n
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 16 Jul 2008 21:55:19 -0700
-Received: from spaceape8.eur.corp.google.com (spaceape8.eur.corp.google.com
-	[172.28.16.142]) by smtp-out3.google.com with ESMTP id m6H4tBoH009018
+	Fri, 18 Jul 2008 12:23:01 -0700
+Received: by hs-out-0708.google.com with SMTP id 55so130100hsc.10
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 17 Jul 2008 05:55:11 +0100
-Received: from rv-out-0506.google.com (rvfb25.prod.google.com [10.140.179.25])
-	by spaceape8.eur.corp.google.com with ESMTP id m6H4svOk026581
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 17 Jul 2008 05:55:10 +0100
-Received: by rv-out-0506.google.com with SMTP id b25so6065946rvf.37
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 16 Jul 2008 21:55:10 -0700 (PDT)
-Message-ID: <5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
-Date: Thu, 17 Jul 2008 12:55:09 +0800
-From: "Jiaying Zhang" <jiayingz@google.com>
-In-Reply-To: <5df78e1d0807160252j1b610c41la1a2f5092ae04be7@mail.gmail.com>
+	Fri, 18 Jul 2008 12:22:58 -0700 (PDT)
+Message-ID: <804dabb00807181222r2e80126fp75bf7bdd9c4cac73@mail.gmail.com>
+Date: Sat, 19 Jul 2008 03:22:58 +0800
+From: "Peter Teoh" <htmldeveloper@gmail.com>
 MIME-Version: 1.0
-References: <5df78e1d0807030053x8a9bfabo582ea78e74b2c65b@mail.gmail.com>
-	<20080703135639.GA8262@c2.user-mode-linux.org>
-	<5df78e1d0807031806s74c13c84idadc62c1d1e0e93b@mail.gmail.com>
-	<5df78e1d0807091925q64c0121fk3d33c37df8d80d18@mail.gmail.com>
-	<20080710170210.GB18429@c2.user-mode-linux.org>
-	<5df78e1d0807140206m43291128t32f1489177ad6e3d@mail.gmail.com>
-	<20080714144612.GA5751@c2.user-mode-linux.org>
-	<5df78e1d0807160252j1b610c41la1a2f5092ae04be7@mail.gmail.com>
-Subject: Re: [uml-devel] 2.6.25 uml kernel crashes when it calls down() on a
-	semaphore with zero counter
+Content-Disposition: inline
+Subject: [uml-devel] Kernel panic - not syncing: do_syscall_stub :
+	PTRACE_SETREGS failed, errno = 5
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -44,199 +27,96 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0455895903=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
---===============0455895903==
-Content-Type: multipart/alternative; 
-	boundary="----=_Part_34076_28377461.1216270509925"
+First I tried the 2.6.24-rc7.bz2 image mentioned at:
 
-------=_Part_34076_28377461.1216270509925
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+http://user-mode-linux.sourceforge.net/
 
-The patch below solves the 2.6.25 uml crash problem for me. Looks like the
-problem should be away in 2.6.26 kernel because down_interruptible has
-changed to the C code since 2.6.26. But I got kernel panic while booting
-the 2.6.26 kernel :(.
+And it worked.   Next, using the same rootfs, I checkout 2.6.26-rc7
+and generated a UML guest for it.   Looking at the
+uml/include/config/kernel.release indicated the version of the UML
+guest as:
 
---- linux-2.6.25.4/lib/semaphore-sleepers.c     2008-05-15
-23:00:12.000000000 +0800
-+++ linux-2.6.25.4-new/lib/semaphore-sleepers.c 2008-07-17
-12:20:47.000000000 +0800
-@@ -48,12 +48,12 @@
-  *    we cannot lose wakeup events.
-  */
+2.6.26-rc4-00103-g1beee8d
 
--void __up(struct semaphore *sem)
-+asmregparm void __up(struct semaphore *sem)
- {
-        wake_up(&sem->wait);
- }
+It bootup no problem as well.
 
--void __sched __down(struct semaphore *sem)
-+asmregparm void __sched __down(struct semaphore *sem)
- {
-        struct task_struct *tsk = current;
-        DECLARE_WAITQUEUE(wait, tsk);
-@@ -90,7 +90,7 @@ void __sched __down(struct semaphore *se
-        tsk->state = TASK_RUNNING;
- }
+Next I checkout the 2.6.26 branch (current master), and generated a
+UML guest for it.  Now the guest have the same version as the host -
+2.6.26.   But bootup with errors:
 
--int __sched __down_interruptible(struct semaphore *sem)
-+asmregparm int __sched __down_interruptible(struct semaphore *sem)
- {
-        int retval = 0;
-        struct task_struct *tsk = current;
-@@ -153,7 +153,7 @@ int __sched __down_interruptible(struct
-  * single "cmpxchg" without failure cases,
-  * but then it wouldn't work on a 386.
-  */
--int __down_trylock(struct semaphore *sem)
-+asmregparm int __down_trylock(struct semaphore *sem)
- {
-        int sleepers;
-        unsigned long flags;
+EXT3-fs: mounted filesystem with ordered data mode.
+VFS: Mounted root (ext3 filesystem) readonly.
+Registers -
+        0       0x0
+        1       0x0
+        2       0x0
+        3       0x0
+        4       0x0
+        5       0x0
+        6       0x0
+        7       0x0
+        8       0x0
+        9       0x0
+        10      0x0
+        11      0x0
+        12      0x0
+        13      0x0
+        14      0x0
+        15      0x0
+        16      0x0
+Kernel panic - not syncing: do_syscall_stub : PTRACE_SETREGS failed, errno = 5
 
-Jiaying
+EIP: 0073:[<b7f33424>] CPU: 0 Not tainted ESP: 007b:bfe314b0 EFLAGS: 00200246
+    Not tainted
+EAX: 00000000 EBX: 00000fed ECX: 00000013 EDX: 00000fed
+ESI: 00000fe9 EDI: 00000003 EBP: bfe314d8 DS: 007b ES: 007b
+0fc5cca8:  [<08069a9b>] show_regs+0xb4/0xb9
+0fc5ccd4:  [<0805968e>] panic_exit+0x25/0x3b
+0fc5cce8:  [<080832b6>] notifier_call_chain+0x27/0x4c
+0fc5cd10:  [<080832f2>] __atomic_notifier_call_chain+0x17/0x19
+0fc5cd20:  [<08083309>] atomic_notifier_call_chain+0x15/0x17
+0fc5cd3c:  [<0806f9ef>] panic+0x52/0xdd
+0fc5cd5c:  [<0806648b>] do_syscall_stub+0x6e/0x173
+0fc5cd84:  [<0806669a>] run_syscall_stub+0x9c/0xa1
+0fc5cd98:  [<08067ad2>] write_ldt_entry+0xe2/0x140
+0fc5cde0:  [<0806813f>] init_new_ldt+0x193/0x2a8
+0fc5ce58:  [<08059986>] init_new_context+0xb7/0xf5
+0fc5ce78:  [<080ad6cc>] bprm_mm_init+0x3f/0x164
+0fc5cea8:  [<080ae2d1>] do_execve+0x6d/0x198
+0fc5cec8:  [<080564f9>] execve1+0x25/0x40
+0fc5ceec:  [<08056565>] um_execve+0x14/0x34
+0fc5cef8:  [<08058225>] kernel_execve+0x2c/0x36
+0fc5cf18:  [<0805624c>] run_init_process+0x18/0x1d
+0fc5cf2c:  [<080562f7>] init_post+0xa6/0xcf
+0fc5cf38:  [<0804953f>] kernel_init+0x1e7/0x1f1
+0fc5cfb4:  [<08063c0f>] run_kernel_thread+0x37/0x3f
+0fc5cfe0:  [<08057541>] new_thread_handler+0x57/0x7e
+0fc5cffc:  [<00000000>] 0x0
 
-On Wed, Jul 16, 2008 at 5:52 PM, Jiaying Zhang <jiayingz@google.com> wrote:
+Terminated
 
->
->
-> On Mon, Jul 14, 2008 at 10:46 PM, Jeff Dike <jdike@addtoit.com> wrote:
->
->> On Mon, Jul 14, 2008 at 05:06:49PM +0800, Jiaying Zhang wrote:
->> > The 2.6.24 kernels are OK, but I have seen this problem with all of the
->> > 2.6.25 kernels I have tried. There have been a lot of changes between
->> > 2.6.24 kernels and 2.6.25 kernels. I am not sure which one may lead
->> > to this problem.
->>
->> So bisect it.
->
->
-> The problem seems to be related to the getting rid of fastcall changes
-> introduced in 2.6.25 kernels. I found the problem started to happen from
-> commit 82f74e7159749cc511ebf5954a7b9ea6ad634949: x86: unify
-> include/asm-x86/linkage_[32|64].h.
-> After that, several commits related to __down_interruptible had been
-> checked in, but they did not solve the crashing problem I saw.
-> In particular, I thought the d50efc6c40620b2e11648cac64ebf4a824e40382
-> x86: fix UML and -regparm=3 commit would solve the problem because it
-> adds the asmregparm macro that is the same as fastcall and uses the macro
-> for  __down_failed_interruptible declaration. Unfortunately, I tried that
-> version
-> of git code and saw the same problem happened.
->
->
->> > Looks like the problem happens when __down_interruptible is called.
->> > I checked the semaphore passed to __down_interruptible under gdb
->> > and found it was corrupted:
->> > (gdb) f 18
->> > #18 __down_interruptible (sem=0x9f68d08) at include/linux/list.h:50
->> > 50              prev->next = new;
->> > (gdb) p sem
->> > $15 = (struct semaphore *) 0x9f68d08
->> > (gdb) p *sem
->> > $16 = {count = {counter = -268435295}, sleepers = 4, wait = {lock =
->> > {raw_lock = {<No data fields>}}, task_list = {
->> >       next = 0x9f68d5c, prev = 0x18124}}}
->> >
->> > But the semaphore looks correct before calling down_interruptible:
->>
->> What's the problem with debugging this, then?  You step through the
->> code starting when the semaphore is good and see exactly when it gets
->> corrupted.
->>
->
-> Yes. Looks like the corruption happens when __down_failed_interruptible()
-> calls __down_interruptible() and it has something to do with the 2.6.25's
-> x86
-> gcc attribute changes.
->
-> Jiaying
->
->
+Seems similar to that of:
 
-------=_Part_34076_28377461.1216270509925
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+http://www.gossamer-threads.com/lists/linux/kernel/944646
 
-<div dir="ltr">The patch below solves the 2.6.25 uml crash problem for me. Looks like the<br>problem should be away in 2.6.26 kernel because down_interruptible has <br>changed to the C code since <a href="http://2.6.26.">2.6.26.</a> But I got kernel panic while booting<br>
-the 2.6.26 kernel :(.<br><br>--- linux-2.6.25.4/lib/semaphore-sleepers.c&nbsp;&nbsp;&nbsp;&nbsp; 2008-05-15 23:00:12.000000000 +0800<br>+++ linux-2.6.25.4-new/lib/semaphore-sleepers.c 2008-07-17 12:20:47.000000000 +0800<br>@@ -48,12 +48,12 @@<br>
-&nbsp; *&nbsp;&nbsp;&nbsp; we cannot lose wakeup events.<br>&nbsp; */<br><br>-void __up(struct semaphore *sem)<br>+asmregparm void __up(struct semaphore *sem)<br>&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wake_up(&amp;sem-&gt;wait);<br>&nbsp;}<br><br>-void __sched __down(struct semaphore *sem)<br>
-+asmregparm void __sched __down(struct semaphore *sem)<br>&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct task_struct *tsk = current;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DECLARE_WAITQUEUE(wait, tsk);<br>@@ -90,7 +90,7 @@ void __sched __down(struct semaphore *se<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tsk-&gt;state = TASK_RUNNING;<br>
-&nbsp;}<br><br>-int __sched __down_interruptible(struct semaphore *sem)<br>+asmregparm int __sched __down_interruptible(struct semaphore *sem)<br>&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int retval = 0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct task_struct *tsk = current;<br>@@ -153,7 +153,7 @@ int __sched __down_interruptible(struct<br>
-&nbsp; * single &quot;cmpxchg&quot; without failure cases,<br>&nbsp; * but then it wouldn&#39;t work on a 386.<br>&nbsp; */<br>-int __down_trylock(struct semaphore *sem)<br>+asmregparm int __down_trylock(struct semaphore *sem)<br>&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int sleepers;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned long flags;<br><br>Jiaying<br><br><div class="gmail_quote">On Wed, Jul 16, 2008 at 5:52 PM, Jiaying Zhang &lt;<a href="mailto:jiayingz@google.com">jiayingz@google.com</a>&gt; wrote:<br>
-<blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;"><br><br><div class="gmail_quote"><div class="Ih2E3d">On Mon, Jul 14, 2008 at 10:46 PM, Jeff Dike &lt;<a href="mailto:jdike@addtoit.com" target="_blank">jdike@addtoit.com</a>&gt; wrote:<br>
-<blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-<div>On Mon, Jul 14, 2008 at 05:06:49PM +0800, Jiaying Zhang wrote:<br>
-&gt; The 2.6.24 kernels are OK, but I have seen this problem with all of the<br>
-&gt; 2.6.25 kernels I have tried. There have been a lot of changes between<br>
-&gt; 2.6.24 kernels and 2.6.25 kernels. I am not sure which one may lead<br>
-&gt; to this problem.<br>
-<br>
-</div>So bisect it.</blockquote></div><div><br>The problem seems to be related to the getting rid of fastcall changes <br>introduced in 2.6.25 kernels. I found the problem started to happen from<br>commit 82f74e7159749cc511ebf5954a7b9ea6ad634949: x86: unify include/asm-x86/linkage_[32|64].h.<br>
+Any fix yet?
 
-After that, several commits related to __down_interruptible had been<br>checked in, but they did not solve the crashing problem I saw.<br>In particular, I thought the d50efc6c40620b2e11648cac64ebf4a824e40382<br>
-x86: fix UML and -regparm=3 commit would solve the problem because it<br>adds the asmregparm macro that is the same as fastcall and uses the macro<br>for&nbsp; __down_failed_interruptible declaration. Unfortunately, I tried that version<br>
-
-of git code and saw the same problem happened.<br>
-<br>
-</div><div class="Ih2E3d"><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;"><div><br>
-&gt; Looks like the problem happens when __down_interruptible is called.<br>
-&gt; I checked the semaphore passed to __down_interruptible under gdb<br>
-&gt; and found it was corrupted:<br>
-&gt; (gdb) f 18<br>
-&gt; #18 __down_interruptible (sem=0x9f68d08) at include/linux/list.h:50<br>
-&gt; 50 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;prev-&gt;next = new;<br>
-&gt; (gdb) p sem<br>
-&gt; $15 = (struct semaphore *) 0x9f68d08<br>
-&gt; (gdb) p *sem<br>
-&gt; $16 = {count = {counter = -268435295}, sleepers = 4, wait = {lock =<br>
-&gt; {raw_lock = {&lt;No data fields&gt;}}, task_list = {<br>
-&gt; &nbsp; &nbsp; &nbsp; next = 0x9f68d5c, prev = 0x18124}}}<br>
-&gt;<br>
-&gt; But the semaphore looks correct before calling down_interruptible:<br>
-<br>
-</div>What&#39;s the problem with debugging this, then? &nbsp;You step through the<br>
-code starting when the semaphore is good and see exactly when it gets<br>
-corrupted.<br>
-<div><div></div><div></div></div></blockquote></div><div><br>Yes. Looks like the corruption happens when __down_failed_interruptible()<br>calls __down_interruptible() and it has something to do with the 2.6.25&#39;s x86<br>
-
-gcc attribute changes.<br><br>Jiaying<br><br></div></div>
-</blockquote></div><br></div>
-
-------=_Part_34076_28377461.1216270509925--
-
-
---===============0455895903==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Regards,
+Peter Teoh
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
 Build the coolest Linux based applications with Moblin SDK & win great prizes
 Grand prize is a trip for two to an Open Source event anywhere in the world
 http://moblin-contest.org/redirect.php?banner_id=100&url=/
---===============0455895903==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============0455895903==--
-
