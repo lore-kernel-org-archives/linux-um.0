@@ -1,32 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
-	helo=mail.sourceforge.net)
-	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KKb5U-0003bc-Jn for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Jul 2008 08:44:40 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KKb5T-0003vK-5Q
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Jul 2008 08:44:40 -0700
-Date: Sun, 20 Jul 2008 11:44:20 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080720154420.GA6244@c2.user-mode-linux.org>
-References: <20080703135639.GA8262@c2.user-mode-linux.org>
-	<5df78e1d0807031806s74c13c84idadc62c1d1e0e93b@mail.gmail.com>
-	<5df78e1d0807091925q64c0121fk3d33c37df8d80d18@mail.gmail.com>
-	<20080710170210.GB18429@c2.user-mode-linux.org>
-	<5df78e1d0807140206m43291128t32f1489177ad6e3d@mail.gmail.com>
-	<20080714144612.GA5751@c2.user-mode-linux.org>
-	<5df78e1d0807160252j1b610c41la1a2f5092ae04be7@mail.gmail.com>
-	<5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
-	<20080718205342.GE13572@c2.user-mode-linux.org>
-	<20080720152022.GE1520@inferi.kami.home>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20080720152022.GE1520@inferi.kami.home>
-Subject: Re: [uml-devel] 2.6.25 uml kernel crashes when it calls down() on	a
-	semaphore with zero counter
+From: Jaswinder Singh <jaswinder@infradead.org>
+In-Reply-To: <1216597993.3679.144.camel@jaswinder.satnam>
+References: <1216592500.3679.14.camel@jaswinder.satnam>
+	<1216592798.3679.22.camel@jaswinder.satnam>
+	<1216592879.3679.24.camel@jaswinder.satnam>
+	<1216593035.3679.27.camel@jaswinder.satnam>
+	<1216596035.3679.95.camel@jaswinder.satnam>
+	<1216596106.3679.98.camel@jaswinder.satnam>
+	<1216596325.3679.104.camel@jaswinder.satnam>
+	<1216596669.3679.112.camel@jaswinder.satnam>
+	<1216596749.3679.115.camel@jaswinder.satnam>
+	<1216596835.3679.117.camel@jaswinder.satnam>
+	<1216596932.3679.120.camel@jaswinder.satnam>
+	<1216597066.3679.123.camel@jaswinder.satnam>
+	<1216597151.3679.125.camel@jaswinder.satnam>
+	<1216597237.3679.128.camel@jaswinder.satnam>
+	<1216597352.3679.131.camel@jaswinder.satnam>
+	<1216597566.3679.135.camel@jaswinder.satnam>
+	<1216597856.3679.139.camel@jaswinder.satnam>
+	<1216597923.3679.141.camel@jaswinder.satnam>
+	<1216597993.3679.144.camel@jaswinder.satnam>
+Date: Mon, 21 Jul 2008 05:24:27 +0530
+Message-Id: <1216598067.3679.146.camel@jaswinder.satnam>
+Mime-Version: 1.0
+Subject: [uml-devel] [PATCH 19/22] um: Introducing asm/syscalls.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,22 +37,98 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Mattia Dongili <malattia@linux.it>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jiaying Zhang <jiayingz@google.com>
+To: LKML <linux-kernel@vger.kernel.org>, kernelnewbies <kernelnewbies@nl.linux.org>, David Woodhouse <dwmw2@infradead.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Mon, Jul 21, 2008 at 12:20:22AM +0900, Mattia Dongili wrote:
-> it's not entirely clear to me why, but that patch fixes a segfault that
-> I experience when booting uml 2.6.25 built with gcc-4.3 on a 2.6.25
-> host (I also applied your ICE workaround patch).
+Declaring arch-dependent syscalls for um architecture
 
-Hmmm, get a stack trace from it and let's see what's going on.
+Signed-off-by: Jaswinder Singh <jaswinder@infradead.org>
+---
+ arch/um/kernel/exec.c     |    1 +
+ arch/um/kernel/signal.c   |    3 +--
+ arch/um/kernel/syscall.c  |    1 +
+ include/asm-um/syscalls.h |   32 ++++++++++++++++++++++++++++++++
+ 4 files changed, 35 insertions(+), 2 deletions(-)
 
-Presumably, you're not doing kernel development, just building a stock UML?
-
-	    	       	     Jeff
-
+diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
+index f5d7f45..cd9fa46 100644
+--- a/arch/um/kernel/exec.c
++++ b/arch/um/kernel/exec.c
+@@ -8,6 +8,7 @@
+ #include "linux/smp_lock.h"
+ #include "linux/ptrace.h"
+ #include "linux/sched.h"
++#include "linux/syscalls.h"
+ #include "asm/current.h"
+ #include "asm/processor.h"
+ #include "asm/uaccess.h"
+diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
+index b0fce72..9a72afc 100644
+--- a/arch/um/kernel/signal.c
++++ b/arch/um/kernel/signal.c
+@@ -6,8 +6,7 @@
+ #include <linux/module.h>
+ #include <linux/ptrace.h>
+ #include <linux/sched.h>
+-#include <asm/siginfo.h>
+-#include <asm/signal.h>
++#include <linux/syscalls.h>
+ #include <asm/unistd.h>
+ #include "frame_kern.h"
+ #include "kern_util.h"
+diff --git a/arch/um/kernel/syscall.c b/arch/um/kernel/syscall.c
+index 128ee85..0c35194 100644
+--- a/arch/um/kernel/syscall.c
++++ b/arch/um/kernel/syscall.c
+@@ -8,6 +8,7 @@
+ #include "linux/mm.h"
+ #include "linux/sched.h"
+ #include "linux/utsname.h"
++#include "linux/syscalls.h"
+ #include "asm/current.h"
+ #include "asm/mman.h"
+ #include "asm/uaccess.h"
+diff --git a/include/asm-um/syscalls.h b/include/asm-um/syscalls.h
+index e69de29..2124282 100644
+--- a/include/asm-um/syscalls.h
++++ b/include/asm-um/syscalls.h
+@@ -0,0 +1,32 @@
++/*
++ * syscalls.h - Linux syscall interfaces (arch-specific)
++ *
++ * Copyright (c) 2008 Jaswinder Singh
++ *
++ * This file is released under the GPLv2.
++ * See the file COPYING for more details.
++ *
++ * Please do not call me directly, include linux/syscalls.h
++ */
++
++#ifndef _ASM_UM_SYSCALLS_H
++#define _ASM_UM_SYSCALLS_H
++
++/* kernel/exec.c */
++long sys_execve(char __user *, char __user *__user *,
++		char __user * __user *);
++
++/* kernel/signal.c */
++long sys_sigsuspend(int, int, old_sigset_t);
++long sys_sigaltstack(const stack_t __user *, stack_t __user *);
++
++/* kernel/syscall.c */
++long sys_fork(void);
++long sys_vfork(void);
++long sys_mmap2(unsigned long, unsigned long, unsigned long,
++	       unsigned long, unsigned long, unsigned long);
++long old_mmap(unsigned long, unsigned long, unsigned long,
++	      unsigned long, unsigned long, unsigned long);
++long sys_uname(struct old_utsname __user *);
++
++#endif /* _ASM_UM_SYSCALLS_H */
 -- 
-Work email - jdike at linux dot intel dot com
+1.5.5.1
+
+
+
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
