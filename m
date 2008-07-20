@@ -1,31 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KJwxd-0000wB-1j for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Jul 2008 13:53:53 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KJwxZ-0003el-LM
+	id 1KKV0g-0005h3-Bl for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 20 Jul 2008 02:15:18 -0700
+Received: from an-out-0708.google.com ([209.85.132.246])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KKV0e-0007c2-VC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Jul 2008 13:53:52 -0700
-Date: Fri, 18 Jul 2008 16:53:42 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080718205342.GE13572@c2.user-mode-linux.org>
-References: <5df78e1d0807030053x8a9bfabo582ea78e74b2c65b@mail.gmail.com>
-	<20080703135639.GA8262@c2.user-mode-linux.org>
-	<5df78e1d0807031806s74c13c84idadc62c1d1e0e93b@mail.gmail.com>
-	<5df78e1d0807091925q64c0121fk3d33c37df8d80d18@mail.gmail.com>
-	<20080710170210.GB18429@c2.user-mode-linux.org>
-	<5df78e1d0807140206m43291128t32f1489177ad6e3d@mail.gmail.com>
-	<20080714144612.GA5751@c2.user-mode-linux.org>
-	<5df78e1d0807160252j1b610c41la1a2f5092ae04be7@mail.gmail.com>
-	<5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
+	Sun, 20 Jul 2008 02:15:18 -0700
+Received: by an-out-0708.google.com with SMTP id b21so314240ana.6
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 20 Jul 2008 02:15:16 -0700 (PDT)
+Message-ID: <804dabb00807200215n32b5171do97d344f2f954c490@mail.gmail.com>
+Date: Sun, 20 Jul 2008 17:15:16 +0800
+From: "Peter Teoh" <htmldeveloper@gmail.com>
+In-Reply-To: <20080718205532.GG13572@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
-Subject: Re: [uml-devel] 2.6.25 uml kernel crashes when it calls down() on	a
-	semaphore with zero counter
+References: <804dabb00807181222r2e80126fp75bf7bdd9c4cac73@mail.gmail.com>
+	<20080718205532.GG13572@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] Kernel panic - not syncing: do_syscall_stub :
+	PTRACE_SETREGS failed, errno = 5
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,45 +34,61 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jiaying Zhang <jiayingz@google.com>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Jul 17, 2008 at 12:55:09PM +0800, Jiaying Zhang wrote:
-> The patch below solves the 2.6.25 uml crash problem for me. Looks like the
-> problem should be away in 2.6.26 kernel because down_interruptible has
-> changed to the C code since 2.6.26. But I got kernel panic while booting
-> the 2.6.26 kernel :(.
-> 
-> --- linux-2.6.25.4/lib/semaphore-sleepers.c     2008-05-15
-> 23:00:12.000000000 +0800
-> +++ linux-2.6.25.4-new/lib/semaphore-sleepers.c 2008-07-17
-> 12:20:47.000000000 +0800
-> @@ -48,12 +48,12 @@
->   *    we cannot lose wakeup events.
->   */
-> 
-> -void __up(struct semaphore *sem)
-> +asmregparm void __up(struct semaphore *sem)
->  {
->         wake_up(&sem->wait);
->  }
+The problem lies in the function:
 
-You continue to ignore a few important facts:
+static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
+{
+        int n, i;
+        long ret, offset;
+        unsigned long * data;
+        unsigned long * syscall;
+        int err, pid = mm_idp->u.pid;
 
-    1 - There are a ton of semaphores in UML
-    2 - They all work, except for yours
-    Therefore, a patch which changes all semphores across all
-architectures for which asmregparam has meaning can't possibly be the
-correct fix.
+        if (proc_mm)
+                /* FIXME: Need to look up userspace_pid by cpu */
+                pid = userspace_pid[0];
 
-However, you might have treated this as an important clue, and looked
-at whether your broken semaphore has a different set of declarations
-in force than those in the rest of the kernel.
+        multi_count++;
 
-   	      	       Jeff
+        n = ptrace_setregs(pid, syscall_regs);
+        if (n < 0) {
+                printk(UM_KERN_ERR "Registers - \n");
+                for (i = 0; i < MAX_REG_NR; i++)
+                        printk(UM_KERN_ERR "\t%d\t0x%lx\n", i, syscall_regs[i]);
+                panic("do_syscall_stub : PTRACE_SETREGS failed, errno = %d\n",
+                      -n);
+        }
 
--- 
-Work email - jdike at linux dot intel dot com
+Where the ptrace_setregs() above returned a value less than zero.
+
+Breakpoint 2, do_syscall_stub (mm_idp=0xfdaee9c, addr=0xfc5ce44) at
+/mnt/hd0/download/linux-2.6-latest/arch/um/os-Linux/skas/mem.c:76
+76                              printk(UM_KERN_ERR "\t%d\t0x%lx\n", i,
+syscall_regs[i]);
+(gdb)
+        16      0x0
+75                      for (i = 0; i < MAX_REG_NR; i++)
+(gdb)
+77                      panic("do_syscall_stub : PTRACE_SETREGS
+failed, errno = %d\n",
+(gdb)
+Kernel panic - not syncing: do_syscall_stub : PTRACE_SETREGS failed, errno = 5
+
+And ptrace_setregs() calling ptrace() seemed to returned -errno almost
+immediately:
+
+(gdb) s
+ptrace_setregs (pid=19131, regs=0x820aae0) at
+/mnt/hd0/download/linux-2.6-latest/arch/um/sys-i386/ptrace_user.c:18
+18              if (ptrace(PTRACE_SETREGS, pid, 0, regs) < 0)
+(gdb) s
+19                      return -errno;
+(gdb) s
+
+Why is it so?
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
