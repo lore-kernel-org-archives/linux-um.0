@@ -1,11 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: vincent-perrier <vincent-perrier@club-internet.fr>
-In-Reply-To: <20080721154658.GA6860@c2.user-mode-linux.org>
-References: <20080721154658.GA6860@c2.user-mode-linux.org>
-Date: Mon, 21 Jul 2008 22:24:39 +0200
-Message-Id: <1216671879.15095.4.camel@localhost>
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1KL2NS-0000QY-Oh for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Jul 2008 13:53:02 -0700
+Received: from earthlight.etchedpixels.co.uk ([81.2.110.250]
+	helo=lxorguk.ukuu.org.uk)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KL2NQ-0006NX-O9
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Jul 2008 13:53:02 -0700
+Date: Mon, 21 Jul 2008 17:32:26 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-ID: <20080721173226.0c0462f7@the-village.bc.nu>
+In-Reply-To: <20080721165409.GA9023@hack.voiplan.pt>
+References: <20080721165409.GA9023@hack.voiplan.pt>
 Mime-Version: 1.0
-Subject: Re: [uml-devel] [uml-user] [PATCH] Fix for 2.6.26 ptrace crash
+Subject: Re: [uml-devel] [Patch] um: fix a build error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,29 +30,30 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: "david.r" <david.r@seznam.cz>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, David Shane Holden <dpejesh@yahoo.com>
+To: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: jdike@addtoit.com, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-SGVsbG8sCkkgYWxzbyBoYWQgdGhlIGNyYXNoIHdpdGggYSBsb3Qgb2YgemVyb3MgaW4gYSB2ZXJ0
-aWNhbCBsaW5lIHdpdGgga2VybmVsCjIuNi4yNiwgSSB3YXMgc2FkIHRoZW4uCkJ1dCBJIGFtIG5v
-dyBoYXBweSwgSSBhcHBsaWVkIHRoZSBwYXRjaDoKCmJhc2gtMy4xIyBjZCBsaW51eC0yLjYuMjYK
-YmFzaC0zLjEjIHBhdGNoIC1wMSA8IC4uL2plZmYucGF0Y2gKcGF0Y2hpbmcgZmlsZSBhcmNoL3Vt
-L2luY2x1ZGUvaW5pdC5oCkh1bmsgIzEgc3VjY2VlZGVkIGF0IDQ1IHdpdGggZnV6eiAyLgpIdW5r
-ICMyIHN1Y2NlZWRlZCBhdCA1NCB3aXRoIGZ1enogMS4KCkFuZCBteSAyLjYuMjYgdW1sIG1hY2hp
-bmUgd29ya2VkISEKCkFsbCB0aGlzIHRvIHNheTogSSBjb25maXJtIHRoZSBwYXRjaCB3b3JrZWQg
-Zm9yIG1lIHRvby4KClJlZ2FyZHMKCgpPbiBNb24sIDIwMDgtMDctMjEgYXQgMTE6NDYgLTA0MDAs
-IEplZmYgRGlrZSB3cm90ZToKPiBJIGJlbGlldmUgSSBmaWd1cmVkIG91dCB0aGUgcHRyYWNlIGNy
-YXNoIHRoYXQgc2hvd2VkIHVwIHdpdGggMi42LjI2LAo+IHRoYW5rcyB0byBUb3JhbGYgRsO2cnN0
-ZXIuCj4gCj4gVGhlIHBhdGNoIGlzIGJlbG93Lgo+IAo+IEkgaGF2ZSBvbmUgY29uZmlybWF0aW9u
-IHRoYXQgdGhpcyBmaXhlcyB0aGUgcHJvYmxlbSAtIEknZCBsaWtlIGEgZmV3Cj4gbW9yZSBqdXN0
-IHRvIGJlIHN1cmUuCj4gCj4gCQkJSmVmZgo+IAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5O
-ZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IHRoZSBNb2JsaW4gWW91ciBNb3ZlIERldmVsb3Blcidz
-IGNoYWxsZW5nZQpCdWlsZCB0aGUgY29vbGVzdCBMaW51eCBiYXNlZCBhcHBsaWNhdGlvbnMgd2l0
-aCBNb2JsaW4gU0RLICYgd2luIGdyZWF0IHByaXplcwpHcmFuZCBwcml6ZSBpcyBhIHRyaXAgZm9y
-IHR3byB0byBhbiBPcGVuIFNvdXJjZSBldmVudCBhbnl3aGVyZSBpbiB0aGUgd29ybGQKaHR0cDov
-L21vYmxpbi1jb250ZXN0Lm9yZy9yZWRpcmVjdC5waHA/YmFubmVyX2lkPTEwMCZ1cmw9LwpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGlu
-dXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNl
-ci1tb2RlLWxpbnV4LWRldmVsCg==
+T24gTW9uLCAyMSBKdWwgMjAwOCAxNzo1NDowOSArMDEwMApXQU5HIENvbmcgPHhpeW91Lndhbmdj
+b25nQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IAo+IEZpeGVkIHRoaXMgYnVpbGQgZXJyb3I6Cj4gCj4g
+L2hvbWUvd2FuZ2NvbmcvUHJvamVjdHMvbGludXgtMi42L2FyY2gvdW0vZHJpdmVycy9saW5lLmM6
+IEluIGZ1bmN0aW9uCj4g4oCYbGluZV93cml0ZV9pbnRlcnJ1cHTigJk6Cj4gL2hvbWUvd2FuZ2Nv
+bmcvUHJvamVjdHMvbGludXgtMi42L2FyY2gvdW0vZHJpdmVycy9saW5lLmM6MzY2OiBlcnJvcjoK
+PiDigJhzdHJ1Y3QgdHR5X2xkaXNj4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYd3JpdGVfd2Fr
+ZXVw4oCZCj4gL2hvbWUvd2FuZ2NvbmcvUHJvamVjdHMvbGludXgtMi42L2FyY2gvdW0vZHJpdmVy
+cy9saW5lLmM6MzY3OiBlcnJvcjoKPiDigJhzdHJ1Y3QgdHR5X2xkaXNj4oCZIGhhcyBubyBtZW1i
+ZXIgbmFtZWQg4oCYd3JpdGVfd2FrZXVw4oCZCj4gbWFrZVsyXTogKioqIFthcmNoL3VtL2RyaXZl
+cnMvbGluZS5vXSBFcnJvciAxCj4gbWFrZVsxXTogKioqIFthcmNoL3VtL2RyaXZlcnNdIEVycm9y
+IDIKPiBtYWtlOiAqKiogW3N1Yi1tYWtlXSBFcnJvciAyCj4gCj4gU2lnZW5kLW9mZi1ieTogV0FO
+RyBDb25nIDx3YW5nY29uZ0B6ZXV1eC5vcmc+CgpOQUsgLSBkcml2ZXJzIHNob3VsZG4ndCBiZSBw
+b2tpbmcgYXJvdW5kIGluIHR0eSBpbm5hcmRzIGluIHRoZSBmaXJzdApwbGFjZSB0aGVuIHRoaXMg
+d291bGRuJ3QgYnJlYWsuIFVzZSB0dHlfd2FrZXVwKHR0eSk7IGluc3RlYWFkCgpBbGFuCgotLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tClRoaXMgU0YuTmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieSB0aGUgTW9ibGlu
+IFlvdXIgTW92ZSBEZXZlbG9wZXIncyBjaGFsbGVuZ2UKQnVpbGQgdGhlIGNvb2xlc3QgTGludXgg
+YmFzZWQgYXBwbGljYXRpb25zIHdpdGggTW9ibGluIFNESyAmIHdpbiBncmVhdCBwcml6ZXMKR3Jh
+bmQgcHJpemUgaXMgYSB0cmlwIGZvciB0d28gdG8gYW4gT3BlbiBTb3VyY2UgZXZlbnQgYW55d2hl
+cmUgaW4gdGhlIHdvcmxkCmh0dHA6Ly9tb2JsaW4tY29udGVzdC5vcmcvcmVkaXJlY3QucGhwP2Jh
+bm5lcl9pZD0xMDAmdXJsPS8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGlu
+dXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
