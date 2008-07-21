@@ -1,29 +1,33 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Jaswinder Singh <jaswinder@infradead.org>
-In-Reply-To: <1216597993.3679.144.camel@jaswinder.satnam>
-References: <1216592500.3679.14.camel@jaswinder.satnam>
-	<1216592798.3679.22.camel@jaswinder.satnam>
-	<1216592879.3679.24.camel@jaswinder.satnam>
-	<1216593035.3679.27.camel@jaswinder.satnam>
-	<1216596035.3679.95.camel@jaswinder.satnam>
-	<1216596106.3679.98.camel@jaswinder.satnam>
-	<1216596325.3679.104.camel@jaswinder.satnam>
-	<1216596669.3679.112.camel@jaswinder.satnam>
-	<1216596749.3679.115.camel@jaswinder.satnam>
-	<1216596835.3679.117.camel@jaswinder.satnam>
-	<1216596932.3679.120.camel@jaswinder.satnam>
-	<1216597066.3679.123.camel@jaswinder.satnam>
-	<1216597151.3679.125.camel@jaswinder.satnam>
-	<1216597237.3679.128.camel@jaswinder.satnam>
-	<1216597352.3679.131.camel@jaswinder.satnam>
-	<1216597566.3679.135.camel@jaswinder.satnam>
-	<1216597856.3679.139.camel@jaswinder.satnam>
-	<1216597923.3679.141.camel@jaswinder.satnam>
-	<1216597993.3679.144.camel@jaswinder.satnam>
-Date: Mon, 21 Jul 2008 05:24:27 +0530
-Message-Id: <1216598067.3679.146.camel@jaswinder.satnam>
-Mime-Version: 1.0
-Subject: [uml-devel] [PATCH 19/22] um: Introducing asm/syscalls.h
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1KKuuV-00075Y-MJ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Jul 2008 05:54:39 -0700
+Received: from static-220-247-10-204.b-man.svips.gol.ne.jp ([220.247.10.204]
+	helo=tadamune.kami.home)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KKuuU-0000mr-5L
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Jul 2008 05:54:39 -0700
+Date: Mon, 21 Jul 2008 21:54:26 +0900
+From: Mattia Dongili <malattia@linux.it>
+Message-ID: <20080721125425.GC13451@inferi.kami.home>
+References: <5df78e1d0807031806s74c13c84idadc62c1d1e0e93b@mail.gmail.com>
+	<5df78e1d0807091925q64c0121fk3d33c37df8d80d18@mail.gmail.com>
+	<20080710170210.GB18429@c2.user-mode-linux.org>
+	<5df78e1d0807140206m43291128t32f1489177ad6e3d@mail.gmail.com>
+	<20080714144612.GA5751@c2.user-mode-linux.org>
+	<5df78e1d0807160252j1b610c41la1a2f5092ae04be7@mail.gmail.com>
+	<5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
+	<20080718205342.GE13572@c2.user-mode-linux.org>
+	<20080720152022.GE1520@inferi.kami.home>
+	<20080720154420.GA6244@c2.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20080720154420.GA6244@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] 2.6.25 uml kernel crashes when it calls down() on	a
+	semaphore with zero counter
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,98 +41,117 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: LKML <linux-kernel@vger.kernel.org>, kernelnewbies <kernelnewbies@nl.linux.org>, David Woodhouse <dwmw2@infradead.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jiaying Zhang <jiayingz@google.com>
 
-Declaring arch-dependent syscalls for um architecture
+On Sun, Jul 20, 2008 at 11:44:20AM -0400, Jeff Dike wrote:
+> On Mon, Jul 21, 2008 at 12:20:22AM +0900, Mattia Dongili wrote:
+> > it's not entirely clear to me why, but that patch fixes a segfault that
+> > I experience when booting uml 2.6.25 built with gcc-4.3 on a 2.6.25
+> > host (I also applied your ICE workaround patch).
+> 
+> Hmmm, get a stack trace from it and let's see what's going on.
+> 
+> Presumably, you're not doing kernel development, just building a stock UML?
 
-Signed-off-by: Jaswinder Singh <jaswinder@infradead.org>
----
- arch/um/kernel/exec.c     |    1 +
- arch/um/kernel/signal.c   |    3 +--
- arch/um/kernel/syscall.c  |    1 +
- include/asm-um/syscalls.h |   32 ++++++++++++++++++++++++++++++++
- 4 files changed, 35 insertions(+), 2 deletions(-)
+nope, not doing kernel development on that it's a stock UML, added
+patches are just small customizations for debian:
+http://svn.debian.org/viewsvn/pkg-uml/trunk/src/user-mode-linux/debian/patches/
+patch #1 is not used, #2 and #3 are trivial changes. #4 is the gcc-4.3
+ICE workaround and #5 is Jiaying's patch we are discussing.
 
-diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
-index f5d7f45..cd9fa46 100644
---- a/arch/um/kernel/exec.c
-+++ b/arch/um/kernel/exec.c
-@@ -8,6 +8,7 @@
- #include "linux/smp_lock.h"
- #include "linux/ptrace.h"
- #include "linux/sched.h"
-+#include "linux/syscalls.h"
- #include "asm/current.h"
- #include "asm/processor.h"
- #include "asm/uaccess.h"
-diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
-index b0fce72..9a72afc 100644
---- a/arch/um/kernel/signal.c
-+++ b/arch/um/kernel/signal.c
-@@ -6,8 +6,7 @@
- #include <linux/module.h>
- #include <linux/ptrace.h>
- #include <linux/sched.h>
--#include <asm/siginfo.h>
--#include <asm/signal.h>
-+#include <linux/syscalls.h>
- #include <asm/unistd.h>
- #include "frame_kern.h"
- #include "kern_util.h"
-diff --git a/arch/um/kernel/syscall.c b/arch/um/kernel/syscall.c
-index 128ee85..0c35194 100644
---- a/arch/um/kernel/syscall.c
-+++ b/arch/um/kernel/syscall.c
-@@ -8,6 +8,7 @@
- #include "linux/mm.h"
- #include "linux/sched.h"
- #include "linux/utsname.h"
-+#include "linux/syscalls.h"
- #include "asm/current.h"
- #include "asm/mman.h"
- #include "asm/uaccess.h"
-diff --git a/include/asm-um/syscalls.h b/include/asm-um/syscalls.h
-index e69de29..2124282 100644
---- a/include/asm-um/syscalls.h
-+++ b/include/asm-um/syscalls.h
-@@ -0,0 +1,32 @@
-+/*
-+ * syscalls.h - Linux syscall interfaces (arch-specific)
-+ *
-+ * Copyright (c) 2008 Jaswinder Singh
-+ *
-+ * This file is released under the GPLv2.
-+ * See the file COPYING for more details.
-+ *
-+ * Please do not call me directly, include linux/syscalls.h
-+ */
-+
-+#ifndef _ASM_UM_SYSCALLS_H
-+#define _ASM_UM_SYSCALLS_H
-+
-+/* kernel/exec.c */
-+long sys_execve(char __user *, char __user *__user *,
-+		char __user * __user *);
-+
-+/* kernel/signal.c */
-+long sys_sigsuspend(int, int, old_sigset_t);
-+long sys_sigaltstack(const stack_t __user *, stack_t __user *);
-+
-+/* kernel/syscall.c */
-+long sys_fork(void);
-+long sys_vfork(void);
-+long sys_mmap2(unsigned long, unsigned long, unsigned long,
-+	       unsigned long, unsigned long, unsigned long);
-+long old_mmap(unsigned long, unsigned long, unsigned long,
-+	      unsigned long, unsigned long, unsigned long);
-+long sys_uname(struct old_utsname __user *);
-+
-+#endif /* _ASM_UM_SYSCALLS_H */
+The configuration is this:
+http://svn.debian.org/viewsvn/pkg-uml/trunk/src/user-mode-linux/config.i386?rev=310&view=markup
+on top of this I enabled the debug info to be built:
+CONFIG_PRINTK_TIME=y
+CONFIG_DEBUG_KERNEL=y
+CONFIG_DEBUG_INFO=y
+CONFIG_FRAME_POINTER=y
+I also just reconfirmaed that with Jiaying's patch it doesn't happen.
+
+Program received signal SIGILL, Illegal instruction.
+0x00000000 in ?? ()
+(gdb) bt
+#0  0x00000000 in ?? ()
+#1  0x080702e5 in __wake_up_common (q=0x16d50e88, mode=3, nr_exclusive=1, sync=0, key=0x0) at kernel/sched.c:4145
+#2  0x08070323 in __wake_up_locked (q=0x16d50e88, mode=3) at kernel/sched.c:4174
+#3  0x082556da in __down (sem=0x16d50e80) at lib/semaphore-sleepers.c:88
+#4  0x0825401a in __down_failed () at arch/um/sys-i386/../../x86/lib/semaphore_32.S:42
+#5  0x081072b7 in flush_commit_list (s=0x16dfba00, jl=0x16d50e80, flushall=1) at include/asm/arch/semaphore_32.h:99
+#6  0x081077a3 in flush_async_commits (work=0x18936124) at fs/reiserfs/journal.c:3507
+#7  0x08082a24 in run_workqueue (cwq=0x16ee9080) at kernel/workqueue.c:276
+#8  0x08082cdf in worker_thread (__cwq=0x16ee9080) at kernel/workqueue.c:321
+#9  0x0808538f in kthread (_create=0x17c679b4) at kernel/kthread.c:80
+#10 0x08068f2b in run_kernel_thread (fn=0x8085347 <kthread>, arg=0x17c679b4, jmp_ptr=0x16e28bb4)
+    at arch/um/os-Linux/process.c:267
+#11 0x0805ae87 in new_thread_handler () at arch/um/kernel/process.c:151
+#12 0x00000000 in ?? ()
+(gdb) l
+178      * area at compile-time..
+179      */
+180     static __always_inline void * __constant_c_memset(void * s, unsigned long c, size_t count)
+181     {
+182     int d0, d1;
+183     __asm__ __volatile__(
+184             "rep ; stosl\n\t"
+185             "testb $2,%b3\n\t"
+186             "je 1f\n\t"
+187             "stosw\n"
+(gdb) up
+#1  0x080702e5 in __wake_up_common (q=0x16d50e88, mode=3, nr_exclusive=1, sync=0, key=0x0) at kernel/sched.c:4145
+4145                    if (curr->func(curr, mode, sync, key) &&
+(gdb) print *curr
+$3 = {flags = 255, private = 0x0, func = 0, task_list = {next = 0x16d50e88, prev = 0x0}}
+
+it looks like there is not func here...
+
+(gdb) l
+4140            wait_queue_t *curr, *next;
+4141
+4142            list_for_each_entry_safe(curr, next, &q->task_list, task_list) {
+4143                    unsigned flags = curr->flags;
+4144
+4145                    if (curr->func(curr, mode, sync, key) &&
+4146                                    (flags & WQ_FLAG_EXCLUSIVE) && !--nr_exclusive)
+4147                            break;
+4148            }
+4149    }
+(gdb) up
+#2  0x08070323 in __wake_up_locked (q=0x16d50e88, mode=3) at kernel/sched.c:4174
+4174            __wake_up_common(q, mode, 1, 0, NULL);
+(gdb) l
+4169    /*
+4170     * Same as __wake_up but called with the spinlock in wait_queue_head_t held.
+4171     */
+4172    void __wake_up_locked(wait_queue_head_t *q, unsigned int mode)
+4173    {
+4174            __wake_up_common(q, mode, 1, 0, NULL);
+4175    }
+4176
+4177    /**
+4178     * __wake_up_sync - wake up threads blocked on a waitqueue.
+(gdb) up
+#3  0x082556da in __down (sem=0x16d50e80) at lib/semaphore-sleepers.c:88
+88              wake_up_locked(&sem->wait);
+(gdb) l
+83
+84                      spin_lock_irqsave(&sem->wait.lock, flags);
+85                      tsk->state = TASK_UNINTERRUPTIBLE;
+86              }
+87              remove_wait_queue_locked(&sem->wait, &wait);
+88              wake_up_locked(&sem->wait);
+89              spin_unlock_irqrestore(&sem->wait.lock, flags);
+90              tsk->state = TASK_RUNNING;
+91      }
+92
+(gdb) print *sem
+$4 = {count = {counter = 5833}, sleepers = 0, wait = {lock = {raw_lock = {<No data fields>}}, task_list = {next = 0xf,
+      prev = 0xf}}}
+
+Any other useful information I could provide?
 -- 
-1.5.5.1
-
-
-
+mattia
+:wq!
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
