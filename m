@@ -2,23 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KLDV7-0004y7-HM for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Jul 2008 01:45:44 -0700
-Received: from an-out-0708.google.com ([209.85.132.240])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KLDV4-000706-8h
+	id 1KLFmF-0004DM-6h for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Jul 2008 04:11:31 -0700
+Received: from earthlight.etchedpixels.co.uk ([81.2.110.250]
+	helo=lxorguk.ukuu.org.uk)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KLFmB-0006CD-Gb
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Jul 2008 01:45:40 -0700
-Received: by an-out-0708.google.com with SMTP id b21so443974ana.6
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 22 Jul 2008 01:45:37 -0700 (PDT)
-Message-ID: <804dabb00807220145y375eaaefk5a352046d5e944d7@mail.gmail.com>
-Date: Tue, 22 Jul 2008 16:45:35 +0800
-From: "Peter Teoh" <htmldeveloper@gmail.com>
-In-Reply-To: <20080721154658.GA6860@c2.user-mode-linux.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-References: <20080721154658.GA6860@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH] Fix for 2.6.26 ptrace crash
+	Tue, 22 Jul 2008 04:11:31 -0700
+Date: Tue, 22 Jul 2008 11:53:54 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-ID: <20080722115354.79ba2314@lxorguk.ukuu.org.uk>
+In-Reply-To: <20080722105812.GB5283@alice>
+References: <20080722105812.GB5283@alice>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [Patch] um: fix a build error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,88 +26,40 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: David Shane Holden <dpejesh@yahoo.com>, "david.r" <david.r@seznam.cz>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>
+To: Eric Sesterhenn <snakebyte@gmx.de>
+Cc: xiyou.wangcong@gmail.com, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Thanks, the patch worked for me too.
+> Signed-off-by: Eric Sesterhenn <snakebyte@gmx.de>
+> 
+> --- linux-2.6/arch/um/drivers/line.c.orig	2008-07-22 12:06:17.000000000 +0200
+> +++ linux-2.6/arch/um/drivers/line.c	2008-07-22 12:06:49.000000000 +0200
+> @@ -362,10 +362,8 @@ static irqreturn_t line_write_interrupt(
+>  	if (tty == NULL)
+>  		return IRQ_NONE;
+>  
+> -	if (test_bit(TTY_DO_WRITE_WAKEUP, &tty->flags) &&
+> -	   (tty->ldisc.write_wakeup != NULL))
+> -		(tty->ldisc.write_wakeup)(tty);
+> -
+> +	if (test_bit(TTY_DO_WRITE_WAKEUP, &tty->flags))
+> +		tty_wakeup(tty);
 
-As an aside, may be u would want to sync with mainline:
+Sorry I should have been clearer - you don't want the test_bit either.
 
-http://lkml.org/lkml/2007/5/3/460
+Acked-by: Alan Cox <alan@redhat.com>
 
-which would solve the problem Boaz posed as well?
-
-(the patch above seemed to indicate a problem of post-3.4 vs pre-3.4 GCC:
-
-http://www.gnu.org/software/gcc/gcc-3.4/changes.html
-
-but your patch indicated something to do with 4.x GCC vs pre-3.4 GCC?)
-
-Sorry if I don't get it correctly :-).
-
-On Mon, Jul 21, 2008 at 11:46 PM, Jeff Dike <jdike@addtoit.com> wrote:
-> I believe I figured out the ptrace crash that showed up with 2.6.26,
-> thanks to Toralf F=F6rster.
->
-> The patch is below.
->
-> I have one confirmation that this fixes the problem - I'd like a few
-> more just to be sure.
->
->                        Jeff
->
-> --
-> Work email - jdike at linux dot intel dot com
->
-> Index: linux-2.6.22/arch/um/include/init.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.22.orig/arch/um/include/init.h    2008-02-18 11:53:50.00000=
-0000 -0500
-> +++ linux-2.6.22/arch/um/include/init.h 2008-07-20 18:06:35.000000000 -04=
-00
-> @@ -45,6 +45,8 @@ typedef void (*exitcall_t)(void);
->  # define __section(S) __attribute__ ((__section__(#S)))
->  #endif
->
-> +#if __GNUC__ =3D=3D 3
-> +
->  #if __GNUC_MINOR__ >=3D 3
->  # define __used                        __attribute__((__used__))
->  #else
-> @@ -52,6 +54,12 @@ typedef void (*exitcall_t)(void);
->  #endif
->
->  #else
-> +#if __GNUC__ =3D=3D 4
-> +# define __used                        __attribute__((__used__))
-> +#endif
-> +#endif
-> +
-> +#else
->  #include <linux/compiler.h>
->  #endif
->  /* These are for everybody (although not all archs will actually
->
-
-
-
--- =
-
-Regards,
-Peter Teoh
+however as it is still right but you can stick my Ack on a version
+without the if too.
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great priz=
-es
+Build the coolest Linux based applications with Moblin SDK & win great prizes
 Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=3D100&url=3D/
+http://moblin-contest.org/redirect.php?banner_id=100&url=/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
