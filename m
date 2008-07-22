@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KLFmF-0004DM-6h for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Jul 2008 04:11:31 -0700
-Received: from earthlight.etchedpixels.co.uk ([81.2.110.250]
-	helo=lxorguk.ukuu.org.uk)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KLFmB-0006CD-Gb
+	id 1KLG1U-0005wv-EN for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 22 Jul 2008 04:27:16 -0700
+Received: from nf-out-0910.google.com ([64.233.182.191])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KLG1R-0003RF-Rt
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Jul 2008 04:11:31 -0700
-Date: Tue, 22 Jul 2008 11:53:54 +0100
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Message-ID: <20080722115354.79ba2314@lxorguk.ukuu.org.uk>
-In-Reply-To: <20080722105812.GB5283@alice>
+	Tue, 22 Jul 2008 04:27:16 -0700
+Received: by nf-out-0910.google.com with SMTP id g16so539736nfd.2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 22 Jul 2008 04:27:12 -0700 (PDT)
+Date: Tue, 22 Jul 2008 12:25:35 +0100
+From: WANG Cong <xiyou.wangcong@gmail.com>
+Message-ID: <20080722112535.GC3081@hack.voiplan.pt>
 References: <20080722105812.GB5283@alice>
-Mime-Version: 1.0
+	<20080722115354.79ba2314@lxorguk.ukuu.org.uk>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20080722115354.79ba2314@lxorguk.ukuu.org.uk>
 Subject: Re: [uml-devel] [Patch] um: fix a build error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,30 +33,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Eric Sesterhenn <snakebyte@gmx.de>
-Cc: xiyou.wangcong@gmail.com, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Eric Sesterhenn <snakebyte@gmx.de>, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, xiyou.wangcong@gmail.com
 
-> Signed-off-by: Eric Sesterhenn <snakebyte@gmx.de>
-> 
-> --- linux-2.6/arch/um/drivers/line.c.orig	2008-07-22 12:06:17.000000000 +0200
-> +++ linux-2.6/arch/um/drivers/line.c	2008-07-22 12:06:49.000000000 +0200
-> @@ -362,10 +362,8 @@ static irqreturn_t line_write_interrupt(
->  	if (tty == NULL)
->  		return IRQ_NONE;
->  
-> -	if (test_bit(TTY_DO_WRITE_WAKEUP, &tty->flags) &&
-> -	   (tty->ldisc.write_wakeup != NULL))
-> -		(tty->ldisc.write_wakeup)(tty);
-> -
-> +	if (test_bit(TTY_DO_WRITE_WAKEUP, &tty->flags))
-> +		tty_wakeup(tty);
+On Tue, Jul 22, 2008 at 11:53:54AM +0100, Alan Cox wrote:
+>> Signed-off-by: Eric Sesterhenn <snakebyte@gmx.de>
+>> 
+>> --- linux-2.6/arch/um/drivers/line.c.orig	2008-07-22 12:06:17.000000000 +0200
+>> +++ linux-2.6/arch/um/drivers/line.c	2008-07-22 12:06:49.000000000 +0200
+>> @@ -362,10 +362,8 @@ static irqreturn_t line_write_interrupt(
+>>  	if (tty == NULL)
+>>  		return IRQ_NONE;
+>>  
+>> -	if (test_bit(TTY_DO_WRITE_WAKEUP, &tty->flags) &&
+>> -	   (tty->ldisc.write_wakeup != NULL))
+>> -		(tty->ldisc.write_wakeup)(tty);
+>> -
+>> +	if (test_bit(TTY_DO_WRITE_WAKEUP, &tty->flags))
+>> +		tty_wakeup(tty);
+>
+>Sorry I should have been clearer - you don't want the test_bit either.
+>
 
-Sorry I should have been clearer - you don't want the test_bit either.
+Sure, tty_wakeup() already does that test.
 
-Acked-by: Alan Cox <alan@redhat.com>
+And, tty_wakeup() also does wake_up_interruptible(), so I think
+the wake_up_interruptible() below can also be removed, probably.
 
-however as it is still right but you can stick my Ack on a version
-without the if too.
+Thanks.
+
+-- 
+The opposite of love is not hate, but indifference.
+	--Elie Wiesel
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
