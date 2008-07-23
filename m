@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KLM9d-0002wo-EX for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Jul 2008 11:00:05 -0700
-Received: from earthlight.etchedpixels.co.uk ([81.2.110.250]
-	helo=lxorguk.ukuu.org.uk)
+	id 1KLgZb-0007l7-LL for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Jul 2008 08:48:16 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KLM9b-0000Gr-8h
+	(Exim 4.44) id 1KLgZZ-00052v-6I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Jul 2008 11:00:05 -0700
-Date: Tue, 22 Jul 2008 18:42:37 +0100
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Message-ID: <20080722184237.7532d052@lxorguk.ukuu.org.uk>
-In-Reply-To: <20080722173509.GE3081@hack.voiplan.pt>
-References: <20080722105812.GB5283@alice>
-	<20080722115354.79ba2314@lxorguk.ukuu.org.uk>
-	<20080722173509.GE3081@hack.voiplan.pt>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] [Patch] um: fix a build error
+	Wed, 23 Jul 2008 08:48:14 -0700
+Date: Wed, 23 Jul 2008 11:48:01 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080723154801.GB15682@c2.user-mode-linux.org>
+References: <20080722174152.GF3081@hack.voiplan.pt>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20080722174152.GF3081@hack.voiplan.pt>
+Subject: Re: [uml-devel] [Patch] uml: fix another build error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,47 +26,33 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: Eric Sesterhenn <snakebyte@gmx.de>, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, xiyou.wangcong@gmail.com
+Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 22 Jul 2008 18:35:09 +0100
-WANG Cong <xiyou.wangcong@gmail.com> wrote:
-
-> On Tue, Jul 22, 2008 at 11:53:54AM +0100, Alan Cox wrote:
-> >> Signed-off-by: Eric Sesterhenn <snakebyte@gmx.de>
-> >> 
-> >> --- linux-2.6/arch/um/drivers/line.c.orig	2008-07-22 12:06:17.000000000 +0200
-> >> +++ linux-2.6/arch/um/drivers/line.c	2008-07-22 12:06:49.000000000 +0200
-> >> @@ -362,10 +362,8 @@ static irqreturn_t line_write_interrupt(
-> >>  	if (tty == NULL)
-> >>  		return IRQ_NONE;
-> >>  
-> >> -	if (test_bit(TTY_DO_WRITE_WAKEUP, &tty->flags) &&
-> >> -	   (tty->ldisc.write_wakeup != NULL))
-> >> -		(tty->ldisc.write_wakeup)(tty);
-> >> -
-> >> +	if (test_bit(TTY_DO_WRITE_WAKEUP, &tty->flags))
-> >> +		tty_wakeup(tty);
-> >
-> >Sorry I should have been clearer - you don't want the test_bit either.
-> >
-> 
-> What about the below one?
-> 
-> Signed-off-by: WANG Cong <wangcong@zeuux.org>
-
-Acked-by: Alan Cox <alan@redhat.com>
-
--------------------------------------------------------------------------
-This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great prizes
-Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gVHVlLCBKdWwgMjIsIDIwMDggYXQgMDY6NDE6NTJQTSArMDEwMCwgV0FORyBDb25nIHdyb3Rl
+Ogo+IAo+IEZpeGVkIHRoaXMgZXJyb3I6Cj4gCj4gICBDQyAgICAgIGFyY2gvdW0vZHJpdmVycy92
+ZGVfdXNlci5vCj4gICAvaG9tZS93YW5nY29uZy9Qcm9qZWN0cy9saW51eC0yLjYvYXJjaC91bS9k
+cml2ZXJzL3ZkZV91c2VyLmM6IEluCj4gZnVuY3Rpb24g4oCYdmRlX2luaXRfbGlic3R1ZmbigJk6
+Cj4gL2hvbWUvd2FuZ2NvbmcvUHJvamVjdHMvbGludXgtMi42L2FyY2gvdW0vZHJpdmVycy92ZGVf
+dXNlci5jOjgxOgo+IGVycm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhr
+bWFsbG9j4oCZCj4gL2hvbWUvd2FuZ2NvbmcvUHJvamVjdHMvbGludXgtMi42L2FyY2gvdW0vZHJp
+dmVycy92ZGVfdXNlci5jOjgxOgo+IHdhcm5pbmc6IGFzc2lnbm1lbnQgbWFrZXMgcG9pbnRlciBm
+cm9tIGludGVnZXIgd2l0aG91dCBhIGNhc3QKPiBtYWtlWzJdOiAqKiogW2FyY2gvdW0vZHJpdmVy
+cy92ZGVfdXNlci5vXSBFcnJvciAxCj4gbWFrZVsxXTogKioqIFthcmNoL3VtL2RyaXZlcnMvdmRl
+X3VzZXIua29dIEVycm9yIDIKPiBtYWtlOiAqKiogW3N1Yi1tYWtlXSBFcnJvciAyCgpUaGFua3Mg
+LSBhZGRlZCB0byB0aGUgcXVldWUuCgogICAgICAgCSAgICAgICAJICBKZWZmCgotLSAKV29yayBl
+bWFpbCAtIGpkaWtlIGF0IGxpbnV4IGRvdCBpbnRlbCBkb3QgY29tCgotLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+ClRoaXMgU0YuTmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieSB0aGUgTW9ibGluIFlvdXIgTW92ZSBE
+ZXZlbG9wZXIncyBjaGFsbGVuZ2UKQnVpbGQgdGhlIGNvb2xlc3QgTGludXggYmFzZWQgYXBwbGlj
+YXRpb25zIHdpdGggTW9ibGluIFNESyAmIHdpbiBncmVhdCBwcml6ZXMKR3JhbmQgcHJpemUgaXMg
+YSB0cmlwIGZvciB0d28gdG8gYW4gT3BlbiBTb3VyY2UgZXZlbnQgYW55d2hlcmUgaW4gdGhlIHdv
+cmxkCmh0dHA6Ly9tb2JsaW4tY29udGVzdC5vcmcvcmVkaXJlY3QucGhwP2Jhbm5lcl9pZD0xMDAm
+dXJsPS8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNl
+ci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
+c3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
