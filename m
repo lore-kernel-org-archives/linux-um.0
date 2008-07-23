@@ -1,13 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Wed, 23 Jul 2008 12:14:30 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080723161430.GC15682@c2.user-mode-linux.org>
-References: <20080721154658.GA6860@c2.user-mode-linux.org>
-	<488599E1.50402@panasas.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <488599E1.50402@panasas.com>
-Subject: Re: [uml-devel] [PATCH] Fix for 2.6.26 ptrace crash
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+	helo=mail.sourceforge.net)
+	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
+	id 1KLkUz-000426-FI for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Jul 2008 12:59:45 -0700
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KLkUz-0002jy-7Z
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 23 Jul 2008 12:59:45 -0700
+Date: Wed, 23 Jul 2008 12:59:25 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20080723125925.6ac68198.akpm@linux-foundation.org>
+In-Reply-To: <20080723154650.GA15682@c2.user-mode-linux.org>
+References: <20080723154650.GA15682@c2.user-mode-linux.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH] UML - Fix boot crash
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,59 +29,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Boaz Harrosh <bharrosh@panasas.com>
-Cc: David Shane Holden <dpejesh@yahoo.com>, "david.r" <david.r@seznam.cz>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, Peter Teoh <htmldeveloper@GMAIL.COM>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: akpm@linuxfoundation.org, torvalds@linux-foundation.org, stable@kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Jul 22, 2008 at 11:27:13AM +0300, Boaz Harrosh wrote:
-> I'm not sure I fully understand. Could you please explain what you
-> found.
+On Wed, 23 Jul 2008 11:46:50 -0400
+Jeff Dike <jdike@addtoit.com> wrote:
 
-arch/um/include/init.h copies enough definitions from linux/compiler.h
-and linux/init.h to implement initcall and exitcall et al.  It can't
-include the kernel headers because it's included in userspace files,
-and libc and kernel headers don't mix.
+> My copying of linux/init.h didn't go far enough.  The definition of
+> __used singled out gcc minor version 3, but didn't care what the major
+> version was.  This broke when unit-at-a-time was added and gcc started
+> throwing out initcalls.
+> 
+> This results in an early boot crash when ptrace tries to initialize a
+> process with an empty, uninitialized register set.
+> 
+> Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+> ---
+>  arch/um/include/init.h |    8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> Index: linux-2.6.22/arch/um/include/init.h
+> ===================================================================
+> --- linux-2.6.22.orig/arch/um/include/init.h	2008-02-18 11:53:50.000000000 -0500
+> +++ linux-2.6.22/arch/um/include/init.h	2008-07-20 18:06:35.000000000 -0400
+> @@ -45,6 +45,8 @@ typedef void (*exitcall_t)(void);
+>  # define __section(S) __attribute__ ((__section__(#S)))
+>  #endif
+>  
+> +#if __GNUC__ == 3
+> +
+>  #if __GNUC_MINOR__ >= 3
+>  # define __used			__attribute__((__used__))
+>  #else
+> @@ -52,6 +54,12 @@ typedef void (*exitcall_t)(void);
+>  #endif
+>  
+>  #else
+> +#if __GNUC__ == 4
+> +# define __used			__attribute__((__used__))
+> +#endif
+> +#endif
+> +
+> +#else
+>  #include <linux/compiler.h>
+>  #endif
+>  /* These are for everybody (although not all archs will actually
 
-What happened was that I copied enough to make a distinction between
-gcc 3.3 and higher vs lower than 3.3 (for the latter, the kernel
-defines __used as attribute(__unused) for some reason).
+Needed in 2.6.26.x, but also applies to 2.6.25.  Is it also needed in
+2.6.25.x?
 
-However, since my ifdefs weren't looking at the major version, these
-definitions also held for gcc 4.x.  And when I added unit-at-a-time,
-the __unused started being taken seriously, and UML libc-side
-initcalls were thrown out.
-
-> Why is it that with same compiler, some systems had a problem and some
-> did not? is it .config related?
-
-I have no idea.  When Ulrich Drepper first hit this, he and I had the
-same base system, same architecture, same toolchain, same config, and
-I didn't see it.
-
-I've upgraded since then, so I can't test in the same environment, but
-when I add the bug back in such that it hits with gcc 4.3, I get the
-crash.
-
-So, this is very mysterious.
-
-> Also I would prefer if the:
->    #define __used __attribute__((__used__))
-> would get an #if ((__GNUC__* 100 + __GNUC_MINOR__) >= 303 )
-> of its own because other wise this problem will return when
-> gcc hits 5. Just as it returned now. 
-
-I don't see the point - this is all wrapped in __GNUC__ == 3 or 4.  As
-for gcc 5, linux/compiler has this to say:
-
-#else
-# error Sorry, your compiler is too old/not recognized.
-#endif
-
-So the kernel totally won't build with gcc 5.
-
-			Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
