@@ -2,23 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KM2qK-0005pB-Kd for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Jul 2008 08:35:00 -0700
-Received: from bombadil.infradead.org ([18.85.46.34])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KM2qI-0001jz-PH
+	id 1KNTht-0007MK-5z for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 28 Jul 2008 07:28:13 -0700
+Received: from fk-out-0910.google.com ([209.85.128.186])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KNThl-0003rS-01
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 24 Jul 2008 08:35:00 -0700
-Date: Thu, 24 Jul 2008 08:32:47 -0700
-From: Greg KH <greg@kroah.com>
-Message-ID: <20080724153247.GA11012@kroah.com>
-References: <20080723154650.GA15682@c2.user-mode-linux.org>
-	<20080723125925.6ac68198.akpm@linux-foundation.org>
-	<20080724025237.GB20556@c2.user-mode-linux.org>
+	Mon, 28 Jul 2008 07:28:13 -0700
+Received: by fk-out-0910.google.com with SMTP id 18so3535901fkq.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 28 Jul 2008 07:28:03 -0700 (PDT)
+Message-ID: <488DD82A.1020606@lipn.univ-paris13.fr>
+Date: Mon, 28 Jul 2008 16:31:06 +0200
+From: Luca Saiu <saiu@lipn.univ-paris13.fr>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20080724025237.GB20556@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [stable] [PATCH] UML - Fix boot crash
+Subject: [uml-devel] ALSA and host audio relay in UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,29 +29,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: torvalds@linux-foundation.org, Andrew Morton <akpm@linux-foundation.org>, akpm@linuxfoundation.org, stable@kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: marionnet-dev <marionnet-dev@marionnet.org>, Abdelouahed <abdel.ouahed@hotmail.fr>, Jonathan Roudiere <Jonathan.Roudiere@lipn.univ-paris13.fr>
 
-On Wed, Jul 23, 2008 at 10:52:37PM -0400, Jeff Dike wrote:
-> On Wed, Jul 23, 2008 at 12:59:25PM -0700, Andrew Morton wrote:
-> > Needed in 2.6.26.x, but also applies to 2.6.25.  Is it also needed in
-> > 2.6.25.x?
-> 
-> ... and just to be clear, I mean I think it's not exactly 2.6.25.x
-> material.  It is definite 2.26.6.x material.
+Hello Jeff, and all the fellow UML developers.
+I think this is the first time we directly communicate. First of all we 
+wish to thank you for your terrific work on UML, from which our project, 
+Marionnet, is heavily dependent.
 
-Ok, fair enough, I'll queue it up when it hits Linus's tree.
+We would like to add a "virtual phone" device to Marionnet, implemented 
+on a UML virtual machine running Ekiga or Linphone. We have several 
+problems in using sound daemons with both Ekiga and Linphone, so instead 
+of having a sound daemon on the host machine, which would be the 
+simplest solution, we are essentially forced to use host audio relaying. 
+That feature works very well, but as far as I can understand from the 
+source and from my tests, it's limited to OSS. Recent versions of ALSA, 
+by contrast, are better supported by modern software such as Ekiga and 
+easily allow multiplexing. We wouldn't strictly need multiplexing on 
+each single virtual machine, but at least more than one virtual machine 
+at a time would need to be able to use the same host sound device, both 
+for input and for output.
+Unfortunately, this is not possible at the moment.
 
-Neat hack:  If you add the line
-  cc: stable <stable@kernel.org>
-to the signed-off-by area of a patch, when it is applied by Linus it
-will be sent automatically to the stable team as well and we will know
-then that it is safe to apply to our trees.  No additional work from you
-would be needed then.
+Is ALSA relaying hard to implement in UML? We honestly don't know that 
+part of the kernel, and we were wondering whether some other solution 
+may be simpler. Is there hope to have ALSA support in UML in the future?
 
-thanks,
+Thanks in advance,
 
-greg k-h
+-- 
+Luca Saiu
+http://www-lipn.univ-paris13.fr/~saiu
+GNU epsilon: http://www.gnu.org/software/epsilon
+Marionnet:   http://www.marionnet.org
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
