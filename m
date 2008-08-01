@@ -2,19 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KP3K8-0004oP-TG for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:42:13 -0700
+	id 1KP3Jj-0004iY-Gk for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Aug 2008 15:41:47 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KP3K7-0004aY-LZ
+	(Exim 4.44) id 1KP3Jj-0004Mk-1Z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:42:12 -0700
-Date: Fri, 1 Aug 2008 18:41:34 -0400
+	Fri, 01 Aug 2008 15:41:47 -0700
+Date: Fri, 1 Aug 2008 18:41:26 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080801224134.GA13708@c2.user-mode-linux.org>
+Message-ID: <20080801224126.GA13719@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 12/14] [UML] fix gcc ICEs and unresolved externs
+Subject: [uml-devel] [PATCH 3/14] uml: physical memory shouldn't include
+	initial stack
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,81 +30,46 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: stable@kernel.org
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>, Ulrich Drepper <drepper@redhat.com>, Benny Halevy <bhalevy@panasas.com>, Ingo Molnar <mingo@elte.hu>
+Cc: WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, "Christopher S. Aker" <caker@theshore.net>
 
-From f9498bcc86dbf5249a4d9baff6ba508c3d4c86fa Mon Sep 17 00:00:00 2001
+From 57c582f7eb25314e650f143c2c5141a0cc4172eb Mon Sep 17 00:00:00 2001
 
-There are various constraints on the use of unit-at-a-time:
- - i386 uses no-unit-at-a-time for pre-4.0 (not 4.3)
- - x86_64 uses unit-at-a-time always
+The top of physical memory should be below the initial process stack, not the
+top of the address space, at least for as long as the stack isn't known to the
+kernel VM system and appropriately reserved.
 
-Uli reported a crash on x86_64 with gcc 4.1.2 with unit-at-a-time,
-resulting in commit c0a18111e571138747a98af18b3a2124df56a0d1
-
-Ingo reported a gcc internal error with gcc 4.3 with no-unit-at-a-timem,
-resulting in 22eecde2f9034764a3fd095eecfa3adfb8ec9a98
-
-Benny Halevy is seeing extern inlines not resolved with gcc 4.3 with
-no-unit-at-a-time
-
-This patch reintroduces unit-at-a-time for gcc >= 4.0, bringing back the
-possibility of Uli's crash.  If that happens, we'll debug it.
-
-I started seeing both the internal compiler errors and unresolved
-inlines on Fedora 9.  This patch fixes both problems, without so far
-reintroducing the crash reported by Uli.
-
+Cc: "Christopher S. Aker" <caker@theshore.net>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Cc: Benny Halevy <bhalevy@panasas.com>
-Cc: Adrian Bunk <bunk@kernel.org>
-Cc: Ingo Molnar <mingo@elte.hu>
-Cc: Ulrich Drepper <drepper@redhat.com>
+Cc: WANG Cong <xiyou.wangcong@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- arch/um/Makefile        |    1 -
- arch/um/Makefile-i386   |    7 +++++++
- arch/um/Makefile-x86_64 |    3 +++
- 3 files changed, 10 insertions(+), 1 deletions(-)
+ arch/um/kernel/um_arch.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index dbeab15..ca40397 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -77,7 +77,6 @@ include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
- KERNEL_DEFINES = $(strip -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
- 			 -Dmktime=kernel_mktime $(ARCH_KERNEL_DEFINES))
- KBUILD_CFLAGS += $(KERNEL_DEFINES)
--KBUILD_CFLAGS += $(call cc-option,-fno-unit-at-a-time,)
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index a6c1dd1..9cecb42 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -259,6 +259,7 @@ int __init linux_main(int argc, char **argv)
+ 	unsigned long avail, diff;
+ 	unsigned long virtmem_size, max_physmem;
+ 	unsigned int i, add;
++	unsigned long stack;
+ 	char * mode;
  
- PHONY += linux
+ 	for (i = 1; i < argc; i++) {
+@@ -347,7 +348,9 @@ int __init linux_main(int argc, char **argv)
+ 	}
  
-diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-i386
-index 561e373..302cbe5 100644
---- a/arch/um/Makefile-i386
-+++ b/arch/um/Makefile-i386
-@@ -32,4 +32,11 @@ cflags-y += $(call cc-option,-mpreferred-stack-boundary=2)
- # an unresolved reference.
- cflags-y += -ffreestanding
- 
-+# Disable unit-at-a-time mode on pre-gcc-4.0 compilers, it makes gcc use
-+# a lot more stack due to the lack of sharing of stacklots.  Also, gcc
-+# 4.3.0 needs -funit-at-a-time for extern inline functions.
-+KBUILD_CFLAGS += $(shell if [ $(call cc-version) -lt 0400 ] ; then \
-+			echo $(call cc-option,-fno-unit-at-a-time); \
-+			else echo $(call cc-option,-funit-at-a-time); fi ;)
-+
- KBUILD_CFLAGS += $(cflags-y)
-diff --git a/arch/um/Makefile-x86_64 b/arch/um/Makefile-x86_64
-index 8ed362f..a9cd7e7 100644
---- a/arch/um/Makefile-x86_64
-+++ b/arch/um/Makefile-x86_64
-@@ -21,3 +21,6 @@ HEADER_ARCH := x86
- 
- LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
- LINK-y += -m64
-+
-+# Do unit-at-a-time unconditionally on x86_64, following the host
-+KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
+ 	virtmem_size = physmem_size;
+-	avail = TASK_SIZE - start_vm;
++	stack = (unsigned long) argv;
++	stack &= ~(1024 * 1024 - 1);
++	avail = stack - start_vm;
+ 	if (physmem_size > avail)
+ 		virtmem_size = avail;
+ 	end_vm = start_vm + virtmem_size;
 -- 
 1.5.5.1
 
