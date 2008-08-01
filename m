@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KP3Jt-0004is-6J for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:41:57 -0700
+	id 1KP3K4-0004mt-V6 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Aug 2008 15:42:09 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KP3Jr-0004R2-Ln
+	(Exim 4.44) id 1KP3K3-0001zt-6W
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:41:57 -0700
-Date: Fri, 1 Aug 2008 18:41:29 -0400
+	Fri, 01 Aug 2008 15:42:07 -0700
+Date: Fri, 1 Aug 2008 18:41:35 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080801224129.GA13733@c2.user-mode-linux.org>
+Message-ID: <20080801224135.GA13786@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 8/14] missing export of csum_partial() on uml/amd64
+Subject: [uml-devel] [PATCH 14/14] uml: PATH_MAX needs limits.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,28 +29,36 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: stable@kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Al Viro <viro@ftp.linux.org.uk>
+Cc: Ingo Molnar <mingo@elte.hu>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From 7282ca1a67ef596819e8cf5725b0caa95c5692f1 Mon Sep 17 00:00:00 2001
-From: Al Viro <viro@ftp.linux.org.uk>
+From 5e544831a3dfb9c0eefd091f578c740496819cec Mon Sep 17 00:00:00 2001
+From: Ingo Molnar <mingo@elte.hu>
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Include limits.h to get a definition of PATH_MAX.
+
+Signed-off-by: Ingo Molnar <mingo@elte.hu>
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- arch/um/sys-x86_64/ksyms.c |    1 +
+ arch/um/os-Linux/helper.c |    1 +
  1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/arch/um/sys-x86_64/ksyms.c b/arch/um/sys-x86_64/ksyms.c
-index 12c5936..08f63e2 100644
---- a/arch/um/sys-x86_64/ksyms.c
-+++ b/arch/um/sys-x86_64/ksyms.c
-@@ -14,3 +14,4 @@ EXPORT_SYMBOL(__up_wakeup);
- 
- /*XXX: we need them because they would be exported by x86_64 */
- EXPORT_SYMBOL(__memcpy);
-+EXPORT_SYMBOL(csum_partial);
+diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
+index 679acce..b6b1096 100644
+--- a/arch/um/os-Linux/helper.c
++++ b/arch/um/os-Linux/helper.c
+@@ -7,6 +7,7 @@
+ #include <unistd.h>
+ #include <errno.h>
+ #include <sched.h>
++#include <linux/limits.h>
+ #include <sys/socket.h>
+ #include <sys/wait.h>
+ #include "kern_constants.h"
 -- 
 1.5.5.1
+
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
