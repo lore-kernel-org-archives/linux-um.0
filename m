@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KP3Jj-0004iY-Gk for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:41:47 -0700
+	id 1KP3K0-0004mJ-Sw for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Aug 2008 15:42:05 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KP3Jj-0004Mk-1Z
+	(Exim 4.44) id 1KP3K0-0001y3-56
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:41:47 -0700
-Date: Fri, 1 Aug 2008 18:41:26 -0400
+	Fri, 01 Aug 2008 15:42:04 -0700
+Date: Fri, 1 Aug 2008 18:41:28 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080801224126.GA13719@c2.user-mode-linux.org>
+Message-ID: <20080801224128.GA13721@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 3/14] uml: physical memory shouldn't include
-	initial stack
+Subject: [uml-devel] [PATCH 6/14] uml: deal with host time going backwards
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,49 +29,50 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: stable@kernel.org
-Cc: WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, "Christopher S. Aker" <caker@theshore.net>
+Cc: Nix <nix@esperi.org.uk>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From 57c582f7eb25314e650f143c2c5141a0cc4172eb Mon Sep 17 00:00:00 2001
+From b547462b600e9d284f9d40ed558ca2b8904af185 Mon Sep 17 00:00:00 2001
 
-The top of physical memory should be below the initial process stack, not the
-top of the address space, at least for as long as the stack isn't known to the
-kernel VM system and appropriately reserved.
+Protection against the host's time going backwards (eg, ntp activity on
+the host) by keeping track of the time at the last tick and if it's
+greater than the current time, keep time stopped until the host catches
+up.
 
-Cc: "Christopher S. Aker" <caker@theshore.net>
+Cc: Nix <nix@esperi.org.uk>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- arch/um/kernel/um_arch.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+ arch/um/os-Linux/time.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index a6c1dd1..9cecb42 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -259,6 +259,7 @@ int __init linux_main(int argc, char **argv)
- 	unsigned long avail, diff;
- 	unsigned long virtmem_size, max_physmem;
- 	unsigned int i, add;
-+	unsigned long stack;
- 	char * mode;
+diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
+index bee98f4..dec5678 100644
+--- a/arch/um/os-Linux/time.c
++++ b/arch/um/os-Linux/time.c
+@@ -106,6 +106,10 @@ static void deliver_alarm(void)
+ 	unsigned long long this_tick = os_nsecs();
+ 	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
  
- 	for (i = 1; i < argc; i++) {
-@@ -347,7 +348,9 @@ int __init linux_main(int argc, char **argv)
- 	}
++	/* Protection against the host's time going backwards */
++	if ((last_tick != 0) && (this_tick < last_tick))
++		this_tick = last_tick;
++
+ 	if (last_tick == 0)
+ 		last_tick = this_tick - one_tick;
  
- 	virtmem_size = physmem_size;
--	avail = TASK_SIZE - start_vm;
-+	stack = (unsigned long) argv;
-+	stack &= ~(1024 * 1024 - 1);
-+	avail = stack - start_vm;
- 	if (physmem_size > avail)
- 		virtmem_size = avail;
- 	end_vm = start_vm + virtmem_size;
+@@ -148,6 +152,9 @@ static int after_sleep_interval(struct timespec *ts)
+ 		start_usecs = usec;
+ 
+ 	start_usecs -= skew / UM_NSEC_PER_USEC;
++	if (start_usecs < 0)
++		start_usecs = 0;
++
+ 	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
+ 				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
+ 	interval = ((struct itimerval) { { 0, usec }, tv });
 -- 
 1.5.5.1
-
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
