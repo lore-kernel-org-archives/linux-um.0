@@ -1,24 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KOhfi-0003RG-BF for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 Jul 2008 16:35:02 -0700
-Received: from wa-out-1112.google.com ([209.85.146.178])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KOhfg-0000E9-S6
+	id 1KP3Jf-0004i4-Ml for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Aug 2008 15:41:43 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KP3Jd-0001nA-6l
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 31 Jul 2008 16:35:02 -0700
-Received: by wa-out-1112.google.com with SMTP id j5so487858wah.18
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 31 Jul 2008 16:35:00 -0700 (PDT)
-Message-ID: <cfa94dc20807311635v3dc4b500w4c243674b5f2bc6b@mail.gmail.com>
-Date: Thu, 31 Jul 2008 16:35:00 -0700
-From: "Ryan Finnie" <ryan@finnie.org>
-In-Reply-To: <200808010108.35145.nanardon@nanardon.zarb.org>
+	Fri, 01 Aug 2008 15:41:43 -0700
+Date: Fri, 1 Aug 2008 18:41:25 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080801224125.GA13729@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-References: <200808010108.35145.nanardon@nanardon.zarb.org>
-Subject: Re: [uml-devel] Running 32bits code on 64bits kernel-uml
+Subject: [uml-devel] [PATCH 2/14] uml: fix bad NTP interaction with clock
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,21 +28,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Olivier Thauvin <nanardon@nanardon.zarb.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: stable@kernel.org
+Cc: WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-2008/7/31 Olivier Thauvin <nanardon@nanardon.zarb.org>:
-> I never notice in FAQ or documentation this limitation. Is this normal ? Is
-> there any plan to remove this limitation ? Is there a technical problem to
-> fix this denying to fix this ?
+From 2b95eda726d565d4abe3cac045022d3141a11b23 Mon Sep 17 00:00:00 2001
 
-(Sorry for the repost, I didn't reply to all the first time.)
+UML's supposed nanosecond clock interacts badly with NTP when NTP
+decides that the clock has drifted ahead and needs to be slowed down.
+Slowing down the clock is done by decrementing the cycle-to-nanosecond
+multiplier, which is 1.  Decrementing that gives you 0 and time is
+stopped.
 
-It's not a problem per se, just a feature that was never implemented
-in 64-bit UML.  Jeff has said he's had this on his "to do" list for
-awhile now.
+This is fixed by switching to a microsecond clock, with a multiplier
+of 1000.
 
-RF
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Cc: WANG Cong <xiyou.wangcong@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ arch/um/kernel/time.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index e066e84..5036c81 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -74,7 +74,7 @@ static irqreturn_t um_timer(int irq, void *dev)
+ 
+ static cycle_t itimer_read(void)
+ {
+-	return os_nsecs();
++	return os_nsecs() / 1000;
+ }
+ 
+ static struct clocksource itimer_clocksource = {
+@@ -82,7 +82,7 @@ static struct clocksource itimer_clocksource = {
+ 	.rating		= 300,
+ 	.read		= itimer_read,
+ 	.mask		= CLOCKSOURCE_MASK(64),
+-	.mult		= 1,
++	.mult		= 1000,
+ 	.shift		= 0,
+ 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+ };
+-- 
+1.5.5.1
+
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
