@@ -2,19 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KP3Jg-0004iJ-Cv for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:41:44 -0700
+	id 1KP3Jt-0004is-6J for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Aug 2008 15:41:57 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KP3Jf-0004Ky-DT
+	(Exim 4.44) id 1KP3Jr-0004R2-Ln
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:41:44 -0700
-Date: Fri, 1 Aug 2008 18:41:33 -0400
+	Fri, 01 Aug 2008 15:41:57 -0700
+Date: Fri, 1 Aug 2008 18:41:29 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080801224133.GA13713@c2.user-mode-linux.org>
+Message-ID: <20080801224129.GA13733@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 10/14] uml: stub needs to tolerate SIGWINCH
+Subject: [uml-devel] [PATCH 8/14] missing export of csum_partial() on uml/amd64
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,37 +29,28 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: stable@kernel.org
-Cc: Benedict Verheyen <benedict.verheyen@gmail.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Al Viro <viro@ftp.linux.org.uk>
 
-From b4783df9f0fefe1af0b828748b8abe39ada65652 Mon Sep 17 00:00:00 2001
+From 7282ca1a67ef596819e8cf5725b0caa95c5692f1 Mon Sep 17 00:00:00 2001
+From: Al Viro <viro@ftp.linux.org.uk>
 
-We lost the marking of SIGWINCH as being OK to receive during stub
-execution, causing a panic should that happen.
-
-Cc: Benedict Verheyen <benedict.verheyen@gmail.com>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- arch/um/os-Linux/skas/process.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ arch/um/sys-x86_64/ksyms.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 1e8cba6..2328098 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -55,7 +55,7 @@ static int ptrace_dump_regs(int pid)
-  * Signals that are OK to receive in the stub - we'll just continue it.
-  * SIGWINCH will happen when UML is inside a detached screen.
-  */
--#define STUB_SIG_MASK (1 << SIGVTALRM)
-+#define STUB_SIG_MASK ((1 << SIGVTALRM) | (1 << SIGWINCH))
+diff --git a/arch/um/sys-x86_64/ksyms.c b/arch/um/sys-x86_64/ksyms.c
+index 12c5936..08f63e2 100644
+--- a/arch/um/sys-x86_64/ksyms.c
++++ b/arch/um/sys-x86_64/ksyms.c
+@@ -14,3 +14,4 @@ EXPORT_SYMBOL(__up_wakeup);
  
- /* Signals that the stub will finish with - anything else is an error */
- #define STUB_DONE_MASK (1 << SIGTRAP)
+ /*XXX: we need them because they would be exported by x86_64 */
+ EXPORT_SYMBOL(__memcpy);
++EXPORT_SYMBOL(csum_partial);
 -- 
 1.5.5.1
-
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
