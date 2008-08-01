@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KP3Jf-0004i4-Ml for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:41:43 -0700
+	id 1KP3Jg-0004iJ-Cv for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Aug 2008 15:41:44 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KP3Jd-0001nA-6l
+	(Exim 4.44) id 1KP3Jf-0004Ky-DT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:41:43 -0700
-Date: Fri, 1 Aug 2008 18:41:25 -0400
+	Fri, 01 Aug 2008 15:41:44 -0700
+Date: Fri, 1 Aug 2008 18:41:33 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080801224125.GA13729@c2.user-mode-linux.org>
+Message-ID: <20080801224133.GA13713@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 2/14] uml: fix bad NTP interaction with clock
+Subject: [uml-devel] [PATCH 10/14] uml: stub needs to tolerate SIGWINCH
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,49 +29,34 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: stable@kernel.org
-Cc: WANG Cong <xiyou.wangcong@gmail.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Benedict Verheyen <benedict.verheyen@gmail.com>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From 2b95eda726d565d4abe3cac045022d3141a11b23 Mon Sep 17 00:00:00 2001
+From b4783df9f0fefe1af0b828748b8abe39ada65652 Mon Sep 17 00:00:00 2001
 
-UML's supposed nanosecond clock interacts badly with NTP when NTP
-decides that the clock has drifted ahead and needs to be slowed down.
-Slowing down the clock is done by decrementing the cycle-to-nanosecond
-multiplier, which is 1.  Decrementing that gives you 0 and time is
-stopped.
+We lost the marking of SIGWINCH as being OK to receive during stub
+execution, causing a panic should that happen.
 
-This is fixed by switching to a microsecond clock, with a multiplier
-of 1000.
-
+Cc: Benedict Verheyen <benedict.verheyen@gmail.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- arch/um/kernel/time.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/um/os-Linux/skas/process.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index e066e84..5036c81 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -74,7 +74,7 @@ static irqreturn_t um_timer(int irq, void *dev)
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 1e8cba6..2328098 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -55,7 +55,7 @@ static int ptrace_dump_regs(int pid)
+  * Signals that are OK to receive in the stub - we'll just continue it.
+  * SIGWINCH will happen when UML is inside a detached screen.
+  */
+-#define STUB_SIG_MASK (1 << SIGVTALRM)
++#define STUB_SIG_MASK ((1 << SIGVTALRM) | (1 << SIGWINCH))
  
- static cycle_t itimer_read(void)
- {
--	return os_nsecs();
-+	return os_nsecs() / 1000;
- }
- 
- static struct clocksource itimer_clocksource = {
-@@ -82,7 +82,7 @@ static struct clocksource itimer_clocksource = {
- 	.rating		= 300,
- 	.read		= itimer_read,
- 	.mask		= CLOCKSOURCE_MASK(64),
--	.mult		= 1,
-+	.mult		= 1000,
- 	.shift		= 0,
- 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
- };
+ /* Signals that the stub will finish with - anything else is an error */
+ #define STUB_DONE_MASK (1 << SIGTRAP)
 -- 
 1.5.5.1
 
