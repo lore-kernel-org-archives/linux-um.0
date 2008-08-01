@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KP3K0-0004mJ-Sw for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:42:05 -0700
+	id 1KP3Jk-0004id-Cq for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Aug 2008 15:41:48 -0700
 Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KP3K0-0001y3-56
+	(Exim 4.44) id 1KP3Ji-0004Ks-SH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 15:42:04 -0700
-Date: Fri, 1 Aug 2008 18:41:28 -0400
+	Fri, 01 Aug 2008 15:41:48 -0700
+Date: Fri, 1 Aug 2008 18:41:24 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080801224128.GA13721@c2.user-mode-linux.org>
+Message-ID: <20080801224124.GA13717@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 6/14] uml: deal with host time going backwards
+Subject: [uml-devel] [PATCH 0/14] UML - 2.6.25.x
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,50 +29,19 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: stable@kernel.org
-Cc: Nix <nix@esperi.org.uk>, LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From b547462b600e9d284f9d40ed558ca2b8904af185 Mon Sep 17 00:00:00 2001
+These are my -stable patches for 2.6.25.14.
 
-Protection against the host's time going backwards (eg, ntp activity on
-the host) by keeping track of the time at the last tick and if it's
-greater than the current time, keep time stopped until the host catches
-up.
+Note that one patch, patch 13 "Fix boot crash", was sent in for
+2.6.26-stable and described then as being not for 2.6.25-stable.  The
+patch which fixes various build problems, patch 12 "fix gcc ICEs and
+unresolved externs", is here, thus requiring #13.
 
-Cc: Nix <nix@esperi.org.uk>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
----
- arch/um/os-Linux/time.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+	   	     	      Jeff
 
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index bee98f4..dec5678 100644
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -106,6 +106,10 @@ static void deliver_alarm(void)
- 	unsigned long long this_tick = os_nsecs();
- 	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
- 
-+	/* Protection against the host's time going backwards */
-+	if ((last_tick != 0) && (this_tick < last_tick))
-+		this_tick = last_tick;
-+
- 	if (last_tick == 0)
- 		last_tick = this_tick - one_tick;
- 
-@@ -148,6 +152,9 @@ static int after_sleep_interval(struct timespec *ts)
- 		start_usecs = usec;
- 
- 	start_usecs -= skew / UM_NSEC_PER_USEC;
-+	if (start_usecs < 0)
-+		start_usecs = 0;
-+
- 	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
- 				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
- 	interval = ((struct itimerval) { { 0, usec }, tv });
 -- 
-1.5.5.1
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
