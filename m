@@ -1,24 +1,33 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KP5UX-00014c-Lp for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 18:01:05 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	id 1KPA4K-0002ct-9L for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Aug 2008 22:54:20 -0700
+Received: from static-220-247-10-204.b-man.svips.gol.ne.jp ([220.247.10.204]
+	helo=tadamune.kami.home)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KP5UV-0002wd-SW
+	(Exim 4.44) id 1KPA4I-0006m0-Sa
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 18:01:05 -0700
-Date: Fri, 1 Aug 2008 21:00:44 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080802010044.GA16405@c2.user-mode-linux.org>
-References: <20080801224125.GA13727@c2.user-mode-linux.org>
-	<20080801230624.GA22233@kroah.com>
+	Fri, 01 Aug 2008 22:54:20 -0700
+Date: Sat, 2 Aug 2008 14:54:08 +0900
+From: Mattia Dongili <malattia@linux.it>
+Message-ID: <20080802055406.GA9504@inferi.kami.home>
+References: <5df78e1d0807091925q64c0121fk3d33c37df8d80d18@mail.gmail.com>
+	<20080710170210.GB18429@c2.user-mode-linux.org>
+	<5df78e1d0807140206m43291128t32f1489177ad6e3d@mail.gmail.com>
+	<20080714144612.GA5751@c2.user-mode-linux.org>
+	<5df78e1d0807160252j1b610c41la1a2f5092ae04be7@mail.gmail.com>
+	<5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
+	<20080718205342.GE13572@c2.user-mode-linux.org>
+	<20080720152022.GE1520@inferi.kami.home>
+	<20080720154420.GA6244@c2.user-mode-linux.org>
+	<20080721125425.GC13451@inferi.kami.home>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20080801230624.GA22233@kroah.com>
-Subject: Re: [uml-devel] [stable] [PATCH 1/14] uml: fix build when SLOB is
-	enabled
+In-Reply-To: <20080721125425.GC13451@inferi.kami.home>
+Subject: Re: [uml-devel] 2.6.25 uml kernel crashes when it calls down() on
+	a	semaphore with zero counter
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,36 +41,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Greg KH <greg@kroah.com>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>, stable@kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Jiaying Zhang <jiayingz@google.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Aug 01, 2008 at 04:06:24PM -0700, Greg KH wrote:
-> On Fri, Aug 01, 2008 at 06:41:25PM -0400, Jeff Dike wrote:
-> > >From 94409ded7768e15b0d0a5a172d611073c72308de Mon Sep 17 00:00:00 2001
-> 
-> These git commit ids don't match up to anything in Linus's tree at all
-> :(
+On Mon, Jul 21, 2008 at 09:54:26PM +0900, Mattia Dongili wrote:
+> On Sun, Jul 20, 2008 at 11:44:20AM -0400, Jeff Dike wrote:
+> > On Mon, Jul 21, 2008 at 12:20:22AM +0900, Mattia Dongili wrote:
+> > > it's not entirely clear to me why, but that patch fixes a segfault that
+> > > I experience when booting uml 2.6.25 built with gcc-4.3 on a 2.6.25
+> > > host (I also applied your ICE workaround patch).
+> > 
+> > Hmmm, get a stack trace from it and let's see what's going on.
 
-Hmmm, OK I'll figure out where the commit ids came from.  I
-cherry-picked them from 2.6.26 into 2.6.25.13, so I guess they got new
-ids when I did that.
+Hi Jeff,
+FWIW I can't reproduce this on 2.6.26.
 
-I'll resend with the original ids...
-
-> Oh, in the future it is simple to get patches into the -stable tree
-> automatically, just add:
-> 	Cc: Stable <stable@kernel.org>
-> to the signed-off-by: area of the patch.  When it goes into Linus's
-> tree, it will be automatically sent to us for inclusion in the next
-> -stable release.
-
-Yeah, I'll do that in future, but it was a little late for these
-patches.
-
-				Jeff
-
+cheers
 -- 
-Work email - jdike at linux dot intel dot com
+mattia
+:wq!
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
