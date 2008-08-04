@@ -2,32 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KPA4K-0002ct-9L for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 22:54:20 -0700
-Received: from static-220-247-10-204.b-man.svips.gol.ne.jp ([220.247.10.204]
-	helo=tadamune.kami.home)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KPA4I-0006m0-Sa
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 01 Aug 2008 22:54:20 -0700
-Date: Sat, 2 Aug 2008 14:54:08 +0900
-From: Mattia Dongili <malattia@linux.it>
-Message-ID: <20080802055406.GA9504@inferi.kami.home>
-References: <5df78e1d0807091925q64c0121fk3d33c37df8d80d18@mail.gmail.com>
-	<20080710170210.GB18429@c2.user-mode-linux.org>
-	<5df78e1d0807140206m43291128t32f1489177ad6e3d@mail.gmail.com>
-	<20080714144612.GA5751@c2.user-mode-linux.org>
-	<5df78e1d0807160252j1b610c41la1a2f5092ae04be7@mail.gmail.com>
-	<5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
-	<20080718205342.GE13572@c2.user-mode-linux.org>
-	<20080720152022.GE1520@inferi.kami.home>
-	<20080720154420.GA6244@c2.user-mode-linux.org>
-	<20080721125425.GC13451@inferi.kami.home>
+	id 1KPzMP-0004Z1-Kw for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Aug 2008 05:40:25 -0700
+Received: from ip-212-081-022-089.static.nextra.sk ([212.81.22.89]
+	helo=meduna.org) by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1KPzMO-00064L-6p for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Aug 2008 05:40:25 -0700
+Received: from [192.168.130.27] (lnxtleo01004.meduna.lan [192.168.130.27])
+	by meduna.org (Postfix) with ESMTP id B94E99C434
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon,  4 Aug 2008 14:48:08 +0200 (CEST)
+Message-ID: <4896F8A1.6020203@meduna.org>
+Date: Mon, 04 Aug 2008 14:40:01 +0200
+From: Stanislav Meduna <stano@meduna.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20080721125425.GC13451@inferi.kami.home>
-Subject: Re: [uml-devel] 2.6.25 uml kernel crashes when it calls down() on
-	a	semaphore with zero counter
+Subject: [uml-devel] /dev/random problems _not_ solved in 2.6.26
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,25 +30,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Jiaying Zhang <jiayingz@google.com>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Jul 21, 2008 at 09:54:26PM +0900, Mattia Dongili wrote:
-> On Sun, Jul 20, 2008 at 11:44:20AM -0400, Jeff Dike wrote:
-> > On Mon, Jul 21, 2008 at 12:20:22AM +0900, Mattia Dongili wrote:
-> > > it's not entirely clear to me why, but that patch fixes a segfault that
-> > > I experience when booting uml 2.6.25 built with gcc-4.3 on a 2.6.25
-> > > host (I also applied your ICE workaround patch).
-> > 
-> > Hmmm, get a stack trace from it and let's see what's going on.
+Hi,
 
-Hi Jeff,
-FWIW I can't reproduce this on 2.6.26.
+this is just to let you know that the /dev/random problems
+are still not solved in the 2.6.26 version. A small dictionary
+attack on sshd (in my case 260 tries over 12 minutes)
+are able to produce
 
-cheers
+auth.log.0:Aug  3 05:30:35 dirk sshd[1825]: fatal: Couldn't obtain random bytes (error 
+604389476)
+
+and the sshd dies (followed by apache on the first subsequent
+SSL request and so on).
+
+
+Unfortunately I can't help you in tracing the uml process
+or trying patches - this is a virtual server at my provider
+and I don't have any access there. I could try to get
+the .config file.
+
+
+# uname -a
+Linux dirk 2.6.26 #1 Wed Jul 30 10:56:10 CEST 2008 i686 GNU/Linux
+
+# cat /proc/cpuinfo
+processor       : 0
+vendor_id       : User Mode Linux
+model name      : UML
+mode            : skas
+host            : Linux seldon-base 2.6.23.17 #2 SMP Sat Jun 21 15:04:22 CEST 2008 i686
+bogomips        : 4771.02
+
+# cat /proc/sys/kernel/random/entropy_avail
+293
+
+After exhausting the entropy with
+
+   cat /dev/random | od -cx
+
+the entropy only slooowly gets up, one byte per several
+seconds or so with me typing in the ssh console...
+
+
+Regards
 -- 
-mattia
-:wq!
+                                 Stano
+
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
