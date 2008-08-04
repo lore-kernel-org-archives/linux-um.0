@@ -2,21 +2,31 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KQ394-0001DY-LI for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Aug 2008 09:42:54 -0700
+	id 1KQ3Au-0001Rn-9q for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Aug 2008 09:44:48 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KQ394-0001tI-2O
+	(Exim 4.44) id 1KQ3As-0002jE-On
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Aug 2008 09:42:54 -0700
-Date: Mon, 4 Aug 2008 12:42:46 -0400
+	Mon, 04 Aug 2008 09:44:48 -0700
+Date: Mon, 4 Aug 2008 12:44:29 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080804164246.GA14805@c2.user-mode-linux.org>
-References: <4896F8A1.6020203@meduna.org>
+Message-ID: <20080804164429.GC14805@c2.user-mode-linux.org>
+References: <20080710170210.GB18429@c2.user-mode-linux.org>
+	<5df78e1d0807140206m43291128t32f1489177ad6e3d@mail.gmail.com>
+	<20080714144612.GA5751@c2.user-mode-linux.org>
+	<5df78e1d0807160252j1b610c41la1a2f5092ae04be7@mail.gmail.com>
+	<5df78e1d0807162155t594936c9qe5bc1616fae97f77@mail.gmail.com>
+	<20080718205342.GE13572@c2.user-mode-linux.org>
+	<20080720152022.GE1520@inferi.kami.home>
+	<20080720154420.GA6244@c2.user-mode-linux.org>
+	<20080721125425.GC13451@inferi.kami.home>
+	<20080802055406.GA9504@inferi.kami.home>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4896F8A1.6020203@meduna.org>
-Subject: Re: [uml-devel] /dev/random problems _not_ solved in 2.6.26
+In-Reply-To: <20080802055406.GA9504@inferi.kami.home>
+Subject: Re: [uml-devel] 2.6.25 uml kernel crashes when it calls down() on	a
+	semaphore with zero counter
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,44 +40,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Stanislav Meduna <stano@meduna.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Mattia Dongili <malattia@linux.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jiaying Zhang <jiayingz@google.com>
 
-On Mon, Aug 04, 2008 at 02:40:01PM +0200, Stanislav Meduna wrote:
-> this is just to let you know that the /dev/random problems
-> are still not solved in the 2.6.26 version. A small dictionary
-> attack on sshd (in my case 260 tries over 12 minutes)
-> are able to produce
-> 
-> auth.log.0:Aug  3 05:30:35 dirk sshd[1825]: fatal: Couldn't obtain random bytes (error 
-> 604389476)
-> 
-> and the sshd dies (followed by apache on the first subsequent
-> SSL request and so on).
+On Sat, Aug 02, 2008 at 02:54:08PM +0900, Mattia Dongili wrote:
+> FWIW I can't reproduce this on 2.6.26.
 
-Off the top of my head, you need the following:
-    2.6.26 UML, which you do
-    rngtools installed in the UML
-    sufficient entropy on the host
+Thanks for letting me know.  Too bad it's still a mystery though.
 
-This last one shouldn't be taken for granted.  I had problems with
-this when debugging the random driver changes - on my laptop with me
-typing on it, mousing, disk going, and network traffic going in and
-out.  It would be worse on a colocated, no-keyboard, no-mouse, server,
-which are notorious for this problem.
-
-> Unfortunately I can't help you in tracing the uml process
-> or trying patches - this is a virtual server at my provider
-> and I don't have any access there. I could try to get
-> the .config file.
-
-You could ask them about how their servers get their randomness.
-
-If nothing else works, I suppose a nasty workaround might be to
-replace /dev/random with dev/urandom, but that has security
-implications.
-
-    	      	   	 Jeff
+       	   	      Jeff
 
 -- 
 Work email - jdike at linux dot intel dot com
