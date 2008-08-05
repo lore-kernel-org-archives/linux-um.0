@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KQSvN-0005Sk-3l for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Aug 2008 13:14:29 -0700
+	id 1KQSvS-0005T0-JB for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Aug 2008 13:14:34 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KQSvL-00035g-8D
+	(Exim 4.44) id 1KQSvQ-0006Bq-GY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Aug 2008 13:14:29 -0700
-Date: Tue, 5 Aug 2008 16:14:05 -0400
+	Tue, 05 Aug 2008 13:14:34 -0700
+Date: Tue, 5 Aug 2008 16:14:09 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080805201405.GA11736@c2.user-mode-linux.org>
+Message-ID: <20080805201409.GA11800@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 5/14] missed kmalloc() in pcap_user.c
+Subject: [uml-devel] [PATCH 11/14] uml: work around broken host PTRACE_SYSEMU
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,30 +31,76 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: stable@kernel.org
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From 296cd66f7f6e130fe08e6880ecb13c3fc615a8db
+From f1ef9167ca4494a8c6d71d0031c73e9c8841eadd
 
-From: Al Viro <viro@ftp.linux.org.uk>
+Fedora broke PTRACE_SYSEMU again, and UML crashes as a result when it
+doesn't need to.  This patch makes the PTRACE_SYSEMU check fail gracefully
+and makes UML fall back to PTRACE_SYSCALL.
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Acked-by: Jeff Dike <jdike@addtoit.com>
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- arch/um/drivers/pcap_user.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ arch/um/os-Linux/start_up.c |   25 ++++++++++++++++---------
+ 1 files changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/arch/um/drivers/pcap_user.c b/arch/um/drivers/pcap_user.c
-index e980935..5f90358 100644
---- a/arch/um/drivers/pcap_user.c
-+++ b/arch/um/drivers/pcap_user.c
-@@ -50,7 +50,7 @@ static int pcap_open(void *data)
- 			return -EIO;
- 		}
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index b616e15..fd71bdb 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -122,8 +122,10 @@ static int stop_ptraced_child(int pid, int exitcode, int mustexit)
+ {
+ 	int status, n, ret = 0;
  
--		pri->compiled = kmalloc(sizeof(struct bpf_program),
-+		pri->compiled = uml_kmalloc(sizeof(struct bpf_program),
- 					UM_GFP_KERNEL);
- 		if (pri->compiled == NULL) {
- 			printk(UM_KERN_ERR "pcap_open : kmalloc failed\n");
+-	if (ptrace(PTRACE_CONT, pid, 0, 0) < 0)
+-		fatal_perror("stop_ptraced_child : ptrace failed");
++	if (ptrace(PTRACE_CONT, pid, 0, 0) < 0) {
++		perror("stop_ptraced_child : ptrace failed");
++		return -1;
++	}
+ 	CATCH_EINTR(n = waitpid(pid, &status, 0));
+ 	if (!WIFEXITED(status) || (WEXITSTATUS(status) != exitcode)) {
+ 		int exit_with = WEXITSTATUS(status);
+@@ -203,7 +205,7 @@ static void __init check_sysemu(void)
+ 	if (n < 0)
+ 		fatal_perror("check_sysemu : wait failed");
+ 	if (!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
+-		fatal("check_sysemu : expected SIGTRAP, got status = %d",
++		fatal("check_sysemu : expected SIGTRAP, got status = %d\n",
+ 		      status);
+ 
+ 	if (ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
+@@ -245,9 +247,11 @@ static void __init check_sysemu(void)
+ 
+ 		if (WIFSTOPPED(status) &&
+ 		    (WSTOPSIG(status) == (SIGTRAP|0x80))) {
+-			if (!count)
+-				fatal("check_ptrace : SYSEMU_SINGLESTEP "
+-				      "doesn't singlestep");
++			if (!count) {
++				non_fatal("check_ptrace : SYSEMU_SINGLESTEP "
++					  "doesn't singlestep");
++				goto fail;
++			}
+ 			n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET,
+ 				   os_getpid());
+ 			if (n < 0)
+@@ -257,9 +261,12 @@ static void __init check_sysemu(void)
+ 		}
+ 		else if (WIFSTOPPED(status) && (WSTOPSIG(status) == SIGTRAP))
+ 			count++;
+-		else
+-			fatal("check_ptrace : expected SIGTRAP or "
+-			      "(SIGTRAP | 0x80), got status = %d", status);
++		else {
++			non_fatal("check_ptrace : expected SIGTRAP or "
++				  "(SIGTRAP | 0x80), got status = %d\n",
++				  status);
++			goto fail;
++		}
+ 	}
+ 	if (stop_ptraced_child(pid, 0, 0) < 0)
+ 		goto fail_stopped;
 -- 
 1.5.5.1
 
