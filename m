@@ -2,23 +2,26 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KQIVD-00053c-EI for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Aug 2008 02:06:47 -0700
-Received: from wr-out-0506.google.com ([64.233.184.230])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KQIVC-00005t-SI
+	id 1KQOQ3-0006de-TE for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Aug 2008 08:25:52 -0700
+Received: from dns1.exasol.com ([62.146.138.134])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KQOQ0-0004Eo-20
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Aug 2008 02:06:47 -0700
-Received: by wr-out-0506.google.com with SMTP id 60so1923956wri.6
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 05 Aug 2008 02:06:46 -0700 (PDT)
-Date: Tue, 5 Aug 2008 10:05:02 +0100
-From: WANG Cong <xiyou.wangcong@gmail.com>
-Message-ID: <20080805090502.GA3039@hack.voiplan.pt>
-References: <20080801224125.GA13727@c2.user-mode-linux.org>
+	Tue, 05 Aug 2008 08:25:51 -0700
+Received: from dns1.exasol.com (root@localhost)
+	by dns1.exasol.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	m75FPXVe005647 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 5 Aug 2008 17:25:33 +0200
+Received: from mail2 (fwgw.exasol.com [62.146.138.137])
+	by dns1.exasol.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	m75FPWCS005641 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 5 Aug 2008 17:25:32 +0200
+Message-ID: <489870E7.7070000@exasol.com>
+Date: Tue, 05 Aug 2008 17:25:27 +0200
+From: juergen.kadidlo@exasol.com
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20080801224125.GA13727@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] [PATCH 1/14] uml: fix build when SLOB is enabled
+Subject: [uml-devel] kernel module support broken on x86-64?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,34 +35,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>, stable@kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Aug 01, 2008 at 06:41:25PM -0400, Jeff Dike wrote:
-From 94409ded7768e15b0d0a5a172d611073c72308de Mon Sep 17 00:00:00 2001
->
->Reintroduce uml_kmalloc for the benefit of UML libc code.  The
->previous tactic of declaring __kmalloc so it could be called directly
->from the libc side of the house turned out to be getting too intimate
->with slab, and it doesn't work with slob.
->
->So, the uml_kmalloc wrapper is back.  It calls kmalloc or whatever
->that translates into, and libc code calls it.
->
->kfree is left alone since that still works, leaving a somewhat
->inconsistent API.
->
->Signed-off-by: Jeff Dike <jdike@linux.intel.com>
->Cc: WANG Cong <xiyou.wangcong@gmail.com>
->Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
->Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Hi!
 
-Looks good. Thanks. :)
+ I've compiled an UML kernel based on 2.6.25 but loading kernel modules 
+seems to be broken. No matter which module I try to load the output 
+looks similar to this:
 
+ overflow in relocation type 11 val 80836d41
+'loop' likely not compiled with -mcmodel=kernel
 
--- 
-The opposite of love is not hate, but indifference.
-	--Elie Wiesel
+After searching for a while I found some threads from 2006 discussing 
+this issue, e.g.:
+http://www.mail-archive.com/user-mode-linux-devel@lists.sourceforge.net/msg03693.html
+and
+http://marc.info/?l=user-mode-linux-devel&m=115125101012707&w=2
+
+As Andi Kleen has mentioned in a mail from the first thread, simply 
+appending "-mcmodel=kernel" to the KBUILD_CFLAGS does not work (I tried 
+it anyway and can confirm his statement ;)
+
+Since I could not find any solution I've decided to write this mail and 
+ask about the current state of this issue and of course for a solution! 
+I simply don't want to believe that there is no loadable module support 
+for UML in 2008...
+
+Regards
+JK
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
