@@ -2,24 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KQSMo-0001mG-5u for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Aug 2008 12:38:46 -0700
-Received: from ip-212-081-022-089.static.nextra.sk ([212.81.22.89]
-	helo=meduna.org) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1KQSMm-0002AI-Od for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Aug 2008 12:38:46 -0700
-Received: from [192.168.130.27] (lnxtleo01004.meduna.lan [192.168.130.27])
-	by meduna.org (Postfix) with ESMTP id 515779C434
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue,  5 Aug 2008 21:46:37 +0200 (CEST)
-Message-ID: <4898AC10.3010602@meduna.org>
-Date: Tue, 05 Aug 2008 21:37:52 +0200
-From: Stanislav Meduna <stano@meduna.org>
+	id 1KQSvM-0005Sa-8V for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Aug 2008 13:14:28 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KQSvJ-000379-VM
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Aug 2008 13:14:28 -0700
+Date: Tue, 5 Aug 2008 16:14:07 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080805201407.GA11790@c2.user-mode-linux.org>
 MIME-Version: 1.0
-References: <4896F8A1.6020203@meduna.org>
-	<20080804164246.GA14805@c2.user-mode-linux.org>
-In-Reply-To: <20080804164246.GA14805@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] /dev/random problems _not_ solved in 2.6.26
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH 8/14] missing export of csum_partial() on uml/amd64
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,37 +28,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: stable@kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Jeff Dike wrote:
+From 3e3b48e5198544dd90e27265a70c1a834139e025
 
-> If nothing else works, I suppose a nasty workaround might be to
-> replace /dev/random with dev/urandom, but that has security
-> implications.
+From: Al Viro <viro@ftp.linux.org.uk>
 
-I am aware of the implications, but unfortunately it did
-not help either.
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ arch/um/sys-x86_64/ksyms.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-# ls -l /dev/*random*
-crw-rw-rw- 1 root root 1, 8 2008-08-05 17:41 /dev/oldrandom
-lrwxrwxrwx 1 root root    7 2008-08-05 17:41 /dev/random -> urandom
-crw-rw-rw- 1 root root 1, 9 2008-08-05 17:42 /dev/urandom
-
-# grep random /var/log/auth.log
-Aug  5 19:53:50 dirk sshd[3117]: fatal: Couldn't obtain random bytes (error 604389476)
-
-# cat /proc/sys/kernel/random/entropy_avail
-335
-
-I am now talking to the host owner - he is running quite
-a few UML guests, each in chroot environment, and one of the
-problems is that his entropy gets sucked out...
-
-Now he has replaced random with urandom in my chroot jail,
-so the UML's random is his urandom. Let's see what happens...
-
+diff --git a/arch/um/sys-x86_64/ksyms.c b/arch/um/sys-x86_64/ksyms.c
+index 12c5936..08f63e2 100644
+--- a/arch/um/sys-x86_64/ksyms.c
++++ b/arch/um/sys-x86_64/ksyms.c
+@@ -14,3 +14,4 @@ EXPORT_SYMBOL(__up_wakeup);
+ 
+ /*XXX: we need them because they would be exported by x86_64 */
+ EXPORT_SYMBOL(__memcpy);
++EXPORT_SYMBOL(csum_partial);
 -- 
-                                     Stano
+1.5.5.1
 
 
 -------------------------------------------------------------------------
