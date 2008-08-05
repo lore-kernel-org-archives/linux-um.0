@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KQSvY-0005TR-LJ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Aug 2008 13:14:40 -0700
+	id 1KQSvI-0005SF-Es for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Aug 2008 13:14:24 -0700
 Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KQSvV-0003BZ-0t
+	(Exim 4.44) id 1KQSvH-00068z-K5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 05 Aug 2008 13:14:40 -0700
-Date: Tue, 5 Aug 2008 16:14:09 -0400
+	Tue, 05 Aug 2008 13:14:24 -0700
+Date: Tue, 5 Aug 2008 16:14:10 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080805201409.GA11798@c2.user-mode-linux.org>
+Message-ID: <20080805201410.GA11794@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH 10/14] uml: stub needs to tolerate SIGWINCH
+Subject: [uml-devel] [PATCH 12/14] [UML] fix gcc ICEs and unresolved externs
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,32 +31,79 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: stable@kernel.org
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From 3d5ede6f776bdb1483bcd086f79c3bf41fed3865
+From 4f81c5350b44bcc501ab6f8a089b16d064b4d2f6
 
-We lost the marking of SIGWINCH as being OK to receive during stub
-execution, causing a panic should that happen.
+There are various constraints on the use of unit-at-a-time:
+ - i386 uses no-unit-at-a-time for pre-4.0 (not 4.3)
+ - x86_64 uses unit-at-a-time always
 
-Cc: Benedict Verheyen <benedict.verheyen@gmail.com>
+Uli reported a crash on x86_64 with gcc 4.1.2 with unit-at-a-time,
+resulting in commit c0a18111e571138747a98af18b3a2124df56a0d1
+
+Ingo reported a gcc internal error with gcc 4.3 with no-unit-at-a-timem,
+resulting in 22eecde2f9034764a3fd095eecfa3adfb8ec9a98
+
+Benny Halevy is seeing extern inlines not resolved with gcc 4.3 with
+no-unit-at-a-time
+
+This patch reintroduces unit-at-a-time for gcc >= 4.0, bringing back the
+possibility of Uli's crash.  If that happens, we'll debug it.
+
+I started seeing both the internal compiler errors and unresolved
+inlines on Fedora 9.  This patch fixes both problems, without so far
+reintroducing the crash reported by Uli.
+
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Benny Halevy <bhalevy@panasas.com>
+Cc: Adrian Bunk <bunk@kernel.org>
+Cc: Ingo Molnar <mingo@elte.hu>
+Cc: Ulrich Drepper <drepper@redhat.com>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
- arch/um/os-Linux/skas/process.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ arch/um/Makefile        |    1 -
+ arch/um/Makefile-i386   |    7 +++++++
+ arch/um/Makefile-x86_64 |    3 +++
+ 3 files changed, 10 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 1e8cba6..2328098 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -55,7 +55,7 @@ static int ptrace_dump_regs(int pid)
-  * Signals that are OK to receive in the stub - we'll just continue it.
-  * SIGWINCH will happen when UML is inside a detached screen.
-  */
--#define STUB_SIG_MASK (1 << SIGVTALRM)
-+#define STUB_SIG_MASK ((1 << SIGVTALRM) | (1 << SIGWINCH))
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index dbeab15..ca40397 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -77,7 +77,6 @@ include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
+ KERNEL_DEFINES = $(strip -Derrno=kernel_errno -Dsigprocmask=kernel_sigprocmask \
+ 			 -Dmktime=kernel_mktime $(ARCH_KERNEL_DEFINES))
+ KBUILD_CFLAGS += $(KERNEL_DEFINES)
+-KBUILD_CFLAGS += $(call cc-option,-fno-unit-at-a-time,)
  
- /* Signals that the stub will finish with - anything else is an error */
- #define STUB_DONE_MASK (1 << SIGTRAP)
+ PHONY += linux
+ 
+diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-i386
+index 561e373..302cbe5 100644
+--- a/arch/um/Makefile-i386
++++ b/arch/um/Makefile-i386
+@@ -32,4 +32,11 @@ cflags-y += $(call cc-option,-mpreferred-stack-boundary=2)
+ # an unresolved reference.
+ cflags-y += -ffreestanding
+ 
++# Disable unit-at-a-time mode on pre-gcc-4.0 compilers, it makes gcc use
++# a lot more stack due to the lack of sharing of stacklots.  Also, gcc
++# 4.3.0 needs -funit-at-a-time for extern inline functions.
++KBUILD_CFLAGS += $(shell if [ $(call cc-version) -lt 0400 ] ; then \
++			echo $(call cc-option,-fno-unit-at-a-time); \
++			else echo $(call cc-option,-funit-at-a-time); fi ;)
++
+ KBUILD_CFLAGS += $(cflags-y)
+diff --git a/arch/um/Makefile-x86_64 b/arch/um/Makefile-x86_64
+index 8ed362f..a9cd7e7 100644
+--- a/arch/um/Makefile-x86_64
++++ b/arch/um/Makefile-x86_64
+@@ -21,3 +21,6 @@ HEADER_ARCH := x86
+ 
+ LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
+ LINK-y += -m64
++
++# Do unit-at-a-time unconditionally on x86_64, following the host
++KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
 -- 
 1.5.5.1
 
