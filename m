@@ -1,21 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KQgvz-0002n9-OF for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Aug 2008 04:12:03 -0700
-Received: from mx1.redhat.com ([66.187.233.31])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KQgvy-00014Y-Th
+	id 1KQhWa-0006sO-Gq for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Aug 2008 04:49:52 -0700
+Received: from gw-colo-pa.panasas.com ([66.238.117.130]
+	helo=natasha.panasas.com)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KQhWa-00080i-0V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Aug 2008 04:12:03 -0700
-From: Tomas Mraz <tmraz@redhat.com>
-In-Reply-To: <48996A21.90603@meduna.org>
-References: <48996A21.90603@meduna.org>
-Date: Wed, 06 Aug 2008 13:11:53 +0200
-Message-Id: <1218021113.3146.164.camel@vespa.frost.loc>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] Couldn't obtain random bytes in sshd - problem in
-	RAND_poll?
+	Wed, 06 Aug 2008 04:49:52 -0700
+Message-ID: <48998FBD.6080705@panasas.com>
+Date: Wed, 06 Aug 2008 14:49:17 +0300
+From: Boaz Harrosh <bharrosh@panasas.com>
+MIME-Version: 1.0
+References: <489870E7.7070000@exasol.com> <489873E0.9030801@panasas.com>
+	<489881BE.9070506@exasol.com> <48988612.3030204@panasas.com>
+	<489979BD.7060103@exasol.com>
+In-Reply-To: <489979BD.7060103@exasol.com>
+Subject: Re: [uml-devel] kernel module support broken on x86-64?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,74 +32,140 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: openssl-dev@openssl.org
+To: juergen.kadidlo@exasol.com
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 2008-08-06 at 11:08 +0200, Stanislav Meduna wrote:
-> Hi,
+juergen.kadidlo@exasol.com wrote:
+> Boaz Harrosh wrote:
+>> juergen.kadidlo@exasol.com wrote:
+>>   
+>>> Boaz Harrosh wrote:
+>>>     
+>>>> juergen.kadidlo@exasol.com wrote:
+>>>>   
+>>>>       
+>>>>> Hi!
+>>>>>
+>>>>>  I've compiled an UML kernel based on 2.6.25 but loading kernel modules 
+>>>>> seems to be broken. No matter which module I try to load the output 
+>>>>> looks similar to this:
+>>>>>
+>>>>>  overflow in relocation type 11 val 80836d41
+>>>>> 'loop' likely not compiled with -mcmodel=kernel
+>>>>>
+>>>>> After searching for a while I found some threads from 2006 discussing 
+>>>>> this issue, e.g.:
+>>>>> http://www.mail-archive.com/user-mode-linux-devel@lists.sourceforge.net/msg03693.html
+>>>>> and
+>>>>> http://marc.info/?l=user-mode-linux-devel&m=115125101012707&w=2
+>>>>>
+>>>>> As Andi Kleen has mentioned in a mail from the first thread, simply 
+>>>>> appending "-mcmodel=kernel" to the KBUILD_CFLAGS does not work (I tried 
+>>>>> it anyway and can confirm his statement ;)
+>>>>>
+>>>>> Since I could not find any solution I've decided to write this mail and 
+>>>>> ask about the current state of this issue and of course for a solution! 
+>>>>> I simply don't want to believe that there is no loadable module support 
+>>>>> for UML in 2008...
+>>>>>
+>>>>> Regards
+>>>>> JK
+>>>>>
+>>>>>     
+>>>>>         
+>>>> Every thing is fine down here. What host Kernel-gcc-glibc / uml-gcc-glibc
+>>>> are you using?
+>>>>
+>>>> I'm using out-of-tree modules with uml for every kernel since 2.6.19.
+>>>> I have both Host and UML as x86_64 on FC7 with gcc 4.1.2
+>>>>
+>>>> Boaz
+>>>>
+>>>>   
+>>>>       
+>>> I'm glad to here that the bug has been fixed. Anyway, it does not work
+>>> with my configuration:
+>>>
+>>>  - CentOS 5.1 as host system and UML root fs
+>>>  - Kernel 2.6.25.4 (vanilla, but config taken from the CentOS kernel)
+>>>  - GCC 4.1.2
+>>>  - GLIBC 2.5
+>>>
+>>> Regards
+>>> JK
+>>>
+>>>     
+>>
+>> I used to run with red-hat 4.5 so this should work.
+>> 64 bit, right?
+>>
+>> From passed experience I've seen that UML will only
+>> work if I first do "make ARCH=um defconfig"  and then
+>> manually enable any needed options with make xconfig.
+>> other wise it breaks in all kind of ways. Even doing
+>> a make oldconfig on a good uml config file from older
+>> kernel will not work. Try to do defconfig and see if
+>> it loads at all.
+>>
+>> How do you compile and run the out-of-tree module
+>> or is it one of the built in modules?
+>>
+>> Boaz
+>>
+>>   
+> I tried what you've suggested and did the following:
+> - make mrproper
+> - make defconfig ARCH=um
+> - make linux ARCH=um
+> - make modules ARCH=um
+> - make modules_install INSTALL_MOD_PATH=/path/to/mounted/uml_root_fs ARCH=um
 > 
-> I and a few other users are seeing sshd failing with
->    Couldn't obtain random bytes (error 604389476)
-> and other ssl-related application failing randomly
-> in user mode linux guests and I suspect a problem
-> in openssl that got triggered by some change in UML.
+> It did not work (same result).
 > 
-> I reviewed the RAND_poll function in rand_unix.c
-> (statically, no time for building a debug version now)
-> and have following suspicions:
+> After that, I copied the kernel source to the uml-root-fs, started the
+> UML and did a 'make clean' and 'make modules ARCH=um' inside the running
+> UML, followed by a 'make modules_install'. Again, it did not work.
 > 
-> ===
-> For Linux:
+> After that, I've extracted the kernel source again (completely vanilla)
+> and restarted at 'make defconfig'. Same result.
+> No module is loadable. They all have 'invalid fomrat' an the usage of
+> the '-mcmodel=kernel' flag is suggested.
 > 
-> int r;   ... this has random bytes from stack
-> ...
+> BTW : with the same sources (and the same commands as listed above) I've
+> successfully built a fully working 32 bit UML kernel!
 > 
-> if (poll(&pset, 1, usec / 1000) < 0)
->    usec = 0;
-> else
->    try_read = (pset.revents & POLLIN) != 0;
+> I've also tried kernel 2.6.24.7 with identical results.
 > 
-> ... Let's say that the poll timed out (i.e. returned 0)
->      try_read remains 0, r still has garbage
+> Last but not least, I've tried the same with a fresh download of the
+> 2.6.26 kernel. Unfortunately, this time there was another problem: the
+> kernel exits with a panic on startup (tried to build it twice with the
+> same result). According to the stack-trace, the panic happens somewhere
+> inside "get_page_from_free_list()"...
+> 
+> I'm really running out of ideas right now, does anyone have some
+> suggestions?
+> 
+> Regards
+> JK
+>  
 
-The r is set to -1 in the else of if(try_read) statement.
+It all works down here. Just a long shot you have installed uml_utilities
+on the host ...
 
-> while ((r > 0 || (errno == EINTR || errno == EAGAIN)) &&
-> 
-> ... Let's say that the garbage was negative. We are out of
->      the loop and errno has bogus data (successfull/timed out
->      poll did not set anything)
+I run the uml from the root of the source tree like this:
+./.build_um/vmlinux ubd0=/usr0/var/local/um/Fedora7-AMD64-root_fs eth0=tuntap,,,192.168.0.117 mem=256M
+(The .build_um/ is because I use KBUILD_OUTPUT=.build_um so I can compile 
+multiple targets from same source tree)
 
-errno has garbage value - this should be fixed by initializing errno to
-0 before the poll/select calls. But in the worst case it means the code
-will wait until it will be able to read some data from the random device
-(which was not the intent).
+Maybe there is some package missing from the Linux image you are using.
+You are using a 64bit Linux image with your 64bit kernel, yes?
+Try to compare the 32 bit image with the 64bit one. See if they have
+the same packages installed. I started with a ready made fedora7 uml
+image and never really touched it much except the occasional yum install
+of a library or two.
 
-> 
-> === For other Unices there's additional problem:
-> 
-> If the select select's successfully and immediately, it can
-> leave the time not slept unchanged in the time argument
-> (which is IMHO fully legal, if it finds the bytes immediately).
-> If the read then does not get all the needed bytes, the code
->    if (usec == 10*1000)
->      usec = 0;
-> kicks in and we are out of the loop again.
-
-The problem is not in the RAND_poll() timeouting - this is fully
-intentional, the function should timeout after 10ms if the random device
-blocks read. The default is to
-try /dev/urandom, /dev/random, /dev/srandom in this order. So if you for
-example do not have /dev/urandom and have just the blocking /dev/random,
-it is perfectly possible that the RAND_poll returns error. The other
-possibility is that the /dev/urandom is broken in UML and blocks if not
-enough entropy is available.
-
--- 
-Tomas Mraz
-No matter how far down the wrong road you've gone, turn back.
-                                              Turkish proverb
-
+Boaz
+  
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
