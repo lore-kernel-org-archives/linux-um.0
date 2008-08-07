@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KVAbc-0003k3-Sb for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:41:32 -0700
-Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	id 1KR1DE-0006Mi-Ug for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Aug 2008 01:51:13 -0700
+Received: from natsu.mindrot.org ([203.209.195.154])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KVAbb-0007Ss-9g
+	(Exim 4.44) id 1KR1DC-0004EA-4e
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:41:32 -0700
-Date: Mon, 18 Aug 2008 12:20:45 -0700
-From: Greg KH <gregkh@suse.de>
-Message-ID: <20080818192045.GO10350@suse.de>
-References: <20080818191012.663450219@mini.kroah.org>
+	Thu, 07 Aug 2008 01:51:12 -0700
+Date: Thu, 7 Aug 2008 18:51:00 +1000 (EST)
+From: Damien Miller <djm@mindrot.org>
+In-Reply-To: <489994DF.1050400@meduna.org>
+Message-ID: <alpine.BSO.1.10.0808071849060.23125@fuyu.mindrot.org>
+References: <48996A21.90603@meduna.org>
+	<1218021113.3146.164.camel@vespa.frost.loc>
+	<489994DF.1050400@meduna.org>
 MIME-Version: 1.0
-Content-Disposition: inline; filename="uml-path_max-needs-limits.h.patch"
-In-Reply-To: <20080818191834.GA10350@suse.de>
-Subject: [uml-devel] [patch 40/49] uml: PATH_MAX needs limits.h
+Subject: Re: [uml-devel] Couldn't obtain random bytes in sshd - problem in
+	RAND_poll?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,41 +32,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org, stable@kernel.org
-Cc: Ingo Molnar <mingo@elte.hu>, Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>
+To: openssl-dev@openssl.org
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-2.6.25-stable review patch.  If anyone has any objections, please let us know.
+On Wed, 6 Aug 2008, Stanislav Meduna wrote:
 
-------------------
+> So what should the applications calling openssl actually
+> do if this happens? Now the ssh/apache/... simply exit,
+> which is bad (it left me without an access to a remote
+> box...).
 
-From: Ingo Molnar <mingo@elte.hu>
+Exiting is the best behaviour - continuing without a good source
+of randomness may compromise cryptographic protocols and even
+long-term private keys (e.g. if DSA is used).
 
-commit b6d8adf477439e7086224bc9674c6b6638780783 upstream.
-
-Include limits.h to get a definition of PATH_MAX.
-
-Signed-off-by: Ingo Molnar <mingo@elte.hu>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
-
----
- arch/um/os-Linux/helper.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -7,6 +7,7 @@
- #include <unistd.h>
- #include <errno.h>
- #include <sched.h>
-+#include <linux/limits.h>
- #include <sys/socket.h>
- #include <sys/wait.h>
- #include "kern_constants.h"
-
--- 
+-d
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
