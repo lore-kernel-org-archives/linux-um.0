@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KR8fB-0003w3-DV for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Aug 2008 09:48:33 -0700
-Received: from fg-out-1718.google.com ([72.14.220.159])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KR8f7-0008Q4-9b
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Aug 2008 09:48:33 -0700
-Received: by fg-out-1718.google.com with SMTP id d23so265090fga.32
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 07 Aug 2008 09:48:27 -0700 (PDT)
-Message-ID: <489B274C.50502@panasas.com>
-Date: Thu, 07 Aug 2008 19:48:12 +0300
-From: Boaz Harrosh <bharrosh@panasas.com>
+	id 1KRRCY-0002HL-IE for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Aug 2008 05:36:14 -0700
+Received: from ip-212-081-022-089.static.nextra.sk ([212.81.22.89]
+	helo=meduna.org) by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1KRRCX-0007TG-2J for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Aug 2008 05:36:14 -0700
+Message-ID: <489C3D9B.7070605@meduna.org>
+Date: Fri, 08 Aug 2008 14:35:39 +0200
+From: Stanislav Meduna <stano@meduna.org>
 MIME-Version: 1.0
-Subject: [uml-devel] Test email please ignore
+References: <4896F8A1.6020203@meduna.org><20080804164246.GA14805@c2.user-mode-linux.org>	<4898AC10.3010602@meduna.org>	<7B4268E5ACB878429B58D4BE5B780E8301A303A5@NWS-EXCH2.nws.oregonstate.edu>	<48995D1A.6030203@meduna.org>	<489AC525.3060305@meduna.org>
+	<489AE6DD.2000200@meduna.org>
+In-Reply-To: <489AE6DD.2000200@meduna.org>
+Subject: [uml-devel] FP registers corruption
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,16 +29,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 
-Recently I get my emails to user-mode-linux-devel@lists.sourceforge.net
-rejected.
+Erm.. after debugging the FP corruption for several hours
+trying to isolate the cause I stumbled upon a patch from
+Jeff Dike from February:
 
-I'm trying to see if going through a different SMTP server will help.
+http://article.gmane.org/gmane.linux.uml.devel/11412
 
-Sorry for the noise
+Did this or equivalent patch get into the mainline kernel?
+Browsing through the source I don't think so :( If not,
+where is the best place to fetch the UML tree with the
+patches that the developers seem to find necessary,
+applied?
 
-Boaz
+Thanks
+-- 
+                                     Stano
+
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
