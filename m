@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KR4Ne-0003HW-Sr for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Aug 2008 05:14:10 -0700
-Received: from ip-212-081-022-089.static.nextra.sk ([212.81.22.89]
-	helo=meduna.org) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1KR4Nc-0003wU-Kw for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Aug 2008 05:14:10 -0700
-Message-ID: <489AE6DD.2000200@meduna.org>
-Date: Thu, 07 Aug 2008 14:13:17 +0200
-From: Stanislav Meduna <stano@meduna.org>
+	id 1KRGNp-0005c0-AK for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Aug 2008 18:03:09 -0700
+Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
+	helo=grelber.thyrsus.com)
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KRGNo-0008BO-Sx
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Aug 2008 18:03:09 -0700
+From: Rob Landley <rob@landley.net>
+Date: Thu, 7 Aug 2008 20:02:56 -0500
+References: <1214488251-20927-1-git-send-email-bhalevy@panasas.com>
+	<48673A9B.8050907@panasas.com>
+	<20080630162201.GC6643@c2.user-mode-linux.org>
+In-Reply-To: <20080630162201.GC6643@c2.user-mode-linux.org>
 MIME-Version: 1.0
-References: <4896F8A1.6020203@meduna.org><20080804164246.GA14805@c2.user-mode-linux.org>	<4898AC10.3010602@meduna.org>	<7B4268E5ACB878429B58D4BE5B780E8301A303A5@NWS-EXCH2.nws.oregonstate.edu>	<48995D1A.6030203@meduna.org>
-	<489AC525.3060305@meduna.org>
-In-Reply-To: <489AC525.3060305@meduna.org>
-Subject: Re: [uml-devel] /dev/random problems .. or FP registers corruption?!
+Content-Disposition: inline
+Message-Id: <200808072002.57539.rob@landley.net>
+Subject: Re: [uml-devel] [PATCH] fix extern inline errors with gcc 4.3.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,118 +33,24 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: openssl-dev@openssl.org
+Cc: Jeff Dike <jdike@addtoit.com>, Benny Halevy <bhalevy@panasas.com>, linux-kernel@vger.kernel.org
 
-Stanislav Meduna wrote:
+On Monday 30 June 2008 11:22:01 Jeff Dike wrote:
+> 	Uli reported a crash on x86_64 with gcc 4.1.2 with unit-at-a-time
+...
+> If that crash does come back, I'd say we should just debug it.  It's
+> likely UML implicitly relying on some gcc behavior anyway.
 
-> Am I seeing ghosts? Anyone got other mysterious
-> problems with current UML kernel? Could it be that
-> some state-saving method is corrupting fp registers
-> or something like that? Was there some change in the
-> UML / vanilla kernel recently?
+Well, I'm seeing the crash in stock 2.6.26.  For the moment I'm reverting
 
-Confirmed: I can reproduce openssl changing a double
-value in unrelated process. I was not able to come
-up with a code not relying on external software yet:
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=4f81c5350b44bcc501ab6f8a089b16d064b4d2f6
 
-===
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <time.h>
-#include <signal.h>
+And then it runs fine.  (With gcc 4.1.2, on x86-64.)
 
-testdblchg()
-{
-   volatile double x0 = 2.0;
-   volatile double x1;
-   int iter = 0;
-
-   fprintf(stderr, "Starting loop, pid=%d\n", getpid());
-
-   while(1)
-   {
-     ++iter;
-     x1 = x0;
-     x0 += 1.0;
-     if (x0 != x1 + 1)
-     {
-       kill(getppid(), SIGTERM);
-       fprintf(stderr, "Double variable changed! pid=%d, iteration=%d, should=%g, 
-is=%g\n", getpid(), iter, x1+1, x0);
-       exit(1);
-     }
-     sleep(1);
-   }
-}
-
-testcrypto()
-{
-   while(1)
-   {
-     system("openssl genrsa -out /dev/null 4096");
-     sleep(1);
-   }
-}
-
-main()
-{
-   if (fork() == 0)
-     testdblchg();
-
-   testcrypto();
-}
-===
-
-Output:
-$ ./a.out
-Starting loop, pid=16920
-Generating RSA private key, 4096 bit long modulus
-......++
-.......................................................................................................................................................................++
-e is 65537 (0x10001)
-Generating RSA private key, 4096 bit long modulus
-...................................Double variable changed! pid=16920, iteration=15, 
-should=nan, is=nan
-Terminated
-
-$ uname -a
-Linux dirk 2.6.26 #1 Wed Jul 30 10:56:10 CEST 2008 i686 GNU/Linux
-
-$ cat /proc/cpuinfo
-processor       : 0
-vendor_id       : User Mode Linux
-model name      : UML
-mode            : skas
-host            : Linux seldon-base 2.6.23.17 #2 SMP Sat Jun 21 15:04:22 CEST 2008 i686
-bogomips        : 4771.02
-
-$ gcc -v
-Using built-in specs.
-Target: i486-linux-gnu
-Configured with: ../src/configure -v --with-pkgversion='Debian 4.3.1-2' 
---with-bugurl=file:///usr/share/doc/gcc-4.3/README.Bugs 
---enable-languages=c,c++,fortran,objc,obj-c++ --prefix=/usr --enable-shared 
---with-system-zlib --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix 
---enable-nls --with-gxx-include-dir=/usr/include/c++/4.3 --program-suffix=-4.3 
---enable-clocale=gnu --enable-libstdcxx-debug --enable-objc-gc --enable-mpfr 
---enable-targets=all --enable-cld --enable-checking=release --build=i486-linux-gnu 
---host=i486-linux-gnu --target=i486-linux-gnu
-Thread model: posix
-gcc version 4.3.1 (Debian 4.3.1-2)
-
-$ dpkg -l libc6
-Desired=Unknown/Install/Remove/Purge/Hold
-| Status=Not/Inst/Cfg-files/Unpacked/Failed-cfg/Half-inst/trig-aWait/Trig-pend
-|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  libc6          2.7-10         GNU C Library: Shared libraries
-
-
-Regards
+Rob
 -- 
-                                            Stano
+"One of my most productive days was throwing away 1000 lines of code."
+  - Ken Thompson.
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
