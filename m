@@ -1,25 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KQiaZ-0006IW-CI for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Aug 2008 05:58:03 -0700
-Received: from mail1.webmaster.com ([216.152.64.169])
-	by mail.sourceforge.net with esmtps (TLSv1:RC4-MD5:128) (Exim 4.44)
-	id 1KQiaW-0006Fz-3m for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Aug 2008 05:58:03 -0700
-Received: from however by webmaster.com (MDaemon.PRO.v8.1.3.R)
-	with ESMTP id md50002307655.msg
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 06 Aug 2008 05:57:40 -0700
-From: "David Schwartz" <davids@webmaster.com>
-Date: Wed, 6 Aug 2008 05:55:35 -0700
-Message-ID: <MDEHLPKNGKAHNMBLJOLKAECKOMAC.davids@webmaster.com>
-MIME-Version: 1.0
-In-Reply-To: <489994DF.1050400@meduna.org>
-Subject: Re: [uml-devel] Couldn't obtain random bytes in sshd - problem in
-	RAND_poll?
-Reply-To: davids@webmaster.com
+	id 1KUURc-0005bR-L2 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Aug 2008 15:40:24 -0700
+Received: from ns2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KUURb-0003Q3-MS
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Aug 2008 15:40:24 -0700
+From: <gregkh@suse.de>
+Date: Sat, 16 Aug 2008 15:32:47 -0700
+In-Reply-To: <20080805201405.GA11784@c2.user-mode-linux.org>
+Message-Id: <20080816224020.6F7E41454450@imap.suse.de>
+Subject: [uml-devel] patch uml-track-and-make-up-lost-ticks.patch added to
+	2.6.25-stable tree
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,50 +24,205 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: openssl-dev@openssl.org
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com, akpm@linux-foundation.org, gregkh@suse.de, jdike@linux.intel.com, linux-kernel@vger.kernel.org, nix@esperi.org.uk, torvalds@linux-foundation.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: stable@kernel.org, stable-commits@vger.kernel.org
 
 
+This is a note to let you know that we have just queued up the patch titled
 
-> Tried many many times, even two running at the same time
-> or poll timeout set to zero, not one instance of blocking
-> even with
->    od -x /dev/urandom
-> and
->    od -x /dev/random
-> running simultaneously (the second one blocks, of course).
->
->
-> Hmmmm.. what the #$%# is happening here.. more ideas?
->
-> --
->                                     Stano
+    Subject: uml: track and make up lost ticks
 
-My bet is that '/dev/urandom' only blocks if it doesn't have enough entropy.
-Early in the startup process, '/dev/urandom' doesn't have enough entropy,
-and your application times out on it.
+to the 2.6.25-stable tree.  Its filename is
 
-Later on, when the system has had lots of network activity, you log in and
-test '/dev/urandom'. At this point, the system is well-seeded from the
-network activity. So it works great for you.
+    uml-track-and-make-up-lost-ticks.patch
 
-Try launching your test program automatically on boot up at the saem time
-you launch ssh or whatever application is failing. I bet '/dev/urandom' will
-fail then.
-
-If you have a network, one solution might be to do a few 'ping's or
-'nslookup's to seed the entropy pool. You can also keep an entropy pool on
-disk, saving it on shutdown and loading it on startup.
-
-Or I could be completely wrong.
-
-DS
+A git repo of this tree can be found at 
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 
+From stable-bounces@linux.kernel.org Tue Aug  5 13:14:23 2008
+From: Jeff Dike <jdike@addtoit.com>
+Date: Tue, 5 Aug 2008 16:14:05 -0400
+Subject: uml: track and make up lost ticks
+To: stable@kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Message-ID: <20080805201405.GA11784@c2.user-mode-linux.org>
+Content-Disposition: inline
+
+From: Jeff Dike <jdike@addtoit.com>
+
+commit fe2cc53ee013a4d4d0317d418e7019fe6533a5a8 upstream
+
+Alarm delivery could be noticably late in the !CONFIG_NOHZ case because lost
+ticks weren't being taken into account.  This is now treated more carefully,
+with the time between ticks being calculated and the appropriate number of
+ticks delivered to the timekeeping system.
+
+Cc: Nix <nix@esperi.org.uk>
+Signed-off-by: Jeff Dike <jdike@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+
+---
+ arch/um/include/process.h |    4 +--
+ arch/um/os-Linux/signal.c |    1 
+ arch/um/os-Linux/time.c   |   54 ++++++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 53 insertions(+), 6 deletions(-)
+
+--- a/arch/um/include/process.h
++++ b/arch/um/include/process.h
+@@ -8,8 +8,8 @@
+ 
+ #include <signal.h>
+ 
+-extern void sig_handler(int sig, struct sigcontext sc);
+-extern void alarm_handler(int sig, struct sigcontext sc);
++extern void sig_handler(int sig, struct sigcontext *sc);
++extern void alarm_handler(int sig, struct sigcontext *sc);
+ 
+ #endif
+ 
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -12,6 +12,7 @@
+ #include "as-layout.h"
+ #include "kern_util.h"
+ #include "os.h"
++#include "process.h"
+ #include "sysdep/barrier.h"
+ #include "sysdep/sigcontext.h"
+ #include "user.h"
+--- a/arch/um/os-Linux/time.c
++++ b/arch/um/os-Linux/time.c
+@@ -9,7 +9,9 @@
+ #include <time.h>
+ #include <sys/time.h>
+ #include "kern_constants.h"
++#include "kern_util.h"
+ #include "os.h"
++#include "process.h"
+ #include "user.h"
+ 
+ int set_interval(void)
+@@ -58,12 +60,17 @@ static inline long long timeval_to_ns(co
+ long long disable_timer(void)
+ {
+ 	struct itimerval time = ((struct itimerval) { { 0, 0 }, { 0, 0 } });
++	int remain, max = UM_NSEC_PER_SEC / UM_HZ;
+ 
+ 	if (setitimer(ITIMER_VIRTUAL, &time, &time) < 0)
+ 		printk(UM_KERN_ERR "disable_timer - setitimer failed, "
+ 		       "errno = %d\n", errno);
+ 
+-	return timeval_to_ns(&time.it_value);
++	remain = timeval_to_ns(&time.it_value);
++	if (remain > max)
++		remain = max;
++
++	return remain;
+ }
+ 
+ long long os_nsecs(void)
+@@ -79,7 +86,44 @@ static int after_sleep_interval(struct t
+ {
+ 	return 0;
+ }
++
++static void deliver_alarm(void)
++{
++	alarm_handler(SIGVTALRM, NULL);
++}
++
++static unsigned long long sleep_time(unsigned long long nsecs)
++{
++	return nsecs;
++}
++
+ #else
++unsigned long long last_tick;
++unsigned long long skew;
++
++static void deliver_alarm(void)
++{
++	unsigned long long this_tick = os_nsecs();
++	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
++
++	if (last_tick == 0)
++		last_tick = this_tick - one_tick;
++
++	skew += this_tick - last_tick;
++
++	while (skew >= one_tick) {
++		alarm_handler(SIGVTALRM, NULL);
++		skew -= one_tick;
++	}
++
++	last_tick = this_tick;
++}
++
++static unsigned long long sleep_time(unsigned long long nsecs)
++{
++	return nsecs > skew ? nsecs - skew : 0;
++}
++
+ static inline long long timespec_to_us(const struct timespec *ts)
+ {
+ 	return ((long long) ts->tv_sec * UM_USEC_PER_SEC) +
+@@ -102,6 +146,8 @@ static int after_sleep_interval(struct t
+ 	 */
+ 	if (start_usecs > usec)
+ 		start_usecs = usec;
++
++	start_usecs -= skew / UM_NSEC_PER_USEC;
+ 	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
+ 				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
+ 	interval = ((struct itimerval) { { 0, usec }, tv });
+@@ -113,8 +159,6 @@ static int after_sleep_interval(struct t
+ }
+ #endif
+ 
+-extern void alarm_handler(int sig, struct sigcontext *sc);
+-
+ void idle_sleep(unsigned long long nsecs)
+ {
+ 	struct timespec ts;
+@@ -126,10 +170,12 @@ void idle_sleep(unsigned long long nsecs
+ 	 */
+ 	if (nsecs == 0)
+ 		nsecs = UM_NSEC_PER_SEC / UM_HZ;
++
++	nsecs = sleep_time(nsecs);
+ 	ts = ((struct timespec) { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
+ 				  .tv_nsec	= nsecs % UM_NSEC_PER_SEC });
+ 
+ 	if (nanosleep(&ts, &ts) == 0)
+-		alarm_handler(SIGVTALRM, NULL);
++		deliver_alarm();
+ 	after_sleep_interval(&ts);
+ }
+
+
+Patches currently in stable-queue which might be from jdike@addtoit.com are
+
+queue-2.6.25/uml-fix-build-when-slob-is-enabled.patch
+queue-2.6.25/uml-fix-bad-ntp-interaction-with-clock.patch
+queue-2.6.25/uml-physical-memory-shouldn-t-include-initial-stack.patch
+queue-2.6.25/uml-track-and-make-up-lost-ticks.patch
+queue-2.6.25/uml-missed-kmalloc-in-pcap_user.c.patch
+queue-2.6.25/uml-deal-with-host-time-going-backwards.patch
+queue-2.6.25/uml-deal-with-inaccessible-address-space-start.patch
+queue-2.6.25/uml-missing-export-of-csum_partial-on-uml-amd64.patch
+queue-2.6.25/uml-memcpy-export-needs-to-follow-host-declaration.patch
+queue-2.6.25/uml-stub-needs-to-tolerate-sigwinch.patch
+queue-2.6.25/uml-work-around-broken-host-ptrace_sysemu.patch
+queue-2.6.25/uml-fix-gcc-ices-and-unresolved-externs.patch
+queue-2.6.25/uml-fix-boot-crash.patch
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
