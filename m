@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KUUN5-00057c-DP for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Aug 2008 15:35:43 -0700
-Received: from mx1.suse.de ([195.135.220.2])
+	id 1KUUQq-0005VL-D2 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Aug 2008 15:39:36 -0700
+Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KUUN3-000053-MP
+	(Exim 4.44) id 1KUUQp-000383-HT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Aug 2008 15:35:43 -0700
+	Sat, 16 Aug 2008 15:39:36 -0700
 From: <gregkh@suse.de>
-Date: Sat, 16 Aug 2008 15:32:36 -0700
-In-Reply-To: <20080805201406.GA11786@c2.user-mode-linux.org>
-Message-Id: <20080816223532.57AA21454450@imap.suse.de>
-Subject: [uml-devel] patch uml-deal-with-host-time-going-backwards.patch
-	added to 2.6.25-stable tree
+Date: Sat, 16 Aug 2008 15:32:46 -0700
+In-Reply-To: <20080805201409.GA11798@c2.user-mode-linux.org>
+Message-Id: <20080816223932.978D51454450@imap.suse.de>
+Subject: [uml-devel] patch uml-stub-needs-to-tolerate-sigwinch.patch added
+	to 2.6.25-stable tree
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,73 +29,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com, akpm@linux-foundation.org, gregkh@suse.de, jdike@linux.intel.com, linux-kernel@vger.kernel.org, nix@esperi.org.uk, torvalds@linux-foundation.org, user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com, akpm@linux-foundation.org, benedict.verheyen@gmail.com, gregkh@suse.de, jdike@linux.intel.com, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, user-mode-linux-devel@lists.sourceforge.net
 Cc: stable@kernel.org, stable-commits@vger.kernel.org
 
 
 This is a note to let you know that we have just queued up the patch titled
 
-    Subject: uml: deal with host time going backwards
+    Subject: uml: stub needs to tolerate SIGWINCH
 
 to the 2.6.25-stable tree.  Its filename is
 
-    uml-deal-with-host-time-going-backwards.patch
+    uml-stub-needs-to-tolerate-sigwinch.patch
 
 A git repo of this tree can be found at 
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 
-From stable-bounces@linux.kernel.org Tue Aug  5 13:14:23 2008
+From stable-bounces@linux.kernel.org Tue Aug  5 13:15:05 2008
 From: Jeff Dike <jdike@addtoit.com>
-Date: Tue, 5 Aug 2008 16:14:06 -0400
-Subject: uml: deal with host time going backwards
+Date: Tue, 5 Aug 2008 16:14:09 -0400
+Subject: uml: stub needs to tolerate SIGWINCH
 To: stable@kernel.org
 Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Message-ID: <20080805201406.GA11786@c2.user-mode-linux.org>
+Message-ID: <20080805201409.GA11798@c2.user-mode-linux.org>
 Content-Disposition: inline
 
 From: Jeff Dike <jdike@addtoit.com>
 
-commit 06e1e4ffbd1932e288839b3140cda6b8141eb684 upstream
+commit 3d5ede6f776bdb1483bcd086f79c3bf41fed3865 upstream
 
-Protection against the host's time going backwards (eg, ntp activity on
-the host) by keeping track of the time at the last tick and if it's
-greater than the current time, keep time stopped until the host catches
-up.
+We lost the marking of SIGWINCH as being OK to receive during stub
+execution, causing a panic should that happen.
 
-Cc: Nix <nix@esperi.org.uk>
+Cc: Benedict Verheyen <benedict.verheyen@gmail.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
 ---
- arch/um/os-Linux/time.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/um/os-Linux/skas/process.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -106,6 +106,10 @@ static void deliver_alarm(void)
- 	unsigned long long this_tick = os_nsecs();
- 	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -55,7 +55,7 @@ static int ptrace_dump_regs(int pid)
+  * Signals that are OK to receive in the stub - we'll just continue it.
+  * SIGWINCH will happen when UML is inside a detached screen.
+  */
+-#define STUB_SIG_MASK (1 << SIGVTALRM)
++#define STUB_SIG_MASK ((1 << SIGVTALRM) | (1 << SIGWINCH))
  
-+	/* Protection against the host's time going backwards */
-+	if ((last_tick != 0) && (this_tick < last_tick))
-+		this_tick = last_tick;
-+
- 	if (last_tick == 0)
- 		last_tick = this_tick - one_tick;
- 
-@@ -148,6 +152,9 @@ static int after_sleep_interval(struct t
- 		start_usecs = usec;
- 
- 	start_usecs -= skew / UM_NSEC_PER_USEC;
-+	if (start_usecs < 0)
-+		start_usecs = 0;
-+
- 	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
- 				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
- 	interval = ((struct itimerval) { { 0, usec }, tv });
+ /* Signals that the stub will finish with - anything else is an error */
+ #define STUB_DONE_MASK (1 << SIGTRAP)
 
 
 Patches currently in stable-queue which might be from jdike@addtoit.com are
