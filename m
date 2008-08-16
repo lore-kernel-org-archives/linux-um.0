@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KVAZe-0003XK-Hy for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:39:30 -0700
-Received: from cantor.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	id 1KUUTx-0005n8-Mf for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Aug 2008 15:42:49 -0700
+Received: from casper.infradead.org ([85.118.1.10])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KVAZc-0006pR-TV
+	(Exim 4.44) id 1KUUTw-0002IW-AE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:39:30 -0700
-Date: Mon, 18 Aug 2008 12:20:34 -0700
-From: Greg KH <gregkh@suse.de>
-Message-ID: <20080818192034.GJ10350@suse.de>
-References: <20080818191012.663450219@mini.kroah.org>
-MIME-Version: 1.0
-Content-Disposition: inline;
-	filename="uml-memcpy-export-needs-to-follow-host-declaration.patch"
-In-Reply-To: <20080818191834.GA10350@suse.de>
-Subject: [uml-devel] [patch 35/49] uml: memcpy export needs to follow host
-	declaration
+	Sat, 16 Aug 2008 15:42:49 -0700
+Date: Sat, 16 Aug 2008 15:41:44 -0700
+From: Arjan van de Ven <arjan@infradead.org>
+Message-ID: <20080816154144.4e6f70ab@infradead.org>
+In-Reply-To: <20080816223556.A0D2E1454450@imap.suse.de>
+References: <20080805201406.GA11788@c2.user-mode-linux.org>
+	<20080816223556.A0D2E1454450@imap.suse.de>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] patch
+	uml-deal-with-inaccessible-address-space-start.patch added to
+	2.6.25-stable tree
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,44 +32,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org, stable@kernel.org
-Cc: Gabriel C <nix.or.die@googlemail.com>, Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>
+To: gregkh@suse.de
+Cc: tspink@gmail.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, stable-commits@vger.kernel.org, akpm@linux-foundation.org, jdike@linux.intel.com, torvalds@linux-foundation.org, stable@kernel.org
 
-2.6.25-stable review patch.  If anyone has any objections, please let us know.
+On Sat, 16 Aug 2008 15:32:38 -0700
+<gregkh@suse.de> wrote:
 
-------------------
 
-From: Jeff Dike <jdike@addtoit.com>
+Hi Greg
 
-commit 8bfd04b974689f700bbd053ad6e66b0a95fb80c9 upstream
+while these notifications are very useful in general, I think you want
+to exclude lkml as a destination to send them to.....
 
-x86_64 defines either memcpy or __memcpy depending on the gcc version, and
-it looks like UML needs to follow that in its exporting.
 
-Cc: Gabriel C <nix.or.die@googlemail.com>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
-
----
- arch/um/sys-x86_64/ksyms.c |    4 ++++
- 1 file changed, 4 insertions(+)
-
---- a/arch/um/sys-x86_64/ksyms.c
-+++ b/arch/um/sys-x86_64/ksyms.c
-@@ -13,5 +13,9 @@ EXPORT_SYMBOL(__down_failed_trylock);
- EXPORT_SYMBOL(__up_wakeup);
- 
- /*XXX: we need them because they would be exported by x86_64 */
-+#if (__GNUC__ == 4 && __GNUC_MINOR__ >= 3) || __GNUC__ > 4
-+EXPORT_SYMBOL(memcpy);
-+#else
- EXPORT_SYMBOL(__memcpy);
-+#endif
- EXPORT_SYMBOL(csum_partial);
 
 -- 
+If you want to reach me at my work email, use arjan@linux.intel.com
+For development, discussion and tips for power savings, 
+visit http://www.lesswatts.org
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
