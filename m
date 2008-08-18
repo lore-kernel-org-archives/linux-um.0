@@ -2,20 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KUURE-0005Vm-9L for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Aug 2008 15:40:00 -0700
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+	id 1KVAZe-0003XK-Hy for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Aug 2008 12:39:30 -0700
+Received: from cantor.suse.de ([195.135.220.2] helo=mx1.suse.de)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KUURD-0003Dw-EN
+	(Exim 4.44) id 1KVAZc-0006pR-TV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Aug 2008 15:40:00 -0700
-From: <gregkh@suse.de>
-Date: Sat, 16 Aug 2008 15:32:46 -0700
-In-Reply-To: <20080805201404.GA11782@c2.user-mode-linux.org>
-Message-Id: <20080816223956.6F6171454450@imap.suse.de>
-Subject: [uml-devel] patch
-	uml-physical-memory-shouldn-t-include-initial-stack.patch
-	added to 2.6.25-stable tree
+	Mon, 18 Aug 2008 12:39:30 -0700
+Date: Mon, 18 Aug 2008 12:20:34 -0700
+From: Greg KH <gregkh@suse.de>
+Message-ID: <20080818192034.GJ10350@suse.de>
+References: <20080818191012.663450219@mini.kroah.org>
+MIME-Version: 1.0
+Content-Disposition: inline;
+	filename="uml-memcpy-export-needs-to-follow-host-declaration.patch"
+In-Reply-To: <20080818191834.GA10350@suse.de>
+Subject: [uml-devel] [patch 35/49] uml: memcpy export needs to follow host
+	declaration
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,93 +28,48 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com, akpm@linux-foundation.org, caker@theshore.net, gregkh@suse.de, jdike@linux.intel.com, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, user-mode-linux-devel@lists.sourceforge.net, xiyou.wangcong@gmail.com
-Cc: stable@kernel.org, stable-commits@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@kernel.org
+Cc: Gabriel C <nix.or.die@googlemail.com>, Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>
 
+2.6.25-stable review patch.  If anyone has any objections, please let us know.
 
-This is a note to let you know that we have just queued up the patch titled
-
-    Subject: uml: physical memory shouldn't include initial stack
-
-to the 2.6.25-stable tree.  Its filename is
-
-    uml-physical-memory-shouldn-t-include-initial-stack.patch
-
-A git repo of this tree can be found at 
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-
-From stable-bounces@linux.kernel.org Tue Aug  5 13:14:54 2008
-From: Jeff Dike <jdike@addtoit.com>
-Date: Tue, 5 Aug 2008 16:14:04 -0400
-Subject: uml: physical memory shouldn't include initial stack
-To: stable@kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Message-ID: <20080805201404.GA11782@c2.user-mode-linux.org>
-Content-Disposition: inline
+------------------
 
 From: Jeff Dike <jdike@addtoit.com>
 
-commit 60a2988aea701a6424809a5432bf068667aac177 upstream
+commit 8bfd04b974689f700bbd053ad6e66b0a95fb80c9 upstream
 
-The top of physical memory should be below the initial process stack, not the
-top of the address space, at least for as long as the stack isn't known to the
-kernel VM system and appropriately reserved.
+x86_64 defines either memcpy or __memcpy depending on the gcc version, and
+it looks like UML needs to follow that in its exporting.
 
-Cc: "Christopher S. Aker" <caker@theshore.net>
+Cc: Gabriel C <nix.or.die@googlemail.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
 ---
- arch/um/kernel/um_arch.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/um/sys-x86_64/ksyms.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -259,6 +259,7 @@ int __init linux_main(int argc, char **a
- 	unsigned long avail, diff;
- 	unsigned long virtmem_size, max_physmem;
- 	unsigned int i, add;
-+	unsigned long stack;
- 	char * mode;
+--- a/arch/um/sys-x86_64/ksyms.c
++++ b/arch/um/sys-x86_64/ksyms.c
+@@ -13,5 +13,9 @@ EXPORT_SYMBOL(__down_failed_trylock);
+ EXPORT_SYMBOL(__up_wakeup);
  
- 	for (i = 1; i < argc; i++) {
-@@ -347,7 +348,9 @@ int __init linux_main(int argc, char **a
- 	}
- 
- 	virtmem_size = physmem_size;
--	avail = TASK_SIZE - start_vm;
-+	stack = (unsigned long) argv;
-+	stack &= ~(1024 * 1024 - 1);
-+	avail = stack - start_vm;
- 	if (physmem_size > avail)
- 		virtmem_size = avail;
- 	end_vm = start_vm + virtmem_size;
+ /*XXX: we need them because they would be exported by x86_64 */
++#if (__GNUC__ == 4 && __GNUC_MINOR__ >= 3) || __GNUC__ > 4
++EXPORT_SYMBOL(memcpy);
++#else
+ EXPORT_SYMBOL(__memcpy);
++#endif
+ EXPORT_SYMBOL(csum_partial);
 
-
-Patches currently in stable-queue which might be from jdike@addtoit.com are
-
-queue-2.6.25/uml-fix-build-when-slob-is-enabled.patch
-queue-2.6.25/uml-fix-bad-ntp-interaction-with-clock.patch
-queue-2.6.25/uml-physical-memory-shouldn-t-include-initial-stack.patch
-queue-2.6.25/uml-track-and-make-up-lost-ticks.patch
-queue-2.6.25/uml-missed-kmalloc-in-pcap_user.c.patch
-queue-2.6.25/uml-deal-with-host-time-going-backwards.patch
-queue-2.6.25/uml-deal-with-inaccessible-address-space-start.patch
-queue-2.6.25/uml-missing-export-of-csum_partial-on-uml-amd64.patch
-queue-2.6.25/uml-memcpy-export-needs-to-follow-host-declaration.patch
-queue-2.6.25/uml-stub-needs-to-tolerate-sigwinch.patch
-queue-2.6.25/uml-work-around-broken-host-ptrace_sysemu.patch
-queue-2.6.25/uml-fix-gcc-ices-and-unresolved-externs.patch
-queue-2.6.25/uml-fix-boot-crash.patch
+-- 
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
