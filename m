@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KVAWw-0003ES-67 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:36:42 -0700
-Received: from ns.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	id 1KVAYr-0003R3-VB for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Aug 2008 12:38:42 -0700
+Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KVAWu-0004tC-It
+	(Exim 4.44) id 1KVAYr-0006Wz-44
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:36:42 -0700
-Date: Mon, 18 Aug 2008 12:20:19 -0700
+	Mon, 18 Aug 2008 12:38:41 -0700
+Date: Mon, 18 Aug 2008 12:20:30 -0700
 From: Greg KH <gregkh@suse.de>
-Message-ID: <20080818192019.GC10350@suse.de>
+Message-ID: <20080818192030.GH10350@suse.de>
 References: <20080818191012.663450219@mini.kroah.org>
 MIME-Version: 1.0
 Content-Disposition: inline;
-	filename="uml-fix-bad-ntp-interaction-with-clock.patch"
+	filename="uml-deal-with-inaccessible-address-space-start.patch"
 In-Reply-To: <20080818191834.GA10350@suse.de>
-Subject: [uml-devel] [patch 28/49] uml: fix bad NTP interaction with clock
+Subject: [uml-devel] [patch 33/49] uml: deal with inaccessible address space
+	start
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,55 +33,146 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: linux-kernel@vger.kernel.org, stable@kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, WANG Cong <xiyou.wangcong@gmail.com>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>
+Cc: Tom Spink <tspink@gmail.com>, Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>
 
 2.6.25-stable review patch.  If anyone has any objections, please let us know.
 
 ------------------
 
-From: Jeff Dike <jdike@addtoit.com>
+From: Tom Spink <tspink@gmail.com>
 
-commit cfd28f6695d0fc047478480791a21bdd4967f98e upstream
+commit 40fb16a360d9c6459afee91dc793c1e3374feb94 upstream
 
-UML's supposed nanosecond clock interacts badly with NTP when NTP
-decides that the clock has drifted ahead and needs to be slowed down.
-Slowing down the clock is done by decrementing the cycle-to-nanosecond
-multiplier, which is 1.  Decrementing that gives you 0 and time is
-stopped.
+This patch makes os_get_task_size locate the bottom of the address space,
+as well as the top.  This is for systems which put a lower limit on mmap
+addresses.  It works by manually scanning pages from zero onwards until a
+valid page is found.
 
-This is fixed by switching to a microsecond clock, with a multiplier
-of 1000.
+Because the bottom of the address space may not be zero, it's not
+sufficient to assume the top of the address space is the size of the
+address space.  The size is the difference between the top address and
+bottom address.
 
+[jdike@addtoit.com: changed the name to reflect that this function is
+supposed to return the top of the process address space, not its size and
+changed the return value to reflect that.  Also some minor formatting
+changes]
+
+Signed-off-by: Tom Spink <tspink@gmail.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
 ---
- arch/um/kernel/time.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/um/include/os.h                    |    2 -
+ arch/um/kernel/um_arch.c                |    2 -
+ arch/um/os-Linux/sys-i386/task_size.c   |   38 ++++++++++++++++++++++++--------
+ arch/um/os-Linux/sys-x86_64/task_size.c |    2 -
+ 4 files changed, 32 insertions(+), 12 deletions(-)
 
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -74,7 +74,7 @@ static irqreturn_t um_timer(int irq, voi
+--- a/arch/um/include/os.h
++++ b/arch/um/include/os.h
+@@ -298,6 +298,6 @@ extern int os_arch_prctl(int pid, int co
+ extern int get_pty(void);
  
- static cycle_t itimer_read(void)
- {
--	return os_nsecs();
-+	return os_nsecs() / 1000;
+ /* sys-$ARCH/task_size.c */
+-extern unsigned long os_get_task_size(void);
++extern unsigned long os_get_top_address(void);
+ 
+ #endif
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -273,7 +273,7 @@ int __init linux_main(int argc, char **a
+ 	if (have_root == 0)
+ 		add_arg(DEFAULT_COMMAND_LINE);
+ 
+-	host_task_size = os_get_task_size();
++	host_task_size = os_get_top_address();
+ 	/*
+ 	 * TASK_SIZE needs to be PGDIR_SIZE aligned or else exit_mmap craps
+ 	 * out
+--- a/arch/um/os-Linux/sys-i386/task_size.c
++++ b/arch/um/os-Linux/sys-i386/task_size.c
+@@ -63,7 +63,7 @@ static int page_ok(unsigned long page)
+ 	return ok;
  }
  
- static struct clocksource itimer_clocksource = {
-@@ -82,7 +82,7 @@ static struct clocksource itimer_clockso
- 	.rating		= 300,
- 	.read		= itimer_read,
- 	.mask		= CLOCKSOURCE_MASK(64),
--	.mult		= 1,
-+	.mult		= 1000,
- 	.shift		= 0,
- 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
- };
+-unsigned long os_get_task_size(void)
++unsigned long os_get_top_address(void)
+ {
+ 	struct sigaction sa, old;
+ 	unsigned long bottom = 0;
+@@ -76,9 +76,9 @@ unsigned long os_get_task_size(void)
+ 	 * hosts, but shouldn't hurt otherwise.
+ 	 */
+ 	unsigned long top = 0xffffd000 >> UM_KERN_PAGE_SHIFT;
+-	unsigned long test;
++	unsigned long test, original;
+ 
+-	printf("Locating the top of the address space ... ");
++	printf("Locating the bottom of the address space ... ");
+ 	fflush(stdout);
+ 
+ 	/*
+@@ -88,14 +88,32 @@ unsigned long os_get_task_size(void)
+ 	sa.sa_handler = segfault;
+ 	sigemptyset(&sa.sa_mask);
+ 	sa.sa_flags = SA_NODEFER;
+-	sigaction(SIGSEGV, &sa, &old);
++	if (sigaction(SIGSEGV, &sa, &old)) {
++		perror("os_get_top_address");
++		exit(1);
++	}
+ 
+-	if (!page_ok(bottom)) {
+-		fprintf(stderr, "Address 0x%x no good?\n",
+-			bottom << UM_KERN_PAGE_SHIFT);
++	/* Manually scan the address space, bottom-up, until we find
++	 * the first valid page (or run out of them).
++	 */
++	for (bottom = 0; bottom < top; bottom++) {
++		if (page_ok(bottom))
++			break;
++	}
++
++	/* If we've got this far, we ran out of pages. */
++	if (bottom == top) {
++		fprintf(stderr, "Unable to determine bottom of address "
++			"space.\n");
+ 		exit(1);
+ 	}
+ 
++	printf("0x%x\n", bottom << UM_KERN_PAGE_SHIFT);
++	printf("Locating the top of the address space ... ");
++	fflush(stdout);
++
++	original = bottom;
++
+ 	/* This could happen with a 4G/4G split */
+ 	if (page_ok(top))
+ 		goto out;
+@@ -110,8 +128,10 @@ unsigned long os_get_task_size(void)
+ 
+ out:
+ 	/* Restore the old SIGSEGV handling */
+-	sigaction(SIGSEGV, &old, NULL);
+-
++	if (sigaction(SIGSEGV, &old, NULL)) {
++		perror("os_get_top_address");
++		exit(1);
++	}
+ 	top <<= UM_KERN_PAGE_SHIFT;
+ 	printf("0x%x\n", top);
+ 	fflush(stdout);
+--- a/arch/um/os-Linux/sys-x86_64/task_size.c
++++ b/arch/um/os-Linux/sys-x86_64/task_size.c
+@@ -1,4 +1,4 @@
+-unsigned long os_get_task_size(unsigned long shift)
++unsigned long os_get_top_address(unsigned long shift)
+ {
+ 	/* The old value of CONFIG_TOP_ADDR */
+ 	return 0x7fc0000000;
 
 -- 
 
