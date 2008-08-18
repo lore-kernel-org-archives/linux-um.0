@@ -2,23 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KVAYr-0003R3-VB for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:38:42 -0700
-Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	id 1KVAaR-0003dY-FR for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Aug 2008 12:40:19 -0700
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KVAYr-0006Wz-44
+	(Exim 4.44) id 1KVAaO-00074n-W1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:38:41 -0700
-Date: Mon, 18 Aug 2008 12:20:30 -0700
+	Mon, 18 Aug 2008 12:40:17 -0700
+Date: Mon, 18 Aug 2008 12:20:38 -0700
 From: Greg KH <gregkh@suse.de>
-Message-ID: <20080818192030.GH10350@suse.de>
+Message-ID: <20080818192038.GL10350@suse.de>
 References: <20080818191012.663450219@mini.kroah.org>
 MIME-Version: 1.0
 Content-Disposition: inline;
-	filename="uml-deal-with-inaccessible-address-space-start.patch"
+	filename="uml-work-around-broken-host-ptrace_sysemu.patch"
 In-Reply-To: <20080818191834.GA10350@suse.de>
-Subject: [uml-devel] [patch 33/49] uml: deal with inaccessible address space
-	start
+Subject: [uml-devel] [patch 37/49] uml: work around broken host PTRACE_SYSEMU
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,146 +32,84 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: linux-kernel@vger.kernel.org, stable@kernel.org
-Cc: Tom Spink <tspink@gmail.com>, Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>
 
 2.6.25-stable review patch.  If anyone has any objections, please let us know.
 
 ------------------
 
-From: Tom Spink <tspink@gmail.com>
+From: Jeff Dike <jdike@addtoit.com>
 
-commit 40fb16a360d9c6459afee91dc793c1e3374feb94 upstream
+commit f1ef9167ca4494a8c6d71d0031c73e9c8841eadd upstream
 
-This patch makes os_get_task_size locate the bottom of the address space,
-as well as the top.  This is for systems which put a lower limit on mmap
-addresses.  It works by manually scanning pages from zero onwards until a
-valid page is found.
+Fedora broke PTRACE_SYSEMU again, and UML crashes as a result when it
+doesn't need to.  This patch makes the PTRACE_SYSEMU check fail gracefully
+and makes UML fall back to PTRACE_SYSCALL.
 
-Because the bottom of the address space may not be zero, it's not
-sufficient to assume the top of the address space is the size of the
-address space.  The size is the difference between the top address and
-bottom address.
-
-[jdike@addtoit.com: changed the name to reflect that this function is
-supposed to return the top of the process address space, not its size and
-changed the return value to reflect that.  Also some minor formatting
-changes]
-
-Signed-off-by: Tom Spink <tspink@gmail.com>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
 ---
- arch/um/include/os.h                    |    2 -
- arch/um/kernel/um_arch.c                |    2 -
- arch/um/os-Linux/sys-i386/task_size.c   |   38 ++++++++++++++++++++++++--------
- arch/um/os-Linux/sys-x86_64/task_size.c |    2 -
- 4 files changed, 32 insertions(+), 12 deletions(-)
+ arch/um/os-Linux/start_up.c |   25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
---- a/arch/um/include/os.h
-+++ b/arch/um/include/os.h
-@@ -298,6 +298,6 @@ extern int os_arch_prctl(int pid, int co
- extern int get_pty(void);
- 
- /* sys-$ARCH/task_size.c */
--extern unsigned long os_get_task_size(void);
-+extern unsigned long os_get_top_address(void);
- 
- #endif
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -273,7 +273,7 @@ int __init linux_main(int argc, char **a
- 	if (have_root == 0)
- 		add_arg(DEFAULT_COMMAND_LINE);
- 
--	host_task_size = os_get_task_size();
-+	host_task_size = os_get_top_address();
- 	/*
- 	 * TASK_SIZE needs to be PGDIR_SIZE aligned or else exit_mmap craps
- 	 * out
---- a/arch/um/os-Linux/sys-i386/task_size.c
-+++ b/arch/um/os-Linux/sys-i386/task_size.c
-@@ -63,7 +63,7 @@ static int page_ok(unsigned long page)
- 	return ok;
- }
- 
--unsigned long os_get_task_size(void)
-+unsigned long os_get_top_address(void)
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -122,8 +122,10 @@ static int stop_ptraced_child(int pid, i
  {
- 	struct sigaction sa, old;
- 	unsigned long bottom = 0;
-@@ -76,9 +76,9 @@ unsigned long os_get_task_size(void)
- 	 * hosts, but shouldn't hurt otherwise.
- 	 */
- 	unsigned long top = 0xffffd000 >> UM_KERN_PAGE_SHIFT;
--	unsigned long test;
-+	unsigned long test, original;
+ 	int status, n, ret = 0;
  
--	printf("Locating the top of the address space ... ");
-+	printf("Locating the bottom of the address space ... ");
- 	fflush(stdout);
- 
- 	/*
-@@ -88,14 +88,32 @@ unsigned long os_get_task_size(void)
- 	sa.sa_handler = segfault;
- 	sigemptyset(&sa.sa_mask);
- 	sa.sa_flags = SA_NODEFER;
--	sigaction(SIGSEGV, &sa, &old);
-+	if (sigaction(SIGSEGV, &sa, &old)) {
-+		perror("os_get_top_address");
-+		exit(1);
+-	if (ptrace(PTRACE_CONT, pid, 0, 0) < 0)
+-		fatal_perror("stop_ptraced_child : ptrace failed");
++	if (ptrace(PTRACE_CONT, pid, 0, 0) < 0) {
++		perror("stop_ptraced_child : ptrace failed");
++		return -1;
 +	}
+ 	CATCH_EINTR(n = waitpid(pid, &status, 0));
+ 	if (!WIFEXITED(status) || (WEXITSTATUS(status) != exitcode)) {
+ 		int exit_with = WEXITSTATUS(status);
+@@ -203,7 +205,7 @@ static void __init check_sysemu(void)
+ 	if (n < 0)
+ 		fatal_perror("check_sysemu : wait failed");
+ 	if (!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
+-		fatal("check_sysemu : expected SIGTRAP, got status = %d",
++		fatal("check_sysemu : expected SIGTRAP, got status = %d\n",
+ 		      status);
  
--	if (!page_ok(bottom)) {
--		fprintf(stderr, "Address 0x%x no good?\n",
--			bottom << UM_KERN_PAGE_SHIFT);
-+	/* Manually scan the address space, bottom-up, until we find
-+	 * the first valid page (or run out of them).
-+	 */
-+	for (bottom = 0; bottom < top; bottom++) {
-+		if (page_ok(bottom))
-+			break;
-+	}
-+
-+	/* If we've got this far, we ran out of pages. */
-+	if (bottom == top) {
-+		fprintf(stderr, "Unable to determine bottom of address "
-+			"space.\n");
- 		exit(1);
+ 	if (ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
+@@ -245,9 +247,11 @@ static void __init check_sysemu(void)
+ 
+ 		if (WIFSTOPPED(status) &&
+ 		    (WSTOPSIG(status) == (SIGTRAP|0x80))) {
+-			if (!count)
+-				fatal("check_ptrace : SYSEMU_SINGLESTEP "
+-				      "doesn't singlestep");
++			if (!count) {
++				non_fatal("check_ptrace : SYSEMU_SINGLESTEP "
++					  "doesn't singlestep");
++				goto fail;
++			}
+ 			n = ptrace(PTRACE_POKEUSR, pid, PT_SYSCALL_RET_OFFSET,
+ 				   os_getpid());
+ 			if (n < 0)
+@@ -257,9 +261,12 @@ static void __init check_sysemu(void)
+ 		}
+ 		else if (WIFSTOPPED(status) && (WSTOPSIG(status) == SIGTRAP))
+ 			count++;
+-		else
+-			fatal("check_ptrace : expected SIGTRAP or "
+-			      "(SIGTRAP | 0x80), got status = %d", status);
++		else {
++			non_fatal("check_ptrace : expected SIGTRAP or "
++				  "(SIGTRAP | 0x80), got status = %d\n",
++				  status);
++			goto fail;
++		}
  	}
- 
-+	printf("0x%x\n", bottom << UM_KERN_PAGE_SHIFT);
-+	printf("Locating the top of the address space ... ");
-+	fflush(stdout);
-+
-+	original = bottom;
-+
- 	/* This could happen with a 4G/4G split */
- 	if (page_ok(top))
- 		goto out;
-@@ -110,8 +128,10 @@ unsigned long os_get_task_size(void)
- 
- out:
- 	/* Restore the old SIGSEGV handling */
--	sigaction(SIGSEGV, &old, NULL);
--
-+	if (sigaction(SIGSEGV, &old, NULL)) {
-+		perror("os_get_top_address");
-+		exit(1);
-+	}
- 	top <<= UM_KERN_PAGE_SHIFT;
- 	printf("0x%x\n", top);
- 	fflush(stdout);
---- a/arch/um/os-Linux/sys-x86_64/task_size.c
-+++ b/arch/um/os-Linux/sys-x86_64/task_size.c
-@@ -1,4 +1,4 @@
--unsigned long os_get_task_size(unsigned long shift)
-+unsigned long os_get_top_address(unsigned long shift)
- {
- 	/* The old value of CONFIG_TOP_ADDR */
- 	return 0x7fc0000000;
+ 	if (stop_ptraced_child(pid, 0, 0) < 0)
+ 		goto fail_stopped;
 
 -- 
 
