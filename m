@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KUUPJ-0005K5-AX for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Aug 2008 15:38:01 -0700
+	id 1KVAY8-0003Kd-26 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Aug 2008 12:37:56 -0700
 Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KUUPI-0000ug-Cy
+	(Exim 4.44) id 1KVAY5-0005N5-FD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Aug 2008 15:38:01 -0700
-From: <gregkh@suse.de>
-Date: Sat, 16 Aug 2008 15:32:43 -0700
-In-Reply-To: <20080805201409.GA11792@c2.user-mode-linux.org>
-Message-Id: <20080816223757.981DE1454450@imap.suse.de>
-Subject: [uml-devel] patch
-	uml-memcpy-export-needs-to-follow-host-declaration.patch
-	added to 2.6.25-stable tree
+	Mon, 18 Aug 2008 12:37:56 -0700
+Date: Mon, 18 Aug 2008 12:20:25 -0700
+From: Greg KH <gregkh@suse.de>
+Message-ID: <20080818192025.GF10350@suse.de>
+References: <20080818191012.663450219@mini.kroah.org>
+MIME-Version: 1.0
+Content-Disposition: inline; filename="uml-missed-kmalloc-in-pcap_user.c.patch"
+In-Reply-To: <20080818191834.GA10350@suse.de>
+Subject: [uml-devel] [patch 31/49] uml: missed kmalloc() in pcap_user.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,82 +26,43 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com, akpm@linux-foundation.org, gregkh@suse.de, jdike@linux.intel.com, linux-kernel@vger.kernel.org, nix.or.die@googlemail.com, torvalds@linux-foundation.org, user-mode-linux-devel@lists.sourceforge.net
-Cc: stable@kernel.org, stable-commits@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@kernel.org
+Cc: Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>, Al Viro <viro@zeniv.linux.org.uk>
 
+2.6.25-stable review patch.  If anyone has any objections, please let us know.
 
-This is a note to let you know that we have just queued up the patch titled
+------------------
 
-    Subject:  uml: memcpy export needs to follow host declaration
+From: Al Viro <viro@ftp.linux.org.uk>
 
-to the 2.6.25-stable tree.  Its filename is
+commit 296cd66f7f6e130fe08e6880ecb13c3fc615a8db upstream
 
-    uml-memcpy-export-needs-to-follow-host-declaration.patch
-
-A git repo of this tree can be found at 
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-
-From stable-bounces@linux.kernel.org Tue Aug  5 13:15:05 2008
-From: Jeff Dike <jdike@addtoit.com>
-Date: Tue, 5 Aug 2008 16:14:09 -0400
-Subject:  uml: memcpy export needs to follow host declaration
-To: stable@kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Message-ID: <20080805201409.GA11792@c2.user-mode-linux.org>
-Content-Disposition: inline
-
-From: Jeff Dike <jdike@addtoit.com>
-
-commit 8bfd04b974689f700bbd053ad6e66b0a95fb80c9 upstream
-
-x86_64 defines either memcpy or __memcpy depending on the gcc version, and
-it looks like UML needs to follow that in its exporting.
-
-Cc: Gabriel C <nix.or.die@googlemail.com>
-Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Acked-by: Jeff Dike <jdike@addtoit.com>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
 ---
- arch/um/sys-x86_64/ksyms.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/um/drivers/pcap_user.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/um/sys-x86_64/ksyms.c
-+++ b/arch/um/sys-x86_64/ksyms.c
-@@ -13,5 +13,9 @@ EXPORT_SYMBOL(__down_failed_trylock);
- EXPORT_SYMBOL(__up_wakeup);
+--- a/arch/um/drivers/pcap_user.c
++++ b/arch/um/drivers/pcap_user.c
+@@ -50,7 +50,7 @@ static int pcap_open(void *data)
+ 			return -EIO;
+ 		}
  
- /*XXX: we need them because they would be exported by x86_64 */
-+#if (__GNUC__ == 4 && __GNUC_MINOR__ >= 3) || __GNUC__ > 4
-+EXPORT_SYMBOL(memcpy);
-+#else
- EXPORT_SYMBOL(__memcpy);
-+#endif
- EXPORT_SYMBOL(csum_partial);
+-		pri->compiled = kmalloc(sizeof(struct bpf_program),
++		pri->compiled = uml_kmalloc(sizeof(struct bpf_program),
+ 					UM_GFP_KERNEL);
+ 		if (pri->compiled == NULL) {
+ 			printk(UM_KERN_ERR "pcap_open : kmalloc failed\n");
 
-
-Patches currently in stable-queue which might be from jdike@addtoit.com are
-
-queue-2.6.25/uml-fix-build-when-slob-is-enabled.patch
-queue-2.6.25/uml-fix-bad-ntp-interaction-with-clock.patch
-queue-2.6.25/uml-physical-memory-shouldn-t-include-initial-stack.patch
-queue-2.6.25/uml-track-and-make-up-lost-ticks.patch
-queue-2.6.25/uml-missed-kmalloc-in-pcap_user.c.patch
-queue-2.6.25/uml-deal-with-host-time-going-backwards.patch
-queue-2.6.25/uml-deal-with-inaccessible-address-space-start.patch
-queue-2.6.25/uml-missing-export-of-csum_partial-on-uml-amd64.patch
-queue-2.6.25/uml-memcpy-export-needs-to-follow-host-declaration.patch
-queue-2.6.25/uml-stub-needs-to-tolerate-sigwinch.patch
-queue-2.6.25/uml-work-around-broken-host-ptrace_sysemu.patch
-queue-2.6.25/uml-fix-gcc-ices-and-unresolved-externs.patch
-queue-2.6.25/uml-fix-boot-crash.patch
+-- 
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
