@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KVAWZ-0003E4-K5 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:36:19 -0700
-Received: from mx1.suse.de ([195.135.220.2])
+	id 1KVAYU-0003QI-OC for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 Aug 2008 12:38:18 -0700
+Received: from ns2.suse.de ([195.135.220.15] helo=mx2.suse.de)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KVAWW-0005YP-FD
+	(Exim 4.44) id 1KVAYT-0006Ph-4P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Aug 2008 12:36:19 -0700
-Date: Mon, 18 Aug 2008 12:20:17 -0700
+	Mon, 18 Aug 2008 12:38:18 -0700
+Date: Mon, 18 Aug 2008 12:20:28 -0700
 From: Greg KH <gregkh@suse.de>
-Message-ID: <20080818192017.GB10350@suse.de>
+Message-ID: <20080818192028.GG10350@suse.de>
 References: <20080818191012.663450219@mini.kroah.org>
 MIME-Version: 1.0
 Content-Disposition: inline;
-	filename="uml-fix-build-when-slob-is-enabled.patch"
+	filename="uml-deal-with-host-time-going-backwards.patch"
 In-Reply-To: <20080818191834.GA10350@suse.de>
-Subject: [uml-devel] [patch 27/49] uml: fix build when SLOB is enabled
+Subject: [uml-devel] [patch 32/49] uml: deal with host time going backwards
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,7 +32,7 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: linux-kernel@vger.kernel.org, stable@kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, WANG Cong <xiyou.wangcong@gmail.com>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Eugene Teo <eteo@redhat.com>, Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>, Chris Wedgwood <reviews@ml.cw.f00f.org>, Jake Edge <jake@lwn.net>, Nix <nix@esperi.org.uk>, Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>, alan@lxorguk.ukuu.org.uk, Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>, Chuck Wolber <chuckw@quantumlinux.com>, akpm@linux-foundation.org, Jeff Dike <jdike@linux.intel.com>, torvalds@linux-foundation.org, Willy Tarreau <w@1wt.eu>, Rodrigo Rubira Branco <rbranco@la.checkpoint.com>
 
 2.6.25-stable review patch.  If anyone has any objections, please let us know.
 
@@ -40,278 +40,46 @@ Cc: Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>, uml
 
 From: Jeff Dike <jdike@addtoit.com>
 
-commit 43f5b3085fdd27c4edf535d938b2cb0ccead4f75 upstream
+commit 06e1e4ffbd1932e288839b3140cda6b8141eb684 upstream
 
-Reintroduce uml_kmalloc for the benefit of UML libc code.  The
-previous tactic of declaring __kmalloc so it could be called directly
-from the libc side of the house turned out to be getting too intimate
-with slab, and it doesn't work with slob.
+Protection against the host's time going backwards (eg, ntp activity on
+the host) by keeping track of the time at the last tick and if it's
+greater than the current time, keep time stopped until the host catches
+up.
 
-So, the uml_kmalloc wrapper is back.  It calls kmalloc or whatever
-that translates into, and libc code calls it.
-
-kfree is left alone since that still works, leaving a somewhat
-inconsistent API.
-
+Cc: Nix <nix@esperi.org.uk>
 Signed-off-by: Jeff Dike <jdike@linux.intel.com>
-Cc: WANG Cong <xiyou.wangcong@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
 ---
- arch/um/drivers/chan_user.c              |    1 +
- arch/um/drivers/cow_sys.h                |    2 +-
- arch/um/drivers/daemon_user.c            |    4 ++--
- arch/um/drivers/fd.c                     |    2 +-
- arch/um/drivers/mcast_user.c             |    3 ++-
- arch/um/drivers/net_user.c               |    2 +-
- arch/um/drivers/port_user.c              |    2 +-
- arch/um/drivers/pty.c                    |    2 +-
- arch/um/drivers/slip_user.c              |    2 +-
- arch/um/drivers/tty.c                    |    2 +-
- arch/um/drivers/xterm.c                  |    2 +-
- arch/um/include/um_malloc.h              |    9 +++------
- arch/um/kernel/mem.c                     |    5 +++++
- arch/um/os-Linux/drivers/ethertap_user.c |    4 ++--
- arch/um/os-Linux/helper.c                |    4 ++--
- arch/um/os-Linux/main.c                  |    2 +-
- arch/um/os-Linux/sigio.c                 |    4 ++--
- 17 files changed, 28 insertions(+), 24 deletions(-)
+ arch/um/os-Linux/time.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/arch/um/drivers/chan_user.c
-+++ b/arch/um/drivers/chan_user.c
-@@ -11,6 +11,7 @@
- #include <termios.h>
- #include <sys/ioctl.h>
- #include "chan_user.h"
-+#include "kern_constants.h"
- #include "os.h"
- #include "um_malloc.h"
- #include "user.h"
---- a/arch/um/drivers/cow_sys.h
-+++ b/arch/um/drivers/cow_sys.h
-@@ -8,7 +8,7 @@
+--- a/arch/um/os-Linux/time.c
++++ b/arch/um/os-Linux/time.c
+@@ -106,6 +106,10 @@ static void deliver_alarm(void)
+ 	unsigned long long this_tick = os_nsecs();
+ 	int one_tick = UM_NSEC_PER_SEC / UM_HZ;
  
- static inline void *cow_malloc(int size)
- {
--	return kmalloc(size, UM_GFP_KERNEL);
-+	return uml_kmalloc(size, UM_GFP_KERNEL);
- }
- 
- static inline void cow_free(void *ptr)
---- a/arch/um/drivers/daemon_user.c
-+++ b/arch/um/drivers/daemon_user.c
-@@ -34,7 +34,7 @@ static struct sockaddr_un *new_addr(void
- {
- 	struct sockaddr_un *sun;
- 
--	sun = kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
-+	sun = uml_kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
- 	if (sun == NULL) {
- 		printk(UM_KERN_ERR "new_addr: allocation of sockaddr_un "
- 		       "failed\n");
-@@ -83,7 +83,7 @@ static int connect_to_switch(struct daem
- 		goto out_close;
- 	}
- 
--	sun = kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
-+	sun = uml_kmalloc(sizeof(struct sockaddr_un), UM_GFP_KERNEL);
- 	if (sun == NULL) {
- 		printk(UM_KERN_ERR "new_addr: allocation of sockaddr_un "
- 		       "failed\n");
---- a/arch/um/drivers/fd.c
-+++ b/arch/um/drivers/fd.c
-@@ -40,7 +40,7 @@ static void *fd_init(char *str, int devi
- 		return NULL;
- 	}
- 
--	data = kmalloc(sizeof(*data), UM_GFP_KERNEL);
-+	data = uml_kmalloc(sizeof(*data), UM_GFP_KERNEL);
- 	if (data == NULL)
- 		return NULL;
- 
---- a/arch/um/drivers/mcast_user.c
-+++ b/arch/um/drivers/mcast_user.c
-@@ -15,6 +15,7 @@
- #include <unistd.h>
- #include <errno.h>
- #include <netinet/in.h>
-+#include "kern_constants.h"
- #include "mcast.h"
- #include "net_user.h"
- #include "um_malloc.h"
-@@ -24,7 +25,7 @@ static struct sockaddr_in *new_addr(char
- {
- 	struct sockaddr_in *sin;
- 
--	sin = kmalloc(sizeof(struct sockaddr_in), UM_GFP_KERNEL);
-+	sin = uml_kmalloc(sizeof(struct sockaddr_in), UM_GFP_KERNEL);
- 	if (sin == NULL) {
- 		printk(UM_KERN_ERR "new_addr: allocation of sockaddr_in "
- 		       "failed\n");
---- a/arch/um/drivers/net_user.c
-+++ b/arch/um/drivers/net_user.c
-@@ -222,7 +222,7 @@ static void change(char *dev, char *what
- 		netmask[2], netmask[3]);
- 
- 	output_len = UM_KERN_PAGE_SIZE;
--	output = kmalloc(output_len, UM_GFP_KERNEL);
-+	output = uml_kmalloc(output_len, UM_GFP_KERNEL);
- 	if (output == NULL)
- 		printk(UM_KERN_ERR "change : failed to allocate output "
- 		       "buffer\n");
---- a/arch/um/drivers/port_user.c
-+++ b/arch/um/drivers/port_user.c
-@@ -47,7 +47,7 @@ static void *port_init(char *str, int de
- 	if (kern_data == NULL)
- 		return NULL;
- 
--	data = kmalloc(sizeof(*data), UM_GFP_KERNEL);
-+	data = uml_kmalloc(sizeof(*data), UM_GFP_KERNEL);
- 	if (data == NULL)
- 		goto err;
- 
---- a/arch/um/drivers/pty.c
-+++ b/arch/um/drivers/pty.c
-@@ -29,7 +29,7 @@ static void *pty_chan_init(char *str, in
- {
- 	struct pty_chan *data;
- 
--	data = kmalloc(sizeof(*data), UM_GFP_KERNEL);
-+	data = uml_kmalloc(sizeof(*data), UM_GFP_KERNEL);
- 	if (data == NULL)
- 		return NULL;
- 
---- a/arch/um/drivers/slip_user.c
-+++ b/arch/um/drivers/slip_user.c
-@@ -96,7 +96,7 @@ static int slip_tramp(char **argv, int f
- 	pid = err;
- 
- 	output_len = UM_KERN_PAGE_SIZE;
--	output = kmalloc(output_len, UM_GFP_KERNEL);
-+	output = uml_kmalloc(output_len, UM_GFP_KERNEL);
- 	if (output == NULL) {
- 		printk(UM_KERN_ERR "slip_tramp : failed to allocate output "
- 		       "buffer\n");
---- a/arch/um/drivers/tty.c
-+++ b/arch/um/drivers/tty.c
-@@ -29,7 +29,7 @@ static void *tty_chan_init(char *str, in
- 	}
- 	str++;
- 
--	data = kmalloc(sizeof(*data), UM_GFP_KERNEL);
-+	data = uml_kmalloc(sizeof(*data), UM_GFP_KERNEL);
- 	if (data == NULL)
- 		return NULL;
- 	*data = ((struct tty_chan) { .dev 	= str,
---- a/arch/um/drivers/xterm.c
-+++ b/arch/um/drivers/xterm.c
-@@ -30,7 +30,7 @@ static void *xterm_init(char *str, int d
- {
- 	struct xterm_chan *data;
- 
--	data = kmalloc(sizeof(*data), UM_GFP_KERNEL);
-+	data = uml_kmalloc(sizeof(*data), UM_GFP_KERNEL);
- 	if (data == NULL)
- 		return NULL;
- 	*data = ((struct xterm_chan) { .pid 		= -1,
---- a/arch/um/include/um_malloc.h
-+++ b/arch/um/include/um_malloc.h
-@@ -8,15 +8,12 @@
- 
- #include "kern_constants.h"
- 
--extern void *__kmalloc(int size, int flags);
--static inline void *kmalloc(int size, int flags)
--{
--	return __kmalloc(size, flags);
--}
--
-+extern void *uml_kmalloc(int size, int flags);
- extern void kfree(const void *ptr);
- 
- extern void *vmalloc(unsigned long size);
- extern void vfree(void *ptr);
- 
- #endif /* __UM_MALLOC_H__ */
++	/* Protection against the host's time going backwards */
++	if ((last_tick != 0) && (this_tick < last_tick))
++		this_tick = last_tick;
 +
+ 	if (last_tick == 0)
+ 		last_tick = this_tick - one_tick;
+ 
+@@ -148,6 +152,9 @@ static int after_sleep_interval(struct t
+ 		start_usecs = usec;
+ 
+ 	start_usecs -= skew / UM_NSEC_PER_USEC;
++	if (start_usecs < 0)
++		start_usecs = 0;
 +
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -375,3 +375,8 @@ pmd_t *pmd_alloc_one(struct mm_struct *m
- 	return pmd;
- }
- #endif
-+
-+void *uml_kmalloc(int size, int flags)
-+{
-+	return kmalloc(size, flags);
-+}
---- a/arch/um/os-Linux/drivers/ethertap_user.c
-+++ b/arch/um/os-Linux/drivers/ethertap_user.c
-@@ -52,7 +52,7 @@ static void etap_change(int op, unsigned
- 		return;
- 	}
- 
--	output = kmalloc(UM_KERN_PAGE_SIZE, UM_GFP_KERNEL);
-+	output = uml_kmalloc(UM_KERN_PAGE_SIZE, UM_GFP_KERNEL);
- 	if (output == NULL)
- 		printk(UM_KERN_ERR "etap_change : Failed to allocate output "
- 		       "buffer\n");
-@@ -165,7 +165,7 @@ static int etap_open(void *data)
- 	err = etap_tramp(pri->dev_name, pri->gate_addr, control_fds[0],
- 			 control_fds[1], data_fds[0], data_fds[1]);
- 	output_len = UM_KERN_PAGE_SIZE;
--	output = kmalloc(output_len, UM_GFP_KERNEL);
-+	output = uml_kmalloc(output_len, UM_GFP_KERNEL);
- 	read_output(control_fds[0], output, output_len);
- 
- 	if (output == NULL)
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -70,8 +70,8 @@ int run_helper(void (*pre_exec)(void *),
- 	data.pre_data = pre_data;
- 	data.argv = argv;
- 	data.fd = fds[1];
--	data.buf = __cant_sleep() ? kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
--					kmalloc(PATH_MAX, UM_GFP_KERNEL);
-+	data.buf = __cant_sleep() ? uml_kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
-+					uml_kmalloc(PATH_MAX, UM_GFP_KERNEL);
- 	pid = clone(helper_child, (void *) sp, CLONE_VM, &data);
- 	if (pid < 0) {
- 		ret = -errno;
---- a/arch/um/os-Linux/main.c
-+++ b/arch/um/os-Linux/main.c
-@@ -199,7 +199,7 @@ void *__wrap_malloc(int size)
- 		return __real_malloc(size);
- 	else if (size <= UM_KERN_PAGE_SIZE)
- 		/* finding contiguous pages can be hard*/
--		ret = kmalloc(size, UM_GFP_KERNEL);
-+		ret = uml_kmalloc(size, UM_GFP_KERNEL);
- 	else ret = vmalloc(size);
- 
- 	/*
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -109,7 +109,7 @@ static int need_poll(struct pollfds *pol
- 	if (n <= polls->size)
- 		return 0;
- 
--	new = kmalloc(n * sizeof(struct pollfd), UM_GFP_ATOMIC);
-+	new = uml_kmalloc(n * sizeof(struct pollfd), UM_GFP_ATOMIC);
- 	if (new == NULL) {
- 		printk(UM_KERN_ERR "need_poll : failed to allocate new "
- 		       "pollfds\n");
-@@ -243,7 +243,7 @@ static struct pollfd *setup_initial_poll
- {
- 	struct pollfd *p;
- 
--	p = kmalloc(sizeof(struct pollfd), UM_GFP_KERNEL);
-+	p = uml_kmalloc(sizeof(struct pollfd), UM_GFP_KERNEL);
- 	if (p == NULL) {
- 		printk(UM_KERN_ERR "setup_initial_poll : failed to allocate "
- 		       "poll\n");
+ 	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
+ 				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
+ 	interval = ((struct itimerval) { { 0, usec }, tv });
 
 -- 
 
