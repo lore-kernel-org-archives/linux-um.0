@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KY3Wo-0008Sb-9T for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Aug 2008 11:44:31 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KY3Wl-0003a4-OW
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Aug 2008 11:44:29 -0700
-Date: Tue, 26 Aug 2008 14:44:25 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080826184425.GA18462@c2.user-mode-linux.org>
+	id 1KY3ez-0000oz-Dp for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Aug 2008 11:52:57 -0700
+Received: from ip-212-081-022-089.static.nextra.sk ([212.81.22.89]
+	helo=meduna.org) by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1KY3ex-0004Kp-Nn for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Aug 2008 11:52:57 -0700
+Message-ID: <48B450C7.9090906@meduna.org>
+Date: Tue, 26 Aug 2008 20:51:51 +0200
+From: Stanislav Meduna <stano@meduna.org>
+MIME-Version: 1.0
 References: <4898AC10.3010602@meduna.org>
 	<7B4268E5ACB878429B58D4BE5B780E8301A303A5@NWS-EXCH2.nws.oregonstate.edu>
 	<48995D1A.6030203@meduna.org> <489AC525.3060305@meduna.org>
@@ -20,9 +20,8 @@ References: <4898AC10.3010602@meduna.org>
 	<48B3AED8.5040904@meduna.org>
 	<20080826174600.GA24342@c2.user-mode-linux.org>
 	<48B44658.8010403@meduna.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <48B44658.8010403@meduna.org>
+	<20080826184425.GA18462@c2.user-mode-linux.org>
+In-Reply-To: <20080826184425.GA18462@c2.user-mode-linux.org>
 Subject: Re: [uml-devel] FP registers corruption
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -37,37 +36,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Stanislav Meduna <stano@meduna.org>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Aug 26, 2008 at 08:07:20PM +0200, Stanislav Meduna wrote:
-> My host is current Ubuntu and I was unable to test 2.6.25.x
-> there due to
->   Locating the top of the address space ... Address 0x0 no good?
-> which AFAIK was a known problem caused by some ubuntu-specific
-> patch.
+Jeff Dike wrote:
 
-You can work around this by putting a 0 into /proc/sys/vm/mmap_min_addr.
+> You can work around this by putting a 0 into /proc/sys/vm/mmap_min_addr.
 
-> 2.6.26 crashes here with
+Permission denied here - looks quite hard readonly on this kernel
+even for root.
 
-This one is fixed in 2.6.26.2, as you note below.
+>> Same here with 2.6.26.2 :(
+> 
+> Hmmm.  If it's not a problem there, I'm tempted to call it fixed,
+> whatever it was.  Can you check current 2.6.27-rc?
 
-> 2.6.26.2 has no problems.
->
->> In an earlier email, you provide a nice test case.  However, I'm
->> running that here, and getting page after page of successful key
->> generation.
->
-> Same here with 2.6.26.2 :(
+OK, I'll try to convince my provider to test 2.6.26.2 and
+possibly 27-rc soon - I'll let you know of the result.
 
-Hmmm.  If it's not a problem there, I'm tempted to call it fixed,
-whatever it was.  Can you check current 2.6.27-rc?
-
-	    	      	  	Jeff
-
+Thanks
 -- 
-Work email - jdike at linux dot intel dot com
+                                   Stano
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
