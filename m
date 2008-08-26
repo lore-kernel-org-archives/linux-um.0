@@ -2,22 +2,26 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KY1mj-0005pX-Lt for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Aug 2008 09:52:49 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
+	id 1KY2cV-0002m4-IX for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Aug 2008 10:46:19 -0700
+Received: from [198.99.130.12] (helo=saraswathi.solana.com)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KY1mi-0008N0-5B
+	(Exim 4.44) id 1KY2cT-0005I7-NK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Aug 2008 09:52:49 -0700
-Date: Tue, 26 Aug 2008 12:52:22 -0400
+	Tue, 26 Aug 2008 10:46:19 -0700
+Date: Tue, 26 Aug 2008 13:46:00 -0400
 From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080826165222.GA18584@c2.user-mode-linux.org>
-References: <Pine.LNX.4.64.0808190904200.4551@wrl-59.cs.helsinki.fi>
+Message-ID: <20080826174600.GA24342@c2.user-mode-linux.org>
+References: <4898AC10.3010602@meduna.org>
+	<7B4268E5ACB878429B58D4BE5B780E8301A303A5@NWS-EXCH2.nws.oregonstate.edu>
+	<48995D1A.6030203@meduna.org> <489AC525.3060305@meduna.org>
+	<489AE6DD.2000200@meduna.org> <489C3D9B.7070605@meduna.org>
+	<20080825215124.GB12626@c2.user-mode-linux.org>
+	<48B3AED8.5040904@meduna.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0808190904200.4551@wrl-59.cs.helsinki.fi>
-Subject: Re: [uml-devel] [RFC PATCH] uml: fix double statement if missing
-	braces
+In-Reply-To: <48B3AED8.5040904@meduna.org>
+Subject: Re: [uml-devel] FP registers corruption
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,77 +31,44 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@helsinki.fi>
+To: Stanislav Meduna <stano@meduna.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, Aug 19, 2008 at 09:09:16AM +0300, Ilpo J=E4rvinen wrote:
-> ...I'm not fully sure what's the intention here, ie., whether
-> the return belongs to a block with the assignment or not.
+On Tue, Aug 26, 2008 at 09:20:56AM +0200, Stanislav Meduna wrote:
+> I tried to isolate the exact version, but I was not able
+> to compile/run all the UML versions in my test environment
+> (current Ubuntu) - obviously the UML is quite sensitive
+> to the host kernel as well.
 
-Yes, this is confused, although it just happens to compile to
-something sane.  Your patch is fine, but I think the whole thing needs
-some more cleanup.  See the patch below.
+It's not.  Any 2.6 UML should run on a any 2.6 host.  If you are
+having problems that look like version skew problems, say what they
+are.
 
-     	  	    	Jeff
+> So the only thing I can say is that I cannot reproduce
+> it with neither 2.6.24.7 nor 2.6.26.2 guest in my environment.
+> The only instance I am seeing it is the 2.6.26 guest on
+> 2.6.23.17 host at my provider :(
 
--- =
+In an earlier email, you provide a nice test case.  However, I'm
+running that here, and getting page after page of successful key
+generation.
 
+Is there anything else that might be relevant to reproducing this?
+
+   	 	       	   Jeff
+
+-- 
 Work email - jdike at linux dot intel dot com
-
-The testing for the host's TLS support was somewhat confused - notably
-in the indentation of a return.
-
-This cleans it up:
-	*supports_tls is only set to 0 once
-	any error besides EINVAL causes an immediate return, with
-*supports_tls equal to 0.
-
-Index: linux-2.6.22/arch/um/os-Linux/sys-i386/tls.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-2.6.22.orig/arch/um/os-Linux/sys-i386/tls.c	2007-07-08 19:32:17.0=
-00000000 -0400
-+++ linux-2.6.22/arch/um/os-Linux/sys-i386/tls.c	2008-08-26 08:19:37.000000=
-000 -0400
-@@ -15,6 +15,7 @@ void check_host_supports_tls(int *suppor
- 	int val[] =3D {GDT_ENTRY_TLS_MIN_I386, GDT_ENTRY_TLS_MIN_X86_64};
- 	int i;
- =
-
-+	*supports_tls =3D 0;
- 	for (i =3D 0; i < ARRAY_SIZE(val); i++) {
- 		user_desc_t info;
- 		info.entry_number =3D val[i];
-@@ -23,14 +24,9 @@ void check_host_supports_tls(int *suppor
- 			*tls_min =3D val[i];
- 			*supports_tls =3D 1;
- 			return;
--		} else {
--			if (errno =3D=3D EINVAL)
--				continue;
--			else if (errno =3D=3D ENOSYS)
--				*supports_tls =3D 0;
--				return;
- 		}
-+		if (errno =3D=3D EINVAL)
-+			continue;
-+		else return;
- 	}
--
--	*supports_tls =3D 0;
- }
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great priz=
-es
+Build the coolest Linux based applications with Moblin SDK & win great prizes
 Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=3D100&url=3D/
+http://moblin-contest.org/redirect.php?banner_id=100&url=/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
