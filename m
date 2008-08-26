@@ -2,27 +2,26 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KY3ez-0000oz-Dp for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Aug 2008 11:52:57 -0700
-Received: from ip-212-081-022-089.static.nextra.sk ([212.81.22.89]
-	helo=meduna.org) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1KY3ex-0004Kp-Nn for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 Aug 2008 11:52:57 -0700
-Message-ID: <48B450C7.9090906@meduna.org>
-Date: Tue, 26 Aug 2008 20:51:51 +0200
-From: Stanislav Meduna <stano@meduna.org>
+	id 1KY4Rm-0006C8-O6 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Aug 2008 12:43:22 -0700
+Received: from yx-out-1718.google.com ([74.125.44.155])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KY4Rl-0000Ij-DT
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 26 Aug 2008 12:43:22 -0700
+Received: by yx-out-1718.google.com with SMTP id 3so1280390yxi.82
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 26 Aug 2008 12:43:20 -0700 (PDT)
+Message-ID: <5861bf050808261243j52343d69rc0ae271eae42a918@mail.gmail.com>
+Date: Tue, 26 Aug 2008 16:43:19 -0300
+From: "=?ISO-8859-1?Q?Roberto_Alc=E2ntara?=" <roberto@eletronica.org>
+In-Reply-To: <20080826175646.GC18584@c2.user-mode-linux.org>
 MIME-Version: 1.0
-References: <4898AC10.3010602@meduna.org>
-	<7B4268E5ACB878429B58D4BE5B780E8301A303A5@NWS-EXCH2.nws.oregonstate.edu>
-	<48995D1A.6030203@meduna.org> <489AC525.3060305@meduna.org>
-	<489AE6DD.2000200@meduna.org> <489C3D9B.7070605@meduna.org>
-	<20080825215124.GB12626@c2.user-mode-linux.org>
-	<48B3AED8.5040904@meduna.org>
-	<20080826174600.GA24342@c2.user-mode-linux.org>
-	<48B44658.8010403@meduna.org>
-	<20080826184425.GA18462@c2.user-mode-linux.org>
-In-Reply-To: <20080826184425.GA18462@c2.user-mode-linux.org>
-Subject: Re: [uml-devel] FP registers corruption
+Content-Disposition: inline
+References: <5861bf050808120823w483e87eev7ff181eab9c8c026@mail.gmail.com>
+	<48A1B2EA.50404@panasas.com>
+	<5861bf050808120902s4aabf4fet1c08c1c27aa45823@mail.gmail.com>
+	<20080826175646.GC18584@c2.user-mode-linux.org>
+Subject: Re: [uml-devel] Error starting uml
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,37 +31,40 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Jeff Dike wrote:
+Ok Jeff, uml is working fine.
 
-> You can work around this by putting a 0 into /proc/sys/vm/mmap_min_addr.
+Thank you.
 
-Permission denied here - looks quite hard readonly on this kernel
-even for root.
+ - Roberto
 
->> Same here with 2.6.26.2 :(
-> 
-> Hmmm.  If it's not a problem there, I'm tempted to call it fixed,
-> whatever it was.  Can you check current 2.6.27-rc?
 
-OK, I'll try to convince my provider to test 2.6.26.2 and
-possibly 27-rc soon - I'll let you know of the result.
 
-Thanks
--- 
-                                   Stano
+On Tue, Aug 26, 2008 at 2:56 PM, Jeff Dike <jdike@addtoit.com> wrote:
+> On Tue, Aug 12, 2008 at 01:02:39PM -0300, Roberto Alc=E2ntara wrote:
+>> Yes, my gcc version is 4.2.3 and I will do what you say.
+>
+> This patch is in 2.6.26.2 now, so use that if you don't feel like
+> patching 2.6.26.
+>
+>                                Jeff
+>
+> --
+> Work email - jdike at linux dot intel dot com
+>
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great prizes
+Build the coolest Linux based applications with Moblin SDK & win great priz=
+es
 Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
+http://moblin-contest.org/redirect.php?banner_id=3D100&url=3D/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
