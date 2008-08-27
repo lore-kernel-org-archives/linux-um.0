@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KYOah-0003XT-FV for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Aug 2008 10:13:55 -0700
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KYOad-0005mx-UN
+	id 1KYP4k-0006fw-F0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Aug 2008 10:44:58 -0700
+Received: from mail-gx0-f19.google.com ([209.85.217.19])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KYP4j-0007rd-Ru
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Aug 2008 10:13:55 -0700
-Date: Wed, 27 Aug 2008 13:13:31 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080827171331.GA10985@c2.user-mode-linux.org>
-References: <20080818230509.23819.90290.reportbug@carrera.home.cobb.me.uk>
-	<20080819120155.GD7425@inferi.kami.home>
-	<20080826202239.GG24342@c2.user-mode-linux.org>
-	<200808271605.25584.graham@cobb.uk.net>
+	Wed, 27 Aug 2008 10:44:58 -0700
+Received: by gxk12 with SMTP id 12so4129324gxk.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 27 Aug 2008 10:44:52 -0700 (PDT)
+Message-ID: <ea9232d10808271044y6b4af1bfv872bf7f9e50dbb68@mail.gmail.com>
+Date: Wed, 27 Aug 2008 19:44:52 +0200
+From: "Karol Swietlicki" <magotari@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200808271605.25584.graham@cobb.uk.net>
-Subject: Re: [uml-devel] [Pkg-uml-pkgs] Bug#495611:
-	user-mode-linux:	page_mapcount(page) went negative!
+Subject: [uml-devel] [PATCH] Removing an unused variable in ptrace.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,23 +30,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Graham Cobb <graham@cobb.uk.net>
-Cc: Mattia Dongili <malattia@linux.it>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, Aug 27, 2008 at 04:05:24PM +0100, Graham Cobb wrote:
-> However, how would I go about bisecting through the large number of patches 
-> which are the difference between these?  Is there somewhere I can get interim 
-> kernel versions from?
+This patch cleans up an usused variable in ptrace.c.
+Compile tested.
 
-Set up a git tree, and git-bisect will chose versions for you, telling
-you which commit introduced the bug.
+Karol Swietlicki
 
-See http://lkml.org/lkml/2005/7/30/106
+Signed-off-by: Karol Swietlicki <magotari@gmail.com>
+---
+--- linux-2.6.27-rc1-mm1.orig/arch/um/kernel/ptrace.c	2008-08-27
+19:20:13.000000000 +0200
++++ linux-2.6.27-rc1-mm1/arch/um/kernel/ptrace.c	2008-08-27
+19:05:34.000000000 +0200
+@@ -225,8 +225,7 @@ long arch_ptrace(struct task_struct *chi
+ 	return ret;
+ }
 
-			Jeff
+-static void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs,
+-		  int error_code)
++static void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs)
+ {
+ 	struct siginfo info;
 
--- 
-Work email - jdike at linux dot intel dot com
+@@ -264,7 +263,7 @@ void syscall_trace(struct uml_pt_regs *r
+
+ 	/* Fake a debug trap */
+ 	if (is_singlestep)
+-		send_sigtrap(current, regs, 0);
++		send_sigtrap(current, regs);
+
+ 	if (!test_thread_flag(TIF_SYSCALL_TRACE))
+ 		return;
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
