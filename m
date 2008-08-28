@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KYP4k-0006fw-F0 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Aug 2008 10:44:58 -0700
-Received: from mail-gx0-f19.google.com ([209.85.217.19])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KYP4j-0007rd-Ru
+	id 1KYVE8-0001mN-1k for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 27 Aug 2008 17:19:04 -0700
+Received: from immanuel.kde.org ([138.246.255.177])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KYVE5-0002Ki-Br
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 27 Aug 2008 10:44:58 -0700
-Received: by gxk12 with SMTP id 12so4129324gxk.10
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 27 Aug 2008 10:44:52 -0700 (PDT)
-Message-ID: <ea9232d10808271044y6b4af1bfv872bf7f9e50dbb68@mail.gmail.com>
-Date: Wed, 27 Aug 2008 19:44:52 +0200
-From: "Karol Swietlicki" <magotari@gmail.com>
+	Wed, 27 Aug 2008 17:19:03 -0700
+From: Steve VanDeBogart <vandebo-valgrind@nerdbox.net>
+In-Reply-To: <bug-98444-50230@http.bugs.kde.org/>
+References: <bug-98444-50230@http.bugs.kde.org/>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] Removing an unused variable in ptrace.c
+Message-Id: <20080828001859.9F4C1E300@immanuel.kde.org>
+Date: Thu, 28 Aug 2008 02:18:59 +0200 (CEST)
+Subject: [uml-devel] [Bug 98444] valgrind fails to run against
+	user-mode-linux (UML) process - clone
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,39 +29,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-This patch cleans up an usused variable in ptrace.c.
-Compile tested.
+http://bugs.kde.org/show_bug.cgi?id=98444
 
-Karol Swietlicki
 
-Signed-off-by: Karol Swietlicki <magotari@gmail.com>
----
---- linux-2.6.27-rc1-mm1.orig/arch/um/kernel/ptrace.c	2008-08-27
-19:20:13.000000000 +0200
-+++ linux-2.6.27-rc1-mm1/arch/um/kernel/ptrace.c	2008-08-27
-19:05:34.000000000 +0200
-@@ -225,8 +225,7 @@ long arch_ptrace(struct task_struct *chi
- 	return ret;
- }
+Steve VanDeBogart vandebo-valgrind nerdbox net changed:
 
--static void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs,
--		  int error_code)
-+static void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs)
- {
- 	struct siginfo info;
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |vandebo-valgrind@nerdbox.net
 
-@@ -264,7 +263,7 @@ void syscall_trace(struct uml_pt_regs *r
 
- 	/* Fake a debug trap */
- 	if (is_singlestep)
--		send_sigtrap(current, regs, 0);
-+		send_sigtrap(current, regs);
 
- 	if (!test_thread_flag(TIF_SYSCALL_TRACE))
- 		return;
+
+--- Comment #3 from Steve VanDeBogart <vandebo-valgrind nerdbox net>  2008-08-28 02:18:56 ---
+There is now a wiki page that describes how to get valgrind to work with User
+Mode Linux here: http://uml.jfdi.org/uml/Wiki.jsp?page=ValgrindingUML
+
+
+-- 
+Configure bugmail: http://bugs.kde.org/userprefs.cgi?tab=email
+------- You are receiving this mail because: -------
+You are on the CC list for the bug.
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
