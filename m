@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KZDMQ-00069F-QT for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Aug 2008 16:26:34 -0700
+	id 1KZDCy-0005FE-Ug for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 29 Aug 2008 16:16:53 -0700
 Received: from abydos.nerdbox.net ([216.151.149.55])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KZDMQ-0005MZ-Ib
+	(Exim 4.44) id 1KZDCx-00060i-Gf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Aug 2008 16:26:34 -0700
-Date: Fri, 29 Aug 2008 16:26:33 -0700 (PDT)
+	Fri, 29 Aug 2008 16:16:48 -0700
+Date: Fri, 29 Aug 2008 16:16:46 -0700 (PDT)
 From: Steve VanDeBogart <vandebo-lkml@NerdBox.Net>
-Message-ID: <alpine.DEB.1.00.0808291624290.15543@abydos.NerdBox.Net>
+In-Reply-To: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
+Message-ID: <alpine.DEB.1.00.0808291616170.15543@abydos.NerdBox.Net>
+References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
 MIME-Version: 1.0
-Subject: [uml-devel] [PATCH] uml: ubd can access uninitialized memory
+Subject: [uml-devel] [PATCH 4/6] VM: Annotate pagealloc
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,53 +29,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, jiayingz@google.com, dkegel@google.com
 
-ubd_kern.c:do_io() may access uninitialized memory and divide requests
-into smaller chunks than necessary.  Found with Valgrind.
+Valgrind annotations for valgrind: memory is addressable once it's been
+alloced, and unaddressable when it is freed again.  Can't use malloc-like
+and free-like because valgrind considers a malloc-like chunk indivisible.
 
 Signed-off-by: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
 ---
 
-Index: linux-2.6.27-rc5/arch/um/drivers/ubd_kern.c
+Index: linux-2.6.27-rc5/mm/page_alloc.c
 ===================================================================
---- linux-2.6.27-rc5.orig/arch/um/drivers/ubd_kern.c	2008-08-29 15:50:19.000000000 -0700
-+++ linux-2.6.27-rc5/arch/um/drivers/ubd_kern.c	2008-08-29 15:51:48.000000000 -0700
-@@ -1218,8 +1218,7 @@
-  	struct ubd *ubd_dev = disk->private_data;
+--- linux-2.6.27-rc5.orig/mm/page_alloc.c	2008-08-29 14:24:27.000000000 -0700
++++ linux-2.6.27-rc5/mm/page_alloc.c	2008-08-29 14:24:37.000000000 -0700
+@@ -46,6 +46,7 @@
+  #include <linux/page-isolation.h>
+  #include <linux/memcontrol.h>
+  #include <linux/debugobjects.h>
++#include <linux/memcheck.h>
 
-  	io_req->req = req;
--	io_req->fds[0] = (ubd_dev->cow.file != NULL) ? ubd_dev->cow.fd :
--		ubd_dev->fd;
-+	io_req->fds[0] = (ubd_dev->cow.file == NULL) ? -1 : ubd_dev->cow.fd;
-  	io_req->fds[1] = ubd_dev->fd;
-  	io_req->cow_offset = -1;
-  	io_req->offset = offset;
-@@ -1374,12 +1373,18 @@
-  	nsectors = req->length / req->sectorsize;
-  	start = 0;
-  	do {
--		bit = ubd_test_bit(start, (unsigned char *) &req->sector_mask);
--		end = start;
--		while((end < nsectors) &&
--		      (ubd_test_bit(end, (unsigned char *)
--				    &req->sector_mask) == bit))
--			end++;
-+		if (req->fds[0] == -1) {
-+			bit = 1;
-+			end = nsectors;
-+		} else {
-+			bit = ubd_test_bit(start,
-+					(unsigned char *) &req->sector_mask);
-+			end = start;
-+			while ((end < nsectors) &&
-+					(ubd_test_bit(end, (unsigned char *)
-+						  &req->sector_mask) == bit))
-+				end++;
-+		}
+  #include <asm/tlbflush.h>
+  #include <asm/div64.h>
+@@ -1080,6 +1081,7 @@
+  		if (!page)
+  			goto failed;
+  	}
++	VALGRIND_MAKE_MEM_UNDEFINED(page_address(page), PAGE_SIZE << order);
 
-  		off = req->offset + req->offsets[bit] +
-  			start * req->sectorsize;
+  	__count_zone_vm_events(PGALLOC, zone, 1 << order);
+  	zone_statistics(preferred_zone, zone);
+@@ -1679,6 +1681,8 @@
+  void __free_pages(struct page *page, unsigned int order)
+  {
+  	if (put_page_testzero(page)) {
++		VALGRIND_MAKE_MEM_NOACCESS(page_address(page),
++						PAGE_SIZE << order);
+  		if (order == 0)
+  			free_hot_page(page);
+  		else
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
