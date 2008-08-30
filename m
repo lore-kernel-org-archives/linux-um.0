@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KZDED-0005OJ-5O for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Aug 2008 16:18:07 -0700
-Received: from abydos.nerdbox.net ([216.151.149.55])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KZDEC-0006Lc-No
+	id 1KZO1t-0000f2-NN for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 30 Aug 2008 03:50:06 -0700
+Received: from wa-out-1112.google.com ([209.85.146.182])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KZO1q-0002Ot-7d
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Aug 2008 16:18:05 -0700
-Date: Fri, 29 Aug 2008 16:18:04 -0700 (PDT)
-From: Steve VanDeBogart <vandebo-lkml@NerdBox.Net>
-In-Reply-To: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
-Message-ID: <alpine.DEB.1.00.0808291617370.15543@abydos.NerdBox.Net>
-References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
+	Sat, 30 Aug 2008 03:50:04 -0700
+Received: by wa-out-1112.google.com with SMTP id j5so865378wah.18
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 30 Aug 2008 03:50:01 -0700 (PDT)
+Message-ID: <84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+Date: Sat, 30 Aug 2008 13:50:01 +0300
+From: "Pekka Enberg" <penberg@cs.helsinki.fi>
+In-Reply-To: <alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
 MIME-Version: 1.0
-Subject: [uml-devel] [PATCH 6/6] VM: Annotate vmalloc
+Content-Disposition: inline
+References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
+	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
+Subject: Re: [uml-devel] [PATCH 5/6] slab: Annotate slab
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,103 +33,108 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, jiayingz@google.com, dkegel@google.com
+To: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
 
-Valgrind annotations for vmalloc: Valgrind doesn't understand memory
-that is mapped to more than one address.  Approximate validness by
-assuming that the physical mapping won't be used while it is vmalloc'd
-and copy the valid bits from the physical page when the fault handler
-maps it in.
+Hi Steve,
 
-Signed-off-by: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
----
+On Sat, Aug 30, 2008 at 2:17 AM, Steve VanDeBogart
+<vandebo-lkml@nerdbox.net> wrote:
+> Valgrind annotations for the slab allocator:  Malloc-like and free-like
+> for cache_alloc and free.  Telling Valgrind a region is free-like clears
+> all the valid bits, so slabs with constructors need different treatment;
+> tell Valgrind about slab objects when first constructed and free them
+> when the slab is destroyed.
 
-Index: linux-2.6.27-rc5/arch/um/kernel/physmem.c
-===================================================================
---- linux-2.6.27-rc5.orig/arch/um/kernel/physmem.c	2008-08-29 14:17:31.000000000 -0700
-+++ linux-2.6.27-rc5/arch/um/kernel/physmem.c	2008-08-29 14:24:46.000000000 -0700
-@@ -6,6 +6,7 @@
-  #include "linux/bootmem.h"
-  #include "linux/mm.h"
-  #include "linux/pfn.h"
-+#include "linux/memcheck.h"
-  #include "asm/page.h"
-  #include "as-layout.h"
-  #include "init.h"
-@@ -71,6 +72,26 @@
-  		panic("map_memory(0x%lx, %d, 0x%llx, %ld, %d, %d, %d) failed, "
-  		      "err = %d\n", virt, fd, offset, len, r, w, x, err);
-  	}
-+#ifdef CONFIG_VALGRIND_SUPPORT
-+	if (virt >= VMALLOC_START && virt < VMALLOC_END) {
-+		/* As far as I know, the backing pages were just page alloc'd,
-+		 * so they are addressable, but may be either valid or invalid
-+		 * (depending on gfp_mask).  The virtual address may be part of
-+		 * a vmalloc region, or a guard page, so inaddressability is ok.
-+		 */
-+#define CHUNK_SIZE (PAGE_SIZE/8)
-+		char vbits[CHUNK_SIZE];
-+		int i;
-+		if (len % (CHUNK_SIZE) != 0)
-+			panic("Expected len to be a multiple of page size");
-+		for (i = 0; i < len; i += CHUNK_SIZE) {
-+			if (VALGRIND_GET_VBITS(__va(phys + i), vbits,
-+						CHUNK_SIZE) > 1)
-+				panic("Expected addressable source memory");
-+			VALGRIND_SET_VBITS(virt + i, vbits, CHUNK_SIZE);
-+		}
-+	}
-+#endif
-  }
+OK, I'm biased (I'm one of the kmemcheck developers) but these hooks
+to SLAB are too ugly to live with. My preferred solution is that you
+reuse the kmemcheck annotations
+kmemcheck_slab_alloc()/kmemcheck_slab_free() we have:
 
-  extern int __syscall_stub_start;
-Index: linux-2.6.27-rc5/mm/vmalloc.c
-===================================================================
---- linux-2.6.27-rc5.orig/mm/vmalloc.c	2008-08-29 14:17:38.000000000 -0700
-+++ linux-2.6.27-rc5/mm/vmalloc.c	2008-08-29 14:24:46.000000000 -0700
-@@ -18,6 +18,7 @@
-  #include <linux/debugobjects.h>
-  #include <linux/vmalloc.h>
-  #include <linux/kallsyms.h>
-+#include <linux/memcheck.h>
+http://git.kernel.org/?p=linux/kernel/git/x86/linux-2.6-tip.git;a=commitdiff;h=30532cb3c49a2a9fed94127aab26003c52398a51
 
-  #include <asm/uaccess.h>
-  #include <asm/tlbflush.h>
-@@ -428,6 +429,8 @@
-  void vfree(const void *addr)
-  {
-  	BUG_ON(in_interrupt());
-+	if (addr)
-+		VALGRIND_FREELIKE_BLOCK(addr, 0);
-  	__vunmap(addr, 1);
-  }
-  EXPORT_SYMBOL(vfree);
-@@ -555,6 +558,7 @@
-  						int node, void *caller)
-  {
-  	struct vm_struct *area;
-+	void *ret;
+Maybe making valgrind code a "UML port" (plus some more) of kmemcheck.
 
-  	size = PAGE_ALIGN(size);
-  	if (!size || (size >> PAGE_SHIFT) > num_physpages)
-@@ -566,7 +570,16 @@
-  	if (!area)
-  		return NULL;
+> Signed-off-by: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
+> ---
+>
+> Index: linux-2.6.27-rc5/mm/slab.c
+> ===================================================================
+> --- linux-2.6.27-rc5.orig/mm/slab.c     2008-08-29 14:24:25.000000000 -0700
+> +++ linux-2.6.27-rc5/mm/slab.c  2008-08-29 14:24:42.000000000 -0700
+> @@ -111,6 +111,7 @@
+>  #include       <linux/rtmutex.h>
+>  #include       <linux/reciprocal_div.h>
+>  #include       <linux/debugobjects.h>
+> +#include       <linux/memcheck.h>
+>
+>  #include       <asm/cacheflush.h>
+>  #include       <asm/tlbflush.h>
+> @@ -1906,6 +1907,8 @@
+>        int i;
+>        for (i = 0; i < cachep->num; i++) {
+>                void *objp = index_to_obj(cachep, slabp, i);
+> +               if (cachep->ctor)
+> +                       VALGRIND_FREELIKE_BLOCK(objp, 0);
+>
+>                if (cachep->flags & SLAB_POISON) {
+>  #ifdef CONFIG_DEBUG_PAGEALLOC
+> @@ -1932,6 +1935,15 @@
+>  #else
+>  static void slab_destroy_debugcheck(struct kmem_cache *cachep, struct slab
+> *slabp)
+>  {
+> +#ifdef CONFIG_VALGRIND_SUPPORT
+> +       int i;
+> +       if (cachep->ctor) {
+> +               for (i = 0; i < cachep->num; i++) {
+> +                       void *objp = index_to_obj(cachep, slabp, i);
+> +                       VALGRIND_FREELIKE_BLOCK(objp, 0);
+> +               }
+> +       }
+> +#endif
+>  }
+>  #endif
+>
+> @@ -2635,6 +2647,9 @@
+>
+>        for (i = 0; i < cachep->num; i++) {
+>                void *objp = index_to_obj(cachep, slabp, i);
+> +               if (cachep->ctor)
+> +                       VALGRIND_MALLOCLIKE_BLOCK(objp, cachep->buffer_size,
+> +                                                       0, 0);
+>  #if DEBUG
+>                /* need to poison the objs? */
+>                if (cachep->flags & SLAB_POISON)
+> @@ -3466,6 +3481,8 @@
+>        objp = cache_alloc_debugcheck_after(cachep, flags, objp, caller);
+>        prefetchw(objp);
+>
+> +       if (!cachep->ctor)
+> +               VALGRIND_MALLOCLIKE_BLOCK(objp, cachep->buffer_size, 0, 0);
+>        if (unlikely((flags & __GFP_ZERO) && objp))
+>                memset(objp, 0, obj_size(cachep));
+>
+> @@ -3578,6 +3595,9 @@
+>  {
+>        struct array_cache *ac = cpu_cache_get(cachep);
+>
+> +       if (!cachep->ctor)
+> +               VALGRIND_FREELIKE_BLOCK(objp, 0);
+> +
+>        check_irq_off();
+>        objp = cache_free_debugcheck(cachep, objp,
+> __builtin_return_address(0));
 
--	return __vmalloc_area_node(area, gfp_mask, prot, node, caller);
-+	VALGRIND_MAKE_MEM_NOACCESS(area->addr, area->size);
-+	VALGRIND_MALLOCLIKE_BLOCK(area->addr, size, 0, 0);
-+	/* This could be improved by also clearing the addessability bits of
-+	 * the rounded up region of the last page */
-+
-+	ret = __vmalloc_area_node(area, gfp_mask, prot, node, caller);
-+	if (!ret)
-+		VALGRIND_FREELIKE_BLOCK(area->addr, 0);
-+
-+	return ret;
-  }
+I'm not sure why you want to treat caches with constructor
+differently. Sure, the memory regions *are* initialized but from
+programmer's point of view you're not supposed to be touching the
+memory unless you got it from kmalloc() or kmem_cache_alloc(). Same
+goes for kfree() and kmem_cache_free() -- no touchy touchy after you
+pass a pointer to either of the functions (unless you're RCU, of
+course).
 
-  void *__vmalloc(unsigned long size, gfp_t gfp_mask, pgprot_t prot)
+                           Pekka
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
