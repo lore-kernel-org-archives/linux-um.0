@@ -2,25 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KaBaE-0006VH-T6 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Sep 2008 08:44:52 -0700
-Received: from mail.unilim.fr ([164.81.1.45] helo=smtp.unilim.fr)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KaBaC-0003T2-Im
+	id 1KaDSn-0001em-Pb for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Sep 2008 10:45:17 -0700
+Received: from relay-ev.club-internet.fr ([194.158.96.209])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KaDSl-000254-8v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Sep 2008 08:44:50 -0700
-Received: from [192.168.1.12] (APoitiers-754-1-6-183.w90-38.abo.wanadoo.fr
-	[90.38.161.183]) (authenticated bits=0)
-	by smtp.unilim.fr (8.13.1/8.13.1) with ESMTP id m81Ficdd010069
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 1 Sep 2008 17:44:38 +0200
-Message-ID: <48BC0DE7.1000703@unilim.fr>
-Date: Mon, 01 Sep 2008 17:44:39 +0200
-From: Julien Iguchi-Cartigny <julien.cartigny@unilim.fr>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080504050907010301080700"
-Subject: [uml-devel] Connecting UML_SWITCH and Wireshark
+	Mon, 01 Sep 2008 10:45:17 -0700
+From: vincent-perrier <vincent-perrier@club-internet.fr>
+In-Reply-To: <48BC0DE7.1000703@unilim.fr>
+References: <48BC0DE7.1000703@unilim.fr>
+Date: Mon, 01 Sep 2008 19:44:58 +0200
+Message-Id: <1220291098.2995.3.camel@clownix>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] Connecting UML_SWITCH and Wireshark
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,85 +24,48 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Julien Iguchi-Cartigny <julien.cartigny@unilim.fr>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------080504050907010301080700
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hello,
-
-(seems a developper question, apologies if it's more a user (moron)
-question)
-
-I'm using Netkit (www.netkit.org): it's a network simulator using UML
-and I want to show packets exchanged between the UML machines. I believe
-the best way is to
-
-- use wireshark with the flag "-" to capture packets in the standard input.
-- use netcat to read the data socket of uml_switch and print to the
-standard output
-
-But uml_switch uses a ctl socket to open new port. I need a way to
-manually open a port by uml_switch to connect netcat. I don't think
-uml_switch offer command-line instruction for this, so is the best way
-to write a short program writing on the ctl socket of uml_switch ? If
-yes, what data to send to uml_switch ?
-
-Cheers,
-
-Julien.
-
-
--- 
-Trouble-a-cat Limited
-
---------------080504050907010301080700
-Content-Type: text/x-vcard; charset=utf-8;
- name="julien_cartigny.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="julien_cartigny.vcf"
-
-begin:vcard
-fn:Julien Iguchi-Cartigny
-n:Iguchi-Cartigny;Julien
-org;quoted-printable;quoted-printable:Universit=C3=A9 de Limoges;D=C3=A9partement DMI
-adr;quoted-printable:83, rue d'Isle;;Site Jid=C3=A9;Limoges;;87000;France
-email;internet:julien.cartigny@unilim.fr
-title:Assistant Professor
-tel;work:+33555436930
-tel;cell:+33681606483
-x-mozilla-html:FALSE
-url:http://msi.unilim.fr/~cartigny/
-version:2.1
-end:vcard
-
-
---------------080504050907010301080700
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great prizes
-Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
---------------080504050907010301080700
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---------------080504050907010301080700--
-
+SGVsbG8KSSBtYWRlIGFub3RoZXIgbmV0d29yayBzaW11bGF0b3IgKGNsb3duaXgubmV0KSBhbmQg
+SSBqdXN0IHJ1bgp3aXJlc2hhcmsgaW5zaWRlIHRoZSB1bWwgbWFjaGluZXMsIEkgZG8gbm90IHNl
+ZSB3aHkgeW91IGhhdmUgCnRyb3VibGVzIHRvIHNlZSBpcCBmcmFtZXMuCgoKCgpMZSBsdW5kaSAw
+MSBzZXB0ZW1icmUgMjAwOCDDoCAxNzo0NCArMDIwMCwgSnVsaWVuIElndWNoaS1DYXJ0aWdueSBh
+CsOpY3JpdCA6Cj4gSGVsbG8sCj4gCj4gKHNlZW1zIGEgZGV2ZWxvcHBlciBxdWVzdGlvbiwgYXBv
+bG9naWVzIGlmIGl0J3MgbW9yZSBhIHVzZXIgKG1vcm9uKQo+IHF1ZXN0aW9uKQo+IAo+IEknbSB1
+c2luZyBOZXRraXQgKHd3dy5uZXRraXQub3JnKTogaXQncyBhIG5ldHdvcmsgc2ltdWxhdG9yIHVz
+aW5nIFVNTAo+IGFuZCBJIHdhbnQgdG8gc2hvdyBwYWNrZXRzIGV4Y2hhbmdlZCBiZXR3ZWVuIHRo
+ZSBVTUwgbWFjaGluZXMuIEkgYmVsaWV2ZQo+IHRoZSBiZXN0IHdheSBpcyB0bwo+IAo+IC0gdXNl
+IHdpcmVzaGFyayB3aXRoIHRoZSBmbGFnICItIiB0byBjYXB0dXJlIHBhY2tldHMgaW4gdGhlIHN0
+YW5kYXJkIGlucHV0Lgo+IC0gdXNlIG5ldGNhdCB0byByZWFkIHRoZSBkYXRhIHNvY2tldCBvZiB1
+bWxfc3dpdGNoIGFuZCBwcmludCB0byB0aGUKPiBzdGFuZGFyZCBvdXRwdXQKPiAKPiBCdXQgdW1s
+X3N3aXRjaCB1c2VzIGEgY3RsIHNvY2tldCB0byBvcGVuIG5ldyBwb3J0LiBJIG5lZWQgYSB3YXkg
+dG8KPiBtYW51YWxseSBvcGVuIGEgcG9ydCBieSB1bWxfc3dpdGNoIHRvIGNvbm5lY3QgbmV0Y2F0
+LiBJIGRvbid0IHRoaW5rCj4gdW1sX3N3aXRjaCBvZmZlciBjb21tYW5kLWxpbmUgaW5zdHJ1Y3Rp
+b24gZm9yIHRoaXMsIHNvIGlzIHRoZSBiZXN0IHdheQo+IHRvIHdyaXRlIGEgc2hvcnQgcHJvZ3Jh
+bSB3cml0aW5nIG9uIHRoZSBjdGwgc29ja2V0IG9mIHVtbF9zd2l0Y2ggPyBJZgo+IHllcywgd2hh
+dCBkYXRhIHRvIHNlbmQgdG8gdW1sX3N3aXRjaCA/Cj4gCj4gQ2hlZXJzLAo+IAo+IEp1bGllbi4K
+PiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVGhpcyBTRi5OZXQgZW1haWwgaXMgc3BvbnNvcmVk
+IGJ5IHRoZSBNb2JsaW4gWW91ciBNb3ZlIERldmVsb3BlcidzIGNoYWxsZW5nZQo+IEJ1aWxkIHRo
+ZSBjb29sZXN0IExpbnV4IGJhc2VkIGFwcGxpY2F0aW9ucyB3aXRoIE1vYmxpbiBTREsgJiB3aW4g
+Z3JlYXQgcHJpemVzCj4gR3JhbmQgcHJpemUgaXMgYSB0cmlwIGZvciB0d28gdG8gYW4gT3BlbiBT
+b3VyY2UgZXZlbnQgYW55d2hlcmUgaW4gdGhlIHdvcmxkCj4gaHR0cDovL21vYmxpbi1jb250ZXN0
+Lm9yZy9yZWRpcmVjdC5waHA/YmFubmVyX2lkPTEwMCZ1cmw9Lwo+IF9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fIFVzZXItbW9kZS1saW51eC1kZXZlbCBtYWls
+aW5nIGxpc3QgVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldCBodHRw
+czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgt
+ZGV2ZWwKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YuTmV0IGVtYWlsIGlzIHNwb25zb3JlZCBi
+eSB0aGUgTW9ibGluIFlvdXIgTW92ZSBEZXZlbG9wZXIncyBjaGFsbGVuZ2UKQnVpbGQgdGhlIGNv
+b2xlc3QgTGludXggYmFzZWQgYXBwbGljYXRpb25zIHdpdGggTW9ibGluIFNESyAmIHdpbiBncmVh
+dCBwcml6ZXMKR3JhbmQgcHJpemUgaXMgYSB0cmlwIGZvciB0d28gdG8gYW4gT3BlbiBTb3VyY2Ug
+ZXZlbnQgYW55d2hlcmUgaW4gdGhlIHdvcmxkCmh0dHA6Ly9tb2JsaW4tY29udGVzdC5vcmcvcmVk
+aXJlY3QucGhwP2Jhbm5lcl9pZD0xMDAmdXJsPS8KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApV
+c2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
