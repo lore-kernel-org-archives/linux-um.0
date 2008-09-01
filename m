@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KZO9V-0001NL-Fg for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Aug 2008 03:57:57 -0700
-Received: from wa-out-1112.google.com ([209.85.146.177])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KZO9U-0000Lg-8H
+	id 1Ka5lX-0006fz-Gp for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Sep 2008 02:32:07 -0700
+Received: from one.firstfloor.org ([213.235.205.2] ident=nessuno)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1Ka5lV-0004Vm-RB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Aug 2008 03:57:57 -0700
-Received: by wa-out-1112.google.com with SMTP id j5so867522wah.18
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 30 Aug 2008 03:57:55 -0700 (PDT)
-Message-ID: <84144f020808300357l9dddda4y726622641ac7f592@mail.gmail.com>
-Date: Sat, 30 Aug 2008 13:57:55 +0300
-From: "Pekka Enberg" <penberg@cs.helsinki.fi>
-In-Reply-To: <alpine.DEB.1.00.0808291616170.15543@abydos.NerdBox.Net>
-MIME-Version: 1.0
-Content-Disposition: inline
+	Mon, 01 Sep 2008 02:32:07 -0700
+From: Andi Kleen <andi@firstfloor.org>
 References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
-	<alpine.DEB.1.00.0808291616170.15543@abydos.NerdBox.Net>
-Subject: Re: [uml-devel] [PATCH 4/6] VM: Annotate pagealloc
+	<alpine.DEB.1.00.0808291613420.15543@abydos.NerdBox.Net>
+Date: Mon, 01 Sep 2008 11:32:00 +0200
+In-Reply-To: <alpine.DEB.1.00.0808291613420.15543@abydos.NerdBox.Net> (Steve
+	VanDeBogart's message of "Fri, 29 Aug 2008 16:14:32 -0700 (PDT)")
+Message-ID: <87ljycxldb.fsf@basil.nowhere.org>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 1/6] base: Valgrind headers and Kconfig
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,59 +31,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
+To: Steve VanDeBogart <vandebo-lkml@NerdBox.Net>
 Cc: jiayingz@google.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, dkegel@google.com
 
-Hi Steve,
+Steve VanDeBogart <vandebo-lkml@NerdBox.Net> writes:
 
-On Sat, Aug 30, 2008 at 2:16 AM, Steve VanDeBogart
-<vandebo-lkml@nerdbox.net> wrote:
-> Valgrind annotations for valgrind: memory is addressable once it's been
-> alloced, and unaddressable when it is freed again.  Can't use malloc-like
-> and free-like because valgrind considers a malloc-like chunk indivisible.
->
-> Signed-off-by: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
-> ---
->
-> Index: linux-2.6.27-rc5/mm/page_alloc.c
-> ===================================================================
-> --- linux-2.6.27-rc5.orig/mm/page_alloc.c       2008-08-29
-> 14:24:27.000000000 -0700
-> +++ linux-2.6.27-rc5/mm/page_alloc.c    2008-08-29 14:24:37.000000000 -0700
-> @@ -46,6 +46,7 @@
->  #include <linux/page-isolation.h>
->  #include <linux/memcontrol.h>
->  #include <linux/debugobjects.h>
-> +#include <linux/memcheck.h>
->
->  #include <asm/tlbflush.h>
->  #include <asm/div64.h>
-> @@ -1080,6 +1081,7 @@
->                if (!page)
->                        goto failed;
->        }
-> +       VALGRIND_MAKE_MEM_UNDEFINED(page_address(page), PAGE_SIZE << order);
+> Kconfig option for Valgrind.  Suppression file, for known non-issues.
+> Valgrind header files (svn 8534) that define the client request
+> mechanism used to annotate programs plus a couple lines to integrate
+> with Kconfig.
 
-No SHOUTING macros please, and I think you should just pass page and
-order here and do the calculation elsewhere.
+Couldn't you just get the valgrind.h header from the currently
+installed valgrind? UML relies on host includes anyways, so
+I don't see a reason to not do that for valgrind too.
 
->
->        __count_zone_vm_events(PGALLOC, zone, 1 << order);
->        zone_statistics(preferred_zone, zone);
-> @@ -1679,6 +1681,8 @@
->  void __free_pages(struct page *page, unsigned int order)
->  {
->        if (put_page_testzero(page)) {
-> +               VALGRIND_MAKE_MEM_NOACCESS(page_address(page),
-> +                                               PAGE_SIZE << order);
-
-Same here.
-
->                if (order == 0)
->                        free_hot_page(page);
->                else
-
-Other than that, looks good to me.
+-Andi
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
