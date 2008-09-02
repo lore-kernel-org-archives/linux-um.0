@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KaWtK-0003RQ-E7 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 07:29:58 -0700
-Received: from mail.unilim.fr ([164.81.1.45] helo=smtp.unilim.fr)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KaWtG-0001cI-C1
+	id 1KabFL-0002v1-Mv for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Sep 2008 12:09:00 -0700
+Received: from relay-cv.club-internet.fr ([194.158.96.103])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KabFJ-0007FE-35
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 07:29:58 -0700
-Message-ID: <48BD4DC9.6080005@unilim.fr>
-Date: Tue, 02 Sep 2008 16:29:29 +0200
-From: Julien Iguchi-Cartigny <julien.cartigny@unilim.fr>
-MIME-Version: 1.0
+	Tue, 02 Sep 2008 12:08:59 -0700
+From: vincent-perrier <vincent-perrier@club-internet.fr>
+In-Reply-To: <48BCFBAE.3050402@unilim.fr>
 References: <48BC0DE7.1000703@unilim.fr> <1220291098.2995.3.camel@clownix>
-	<48BCFBAE.3050402@unilim.fr> <20080902101808.GR3824@pintsize>
-In-Reply-To: <20080902101808.GR3824@pintsize>
-Content-Type: multipart/mixed; boundary="------------060506050902060903090700"
+	<48BCFBAE.3050402@unilim.fr>
+Date: Tue, 02 Sep 2008 21:08:38 +0200
+Message-Id: <1220382518.7575.1.camel@clownix>
+Mime-Version: 1.0
 Subject: Re: [uml-devel] Connecting UML_SWITCH and Wireshark
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -27,102 +25,66 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Luca Bigliardi <shammash@artha.org>
+To: Julien Iguchi-Cartigny <julien.cartigny@unilim.fr>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------060506050902060903090700
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hello Luca,
-
-> On wireshark(1) they say this works only if you have a libpcap format on
-> wireshark's STDIN, but in this way you'll have pure ethernet frames.
-
-Damn it ! I didn't think of this problem.
-
-> Does Netkit support uml's vde network?
-> If it does then you can use the 'pdump' plugin in vde_switch which dumps
-> all the traffic in pcap format.
-
-I don't think so (I didn't see reference to vde_switch in netkit
-distribution).
-
-One idea is to do the same think: use pdump on uml_switch (vde_switch
-seems close to uml_switch, right ?).
-
-An other idea  could be to extend uml_switch to dump traffic on standard
-output in cap format. Don't seem too difficult (include libcap is
-needed, and some code of course).
-
-The only problem is how to connect the standard input of wireshark and
-the standard output of this "new" uml_switch; netcat is an interesting
-"brut hack" to do this (not really "elegant") but maybe some people have
-a better solution ????
-
-Cheers,
-
-Julien.
-
-> Here you can find an example of pdump usage:
-> http://qemu-forum.ipi.fi/viewtopic.php?f=2&p=13488#p13488
-> 
-> 
-> HTH
-> 
-> luca
-> 
-
-
--- 
-Trouble-a-cat Limited
-
---------------060506050902060903090700
-Content-Type: text/x-vcard; charset=utf-8;
- name="julien_cartigny.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="julien_cartigny.vcf"
-
-begin:vcard
-fn:Julien Iguchi-Cartigny
-n:Iguchi-Cartigny;Julien
-org;quoted-printable;quoted-printable:Universit=C3=A9 de Limoges;D=C3=A9partement DMI
-adr;quoted-printable:83, rue d'Isle;;Site Jid=C3=A9;Limoges;;87000;France
-email;internet:julien.cartigny@unilim.fr
-title:Assistant Professor
-tel;work:+33555436930
-tel;cell:+33681606483
-x-mozilla-html:FALSE
-url:http://msi.unilim.fr/~cartigny/
-version:2.1
-end:vcard
-
-
---------------060506050902060903090700
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--------------------------------------------------------------------------
-This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great prizes
-Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
---------------060506050902060903090700
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---------------060506050902060903090700--
-
+CkhlbGxvIEp1bGllbgpJIGZpbmQgWG9yZy9ndGsgdmVyeSB2ZXJ5IHVzZWZ1bGwhIGV2ZW4gaWYg
+SSB0b28gd29yayBvbmx5IGluCnRlcm1pbmFscyB3aXRoIGNvbW1hbmQtbGluZSBpbnRlcmZhY2Vz
+LgpBcyBJIHBsYW4gdG8gaGF2ZSBzaXAgc29mdHBob25lcyBpbiBteSBuZXh0IHVtbCBtYWNoaW5l
+cywgSSBoYXZlIHRvCmhhdmUgYWxsIHRoZSBuZWNlc3NhcnkgZ3VpIChpbmNsdWRpbmcgYSBqYXZh
+IG1hY2hpbmUpLgpCdXQgaWYgeW91IHJlYWxseSB3YW50IHRvIHNweSBpcCBwYWNrZXRzIHdpdGhv
+dXQgZ3RrLCB1c2UgdHNoYXJrLAppdCBpcyBhbHNvIGEgZmFudGFzdGljIHBpZWNlIG9mIHNvZnR3
+YXJlLgpDaGVlcnMKVmluY2VudCBQZXJyaWVyCgpMZSBtYXJkaSAwMiBzZXB0ZW1icmUgMjAwOCDD
+oCAxMDozOSArMDIwMCwgSnVsaWVuIElndWNoaS1DYXJ0aWdueSBhCsOpY3JpdCA6Cj4gSGVsbG8g
+VmluY2VudCwKPiAKPiBOZXRraXQgZG9lc24ndCBzdXBwb3J0IFgsIGFuZCBJIGRvbid0IHdhbnQg
+aXQgYW55d2F5LCBhcyB0aGUgdXNlciBoYXMKPiBhbHJlYWR5IHNldmVyYWwgdGVybWluYWxzIG9u
+IGhpcyBzY3JlZW4gKG9uZSBieSBVTUwgbWFjaGluZSkuCj4gCj4gSSB3YW50IFdpcmVzaGFyayB0
+byBiZSBydW5uaW5nIG9uIHRoZSBob3N0IGNvbXB1dGVyLCBhbmQgSSBkb24ndCB3YW50IHRvCj4g
+dXNlIHRoZSBUQVAgc29sdXRpb24gKHN0dWRlbnRzIHVzaW5nIHRoZSBzaW11bGF0b3IgZG9uJ3Qg
+aGF2ZSByb290IGFjY2VzcykuCj4gCj4gU28sIHRoZSBvbmx5IHdheSBpcyB0byBjb25uZWN0IHdp
+cmVzaGFyayBvbiB1bWxfc3dpdGNoIChob3cgPykuCj4gCj4gQ2hlZXJzLAo+IAo+IEp1bGllbi4K
+PiAKPiB2aW5jZW50LXBlcnJpZXIgd3JvdGU6Cj4gPiBIZWxsbwo+ID4gSSBtYWRlIGFub3RoZXIg
+bmV0d29yayBzaW11bGF0b3IgKGNsb3duaXgubmV0KSBhbmQgSSBqdXN0IHJ1bgo+ID4gd2lyZXNo
+YXJrIGluc2lkZSB0aGUgdW1sIG1hY2hpbmVzLCBJIGRvIG5vdCBzZWUgd2h5IHlvdSBoYXZlIAo+
+ID4gdHJvdWJsZXMgdG8gc2VlIGlwIGZyYW1lcy4KPiA+IAo+ID4gCj4gPiAKPiA+IAo+ID4gTGUg
+bHVuZGkgMDEgc2VwdGVtYnJlIDIwMDggw6AgMTc6NDQgKzAyMDAsIEp1bGllbiBJZ3VjaGktQ2Fy
+dGlnbnkgYQo+ID4gw6ljcml0IDoKPiA+PiBIZWxsbywKPiA+Pgo+ID4+IChzZWVtcyBhIGRldmVs
+b3BwZXIgcXVlc3Rpb24sIGFwb2xvZ2llcyBpZiBpdCdzIG1vcmUgYSB1c2VyIChtb3JvbikKPiA+
+PiBxdWVzdGlvbikKPiA+Pgo+ID4+IEknbSB1c2luZyBOZXRraXQgKHd3dy5uZXRraXQub3JnKTog
+aXQncyBhIG5ldHdvcmsgc2ltdWxhdG9yIHVzaW5nIFVNTAo+ID4+IGFuZCBJIHdhbnQgdG8gc2hv
+dyBwYWNrZXRzIGV4Y2hhbmdlZCBiZXR3ZWVuIHRoZSBVTUwgbWFjaGluZXMuIEkgYmVsaWV2ZQo+
+ID4+IHRoZSBiZXN0IHdheSBpcyB0bwo+ID4+Cj4gPj4gLSB1c2Ugd2lyZXNoYXJrIHdpdGggdGhl
+IGZsYWcgIi0iIHRvIGNhcHR1cmUgcGFja2V0cyBpbiB0aGUgc3RhbmRhcmQgaW5wdXQuCj4gPj4g
+LSB1c2UgbmV0Y2F0IHRvIHJlYWQgdGhlIGRhdGEgc29ja2V0IG9mIHVtbF9zd2l0Y2ggYW5kIHBy
+aW50IHRvIHRoZQo+ID4+IHN0YW5kYXJkIG91dHB1dAo+ID4+Cj4gPj4gQnV0IHVtbF9zd2l0Y2gg
+dXNlcyBhIGN0bCBzb2NrZXQgdG8gb3BlbiBuZXcgcG9ydC4gSSBuZWVkIGEgd2F5IHRvCj4gPj4g
+bWFudWFsbHkgb3BlbiBhIHBvcnQgYnkgdW1sX3N3aXRjaCB0byBjb25uZWN0IG5ldGNhdC4gSSBk
+b24ndCB0aGluawo+ID4+IHVtbF9zd2l0Y2ggb2ZmZXIgY29tbWFuZC1saW5lIGluc3RydWN0aW9u
+IGZvciB0aGlzLCBzbyBpcyB0aGUgYmVzdCB3YXkKPiA+PiB0byB3cml0ZSBhIHNob3J0IHByb2dy
+YW0gd3JpdGluZyBvbiB0aGUgY3RsIHNvY2tldCBvZiB1bWxfc3dpdGNoID8gSWYKPiA+PiB5ZXMs
+IHdoYXQgZGF0YSB0byBzZW5kIHRvIHVtbF9zd2l0Y2ggPwo+ID4+Cj4gPj4gQ2hlZXJzLAo+ID4+
+Cj4gPj4gSnVsaWVuLgo+ID4+Cj4gPj4KPiA+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gPj4gVGhpcyBT
+Ri5OZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IHRoZSBNb2JsaW4gWW91ciBNb3ZlIERldmVsb3Bl
+cidzIGNoYWxsZW5nZQo+ID4+IEJ1aWxkIHRoZSBjb29sZXN0IExpbnV4IGJhc2VkIGFwcGxpY2F0
+aW9ucyB3aXRoIE1vYmxpbiBTREsgJiB3aW4gZ3JlYXQgcHJpemVzCj4gPj4gR3JhbmQgcHJpemUg
+aXMgYSB0cmlwIGZvciB0d28gdG8gYW4gT3BlbiBTb3VyY2UgZXZlbnQgYW55d2hlcmUgaW4gdGhl
+IHdvcmxkCj4gPj4gaHR0cDovL21vYmxpbi1jb250ZXN0Lm9yZy9yZWRpcmVjdC5waHA/YmFubmVy
+X2lkPTEwMCZ1cmw9Lwo+ID4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fIFVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QgVXNlci1tb2RlLWxp
+bnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldCBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
+Lm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwKPiA+IAo+IAo+IAoKCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5OZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IHRoZSBNb2Js
+aW4gWW91ciBNb3ZlIERldmVsb3BlcidzIGNoYWxsZW5nZQpCdWlsZCB0aGUgY29vbGVzdCBMaW51
+eCBiYXNlZCBhcHBsaWNhdGlvbnMgd2l0aCBNb2JsaW4gU0RLICYgd2luIGdyZWF0IHByaXplcwpH
+cmFuZCBwcml6ZSBpcyBhIHRyaXAgZm9yIHR3byB0byBhbiBPcGVuIFNvdXJjZSBldmVudCBhbnl3
+aGVyZSBpbiB0aGUgd29ybGQKaHR0cDovL21vYmxpbi1jb250ZXN0Lm9yZy9yZWRpcmVjdC5waHA/
+YmFubmVyX2lkPTEwMCZ1cmw9LwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1s
+aW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
