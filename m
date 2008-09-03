@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KaesN-0000HN-QD for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 16:01:31 -0700
-Received: from zaphod.cobb.me.uk ([80.68.91.167])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1KaesM-0003SY-D6
+	id 1KaiWf-0004z2-DB for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Sep 2008 19:55:21 -0700
+Received: from jade.aracnet.com ([216.99.193.136])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KaiWe-0002G6-RR
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 16:01:31 -0700
-From: Graham Cobb <g+debian@cobb.uk.net>
-Date: Wed, 3 Sep 2008 00:01:19 +0100
-References: <20080818230509.23819.90290.reportbug@carrera.home.cobb.me.uk>
-	<20080819120155.GD7425@inferi.kami.home>
-	<20080826202239.GG24342@c2.user-mode-linux.org>
-In-Reply-To: <20080826202239.GG24342@c2.user-mode-linux.org>
+	Tue, 02 Sep 2008 19:55:21 -0700
+Message-ID: <48BDFC77.4060909@BitWagon.com>
+Date: Tue, 02 Sep 2008 19:54:47 -0700
+From: John Reiser <jreiser@BitWagon.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200809030001.20439.g+debian@cobb.uk.net>
-Subject: Re: [uml-devel] [Pkg-uml-pkgs] Bug#495611: user-mode-linux:
-	page_mapcount(page) went negative!
+References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
+	<84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+In-Reply-To: <84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH 5/6] slab: Annotate slab
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,30 +30,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Mattia Dongili <malattia@linux.it>, 495611@bugs.debian.org, UML-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Pekka Enberg <penberg@cs.helsinki.fi>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Steve VanDeBogart <vandebo-lkml@nerdbox.net>, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
 
-The bisection is complete.  It took longer than I expected as many of the 
-versions git-bisect wanted to test would not build UML without tracking down 
-some additional patches. 
+Pekka Enberg wrote:
+> Steve VanDeBogart proposed
+   [snip]
+>> Index: linux-2.6.27-rc5/mm/slab.c
+>> ===================================================================
+>> --- linux-2.6.27-rc5.orig/mm/slab.c     2008-08-29 14:24:25.000000000 -0700
+>> +++ linux-2.6.27-rc5/mm/slab.c  2008-08-29 14:24:42.000000000 -0700
+   [snip]
+> @@ -3466,6 +3481,8 @@
+>>        objp = cache_alloc_debugcheck_after(cachep, flags, objp, caller);
+>>        prefetchw(objp);
+>>
+>> +       if (!cachep->ctor)
+>> +               VALGRIND_MALLOCLIKE_BLOCK(objp, cachep->buffer_size, 0, 0);
+>>        if (unlikely((flags & __GFP_ZERO) && objp))
+>>                memset(objp, 0, obj_size(cachep));
+>>
+   [snip]
+> I'm not sure why you want to treat caches with constructor
+> differently. Sure, the memory regions *are* initialized but from
+> programmer's point of view you're not supposed to be touching the
+> memory unless you got it from kmalloc() or kmem_cache_alloc(). Same
+> goes for kfree() and kmem_cache_free() -- no touchy touchy after you
+> pass a pointer to either of the functions (unless you're RCU, of
+> course).
 
-The bug seems to have been introduced with git commit 
-3963333fe6767f15141ab2dc3b933721c636c212 (uml: cover stubs with a VMA). 
+Hi, I developed the predecessor to Steve's patches.  The patch treats
+a cache with a constructor differently because the semantics of kmalloc
+are different in that case.  If a cache has a constructor then the
+object returned by kmalloc has been initialized for certain.  Namely,
+the constructor initialized the object before it was kmalloc'ed the first
+time, and each corresponding caller [re-]initialized the object before
+calling kfree.  This is emphasized by comments in mm/slab.c:
+ * This means, that your constructor is used only for newly allocated
+ * slabs and you must pass objects with the same initializations to
+ * kmem_cache_free.
 
-Note the bisection didn't quite complete: the previous commit (git commit 
-42a2b54ce8c7b9d4f418995a7950e7e2e15e52ce (uml: clean up TASK_SIZE usage))  
-also causes a panic but it is different from the one reported in this bug and 
-occurs immediately init is started so I presume it is not the same problem. 
-The version before these two commits works.  
+The slab allocator has the property that the contents of a block [object]
+that is returned by kmalloc are identical to the contents that were passed
+to kfree (or back as result from the constructor) unless something special
+happens, such as SLAB_POISON.  A block [object] which is handed back and
+forth between kfree and kmalloc builds and retains history throughout the
+lifetime of the cache.  This property is directly contrary to the semantics
+of libc malloc.  The contents of the result of libc malloc must be considered
+to be *un*initialized always.
 
-With hindsight I suppose I could have guessed that would be the commit: the 
-crash seemed to be when unmapping a VMA.  If my reading of the page flags is 
-correct the problem is that the page has the PG_reserved flag set, so what is 
-it doing in the VMA which is being unmapped?
+Yes, there is at least one kmalloc+kfree slab object cache that depends on
+retaining state from kfree to kmalloc.  My first attempt treated kmalloc+kfree
+like libc malloc+free, but I soon learned that was not the actual semantics.
 
-Let me know if you want me to run some more tests, for example if you want to 
-add some printk's in the code to understand more about what is going on.
+Because the slab allocator deals in objects that persist through kfree
+and kmalloc, then there are only two indications that objects ever become
+uninitialized: SLAB_POISON, and not having a constructor.  Obviously the
+application of SLAB_POISON means that the object becomes [logically] uninit.
+Not having a constructor *tends* to indicate that kmalloc() implies uninit,
+by chain of reasoning based on the comment quoted above from mm/slab.c.
+If the object was uninit upon first kmalloc, and if kfree is supposed to
+receive objects that are "ready for kmalloc", and because a caller cannot
+discern the first-ever return of an object by kmalloc, then the caller
+must treat each result of kmalloc (from that particular cache) as uninit.
+It would be helpful if each cache had a documenting comment such as "This
+cache depends on objects whose contents persist from kfree() to kmalloc()"
+or a comment such as "An object in this cache is considered to become
+uninitialized when the object is passed to kfree."
 
+With regard to Read-Copy-Update, I anticipate that RCU will require
+special annotations because of the deliberate references after kfree
+and before the next corresponding kmalloc.  These special annotations
+will require great care, because bugs in this area have high value.
+
+-- 
+John Reiser, jreiser@BitWagon.com
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
