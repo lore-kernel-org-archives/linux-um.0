@@ -2,20 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KaiWf-0004z2-DB for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 19:55:21 -0700
-Received: from jade.aracnet.com ([216.99.193.136])
+	id 1Kakbw-0000De-1I for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Sep 2008 22:08:56 -0700
+Received: from abydos.nerdbox.net ([216.151.149.55])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KaiWe-0002G6-RR
+	(Exim 4.44) id 1Kakbu-0001Bk-Lu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 19:55:21 -0700
-Message-ID: <48BDFC77.4060909@BitWagon.com>
-Date: Tue, 02 Sep 2008 19:54:47 -0700
-From: John Reiser <jreiser@BitWagon.com>
-MIME-Version: 1.0
-References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
-	<84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+	Tue, 02 Sep 2008 22:08:55 -0700
+Date: Tue, 2 Sep 2008 22:08:48 -0700 (PDT)
+From: Steve VanDeBogart <vandebo-lkml@NerdBox.Net>
 In-Reply-To: <84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+Message-ID: <alpine.DEB.1.00.0809022036560.15543@abydos.NerdBox.Net>
+References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
+	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
+	<84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+MIME-Version: 1.0
 Subject: Re: [uml-devel] [PATCH 5/6] slab: Annotate slab
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,26 +32,44 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Pekka Enberg <penberg@cs.helsinki.fi>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Steve VanDeBogart <vandebo-lkml@nerdbox.net>, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
+Cc: user-mode-linux-devel@lists.sourceforge.net, John Reiser <jreiser@BitWagon.com>, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
 
-Pekka Enberg wrote:
-> Steve VanDeBogart proposed
-   [snip]
->> Index: linux-2.6.27-rc5/mm/slab.c
->> ===================================================================
->> --- linux-2.6.27-rc5.orig/mm/slab.c     2008-08-29 14:24:25.000000000 -0700
->> +++ linux-2.6.27-rc5/mm/slab.c  2008-08-29 14:24:42.000000000 -0700
-   [snip]
-> @@ -3466,6 +3481,8 @@
->>        objp = cache_alloc_debugcheck_after(cachep, flags, objp, caller);
->>        prefetchw(objp);
+On Sat, 30 Aug 2008, Pekka Enberg wrote:
+
+> Hi Steve,
+>
+> On Sat, Aug 30, 2008 at 2:17 AM, Steve VanDeBogart
+> <vandebo-lkml@nerdbox.net> wrote:
+>> Valgrind annotations for the slab allocator:  Malloc-like and free-like
+>> for cache_alloc and free.  Telling Valgrind a region is free-like clears
+>> all the valid bits, so slabs with constructors need different treatment;
+>> tell Valgrind about slab objects when first constructed and free them
+>> when the slab is destroyed.
+>
+> OK, I'm biased (I'm one of the kmemcheck developers) but these hooks
+> to SLAB are too ugly to live with. My preferred solution is that you
+> reuse the kmemcheck annotations
+> kmemcheck_slab_alloc()/kmemcheck_slab_free() we have:
+>
+> http://git.kernel.org/?p=linux/kernel/git/x86/linux-2.6-tip.git;a=commitdiff;h=30532cb3c49a2a9fed94127aab26003c52398a51
+
+Thank you for pointing out the location of the kmemcheck code.  I looked
+around briefly but didn't find the latest version.  It does seem that
+kmemcheck and Valgrind annotations want to live in the same places so it
+makes perfect sense to combine them where possible.  I'm not exactly sure
+what you find so ugly about the Valgrind annotations, please elaborate.
+
+>> @@ -3578,6 +3595,9 @@
+>>  {
+>>        struct array_cache *ac = cpu_cache_get(cachep);
 >>
 >> +       if (!cachep->ctor)
->> +               VALGRIND_MALLOCLIKE_BLOCK(objp, cachep->buffer_size, 0, 0);
->>        if (unlikely((flags & __GFP_ZERO) && objp))
->>                memset(objp, 0, obj_size(cachep));
->>
-   [snip]
+>> +               VALGRIND_FREELIKE_BLOCK(objp, 0);
+>> +
+>>        check_irq_off();
+>>        objp = cache_free_debugcheck(cachep, objp,
+>> __builtin_return_address(0));
+>
 > I'm not sure why you want to treat caches with constructor
 > differently. Sure, the memory regions *are* initialized but from
 > programmer's point of view you're not supposed to be touching the
@@ -59,52 +78,24 @@ Pekka Enberg wrote:
 > pass a pointer to either of the functions (unless you're RCU, of
 > course).
 
-Hi, I developed the predecessor to Steve's patches.  The patch treats
-a cache with a constructor differently because the semantics of kmalloc
-are different in that case.  If a cache has a constructor then the
-object returned by kmalloc has been initialized for certain.  Namely,
-the constructor initialized the object before it was kmalloc'ed the first
-time, and each corresponding caller [re-]initialized the object before
-calling kfree.  This is emphasized by comments in mm/slab.c:
- * This means, that your constructor is used only for newly allocated
- * slabs and you must pass objects with the same initializations to
- * kmem_cache_free.
+It is true that code above the allocator should not be touching free'd
+slab objects.  However, it is also true that objects from slabs that
+have a constructor should retain their per byte un/initialized state
+through allocation and free cycles (just the semantic of slabs with
+constructors AFAICT).
 
-The slab allocator has the property that the contents of a block [object]
-that is returned by kmalloc are identical to the contents that were passed
-to kfree (or back as result from the constructor) unless something special
-happens, such as SLAB_POISON.  A block [object] which is handed back and
-forth between kfree and kmalloc builds and retains history throughout the
-lifetime of the cache.  This property is directly contrary to the semantics
-of libc malloc.  The contents of the result of libc malloc must be considered
-to be *un*initialized always.
+Ideally, we'd tell Valgrind that the bytes of a free'd slab object are
+no longer accessible, but the initialized state should remain the same
+until the object is made accessible again by the next allocation of
+the object.  Unfortunately, the compression method for A & V bits in
+Valgrind doesn't allow a region to be inaccessible and retain validness
+bits.
 
-Yes, there is at least one kmalloc+kfree slab object cache that depends on
-retaining state from kfree to kmalloc.  My first attempt treated kmalloc+kfree
-like libc malloc+free, but I soon learned that was not the actual semantics.
+The best we can do without spending extra space or extra cycles it to
+leave the memory accessible while it is free in a slab.
 
-Because the slab allocator deals in objects that persist through kfree
-and kmalloc, then there are only two indications that objects ever become
-uninitialized: SLAB_POISON, and not having a constructor.  Obviously the
-application of SLAB_POISON means that the object becomes [logically] uninit.
-Not having a constructor *tends* to indicate that kmalloc() implies uninit,
-by chain of reasoning based on the comment quoted above from mm/slab.c.
-If the object was uninit upon first kmalloc, and if kfree is supposed to
-receive objects that are "ready for kmalloc", and because a caller cannot
-discern the first-ever return of an object by kmalloc, then the caller
-must treat each result of kmalloc (from that particular cache) as uninit.
-It would be helpful if each cache had a documenting comment such as "This
-cache depends on objects whose contents persist from kfree() to kmalloc()"
-or a comment such as "An object in this cache is considered to become
-uninitialized when the object is passed to kfree."
-
-With regard to Read-Copy-Update, I anticipate that RCU will require
-special annotations because of the deliberate references after kfree
-and before the next corresponding kmalloc.  These special annotations
-will require great care, because bugs in this area have high value.
-
--- 
-John Reiser, jreiser@BitWagon.com
+--
+Steve
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
