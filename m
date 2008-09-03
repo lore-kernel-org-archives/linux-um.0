@@ -1,25 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KauVR-0000wC-Dv for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Sep 2008 08:42:53 -0700
-Received: from abydos.nerdbox.net ([216.151.149.55])
+	id 1Kaw3g-0003Qk-5x for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Sep 2008 10:22:20 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KauVQ-0001AM-T5
+	(Exim 4.44) id 1Kaw3e-0003NN-Js
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Sep 2008 08:42:53 -0700
-Date: Wed, 3 Sep 2008 08:42:49 -0700 (PDT)
-From: Steve VanDeBogart <vandebo-lkml@NerdBox.Net>
-In-Reply-To: <84144f020809030227jce7d3c2wab9e9c00b2fcdfe5@mail.gmail.com>
-Message-ID: <alpine.DEB.1.00.0809030833050.15543@abydos.NerdBox.Net>
-References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
-	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
-	<84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
-	<alpine.DEB.1.00.0809022036560.15543@abydos.NerdBox.Net>
-	<84144f020809030227jce7d3c2wab9e9c00b2fcdfe5@mail.gmail.com>
+	Wed, 03 Sep 2008 10:22:20 -0700
+Date: Wed, 3 Sep 2008 13:21:52 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080903172152.GB8769@c2.user-mode-linux.org>
+References: <20080818230509.23819.90290.reportbug@carrera.home.cobb.me.uk>
+	<20080819120155.GD7425@inferi.kami.home>
+	<20080826202239.GG24342@c2.user-mode-linux.org>
+	<200809030001.20439.g+debian@cobb.uk.net>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 5/6] slab: Annotate slab
+Content-Disposition: inline
+In-Reply-To: <200809030001.20439.g+debian@cobb.uk.net>
+Subject: Re: [uml-devel] [Pkg-uml-pkgs] Bug#495611:
+	user-mode-linux:	page_mapcount(page) went negative!
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,54 +34,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Pekka Enberg <penberg@cs.helsinki.fi>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
+To: Graham Cobb <g+debian@cobb.uk.net>
+Cc: Mattia Dongili <malattia@linux.it>, 495611@bugs.debian.org, UML-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Hello Pekka,
+On Wed, Sep 03, 2008 at 12:01:19AM +0100, Graham Cobb wrote:
+> The bisection is complete.  It took longer than I expected as many of the 
+> versions git-bisect wanted to test would not build UML without tracking down 
+> some additional patches. 
+> 
+> The bug seems to have been introduced with git commit 
+> 3963333fe6767f15141ab2dc3b933721c636c212 (uml: cover stubs with a VMA). 
 
-On Wed, 3 Sep 2008, Pekka Enberg wrote:
+Excellent, the backtrace now makes a bit of sense.  It looks like the
+VMAs at the top of the address space are being overmapped by a call to
+mmap.  The question is why does it look like there's a big enough hole
+there, when it ends up unmapping the stubs in order to make room for
+the mmap.
 
-> On Wed, Sep 3, 2008 at 8:08 AM, Steve VanDeBogart
-> <vandebo-lkml@nerdbox.net> wrote:
->> It is true that code above the allocator should not be touching free'd
->> slab objects.  However, it is also true that objects from slabs that
->> have a constructor should retain their per byte un/initialized state
->> through allocation and free cycles (just the semantic of slabs with
->> constructors AFAICT).
->
-> Sorry for being unclear, sure, object should be marked as initialized
-> when they're returned from kmem_cache_alloc(). However, what I
-> disagree with is *where* you're marking them as initialized. Surely
-> they're not semantically initialized when the slabs are allocated
-> (although technically they are).
+> With hindsight I suppose I could have guessed that would be the commit: the 
+> crash seemed to be when unmapping a VMA.  If my reading of the page flags is 
+> correct the problem is that the page has the PG_reserved flag set, so what is 
+> it doing in the VMA which is being unmapped?
 
-But which bits of a slab object should be marked as initialized at
-kmem_cache_alloc() time?  We can't mark all of them as initialized
-because the constructor may not initialize all of them (in fact, I've
-programmatically confirmed that there are constructors that don't
-initialize all the bytes of an object).  The only place to get the
-information of interest is to mark all bytes uninitialized and then
-run the constructor on the memory region.
+A page of kernel code is mapped into the process.  This page (and all
+other pages containing kernel text) is marked reserved during boot.
 
->
-> On Wed, Sep 3, 2008 at 8:08 AM, Steve VanDeBogart
-> <vandebo-lkml@nerdbox.net> wrote:
->> Ideally, we'd tell Valgrind that the bytes of a free'd slab object are
->> no longer accessible, but the initialized state should remain the same
->> until the object is made accessible again by the next allocation of
->> the object.  Unfortunately, the compression method for A & V bits in
->> Valgrind doesn't allow a region to be inaccessible and retain validness
->> bits.
->
-> I don't see why you should mark them initialized all the time. Just
-> mark them as uninitialized on kmem_cache_free() and again as
-> initialized when they're about to be returned from kmem_cache_alloc()
-> like we do in kmemcheck.
+> Let me know if you want me to run some more tests, for example if you want to 
+> add some printk's in the code to understand more about what is going on.
 
-This question has the same answer as above.
+I'm going to need some more information.  I'll get back to you with a
+patch...
 
---
-Steve
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
