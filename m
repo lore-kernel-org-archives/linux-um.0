@@ -1,27 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Kaor7-000359-K8 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Sep 2008 02:40:53 -0700
-Received: from rv-out-0708.google.com ([209.85.198.250])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Kaor6-00064d-A3
+	id 1KauVR-0000wC-Dv for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Sep 2008 08:42:53 -0700
+Received: from abydos.nerdbox.net ([216.151.149.55])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KauVQ-0001AM-T5
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Sep 2008 02:40:53 -0700
-Received: by rv-out-0708.google.com with SMTP id f25so2161909rvb.22
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 03 Sep 2008 02:40:51 -0700 (PDT)
-Message-ID: <84144f020809030240l265891e8gad5a2a9fced6880f@mail.gmail.com>
-Date: Wed, 3 Sep 2008 12:40:51 +0300
-From: "Pekka Enberg" <penberg@cs.helsinki.fi>
+	Wed, 03 Sep 2008 08:42:53 -0700
+Date: Wed, 3 Sep 2008 08:42:49 -0700 (PDT)
+From: Steve VanDeBogart <vandebo-lkml@NerdBox.Net>
 In-Reply-To: <84144f020809030227jce7d3c2wab9e9c00b2fcdfe5@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
+Message-ID: <alpine.DEB.1.00.0809030833050.15543@abydos.NerdBox.Net>
 References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
 	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
 	<84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
 	<alpine.DEB.1.00.0809022036560.15543@abydos.NerdBox.Net>
 	<84144f020809030227jce7d3c2wab9e9c00b2fcdfe5@mail.gmail.com>
+MIME-Version: 1.0
 Subject: Re: [uml-devel] [PATCH 5/6] slab: Annotate slab
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -36,10 +33,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
+To: Pekka Enberg <penberg@cs.helsinki.fi>
 Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
 
-On Wed, Sep 3, 2008 at 12:27 PM, Pekka Enberg <penberg@cs.helsinki.fi> wrote:
+Hello Pekka,
+
+On Wed, 3 Sep 2008, Pekka Enberg wrote:
+
+> On Wed, Sep 3, 2008 at 8:08 AM, Steve VanDeBogart
+> <vandebo-lkml@nerdbox.net> wrote:
+>> It is true that code above the allocator should not be touching free'd
+>> slab objects.  However, it is also true that objects from slabs that
+>> have a constructor should retain their per byte un/initialized state
+>> through allocation and free cycles (just the semantic of slabs with
+>> constructors AFAICT).
+>
+> Sorry for being unclear, sure, object should be marked as initialized
+> when they're returned from kmem_cache_alloc(). However, what I
+> disagree with is *where* you're marking them as initialized. Surely
+> they're not semantically initialized when the slabs are allocated
+> (although technically they are).
+
+But which bits of a slab object should be marked as initialized at
+kmem_cache_alloc() time?  We can't mark all of them as initialized
+because the constructor may not initialize all of them (in fact, I've
+programmatically confirmed that there are constructors that don't
+initialize all the bytes of an object).  The only place to get the
+information of interest is to mark all bytes uninitialized and then
+run the constructor on the memory region.
+
+>
 > On Wed, Sep 3, 2008 at 8:08 AM, Steve VanDeBogart
 > <vandebo-lkml@nerdbox.net> wrote:
 >> Ideally, we'd tell Valgrind that the bytes of a free'd slab object are
@@ -54,8 +77,10 @@ On Wed, Sep 3, 2008 at 12:27 PM, Pekka Enberg <penberg@cs.helsinki.fi> wrote:
 > initialized when they're about to be returned from kmem_cache_alloc()
 > like we do in kmemcheck.
 
-Btw, actually, we don't mark them as uninitialized at the moment, but
-that's a bug in kmemcheck.
+This question has the same answer as above.
+
+--
+Steve
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
