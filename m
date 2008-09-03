@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Kakbw-0000De-1I for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 22:08:56 -0700
+	id 1Kakru-0001sH-LM for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 02 Sep 2008 22:25:26 -0700
 Received: from abydos.nerdbox.net ([216.151.149.55])
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Kakbu-0001Bk-Lu
+	(Exim 4.44) id 1Kakrt-00079l-DI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 22:08:55 -0700
-Date: Tue, 2 Sep 2008 22:08:48 -0700 (PDT)
+	Tue, 02 Sep 2008 22:25:26 -0700
+Date: Tue, 2 Sep 2008 22:25:21 -0700 (PDT)
 From: Steve VanDeBogart <vandebo-lkml@NerdBox.Net>
-In-Reply-To: <84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
-Message-ID: <alpine.DEB.1.00.0809022036560.15543@abydos.NerdBox.Net>
+In-Reply-To: <84144f020808300357l9dddda4y726622641ac7f592@mail.gmail.com>
+Message-ID: <alpine.DEB.1.00.0809022209100.15543@abydos.NerdBox.Net>
 References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
-	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
-	<84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+	<alpine.DEB.1.00.0808291616170.15543@abydos.NerdBox.Net>
+	<84144f020808300357l9dddda4y726622641ac7f592@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 5/6] slab: Annotate slab
+Subject: Re: [uml-devel] [PATCH 4/6] VM: Annotate pagealloc
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,67 +32,37 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Pekka Enberg <penberg@cs.helsinki.fi>
-Cc: user-mode-linux-devel@lists.sourceforge.net, John Reiser <jreiser@BitWagon.com>, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, jiayingz@google.com, dkegel@google.com
 
 On Sat, 30 Aug 2008, Pekka Enberg wrote:
 
 > Hi Steve,
 >
-> On Sat, Aug 30, 2008 at 2:17 AM, Steve VanDeBogart
+> On Sat, Aug 30, 2008 at 2:16 AM, Steve VanDeBogart
 > <vandebo-lkml@nerdbox.net> wrote:
->> Valgrind annotations for the slab allocator:  Malloc-like and free-like
->> for cache_alloc and free.  Telling Valgrind a region is free-like clears
->> all the valid bits, so slabs with constructors need different treatment;
->> tell Valgrind about slab objects when first constructed and free them
->> when the slab is destroyed.
->
-> OK, I'm biased (I'm one of the kmemcheck developers) but these hooks
-> to SLAB are too ugly to live with. My preferred solution is that you
-> reuse the kmemcheck annotations
-> kmemcheck_slab_alloc()/kmemcheck_slab_free() we have:
->
-> http://git.kernel.org/?p=linux/kernel/git/x86/linux-2.6-tip.git;a=commitdiff;h=30532cb3c49a2a9fed94127aab26003c52398a51
-
-Thank you for pointing out the location of the kmemcheck code.  I looked
-around briefly but didn't find the latest version.  It does seem that
-kmemcheck and Valgrind annotations want to live in the same places so it
-makes perfect sense to combine them where possible.  I'm not exactly sure
-what you find so ugly about the Valgrind annotations, please elaborate.
-
->> @@ -3578,6 +3595,9 @@
->>  {
->>        struct array_cache *ac = cpu_cache_get(cachep);
+>> Valgrind annotations for valgrind: memory is addressable once it's been
+>> alloced, and unaddressable when it is freed again.  Can't use malloc-like
+>> and free-like because valgrind considers a malloc-like chunk indivisible.
 >>
->> +       if (!cachep->ctor)
->> +               VALGRIND_FREELIKE_BLOCK(objp, 0);
->> +
->>        check_irq_off();
->>        objp = cache_free_debugcheck(cachep, objp,
->> __builtin_return_address(0));
+>> Signed-off-by: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
+>> ---
+>>
+>> Index: linux-2.6.27-rc5/mm/page_alloc.c
+>> @@ -1080,6 +1081,7 @@
+>>                if (!page)
+>>                        goto failed;
+>>        }
+>> +       VALGRIND_MAKE_MEM_UNDEFINED(page_address(page), PAGE_SIZE << order);
 >
-> I'm not sure why you want to treat caches with constructor
-> differently. Sure, the memory regions *are* initialized but from
-> programmer's point of view you're not supposed to be touching the
-> memory unless you got it from kmalloc() or kmem_cache_alloc(). Same
-> goes for kfree() and kmem_cache_free() -- no touchy touchy after you
-> pass a pointer to either of the functions (unless you're RCU, of
-> course).
+> No SHOUTING macros please, and I think you should just pass page and
+> order here and do the calculation elsewhere.
 
-It is true that code above the allocator should not be touching free'd
-slab objects.  However, it is also true that objects from slabs that
-have a constructor should retain their per byte un/initialized state
-through allocation and free cycles (just the semantic of slabs with
-constructors AFAICT).
-
-Ideally, we'd tell Valgrind that the bytes of a free'd slab object are
-no longer accessible, but the initialized state should remain the same
-until the object is made accessible again by the next allocation of
-the object.  Unfortunately, the compression method for A & V bits in
-Valgrind doesn't allow a region to be inaccessible and retain validness
-bits.
-
-The best we can do without spending extra space or extra cycles it to
-leave the memory accessible while it is free in a slab.
+Valgrind provides a header file that defines these annotation functions.
+For the ease of tracking changes to this header file, I've made minimal
+changes to it (just a couple lines to integrate with Kconfig).  If the
+interfaces and/or style is objectionable to the kernel community at
+large, than we will have to decide to either wrap the interface that
+Valgrind provides or modify the header and track changes manually.
 
 --
 Steve
