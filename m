@@ -1,27 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Kaom9-0002YW-AJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Sep 2008 02:35:45 -0700
-Received: from wa-out-1112.google.com ([209.85.146.178])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Kaom7-00045L-Uz
+	id 1KaoqL-00031r-BL for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Sep 2008 02:40:05 -0700
+Received: from courier.cs.helsinki.fi ([128.214.9.1] helo=mail.cs.helsinki.fi)
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KaoqI-0000yF-GO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Sep 2008 02:35:45 -0700
-Received: by wa-out-1112.google.com with SMTP id j5so2263948wah.18
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 03 Sep 2008 02:35:43 -0700 (PDT)
-Message-ID: <84144f020809030235p14f71915v355102005add6c5a@mail.gmail.com>
-Date: Wed, 3 Sep 2008 12:35:43 +0300
-From: "Pekka Enberg" <penberg@cs.helsinki.fi>
-In-Reply-To: <alpine.DEB.1.00.0809022209100.15543@abydos.NerdBox.Net>
-MIME-Version: 1.0
-Content-Disposition: inline
+	Wed, 03 Sep 2008 02:40:05 -0700
+Date: Wed, 3 Sep 2008 12:39:58 +0300 (EEST)
+From: Pekka J Enberg <penberg@cs.helsinki.fi>
+In-Reply-To: <48BDFC77.4060909@BitWagon.com>
+Message-ID: <Pine.LNX.4.64.0809031237320.6448@melkki.cs.Helsinki.FI>
 References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
-	<alpine.DEB.1.00.0808291616170.15543@abydos.NerdBox.Net>
-	<84144f020808300357l9dddda4y726622641ac7f592@mail.gmail.com>
-	<alpine.DEB.1.00.0809022209100.15543@abydos.NerdBox.Net>
-Subject: Re: [uml-devel] [PATCH 4/6] VM: Annotate pagealloc
+	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
+	<84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+	<48BDFC77.4060909@BitWagon.com>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH 5/6] slab: Annotate slab
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,38 +32,147 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
+To: John Reiser <jreiser@BitWagon.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Steve VanDeBogart <vandebo-lkml@nerdbox.net>, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
 
-Hi Steve,
+Hi,
 
-On Wed, Sep 3, 2008 at 8:25 AM, Steve VanDeBogart
-<vandebo-lkml@nerdbox.net> wrote:
->>> Index: linux-2.6.27-rc5/mm/page_alloc.c
->>> @@ -1080,6 +1081,7 @@
->>>               if (!page)
->>>                       goto failed;
->>>       }
->>> +       VALGRIND_MAKE_MEM_UNDEFINED(page_address(page), PAGE_SIZE <<
->>> order);
->>
->> No SHOUTING macros please, and I think you should just pass page and
->> order here and do the calculation elsewhere.
->
-> Valgrind provides a header file that defines these annotation functions.
-> For the ease of tracking changes to this header file, I've made minimal
-> changes to it (just a couple lines to integrate with Kconfig).  If the
-> interfaces and/or style is objectionable to the kernel community at
-> large, than we will have to decide to either wrap the interface that
-> Valgrind provides or modify the header and track changes manually.
+On Tue, 2 Sep 2008, John Reiser wrote:
+> With regard to Read-Copy-Update, I anticipate that RCU will require
+> special annotations because of the deliberate references after kfree
+> and before the next corresponding kmalloc.  These special annotations
+> will require great care, because bugs in this area have high value.
 
-That's trivially fixable by adding a wrapper for the ugly valgrind
-macros and hiding that in some header file. Preferably something
-similar to what the kmemcheck hooks look like so that we can also use
-them in the future if we implement tracking at page allocator level
-too.
+For RCU, I was thinking of adding a new RCU_WAITING state that a RCU-freed 
+object is set to upon freeing that we can use to detect whatever errors 
+there might be. I've included an incomplete implementation of SLAB hooks 
+for that. Obviously there would need to be some additional code in 
+kmemcheck for that. No idea if that kind of model works for valgrind, 
+though.
 
-                                 Pekka
+		Pekka
+
+Index: linux-2.6/mm/slab.c
+===================================================================
+--- linux-2.6.orig/mm/slab.c	2008-08-30 13:42:17.000000000 +0300
++++ linux-2.6/mm/slab.c	2008-08-30 13:42:22.000000000 +0300
+@@ -1647,11 +1647,23 @@
+ 	free_pages((unsigned long)addr, cachep->gfporder);
+ }
+ 
++static void kmemcheck_rcu_free(struct kmem_cache *cache, struct slab *slab)
++{
++	int i;
++
++	for (i = 0; i < cache->num; i++) {
++		void *obj = index_to_obj(cache, slab, i);
++
++		kmemcheck_slab_rcu_free(cache, obj, obj_size(cache));
++	}
++}
++
+ static void kmem_rcu_free(struct rcu_head *head)
+ {
+ 	struct slab_rcu *slab_rcu = (struct slab_rcu *)head;
+ 	struct kmem_cache *cachep = slab_rcu->cachep;
+ 
++	kmemcheck_rcu_free(cachep, (struct slab *)slab_rcu);
+ 	kmem_freepages(cachep, slab_rcu->addr);
+ 	if (OFF_SLAB(cachep))
+ 		kmem_cache_free(cachep->slabp_cache, slab_rcu);
+Index: linux-2.6/include/linux/kmemcheck.h
+===================================================================
+--- linux-2.6.orig/include/linux/kmemcheck.h	2008-08-30 13:42:21.000000000 +0300
++++ linux-2.6/include/linux/kmemcheck.h	2008-08-30 13:42:22.000000000 +0300
+@@ -9,6 +9,7 @@
+ 	KMEMCHECK_UNINITIALIZED,
+ 	KMEMCHECK_INITIALIZED,
+ 	KMEMCHECK_FREED,
++	KMEMCHECK_RCU_WAITING,	/* waiting for RCU to free the object */
+ };
+ 
+ #ifdef CONFIG_KMEMCHECK
+@@ -22,6 +23,7 @@
+ void kmemcheck_free_shadow(struct kmem_cache *s, struct page *page, int order);
+ void kmemcheck_slab_alloc(struct kmem_cache *s, gfp_t gfpflags, void *object,
+ 			  size_t size);
++void kmemcheck_slab_rcu_free(struct kmem_cache *s, void *object, size_t size);
+ void kmemcheck_slab_free(struct kmem_cache *s, void *object, size_t size);
+ 
+ void kmemcheck_show_pages(struct page *p, unsigned int n);
+@@ -29,7 +31,11 @@
+ 
+ bool kmemcheck_page_is_tracked(struct page *p);
+ 
+-void kmemcheck_mark_addr(void *address, unsigned int n, enum kmemcheck_addr_type type);
++void kmemcheck_mark_addr(void *address, unsigned int n,
++			 enum kmemcheck_addr_type type);
++
++void kmemcheck_verify_addr(void *address, unsigned int n,
++			   enum kmemcheck_addr_type type);
+ 
+ void kmemcheck_mark_unallocated_pages(struct page *p, unsigned int n);
+ void kmemcheck_mark_uninitialized_pages(struct page *p, unsigned int n);
+@@ -74,6 +80,10 @@
+ {
+ }
+ 
++static inline void kmemcheck_verify_addr(void *address, unsigned int n, enum kmemcheck_addr_type type)
++{
++}
++
+ #endif /* CONFIG_KMEMCHECK */
+ 
+ #endif /* LINUX_KMEMCHECK_H */
+Index: linux-2.6/arch/x86/mm/kmemcheck/shadow.c
+===================================================================
+--- linux-2.6.orig/arch/x86/mm/kmemcheck/shadow.c	2008-08-30 13:42:21.000000000 +0300
++++ linux-2.6/arch/x86/mm/kmemcheck/shadow.c	2008-08-30 13:43:01.000000000 +0300
+@@ -51,6 +51,14 @@
+ }
+ EXPORT_SYMBOL_GPL(kmemcheck_mark_addr);
+ 
++void kmemcheck_verify_addr(void *address, unsigned int n, enum kmemcheck_addr_type type)
++{
++	/*
++ 	 * Vegard, please implement me!
++ 	 */
++}
++EXPORT_SYMBOL_GPL(kmemcheck_verify_addr);
++
+ void kmemcheck_mark_unallocated_pages(struct page *p, unsigned int n)
+ {
+ 	unsigned int i;
+Index: linux-2.6/mm/kmemcheck.c
+===================================================================
+--- linux-2.6.orig/mm/kmemcheck.c	2008-08-30 13:42:21.000000000 +0300
++++ linux-2.6/mm/kmemcheck.c	2008-08-30 13:42:22.000000000 +0300
+@@ -95,9 +95,23 @@
+ 	}
+ }
+ 
++void kmemcheck_slab_rcu_free(struct kmem_cache *s, void *object, size_t size)
++{
++	if (WARN_ON(!(s->flags & SLAB_DESTROY_BY_RCU)))
++		return;
++
++	kmemcheck_verify_addr(object, size, KMEMCHECK_RCU_WAITING);
++
++	kmemcheck_mark_addr(object, size, KMEMCHECK_FREED);
++}
++
+ void kmemcheck_slab_free(struct kmem_cache *s, void *object, size_t size)
+ {
+-	/* TODO: RCU freeing is unsupported for now; hide false positives. */
+-	if (!s->ctor && !(s->flags & SLAB_DESTROY_BY_RCU))
++	if (s->ctor)
++		return;
++
++	if (s->flags & SLAB_DESTROY_BY_RCU)
++		kmemcheck_mark_addr(object, size, KMEMCHECK_RCU_WAITING);
++	else
+ 		kmemcheck_mark_addr(object, size, KMEMCHECK_FREED);
+ }
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
