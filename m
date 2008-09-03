@@ -2,22 +2,26 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Kakru-0001sH-LM for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 22:25:26 -0700
-Received: from abydos.nerdbox.net ([216.151.149.55])
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Kakrt-00079l-DI
+	id 1Kaodu-0001jd-2G for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 03 Sep 2008 02:27:14 -0700
+Received: from wa-out-1112.google.com ([209.85.146.179])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Kaods-0004lo-O6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 02 Sep 2008 22:25:26 -0700
-Date: Tue, 2 Sep 2008 22:25:21 -0700 (PDT)
-From: Steve VanDeBogart <vandebo-lkml@NerdBox.Net>
-In-Reply-To: <84144f020808300357l9dddda4y726622641ac7f592@mail.gmail.com>
-Message-ID: <alpine.DEB.1.00.0809022209100.15543@abydos.NerdBox.Net>
-References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
-	<alpine.DEB.1.00.0808291616170.15543@abydos.NerdBox.Net>
-	<84144f020808300357l9dddda4y726622641ac7f592@mail.gmail.com>
+	Wed, 03 Sep 2008 02:27:14 -0700
+Received: by wa-out-1112.google.com with SMTP id j5so2261845wah.18
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 03 Sep 2008 02:27:12 -0700 (PDT)
+Message-ID: <84144f020809030227jce7d3c2wab9e9c00b2fcdfe5@mail.gmail.com>
+Date: Wed, 3 Sep 2008 12:27:12 +0300
+From: "Pekka Enberg" <penberg@cs.helsinki.fi>
+In-Reply-To: <alpine.DEB.1.00.0809022036560.15543@abydos.NerdBox.Net>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 4/6] VM: Annotate pagealloc
+Content-Disposition: inline
+References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
+	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
+	<84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+	<alpine.DEB.1.00.0809022036560.15543@abydos.NerdBox.Net>
+Subject: Re: [uml-devel] [PATCH 5/6] slab: Annotate slab
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,41 +35,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Pekka Enberg <penberg@cs.helsinki.fi>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, jiayingz@google.com, dkegel@google.com
+To: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
 
-On Sat, 30 Aug 2008, Pekka Enberg wrote:
+Hi Steve,
 
-> Hi Steve,
->
-> On Sat, Aug 30, 2008 at 2:16 AM, Steve VanDeBogart
-> <vandebo-lkml@nerdbox.net> wrote:
->> Valgrind annotations for valgrind: memory is addressable once it's been
->> alloced, and unaddressable when it is freed again.  Can't use malloc-like
->> and free-like because valgrind considers a malloc-like chunk indivisible.
->>
->> Signed-off-by: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
->> ---
->>
->> Index: linux-2.6.27-rc5/mm/page_alloc.c
->> @@ -1080,6 +1081,7 @@
->>                if (!page)
->>                        goto failed;
->>        }
->> +       VALGRIND_MAKE_MEM_UNDEFINED(page_address(page), PAGE_SIZE << order);
->
-> No SHOUTING macros please, and I think you should just pass page and
-> order here and do the calculation elsewhere.
+On Wed, Sep 3, 2008 at 8:08 AM, Steve VanDeBogart
+<vandebo-lkml@nerdbox.net> wrote:
+> Thank you for pointing out the location of the kmemcheck code.  I looked
+> around briefly but didn't find the latest version.  It does seem that
+> kmemcheck and Valgrind annotations want to live in the same places so it
+> makes perfect sense to combine them where possible.  I'm not exactly sure
+> what you find so ugly about the Valgrind annotations, please elaborate.
 
-Valgrind provides a header file that defines these annotation functions.
-For the ease of tracking changes to this header file, I've made minimal
-changes to it (just a couple lines to integrate with Kconfig).  If the
-interfaces and/or style is objectionable to the kernel community at
-large, than we will have to decide to either wrap the interface that
-Valgrind provides or modify the header and track changes manually.
+Upper case macros and littering #ifdefs in the code. See the kmemcheck
+hooks how to do it in a clean way.
 
---
-Steve
+On Wed, Sep 3, 2008 at 8:08 AM, Steve VanDeBogart
+<vandebo-lkml@nerdbox.net> wrote:
+> It is true that code above the allocator should not be touching free'd
+> slab objects.  However, it is also true that objects from slabs that
+> have a constructor should retain their per byte un/initialized state
+> through allocation and free cycles (just the semantic of slabs with
+> constructors AFAICT).
+
+Sorry for being unclear, sure, object should be marked as initialized
+when they're returned from kmem_cache_alloc(). However, what I
+disagree with is *where* you're marking them as initialized. Surely
+they're not semantically initialized when the slabs are allocated
+(although technically they are).
+
+On Wed, Sep 3, 2008 at 8:08 AM, Steve VanDeBogart
+<vandebo-lkml@nerdbox.net> wrote:
+> Ideally, we'd tell Valgrind that the bytes of a free'd slab object are
+> no longer accessible, but the initialized state should remain the same
+> until the object is made accessible again by the next allocation of
+> the object.  Unfortunately, the compression method for A & V bits in
+> Valgrind doesn't allow a region to be inaccessible and retain validness
+> bits.
+
+I don't see why you should mark them initialized all the time. Just
+mark them as uninitialized on kmem_cache_free() and again as
+initialized when they're about to be returned from kmem_cache_alloc()
+like we do in kmemcheck.
+
+                              Pekka
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
