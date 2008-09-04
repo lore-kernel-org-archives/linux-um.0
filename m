@@ -2,21 +2,28 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Kawdo-00078C-Pc for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Sep 2008 10:59:40 -0700
-Received: from [198.99.130.12] (helo=saraswathi.solana.com)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Kawdn-0002Ho-8p
+	id 1Kb9Lp-0000ol-8V for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 04 Sep 2008 00:33:57 -0700
+Received: from rv-out-0708.google.com ([209.85.198.250])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Kb9Ln-00058k-2b
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 Sep 2008 10:59:40 -0700
-Date: Wed, 3 Sep 2008 13:59:33 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20080903175933.GB9917@c2.user-mode-linux.org>
-References: <48BC0DE7.1000703@unilim.fr>
+	Thu, 04 Sep 2008 00:33:57 -0700
+Received: by rv-out-0708.google.com with SMTP id f25so2563106rvb.22
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 04 Sep 2008 00:33:54 -0700 (PDT)
+Message-ID: <84144f020809040033h6872ecfdlfb7d7cdb57621b0d@mail.gmail.com>
+Date: Thu, 4 Sep 2008 10:33:54 +0300
+From: "Pekka Enberg" <penberg@cs.helsinki.fi>
+In-Reply-To: <alpine.DEB.1.00.0809030833050.15543@abydos.NerdBox.Net>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <48BC0DE7.1000703@unilim.fr>
-Subject: Re: [uml-devel] Connecting UML_SWITCH and Wireshark
+References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
+	<alpine.DEB.1.00.0808291616560.15543@abydos.NerdBox.Net>
+	<84144f020808300350i7cb2d23aj6d1ffcbeceaf7e9c@mail.gmail.com>
+	<alpine.DEB.1.00.0809022036560.15543@abydos.NerdBox.Net>
+	<84144f020809030227jce7d3c2wab9e9c00b2fcdfe5@mail.gmail.com>
+	<alpine.DEB.1.00.0809030833050.15543@abydos.NerdBox.Net>
+Subject: Re: [uml-devel] [PATCH 5/6] slab: Annotate slab
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,38 +37,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Julien Iguchi-Cartigny <julien.cartigny@unilim.fr>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: Steve VanDeBogart <vandebo-lkml@nerdbox.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@us.ibm.com>, Ingo Molnar <mingo@elte.hu>, dkegel@google.com, jiayingz@google.com
 
-On Mon, Sep 01, 2008 at 05:44:39PM +0200, Julien Iguchi-Cartigny wrote:
-> I'm using Netkit (www.netkit.org): it's a network simulator using UML
-> and I want to show packets exchanged between the UML machines. I believe
-> the best way is to
-> 
-> - use wireshark with the flag "-" to capture packets in the standard input.
-> - use netcat to read the data socket of uml_switch and print to the
-> standard output
-> 
-> But uml_switch uses a ctl socket to open new port. I need a way to
-> manually open a port by uml_switch to connect netcat. I don't think
-> uml_switch offer command-line instruction for this, so is the best way
-> to write a short program writing on the ctl socket of uml_switch ? If
-> yes, what data to send to uml_switch ?
+Hi Steve,
 
-If you want to capture UML network traffic going over uml_switch (be
-it with wireshark or tcpdump - it doesn't matter), there are two basic
-ways of doing it:
-	enable hub mode (uml_switch -hub) and then either
+On Wed, Sep 3, 2008 at 6:42 PM, Steve VanDeBogart
+<vandebo-lkml@nerdbox.net> wrote:
+> But which bits of a slab object should be marked as initialized at
+> kmem_cache_alloc() time?  We can't mark all of them as initialized
+> because the constructor may not initialize all of them (in fact, I've
+> programmatically confirmed that there are constructors that don't
+> initialize all the bytes of an object).  The only place to get the
+> information of interest is to mark all bytes uninitialized and then
+> run the constructor on the memory region.
 
-	sniff from a UML's eth0 (a third UML if you don't want to
-interfere with the communicating UMLs), or
-	add a host tap device to the switch (uml_switch -tap tap<n>)
-and sniff that.
+Aah, indeed. We should fix kmemcheck as well then.
 
-				Jeff
-
--- 
-Work email - jdike at linux dot intel dot com
+                      Pekka
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
