@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Kbfhz-0003u7-Po for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Sep 2008 11:06:59 -0700
-Received: from mail-gx0-f19.google.com ([209.85.217.19])
-	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Kbfhz-0006bk-F5
+	id 1KbiCg-0002Hh-Hq for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Sep 2008 13:46:50 -0700
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.44) id 1KbiCe-0008Bw-1I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 05 Sep 2008 11:06:59 -0700
-Received: by gxk12 with SMTP id 12so7023347gxk.10
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 05 Sep 2008 11:06:53 -0700 (PDT)
-Message-ID: <ea9232d10809051106h3c678eebq2f9f56dc20823270@mail.gmail.com>
-Date: Fri, 5 Sep 2008 20:06:53 +0200
-From: "Karol Swietlicki" <magotari@gmail.com>
+	Fri, 05 Sep 2008 13:46:50 -0700
+Date: Fri, 5 Sep 2008 12:37:18 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20080905163718.GA11455@c2.user-mode-linux.org>
+References: <alpine.DEB.1.00.0808281139420.15543@abydos.NerdBox.Net>
+	<alpine.DEB.1.00.0808291614430.15543@abydos.NerdBox.Net>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [PATCH] Removing an unused variable in trap.c
+In-Reply-To: <alpine.DEB.1.00.0808291614430.15543@abydos.NerdBox.Net>
+Subject: Re: [uml-devel] [PATCH 2/6] UML: Don't valgrind userspace
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +31,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Steve VanDeBogart <vandebo-lkml@NerdBox.Net>
+Cc: jiayingz@google.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, dkegel@google.com
 
-This patch gets rid of an unused variable in bad_segv.
-Compile tested.
+On Fri, Aug 29, 2008 at 04:15:24PM -0700, Steve VanDeBogart wrote:
+> Add a flag to tell Valgrind to run the forked child natively.  Necessary
+> because Valgrind makes additional system calls to instrumented processes,
+> which confuse UML.
 
-Karol Swietlicki
+> +#ifdef UML_CONFIG_VALGRIND_SUPPORT
+> +		flags |= VALGRIND_CLONE_LETGO;
+> +#endif
+> +	}
 
-Signed-off-by: Karol Swietlicki <magotari@gmail.com>
----
-diff -rupN linux27r1m1-original/arch/um/kernel/trap.c
-linux-2.6.27-rc1-mm1/arch/um/kernel/trap.c
---- linux27r1m1-original/arch/um/kernel/trap.c	2008-09-04
-18:32:50.000000000 +0200
-+++ linux-2.6.27-rc1-mm1/arch/um/kernel/trap.c	2008-09-05
-19:00:45.000000000 +0200
-@@ -118,7 +118,7 @@ out_of_memory:
- 	goto out;
- }
+I keep forgetting that I have a really bad feeling about this:
 
--static void bad_segv(struct faultinfo fi, unsigned long ip)
-+static void bad_segv(struct faultinfo fi)
- {
- 	struct siginfo si;
++#define VALGRIND_CLONE_LETGO   0x80000000      /* do not track fork like childr
+en*/
 
-@@ -146,7 +146,7 @@ void segv_handler(int sig, struct uml_pt
- 	struct faultinfo * fi = UPT_FAULTINFO(regs);
+This is effectively appropriating part of the kernel's ABI for
+valgrind's use.  Not to mention that that bit is already taken:
 
- 	if (UPT_IS_USER(regs) && !SEGV_IS_FIXABLE(fi)) {
--		bad_segv(*fi, UPT_IP(regs));
-+		bad_segv(*fi);
- 		return;
- 	}
- 	segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs);
+#define CLONE_IO		0x80000000	/* Clone io context */
+
+Could you do this with an annotation that says "let the next clone run
+untraced"?
+
+				Jeff
+
+-- 
+Work email - jdike at linux dot intel dot com
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
