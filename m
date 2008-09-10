@@ -2,37 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KdTH5-0002EY-GR for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Sep 2008 10:14:39 -0700
-Received: from over.ny.us.ibm.com ([32.97.182.150])
+	id 1KdSOh-0004Xm-Iu for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Sep 2008 09:18:27 -0700
+Received: from x346.tv-sign.ru ([89.108.83.215] helo=mail.screens.ru)
 	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1KdTH3-0003c3-UV
+	(Exim 4.44) id 1KdSOf-0008S3-Et
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Sep 2008 10:14:39 -0700
-Received: from e4.ny.us.ibm.com ([192.168.1.104])
-	by pokfb.esmtp.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	m8AGN1lM018102
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 10 Sep 2008 12:23:01 -0400
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e4.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m8AGJk73010744
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 10 Sep 2008 12:19:46 -0400
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	m8AGJjQV1581106 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 10 Sep 2008 12:19:45 -0400
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m8AGJiLr030165 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 10 Sep 2008 10:19:45 -0600
-From: Dave Hansen <dave@linux.vnet.ibm.com>
-In-Reply-To: <48C51439.7000706@linux.vnet.ibm.com>
+	Wed, 10 Sep 2008 09:18:27 -0700
+Date: Wed, 10 Sep 2008 20:20:08 +0400
+From: Oleg Nesterov <oleg@tv-sign.ru>
+Message-ID: <20080910162008.GA401@tv-sign.ru>
 References: <48C51439.7000706@linux.vnet.ibm.com>
-Date: Wed, 10 Sep 2008 09:19:34 -0700
-Message-Id: <1221063574.6781.8.camel@nimitz>
+	<20080909124302.GA139@tv-sign.ru>
+	<48C7E3A9.3060602@linux.vnet.ibm.com>
 Mime-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <48C7E3A9.3060602@linux.vnet.ibm.com>
 Subject: Re: [uml-devel] [PATCH 1/1] system call notification with self_ptrace
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -48,31 +33,75 @@ Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Pierre Morel <pmorel@linux.vnet.ibm.com>
-Cc: sameske@linux.vnet.ibm.com, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, gregkh@suse.de, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heicars2@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Daniel Lezcano <dlezcano@fr.ibm.com>, Cedric Le Goater <clg@fr.ibm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@tv-sign.ru>, Roland McGrath <roland@redhat.com>
+Cc: sameske@linux.vnet.ibm.com, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, gregkh@suse.de, Heiko Carstens <heicars2@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Dave Hansen <dave@linux.vnet.ibm.com>, Daniel Lezcano <dlezcano@fr.ibm.com>, Cedric Le Goater <clg@fr.ibm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, Roland McGrath <roland@redhat.com>
 
-On Mon, 2008-09-08 at 14:02 +0200, Pierre Morel wrote:
-> 
-> +       if (is_self_ptracing(regs->gprs[2])) {
-> +               if (!entryexit) {
-> +                       struct siginfo info;
-> +
-> +                       memset(&info, 0, sizeof(struct siginfo));
-> +                       info.si_signo = SIGSYS;
-> +                       info.si_code = SYS_SYSCALL;
-> +                       info.si_errno = regs->gprs[2];
-> +                       info.si_addr = (void *)regs->orig_gpr2;
-> +                       send_sig_info(SIGSYS, &info, current);
-> +                       regs->gprs[2] = -1;
-> +               }
-> +               return;
-> +       }
+On 09/10, Pierre Morel wrote:
+>
+> Oleg Nesterov wrote:
+> >
+> >I still think this patch shouldn't change handle_signal().
+> >
+> >Once again. The signal handler for SIGSYS can first do
+> >sys_ptrace(PTRACE_SELF_OFF) (which is filtered out), and then use any
+> >other syscall, so this change is not needed, afaics.
+> >
+> Yes it can but what if the application forget to do it?
+> It is a security so that the application do not bounce for ever.
 
-I see you didn't like my suggestions for consolidating some of these
-repetitive code bits across all the architectures.  Did you give that a
-a shot?  Would you like me to produce a patch on top of what you have
-here before this gets merged into mm?
+The (buggy) task can be killed, this has nothing to do with security.
 
--- Dave
+From the security pov, this case doesn't differ from, say,
+
+	void sigh(int sig)
+	{
+		kill(getpid(), sig);
+	}
+
+	void main(void)
+	{
+		signal(SIGSYS, sigh);
+		kill(getpid(), SIGSYS);
+	}
+
+Or I missed something?
+
+> >So, PTRACE_SELF_XXX disables the "normal" ptrace. Not sure this is good.
+> >
+> I think that having two tracing system one over the other may be
+> quite difficult to handle.
+
+Yes I see.
+
+But... well, I think we need Roland's opinion. I must admit, I am a bit
+sceptical about this patch ;) I mean, I don't really understand why it
+is useful. We can do the same with fork() + ptrace(). Yes, in that
+case we need an "extra" context switch for any traced syscall. But,
+do you have any "real life" example to demonstrate that the user-space
+solution sucks? We can even use CLONE_MM to speedup the context switch.
+
+Pierre, don't get me wrong. I never used debuggers for myself, I will
+be happy to know I am wrong. I just don't understand.
+
+
+As for ->instrumentation. If you are going to remove PTS_INSTRUMENTED,
+we need only one bit. We could use PF_PTS_SELF, but ->flags is already
+"contended". Perhaps you can do something like
+
+	--- include/linux/sched.h
+	+++ include/linux/sched.h
+	@@ -1088,6 +1088,7 @@ struct task_struct {
+		/* ??? */
+		unsigned int personality;
+		unsigned did_exec:1;
+	+	unsigned pts_self:1;
+		pid_t pid;
+		pid_t tgid;
+	 
+
+Both did_exec and pts_self can only be changed by current, so it is
+safe to share the same word. This way we don't enlarge task_struct.
+
+Oleg.
 
 
 -------------------------------------------------------------------------
