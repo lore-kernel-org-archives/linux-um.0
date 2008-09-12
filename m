@@ -2,25 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1Ke9dt-000108-CU for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Sep 2008 07:29:01 -0700
-Received: from x346.tv-sign.ru ([89.108.83.215] helo=mail.screens.ru)
-	by mail.sourceforge.net with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.44) id 1Ke9dq-0003SQ-RS
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Sep 2008 07:29:01 -0700
-Date: Fri, 12 Sep 2008 18:32:25 +0400
-From: Oleg Nesterov <oleg@tv-sign.ru>
-Message-ID: <20080912143225.GA108@tv-sign.ru>
-References: <48C51439.7000706@linux.vnet.ibm.com>
-	<20080909124302.GA139@tv-sign.ru>
-	<48C7E3A9.3060602@linux.vnet.ibm.com>
-	<20080910162008.GA401@tv-sign.ru>
-	<48CA5E4F.2020600@linux.vnet.ibm.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <48CA5E4F.2020600@linux.vnet.ibm.com>
-Subject: Re: [uml-devel] [PATCH 1/1] system call notification with self_ptrace
+	id 1KeFFC-0006w6-5E for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Sep 2008 13:27:54 -0700
+Received: from ip-212-081-022-089.static.nextra.sk ([212.81.22.89]
+	helo=meduna.org) by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1KeFFA-0006Ju-HE for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 12 Sep 2008 13:27:53 -0700
+Message-ID: <48CAD095.4050004@meduna.org>
+Date: Fri, 12 Sep 2008 22:27:01 +0200
+From: Stanislav Meduna <stano@meduna.org>
+MIME-Version: 1.0
+References: <4898AC10.3010602@meduna.org>	<7B4268E5ACB878429B58D4BE5B780E8301A303A5@NWS-EXCH2.nws.oregonstate.edu>	<48995D1A.6030203@meduna.org>
+	<489AC525.3060305@meduna.org>	<489AE6DD.2000200@meduna.org>
+	<489C3D9B.7070605@meduna.org>	<20080825215124.GB12626@c2.user-mode-linux.org>	<48B3AED8.5040904@meduna.org>	<20080826174600.GA24342@c2.user-mode-linux.org>	<48B44658.8010403@meduna.org>	<20080826184425.GA18462@c2.user-mode-linux.org>	<48B450C7.9090906@meduna.org>
+	<48C516CE.9000109@meduna.org> <48C6FF00.4060304@meduna.org>
+In-Reply-To: <48C6FF00.4060304@meduna.org>
+Subject: Re: [uml-devel] FP registers corruption
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,50 +31,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Pierre Morel <pmorel@linux.vnet.ibm.com>
-Cc: sameske@linux.vnet.ibm.com, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, gregkh@suse.de, Heiko Carstens <heicars2@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, Dave Hansen <dave@linux.vnet.ibm.com>, Daniel Lezcano <dlezcano@fr.ibm.com>, Cedric Le Goater <clg@fr.ibm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, Roland McGrath <roland@redhat.com>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Marek Zelem <marek@terminus.sk>, user-mode-linux-devel@lists.sourceforge.net
 
-Hello Pierre,
+Stanislav Meduna wrote:
 
-On 09/12, Pierre Morel wrote:
->
-> You are right, the functionality can be implemented with the system call.
-> But it means we have the overhead of a system call just to clear two bits,
-> the TIF_SYSCALL_TRACE and the PTS_SELF.
+>> I'll try to get the host config from him and to reproduce
+>> it in a clean environment with the similar config as he has
+>> (2.6.23.17 + skas3, i tried with current and without skas).
+>> Is the skas3 patch still maintained?
+> 
+> An update: I can definitely reproduce the problem using
+> 
+> - 2.6.23.17
+> 
+> - http://user-mode-linux.sourceforge.net/skas3-2.6.23.patch
+> 
+> - a patch from Marek Zelem that adds files missing
+>   from your patch
 
-Yes.
+Another piece of information: the FP registers only get corrupted
+for skas3; running the guest with mode=skas0 or host with CONFIG_PROC_MM
+disabled works (or at least did not fail in a few minutes - the skas3
+fails in seconds).
 
-So you want to optimize the code for the (imho very exotic) functionality.
-And again, the overhead of a system call is nothing compared to the signal
-delivery. I bet this overhead won't be visible with any benchmark.
-
-> On the other hand we have an overhead of one single "if" inside
-> the handle_signal() function.
-
-What if everyone who wants to add the new functionality will add one
-single "if + code" to the core kernel just because he wants to add
-a very minor optimization for his needs?
-
-And you forgot about the maintaince overhead. You forgot that this extra
-"if" uglifies/complicates the code.
-
-This all is imho of course, and I'm not maintainer. But I promise I
-will argue against this change forever ;)
-
-> We can do the same with fork and ptrace, yes, but with a very big 
-> overhead on each system call and this is why this patch is so usefull: 
-> because with this patch you sit inside the thread when analysing it and 
-> have a direct access to all data without the need of IPC, ptrace or any 
-> task switch.
->
-> I will provide a test program and plan to release a tracing tool based 
-> on it.
-
-Yes please, this would be very nice. Please do not count me, but I'm
-afraid I am not alone who needs to really understand why this patch
-is useful.
-
-Oleg.
+Regards
+-- 
+                                   Stano
 
 
 -------------------------------------------------------------------------
