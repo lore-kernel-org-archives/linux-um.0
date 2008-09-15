@@ -2,22 +2,33 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
 	helo=mail.sourceforge.net)
 	by sc8-sf-list1-new.sourceforge.net with esmtp (Exim 4.43)
-	id 1KeFFC-0006w6-5E for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Sep 2008 13:27:54 -0700
-Received: from ip-212-081-022-089.static.nextra.sk ([212.81.22.89]
-	helo=meduna.org) by mail.sourceforge.net with esmtp (Exim 4.44)
-	id 1KeFFA-0006Ju-HE for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 12 Sep 2008 13:27:53 -0700
-Message-ID: <48CAD095.4050004@meduna.org>
-Date: Fri, 12 Sep 2008 22:27:01 +0200
-From: Stanislav Meduna <stano@meduna.org>
+	id 1Kf9vb-00051k-5b for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 Sep 2008 01:59:27 -0700
+Received: from leopard.ecp.fr ([138.195.33.24])
+	by mail.sourceforge.net with esmtp (Exim 4.44) id 1Kf9va-00037I-At
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 15 Sep 2008 01:59:27 -0700
+Received: from localhost (localhost [127.0.0.1])
+	by leopard.ecp.fr (Postfix) with ESMTP id 0D2E537CA3
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 15 Sep 2008 10:59:18 +0200 (CEST)
+Received: from leopard.ecp.fr ([127.0.0.1])
+	by localhost (leopard [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 15854-04
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 15 Sep 2008 10:59:17 +0200 (CEST)
+Received: from [138.195.30.9] (kheops.system.ecp.fr [138.195.30.9])
+	by leopard.ecp.fr (Postfix) with ESMTP id DB58037C9A
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 15 Sep 2008 10:59:17 +0200 (CEST)
+Message-ID: <48CE23E5.4070308@ecp.fr>
+Date: Mon, 15 Sep 2008 10:59:17 +0200
+From: Nicolas Boullis <nicolas.boullis@ecp.fr>
 MIME-Version: 1.0
-References: <4898AC10.3010602@meduna.org>	<7B4268E5ACB878429B58D4BE5B780E8301A303A5@NWS-EXCH2.nws.oregonstate.edu>	<48995D1A.6030203@meduna.org>
-	<489AC525.3060305@meduna.org>	<489AE6DD.2000200@meduna.org>
-	<489C3D9B.7070605@meduna.org>	<20080825215124.GB12626@c2.user-mode-linux.org>	<48B3AED8.5040904@meduna.org>	<20080826174600.GA24342@c2.user-mode-linux.org>	<48B44658.8010403@meduna.org>	<20080826184425.GA18462@c2.user-mode-linux.org>	<48B450C7.9090906@meduna.org>
-	<48C516CE.9000109@meduna.org> <48C6FF00.4060304@meduna.org>
-In-Reply-To: <48C6FF00.4060304@meduna.org>
-Subject: Re: [uml-devel] FP registers corruption
+References: <48CA7158.5080500@ecp.fr>
+In-Reply-To: <48CA7158.5080500@ecp.fr>
+Content-Type: multipart/mixed; boundary="------------020503010202080903090800"
+Subject: Re: [uml-devel] parallel I/O
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,45 +38,321 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: user-mode-linux-devel-bounces@lists.sourceforge.net
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Marek Zelem <marek@terminus.sk>, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Stanislav Meduna wrote:
+This is a multi-part message in MIME format.
+--------------020503010202080903090800
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
->> I'll try to get the host config from him and to reproduce
->> it in a clean environment with the similar config as he has
->> (2.6.23.17 + skas3, i tried with current and without skas).
->> Is the skas3 patch still maintained?
-> 
-> An update: I can definitely reproduce the problem using
-> 
-> - 2.6.23.17
-> 
-> - http://user-mode-linux.sourceforge.net/skas3-2.6.23.patch
-> 
-> - a patch from Marek Zelem that adds files missing
->   from your patch
+Hi,
 
-Another piece of information: the FP registers only get corrupted
-for skas3; running the guest with mode=skas0 or host with CONFIG_PROC_MM
-disabled works (or at least did not fail in a few minutes - the skas3
-fails in seconds).
+For what it's worth, here is my quick-n-dirty proof-of-concept patch
+that enables parallel I/O. Note that it is based on 2.6.24.
 
-Regards
--- 
-                                   Stano
+If people are interested, I can try to make a clean patch out of it.
 
+
+Cheers,
+
+Nicolas
+
+--------------020503010202080903090800
+Content-Type: text/x-patch;
+ name="uml_parallel_io.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="uml_parallel_io.patch"
+
+--- linux-source-2.6.24/arch/um/drivers/ubd_kern.c.orig	2008-09-15 10:55:51.000000000 +0200
++++ linux-source-2.6.24/arch/um/drivers/ubd_kern.c	2008-09-12 15:13:24.000000000 +0200
+@@ -65,7 +65,7 @@
+ 	unsigned long length;
+ 	char *buffer;
+ 	int sectorsize;
+-	unsigned long sector_mask;
++	unsigned long sector_mask[8];
+ 	unsigned long long cow_offset;
+ 	unsigned long bitmap_words[2];
+ 	int error;
+@@ -172,6 +172,9 @@
+ 	struct scatterlist sg[MAX_SG];
+ 	struct request *request;
+ 	int start_sg, end_sg;
++	int pipe_fd[2];
++	int io_pid;
++	unsigned long stack;
+ };
+ 
+ #define DEFAULT_COW { \
+@@ -196,6 +199,9 @@
+ 	.request =		NULL, \
+ 	.start_sg =		0, \
+ 	.end_sg =		0, \
++	.pipe_fd =		{-1, -1}, \
++	.io_pid =		-1, \
++	.stack =		0, \
+ }
+ 
+ /* Protected by ubd_lock */
+@@ -473,7 +479,7 @@
+ static void do_ubd_request(struct request_queue * q);
+ 
+ /* Only changed by ubd_init, which is an initcall. */
+-int thread_fd = -1;
++int common_thread_fd = -1;
+ 
+ static void ubd_end_request(struct request *req, int bytes, int uptodate)
+ {
+@@ -513,7 +519,7 @@
+ 	int n;
+ 
+ 	while(1){
+-		n = os_read_file(thread_fd, &req,
++		n = os_read_file(common_thread_fd, &req,
+ 				 sizeof(struct io_thread_req *));
+ 		if(n != sizeof(req)){
+ 			if(n == -EAGAIN)
+@@ -529,7 +535,7 @@
+ 			ubd_finish(rq, rq->hard_nr_sectors << 9);
+ 		kfree(req);
+ 	}
+-	reactivate_fd(thread_fd, UBD_IRQ);
++	reactivate_fd(common_thread_fd, UBD_IRQ);
+ 
+ 	list_for_each_safe(list, next_ele, &restart){
+ 		ubd = container_of(list, struct ubd, restart);
+@@ -565,6 +571,8 @@
+ 	return os_file_size(file, size_out);
+ }
+ 
++extern pid_t waitpid(pid_t pid, int *status, int options);
++
+ static void ubd_close_dev(struct ubd *ubd_dev)
+ {
+ 	os_close_file(ubd_dev->fd);
+@@ -576,6 +584,8 @@
+ 	ubd_dev->cow.bitmap = NULL;
+ }
+ 
++int per_device_io_thread(void *arg);
++
+ static int ubd_open_dev(struct ubd *ubd_dev)
+ {
+ 	struct openflags flags;
+@@ -636,6 +646,8 @@
+ 		if(err < 0) goto error;
+ 		ubd_dev->cow.fd = err;
+ 	}
++
++
+ 	return 0;
+  error:
+ 	os_close_file(ubd_dev->fd);
+@@ -938,7 +950,7 @@
+ 	}
+ 	stack = alloc_stack(0, 0);
+ 	io_pid = start_io_thread(stack + PAGE_SIZE - sizeof(void *),
+-				 &thread_fd);
++				 &common_thread_fd);
+ 	if(io_pid < 0){
+ 		printk(KERN_ERR
+ 		       "ubd : Failed to start I/O thread (errno = %d) - "
+@@ -946,7 +958,7 @@
+ 		io_pid = -1;
+ 		return 0;
+ 	}
+-	err = um_request_irq(UBD_IRQ, thread_fd, IRQ_READ, ubd_intr,
++	err = um_request_irq(UBD_IRQ, common_thread_fd, IRQ_READ, ubd_intr,
+ 			     IRQF_DISABLED, "ubd", ubd_devs);
+ 	if(err != 0)
+ 		printk(KERN_ERR "um_request_irq failed - errno = %d\n", -err);
+@@ -962,12 +974,23 @@
+ 	int err = 0;
+ 
+ 	if(ubd_dev->count == 0){
++		void *sp;
++
+ 		err = ubd_open_dev(ubd_dev);
+ 		if(err){
+ 			printk(KERN_ERR "%s: Can't open \"%s\": errno = %d\n",
+ 			       disk->disk_name, ubd_dev->file, -err);
+ 			goto out;
+ 		}
++
++		pipe(ubd_dev->pipe_fd);
++		os_set_fd_block(ubd_dev->pipe_fd[1], 0);
++
++		ubd_dev->stack = alloc_stack(0, 0);
++		sp = (void *)(ubd_dev->stack + PAGE_SIZE - sizeof(void *));
++		ubd_dev->io_pid = clone(per_device_io_thread, sp, CLONE_VM, (void *)ubd_dev);
++
++		printk("Launched I/O thread.\n");
+ 	}
+ 	ubd_dev->count++;
+ 	set_disk_ro(disk, !ubd_dev->openflags.w);
+@@ -987,12 +1010,21 @@
+ 	struct gendisk *disk = inode->i_bdev->bd_disk;
+ 	struct ubd *ubd_dev = disk->private_data;
+ 
+-	if(--ubd_dev->count == 0)
++	if(--ubd_dev->count == 0) {
++		printk("Trying to stop I/O thread.\n");
++		os_close_file(ubd_dev->pipe_fd[1]);
++		ubd_dev->pipe_fd[1] = -1;
++		waitpid(ubd_dev->io_pid, NULL, __WCLONE);
++		ubd_dev->io_pid = -1;
++		free_stack(ubd_dev->stack, 0);
++		ubd_dev->stack = 0;
++
+ 		ubd_close_dev(ubd_dev);
++	}
+ 	return 0;
+ }
+ 
+-static void cowify_bitmap(__u64 io_offset, int length, unsigned long *cow_mask,
++static void cowify_bitmap(__u64 io_offset, int length, unsigned long (*cow_mask)[],
+ 			  __u64 *cow_offset, unsigned long *bitmap,
+ 			  __u64 bitmap_offset, unsigned long *bitmap_words,
+ 			  __u64 bitmap_len)
+@@ -1059,6 +1091,7 @@
+ {
+ 	struct gendisk *disk = req->rq_disk;
+ 	struct ubd *ubd_dev = disk->private_data;
++	int i;
+ 
+ 	io_req->req = req;
+ 	io_req->fds[0] = (ubd_dev->cow.file != NULL) ? ubd_dev->cow.fd :
+@@ -1068,7 +1101,8 @@
+ 	io_req->offset = offset;
+ 	io_req->length = len;
+ 	io_req->error = 0;
+-	io_req->sector_mask = 0;
++	for (i = 0; i < 8; i++)
++		io_req->sector_mask[i] = 0;
+ 
+ 	io_req->op = (rq_data_dir(req) == READ) ? UBD_READ : UBD_WRITE;
+ 	io_req->offsets[0] = 0;
+@@ -1120,7 +1154,7 @@
+ 					sg->offset, sg->length, sg_page(sg));
+ 
+ 			last_sectors = sg->length >> 9;
+-			n = os_write_file(thread_fd, &io_req,
++			n = os_write_file(dev->pipe_fd[1], &io_req,
+ 					  sizeof(struct io_thread_req *));
+ 			if(n != sizeof(struct io_thread_req *)){
+ 				if(n != -EAGAIN)
+@@ -1482,3 +1516,86 @@
+ 
+ 	return 0;
+ }
++
++extern int open(const char *pathname, int flags);
++extern int dup2(int oldfd, int newfd);
++
++void reopen(int fd)
++{
++	char name[64];
++	int tmp_fd;
++
++	sprintf(name, "/proc/self/fd/%d", fd);
++	tmp_fd = open(name, O_RDWR | O_SYNC);
++	os_close_file(fd);
++	dup2(tmp_fd, fd);
++}
++
++int io_subthread(void *arg)
++{
++	struct ubd *ubd_dev = (struct ubd *)arg;
++	struct io_thread_req *req;
++	int n;
++
++	if (ubd_dev->fd >= 0)
++		reopen(ubd_dev->fd);
++
++	if (ubd_dev->cow.fd >= 0)
++		reopen(ubd_dev->cow.fd);
++
++	while(1){
++		n = os_read_file(ubd_dev->pipe_fd[0], &req,
++				 sizeof(struct io_thread_req *));
++		if(n != sizeof(struct io_thread_req *)){
++			if(n < 0)
++				printk("io_subthread - read failed, fd = %d, "
++				       "err = %d\n", ubd_dev->pipe_fd[0], -n);
++			else if (n == 0)
++				break;
++			else {
++				printk("io_subthread - short read, fd = %d, "
++				       "length = %d\n", ubd_dev->pipe_fd[0], n);
++			}
++			continue;
++		}
++		io_count++;
++		do_io(req);
++		n = os_write_file(kernel_fd, &req,
++				  sizeof(struct io_thread_req *));
++		if(n != sizeof(struct io_thread_req *))
++			printk("io_subthread - write failed, fd = %d, err = %d\n",
++			       kernel_fd, -n);
++	}
++
++	ubd_close_dev(ubd_dev);
++
++	return 0;
++}
++
++int per_device_io_thread(void *arg)
++{
++	struct ubd *ubd_dev = (struct ubd *)arg;
++	unsigned long stack[16];
++	int i;
++
++	printk("I/O thread has started.\n");
++
++	ignore_sigwinch_sig();
++
++	os_close_file(ubd_dev->pipe_fd[1]);
++
++	for (i = 0; i < 16; i++) {
++		void *sp;
++		stack[i] = alloc_stack(0, 0);
++		sp = (void *)(stack[i] + PAGE_SIZE - sizeof(void *));
++		clone(io_subthread, sp, CLONE_VM, (void *)ubd_dev);
++	}
++
++	while (waitpid(-1, NULL, __WCLONE) != -1);
++	for (i = 0; i < 16; i++)
++		free_stack(stack[i], 0);
++
++	printk("I/O thread has finished.\n");
++
++	return 0;
++}
+
+--------------020503010202080903090800
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
 Build the coolest Linux based applications with Moblin SDK & win great prizes
 Grand prize is a trip for two to an Open Source event anywhere in the world
 http://moblin-contest.org/redirect.php?banner_id=100&url=/
+--------------020503010202080903090800
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--------------020503010202080903090800--
+
