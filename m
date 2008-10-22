@@ -1,25 +1,32 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <berrange@redhat.com>) id 1Ks0AA-0001Tg-VC
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <nicolas.boullis@ecp.fr>) id 1KsexL-0007p3-MB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Oct 2008 19:11:34 +0000
-Received: from mx1.redhat.com ([66.187.233.31])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ks09w-0003rZ-2A for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Oct 2008 19:11:34 +0000
-Date: Mon, 20 Oct 2008 20:11:18 +0100
-From: "Daniel P. Berrange" <berrange@redhat.com>
-Message-ID: <20081020191118.GA20239@redhat.com>
-References: <20081016115012.GK27881@redhat.com>
-	<200810201524.m9KFOSPg024776@tiffany.internal.tigress.co.uk>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200810201524.m9KFOSPg024776@tiffany.internal.tigress.co.uk>
-Subject: Re: [uml-devel] [FW: [libvirt] PATCH: Experimental User Mode Linux
-	driver for libvirt]
-Reply-To: "Daniel P. Berrange" <berrange@redhat.com>
+	Wed, 22 Oct 2008 14:45:03 +0000
+Received: from jaguar.ecp.fr ([138.195.33.9])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1KsexF-0007U9-Ow for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Oct 2008 14:45:03 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by jaguar.ecp.fr (Postfix) with ESMTP id 6B66968010
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 22 Oct 2008 16:44:55 +0200 (CEST)
+Received: from jaguar.ecp.fr ([127.0.0.1])
+	by localhost (jaguar [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 24602-08
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 22 Oct 2008 16:44:55 +0200 (CEST)
+Received: from [138.195.30.9] (kheops.system.ecp.fr [138.195.30.9])
+	by jaguar.ecp.fr (Postfix) with ESMTP id 4BD0A68002
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 22 Oct 2008 16:44:55 +0200 (CEST)
+Message-ID: <48FF3C66.20509@ecp.fr>
+Date: Wed, 22 Oct 2008 16:44:54 +0200
+From: Nicolas Boullis <nicolas.boullis@ecp.fr>
+MIME-Version: 1.0
+Subject: [uml-devel] I/O Performance
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,56 +39,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Ron Yorston <rmy@tigress.co.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Oct 20, 2008 at 04:24:26PM +0100, Ron Yorston wrote:
-> I've now had a chance to try out the UML driver for libvirt.  My host
-> platform was CentOS 5 and the guest CentOS 4, with a 2.6.27.2 kernel
-> configured as 'make defconfig ARCH=um'.  I used uml:///session as an
-> unprivileged user.
-> 
-> The CVS snapshot tarball on the libvirt.org ftp site was out of date:
-> use the cvs command to fetch the source.
-> 
-> My host system hadn't been set up for UML before so virsh didn't work
-> until I'd:
-> 
->    created the directory ~/.uml (which doesn't exist if you haven't
->    run a UML instance yet);
+Hi,
 
-Ah, that's useful info - I would never have noticed that :-)
+Sorry for insisting, but I think it would be nice if things could be
+improved before linux 2.6.28.
 
->    installed the UML utilities (because libvirt checks that uml_mconsole
->    exists, even though it doesn't use it).
+When COW is not used, the performance is very bad because multiples I/O
+are performed when one would be enough. Steve VanDeBogart's "ubd does
+multiple io's when one will suffice" patch look clean and solves the
+problem.
 
-Yep, that check is now obsolete, so I'll remove it.
+Performing parallel I/O also much improves the performance (at least
+with ubd=sync), but my patch is certainly not clean enough for
+inclusion. Jeff, you told me you had such a patch; would you like me tou
+give it a try?
 
-> Once I'd figured that out I was able to start a virtual machine from
-> virsh and see it using the list command.
-> 
-> However, connecting to the guest's console was very unreliable (No
-> console available for domain).  Also, all attempts to shut down the
-> guest from virsh failed (libvir: Remote error :  socket closed
-> unexpectedly).  Once that had happened the domain was no longer shown
-> by the list command.
 
-Ok, that's a bug I'll look into.
+Cheers,
 
-> BTW, is there a way to disconnect from the guest console?
-
-We follow the telnet defaults, and use 'Ctrl+]' sequence
-
-Thanks for taking the time to test out this initial code, hopefully I'll 
-get this polished up and incorporated in the next libvirt release.
-
-Regards,
-Daniel
--- 
-|: Red Hat, Engineering, London   -o-   http://people.redhat.com/berrange/ :|
-|: http://libvirt.org  -o-  http://virt-manager.org  -o-  http://ovirt.org :|
-|: http://autobuild.org       -o-         http://search.cpan.org/~danberr/ :|
-|: GnuPG: 7D3B9505  -o-  F3C9 553F A1DA 4AC2 5648 23C1 B3DF F742 7D3B 9505 :|
+Nicolas Boullis
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
