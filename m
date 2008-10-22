@@ -1,32 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <nicolas.boullis@ecp.fr>) id 1KsexL-0007p3-MB
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rusty@rustcorp.com.au>) id 1KsToR-00058Q-Nu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Oct 2008 14:45:03 +0000
-Received: from jaguar.ecp.fr ([138.195.33.9])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1KsexF-0007U9-Ow for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 22 Oct 2008 14:45:03 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by jaguar.ecp.fr (Postfix) with ESMTP id 6B66968010
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 22 Oct 2008 16:44:55 +0200 (CEST)
-Received: from jaguar.ecp.fr ([127.0.0.1])
-	by localhost (jaguar [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 24602-08
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 22 Oct 2008 16:44:55 +0200 (CEST)
-Received: from [138.195.30.9] (kheops.system.ecp.fr [138.195.30.9])
-	by jaguar.ecp.fr (Postfix) with ESMTP id 4BD0A68002
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 22 Oct 2008 16:44:55 +0200 (CEST)
-Message-ID: <48FF3C66.20509@ecp.fr>
-Date: Wed, 22 Oct 2008 16:44:54 +0200
-From: Nicolas Boullis <nicolas.boullis@ecp.fr>
+	Wed, 22 Oct 2008 02:51:07 +0000
+Received: from ozlabs.org ([203.10.76.45])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1KsToM-0003bs-BA
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Oct 2008 02:51:07 +0000
+From: Rusty Russell <rusty@rustcorp.com.au>
+Date: Wed, 22 Oct 2008 13:34:59 +1100
 MIME-Version: 1.0
-Subject: [uml-devel] I/O Performance
+Content-Disposition: inline
+Message-Id: <200810221335.00063.rusty@rustcorp.com.au>
+Subject: [uml-devel] Strange code in smp_prepare_cpus?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -39,27 +28,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+...
+	cpu_clear(me, cpu_online_map);
+	cpu_set(me, cpu_online_map);
 
-Sorry for insisting, but I think it would be nice if things could be
-improved before linux 2.6.28.
-
-When COW is not used, the performance is very bad because multiples I/O
-are performed when one would be enough. Steve VanDeBogart's "ubd does
-multiple io's when one will suffice" patch look clean and solves the
-problem.
-
-Performing parallel I/O also much improves the performance (at least
-with ubd=sync), but my patch is certainly not clean enough for
-inclusion. Jeff, you told me you had such a patch; would you like me tou
-give it a try?
-
-
-Cheers,
-
-Nicolas Boullis
+Something subtle here?
+Rusty.
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
