@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jdike@addtoit.com>) id 1Kt5jv-0007TA-Em
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <roman.yepishev@gmail.com>) id 1KtVll-0002JS-Cd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Oct 2008 19:20:59 +0000
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Kt5ju-0006fu-8a
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 23 Oct 2008 19:20:59 +0000
-Date: Thu, 23 Oct 2008 15:20:50 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20081023192050.GC13198@c2.user-mode-linux.org>
-References: <200810221335.00063.rusty@rustcorp.com.au>
+	Fri, 24 Oct 2008 23:08:37 +0000
+Received: from mail-gx0-f17.google.com ([209.85.217.17])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1KtVlh-000243-4n for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Oct 2008 23:08:37 +0000
+Received: by gxk10 with SMTP id 10so340957gxk.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 24 Oct 2008 16:08:31 -0700 (PDT)
+Message-ID: <f39be10d0810241608i590d13f5p429c02558a1c26cf@mail.gmail.com>
+Date: Sat, 25 Oct 2008 02:08:31 +0300
+From: "Roman Yepishev" <roman.yepishev@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200810221335.00063.rusty@rustcorp.com.au>
-Subject: Re: [uml-devel] Strange code in smp_prepare_cpus?
+Subject: [uml-devel] UML crashes when built with _FORTIFY_SOURCE
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,22 +30,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Rusty Russell <rusty@rustcorp.com.au>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Oct 22, 2008 at 01:34:59PM +1100, Rusty Russell wrote:
-> ...
-> 	cpu_clear(me, cpu_online_map);
-> 	cpu_set(me, cpu_online_map);
-> 
-> Something subtle here?
+Hello,
 
-I'd like to be able to claim so, but no.  Looks like a botched merge to me.
+When UML kernel is built with _FORTIFY_SOURCE defined, then all
+arguments for snprintf, printf etc. are checked by glibc.
 
-				Jeff
+mconsole_init defines file[256] which is used later to construct the
+socket path.
+file is then passed to os_create_unix_socket which in turn uses
+sockaddr_un to describe the socket.
+The problem happens when snprintf tries to fit file into sun_path
+which is only 108 bytes long. The checks fail and kernel abort()s.
+
+Temporary solution is to fix file declaration to be 108 or less bytes
+but checks should be introduced when socket path is constructed.
+
+The complete history of bug is here:
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/284631
 
 -- 
-Work email - jdike at linux dot intel dot com
+Regards,
+Roman Yepishev
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
