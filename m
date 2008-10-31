@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sfr@canb.auug.org.au>) id 1KvhPD-0005Of-ED
+	(envelope-from <geert@linux-m68k.org>) id 1Kvpjw-0001tx-BF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Oct 2008 23:58:23 +0000
-Received: from chilli.pcug.org.au ([203.10.76.44] helo=smtps.tip.net.au)
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1KvhP3-0001S8-DI for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Oct 2008 23:58:23 +0000
-Date: Fri, 31 Oct 2008 10:38:20 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Message-Id: <20081031103820.7e81f7f1.sfr@canb.auug.org.au>
-In-Reply-To: <Pine.LNX.4.64.0810300925590.4898@anakin>
+	Fri, 31 Oct 2008 08:52:20 +0000
+Received: from nelson.telenet-ops.be ([195.130.133.66])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Kvpjt-0008Fl-Bs for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 31 Oct 2008 08:52:20 +0000
+Date: Fri, 31 Oct 2008 09:52:08 +0100 (CET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+In-Reply-To: <20081031103820.7e81f7f1.sfr@canb.auug.org.au>
+Message-ID: <Pine.LNX.4.64.0810310951200.22521@anakin>
 References: <804dabb00810291851xc617690wac1404176437fb84@mail.gmail.com>
 	<Pine.LNX.4.64.0810300925590.4898@anakin>
-Mime-Version: 1.0
+	<20081031103820.7e81f7f1.sfr@canb.auug.org.au>
+MIME-Version: 1.0
 Subject: Re: [uml-devel] =?utf-8?q?=22warning=3A_passing_argument_1_of_?=
 	=?utf-8?q?=E2=80=98um=5Fexecve=E2=80=99_discards_qualifiers_from_pointer_?=
 	=?utf-8?q?target_type=22?=
@@ -28,73 +29,41 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7331043301695645367=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
 Cc: linux-next@vger.kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
---===============7331043301695645367==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="PGP-SHA1";
-	boundary="Signature=_Fri__31_Oct_2008_10_38_20_+1100_kSE83CpICyBylQ=Q"
+On Fri, 31 Oct 2008, Stephen Rothwell wrote:
+> On Thu, 30 Oct 2008 09:31:04 +0100 (CET) Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >
+> > I see there are no UML builds yet on
+> > http://kisskb.ellerman.id.au/kisskb/matrix/.
+> > Perhaps it would be a good idea to add them?
+> 
+> We would love to, but we can't figure out how to cross build an x86 based
+> uml kernel on a powerpc machine.  Any hints?
 
---Signature=_Fri__31_Oct_2008_10_38_20_+1100_kSE83CpICyBylQ=Q
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Haven't tried it, but something like ARCH=um SUBARCH=x86 should work...
 
-Hi Geert,
+Gr{oetje,eeting}s,
 
-On Thu, 30 Oct 2008 09:31:04 +0100 (CET) Geert Uytterhoeven <geert@linux-m6=
-8k.org> wrote:
->
-> I see there are no UML builds yet on
-> http://kisskb.ellerman.id.au/kisskb/matrix/.
-> Perhaps it would be a good idea to add them?
+						Geert
 
-We would love to, but we can't figure out how to cross build an x86 based
-uml kernel on a powerpc machine.  Any hints?
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Fri__31_Oct_2008_10_38_20_+1100_kSE83CpICyBylQ=Q
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkkKRWwACgkQjjKRsyhoI8yQzACfV9J8VMbJ5vdthnIovwdnY/fz
-yYgAoLVPd474e+sBZSxEypfwzP3BDUGL
-=H8FF
------END PGP SIGNATURE-----
-
---Signature=_Fri__31_Oct_2008_10_38_20_+1100_kSE83CpICyBylQ=Q--
-
-
---===============7331043301695645367==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
 Build the coolest Linux based applications with Moblin SDK & win great prizes
 Grand prize is a trip for two to an Open Source event anywhere in the world
 http://moblin-contest.org/redirect.php?banner_id=100&url=/
---===============7331043301695645367==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============7331043301695645367==--
-
