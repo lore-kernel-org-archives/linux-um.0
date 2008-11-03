@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jdike@addtoit.com>) id 1Kwr5M-0001yb-TD
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <roman.yepishev@gmail.com>) id 1Kx7FE-00006u-09
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Nov 2008 04:30:40 +0000
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Kwr5K-0000Ra-IX
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 03 Nov 2008 04:30:40 +0000
-Date: Fri, 31 Oct 2008 15:14:52 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20081031191452.GA10950@c2.user-mode-linux.org>
-References: <f39be10d0810241608i590d13f5p429c02558a1c26cf@mail.gmail.com>
+	Mon, 03 Nov 2008 21:45:56 +0000
+Received: from el-out-1112.google.com ([209.85.162.177])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Kx7FC-0002nG-Hs for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Nov 2008 21:45:55 +0000
+Received: by el-out-1112.google.com with SMTP id z25so1305518ele.1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 03 Nov 2008 13:45:53 -0800 (PST)
+Message-ID: <f39be10d0811031335me028b1dhed153cdbb956250@mail.gmail.com>
+Date: Mon, 3 Nov 2008 23:35:52 +0200
+From: "Roman Yepishev" <roman.yepishev@gmail.com>
+In-Reply-To: <20081031191452.GA10950@c2.user-mode-linux.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <f39be10d0810241608i590d13f5p429c02558a1c26cf@mail.gmail.com>
+References: <f39be10d0810241608i590d13f5p429c02558a1c26cf@mail.gmail.com>
+	<20081031191452.GA10950@c2.user-mode-linux.org>
 Subject: Re: [uml-devel] UML crashes when built with _FORTIFY_SOURCE
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,103 +33,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Roman Yepishev <roman.yepishev@gmail.com>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Oct 25, 2008 at 02:08:31AM +0300, Roman Yepishev wrote:
-> Temporary solution is to fix file declaration to be 108 or less bytes
-> but checks should be introduced when socket path is constructed.
+On Fri, Oct 31, 2008 at 9:14 PM, Jeff Dike <jdike@addtoit.com> wrote:
+> On Sat, Oct 25, 2008 at 02:08:31AM +0300, Roman Yepishev wrote:
+>> Temporary solution is to fix file declaration to be 108 or less bytes
+>> but checks should be introduced when socket path is constructed.
+>
+> I don't really understand what you mean by checks being introduced,
+> but how do you like the patch below?
+>
+>                        Jeff
+>
+> --
+> Work email - jdike at linux dot intel dot com
+>
+[patch skipped]
 
-I don't really understand what you mean by checks being introduced,
-but how do you like the patch below?
+Looks great, checked on i386 system - successfully builds and runs
+with _FORTIFY_SOURCE.
 
-			Jeff
+By "checks" i meant the case when uml_dir  and/or  umid is too long to be used.
+Currently the execution continues with a humble message
+
+ NET: Registered protocol family 1
+>umid_file_name : buffer too short
+ Checking host MADV_REMOVE support...OK
+ Host TLS support detected
+
+I guess this case should be documented somehow as well.
 
 -- 
-Work email - jdike at linux dot intel dot com
-
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index 19d579d..cc88ef7 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -785,11 +785,12 @@ static int __init mconsole_init(void)
- 	/* long to avoid size mismatch warnings from gcc */
- 	long sock;
- 	int err;
--	char file[256];
-+	char file[UM_UNIX_PATH_MAX];
- 
- 	if (umid_file_name("mconsole", file, sizeof(file)))
- 		return -1;
--	snprintf(mconsole_socket_name, sizeof(file), "%s", file);
-+	snprintf(mconsole_socket_name, sizeof(file) - 1, "%s", file);
-+	file[sizeof(file) - 1] = '\0';
- 
- 	sock = os_create_unix_socket(file, sizeof(file), 1);
- 	if (sock < 0) {
-diff --git a/arch/um/drivers/mconsole_user.c b/arch/um/drivers/mconsole_user.c
-index f8cf4c8..f00735e 100644
---- a/arch/um/drivers/mconsole_user.c
-+++ b/arch/um/drivers/mconsole_user.c
-@@ -9,7 +9,7 @@
- #include <unistd.h>
- #include <sys/socket.h>
- #include <sys/uio.h>
--#include <sys/un.h>
-+#include <linux/un.h>
- #include "kern_constants.h"
- #include "mconsole.h"
- #include "user.h"
-@@ -37,7 +37,7 @@ static struct mconsole_command commands[] = {
- };
- 
- /* Initialized in mconsole_init, which is an initcall */
--char mconsole_socket_name[256];
-+char mconsole_socket_name[UNIX_PATH_MAX];
- 
- static int mconsole_reply_v0(struct mc_request *req, char *reply)
- {
-diff --git a/arch/um/sys-i386/user-offsets.c b/arch/um/sys-i386/user-offsets.c
-index 5f883bf..5e4ae72 100644
---- a/arch/um/sys-i386/user-offsets.c
-+++ b/arch/um/sys-i386/user-offsets.c
-@@ -2,8 +2,10 @@
- #include <stddef.h>
- #include <signal.h>
- #include <sys/poll.h>
-+#include <sys/socket.h>
- #include <sys/user.h>
- #include <sys/mman.h>
-+#include <linux/un.h>
- #include <asm/ptrace.h>
- 
- #define DEFINE(sym, val) \
-@@ -50,4 +52,6 @@ void foo(void)
- 	DEFINE(UM_PROT_READ, PROT_READ);
- 	DEFINE(UM_PROT_WRITE, PROT_WRITE);
- 	DEFINE(UM_PROT_EXEC, PROT_EXEC);
-+
-+	DEFINE(UM_UNIX_PATH_MAX, UNIX_PATH_MAX);
- }
-diff --git a/arch/um/sys-x86_64/user-offsets.c b/arch/um/sys-x86_64/user-offsets.c
-index 9735854..e47b3bd 100644
---- a/arch/um/sys-x86_64/user-offsets.c
-+++ b/arch/um/sys-x86_64/user-offsets.c
-@@ -4,6 +4,7 @@
- #include <sys/poll.h>
- #include <sys/mman.h>
- #include <sys/user.h>
-+#include <linux/un.h>
- #define __FRAME_OFFSETS
- #include <asm/ptrace.h>
- #include <asm/types.h>
-@@ -62,4 +63,6 @@ void foo(void)
- 	DEFINE(UM_PROT_READ, PROT_READ);
- 	DEFINE(UM_PROT_WRITE, PROT_WRITE);
- 	DEFINE(UM_PROT_EXEC, PROT_EXEC);
-+
-+	DEFINE(UM_UNIX_PATH_MAX, UNIX_PATH_MAX);
- }
+Regards,
+Roman Yepishev
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
