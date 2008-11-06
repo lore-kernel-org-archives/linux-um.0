@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <htmldeveloper@gmail.com>) id 1KxaB9-00036E-Pm
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <htmldeveloper@gmail.com>) id 1Ky2NH-0007sb-Pf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Nov 2008 04:39:39 +0000
-Received: from an-out-0708.google.com ([209.85.132.251])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1KxaB7-0007eb-Dd for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Nov 2008 04:39:39 +0000
-Received: by an-out-0708.google.com with SMTP id c38so391013ana.37
+	Thu, 06 Nov 2008 10:46:03 +0000
+Received: from yx-out-1718.google.com ([74.125.44.158])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ky2ND-0000t3-H3 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 06 Nov 2008 10:46:03 +0000
+Received: by yx-out-1718.google.com with SMTP id 3so200673yxi.82
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 04 Nov 2008 20:39:36 -0800 (PST)
-Message-ID: <804dabb00811042039s2dd4d9dv940059deea522dd8@mail.gmail.com>
-Date: Wed, 5 Nov 2008 12:39:36 +0800
+	Thu, 06 Nov 2008 02:45:58 -0800 (PST)
+Message-ID: <804dabb00811060245t2dcae77bkcbba0156b9002c6d@mail.gmail.com>
+Date: Thu, 6 Nov 2008 18:45:57 +0800
 From: "Peter Teoh" <htmldeveloper@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] UML: multiple error in compilation
+Subject: [uml-devel] How to avoid stopping at gdb's "Program received signal
+	SIGSEGV, Segmentation fault"?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,43 +31,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Al Viro <viro@zeniv.linux.org.uk>, Steven Rostedt <srostedt@redhat.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-I am on linus git tree:
+When I run gdb ./linux (my UML-compiled kernel):
 
-45beca08dd8b6d6a65c5ffd730af2eac7a2c7a03		branch 'master' of
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6
+(gdb) run ubda=/mnt/hd1/download/FedoraCore5-x86-root_fs mem=128M
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /mnt/hd0/download/linux-2.6-latest/uml/linux
+ubda=/mnt/hd1/download/FedoraCore5-x86-root_fs mem=128M
+Locating the bottom of the address space ...
+Program received signal SIGSEGV, Segmentation fault.
+0x080664ff in page_ok (page=<value optimized out>) at
+/mnt/hd0/download/linux-2.6-latest/arch/um/os-Linux/sys-i386/task_size.c:31
+31                      n = *address;
 
-after attempting to compile for UML, I got "undefined reference to
-`save_stack_trace'", and so I applied the following:
+The flow keep stopping at the following message:
 
-http://groups.google.com/group/linux.kernel/browse_thread/thread/84e3655b604ecc40/1b16192ff6b216b9?lnk=raot
+Program received signal SIGTRAP, Trace/breakpoint trap.
 
-and then make again:
+And I have to "next" many many times....the execution flow continue as
+per normal.   But I would like to ignore the breakpoint trap, how?
+(It is not a breakpoint by itself)   Execution flow continues normally
+can be deduced because when I enter "bt" I can see the stacktrace
+anytime:
 
-/root/download/linux-2.6_latest>make linux ARCH=um O=uml
-make[1]: Nothing to be done for `/mnt/sda2/download/linux-2.6_latest/uml'.
-make[2]: `arch/um/sys-i386/user-offsets.s' is up to date.
-  Using /mnt/sda2/download/linux-2.6_latest as source for kernel
-  GEN     /mnt/sda2/download/linux-2.6_latest/uml/Makefile
-  CHK     include/linux/version.h
-  CHK     include/linux/utsrelease.h
-  SYMLINK include/asm -> include/asm-um
-  CALL    /mnt/sda2/download/linux-2.6_latest/scripts/checksyscalls.sh
-  CHK     include/linux/compile.h
-  CC      kernel/trace/trace.o
-/mnt/sda2/download/linux-2.6_latest/kernel/trace/trace.c: In function
-'ftrace_trace_stack':
-/mnt/sda2/download/linux-2.6_latest/kernel/trace/trace.c:710: error:
-storage size of 'trace' isn't known
-/mnt/sda2/download/linux-2.6_latest/kernel/trace/trace.c:710: warning:
-unused variable 'trace'
-make[3]: *** [kernel/trace/trace.o] Error 1
-make[2]: *** [kernel/trace] Error 2
-make[1]: *** [kernel] Error 2
-make: *** [sub-make] Error 2
+(gdb) bt
+#0  0x00556c2b in __i686.get_pc_thunk.bx () from /lib/ld-linux.so.2
+#1  0x0054a8f8 in _dl_lookup_symbol_x () from /lib/ld-linux.so.2
+#2  0x0054eac2 in _dl_fixup () from /lib/ld-linux.so.2
+#3  0x00554260 in _dl_runtime_resolve () from /lib/ld-linux.so.2
+#4  0x08066526 in page_ok (page=<value optimized out>) at
+/mnt/hd0/download/linux-2.6-latest/arch/um/os-Linux/sys-i386/task_size.c:33
+#5  0x08066607 in os_get_top_address () at
+/mnt/hd0/download/linux-2.6-latest/arch/um/os-Linux/sys-i386/task_size.c:100
+#6  0x0804a232 in linux_main (argc=3, argv=0xbffb46f4) at
+/mnt/hd0/download/linux-2.6-latest/arch/um/kernel/um_arch.c:277
+#7  0x0804ad16 in main (argc=3, argv=0xbffb46f4, envp=0xbffb4704) at
+/mnt/hd0/download/linux-2.6-latest/arch/um/os-Linux/main.c:150
 
-Hm...possibly some header got error.....any hints?
 
 -- 
 Regards,
