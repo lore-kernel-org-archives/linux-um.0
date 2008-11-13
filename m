@@ -1,27 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <htmldeveloper@gmail.com>) id 1Ky6wy-0001ly-Dk
+	(envelope-from <htmldeveloper@gmail.com>) id 1L0VrJ-00035c-4J
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Nov 2008 15:39:12 +0000
-Received: from yw-out-1718.google.com ([74.125.46.158])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ky6wk-0006nR-Ol for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Nov 2008 15:39:12 +0000
-Received: by yw-out-1718.google.com with SMTP id 6so251993ywa.82
+	Thu, 13 Nov 2008 06:39:17 +0000
+Received: from yx-out-1718.google.com ([74.125.44.158])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1L0VrH-0002iV-Gg for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 13 Nov 2008 06:39:17 +0000
+Received: by yx-out-1718.google.com with SMTP id 3so324062yxi.82
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 06 Nov 2008 07:38:57 -0800 (PST)
-Message-ID: <804dabb00811060738r4517f07fs758ee997995a48ce@mail.gmail.com>
-Date: Thu, 6 Nov 2008 23:38:56 +0800
+	Wed, 12 Nov 2008 22:39:14 -0800 (PST)
+Message-ID: <804dabb00811122239l352dbb5dta63dc3330b92bf5a@mail.gmail.com>
+Date: Thu, 13 Nov 2008 14:39:13 +0800
 From: "Peter Teoh" <htmldeveloper@gmail.com>
-In-Reply-To: <dfed62190811060520i6e51b844l4600222304bab23@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-References: <804dabb00811060245t2dcae77bkcbba0156b9002c6d@mail.gmail.com>
-	<dfed62190811060520i6e51b844l4600222304bab23@mail.gmail.com>
-Subject: Re: [uml-devel] How to avoid stopping at gdb's "Program received
-	signal SIGSEGV, Segmentation fault"?
+Subject: [uml-devel] query on STDERR output from UML tracing
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,44 +30,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Samuel Korpi <strontianite@gmail.com>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Nov 6, 2008 at 9:20 PM, Samuel Korpi <strontianite@gmail.com> wrote:
-> On Thu, Nov 6, 2008 at 12:45 PM, Peter Teoh <htmldeveloper@gmail.com> wrote:
->> When I run gdb ./linux (my UML-compiled kernel):
->>
->> (gdb) run ubda=/mnt/hd1/download/FedoraCore5-x86-root_fs mem=128M
->> The program being debugged has been started already.
->> Start it from the beginning? (y or n) y
->> Starting program: /mnt/hd0/download/linux-2.6-latest/uml/linux
->> ubda=/mnt/hd1/download/FedoraCore5-x86-root_fs mem=128M
->> Locating the bottom of the address space ...
->> Program received signal SIGSEGV, Segmentation fault.
->> 0x080664ff in page_ok (page=<value optimized out>) at
->> /mnt/hd0/download/linux-2.6-latest/arch/um/os-Linux/sys-i386/task_size.c:31
->> 31                      n = *address;
->>
->> The flow keep stopping at the following message:
->>
->> Program received signal SIGTRAP, Trace/breakpoint trap.
->>
->> And I have to "next" many many times....the execution flow continue as
->> per normal.   But I would like to ignore the breakpoint trap, how?
->>
->
-> Try giving the following commands to gdb before starting UML:
->
-> handle SIGSEGV pass nostop noprint
-> handle SIGUSR1 pass nostop noprint
->
-> Hope it helps,
->
-> Samuel Korpi
->
+As I used gdb to trace UML execution, only three lines were output to STDERR:
 
-thanks....that worked!!!
+  - /proc/mm...not found: No such file or directory
+  - PTRACE_FAULTINFO...not found
+  - PTRACE_LDT...not found
 
+What are these?   How to turn them on?   What is the implication of
+not having these features?
 
 -- 
 Regards,
