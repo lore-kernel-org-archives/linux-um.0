@@ -1,20 +1,36 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <foolishzhu@yahoo.cn>) id 1L47Hr-0003tb-Mn
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rmy@tigress.co.uk>) id 1L4InU-0003Jr-Sp
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 Nov 2008 05:13:35 +0000
-Received: from web92202.mail.cnh.yahoo.com ([203.209.250.115])
-	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1L47Hk-0001Bh-Bt for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 Nov 2008 05:13:35 +0000
-Date: Sun, 23 Nov 2008 13:13:19 +0800 (CST)
-From: Xm Zhu <foolishzhu@yahoo.cn>
+	Sun, 23 Nov 2008 17:31:00 +0000
+Received: from mail.tigress.co.uk ([195.172.168.163] helo=intgat.tigress.co.uk)
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1L4InR-0005Jb-0L
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 Nov 2008 17:31:00 +0000
+Received: (from uucp@localhost)
+	by intgat.tigress.co.uk (8.13.1/8.13.1) id mANHUtW7013349
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 23 Nov 2008 17:30:55 GMT
+Received: from tiffany.internal.tigress.co.uk (tiffany [157.147.97.76])
+	by tigress.co.uk (8.12.11.20060308/8.11.6) with ESMTP id mANHTx4p016312
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 23 Nov 2008 17:29:59 GMT
+Received: from tiffany.internal.tigress.co.uk (localhost [127.0.0.1])
+	by tiffany.internal.tigress.co.uk (8.13.8+Sun/8.13.8) with ESMTP id
+	mANHTxi2020568 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 23 Nov 2008 17:29:59 GMT
+Received: (from rmy@localhost)
+	by tiffany.internal.tigress.co.uk (8.13.8+Sun/8.13.8/Submit) id
+	mANHTxaq020567 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 23 Nov 2008 17:29:59 GMT
+From: Ron Yorston <rmy@tigress.co.uk>
+Message-Id: <200811231729.mANHTxaq020567@tiffany.internal.tigress.co.uk>
+Date: Sun, 23 Nov 2008 17:29:59 +0000
 MIME-Version: 1.0
-Message-ID: <868058.36595.qm@web92202.mail.cnh.yahoo.com>
-Subject: [uml-devel] Debug under Skas3 start_uml - start_userspace returned -22
-Reply-To: foolishzhu@yahoo.cn
+Subject: [uml-devel] [PATCH] uml: shared memory framebuffer
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,113 +40,1095 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6926045283688810870=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
---===============6926045283688810870==
-Content-Type: multipart/alternative; boundary="0-1113773276-1227417199=:36595"
+This patch implements a shared memory framebuffer for User Mode Linux.
+Separate host programs can be used to view the contents of the framebuffer.
 
---0-1113773276-1227417199=:36595
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-HI
-All
-I have patched my linux host for ska3 and it can run under skas3 mode. Howe=
-ver, when I gdb linux
-i. I want to follow=20
-r
-ubd0=3D/home/jdike/roots/cow.debian,/home/jdike/roots/debian_22
-con=3Dport:9000 ssl=3Dpty con0=3Dfd:0,fd:1 umid=3Ddebian mem=3D128M
-
-however, I do not the meaning of ubd0 ,since there is no cow.debian under m=
-y roots. I really do not know how to set these parameters.
-
-So , I just put (after setting handle two signals)
-r=20
-It comes out
-Starting program: ~/linux-2.6.27.6/linux=20
-Locating the bottom of the address space ... 0x0
-Locating the top of the address space ... 0xc0000000
-Core dump limits :
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 soft - 0
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hard - NONE
-Checking that ptrace can change system call numbers...OK
-Checking syscall emulation patch for ptrace...OK
-Checking advanced syscall emulation patch for ptrace...OK
-Checking for tmpfs mount on /dev/shm...OK
-Checking PROT_EXEC mmap in /dev/shm/...OK
-Checking for the skas3 patch in the host:
-=C2=A0 - /proc/mm...found
-=C2=A0 - PTRACE_FAULTINFO...found
-=C2=A0 -
- PTRACE_LDT...found
-UML running in SKAS3 mode
-[New LWP 7387]
-[LWP 7387 exited]
-start_uml - start_userspace returned -22
-
-IS there anyone can help me?
-thankyou
-=C2=A0
-=0A=0A=0A      ___________________________________________________________ =
-=0A  =E5=A5=BD=E7=8E=A9=E8=B4=BA=E5=8D=A1=E7=AD=89=E4=BD=A0=E5=8F=91=EF=BC=
-=8C=E9=82=AE=E7=AE=B1=E8=B4=BA=E5=8D=A1=E5=85=A8=E6=96=B0=E4=B8=8A=E7=BA=BF=
-=EF=BC=81 =0Ahttp://card.mail.cn.yahoo.com/
---0-1113773276-1227417199=:36595
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-<table cellspacing=3D"0" cellpadding=3D"0" border=3D"0" ><tr><td valign=3D"=
-top" style=3D"font: inherit;"><div id=3D"yiv1532780175">HI<br>All<br>I have=
- patched my linux host for ska3 and it can run under skas3 mode. However, w=
-hen I gdb linux<br>i. I want to follow <br><tt><font color=3D"#000000">r
-ubd0=3D/home/jdike/roots/cow.debian,/home/jdike/roots/debian_22
-con=3Dport:9000 ssl=3Dpty con0=3Dfd:0,fd:1 umid=3Ddebian mem=3D128M<br><br>=
-however, I do not the meaning of ubd0 ,since there is no cow.debian under m=
-y roots. I really do not know how to set these parameters.<br><br>So , I ju=
-st put (after setting handle two signals)<br>r <br>It comes out<br>Starting=
- program: ~/linux-2.6.27.6/linux <br>Locating the bottom of the address spa=
-ce ... 0x0<br>Locating the top of the address space ... 0xc0000000<br>Core =
-dump limits :<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; soft - 0<br>&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hard - NONE<br>Checking that ptrace=
- can change system call numbers...OK<br>Checking syscall emulation patch fo=
-r ptrace...OK<br>Checking advanced syscall emulation patch for ptrace...OK<=
-br>Checking for tmpfs mount on /dev/shm...OK<br>Checking PROT_EXEC mmap in =
-/dev/shm/...OK<br>Checking for the skas3 patch in the host:<br>&nbsp; - /pr=
-oc/mm...found<br>&nbsp; - PTRACE_FAULTINFO...found<br>&nbsp; -
- PTRACE_LDT...found<br>UML running in SKAS3 mode<br>[New LWP 7387]<br>[LWP =
-7387 exited]<br>start_uml - start_userspace returned -22<br><br>IS there an=
-yone can help me?<br>thankyou<br>&nbsp;<br></font></tt></div></td></tr></ta=
-ble><br>=0A=0A=0A      <hr size=3D1><a href=3D"http://cn.rd.yahoo.com/mail_=
-cn/tagline/card/*http://card.mail.cn.yahoo.com/">  =E5=A5=BD=E7=8E=A9=E8=B4=
-=BA=E5=8D=A1=E7=AD=89=E4=BD=A0=E5=8F=91=EF=BC=8C=E9=82=AE=E7=AE=B1=E8=B4=BA=
-=E5=8D=A1=E5=85=A8=E6=96=B0=E4=B8=8A=E7=BA=BF=EF=BC=81</a>
---0-1113773276-1227417199=:36595--
-
-
---===============6926045283688810870==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Ron Yorston <rmy@tigress.co.uk>
+---
+diff -up linux-2.6.27.7/arch/um/drivers/Makefile.shm-fb linux-2.6.27.7/arch/um/drivers/Makefile
+--- linux-2.6.27.7/arch/um/drivers/Makefile.shm-fb	2008-11-20 23:02:37.000000000 +0000
++++ linux-2.6.27.7/arch/um/drivers/Makefile	2008-11-22 09:40:30.000000000 +0000
+@@ -16,6 +16,10 @@ hostaudio-objs := hostaudio_kern.o
+ ubd-objs := ubd_kern.o ubd_user.o
+ port-objs := port_kern.o port_user.o
+ harddog-objs := harddog_kern.o harddog_user.o
++shmfb-objs := shmfb_kern.o shmfb_user.o \
++	../../../drivers/video/cfbfillrect.o \
++	../../../drivers/video/cfbcopyarea.o \
++	../../../drivers/video/cfbimgblt.o
+ 
+ LDFLAGS_pcap.o := -r $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
+ 
+@@ -59,6 +63,7 @@ obj-$(CONFIG_XTERM_CHAN) += xterm.o xter
+ obj-$(CONFIG_UML_WATCHDOG) += harddog.o
+ obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
+ obj-$(CONFIG_UML_RANDOM) += random.o
++obj-$(CONFIG_SHM_FB) += shmfb.o
+ 
+ # pcap_user.o must be added explicitly.
+ USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o vde_user.o
+diff -up /dev/null linux-2.6.27.7/arch/um/drivers/shmfb_kern.c
+--- /dev/null	2008-11-23 07:49:17.260006524 +0000
++++ linux-2.6.27.7/arch/um/drivers/shmfb_kern.c	2008-11-23 14:01:10.000000000 +0000
+@@ -0,0 +1,600 @@
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/interrupt.h>
++#include <linux/list.h>
++#include <linux/fb.h>
++#include <linux/input.h>
++#include <linux/sched.h>
++#include <linux/console.h>
++#include <linux/pagemap.h>
++#include <linux/mm.h>
++#include <linux/notifier.h>
++#include <linux/reboot.h>
++#include "os.h"
++#include "../../../drivers/video/console/fbcon.h"
++
++#include "irq_kern.h"
++#include "irq_user.h"
++#include "shmfb_user.h"
++#include "shmfb_kern.h"
++
++/*
++ * These are all constant after early boot
++ */
++static int shmfb_enable;
++static int shmfb_width;
++static int shmfb_height;
++static int shmfb_depth;
++static char *shmfb_client;
++
++struct shmfb_kerndata {
++	/* common stuff */
++	struct shmfb_window       *win;
++
++	/* framebuffer driver */
++	struct fb_fix_screeninfo  *fix;
++	struct fb_var_screeninfo  *var;
++	struct fb_info            *info;
++	int                       x1, x2, y1, y2;
++
++	/* fb mapping */
++	struct semaphore          mm_lock;
++	struct vm_area_struct     *vma;
++	atomic_t                  map_refs;
++	int                       faults;
++	int                       nr_pages;
++	struct page               **pages;
++	int                       *mapped;
++
++	/* input drivers */
++	struct input_dev          *kbd;
++	struct input_dev          *mouse;
++
++	/* i/o socket */
++	int                       sock;
++};
++
++static int do_unlink_socket(struct notifier_block *notifier,
++				unsigned long what, void *data)
++{
++	return shmfb_unlink_socket();
++}
++
++
++static struct notifier_block reboot_notifier = {
++	.notifier_call		= do_unlink_socket,
++	.priority		= 0,
++};
++
++void shmfb_mmap_update(struct shmfb_kerndata *kd)
++{
++	int i, off, len;
++	char *src;
++
++	zap_page_range(kd->vma, kd->vma->vm_start,
++		       kd->vma->vm_end - kd->vma->vm_start, NULL);
++	kd->faults = 0;
++	for (i = 0; i < kd->nr_pages; i++) {
++		if (NULL == kd->pages[i])
++			continue;
++		if (0 == kd->mapped[i])
++			continue;
++		kd->mapped[i] = 0;
++		off = i << PAGE_SHIFT;
++		len = PAGE_SIZE;
++		if (len > kd->fix->smem_len - off)
++			len = kd->fix->smem_len - off;
++		src = kmap(kd->pages[i]);
++		memcpy(kd->info->screen_base + off, src, len);
++		kunmap(kd->pages[i]);
++	}
++}
++
++/* ------------------------------------------------------------------------- */
++/* input driver                                                              */
++
++void shmfb_kbd_input(struct shmfb_kerndata *kd, int key, int down)
++{
++	if (key >= KEY_MAX) {
++		if (down)
++			printk(KERN_INFO "%s: unknown key pressed [%d]\n",
++			       __func__, key-KEY_MAX);
++		return;
++	}
++	input_report_key(kd->kbd, key, down);
++	input_sync(kd->kbd);
++}
++
++void shmfb_mouse_input(struct shmfb_kerndata *kd, int key, int down,
++		     int x, int y)
++{
++	if (key != KEY_RESERVED)
++		input_report_key(kd->mouse, key, down);
++	input_report_abs(kd->mouse, ABS_X, x);
++	input_report_abs(kd->mouse, ABS_Y, y);
++	input_sync(kd->mouse);
++}
++
++/* ------------------------------------------------------------------------- */
++/* framebuffer driver                                                        */
++
++static int shmfb_setcolreg(unsigned regno, unsigned red, unsigned green,
++			 unsigned blue, unsigned transp,
++			 struct fb_info *info)
++{
++	if (regno >= info->cmap.len)
++		return 1;
++
++	switch (info->var.bits_per_pixel) {
++	case 16:
++		if (info->var.red.offset == 10) {
++			/* 1:5:5:5 */
++			((u32 *) (info->pseudo_palette))[regno] =
++				((red   & 0xf800) >> 1) |
++				((green & 0xf800) >> 6) |
++				((blue  & 0xf800) >> 11);
++		} else {
++			/* 0:5:6:5 */
++			((u32 *) (info->pseudo_palette))[regno] =
++				((red   & 0xf800)) |
++				((green & 0xfc00) >> 5) |
++				((blue  & 0xf800) >> 11);
++		}
++		break;
++	case 24:
++		red   >>= 8;
++		green >>= 8;
++		blue  >>= 8;
++		((u32 *)(info->pseudo_palette))[regno] =
++			(red   << info->var.red.offset)   |
++			(green << info->var.green.offset) |
++			(blue  << info->var.blue.offset);
++		break;
++	case 32:
++		red   >>= 8;
++		green >>= 8;
++		blue  >>= 8;
++		((u32 *)(info->pseudo_palette))[regno] =
++			(red   << info->var.red.offset)   |
++			(green << info->var.green.offset) |
++			(blue  << info->var.blue.offset);
++		break;
++	}
++	return 0;
++}
++
++static void shmfb_fb_refresh(struct shmfb_kerndata *kd,
++			   int x1, int y1, int w, int h)
++{
++	int x2, y2;
++
++	x2 = x1 + w;
++	y2 = y1 + h;
++	if (0 == kd->x2 || 0 == kd->y2) {
++		kd->x1 = x1;
++		kd->x2 = x2;
++		kd->y1 = y1;
++		kd->y2 = y2;
++	}
++	if (kd->x1 > x1)
++		kd->x1 = x1;
++	if (kd->x2 < x2)
++		kd->x2 = x2;
++	if (kd->y1 > y1)
++		kd->y1 = y1;
++	if (kd->y2 < y2)
++		kd->y2 = y2;
++}
++
++void shmfb_fillrect(struct fb_info *p, const struct fb_fillrect *rect)
++{
++	struct shmfb_kerndata *kd = p->par;
++
++	cfb_fillrect(p, rect);
++	shmfb_fb_refresh(kd, rect->dx, rect->dy, rect->width, rect->height);
++}
++
++void shmfb_imageblit(struct fb_info *p, const struct fb_image *image)
++{
++	struct shmfb_kerndata *kd = p->par;
++
++	cfb_imageblit(p, image);
++	shmfb_fb_refresh(kd, image->dx, image->dy, image->width, image->height);
++}
++
++void shmfb_copyarea(struct fb_info *p, const struct fb_copyarea *area)
++{
++	struct shmfb_kerndata *kd = p->par;
++
++	cfb_copyarea(p, area);
++	shmfb_fb_refresh(kd, area->dx, area->dy, area->width, area->height);
++}
++
++static int shmfb_blank(int blank, struct fb_info *p)
++{
++	return 0;
++}
++
++/* ------------------------------------------------------------------------- */
++
++static void
++shmfb_fb_vm_open(struct vm_area_struct *vma)
++{
++	struct shmfb_kerndata *kd = vma->vm_private_data;
++
++	atomic_inc(&kd->map_refs);
++}
++
++static void
++shmfb_fb_vm_close(struct vm_area_struct *vma)
++{
++	struct shmfb_kerndata *kd = vma->vm_private_data;
++	int i;
++
++	if (!atomic_dec_and_test(&kd->map_refs))
++		return;
++	down(&kd->mm_lock);
++	for (i = 0; i < kd->nr_pages; i++) {
++		if (NULL == kd->pages[i])
++			continue;
++		put_page(kd->pages[i]);
++	}
++	kfree(kd->pages);
++	kfree(kd->mapped);
++	kd->pages    = NULL;
++	kd->mapped   = NULL;
++	kd->vma      = NULL;
++	kd->nr_pages = 0;
++	kd->faults   = 0;
++	up(&kd->mm_lock);
++}
++
++static int shmfb_fb_vm_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
++{
++	struct shmfb_kerndata *kd = vma->vm_private_data;
++	int pgnr = vmf->pgoff;
++	int y1, y2;
++
++	if (pgnr >= kd->nr_pages)
++		return VM_FAULT_SIGBUS;
++
++	down(&kd->mm_lock);
++	if (NULL == kd->pages[pgnr]) {
++		unsigned long vaddr = vma->vm_start + (vmf->pgoff<<PAGE_SHIFT);
++		struct page *page;
++		page = alloc_page_vma(GFP_HIGHUSER, vma, vaddr);
++		if (!page)
++			return VM_FAULT_SIGBUS;
++		clear_user_highpage(page, vaddr);
++		kd->pages[pgnr] = page;
++	}
++	get_page(kd->pages[pgnr]);
++	kd->mapped[pgnr] = 1;
++	kd->faults++;
++	up(&kd->mm_lock);
++
++	y1 = pgnr * PAGE_SIZE / kd->fix->line_length;
++	y2 = (pgnr * PAGE_SIZE + PAGE_SIZE-1) / kd->fix->line_length;
++	if (y2 > kd->var->yres)
++		y2 = kd->var->yres;
++	shmfb_fb_refresh(kd, 0, y1, kd->var->xres, y2 - y1);
++
++	vmf->page = kd->pages[pgnr];
++	return 0;
++}
++
++static struct vm_operations_struct shmfb_fb_vm_ops = {
++	.open     = shmfb_fb_vm_open,
++	.close    = shmfb_fb_vm_close,
++	.fault    = shmfb_fb_vm_fault,
++};
++
++int shmfb_mmap(struct fb_info *p, struct vm_area_struct *vma)
++{
++	struct shmfb_kerndata *kd = p->par;
++	int retval;
++	int fb_pages;
++	int map_pages;
++
++	down(&kd->mm_lock);
++
++	retval = -EBUSY;
++	if (kd->vma) {
++		printk(KERN_ERR "%s: busy, mapping exists\n", __func__);
++		goto out;
++	}
++
++	retval = -EINVAL;
++	if (!(vma->vm_flags & VM_WRITE)) {
++		printk(KERN_ERR "%s: need writable mapping\n", __func__);
++		goto out;
++	}
++	if (!(vma->vm_flags & VM_SHARED)) {
++		printk(KERN_ERR "%s: need shared mapping\n", __func__);
++		goto out;
++	}
++	if (vma->vm_pgoff != 0) {
++		printk(KERN_ERR
++			"%s: need offset 0 (vm_pgoff=%ld)\n", __func__,
++		       vma->vm_pgoff);
++		goto out;
++	}
++
++	fb_pages  = (p->fix.smem_len             + PAGE_SIZE-1) >> PAGE_SHIFT;
++	map_pages = (vma->vm_end - vma->vm_start + PAGE_SIZE-1) >> PAGE_SHIFT;
++	if (map_pages > fb_pages) {
++		printk(KERN_ERR "%s: mapping too big (%ld>%d)\n", __func__,
++		       vma->vm_end - vma->vm_start, p->fix.smem_len);
++		goto out;
++	}
++
++	retval = -ENOMEM;
++	kd->pages = kcalloc(map_pages, sizeof(struct page *), GFP_KERNEL);
++	if (NULL == kd->pages)
++		goto out;
++	kd->mapped = kcalloc(map_pages, sizeof(int), GFP_KERNEL);
++	if (NULL == kd->mapped) {
++		kfree(kd->pages);
++		goto out;
++	}
++	kd->vma = vma;
++	kd->nr_pages = map_pages;
++	atomic_set(&kd->map_refs, 1);
++	kd->faults = 0;
++
++	vma->vm_ops   = &shmfb_fb_vm_ops;
++	vma->vm_flags |= VM_DONTEXPAND | VM_RESERVED;
++	vma->vm_flags &= ~VM_IO; /* using shared anonymous pages */
++	vma->vm_private_data = kd;
++	retval = 0;
++
++out:
++	up(&kd->mm_lock);
++	return retval;
++}
++
++/* ------------------------------------------------------------------------- */
++
++static struct fb_ops shmfb_fb_ops = {
++	.owner		= THIS_MODULE,
++	.fb_setcolreg	= shmfb_setcolreg,
++	.fb_fillrect	= shmfb_fillrect,
++	.fb_copyarea	= shmfb_copyarea,
++	.fb_imageblit	= shmfb_imageblit,
++	.fb_blank       = shmfb_blank,
++	.fb_cursor	= soft_cursor,
++	.fb_mmap        = shmfb_mmap,
++};
++
++/* ------------------------------------------------------------------------- */
++
++void shmfb_process_request(struct shmfb_request *req)
++{
++	if (req->request.type == SHMFB_MOTION_EVENT) {
++		shmfb_mouse_input(req->kd, KEY_RESERVED, 0, req->request.x,
++			req->request.y);
++	} else if (req->request.type == SHMFB_BUTTON_EVENT) {
++		shmfb_mouse_input(req->kd, req->request.key, req->request.down,
++				req->request.x, req->request.y);
++	} else if (req->request.type == SHMFB_KEY_EVENT) {
++		shmfb_kbd_input(req->kd, req->request.key, req->request.down);
++	}
++
++	down(&req->kd->mm_lock);
++	if (req->kd->faults > 0)
++		shmfb_mmap_update(req->kd);
++	up(&req->kd->mm_lock);
++
++	shmfb_reply(req, SHMFB_UPDATE_EVENT, req->kd->x1,
++			req->kd->y1, req->kd->x2, req->kd->y2);
++
++	req->kd->x1 = req->kd->x2 = req->kd->y1 = req->kd->y2 = 0;
++}
++
++static LIST_HEAD(shmfb_requests);
++
++static void shmfb_work_proc(struct work_struct *unused)
++{
++	struct shmfb_entry *req;
++	unsigned long flags;
++
++	while (!list_empty(&shmfb_requests)) {
++		local_irq_save(flags);
++		req = list_entry(shmfb_requests.next, struct shmfb_entry, list);
++		list_del(&req->list);
++		local_irq_restore(flags);
++		shmfb_process_request(&req->request);
++		kfree(req);
++	}
++}
++
++static DECLARE_WORK(shmfb_work, shmfb_work_proc);
++
++static irqreturn_t shmfb_interrupt(int irq, void *data)
++{
++	struct shmfb_kerndata *kd = (struct shmfb_kerndata *)data;
++	struct shmfb_entry *new;
++	struct shmfb_request req;
++
++	while (shmfb_get_request(kd->sock, &req)) {
++		req.kd = kd;
++		new = kmalloc(sizeof(*new), GFP_NOWAIT);
++		if (new == NULL)
++			shmfb_reply(&req, SHMFB_ERROR_EVENT, 0, 0, 0, 0);
++		else {
++			new->request = req;
++			list_add(&new->list, &shmfb_requests);
++		}
++	}
++	if (!list_empty(&shmfb_requests))
++		schedule_work(&shmfb_work);
++	reactivate_fd(kd->sock, SHMFB_IRQ);
++	return IRQ_HANDLED;
++}
++
++static int __init shmfb_probe(struct shmfb_kerndata **data)
++{
++	struct shmfb_kerndata *kd;
++	int i, err;
++
++	*data = NULL;
++	if (!shmfb_enable)
++		return -ENODEV;
++
++	kd = kzalloc(sizeof(*kd), GFP_KERNEL);
++	if (NULL == kd)
++		return -ENOMEM;
++
++	/* keyboard setup */
++	kd->kbd = input_allocate_device();
++	set_bit(EV_KEY, kd->kbd->evbit);
++	for (i = 0; i < KEY_MAX; i++)
++		set_bit(i, kd->kbd->keybit);
++	kd->kbd->id.bustype = BUS_HOST;
++	kd->kbd->name = "virtual keyboard";
++	kd->kbd->phys = "shmfb/input0";
++	err = input_register_device(kd->kbd);
++	if (err) {
++		input_free_device(kd->kbd);
++		goto fail_free;
++	}
++
++	/* mouse setup */
++	kd->mouse = input_allocate_device();
++	set_bit(EV_ABS,     kd->mouse->evbit);
++	set_bit(EV_KEY,     kd->mouse->evbit);
++	set_bit(BTN_TOUCH,  kd->mouse->keybit);
++	set_bit(BTN_LEFT,   kd->mouse->keybit);
++	set_bit(BTN_MIDDLE, kd->mouse->keybit);
++	set_bit(BTN_RIGHT,  kd->mouse->keybit);
++	set_bit(ABS_X,      kd->mouse->absbit);
++	set_bit(ABS_Y,      kd->mouse->absbit);
++	input_set_abs_params(kd->mouse, ABS_X, 0, shmfb_width, 0, 0);
++	input_set_abs_params(kd->mouse, ABS_Y, 0, shmfb_height, 0, 0);
++	kd->mouse->id.bustype = BUS_HOST;
++	kd->mouse->name = "virtual mouse";
++	kd->mouse->phys = "shmfb/input1";
++	err = input_register_device(kd->mouse);
++	if (err) {
++		input_free_device(kd->mouse);
++		goto fail_unregister_kbd;
++	}
++
++	kd->win = shmfb_open(shmfb_width, shmfb_height, shmfb_depth);
++	if (NULL == kd->win) {
++		printk(KERN_ERR "fb: can't open shared memory framebuffer\n");
++		goto fail_unregister_all;
++	}
++	kd->fix = shmfb_get_fix(kd->win);
++	kd->var = shmfb_get_var(kd->win);
++
++	/* framebuffer setup */
++	kd->info = framebuffer_alloc(sizeof(u32) * 256, NULL);
++	kd->info->pseudo_palette = kd->info->par;
++	kd->info->par = kd;
++	kd->info->screen_base = shmfb_get_fbmem(kd->win);
++
++	kd->info->fbops = &shmfb_fb_ops;
++	kd->info->var = *kd->var;
++	kd->info->fix = *kd->fix;
++	kd->info->flags = FBINFO_FLAG_DEFAULT;
++
++	fb_alloc_cmap(&kd->info->cmap, 256, 0);
++	err = register_framebuffer(kd->info);
++	if (err)
++		goto fail_unregister_all;
++
++	printk(KERN_INFO "fb%d: %s frame buffer device, "
++		"%dx%d, %d bpp (%d:%d:%d)\n",
++		kd->info->node, kd->info->fix.id,
++		kd->var->xres, kd->var->yres,
++		kd->var->bits_per_pixel, kd->var->red.length,
++		kd->var->green.length, kd->var->blue.length);
++
++	/* misc common kernel stuff */
++	init_MUTEX(&kd->mm_lock);
++
++	*data = kd;
++
++	return 0;
++
++fail_unregister_all:
++	input_unregister_device(kd->mouse);
++fail_unregister_kbd:
++	input_unregister_device(kd->kbd);
++fail_free:
++	kfree(kd);
++	return -ENODEV;
++}
++
++static int __init shmfb_init(void)
++{
++	struct shmfb_kerndata *kd;
++	int sock;
++	int err;
++	char file[256];
++
++	err = shmfb_probe(&kd);
++	if (err)
++		return err;
++
++	if (umid_file_name("shmfb", file, sizeof(file)))
++		return -1;
++	snprintf(shmfb_socket_name, sizeof(file), "%s", file);
++
++	sock = os_create_unix_socket(file, sizeof(file), 1);
++	if (sock < 0) {
++		printk(KERN_ERR "Failed to initialize shmfb socket\n");
++		return 1;
++	}
++	if (os_set_fd_block(sock, 0))
++		goto out;
++
++	register_reboot_notifier(&reboot_notifier);
++
++	kd->sock = sock;
++	err = um_request_irq(SHMFB_IRQ, sock, IRQ_READ, shmfb_interrupt,
++			     IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			     "shmfb", (void *)kd);
++	if (err) {
++		printk(KERN_ERR "Failed to get IRQ for shmfb io\n");
++		goto out;
++	}
++
++	printk(KERN_INFO "shmfb io initialized on %s\n", shmfb_socket_name);
++
++	if (shmfb_client)
++		shmfb_client_open(shmfb_client);
++
++	return 0;
++
++out:
++	os_close_file(sock);
++	return 1;
++}
++
++static void __exit shmfb_fini(void)
++{
++	/* FIXME */
++}
++
++module_init(shmfb_init);
++module_exit(shmfb_fini);
++
++static int shmfb_setup(char *str)
++{
++	if (3 == sscanf(str, "%dx%dx%d", &shmfb_width, &shmfb_height,
++				&shmfb_depth)) {
++		shmfb_enable = 1;
++		return 0;
++	}
++	return -1;
++}
++__setup("shmfb=", shmfb_setup);
++
++static int shmfb_client_setup(char *str)
++{
++	shmfb_client = str;
++	return 0;
++}
++__setup("shmfb_client=", shmfb_client_setup);
+diff -up /dev/null linux-2.6.27.7/arch/um/drivers/shmfb_user.c
+--- /dev/null	2008-11-23 07:49:17.260006524 +0000
++++ linux-2.6.27.7/arch/um/drivers/shmfb_user.c	2008-11-23 09:22:43.000000000 +0000
+@@ -0,0 +1,209 @@
++#include <errno.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <sys/socket.h>
++#include <sys/uio.h>
++#include <sys/un.h>
++
++#include <sys/ipc.h>
++#include <sys/shm.h>
++
++#include <linux/fb.h>
++#include <linux/input.h>
++
++#include "init.h"
++#include "kern_constants.h"
++#include "os.h"
++#include "user.h"
++#include "shmfb_user.h"
++
++/* ------------------------------------------------------------------------- */
++
++struct shmfb_window {
++	/* shared memory */
++	char *buffer;
++
++	/* framebuffer -- kernel */
++	struct fb_fix_screeninfo  fix;
++	struct fb_var_screeninfo  var;
++};
++
++char shmfb_socket_name[256];
++
++int shmfb_unlink_socket(void)
++{
++	unlink(shmfb_socket_name);
++	return 0;
++}
++
++/* ------------------------------------------------------------------------- */
++
++static void __init create_shmid_file(int width, int height, int depth,
++						key_t shmid)
++{
++	char file[256];
++	char buffer[20];
++	int fd, n;
++
++	if (umid_file_name("shmid", file, sizeof(file)))
++		return;
++
++	fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0644);
++	if (fd < 0) {
++		printk(UM_KERN_ERR "Open of shmid file \"%s\" failed: %s\n",
++			file, strerror(errno));
++		return;
++	}
++
++	snprintf(buffer, sizeof(buffer), "%d %d %d %d\n", shmid, width,
++			height, depth);
++	n = write(fd, buffer, strlen(buffer));
++	if (n != strlen(buffer))
++		printk(UM_KERN_ERR "Write of shmid file failed: %s\n",
++			strerror(errno));
++
++	close(fd);
++}
++
++struct shmfb_window * __init shmfb_open(int width, int height, int depth)
++{
++	struct shmfb_window *win;
++	key_t shmid;
++
++	win = malloc(sizeof(*win));
++	if (NULL == win)
++		goto fail;
++
++	shmid = shmget(IPC_PRIVATE, width*height*depth, IPC_CREAT|0777);
++	if (-1 == shmid)
++		goto fail_free;
++
++	win->buffer = (char *)shmat(shmid, NULL, 0);
++	shmctl(shmid, IPC_RMID, 0);
++	if (NULL == win->buffer)
++		goto fail_free;
++
++	/* fill structs */
++	win->var.xres           = width;
++	win->var.xres_virtual   = width;
++	win->var.yres           = height;
++	win->var.yres_virtual   = height;
++	win->var.xoffset        = 0;
++	win->var.yoffset        = 0;
++	win->var.grayscale      = 0;
++	win->var.nonstd         = 0;
++	win->var.bits_per_pixel = depth * 8;
++	win->var.pixclock       = 10000000 / win->var.xres *
++					1000 / win->var.yres;
++	win->var.left_margin    = (win->var.xres / 8) & 0xf8;
++	win->var.hsync_len      = (win->var.xres / 8) & 0xf8;
++
++	if (depth == 4) {
++		win->var.red.offset = 16;
++		win->var.red.length = 8;
++		win->var.green.offset = 8;
++		win->var.green.length = 8;
++		win->var.blue.offset = 0;
++		win->var.blue.length = 8;
++		win->var.transp.offset = 0;
++		win->var.transp.length = 0;
++	} else {
++		win->var.red.offset = 10;
++		win->var.red.length = 5;
++		win->var.green.offset = 5;
++		win->var.green.length = 5;
++		win->var.blue.offset = 0;
++		win->var.blue.length = 5;
++		win->var.transp.offset = 0;
++		win->var.transp.length = 0;
++	}
++
++	win->var.activate       = FB_ACTIVATE_NOW;
++	win->var.height         = -1;
++	win->var.width          = -1;
++	win->var.right_margin   = 32;
++	win->var.upper_margin   = 16;
++	win->var.lower_margin   = 4;
++	win->var.vsync_len      = 4;
++	win->var.vmode          = FB_VMODE_NONINTERLACED;
++	win->var.rotate         = 0;
++
++	win->fix.visual         = FB_VISUAL_TRUECOLOR;
++	win->fix.line_length    = width * depth;
++	win->fix.smem_start     = 0;
++	win->fix.smem_len       = win->fix.line_length * win->var.yres;
++	win->fix.xpanstep       = 0;
++	win->fix.ypanstep       = 0;
++	win->fix.ywrapstep      = 0;
++
++	strcpy(win->fix.id, "shmfb");
++	win->fix.type		= FB_TYPE_PACKED_PIXELS;
++	win->fix.accel		= FB_ACCEL_NONE;
++
++	create_shmid_file(width, height, depth, shmid);
++
++	return win;
++
++fail_free:
++	free(win);
++fail:
++	return NULL;
++}
++
++struct fb_fix_screeninfo *shmfb_get_fix(struct shmfb_window *win)
++{
++	return &win->fix;
++}
++
++struct fb_var_screeninfo *shmfb_get_var(struct shmfb_window *win)
++{
++	return &win->var;
++}
++
++void *shmfb_get_fbmem(struct shmfb_window *win)
++{
++	return win->buffer;
++}
++
++int shmfb_get_request(int fd, struct shmfb_request *req)
++{
++	req->originlen = sizeof(req->origin);
++	req->len = recvfrom(fd, &req->request, sizeof(req->request), 0,
++			    (struct sockaddr *) req->origin, &req->originlen);
++	if (req->len < 0)
++		return 0;
++
++	req->originating_fd = fd;
++
++	return 1;
++}
++
++int shmfb_reply(struct shmfb_request *req, enum shmfb_event_code type,
++		int x1, int y1, int x2, int y2)
++{
++	struct shmfb_io_reply reply;
++	int n;
++
++	reply.type = type;
++	reply.x1 = x1;
++	reply.y1 = y1;
++	reply.x2 = x2;
++	reply.y2 = y2;
++
++	n = sendto(req->originating_fd, &reply, sizeof(reply), 0,
++			  (struct sockaddr *) req->origin, req->originlen);
++	if (n < 0)
++		return -errno;
++
++	return 0;
++}
++
++void shmfb_client_open(char *file)
++{
++	char *argv[] = { file, "--umid", get_umid(), NULL };
++
++	run_helper(NULL, NULL, argv);
++}
+diff -up /dev/null linux-2.6.27.7/arch/um/include/shmfb_kern.h
+--- /dev/null	2008-11-23 07:49:17.260006524 +0000
++++ linux-2.6.27.7/arch/um/include/shmfb_kern.h	2008-11-22 09:40:30.000000000 +0000
+@@ -0,0 +1,16 @@
++/* shmfb_kern */
++
++struct shmfb_window;
++struct shmfb_kerndata;
++
++extern char shmfb_socket_name[];
++
++void shmfb_kbd_input(struct shmfb_kerndata *kd, int key, int down);
++void shmfb_mouse_input(struct shmfb_kerndata *kd, int key, int down,
++			int x, int y);
++
++struct shmfb_entry {
++	struct list_head list;
++	struct shmfb_request request;
++};
++
+diff -up /dev/null linux-2.6.27.7/arch/um/include/shmfb_user.h
+--- /dev/null	2008-11-23 07:49:17.260006524 +0000
++++ linux-2.6.27.7/arch/um/include/shmfb_user.h	2008-11-23 09:23:33.000000000 +0000
+@@ -0,0 +1,54 @@
++/* shmfb_user */
++
++#ifndef __KERNEL__
++#include <stdint.h>
++#define u32 uint32_t
++#endif
++
++#include "sysdep/ptrace.h"
++
++struct shmfb_window;
++struct shmfb_kerndata;
++
++struct shmfb_window *shmfb_open(int width, int height, int depth);
++void *shmfb_get_fbmem(struct shmfb_window *win);
++
++struct fb_fix_screeninfo *shmfb_get_fix(struct shmfb_window *win);
++struct fb_var_screeninfo *shmfb_get_var(struct shmfb_window *win);
++
++enum shmfb_event_code { SHMFB_ERROR_EVENT, SHMFB_BUTTON_EVENT,
++	SHMFB_KEY_EVENT, SHMFB_MOTION_EVENT, SHMFB_UPDATE_EVENT };
++
++struct shmfb_io_request {
++	u32 type;
++	u32 key;
++	u32 down;
++	u32 x;
++	u32 y;
++};
++
++struct shmfb_io_reply {
++	u32 type;
++	u32 x1;
++	u32 y1;
++	u32 x2;
++	u32 y2;
++};
++
++struct shmfb_request {
++	int len;
++
++	int originating_fd;
++	unsigned int originlen;
++	unsigned char origin[128];		/* sockaddr_un */
++
++	struct shmfb_kerndata *kd;
++
++	struct shmfb_io_request request;
++};
++
++int shmfb_unlink_socket(void);
++int shmfb_get_request(int fd, struct shmfb_request *req);
++int shmfb_reply(struct shmfb_request *req, enum shmfb_event_code type,
++		int x1, int y1, int x2, int y2);
++void shmfb_client_open(char *file);
+diff -up linux-2.6.27.7/arch/um/Kconfig.shm-fb linux-2.6.27.7/arch/um/Kconfig
+--- linux-2.6.27.7/arch/um/Kconfig.shm-fb	2008-11-20 23:02:37.000000000 +0000
++++ linux-2.6.27.7/arch/um/Kconfig	2008-11-22 09:40:30.000000000 +0000
+@@ -99,6 +99,14 @@ config LD_SCRIPT_DYN
+ 	default y
+ 	depends on !LD_SCRIPT_STATIC
+ 
++source "drivers/input/Kconfig"
++source "drivers/char/Kconfig"
++source "drivers/video/Kconfig"
++
++config SHM_FB
++	bool "Shared Memory Framebuffer driver"
++	depends on FB && !MODE_TT && !STATIC_LINK
++
+ source "fs/Kconfig.binfmt"
+ 
+ config HOSTFS
+@@ -263,7 +271,7 @@ source "drivers/leds/Kconfig"
+ 
+ #This is just to shut up some Kconfig warnings, so no prompt.
+ config INPUT
+-	bool
++	tristate
+ 	default n
+ 
+ source "arch/um/Kconfig.debug"
+diff -up linux-2.6.27.7/arch/um/kernel/um_arch.c.shm-fb linux-2.6.27.7/arch/um/kernel/um_arch.c
+--- linux-2.6.27.7/arch/um/kernel/um_arch.c.shm-fb	2008-11-20 23:02:37.000000000 +0000
++++ linux-2.6.27.7/arch/um/kernel/um_arch.c	2008-11-22 09:40:30.000000000 +0000
+@@ -10,6 +10,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/string.h>
+ #include <linux/utsname.h>
++#include <linux/console.h>
+ #include <asm/pgtable.h>
+ #include <asm/processor.h>
+ #include <asm/setup.h>
+@@ -377,6 +378,9 @@ void __init setup_arch(char **cmdline_p)
+ 	strlcpy(boot_command_line, command_line, COMMAND_LINE_SIZE);
+ 	*cmdline_p = command_line;
+ 	setup_hostinfo(host_info, sizeof host_info);
++#if defined(CONFIG_DUMMY_CONSOLE)
++	conswitchp = &dummy_con;
++#endif
+ }
+ 
+ void __init check_bugs(void)
+diff -up linux-2.6.27.7/drivers/char/Kconfig.shm-fb linux-2.6.27.7/drivers/char/Kconfig
+--- linux-2.6.27.7/drivers/char/Kconfig.shm-fb	2008-11-20 23:02:37.000000000 +0000
++++ linux-2.6.27.7/drivers/char/Kconfig	2008-11-22 09:40:30.000000000 +0000
+@@ -68,7 +68,7 @@ config VT_CONSOLE
+ 
+ config HW_CONSOLE
+ 	bool
+-	depends on VT && !S390 && !UML
++	depends on VT && !S390
+ 	default y
+ 
+ config VT_HW_CONSOLE_BINDING
+diff -up linux-2.6.27.7/drivers/video/fbmem.c.shm-fb linux-2.6.27.7/drivers/video/fbmem.c
+--- linux-2.6.27.7/drivers/video/fbmem.c.shm-fb	2008-11-20 23:02:37.000000000 +0000
++++ linux-2.6.27.7/drivers/video/fbmem.c	2008-11-22 09:40:30.000000000 +0000
+@@ -1310,9 +1310,11 @@ fb_mmap(struct file *file, struct vm_are
+ 	/* This is an IO map - tell maydump to skip this VMA */
+ 	vma->vm_flags |= VM_IO | VM_RESERVED;
+ 	fb_pgprotect(file, vma, off);
++#ifndef CONFIG_UML
+ 	if (io_remap_pfn_range(vma, vma->vm_start, off >> PAGE_SHIFT,
+ 			     vma->vm_end - vma->vm_start, vma->vm_page_prot))
+ 		return -EAGAIN;
++#endif
+ 	return 0;
+ }
+ 
+diff -up linux-2.6.27.7/drivers/video/Kconfig.shm-fb linux-2.6.27.7/drivers/video/Kconfig
+--- linux-2.6.27.7/drivers/video/Kconfig.shm-fb	2008-11-20 23:02:37.000000000 +0000
++++ linux-2.6.27.7/drivers/video/Kconfig	2008-11-22 09:40:30.000000000 +0000
+@@ -3,7 +3,7 @@
+ #
+ 
+ menu "Graphics support"
+-	depends on HAS_IOMEM
++	depends on HAS_IOMEM || UML
+ 
+ source "drivers/char/agp/Kconfig"
+ 
+diff -up /dev/null linux-2.6.27.7/include/asm-um/fb.h
+--- /dev/null	2008-11-23 07:49:17.260006524 +0000
++++ linux-2.6.27.7/include/asm-um/fb.h	2008-11-22 09:40:30.000000000 +0000
+@@ -0,0 +1,15 @@
++#ifndef _ASM_FB_H_
++#define _ASM_FB_H_
++
++#include <linux/fb.h>
++#include <linux/fs.h>
++#include <asm/page.h>
++
++extern int fb_is_primary_device(struct fb_info *info);
++
++static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
++				unsigned long off)
++{
++}
++
++#endif /* _ASM_FB_H_ */
+diff -up linux-2.6.27.7/include/asm-um/io.h.shm-fb linux-2.6.27.7/include/asm-um/io.h
+--- linux-2.6.27.7/include/asm-um/io.h.shm-fb	2008-11-20 23:02:37.000000000 +0000
++++ linux-2.6.27.7/include/asm-um/io.h	2008-11-22 09:40:30.000000000 +0000
+@@ -33,6 +33,31 @@ static inline void * phys_to_virt(unsign
+  */
+ #define xlate_dev_kmem_ptr(p)	p
+ 
++static inline __u8 __readb(const volatile void __iomem *addr)
++{
++	return *(__force volatile __u8 *)addr;
++}
++static inline __u16 __readw(const volatile void __iomem *addr)
++{
++	return *(__force volatile __u16 *)addr;
++}
++static __always_inline __u32 __readl(const volatile void __iomem *addr)
++{
++	return *(__force volatile __u32 *)addr;
++}
++static inline __u64 __readq(const volatile void __iomem *addr)
++{
++	return *(__force volatile __u64 *)addr;
++}
++#define readb(x) __readb(x)
++#define readw(x) __readw(x)
++#define readl(x) __readl(x)
++#define readq(x) __readq(x)
++#define __raw_readb readb
++#define __raw_readw readw
++#define __raw_readl readl
++#define __raw_readq readq
++
+ static inline void writeb(unsigned char b, volatile void __iomem *addr)
+ {
+ 	*(volatile unsigned char __force *) addr = b;
+diff -up linux-2.6.27.7/include/asm-um/irq.h.shm-fb linux-2.6.27.7/include/asm-um/irq.h
+--- linux-2.6.27.7/include/asm-um/irq.h.shm-fb	2008-11-20 23:02:37.000000000 +0000
++++ linux-2.6.27.7/include/asm-um/irq.h	2008-11-22 09:40:30.000000000 +0000
+@@ -16,8 +16,9 @@
+ #define TELNETD_IRQ 		12
+ #define XTERM_IRQ 		13
+ #define RANDOM_IRQ 		14
++#define SHMFB_IRQ 		15
+ 
+-#define LAST_IRQ RANDOM_IRQ
++#define LAST_IRQ SHMFB_IRQ
+ #define NR_IRQS (LAST_IRQ + 1)
+ 
+ #endif
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
 Build the coolest Linux based applications with Moblin SDK & win great prizes
 Grand prize is a trip for two to an Open Source event anywhere in the world
 http://moblin-contest.org/redirect.php?banner_id=100&url=/
---===============6926045283688810870==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============6926045283688810870==--
-
