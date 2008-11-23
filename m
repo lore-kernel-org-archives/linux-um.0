@@ -1,36 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rmy@tigress.co.uk>) id 1L4ImY-0003FW-J0
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 Nov 2008 17:30:02 +0000
-Received: from mail.tigress.co.uk ([195.172.168.163] helo=intgat.tigress.co.uk)
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1L4ImV-0005IS-79
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 Nov 2008 17:30:02 +0000
-Received: (from uucp@localhost)
-	by intgat.tigress.co.uk (8.13.1/8.13.1) id mANHTtIu013295
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 23 Nov 2008 17:29:55 GMT
-Received: from tiffany.internal.tigress.co.uk (tiffany [157.147.97.76])
-	by tigress.co.uk (8.12.11.20060308/8.11.6) with ESMTP id mANHTBfo016281
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 23 Nov 2008 17:29:11 GMT
-Received: from tiffany.internal.tigress.co.uk (localhost [127.0.0.1])
-	by tiffany.internal.tigress.co.uk (8.13.8+Sun/8.13.8) with ESMTP id
-	mANHTA7l020563 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 23 Nov 2008 17:29:11 GMT
-Received: (from rmy@localhost)
-	by tiffany.internal.tigress.co.uk (8.13.8+Sun/8.13.8/Submit) id
-	mANHT1uE020562 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 23 Nov 2008 17:29:01 GMT
-From: Ron Yorston <rmy@tigress.co.uk>
-Message-Id: <200811231729.mANHT1uE020562@tiffany.internal.tigress.co.uk>
-Date: Sun, 23 Nov 2008 17:28:59 +0000
-MIME-Version: 1.0
-Subject: [uml-devel] A shared memory framebuffer for UML
+	(envelope-from <vincent-perrier@club-internet.fr>)
+	id 1L4Ot7-0005Gw-SZ for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Nov 2008 00:01:13 +0000
+Received: from relay-dv.club-internet.fr ([194.158.96.208])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1L4Ot5-0003jX-KL for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Nov 2008 00:01:13 +0000
+From: root <vincent-perrier@club-internet.fr>
+In-Reply-To: <200811231729.mANHT1uE020562@tiffany.internal.tigress.co.uk>
+References: <200811231729.mANHT1uE020562@tiffany.internal.tigress.co.uk>
+Date: Mon, 24 Nov 2008 00:59:03 +0100
+Message-Id: <1227484743.11944.19.camel@cloonix>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] A shared memory framebuffer for UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,100 +25,106 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Ron Yorston <rmy@tigress.co.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-I've done some work on a patch to implement a shared memory framebuffer
-for UML.  (Patch to follow in a separate message, or pick it up from
-my website:  http://intgat.tigress.co.uk/rmy/shmfb/index.html)
-
-Apply the patch and build the kernel in the usual way:
-
-   tar xfj linux-2.6.27.7.tar.bz2
-   cd linux-2.6.27.7
-   patch -p1 <linux-2.6.27.7-shm-fb.patch
-   make defconfig ARCH=um
-   make menuconfig ARCH=um
-   make linux ARCH=um
-
-During the menuconfig phase you should enable framebuffer devices
-(UML-specific options/Graphics support/Support for frame buffer
-devices). Then, in the UML-specific options/Graphics support/Console
-display driver support menu disable VGA text console, enable Framebuffer
-Console support, enable Select compiled-in fonts and select a suitable
-font, for example, VGA 8x16 font. Back in the UML-specific options menu
-enable Shared Memory Framebuffer driver.
-
-To enable the shared memory framebuffer device add the option
-shmfb=widthxheightxdepth to the kernel command line. For example,
-shmfb=800x600x4. The width and height can have any reasonable values. The
-depth can currently only be 2 or 4 bytes per pixel.
-
-When the kernel boots it will use the framebuffer device as its console,
-but you won't be able to see anything! To make the framebuffer console
-visible you need a separate client application to run on the host. Two
-clients are provided, a simple Xt-based window and a VNC server:
-
-   http://intgat.tigress.co.uk/rmy/shmfb/uml_fb-0.1.0.tar.gz
-
-To build the VNC server client you'll need libvncserver. If this isn't
-in your distro's package repository you can get it from the project's
-Sourceforge page: http://libvncserver.sourceforge.net/.
-
-Once you've built the clients you can run them as:
-
-   uml_xtfb --umid <name>
-
-or
-
-   uml_vncfb --umid <name>
-
-where <name> is the name of your UML instance. If you've run the VNC
-client you still won't be able to see anything! You now need to run a
-VNC viewer:
-
-   vncviewer localhost:0
-
-As an alternative to starting the client programs by hand you can also use
-a kernel command line option of the form shmfb_client=<path_to_client>,
-where <path_to_client> is, as you might expect, the path to the client
-you'd like to use.
-
-There are a few problems with the client programs:
-
-    * the cursor in the virtual console doesn't track the mouse very well;
-    * the X server in the UML instance tends to get confused and sends
-      the mouse to the top left hand corner of the display, where it sits
-      and sulks.
-    * the mouse wheel doesn't work;
-    * the VNC client is hardcoded for a US keyboard. (Probably. I've
-      got a UK keyboard, so some of the less used characters may not be
-      quite right);
-    * if any keys are pressed when the client loses focus it never sees
-      the key release, so thinks that, for example, the control key is
-      always pressed.
-
-(Adjusting the mouse acceleration in the console mouse server (gpmd)
-or X server (set m, or your desktop manager's GUI equivalent) helps with
-some of the mouse issues.)
-
-The kernel patch is based on the X11 framebuffer driver by Gerd
-Knorr. Without Gerd's work I wouldn't have been able to achieve
-anything. Thanks!
-
-Any problems with the patch are my fault.  In particular, I'd very much
-appreciate some hint as to what should be done about fb_pgprotect in fb.h.
-
-Ron
-
--------------------------------------------------------------------------
-This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great prizes
-Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+SGVsbG8gUm9uIFlvcnN0b24sCkkgd291bGQgbGlrZSB0byBoYXZlIGJvdGggYXVkaW8gYW5kIHZp
+ZGVvIG9uIHRoZSBob3N0IGR1cmluZyBhIApzaXAgY29tbXVuaWNhdGlvbiB3aXRoIGxpbnBob25l
+LCBla2lnYSBvciBhbm90aGVyIG9wZW4gc291cmNlCmJldHdlZW4gMiBVTUwgbWFjaGluZXMgaW4g
+YSB2aXJ0dWFsIG5ldHdvcmsuCkkgYWxyZWFkeSBoYXZlIHRoZSBzb3VuZCBidXQgdGhlIHNpcCBz
+b2Z0d2FyZXMgc2hvdyB1Z2x5IHNjcmVlbnMKYW5kIG5lZWQgL2Rldi92aWRlby4uLiB0byBnZXQg
+YSBkaXNwbGF5LgpBdCBodHRwOi8vY2xvd25peC5uZXQgYSB2aXJ0dWFsIG5ldHdvcmsgd2l0aCBz
+b3VuZCBpcyBhdmFpbGxhYmxlLApwdWxzZWF1ZGlvIHRyYW5zZmVycyB0aGUgYXVkaW8gdG8gYW5k
+IGZyb20gdGhlIGhvc3QgdGhyb3VnaCB0aGUKdmlydHVhbCBuZXR3b3JrLgpOb3cgbXkgcXVlc3Rp
+b246IHdvdWxkIHRoaXMgZnJhbWVidWZmZXIgaGVscCBpbiB0aGUgdmlkZW8gcGFydApvZiB0aGUg
+c2lwIGNvbW11bmljYXRpb24/IENvdWxkIHRoZSBzaXAgYXBwbGljYXRpb24gdHJhbnNtaXQKaW1h
+Z2VzIHRvIHRoZSBob3N0J3MgZGlzcGxheT8gQ291bGQgdGhlIHNpcCBhcHBsaWNhdGlvbiByZWNl
+aXZlCmZyb20gYSByZWFsIHdlYmNhbT8KTXkgcXVlc3Rpb25zIG1heSBub3QgY29uY2VybiB5b3Vy
+IHdvcmsgYXQgYWxsLCBhcyBJIGRvIG5vdCBrbm93IAptdWNoIGFib3V0IHdlYmNhbXMgYW5kIGRp
+c3BsYXlzIHlldC4gClJlZ2FyZHMKVmluY2VudCBQZXJyaWVyCgoKTGUgZGltYW5jaGUgMjMgbm92
+ZW1icmUgMjAwOCDDoCAxNzoyOCArMDAwMCwgUm9uIFlvcnN0b24gYSDDqWNyaXQgOgo+IEkndmUg
+ZG9uZSBzb21lIHdvcmsgb24gYSBwYXRjaCB0byBpbXBsZW1lbnQgYSBzaGFyZWQgbWVtb3J5IGZy
+YW1lYnVmZmVyCj4gZm9yIFVNTC4gIChQYXRjaCB0byBmb2xsb3cgaW4gYSBzZXBhcmF0ZSBtZXNz
+YWdlLCBvciBwaWNrIGl0IHVwIGZyb20KPiBteSB3ZWJzaXRlOiAgaHR0cDovL2ludGdhdC50aWdy
+ZXNzLmNvLnVrL3JteS9zaG1mYi9pbmRleC5odG1sKQo+IAo+IEFwcGx5IHRoZSBwYXRjaCBhbmQg
+YnVpbGQgdGhlIGtlcm5lbCBpbiB0aGUgdXN1YWwgd2F5Ogo+IAo+ICAgIHRhciB4ZmogbGludXgt
+Mi42LjI3LjcudGFyLmJ6Mgo+ICAgIGNkIGxpbnV4LTIuNi4yNy43Cj4gICAgcGF0Y2ggLXAxIDxs
+aW51eC0yLjYuMjcuNy1zaG0tZmIucGF0Y2gKPiAgICBtYWtlIGRlZmNvbmZpZyBBUkNIPXVtCj4g
+ICAgbWFrZSBtZW51Y29uZmlnIEFSQ0g9dW0KPiAgICBtYWtlIGxpbnV4IEFSQ0g9dW0KPiAKPiBE
+dXJpbmcgdGhlIG1lbnVjb25maWcgcGhhc2UgeW91IHNob3VsZCBlbmFibGUgZnJhbWVidWZmZXIg
+ZGV2aWNlcwo+IChVTUwtc3BlY2lmaWMgb3B0aW9ucy9HcmFwaGljcyBzdXBwb3J0L1N1cHBvcnQg
+Zm9yIGZyYW1lIGJ1ZmZlcgo+IGRldmljZXMpLiBUaGVuLCBpbiB0aGUgVU1MLXNwZWNpZmljIG9w
+dGlvbnMvR3JhcGhpY3Mgc3VwcG9ydC9Db25zb2xlCj4gZGlzcGxheSBkcml2ZXIgc3VwcG9ydCBt
+ZW51IGRpc2FibGUgVkdBIHRleHQgY29uc29sZSwgZW5hYmxlIEZyYW1lYnVmZmVyCj4gQ29uc29s
+ZSBzdXBwb3J0LCBlbmFibGUgU2VsZWN0IGNvbXBpbGVkLWluIGZvbnRzIGFuZCBzZWxlY3QgYSBz
+dWl0YWJsZQo+IGZvbnQsIGZvciBleGFtcGxlLCBWR0EgOHgxNiBmb250LiBCYWNrIGluIHRoZSBV
+TUwtc3BlY2lmaWMgb3B0aW9ucyBtZW51Cj4gZW5hYmxlIFNoYXJlZCBNZW1vcnkgRnJhbWVidWZm
+ZXIgZHJpdmVyLgo+IAo+IFRvIGVuYWJsZSB0aGUgc2hhcmVkIG1lbW9yeSBmcmFtZWJ1ZmZlciBk
+ZXZpY2UgYWRkIHRoZSBvcHRpb24KPiBzaG1mYj13aWR0aHhoZWlnaHR4ZGVwdGggdG8gdGhlIGtl
+cm5lbCBjb21tYW5kIGxpbmUuIEZvciBleGFtcGxlLAo+IHNobWZiPTgwMHg2MDB4NC4gVGhlIHdp
+ZHRoIGFuZCBoZWlnaHQgY2FuIGhhdmUgYW55IHJlYXNvbmFibGUgdmFsdWVzLiBUaGUKPiBkZXB0
+aCBjYW4gY3VycmVudGx5IG9ubHkgYmUgMiBvciA0IGJ5dGVzIHBlciBwaXhlbC4KPiAKPiBXaGVu
+IHRoZSBrZXJuZWwgYm9vdHMgaXQgd2lsbCB1c2UgdGhlIGZyYW1lYnVmZmVyIGRldmljZSBhcyBp
+dHMgY29uc29sZSwKPiBidXQgeW91IHdvbid0IGJlIGFibGUgdG8gc2VlIGFueXRoaW5nISBUbyBt
+YWtlIHRoZSBmcmFtZWJ1ZmZlciBjb25zb2xlCj4gdmlzaWJsZSB5b3UgbmVlZCBhIHNlcGFyYXRl
+IGNsaWVudCBhcHBsaWNhdGlvbiB0byBydW4gb24gdGhlIGhvc3QuIFR3bwo+IGNsaWVudHMgYXJl
+IHByb3ZpZGVkLCBhIHNpbXBsZSBYdC1iYXNlZCB3aW5kb3cgYW5kIGEgVk5DIHNlcnZlcjoKPiAK
+PiAgICBodHRwOi8vaW50Z2F0LnRpZ3Jlc3MuY28udWsvcm15L3NobWZiL3VtbF9mYi0wLjEuMC50
+YXIuZ3oKPiAKPiBUbyBidWlsZCB0aGUgVk5DIHNlcnZlciBjbGllbnQgeW91J2xsIG5lZWQgbGli
+dm5jc2VydmVyLiBJZiB0aGlzIGlzbid0Cj4gaW4geW91ciBkaXN0cm8ncyBwYWNrYWdlIHJlcG9z
+aXRvcnkgeW91IGNhbiBnZXQgaXQgZnJvbSB0aGUgcHJvamVjdCdzCj4gU291cmNlZm9yZ2UgcGFn
+ZTogaHR0cDovL2xpYnZuY3NlcnZlci5zb3VyY2Vmb3JnZS5uZXQvLgo+IAo+IE9uY2UgeW91J3Zl
+IGJ1aWx0IHRoZSBjbGllbnRzIHlvdSBjYW4gcnVuIHRoZW0gYXM6Cj4gCj4gICAgdW1sX3h0ZmIg
+LS11bWlkIDxuYW1lPgo+IAo+IG9yCj4gCj4gICAgdW1sX3ZuY2ZiIC0tdW1pZCA8bmFtZT4KPiAK
+PiB3aGVyZSA8bmFtZT4gaXMgdGhlIG5hbWUgb2YgeW91ciBVTUwgaW5zdGFuY2UuIElmIHlvdSd2
+ZSBydW4gdGhlIFZOQwo+IGNsaWVudCB5b3Ugc3RpbGwgd29uJ3QgYmUgYWJsZSB0byBzZWUgYW55
+dGhpbmchIFlvdSBub3cgbmVlZCB0byBydW4gYQo+IFZOQyB2aWV3ZXI6Cj4gCj4gICAgdm5jdmll
+d2VyIGxvY2FsaG9zdDowCj4gCj4gQXMgYW4gYWx0ZXJuYXRpdmUgdG8gc3RhcnRpbmcgdGhlIGNs
+aWVudCBwcm9ncmFtcyBieSBoYW5kIHlvdSBjYW4gYWxzbyB1c2UKPiBhIGtlcm5lbCBjb21tYW5k
+IGxpbmUgb3B0aW9uIG9mIHRoZSBmb3JtIHNobWZiX2NsaWVudD08cGF0aF90b19jbGllbnQ+LAo+
+IHdoZXJlIDxwYXRoX3RvX2NsaWVudD4gaXMsIGFzIHlvdSBtaWdodCBleHBlY3QsIHRoZSBwYXRo
+IHRvIHRoZSBjbGllbnQKPiB5b3UnZCBsaWtlIHRvIHVzZS4KPiAKPiBUaGVyZSBhcmUgYSBmZXcg
+cHJvYmxlbXMgd2l0aCB0aGUgY2xpZW50IHByb2dyYW1zOgo+IAo+ICAgICAqIHRoZSBjdXJzb3Ig
+aW4gdGhlIHZpcnR1YWwgY29uc29sZSBkb2Vzbid0IHRyYWNrIHRoZSBtb3VzZSB2ZXJ5IHdlbGw7
+Cj4gICAgICogdGhlIFggc2VydmVyIGluIHRoZSBVTUwgaW5zdGFuY2UgdGVuZHMgdG8gZ2V0IGNv
+bmZ1c2VkIGFuZCBzZW5kcwo+ICAgICAgIHRoZSBtb3VzZSB0byB0aGUgdG9wIGxlZnQgaGFuZCBj
+b3JuZXIgb2YgdGhlIGRpc3BsYXksIHdoZXJlIGl0IHNpdHMKPiAgICAgICBhbmQgc3Vsa3MuCj4g
+ICAgICogdGhlIG1vdXNlIHdoZWVsIGRvZXNuJ3Qgd29yazsKPiAgICAgKiB0aGUgVk5DIGNsaWVu
+dCBpcyBoYXJkY29kZWQgZm9yIGEgVVMga2V5Ym9hcmQuIChQcm9iYWJseS4gSSd2ZQo+ICAgICAg
+IGdvdCBhIFVLIGtleWJvYXJkLCBzbyBzb21lIG9mIHRoZSBsZXNzIHVzZWQgY2hhcmFjdGVycyBt
+YXkgbm90IGJlCj4gICAgICAgcXVpdGUgcmlnaHQpOwo+ICAgICAqIGlmIGFueSBrZXlzIGFyZSBw
+cmVzc2VkIHdoZW4gdGhlIGNsaWVudCBsb3NlcyBmb2N1cyBpdCBuZXZlciBzZWVzCj4gICAgICAg
+dGhlIGtleSByZWxlYXNlLCBzbyB0aGlua3MgdGhhdCwgZm9yIGV4YW1wbGUsIHRoZSBjb250cm9s
+IGtleSBpcwo+ICAgICAgIGFsd2F5cyBwcmVzc2VkLgo+IAo+IChBZGp1c3RpbmcgdGhlIG1vdXNl
+IGFjY2VsZXJhdGlvbiBpbiB0aGUgY29uc29sZSBtb3VzZSBzZXJ2ZXIgKGdwbWQpCj4gb3IgWCBz
+ZXJ2ZXIgKHNldCBtLCBvciB5b3VyIGRlc2t0b3AgbWFuYWdlcidzIEdVSSBlcXVpdmFsZW50KSBo
+ZWxwcyB3aXRoCj4gc29tZSBvZiB0aGUgbW91c2UgaXNzdWVzLikKPiAKPiBUaGUga2VybmVsIHBh
+dGNoIGlzIGJhc2VkIG9uIHRoZSBYMTEgZnJhbWVidWZmZXIgZHJpdmVyIGJ5IEdlcmQKPiBLbm9y
+ci4gV2l0aG91dCBHZXJkJ3Mgd29yayBJIHdvdWxkbid0IGhhdmUgYmVlbiBhYmxlIHRvIGFjaGll
+dmUKPiBhbnl0aGluZy4gVGhhbmtzIQo+IAo+IEFueSBwcm9ibGVtcyB3aXRoIHRoZSBwYXRjaCBh
+cmUgbXkgZmF1bHQuICBJbiBwYXJ0aWN1bGFyLCBJJ2QgdmVyeSBtdWNoCj4gYXBwcmVjaWF0ZSBz
+b21lIGhpbnQgYXMgdG8gd2hhdCBzaG91bGQgYmUgZG9uZSBhYm91dCBmYl9wZ3Byb3RlY3QgaW4g
+ZmIuaC4KPiAKPiBSb24KPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVGhpcyBTRi5OZXQgZW1haWwg
+aXMgc3BvbnNvcmVkIGJ5IHRoZSBNb2JsaW4gWW91ciBNb3ZlIERldmVsb3BlcidzIGNoYWxsZW5n
+ZQo+IEJ1aWxkIHRoZSBjb29sZXN0IExpbnV4IGJhc2VkIGFwcGxpY2F0aW9ucyB3aXRoIE1vYmxp
+biBTREsgJiB3aW4gZ3JlYXQgcHJpemVzCj4gR3JhbmQgcHJpemUgaXMgYSB0cmlwIGZvciB0d28g
+dG8gYW4gT3BlbiBTb3VyY2UgZXZlbnQgYW55d2hlcmUgaW4gdGhlIHdvcmxkCj4gaHR0cDovL21v
+Ymxpbi1jb250ZXN0Lm9yZy9yZWRpcmVjdC5waHA/YmFubmVyX2lkPTEwMCZ1cmw9Lwo+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gVXNlci1tb2RlLWxp
+bnV4LWRldmVsIG1haWxpbmcgbGlzdAo+IFVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5m
+by91c2VyLW1vZGUtbGludXgtZGV2ZWwKPiAmIzA7Cj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlz
+IFNGLk5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnkgdGhlIE1vYmxpbiBZb3VyIE1vdmUgRGV2ZWxv
+cGVyJ3MgY2hhbGxlbmdlCkJ1aWxkIHRoZSBjb29sZXN0IExpbnV4IGJhc2VkIGFwcGxpY2F0aW9u
+cyB3aXRoIE1vYmxpbiBTREsgJiB3aW4gZ3JlYXQgcHJpemVzCkdyYW5kIHByaXplIGlzIGEgdHJp
+cCBmb3IgdHdvIHRvIGFuIE9wZW4gU291cmNlIGV2ZW50IGFueXdoZXJlIGluIHRoZSB3b3JsZApo
+dHRwOi8vbW9ibGluLWNvbnRlc3Qub3JnL3JlZGlyZWN0LnBocD9iYW5uZXJfaWQ9MTAwJnVybD0v
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9k
+ZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNv
+dXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5m
+by91c2VyLW1vZGUtbGludXgtZGV2ZWwK
