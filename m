@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vincent-perrier@club-internet.fr>)
-	id 1L4Ot7-0005Gw-SZ for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Nov 2008 00:01:13 +0000
-Received: from relay-dv.club-internet.fr ([194.158.96.208])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1L4Ot5-0003jX-KL for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Nov 2008 00:01:13 +0000
-From: root <vincent-perrier@club-internet.fr>
-In-Reply-To: <200811231729.mANHT1uE020562@tiffany.internal.tigress.co.uk>
+	(envelope-from <rmy@tigress.co.uk>) id 1L4Xf1-0004v6-Dw
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Nov 2008 09:23:15 +0000
+Received: from mail.tigress.co.uk ([195.172.168.163] helo=intgat.tigress.co.uk)
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1L4Xew-0003fw-Pt
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 24 Nov 2008 09:23:15 +0000
+From: Ron Yorston <rmy@tigress.co.uk>
+Message-Id: <200811240922.mAO9Mbxg020777@tiffany.internal.tigress.co.uk>
+Date: Mon, 24 Nov 2008 09:22:36 +0000
 References: <200811231729.mANHT1uE020562@tiffany.internal.tigress.co.uk>
-Date: Mon, 24 Nov 2008 00:59:03 +0100
-Message-Id: <1227484743.11944.19.camel@cloonix>
-Mime-Version: 1.0
+	<1227484743.11944.19.camel@cloonix>
+In-Reply-To: <1227484743.11944.19.camel@cloonix>
+MIME-Version: 1.0
 Subject: Re: [uml-devel] A shared memory framebuffer for UML
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -25,106 +27,37 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Ron Yorston <rmy@tigress.co.uk>
+To: vincent-perrier@club-internet.fr, rmy@tigress.co.uk
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-SGVsbG8gUm9uIFlvcnN0b24sCkkgd291bGQgbGlrZSB0byBoYXZlIGJvdGggYXVkaW8gYW5kIHZp
-ZGVvIG9uIHRoZSBob3N0IGR1cmluZyBhIApzaXAgY29tbXVuaWNhdGlvbiB3aXRoIGxpbnBob25l
-LCBla2lnYSBvciBhbm90aGVyIG9wZW4gc291cmNlCmJldHdlZW4gMiBVTUwgbWFjaGluZXMgaW4g
-YSB2aXJ0dWFsIG5ldHdvcmsuCkkgYWxyZWFkeSBoYXZlIHRoZSBzb3VuZCBidXQgdGhlIHNpcCBz
-b2Z0d2FyZXMgc2hvdyB1Z2x5IHNjcmVlbnMKYW5kIG5lZWQgL2Rldi92aWRlby4uLiB0byBnZXQg
-YSBkaXNwbGF5LgpBdCBodHRwOi8vY2xvd25peC5uZXQgYSB2aXJ0dWFsIG5ldHdvcmsgd2l0aCBz
-b3VuZCBpcyBhdmFpbGxhYmxlLApwdWxzZWF1ZGlvIHRyYW5zZmVycyB0aGUgYXVkaW8gdG8gYW5k
-IGZyb20gdGhlIGhvc3QgdGhyb3VnaCB0aGUKdmlydHVhbCBuZXR3b3JrLgpOb3cgbXkgcXVlc3Rp
-b246IHdvdWxkIHRoaXMgZnJhbWVidWZmZXIgaGVscCBpbiB0aGUgdmlkZW8gcGFydApvZiB0aGUg
-c2lwIGNvbW11bmljYXRpb24/IENvdWxkIHRoZSBzaXAgYXBwbGljYXRpb24gdHJhbnNtaXQKaW1h
-Z2VzIHRvIHRoZSBob3N0J3MgZGlzcGxheT8gQ291bGQgdGhlIHNpcCBhcHBsaWNhdGlvbiByZWNl
-aXZlCmZyb20gYSByZWFsIHdlYmNhbT8KTXkgcXVlc3Rpb25zIG1heSBub3QgY29uY2VybiB5b3Vy
-IHdvcmsgYXQgYWxsLCBhcyBJIGRvIG5vdCBrbm93IAptdWNoIGFib3V0IHdlYmNhbXMgYW5kIGRp
-c3BsYXlzIHlldC4gClJlZ2FyZHMKVmluY2VudCBQZXJyaWVyCgoKTGUgZGltYW5jaGUgMjMgbm92
-ZW1icmUgMjAwOCDDoCAxNzoyOCArMDAwMCwgUm9uIFlvcnN0b24gYSDDqWNyaXQgOgo+IEkndmUg
-ZG9uZSBzb21lIHdvcmsgb24gYSBwYXRjaCB0byBpbXBsZW1lbnQgYSBzaGFyZWQgbWVtb3J5IGZy
-YW1lYnVmZmVyCj4gZm9yIFVNTC4gIChQYXRjaCB0byBmb2xsb3cgaW4gYSBzZXBhcmF0ZSBtZXNz
-YWdlLCBvciBwaWNrIGl0IHVwIGZyb20KPiBteSB3ZWJzaXRlOiAgaHR0cDovL2ludGdhdC50aWdy
-ZXNzLmNvLnVrL3JteS9zaG1mYi9pbmRleC5odG1sKQo+IAo+IEFwcGx5IHRoZSBwYXRjaCBhbmQg
-YnVpbGQgdGhlIGtlcm5lbCBpbiB0aGUgdXN1YWwgd2F5Ogo+IAo+ICAgIHRhciB4ZmogbGludXgt
-Mi42LjI3LjcudGFyLmJ6Mgo+ICAgIGNkIGxpbnV4LTIuNi4yNy43Cj4gICAgcGF0Y2ggLXAxIDxs
-aW51eC0yLjYuMjcuNy1zaG0tZmIucGF0Y2gKPiAgICBtYWtlIGRlZmNvbmZpZyBBUkNIPXVtCj4g
-ICAgbWFrZSBtZW51Y29uZmlnIEFSQ0g9dW0KPiAgICBtYWtlIGxpbnV4IEFSQ0g9dW0KPiAKPiBE
-dXJpbmcgdGhlIG1lbnVjb25maWcgcGhhc2UgeW91IHNob3VsZCBlbmFibGUgZnJhbWVidWZmZXIg
-ZGV2aWNlcwo+IChVTUwtc3BlY2lmaWMgb3B0aW9ucy9HcmFwaGljcyBzdXBwb3J0L1N1cHBvcnQg
-Zm9yIGZyYW1lIGJ1ZmZlcgo+IGRldmljZXMpLiBUaGVuLCBpbiB0aGUgVU1MLXNwZWNpZmljIG9w
-dGlvbnMvR3JhcGhpY3Mgc3VwcG9ydC9Db25zb2xlCj4gZGlzcGxheSBkcml2ZXIgc3VwcG9ydCBt
-ZW51IGRpc2FibGUgVkdBIHRleHQgY29uc29sZSwgZW5hYmxlIEZyYW1lYnVmZmVyCj4gQ29uc29s
-ZSBzdXBwb3J0LCBlbmFibGUgU2VsZWN0IGNvbXBpbGVkLWluIGZvbnRzIGFuZCBzZWxlY3QgYSBz
-dWl0YWJsZQo+IGZvbnQsIGZvciBleGFtcGxlLCBWR0EgOHgxNiBmb250LiBCYWNrIGluIHRoZSBV
-TUwtc3BlY2lmaWMgb3B0aW9ucyBtZW51Cj4gZW5hYmxlIFNoYXJlZCBNZW1vcnkgRnJhbWVidWZm
-ZXIgZHJpdmVyLgo+IAo+IFRvIGVuYWJsZSB0aGUgc2hhcmVkIG1lbW9yeSBmcmFtZWJ1ZmZlciBk
-ZXZpY2UgYWRkIHRoZSBvcHRpb24KPiBzaG1mYj13aWR0aHhoZWlnaHR4ZGVwdGggdG8gdGhlIGtl
-cm5lbCBjb21tYW5kIGxpbmUuIEZvciBleGFtcGxlLAo+IHNobWZiPTgwMHg2MDB4NC4gVGhlIHdp
-ZHRoIGFuZCBoZWlnaHQgY2FuIGhhdmUgYW55IHJlYXNvbmFibGUgdmFsdWVzLiBUaGUKPiBkZXB0
-aCBjYW4gY3VycmVudGx5IG9ubHkgYmUgMiBvciA0IGJ5dGVzIHBlciBwaXhlbC4KPiAKPiBXaGVu
-IHRoZSBrZXJuZWwgYm9vdHMgaXQgd2lsbCB1c2UgdGhlIGZyYW1lYnVmZmVyIGRldmljZSBhcyBp
-dHMgY29uc29sZSwKPiBidXQgeW91IHdvbid0IGJlIGFibGUgdG8gc2VlIGFueXRoaW5nISBUbyBt
-YWtlIHRoZSBmcmFtZWJ1ZmZlciBjb25zb2xlCj4gdmlzaWJsZSB5b3UgbmVlZCBhIHNlcGFyYXRl
-IGNsaWVudCBhcHBsaWNhdGlvbiB0byBydW4gb24gdGhlIGhvc3QuIFR3bwo+IGNsaWVudHMgYXJl
-IHByb3ZpZGVkLCBhIHNpbXBsZSBYdC1iYXNlZCB3aW5kb3cgYW5kIGEgVk5DIHNlcnZlcjoKPiAK
-PiAgICBodHRwOi8vaW50Z2F0LnRpZ3Jlc3MuY28udWsvcm15L3NobWZiL3VtbF9mYi0wLjEuMC50
-YXIuZ3oKPiAKPiBUbyBidWlsZCB0aGUgVk5DIHNlcnZlciBjbGllbnQgeW91J2xsIG5lZWQgbGli
-dm5jc2VydmVyLiBJZiB0aGlzIGlzbid0Cj4gaW4geW91ciBkaXN0cm8ncyBwYWNrYWdlIHJlcG9z
-aXRvcnkgeW91IGNhbiBnZXQgaXQgZnJvbSB0aGUgcHJvamVjdCdzCj4gU291cmNlZm9yZ2UgcGFn
-ZTogaHR0cDovL2xpYnZuY3NlcnZlci5zb3VyY2Vmb3JnZS5uZXQvLgo+IAo+IE9uY2UgeW91J3Zl
-IGJ1aWx0IHRoZSBjbGllbnRzIHlvdSBjYW4gcnVuIHRoZW0gYXM6Cj4gCj4gICAgdW1sX3h0ZmIg
-LS11bWlkIDxuYW1lPgo+IAo+IG9yCj4gCj4gICAgdW1sX3ZuY2ZiIC0tdW1pZCA8bmFtZT4KPiAK
-PiB3aGVyZSA8bmFtZT4gaXMgdGhlIG5hbWUgb2YgeW91ciBVTUwgaW5zdGFuY2UuIElmIHlvdSd2
-ZSBydW4gdGhlIFZOQwo+IGNsaWVudCB5b3Ugc3RpbGwgd29uJ3QgYmUgYWJsZSB0byBzZWUgYW55
-dGhpbmchIFlvdSBub3cgbmVlZCB0byBydW4gYQo+IFZOQyB2aWV3ZXI6Cj4gCj4gICAgdm5jdmll
-d2VyIGxvY2FsaG9zdDowCj4gCj4gQXMgYW4gYWx0ZXJuYXRpdmUgdG8gc3RhcnRpbmcgdGhlIGNs
-aWVudCBwcm9ncmFtcyBieSBoYW5kIHlvdSBjYW4gYWxzbyB1c2UKPiBhIGtlcm5lbCBjb21tYW5k
-IGxpbmUgb3B0aW9uIG9mIHRoZSBmb3JtIHNobWZiX2NsaWVudD08cGF0aF90b19jbGllbnQ+LAo+
-IHdoZXJlIDxwYXRoX3RvX2NsaWVudD4gaXMsIGFzIHlvdSBtaWdodCBleHBlY3QsIHRoZSBwYXRo
-IHRvIHRoZSBjbGllbnQKPiB5b3UnZCBsaWtlIHRvIHVzZS4KPiAKPiBUaGVyZSBhcmUgYSBmZXcg
-cHJvYmxlbXMgd2l0aCB0aGUgY2xpZW50IHByb2dyYW1zOgo+IAo+ICAgICAqIHRoZSBjdXJzb3Ig
-aW4gdGhlIHZpcnR1YWwgY29uc29sZSBkb2Vzbid0IHRyYWNrIHRoZSBtb3VzZSB2ZXJ5IHdlbGw7
-Cj4gICAgICogdGhlIFggc2VydmVyIGluIHRoZSBVTUwgaW5zdGFuY2UgdGVuZHMgdG8gZ2V0IGNv
-bmZ1c2VkIGFuZCBzZW5kcwo+ICAgICAgIHRoZSBtb3VzZSB0byB0aGUgdG9wIGxlZnQgaGFuZCBj
-b3JuZXIgb2YgdGhlIGRpc3BsYXksIHdoZXJlIGl0IHNpdHMKPiAgICAgICBhbmQgc3Vsa3MuCj4g
-ICAgICogdGhlIG1vdXNlIHdoZWVsIGRvZXNuJ3Qgd29yazsKPiAgICAgKiB0aGUgVk5DIGNsaWVu
-dCBpcyBoYXJkY29kZWQgZm9yIGEgVVMga2V5Ym9hcmQuIChQcm9iYWJseS4gSSd2ZQo+ICAgICAg
-IGdvdCBhIFVLIGtleWJvYXJkLCBzbyBzb21lIG9mIHRoZSBsZXNzIHVzZWQgY2hhcmFjdGVycyBt
-YXkgbm90IGJlCj4gICAgICAgcXVpdGUgcmlnaHQpOwo+ICAgICAqIGlmIGFueSBrZXlzIGFyZSBw
-cmVzc2VkIHdoZW4gdGhlIGNsaWVudCBsb3NlcyBmb2N1cyBpdCBuZXZlciBzZWVzCj4gICAgICAg
-dGhlIGtleSByZWxlYXNlLCBzbyB0aGlua3MgdGhhdCwgZm9yIGV4YW1wbGUsIHRoZSBjb250cm9s
-IGtleSBpcwo+ICAgICAgIGFsd2F5cyBwcmVzc2VkLgo+IAo+IChBZGp1c3RpbmcgdGhlIG1vdXNl
-IGFjY2VsZXJhdGlvbiBpbiB0aGUgY29uc29sZSBtb3VzZSBzZXJ2ZXIgKGdwbWQpCj4gb3IgWCBz
-ZXJ2ZXIgKHNldCBtLCBvciB5b3VyIGRlc2t0b3AgbWFuYWdlcidzIEdVSSBlcXVpdmFsZW50KSBo
-ZWxwcyB3aXRoCj4gc29tZSBvZiB0aGUgbW91c2UgaXNzdWVzLikKPiAKPiBUaGUga2VybmVsIHBh
-dGNoIGlzIGJhc2VkIG9uIHRoZSBYMTEgZnJhbWVidWZmZXIgZHJpdmVyIGJ5IEdlcmQKPiBLbm9y
-ci4gV2l0aG91dCBHZXJkJ3Mgd29yayBJIHdvdWxkbid0IGhhdmUgYmVlbiBhYmxlIHRvIGFjaGll
-dmUKPiBhbnl0aGluZy4gVGhhbmtzIQo+IAo+IEFueSBwcm9ibGVtcyB3aXRoIHRoZSBwYXRjaCBh
-cmUgbXkgZmF1bHQuICBJbiBwYXJ0aWN1bGFyLCBJJ2QgdmVyeSBtdWNoCj4gYXBwcmVjaWF0ZSBz
-b21lIGhpbnQgYXMgdG8gd2hhdCBzaG91bGQgYmUgZG9uZSBhYm91dCBmYl9wZ3Byb3RlY3QgaW4g
-ZmIuaC4KPiAKPiBSb24KPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVGhpcyBTRi5OZXQgZW1haWwg
-aXMgc3BvbnNvcmVkIGJ5IHRoZSBNb2JsaW4gWW91ciBNb3ZlIERldmVsb3BlcidzIGNoYWxsZW5n
-ZQo+IEJ1aWxkIHRoZSBjb29sZXN0IExpbnV4IGJhc2VkIGFwcGxpY2F0aW9ucyB3aXRoIE1vYmxp
-biBTREsgJiB3aW4gZ3JlYXQgcHJpemVzCj4gR3JhbmQgcHJpemUgaXMgYSB0cmlwIGZvciB0d28g
-dG8gYW4gT3BlbiBTb3VyY2UgZXZlbnQgYW55d2hlcmUgaW4gdGhlIHdvcmxkCj4gaHR0cDovL21v
-Ymxpbi1jb250ZXN0Lm9yZy9yZWRpcmVjdC5waHA/YmFubmVyX2lkPTEwMCZ1cmw9Lwo+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gVXNlci1tb2RlLWxp
-bnV4LWRldmVsIG1haWxpbmcgbGlzdAo+IFVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5m
-by91c2VyLW1vZGUtbGludXgtZGV2ZWwKPiAmIzA7Cj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlz
-IFNGLk5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnkgdGhlIE1vYmxpbiBZb3VyIE1vdmUgRGV2ZWxv
-cGVyJ3MgY2hhbGxlbmdlCkJ1aWxkIHRoZSBjb29sZXN0IExpbnV4IGJhc2VkIGFwcGxpY2F0aW9u
-cyB3aXRoIE1vYmxpbiBTREsgJiB3aW4gZ3JlYXQgcHJpemVzCkdyYW5kIHByaXplIGlzIGEgdHJp
-cCBmb3IgdHdvIHRvIGFuIE9wZW4gU291cmNlIGV2ZW50IGFueXdoZXJlIGluIHRoZSB3b3JsZApo
-dHRwOi8vbW9ibGluLWNvbnRlc3Qub3JnL3JlZGlyZWN0LnBocD9iYW5uZXJfaWQ9MTAwJnVybD0v
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9k
-ZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5m
-by91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+root <vincent-perrier@club-internet.fr> wrote:
+>Now my question: would this framebuffer help in the video part
+>of the sip communication? Could the sip application transmit
+>images to the host's display? Could the sip application receive
+>from a real webcam?
+
+I don't think so, at least not as I understand what you're trying to
+do.
+
+The framebuffer is like giving UML a graphics card:  the guest can
+display a console on it or run an X server on it.  It will let you see
+X applications on the guest, but there are already ways to do that.
+(Run an Xvnc server on the guest, or ssh into it and export an
+application's display back to your local X server.)  And it won't help
+at all with importing webcam images into the guest, that's an entirely
+different problem.
+
+Ron
+
+-------------------------------------------------------------------------
+This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
+Build the coolest Linux based applications with Moblin SDK & win great prizes
+Grand prize is a trip for two to an Open Source event anywhere in the world
+http://moblin-contest.org/redirect.php?banner_id=100&url=/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
