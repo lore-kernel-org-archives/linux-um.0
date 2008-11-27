@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rmy@tigress.co.uk>) id 1L4Ykg-0002No-2d
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <xiyou.wangcong@gmail.com>) id 1L5lM9-0002R4-Qp
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Nov 2008 10:33:10 +0000
-Received: from mail.tigress.co.uk ([195.172.168.163] helo=intgat.tigress.co.uk)
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1L4Ykb-0006ux-9o
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Nov 2008 10:33:09 +0000
-Received: (from uucp@localhost)
-	by intgat.tigress.co.uk (8.13.1/8.13.1) id mAOAX2gM005793
+	Thu, 27 Nov 2008 18:12:49 +0000
+Received: from nf-out-0910.google.com ([64.233.182.185])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1L5lM5-0001oH-Su for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 Nov 2008 18:12:49 +0000
+Received: by nf-out-0910.google.com with SMTP id g16so552761nfd.2
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 24 Nov 2008 10:33:02 GMT
-From: Ron Yorston <rmy@tigress.co.uk>
-Message-Id: <200811241032.mAOAWjd4020866@tiffany.internal.tigress.co.uk>
-Date: Mon, 24 Nov 2008 10:32:45 +0000
-References: <200811231729.mANHT1uE020562@tiffany.internal.tigress.co.uk>
-In-Reply-To: <200811231729.mANHT1uE020562@tiffany.internal.tigress.co.uk>
+	Thu, 27 Nov 2008 10:12:43 -0800 (PST)
+Date: Thu, 27 Nov 2008 18:12:28 +0000
+From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Message-ID: <20081127181228.GA4417@hack.voiplan.pt>
 MIME-Version: 1.0
-Subject: Re: [uml-devel] A shared memory framebuffer for UML
+Content-Disposition: inline
+Subject: [uml-devel] [Patch] uml: fix the highmem build error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,56 +27,41 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, rmy@tigress.co.uk
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Andrew Morton <akpm@osdl.org>, jdike@addtoit.com, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net
 
-I was in too much of a hurry yesterday and didn't include some useful
-information about shmfb clients.
-
-To make use of the framebuffer the client needs to know its details.
-It also needs to be able to send keyboard and mouse events to the guest
-and to receive information about updates to the guest's display.
-
-When a UML kernel uses a shared memory framebuffer it creates the file
-~/<name>/shmid.  This contains the id of the shared memory segment and
-the dimensions of the display (width, height and depth).
-
-It also sets up a socket to enable communication between host and
-guest.  This is based on the way mconsole works, but with a much
-simplified protocol that's tailored to the needs of the framebuffer.
-The host sends information about keyboard and mouse events to the
-guest.  It can also request information from the guest as to which
-areas of the framebuffer have been updated.
-
-This latter point is something of a limitation:  the client has to poll
-for updates.  Furthermore, there's nothing to prevent more than one
-client from connecting to the same guest.  The guest doesn't keep track
-of its clients separately, so the clients won't be informed about all
-updates.  A workaround for that would be to have the clients just
-update the whole display, whether or not anything has changed.  But
-that's inefficient.  A proper fix for these issues is to have the
-kernel track client connections and send updates without prompting.
-
-The rate at which the clients update their displays can be controlled
-with the --fps option, which sets the number of frames per second.  The
-default is 10fps.
-
-The X client requires the MIT-SHM extension in the host X server.  The
-format of the framebuffer memory must match that of a shared memory
-image in the host X server.  So if you have a 16-bit display you need
-to specify a framebuffer depth of 2 bytes per pixel to use the X
-client.
-
-Ron
-
--------------------------------------------------------------------------
-This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
-Build the coolest Linux based applications with Moblin SDK & win great prizes
-Grand prize is a trip for two to an Open Source event anywhere in the world
-http://moblin-contest.org/redirect.php?banner_id=100&url=/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+ClRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBlcnJvcjoKCmFyY2gvdW0va2VybmVsL21lbS5jOiBJbiBm
+dW5jdGlvbiDigJhpbml0X2hpZ2htZW3igJk6ICAgICAgICAKYXJjaC91bS9rZXJuZWwvbWVtLmM6
+MTc3OiBlcnJvcjog4oCYcGttYXBfcGFnZV90YWJsZeKAmSB1bmRlY2xhcmVkIChmaXJzdAp1c2Ug
+aW4gdGhpcyBmdW5jdGlvbikgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKYXJjaC91
+bS9rZXJuZWwvbWVtLmM6MTc3OiBlcnJvcjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlz
+CnJlcG9ydGVkIG9ubHkgb25jZSAgICAgIAphcmNoL3VtL2tlcm5lbC9tZW0uYzoxNzc6IGVycm9y
+OiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluLikgIAoKQ29tcGlsZSBhbmQgcnVuIHRl
+c3RlZC4KClNpZ25lZC1vZmYtYnk6IFdBTkcgQ29uZyA8d2FuZ2NvbmdAemV1dXgub3JnPgpDYzog
+SmVmZiBEaWtlIDxqZGlrZUBhZGR0b2l0LmNvbT4KQ2M6IEFsIFZpcm8gPHZpcm9AemVuaXYubGlu
+dXgub3JnLnVrPgoKLS0tCmRpZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL2ZpeG1hcC5o
+IGIvYXJjaC91bS9pbmNsdWRlL2FzbS9maXhtYXAuaAppbmRleCA2OWMwMjUyLi40ZTY1NmM5IDEw
+MDY0NAotLS0gYS9hcmNoL3VtL2luY2x1ZGUvYXNtL2ZpeG1hcC5oCisrKyBiL2FyY2gvdW0vaW5j
+bHVkZS9hc20vZml4bWFwLmgKQEAgLTQwLDYgKzQwLDkgQEAgZW51bSBmaXhlZF9hZGRyZXNzZXMg
+ewogI2VuZGlmCiAJX19lbmRfb2ZfZml4ZWRfYWRkcmVzc2VzCiB9OworZXh0ZXJuIHB0ZV90ICpw
+a21hcF9wYWdlX3RhYmxlOworZXh0ZXJuIHB0ZV90ICprbWFwX3B0ZTsKK2V4dGVybiBwZ3Byb3Rf
+dCBrbWFwX3Byb3Q7CiAKIGV4dGVybiB2b2lkIF9fc2V0X2ZpeG1hcCAoZW51bSBmaXhlZF9hZGRy
+ZXNzZXMgaWR4LAogCQkJICB1bnNpZ25lZCBsb25nIHBoeXMsIHBncHJvdF90IGZsYWdzKTsKZGlm
+ZiAtLWdpdCBhL2FyY2gveDg2L21tL2hpZ2htZW1fMzIuYyBiL2FyY2gveDg2L21tL2hpZ2htZW1f
+MzIuYwppbmRleCBiY2MwNzljLi44ODRmOWUyIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9tbS9oaWdo
+bWVtXzMyLmMKKysrIGIvYXJjaC94ODYvbW0vaGlnaG1lbV8zMi5jCkBAIC0xLDMgKzEsNCBAQAor
+I2luY2x1ZGUgPGFzbS9maXhtYXAuaD4KICNpbmNsdWRlIDxsaW51eC9oaWdobWVtLmg+CiAjaW5j
+bHVkZSA8bGludXgvbW9kdWxlLmg+CiAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5OZXQgZW1h
+aWwgaXMgc3BvbnNvcmVkIGJ5IHRoZSBNb2JsaW4gWW91ciBNb3ZlIERldmVsb3BlcidzIGNoYWxs
+ZW5nZQpCdWlsZCB0aGUgY29vbGVzdCBMaW51eCBiYXNlZCBhcHBsaWNhdGlvbnMgd2l0aCBNb2Js
+aW4gU0RLICYgd2luIGdyZWF0IHByaXplcwpHcmFuZCBwcml6ZSBpcyBhIHRyaXAgZm9yIHR3byB0
+byBhbiBPcGVuIFNvdXJjZSBldmVudCBhbnl3aGVyZSBpbiB0aGUgd29ybGQKaHR0cDovL21vYmxp
+bi1jb250ZXN0Lm9yZy9yZWRpcmVjdC5waHA/YmFubmVyX2lkPTEwMCZ1cmw9LwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2
+ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2Rl
+LWxpbnV4LWRldmVsCg==
