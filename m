@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <penberg@gmail.com>) id 1L6MxS-0003Hy-ME
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <xiyou.wangcong@gmail.com>) id 1L6PUC-0007uA-GV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 Nov 2008 10:21:50 +0000
-Received: from wf-out-1314.google.com ([209.85.200.170])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1L6MxQ-0004U1-QT for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 Nov 2008 10:21:50 +0000
-Received: by wf-out-1314.google.com with SMTP id 27so1818080wfd.4
+	Sat, 29 Nov 2008 13:03:48 +0000
+Received: from wa-out-1112.google.com ([209.85.146.180])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1L6PU8-0002yQ-5x for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 Nov 2008 13:03:48 +0000
+Received: by wa-out-1112.google.com with SMTP id m34so862976wag.10
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 29 Nov 2008 02:21:46 -0800 (PST)
-Message-ID: <84144f020811290221g947f836n4fe3435676425ee@mail.gmail.com>
-Date: Sat, 29 Nov 2008 12:21:46 +0200
-From: "Pekka Enberg" <penberg@cs.helsinki.fi>
+	Sat, 29 Nov 2008 05:03:42 -0800 (PST)
+Message-ID: <2375c9f90811290503s1b4cb9aelaecccc680c6e37d0@mail.gmail.com>
+Date: Sat, 29 Nov 2008 13:03:42 +0000
+From: "=?UTF-8?Q?Am=C3=A9rico_Wang?=" <xiyou.wangcong@gmail.com>
 In-Reply-To: <20081129100830.GA24128@balbir.in.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
@@ -34,23 +34,16 @@ Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: balbir@linux.vnet.ibm.com, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Hi Balbir,
-
-On Sat, Nov 29, 2008 at 12:08 PM, Balbir Singh
+On Sat, Nov 29, 2008 at 10:08 AM, Balbir Singh
 <balbir@linux.vnet.ibm.com> wrote:
+>
 > mconsole_init() passed 256 bytes as length in os_create_unix_socket, while
 > the sizeof UNIX_PATH_MAX is 108. This patch fixes that problem and avoids
 > a big overrun bug reported on UML bootup.
-
-Maybe mention that ->sun_path in struct sockaddr_un is UNIX_PATH_MAX
-long which causes the problem?
-
+>
 > Reported-by: Vikas K Managutte <vikki.km@gmail.com>
 > Reported-by: Sarvesh Kumar Lal Das <skldas@gmail.com>
 > Signed-off-by: Balbir Singh <balbir@linux.vnet.ibm.com>
-
-Reviewed-by: Pekka Enberg <penberg@cs.helsinki.fi>
-
 > ---
 >
 >  arch/um/drivers/mconsole_kern.c |    4 +++-
@@ -75,18 +68,15 @@ Reviewed-by: Pekka Enberg <penberg@cs.helsinki.fi>
 > -       char file[256];
 > +       char file[UNIX_PATH_MAX];
 >
->        if (umid_file_name("mconsole", file, sizeof(file)))
->                return -1;
-> _
->
-> --
->        Balbir
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
->
+
+
+Aha, good spot!
+
+Please also correct the length of mconsole_socket_name.
+
+Anyway,
+
+Reviewed-by: WANG Cong <wangcong@zeuux.org>
 
 -------------------------------------------------------------------------
 This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
