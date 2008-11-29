@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <xiyou.wangcong@gmail.com>) id 1L5ovQ-0005mz-1U
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penberg@gmail.com>) id 1L6MxS-0003Hy-ME
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Nov 2008 22:01:28 +0000
-Received: from ti-out-0910.google.com ([209.85.142.191])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1L5ovM-0003qa-Jo for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Nov 2008 22:01:28 +0000
-Received: by ti-out-0910.google.com with SMTP id y6so864444tia.18
+	Sat, 29 Nov 2008 10:21:50 +0000
+Received: from wf-out-1314.google.com ([209.85.200.170])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1L6MxQ-0004U1-QT for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 29 Nov 2008 10:21:50 +0000
+Received: by wf-out-1314.google.com with SMTP id 27so1818080wfd.4
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 27 Nov 2008 14:01:22 -0800 (PST)
-Message-ID: <2375c9f90811271331q40adeef6nf1f3d27f3a92a444@mail.gmail.com>
-Date: Thu, 27 Nov 2008 21:31:22 +0000
-From: "=?UTF-8?Q?Am=C3=A9rico_Wang?=" <xiyou.wangcong@gmail.com>
-In-Reply-To: <20081127181228.GA4417@hack.voiplan.pt>
+	Sat, 29 Nov 2008 02:21:46 -0800 (PST)
+Message-ID: <84144f020811290221g947f836n4fe3435676425ee@mail.gmail.com>
+Date: Sat, 29 Nov 2008 12:21:46 +0200
+From: "Pekka Enberg" <penberg@cs.helsinki.fi>
+In-Reply-To: <20081129100830.GA24128@balbir.in.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-References: <20081127181228.GA4417@hack.voiplan.pt>
-Subject: Re: [uml-devel] [Patch] uml: fix the highmem build error
+References: <20081129100830.GA24128@balbir.in.ibm.com>
+Subject: Re: [uml-devel] [PATCH][UML] Boot broken due to buffer overrun
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,49 +29,71 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Andrew Morton <akpm@osdl.org>, jdike@addtoit.com, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net
+To: balbir@linux.vnet.ibm.com, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-T24gVGh1LCBOb3YgMjcsIDIwMDggYXQgNjoxMiBQTSwgQW3DqXJpY28gV2FuZyA8eGl5b3Uud2Fu
-Z2NvbmdAZ21haWwuY29tPiB3cm90ZToKPgo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBlcnJvcjoK
-Pgo+IGFyY2gvdW0va2VybmVsL21lbS5jOiBJbiBmdW5jdGlvbiAnaW5pdF9oaWdobWVtJzoKPiBh
-cmNoL3VtL2tlcm5lbC9tZW0uYzoxNzc6IGVycm9yOiAncGttYXBfcGFnZV90YWJsZScgdW5kZWNs
-YXJlZCAoZmlyc3QKPiB1c2UgaW4gdGhpcyBmdW5jdGlvbikKPiBhcmNoL3VtL2tlcm5lbC9tZW0u
-YzoxNzc6IGVycm9yOiAoRWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMKPiByZXBvcnRlZCBv
-bmx5IG9uY2UKPiBhcmNoL3VtL2tlcm5lbC9tZW0uYzoxNzc6IGVycm9yOiBmb3IgZWFjaCBmdW5j
-dGlvbiBpdCBhcHBlYXJzIGluLikKPgo+IENvbXBpbGUgYW5kIHJ1biB0ZXN0ZWQuCj4KCklnbm9y
-ZSB0aGUgYWJvdmUgb25lLCBiZWxvdyBpcyB0aGUgdXBkYXRlZCB2ZXJzaW9uLgoKLS0tLS0tLT4K
-ClRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBlcnJvcjoKCmFyY2gvdW0va2VybmVsL21lbS5jOiBJbiBm
-dW5jdGlvbiAnaW5pdF9oaWdobWVtJzoKYXJjaC91bS9rZXJuZWwvbWVtLmM6MTc3OiBlcnJvcjog
-J3BrbWFwX3BhZ2VfdGFibGUnIHVuZGVjbGFyZWQgKGZpcnN0CnVzZSBpbiB0aGlzIGZ1bmN0aW9u
-KQphcmNoL3VtL2tlcm5lbC9tZW0uYzoxNzc6IGVycm9yOiAoRWFjaCB1bmRlY2xhcmVkIGlkZW50
-aWZpZXIgaXMKcmVwb3J0ZWQgb25seSBvbmNlCmFyY2gvdW0va2VybmVsL21lbS5jOjE3NzogZXJy
-b3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMgaW4uKQoKClNpZ25lZC1vZmYtYnk6IFdB
-TkcgQ29uZyA8d2FuZ2NvbmdAemV1dXgub3JnPgpDYzogSmVmZiBEaWtlIDxqZGlrZUBhZGR0b2l0
-LmNvbT4KQ2M6IEFsIFZpcm8gPHZpcm9AemVuaXYubGludXgub3JnLnVrPgoKZGlmZiAtLWdpdCBh
-L2FyY2gvdW0vaW5jbHVkZS9hc20vZml4bWFwLmggYi9hcmNoL3VtL2luY2x1ZGUvYXNtL2ZpeG1h
-cC5oCmluZGV4IDY5YzAyNTIuLmE4ZTI5ZTUgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0vaW5jbHVkZS9h
-c20vZml4bWFwLmgKKysrIGIvYXJjaC91bS9pbmNsdWRlL2FzbS9maXhtYXAuaApAQCAtNDEsNiAr
-NDEsMTIgQEAgZW51bSBmaXhlZF9hZGRyZXNzZXMgewogCV9fZW5kX29mX2ZpeGVkX2FkZHJlc3Nl
-cwogfTsKCisjaWZkZWYgQ09ORklHX0hJR0hNRU0KK2V4dGVybiBwdGVfdCAqcGttYXBfcGFnZV90
-YWJsZTsKK2V4dGVybiBwdGVfdCAqa21hcF9wdGU7CitleHRlcm4gcGdwcm90X3Qga21hcF9wcm90
-OworI2VuZGlmCisKIGV4dGVybiB2b2lkIF9fc2V0X2ZpeG1hcCAoZW51bSBmaXhlZF9hZGRyZXNz
-ZXMgaWR4LAogCQkJICB1bnNpZ25lZCBsb25nIHBoeXMsIHBncHJvdF90IGZsYWdzKTsKCmRpZmYg
-LS1naXQgYS9hcmNoL3g4Ni9tbS9oaWdobWVtXzMyLmMgYi9hcmNoL3g4Ni9tbS9oaWdobWVtXzMy
-LmMKaW5kZXggYmNjMDc5Yy4uODg0ZjllMiAxMDA2NDQKLS0tIGEvYXJjaC94ODYvbW0vaGlnaG1l
-bV8zMi5jCisrKyBiL2FyY2gveDg2L21tL2hpZ2htZW1fMzIuYwpAQCAtMSwzICsxLDQgQEAKKyNp
-bmNsdWRlIDxhc20vZml4bWFwLmg+CiAjaW5jbHVkZSA8bGludXgvaGlnaG1lbS5oPgogI2luY2x1
-ZGUgPGxpbnV4L21vZHVsZS5oPgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YuTmV0IGVtYWlsIGlz
-IHNwb25zb3JlZCBieSB0aGUgTW9ibGluIFlvdXIgTW92ZSBEZXZlbG9wZXIncyBjaGFsbGVuZ2UK
-QnVpbGQgdGhlIGNvb2xlc3QgTGludXggYmFzZWQgYXBwbGljYXRpb25zIHdpdGggTW9ibGluIFNE
-SyAmIHdpbiBncmVhdCBwcml6ZXMKR3JhbmQgcHJpemUgaXMgYSB0cmlwIGZvciB0d28gdG8gYW4g
-T3BlbiBTb3VyY2UgZXZlbnQgYW55d2hlcmUgaW4gdGhlIHdvcmxkCmh0dHA6Ly9tb2JsaW4tY29u
-dGVzdC5vcmcvcmVkaXJlY3QucGhwP2Jhbm5lcl9pZD0xMDAmdXJsPS8KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1h
-aWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51
-eC1kZXZlbAo=
+Hi Balbir,
+
+On Sat, Nov 29, 2008 at 12:08 PM, Balbir Singh
+<balbir@linux.vnet.ibm.com> wrote:
+> mconsole_init() passed 256 bytes as length in os_create_unix_socket, while
+> the sizeof UNIX_PATH_MAX is 108. This patch fixes that problem and avoids
+> a big overrun bug reported on UML bootup.
+
+Maybe mention that ->sun_path in struct sockaddr_un is UNIX_PATH_MAX
+long which causes the problem?
+
+> Reported-by: Vikas K Managutte <vikki.km@gmail.com>
+> Reported-by: Sarvesh Kumar Lal Das <skldas@gmail.com>
+> Signed-off-by: Balbir Singh <balbir@linux.vnet.ibm.com>
+
+Reviewed-by: Pekka Enberg <penberg@cs.helsinki.fi>
+
+> ---
+>
+>  arch/um/drivers/mconsole_kern.c |    4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff -puN arch/um/drivers/mconsole_kern.c~fix-uml-buggy-socket-creation arch/um/drivers/mconsole_kern.c
+> --- linux-2.6.28-rc6/arch/um/drivers/mconsole_kern.c~fix-uml-buggy-socket-creation      2008-11-29 15:29:04.000000000 +0530
+> +++ linux-2.6.28-rc6-balbir/arch/um/drivers/mconsole_kern.c     2008-11-29 15:32:23.000000000 +0530
+> @@ -16,6 +16,8 @@
+>  #include <linux/slab.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/utsname.h>
+> +#include <linux/socket.h>
+> +#include <linux/un.h>
+>  #include <linux/workqueue.h>
+>  #include <linux/mutex.h>
+>  #include <asm/uaccess.h>
+> @@ -785,7 +787,7 @@ static int __init mconsole_init(void)
+>        /* long to avoid size mismatch warnings from gcc */
+>        long sock;
+>        int err;
+> -       char file[256];
+> +       char file[UNIX_PATH_MAX];
+>
+>        if (umid_file_name("mconsole", file, sizeof(file)))
+>                return -1;
+> _
+>
+> --
+>        Balbir
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+>
+
+-------------------------------------------------------------------------
+This SF.Net email is sponsored by the Moblin Your Move Developer's challenge
+Build the coolest Linux based applications with Moblin SDK & win great prizes
+Grand prize is a trip for two to an Open Source event anywhere in the world
+http://moblin-contest.org/redirect.php?banner_id=100&url=/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
