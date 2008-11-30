@@ -1,35 +1,35 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <balbir@linux.vnet.ibm.com>) id 1L6RHi-0001HY-Te
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <balbir@linux.vnet.ibm.com>) id 1L6cbP-0004Ue-DT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 Nov 2008 14:59:02 +0000
+	Sun, 30 Nov 2008 03:04:07 +0000
 Received: from e23smtp01.au.ibm.com ([202.81.18.162])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1L6RHe-0003um-SM
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1L6cbN-0004um-Dk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 29 Nov 2008 14:59:02 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.18.234])
-	by e23smtp01.au.ibm.com (8.13.1/8.13.1) with ESMTP id mATEwsjm027822
+	Sun, 30 Nov 2008 03:04:07 +0000
+Received: from sd0109e.au.ibm.com (d23rh905.au.ibm.com [202.81.18.225])
+	by e23smtp01.au.ibm.com (8.13.1/8.13.1) with ESMTP id mAU340Ea024112
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 30 Nov 2008 01:58:54 +1100
-Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	mATExIrr4104316 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 30 Nov 2008 01:59:18 +1100
-Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
-	by d23av01.au.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	mATEwsdx008449 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 30 Nov 2008 01:58:55 +1100
-Date: Sat, 29 Nov 2008 17:50:39 +0530
+	Sun, 30 Nov 2008 14:04:00 +1100
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by sd0109e.au.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
+	mAU31VFc311716 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 30 Nov 2008 14:01:31 +1100
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	mAU31UA8009342 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 30 Nov 2008 14:01:31 +1100
+Date: Sun, 30 Nov 2008 08:31:28 +0530
 From: Balbir Singh <balbir@linux.vnet.ibm.com>
-Message-ID: <20081129122039.GA31635@balbir.in.ibm.com>
+Message-ID: <20081130030128.GA8948@balbir.in.ibm.com>
 References: <20081129100830.GA24128@balbir.in.ibm.com>
-	<84144f020811290221g947f836n4fe3435676425ee@mail.gmail.com>
+	<2375c9f90811290503s1b4cb9aelaecccc680c6e37d0@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <84144f020811290221g947f836n4fe3435676425ee@mail.gmail.com>
+In-Reply-To: <2375c9f90811290503s1b4cb9aelaecccc680c6e37d0@mail.gmail.com>
 Subject: Re: [uml-devel] [PATCH][UML] Boot broken due to buffer overrun
 Reply-To: balbir@linux.vnet.ibm.com
 List-Id: The user-mode Linux development list
@@ -44,32 +44,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Pekka Enberg <penberg@cs.helsinki.fi>
+To: Am?rico Wang <xiyou.wangcong@gmail.com>
 Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-* Pekka Enberg <penberg@cs.helsinki.fi> [2008-11-29 12:21:46]:
+* WANG Cong <xiyou.wangcong@gmail.com> [2008-11-29 13:03:42]:
 
-> Hi Balbir,
-> 
-> On Sat, Nov 29, 2008 at 12:08 PM, Balbir Singh
+> On Sat, Nov 29, 2008 at 10:08 AM, Balbir Singh
 > <balbir@linux.vnet.ibm.com> wrote:
+> >
 > > mconsole_init() passed 256 bytes as length in os_create_unix_socket, while
 > > the sizeof UNIX_PATH_MAX is 108. This patch fixes that problem and avoids
 > > a big overrun bug reported on UML bootup.
-> 
-> Maybe mention that ->sun_path in struct sockaddr_un is UNIX_PATH_MAX
-> long which causes the problem?
->
-
-Yes, the changelog can definitely add that to the changelog, I'll
-resend the patch if Jeff asks for it.
-
- 
+> >
 > > Reported-by: Vikas K Managutte <vikki.km@gmail.com>
 > > Reported-by: Sarvesh Kumar Lal Das <skldas@gmail.com>
 > > Signed-off-by: Balbir Singh <balbir@linux.vnet.ibm.com>
+> > ---
+> >
+> >  arch/um/drivers/mconsole_kern.c |    4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff -puN arch/um/drivers/mconsole_kern.c~fix-uml-buggy-socket-creation arch/um/drivers/mconsole_kern.c
+> > --- linux-2.6.28-rc6/arch/um/drivers/mconsole_kern.c~fix-uml-buggy-socket-creation      2008-11-29 15:29:04.000000000 +0530
+> > +++ linux-2.6.28-rc6-balbir/arch/um/drivers/mconsole_kern.c     2008-11-29 15:32:23.000000000 +0530
+> > @@ -16,6 +16,8 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/syscalls.h>
+> >  #include <linux/utsname.h>
+> > +#include <linux/socket.h>
+> > +#include <linux/un.h>
+> >  #include <linux/workqueue.h>
+> >  #include <linux/mutex.h>
+> >  #include <asm/uaccess.h>
+> > @@ -785,7 +787,7 @@ static int __init mconsole_init(void)
+> >        /* long to avoid size mismatch warnings from gcc */
+> >        long sock;
+> >        int err;
+> > -       char file[256];
+> > +       char file[UNIX_PATH_MAX];
+> >
 > 
-> Reviewed-by: Pekka Enberg <penberg@cs.helsinki.fi>
+> 
+> Aha, good spot!
+> 
+> Please also correct the length of mconsole_socket_name.
+>
+
+I did not fix that with UNIX_PATH_MAX since, mconsole_user.c already includes
+sys/un.h and sys/socket.h and I did not want to include kernel headers
+linux/socket.h and linux/un.h there. I could have hard-coded those
+values to 108, but I just let it be for now. If you feel strongly
+about it, it can be done.
+ 
+> Anyway,
+> 
+> Reviewed-by: WANG Cong <wangcong@zeuux.org>
 
 Thanks!
 
