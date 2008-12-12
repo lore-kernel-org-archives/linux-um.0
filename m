@@ -1,27 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hannes@cmpxchg.org>) id 1L9Pjv-0001uy-OQ
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <miklos@szeredi.hu>) id 1LB4Qf-0008JW-7x
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 Dec 2008 19:56:27 +0000
-Received: from cmpxchg.org ([85.214.51.133])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1L9Pjt-0001W4-A1
+	Fri, 12 Dec 2008 09:35:25 +0000
+Received: from fxip-0047f.externet.hu ([88.209.222.127]
+	helo=pomaz-ex.szeredi.hu)
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1LB4QZ-0002HV-Qu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 07 Dec 2008 19:56:27 +0000
-Date: Sun, 7 Dec 2008 20:55:38 +0100
-From: Johannes Weiner <hannes@cmpxchg.org>
-Message-ID: <20081207195537.GA24808@cmpxchg.org>
-References: <2375c9f90812021451hfd77292yf2463ca99d07b88e@mail.gmail.com>
-	<20081203012051.GA8953@cmpxchg.org>
-	<2375c9f90812030432m771984edkdd0c599bbae9bb3c@mail.gmail.com>
-	<20081203134035.GA17560@cmpxchg.org>
-	<2375c9f90812051702m217ee049i79ce2f9cc8280fb1@mail.gmail.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2375c9f90812051702m217ee049i79ce2f9cc8280fb1@mail.gmail.com>
-Subject: Re: [uml-devel] [Patch] uml: drop const qualifier for kernel_execve()
+	Fri, 12 Dec 2008 09:35:25 +0000
+Message-Id: <E1LB4QO-0005fk-7g@pomaz-ex.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Fri, 12 Dec 2008 10:35:08 +0100
+Subject: [uml-devel] [regression] uml is very slow on 2.6.28 host
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,47 +24,26 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: =?iso-8859-1?Q?Am=E9rico?= Wang <xiyou.wangcong@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, jdike@addtoit.com, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Dec 06, 2008 at 01:02:16AM +0000, Am=E9rico Wang wrote:
-> On Wed, Dec 3, 2008 at 1:40 PM, Johannes Weiner <hannes@cmpxchg.org> wrot=
-e:
-> > On Wed, Dec 03, 2008 at 12:32:02PM +0000, Am=E9rico Wang wrote:
-> >> On Wed, Dec 3, 2008 at 1:20 AM, Johannes Weiner <hannes@cmpxchg.org> w=
-rote:
-> >> > On Tue, Dec 02, 2008 at 10:51:09PM +0000, Am=E9rico Wang wrote:
-> >> >> UML implementation of kernel_execve() should not have const qualifi=
-er,
-> >> >> because it will finally call do_execve() which doesn't have.
-> >> >
-> >> > And you made sure that do_execve() is correctly annotated?
-> >> >
-> >>
-> >> Yes, I checked that.
-> >
-> > Good.  Then please fix up do_execve() or let the warning stand out as
-> > a reminder.
-> =
+When the UML boot gets to the userspace part it gets really really
+slow.  It takes about 20 times the normal time to fully boot.  CPU
+seems to be idle.
 
-> ??
-> Confused...
-> =
+Guest version doesn't matter.  Host version 2.6.27 was OK, latest git
+is not OK.  I'm running 32bit guest on 64bit host.
 
-> do_execve() is OK, we don't need to fix it.
+Anyone else experiencing this?
 
-I don't see where it writes through @filename.  So it seems the right
-fix would be to make do_execve()s parameter const (and as it seems, a
-lot more adjustments down this call graph) and not remove a correct
-const from a callsite.
+Thanks,
+Miklos
 
-	Hannes
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 SF.Net email is Sponsored by MIX09, March 18-20, 2009 in Las Vegas, Nevada.
 The future of the web can't happen without you.  Join us at MIX09 to help
 pave the way to the Next Web now. Learn more and register at
