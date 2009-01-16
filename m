@@ -1,21 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <akpm@linux-foundation.org>) id 1LNvW7-0002T5-LJ
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jdike@addtoit.com>) id 1LNxVI-0001rH-92
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Jan 2009 20:42:11 +0000
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1LNvW2-0002GN-NZ
+	Fri, 16 Jan 2009 22:49:28 +0000
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1LNxVG-0005KW-5f
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Jan 2009 20:42:11 +0000
-Date: Fri, 16 Jan 2009 12:41:58 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20090116124158.4364e269.akpm@linux-foundation.org>
-In-Reply-To: <20090115194033.GA10926@hack.private>
+	Fri, 16 Jan 2009 22:49:28 +0000
+Date: Fri, 16 Jan 2009 16:38:33 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20090116213833.GA11904@c2.user-mode-linux.org>
 References: <20090115194033.GA10926@hack.private>
-Mime-Version: 1.0
+	<20090116124158.4364e269.akpm@linux-foundation.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20090116124158.4364e269.akpm@linux-foundation.org>
 Subject: Re: [uml-devel] [Patch] uml: fix a link error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,52 +31,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: =?ISO-8859-1?Q?Am=E9rico?= Wang <xiyou.wangcong@gmail.com>
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: =?iso-8859-1?Q?Am=E9rico?= Wang <xiyou.wangcong@gmail.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, 15 Jan 2009 19:40:33 +0000
-Am__rico Wang <xiyou.wangcong@gmail.com> wrote:
-
+On Fri, Jan 16, 2009 at 12:41:58PM -0800, Andrew Morton wrote:
+> On Thu, 15 Jan 2009 19:40:33 +0000
+> Am__rico Wang <xiyou.wangcong@gmail.com> wrote:
+> >  #define sys_vm86old sys_ni_syscall
+> >  #define sys_vm86 sys_ni_syscall
+> > +#define sys_sigprocmask sigprocmask
+> >  
+> >  #define old_mmap old_mmap_i386
+> >  
 > 
-> This patch fixes the following link error:
+> For how long has this problem been present?
 > 
->   LD      .tmp_vmlinux1                                             
->   arch/um/sys-i386/built-in.o: In function sys_call_table':          
->   (.rodata+0x308): undefined reference to sys_sigprocmask'           
->   collect2: ld returned 1 exit status                                 
->    KSYM    .tmp_kallsyms1.S                                          
->    nm: '.tmp_vmlinux1': No such file                                   
->    AS      .tmp_kallsyms1.o                                          
->    LD      .tmp_vmlinux2 
->    arch/um/sys-i386/built-in.o: In function sys_call_table':  
->   (.rodata+0x308): undefined reference to sys_sigprocmask'  
->   collect2: ld returned 1 exit status   
->   make[1]: *** [.tmp_vmlinux2] Error 1   
->   make: *** [sub-make] Error 2                               
-> 
-> 
-> Signed-off-by: WANG Cong <wangcong@zeuux.org>
-> Cc: Jeff Dike <jdike@addtoit.com>
-> 
-> ---
-> diff --git a/arch/um/sys-i386/sys_call_table.S b/arch/um/sys-i386/sys_call_table.S
-> index 00e5f52..04147dc 100644
-> --- a/arch/um/sys-i386/sys_call_table.S
-> +++ b/arch/um/sys-i386/sys_call_table.S
-> @@ -6,6 +6,7 @@
->  
->  #define sys_vm86old sys_ni_syscall
->  #define sys_vm86 sys_ni_syscall
-> +#define sys_sigprocmask sigprocmask
->  
->  #define old_mmap old_mmap_i386
->  
+> Why aren't lots of other people reporting it?
 
-For how long has this problem been present?
+There's no problem AFAICT.
 
-Why aren't lots of other people reporting it?
+This is just bogus.
 
+As you point out, if sigprocmask were missing, people would have
+noticed.  Also, the proposed definition would pull in the libc
+system call wrapper, not the UML system call definition.
 
+				Jeff
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by:
