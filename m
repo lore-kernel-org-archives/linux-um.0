@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <inguin@gmx.de>) id 1LOZwH-0004Ze-Hm
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rob@landley.net>) id 1LOh5O-0004s2-MH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2009 15:51:53 +0000
-Received: from mail.gmx.net ([213.165.64.20])
-	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1LOZwE-00028o-2Z for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2009 15:51:53 +0000
-Message-ID: <4973500A.2000509@gmx.de>
-Date: Sun, 18 Jan 2009 16:51:38 +0100
-From: Ingo van Lil <inguin@gmx.de>
+	Sun, 18 Jan 2009 23:29:46 +0000
+Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
+	helo=grelber.thyrsus.com) by 72vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1LOh5F-00013K-Pn
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jan 2009 23:29:46 +0000
+From: Rob Landley <rob@landley.net>
+Date: Sun, 18 Jan 2009 17:29:30 -0600
+References: <20090115194033.GA10926@hack.private>
+	<200901170328.15178.rob@landley.net>
+	<20090118083237.GA3292@hack.private>
+In-Reply-To: <20090118083237.GA3292@hack.private>
 MIME-Version: 1.0
-References: <200901130159.04389.rob@landley.net>
-In-Reply-To: <200901130159.04389.rob@landley.net>
-Subject: Re: [uml-devel] Does 2.6.28 UML work for anyone else?
+Content-Disposition: inline
+Message-Id: <200901181729.31682.rob@landley.net>
+Subject: Re: [uml-devel] [Patch] uml: fix a link error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,34 +29,42 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Rob Landley <rob@landley.net>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: =?iso-8859-1?q?Am=E9rico_Wang?= <xiyou.wangcong@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-Rob Landley schrieb:
+On Sunday 18 January 2009 02:32:37 Am=E9rico Wang wrote:
+> >The result panics (twice) and exits, instead of giving me a shell prompt.
+> >Built and run on stock Ubuntu 8.10.  (I posted about it on tuesday, but
+> > nobody replied...)
+>
+> Hi, Rob.
+>
+> I tried what you said, it works very fine here, on my Fedora 10.
+> Could you please tell us which kernel your host is using?
 
-> Can anyone else reproduce building ARCH=um with the attached .config, and then 
-> going:
-> 
-> $ ./vmlinux rw init=/bin/sh rootfstype=hostfs
-[...]
-> Kernel panic - not syncing: Segfault with no mm
-[...]
-> Segmentation fault
+Ubuntu 8.10 stock kernel, calls itself "2.6.27-9-generic".
 
-Works fine on my Fedora 9 machine. I used the "mini.conf" script you
-posted yesterday, not the attached config file. The built kernel wasn't
-very useful, obviously, but at least it managed to run a shell.
+> and the guest?
 
-The default config (make defconfig) also works flawlessly. It boots the
-FC5 image from the UML homepage without problems.
+Checking tuesday's bug report, it said:
 
-Cheers,
-Ingo
+> Linux version 2.6.28 (landley@driftwood) (gcc version 4.3.2 (Ubuntu =
 
-------------------------------------------------------------------------------
+> 4.3.2-1ubuntu11) ) #6 Tue Jan 13 01:54:34 CST 2009
+
+It's the vanilla tarball (albeit extracted from source control according to =
+
+the v2.6.28 tag rather than downloaded).
+
+Possibly a gcc 4.3 issue?
+
+Rob
+
+---------------------------------------------------------------------------=
+---
 This SF.net email is sponsored by:
 SourcForge Community
 SourceForge wants to tell your story.
