@@ -1,24 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rob@landley.net>) id 1LOh5O-0004s2-MH
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jdike@addtoit.com>) id 1LOvwo-0004aS-Na
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2009 23:29:46 +0000
-Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
-	helo=grelber.thyrsus.com) by 72vjzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1LOh5F-00013K-Pn
+	Mon, 19 Jan 2009 15:21:54 +0000
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1LOvwf-0000ua-GS
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2009 23:29:46 +0000
-From: Rob Landley <rob@landley.net>
-Date: Sun, 18 Jan 2009 17:29:30 -0600
+	Mon, 19 Jan 2009 15:21:54 +0000
+Date: Mon, 19 Jan 2009 10:21:04 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20090119152104.GC6432@c2.user-mode-linux.org>
 References: <20090115194033.GA10926@hack.private>
+	<20090116124158.4364e269.akpm@linux-foundation.org>
 	<200901170328.15178.rob@landley.net>
-	<20090118083237.GA3292@hack.private>
-In-Reply-To: <20090118083237.GA3292@hack.private>
+	<dc84318c0901172223p57872a8cr227d940b1c0a908a@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Message-Id: <200901181729.31682.rob@landley.net>
+In-Reply-To: <dc84318c0901172223p57872a8cr227d940b1c0a908a@mail.gmail.com>
 Subject: Re: [uml-devel] [Patch] uml: fix a link error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -29,42 +30,27 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: =?iso-8859-1?q?Am=E9rico_Wang?= <xiyou.wangcong@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Daolong Wang <ahlongxp@gmail.com>
+Cc: Am?rico Wang <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net, Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org
 
-On Sunday 18 January 2009 02:32:37 Am=E9rico Wang wrote:
-> >The result panics (twice) and exits, instead of giving me a shell prompt.
-> >Built and run on stock Ubuntu 8.10.  (I posted about it on tuesday, but
-> > nobody replied...)
->
-> Hi, Rob.
->
-> I tried what you said, it works very fine here, on my Fedora 10.
-> Could you please tell us which kernel your host is using?
+On Sun, Jan 18, 2009 at 02:23:46PM +0800, Daolong Wang wrote:
+> I can confirm this link error. 
 
-Ubuntu 8.10 stock kernel, calls itself "2.6.27-9-generic".
+In what environment?  I see no problems here.
 
-> and the guest?
+> And this patch works for me.
 
-Checking tuesday's bug report, it said:
+Maybe it fixes the link failure.  But I really doubt that sigprocmask works.
 
-> Linux version 2.6.28 (landley@driftwood) (gcc version 4.3.2 (Ubuntu =
+				Jeff
 
-> 4.3.2-1ubuntu11) ) #6 Tue Jan 13 01:54:34 CST 2009
+-- 
+Work email - jdike at linux dot intel dot com
 
-It's the vanilla tarball (albeit extracted from source control according to =
-
-the v2.6.28 tag rather than downloaded).
-
-Possibly a gcc 4.3 issue?
-
-Rob
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 This SF.net email is sponsored by:
 SourcForge Community
 SourceForge wants to tell your story.
