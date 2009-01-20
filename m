@@ -1,24 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ahlongxp@gmail.com>) id 1LOR4e-0003sl-Ej
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ahlongxp@gmail.com>) id 1LP6Bp-0007Ud-97
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2009 06:23:56 +0000
-Received: from rv-out-0708.google.com ([209.85.198.244])
+	Tue, 20 Jan 2009 02:18:05 +0000
+Received: from rv-out-0708.google.com ([209.85.198.243])
 	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1LOR4W-0002Od-CC for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2009 06:23:56 +0000
-Received: by rv-out-0708.google.com with SMTP id f25so2204246rvb.22
+	id 1LP6Bg-0001uI-DG for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Jan 2009 02:18:05 +0000
+Received: by rv-out-0708.google.com with SMTP id f25so3002624rvb.22
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 17 Jan 2009 22:23:46 -0800 (PST)
+	Mon, 19 Jan 2009 18:17:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <200901170328.15178.rob@landley.net>
+In-Reply-To: <20090119152104.GC6432@c2.user-mode-linux.org>
 References: <20090115194033.GA10926@hack.private>
 	<20090116124158.4364e269.akpm@linux-foundation.org>
 	<200901170328.15178.rob@landley.net>
-Date: Sun, 18 Jan 2009 14:23:46 +0800
-Message-ID: <dc84318c0901172223p57872a8cr227d940b1c0a908a@mail.gmail.com>
+	<dc84318c0901172223p57872a8cr227d940b1c0a908a@mail.gmail.com>
+	<20090119152104.GC6432@c2.user-mode-linux.org>
+Date: Tue, 20 Jan 2009 09:46:15 +0800
+Message-ID: <dc84318c0901191746g31d51c23g65da89190dc8bfd2@mail.gmail.com>
 From: Daolong Wang <ahlongxp@gmail.com>
 Subject: Re: [uml-devel] [Patch] uml: fix a link error
 List-Id: The user-mode Linux development list
@@ -33,65 +35,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Rob Landley <rob@landley.net>
-Cc: =?ISO-8859-1?Q?Am=E9rico_Wang?= <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Am?rico Wang <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net, Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org
 
-I can confirm this link error. And this patch works for me.
-
-On Sat, Jan 17, 2009 at 5:28 PM, Rob Landley <rob@landley.net> wrote:
-> On Friday 16 January 2009 14:41:58 Andrew Morton wrote:
->> > diff --git a/arch/um/sys-i386/sys_call_table.S
->> > b/arch/um/sys-i386/sys_call_table.S index 00e5f52..04147dc 100644
->> > --- a/arch/um/sys-i386/sys_call_table.S
->> > +++ b/arch/um/sys-i386/sys_call_table.S
->> > @@ -6,6 +6,7 @@
->> >
->> >  #define sys_vm86old sys_ni_syscall
->> >  #define sys_vm86 sys_ni_syscall
->> > +#define sys_sigprocmask sigprocmask
->> >
->> >  #define old_mmap old_mmap_i386
->>
->> For how long has this problem been present?
->>
->> Why aren't lots of other people reporting it?
+On Mon, Jan 19, 2009 at 11:21 PM, Jeff Dike <jdike@addtoit.com> wrote:
+> On Sun, Jan 18, 2009 at 02:23:46PM +0800, Daolong Wang wrote:
+>> I can confirm this link error.
 >
-> I'm not sure User Mode Linux still has a lot of users regularly testing the
-> latest and greatest version.  (QEMU and KVM kinda took the wind out of its
-> sails.)
+> In what environment?  I see no problems here.
 >
-> I still find it useful to be able to stick printfs into the code and debug
-> stuff even when the console isn't working, but I haven't been able to build a
-> version of 2.6.28 that works for me at all:
+Ubuntu 8.04. Gcc is 4.2.4. Sorry I don't have the access to the machine now.
+>> And this patch works for me.
 >
-> cat > mini.conf << EOF
-> CONFIG_BINFMT_ELF=y
-> CONFIG_HOSTFS=y
-> CONFIG_LBD=y
-> CONFIG_BLK_DEV=y
-> CONFIG_BLK_DEV_LOOP=y
-> CONFIG_STDERR_CONSOLE=y
-> CONFIG_UNIX98_PTYS=y
-> CONFIG_EXT2_FS=y
-> CONFIG_EXT3_FS=y
-> CONFIG_STATIC_LINK=y
-> CONFIG_NO_HZ=y
-> CONFIG_UNEVICTABLE_LRU=y
-> EOF
-> make ARCH=um allnoconfig KCONFIG_ALLCONFIG=mini.conf
-> make ARCH=um -j 3
-> ./linux rw init=/bin/bash rootfstype=hostfs
+> Maybe it fixes the link failure.  But I really doubt that sigprocmask works.
 >
-> The result panics (twice) and exits, instead of giving me a shell prompt.
-> Built and run on stock Ubuntu 8.10.  (I posted about it on tuesday, but nobody
-> replied...)
+not sure. compile test only!
+>                                Jeff
 >
-> Rob
 > --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+> Work email - jdike at linux dot intel dot com
 >
 
 ------------------------------------------------------------------------------
