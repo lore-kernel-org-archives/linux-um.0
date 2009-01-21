@@ -1,36 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lanas@securenet.net>) id 1LPEmv-0004he-Pu
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <roel.kluin@gmail.com>) id 1LPeoF-0002Hx-1Z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2009 11:28:57 +0000
-Received: from ms.securenet.net ([205.236.147.20])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1LPEmm-0003OQ-QJ for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Jan 2009 11:28:57 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by ms.securenet.net (Postfix) with ESMTP id 783A3B8EA
+	Wed, 21 Jan 2009 15:16:03 +0000
+Received: from ug-out-1314.google.com ([66.249.92.171])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1LPeoC-0004cF-BY for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 21 Jan 2009 15:16:02 +0000
+Received: by ug-out-1314.google.com with SMTP id 36so490823uga.17
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 20 Jan 2009 06:28:23 -0500 (EST)
-Received: from ms.securenet.net ([127.0.0.1])
-	by localhost (ms.securenet.net [127.0.0.1]) (amavisd-new, port 10025)
-	with ESMTP id 2jBkeUjTZlHP
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 20 Jan 2009 06:28:18 -0500 (EST)
-Received: from mistral.stie (mtl-pppoe-adsl630.securenet.net [66.38.238.121])
-	by ms.securenet.net (Postfix) with ESMTP id 37C98B8B0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 20 Jan 2009 06:28:18 -0500 (EST)
-Date: Tue, 20 Jan 2009 06:29:33 -0500
-From: lanas <lanas@securenet.net>
-Message-ID: <20090120062933.68f10690@mistral.stie>
-In-Reply-To: <497561E8.9070902@hathawaymix.org>
-References: <49754AB5.3000701@hathawaymix.org>
-	<20090120045959.GA18187@c2.user-mode-linux.org>
-	<497561E8.9070902@hathawaymix.org>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] [Patch] UML: spurious interrupt freezes guest
+	Wed, 21 Jan 2009 07:15:58 -0800 (PST)
+Message-ID: <49773C2E.9090608@gmail.com>
+Date: Wed, 21 Jan 2009 16:15:58 +0100
+From: Roel Kluin <roel.kluin@gmail.com>
+MIME-Version: 1.0
+Subject: [uml-devel] [PATCH] x86, um: fix GETREG/PUTREG macros
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -43,22 +29,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Mon, 19 Jan 2009 22:32:24 -0700,
-Shane Hathaway <shane@hathawaymix.org> wrote :
+When these macros aren't called with regs, e.g. with foo
+this will incorectly expand to foo->foo.gp[*]
 
-> The best way I found to trigger the spurious interrupt was to try to
-> "apt-get install" many packages at once.  The download would succeed,
-> but the guest would freeze partway through the install.
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+My other patch should probably as well have been sent to this list:
+http://lkml.org/lkml/2009/1/21/203
 
-That makes me think, recently I did an 'apt-get dist-upgrade' on about
-10 UMLs at the same time and many of them segfaulted.  UMLs are 2.6.26
-and host is Fedora 8 32 bits with 1 GB RAM.  UMLS have their memory set
-at 128 MB.  I figured I was pushing a bit, so I did not took notes and
-ended up rebooting the host to get a clean slate.
+diff --git a/arch/um/sys-x86_64/signal.c b/arch/um/sys-x86_64/signal.c
+index 1a899a7..31d0e9c 100644
+--- a/arch/um/sys-x86_64/signal.c
++++ b/arch/um/sys-x86_64/signal.c
+@@ -49,8 +49,8 @@ static int copy_sc_from_user(struct pt_regs *regs,
+ 	struct user_i387_struct fp;
+ 	int err = 0;
+ 
+-#define GETREG(regs, regno, sc, regname)				\
+-	__get_user((regs)->regs.gp[(regno) / sizeof(unsigned long)],	\
++#define GETREG(_regs, regno, sc, regname)				\
++	__get_user((_regs)->regs.gp[(regno) / sizeof(unsigned long)],	\
+ 		   &(sc)->regname)
+ 
+ 	err |= GETREG(regs, R8, from, r8);
+@@ -104,8 +104,8 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ 	err |= __put_user(0, &to->gs);
+ 	err |= __put_user(0, &to->fs);
+ 
+-#define PUTREG(regs, regno, sc, regname)				\
+-	__put_user((regs)->regs.gp[(regno) / sizeof(unsigned long)],	\
++#define PUTREG(_regs, regno, sc, regname)				\
++	__put_user((_regs)->regs.gp[(regno) / sizeof(unsigned long)],	\
+ 		   &(sc)->regname)
+ 
+ 	err |= PUTREG(regs, RDI, to, di);
 
-Al
 
 ------------------------------------------------------------------------------
 This SF.net email is sponsored by:
