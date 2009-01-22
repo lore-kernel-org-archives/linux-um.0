@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <xiyou.wangcong@gmail.com>) id 1LQ22d-0005AU-R8
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <xiyou.wangcong@gmail.com>) id 1LQ23o-0005tY-NG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2009 16:04:27 +0000
+	Thu, 22 Jan 2009 16:05:40 +0000
 Received: from mail-ew0-f21.google.com ([209.85.219.21])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1LQ22b-0000uj-26 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2009 16:04:27 +0000
-Received: by ewy14 with SMTP id 14so3228831ewy.10
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1LQ23j-0002ZV-JE for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 22 Jan 2009 16:05:40 +0000
+Received: by ewy14 with SMTP id 14so3230712ewy.10
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 22 Jan 2009 08:04:22 -0800 (PST)
-Date: Fri, 23 Jan 2009 00:04:01 +0800
+	Thu, 22 Jan 2009 08:05:33 -0800 (PST)
+Date: Fri, 23 Jan 2009 00:05:25 +0800
 From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
-Message-ID: <20090122160401.GA9732@hack.private>
-References: <49773C2E.9090608@gmail.com>
+Message-ID: <20090122160525.GB9732@hack.private>
+References: <49773C2E.9090608@gmail.com> <497890C2.1040206@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <49773C2E.9090608@gmail.com>
-Subject: Re: [uml-devel] [PATCH] x86, um: fix GETREG/PUTREG macros
+In-Reply-To: <497890C2.1040206@gmail.com>
+Subject: Re: [uml-devel] [PATCH] x86, um: fix EXECUTE_SYSCALL macros
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,15 +35,25 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Roel Kluin <roel.kluin@gmail.com>
 Cc: Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, Jan 21, 2009 at 04:15:58PM +0100, Roel Kluin wrote:
->When these macros aren't called with regs, e.g. with foo
->this will incorectly expand to foo->foo.gp[*]
+On Thu, Jan 22, 2009 at 04:29:06PM +0100, Roel Kluin wrote:
+>Roel Kluin wrote:
+>> When these macros aren't called with regs, e.g. with foo
+>> this will incorectly expand to foo->foo.gp[*]
+>> 
+>> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+>> ---
+>> My other patch should probably as well have been sent to this list:
+>> http://lkml.org/lkml/2009/1/21/203
+>> 
+>there were more
+>
+>Fix EXECUTE_SYSCALL macros. When called with a variable named other
+>than regs as second argument, this will result in a build failure.
 >
 >Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
 
-Good catch!
-
 Reviewed-by: WANG Cong <wangcong@zeuux.org>
+
 
 -- 
 "Against stupidity, the gods themselves, contend in vain."
