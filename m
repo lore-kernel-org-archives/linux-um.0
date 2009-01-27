@@ -1,27 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <xiyou.wangcong@gmail.com>) id 1LQ2BD-0005t8-Dm
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1LRlMN-0003xO-1O
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2009 16:13:19 +0000
-Received: from mail-ew0-f21.google.com ([209.85.219.21])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1LQ2B7-0003s9-DQ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 22 Jan 2009 16:13:19 +0000
-Received: by ewy14 with SMTP id 14so3243683ewy.10
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 22 Jan 2009 08:13:10 -0800 (PST)
-Date: Fri, 23 Jan 2009 00:12:57 +0800
-From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
-Message-ID: <20090122161257.GG9732@hack.private>
+	Tue, 27 Jan 2009 10:39:59 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1LRlMJ-0005zU-NE
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Jan 2009 10:39:58 +0000
+Date: Tue, 27 Jan 2009 09:23:14 +0000
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Message-ID: <20090127092314.GZ28946@ZenIV.linux.org.uk>
 References: <20090115194033.GA10926@hack.private>
+	<20090116124158.4364e269.akpm@linux-foundation.org>
 	<200901170328.15178.rob@landley.net>
-	<20090118083237.GA3292@hack.private>
-	<200901181729.31682.rob@landley.net>
+	<dc84318c0901172223p57872a8cr227d940b1c0a908a@mail.gmail.com>
+	<20090119152104.GC6432@c2.user-mode-linux.org>
+	<dc84318c0901191746g31d51c23g65da89190dc8bfd2@mail.gmail.com>
+	<49753063.8040007@hathawaymix.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <200901181729.31682.rob@landley.net>
+In-Reply-To: <49753063.8040007@hathawaymix.org>
 Subject: Re: [uml-devel] [Patch] uml: fix a link error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -32,33 +33,53 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Rob Landley <rob@landley.net>
-Cc: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Shane Hathaway <shane@hathawaymix.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, Rob Landley <rob@landley.net>, Am?rico Wang <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Daolong Wang <ahlongxp@gmail.com>
 
-T24gU3VuLCBKYW4gMTgsIDIwMDkgYXQgMDU6Mjk6MzBQTSAtMDYwMCwgUm9iIExhbmRsZXkgd3Jv
-dGU6Cj5PbiBTdW5kYXkgMTggSmFudWFyeSAyMDA5IDAyOjMyOjM3IEFtw6lyaWNvIFdhbmcgd3Jv
-dGU6Cj4+ID5UaGUgcmVzdWx0IHBhbmljcyAodHdpY2UpIGFuZCBleGl0cywgaW5zdGVhZCBvZiBn
-aXZpbmcgbWUgYSBzaGVsbCBwcm9tcHQuCj4+ID5CdWlsdCBhbmQgcnVuIG9uIHN0b2NrIFVidW50
-dSA4LjEwLiAgKEkgcG9zdGVkIGFib3V0IGl0IG9uIHR1ZXNkYXksIGJ1dAo+PiA+IG5vYm9keSBy
-ZXBsaWVkLi4uKQo+Pgo+PiBIaSwgUm9iLgo+Pgo+PiBJIHRyaWVkIHdoYXQgeW91IHNhaWQsIGl0
-IHdvcmtzIHZlcnkgZmluZSBoZXJlLCBvbiBteSBGZWRvcmEgMTAuCj4+IENvdWxkIHlvdSBwbGVh
-c2UgdGVsbCB1cyB3aGljaCBrZXJuZWwgeW91ciBob3N0IGlzIHVzaW5nPwo+Cj5VYnVudHUgOC4x
-MCBzdG9jayBrZXJuZWwsIGNhbGxzIGl0c2VsZiAiMi42LjI3LTktZ2VuZXJpYyIuCj4KPj4gYW5k
-IHRoZSBndWVzdD8KPgo+Q2hlY2tpbmcgdHVlc2RheSdzIGJ1ZyByZXBvcnQsIGl0IHNhaWQ6Cj4K
-Pj4gTGludXggdmVyc2lvbiAyLjYuMjggKGxhbmRsZXlAZHJpZnR3b29kKSAoZ2NjIHZlcnNpb24g
-NC4zLjIgKFVidW50dSAKPj4gNC4zLjItMXVidW50dTExKSApICM2IFR1ZSBKYW4gMTMgMDE6NTQ6
-MzQgQ1NUIDIwMDkKPgo+SXQncyB0aGUgdmFuaWxsYSB0YXJiYWxsIChhbGJlaXQgZXh0cmFjdGVk
-IGZyb20gc291cmNlIGNvbnRyb2wgYWNjb3JkaW5nIHRvIAo+dGhlIHYyLjYuMjggdGFnIHJhdGhl
-ciB0aGFuIGRvd25sb2FkZWQpLgoKSSB3aWxsIHRyeSAyLjYuMjguCgo+Cj5Qb3NzaWJseSBhIGdj
-YyA0LjMgaXNzdWU/CgpJIGRvbid0IGtub3cuIDopCgotLSAKIkFnYWluc3Qgc3R1cGlkaXR5LCB0
-aGUgZ29kcyB0aGVtc2VsdmVzLCBjb250ZW5kIGluIHZhaW4uIgoKCi0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQpUaGlzIFNGLm5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnk6ClNvdXJjRm9yZ2UgQ29tbXVu
-aXR5ClNvdXJjZUZvcmdlIHdhbnRzIHRvIHRlbGwgeW91ciBzdG9yeS4KaHR0cDovL3Auc2YubmV0
-L3NmdS9zZi1zcHJlYWR0aGV3b3JkCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2Rl
-LWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
-cmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+On Mon, Jan 19, 2009 at 07:01:07PM -0700, Shane Hathaway wrote:
+> The problem is that the name "sigprocmask" is getting renamed to
+> "kernel_sigprocmask" by a compiler directive in arch/um/Makefile, then
+> that name gets mangled into "sys_kernel_sigprocmask" by the
+> SYSCALL_DEFINE3(sigprocmask, ...) macro in kernel/signal.c.
+> 
+> So, instead of the patch suggested earlier, I added the following line
+> to arch/um/sys-i386/sys_call_table.S:
+> 
+> #define sys_sigprocmask sys_kernel_sigprocmask
+
+Interesting...  Everything else aside, we have difference in e.g.
+SYSCALL_DEFINE0 and SYSCALL_DEFINE3 behaviours: SYSCALL_DEFINE0(name)
+will *not* do macro expansion in name and SYSCALL_DEFINE3(name, blah, ...)
+will.
+
+The reason is that we have name carried through extra layer of macros
+in the latter case.  Argument is *NOT* a subject to expansion when it
+is used with ##; however, passing it to another macro will expand it
+just fine.
+
+Regardless of the kludge with -D used by uml, I'd say that we want consistency
+here; keeping the original behaviour would also be nice.
+
+How about
+#define SYSCALL_DEFINE1(name,...)    SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)
+etc.
+with
+#define SYSCALL_DEFINEx(x, name, ...)                                   \
+        asmlinkage long sys##name(__SC_DECL##x(__VA_ARGS__))
+?
+
+That gives consistent behaviour in all cases and avoids the insane side
+effects like this one.
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by:
+SourcForge Community
+SourceForge wants to tell your story.
+http://p.sf.net/sfu/sf-spreadtheword
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
