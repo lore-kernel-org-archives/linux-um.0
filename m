@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <isaacclose@yahoo.co.uk>) id 1LSJKn-0002wt-QG
+	(envelope-from <isaacclose@yahoo.co.uk>) id 1LST1J-0003z6-RS
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jan 2009 22:56:37 +0000
-Received: from web28001.mail.ukl.yahoo.com ([217.146.182.106])
-	by 72vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1LSJKj-0001nA-PJ for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 28 Jan 2009 22:56:37 +0000
-Date: Wed, 28 Jan 2009 22:56:31 +0000 (GMT)
+	Thu, 29 Jan 2009 09:17:09 +0000
+Received: from web28005.mail.ukl.yahoo.com ([217.146.182.110])
+	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1LST1D-0004Z5-Uq for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Jan 2009 09:17:09 +0000
+Date: Thu, 29 Jan 2009 09:17:01 +0000 (GMT)
 From: Isaac Close <isaacclose@yahoo.co.uk>
 MIME-Version: 1.0
-Message-ID: <78387.96181.qm@web28001.mail.ukl.yahoo.com>
+Message-ID: <516253.10330.qm@web28005.mail.ukl.yahoo.com>
 Subject: [uml-devel] Sparc Port
 Reply-To: isaacclose@yahoo.co.uk
 List-Id: The user-mode Linux development list
@@ -40,6 +40,8 @@ I'm having a google and searching kerneltrap.org but nothing solid yet.
 tia,
 
 Isaac Close.
+
+
 
 
       
