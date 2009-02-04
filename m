@@ -1,11 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+	helo=mx.sourceforge.net)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1LUlVu-00011m-9x
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Feb 2009 17:26:14 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1LUlVq-0002qZ-3O for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 04 Feb 2009 17:26:14 +0000
+Date: Wed, 4 Feb 2009 18:26:06 +0100 (CET)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+In-Reply-To: <49753063.8040007@hathawaymix.org>
+Message-ID: <alpine.LRH.2.00.0902041803360.7690@vixen.sonytel.be>
+References: <20090115194033.GA10926@hack.private>
+	<20090116124158.4364e269.akpm@linux-foundation.org>
+	<200901170328.15178.rob@landley.net>
+	<dc84318c0901172223p57872a8cr227d940b1c0a908a@mail.gmail.com>
+	<20090119152104.GC6432@c2.user-mode-linux.org>
+	<dc84318c0901191746g31d51c23g65da89190dc8bfd2@mail.gmail.com>
+	<49753063.8040007@hathawaymix.org>
 MIME-Version: 1.0
-In-Reply-To: <d875c4ca0902111928o60f8daddt7b0c84902bae380d@mail.gmail.com>
-References: <d875c4ca0902111928o60f8daddt7b0c84902bae380d@mail.gmail.com>
-Date: Thu, 12 Feb 2009 17:02:58 -0800
-Message-ID: <d875c4ca0902121702n774678o65c2f0aeb27ccd7f@mail.gmail.com>
-From: David Francisco Rodriguez Perez <david.francisco.rodriguez@gmail.com>
-Subject: Re: [uml-devel] linux 2.6.29-rc2
+Subject: Re: [uml-devel] [Patch] uml: fix a link error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -15,143 +32,97 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3392923948060167646=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel@lists.sourceforge.net
-
---===============3392923948060167646==
-Content-Type: multipart/alternative; boundary=000e0cd3116ad783750462c26515
-
---000e0cd3116ad783750462c26515
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi
-
-I decided to post on a wider audience. So far the uml vmlinux  gets block on
-bootup at
-page_ok(top) ->  n = *address;
-when calculating the top of the address space.
-
-So my only guess so far is that the RHEL 5.0 has the option:
-CONFIG_DEBUG_HIGHMEM
-enable and the Ubuntu does not.
-If I change the top starting address from:
-unsigned long top = 0xffffd000 >> UM_KERN_PAGE_SHIFT
-to
-unsigned long top = 0xf0000000 >> UM_KERN_PAGE_SHIFT
-it works.
-
-Does anybody know why it would be?
-
-Thanks
-
-David Rodriguez
-
-
-
-On Wed, Feb 11, 2009 at 7:28 PM, David Francisco Rodriguez Perez <
-david.francisco.rodriguez@gmail.com> wrote:
-
-> Hi All
->
->
-> I downloaded linux 2.6.29-rc2 and I did applied a recent patch from Heiko
-> Carstens (link below) to fix a link problem.
->
-> http://marc.info/?l=linux-kernel&m=123400805007855&w=2
->
-> If I run in ubuntu 8.04 (libc 2.7) it runs okay. But If I run in RHEL 5.0
-> (libc2.5) it gets bock in:
-> $ ./vmlinux mem=128M
-> Locating the bottom of the address space ... 0x0
-> Locating the top of the address space ...
->
-> So it looks like a problem seen before like
->
-> http://kerneltrap.org/mailarchive/linux-kernel/2008/8/5/2828244
->
-> But that patch is already in. So does anybody know why would it be
-> happening?
->
-> Thanks
->
-> David Rodriguez
->
-> PS. So far it stops at:
->
-> (gdb) n
-> 31            n = *address;
-> (gdb) n
->
->
-
---000e0cd3116ad783750462c26515
-Content-Type: text/html; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Shane Hathaway <shane@hathawaymix.org>
+Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Rob Landley <rob@landley.net>, Am?rico Wang <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Daolong Wang <ahlongxp@gmail.com>
 
-Hi<br><br>I decided to post on a wider audience. So far the uml vmlinux&nbs=
-p; gets block on bootup at<br>page_ok(top) -&gt;&nbsp; n =3D *address;<br>w=
-hen calculating the top of the address space.<br><br>So my only guess so fa=
-r is that the RHEL 5.0 has the option:<br>
-CONFIG_DEBUG_HIGHMEM<br>enable and the Ubuntu does not.<br>If I change the =
-top starting address from:<br>unsigned long top =3D 0xffffd000 &gt;&gt; UM_=
-KERN_PAGE_SHIFT<br>to<br>unsigned long top =3D 0xf0000000 &gt;&gt; UM_KERN_=
-PAGE_SHIFT<br>
+On Mon, 19 Jan 2009, Shane Hathaway wrote:
+> Daolong Wang wrote:
+> > On Mon, Jan 19, 2009 at 11:21 PM, Jeff Dike <jdike@addtoit.com> wrote:
+> >> On Sun, Jan 18, 2009 at 02:23:46PM +0800, Daolong Wang wrote:
+> >>> I can confirm this link error.
+> >> In what environment?  I see no problems here.
+> =
 
-it works.&nbsp; <br><br>Does anybody know why it would be?<br><br>Thanks<br=
-><br>David Rodriguez<br><br><br><br><div class=3D"gmail_quote">On Wed, Feb =
-11, 2009 at 7:28 PM, David Francisco Rodriguez Perez <span dir=3D"ltr">&lt;=
-<a href=3D"mailto:david.francisco.rodriguez@gmail.com">david.francisco.rodr=
-iguez@gmail.com</a>&gt;</span> wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
-204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">Hi All<br><br><br=
->I downloaded linux 2.6.29-rc2 and I did applied a recent patch from Heiko =
-Carstens (link below) to fix a link problem.<br>
-<br><a href=3D"http://marc.info/?l=3Dlinux-kernel&amp;m=3D123400805007855&a=
-mp;w=3D2" target=3D"_blank">http://marc.info/?l=3Dlinux-kernel&amp;m=3D1234=
-00805007855&amp;w=3D2</a><br>
-<br>If I run in ubuntu 8.04 (libc 2.7) it runs okay. But If I run in RHEL 5=
-.0 (libc2.5) it gets bock in:<br>$ ./vmlinux mem=3D128M<br>Locating the bot=
-tom of the address space ... 0x0<br>Locating the top of the address space .=
-.. <br>
+> I can also confirm this link error.  The problem occurs when compiling
+> either 2.6.28.1 or 2.6.27.12; I didn't try anything earlier.  The patch
+> suggested at this beginning of this thread did solve the link problem
+> and the resulting kernel ran for several hours.  However, I think the
+> patch is still probably incorrect.
+> =
 
-<br>So it looks like a problem seen before like<br><br><a href=3D"http://ke=
-rneltrap.org/mailarchive/linux-kernel/2008/8/5/2828244" target=3D"_blank">h=
-ttp://kerneltrap.org/mailarchive/linux-kernel/2008/8/5/2828244</a><br><br>
-But that patch is already in. So does anybody know why would it be happenin=
-g?<br>
-<br>Thanks<br><br>David Rodriguez<br><br>PS. So far it stops at:<br><br>(gd=
-b) n<br>31&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; n =3D *a=
-ddress;<br>(gdb) n<br><br>
-</blockquote></div><br>
+> I'm going to repost what I said in another message I sent today, this
+> time with a wider audience:
+> =
 
---000e0cd3116ad783750462c26515--
+> The problem is that the name "sigprocmask" is getting renamed to
+> "kernel_sigprocmask" by a compiler directive in arch/um/Makefile, then
+> that name gets mangled into "sys_kernel_sigprocmask" by the
+> SYSCALL_DEFINE3(sigprocmask, ...) macro in kernel/signal.c.
+> =
 
+> So, instead of the patch suggested earlier, I added the following line
+> to arch/um/sys-i386/sys_call_table.S:
+> =
 
---===============3392923948060167646==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> #define sys_sigprocmask sys_kernel_sigprocmask
+> =
 
-------------------------------------------------------------------------------
-Open Source Business Conference (OSBC), March 24-25, 2009, San Francisco, CA
--OSBC tackles the biggest issue in open source: Open Sourcing the Enterprise
--Strategies to boost innovation and cut costs with open source participation
--Receive a $600 discount off the registration fee with the source code: SFAD
-http://p.sf.net/sfu/XcvMzF8H
---===============3392923948060167646==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> This made it compile and link correctly.  Look at the symbols generated
+> by the compile of signal.c to see what I mean:
+> =
 
+> # nm kernel/signal.o | grep sigprocmask
+> 0000008f r __kstrtab_kernel_sigprocmask
+> 00000040 r __ksymtab_kernel_sigprocmask
+> 00001ea6 T kernel_sigprocmask
+> 00002d67 T sys_kernel_sigprocmask
+> 00001faf T sys_rt_sigprocmask
+> =
+
+> Unfortunately, it's a mystery to me that others haven't run into this
+> before.  My host environment is RHEL 4 inside some kind of chroot.
+
+I've just started seeing this problem with some 2.6.29-rc3 kernel...
+
+Before, I did not have this problem with various 2.6.28-rc8 and 2.6.29-rc1
+kernels (and several older versions I don't remember).
+
+Given 2.6.29-rc1 works for me and 2.6.28.1 fails for you, I'm inclined to
+believe 2.6.28 is OK. I'll give it a try...
+
+BTW, I'm using CentOS 5.2.
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+
+---------------------------------------------------------------------------=
+---
+Create and Deploy Rich Internet Apps outside the browser with Adobe(R)AIR(T=
+M)
+software. With Adobe AIR, Ajax developers can use existing skills and code =
+to
+build responsive, highly engaging applications that combine the power of lo=
+cal
+resources and data with the reach of the web. Download the Adobe AIR SDK and
+Ajax docs to start building applications today-http://p.sf.net/sfu/adobe-com
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============3392923948060167646==--
-
-
