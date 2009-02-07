@@ -1,18 +1,34 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <geert@linux-m68k.org>) id 1LUoQq-0003lY-MK
+	(envelope-from <heiko.carstens@de.ibm.com>) id 1LVls7-0007o7-HJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Feb 2009 20:33:12 +0000
-Received: from monty.telenet-ops.be ([195.130.132.56])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1LUoQh-0002vK-16 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 04 Feb 2009 20:33:12 +0000
-Date: Wed, 4 Feb 2009 21:32:51 +0100 (CET)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <alpine.LRH.2.00.0902041803360.7690@vixen.sonytel.be>
-Message-ID: <Pine.LNX.4.64.0902042115530.25136@anakin>
+	Sat, 07 Feb 2009 12:01:19 +0000
+Received: from mtagate7.de.ibm.com ([195.212.29.156])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1LVls2-0000c2-EJ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 Feb 2009 12:01:19 +0000
+Received: from d12nrmr1607.megacenter.de.ibm.com
+	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
+	by mtagate7.de.ibm.com (8.13.8/8.13.8) with ESMTP id n17BxxIU615550
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 7 Feb 2009 11:59:59 GMT
+Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
+	[9.149.165.213])
+	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v9.1) with
+	ESMTP id n17BxxdS671942
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 7 Feb 2009 12:59:59 +0100
+Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id n17BxwW7008761 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 7 Feb 2009 12:59:59 +0100
+Date: Sat, 7 Feb 2009 12:59:56 +0100
+From: Heiko Carstens <heiko.carstens@de.ibm.com>
+Message-ID: <20090207125956.110591c9@osiris.boeblingen.de.ibm.com>
+In-Reply-To: <Pine.LNX.4.64.0902042150550.25136@anakin>
 References: <20090115194033.GA10926@hack.private>
 	<20090116124158.4364e269.akpm@linux-foundation.org>
 	<200901170328.15178.rob@landley.net>
@@ -21,7 +37,10 @@ References: <20090115194033.GA10926@hack.private>
 	<dc84318c0901191746g31d51c23g65da89190dc8bfd2@mail.gmail.com>
 	<49753063.8040007@hathawaymix.org>
 	<alpine.LRH.2.00.0902041803360.7690@vixen.sonytel.be>
-MIME-Version: 1.0
+	<Pine.LNX.4.64.0902042115530.25136@anakin>
+	<20090204204009.GA10680@suse.de>
+	<Pine.LNX.4.64.0902042150550.25136@anakin>
+Mime-Version: 1.0
 Subject: Re: [uml-devel] [Patch] uml: fix a link error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -35,111 +54,102 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Shane Hathaway <shane@hathawaymix.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Greg Kroah-Hartman <gregkh@suse.de>
-Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Rob Landley <rob@landley.net>, Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, Am?rico Wang <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Daolong Wang <ahlongxp@gmail.com>, stable@kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, Greg KH <gregkh@suse.de>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Al Viro <viro@ZenIV.linux.org.uk>, Rob Landley <rob@landley.net>, Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, Am?rico Wang <xiyou.wangcong@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Shane Hathaway <shane@hathawaymix.org>, Daolong Wang <ahlongxp@gmail.com>, stable@kernel.org
 
-On Wed, 4 Feb 2009, Geert Uytterhoeven wrote:
-> On Mon, 19 Jan 2009, Shane Hathaway wrote:
-> > Daolong Wang wrote:
-> > > On Mon, Jan 19, 2009 at 11:21 PM, Jeff Dike <jdike@addtoit.com> wrote:
-> > >> On Sun, Jan 18, 2009 at 02:23:46PM +0800, Daolong Wang wrote:
-> > >>> I can confirm this link error.
-> > >> In what environment?  I see no problems here.
-> > 
-> > I can also confirm this link error.  The problem occurs when compiling
-> > either 2.6.28.1 or 2.6.27.12; I didn't try anything earlier.  The patch
-> > suggested at this beginning of this thread did solve the link problem
-> > and the resulting kernel ran for several hours.  However, I think the
-> > patch is still probably incorrect.
-> > 
-> > I'm going to repost what I said in another message I sent today, this
-> > time with a wider audience:
-> > 
-> > The problem is that the name "sigprocmask" is getting renamed to
-> > "kernel_sigprocmask" by a compiler directive in arch/um/Makefile, then
-> > that name gets mangled into "sys_kernel_sigprocmask" by the
-> > SYSCALL_DEFINE3(sigprocmask, ...) macro in kernel/signal.c.
-> > 
-> > So, instead of the patch suggested earlier, I added the following line
-> > to arch/um/sys-i386/sys_call_table.S:
-> > 
-> > #define sys_sigprocmask sys_kernel_sigprocmask
-> > 
-> > This made it compile and link correctly.  Look at the symbols generated
-> > by the compile of signal.c to see what I mean:
-> > 
-> > # nm kernel/signal.o | grep sigprocmask
-> > 0000008f r __kstrtab_kernel_sigprocmask
-> > 00000040 r __ksymtab_kernel_sigprocmask
-> > 00001ea6 T kernel_sigprocmask
-> > 00002d67 T sys_kernel_sigprocmask
-> > 00001faf T sys_rt_sigprocmask
-> > 
-> > Unfortunately, it's a mystery to me that others haven't run into this
-> > before.  My host environment is RHEL 4 inside some kind of chroot.
+On Wed, 4 Feb 2009 21:54:12 +0100 (CET)
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> I verified that Shane's solution:
 > 
-> I've just started seeing this problem with some 2.6.29-rc3 kernel...
+> #define sys_sigprocmask sys_kernel_sigprocmask
 > 
-> Before, I did not have this problem with various 2.6.28-rc8 and 2.6.29-rc1
-> kernels (and several older versions I don't remember).
+> works for me, but that's definitely not the cleanest way.
 > 
-> Given 2.6.29-rc1 works for me and 2.6.28.1 fails for you, I'm inclined to
-> believe 2.6.28 is OK. I'll give it a try...
-> 
-> BTW, I'm using CentOS 5.2.
+> Al Viro also had a suggestion to rework the SYSCALL_DEFINE* macros, but I
+> haven't tried it yet.
 
-Following up from home...
 
-Indeed, 2.6.28 works, 2.6.28.1 doesn't.
+Patch below should fix it.
 
-According to git bisect, it got introduced by the system call security fixes
-(CVE-2009-0029), more specifically by this part:
 
-| commit fe7c0d987fb2cce464d29eec9dfcca6296b5eed7
-| Author: Heiko Carstens <heiko.carstens@de.ibm.com>
-| Date:   Wed Jan 14 14:14:06 2009 +0100
-| 
-|     System call wrappers part 04
-|     
-|     commit b290ebe2c46d01b742b948ce03f09e8a3efb9a92 upstream.
-|     
-|     Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
-|     Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
-| 
-| --- a/kernel/signal.c
-| +++ b/kernel/signal.c
-| @@ -2425,8 +2424,8 @@ sys_sigpending(old_sigset_t __user *set)
-|  /* Some platforms have their own version with special arguments others
-|     support only sys_rt_sigprocmask.  */
-|  
-| -asmlinkage long
-| -sys_sigprocmask(int how, old_sigset_t __user *set, old_sigset_t __user *oset)
-   ^^^^^^^^^^^^^^^
-| +SYSCALL_DEFINE3(sigprocmask, int, how, old_sigset_t __user *, set,
-                   ^^^^^^^^^^^
-| +		old_sigset_t __user *, oset)
-|  {
-|  	int error;
-|  	old_sigset_t old_set, new_set;
+Subject: [PATCH] syscall define: fix uml compile bug
 
-Hence it allows sigprocmask to be redefined to kernel_sigprocmask by the C
-preprocessor...
+From: Heiko Carstens <heiko.carstens@de.ibm.com>
 
-This got backported to 2.6.27.12 as well, confusing people who ran post-2.6.27
-development kernels and never noticed the problem (including Jeff and me)...
+With the new system call defines we get this on uml:
 
-It showed up in a "development" kernel in 2.6.29-rc2 only.
+arch/um/sys-i386/built-in.o: In function `sys_call_table':
+(.rodata+0x308): undefined reference to `sys_sigprocmask'
 
-Gr{oetje,eeting}s,
+Reason for this is that uml passes the preprocessor option
+-Dsigprocmask=kernel_sigprocmask to gcc when compiling the kernel.
+This causes SYSCALL_DEFINE3(sigprocmask, ...) to be expanded to
+SYSCALL_DEFINEx(3, kernel_sigprocmask, ...) and finally to a system call
+named sys_kernel_sigprocmask. However sys_sigprocmask is missing because
+of this.
+To avoid macro expansion for the system call name just concatenate the
+name at first define instead of carrying it through severel levels.
+This was pointed out by Al Viro.
 
-						Geert
+Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+---
+ include/linux/syscalls.h |   28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Index: linux-2.6/include/linux/syscalls.h
+===================================================================
+--- linux-2.6.orig/include/linux/syscalls.h
++++ linux-2.6/include/linux/syscalls.h
+@@ -95,13 +95,13 @@ struct old_linux_dirent;
+ #define __SC_TEST5(t5, a5, ...)	__SC_TEST(t5); __SC_TEST4(__VA_ARGS__)
+ #define __SC_TEST6(t6, a6, ...)	__SC_TEST(t6); __SC_TEST5(__VA_ARGS__)
+ 
+-#define SYSCALL_DEFINE0(name)   asmlinkage long sys_##name(void)
+-#define SYSCALL_DEFINE1(...)    SYSCALL_DEFINEx(1, __VA_ARGS__)
+-#define SYSCALL_DEFINE2(...)    SYSCALL_DEFINEx(2, __VA_ARGS__)
+-#define SYSCALL_DEFINE3(...)    SYSCALL_DEFINEx(3, __VA_ARGS__)
+-#define SYSCALL_DEFINE4(...)    SYSCALL_DEFINEx(4, __VA_ARGS__)
+-#define SYSCALL_DEFINE5(...)    SYSCALL_DEFINEx(5, __VA_ARGS__)
+-#define SYSCALL_DEFINE6(...)    SYSCALL_DEFINEx(6, __VA_ARGS__)
++#define SYSCALL_DEFINE0(name)	   asmlinkage long sys_##name(void)
++#define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)
++#define SYSCALL_DEFINE2(name, ...) SYSCALL_DEFINEx(2, _##name, __VA_ARGS__)
++#define SYSCALL_DEFINE3(name, ...) SYSCALL_DEFINEx(3, _##name, __VA_ARGS__)
++#define SYSCALL_DEFINE4(name, ...) SYSCALL_DEFINEx(4, _##name, __VA_ARGS__)
++#define SYSCALL_DEFINE5(name, ...) SYSCALL_DEFINEx(5, _##name, __VA_ARGS__)
++#define SYSCALL_DEFINE6(name, ...) SYSCALL_DEFINEx(6, _##name, __VA_ARGS__)
+ 
+ #ifdef CONFIG_PPC64
+ #define SYSCALL_ALIAS(alias, name)					\
+@@ -121,21 +121,21 @@ struct old_linux_dirent;
+ 
+ #define SYSCALL_DEFINE(name) static inline long SYSC_##name
+ #define SYSCALL_DEFINEx(x, name, ...)					\
+-	asmlinkage long sys_##name(__SC_DECL##x(__VA_ARGS__));		\
+-	static inline long SYSC_##name(__SC_DECL##x(__VA_ARGS__));	\
+-	asmlinkage long SyS_##name(__SC_LONG##x(__VA_ARGS__))		\
++	asmlinkage long sys##name(__SC_DECL##x(__VA_ARGS__));		\
++	static inline long SYSC##name(__SC_DECL##x(__VA_ARGS__));	\
++	asmlinkage long SyS##name(__SC_LONG##x(__VA_ARGS__))		\
+ 	{								\
+ 		__SC_TEST##x(__VA_ARGS__);				\
+-		return (long) SYSC_##name(__SC_CAST##x(__VA_ARGS__));	\
++		return (long) SYSC##name(__SC_CAST##x(__VA_ARGS__));	\
+ 	}								\
+-	SYSCALL_ALIAS(sys_##name, SyS_##name);				\
+-	static inline long SYSC_##name(__SC_DECL##x(__VA_ARGS__))
++	SYSCALL_ALIAS(sys##name, SyS##name);				\
++	static inline long SYSC##name(__SC_DECL##x(__VA_ARGS__))
+ 
+ #else /* CONFIG_HAVE_SYSCALL_WRAPPERS */
+ 
+ #define SYSCALL_DEFINE(name) asmlinkage long sys_##name
+ #define SYSCALL_DEFINEx(x, name, ...)					\
+-	asmlinkage long sys_##name(__SC_DECL##x(__VA_ARGS__))
++	asmlinkage long sys##name(__SC_DECL##x(__VA_ARGS__))
+ 
+ #endif /* CONFIG_HAVE_SYSCALL_WRAPPERS */
+ 
 
 ------------------------------------------------------------------------------
 Create and Deploy Rich Internet Apps outside the browser with Adobe(R)AIR(TM)
