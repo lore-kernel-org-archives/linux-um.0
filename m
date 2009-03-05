@@ -1,27 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <xiyou.wangcong@gmail.com>) id 1LfG3u-0003UW-IL
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <bharrosh@panasas.com>) id 1LfE5c-00081W-Fj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Mar 2009 16:04:42 +0000
-Received: from ti-out-0910.google.com ([209.85.142.187])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1LfG3l-0000He-Hd for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Mar 2009 16:04:42 +0000
-Received: by ti-out-0910.google.com with SMTP id a6so3925408tib.18
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 05 Mar 2009 08:04:32 -0800 (PST)
-Date: Fri, 6 Mar 2009 00:04:47 +0800
-From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
-Message-ID: <20090305160447.GB4265@hack.private>
-References: <49AFC206.9080004@panasas.com> <20090305130610.GA4265@hack.private>
-	<49AFD780.8080500@panasas.com>
+	Thu, 05 Mar 2009 13:58:20 +0000
+Received: from gw-ca.panasas.com ([209.116.51.66] helo=laguna.int.panasas.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1LfE5Z-00042R-Fo for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 Mar 2009 13:58:20 +0000
+Message-ID: <49AFD780.8080500@panasas.com>
+Date: Thu, 05 Mar 2009 15:45:36 +0200
+From: Boaz Harrosh <bharrosh@panasas.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <49AFD780.8080500@panasas.com>
+References: <49AFC206.9080004@panasas.com> <20090305130610.GA4265@hack.private>
+In-Reply-To: <20090305130610.GA4265@hack.private>
 Subject: Re: [uml-devel] um: WARNING: vmlinux: 'memcpy' exported twice.
-	Previous export	was in vmlinux
+ Previous export was in vmlinux
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,34 +29,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Boaz Harrosh <bharrosh@panasas.com>
-Cc: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: =?UTF-8?B?QW3DqXJpY28gV2FuZw==?= <xiyou.wangcong@gmail.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gVGh1LCBNYXIgMDUsIDIwMDkgYXQgMDM6NDU6MzZQTSArMDIwMCwgQm9heiBIYXJyb3NoIHdy
-b3RlOgo+QW3DqXJpY28gV2FuZyB3cm90ZToKPj4gT24gVGh1LCBNYXIgMDUsIDIwMDkgYXQgMDI6
-MTM6NThQTSArMDIwMCwgQm9heiBIYXJyb3NoIHdyb3RlOgo+Pj4gT24gdG9kYXkncyBsaW51cyB2
-Mi42LjI5LXJjNy0zLWc1NTk1OTVhCj4+Pgo+Pj4gRG9pbmcgbWFrZSBBUkNIPXVtIGRlZmNvbmZp
-ZyAmIG1ha2UgQVJDSD11bQo+Pj4gZ2l2ZSdzIG1lOgo+Pj4KPj4+IExEIHZtbGludXgubwo+Pj4g
-TU9EUE9TVCB2bWxpbnV4Lm8KPj4+IFdBUk5JTkc6IHZtbGludXg6ICdtZW1jcHknIGV4cG9ydGVk
-IHR3aWNlLiBQcmV2aW91cyBleHBvcnQgd2FzIGluIHZtbGludXgKPj4+Cj4+Pgo+Pj4gU29ycnkg
-aWYgdGhpcyBpcyBhIGR1cGxpY2F0ZSByZXBvcnQKPj4+Cj4+IAo+PiBXZWlyZC4uLgo+PiBJIHRy
-aWVkIHRvIGNvbXBpbGUgbGlrZSB3aGF0IHlvdSBzYWlkLCBJIGNhbid0IHJlcHJvZHVjZSBpdC4K
-Pj4gCj4+IFdoaWNoIGdjYyBhcmUgeW91IHVzaW5nPwo+PiAKPj4gVGhhbmtzLgo+PiAKPgo+JCBn
-Y2MgLS12ZXJzaW9uCj5nY2MgKEdDQykgNC4zLjIgMjAwODExMDUgKFJlZCBIYXQgNC4zLjItNykK
-Pgo+SSdtIHJ1bm5pbmcgb24gYW4geDg2XzY0IEZlZG9yYTEwIHN5c3RlbSAodXBkYXRlZCByZWNl
-bnRseSkKPiQgdW5hbWUgLW8gLXMgLXIgLW0gLXAgLWkKPkxpbnV4IDIuNi4yNy4xNS0xNzAuMi4y
-NC5mYzEwLng4Nl82NCB4ODZfNjQgeDg2XzY0IHg4Nl82NCBHTlUvTGludXgKPgoKSSBhbSB1c2lu
-ZyB0aGUgc2FtZSB0aGluZywgYnV0IG9uIGkzODYuIEkgc3RpbGwgY2FuJ3QgcmVwcm9kdWNlIGl0
-LiA6KAoKLS0gCkRvIHdoYXQgeW91IGxvdmUsIGYqKmsgdGhlIHJlc3QhIEYqKmsgdGhlIHJlZ3Vs
-YXRpb25zIQogCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KT3BlbiBTb3VyY2UgQnVzaW5lc3MgQ29u
-ZmVyZW5jZSAoT1NCQyksIE1hcmNoIDI0LTI1LCAyMDA5LCBTYW4gRnJhbmNpc2NvLCBDQQotT1NC
-QyB0YWNrbGVzIHRoZSBiaWdnZXN0IGlzc3VlIGluIG9wZW4gc291cmNlOiBPcGVuIFNvdXJjaW5n
-IHRoZSBFbnRlcnByaXNlCi1TdHJhdGVnaWVzIHRvIGJvb3N0IGlubm92YXRpb24gYW5kIGN1dCBj
-b3N0cyB3aXRoIG9wZW4gc291cmNlIHBhcnRpY2lwYXRpb24KLVJlY2VpdmUgYSAkNjAwIGRpc2Nv
-dW50IG9mZiB0aGUgcmVnaXN0cmF0aW9uIGZlZSB3aXRoIHRoZSBzb3VyY2UgY29kZTogU0ZBRApo
-dHRwOi8vcC5zZi5uZXQvc2Z1L1hjdk16RjhICl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNl
-ci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
-dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+QW3DqXJpY28gV2FuZyB3cm90ZToKPiBPbiBUaHUsIE1hciAwNSwgMjAwOSBhdCAwMjoxMzo1OFBN
+ICswMjAwLCBCb2F6IEhhcnJvc2ggd3JvdGU6Cj4+IE9uIHRvZGF5J3MgbGludXMgdjIuNi4yOS1y
+YzctMy1nNTU5NTk1YQo+Pgo+PiBEb2luZyBtYWtlIEFSQ0g9dW0gZGVmY29uZmlnICYgbWFrZSBB
+UkNIPXVtCj4+IGdpdmUncyBtZToKPj4KPj4gTEQgdm1saW51eC5vCj4+IE1PRFBPU1Qgdm1saW51
+eC5vCj4+IFdBUk5JTkc6IHZtbGludXg6ICdtZW1jcHknIGV4cG9ydGVkIHR3aWNlLiBQcmV2aW91
+cyBleHBvcnQgd2FzIGluIHZtbGludXgKPj4KPj4KPj4gU29ycnkgaWYgdGhpcyBpcyBhIGR1cGxp
+Y2F0ZSByZXBvcnQKPj4KPiAKPiBXZWlyZC4uLgo+IEkgdHJpZWQgdG8gY29tcGlsZSBsaWtlIHdo
+YXQgeW91IHNhaWQsIEkgY2FuJ3QgcmVwcm9kdWNlIGl0Lgo+IAo+IFdoaWNoIGdjYyBhcmUgeW91
+IHVzaW5nPwo+IAo+IFRoYW5rcy4KPiAKCiQgZ2NjIC0tdmVyc2lvbgpnY2MgKEdDQykgNC4zLjIg
+MjAwODExMDUgKFJlZCBIYXQgNC4zLjItNykKCkknbSBydW5uaW5nIG9uIGFuIHg4Nl82NCBGZWRv
+cmExMCBzeXN0ZW0gKHVwZGF0ZWQgcmVjZW50bHkpCiQgdW5hbWUgLW8gLXMgLXIgLW0gLXAgLWkK
+TGludXggMi42LjI3LjE1LTE3MC4yLjI0LmZjMTAueDg2XzY0IHg4Nl82NCB4ODZfNjQgeDg2XzY0
+IEdOVS9MaW51eAoKVGhhbmtzCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KT3BlbiBTb3VyY2UgQnVz
+aW5lc3MgQ29uZmVyZW5jZSAoT1NCQyksIE1hcmNoIDI0LTI1LCAyMDA5LCBTYW4gRnJhbmNpc2Nv
+LCBDQQotT1NCQyB0YWNrbGVzIHRoZSBiaWdnZXN0IGlzc3VlIGluIG9wZW4gc291cmNlOiBPcGVu
+IFNvdXJjaW5nIHRoZSBFbnRlcnByaXNlCi1TdHJhdGVnaWVzIHRvIGJvb3N0IGlubm92YXRpb24g
+YW5kIGN1dCBjb3N0cyB3aXRoIG9wZW4gc291cmNlIHBhcnRpY2lwYXRpb24KLVJlY2VpdmUgYSAk
+NjAwIGRpc2NvdW50IG9mZiB0aGUgcmVnaXN0cmF0aW9uIGZlZSB3aXRoIHRoZSBzb3VyY2UgY29k
+ZTogU0ZBRApodHRwOi8vcC5zZi5uZXQvc2Z1L1hjdk16RjhICl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5n
+IGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
+L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2
+ZWwK
 
