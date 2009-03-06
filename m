@@ -1,107 +1,92 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1752757AbZCHKuV@vger.kernel.org>
-Message-ID: <49B3A2AC.7050701@panasas.com>
-Date: Sun, 08 Mar 2009 12:49:16 +0200
-From: Boaz Harrosh <bharrosh@panasas.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+	helo=mx.sourceforge.net)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <xiyou.wangcong@gmail.com>) id 1LfUqe-0000GY-0g
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 Mar 2009 07:52:00 +0000
+Received: from ti-out-0910.google.com ([209.85.142.186])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1LfUqc-0004QG-3y for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 Mar 2009 07:51:59 +0000
+Received: by ti-out-0910.google.com with SMTP id a6so177719tib.18
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 05 Mar 2009 23:51:55 -0800 (PST)
+Date: Fri, 6 Mar 2009 15:52:11 +0800
+From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Message-ID: <20090306075211.GN22605@hack.private>
+References: <49AFC206.9080004@panasas.com> <20090305130610.GA4265@hack.private>
+	<49AFD780.8080500@panasas.com> <20090305160447.GB4265@hack.private>
+	<49B00B83.20400@panasas.com>
 MIME-Version: 1.0
-Subject: Re: um: WARNING: vmlinux: 'memcpy' exported twice. Previous export
- was in vmlinux
-References: <49AFC206.9080004@panasas.com> <20090305130610.GA4265@hack.private> <49AFD780.8080500@panasas.com> <20090305160447.GB4265@hack.private> <49B00B83.20400@panasas.com> <20090306075211.GN22605@hack.private>
-In-Reply-To: <20090306075211.GN22605@hack.private>
+Content-Disposition: inline
+In-Reply-To: <49B00B83.20400@panasas.com>
+Subject: Re: [uml-devel] um: WARNING: vmlinux: 'memcpy' exported twice.
+	Previous export	was in vmlinux
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?B?QW3DqXJpY28gV2FuZw==?= <xiyou.wangcong@gmail.com>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Boaz Harrosh <bharrosh@panasas.com>
+Cc: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Américo Wang wrote:
-> On Thu, Mar 05, 2009 at 07:27:31PM +0200, Boaz Harrosh wrote:
->> Américo Wang wrote:
->>> On Thu, Mar 05, 2009 at 03:45:36PM +0200, Boaz Harrosh wrote:
->>>> Américo Wang wrote:
->>>>> On Thu, Mar 05, 2009 at 02:13:58PM +0200, Boaz Harrosh wrote:
->>>>>> On today's linus v2.6.29-rc7-3-g559595a
->>>>>>
->>>>>> Doing make ARCH=um defconfig & make ARCH=um
->>>>>> give's me:
->>>>>>
->>>>>> LD vmlinux.o
->>>>>> MODPOST vmlinux.o
->>>>>> WARNING: vmlinux: 'memcpy' exported twice. Previous export was in vmlinux
->>>>>>
->>>>>>
->>>>>> Sorry if this is a duplicate report
->>>>>>
->>>>> Weird...
->>>>> I tried to compile like what you said, I can't reproduce it.
->>>>>
->>>>> Which gcc are you using?
->>>>>
->>>>> Thanks.
->>>>>
->>>> $ gcc --version
->>>> gcc (GCC) 4.3.2 20081105 (Red Hat 4.3.2-7)
->>>>
->>>> I'm running on an x86_64 Fedora10 system (updated recently)
->>>> $ uname -o -s -r -m -p -i
->>>> Linux 2.6.27.15-170.2.24.fc10.x86_64 x86_64 x86_64 x86_64 GNU/Linux
->>>>
->>> I am using the same thing, but on i386. I still can't reproduce it. :(
->>>
->> What can I say I just did it again from scratch
->>
->> $ mkdir .build_um
->> $ make ARCH=um KBUILD_OUTPUT=.build_um defconfig
->> $ make ARCH=um KBUILD_OUTPUT=.build_um
->>
->> (I'm using KBUILD_OUTPUT= because O= does not work when also using M= with
->> external modules, so it's a habit)
->>
->> Thanks for your help. I will try to bisect it on Sunday
-> 
-> Hi, Boaz.
-> 
-> I am sorry that I don't have an x86_64 machine to use, but I know
-> why this happens now. :)
-> 
-> Would you like to try the following patch? Thanks!
-> 
-> -------------->
-> 
-> Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
-> 
+T24gVGh1LCBNYXIgMDUsIDIwMDkgYXQgMDc6Mjc6MzFQTSArMDIwMCwgQm9heiBIYXJyb3NoIHdy
+b3RlOgo+QW3DqXJpY28gV2FuZyB3cm90ZToKPj4gT24gVGh1LCBNYXIgMDUsIDIwMDkgYXQgMDM6
+NDU6MzZQTSArMDIwMCwgQm9heiBIYXJyb3NoIHdyb3RlOgo+Pj4gQW3DqXJpY28gV2FuZyB3cm90
+ZToKPj4+PiBPbiBUaHUsIE1hciAwNSwgMjAwOSBhdCAwMjoxMzo1OFBNICswMjAwLCBCb2F6IEhh
+cnJvc2ggd3JvdGU6Cj4+Pj4+IE9uIHRvZGF5J3MgbGludXMgdjIuNi4yOS1yYzctMy1nNTU5NTk1
+YQo+Pj4+Pgo+Pj4+PiBEb2luZyBtYWtlIEFSQ0g9dW0gZGVmY29uZmlnICYgbWFrZSBBUkNIPXVt
+Cj4+Pj4+IGdpdmUncyBtZToKPj4+Pj4KPj4+Pj4gTEQgdm1saW51eC5vCj4+Pj4+IE1PRFBPU1Qg
+dm1saW51eC5vCj4+Pj4+IFdBUk5JTkc6IHZtbGludXg6ICdtZW1jcHknIGV4cG9ydGVkIHR3aWNl
+LiBQcmV2aW91cyBleHBvcnQgd2FzIGluIHZtbGludXgKPj4+Pj4KPj4+Pj4KPj4+Pj4gU29ycnkg
+aWYgdGhpcyBpcyBhIGR1cGxpY2F0ZSByZXBvcnQKPj4+Pj4KPj4+PiBXZWlyZC4uLgo+Pj4+IEkg
+dHJpZWQgdG8gY29tcGlsZSBsaWtlIHdoYXQgeW91IHNhaWQsIEkgY2FuJ3QgcmVwcm9kdWNlIGl0
+Lgo+Pj4+Cj4+Pj4gV2hpY2ggZ2NjIGFyZSB5b3UgdXNpbmc/Cj4+Pj4KPj4+PiBUaGFua3MuCj4+
+Pj4KPj4+ICQgZ2NjIC0tdmVyc2lvbgo+Pj4gZ2NjIChHQ0MpIDQuMy4yIDIwMDgxMTA1IChSZWQg
+SGF0IDQuMy4yLTcpCj4+Pgo+Pj4gSSdtIHJ1bm5pbmcgb24gYW4geDg2XzY0IEZlZG9yYTEwIHN5
+c3RlbSAodXBkYXRlZCByZWNlbnRseSkKPj4+ICQgdW5hbWUgLW8gLXMgLXIgLW0gLXAgLWkKPj4+
+IExpbnV4IDIuNi4yNy4xNS0xNzAuMi4yNC5mYzEwLng4Nl82NCB4ODZfNjQgeDg2XzY0IHg4Nl82
+NCBHTlUvTGludXgKPj4+Cj4+IAo+PiBJIGFtIHVzaW5nIHRoZSBzYW1lIHRoaW5nLCBidXQgb24g
+aTM4Ni4gSSBzdGlsbCBjYW4ndCByZXByb2R1Y2UgaXQuIDooCj4+IAo+Cj5XaGF0IGNhbiBJIHNh
+eSBJIGp1c3QgZGlkIGl0IGFnYWluIGZyb20gc2NyYXRjaAo+Cj4kIG1rZGlyIC5idWlsZF91bQo+
+JCBtYWtlIEFSQ0g9dW0gS0JVSUxEX09VVFBVVD0uYnVpbGRfdW0gZGVmY29uZmlnCj4kIG1ha2Ug
+QVJDSD11bSBLQlVJTERfT1VUUFVUPS5idWlsZF91bQo+Cj4oSSdtIHVzaW5nIEtCVUlMRF9PVVRQ
+VVQ9IGJlY2F1c2UgTz0gZG9lcyBub3Qgd29yayB3aGVuIGFsc28gdXNpbmcgTT0gd2l0aAo+IGV4
+dGVybmFsIG1vZHVsZXMsIHNvIGl0J3MgYSBoYWJpdCkKPgo+VGhhbmtzIGZvciB5b3VyIGhlbHAu
+IEkgd2lsbCB0cnkgdG8gYmlzZWN0IGl0IG9uIFN1bmRheQoKSGksIEJvYXouCgpJIGFtIHNvcnJ5
+IHRoYXQgSSBkb24ndCBoYXZlIGFuIHg4Nl82NCBtYWNoaW5lIHRvIHVzZSwgYnV0IEkga25vdwp3
+aHkgdGhpcyBoYXBwZW5zIG5vdy4gOikKCldvdWxkIHlvdSBsaWtlIHRvIHRyeSB0aGUgZm9sbG93
+aW5nIHBhdGNoPyBUaGFua3MhCgotLS0tLS0tLS0tLS0tLT4KClNpZ25lZC1vZmYtYnk6IFdBTkcg
+Q29uZyA8eGl5b3Uud2FuZ2NvbmdAZ21haWwuY29tPgoKLS0tCmRpZmYgLS1naXQgYS9hcmNoL3Vt
+L29zLUxpbnV4L3VzZXJfc3ltcy5jIGIvYXJjaC91bS9vcy1MaW51eC91c2VyX3N5bXMuYwppbmRl
+eCA3NGY0OWJiLi44OWI0OGExIDEwMDY0NAotLS0gYS9hcmNoL3VtL29zLUxpbnV4L3VzZXJfc3lt
+cy5jCisrKyBiL2FyY2gvdW0vb3MtTGludXgvdXNlcl9zeW1zLmMKQEAgLTE0LDcgKzE0LDYgQEAK
+ICN1bmRlZiBtZW1zZXQKIAogZXh0ZXJuIHNpemVfdCBzdHJsZW4oY29uc3QgY2hhciAqKTsKLWV4
+dGVybiB2b2lkICptZW1jcHkodm9pZCAqLCBjb25zdCB2b2lkICosIHNpemVfdCk7CiBleHRlcm4g
+dm9pZCAqbWVtbW92ZSh2b2lkICosIGNvbnN0IHZvaWQgKiwgc2l6ZV90KTsKIGV4dGVybiB2b2lk
+ICptZW1zZXQodm9pZCAqLCBpbnQsIHNpemVfdCk7CiBleHRlcm4gaW50IHByaW50Zihjb25zdCBj
+aGFyICosIC4uLik7CkBAIC0yNCw3ICsyMywxMSBAQCBleHRlcm4gaW50IHByaW50Zihjb25zdCBj
+aGFyICosIC4uLik7CiBFWFBPUlRfU1lNQk9MKHN0cnN0cik7CiAjZW5kaWYKIAorI2lmbmRlZiBf
+X3g4Nl82NF9fCitleHRlcm4gdm9pZCAqbWVtY3B5KHZvaWQgKiwgY29uc3Qgdm9pZCAqLCBzaXpl
+X3QpOwogRVhQT1JUX1NZTUJPTChtZW1jcHkpOworI2VuZGlmCisKIEVYUE9SVF9TWU1CT0wobWVt
+bW92ZSk7CiBFWFBPUlRfU1lNQk9MKG1lbXNldCk7CiBFWFBPUlRfU1lNQk9MKHByaW50Zik7CiAK
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpPcGVuIFNvdXJjZSBCdXNpbmVzcyBDb25mZXJlbmNlIChP
+U0JDKSwgTWFyY2ggMjQtMjUsIDIwMDksIFNhbiBGcmFuY2lzY28sIENBCi1PU0JDIHRhY2tsZXMg
+dGhlIGJpZ2dlc3QgaXNzdWUgaW4gb3BlbiBzb3VyY2U6IE9wZW4gU291cmNpbmcgdGhlIEVudGVy
+cHJpc2UKLVN0cmF0ZWdpZXMgdG8gYm9vc3QgaW5ub3ZhdGlvbiBhbmQgY3V0IGNvc3RzIHdpdGgg
+b3BlbiBzb3VyY2UgcGFydGljaXBhdGlvbgotUmVjZWl2ZSBhICQ2MDAgZGlzY291bnQgb2ZmIHRo
+ZSByZWdpc3RyYXRpb24gZmVlIHdpdGggdGhlIHNvdXJjZSBjb2RlOiBTRkFECmh0dHA6Ly9wLnNm
+Lm5ldC9zZnUvWGN2TXpGOEgKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGlu
+dXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
-Tested-by: Boaz Harrosh <bharrosh@panasas.com>
-
-> ---
-> diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
-> index 74f49bb..89b48a1 100644
-> --- a/arch/um/os-Linux/user_syms.c
-> +++ b/arch/um/os-Linux/user_syms.c
-> @@ -14,7 +14,6 @@
->  #undef memset
->  
->  extern size_t strlen(const char *);
-> -extern void *memcpy(void *, const void *, size_t);
->  extern void *memmove(void *, const void *, size_t);
->  extern void *memset(void *, int, size_t);
->  extern int printf(const char *, ...);
-> @@ -24,7 +23,11 @@ extern int printf(const char *, ...);
->  EXPORT_SYMBOL(strstr);
->  #endif
->  
-> +#ifndef __x86_64__
-> +extern void *memcpy(void *, const void *, size_t);
->  EXPORT_SYMBOL(memcpy);
-> +#endif
-> +
->  EXPORT_SYMBOL(memmove);
->  EXPORT_SYMBOL(memset);
->  EXPORT_SYMBOL(printf);
->  
-
-Yes this works. But it is weird, what is the difference between
-__x86_64__ and any other platform?
-
-Thanks
-Boaz
