@@ -1,62 +1,59 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1756201AbZCJO1Q@vger.kernel.org>
-Date: Tue, 10 Mar 2009 22:27:10 +0800
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1751441AbZCHHYj@vger.kernel.org>
+Date: Sun, 8 Mar 2009 15:24:43 +0800
 From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
-Subject: Re: [PATCH] UML on UML fixed: it did not start
-Message-ID: <20090310142710.GF3157@hack>
-References: <20090306194921.GA2881@cs.unibo.it>
+Subject: [trivial Patch] uml: improve error messages
+Message-ID: <20090308072443.GB30016@hack.private>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20090306194921.GA2881@cs.unibo.it>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Renzo Davoli <renzo@cs.unibo.it>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@osdl.org>, user-mode-linux-devel@lists.sourceforge.net
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Andrew Morton <akpm@osdl.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Fri, Mar 06, 2009 at 08:49:22PM +0100, Renzo Davoli wrote:
->It is currently impossible to run a user-mode linux machine inside another user-mode 
->linux (UML on UML). It breaks after a few instructions. When it tries to check
->whether SYSEMU is installed (the inner) UML receives an inconsistent result 
->(from the outer UML).
->
->This is the output of a broken attempt:
->$ ./linux mem=256m ubd0=cow
->Locating the bottom of the address space ... 0x0
->Locating the top of the address space ... 0xc0000000
->Core dump limits :
->        soft - 0
->        hard - NONE
->Checking that ptrace can change system call numbers...OK
->Checking ptrace new tags for syscall emulation...unsupported
->Checking syscall emulation patch for ptrace...check_sysemu : expected SIGTRAP, got status = 256
->$
->
->The problem is the following:
->PTRACE_SYSCALL/SINGLESTEP is currently managed inside arch_ptrace for ARCH=um.
->
->PTRACE_SYSEMU/SUSEMU_SINGLESTEP is not captured in arch_ptrace's switch, therefore
->it is erroneously passed back to ptrace_request (in kernel/ptrace).
->
->This simple patch simply forces ptrace to return an error on PTRACE_SYSEMU/SUSEMU_SINGLESTEP
->as it is unsupported on ARCH=um, and fixes the problem.
->
->I posted the same patch one month ago. I just tested it again against the latest kernel.
->
->	renzo
->
->Signed-off-by: Renzo Davoli <renzo@cs.unibo.it>
 
-Cc: Andrew Morton <akpm@osdl.org>
+These error messages are from check_sysemu(), not check_ptrace().
 
-Andrew, would you like to put this patch into -mm? It looks fine for me.
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: Jeff Dike <jdike@addtoit.com>
 
-Renzo, I remember you sent some patches about PTRACE_SYSEMU support
-for UML some days ago, could you please rebase them against the latest
--git tree and resend?
+---
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 183db26..02ee9ad 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -244,7 +244,7 @@ static void __init check_sysemu(void)
+ 
+ 	if ((ptrace(PTRACE_OLDSETOPTIONS, pid, 0,
+ 		   (void *) PTRACE_O_TRACESYSGOOD) < 0))
+-		fatal_perror("check_ptrace: PTRACE_OLDSETOPTIONS failed");
++		fatal_perror("check_sysemu: PTRACE_OLDSETOPTIONS failed");
+ 
+ 	while (1) {
+ 		count++;
+@@ -252,12 +252,12 @@ static void __init check_sysemu(void)
+ 			goto fail;
+ 		CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
+ 		if (n < 0)
+-			fatal_perror("check_ptrace : wait failed");
++			fatal_perror("check_sysemu: wait failed");
+ 
+ 		if (WIFSTOPPED(status) &&
+ 		    (WSTOPSIG(status) == (SIGTRAP|0x80))) {
+ 			if (!count) {
+-				non_fatal("check_ptrace : SYSEMU_SINGLESTEP "
++				non_fatal("check_sysemu: SYSEMU_SINGLESTEP "
+ 					  "doesn't singlestep");
+ 				goto fail;
+ 			}
+@@ -271,7 +271,7 @@ static void __init check_sysemu(void)
+ 		else if (WIFSTOPPED(status) && (WSTOPSIG(status) == SIGTRAP))
+ 			count++;
+ 		else {
+-			non_fatal("check_ptrace : expected SIGTRAP or "
++			non_fatal("check_sysemu: expected SIGTRAP or "
+ 				  "(SIGTRAP | 0x80), got status = %d\n",
+ 				  status);
+ 			goto fail;
 
-Thank you very much! Have a nice day!
-
-
-Yours,
-Cong
  
