@@ -1,68 +1,62 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1761381AbZCSWZQ@vger.kernel.org>
-Subject: [patch] fix uml slowness caused by ptrace preemption bug on host
-Message-Id: <E1LkQeU-00020Z-Be@pomaz-ex.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Thu, 19 Mar 2009 23:23:50 +0100
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1756201AbZCJO1Q@vger.kernel.org>
+Date: Tue, 10 Mar 2009 22:27:10 +0800
+From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Subject: Re: [PATCH] UML on UML fixed: it did not start
+Message-ID: <20090310142710.GF3157@hack>
+References: <20090306194921.GA2881@cs.unibo.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090306194921.GA2881@cs.unibo.it>
 Sender: linux-kernel-owner@vger.kernel.org
-To: roland@redhat.com
-Cc: peterz@infradead.org, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, mingo@elte.hu, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Renzo Davoli <renzo@cs.unibo.it>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@osdl.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Miklos Szeredi <mszeredi@suse.cz>
+On Fri, Mar 06, 2009 at 08:49:22PM +0100, Renzo Davoli wrote:
+>It is currently impossible to run a user-mode linux machine inside another user-mode 
+>linux (UML on UML). It breaks after a few instructions. When it tries to check
+>whether SYSEMU is installed (the inner) UML receives an inconsistent result 
+>(from the outer UML).
+>
+>This is the output of a broken attempt:
+>$ ./linux mem=256m ubd0=cow
+>Locating the bottom of the address space ... 0x0
+>Locating the top of the address space ... 0xc0000000
+>Core dump limits :
+>        soft - 0
+>        hard - NONE
+>Checking that ptrace can change system call numbers...OK
+>Checking ptrace new tags for syscall emulation...unsupported
+>Checking syscall emulation patch for ptrace...check_sysemu : expected SIGTRAP, got status = 256
+>$
+>
+>The problem is the following:
+>PTRACE_SYSCALL/SINGLESTEP is currently managed inside arch_ptrace for ARCH=um.
+>
+>PTRACE_SYSEMU/SUSEMU_SINGLESTEP is not captured in arch_ptrace's switch, therefore
+>it is erroneously passed back to ptrace_request (in kernel/ptrace).
+>
+>This simple patch simply forces ptrace to return an error on PTRACE_SYSEMU/SUSEMU_SINGLESTEP
+>as it is unsupported on ARCH=um, and fixes the problem.
+>
+>I posted the same patch one month ago. I just tested it again against the latest kernel.
+>
+>	renzo
+>
+>Signed-off-by: Renzo Davoli <renzo@cs.unibo.it>
 
-This patch fixes bug #12208.
+Cc: Andrew Morton <akpm@osdl.org>
 
-This turned out to be not a scheduler regression, but an already
-existing problem in ptrace being triggered by subtle scheduler
-changes.
+Andrew, would you like to put this patch into -mm? It looks fine for me.
 
-The problem is this:
+Renzo, I remember you sent some patches about PTRACE_SYSEMU support
+for UML some days ago, could you please rebase them against the latest
+-git tree and resend?
 
- - task A is ptracing task B
- - task B stops on a trace event
- - task A is woken up and preempts task B
- - task A calls ptrace on task B, which does ptrace_check_attach()
- - this calls wait_task_inactive(), which sees that task B is still on the runq
- - task A goes to sleep for a jiffy
- - ...
+Thank you very much! Have a nice day!
 
-Since UML does lots of the above sequences, those jiffies quickly add
-up to make it slow as hell.
 
-This patch solves this by not scheduling on preempt_enable() after
-ptrace_stop() has woken up the tracer.
-
-Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
----
- kernel/signal.c |    7 +++++++
- 1 file changed, 7 insertions(+)
-
-Index: linux.git/kernel/signal.c
-===================================================================
---- linux.git.orig/kernel/signal.c	2009-03-19 22:48:59.000000000 +0100
-+++ linux.git/kernel/signal.c	2009-03-19 22:54:22.000000000 +0100
-@@ -1572,10 +1572,16 @@ static void ptrace_stop(int exit_code, i
- 	/* Let the debugger run.  */
- 	__set_current_state(TASK_TRACED);
- 	spin_unlock_irq(&current->sighand->siglock);
-+	preempt_disable();
- 	read_lock(&tasklist_lock);
- 	if (may_ptrace_stop()) {
- 		do_notify_parent_cldstop(current, CLD_TRAPPED);
- 		read_unlock(&tasklist_lock);
-+		/*
-+		 * Don't want to allow preemption here, because
-+		 * sys_ptrace() needs this task to be inactive.
-+		 */
-+		preempt_enable_no_resched();
- 		schedule();
- 	} else {
- 		/*
-@@ -1586,6 +1592,7 @@ static void ptrace_stop(int exit_code, i
- 		if (clear_code)
- 			current->exit_code = 0;
- 		read_unlock(&tasklist_lock);
-+		preempt_enable();
- 	}
+Yours,
+Cong
  
- 	/*
