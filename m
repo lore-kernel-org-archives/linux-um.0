@@ -1,66 +1,34 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1757137AbZCTJpD@vger.kernel.org>
-Subject: [patch] don't preempt not TASK_RUNNING tasks
-Message-Id: <E1LkbGe-00039U-Hc@pomaz-ex.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Fri, 20 Mar 2009 10:43:56 +0100
-Sender: linux-kernel-owner@vger.kernel.org
-To: mingo@elte.hu
-Cc: peterz@infradead.org, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org
+Return-Path: <xiyou.wangcong@gmail.com>
+Date: Tue, 10 Mar 2009 22:29:29 +0800
+From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Subject: Re: [PATCH] Fix ARCH=um segfault on x86-64.
+Message-ID: <20090310142929.GG3157@hack>
+References: <200903060042.19084.rob@landley.net> <20090306084848.GO22605@hack.private> <10f740e80903060150p565e9703u81d4fe47cb599ab@mail.gmail.com> <10f740e80903060151w779bbd11ld2fcc437ac7ac321@mail.gmail.com> <20090306111834.GC8991@hack.private> <20090306143543.GA6983@c2.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090306143543.GA6983@c2.user-mode-linux.org>
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Am??rico Wang <xiyou.wangcong@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Rob Landley <rob@landley.net>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Ingo,
+On Fri, Mar 06, 2009 at 09:35:43AM -0500, Jeff Dike wrote:
+>On Fri, Mar 06, 2009 at 07:18:34PM +0800, Am??rico Wang wrote:
+>> It does work well x86_64, but my question is that whether this will
+>> break i386 or not, since before, CONFIG_3_LEVEL_PGTABLES depends on
+>> EXPERIMENTAL on i386, this patch removes it.
+>
+>As long as CONFIG_3_LEVEL_PGTABLES is off on 32-bit, it should be fine.
+>
+>It did work, last I checked, but 3-level page tables on 32-bit is a
+>very rarely used combination, and not useful.
+>
 
-I tested this one, and I think it makes sense in any case as an
-optimization.  It should also be good for -stable kernels.
+So this patch should be fine, right? :)
 
-Does it look OK?
+Thanks for your comments!
 
-Thanks,
-Miklos
-----
-
-From: Miklos Szeredi <mszeredi@suse.cz>
-
-This patch fixes bug #12208:
-
-  http://bugzilla.kernel.org/show_bug.cgi?id=12208
-
-Don't preempt tasks in preempt_schedule() if they are already in the
-process of going to sleep.  Otherwise the task would wake up only to
-go to sleep again.
-
-Due to the way wait_task_inactive() works this can also drastically
-slow down ptrace:
-
- - task A is ptracing task B
- - task B stops on a trace event
- - task A is woken up and preempts task B
- - task A calls ptrace on task B, which does ptrace_check_attach()
- - this calls wait_task_inactive(), which sees that task B is still on the runq
- - task A goes to sleep for a jiffy
- - ...
-
-Since UML does lots of the above sequences, those jiffies quickly add
-up to make it slow as hell.
-
-Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
-CC: stable@kernel.org
----
- kernel/sched.c |    4 ++++
- 1 file changed, 4 insertions(+)
-
-Index: linux.git/kernel/sched.c
-===================================================================
---- linux.git.orig/kernel/sched.c	2009-03-20 09:40:47.000000000 +0100
-+++ linux.git/kernel/sched.c	2009-03-20 10:28:56.000000000 +0100
-@@ -4632,6 +4632,10 @@ asmlinkage void __sched preempt_schedule
- 	if (likely(ti->preempt_count || irqs_disabled()))
- 		return;
+-- 
+Do what you love, f**k the rest! F**k the regulations!
  
-+	/* No point in preempting we are just about to go to sleep. */
-+	if (current->state != TASK_RUNNING)
-+		return;
-+
- 	do {
- 		add_preempt_count(PREEMPT_ACTIVE);
- 		schedule();
+
