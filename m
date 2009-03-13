@@ -1,128 +1,46 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1755096AbZCPHu6@vger.kernel.org>
-Date: Mon, 16 Mar 2009 15:51:13 +0800
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1757579AbZCMHm0@vger.kernel.org>
+Date: Fri, 13 Mar 2009 15:42:32 +0800
 From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
-Subject: Re: [PATCH 1/2] ptrace_vm: ptrace for syscall emulation virtual
+Subject: Re: [PATCH 0/2] ptrace_vm: ptrace for syscall emulation virtual
 	machines
-Message-ID: <20090316075113.GD3360@hack>
-References: <20090204080248.GB17452@cs.unibo.it> <20090310214450.GD5213@cs.unibo.it> <20090311134103.GC12753@cs.unibo.it>
+Message-ID: <20090313074232.GA8933@hack>
+References: <20090204080236.GA17452@cs.unibo.it> <20090310214436.GC5213@cs.unibo.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20090311134103.GC12753@cs.unibo.it>
+In-Reply-To: <20090310214436.GC5213@cs.unibo.it>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Renzo Davoli <renzo@cs.unibo.it>
-Cc: Am??rico Wang <xiyou.wangcong@gmail.com>, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Roland McGrath <roland@redhat.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Wed, Mar 11, 2009 at 02:41:03PM +0100, Renzo Davoli wrote:
->I am re-submitting the two patches. Now they should be (more)
->consistent with the Coding Style specifications.
+On Tue, Mar 10, 2009 at 10:44:36PM +0100, Renzo Davoli wrote:
+>Cong,
 >
->This patch adds the new PTRACE_VM_SKIPCALL and PTRACE_VM_SKIPEXIT
->tags for ptrace's addr parameter.
->In this way it is possible to (eventually) get rid of PTRACE_SYSEMU
->PTRACE_SYSEMU_SINGLESTEP, while providing not only the same features
->but a more general support for Virtual Machines.
->Part#1: tracehook based architecture independent support
+>I have updated the PTRACE_VM patches.
+>The patches have been rebased to linux-2.6.29-rc7 but apply to linux-2.6.29-rc7-git3.
 >
->renzo
+>The set is composed by two patches.
+>The first one is for all those architectures where PTRACE_SYSCALL is
+>managed via tracehook (x86, powerpc etc).
+>Given the wonderful work by Roland McGrath this patch is now
+>architecture independent and straightforward simple.
 >
->Signed-off-by: Renzo Davoli <renzo@cs.unibo.it>
->---
->diff -Naur linux-2.6.29-rc7-umluml/include/linux/ptrace.h linux-2.6.29-rc7-vm1/include/linux/ptrace.h
->--- linux-2.6.29-rc7-umluml/include/linux/ptrace.h	2009-03-06 20:26:13.000000000 +0100
->+++ linux-2.6.29-rc7-vm1/include/linux/ptrace.h	2009-03-06 20:31:11.000000000 +0100
->@@ -46,6 +46,11 @@
-> #define PTRACE_EVENT_VFORK_DONE	5
-> #define PTRACE_EVENT_EXIT	6
-> 
->+/* options for new PTRACE_SYSCALL syntax*/
->+#define PTRACE_SYSCALL_SKIPEXIT  0x2
->+#define PTRACE_SYSCALL_SKIPCALL  0x6
->+#define PTRACE_SYSCALL_MASK    0x00000006
->+
-> #include <asm/ptrace.h>
-> 
-> #ifdef __KERNEL__
->@@ -68,6 +73,10 @@
-> #define PT_TRACE_VFORK_DONE	0x00000100
-> #define PT_TRACE_EXIT	0x00000200
-> 
->+#define PT_SYSCALL_SKIPEXIT  0x60000000
->+#define PT_SYSCALL_SKIPCALL  0x40000000
->+#define PT_SYSCALL_MASK      0x60000000
->+
-> #define PT_TRACE_MASK	0x000003f4
-> 
-> /* single stepping state bits (used on ARM and PA-RISC) */
->diff -Naur linux-2.6.29-rc7-umluml/include/linux/tracehook.h linux-2.6.29-rc7-vm1/include/linux/tracehook.h
->--- linux-2.6.29-rc7-umluml/include/linux/tracehook.h	2009-03-06 20:26:13.000000000 +0100
->+++ linux-2.6.29-rc7-vm1/include/linux/tracehook.h	2009-03-06 20:31:11.000000000 +0100
->@@ -112,7 +112,7 @@
-> 	struct pt_regs *regs)
-> {
-> 	ptrace_report_syscall(regs);
->-	return 0;
->+	return (task_ptrace(current) & PT_SYSCALL_SKIPCALL) ? 1 : 0;
-> }
-> 
-> /**
->@@ -134,7 +134,8 @@
->  */
-> static inline void tracehook_report_syscall_exit(struct pt_regs *regs, int step)
-> {
->-	ptrace_report_syscall(regs);
->+	if (!(task_ptrace(current) & PT_SYSCALL_SKIPEXIT))
->+		ptrace_report_syscall(regs);
-> }
-> 
-> /**
->diff -Naur linux-2.6.29-rc7-umluml/kernel/ptrace.c linux-2.6.29-rc7-vm1/kernel/ptrace.c
->--- linux-2.6.29-rc7-umluml/kernel/ptrace.c	2009-03-06 20:26:15.000000000 +0100
->+++ linux-2.6.29-rc7-vm1/kernel/ptrace.c	2009-03-06 20:31:11.000000000 +0100
->@@ -396,7 +396,7 @@
-> #define is_sysemu_singlestep(request)	0
-> #endif
-> 
->-static int ptrace_resume(struct task_struct *child, long request, long data)
->+static int ptrace_resume(struct task_struct *child, long request, long addr, long data)
+>The second one is the support of PTRACE_VM for user-mode-linux.
+>It provides PTRACE_VM for UML processes and uses PTRACE_VM of the hosting 
+>kernel.
+>
 
-This line is longer than 80-characters, please break it into two lines.
+Hello, Renzo!
 
+Thanks very much for your patches!
 
-> {
-> 	if (!valid_signal(data))
-> 		return -EIO;
->@@ -425,6 +425,9 @@
-> 	else
-> 		user_disable_single_step(child);
-> 
->+	child->ptrace &= ~PT_SYSCALL_MASK;
->+	child->ptrace |= (addr & PTRACE_SYSCALL_MASK) << 28;
+I am sorting these, give me some more time, since I am not so familiar
+with ptrace. :^)
 
+And also let's Cc Roland to see if we can get any feedbacks from him.
 
-Please don't use magic numbers, use a macro to define it.
-
-
->+
-> 	child->exit_code = data;
-> 	wake_up_process(child);
-> 
->@@ -486,12 +489,12 @@
-> #endif
-> 	case PTRACE_SYSCALL:
-> 	case PTRACE_CONT:
->-		return ptrace_resume(child, request, data);
->+		return ptrace_resume(child, request, addr, data);
-> 
-> 	case PTRACE_KILL:
-> 		if (child->exit_state)	/* already dead */
-> 			return 0;
->-		return ptrace_resume(child, request, SIGKILL);
->+		return ptrace_resume(child, request, addr, SIGKILL);
-> 
-> 	default:
-> 		break;
+Thanks.
 
 -- 
 Do what you love, f**k the rest! F**k the regulations!
