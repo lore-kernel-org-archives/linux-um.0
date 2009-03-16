@@ -1,99 +1,123 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
-	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <miklos@szeredi.hu>) id 1LoMW4-0005qX-QC
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Mar 2009 18:47:24 +0000
-Received: from fxip-0047f.externet.hu ([88.209.222.127]
-	helo=pomaz-ex.szeredi.hu)
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1LoMVr-000065-De
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Mar 2009 18:47:24 +0000
-In-reply-to: <E1LoMQ2-0007bB-By@pomaz-ex.szeredi.hu> (message from Miklos
-	Szeredi on Mon, 30 Mar 2009 20:41:10 +0200)
-References: <E1LoMQ2-0007bB-By@pomaz-ex.szeredi.hu>
-Message-Id: <E1LoMVs-0007dg-D3@pomaz-ex.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Mon, 30 Mar 2009 20:47:12 +0200
-Subject: [uml-devel] [patch 2/3] uml: fix link error from prefixing of i386
-	syscalls with ptregs_
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1758065AbZCPERf@vger.kernel.org>
+Subject: [PULL] cpumask updates for um
+From: Rusty Russell <rusty@rustcorp.com.au>
+Date: Mon, 16 Mar 2009 14:44:44 +1030
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jdike@addtoit.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Content-Disposition: inline
+Message-Id: <200903161444.44432.rusty@rustcorp.com.au>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, mingo@redhat.com, travis@sgi.com, linux-kernel@vger.kernel.org, mingo@redhat.com, travis@sgi.com
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Miklos Szeredi <mszeredi@suse.cz>
+The following changes since commit 5bee17f18b595937e6beafeee5197868a3f74a06:
+  Kyle McMartin (1):
+        parisc: sba_iommu: fix build bug when CONFIG_PARISC_AGP=y
 
-Fix the following link error:
+are available in the git repository at:
 
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x11c): undefined reference to `ptregs_fork'
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x140): undefined reference to `ptregs_execve'
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x2cc): undefined reference to `ptregs_iopl'
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x2d8): undefined reference to `ptregs_vm86old'
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x2f0): undefined reference to `ptregs_sigreturn'
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x2f4): undefined reference to `ptregs_clone'
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x3ac): undefined reference to `ptregs_vm86'
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x3c8): undefined reference to `ptregs_rt_sigreturn'
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x3fc): undefined reference to `ptregs_sigaltstack'
-arch/um/sys-i386/built-in.o: In function `sys_call_table':
-(.rodata+0x40c): undefined reference to `ptregs_vfork'
+  ssh://master.kernel.org/home/ftp/pub/scm/linux/kernel/git/rusty/linux-2.6-cpumask-for-um.git master
 
-This was introduced by commit 253f29a4, "x86: pass in pt_regs pointer
-for syscalls that need it"
+Rusty Russell (3):
+      cpumask: prepare for iterators to only go to nr_cpu_ids/nr_cpumask_bits.: um
+      cpumask: Use accessors code.: um
+      cpumask: use mm_cpumask() wrapper: um
 
-Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
----
- arch/um/sys-i386/sys_call_table.S |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/um/include/asm/mmu_context.h |    4 ++--
+ arch/um/kernel/smp.c              |    2 +-
+ arch/um/kernel/um_arch.c          |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-Index: linux-2.6/arch/um/sys-i386/sys_call_table.S
-===================================================================
---- linux-2.6.orig/arch/um/sys-i386/sys_call_table.S	2009-03-27 10:57:38.000000000 +0100
-+++ linux-2.6/arch/um/sys-i386/sys_call_table.S	2009-03-30 19:53:14.000000000 +0200
-@@ -9,6 +9,17 @@
+commit 9ca79a68564459385c0a8db903ec6ffe6b00c50c
+Author: Rusty Russell <rusty@rustcorp.com.au>
+Date:   Mon Mar 16 14:27:41 2009 +1030
+
+    cpumask: use mm_cpumask() wrapper: um
+    
+    Makes code futureproof against the impending change to mm->cpu_vm_mask.
+    
+    It's also a chance to use the new cpumask_ ops which take a pointer
+    (the older ones are deprecated, but there's no hurry for arch code).
+    
+    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 54f42e8..edd719e 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -35,8 +35,8 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 	unsigned cpu = smp_processor_id();
  
- #define old_mmap old_mmap_i386
- 
-+#define ptregs_fork sys_fork
-+#define ptregs_execve sys_execve
-+#define ptregs_iopl sys_iopl
-+#define ptregs_vm86old sys_vm86old
-+#define ptregs_sigreturn sys_sigreturn
-+#define ptregs_clone sys_clone
-+#define ptregs_vm86 sys_vm86
-+#define ptregs_rt_sigreturn sys_rt_sigreturn
-+#define ptregs_sigaltstack sys_sigaltstack
-+#define ptregs_vfork sys_vfork
-+
- .section .rodata,"a"
- 
- #include "../../x86/kernel/syscall_table_32.S"
+ 	if(prev != next){
+-		cpu_clear(cpu, prev->cpu_vm_mask);
+-		cpu_set(cpu, next->cpu_vm_mask);
++		cpumask_clear(cpu, mm_cpumask(prev));
++		cpumask_set_cpu(cpu, mm_cpumask(next));
+ 		if(next != &init_mm)
+ 			__switch_mm(&next->context.id);
+ 	}
 
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+commit 577e3b46d67a0dc236a9eb89c06861a8b4580a02
+Author: Rusty Russell <rusty@rustcorp.com.au>
+Date:   Mon Mar 16 14:27:41 2009 +1030
+
+    cpumask: Use accessors code.: um
+    
+    Impact: use new API
+    
+    Use the accessors rather than frobbing bits directly.  Most of this is
+    in arch code I haven't even compiled, but is straightforward.
+    
+    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+    Signed-off-by: Mike Travis <travis@sgi.com>
+
+diff --git a/arch/um/kernel/smp.c b/arch/um/kernel/smp.c
+index 98351c7..106bf27 100644
+--- a/arch/um/kernel/smp.c
++++ b/arch/um/kernel/smp.c
+@@ -111,7 +111,7 @@ void smp_prepare_cpus(unsigned int maxcpus)
+ 	int i;
+ 
+ 	for (i = 0; i < ncpus; ++i)
+-		cpu_set(i, cpu_possible_map);
++		set_cpu_possible(i, true);
+ 
+ 	cpu_clear(me, cpu_online_map);
+ 	cpu_set(me, cpu_online_map);
+
+commit 816a1c29fc3d9bb95dde5806c29629d16947bfe7
+Author: Rusty Russell <rusty@rustcorp.com.au>
+Date:   Mon Mar 16 14:27:40 2009 +1030
+
+    cpumask: prepare for iterators to only go to nr_cpu_ids/nr_cpumask_bits.: um
+    
+    Impact: cleanup, futureproof
+    
+    In fact, all cpumask ops will only be valid (in general) for bit
+    numbers < nr_cpu_ids.  So use that instead of NR_CPUS in various
+    places.
+    
+    This is always safe: no cpu number can be >= nr_cpu_ids, and
+    nr_cpu_ids is initialized to NR_CPUS at boot.
+    
+    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+    Signed-off-by: Mike Travis <travis@sgi.com>
+    Acked-by: Ingo Molnar <mingo@elte.hu>
+
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 8d84250..bbf96ab 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -80,7 +80,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 
+ static void *c_start(struct seq_file *m, loff_t *pos)
+ {
+-	return *pos < NR_CPUS ? cpu_data + *pos : NULL;
++	return *pos < nr_cpu_ids ? cpu_data + *pos : NULL;
+ }
+ 
+ static void *c_next(struct seq_file *m, void *v, loff_t *pos)
 
