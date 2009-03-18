@@ -1,109 +1,66 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1755866AbZCXXUR@vger.kernel.org>
-Date: Wed, 25 Mar 2009 00:19:50 +0100
-From: Renzo Davoli <renzo@cs.unibo.it>
-Subject: Re: [PATCH 1/2] ptrace_vm: ptrace for syscall emulation virtual
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1758024AbZCROjW@vger.kernel.org>
+Date: Wed, 18 Mar 2009 22:39:39 +0800
+From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Subject: Re: [PATCH 2/2] ptrace_vm: ptrace for syscall emulation virtual
 	machines
-Message-ID: <20090324231950.GF22695@cs.unibo.it>
-References: <20090204080248.GB17452@cs.unibo.it> <20090310214450.GD5213@cs.unibo.it> <20090311134103.GC12753@cs.unibo.it> <20090316075113.GD3360@hack>
+Message-ID: <20090318143939.GA3986@hack>
+References: <20090204080256.GC17452@cs.unibo.it> <20090310214456.GE5213@cs.unibo.it> <20090310220241.GC30475@elte.hu> <20090311134138.GD12753@cs.unibo.it> <20090316081508.GE3360@hack> <20090316121732.GC22978@cs.unibo.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20090316075113.GD3360@hack>
+In-Reply-To: <20090316121732.GC22978@cs.unibo.it>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Am??rico Wang <xiyou.wangcong@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: Renzo Davoli <renzo@cs.unibo.it>
+Cc: Am??rico Wang <xiyou.wangcong@gmail.com>, Ingo Molnar <mingo@elte.hu>, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-patch #1. Rebased on 2.6.29 and Cong's objections fixed.
+On Mon, Mar 16, 2009 at 01:17:32PM +0100, Renzo Davoli wrote:
+>Dear Cong,
+>
+>Thank you for the detailed analysis of the code.
+>I'll change the code taking care of your observations asap.
 
-	renzo 
 
-Signed-off-by: Renzo Davoli <renzo@cs.unibo.it>
----
-diff -Naur linux-2.6.29/include/linux/ptrace.h linux-2.6.29-vm/include/linux/ptrace.h
---- linux-2.6.29/include/linux/ptrace.h	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29-vm/include/linux/ptrace.h	2009-03-24 22:10:23.000000000 +0100
-@@ -46,6 +46,11 @@
- #define PTRACE_EVENT_VFORK_DONE	5
- #define PTRACE_EVENT_EXIT	6
+You are so welcome. :)
+
+>
+>On Mon, Mar 16, 2009 at 04:15:08PM +0800, Am??rico Wang wrote:
+>> >I have updated the patch, now it should be (more) consistent
+>> >with the Coding Style specifications.
+>> You can use scripts/checkpatch.pl to check it before sending.
+>I read the coding style document and I used the perl script.
+>However, the script is not able to cope with all the style specifications
+>and I may have missed something more. 
+>> 
+>> >UML tests at startup which features are provided and uses PTRACE_VM or
+>> >PTRACE_SYSEMU (or nothing). PTRACE_VM and/or PTRACE_SYSEMU support can be
+>> >disabled by command line flags.
+>> So what? PTRACE_VM is only supported in UML with this patch,
+>> UML still has to use PTRACE_SYSEMU on x86_32.
+>> 
+>> Am I missing something? :)
+>This patch [2/2] is for UML (host and guest). Patch #1 provides PTRACE_VM
+>for all the architectures supporting ptrace via tracehook.
+>By applying both patches PTRACE_VM is available in the following architectures:
+>x86*, sparc*, s390, powerpc*, ia64, sh* and um.
+>(I have not tested all these architectures, but the patch applies to the core ptrace
+>code, shared by all of them).
+
+Ok then. I am not familiar with tracehooks.
+
+>Ptrace_vm then provides the same speedup of PTRACE_SYSEMU extending its support:
+>- to other architectures: ports of UML or similar code for other architectures can
+>use it
+>- to other applications: PTRACE_SYSEMU supports the virtualization of all the system calls
+>while by PTRACE_VM the VM monitor can virtualize some of the system calls, depending on
+>some condition e.g. the value of a parameter. It is possible in this way give a faster
+>implementation to partial virtual machines like my umview.  
+>
+>With patch #2 user-mode linux also uses ptrace_vm where available.
+>
+
+Thanks for your explanations!
+
+-- 
+Do what you love, f**k the rest! F**k the regulations!
  
-+/* options for new PTRACE_SYSCALL syntax*/
-+#define PTRACE_SYSCALL_SKIPEXIT  0x2
-+#define PTRACE_SYSCALL_SKIPCALL  0x6
-+#define PTRACE_SYSCALL_MASK    0x00000006
-+
- #include <asm/ptrace.h>
- 
- #ifdef __KERNEL__
-@@ -68,6 +73,11 @@
- #define PT_TRACE_VFORK_DONE	0x00000100
- #define PT_TRACE_EXIT	0x00000200
- 
-+#define PT_SYSCALL_SKIPEXIT  0x60000000
-+#define PT_SYSCALL_SKIPCALL  0x40000000
-+#define PT_SYSCALL_MASK      0x60000000
-+#define PTRACE2PT_SYSCALL(X)	(((X) & PTRACE_SYSCALL_MASK) << 28)
-+
- #define PT_TRACE_MASK	0x000003f4
- 
- /* single stepping state bits (used on ARM and PA-RISC) */
-diff -Naur linux-2.6.29/include/linux/tracehook.h linux-2.6.29-vm/include/linux/tracehook.h
---- linux-2.6.29/include/linux/tracehook.h	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29-vm/include/linux/tracehook.h	2009-03-24 22:04:39.000000000 +0100
-@@ -112,7 +112,7 @@
- 	struct pt_regs *regs)
- {
- 	ptrace_report_syscall(regs);
--	return 0;
-+	return (task_ptrace(current) & PT_SYSCALL_SKIPCALL) ? 1 : 0;
- }
- 
- /**
-@@ -134,7 +134,8 @@
-  */
- static inline void tracehook_report_syscall_exit(struct pt_regs *regs, int step)
- {
--	ptrace_report_syscall(regs);
-+	if (!(task_ptrace(current) & PT_SYSCALL_SKIPEXIT))
-+		ptrace_report_syscall(regs);
- }
- 
- /**
-diff -Naur linux-2.6.29/kernel/ptrace.c linux-2.6.29-vm/kernel/ptrace.c
---- linux-2.6.29/kernel/ptrace.c	2009-03-24 00:12:14.000000000 +0100
-+++ linux-2.6.29-vm/kernel/ptrace.c	2009-03-24 22:09:46.000000000 +0100
-@@ -396,7 +396,8 @@
- #define is_sysemu_singlestep(request)	0
- #endif
- 
--static int ptrace_resume(struct task_struct *child, long request, long data)
-+static int ptrace_resume(struct task_struct *child, long request, 
-+		   long addr, long data)
- {
- 	if (!valid_signal(data))
- 		return -EIO;
-@@ -425,6 +426,9 @@
- 	else
- 		user_disable_single_step(child);
- 
-+	child->ptrace &= ~PT_SYSCALL_MASK;
-+	child->ptrace |= PTRACE2PT_SYSCALL(addr);
-+
- 	child->exit_code = data;
- 	wake_up_process(child);
- 
-@@ -486,12 +490,12 @@
- #endif
- 	case PTRACE_SYSCALL:
- 	case PTRACE_CONT:
--		return ptrace_resume(child, request, data);
-+		return ptrace_resume(child, request, addr, data);
- 
- 	case PTRACE_KILL:
- 		if (child->exit_state)	/* already dead */
- 			return 0;
--		return ptrace_resume(child, request, SIGKILL);
-+		return ptrace_resume(child, request, addr, SIGKILL);
- 
- 	default:
- 		break;
