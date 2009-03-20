@@ -1,80 +1,53 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
-	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yehudasa@gmail.com>) id 1Lmuf7-0006Ap-ET
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Mar 2009 18:50:45 +0000
-Received: from wa-out-1112.google.com ([209.85.146.179])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Lmuey-0004GH-OW for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Mar 2009 18:50:45 +0000
-Received: by wa-out-1112.google.com with SMTP id j32so382985waf.10
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 26 Mar 2009 11:50:35 -0700 (PDT)
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1759129AbZCTLk7@vger.kernel.org>
+Date: Fri, 20 Mar 2009 12:39:43 +0100
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: [patch] don't preempt not TASK_RUNNING tasks
+Message-ID: <20090320113943.GC11751@elte.hu>
+References: <E1LkbGe-00039U-Hc@pomaz-ex.szeredi.hu> <1237543392.24626.49.camel@twins> <E1Lkc6U-0003II-W1@pomaz-ex.szeredi.hu> <20090320105306.GG6256@elte.hu> <E1LkcrP-0003Np-T2@pomaz-ex.szeredi.hu>
 MIME-Version: 1.0
-Date: Thu, 26 Mar 2009 11:50:34 -0700
-Message-ID: <a37615150903261150x3642d954y296b6e8c26e53fe8@mail.gmail.com>
-From: Yehuda Sadeh Weinraub <yehudasa@gmail.com>
-Subject: [uml-devel] Networking issues with 2.6.29
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E1LkcrP-0003Np-T2@pomaz-ex.szeredi.hu>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: peterz@infradead.org, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Network doesn't seem to work for me in 2.6.29, although it was working
-in 2.6.28. System behavior seemed really strange, as it sometimes did
-work when I was using the same uml machine, when using a different
-user. Bisecting the kernel tree, revels a seemingly unrelated commit
-that when reverted it fixes the problem:
 
-commit 470c66239ef0336429b35345f3f615d47341e13b
-Author: David Brownell <dbrownell@users.sourceforge.net>
-Date:   Mon Dec 1 14:31:37 2008 -0800
+* Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-    genirq: warn when IRQF_DISABLED may be ignored
-...
-iff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index c498a1b..7fd891c 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -635,6 +635,18 @@ int request_irq(unsigned int irq, irq_handler_t handler,
-        struct irq_desc *desc;
-        int retval;
+> On Fri, 20 Mar 2009, Ingo Molnar wrote:
+> > > > The first line of attack for this problem is making 
+> > > > wait_task_inactive() sucks less, which shouldn't be too hard, 
+> > > > that unconditional 1 jiffy sleep is simply retarded.
+> > > 
+> > > I completely agree.  However, I'd like to have a non-invasive 
+> > > solution that can go into current and stable kernels so UML users 
+> > > don't need to suffer any more.
+> > 
+> > Agreed. task_unlock_no_resched() should do that i think.
+> 
+> I don't see how that would help.
 
-+       /*
-+        * handle_IRQ_event() always ignores IRQF_DISABLED except for
-+        * the _first_ irqaction (sigh).  That can cause oopsing, but
-+        * the behavior is classified as "will not fix" so we need to
-+        * start nudging drivers away from using that idiom.
-+        */
-+       if ((irqflags & (IRQF_SHARED|IRQF_DISABLED))
-+                       == (IRQF_SHARED|IRQF_DISABLED))
-+               pr_warning("IRQ %d/%s: IRQF_DISABLED is not "
-+                               "guaranteed on shared IRQs\n",
-+                               irq, devname);
-+
- #ifdef CONFIG_LOCKDEP
-        /*
-         * Lockdep wants atomic interrupt handlers:
+it more clearly expresses the need there, and we already have 
+_no_resched API variants (we add them on an as-needed basis).
 
-I guess there are some timing issues?
+Doing:
 
-Thanks,
-Yehuda
+ preempt_disable();
+ read_lock();
+ ...
+ read_unlock();
+ preempt_enable_no_resched();
 
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Really just open-codes read_unlock_no_resched() and uglifies the 
+code.
 
+> ptrace_stop() specifically would need read_unlock_no_resched().  
+> But I'm reluctant to add more spinlock functions with all their 
+> variants...
+
+if you worry about backportability, we can certainly add the easy 
+fix too, if it's followed by the more involved fix(es).
+
+	Ingo
