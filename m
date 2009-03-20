@@ -1,74 +1,51 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1760783AbZCTKi0@vger.kernel.org>
-In-reply-to: <1237543392.24626.49.camel@twins> (message from Peter Zijlstra on
-	Fri, 20 Mar 2009 11:03:12 +0100)
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1761806AbZCTKMl@vger.kernel.org>
 Subject: Re: [patch] don't preempt not TASK_RUNNING tasks
-References: <E1LkbGe-00039U-Hc@pomaz-ex.szeredi.hu> <1237543392.24626.49.camel@twins>
-Message-Id: <E1Lkc6U-0003II-W1@pomaz-ex.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Fri, 20 Mar 2009 11:37:30 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+In-Reply-To: <E1LkbGe-00039U-Hc@pomaz-ex.szeredi.hu>
+References: <E1LkbGe-00039U-Hc@pomaz-ex.szeredi.hu>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Fri, 20 Mar 2009 11:03:12 +0100
+Message-Id: <1237543392.24626.49.camel@twins>
+Mime-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
-To: peterz@infradead.org
-Cc: miklos@szeredi.hu, mingo@elte.hu, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: mingo@elte.hu, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Fri, 20 Mar 2009, Peter Zijlstra wrote:
-> On Fri, 2009-03-20 at 10:43 +0100, Miklos Szeredi wrote:
-> > Ingo,
-> > 
-> > I tested this one, and I think it makes sense in any case as an
-> > optimization.  It should also be good for -stable kernels.
-> > 
-> > Does it look OK?
+On Fri, 2009-03-20 at 10:43 +0100, Miklos Szeredi wrote:
+> Ingo,
 > 
-> The idea is good, but there is a risk of preemption latencies here. Some
-> code paths aren't real quick between setting ->state != TASK_RUNNING and
-> calling schedule.
+> I tested this one, and I think it makes sense in any case as an
+> optimization.  It should also be good for -stable kernels.
 > 
-> [ Both quick: as in O(1) and few instructions ]
-> 
-> So if we're going to do this, we'd need to audit all such code paths --
-> and there be lots.
+> Does it look OK?
 
-Oh, yes.
+The idea is good, but there is a risk of preemption latencies here. Some
+code paths aren't real quick between setting ->state != TASK_RUNNING and
+calling schedule.
 
-In a random sample the most common pattern is something like this:
+[ Both quick: as in O(1) and few instructions ]
 
-	spin_lock(&some_lock);
-	/* do something */
-	set_task_state(TASK_SOMESLEEP);
-	/* do something more */
-	spin_unlock(&some_lock);
-	schedule();
-	...
+So if we're going to do this, we'd need to audit all such code paths --
+and there be lots.
 
-Which should only positively be impacted by the change.  But I can
-imagine rare cases where it's more complex.
+The first line of attack for this problem is making wait_task_inactive()
+sucks less, which shouldn't be too hard, that unconditional 1 jiffy
+sleep is simply retarded.
 
-> The first line of attack for this problem is making wait_task_inactive()
-> sucks less, which shouldn't be too hard, that unconditional 1 jiffy
-> sleep is simply retarded.
-
-I completely agree.  However, I'd like to have a non-invasive solution
-that can go into current and stable kernels so UML users don't need to
-suffer any more.
-
-Thanks,
-Miklos
-
-> 
-> > Index: linux.git/kernel/sched.c
-> > ===================================================================
-> > --- linux.git.orig/kernel/sched.c	2009-03-20 09:40:47.000000000 +0100
-> > +++ linux.git/kernel/sched.c	2009-03-20 10:28:56.000000000 +0100
-> > @@ -4632,6 +4632,10 @@ asmlinkage void __sched preempt_schedule
-> >  	if (likely(ti->preempt_count || irqs_disabled()))
-> >  		return;
-> >  
-> > +	/* No point in preempting we are just about to go to sleep. */
-> > +	if (current->state != TASK_RUNNING)
-> > +		return;
-> > +
-> >  	do {
-> >  		add_preempt_count(PREEMPT_ACTIVE);
-> >  		schedule();
-> 
+> Index: linux.git/kernel/sched.c
+> ===================================================================
+> --- linux.git.orig/kernel/sched.c	2009-03-20 09:40:47.000000000 +0100
+> +++ linux.git/kernel/sched.c	2009-03-20 10:28:56.000000000 +0100
+> @@ -4632,6 +4632,10 @@ asmlinkage void __sched preempt_schedule
+>  	if (likely(ti->preempt_count || irqs_disabled()))
+>  		return;
+>  
+> +	/* No point in preempting we are just about to go to sleep. */
+> +	if (current->state != TASK_RUNNING)
+> +		return;
+> +
+>  	do {
+>  		add_preempt_count(PREEMPT_ACTIVE);
+>  		schedule();
