@@ -1,38 +1,48 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1754188AbZCTI22@vger.kernel.org>
-In-reply-to: <1237537169.24626.29.camel@twins> (message from Peter Zijlstra on
-	Fri, 20 Mar 2009 09:19:29 +0100)
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1755448AbZCTIUp@vger.kernel.org>
 Subject: Re: [patch] fix uml slowness caused by ptrace preemption bug on
  host
-References: <E1LkQeU-00020Z-Be@pomaz-ex.szeredi.hu> <1237537169.24626.29.camel@twins>
-Message-Id: <E1Lka4M-0002za-FQ@pomaz-ex.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Fri, 20 Mar 2009 09:27:10 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+In-Reply-To: <E1LkQeU-00020Z-Be@pomaz-ex.szeredi.hu>
+References: <E1LkQeU-00020Z-Be@pomaz-ex.szeredi.hu>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Fri, 20 Mar 2009 09:19:29 +0100
+Message-Id: <1237537169.24626.29.camel@twins>
+Mime-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
-To: peterz@infradead.org
-Cc: miklos@szeredi.hu, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, mingo@elte.hu, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, mingo@elte.hu, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Fri, 20 Mar 2009, Peter Zijlstra wrote:
-> On Thu, 2009-03-19 at 23:23 +0100, Miklos Szeredi wrote:
-> > 
-> > This patch solves this by not scheduling on preempt_enable() after
-> > ptrace_stop() has woken up the tracer.
+On Thu, 2009-03-19 at 23:23 +0100, Miklos Szeredi wrote:
+> From: Miklos Szeredi <mszeredi@suse.cz>
 > 
-> Nice,.. however did you find this?
+> This patch fixes bug #12208.
+> 
+> This turned out to be not a scheduler regression, but an already
+> existing problem in ptrace being triggered by subtle scheduler
+> changes.
+> 
+> The problem is this:
+> 
+>  - task A is ptracing task B
+>  - task B stops on a trace event
+>  - task A is woken up and preempts task B
+>  - task A calls ptrace on task B, which does ptrace_check_attach()
+>  - this calls wait_task_inactive(), which sees that task B is still on the runq
+>  - task A goes to sleep for a jiffy
+>  - ...
+> 
+> Since UML does lots of the above sequences, those jiffies quickly add
+> up to make it slow as hell.
+> 
+> This patch solves this by not scheduling on preempt_enable() after
+> ptrace_stop() has woken up the tracer.
 
-Ftrace helped a lot, it's a really cool tool :).  I had to patch it
-with this, otherwise the timestamps would be totally off:
+Nice,.. however did you find this?
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index bd38c5c..557c2dd 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -108,7 +108,7 @@ u64 ring_buffer_time_stamp(int cpu)
- 
- 	preempt_disable_notrace();
- 	/* shift to debug/test normalization and TIME_EXTENTS */
--	time = sched_clock() << DEBUG_SHIFT;
-+	time = cpu_clock(cpu) << DEBUG_SHIFT;
- 	preempt_enable_no_resched_notrace();
- 
- 	return time;
+Ingo is looking at changing wait_task_inactive() to not be quite so
+stupid. I'll let him respond with more details when he's done poking at
+the code :-)
+
+
