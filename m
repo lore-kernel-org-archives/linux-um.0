@@ -1,35 +1,48 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1758845AbZCWQkf@vger.kernel.org>
-Date: Mon, 23 Mar 2009 17:38:38 +0100
-From: Ingo Molnar <mingo@elte.hu>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1759980AbZCWQRb@vger.kernel.org>
+In-reply-to: <20090323151954.GC21267@elte.hu> (message from Ingo Molnar on
+	Mon, 23 Mar 2009 16:19:54 +0100)
 Subject: Re: [patch] fix ptrace slowness
-Message-ID: <20090323163838.GA24454@elte.hu>
-References: <E1LllkK-0000zF-1h@pomaz-ex.szeredi.hu> <20090323151954.GC21267@elte.hu> <E1Llmpk-0001A3-2E@pomaz-ex.szeredi.hu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E1Llmpk-0001A3-2E@pomaz-ex.szeredi.hu>
+References: <E1LllkK-0000zF-1h@pomaz-ex.szeredi.hu> <20090323151954.GC21267@elte.hu>
+Message-Id: <E1Llmpk-0001A3-2E@pomaz-ex.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Mon, 23 Mar 2009 17:17:04 +0100
 Sender: linux-kernel-owner@vger.kernel.org
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: linux-kernel@vger.kernel.org, oleg@redhat.com, peterz@infradead.org, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, torvalds@linux-foundation.org, akpm@linux-foundation.org, stable@kernel.org
+To: mingo@elte.hu
+Cc: miklos@szeredi.hu, linux-kernel@vger.kernel.org, oleg@redhat.com, peterz@infradead.org, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, torvalds@linux-foundation.org, akpm@linux-foundation.org, stable@kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-
-* Miklos Szeredi <miklos@szeredi.hu> wrote:
-
-> On Mon, 23 Mar 2009, Ingo Molnar wrote:
-> > * Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > 
-> > > This one incorporates comments from Oleg and Ingo.  Please apply 
-> > > to 2.6.29 and 2.6.2[78]-stable trees.
-> > 
-> > The fix first needs to go upstream. There's an alternative patch 
-> > below. Would you mind to give it a test? Chances are that it 
-> > will make UML even faster than your fix.
+On Mon, 23 Mar 2009, Ingo Molnar wrote:
+> * Miklos Szeredi <miklos@szeredi.hu> wrote:
 > 
-> Just the opposite.  With my patch a UML image boots in 17 
-> seconnds, with your patch it boots in 33 seconds.  Without either 
-> patch it boots in about 5 minutes.
+> > This one incorporates comments from Oleg and Ingo.  Please apply 
+> > to 2.6.29 and 2.6.2[78]-stable trees.
+> 
+> The fix first needs to go upstream. There's an alternative patch 
+> below. Would you mind to give it a test? Chances are that it will 
+> make UML even faster than your fix.
 
-okay - i've queued up your fix.
+Just the opposite.  With my patch a UML image boots in 17 seconnds,
+with your patch it boots in 33 seconds.  Without either patch it boots
+in about 5 minutes.
 
-	Ingo
+Thanks,
+Miklos
+
+> 
+> 	Ingo
+> 
+> diff --git a/kernel/sched.c b/kernel/sched.c
+> index 3e827b8..2d60f23 100644
+> --- a/kernel/sched.c
+> +++ b/kernel/sched.c
+> @@ -2119,7 +2119,8 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
+>  		 * yield - it could be a while.
+>  		 */
+>  		if (unlikely(on_rq)) {
+> -			schedule_timeout_uninterruptible(1);
+> +			cpu_relax();
+> +			cond_resched();
+>  			continue;
+>  		}
+>  
+> 
