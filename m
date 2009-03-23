@@ -1,71 +1,40 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
-	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <miklos@szeredi.hu>) id 1LoMUA-0001Vr-2O
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Mar 2009 18:45:26 +0000
-Received: from fxip-0047f.externet.hu ([88.209.222.127]
-	helo=pomaz-ex.szeredi.hu)
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1LoMU6-0005mo-FB
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Mar 2009 18:45:25 +0000
-In-reply-to: <E1LoMQ2-0007bB-By@pomaz-ex.szeredi.hu> (message from Miklos
-	Szeredi on Mon, 30 Mar 2009 20:41:10 +0200)
-References: <E1LoMQ2-0007bB-By@pomaz-ex.szeredi.hu>
-Message-Id: <E1LoMTw-0007d2-AI@pomaz-ex.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Mon, 30 Mar 2009 20:45:12 +0200
-Subject: [uml-devel] [patch 3/3] uml: fix warnings in kernel_execve
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1759931AbZCWTIm@vger.kernel.org>
+Message-ID: <49C7DE25.4030706@googlemail.com>
+Date: Mon, 23 Mar 2009 20:08:21 +0100
+From: Michael Riepe <michael.riepe@googlemail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Subject: Re: [patch] fix ptrace slowness
+References: <E1LllkK-0000zF-1h@pomaz-ex.szeredi.hu> <20090323151954.GC21267@elte.hu> <E1Llmpk-0001A3-2E@pomaz-ex.szeredi.hu>
+In-Reply-To: <E1Llmpk-0001A3-2E@pomaz-ex.szeredi.hu>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jdike@addtoit.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: mingo@elte.hu, linux-kernel@vger.kernel.org, oleg@redhat.com, peterz@infradead.org, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, torvalds@linux-foundation.org, akpm@linux-foundation.org, stable@kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Miklos Szeredi <mszeredi@suse.cz>
+Hi!
 
-Fix the following warnings:
+Miklos Szeredi wrote:
+> On Mon, 23 Mar 2009, Ingo Molnar wrote:
+> 
+>>* Miklos Szeredi <miklos@szeredi.hu> wrote:
+>>
+>>
+>>>This one incorporates comments from Oleg and Ingo.  Please apply 
+>>>to 2.6.29 and 2.6.2[78]-stable trees.
+>>
+>>The fix first needs to go upstream. There's an alternative patch 
+>>below. Would you mind to give it a test? Chances are that it will 
+>>make UML even faster than your fix.
+> 
+> 
+> Just the opposite.  With my patch a UML image boots in 17 seconnds,
+> with your patch it boots in 33 seconds.  Without either patch it boots
+> in about 5 minutes.
 
-arch/um/kernel/syscall.c: In function 'kernel_execve':
-arch/um/kernel/syscall.c:130: warning: passing argument 1 of 'um_execve' discards qualifiers from pointer target type
-arch/um/kernel/syscall.c:130: warning: passing argument 2 of 'um_execve' discards qualifiers from pointer target type
-arch/um/kernel/syscall.c:130: warning: passing argument 3 of 'um_execve' discards qualifiers from pointer target type
+My strace test case runs 60% faster with this patch (compared to Ingo's).
 
-Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
----
- arch/um/kernel/syscall.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-Index: linux-2.6/arch/um/kernel/syscall.c
-===================================================================
---- linux-2.6.orig/arch/um/kernel/syscall.c	2009-03-30 20:25:17.000000000 +0200
-+++ linux-2.6/arch/um/kernel/syscall.c	2009-03-30 20:36:20.000000000 +0200
-@@ -127,7 +127,8 @@ int kernel_execve(const char *filename,
- 
- 	fs = get_fs();
- 	set_fs(KERNEL_DS);
--	ret = um_execve(filename, argv, envp);
-+	ret = um_execve((char *)filename, (char __user *__user *)argv,
-+			(char __user *__user *) envp);
- 	set_fs(fs);
- 
- 	return ret;
-
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+-- 
+Michael "Tired" Riepe <michael.riepe@googlemail.com>
+X-Tired: Each morning I get up I die a little
