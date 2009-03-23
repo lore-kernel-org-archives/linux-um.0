@@ -1,41 +1,72 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1758995AbZCWPW1@vger.kernel.org>
-Date: Mon, 23 Mar 2009 16:19:54 +0100
-From: Ingo Molnar <mingo@elte.hu>
-Subject: Re: [patch] fix ptrace slowness
-Message-ID: <20090323151954.GC21267@elte.hu>
-References: <E1LllkK-0000zF-1h@pomaz-ex.szeredi.hu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E1LllkK-0000zF-1h@pomaz-ex.szeredi.hu>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1758501AbZCWPHv@vger.kernel.org>
+Subject: [patch] fix ptrace slowness
+Message-Id: <E1LllkK-0000zF-1h@pomaz-ex.szeredi.hu>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Mon, 23 Mar 2009 16:07:24 +0100
 Sender: linux-kernel-owner@vger.kernel.org
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: linux-kernel@vger.kernel.org, oleg@redhat.com, peterz@infradead.org, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, torvalds@linux-foundation.org, akpm@linux-foundation.org, stable@kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: mingo@elte.hu, oleg@redhat.com, peterz@infradead.org, roland@redhat.com, efault@gmx.de, rjw@sisk.pl, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, torvalds@linux-foundation.org, akpm@linux-foundation.org, stable@kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+This one incorporates comments from Oleg and Ingo.  Please apply to
+2.6.29 and 2.6.2[78]-stable trees.
 
-* Miklos Szeredi <miklos@szeredi.hu> wrote:
+Thanks,
+Miklos
+----
 
-> This one incorporates comments from Oleg and Ingo.  Please apply 
-> to 2.6.29 and 2.6.2[78]-stable trees.
+From: Miklos Szeredi <mszeredi@suse.cz>
 
-The fix first needs to go upstream. There's an alternative patch 
-below. Would you mind to give it a test? Chances are that it will 
-make UML even faster than your fix.
+This patch fixes bug #12208:
 
-	Ingo
+  Bug-Entry       : http://bugzilla.kernel.org/show_bug.cgi?id=12208
+  Subject         : uml is very slow on 2.6.28 host
 
-diff --git a/kernel/sched.c b/kernel/sched.c
-index 3e827b8..2d60f23 100644
---- a/kernel/sched.c
-+++ b/kernel/sched.c
-@@ -2119,7 +2119,8 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
- 		 * yield - it could be a while.
- 		 */
- 		if (unlikely(on_rq)) {
--			schedule_timeout_uninterruptible(1);
-+			cpu_relax();
-+			cond_resched();
- 			continue;
- 		}
- 
+This turned out to be not a scheduler regression, but an already
+existing problem in ptrace being triggered by subtle scheduler
+changes.
+
+The problem is this:
+
+ - task A is ptracing task B
+ - task B stops on a trace event
+ - task A is woken up and preempts task B
+ - task A calls ptrace on task B, which does ptrace_check_attach()
+ - this calls wait_task_inactive(), which sees that task B is still on the runq
+ - task A goes to sleep for a jiffy
+ - ...
+
+Since UML does lots of the above sequences, those jiffies quickly add
+up to make it slow as hell.
+
+This patch solves this by not rescheduling in read_unlock() after
+ptrace_stop() has woken up the tracer.
+
+Thanks to Oleg Nesterov and Ingo Molnar for the feedback.
+
+Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+CC: stable@kernel.org
+---
+ kernel/signal.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+Index: linux.git/kernel/signal.c
+===================================================================
+--- linux.git.orig/kernel/signal.c	2009-03-20 09:41:04.000000000 +0100
++++ linux.git/kernel/signal.c	2009-03-23 15:40:57.000000000 +0100
+@@ -1575,7 +1575,15 @@ static void ptrace_stop(int exit_code, i
+ 	read_lock(&tasklist_lock);
+ 	if (may_ptrace_stop()) {
+ 		do_notify_parent_cldstop(current, CLD_TRAPPED);
++		/*
++		 * Don't want to allow preemption here, because
++		 * sys_ptrace() needs this task to be inactive.
++		 *
++		 * XXX: implement read_unlock_no_resched().
++		 */
++		preempt_disable();
+ 		read_unlock(&tasklist_lock);
++		preempt_enable_no_resched();
+ 		schedule();
+ 	} else {
+ 		/*
