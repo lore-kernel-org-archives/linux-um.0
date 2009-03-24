@@ -1,30 +1,55 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1758189AbZC2QK5@vger.kernel.org>
-Date: Mon, 30 Mar 2009 00:11:21 +0800
-From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
-Subject: Re: [PATCH 2/2] ptrace_vm: ptrace for syscall emulation virtual
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1755978AbZCXXsM@vger.kernel.org>
+Date: Wed, 25 Mar 2009 00:47:53 +0100
+From: Renzo Davoli <renzo@cs.unibo.it>
+Subject: Re: [PATCH 0/2] ptrace_vm: ptrace for syscall emulation virtual
 	machines
-Message-ID: <20090329161121.GD7671@hack>
-References: <20090204080256.GC17452@cs.unibo.it> <20090310214456.GE5213@cs.unibo.it> <20090310220241.GC30475@elte.hu> <20090311134138.GD12753@cs.unibo.it> <20090316081508.GE3360@hack> <20090316121732.GC22978@cs.unibo.it> <20090318143939.GA3986@hack> <20090324232019.GG22695@cs.unibo.it>
+Message-ID: <20090324234753.GH22695@cs.unibo.it>
+References: <20090204080236.GA17452@cs.unibo.it> <20090310214436.GC5213@cs.unibo.it> <20090316074520.GC3360@hack>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20090324232019.GG22695@cs.unibo.it>
+In-Reply-To: <20090316074520.GC3360@hack>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Renzo Davoli <renzo@cs.unibo.it>
-Cc: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>, Ingo Molnar <mingo@elte.hu>, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: Am??rico Wang <xiyou.wangcong@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, mtk.manpages@gmail.com, Roland McGrath <roland@redhat.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Wed, Mar 25, 2009 at 12:20:19AM +0100, Renzo Davoli wrote:
->Patch rebased on 2.6.29. I have fixed the code following Cong's suggestion.
->	renzo
->Although get_using_sysptvm is used as a boolean, I have left it int just 
->for the sake of simmetry with get_using_sysemu.
->It could be safely changed to boolean at any time.
->
+> I just finished reading all of them. Good work! :)
+> Thanks. Comments below.
+I am thanking you, not viceversa!
+> 
+> Why not introduce a new request for PTRACE_VM but use *tags* in 'addr'?
+> We are taking risks of breaking the existing code. :)
 
-Thanks.
+Yes, there is a minimal risk to break some code. This is a con.
+On the other side there are two main pros for this proposal:
+1- the code is now extremely simple 
+2- if we define a different tag for syscall (e.g. PTRACE_VM), we need also
+different tags for PTRACE_VM_SINGLESTEP, PTRACE_VM_SINGLEBLOCK and maybe
+others in the future.
+Using the addr field we don't need this multiplication of tags
+(and we could soon delete PTRACE_SYSEMU and PTRACE_SYSEMU_SINGLESTEP).
 
-My point is *not* changing it from 'int' to 'bool', I mean you
-should change the interface, for example, change get_using_sysptvm()
-to enable_sysptvm().
+> My question is if there are any other usages of SYSEMU beyond UML?
+At this time I have not find any other usage.
+> 
+> Well, since 'addr' is said to be unused, it can have any value beyond
+> 0 or 1, we are still having the risks of breaking existing code. :(
+True. 
+> 
+> >This change would eventually simplify both the kernel code
+> >(reducing tags and exceptions) and even user-mode linux and umview.
+> >
+I forgot to change this sentence
+> >The skip-exit feature can be implemented in a arch-independent
+> >manner, while for skip_call some simple changes are needed
+> >(the entry assembly code should process the return value of the syscall
+> >tracing function call, like in arch/x86/kernel/Entry_32.S).
+Both features are now arch independent after McGrath work on tracing hooks.
+> 
+> BTW, please always update the corresponding man pages when you change
+> any syscall interface. So let's Cc Michael Kerrisk.
 
+You are right, I'll patch the man page as soon as possible.
+
+	renzo
