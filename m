@@ -1,56 +1,50 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1756094AbZCJOTe@vger.kernel.org>
-Date: Tue, 10 Mar 2009 22:19:38 +0800
-From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
-Subject: [Patch] uml: fix WARNING: vmlinux: 'memcpy' exported twice.
-Message-ID: <20090310141938.GE3157@hack>
-References: <49AFC206.9080004@panasas.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <49AFC206.9080004@panasas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Boaz Harrosh <bharrosh@panasas.com>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@osdl.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+	helo=mx.sourceforge.net)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <davem@davemloft.net>) id 1Ln6pf-00063h-0X
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Mar 2009 07:50:27 +0000
+Received: from [74.93.104.97] (helo=sunset.davemloft.net)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ln6pV-0003qE-Vf for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Mar 2009 07:50:26 +0000
+Date: Fri, 27 Mar 2009 00:50:05 -0700 (PDT)
+Message-Id: <20090327.005005.216977066.davem@davemloft.net>
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <20090327011255.097375153@linux-foundation.org>
+References: <20090327011114.169107105@linux-foundation.org>
+	<20090327011255.097375153@linux-foundation.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [patch 02/30] uml: convert network device to
+ internal network device stats
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: shemminger@linux-foundation.org
+Cc: netdev@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
+From: Stephen Hemminger <shemminger@linux-foundation.org>
+Date: Thu, 26 Mar 2009 18:11:16 -0700
 
+> Convert the UML network device to use internal network device stats.
+> 
+> Signed-off-by: Stephen Hemminger <shemminger@vyatta.com>
 
-This patch fixes the following warning on x86_64:
+Applied.
 
-LD vmlinux.o
-MODPOST vmlinux.o
-WARNING: vmlinux: 'memcpy' exported twice. Previous export was in
-vmlinux
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-Reported-by: Boaz Harrosh <bharrosh@panasas.com>
-Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
-Tested-by: Boaz Harrosh <bharrosh@panasas.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-
----
-diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
-index 74f49bb..89b48a1 100644
---- a/arch/um/os-Linux/user_syms.c
-+++ b/arch/um/os-Linux/user_syms.c
-@@ -14,7 +14,6 @@
- #undef memset
- 
- extern size_t strlen(const char *);
--extern void *memcpy(void *, const void *, size_t);
- extern void *memmove(void *, const void *, size_t);
- extern void *memset(void *, int, size_t);
- extern int printf(const char *, ...);
-@@ -24,7 +23,11 @@ extern int printf(const char *, ...);
- EXPORT_SYMBOL(strstr);
- #endif
- 
-+#ifndef __x86_64__
-+extern void *memcpy(void *, const void *, size_t);
- EXPORT_SYMBOL(memcpy);
-+#endif
-+
- EXPORT_SYMBOL(memmove);
- EXPORT_SYMBOL(memset);
- EXPORT_SYMBOL(printf);
-
- 
