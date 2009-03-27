@@ -1,70 +1,48 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1753662AbZCFMiA@vger.kernel.org>
-Date: Fri, 6 Mar 2009 20:38:02 +0800
-From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
-Subject: [Patch] uml: don't use a too long string literal
-Message-ID: <20090306123802.GE8991@hack.private>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Andrew Morton <akpm@osdl.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+	helo=mx.sourceforge.net)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <davem@davemloft.net>) id 1Ln6pp-0007J7-0O
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Mar 2009 07:50:37 +0000
+Received: from [74.93.104.97] (helo=sunset.davemloft.net)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Ln6pf-0001bM-8a for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Mar 2009 07:50:36 +0000
+Date: Fri, 27 Mar 2009 00:50:09 -0700 (PDT)
+Message-Id: <20090327.005009.140434254.davem@davemloft.net>
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <20090327011255.168951778@linux-foundation.org>
+References: <20090327011114.169107105@linux-foundation.org>
+	<20090327011255.168951778@linux-foundation.org>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [patch 03/30] uml: convert network device to
+	netdevice ops
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: shemminger@linux-foundation.org
+Cc: netdev@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
+From: Stephen Hemminger <shemminger@linux-foundation.org>
+Date: Thu, 26 Mar 2009 18:11:17 -0700
 
-uml uses a concatenated string literal to store the contents of .config,
-but .config file content is varaible, it can be very long.
+> Signed-off-by: Stephen Hemminger <shemminger@vyatta.com>
 
-Use an array of string literals instead.
+Applied.
 
-Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
-Cc: Jeff Dike <jdike@addtoit.com>
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
----
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 499e5e9..388ec0a 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -28,7 +28,7 @@ $(obj)/config.tmp: $(objtree)/.config FORCE
- 	$(call if_changed,quote1)
- 
- quiet_cmd_quote1 = QUOTE   $@
--      cmd_quote1 = sed -e 's/"/\\"/g' -e 's/^/"/' -e 's/$$/\\n"/' \
-+      cmd_quote1 = sed -e 's/"/\\"/g' -e 's/^/"/' -e 's/$$/\\n",/' \
- 		   $< > $@
- 
- $(obj)/config.c: $(src)/config.c.in $(obj)/config.tmp FORCE
-@@ -36,9 +36,9 @@ $(obj)/config.c: $(src)/config.c.in $(obj)/config.tmp FORCE
- 
- quiet_cmd_quote2 = QUOTE   $@
-       cmd_quote2 = sed -e '/CONFIG/{'          \
--		  -e 's/"CONFIG"\;/""/'        \
-+		  -e 's/"CONFIG"//'            \
- 		  -e 'r $(obj)/config.tmp'     \
- 		  -e 'a \'                     \
--		  -e '""\;'                    \
-+		  -e '""'                      \
- 		  -e '}'                       \
- 		  $< > $@
-diff --git a/arch/um/kernel/config.c.in b/arch/um/kernel/config.c.in
-index c062cbf..bee154d 100644
---- a/arch/um/kernel/config.c.in
-+++ b/arch/um/kernel/config.c.in
-@@ -7,11 +7,15 @@
- #include <stdlib.h>
- #include "init.h"
- 
--static __initdata char *config = "CONFIG";
-+static __initdata const char *config[] = {
-+"CONFIG"
-+};
- 
- static int __init print_config(char *line, int *add)
- {
--	printf("%s", config);
-+	int i;
-+	for (i = 0; i < sizeof(config)/sizeof(config[0]); i++)
-+		printf("%s", config[i]);
- 	exit(0);
- }
- 
