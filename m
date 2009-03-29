@@ -1,123 +1,65 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1758065AbZCPERf@vger.kernel.org>
-Subject: [PULL] cpumask updates for um
-From: Rusty Russell <rusty@rustcorp.com.au>
-Date: Mon, 16 Mar 2009 14:44:44 +1030
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+	helo=mx.sourceforge.net)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <nix@esperi.org.uk>) id 1Lnu4b-0005b8-RQ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Mar 2009 12:25:09 +0000
+Received: from 41-052.adsl.zetnet.co.uk ([194.247.41.52]
+	helo=mail.esperi.org.uk) by 3b2kzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1Lnu4W-0001MQ-Lq
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Mar 2009 12:25:09 +0000
+References: <a37615150903261150x3642d954y296b6e8c26e53fe8@mail.gmail.com>
+From: Nix <nix@esperi.org.uk>
+Date: Sun, 29 Mar 2009 13:08:49 +0100
+In-Reply-To: <a37615150903261150x3642d954y296b6e8c26e53fe8@mail.gmail.com>
+	(Yehuda Sadeh Weinraub's message of "Thu,
+	26 Mar 2009 11:50:34 -0700")
+Message-ID: <87hc1cbkfi.fsf@hades.wkstn.nix>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Subject: Re: [uml-devel] Networking issues with 2.6.29
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200903161444.44432.rusty@rustcorp.com.au>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, mingo@redhat.com, travis@sgi.com, linux-kernel@vger.kernel.org, mingo@redhat.com, travis@sgi.com
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Yehuda Sadeh Weinraub <yehudasa@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-The following changes since commit 5bee17f18b595937e6beafeee5197868a3f74a06:
-  Kyle McMartin (1):
-        parisc: sba_iommu: fix build bug when CONFIG_PARISC_AGP=y
+On 26 Mar 2009, Yehuda Sadeh Weinraub spake thusly:
 
-are available in the git repository at:
+> Network doesn't seem to work for me in 2.6.29, although it was working
+> in 2.6.28. System behavior seemed really strange, as it sometimes did
+> work when I was using the same uml machine, when using a different
+> user. Bisecting the kernel tree, revels a seemingly unrelated commit
+> that when reverted it fixes the problem:
 
-  ssh://master.kernel.org/home/ftp/pub/scm/linux/kernel/git/rusty/linux-2.6-cpumask-for-um.git master
+I doubt it. This is a known race, particularly easy to reproduce on UP,
+fixed by <http://patchwork.kernel.org/patch/14465/>, which causes
+networking to go away at seemingly random moments. I had it everywhere
+within ten minutes of upgrading...
 
-Rusty Russell (3):
-      cpumask: prepare for iterators to only go to nr_cpu_ids/nr_cpumask_bits.: um
-      cpumask: Use accessors code.: um
-      cpumask: use mm_cpumask() wrapper: um
+> commit 470c66239ef0336429b35345f3f615d47341e13b
+> Author: David Brownell <dbrownell@users.sourceforge.net>
+> Date:   Mon Dec 1 14:31:37 2008 -0800
+>
+>     genirq: warn when IRQF_DISABLED may be ignored
 
- arch/um/include/asm/mmu_context.h |    4 ++--
- arch/um/kernel/smp.c              |    2 +-
- arch/um/kernel/um_arch.c          |    2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+This patch just adds an (annoying and useless to users) warning that's
+printed at interface bringup time. If it makes the problem go away I'll
+eat my hat.
 
-commit 9ca79a68564459385c0a8db903ec6ffe6b00c50c
-Author: Rusty Russell <rusty@rustcorp.com.au>
-Date:   Mon Mar 16 14:27:41 2009 +1030
-
-    cpumask: use mm_cpumask() wrapper: um
-    
-    Makes code futureproof against the impending change to mm->cpu_vm_mask.
-    
-    It's also a chance to use the new cpumask_ ops which take a pointer
-    (the older ones are deprecated, but there's no hurry for arch code).
-    
-    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
-
-diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
-index 54f42e8..edd719e 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -35,8 +35,8 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	unsigned cpu = smp_processor_id();
- 
- 	if(prev != next){
--		cpu_clear(cpu, prev->cpu_vm_mask);
--		cpu_set(cpu, next->cpu_vm_mask);
-+		cpumask_clear(cpu, mm_cpumask(prev));
-+		cpumask_set_cpu(cpu, mm_cpumask(next));
- 		if(next != &init_mm)
- 			__switch_mm(&next->context.id);
- 	}
-
-commit 577e3b46d67a0dc236a9eb89c06861a8b4580a02
-Author: Rusty Russell <rusty@rustcorp.com.au>
-Date:   Mon Mar 16 14:27:41 2009 +1030
-
-    cpumask: Use accessors code.: um
-    
-    Impact: use new API
-    
-    Use the accessors rather than frobbing bits directly.  Most of this is
-    in arch code I haven't even compiled, but is straightforward.
-    
-    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
-    Signed-off-by: Mike Travis <travis@sgi.com>
-
-diff --git a/arch/um/kernel/smp.c b/arch/um/kernel/smp.c
-index 98351c7..106bf27 100644
---- a/arch/um/kernel/smp.c
-+++ b/arch/um/kernel/smp.c
-@@ -111,7 +111,7 @@ void smp_prepare_cpus(unsigned int maxcpus)
- 	int i;
- 
- 	for (i = 0; i < ncpus; ++i)
--		cpu_set(i, cpu_possible_map);
-+		set_cpu_possible(i, true);
- 
- 	cpu_clear(me, cpu_online_map);
- 	cpu_set(me, cpu_online_map);
-
-commit 816a1c29fc3d9bb95dde5806c29629d16947bfe7
-Author: Rusty Russell <rusty@rustcorp.com.au>
-Date:   Mon Mar 16 14:27:40 2009 +1030
-
-    cpumask: prepare for iterators to only go to nr_cpu_ids/nr_cpumask_bits.: um
-    
-    Impact: cleanup, futureproof
-    
-    In fact, all cpumask ops will only be valid (in general) for bit
-    numbers < nr_cpu_ids.  So use that instead of NR_CPUS in various
-    places.
-    
-    This is always safe: no cpu number can be >= nr_cpu_ids, and
-    nr_cpu_ids is initialized to NR_CPUS at boot.
-    
-    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
-    Signed-off-by: Mike Travis <travis@sgi.com>
-    Acked-by: Ingo Molnar <mingo@elte.hu>
-
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 8d84250..bbf96ab 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -80,7 +80,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 
- static void *c_start(struct seq_file *m, loff_t *pos)
- {
--	return *pos < NR_CPUS ? cpu_data + *pos : NULL;
-+	return *pos < nr_cpu_ids ? cpu_data + *pos : NULL;
- }
- 
- static void *c_next(struct seq_file *m, void *v, loff_t *pos)
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
