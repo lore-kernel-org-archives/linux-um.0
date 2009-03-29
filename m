@@ -1,21 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <miklos@szeredi.hu>) id 1LoMQC-00013T-H9
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <xiyou.wangcong@gmail.com>) id 1LnxvE-00056m-2b
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Mar 2009 18:41:20 +0000
-Received: from fxip-0047f.externet.hu ([88.209.222.127]
-	helo=pomaz-ex.szeredi.hu)
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1LoMQ8-00081o-Bx
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Mar 2009 18:41:20 +0000
-Message-Id: <E1LoMQ2-0007bB-By@pomaz-ex.szeredi.hu>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Mon, 30 Mar 2009 20:41:10 +0200
-Subject: [uml-devel] [patch 1/3] uml: fix compile error from net_device_ops
-	conversion
+	Sun, 29 Mar 2009 16:31:44 +0000
+Received: from ti-out-0910.google.com ([209.85.142.186])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1LnxvB-0000Tw-LO for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Mar 2009 16:31:44 +0000
+Received: by ti-out-0910.google.com with SMTP id b6so1325975tic.18
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 29 Mar 2009 09:31:40 -0700 (PDT)
+Date: Mon, 30 Mar 2009 00:32:28 +0800
+From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Message-ID: <20090329163228.GE7671@hack>
+References: <20090204080236.GA17452@cs.unibo.it>
+	<20090310214436.GC5213@cs.unibo.it> <20090316074520.GC3360@hack>
+	<20090324234753.GH22695@cs.unibo.it>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20090324234753.GH22695@cs.unibo.it>
+Subject: Re: [uml-devel] [PATCH 0/2] ptrace_vm: ptrace for syscall emulation
+	virtual	machines
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,41 +32,38 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jdike@addtoit.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+To: Renzo Davoli <renzo@cs.unibo.it>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, mtk.manpages@gmail.com, Am??rico Wang <xiyou.wangcong@gmail.com>, Roland McGrath <roland@redhat.com>
 
-From: Miklos Szeredi <mszeredi@suse.cz>
+On Wed, Mar 25, 2009 at 12:47:53AM +0100, Renzo Davoli wrote:
+>> Why not introduce a new request for PTRACE_VM but use *tags* in 'addr'?
+>> We are taking risks of breaking the existing code. :)
+>
+>Yes, there is a minimal risk to break some code. This is a con.
+>On the other side there are two main pros for this proposal:
+>1- the code is now extremely simple 
 
-Fix the following compile error:
+Why adding a new request for ptrace is harder? I don't think so. :)
 
-arch/um/drivers/net_kern.c: In function 'uml_inetaddr_event':
-arch/um/drivers/net_kern.c:760: error: 'struct net_device' has no member named 'open'
 
-This was introduced by commit 8bb95b39, "uml: convert network device
-to netdevice ops".
+>2- if we define a different tag for syscall (e.g. PTRACE_VM), we need also
+>different tags for PTRACE_VM_SINGLESTEP, PTRACE_VM_SINGLEBLOCK and maybe
+>others in the future.
+>Using the addr field we don't need this multiplication of tags
+>(and we could soon delete PTRACE_SYSEMU and PTRACE_SYSEMU_SINGLESTEP).
+>
 
-Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
----
- arch/um/drivers/net_kern.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes? We could also remove PTRACE_SYSEMU* if we had PTRACE_VM to replace
+it. I would like to hear more from you on this point.
 
-Index: linux-2.6/arch/um/drivers/net_kern.c
-===================================================================
---- linux-2.6.orig/arch/um/drivers/net_kern.c	2009-03-30 17:07:10.000000000 +0200
-+++ linux-2.6/arch/um/drivers/net_kern.c	2009-03-30 19:25:30.000000000 +0200
-@@ -757,7 +757,7 @@ static int uml_inetaddr_event(struct not
- 	void (*proc)(unsigned char *, unsigned char *, void *);
- 	unsigned char addr_buf[4], netmask_buf[4];
+Thanks.
+
+-- 
+Do what you love, f**k the rest! F**k the regulations!
  
--	if (dev->open != uml_net_open)
-+	if (dev->netdev_ops->ndo_open != uml_net_open)
- 		return NOTIFY_DONE;
- 
- 	lp = netdev_priv(dev);
 
 ------------------------------------------------------------------------------
 _______________________________________________
