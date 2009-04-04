@@ -1,49 +1,58 @@
-Return-Path: <tabbott@mit.edu>
-From: Tim Abbott <tabbott@MIT.EDU>
-Subject: [PATCH 5/6] Add new READ_MOSTLY_DATA(align) linker script macro.
-Date: Thu, 30 Apr 2009 15:32:35 -0400
-Message-Id: <1241119956-31453-6-git-send-email-tabbott@mit.edu>
-In-Reply-To: <1241119956-31453-5-git-send-email-tabbott@mit.edu>
-References: <1241119956-31453-1-git-send-email-tabbott@mit.edu>
- <1241119956-31453-2-git-send-email-tabbott@mit.edu>
- <1241119956-31453-3-git-send-email-tabbott@mit.edu>
- <1241119956-31453-4-git-send-email-tabbott@mit.edu>
- <1241119956-31453-5-git-send-email-tabbott@mit.edu>
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: Anders Kaseorg <andersk@MIT.EDU>, Waseem Daher <wdaher@MIT.EDU>, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Arnold <jbarnold@MIT.EDU>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Bryan Wu <cooloney@kernel.org>, Chris Zankel <chris@zankel.net>, Cyrill Gorcunov <gorcunov@openvz.org>, David Howells <dhowells@redhat.com>, "David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hirokazu Takata <takata@linux-m32r.org>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Kyle McMartin <kyle@mcmartin.ca>, Linus Torvalds <torvalds@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-arm-kernel@lists.arm.linux.org.uk, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michal Simek <monstr@monstr.eu>, microblaze-uclinux@itee.uq.edu.au, Mikael Starvik <starvik@axis.com>, Paul Mackerras <paulus@samba.org>, Paul Mundt <lethal@linux-sh.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, Roman Zippel <zippel@linux-m68k.org>, Russell King <rmk+kernel@arm.linux.org.uk>, sparclinux@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, uclinux-dist-devel@blackfin.uclinux.org, user-mode-linux-devel@lists.sourceforge.net, Yoshinori Sato <ysato@users.sourceforge.jp>, Tim Abbott <tabbott@MIT.EDU>, Sam Ravnborg <sam@ravnborg.org>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1754754AbZDDQvK@vger.kernel.org>
+Date: Sun, 5 Apr 2009 00:51:44 +0800
+From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Subject: Re: do_execve() needs const qualifiers (was Re: [patch 3/3] uml:
+	fix warnings in kernel_execve)
+Message-ID: <20090404165144.GB17018@hack>
+References: <E1LoMQ2-0007bB-By@pomaz-ex.szeredi.hu> <E1LoMTw-0007d2-AI@pomaz-ex.szeredi.hu> <20090401161114.GF3848@hack> <20090401162122.GE28946@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090401162122.GE28946@ZenIV.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: Am??rico Wang <xiyou.wangcong@gmail.com>, Miklos Szeredi <miklos@szeredi.hu>, user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This patch is preparation for replacing most ".data.read_mostly" in
-the kernel with macros, so that the section name can later be changed
-without having to touch a lot of the kernel.
+On Wed, Apr 01, 2009 at 05:21:22PM +0100, Al Viro wrote:
+>On Thu, Apr 02, 2009 at 12:11:14AM +0800, Am??rico Wang wrote:
+>> On Mon, Mar 30, 2009 at 08:45:12PM +0200, Miklos Szeredi wrote:
+>> >From: Miklos Szeredi <mszeredi@suse.cz>
+>> >
+>> >Fix the following warnings:
+>> >
+>> >arch/um/kernel/syscall.c: In function 'kernel_execve':
+>> >arch/um/kernel/syscall.c:130: warning: passing argument 1 of 'um_execve' discards qualifiers from pointer target type
+>> >arch/um/kernel/syscall.c:130: warning: passing argument 2 of 'um_execve' discards qualifiers from pointer target type
+>> >arch/um/kernel/syscall.c:130: warning: passing argument 3 of 'um_execve' discards qualifiers from pointer target type
+>> >
+>> >Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+>> >---
+>> > arch/um/kernel/syscall.c |    3 ++-
+>> > 1 file changed, 2 insertions(+), 1 deletion(-)
+>> >
+>> >Index: linux-2.6/arch/um/kernel/syscall.c
+>> >===================================================================
+>> >--- linux-2.6.orig/arch/um/kernel/syscall.c	2009-03-30 20:25:17.000000000 +0200
+>> >+++ linux-2.6/arch/um/kernel/syscall.c	2009-03-30 20:36:20.000000000 +0200
+>> >@@ -127,7 +127,8 @@ int kernel_execve(const char *filename,
+>> > 
+>> > 	fs = get_fs();
+>> > 	set_fs(KERNEL_DS);
+>> >-	ret = um_execve(filename, argv, envp);
+>> >+	ret = um_execve((char *)filename, (char __user *__user *)argv,
+>> >+			(char __user *__user *) envp);
+>> 
+>> Well... I found this many days ago and I did a similar fix.
+>> 
+>> However, I think this doesn't fix the real problem. The real problem
+>> is do_execve() doesn't have the correct const qualifiers, I am queueing
+>> a huge patch to fix all the 'const' issues from do_execve() and more,
+>> but I don't if Al would like it or not.
+>
+>I don't know...  The thing is, it'll trail down into bprm->filename /
+>bprm->interp and the things get very ugly very fast from that point.
 
-The long-term goal here is to be able to change the kernel's magic
-section names to those that are compatible with -ffunction-sections
--fdata-sections.  This requires renaming all magic sections with names
-of the form ".data.foo".
-
-Signed-off-by: Tim Abbott <tabbott@mit.edu>
-Cc: Sam Ravnborg <sam@ravnborg.org>
----
- include/asm-generic/vmlinux.lds.h |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 4b020e8..a4b4f4a 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -139,6 +139,10 @@
- 	. = ALIGN(alignment);						\
- 	*(.data.init_task)
+Yes, I agree, my queued patch is huge. 8-)
+But it is still worthy to fix, right?
  
-+#define READ_MOSTLY_DATA(alignment)					\
-+	. = ALIGN(alignment);						\
-+	*(.data.read_mostly)
-+
- #define RO_DATA(align)							\
- 	. = ALIGN((align));						\
- 	.rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {		\
--- 
-1.6.2.1
-
-
