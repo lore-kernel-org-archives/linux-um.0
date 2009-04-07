@@ -1,42 +1,66 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1754144AbZDWGkY@vger.kernel.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+	helo=mx.sourceforge.net)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <inguin@gmx.de>) id 1LrIlW-0003AJ-Qr
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Apr 2009 21:23:30 +0000
+Received: from mail.gmx.net ([213.165.64.20])
+	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1LrIlV-0002Qc-TO for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Apr 2009 21:23:30 +0000
+Message-ID: <49DBC44A.5070700@gmx.de>
+Date: Tue, 07 Apr 2009 23:23:22 +0200
+From: Ingo van Lil <inguin@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+References: <49DB91C6.7030005@gmx.de> <49DB9B13.80203@meduna.org>
+In-Reply-To: <49DB9B13.80203@meduna.org>
+Subject: Re: [uml-devel] Multi-threaded applications and floating point
+	registers
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: Roland McGrath <roland@redhat.com>
-Subject: Re: PT_DTRACE && uml
-In-Reply-To: Oleg Nesterov's message of  Thursday, 23 April 2009 00:17:26 +0200 <20090422221726.GC22755@redhat.com>
-References: <20090330185146.D525AFC3AB@magilla.sf.frob.com>
-	<20090408203954.GA26816@redhat.com>
-	<20090416204004.GA28013@redhat.com>
-	<20090416232430.4DAE4FC3C6@magilla.sf.frob.com>
-	<20090420183718.GC32527@redhat.com>
-	<20090421011354.4B19EFC3C7@magilla.sf.frob.com>
-	<20090421214819.GA22845@redhat.com>
-	<20090422032205.B8D39FC3C7@magilla.sf.frob.com>
-	<20090422220400.GA22755@redhat.com>
-	<20090422221726.GC22755@redhat.com>
-Message-Id: <20090423063949.8DE92FC3C7@magilla.sf.frob.com>
-Date: Wed, 22 Apr 2009 23:39:49 -0700 (PDT)
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Stanislav Meduna <stano@meduna.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> (cc Jeff Dike)
+Stanislav Meduna wrote:
 
-I've also CC'd the UML hackers' mailing list.
-
-> So, arch/um/ seems to be the only user of PT_DTRACE.
+>> I'm experiencing some weird problems with a multi-threaded application 
+>> I'm working on: A function which uses nothing but a single input value, 
+>> a few constants and a couple of floating point operations returns wrong 
+>> results from time to time. The application uses multiple threads, and 
+>> we're suspecting that the FPU state isn't properly saved and restored 
+>> when switching between threads within a process.
 > 
-> I do not understand this code at all. It looks as if we can just
-> s/PT_DTRACE/TIF_SINGLESTEP/.
-> 
-> But it can't be that simple?
+> I had a similar problem between processes a few months ago,
+> I also posted an example, unfortunately with no resolution
+> nor further inquiries from the developers. I suspect the skas3
+> patch does not get much attention now...
 
-I don't really understand off hand how UML is using PT_DTRACE either.
-But clearly it (or any real arch) that needs a flag for an arch purpose
-can use a TIF_* bit instead of touching ->ptrace, and should do that.
+Yes, I remember the thread. I don't think we're hitting the same
+problem, though: I'm not using the SKAS3 patch, and I did not notice any
+kind of cross-process influence. The effect is limited to threads
+sharing a single process context.
 
+Regards,
+Ingo
 
-Thanks,
-Roland
+------------------------------------------------------------------------------
+This SF.net email is sponsored by:
+High Quality Requirements in a Collaborative Environment.
+Download a free trial of Rational Requirements Composer Now!
+http://p.sf.net/sfu/www-ibm-com
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
