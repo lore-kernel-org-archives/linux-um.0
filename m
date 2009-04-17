@@ -1,87 +1,39 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1756407AbZDAQDU@vger.kernel.org>
-Date: Thu, 2 Apr 2009 00:03:49 +0800
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1759763AbZDQJTg@vger.kernel.org>
+Date: Fri, 17 Apr 2009 17:20:29 +0800
 From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
-Subject: Re: [patch 2/3] uml: fix link error from prefixing of i386
-	syscalls with ptregs_
-Message-ID: <20090401160349.GE3848@hack>
-References: <E1LoMQ2-0007bB-By@pomaz-ex.szeredi.hu> <E1LoMVs-0007dg-D3@pomaz-ex.szeredi.hu>
+Subject: [Patch] uml: kill a kconfig warning
+Message-ID: <20090417092028.GB31897@hack>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <E1LoMVs-0007dg-D3@pomaz-ex.szeredi.hu>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@osdl.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Mon, Mar 30, 2009 at 08:47:12PM +0200, Miklos Szeredi wrote:
->From: Miklos Szeredi <mszeredi@suse.cz>
->
->Fix the following link error:
->
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x11c): undefined reference to `ptregs_fork'
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x140): undefined reference to `ptregs_execve'
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x2cc): undefined reference to `ptregs_iopl'
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x2d8): undefined reference to `ptregs_vm86old'
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x2f0): undefined reference to `ptregs_sigreturn'
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x2f4): undefined reference to `ptregs_clone'
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x3ac): undefined reference to `ptregs_vm86'
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x3c8): undefined reference to `ptregs_rt_sigreturn'
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x3fc): undefined reference to `ptregs_sigaltstack'
->arch/um/sys-i386/built-in.o: In function `sys_call_table':
->(.rodata+0x40c): undefined reference to `ptregs_vfork'
->
->This was introduced by commit 253f29a4, "x86: pass in pt_regs pointer
->for syscalls that need it"
->
->Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
 
-Looks good.
+Got this warning from Kconfig:
 
-Reviewed-by: WANG Cong <xiyou.wangcong@gmail.com>
+   boolean symbol INPUT tested for 'm'? test forced to 'n'
 
+because INPUT is tristate, not bool. The patch below fixes it.
 
->---
-> arch/um/sys-i386/sys_call_table.S |   11 +++++++++++
-> 1 file changed, 11 insertions(+)
->
->Index: linux-2.6/arch/um/sys-i386/sys_call_table.S
->===================================================================
->--- linux-2.6.orig/arch/um/sys-i386/sys_call_table.S	2009-03-27 10:57:38.000000000 +0100
->+++ linux-2.6/arch/um/sys-i386/sys_call_table.S	2009-03-30 19:53:14.000000000 +0200
->@@ -9,6 +9,17 @@
-> 
-> #define old_mmap old_mmap_i386
-> 
->+#define ptregs_fork sys_fork
->+#define ptregs_execve sys_execve
->+#define ptregs_iopl sys_iopl
->+#define ptregs_vm86old sys_vm86old
->+#define ptregs_sigreturn sys_sigreturn
->+#define ptregs_clone sys_clone
->+#define ptregs_vm86 sys_vm86
->+#define ptregs_rt_sigreturn sys_rt_sigreturn
->+#define ptregs_sigaltstack sys_sigaltstack
->+#define ptregs_vfork sys_vfork
->+
-> .section .rodata,"a"
-> 
-> #include "../../x86/kernel/syscall_table_32.S"
->--
->To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
->the body of a message to majordomo@vger.kernel.org
->More majordomo info at  http://vger.kernel.org/majordomo-info.html
->Please read the FAQ at  http://www.tux.org/lkml/
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Jeff Dike <jdike@addtoit.com>
 
--- 
-Do what you love, f**k the rest! F**k the regulations!
+--
+diff --git a/arch/um/Kconfig.rest b/arch/um/Kconfig.rest
+index 7b5cea7..0ccad0f 100644
+--- a/arch/um/Kconfig.rest
++++ b/arch/um/Kconfig.rest
+@@ -36,7 +36,7 @@ source "drivers/leds/Kconfig"
  
+ #This is just to shut up some Kconfig warnings, so no prompt.
+ config INPUT
+-	bool
++	tristate
+ 	default n
+ 
+ source "arch/um/Kconfig.debug"
+
