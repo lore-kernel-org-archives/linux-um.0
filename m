@@ -1,124 +1,100 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1756328AbZCJVo5@vger.kernel.org>
-Date: Tue, 10 Mar 2009 22:44:36 +0100
-From: Renzo Davoli <renzo@cs.unibo.it>
-Subject: [PATCH 0/2] ptrace_vm: ptrace for syscall emulation virtual
-	machines
-Message-ID: <20090310214436.GC5213@cs.unibo.it>
-References: <20090204080236.GA17452@cs.unibo.it>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+	helo=mx.sourceforge.net)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tabbott@MIT.EDU>) id 1LzgBl-0006De-LM
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 May 2009 00:01:13 +0000
+Received: from biscayne-one-station.mit.edu ([18.7.7.80])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1LzgBj-0008WF-Hf
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 May 2009 00:01:13 +0000
+From: Tim Abbott <tabbott@MIT.EDU>
+Date: Thu, 30 Apr 2009 19:59:46 -0400
+Message-Id: <1241135986-10051-2-git-send-email-tabbott@mit.edu>
+In-Reply-To: <1241135986-10051-1-git-send-email-tabbott@mit.edu>
+References: <1241135986-10051-1-git-send-email-tabbott@mit.edu>
+Subject: [uml-devel] [PATCH] um: use new macros for .data.init_task.
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20090204080236.GA17452@cs.unibo.it>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?iso-8859-1?Q?Am=E9rico?= Wang <xiyou.wangcong@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Dike <jdike@addtoit.com>, Jeff Arnold <jbarnold@MIT.EDU>, Linux kernel mailing list <linux-kernel@vger.kernel.org>, Anders Kaseorg <andersk@MIT.EDU>, Tim Abbott <tabbott@MIT.EDU>, Waseem Daher <wdaher@MIT.EDU>
 
-Cong,
+Signed-off-by: Tim Abbott <tabbott@mit.edu>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+---
+ arch/um/kernel/dyn.lds.S   |    3 +--
+ arch/um/kernel/init_task.c |    3 +--
+ arch/um/kernel/uml.lds.S   |    3 +--
+ 3 files changed, 3 insertions(+), 6 deletions(-)
 
-I have updated the PTRACE_VM patches.
-The patches have been rebased to linux-2.6.29-rc7 but apply to linux-2.6.29-rc7-git3.
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+index 9975e1a..901f703 100644
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -96,8 +96,7 @@ SECTIONS
+   .init_array     : { *(.init_array) }
+   .fini_array     : { *(.fini_array) }
+   .data           : {
+-    . = ALIGN(KERNEL_STACK_SIZE);		/* init_task */
+-    *(.data.init_task)
++    INIT_TASK_DATA(KERNEL_STACK_SIZE)
+     . = ALIGN(KERNEL_STACK_SIZE);
+     *(.data.init_irqstack)
+     DATA_DATA
+diff --git a/arch/um/kernel/init_task.c b/arch/um/kernel/init_task.c
+index 806d381..0d4657f 100644
+--- a/arch/um/kernel/init_task.c
++++ b/arch/um/kernel/init_task.c
+@@ -33,8 +33,7 @@ EXPORT_SYMBOL(init_task);
+  * "init_task" linker map entry..
+  */
+ 
+-union thread_union init_thread_union
+-	__attribute__((__section__(".data.init_task"))) =
++union thread_union init_thread_union __init_task_data =
+ 		{ INIT_THREAD_INFO(init_task) };
+ 
+ union thread_union cpu0_irqstack
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index 11b8352..e4394a5 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -52,8 +52,7 @@ SECTIONS
+   init.data : { INIT_DATA }
+   .data    :
+   {
+-    . = ALIGN(KERNEL_STACK_SIZE);		/* init_task */
+-    *(.data.init_task)
++    INIT_TASK_DATA(KERNEL_STACK_SIZE)
+     . = ALIGN(KERNEL_STACK_SIZE);
+     *(.data.init_irqstack)
+     DATA_DATA
+-- 
+1.6.2.1
 
-The set is composed by two patches.
-The first one is for all those architectures where PTRACE_SYSCALL is
-managed via tracehook (x86, powerpc etc).
-Given the wonderful work by Roland McGrath this patch is now
-architecture independent and straightforward simple.
 
-The second one is the support of PTRACE_VM for user-mode-linux.
-It provides PTRACE_VM for UML processes and uses PTRACE_VM of the hosting 
-kernel.
+------------------------------------------------------------------------------
+Register Now & Save for Velocity, the Web Performance & Operations 
+Conference from O'Reilly Media. Velocity features a full day of 
+expert-led, hands-on workshops and two days of sessions from industry 
+leaders in dedicated Performance & Operations tracks. Use code vel09scf 
+and Save an extra 15% before 5/3. http://p.sf.net/sfu/velocityconf
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-
-The description and motivation follows.
------
-Proposal: let us simplify
-PTRACE_SYSCALL/PTRACE_SINGLESTEP/PTRACE_SYSEMU/PTRACE_SYSEMU_SINGLESTEP,
-and now PTRACE_BLOCKSTEP (which will require soon a PTRACE_SYSEMU_BLOCKSTEP),
-my PTRACE_SYSVM...etc. etc.
-
-Summary of the solution:
-Use tags in the "addr" parameter of existing
-PTRACE_SYSCALL/PTRACE_SINGLESTEP/PTRACE_CONT/PTRACE_BLOCKSTEP calls
-to skip the current call (PTRACE_VM_SKIPCALL) or skip the second upcall to 
-the VM/debugger after the syscall execution (PTRACE_VM_SKIPEXIT).
-
-Motivation:
-
-The ptrace tag PTRACE_SYSEMU is a feature mainly used for User-Mode Linux,
-or at most for other virtual machines aiming to virtualize *all* the syscalls
-(total virtual machines).
-
-In fact:
-ptrace(PTRACE_SYSEMU, pid, 0, 0)
-means that the *next* system call will not be executed.
-PTRACE_SYSEMU AFAIK has been implemented only for x86_32.
-
-I already proposed some time ago a different tag: PTRACE_SYSVM 
-(and I maintain a patch for it) where:
-ptrace(PTRACE_SYSVM, pid, XXX, 0)
-1* is the same as PTRACE_SYSCALL when XXX==0,
-2* skips the call (and stops before entering the next syscall) when
-  PTRACE_VM_SKIPCALL | PTRACE_VM_SKIPEXIT
-3* skips the ptrace call after the system call if PTRACE_VM_SKIPEXIT.
-  PTRACE_SYSVM has been implemented for x86_32, powerpc_32, um+x86_32.
-(x86_64 and ppc64 exist too, but are less tested).
-
-The main difference between SYSEMU and SYSVM is that with SYSVM it is possible
-to decide if *this* system call should be executed or not (instead of the next
-one).
-SYSVM can be used also for partial virtual machines (some syscall gets
-virtualized and some others do not), like our umview.
-
-PTRACE_SYSVM above can be used instead of PTRACE_SYSEMU in user-mode linux
-and in all the others total virtual machines. In fact, provided user-mode linux
-skips *all* the syscalls it does not matter if the upcall happens just after
-(SYSEMU) or just before (SYSVM) having skipped the syscall.
-
-Briefly I would like to unify SYSCALL, SYSEMU and SYSVM.
-We don't need three different tags (and all their "variations", 
-SINGLESTEP->SYSEMU_SINGLESTEP etc).
-
-We could keep PTRACE_SYSCALL, using the addr parameter as in PTRACE_SYSVM.
-In this case all the code I have seen (user-mode linux, strace, umview
-and googling around) use 0 or 1 for addr (being defined unused).
-defining PTRACE_VM_SKIPCALL=4 and PTRACE_VM_SKIPEXIT=2 (i.e. by ignoring
-the lsb) everything previously coded using PTRACE_SYSCALL should continue 
-to work.
-In the same way PTRACE_SINGLESTEP, PTRACE_CONT and PTRACE_BLOCKSTEP can use 
-the same tags restarting after a SYSCALL.
-
-This change would eventually simplify both the kernel code
-(reducing tags and exceptions) and even user-mode linux and umview.
-
-The skip-exit feature can be implemented in a arch-independent
-manner, while for skip_call some simple changes are needed
-(the entry assembly code should process the return value of the syscall
-tracing function call, like in arch/x86/kernel/Entry_32.S).
-
-Motivation summary:
-1) (eventually) Reduce the number of PTRACE tags. The proposed patch
-does not add any tag. On the contrary after a period of deprecation
-SYSEMU* tags can be eliminated.
-2) Backward compatible with existing software (existing UML kernels,
-strace already tested). Only software using strange "addr" values
-(the addr parameter is currently ignored) could have portability problems.
-3) (eventually) simplify kernel code. SYSEMU support is a bit messy and
-x86/32 only. These new PTRACE_VM tags for the addr parameter will allow to
-get rid of SYSEMU code.
-4) It is simple to be ported across the architecture.
-It is directly supported by the tracehook mechanism.
-5) It is more powerful than PTRACE_SYSEMU. It provides an optimized support for
-partial virtualization (some syscalls gets virtualized some other do
-not) while keeping support for total virtualization a' la UML.
-6) Software currently using PTRACE_SYSEMU can be easily ported to this
-new support. The porting for UML (client side) is already in the patch.
-All the calls like:
-ptrace(PTRACE_SYSEMU, pid, 0, 0)
-can be converted into
-ptrace(PTRACE_SYSCALL, pid, PTRACE_VM_SKIPCALL, 0)
-(but the first PTRACE_SYSCALL, the one which starts up the emulation.
-In practice it is possible to set PTRACE_VM_SKIPCALL for the first call,
-too. The "addr" tag is ignored being no syscalls pending).
-
-		renzo
