@@ -1,87 +1,63 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
-	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mark.s.waterbury@att.net>) id 1LvyDR-0006Rl-HC
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Apr 2009 18:27:37 +0000
-Received: from fmailhost04.isp.att.net ([204.127.217.104])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1LvyDI-0006GI-KW for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Apr 2009 18:27:37 +0000
-Message-ID: <49ECBE8C.3050305@att.net>
-Date: Mon, 20 Apr 2009 14:27:24 -0400
-From: "Mark S. Waterbury" <mark.s.waterbury@att.net>
-MIME-Version: 1.0
-Subject: [uml-devel] can UML run on AIX?
-Reply-To: mark.s.waterbury@att.net
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3754769578784313824=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <tabbott@mit.edu>
+From: Tim Abbott <tabbott@MIT.EDU>
+Subject: [PATCH v2 0/6] macros for section name cleanup
+Date: Thu, 30 Apr 2009 15:54:07 -0400
+Message-Id: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>, Anders Kaseorg <andersk@MIT.EDU>, Waseem Daher <wdaher@MIT.EDU>, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Arnold <jbarnold@MIT.EDU>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Bryan Wu <cooloney@kernel.org>, Chris Zankel <chris@zankel.net>, Cyrill Gorcunov <gorcunov@openvz.org>, David Howells <dhowells@redhat.com>, "David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hirokazu Takata <takata@linux-m32r.org>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Kyle McMartin <kyle@mcmartin.ca>, Linus Torvalds <torvalds@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michal Simek <monstr@monstr.eu>, microblaze-uclinux@itee.uq.edu.au, Mikael Starvik <starvik@axis.com>, Paul Mackerras <paulus@samba.org>, Paul Mundt <lethal@linux-sh.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, Roman Zippel <zippel@linux-m68k.org>, Russell King <rmk+kernel@arm.linux.org.uk>, sparclinux@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, uclinux-dist-devel@blackfin.uclinux.org, user-mode-linux-devel@lists.sourceforge.net, Yoshinori Sato <ysato@users.sourceforge.jp>, Tim Abbott <tabbott@MIT.EDU>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---===============3754769578784313824==
-Content-Type: multipart/alternative;
-	boundary="------------080501010804060308000901"
+(this patch series differs from v1 only in the CC list; some of the
+architecture lists I sent the previous one to are moderated against
+non-members; all replies should go to this version).
 
-This is a multi-part message in MIME format.
---------------080501010804060308000901
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Here are the architecture-independent macro definitions needed for
+to clean up the kernel's section names.  The overall diffstat from
+this section name cleanup project is:
 
-Does anyone know if anyone has successfully "ported" UML to run on top 
-of AIX?
+ 96 files changed, 261 insertions(+), 503 deletions(-)
 
---------------080501010804060308000901
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+The decrease results from removing a lot of redundancy in the linker
+scripts.
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-</head>
-<body bgcolor="#ffffff" text="#000000">
-<font face="Arial">Does anyone know if anyone has successfully "ported"
-UML to run on top of AIX? <br>
-</font>
-</body>
-</html>
+The long-term goal here is to add support for building the kernel with
+-ffunction-sections -fdata-sections.  This requires renaming all the
+magic section names in the kernel of the form .text.foo, .data.foo,
+.bss.foo, and .rodata.foo to not have collisions with sections
+generated for code like:
 
---------------080501010804060308000901--
+static int nosave = 0; /* -fdata-sections places in .data.nosave */
+static void head(); /* -ffunction-sections places in .text.head */
 
+Sam Ravnborg proposed that rather than just renaming all the sections
+outright, we should start by first getting more control over the
+section names used in the kernel so that we can later rename sections
+without touching too many files.  These patch series implement that
+cleanup.  Later, there will be another patch series to actually rename
+the sections.
 
---===============3754769578784313824==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I'm hoping we can get just these macro definitions into 2.6.30 so that
+the arch maintainers don't have to grab the macro definitions for
+their trees while reviewing the patches for 2.6.31.
 
-------------------------------------------------------------------------------
-Stay on top of everything new and different, both inside and 
-around Java (TM) technology - register by April 22, and save
-$200 on the JavaOne (SM) conference, June 2-5, 2009, San Francisco.
-300 plus technical and hands-on sessions. Register today. 
-Use priority code J9JMT32. http://p.sf.net/sfu/p
---===============3754769578784313824==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Shortly, I'm going to send one patch series for each of the
+architectures updating those architectures to use these new macros
+(and otherwise cleaning up section names on those architectures).
 
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+	-Tim Abbott
 
---===============3754769578784313824==--
+Tim Abbott (6):
+  Add new macros for page-aligned data and bss sections.
+  Add new NOSAVE_DATA linker script macro.
+  Add new CACHELINE_ALIGNED_DATA linker script macro.
+  Add new INIT_TASK_DATA() linker script macro.
+  Add new READ_MOSTLY_DATA(align) linker script macro.
+  Add support for __read_mostly to linux/cache.h
+
+ include/asm-generic/vmlinux.lds.h |   27 +++++++++++++++++++++++++++
+ include/linux/cache.h             |    6 ++++++
+ include/linux/init_task.h         |    3 +++
+ include/linux/linkage.h           |    9 +++++++++
+ 4 files changed, 45 insertions(+), 0 deletions(-)
 
 
