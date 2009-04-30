@@ -1,105 +1,62 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
-	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shlomopongratz@gmail.com>) id 1LzVsT-0003cZ-Na
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Apr 2009 13:00:37 +0000
-Received: from mail-bw0-f222.google.com ([209.85.218.222])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1LzVsI-0008U3-NI for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 Apr 2009 13:00:27 +0000
-Received: by bwz22 with SMTP id 22so1798343bwz.10
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 30 Apr 2009 06:00:24 -0700 (PDT)
-MIME-Version: 1.0
-From: Shlomo Pongratz <shlomopongratz@gmail.com>
-Date: Thu, 30 Apr 2009 16:00:04 +0300
-Message-ID: <88ea9a580904300600p35dae66ake68916536ed9b472@mail.gmail.com>
-Subject: [uml-devel] Use iomem for cluster interconnect
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2491788047779438331=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <tabbott@mit.edu>
+From: Tim Abbott <tabbott@MIT.EDU>
+Subject: [PATCH v2 4/6] Add new INIT_TASK_DATA() linker script macro.
+Date: Thu, 30 Apr 2009 15:54:11 -0400
+Message-Id: <1241121253-32341-5-git-send-email-tabbott@mit.edu>
+In-Reply-To: <1241121253-32341-4-git-send-email-tabbott@mit.edu>
+References: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
+ <1241121253-32341-2-git-send-email-tabbott@mit.edu>
+ <1241121253-32341-3-git-send-email-tabbott@mit.edu>
+ <1241121253-32341-4-git-send-email-tabbott@mit.edu>
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>, Anders Kaseorg <andersk@MIT.EDU>, Waseem Daher <wdaher@MIT.EDU>, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Arnold <jbarnold@MIT.EDU>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Bryan Wu <cooloney@kernel.org>, Chris Zankel <chris@zankel.net>, Cyrill Gorcunov <gorcunov@openvz.org>, David Howells <dhowells@redhat.com>, "David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hirokazu Takata <takata@linux-m32r.org>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Kyle McMartin <kyle@mcmartin.ca>, Linus Torvalds <torvalds@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michal Simek <monstr@monstr.eu>, microblaze-uclinux@itee.uq.edu.au, Mikael Starvik <starvik@axis.com>, Paul Mackerras <paulus@samba.org>, Paul Mundt <lethal@linux-sh.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, Roman Zippel <zippel@linux-m68k.org>, Russell King <rmk+kernel@arm.linux.org.uk>, sparclinux@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, uclinux-dist-devel@blackfin.uclinux.org, user-mode-linux-devel@lists.sourceforge.net, Yoshinori Sato <ysato@users.sourceforge.jp>, Tim Abbott <tabbott@MIT.EDU>, Sam Ravnborg <sam@ravnborg.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
---===============2491788047779438331==
-Content-Type: multipart/alternative; boundary=001636c5ac7a7e341f0468c5470d
+This patch is preparation for replacing most ".data.init_task" in the
+kernel with macros, so that the section name can later be changed
+without having to touch a lot of the kernel.
 
---001636c5ac7a7e341f0468c5470d
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+The long-term goal here is to be able to change the kernel's magic
+section names to those that are compatible with -ffunction-sections
+-fdata-sections.  This requires renaming all magic sections with names
+of the form ".data.foo".
 
-Hi All,
+Signed-off-by: Tim Abbott <tabbott@mit.edu>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+---
+ include/asm-generic/vmlinux.lds.h |    4 ++++
+ include/linux/init_task.h         |    3 +++
+ 2 files changed, 7 insertions(+), 0 deletions(-)
 
-In Jeff Dike's book User Mode Linux it is mentioned in page 247 that iomem
-driver "is mostly used for writing emulated drivers and cluster
-interconnect".
-Did anyone encountered an example of one of these usages? Except for the
-obvious demo driver mmapper_kern.c
-I'm trying to emulate two boards connected via PCIe (one is of course root
-complex and the other is an endpoint). Thus iomem seems the obvious
-solution.
-I'm also interested with simulating PCIe doorbell interrupt from one
-simulated board to the other.
-
-Best regards,
-
-S.P.
-
---001636c5ac7a7e341f0468c5470d
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">Hi All,<br><br>In Jeff Dike&#39;s book User Mode Linux it =
-is mentioned in
-page 247 that iomem driver &quot;is mostly used for writing emulated driver=
-s
-and cluster interconnect&quot;.<br>Did anyone encountered an example of one=
- of
-these usages? Except for the obvious demo driver mmapper_kern.c<br>
-I&#39;m trying to emulate two boards connected via PCIe (one is of course r=
-oot complex and the other is an endpoint). Thus iomem seems the obvious sol=
-ution.<br>I&#39;m also interested with simulating PCIe doorbell interrupt f=
-rom one simulated board to the other.<br>
-
-<br>Best regards,<br>
-
-=A0<br>S.P.</div>
-
---001636c5ac7a7e341f0468c5470d--
-
-
---===============2491788047779438331==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Register Now & Save for Velocity, the Web Performance & Operations 
-Conference from O'Reilly Media. Velocity features a full day of 
-expert-led, hands-on workshops and two days of sessions from industry 
-leaders in dedicated Performance & Operations tracks. Use code vel09scf 
-and Save an extra 15% before 5/3. http://p.sf.net/sfu/velocityconf
---===============2491788047779438331==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============2491788047779438331==--
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index fa7801b..4b020e8 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -135,6 +135,10 @@
+ 	. = ALIGN(alignment);						\
+ 	*(.data.cacheline_aligned)
+ 
++#define INIT_TASK_DATA(alignment)					\
++	. = ALIGN(alignment);						\
++	*(.data.init_task)
++
+ #define RO_DATA(align)							\
+ 	. = ALIGN((align));						\
+ 	.rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {		\
+diff --git a/include/linux/init_task.h b/include/linux/init_task.h
+index d87247d..e555baa 100644
+--- a/include/linux/init_task.h
++++ b/include/linux/init_task.h
+@@ -184,5 +184,8 @@ extern struct cred init_cred;
+ 	LIST_HEAD_INIT(cpu_timers[2]),					\
+ }
+ 
++/* Attach to the init_task data structure for proper alignment */
++#define __init_task_data __attribute__((__section__(".data.init_task")))
++
+ 
+ #endif
+-- 
+1.6.2.1
 
 
