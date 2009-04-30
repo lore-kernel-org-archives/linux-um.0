@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <inguin@gmx.de>) id 1LvCes-00010q-OD
+	(envelope-from <shlomopongratz@gmail.com>) id 1LzVsT-0003cZ-Na
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Apr 2009 15:40:46 +0000
-Received: from mail.gmx.net ([213.165.64.20])
-	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1LvCej-0004n2-6y for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Apr 2009 15:40:46 +0000
-Date: Sat, 18 Apr 2009 17:40:21 +0200
-From: Ingo van Lil <inguin@gmx.de>
-Message-ID: <20090418154021.GA14617@ivl.dyndns.org>
+	Thu, 30 Apr 2009 13:00:37 +0000
+Received: from mail-bw0-f222.google.com ([209.85.218.222])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1LzVsI-0008U3-NI for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Apr 2009 13:00:27 +0000
+Received: by bwz22 with SMTP id 22so1798343bwz.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 30 Apr 2009 06:00:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [Patch] Save FPU registers between task switches
+From: Shlomo Pongratz <shlomopongratz@gmail.com>
+Date: Thu, 30 Apr 2009 16:00:04 +0300
+Message-ID: <88ea9a580904300600p35dae66ake68916536ed9b472@mail.gmail.com>
+Subject: [uml-devel] Use iomem for cluster interconnect
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,204 +26,80 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2491788047779438331=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
 
-Hello there,
+--===============2491788047779438331==
+Content-Type: multipart/alternative; boundary=001636c5ac7a7e341f0468c5470d
 
-some time ago Jeff prepared a patch [1] for UML to stop saving the
-process FP state between task switches. The assumption was that since
-with SKAS0 every guest process runs inside a host process context the
-host OS will take care of keeping the proper FP state. Unfortunately
-this is not true for multi-threaded applications, where all guest
-threads share a single host process context yet all may use the FPU on
-their own. Although I haven't verified it I suspect things to be even
-worse in SKAS3 mode where all guest processes run inside a single host
-process.
+--001636c5ac7a7e341f0468c5470d
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-I have written a simple test program to demostrate the issue. It can be
-found in my mail at [2].
+Hi All,
 
-The patch below reintroduces the saving and restoring of the FP context
-between task switches. Stanislav, the patch might also fix the problems
-you experienced in SKAS3 mode. I'd be grateful if you could give it a
-try.
+In Jeff Dike's book User Mode Linux it is mentioned in page 247 that iomem
+driver "is mostly used for writing emulated drivers and cluster
+interconnect".
+Did anyone encountered an example of one of these usages? Except for the
+obvious demo driver mmapper_kern.c
+I'm trying to emulate two boards connected via PCIe (one is of course root
+complex and the other is an endpoint). Thus iomem seems the obvious
+solution.
+I'm also interested with simulating PCIe doorbell interrupt from one
+simulated board to the other.
 
-Of course the additional ptrace calls adds some overhead to context
-switches. It might be possible to optimize things by remembering the
-last running task for each mm_context and only save/restore the FP state
-if a different task is scheduled to run in a context.
+Best regards,
 
-Regards,
-Ingo
+S.P.
 
-[1]
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=42daba316557e597a90a730f61c762602b7f0e0c
+--001636c5ac7a7e341f0468c5470d
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-[2] http://marc.info/?l=user-mode-linux-devel&m=123912656515459&w=2
+<div dir=3D"ltr">Hi All,<br><br>In Jeff Dike&#39;s book User Mode Linux it =
+is mentioned in
+page 247 that iomem driver &quot;is mostly used for writing emulated driver=
+s
+and cluster interconnect&quot;.<br>Did anyone encountered an example of one=
+ of
+these usages? Except for the obvious demo driver mmapper_kern.c<br>
+I&#39;m trying to emulate two boards connected via PCIe (one is of course r=
+oot complex and the other is an endpoint). Thus iomem seems the obvious sol=
+ution.<br>I&#39;m also interested with simulating PCIe doorbell interrupt f=
+rom one simulated board to the other.<br>
+
+<br>Best regards,<br>
+
+=A0<br>S.P.</div>
+
+--001636c5ac7a7e341f0468c5470d--
 
 
-
-Signed-off-by: Ingo van Lil <inguin@gmx.de>
-Cc: Jeff Dike <jdike@addtoit.com>
-
---
-diff -ur a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
---- a/arch/um/include/shared/registers.h	2009-04-02 22:55:27.000000000 +0200
-+++ b/arch/um/include/shared/registers.h	2009-04-18 17:06:30.000000000 +0200
-@@ -16,7 +16,7 @@
- extern int save_registers(int pid, struct uml_pt_regs *regs);
- extern int restore_registers(int pid, struct uml_pt_regs *regs);
- extern int init_registers(int pid);
--extern void get_safe_registers(unsigned long *regs);
-+extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
- extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
- extern int get_fp_registers(int pid, unsigned long *regs);
- extern int put_fp_registers(int pid, unsigned long *regs);
-diff -ur a/arch/um/kernel/process.c b/arch/um/kernel/process.c
---- a/arch/um/kernel/process.c	2009-04-02 22:55:27.000000000 +0200
-+++ b/arch/um/kernel/process.c	2009-04-18 17:06:30.000000000 +0200
-@@ -200,7 +200,7 @@
- 		arch_copy_thread(&current->thread.arch, &p->thread.arch);
- 	}
- 	else {
--		get_safe_registers(p->thread.regs.regs.gp);
-+		get_safe_registers(p->thread.regs.regs.gp, p->thread.regs.regs.fp);
- 		p->thread.request.u.thread = current->thread.request.u.thread;
- 		handler = new_thread_handler;
- 	}
-diff -ur a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
---- a/arch/um/os-Linux/registers.c	2009-04-02 22:55:27.000000000 +0200
-+++ b/arch/um/os-Linux/registers.c	2009-04-18 17:06:30.000000000 +0200
-@@ -8,6 +8,8 @@
- #include <string.h>
- #include <sys/ptrace.h>
- #include "sysdep/ptrace.h"
-+#include "ptrace_user.h"
-+#include "registers.h"
- 
- int save_registers(int pid, struct uml_pt_regs *regs)
- {
-@@ -32,6 +34,7 @@
- /* This is set once at boot time and not changed thereafter */
- 
- static unsigned long exec_regs[MAX_REG_NR];
-+static unsigned long exec_fp_regs[FP_SIZE];
- 
- int init_registers(int pid)
- {
-@@ -42,10 +45,13 @@
- 		return -errno;
- 
- 	arch_init_registers(pid);
-+	get_fp_registers(pid, exec_fp_regs);
- 	return 0;
- }
- 
--void get_safe_registers(unsigned long *regs)
-+void get_safe_registers(unsigned long *regs, unsigned long *fp_regs)
- {
- 	memcpy(regs, exec_regs, sizeof(exec_regs));
-+	if (fp_regs != NULL)
-+		memcpy(fp_regs, exec_fp_regs, sizeof(exec_fp_regs));
- }
-diff -ur a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
---- a/arch/um/os-Linux/skas/mem.c	2009-04-02 22:55:27.000000000 +0200
-+++ b/arch/um/os-Linux/skas/mem.c	2009-04-18 17:06:30.000000000 +0200
-@@ -39,7 +39,7 @@
- 
- static int __init init_syscall_regs(void)
- {
--	get_safe_registers(syscall_regs);
-+	get_safe_registers(syscall_regs, NULL);
- 	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
- 		((unsigned long) &batch_syscall_stub -
- 		 (unsigned long) &__syscall_stub_start);
-diff -ur a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
---- a/arch/um/os-Linux/skas/process.c	2009-04-02 22:55:27.000000000 +0200
-+++ b/arch/um/os-Linux/skas/process.c	2009-04-18 17:06:30.000000000 +0200
-@@ -372,6 +372,8 @@
- 		 */
- 		if (ptrace(PTRACE_SETREGS, pid, 0, regs->gp))
- 			fatal_sigsegv();
-+		if (put_fp_registers(pid, regs->fp))
-+			fatal_sigsegv();
- 
- 		/* Now we set local_using_sysemu to be used for one loop */
- 		local_using_sysemu = get_using_sysemu();
-@@ -398,6 +400,11 @@
- 			       "errno = %d\n", errno);
- 			fatal_sigsegv();
- 		}
-+		if (get_fp_registers(pid, regs->fp)) {
-+			printk(UM_KERN_ERR "userspace - get_fp_registers failed, "
-+			       "errno = %d\n", errno);
-+			fatal_sigsegv();
-+		}
- 
- 		UPT_SYSCALL_NR(regs) = -1; /* Assume: It's not a syscall */
- 
-@@ -457,10 +464,11 @@
- }
- 
- static unsigned long thread_regs[MAX_REG_NR];
-+static unsigned long thread_fp_regs[FP_SIZE];
- 
- static int __init init_thread_regs(void)
- {
--	get_safe_registers(thread_regs);
-+	get_safe_registers(thread_regs, thread_fp_regs);
- 	/* Set parent's instruction pointer to start of clone-stub */
- 	thread_regs[REGS_IP_INDEX] = STUB_CODE +
- 				(unsigned long) stub_clone_handler -
-@@ -503,6 +511,13 @@
- 		return err;
- 	}
- 
-+	err = put_fp_registers(pid, thread_fp_regs);
-+	if (err < 0) {
-+		printk(UM_KERN_ERR "copy_context_skas0 : PTRACE_SETFPREGS "
-+		       "failed, pid = %d, errno = %d\n", pid, -err);
-+		return err;
-+	}
-+
- 	/* set a well known return code for detection of child write failure */
- 	child_data->err = 12345678;
- 
-diff -ur a/arch/um/sys-i386/shared/sysdep/ptrace.h b/arch/um/sys-i386/shared/sysdep/ptrace.h
---- a/arch/um/sys-i386/shared/sysdep/ptrace.h	2009-04-02 22:55:27.000000000 +0200
-+++ b/arch/um/sys-i386/shared/sysdep/ptrace.h	2009-04-18 17:06:30.000000000 +0200
-@@ -53,6 +53,7 @@
- 
- struct uml_pt_regs {
- 	unsigned long gp[MAX_REG_NR];
-+	unsigned long fp[HOST_FPX_SIZE];
- 	struct faultinfo faultinfo;
- 	long syscall;
- 	int is_user;
-diff -ur a/arch/um/sys-x86_64/shared/sysdep/ptrace.h b/arch/um/sys-x86_64/shared/sysdep/ptrace.h
---- a/arch/um/sys-x86_64/shared/sysdep/ptrace.h	2009-04-02 22:55:27.000000000 +0200
-+++ b/arch/um/sys-x86_64/shared/sysdep/ptrace.h	2009-04-18 17:06:30.000000000 +0200
-@@ -85,6 +85,7 @@
- 
- struct uml_pt_regs {
- 	unsigned long gp[MAX_REG_NR];
-+	unsigned long fp[HOST_FP_SIZE];
- 	struct faultinfo faultinfo;
- 	long syscall;
- 	int is_user;
+--===============2491788047779438331==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Stay on top of everything new and different, both inside and 
-around Java (TM) technology - register by April 22, and save
-$200 on the JavaOne (SM) conference, June 2-5, 2009, San Francisco.
-300 plus technical and hands-on sessions. Register today. 
-Use priority code J9JMT32. http://p.sf.net/sfu/p
+Register Now & Save for Velocity, the Web Performance & Operations 
+Conference from O'Reilly Media. Velocity features a full day of 
+expert-led, hands-on workshops and two days of sessions from industry 
+leaders in dedicated Performance & Operations tracks. Use code vel09scf 
+and Save an extra 15% before 5/3. http://p.sf.net/sfu/velocityconf
+--===============2491788047779438331==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============2491788047779438331==--
+
 
