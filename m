@@ -1,355 +1,56 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1757614AbZDDKR2@vger.kernel.org>
-Date: Sat, 4 Apr 2009 12:17:09 +0200
-From: Renzo Davoli <renzo@cs.unibo.it>
-Subject: Re: [PATCH 0/2] ptrace_vm: ptrace for syscall emulation virtual
-	machines
-Message-ID: <20090404101708.GG4203@cs.unibo.it>
-References: <20090204080236.GA17452@cs.unibo.it> <20090310214436.GC5213@cs.unibo.it> <20090316074520.GC3360@hack> <20090324234753.GH22695@cs.unibo.it> <20090329163228.GE7671@hack>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Return-Path: <sam@ravnborg.org>
+Date: Fri, 1 May 2009 11:21:14 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v2 2/6] Add new NOSAVE_DATA linker script macro.
+Message-ID: <20090501092114.GC18326@uranus.ravnborg.org>
+References: <1241121253-32341-1-git-send-email-tabbott@mit.edu> <1241121253-32341-2-git-send-email-tabbott@mit.edu> <1241121253-32341-3-git-send-email-tabbott@mit.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20090329163228.GE7671@hack>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?iso-8859-1?Q?Am=E9rico?= Wang <xiyou.wangcong@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, mtk.manpages@gmail.com, Roland McGrath <roland@redhat.com>
+In-Reply-To: <1241121253-32341-3-git-send-email-tabbott@mit.edu>
+To: Tim Abbott <tabbott@MIT.EDU>
+Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>, Anders Kaseorg <andersk@MIT.EDU>, Waseem Daher <wdaher@MIT.EDU>, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Arnold <jbarnold@MIT.EDU>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Bryan Wu <cooloney@kernel.org>, Chris Zankel <chris@zankel.net>, Cyrill Gorcunov <gorcunov@openvz.org>, David Howells <dhowells@redhat.com>, "David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hirokazu Takata <takata@linux-m32r.org>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Kyle McMartin <kyle@mcmartin.ca>, Linus Torvalds <torvalds@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michal Simek <monstr@monstr.eu>, microblaze-uclinux@itee.uq.edu.au, Mikael Starvik <starvik@axis.com>, Paul Mackerras <paulus@samba.org>, Paul Mundt <lethal@linux-sh.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, Roman Zippel <zippel@linux-m68k.org>, Russell King <rmk+kernel@arm.linux.org.uk>, sparclinux@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, uclinux-dist-devel@blackfin.uclinux.org, user-mode-linux-devel@lists.sourceforge.net, Yoshinori Sato <ysato@users.sourceforge.jp>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Dear Cong,
+On Thu, Apr 30, 2009 at 03:54:09PM -0400, Tim Abbott wrote:
+> This patch is preparation for replacing most ".data.nosave" in the
+> kernel with macros, so that the section name can later be changed
+> without having to touch a lot of the kernel.
+> 
+> The long-term goal here is to be able to change the kernel's magic
+> section names to those that are compatible with -ffunction-sections
+> -fdata-sections.  This requires renaming all magic sections with names
+> of the form ".data.foo".
+> 
+> Signed-off-by: Tim Abbott <tabbott@mit.edu>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> ---
+>  include/asm-generic/vmlinux.lds.h |    7 +++++++
+>  1 files changed, 7 insertions(+), 0 deletions(-)
+> 
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index 3d88c87..f5ebd2b 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -124,6 +124,13 @@
+>  	. = ALIGN(PAGE_SIZE);						\
+>  	*(.bss.page_aligned)
+>  
+> +#define NOSAVE_DATA							\
+> +	. = ALIGN(PAGE_SIZE);						\
+> +	__nosave_begin = .;						\
+> +	*(.data.nosave)							\
+> +	. = ALIGN(PAGE_SIZE);						\
+> +	__nosave_end = .;
+> +
 
-On Mon, Mar 30, 2009 at 12:32:28AM +0800, Am=EF=BF=BDrico Wang wrote:
-> On Wed, Mar 25, 2009 at 12:47:53AM +0100, Renzo Davoli wrote:
-> >1- the code is now extremely simple=20
-> Why adding a new request for ptrace is harder? I don't think so. :)
-> >2- if we define a different tag for syscall (e.g. PTRACE_VM), we need al=
-so
-> >different tags for PTRACE_VM_SINGLESTEP, PTRACE_VM_SINGLEBLOCK and maybe
-> >others in the future.
-> >Using the addr field we don't need this multiplication of tags
-> >(and we could soon delete PTRACE_SYSEMU and PTRACE_SYSEMU_SINGLESTEP).
-> Yes? We could also remove PTRACE_SYSEMU* if we had PTRACE_VM to replace
-> it. I would like to hear more from you on this point.
+You need to use:
+	VMLINUX_SYMBOL(__nosave_begin) = .;
 
-I am sorry for the delay of this reply.
-I am having a quite busy time and I like to analyze problems before
-giving answers.
+Otherwise architectures such as m68k wil break as they
+add a leading underscore.
 
-Let me point out that the primary issue is the following one:
-PTRACE_SYSEMU is a limited feature. It is twofold limited:
-- it is supported only for x86
-- it provides support for "total" virtual machines like User-Mode Linux
-and it is useless for "partial" virtual machine like fakeroot-ng, umview
-or others.
-I have published a proposal for a new support that is able to overpass
-these limits. PTRACE_SYSEMU/SYSEMU_SINGLESTEP could be deprecated.
-There will be some cleaning up of the kernel code when the deprecated
-tags are eliminated.
+See other symbols that is defined inside vmlinux.lds.h
 
-Whether it is nicer to use the existing tags or defining new tags is a
-secondary issue. I support the hypothesis of reusing the existing tags and =
-use
-values in the addr field but if the community says that it is nicer/better =
-to
-have separate tags it is quite easy to update my patches (and umview).
+	Sam
 
-Let us discuss this latter point.
-
-PTRACE has a number of "resume" tags:
-PTRACE_SYSCALL, PTRACE_SINGLESTEP, PTRACE_SINGLEBLOCK and currently
-PTRACE_SYSEMU and PTRACE_SYSEMU_SINGLESTEP.
-all these call are managed in the code by the ptrace_resume function.
-
-My patch #1 (kernel/ptrace.c function ptrace_request) forwards the addr=20
-parameter to ptrace_resume which saves the VM bits in some bits inside=20
-task_struct's ptrace field.
-
-If we want to use different tags like:
-PTRACE_VM PTRACE_VM_SINGLESTEP PTRACE_VM_SINGLEBLOCK:
-the better implementation I can envision, adds another group of switch cases
-as follows (kernel/ptrace.c function ptrace_request):
- ....
- #ifdef PTRACE_SINGLESTEP
-   case PTRACE_SINGLESTEP:
- #endif
- #ifdef PTRACE_SINGLEBLOCK
-   case PTRACE_SINGLEBLOCK:
- #endif
- #ifdef PTRACE_SYSEMU
-   case PTRACE_SYSEMU:
-   case PTRACE_SYSEMU_SINGLESTEP:
- #endif
-   case PTRACE_SYSCALL:
-   case PTRACE_CONT:
-     return ptrace_resume(child, request, 0, data);
-+/* statements added for PTRACE_VM management */
-+#ifdef PTRACE_VM
-+  case PTRACE_VM:
-+#ifdef PTRACE_VM_SINGLESTEP
-+  case PTRACE_VM_SINGLESTEP:
-+#endif
-+#ifdef PTRACE_VM_SINGLEBLOCK
-+  case PTRACE_VM_SINGLEBLOCK:
-+#endif
-+    return ptrace_resume(child, PTRACE_VM_TAGS_MAPPING(request), addr, dat=
-a);
-+#endif
-....
- =20
-where PTRACE_VM_TAGS_MAPPING is a macro that maps each VM tag to the
-corresponding one (PTRACE_VM->PTRACE_SYSCALL,=20
-PTRACE_VM_SINGLESTEP->PTRACE_SINGLESTEP, and so on).
-
-Other implementations inside ptrace_resume would end up in a nightmare of
-definitions like is_vm, is_vm_singlestep ... similar to is_singlestep,
-is_sysemu_singlestep and a lot of cases and subcases in ptrace_resume: more
-lines of code and more cases during the execution.
-
-This is my position:
-There are three points in favour of reusing the existing tags and=20
-one against.
-
-In favour #1: Do we really want to add some tags to the jungle of PTRACE ta=
-gs?
-at the end of this message I have attached a list of the tags defined in
-2.6.29.  I know that the set of integers although limited is quite large, b=
-ut
-the idea to have a slalom between already defined constant is not nice.  (N=
-ote
-that some globally defined tags like PTRACE_ATTACH have been redefined in s=
-ome
-architectures. PTRACE_SYSEMU value itself has been redefined in frv, blackf=
-in,
-sh). Of course, each architecture uses its own constants but this is not an=
-=20
-example of good design.
-
-We could use a high order bit to map VM calls to make things simpler.
-e.g.
-#define PTRACE_VM_BIT 0x80000000
-#define PTRACE_VM (PTRACE_VM_BIT | PTRACE_SYSCALL)
-#define PTRACE_VM_SINGLESTEP (PTRACE_VM_BIT | PTRACE_SINGLESTEP)
-...
-in this way:
-#define PTRACE_VM_TAGS_MAPPING(REQ) ((REQ) & ~PTRACE_VM_BIT)
-
-In favour#2: Using specific PTRACE_VM* tags the definitions above should be
-added in the specific ptrace.h files for each architecture supporting PTRAC=
-E_VM
-(those supporting tracehook), skipping the others, thus adding a number of
-lines.  When a new "resume" tag is added, all these ptrace.h files will need
-to be patched. =20
-If we use the addr field, it is simply ignored for architectures where
-the new feature is not supported, there is no need of architecure dependent
-definitions and new tags are managed automagically.
-Summing up "in favour" #1 and #2 the saving in terms of lines of code is
-higher with the current patch than by using specific tags.
-
-In favour#3: The more cases in a switch the more code is generated.
-Using specific PTRACE_VM* tags there are some more instruction to be execut=
-ed
-twice for each system call.  The loss of performance is very low, but not n=
-ull.
-When dealing with virtual machines speed is a must, and when possible, the
-single useless machine instruction should be avoided.
-
-Against #1: Using the patch I proposed which encodes PTRACE_VM tags in the
-addr field, there is a remote possibility to break some existing code.
-gdb, fakeroot_ng, UML uses addr =3D 0. strace for some unknown reasons
-uses addr =3D (char *) 1.=20
-The addr tags in my patches do not use the less significant bit.
-The tools I tested on a kernel with my patch installed worked like a charm.
-
-I'd summarize this discussion as follows. I have a strong position about
-the need of a more powerful/portable support for virtual machines based
-in system call emulation (and partial emulation).
-I have a weak preference about the interface, it is my opinion that the one=
-=20
-I proposed is better for some reasons:
-- less lines of code/more lines of code will be saved when SYSEMU is elimin=
-ated
-- a bit faster
-- no need for arch dependent definitions.
-
-I have in my todo file to update the ptrace(2) man page for this new featur=
-e.
-I'll do it as soon as we decide for the best interface.
-
-Thank you to have read my posting up to here ;-)
-
-	renzo
-
------
-Summary of ptrace tags.=20
-Entries without leading path are globally defined in include/linux/ptrace.h.
-
-#define PTRACE_TRACEME		   0
-#define PTRACE_PEEKTEXT		   1
-#define PTRACE_PEEKDATA		   2
-#define PTRACE_PEEKUSR		   3
-#define PTRACE_POKETEXT		   4
-#define PTRACE_POKEDATA		   5
-#define PTRACE_POKEUSR		   6
-#define PTRACE_CONT		   7
-#define PTRACE_KILL		   8
-#define PTRACE_SINGLESTEP	   9
-arch/sparc/include/asm/ptrace.h:#define PTRACE_SPARC_DETACH       11
-include/asm-frv/ptrace.h:#define PTRACE_GETREGS		12
-include/asm-m32r/ptrace.h:#define PTRACE_GETREGS		12
-include/asm-mn10300/ptrace.h:#define PTRACE_GETREGS            12
-arch/arm/include/asm/ptrace.h:#define PTRACE_GETREGS		12
-arch/avr32/include/asm/ptrace.h:#define PTRACE_GETREGS		12
-arch/blackfin/include/asm/ptrace.h:#define PTRACE_GETREGS            12
-arch/cris/include/asm/ptrace.h:#define PTRACE_GETREGS            12
-arch/h8300/include/asm/ptrace.h:#define PTRACE_GETREGS            12
-arch/ia64/include/asm/ptrace.h:#define PTRACE_SINGLEBLOCK	12	/* resume exec=
-ution until next branch */
-arch/m68k/include/asm/ptrace.h:#define PTRACE_GETREGS            12
-arch/mips/include/asm/ptrace.h:#define PTRACE_GETREGS		12
-arch/parisc/include/asm/ptrace.h:#define PTRACE_SINGLEBLOCK	12	/* resume ex=
-ecution until next branch */
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_GETREGS            12
-arch/sparc/include/asm/ptrace.h:#define PTRACE_GETREGS            12
-arch/sh/include/asm/ptrace.h:#define PTRACE_GETREGS		12	/* General register=
-s */
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_GETREGS            12
-arch/xtensa/include/asm/ptrace.h:#define PTRACE_GETREGS		12
-include/asm-frv/ptrace.h:#define PTRACE_SETREGS		13
-include/asm-m32r/ptrace.h:#define PTRACE_SETREGS		13
-include/asm-mn10300/ptrace.h:#define PTRACE_SETREGS            13
-arch/arm/include/asm/ptrace.h:#define PTRACE_SETREGS		13
-arch/avr32/include/asm/ptrace.h:#define PTRACE_SETREGS		13
-arch/blackfin/include/asm/ptrace.h:#define PTRACE_SETREGS            13	/* =
-ptrace signal  */
-arch/cris/include/asm/ptrace.h:#define PTRACE_SETREGS            13
-arch/h8300/include/asm/ptrace.h:#define PTRACE_SETREGS            13
-arch/ia64/include/asm/ptrace.h:#define PTRACE_OLD_GETSIGINFO	13	/* (replace=
-d by PTRACE_GETSIGINFO in <linux/ptrace.h>)  */
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_SETREGS            13
-arch/m68k/include/asm/ptrace.h:#define PTRACE_SETREGS            13
-arch/mips/include/asm/ptrace.h:#define PTRACE_SETREGS		13
-arch/sparc/include/asm/ptrace.h:#define PTRACE_SETREGS            13
-arch/sh/include/asm/ptrace.h:#define PTRACE_SETREGS		13
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_SETREGS            13
-arch/xtensa/include/asm/ptrace.h:#define PTRACE_SETREGS		13
-include/asm-frv/ptrace.h:#define PTRACE_GETFPREGS	14
-include/asm-mn10300/ptrace.h:#define PTRACE_GETFPREGS          14
-arch/arm/include/asm/ptrace.h:#define PTRACE_GETFPREGS	14
-arch/ia64/include/asm/ptrace.h:#define PTRACE_OLD_SETSIGINFO	14	/* (replace=
-d by PTRACE_SETSIGINFO in <linux/ptrace.h>)  */
-arch/m68k/include/asm/ptrace.h:#define PTRACE_GETFPREGS          14
-arch/mips/include/asm/ptrace.h:#define PTRACE_GETFPREGS		14
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_GETFPREGS          14
-arch/sparc/include/asm/ptrace.h:#define PTRACE_GETFPREGS          14
-arch/sh/include/asm/ptrace.h:#define PTRACE_GETFPREGS	14	/* FPU registers */
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_GETFPREGS          14
-include/asm-frv/ptrace.h:#define PTRACE_SETFPREGS	15
-include/asm-mn10300/ptrace.h:#define PTRACE_SETFPREGS          15
-arch/arm/include/asm/ptrace.h:#define PTRACE_SETFPREGS	15
-arch/m68k/include/asm/ptrace.h:#define PTRACE_SETFPREGS          15
-arch/mips/include/asm/ptrace.h:#define PTRACE_SETFPREGS		15
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_SETFPREGS          15
-arch/sparc/include/asm/ptrace.h:#define PTRACE_SETFPREGS          15
-arch/sh/include/asm/ptrace.h:#define PTRACE_SETFPREGS	15
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_SETFPREGS          15
-#define PTRACE_ATTACH		  16
-arch/sparc/include/asm/ptrace.h:#define PTRACE_READDATA           16
-#define PTRACE_DETACH		  17
-arch/sparc/include/asm/ptrace.h:#define PTRACE_WRITEDATA          17
-arch/arm/include/asm/ptrace.h:#define PTRACE_GETWMMXREGS	18
-arch/ia64/include/asm/ptrace.h:#define PTRACE_GETREGS		18	/* get all regist=
-ers (pt_all_user_regs) in one shot */
-arch/mips/include/asm/ptrace.h:/* #define PTRACE_GETFPXREGS		18 */
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_GETVRREGS	18
-arch/sparc/include/asm/ptrace.h:#define PTRACE_READTEXT           18
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_GETFPXREGS         18
-arch/xtensa/include/asm/ptrace.h:#define PTRACE_GETXTREGS	18
-arch/arm/include/asm/ptrace.h:#define PTRACE_SETWMMXREGS	19
-arch/ia64/include/asm/ptrace.h:#define PTRACE_SETREGS		19	/* set all regist=
-ers (pt_all_user_regs) in one shot */
-arch/mips/include/asm/ptrace.h:/* #define PTRACE_SETFPXREGS		19 */
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_SETVRREGS	19
-arch/sparc/include/asm/ptrace.h:#define PTRACE_WRITETEXT          19
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_SETFPXREGS         19
-arch/xtensa/include/asm/ptrace.h:#define PTRACE_SETXTREGS	19
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_GETEVRREGS	20
-arch/sparc/include/asm/ptrace.h:#define PTRACE_GETFPAREGS         20
-include/asm-m32r/ptrace.h:#define PTRACE_OLDSETOPTIONS	21
-arch/arm/include/asm/ptrace.h:#define PTRACE_OLDSETOPTIONS	21
-arch/ia64/include/asm/ptrace.h:#define PTRACE_OLDSETOPTIONS	21
-arch/mips/include/asm/ptrace.h:#define PTRACE_OLDSETOPTIONS	21
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_SETEVRREGS	21
-arch/s390/include/asm/ptrace.h:#define PTRACE_OLDSETOPTIONS         21
-arch/s390/include/asm/ptrace.h:#define PTRACE_PROT                       21
-arch/sparc/include/asm/ptrace.h:#define PTRACE_SETFPAREGS         21
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_OLDSETOPTIONS      21
-arch/arm/include/asm/ptrace.h:#define PTRACE_GET_THREAD_AREA	22
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_GETREGS64	  22
-arch/sparc/include/asm/ptrace.h:#define PTRACE_GETREGS64	  22
-arch/arm/include/asm/ptrace.h:#define PTRACE_SET_SYSCALL	23
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_SETREGS64	  23
-arch/sparc/include/asm/ptrace.h:#define PTRACE_SETREGS64	  23
-#define PTRACE_SYSCALL		  24
-arch/arm/include/asm/ptrace.h:#define PTRACE_GETCRUNCHREGS	25
-arch/mips/include/asm/ptrace.h:#define PTRACE_GET_THREAD_AREA	25
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_GET_DEBUGREG	25
-arch/sparc/include/asm/ptrace.h:#define PTRACE_GETFPREGS64	  25
-arch/arm/include/asm/ptrace.h:#define PTRACE_SETCRUNCHREGS	26
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_GET_THREAD_AREA    25
-arch/mips/include/asm/ptrace.h:#define PTRACE_SET_THREAD_AREA	26
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_SET_DEBUGREG	26
-arch/sparc/include/asm/ptrace.h:#define PTRACE_SETFPREGS64	  26
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_SET_THREAD_AREA    26
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_GETVSRREGS	27
-arch/powerpc/include/asm/ptrace.h:#define PTRACE_SETVSRREGS	28
-arch/x86/include/asm/ptrace-abi.h:# define PTRACE_ARCH_PRCTL	  30
-arch/um/include/shared/ptrace_user.h:#define PTRACE_SYSEMU 31
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_SYSEMU		  31
-include/asm-frv/ptrace.h:#define PTRACE_GETFDPIC		31	/* get the ELF fdpic l=
-oadmap address */
-arch/blackfin/include/asm/ptrace.h:#define PTRACE_GETFDPIC           31
-arch/sh/include/asm/ptrace.h:#define PTRACE_GETFDPIC		31	/* get the ELF fdp=
-ic loadmap address */
-arch/um/include/shared/ptrace_user.h:#define PTRACE_SYSEMU_SINGLESTEP 32
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_SYSEMU_SINGLESTEP  32
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_SINGLEBLOCK	33	/* resume e=
-xecution until next branch */
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_BTS_CONFIG	40
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_BTS_STATUS	41
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_BTS_SIZE		42
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_BTS_GET		43
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_BTS_CLEAR	44
-arch/x86/include/asm/ptrace-abi.h:#define PTRACE_BTS_DRAIN	45
-arch/sh/include/asm/ptrace.h:#define	PTRACE_GETDSPREGS	55	/* DSP registers =
-*/
-arch/sh/include/asm/ptrace.h:#define	PTRACE_SETDSPREGS	56
-arch/mips/include/asm/ptrace.h:#define PTRACE_PEEKTEXT_3264	0xc0
-arch/mips/include/asm/ptrace.h:#define PTRACE_PEEKDATA_3264	0xc1
-arch/mips/include/asm/ptrace.h:#define PTRACE_POKETEXT_3264	0xc2
-arch/mips/include/asm/ptrace.h:#define PTRACE_POKEDATA_3264	0xc3
-arch/mips/include/asm/ptrace.h:#define PTRACE_GET_THREAD_AREA_3264	0xc4
-arch/mips/include/asm/ptrace.h:#define PTRACE_GET_WATCH_REGS	0xd0
-arch/mips/include/asm/ptrace.h:#define PTRACE_SET_WATCH_REGS	0xd1
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_POKEUSR_3264  0x90
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_PEEKUSR_3264  0x91
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_POKEDATA_3264 0x92
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_POKETEXT_3264 0x93
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_PEEKDATA_3264 0x94
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_PEEKTEXT_3264 0x95
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_SETFPREGS	0x96	/* Set =
-FPRs 0 - 31 */
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_GETFPREGS	0x97	/* Get =
-FPRs 0 - 31 */
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_SETREGS	0x98	/* Set GP=
-Rs 0 - 31 */
-arch/powerpc/include/asm/ptrace.h:#define PPC_PTRACE_GETREGS	0x99	/* Get GP=
-Rs 0 - 31 */
-#define PTRACE_SETOPTIONS	0x4200
-#define PTRACE_GETEVENTMSG	0x4201
-#define PTRACE_GETSIGINFO	0x4202
-#define PTRACE_SETSIGINFO	0x4203
-arch/s390/include/asm/ptrace.h:#define PTRACE_PEEKUSR_AREA           0x5000
-arch/s390/include/asm/ptrace.h:#define PTRACE_POKEUSR_AREA           0x5001
-arch/s390/include/asm/ptrace.h:#define PTRACE_PEEKTEXT_AREA	      0x5002
-arch/s390/include/asm/ptrace.h:#define PTRACE_PEEKDATA_AREA	      0x5003
-arch/s390/include/asm/ptrace.h:#define PTRACE_POKETEXT_AREA	      0x5004
-arch/s390/include/asm/ptrace.h:#define PTRACE_POKEDATA_AREA 	      0x5005
