@@ -1,49 +1,55 @@
-Return-Path: <sam@ravnborg.org>
-Date: Fri, 1 May 2009 11:44:07 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH 6/6] Add support for __read_mostly to linux/cache.h
-Message-ID: <20090501094407.GD18326@uranus.ravnborg.org>
-References: <1241119956-31453-1-git-send-email-tabbott@mit.edu> <1241119956-31453-2-git-send-email-tabbott@mit.edu> <1241119956-31453-3-git-send-email-tabbott@mit.edu> <1241119956-31453-4-git-send-email-tabbott@mit.edu> <1241119956-31453-5-git-send-email-tabbott@mit.edu> <1241119956-31453-6-git-send-email-tabbott@mit.edu> <1241119956-31453-7-git-send-email-tabbott@mit.edu>
-Mime-Version: 1.0
+Return-Path: <whitebox@nefkom.net>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH v2 1/6] Add new macros for page-aligned data and bss sections.
+References: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
+	<1241121253-32341-2-git-send-email-tabbott@mit.edu>
+	<20090501091848.GB18326@uranus.ravnborg.org>
+	<alpine.DEB.1.10.0905010951100.3955@vinegar-pot.mit.edu>
+	<49FB2449.1010301@zytor.com>
+	<20090501171717.GA26401@uranus.ravnborg.org>
+	<49FB2EDC.9050300@zytor.com>
+	<20090501174457.GA26559@uranus.ravnborg.org>
+	<49FB35C4.6060107@zytor.com>
+Date: Sat, 02 May 2009 01:02:12 +0200
+In-Reply-To: <49FB35C4.6060107@zytor.com> (H. Peter Anvin's message of "Fri,
+	01 May 2009 10:47:48 -0700")
+Message-ID: <m2tz44o2a3.fsf@igel.home>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1241119956-31453-7-git-send-email-tabbott@mit.edu>
-To: Tim Abbott <tabbott@MIT.EDU>, Christoph Lameter <cl@linux-foundation.org>
-Cc: Anders Kaseorg <andersk@MIT.EDU>, Waseem Daher <wdaher@MIT.EDU>, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Arnold <jbarnold@MIT.EDU>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Bryan Wu <cooloney@kernel.org>, Chris Zankel <chris@zankel.net>, Cyrill Gorcunov <gorcunov@openvz.org>, David Howells <dhowells@redhat.com>, "David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hirokazu Takata <takata@linux-m32r.org>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Kyle McMartin <kyle@mcmartin.ca>, Linus Torvalds <torvalds@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-arm-kernel@lists.arm.linux.org.uk, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michal Simek <monstr@monstr.eu>, microblaze-uclinux@itee.uq.edu.au, Mikael Starvik <starvik@axis.com>, Paul Mackerras <paulus@samba.org>, Paul Mundt <lethal@linux-sh.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, Roman Zippel <zippel@linux-m68k.org>, Russell King <rmk+kernel@arm.linux.org.uk>, sparclinux@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, uclinux-dist-devel@blackfin.uclinux.org, user-mode-linux-devel@lists.sourceforge.net, Yoshinori Sato <ysato@users.sourceforge.jp>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Denys Vlasenko <vda.linux@googlemail.com>, Tim Abbott <tabbott@MIT.EDU>, Heiko Carstens <heiko.carstens@de.ibm.com>, linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>, Greg Ungerer <gerg@uclinux.org>, sparclinux@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, linux-s390@vger.kernel.org, Jesper Nilsson <jesper.nilsson@axis.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Russell King <rmk+kernel@arm.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, microblaze-uclinux@itee.uq.edu.au, Jeff Dike <jdike@addtoit.com>, Jeff Arnold <jbarnold@MIT.EDU>, dev-etrax@axis.com, Mikael Starvik <starvik@axis.com>, Cyrill Gorcunov <gorcunov@openvz.org>, Michal Simek <monstr@monstr.eu>, Waseem Daher <wdaher@MIT.EDU>, Richard Henderson <rth@twiddle.net>, Chris Zankel <chris@zankel.net>, Bryan Wu <cooloney@kernel.org>, Tony Luck <tony.luck@intel.com>, linux-parisc@vger.kernel.org, Haavard Skinnemoen <hskinnemoen@atmel.com>, Hirokazu Takata <takata@linux-m32r.org>, Linux kernel mailing list <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Anders Kaseorg <andersk@MIT.EDU>, Kyle McMartin <kyle@mcmartin.ca>, Paul Mundt <lethal@linux-sh.org>, linux-alpha@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, uclinux-dist-devel@blackfin.uclinux.org, Linus Torvalds <torvalds@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Apr 30, 2009 at 03:32:36PM -0400, Tim Abbott wrote:
-> Signed-off-by: Tim Abbott <tabbott@mit.edu>
-> ---
->  include/linux/cache.h |    6 ++++++
->  1 files changed, 6 insertions(+), 0 deletions(-)
-> 
-> diff --git a/include/linux/cache.h b/include/linux/cache.h
-> index 97e2488..99d8a6f 100644
-> --- a/include/linux/cache.h
-> +++ b/include/linux/cache.h
-> @@ -13,7 +13,13 @@
->  #endif
->  
->  #ifndef __read_mostly
-> +#ifdef CONFIG_HAVE_READ_MOSTLY_DATA
-> +#define __read_mostly __attribute__((__section__(".data.read_mostly")))
-> +#define __READ_MOSTLY .section ".data.read_mostly", "aw"
-> +#else
->  #define __read_mostly
-> +#define __READ_MOSTLY
-> +#endif /* CONFIG_HAVE_READ_MOSTLY_DATA */
->  #endif
+"H. Peter Anvin" <hpa@zytor.com> writes:
 
-Are there any specific reason why we do not support read_mostly on all
-architectures?
+> Sam Ravnborg wrote:
+>>>
+>>> What's wrong with @?
+>> arm does not support it :-(
+>> I recall it denote a comment in arm assembler.
+>> 
+>> I could do some magic to detect the ARM case but I'm reluctant to do so.
+>> I could also ignore the arm issue for now as it is not used by arm,
+>> but that strikes me as the wrong approach.
+>> 
+>
+> If we really have to use different tokens, I would say:
+>
+> #ifdef __ARM__
+> # define _PROGBITS %progbits	/* or whatever */
+> # define _NOBITS   %nobits
+> #else
+> # define _PROGBITS @progbits
+> # define _NOBITS   @nobits
+> #endif
 
-read_mostly is about grouping rarely written data together
-so what is needed is to introduce this section in the remaining
-archtectures.
+GAS has always supported both '@' and '%', so '%' can be used
+everywhere.
 
-Christoph - git log says you did the inital implmentation.
-Do you agree?
+Andreas.
 
-	Sam
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
 
