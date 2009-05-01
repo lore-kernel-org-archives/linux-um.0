@@ -1,8 +1,8 @@
 Return-Path: <sam@ravnborg.org>
-Date: Fri, 1 May 2009 16:21:10 +0200
+Date: Fri, 1 May 2009 11:04:56 +0200
 From: Sam Ravnborg <sam@ravnborg.org>
 Subject: Re: [PATCH v2 0/6] macros for section name cleanup
-Message-ID: <20090501142110.GA25236@uranus.ravnborg.org>
+Message-ID: <20090501090455.GA18326@uranus.ravnborg.org>
 References: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -49,21 +49,17 @@ On Thu, Apr 30, 2009 at 03:54:07PM -0400, Tim Abbott wrote:
 > Shortly, I'm going to send one patch series for each of the
 > architectures updating those architectures to use these new macros
 > (and otherwise cleaning up section names on those architectures).
-> 
-> 	-Tim Abbott
-> 
-> Tim Abbott (6):
->   Add new macros for page-aligned data and bss sections.
->   Add new NOSAVE_DATA linker script macro.
->   Add new CACHELINE_ALIGNED_DATA linker script macro.
->   Add new INIT_TASK_DATA() linker script macro.
->   Add new READ_MOSTLY_DATA(align) linker script macro.
 
-I am about to apply this part of your patches.
-I am doing some additional modifications and
-will most likely apply them as one patch.
+Hi Tim.
 
-Will post to linux-arch for review when it is ready.
+We agreed to get the common stuff and one architecture done before
+proceeding with the rest.
+Please stick to that plan so we avoid patch-bombing lkml + maintainers.
+
+When we have this ready it will be a simple one-patch-per-arch to cover
+the rest.
+
+I will comment on your common patches for now.
 
 	Sam
 
