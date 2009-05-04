@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <roel.kluin@gmail.com>) id 1M4078-0001sj-Mo
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <greg@kroah.com>) id 1M14kV-0001Oi-1h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 May 2009 22:06:18 +0000
-Received: from mail-ew0-f169.google.com ([209.85.219.169])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M4074-0001ti-AD for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 May 2009 22:06:18 +0000
-Received: by ewy17 with SMTP id 17so369733ewy.10
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 12 May 2009 15:06:12 -0700 (PDT)
-Message-ID: <4A09F2D3.9030006@gmail.com>
-Date: Wed, 13 May 2009 00:06:11 +0200
-From: Roel Kluin <roel.kluin@gmail.com>
+	Mon, 04 May 2009 20:26:51 +0000
+Received: from kroah.org ([198.145.64.141] helo=coco.kroah.org)
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M14kP-0000ci-Nc
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 May 2009 20:26:50 +0000
+Date: Mon, 4 May 2009 13:20:21 -0700
+From: Greg Kroah-Hartman <gregkh@suse.de>
+Message-ID: <20090504202021.GA23223@kroah.com>
 MIME-Version: 1.0
-Subject: [uml-devel] [PATCH] uml: bad macro expansion, parameter is member
+Content-Disposition: inline
+Subject: [uml-devel] [PATCH] uml: remove driver_data direct access of struct
+	device
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,75 +30,71 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Greg KH <greg@kroah.com>, user-mode-linux-devel@lists.sourceforge.net
 
-`ELF_CORE_COPY_REGS(x, y)' will make expansions like:
-`(y)[0] = (x)->x.gp[0]' but correct is `(y)[0] = (x)->regs.gp[0]'
+From: Greg Kroah-Hartman <gregkh@suse.de>
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+In the near future, the driver core is going to not allow direct access
+to the driver_data pointer in struct device.  Instead, the functions
+dev_get_drvdata() and dev_set_drvdata() should be used.  These functions
+have been around since the beginning, so are backwards compatible with
+all older kernel versions.
+
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 ---
-diff --git a/arch/um/sys-x86_64/asm/elf.h b/arch/um/sys-x86_64/asm/elf.h
-index 6e8a919..04b9e87 100644
---- a/arch/um/sys-x86_64/asm/elf.h
-+++ b/arch/um/sys-x86_64/asm/elf.h
-@@ -66,28 +66,28 @@ typedef struct user_i387_struct elf_fpregset_t;
- 	PT_REGS_R15(regs) = 0; \
- } while (0)
+ arch/um/drivers/net_kern.c |    4 ++--
+ arch/um/drivers/ubd_kern.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -360,7 +360,7 @@ static struct platform_driver uml_net_dr
  
--#define ELF_CORE_COPY_REGS(pr_reg, regs)		\
--	(pr_reg)[0] = (regs)->regs.gp[0];			\
--	(pr_reg)[1] = (regs)->regs.gp[1];			\
--	(pr_reg)[2] = (regs)->regs.gp[2];			\
--	(pr_reg)[3] = (regs)->regs.gp[3];			\
--	(pr_reg)[4] = (regs)->regs.gp[4];			\
--	(pr_reg)[5] = (regs)->regs.gp[5];			\
--	(pr_reg)[6] = (regs)->regs.gp[6];			\
--	(pr_reg)[7] = (regs)->regs.gp[7];			\
--	(pr_reg)[8] = (regs)->regs.gp[8];			\
--	(pr_reg)[9] = (regs)->regs.gp[9];			\
--	(pr_reg)[10] = (regs)->regs.gp[10];			\
--	(pr_reg)[11] = (regs)->regs.gp[11];			\
--	(pr_reg)[12] = (regs)->regs.gp[12];			\
--	(pr_reg)[13] = (regs)->regs.gp[13];			\
--	(pr_reg)[14] = (regs)->regs.gp[14];			\
--	(pr_reg)[15] = (regs)->regs.gp[15];			\
--	(pr_reg)[16] = (regs)->regs.gp[16];			\
--	(pr_reg)[17] = (regs)->regs.gp[17];			\
--	(pr_reg)[18] = (regs)->regs.gp[18];			\
--	(pr_reg)[19] = (regs)->regs.gp[19];			\
--	(pr_reg)[20] = (regs)->regs.gp[20];			\
-+#define ELF_CORE_COPY_REGS(pr_reg, _regs)		\
-+	(pr_reg)[0] = (_regs)->regs.gp[0];			\
-+	(pr_reg)[1] = (_regs)->regs.gp[1];			\
-+	(pr_reg)[2] = (_regs)->regs.gp[2];			\
-+	(pr_reg)[3] = (_regs)->regs.gp[3];			\
-+	(pr_reg)[4] = (_regs)->regs.gp[4];			\
-+	(pr_reg)[5] = (_regs)->regs.gp[5];			\
-+	(pr_reg)[6] = (_regs)->regs.gp[6];			\
-+	(pr_reg)[7] = (_regs)->regs.gp[7];			\
-+	(pr_reg)[8] = (_regs)->regs.gp[8];			\
-+	(pr_reg)[9] = (_regs)->regs.gp[9];			\
-+	(pr_reg)[10] = (_regs)->regs.gp[10];			\
-+	(pr_reg)[11] = (_regs)->regs.gp[11];			\
-+	(pr_reg)[12] = (_regs)->regs.gp[12];			\
-+	(pr_reg)[13] = (_regs)->regs.gp[13];			\
-+	(pr_reg)[14] = (_regs)->regs.gp[14];			\
-+	(pr_reg)[15] = (_regs)->regs.gp[15];			\
-+	(pr_reg)[16] = (_regs)->regs.gp[16];			\
-+	(pr_reg)[17] = (_regs)->regs.gp[17];			\
-+	(pr_reg)[18] = (_regs)->regs.gp[18];			\
-+	(pr_reg)[19] = (_regs)->regs.gp[19];			\
-+	(pr_reg)[20] = (_regs)->regs.gp[20];			\
- 	(pr_reg)[21] = current->thread.arch.fs;			\
- 	(pr_reg)[22] = 0;					\
- 	(pr_reg)[23] = 0;					\
+ static void net_device_release(struct device *dev)
+ {
+-	struct uml_net *device = dev->driver_data;
++	struct uml_net *device = dev_get_drvdata(dev);
+ 	struct net_device *netdev = device->dev;
+ 	struct uml_net_private *lp = netdev_priv(netdev);
+ 
+@@ -440,7 +440,7 @@ static void eth_configure(int n, void *i
+ 	device->pdev.id = n;
+ 	device->pdev.name = DRIVER_NAME;
+ 	device->pdev.dev.release = net_device_release;
+-	device->pdev.dev.driver_data = device;
++	dev_set_drvdata(&device->pdev.dev, device);
+ 	if (platform_device_register(&device->pdev))
+ 		goto out_free_netdev;
+ 	SET_NETDEV_DEV(dev,&device->pdev.dev);
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -799,7 +799,7 @@ static int ubd_open_dev(struct ubd *ubd_
+ 
+ static void ubd_device_release(struct device *dev)
+ {
+-	struct ubd *ubd_dev = dev->driver_data;
++	struct ubd *ubd_dev = dev_get_drvdata(dev);
+ 
+ 	blk_cleanup_queue(ubd_dev->queue);
+ 	*ubd_dev = ((struct ubd) DEFAULT_UBD);
+@@ -828,7 +828,7 @@ static int ubd_disk_register(int major, 
+ 		ubd_devs[unit].pdev.id   = unit;
+ 		ubd_devs[unit].pdev.name = DRIVER_NAME;
+ 		ubd_devs[unit].pdev.dev.release = ubd_device_release;
+-		ubd_devs[unit].pdev.dev.driver_data = &ubd_devs[unit];
++		dev_set_drvdata(&ubd_devs[unit].pdev.dev, &ubd_devs[unit]);
+ 		platform_device_register(&ubd_devs[unit].pdev);
+ 		disk->driverfs_dev = &ubd_devs[unit].pdev.dev;
+ 	}
 
 ------------------------------------------------------------------------------
-The NEW KODAK i700 Series Scanners deliver under ANY circumstances! Your
-production scanning environment may not be a perfect world - but thanks to
-Kodak, there's a perfect scanner to get the job done! With the NEW KODAK i700
-Series Scanner you'll get full speed at 300 dpi even with all image 
-processing features enabled. http://p.sf.net/sfu/kodak-com
+Register Now & Save for Velocity, the Web Performance & Operations 
+Conference from O'Reilly Media. Velocity features a full day of 
+expert-led, hands-on workshops and two days of sessions from industry 
+leaders in dedicated Performance & Operations tracks. Use code vel09scf 
+and Save an extra 15% before 5/3. http://p.sf.net/sfu/velocityconf
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
