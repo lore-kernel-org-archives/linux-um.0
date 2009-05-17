@@ -1,65 +1,122 @@
-Return-Path: <sam@ravnborg.org>
-Date: Fri, 1 May 2009 11:04:56 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v2 0/6] macros for section name cleanup
-Message-ID: <20090501090455.GA18326@uranus.ravnborg.org>
-References: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+	helo=mx.sourceforge.net)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <shlomopongratz@gmail.com>) id 1M5eYD-00066C-7Y
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 17 May 2009 11:29:05 +0000
+Received: from mail-bw0-f222.google.com ([209.85.218.222])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M5eY8-0006mg-IH for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 17 May 2009 11:29:05 +0000
+Received: by bwz22 with SMTP id 22so2884233bwz.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 17 May 2009 04:28:58 -0700 (PDT)
+MIME-Version: 1.0
+From: Shlomo Pongratz <shlomopongratz@gmail.com>
+Date: Sun, 17 May 2009 14:28:38 +0300
+Message-ID: <88ea9a580905170428g2e6fd26ck205e38962a5eded3@mail.gmail.com>
+Subject: [uml-devel] mcmodel=kernel and mem=512M
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============4058903890338270218=="
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+
+--===============4058903890338270218==
+Content-Type: multipart/alternative; boundary=001485f7bec8d371bf046a19fb7d
+
+--001485f7bec8d371bf046a19fb7d
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hi all,
+
+I know that this is an old issue but I can't find the solution no matter how
+much I've Googled.
+I've build a 2.6.27 64 bit kernel and build modules with make modules
+ARCH=um.
+When I run the linux binary with mem=256M I can "insmod" the module loop.ko
+without any problem.
+However if  I use mem=512M and try to "insmod" loop.ko I'm getting the
+message;
+
+# cd /lib/modules
+# insmod loop.ko
+overflow in relocation type 11 val 848351e2
+`loop' likely not compiled with -mcmodel=kernel
+insmod: cannot insert 'loop.ko': Invalid module format (-1): Exec format
+error
+#
+
+My host is;
+
+$ uname -a
+Linux lnx6004 2.6.9-42.ELsmp #1 SMP Wed Jul 12 23:32:02 EDT 2006 x86_64
+x86_64 x86_64 GNU/Linux
+
+Thanks,
+
+S.P.
+
+--001485f7bec8d371bf046a19fb7d
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi all,<br><br>I know that this is an old issue but I can&=
+#39;t find the solution no matter how much I&#39;ve Googled.<br>I&#39;ve bu=
+ild a 2.6.27 64 bit kernel and build modules with make modules ARCH=3Dum.<b=
+r>
+
+When I run the linux binary with mem=3D256M I can &quot;insmod&quot; the mo=
+dule loop.ko without any problem.<br>However if=A0 I use mem=3D512M and try=
+ to &quot;insmod&quot; loop.ko I&#39;m getting the message;<br><br># cd /li=
+b/modules<br>
+
+# insmod loop.ko<br>overflow in relocation type 11 val 848351e2<br>`loop&#3=
+9; likely not compiled with -mcmodel=3Dkernel<br>insmod: cannot insert &#39=
+;loop.ko&#39;: Invalid module format (-1): Exec format error<br>#=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 <br>
+
+<br>My host is;<br><br>$ uname -a<br>Linux lnx6004 2.6.9-42.ELsmp #1 SMP We=
+d Jul 12 23:32:02 EDT 2006 x86_64 x86_64 x86_64 GNU/Linux<br><br>Thanks,<br=
+><br>S.P.<br><br><br></div>
+
+--001485f7bec8d371bf046a19fb7d--
+
+
+--===============4058903890338270218==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <1241121253-32341-1-git-send-email-tabbott@mit.edu>
-To: Tim Abbott <tabbott@MIT.EDU>
-Cc: Linux kernel mailing list <linux-kernel@vger.kernel.org>, Anders Kaseorg <andersk@MIT.EDU>, Waseem Daher <wdaher@MIT.EDU>, Denys Vlasenko <vda.linux@googlemail.com>, Jeff Arnold <jbarnold@MIT.EDU>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Bryan Wu <cooloney@kernel.org>, Chris Zankel <chris@zankel.net>, Cyrill Gorcunov <gorcunov@openvz.org>, David Howells <dhowells@redhat.com>, "David S. Miller" <davem@davemloft.net>, dev-etrax@axis.com, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@uclinux.org>, Haavard Skinnemoen <hskinnemoen@atmel.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Hirokazu Takata <takata@linux-m32r.org>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Kyle McMartin <kyle@mcmartin.ca>, Linus Torvalds <torvalds@linux-foundation.org>, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michal Simek <monstr@monstr.eu>, microblaze-uclinux@itee.uq.edu.au, Mikael Starvik <starvik@axis.com>, Paul Mackerras <paulus@samba.org>, Paul Mundt <lethal@linux-sh.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, Roman Zippel <zippel@linux-m68k.org>, Russell King <rmk+kernel@arm.linux.org.uk>, sparclinux@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, uclinux-dist-devel@blackfin.uclinux.org, user-mode-linux-devel@lists.sourceforge.net, Yoshinori Sato <ysato@users.sourceforge.jp>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Apr 30, 2009 at 03:54:07PM -0400, Tim Abbott wrote:
-> (this patch series differs from v1 only in the CC list; some of the
-> architecture lists I sent the previous one to are moderated against
-> non-members; all replies should go to this version).
-> 
-> Here are the architecture-independent macro definitions needed for
-> to clean up the kernel's section names.  The overall diffstat from
-> this section name cleanup project is:
-> 
->  96 files changed, 261 insertions(+), 503 deletions(-)
-> 
-> The decrease results from removing a lot of redundancy in the linker
-> scripts.
-> 
-> The long-term goal here is to add support for building the kernel with
-> -ffunction-sections -fdata-sections.  This requires renaming all the
-> magic section names in the kernel of the form .text.foo, .data.foo,
-> .bss.foo, and .rodata.foo to not have collisions with sections
-> generated for code like:
-> 
-> static int nosave = 0; /* -fdata-sections places in .data.nosave */
-> static void head(); /* -ffunction-sections places in .text.head */
-> 
-> Sam Ravnborg proposed that rather than just renaming all the sections
-> outright, we should start by first getting more control over the
-> section names used in the kernel so that we can later rename sections
-> without touching too many files.  These patch series implement that
-> cleanup.  Later, there will be another patch series to actually rename
-> the sections.
-> 
-> I'm hoping we can get just these macro definitions into 2.6.30 so that
-> the arch maintainers don't have to grab the macro definitions for
-> their trees while reviewing the patches for 2.6.31.
-> 
-> Shortly, I'm going to send one patch series for each of the
-> architectures updating those architectures to use these new macros
-> (and otherwise cleaning up section names on those architectures).
+------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
+--===============4058903890338270218==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Hi Tim.
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-We agreed to get the common stuff and one architecture done before
-proceeding with the rest.
-Please stick to that plan so we avoid patch-bombing lkml + maintainers.
+--===============4058903890338270218==--
 
-When we have this ready it will be a simple one-patch-per-arch to cover
-the rest.
-
-I will comment on your common patches for now.
-
-	Sam
 
