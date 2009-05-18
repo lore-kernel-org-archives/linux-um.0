@@ -1,13 +1,30 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Joe Perches <joe@perches.com>
-Date: Fri, 15 May 2009 10:59:39 -0700
-Message-Id: <6d8b845124bb1e826e30ba943ccb04ac5379be21.1242407227.git.joe@perches.com>
-In-Reply-To: <cover.1242407227.git.joe@perches.com>
-References: <cover.1242407227.git.joe@perches.com>
-In-Reply-To: <cover.1242407227.git.joe@perches.com>
-References: <cover.1242407227.git.joe@perches.com>
-Subject: [uml-devel] [PATCH 05/11] arch/um: Convert #ifdef DEBUG
-	printk(KERN_DEBUG to pr_debug(
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+	helo=mx.sourceforge.net)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <xiyou.wangcong@gmail.com>) id 1M5zNq-0003CF-JD
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 May 2009 09:43:46 +0000
+Received: from mail-pz0-f110.google.com ([209.85.222.110])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M5zNp-00045D-Iw for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 18 May 2009 09:43:46 +0000
+Received: by pzk8 with SMTP id 8so2454960pzk.28
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 18 May 2009 02:43:43 -0700 (PDT)
+Date: Mon, 18 May 2009 17:45:01 +0800
+From: Amerigo Wang <xiyou.wangcong@gmail.com>
+Message-ID: <20090518094501.GB13776@cr0.nay.redhat.com>
+References: <20090316074520.GC3360@hack> <20090324234753.GH22695@cs.unibo.it>
+	<20090329163228.GE7671@hack> <20090404101708.GG4203@cs.unibo.it>
+	<20090407173646.GL12226@hack> <20090408121851.GE24173@cs.unibo.it>
+	<20090413163603.GG2391@hack> <20090417081823.GA31897@hack>
+	<20090425091928.GB18153@cs.unibo.it> <20090430082711.GA24819@hack>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20090430082711.GA24819@hack>
+Subject: Re: [uml-devel] [PATCH 0/2] ptrace_vm: ptrace for syscall emulation
+	virtual	machines
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,137 +34,33 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+To: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, mtk.manpages@gmail.com, akpm@linux-foundation.org, Roland McGrath <roland@redhat.com>
 
-From: Joe Perches <joe@perches.com>
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
- arch/um/drivers/hostaudio_kern.c |   38 +++++++++++---------------------------
- 1 files changed, 11 insertions(+), 27 deletions(-)
-
-diff --git a/arch/um/drivers/hostaudio_kern.c b/arch/um/drivers/hostaudio_kern.c
-index 368219c..2f5b343 100644
---- a/arch/um/drivers/hostaudio_kern.c
-+++ b/arch/um/drivers/hostaudio_kern.c
-@@ -75,9 +75,7 @@ static ssize_t hostaudio_read(struct file *file, char __user *buffer,
- 	void *kbuf;
- 	int err;
- 
--#ifdef DEBUG
--	printk(KERN_DEBUG "hostaudio: read called, count = %d\n", count);
--#endif
-+	pr_debug("hostaudio: read called, count = %d\n", count);
- 
- 	kbuf = kmalloc(count, GFP_KERNEL);
- 	if (kbuf == NULL)
-@@ -102,9 +100,7 @@ static ssize_t hostaudio_write(struct file *file, const char __user *buffer,
- 	void *kbuf;
- 	int err;
- 
--#ifdef DEBUG
--	printk(KERN_DEBUG "hostaudio: write called, count = %d\n", count);
--#endif
-+	pr_debug("hostaudio: write called, count = %d\n", count);
- 
- 	kbuf = kmalloc(count, GFP_KERNEL);
- 	if (kbuf == NULL)
-@@ -129,9 +125,7 @@ static unsigned int hostaudio_poll(struct file *file,
- {
- 	unsigned int mask = 0;
- 
--#ifdef DEBUG
--	printk(KERN_DEBUG "hostaudio: poll called (unimplemented)\n");
--#endif
-+	pr_debug("hostaudio: poll called (unimplemented)\n");
- 
- 	return mask;
- }
-@@ -143,9 +137,8 @@ static int hostaudio_ioctl(struct inode *inode, struct file *file,
- 	unsigned long data = 0;
- 	int err;
- 
--#ifdef DEBUG
--	printk(KERN_DEBUG "hostaudio: ioctl called, cmd = %u\n", cmd);
--#endif
-+	pr_debug("hostaudio: ioctl called, cmd = %u\n", cmd);
-+
- 	switch(cmd){
- 	case SNDCTL_DSP_SPEED:
- 	case SNDCTL_DSP_STEREO:
-@@ -185,9 +178,7 @@ static int hostaudio_open(struct inode *inode, struct file *file)
- 	int r = 0, w = 0;
- 	int ret;
- 
--#ifdef DEBUG
--	printk(KERN_DEBUG "hostaudio: open called (host: %s)\n", dsp);
--#endif
-+	pr_debug("hostaudio: open called (host: %s)\n", dsp);
- 
- 	state = kmalloc(sizeof(struct hostaudio_state), GFP_KERNEL);
- 	if (state == NULL)
-@@ -212,9 +203,8 @@ static int hostaudio_release(struct inode *inode, struct file *file)
- {
- 	struct hostaudio_state *state = file->private_data;
- 
--#ifdef DEBUG
--	printk(KERN_DEBUG "hostaudio: release called\n");
--#endif
-+	pr_debug("hostaudio: release called\n");
-+
- 	os_close_file(state->fd);
- 	kfree(state);
- 
-@@ -228,9 +218,7 @@ static int hostmixer_ioctl_mixdev(struct inode *inode, struct file *file,
- {
- 	struct hostmixer_state *state = file->private_data;
- 
--#ifdef DEBUG
--	printk(KERN_DEBUG "hostmixer: ioctl called\n");
--#endif
-+	pr_debug("hostmixer: ioctl called\n");
- 
- 	return os_ioctl_generic(state->fd, cmd, arg);
- }
-@@ -241,9 +229,7 @@ static int hostmixer_open_mixdev(struct inode *inode, struct file *file)
- 	int r = 0, w = 0;
- 	int ret;
- 
--#ifdef DEBUG
--	printk(KERN_DEBUG "hostmixer: open called (host: %s)\n", mixer);
--#endif
-+	pr_debug("hostmixer: open called (host: %s)\n", mixer);
- 
- 	state = kmalloc(sizeof(struct hostmixer_state), GFP_KERNEL);
- 	if (state == NULL)
-@@ -271,9 +257,7 @@ static int hostmixer_release(struct inode *inode, struct file *file)
- {
- 	struct hostmixer_state *state = file->private_data;
- 
--#ifdef DEBUG
--	printk(KERN_DEBUG "hostmixer: release called\n");
--#endif
-+	pr_debug("hostmixer: release called\n");
- 
- 	os_close_file(state->fd);
- 	kfree(state);
--- 
-1.6.3.1.9.g95405b.dirty
-
-
-------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gVGh1LCBBcHIgMzAsIDIwMDkgYXQgMDQ6Mjc6MTFQTSArMDgwMCwgQW3DqXJpY28gV2FuZyB3
+cm90ZToKPk9uIFNhdCwgQXByIDI1LCAyMDA5IGF0IDExOjE5OjI4QU0gKzAyMDAsIFJlbnpvIERh
+dm9saSB3cm90ZToKPgo+Pgo+PkkgaGF2ZSBzdWNjZXNzZnVsbHkgdGVzdGVkIG15IHBhY2hlcyBp
+biB2YXJpb3VzIGNvbmZpZ3VyYXRpb25zOgo+Pi0gcGF0Y2hlZC1rZXJuZWwgcnVubmluZyBwYXRj
+aGVkLVVNTAo+Pi0gcGF0Y2hlZC1rZXJuZWwgcnVubmluZyB1bnBhdGNoZWQtVU1MCj4+LSBwYXRj
+aGVkLWtlcm5lbCBydW5uaW5nIHVtdmlldwo+Pi0gcGF0Y2hlZC1VTUwgcnVubmluZyB1bXZpZXcK
+Pj4tIFVNTCBvbiBVTUwgZmFpbHMgaW4gdGhlIHNhbWUgd2F5IHdpdGggYW5kIHdpdGhvdXQgdGhl
+IHBhdGNoLgo+PkkgYW0gY3VycmVudGx5IHJ1bm5pbmcgdGhlIHBhdGNoZWQga2VybmVsIG9uIG15
+IGxhcHRvcC4KPgo+VGhhbmtzLCBJIHdpbGwgZ2l2ZSB0aGVtIGFub3RoZXIgdGVzdGluZyBzb29u
+Li4uCgpTb3JyeSBmb3IgdGhlIGxvbmcgZGVsYXkuLi4KCkkgcmV2aWV3ZWQgdGhlIHdob2xlIHBh
+dGNoIHNldCBhZ2FpbiwgYW5kIHRlc3RlZCBpdCBvbiBib3RoIGkzODYKYW5kIHg4Nl82NCwgaXQg
+bG9va3MgdmVyeSBmaW5lISEgOi0pCgpTbyBJIHdvdWxkIGxpa2UgdG8gc2VlIHRoZXNlIHBhdGNo
+ZXMgdG8gYmUgbWVyZ2VkLgoKQW5kcmV3LCBjb3VsZCB5b3UgcGxlYXNlIHRha2UgdGhlc2UgdHdv
+IHBhdGNoZXMgZm9yIHVzPz8KClRoYW5rIHlvdSEKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ3J5
+c3RhbCBSZXBvcnRzIC0gTmV3IEZyZWUgUnVudGltZSBhbmQgMzAgRGF5IFRyaWFsCkNoZWNrIG91
+dCB0aGUgbmV3IHNpbXBsaWZpZWQgbGljZW5zaW5nIG9wdGlvbiB0aGF0IGVuYWJsZXMgCnVubGlt
+aXRlZCByb3lhbHR5LWZyZWUgZGlzdHJpYnV0aW9uIG9mIHRoZSByZXBvcnQgZW5naW5lIApmb3Ig
+ZXh0ZXJuYWxseSBmYWNpbmcgc2VydmVyIGFuZCB3ZWIgZGVwbG95bWVudC4gCmh0dHA6Ly9wLnNm
+Lm5ldC9zZnUvYnVzaW5lc3NvYmplY3RzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1t
+b2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
+ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
