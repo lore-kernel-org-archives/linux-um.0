@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <menage@google.com>) id 1MGNSH-0007nt-U5
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <greg@kroah.com>) id 1MGRaP-0006Gg-4d
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Jun 2009 01:27:17 +0000
-Received: from smtp-out.google.com ([216.239.45.13])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGNSG-0006ov-Tk
+	Tue, 16 Jun 2009 05:51:57 +0000
+Received: from kroah.org ([198.145.64.141] helo=coco.kroah.org)
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MGRaL-0006EI-2Q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Jun 2009 01:27:17 +0000
-From: Paul Menage <menage@google.com>
-Date: Mon, 15 Jun 2009 17:17:39 -0700
-Message-ID: <20090616001739.30398.50579.stgit@menage.mtv.corp.google.com>
-In-Reply-To: <20090616001248.30398.84278.stgit@menage.mtv.corp.google.com>
-References: <20090616001248.30398.84278.stgit@menage.mtv.corp.google.com>
-MIME-Version: 1.0
-Subject: [uml-devel] [PATCH 3/5] UML: Enable CONFIG_STACKTRACE_SUPPORT
+	Tue, 16 Jun 2009 05:51:56 +0000
+From: Greg Kroah-Hartman <gregkh@suse.de>
+Date: Mon, 15 Jun 2009 22:46:49 -0700
+Message-Id: <1245131213-24168-60-git-send-email-gregkh@suse.de>
+In-Reply-To: <20090616051351.GA23627@kroah.com>
+References: <20090616051351.GA23627@kroah.com>
+Subject: [uml-devel] [PATCH 60/64] uml: remove driver_data direct access of
+	struct device
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,164 +26,73 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: peterz@infradead.org, mingo@redhat.com, jdike@addtoit.com
+To: linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Greg Kroah-Hartman <gregkh@suse.de>, user-mode-linux-devel@lists.sourceforge.net
+
+In the near future, the driver core is going to not allow direct access
+to the driver_data pointer in struct device.  Instead, the functions
+dev_get_drvdata() and dev_set_drvdata() should be used.  These functions
+have been around since the beginning, so are backwards compatible with
+all older kernel versions.
+
 Cc: user-mode-linux-devel@lists.sourceforge.net
-
-UML: Enable CONFIG_STACKTRACE_SUPPORT
-
-Adds a simple stacktrace function, only tested/enabled on X86
-
-Signed-off-by: Paul Menage <menage@google.com>
-
+Cc: Jeff Dike <jdike@addtoit.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 ---
+ arch/um/drivers/net_kern.c |    4 ++--
+ arch/um/drivers/ubd_kern.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
- arch/um/Kconfig.common      |    2 +
- arch/um/kernel/Makefile     |    1 +
- arch/um/kernel/stacktrace.c |   68 +++++++++++++++++++++++++++++++++++++++++++
- arch/um/kernel/sysrq.c      |   20 +++++++++++++
- 4 files changed, 90 insertions(+), 1 deletions(-)
- create mode 100644 arch/um/kernel/stacktrace.c
-
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index 8a54ae4..b757c36 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -44,7 +44,7 @@ config LOCKDEP_SUPPORT
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index 434ba12..3b44b47 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -360,7 +360,7 @@ static struct platform_driver uml_net_driver = {
  
- config STACKTRACE_SUPPORT
- 	bool
--	default n
-+	default UML_X86
- 
- config GENERIC_CALIBRATE_DELAY
- 	bool
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 388ec0a..b1867a0 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -14,6 +14,7 @@ obj-y = config.o exec.o exitcode.o init_task.o irq.o ksyms.o mem.o \
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
- obj-$(CONFIG_GCOV)	+= gmon_syms.o
-+obj-$(CONFIG_STACKTRACE_SUPPORT) += stacktrace.o
- 
- USER_OBJS := config.o
- 
-diff --git a/arch/um/kernel/stacktrace.c b/arch/um/kernel/stacktrace.c
-new file mode 100644
-index 0000000..a0d6a60
---- /dev/null
-+++ b/arch/um/kernel/stacktrace.c
-@@ -0,0 +1,68 @@
-+/*
-+ * Simple stacktrace function. Only tested on x86, but can probably
-+ * be adapted to other architectures with minimal work. (E.g. checking
-+ * stack direction)
-+ */
-+#include "linux/stddef.h"
-+#include <linux/stacktrace.h>
-+#include <linux/kallsyms.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/sched.h>
-+
-+static void save_stack_address(unsigned long addr, struct stack_trace *trace)
-+{
-+	if (!__kernel_text_address(addr))
-+		return;
-+
-+	if (trace->skip) {
-+		trace->skip--;
-+		return;
-+	}
-+
-+	trace->entries[trace->nr_entries++] = addr;
-+}
-+
-+#define THREAD_MASK (THREAD_SIZE-1)
-+
-+#ifdef CONFIG_FRAME_POINTER
-+
-+struct stack_frame {
-+	struct stack_frame *next_frame;
-+	unsigned long return_address;
-+};
-+
-+void save_stack_trace(struct stack_trace *trace)
-+{
-+	unsigned long addr;
-+	struct stack_frame *frame, *end;
-+	frame = __builtin_frame_address(0);
-+	end = (struct stack_frame *)
-+		((((unsigned long)frame) + THREAD_MASK) & ~THREAD_MASK);
-+	while (trace->nr_entries < trace->max_entries) {
-+		addr = frame->return_address;
-+		save_stack_address(addr, trace);
-+		if (frame->next_frame <= frame || frame->next_frame > end)
-+			break;
-+		frame = frame->next_frame;
-+	}
-+	if (trace->nr_entries < trace->max_entries)
-+		trace->entries[trace->nr_entries++] = ULONG_MAX;
-+}
-+#else
-+
-+void save_stack_trace(struct stack_trace *trace)
-+{
-+	unsigned long addr;
-+	unsigned long *stack = (unsigned long *)&stack;
-+	while (trace->nr_entries < trace->max_entries) {
-+		addr = *stack;
-+		save_stack_address(addr, trace);
-+		stack++;
-+		if (!(stack & THREAD_MASK))
-+			break;
-+	}
-+	if (trace->nr_entries < trace->max_entries)
-+		trace->entries[trace->nr_entries++] = ULONG_MAX;
-+}
-+#endif
-diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
-index 56d43d0..42b832c 100644
---- a/arch/um/kernel/sysrq.c
-+++ b/arch/um/kernel/sysrq.c
-@@ -11,6 +11,25 @@
- 
- /* Catch non-i386 SUBARCH's. */
- #if !defined(CONFIG_UML_X86) || defined(CONFIG_64BIT)
-+#ifdef CONFIG_STACKTRACE
-+void show_trace(struct task_struct *task, unsigned long * stack)
-+{
-+	struct stack_trace trace;
-+	unsigned long entries[64];
-+
-+	if (!stack) {
-+		stack = (unsigned long *) &stack;
-+		WARN_ON(1);
-+	}
-+
-+	trace.nr_entries = 0;
-+	trace.max_entries = ARRAY_SIZE(entries);
-+	trace.entries = entries;
-+	trace.skip = 0;
-+	save_stack_trace(&trace);
-+	print_stack_trace(&trace, 0);
-+}
-+#else
- void show_trace(struct task_struct *task, unsigned long * stack)
+ static void net_device_release(struct device *dev)
  {
- 	unsigned long addr;
-@@ -33,6 +52,7 @@ void show_trace(struct task_struct *task, unsigned long * stack)
- 	}
- 	printk(KERN_INFO "\n");
- }
-+#endif  /& CONFIG_STACKTRACE */
- #endif
+-	struct uml_net *device = dev->driver_data;
++	struct uml_net *device = dev_get_drvdata(dev);
+ 	struct net_device *netdev = device->dev;
+ 	struct uml_net_private *lp = netdev_priv(netdev);
  
- /*
+@@ -440,7 +440,7 @@ static void eth_configure(int n, void *init, char *mac,
+ 	device->pdev.id = n;
+ 	device->pdev.name = DRIVER_NAME;
+ 	device->pdev.dev.release = net_device_release;
+-	device->pdev.dev.driver_data = device;
++	dev_set_drvdata(&device->pdev.dev, device);
+ 	if (platform_device_register(&device->pdev))
+ 		goto out_free_netdev;
+ 	SET_NETDEV_DEV(dev,&device->pdev.dev);
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index aa9e926..8f05d4d 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -778,7 +778,7 @@ static int ubd_open_dev(struct ubd *ubd_dev)
+ 
+ static void ubd_device_release(struct device *dev)
+ {
+-	struct ubd *ubd_dev = dev->driver_data;
++	struct ubd *ubd_dev = dev_get_drvdata(dev);
+ 
+ 	blk_cleanup_queue(ubd_dev->queue);
+ 	*ubd_dev = ((struct ubd) DEFAULT_UBD);
+@@ -807,7 +807,7 @@ static int ubd_disk_register(int major, u64 size, int unit,
+ 		ubd_devs[unit].pdev.id   = unit;
+ 		ubd_devs[unit].pdev.name = DRIVER_NAME;
+ 		ubd_devs[unit].pdev.dev.release = ubd_device_release;
+-		ubd_devs[unit].pdev.dev.driver_data = &ubd_devs[unit];
++		dev_set_drvdata(&ubd_devs[unit].pdev.dev, &ubd_devs[unit]);
+ 		platform_device_register(&ubd_devs[unit].pdev);
+ 		disk->driverfs_dev = &ubd_devs[unit].pdev.dev;
+ 	}
+-- 
+1.6.3.2
 
 
 ------------------------------------------------------------------------------
