@@ -1,53 +1,30 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1755483AbZFVKwm@vger.kernel.org>
-Date: Mon, 22 Jun 2009 20:52:26 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1753593AbZFVIzl@vger.kernel.org>
+Date: Mon, 22 Jun 2009 16:57:35 +0800
+From: Amerigo Wang <xiyou.wangcong@gmail.com>
 Subject: Re: [uml-devel] [PATCH] UML: Fix some apparent bitrot
-Message-Id: <20090622205226.fee30ba8.sfr@canb.auug.org.au>
-In-Reply-To: <20090622085735.GB6499@cr0.nay.redhat.com>
-References: <20090620005524.25582.69677.stgit@menage.mtv.corp.google.com>
-	<4A3F4448.30502@panasas.com>
-	<20090622085735.GB6499@cr0.nay.redhat.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Mon__22_Jun_2009_20_52_26_+1000_OnL4O7BVnN3vMgjy"
+Message-ID: <20090622085735.GB6499@cr0.nay.redhat.com>
+References: <20090620005524.25582.69677.stgit@menage.mtv.corp.google.com> <4A3F4448.30502@panasas.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4A3F4448.30502@panasas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Amerigo Wang <xiyou.wangcong@gmail.com>
-Cc: Boaz Harrosh <bharrosh@panasas.com>, Paul Menage <menage@google.com>, akpm@linux-foundation.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Boaz Harrosh <bharrosh@panasas.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Paul Menage <menage@google.com>, akpm@linux-foundation.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
---Signature=_Mon__22_Jun_2009_20_52_26_+1000_OnL4O7BVnN3vMgjy
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Amerigo,
-
-On Mon, 22 Jun 2009 16:57:35 +0800 Amerigo Wang <xiyou.wangcong@gmail.com> =
-wrote:
+On Mon, Jun 22, 2009 at 11:43:52AM +0300, Boaz Harrosh wrote:
 >
-> Stephan, could you please also do compiling tests for UML in your -next t=
-ree?
->=20
-> Thanks!
+>Stephan hi.
+>
+>The above breakage is the usual stuff we get every merge window. With people doing
+>cross arch work and neglecting UML.
+>
+>Who is the person or people responsible for the large linux-next compilation rig?
+>Is it possible to also add a UML traget, at least for the x86_64/x86_32 sub-arch?
 
-I would be happy to do this, all I need is for someone to tell me how to
-do this given we have PowerPC hosts so our X86 compilers are cross
-compilers.
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
+Agreed.
 
---Signature=_Mon__22_Jun_2009_20_52_26_+1000_OnL4O7BVnN3vMgjy
-Content-Type: application/pgp-signature
+Stephan, could you please also do compiling tests for UML in your -next tree?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAko/YmoACgkQjjKRsyhoI8wukQCfSRF8ekFDP38V7yoq6KQH0Fa6
-ZwcAnj0RIJEp+suHIC/H7iPa0v/gLuh/
-=AS4I
------END PGP SIGNATURE-----
-
---Signature=_Mon__22_Jun_2009_20_52_26_+1000_OnL4O7BVnN3vMgjy--
+Thanks!
