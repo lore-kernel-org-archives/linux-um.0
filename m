@@ -1,54 +1,32 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
-	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jdike@addtoit.com>) id 1MJqLy-0000bK-IT
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Jun 2009 14:55:06 +0000
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJqLa-0008Lz-6b
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Jun 2009 14:55:06 +0000
-Date: Thu, 25 Jun 2009 10:51:55 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20090625145155.GA6383@c2.user-mode-linux.org>
-References: <20090620005524.25582.69677.stgit@menage.mtv.corp.google.com>
-	<4A3F4448.30502@panasas.com>
-	<20090622085735.GB6499@cr0.nay.redhat.com>
-	<20090622205226.fee30ba8.sfr@canb.auug.org.au>
-	<20090625104901.GG6374@cr0.nay.redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20090625104901.GG6374@cr0.nay.redhat.com>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1754985AbZFYKuV@vger.kernel.org>
+Date: Thu, 25 Jun 2009 18:52:12 +0800
+From: Amerigo Wang <xiyou.wangcong@gmail.com>
 Subject: Re: [uml-devel] [PATCH] UML: Fix some apparent bitrot
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Amerigo Wang <xiyou.wangcong@gmail.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com, linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Message-ID: <20090625105212.GH6374@cr0.nay.redhat.com>
+References: <20090620005524.25582.69677.stgit@menage.mtv.corp.google.com> <4A3F4448.30502@panasas.com> <20090625135901.a028512d.sfr@canb.auug.org.au> <4A432DD4.3010905@panasas.com> <6599ad830906250106q2807c72ci21e95b02448ec4f7@mail.gmail.com> <4A43309A.3060306@panasas.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4A43309A.3060306@panasas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Boaz Harrosh <bharrosh@panasas.com>
+Cc: Paul Menage <menage@google.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Andrew Morton <akpm@linux-foundation.org>, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Rusty Russell <rusty@rustcorp.com.au>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Jun 25, 2009 at 06:49:01PM +0800, Amerigo Wang wrote:
-> make ARCH=um SUBARCH=ppc? Or something similar...
 
-It would need to be
-	make ARCH=um 
-with an x86 cross-compiler.
+On Thu, Jun 25, 2009 at 11:08:58AM +0300, Boaz Harrosh wrote:
+>On 06/25/2009 11:06 AM, Paul Menage wrote:
+>> On Thu, Jun 25, 2009 at 12:57 AM, Boaz Harrosh<bharrosh@panasas.com> wrote:
+>>> Paul? we did not receive any feedback from you
+>> 
+>> I split it out into two patches and sent them about an hour ago. (One
+>> for mmu_context.h sent to Rusty and one for the other two fixes, sent
+>> to Linus)
+>> 
+>> Paul
+>
+>Thanks ... :-)
 
-				Jeff
+yeah, that is better, well done!
 
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Thanks.
