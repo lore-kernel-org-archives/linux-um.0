@@ -1,32 +1,47 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1754985AbZFYKuV@vger.kernel.org>
-Date: Thu, 25 Jun 2009 18:52:12 +0800
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1760200AbZFYKp5@vger.kernel.org>
+Date: Thu, 25 Jun 2009 18:47:00 +0800
 From: Amerigo Wang <xiyou.wangcong@gmail.com>
 Subject: Re: [uml-devel] [PATCH] UML: Fix some apparent bitrot
-Message-ID: <20090625105212.GH6374@cr0.nay.redhat.com>
-References: <20090620005524.25582.69677.stgit@menage.mtv.corp.google.com> <4A3F4448.30502@panasas.com> <20090625135901.a028512d.sfr@canb.auug.org.au> <4A432DD4.3010905@panasas.com> <6599ad830906250106q2807c72ci21e95b02448ec4f7@mail.gmail.com> <4A43309A.3060306@panasas.com>
+Message-ID: <20090625104700.GF6374@cr0.nay.redhat.com>
+References: <20090620005524.25582.69677.stgit@menage.mtv.corp.google.com> <20090622024610.GC5893@cr0.nay.redhat.com> <4A421AA6.5060908@panasas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4A43309A.3060306@panasas.com>
+In-Reply-To: <4A421AA6.5060908@panasas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Boaz Harrosh <bharrosh@panasas.com>
-Cc: Paul Menage <menage@google.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Andrew Morton <akpm@linux-foundation.org>, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Rusty Russell <rusty@rustcorp.com.au>
+Cc: Amerigo Wang <xiyou.wangcong@gmail.com>, Paul Menage <menage@google.com>, akpm@linux-foundation.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 
-On Thu, Jun 25, 2009 at 11:08:58AM +0300, Boaz Harrosh wrote:
->On 06/25/2009 11:06 AM, Paul Menage wrote:
->> On Thu, Jun 25, 2009 at 12:57 AM, Boaz Harrosh<bharrosh@panasas.com> wrote:
->>> Paul? we did not receive any feedback from you
+On Wed, Jun 24, 2009 at 03:23:02PM +0300, Boaz Harrosh wrote:
+>On 06/22/2009 05:46 AM, Amerigo Wang wrote:
+>> On Fri, Jun 19, 2009 at 05:55:24PM -0700, Paul Menage wrote:
+>>> UML: Fix some apparent bitrot
+>>>
+>>> - migration of net_device methods into net_device_ops
+>>> - dma_sync_single() changes
+>>> - cpumask_clear() -> cpumask_clear_cpu()
+>>>
+>>> Signed-off-by: Paul Menage <menage@google.com>
 >> 
->> I split it out into two patches and sent them about an hour ago. (One
->> for mmu_context.h sent to Rusty and one for the other two fixes, sent
->> to Linus)
 >> 
->> Paul
+>> Looks good.
+>> 
+>> Acked-by: WANG Cong <xiyou.wangcong@gmail.com>
+>> 
+>> 
 >
->Thanks ... :-)
+>Dear Jeff, Amerigo
+>
+>who is pushing this patch to Linus for 2.6.31. (ASAP)
+>Linus has threatened to cut -rc1 soon, and it is
+>unbuildable for UML currently.
 
-yeah, that is better, well done!
+Hello, Boaz.
 
-Thanks.
+It is supposed to be Jeff who should take UML patches,
+but since we haven't seen Jeff for a long time, Andrew
+should help us to take them.
+
+So Andrew? ping... :)
