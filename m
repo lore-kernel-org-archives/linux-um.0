@@ -1,61 +1,54 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1755330AbZFZBHk@vger.kernel.org>
-Date: Fri, 26 Jun 2009 11:07:22 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [uml-devel] [PATCH] UML: Fix some apparent bitrot
-Message-Id: <20090626110722.7ca2e8c4.sfr@canb.auug.org.au>
-In-Reply-To: <4A432DD4.3010905@panasas.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+	helo=mx.sourceforge.net)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jdike@addtoit.com>) id 1MJqLy-0000bK-IT
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 25 Jun 2009 14:55:06 +0000
+Received: from saraswathi.solana.com ([198.99.130.12])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJqLa-0008Lz-6b
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 25 Jun 2009 14:55:06 +0000
+Date: Thu, 25 Jun 2009 10:51:55 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20090625145155.GA6383@c2.user-mode-linux.org>
 References: <20090620005524.25582.69677.stgit@menage.mtv.corp.google.com>
 	<4A3F4448.30502@panasas.com>
-	<20090625135901.a028512d.sfr@canb.auug.org.au>
-	<4A432DD4.3010905@panasas.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Fri__26_Jun_2009_11_07_22_+1000_+N+U/eWqXUq/h3ys"
-Sender: linux-kernel-owner@vger.kernel.org
-To: Boaz Harrosh <bharrosh@panasas.com>
-Cc: Paul Menage <menage@google.com>, Andrew Morton <akpm@linux-foundation.org>, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Rusty Russell <rusty@rustcorp.com.au>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
-
---Signature=_Fri__26_Jun_2009_11_07_22_+1000_+N+U/eWqXUq/h3ys
-Content-Type: text/plain; charset=US-ASCII
+	<20090622085735.GB6499@cr0.nay.redhat.com>
+	<20090622205226.fee30ba8.sfr@canb.auug.org.au>
+	<20090625104901.GG6374@cr0.nay.redhat.com>
+MIME-Version: 1.0
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20090625104901.GG6374@cr0.nay.redhat.com>
+Subject: Re: [uml-devel] [PATCH] UML: Fix some apparent bitrot
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Amerigo Wang <xiyou.wangcong@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com, linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 
-Hi Boaz,
+On Thu, Jun 25, 2009 at 06:49:01PM +0800, Amerigo Wang wrote:
+> make ARCH=um SUBARCH=ppc? Or something similar...
 
-On Thu, 25 Jun 2009 10:57:08 +0300 Boaz Harrosh <bharrosh@panasas.com> wrot=
-e:
->
-> On 06/25/2009 06:59 AM, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > I applied the following patch to yesterday's linux-next and the i386 uml
-> > defconfig build succeeded.
->=20
-> Stephan Hi,=20
-       ^
-Stephen :-)
+It would need to be
+	make ARCH=um 
+with an x86 cross-compiler.
 
-> Does this means that there will be a UML build every linux-next now?
+				Jeff
 
-Yes,  I will also see if the x86_64 UML will build.  I know the PPC one
-won't (does anyone care?).
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Fri__26_Jun_2009_11_07_22_+1000_+N+U/eWqXUq/h3ys
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkpEH0oACgkQjjKRsyhoI8yFagCgvy78dnYVEHWwv1bBsSkYJ0gc
-9/oAoKlewV4ngE2itq7NE2FPMPMRi8uI
-=jXJo
------END PGP SIGNATURE-----
-
---Signature=_Fri__26_Jun_2009_11_07_22_+1000_+N+U/eWqXUq/h3ys--
