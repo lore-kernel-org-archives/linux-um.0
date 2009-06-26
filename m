@@ -1,112 +1,78 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1755497AbZFTAzq@vger.kernel.org>
-From: Paul Menage <menage@google.com>
-Subject: [PATCH] UML: Fix some apparent bitrot
-Date: Fri, 19 Jun 2009 17:55:24 -0700
-Message-ID: <20090620005524.25582.69677.stgit@menage.mtv.corp.google.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+	helo=mx.sourceforge.net)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chkr@plauener.de>) id 1MKBF8-0001To-BU
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Jun 2009 13:13:26 +0000
+Received: from jack.hrz.tu-chemnitz.de ([134.109.132.46])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MKBEJ-0002Xq-R1
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Jun 2009 13:13:26 +0000
+Received: from csn-server.csn.tu-chemnitz.de ([134.109.101.249]
+	helo=gondor.middle-earth.priv)
+	by jack.hrz.tu-chemnitz.de with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <chkr@plauener.de>) id 1MKAHj-0003lt-HG
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Jun 2009 14:12:03 +0200
+Message-ID: <4A44BB12.1010605@plauener.de>
+Date: Fri, 26 Jun 2009 14:12:02 +0200
+From: Christian Krause <chkr@plauener.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+References: <1244664800.22809.31.camel@localhost>
+In-Reply-To: <1244664800.22809.31.camel@localhost>
+Subject: Re: [uml-devel] Fedora core 11 and UML kernel compile
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: akpm@linux-foundation.org, jdike@addtoit.com
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-UML: Fix some apparent bitrot
+Hi,
 
-- migration of net_device methods into net_device_ops
-- dma_sync_single() changes
-- cpumask_clear() -> cpumask_clear_cpu()
+Vincent Perrier wrote:
+> Fedora 11 cannot compile uml kernels (2.6.29.4 and 2.6.30),
+> here is the error:
+>    . . .
+>    . . .
+>   CC      init/version.o
+>   LD      init/built-in.o
+>   LD      .tmp_vmlinux1
+> /usr/bin/ld:arch/um/kernel/vmlinux.lds:1: ignoring invalid character `#'
+> in expression
+> 
+> I have no knowledge at all of kernel compilation, so I have no idea
+> how to get it compiled.
 
-Signed-off-by: Paul Menage <menage@google.com>
+The root cause of the problem is a change in the behavior of the bash.
+Fedora 11 uses bash 4 which does not pass environmental variables
+containing "." to sub-processes. Since the kernel's Makefiles rely on
+this feature, the mentioned error occurs.
 
---
+Right now there is a discussion on the bash's mailing list whether this
+behavior is correct or not:
+http://lists.gnu.org/archive/html/bug-bash/2009-06/msg00078.html
 
-Fixes the following compile errors:
-
-include/linux/dma-mapping.h:113: error: redefinition of 'dma_sync_single'
-arch/um/include/asm/dma-mapping.h:84: error: previous definition of 'dma_sync_single' was here
-include/linux/dma-mapping.h: In function 'dma_sync_single':
-include/linux/dma-mapping.h:117: error: implicit declaration of function 'dma_sync_single_for_cpu'
-include/linux/dma-mapping.h: At top level:
-include/linux/dma-mapping.h:120: error: redefinition of 'dma_sync_sg'
-arch/um/include/asm/dma-mapping.h:91: error: previous definition of 'dma_sync_sg' was here
-include/linux/dma-mapping.h: In function 'dma_sync_sg':
-include/linux/dma-mapping.h:124: error: implicit declaration of function 'dma_sync_sg_for_cpu'
+So it is unclear right now whether the problem should be fixed in the
+bash, in make or in the kernel's Makefiles. Let's see what's the outcome
+of the discussion with the bash developers.
 
 
-arch/um/drivers/slirp_kern.c: In function 'slirp_init':
-arch/um/drivers/slirp_kern.c:35: error: 'struct net_device' has no member named 'init'
+Best regards,
+Christian
 
-
-arch/um/include/asm/mmu_context.h: In function 'switch_mm':
-arch/um/include/asm/mmu_context.h:38: warning: passing argument 1 of 'cpumask_clear' makes pointer from integer without
-a cast
-arch/um/include/asm/mmu_context.h:38: error: too many arguments to function 'cpumask_clear'
-
----
-
- arch/um/drivers/slip_kern.c       |    1 -
- arch/um/drivers/slirp_kern.c      |    1 -
- arch/um/include/asm/dma-mapping.h |    4 ++--
- arch/um/include/asm/mmu_context.h |    2 +-
- 4 files changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/arch/um/drivers/slip_kern.c b/arch/um/drivers/slip_kern.c
-index 5ec1756..dd2aadc 100644
---- a/arch/um/drivers/slip_kern.c
-+++ b/arch/um/drivers/slip_kern.c
-@@ -30,7 +30,6 @@ static void slip_init(struct net_device *dev, void *data)
- 
- 	slip_proto_init(&spri->slip);
- 
--	dev->init = NULL;
- 	dev->hard_header_len = 0;
- 	dev->header_ops = NULL;
- 	dev->addr_len = 0;
-diff --git a/arch/um/drivers/slirp_kern.c b/arch/um/drivers/slirp_kern.c
-index f15a6e7..e376284 100644
---- a/arch/um/drivers/slirp_kern.c
-+++ b/arch/um/drivers/slirp_kern.c
-@@ -32,7 +32,6 @@ void slirp_init(struct net_device *dev, void *data)
- 
- 	slip_proto_init(&spri->slip);
- 
--	dev->init = NULL;
- 	dev->hard_header_len = 0;
- 	dev->header_ops = NULL;
- 	dev->addr_len = 0;
-diff --git a/arch/um/include/asm/dma-mapping.h b/arch/um/include/asm/dma-mapping.h
-index 90fc708..378de4b 100644
---- a/arch/um/include/asm/dma-mapping.h
-+++ b/arch/um/include/asm/dma-mapping.h
-@@ -79,14 +79,14 @@ dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nhwentries,
- }
- 
- static inline void
--dma_sync_single(struct device *dev, dma_addr_t dma_handle, size_t size,
-+dma_sync_single_for_cpu(struct device *dev, dma_addr_t dma_handle, size_t size,
- 		enum dma_data_direction direction)
- {
- 	BUG();
- }
- 
- static inline void
--dma_sync_sg(struct device *dev, struct scatterlist *sg, int nelems,
-+dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg, int nelems,
- 	    enum dma_data_direction direction)
- {
- 	BUG();
-diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
-index edd719e..34d8130 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -35,7 +35,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	unsigned cpu = smp_processor_id();
- 
- 	if(prev != next){
--		cpumask_clear(cpu, mm_cpumask(prev));
-+		cpumask_clear_cpu(cpu, mm_cpumask(prev));
- 		cpumask_set_cpu(cpu, mm_cpumask(next));
- 		if(next != &init_mm)
- 			__switch_mm(&next->context.id);
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
