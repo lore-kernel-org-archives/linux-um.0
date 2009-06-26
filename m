@@ -1,65 +1,59 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
-	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jdike@addtoit.com>) id 1MK1UG-0002S4-JI
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Jun 2009 02:48:24 +0000
-Received: from saraswathi.solana.com ([198.99.130.12])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MK1UE-0002Zi-BG
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Jun 2009 02:48:24 +0000
-Date: Thu, 25 Jun 2009 22:48:02 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20090626024802.GA17655@c2.user-mode-linux.org>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1755977AbZFZCB0@vger.kernel.org>
+Date: Fri, 26 Jun 2009 12:01:11 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [uml-devel] [PATCH] UML: Fix some apparent bitrot
+Message-Id: <20090626120111.ef8622ba.sfr@canb.auug.org.au>
+In-Reply-To: <20090625145155.GA6383@c2.user-mode-linux.org>
 References: <20090620005524.25582.69677.stgit@menage.mtv.corp.google.com>
 	<4A3F4448.30502@panasas.com>
 	<20090622085735.GB6499@cr0.nay.redhat.com>
 	<20090622205226.fee30ba8.sfr@canb.auug.org.au>
 	<20090625104901.GG6374@cr0.nay.redhat.com>
 	<20090625145155.GA6383@c2.user-mode-linux.org>
-	<20090626120111.ef8622ba.sfr@canb.auug.org.au>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Fri__26_Jun_2009_12_01_11_+1000_YNeEzb3njtCdI8sg"
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Amerigo Wang <xiyou.wangcong@gmail.com>, Boaz Harrosh <bharrosh@panasas.com>, Paul Menage <menage@google.com>, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+
+--Signature=_Fri__26_Jun_2009_12_01_11_+1000_YNeEzb3njtCdI8sg
+Content-Type: text/plain; charset=US-ASCII
 Content-Disposition: inline
-In-Reply-To: <20090626120111.ef8622ba.sfr@canb.auug.org.au>
-Subject: Re: [uml-devel] [PATCH] UML: Fix some apparent bitrot
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Amerigo Wang <xiyou.wangcong@gmail.com>, akpm@linux-foundation.org
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 26, 2009 at 12:01:11PM +1000, Stephen Rothwell wrote:
-> On out PowerPC host I am using
-> 
-> 	make ARCH=um SUBARCH=i386 CROSS_COMPILE=<path to i386 cross compiler>
-> 
-> I am just building defconfig, would another config also be useful?
+On Thu, 25 Jun 2009 10:51:55 -0400 Jeff Dike <jdike@addtoit.com> wrote:
+>
+> On Thu, Jun 25, 2009 at 06:49:01PM +0800, Amerigo Wang wrote:
+> > make ARCH=3Dum SUBARCH=3Dppc? Or something similar...
+>=20
+> It would need to be
+> 	make ARCH=3Dum=20
+> with an x86 cross-compiler.
 
-defconfig is good - that's my normal test config.
+On out PowerPC host I am using
 
-> Currently plain "make ARCH=um" on PowerPC doesn't appear to work.
+	make ARCH=3Dum SUBARCH=3Di386 CROSS_COMPILE=3D<path to i386 cross compiler>
 
-No, it won't.
+I am just building defconfig, would another config also be useful?
 
-				Jeff
+Currently plain "make ARCH=3Dum" on PowerPC doesn't appear to work.
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
 
--- 
-Work email - jdike at linux dot intel dot com
+--Signature=_Fri__26_Jun_2009_12_01_11_+1000_YNeEzb3njtCdI8sg
+Content-Type: application/pgp-signature
 
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
+iEYEARECAAYFAkpEK+cACgkQjjKRsyhoI8wSkwCgkjJ4mO9aS59K8scR2ibpLv9S
+cRIAn0TGIPSRwn6YkvVzBvWb4a50HEId
+=CcyU
+-----END PGP SIGNATURE-----
+
+--Signature=_Fri__26_Jun_2009_12_01_11_+1000_YNeEzb3njtCdI8sg--
