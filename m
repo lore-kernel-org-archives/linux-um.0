@@ -1,22 +1,11 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
-	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <greg@kroah.com>) id 1MGRaP-0006Gg-4d
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Jun 2009 05:51:57 +0000
-Received: from kroah.org ([198.145.64.141] helo=coco.kroah.org)
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGRaL-0006EI-2Q
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 16 Jun 2009 05:51:56 +0000
-From: Greg Kroah-Hartman <gregkh@suse.de>
-Date: Mon, 15 Jun 2009 22:46:49 -0700
-Message-Id: <1245131213-24168-60-git-send-email-gregkh@suse.de>
-In-Reply-To: <20090616051351.GA23627@kroah.com>
-References: <20090616051351.GA23627@kroah.com>
-Subject: [uml-devel] [PATCH 60/64] uml: remove driver_data direct access of
-	struct device
+From: Joe Perches <joe@perches.com>
+Date: Sun, 28 Jun 2009 09:26:15 -0700
+Message-Id: <ea88a396964053c31a743f997d4cc6e7d53987cf.1246173680.git.joe@perches.com>
+In-Reply-To: <cover.1246173664.git.joe@perches.com>
+References: <cover.1246173664.git.joe@perches.com>
+Subject: [uml-devel] [PATCH 10/62] arch/um/drivers/net_kern.c: Remove
+	unnecessary semicolons
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,76 +20,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: linux-kernel@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Greg Kroah-Hartman <gregkh@suse.de>, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@linux-foundation.org>, trivial@kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net
 
-In the near future, the driver core is going to not allow direct access
-to the driver_data pointer in struct device.  Instead, the functions
-dev_get_drvdata() and dev_set_drvdata() should be used.  These functions
-have been around since the beginning, so are backwards compatible with
-all older kernel versions.
-
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- arch/um/drivers/net_kern.c |    4 ++--
- arch/um/drivers/ubd_kern.c |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/um/drivers/net_kern.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 434ba12..3b44b47 100644
+index 3b44b47..5072d4b 100644
 --- a/arch/um/drivers/net_kern.c
 +++ b/arch/um/drivers/net_kern.c
-@@ -360,7 +360,7 @@ static struct platform_driver uml_net_driver = {
- 
- static void net_device_release(struct device *dev)
+@@ -533,7 +533,7 @@ static int eth_parse(char *str, int *index_out, char **str_out,
+ 		     char **error_out)
  {
--	struct uml_net *device = dev->driver_data;
-+	struct uml_net *device = dev_get_drvdata(dev);
- 	struct net_device *netdev = device->dev;
- 	struct uml_net_private *lp = netdev_priv(netdev);
+ 	char *end;
+-	int n, err = -EINVAL;;
++	int n, err = -EINVAL;
  
-@@ -440,7 +440,7 @@ static void eth_configure(int n, void *init, char *mac,
- 	device->pdev.id = n;
- 	device->pdev.name = DRIVER_NAME;
- 	device->pdev.dev.release = net_device_release;
--	device->pdev.dev.driver_data = device;
-+	dev_set_drvdata(&device->pdev.dev, device);
- 	if (platform_device_register(&device->pdev))
- 		goto out_free_netdev;
- 	SET_NETDEV_DEV(dev,&device->pdev.dev);
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index aa9e926..8f05d4d 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -778,7 +778,7 @@ static int ubd_open_dev(struct ubd *ubd_dev)
- 
- static void ubd_device_release(struct device *dev)
- {
--	struct ubd *ubd_dev = dev->driver_data;
-+	struct ubd *ubd_dev = dev_get_drvdata(dev);
- 
- 	blk_cleanup_queue(ubd_dev->queue);
- 	*ubd_dev = ((struct ubd) DEFAULT_UBD);
-@@ -807,7 +807,7 @@ static int ubd_disk_register(int major, u64 size, int unit,
- 		ubd_devs[unit].pdev.id   = unit;
- 		ubd_devs[unit].pdev.name = DRIVER_NAME;
- 		ubd_devs[unit].pdev.dev.release = ubd_device_release;
--		ubd_devs[unit].pdev.dev.driver_data = &ubd_devs[unit];
-+		dev_set_drvdata(&ubd_devs[unit].pdev.dev, &ubd_devs[unit]);
- 		platform_device_register(&ubd_devs[unit].pdev);
- 		disk->driverfs_dev = &ubd_devs[unit].pdev.dev;
- 	}
+ 	n = simple_strtoul(str, &end, 0);
+ 	if (end == str) {
 -- 
-1.6.3.2
+1.6.3.1.10.g659a0.dirty
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
