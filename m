@@ -1,41 +1,64 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1756580AbZGHQC1@vger.kernel.org>
-Subject: [PATCH 17/44] includecheck fix: um, helper.c
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-In-Reply-To: <1247063308.4382.12.camel@ht.satnam>
-References: <1247063308.4382.12.camel@ht.satnam>
-Content-Type: text/plain
-Date: Wed, 08 Jul 2009 20:25:50 +0530
-Message-Id: <1247064950.4382.45.camel@ht.satnam>
-Mime-Version: 1.0
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+	helo=mx.sourceforge.net)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <bugzilla_noreply@kde.org>) id 1MMDdw-0003do-AL
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Jul 2009 04:11:28 +0000
+Received: from immanuel.kde.org ([138.246.255.177])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MMDdt-0004lq-M1 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Jul 2009 04:11:28 +0000
+From: Nicholas Nethercote <njn@valgrind.org>
+In-Reply-To: <bug-98444-50230@http.bugs.kde.org/>
+References: <bug-98444-50230@http.bugs.kde.org/>
+MIME-Version: 1.0
+Message-Id: <20090702041124.385D514696@immanuel.kde.org>
+Date: Thu,  2 Jul 2009 06:11:24 +0200 (CEST)
+Subject: [uml-devel] [Bug 98444] valgrind fails to run against
+ user-mode-linux (UML) process - clone
+Reply-To: bug-control@bugs.kde.org
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, Sam Ravnborg <sam@ravnborg.org>, LKML <linux-kernel@vger.kernel.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+
+https://bugs.kde.org/show_bug.cgi?id=98444
 
 
-fix the following 'make includecheck' warning:
+Nicholas Nethercote <njn@valgrind.org> changed:
 
-  arch/um/os-Linux/helper.c: linux/limits.h is included more than once.
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+             Status|UNCONFIRMED                 |RESOLVED
+                 CC|                            |njn@valgrind.org
+         Resolution|                            |WONTFIX
 
-Signed-off-by: Jaswinder Singh Rajput <jaswinderrajput@gmail.com>
----
- arch/um/os-Linux/helper.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index 30860b8..b6b1096 100644
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -15,7 +15,6 @@
- #include "os.h"
- #include "um_malloc.h"
- #include "user.h"
--#include <linux/limits.h>
- 
- struct helper_data {
- 	void (*pre_exec)(void*);
+
+
+--- Comment #4 from Nicholas Nethercote <njn valgrind org>  2009-07-02 06:11:20 ---
+I'm closing crashing and similar bugs that are more than two years old.  If
+you still see this problem with Valgrind 3.4.1 please reopen the bug report.
+Thanks.
+
 -- 
-1.6.0.6
+Configure bugmail: https://bugs.kde.org/userprefs.cgi?tab=email
+------- You are receiving this mail because: -------
+You are on the CC list for the bug.
 
-
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
