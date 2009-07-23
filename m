@@ -1,23 +1,38 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1754623AbZGWVaE@vger.kernel.org>
-Date: Thu, 23 Jul 2009 23:30:02 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH] um: minor Makefile simplification through use of
-	cc-ifversion
-Message-ID: <20090723213002.GC9488@merkur.ravnborg.org>
-References: <200907232057.51827.elendil@planet.nl>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1754384AbZGWS5y@vger.kernel.org>
+From: Frans Pop <elendil@planet.nl>
+Subject: [PATCH] um: minor Makefile simplification through use of cc-ifversion
+Date: Thu, 23 Jul 2009 20:57:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <200907232057.51827.elendil@planet.nl>
+Message-Id: <200907232057.51827.elendil@planet.nl>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Frans Pop <elendil@planet.nl>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Jul 23, 2009 at 08:57:51PM +0200, Frans Pop wrote:
-> Signed-off-by: Frans Pop <elendil@planet.nl>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Frans Pop <elendil@planet.nl>
+---
 
-If this patch is not pisked up by anyone else I will take it in kbuild.git.
+Change was suggested by Sam Ravnborg; see http://lkml.org/lkml/2009/7/18/15.
+Untested, but a similar patch for x86 was tested to work.
 
-	Sam
+diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-i386
+index 302cbe5..2c3e658 100644
+--- a/arch/um/Makefile-i386
++++ b/arch/um/Makefile-i386
+@@ -35,8 +35,9 @@ cflags-y += -ffreestanding
+ # Disable unit-at-a-time mode on pre-gcc-4.0 compilers, it makes gcc use
+ # a lot more stack due to the lack of sharing of stacklots.  Also, gcc
+ # 4.3.0 needs -funit-at-a-time for extern inline functions.
+-KBUILD_CFLAGS += $(shell if [ $(call cc-version) -lt 0400 ] ; then \
+-			echo $(call cc-option,-fno-unit-at-a-time); \
+-			else echo $(call cc-option,-funit-at-a-time); fi ;)
++KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0400, \
++			$(call cc-option,-fno-unit-at-a-time))
++KBUILD_CFLAGS += $(call cc-ifversion, -ge, 0400, \
++			$(call cc-option,-funit-at-a-time))
+ 
+ KBUILD_CFLAGS += $(cflags-y)
