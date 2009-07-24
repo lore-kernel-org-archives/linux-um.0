@@ -1,23 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <bugzilla_noreply@kde.org>) id 1MMDdw-0003do-AL
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <xiyou.wangcong@gmail.com>) id 1MUGb3-000525-Fr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Jul 2009 04:11:28 +0000
-Received: from immanuel.kde.org ([138.246.255.177])
+	Fri, 24 Jul 2009 08:57:45 +0000
+Received: from mail-px0-f190.google.com ([209.85.216.190])
 	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MMDdt-0004lq-M1 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Jul 2009 04:11:28 +0000
-From: Nicholas Nethercote <njn@valgrind.org>
-In-Reply-To: <bug-98444-50230@http.bugs.kde.org/>
-References: <bug-98444-50230@http.bugs.kde.org/>
+	id 1MUGay-0007KM-1V for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 24 Jul 2009 08:57:45 +0000
+Received: by pxi28 with SMTP id 28so1211266pxi.28
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 24 Jul 2009 01:57:34 -0700 (PDT)
+Date: Fri, 24 Jul 2009 16:59:45 +0800
+From: Amerigo Wang <xiyou.wangcong@gmail.com>
+Message-ID: <20090724085945.GB6372@cr0.nay.redhat.com>
+References: <200907232057.51827.elendil@planet.nl>
+	<20090723213002.GC9488@merkur.ravnborg.org>
 MIME-Version: 1.0
-Message-Id: <20090702041124.385D514696@immanuel.kde.org>
-Date: Thu,  2 Jul 2009 06:11:24 +0200 (CEST)
-Subject: [uml-devel] [Bug 98444] valgrind fails to run against
- user-mode-linux (UML) process - clone
-Reply-To: bug-control@bugs.kde.org
+Content-Disposition: inline
+In-Reply-To: <20090723213002.GC9488@merkur.ravnborg.org>
+Subject: Re: [uml-devel] [PATCH] um: minor Makefile simplification through
+	use of	cc-ifversion
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,31 +34,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: Frans Pop <elendil@planet.nl>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org
 
-https://bugs.kde.org/show_bug.cgi?id=98444
+On Thu, Jul 23, 2009 at 11:30:02PM +0200, Sam Ravnborg wrote:
+>On Thu, Jul 23, 2009 at 08:57:51PM +0200, Frans Pop wrote:
+>> Signed-off-by: Frans Pop <elendil@planet.nl>
+>Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
+Acked-by: WANG Cong <xiyou.wangcong@gmail.com>
 
-Nicholas Nethercote <njn@valgrind.org> changed:
+>
+>If this patch is not pisked up by anyone else I will take it in kbuild.git.
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-             Status|UNCONFIRMED                 |RESOLVED
-                 CC|                            |njn@valgrind.org
-         Resolution|                            |WONTFIX
-
-
-
-
---- Comment #4 from Nicholas Nethercote <njn valgrind org>  2009-07-02 06:11:20 ---
-I'm closing crashing and similar bugs that are more than two years old.  If
-you still see this problem with Valgrind 3.4.1 please reopen the bug report.
 Thanks.
-
--- 
-Configure bugmail: https://bugs.kde.org/userprefs.cgi?tab=email
-------- You are receiving this mail because: -------
-You are on the CC list for the bug.
 
 ------------------------------------------------------------------------------
 _______________________________________________
