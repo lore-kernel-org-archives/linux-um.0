@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <roel.kluin@gmail.com>) id 1Meqco-0000fu-GC
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jaswinder@kernel.org>) id 1Ma9xM-0003hf-4y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Aug 2009 13:27:18 +0000
-Received: from mail-ew0-f225.google.com ([209.85.219.225])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Meqcf-0000Dh-HZ for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 22 Aug 2009 13:27:18 +0000
-Received: by ewy25 with SMTP id 25so1268777ewy.33
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 22 Aug 2009 06:27:02 -0700 (PDT)
-Message-ID: <4A8FF347.30309@gmail.com>
-Date: Sat, 22 Aug 2009 15:31:51 +0200
-From: Roel Kluin <roel.kluin@gmail.com>
-MIME-Version: 1.0
-Subject: [uml-devel] [PATCH] uml: Fix order of pud and pmd_free()
+	Sun, 09 Aug 2009 15:05:08 +0000
+Received: from hera.kernel.org ([140.211.167.34])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Ma9xE-00023d-FT
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Aug 2009 15:05:07 +0000
+From: Jaswinder Singh Rajput <jaswinder@kernel.org>
+Date: Sun, 09 Aug 2009 20:34:04 +0530
+Message-Id: <1249830244.2957.27.camel@ht.satnam>
+Mime-Version: 1.0
+Subject: [uml-devel] [PATCH] UML: includecheck fix: um, helper.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,30 +27,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@linux-foundation.org>
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-If pmd_alloc() fails we should only free the prior allocated pud,
-if pte_alloc_map() fails, we should free pmd as well.
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+fix the following 'make includecheck' warning:
+
+  arch/um/os-Linux/helper.c: linux/limits.h is included more than once.
+
+Signed-off-by: Jaswinder Singh Rajput <jaswinderrajput@gmail.com>
 ---
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 0cd9a7a..8bfd1e9 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -38,10 +38,10 @@ static int init_stub_pte(struct mm_struct *mm, unsigned long proc,
- 	*pte = pte_mkread(*pte);
- 	return 0;
+ arch/um/os-Linux/helper.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
+index 30860b8..b6b1096 100644
+--- a/arch/um/os-Linux/helper.c
++++ b/arch/um/os-Linux/helper.c
+@@ -15,7 +15,6 @@
+ #include "os.h"
+ #include "um_malloc.h"
+ #include "user.h"
+-#include <linux/limits.h>
  
-- out_pmd:
--	pud_free(mm, pud);
-  out_pte:
- 	pmd_free(mm, pmd);
-+ out_pmd:
-+	pud_free(mm, pud);
-  out:
- 	return -ENOMEM;
- }
+ struct helper_data {
+ 	void (*pre_exec)(void*);
+-- 
+1.6.0.6
+
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
