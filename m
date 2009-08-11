@@ -1,9 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Thu, 30 Jul 2009 16:08:34 +0200 (CEST)
-From: Julia Lawall <julia@diku.dk>
-Message-ID: <Pine.LNX.4.64.0907301607550.8734@ask.diku.dk>
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+	helo=mx.sourceforge.net)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <roel.kluin@gmail.com>) id 1May9K-0003rU-KS
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Aug 2009 20:40:50 +0000
+Received: from mail-ew0-f210.google.com ([209.85.219.210])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1May9E-0000ST-BF for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 11 Aug 2009 20:40:50 +0000
+Received: by ewy6 with SMTP id 6so2230456ewy.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 11 Aug 2009 13:40:37 -0700 (PDT)
+Message-ID: <4A81D831.5090808@gmail.com>
+Date: Tue, 11 Aug 2009 22:44:33 +0200
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-Subject: [uml-devel] [PATCH 2/5] fs/hppfs: Add kmalloc NULL tests
+Subject: [uml-devel] [PATCH] uml: Read buffer overflow
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,57 +29,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Andrew Morton <akpm@linux-foundation.org>
 
-From: Julia Lawall <julia@diku.dk>
+Prevent write to write init->argw.argv[SLIRP_MAX_ARGS]
 
-Test the result of kmalloc using a ! test, as most commonly done elsewhere,
-rather than a test on 0.
-
-The semantic match that finds this problem is as follows:
-(http://www.emn.fr/x-info/coccinelle/)
-
-// <smpl>
-@@
-expression *x;
-identifier f;
-constant char *C;
-@@
-
-x = \(kmalloc\|kcalloc\|kzalloc\)(...);
-... when != x == NULL
-    when != x != NULL
-    when != (x || ...)
-(
-kfree(x)
-|
-f(...,C,...,x,...)
-|
-*f(...,x,...)
-|
-*x->f
-)
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
 ---
- fs/hppfs/hppfs.c                    |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+If i becomes SLIRP_MAX_ARGS - 1 and `*str != ','` evaluates to
+true, then we write init->argw.argv[SLIRP_MAX_ARGS].
 
-diff --git a/fs/hppfs/hppfs.c b/fs/hppfs/hppfs.c
-index a5089a6..b705a3c 100644
---- a/fs/hppfs/hppfs.c
-+++ b/fs/hppfs/hppfs.c
-@@ -385,7 +385,7 @@ static struct hppfs_data *hppfs_get_data(int fd, int filter,
- 			break;
+Can this occur?
+
+diff --git a/arch/um/drivers/slirp_kern.c b/arch/um/drivers/slirp_kern.c
+index e376284..39bc9a7 100644
+--- a/arch/um/drivers/slirp_kern.c
++++ b/arch/um/drivers/slirp_kern.c
+@@ -97,6 +97,9 @@ static int slirp_setup(char *str, char **mac_out, void *data)
+ 		*str++ = '\0';
+ 	} while (1);
  
- 		new = kmalloc(sizeof(*data), GFP_KERNEL);
--		if (new == 0) {
-+		if (!new) {
- 			printk(KERN_ERR "hppfs_get_data : data allocation "
- 			       "failed\n");
- 			err = -ENOMEM;
++	if (i == SLIRP_MAX_ARGS)
++		i--;
++
+ 	init->argw.argv[i] = NULL;
+ 	return 1;
+ }
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
