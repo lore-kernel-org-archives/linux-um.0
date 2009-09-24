@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <tabbott@MIT.EDU>) id 1MokBa-0005ho-VQ
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tabbott@MIT.EDU>) id 1MqpRk-0001tp-69
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Sep 2009 20:36:06 +0000
+	Thu, 24 Sep 2009 14:37:24 +0000
 Received: from biscayne-one-station.mit.edu ([18.7.7.80])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MokBW-0001WI-T5
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MqpRf-0002fh-7r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Sep 2009 20:36:06 +0000
+	Thu, 24 Sep 2009 14:37:24 +0000
 From: Tim Abbott <tabbott@ksplice.com>
-Date: Fri, 18 Sep 2009 16:35:32 -0400
-Message-Id: <1253306132-7117-2-git-send-email-tabbott@ksplice.com>
-In-Reply-To: <1253306132-7117-1-git-send-email-tabbott@ksplice.com>
-References: <1253306132-7117-1-git-send-email-tabbott@ksplice.com>
-Subject: [uml-devel] [PATCH v2] um: Clean up linker script using standard
-	macros.
+Date: Thu, 24 Sep 2009 10:36:20 -0400
+Message-Id: <1253802986-8132-6-git-send-email-tabbott@ksplice.com>
+In-Reply-To: <1253802986-8132-1-git-send-email-tabbott@ksplice.com>
+References: <1253802986-8132-1-git-send-email-tabbott@ksplice.com>
+Subject: [uml-devel] [PATCH v2 05/11] um: Clean up linker script using
+	standard macros.
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,13 +30,13 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Tim Abbott <tabbott@ksplice.com>, Jeff Dike <jdike@addtoit.com>, Sam Ravnborg <sam@ravnborg.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Tim Abbott <tabbott@ksplice.com>, Jeff Dike <jdike@addtoit.com>, Sam Ravnborg <sam@ravnborg.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
 Signed-off-by: Tim Abbott <tabbott@ksplice.com>
 Cc: Jeff Dike <jdike@addtoit.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: Sam Ravnborg <sam@ravnborg.org>
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
 ---
  arch/um/include/asm/common.lds.S |   29 ++++++-----------------------
  arch/um/kernel/dyn.lds.S         |    9 ++-------
