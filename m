@@ -1,29 +1,105 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1758637AbZIRUgK@vger.kernel.org>
-From: Tim Abbott <tabbott@ksplice.com>
-Subject: [PATCH v2] Linker script cleanup for um
-Date: Fri, 18 Sep 2009 16:35:31 -0400
-Message-Id: <1253306132-7117-1-git-send-email-tabbott@ksplice.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>, Tim Abbott <tabbott@ksplice.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+	helo=mx.sourceforge.net)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <andrew@lunn.ch>) id 1Mw0Ow-0004EW-2k
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Oct 2009 21:19:54 +0000
+Received: from londo.lunn.ch ([80.238.139.98])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mw0Op-0005hz-KK for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 08 Oct 2009 21:19:54 +0000
+Date: Thu, 8 Oct 2009 23:00:37 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+Message-ID: <20091008210037.GL6646@lunn.ch>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] [patch] Fix race in um_request_irq()
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This is an updated version of the patch I sent on September 6 cleaning
-up the um architecture's linker scripts.  It differs from the previous
-version only in having been rebased on top of Linus' current master.
+There is a race condition in um_request_irq(). The SIGIO handling is
+first enabled with the call to activate_fd(). The irq handler is then
+registered with request_irq(). What can happen is that directly after
+activate_fd() the SIGIO goes off and the IRQ source is disabled at the
+low level, the pollfd is set to -1. Since no irq handler has yet been
+registered, the interrupt it left disabled at the low level. The
+interrupt handler is then registered, but its too late, the interrupt
+source has been disabled at the lower level and is never re-enabled.
+To fix this race condition i swapped the order. First request_irq()
+then activate_fd() the interrupt sources.
 
-This cross-architecture linker script cleanup project is in
-preparation for adding support for building the kernel with
--ffunction-sections -fdata-sections, which is a prerequisite for
-Ksplice.
+There is a second bug. In 2.6.31 there was a change to the way
+__do_IRQ() and friends work for chained interrupt sources. The old way
+was that all chained interrupt handlers were called. The new way is
+that the chain is walked only until a handler returns IRQ_HANDLED or
+IRQ_WAKE_THREAD. uml_net_interrupt() would always return IRQ_HANDLED,
+irrespective of if the device really did receive an interrupt or
+not. This mean with the new code only the first device on a chained
+interrupt ever got its interrupts handled. The second/third/... device
+never got any interrupts processed. I changed uml_net_interrupt() to
+always return IRQ_NONE so that all handlers get called on a chained
+interrupt.
 
-	-Tim Abbott
+        Andrew Lunn
 
-Tim Abbott (1):
-  um: Clean up linker script using standard macros.
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index 9483c19..2b0748e 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -145,7 +145,7 @@ static irqreturn_t uml_net_interrupt(int irq, void *dev_id)
+ 
+ out:
+ 	spin_unlock(&lp->lock);
+-	return IRQ_HANDLED;
++	return IRQ_NONE;
+ }
+ 
+ static int uml_net_open(struct net_device *dev)
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 454cdb4..3a31d57 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -345,13 +345,12 @@ int um_request_irq(unsigned int irq, int fd, int type,
+ {
+ 	int err;
+ 
+-	if (fd != -1) {
++	err = request_irq(irq, handler, irqflags, devname, dev_id);
++
++	if (!err && (fd != -1))
+ 		err = activate_fd(irq, fd, type, dev_id);
+-		if (err)
+-			return err;
+-	}
+ 
+-	return request_irq(irq, handler, irqflags, devname, dev_id);
++	return err;
+ }
+ 
+ EXPORT_SYMBOL(um_request_irq);
 
- arch/um/include/asm/common.lds.S |   29 ++++++-----------------------
- arch/um/kernel/dyn.lds.S         |    9 ++-------
- arch/um/kernel/uml.lds.S         |   26 ++++++--------------------
- 3 files changed, 14 insertions(+), 50 deletions(-)
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
