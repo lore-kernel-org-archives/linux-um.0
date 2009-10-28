@@ -1,20 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
-	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <andrew@lunn.ch>) id 1Mw0Ow-0004EW-2k
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Oct 2009 21:19:54 +0000
-Received: from londo.lunn.ch ([80.238.139.98])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mw0Op-0005hz-KK for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 08 Oct 2009 21:19:54 +0000
-Date: Thu, 8 Oct 2009 23:00:37 +0200
+Date: Wed, 28 Oct 2009 07:37:21 +0100
 From: Andrew Lunn <andrew@lunn.ch>
-Message-ID: <20091008210037.GL6646@lunn.ch>
+Message-ID: <20091028063721.GA4513@lunn.ch>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [uml-devel] [patch] Fix race in um_request_irq()
+Subject: [uml-devel] [patch] uml: IRQ register race condition
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,7 +18,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, user-mode-linux-user@lists.sourceforge.net, Andrew Morton <akpm@linux-foundation.org>, Yinghai Lu <yinghai@kernel.org>, Ingo Molnar <mingo@elte.hu>
+
+From: Andrew Lunn <andrew@lunn.ch>
 
 There is a race condition in um_request_irq(). The SIGIO handling is
 first enabled with the call to activate_fd(). The irq handler is then
@@ -53,9 +45,8 @@ never got any interrupts processed. I changed uml_net_interrupt() to
 always return IRQ_NONE so that all handlers get called on a chained
 interrupt.
 
-        Andrew Lunn
-
 Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+---
 diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
 index 9483c19..2b0748e 100644
 --- a/arch/um/drivers/net_kern.c
