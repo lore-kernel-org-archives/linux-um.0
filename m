@@ -1,13 +1,14 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+From: =?UTF-8?q?Andr=C3=A9=20Goddard=20Rosa?= <andre.goddard@gmail.com>
+Date: Sat,  7 Nov 2009 13:16:15 -0200
+Message-Id: <7206ef594e67a240a842339f520284de6569b1fc.1257602781.git.andre.goddard@gmail.com>
+In-Reply-To: <cover.1257602781.git.andre.goddard@gmail.com>
+References: <cover.1257602781.git.andre.goddard@gmail.com>
+In-Reply-To: <cover.1257602781.git.andre.goddard@gmail.com>
+References: <cover.1257602781.git.andre.goddard@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1257696303.4184.8.camel@mulgrave.site>
-References: <cover.1257602781.git.andre.goddard@gmail.com> 
-	<1257696303.4184.8.camel@mulgrave.site>
-From: =?ISO-8859-1?Q?Andr=E9_Goddard_Rosa?= <andre.goddard@gmail.com>
-Date: Sun, 8 Nov 2009 14:52:18 -0200
-Message-ID: <b8bf37780911080852l10d11f4ele5bf6a6aed94c5fe@mail.gmail.com>
-Subject: Re: [uml-devel] [dm-devel] [PATCH v4 00/12] introduce skip_spaces(),
-	reducing 	code size plus some clean-ups
+Subject: [uml-devel] [PATCH v4 07/12] vsprintf: factor out skip_space code
+	in a separate function
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,67 +18,52 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Pavel Roskin <proski@gnu.org>, Stefan Haberland <stefan.haberland@de.ibm.com>, Jan Kara <jack@suse.cz>, linux-cachefs@redhat.com, Mike Snitzer <snitzer@redhat.com>, Neil Brown <neilb@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, Jens Axboe <jens.axboe@oracle.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steve Dickson <steved@redhat.com>, "James E . J . Bottomley" <jejb@parisc-linux.org>, David Howells <dhowells@redhat.com>, ibm-acpi-devel@lists.sourceforge.net, device-mapper development <dm-devel@redhat.com>, Julia Lawall <julia@diku.dk>, "H . Peter Anvin" <hpa@zytor.com>, Daire Byrne <Daire.Byrne@framestore.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Greg Banks <gnb@melbourne.sgi.com>, Stefan Weinhuber <wein@de.ibm.com>, Eric Sandeen <sandeen@redhat.com>, Adam Belay <abelay@mit.edu>, netfilter-devel@vger.kernel.org, Helge Deller <deller@gmx.de>, x86@kernel.org, James Morris <jmorris@namei.org>, Takashi Iwai <tiwai@suse.de>, Ingo Molnar <mingo@redhat.com>, Alasdair G Kergon <agk@redhat.com>, WANG Cong <wangcong@zeuux.org>, Roman Hoog Antink <rha@open.ch>, linux-ext4@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>, Andrea Righi <righi.andrea@gmail.com>, alsa-devel@alsa-project.org, Len Brown <len.brown@intel.com>, Samuel Ortiz <samuel@sortiz.org>, coreteam@netfilter.org, user-mode-linux-devel@lists.sourceforge.net, linux-s390@vger.kernel.org, Trond Myklebust <Trond.Myklebust@netapp.com>, Jeff Dike <jdike@addtoit.com>, Rusty Russell <rusty@rustcorp.com.au>, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Sitsofe Wheeler <sitsofe@yahoo.com>, Steven Rostedt <rostedt@goodmis.org>, linux-raid@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Andreas Dilger <adilger@sun.com>, Pekka Enberg <penberg@cs.helsinki.fi>, Mikulas Patocka <mpatocka@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-user@lists.sourceforge.net, Jaroslav Kysela <perex@perex.cz>, Thomas Gleixner <tglx@linutronix.de>, Michael Holzheu <holzheu@linux.vnet.ibm.com>, Arjan van de Ven <arjan@linux.intel.com>, Jan Engelhardt <jengelh@medozas.de>, Bjorn Helgaas <bjorn.helgaas@hp.com>, Andre Noll <maan@systemlinux.org>, Theodore Ts'o <tytso@mit.edu>, linux-parisc@vger.kernel.org, "Martin K . Petersen" <martin.petersen@oracle.com>, netdev@vger.kernel.org, Jason Baron <jbaron@redhat.com>, Greg Kroah-Hartman <gregkh@suse.de>, Roel Kluin <roel.kluin@gmail.com>, linux-kernel@vger.kernel.org, Stoyan Gaydarov <stoyboyker@gmail.com>, Patrick McHardy <kaber@trash.net>, Kyle McMarti n <kyle@mcmartin.ca>, Chr istof Schmitt <christof.schmitt@de.ibm.com>, netfilter@vger.kernel.org, Richard Purdie <rpurdie@rpsys.net>, Joe Perches <joe@perches.com>, linux390@de.ibm.com, Andrew Morton <akpm@linux-foundation.org>, Andrey Borzenkov <arvidjaar@mail.ru>, "David S . Miller" <davem@davemloft.net>
+To: Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Michael Holzheu <holzheu@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Stoyan Gaydarov <stoyboyker@gmail.com>, Julia Lawall <julia@diku.dk>, Jeff Dike <jdike@addtoit.com>, James Morris <jmorris@namei.org>, WANG Cong <wangcong@zeuux.org>, Pekka Enberg <penberg@cs.helsinki.fi>, David Howells <dhowells@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Alexey Dobriyan <adobriyan@gmail.com>, Joe Perches <joe@perches.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Arjan van de Ven <arjan@linux.intel.com>, Neil Brown <neilb@suse.de>, Alasdair G Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>, Mikulas Patocka <mpatocka@redhat.com>, Jens Axboe <jens.axboe@oracle.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, Andre Noll <maan@systemlinux.org>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E . J . Bottomley" <jejb@parisc-linux.org>, Roel Kluin <roel.kluin@gmail.com>, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Len Brown <len.brown@intel.com>, Adam Belay <abelay@mit.edu>, Bjorn Helgaas <bjorn.helgaas@hp.com>, Stefan Haberland <stefan.haberland@de.ibm.com>, Stefan Weinhuber <wein@de.ibm.com>, Richard Purdie <rpurdie@rpsys.net>, Andrea Righi <righi.andrea@gmail.com>, Greg Kroah-Hartman <gregkh@suse.de>, Pavel Roskin <proski@gnu.org>, Andrey Borzenkov <arvidjaar@mail.ru>, Steve Dickson <steved@redhat.com>, Trond Myklebust <Trond.Myklebust@netapp.com>, Daire Byrne <Daire.Byrne@framestore.com>, Al Viro <viro@zeniv.linux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@sun.com>, Eric Sandeen <sandeen@redhat.com>, Jan Kara <jack@suse.cz>, Rusty Russell <rusty@rustcorp.com.au>, Takashi Iwai <tiwai@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, Sitsofe Wheeler <sitsofe@yahoo.com>, Christof Schmitt <christof.schmitt@de.ibm.com>, Greg Banks <gnb@melbourne.sgi.com>, Jason Baron <jbaron@redhat.com>, "David S . Miller" <davem@davemloft.net>, Steven Rostedt <rostedt@goodmis.org>, Samuel Ortiz <samuel@sortiz.org>, Patrick McHardy <kaber@trash.net>, Jan Engelhardt <jengelh@medozas.de>, Roman Hoog Antink <rha@open.ch>, Jaroslav Kysela <perex@perex.cz>, linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-parisc@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net, linux-cachefs@redhat.com, linux-ext4@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?Andr=C3=A9=20Goddard=20Rosa?= <andre.goddard@gmail.com>
 
-Hi, James!
-
-On Sun, Nov 8, 2009 at 2:05 PM, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Sat, 2009-11-07 at 13:16 -0200, Andr=E9 Goddard Rosa wrote:
->> This patch reduces lib.a code size by 173 bytes on my Core 2 with gcc 4.=
-4.1
->> even considering that it exports a newly defined function skip_spaces()
->> to drivers:
->> =A0 =A0text =A0 =A0data =A0 =A0 bss =A0 =A0 dec =A0 =A0 hex filename
->> =A0 64867 =A0 =A0 840 =A0 =A0 592 =A0 66299 =A0 102fb (TOTALS-lib.a-befo=
-re)
->> =A0 64954 =A0 =A0 584 =A0 =A0 588 =A0 66126 =A0 1024e (TOTALS-lib.a-afte=
-r)
->> and implements some code tidy up.
->>
->> Besides reducing lib.a size, it converts many in-tree drivers to use the
->> newly defined function, which makes another small reduction on kernel si=
-ze
->> overall when those drivers are used.
->
-> Before we embark on something as massive as this, could we take a step
-> back. =A0I agree that if I were coming up with the strstip() interface
-> today I probably wouldn't have given it two overloaded uses.
->
-> However, I think the function, in spite of this minor issue, is very
-> usable. =A0I still don't understand why people thought adding a
-> __must_check, which is what damaged one of the overloaded uses, is a
-> good idea.
-
-Differently of "static void strip(char *str)"@scripts/kconfig/conf.c ,
-this function
-does not moves the characters to the beginning of the string, so that if th=
-at
-string is going to be reused it should refer to the newly returned string s=
-tart.
-
-I've changed it to remove the const and return a "char *".
-
-Do you think __must_check is not needed as well?
-
-Thanks,
-Andr=E9
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+SXQgZGVjcmVhc2VzIGNvZGUgc2l6ZToKICAgdGV4dCAgICBkYXRhICAgICBic3MgICAgIGRlYyAg
+ICAgaGV4IGZpbGVuYW1lCiAgMTU3MTkgICAgICAgMCAgICAgICA4ICAgMTU3MjcgICAgM2Q2ZiBs
+aWIvdnNwcmludGYuby1iZWZvcmUKICAxNTU0MyAgICAgICAwICAgICAgIDggICAxNTU1MSAgICAz
+Y2JmIGxpYi92c3ByaW50Zi5vLWFmdGVyCgpTaWduZWQtb2ZmLWJ5OiBBbmRyw6kgR29kZGFyZCBS
+b3NhIDxhbmRyZS5nb2RkYXJkQGdtYWlsLmNvbT4KQWNrZWQtYnk6IEZyZWRlcmljIFdlaXNiZWNr
+ZXIgPGZ3ZWlzYmVjQGdtYWlsLmNvbT4KLS0tCiBsaWIvdnNwcmludGYuYyB8ICAgMTkgKysrKysr
+KysrKystLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCA4IGRlbGV0
+aW9ucygtKQoKZGlmZiAtLWdpdCBhL2xpYi92c3ByaW50Zi5jIGIvbGliL3ZzcHJpbnRmLmMKaW5k
+ZXggZjcwM2ZkZi4uNTY2Yzk0NyAxMDA2NDQKLS0tIGEvbGliL3ZzcHJpbnRmLmMKKysrIGIvbGli
+L3ZzcHJpbnRmLmMKQEAgLTE3MzYsNiArMTczNiwxMyBAQCBFWFBPUlRfU1lNQk9MX0dQTChicHJp
+bnRmKTsKIAogI2VuZGlmIC8qIENPTkZJR19CSU5BUllfUFJJTlRGICovCiAKK3N0YXRpYyBub2lu
+bGluZSBjb25zdCBjaGFyICpza2lwX3NwYWNlKGNvbnN0IGNoYXIgKnN0cikKK3sKKwl3aGlsZSAo
+aXNzcGFjZSgqc3RyKSkKKwkJKytzdHI7CisJcmV0dXJuIHN0cjsKK30KKwogLyoqCiAgKiB2c3Nj
+YW5mIC0gVW5mb3JtYXQgYSBidWZmZXIgaW50byBhIGxpc3Qgb2YgYXJndW1lbnRzCiAgKiBAYnVm
+OglpbnB1dCBidWZmZXIKQEAgLTE3NTcsMTAgKzE3NjQsOCBAQCBpbnQgdnNzY2FuZihjb25zdCBj
+aGFyICpidWYsIGNvbnN0IGNoYXIgKmZtdCwgdmFfbGlzdCBhcmdzKQogCQkgKiB3aGl0ZSBzcGFj
+ZSwgaW5jbHVkaW5nIG5vbmUsIGluIHRoZSBpbnB1dC4KIAkJICovCiAJCWlmIChpc3NwYWNlKCpm
+bXQpKSB7Ci0JCQl3aGlsZSAoaXNzcGFjZSgqZm10KSkKLQkJCQkrK2ZtdDsKLQkJCXdoaWxlIChp
+c3NwYWNlKCpzdHIpKQotCQkJCSsrc3RyOworCQkJZm10ID0gc2tpcF9zcGFjZShmbXQpOworCQkJ
+c3RyID0gc2tpcF9zcGFjZShzdHIpOwogCQl9CiAKIAkJLyogYW55dGhpbmcgdGhhdCBpcyBub3Qg
+YSBjb252ZXJzaW9uIG11c3QgbWF0Y2ggZXhhY3RseSAqLwpAQCAtMTgzMCw4ICsxODM1LDcgQEAg
+aW50IHZzc2NhbmYoY29uc3QgY2hhciAqYnVmLCBjb25zdCBjaGFyICpmbXQsIHZhX2xpc3QgYXJn
+cykKIAkJCWlmIChmaWVsZF93aWR0aCA9PSAtMSkKIAkJCQlmaWVsZF93aWR0aCA9IElOVF9NQVg7
+CiAJCQkvKiBmaXJzdCwgc2tpcCBsZWFkaW5nIHdoaXRlIHNwYWNlIGluIGJ1ZmZlciAqLwotCQkJ
+d2hpbGUgKGlzc3BhY2UoKnN0cikpCi0JCQkJc3RyKys7CisJCQlzdHIgPSBza2lwX3NwYWNlKHN0
+cik7CiAKIAkJCS8qIG5vdyBjb3B5IHVudGlsIG5leHQgd2hpdGUgc3BhY2UgKi8KIAkJCXdoaWxl
+ICgqc3RyICYmICFpc3NwYWNlKCpzdHIpICYmIGZpZWxkX3dpZHRoLS0pCkBAIC0xODczLDggKzE4
+NzcsNyBAQCBpbnQgdnNzY2FuZihjb25zdCBjaGFyICpidWYsIGNvbnN0IGNoYXIgKmZtdCwgdmFf
+bGlzdCBhcmdzKQogCQkvKiBoYXZlIHNvbWUgc29ydCBvZiBpbnRlZ2VyIGNvbnZlcnNpb24uCiAJ
+CSAqIGZpcnN0LCBza2lwIHdoaXRlIHNwYWNlIGluIGJ1ZmZlci4KIAkJICovCi0JCXdoaWxlIChp
+c3NwYWNlKCpzdHIpKQotCQkJc3RyKys7CisJCXN0ciA9IHNraXBfc3BhY2Uoc3RyKTsKIAogCQlk
+aWdpdCA9ICpzdHI7CiAJCWlmIChpc19zaWduICYmIGRpZ2l0ID09ICctJykKLS0gCjEuNi41LjIu
+MTUzLmc2ZTMxZi5kaXJ0eQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZXQgQ3J5c3RhbCBSZXBv
+cnRzIGhhbmRsZSB0aGUgcmVwb3J0aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1E
+YXkgCnRyaWFsLiBTaW1wbGlmeSB5b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBk
+ZXBsb3ltZW50IC0gYW5kIGZvY3VzIG9uIAp3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0
+aW9uIGNvZGluZy4gRGlzY292ZXIgd2hhdCdzIG5ldyB3aXRoCkNyeXN0YWwgUmVwb3J0cyBub3cu
+ICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0
+ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
+cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
