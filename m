@@ -1,10 +1,13 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Wed, 28 Oct 2009 07:37:21 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-Message-ID: <20091028063721.GA4513@lunn.ch>
+From: =?UTF-8?q?Andr=C3=A9=20Goddard=20Rosa?= <andre.goddard@gmail.com>
+Date: Sat,  7 Nov 2009 13:16:17 -0200
+Message-Id: <360ba96ac59d5bb9f14aef9ce0ec5f57014c2f8e.1257602781.git.andre.goddard@gmail.com>
+In-Reply-To: <cover.1257602781.git.andre.goddard@gmail.com>
+References: <cover.1257602781.git.andre.goddard@gmail.com>
+In-Reply-To: <cover.1257602781.git.andre.goddard@gmail.com>
+References: <cover.1257602781.git.andre.goddard@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [patch] uml: IRQ register race condition
+Subject: [uml-devel] [PATCH v4 09/12] ctype: constify read-only _ctype string
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -14,83 +17,79 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, user-mode-linux-user@lists.sourceforge.net, Andrew Morton <akpm@linux-foundation.org>, Yinghai Lu <yinghai@kernel.org>, Ingo Molnar <mingo@elte.hu>
+To: Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Michael Holzheu <holzheu@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Stoyan Gaydarov <stoyboyker@gmail.com>, Julia Lawall <julia@diku.dk>, Jeff Dike <jdike@addtoit.com>, James Morris <jmorris@namei.org>, WANG Cong <wangcong@zeuux.org>, Pekka Enberg <penberg@cs.helsinki.fi>, David Howells <dhowells@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Alexey Dobriyan <adobriyan@gmail.com>, Joe Perches <joe@perches.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Arjan van de Ven <arjan@linux.intel.com>, Neil Brown <neilb@suse.de>, Alasdair G Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>, Mikulas Patocka <mpatocka@redhat.com>, Jens Axboe <jens.axboe@oracle.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, Andre Noll <maan@systemlinux.org>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E . J . Bottomley" <jejb@parisc-linux.org>, Roel Kluin <roel.kluin@gmail.com>, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Len Brown <len.brown@intel.com>, Adam Belay <abelay@mit.edu>, Bjorn Helgaas <bjorn.helgaas@hp.com>, Stefan Haberland <stefan.haberland@de.ibm.com>, Stefan Weinhuber <wein@de.ibm.com>, Richard Purdie <rpurdie@rpsys.net>, Andrea Righi <righi.andrea@gmail.com>, Greg Kroah-Hartman <gregkh@suse.de>, Pavel Roskin <proski@gnu.org>, Andrey Borzenkov <arvidjaar@mail.ru>, Steve Dickson <steved@redhat.com>, Trond Myklebust <Trond.Myklebust@netapp.com>, Daire Byrne <Daire.Byrne@framestore.com>, Al Viro <viro@zeniv.linux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@sun.com>, Eric Sandeen <sandeen@redhat.com>, Jan Kara <jack@suse.cz>, Rusty Russell <rusty@rustcorp.com.au>, Takashi Iwai <tiwai@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, Sitsofe Wheeler <sitsofe@yahoo.com>, Christof Schmitt <christof.schmitt@de.ibm.com>, Greg Banks <gnb@melbourne.sgi.com>, Jason Baron <jbaron@redhat.com>, "David S . Miller" <davem@davemloft.net>, Steven Rostedt <rostedt@goodmis.org>, Samuel Ortiz <samuel@sortiz.org>, Patrick McHardy <kaber@trash.net>, Jan Engelhardt <jengelh@medozas.de>, Roman Hoog Antink <rha@open.ch>, Jaroslav Kysela <perex@perex.cz>, linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-parisc@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net, linux-cachefs@redhat.com, linux-ext4@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?Andr=C3=A9=20Goddard=20Rosa?= <andre.goddard@gmail.com>
 
-From: Andrew Lunn <andrew@lunn.ch>
-
-There is a race condition in um_request_irq(). The SIGIO handling is
-first enabled with the call to activate_fd(). The irq handler is then
-registered with request_irq(). What can happen is that directly after
-activate_fd() the SIGIO goes off and the IRQ source is disabled at the
-low level, the pollfd is set to -1. Since no irq handler has yet been
-registered, the interrupt it left disabled at the low level. The
-interrupt handler is then registered, but its too late, the interrupt
-source has been disabled at the lower level and is never re-enabled.
-To fix this race condition i swapped the order. First request_irq()
-then activate_fd() the interrupt sources.
-
-There is a second bug. In 2.6.31 there was a change to the way
-__do_IRQ() and friends work for chained interrupt sources. The old way
-was that all chained interrupt handlers were called. The new way is
-that the chain is walked only until a handler returns IRQ_HANDLED or
-IRQ_WAKE_THREAD. uml_net_interrupt() would always return IRQ_HANDLED,
-irrespective of if the device really did receive an interrupt or
-not. This mean with the new code only the first device on a chained
-interrupt ever got its interrupts handled. The second/third/... device
-never got any interrupts processed. I changed uml_net_interrupt() to
-always return IRQ_NONE so that all handlers get called on a chained
-interrupt.
-
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
----
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 9483c19..2b0748e 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -145,7 +145,7 @@ static irqreturn_t uml_net_interrupt(int irq, void *dev_id)
- 
- out:
- 	spin_unlock(&lp->lock);
--	return IRQ_HANDLED;
-+	return IRQ_NONE;
- }
- 
- static int uml_net_open(struct net_device *dev)
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 454cdb4..3a31d57 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -345,13 +345,12 @@ int um_request_irq(unsigned int irq, int fd, int type,
- {
- 	int err;
- 
--	if (fd != -1) {
-+	err = request_irq(irq, handler, irqflags, devname, dev_id);
-+
-+	if (!err && (fd != -1))
- 		err = activate_fd(irq, fd, type, dev_id);
--		if (err)
--			return err;
--	}
- 
--	return request_irq(irq, handler, irqflags, devname, dev_id);
-+	return err;
- }
- 
- EXPORT_SYMBOL(um_request_irq);
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+V2hpbGUgYXQgaXQsIHVzZSB0YWJzIHRvIGluZGVudCB0aGUgY29tbWVudHMuCgpTaWduZWQtb2Zm
+LWJ5OiBBbmRyw6kgR29kZGFyZCBSb3NhIDxhbmRyZS5nb2RkYXJkQGdtYWlsLmNvbT4KLS0tCiBp
+bmNsdWRlL2xpbnV4L2N0eXBlLmggfCAgICAyICstCiBsaWIvY3R5cGUuYyAgICAgICAgICAgfCAg
+IDUwICsrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMiBm
+aWxlcyBjaGFuZ2VkLCAyNiBpbnNlcnRpb25zKCspLCAyNiBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
+aXQgYS9pbmNsdWRlL2xpbnV4L2N0eXBlLmggYi9pbmNsdWRlL2xpbnV4L2N0eXBlLmgKaW5kZXgg
+YWZhMzYzOS4uNmRlYzk0NCAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC9jdHlwZS5oCisrKyBi
+L2luY2x1ZGUvbGludXgvY3R5cGUuaApAQCAtMTUsNyArMTUsNyBAQAogI2RlZmluZSBfWAkweDQw
+CS8qIGhleCBkaWdpdCAqLwogI2RlZmluZSBfU1AJMHg4MAkvKiBoYXJkIHNwYWNlICgweDIwKSAq
+LwogCi1leHRlcm4gdW5zaWduZWQgY2hhciBfY3R5cGVbXTsKK2V4dGVybiBjb25zdCB1bnNpZ25l
+ZCBjaGFyIF9jdHlwZVtdOwogCiAjZGVmaW5lIF9faXNtYXNrKHgpIChfY3R5cGVbKGludCkodW5z
+aWduZWQgY2hhcikoeCldKQogCmRpZmYgLS1naXQgYS9saWIvY3R5cGUuYyBiL2xpYi9jdHlwZS5j
+CmluZGV4IGQwMmFjZTEuLjI2YmFhNjIgMTAwNjQ0Ci0tLSBhL2xpYi9jdHlwZS5jCisrKyBiL2xp
+Yi9jdHlwZS5jCkBAIC03LDMwICs3LDMwIEBACiAjaW5jbHVkZSA8bGludXgvY3R5cGUuaD4KICNp
+bmNsdWRlIDxsaW51eC9tb2R1bGUuaD4KIAotdW5zaWduZWQgY2hhciBfY3R5cGVbXSA9IHsKLV9D
+LF9DLF9DLF9DLF9DLF9DLF9DLF9DLAkJCS8qIDAtNyAqLwotX0MsX0N8X1MsX0N8X1MsX0N8X1Ms
+X0N8X1MsX0N8X1MsX0MsX0MsCQkvKiA4LTE1ICovCi1fQyxfQyxfQyxfQyxfQyxfQyxfQyxfQywJ
+CQkvKiAxNi0yMyAqLwotX0MsX0MsX0MsX0MsX0MsX0MsX0MsX0MsCQkJLyogMjQtMzEgKi8KLV9T
+fF9TUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCwJCQkvKiAzMi0zOSAqLwotX1AsX1AsX1AsX1AsX1As
+X1AsX1AsX1AsCQkJLyogNDAtNDcgKi8KLV9ELF9ELF9ELF9ELF9ELF9ELF9ELF9ELAkJCS8qIDQ4
+LTU1ICovCi1fRCxfRCxfUCxfUCxfUCxfUCxfUCxfUCwJCQkvKiA1Ni02MyAqLwotX1AsX1V8X1gs
+X1V8X1gsX1V8X1gsX1V8X1gsX1V8X1gsX1V8X1gsX1UsCS8qIDY0LTcxICovCi1fVSxfVSxfVSxf
+VSxfVSxfVSxfVSxfVSwJCQkvKiA3Mi03OSAqLwotX1UsX1UsX1UsX1UsX1UsX1UsX1UsX1UsCQkJ
+LyogODAtODcgKi8KLV9VLF9VLF9VLF9QLF9QLF9QLF9QLF9QLAkJCS8qIDg4LTk1ICovCi1fUCxf
+THxfWCxfTHxfWCxfTHxfWCxfTHxfWCxfTHxfWCxfTHxfWCxfTCwJLyogOTYtMTAzICovCi1fTCxf
+TCxfTCxfTCxfTCxfTCxfTCxfTCwJCQkvKiAxMDQtMTExICovCi1fTCxfTCxfTCxfTCxfTCxfTCxf
+TCxfTCwJCQkvKiAxMTItMTE5ICovCi1fTCxfTCxfTCxfUCxfUCxfUCxfUCxfQywJCQkvKiAxMjAt
+MTI3ICovCi0wLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLAkJLyogMTI4LTE0MyAqLwot
+MCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwJCS8qIDE0NC0xNTkgKi8KLV9TfF9TUCxf
+UCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCwgICAvKiAxNjAtMTc1
+ICovCi1fUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCxfUCwgICAg
+ICAgLyogMTc2LTE5MSAqLwotX1UsX1UsX1UsX1UsX1UsX1UsX1UsX1UsX1UsX1UsX1UsX1UsX1Us
+X1UsX1UsX1UsICAgICAgIC8qIDE5Mi0yMDcgKi8KLV9VLF9VLF9VLF9VLF9VLF9VLF9VLF9QLF9V
+LF9VLF9VLF9VLF9VLF9VLF9VLF9MLCAgICAgICAvKiAyMDgtMjIzICovCi1fTCxfTCxfTCxfTCxf
+TCxfTCxfTCxfTCxfTCxfTCxfTCxfTCxfTCxfTCxfTCxfTCwgICAgICAgLyogMjI0LTIzOSAqLwot
+X0wsX0wsX0wsX0wsX0wsX0wsX0wsX1AsX0wsX0wsX0wsX0wsX0wsX0wsX0wsX0x9OyAgICAgIC8q
+IDI0MC0yNTUgKi8KK2NvbnN0IHVuc2lnbmVkIGNoYXIgX2N0eXBlW10gPSB7CitfQyxfQyxfQyxf
+QyxfQyxfQyxfQyxfQywJCQkJLyogMC03ICovCitfQyxfQ3xfUyxfQ3xfUyxfQ3xfUyxfQ3xfUyxf
+Q3xfUyxfQyxfQywJCQkvKiA4LTE1ICovCitfQyxfQyxfQyxfQyxfQyxfQyxfQyxfQywJCQkJLyog
+MTYtMjMgKi8KK19DLF9DLF9DLF9DLF9DLF9DLF9DLF9DLAkJCQkvKiAyNC0zMSAqLworX1N8X1NQ
+LF9QLF9QLF9QLF9QLF9QLF9QLF9QLAkJCQkvKiAzMi0zOSAqLworX1AsX1AsX1AsX1AsX1AsX1As
+X1AsX1AsCQkJCS8qIDQwLTQ3ICovCitfRCxfRCxfRCxfRCxfRCxfRCxfRCxfRCwJCQkJLyogNDgt
+NTUgKi8KK19ELF9ELF9QLF9QLF9QLF9QLF9QLF9QLAkJCQkvKiA1Ni02MyAqLworX1AsX1V8X1gs
+X1V8X1gsX1V8X1gsX1V8X1gsX1V8X1gsX1V8X1gsX1UsCQkvKiA2NC03MSAqLworX1UsX1UsX1Us
+X1UsX1UsX1UsX1UsX1UsCQkJCS8qIDcyLTc5ICovCitfVSxfVSxfVSxfVSxfVSxfVSxfVSxfVSwJ
+CQkJLyogODAtODcgKi8KK19VLF9VLF9VLF9QLF9QLF9QLF9QLF9QLAkJCQkvKiA4OC05NSAqLwor
+X1AsX0x8X1gsX0x8X1gsX0x8X1gsX0x8X1gsX0x8X1gsX0x8X1gsX0wsCQkvKiA5Ni0xMDMgKi8K
+K19MLF9MLF9MLF9MLF9MLF9MLF9MLF9MLAkJCQkvKiAxMDQtMTExICovCitfTCxfTCxfTCxfTCxf
+TCxfTCxfTCxfTCwJCQkJLyogMTEyLTExOSAqLworX0wsX0wsX0wsX1AsX1AsX1AsX1AsX0MsCQkJ
+CS8qIDEyMC0xMjcgKi8KKzAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsCQkJLyogMTI4
+LTE0MyAqLworMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwwLDAsMCwJCQkvKiAxNDQtMTU5ICov
+CitfU3xfU1AsX1AsX1AsX1AsX1AsX1AsX1AsX1AsX1AsX1AsX1AsX1AsX1AsX1AsX1AsX1AsCS8q
+IDE2MC0xNzUgKi8KK19QLF9QLF9QLF9QLF9QLF9QLF9QLF9QLF9QLF9QLF9QLF9QLF9QLF9QLF9Q
+LF9QLAkvKiAxNzYtMTkxICovCitfVSxfVSxfVSxfVSxfVSxfVSxfVSxfVSxfVSxfVSxfVSxfVSxf
+VSxfVSxfVSxfVSwJLyogMTkyLTIwNyAqLworX1UsX1UsX1UsX1UsX1UsX1UsX1UsX1AsX1UsX1Us
+X1UsX1UsX1UsX1UsX1UsX0wsCS8qIDIwOC0yMjMgKi8KK19MLF9MLF9MLF9MLF9MLF9MLF9MLF9M
+LF9MLF9MLF9MLF9MLF9MLF9MLF9MLF9MLAkvKiAyMjQtMjM5ICovCitfTCxfTCxfTCxfTCxfTCxf
+TCxfTCxfUCxfTCxfTCxfTCxfTCxfTCxfTCxfTCxfTH07CS8qIDI0MC0yNTUgKi8KIAogRVhQT1JU
+X1NZTUJPTChfY3R5cGUpOwotLSAKMS42LjUuMi4xNTMuZzZlMzFmLmRpcnR5CgoKLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBG
+cmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVw
+b3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndo
+YXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3Mg
+bmV3IHdpdGgKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1q
+dWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXIt
+bW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3Rz
+LnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
+aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
