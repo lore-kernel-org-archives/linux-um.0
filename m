@@ -1,10 +1,12 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: =?UTF-8?q?Andr=C3=A9=20Goddard=20Rosa?= <andre.goddard@gmail.com>
-Date: Sat,  7 Nov 2009 13:16:08 -0200
-Message-Id: <cover.1257602781.git.andre.goddard@gmail.com>
-MIME-Version: 1.0
-Subject: [uml-devel] [PATCH v4 00/12] introduce skip_spaces(),
-	reducing code size plus some clean-ups
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+In-Reply-To: <cover.1257602781.git.andre.goddard@gmail.com>
+References: <cover.1257602781.git.andre.goddard@gmail.com>
+Date: Sun, 08 Nov 2009 10:05:03 -0600
+Message-Id: <1257696303.4184.8.camel@mulgrave.site>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [dm-devel] [PATCH v4 00/12] introduce skip_spaces(),
+ reducing code size plus some clean-ups
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,74 +19,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Michael Holzheu <holzheu@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, Stoyan Gaydarov <stoyboyker@gmail.com>, Julia Lawall <julia@diku.dk>, Jeff Dike <jdike@addtoit.com>, James Morris <jmorris@namei.org>, WANG Cong <wangcong@zeuux.org>, Pekka Enberg <penberg@cs.helsinki.fi>, David Howells <dhowells@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Alexey Dobriyan <adobriyan@gmail.com>, Joe Perches <joe@perches.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, Arjan van de Ven <arjan@linux.intel.com>, Neil Brown <neilb@suse.de>, Alasdair G Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>, Mikulas Patocka <mpatocka@redhat.com>, Jens Axboe <jens.axboe@oracle.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, Andre Noll <maan@systemlinux.org>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E . J . Bottomley" <jejb@parisc-linux.org>, Roel Kluin <roel.kluin@gmail.com>, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Len Brown <len.brown@intel.com>, Adam Belay <abelay@mit.edu>, Bjorn Helgaas <bjorn.helgaas@hp.com>, Stefan Haberland <stefan.haberland@de.ibm.com>, Stefan Weinhuber <wein@de.ibm.com>, Richard Purdie <rpurdie@rpsys.net>, Andrea Righi <righi.andrea@gmail.com>, Greg Kroah-Hartman <gregkh@suse.de>, Pavel Roskin <proski@gnu.org>, Andrey Borzenkov <arvidjaar@mail.ru>, Steve Dickson <steved@redhat.com>, Trond Myklebust <Trond.Myklebust@netapp.com>, Daire Byrne <Daire.Byrne@framestore.com>, Al Viro <viro@zeniv.linux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@sun.com>, Eric Sandeen <sandeen@redhat.com>, Jan Kara <jack@suse.cz>, Rusty Russell <rusty@rustcorp.com.au>, Takashi Iwai <tiwai@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, Sitsofe Wheeler <sitsofe@yahoo.com>, Christof Schmitt <christof.schmitt@de.ibm.com>, Greg Banks <gnb@melbourne.sgi.com>, Jason Baron <jbaron@redhat.com>, "David S . Miller" <davem@davemloft.net>, Steven Rostedt <rostedt@goodmis.org>, Samuel Ortiz <samuel@sortiz.org>, Patrick McHardy <kaber@trash.net>, Jan Engelhardt <jengelh@medozas.de>, Roman Hoog Antink <rha@open.ch>, Jaroslav Kysela <perex@perex.cz>, linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, dm-devel@redhat.com, linux-raid@vger.kernel.org, linux-parisc@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net, linux-cachefs@redhat.com, linux-ext4@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Andr=C3=A9=20Goddard=20Rosa?= <andre.goddard@gmail.com>
+To: device-mapper development <dm-devel@redhat.com>
+Cc: Pavel Roskin <proski@gnu.org>, Stefan Haberland <stefan.haberland@de.ibm.com>, Jan Kara <jack@suse.cz>, linux-cachefs@redhat.com, Mike Snitzer <snitzer@redhat.com>, Neil Brown <neilb@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, Jens Axboe <jens.axboe@oracle.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steve Dickson <steved@redhat.com>, "James E . J . Bottomley" <jejb@parisc-linux.org>, David Howells <dhowells@redhat.com>, ibm-acpi-devel@lists.sourceforge.net, Chr@nerdnet.nl, Julia Lawall <julia@diku.dk>, "H . Peter Anvin" <hpa@zytor.com>, Daire Byrne <Daire.Byrne@framestore.com>, Alasdair G Kergon <agk@redhat.com>, Greg Banks <gnb@melbourne.sgi.com>, Stefan Weinhuber <wein@de.ibm.com>, Eric Sandeen <sandeen@redhat.com>, Adam Belay <abelay@mit.edu>, netfilter-devel@vger.kernel.org, Helge Deller <deller@gmx.de>, x86@kernel.org, James Morris <jmorris@namei.org>, Takashi Iwai <tiwai@suse.de>, Ingo Molnar <mingo@redhat.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>, WANG Cong <wangcong@zeuux.org>, Roman Hoog Antink <rha@open.ch>, linux-ext4@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>, Andrea Righi <righi.andrea@gmail.com>, alsa-devel@alsa-project.org, Len Brown <len.brown@intel.com>, Samuel Ortiz <samuel@sortiz.org>, coreteam@netfilter.org, user-mode-linux-devel@lists.sourceforge.net, linux-s390@vger.kernel.org, Trond Myklebust <Trond.Myklebust@netapp.com>, Jeff Dike <jdike@addtoit.com>, Rusty Russell <rusty@rustcorp.com.au>, Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>, Kyle@nerdnet.nl, Steven Rostedt <rostedt@goodmis.org>, Sitsofe Wheeler <sitsofe@yahoo.com>, linux-raid@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Andreas Dilger <adilger@sun.com>, Pekka Enberg <penberg@cs.helsinki.fi>, Mikulas Patocka <mpatocka@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-user@lists.sourceforge.net, Jaroslav Kysela <perex@perex.cz>, Thomas Gleixner <tglx@linutronix.de>, Michael Holzheu <holzheu@linux.vnet.ibm.com>, Arjan van de Ven <arjan@linux.intel.com>, Jan Engelhardt <jengelh@medozas.de>, Bjorn Helgaas <bjorn.helgaas@hp.com>, Andre Noll <maan@systemlinux.org>, Theodore Ts'o <tytso@mit.edu>, linux-parisc@vger.kernel.org, "Martin K . Petersen" <martin.petersen@oracle.com>, =?ISO-8859-1?Q?Andr=E9?= Goddard Rosa <andre.goddard@gmail.com>, netdev@vger.kernel.org, Jason Baron <jbaron@redhat.com>, Greg Kroah-Hartman <gregkh@suse.de>, Roel Kluin <roel.kluin@gmail.com>, linux-kernel@vger.kernel.org, Stoyan Gaydarov <stoyboyker@gmail.com>, Patrick McHardy <kaber@trash.net>, n <kyle@mcmartin.ca>, istof Schmitt <christof.schmitt@de.ibm.com>, netfilter@vger.kernel.org, Richard Purdie <rpurdie@rpsys.net>, Joe Perches <joe@perches.com>, linux390@de.ibm.com, Andrew Morton <akpm@linux-foundation.org>, Andrey Borzenkov <arvidjaar@mail.ru>, "David S . Miller" <davem@davemloft.net>
 
-VGhpcyBwYXRjaCByZWR1Y2VzIGxpYi5hIGNvZGUgc2l6ZSBieSAxNzMgYnl0ZXMgb24gbXkgQ29y
-ZSAyIHdpdGggZ2NjIDQuNC4xCmV2ZW4gY29uc2lkZXJpbmcgdGhhdCBpdCBleHBvcnRzIGEgbmV3
-bHkgZGVmaW5lZCBmdW5jdGlvbiBza2lwX3NwYWNlcygpCnRvIGRyaXZlcnM6CiAgIHRleHQgICAg
-ZGF0YSAgICAgYnNzICAgICBkZWMgICAgIGhleCBmaWxlbmFtZSAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIAogIDY0ODY3ICAgICA4NDAgICAgIDU5MiAgIDY2Mjk5ICAgMTAyZmIgKFRPVEFMUy1s
-aWIuYS1iZWZvcmUpCiAgNjQ5NTQgICAgIDU4NCAgICAgNTg4ICAgNjYxMjYgICAxMDI0ZSAoVE9U
-QUxTLWxpYi5hLWFmdGVyKQphbmQgaW1wbGVtZW50cyBzb21lIGNvZGUgdGlkeSB1cC4KCkJlc2lk
-ZXMgcmVkdWNpbmcgbGliLmEgc2l6ZSwgaXQgY29udmVydHMgbWFueSBpbi10cmVlIGRyaXZlcnMg
-dG8gdXNlIHRoZQpuZXdseSBkZWZpbmVkIGZ1bmN0aW9uLCB3aGljaCBtYWtlcyBhbm90aGVyIHNt
-YWxsIHJlZHVjdGlvbiBvbiBrZXJuZWwgc2l6ZQpvdmVyYWxsIHdoZW4gdGhvc2UgZHJpdmVycyBh
-cmUgdXNlZC4KCnAucy46IEluZ28sIEkgaG9wZSB0byBoYXZlIGZpbmFsbHkgZml4ZWQgbXkgZW52
-aXJvbm1lbnQgYnkgdXNpbmcgc2VuZC1lbWFpbCBub3cuClBsZWFzZSBsZXQgbWUga25vdyBpZiB5
-b3UgaGF2ZSBhbnkgcHJvYmxlbSB3aXRoIHRoZXNlIGFuZCB0aGFuayB5b3UgZm9yIHRoZQpnb29k
-IGFkdmljZS4gZ2V0X21haW50YWluZXIucGwgZ2F2ZSBsb3RzIG9mIHBlb3BsZSBhcyBvdXRwdXQs
-IEkgaG9wZSB0aGF0J3Mgb2suCgpDaGFuZ2Vsb2c6CiAgIHY0OiBjb252ZXJ0IGRyaXZlcnMgb3Zl
-ciBuZXdseSBkZWZpbmVkIHNraXBfc3BhY2VzKCkgZnVuY3Rpb24gCiAgIHYzOiBpbXByb3ZlZCBj
-b21tZW50cyBvbiBwYXRjaCA1LzcgYW5kIGZhY3Rvcml6ZSBhIHN3aXRjaCBzdGF0ZW1lbnQgb24g
-Ni83CmFzIHBlciBzdWdnZXN0aW9ucyBmcm9tIEluZ28gYW5kIEZyZWRlcmljICh0aGFua3MhKQog
-ICB2MjogYWRkcmVzc2VkIGZlZWRiYWNrIGZyb20gRnJlZGVyaWMgV2Vpc2JlY2tlciByZXZpZXcg
-KHRoYW5rcyEhKQphbmQgc3BsaXQgaW50byBzZXBhcmF0ZSBwYXRjaGVzCiAgIHYxOiBvcmlnaW5h
-bCBzdWJtaXNzaW9uCgpBbmRyw6kgR29kZGFyZCBSb3NhICgxMik6CiAgdnNwcmludGY6IGZhY3Rv
-cml6ZSAiKG51bGwpIiBzdHJpbmcKICB2c3ByaW50ZjogcHJlLWNhbGN1bGF0ZSBmaW5hbCBzdHJp
-bmcgbGVuZ3RoIGZvciBsYXRlciB1c2UKICB2c3ByaW50ZjogZ2l2ZSBpdCBzb21lIGNhcmUgdG8g
-cGxlYXNlIGNoZWNrcGF0Y2gucGwKICB2c3ByaW50ZjogdXNlIFRPTE9XRVIgd2hlbmV2ZXIgcG9z
-c2libGUKICB2c3ByaW50ZjogcmVkdWNlIGNvZGUgc2l6ZSBieSBhdm9pZGluZyBleHRyYSBjaGVj
-awogIHZzcHJpbnRmOiBtb3ZlIGxvY2FsIHZhcnMgdG8gYmxvY2sgbG9jYWwgdmFycyBhbmQgcmVt
-b3ZlIHVubmVlZGVkCiAgICBvbmVzCiAgdnNwcmludGY6IGZhY3RvciBvdXQgc2tpcF9zcGFjZSBj
-b2RlIGluIGEgc2VwYXJhdGUgZnVuY3Rpb24KICB2c3ByaW50ZjogcmV1c2UgYWxtb3N0IGlkZW50
-aWNhbCBzaW1wbGVfc3RydG91bFgoKSBmdW5jdGlvbnMKICBjdHlwZTogY29uc3RpZnkgcmVhZC1v
-bmx5IF9jdHlwZSBzdHJpbmcKICBzdHJpbmc6IGZhY3Rvcml6ZSBza2lwX3NwYWNlcyBhbmQgZXhw
-b3J0IGl0IHRvIGJlIGdlbmVyYWxseSBhdmFpbGFibGUKICBzdHJpbmc6IG9uIHN0cnN0cmlwKCks
-IGZpcnN0IHJlbW92ZSBsZWFkaW5nIHNwYWNlcyBiZWZvcmUgcnVubmluZwogICAgb3ZlciBzdHIK
-ICB0cmVlLXdpZGU6IGNvbnZlcnQgb3BlbiBjYWxscyB0byByZW1vdmUgc3BhY2VzIHRvIHNraXBf
-c3BhY2VzKCkgbGliCiAgICBmdW5jdGlvbgoKIGFyY2gvczM5MC9rZXJuZWwvZGVidWcuYyAgICAg
-ICAgICAgICAgfCAgICAzICstCiBhcmNoL3VtL2RyaXZlcnMvbWNvbnNvbGVfa2Vybi5jICAgICAg
-IHwgICAxNiArLQogYXJjaC94ODYva2VybmVsL2NwdS9tdHJyL2lmLmMgICAgICAgICB8ICAgMTEg
-Ky0KIGRyaXZlcnMvbWQvZG0tdGFibGUuYyAgICAgICAgICAgICAgICAgfCAgICA2ICstCiBkcml2
-ZXJzL21kL21kLmMgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNCArLQogZHJpdmVycy9wYXJp
-c2MvcGRjX3N0YWJsZS5jICAgICAgICAgICB8ICAgIDkgKy0KIGRyaXZlcnMvcGxhdGZvcm0veDg2
-L3RoaW5rcGFkX2FjcGkuYyAgfCAgICA3ICstCiBkcml2ZXJzL3BucC9pbnRlcmZhY2UuYyAgICAg
-ICAgICAgICAgIHwgICAzNiArLS0tCiBkcml2ZXJzL3MzOTAvYmxvY2svZGFzZF9wcm9jLmMgICAg
-ICAgIHwgICAgNSArLQogZHJpdmVycy92aWRlby9iYWNrbGlnaHQvbGNkLmMgICAgICAgICB8ICAg
-IDQgKy0KIGRyaXZlcnMvdmlkZW8vZGlzcGxheS9kaXNwbGF5LXN5c2ZzLmMgfCAgICAyICstCiBm
-cy9jYWNoZWZpbGVzL2RhZW1vbi5jICAgICAgICAgICAgICAgIHwgICAgOCArLQogZnMvZXh0NC9z
-dXBlci5jICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDcgKy0KIGluY2x1ZGUvbGludXgvY3R5
-cGUuaCAgICAgICAgICAgICAgICAgfCAgICAyICstCiBpbmNsdWRlL2xpbnV4L3N0cmluZy5oICAg
-ICAgICAgICAgICAgIHwgICAgMSArCiBrZXJuZWwvcGFyYW1zLmMgICAgICAgICAgICAgICAgICAg
-ICAgIHwgICAgOCArLQogbGliL2FyZ3Zfc3BsaXQuYyAgICAgICAgICAgICAgICAgICAgICB8ICAg
-MTMgKy0KIGxpYi9jdHlwZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDUwICsrKy0t
-LQogbGliL2R5bmFtaWNfZGVidWcuYyAgICAgICAgICAgICAgICAgICB8ICAgIDQgKy0KIGxpYi9z
-dHJpbmcuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDE5ICsrLQogbGliL3ZzcHJpbnRm
-LmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAzNDIgKysrKysrKysrKysrKysrKy0tLS0tLS0t
-LS0tLS0tLS0tCiBuZXQvaXJkYS9pcm5ldC9pcm5ldC5oICAgICAgICAgICAgICAgIHwgICAgMSAr
-CiBuZXQvaXJkYS9pcm5ldC9pcm5ldF9wcHAuYyAgICAgICAgICAgIHwgICAgOCArLQogbmV0L25l
-dGZpbHRlci94dF9yZWNlbnQuYyAgICAgICAgICAgICB8ICAgIDMgKy0KIHNvdW5kL3BjaS9oZGEv
-aGRhX2h3ZGVwLmMgICAgICAgICAgICAgfCAgICA3ICstCiAyNSBmaWxlcyBjaGFuZ2VkLCAyNjQg
-aW5zZXJ0aW9ucygrKSwgMzEyIGRlbGV0aW9ucygtKQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpM
-ZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0aW5nIC0gRnJlZSBDcnlzdGFsIFJl
-cG9ydHMgMjAwOCAzMC1EYXkgCnRyaWFsLiBTaW1wbGlmeSB5b3VyIHJlcG9ydCBkZXNpZ24sIGlu
-dGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0gYW5kIGZvY3VzIG9uIAp3aGF0IHlvdSBkbyBiZXN0
-LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGluZy4gRGlzY292ZXIgd2hhdCdzIG5ldyB3aXRoCkNyeXN0
-YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2
-ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2Rl
-LWxpbnV4LWRldmVsCg==
+T24gU2F0LCAyMDA5LTExLTA3IGF0IDEzOjE2IC0wMjAwLCBBbmRyw6kgR29kZGFyZCBSb3NhIHdy
+b3RlOgo+IFRoaXMgcGF0Y2ggcmVkdWNlcyBsaWIuYSBjb2RlIHNpemUgYnkgMTczIGJ5dGVzIG9u
+IG15IENvcmUgMiB3aXRoIGdjYyA0LjQuMQo+IGV2ZW4gY29uc2lkZXJpbmcgdGhhdCBpdCBleHBv
+cnRzIGEgbmV3bHkgZGVmaW5lZCBmdW5jdGlvbiBza2lwX3NwYWNlcygpCj4gdG8gZHJpdmVyczoK
+PiAgICB0ZXh0ICAgIGRhdGEgICAgIGJzcyAgICAgZGVjICAgICBoZXggZmlsZW5hbWUgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKPiAgIDY0ODY3ICAgICA4NDAgICAgIDU5MiAgIDY2Mjk5ICAg
+MTAyZmIgKFRPVEFMUy1saWIuYS1iZWZvcmUpCj4gICA2NDk1NCAgICAgNTg0ICAgICA1ODggICA2
+NjEyNiAgIDEwMjRlIChUT1RBTFMtbGliLmEtYWZ0ZXIpCj4gYW5kIGltcGxlbWVudHMgc29tZSBj
+b2RlIHRpZHkgdXAuCj4gCj4gQmVzaWRlcyByZWR1Y2luZyBsaWIuYSBzaXplLCBpdCBjb252ZXJ0
+cyBtYW55IGluLXRyZWUgZHJpdmVycyB0byB1c2UgdGhlCj4gbmV3bHkgZGVmaW5lZCBmdW5jdGlv
+biwgd2hpY2ggbWFrZXMgYW5vdGhlciBzbWFsbCByZWR1Y3Rpb24gb24ga2VybmVsIHNpemUKPiBv
+dmVyYWxsIHdoZW4gdGhvc2UgZHJpdmVycyBhcmUgdXNlZC4KCkJlZm9yZSB3ZSBlbWJhcmsgb24g
+c29tZXRoaW5nIGFzIG1hc3NpdmUgYXMgdGhpcywgY291bGQgd2UgdGFrZSBhIHN0ZXAKYmFjay4g
+IEkgYWdyZWUgdGhhdCBpZiBJIHdlcmUgY29taW5nIHVwIHdpdGggdGhlIHN0cnN0aXAoKSBpbnRl
+cmZhY2UKdG9kYXkgSSBwcm9iYWJseSB3b3VsZG4ndCBoYXZlIGdpdmVuIGl0IHR3byBvdmVybG9h
+ZGVkIHVzZXMuCgpIb3dldmVyLCBJIHRoaW5rIHRoZSBmdW5jdGlvbiwgaW4gc3BpdGUgb2YgdGhp
+cyBtaW5vciBpc3N1ZSwgaXMgdmVyeQp1c2FibGUuICBJIHN0aWxsIGRvbid0IHVuZGVyc3RhbmQg
+d2h5IHBlb3BsZSB0aG91Z2h0IGFkZGluZyBhCl9fbXVzdF9jaGVjaywgd2hpY2ggaXMgd2hhdCBk
+YW1hZ2VkIG9uZSBvZiB0aGUgb3ZlcmxvYWRlZCB1c2VzLCBpcyBhCmdvb2QgaWRlYS4KCkFzc3Vt
+aW5nIHRoZXJlJ3MgYSBnb29kIGFuc3dlciB0byB0aGUgYWJvdmU6Cgo+ICsgKiBza2lwX3NwYWNl
+cyAtIFJlbW92ZXMgbGVhZGluZyB3aGl0ZXNwYWNlIGZyb20gQHMuCj4gKyAqIEBzOiBUaGUgc3Ry
+aW5nIHRvIGJlIHN0cmlwcGVkLgo+ICsgKgo+ICsgKiBSZXR1cm5zIGEgcG9pbnRlciB0byB0aGUg
+Zmlyc3Qgbm9uLXdoaXRlc3BhY2UgY2hhcmFjdGVyIGluIEBzLgo+ICsgKi8KPiArY29uc3QgY2hh
+ciAqc2tpcF9zcGFjZXMoY29uc3QgY2hhciAqc3RyKQoKSSBkb24ndCB0aGluayBjb25zdCByZXR1
+cm4gaXMgYSBnb29kIGlkZWEgYmVjYXVzZSBtb3N0IGZ1bmN0aW9ucyB3aWxsIGJlCm1hbmlwdWxh
+dGluZyB0aGUgc3RyaW5nIGFuZCB1c2luZyBwb2ludGVycyB0aGF0IHdvbid0IGJlIGNvbnN0LCBz
+byB0aGlzCndpbGwgZ2VuZXJhdGUgYSB0b24gb2YgJ2luaXRpYWxpemF0aW9uIGRpc2NhcmRzIHF1
+YWxpZmllcnMgZnJvbSBwb2ludGVyCnRhcmdldCB0eXBlJyAuLi4gc28gdGhhdCBsZWFkcyB0byB0
+aGUgcXVlc3Rpb24gb2Ygd2hldGhlciB0aGlzIHBhdGNoCnNlcmllcyB3YXMgYWN0dWFsbHkgY29t
+cGlsZWQgLi4uCgpKYW1lcwoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENyeXN0YWwgUmVw
+b3J0cyBoYW5kbGUgdGhlIHJlcG9ydGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIwMDggMzAt
+RGF5IAp0cmlhbC4gU2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlvbiBhbmQg
+ZGVwbG95bWVudCAtIGFuZCBmb2N1cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNh
+dGlvbiBjb2RpbmcuIERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aApDcnlzdGFsIFJlcG9ydHMgbm93
+LiAgaHR0cDovL3Auc2YubmV0L3NmdS9ib2JqLWp1bHkKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlz
+dApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlz
+dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
