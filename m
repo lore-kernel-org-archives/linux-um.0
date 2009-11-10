@@ -1,85 +1,104 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1752724AbZKPA1k@vger.kernel.org>
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 01/12] arch/um: handle compat_ioctl in tty line driver
-Date: Mon, 16 Nov 2009 00:26:56 +0000
-Message-Id: <1258331227-1694-2-git-send-email-arnd@arndb.de>
-In-Reply-To: <1258331227-1694-1-git-send-email-arnd@arndb.de>
-References: <1258331227-1694-1-git-send-email-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, Alexey Dobriyan <adobriyan@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+	helo=mx.sourceforge.net)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tobias@strongswan.org>) id 1N7rc9-00059E-Qw
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 10 Nov 2009 14:22:33 +0000
+Received: from sidv0150.hsr.ch ([152.96.52.150] helo=strongswan.org)
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N7rc2-0000OU-56
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 10 Nov 2009 14:22:33 +0000
+Received: from [152.96.15.216] (unknown [152.96.15.216])
+	by strongswan.org (Postfix) with ESMTP id 138A1EF92A
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 10 Nov 2009 14:50:30 +0100 (CET)
+Message-ID: <4AF96F9D.80107@strongswan.org>
+Date: Tue, 10 Nov 2009 14:50:21 +0100
+From: Tobias Brunner <tobias@strongswan.org>
+MIME-Version: 1.0
+Subject: [uml-devel] [PATCH] hostfs: fix setting the timestamps of files
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-This pushes the handling of VT specific ioctls down to the
-UML specific drivers so we can remove it from the common
-compat_ioctl.c file.
+When setting the timestamps of a file using e.g. futimens the flag
+HOSTFS_ATTR_(A|M)TIME_SET is set only if explicit timestamps were
+specified. If futimens is called without timestamps (i.e. parameter
+times is set to NULL), only HOSTFS_ATTR_(A|M)TIME is set. On the other
+hand, the latter flag is also set if the timestamps were explicitly
+specified.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
+Signed-off-by: Tobias Brunner <tobias@strongswan.org>
 ---
- arch/um/drivers/line.c          |    6 ++++++
- arch/um/drivers/ssl.c           |    1 +
- arch/um/drivers/stdio_console.c |    1 +
- arch/um/include/shared/line.h   |    2 ++
- 4 files changed, 10 insertions(+), 0 deletions(-)
+ fs/hostfs/hostfs_user.c |   15 ++++-----------
+ 1 files changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index cf8a97f..e819d9b 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -315,6 +315,12 @@ int line_ioctl(struct tty_struct *tty, struct file * file,
- 	return ret;
+diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
+index b79424f..3da7cdd 100644
+--- a/fs/hostfs/hostfs_user.c
++++ b/fs/hostfs/hostfs_user.c
+@@ -277,7 +277,8 @@ int set_attr(const char *file, struct hostfs_iattr
+*attrs, int fd)
+ 	 * times according to the changes to perform, and then call futimes()
+ 	 * or utimes() to apply them.
+ 	 */
+-	ma = (HOSTFS_ATTR_ATIME_SET | HOSTFS_ATTR_MTIME_SET);
++	/* Note: ctime is not handled */
++	ma = (HOSTFS_ATTR_ATIME | HOSTFS_ATTR_MTIME);
+ 	if (attrs->ia_valid & ma) {
+ 		err = stat_file(file, NULL, NULL, NULL, NULL, NULL, NULL,
+ 				&atime_ts, &mtime_ts, NULL, NULL, NULL, fd);
+@@ -289,11 +290,11 @@ int set_attr(const char *file, struct hostfs_iattr
+*attrs, int fd)
+ 		times[1].tv_sec = mtime_ts.tv_sec;
+ 		times[1].tv_usec = mtime_ts.tv_nsec / 1000;
+
+-		if (attrs->ia_valid & HOSTFS_ATTR_ATIME_SET) {
++		if (attrs->ia_valid & HOSTFS_ATTR_ATIME) {
+ 			times[0].tv_sec = attrs->ia_atime.tv_sec;
+ 			times[0].tv_usec = attrs->ia_atime.tv_nsec / 1000;
+ 		}
+-		if (attrs->ia_valid & HOSTFS_ATTR_MTIME_SET) {
++		if (attrs->ia_valid & HOSTFS_ATTR_MTIME) {
+ 			times[1].tv_sec = attrs->ia_mtime.tv_sec;
+ 			times[1].tv_usec = attrs->ia_mtime.tv_nsec / 1000;
+ 		}
+@@ -306,14 +307,6 @@ int set_attr(const char *file, struct hostfs_iattr
+*attrs, int fd)
+ 		}
+ 	}
+
+-	/* Note: ctime is not handled */
+-	if (attrs->ia_valid & (HOSTFS_ATTR_ATIME | HOSTFS_ATTR_MTIME)) {
+-		err = stat_file(file, NULL, NULL, NULL, NULL, NULL, NULL,
+-				&attrs->ia_atime, &attrs->ia_mtime, NULL,
+-				NULL, NULL, fd);
+-		if (err != 0)
+-			return err;
+-	}
+ 	return 0;
  }
- 
-+long line_compat_ioctl(struct tty_struct *tty, struct file * file,
-+	       unsigned int cmd, unsigned long arg)
-+{
-+	return line_ioctl(tty, file, cmd, arg);
-+}
-+
- void line_throttle(struct tty_struct *tty)
- {
- 	struct line *line = tty->driver_data;
-diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
-index f1786e6..eccf14a 100644
---- a/arch/um/drivers/ssl.c
-+++ b/arch/um/drivers/ssl.c
-@@ -137,6 +137,7 @@ static const struct tty_operations ssl_ops = {
- 	.flush_chars 		= line_flush_chars,
- 	.set_termios 		= line_set_termios,
- 	.ioctl 	 		= line_ioctl,
-+	.compat_ioctl 	 	= line_compat_ioctl,
- 	.throttle 		= line_throttle,
- 	.unthrottle 		= line_unthrottle,
- #if 0
-diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
-index 49266f6..2cb1f04 100644
---- a/arch/um/drivers/stdio_console.c
-+++ b/arch/um/drivers/stdio_console.c
-@@ -120,6 +120,7 @@ static const struct tty_operations console_ops = {
- 	.flush_chars 		= line_flush_chars,
- 	.set_termios 		= line_set_termios,
- 	.ioctl 	 		= line_ioctl,
-+	.compat_ioctl 	 	= line_compat_ioctl,
- 	.throttle 		= line_throttle,
- 	.unthrottle 		= line_unthrottle,
- };
-diff --git a/arch/um/include/shared/line.h b/arch/um/include/shared/line.h
-index 311a0d3..6ef62e4 100644
---- a/arch/um/include/shared/line.h
-+++ b/arch/um/include/shared/line.h
-@@ -79,6 +79,8 @@ extern void line_flush_chars(struct tty_struct *tty);
- extern int line_write_room(struct tty_struct *tty);
- extern int line_ioctl(struct tty_struct *tty, struct file * file,
- 		      unsigned int cmd, unsigned long arg);
-+extern long line_compat_ioctl(struct tty_struct *tty, struct file * file,
-+		      unsigned int cmd, unsigned long arg);
- extern void line_throttle(struct tty_struct *tty);
- extern void line_unthrottle(struct tty_struct *tty);
- 
--- 
-1.6.3.3
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
