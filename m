@@ -1,127 +1,85 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1752724AbZKPA1k@vger.kernel.org>
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 16 Nov 2009 00:26:55 +0000
-Message-Id: <1258331227-1694-1-git-send-email-arnd@arndb.de>
-Subject: [uml-devel] [PATCH 00/12] move compat_ioctl handling into drivers
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [PATCH 01/12] arch/um: handle compat_ioctl in tty line driver
+Date: Mon, 16 Nov 2009 00:26:56 +0000
+Message-Id: <1258331227-1694-2-git-send-email-arnd@arndb.de>
+In-Reply-To: <1258331227-1694-1-git-send-email-arnd@arndb.de>
+References: <1258331227-1694-1-git-send-email-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: linux-usb@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, Neil Brown <neilb@suse.de>, "H. Peter Anvin" <hpa@zytor.com>, Paul Clements <Paul.Clements@steeleye.com>, Andre Noll <maan@systemlinux.org>, Pavel Machek <pavel@suse.cz>, linux-i2c@vger.kernel.org, Jens Axboe <jens.axboe@oracle.com>, Jan Blunck <jblunck@suse.de>, Ian Kent <raven@themaw.net>, Nick Piggin <npiggin@suse.de>, user-mode-linux-devel@lists.sourceforge.net, linux-scsi@vger.kernel.org, Kay Sievers <kay.sievers@vrfy.org>, Alon Bar-Lev <alon.barlev@gmail.com>, Alan Stern <stern@rowland.harvard.edu>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, Doug Gilbert <dgilbert@interlog.com>, David Vrabel <david.vrabel@csr.com>, Alexey Dobriyan <adobriyan@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, Oliver Neukum <oliver@neukum.org>, linux-raid@vger.kernel.org, Tejun Heo <tj@kernel.org>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Al Viro <viro@zeniv.linux.org.uk>, "Ben Dooks (embedded platforms)" <ben-linux@fluff.org>, autofs@linux.kernel.org, "Martin K. Petersen" <martin.petersen@oracle.com>, Greg Kroah-Hartman <gregkh@suse.de>, Wolfram Sang <w.sang@pengutronix.de>, FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>, "Jean Delvare (PC drivers, core)" <khali@linux-fr.org>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>
+Cc: Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, Alexey Dobriyan <adobriyan@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is the second series of patches on compat_ioctl handling,
-moving compat handlers into more drivers. Most of these
-patches consist on a part that adds a compat_ioctl method
-in one driver and another part removing the respective
-section from fs/compat_ioctl.c. The fs/compat_ioctl.c
-portion depends on other patches[1], but the driver code can
-be applied independently.
+This pushes the handling of VT specific ioctls down to the
+UML specific drivers so we can remove it from the common
+compat_ioctl.c file.
 
-If some of you feel responsible for the code I patched, please
-look at my changes and if they are ok, either take them into
-your tree or give me an Acked-by for them.
-
-I have tested the patches for sg, usbdevfs and autofs, which
-was easily done in qemu, but I'm lacking test cases for
-most of the other ones.
-
-	Arnd <><
-
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Alon Bar-Lev <alon.barlev@gmail.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Andre Noll <maan@systemlinux.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: autofs@linux.kernel.org
-Cc: "Ben Dooks (embedded platforms)" <ben-linux@fluff.org>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: David Vrabel <david.vrabel@csr.com>
-Cc: Doug Gilbert <dgilbert@interlog.com>
-Cc: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Ian Kent <raven@themaw.net>
-Cc: James E.J. Bottomley <James.Bottomley@suse.de>
-Cc: Jan Blunck <jblunck@suse.de>
-Cc: "Jean Delvare (PC drivers, core)" <khali@linux-fr.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Jens Axboe <jens.axboe@oracle.com>
-Cc: Kay Sievers <kay.sievers@vrfy.org>
-Cc: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
-Cc: linux-i2c@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-raid@vger.kernel.org
-Cc: linux-scsi@vger.kernel.org
-Cc: linux-usb@vger.kernel.org
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: Neil Brown <neilb@suse.de>
-Cc: Nick Piggin <npiggin@suse.de>
-Cc: Oliver Neukum <oliver@neukum.org>
-Cc: Paul Clements <Paul.Clements@steeleye.com>
-Cc: Pavel Machek <pavel@suse.cz>
-Cc: Tejun Heo <tj@kernel.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 Cc: user-mode-linux-user@lists.sourceforge.net
-Cc: Wolfram Sang <w.sang@pengutronix.de>
-
-Arnd Bergmann (12):
-  arch/um: handle compat_ioctl in tty line driver
-  scsi/sg: move compat_ioctl handling into sg driver
-  autofs/autofs4: move compat_ioctl handling into fs
-  raw: partly fix compat_ioctl handling on non-x86
-  nbd: add compat_ioctl method
-  smbfs: do compat_ioctl handling in place
-  i2cdev: move compat_ioctl handling into driver
-  md: move compat_ioctl handling into md.c
-  lp: move compat_ioctl handling into lp.c
-  usbdevfs: move compat_ioctl handling to devio.c
-  hamradio/mkiss: fix typo in compat_ioctl
-  compat_ioctl: remove unused handlers
-
- arch/um/drivers/line.c          |    6 +
+---
+ arch/um/drivers/line.c          |    6 ++++++
  arch/um/drivers/ssl.c           |    1 +
  arch/um/drivers/stdio_console.c |    1 +
- arch/um/include/shared/line.h   |    2 +
- drivers/block/nbd.c             |    7 +-
- drivers/char/lp.c               |  115 +++++++--
- drivers/char/raw.c              |  157 ++++++++++---
- drivers/i2c/i2c-dev.c           |  117 +++++++++
- drivers/md/md.c                 |   23 ++
- drivers/net/hamradio/mkiss.c    |    2 +-
- drivers/scsi/sg.c               |  182 ++++++++++++++-
- drivers/usb/core/devio.c        |  110 ++++++++-
- fs/autofs/root.c                |   67 +++++-
- fs/autofs4/root.c               |   69 +++++-
- fs/compat_ioctl.c               |  504 +--------------------------------------
- fs/smbfs/dir.c                  |    5 +-
- fs/smbfs/file.c                 |    3 +-
- fs/smbfs/ioctl.c                |   48 ++++-
- fs/smbfs/proto.h                |    3 +-
- include/linux/auto_fs.h         |    1 +
- include/linux/usbdevice_fs.h    |   26 ++
- kernel/trace/blktrace.c         |    1 +
- 22 files changed, 856 insertions(+), 594 deletions(-)
+ arch/um/include/shared/line.h   |    2 ++
+ 4 files changed, 10 insertions(+), 0 deletions(-)
 
-[1] http://patchwork.kernel.org/bundle/arnd/compat-ioctl-cleanup/?state=*
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index cf8a97f..e819d9b 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -315,6 +315,12 @@ int line_ioctl(struct tty_struct *tty, struct file * file,
+ 	return ret;
+ }
+ 
++long line_compat_ioctl(struct tty_struct *tty, struct file * file,
++	       unsigned int cmd, unsigned long arg)
++{
++	return line_ioctl(tty, file, cmd, arg);
++}
++
+ void line_throttle(struct tty_struct *tty)
+ {
+ 	struct line *line = tty->driver_data;
+diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
+index f1786e6..eccf14a 100644
+--- a/arch/um/drivers/ssl.c
++++ b/arch/um/drivers/ssl.c
+@@ -137,6 +137,7 @@ static const struct tty_operations ssl_ops = {
+ 	.flush_chars 		= line_flush_chars,
+ 	.set_termios 		= line_set_termios,
+ 	.ioctl 	 		= line_ioctl,
++	.compat_ioctl 	 	= line_compat_ioctl,
+ 	.throttle 		= line_throttle,
+ 	.unthrottle 		= line_unthrottle,
+ #if 0
+diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
+index 49266f6..2cb1f04 100644
+--- a/arch/um/drivers/stdio_console.c
++++ b/arch/um/drivers/stdio_console.c
+@@ -120,6 +120,7 @@ static const struct tty_operations console_ops = {
+ 	.flush_chars 		= line_flush_chars,
+ 	.set_termios 		= line_set_termios,
+ 	.ioctl 	 		= line_ioctl,
++	.compat_ioctl 	 	= line_compat_ioctl,
+ 	.throttle 		= line_throttle,
+ 	.unthrottle 		= line_unthrottle,
+ };
+diff --git a/arch/um/include/shared/line.h b/arch/um/include/shared/line.h
+index 311a0d3..6ef62e4 100644
+--- a/arch/um/include/shared/line.h
++++ b/arch/um/include/shared/line.h
+@@ -79,6 +79,8 @@ extern void line_flush_chars(struct tty_struct *tty);
+ extern int line_write_room(struct tty_struct *tty);
+ extern int line_ioctl(struct tty_struct *tty, struct file * file,
+ 		      unsigned int cmd, unsigned long arg);
++extern long line_compat_ioctl(struct tty_struct *tty, struct file * file,
++		      unsigned int cmd, unsigned long arg);
+ extern void line_throttle(struct tty_struct *tty);
+ extern void line_unthrottle(struct tty_struct *tty);
+ 
+-- 
+1.6.3.3
 
