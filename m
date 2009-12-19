@@ -1,66 +1,86 @@
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1261222401.435.6.camel@localhost>
-References: <1261222401.435.6.camel@localhost>
-Date: Sun, 20 Dec 2009 10:07:03 +0100
-Message-ID: <10f740e80912200107v4ffeee81k77e291ffaebac837@mail.gmail.com>
-Subject: Re: [uml-devel] linux-2.6.32 uml Segmentation fault
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-To: clownix <clownix@clownix.net>, David Howells <dhowells@redhat.com>, James Morris <jmorris@namei.org>, stable <stable@kernel.org>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, linux-kernel@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <clownix@clownix.net>) id 1NM7xN-0007NW-Mb
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Dec 2009 22:39:25 +0000
+Received: from gateway10.websitewelcome.com ([67.18.14.12])
+	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NM7xH-0001bT-8t for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Dec 2009 22:39:25 +0000
+From: clownix <clownix@clownix.net>
+Date: Sat, 19 Dec 2009 12:33:21 +0100
+Message-Id: <1261222401.435.6.camel@localhost>
+Mime-Version: 1.0
+Subject: [uml-devel] linux-2.6.32 uml Segmentation fault
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-On Sat, Dec 19, 2009 at 12:33, clownix <clownix@clownix.net> wrote:
-> Hello
-> For the 2.6.32 kernel there are 2 problems:
->
-> 1: Compile error, this patch works for it:
-> --------------------------------------------
->
-> diff -Naur old_linux-2.6.32.1/security/keys/keyctl.c
-> linux-2.6.32.1/security/keys/keyctl.c
-> --- old_linux-2.6.32.1/security/keys/keyctl.c =C2=A0 2009-12-14
-> 18:47:25.000000000 +0100
-> +++ linux-2.6.32.1/security/keys/keyctl.c =C2=A0 =C2=A0 =C2=A0 2009-12-15=
- 22:40:32.565286766
-> +0100
-> @@ -1236,6 +1236,7 @@
-> =C2=A0*/
-> =C2=A0long keyctl_session_to_parent(void)
-> =C2=A0{
-> +#ifdef TIF_NOTIFY_RESUME
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct task_struct *me, *parent;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0const struct cred *mycred, *pcred;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct cred *cred, *oldcred;
-> @@ -1326,6 +1327,9 @@
-> =C2=A0error_keyring:
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0key_ref_put(keyring_r);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0return ret;
-> +#else /* !TIF_NOTIFY_RESUME */
-> + =C2=A0 =C2=A0 =C2=A0 return -EOPNOTSUPP;
-> +#endif /* !TIF_NOTIFY_RESUME */
-> =C2=A0}
+Hello
+For the 2.6.32 kernel there are 2 problems:
 
-Aha, UML is also affected.
+1: Compile error, this patch works for it:
+--------------------------------------------
 
-Commit a00ae4d21b2fa9379914f270ffffd8d3bec55430 ("Keys:
-KEYCTL_SESSION_TO_PARENT needs TIF_NOTIFY_RESUME architecture
-support") should be in 2.6.32-stable as it fixes a regression, but
-apparently the `Cc: stable@kernel.org' got lost?
+diff -Naur old_linux-2.6.32.1/security/keys/keyctl.c
+linux-2.6.32.1/security/keys/keyctl.c
+--- old_linux-2.6.32.1/security/keys/keyctl.c	2009-12-14
+18:47:25.000000000 +0100
++++ linux-2.6.32.1/security/keys/keyctl.c	2009-12-15 22:40:32.565286766
++0100
+@@ -1236,6 +1236,7 @@
+  */
+ long keyctl_session_to_parent(void)
+ {
++#ifdef TIF_NOTIFY_RESUME 
+ 	struct task_struct *me, *parent;
+ 	const struct cred *mycred, *pcred;
+ 	struct cred *cred, *oldcred;
+@@ -1326,6 +1327,9 @@
+ error_keyring:
+ 	key_ref_put(keyring_r);
+ 	return ret;
++#else /* !TIF_NOTIFY_RESUME */ 
++       return -EOPNOTSUPP;
++#endif /* !TIF_NOTIFY_RESUME */ 
+ }
 
-Gr{oetje,eeting}s,
 
-						Geert
+2 A segfault during launch:
+-----------------------------
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+Program received signal SIGSEGV, Segmentation fault.
+0x0842487f in __libc_setup_tls ()
+(gdb) bt
+#0  0x0842487f in __libc_setup_tls ()
+#1  0x08424a9a in __pthread_initialize_minimal ()
+#2  0x08424525 in __libc_start_main ()
+#3  0x08061021 in _start ()
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-							    -- Linus Torvalds
+
+
+
+
+------------------------------------------------------------------------------
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
