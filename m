@@ -1,19 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <clownix@clownix.net>) id 1NM7xN-0007NW-Mb
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <antoine@nagafix.co.uk>) id 1NOswV-00024z-Gn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Dec 2009 22:39:25 +0000
-Received: from gateway10.websitewelcome.com ([67.18.14.12])
-	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NM7xH-0001bT-8t for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Dec 2009 22:39:25 +0000
-From: clownix <clownix@clownix.net>
-Date: Sat, 19 Dec 2009 12:33:21 +0100
-Message-Id: <1261222401.435.6.camel@localhost>
-Mime-Version: 1.0
-Subject: [uml-devel] linux-2.6.32 uml Segmentation fault
+	Sun, 27 Dec 2009 13:13:55 +0000
+Received: from mamba.nagafix.co.uk ([194.145.196.68] helo=mail.nagafix.co.uk)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NOswM-0001tu-Fn for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 27 Dec 2009 13:13:54 +0000
+Received: (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: antoine@nagafix.co.uk)
+	by mail.nagafix.co.uk (Postfix) with ESMTPSA id 895336675
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 27 Dec 2009 12:55:59 +0000 (GMT)
+Message-ID: <4B37595C.8050002@nagafix.co.uk>
+Date: Sun, 27 Dec 2009 19:55:56 +0700
+From: Antoine Martin <antoine@nagafix.co.uk>
+MIME-Version: 1.0
+Subject: [uml-devel] Fedora 12 can't link with libc.a
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,52 +32,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>
+To: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
 
-Hello
-For the 2.6.32 kernel there are 2 problems:
+Exact same error as this bug:
+http://sources.redhat.com/bugzilla/show_bug.cgi?id=10893
 
-1: Compile error, this patch works for it:
---------------------------------------------
-
-diff -Naur old_linux-2.6.32.1/security/keys/keyctl.c
-linux-2.6.32.1/security/keys/keyctl.c
---- old_linux-2.6.32.1/security/keys/keyctl.c	2009-12-14
-18:47:25.000000000 +0100
-+++ linux-2.6.32.1/security/keys/keyctl.c	2009-12-15 22:40:32.565286766
-+0100
-@@ -1236,6 +1236,7 @@
-  */
- long keyctl_session_to_parent(void)
- {
-+#ifdef TIF_NOTIFY_RESUME 
- 	struct task_struct *me, *parent;
- 	const struct cred *mycred, *pcred;
- 	struct cred *cred, *oldcred;
-@@ -1326,6 +1327,9 @@
- error_keyring:
- 	key_ref_put(keyring_r);
- 	return ret;
-+#else /* !TIF_NOTIFY_RESUME */ 
-+       return -EOPNOTSUPP;
-+#endif /* !TIF_NOTIFY_RESUME */ 
- }
+  LD      .tmp_vmlinux1
+/usr/lib/gcc/x86_64-redhat-linux/4.4.2/../../../../lib64/libc.a(elf-init.o):
+In function `__libc_csu_init':
+(.text+0x65): undefined reference to `__rela_iplt_end'
+/usr/lib/gcc/x86_64-redhat-linux/4.4.2/../../../../lib64/libc.a(elf-init.o):
+In function `__libc_csu_init':
+(.text+0x6e): undefined reference to `__rela_iplt_start'
+/usr/lib/gcc/x86_64-redhat-linux/4.4.2/../../../../lib64/libc.a(elf-init.o):
+In function `__libc_csu_init':
+(.text+0x8a): undefined reference to `__rela_iplt_start'
+/usr/lib/gcc/x86_64-redhat-linux/4.4.2/../../../../lib64/libc.a(elf-init.o):
+In function `__libc_csu_init':
+(.text+0x98): undefined reference to `__rela_iplt_start'
+/usr/lib/gcc/x86_64-redhat-linux/4.4.2/../../../../lib64/libc.a(elf-init.o):
+In function `__libc_csu_init':
+(.text+0x9e): undefined reference to `__rela_iplt_start'
+/usr/lib/gcc/x86_64-redhat-linux/4.4.2/../../../../lib64/libc.a(elf-init.o):
+In function `__libc_csu_init':
+(.text+0xa3): undefined reference to `__rela_iplt_start'
+collect2: ld returned 1 exit status
+  KSYM    .tmp_kallsyms1.S
+nm: '.tmp_vmlinux1': No such file
 
 
-2 A segfault during launch:
------------------------------
+Anyone from redhat who understands the changes to the linker/static libs
+should be able to fix this quickly I would have thought.
 
-Program received signal SIGSEGV, Segmentation fault.
-0x0842487f in __libc_setup_tls ()
-(gdb) bt
-#0  0x0842487f in __libc_setup_tls ()
-#1  0x08424a9a in __pthread_initialize_minimal ()
-#2  0x08424525 in __libc_start_main ()
-#3  0x08061021 in _start ()
-
-
-
-
+Cheers
+Antoine
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
