@@ -1,128 +1,60 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <david.francisco.rodriguez@gmail.com>)
-	id 1NYTGQ-0004T2-Q3 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 22 Jan 2010 23:50:06 +0000
-Received: from mail-yx0-f202.google.com ([209.85.210.202])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NYTGP-0001EG-TR for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 22 Jan 2010 23:50:06 +0000
-Received: by yxe40 with SMTP id 40so1449308yxe.28
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 22 Jan 2010 15:50:00 -0800 (PST)
+Return-Path: <greg@kroah.com>
+Date: Mon, 4 Jan 2010 14:39:17 -0800
+From: Greg KH <greg@kroah.com>
+Subject: Re: [stable] [uml-devel] linux-2.6.32 uml Segmentation fault
+Message-ID: <20100104223917.GB20708@kroah.com>
+References: <1261222401.435.6.camel@localhost>
+ <10f740e80912200107v4ffeee81k77e291ffaebac837@mail.gmail.com>
 MIME-Version: 1.0
-Date: Fri, 22 Jan 2010 15:49:55 -0800
-Message-ID: <d875c4ca1001221549t211b2821x3ba36d1cea28de65@mail.gmail.com>
-From: David Francisco Rodriguez Perez <david.francisco.rodriguez@gmail.com>
-Subject: [uml-devel] segfault on 2.6.32.4
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7226906367487548978=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-
---===============7226906367487548978==
-Content-Type: multipart/alternative; boundary=0016364ed934fbd726047dc97969
-
---0016364ed934fbd726047dc97969
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi All
-
-I have been using UML with kernel 2.6.29.6 it was working okay. I move up to
-2.6.32.4.
-I started using 2.6.32.4  using ARCH=um and I getting SIGSEGV similar to the
-thread below:
-
-http://groups.google.com/group/linux.kernel/browse_thread/thread/9f921f62fff75f6f?pli=1
-
-The problem happens if I configure the kernel menu option :
-Force a static link
-which compiles the vmlinux staticly. If I don't use that option the vmlinux
-boots okay
-
-The error is like
-
-(gdb) b main
-Breakpoint 1 at 0x804bd54: file
-/home/darodrig/PERFORCE/7.1.1.R01-darodrig-v3/engr/sw/tps/installed/23/rushmore_sim/kernel/ksrc/arch/um/os-Linux/main.c,
-line 126.
-(gdb) r
-Starting program:
-/home/darodrig/PERFORCE/7.1.1.R01-darodrig-v3/engr/sw/tps/objs/23/rushmore_sim/image/vmlinux
-mem=256M
-
-Program received signal SIGSEGV, Segmentation fault.
-__libc_setup_tls (tcbsize=1136, tcbalign=16) at libc-tls.c:125
-125     libc-tls.c: No such file or directory.
-        in libc-tls.c
-
-I wonder if somebody knows about it ? and what to do?
-
-Thanks,
-
-David Rodriguez
-
---0016364ed934fbd726047dc97969
-Content-Type: text/html; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <10f740e80912200107v4ffeee81k77e291ffaebac837@mail.gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: clownix <clownix@clownix.net>, David Howells <dhowells@redhat.com>, James Morris <jmorris@namei.org>, stable <stable@kernel.org>, uml-user <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi All<br><br>I have been using UML with kernel 2.6.29.6 it was working oka=
-y. I move up to 2.6.32.4.<br>I started using 2.6.32.4=A0 using ARCH=3Dum an=
-d I getting SIGSEGV similar to the thread below:<br><br><a href=3D"http://g=
-roups.google.com/group/linux.kernel/browse_thread/thread/9f921f62fff75f6f?p=
-li=3D1">http://groups.google.com/group/linux.kernel/browse_thread/thread/9f=
-921f62fff75f6f?pli=3D1</a><br>
-<br>The problem happens if I configure the kernel menu option :<br>Force a =
-static link<br>which compiles the vmlinux staticly. If I don&#39;t use that=
- option the vmlinux boots okay<br><br>The error is like <br><br>(gdb) b mai=
-n<br>
-Breakpoint 1 at 0x804bd54: file /home/darodrig/PERFORCE/7.1.1.R01-darodrig-=
-v3/engr/sw/tps/installed/23/rushmore_sim/kernel/ksrc/arch/um/os-Linux/main.=
-c, line 126.<br>(gdb) r<br>Starting program: /home/darodrig/PERFORCE/7.1.1.=
-R01-darodrig-v3/engr/sw/tps/objs/23/rushmore_sim/image/vmlinux mem=3D256M<b=
-r>
-<br>Program received signal SIGSEGV, Segmentation fault.<br>__libc_setup_tl=
-s (tcbsize=3D1136, tcbalign=3D16) at libc-tls.c:125<br>125=A0=A0=A0=A0 libc=
--tls.c: No such file or directory.<br>=A0=A0=A0=A0=A0=A0=A0 in libc-tls.c<b=
-r><br>I wonder if somebody knows about it ? and what to do?<br>
-<br>Thanks,<br><br>David Rodriguez<br>
+On Sun, Dec 20, 2009 at 10:07:03AM +0100, Geert Uytterhoeven wrote:
+> On Sat, Dec 19, 2009 at 12:33, clownix <clownix@clownix.net> wrote:
+> > Hello
+> > For the 2.6.32 kernel there are 2 problems:
+> >
+> > 1: Compile error, this patch works for it:
+> > --------------------------------------------
+> >
+> > diff -Naur old_linux-2.6.32.1/security/keys/keyctl.c
+> > linux-2.6.32.1/security/keys/keyctl.c
+> > --- old_linux-2.6.32.1/security/keys/keyctl.c =EF=BF=BD 2009-12-14
+> > 18:47:25.000000000 +0100
+> > +++ linux-2.6.32.1/security/keys/keyctl.c =EF=BF=BD =EF=BF=BD =EF=BF=BD=
+ 2009-12-15 22:40:32.565286766
+> > +0100
+> > @@ -1236,6 +1236,7 @@
+> > =EF=BF=BD*/
+> > =EF=BF=BDlong keyctl_session_to_parent(void)
+> > =EF=BF=BD{
+> > +#ifdef TIF_NOTIFY_RESUME
+> > =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDstruct task_struct *me, *parent;
+> > =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDconst struct cred *mycred, *pcre=
+d;
+> > =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDstruct cred *cred, *oldcred;
+> > @@ -1326,6 +1327,9 @@
+> > =EF=BF=BDerror_keyring:
+> > =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDkey_ref_put(keyring_r);
+> > =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDreturn ret;
+> > +#else /* !TIF_NOTIFY_RESUME */
+> > + =EF=BF=BD =EF=BF=BD =EF=BF=BD return -EOPNOTSUPP;
+> > +#endif /* !TIF_NOTIFY_RESUME */
+> > =EF=BF=BD}
+>=20
+> Aha, UML is also affected.
+>=20
+> Commit a00ae4d21b2fa9379914f270ffffd8d3bec55430 ("Keys:
+> KEYCTL_SESSION_TO_PARENT needs TIF_NOTIFY_RESUME architecture
+> support") should be in 2.6.32-stable as it fixes a regression, but
+> apparently the `Cc: stable@kernel.org' got lost?
 
---0016364ed934fbd726047dc97969--
+Now queued up, thanks for letting me know.
 
-
---===============7226906367487548978==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
---===============7226906367487548978==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============7226906367487548978==--
-
+greg k-h
 
