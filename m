@@ -1,68 +1,104 @@
-Return-Path: <linux-kernel-owner+geert=40linux-m68k.org-S1753588Ab0ADUUj@vger.kernel.org>
-Date: Mon, 4 Jan 2010 15:08:29 -0500 (EST)
-From: Tim Abbott <tabbott@ksplice.com>
-Subject: [REGRESSION] um: CONFIG_STATIC_LINK=y broken
-Message-ID: <alpine.DEB.1.10.1001041421450.4942@dr-wily.mit.edu>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <golubovsky@gmail.com>) id 1NSk7M-0003cO-AO
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jan 2010 04:37:04 +0000
+Received: from fg-out-1718.google.com ([72.14.220.155])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSk7H-00011D-TK for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jan 2010 04:37:04 +0000
+Received: by fg-out-1718.google.com with SMTP id e12so908375fga.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 06 Jan 2010 20:36:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, stable@kernel.org, richard -rw- weinberger <richard.weinberger@gmail.com>, Sam Ravnborg <sam@ravnborg.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Date: Wed, 6 Jan 2010 23:36:53 -0500
+Message-ID: <bcba51a1001062036i3343fdccxbca2cc2ec246410a@mail.gmail.com>
+From: Dimitry Golubovsky <golubovsky@gmail.com>
+Subject: [uml-devel] How to intercept int 0x40 in UML
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi Linus,
+Hi,
 
-The following patch fixes a regression that I caused in 2.6.32 when 
-cleaning up the um architecture's linker scripts.
+I am trying to implement some ideas of Glendix [1], but without
+patching the underlying Linux kernel, staying completely within UML.
 
-I've not heard anything from the um maintainers (they have had since 
-Richard Weinberger reported that this patch fixed the problem on December 
-22), so I'm sending this to you now (and CCing stable@ since it affects 
-2.6.32).
+I am experimenting with kernel 2.6.31.6 sources (the same version for
+which Glendix patch is available)
 
-	-Tim Abbott
+I got stuck trying to intercept the "int 0x40" instruction which is
+used for syscalls in Plan 9. Example code below (NASM syntax, example
+borrowed from Glendix):
 
---
+======================
+section .data
+        hello:     db 'Hello world!',10    ; 'Hello world!' plus a
+linefeed character
+        helloLen:  equ $-hello             ; Length of the 'Hello world!' string
 
-um: remove PAGE_SIZE alignment in linker script causing kernel segfault.
+section .text
+        global _start
 
-The linker script cleanup that I did in commit 
-5d150a97f9391f5bcd7ba0d59d7a11c3de3cea80 accidentally introduced an 
-ALIGN(PAGE_SIZE) when converting to use INIT_TEXT_SECTION; Richard 
-Weinberger reported that this causes the kernel to segfault with 
-CONFIG_STATIC_LINK=y.
+_start:
+        mov eax,8
+        mov ebx,hello
+        int 40h
+======================
 
-I'm not certain why this extra alignment is a problem, but it seems likely 
-it is because previously
+I am trying to find a place within arch/um/os-Linux/skas/process.c
+where to my understanding the code responsible for intercepting
+syscalls is located - the place where I could insert my own code to
+intercept 0x40 interrupt and translate it to some kernel action.
 
-__init_begin = _stext = _text = _sinittext 
+When I run this program compiled I get "Segmentation fault" message.
 
-and with the extra ALIGN(PAGE_SIZE), _sinittext becomes different from the 
-rest.  So there is likely a bug here where something is assuming that 
-_sinittext is the same as one of those other symbols.  But reverting the 
-accidental change fixes the regression, so it seems worth committing that 
-now.
+I tried to insert printk call in the "userspace" function in
+arch/um/os-Linux/skas/process.c in various places to see if the "int
+0x40" instruction is trapped by the UML kernel, unsuccessfully so far.
 
-Signed-off-by: Tim Abbott <tabbott@ksplice.com>
-Reported-by: richard -rw- weinberger <richard.weinberger@gmail.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
----
- arch/um/kernel/uml.lds.S |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+In particular, I tried:
+  * right after the if(WIFSTOPPED(status)) statement
+(arch/um/os-Linux/skas/process.c, line 406)
+  * right before the same check (like this: if (!WIFSTOPPED(status)) printk ...)
+  * inside the "fatal_sigsegv" function in arch/um/kernel/trap.c
 
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index e7a6cca..664f942 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -22,7 +22,7 @@ SECTIONS
-   _text = .;
-   _stext = .;
-   __init_begin = .;
--  INIT_TEXT_SECTION(PAGE_SIZE)
-+  INIT_TEXT_SECTION(0)
-   . = ALIGN(PAGE_SIZE);
- 
-   .text      :
+None caused any output when running the test program
+
+Any suggestions where can I intercept it? Or does this signal
+completely bypass UML?
+
+Thanks for any ideas.
+
+----------------
+[1] http://www.glendix.org - Linux kernel patch to run Plan9 binaries
+on Linux kernel
+
 -- 
-1.6.5.7
+Dimitry Golubovsky
+
+Anywhere on the Web
+
+------------------------------------------------------------------------------
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
