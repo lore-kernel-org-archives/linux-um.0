@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <golubovsky@gmail.com>) id 1NSk7M-0003cO-AO
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jan 2010 04:37:04 +0000
-Received: from fg-out-1718.google.com ([72.14.220.155])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSk7H-00011D-TK for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jan 2010 04:37:04 +0000
-Received: by fg-out-1718.google.com with SMTP id e12so908375fga.10
+	(envelope-from <david.francisco.rodriguez@gmail.com>)
+	id 1NYTGQ-0004T2-Q3 for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 22 Jan 2010 23:50:06 +0000
+Received: from mail-yx0-f202.google.com ([209.85.210.202])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NYTGP-0001EG-TR for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 22 Jan 2010 23:50:06 +0000
+Received: by yxe40 with SMTP id 40so1449308yxe.28
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 06 Jan 2010 20:36:53 -0800 (PST)
+	Fri, 22 Jan 2010 15:50:00 -0800 (PST)
 MIME-Version: 1.0
-Date: Wed, 6 Jan 2010 23:36:53 -0500
-Message-ID: <bcba51a1001062036i3343fdccxbca2cc2ec246410a@mail.gmail.com>
-From: Dimitry Golubovsky <golubovsky@gmail.com>
-Subject: [uml-devel] How to intercept int 0x40 in UML
+Date: Fri, 22 Jan 2010 15:49:55 -0800
+Message-ID: <d875c4ca1001221549t211b2821x3ba36d1cea28de65@mail.gmail.com>
+From: David Francisco Rodriguez Perez <david.francisco.rodriguez@gmail.com>
+Subject: [uml-devel] segfault on 2.6.32.4
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,79 +26,103 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7226906367487548978=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+--===============7226906367487548978==
+Content-Type: multipart/alternative; boundary=0016364ed934fbd726047dc97969
 
-I am trying to implement some ideas of Glendix [1], but without
-patching the underlying Linux kernel, staying completely within UML.
+--0016364ed934fbd726047dc97969
+Content-Type: text/plain; charset=ISO-8859-1
 
-I am experimenting with kernel 2.6.31.6 sources (the same version for
-which Glendix patch is available)
+Hi All
 
-I got stuck trying to intercept the "int 0x40" instruction which is
-used for syscalls in Plan 9. Example code below (NASM syntax, example
-borrowed from Glendix):
+I have been using UML with kernel 2.6.29.6 it was working okay. I move up to
+2.6.32.4.
+I started using 2.6.32.4  using ARCH=um and I getting SIGSEGV similar to the
+thread below:
 
-======================
-section .data
-        hello:     db 'Hello world!',10    ; 'Hello world!' plus a
-linefeed character
-        helloLen:  equ $-hello             ; Length of the 'Hello world!' string
+http://groups.google.com/group/linux.kernel/browse_thread/thread/9f921f62fff75f6f?pli=1
 
-section .text
-        global _start
+The problem happens if I configure the kernel menu option :
+Force a static link
+which compiles the vmlinux staticly. If I don't use that option the vmlinux
+boots okay
 
-_start:
-        mov eax,8
-        mov ebx,hello
-        int 40h
-======================
+The error is like
 
-I am trying to find a place within arch/um/os-Linux/skas/process.c
-where to my understanding the code responsible for intercepting
-syscalls is located - the place where I could insert my own code to
-intercept 0x40 interrupt and translate it to some kernel action.
+(gdb) b main
+Breakpoint 1 at 0x804bd54: file
+/home/darodrig/PERFORCE/7.1.1.R01-darodrig-v3/engr/sw/tps/installed/23/rushmore_sim/kernel/ksrc/arch/um/os-Linux/main.c,
+line 126.
+(gdb) r
+Starting program:
+/home/darodrig/PERFORCE/7.1.1.R01-darodrig-v3/engr/sw/tps/objs/23/rushmore_sim/image/vmlinux
+mem=256M
 
-When I run this program compiled I get "Segmentation fault" message.
+Program received signal SIGSEGV, Segmentation fault.
+__libc_setup_tls (tcbsize=1136, tcbalign=16) at libc-tls.c:125
+125     libc-tls.c: No such file or directory.
+        in libc-tls.c
 
-I tried to insert printk call in the "userspace" function in
-arch/um/os-Linux/skas/process.c in various places to see if the "int
-0x40" instruction is trapped by the UML kernel, unsuccessfully so far.
+I wonder if somebody knows about it ? and what to do?
 
-In particular, I tried:
-  * right after the if(WIFSTOPPED(status)) statement
-(arch/um/os-Linux/skas/process.c, line 406)
-  * right before the same check (like this: if (!WIFSTOPPED(status)) printk ...)
-  * inside the "fatal_sigsegv" function in arch/um/kernel/trap.c
+Thanks,
 
-None caused any output when running the test program
+David Rodriguez
 
-Any suggestions where can I intercept it? Or does this signal
-completely bypass UML?
+--0016364ed934fbd726047dc97969
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for any ideas.
+Hi All<br><br>I have been using UML with kernel 2.6.29.6 it was working oka=
+y. I move up to 2.6.32.4.<br>I started using 2.6.32.4=A0 using ARCH=3Dum an=
+d I getting SIGSEGV similar to the thread below:<br><br><a href=3D"http://g=
+roups.google.com/group/linux.kernel/browse_thread/thread/9f921f62fff75f6f?p=
+li=3D1">http://groups.google.com/group/linux.kernel/browse_thread/thread/9f=
+921f62fff75f6f?pli=3D1</a><br>
+<br>The problem happens if I configure the kernel menu option :<br>Force a =
+static link<br>which compiles the vmlinux staticly. If I don&#39;t use that=
+ option the vmlinux boots okay<br><br>The error is like <br><br>(gdb) b mai=
+n<br>
+Breakpoint 1 at 0x804bd54: file /home/darodrig/PERFORCE/7.1.1.R01-darodrig-=
+v3/engr/sw/tps/installed/23/rushmore_sim/kernel/ksrc/arch/um/os-Linux/main.=
+c, line 126.<br>(gdb) r<br>Starting program: /home/darodrig/PERFORCE/7.1.1.=
+R01-darodrig-v3/engr/sw/tps/objs/23/rushmore_sim/image/vmlinux mem=3D256M<b=
+r>
+<br>Program received signal SIGSEGV, Segmentation fault.<br>__libc_setup_tl=
+s (tcbsize=3D1136, tcbalign=3D16) at libc-tls.c:125<br>125=A0=A0=A0=A0 libc=
+-tls.c: No such file or directory.<br>=A0=A0=A0=A0=A0=A0=A0 in libc-tls.c<b=
+r><br>I wonder if somebody knows about it ? and what to do?<br>
+<br>Thanks,<br><br>David Rodriguez<br>
 
-----------------
-[1] http://www.glendix.org - Linux kernel patch to run Plan9 binaries
-on Linux kernel
+--0016364ed934fbd726047dc97969--
 
--- 
-Dimitry Golubovsky
 
-Anywhere on the Web
+--===============7226906367487548978==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
+--===============7226906367487548978==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============7226906367487548978==--
+
 
