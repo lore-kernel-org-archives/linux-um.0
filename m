@@ -1,37 +1,51 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 36/66] arch/um/include/shared/ubd_user.h: Checkpatch cleanup
-Date: Sat, 27 Feb 2010 17:51:17 +0100
-Message-Id: <1267289508-31031-37-git-send-email-andrea.gelmini@gelma.net>
-In-Reply-To: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
-References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-Path: <linux-mips-bounce@linux-mips.org>
+From: Frans Pop <elendil@planet.nl>
+Subject: [PATCH 00/16] remove trailing spaces in messages
+Date: Sat, 6 Feb 2010 18:44:36 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <201002061844.45212.elendil@planet.nl>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
 To: linux-kernel@vger.kernel.org
-Cc: Andrea Gelmini <andrea.gelmini@gelma.net>, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, WANG Cong <xiyou.wangcong@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, "David S. Miller" <davem@davemloft.net>, Fenghua Yu <fenghua.yu@intel.com>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@elte.hu>, Jeff Dike <jdike@addtoit.com>, Jiri Kosina <trivial@kernel.org>, Kyle McMartin <kyle@mcmartin.ca>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@lists.linux-foundation.org, linuxppc-dev@ozlabs.org, linux-s390@vger.kernel.org, Michal Simek <monstr@monstr.eu>, microblaze-uclinux@itee.uq.edu.au, Mike Frysinger <vapier@gentoo.org>, Paul Mackerras <paulus@samba.org>, "Rafael J. Wysocki" <rjw@sisk.pl>, Ralf Baechle <ralf@linux-mips.org>, Roman Zippel <zippel@linux-m68k.org>, Russell King <linux@arm.linux.org.uk>, sparclinux@vger.kernel.org, Tony Luck <tony.luck@intel.com>, uclinux-dist-devel@blackfin.uclinux.org, user-mode-linux-devel@lists.sourceforge.net, x86@kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-arch/um/include/shared/ubd_user.h:1: ERROR: trailing whitespace
+This is a first series of patches to remove trailing spaces in messages. 
+Patches cover arch-specific code plus one fix for PM and one in 
+Documentation. Depending on how this series is received I'll continue
+with other parts of the kernel.
 
-Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
----
- arch/um/include/shared/ubd_user.h |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+Benefits are:
+- general cleanup and consistency
+- minor reduction in kernel size and user's log file size
+- reduced annoyance for people writing logcheck rules
 
-diff --git a/arch/um/include/shared/ubd_user.h b/arch/um/include/shared/ubd_user.h
-index 3845051..9198fa3 100644
---- a/arch/um/include/shared/ubd_user.h
-+++ b/arch/um/include/shared/ubd_user.h
-@@ -1,4 +1,4 @@
--/* 
-+/*
-  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
-  * Copyright (C) 2001 RidgeRun, Inc (glonnon@ridgerun.com)
-  * Licensed under the GPL
-@@ -13,4 +13,3 @@ extern int io_thread(void *arg);
- extern int kernel_fd;
- 
- #endif
--
--- 
-1.7.0.90.g251a4
+The patch for m68k has been rebased against linux-next; all other
+patches apply against both mainline and -next (as of 5-2).
+
+Shortstat:
+ 74 files changed, 135 insertions(+), 136 deletions(-)
+
+Frans Pop (16):
+      alpha: remove trailing spaces in messages
+      arm: remove trailing spaces in messages
+      ia64: remove trailing space in messages
+      m68k: remove trailing space in messages
+      microblaze: remove trailing space in messages
+      mips: remove trailing space in messages
+      parisc: remove trailing space in messages
+      s390: remove trailing space in messages
+      sparc: remove trailing space in messages
+      x86: remove trailing space in messages
+      blackfin: remove trailing space in messages
+      cris/trivial: remove trailing space in message
+      powerpc: remove trailing space in messages
+      um: remove trailing space in messages
+      PM: remove trailing space in message
+      trivial: remove trailing space in spidev test program
+
 
