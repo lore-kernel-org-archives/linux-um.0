@@ -1,37 +1,47 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 14/66] arch/um/sys-ia64/sysdep/ptrace.h: Checkpatch cleanup
-Date: Sat, 27 Feb 2010 17:50:55 +0100
-Message-Id: <1267289508-31031-15-git-send-email-andrea.gelmini@gelma.net>
-In-Reply-To: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
-References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
+Date: Thu, 25 Feb 2010 22:55:46 +0800
+From: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Subject: [RESEND Patch] um: tell git to ignore generated files
+Message-ID: <20100225145546.GC3842@hack>
+References: <20100220143359.GD3000@hack> <20100220150936.GP30031@ZenIV.linux.org.uk> <20100220153521.GK3000@hack>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20100220153521.GK3000@hack>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Andrea Gelmini <andrea.gelmini@gelma.net>, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, WANG Cong <xiyou.wangcong@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+To: =?utf-8?Q?Am=C3=A9rico?= Wang <xiyou.wangcong@gmail.com>
+Cc: Al Viro <viro@ZenIV.linux.org.uk>, LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-arch/um/sys-ia64/sysdep/ptrace.h:1: ERROR: trailing whitespace
 
-Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
+Tell git to ignore the generated files under um, except:
+
+ include/shared/kern_constants.h
+ include/shared/user_constants.h
+
+which will be moved to include/generated.
+
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
+
 ---
- arch/um/sys-ia64/sysdep/ptrace.h |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/sys-ia64/sysdep/ptrace.h b/arch/um/sys-ia64/sysdep/ptrace.h
-index 0f0f4e6..8e85f09 100644
---- a/arch/um/sys-ia64/sysdep/ptrace.h
-+++ b/arch/um/sys-ia64/sysdep/ptrace.h
-@@ -1,4 +1,4 @@
--/* 
-+/*
-  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
-  * Licensed under the GPL
-  */
-@@ -13,4 +13,3 @@ struct sys_pt_regs {
- #define EMPTY_REGS { 0 }
- 
- #endif
--
--- 
-1.7.0.90.g251a4
-
+diff --git a/.gitignore b/.gitignore
+index de6344e..efab0eb 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -36,6 +36,7 @@ modules.builtin
+ #
+ tags
+ TAGS
++linux
+ vmlinux
+ vmlinuz
+ System.map
+diff --git a/arch/um/.gitignore b/arch/um/.gitignore
+new file mode 100644
+index 0000000..f22bd73
+--- /dev/null
++++ b/arch/um/.gitignore
+@@ -0,0 +1,3 @@
++kernel/config.c
++kernel/config.tmp
++kernel/vmlinux.lds
