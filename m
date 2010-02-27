@@ -1,40 +1,46 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20100227221310.GA5455@localhost.localdomain>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Date: Sat, 27 Feb 2010 17:13:10 -0500
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20100227221310.GA5455@localhost.localdomain>
 References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
-	 <1267289508-31031-67-git-send-email-andrea.gelmini@gelma.net>
-	 <20100227221310.GA5455@localhost.localdomain>
-Date: Sun, 28 Feb 2010 15:06:21 +0100
-Message-ID: <9cdbb57f1002280606j6d6ca697k21f42cff87d685de@mail.gmail.com>
-Subject: Re: [uml-devel] [PATCH 66/66] arch/um/sys-x86_64/shared/sysdep/skas_ptrace.h: 
+	<1267289508-31031-67-git-send-email-andrea.gelmini@gelma.net>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1267289508-31031-67-git-send-email-andrea.gelmini@gelma.net>
+Subject: Re: [uml-devel] [PATCH
+	66/66]	arch/um/sys-x86_64/shared/sysdep/skas_ptrace.h:
 	Checkpatch cleanup
-From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Andrea Gelmini <andrea.gelmini@gelma.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net
 
-2010/2/27 Jeff Dike <jdike@addtoit.com>:
-Hi Jeff,
-   and thanks for your reply.
+On Sat, Feb 27, 2010 at 05:51:47PM +0100, Andrea Gelmini wrote:
+> arch/um/sys-x86_64/shared/sysdep/skas_ptrace.h:10: ERROR: code indent should use tabs where possible
+> arch/um/sys-x86_64/shared/sysdep/skas_ptrace.h:11: ERROR: code indent should use tabs where possible
 
-> Don't you have anything better to do with your time?
+Don't you have anything better to do with your time?
 
-It's a dirty job, but somebody has to do it...
-Enlighted by Greg's talk at FOSDEM¹ I sent him some patches (nothing
-more than boring things for a real programmer, but a good solitaire
-alternative for a rookie like me).
+				Jeff
 
-These patches are just a try to see if there are other subtree
-maintainers interested in stuff like this.
+------------------------------------------------------------------------------
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-Ciao,
-Andrea
-
-
-
-
-----------------------------
-¹ http://bit.ly/9d3Ql3
