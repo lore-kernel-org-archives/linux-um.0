@@ -1,50 +1,36 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 63/66] arch/um/sys-ppc/shared/sysdep/skas_ptrace.h: Checkpatch cleanup
-Date: Sat, 27 Feb 2010 17:51:44 +0100
-Message-Id: <1267289508-31031-64-git-send-email-andrea.gelmini@gelma.net>
+Subject: [PATCH 50/66] arch/um/include/shared/irq_kern.h: Checkpatch cleanup
+Date: Sat, 27 Feb 2010 17:51:31 +0100
+Message-Id: <1267289508-31031-51-git-send-email-andrea.gelmini@gelma.net>
 In-Reply-To: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
 References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Andrea Gelmini <andrea.gelmini@gelma.net>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: Andrea Gelmini <andrea.gelmini@gelma.net>, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, WANG Cong <xiyou.wangcong@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-arch/um/sys-ppc/shared/sysdep/skas_ptrace.h:10: ERROR: code indent should use tabs where possible
-arch/um/sys-ppc/shared/sysdep/skas_ptrace.h:11: ERROR: code indent should use tabs where possible
-arch/um/sys-ppc/shared/sysdep/skas_ptrace.h:15: ERROR: code indent should use tabs where possible
-arch/um/sys-ppc/shared/sysdep/skas_ptrace.h:16: ERROR: code indent should use tabs where possible
-arch/um/sys-ppc/shared/sysdep/skas_ptrace.h:17: ERROR: code indent should use tabs where possible
+arch/um/include/shared/irq_kern.h:14: ERROR: "foo * bar" should be "foo *bar"
 
 Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
 ---
- arch/um/sys-ppc/shared/sysdep/skas_ptrace.h |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+ arch/um/include/shared/irq_kern.h |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/sys-ppc/shared/sysdep/skas_ptrace.h b/arch/um/sys-ppc/shared/sysdep/skas_ptrace.h
-index d9fbbac..f26f93b 100644
---- a/arch/um/sys-ppc/shared/sysdep/skas_ptrace.h
-+++ b/arch/um/sys-ppc/shared/sysdep/skas_ptrace.h
-@@ -7,14 +7,14 @@
- #define __SYSDEP_PPC_SKAS_PTRACE_H
+diff --git a/arch/um/include/shared/irq_kern.h b/arch/um/include/shared/irq_kern.h
+index b05d22f..f5855e1 100644
+--- a/arch/um/include/shared/irq_kern.h
++++ b/arch/um/include/shared/irq_kern.h
+@@ -11,8 +11,7 @@
  
- struct ptrace_faultinfo {
--        int is_write;
--        unsigned long addr;
-+	int is_write;
-+	unsigned long addr;
- };
+ extern int um_request_irq(unsigned int irq, int fd, int type,
+ 			  irq_handler_t handler,
+-			  unsigned long irqflags,  const char * devname,
++			  unsigned long irqflags,  const char *devname,
+ 			  void *dev_id);
  
- struct ptrace_ldt {
--        int func;
--        void *ptr;
--        unsigned long bytecount;
-+	int func;
-+	void *ptr;
-+	unsigned long bytecount;
- };
- 
- #define PTRACE_LDT 54
+ #endif
+-
 -- 
 1.7.0.90.g251a4
 
