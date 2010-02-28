@@ -1,32 +1,40 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 28 Feb 2010 10:28:39 -0500
-From: Jeff Dike <jdike@addtoit.com>
-Subject: Re: [uml-devel] [PATCH 66/66]
-	arch/um/sys-x86_64/shared/sysdep/skas_ptrace.h: Checkpatch cleanup
-Message-ID: <20100228152839.GA3063@localhost.localdomain>
-References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net> <1267289508-31031-67-git-send-email-andrea.gelmini@gelma.net> <20100227221310.GA5455@localhost.localdomain> <9cdbb57f1002280606j6d6ca697k21f42cff87d685de@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9cdbb57f1002280606j6d6ca697k21f42cff87d685de@mail.gmail.com>
+In-Reply-To: <20100227221310.GA5455@localhost.localdomain>
+References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
+	 <1267289508-31031-67-git-send-email-andrea.gelmini@gelma.net>
+	 <20100227221310.GA5455@localhost.localdomain>
+Date: Sun, 28 Feb 2010 15:06:21 +0100
+Message-ID: <9cdbb57f1002280606j6d6ca697k21f42cff87d685de@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH 66/66] arch/um/sys-x86_64/shared/sysdep/skas_ptrace.h: 
+	Checkpatch cleanup
+From: Andrea Gelmini <andrea.gelmini@gelma.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andrea Gelmini <andrea.gelmini@gelma.net>
+To: Jeff Dike <jdike@addtoit.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sun, Feb 28, 2010 at 03:06:21PM +0100, Andrea Gelmini wrote:
-> 2010/2/27 Jeff Dike <jdike@addtoit.com>:
-> Hi Jeff,
->    and thanks for your reply.
-> 
-> > Don't you have anything better to do with your time?
-> 
-> It's a dirty job, but somebody has to do it...
+2010/2/27 Jeff Dike <jdike@addtoit.com>:
+Hi Jeff,
+   and thanks for your reply.
 
-To be a bit more serious, the UML tree was once a seething mass of
-checkpatch violations.  I cleaned up a lot of it while making other
-changes in the area.  This sort of thing I think is reasonably
-worthwhile, but dumping in a whole lot of checkpatch changes doesn't
-help anything and it just pollutes the change history.
+> Don't you have anything better to do with your time?
 
-				Jeff
+It's a dirty job, but somebody has to do it...
+Enlighted by Greg's talk at FOSDEM¹ I sent him some patches (nothing
+more than boring things for a real programmer, but a good solitaire
+alternative for a rookie like me).
+
+These patches are just a try to see if there are other subtree
+maintainers interested in stuff like this.
+
+Ciao,
+Andrea
+
+
+
+
+----------------------------
+¹ http://bit.ly/9d3Ql3
