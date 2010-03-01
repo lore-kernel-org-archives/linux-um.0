@@ -1,37 +1,47 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 04/66] arch/um/include/asm/irq_vectors.h: Checkpatch cleanup
-Date: Sat, 27 Feb 2010 17:50:45 +0100
-Message-Id: <1267289508-31031-5-git-send-email-andrea.gelmini@gelma.net>
-In-Reply-To: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
+Date: Sun, 28 Feb 2010 19:57:18 -0800
+From: Greg KH <gregkh@suse.de>
+Subject: Re: [uml-devel] [PATCH 66/66]
+ arch/um/sys-x86_64/shared/sysdep/skas_ptrace.h: Checkpatch cleanup
+Message-ID: <20100301035718.GA17045@suse.de>
 References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
+ <1267289508-31031-67-git-send-email-andrea.gelmini@gelma.net>
+ <20100227221310.GA5455@localhost.localdomain>
+ <9cdbb57f1002280606j6d6ca697k21f42cff87d685de@mail.gmail.com>
+ <20100228204506.GQ30031@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20100228204506.GQ30031@ZenIV.linux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Andrea Gelmini <andrea.gelmini@gelma.net>, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, WANG Cong <xiyou.wangcong@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: Andrea Gelmini <andrea.gelmini@gelma.net>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-arch/um/include/asm/irq_vectors.h:1: ERROR: trailing whitespace
+On Sun, Feb 28, 2010 at 08:45:06PM +0000, Al Viro wrote:
+> On Sun, Feb 28, 2010 at 03:06:21PM +0100, Andrea Gelmini wrote:
+> > 2010/2/27 Jeff Dike <jdike@addtoit.com>:
+> > Hi Jeff,
+> >    and thanks for your reply.
+> > 
+> > > Don't you have anything better to do with your time?
+> > 
+> > It's a dirty job, but somebody has to do it...
+> > Enlighted by Greg's talk at FOSDEM?? I sent him some patches (nothing
+> > more than boring things for a real programmer, but a good solitaire
+> > alternative for a rookie like me).
+> > 
+> > These patches are just a try to see if there are other subtree
+> > maintainers interested in stuff like this.
+> 
+> Note to gregkh: the next time you give a talk like that, consider including
+> "spamming l-k with sixty-odd solitaire sessions^W^Wwhitespace-removal patches
+> can lead to considerable annoyance"...
 
-Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
----
- arch/um/include/asm/irq_vectors.h |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+Heh, I did explicitly state that this should be done on the staging
+tree only.  This developer took it apon themselves to try a different
+subsystem, which is fine, why would we want to turn away free help :)
 
-diff --git a/arch/um/include/asm/irq_vectors.h b/arch/um/include/asm/irq_vectors.h
-index 272a81e..05cb834 100644
---- a/arch/um/include/asm/irq_vectors.h
-+++ b/arch/um/include/asm/irq_vectors.h
-@@ -1,4 +1,4 @@
--/* 
-+/*
-  * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-  * Licensed under the GPL
-  */
-@@ -7,4 +7,3 @@
- #define __UM_IRQ_VECTORS_H
- 
- #endif
--
--- 
-1.7.0.90.g251a4
+thanks,
 
+greg k-h
