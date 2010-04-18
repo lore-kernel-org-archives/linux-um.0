@@ -1,50 +1,50 @@
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <4BCB464A.702@web.de>
+Date: Sun, 18 Apr 2010 19:50:02 +0200
+From: Jan Kiszka <jan.kiszka@web.de>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <s2o2b41c201004240356y8129de6s3a873a04821d577a@mail.gmail.com>
-References: <s2o2b41c201004240356y8129de6s3a873a04821d577a@mail.gmail.com>
-Date: Sat, 24 Apr 2010 14:07:15 +0200
-Message-ID: <n2j10f740e81004240507ze56962b1jbb5daab22019584b@mail.gmail.com>
-Subject: Re: um: Maintainer status
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-To: richard -rw- weinberger <richard.weinberger@gmail.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: jdike@addtoit.com, jdike@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: uml: pthreads instead of manual clone()?
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigB072389367F5E104741C48CB"
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Cc user-mode-linux-devel@lists.sourceforge.ne added.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigB072389367F5E104741C48CB
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 24, 2010 at 12:56, richard -rw- weinberger
-<richard.weinberger@gmail.com> wrote:
-> Hi Jeff!
->
-> There have been patches sent to you and none of them got merged or commen=
-ted.
-> E.g: http://marc.info/?l=3Duser-mode-linux-devel&m=3D126861825712632&w=3D=
-2
->
-> Do you actively maintain UML?
->
-> Cherrs,
-> //richard
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" i=
-n
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at =C2=A0http://www.tux.org/lkml/
+Hi Jeff,
 
-Gr{oetje,eeting}s,
+is there (still) any reason to use explicit clone() instead of pthreads
+to spawn UML kernel threads?
 
-						Geert
+While playing with a patch to finally move os_nsecs to proper
+CLOCK_MONOTONIC, I noticed some subtle side-effect: We need to link
+against librt for clock_gettime, but that indirectly drags in
+libpthread. Now gdb gets unhappy when you try to debug the UML kernel.
+It assumes that pthreads are used, but fails to find their IDs and
+terminates the session. So the obvious approach appears to be converting
+kernel threads to pthreads - if there aren't any know pitfalls.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+Jan
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-							    -- Linus Torvalds
 
+--------------enigB072389367F5E104741C48CB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+Comment: Using GnuPG with SUSE - http://enigmail.mozdev.org
+
+iEYEARECAAYFAkvLRk8ACgkQitSsb3rl5xRlWwCg0j9oWDNFXcvSva4SFWx1Uo+o
+znwAn0il7aX4P3Z/to2BT7JAKCuE8TYb
+=01UP
+-----END PGP SIGNATURE-----
+
+--------------enigB072389367F5E104741C48CB--
