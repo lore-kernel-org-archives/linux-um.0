@@ -1,76 +1,27 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4BD6D59A.5070908@ugcs.caltech.edu>
-Date: Tue, 27 Apr 2010 05:16:26 -0700
-From: Matthew Ryan Maurer <maurer@ugcs.caltech.edu>
-MIME-Version: 1.0
-Subject: [PATCH] UML: UML libc linking error fix
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: Jan Kiszka <jan.kiszka@web.de>
+Subject: [PATCH 0/5] uml: Some trivial cleanups
+Date: Mon, 19 Apr 2010 23:53:03 +0200
+Message-Id: <cover.1271713955.git.jan.kiszka@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, Tejun Heo <tj@kernel.org>, Paul Mundt <lethal@linux-sh.org>, Mike Frysinger <vapier@gentoo.org>, Michal Simek <monstr@monstr.eu>, Tim Abbott <tabbott@ksplice.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: trivial@kernel.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Matthew Maurer <maurer@ugcs.caltech.edu>
+Some trivial build warning fixes and cleanups for UML.
 
-Fixes linking for UML against newer libcs by adding two hidden symbols
-which are now expected.
-Signed-off-by: Matthew Maurer <maurer@ugcs.caltech.edu>
----
-Apologies ahead of time if I've missed something or if this has already
-been fixed somewhere I couldn't find it.
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index 7fcad58..85babf5 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -50,8 +50,21 @@ SECTIONS
-   .rela.got       : { *(.rela.got) }
-   .rel.bss        : { *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*) }
-   .rela.bss       : { *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*) }
--  .rel.plt        : { *(.rel.plt) }
--  .rela.plt       : { *(.rela.plt) }
-+  /* Deal with multilib libc */
-+  .rel.plt        :
-+  {
-+    *(.rel.plt)
-+    PROVIDE_HIDDEN (__rel_iplt_start = .);
-+    *(.rel.iplt)
-+    PROVIDE_HIDDEN (__rel_iplt_end = .);
-+  }
-+  .rela.plt       :
-+  {
-+    *(.rela.plt)
-+    PROVIDE_HIDDEN (__rela_iplt_start = .);
-+    *(.rela.iplt)
-+    PROVIDE_HIDDEN (__rela_iplt_end = .);
-+  }
-   .init           : {
-     KEEP (*(.init))
-   } =0x90909090
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index e7a6cca..50d80e8 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -35,6 +35,21 @@ SECTIONS
-     *(.gnu.warning)
-     *(.gnu.linkonce.t*)
-   }
-+  /* Deal with multilib libc */
-+  .rel.plt        :
-+  {
-+    *(.rel.plt)
-+    PROVIDE_HIDDEN (__rel_iplt_start = .);
-+    *(.rel.iplt)
-+    PROVIDE_HIDDEN (__rel_iplt_end = .);
-+  }
-+  .rela.plt       :
-+  {
-+    *(.rela.plt)
-+    PROVIDE_HIDDEN (__rela_iplt_start = .);
-+    *(.rela.iplt)
-+    PROVIDE_HIDDEN (__rela_iplt_end = .);
-+  }
+Jan Kiszka (5):
+  uml: Remove unused variable from line driver
+  uml: Drop private round_down definition
+  uml: Fix warning due to missing task_struct declaration
+  uml: i386: Avoid redefinition of NR_syscalls
+  uml: Clean up asm/system.h
 
-   . = ALIGN(PAGE_SIZE);
-   .syscall_stub : {
-Signed-off-by: Matthew Maurer <maurer@ugcs.caltech.edu>
+ arch/um/drivers/line.c        |    1 -
+ arch/um/include/asm/system.h  |    3 ---
+ arch/um/kernel/skas/syscall.c |    4 ++--
+ arch/um/sys-i386/asm/elf.h    |    2 ++
+ arch/um/sys-x86_64/asm/elf.h  |    2 ++
+ arch/um/sys-x86_64/signal.c   |    2 --
+ 6 files changed, 6 insertions(+), 8 deletions(-)
+
