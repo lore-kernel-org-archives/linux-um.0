@@ -1,48 +1,39 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4BCB353A.3040806@web.de>
-Date: Sun, 18 Apr 2010 18:37:14 +0200
-From: Jan Kiszka <jan.kiszka@web.de>
+Date: Tue, 20 Apr 2010 16:31:53 +0200 (CEST)
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: Re: [PATCH 1/5] uml: Remove unused variable from line driver
+In-Reply-To: <f430193946dbd11791e8fb5bef2e4a8e68393828.1271713955.git.jan.kiszka@web.de>
+Message-ID: <alpine.LNX.2.00.1004201631440.7579@pobox.suse.cz>
+References: <cover.1271713955.git.jan.kiszka@web.de> <f430193946dbd11791e8fb5bef2e4a8e68393828.1271713955.git.jan.kiszka@web.de>
 MIME-Version: 1.0
-Subject: [PATCH] uml: Fix build breakage after slab.h changes
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, Tejun Heo <tj@kernel.org>, Tiger Yang <tiger.yang@oracle.com>
+To: Jan Kiszka <jan.kiszka@web.de>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-We now have to to include linux/slab.h explicitly for kmalloc & friends.
-Files that build against host headers already get their prototypes via
-um_malloc.h, linux/slab.h may even be unavailable.
+On Mon, 19 Apr 2010, Jan Kiszka wrote:
 
-Signed-off-by: Jan Kiszka <jan.kiszka@web.de>
----
- arch/um/drivers/line.c    |    1 +
- arch/um/os-Linux/helper.c |    1 -
- 2 files changed, 1 insertions(+), 1 deletions(-)
+> Signed-off-by: Jan Kiszka <jan.kiszka@web.de>
+> ---
+>  arch/um/drivers/line.c |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+> index 7a656bd..7f7338c 100644
+> --- a/arch/um/drivers/line.c
+> +++ b/arch/um/drivers/line.c
+> @@ -19,7 +19,6 @@ static irqreturn_t line_interrupt(int irq, void *data)
+>  {
+>  	struct chan *chan = data;
+>  	struct line *line = chan->line;
+> -	struct tty_struct *tty;
+>  
+>  	if (line)
+>  		chan_interrupt(&line->chan_list, &line->task, line->tty, irq);
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 64cda95..7a656bd 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -6,6 +6,7 @@
- #include "linux/irqreturn.h"
- #include "linux/kd.h"
- #include "linux/sched.h"
-+#include "linux/slab.h"
- #include "chan_kern.h"
- #include "irq_kern.h"
- #include "irq_user.h"
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index 06d6ccf..b6b1096 100644
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -8,7 +8,6 @@
- #include <errno.h>
- #include <sched.h>
- #include <linux/limits.h>
--#include <linux/slab.h>
- #include <sys/socket.h>
- #include <sys/wait.h>
- #include "kern_constants.h"
+Applied, thanks.
 
+-- 
+Jiri Kosina
+SUSE Labs, Novell Inc.
