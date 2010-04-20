@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jkosina@suse.cz>) id 1O4Fhf-0005BY-V8
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jkosina@suse.cz>) id 1O4EYS-0004er-Ap
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Apr 2010 15:49:35 +0000
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O4Fhe-0007Kw-KD for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 20 Apr 2010 15:49:35 +0000
-Date: Tue, 20 Apr 2010 17:49:28 +0200 (CEST)
+	Tue, 20 Apr 2010 14:36:00 +0000
+Received: from cantor.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O4EYQ-00012e-U0
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 20 Apr 2010 14:36:00 +0000
+Date: Tue, 20 Apr 2010 16:35:52 +0200 (CEST)
 From: Jiri Kosina <jkosina@suse.cz>
-In-Reply-To: <20100420142510.GA30011@c-98-229-117-200.hsd1.ma.comcast.net>
-Message-ID: <alpine.LNX.2.00.1004201749170.7579@pobox.suse.cz>
+In-Reply-To: <20100420083358.GD4356@cr0.nay.redhat.com>
+Message-ID: <alpine.LNX.2.00.1004201635050.7579@pobox.suse.cz>
 References: <cover.1271713955.git.jan.kiszka@web.de>
 	<74c7d668690f283cf3b8aed92004dc72e872f7ce.1271713955.git.jan.kiszka@web.de>
 	<20100420083358.GD4356@cr0.nay.redhat.com>
-	<20100420142510.GA30011@c-98-229-117-200.hsd1.ma.comcast.net>
 MIME-Version: 1.0
 Subject: Re: [uml-devel] [PATCH 2/5] uml: Drop private round_down definition
 List-Id: The user-mode Linux development list
@@ -31,41 +31,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Amerigo Wang <xiyou.wangcong@gmail.com>, Jan Kiszka <jan.kiszka@web.de>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Amerigo Wang <xiyou.wangcong@gmail.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Jan Kiszka <jan.kiszka@web.de>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Tue, 20 Apr 2010, Jeff Dike wrote:
+On Tue, 20 Apr 2010, Amerigo Wang wrote:
 
-> > >Already defined in kernel.h. The official version assumes that 'n' is
-> > >power of two - which it is in our case.
-> > >
-> > >Signed-off-by: Jan Kiszka <jan.kiszka@web.de>
-> > >---
-> > > arch/um/sys-x86_64/signal.c |    2 --
-> > > 1 files changed, 0 insertions(+), 2 deletions(-)
-> > >
-> > >diff --git a/arch/um/sys-x86_64/signal.c b/arch/um/sys-x86_64/signal.c
-> > >index 1a899a7..07797d1 100644
-> > >--- a/arch/um/sys-x86_64/signal.c
-> > >+++ b/arch/um/sys-x86_64/signal.c
-> > >@@ -165,8 +165,6 @@ struct rt_sigframe
-> > > 	struct _fpstate fpstate;
-> > > };
-> > > 
-> > >-#define round_down(m, n) (((m) / (n)) * (n))
-> > >-
-> > > int setup_signal_stack_si(unsigned long stack_top, int sig,
-> > > 			  struct k_sigaction *ka, struct pt_regs * regs,
-> > > 			  siginfo_t *info, sigset_t *set)
+> On Mon, Apr 19, 2010 at 11:53:05PM +0200, Jan Kiszka wrote:
+> >Already defined in kernel.h. The official version assumes that 'n' is
+> >power of two - which it is in our case.
+> >
+> >Signed-off-by: Jan Kiszka <jan.kiszka@web.de>
+> >---
+> > arch/um/sys-x86_64/signal.c |    2 --
+> > 1 files changed, 0 insertions(+), 2 deletions(-)
+> >
+> >diff --git a/arch/um/sys-x86_64/signal.c b/arch/um/sys-x86_64/signal.c
+> >index 1a899a7..07797d1 100644
+> >--- a/arch/um/sys-x86_64/signal.c
+> >+++ b/arch/um/sys-x86_64/signal.c
+> >@@ -165,8 +165,6 @@ struct rt_sigframe
+> > 	struct _fpstate fpstate;
+> > };
 > > 
-> > Shouldn't this signal.c #include <linux/kernel.h>?
+> >-#define round_down(m, n) (((m) / (n)) * (n))
+> >-
+> > int setup_signal_stack_si(unsigned long stack_top, int sig,
+> > 			  struct k_sigaction *ka, struct pt_regs * regs,
+> > 			  siginfo_t *info, sigset_t *set)
 > 
-> I agree - if this is going to depend on kernel.h, it should be
-> explicitly included.
+> Shouldn't this signal.c #include <linux/kernel.h>?
 
-Yup, I have already added that.
+Well, it gets included implicitly through uaccess.h -> sched.h -> 
+kernel.h.
 
-Thanks,
+Applied, thanks.
 
 -- 
 Jiri Kosina
