@@ -1,31 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <tiger.yang@oracle.com>) id 1O2h47-0002yz-1I
+	(envelope-from <barryf@google.com>) id 1O4OBJ-0003UQ-Nw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Apr 2010 08:38:19 +0000
-Received: from rcsinet11.oracle.com ([148.87.113.123])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1O2h44-0007Vv-PT
+	Wed, 21 Apr 2010 00:52:45 +0000
+Received: from smtp-out.google.com ([216.239.44.51])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1O4Nm5-0006tn-Lp
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Apr 2010 08:38:18 +0000
-Received: from acsinet15.oracle.com (acsinet15.oracle.com [141.146.126.227])
-	by rcsinet11.oracle.com (Switch-3.4.2/Switch-3.4.2) with ESMTP id
-	o3G8c9MZ012368
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	Wed, 21 Apr 2010 00:26:42 +0000
+Received: from kpbe15.cbf.corp.google.com (kpbe15.cbf.corp.google.com
+	[172.25.105.79]) by smtp-out.google.com with ESMTP id o3L0MPYi014681
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 16 Apr 2010 08:38:11 GMT
-Received: from acsmt355.oracle.com (acsmt355.oracle.com [141.146.40.155])
-	by acsinet15.oracle.com (Switch-3.4.2/Switch-3.4.1) with ESMTP id
-	o3FGwVHS030851 for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 16 Apr 2010 08:38:08 GMT
-From: Tiger Yang <tiger.yang@oracle.com>
-Date: Fri, 16 Apr 2010 16:35:39 +0800
-Message-Id: <1271406939-26394-1-git-send-email-tiger.yang@oracle.com>
-In-Reply-To: <>
-References: <>
-Subject: [uml-devel] [PATCH 1/1] uml: replace kmalloc() in line.c
+	Tue, 20 Apr 2010 17:22:25 -0700
+From: Barry Friedman <barryf@google.com>
+Date: Tue, 20 Apr 2010 17:21:51 -0700
+Message-Id: <1271809311-8460-1-git-send-email-barryf@google.com>
+Subject: [uml-devel] [PATCH] UML: Fix gdbserver "Couldn't write debug
+	register" error
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -40,72 +33,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Barry Friedman <barryf@google.com>
 
-This patch replace kmalloc() with uml_kmalloc() in line.c and
-remove an unused variable.
+Running gdbserver in a UML instance displays "Couldn't
+write debug register" after setting a breakpoint and continuing after
+attaching from a remote gdb on the host. This is on an AMD x86_64
+machine. The error message was resulting from getting EIO error  when
+making a PTRACE_POKEUSER call. I debugged the ptrace call handling on
+the kernel side and found that the poke_user() and peek_user() calls
+in arch/um/sys-x86_64/ptrace.c assume that long is 4 bytes instead of
+8. Fix here calculates the register index based on 8 byte long.
 
-Signed-off-by: Tiger Yang <tiger.yang@oracle.com>
+arch/um/sys-x86_64/ptrace.c
+ - poke_user(): Fix register index calc based on 8 byte long
+ - peek_user(): Fix register index calc based on 8 byte	long
+
 ---
- arch/um/drivers/line.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ arch/um/sys-x86_64/ptrace.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 64cda95..616a1f3 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -11,6 +11,7 @@
- #include "irq_user.h"
- #include "kern_util.h"
- #include "os.h"
-+#include "um_malloc.h"
- 
- #define LINE_BUFSIZE 4096
- 
-@@ -18,7 +19,6 @@ static irqreturn_t line_interrupt(int irq, void *data)
- {
- 	struct chan *chan = data;
- 	struct line *line = chan->line;
--	struct tty_struct *tty;
- 
- 	if (line)
- 		chan_interrupt(&line->chan_list, &line->task, line->tty, irq);
-@@ -95,7 +95,7 @@ static int buffer_data(struct line *line, const char *buf, int len)
- 	int end, room;
- 
- 	if (line->buffer == NULL) {
--		line->buffer = kmalloc(LINE_BUFSIZE, GFP_ATOMIC);
-+		line->buffer = uml_kmalloc(LINE_BUFSIZE, UM_GFP_ATOMIC);
- 		if (line->buffer == NULL) {
- 			printk(KERN_ERR "buffer_data - atomic allocation "
- 			       "failed\n");
-@@ -782,7 +782,7 @@ void register_winch_irq(int fd, int tty_fd, int pid, struct tty_struct *tty,
- {
- 	struct winch *winch;
- 
--	winch = kmalloc(sizeof(*winch), GFP_KERNEL);
-+	winch = uml_kmalloc(sizeof(*winch), UM_GFP_KERNEL);
- 	if (winch == NULL) {
- 		printk(KERN_ERR "register_winch_irq - kmalloc failed\n");
- 		goto cleanup;
-@@ -861,7 +861,7 @@ char *add_xterm_umid(char *base)
- 		return base;
- 
- 	len = strlen(base) + strlen(" ()") + strlen(umid) + 1;
--	title = kmalloc(len, GFP_KERNEL);
-+	title = uml_kmalloc(len, UM_GFP_KERNEL);
- 	if (title == NULL) {
- 		printk(KERN_ERR "Failed to allocate buffer for xterm title\n");
- 		return base;
+diff --git a/arch/um/sys-x86_64/ptrace.c b/arch/um/sys-x86_64/ptrace.c
+index f3458d7..e491e48 100644
+--- a/arch/um/sys-x86_64/ptrace.c
++++ b/arch/um/sys-x86_64/ptrace.c
+@@ -69,7 +69,7 @@ int poke_user(struct task_struct *child, long addr, long data)
+ 	else if ((addr >= offsetof(struct user, u_debugreg[0])) &&
+ 		(addr <= offsetof(struct user, u_debugreg[7]))) {
+ 		addr -= offsetof(struct user, u_debugreg[0]);
+-		addr = addr >> 2;
++		addr = addr >> 3;
+ 		if ((addr == 4) || (addr == 5))
+ 			return -EIO;
+ 		child->thread.arch.debugregs[addr] = data;
+@@ -114,7 +114,7 @@ int peek_user(struct task_struct *child, long addr, long data)
+ 	else if ((addr >= offsetof(struct user, u_debugreg[0])) &&
+ 		(addr <= offsetof(struct user, u_debugreg[7]))) {
+ 		addr -= offsetof(struct user, u_debugreg[0]);
+-		addr = addr >> 2;
++		addr = addr >> 3;
+ 		tmp = child->thread.arch.debugregs[addr];
+ 	}
+ 	return put_user(tmp, (unsigned long *) data);
 -- 
-1.5.4.3
+1.7.0.1
 
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
