@@ -1,71 +1,48 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jan.kiszka@web.de>) id 1O3yuF-000094-Tf
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Apr 2010 21:53:27 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O3yuE-00024R-U6 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Apr 2010 21:53:27 +0000
-From: Jan Kiszka <jan.kiszka@web.de>
-Date: Mon, 19 Apr 2010 23:53:05 +0200
-Message-Id: <74c7d668690f283cf3b8aed92004dc72e872f7ce.1271713955.git.jan.kiszka@web.de>
-In-Reply-To: <cover.1271713955.git.jan.kiszka@web.de>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Wed, 21 Apr 2010 14:12:05 +0800
+From: Amerigo Wang <xiyou.wangcong@gmail.com>
+Subject: Re: [PATCH 4/5] uml: i386: Avoid redefinition of NR_syscalls
+Message-ID: <20100421061205.GC4467@cr0.nay.redhat.com>
 References: <cover.1271713955.git.jan.kiszka@web.de>
-In-Reply-To: <cover.1271713955.git.jan.kiszka@web.de>
-References: <cover.1271713955.git.jan.kiszka@web.de>
-Subject: [uml-devel] [PATCH 2/5] uml: Drop private round_down definition
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+ <3e07ad1a38e88a22d7298deb88a8f3962b101998.1271713955.git.jan.kiszka@web.de>
+ <20100420101056.GC5317@cr0.nay.redhat.com>
+ <4BCDE103.7080709@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: trivial@kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4BCDE103.7080709@web.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jan Kiszka <jan.kiszka@web.de>
+Cc: Amerigo Wang <xiyou.wangcong@gmail.com>, trivial@kernel.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Already defined in kernel.h. The official version assumes that 'n' is
-power of two - which it is in our case.
+On Tue, Apr 20, 2010 at 07:14:43PM +0200, Jan Kiszka wrote:
+>Amerigo Wang wrote:
+>> On Mon, Apr 19, 2010 at 11:53:07PM +0200, Jan Kiszka wrote:
+>>> The i386 subarch happens to pull in original NR_syscalls. Maybe we can
+>>> make that work for all host arch, but for now just avoid the clash by
+>>> using an all-upper-case name.
+>>>
+>> 
+>> Where?
+>
+>Not sure if this answers your question:
+>
+>  CC      arch/um/kernel/skas/syscall.o
+>/data/linux-2.6/arch/um/kernel/skas/syscall.c:13:1: warning:
+>"NR_syscalls" redefined
+>In file included from /data/linux-2.6/arch/x86/include/asm/unistd.h:3,
+>                 from
+>/data/linux-2.6/arch/um/sys-i386/shared/sysdep/syscalls.h:6,
+>                 from /data/linux-2.6/arch/um/kernel/skas/syscall.c:10:
+>/data/linux-2.6/arch/x86/include/asm/unistd_32.h:349:1: warning: this is
+>the location of the previous definition
+>
 
-Signed-off-by: Jan Kiszka <jan.kiszka@web.de>
----
- arch/um/sys-x86_64/signal.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/sys-x86_64/signal.c b/arch/um/sys-x86_64/signal.c
-index 1a899a7..07797d1 100644
---- a/arch/um/sys-x86_64/signal.c
-+++ b/arch/um/sys-x86_64/signal.c
-@@ -165,8 +165,6 @@ struct rt_sigframe
- 	struct _fpstate fpstate;
- };
- 
--#define round_down(m, n) (((m) / (n)) * (n))
--
- int setup_signal_stack_si(unsigned long stack_top, int sig,
- 			  struct k_sigaction *ka, struct pt_regs * regs,
- 			  siginfo_t *info, sigset_t *set)
--- 
-1.6.0.2
+Ah, sure. I misunderstood your purpose, please do include the warning
+messages you are trying to fix in your patch description.
 
 
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Thanks!
+
 
