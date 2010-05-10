@@ -1,53 +1,42 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <antoine@nagafix.co.uk>) id 1OEiqV-000829-BX
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 May 2010 12:57:59 +0000
-Received: from mamba.nagafix.co.uk ([194.145.196.68] helo=mail.nagafix.co.uk)
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OEiqT-0004CX-TR for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 19 May 2010 12:57:59 +0000
-Received: (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: antoine@nagafix.co.uk)
-	by mail.nagafix.co.uk (Postfix) with ESMTPSA id 7AFD96999
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 19 May 2010 13:57:50 +0100 (BST)
-Message-ID: <4BF3E049.4060900@nagafix.co.uk>
-Date: Wed, 19 May 2010 19:57:45 +0700
-From: Antoine Martin <antoine@nagafix.co.uk>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Mon, 10 May 2010 23:38:41 +0200 (CEST)
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: Re: [PATCH 4/5] uml: i386: Avoid redefinition of NR_syscalls
+In-Reply-To: <20100421061205.GC4467@cr0.nay.redhat.com>
+Message-ID: <alpine.LNX.2.00.1005102338190.28092@pobox.suse.cz>
+References: <cover.1271713955.git.jan.kiszka@web.de> <3e07ad1a38e88a22d7298deb88a8f3962b101998.1271713955.git.jan.kiszka@web.de> <20100420101056.GC5317@cr0.nay.redhat.com> <4BCDE103.7080709@web.de> <20100421061205.GC4467@cr0.nay.redhat.com>
 MIME-Version: 1.0
-Subject: [uml-devel] something broke hppfs
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: linux-kernel-owner@vger.kernel.org
+To: Amerigo Wang <xiyou.wangcong@gmail.com>
+Cc: Jan Kiszka <jan.kiszka@web.de>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-   LD      fs/hostfs/hostfs.o
-   LD      fs/hostfs/built-in.o
-   CC      fs/hppfs/hppfs.o
-fs/hppfs/hppfs.c: In function 'hppfs_fill_super':
-fs/hppfs/hppfs.c:721: error: dereferencing pointer to incomplete type
-make[2]: *** [fs/hppfs/hppfs.o] Error 1
-make[1]: *** [fs/hppfs] Error 2
-make: *** [fs] Error 2
+On Wed, 21 Apr 2010, Amerigo Wang wrote:
 
+> >> Where?
+> >
+> >Not sure if this answers your question:
+> >
+> >  CC      arch/um/kernel/skas/syscall.o
+> >/data/linux-2.6/arch/um/kernel/skas/syscall.c:13:1: warning:
+> >"NR_syscalls" redefined
+> >In file included from /data/linux-2.6/arch/x86/include/asm/unistd.h:3,
+> >                 from
+> >/data/linux-2.6/arch/um/sys-i386/shared/sysdep/syscalls.h:6,
+> >                 from /data/linux-2.6/arch/um/kernel/skas/syscall.c:10:
+> >/data/linux-2.6/arch/x86/include/asm/unistd_32.h:349:1: warning: this is
+> >the location of the previous definition
+> >
+> 
+> Ah, sure. I misunderstood your purpose, please do include the warning
+> messages you are trying to fix in your patch description.
 
-------------------------------------------------------------------------------
+The patch doesn't seem to be present in linux-next as of today. I have 
+applied it to my queue.
 
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Thanks,
 
+-- 
+Jiri Kosina
+SUSE Labs, Novell Inc.
