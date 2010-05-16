@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jan.kiszka@web.de>) id 1ODdhk-0006AY-L7
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <p.giarrusso@gmail.com>) id 1ODdCP-0006CL-HU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 16 May 2010 13:16:28 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1ODdhj-0003yd-8I for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 16 May 2010 13:16:28 +0000
-Message-ID: <4BEFF020.5080901@web.de>
-Date: Sun, 16 May 2010 15:16:16 +0200
-From: Jan Kiszka <jan.kiszka@web.de>
+	Sun, 16 May 2010 12:44:05 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1ODdCO-0000pM-9I for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 16 May 2010 12:44:05 +0000
+Received: by fxm9 with SMTP id 9so901413fxm.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 16 May 2010 05:43:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <alpine.LFD.2.00.1005101719500.21053@localhost>
+In-Reply-To: <4BE845D9.40400@web.de>
+References: <alpine.LFD.2.00.1005101719500.21053@localhost> 
 	<4BE845D9.40400@web.de>
-	<AANLkTilMZQ12zv8VvUMa0yTnwGTT7ZhiEKfzwUPgiQjF@mail.gmail.com>
-In-Reply-To: <AANLkTilMZQ12zv8VvUMa0yTnwGTT7ZhiEKfzwUPgiQjF@mail.gmail.com>
+From: Paolo Giarrusso <p.giarrusso@gmail.com>
+Date: Sun, 16 May 2010 14:43:38 +0200
+Message-ID: <AANLkTilMZQ12zv8VvUMa0yTnwGTT7ZhiEKfzwUPgiQjF@mail.gmail.com>
 Subject: Re: [uml-devel] uml: Error with Linked list debugging on
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -27,209 +29,173 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9212311610799062006=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Paolo Giarrusso <p.giarrusso@gmail.com>
+To: Jan Kiszka <jan.kiszka@web.de>
 Cc: Lukas Czerner <lczerner@redhat.com>, user-mode-linux-devel@lists.sourceforge.net
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============9212311610799062006==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig1A325167672B6912C95A1813"
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig1A325167672B6912C95A1813
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Paolo Giarrusso wrote:
-> On Mon, May 10, 2010 at 19:43, Jan Kiszka <jan.kiszka@web.de> wrote:
->> Lukas Czerner wrote:
->>> Hi,
->>>
->>> I have got an error when booting uml with Linked list manipulation
->>> debugging turned on. The crash occurs in the exact moment when the
->>> consoles are showing up - it just blinks and crush. Here is the
->>> backtrace:
->>>
->>>
->>> #0  0x0000003cb8233e14 in abort () from /lib64/libc.so.6
->>> #1  0x00000000600220b2 in os_dump_core () at arch/um/os-Linux/util.c:=
-119
->>> #2  0x00000000600147c1 in panic_exit (self=3D<value optimized out>, u=
-nused1=3D<value optimized out>,
->>>     unused2=3D<value optimized out>) at arch/um/kernel/um_arch.c:233
->>> #3  0x0000000060045996 in notifier_call_chain (nl=3D<value optimized =
-out>, val=3D0, v=3D0x602ffb40,
->>> nr_to_call=3D-2, nr_calls=3D<value optimized out>) at kernel/notifier=
-=2Ec:93
->>> #4  0x00000000600459e4 in __atomic_notifier_call_chain (nh=3D<value o=
-ptimized out>,
->>> val=3D<value optimized out>, v=3D<value optimized out>) at kernel/not=
-ifier.c:182
->>> #5  atomic_notifier_call_chain (nh=3D<value optimized out>, val=3D<va=
-lue optimized out>,
->>> v=3D<value optimized out>) at kernel/notifier.c:191
->>> #6  0x00000000601a56d0 in panic (fmt=3D0x601f3050 "Kernel mode fault =
-at addr 0x%lx, ip 0x%lx")
->>> at kernel/panic.c:115
->>> #7  0x00000000600145df in segv (fi=3D..., ip=3D1611852984, is_user=3D=
-0, regs=3D0x6024fa10)
->>> at arch/um/kernel/trap.c:201
->>> #8  0x000000006001463e in segv_handler (sig=3D<value optimized out>, =
-regs=3D<value optimized out>)
->>> at arch/um/kernel/trap.c:147
->>> #9  0x00000000600211a4 in sig_handler_common (sig=3D11, sc=3D0x6024fb=
-e8) at arch/um/os-Linux/signal.c:49
->>> #10 0x00000000600212ea in sig_handler (sig=3D<value optimized out>, s=
-c=3D<value optimized out>)
->>> at arch/um/os-Linux/signal.c:226
->>> #11 0x000000006002151c in handle_signal (sig=3D<value optimized out>,=
- sc=3D0x6024fbe8)
->>>     at arch/um/os-Linux/signal.c:158
->>> #12 0x0000000060022e9c in hard_handler (sig=3D<value optimized out>)
->>> at arch/um/os-Linux/sys-x86_64/signal.c:15
->>> #13 <signal handler called>
->>> #14 0x000000006012ecb8 in list_del (entry=3D0x807bcf00) at lib/list_d=
-ebug.c:46
->>> #15 0x0000000060016724 in free_winch (winch=3D0x807bcf00, free_irq_ok=
-=3D0) at arch/um/drivers/line.c:731
->>> #16 0x0000000060016ad7 in winch_interrupt (irq=3D<value optimized out=
->, data=3D0x807bcf00)
->>> at arch/um/drivers/line.c:760
->>> #17 0x0000000060055b45 in __free_irq (irq=3D10, dev_id=3D0x807bcf00) =
-at kernel/irq/manage.c:937
->>> #18 0x0000000060055bc0 in free_irq (irq=3D10, dev_id=3D0x807bcf00) at=
- kernel/irq/manage.c:986
->>> #19 0x0000000060016765 in free_winch (winch=3D0x807bcf00, free_irq_ok=
-=3D1) at arch/um/drivers/line.c:740
->>> #20 0x0000000060017211 in unregister_winch (tty=3D0x8072a800, filp=3D=
-<value optimized out>)
->>> at arch/um/drivers/line.c:836
->>> #21 line_close (tty=3D0x8072a800, filp=3D<value optimized out>) at ar=
-ch/um/drivers/line.c:477
->>> #22 0x00000000601335d9 in tty_release (inode=3D0x7eff4190, filp=3D0x7=
-fc9abc0) at drivers/char/tty_io.c:1580
->>> #23 0x000000006007e6a8 in __fput (file=3D0x7fc9abc0) at fs/file_table=
-=2Ec:254
->>> #24 0x000000006007e79c in fput (file=3D<value optimized out>) at fs/f=
-ile_table.c:200
->>> #25 0x000000006007b995 in filp_close (filp=3D0x7fc9abc0, id=3D0x7fc72=
-0c0) at fs/open.c:1124
->>> #26 0x000000006007ba4a in sys_close (fd=3D3) at fs/open.c:1153
->>> #27 0x0000000060014c7c in handle_syscall (r=3D0x7e1ba418) at arch/um/=
-kernel/skas/syscall.c:35
->>> #28 0x0000000060023e7f in handle_trap (regs=3D0x7e1ba418) at arch/um/=
-os-Linux/skas/process.c:201
->>> #29 userspace (regs=3D0x7e1ba418) at arch/um/os-Linux/skas/process.c:=
-417
->>> #30 0x000000006001265b in fork_handler () at arch/um/kernel/process.c=
-:181
->>>
->>>
->>> Apparently, the winch is not in the list when the free_winch is
->>> invoked. Kernel version 2.6.34-rc7
->>>
->> You might be lucky: Does the patch below make a difference? It may be
->> untested as it's part on my half-finished uml cleanup/review queue.
->=20
-> Hi, I'm not sure it may help, since the spurious call is from inside
-> the IRQ handler. In the worst case, the above call may cause a
-> deadlock. I suggest a better fix idea below.
->=20
-> Here's the help from DEBUG_SHIRQ:
-> 	  Enable this to generate a spurious interrupt as soon as a shared
-> 	  interrupt handler is registered, and just before one is deregistered=
-=2E
-> 	  Drivers ought to be able to handle interrupts coming in at those
-> 	  points; some don't and need to be caught.
->=20
-> The problem is that free_winch calls free_irq at the end, after
-> destroying everything, which is wrong: first you disable the
-> interrupt, then you destroy resources needed to handle it. SHIRQ is
-> catching a real bug here. In fact, the IRQ handler is noticing that it
-> can't read from the FD (because it was just closed) and trying to free
-> again the IRQ (which is bad). You must move the call to free_irq at
-> the beginning. There's a number of apparent "race" in UML which is
-> really solved by state machines, like this: when closing, you are in a
-> state when other routines (like IRQs) must not wait (what you get by
-> locking), but must be disabled.
-> Actually, the cleanup seems to start at line_close which already
-> destroyed some resources, but winch_interrupt seems safe against that
-> (it tests if winch->tty is NULL). Not really maybe, because the
-> testing is not atomic (so there might be races, but it seems not so
-> likely). But moving the call to unregister_winch to the beginning of
-> line_close might be a good idea (after all, you don't really need to
-> listen for SIGWINCH when you start closing a window). The calls before
-> line_close are from the generic kernel, so they can't be changed: if
-> they free any resources, the interrupt handler must be ready to
-> operate without them, whatever that means. But it's just calling
-> tty_fasync(on=3D0), I think to disable async notifications.
-
-Right, there was more broken. Besides the locking fix, this should do
-the trick by avoiding the recursive free_winch call:
-
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index d85fcb9..fa66eb4 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -731,8 +731,10 @@ static void free_winch(struct winch *winch, int free=
-_irq_ok)
-=20
- 	if (winch->pid !=3D -1)
- 		os_kill_process(winch->pid, 1);
--	if (winch->fd !=3D -1)
-+	if (winch->fd !=3D -1) {
- 		os_close_file(winch->fd);
-+		winch->fd =3D -1;
-+	}
- 	if (winch->stack !=3D 0)
- 		free_stack(winch->stack, 0);
- 	if (free_irq_ok)
-
-(note: untested)
-
-Jan
-
-
---------------enig1A325167672B6912C95A1813
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-Comment: Using GnuPG with SUSE - http://enigmail.mozdev.org
-
-iEYEARECAAYFAkvv8CQACgkQitSsb3rl5xSa1wCgoZHlPDcGGXxN31Y2I9eXWEE2
-iQ0AoMTrb52p1JEARH4xr6Sx2E+bfjI8
-=kxZU
------END PGP SIGNATURE-----
-
---------------enig1A325167672B6912C95A1813--
-
-
---===============9212311610799062006==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-
-
---===============9212311610799062006==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============9212311610799062006==--
-
+T24gTW9uLCBNYXkgMTAsIDIwMTAgYXQgMTk6NDMsIEphbiBLaXN6a2EgPGphbi5raXN6a2FAd2Vi
+LmRlPiB3cm90ZToKPiBMdWthcyBDemVybmVyIHdyb3RlOgo+PiBIaSwKPj4KPj4gSSBoYXZlIGdv
+dCBhbiBlcnJvciB3aGVuIGJvb3RpbmcgdW1sIHdpdGggTGlua2VkIGxpc3QgbWFuaXB1bGF0aW9u
+Cj4+IGRlYnVnZ2luZyB0dXJuZWQgb24uIFRoZSBjcmFzaCBvY2N1cnMgaW4gdGhlIGV4YWN0IG1v
+bWVudCB3aGVuIHRoZQo+PiBjb25zb2xlcyBhcmUgc2hvd2luZyB1cCAtIGl0IGp1c3QgYmxpbmtz
+IGFuZCBjcnVzaC4gSGVyZSBpcyB0aGUKPj4gYmFja3RyYWNlOgo+Pgo+Pgo+PiAjMCDCoDB4MDAw
+MDAwM2NiODIzM2UxNCBpbiBhYm9ydCAoKSBmcm9tIC9saWI2NC9saWJjLnNvLjYKPj4gIzEgwqAw
+eDAwMDAwMDAwNjAwMjIwYjIgaW4gb3NfZHVtcF9jb3JlICgpIGF0IGFyY2gvdW0vb3MtTGludXgv
+dXRpbC5jOjExOQo+PiAjMiDCoDB4MDAwMDAwMDA2MDAxNDdjMSBpbiBwYW5pY19leGl0IChzZWxm
+PTx2YWx1ZSBvcHRpbWl6ZWQgb3V0PiwgdW51c2VkMT08dmFsdWUgb3B0aW1pemVkIG91dD4sCj4+
+IMKgIMKgIHVudXNlZDI9PHZhbHVlIG9wdGltaXplZCBvdXQ+KSBhdCBhcmNoL3VtL2tlcm5lbC91
+bV9hcmNoLmM6MjMzCj4+ICMzIMKgMHgwMDAwMDAwMDYwMDQ1OTk2IGluIG5vdGlmaWVyX2NhbGxf
+Y2hhaW4gKG5sPTx2YWx1ZSBvcHRpbWl6ZWQgb3V0PiwgdmFsPTAsIHY9MHg2MDJmZmI0MCwKPj4g
+bnJfdG9fY2FsbD0tMiwgbnJfY2FsbHM9PHZhbHVlIG9wdGltaXplZCBvdXQ+KSBhdCBrZXJuZWwv
+bm90aWZpZXIuYzo5Mwo+PiAjNCDCoDB4MDAwMDAwMDA2MDA0NTllNCBpbiBfX2F0b21pY19ub3Rp
+Zmllcl9jYWxsX2NoYWluIChuaD08dmFsdWUgb3B0aW1pemVkIG91dD4sCj4+IHZhbD08dmFsdWUg
+b3B0aW1pemVkIG91dD4sIHY9PHZhbHVlIG9wdGltaXplZCBvdXQ+KSBhdCBrZXJuZWwvbm90aWZp
+ZXIuYzoxODIKPj4gIzUgwqBhdG9taWNfbm90aWZpZXJfY2FsbF9jaGFpbiAobmg9PHZhbHVlIG9w
+dGltaXplZCBvdXQ+LCB2YWw9PHZhbHVlIG9wdGltaXplZCBvdXQ+LAo+PiB2PTx2YWx1ZSBvcHRp
+bWl6ZWQgb3V0PikgYXQga2VybmVsL25vdGlmaWVyLmM6MTkxCj4+ICM2IMKgMHgwMDAwMDAwMDYw
+MWE1NmQwIGluIHBhbmljIChmbXQ9MHg2MDFmMzA1MCAiS2VybmVsIG1vZGUgZmF1bHQgYXQgYWRk
+ciAweCVseCwgaXAgMHglbHgiKQo+PiBhdCBrZXJuZWwvcGFuaWMuYzoxMTUKPj4gIzcgwqAweDAw
+MDAwMDAwNjAwMTQ1ZGYgaW4gc2VndiAoZmk9Li4uLCBpcD0xNjExODUyOTg0LCBpc191c2VyPTAs
+IHJlZ3M9MHg2MDI0ZmExMCkKPj4gYXQgYXJjaC91bS9rZXJuZWwvdHJhcC5jOjIwMQo+PiAjOCDC
+oDB4MDAwMDAwMDA2MDAxNDYzZSBpbiBzZWd2X2hhbmRsZXIgKHNpZz08dmFsdWUgb3B0aW1pemVk
+IG91dD4sIHJlZ3M9PHZhbHVlIG9wdGltaXplZCBvdXQ+KQo+PiBhdCBhcmNoL3VtL2tlcm5lbC90
+cmFwLmM6MTQ3Cj4+ICM5IMKgMHgwMDAwMDAwMDYwMDIxMWE0IGluIHNpZ19oYW5kbGVyX2NvbW1v
+biAoc2lnPTExLCBzYz0weDYwMjRmYmU4KSBhdCBhcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjQ5
+Cj4+ICMxMCAweDAwMDAwMDAwNjAwMjEyZWEgaW4gc2lnX2hhbmRsZXIgKHNpZz08dmFsdWUgb3B0
+aW1pemVkIG91dD4sIHNjPTx2YWx1ZSBvcHRpbWl6ZWQgb3V0PikKPj4gYXQgYXJjaC91bS9vcy1M
+aW51eC9zaWduYWwuYzoyMjYKPj4gIzExIDB4MDAwMDAwMDA2MDAyMTUxYyBpbiBoYW5kbGVfc2ln
+bmFsIChzaWc9PHZhbHVlIG9wdGltaXplZCBvdXQ+LCBzYz0weDYwMjRmYmU4KQo+PiDCoCDCoCBh
+dCBhcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjE1OAo+PiAjMTIgMHgwMDAwMDAwMDYwMDIyZTlj
+IGluIGhhcmRfaGFuZGxlciAoc2lnPTx2YWx1ZSBvcHRpbWl6ZWQgb3V0PikKPj4gYXQgYXJjaC91
+bS9vcy1MaW51eC9zeXMteDg2XzY0L3NpZ25hbC5jOjE1Cj4+ICMxMyA8c2lnbmFsIGhhbmRsZXIg
+Y2FsbGVkPgo+PiAjMTQgMHgwMDAwMDAwMDYwMTJlY2I4IGluIGxpc3RfZGVsIChlbnRyeT0weDgw
+N2JjZjAwKSBhdCBsaWIvbGlzdF9kZWJ1Zy5jOjQ2Cj4+ICMxNSAweDAwMDAwMDAwNjAwMTY3MjQg
+aW4gZnJlZV93aW5jaCAod2luY2g9MHg4MDdiY2YwMCwgZnJlZV9pcnFfb2s9MCkgYXQgYXJjaC91
+bS9kcml2ZXJzL2xpbmUuYzo3MzEKPj4gIzE2IDB4MDAwMDAwMDA2MDAxNmFkNyBpbiB3aW5jaF9p
+bnRlcnJ1cHQgKGlycT08dmFsdWUgb3B0aW1pemVkIG91dD4sIGRhdGE9MHg4MDdiY2YwMCkKPj4g
+YXQgYXJjaC91bS9kcml2ZXJzL2xpbmUuYzo3NjAKPj4gIzE3IDB4MDAwMDAwMDA2MDA1NWI0NSBp
+biBfX2ZyZWVfaXJxIChpcnE9MTAsIGRldl9pZD0weDgwN2JjZjAwKSBhdCBrZXJuZWwvaXJxL21h
+bmFnZS5jOjkzNwo+PiAjMTggMHgwMDAwMDAwMDYwMDU1YmMwIGluIGZyZWVfaXJxIChpcnE9MTAs
+IGRldl9pZD0weDgwN2JjZjAwKSBhdCBrZXJuZWwvaXJxL21hbmFnZS5jOjk4Ngo+PiAjMTkgMHgw
+MDAwMDAwMDYwMDE2NzY1IGluIGZyZWVfd2luY2ggKHdpbmNoPTB4ODA3YmNmMDAsIGZyZWVfaXJx
+X29rPTEpIGF0IGFyY2gvdW0vZHJpdmVycy9saW5lLmM6NzQwCj4+ICMyMCAweDAwMDAwMDAwNjAw
+MTcyMTEgaW4gdW5yZWdpc3Rlcl93aW5jaCAodHR5PTB4ODA3MmE4MDAsIGZpbHA9PHZhbHVlIG9w
+dGltaXplZCBvdXQ+KQo+PiBhdCBhcmNoL3VtL2RyaXZlcnMvbGluZS5jOjgzNgo+PiAjMjEgbGlu
+ZV9jbG9zZSAodHR5PTB4ODA3MmE4MDAsIGZpbHA9PHZhbHVlIG9wdGltaXplZCBvdXQ+KSBhdCBh
+cmNoL3VtL2RyaXZlcnMvbGluZS5jOjQ3Nwo+PiAjMjIgMHgwMDAwMDAwMDYwMTMzNWQ5IGluIHR0
+eV9yZWxlYXNlIChpbm9kZT0weDdlZmY0MTkwLCBmaWxwPTB4N2ZjOWFiYzApIGF0IGRyaXZlcnMv
+Y2hhci90dHlfaW8uYzoxNTgwCj4+ICMyMyAweDAwMDAwMDAwNjAwN2U2YTggaW4gX19mcHV0IChm
+aWxlPTB4N2ZjOWFiYzApIGF0IGZzL2ZpbGVfdGFibGUuYzoyNTQKPj4gIzI0IDB4MDAwMDAwMDA2
+MDA3ZTc5YyBpbiBmcHV0IChmaWxlPTx2YWx1ZSBvcHRpbWl6ZWQgb3V0PikgYXQgZnMvZmlsZV90
+YWJsZS5jOjIwMAo+PiAjMjUgMHgwMDAwMDAwMDYwMDdiOTk1IGluIGZpbHBfY2xvc2UgKGZpbHA9
+MHg3ZmM5YWJjMCwgaWQ9MHg3ZmM3MjBjMCkgYXQgZnMvb3Blbi5jOjExMjQKPj4gIzI2IDB4MDAw
+MDAwMDA2MDA3YmE0YSBpbiBzeXNfY2xvc2UgKGZkPTMpIGF0IGZzL29wZW4uYzoxMTUzCj4+ICMy
+NyAweDAwMDAwMDAwNjAwMTRjN2MgaW4gaGFuZGxlX3N5c2NhbGwgKHI9MHg3ZTFiYTQxOCkgYXQg
+YXJjaC91bS9rZXJuZWwvc2thcy9zeXNjYWxsLmM6MzUKPj4gIzI4IDB4MDAwMDAwMDA2MDAyM2U3
+ZiBpbiBoYW5kbGVfdHJhcCAocmVncz0weDdlMWJhNDE4KSBhdCBhcmNoL3VtL29zLUxpbnV4L3Nr
+YXMvcHJvY2Vzcy5jOjIwMQo+PiAjMjkgdXNlcnNwYWNlIChyZWdzPTB4N2UxYmE0MTgpIGF0IGFy
+Y2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNzLmM6NDE3Cj4+ICMzMCAweDAwMDAwMDAwNjAwMTI2
+NWIgaW4gZm9ya19oYW5kbGVyICgpIGF0IGFyY2gvdW0va2VybmVsL3Byb2Nlc3MuYzoxODEKPj4K
+Pj4KPj4gQXBwYXJlbnRseSwgdGhlIHdpbmNoIGlzIG5vdCBpbiB0aGUgbGlzdCB3aGVuIHRoZSBm
+cmVlX3dpbmNoIGlzCj4+IGludm9rZWQuIEtlcm5lbCB2ZXJzaW9uIDIuNi4zNC1yYzcKPj4KPgo+
+IFlvdSBtaWdodCBiZSBsdWNreTogRG9lcyB0aGUgcGF0Y2ggYmVsb3cgbWFrZSBhIGRpZmZlcmVu
+Y2U/IEl0IG1heSBiZQo+IHVudGVzdGVkIGFzIGl0J3MgcGFydCBvbiBteSBoYWxmLWZpbmlzaGVk
+IHVtbCBjbGVhbnVwL3JldmlldyBxdWV1ZS4KCkhpLCBJJ20gbm90IHN1cmUgaXQgbWF5IGhlbHAs
+IHNpbmNlIHRoZSBzcHVyaW91cyBjYWxsIGlzIGZyb20gaW5zaWRlCnRoZSBJUlEgaGFuZGxlci4g
+SW4gdGhlIHdvcnN0IGNhc2UsIHRoZSBhYm92ZSBjYWxsIG1heSBjYXVzZSBhCmRlYWRsb2NrLiBJ
+IHN1Z2dlc3QgYSBiZXR0ZXIgZml4IGlkZWEgYmVsb3cuCgpIZXJlJ3MgdGhlIGhlbHAgZnJvbSBE
+RUJVR19TSElSUToKCSAgRW5hYmxlIHRoaXMgdG8gZ2VuZXJhdGUgYSBzcHVyaW91cyBpbnRlcnJ1
+cHQgYXMgc29vbiBhcyBhIHNoYXJlZAoJICBpbnRlcnJ1cHQgaGFuZGxlciBpcyByZWdpc3RlcmVk
+LCBhbmQganVzdCBiZWZvcmUgb25lIGlzIGRlcmVnaXN0ZXJlZC4KCSAgRHJpdmVycyBvdWdodCB0
+byBiZSBhYmxlIHRvIGhhbmRsZSBpbnRlcnJ1cHRzIGNvbWluZyBpbiBhdCB0aG9zZQoJICBwb2lu
+dHM7IHNvbWUgZG9uJ3QgYW5kIG5lZWQgdG8gYmUgY2F1Z2h0LgoKVGhlIHByb2JsZW0gaXMgdGhh
+dCBmcmVlX3dpbmNoIGNhbGxzIGZyZWVfaXJxIGF0IHRoZSBlbmQsIGFmdGVyCmRlc3Ryb3lpbmcg
+ZXZlcnl0aGluZywgd2hpY2ggaXMgd3Jvbmc6IGZpcnN0IHlvdSBkaXNhYmxlIHRoZQppbnRlcnJ1
+cHQsIHRoZW4geW91IGRlc3Ryb3kgcmVzb3VyY2VzIG5lZWRlZCB0byBoYW5kbGUgaXQuIFNISVJR
+IGlzCmNhdGNoaW5nIGEgcmVhbCBidWcgaGVyZS4gSW4gZmFjdCwgdGhlIElSUSBoYW5kbGVyIGlz
+IG5vdGljaW5nIHRoYXQgaXQKY2FuJ3QgcmVhZCBmcm9tIHRoZSBGRCAoYmVjYXVzZSBpdCB3YXMg
+anVzdCBjbG9zZWQpIGFuZCB0cnlpbmcgdG8gZnJlZQphZ2FpbiB0aGUgSVJRICh3aGljaCBpcyBi
+YWQpLiBZb3UgbXVzdCBtb3ZlIHRoZSBjYWxsIHRvIGZyZWVfaXJxIGF0CnRoZSBiZWdpbm5pbmcu
+IFRoZXJlJ3MgYSBudW1iZXIgb2YgYXBwYXJlbnQgInJhY2UiIGluIFVNTCB3aGljaCBpcwpyZWFs
+bHkgc29sdmVkIGJ5IHN0YXRlIG1hY2hpbmVzLCBsaWtlIHRoaXM6IHdoZW4gY2xvc2luZywgeW91
+IGFyZSBpbiBhCnN0YXRlIHdoZW4gb3RoZXIgcm91dGluZXMgKGxpa2UgSVJRcykgbXVzdCBub3Qg
+d2FpdCAod2hhdCB5b3UgZ2V0IGJ5CmxvY2tpbmcpLCBidXQgbXVzdCBiZSBkaXNhYmxlZC4KQWN0
+dWFsbHksIHRoZSBjbGVhbnVwIHNlZW1zIHRvIHN0YXJ0IGF0IGxpbmVfY2xvc2Ugd2hpY2ggYWxy
+ZWFkeQpkZXN0cm95ZWQgc29tZSByZXNvdXJjZXMsIGJ1dCB3aW5jaF9pbnRlcnJ1cHQgc2VlbXMg
+c2FmZSBhZ2FpbnN0IHRoYXQKKGl0IHRlc3RzIGlmIHdpbmNoLT50dHkgaXMgTlVMTCkuIE5vdCBy
+ZWFsbHkgbWF5YmUsIGJlY2F1c2UgdGhlCnRlc3RpbmcgaXMgbm90IGF0b21pYyAoc28gdGhlcmUg
+bWlnaHQgYmUgcmFjZXMsIGJ1dCBpdCBzZWVtcyBub3Qgc28KbGlrZWx5KS4gQnV0IG1vdmluZyB0
+aGUgY2FsbCB0byB1bnJlZ2lzdGVyX3dpbmNoIHRvIHRoZSBiZWdpbm5pbmcgb2YKbGluZV9jbG9z
+ZSBtaWdodCBiZSBhIGdvb2QgaWRlYSAoYWZ0ZXIgYWxsLCB5b3UgZG9uJ3QgcmVhbGx5IG5lZWQg
+dG8KbGlzdGVuIGZvciBTSUdXSU5DSCB3aGVuIHlvdSBzdGFydCBjbG9zaW5nIGEgd2luZG93KS4g
+VGhlIGNhbGxzIGJlZm9yZQpsaW5lX2Nsb3NlIGFyZSBmcm9tIHRoZSBnZW5lcmljIGtlcm5lbCwg
+c28gdGhleSBjYW4ndCBiZSBjaGFuZ2VkOiBpZgp0aGV5IGZyZWUgYW55IHJlc291cmNlcywgdGhl
+IGludGVycnVwdCBoYW5kbGVyIG11c3QgYmUgcmVhZHkgdG8Kb3BlcmF0ZSB3aXRob3V0IHRoZW0s
+IHdoYXRldmVyIHRoYXQgbWVhbnMuIEJ1dCBpdCdzIGp1c3QgY2FsbGluZwp0dHlfZmFzeW5jKG9u
+PTApLCBJIHRoaW5rIHRvIGRpc2FibGUgYXN5bmMgbm90aWZpY2F0aW9ucy4KCj4gSmFuCj4KPiAt
+LS0tLS0KPgo+IHVtbDogRml4IGxvY2tpbmcgYXJvdW5kIHdpbmNoX2hhbmRsZXJzCj4KPiBNYW5p
+cHVsYXRpb24gb2YgdGhlIHdpbmNoX2hhbmRsZXJzIGxpc3QgaGFzIHRvIGJlIHByb3RlY3RlZCBi
+eQo+IHdpbmNoX2hhbmRsZXJfbG9jay4gU28gd2UgaGF2ZSB0byBhZGQgdGhpcyBsb2NrIHRvIHdp
+bmNoX2ludGVycnVwdCB3aGljaAo+IGNhbGxlZCBmcmVlX3dpbmNoIHdpdGhvdXQgbG9jayBwcm90
+ZWN0aW9uIGFuZCBtYWtlIHRoZSBvdGhlciBsb2NrIHNpdGVzCj4gSVJRLXNhZmUuCj4KPiAtLS0K
+PiDCoGFyY2gvdW0vZHJpdmVycy9saW5lLmMgfCDCoCAxNCArKysrKysrKy0tLS0tLQo+IMKgMSBm
+aWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0t
+Z2l0IGEvYXJjaC91bS9kcml2ZXJzL2xpbmUuYyBiL2FyY2gvdW0vZHJpdmVycy9saW5lLmMKPiBp
+bmRleCA3ZjhmNjQ5Li5kYmVhYTgzIDEwMDY0NAo+IC0tLSBhL2FyY2gvdW0vZHJpdmVycy9saW5l
+LmMKPiArKysgYi9hcmNoL3VtL2RyaXZlcnMvbGluZS5jCj4gQEAgLTc1Niw3ICs3NTYsOSBAQCBz
+dGF0aWMgaXJxcmV0dXJuX3Qgd2luY2hfaW50ZXJydXB0KGludCBpcnEsIHZvaWQgKmRhdGEpCj4g
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+InJlYWQgZmFpbGVkLCBlcnJubyA9ICVkXG4iLCAtZXJyKTsKPiDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHByaW50ayhLRVJOX0VSUiAiZmQgJWQgaXMgbG9z
+aW5nIFNJR1dJTkNIICIKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCAic3VwcG9ydFxuIiwgd2luY2gtPnR0eV9mZCk7Cj4gKyDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzcGluX2xvY2soJndpbmNoX2hh
+bmRsZXJfbG9jayk7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqBmcmVlX3dpbmNoKHdpbmNoLCAwKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHNwaW5fdW5sb2NrKCZ3aW5jaF9oYW5kbGVyX2xvY2spOwo+IMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcmV0dXJuIElSUV9I
+QU5ETEVEOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfQo+IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZ290byBvdXQ7Cj4gQEAgLTgwMyw5ICs4MDUsOSBA
+QCB2b2lkIHJlZ2lzdGVyX3dpbmNoX2lycShpbnQgZmQsIGludCB0dHlfZmQsIGludCBwaWQsIHN0
+cnVjdCB0dHlfc3RydWN0ICp0dHksCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBnb3RvIG91dF9m
+cmVlOwo+IMKgIMKgIMKgIMKgfQo+Cj4gLSDCoCDCoCDCoCBzcGluX2xvY2soJndpbmNoX2hhbmRs
+ZXJfbG9jayk7Cj4gKyDCoCDCoCDCoCBzcGluX2xvY2tfaXJxKCZ3aW5jaF9oYW5kbGVyX2xvY2sp
+Owo+IMKgIMKgIMKgIMKgbGlzdF9hZGQoJndpbmNoLT5saXN0LCAmd2luY2hfaGFuZGxlcnMpOwo+
+IC0gwqAgwqAgwqAgc3Bpbl91bmxvY2soJndpbmNoX2hhbmRsZXJfbG9jayk7Cj4gKyDCoCDCoCDC
+oCBzcGluX3VubG9ja19pcnEoJndpbmNoX2hhbmRsZXJfbG9jayk7Cj4KPiDCoCDCoCDCoCDCoHJl
+dHVybjsKPgo+IEBAIC04MjMsNyArODI1LDcgQEAgc3RhdGljIHZvaWQgdW5yZWdpc3Rlcl93aW5j
+aChzdHJ1Y3QgdHR5X3N0cnVjdCAqdHR5KQo+IMKgIMKgIMKgIMKgc3RydWN0IGxpc3RfaGVhZCAq
+ZWxlOwo+IMKgIMKgIMKgIMKgc3RydWN0IHdpbmNoICp3aW5jaDsKPgo+IC0gwqAgwqAgwqAgc3Bp
+bl9sb2NrKCZ3aW5jaF9oYW5kbGVyX2xvY2spOwo+ICsgwqAgwqAgwqAgc3Bpbl9sb2NrX2lycSgm
+d2luY2hfaGFuZGxlcl9sb2NrKTsKPgo+IMKgIMKgIMKgIMKgbGlzdF9mb3JfZWFjaChlbGUsICZ3
+aW5jaF9oYW5kbGVycykgewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgd2luY2ggPSBsaXN0X2Vu
+dHJ5KGVsZSwgc3RydWN0IHdpbmNoLCBsaXN0KTsKPiBAQCAtODMyLDcgKzgzNCw3IEBAIHN0YXRp
+YyB2b2lkIHVucmVnaXN0ZXJfd2luY2goc3RydWN0IHR0eV9zdHJ1Y3QgKnR0eSkKPiDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGJyZWFrOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgfQo+IMKgIMKgIMKgIMKgfQo+IC0gwqAgwqAgwqAgc3Bpbl91bmxvY2soJndpbmNoX2hhbmRs
+ZXJfbG9jayk7Cj4gKyDCoCDCoCDCoCBzcGluX3VubG9ja19pcnEoJndpbmNoX2hhbmRsZXJfbG9j
+ayk7Cj4gwqB9Cj4KPiDCoHN0YXRpYyB2b2lkIHdpbmNoX2NsZWFudXAodm9pZCkKPiBAQCAtODQw
+LDE0ICs4NDIsMTQgQEAgc3RhdGljIHZvaWQgd2luY2hfY2xlYW51cCh2b2lkKQo+IMKgIMKgIMKg
+IMKgc3RydWN0IGxpc3RfaGVhZCAqZWxlLCAqbmV4dDsKPiDCoCDCoCDCoCDCoHN0cnVjdCB3aW5j
+aCAqd2luY2g7Cj4KPiAtIMKgIMKgIMKgIHNwaW5fbG9jaygmd2luY2hfaGFuZGxlcl9sb2NrKTsK
+PiArIMKgIMKgIMKgIHNwaW5fbG9ja19pcnEoJndpbmNoX2hhbmRsZXJfbG9jayk7Cj4KPiDCoCDC
+oCDCoCDCoGxpc3RfZm9yX2VhY2hfc2FmZShlbGUsIG5leHQsICZ3aW5jaF9oYW5kbGVycykgewo+
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgd2luY2ggPSBsaXN0X2VudHJ5KGVsZSwgc3RydWN0IHdp
+bmNoLCBsaXN0KTsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGZyZWVfd2luY2god2luY2gsIDEp
+Owo+IMKgIMKgIMKgIMKgfQo+Cj4gLSDCoCDCoCDCoCBzcGluX3VubG9jaygmd2luY2hfaGFuZGxl
+cl9sb2NrKTsKPiArIMKgIMKgIMKgIHNwaW5fdW5sb2NrX2lycSgmd2luY2hfaGFuZGxlcl9sb2Nr
+KTsKPiDCoH0KPiDCoF9fdW1sX2V4aXRjYWxsKHdpbmNoX2NsZWFudXApOwo+Cj4KPgo+Cj4gLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCj4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCj4gVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdAo+IFVz
+ZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3Rz
+LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwKPgo+
+CgoKCi0tIApQYW9sbyBHaWFycnVzc28KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRl
+dmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9k
+ZS1saW51eC1kZXZlbAo=
 
