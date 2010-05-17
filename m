@@ -1,62 +1,47 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Date: Sun, 23 May 2010 22:02:10 +0200
-Message-Id: <1274644930-26600-26-git-send-email-andrea.gelmini@gelma.net>
-In-Reply-To: <1274644930-26600-1-git-send-email-andrea.gelmini@gelma.net>
-References: <1274644930-26600-1-git-send-email-andrea.gelmini@gelma.net>
-Subject: [uml-devel] [PATCH 183/199] arch/um/os-Linux/drivers/Makefile:
-	Checkpatch cleanup
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: andrea.gelmini@gelma.net
-Cc: user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net, vtun@office.satix.net, Maxim Krasnyansky <maxk@qualcomm.com>
+In-Reply-To: <4BCB464A.702@web.de>
+References: <4BCB464A.702@web.de>
+From: Paolo Giarrusso <p.giarrusso@gmail.com>
+Date: Mon, 17 May 2010 16:41:25 +0200
+Message-ID: <AANLkTilQfz-PfNf6ZTqguMKBsADghbK4pEBGVzpjSurm@mail.gmail.com>
+Subject: Re: [uml-devel] uml: pthreads instead of manual clone()?
+Content-Type: text/plain; charset=UTF-8
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jan Kiszka <jan.kiszka@web.de>
+Cc: Jeff Dike <jdike@addtoit.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-arch/um/os-Linux/drivers/Makefile:1: ERROR: trailing whitespace
-arch/um/os-Linux/drivers/Makefile:9: ERROR: trailing whitespace
+On Sun, Apr 18, 2010 at 19:50, Jan Kiszka <jan.kiszka@web.de> wrote:
+> Hi Jeff,
+>
+> is there (still) any reason to use explicit clone() instead of pthreads
+> to spawn UML kernel threads?
+>
+> While playing with a patch to finally move os_nsecs to proper
+> CLOCK_MONOTONIC, I noticed some subtle side-effect: We need to link
+> against librt for clock_gettime, but that indirectly drags in
+> libpthread. Now gdb gets unhappy when you try to debug the UML kernel.
+> It assumes that pthreads are used, but fails to find their IDs and
+> terminates the session. So the obvious approach appears to be converting
+> kernel threads to pthreads - if there aren't any know pitfalls.
 
-Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
----
- arch/um/os-Linux/drivers/Makefile |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+I think you should better manually copy the clock_gettime syscall stub
+or function (hoping it's simple enough). Basically, we don't want
+glibc to do anything by his own free will, like doing TLS setup
+(pthread could do that), allocating memory from the heap on its own
+(we only allow it very early, and we try to make it still safe - see
+the malloc replacement stuff we do through linker and
+__real_malloc/_whatever_I_dont_recall_malloc). We got a bug once we
+called getpid() just to get a ptrace notification, but glibc cached
+the getpid() result: we have our own getpid() syscall stub (at some
+point I was writing actual UML code, and I wrote some TLS code myself
+- not sure whether it's the current implementation or it was
+rewritten).
 
-diff --git a/arch/um/os-Linux/drivers/Makefile b/arch/um/os-Linux/drivers/Makefile
-index 6c546dc..7106d8f 100644
---- a/arch/um/os-Linux/drivers/Makefile
-+++ b/arch/um/os-Linux/drivers/Makefile
-@@ -1,4 +1,4 @@
--# 
-+#
- # Copyright (C) 2000, 2002 Jeff Dike (jdike@karaya.com)
- # Licensed under the GPL
- #
-@@ -6,7 +6,7 @@
- ethertap-objs := ethertap_kern.o ethertap_user.o
- tuntap-objs := tuntap_kern.o tuntap_user.o
- 
--obj-y = 
-+obj-y =
- obj-$(CONFIG_UML_NET_ETHERTAP) += ethertap.o
- obj-$(CONFIG_UML_NET_TUNTAP) += tuntap.o
- 
+Then, maybe, it can be made to work, even if I really wonder about the
+TLS setup stuff - we need to allow the guest userspace programs to do
+basically any [gs]et_thread_area() calls. But it's really untrivial
+IMHO.
 -- 
-1.7.1.251.gf80a2
-
-
-------------------------------------------------------------------------------
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Paolo Giarrusso
