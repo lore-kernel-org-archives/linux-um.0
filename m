@@ -1,18 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lczerner@redhat.com>) id 1O3vMz-0002oI-Cw
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <p.giarrusso@gmail.com>) id 1ODoE6-0008BX-EE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Apr 2010 18:06:53 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	Mon, 17 May 2010 00:30:34 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1O3vMy-0007pE-Hn for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 19 Apr 2010 18:06:53 +0000
-From: Lukas Czerner <lczerner@redhat.com>
-Date: Mon, 19 Apr 2010 20:06:07 +0200
-Message-Id: <1271700367-14127-1-git-send-email-lczerner@redhat.com>
-Subject: [uml-devel] [PATCH] um: Fix compile errors for um architecture
+	id 1ODoE5-0008Sn-1Y for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 17 May 2010 00:30:34 +0000
+Received: by fxm15 with SMTP id 15so72781fxm.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 16 May 2010 17:30:27 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4BEFFC13.4010106@web.de>
+References: <alpine.LFD.2.00.1005101719500.21053@localhost> 
+	<4BE845D9.40400@web.de>
+	<AANLkTilMZQ12zv8VvUMa0yTnwGTT7ZhiEKfzwUPgiQjF@mail.gmail.com> 
+	<4BEFF020.5080901@web.de> <4BEFFC13.4010106@web.de>
+From: Paolo Giarrusso <p.giarrusso@gmail.com>
+Date: Mon, 17 May 2010 02:30:07 +0200
+Message-ID: <AANLkTilRxQHTlwWrrBg2e7jG4ot-KIrK2wlQrK4mNpFi@mail.gmail.com>
+Subject: Re: [uml-devel] uml: Error with Linked list debugging on
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,71 +31,128 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Lukas Czerner <lczerner@redhat.com>, Jeff Dike <jdike@addtoit.com>
+To: Jan Kiszka <jan.kiszka@web.de>
+Cc: Lukas Czerner <lczerner@redhat.com>, user-mode-linux-devel@lists.sourceforge.net
 
-arch/um/drivers/line.c
- - need to include linux/slab.h since the code uses kmalloc.
- - fix warning message with unused variable tty
-
-arch/um/os-Linux/helper.c
- - there is no need to include linux/slab.h since allocations are
- done with uml_kmalloc
-
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
----
- arch/um/drivers/line.c    |    2 +-
- arch/um/os-Linux/helper.c |    1 -
- 2 files changed, 1 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 64cda95..7f7338c 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -6,6 +6,7 @@
- #include "linux/irqreturn.h"
- #include "linux/kd.h"
- #include "linux/sched.h"
-+#include "linux/slab.h"
- #include "chan_kern.h"
- #include "irq_kern.h"
- #include "irq_user.h"
-@@ -18,7 +19,6 @@ static irqreturn_t line_interrupt(int irq, void *data)
- {
- 	struct chan *chan = data;
- 	struct line *line = chan->line;
--	struct tty_struct *tty;
- 
- 	if (line)
- 		chan_interrupt(&line->chan_list, &line->task, line->tty, irq);
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index 06d6ccf..b6b1096 100644
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -8,7 +8,6 @@
- #include <errno.h>
- #include <sched.h>
- #include <linux/limits.h>
--#include <linux/slab.h>
- #include <sys/socket.h>
- #include <sys/wait.h>
- #include "kern_constants.h"
--- 
-1.6.6.1
-
-
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gU3VuLCBNYXkgMTYsIDIwMTAgYXQgMTY6MDcsIEphbiBLaXN6a2EgPGphbi5raXN6a2FAd2Vi
+LmRlPiB3cm90ZToKPiBKYW4gS2lzemthIHdyb3RlOgo+PiBQYW9sbyBHaWFycnVzc28gd3JvdGU6
+Cj4+PiBPbiBNb24sIE1heSAxMCwgMjAxMCBhdCAxOTo0MywgSmFuIEtpc3prYSA8amFuLmtpc3pr
+YUB3ZWIuZGU+IHdyb3RlOgo+Pj4+IEx1a2FzIEN6ZXJuZXIgd3JvdGU6Cgo+PiBSaWdodCwgdGhl
+cmUgd2FzIG1vcmUgYnJva2VuLiBCZXNpZGVzIHRoZSBsb2NraW5nIGZpeCwgdGhpcyBzaG91bGQg
+ZG8KPj4gdGhlIHRyaWNrIGJ5IGF2b2lkaW5nIHRoZSByZWN1cnNpdmUgZnJlZV93aW5jaCBjYWxs
+OgoKPj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vZHJpdmVycy9saW5lLmMgYi9hcmNoL3VtL2RyaXZl
+cnMvbGluZS5jCj4+IGluZGV4IGQ4NWZjYjkuLmZhNjZlYjQgMTAwNjQ0Cj4+IC0tLSBhL2FyY2gv
+dW0vZHJpdmVycy9saW5lLmMKPj4gKysrIGIvYXJjaC91bS9kcml2ZXJzL2xpbmUuYwo+PiBAQCAt
+NzMxLDggKzczMSwxMCBAQCBzdGF0aWMgdm9pZCBmcmVlX3dpbmNoKHN0cnVjdCB3aW5jaCAqd2lu
+Y2gsIGludCBmcmVlX2lycV9vaykKPj4KPj4gwqAgwqAgwqAgaWYgKHdpbmNoLT5waWQgIT0gLTEp
+Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIG9zX2tpbGxfcHJvY2Vzcyh3aW5jaC0+cGlkLCAxKTsK
+Pj4gLSDCoCDCoCBpZiAod2luY2gtPmZkICE9IC0xKQo+PiArIMKgIMKgIGlmICh3aW5jaC0+ZmQg
+IT0gLTEpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgb3NfY2xvc2VfZmlsZSh3aW5jaC0+ZmQp
+Owo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHdpbmNoLT5mZCA9IC0xOwo+PiArIMKgIMKgIH0KPj4g
+wqAgwqAgwqAgaWYgKHdpbmNoLT5zdGFjayAhPSAwKQo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBm
+cmVlX3N0YWNrKHdpbmNoLT5zdGFjaywgMCk7Cj4+IMKgIMKgIMKgIGlmIChmcmVlX2lycV9vaykK
+Pj4KPj4gKG5vdGU6IHVudGVzdGVkKQo+Cj4gV2VsbCwgdGhvdWdodCBhYm91dCBpdCBhZ2Fpbiwg
+dGhpcyBpcyB0aGUgcmVzdWx0OgoKR2l2ZW4gYSBsb29rLCBpdCBtYWtlcyBzZW5zZS4gQnV0IHN0
+aWxsLCBJIHRoaW5rIHRoYXQgbW92aW5nIHRoZQpmcmVlX2lycSBjYWxsIHRvIGVhcmxpZXIgbWln
+aHQgbWFrZSB0aGUgcmVzdWx0IG1vcmUgc3RhYmxlLgpNb3Jlb3ZlciwgZG8geW91IHJlYWxseSBu
+ZWVkIHRvIGF2b2lkIHRoZSBoYW5kbGVyIGNhbGxpbmcgZnJlZV9pcnE/ClRoYXQgc2hvdWxkIGJl
+IHNhZmUsIGFzIGxvbmcgYXMgdGhlIElSUSBpcyBzaHV0ZG93biBieSBjbGVhbnVwCnJvdXRpbmVz
+IGFzIHRoZSBmaXJzdCB0aGluZywgYmVmb3JlIHRoZSBjYWxsIHRvCmxpc3RfZGVsKCZ3aW5jaC0+
+bGlzdCkuCgo+IHVtbDogRml4IHdpbmNoIGNsZWFudXAgcmFjZXMKPgo+IENhbGxpbmcgZnJlZV93
+aW5jaCBmcm9tIHdpdGhpbiB0aGUgSVJRIGhhbmRsZXIgaXMgYnJva2VuIGZvciBtYW55Cj4gcmVh
+c29uczogSXQgY2FuIGxlYXZlIHRoZSBJUlEgbGluZSByZWdpc3RlcmVkIGFuZCBpdCByYWNlcyB3
+aXRoCj4gcGFyYWxsZWwgY2xlYW51cCBieSB1bnJlZ2lzdGVyX3dpbmNoIGFuZCB3aW5jaF9jbGVh
+bnVwLgo+Cj4gUmVzb2x2ZSB0aGlzIHZpYSBhIHBlci13aW5jaCBzcGlubG9jayB0aGF0IHByb3Rl
+Y3RzIHBpZCBhbmQgZmQgb2YgdGhlCj4gd2luY2ggc3RydWN0dXJlLgo+Cj4gU2lnbmVkLW9mZi1i
+eTogSmFuIEtpc3prYSA8amFuLmtpc3prYUB3ZWIuZGU+Cj4gLS0tCj4gwqBhcmNoL3VtL2RyaXZl
+cnMvbGluZS5jIHwgwqAgNTAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0t
+LS0tLS0tLS0KPiDCoDEgZmlsZXMgY2hhbmdlZCwgMzggaW5zZXJ0aW9ucygrKSwgMTIgZGVsZXRp
+b25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9kcml2ZXJzL2xpbmUuYyBiL2FyY2gvdW0v
+ZHJpdmVycy9saW5lLmMKPiBpbmRleCA3ZjhmNjQ5Li40YjlkMTc3IDEwMDY0NAo+IC0tLSBhL2Fy
+Y2gvdW0vZHJpdmVycy9saW5lLmMKPiArKysgYi9hcmNoL3VtL2RyaXZlcnMvbGluZS5jCj4gQEAg
+LTcyMywyMCArNzIzLDMwIEBAIHN0cnVjdCB3aW5jaCB7Cj4gwqAgwqAgwqAgwqBpbnQgcGlkOwo+
+IMKgIMKgIMKgIMKgc3RydWN0IHR0eV9zdHJ1Y3QgKnR0eTsKPiDCoCDCoCDCoCDCoHVuc2lnbmVk
+IGxvbmcgc3RhY2s7Cj4gKyDCoCDCoCDCoCBzcGlubG9ja190IGxvY2s7Cj4gwqB9Owo+Cj4gLXN0
+YXRpYyB2b2lkIGZyZWVfd2luY2goc3RydWN0IHdpbmNoICp3aW5jaCwgaW50IGZyZWVfaXJxX29r
+KQo+ICtzdGF0aWMgdm9pZCBmcmVlX3dpbmNoKHN0cnVjdCB3aW5jaCAqd2luY2gpCj4gwqB7Cj4g
+LSDCoCDCoCDCoCBsaXN0X2RlbCgmd2luY2gtPmxpc3QpOwo+ICsgwqAgwqAgwqAgc3Bpbl9sb2Nr
+X2lycSgmd2luY2gtPmxvY2spOwo+Cj4gLSDCoCDCoCDCoCBpZiAod2luY2gtPnBpZCAhPSAtMSkK
+PiArIMKgIMKgIMKgIGlmICh3aW5jaC0+cGlkICE9IC0xKSB7Cj4gwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqBvc19raWxsX3Byb2Nlc3Mod2luY2gtPnBpZCwgMSk7Cj4gLSDCoCDCoCDCoCBpZiAod2lu
+Y2gtPmZkICE9IC0xKQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgd2luY2gtPnBpZCA9IC0xOwo+
+ICsgwqAgwqAgwqAgfQo+ICsgwqAgwqAgwqAgaWYgKHdpbmNoLT5mZCAhPSAtMSkgewo+IMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgb3NfY2xvc2VfZmlsZSh3aW5jaC0+ZmQpOwo+ICsgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgd2luY2gtPmZkID0gLTE7Cj4gKyDCoCDCoCDCoCB9Cj4gKwo+ICsgwqAgwqAg
+wqAgc3Bpbl91bmxvY2tfaXJxKCZ3aW5jaC0+bG9jayk7Cj4gKwo+IMKgIMKgIMKgIMKgaWYgKHdp
+bmNoLT5zdGFjayAhPSAwKQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZnJlZV9zdGFjayh3aW5j
+aC0+c3RhY2ssIDApOwo+IC0gwqAgwqAgwqAgaWYgKGZyZWVfaXJxX29rKQo+IC0gwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgdW1fZnJlZV9pcnEoV0lOQ0hfSVJRLCB3aW5jaCk7Cj4gKwo+ICsgwqAgwqAg
+wqAgdW1fZnJlZV9pcnEoV0lOQ0hfSVJRLCB3aW5jaCk7Cj4gKwo+ICsgwqAgwqAgwqAgbGlzdF9k
+ZWwoJndpbmNoLT5saXN0KTsKPiDCoCDCoCDCoCDCoGtmcmVlKHdpbmNoKTsKPiDCoH0KPgo+IEBA
+IC03NDgsNiArNzU4LDggQEAgc3RhdGljIGlycXJldHVybl90IHdpbmNoX2ludGVycnVwdChpbnQg
+aXJxLCB2b2lkICpkYXRhKQo+IMKgIMKgIMKgIMKgaW50IGVycjsKPiDCoCDCoCDCoCDCoGNoYXIg
+YzsKPgo+ICsgwqAgwqAgwqAgc3Bpbl9sb2NrKCZ3aW5jaC0+bG9jayk7Cj4gKwo+IMKgIMKgIMKg
+IMKgaWYgKHdpbmNoLT5mZCAhPSAtMSkgewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZXJyID0g
+Z2VuZXJpY19yZWFkKHdpbmNoLT5mZCwgJmMsIE5VTEwpOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgaWYgKGVyciA8IDApIHsKPiBAQCAtNzU2LDEwICs3NjgsMTcgQEAgc3RhdGljIGlycXJldHVy
+bl90IHdpbmNoX2ludGVycnVwdChpbnQgaXJxLCB2b2lkICpkYXRhKQo+IMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICJyZWFkIGZhaWxlZCwg
+ZXJybm8gPSAlZFxuIiwgLWVycik7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqBwcmludGsoS0VSTl9FUlIgImZkICVkIGlzIGxvc2luZyBTSUdXSU5DSCAi
+Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgInN1cHBvcnRcbiIsIHdpbmNoLT50dHlfZmQpOwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZnJlZV93aW5jaCh3aW5jaCwgMCk7Cj4gLSDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gSVJRX0hBTkRMRUQ7
+Cj4gKwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYg
+KHdpbmNoLT5waWQgIT0gLTEpIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIG9zX2tpbGxfcHJvY2Vzcyh3aW5jaC0+cGlkLCAxKTsK
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIHdpbmNoLT5waWQgPSAtMTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIH0KPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIG9zX2Nsb3NlX2ZpbGUod2luY2gtPmZkKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHdpbmNoLT5mZCA9IC0xOwo+ICsKPiArIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGdvdG8gdW5sb2NrX291dDsKPiDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoH0KPiAtIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIGdvdG8gb3V0Owo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgZ290byByZWFjdGl2YXRlX291dDsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoH0KPiDC
+oCDCoCDCoCDCoH0KPiDCoCDCoCDCoCDCoHR0eSA9IHdpbmNoLT50dHk7Cj4gQEAgLTc3MSw5ICs3
+OTAsMTQgQEAgc3RhdGljIGlycXJldHVybl90IHdpbmNoX2ludGVycnVwdChpbnQgaXJxLCB2b2lk
+ICpkYXRhKQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKga2lsbF9wZ3JwKHR0
+eS0+cGdycCwgU0lHV0lOQ0gsIDEpOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfQo+IMKgIMKg
+IMKgIMKgfQo+IC0gb3V0Ogo+ICsKPiArcmVhY3RpdmF0ZV9vdXQ6Cj4gwqAgwqAgwqAgwqBpZiAo
+d2luY2gtPmZkICE9IC0xKQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcmVhY3RpdmF0ZV9mZCh3
+aW5jaC0+ZmQsIFdJTkNIX0lSUSk7Cj4gKwo+ICt1bmxvY2tfb3V0Ogo+ICsgwqAgwqAgwqAgc3Bp
+bl91bmxvY2soJndpbmNoLT5sb2NrKTsKPiArCj4gwqAgwqAgwqAgwqByZXR1cm4gSVJRX0hBTkRM
+RUQ7Cj4gwqB9Cj4KPiBAQCAtNzk1LDYgKzgxOSw4IEBAIHZvaWQgcmVnaXN0ZXJfd2luY2hfaXJx
+KGludCBmZCwgaW50IHR0eV9mZCwgaW50IHBpZCwgc3RydWN0IHR0eV9zdHJ1Y3QgKnR0eSwKPiDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAudHR5IMKg
+IMKgIMKgIMKgID0gdHR5LAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIC5zdGFjayDCoCDCoCDCoCA9IHN0YWNrIH0pOwo+Cj4gKyDCoCDCoCDCoCBz
+cGluX2xvY2tfaW5pdCgmd2luY2gtPmxvY2spOwo+ICsKPiDCoCDCoCDCoCDCoGlmICh1bV9yZXF1
+ZXN0X2lycShXSU5DSF9JUlEsIGZkLCBJUlFfUkVBRCwgd2luY2hfaW50ZXJydXB0LAo+IMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIElSUUZfRElTQUJMRUQgfCBJUlFGX1NI
+QVJFRCB8IElSUUZfU0FNUExFX1JBTkRPTSwKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCAid2luY2giLCB3aW5jaCkgPCAwKSB7Cj4gQEAgLTgyOCw3ICs4NTQsNyBAQCBz
+dGF0aWMgdm9pZCB1bnJlZ2lzdGVyX3dpbmNoKHN0cnVjdCB0dHlfc3RydWN0ICp0dHkpCj4gwqAg
+wqAgwqAgwqBsaXN0X2Zvcl9lYWNoKGVsZSwgJndpbmNoX2hhbmRsZXJzKSB7Cj4gwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqB3aW5jaCA9IGxpc3RfZW50cnkoZWxlLCBzdHJ1Y3Qgd2luY2gsIGxpc3Qp
+Owo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgaWYgKHdpbmNoLT50dHkgPT0gdHR5KSB7Cj4gLSDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBmcmVlX3dpbmNoKHdpbmNoLCAxKTsKPiAr
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGZyZWVfd2luY2god2luY2gpOwo+IMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgYnJlYWs7Cj4gwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqB9Cj4gwqAgwqAgwqAgwqB9Cj4gQEAgLTg0NCw3ICs4NzAsNyBAQCBzdGF0aWMgdm9p
+ZCB3aW5jaF9jbGVhbnVwKHZvaWQpCj4KPiDCoCDCoCDCoCDCoGxpc3RfZm9yX2VhY2hfc2FmZShl
+bGUsIG5leHQsICZ3aW5jaF9oYW5kbGVycykgewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgd2lu
+Y2ggPSBsaXN0X2VudHJ5KGVsZSwgc3RydWN0IHdpbmNoLCBsaXN0KTsKPiAtIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIGZyZWVfd2luY2god2luY2gsIDEpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+ZnJlZV93aW5jaCh3aW5jaCk7Cj4gwqAgwqAgwqAgwqB9Cj4KPiDCoCDCoCDCoCDCoHNwaW5fdW5s
+b2NrKCZ3aW5jaF9oYW5kbGVyX2xvY2spOwo+Cj4KPgoKCgotLSAKUGFvbG8gR2lhcnJ1c3NvCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUt
+bGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
+Z2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
