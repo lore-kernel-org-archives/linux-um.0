@@ -1,42 +1,55 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 10 May 2010 23:38:41 +0200 (CEST)
-From: Jiri Kosina <jkosina@suse.cz>
-Subject: Re: [PATCH 4/5] uml: i386: Avoid redefinition of NR_syscalls
-In-Reply-To: <20100421061205.GC4467@cr0.nay.redhat.com>
-Message-ID: <alpine.LNX.2.00.1005102338190.28092@pobox.suse.cz>
-References: <cover.1271713955.git.jan.kiszka@web.de> <3e07ad1a38e88a22d7298deb88a8f3962b101998.1271713955.git.jan.kiszka@web.de> <20100420101056.GC5317@cr0.nay.redhat.com> <4BCDE103.7080709@web.de> <20100421061205.GC4467@cr0.nay.redhat.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <1272844700-32496-1-git-send-email-nico@openwrt.org>
+References: <1272844700-32496-1-git-send-email-nico@openwrt.org>
+From: Paolo Giarrusso <p.giarrusso@gmail.com>
+Date: Mon, 17 May 2010 16:42:23 +0200
+Message-ID: <AANLkTiks4xC4ecImFzaFBpLdBp7l7iUO941fYyCetxTA@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH] UML: x86_64: fix memcpy export
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: Amerigo Wang <xiyou.wangcong@gmail.com>
-Cc: Jan Kiszka <jan.kiszka@web.de>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
+To: Nicolas Thill <nicolas.thill@gmail.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Nicolas Thill <nico@openwrt.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Wed, 21 Apr 2010, Amerigo Wang wrote:
+Shouldn't this thing be in arch/um/sys-i386/ksyms.c, instead of having #ifndef?
 
-> >> Where?
-> >
-> >Not sure if this answers your question:
-> >
-> >  CC      arch/um/kernel/skas/syscall.o
-> >/data/linux-2.6/arch/um/kernel/skas/syscall.c:13:1: warning:
-> >"NR_syscalls" redefined
-> >In file included from /data/linux-2.6/arch/x86/include/asm/unistd.h:3,
-> >                 from
-> >/data/linux-2.6/arch/um/sys-i386/shared/sysdep/syscalls.h:6,
-> >                 from /data/linux-2.6/arch/um/kernel/skas/syscall.c:10:
-> >/data/linux-2.6/arch/x86/include/asm/unistd_32.h:349:1: warning: this is
-> >the location of the previous definition
-> >
-> 
-> Ah, sure. I misunderstood your purpose, please do include the warning
-> messages you are trying to fix in your patch description.
+On Mon, May 3, 2010 at 01:58, Nicolas Thill <nicolas.thill@gmail.com> wrote:
+> ./arch/um/sys-x86_64/ksyms.c exports memcpy or __memcpy depending on the gcc
+> version, use the same logic in ./arch/um/os-Linux/user_syms.c
+>
+> Signed-off-by: Nicolas Thill <nico@openwrt.org>
+> ---
+>  arch/um/os-Linux/user_syms.c |    3 ++-
+>  1 files changed, 2 insertions(+), 1 deletions(-)
+>
+> diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
+> index 89b48a1..e3a12dd 100644
+> --- a/arch/um/os-Linux/user_syms.c
+> +++ b/arch/um/os-Linux/user_syms.c
+> @@ -23,7 +23,8 @@ extern int printf(const char *, ...);
+>  EXPORT_SYMBOL(strstr);
+>  #endif
+>
+> -#ifndef __x86_64__
+> +#if !defined(__x86_64) || \
+> +       (__GNUC__ == 4 && __GNUC_MINOR__ < 3) || (__GNUC__ < 4)
+>  extern void *memcpy(void *, const void *, size_t);
+>  EXPORT_SYMBOL(memcpy);
+>  #endif
+> --
+> 1.6.0.4
+>
+>
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
 
-The patch doesn't seem to be present in linux-next as of today. I have 
-applied it to my queue.
 
-Thanks,
 
 -- 
-Jiri Kosina
-SUSE Labs, Novell Inc.
+Paolo Giarrusso
