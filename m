@@ -1,56 +1,53 @@
-Return-Path: <bp@alien8.de>
-Date: Sun, 30 May 2010 19:03:46 +0200
-From: Borislav Petkov <bp@alien8.de>
-Subject: [PATCH] x86, hweight: Fix UML boot crash
-Message-ID: <20100530170346.GC1565@liondog.tnic>
-References: <201005271944.09541.toralf.foerster@gmx.de>
- <AANLkTimKwxYxM_PExplIDK1WPTQ9e_-CHn5SnIvfjfUg@mail.gmail.com>
- <20100530150214.GA1565@liondog.tnic>
- <201005301728.25976.toralf.foerster@gmx.de>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <antoine@nagafix.co.uk>) id 1OEiqV-000829-BX
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 May 2010 12:57:59 +0000
+Received: from mamba.nagafix.co.uk ([194.145.196.68] helo=mail.nagafix.co.uk)
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OEiqT-0004CX-TR for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 May 2010 12:57:59 +0000
+Received: (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: antoine@nagafix.co.uk)
+	by mail.nagafix.co.uk (Postfix) with ESMTPSA id 7AFD96999
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 19 May 2010 13:57:50 +0100 (BST)
+Message-ID: <4BF3E049.4060900@nagafix.co.uk>
+Date: Wed, 19 May 2010 19:57:45 +0700
+From: Antoine Martin <antoine@nagafix.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <201005301728.25976.toralf.foerster@gmx.de>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Borislav Petkov <borislav.petkov@amd.com>, Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Subject: [uml-devel] something broke hppfs
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Obviously UML cannot stomach callee reg-saving trickery
-introduced with d61931d89be506372d01a90d1755f6d0a9fafe2d (x86:
-Add optimized popcnt variants) and oopses during boot:
-http://marc.info/?l=linux-kernel&m=127522065202435&w=2
+   LD      fs/hostfs/hostfs.o
+   LD      fs/hostfs/built-in.o
+   CC      fs/hppfs/hppfs.o
+fs/hppfs/hppfs.c: In function 'hppfs_fill_super':
+fs/hppfs/hppfs.c:721: error: dereferencing pointer to incomplete type
+make[2]: *** [fs/hppfs/hppfs.o] Error 1
+make[1]: *** [fs/hppfs] Error 2
+make: *** [fs] Error 2
 
-Go ahead and fall back to the software hweight* routines on UML.
 
-LKML-Reference: <201005271944.09541.toralf.foerster@gmx.de>
-Tested-by: Toralf Förster <toralf.foerster@gmx.de>
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Borislav Petkov <bp@alien8.de>
----
- arch/x86/include/asm/bitops.h |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+------------------------------------------------------------------------------
 
-diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
-index 545776e..c9dad12 100644
---- a/arch/x86/include/asm/bitops.h
-+++ b/arch/x86/include/asm/bitops.h
-@@ -444,7 +444,11 @@ static inline int fls(int x)
- 
- #define ARCH_HAS_FAST_MULTIPLIER 1
- 
-+#ifdef CONFIG_UML
-+#include <asm-generic/bitops/arch_hweight.h>
-+#else
- #include <asm/arch_hweight.h>
-+#endif
- 
- #include <asm-generic/bitops/const_hweight.h>
- 
--- 
-1.7.1
-
--- 
-Regards/Gruss,
-    Boris.
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
