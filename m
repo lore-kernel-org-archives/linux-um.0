@@ -1,37 +1,49 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 30 May 2010 17:46:27 +0200
-From: Borislav Petkov <bp@alien8.de>
+Return-Path: <toralf.foerster@gmx.de>
+From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
 Subject: Re: current git kernel crashes UML system during boot
-Message-ID: <20100530154627.GB1565@liondog.tnic>
-References: <201005271944.09541.toralf.foerster@gmx.de>
- <AANLkTimYeMO_fc8C5MQedwF646_au4lvEbXkBPmQSxb9@mail.gmail.com>
- <AANLkTimKwxYxM_PExplIDK1WPTQ9e_-CHn5SnIvfjfUg@mail.gmail.com>
- <20100530150214.GA1565@liondog.tnic>
- <AANLkTimo-kuzlyQvraLnYBZKlGQHr23ZiMeWmTaj4Yea@mail.gmail.com>
+Date: Sun, 30 May 2010 17:28:25 +0200
+References: <201005271944.09541.toralf.foerster@gmx.de> <AANLkTimKwxYxM_PExplIDK1WPTQ9e_-CHn5SnIvfjfUg@mail.gmail.com> <20100530150214.GA1565@liondog.tnic>
+In-Reply-To: <20100530150214.GA1565@liondog.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <AANLkTimo-kuzlyQvraLnYBZKlGQHr23ZiMeWmTaj4Yea@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>, Borislav Petkov <borislav.petkov@amd.com>, "H. Peter Anvin" <hpa@zytor.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Content-Type: Text/Plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <201005301728.25976.toralf.foerster@gmx.de>
+To: Borislav Petkov <bp@alien8.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Borislav Petkov <borislav.petkov@amd.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, May 30, 2010 at 05:18:21PM +0200
 
-> Works, thanks!
+Borislav Petkov wrote at 17:02:14
+> Can you guys check whether the following fixes the issue?
 > 
-> BTW, if you want to check yourself:
+> Thanks.
 > 
->     make ARCH=um defconfig
->     make ACH=um
->     ./linux
+> --
+> diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
+> index 545776e..c9dad12 100644
+> --- a/arch/x86/include/asm/bitops.h
+> +++ b/arch/x86/include/asm/bitops.h
+> @@ -444,7 +444,11 @@ static inline int fls(int x)
+>  
+>  #define ARCH_HAS_FAST_MULTIPLIER 1
+>  
+> +#ifdef CONFIG_UML
+> +#include <asm-generic/bitops/arch_hweight.h>
+> +#else
+>  #include <asm/arch_hweight.h>
+> +#endif
+>  
+>  #include <asm-generic/bitops/const_hweight.h>
+>  
 > 
-> If it panics because it cannot mount the root file system, it works.
-
-Cool, thank you both for testing. I'll add your Tested-by:'s.
+> 
+solved reported issue.
+Thx
 
 -- 
-Regards/Gruss,
-    Boris.
+MfG/Sincerely
+Toralf Förster
+
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+
+
