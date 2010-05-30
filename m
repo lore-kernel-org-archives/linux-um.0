@@ -1,47 +1,37 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Sun, 30 May 2010 17:46:27 +0200
+From: Borislav Petkov <bp@alien8.de>
+Subject: Re: current git kernel crashes UML system during boot
+Message-ID: <20100530154627.GB1565@liondog.tnic>
+References: <201005271944.09541.toralf.foerster@gmx.de>
+ <AANLkTimYeMO_fc8C5MQedwF646_au4lvEbXkBPmQSxb9@mail.gmail.com>
+ <AANLkTimKwxYxM_PExplIDK1WPTQ9e_-CHn5SnIvfjfUg@mail.gmail.com>
+ <20100530150214.GA1565@liondog.tnic>
+ <AANLkTimo-kuzlyQvraLnYBZKlGQHr23ZiMeWmTaj4Yea@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4BCB464A.702@web.de>
-References: <4BCB464A.702@web.de>
-From: Paolo Giarrusso <p.giarrusso@gmail.com>
-Date: Mon, 17 May 2010 16:41:25 +0200
-Message-ID: <AANLkTilQfz-PfNf6ZTqguMKBsADghbK4pEBGVzpjSurm@mail.gmail.com>
-Subject: Re: [uml-devel] uml: pthreads instead of manual clone()?
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <AANLkTimo-kuzlyQvraLnYBZKlGQHr23ZiMeWmTaj4Yea@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jan Kiszka <jan.kiszka@web.de>
-Cc: Jeff Dike <jdike@addtoit.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>, Borislav Petkov <borislav.petkov@amd.com>, "H. Peter Anvin" <hpa@zytor.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sun, Apr 18, 2010 at 19:50, Jan Kiszka <jan.kiszka@web.de> wrote:
-> Hi Jeff,
->
-> is there (still) any reason to use explicit clone() instead of pthreads
-> to spawn UML kernel threads?
->
-> While playing with a patch to finally move os_nsecs to proper
-> CLOCK_MONOTONIC, I noticed some subtle side-effect: We need to link
-> against librt for clock_gettime, but that indirectly drags in
-> libpthread. Now gdb gets unhappy when you try to debug the UML kernel.
-> It assumes that pthreads are used, but fails to find their IDs and
-> terminates the session. So the obvious approach appears to be converting
-> kernel threads to pthreads - if there aren't any know pitfalls.
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, May 30, 2010 at 05:18:21PM +0200
 
-I think you should better manually copy the clock_gettime syscall stub
-or function (hoping it's simple enough). Basically, we don't want
-glibc to do anything by his own free will, like doing TLS setup
-(pthread could do that), allocating memory from the heap on its own
-(we only allow it very early, and we try to make it still safe - see
-the malloc replacement stuff we do through linker and
-__real_malloc/_whatever_I_dont_recall_malloc). We got a bug once we
-called getpid() just to get a ptrace notification, but glibc cached
-the getpid() result: we have our own getpid() syscall stub (at some
-point I was writing actual UML code, and I wrote some TLS code myself
-- not sure whether it's the current implementation or it was
-rewritten).
+> Works, thanks!
+> 
+> BTW, if you want to check yourself:
+> 
+>     make ARCH=um defconfig
+>     make ACH=um
+>     ./linux
+> 
+> If it panics because it cannot mount the root file system, it works.
 
-Then, maybe, it can be made to work, even if I really wonder about the
-TLS setup stuff - we need to allow the guest userspace programs to do
-basically any [gs]et_thread_area() calls. But it's really untrivial
-IMHO.
+Cool, thank you both for testing. I'll add your Tested-by:'s.
+
 -- 
-Paolo Giarrusso
+Regards/Gruss,
+    Boris.
