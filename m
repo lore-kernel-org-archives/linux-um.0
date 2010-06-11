@@ -1,83 +1,83 @@
-Return-Path: <p.giarrusso@gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <4C02D408.1030306@zytor.com>
-References: <201005271944.09541.toralf.foerster@gmx.de> <AANLkTimKwxYxM_PExplIDK1WPTQ9e_-CHn5SnIvfjfUg@mail.gmail.com> 
-	<20100530150214.GA1565@liondog.tnic> <201005301728.25976.toralf.foerster@gmx.de> 
-	<20100530170346.GC1565@liondog.tnic> <4C02B020.2040103@zytor.com> 
-	<20100530193956.GA2498@liondog.tnic> <20100530201738.GB2498@liondog.tnic> 
-	<4C02D408.1030306@zytor.com>
-From: Paolo Giarrusso <p.giarrusso@gmail.com>
-Date: Sat, 12 Jun 2010 15:34:38 +0200
-Message-ID: <AANLkTimPSQ3K6ulqGV243w__IbMaJTG71VckB8gl701u@mail.gmail.com>
-Subject: Re: [uml-devel] [PATCH] x86, hweight: Fix UML boot crash
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Borislav Petkov <bp@alien8.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Borislav Petkov <borislav.petkov@amd.com>, =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH] um: call free_irq() only on enabled channels
+Date: Fri, 11 Jun 2010 20:00:14 +0200
+Message-Id: <1276279214-22790-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+To: akpm@linux-foundation.org
+Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Richard Weinberger <richard@nod.at>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sun, May 30, 2010 at 23:09, H. Peter Anvin <hpa@zytor.com> wrote:
-> On 05/30/2010 01:17 PM, Borislav Petkov wrote:
->>>> This bothers me, because it really feels like something is fundamental=
-ly
->>>> broken in UML tryingto track the upstream architecture, and this is ju=
-st
->>>> a bandage.
->>>
->>> First of all, scratch that patch. It is indeed dumb idea to sprinkle UM=
-L
->>> special cases in x86 just because they include it.
->>>
->>> Which begs the question why _is_ UML sucking in x86 stuff and can anyon=
-e
->>> provide us with some sensible reasons? Because if there aren't any, it
->>> is their includes that should be fixed. Let me see what I can do to
->>> redirect hweight stuff properly...
->>
->> Ok, AFAICT UML is sucking in the includes of the sub-architecture the
->> UML "guest" is running on. See below=C2=B9 for the whole gcc string make
->> executes. Among the switches is
->>
->> "-I/home/boris/kernel/linux-2.6/arch/x86/include"
->>
->> so there will be no untangling today. Instead, we could do another
->> bandaid which is confined to UML include space only and redirect
->> arch_hweight.h includes to the generic ones. Check this out, it seems to
->> work here:
->>
->
-> That looks better to me, although I'm still wondering why UML can't
-> stomach the register-saving tricks... it is not at all "obvious" why
-> that can't be done.
-Hi all, and sorry for the delay, I hope you still care about this.
+When I use OpenSUSE-11.2 on UML (> 2.6.25)
+I get lots of such errors:
 
-First, ARCH_HWEIGHT_CFLAGS should IMHO be shared with UML. I.e., moved
-to arch/x86/Kconfig.cpu (which was born as Kconfig code shared with
-UML), or copied in UML (it's not defined, as far as I can see).
-Otherwise it just can't work. And I think that's it.
+Registering fd 1 twice
+Irqs : 3, 3
+Ids : 0x09cb41a0, 0x09cb4120
+------------[ cut here ]------------
+WARNING: at kernel/irq/manage.c:896 __free_irq+0x79/0x11a()
+Trying to free already-free IRQ 3
+Modules linked in:
+09dadc6c:  [<081b2edb>] dump_stack+0x1c/0x20
+09dadc84:  [<080716da>] warn_slowpath_common+0x49/0x77
+09dadc9c:  [<08071772>] warn_slowpath_fmt+0x26/0x2a
+09dadcb4:  [<08094e08>] __free_irq+0x79/0x11a
+09dadce4:  [<08094ed6>] free_irq+0x2d/0x49
+09dadcf4:  [<0805b4bc>] close_one_chan+0x70/0x9c
+09dadd0c:  [<0805b833>] close_chan+0x17/0x22
+09dadd1c:  [<0805bdda>] enable_chan+0x70/0x7c
+09dadd3c:  [<0805cbb7>] line_open+0x34/0x9f
+09dadd54:  [<0805b21e>] con_open+0x13/0x35
+09dadd6c:  [<0814dc89>] tty_open+0x285/0x384
+09dadda0:  [<080b754e>] chrdev_open+0xe0/0xf9
+09daddc0:  [<080b3fb2>] __dentry_open+0xf3/0x1e2
+09dadde4:  [<080b4142>] nameidata_to_filp+0x35/0x49
+09daddfc:  [<080bd270>] do_last+0x409/0x50e
+09dade28:  [<080bea04>] do_filp_open+0x175/0x446
+09dadecc:  [<080b3d89>] do_sys_open+0x4a/0x128
+09dadf04:  [<080b3ea2>] sys_open+0x19/0x21
+09dadf28:  [<0805ab5a>] handle_syscall+0x7a/0x98
+09dadf78:  [<08068441>] userspace+0x2c9/0x370
+09dadfe0:  [<08058bb3>] fork_handler+0x53/0x5b
+09dadffc:  [<00766564>] 0x766564
 
-Second, I've been looking at arch_hweight.h to try answering as well,
-and my question is: did somebody ever implement ALTERNATIVE support on
-UML? When I worked on it, this thing didn't exist at all. The user
-declared the host CPU, and we enabled features based on that. There's
-barely code for exception tables, and we never used it to implement
-copy_from_user and staff like that (I recall the exception handler was
-set at run-time).
+---[ end trace 9ebc1094aaf4bded ]---
 
-Indeed, arch/um/kernel/um_arch.c:apply_alternatives() is empty. And I
-mean, implementing it is not so trivial (unlike exception handling),
-simply because it requires making the binary mapping writable, and I'm
-not sure UML does it already.
+This patch fixes the issue.
 
-A third note is that UML links with glibc, so it can have a different
-calling convention from the kernel. Say, on x86 32bit regparm doesn't
-work (in fact, -mregparm is set in arch/x86/Makefile and not in
-arch/x86/Makefile_32.cpu). And since popcnt is supported on 32bit, it
-might in theory make a difference for that case. But maybe those flags
-are simply fine, I didn't recheck the possible calling conventions.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/drivers/chan_kern.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-Good bye!
---=20
-Paolo Giarrusso - Ph.D. Student
-http://www.informatik.uni-marburg.de/~pgiarrusso/
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index 6e51424..25e1965 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -210,9 +210,9 @@ void free_irqs(void)
+ 	list_for_each(ele, &list) {
+ 		chan = list_entry(ele, struct chan, free_list);
+ 
+-		if (chan->input)
++		if (chan->input && chan->enabled)
+ 			free_irq(chan->line->driver->read_irq, chan);
+-		if (chan->output)
++		if (chan->output && chan->enabled)
+ 			free_irq(chan->line->driver->write_irq, chan);
+ 		chan->enabled = 0;
+ 	}
+@@ -231,9 +231,9 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
+ 		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+ 	}
+ 	else {
+-		if (chan->input)
++		if (chan->input && chan->enabled)
+ 			free_irq(chan->line->driver->read_irq, chan);
+-		if (chan->output)
++		if (chan->output && chan->enabled)
+ 			free_irq(chan->line->driver->write_irq, chan);
+ 		chan->enabled = 0;
+ 	}
+-- 
+1.6.6.1
 
