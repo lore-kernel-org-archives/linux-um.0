@@ -1,71 +1,83 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sat, 12 Jun 2010 16:18:37 +0200
-From: Borislav Petkov <bp@alien8.de>
-Subject: Re: [uml-devel] [PATCH] x86, hweight: Fix UML boot crash
-Message-ID: <20100612141837.GA28572@liondog.tnic>
-References: <201005271944.09541.toralf.foerster@gmx.de>
- <AANLkTimKwxYxM_PExplIDK1WPTQ9e_-CHn5SnIvfjfUg@mail.gmail.com>
- <20100530150214.GA1565@liondog.tnic>
- <201005301728.25976.toralf.foerster@gmx.de>
- <20100530170346.GC1565@liondog.tnic>
- <4C02B020.2040103@zytor.com>
- <20100530193956.GA2498@liondog.tnic>
- <20100530201738.GB2498@liondog.tnic>
- <4C02D408.1030306@zytor.com>
- <AANLkTimPSQ3K6ulqGV243w__IbMaJTG71VckB8gl701u@mail.gmail.com>
+Return-Path: <p.giarrusso@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <AANLkTimPSQ3K6ulqGV243w__IbMaJTG71VckB8gl701u@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paolo Giarrusso <p.giarrusso@gmail.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Borislav Petkov <borislav.petkov@amd.com>, Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>
+In-Reply-To: <4C02D408.1030306@zytor.com>
+References: <201005271944.09541.toralf.foerster@gmx.de> <AANLkTimKwxYxM_PExplIDK1WPTQ9e_-CHn5SnIvfjfUg@mail.gmail.com> 
+	<20100530150214.GA1565@liondog.tnic> <201005301728.25976.toralf.foerster@gmx.de> 
+	<20100530170346.GC1565@liondog.tnic> <4C02B020.2040103@zytor.com> 
+	<20100530193956.GA2498@liondog.tnic> <20100530201738.GB2498@liondog.tnic> 
+	<4C02D408.1030306@zytor.com>
+From: Paolo Giarrusso <p.giarrusso@gmail.com>
+Date: Sat, 12 Jun 2010 15:34:38 +0200
+Message-ID: <AANLkTimPSQ3K6ulqGV243w__IbMaJTG71VckB8gl701u@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH] x86, hweight: Fix UML boot crash
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Borislav Petkov <bp@alien8.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Borislav Petkov <borislav.petkov@amd.com>, =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Paolo Giarrusso <p.giarrusso@gmail.com>
-Date: Sat, Jun 12, 2010 at 03:34:38PM +0200
+On Sun, May 30, 2010 at 23:09, H. Peter Anvin <hpa@zytor.com> wrote:
+> On 05/30/2010 01:17 PM, Borislav Petkov wrote:
+>>>> This bothers me, because it really feels like something is fundamental=
+ly
+>>>> broken in UML tryingto track the upstream architecture, and this is ju=
+st
+>>>> a bandage.
+>>>
+>>> First of all, scratch that patch. It is indeed dumb idea to sprinkle UM=
+L
+>>> special cases in x86 just because they include it.
+>>>
+>>> Which begs the question why _is_ UML sucking in x86 stuff and can anyon=
+e
+>>> provide us with some sensible reasons? Because if there aren't any, it
+>>> is their includes that should be fixed. Let me see what I can do to
+>>> redirect hweight stuff properly...
+>>
+>> Ok, AFAICT UML is sucking in the includes of the sub-architecture the
+>> UML "guest" is running on. See below=C2=B9 for the whole gcc string make
+>> executes. Among the switches is
+>>
+>> "-I/home/boris/kernel/linux-2.6/arch/x86/include"
+>>
+>> so there will be no untangling today. Instead, we could do another
+>> bandaid which is confined to UML include space only and redirect
+>> arch_hweight.h includes to the generic ones. Check this out, it seems to
+>> work here:
+>>
+>
+> That looks better to me, although I'm still wondering why UML can't
+> stomach the register-saving tricks... it is not at all "obvious" why
+> that can't be done.
+Hi all, and sorry for the delay, I hope you still care about this.
 
-Hi,
+First, ARCH_HWEIGHT_CFLAGS should IMHO be shared with UML. I.e., moved
+to arch/x86/Kconfig.cpu (which was born as Kconfig code shared with
+UML), or copied in UML (it's not defined, as far as I can see).
+Otherwise it just can't work. And I think that's it.
 
-> > That looks better to me, although I'm still wondering why UML can't
-> > stomach the register-saving tricks... it is not at all "obvious" why
-> > that can't be done.
-> Hi all, and sorry for the delay, I hope you still care about this.
-> 
-> First, ARCH_HWEIGHT_CFLAGS should IMHO be shared with UML. I.e., moved
-> to arch/x86/Kconfig.cpu (which was born as Kconfig code shared with
-> UML), or copied in UML (it's not defined, as far as I can see).
-> Otherwise it just can't work. And I think that's it.
-> 
-> Second, I've been looking at arch_hweight.h to try answering as well,
-> and my question is: did somebody ever implement ALTERNATIVE support on
-> UML? When I worked on it, this thing didn't exist at all. The user
-> declared the host CPU, and we enabled features based on that. There's
-> barely code for exception tables, and we never used it to implement
-> copy_from_user and staff like that (I recall the exception handler was
-> set at run-time).
-> 
-> Indeed, arch/um/kernel/um_arch.c:apply_alternatives() is empty. And I
-> mean, implementing it is not so trivial (unlike exception handling),
-> simply because it requires making the binary mapping writable, and I'm
-> not sure UML does it already.
+Second, I've been looking at arch_hweight.h to try answering as well,
+and my question is: did somebody ever implement ALTERNATIVE support on
+UML? When I worked on it, this thing didn't exist at all. The user
+declared the host CPU, and we enabled features based on that. There's
+barely code for exception tables, and we never used it to implement
+copy_from_user and staff like that (I recall the exception handler was
+set at run-time).
 
-Which would mean that UML doesn't use alternatives at all and uses the
-instructions which are meant to be replaced instead, no? In that case,
-fixing this is either by rerouting the includes (easiest, already in
--tip) or adding alternatives support (harder, needs volunteers :)).
+Indeed, arch/um/kernel/um_arch.c:apply_alternatives() is empty. And I
+mean, implementing it is not so trivial (unlike exception handling),
+simply because it requires making the binary mapping writable, and I'm
+not sure UML does it already.
 
-> A third note is that UML links with glibc, so it can have a different
-> calling convention from the kernel. Say, on x86 32bit regparm doesn't
-> work (in fact, -mregparm is set in arch/x86/Makefile and not in
-> arch/x86/Makefile_32.cpu). And since popcnt is supported on 32bit, it
-> might in theory make a difference for that case. But maybe those flags
-> are simply fine, I didn't recheck the possible calling conventions.
+A third note is that UML links with glibc, so it can have a different
+calling convention from the kernel. Say, on x86 32bit regparm doesn't
+work (in fact, -mregparm is set in arch/x86/Makefile and not in
+arch/x86/Makefile_32.cpu). And since popcnt is supported on 32bit, it
+might in theory make a difference for that case. But maybe those flags
+are simply fine, I didn't recheck the possible calling conventions.
 
-If this is also the case, the -fcall-saved-* stuff won't work on UML and
-yet another way of doing "call *func" from within asm("...") and making
-sure the callee doesn't clobber caller's regs will be needed for UML.
+Good bye!
+--=20
+Paolo Giarrusso - Ph.D. Student
+http://www.informatik.uni-marburg.de/~pgiarrusso/
 
--- 
-Regards/Gruss,
-    Boris.
