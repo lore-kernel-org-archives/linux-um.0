@@ -8,8 +8,8 @@ References: <alpine.DEB.1.10.1001041421450.4942@dr-wily.mit.edu>
 	<AANLkTikU23ID2LWjAOAeGnnhhV5wulXeRghVG20PFPje@mail.gmail.com>
 	<AANLkTilqSSfV3vR-fI1LxrsuSMt_M7_zaeT_xQuNVJL4@mail.gmail.com>
 	<AANLkTilrk4mzoKIGIWTElkdMnoWwEjXgAMOEZpdLvuz0@mail.gmail.com>
-Date: Sat, 19 Jun 2010 00:23:12 +0200
-Message-ID: <AANLkTikzj9PTDnKHXtwLEet1AFZc_uKj8dUm2wXh7Txo@mail.gmail.com>
+Date: Fri, 18 Jun 2010 22:18:22 +0200
+Message-ID: <AANLkTikQXNFVJY4ZKEhS3ZHu7KSRPpOU5PdvACjRkx_7@mail.gmail.com>
 Subject: Re: [RESEND][REGRESSION] um: CONFIG_STATIC_LINK=y broken
 From: richard -rw- weinberger <richard.weinberger@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -52,9 +52,8 @@ On Fri, Jun 18, 2010 at 10:01 PM, Geert Uytterhoeven
 > I'm using amd64 on Ubuntu 10.04.
 >
 
-Can please you test this patch?
-http://groups.google.com/group/fa.linux.kernel/browse_thread/thread/03cd264b00551949?pli=1
-
+On my CentOS 5 x86_64 i get no linking error.
+Sadly I don't have a 64bits Ubuntu machine.
 
 -- 
 Cheers,
