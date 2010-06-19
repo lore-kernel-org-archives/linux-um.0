@@ -1,42 +1,75 @@
-Return-Path: <bharrosh@panasas.com>
-Message-ID: <4C0F4B00.4090307@panasas.com>
-Date: Wed, 09 Jun 2010 11:04:16 +0300
-From: Boaz Harrosh <bharrosh@panasas.com>
+Return-Path: <richard.weinberger@gmail.com>
 MIME-Version: 1.0
-Subject: [PATCH resend] um, hweight: Fix UML boot crash
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-To: Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, Geert Uytterhoeven <geert@linux-m68k.org>, =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <AANLkTimce-yUWW9uXNNGYO48wEgzJuFn8UWzJuhhUy3C@mail.gmail.com>
+References: <alpine.DEB.1.10.1001041421450.4942@dr-wily.mit.edu>
+	<AANLkTinji7n8Hd1Ldci_ruH0r8qglGjC00YQkb-MEwoV@mail.gmail.com>
+	<AANLkTilcHe8jnIBcTC_FjLPGxIbuZV3snU4u0FtdoeDi@mail.gmail.com>
+	<AANLkTim4Tn74BSTqpXMfZeAG9eLDYEKUbcN_wiw2HpBY@mail.gmail.com>
+	<AANLkTikU23ID2LWjAOAeGnnhhV5wulXeRghVG20PFPje@mail.gmail.com>
+	<AANLkTilqSSfV3vR-fI1LxrsuSMt_M7_zaeT_xQuNVJL4@mail.gmail.com>
+	<AANLkTilrk4mzoKIGIWTElkdMnoWwEjXgAMOEZpdLvuz0@mail.gmail.com>
+	<AANLkTikzj9PTDnKHXtwLEet1AFZc_uKj8dUm2wXh7Txo@mail.gmail.com>
+	<AANLkTimce-yUWW9uXNNGYO48wEgzJuFn8UWzJuhhUy3C@mail.gmail.com>
+Date: Sat, 19 Jun 2010 11:54:02 +0200
+Message-ID: <AANLkTim1X5nlYtFxajkWCJOPubEkOGciqlCWeGDKQdQV@mail.gmail.com>
+Subject: Re: [RESEND][REGRESSION] um: CONFIG_STATIC_LINK=y broken
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: akpm@linux-foundation.org, tabbott@ksplice.com, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, stable@kernel.org, maurer@ugcs.caltech.edu
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Borislav Petkov <bp@alien8.de>
+On Sat, Jun 19, 2010 at 10:59 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Sat, Jun 19, 2010 at 00:23, richard -rw- weinberger
+> <richard.weinberger@gmail.com> wrote:
+>> On Fri, Jun 18, 2010 at 10:01 PM, Geert Uytterhoeven
+>> <geert@linux-m68k.org> wrote:
+>>> On Fri, Jun 18, 2010 at 19:50, richard -rw- weinberger
+>>> <richard.weinberger@gmail.com> wrote:
+>>>> On Fri, Jun 18, 2010 at 7:17 PM, Geert Uytterhoeven
+>>>> <geert@linux-m68k.org> wrote:
+>>>>> On Fri, Jun 18, 2010 at 17:22, richard -rw- weinberger
+>>>>> <richard.weinberger@gmail.com> wrote:
+>>>>>> On Fri, Jun 18, 2010 at 4:27 PM, Geert Uytterhoeven
+>>>>>> <geert@linux-m68k.org> wrote:
+>>>>>>> On Fri, Jun 18, 2010 at 15:49, richard -rw- weinberger
+>>>>>>> <richard.weinberger@gmail.com> wrote:
+>>>>>>>> Andrew, Linus, Jeff, ... anyone?
+>>>>>>>> Please apply this patch.
+>>>>>>>>
+>>>>>>>> CONFIG_STATIC_LINK is still broken. :(
+>>>>>>>
+>>>>>>> I wanted to verify Tim's patch, but after enabling CONFIG_STATIC_LINK,
+>>>>>>> it fails to link
+>>>>>>> (with or without your patch):
+>>>>>>>
+>>>>>>
+>>>>>> BTW: Does CONFIG_STATIC_LINK work for you when you revert commit
+>>>>>> 5d150a97f9391f5bcd7ba0d59d7a11c3de3cea80 (um: Clean up linker script
+>>>>>> using standard macros)?
+>>>>>
+>>>>> Still the same linking errors ;-(
+>>>>>
+>>>>
+>>>> Are you using a non-x86 environment?
+>>>> Maybe CONFIG_STATIC_LINK is more broken than i thought.
+>>>
+>>> I'm using amd64 on Ubuntu 10.04.
+>>>
+>>
+>> Can please you test this patch?
+>> http://groups.google.com/group/fa.linux.kernel/browse_thread/thread/03cd264b00551949?pli=1
+>
+> Matthew's patch fixes the linking problem for me.
+>
+> Interestingly, CONFIG_STATIC_LINK=y now boots fine for me, with and
+> without Tim's patch?
 
-Obviously UML cannot stomach callee reg-saving trickery
-introduced with d61931d89be506372d01a90d1755f6d0a9fafe2d
-(x86: Add optimized popcnt variants) and oopses during boot:
-http://marc.info/?l=linux-kernel&m=127522065202435&w=2
+Tim's patch fixes the issue on x86 and Matthew's patch fixes it on amd64.
+I'll combine both patches and test them also on some other archs.
 
-Redirect arch_hweight.h include from the x86 portion to the generic
-arch_hweight.h which is a fallback to the software hweight routines.
-
-LKML-Reference: <201005271944.09541.toralf.foerster@gmx.de>
-Signed-off-by: Borislav Petkov <bp@alien8.de>
----
- arch/um/include/asm/arch_hweight.h |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
- create mode 100644 arch/um/include/asm/arch_hweight.h
-
-diff --git a/arch/um/include/asm/arch_hweight.h b/arch/um/include/asm/arch_hweight.h
-new file mode 100644
-index 0000000..c656cf4
---- /dev/null
-+++ b/arch/um/include/asm/arch_hweight.h
-@@ -0,0 +1,6 @@
-+#ifndef _ASM_UM_HWEIGHT_H
-+#define _ASM_UM_HWEIGHT_H
-+
-+#include <asm-generic/bitops/arch_hweight.h>
-+
-+#endif
--- 1.7.1 
+-- 
+Cheers,
+//richard
 
