@@ -1,83 +1,155 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH] um: call free_irq() only on enabled channels
-Date: Fri, 11 Jun 2010 20:00:14 +0200
-Message-Id: <1276279214-22790-1-git-send-email-richard@nod.at>
+Date: Mon, 21 Jun 2010 15:58:09 -0700
+From: Stephen Hemminger <shemminger@vyatta.com>
+Subject: Re: [PATCH 1/3] arch/um/drivers: remove duplicate structure field
+ initialization
+Message-ID: <20100621155809.4655a389@nehalam>
+In-Reply-To: <20100621155349.8f314499.akpm@linux-foundation.org>
+References: <Pine.LNX.4.64.1006201539080.6207@ask.diku.dk>
+	<20100621155349.8f314499.akpm@linux-foundation.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: akpm@linux-foundation.org
-Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Richard Weinberger <richard@nod.at>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Julia Lawall <julia@diku.dk>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-When I use OpenSUSE-11.2 on UML (> 2.6.25)
-I get lots of such errors:
+On Mon, 21 Jun 2010 15:53:49 -0700
+Andrew Morton <akpm@linux-foundation.org> wrote:
 
-Registering fd 1 twice
-Irqs : 3, 3
-Ids : 0x09cb41a0, 0x09cb4120
-------------[ cut here ]------------
-WARNING: at kernel/irq/manage.c:896 __free_irq+0x79/0x11a()
-Trying to free already-free IRQ 3
-Modules linked in:
-09dadc6c:  [<081b2edb>] dump_stack+0x1c/0x20
-09dadc84:  [<080716da>] warn_slowpath_common+0x49/0x77
-09dadc9c:  [<08071772>] warn_slowpath_fmt+0x26/0x2a
-09dadcb4:  [<08094e08>] __free_irq+0x79/0x11a
-09dadce4:  [<08094ed6>] free_irq+0x2d/0x49
-09dadcf4:  [<0805b4bc>] close_one_chan+0x70/0x9c
-09dadd0c:  [<0805b833>] close_chan+0x17/0x22
-09dadd1c:  [<0805bdda>] enable_chan+0x70/0x7c
-09dadd3c:  [<0805cbb7>] line_open+0x34/0x9f
-09dadd54:  [<0805b21e>] con_open+0x13/0x35
-09dadd6c:  [<0814dc89>] tty_open+0x285/0x384
-09dadda0:  [<080b754e>] chrdev_open+0xe0/0xf9
-09daddc0:  [<080b3fb2>] __dentry_open+0xf3/0x1e2
-09dadde4:  [<080b4142>] nameidata_to_filp+0x35/0x49
-09daddfc:  [<080bd270>] do_last+0x409/0x50e
-09dade28:  [<080bea04>] do_filp_open+0x175/0x446
-09dadecc:  [<080b3d89>] do_sys_open+0x4a/0x128
-09dadf04:  [<080b3ea2>] sys_open+0x19/0x21
-09dadf28:  [<0805ab5a>] handle_syscall+0x7a/0x98
-09dadf78:  [<08068441>] userspace+0x2c9/0x370
-09dadfe0:  [<08058bb3>] fork_handler+0x53/0x5b
-09dadffc:  [<00766564>] 0x766564
+> On Sun, 20 Jun 2010 15:40:02 +0200 (CEST)
+> Julia Lawall <julia@diku.dk> wrote:
+> 
+> > From: Julia Lawall <julia@diku.dk>
+> > 
+> > There are two initializations of ndo_set_mac_address, one to a local
+> > function that is not used otherwise and one to a function that is defined
+> > elsewhere.  This patch keeps the initialization to the local function.
+> > 
+> > The semantic match that finds this problem is as follows:
+> > (http://coccinelle.lip6.fr/)
+> > 
+> > // <smpl>
+> > @r@
+> > identifier I, s, fld;
+> > position p0,p;
+> > expression E;
+> > @@
+> > 
+> > struct I s =@p0 { ... .fld@p = E, ...};
+> > 
+> > @s@
+> > identifier I, s, r.fld;
+> > position r.p0,p;
+> > expression E;
+> > @@
+> > 
+> > struct I s =@p0 { ... .fld@p = E, ...};
+> > 
+> > @script:python@
+> > p0 << r.p0;
+> > fld << r.fld;
+> > ps << s.p;
+> > pr << r.p;
+> > @@
+> > 
+> > if int(ps[0].line)<int(pr[0].line) or int(ps[0].column)<int(pr[0].column):
+> >   cocci.print_main(fld,p0)
+> > // </smpl>
+> > 
+> > Signed-off-by: Julia Lawall <julia@diku.dk>
+> > 
+> > ---
+> > This fix was sent previously, in September 2009.
+> > 
+> >  arch/um/drivers/net_kern.c |    1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+> > index f053726..d2d42d8 100644
+> > --- a/arch/um/drivers/net_kern.c
+> > +++ b/arch/um/drivers/net_kern.c
+> > @@ -380,7 +380,6 @@ static const struct net_device_ops uml_netdev_ops = {
+> >  	.ndo_tx_timeout 	= uml_net_tx_timeout,
+> >  	.ndo_set_mac_address	= uml_net_set_mac,
+> >  	.ndo_change_mtu 	= uml_net_change_mtu,
+> > -	.ndo_set_mac_address 	= eth_mac_addr,
+> >  	.ndo_validate_addr	= eth_validate_addr,
+> >  };
+> 
+> Your patch is actually a functional change.
+> 
+> Geeze, whatamess.
+> 
+> 
+> This duplicated field was added by
+> 
+> : commit 8bb95b39a16ed55226810596f92216c53329d2fe
+> : Author:     Stephen Hemminger <shemminger@linux-foundation.org>
+> : AuthorDate: Thu Mar 26 15:11:17 2009 +0000
+> : Commit:     David S. Miller <davem@davemloft.net>
+> : CommitDate: Fri Mar 27 00:46:40 2009 -0700
+> :
+> :    uml: convert network device to netdevice ops
+> 
+> Either Stephen fat-fingered it, or it was a secret, unchangelogged (and
+> partial) cleanup.
+> 
+> Presumably the spin_lock_irq(&lp->lock); stuff is in uml_net_set_mac()
+> for a reason so presumably we should restore it.
+> 
+> 
+> - Use the standard eth_mac_addr() in uml_net_set_mac()
+> 
+> - Remove unneeded and racy local set_ether_mac()
+> 
+> - Remove duplicated (and incorrect)
+>   uml_netdev_ops.ndo_set_mac_address initializer.
+> 
+> Fixes 8bb95b39a16ed55226810596f92216c53329d2fe ("uml: convert network
+> device to netdevice ops").
+> 
+> diff -puN arch/um/drivers/net_kern.c~arch-um-drivers-remove-duplicate-structure-field-initialization arch/um/drivers/net_kern.c
+> --- a/arch/um/drivers/net_kern.c~arch-um-drivers-remove-duplicate-structure-field-initialization
+> +++ a/arch/um/drivers/net_kern.c
+> @@ -25,11 +25,6 @@
+>  #include "net_kern.h"
+>  #include "net_user.h"
+>  
+> -static inline void set_ether_mac(struct net_device *dev, unsigned char *addr)
+> -{
+> -	memcpy(dev->dev_addr, addr, ETH_ALEN);
+> -}
+> -
+>  #define DRIVER_NAME "uml-netdev"
+>  
+>  static DEFINE_SPINLOCK(opened_lock);
+> @@ -266,7 +261,7 @@ static int uml_net_set_mac(struct net_de
+>  	struct sockaddr *hwaddr = addr;
+>  
+>  	spin_lock_irq(&lp->lock);
+> -	set_ether_mac(dev, hwaddr->sa_data);
+> +	eth_mac_addr(dev, hwaddr->sa_data);
+>  	spin_unlock_irq(&lp->lock);
+>  
+>  	return 0;
+> @@ -380,7 +375,6 @@ static const struct net_device_ops uml_n
+>  	.ndo_tx_timeout 	= uml_net_tx_timeout,
+>  	.ndo_set_mac_address	= uml_net_set_mac,
+>  	.ndo_change_mtu 	= uml_net_change_mtu,
+> -	.ndo_set_mac_address 	= eth_mac_addr,
+>  	.ndo_validate_addr	= eth_validate_addr,
+>  };
+>  
+> @@ -478,7 +472,7 @@ static void eth_configure(int n, void *i
+>  	    ((*transport->user->init)(&lp->user, dev) != 0))
+>  		goto out_unregister;
+>  
+> -	set_ether_mac(dev, device->mac);
+> +	eth_mac_addr(dev, device->mac);
+>  	dev->mtu = transport->user->mtu;
+>  	dev->netdev_ops = &uml_netdev_ops;
+>  	dev->ethtool_ops = &uml_net_ethtool_ops;
 
----[ end trace 9ebc1094aaf4bded ]---
-
-This patch fixes the issue.
-
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/drivers/chan_kern.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
-index 6e51424..25e1965 100644
---- a/arch/um/drivers/chan_kern.c
-+++ b/arch/um/drivers/chan_kern.c
-@@ -210,9 +210,9 @@ void free_irqs(void)
- 	list_for_each(ele, &list) {
- 		chan = list_entry(ele, struct chan, free_list);
- 
--		if (chan->input)
-+		if (chan->input && chan->enabled)
- 			free_irq(chan->line->driver->read_irq, chan);
--		if (chan->output)
-+		if (chan->output && chan->enabled)
- 			free_irq(chan->line->driver->write_irq, chan);
- 		chan->enabled = 0;
- 	}
-@@ -231,9 +231,9 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
- 		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
- 	}
- 	else {
--		if (chan->input)
-+		if (chan->input && chan->enabled)
- 			free_irq(chan->line->driver->read_irq, chan);
--		if (chan->output)
-+		if (chan->output && chan->enabled)
- 			free_irq(chan->line->driver->write_irq, chan);
- 		chan->enabled = 0;
- 	}
--- 
-1.6.6.1
-
+Looks correct thanks.
