@@ -1,44 +1,83 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 29 Jul 2010 17:29:02 +0200
-From: Christoph Egger <siccegge@cs.fau.de>
-Subject: [PATCH 2/3] Removing conditionalizing containing exactly the same
- code
-Message-ID: <62a933db8d615bbc8b277fc7decb76964808795d.1280417117.git.siccegge@cs.fau.de>
-References: <cover.1280417117.git.siccegge@cs.fau.de>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ratheesh.ksz@gmail.com>) id 1OeIUQ-0007Jh-83
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Jul 2010 02:04:54 +0000
+Received: from mail-iw0-f175.google.com ([209.85.214.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OeIUP-0008Ff-Fm for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 29 Jul 2010 02:04:54 +0000
+Received: by iwn34 with SMTP id 34so58399iwn.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 28 Jul 2010 19:04:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1280417117.git.siccegge@cs.fau.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: vamos-dev@i4.informatik.uni-erlangen.de
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <20100728184956.GA25818@c-98-229-117-200.hsd1.ma.comcast.net>
+References: <AANLkTi=VnBo4uZ6UUd7WZoKYY1M2D2+YaaX9+wKmNXaK@mail.gmail.com>
+	<20100728184956.GA25818@c-98-229-117-200.hsd1.ma.comcast.net>
+Date: Thu, 29 Jul 2010 07:34:48 +0530
+Message-ID: <AANLkTimg9p_kVZvDtAkn4W5xBjJXn4GwZXAdPZzfg5jV@mail.gmail.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: [uml-devel] reading heap memory in kernel space .
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Found this because there's no PPC64 in um, however both branches of
-this ifdef contain the exactly same code (modulo comment).
+On Thu, Jul 29, 2010 at 12:19 AM, Jeff Dike <jdike@addtoit.com> wrote:
+> Why do you want a physical address?  It's useless to a debugger.
 
-Signed-off-by: Christoph Egger <siccegge@cs.fau.de>
+I agree .
+I would like to know this .Could you help me .How do i find uml_physmem val=
+ue ?
+
+-Ratheesh
+
+> On Wed, Jul 28, 2010 at 09:54:37PM +0530, ratheesh k wrote:
+>> I have a simple user space program .
+>>
+>> char *ptr=3D(char *)malloc(100);
+>> strcpy(ptr , "Hi Kernel =A0, How are you ");
+>> .........
+>> sendmsg(...)
+>> ........
+>>
+>>
+>> I compiled this program =A0and executed on 2.6.32 user mode linux .
+>> when i run uml under gdb , i would like to read all memory location
+>> staring from ptr .( whole string ) from kernel .
+>> I have set some break points on some system calls ( sys_sendmsg ). gdb
+>> will break there and if know ptr address , should i convert to
+>> physical address space ? How will i do that ? how will i get
+>> uml_physmem value ?
+>
+> Why do you want a physical address? =A0It's useless to a debugger.
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Jeff
+>
+> --
+> Work email - jdike at linux dot intel dot com
+>
+
+---------------------------------------------------------------------------=
 ---
- arch/um/sys-ppc/shared/sysdep/ptrace.h |    5 +----
- 1 files changed, 1 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/sys-ppc/shared/sysdep/ptrace.h b/arch/um/sys-ppc/shared/sysdep/ptrace.h
-index 0e3230e..4ae9be9 100644
---- a/arch/um/sys-ppc/shared/sysdep/ptrace.h
-+++ b/arch/um/sys-ppc/shared/sysdep/ptrace.h
-@@ -9,11 +9,8 @@
- 
- /* the following taken from <asm-ppc/ptrace.h> */
- 
--#ifdef CONFIG_PPC64
--#define PPC_REG unsigned long /*long*/
--#else
- #define PPC_REG unsigned long
--#endif
-+
- struct sys_pt_regs_s {
- 	PPC_REG gpr[32];
- 	PPC_REG nip;
--- 
-1.7.0.4
+The Palm PDK Hot Apps Program offers developers who use the
+Plug-In Development Kit to bring their C/C++ apps to Palm for a share
+of $1 Million in cash or HP Products. Visit us here for more details:
+http://p.sf.net/sfu/dev2dev-palm
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
