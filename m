@@ -1,129 +1,129 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 29 Jul 2010 17:29:12 +0200
-From: Christoph Egger <siccegge@cs.fau.de>
-Subject: [PATCH 3/3] Removing dead copy&paste code
-Message-ID: <b9395c2aeb22a47833787494090774f38aa04f58.1280417117.git.siccegge@cs.fau.de>
-References: <cover.1280417117.git.siccegge@cs.fau.de>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <roland@redhat.com>) id 1Omaik-00082l-9I
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2010 23:09:58 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Omaij-0001CU-AC for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Aug 2010 23:09:58 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1280417117.git.siccegge@cs.fau.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: vamos-dev@i4.informatik.uni-erlangen.de
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+From: Roland McGrath <roland@redhat.com>
+Message-Id: <20100820230938.16A5D402A4@magilla.sf.frob.com>
+Date: Fri, 20 Aug 2010 16:09:37 -0700 (PDT)
+Subject: [uml-devel] [PATCH] uml: fix CONFIG_STATIC_LINK=y build failure
+	with newer glibc
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Alexander Viro <aviro@redhat.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-In arch/um there's a lot of code that is copied from their original
-arch (but out of sync) and contains code blocks that are either dead
-because these options disappearedd or because the arch/x86 Kconfig
-stuff doesn't reach arch/um.
+The following changes since commit 36423a5ed5e4ea95ceedb68fad52965033e11639:
 
-X86_OOSTORE is a bit tricky because it's in itself seemingly available
-on arch/um but depends on MTRR which isn't in arch/um.
+  Merge branch 'x86-fixes-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/linux-2.6-tip (2010-08-20 14:25:08 -0700)
 
-Signed-off-by: Christoph Egger <siccegge@cs.fau.de>
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/frob/linux-2.6-roland.git uml/ld-irel
+
+Roland McGrath (1):
+      uml: fix CONFIG_STATIC_LINK=y build failure with newer glibc
+
+ arch/um/kernel/dyn.lds.S |   14 ++++++++++++--
+ arch/um/kernel/uml.lds.S |   17 +++++++++++++++++
+ 2 files changed, 29 insertions(+), 2 deletions(-)
+
+Thanks,
+Roland
 ---
- arch/um/sys-i386/asm/archparam.h          |    4 ----
- arch/um/sys-i386/shared/sysdep/system.h   |   11 +----------
- arch/um/sys-ppc/misc.S                    |    6 ------
- arch/um/sys-x86_64/shared/sysdep/system.h |   10 +---------
- 4 files changed, 2 insertions(+), 29 deletions(-)
+[PATCH] uml: fix CONFIG_STATIC_LINK=y build failure with newer glibc
 
-diff --git a/arch/um/sys-i386/asm/archparam.h b/arch/um/sys-i386/asm/archparam.h
-index 2a18a88..b2072c9 100644
---- a/arch/um/sys-i386/asm/archparam.h
-+++ b/arch/um/sys-i386/asm/archparam.h
-@@ -6,11 +6,7 @@
- #ifndef __UM_ARCHPARAM_I386_H
- #define __UM_ARCHPARAM_I386_H
+With glibc 2.11 or later that was built with --enable-multi-arch,
+the UML link fails with undefined references to __rel_iplt_start and
+similar symbols.  In recent binutils, the default linker script
+defines these symbols (see ld --verbose).  Fix the UML linker
+scripts to match the new defaults for these sections.
+
+Signed-off-by: Roland McGrath <roland@redhat.com>
+---
+ arch/um/kernel/dyn.lds.S |   14 ++++++++++++--
+ arch/um/kernel/uml.lds.S |   17 +++++++++++++++++
+ 2 files changed, 29 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+index 6926801..a3cab6d 100644
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -50,8 +50,18 @@ SECTIONS
+   .rela.got       : { *(.rela.got) }
+   .rel.bss        : { *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*) }
+   .rela.bss       : { *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*) }
+-  .rel.plt        : { *(.rel.plt) }
+-  .rela.plt       : { *(.rela.plt) }
++  .rel.plt : {
++	*(.rel.plt)
++	PROVIDE_HIDDEN(__rel_iplt_start = .);
++	*(.rel.iplt)
++	PROVIDE_HIDDEN(__rel_iplt_end = .);
++  }
++  .rela.plt : {
++	*(.rela.plt)
++	PROVIDE_HIDDEN(__rela_iplt_start = .);
++	*(.rela.iplt)
++	PROVIDE_HIDDEN(__rela_iplt_end = .);
++  }
+   .init           : {
+     KEEP (*(.init))
+   } =0x90909090
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index ec63785..a7cbffb 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -43,6 +43,23 @@ SECTIONS
+ 	__syscall_stub_end = .;
+   }
  
--#ifdef CONFIG_X86_PAE
--#define LAST_PKMAP 512
--#else
- #define LAST_PKMAP 1024
--#endif
++  /*
++   * These are needed even in a static link, even if they wind up being empty.
++   * Newer glibc needs these __rel{,a}_iplt_{start,end} symbols.
++   */
++  .rel.plt : {
++	*(.rel.plt)
++	PROVIDE_HIDDEN(__rel_iplt_start = .);
++	*(.rel.iplt)
++	PROVIDE_HIDDEN(__rel_iplt_end = .);
++  }
++  .rela.plt : {
++	*(.rela.plt)
++	PROVIDE_HIDDEN(__rela_iplt_start = .);
++	*(.rela.iplt)
++	PROVIDE_HIDDEN(__rela_iplt_end = .);
++  }
++
+   #include "asm/common.lds.S"
  
- #endif
- 
-diff --git a/arch/um/sys-i386/shared/sysdep/system.h b/arch/um/sys-i386/shared/sysdep/system.h
-index d1b93c4..be25c95 100644
---- a/arch/um/sys-i386/shared/sysdep/system.h
-+++ b/arch/um/sys-i386/shared/sysdep/system.h
-@@ -10,12 +10,7 @@
- #include <linux/kernel.h>
- #include <linux/irqflags.h>
- 
--/* entries in ARCH_DLINFO: */
--#ifdef CONFIG_IA32_EMULATION
--# define AT_VECTOR_SIZE_ARCH 2
--#else
--# define AT_VECTOR_SIZE_ARCH 1
--#endif
-+#define AT_VECTOR_SIZE_ARCH 1
- 
- extern unsigned long arch_align_stack(unsigned long sp);
- 
-@@ -101,11 +96,7 @@ void default_idle(void);
- #else
- # define smp_rmb()	barrier()
- #endif
--#ifdef CONFIG_X86_OOSTORE
--# define smp_wmb() 	wmb()
--#else
- # define smp_wmb()	barrier()
--#endif
- #define smp_read_barrier_depends()	read_barrier_depends()
- #define set_mb(var, value) do { (void)xchg(&var, value); } while (0)
- #else
-diff --git a/arch/um/sys-ppc/misc.S b/arch/um/sys-ppc/misc.S
-index 1364b7d..962e4af 100644
---- a/arch/um/sys-ppc/misc.S
-+++ b/arch/um/sys-ppc/misc.S
-@@ -18,15 +18,9 @@
- #include <asm/processor.h>
- #include "ppc_asm.h"
- 
--#if defined(CONFIG_4xx) || defined(CONFIG_8xx)
--#define CACHE_LINE_SIZE		16
--#define LG_CACHE_LINE_SIZE	4
--#define MAX_COPY_PREFETCH	1
--#else
- #define CACHE_LINE_SIZE		32
- #define LG_CACHE_LINE_SIZE	5
- #define MAX_COPY_PREFETCH	4
--#endif /* CONFIG_4xx || CONFIG_8xx */
- 
- 	.text
- 
-diff --git a/arch/um/sys-x86_64/shared/sysdep/system.h b/arch/um/sys-x86_64/shared/sysdep/system.h
-index d1b93c4..511241f 100644
---- a/arch/um/sys-x86_64/shared/sysdep/system.h
-+++ b/arch/um/sys-x86_64/shared/sysdep/system.h
-@@ -11,11 +11,7 @@
- #include <linux/irqflags.h>
- 
- /* entries in ARCH_DLINFO: */
--#ifdef CONFIG_IA32_EMULATION
--# define AT_VECTOR_SIZE_ARCH 2
--#else
--# define AT_VECTOR_SIZE_ARCH 1
--#endif
-+#define AT_VECTOR_SIZE_ARCH 1
- 
- extern unsigned long arch_align_stack(unsigned long sp);
- 
-@@ -101,11 +97,7 @@ void default_idle(void);
- #else
- # define smp_rmb()	barrier()
- #endif
--#ifdef CONFIG_X86_OOSTORE
--# define smp_wmb() 	wmb()
--#else
- # define smp_wmb()	barrier()
--#endif
- #define smp_read_barrier_depends()	read_barrier_depends()
- #define set_mb(var, value) do { (void)xchg(&var, value); } while (0)
- #else
--- 
-1.7.0.4
+   init.data : { INIT_DATA }
+
+------------------------------------------------------------------------------
+This SF.net email is sponsored by 
+
+Make an app they can't live without
+Enter the BlackBerry Developer Challenge
+http://p.sf.net/sfu/RIM-dev2dev 
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
