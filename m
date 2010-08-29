@@ -1,28 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sakari.ailus@iki.fi>) id 1OqCuT-0000x5-Ma
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <toralf.foerster@gmx.de>) id 1OplaA-00015m-Td
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Aug 2010 22:33:01 +0000
-Received: from smtp-68.nebula.fi ([83.145.220.68])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OqCuS-0001DL-0r for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 30 Aug 2010 22:33:01 +0000
-Received: from hillosipuli.localdomain (nblzone-241-231.nblnetworks.fi
-	[83.145.241.231])
-	by smtp-68.nebula.fi (Postfix) with ESMTP id 3094043F0A2E
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 31 Aug 2010 01:17:08 +0300 (EEST)
-Received: from [192.168.1.1] (masiina.localdomain [192.168.1.1])
-	by hillosipuli.localdomain (Postfix) with ESMTP id F2E704A02C
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 31 Aug 2010 01:17:07 +0300 (EEST)
-Message-ID: <4C7C2DE4.3090203@iki.fi>
-Date: Tue, 31 Aug 2010 01:17:08 +0300
-From: Sakari Ailus <sakari.ailus@iki.fi>
+	Sun, 29 Aug 2010 17:22:14 +0000
+Received: from mailout-de.gmx.net ([213.165.64.22] helo=mail.gmx.net)
+	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1Opla9-00019o-Cl for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Aug 2010 17:22:14 +0000
+From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Date: Sun, 29 Aug 2010 19:22:04 +0200
 MIME-Version: 1.0
-Subject: [uml-devel] UML development, anyone?
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_9cpeMdKbWivTC9R"
+Message-Id: <201008291922.05069.toralf.foerster@gmx.de>
+Subject: [uml-devel] v2.6.36-rc3: UML compile error in hostaudio_kern.c
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,60 +25,82 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hello all,
+--Boundary-00=_9cpeMdKbWivTC9R
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-I'm a long-time UML user and lately I've become a bit worried on the 
-state of the UML. This list, as well as the -user one, is very quiet 
-these days. Is there someone still actively developing the UML? I have 
-to say I really like it! Running Linux on Linux reliably and 
-efficiently, just what I need! :-)
+Hello,
 
-I'm currently running three UML virtual machines on an server using 
-Athlon XP-M. The host is running 2.6.31 and the guests are 2.6.27.
+I get with the attached config :
 
-I cannot upgrade neither host nor guests due to these problems:
+=2E..
+  CC      arch/um/drivers/hostaudio_kern.o
+  CC      arch/um/kernel/tlb.o
+  CC      arch/um/os-Linux/start_up.o
+arch/um/drivers/hostaudio_kern.c: In function =E2=80=98hostaudio_open=E2=80=
+=99:
+arch/um/drivers/hostaudio_kern.c:204: error: =E2=80=98__param_dsp=E2=80=99 =
+undeclared (first=20
+use in this function)
+arch/um/drivers/hostaudio_kern.c:204: error: (Each undeclared identifier is=
+=20
+reported only once
+arch/um/drivers/hostaudio_kern.c:204: error: for each function it appears i=
+n.)
+arch/um/drivers/hostaudio_kern.c: In function =E2=80=98hostmixer_open_mixde=
+v=E2=80=99:
+arch/um/drivers/hostaudio_kern.c:265: error: =E2=80=98__param_mixer=E2=80=
+=99 undeclared (first=20
+use in this function)
+arch/um/drivers/hostaudio_kern.c:272: error: =E2=80=98__param_dsp=E2=80=99 =
+undeclared (first=20
+use in this function)
+make[1]: *** [arch/um/drivers/hostaudio_kern.o] Error 1
+make: *** [arch/um/drivers] Error 2
+make: *** Waiting for unfinished jobs....
 
-- SKAS 3 patches available up to 2.6.31 only. Merging this to current 
-kernel might not be a problem, just some work, but:
+=2D-=20
+MfG/Kind regards
+Toralf F=C3=B6rster
 
-- Severe data corruption on guest on recent guest kernel versions. I'm 
-using a few hard disk partitions directly for UML guests. Something 
-after 2.6.27 guest breaks this quite badly. Even for small data sets 
-like 100 MiB, copying a file to a different location on guest and then 
-running md5sum on both often produces a different result.
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
 
-Do I have any options than to switch to Qemu and suffer the performance 
-penalty from emulation (kqemu is obsolete, too) or to switch to newer 
-hardware that supports kvm? Qemu performance is somewhat less than 10 % 
-of the native (or UML) performance.
 
-I also found something called lguest but haven't given it a try yet. 
-Looks the most interesting but that doesn't seem to have much list 
-activity either. So it works perfectly for almost everyone or has few 
-users... ;)
+--Boundary-00=_9cpeMdKbWivTC9R
+Content-Type: application/x-zerosize;
+  name=".config"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=".config"
 
-How are others coping in the current situation? Or is it just me who has 
-these troubles...?
 
-Best regards,
-
--- 
-Sakari Ailus
-sakari.ailus@iki.fi
+--Boundary-00=_9cpeMdKbWivTC9R
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
+Sell apps to millions through the Intel(R) Atom(Tm) Developer Program
+Be part of this innovative community and reach millions of netbook users 
+worldwide. Take advantage of special opportunities to increase revenue and 
+speed time-to-market. Join now, and jumpstart your future.
+http://p.sf.net/sfu/intel-atom-d2d
+--Boundary-00=_9cpeMdKbWivTC9R
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--Boundary-00=_9cpeMdKbWivTC9R--
+
 
