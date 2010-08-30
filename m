@@ -1,20 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <roland@redhat.com>) id 1Omaik-00082l-9I
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sakari.ailus@iki.fi>) id 1OqCuT-0000x5-Ma
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2010 23:09:58 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Omaij-0001CU-AC for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Aug 2010 23:09:58 +0000
+	Mon, 30 Aug 2010 22:33:01 +0000
+Received: from smtp-68.nebula.fi ([83.145.220.68])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OqCuS-0001DL-0r for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 30 Aug 2010 22:33:01 +0000
+Received: from hillosipuli.localdomain (nblzone-241-231.nblnetworks.fi
+	[83.145.241.231])
+	by smtp-68.nebula.fi (Postfix) with ESMTP id 3094043F0A2E
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 31 Aug 2010 01:17:08 +0300 (EEST)
+Received: from [192.168.1.1] (masiina.localdomain [192.168.1.1])
+	by hillosipuli.localdomain (Postfix) with ESMTP id F2E704A02C
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 31 Aug 2010 01:17:07 +0300 (EEST)
+Message-ID: <4C7C2DE4.3090203@iki.fi>
+Date: Tue, 31 Aug 2010 01:17:08 +0300
+From: Sakari Ailus <sakari.ailus@iki.fi>
 MIME-Version: 1.0
-From: Roland McGrath <roland@redhat.com>
-Message-Id: <20100820230938.16A5D402A4@magilla.sf.frob.com>
-Date: Fri, 20 Aug 2010 16:09:37 -0700 (PDT)
-Subject: [uml-devel] [PATCH] uml: fix CONFIG_STATIC_LINK=y build failure
-	with newer glibc
+Subject: [uml-devel] UML development, anyone?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,101 +35,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jeff Dike <jdike@addtoit.com>
-Cc: Alexander Viro <aviro@redhat.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-The following changes since commit 36423a5ed5e4ea95ceedb68fad52965033e11639:
+Hello all,
 
-  Merge branch 'x86-fixes-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/linux-2.6-tip (2010-08-20 14:25:08 -0700)
+I'm a long-time UML user and lately I've become a bit worried on the 
+state of the UML. This list, as well as the -user one, is very quiet 
+these days. Is there someone still actively developing the UML? I have 
+to say I really like it! Running Linux on Linux reliably and 
+efficiently, just what I need! :-)
 
-are available in the git repository at:
+I'm currently running three UML virtual machines on an server using 
+Athlon XP-M. The host is running 2.6.31 and the guests are 2.6.27.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/frob/linux-2.6-roland.git uml/ld-irel
+I cannot upgrade neither host nor guests due to these problems:
 
-Roland McGrath (1):
-      uml: fix CONFIG_STATIC_LINK=y build failure with newer glibc
+- SKAS 3 patches available up to 2.6.31 only. Merging this to current 
+kernel might not be a problem, just some work, but:
 
- arch/um/kernel/dyn.lds.S |   14 ++++++++++++--
- arch/um/kernel/uml.lds.S |   17 +++++++++++++++++
- 2 files changed, 29 insertions(+), 2 deletions(-)
+- Severe data corruption on guest on recent guest kernel versions. I'm 
+using a few hard disk partitions directly for UML guests. Something 
+after 2.6.27 guest breaks this quite badly. Even for small data sets 
+like 100 MiB, copying a file to a different location on guest and then 
+running md5sum on both often produces a different result.
 
-Thanks,
-Roland
----
-[PATCH] uml: fix CONFIG_STATIC_LINK=y build failure with newer glibc
+Do I have any options than to switch to Qemu and suffer the performance 
+penalty from emulation (kqemu is obsolete, too) or to switch to newer 
+hardware that supports kvm? Qemu performance is somewhat less than 10 % 
+of the native (or UML) performance.
 
-With glibc 2.11 or later that was built with --enable-multi-arch,
-the UML link fails with undefined references to __rel_iplt_start and
-similar symbols.  In recent binutils, the default linker script
-defines these symbols (see ld --verbose).  Fix the UML linker
-scripts to match the new defaults for these sections.
+I also found something called lguest but haven't given it a try yet. 
+Looks the most interesting but that doesn't seem to have much list 
+activity either. So it works perfectly for almost everyone or has few 
+users... ;)
 
-Signed-off-by: Roland McGrath <roland@redhat.com>
----
- arch/um/kernel/dyn.lds.S |   14 ++++++++++++--
- arch/um/kernel/uml.lds.S |   17 +++++++++++++++++
- 2 files changed, 29 insertions(+), 2 deletions(-)
+How are others coping in the current situation? Or is it just me who has 
+these troubles...?
 
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index 6926801..a3cab6d 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -50,8 +50,18 @@ SECTIONS
-   .rela.got       : { *(.rela.got) }
-   .rel.bss        : { *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*) }
-   .rela.bss       : { *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*) }
--  .rel.plt        : { *(.rel.plt) }
--  .rela.plt       : { *(.rela.plt) }
-+  .rel.plt : {
-+	*(.rel.plt)
-+	PROVIDE_HIDDEN(__rel_iplt_start = .);
-+	*(.rel.iplt)
-+	PROVIDE_HIDDEN(__rel_iplt_end = .);
-+  }
-+  .rela.plt : {
-+	*(.rela.plt)
-+	PROVIDE_HIDDEN(__rela_iplt_start = .);
-+	*(.rela.iplt)
-+	PROVIDE_HIDDEN(__rela_iplt_end = .);
-+  }
-   .init           : {
-     KEEP (*(.init))
-   } =0x90909090
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index ec63785..a7cbffb 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -43,6 +43,23 @@ SECTIONS
- 	__syscall_stub_end = .;
-   }
- 
-+  /*
-+   * These are needed even in a static link, even if they wind up being empty.
-+   * Newer glibc needs these __rel{,a}_iplt_{start,end} symbols.
-+   */
-+  .rel.plt : {
-+	*(.rel.plt)
-+	PROVIDE_HIDDEN(__rel_iplt_start = .);
-+	*(.rel.iplt)
-+	PROVIDE_HIDDEN(__rel_iplt_end = .);
-+  }
-+  .rela.plt : {
-+	*(.rela.plt)
-+	PROVIDE_HIDDEN(__rela_iplt_start = .);
-+	*(.rela.iplt)
-+	PROVIDE_HIDDEN(__rela_iplt_end = .);
-+  }
-+
-   #include "asm/common.lds.S"
- 
-   init.data : { INIT_DATA }
+Best regards,
+
+-- 
+Sakari Ailus
+sakari.ailus@iki.fi
 
 ------------------------------------------------------------------------------
-This SF.net email is sponsored by 
+This SF.net Dev2Dev email is sponsored by:
 
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
+Show off your parallel programming skills.
+Enter the Intel(R) Threading Challenge 2010.
+http://p.sf.net/sfu/intel-thread-sfd
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
