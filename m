@@ -1,60 +1,77 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <cdfrey@foursquare.net>) id 1P0P7n-0004rA-Vn
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Sep 2010 01:36:55 +0000
-Received: from nic.netdirect.ca ([216.16.235.2] helo=rubicon.netdirect.ca)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P0P7m-0001wq-Vq
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 28 Sep 2010 01:36:55 +0000
-Received: from localhost (nic.NetDirect.CA [216.16.235.2])
-	by rubicon.netdirect.ca (8.13.8/8.13.8) with ESMTP id o8S1amN8030645
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 27 Sep 2010 21:36:48 -0400
-Date: Mon, 27 Sep 2010 21:36:48 -0400
-From: Chris Frey <cdfrey@foursquare.net>
-Message-ID: <20100928013648.GA30506@foursquare.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Wed, 8 Sep 2010 13:11:07 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 10/14] hppfs: check for IS_ERR() instead of != NULL
+Message-Id: <20100908131107.3003667d.akpm@linux-foundation.org>
+In-Reply-To: <1283711577-7505-1-git-send-email-segooon@gmail.com>
+References: <1283711577-7505-1-git-send-email-segooon@gmail.com>
 Mime-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] ext3 filesystem corruption in user mode linux
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kulikov Vasiliy <segooon@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi,
+On Sun,  5 Sep 2010 22:32:56 +0400
+Kulikov Vasiliy <segooon@gmail.com> wrote:
 
-I thought it might be useful to point to the linux-kernel thread on
-the same topic, which can be found here:
+> From: Vasiliy Kulikov <segooon@gmail.com>
+> 
+> Function get_inode may return ERR_PTR(...). Check for it.
+> 
+> Signed-off-by: Vasiliy Kulikov <segooon@gmail.com>
+> ---
+>  Compile tested.
+> 
+>  fs/hppfs/hppfs.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/hppfs/hppfs.c b/fs/hppfs/hppfs.c
+> index 7b02772..e7d6535 100644
+> --- a/fs/hppfs/hppfs.c
+> +++ b/fs/hppfs/hppfs.c
+> @@ -173,7 +173,7 @@ static struct dentry *hppfs_lookup(struct inode *ino, struct dentry *dentry,
+>  
+>  	err = -ENOMEM;
+>  	inode = get_inode(ino->i_sb, proc_dentry);
+> -	if (!inode)
+> +	if (IS_ERR_OR_NULL(inode))
+>  		goto out_dput;
+>  
+>   	d_add(dentry, inode);
+> @@ -730,7 +730,7 @@ static int hppfs_fill_super(struct super_block *sb, void *d, int silent)
+>  
+>  	err = -ENOMEM;
+>  	root_inode = get_inode(sb, proc_mnt->mnt_sb->s_root);
+> -	if (!root_inode)
+> +	if (IS_ERR_OR_NULL(root_inode))
+>  		goto out_mntput;
+>  
+>  	sb->s_root = d_alloc_root(root_inode);
 
-	http://marc.info/?t=128530280700001&r=1&w=2
+This fix is rather half-and-half.
 
-So far, Richard Weinberger and I have reproduced the problem.
-Additional tips or fixes are quite welcome.
+If we're going to *assume* that an IS_ERR_OR_NULL return from
+get_inode() means ENOMEM then there was no point in returning an errno
+from get_inode()!  So we can just do this:
 
-Thanks,
-- Chris
+--- a/fs/hppfs/hppfs.c~a
++++ a/fs/hppfs/hppfs.c
+@@ -683,7 +683,7 @@ static struct inode *get_inode(struct su
+ 	struct inode *inode = new_inode(sb);
+ 
+ 	if (!inode)
+-		return ERR_PTR(-ENOMEM);
++		return NULL;
+ 
+ 	if (S_ISDIR(dentry->d_inode->i_mode)) {
+ 		inode->i_op = &hppfs_dir_iops;
+_
 
 
-------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+If, however, we want to be able to return other error codes from
+get_inode() (which is generally a good idea) then we should change the
+callers of get_inode() to use PTR_ERR() and to propagate the error code
+upwards.
 
