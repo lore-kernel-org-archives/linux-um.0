@@ -1,76 +1,65 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 1/1] uml: fix compile warning
-Date: Tue, 14 Sep 2010 23:27:46 +0200
-Message-Id: <1284499666-17568-1-git-send-email-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: jdike@addtoit.com, akpm@linux-foundation.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, dhowells@redhat.com, Richard Weinberger <richard@nod.at>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <bharrosh@panasas.com>) id 1OujB2-0006PR-KJ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Sep 2010 09:48:48 +0000
+Received: from daytona.panasas.com ([67.152.220.89]
+	helo=daytona.int.panasas.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OujB1-0001Od-OH for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Sep 2010 09:48:48 +0000
+Message-ID: <4C8CA1F2.1060802@panasas.com>
+Date: Sun, 12 Sep 2010 11:48:34 +0200
+From: Boaz Harrosh <bharrosh@panasas.com>
+MIME-Version: 1.0
+References: <4C7C2DE4.3090203@iki.fi> <4C7E3715.2060803@panasas.com>
+	<4C8C8291.2040303@iki.fi>
+In-Reply-To: <4C8C8291.2040303@iki.fi>
+Subject: Re: [uml-devel] UML development, anyone?
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Sakari Ailus <sakari.ailus@iki.fi>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This fixes:
-incompatible pointer type:  => 89
-       arch/um/kernel/exec.c: warning: passing argument 2 of 'execve1' from
-incompatible pointer type:  => 69, 85
-       arch/um/kernel/exec.c: warning: passing argument 3 of 'execve1' from
-incompatible pointer type:  => 69, 85
+On 09/12/2010 09:34 AM, Sakari Ailus wrote:
+>> - Please send a detailed bug report about that data corruption so someone
+>>    can reproduce it. I'm not sure what block device you are using but it has
+>>    a bug. If you have a good version 2.6.27 and a bad version 2.6.28. It should
+>>    be easy to "git bisect" to the exact patch that broke the system, and should
+>>    be easy to fix. (Tell me if you need help, it's easy really)
+> 
+> I did write about this back then but it seems no-one else had the same 
+> problem. It's one thing to find it and the other to fix it. My wild 
+> guess is that it's not a change to that actual driver that broke it.
+> 
 
-which was introduced by d7627467b7a8dd6944885290a03a07ceb28c10eb
-(Make do_execve() take a const filename pointer)
+A "git bisect" should be the best way to find what exactly broke it. If it's
+not the driver then fine, that will be found as well.
+Can you reliably reproduce the data corruption? If yes then a git bisect should
+be easy. Please try to see what you can do?
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/kernel/exec.c     |    6 +++---
- arch/um/kernel/internal.h |    2 +-
- arch/um/kernel/syscall.c  |    4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+Thanks
+Boaz
 
-diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
-index cd145ed..49b5e1e 100644
---- a/arch/um/kernel/exec.c
-+++ b/arch/um/kernel/exec.c
-@@ -62,7 +62,7 @@ static long execve1(const char *file,
- 	return error;
- }
- 
--long um_execve(const char *file, char __user *__user *argv, char __user *__user *env)
-+long um_execve(const char *file, const char __user *const __user *argv, const char __user *const __user *env)
- {
- 	long err;
- 
-@@ -72,8 +72,8 @@ long um_execve(const char *file, char __user *__user *argv, char __user *__user
- 	return err;
- }
- 
--long sys_execve(const char __user *file, char __user *__user *argv,
--		char __user *__user *env)
-+long sys_execve(const char __user *file, const char __user *const __user *argv,
-+		const char __user *const __user *env)
- {
- 	long error;
- 	char *filename;
-diff --git a/arch/um/kernel/internal.h b/arch/um/kernel/internal.h
-index 1303a10..5bf97db 100644
---- a/arch/um/kernel/internal.h
-+++ b/arch/um/kernel/internal.h
-@@ -1 +1 @@
--extern long um_execve(const char *file, char __user *__user *argv, char __user *__user *env);
-+extern long um_execve(const char *file, const char __user *const __user *argv, const char __user *const __user *env);
-diff --git a/arch/um/kernel/syscall.c b/arch/um/kernel/syscall.c
-index 5ddb246..f958cb8 100644
---- a/arch/um/kernel/syscall.c
-+++ b/arch/um/kernel/syscall.c
-@@ -60,8 +60,8 @@ int kernel_execve(const char *filename,
- 
- 	fs = get_fs();
- 	set_fs(KERNEL_DS);
--	ret = um_execve(filename, (char __user *__user *)argv,
--			(char __user *__user *) envp);
-+	ret = um_execve(filename, (const char __user *const __user *)argv,
-+			(const char __user *const __user *) envp);
- 	set_fs(fs);
- 
- 	return ret;
--- 
-1.6.6.1
+------------------------------------------------------------------------------
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing
+http://p.sf.net/sfu/novell-sfdev2dev
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
