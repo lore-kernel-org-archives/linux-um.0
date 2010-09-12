@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <bharrosh@panasas.com>) id 1OujB2-0006PR-KJ
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sakari.ailus@iki.fi>) id 1Ouh5P-000323-Tv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2010 09:48:48 +0000
-Received: from daytona.panasas.com ([67.152.220.89]
-	helo=daytona.int.panasas.com)
+	Sun, 12 Sep 2010 07:34:51 +0000
+Received: from smtp-68.nebula.fi ([83.145.220.68])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OujB1-0001Od-OH for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Sep 2010 09:48:48 +0000
-Message-ID: <4C8CA1F2.1060802@panasas.com>
-Date: Sun, 12 Sep 2010 11:48:34 +0200
-From: Boaz Harrosh <bharrosh@panasas.com>
+	id 1Ouh5N-0005Nw-1w for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Sep 2010 07:34:51 +0000
+Message-ID: <4C8C8291.2040303@iki.fi>
+Date: Sun, 12 Sep 2010 10:34:41 +0300
+From: Sakari Ailus <sakari.ailus@iki.fi>
 MIME-Version: 1.0
 References: <4C7C2DE4.3090203@iki.fi> <4C7E3715.2060803@panasas.com>
-	<4C8C8291.2040303@iki.fi>
-In-Reply-To: <4C8C8291.2040303@iki.fi>
+In-Reply-To: <4C7E3715.2060803@panasas.com>
 Subject: Re: [uml-devel] UML development, anyone?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,28 +28,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Sakari Ailus <sakari.ailus@iki.fi>
+To: Boaz Harrosh <bharrosh@panasas.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On 09/12/2010 09:34 AM, Sakari Ailus wrote:
->> - Please send a detailed bug report about that data corruption so someone
->>    can reproduce it. I'm not sure what block device you are using but it has
->>    a bug. If you have a good version 2.6.27 and a bad version 2.6.28. It should
->>    be easy to "git bisect" to the exact patch that broke the system, and should
->>    be easy to fix. (Tell me if you need help, it's easy really)
-> 
-> I did write about this back then but it seems no-one else had the same 
-> problem. It's one thing to find it and the other to fix it. My wild 
-> guess is that it's not a change to that actual driver that broke it.
-> 
+Hi Boaz,
 
-A "git bisect" should be the best way to find what exactly broke it. If it's
-not the driver then fine, that will be found as well.
-Can you reliably reproduce the data corruption? If yes then a git bisect should
-be easy. Please try to see what you can do?
+Boaz Harrosh wrote:
+> On 08/31/2010 01:17 AM, Sakari Ailus wrote:
+>> Hello all,
+>>
+>> I'm a long-time UML user and lately I've become a bit worried on the
+>> state of the UML. This list, as well as the -user one, is very quiet
+>> these days. Is there someone still actively developing the UML? I have
+>> to say I really like it! Running Linux on Linux reliably and
+>> efficiently, just what I need! :-)
+>>
+>> I'm currently running three UML virtual machines on an server using
+>> Athlon XP-M. The host is running 2.6.31 and the guests are 2.6.27.
+>>
+>> I cannot upgrade neither host nor guests due to these problems:
+>>
+>> - SKAS 3 patches available up to 2.6.31 only. Merging this to current
+>> kernel might not be a problem, just some work, but:
+>>
+>> - Severe data corruption on guest on recent guest kernel versions. I'm
+>> using a few hard disk partitions directly for UML guests. Something
+>> after 2.6.27 guest breaks this quite badly. Even for small data sets
+>> like 100 MiB, copying a file to a different location on guest and then
+>> running md5sum on both often produces a different result.
+>>
+>> Do I have any options than to switch to Qemu and suffer the performance
+>> penalty from emulation (kqemu is obsolete, too) or to switch to newer
+>> hardware that supports kvm? Qemu performance is somewhat less than 10 %
+>> of the native (or UML) performance.
+>>
+>> I also found something called lguest but haven't given it a try yet.
+>> Looks the most interesting but that doesn't seem to have much list
+>> activity either. So it works perfectly for almost everyone or has few
+>> users... ;)
+>>
+>> How are others coping in the current situation? Or is it just me who has
+>> these troubles...?
+>>
+>
+> I hear you ...
+>
+> I'm using UML for years, as my developing platform for new Kernel code.
+> You can imagine how it shortens the development cycle. For guests I must
+> use the absolute newest Kernel all the time. So ...
+>
+> - Please send a detailed bug report about that data corruption so someone
+>    can reproduce it. I'm not sure what block device you are using but it has
+>    a bug. If you have a good version 2.6.27 and a bad version 2.6.28. It should
+>    be easy to "git bisect" to the exact patch that broke the system, and should
+>    be easy to fix. (Tell me if you need help, it's easy really)
 
-Thanks
-Boaz
+I did write about this back then but it seems no-one else had the same 
+problem. It's one thing to find it and the other to fix it. My wild 
+guess is that it's not a change to that actual driver that broke it.
+
+> - I probably don't have your problem because in my UMLs /home is an NFS
+>    mount to the office /home server. And any other data intensive work
+>    is done over iscsi mounts. Look into iscsi Qemu mangament tools , they
+>    should work well for UML as well. (Note you'll need to kconfig scsi and
+>    iscsi in your guest compile, they are off by default)
+>    (The general rule is any UML specific drivers tend to rot faster then
+>     any generic driver like iscsi or nfs)
+
+Using NFS root would indeed be another option.
+
+> - SKAS 3: haaa SKAS3, that one is abandoned. It will need a maintainer to
+>    get it alive again. How much better is it? do you have some numbers.
+>    (I never used it, the all point was to keep the desktop (host) with a
+>    distro Kernel, nvidia and all that)
+
+SKAS4 was supposed to replace it and I think I even used it for a while 
+but the current SKAS4 patch is even older than SKAS3. SKAS 4, as far as 
+I understand, would be a long-term solution since the /dev/mm approach 
+of SKAS 3 wasn't accepted by Linus.
+
+<URL:http://user-mode-linux.sourceforge.net/old/skas.html>
+
+You do need that to get decent performance with UML and at some point 
+some years ago perhaps, I couldn't get it even working without.
+
+Regards,
+
+-- 
+Sakari Ailus
+sakari.ailus@iki.fi
 
 ------------------------------------------------------------------------------
 Start uncovering the many advantages of virtual appliances
