@@ -1,137 +1,78 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4CA09977.80506@panasas.com>
-Date: Mon, 27 Sep 2010 15:17:43 +0200
-From: Boaz Harrosh <bharrosh@panasas.com>
-MIME-Version: 1.0
-Subject: {painfully BISECTED} Please revert f25c80a4b2:  arch/um/drivers:
- remove duplicate structure field initialization
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>, Julia Lawall <julia@diku.dk>, "David S. Miller" <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Stephen Hemminger <shemminger@vyatta.com>
+Return-Path: <sfr@canb.auug.org.au>
+Date: Wed, 15 Sep 2010 19:37:18 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH 00/18] Make the big kernel lock optional
+Message-Id: <20100915193718.3117b7bb.sfr@canb.auug.org.au>
+In-Reply-To: <1284492909-7147-1-git-send-email-arnd@arndb.de>
+References: <1284492909-7147-1-git-send-email-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Wed__15_Sep_2010_19_37_18_+1000_W4OgHxa=ez9J+hdT"
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, Arjan van de Ven <arjan@linux.intel.com>, Bob Picco <bob.picco@hp.com>, Clemens Ladisch <clemens@ladisch.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@elte.hu>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jaroslav Kysela <perex@perex.cz>, Jeff Dike <jdike@addtoit.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Jesse Barnes <jbarnes@virtuousgeek.org>, Karsten Keil <isdn@linux-pingi.de>, Kyle McMartin <kyle@mcmartin.ca>, Linus Torvalds <torvalds@linux-foundation.org>, Mark Gross <mark.gross@intel.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Matt Turner <mattst88@gmail.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Mikael Starvik <starvik@axis.com>, Paul Mundt <lethal@linux-sh.org>, Richard Henderson <rth@twiddle.net>, Roman Zippel <zippel@linux-m68k.org>, Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-alpha@vger.kernel.org, linux-cris-kernel@axis.com, linux-m68k@vger.kernel.org, linux-media@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pci@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, netdev@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-[bharrosh@fs2 ~/dev/git/pub/scsi-misc] 1115$ git bisect good
-f25c80a4b2bf93c99820f470573626557db35202 is the first bad commit
-commit f25c80a4b2bf93c99820f470573626557db35202
-Author: Julia Lawall <julia@diku.dk>
-Date:   Tue Jul 20 12:25:17 2010 +0000
+--Signature=_Wed__15_Sep_2010_19_37_18_+1000_W4OgHxa=ez9J+hdT
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    arch/um/drivers: remove duplicate structure field initialization
-    
-    There are two initializations of ndo_set_mac_address, one to a local
-    function that is not used otherwise and one to a function that is defined
-    elsewhere.
-    
-    The semantic match that finds this problem is as follows:
-    (http://coccinelle.lip6.fr/)
-    
-    // <smpl>
-    @r@
-    identifier I, s, fld;
-    position p0,p;
-    expression E;
-    @@
-    
-    struct I s =@p0 { ... .fld@p = E, ...};
-    
-    @s@
-    identifier I, s, r.fld;
-    position r.p0,p;
-    expression E;
-    @@
-    
-    struct I s =@p0 { ... .fld@p = E, ...};
-    
-    @script:python@
-    p0 << r.p0;
-    fld << r.fld;
-    ps << s.p;
-    pr << r.p;
-    @@
-    
-    if int(ps[0].line)<int(pr[0].line) or int(ps[0].column)<int(pr[0].column):
-      cocci.print_main(fld,p0)
-    // </smpl>
-    
-    akpm:
-    
-    - Use the standard eth_mac_addr() in uml_net_set_mac()
-    
-    - Remove unneeded and racy local set_ether_mac()
-    
-    - Remove duplicated (and incorrect)
-      uml_netdev_ops.ndo_set_mac_address initializer.
-    
-    Fixes 8bb95b39a16ed55226810596f92216c53329d2fe ("uml: convert network
-    device to netdevice ops").
-    
-    [akpm@linux-foundation.org: rework as above]
-    Signed-off-by: Julia Lawall <julia@diku.dk>
-    Cc: Stephen Hemminger <shemminger@vyatta.com>
-    Cc: "David S. Miller" <davem@davemloft.net>
-    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
+On Tue, 14 Sep 2010 21:34:51 +0200 Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> Stephen, please add
+> git+ssh://master.kernel.org/pub/scm/linux/kernel/git/arnd/bkl.git config
 
-:040000 040000 b3ff18738a5de659b97ff6ad7ba3c23eb2736263 241657298557b14317378fbb08ad664cf6f59ad3 M      arch
+Added from today.
 
-When this patch is applied my UML's networking works less then 50% of the times.
-Then 30% of the times I see ethX where  1 < X < enf. Only 20% of boots will come up
-with the regular eth0.
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgment of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
 
-At 50% of the times when the nic fails to show up I get:
-* Bringing up interface eth0:  RTNETLINK answers: Cannot assign requested address
-  Failed to bring up eth0.
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+	Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
 
-When I get the funny ethX I get:
-* Bringing up interface eth0:  Device eth0 does not seem to be present,
-  delaying initialization. [FAILED]
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
 
-The patch Reverts cleanly on top of 2.6.36-rc5 and after Revert works perfectly as
-before.
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
 
-If indeed this is a cleanup. It can be included (fixed) again in next Kernel.
-I can try any patches until this is fixed.
+Legal Stuff:
+By participating in linux-next, your subsystem tree contributions are
+public and will be included in the linux-next trees.  You may be sent
+e-mail messages indicating errors or other issues when the
+patches/commits from your subsystem tree are merged and tested in
+linux-next.  These messages may also be cross-posted to the linux-next
+mailing list, the linux-kernel mailing list, etc.  The linux-next tree
+project and IBM (my employer) make no warranties regarding the linux-next
+project, the testing procedures, the results, the e-mails, etc.  If you
+don't agree to these ground rules, let me know and I'll remove your tree
+from participation in linux-next.
 
-<RANT A HEAD CAN BE IGNORED>
+--Signature=_Wed__15_Sep_2010_19_37_18_+1000_W4OgHxa=ez9J+hdT
+Content-Type: application/pgp-signature
 
-It has become extremely hard to bisect a simple problem in latest Kernels!
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-Most mainline merges during a merge window are based on an rc1 of the previous
-Kernel. In the last 5 Kernels there was a 90% chance of a BAD bug in systems
-I use, at rc1. If a bug is found that needs bisecting. The other bugs creep
-up during bisect and mask out the possibility to bisect.
+iQEcBAEBAgAGBQJMkJPOAAoJEDMEi1NhKgbsHl8H+gIjNh21BvYQwVmcAhiVTAfw
+A05Ptgdei0a7COpn+ogKi9Hlt0eM1b31ewZ3pAmqwXiOogNuomSetuZlKWo523vH
+4Ur59ge1eFX4U6dEebVnJXTBOUUZHa6/mdIp684Jc0Oeh4aQzEv4YQYrCeBVZfcW
+Dr969+hoer3dWHJ3X7VELBeKt+y+k4g6YUIYwGTXKn77iV/GG72XdIV5N+AMiiT4
+BZp+1LnGgW/tkBQOujbXbyh9/08fWN3J75blTap0LripOHuo03zhWCWR+EeEiMza
+92dkYYVlSY/gjksREqeBZSrZk4RDM4emcm0FndfC3835suxcoGwZa6EaCqQrnXA=
+=cKMf
+-----END PGP SIGNATURE-----
 
-For instance I found the bug I see was already present in 2.6.36-rc2
-and that a good point was 2.6.35. Bisecting two bad(s) quickly took me
-to some 2.6.35-rc1 Kernel that did not boot at all. So I was clever I
-decided to merge in 2.6.35 at each bisect point. Then reset and continue.
-But for some reason the bisect got mixed up and complained about an impossible
-merge common bases. So out of desperation I did a very very^ stupid thing.
-[]$ git rebase -i v2.6.35 v2.6.36-rc1
-After endless merge conflicts, at about 3700/7100 I realised that I know
-what is the patch that makes my UML refuse to boot. I have actually bisect
-a problem with it's absence 2 Kernels ago. So I was again at my bisecting
-manually cherry-picking the offending patch. Making sure to reset it before
-every git bisect XXX step. But clearly I got lucky.
+--Signature=_Wed__15_Sep_2010_19_37_18_+1000_W4OgHxa=ez9J+hdT--
 
-In short I wish at some 2.6.XX-rc[45] of every Kernel cycle. Maintainers
-would rebase their next's tree of [XX+1] to a some what more stable rc.
-Sure re-run all the tests. They still have time for the new tree in next
-to be tested and verified before the next merge window.
-(Hell one of my bisect points took me as back as 2.6.34)
-
-Please remind me why maintainers should not rebase their trees once
-committed, to the point that they don't rebase even for buggy patches
-that are already in next, and apply fix patches, all within the same
-merge window. The same is also done with merge conflicts with the
-rc-cycle of their own code, instead of rebasing.
-
-So in short this is a call for, possibly, cleaner History in main Kernel.
-Please remind me why re-writing history is a bad thing.
-
-</RANT A HEAD CAN BE IGNORED>
-
-Thanks
-Boaz
