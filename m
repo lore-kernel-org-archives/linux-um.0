@@ -1,35 +1,107 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <p.giarrusso@gmail.com>) id 1OyXlj-00062J-3v
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Sep 2010 22:26:27 +0000
+Received: from mail-qy0-f182.google.com ([209.85.216.182])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1OyXlg-0004GE-QO for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 22 Sep 2010 22:26:27 +0000
+Received: by qyk4 with SMTP id 4so1512366qyk.13
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 22 Sep 2010 15:26:19 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 28 Sep 2010 18:16:19 +0200
-Message-ID: <AANLkTi=PTp7YW_eYxtF-H2QSxgei3whWH59wU0C9oCkz@mail.gmail.com>
-Subject: [REGRESSION] um: ubd: block layer issue (Was: ext3 filesystem
- corruption in user mode linux)
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Sender: linux-kernel-owner@vger.kernel.org
-To: tj@kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, axboe@kernel.dk, jdike@addtoit.com, Geert.Uytterhoeven@sonycom.com, grant.likely@secretlab.ca, adrian@mcmen.demon.co.uk, mike.miller@hp.com, Chris Frey <cdfrey@foursquare.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+From: Paolo Giarrusso <blaisorblade@yahoo.it>
+Date: Thu, 23 Sep 2010 00:25:59 +0200
+Message-ID: <AANLkTim9K-2JZf_CyDZRgdLRw7c7oODzQqb2svpSwv3L@mail.gmail.com>
+Subject: [uml-devel] UML patch submission (was: Re: UML)
+Reply-To: p.giarrusso@gmail.com
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Michael Richardson <mcr@sandelman.ca>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hi Tejun!
+SGkgTWljaGFlbCwKSSdtIENDJ2luZyB1bWwtZGV2ZWwgYXMgdGhlIGRpc2N1c3Npb24gaXMgdmVy
+eSByZWxldmFudCBhbmQgY291bGQgYmUKaW50ZXJlc3RpbmcgZm9yIGV2ZXJ5Ym9keS4KCk9uIFdl
+ZCwgU2VwIDIyLCAyMDEwIGF0IDIzOjEzLCBNaWNoYWVsIFJpY2hhcmRzb24gPG1jckBzYW5kZWxt
+YW4uY2E+IHdyb3RlOgoKPj4+Pj4+ICJQYW9sbyIgPT0gUGFvbG8gR2lhcnJ1c3NvIDxibGFpc29y
+YmxhZGVAeWFob28uaXQ+IHdyaXRlczoKPiBBbnkgaWRlYSB3aGVyZSB0byBzZW5kIHBhdGNoZXMv
+Z2l0LXRyZWUgcHVsbCByZXF1ZXN0cy4KPiAyLjYuMzEgc3RpbGwgd29ya3MsIDIuNi4zNSBjb3Jl
+IGR1bXBzLgo+IEkgaGF2ZW4ndCBiaXNlY3RlZCB5ZXQuIMKgSSB3YXMgd3JpdGluZyBHUkUtb3Zl
+ci1JUHY2IGNvZGUuCgpJJ3ZlIHNlZW4gc3R1ZmYgb24gdGhlIFVNTCBNTHMsIGJ1dCBJIGJlbGll
+dmUgeW91IHNob3VsZCBzZW5kIG1heWJlCnRoZW0gZGlyZWN0bHkgdXBzdHJlYW0uIFdoaWNoIG1l
+YW5zICJzZW5kIHBhdGNoZXMgdG8gQW5kcmV3Ck1vcnRvbi9MS01MIGluIG1haWwgZm9ybWF0IChB
+bmRyZXcgZG9lc24ndCB1c2UgR2l0KSIuIE15IGJlbGllZiBpcwp0aGF0IG9ubHkgc3Vic3lzdGVt
+IG1haW50YWluZXJzIGNhbiBzZW5kIHB1bGwgcmVxdWVzdHMsIGJlY2F1c2UKbWFpbnRhaW5lcnMg
+YXJlIG1vcmUgInRydXN0ZWQiIC0gd2UgbmV2ZXIgdXNlZCB0aGF0LCBhbHdheXMgc2VuZAplbWFp
+bHMgdXBzdHJlYW0uCkkgcmVjb21tZW5kIHNlbmRpbmcgdG8gQW5kcmV3IE1vcnRvbiBiZWNhdXNl
+IGhlIHVzZWQgbm90IHRvIHNpbGVudGx5CmRyb3AgcGF0Y2hlcywgZXZlbiBiZWNhdXNlIGhlIGNh
+biBtZXJnZSB0aGVtIGludG8gLW1tIGV2ZW4gaWYgdGhleSBhcmUKbm90IHJlYWR5IGZvciBpbmNs
+dXNpb24uIFdoaWNoIGhlbHBzIGFueXdheSBldmVuIGlmIHlvdXIgcGF0Y2ggaXMKcmVhZHkgLSB0
+aGF0J3MgbXkgcGVyc29uYWwgZXhwZXJpZW5jZSAodGhhdCdzIHdoeSBJIGdvdCBVTUwgdXBkYXRl
+cwptZXJnZWQgaW4gMi42LjksIHdoaWxlIHNlbmRpbmcgdG8gTGludXMgaGFkIHN0b3BwZWQgd29y
+a2luZyBmb3IgdXMpCmFuZCBpdCBkb2VzIG5vdCBzZWVtcyB0aGF0IHRoaW5ncyBjaGFuZ2VkLgoK
+QmV5b25kIHRoYXQsIERvY3VtZW50YXRpb24vU3VibWl0dGluZ1BhdGNoZXMgc3RpbGwgYXBwbGll
+cy4gV2hpY2gKbWVhbnMgdGhhdCB5b3UgaGF2ZSB0byBDQyBKZWZmIERpa2UsIHNpbmNlIGhlJ3Mg
+c3RpbGwgbGlzdGVkIGluCk1BSU5UQUlORVJTLiBFdmVuIGlmIGhlIGRvZXNuJ3QgYW5zd2VyLCBp
+dCdzIGltcG9ydGFudCBmb3IgQW5kcmV3Ck1vcnRvbjogeW91IGFyZSBnaXZpbmcgSmVmZiB0aGUg
+b3Bwb3J0dW5pdHkgdG8gc2F5ICJObyIgaWYgaGUgdGhpbmtzCnlvdSByZWFsbHkgbWFkZSBzb21l
+IG1pc3Rha2UuCgo+IE5vIG90aGVyIFZNIHN5c3RlbSBpcyBhcyBsaWdodCB3ZWlnaHQsIGFuZCBz
+dXBwb3J0cyBob3N0ZnMtc3R5bGUgdXNhZ2UuCj4gKHllYWgsIHlvdSBjYW4gdXNlIE5GUywgYnV0
+IHRoYXQgc3Vja3MgaWYgeW91IGFyZSBkb2luZyB3b3JrCj4gdGlua2VyaW5nLi4uKQoKUGxlYXNl
+IHNoYXJlIHRoZXNlIHRob3VnaHRzIHVwc3RyZWFtLCBldmVuIG9uIExLTUwgLSBzb21lYm9keSBt
+aWdodAphY3R1YWxseSByZWFsaXplIHRoYXQgdGhlc2UgcHJvcGVydGllcyBhcmUgaW50ZXJlc3Rp
+bmcgdG8gdXNlcnMsCnJlYWxpemUgdGhlcmUgaXMgYSAibWFya2V0IiwgYW5kIGZpbGwgdGhlIG5l
+ZWQuIE1pa2xvcyBTcmV6ZWRpIGFuZApBbnRvbiBBbHRhcGFybWFrb3YsIHdvcmtpbmcgb24gRlVT
+RSBhbmQgTlRGUywga2VwdCB1c2luZyBVTUwgZm9yIGEKbG9uZyB0aW1lIC0gdGhhdCBoYXMgdG8g
+bWVhbiBzb21ldGhpbmcsIHJpZ2h0PwoKS1ZNIHNlZW1zIHRvIHRhcmdldCBwcm9jZXNzLXN0eWxl
+IHVzYWdlICh3aGlsZSByZWx5aW5nIG9uIEhXCmV4dGVuc2lvbnMsIE9LKSwgYW5kIGF0IGxlYXN0
+IFZpcnR1YWxCb3gsIFZNV2FyZSBhbmQgc28gb24gcHJvdmlkZXMKc29tZSAic2hhcmVkIGZvbGRl
+cnMiIGZhY2lsaXR5LCB3aGljaCBzZWVtcyBob3N0ZnMtbGlrZS4KCkl0IHdvdWxkIF9tYXliZV8g
+bWFrZSBzZW5zZSB0byByZXdyaXRlIHNvbWUgIlNLQVMwLWxpa2UiIG9wZXJhdGlvbgptb2RlIGZv
+ciBLVk0sIHNpbmNlIHRoZXkgaGF2ZSB0aGUgbW9zdCBzaW1pbGFyIHBoaWxvc29waHksIGJ1dCB3
+aXRoIGEKY29kZWJhc2UgZ2VuZXJhbGx5IGluIGJldHRlciBzaGFwZSwgYW5kIEkgYmVsaWV2ZSB0
+aGV5IGhhdmUgbGVzcwpkcml2ZXIgY29kZSB0byBtYWludGFpbiwgc2luY2UgdGhleSByZXVzZSBw
+aWVjZXMgb2YgUUVNVS4KCkFuZCByZXdyaXRpbmcgVU1MIGZyb20gdGhlIGdyb3VuZCB1cCAobm8g
+b2ZmZW5zZSBpbnRlbmRlZCkgY291bGQKYW55d2F5IG1ha2Ugc2Vuc2UsIHRvIHJlZXZhbHVhdGUg
+c29tZSBkZXNpZ24gZGVjaXNpb25zLgotIE9uIHRoZSBvbmUgaGFuZCwgbm93YWRheXMgSSB0aGlu
+ayB0aGF0IHlvdSBjYW4ndCBzcGVlZCB1cCBzb21ldGhpbmcKYXMgbXVjaCBhcyBuZWVkZWQgYW5k
+IGtlZXAgaXQgc3RhYmxlOyB5b3UgYmV0dGVyIHN0YXJ0IGZyb20gdGhlIGNvcmUKKG1vc3QgY29t
+bW9uIG9wZXJhdGlvbnMpLCBvcHRpbWl6ZSBpdCBkb3duIHRvIHRoZSBsYXN0IGJpdCwgYW5kIHRo
+ZW4KYWRkIHRoZSByZXN0IG9uIHRvcC4KSSB3cm90ZSB0aGUgY29yZSBvZiBhIHNtYWxsIFB5dGhv
+biBpbnRlcnByZXRlciB0aGlzIHdheSBmb3IgYSBzdHVkZW50CnByb2plY3QsIGFuZCB0aGUgcmVz
+dWx0cyBhcmUgYmV5b25kIGV4cGVjdGF0aW9uLgotIE9uIHRoZSBvdGhlciBoYW5kLCBoYXZpbmcg
+YXMgZmV3IFVNTCBkcml2ZXJzIGFzIHBvc3NpYmxlIGlzIGFsc28gYQp2ZXJ5IGdvb2QgaWRlYSAt
+IHNpbXBseSBmaXhpbmcgdGhlIGxvY2tpbmcgb2YgdGhvc2UgZHJpdmVycyB3YXMKY29tcGxpY2F0
+ZWQsIEkgY291bGRuJ3QgZmluaXNoIGl0IChidXQgcmV3cml0aW5nIHRoZW0gdXNpbmcgTGludXgK
+RGV2aWNlIERyaXZlcnMgY291bGQgaGF2ZSBiZWVuIGZhc3RlcikuCgpUbyBldmVudHVhbGx5IHNw
+ZWVkIHVwIFNLQVMwLCBfYWZ0ZXJfIHRoZXJlIGlzIGFueSAiU0tBUzAiIGNvZGUgYXQgYWxsCmlu
+IEtWTSwgd2UgaGFkIHNvbWUgaWRlYXMsIHZlcnkgbGl0dGxlIG1hbnBvd2VyIHRvIGltcGxlbWVu
+dCB0aGVtLCBhbmQKc29tZSBvbGQgcHJvb2Ytb2YtY29uY2VwdCBieSBJbmdvIE1vbG5hci4gSSds
+bCAoc2xvd2x5KSBlbGFib3JhdGUgb24KdGhlbSBpbiBkZXRhaWwgaWYgeW91IGdldCB0aGUgaW50
+ZXJlc3Qgb2YgS1ZNIGRldmVsb3BlcnMgYW5kIF90aGVuXyBDQwptZSwgYnV0IEkgd29uJ3QgbWFr
+ZSB0aGUgZWZmb3J0IHRvIGNvbnRhY3QgdGhlbSBmaXJzdCBhcyBteSBsYWNrIG9mCnRpbWUgaXMg
+dG9vIGh1Z2UuCgpCZXN0IHJlZ2FyZHMKLS0gClBhb2xvIEdpYXJydXNzbyAtIFBoLkQuIFN0dWRl
+bnQKaHR0cDovL3d3dy5pbmZvcm1hdGlrLnVuaS1tYXJidXJnLmRlL35wZ2lhcnJ1c3NvLwoKLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tClN0YXJ0IHVuY292ZXJpbmcgdGhlIG1hbnkgYWR2YW50YWdlcyBv
+ZiB2aXJ0dWFsIGFwcGxpYW5jZXMKYW5kIHN0YXJ0IHVzaW5nIHRoZW0gdG8gc2ltcGxpZnkgYXBw
+bGljYXRpb24gZGVwbG95bWVudCBhbmQKYWNjZWxlcmF0ZSB5b3VyIHNoaWZ0IHRvIGNsb3VkIGNv
+bXB1dGluZy4KaHR0cDovL3Auc2YubmV0L3NmdS9ub3ZlbGwtc2ZkZXYyZGV2Cl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZl
+bCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUt
+bGludXgtZGV2ZWwK
 
-Chris Frey ran into some problems with ext3 on UML.
-See: http://marc.info/?i=20100924041410.GA18040%20()%20foursquare%20!%20net
-
-I can reproduce this issue with any file system on Linux >= 2.6.31.
-There seems to be a serious problem with the block layer on UML.
-Under high load any file system gets corrupted.
-
-The regression was most likely introduced with this three changes:
-83096ebf1263b2c1ee5e653ba37d993d02e3eb7b (block: convert to pos and
-nr_sectors accessors)
-f81f2f7c9fee307e371f37424577d46f9eaf8692 (ubd: drop unnecessary
-rq->sector manipulation)
-4d6c84d91d1a539ebc47d1a36a35e9390ba11fdc (ubd: cleanup completion path)
-
-Maybe only f81f2f7 is the bad one. They depend on each and I don't
-know all the internals...
-
--- 
-Cheers,
-//richard
