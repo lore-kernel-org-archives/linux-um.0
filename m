@@ -1,203 +1,62 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <arnd@arndb.de>) id 1OvbIX-0006de-9H
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Sep 2010 19:36:09 +0000
-Received: from moutng.kundenserver.de ([212.227.17.9])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OvbIT-0005vv-A6 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Sep 2010 19:36:09 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 14 Sep 2010 21:35:01 +0200
-Message-Id: <1284492909-7147-11-git-send-email-arnd@arndb.de>
-In-Reply-To: <1284492909-7147-1-git-send-email-arnd@arndb.de>
-References: <1284492909-7147-1-git-send-email-arnd@arndb.de>
-Subject: [uml-devel] [PATCH 10/18] uml: kill big kernel lock
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: arnd@arndb.de
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: matt mooney <mfm@muteddisk.com>
+Subject: [PATCH 16/20] um: change to new flag variables
+Date: Wed, 22 Sep 2010 23:51:31 -0700
+Message-Id: <1285224691-30001-1-git-send-email-mfm@muteddisk.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, Jiri Kosina <jkosina@suse.cz>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Three uml device drivers still use the big kernel lock,
-but all of them can be safely converted to using
-a per-driver mutex instead. Most likely this is not
-even necessary, so after further review these can
-and should be removed as well.
+Replace EXTRA_CFLAGS with ccflags-y and EXTRA_AFLAGS with asflags-y.
 
-The exec system call no longer requires the BKL either,
-so remove it from there, too.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Signed-off-by: matt mooney <mfm@muteddisk.com>
 ---
- arch/um/drivers/harddog_kern.c   |   13 +++++++------
- arch/um/drivers/hostaudio_kern.c |    8 ++++----
- arch/um/drivers/ubd_kern.c       |    8 ++++----
- arch/um/kernel/exec.c            |    2 --
- 4 files changed, 15 insertions(+), 16 deletions(-)
+ arch/um/sys-ppc/Makefile |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/harddog_kern.c b/arch/um/drivers/harddog_kern.c
-index cfcac1f..8603627 100644
---- a/arch/um/drivers/harddog_kern.c
-+++ b/arch/um/drivers/harddog_kern.c
-@@ -42,7 +42,7 @@
- #include <linux/miscdevice.h>
- #include <linux/watchdog.h>
- #include <linux/reboot.h>
--#include <linux/smp_lock.h>
-+#include <linux/mutex.h>
- #include <linux/init.h>
- #include <linux/spinlock.h>
- #include <asm/uaccess.h>
-@@ -50,6 +50,7 @@
+diff --git a/arch/um/sys-ppc/Makefile b/arch/um/sys-ppc/Makefile
+index b8bc844..20d363b 100644
+--- a/arch/um/sys-ppc/Makefile
++++ b/arch/um/sys-ppc/Makefile
+@@ -6,7 +6,7 @@ OBJ = built-in.o
+ OBJS = ptrace.o sigcontext.o checksum.o miscthings.o misc.o \
+ 	ptrace_user.o sysrq.o
  
- MODULE_LICENSE("GPL");
+-EXTRA_AFLAGS := -DCONFIG_PPC32 -I. -I$(srctree)/arch/ppc/kernel
++asflags-y := -DCONFIG_PPC32 -I. -I$(srctree)/arch/ppc/kernel
  
-+static DEFINE_MUTEX(harddog_mutex);
- static DEFINE_SPINLOCK(lock);
- static int timer_alive;
- static int harddog_in_fd = -1;
-@@ -66,7 +67,7 @@ static int harddog_open(struct inode *inode, struct file *file)
- 	int err = -EBUSY;
- 	char *sock = NULL;
+ all: $(OBJ)
  
--	lock_kernel();
-+	mutex_lock(&harddog_mutex);
- 	spin_lock(&lock);
- 	if(timer_alive)
- 		goto err;
-@@ -83,11 +84,11 @@ static int harddog_open(struct inode *inode, struct file *file)
+@@ -15,10 +15,10 @@ $(OBJ): $(OBJS)
+ 	$(LD) $(LINKFLAGS) --start-group $^ --end-group -o $@
  
- 	timer_alive = 1;
- 	spin_unlock(&lock);
--	unlock_kernel();
-+	mutex_unlock(&harddog_mutex);
- 	return nonseekable_open(inode, file);
- err:
- 	spin_unlock(&lock);
--	unlock_kernel();
-+	mutex_unlock(&harddog_mutex);
- 	return err;
- }
+ ptrace_user.o: ptrace_user.c
+-	$(CC) -D__KERNEL__ $(USER_CFLAGS) $(EXTRA_CFLAGS) -c -o $@ $<
++	$(CC) -D__KERNEL__ $(USER_CFLAGS) $(ccflags-y) -c -o $@ $<
  
-@@ -153,9 +154,9 @@ static long harddog_ioctl(struct file *file,
- {
- 	long ret;
+ sigcontext.o: sigcontext.c
+-	$(CC) $(USER_CFLAGS) $(EXTRA_CFLAGS) -c -o $@ $<
++	$(CC) $(USER_CFLAGS) $(ccflags-y) -c -o $@ $<
  
--	lock_kernel();
-+	mutex_lock(&harddog_mutex);
- 	ret = harddog_ioctl_unlocked(file, cmd, arg);
--	unlock_kernel();
-+	mutex_unlock(&harddog_mutex);
+ checksum.S:
+ 	rm -f $@
+@@ -53,13 +53,13 @@ ppc_defs.h: mk_defs.c ppc_defs.head \
+ checksum.o: checksum.S
+ 	rm -f asm
+ 	ln -s $(srctree)/include/asm-ppc asm
+-	$(CC) $(EXTRA_AFLAGS) $(KBUILD_AFLAGS) -D__ASSEMBLY__ -D__UM_PPC__ -c $< -o $*.o
++	$(CC) $(asflags-y) $(KBUILD_AFLAGS) -D__ASSEMBLY__ -D__UM_PPC__ -c $< -o $*.o
+ 	rm -f asm
  
- 	return ret;
- }
-diff --git a/arch/um/drivers/hostaudio_kern.c b/arch/um/drivers/hostaudio_kern.c
-index 0c46e39..fde18dc 100644
---- a/arch/um/drivers/hostaudio_kern.c
-+++ b/arch/um/drivers/hostaudio_kern.c
-@@ -202,9 +202,9 @@ static int hostaudio_open(struct inode *inode, struct file *file)
- 		w = 1;
+ misc.o: misc.S ppc_defs.h
+ 	rm -f asm
+ 	ln -s $(srctree)/include/asm-ppc asm
+-	$(CC) $(EXTRA_AFLAGS) $(KBUILD_AFLAGS) -D__ASSEMBLY__ -D__UM_PPC__ -c $< -o $*.o
++	$(CC) $(asflags-y) $(KBUILD_AFLAGS) -D__ASSEMBLY__ -D__UM_PPC__ -c $< -o $*.o
+ 	rm -f asm
  
- 	kparam_block_sysfs_write(dsp);
--	lock_kernel();
-+	mutex_lock(&hostaudio_mutex);
- 	ret = os_open_file(dsp, of_set_rw(OPENFLAGS(), r, w), 0);
--	unlock_kernel();
-+	mutex_unlock(&hostaudio_mutex);
- 	kparam_unblock_sysfs_write(dsp);
- 
- 	if (ret < 0) {
-@@ -263,9 +263,9 @@ static int hostmixer_open_mixdev(struct inode *inode, struct file *file)
- 		w = 1;
- 
- 	kparam_block_sysfs_write(mixer);
--	lock_kernel();
-+	mutex_lock(&hostaudio_mutex);
- 	ret = os_open_file(mixer, of_set_rw(OPENFLAGS(), r, w), 0);
--	unlock_kernel();
-+	mutex_unlock(&hostaudio_mutex);
- 	kparam_unblock_sysfs_write(mixer);
- 
- 	if (ret < 0) {
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 1bcd208..dc73bc8 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1099,7 +1099,7 @@ static int ubd_open(struct block_device *bdev, fmode_t mode)
- 	struct ubd *ubd_dev = disk->private_data;
- 	int err = 0;
- 
--	lock_kernel();
-+	mutex_lock(&ubd_mutex);
- 	if(ubd_dev->count == 0){
- 		err = ubd_open_dev(ubd_dev);
- 		if(err){
-@@ -1118,7 +1118,7 @@ static int ubd_open(struct block_device *bdev, fmode_t mode)
- 	        err = -EROFS;
- 	}*/
- out:
--	unlock_kernel();
-+	mutex_unlock(&ubd_mutex);
- 	return err;
- }
- 
-@@ -1126,10 +1126,10 @@ static int ubd_release(struct gendisk *disk, fmode_t mode)
- {
- 	struct ubd *ubd_dev = disk->private_data;
- 
--	lock_kernel();
-+	mutex_lock(&ubd_mutex);
- 	if(--ubd_dev->count == 0)
- 		ubd_close_dev(ubd_dev);
--	unlock_kernel();
-+	mutex_unlock(&ubd_mutex);
- 	return 0;
- }
- 
-diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
-index cd145ed..460ce86 100644
---- a/arch/um/kernel/exec.c
-+++ b/arch/um/kernel/exec.c
-@@ -78,13 +78,11 @@ long sys_execve(const char __user *file, char __user *__user *argv,
- 	long error;
- 	char *filename;
- 
--	lock_kernel();
- 	filename = getname(file);
- 	error = PTR_ERR(filename);
- 	if (IS_ERR(filename)) goto out;
- 	error = execve1(filename, argv, env);
- 	putname(filename);
-  out:
--	unlock_kernel();
- 	return error;
- }
+ clean-files := $(OBJS) ppc_defs.h checksum.S mk_defs.c
 -- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-Start uncovering the many advantages of virtual appliances
-and start using them to simplify application deployment and
-accelerate your shift to cloud computing.
-http://p.sf.net/sfu/novell-sfdev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+1.7.2.1
 
