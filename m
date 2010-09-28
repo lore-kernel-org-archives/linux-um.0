@@ -1,34 +1,26 @@
-Return-Path: <cdfrey@foursquare.net>
-Date: Tue, 28 Sep 2010 18:52:02 -0400
-From: Chris Frey <cdfrey@foursquare.net>
+Return-Path: <richard@nod.at>
+From: Richard Weinberger <richard@nod.at>
 Subject: Re: [PATCH 1/1] um: ubd: Fix data corruption
-Message-ID: <20100928225202.GA30352@foursquare.net>
-References: <1285710456-4435-1-git-send-email-richard@nod.at> <20100928150000.f007f43e.akpm@linux-foundation.org> <201009290013.11332.richard@nod.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201009290013.11332.richard@nod.at>
-To: Richard Weinberger <richard@nod.at>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, janjaap@bos.nl, geert@linux-m68k.org, jaxboe@fusionio.com, martin.petersen@oracle.com, adobriyan@gmail.com, syzop@vulnscan.org
+Date: Wed, 29 Sep 2010 00:13:10 +0200
+References: <1285710456-4435-1-git-send-email-richard@nod.at> <20100928150000.f007f43e.akpm@linux-foundation.org>
+In-Reply-To: <20100928150000.f007f43e.akpm@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201009290013.11332.richard@nod.at>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, janjaap@bos.nl, geert@linux-m68k.org, jaxboe@fusionio.com, martin.petersen@oracle.com, adobriyan@gmail.com, cdfrey@foursquare.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Wed, Sep 29, 2010 at 12:13:10AM +0200, Richard Weinberger wrote:
-> Am Mittwoch 29 September 2010, 00:00:00 schrieb Andrew Morton:
-> > This is a workaround, I think?  Do we know what the actual bug is?
-> > From the comment it appears to be a regression?
-> 
-> Yes, it is a workaround.
-> For more details please have a look at this post:
-> http://lkml.org/lkml/2010/9/28/245
+Am Mittwoch 29 September 2010, 00:00:00 schrieb Andrew Morton:
+> This is a workaround, I think?  Do we know what the actual bug is?
+> From the comment it appears to be a regression?
 
-I'm going to run some tests to see how this works on my end, but in
-reading old threads, I found this response from Bram Matthys
-that casts some doubt on an older version of this patch.
+Yes, it is a workaround.
+For more details please have a look at this post:
+http://lkml.org/lkml/2010/9/28/245
 
-	http://marc.info/?l=user-mode-linux-user&m=126883932731656&w=2
-
-I've added him to the CC.
-
-- Chris
-
+Cheers,
+//richard
 
