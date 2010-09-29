@@ -1,30 +1,71 @@
 Return-Path: <cdfrey@foursquare.net>
-Date: Tue, 28 Sep 2010 23:30:38 -0400
+Date: Tue, 28 Sep 2010 21:29:45 -0400
 From: Chris Frey <cdfrey@foursquare.net>
 Subject: Re: [PATCH 1/1] um: ubd: Fix data corruption
-Message-ID: <20100929033038.GA7668@foursquare.net>
-References: <1285710456-4435-1-git-send-email-richard@nod.at> <20100928150000.f007f43e.akpm@linux-foundation.org> <201009290013.11332.richard@nod.at>
+Message-ID: <20100929012945.GA3324@foursquare.net>
+References: <1285710456-4435-1-git-send-email-richard@nod.at> <20100928150000.f007f43e.akpm@linux-foundation.org> <201009290013.11332.richard@nod.at> <20100928225202.GA30352@foursquare.net> <4CA275CE.6060401@fusionio.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201009290013.11332.richard@nod.at>
-To: Richard Weinberger <richard@nod.at>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, janjaap@bos.nl, geert@linux-m68k.org, jaxboe@fusionio.com, martin.petersen@oracle.com, adobriyan@gmail.com
+In-Reply-To: <4CA275CE.6060401@fusionio.com>
+To: Jens Axboe <jaxboe@fusionio.com>
+Cc: Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "jdike@addtoit.com" <jdike@addtoit.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, "janjaap@bos.nl" <janjaap@bos.nl>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "martin.petersen@oracle.com" <martin.petersen@oracle.com>, "adobriyan@gmail.com" <adobriyan@gmail.com>, "syzop@vulnscan.org" <syzop@vulnscan.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Wed, Sep 29, 2010 at 12:13:10AM +0200, Richard Weinberger wrote:
-> Am Mittwoch 29 September 2010, 00:00:00 schrieb Andrew Morton:
-> > This is a workaround, I think?  Do we know what the actual bug is?
-> > From the comment it appears to be a regression?
+On Wed, Sep 29, 2010 at 08:10:06AM +0900, Jens Axboe wrote:
+> It looks like that if we need to restart the requeue, then
+> we use the initial position and not the current index. Does
+> this help?
 > 
-> Yes, it is a workaround.
-> For more details please have a look at this post:
-> http://lkml.org/lkml/2010/9/28/245
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index 1bcd208..81ee063 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -162,7 +162,7 @@ struct ubd {
+>  	spinlock_t lock;
+>  	struct scatterlist sg[MAX_SG];
+>  	struct request *request;
+> -	int start_sg, end_sg;
+> +	int start_sg, end_sg, rq_off;
+>  };
+>  
+>  #define DEFAULT_COW { \
+> @@ -187,6 +187,7 @@ struct ubd {
+>  	.request =		NULL, \
+>  	.start_sg =		0, \
+>  	.end_sg =		0, \
+> +	.rq_off =		0, \
+>  }
+>  
+>  /* Protected by ubd_lock */
+> @@ -1241,10 +1242,11 @@ static void do_ubd_request(struct request_queue *q)
+>  			dev->request = req;
+>  			dev->start_sg = 0;
+>  			dev->end_sg = blk_rq_map_sg(q, req, dev->sg);
+> +			dev->rq_off = 0;
+>  		}
+>  
+>  		req = dev->request;
+> -		sector = blk_rq_pos(req);
+> +		sector = blk_rq_pos(req) + dev->rq_off;
+>  		while(dev->start_sg < dev->end_sg){
+>  			struct scatterlist *sg = &dev->sg[dev->start_sg];
+>  
+> @@ -1273,6 +1275,7 @@ static void do_ubd_request(struct request_queue *q)
+>  			}
+>  
+>  			dev->start_sg++;
+> +			dev->rq_off += sg->length >> 9;
+>  		}
+>  		dev->end_sg = 0;
+>  		dev->request = NULL;
+> 
+> -- 
 
-I am so far unable to reproduce the corruption with this workaround patch.
-So it looks like we have at least one fix.
-
-Thank you very much to everyone who worked on this.
+This patch does not fix the corruption issue for me.  I applied the patch
+to 2.6.35.5, and reproduced the "deleted inode referenced" errors
+in both a gentoo and ubuntu guest OS.  It does take longer to reproduce
+though, with this patch.
 
 - Chris
 
