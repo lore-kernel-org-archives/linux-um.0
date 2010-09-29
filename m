@@ -1,26 +1,27 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Wed, 29 Sep 2010 19:19:45 +0200
-From: Renzo Davoli <renzo@cs.unibo.it>
-Subject: Re: [uml-devel] {painfully BISECTED} Please revert f25c80a4b2:
-	arch/um/drivers: remove duplicate structure field initialization
-Message-ID: <20100929171944.GA3942@cs.unibo.it>
-References: <AANLkTim85sH_2o=xCiDuoQrHq_7ZL96Y91xQMGxUP5Fy@mail.gmail.com> <20100928211106.GE19804@ZenIV.linux.org.uk> <20100928212417.GF19804@ZenIV.linux.org.uk> <20100928.144215.246551852.davem@davemloft.net> <20100928215108.GH19804@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20100928215108.GH19804@ZenIV.linux.org.uk>
+In-Reply-To: <4CA2FBBB.3040004@panasas.com>
+References: <4CA09977.80506@panasas.com> <AANLkTim85sH_2o=xCiDuoQrHq_7ZL96Y91xQMGxUP5Fy@mail.gmail.com>
+ <20100928134721.f79a5955.akpm@linux-foundation.org> <AANLkTi=E7+CpJZE3XC7O1LvJu6LWfmvSxonskH4CYg25@mail.gmail.com>
+ <4CA2FBBB.3040004@panasas.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 29 Sep 2010 08:01:07 -0700
+Message-ID: <AANLkTi=aqtzLskpTeZkQwEGRg9jb=NJ8UcQG=vkdc20z@mail.gmail.com>
+Subject: Re: {painfully BISECTED} Please revert f25c80a4b2: arch/um/drivers:
+ remove duplicate structure field initialization
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: linux-kernel-owner@vger.kernel.org
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: David Miller <davem@davemloft.net>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, julia@diku.dk, akpm@linux-foundation.org, torvalds@linux-foundation.org, shemminger@vyatta.com, shammash@artha.org
+To: Boaz Harrosh <bharrosh@panasas.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Julia Lawall <julia@diku.dk>, "David S. Miller" <davem@davemloft.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>, Stephen Hemminger <shemminger@vyatta.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-> Oh, joy...  I'm regulary using uml, with some of these drivers used
-> from time to time, but I've no fscking clue on e.g. VDE - even on
-> the "what the hell it is" level ;-/
-VDE is Virtual Distributed Ethernet.
-http://wiki.virtualsquare.org/wiki/index.php/Introduction#Virtual_Square_Networking
+On Wed, Sep 29, 2010 at 1:41 AM, Boaz Harrosh <bharrosh@panasas.com> wrote:
+>
+> With this I'm now back to my usual: boots fine but half of the times
+> not halting. But I think that's a Fedora12 problem with interaction
+> with uml. (Which I do not have time to investigate)
 
-I am the main author of VDE.
-Was it just an example or there is a bug on the VDE support for user-mode Linux?
+So that "half of the time not halting" happened with the revert too?
+If so, we should just do the fix. Thanks for testing.
 
-	renzo
+                                              Linus
