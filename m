@@ -1,18 +1,22 @@
-Return-Path: <cdfrey@foursquare.net>
-Date: Tue, 28 Sep 2010 21:29:45 -0400
-From: Chris Frey <cdfrey@foursquare.net>
+Return-Path: <janjaap@bos.nl>
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: text/plain; CHARSET=US-ASCII
 Subject: Re: [PATCH 1/1] um: ubd: Fix data corruption
-Message-ID: <20100929012945.GA3324@foursquare.net>
-References: <1285710456-4435-1-git-send-email-richard@nod.at> <20100928150000.f007f43e.akpm@linux-foundation.org> <201009290013.11332.richard@nod.at> <20100928225202.GA30352@foursquare.net> <4CA275CE.6060401@fusionio.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4CA275CE.6060401@fusionio.com>
+From: Janjaap Bos <janjaap@bos.nl>
+In-reply-to: <4CA275CE.6060401@fusionio.com>
+References: <1285710456-4435-1-git-send-email-richard@nod.at>
+ <20100928150000.f007f43e.akpm@linux-foundation.org>
+ <201009290013.11332.richard@nod.at> <20100928225202.GA30352@foursquare.net>
+ <4CA275CE.6060401@fusionio.com>
+Date: Wed, 29 Sep 2010 02:48:28 +0200
+Message-id: <1285721308.9775.3.camel@voyager>
 To: Jens Axboe <jaxboe@fusionio.com>
-Cc: Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "jdike@addtoit.com" <jdike@addtoit.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, "janjaap@bos.nl" <janjaap@bos.nl>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "martin.petersen@oracle.com" <martin.petersen@oracle.com>, "adobriyan@gmail.com" <adobriyan@gmail.com>, "syzop@vulnscan.org" <syzop@vulnscan.org>
+Cc: Chris Frey <cdfrey@foursquare.net>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "jdike@addtoit.com" <jdike@addtoit.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "martin.petersen@oracle.com" <martin.petersen@oracle.com>, "adobriyan@gmail.com" <adobriyan@gmail.com>, "syzop@vulnscan.org" <syzop@vulnscan.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Wed, Sep 29, 2010 at 08:10:06AM +0900, Jens Axboe wrote:
+On Wed, 2010-09-29 at 08:10 +0900, Jens Axboe wrote:
+
 > It looks like that if we need to restart the requeue, then
 > we use the initial position and not the current index. Does
 > this help?
@@ -60,13 +64,12 @@ On Wed, Sep 29, 2010 at 08:10:06AM +0900, Jens Axboe wrote:
 >  		dev->end_sg = 0;
 >  		dev->request = NULL;
 > 
-> -- 
 
-This patch does not fix the corruption issue for me.  I applied the patch
-to 2.6.35.5, and reproduced the "deleted inode referenced" errors
-in both a gentoo and ubuntu guest OS.  It does take longer to reproduce
-though, with this patch.
+Yes, this works. I quickly tested it on current git version, and it does
+not require the work-around. So far no corruption seen.
 
-- Chris
+Thanks!
+-Janjaap
+
 
 
