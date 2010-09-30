@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <bharrosh@panasas.com>) id 1OqlZA-0000Jz-Hw
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <davem@davemloft.net>) id 1P18sL-0008AQ-Q8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Sep 2010 11:33:20 +0000
-Received: from daytona.panasas.com ([67.152.220.89]
-	helo=daytona.int.panasas.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OqlZ7-00055e-BV for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Sep 2010 11:33:20 +0000
-Message-ID: <4C7E3715.2060803@panasas.com>
-Date: Wed, 01 Sep 2010 14:20:53 +0300
-From: Boaz Harrosh <bharrosh@panasas.com>
-MIME-Version: 1.0
-References: <4C7C2DE4.3090203@iki.fi>
-In-Reply-To: <4C7C2DE4.3090203@iki.fi>
-Subject: Re: [uml-devel] UML development, anyone?
+	Thu, 30 Sep 2010 02:28:01 +0000
+Received: from 74-93-104-97-washington.hfc.comcastbusiness.net ([74.93.104.97]
+	helo=sunset.davemloft.net)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1P18sK-0001m1-Px for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 30 Sep 2010 02:28:01 +0000
+Date: Wed, 29 Sep 2010 19:28:16 -0700 (PDT)
+Message-Id: <20100929.192816.116374275.davem@davemloft.net>
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <AANLkTikX1xWiZ+XROF=CEvkE+BVpv6vk5vzW2BGt-bxq@mail.gmail.com>
+References: <AANLkTi=E7+CpJZE3XC7O1LvJu6LWfmvSxonskH4CYg25@mail.gmail.com>
+	<4CA2FA13.8050405@panasas.com>
+	<AANLkTikX1xWiZ+XROF=CEvkE+BVpv6vk5vzW2BGt-bxq@mail.gmail.com>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] [PATCH] um: Proper Fix for f25c80a4: remove
+ duplicate structure field initialization
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,83 +32,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: torvalds@linux-foundation.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, julia@diku.dk, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, shemminger@vyatta.com
 
-On 08/31/2010 01:17 AM, Sakari Ailus wrote:
-> Hello all,
-> 
-> I'm a long-time UML user and lately I've become a bit worried on the 
-> state of the UML. This list, as well as the -user one, is very quiet 
-> these days. Is there someone still actively developing the UML? I have 
-> to say I really like it! Running Linux on Linux reliably and 
-> efficiently, just what I need! :-)
-> 
-> I'm currently running three UML virtual machines on an server using 
-> Athlon XP-M. The host is running 2.6.31 and the guests are 2.6.27.
-> 
-> I cannot upgrade neither host nor guests due to these problems:
-> 
-> - SKAS 3 patches available up to 2.6.31 only. Merging this to current 
-> kernel might not be a problem, just some work, but:
-> 
-> - Severe data corruption on guest on recent guest kernel versions. I'm 
-> using a few hard disk partitions directly for UML guests. Something 
-> after 2.6.27 guest breaks this quite badly. Even for small data sets 
-> like 100 MiB, copying a file to a different location on guest and then 
-> running md5sum on both often produces a different result.
-> 
-> Do I have any options than to switch to Qemu and suffer the performance 
-> penalty from emulation (kqemu is obsolete, too) or to switch to newer 
-> hardware that supports kvm? Qemu performance is somewhat less than 10 % 
-> of the native (or UML) performance.
-> 
-> I also found something called lguest but haven't given it a try yet. 
-> Looks the most interesting but that doesn't seem to have much list 
-> activity either. So it works perfectly for almost everyone or has few 
-> users... ;)
-> 
-> How are others coping in the current situation? Or is it just me who has 
-> these troubles...?
-> 
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 29 Sep 2010 08:05:04 -0700
 
-I hear you ...
-
-I'm using UML for years, as my developing platform for new Kernel code.
-You can imagine how it shortens the development cycle. For guests I must
-use the absolute newest Kernel all the time. So ...
-
-- Please send a detailed bug report about that data corruption so someone
-  can reproduce it. I'm not sure what block device you are using but it has
-  a bug. If you have a good version 2.6.27 and a bad version 2.6.28. It should
-  be easy to "git bisect" to the exact patch that broke the system, and should
-  be easy to fix. (Tell me if you need help, it's easy really)
-
-- I probably don't have your problem because in my UMLs /home is an NFS
-  mount to the office /home server. And any other data intensive work
-  is done over iscsi mounts. Look into iscsi Qemu mangament tools , they
-  should work well for UML as well. (Note you'll need to kconfig scsi and
-  iscsi in your guest compile, they are off by default)
-  (The general rule is any UML specific drivers tend to rot faster then
-   any generic driver like iscsi or nfs)
-
-- SKAS 3: haaa SKAS3, that one is abandoned. It will need a maintainer to
-  get it alive again. How much better is it? do you have some numbers.
-  (I never used it, the all point was to keep the desktop (host) with a
-  distro Kernel, nvidia and all that)
-
-> Best regards,
+> On Wed, Sep 29, 2010 at 1:34 AM, Boaz Harrosh <bharrosh@panasas.com> wrote:
+>>
+>> On the other hand patch [f25c80a4] was trying to use eth_mac_addr()
+>> in eth_configure(), *which was the real fallout*. Because of state
+>> checks done inside eth_mac_addr() the address was never set. I have
+>> not reintroduced the memcpy wrapper, but I've put a comment for future
+>> cats.
 > 
+> Ahh. Ok, this looks fine. David, please use this instead of my broken
+> one that didn't do the whole thing.
 
-Cheers
-Boaz
+Oops, I just noticed this, ok will do.
 
 ------------------------------------------------------------------------------
-This SF.net Dev2Dev email is sponsored by:
-
-Show off your parallel programming skills.
-Enter the Intel(R) Threading Challenge 2010.
-http://p.sf.net/sfu/intel-thread-sfd
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
