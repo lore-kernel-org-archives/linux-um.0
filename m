@@ -1,43 +1,31 @@
-Return-Path: <richard@nod.at>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 1/1] um: ubd: Fix data corruption
-Date: Tue, 28 Sep 2010 23:47:36 +0200
-Message-Id: <1285710456-4435-1-git-send-email-richard@nod.at>
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, janjaap@bos.nl, geert@linux-m68k.org, jaxboe@fusionio.com, martin.petersen@oracle.com, adobriyan@gmail.com, cdfrey@foursquare.net, Richard Weinberger <richard@nod.at>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Wed, 29 Sep 2010 19:27:37 -0700 (PDT)
+Message-Id: <20100929.192737.242138187.davem@davemloft.net>
+Subject: Re: {painfully BISECTED} Please revert f25c80a4b2:
+ arch/um/drivers: remove duplicate structure field initialization
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <AANLkTi=aqtzLskpTeZkQwEGRg9jb=NJ8UcQG=vkdc20z@mail.gmail.com>
+References: <AANLkTi=E7+CpJZE3XC7O1LvJu6LWfmvSxonskH4CYg25@mail.gmail.com>
+	<4CA2FBBB.3040004@panasas.com>
+	<AANLkTi=aqtzLskpTeZkQwEGRg9jb=NJ8UcQG=vkdc20z@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: bharrosh@panasas.com, akpm@linux-foundation.org, julia@diku.dk, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, shemminger@vyatta.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Under high load the file system gets corrupted.
-This patch fixes the issue.
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 29 Sep 2010 08:01:07 -0700
 
-Many thanks to Janjaap Bos <janjaap@bos.nl>!
+> On Wed, Sep 29, 2010 at 1:41 AM, Boaz Harrosh <bharrosh@panasas.com> wrote:
+>>
+>> With this I'm now back to my usual: boots fine but half of the times
+>> not halting. But I think that's a Fedora12 problem with interaction
+>> with uml. (Which I do not have time to investigate)
+> 
+> So that "half of the time not halting" happened with the revert too?
+> If so, we should just do the fix. Thanks for testing.
 
-LKML-Reference: <AANLkTi=PTp7YW_eYxtF-H2QSxgei3whWH59wU0C9oCkz () mail ! gmail ! com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/drivers/ubd_kern.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 1bcd208..2874b83 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -748,9 +748,12 @@ static int ubd_open_dev(struct ubd *ubd_dev)
- 	}
- 	ubd_dev->fd = fd;
- 
--	if(ubd_dev->cow.file != NULL){
--		blk_queue_max_hw_sectors(ubd_dev->queue, 8 * sizeof(long));
-+	/* A setting higher than 1 sector currently (>= v2.6.31) generates
-+		data loss, both for raw and cow ubd. */
-+	blk_queue_max_hw_sectors(ubd_dev->queue, 1 * sizeof(long));
-+	blk_queue_max_segments(ubd_dev->queue, 1 * sizeof(long));
- 
-+	if (ubd_dev->cow.file != NULL) {
- 		err = -ENOMEM;
- 		ubd_dev->cow.bitmap = vmalloc(ubd_dev->cow.bitmap_len);
- 		if(ubd_dev->cow.bitmap == NULL){
--- 
-1.6.6.1
-
-
+Linus, I've queued up your fix into my tree.
