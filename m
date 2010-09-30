@@ -1,22 +1,9 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <j.vimal@gmail.com>) id 1OjoV0-0005tl-3A
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Aug 2010 07:16:18 +0000
-Received: from mail-qy0-f182.google.com ([209.85.216.182])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1OjoUz-0001vr-7X for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 13 Aug 2010 07:16:18 +0000
-Received: by mail-qy0-f182.google.com with SMTP id 32so2951511qyk.13
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 13 Aug 2010 00:16:17 -0700 (PDT)
 MIME-Version: 1.0
-From: Vimal <j.vimal@gmail.com>
-Date: Fri, 13 Aug 2010 00:15:55 -0700
-Message-ID: <AANLkTim_1MzoDRGJpV92FRcNx8HcoHzjAqn+fWEX9SAm@mail.gmail.com>
-Subject: [uml-devel] UML time dilation
+Date: Thu, 30 Sep 2010 16:04:05 +0530
+Message-ID: <AANLkTi=pWfESR4au8iFXMJgROVr5z7My5b+9+6=aAfKZ@mail.gmail.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: [uml-devel] nf_nat.h
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,45 +13,36 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Hi,
+When i included nf_nat.h in hook.c file and try to build a kernel
+module ; fol lowing error comes
 
-I wish to make time appear slower to applications running inside UML.
-I came across this post:
-http://www.mail-archive.com/user-mode-linux-user@lists.sourceforge.net/msg03984.html
+   from include/net/netfilter/nf_nat.h:57,
+                 from /home/fox/workspace/hook.c:7:
+include/net/netfilter/nf_conntrack.h:94: error: field =91ct_general=92 has
+incomplete type
+include/net/netfilter/nf_conntrack.h: In function =91nf_ct_get=92:
+include/net/netfilter/nf_conntrack.h:178: error: =91const struct
+sk_buff=92 has no member named =91nfct=92
+include/net/netfilter/nf_conntrack.h: In function =91nf_ct_put=92:
+include/net/netfilter/nf_conntrack.h:185: error: implicit declaration
+of function =91nf_conntrack_put=92
+include/net/netfilter/nf_conntrack.h: In function =91nf_ct_is_untracked=92:
+include/net/netfilter/nf_conntrack.h:288: error: =91const struct
+sk_buff=92 has no member named =91nfct=92
+make[1]: *** [/home/fox/workspace/hook.o] Error 1
+make: *** [_module_/home/fox/workspace] Error 2
 
-But it looks like UML now uses hrtimers (setitimer, getitimer).  I
-have configured a tickless kernel.
-
-I tried dilating the time by library interposition and LD_PRELOADing a
-module that modifies the following system calls:
-
-- getitimer (gets the stored timer, returns T / dilation)
-- setitimer (sets a new timer for T * dilation)
-- nanosleep (sleeps for T * dilation)
-- gtod: gettimeofday (returns T / dilation)
-
-But some applications still have the correct knowledge of time.
-Applications that use gtod still know the "real" time (though I
-modified gtod), though "sleep 1" (which uses nanosleep), sleeps for 2
-seconds.
-
-Am I doing something wrong?
-
-Thanks,
--- 
-Vimal
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by 
-
-Make an app they can't live without
-Enter the BlackBerry Developer Challenge
-http://p.sf.net/sfu/RIM-dev2dev 
+---------------------------------------------------------------------------=
+---
+Start uncovering the many advantages of virtual appliances
+and start using them to simplify application deployment and
+accelerate your shift to cloud computing.
+http://p.sf.net/sfu/novell-sfdev2dev
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
