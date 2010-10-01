@@ -1,67 +1,125 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <cdfrey@foursquare.net>) id 1P2qgK-000448-I1
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Oct 2010 19:26:40 +0000
-Received: from nic.netdirect.ca ([216.16.235.2] helo=rubicon.netdirect.ca)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P2qgJ-0007by-Eq
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Oct 2010 19:26:40 +0000
-Date: Mon, 4 Oct 2010 15:26:31 -0400
-From: Chris Frey <cdfrey@foursquare.net>
-Message-ID: <20101004192631.GA30065@foursquare.net>
-References: <AANLkTimmwViVHMy-7S3N9Ps1Vj_n_TfJLvwzoupsFPnp@mail.gmail.com>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AANLkTimmwViVHMy-7S3N9Ps1Vj_n_TfJLvwzoupsFPnp@mail.gmail.com>
-Subject: Re: [uml-devel] um: rcu_sched_state detected stall on CPU 0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+MIME-Version: 1.0
+Date: Sat, 2 Oct 2010 00:03:04 +0200
+Message-ID: <AANLkTimmwViVHMy-7S3N9Ps1Vj_n_TfJLvwzoupsFPnp@mail.gmail.com>
+Subject: um: rcu_sched_state detected stall on CPU 0
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: multipart/mixed; boundary=00c09f9daf37e7c3380491955b69
+Sender: linux-kernel-owner@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sat, Oct 02, 2010 at 12:03:04AM +0200, richard -rw- weinberger wrote:
-> Hi,
-> 
-> I'm seeing often messages like this one on my UML:
-> ...
-> INFO: rcu_sched_state detected stall on CPU 0 (t=7348 jiffies)
-> ...
-> 
-> The system often seems to be frozen.
-> When I press a button it wakes up immediately and continues to run.
-> 
-> Any ideas?
-> Config is attached.
+--00c09f9daf37e7c3380491955b69
+Content-Type: text/plain; charset=ISO-8859-1
 
-I saw this too, but I thought it was because I was overloading my machine.
-I only seem to see it when the guest is starved for CPU due to IO on the
-host.
+Hi,
 
-- Chris
+I'm seeing often messages like this one on my UML:
+...
+INFO: rcu_sched_state detected stall on CPU 0 (t=7348 jiffies)
+...
 
+The system often seems to be frozen.
+When I press a button it wakes up immediately and continues to run.
 
-------------------------------------------------------------------------------
-Virtualization is moving to the mainstream and overtaking non-virtualized
-environment for deploying applications. Does it make network security 
-easier or more difficult to achieve? Read this whitepaper to separate the 
-two and get a better understanding.
-http://p.sf.net/sfu/hp-phase2-d2d
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Any ideas?
+Config is attached.
 
+-- 
+Cheers,
+//richard
+
+--00c09f9daf37e7c3380491955b69
+Content-Type: application/x-gzip; name="config-2.6.36-rc6-00105-gd7d8ecb.gz"
+Content-Disposition: attachment; 
+	filename="config-2.6.36-rc6-00105-gd7d8ecb.gz"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gerlmdl60
+
+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
+--00c09f9daf37e7c3380491955b69--
