@@ -1,22 +1,10 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <richard@nod.at>) id 1P5Qm9-0005uM-IY
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2010 22:23:21 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P5Qm7-0001OK-Pr
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2010 22:23:21 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Tue, 12 Oct 2010 00:23:10 +0200
+Date: Mon, 11 Oct 2010 15:14:47 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20101011151447.1a022f25.akpm@linux-foundation.org>
+In-Reply-To: <1286832575-21474-1-git-send-email-richard@nod.at>
 References: <1286832575-21474-1-git-send-email-richard@nod.at>
-	<20101011151447.1a022f25.akpm@linux-foundation.org>
-In-Reply-To: <20101011151447.1a022f25.akpm@linux-foundation.org>
-MIME-Version: 1.0
-Message-Id: <201010120023.10861.richard@nod.at>
+Mime-Version: 1.0
 Subject: Re: [uml-devel] [PATCH 1/1] um: Get rid of __do_IRQ()
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,25 +18,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@linux-foundation.org>
+To: Richard Weinberger <richard@nod.at>
 Cc: user-mode-linux-devel@lists.sourceforge.net, peterz@infradead.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, tj@kernel.org, tglx@linutronix.de, mingo@elte.hu
 
-Am Dienstag 12 Oktober 2010, 00:14:47 schrieb Andrew Morton:
-> What's the plan here?  Are all architectures supposed to me migrating
-> away from __do_IRQ() and over to generic_handle_irq(), or what?
+On Mon, 11 Oct 2010 23:29:35 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-Yes.
+> This patch removes __do_IRQ() from user mode linux.
 
-Documentation/feature-removal-schedule.txt:
+I'd never actually noticed CONFIG_GENERIC_HARDIRQS_NO__DO_IRQ.
 
-What: __do_IRQ all in one fits nothing interrupt handler
-When: 2.6.32
-Why:  __do_IRQ was kept for easy migration to the type flow handlers.
-  More than two years of migration time is enough.
-Who:  Thomas Gleixner <tglx@linutronix.de>
+What's the plan here?  Are all architectures supposed to me migrating
+away from __do_IRQ() and over to generic_handle_irq(), or what?
 
-Thanks,
-//richard
 
 ------------------------------------------------------------------------------
 Beautiful is writing same markup. Internet Explorer 9 supports
