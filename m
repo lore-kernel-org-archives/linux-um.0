@@ -1,82 +1,29 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 1/1] hostfs: fix UML crash (remove f_spare from hostfs)
-Date: Tue, 19 Oct 2010 15:48:58 +0200
-Message-Id: <1287496138-16490-1-git-send-email-richard@nod.at>
+Date: Tue, 12 Oct 2010 00:29:27 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/1] um: Get rid of __do_IRQ()
+In-Reply-To: <20101011151447.1a022f25.akpm@linux-foundation.org>
+Message-ID: <alpine.LFD.2.00.1010120028570.2909@localhost6.localdomain6>
+References: <1286832575-21474-1-git-send-email-richard@nod.at> <20101011151447.1a022f25.akpm@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk, toralf.foerster@gmx.de, hch@lst.de, Richard Weinberger <richard@nod.at>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, peterz@infradead.org, tj@kernel.org, mingo@elte.hu
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-365b1818 resized f_spare within struct statfs which
-caused a UML crash.
-There is no need to copy f_spare.
+On Mon, 11 Oct 2010, Andrew Morton wrote:
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Reported-by: Toralf Förster <toralf.foerster@gmx.de>
-Tested-by: Toralf Förster <toralf.foerster@gmx.de>
-LKML-Reference: <20101019011125.GA3905@lst.de>
----
- fs/hostfs/hostfs.h      |    3 +--
- fs/hostfs/hostfs_kern.c |    2 +-
- fs/hostfs/hostfs_user.c |    9 ++-------
- 3 files changed, 4 insertions(+), 10 deletions(-)
+> On Mon, 11 Oct 2010 23:29:35 +0200
+> Richard Weinberger <richard@nod.at> wrote:
+> 
+> > This patch removes __do_IRQ() from user mode linux.
+> 
+> I'd never actually noticed CONFIG_GENERIC_HARDIRQS_NO__DO_IRQ.
+> 
+> What's the plan here?  Are all architectures supposed to me migrating
+> away from __do_IRQ() and over to generic_handle_irq(), or what?
 
-diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
-index 6bbd75c..3ccb4e4 100644
---- a/fs/hostfs/hostfs.h
-+++ b/fs/hostfs/hostfs.h
-@@ -96,7 +96,6 @@ extern int rename_file(char *from, char *to);
- extern int do_statfs(char *root, long *bsize_out, long long *blocks_out,
- 		     long long *bfree_out, long long *bavail_out,
- 		     long long *files_out, long long *ffree_out,
--		     void *fsid_out, int fsid_size, long *namelen_out,
--		     long *spare_out);
-+		     void *fsid_out, int fsid_size, long *namelen_out);
+Yes, that's why __do_IRQ() is deprecated since 3 years.
+
  
- #endif
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index f7dc9b5..cd7c939 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -217,7 +217,7 @@ int hostfs_statfs(struct dentry *dentry, struct kstatfs *sf)
- 	err = do_statfs(dentry->d_sb->s_fs_info,
- 			&sf->f_bsize, &f_blocks, &f_bfree, &f_bavail, &f_files,
- 			&f_ffree, &sf->f_fsid, sizeof(sf->f_fsid),
--			&sf->f_namelen, sf->f_spare);
-+			&sf->f_namelen);
- 	if (err)
- 		return err;
- 	sf->f_blocks = f_blocks;
-diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
-index 6777aa0..8d02683 100644
---- a/fs/hostfs/hostfs_user.c
-+++ b/fs/hostfs/hostfs_user.c
-@@ -364,8 +364,7 @@ int rename_file(char *from, char *to)
- int do_statfs(char *root, long *bsize_out, long long *blocks_out,
- 	      long long *bfree_out, long long *bavail_out,
- 	      long long *files_out, long long *ffree_out,
--	      void *fsid_out, int fsid_size, long *namelen_out,
--	      long *spare_out)
-+	      void *fsid_out, int fsid_size, long *namelen_out)
- {
- 	struct statfs64 buf;
- 	int err;
-@@ -384,10 +383,6 @@ int do_statfs(char *root, long *bsize_out, long long *blocks_out,
- 	       sizeof(buf.f_fsid) > fsid_size ? fsid_size :
- 	       sizeof(buf.f_fsid));
- 	*namelen_out = buf.f_namelen;
--	spare_out[0] = buf.f_spare[0];
--	spare_out[1] = buf.f_spare[1];
--	spare_out[2] = buf.f_spare[2];
--	spare_out[3] = buf.f_spare[3];
--	spare_out[4] = buf.f_spare[4];
-+
- 	return 0;
- }
--- 
-1.6.6.1
-
