@@ -1,45 +1,66 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Mon, 11 Oct 2010 15:14:47 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20101011151447.1a022f25.akpm@linux-foundation.org>
-In-Reply-To: <1286832575-21474-1-git-send-email-richard@nod.at>
-References: <1286832575-21474-1-git-send-email-richard@nod.at>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] [PATCH 1/1] um: Get rid of __do_IRQ()
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, peterz@infradead.org, jdike@addtoit.com, linux-kernel@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, tj@kernel.org, tglx@linutronix.de, mingo@elte.hu
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 1/1] um: Get rid of __do_IRQ()
+Date: Mon, 11 Oct 2010 23:29:35 +0200
+Message-Id: <1286832575-21474-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+To: akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, peterz@infradead.org, tj@kernel.org, tglx@linutronix.de, mingo@elte.hu, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Mon, 11 Oct 2010 23:29:35 +0200
-Richard Weinberger <richard@nod.at> wrote:
+This patch removes __do_IRQ() from user mode linux.
 
-> This patch removes __do_IRQ() from user mode linux.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/Kconfig.um   |    3 +++
+ arch/um/kernel/irq.c |   15 ++++-----------
+ 2 files changed, 7 insertions(+), 11 deletions(-)
 
-I'd never actually noticed CONFIG_GENERIC_HARDIRQS_NO__DO_IRQ.
-
-What's the plan here?  Are all architectures supposed to me migrating
-away from __do_IRQ() and over to generic_handle_irq(), or what?
-
-
-------------------------------------------------------------------------------
-Beautiful is writing same markup. Internet Explorer 9 supports
-standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
-Spend less time writing and  rewriting code and more time creating great
-experiences on the web. Be a part of the beta today.
-http://p.sf.net/sfu/beautyoftheweb
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+diff --git a/arch/um/Kconfig.um b/arch/um/Kconfig.um
+index ec2b8da..7ad0916 100644
+--- a/arch/um/Kconfig.um
++++ b/arch/um/Kconfig.um
+@@ -147,3 +147,6 @@ config KERNEL_STACK_ORDER
+ 	  This option determines the size of UML kernel stacks.  They will
+ 	  be 1 << order pages.  The default is OK unless you're running Valgrind
+ 	  on UML, in which case, set this to 3.
++
++config GENERIC_HARDIRQS_NO__DO_IRQ
++	def_bool y
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index a3f0b04..ea21a87 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -334,7 +334,7 @@ unsigned int do_IRQ(int irq, struct uml_pt_regs *regs)
+ {
+ 	struct pt_regs *old_regs = set_irq_regs((struct pt_regs *)regs);
+ 	irq_enter();
+-	__do_IRQ(irq);
++	generic_handle_irq(irq);
+ 	irq_exit();
+ 	set_irq_regs(old_regs);
+ 	return 1;
+@@ -391,17 +391,10 @@ void __init init_IRQ(void)
+ {
+ 	int i;
+ 
+-	irq_desc[TIMER_IRQ].status = IRQ_DISABLED;
+-	irq_desc[TIMER_IRQ].action = NULL;
+-	irq_desc[TIMER_IRQ].depth = 1;
+-	irq_desc[TIMER_IRQ].chip = &SIGVTALRM_irq_type;
+-	enable_irq(TIMER_IRQ);
++	set_irq_chip_and_handler(TIMER_IRQ, &SIGVTALRM_irq_type, handle_edge_irq);
++
+ 	for (i = 1; i < NR_IRQS; i++) {
+-		irq_desc[i].status = IRQ_DISABLED;
+-		irq_desc[i].action = NULL;
+-		irq_desc[i].depth = 1;
+-		irq_desc[i].chip = &normal_irq_type;
+-		enable_irq(i);
++		set_irq_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
+ 	}
+ }
+ 
+-- 
+1.6.6.1
 
