@@ -3,15 +3,15 @@ MIME-Version: 1.0
 In-Reply-To: <4CB75F05.9070505@linux.intel.com>
 References: <AANLkTinNxzktyttzEjWSUPBiOUwh+4DUL0tmP7p1UiT5@mail.gmail.com>
 	<4CB75F05.9070505@linux.intel.com>
-Date: Fri, 15 Oct 2010 01:44:08 +0200
-Message-ID: <AANLkTik5_TCXeGzTWBZzE8F0Cb2bQq-D228xDXk87rhP@mail.gmail.com>
+Date: Thu, 14 Oct 2010 22:06:39 +0200
+Message-ID: <AANLkTin2xPm2PCy-nd1MYxjy+Dis4T1Zh4Vzy07+k=Yx@mail.gmail.com>
 Subject: Re: [REGRESSION] um: rcu_sched_state detected stall on CPU 0
 From: richard -rw- weinberger <richard.weinberger@gmail.com>
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arjan van de Ven <arjan@linux.intel.com>
-Cc: penberg@cs.helsinki.fi, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Cc: penberg@cs.helsinki.fi, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, cdfrey@foursquare.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 On Thu, Oct 14, 2010 at 9:50 PM, Arjan van de Ven <arjan@linux.intel.com> w=
@@ -32,17 +32,13 @@ rote:
 ..
 > that's very obviously not a problem with this patch.
 > has this been seem anywhere except UML ?
+>
 
-A small update:
-It seems that CONFIG_NO_HZ is broken on UML. :-(
+So far I've seen this problem only on UML.
+Chris saw it too:
+http://marc.info/?l=3Dlinux-kernel&m=3D128622041625323&w=3D2
 
-CONFIG_NO_HZ + CONFIG_SLAB: works
-CONFIG_NO_HZ + CONFIG_SLAB + your patch: broken
-CONFIG_NO_HZ + CONFIG_SLUB: broken
-
-CONFIG_SLAB + your patch: works
-CONFIG_SLAB: works
-CONFIG_SLUB: works
+Maybe your patch triggers a general timer problem within UML?
 
 >> Messages like this appear:
 >> INFO: rcu_sched_state detected stall on CPU 0 (t=3D7348 jiffies)
