@@ -1,82 +1,46 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH] um: Fix IRQ flag handling naming
-Date: Mon, 25 Oct 2010 17:24:33 +0200
-Message-Id: <1288020273-31161-1-git-send-email-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, dhowells@redhat.com, jkosina@suse.cz, jan.kiszka@web.de, xiyou.wangcong@gmail.com, Richard Weinberger <richard@nod.at>
+Return-Path: <axboe@kernel.dk>
+Message-ID: <4CB8336B.9030400@kernel.dk>
+Date: Fri, 15 Oct 2010 12:56:43 +0200
+From: Jens Axboe <axboe@kernel.dk>
+MIME-Version: 1.0
+Subject: Re: [PATCH v2.6.36-rc7] ubd: fix incorrect sector handling during
+ request  restart
+References: <4CB81C91.7070406@kernel.org>
+In-Reply-To: <4CB81C91.7070406@kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+To: Tejun Heo <tj@kernel.org>
+Cc: lkml <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Richard Weinberger <richard@nod.at>, "jdike@addtoit.com" <jdike@addtoit.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, "janjaap@bos.nl" <janjaap@bos.nl>, Geert Uytterhoeven <geert@linux-m68k.org>, "Martin K. Petersen" <martin.petersen@oracle.com>, Alexey Dobriyan <adobriyan@gmail.com>, "syzop@vulnscan.org" <syzop@vulnscan.org>, Chris Frey <cdfrey@foursquare.net>, stable <stable@kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Commit df9ee292 changed the IRQ flag handling naming scheme
-and broke UML.
-This patch brings the new scheme to UML and makes it work again.
+On 2010-10-15 11:19, Tejun Heo wrote:
+> Commit f81f2f7c (ubd: drop unnecessary rq->sector manipulation)
+> dropped request->sector manipulation in preparation for global request
+> handling cleanup; unfortunately, it incorrectly assumed that the
+> updated sector wasn't being used.
+> 
+> ubd tries to issue as many requests as possible to io_thread.  When
+> issuing fails due to memory pressure or other reasons, the device is
+> put on the restart list and issuing stops.  On IO completion, devices
+> on the restart list are scanned and IO issuing is restarted.
+> 
+> ubd issues IOs sg-by-sg and issuing can be stopped in the middle of a
+> request, so each device on the restart queue needs to remember where
+> to restart in its current request.  ubd needs to keep track of the
+> issue position itself because,
+> 
+> * blk_rq_pos(req) is now updated by the block layer to keep track of
+>   _completion_ position.
+> 
+> * Multiple io_req's for the current request may be in flight, so it's
+>   difficult to tell where blk_rq_pos(req) currently is.
+> 
+> Add ubd->rq_pos to keep track of the issue position and use it to
+> correctly restart io_req issue.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/include/asm/system.h |   49 +++++++++++++++++++++++++++--------------
- 1 files changed, 32 insertions(+), 17 deletions(-)
+Thanks Tejun, good to see this one resolved.
 
-diff --git a/arch/um/include/asm/system.h b/arch/um/include/asm/system.h
-index 93af1cf..68a90ec 100644
---- a/arch/um/include/asm/system.h
-+++ b/arch/um/include/asm/system.h
-@@ -8,23 +8,38 @@ extern int set_signals(int enable);
- extern void block_signals(void);
- extern void unblock_signals(void);
- 
--#define local_save_flags(flags) do { typecheck(unsigned long, flags); \
--				     (flags) = get_signals(); } while(0)
--#define local_irq_restore(flags) do { typecheck(unsigned long, flags); \
--				      set_signals(flags); } while(0)
--
--#define local_irq_save(flags) do { local_save_flags(flags); \
--                                   local_irq_disable(); } while(0)
--
--#define local_irq_enable() unblock_signals()
--#define local_irq_disable() block_signals()
--
--#define irqs_disabled()                 \
--({                                      \
--        unsigned long flags;            \
--        local_save_flags(flags);        \
--        (flags == 0);                   \
--})
-+static inline unsigned long arch_local_save_flags(void)
-+{
-+	return get_signals();
-+}
-+
-+static inline void arch_local_irq_restore(unsigned long flags)
-+{
-+	set_signals(flags);
-+}
-+
-+static inline void arch_local_irq_enable(void)
-+{
-+	unblock_signals();
-+}
-+
-+static inline void arch_local_irq_disable(void)
-+{
-+	block_signals();
-+}
-+
-+static inline unsigned long arch_local_irq_save(void)
-+{
-+	unsigned long flags;
-+	flags = arch_local_save_flags();
-+	arch_local_irq_disable();
-+	return flags;
-+}
-+
-+static inline bool arch_irqs_disabled(void)
-+{
-+	return arch_local_save_flags() == 0;
-+}
- 
- extern void *_switch_to(void *prev, void *next, void *last);
- #define switch_to(prev, next, last) prev = _switch_to(prev, next, last)
 -- 
-1.6.6.1
+Jens Axboe
+
 
