@@ -1,57 +1,96 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <richard@nod.at>) id 1P7sit-0003xc-Ru
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2010 16:38:07 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P7sir-00068V-JO
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2010 16:38:07 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 18 Oct 2010 18:36:54 +0200
-Message-Id: <1287419814-20086-1-git-send-email-richard@nod.at>
-MIME-Version: 1.0
-Subject: [uml-devel] [PATCH 1/1] hostfs: fix UML crash
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: akpm@linux-foundation.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, jdike@addtoit.com, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, toralf.foerster@gmx.de
+Return-Path: <cdfrey@foursquare.net>
+Date: Fri, 15 Oct 2010 00:47:56 -0400
+From: Chris Frey <cdfrey@foursquare.net>
+Subject: Re: [PATCH 1/1] um: ubd: Fix data corruption
+Message-ID: <20101015044756.GA16666@foursquare.net>
+References: <20100929012945.GA3324@foursquare.net> <4CA2CCC3.8010307@fusionio.com> <20100929063452.GA13290@foursquare.net> <4CAA02D0.7040901@gmail.com> <20101004195152.GA31583@foursquare.net> <4CAAE077.9010500@gmail.com> <20101005203137.GA594@foursquare.net> <4CAD7D98.7080808@fusionio.com> <20101007202339.GA8338@foursquare.net> <4CB70234.3030308@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4CB70234.3030308@gmail.com>
+To: Tejun Heo <htejun@gmail.com>
+Cc: Jens Axboe <jaxboe@fusionio.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "jdike@addtoit.com" <jdike@addtoit.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, "janjaap@bos.nl" <janjaap@bos.nl>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "martin.petersen@oracle.com" <martin.petersen@oracle.com>, "adobriyan@gmail.com" <adobriyan@gmail.com>, "syzop@vulnscan.org" <syzop@vulnscan.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-MzY1YjE4MTggcmVzaXplZCBmX3NwYXJlIHdpdGhpbiBzdHJ1Y3Qgc3RhdGZzLgpob3N0ZnMgYWNj
-ZXNzZXMgZl9zcGFyZSBkaXJlY3RseSBhbmQgbmVlZHMgYW4gdXBkYXRlLgoKU2lnbmVkLW9mZi1i
-eTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KUmVwb3J0ZWQtYnk6IFRvcmFs
-ZiBGw7Zyc3RlciA8dG9yYWxmLmZvZXJzdGVyQGdteC5kZT4KVGVzdGVkLWJ5OiBUb3JhbGYgRsO2
-cnN0ZXIgPHRvcmFsZi5mb2Vyc3RlckBnbXguZGU+Ci0tLQogZnMvaG9zdGZzL2hvc3Rmc191c2Vy
-LmMgfCAgICAyICstCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlv
-bnMoLSkKCmRpZmYgLS1naXQgYS9mcy9ob3N0ZnMvaG9zdGZzX3VzZXIuYyBiL2ZzL2hvc3Rmcy9o
-b3N0ZnNfdXNlci5jCmluZGV4IDY3NzdhYTAuLmNlMmYxNjggMTAwNjQ0Ci0tLSBhL2ZzL2hvc3Rm
-cy9ob3N0ZnNfdXNlci5jCisrKyBiL2ZzL2hvc3Rmcy9ob3N0ZnNfdXNlci5jCkBAIC0zODgsNiAr
-Mzg4LDYgQEAgaW50IGRvX3N0YXRmcyhjaGFyICpyb290LCBsb25nICpic2l6ZV9vdXQsIGxvbmcg
-bG9uZyAqYmxvY2tzX291dCwKIAlzcGFyZV9vdXRbMV0gPSBidWYuZl9zcGFyZVsxXTsKIAlzcGFy
-ZV9vdXRbMl0gPSBidWYuZl9zcGFyZVsyXTsKIAlzcGFyZV9vdXRbM10gPSBidWYuZl9zcGFyZVsz
-XTsKLQlzcGFyZV9vdXRbNF0gPSBidWYuZl9zcGFyZVs0XTsKKwogCXJldHVybiAwOwogfQotLSAK
-MS42LjYuMQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb3dubG9hZCBuZXcgQWRvYmUoUikgRmxh
-c2goUikgQnVpbGRlcihUTSkgNApUaGUgbmV3IEFkb2JlKFIpIEZsZXgoUikgNCBhbmQgRmxhc2go
-UikgQnVpbGRlcihUTSkgNCAoZm9ybWVybHkgCkZsZXgoUikgQnVpbGRlcihUTSkpIGVuYWJsZSB0
-aGUgZGV2ZWxvcG1lbnQgb2YgcmljaCBhcHBsaWNhdGlvbnMgdGhhdCBydW4KYWNyb3NzIG11bHRp
-cGxlIGJyb3dzZXJzIGFuZCBwbGF0Zm9ybXMuIERvd25sb2FkIHlvdXIgZnJlZSB0cmlhbHMgdG9k
-YXkhCmh0dHA6Ly9wLnNmLm5ldC9zZnUvYWRvYmUtZGV2MmRldgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGlu
-ZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6
-Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRl
-dmVsCg==
+On Thu, Oct 14, 2010 at 03:14:28PM +0200, Tejun Heo wrote:
+> Hello,
+> 
+> Can you please try this one then?  It seems to work here but I can't
+> reproduce the original problem reliably so I'm not really sure.
+> 
+> Thanks.
+> 
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index 1bcd208..9734994 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -163,6 +163,7 @@ struct ubd {
+>  	struct scatterlist sg[MAX_SG];
+>  	struct request *request;
+>  	int start_sg, end_sg;
+> +	sector_t rq_pos;
+>  };
+> 
+>  #define DEFAULT_COW { \
+> @@ -187,6 +188,7 @@ struct ubd {
+>  	.request =		NULL, \
+>  	.start_sg =		0, \
+>  	.end_sg =		0, \
+> +	.rq_pos =		0, \
+>  }
+> 
+>  /* Protected by ubd_lock */
+> @@ -1228,7 +1230,6 @@ static void do_ubd_request(struct request_queue *q)
+>  {
+>  	struct io_thread_req *io_req;
+>  	struct request *req;
+> -	sector_t sector;
+>  	int n;
+> 
+>  	while(1){
+> @@ -1239,12 +1240,12 @@ static void do_ubd_request(struct request_queue *q)
+>  				return;
+> 
+>  			dev->request = req;
+> +			dev->rq_pos = blk_rq_pos(req);
+>  			dev->start_sg = 0;
+>  			dev->end_sg = blk_rq_map_sg(q, req, dev->sg);
+>  		}
+> 
+>  		req = dev->request;
+> -		sector = blk_rq_pos(req);
+>  		while(dev->start_sg < dev->end_sg){
+>  			struct scatterlist *sg = &dev->sg[dev->start_sg];
+> 
+> @@ -1256,10 +1257,9 @@ static void do_ubd_request(struct request_queue *q)
+>  				return;
+>  			}
+>  			prepare_request(req, io_req,
+> -					(unsigned long long)sector << 9,
+> +					(unsigned long long)dev->rq_pos << 9,
+>  					sg->offset, sg->length, sg_page(sg));
+> 
+> -			sector += sg->length >> 9;
+>  			n = os_write_file(thread_fd, &io_req,
+>  					  sizeof(struct io_thread_req *));
+>  			if(n != sizeof(struct io_thread_req *)){
+> @@ -1272,6 +1272,7 @@ static void do_ubd_request(struct request_queue *q)
+>  				return;
+>  			}
+> 
+> +			dev->rq_pos += sg->length >> 9;
+>  			dev->start_sg++;
+>  		}
+>  		dev->end_sg = 0;
+
+
+
+I tested this patch, on 2.6.35.5, as heavily as I could today, and
+was unable to reproduce the filesystem corruption.
+
+Seems to be fixed. :-)
+
+Thanks!
+- Chris
+
 
