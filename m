@@ -1,66 +1,70 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 1/1] um: Get rid of __do_IRQ()
-Date: Mon, 11 Oct 2010 23:29:35 +0200
-Message-Id: <1286832575-21474-1-git-send-email-richard@nod.at>
+MIME-Version: 1.0
+In-Reply-To: <1287128928.29097.1235.camel@twins>
+References: <AANLkTinNxzktyttzEjWSUPBiOUwh+4DUL0tmP7p1UiT5@mail.gmail.com>
+	<4CB75F05.9070505@linux.intel.com>
+	<AANLkTik5_TCXeGzTWBZzE8F0Cb2bQq-D228xDXk87rhP@mail.gmail.com>
+	<AANLkTi=vYFv+S=D6O06Nys4cjU7KHWv11d_VdLGmLyf6@mail.gmail.com>
+	<1287128928.29097.1235.camel@twins>
+Date: Sat, 16 Oct 2010 17:27:36 +0200
+Message-ID: <AANLkTimJZXL4gqq5y4eAZMqTEpN8Xy4S2B0cYANyK5qJ@mail.gmail.com>
+Subject: Re: [REGRESSION] um: rcu_sched_state detected stall on CPU 0
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, peterz@infradead.org, tj@kernel.org, tglx@linutronix.de, mingo@elte.hu, Richard Weinberger <richard@nod.at>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Pekka Enberg <penberg@kernel.org>, Arjan van de Ven <arjan@linux.intel.com>, penberg@cs.helsinki.fi, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, Jeff Dike <jdike@addtoit.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This patch removes __do_IRQ() from user mode linux.
+On Fri, Oct 15, 2010 at 9:48 AM, Peter Zijlstra <peterz@infradead.org> wrot=
+e:
+> On Fri, 2010-10-15 at 10:02 +0300, Pekka Enberg wrote:
+>> On Fri, Oct 15, 2010 at 2:44 AM, richard -rw- weinberger
+>> <richard.weinberger@gmail.com> wrote:
+>> > On Thu, Oct 14, 2010 at 9:50 PM, Arjan van de Ven
+>> <arjan@linux.intel.com> wrote:
+>> >> =EF=BF=BDOn 10/14/2010 11:27 AM, richard -rw- weinberger wrote:
+>> >>>
+>> >>> Hi Arjan!
+>> >>>
+>> >>> This commit causes some problems on UML.
+>> >>>
+>> >> that is extremely weird.
+>> >>>
+>> >>> The kernel freezes after a few seconds until it gets some input.
+>> >>> e.g: When I run top it stops refreshing the process list until i
+>> press a
+>> >>> button.
+>> >>
+>> >> a slab timer change (to not be as critical) causing global timer
+>> issues....
+>> >> that's very obviously not a problem with this patch.
+>> >> has this been seem anywhere except UML ?
+>> >
+>> > A small update:
+>> > It seems that CONFIG_NO_HZ is broken on UML. :-(
+>> >
+>> > CONFIG_NO_HZ + CONFIG_SLAB: works
+>> > CONFIG_NO_HZ + CONFIG_SLAB + your patch: broken
+>> > CONFIG_NO_HZ + CONFIG_SLUB: broken
+>> >
+>> > CONFIG_SLAB + your patch: works
+>> > CONFIG_SLAB: works
+>> > CONFIG_SLUB: works
+>>
+>> Thanks for testing! Thomas, Ingo, Peter, I'm not sure who maintains
+>> CONFIG_NO_HZ so I CC'd you. The problem here is that Arjan's
+>> deferrable timers patch in SLAB triggered something that looks like a
+>> latent bug with UML and NOHZ.
+>
+> Thomas does mostly, but if its UML specific, I guess its Jeff Dike
+> you'll be wanting to talk to, since he's the arch maintainer.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/Kconfig.um   |    3 +++
- arch/um/kernel/irq.c |   15 ++++-----------
- 2 files changed, 7 insertions(+), 11 deletions(-)
+After reviewing the code for hours I've found the bug.
+It's a int/long long issue within arch/um/os-Linux/time.c.
+A patch is on the way!
 
-diff --git a/arch/um/Kconfig.um b/arch/um/Kconfig.um
-index ec2b8da..7ad0916 100644
---- a/arch/um/Kconfig.um
-+++ b/arch/um/Kconfig.um
-@@ -147,3 +147,6 @@ config KERNEL_STACK_ORDER
- 	  This option determines the size of UML kernel stacks.  They will
- 	  be 1 << order pages.  The default is OK unless you're running Valgrind
- 	  on UML, in which case, set this to 3.
-+
-+config GENERIC_HARDIRQS_NO__DO_IRQ
-+	def_bool y
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index a3f0b04..ea21a87 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -334,7 +334,7 @@ unsigned int do_IRQ(int irq, struct uml_pt_regs *regs)
- {
- 	struct pt_regs *old_regs = set_irq_regs((struct pt_regs *)regs);
- 	irq_enter();
--	__do_IRQ(irq);
-+	generic_handle_irq(irq);
- 	irq_exit();
- 	set_irq_regs(old_regs);
- 	return 1;
-@@ -391,17 +391,10 @@ void __init init_IRQ(void)
- {
- 	int i;
- 
--	irq_desc[TIMER_IRQ].status = IRQ_DISABLED;
--	irq_desc[TIMER_IRQ].action = NULL;
--	irq_desc[TIMER_IRQ].depth = 1;
--	irq_desc[TIMER_IRQ].chip = &SIGVTALRM_irq_type;
--	enable_irq(TIMER_IRQ);
-+	set_irq_chip_and_handler(TIMER_IRQ, &SIGVTALRM_irq_type, handle_edge_irq);
-+
- 	for (i = 1; i < NR_IRQS; i++) {
--		irq_desc[i].status = IRQ_DISABLED;
--		irq_desc[i].action = NULL;
--		irq_desc[i].depth = 1;
--		irq_desc[i].chip = &normal_irq_type;
--		enable_irq(i);
-+		set_irq_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
- 	}
- }
- 
--- 
-1.6.6.1
-
+--=20
+Thanks,
+//richard
