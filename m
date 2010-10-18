@@ -1,43 +1,55 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH] hostfs: trivial code cleanup
-Date: Tue, 19 Oct 2010 16:47:01 +0200
-Message-Id: <1287499621-28447-1-git-send-email-richard@nod.at>
+MIME-Version: 1.0
+In-Reply-To: <4CBB4D4F.8010904@cs.helsinki.fi>
+References: <1287242638-20968-1-git-send-email-richard@nod.at>
+	<4CBB4D4F.8010904@cs.helsinki.fi>
+Date: Mon, 18 Oct 2010 21:58:53 +0300
+Message-ID: <AANLkTinPG1J280HMDkg4bhO-9evW2T86c8FKfhk84ZhR@mail.gmail.com>
+Subject: Re: [PATCH 1/1] um: fix global timer issue when using CONFIG_NO_HZ
+From: Pekka Enberg <penberg@kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+To: Pekka Enberg <penberg@cs.helsinki.fi>
+Cc: Richard Weinberger <richard@nod.at>, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, arjan@linux.intel.com, peterz@infradead.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Some trivial code cleanups for hostfs.
+On Sun, Oct 17, 2010 at 10:23 PM, Pekka Enberg <penberg@cs.helsinki.fi> wro=
+te:
+> On 16.10.2010 18.23, Richard Weinberger wrote:
+>>
+>> This fixes a issue which was introduced by fe2cc53e.
+>> timeval_to_ns() returns long long and not int.
+>> Due to that UML's timer did not work proper and caused timer freezes.
+>>
+>> LKML-Reference:<AANLkTik5_TCXeGzTWBZzE8F0Cb2bQq-D228xDXk87rhP () mail !
+>> gmail ! com>
+>> Signed-off-by: Richard Weinberger<richard@nod.at>
+>> ---
+>> =EF=BF=BDarch/um/os-Linux/time.c | =EF=BF=BD =EF=BF=BD2 +-
+>> =EF=BF=BD1 files changed, 1 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
+>> index dec5678..6e3359d 100644
+>> --- a/arch/um/os-Linux/time.c
+>> +++ b/arch/um/os-Linux/time.c
+>> @@ -60,7 +60,7 @@ static inline long long timeval_to_ns(const struct
+>> timeval *tv)
+>> =EF=BF=BDlong long disable_timer(void)
+>> =EF=BF=BD{
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDstruct itimerval time =3D ((struc=
+t itimerval) { { 0, 0 }, { 0, 0 }
+>> });
+>> - =EF=BF=BD =EF=BF=BD =EF=BF=BD int remain, max =3D UM_NSEC_PER_SEC / UM=
+_HZ;
+>> + =EF=BF=BD =EF=BF=BD =EF=BF=BD long long remain, max =3D UM_NSEC_PER_SE=
+C / UM_HZ;
+>>
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDif (setitimer(ITIMER_VIRTUAL,&tim=
+e,&time)< =EF=BF=BD0)
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BD =
+=EF=BF=BDprintk(UM_KERN_ERR "disable_timer - setitimer failed, "
+>
+> Acked-by: Pekka Enberg <penberg@kernel.org>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/hostfs/hostfs_user.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
-index 6777aa0..68ead6f 100644
---- a/fs/hostfs/hostfs_user.c
-+++ b/fs/hostfs/hostfs_user.c
-@@ -94,8 +94,7 @@ void *open_dir(char *path, int *err_out)
- 
- 	dir = opendir(path);
- 	*err_out = errno;
--	if (dir == NULL)
--		return NULL;
-+
- 	return dir;
- }
- 
-@@ -205,7 +204,7 @@ int set_attr(const char *file, struct hostfs_iattr *attrs, int fd)
- 	if (attrs->ia_valid & HOSTFS_ATTR_MODE) {
- 		if (fd >= 0) {
- 			if (fchmod(fd, attrs->ia_mode) != 0)
--				return (-errno);
-+				return -errno;
- 		} else if (chmod(file, attrs->ia_mode) != 0) {
- 			return -errno;
- 		}
--- 
-1.6.6.1
-
+Andrew, do you mind picking this patch up?
