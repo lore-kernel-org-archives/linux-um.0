@@ -1,79 +1,105 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <toralf.foerster@gmx.de>) id 1P7nfr-00041y-QB
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2010 11:14:39 +0000
-Received: from mailout-de.gmx.net ([213.165.64.23] helo=mail.gmx.net)
-	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1P7nfp-00025o-6F for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 18 Oct 2010 11:14:39 +0000
-From: Toralf =?iso-8859-1?q?F=F6rster?= <toralf.foerster@gmx.de>
-Date: Mon, 18 Oct 2010 13:14:26 +0200
-References: <201010131328.06465.toralf.foerster@gmx.de>
-	<201010181105.17077.toralf.foerster@gmx.de>
-	<AANLkTi=UyWg6PUrE_jEs0oqZ_tVw1mMQsoUrDnnqtcHa@mail.gmail.com>
-In-Reply-To: <AANLkTi=UyWg6PUrE_jEs0oqZ_tVw1mMQsoUrDnnqtcHa@mail.gmail.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <201010181314.27780.toralf.foerster@gmx.de>
-Subject: Re: [uml-devel] Fwd: Re: UML kernel crash of v2.6.36-rcX kernel
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+In-Reply-To: <201010181105.17077.toralf.foerster@gmx.de>
+References: <201010131328.06465.toralf.foerster@gmx.de>
+	<201010171555.40453.toralf.foerster@gmx.de>
+	<20101017201837.GA16458@lst.de>
+	<201010181105.17077.toralf.foerster@gmx.de>
+Date: Mon, 18 Oct 2010 11:31:31 +0200
+Message-ID: <AANLkTi=UyWg6PUrE_jEs0oqZ_tVw1mMQsoUrDnnqtcHa@mail.gmail.com>
+Subject: Re: Fwd: Re: UML kernel crash of v2.6.36-rcX kernel
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Richard Weinberger <richard@nod.at>, Christoph Hellwig <hch@lst.de>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
+Cc: Christoph Hellwig <hch@lst.de>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+2010/10/18 Toralf F=EF=BF=BDrster <toralf.foerster@gmx.de>:
+> Well, in addition to my last mail the following patch isn't a fix, but it
+> might point to the culprit.
+> If I apply this patch against latest tree, then the crash doesn't occur :
+>
+> diff --git a/include/linux/statfs.h b/include/linux/statfs.h
+> index 0166d32..e336e70 100644
+> --- a/include/linux/statfs.h
+> +++ b/include/linux/statfs.h
+> @@ -15,8 +15,8 @@ struct kstatfs {
+> =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BD__kernel_fsid_t f_fsid;
+> =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDlong f_namelen;
+> =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDlong f_frsize;
+> - =EF=BF=BD long f_flags;
+> =EF=BF=BD =EF=BF=BD =EF=BF=BD =EF=BF=BDlong f_spare[4];
+> + long f_flags;
+> =EF=BF=BD};
+>
+>
+>
+> Christoph Hellwig wrote at 22:18:37
+>> On Sun, Oct 17, 2010 at 03:55:39PM +0200, Toralf F?rster wrote:
+>> > I bisected it again w/ a fixed test script, got the same bad commit
+>> > script and double checked, that this commit is really the culprit which
+>> > crashes a user mode linux kernel at my 32bix x86 stable Gentoo running
+>> > 2.6.35.6 vanilla kernel as host system and 2/ gcc version 4.4.3 (Gentoo
+>> > 4.4.3-r2 p1.2) and glibc-2.11.2-r1 in the tool chain.
+>>
+>> I really can't see any relation to the patch. =EF=BF=BDCan you try the s=
+ome
+>> things in the following order, please:
+>>
+>> =EF=BF=BD(1) git-revert 365b18189789bfa1acd9939e6312b8a4b4577b28 on curr=
+ent
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BDLinus tree and see it it works.
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BDIf it works try the next, else the bisect m=
+ust have been a weird
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BDconicidence and I can't really help more.
+>> =EF=BF=BD(2) re-apply only the changes to include/asm-generic/statfs.h f=
+rom
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BD365b18189789bfa1acd9939e6312b8a4b4577b28 an=
+d see if that still
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BDboots.
+>> =EF=BF=BD(3) re-apply the arch/mips/include/asm/statfs.h and
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BDarch/s390/include/asm/statfs.h changes and =
+see if it still boots
+>> =EF=BF=BD(4) re-apply the include/linux/statfs.h changes and see if it s=
+till
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BD boots
+>> =EF=BF=BD(5) re-apply the fs/statfs.c changes, and by now it really shou=
+ldn't
+>> =EF=BF=BD =EF=BF=BD =EF=BF=BDboot anymore
+>> =EF=BF=BD(6) verify the code really is the same again as in current Linu=
+s' tree
+>
+>
+> --
+> MfG/Kind regards
+> Toralf F=EF=BF=BDrster
+>
+> pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =EF=BF=BDhttp://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at =EF=BF=BDhttp://www.tux.org/lkml/
+>
 
-richard -rw- weinberger wrote at 11:31:31
-> Does this help?
-> =
+Does this help?
 
-> --- linux-2.6.36-rc8/fs/hostfs/hostfs_user.c.orig       2010-10-18
-> 11:24:33.844592000 +0200
-> +++ linux-2.6.36-rc8/fs/hostfs/hostfs_user.c    2010-10-18
-> 11:24:44.594679000 +0200
-> @@ -388,6 +388,6 @@
->         spare_out[1] =3D buf.f_spare[1];
->         spare_out[2] =3D buf.f_spare[2];
->         spare_out[3] =3D buf.f_spare[3];
-> -       spare_out[4] =3D buf.f_spare[4];
-> +
->         return 0;
->  }
+--- linux-2.6.36-rc8/fs/hostfs/hostfs_user.c.orig       2010-10-18
+11:24:33.844592000 +0200
++++ linux-2.6.36-rc8/fs/hostfs/hostfs_user.c    2010-10-18
+11:24:44.594679000 +0200
+@@ -388,6 +388,6 @@
+        spare_out[1] =3D buf.f_spare[1];
+        spare_out[2] =3D buf.f_spare[2];
+        spare_out[3] =3D buf.f_spare[3];
+-       spare_out[4] =3D buf.f_spare[4];
++
+        return 0;
+ }
 
-yes - definitely (BTW I like a preceeding "diff --git" line to make the pat=
-ch =
-
-utility happy ;) )
-
--- =
-
-MfG/Kind regards
-Toralf F=F6rster
-
-pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
-
-
----------------------------------------------------------------------------=
----
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly =
-
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+--=20
+Thanks,
+//richard
