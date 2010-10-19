@@ -1,80 +1,82 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <renzo@cs.unibo.it>) id 1P5OLT-0002WP-Qg
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2010 19:47:39 +0000
-Received: from leb.cs.unibo.it ([130.136.1.102])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P5OLR-00069F-Tg
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Oct 2010 19:47:39 +0000
-Date: Mon, 11 Oct 2010 21:47:31 +0200
-From: Renzo Davoli <renzo@cs.unibo.it>
-Message-ID: <20101011194730.GA28783@cs.unibo.it>
-References: <201008291922.05069.toralf.foerster@gmx.de>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 1/1] hostfs: fix UML crash (remove f_spare from hostfs)
+Date: Tue, 19 Oct 2010 15:48:58 +0200
+Message-Id: <1287496138-16490-1-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201008291922.05069.toralf.foerster@gmx.de>
-Subject: Re: [uml-devel] v2.6.36-rc3: UML compile error in hostaudio_kern.c
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk, toralf.foerster@gmx.de, hch@lst.de, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-T24gU3VuLCBBdWcgMjksIDIwMTAgYXQgMDc6MjI6MDRQTSArMDIwMCwgVG9yYWxmIEbDtnJzdGVy
-IHdyb3RlOgo+IEkgZ2V0IHdpdGggdGhlIGF0dGFjaGVkIGNvbmZpZyA6CnRoZSBhdHRhY2hlZCBj
-b25maWcgaXMgZW1wdHkuLi4gYnV0IEkgaGF2ZSBzdGVwcGVkIG9udG8gdGhlIHNhbWUgYnVnLgpU
-aGUgcHJvYmxlbSBoYXBwZW5zIHdoZW4gaG9zdGF1ZGlvIGlzIGxpbmtlZCB0byB0aGUga2VybmVs
-IChpdCBpcyBub3QKYSBtb2R1bGUpLgo+IAo+IGFyY2gvdW0vZHJpdmVycy9ob3N0YXVkaW9fa2Vy
-bi5jOjIwNDogZXJyb3I6IOKAmF9fcGFyYW1fZHNw4oCZIHVuZGVjbGFyZWQgKGZpcnN0IAoKVGhl
-IHByb2JsZW0gaXMgdGhhdCBkc3AgYW5kIG1peGVyIGFyZSBkZWZpbmVkIGFzIG1vZHVsZV9wYXJh
-bSBvbmx5IHdoZW4KaG9zdGF1ZGlvIGlzIGEgbW9kdWxlLCBzbyBfX3BhcmFtX2RzcCBpcyB1bmRl
-ZmluZWQgZm9yIGtwYXJhbV9ibG9ja19zeXNmc193cml0ZQp3aGVuIGhvc3RhdWRpbyBpcyBub3Qg
-YSBtb2R1bGUuCgpUaGUgZm9sbG93aW5nIHBhdGNoIHNlZW1zIHRvIHNvbHZlIHRoZSBwcm9ibGVt
-LgoKCXJlbnpvCi0tLS0KLS0tIGFyY2gvdW0vZHJpdmVycy9ob3N0YXVkaW9fa2Vybi5jLm9yaWcJ
-MjAxMC0xMC0xMSAyMTozNjozOC4wMDAwMDAwMDAgKzAyMDAKKysrIGFyY2gvdW0vZHJpdmVycy9o
-b3N0YXVkaW9fa2Vybi5jCTIwMTAtMTAtMTEgMjE6Mzg6MTYuMDAwMDAwMDAwICswMjAwCkBAIC0x
-ODcsMTAgKzE4NywxNCBAQAogCWludCByZXQ7CiAKICNpZmRlZiBERUJVRworI2lmZGVmIE1PRFVM
-RQogCWtwYXJhbV9ibG9ja19zeXNmc193cml0ZShkc3ApOworI2VuZGlmCiAJcHJpbnRrKEtFUk5f
-REVCVUcgImhvc3RhdWRpbzogb3BlbiBjYWxsZWQgKGhvc3Q6ICVzKVxuIiwgZHNwKTsKKyNpZmRl
-ZiBNT0RVTEUKIAlrcGFyYW1fdW5ibG9ja19zeXNmc193cml0ZShkc3ApOwogI2VuZGlmCisjZW5k
-aWYKIAogCXN0YXRlID0ga21hbGxvYyhzaXplb2Yoc3RydWN0IGhvc3RhdWRpb19zdGF0ZSksIEdG
-UF9LRVJORUwpOwogCWlmIChzdGF0ZSA9PSBOVUxMKQpAQCAtMjAxLDExICsyMDUsMTUgQEAKIAlp
-ZiAoZmlsZS0+Zl9tb2RlICYgRk1PREVfV1JJVEUpCiAJCXcgPSAxOwogCisjaWZkZWYgTU9EVUxF
-CiAJa3BhcmFtX2Jsb2NrX3N5c2ZzX3dyaXRlKGRzcCk7CisjZW5kaWYKIAlsb2NrX2tlcm5lbCgp
-OwogCXJldCA9IG9zX29wZW5fZmlsZShkc3AsIG9mX3NldF9ydyhPUEVORkxBR1MoKSwgciwgdyks
-IDApOwogCXVubG9ja19rZXJuZWwoKTsKKyNpZmRlZiBNT0RVTEUKIAlrcGFyYW1fdW5ibG9ja19z
-eXNmc193cml0ZShkc3ApOworI2VuZGlmCiAKIAlpZiAocmV0IDwgMCkgewogCQlrZnJlZShzdGF0
-ZSk7CkBAIC0yNjIsMTcgKzI3MCwyNSBAQAogCWlmIChmaWxlLT5mX21vZGUgJiBGTU9ERV9XUklU
-RSkKIAkJdyA9IDE7CiAKKyNpZmRlZiBNT0RVTEUKIAlrcGFyYW1fYmxvY2tfc3lzZnNfd3JpdGUo
-bWl4ZXIpOworI2VuZGlmCiAJbG9ja19rZXJuZWwoKTsKIAlyZXQgPSBvc19vcGVuX2ZpbGUobWl4
-ZXIsIG9mX3NldF9ydyhPUEVORkxBR1MoKSwgciwgdyksIDApOwogCXVubG9ja19rZXJuZWwoKTsK
-KyNpZmRlZiBNT0RVTEUKIAlrcGFyYW1fdW5ibG9ja19zeXNmc193cml0ZShtaXhlcik7CisjZW5k
-aWYKIAogCWlmIChyZXQgPCAwKSB7CisjaWZkZWYgTU9EVUxFCiAJCWtwYXJhbV9ibG9ja19zeXNm
-c193cml0ZShkc3ApOworI2VuZGlmCiAJCXByaW50ayhLRVJOX0VSUiAiaG9zdGF1ZGlvX29wZW5f
-bWl4ZGV2IGZhaWxlZCB0byBvcGVuICclcycsICIKIAkJICAgICAgICJlcnIgPSAlZFxuIiwgZHNw
-LCAtcmV0KTsKKyNpZmRlZiBNT0RVTEUKIAkJa3BhcmFtX3VuYmxvY2tfc3lzZnNfd3JpdGUoZHNw
-KTsKKyNlbmRpZgogCQlrZnJlZShzdGF0ZSk7CiAJCXJldHVybiByZXQ7CiAJfQoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCkJlYXV0aWZ1bCBpcyB3cml0aW5nIHNhbWUgbWFya3VwLiBJbnRlcm5ldCBF
-eHBsb3JlciA5IHN1cHBvcnRzCnN0YW5kYXJkcyBmb3IgSFRNTDUsIENTUzMsIFNWRyAxLjEsICBF
-Q01BU2NyaXB0NSwgYW5kIERPTSBMMiAmIEwzLgpTcGVuZCBsZXNzIHRpbWUgd3JpdGluZyBhbmQg
-IHJld3JpdGluZyBjb2RlIGFuZCBtb3JlIHRpbWUgY3JlYXRpbmcgZ3JlYXQKZXhwZXJpZW5jZXMg
-b24gdGhlIHdlYi4gQmUgYSBwYXJ0IG9mIHRoZSBiZXRhIHRvZGF5LgpodHRwOi8vcC5zZi5uZXQv
-c2Z1L2JlYXV0eW9mdGhld2ViCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxp
-bnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
-Lm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+365b1818 resized f_spare within struct statfs which
+caused a UML crash.
+There is no need to copy f_spare.
+
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Reported-by: Toralf Förster <toralf.foerster@gmx.de>
+Tested-by: Toralf Förster <toralf.foerster@gmx.de>
+LKML-Reference: <20101019011125.GA3905@lst.de>
+---
+ fs/hostfs/hostfs.h      |    3 +--
+ fs/hostfs/hostfs_kern.c |    2 +-
+ fs/hostfs/hostfs_user.c |    9 ++-------
+ 3 files changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
+index 6bbd75c..3ccb4e4 100644
+--- a/fs/hostfs/hostfs.h
++++ b/fs/hostfs/hostfs.h
+@@ -96,7 +96,6 @@ extern int rename_file(char *from, char *to);
+ extern int do_statfs(char *root, long *bsize_out, long long *blocks_out,
+ 		     long long *bfree_out, long long *bavail_out,
+ 		     long long *files_out, long long *ffree_out,
+-		     void *fsid_out, int fsid_size, long *namelen_out,
+-		     long *spare_out);
++		     void *fsid_out, int fsid_size, long *namelen_out);
+ 
+ #endif
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index f7dc9b5..cd7c939 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -217,7 +217,7 @@ int hostfs_statfs(struct dentry *dentry, struct kstatfs *sf)
+ 	err = do_statfs(dentry->d_sb->s_fs_info,
+ 			&sf->f_bsize, &f_blocks, &f_bfree, &f_bavail, &f_files,
+ 			&f_ffree, &sf->f_fsid, sizeof(sf->f_fsid),
+-			&sf->f_namelen, sf->f_spare);
++			&sf->f_namelen);
+ 	if (err)
+ 		return err;
+ 	sf->f_blocks = f_blocks;
+diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
+index 6777aa0..8d02683 100644
+--- a/fs/hostfs/hostfs_user.c
++++ b/fs/hostfs/hostfs_user.c
+@@ -364,8 +364,7 @@ int rename_file(char *from, char *to)
+ int do_statfs(char *root, long *bsize_out, long long *blocks_out,
+ 	      long long *bfree_out, long long *bavail_out,
+ 	      long long *files_out, long long *ffree_out,
+-	      void *fsid_out, int fsid_size, long *namelen_out,
+-	      long *spare_out)
++	      void *fsid_out, int fsid_size, long *namelen_out)
+ {
+ 	struct statfs64 buf;
+ 	int err;
+@@ -384,10 +383,6 @@ int do_statfs(char *root, long *bsize_out, long long *blocks_out,
+ 	       sizeof(buf.f_fsid) > fsid_size ? fsid_size :
+ 	       sizeof(buf.f_fsid));
+ 	*namelen_out = buf.f_namelen;
+-	spare_out[0] = buf.f_spare[0];
+-	spare_out[1] = buf.f_spare[1];
+-	spare_out[2] = buf.f_spare[2];
+-	spare_out[3] = buf.f_spare[3];
+-	spare_out[4] = buf.f_spare[4];
++
+ 	return 0;
+ }
+-- 
+1.6.6.1
 
