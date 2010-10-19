@@ -1,21 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <stian@nixia.no>) id 1P8B32-0007MX-Fy
+	(envelope-from <ostmann@websuche.de>) id 1P89tU-0002HX-LO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Oct 2010 12:12:08 +0000
-Received: from mail42.e.nsc.no ([193.213.115.42])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1P8B30-0001YS-Kf for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Oct 2010 12:12:08 +0000
-From: "Stian Skjelstad" <stian@nixia.no>
-References: <4CB821EE.2010208@websuche.de> <4CBD79B8.2000803@websuche.de>
-In-Reply-To: <4CBD79B8.2000803@websuche.de>
-Date: Tue, 19 Oct 2010 13:24:18 +0200
-Message-ID: <000901cb6f80$2d7b3f60$8871be20$@no>
+	Tue, 19 Oct 2010 10:58:12 +0000
+Received: from www45.your-server.de ([213.133.104.45])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1P89tT-0003Dr-5R
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Oct 2010 10:58:12 +0000
+Received: from [87.183.26.244] (helo=[192.168.0.131])
+	by www45.your-server.de with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <ostmann@websuche.de>) id 1P89tM-0005pg-8K
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Oct 2010 12:58:04 +0200
+Message-ID: <4CBD79B8.2000803@websuche.de>
+Date: Tue, 19 Oct 2010 12:58:00 +0200
+From: Felix Antonius Wilhelm Ostmann <ostmann@websuche.de>
 MIME-Version: 1.0
-Content-Language: no
+References: <4CB821EE.2010208@websuche.de>
+In-Reply-To: <4CB821EE.2010208@websuche.de>
 Subject: Re: [uml-devel] general protection failures
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,38 +31,86 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: 'Felix Antonius Wilhelm Ostmann' <ostmann@websuche.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Just some few things to check. How is the memory pressure? What resources does the UML instances use (network, hostfs, cow). Could it be related to a network-device not being able initialize?
-
-
-Stian Skjelstad
-
-
-> no hints? :-/
->
->Am 15.10.2010 11:42, schrieb Felix Antonius Wilhelm Ostmann:
->> We use UML since 4 years on one host (P4). Now we build another UML-Host
->> on a Xeon and all was fine. A week ago we startet the third guest at the
->> Xeon Host and after some time the guest was killed from the host (see
->> the log at the end). It is allways the third startet guest. We stopped
->> all guest and startet in different order and the last (third) startet
->> guest get the general protection error. Thanks for any help!
-
-
-
-------------------------------------------------------------------------------
-Download new Adobe(R) Flash(R) Builder(TM) 4
-The new Adobe(R) Flex(R) 4 and Flash(R) Builder(TM) 4 (formerly 
-Flex(R) Builder(TM)) enable the development of rich applications that run
-across multiple browsers and platforms. Download your free trials today!
-http://p.sf.net/sfu/adobe-dev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+bm8gaGludHM/IDotLwoKQW0gMTUuMTAuMjAxMCAxMTo0Miwgc2NocmllYiBGZWxpeCBBbnRvbml1
+cyBXaWxoZWxtIE9zdG1hbm46Cj4gV2UgdXNlIFVNTCBzaW5jZSA0IHllYXJzIG9uIG9uZSBob3N0
+IChQNCkuIE5vdyB3ZSBidWlsZCBhbm90aGVyIFVNTC1Ib3N0Cj4gb24gYSBYZW9uIGFuZCBhbGwg
+d2FzIGZpbmUuIEEgd2VlayBhZ28gd2Ugc3RhcnRldCB0aGUgdGhpcmQgZ3Vlc3QgYXQgdGhlCj4g
+WGVvbiBIb3N0IGFuZCBhZnRlciBzb21lIHRpbWUgdGhlIGd1ZXN0IHdhcyBraWxsZWQgZnJvbSB0
+aGUgaG9zdCAoc2VlCj4gdGhlIGxvZyBhdCB0aGUgZW5kKS4gSXQgaXMgYWxsd2F5cyB0aGUgdGhp
+cmQgc3RhcnRldCBndWVzdC4gV2Ugc3RvcHBlZAo+IGFsbCBndWVzdCBhbmQgc3RhcnRldCBpbiBk
+aWZmZXJlbnQgb3JkZXIgYW5kIHRoZSBsYXN0ICh0aGlyZCkgc3RhcnRldAo+IGd1ZXN0IGdldCB0
+aGUgZ2VuZXJhbCBwcm90ZWN0aW9uIGVycm9yLiBUaGFua3MgZm9yIGFueSBoZWxwIQo+IAo+IAo+
+IHJvb3RAaW50ZXJuNTp+IyB1bmFtZSAtYQo+IExpbnV4IGludGVybjUgMi42LjI2LTItYW1kNjQg
+IzEgU01QIFRodSBTZXAgMTYgMTU6NTY6MzggVVRDIDIwMTAgeDg2XzY0Cj4gR05VL0xpbnV4Cj4g
+Cj4gcm9vdEBpbnRlcm41On4jIGNhdCAvcHJvYy9jcHVpbmZvCj4gcHJvY2Vzc29yCTogMAo+IHZl
+bmRvcl9pZAk6IEdlbnVpbmVJbnRlbAo+IGNwdSBmYW1pbHkJOiA2Cj4gbW9kZWwJCTogMTUKPiBt
+b2RlbCBuYW1lCTogSW50ZWwoUikgWGVvbihSKSBDUFUgICAgICAgICAgICAzMDUwICBAIDIuMTNH
+SHoKPiBzdGVwcGluZwk6IDIKPiBjcHUgTUh6CQk6IDIxMjcuOTk2Cj4gY2FjaGUgc2l6ZQk6IDIw
+NDggS0IKPiBwaHlzaWNhbCBpZAk6IDAKPiBzaWJsaW5ncwk6IDIKPiBjb3JlIGlkCQk6IDAKPiBj
+cHUgY29yZXMJOiAyCj4gYXBpY2lkCQk6IDAKPiBpbml0aWFsIGFwaWNpZAk6IDAKPiBmcHUJCTog
+eWVzCj4gZnB1X2V4Y2VwdGlvbgk6IHllcwo+IGNwdWlkIGxldmVsCTogMTAKPiB3cAkJOiB5ZXMK
+PiBmbGFncwkJOiBmcHUgdm1lIGRlIHBzZSB0c2MgbXNyIHBhZSBtY2UgY3g4IGFwaWMgc2VwIG10
+cnIgcGdlIG1jYSBjbW92Cj4gcGF0IHBzZTM2IGNsZmx1c2ggZHRzIGFjcGkgbW14IGZ4c3Igc3Nl
+IHNzZTIgc3MgaHQgdG0gcGJlIHN5c2NhbGwgbnggbG0KPiBjb25zdGFudF90c2MgYXJjaF9wZXJm
+bW9uIHBlYnMgYnRzIHJlcF9nb29kIHBuaSBtb25pdG9yIGRzX2NwbCB2bXggZXN0Cj4gdG0yIHNz
+c2UzIGN4MTYgeHRwciBsYWhmX2xtCj4gYm9nb21pcHMJOiA0MjU5LjM1Cj4gY2xmbHVzaCBzaXpl
+CTogNjQKPiBjYWNoZV9hbGlnbm1lbnQJOiA2NAo+IGFkZHJlc3Mgc2l6ZXMJOiAzNiBiaXRzIHBo
+eXNpY2FsLCA0OCBiaXRzIHZpcnR1YWwKPiBwb3dlciBtYW5hZ2VtZW50Ogo+IAo+IHByb2Nlc3Nv
+cgk6IDEKPiB2ZW5kb3JfaWQJOiBHZW51aW5lSW50ZWwKPiBjcHUgZmFtaWx5CTogNgo+IG1vZGVs
+CQk6IDE1Cj4gbW9kZWwgbmFtZQk6IEludGVsKFIpIFhlb24oUikgQ1BVICAgICAgICAgICAgMzA1
+MCAgQCAyLjEzR0h6Cj4gc3RlcHBpbmcJOiAyCj4gY3B1IE1IegkJOiAyMTI3Ljk5Ngo+IGNhY2hl
+IHNpemUJOiAyMDQ4IEtCCj4gcGh5c2ljYWwgaWQJOiAwCj4gc2libGluZ3MJOiAyCj4gY29yZSBp
+ZAkJOiAxCj4gY3B1IGNvcmVzCTogMgo+IGFwaWNpZAkJOiAxCj4gaW5pdGlhbCBhcGljaWQJOiAx
+Cj4gZnB1CQk6IHllcwo+IGZwdV9leGNlcHRpb24JOiB5ZXMKPiBjcHVpZCBsZXZlbAk6IDEwCj4g
+d3AJCTogeWVzCj4gZmxhZ3MJCTogZnB1IHZtZSBkZSBwc2UgdHNjIG1zciBwYWUgbWNlIGN4OCBh
+cGljIHNlcCBtdHJyIHBnZSBtY2EgY21vdgo+IHBhdCBwc2UzNiBjbGZsdXNoIGR0cyBhY3BpIG1t
+eCBmeHNyIHNzZSBzc2UyIHNzIGh0IHRtIHBiZSBzeXNjYWxsIG54IGxtCj4gY29uc3RhbnRfdHNj
+IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyByZXBfZ29vZCBwbmkgbW9uaXRvciBkc19jcGwgdm14IGVz
+dAo+IHRtMiBzc3NlMyBjeDE2IHh0cHIgbGFoZl9sbQo+IGJvZ29taXBzCTogNDI1Ni4wMQo+IGNs
+Zmx1c2ggc2l6ZQk6IDY0Cj4gY2FjaGVfYWxpZ25tZW50CTogNjQKPiBhZGRyZXNzIHNpemVzCTog
+MzYgYml0cyBwaHlzaWNhbCwgNDggYml0cyB2aXJ0dWFsCj4gcG93ZXIgbWFuYWdlbWVudDoKPiAK
+PiAKPiBmcm9tIHN5c2xvZzoKPiAvdmFyL2xvZy9zeXNsb2cuMy5nejpPY3QgMTEgMTY6MTA6NDcg
+aW50ZXJuNSBrZXJuZWw6IFsxNDI2NjMwLjk3ODQzNF0KPiBsaW51eFsxMjgyM10gZ2VuZXJhbCBw
+cm90ZWN0aW9uIGlwOjdmZjA5ZGViMzM1YyBzcDo2MDM2ZjlmMCBlcnJvcjowIGluCj4gbGliYy0y
+Ljcuc29bN2ZmMDlkZTgwMDAwKzE0YTAwMF0KPiAvdmFyL2xvZy9zeXNsb2cuMDpPY3QgMTQgMTM6
+MTE6NDYgaW50ZXJuNSBrZXJuZWw6IFsxNzQ2Mzc5Ljk0NDU5MF0KPiBsaW51eFsxMDY5Ml0gZ2Vu
+ZXJhbCBwcm90ZWN0aW9uIGlwOjdmYTk1ZTAxZjM1YyBzcDo2MDM2ZjlmMCBlcnJvcjowIGluCj4g
+bGliYy0yLjcuc29bN2ZhOTVkZmVjMDAwKzE0YTAwMF0KPiAvdmFyL2xvZy9zeXNsb2cuMDpPY3Qg
+MTQgMTQ6MDI6MTcgaW50ZXJuNSBrZXJuZWw6IFsxNzUwMTI4Ljc4MzgyNl0KPiBsaW51eFsyNDEy
+XSBnZW5lcmFsIHByb3RlY3Rpb24gaXA6N2ZiYThmYmU0MzVjIHNwOjYwMzZmOWYwIGVycm9yOjAg
+aW4KPiBsaWJjLTIuNy5zb1s3ZmJhOGZiYjEwMDArMTRhMDAwXQo+IC92YXIvbG9nL3N5c2xvZzpP
+Y3QgMTUgMTA6MjA6MDMgaW50ZXJuNSBrZXJuZWw6IFsxODQzNTgzLjkwNTAxNl0KPiBsaW51eFs1
+MDc1XSBnZW5lcmFsIHByb3RlY3Rpb24gaXA6N2YwYjkxMjhmMzVjIHNwOjYwMzZmOWYwIGVycm9y
+OjAgaW4KPiBsaWJjLTIuNy5zb1s3ZjBiOTEyNWMwMDArMTRhMDAwXQo+IC92YXIvbG9nL3N5c2xv
+ZzpPY3QgMTUgMTE6MjA6MTcgaW50ZXJuNSBrZXJuZWw6IFsxODQ4MTAzLjYzNjM3NV0KPiBsaW51
+eFsxMDc4NV0gZ2VuZXJhbCBwcm90ZWN0aW9uIGlwOjdmNmE3ZGMyNzM1YyBzcDo2MDM2ZjlmMCBl
+cnJvcjowIGluCj4gbGliYy0yLjcuc29bN2Y2YTdkYmY0MDAwKzE0YTAwMF0KPiAKPiAKCgotLSAK
+TWl0IGZyZXVuZGxpY2hlbiBHcsO8w59lbgoKRmVsaXggQW50b25pdXMgV2lsaGVsbSBPc3RtYW5u
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCldlYnN1Y2hlIFNlYXJjaCBUZWNobm9sb2d5IEdtYkggJiBDby4gS0cKTWFydGluaXN0cmHD
+n2UgMywgRC00OTA4MCBPc25hYnLDvGNrLCBHZXJtYW55Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClRlbC46ICs0OSA1NDEgNDA2NjYt
+MCwgRmF4OiArNDkgNTQxIDQwNjY2LTIyCkVtYWlsOiBpbmZvQHdlYnN1Y2hlLmRlLCBXZWI6IHd3
+dy53ZWJzdWNoZS5kZQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpBRyBPc25hYnLDvGNrIC0gSFJBIDIwMDI1MiwgVXN0LUlkTnIuOiBE
+RTgxNDczNzMxMAotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQpLb21wbGVtZW50w6RyaW46IFdlYnN1Y2hlIFNlYXJjaCBUZWNobm9sb2d5
+IFZlcndhbHR1bmdzIEdtYkgKQUcgT3NuYWJyw7xjayAtIEhSQiAyMDAzNTksIEdlc2Now6RmdHNm
+w7xocmVyOiBBbnNhcyBNZXllcgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkRvd25sb2FkIG5l
+dyBBZG9iZShSKSBGbGFzaChSKSBCdWlsZGVyKFRNKSA0ClRoZSBuZXcgQWRvYmUoUikgRmxleChS
+KSA0IGFuZCBGbGFzaChSKSBCdWlsZGVyKFRNKSA0IChmb3JtZXJseSAKRmxleChSKSBCdWlsZGVy
+KFRNKSkgZW5hYmxlIHRoZSBkZXZlbG9wbWVudCBvZiByaWNoIGFwcGxpY2F0aW9ucyB0aGF0IHJ1
+bgphY3Jvc3MgbXVsdGlwbGUgYnJvd3NlcnMgYW5kIHBsYXRmb3Jtcy4gRG93bmxvYWQgeW91ciBm
+cmVlIHRyaWFscyB0b2RheSEKaHR0cDovL3Auc2YubmV0L3NmdS9hZG9iZS1kZXYyZGV2Cl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51
+eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZv
+cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2Vy
+LW1vZGUtbGludXgtZGV2ZWwK
 
