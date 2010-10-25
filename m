@@ -1,76 +1,82 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <akpm@linux-foundation.org>) id 1PASjz-0002li-Et
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Oct 2010 19:29:55 +0000
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PASjy-0000mC-11
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Oct 2010 19:29:55 +0000
-Date: Mon, 25 Oct 2010 12:29:36 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-Message-Id: <20101025122936.56d0370f.akpm@linux-foundation.org>
-In-Reply-To: <1288020273-31161-1-git-send-email-richard@nod.at>
-References: <1288020273-31161-1-git-send-email-richard@nod.at>
-Mime-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] um: Fix IRQ flag handling naming
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, jkosina@suse.cz, jdike@addtoit.com, linux-kernel@vger.kernel.org, dhowells@redhat.com, jan.kiszka@web.de, xiyou.wangcong@gmail.com
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH] um: Fix IRQ flag handling naming
+Date: Mon, 25 Oct 2010 17:24:33 +0200
+Message-Id: <1288020273-31161-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+To: akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, dhowells@redhat.com, jkosina@suse.cz, jan.kiszka@web.de, xiyou.wangcong@gmail.com, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Mon, 25 Oct 2010 17:24:33 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Commit df9ee292 changed the IRQ flag handling naming scheme
+and broke UML.
+This patch brings the new scheme to UML and makes it work again.
 
-> Commit df9ee292 changed the IRQ flag handling naming scheme
-> and broke UML.
-> This patch brings the new scheme to UML and makes it work again.
-> 
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/include/asm/system.h |   49 +++++++++++++++++++++++++++--------------
+ 1 files changed, 32 insertions(+), 17 deletions(-)
 
-Please always fully describe a bug when fixing it.  Something more than
-"broke".  In the case of compilation errors or warnings, that means
-quoting the compiler error output and, if necessary, the means of
-reproducing it (config, compiler version, etc).
-
-I did an allnoconfig uml build and saw this:
-
-In file included from /usr/src/25/arch/um/include/asm/fixmap.h:5,
-                 from /usr/src/25/arch/um/include/shared/um_uaccess.h:10,
-                 from /usr/src/25/arch/um/include/asm/uaccess.h:41,
-                 from /usr/src/25/arch/um/include/asm/thread_info.h:13,
-                 from include/linux/thread_info.h:56,
-                 from include/linux/preempt.h:9,
-                 from include/linux/spinlock.h:50,
-                 from include/linux/seqlock.h:29,
-                 from include/linux/time.h:8,
-                 from include/linux/stat.h:60,
-                 from include/linux/module.h:10,
-                 from init/main.c:13:
-/usr/src/25/arch/um/include/asm/system.h:11:1: warning: "local_save_flags" redefined
-
-which I shall assume is the error which this patch addresses.
-
-------------------------------------------------------------------------------
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store 
-http://p.sf.net/sfu/nokia-dev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+diff --git a/arch/um/include/asm/system.h b/arch/um/include/asm/system.h
+index 93af1cf..68a90ec 100644
+--- a/arch/um/include/asm/system.h
++++ b/arch/um/include/asm/system.h
+@@ -8,23 +8,38 @@ extern int set_signals(int enable);
+ extern void block_signals(void);
+ extern void unblock_signals(void);
+ 
+-#define local_save_flags(flags) do { typecheck(unsigned long, flags); \
+-				     (flags) = get_signals(); } while(0)
+-#define local_irq_restore(flags) do { typecheck(unsigned long, flags); \
+-				      set_signals(flags); } while(0)
+-
+-#define local_irq_save(flags) do { local_save_flags(flags); \
+-                                   local_irq_disable(); } while(0)
+-
+-#define local_irq_enable() unblock_signals()
+-#define local_irq_disable() block_signals()
+-
+-#define irqs_disabled()                 \
+-({                                      \
+-        unsigned long flags;            \
+-        local_save_flags(flags);        \
+-        (flags == 0);                   \
+-})
++static inline unsigned long arch_local_save_flags(void)
++{
++	return get_signals();
++}
++
++static inline void arch_local_irq_restore(unsigned long flags)
++{
++	set_signals(flags);
++}
++
++static inline void arch_local_irq_enable(void)
++{
++	unblock_signals();
++}
++
++static inline void arch_local_irq_disable(void)
++{
++	block_signals();
++}
++
++static inline unsigned long arch_local_irq_save(void)
++{
++	unsigned long flags;
++	flags = arch_local_save_flags();
++	arch_local_irq_disable();
++	return flags;
++}
++
++static inline bool arch_irqs_disabled(void)
++{
++	return arch_local_save_flags() == 0;
++}
+ 
+ extern void *_switch_to(void *prev, void *next, void *last);
+ #define switch_to(prev, next, last) prev = _switch_to(prev, next, last)
+-- 
+1.6.6.1
 
