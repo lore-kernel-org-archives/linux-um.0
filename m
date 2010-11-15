@@ -1,109 +1,163 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ostmann@websuche.de>) id 1P6h7B-0008VT-J6
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Oct 2010 10:02:17 +0000
-Received: from www45.your-server.de ([213.133.104.45])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1P6h79-0000rv-Q7
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Oct 2010 10:02:17 +0000
-Received: from [87.183.16.114] (helo=[192.168.0.131])
-	by www45.your-server.de with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.69) (envelope-from <ostmann@websuche.de>) id 1P6gni-0002Uf-B6
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 15 Oct 2010 11:42:10 +0200
-Message-ID: <4CB821EE.2010208@websuche.de>
-Date: Fri, 15 Oct 2010 11:42:06 +0200
-From: Felix Antonius Wilhelm Ostmann <ostmann@websuche.de>
-MIME-Version: 1.0
-Subject: [uml-devel] general protection failures
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 00/44] remove unnecessary semicolons
+Date: Sun, 14 Nov 2010 19:04:19 -0800
+Message-Id: <cover.1289789604.git.joe@perches.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jiri Kosina <trivial@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, microblaze-uclinux@itee.uq.edu.au, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, cpufreq@vger.kernel.org, linux-i2c@vger.kernel.org, netdev@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, e1000-devel@lists.sourceforge.net, linux-wireless@vger.kernel.org, ath9k-devel@venema.h4ckr.net, platform-driver-x86@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, spi-devel-general@lists.sourceforge.net, devel@driverdev.osuosl.org, linux-usb@vger.kernel.org, xen-devel@lists.xensource.com, virtualization@lists.osdl.org, v9fs-developer@lists.sourceforge.net, ceph-devel@vger.kernel.org, logfs@logfs.org, linux-nfs@vger.kernel.org, ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org, linux-mm@kvack.org, alsa-devel@alsa-project.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-V2UgdXNlIFVNTCBzaW5jZSA0IHllYXJzIG9uIG9uZSBob3N0IChQNCkuIE5vdyB3ZSBidWlsZCBh
-bm90aGVyIFVNTC1Ib3N0Cm9uIGEgWGVvbiBhbmQgYWxsIHdhcyBmaW5lLiBBIHdlZWsgYWdvIHdl
-IHN0YXJ0ZXQgdGhlIHRoaXJkIGd1ZXN0IGF0IHRoZQpYZW9uIEhvc3QgYW5kIGFmdGVyIHNvbWUg
-dGltZSB0aGUgZ3Vlc3Qgd2FzIGtpbGxlZCBmcm9tIHRoZSBob3N0IChzZWUKdGhlIGxvZyBhdCB0
-aGUgZW5kKS4gSXQgaXMgYWxsd2F5cyB0aGUgdGhpcmQgc3RhcnRldCBndWVzdC4gV2Ugc3RvcHBl
-ZAphbGwgZ3Vlc3QgYW5kIHN0YXJ0ZXQgaW4gZGlmZmVyZW50IG9yZGVyIGFuZCB0aGUgbGFzdCAo
-dGhpcmQpIHN0YXJ0ZXQKZ3Vlc3QgZ2V0IHRoZSBnZW5lcmFsIHByb3RlY3Rpb24gZXJyb3IuIFRo
-YW5rcyBmb3IgYW55IGhlbHAhCgoKcm9vdEBpbnRlcm41On4jIHVuYW1lIC1hCkxpbnV4IGludGVy
-bjUgMi42LjI2LTItYW1kNjQgIzEgU01QIFRodSBTZXAgMTYgMTU6NTY6MzggVVRDIDIwMTAgeDg2
-XzY0CkdOVS9MaW51eAoKcm9vdEBpbnRlcm41On4jIGNhdCAvcHJvYy9jcHVpbmZvCnByb2Nlc3Nv
-cgk6IDAKdmVuZG9yX2lkCTogR2VudWluZUludGVsCmNwdSBmYW1pbHkJOiA2Cm1vZGVsCQk6IDE1
-Cm1vZGVsIG5hbWUJOiBJbnRlbChSKSBYZW9uKFIpIENQVSAgICAgICAgICAgIDMwNTAgIEAgMi4x
-M0dIegpzdGVwcGluZwk6IDIKY3B1IE1IegkJOiAyMTI3Ljk5NgpjYWNoZSBzaXplCTogMjA0OCBL
-QgpwaHlzaWNhbCBpZAk6IDAKc2libGluZ3MJOiAyCmNvcmUgaWQJCTogMApjcHUgY29yZXMJOiAy
-CmFwaWNpZAkJOiAwCmluaXRpYWwgYXBpY2lkCTogMApmcHUJCTogeWVzCmZwdV9leGNlcHRpb24J
-OiB5ZXMKY3B1aWQgbGV2ZWwJOiAxMAp3cAkJOiB5ZXMKZmxhZ3MJCTogZnB1IHZtZSBkZSBwc2Ug
-dHNjIG1zciBwYWUgbWNlIGN4OCBhcGljIHNlcCBtdHJyIHBnZSBtY2EgY21vdgpwYXQgcHNlMzYg
-Y2xmbHVzaCBkdHMgYWNwaSBtbXggZnhzciBzc2Ugc3NlMiBzcyBodCB0bSBwYmUgc3lzY2FsbCBu
-eCBsbQpjb25zdGFudF90c2MgYXJjaF9wZXJmbW9uIHBlYnMgYnRzIHJlcF9nb29kIHBuaSBtb25p
-dG9yIGRzX2NwbCB2bXggZXN0CnRtMiBzc3NlMyBjeDE2IHh0cHIgbGFoZl9sbQpib2dvbWlwcwk6
-IDQyNTkuMzUKY2xmbHVzaCBzaXplCTogNjQKY2FjaGVfYWxpZ25tZW50CTogNjQKYWRkcmVzcyBz
-aXplcwk6IDM2IGJpdHMgcGh5c2ljYWwsIDQ4IGJpdHMgdmlydHVhbApwb3dlciBtYW5hZ2VtZW50
-OgoKcHJvY2Vzc29yCTogMQp2ZW5kb3JfaWQJOiBHZW51aW5lSW50ZWwKY3B1IGZhbWlseQk6IDYK
-bW9kZWwJCTogMTUKbW9kZWwgbmFtZQk6IEludGVsKFIpIFhlb24oUikgQ1BVICAgICAgICAgICAg
-MzA1MCAgQCAyLjEzR0h6CnN0ZXBwaW5nCTogMgpjcHUgTUh6CQk6IDIxMjcuOTk2CmNhY2hlIHNp
-emUJOiAyMDQ4IEtCCnBoeXNpY2FsIGlkCTogMApzaWJsaW5ncwk6IDIKY29yZSBpZAkJOiAxCmNw
-dSBjb3Jlcwk6IDIKYXBpY2lkCQk6IDEKaW5pdGlhbCBhcGljaWQJOiAxCmZwdQkJOiB5ZXMKZnB1
-X2V4Y2VwdGlvbgk6IHllcwpjcHVpZCBsZXZlbAk6IDEwCndwCQk6IHllcwpmbGFncwkJOiBmcHUg
-dm1lIGRlIHBzZSB0c2MgbXNyIHBhZSBtY2UgY3g4IGFwaWMgc2VwIG10cnIgcGdlIG1jYSBjbW92
-CnBhdCBwc2UzNiBjbGZsdXNoIGR0cyBhY3BpIG1teCBmeHNyIHNzZSBzc2UyIHNzIGh0IHRtIHBi
-ZSBzeXNjYWxsIG54IGxtCmNvbnN0YW50X3RzYyBhcmNoX3BlcmZtb24gcGVicyBidHMgcmVwX2dv
-b2QgcG5pIG1vbml0b3IgZHNfY3BsIHZteCBlc3QKdG0yIHNzc2UzIGN4MTYgeHRwciBsYWhmX2xt
-CmJvZ29taXBzCTogNDI1Ni4wMQpjbGZsdXNoIHNpemUJOiA2NApjYWNoZV9hbGlnbm1lbnQJOiA2
-NAphZGRyZXNzIHNpemVzCTogMzYgYml0cyBwaHlzaWNhbCwgNDggYml0cyB2aXJ0dWFsCnBvd2Vy
-IG1hbmFnZW1lbnQ6CgoKZnJvbSBzeXNsb2c6Ci92YXIvbG9nL3N5c2xvZy4zLmd6Ok9jdCAxMSAx
-NjoxMDo0NyBpbnRlcm41IGtlcm5lbDogWzE0MjY2MzAuOTc4NDM0XQpsaW51eFsxMjgyM10gZ2Vu
-ZXJhbCBwcm90ZWN0aW9uIGlwOjdmZjA5ZGViMzM1YyBzcDo2MDM2ZjlmMCBlcnJvcjowIGluCmxp
-YmMtMi43LnNvWzdmZjA5ZGU4MDAwMCsxNGEwMDBdCi92YXIvbG9nL3N5c2xvZy4wOk9jdCAxNCAx
-MzoxMTo0NiBpbnRlcm41IGtlcm5lbDogWzE3NDYzNzkuOTQ0NTkwXQpsaW51eFsxMDY5Ml0gZ2Vu
-ZXJhbCBwcm90ZWN0aW9uIGlwOjdmYTk1ZTAxZjM1YyBzcDo2MDM2ZjlmMCBlcnJvcjowIGluCmxp
-YmMtMi43LnNvWzdmYTk1ZGZlYzAwMCsxNGEwMDBdCi92YXIvbG9nL3N5c2xvZy4wOk9jdCAxNCAx
-NDowMjoxNyBpbnRlcm41IGtlcm5lbDogWzE3NTAxMjguNzgzODI2XQpsaW51eFsyNDEyXSBnZW5l
-cmFsIHByb3RlY3Rpb24gaXA6N2ZiYThmYmU0MzVjIHNwOjYwMzZmOWYwIGVycm9yOjAgaW4KbGli
-Yy0yLjcuc29bN2ZiYThmYmIxMDAwKzE0YTAwMF0KL3Zhci9sb2cvc3lzbG9nOk9jdCAxNSAxMDoy
-MDowMyBpbnRlcm41IGtlcm5lbDogWzE4NDM1ODMuOTA1MDE2XQpsaW51eFs1MDc1XSBnZW5lcmFs
-IHByb3RlY3Rpb24gaXA6N2YwYjkxMjhmMzVjIHNwOjYwMzZmOWYwIGVycm9yOjAgaW4KbGliYy0y
-Ljcuc29bN2YwYjkxMjVjMDAwKzE0YTAwMF0KL3Zhci9sb2cvc3lzbG9nOk9jdCAxNSAxMToyMDox
-NyBpbnRlcm41IGtlcm5lbDogWzE4NDgxMDMuNjM2Mzc1XQpsaW51eFsxMDc4NV0gZ2VuZXJhbCBw
-cm90ZWN0aW9uIGlwOjdmNmE3ZGMyNzM1YyBzcDo2MDM2ZjlmMCBlcnJvcjowIGluCmxpYmMtMi43
-LnNvWzdmNmE3ZGJmNDAwMCsxNGEwMDBdCgoKLS0gCk1pdCBmcmV1bmRsaWNoZW4gR3LDvMOfZW4K
-CkZlbGl4IEFudG9uaXVzIFdpbGhlbG0gT3N0bWFubgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpXZWJzdWNoZSBTZWFyY2ggVGVjaG5v
-bG9neSBHbWJIICYgQ28uIEtHCk1hcnRpbmlzdHJhw59lIDMsIEQtNDkwODAgT3NuYWJyw7xjaywg
-R2VybWFueQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQpUZWwuOiArNDkgNTQxIDQwNjY2LTAsIEZheDogKzQ5IDU0MSA0MDY2Ni0yMgpF
-bWFpbDogaW5mb0B3ZWJzdWNoZS5kZSwgV2ViOiB3d3cud2Vic3VjaGUuZGUKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQUcgT3NuYWJy
-w7xjayAtIEhSQSAyMDAyNTIsIFVzdC1JZE5yLjogREU4MTQ3MzczMTAKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KS29tcGxlbWVudMOk
-cmluOiBXZWJzdWNoZSBTZWFyY2ggVGVjaG5vbG9neSBWZXJ3YWx0dW5ncyBHbWJICkFHIE9zbmFi
-csO8Y2sgLSBIUkIgMjAwMzU5LCBHZXNjaMOkZnRzZsO8aHJlcjogQW5zYXMgTWV5ZXIKLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCi0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLQpEb3dubG9hZCBuZXcgQWRvYmUoUikgRmxhc2goUikgQnVpbGRl
-cihUTSkgNApUaGUgbmV3IEFkb2JlKFIpIEZsZXgoUikgNCBhbmQgRmxhc2goUikgQnVpbGRlcihU
-TSkgNCAoZm9ybWVybHkgCkZsZXgoUikgQnVpbGRlcihUTSkpIGVuYWJsZSB0aGUgZGV2ZWxvcG1l
-bnQgb2YgcmljaCBhcHBsaWNhdGlvbnMgdGhhdCBydW4KYWNyb3NzIG11bHRpcGxlIGJyb3dzZXJz
-IGFuZCBwbGF0Zm9ybXMuIERvd25sb2FkIHlvdXIgZnJlZSB0cmlhbHMgdG9kYXkhCmh0dHA6Ly9w
-LnNmLm5ldC9zZnUvYWRvYmUtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXIt
-bW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+ya trivial series...
+
+Joe Perches (44):
+  arch/arm: Remove unnecessary semicolons
+  arch/microblaze: Remove unnecessary semicolons
+  arch/um: Remove unnecessary semicolons
+  drivers/cpufreq: Remove unnecessary semicolons
+  drivers/gpio: Remove unnecessary semicolons
+  drivers/i2c: Remove unnecessary semicolons
+  drivers/isdn: Remove unnecessary semicolons
+  drivers/leds: Remove unnecessary semicolons
+  drivers/media/video: Remove unnecessary semicolons
+  drivers/misc: Remove unnecessary semicolons
+  drivers/mmc: Remove unnecessary semicolons
+  drivers/net/bnx2x: Remove unnecessary semicolons
+  drivers/net/e1000e: Remove unnecessary semicolons
+  drivers/net/ixgbe: Remove unnecessary semicolons
+  drivers/net/vxge: Remove unnecessary semicolons
+  drivers/net/wireless/ath: Remove unnecessary semicolons
+  drivers/net/wireless/iwlwifi: Remove unnecessary semicolons
+  drivers/net/cnic.c: Remove unnecessary semicolons
+  drivers/platform/x86: Remove unnecessary semicolons
+  drivers/power: Remove unnecessary semicolons
+  drivers/s390/net: Remove unnecessary semicolons
+  drivers/scsi/be2iscsi: Remove unnecessary semicolons
+  drivers/scsi/bfa: Remove unnecessary semicolons
+  drivers/scsi/lpfc: Remove unnecessary semicolons
+  drivers/scsi/pm8001: Remove unnecessary semicolons
+  drivers/scsi/qla2xxx: Remove unnecessary semicolons
+  drivers/serial: Remove unnecessary semicolons
+  drivers/spi: Remove unnecessary semicolons
+  drivers/staging: Remove unnecessary semicolons
+  drivers/usb/gadget: Remove unnecessary semicolons
+  drivers/xen: Remove unnecessary semicolons
+  fs/9p: Remove unnecessary semicolons
+  fs/ceph: Remove unnecessary semicolons
+  fs/logfs: Remove unnecessary semicolons
+  fs/nfs: Remove unnecessary semicolons
+  fs/ocfs2: Remove unnecessary semicolons
+  fs/ubifs: Remove unnecessary semicolons
+  include/linux/if_macvlan.h: Remove unnecessary semicolons
+  include/net/caif/cfctrl.h: Remove unnecessary semicolons
+  mm/hugetlb.c: Remove unnecessary semicolons
+  net/ipv6/mcast.c: Remove unnecessary semicolons
+  net/sunrpc/addr.c: Remove unnecessary semicolons
+  sound/core/pcm_lib.c: Remove unnecessary semicolons
+  sound/soc/codecs: Remove unnecessary semicolons
+
+ arch/arm/mach-at91/at91cap9_devices.c              |    2 +-
+ arch/arm/mach-at91/at91sam9g45_devices.c           |    2 +-
+ arch/arm/mach-at91/at91sam9rl_devices.c            |    2 +-
+ arch/arm/mach-nuc93x/time.c                        |    2 +-
+ arch/arm/mach-tegra/tegra2_clocks.c                |    2 +-
+ arch/arm/mach-w90x900/cpu.c                        |    2 +-
+ arch/arm/plat-mxc/irq.c                            |    2 +-
+ arch/microblaze/lib/memmove.c                      |    2 +-
+ arch/um/drivers/mmapper_kern.c                     |    2 +-
+ drivers/cpufreq/cpufreq_conservative.c             |    2 +-
+ drivers/gpio/langwell_gpio.c                       |    2 +-
+ drivers/i2c/busses/i2c-designware.c                |    2 +-
+ drivers/isdn/hardware/mISDN/mISDNinfineon.c        |    4 ++--
+ drivers/isdn/hardware/mISDN/mISDNisar.c            |    2 +-
+ drivers/leds/leds-mc13783.c                        |    2 +-
+ drivers/media/video/cx88/cx88-blackbird.c          |    2 +-
+ drivers/media/video/davinci/vpfe_capture.c         |    2 +-
+ drivers/media/video/em28xx/em28xx-cards.c          |    2 +-
+ drivers/misc/bmp085.c                              |    2 +-
+ drivers/misc/isl29020.c                            |    2 +-
+ drivers/mmc/host/davinci_mmc.c                     |    2 +-
+ drivers/net/bnx2x/bnx2x_link.c                     |    4 ++--
+ drivers/net/bnx2x/bnx2x_main.c                     |    2 +-
+ drivers/net/cnic.c                                 |    2 +-
+ drivers/net/e1000e/netdev.c                        |    2 +-
+ drivers/net/ixgbe/ixgbe_sriov.c                    |    2 +-
+ drivers/net/vxge/vxge-main.c                       |    2 +-
+ drivers/net/wireless/ath/ath9k/htc.h               |    2 +-
+ drivers/net/wireless/iwlwifi/iwl-agn.c             |    2 +-
+ drivers/platform/x86/classmate-laptop.c            |    2 +-
+ drivers/platform/x86/thinkpad_acpi.c               |    2 +-
+ drivers/power/intel_mid_battery.c                  |    2 +-
+ drivers/s390/net/qeth_core_sys.c                   |    2 +-
+ drivers/scsi/be2iscsi/be_main.c                    |    4 ++--
+ drivers/scsi/bfa/bfa_fcs_lport.c                   |    2 +-
+ drivers/scsi/lpfc/lpfc_bsg.c                       |    2 +-
+ drivers/scsi/pm8001/pm8001_init.c                  |    2 +-
+ drivers/scsi/qla2xxx/qla_isr.c                     |    4 ++--
+ drivers/scsi/qla2xxx/qla_nx.c                      |    2 +-
+ drivers/serial/mrst_max3110.c                      |    2 +-
+ drivers/spi/amba-pl022.c                           |    2 +-
+ drivers/spi/spi_nuc900.c                           |    2 +-
+ .../staging/ath6kl/hif/sdio/linux_sdio/src/hif.c   |    2 +-
+ drivers/staging/ath6kl/os/linux/ar6000_drv.c       |    2 +-
+ drivers/staging/bcm/InterfaceInit.c                |    2 +-
+ drivers/staging/bcm/InterfaceIsr.c                 |    2 +-
+ drivers/staging/bcm/Misc.c                         |    4 ++--
+ .../comedi/drivers/addi-data/APCI1710_Tor.c        |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1500.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1516.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci3501.c      |    2 +-
+ drivers/staging/comedi/drivers/amplc_pci230.c      |    2 +-
+ drivers/staging/comedi/drivers/cb_das16_cs.c       |    2 +-
+ drivers/staging/comedi/drivers/comedi_bond.c       |    2 +-
+ drivers/staging/crystalhd/crystalhd_hw.c           |    2 +-
+ drivers/staging/go7007/go7007-driver.c             |    2 +-
+ drivers/staging/iio/accel/lis3l02dq_ring.c         |    2 +-
+ .../staging/intel_sst/intel_sst_drv_interface.c    |    4 ++--
+ drivers/staging/keucr/smilmain.c                   |    4 ++--
+ drivers/staging/keucr/smilsub.c                    |    4 ++--
+ drivers/staging/msm/lcdc_toshiba_wvga_pt.c         |    2 +-
+ drivers/staging/rt2860/common/cmm_data_pci.c       |    4 ++--
+ drivers/staging/rt2860/rt_linux.c                  |    2 +-
+ drivers/staging/rt2860/rtmp.h                      |    2 +-
+ drivers/staging/rtl8192e/ieee80211/ieee80211_tx.c  |    2 +-
+ drivers/staging/rtl8192e/r819xE_phy.c              |    2 +-
+ drivers/staging/rtl8192u/ieee80211/ieee80211_tx.c  |    2 +-
+ drivers/staging/rtl8192u/r8192U_core.c             |    2 +-
+ drivers/staging/rtl8192u/r819xU_phy.c              |    2 +-
+ drivers/staging/rtl8712/rtl8712_efuse.c            |    2 +-
+ drivers/staging/rtl8712/rtl8712_xmit.c             |    2 +-
+ drivers/staging/rtl8712/rtl871x_xmit.c             |    2 +-
+ drivers/staging/tidspbridge/core/tiomap3430.c      |    4 ++--
+ drivers/staging/tidspbridge/rmgr/nldr.c            |    2 +-
+ drivers/staging/vt6655/card.c                      |    2 +-
+ drivers/staging/vt6655/iwctl.c                     |    2 +-
+ drivers/staging/vt6655/wpa2.c                      |    4 ++--
+ drivers/staging/vt6656/baseband.c                  |    2 +-
+ drivers/staging/vt6656/iwctl.c                     |    2 +-
+ drivers/staging/vt6656/power.c                     |    2 +-
+ drivers/staging/vt6656/wpa2.c                      |    4 ++--
+ drivers/usb/gadget/f_fs.c                          |    2 +-
+ drivers/xen/swiotlb-xen.c                          |    2 +-
+ fs/9p/acl.c                                        |    2 +-
+ fs/9p/xattr.c                                      |    2 +-
+ fs/ceph/mds_client.c                               |    2 +-
+ fs/logfs/readwrite.c                               |    2 +-
+ fs/nfs/getroot.c                                   |    2 +-
+ fs/ocfs2/refcounttree.c                            |    2 +-
+ fs/ubifs/scan.c                                    |    2 +-
+ include/linux/if_macvlan.h                         |    2 +-
+ include/net/caif/cfctrl.h                          |    2 +-
+ mm/hugetlb.c                                       |    2 +-
+ net/ipv6/mcast.c                                   |    2 +-
+ net/sunrpc/addr.c                                  |    2 +-
+ sound/core/pcm_lib.c                               |    2 +-
+ sound/soc/codecs/wm8904.c                          |    2 +-
+ sound/soc/codecs/wm8940.c                          |    1 -
+ sound/soc/codecs/wm8993.c                          |    2 +-
+ sound/soc/codecs/wm_hubs.c                         |    2 +-
+ 100 files changed, 111 insertions(+), 112 deletions(-)
+
+-- 
+1.7.3.1.g432b3.dirty
 
