@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mortehu@ping.uio.no>) id 1PLg4h-0005VQ-Vx
+	(envelope-from <ondra@czol.eu>) id 1PJADW-0007Ba-Tc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Nov 2010 17:57:39 +0000
-Received: from ping.uio.no ([193.157.115.196])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PLg4d-0003tH-Fq
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 25 Nov 2010 17:57:39 +0000
-Received: from [2001:700:100:570::200] (helo=knuth.ping.uio.no ident=postfix)
-	by ping.uio.no with esmtp (Exim 4.69 #1 (Debian)) id 1PLfkX-0001Pl-Di
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 25 Nov 2010 18:36:52 +0100
-Date: Thu, 25 Nov 2010 18:36:49 +0100
-From: Morten Hustveit <mortehu@ping.uio.no>
-Message-ID: <20101125173649.GA20609@ping.uio.no>
+	Thu, 18 Nov 2010 19:32:22 +0000
+Received: from mail.cz-hosting.com ([95.168.206.20])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PJADV-0000zj-4W for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Nov 2010 19:32:22 +0000
+Message-ID: <4CE57F35.60505@czol.eu>
+Date: Thu, 18 Nov 2010 20:32:05 +0100
+From: =?ISO-8859-2?Q?Ond=F8ej_Kunc?= <ondra@czol.eu>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] [PATCH] uml_switch: configurable network delay
+References: <4CE565D1.602@czol.eu>	<alpine.LFD.2.00.1011181852270.15886@dhcp-lab-213.englab.brq.redhat.com>
+	<AANLkTin==wLEtuw8Kb-i48X06PeEJpewCXPORbM1xA1G@mail.gmail.com>
+In-Reply-To: <AANLkTin==wLEtuw8Kb-i48X06PeEJpewCXPORbM1xA1G@mail.gmail.com>
+Subject: Re: [uml-devel] Ext4 in user mode linux hang
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,297 +26,337 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Cc: linux-ext4@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Add the "-delay" option to configure network delay in milliseconds
+Hi,
 
-When using UML to test networking code, it would be helpful if the
-switch daemon could provide configurable delay, in order to simulate
-ordinary network delay.  This patch provides that feature by storing
-scheduled packets in a linked list, and using the poll() timeout
-parameter to pop items from the list at the appropriate time.
+on vanilla kernel (2.6.36 from kernel.org) ... it fails too(so it is not =
 
-Presently, the size of the backlog is unbounded, but I think this is
-acceptable for a testing/debugging feature.
+debian specific), traces from sysrq t (via uml_mconsole)
 
-PS: I could not find a public SCM with the most recent development
-version of the utilities.
---- 
-diff -ur tools-20070815/uml_switch/port.c tools-20070815.my/uml_switch/port.c
---- tools-20070815/uml_switch/port.c	2006-02-27 22:02:45.000000000 +0100
-+++ tools-20070815.my/uml_switch/port.c	2010-11-25 18:32:20.597950521 +0100
-@@ -8,6 +8,8 @@
- #include "hash.h"
- #include "port.h"
- 
-+typedef void (*sender_t)(int fd, void *packet, int len, void *data);
-+
- struct packet {
-   struct {
-     unsigned char dest[ETH_ALEN];
-@@ -24,15 +26,57 @@
-   void *data;
-   int data_len;
-   unsigned char src[ETH_ALEN];
--  void (*sender)(int fd, void *packet, int len, void *data);
-+  sender_t sender;
- };
- 
- static struct port *head = NULL;
- 
-+struct queued_packet {
-+  struct queued_packet *next;
-+
-+  struct timeval delivery_time;
-+
-+  sender_t sender;
-+  void *data;
-+
-+  int fd;
-+  int len;
-+  struct sockaddr_un sock;
-+
-+  char packet[1];
-+};
-+
-+static struct queued_packet *first_packet = NULL;
-+static struct queued_packet *last_packet = NULL;
-+
-+extern int simulated_delay;
-+
- #define IS_BROADCAST(addr) ((addr[0] & 1) == 1)
- 
- static void free_port(struct port *port)
- {
-+  struct queued_packet *qp, *prev = 0, *next;
-+
-+  /* Remove queued packets belonging to `port' */
-+  qp = first_packet;
-+
-+  while (qp) {
-+    if (qp->fd == port->control) {
-+      next = qp->next;
-+      if (prev)
-+	prev->next = next;
-+      else
-+	first_packet = next;
-+      free (qp);
-+      qp = next;
-+    } else {
-+      prev = qp;
-+      qp = qp->next;
-+    }
-+  }
-+
-+  last_packet = prev;
-+
-   if(port->prev) port->prev->next = port->next;
-   else head = port->next;
-   if(port->next) port->next->prev = port->prev;
-@@ -83,6 +127,76 @@
-   update_entry_time(p->header.src);
- }
- 
-+static void send_dst_packet(sender_t sender, int fd, void *packet, int len, void *data)
-+{
-+  struct queued_packet *qp;
-+  if (!simulated_delay) {
-+    sender(fd, data, len, data);
-+  } else {
-+    qp = malloc(sizeof(*qp) - sizeof(qp->packet) + len);
-+
-+    if(qp == NULL) {
-+      perror("malloc");
-+      return;
-+    }
-+
-+    qp->next = 0;
-+
-+    gettimeofday(&qp->delivery_time, 0);
-+
-+    qp->delivery_time.tv_usec += simulated_delay * 1000;
-+
-+    if (qp->delivery_time.tv_usec > 1000000) {
-+      qp->delivery_time.tv_sec += qp->delivery_time.tv_usec / 1000000;
-+      qp->delivery_time.tv_usec %= 1000000;
-+    }
-+
-+    qp->sender = sender;
-+    qp->data = data;
-+
-+    qp->fd = fd;
-+    qp->len = len;
-+    memcpy(qp->packet, packet, len);
-+
-+    if (!first_packet)
-+      first_packet = qp;
-+    else
-+      last_packet->next = qp;
-+
-+    last_packet = qp;
-+  }
-+}
-+
-+void process_queued_packets()
-+{
-+  struct queued_packet *qp;
-+  struct timeval now;
-+  int err;
-+
-+  if (!first_packet)
-+    return;
-+
-+  gettimeofday(&now, 0);
-+
-+  while (first_packet)
-+    {
-+      if (first_packet->delivery_time.tv_sec > now.tv_sec
-+	  || (first_packet->delivery_time.tv_sec == now.tv_sec
-+	      && first_packet->delivery_time.tv_usec > now.tv_usec))
-+	break;
-+
-+      qp = first_packet;
-+
-+      if (qp == last_packet)
-+	last_packet = 0;
-+      first_packet = qp->next;
-+
-+      (*qp->sender)(qp->fd, qp->packet, qp->len, qp->data);
-+
-+      free(qp);
-+    }
-+}
-+
- static void send_dst(struct port *port, struct packet *packet, int len, 
- 		     int hub)
- {
-@@ -104,10 +218,11 @@
-       /* don't send it back the port it came in */
-       if(p == port) continue;
- 
--      (*p->sender)(p->control, packet, len, p->data);
-+      send_dst_packet(p->sender, p->control, packet, len, p->data);  
-     }
-   }
--  else (*target->sender)(target->control, packet, len, target->data);
-+  else
-+    send_dst_packet(target->sender, target->control, packet, len, target->data);  
- }
- 
- static void handle_data(int fd, int hub, struct packet *packet, int len, 
-@@ -148,8 +263,7 @@
-   handle_data(fd, hub, &packet, len, NULL, match_tap);
- }
- 
--int setup_port(int fd, void (*sender)(int fd, void *packet, int len, 
--				      void *data), void *data, int data_len)
-+int setup_port(int fd, sender_t sender)
- {
-   struct port *port;
- 
-@@ -188,6 +302,25 @@
-   }
- }
- 
-+int next_queued_packet()
-+{
-+  struct timeval now;
-+  int result = -1;
-+
-+  if (first_packet)
-+    {
-+      gettimeofday(&now, 0);
-+
-+      result = (first_packet->delivery_time.tv_sec - now.tv_sec) * 1000
-+	+ (first_packet->delivery_time.tv_usec - now.tv_usec) / 1000;
-+
-+      if (result < 0)
-+	result = 0;
-+    }
-+
-+  return result;
-+}
-+
- static int match_sock(int port_fd, int data_fd, void *port_data, 
- 		      int port_data_len, void *data)
- {
-diff -ur tools-20070815/uml_switch/port.h tools-20070815.my/uml_switch/port.h
---- tools-20070815/uml_switch/port.h	2002-04-10 15:07:02.000000000 +0200
-+++ tools-20070815.my/uml_switch/port.h	2010-11-25 18:15:51.557625929 +0100
-@@ -16,5 +16,7 @@
- 		      int data_len);
- extern void handle_tap_data(int fd, int hub);
- extern void handle_sock_data(int fd, int hub);
-+extern int next_queued_packet();
-+extern void process_queued_packets();
- 
- #endif
-diff -ur tools-20070815/uml_switch/uml_switch.c tools-20070815.my/uml_switch/uml_switch.c
---- tools-20070815/uml_switch/uml_switch.c	2006-02-27 22:02:36.000000000 +0100
-+++ tools-20070815.my/uml_switch/uml_switch.c	2010-11-25 18:15:51.545961139 +0100
-@@ -26,6 +26,7 @@
- 
- static int hub = 0;
- static int compat_v0 = 0;
-+int simulated_delay = 0;
- 
- enum request_type { REQ_NEW_CONTROL };
- 
-@@ -392,9 +393,10 @@
-   tap_str = "[ -tap tap-device ]";
- #endif
- 
--  fprintf(stderr, "Usage : %s [ -unix control-socket ] [ -hub ] %s\n"
-+  fprintf(stderr, "Usage : %s [ -unix control-socket ] [ -hub ] "
-+	  "[ -delay ms ] %s\n"
- 	  "or : %s -compat-v0 [ -unix control-socket data-socket ] "
--	  "[ -hub ] %s\n", prog, tap_str, prog, tap_str);
-+	  "[ -hub ] [ -delay ms ] %s\n", prog, tap_str, prog, tap_str);
- 
-   exit(1);
- }
-@@ -455,6 +457,13 @@
-       argc--;
-       argv++;
-     }
-+    else if(!strcmp(argv[0], "-delay")){
-+      if(argc < 2) 
-+	Usage();
-+      simulated_delay = atoi(argv[1]);
-+      argv += 2;
-+      argc -= 2;
-+    }
-     else Usage();
-   }
- 
-@@ -521,7 +530,7 @@
-   while(1){
-     char buf[128];
- 
--    n = poll(fds, nfds, -1);
-+    n = poll(fds, nfds, next_queued_packet());
-     if(n < 0){
-       if(errno == EINTR) continue;
-       perror("poll");
-@@ -562,6 +571,8 @@
- 	else close_descriptor(fds[i].fd);
-       }
-     }
-+
-+    process_queued_packets();
-   }
-  out:
-   cleanup();
+(only processess in D state):
 
-------------------------------------------------------------------------------
-Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
-Tap into the largest installed PC base & get more eyes on your game by
-optimizing for Intel(R) Graphics Technology. Get started today with the
-Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
-http://p.sf.net/sfu/intelisp-dev2dev
+jbd2/ubdb-8   D 00000000405068b3     0   580      2 0x00000000
+66aea608 660214c8 66021038 60284440 66041cb0 60013597 66aea140 66040000
+        66040000 66aea140 66041d10 601d3381 679ac2d0 66bcb8a8 66041d10 =
+
+66040000
+        00000000 66bcb800 67453a80 1000014a0 66040000 67453b18 66041e50 =
+
+60122f6f
+Call Trace:
+66041c88:  [<60013597>] _switch_to+0x5e/0xae
+66041cb8:  [<601d3381>] schedule+0x274/0x2ae
+66041d18:  [<60122f6f>] jbd2_journal_commit_transaction+0x16c/0xe59
+66041d98:  [<600245e3>] switch_threads+0x2d/0x3d
+66041de0:  [<60042f46>] autoremove_wake_function+0x0/0x34
+66041e58:  [<6012635c>] kjournald2+0xb8/0x1bb
+66041e90:  [<60042f46>] autoremove_wake_function+0x0/0x34
+66041eb0:  [<601262a4>] kjournald2+0x0/0x1bb
+66041ed0:  [<601262a4>] kjournald2+0x0/0x1bb
+66041ee8:  [<60042c9d>] kthread+0x91/0x99
+66041f48:  [<60021329>] run_kernel_thread+0x41/0x4a
+66041f58:  [<60042c0c>] kthread+0x0/0x99
+66041f98:  [<60021310>] run_kernel_thread+0x28/0x4a
+66041fc8:  [<6001350f>] new_thread_handler+0x71/0x9b
+
+flush-98:16   D 00000000405068b3     0   609      2 0x00000000
+660214c8 608dec08 608de778 60284440 6613b9d0 60013597 66021000 6613a000
+        6613a000 66021000 6613ba30 601d3381 6613b9f0 6002a34f 6613ba30 =
+
+6613a000
+        76800000767 66021000 63474428 00000002 0000ffff 63474440 =
+
+6613ba90 601d45a2
+Call Trace:
+6613b9a8:  [<60013597>] _switch_to+0x5e/0xae
+6613b9d8:  [<601d3381>] schedule+0x274/0x2ae
+6613b9e8:  [<6002a34f>] wake_up_process+0x10/0x12
+6613ba38:  [<601d45a2>] rwsem_down_failed_common+0xb8/0xd8
+6613ba98:  [<601d45d5>] rwsem_down_write_failed+0x13/0x15
+6613baa8:  [<60027bbb>] call_rwsem_down_write_failed+0x13/0x20
+6613bae8:  [<601d3db5>] down_write+0x1c/0x1e
+6613baf8:  [<6010053a>] mpage_da_map_blocks+0x308/0x359
+6613bb68:  [<60100ce7>] ext4_da_writepages+0x2f7/0x479
+6613bc58:  [<6005b236>] do_writepages+0x1c/0x25
+6613bc68:  [<60090ab0>] writeback_single_inode+0x93/0x1d4
+6613bc98:  [<60090e42>] writeback_sb_inodes+0xa1/0xfe
+6613bcf8:  [<60091558>] writeback_inodes_wb+0xc5/0xe4
+6613bd00:  [<60042f7a>] wake_bit_function+0x0/0x2e
+6613bd48:  [<600916e6>] wb_writeback+0x16f/0x1de
+6613bda8:  [<601d3389>] schedule+0x27c/0x2ae
+6613bdf8:  [<60091868>] wb_do_writeback+0x113/0x130
+6613be08:  [<601d3600>] schedule_timeout+0x13e/0x15c
+6613be78:  [<6009190e>] bdi_writeback_thread+0x89/0x13f
+6613beb0:  [<60091885>] bdi_writeback_thread+0x0/0x13f
+6613bed0:  [<60091885>] bdi_writeback_thread+0x0/0x13f
+6613bee8:  [<60042c9d>] kthread+0x91/0x99
+6613bf48:  [<60021329>] run_kernel_thread+0x41/0x4a
+6613bf58:  [<60042c0c>] kthread+0x0/0x99
+6613bf98:  [<60021310>] run_kernel_thread+0x28/0x4a
+6613bfc8:  [<6001350f>] new_thread_handler+0x71/0x9b
+
+dd            D 00000000405068b3     0 18357    922 0x00000000
+608dec08 60276e98 6087b8c0 6002a1ed 6087b8d0 60013597 608de740 6087a000
+        6087a000 608de740 6087b930 601d3381 6087b930 601d7480 6087b930 =
+
+6087a000
+        816087b920 66bcb800 00000000 67453a80 6087a000 6087b998 6087b9e0 =
+
+60122942
+Call Trace:
+6087b898:  [<6002a1ed>] dequeue_task+0x39/0x48
+6087b8a8:  [<60013597>] _switch_to+0x5e/0xae
+6087b8d8:  [<601d3381>] schedule+0x274/0x2ae
+6087b938:  [<60122942>] start_this_handle+0x2f4/0x395
+6087b990:  [<60042f46>] autoremove_wake_function+0x0/0x34
+6087b9e8:  [<60122b70>] jbd2__journal_start+0xb9/0xf7
+6087ba38:  [<60122bbc>] jbd2_journal_start+0xe/0x10
+6087ba48:  [<6010add9>] ext4_journal_start_sb+0xe0/0x125
+6087ba78:  [<60015daf>] buffer_op+0xab/0xc7
+6087baa8:  [<600ffbf6>] ext4_da_write_begin+0xc1/0x1b4
+6087bb28:  [<60054e94>] generic_file_buffered_write+0x124/0x27e
+6087bbc8:  [<60088a92>] file_update_time+0x3b/0xfe
+6087bc18:  [<60056828>] __generic_file_aio_write+0x380/0x3bf
+6087bcd8:  [<600568bf>] generic_file_aio_write+0x58/0xa2
+6087bd18:  [<600f80fb>] ext4_file_write+0x92/0xa3
+6087bd48:  [<60077c1b>] do_sync_write+0xd1/0x10e
+6087bdb8:  [<60015daf>] buffer_op+0xab/0xc7
+6087be68:  [<600785ef>] vfs_write+0xb5/0x169
+6087bea8:  [<6007875c>] sys_write+0x45/0x6c
+6087bee8:  [<60015ab8>] handle_syscall+0x58/0x70
+6087bf08:  [<60024ecb>] userspace+0x2dd/0x38a
+6087bfc8:  [<60013497>] fork_handler+0x62/0x69
+
+Dne 18.11.2010 19:35, richard -rw- weinberger napsal(a):
+> 2010/11/18 Lukas Czerner<lczerner@redhat.com>:
+>    =
+
+>> On Thu, 18 Nov 2010, Ond=F8ej Kunc wrote:
+>>
+>>      =
+
+>>> Hi,
+>>>
+>>> I've recently tested ext4 in user mode linux VM. I compiled linux 2.6.3=
+6(from
+>>> debian source package). I configured kernel this way ... only disabled =
+modules
+>>> (to work with default debootstraped debian). Then I created this script:
+>>>        =
+
+> Can you reproduce this on a vanilla kernel?
+>
+>    =
+
+>>> #!/bin/bash
+>>> DD=3D"dd if=3D/dev/zero bs=3D1k"
+>>> for i in `seq 1 1000`; do
+>>>          A=3D$(($RANDOM%50000))
+>>>          $DD count=3D$A of=3Dfrag_$A
+>>>          for i in `seq 1 100`; do
+>>>                  A=3D$(($RANDOM%50000))
+>>>                  rm -f frag_$A
+>>>          done
+>>> done
+>>>
+>>>
+>>> This script I'had run on mounted ext4 partition (/dev/ubda ->  /mnt/tes=
+t). It's
+>>> purpose is creating fragmented filesystem to test e4defrag. But after s=
+ome
+>>> time it hungs the whole virtual system. All processes which want to wri=
+te to
+>>> /mnt/test are still in D state. I issued sysrq t via uml_mconsole and i=
+n that
+>>> output I found traces below.
+>>>
+>>> Ondra
+>>>        =
+
+>> I did not look at the traces closely, but did you tried another
+>> filesystem ? My experience with UML is that it is always broken so the
+>> problem might as well be somewhere else.
+>>
+>> -Lukas
+>>
+>>      =
+
+>>>
+>>>
+>>> flush-98:16   D 0000000041a0d8b3     0   811      2 0x00000000
+>>> 67c57d80 60276e90 69857980 6002a1ed 69857990 60013597 67c578c0 69856000
+>>>         69856000 67c578c0 698579f0 601d3181 69857a10 601d74a0 698579f0 =
+69856000
+>>>         ffffffff00000a57 62e09800 00000000 69ab1480 69856000 69857a58 6=
+9857aa0
+>>> 6012274e
+>>> Call Trace:
+>>> 69857958:  [<6002a1ed>] dequeue_task+0x39/0x48
+>>> 69857968:  [<60013597>] _switch_to+0x5e/0xae
+>>> 69857998:  [<601d3181>] schedule+0x274/0x2ae
+>>> 698579f8:  [<6012274e>] start_this_handle+0x2f4/0x395
+>>> 69857a50:  [<60042f42>] autoremove_wake_function+0x0/0x34
+>>> 69857aa8:  [<6012297c>] jbd2__journal_start+0xb9/0xf7
+>>> 69857af8:  [<601229c8>] jbd2_journal_start+0xe/0x10
+>>> 69857b08:  [<6010abe5>] ext4_journal_start_sb+0xe0/0x125
+>>> 69857b28:  [<600fa802>] ext4_meta_trans_blocks+0x5b/0xaf
+>>> 69857b68:  [<60100a43>] ext4_da_writepages+0x249/0x479
+>>> 69857c58:  [<6005b042>] do_writepages+0x1c/0x25
+>>> 69857c68:  [<600908bc>] writeback_single_inode+0x93/0x1d4
+>>> 69857c98:  [<60090c4e>] writeback_sb_inodes+0xa1/0xfe
+>>> 69857cf8:  [<60091364>] writeback_inodes_wb+0xc5/0xe4
+>>> 69857d00:  [<60042f76>] wake_bit_function+0x0/0x2e
+>>> 69857d48:  [<600914f2>] wb_writeback+0x16f/0x1de
+>>> 69857da8:  [<601d3189>] schedule+0x27c/0x2ae
+>>> 69857df8:  [<60091674>] wb_do_writeback+0x113/0x130
+>>> 69857e08:  [<601d3400>] schedule_timeout+0x13e/0x15c
+>>> 69857e78:  [<6009171a>] bdi_writeback_thread+0x89/0x13f
+>>> 69857eb0:  [<60091691>] bdi_writeback_thread+0x0/0x13f
+>>> 69857ed0:  [<60091691>] bdi_writeback_thread+0x0/0x13f
+>>> 69857ee8:  [<60042c99>] kthread+0x91/0x99
+>>> 69857f48:  [<60021329>] run_kernel_thread+0x41/0x4a
+>>> 69857f58:  [<60042c08>] kthread+0x0/0x99
+>>> 69857f98:  [<60021310>] run_kernel_thread+0x28/0x4a
+>>> 69857fc8:  [<6001350f>] new_thread_handler+0x71/0x9b
+>>>
+>>> jbd2/ubdb-8   D 0000000041a0d8b3     0  4542      2 0x00000000
+>>> 6838d640 60276e90 68275ca0 6002a1ed 68275cb0 60013597 6838d180 68274000
+>>>         68274000 6838d180 68275d10 601d3181 68fd7470 601d74a0 68275d10 =
+68274000
+>>>         00000000 62e09800 69ab1480 1000077f1 68274000 69ab1518 68275e50
+>>> 60122d7b
+>>> Call Trace:
+>>> 68275c78:  [<6002a1ed>] dequeue_task+0x39/0x48
+>>> 68275c88:  [<60013597>] _switch_to+0x5e/0xae
+>>> 68275cb8:  [<601d3181>] schedule+0x274/0x2ae
+>>> 68275d18:  [<60122d7b>] jbd2_journal_commit_transaction+0x16c/0xe59
+>>> 68275d98:  [<600245e3>] switch_threads+0x2d/0x3d
+>>> 68275de0:  [<60042f42>] autoremove_wake_function+0x0/0x34
+>>> 68275df8:  [<600222bb>] set_signals+0x1c/0x2e
+>>> 68275e18:  [<60043094>] finish_wait+0x64/0x6f
+>>> 68275e58:  [<60126168>] kjournald2+0xb8/0x1bb
+>>> 68275e90:  [<60042f42>] autoremove_wake_function+0x0/0x34
+>>> 68275eb0:  [<601260b0>] kjournald2+0x0/0x1bb
+>>> 68275ed0:  [<601260b0>] kjournald2+0x0/0x1bb
+>>> 68275ee8:  [<60042c99>] kthread+0x91/0x99
+>>> 68275f48:  [<60021329>] run_kernel_thread+0x41/0x4a
+>>> 68275f58:  [<60042c08>] kthread+0x0/0x99
+>>> 68275f98:  [<60021310>] run_kernel_thread+0x28/0x4a
+>>> 68275fc8:  [<6001350f>] new_thread_handler+0x71/0x9b
+>>>
+>>> dd            D 0000000041a0d8b3     0  4952   4593 0x00000000
+>>> 6838c8c0 67c57d80 67c578f8 60284440 69b6d7a8 60013597 6838c400 69b6c000
+>>>         69b6c000 6838c400 69b6d808 601d3181 69b6d7c8 6002a34f 69b6d808 =
+69b6c000
+>>>         00001000 6838c400 696c0838 00000001 ffffffffffffffff 00000000 6=
+9b6d868
+>>> 601d43a2
+>>> Call Trace:
+>>> 69b6d780:  [<60013597>] _switch_to+0x5e/0xae
+>>> 69b6d7b0:  [<601d3181>] schedule+0x274/0x2ae
+>>> 69b6d7c0:  [<6002a34f>] wake_up_process+0x10/0x12
+>>> 69b6d810:  [<601d43a2>] rwsem_down_failed_common+0xb8/0xd8
+>>> 69b6d838:  [<600222bb>] set_signals+0x1c/0x2e
+>>> 69b6d870:  [<601d43e9>] rwsem_down_read_failed+0x12/0x14
+>>> 69b6d880:  [<60027b98>] call_rwsem_down_read_failed+0x14/0x24
+>>> 69b6d8c8:  [<601d3b97>] down_read+0x11/0x13
+>>> 69b6d8d8:  [<600fe1cc>] ext4_map_blocks+0x3e/0x18e
+>>> 69b6d938:  [<600ffe02>] ext4_da_get_block_prep+0x83/0x2bd
+>>> 69b6d958:  [<60095705>] alloc_buffer_head+0x18/0x6c
+>>> 69b6d968:  [<60095d31>] alloc_page_buffers+0x75/0xd1
+>>> 69b6d9d8:  [<60097105>] block_prepare_write+0x177/0x380
+>>> 69b6d9e8:  [<6005588b>] add_to_page_cache_locked+0xbf/0xe7
+>>> 69b6da00:  [<600ffd7f>] ext4_da_get_block_prep+0x0/0x2bd
+>>> 69b6da98:  [<600973f3>] __block_write_begin+0x12/0x14
+>>> 69b6daa8:  [<600ffa62>] ext4_da_write_begin+0x123/0x1b4
+>>> 69b6db28:  [<60054ca0>] generic_file_buffered_write+0x124/0x27e
+>>> 69b6dbc8:  [<6008889e>] file_update_time+0x3b/0xfe
+>>> 69b6dc18:  [<60056634>] __generic_file_aio_write+0x380/0x3bf
+>>> 69b6dcd8:  [<600566cb>] generic_file_aio_write+0x58/0xa2
+>>> 69b6dd18:  [<600f7f07>] ext4_file_write+0x92/0xa3
+>>> 69b6dd48:  [<60077a27>] do_sync_write+0xd1/0x10e
+>>> 69b6ddb8:  [<60015daf>] buffer_op+0xab/0xc7
+>>> 69b6de68:  [<600783fb>] vfs_write+0xb5/0x169
+>>> 69b6dea8:  [<60078568>] sys_write+0x45/0x6c
+>>> 69b6dee8:  [<60015ab8>] handle_syscall+0x58/0x70
+>>> 69b6df08:  [<60024ecb>] userspace+0x2dd/0x38a
+>>> 69b6dfc8:  [<60013497>] fork_handler+0x62/0x69
+>>>
+>>> bash          D 0000000041a0d8b3     0  5324   5271 0x00000002
+>>> 67e2c540 60276e90 67dcfbd0 6002a1ed 67dcfbe0 60013597 67e2c080 67dce000
+>>>         67dce000 67e2c080 67dcfc40 601d3181 62a31000 601d74a0 67dcfc40 =
+67dce000
+>>>         67dcfc10 62e09800 00000000 69ab1480 67dce000 67dcfca8 67dcfcf0 =
+6012274e
+>>> Call Trace:
+>>> 67dcfba8:  [<6002a1ed>] dequeue_task+0x39/0x48
+>>> 67dcfbb8:  [<60013597>] _switch_to+0x5e/0xae
+>>> 67dcfbe8:  [<601d3181>] schedule+0x274/0x2ae
+>>> 67dcfc48:  [<6012274e>] start_this_handle+0x2f4/0x395
+>>> 67dcfca0:  [<60042f42>] autoremove_wake_function+0x0/0x34
+>>> 67dcfcf8:  [<6012297c>] jbd2__journal_start+0xb9/0xf7
+>>> 67dcfd48:  [<601229c8>] jbd2_journal_start+0xe/0x10
+>>> 67dcfd58:  [<6010abe5>] ext4_journal_start_sb+0xe0/0x125
+>>> 67dcfd60:  [<6008424f>] filldir+0x0/0x11a
+>>> 67dcfdb8:  [<600fb08a>] ext4_dirty_inode+0x1b/0x48
+>>> 67dcfdd8:  [<60091027>] __mark_inode_dirty+0x29/0x199
+>>> 67dcfdf8:  [<60088a63>] touch_atime+0x102/0x125
+>>> 67dcfe38:  [<6008424f>] filldir+0x0/0x11a
+>>> 67dcfe48:  [<600844fd>] vfs_readdir+0x7a/0xa1
+>>> 67dcfe98:  [<6008469d>] sys_getdents+0x90/0x124
+>>> 67dcfee8:  [<60015ab8>] handle_syscall+0x58/0x70
+>>> 67dcff08:  [<60024ecb>] userspace+0x2dd/0x38a
+>>> 67dcffc8:  [<60013497>] fork_handler+0x62/0x69
+>>>
+>>>
+>>>        =
+
+>> ------------------------------------------------------------------------=
+------
+>> Beautiful is writing same markup. Internet Explorer 9 supports
+>> standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2&  L3.
+>> Spend less time writing and  rewriting code and more time creating great
+>> experiences on the web. Be a part of the beta today
+>> http://p.sf.net/sfu/msIE9-sfdev2dev
+>> _______________________________________________
+>> User-mode-linux-devel mailing list
+>> User-mode-linux-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>>
+>>
+>>      =
+
+>
+>
+>    =
+
+
+
+-- =
+
+Ond=F8ej Kunc
+
+spr=E1vce serverov=E9 farmy
+CZOL media interactive s.r.o.
+S=EDdlo: Moul=EDkova 2238/1, Praha 5, 15000
+Kancel=E1=F8e: Na Mor=E1ni 5357, Chomutov, 43001
+Telefon: +420 723 137 981
+E-mail: ondra@czol.eu
+URL: www.czol.eu, www.cz-hosting.com
+
+
+---------------------------------------------------------------------------=
+---
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today
+http://p.sf.net/sfu/msIE9-sfdev2dev
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
