@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <renzo@cs.unibo.it>) id 1PK999-0001GQ-Cg
+	(envelope-from <richard.weinberger@gmail.com>) id 1PJ3YL-0005sE-VD
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Nov 2010 12:35:55 +0000
-Received: from leb.cs.unibo.it ([130.136.1.102])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PK998-00022y-6w
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Nov 2010 12:35:55 +0000
-Date: Sun, 21 Nov 2010 13:35:47 +0100
-From: Renzo Davoli <renzo@cs.unibo.it>
-Message-ID: <20101121123547.GB589@cs.unibo.it>
-References: <20101118114143.GB23698@cs.unibo.it>
-	<AANLkTimYG1jLwJ2tWLonFcoMWaQtaR9RG7HWJDbdE4cS@mail.gmail.com>
-	<4CE8F332.3050205@meduna.org>
+	Thu, 18 Nov 2010 12:25:25 +0000
+Received: from mail-yx0-f175.google.com ([209.85.213.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1PJ3YL-0005Zh-39 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Nov 2010 12:25:25 +0000
+Received: by yxd5 with SMTP id 5so1825536yxd.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 18 Nov 2010 04:25:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4CE8F332.3050205@meduna.org>
-Subject: Re: [uml-devel] "New Challenges in Virtualization" devroom @	FOSDEM
+In-Reply-To: <20101118114853.GC23698@cs.unibo.it>
+References: <20101118114853.GC23698@cs.unibo.it>
+Date: Thu, 18 Nov 2010 13:25:19 +0100
+Message-ID: <AANLkTi=MpvujCOMPgF-QOLtTrqW=m6pWgweOw_xKikWi@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Subject: Re: [uml-devel] "New Challenges in Virtualization" devroom @ FOSDEM
 	2011
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,52 +29,61 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Stanislav Meduna <stano@meduna.org>
+To: Renzo Davoli <renzo@cs.unibo.it>
 Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-Pros=+ Cons=- Pros(umview/kmview can be used instead)=++
-Richard:
-- IMHO it's dead as virtualization technology.
-+ But it's still used as playground for kernel developers.
-+ You can easily implement and test new kernel features.
+On Thu, Nov 18, 2010 at 12:49 PM, Renzo Davoli <renzo@cs.unibo.it> wrote:
+> Dear User-Mode Linux developers,
+>
+> FOSDEM accepted my proposal for a devroom about
+> "new challenges in virtualization".
+>
+> I think this devroom can be also a meeting point for
+> user-mode-linux developers to discuss the future
+> of the project.
+> I have added an item to the topic list:
+> * user-mode-linux: dead or alive?
+>
+> I think it is alive and healthy and it can benefit from
+> new virtualization supports in the kernel, optimized
+> ptrace tags and utrace-based modules.
+> I am sure you have many other ideas.
 
-Geert:
-+ It's easy to get it running
-++ I can run it without needing root access, so I can run it on any
-Linux machine I have an account on
-++ I can use it to do things that are limited to root-only
-+ I even use it to debug/develop code for the Amiga Zorro bus
+IMHO it's dead as virtualization technology.
+But it's still used as playground for kernel developers.
+You can easily implement and test new kernel features.
 
-Stanislav:
-- From a plain user's view: basically dead:
-- SKAS3 is against 2.6.23 and unmaintained
-- SKAS4 is against 2.6.24 and marked as experimental
-+ As a help tool to run at the workstation, yes
-- As a serious tool to virtualize services: no
+> I invite you to propose talks and join the devroom.
+> FOSDEM will be held in Brussels on February 5-6 2011.
+>
+> The wiki for the devroom is here:
+> http://nciv2011.v2.cs.unibo.it
+>
+> =A0 =A0 =A0 =A0renzo
+>
+> -------------------------------------------------------------------------=
+-----
+> Beautiful is writing same markup. Internet Explorer 9 supports
+> standards for HTML5, CSS3, SVG 1.1, =A0ECMAScript5, and DOM L2 & L3.
+> Spend less time writing and =A0rewriting code and more time creating great
+> experiences on the web. Be a part of the beta today
+> http://p.sf.net/sfu/msIE9-sfdev2dev
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
 
---------
->>From this overview you can see that user-mode linux is still
-useful but there are new problems to address.
+-- =
 
-I think that this is a good topic for a brainstorming session on
-user-mode linux at FOSDEM 2011.
+Thanks,
+//richard
 
-You are all invited to join the "new challenges in virtualization"
-dev-room, proposing talks and new ideas.
-
-nciv2011.v2.cs.unibo.it
-
-ciao
-	renzo
-
-PS: I beg your pardon for the wrong subject in the first message of this thread.
-copy&paste (middle button of the mouse for X) is a powerful tool but
-sometimes creates damages...
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Beautiful is writing same markup. Internet Explorer 9 supports
 standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
 Spend less time writing and  rewriting code and more time creating great
