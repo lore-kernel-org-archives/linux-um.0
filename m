@@ -1,74 +1,154 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 MIME-Version: 1.0
-Date: Sat, 13 Nov 2010 17:44:28 +0000
-Message-ID: <AANLkTi=xJb1LcGXeCcd_tJ+Q9vV5W4z3M-up_mrKeV9q@mail.gmail.com>
-Subject: [PATCH 1/2] uml: Safely iterate list of winch handlers in line driver.
-From: Will Newton <will.newton@gmail.com>
-Content-Type: multipart/mixed; boundary=001485f6cd7e40e8300494f2c283
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linux Kernel list <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <4CEA4EAF.6090209@cs.atlas-brb.de>
+References: <4CEA4EAF.6090209@cs.atlas-brb.de>
+Date: Mon, 22 Nov 2010 14:26:43 +0100
+Message-ID: <AANLkTikk6dvPJjG9CxVRrfYGuS+a5KbedYOrKq7GjmEC@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Subject: Re: [uml-devel] immediately segfault with con0=tty:/dev/ttyXY
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Nico Rittner <nrittner@cs.atlas-brb.de>
+Cc: gentoo-user@lists.gentoo.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
---001485f6cd7e40e8300494f2c283
-Content-Type: text/plain; charset=ISO-8859-1
+On Mon, Nov 22, 2010 at 12:06 PM, Nico Rittner <nrittner@cs.atlas-brb.de> w=
+rote:
+> immediately segfault with con0=3Dtty:/dev/tty10
+>
+> Calling UML with con0=3Dtty:/dev/tty10 immediately
+> leads to segfault.
+>
+> uml : ~ $ bin/image initrd=3Dbin/initrd init=3D/linuxrc mem=3D256M
+> umid=3Dapp.dev.dpvw eth0=3Dtuntap,,,192.168.178.21 con0=3Dtty:/dev/tty9 c=
+on1=3Dnull
+> con2=3Dnull con3=3Dnull con4=3Dnull con5=3Dnull con6=3Dnull con7=3Dnull c=
+on8=3Dnull
+> con9=3Dnull con10=3Dnull con11=3Dnull con12=3Dnull root=3D/dev/ram0 realm=
+=3Dgrw
+> readonly=3D/dev/ubdb readwrite=3D/dev/ubdc ubdc=3Dmachines/app.dev.dpvw/u=
+bdc
+> ubda=3Dmachines/app.dev.dpvw/ubda ubdb=3Dmachines/app.dev.dpvw/ubdb
+> Locating the bottom of the address space ... 0x1000
+> Locating the top of the address space ... 0xc0000000
+> Core dump limits :
+> =A0 =A0 =A0 =A0soft - 0
+> =A0 =A0 =A0 =A0hard - NONE
+> Checking that ptrace can change system call numbers...OK
+> Checking syscall emulation patch for ptrace...OK
+> Checking advanced syscall emulation patch for ptrace...OK
+> Checking for tmpfs mount on /dev/shm...nothing mounted on /dev/shm
+> Checking PROT_EXEC mmap in /tmp/...OK
+> Checking for the skas3 patch in the host:
+> =A0- /proc/mm...not found: No such file or directory
+> =A0- PTRACE_FAULTINFO...not found
+> =A0- PTRACE_LDT...not found
+> UML running in SKAS0 mode
+> Segmentation fault
+> uml : ~ $
+>
+> Whenn changing con0 to 'null' or 'fd:0,fd:1'
+> the segfault disappears and the uml is booting
+> without problems. The user the UML runs
+> under is member of the tty group and able to
+> write to /dev/ttyXY.
+> Both UML and Host source tree is 2.6.34-gentoo-r12
+> from gentoo portage. uml config is attached.
+>
+> The last lines when running with strace are:
 
-unregister_winch should use list_for_each_safe, as it can
-potentially delete from the list.
+Can you please post the output of "strace ./linux con0=3Dtty:/dev/tty9
+... 2>&1 | grep tty9"
+Does the problem also occur on the most current vanilla kernel?
 
-Signed-off-by: Will Newton <will.newton@gmail.com>
+> waitpid(19109, [{WIFSTOPPED(s) && WSTOPSIG(s) =3D=3D 133}], WSTOPPED|__WA=
+LL) =3D
+> 19109
+> ptrace(PTRACE_GETREGS, 19109, 0, 0x17c59e04) =3D 0
+> ptrace(PTRACE_SETREGS, 19109, 0, 0x17c59e04) =3D 0
+> ptrace(0x1f /* PTRACE_??? */, 19109, 0, 0) =3D 0
+> --- SIGCHLD (Child exited) @ 0 (0) ---
+> waitpid(19109, [{WIFSTOPPED(s) && WSTOPSIG(s) =3D=3D SIGSEGV}], WSTOPPED|=
+__WALL)
+> =3D 19109
+> ptrace(PTRACE_GETREGS, 19109, 0, 0x17c59e04) =3D 0
+> ptrace(PTRACE_GETFPXREGS, 19109, 0, 0x17c63d58) =3D 0
+> ptrace(PTRACE_CONT, 19109, 0, SIGSEGV) =A0=3D 0
+> --- SIGCHLD (Child exited) @ 0 (0) ---
+> waitpid(19109, [{WIFSTOPPED(s) && WSTOPSIG(s) =3D=3D SIGTRAP}], WSTOPPED|=
+__WALL)
+> =3D 19109
+> ptrace(PTRACE_SETFPXREGS, 19109, 0, 0x17c63d58) =3D 0
+> ptrace(PTRACE_SETREGS, 19109, 0, 0x8253960) =3D 0
+> ptrace(PTRACE_CONT, 19109, 0, SIG_0) =A0 =A0=3D 0
+> --- SIGCHLD (Child exited) @ 0 (0) ---
+> waitpid(19109, [{WIFSTOPPED(s) && WSTOPSIG(s) =3D=3D SIGTRAP}], WSTOPPED|=
+__WALL)
+> =3D 19109
+> ptrace(PTRACE_SETREGS, 19109, 0, 0x17c59e04) =3D 0
+> ptrace(0x1f /* PTRACE_??? */, 19109, 0, 0) =3D 0
+> --- SIGCHLD (Child exited) @ 0 (0) ---
+> waitpid(19109, [{WIFSTOPPED(s) && WSTOPSIG(s) =3D=3D 133}], WSTOPPED|__WA=
+LL) =3D
+> 19109
+> ptrace(PTRACE_GETREGS, 19109, 0, 0x17c59e04) =3D 0
+> rt_sigaction(SIGSEGV, {SIG_DFL, [SEGV], SA_RESTART}, {0x8070d30, [USR1
+> VTALRM WINCH IO], SA_STACK|SA_NODEFER}, 8) =3D 0
+> rt_sigaction(SIGTERM, {SIG_IGN, [TERM], SA_RESTART}, {0x806d5c0, [],
+> SA_NODEFER|SA_RESETHAND}, 8) =3D 0
+> kill(0, SIGTERM <unfinished ...>
+>
+>
+> Further info:
+> - gcc version 4.4.4 (Gentoo 4.4.4-r2 p1.2, pie-0.4.5)
+> - GNU C Library stable release version 2.11.2
+>
+> How can i make uml work with ttys as console i/o?
+>
+>
+> Thanks in advance!
+>
+> Nico
+>
+> -------------------------------------------------------------------------=
+-----
+> Beautiful is writing same markup. Internet Explorer 9 supports
+> standards for HTML5, CSS3, SVG 1.1, =A0ECMAScript5, and DOM L2 & L3.
+> Spend less time writing and =A0rewriting code and more time creating great
+> experiences on the web. Be a part of the beta today
+> http://p.sf.net/sfu/msIE9-sfdev2dev
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
+>
+
+
+
+-- =
+
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
 ---
- arch/um/drivers/line.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Beautiful is writing same markup. Internet Explorer 9 supports
+standards for HTML5, CSS3, SVG 1.1,  ECMAScript5, and DOM L2 & L3.
+Spend less time writing and  rewriting code and more time creating great
+experiences on the web. Be a part of the beta today
+http://p.sf.net/sfu/msIE9-sfdev2dev
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 7f7338c..5f12fef 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -820,12 +820,12 @@ void register_winch_irq(int fd, int tty_fd, int
-pid, struct tty_struct *tty,
-
- static void unregister_winch(struct tty_struct *tty)
- {
--	struct list_head *ele;
-+	struct list_head *ele, *next;
- 	struct winch *winch;
-
- 	spin_lock(&winch_handler_lock);
-
--	list_for_each(ele, &winch_handlers) {
-+	list_for_each_safe(ele, next, &winch_handlers) {
- 		winch = list_entry(ele, struct winch, list);
- 		if (winch->tty == tty) {
- 			free_winch(winch, 1);
--- 
-1.7.0.4
-
---001485f6cd7e40e8300494f2c283
-Content-Type: text/x-patch; charset=US-ASCII; 
-	name="0001-uml-Safely-iterate-list-of-winch-handlers-in-line-dr.patch"
-Content-Disposition: attachment; 
-	filename="0001-uml-Safely-iterate-list-of-winch-handlers-in-line-dr.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gggsbuvi0
-
-RnJvbSBlNTc5ZWI1ODM1YTA3MzAxNzczODg1NDU1MjBmMjFkOWZiYzBkZTFlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBXaWxsIE5ld3RvbiA8d2lsbC5uZXd0b25AZ21haWwuY29tPgpE
-YXRlOiBTYXQsIDEzIE5vdiAyMDEwIDE2OjMwOjU4ICswMDAwClN1YmplY3Q6IFtQQVRDSCAxLzJd
-IHVtbDogU2FmZWx5IGl0ZXJhdGUgbGlzdCBvZiB3aW5jaCBoYW5kbGVycyBpbiBsaW5lIGRyaXZl
-ci4KCnVucmVnaXN0ZXJfd2luY2ggc2hvdWxkIHVzZSBsaXN0X2Zvcl9lYWNoX3NhZmUsIGFzIGl0
-IGNhbgpwb3RlbnRpYWxseSBkZWxldGUgZnJvbSB0aGUgbGlzdC4KClNpZ25lZC1vZmYtYnk6IFdp
-bGwgTmV3dG9uIDx3aWxsLm5ld3RvbkBnbWFpbC5jb20+Ci0tLQogYXJjaC91bS9kcml2ZXJzL2xp
-bmUuYyB8ICAgIDQgKystLQogMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVs
-ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC91bS9kcml2ZXJzL2xpbmUuYyBiL2FyY2gvdW0v
-ZHJpdmVycy9saW5lLmMKaW5kZXggN2Y3MzM4Yy4uNWYxMmZlZiAxMDA2NDQKLS0tIGEvYXJjaC91
-bS9kcml2ZXJzL2xpbmUuYworKysgYi9hcmNoL3VtL2RyaXZlcnMvbGluZS5jCkBAIC04MjAsMTIg
-KzgyMCwxMiBAQCB2b2lkIHJlZ2lzdGVyX3dpbmNoX2lycShpbnQgZmQsIGludCB0dHlfZmQsIGlu
-dCBwaWQsIHN0cnVjdCB0dHlfc3RydWN0ICp0dHksCiAKIHN0YXRpYyB2b2lkIHVucmVnaXN0ZXJf
-d2luY2goc3RydWN0IHR0eV9zdHJ1Y3QgKnR0eSkKIHsKLQlzdHJ1Y3QgbGlzdF9oZWFkICplbGU7
-CisJc3RydWN0IGxpc3RfaGVhZCAqZWxlLCAqbmV4dDsKIAlzdHJ1Y3Qgd2luY2ggKndpbmNoOwog
-CiAJc3Bpbl9sb2NrKCZ3aW5jaF9oYW5kbGVyX2xvY2spOwogCi0JbGlzdF9mb3JfZWFjaChlbGUs
-ICZ3aW5jaF9oYW5kbGVycykgeworCWxpc3RfZm9yX2VhY2hfc2FmZShlbGUsIG5leHQsICZ3aW5j
-aF9oYW5kbGVycykgewogCQl3aW5jaCA9IGxpc3RfZW50cnkoZWxlLCBzdHJ1Y3Qgd2luY2gsIGxp
-c3QpOwogCQlpZiAod2luY2gtPnR0eSA9PSB0dHkpIHsKIAkJCWZyZWVfd2luY2god2luY2gsIDEp
-OwotLSAKMS43LjAuNAoK
---001485f6cd7e40e8300494f2c283--
