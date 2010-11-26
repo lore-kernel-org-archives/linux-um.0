@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mortehu@ping.uio.no>) id 1PMJWY-000167-Sz
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <renzo@cs.unibo.it>) id 1PM2QR-0006tf-RL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Nov 2010 12:05:02 +0000
-Received: from ping.uio.no ([193.157.115.196])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1PMJWX-0002Id-I4
+	Fri, 26 Nov 2010 17:49:35 +0000
+Received: from leb.cs.unibo.it ([130.136.1.102])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PM2QP-0000Lx-Ex
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Nov 2010 12:05:02 +0000
-Date: Sat, 27 Nov 2010 13:04:50 +0100
-From: Morten Hustveit <mortehu@ping.uio.no>
-Message-ID: <20101127120450.GA4789@ping.uio.no>
+	Fri, 26 Nov 2010 17:49:35 +0000
+Date: Fri, 26 Nov 2010 18:49:26 +0100
+From: Renzo Davoli <renzo@cs.unibo.it>
+Message-ID: <20101126174926.GB8087@cs.unibo.it>
 References: <20101125173649.GA20609@ping.uio.no>
-	<20101126174926.GB8087@cs.unibo.it>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20101126174926.GB8087@cs.unibo.it>
+In-Reply-To: <20101125173649.GA20609@ping.uio.no>
 Subject: Re: [uml-devel] [PATCH] uml_switch: configurable network delay
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,25 +30,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Morten Hustveit <mortehu@ping.uio.no>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
 On Thu, Nov 25, 2010 at 06:36:49PM +0100, Morten Hustveit wrote:
-> > Add the "-delay" option to configure network delay in milliseconds
+> Add the "-delay" option to configure network delay in milliseconds
+If you use vde instead of uml_switch, vde provides wirefilter
+which implements packet delay as well as several other networking testing features:
 
-On Fri, Nov 26, 2010 at 06:49:26PM +0100, Renzo Davoli wrote:
-> If you use vde instead of uml_switch, vde provides wirefilter
-> which implements packet delay as well as several other networking testing features:
+packet loss
+packet dup
+bandwidth limit
+interface speed
+channel capacity
+channel noise
+fifoness errors
 
-That looks nice, but I couldn't understand how to use it.  It seemed to
-me that to do something like
-
-  uml_switch -delay 100
-
-with vde, you would need to write several long command lines and perhaps
-a configuration file.  I understand this is not a problem for most
-people, but I would like to have a simple way of doing things as well.
-I'm hoping to contribute other similarly simple testing features to
-uml_switch, but first I need to know whether such changes are welcome.
+	renzo
 
 ------------------------------------------------------------------------------
 Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
