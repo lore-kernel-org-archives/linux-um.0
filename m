@@ -1,10 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Joe Perches <joe@perches.com>
-Date: Sun, 14 Nov 2010 19:04:22 -0800
-Message-Id: <9ab60a1761dde357ebc028c525dae7572e072588.1289789604.git.joe@perches.com>
-In-Reply-To: <cover.1289789604.git.joe@perches.com>
-References: <cover.1289789604.git.joe@perches.com>
-Subject: [uml-devel] [PATCH 03/44] arch/um: Remove unnecessary semicolons
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mortehu@ping.uio.no>) id 1PMJWY-000167-Sz
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 27 Nov 2010 12:05:02 +0000
+Received: from ping.uio.no ([193.157.115.196])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1PMJWX-0002Id-I4
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 27 Nov 2010 12:05:02 +0000
+Date: Sat, 27 Nov 2010 13:04:50 +0100
+From: Morten Hustveit <mortehu@ping.uio.no>
+Message-ID: <20101127120450.GA4789@ping.uio.no>
+References: <20101125173649.GA20609@ping.uio.no>
+	<20101126174926.GB8087@cs.unibo.it>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20101126174926.GB8087@cs.unibo.it>
+Subject: Re: [uml-devel] [PATCH] uml_switch: configurable network delay
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -14,41 +28,35 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Jiri Kosina <trivial@kernel.org>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- arch/um/drivers/mmapper_kern.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+On Thu, Nov 25, 2010 at 06:36:49PM +0100, Morten Hustveit wrote:
+> > Add the "-delay" option to configure network delay in milliseconds
 
-diff --git a/arch/um/drivers/mmapper_kern.c b/arch/um/drivers/mmapper_kern.c
-index 8501e7d..6256fa9 100644
---- a/arch/um/drivers/mmapper_kern.c
-+++ b/arch/um/drivers/mmapper_kern.c
-@@ -122,7 +122,7 @@ static int __init mmapper_init(void)
- 	if (err) {
- 		printk(KERN_ERR "mmapper - misc_register failed, err = %d\n",
- 		       err);
--		return err;;
-+		return err;
- 	}
- 	return 0;
- }
--- 
-1.7.3.1.g432b3.dirty
+On Fri, Nov 26, 2010 at 06:49:26PM +0100, Renzo Davoli wrote:
+> If you use vde instead of uml_switch, vde provides wirefilter
+> which implements packet delay as well as several other networking testing features:
 
+That looks nice, but I couldn't understand how to use it.  It seemed to
+me that to do something like
+
+  uml_switch -delay 100
+
+with vde, you would need to write several long command lines and perhaps
+a configuration file.  I understand this is not a problem for most
+people, but I would like to have a simple way of doing things as well.
+I'm hoping to contribute other similarly simple testing features to
+uml_switch, but first I need to know whether such changes are welcome.
 
 ------------------------------------------------------------------------------
-Centralized Desktop Delivery: Dell and VMware Reference Architecture
-Simplifying enterprise desktop deployment and management using
-Dell EqualLogic storage and VMware View: A highly scalable, end-to-end
-client virtualization framework. Read more!
-http://p.sf.net/sfu/dell-eql-dev2dev
+Increase Visibility of Your 3D Game App & Earn a Chance To Win $500!
+Tap into the largest installed PC base & get more eyes on your game by
+optimizing for Intel(R) Graphics Technology. Get started today with the
+Intel(R) Software Partner Program. Five $500 cash prizes are up for grabs.
+http://p.sf.net/sfu/intelisp-dev2dev
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
