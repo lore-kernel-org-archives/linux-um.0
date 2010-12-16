@@ -1,70 +1,61 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 16 Dec 2010 23:01:10 +0100
-From: Anatolij Gustschin <agust@denx.de>
 Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
-Message-ID: <20101216230110.65156c55@wker>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
 In-Reply-To: <20101214195124.GA6010@falooley.org>
 References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<20071024011712.GA3762@falooley.org>
-	<1193208689.26096.48.camel@pmac.infradead.org>
-	<20071227181524.GA19051@falooley.org>
-	<20071228174853.GA4252@uranus.ravnborg.org>
-	<20101207072919.GA8511@falooley.org>
-	<AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
-	<20101207182012.GA10546@falooley.org>
-	<1292343878.2538.80.camel@localhost>
-	<20101214195124.GA6010@falooley.org>
+	 <20071024011712.GA3762@falooley.org>
+	 <1193208689.26096.48.camel@pmac.infradead.org>
+	 <20071227181524.GA19051@falooley.org>
+	 <20071228174853.GA4252@uranus.ravnborg.org>
+	 <20101207072919.GA8511@falooley.org>
+	 <AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
+	 <20101207182012.GA10546@falooley.org> <1292343878.2538.80.camel@localhost>
+	 <20101214195124.GA6010@falooley.org>
+Content-Type: text/plain; charset="utf-8"
+Date: Thu, 16 Dec 2010 17:25:06 +0200
+Message-ID: <1292513106.2364.86.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jason Lunz <lunz@acm.org>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, atom ota <atomota@sleepyhammer.com>, user-mode-linux-devel@lists.sourceforge.net, richard -rw- weinberger <richard.weinberger@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>, David Woodhouse <dwmw2@infradead.org>
+Cc: richard -rw- weinberger <richard.weinberger@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, David Woodhouse <dwmw2@infradead.org>, atom ota <atomota@sleepyhammer.com>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, 14 Dec 2010 11:51:24 -0800
-Jason Lunz <lunz@acm.org> wrote:
-...
-> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-> index a9e6ba4..3d9f7e0 100644
-> --- a/include/linux/mtd/map.h
-> +++ b/include/linux/mtd/map.h
-> @@ -388,6 +388,15 @@ static inline map_word map_word_ff(struct map_info *map)
->  	return r;
->  }
->  
-> +#ifdef CONFIG_MTD_COMPLEX_MAPPINGS
-> +#define map_read(map, ofs) (map)->read(map, ofs)
-> +#define map_copy_from(map, to, from, len) (map)->copy_from(map, to, from, len)
-> +#define map_write(map, datum, ofs) (map)->write(map, datum, ofs)
-> +#define map_copy_to(map, to, from, len) (map)->copy_to(map, to, from, len)
-> +
-> +extern void simple_map_init(struct map_info *);
-> +#define map_is_linear(map) (map->phys != NO_XIP)
-> +
->  static inline map_word inline_map_read(struct map_info *map, unsigned long ofs)
->  {
->  	map_word r;
-> @@ -440,15 +449,6 @@ static inline void inline_map_copy_to(struct map_info *map, unsigned long to, co
->  	memcpy_toio(map->virt + to, from, len);
->  }
->  
-> -#ifdef CONFIG_MTD_COMPLEX_MAPPINGS
-> -#define map_read(map, ofs) (map)->read(map, ofs)
-> -#define map_copy_from(map, to, from, len) (map)->copy_from(map, to, from, len)
-> -#define map_write(map, datum, ofs) (map)->write(map, datum, ofs)
-> -#define map_copy_to(map, to, from, len) (map)->copy_to(map, to, from, len)
-> -
-> -extern void simple_map_init(struct map_info *);
-> -#define map_is_linear(map) (map->phys != NO_XIP)
-> -
->  #else
->  #define map_read(map, ofs) inline_map_read(map, ofs)
->  #define map_copy_from(map, to, from, len) inline_map_copy_from(map, to, from, len)
+On Tue, 2010-12-14 at 11:51 -0800, Jason Lunz wrote:
+> On Tue, Dec 14, 2010 at 06:24:38PM +0200, Artem Bityutskiy wrote:
+> > But I think your solution is a bit dirty, because it adds a great deal
+> > of little 'if HAS_IOMEM' and '#ifdef CONFIG_HAS_IOMEM' to many places.
+> > This is error-prone.
+> 
+> The intent of that patch was to allow as much of the mtd subsystem to
+> compile as possible. My thinking was to try and rectify the fact that
+> uml has gone without mtd (and hence jffs2) support for years even though
+> much of it works just fine. I think the entire subsystem being marked
+> BROKEN in kconfig kept anyone from experimenting with it.
+> 
+> The patch I sent was actually a reaction to feedback I got from Sam
+> Ravnborg on my last attempt (um, three years ago :/ ) in which he
+> suggested pushing down the ifdefs closer to their points of use. But I
+> agree, the minimal version has a much smaller footprint.
+> 
+> The version below still meets the goal of allowing jffs2-on-block2mtd
+> usage under uml but is much smaller because only the mtd core is
+> included. Compile-tested on i386, x86_64, um/i386, and um/x86_64.
+> 
+> > Instead, you should solve this problem in UML code. I do not know how,
+> > but may be you can add readb/writeb there which actually do nothing or
+> > print a scary warning, or do BUG(), and let things which use them just
+> > fail run-time.
+> 
+> Something like this could work, but it would be error-prone for anyone
+> else who attempts using iomem-requiring drivers on uml. Instead of
+> getting obvious compile failures we'd have broken drivers that BUG() or
+> emit scary warnings. That doesn't seem to me like an improvement.
 
-This change breaks compiling when CONFIG_MTD_COMPLEX_MAPPINGS is not
-defined in the kernel configuration. Please fix!
+OK, pushed this patch to l2-mtd-2.6.git.
 
-Thanks,
-Anatolij
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
 
