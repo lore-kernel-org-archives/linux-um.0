@@ -1,44 +1,38 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH] uml: use simple_write_to_buffer
-Date: Sat, 25 Dec 2010 15:03:57 +0900
-Message-Id: <1293257039-2580-2-git-send-email-akinobu.mita@gmail.com>
-In-Reply-To: <n>
-References: <n>
+Subject: Re: mtd: fix CONFIG_MTD_COMPLEX_MAPPINGS=n compile
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+In-Reply-To: <20101217042759.GA3148@falooley.org>
+References: <20071024011712.GA3762@falooley.org>
+	 <1193208689.26096.48.camel@pmac.infradead.org>
+	 <20071227181524.GA19051@falooley.org>
+	 <20071228174853.GA4252@uranus.ravnborg.org>
+	 <20101207072919.GA8511@falooley.org>
+	 <AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
+	 <20101207182012.GA10546@falooley.org> <1292343878.2538.80.camel@localhost>
+	 <20101214195124.GA6010@falooley.org> <20101216230110.65156c55@wker>
+	 <20101217042759.GA3148@falooley.org>
+Content-Type: text/plain; charset="utf-8"
+Date: Sun, 19 Dec 2010 18:47:56 +0200
+Message-ID: <1292777276.2140.1.camel@koala>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: Jason Lunz <lunz@acm.org>
+Cc: Anatolij Gustschin <agust@denx.de>, atom ota <atomota@sleepyhammer.com>, user-mode-linux-devel@lists.sourceforge.net, richard -rw- weinberger <richard.weinberger@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>, David Woodhouse <dwmw2@infradead.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Simplify write file operation for mmapper by using
-simple_write_to_buffer().
+On Thu, 2010-12-16 at 20:27 -0800, Jason Lunz wrote:
+> On Thu, Dec 16, 2010 at 11:01:10PM +0100, Anatolij Gustschin wrote:
+> > This change breaks compiling when CONFIG_MTD_COMPLEX_MAPPINGS is not
+> > defined in the kernel configuration. Please fix!
+> 
+> Sorry, sloppy of me. This reverts all changes to mtd.h while keeping the
+> ability to compile mtd on ARCH=um, with the exception mtdchar.
 
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
----
- arch/um/drivers/mmapper_kern.c |    8 +-------
- 1 files changed, 1 insertions(+), 7 deletions(-)
+Merged with the previous patch, thanks.
 
-diff --git a/arch/um/drivers/mmapper_kern.c b/arch/um/drivers/mmapper_kern.c
-index 8501e7d..4ad91c6 100644
---- a/arch/um/drivers/mmapper_kern.c
-+++ b/arch/um/drivers/mmapper_kern.c
-@@ -37,13 +37,7 @@ static ssize_t mmapper_write(struct file *file, const char __user *buf,
- 	if (*ppos > mmapper_size)
- 		return -EINVAL;
- 
--	if (count > mmapper_size - *ppos)
--		count = mmapper_size - *ppos;
--
--	if (copy_from_user(&v_buf[*ppos], buf, count))
--		return -EFAULT;
--
--	return count;
-+	return simple_write_to_buffer(v_buf, mmapper_size, ppos, buf, count);
- }
- 
- static long mmapper_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 -- 
-1.7.3.4
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
 
