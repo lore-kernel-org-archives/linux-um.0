@@ -1,38 +1,24 @@
-Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-From: Peter Zijlstra <peterz@infradead.org>
-In-Reply-To: <AANLkTik3hE=_34Lbs944MzKpkNzqY+kCxpxmncUM2HB7@mail.gmail.com>
+Return-Path: <linux-mips-bounce@linux-mips.org>
+MIME-Version: 1.0
+In-Reply-To: <1295262433.30950.53.camel@laptop>
 References: <1295262433.30950.53.camel@laptop>
-	<AANLkTik3hE=_34Lbs944MzKpkNzqY+kCxpxmncUM2HB7@mail.gmail.com>
-Date: Mon, 17 Jan 2011 21:16:03 +0100
-Message-ID: <1295295363.30950.318.camel@laptop>
-Mime-Version: 1.0
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 17 Jan 2011 14:49:40 -0500
+Message-ID: <AANLkTik3hE=_34Lbs944MzKpkNzqY+kCxpxmncUM2HB7@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
 Subject: Re: [uclinux-dist-devel] [PATCH] sched: provide scheduler_ipi()
-	callback in response to smp_send_reschedule()
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Paul Mackerras <paulus@samba.org>, Helge Deller <deller@gmx.de>, sparclinux@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>, linux-s390@vger.kernel.org, Jesper Nilsson <jesper.nilsson@axis.com>, Jeremy Fitzhardinge <jeremy.fitzhardinge@citrix.com>, Russell King <linux@arm.linux.org.uk>, Hirokazu Takata <takata@linux-m32r.org>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, virtualization@lists.osdl.org, Ingo Molnar <mingo@redhat.com>, Matt Turner <mattst88@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, user-mode-linux-devel@lists.sourceforge.net, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Jeff Dike <jdike@addtoit.com>, Chris Metcalf <cmetcalf@tilera.com>, xen-devel@lists.xensource.com, Mikael Starvik <starvik@axis.com>, linux-m32r@ml.linux-m32r.org, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, user-mode-linux-user@lists.sourceforge.net, uclinux-dist-devel@blackfin.uclinux.org, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, Richard Henderson <rth@twiddle.net>, Tony Luck <tony.luck@intel.com>, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-am33-list@redhat.com, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Kyle McMartin <kyle@mcmartin.ca>, Paul Mundt <lethal@linux-sh.org>, linux-alpha@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux390@de.ibm.com, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
+ callback in response to smp_send_reschedule()
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@arm.linux.org.uk>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Hirokazu Takata <takata@linux-m32r.org>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Paul Mundt <lethal@linux-sh.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@tilera.com>, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeremy Fitzhardinge <jeremy.fitzhardinge@citrix.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, xen-devel@lists.xensource.com, virtualization@lists.osdl.org, Linux-Arch <linux-arch@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Mon, 2011-01-17 at 14:49 -0500, Mike Frysinger wrote:
-> On Mon, Jan 17, 2011 at 06:07, Peter Zijlstra wrote:
-> > Also, while reading through all this, I noticed the blackfin SMP code
-> > looks to be broken, it simply discards any IPI when low on memory.
-> 
-> not really.  see changelog of commit 73a400646b8e26615f3ef1a0a4bc0cd0d5bd284c.
+On Mon, Jan 17, 2011 at 06:07, Peter Zijlstra wrote:
+> Also, while reading through all this, I noticed the blackfin SMP code
+> looks to be broken, it simply discards any IPI when low on memory.
 
-Ah, indeed, it appears my tree was simply out of date, very good!
-_______________________________________________
-Linuxppc-dev mailing list
-Linuxppc-dev@lists.ozlabs.org
-https://lists.ozlabs.org/listinfo/linuxppc-dev
+not really.  see changelog of commit 73a400646b8e26615f3ef1a0a4bc0cd0d5bd284c.
+-mike
+
 
