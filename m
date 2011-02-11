@@ -1,58 +1,77 @@
-Return-Path: <linux-mips-bounce@linux-mips.org>
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-In-Reply-To: <1295262433.30950.53.camel@laptop>
-References: <1295262433.30950.53.camel@laptop>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 07 Feb 2011 10:26:32 +1100
-Message-ID: <1297034792.14982.10.camel@pasglop>
-Mime-Version: 1.0
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <4D553455.6000409@panasas.com>
+Date: Fri, 11 Feb 2011 15:06:29 +0200
+From: Boaz Harrosh <bharrosh@panasas.com>
+MIME-Version: 1.0
+References: <4D52E4E1.7070705@panasas.com>	<4D540969.9090507@panasas.com> <AANLkTine1w2h29OPES1RHTs-otB_ohhMDMbbRoXFK+BB@mail.gmail.com>
+In-Reply-To: <AANLkTine1w2h29OPES1RHTs-otB_ohhMDMbbRoXFK+BB@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-Subject: Re: [PATCH] sched: provide scheduler_ipi() callback in response to
- smp_send_reschedule()
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Hirokazu Takata <takata@linux-m32r.org>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Koichi Yasutake <yasutake.koichi@jp.panasonic.com>, Kyle McMartin <kyle@mcmartin.ca>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Paul Mundt <lethal@linux-sh.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@tilera.com>, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeremy Fitzhardinge <jeremy.fitzhardinge@citrix.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, xen-devel@lists.xensource.com, virtualization@lists.osdl.org, Linux-Arch <linux-arch@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: Regression with calibrate_xor_blocks, probably UML related
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Cc: Dan Williams <dan.j.williams@intel.com>, linux-kernel <linux-kernel@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, NeilBrown <neilb@suse.de>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Mon, 2011-01-17 at 12:07 +0100, Peter Zijlstra wrote:
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index 68034bb..7ee0fc3 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -128,6 +128,7 @@ static irqreturn_t call_function_action(int irq, void *data)
->  static irqreturn_t reschedule_action(int irq, void *data)
->  {
->         /* we just need the return path side effect of checking need_resched */
-> +       scheduler_ipi();
->         return IRQ_HANDLED;
->  }
->   
+On 02/11/2011 02:38 PM, richard -rw- weinberger wrote:
+> On Thu, Feb 10, 2011 at 4:51 PM, Boaz Harrosh <bharrosh@panasas.com> wrote:
+>> On 02/09/2011 09:02 PM, Boaz Harrosh wrote:
+>>> I have a new module that uses the async_tx.h lib.
+>>>
+>>> On an exact same module code based on 3.6.37 I see the:
+>>>       xor: measuring software checksum speed
+>>>          8regs     : 11312.000 MB/sec
+>>>          8regs_prefetch:  9792.800 MB/sec
+>>>          32regs    : 11220.400 MB/sec
+>>>          32regs_prefetch:  9750.800 MB/sec
+>>>       xor: using function: 8regs (11312.000 MB/sec)
+>>>
+>>> And all is well. But on code based on 2.6.38-rc4 I get hard stuck
+>>> right after:
+>>>       xor: measuring software checksum speed
+>>>
+>>
+>> OK this is not dependent on Kernel version it is the same for both
+>> .38-rc4 and .37. I was just lucky with .37 more.
+>>
 
-You missed:
+Thanks richard.
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 9813605..467d122 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -98,6 +98,7 @@ void smp_message_recv(int msg)
-                break;
-        case PPC_MSG_RESCHEDULE:
-                /* we notice need_resched on exit */
-+               scheduler_ipi();
-                break;
-        case PPC_MSG_CALL_FUNC_SINGLE:
-                generic_smp_call_function_single_interrupt();
+I'm afraid it is not a regression. Just that I got lucky more
+with 2.6.37. But it happens with 2.6.37 just the same.
 
-Fold that in and add:
+>> And the same things happen with raid456 module. I do
+>> []$ modprobe raid456; modprobe --remove raid456
+>> A few times it loads, printing the above checks, Then At one
+>> time it freezes. Sometimes at first attempt sometimes at 4-7
+>> attempts. I never went 10 times strait.
+>>
+>> When it freezes (hard) I can see in my host that the UML is
+>> at 100% CPU.
+>>
+>> BTW: when I manage to pass the tests I get the above numbers
+>> But when I load directly on the host I get:
+>>
+<>
+>> Any way I'm trying to debug that xor.ko loading problem see what
+>> comes up. Any help is welcome
+> 
+> Hmmm, can you bisect it?
+> Can you post you config then I can also try my best...
+> 
 
-Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+You mean that you can setup a UML and try it out for yourself?
+All I did was:
+[]$ make ARCH=um defconfig
+Then turn on raid456 in "make ARCH=um xconfig"
 
-(We have two variants of the IPIs)
+when you load into the UML just, "modprobe raid456
 
-Cheers,
-Ben.
+Thanks
+Boaz
 
-
-
-
+>> Thanks
+>> Boaz
+>>
+>>> the UML is completely frozen. When I kill the uml from the host
+>>> I can sometimes get this trace.
