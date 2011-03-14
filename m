@@ -1,124 +1,109 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4D52E4E1.7070705@panasas.com>
-Date: Wed, 09 Feb 2011 21:02:57 +0200
-From: Boaz Harrosh <bharrosh@panasas.com>
+Return-Path: <linux-arch-owner@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Regression with calibrate_xor_blocks, probably UML related
-To: Dan Williams <dan.j.williams@intel.com>, linux-kernel <linux-kernel@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, NeilBrown <neilb@suse.de>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+In-Reply-To: <AANLkTim8nHe1jXagKg-5g0ZLh7J61LzAi0ww__Kgaerx@mail.gmail.com>
+References: <AANLkTim8nHe1jXagKg-5g0ZLh7J61LzAi0ww__Kgaerx@mail.gmail.com>
+Date: Mon, 14 Mar 2011 23:26:58 +0100
+Message-ID: <AANLkTi=C-LRv_aRAc9mpdMJXkyGEQLtYQ_E82hwYUjgi@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-arch-owner@vger.kernel.org
+Subject: Re: [RFC][PATCH v2 21/23] (um) __vmalloc: add gfp flags variant of
+ pte and pmd allocation
+To: Prasad Joshi <prasadjoshi124@gmail.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Tejun Heo <tj@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, UML Mailing List <user-mode-linux-user@lists.sourceforge.net>, Anand Mitra <mitra@kqinfotech.com>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-arch@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-I have a new module that uses the async_tx.h lib.
+On Mon, Mar 14, 2011 at 7:12 PM, Prasad Joshi <prasadjoshi124@gmail.com=
+> wrote:
+> diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgal=
+loc.h
+> index 32c8ce4..8b6257e 100644
+> --- a/arch/um/include/asm/pgalloc.h
+> +++ b/arch/um/include/asm/pgalloc.h
+> @@ -27,6 +27,7 @@ extern pgd_t *pgd_alloc(struct mm_struct *);
+> =A0extern void pgd_free(struct mm_struct *mm, pgd_t *pgd);
+>
+> =A0extern pte_t *pte_alloc_one_kernel(struct mm_struct *, unsigned lo=
+ng);
+> +extern pte_t *__pte_alloc_one_kernel(struct mm_struct *, unsigned lo=
+ng, gfp_t);
+> =A0extern pgtable_t pte_alloc_one(struct mm_struct *, unsigned long);
+>
+> =A0static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pt=
+e)
+> diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+> index 8137ccc..e4caf17 100644
+> --- a/arch/um/kernel/mem.c
+> +++ b/arch/um/kernel/mem.c
+> @@ -284,12 +284,15 @@ void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+> =A0 =A0free_page((unsigned long) pgd);
+> =A0}
+>
+> -pte_t *pte_alloc_one_kernel(struct mm_struct *mm, unsigned long addr=
+ess)
+> +pte_t *
+> +__pte_alloc_one_kernel(struct mm_struct *mm, unsigned long address,
+> gfp_t gfp_mask)
+> =A0{
+> - =A0 pte_t *pte;
+> + =A0 return (pte_t *)__get_free_page(gfp_mask | __GFP_ZERO);
+> +}
+>
+> - =A0 pte =3D (pte_t *)__get_free_page(GFP_KERNEL|__GFP_REPEAT|__GFP_=
+ZERO);
+> - =A0 return pte;
+> +pte_t *pte_alloc_one_kernel(struct mm_struct *mm, unsigned long addr=
+ess)
+> +{
+> + =A0 return __pte_alloc_one_kernel(mm, address, GFP_KERNEL | __GFP_R=
+EPEAT);
+> =A0}
+>
+> =A0pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long addres=
+s)
+> @@ -303,15 +306,21 @@ pgtable_t pte_alloc_one(struct mm_struct *mm,
+> unsigned long address)
+> =A0}
+>
+> =A0#ifdef CONFIG_3_LEVEL_PGTABLES
+> -pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+> +pmd_t *
+> +__pmd_alloc_one(struct mm_struct *mm, unsigned long address, gfp_t g=
+fp_mask)
+> =A0{
+> - =A0 pmd_t *pmd =3D (pmd_t *) __get_free_page(GFP_KERNEL);
+> + =A0 pmd_t *pmd =3D (pmd_t *) __get_free_page(gfp_mask);
+>
+> =A0 =A0if (pmd)
+> =A0 =A0 =A0 =A0memset(pmd, 0, PAGE_SIZE);
+>
+> =A0 =A0return pmd;
+> =A0}
+> +
+> +pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+> +{
+> + =A0 return __pmd_alloc_one(mm, address, GFP_KERNEL);
+> +}
+> =A0#endif
+>
+> =A0void *uml_kmalloc(int size, int flags)
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kerne=
+l" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at =A0http://www.tux.org/lkml/
+>
 
-On an exact same module code based on 3.6.37 I see the:
-	xor: measuring software checksum speed
-	   8regs     : 11312.000 MB/sec
-	   8regs_prefetch:  9792.800 MB/sec
-	   32regs    : 11220.400 MB/sec
-	   32regs_prefetch:  9750.800 MB/sec
-	xor: using function: 8regs (11312.000 MB/sec)
+Sorry, this patch seems damaged.
 
-And all is well. But on code based on 2.6.38-rc4 I get hard stuck
-right after:
-	xor: measuring software checksum speed
+--=20
+Thanks,
+//richard
+--
+To unsubscribe from this list: send the line "unsubscribe linux-arch" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-the UML is completely frozen. When I kill the uml from the host
-I can sometimes get this trace.
-
-750c7498:  [<6005f936>] bad_page+0xd8/0xf3
-750c74c8:  [<60060c93>] get_page_from_freelist+0x333/0x47b
-750c7508:  [<60131243>] put_dec+0x20/0x3c
-750c75a0:  [<6001a0ac>] change_pre_exec+0x0/0x24
-750c75b8:  [<60060ef1>] __alloc_pages_nodemask+0x116/0x65b
-750c7668:  [<60132e25>] sprintf+0xa1/0xa3
-750c76a0:  [<6001a0ac>] change_pre_exec+0x0/0x24
-750c76b8:  [<60061446>] __get_free_pages+0x10/0x43
-750c76c8:  [<60012875>] alloc_stack+0x1b/0x1d
-750c76d8:  [<6001fe27>] run_helper+0x26/0x1b5
-750c76e8:  [<60021553>] set_signals+0x1c/0x2e
-750c7708:  [<6007efac>] __kmalloc+0x9e/0xc4
-750c7748:  [<6001a544>] change+0x124/0x189
-750c77e8:  [<601b77db>] _raw_spin_unlock+0x9/0xb
-750c7818:  [<6001a5a9>] close_addr+0x0/0x1c
-750c7828:  [<6001a5c3>] close_addr+0x1a/0x1c
-750c7838:  [<6001926a>] iter_addresses+0x5f/0x76
-750c7858:  [<6007e8e8>] kfree+0x92/0x9b
-750c7898:  [<60022d01>] tuntap_close+0x24/0x38
-750c78b8:  [<600194e4>] close_devices+0x4a/0x7f
-750c78d8:  [<600121bf>] do_uml_exitcalls+0x12/0x23
-750c78f8:  [<60012cd2>] uml_cleanup+0x1a/0x87
-750c7928:  [<6002039b>] last_ditch_exit+0x9/0x16
-750c79e8:  [<78817031>] xor_8regs_2+0x31/0x58 [xor]
-750c7a18:  [<7881b000>] calibrate_xor_blocks+0x0/0xdf [xor]
-750c7aa8:  [<601b77ce>] _raw_spin_unlock_irqrestore+0x18/0x1c
-750c7ac8:  [<60029d8d>] try_to_wake_up+0x86/0x98
-750c7d78:  [<601b548d>] printk+0xa0/0xa3
-750c7e08:  [<78817633>] do_xor_speed+0x54/0xaf [xor]
-750c7e20:  [<7881b000>] calibrate_xor_blocks+0x0/0xdf [xor]
-750c7e58:  [<7881b057>] calibrate_xor_blocks+0x57/0xdf [xor]
-750c7e68:  [<7881b000>] calibrate_xor_blocks+0x0/0xdf [xor]
-750c7e78:  [<6001105a>] do_one_initcall+0x76/0x121
-750c7eb8:  [<600563fd>] sys_init_module+0x78/0x1a6
-750c7ee8:  [<60014d60>] handle_syscall+0x58/0x70
-750c7f08:  [<60024163>] userspace+0x2dd/0x38a
-750c7fc8:  [<600126af>] fork_handler+0x62/0x69
-
-(gdb) list *(xor_8regs_2+0x31)
-0x55 is in xor_8regs_2 (/usr0/export/dev/bharrosh/git/pub/scsi-misc/include/asm-generic/xor.h:29).
-24                      p1[0] ^= p2[0];
-25                      p1[1] ^= p2[1];
-26                      p1[2] ^= p2[2];
-27                      p1[3] ^= p2[3];
-28                      p1[4] ^= p2[4];
-29                      p1[5] ^= p2[5];
-30                      p1[6] ^= p2[6];
-31                      p1[7] ^= p2[7];
-32                      p1 += 8;
-33                      p2 += 8;
-(gdb) list *(calibrate_xor_blocks+0x0)
-0xd52 is in calibrate_xor_blocks (/usr0/export/dev/bharrosh/git/pub/scsi-misc/crypto/xor.c:101).
-96                     speed / 1000, speed % 1000);
-97      }
-98
-99      static int __init
-100     calibrate_xor_blocks(void)
-101     {
-102             void *b1, *b2;
-103             struct xor_block_template *f, *fastest;
-104
-105             /*
-(gdb) list *(do_xor_speed+0x54)
-0x657 is in do_xor_speed (/usr0/export/dev/bharrosh/git/pub/scsi-misc/crypto/xor.c:84).
-79                      now = jiffies;
-80                      count = 0;
-81                      while (jiffies == now) {
-82                              mb(); /* prevent loop optimzation */
-83                              tmpl->do_2(BENCH_SIZE, b1, b2);
-84                              mb();
-85                              count++;
-86                              mb();
-87                      }
-88                      if (count > max)
-(gdb) list *(calibrate_xor_blocks+0x57)
-0xda9 is in calibrate_xor_blocks (/usr0/export/dev/bharrosh/git/pub/scsi-misc/crypto/xor.c:137).
-132                             "checksumming function: %s\n",
-133                             fastest->name);
-134                     xor_speed(fastest);
-135             } else {
-136                     printk(KERN_INFO "xor: measuring software checksum speed\n");
-137                     XOR_TRY_TEMPLATES;
-138                     fastest = template_list;
-139                     for (f = fastest; f; f = f->next)
-140                             if (f->speed > fastest->speed)
-141                                     fastest = f;
-(gdb) q
-
-So it looks like the code in UML links the include/asm-generic/xor.h and that it gets
-stuck. Any thing changed in this area in last merge window?
-
-Before I start the very difficult bisect?
-
-Thanks for any tips
-Boaz
