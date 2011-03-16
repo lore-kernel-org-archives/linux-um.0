@@ -1,46 +1,27 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-Date: Thu, 17 Mar 2011 13:25:08 +0100
-Message-ID: <AANLkTi=e+tM-WTerLmkZfLTQqKCLsJHVBgQ5sj+TMjc4@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <20110315172208.82934b13.randy.dunlap@oracle.com>
+References: <20110315194543.a5d56c0c.sfr@canb.auug.org.au>
+	<20110315172208.82934b13.randy.dunlap@oracle.com>
+Date: Wed, 16 Mar 2011 11:38:03 +0800
+Message-ID: <AANLkTi=yDHaeosLpyuCjTJ8hZA8Q4bzHCmKK0J1Giunz@mail.gmail.com>
+From: =?UTF-8?Q?Am=C3=A9rico_Wang?= <xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: um: WARNING: at kernel/futex.c:786 __unqueue_futex
-To: laijs@cn.fujitsu.com
-Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, dvhart@linux.intel.com, rostedt@goodmis.org
+Subject: Re: [PATCH -next] uml: fix tty interface warnings
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, gregkh@suse.de, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Lai,
+On Wed, Mar 16, 2011 at 8:22 AM, Randy Dunlap <randy.dunlap@oracle.com> wrote:
+> From: Randy Dunlap <randy.dunlap@oracle.com>
+>
+> Fix tty interface warnings in arch/um:
+>
+> arch/um/drivers/stdio_console.c:122: warning: initialization from incompatible pointer type
+> arch/um/drivers/ssl.c:139: warning: initialization from incompatible pointer type
+>
 
-Your commit 2e12978a
-(futex,plist: Pass the real head of the priority list to plist_del())
-triggers gazillions warnings on User Mode Linux (x86, Linus' tree as of today):
+Acked-by: WANG Cong <xiyou.wangcong@gmail.com>
 
-------------[ cut here ]------------
-WARNING: at kernel/futex.c:786 __unqueue_futex+0x12/0x16()
-Modules linked in:
-27d4cce8:  [<081c13fe>] dump_stack+0x1c/0x20
-27d4cd00:  [<08071aa0>] warn_slowpath_common+0x49/0x5f
-27d4cd18:  [<08071acb>] warn_slowpath_null+0x15/0x19
-27d4cd28:  [<0808fdb8>] __unqueue_futex+0x12/0x16
-27d4cd38:  [<0808fef3>] futex_wait+0x137/0x1ed
-27d4cdd0:  [<080910c3>] do_futex+0x78/0x7c4
-27d4cedc:  [<080918e6>] sys_futex+0xd7/0xed
-27d4cf28:  [<0805abf6>] handle_syscall+0x7a/0x98
-27d4cf78:  [<080685d9>] userspace+0x2c9/0x370
-27d4cfe0:  [<08058be5>] fork_handler+0x53/0x5b
-27d4cffc:  [<00000000>] 0x0
-
----[ end trace ed7709f235f82328 ]---
-
-!spin_is_locked(q->lock_ptr) in the WARN_ON() at line 786
-triggers the warnings.
-
-I'm not sure whether this shows a bug within UML
-or the WARN_ON() is wrong.
-
-What do you think?
-
--- 
-Thanks,
-//richard
+Thanks.
