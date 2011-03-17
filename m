@@ -3,8 +3,8 @@ MIME-Version: 1.0
 In-Reply-To: <1300370936.16880.96.camel@gandalf.stny.rr.com>
 References: <AANLkTi=e+tM-WTerLmkZfLTQqKCLsJHVBgQ5sj+TMjc4@mail.gmail.com>
 	<1300370936.16880.96.camel@gandalf.stny.rr.com>
-Date: Thu, 17 Mar 2011 15:27:29 +0100
-Message-ID: <AANLkTi=Z_yYkdwzO7TMs7nSMOXR9wn_7BxtKjOKgS5HL@mail.gmail.com>
+Date: Thu, 17 Mar 2011 15:17:11 +0100
+Message-ID: <AANLkTi=P1OsdZSSQu224dDeLhgnXeh+Z1oK2=5y0hZ8V@mail.gmail.com>
 From: richard -rw- weinberger <richard.weinberger@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -49,12 +49,7 @@ rote:
 ed to
 > make that a WARN_ON_SMP().
 
-BTW: When using WARN_ON_SMP() the if-statement in __unqueue_futex
-will not longer work.
-
-WARN_ON_SMP() is defined as "do { } while (0)" on non CONFIG_SMP system=
-s.
-
+Yes, UML does not support SMP.
 
 > -- Steve
 >
