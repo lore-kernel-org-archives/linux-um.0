@@ -1,47 +1,78 @@
-Return-Path: <rostedt@goodmis.org>
-From: Steven Rostedt <rostedt@goodmis.org>
-In-Reply-To: <1300386121.16880.359.camel@gandalf.stny.rr.com>
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1300385802.16880.348.camel@gandalf.stny.rr.com>
 References: <AANLkTi=e+tM-WTerLmkZfLTQqKCLsJHVBgQ5sj+TMjc4@mail.gmail.com>
-	 <1300370936.16880.96.camel@gandalf.stny.rr.com>
-	 <AANLkTi=Z_yYkdwzO7TMs7nSMOXR9wn_7BxtKjOKgS5HL@mail.gmail.com>
-	 <1300380909.16880.264.camel@gandalf.stny.rr.com>
-	 <1300381340.6315.323.camel@edumazet-laptop>
-	 <AANLkTik6oHOOk+1paSmCs=0c03_J10wGBFrRMQw-Jo86@mail.gmail.com>
-	 <1300386121.16880.359.camel@gandalf.stny.rr.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Date: Thu, 17 Mar 2011 14:32:50 -0400
-Message-ID: <1300386770.16880.383.camel@gandalf.stny.rr.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	<1300370936.16880.96.camel@gandalf.stny.rr.com>
+	<AANLkTi=Z_yYkdwzO7TMs7nSMOXR9wn_7BxtKjOKgS5HL@mail.gmail.com>
+	<1300380909.16880.264.camel@gandalf.stny.rr.com>
+	<1300381340.6315.323.camel@edumazet-laptop>
+	<1300385802.16880.348.camel@gandalf.stny.rr.com>
+Date: Thu, 17 Mar 2011 19:25:36 +0100
+Message-ID: <AANLkTim4hY_HJrukNjVe5RDzBj7r547BcxKRozKcQ_uE@mail.gmail.com>
 Subject: Re: um: WARNING: at kernel/futex.c:786 __unqueue_futex
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+To: Steven Rostedt <rostedt@goodmis.org>
 Cc: Eric Dumazet <eric.dumazet@gmail.com>, richard -rw- weinberger <richard.weinberger@gmail.com>, laijs@cn.fujitsu.com, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, dvhart@linux.intel.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, 2011-03-17 at 14:22 -0400, Steven Rostedt wrote:
-> On Thu, 2011-03-17 at 18:43 +0100, Geert Uytterhoeven wrote:
-> 
-> > I don't know. It's not clear to me if "WARN_ON_SMP(x)" should always return "x",
-> > or only on SMP?
-> > 
-> > E.g.
-> > 
-> >     if (WARN_ON_SMP(x)) {
-> >        // Should we get here if "x" is true?
-> >        // Or only if CONFIG_SMP and "x" are both true?
-> >     }
-> > 
-> 
-> The "Or only if CONFIG_SMP and "x" are both true.
-> 
-> I'll update the change to add a comment about that.
-> 
+On Thu, Mar 17, 2011 at 19:16, Steven Rostedt <rostedt@goodmis.org> wrote:
+> On Thu, 2011-03-17 at 18:02 +0100, Eric Dumazet wrote:
+>> Le jeudi 17 mars 2011 =C3=A0 12:55 -0400, Steven Rostedt a =C3=A9crit :
+>> > Here, test this patch. I'm in the process of committing it now.
+>> > It will be two patches, one for the WARN_ON_SMP() change, the other fo=
+r
+>> > the futex change.
+>> >
+>> > -- Steve
+>> >
+>> > diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
+>> > index c2c9ba0..25f1e9e 100644
+>> > --- a/include/asm-generic/bug.h
+>> > +++ b/include/asm-generic/bug.h
+>> > @@ -168,7 +168,7 @@ extern void warn_slowpath_null(const char *file, c=
+onst int line);
+>> > =C2=A0#ifdef CONFIG_SMP
+>> > =C2=A0# define WARN_ON_SMP(x) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0WARN_ON(x)
+>> > =C2=A0#else
+>> > -# define WARN_ON_SMP(x) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0do { } while (0)
+>> > +# define WARN_ON_SMP(x) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0({0;})
+>> > =C2=A0#endif
+>> >
+>>
+>> You meant :
+>>
+>> # define WARN_ON_SMP(x) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 ({x;})
+>>
+>> or
+>>
+>> # define WARN_ON_SMP(x) =C2=A0 =C2=A0 =C2=A0 =C2=A0 do { } while (x, 0)
+>>
+>> ?
+>>
+>
+> Does if (do { } while (x, 0)) work?
 
-We are the first user of this false return, as do { } while (0) doesn't
-return anything. I'll add a comment to explain the issue, but it makes
-sense to have it returns false on UNIPROCESSOR.
+No.
 
--- Steve
+Gr{oetje,eeting}s,
 
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
 
