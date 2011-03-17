@@ -1,54 +1,53 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Thu, 17 Mar 2011 13:37:29 +0100
-Message-Id: <1300365449-12548-1-git-send-email-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: Remove file pointer from ioctl
-To: akpm@linux-foundation.org
-Cc: alan@linux.intel.com, gregkh@suse.de, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, jdike@addtoit.com, Richard Weinberger <richard@nod.at>
+Return-Path: <rostedt@goodmis.org>
+From: Steven Rostedt <rostedt@goodmis.org>
+In-Reply-To: <1300387122.6315.407.camel@edumazet-laptop>
+References: <AANLkTi=e+tM-WTerLmkZfLTQqKCLsJHVBgQ5sj+TMjc4@mail.gmail.com>
+	 <1300370936.16880.96.camel@gandalf.stny.rr.com>
+	 <AANLkTi=Z_yYkdwzO7TMs7nSMOXR9wn_7BxtKjOKgS5HL@mail.gmail.com>
+	 <1300380909.16880.264.camel@gandalf.stny.rr.com>
+	 <1300381340.6315.323.camel@edumazet-laptop>
+	 <1300385802.16880.348.camel@gandalf.stny.rr.com>
+	 <AANLkTim4hY_HJrukNjVe5RDzBj7r547BcxKRozKcQ_uE@mail.gmail.com>
+	 <1300387122.6315.407.camel@edumazet-laptop>
+Content-Type: text/plain; charset="ISO-8859-15"
+Date: Thu, 17 Mar 2011 14:43:37 -0400
+Message-ID: <1300387417.16880.399.camel@gandalf.stny.rr.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: um: WARNING: at kernel/futex.c:786 __unqueue_futex
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, richard -rw- weinberger <richard.weinberger@gmail.com>, laijs@cn.fujitsu.com, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, dvhart@linux.intel.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Commit 6caa76b (tty: now phase out the ioctl file pointer for good)
-removed the ioctl file pointer.
-User Mode Linux's line driver uses this ioctl and needs a
-signature update too.
+On Thu, 2011-03-17 at 19:38 +0100, Eric Dumazet wrote:
+>  
+> 
+> My point was that WARN_ON(X) always evaluates X once
+> 
+> And apparently, WARN_ON_SMP(X) doesnt evaluates X iF !SMP
+> 
+> This should be documented, or fixed ;)
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/drivers/line.c        |    4 ++--
- arch/um/include/shared/line.h |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+My new patch has it documented. I even explain when to use the _SMP()
+version, which is mainly for !spin_is_locked() as spin_is_locked()
+always returns false, and !0 will trigger the warning.
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 050e4dd..35dd0b8 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -255,8 +255,8 @@ static const struct {
- 	{ KDSIGACCEPT, KERN_INFO,  "KDSIGACCEPT" },
- };
- 
--int line_ioctl(struct tty_struct *tty, struct file * file,
--	       unsigned int cmd, unsigned long arg)
-+int line_ioctl(struct tty_struct *tty, unsigned int cmd,
-+				unsigned long arg)
- {
- 	int ret;
- 	int i;
-diff --git a/arch/um/include/shared/line.h b/arch/um/include/shared/line.h
-index 311a0d3..72f4f25 100644
---- a/arch/um/include/shared/line.h
-+++ b/arch/um/include/shared/line.h
-@@ -77,8 +77,8 @@ extern int line_chars_in_buffer(struct tty_struct *tty);
- extern void line_flush_buffer(struct tty_struct *tty);
- extern void line_flush_chars(struct tty_struct *tty);
- extern int line_write_room(struct tty_struct *tty);
--extern int line_ioctl(struct tty_struct *tty, struct file * file,
--		      unsigned int cmd, unsigned long arg);
-+extern int line_ioctl(struct tty_struct *tty, unsigned int cmd,
-+				unsigned long arg);
- extern void line_throttle(struct tty_struct *tty);
- extern void line_unthrottle(struct tty_struct *tty);
- 
--- 
-1.6.6.1
+It can also be used to test values that only exist in SMP.
+
+struct foo {
+	[...]
+#ifdef CONFIG_SMP
+	int bar;
+#endif
+};
+
+
+	WARN_ON_SMP(zoo->bar);
+
+We don't want that zoo->bar even evaluated for that case.
+
+-- Steve
+
+
+
 
