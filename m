@@ -1,95 +1,70 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <thomas.roth@leveldown.de>) id 1PxKjQ-0003WH-P7
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2011 14:51:20 +0000
-Received: from mail-yw0-f47.google.com ([209.85.213.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1PxKjO-0005wl-JO
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Mar 2011 14:51:20 +0000
-Received: by ywg8 with SMTP id 8so294242ywg.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 09 Mar 2011 06:51:13 -0800 (PST)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 9 Mar 2011 15:21:07 +0100
-Message-ID: <AANLkTi=tCx=04dwqxyZ9DJioibMURzXbTMgoKpSg03jf@mail.gmail.com>
-From: Thomas Roth <code@stacksmashing.net>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] make_tempfile: Fix potential memory leak.
-To: jdike@addtoit.com
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Date: Thu, 31 Mar 2011 17:28:03 +0200
+Message-ID: <AANLkTimPAX+BnXhtV0R=he80DBrQFMLgjobUwKfnWJuZ@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: gcc 4.6.0 breaks User Mode Linux
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, jdike@linux.intel.com
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This patch removes a potential memory leak in make_tempfile (in
-arch/um/os-Linux/mem.c).
-If tempdir is NULL or as long as MAXPATHLEN, the function will return
-without freeing the previously
-malloced tempname, resulting in a memory leak. Another way to fix this
-issue is to replace :
- 	if ((tempdir == NULL) || (strlen(tempdir) >= MAXPATHLEN))
- 		return -1;
-with:
- 	if ((tempdir == NULL) || (strlen(tempdir) >= MAXPATHLEN))
- 		goto out;
+Hi,
 
-But I think the way in the attached patch is cleaner, as it doesn't
-malloc tempname at all if it's not necessary.
+The um kernel (Linus's tree as of today) crashes very early during boot-up.
 
-Cheers,
+---cut---
+$ ./linux
+Locating the bottom of the address space ... 0x10000
+Locating the top of the address space ... 0xc0000000
+Core dump limits :
+        soft - 0
+        hard - NONE
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+Checking for tmpfs mount on /dev/shm...nothing mounted on /dev/shm
+Checking PROT_EXEC mmap in /tmp/...OK
+Checking for the skas3 patch in the host:
+  - /proc/mm...not found: No such file or directory
+  - PTRACE_FAULTINFO...not found
+  - PTRACE_LDT...not found
+UML running in SKAS0 mode
+Aborted
+---cut---
 
-Thomas
+Here the gdb backtrace:
+---cut---
+Program received signal SIGILL, Illegal instruction.
+kmem_cache_create (name=0x81efe77 "pid", size=44, align=4,
+flags=270336, ctor=0) at mm/slab.c:2181
+2181                    BUG();
+(gdb) bt
+#0  kmem_cache_create (name=0x81efe77 "pid", size=44, align=4,
+flags=270336, ctor=0) at mm/slab.c:2181
+#1  0x0804c902 in pidmap_init () at kernel/pid.c:565
+#2  0x080494e9 in start_kernel () at init/main.c:591
+#3  0x0804a539 in start_kernel_proc (unused=0x0) at
+arch/um/kernel/skas/process.c:46
+#4  0x08063ec2 in run_kernel_thread (fn=0x804a50f <start_kernel_proc>,
+arg=0x0, jmp_ptr=0x823e7dc)
+    at arch/um/os-Linux/process.c:267
+#5  0x08057717 in new_thread_handler () at arch/um/kernel/process.c:153
+#6  0x00000000 in ?? ()
+---cut---
 
----
- arch/um/os-Linux/mem.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+BUG() was trigged by in_interrupt() at mm/slab.c:2181.
+in_interrupt() returns misleadingly a non-zero value.
+My first idea was that in_interrupt() returns always a non-zero value,
+but this is not the case.
+preempt_count() seems broken in some way.
 
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index e696144..e135422 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -170,14 +170,14 @@ static int __init make_tempfile(const char
-*template, char **out_tempname,
- 	int fd;
+I can reproduce this issue using gcc 4.6.0 on x86 and x86_64 hosts.
+Now I'm wondering whether this is a gcc or a uml bug.
 
- 	which_tmpdir();
--	tempname = malloc(MAXPATHLEN);
--	if (tempname == NULL)
--		return -1;
--
- 	find_tempdir();
- 	if ((tempdir == NULL) || (strlen(tempdir) >= MAXPATHLEN))
- 		return -1;
+Any ideas where to start?
 
-+	tempname = malloc(MAXPATHLEN);
-+	if (tempname == NULL)
-+		return -1;
-+
- 	if (template[0] != '/')
- 		strcpy(tempname, tempdir);
- 	else
 -- 
-1.7.2.3
-
-------------------------------------------------------------------------------
-Colocation vs. Managed Hosting
-A question and answer guide to determining the best fit
-for your organization - today and in the future.
-http://p.sf.net/sfu/internap-sfd2d
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Thanks,
+//richard
