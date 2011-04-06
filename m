@@ -1,34 +1,252 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Wed, 6 Apr 2011 23:31:33 +0200
-References: <20110407001837.12e6f01c@sf.home>
-In-Reply-To: <20110407001837.12e6f01c@sf.home>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201104062331.34205.richard@nod.at>
+Date: Thu, 7 Apr 2011 00:18:37 +0300
+From: Sergei Trofimovich <slyich@gmail.com>
+Message-ID: <20110407001837.12e6f01c@sf.home>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+ boundary="Sig_/Ny9MwLaR9EtgbIi4WWPXtqr"; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH] [RFC] um: x86: unbreak build by reintroducing this_cpu_cmpxchg16b_emu
-To: Sergei Trofimovich <slyich@gmail.com>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH] [RFC] um: x86: unbreak build by reintroducing
+ this_cpu_cmpxchg16b_emu
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Sergei,
+--Sig_/Ny9MwLaR9EtgbIi4WWPXtqr
+Content-Type: multipart/mixed; boundary="MP_/Wyi1zXQ2o+_Y3x+fDwvHPFe"
 
-Am Mittwoch 06 April 2011, 23:18:37 schrieb Sergei Trofimovich:
-> I'm sure fix can be nices, but initial patch should express an idea.
+--MP_/Wyi1zXQ2o+_Y3x+fDwvHPFe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Please send patches not as attachment.
+I'm sure fix can be nices, but initial patch should express an idea.
 
-I think this patch is only needed on x86_64.
-Um builds fine on my main machine (i386).
-It seems to fail on x86_64 when using  CONFIG_SLUB=y.
+The main offender is privileged 'cli'.
 
-> The main offender is privileged 'cli'.
-> 
-> Thanks!
+Thanks!
 
-Thanks,
-//richard
+--=20
 
+  Sergei
+
+--MP_/Wyi1zXQ2o+_Y3x+fDwvHPFe
+Content-Type: text/x-patch
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename=0001-RFC-um-x86-unbreak-build-by-reintroducing-this_cpu_c.patch
+
+=46rom 59c59c76b0238ff2469bb7f4201b9b88ec436df4 Mon Sep 17 00:00:00 2001
+From: Sergei Trofimovich <slyfox@gentoo.org>
+Date: Thu, 7 Apr 2011 00:09:37 +0300
+Subject: [PATCH] [RFC] um: x86: unbreak build by reintroducing this_cpu_cmp=
+xchg16b_emu
+
+  LD      .tmp_vmlinux1
+mm/built-in.o: In function `slab_free':
+/home/slyfox/linux-2.6/mm/slub.c:2148: undefined reference to `this_cpu_cmp=
+xchg16b_emu'
+/home/slyfox/linux-2.6/mm/slub.c:2148: undefined reference to `this_cpu_cmp=
+xchg16b_emu'
+mm/built-in.o: In function `slab_alloc':
+/home/slyfox/linux-2.6/mm/slub.c:1943: undefined reference to `this_cpu_cmp=
+xchg16b_emu'
+/home/slyfox/linux-2.6/mm/slub.c:1943: undefined reference to `this_cpu_cmp=
+xchg16b_emu'
+/home/slyfox/linux-2.6/mm/slub.c:1943: undefined reference to `this_cpu_cmp=
+xchg16b_emu'
+
+Original implementation of this_cpu_cmpxchg16b_emu contained privileged 'cl=
+i' instruction
+so copied implementation to private um/ space. Tested on x86_64, untested o=
+n i386.
+
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+---
+ arch/um/sys-i386/Makefile              |    2 +-
+ arch/um/sys-i386/cmpxchg8b_emu_um.S    |   56 ++++++++++++++++++++++++++++
+ arch/um/sys-x86_64/Makefile            |    2 +-
+ arch/um/sys-x86_64/cmpxchg16b_emu_um.S |   64 ++++++++++++++++++++++++++++=
+++++
+ 4 files changed, 122 insertions(+), 2 deletions(-)
+ create mode 100644 arch/um/sys-i386/cmpxchg8b_emu_um.S
+ create mode 100644 arch/um/sys-x86_64/cmpxchg16b_emu_um.S
+
+diff --git a/arch/um/sys-i386/Makefile b/arch/um/sys-i386/Makefile
+index 804b28d..40d7940 100644
+--- a/arch/um/sys-i386/Makefile
++++ b/arch/um/sys-i386/Makefile
+@@ -4,7 +4,7 @@
+=20
+ obj-y =3D bug.o bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
+ 	ptrace_user.o setjmp.o signal.o stub.o stub_segv.o syscalls.o sysrq.o \
+-	sys_call_table.o tls.o
++	sys_call_table.o tls.o cmpxchg8b_emu_um.o
+=20
+ obj-$(CONFIG_BINFMT_ELF) +=3D elfcore.o
+=20
+diff --git a/arch/um/sys-i386/cmpxchg8b_emu_um.S b/arch/um/sys-i386/cmpxchg=
+8b_emu_um.S
+new file mode 100644
+index 0000000..b2f0d5f
+--- /dev/null
++++ b/arch/um/sys-i386/cmpxchg8b_emu_um.S
+@@ -0,0 +1,56 @@
++/*
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; version 2
++ *	of the License.
++ *
++ */
++
++#include <linux/linkage.h>
++#include <asm/alternative-asm.h>
++#include <asm/frame.h>
++#include <asm/dwarf2.h>
++
++
++.text
++
++/*
++ * Inputs:
++ * %esi : memory location to compare
++ * %eax : low 32 bits of old value
++ * %edx : high 32 bits of old value
++ * %ebx : low 32 bits of new value
++ * %ecx : high 32 bits of new value
++ */
++ENTRY(cmpxchg8b_emu)
++CFI_STARTPROC
++
++#
++# Emulate 'cmpxchg8b (%esi)' on UP except we don't
++# set the whole ZF thing (caller will just compare
++# eax:edx with the expected value)
++#
++cmpxchg8b_emu:
++	pushfl
++
++	cmpl  (%esi), %eax
++	jne not_same
++	cmpl 4(%esi), %edx
++	jne half_same
++
++	movl %ebx,  (%esi)
++	movl %ecx, 4(%esi)
++
++	popfl
++	ret
++
++ not_same:
++	movl  (%esi), %eax
++ half_same:
++	movl 4(%esi), %edx
++
++	popfl
++	ret
++
++CFI_ENDPROC
++ENDPROC(cmpxchg8b_emu)
+diff --git a/arch/um/sys-x86_64/Makefile b/arch/um/sys-x86_64/Makefile
+index c1ea9eb..3259f54 100644
+--- a/arch/um/sys-x86_64/Makefile
++++ b/arch/um/sys-x86_64/Makefile
+@@ -6,7 +6,7 @@
+=20
+ obj-y =3D bug.o bugs.o delay.o fault.o ldt.o mem.o ptrace.o ptrace_user.o \
+ 	setjmp.o signal.o stub.o stub_segv.o syscalls.o syscall_table.o \
+-	sysrq.o ksyms.o tls.o
++	sysrq.o ksyms.o tls.o cmpxchg16b_emu_um.o
+=20
+ subarch-obj-y =3D lib/csum-partial_64.o lib/memcpy_64.o lib/thunk_64.o \
+ 		lib/rwsem_64.o
+diff --git a/arch/um/sys-x86_64/cmpxchg16b_emu_um.S b/arch/um/sys-x86_64/cm=
+pxchg16b_emu_um.S
+new file mode 100644
+index 0000000..e954084
+--- /dev/null
++++ b/arch/um/sys-x86_64/cmpxchg16b_emu_um.S
+@@ -0,0 +1,64 @@
++/*
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License
++ *	as published by the Free Software Foundation; version 2
++ *	of the License.
++ *
++ */
++#include <linux/linkage.h>
++#include <asm/alternative-asm.h>
++#include <asm/frame.h>
++#include <asm/dwarf2.h>
++
++#ifdef CONFIG_SMP
++#define SEG_PREFIX %gs:
++#else
++#define SEG_PREFIX
++#endif
++
++.text
++
++/*
++ * Inputs:
++ * %rsi : memory location to compare
++ * %rax : low 64 bits of old value
++ * %rdx : high 64 bits of old value
++ * %rbx : low 64 bits of new value
++ * %rcx : high 64 bits of new value
++ * %al  : Operation successful
++ */
++ENTRY(this_cpu_cmpxchg16b_emu)
++CFI_STARTPROC
++
++#
++# Emulate 'cmpxchg16b %gs:(%rsi)' except we return the result in %al not
++# via the ZF.  Caller will access %al to get result.
++#
++# Note that this is only useful for a cpuops operation.  Meaning that we
++# do *not* have a fully atomic operation but just an operation that is
++# *atomic* on a single cpu (as provided by the this_cpu_xx class of
++# macros).
++#
++this_cpu_cmpxchg16b_emu:
++	pushf
++
++	cmpq SEG_PREFIX(%rsi), %rax
++	jne not_same
++	cmpq SEG_PREFIX 8(%rsi), %rdx
++	jne not_same
++
++	movq %rbx, SEG_PREFIX(%rsi)
++	movq %rcx, SEG_PREFIX 8(%rsi)
++
++	popf
++	mov $1, %al
++	ret
++
++ not_same:
++	popf
++	xor %al,%al
++	ret
++
++CFI_ENDPROC
++
++ENDPROC(this_cpu_cmpxchg16b_emu)
+--=20
+1.7.3.4
+
+
+--MP_/Wyi1zXQ2o+_Y3x+fDwvHPFe--
+
+--Sig_/Ny9MwLaR9EtgbIi4WWPXtqr
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iEYEARECAAYFAk2c2LIACgkQcaHudmEf86qRhQCfT8B9w2mjLnr1UHHQJmszDu3t
+kEgAmwQgmWlp1h93+qhN1W6fZQ4J1yA7
+=vlgw
+-----END PGP SIGNATURE-----
+
+--Sig_/Ny9MwLaR9EtgbIi4WWPXtqr--
