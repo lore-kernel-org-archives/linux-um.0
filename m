@@ -1,41 +1,27 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Fri, 22 Apr 2011 12:20:14 +0200
-Message-Id: <1303467614-7585-1-git-send-email-richard@nod.at>
+MIME-Version: 1.0
+In-Reply-To: <1302698512-11979-2-git-send-email-richard@nod.at>
+References: <1302698512-11979-1-git-send-email-richard@nod.at>
+	<1302698512-11979-2-git-send-email-richard@nod.at>
+Date: Wed, 13 Apr 2011 15:56:26 +0300
+Message-ID: <BANLkTikJ-7vHBBWSdTcz4mtB2ERqfn3D6g@mail.gmail.com>
+From: Pekka Enberg <penberg@kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: Adjust current_thread_info() for newer gcc versions
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, kirill@shutemov.name, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 2/2] um: Disable CONFIG_CMPXCHG_LOCAL
+To: Richard Weinberger <richard@nod.at>
+Cc: akpm@linux-foundation.com, slyich@gmail.com, linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, Christoph Lameter <cl@linux.com>, Tejun Heo <tj@kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-In some cases gcc >= 4.5.2 will optimize away current_thread_info().
-To prevent gcc from doing so the stack address has to be obtained
-via inline asm.
+On Wed, Apr 13, 2011 at 3:41 PM, Richard Weinberger <richard@nod.at> wrote:
+> Commit 8a5ec0ba "Lockless (and preemptless) fastpaths for slub"
+> makes use of this_cpu_cmpxchg_double() which needs
+> this_cpu_cmpxchg16b_emu() on x86_64.
+> Implementing cmpxchg16b emulation for UML would introduce
+> too much complexity. So just disable it.
+>
+> LKML-Reference: <20110412192014.GF16342@mtj.dyndns.org>
+> Reported-by: Sergei Trofimovich <slyich@gmail.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-LKML-Reference: http://marc.info/?i=201104132150.05623.richard@nod.at
-
-Acked-by: Kirill A. Shutemov <kirill@shutemov.name>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/include/asm/thread_info.h |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
-index e2cf786..5bd1bad 100644
---- a/arch/um/include/asm/thread_info.h
-+++ b/arch/um/include/asm/thread_info.h
-@@ -49,7 +49,10 @@ static inline struct thread_info *current_thread_info(void)
- {
- 	struct thread_info *ti;
- 	unsigned long mask = THREAD_SIZE - 1;
--	ti = (struct thread_info *) (((unsigned long) &ti) & ~mask);
-+	void *p;
-+
-+	asm volatile ("" : "=r" (p) : "0" (&ti));
-+	ti = (struct thread_info *) (((unsigned long)p) & ~mask);
- 	return ti;
- }
- 
--- 
-1.7.4.2
-
+Acked-by: Pekka Enberg <penberg@kernel.org>
