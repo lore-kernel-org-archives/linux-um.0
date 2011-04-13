@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <nolan@sigbus.net>) id 1QBycP-0001i6-F1
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <richard@nod.at>) id 1Q9xmn-0003JN-5Z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Apr 2011 00:16:37 +0000
-Received: from phong.sigbus.net ([64.62.173.8])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1QBycO-0008DS-Lu
+	Wed, 13 Apr 2011 10:59:01 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1Q9xmh-0003BC-0e
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Apr 2011 00:16:37 +0000
-From: Nolan Leake <nolan@cumulusnetworks.com>
-In-Reply-To: <201104131258.46657.richard@nod.at>
+	Wed, 13 Apr 2011 10:59:01 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Wed, 13 Apr 2011 12:58:46 +0200
 References: <1302652293.17952.33.camel@voxel>
-	<201104131258.46657.richard@nod.at>
-Date: Mon, 18 Apr 2011 17:16:29 -0700
-Message-ID: <1303172189.17952.81.camel@voxel>
-Mime-Version: 1.0
+In-Reply-To: <1302652293.17952.33.camel@voxel>
+MIME-Version: 1.0
+Message-Id: <201104131258.46657.richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +29,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] um: Add a "ucast" ethernet transport
-To: Richard Weinberger <richard@nod.at>
+To: Nolan Leake <nolan@cumulusnetworks.com>
 Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, 2011-04-13 at 12:58 +0200, Richard Weinberger wrote:
-> Am Mittwoch 13 April 2011, 01:51:33 schrieb Nolan Leake:
-> > The "ucast" transport is similar to the mcast transport (and, in fact,
-> > shares most of its code), only it uses UDP unicast to move packets.
-> > 
-> > Obviously this is only useful for point-to-point connections between
-> > virtual ethernet devices.
+Hi,
+
+Am Mittwoch 13 April 2011, 01:51:33 schrieb Nolan Leake:
+> The "ucast" transport is similar to the mcast transport (and, in fact,
+> shares most of its code), only it uses UDP unicast to move packets.
 > 
-> Sorry, your mailer screwed the patch.
-> Please use git send-email.
+> Obviously this is only useful for point-to-point connections between
+> virtual ethernet devices.
+> 
+> Signed-off-by: Nolan Leake <nolan@cumulusnetworks.com>
+> ---
+>  Documentation/uml/UserModeLinux-HOWTO.txt |   10 +++
+>  arch/um/drivers/mcast.h                   |    7 ++-
+>  arch/um/drivers/mcast_kern.c              |   82 +++++++++++++++++++--
+>  arch/um/drivers/mcast_user.c              |  113
+> +++++++++++++++++------------ 4 files changed, 157 insertions(+), 55
+> deletions(-)
+> 
 
-Weird, I used the same settings I've used in the past for linux kernel
-patches.  I'll try git send-email.
+Sorry, your mailer screwed the patch.
+Please use git send-email.
 
-> With your patch drivers/mcast* would contain unicast stuff.
-> This is a bit confusing.
-> Either rename the mcast files or put everything which have mcast 
-> and ucast in common into a separate file.
+With your patch drivers/mcast* would contain unicast stuff.
+This is a bit confusing.
+Either rename the mcast files or put everything which have mcast 
+and ucast in common into a separate file.
 
-OK, I'll do the rename.
+Are you using this patch in a production environment?
 
-> Are you using this patch in a production environment?
-
-I use it for testing.
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+Forrester Wave Report - Recovery time is now measured in hours and minutes
+not days. Key insights are discussed in the 2010 Forrester Wave Report as
+part of an in-depth evaluation of disaster recovery service providers.
+Forrester found the best-in-class provider in terms of services and vision.
+Read this report now!  http://p.sf.net/sfu/ibm-webcastpromo
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
