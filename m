@@ -1,21 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <walch.martin@web.de>) id 1QBWAZ-0001ND-Nm
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <richard.weinberger@gmail.com>) id 1QBDTT-0006u8-Nn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Apr 2011 17:53:59 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QBWAY-0003XQ-8U for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Apr 2011 17:53:59 +0000
-From: Martin Walch <walch.martin@web.de>
-Date: Sun, 17 Apr 2011 19:52:19 +0200
-References: <201104161604.18054.walch.martin@web.de>
-	<BANLkTike7MH5NEQ06CZj9ae2b2q4fWehMQ@mail.gmail.com>
-In-Reply-To: <BANLkTike7MH5NEQ06CZj9ae2b2q4fWehMQ@mail.gmail.com>
+	Sat, 16 Apr 2011 21:56:15 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.74) id 1QBDTS-0007jL-Qp
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 16 Apr 2011 21:56:15 +0000
+Received: by iye7 with SMTP id 7so4224047iye.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 16 Apr 2011 14:56:09 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <201104171952.19782.walch.martin@web.de>
+In-Reply-To: <201104161604.18054.walch.martin@web.de>
+References: <201104161604.18054.walch.martin@web.de>
+Date: Sat, 16 Apr 2011 23:56:09 +0200
+Message-ID: <BANLkTike7MH5NEQ06CZj9ae2b2q4fWehMQ@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: multipart/mixed; boundary=90e6ba6148bce0a1f404a1103969
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,34 +29,136 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] Linux Kernel Bug #32812 "ARCH=um,
-	SUBARCH=i386: linking failure"
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+ SUBARCH=i386: linking failure"
+To: Martin Walch <walch.martin@web.de>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-> Can you please test the attached patch?
-> Don't forget to apply http://git.kernel.org/linus/084189a in case you're
-> not using Linus' tree.
+--90e6ba6148bce0a1f404a1103969
+Content-Type: text/plain; charset=ISO-8859-1
 
-Works fine. At least make successfully creates a uml binary and I can create, 
-mount and unmount an xfs file system. Creating and deleting a file also works 
-fine.
+Martin,
 
-I did not do any intensive testing as I am not going to use it now anyway, as 
-hostfs has become the better choice. (Actually, I had already decided against 
-xfs before reporting the bug.)
+On Sat, Apr 16, 2011 at 4:04 PM, Martin Walch <walch.martin@web.de> wrote:
+> Hello UML maintainers,
+>
+> I have run into a problem making a uml kernel for SUBARCH=i386 with support
+> for XFS. This looks like a regression. Can you please take a look at
+>
+> https://bugzilla.kernel.org/show_bug.cgi?id=32812
+>
+> Thank you.
 
-> BTW: Please configure your kernel for a CPU newer than i486,
-> Pentium Pro would be a good choice. :-)
+Can you please test the attached patch?
+Don't forget to apply http://git.kernel.org/linus/084189a in case you're
+not using Linus' tree.
 
-I never intended to actually use an i486 comaptible build. I will be using 
-"Opteron/Athlon64/Hammer/K8". However, I wonder if there are any problems 
-using i486 besides performance loss. Will this break things?
+BTW: Please configure your kernel for a CPU newer than i486,
+Pentium Pro would be a good choice. :-)
 
 -- 
+Thanks,
+//richard
+
+--90e6ba6148bce0a1f404a1103969
+Content-Type: text/x-patch; charset=UTF-8; 
+	name="0001-um-Add-support-for-64-bit-atomic-operations.patch"
+Content-Disposition: attachment; 
+	filename="0001-um-Add-support-for-64-bit-atomic-operations.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gml33fsy0
+
+RnJvbSAxZWVjYWM3Y2E2ZmIzODI0NDc4YzVjZWI0OTI5ZTA4OTJiMTgwMTE1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgpE
+YXRlOiBTYXQsIDE2IEFwciAyMDExIDIzOjQzOjQ3ICswMjAwClN1YmplY3Q6IFtQQVRDSF0gdW06
+IEFkZCBzdXBwb3J0IGZvciA2NCBiaXQgYXRvbWljIG9wZXJhdGlvbnMKClRoaXMgYWRkcyBzdXBw
+b3J0IGZvciA2NCBiaXQgYXRvbWljIG9wZXJhdGlvbnMgb24KMzIgYml0IFVNTCBzeXN0ZW1zLgoK
+UmVwb3J0ZWQtYnk6IE1hcnRpbiBXYWxjaCA8d2FsY2gubWFydGluQHdlYi5kZT4KU2lnbmVkLW9m
+Zi1ieTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KLS0tCiBhcmNoL3VtL3N5
+cy1pMzg2L01ha2VmaWxlICAgICAgICAgIHwgICAgMiArLQogYXJjaC91bS9zeXMtaTM4Ni9hdG9t
+aWM2NF9jeDhfMzIuUyB8ICAyMjQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+CiAyIGZpbGVzIGNoYW5nZWQsIDIyNSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQogY3Jl
+YXRlIG1vZGUgMTAwNjQ0IGFyY2gvdW0vc3lzLWkzODYvYXRvbWljNjRfY3g4XzMyLlMKCmRpZmYg
+LS1naXQgYS9hcmNoL3VtL3N5cy1pMzg2L01ha2VmaWxlIGIvYXJjaC91bS9zeXMtaTM4Ni9NYWtl
+ZmlsZQppbmRleCA4MDRiMjhkLi5iMWRhOTFjIDEwMDY0NAotLS0gYS9hcmNoL3VtL3N5cy1pMzg2
+L01ha2VmaWxlCisrKyBiL2FyY2gvdW0vc3lzLWkzODYvTWFrZWZpbGUKQEAgLTQsNyArNCw3IEBA
+CiAKIG9iai15ID0gYnVnLm8gYnVncy5vIGNoZWNrc3VtLm8gZGVsYXkubyBmYXVsdC5vIGtzeW1z
+Lm8gbGR0Lm8gcHRyYWNlLm8gXAogCXB0cmFjZV91c2VyLm8gc2V0am1wLm8gc2lnbmFsLm8gc3R1
+Yi5vIHN0dWJfc2Vndi5vIHN5c2NhbGxzLm8gc3lzcnEubyBcCi0Jc3lzX2NhbGxfdGFibGUubyB0
+bHMubworCXN5c19jYWxsX3RhYmxlLm8gdGxzLm8gYXRvbWljNjRfY3g4XzMyLm8KIAogb2JqLSQo
+Q09ORklHX0JJTkZNVF9FTEYpICs9IGVsZmNvcmUubwogCmRpZmYgLS1naXQgYS9hcmNoL3VtL3N5
+cy1pMzg2L2F0b21pYzY0X2N4OF8zMi5TIGIvYXJjaC91bS9zeXMtaTM4Ni9hdG9taWM2NF9jeDhf
+MzIuUwpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwLi5mYjBlYzI2Ci0tLSAvZGV2
+L251bGwKKysrIGIvYXJjaC91bS9zeXMtaTM4Ni9hdG9taWM2NF9jeDhfMzIuUwpAQCAtMCwwICsx
+LDIyNCBAQAorLyoKKyAqIGF0b21pYzY0X3QgZm9yIDU4NisKKyAqCisgKiBDb3B5cmlnaHQgwqkg
+MjAxMCAgTHVjYSBCYXJiaWVyaQorICoKKyAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJl
+OyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CisgKiBpdCB1bmRlciB0aGUg
+dGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQor
+ICogdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0aGUg
+TGljZW5zZSwgb3IKKyAqIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCisgKgor
+ICogQ29waWVkIGZyb20gYXJjaC94ODYvbGliL2F0b21pYzY0X2N4OF8zMi5TCisgKi8KKworI2lu
+Y2x1ZGUgPGxpbnV4L2xpbmthZ2UuaD4KKyNpbmNsdWRlIDxhc20vYWx0ZXJuYXRpdmUtYXNtLmg+
+CisjaW5jbHVkZSA8YXNtL2R3YXJmMi5oPgorCisubWFjcm8gU0FWRSByZWcKKwlwdXNobF9jZmkg
+JVxyZWcKKwlDRklfUkVMX09GRlNFVCBccmVnLCAwCisuZW5kbQorCisubWFjcm8gUkVTVE9SRSBy
+ZWcKKwlwb3BsX2NmaSAlXHJlZworCUNGSV9SRVNUT1JFIFxyZWcKKy5lbmRtCisKKy5tYWNybyBy
+ZWFkNjQgcmVnCisJbW92bCAlZWJ4LCAlZWF4CisJbW92bCAlZWN4LCAlZWR4CisvKiB3ZSBuZWVk
+IExPQ0tfUFJFRklYIHNpbmNlIG90aGVyd2lzZSBjbXB4Y2hnOGIgYWx3YXlzIGRvZXMgdGhlIHdy
+aXRlICovCisJTE9DS19QUkVGSVgKKwljbXB4Y2hnOGIgKFxyZWcpCisuZW5kbQorCitFTlRSWShh
+dG9taWM2NF9yZWFkX2N4OCkKKwlDRklfU1RBUlRQUk9DCisKKwlyZWFkNjQgJWVjeAorCXJldAor
+CUNGSV9FTkRQUk9DCitFTkRQUk9DKGF0b21pYzY0X3JlYWRfY3g4KQorCitFTlRSWShhdG9taWM2
+NF9zZXRfY3g4KQorCUNGSV9TVEFSVFBST0MKKworMToKKy8qIHdlIGRvbid0IG5lZWQgTE9DS19Q
+UkVGSVggc2luY2UgYWxpZ25lZCA2NC1iaXQgd3JpdGVzCisgKiBhcmUgYXRvbWljIG9uIDU4NiBh
+bmQgbmV3ZXIgKi8KKwljbXB4Y2hnOGIgKCVlc2kpCisJam5lIDFiCisKKwlyZXQKKwlDRklfRU5E
+UFJPQworRU5EUFJPQyhhdG9taWM2NF9zZXRfY3g4KQorCitFTlRSWShhdG9taWM2NF94Y2hnX2N4
+OCkKKwlDRklfU1RBUlRQUk9DCisKKwltb3ZsICVlYngsICVlYXgKKwltb3ZsICVlY3gsICVlZHgK
+KzE6CisJTE9DS19QUkVGSVgKKwljbXB4Y2hnOGIgKCVlc2kpCisJam5lIDFiCisKKwlyZXQKKwlD
+RklfRU5EUFJPQworRU5EUFJPQyhhdG9taWM2NF94Y2hnX2N4OCkKKworLm1hY3JvIGFkZHN1Yl9y
+ZXR1cm4gZnVuYyBpbnMgaW5zYworRU5UUlkoYXRvbWljNjRfXGZ1bmNcKClfcmV0dXJuX2N4OCkK
+KwlDRklfU1RBUlRQUk9DCisJU0FWRSBlYnAKKwlTQVZFIGVieAorCVNBVkUgZXNpCisJU0FWRSBl
+ZGkKKworCW1vdmwgJWVheCwgJWVzaQorCW1vdmwgJWVkeCwgJWVkaQorCW1vdmwgJWVjeCwgJWVi
+cAorCisJcmVhZDY0ICVlYnAKKzE6CisJbW92bCAlZWF4LCAlZWJ4CisJbW92bCAlZWR4LCAlZWN4
+CisJXGluc1woKWwgJWVzaSwgJWVieAorCVxpbnNjXCgpbCAlZWRpLCAlZWN4CisJTE9DS19QUkVG
+SVgKKwljbXB4Y2hnOGIgKCVlYnApCisJam5lIDFiCisKKzEwOgorCW1vdmwgJWVieCwgJWVheAor
+CW1vdmwgJWVjeCwgJWVkeAorCVJFU1RPUkUgZWRpCisJUkVTVE9SRSBlc2kKKwlSRVNUT1JFIGVi
+eAorCVJFU1RPUkUgZWJwCisJcmV0CisJQ0ZJX0VORFBST0MKK0VORFBST0MoYXRvbWljNjRfXGZ1
+bmNcKClfcmV0dXJuX2N4OCkKKy5lbmRtCisKK2FkZHN1Yl9yZXR1cm4gYWRkIGFkZCBhZGMKK2Fk
+ZHN1Yl9yZXR1cm4gc3ViIHN1YiBzYmIKKworLm1hY3JvIGluY2RlY19yZXR1cm4gZnVuYyBpbnMg
+aW5zYworRU5UUlkoYXRvbWljNjRfXGZ1bmNcKClfcmV0dXJuX2N4OCkKKwlDRklfU1RBUlRQUk9D
+CisJU0FWRSBlYngKKworCXJlYWQ2NCAlZXNpCisxOgorCW1vdmwgJWVheCwgJWVieAorCW1vdmwg
+JWVkeCwgJWVjeAorCVxpbnNcKClsICQxLCAlZWJ4CisJXGluc2NcKClsICQwLCAlZWN4CisJTE9D
+S19QUkVGSVgKKwljbXB4Y2hnOGIgKCVlc2kpCisJam5lIDFiCisKKzEwOgorCW1vdmwgJWVieCwg
+JWVheAorCW1vdmwgJWVjeCwgJWVkeAorCVJFU1RPUkUgZWJ4CisJcmV0CisJQ0ZJX0VORFBST0MK
+K0VORFBST0MoYXRvbWljNjRfXGZ1bmNcKClfcmV0dXJuX2N4OCkKKy5lbmRtCisKK2luY2RlY19y
+ZXR1cm4gaW5jIGFkZCBhZGMKK2luY2RlY19yZXR1cm4gZGVjIHN1YiBzYmIKKworRU5UUlkoYXRv
+bWljNjRfZGVjX2lmX3Bvc2l0aXZlX2N4OCkKKwlDRklfU1RBUlRQUk9DCisJU0FWRSBlYngKKwor
+CXJlYWQ2NCAlZXNpCisxOgorCW1vdmwgJWVheCwgJWVieAorCW1vdmwgJWVkeCwgJWVjeAorCXN1
+YmwgJDEsICVlYngKKwlzYmIgJDAsICVlY3gKKwlqcyAyZgorCUxPQ0tfUFJFRklYCisJY21weGNo
+ZzhiICglZXNpKQorCWpuZSAxYgorCisyOgorCW1vdmwgJWVieCwgJWVheAorCW1vdmwgJWVjeCwg
+JWVkeAorCVJFU1RPUkUgZWJ4CisJcmV0CisJQ0ZJX0VORFBST0MKK0VORFBST0MoYXRvbWljNjRf
+ZGVjX2lmX3Bvc2l0aXZlX2N4OCkKKworRU5UUlkoYXRvbWljNjRfYWRkX3VubGVzc19jeDgpCisJ
+Q0ZJX1NUQVJUUFJPQworCVNBVkUgZWJwCisJU0FWRSBlYngKKy8qIHRoZXNlIGp1c3QgcHVzaCB0
+aGVzZSB0d28gcGFyYW1ldGVycyBvbiB0aGUgc3RhY2sgKi8KKwlTQVZFIGVkaQorCVNBVkUgZXNp
+CisKKwltb3ZsICVlY3gsICVlYnAKKwltb3ZsICVlYXgsICVlc2kKKwltb3ZsICVlZHgsICVlZGkK
+KworCXJlYWQ2NCAlZWJwCisxOgorCWNtcGwgJWVheCwgMCglZXNwKQorCWplIDRmCisyOgorCW1v
+dmwgJWVheCwgJWVieAorCW1vdmwgJWVkeCwgJWVjeAorCWFkZGwgJWVzaSwgJWVieAorCWFkY2wg
+JWVkaSwgJWVjeAorCUxPQ0tfUFJFRklYCisJY21weGNoZzhiICglZWJwKQorCWpuZSAxYgorCisJ
+bW92bCAkMSwgJWVheAorMzoKKwlhZGRsICQ4LCAlZXNwCisJQ0ZJX0FESlVTVF9DRkFfT0ZGU0VU
+IC04CisJUkVTVE9SRSBlYngKKwlSRVNUT1JFIGVicAorCXJldAorNDoKKwljbXBsICVlZHgsIDQo
+JWVzcCkKKwlqbmUgMmIKKwl4b3JsICVlYXgsICVlYXgKKwlqbXAgM2IKKwlDRklfRU5EUFJPQwor
+RU5EUFJPQyhhdG9taWM2NF9hZGRfdW5sZXNzX2N4OCkKKworRU5UUlkoYXRvbWljNjRfaW5jX25v
+dF96ZXJvX2N4OCkKKwlDRklfU1RBUlRQUk9DCisJU0FWRSBlYngKKworCXJlYWQ2NCAlZXNpCisx
+OgorCXRlc3RsICVlYXgsICVlYXgKKwlqZSA0ZgorMjoKKwltb3ZsICVlYXgsICVlYngKKwltb3Zs
+ICVlZHgsICVlY3gKKwlhZGRsICQxLCAlZWJ4CisJYWRjbCAkMCwgJWVjeAorCUxPQ0tfUFJFRklY
+CisJY21weGNoZzhiICglZXNpKQorCWpuZSAxYgorCisJbW92bCAkMSwgJWVheAorMzoKKwlSRVNU
+T1JFIGVieAorCXJldAorNDoKKwl0ZXN0bCAlZWR4LCAlZWR4CisJam5lIDJiCisJam1wIDNiCisJ
+Q0ZJX0VORFBST0MKK0VORFBST0MoYXRvbWljNjRfaW5jX25vdF96ZXJvX2N4OCkKLS0gCjEuNi42
+LjEKCg==
+--90e6ba6148bce0a1f404a1103969
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Benefiting from Server Virtualization: Beyond Initial Workload 
@@ -60,8 +166,17 @@ Consolidation -- Increasing the use of server virtualization is a top
 priority.Virtualization can reduce costs, simplify management, and improve 
 application availability and disaster protection. Learn more about boosting 
 the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
+--90e6ba6148bce0a1f404a1103969
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--90e6ba6148bce0a1f404a1103969--
+
 
