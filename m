@@ -1,62 +1,51 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <walch.martin@web.de>) id 1QB68K-0007Cg-Ro
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Apr 2011 14:05:56 +0000
-Received: from fmmailgate01.web.de ([217.72.192.221])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QB68I-0000qf-Hk for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Apr 2011 14:05:56 +0000
-Received: from smtp07.web.de  ( [172.20.5.215])
-	by fmmailgate01.web.de (Postfix) with ESMTP id 9B44F18C2A60A
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 16 Apr 2011 16:05:48 +0200 (CEST)
-Received: from [46.223.68.51] (helo=tacticalops.localnet)
-	by smtp07.web.de with asmtp (TLSv1:AES256-SHA:256) (WEB.DE 4.110 #2)
-	id 1QB68C-0003W2-00 for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 16 Apr 2011 16:05:48 +0200
-From: Martin Walch <walch.martin@web.de>
-Date: Sat, 16 Apr 2011 16:04:17 +0200
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Date: Tue, 19 Apr 2011 22:09:16 +0200
+References: <BANLkTin1=uPcyBgy9S_2TJASk8qTkeueEA@mail.gmail.com> <20110419130419.5f1f8539.randy.dunlap@oracle.com>
+In-Reply-To: <20110419130419.5f1f8539.randy.dunlap@oracle.com>
 MIME-Version: 1.0
-Message-Id: <201104161604.18054.walch.martin@web.de>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Linux Kernel Bug #32812 "ARCH=um,
-	SUBARCH=i386: linking failure"
-To: user-mode-linux-devel@lists.sourceforge.net
+Message-Id: <201104192209.16816.richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] uml: fix hppfs build
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Simon Danner <danner.simon@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Christoph Hellwig <hch@infradead.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hello UML maintainers,
+Am Dienstag 19 April 2011, 22:04:19 schrieb Randy Dunlap:
+> From: Randy Dunlap <randy.dunlap@oracle.com>
+> 
+> Make HoneyPot ProcFS depend on CONFIG_PROC_FS so that it will build.
+> Recommended by Christoph Hellwig.
+> 
+> Fixes kernel bugzilla #33692:
+>   https://bugzilla.kernel.org/show_bug.cgi?id=33692
+> 
+> Reported-by: Simon Danner <danner.simon@gmail.com>
+> Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+> Cc:	Jeff Dike <jdike@addtoit.com>
+> Cc:	Richard Weinberger <richard@nod.at>
+> Cc:	user-mode-linux-devel@lists.sourceforge.net
+> Cc:	Christoph Hellwig <hch@infradead.org>
+> ---
+>  arch/um/Kconfig.um |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- lnx-2639-rc4.orig/arch/um/Kconfig.um
+> +++ lnx-2639-rc4/arch/um/Kconfig.um
+> @@ -47,7 +47,7 @@ config HOSTFS
+> 
+>  config HPPFS
+>  	tristate "HoneyPot ProcFS (EXPERIMENTAL)"
+> -	depends on EXPERIMENTAL
+> +	depends on EXPERIMENTAL && PROC_FS
+>  	help
+>  	  hppfs (HoneyPot ProcFS) is a filesystem which allows UML /proc
+>  	  entries to be overridden, removed, or fabricated from the host.
 
-I have run into a problem making a uml kernel for SUBARCH=i386 with support 
-for XFS. This looks like a regression. Can you please take a look at
+Applied.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=32812
-
-Thank you.
-
-Martin Walch
--- 
-
-------------------------------------------------------------------------------
-Benefiting from Server Virtualization: Beyond Initial Workload 
-Consolidation -- Increasing the use of server virtualization is a top
-priority.Virtualization can reduce costs, simplify management, and improve 
-application availability and disaster protection. Learn more about boosting 
-the value of server virtualization. http://p.sf.net/sfu/vmware-sfdev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Thanks,
+//richard
