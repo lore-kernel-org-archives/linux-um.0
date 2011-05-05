@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <richard.weinberger@gmail.com>) id 1QIFpb-0000sb-EQ
+	(envelope-from <paul.chavent@fnac.net>) id 1QHtOt-0000Fg-Mf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2011 07:52:11 +0000
-Received: from mail-qy0-f175.google.com ([209.85.216.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.74) id 1QIFpa-0007Lp-FY
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 06 May 2011 07:52:11 +0000
-Received: by qyk35 with SMTP id 35so4785336qyk.13
+	Thu, 05 May 2011 07:55:07 +0000
+Received: from smtp22.services.sfr.fr ([93.17.128.10])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
+	id 1QHtOs-00024i-BS for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 05 May 2011 07:55:07 +0000
+Received: from smtp11.services.sfr.fr (msfrf1103 [10.18.24.53])
+	by msfrf2205.sfr.fr (SMTP Server) with ESMTP id 1196270005C7
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 06 May 2011 00:52:05 -0700 (PDT)
+	Thu,  5 May 2011 09:34:31 +0200 (CEST)
+From: <paul.chavent@fnac.net>
+Message-ID: <3030427.400951304580864978.JavaMail.www@wsfrf1110>
 MIME-Version: 1.0
-In-Reply-To: <3030427.400951304580864978.JavaMail.www@wsfrf1110>
-References: <3030427.400951304580864978.JavaMail.www@wsfrf1110>
-Date: Fri, 6 May 2011 09:52:05 +0200
-Message-ID: <BANLkTimDwsBk-MvFFABgf0kzx3WHkt6uMA@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Date: Thu,  5 May 2011 09:34:24 +0200 (CEST)
+Reply-To: paul.chavent@fnac.net
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,28 +30,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] for ARCH=um,
+Subject: [uml-devel] [PATCH] for ARCH=um,
  optionaly give a path for the vde installation.
-To: paul.chavent@fnac.net
-Cc: jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+To: jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, May 5, 2011 at 9:34 AM,  <paul.chavent@fnac.net> wrote:
-> Hi.
->
-> I use uml with vde. The kernel links against libvdeplug.a and automatically find it. But i would like to manually give its path.
->
-> So i made a patch for being able to give the VDE_PREFIX when we call make.
->
-> I wonder if this patch could be included in the mainstream kernel, or if there is a better way of doing it.
->
-> Could you give me your opinion please ?
+Hi.
 
-Please post your patch.
-Otherwise nobody can review it.
+I use uml with vde. The kernel links against libvdeplug.a and automatically find it. But i would like to manually give its path.
 
--- 
-Thanks,
-//richard
+So i made a patch for being able to give the VDE_PREFIX when we call make.
+
+I wonder if this patch could be included in the mainstream kernel, or if there is a better way of doing it.
+
+Could you give me your opinion please ?
+
+Regards .
+
+Paul.
+
+
 
 ------------------------------------------------------------------------------
 WhatsUp Gold - Download Free Network Management Software
