@@ -1,13 +1,13 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Richard Weinberger <richard@nod.at>
-Date: Tue, 10 May 2011 20:18:57 +0200
-Message-Id: <1305051538-7191-3-git-send-email-richard@nod.at>
-In-Reply-To: <1305051538-7191-1-git-send-email-richard@nod.at>
-References: <1305051538-7191-1-git-send-email-richard@nod.at>
+Date: Sun,  8 May 2011 23:59:44 +0200
+Message-Id: <1304891985-11569-3-git-send-email-richard@nod.at>
+In-Reply-To: <1304891985-11569-1-git-send-email-richard@nod.at>
+References: <1304891985-11569-1-git-send-email-richard@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: [PATCH 3/4] um: remove SIGHUP handler
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+To: linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 The UML kernel ignores SIGHUP anyway.
