@@ -1,308 +1,112 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Stephen Boyd <sboyd@codeaurora.org>
-Date: Fri,  6 May 2011 22:57:11 -0700
-Message-Id: <1304747831-2098-1-git-send-email-sboyd@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] lib: Consolidate DEBUG_STACK_USAGE option
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org, linux-m32r@ml.linux-m32r.org, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, user-mode-linux-devel@lists.sourceforge.net, x86@kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
+	(envelope-from <richard@nod.at>) id 1QJC2I-0007Wb-GL
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 May 2011 22:01:10 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.74) id 1QJC2H-0006pK-As
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 08 May 2011 22:01:10 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Sun,  8 May 2011 23:59:43 +0200
+Message-Id: <1304891985-11569-2-git-send-email-richard@nod.at>
+In-Reply-To: <1304891985-11569-1-git-send-email-richard@nod.at>
+References: <1304891985-11569-1-git-send-email-richard@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 2/4] um: fix abort
+To: linux-kernel@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 
-Most arches define CONFIG_DEBUG_STACK_USAGE exactly the same way.
-Move it to lib/Kconfig.debug so each arch doesn't have to define
-it. This obviously makes the option generic, but that's fine
-because the config is already used in generic code.
+os_dump_core() uses abort() to terminate UML in case of an
+fatal error.
+glibc's abort() calls raise(SIGABRT) which makes use of tgkill().
+tgkill() has no effect within UML's kernel threads because they
+are not pthreads. As fallback abort() executes an invalid instruction
+to terminate the process. Therefore UML gets killed by SIGSEGV and
+leaves a ugly log entry in the host's kernel ring buffer.
 
-It's not obvious to me that sysrq-P actually does anything
-different with this option enabled, but I erred on the side of
-caution by keeping the most inclusive wording.
+To get rid of this use our own abort routine.
 
-Cc: linux-arch@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: uclinux-dist-devel@blackfin.uclinux.org
-Cc: linux-m32r@ml.linux-m32r.org
-Cc: linux-mips@linux-mips.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-sh@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: Chris Metcalf <cmetcalf@tilera.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: x86@kernel.org
-Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+ # Untracked files:
+
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
+ arch/um/os-Linux/util.c |   23 ++++++++++++++++++++++-
+ 1 files changed, 22 insertions(+), 1 deletions(-)
 
-This is on top of mmotm's lib-conslidate-debug_per_cpu_maps patch.
-
- arch/arm/Kconfig.debug       |    7 -------
- arch/blackfin/Kconfig.debug  |    9 ---------
- arch/m32r/Kconfig.debug      |    9 ---------
- arch/mips/Kconfig.debug      |    9 ---------
- arch/powerpc/Kconfig.debug   |    9 ---------
- arch/score/Kconfig.debug     |    9 ---------
- arch/sh/Kconfig.debug        |    9 ---------
- arch/sparc/Kconfig.debug     |    9 ---------
- arch/tile/Kconfig.debug      |    9 ---------
- arch/um/Kconfig.debug        |    9 ---------
- arch/unicore32/Kconfig.debug |    7 -------
- arch/x86/Kconfig.debug       |    9 ---------
- lib/Kconfig.debug            |    9 +++++++++
- 13 files changed, 9 insertions(+), 104 deletions(-)
-
-diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
-index 03d01d7..81cbe40 100644
---- a/arch/arm/Kconfig.debug
-+++ b/arch/arm/Kconfig.debug
-@@ -63,13 +63,6 @@ config DEBUG_USER
- 	      8 - SIGSEGV faults
- 	     16 - SIGBUS faults
+diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
+index 6ea7797..42827ca 100644
+--- a/arch/um/os-Linux/util.c
++++ b/arch/um/os-Linux/util.c
+@@ -5,6 +5,7 @@
  
--config DEBUG_STACK_USAGE
--	bool "Enable stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T output.
--
- # These options are only for real kernel hackers who want to get their hands dirty.
- config DEBUG_LL
- 	bool "Kernel low-level debugging functions"
-diff --git a/arch/blackfin/Kconfig.debug b/arch/blackfin/Kconfig.debug
-index 2641731..19ccfb3 100644
---- a/arch/blackfin/Kconfig.debug
-+++ b/arch/blackfin/Kconfig.debug
-@@ -9,15 +9,6 @@ config DEBUG_STACKOVERFLOW
- 	  This option will cause messages to be printed if free stack space
- 	  drops below a certain limit.
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <unistd.h>
+ #include <errno.h>
+ #include <signal.h>
+ #include <string.h>
+@@ -75,6 +76,26 @@ void setup_hostinfo(char *buf, int len)
+ 		 host.release, host.version, host.machine);
+ }
  
--config DEBUG_STACK_USAGE
--	bool "Enable stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T output.
--
--	  This option will slow down process creation somewhat.
--
- config DEBUG_VERBOSE
- 	bool "Verbose fault messages"
- 	default y
-diff --git a/arch/m32r/Kconfig.debug b/arch/m32r/Kconfig.debug
-index 2e1019d..bb1afc1 100644
---- a/arch/m32r/Kconfig.debug
-+++ b/arch/m32r/Kconfig.debug
-@@ -9,15 +9,6 @@ config DEBUG_STACKOVERFLOW
- 	  This option will cause messages to be printed if free stack space
- 	  drops below a certain limit.
- 
--config DEBUG_STACK_USAGE
--	bool "Stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T and sysrq-P debug output.
--
--	  This option will slow down process creation somewhat.
--
- config DEBUG_PAGEALLOC
- 	bool "Debug page memory allocations"
- 	depends on DEBUG_KERNEL && BROKEN
-diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
-index 5358f90..83ed00a 100644
---- a/arch/mips/Kconfig.debug
-+++ b/arch/mips/Kconfig.debug
-@@ -76,15 +76,6 @@ config DEBUG_STACKOVERFLOW
- 	  provides another way to check stack overflow happened on kernel mode
- 	  stack usually caused by nested interruption.
- 
--config DEBUG_STACK_USAGE
--	bool "Enable stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T and sysrq-P debug output.
--
--	  This option will slow down process creation somewhat.
--
- config SMTC_IDLE_HOOK_DEBUG
- 	bool "Enable additional debug checks before going into CPU idle loop"
- 	depends on DEBUG_KERNEL && MIPS_MT_SMTC
-diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
-index 12a8d18..f862fc0 100644
---- a/arch/powerpc/Kconfig.debug
-+++ b/arch/powerpc/Kconfig.debug
-@@ -35,15 +35,6 @@ config DEBUG_STACKOVERFLOW
- 	  This option will cause messages to be printed if free stack space
- 	  drops below a certain limit.
- 
--config DEBUG_STACK_USAGE
--	bool "Stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T and sysrq-P debug output.
--
--	  This option will slow down process creation somewhat.
--
- config HCALL_STATS
- 	bool "Hypervisor call instrumentation"
- 	depends on PPC_PSERIES && DEBUG_FS && TRACEPOINTS
-diff --git a/arch/score/Kconfig.debug b/arch/score/Kconfig.debug
-index 451ed54..a1f346d 100644
---- a/arch/score/Kconfig.debug
-+++ b/arch/score/Kconfig.debug
-@@ -16,15 +16,6 @@ config CMDLINE
- 	  other cases you can specify kernel args so that you don't have
- 	  to set them up in board prom initialization routines.
- 
--config DEBUG_STACK_USAGE
--	bool "Enable stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T and sysrq-P debug output.
--
--	  This option will slow down process creation somewhat.
--
- config RUNTIME_DEBUG
- 	bool "Enable run-time debugging"
- 	depends on DEBUG_KERNEL
-diff --git a/arch/sh/Kconfig.debug b/arch/sh/Kconfig.debug
-index 1553d56..c1d5a82 100644
---- a/arch/sh/Kconfig.debug
-+++ b/arch/sh/Kconfig.debug
-@@ -28,15 +28,6 @@ config STACK_DEBUG
- 	  every function call and will therefore incur a major
- 	  performance hit. Most users should say N.
- 
--config DEBUG_STACK_USAGE
--	bool "Stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T and sysrq-P debug output.
--
--	  This option will slow down process creation somewhat.
--
- config 4KSTACKS
- 	bool "Use 4Kb for kernel stacks instead of 8Kb"
- 	depends on DEBUG_KERNEL && (MMU || BROKEN) && !PAGE_SIZE_64KB
-diff --git a/arch/sparc/Kconfig.debug b/arch/sparc/Kconfig.debug
-index d9a795e..6db35fb 100644
---- a/arch/sparc/Kconfig.debug
-+++ b/arch/sparc/Kconfig.debug
-@@ -6,15 +6,6 @@ config TRACE_IRQFLAGS_SUPPORT
- 
- source "lib/Kconfig.debug"
- 
--config DEBUG_STACK_USAGE
--	bool "Enable stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T and sysrq-P debug output.
--
--	  This option will slow down process creation somewhat.
--
- config DEBUG_DCFLUSH
- 	bool "D-cache flush debugging"
- 	depends on SPARC64 && DEBUG_KERNEL
-diff --git a/arch/tile/Kconfig.debug b/arch/tile/Kconfig.debug
-index 9bc161a..ddbfc33 100644
---- a/arch/tile/Kconfig.debug
-+++ b/arch/tile/Kconfig.debug
-@@ -21,15 +21,6 @@ config DEBUG_STACKOVERFLOW
- 	  This option will cause messages to be printed if free stack space
- 	  drops below a certain limit.
- 
--config DEBUG_STACK_USAGE
--	bool "Stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T and sysrq-P debug output.
--
--	  This option will slow down process creation somewhat.
--
- config DEBUG_EXTRA_FLAGS
- 	string "Additional compiler arguments when building with '-g'"
- 	depends on DEBUG_INFO
-diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
-index 8fce5e5..34ac57f 100644
---- a/arch/um/Kconfig.debug
-+++ b/arch/um/Kconfig.debug
-@@ -28,13 +28,4 @@ config GCOV
- 	  If you're involved in UML kernel development and want to use gcov,
- 	  say Y.  If you're unsure, say N.
- 
--config DEBUG_STACK_USAGE
--	bool "Stack utilization instrumentation"
--	default N
--	help
--	  Track the maximum kernel stack usage - this will look at each
--	  kernel stack at process exit and log it if it's the deepest
--	  stack seen so far.
--
--	  This option will slow down process creation and destruction somewhat.
- endmenu
-diff --git a/arch/unicore32/Kconfig.debug b/arch/unicore32/Kconfig.debug
-index 3140151..ae2ec33 100644
---- a/arch/unicore32/Kconfig.debug
-+++ b/arch/unicore32/Kconfig.debug
-@@ -27,13 +27,6 @@ config EARLY_PRINTK
- 	  with klogd/syslogd or the X server. You should normally N here,
- 	  unless you want to debug such a crash.
- 
--config DEBUG_STACK_USAGE
--	bool "Enable stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	help
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T output.
--
- # These options are only for real kernel hackers who want to get their hands dirty.
- config DEBUG_LL
- 	bool "Kernel low-level debugging functions"
-diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
-index 1bf8839..c0f8a5c 100644
---- a/arch/x86/Kconfig.debug
-+++ b/arch/x86/Kconfig.debug
-@@ -66,15 +66,6 @@ config DEBUG_STACKOVERFLOW
- 	  This option will cause messages to be printed if free stack space
- 	  drops below a certain limit.
- 
--config DEBUG_STACK_USAGE
--	bool "Stack utilization instrumentation"
--	depends on DEBUG_KERNEL
--	---help---
--	  Enables the display of the minimum amount of free stack which each
--	  task has ever had available in the sysrq-T and sysrq-P debug output.
--
--	  This option will slow down process creation somewhat.
--
- config X86_PTDUMP
- 	bool "Export kernel pagetable layout to userspace via debugfs"
- 	depends on DEBUG_KERNEL
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index c0872ee..37fae12 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -654,6 +654,15 @@ config STACKTRACE
- 	bool
- 	depends on STACKTRACE_SUPPORT
- 
-+config DEBUG_STACK_USAGE
-+	bool "Stack utilization instrumentation"
-+	depends on DEBUG_KERNEL
-+	help
-+	  Enables the display of the minimum amount of free stack which each
-+	  task has ever had available in the sysrq-T and sysrq-P debug output.
++/*
++ * We cannot use glibc's abort(). It makes use of tgkill() which
++ * has no effect within UML's kernel threads.
++ * After that glibc would execute an invalid instruction to kill
++ * the calling process and UML crashes with SIGSEGV.
++ */
++static inline void __attribute__ ((noreturn)) uml_abort(void)
++{
++	sigset_t sig;
 +
-+	  This option will slow down process creation somewhat.
++	fflush(NULL);
 +
- config DEBUG_KOBJECT
- 	bool "kobject debugging"
- 	depends on DEBUG_KERNEL
++	if (!sigemptyset(&sig) && !sigaddset(&sig, SIGABRT))
++		sigprocmask(SIG_UNBLOCK, &sig, 0);
++
++	for (;;)
++		if (kill(getpid(), SIGABRT) < 0)
++			exit(127);
++}
++
+ void os_dump_core(void)
+ {
+ 	int pid;
+@@ -116,5 +137,5 @@ void os_dump_core(void)
+ 	while ((pid = waitpid(-1, NULL, WNOHANG | __WALL)) > 0)
+ 		os_kill_ptraced_process(pid, 0);
+ 
+-	abort();
++	uml_abort();
+ }
 -- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+1.7.4.2
+
+
+------------------------------------------------------------------------------
+WhatsUp Gold - Download Free Network Management Software
+The most intuitive, comprehensive, and cost-effective network 
+management toolset available today.  Delivers lowest initial 
+acquisition cost and overall TCO of any competing solution.
+http://p.sf.net/sfu/whatsupgold-sd
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
