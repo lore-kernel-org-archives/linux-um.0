@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QO9zU-00040O-WE
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1QJsqe-0005oP-Bd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 May 2011 14:50:49 +0000
+	Tue, 10 May 2011 19:44:00 +0000
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QO9zU-00067d-5C
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QJsqc-00071C-QO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 May 2011 14:50:48 +0000
+	Tue, 10 May 2011 19:44:00 +0000
 From: Richard Weinberger <richard@nod.at>
-Date: Sun, 22 May 2011 16:48:32 +0200
-Message-Id: <1306075716-20042-3-git-send-email-richard@nod.at>
-In-Reply-To: <1306075716-20042-1-git-send-email-richard@nod.at>
-References: <1306075716-20042-1-git-send-email-richard@nod.at>
+Date: Tue, 10 May 2011 21:42:17 +0200
+Message-Id: <1305056537-22299-3-git-send-email-richard@nod.at>
+In-Reply-To: <1305056537-22299-1-git-send-email-richard@nod.at>
+References: <1305056537-22299-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,127 +28,75 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 3/7] um: add earlyprintk support
-To: akpm@linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 3/3] um: print info about fatal segfaults
+To: linux-kernel@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 
-User Mode Linux can also benefit from earlyprintk.
-UML's earlyprintk writes kernel messages directly to stdout.
+Print a short info about fatal segfaults like other archs do.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/Kconfig.debug         |   10 ++++++++++
- arch/um/include/shared/os.h   |    1 +
- arch/um/kernel/Makefile       |    1 +
- arch/um/kernel/early_printk.c |   33 +++++++++++++++++++++++++++++++++
- arch/um/os-Linux/util.c       |    5 +++++
- 5 files changed, 50 insertions(+), 0 deletions(-)
- create mode 100644 arch/um/kernel/early_printk.c
+ arch/um/kernel/trap.c |   24 ++++++++++++++++++++++++
+ 1 files changed, 24 insertions(+), 0 deletions(-)
 
-diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
-index 8fce5e5..85c86edd 100644
---- a/arch/um/Kconfig.debug
-+++ b/arch/um/Kconfig.debug
-@@ -37,4 +37,14 @@ config DEBUG_STACK_USAGE
- 	  stack seen so far.
- 
- 	  This option will slow down process creation and destruction somewhat.
-+
-+config EARLY_PRINTK
-+	bool "Early printk"
-+	default y
-+	---help---
-+	  Write kernel log output directly to stdout.
-+
-+	  This is useful for kernel debugging when your machine crashes very
-+	  early before the console code is initialized.
-+
- endmenu
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index f06a5da..83c7c2e 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -244,6 +244,7 @@ extern int raw(int fd);
- extern void setup_machinename(char *machine_out);
- extern void setup_hostinfo(char *buf, int len);
- extern void os_dump_core(void) __attribute__ ((noreturn));
-+extern void um_early_printk(const char *s, unsigned int n);
- 
- /* time.c */
- extern void idle_sleep(unsigned long long nsecs);
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 1119233..c4491c1 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -17,6 +17,7 @@ obj-y = config.o exec.o exitcode.o init_task.o irq.o ksyms.o mem.o \
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
- obj-$(CONFIG_GCOV)	+= gmon_syms.o
-+obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
- 
- USER_OBJS := config.o
- 
-diff --git a/arch/um/kernel/early_printk.c b/arch/um/kernel/early_printk.c
-new file mode 100644
-index 0000000..ec649bf
---- /dev/null
-+++ b/arch/um/kernel/early_printk.c
-@@ -0,0 +1,33 @@
-+/*
-+ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/console.h>
-+#include <linux/init.h>
-+#include "os.h"
-+
-+static void early_console_write(struct console *con, const char *s, unsigned int n)
-+{
-+	um_early_printk(s, n);
-+}
-+
-+static struct console early_console = {
-+	.name = "earlycon",
-+	.write = early_console_write,
-+	.flags = CON_BOOT,
-+	.index = -1,
-+};
-+
-+static int __init setup_early_printk(char *buf)
-+{
-+	register_console(&early_console);
-+
-+	return 0;
-+}
-+
-+early_param("earlyprintk", setup_early_printk);
-diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
-index 42827ca..5803b18 100644
---- a/arch/um/os-Linux/util.c
-+++ b/arch/um/os-Linux/util.c
-@@ -139,3 +139,8 @@ void os_dump_core(void)
- 
- 	uml_abort();
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index 637c650..b2e3d82 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -113,6 +113,27 @@ out_of_memory:
+ 	return 0;
  }
-+
-+void um_early_printk(const char *s, unsigned int n)
+ 
++static void show_segv_info(struct uml_pt_regs *regs)
 +{
-+	printf("%.*s", n, s);
++	struct task_struct *tsk = current;
++	struct faultinfo *fi = UPT_FAULTINFO(regs);
++
++	if (!unhandled_signal(tsk, SIGSEGV))
++		return;
++
++	if (!printk_ratelimit())
++		return;
++
++	printk(KERN_INFO "%s%s[%d]: segfault at %lx ip %p sp %p error %x",
++		task_pid_nr(tsk) > 1 ? KERN_INFO : KERN_EMERG,
++		tsk->comm, task_pid_nr(tsk), FAULT_ADDRESS(*fi),
++		(void *)UPT_IP(regs), (void *)UPT_SP(regs),
++		fi->error_code);
++
++	print_vma_addr(KERN_CONT " in ", UPT_IP(regs));
++	printk(KERN_CONT "\n");
 +}
++
+ static void bad_segv(struct faultinfo fi, unsigned long ip)
+ {
+ 	struct siginfo si;
+@@ -141,6 +162,7 @@ void segv_handler(int sig, struct uml_pt_regs *regs)
+ 	struct faultinfo * fi = UPT_FAULTINFO(regs);
+ 
+ 	if (UPT_IS_USER(regs) && !SEGV_IS_FIXABLE(fi)) {
++		show_segv_info(regs);
+ 		bad_segv(*fi, UPT_IP(regs));
+ 		return;
+ 	}
+@@ -202,6 +224,8 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 		      address, ip);
+ 	}
+ 
++	show_segv_info(regs);
++
+ 	if (err == -EACCES) {
+ 		si.si_signo = SIGBUS;
+ 		si.si_errno = 0;
 -- 
 1.7.4.2
 
 
 ------------------------------------------------------------------------------
-What Every C/C++ and Fortran developer Should Know!
-Read this article and learn how Intel has extended the reach of its 
-next-generation tools to help Windows* and Linux* C/C++ and Fortran 
-developers boost performance applications - including clusters. 
+Achieve unprecedented app performance and reliability
+What every C/C++ and Fortran developer should know.
+Learn how Intel has extended the reach of its next-generation tools
+to help boost performance applications - inlcuding clusters.
 http://p.sf.net/sfu/intel-dev2devmay
 _______________________________________________
 User-mode-linux-devel mailing list
