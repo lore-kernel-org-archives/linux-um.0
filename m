@@ -1,69 +1,66 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QO9zT-0003zT-6y
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 May 2011 14:50:47 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QO9zR-0006ix-P0
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 May 2011 14:50:47 +0000
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Richard Weinberger <richard@nod.at>
-Date: Sun, 22 May 2011 16:48:31 +0200
-Message-Id: <1306075716-20042-2-git-send-email-richard@nod.at>
-In-Reply-To: <1306075716-20042-1-git-send-email-richard@nod.at>
-References: <1306075716-20042-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 2/7] um: remove SIGHUP handler
+Date: Tue, 10 May 2011 20:18:55 +0200
+Message-Id: <1305051538-7191-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 1/4] um: fix UML_LIB_PATH
 To: akpm@linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The UML kernel ignores SIGHUP anyway.
-This handler is in vain.
+UML_LIB_PATH is hardcoded to /usr/lib/uml/,
+on 64bit systems UML_LIB_PATH needs to be /usr/lib64/uml/.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/os-Linux/main.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ arch/um/drivers/xterm.c     |    2 +-
+ arch/um/include/shared/os.h |    6 ++++++
+ arch/um/os-Linux/main.c     |    2 +-
+ 3 files changed, 8 insertions(+), 2 deletions(-)
 
+diff --git a/arch/um/drivers/xterm.c b/arch/um/drivers/xterm.c
+index da2caa5..8ac7146 100644
+--- a/arch/um/drivers/xterm.c
++++ b/arch/um/drivers/xterm.c
+@@ -90,7 +90,7 @@ static int xterm_open(int input, int output, int primary, void *d,
+ 	int pid, fd, new, err;
+ 	char title[256], file[] = "/tmp/xterm-pipeXXXXXX";
+ 	char *argv[] = { terminal_emulator, title_switch, title, exec_switch,
+-			 "/usr/lib/uml/port-helper", "-uml-socket",
++			 OS_LIB_PATH "/uml/port-helper", "-uml-socket",
+ 			 file, NULL };
+ 
+ 	if (access(argv[4], X_OK) < 0)
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index c4617ba..f06a5da 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -29,6 +29,12 @@
+ #define OS_ACC_R_OK    4       /* Test for read permission.  */
+ #define OS_ACC_RW_OK   (OS_ACC_W_OK | OS_ACC_R_OK) /* Test for RW permission */
+ 
++#ifdef CONFIG_64BIT
++#define OS_LIB_PATH	"/usr/lib64/"
++#else
++#define OS_LIB_PATH	"/usr/lib/"
++#endif
++
+ /*
+  * types taken from stat_file() in hostfs_user.c
+  * (if they are wrong here, they are wrong there...).
 diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
-index 39613ea..fb2a97a 100644
+index eee69b9..39613ea 100644
 --- a/arch/um/os-Linux/main.c
 +++ b/arch/um/os-Linux/main.c
-@@ -142,7 +142,6 @@ int __init main(int argc, char **argv, char **envp)
- 	 */
- 	install_fatal_handler(SIGINT);
- 	install_fatal_handler(SIGTERM);
--	install_fatal_handler(SIGHUP);
+@@ -78,7 +78,7 @@ static void install_fatal_handler(int sig)
+ 	}
+ }
  
- 	scan_elf_aux(envp);
+-#define UML_LIB_PATH	":/usr/lib/uml"
++#define UML_LIB_PATH	":" OS_LIB_PATH "/uml"
  
+ static void setup_env_path(void)
+ {
 -- 
 1.7.4.2
-
-
-------------------------------------------------------------------------------
-What Every C/C++ and Fortran developer Should Know!
-Read this article and learn how Intel has extended the reach of its 
-next-generation tools to help Windows* and Linux* C/C++ and Fortran 
-developers boost performance applications - including clusters. 
-http://p.sf.net/sfu/intel-dev2devmay
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
