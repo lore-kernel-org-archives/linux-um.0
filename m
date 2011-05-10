@@ -1,64 +1,121 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <paul.chavent@fnac.net>) id 1QHtOt-0000Fg-Mf
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 May 2011 07:55:07 +0000
-Received: from smtp22.services.sfr.fr ([93.17.128.10])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.74)
-	id 1QHtOs-00024i-BS for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 May 2011 07:55:07 +0000
-Received: from smtp11.services.sfr.fr (msfrf1103 [10.18.24.53])
-	by msfrf2205.sfr.fr (SMTP Server) with ESMTP id 1196270005C7
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu,  5 May 2011 09:34:31 +0200 (CEST)
-From: <paul.chavent@fnac.net>
-Message-ID: <3030427.400951304580864978.JavaMail.www@wsfrf1110>
-MIME-Version: 1.0
-Date: Thu,  5 May 2011 09:34:24 +0200 (CEST)
-Reply-To: paul.chavent@fnac.net
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] for ARCH=um,
- optionaly give a path for the vde installation.
-To: jdike@addtoit.com
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Date: Tue, 10 May 2011 21:42:15 +0200
+Message-Id: <1305056537-22299-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 1/3] um: add earlyprintk support
+To: linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi.
+User Mode Linux can also benefit from earlyprintk.
+UML's earlyprintk writes kernel messages directly to stdout.
 
-I use uml with vde. The kernel links against libvdeplug.a and automatically find it. But i would like to manually give its path.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/Kconfig.debug         |   10 ++++++++++
+ arch/um/include/shared/os.h   |    1 +
+ arch/um/kernel/Makefile       |    1 +
+ arch/um/kernel/early_printk.c |   33 +++++++++++++++++++++++++++++++++
+ arch/um/os-Linux/util.c       |    5 +++++
+ 5 files changed, 50 insertions(+), 0 deletions(-)
+ create mode 100644 arch/um/kernel/early_printk.c
 
-So i made a patch for being able to give the VDE_PREFIX when we call make.
-
-I wonder if this patch could be included in the mainstream kernel, or if there is a better way of doing it.
-
-Could you give me your opinion please ?
-
-Regards .
-
-Paul.
-
-
-
-------------------------------------------------------------------------------
-WhatsUp Gold - Download Free Network Management Software
-The most intuitive, comprehensive, and cost-effective network 
-management toolset available today.  Delivers lowest initial 
-acquisition cost and overall TCO of any competing solution.
-http://p.sf.net/sfu/whatsupgold-sd
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
+index 8fce5e5..85c86edd 100644
+--- a/arch/um/Kconfig.debug
++++ b/arch/um/Kconfig.debug
+@@ -37,4 +37,14 @@ config DEBUG_STACK_USAGE
+ 	  stack seen so far.
+ 
+ 	  This option will slow down process creation and destruction somewhat.
++
++config EARLY_PRINTK
++	bool "Early printk"
++	default y
++	---help---
++	  Write kernel log output directly to stdout.
++
++	  This is useful for kernel debugging when your machine crashes very
++	  early before the console code is initialized.
++
+ endmenu
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index c4617ba..745a1bc 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -238,6 +238,7 @@ extern int raw(int fd);
+ extern void setup_machinename(char *machine_out);
+ extern void setup_hostinfo(char *buf, int len);
+ extern void os_dump_core(void) __attribute__ ((noreturn));
++extern void um_early_printk(const char *s, unsigned int n);
+ 
+ /* time.c */
+ extern void idle_sleep(unsigned long long nsecs);
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 1119233..c4491c1 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -17,6 +17,7 @@ obj-y = config.o exec.o exitcode.o init_task.o irq.o ksyms.o mem.o \
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+ obj-$(CONFIG_GCOV)	+= gmon_syms.o
++obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+ 
+ USER_OBJS := config.o
+ 
+diff --git a/arch/um/kernel/early_printk.c b/arch/um/kernel/early_printk.c
+new file mode 100644
+index 0000000..ec649bf
+--- /dev/null
++++ b/arch/um/kernel/early_printk.c
+@@ -0,0 +1,33 @@
++/*
++ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/kernel.h>
++#include <linux/console.h>
++#include <linux/init.h>
++#include "os.h"
++
++static void early_console_write(struct console *con, const char *s, unsigned int n)
++{
++	um_early_printk(s, n);
++}
++
++static struct console early_console = {
++	.name = "earlycon",
++	.write = early_console_write,
++	.flags = CON_BOOT,
++	.index = -1,
++};
++
++static int __init setup_early_printk(char *buf)
++{
++	register_console(&early_console);
++
++	return 0;
++}
++
++early_param("earlyprintk", setup_early_printk);
+diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
+index 6ea7797..cac25ad 100644
+--- a/arch/um/os-Linux/util.c
++++ b/arch/um/os-Linux/util.c
+@@ -118,3 +118,8 @@ void os_dump_core(void)
+ 
+ 	abort();
+ }
++
++void um_early_printk(const char *s, unsigned int n)
++{
++	printf("%.*s", n, s);
++}
+-- 
+1.7.4.2
 
