@@ -1,71 +1,53 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Toralf =?iso-8859-1?q?F=F6rster?= <toralf.foerster@gmx.de>
-Date: Thu, 19 May 2011 22:18:16 +0200
-References: <201105191526.31904.toralf.foerster@gmx.de> <BANLkTi=FinuAYpYXf1K6pQ-3i2vRJS=g9g@mail.gmail.com>
-In-Reply-To: <BANLkTi=FinuAYpYXf1K6pQ-3i2vRJS=g9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
+In-Reply-To: <201105191920.44596.toralf.foerster@gmx.de>
+References: <201105191526.31904.toralf.foerster@gmx.de>
+	<BANLkTi=FinuAYpYXf1K6pQ-3i2vRJS=g9g@mail.gmail.com>
+	<201105191920.44596.toralf.foerster@gmx.de>
+Date: Thu, 19 May 2011 19:25:52 +0200
+Message-ID: <BANLkTi=kDHuhKyVxEYWL92pyfLuQWAjtdQ@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Message-Id: <201105192218.18261.toralf.foerster@gmx.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: kernel 2.6.39 (user mode linux) crashes (2.6.38 works fine)
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
 Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+2011/5/19 Toralf F=F6rster <toralf.foerster@gmx.de>:
+> Errm, automatic bisecting doesn't work, b/c the issue can't be reprod=
+uced by a
+> simple "wget https://..." - when I use konqueror - up to 6-10 times I=
+'m asked
+> to confirm a cookie or something else before the crash occures.
+>
+> And if I use "lynx -accept_all_cookies https://n22_uml/phpmyadmin/" t=
+hen I'm
+> able to login - so it has something to do with HTTP frames I suspecte=
+d - but a
+> shutdown of the UML instance wasn't possible too after such a try - p=
+robably
+> something else then the HTTP frames itself triggers the issue ...
+>
+> In short - =A0it is not phpmyadmin (3.4.0) itself, but it triggers th=
+e bug (in
+> fact sometimes I even could see the login window within Firefox of th=
+e
+> phpmyadmin site before the crash happened).
+>
+> Because therefore manual interaction is needed (or do you know an aut=
+omated
+> way for konqueror/ff/.... ?) at least it would be helpful if the bise=
+cting
+> could be narrowed doesn to a given path or somethign else.
 
-richard -rw- weinberger wrote at 19:00:35
-> Can you bisect the issue?
-
-tfoerste@n22 ~/devel/linux-2.6 $ git bisect bad
-2e12978a9f7a7abd54e8eb9ce70a7718767b8b2c is the first bad commit
-commit 2e12978a9f7a7abd54e8eb9ce70a7718767b8b2c
-Author: Lai Jiangshan <laijs@cn.fujitsu.com>
-Date:   Wed Dec 22 14:18:50 2010 +0800
-
-    futex,plist: Pass the real head of the priority list to plist_del()
-   =20
-    Some plist_del()s in kernel/futex.c are passed a faked head of the
-    priority list.
-   =20
-    It does not fail because the current code does not require the real=
- head
-    in plist_del(). The current code of plist_del() just uses the head =
-for=20
-checking,
-    so it will not cause a bad result even when we use a faked head.
-   =20
-    But it is undocumented usage:
-   =20
-    /**
-     * plist_del - Remove a @node from plist.
-     *
-     * @node:   &struct plist_node pointer - entry to be removed
-     * @head:   &struct plist_head pointer - list head
-     */
-   =20
-    The document says that the @head is the "list head" head of the pri=
-ority=20
-list.
-   =20
-    In futex code, several places use "plist_del(&q->list, &q->list.pli=
-st);",
-    they pass a fake head. We need to fix them all.
-   =20
-    Thanks to Darren Hart for many suggestions.
-   =20
-    Acked-by: Darren Hart <dvhart@linux.intel.com>
-    Signed-off-by:  Lai Jiangshan <laijs@cn.fujitsu.com>
-    LKML-Reference: <4D11984A.5030203@cn.fujitsu.com>
-    Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-
-:040000 040000 78d47de377f8da1c131007a17ca915fbd13f7ff6=20
-ffac93205aaf22fda0667d6395c8da7c7bf692e4 M      kernel
+BTW: Haven=92t you had such an issue a few months ago?
+Does it work without https? Maybe mod_ssl triggers the bug...
 
 --=20
-MfG/Sincerely
-Toralf F=F6rster
-pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+Thanks,
+//richard
 --
 To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
  in
