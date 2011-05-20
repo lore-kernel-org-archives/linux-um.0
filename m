@@ -1,59 +1,303 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Toralf =?iso-8859-1?q?F=F6rster?= <toralf.foerster@gmx.de>
-Date: Fri, 20 May 2011 09:43:09 +0200
-References: <201105191526.31904.toralf.foerster@gmx.de> <201105191834.56577.toralf.foerster@gmx.de> <BANLkTi=8NW9Q+8Q=kuUJY1L=FcQGapqDLA@mail.gmail.com>
-In-Reply-To: <BANLkTi=8NW9Q+8Q=kuUJY1L=FcQGapqDLA@mail.gmail.com>
+Date: Fri, 20 May 2011 09:37:13 +0200
+References: <201105191526.31904.toralf.foerster@gmx.de> <201105192218.18261.toralf.foerster@gmx.de> <20110519204342.GA10792@home.goodmis.org>
+In-Reply-To: <20110519204342.GA10792@home.goodmis.org>
 MIME-Version: 1.0
 Content-Type: Text/Plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Message-Id: <201105200943.10228.toralf.foerster@gmx.de>
+Message-Id: <201105200937.15322.toralf.foerster@gmx.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: kernel 2.6.39 (user mode linux) crashes (2.6.38 works fine)
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: richard -rw- weinberger <richard.weinberger@gmail.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 
-richard -rw- weinberger wrote at 08:44:39
-> > * Starting local
+Steven Rostedt wrote at 22:43:43
+> Is this bug fully reproducable? If not, then you may have had a git
+> bisect good, when it should have been git bisect bad.
+Yes, bisected it again to the same commit.
+=46urthermore I explicitely checked out that revision - tested it - iss=
+ue exists,
+reverted exactly that commit on top of the checked out tree and tested =
+it
+again, issue went away.
+Then I recompiled the buggy version with CONFIG_DEBUG_INFO=3Dy
+here's the output :
+
+=2E..
+Kernel panic - not syncing: Kernel mode fault at addr 0x0, ip 0x80a9f6b
+08324b44:  [<0829e78b>] dump_stack+0x22/0x24
+08324b5c:  [<0829e7f0>] panic+0x63/0x167
+08324b84:  [<080603d2>] segv+0x1e2/0x2b0
+08324c3c:  [<080604e1>] segv_handler+0x41/0x60
+08324c5c:  [<08070c54>] sig_handler_common+0x44/0xb0
+08324cd8:  [<08070e32>] sig_handler+0x42/0x50
+08324ce8:  [<0807106c>] handle_signal+0x5c/0xa0
+08324d0c:  [<08073408>] hard_handler+0x18/0x20
+08324d1c:  [<b7715400>] 0xb7715400
+
+
+EIP: 0073:[<400008d2>] CPU: 0 Tainted: G        W   ESP: 007b:4ef22270 =
+EFLAGS: 00200206
+    Tainted: G        W =20
+EAX: ffffffda EBX: 081efe10 ECX: 00000081 EDX: 00000001
+ESI: 083f6758 EDI: 081efe0c EBP: 080a88a8 DS: 007b ES: 007b
+08324af8:  [<080780bd>] show_regs+0xed/0x120
+08324b14:  [<0806071c>] panic_exit+0x2c/0x50
+08324b24:  [<0809fc1c>] notifier_call_chain+0x4c/0x70
+08324b4c:  [<0809fc93>] atomic_notifier_call_chain+0x23/0x30
+08324b5c:  [<0829e818>] panic+0x8b/0x167
+08324b84:  [<080603d2>] segv+0x1e2/0x2b0
+08324c3c:  [<080604e1>] segv_handler+0x41/0x60
+08324c5c:  [<08070c54>] sig_handler_common+0x44/0xb0
+08324cd8:  [<08070e32>] sig_handler+0x42/0x50
+08324ce8:  [<0807106c>] handle_signal+0x5c/0xa0
+08324d0c:  [<08073408>] hard_handler+0x18/0x20
+08324d1c:  [<b7715400>] 0xb7715400
+
+
+The file /var/log/messages of the UML says :
+
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: ------------[ cut here ]-=
+-----------                                                            =
+                                                          =20
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: WARNING: at kernel/futex.=
+c:789 wake_futex+0x28/0x60()                                           =
+                                                          =20
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: 19e5bd14:  [<0829e78b>] d=
+ump_stack+0x22/0x24
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: 19e5bd2c:  [<0808205a>] w=
+arn_slowpath_common+0x5a/0x80                                          =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: 19e5bd54:  [<080820a3>] w=
+arn_slowpath_null+0x23/0x30                                            =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: 19e5bd64:  [<080a9eb8>] w=
+ake_futex+0x28/0x60                                                    =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: 19e5bd7c:  [<080a9faf>] f=
+utex_wake+0xbf/0x100                                                   =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: 19e5bda4:  [<080abb1d>] d=
+o_futex+0xcd/0x6c0                                                     =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: 19e5be08:  [<080ac184>] s=
+ys_futex+0x74/0x140                                                    =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.455+02:00 n22_uml kernel: 19e5be60:  [<0807ffc1>] m=
+m_release+0xd1/0x130                                                   =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.457+02:00 n22_uml kernel: 19e5be8c:  [<08083dad>] e=
+xit_mm+0x1d/0x100                                                      =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.457+02:00 n22_uml kernel: 19e5beb8:  [<08085b73>] d=
+o_exit+0xc3/0x660                                                      =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.457+02:00 n22_uml kernel: 19e5bf14:  [<080861e9>] s=
+ys_exit+0x19/0x20                                                      =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.457+02:00 n22_uml kernel: 19e5bf20:  [<08060d16>] h=
+andle_syscall+0xa6/0xb0                                                =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.457+02:00 n22_uml kernel: 19e5bf68:  [<08074cf1>] u=
+serspace+0x361/0x500                                                   =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.457+02:00 n22_uml kernel: 19e5bfe8:  [<0805e0cb>] f=
+ork_handler+0x5b/0x70                                                  =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.457+02:00 n22_uml kernel: 19e5bffc:  [<00000000>] 0=
+x0                                                                     =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.457+02:00 n22_uml kernel:                          =
+                                                                       =
+                                                                       =
+                           =20
+2011-05-20T09:33:03.457+02:00 n22_uml kernel: ---[ end trace 95fb08f635=
+a473e8 ]---
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: ------------[ cut here ]-=
+-----------
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: WARNING: at kernel/futex.=
+c:789 wake_futex+0x28/0x60()
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: 19d99d14:  [<0829e78b>] d=
+ump_stack+0x22/0x24
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: 19d99d2c:  [<0808205a>] w=
+arn_slowpath_common+0x5a/0x80
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: 19d99d54:  [<080820a3>] w=
+arn_slowpath_null+0x23/0x30
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: 19d99d64:  [<080a9eb8>] w=
+ake_futex+0x28/0x60
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: 19d99d7c:  [<080a9faf>] f=
+utex_wake+0xbf/0x100
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: 19d99da4:  [<080abb1d>] d=
+o_futex+0xcd/0x6c0
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: 19d99e08:  [<080ac184>] s=
+ys_futex+0x74/0x140
+2011-05-20T09:33:03.831+02:00 n22_uml kernel: 19d99e60:  [<0807ffc1>] m=
+m_release+0xd1/0x130
+2011-05-20T09:33:03.832+02:00 n22_uml kernel: 19d99e8c:  [<08083dad>] e=
+xit_mm+0x1d/0x100
+2011-05-20T09:33:03.832+02:00 n22_uml kernel: 19d99eb8:  [<08085b73>] d=
+o_exit+0xc3/0x660
+2011-05-20T09:33:03.832+02:00 n22_uml kernel: 19d99f14:  [<080861e9>] s=
+ys_exit+0x19/0x20
+2011-05-20T09:33:03.832+02:00 n22_uml kernel: 19d99f20:  [<08060d16>] h=
+andle_syscall+0xa6/0xb0
+2011-05-20T09:33:03.832+02:00 n22_uml kernel: 19d99f68:  [<08074cf1>] u=
+serspace+0x361/0x500
+2011-05-20T09:33:03.832+02:00 n22_uml kernel: 19d99fe8:  [<0805e0cb>] f=
+ork_handler+0x5b/0x70
+2011-05-20T09:33:03.832+02:00 n22_uml kernel: 19d99ffc:  [<00000000>] 0=
+x0
+2011-05-20T09:33:03.832+02:00 n22_uml kernel:=20
+2011-05-20T09:33:03.832+02:00 n22_uml kernel: ---[ end trace 95fb08f635=
+a473e9 ]---
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: ------------[ cut here ]-=
+-----------
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: WARNING: at kernel/futex.=
+c:789 wake_futex+0x28/0x60()
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: 19e5bd78:  [<0829e78b>] d=
+ump_stack+0x22/0x24
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: 19e5bd90:  [<0808205a>] w=
+arn_slowpath_common+0x5a/0x80
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: 19e5bdb8:  [<080820a3>] w=
+arn_slowpath_null+0x23/0x30
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: 19e5bdc8:  [<080a9eb8>] w=
+ake_futex+0x28/0x60
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: 19e5bde0:  [<080ab702>] f=
+utex_requeue+0x362/0x6b0
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: 19e5be64:  [<080abceb>] d=
+o_futex+0x29b/0x6c0
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: 19e5bec8:  [<080ac184>] s=
+ys_futex+0x74/0x140
+2011-05-20T09:33:03.951+02:00 n22_uml kernel: 19e5bf20:  [<08060d16>] h=
+andle_syscall+0xa6/0xb0
+2011-05-20T09:33:03.955+02:00 n22_uml kernel: 19e5bf68:  [<08074cf1>] u=
+serspace+0x361/0x500
+2011-05-20T09:33:03.955+02:00 n22_uml kernel: 19e5bfe8:  [<0805e0cb>] f=
+ork_handler+0x5b/0x70
+2011-05-20T09:33:03.955+02:00 n22_uml kernel: 19e5bffc:  [<00000000>] 0=
+x0
+2011-05-20T09:33:03.955+02:00 n22_uml kernel:=20
+2011-05-20T09:33:03.955+02:00 n22_uml kernel: ---[ end trace 95fb08f635=
+a473ea ]---
+2011-05-20T09:33:04.000+02:00 n22_uml sshd[738]: Server listening on 0.=
+0.0.0 port 22.
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: ------------[ cut here ]-=
+-----------
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: WARNING: at kernel/futex.=
+c:789 wake_futex+0x28/0x60()
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: 19ef0d14:  [<0829e78b>] d=
+ump_stack+0x22/0x24
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: 19ef0d2c:  [<0808205a>] w=
+arn_slowpath_common+0x5a/0x80
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: 19ef0d54:  [<080820a3>] w=
+arn_slowpath_null+0x23/0x30
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: 19ef0d64:  [<080a9eb8>] w=
+ake_futex+0x28/0x60
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: 19ef0d7c:  [<080a9faf>] f=
+utex_wake+0xbf/0x100
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: 19ef0da4:  [<080abb1d>] d=
+o_futex+0xcd/0x6c0
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: 19ef0e08:  [<080ac184>] s=
+ys_futex+0x74/0x140
+2011-05-20T09:33:06.100+02:00 n22_uml kernel: 19ef0e60:  [<0807ffc1>] m=
+m_release+0xd1/0x130
+2011-05-20T09:33:06.104+02:00 n22_uml kernel: 19ef0e8c:  [<08083dad>] e=
+xit_mm+0x1d/0x100
+2011-05-20T09:33:06.104+02:00 n22_uml kernel: 19ef0eb8:  [<08085b73>] d=
+o_exit+0xc3/0x660
+2011-05-20T09:33:06.104+02:00 n22_uml kernel: 19ef0f14:  [<080861e9>] s=
+ys_exit+0x19/0x20
+2011-05-20T09:33:06.104+02:00 n22_uml kernel: 19ef0f20:  [<08060d16>] h=
+andle_syscall+0xa6/0xb0
+2011-05-20T09:33:06.104+02:00 n22_uml kernel: 19ef0f68:  [<08074cf1>] u=
+serspace+0x361/0x500
+2011-05-20T09:33:06.104+02:00 n22_uml kernel: 19ef0fe8:  [<0805e0cb>] f=
+ork_handler+0x5b/0x70
+2011-05-20T09:33:06.104+02:00 n22_uml kernel: 19ef0ffc:  [<00000000>] 0=
+x0
+2011-05-20T09:33:06.104+02:00 n22_uml kernel:=20
+2011-05-20T09:33:06.104+02:00 n22_uml kernel: ---[ end trace 95fb08f635=
+a473eb ]---
+2011-05-20T09:33:09.000+02:00 n22_uml cron[851]: (CRON) STARTUP (V5.0)
+2011-05-20T09:33:10.112+02:00 n22_uml kernel: Virtual console 1 assigne=
+d device '/dev/pts/5'
+
+
 >=20
-> What is this "Starting local",
-> was UML crashing while starting your distro?
-No, that the last init script of the Gentoo, I'm using within UML.
-
-> I fear the backtrace is garbage.
-yep, maybe this helps more :=20
-
-Program received signal SIGSEGV, Segmentation fault.
-0x080a9f6b in futex_wake (uaddr=3D<value optimized out>, flags=3D<value=
- optimized out>, nr_wake=3D<value optimized out>,=20
-    bitset=3D4294967295) at kernel/futex.c:958
-958             plist_for_each_entry_safe(this, next, head, list) {
-(gdb) bt
-#0  0x080a9f6b in futex_wake (uaddr=3D<value optimized out>, flags=3D<v=
-alue optimized out>, nr_wake=3D<value optimized out>,=20
-    bitset=3D4294967295) at kernel/futex.c:958
-#1  0x080abb1d in do_futex (uaddr=3D0x81efe10, op=3D0, val=3D0, timeout=
-=3D0x0, uaddr2=3D0x81efe0c, val2=3D0, val3=3D4294967295)
-    at kernel/futex.c:2610
-#2  0x080ac184 in sys_futex (uaddr=3D0x81efe10, op=3D129, val=3D1, utim=
-e=3D0x83f89b8, uaddr2=3D0x81efe0c, val3=3D134908072)
-    at kernel/futex.c:2678
-#3  0x08060d16 in handle_syscall (r=3D0x19545290) at arch/um/kernel/ska=
-s/syscall.c:35
-#4  0x08074cf1 in handle_trap (regs=3D0x19545290) at arch/um/os-Linux/s=
-kas/process.c:201
-#5  userspace (regs=3D0x19545290) at arch/um/os-Linux/skas/process.c:41=
-7
-#6  0x0805e0cb in fork_handler () at arch/um/kernel/process.c:181
-#7  0x00000000 in ?? ()
-
+> The futex/plist should not be affecting rwsem.
 >=20
-> Can you reproduce the issue using the default config?
-yes
-
-> Are you using hostfs?
-Yes, but the issue is independend from that.
+> -- Steve
+>=20
+> > tfoerste@n22 ~/devel/linux-2.6 $ git bisect bad
+> > 2e12978a9f7a7abd54e8eb9ce70a7718767b8b2c is the first bad commit
+> > commit 2e12978a9f7a7abd54e8eb9ce70a7718767b8b2c
+> > Author: Lai Jiangshan <laijs@cn.fujitsu.com>
+> > Date:   Wed Dec 22 14:18:50 2010 +0800
+> >=20
+> >     futex,plist: Pass the real head of the priority list to plist_d=
+el()
+> >    =20
+> >     Some plist_del()s in kernel/futex.c are passed a faked head of =
+the
+> >     priority list.
+> >    =20
+> >     It does not fail because the current code does not require the =
+real
+> >     head in plist_del(). The current code of plist_del() just uses =
+the
+> >     head for
+> >=20
+> > checking,
+> >=20
+> >     so it will not cause a bad result even when we use a faked head=
+=2E
+> >    =20
+> >     But it is undocumented usage:
+> >    =20
+> >     /**
+> >    =20
+> >      * plist_del - Remove a @node from plist.
+> >      *
+> >      * @node:   &struct plist_node pointer - entry to be removed
+> >      * @head:   &struct plist_head pointer - list head
+> >      */
+> >    =20
+> >     The document says that the @head is the "list head" head of the
+> >     priority
+> >=20
+> > list.
+> >=20
+> >     In futex code, several places use "plist_del(&q->list,
+> >     &q->list.plist);", they pass a fake head. We need to fix them a=
+ll.
+> >    =20
+> >     Thanks to Darren Hart for many suggestions.
+> >    =20
+> >     Acked-by: Darren Hart <dvhart@linux.intel.com>
+> >     Signed-off-by:  Lai Jiangshan <laijs@cn.fujitsu.com>
+> >     LKML-Reference: <4D11984A.5030203@cn.fujitsu.com>
+> >     Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+> > :
+> > :040000 040000 78d47de377f8da1c131007a17ca915fbd13f7ff6
+> >=20
+> > ffac93205aaf22fda0667d6395c8da7c7bf692e4 M      kernel
 
 
 --=20
