@@ -1,12 +1,12 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Toralf =?iso-8859-1?q?F=F6rster?= <toralf.foerster@gmx.de>
-Date: Fri, 20 May 2011 10:58:19 +0200
-References: <201105191526.31904.toralf.foerster@gmx.de> <BANLkTik0oz6ppJvRpufaaiBL1pqcAxNHuA@mail.gmail.com> <BANLkTikCS=LbvXSe4ok740O2ue1DQDfBmA@mail.gmail.com>
-In-Reply-To: <BANLkTikCS=LbvXSe4ok740O2ue1DQDfBmA@mail.gmail.com>
+Date: Fri, 20 May 2011 10:42:14 +0200
+References: <201105191526.31904.toralf.foerster@gmx.de> <201105200937.15322.toralf.foerster@gmx.de> <BANLkTik0oz6ppJvRpufaaiBL1pqcAxNHuA@mail.gmail.com>
+In-Reply-To: <BANLkTik0oz6ppJvRpufaaiBL1pqcAxNHuA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Message-Id: <201105201058.20355.toralf.foerster@gmx.de>
+Message-Id: <201105201042.15410.toralf.foerster@gmx.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: kernel 2.6.39 (user mode linux) crashes (2.6.38 works fine)
 To: richard -rw- weinberger <richard.weinberger@gmail.com>
@@ -14,15 +14,25 @@ Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, u
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 
-richard -rw- weinberger wrote at 10:39:03
-> 2011/5/20 richard -rw- weinberger <richard.weinberger@gmail.com>:
-> > Use "objdump -d -S | less" to find it.
+richard -rw- weinberger wrote at 09:56:02
+> 2011/5/20 Toralf F=F6rster <toralf.foerster@gmx.de>:
+> > ...
+> > Kernel panic - not syncing: Kernel mode fault at addr 0x0, ip 0x80a=
+9f6b
 >=20
-> Ick, I meant "objdump -d -S vmlinux | less"
-Well (BTW nearly similar to the result of "objdump -d -S linux" ), but =
-anyway=20
-here it is :
+> Looks like a NULL-pointer bug.
+> What code is at address 80a9f6b?
+> Use "objdump -d -S | less" to find it.
+        if (unlikely(ret !=3D 0))
+ 80a9f3a:       85 c0                   test   %eax,%eax
+ 80a9f3c:       75 ca                   jne    80a9f08 <futex_wake+0x18=
+>
+                goto out;
 
+        hb =3D hash_futex(&key);
+ 80a9f3e:       8d 45 e8                lea    -0x18(%ebp),%eax
+ 80a9f41:       e8 aa f6 ff ff          call   80a95f0 <hash_futex>
+ 80a9f46:       89 c2                   mov    %eax,%edx
         spin_lock(&hb->lock);
         head =3D &hb->chain;
 
@@ -60,6 +70,11 @@ here it is :
 /*
  * Return 1 if two futex_keys are equal, 0 otherwise.
  */
+
+> Is this really 2.6.39?
+No, but I didn't want to change the subject line, the bisected version =
+is :
+v2.6.38-rc8-1-g2e12978
 
 
 --=20
