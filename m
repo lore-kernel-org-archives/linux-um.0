@@ -1,34 +1,68 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Steven Rostedt <rostedt@goodmis.org>
-In-Reply-To: <4DD6A678.6090801@linux.intel.com>
-References: <201105191526.31904.toralf.foerster@gmx.de>
-	 <201105192218.18261.toralf.foerster@gmx.de>
-	 <20110519204342.GA10792@home.goodmis.org>
-	 <201105200937.15322.toralf.foerster@gmx.de>
-	 <BANLkTik0oz6ppJvRpufaaiBL1pqcAxNHuA@mail.gmail.com>
-	 <4DD68EDF.4030301@linux.intel.com>
-	 <1305907458.1465.23.camel@gandalf.stny.rr.com>
-	 <4DD6A678.6090801@linux.intel.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Date: Fri, 20 May 2011 13:41:12 -0400
-Message-ID: <1305913272.1465.30.camel@gandalf.stny.rr.com>
-Mime-Version: 1.0
+Message-ID: <4DD6A678.6090801@linux.intel.com>
+Date: Fri, 20 May 2011 10:35:52 -0700
+From: Darren Hart <dvhart@linux.intel.com>
+MIME-Version: 1.0
+References: <201105191526.31904.toralf.foerster@gmx.de>	 <201105192218.18261.toralf.foerster@gmx.de>	 <20110519204342.GA10792@home.goodmis.org>	 <201105200937.15322.toralf.foerster@gmx.de>	 <BANLkTik0oz6ppJvRpufaaiBL1pqcAxNHuA@mail.gmail.com>	 <4DD68EDF.4030301@linux.intel.com> <1305907458.1465.23.camel@gandalf.stny.rr.com>
+In-Reply-To: <1305907458.1465.23.camel@gandalf.stny.rr.com>
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: kernel 2.6.39 (user mode linux) crashes (2.6.38 works fine)
-To: Darren Hart <dvhart@linux.intel.com>
-Cc: richard -rw- weinberger <richard.weinberger@gmail.com>, Toralf =?ISO-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: richard -rw- weinberger <richard.weinberger@gmail.com>, =?ISO-8859-15?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Fri, 2011-05-20 at 10:35 -0700, Darren Hart wrote:
 
-> > Wait! This is where we need the WARN_ON_SMP(), do we have that patch in?
+
+On 05/20/2011 09:04 AM, Steven Rostedt wrote:
+> On Fri, 2011-05-20 at 08:55 -0700, Darren Hart wrote:
 > 
-> Hrm, I thought he said he was on 2.6.39-rc-something. Those patches went
-> in pre 2.6.39-rc1 according to gitk.
+>> I suspect Toralf is hitting the WARN_ON in __unqueue_futex:
+>>
+>> 	if (WARN_ON(!q->lock_ptr || !spin_is_locked(q->lock_ptr)
+>> 			|| plist_node_empty(&q->list)))
+>>
+>> Toralf, can you instrument that let us know which of conditions is
+>> triggering the WARN_ON? Something like the following should be adequate
+>> to get you the line number. I suspect it is plist_node_empty give the
+>> git bisect results you reported.
+>>
+>>
+>> diff --git a/kernel/futex.c b/kernel/futex.c
+>> index abd5324..7f31bca 100644
+>> --- a/kernel/futex.c
+>> +++ b/kernel/futex.c
+>> @@ -782,8 +782,11 @@ static void __unqueue_futex(struct futex_q *q)
+>>  {
+>>  	struct futex_hash_bucket *hb;
+>>
+>> -	if (WARN_ON(!q->lock_ptr || !spin_is_locked(q->lock_ptr)
+>> -			|| plist_node_empty(&q->list)))
+>> +	if (WARN_ON(!q->lock_ptr))
+>> +		return;
+>> +	if (!spin_is_locked(q->lock_ptr))
+>> +		return;
+>> +	if (plist_node_empty(&q->list))
+>>  		return;
+>>
+> 
 
-A git bisect can easily stumble on this where the fix is not made.
+Whoops, there should have been WARN_ON's in all the if blocks... duh.
 
--- Steve
+> Wait! This is where we need the WARN_ON_SMP(), do we have that patch in?
 
+Hrm, I thought he said he was on 2.6.39-rc-something. Those patches went
+in pre 2.6.39-rc1 according to gitk.
 
+> 
+> I think UML is UP, and that spin_is_locked() will always return false.
+> 
+> -- Steve
+> 
+> 
+
+-- 
+Darren Hart
+Intel Open Source Technology Center
+Yocto Project - Linux Kernel
