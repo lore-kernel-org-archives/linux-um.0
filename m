@@ -1,57 +1,88 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Toralf =?iso-8859-15?q?F=F6rster?= <toralf.foerster@gmx.de>
-Date: Fri, 20 May 2011 19:10:12 +0200
-References: <201105191526.31904.toralf.foerster@gmx.de> <1305907458.1465.23.camel@gandalf.stny.rr.com> <1305907896.1465.27.camel@gandalf.stny.rr.com>
-In-Reply-To: <1305907896.1465.27.camel@gandalf.stny.rr.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-15
+In-Reply-To: <201105201042.15410.toralf.foerster@gmx.de>
+References: <201105191526.31904.toralf.foerster@gmx.de>
+	<201105200937.15322.toralf.foerster@gmx.de>
+	<BANLkTik0oz6ppJvRpufaaiBL1pqcAxNHuA@mail.gmail.com>
+	<201105201042.15410.toralf.foerster@gmx.de>
+Date: Fri, 20 May 2011 18:24:56 +0200
+Message-ID: <BANLkTikfaKJfnDwQoFi9WLX6q+2HHe90HQ@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Message-Id: <201105201910.13095.toralf.foerster@gmx.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: kernel 2.6.39 (user mode linux) crashes (2.6.38 works fine)
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Darren Hart <dvhart@linux.intel.com>, richard -rw- weinberger <richard.weinberger@gmail.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
+Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+2011/5/20 Toralf F=F6rster <toralf.foerster@gmx.de>:
+>
+> richard -rw- weinberger wrote at 09:56:02
+>> 2011/5/20 Toralf F=F6rster <toralf.foerster@gmx.de>:
+>> > ...
+>> > Kernel panic - not syncing: Kernel mode fault at addr 0x0, ip 0x80=
+a9f6b
+>>
+>> Looks like a NULL-pointer bug.
+>> What code is at address 80a9f6b?
+>> Use "objdump -d -S | less" to find it.
+> =A0 =A0 =A0 =A0if (unlikely(ret !=3D 0))
+> =A080a9f3a: =A0 =A0 =A0 85 c0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tes=
+t =A0 %eax,%eax
+> =A080a9f3c: =A0 =A0 =A0 75 ca =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 jne=
+ =A0 =A080a9f08 <futex_wake+0x18>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto out;
+>
+> =A0 =A0 =A0 =A0hb =3D hash_futex(&key);
+> =A080a9f3e: =A0 =A0 =A0 8d 45 e8 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0lea =A0=
+ =A0-0x18(%ebp),%eax
+> =A080a9f41: =A0 =A0 =A0 e8 aa f6 ff ff =A0 =A0 =A0 =A0 =A0call =A0 80=
+a95f0 <hash_futex>
+> =A080a9f46: =A0 =A0 =A0 89 c2 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 mov=
+ =A0 =A0%eax,%edx
+> =A0 =A0 =A0 =A0spin_lock(&hb->lock);
+> =A0 =A0 =A0 =A0head =3D &hb->chain;
+>
+> =A0 =A0 =A0 =A0plist_for_each_entry_safe(this, next, head, list) {
+> =A080a9f48: =A0 =A0 =A0 8b 48 08 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mov =A0=
+ =A00x8(%eax),%ecx
+> =A080a9f4b: =A0 =A0 =A0 83 c2 08 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0add =A0=
+ =A0$0x8,%edx
+> =A080a9f4e: =A0 =A0 =A0 8d 41 f4 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0lea =A0=
+ =A0-0xc(%ecx),%eax
+> =A080a9f51: =A0 =A0 =A0 39 ca =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 cmp=
+ =A0 =A0%ecx,%edx
+> =A080a9f53: =A0 =A0 =A0 8b 70 0c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mov =A0=
+ =A00xc(%eax),%esi
+> =A080a9f56: =A0 =A0 =A0 74 6a =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 je =
+=A0 =A0 80a9fc2 <futex_wake+0xd2>
+> =A080a9f58: =A0 =A0 =A0 89 d9 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 mov=
+ =A0 =A0%ebx,%ecx
+> =A080a9f5a: =A0 =A0 =A0 83 ee 0c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sub =A0=
+ =A0$0xc,%esi
+> =A080a9f5d: =A0 =A0 =A0 89 d3 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 mov=
+ =A0 =A0%edx,%ebx
+> =A080a9f5f: =A0 =A0 =A0 89 fa =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 mov=
+ =A0 =A0%edi,%edx
+> =A080a9f61: =A0 =A0 =A0 89 cf =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 mov=
+ =A0 =A0%ecx,%edi
+> =A080a9f63: =A0 =A0 =A0 eb 12 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 jmp=
+ =A0 =A080a9f77 <futex_wake+0x87>
+> =A080a9f65: =A0 =A0 =A0 8d 76 00 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0lea =A0=
+ =A00x0(%esi),%esi
+> =A080a9f68: =A0 =A0 =A0 8d 46 0c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0lea =A0=
+ =A00xc(%esi),%eax
+> =A080a9f6b: =A0 =A0 =A0 8b 4e 0c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mov =A0=
+ =A00xc(%esi),%ecx
 
-Steven Rostedt wrote at 18:11:36
-> > Wait! This is where we need the WARN_ON_SMP(), do we have that patc=
-h in?
-> >=20
-> > I think UML is UP, and that spin_is_locked() will always return fal=
-se.
->=20
-> Could you apply these patches:
->=20
-> 2092e6be WARN_ON_SMP(): Allow use in if() statements on UP
-> 29096202 futex: Fix WARN_ON() test for UP
->=20
-> On top of this commit, and see if the problem goes away. What could h=
-ave
-> happened, is that you have two bugs, with one of them fixed. If the g=
-it
-> bisect stumbled on this bug, it will show this one, even though later
-> on, this code was fixed. If you apply the above two patches and it wo=
-rks
-> again, then this isn't the bug you are looking for.
->=20
-> -- Steve
-Right - applying those 2 commits on top of v2.6.38-rc8-1-g2e12978 works=
- - now=20
-the issue is away.
 
-And yes - now I've to look for the other of two bugs, which was introdu=
-ced=20
-between the tags v2.6.38 and v2.6.39, I think.
-
-Is there's an easy way to check, whether a given checked out git tree c=
-ontains=20
-a specific commit id ?
+Here in futex_wake() happens a NULL pointer dereference.
+Steve, any ideas?
 
 --=20
-MfG/Sincerely
-Toralf F=F6rster
-pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+Thanks,
+//richard
 --
 To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
  in
