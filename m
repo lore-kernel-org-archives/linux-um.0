@@ -1,68 +1,42 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4DD6A678.6090801@linux.intel.com>
-Date: Fri, 20 May 2011 10:35:52 -0700
-From: Darren Hart <dvhart@linux.intel.com>
-MIME-Version: 1.0
-References: <201105191526.31904.toralf.foerster@gmx.de>	 <201105192218.18261.toralf.foerster@gmx.de>	 <20110519204342.GA10792@home.goodmis.org>	 <201105200937.15322.toralf.foerster@gmx.de>	 <BANLkTik0oz6ppJvRpufaaiBL1pqcAxNHuA@mail.gmail.com>	 <4DD68EDF.4030301@linux.intel.com> <1305907458.1465.23.camel@gandalf.stny.rr.com>
-In-Reply-To: <1305907458.1465.23.camel@gandalf.stny.rr.com>
+From: Steven Rostedt <rostedt@goodmis.org>
+In-Reply-To: <BANLkTikfaKJfnDwQoFi9WLX6q+2HHe90HQ@mail.gmail.com>
+References: <201105191526.31904.toralf.foerster@gmx.de>
+	 <201105200937.15322.toralf.foerster@gmx.de>
+	 <BANLkTik0oz6ppJvRpufaaiBL1pqcAxNHuA@mail.gmail.com>
+	 <201105201042.15410.toralf.foerster@gmx.de>
+	 <BANLkTikfaKJfnDwQoFi9WLX6q+2HHe90HQ@mail.gmail.com>
 Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Date: Fri, 20 May 2011 13:19:13 -0400
+Message-ID: <1305911953.1465.29.camel@gandalf.stny.rr.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: kernel 2.6.39 (user mode linux) crashes (2.6.38 works fine)
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: richard -rw- weinberger <richard.weinberger@gmail.com>, =?ISO-8859-15?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Cc: Toralf =?ISO-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+On Fri, 2011-05-20 at 18:24 +0200, richard -rw- weinberger wrote:
+> 2011/5/20 Toralf F=F6rster <toralf.foerster@gmx.de>:
+> >
+
+> Here in futex_wake() happens a NULL pointer dereference.
+> Steve, any ideas?
+>=20
+
+Yes, if this is from the bisect, and does not contain the two commits
+that I've posted in another email. Without those fixes, the futex code
+will error and return without doing the proper work and cause all sorts
+of bugs.
+
+-- Steve
 
 
-On 05/20/2011 09:04 AM, Steven Rostedt wrote:
-> On Fri, 2011-05-20 at 08:55 -0700, Darren Hart wrote:
-> 
->> I suspect Toralf is hitting the WARN_ON in __unqueue_futex:
->>
->> 	if (WARN_ON(!q->lock_ptr || !spin_is_locked(q->lock_ptr)
->> 			|| plist_node_empty(&q->list)))
->>
->> Toralf, can you instrument that let us know which of conditions is
->> triggering the WARN_ON? Something like the following should be adequate
->> to get you the line number. I suspect it is plist_node_empty give the
->> git bisect results you reported.
->>
->>
->> diff --git a/kernel/futex.c b/kernel/futex.c
->> index abd5324..7f31bca 100644
->> --- a/kernel/futex.c
->> +++ b/kernel/futex.c
->> @@ -782,8 +782,11 @@ static void __unqueue_futex(struct futex_q *q)
->>  {
->>  	struct futex_hash_bucket *hb;
->>
->> -	if (WARN_ON(!q->lock_ptr || !spin_is_locked(q->lock_ptr)
->> -			|| plist_node_empty(&q->list)))
->> +	if (WARN_ON(!q->lock_ptr))
->> +		return;
->> +	if (!spin_is_locked(q->lock_ptr))
->> +		return;
->> +	if (plist_node_empty(&q->list))
->>  		return;
->>
-> 
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
-Whoops, there should have been WARN_ON's in all the if blocks... duh.
-
-> Wait! This is where we need the WARN_ON_SMP(), do we have that patch in?
-
-Hrm, I thought he said he was on 2.6.39-rc-something. Those patches went
-in pre 2.6.39-rc1 according to gitk.
-
-> 
-> I think UML is UP, and that spin_is_locked() will always return false.
-> 
-> -- Steve
-> 
-> 
-
--- 
-Darren Hart
-Intel Open Source Technology Center
-Yocto Project - Linux Kernel
