@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QO9zl-0005tp-EQ
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1QO9zT-0003zT-6y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 May 2011 14:51:05 +0000
+	Sun, 22 May 2011 14:50:47 +0000
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QO9zj-00068R-NC
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QO9zR-0006ix-P0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 May 2011 14:51:05 +0000
+	Sun, 22 May 2011 14:50:47 +0000
 From: Richard Weinberger <richard@nod.at>
-Date: Sun, 22 May 2011 16:48:36 +0200
-Message-Id: <1306075716-20042-7-git-send-email-richard@nod.at>
+Date: Sun, 22 May 2011 16:48:31 +0200
+Message-Id: <1306075716-20042-2-git-send-email-richard@nod.at>
 In-Reply-To: <1306075716-20042-1-git-send-email-richard@nod.at>
 References: <1306075716-20042-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
@@ -28,32 +28,30 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 7/7] um: fix crash while os_dump_core()
+Subject: [uml-devel] [PATCH 2/7] um: remove SIGHUP handler
 To: akpm@linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-os_dump_core() emits SIGTERM to terminate all UML processes.
-Kernel threads have to exit on SIGTERM instead of calling
-last_ditch_exit().
-Multiple calls to last_ditch_exit() can cause a crash.
+The UML kernel ignores SIGHUP anyway.
+This handler is in vain.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/os-Linux/process.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ arch/um/os-Linux/main.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index e0477c3..0c45dc8 100644
---- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -253,6 +253,7 @@ void init_new_thread_signals(void)
- 		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH, SIGALRM,
- 		    SIGVTALRM, -1);
- 	signal(SIGWINCH, SIG_IGN);
-+	signal(SIGTERM, SIG_DFL);
- }
+diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+index 39613ea..fb2a97a 100644
+--- a/arch/um/os-Linux/main.c
++++ b/arch/um/os-Linux/main.c
+@@ -142,7 +142,6 @@ int __init main(int argc, char **argv, char **envp)
+ 	 */
+ 	install_fatal_handler(SIGINT);
+ 	install_fatal_handler(SIGTERM);
+-	install_fatal_handler(SIGHUP);
  
- int run_kernel_thread(int (*fn)(void *), void *arg, jmp_buf **jmp_ptr)
+ 	scan_elf_aux(envp);
+ 
 -- 
 1.7.4.2
 
