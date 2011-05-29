@@ -1,58 +1,68 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Date: Sun, 29 May 2011 11:22:01 +0200
 MIME-Version: 1.0
-In-Reply-To: <201105291122.01602.toralf.foerster@gmx.de>
-References: <201105291122.01602.toralf.foerster@gmx.de>
-Date: Sun, 29 May 2011 11:54:25 +0200
-Message-ID: <BANLkTi=NTWo3AyVUA93=bBcjKeSfbsQBcQ@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: Text/Plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Message-Id: <201105291122.01602.toralf.foerster@gmx.de>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: 2 small kernel config issues related to UML + RTC
-To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: 2 small kernel config issues related to UML + RTC
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-MjAxMS81LzI5IFRvcmFsZiBGw7Zyc3RlciA8dG9yYWxmLmZvZXJzdGVyQGdteC5kZT46Cj4gSGVs
-bG8sCj4KPiB3aXRoIHRoZSBjdXJyZW50IGdpdCBrZXJuZWwgSSBydW4KPiAkPm1ha2UgQVJDSD11
-bSBtZW51Y29uZmlnCj4KPiBhbmQgc2VhcmNoZWQgZm9yIHRoZSBzdHJpbmcgIlJUQyIgYi9jIGR1
-cmluZyBib290IG9mIG15IFVNTCBpbWFnZSBJIHJlYWxpemVkIG5vd2FkYXlzIHRoZSBtZXNzYWdl
-Ogo+Cj4gIktlcm5lbCBub3QgYnVpbHQgd2l0aCBSVEMgc3VwcG9ydCwgQUxBUk0gdGltZXJzIHdp
-bGwgbm90IHdha2UgZnJvbSBzdXNwZW5kIgo+Cj4gQWx0aG91Z2ggdGhlIG1lbnVjb25maWcgZ2l2
-ZXMgbWUgdGhlIGFuc3dlciA6Cj4KPiDCoOKUgiBTeW1ib2w6IFNUTU1BQ19SVENfVElNRVIgWz1u
-XSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDilIIKPiDCoOKUgiBUeXBlIMKgOiBib29sZWFuIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIOKUggo+IMKg4pSCIFByb21wdDogUmVhbCB0aW1lIGNsb2NrIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIOKUggo+IMKg4pSCIMKgIERlZmluZWQgYXQgZHJpdmVycy9uZXQvc3RtbWFjL0tj
-b25maWc6NTAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqDi
-lIIKPiDCoOKUgiDCoCBEZXBlbmRzIG9uOiA8Y2hvaWNlPiAmJiBSVENfQ0xBU1MgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg4pSCCj4gwqDi
-lIIgwqAgTG9jYXRpb246IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIOKUggo+
-IMKg4pSCIMKgIMKgIC0+IE5ldHdvcmsgZGV2aWNlIHN1cHBvcnQgKE5FVERFVklDRVMgWz15XSkg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg4pSCCj4gwqDilIIgwqAgwqAg
-wqAgLT4gRXRoZXJuZXQgKDEwMDAgTWJpdCkgKE5FVERFVl8xMDAwIFs9bl0pIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg4pSCCj4gwqDilIIgwqAgwqAgwqAgwqAgLT4gU1RN
-aWNyb2VsZWN0cm9uaWNzIDEwLzEwMC8xMDAwIEV0aGVybmV0IGRyaXZlciAoU1RNTUFDX0VUSCBb
-PW5dKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDilIIKPiDCoOKUgiDCoCDCoCDCoCDCoCDCoCAtPiBTVE1NQUMgVGltZXIgb3B0aW1pc2F0aW9u
-IChTVE1NQUNfVElNRVIgWz1uXSkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqDilIIKPiDCoOKUgiDC
-oCDCoCDCoCDCoCDCoCDCoCAtPiBTZWxlY3QgVGltZXIgZGV2aWNlICg8Y2hvaWNlPiBbPW5dKSDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoOKUggo+Cj4KPiBJIGNhbm5vdCBmb3Vu
-ZCB0aGUgbWVudSBpdGVtLgo+Cj4gVG8gc3VtIGl0IHVwIElNTyB0aGUga2VybmVsIG1lc2FnZSBk
-b2Vzbid0IG1ha2VzIHNlbnNlIGZvciBVTUwKPiBhbmQgZnVydGhlcm1vcmUgc2VhcmNoaW5nIGZv
-ciAiUlRDIiBzaG91bGRuJ3QgZ2l2ZSBub24tZXhpc3RlbnQgbWVudSBpdGVtcywgaXNuJ3QgaXQg
-PwoKSSBzYXcgdGhpcyBtZXNzYWdlIHRvby4KQSBmaXggaXMgb24gdGhlIHdheS4uLgoKLS0gClRo
-YW5rcywKLy9yaWNoYXJkCg==
+Hello,
+
+with the current git kernel I run=20
+$>make ARCH=3Dum menuconfig
+
+and searched for the string "RTC" b/c during boot of my UML image I rea=
+lized nowadays the message:
+
+"Kernel not built with RTC support, ALARM timers will not wake from sus=
+pend"
+
+Although the menuconfig gives me the answer :
+
+  =E2=94=82 Symbol: STMMAC_RTC_TIMER [=3Dn]                            =
+                                                       =E2=94=82  =20
+  =E2=94=82 Type  : boolean                                            =
+                                                     =E2=94=82  =20
+  =E2=94=82 Prompt: Real time clock                                    =
+                                                     =E2=94=82  =20
+  =E2=94=82   Defined at drivers/net/stmmac/Kconfig:50                 =
+                                                     =E2=94=82  =20
+  =E2=94=82   Depends on: <choice> && RTC_CLASS                        =
+                                                     =E2=94=82  =20
+  =E2=94=82   Location:                                                =
+                                                     =E2=94=82  =20
+  =E2=94=82     -> Network device support (NETDEVICES [=3Dy])          =
+                                                       =E2=94=82  =20
+  =E2=94=82       -> Ethernet (1000 Mbit) (NETDEV_1000 [=3Dn])         =
+                                                       =E2=94=82  =20
+  =E2=94=82         -> STMicroelectronics 10/100/1000 Ethernet driver (=
+STMMAC_ETH [=3Dn])                                     =E2=94=82  =20
+  =E2=94=82           -> STMMAC Timer optimisation (STMMAC_TIMER [=3Dn]=
+)                                                      =E2=94=82  =20
+  =E2=94=82             -> Select Timer device (<choice> [=3Dn])       =
+                                                       =E2=94=82  =20
+
+
+I cannot found the menu item.
+
+To sum it up IMO the kernel mesage doesn't makes sense for UML
+and furthermore searching for "RTC" shouldn't give non-existent menu it=
+ems, isn't it ?
+
+
+--=20
+MfG/Sincerely
+Toralf F=C3=B6rster
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+
