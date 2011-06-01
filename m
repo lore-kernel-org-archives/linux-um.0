@@ -1,13 +1,13 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Richard Weinberger <richard@nod.at>
-Date: Tue,  7 Jun 2011 17:34:30 +0200
-Message-Id: <1307460870-18234-2-git-send-email-richard@nod.at>
-In-Reply-To: <1307460870-18234-1-git-send-email-richard@nod.at>
-References: <1307460870-18234-1-git-send-email-richard@nod.at>
+Date: Wed,  1 Jun 2011 16:18:44 +0200
+Message-Id: <1306937924-22135-2-git-send-email-richard@nod.at>
+In-Reply-To: <1306937924-22135-1-git-send-email-richard@nod.at>
+References: <1306937924-22135-1-git-send-email-richard@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: [PATCH 2/2] um: Clean up delay functions
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+To: linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 Both sys-i386 and sys-x86_64 support now ndelay().
