@@ -1,41 +1,63 @@
-Return-Path: <richard@nod.at>
-From: Richard Weinberger <richard@nod.at>
-Date: Tue, 28 Jun 2011 00:15:31 +0200
-Message-Id: <1309212931-19772-4-git-send-email-richard@nod.at>
-In-Reply-To: <1309212931-19772-1-git-send-email-richard@nod.at>
-References: <1309212931-19772-1-git-send-email-richard@nod.at>
-Subject: [PATCH 4/4] um: Reinstate kernel version in generated .config
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger <richard@nod.at>
+Return-Path: <linux-mips-bounce@linux-mips.org>
+Message-ID: <4DE817CC.80404@redhat.com>
+Date: Thu, 02 Jun 2011 19:07:56 -0400
+From: Eric Paris <eparis@redhat.com>
+MIME-Version: 1.0
+References: <20110602210458.23613.24076.stgit@paris.rdu.redhat.com>     <201106030032.17398.richard@nod.at> <BANLkTik9kCs_06=7HKo44cWqpS0zB9fr+A@mail.gmail.com>
+In-Reply-To: <BANLkTik9kCs_06=7HKo44cWqpS0zB9fr+A@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+Subject: Re: [PATCH] Audit: push audit success and retcode into arch ptrace.h
+To: Tony Luck <tony.luck@intel.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, fenghua.yu@intel.com, monstr@monstr.eu, ralf@linux-mips.org, benh@kernel.crashing.org, paulus@samba.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, lethal@linux-sh.org, davem@davemloft.net, jdike@addtoit.com, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, viro@zeniv.linux.org.uk, oleg@redhat.com, akpm@linux-foundation.org, linux-ia64@vger.kernel.org, microblaze-uclinux@itee.uq.edu.au, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+On 06/02/2011 07:00 PM, Tony Luck wrote:
+>> But there seems to be another problem.
+>> Why is pt_regs of type void *?
+>>
+>> gcc complains:
+>> In file included from include/linux/fsnotify.h:15:0,
+>>                 from include/linux/security.h:26,
+>>                 from init/main.c:32:
+>> include/linux/audit.h: In function =91audit_syscall_exit=92:
+>> include/linux/audit.h:440:17: warning: dereferencing =91void *=92 po=
+inter
+>> include/linux/audit.h:440:3: error: invalid use of void expression
+>> include/linux/audit.h:441:21: warning: dereferencing =91void *=92 po=
+inter
+>> include/linux/audit.h:441:21: error: void value not ignored as it ou=
+ght to be
+>=20
+> Perhaps same issue on ia64 - but symptoms are different:
+>=20
+>   CC      crypto/cipher.o
+> In file included from include/linux/fsnotify.h:15,
+>                  from include/linux/security.h:26,
+>                  from init/do_mounts.c:8:
+> include/linux/audit.h: In function =91audit_syscall_exit=92:
+> include/linux/audit.h:440: warning: dereferencing =91void *=92 pointe=
+r
+> include/linux/audit.h:440: error: request for member =91r10=92 in
+> something not a structure or union
+> include/linux/audit.h:441: error: request for member =91r10=92 in
+> something not a structure or union
+> include/linux/audit.h:441: error: request for member =91r8=92 in some=
+thing
+> not a structure or union
+> include/linux/audit.h:441: error: request for member =91r8=92 in some=
+thing
+> not a structure or union
+> include/linux/audit.h:441: error: expected =91;=92 before =91}=92 tok=
+en
+> include/linux/audit.h:441: error: void value not ignored as it ought =
+to be
 
-commit 0954828fcbf3bd13d593499b16b901a4e801b0b9 ("kconfig: replace
-KERNELVERSION usage by the mainmenu's prompt") made the kernel version
-disappear from the generated .config file when configuring for UML.
-As UML's Kconfig doesn't have a mainmenu, kconfig falls back to the
-default string "Linux Kernel Configuration".
+I think it is the same problem.  I'll redo the patch with typed static
+inlines instead of #defines and all of this should hopefully work out.
 
-Add a suitable mainmenu to the main UML Kconfig file to fix this.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/Kconfig.x86 |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/arch/um/Kconfig.x86 b/arch/um/Kconfig.x86
-index 8aae429..d31ecf3 100644
---- a/arch/um/Kconfig.x86
-+++ b/arch/um/Kconfig.x86
-@@ -1,3 +1,5 @@
-+mainmenu "User Mode Linux/$SUBARCH $KERNELVERSION Kernel Configuration"
-+
- source "arch/um/Kconfig.common"
- 
- menu "UML-specific options"
--- 
-1.7.5.4
+-Eric
 
 
