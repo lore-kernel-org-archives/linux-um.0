@@ -1,58 +1,41 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Fri, 3 Jun 2011 00:32:16 +0200
+Return-Path: <linux-mips-bounce@linux-mips.org>
+Message-ID: <4DE7FE2A.10107@zytor.com>
+Date: Thu, 02 Jun 2011 14:18:34 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
+MIME-Version: 1.0
 References: <20110602210458.23613.24076.stgit@paris.rdu.redhat.com>
 In-Reply-To: <20110602210458.23613.24076.stgit@paris.rdu.redhat.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Message-Id: <201106030032.17398.richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
 Subject: Re: [PATCH] Audit: push audit success and retcode into arch ptrace.h
 To: Eric Paris <eparis@redhat.com>
-Cc: linux-kernel@vger.kernel.org, tony.luck@intel.com, fenghua.yu@intel.com, monstr@monstr.eu, ralf@linux-mips.org, benh@kernel.crashing.org, paulus@samba.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, lethal@linux-sh.org, davem@davemloft.net, jdike@addtoit.com, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, viro@zeniv.linux.org.uk, oleg@redhat.com, akpm@linux-foundation.org, linux-ia64@vger.kernel.org, microblaze-uclinux@itee.uq.edu.au, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, tony.luck@intel.com, fenghua.yu@intel.com, monstr@monstr.eu, ralf@linux-mips.org, benh@kernel.crashing.org, paulus@samba.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, lethal@linux-sh.org, davem@davemloft.net, jdike@addtoit.com, richard@nod.at, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org, viro@zeniv.linux.org.uk, oleg@redhat.com, akpm@linux-foundation.org, linux-ia64@vger.kernel.org, microblaze-uclinux@itee.uq.edu.au, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am Donnerstag 02 Juni 2011, 23:04:58 schrieb Eric Paris:
-> b/arch/um/sys-i386/shared/sysdep/ptrace.h index d50e62e..ef5c310 1006=
-44
-> --- a/arch/um/sys-i386/shared/sysdep/ptrace.h
-> +++ b/arch/um/sys-i386/shared/sysdep/ptrace.h
-> @@ -162,6 +162,7 @@ struct syscall_args {
->  #define UPT_ORIG_SYSCALL(r) UPT_EAX(r)
->  #define UPT_SYSCALL_NR(r) UPT_ORIG_EAX(r)
->  #define UPT_SYSCALL_RET(r) UPT_EAX(r)
-> +#define regs_return_value UPT_SYSCALL_RET
+On 06/02/2011 02:04 PM, Eric Paris wrote:
+> The audit system previously expected arches calling to audit_syscall_exit to
+> supply as arguments if the syscall was a success and what the return code was.
+> Audit also provides a helper AUDITSC_RESULT which was supposed to simplify by
+> converting from negative retcodes to an audit internal magic value stating
+> success or failure.  This helper was wrong and could indicate that a valid
+> pointer returned to userspace was a failed syscall.  The fix is to fix the
+> layering foolishness.  We now pass audit_syscall_exit a struct pt_reg and it
+> in turns calls back into arch code to collect the return value and to
+> determine if the syscall was a success or failure.
+> 
+> In arch/sh/kernel/ptrace_64.c I see that we were using regs[9] in the old
+> audit code.  But the ptrace_64.h code was previously using regs[3] for the
+> regs_return_value().  I have no idea which one is correct, but this patch now
+> uses regs[3].
+> 
+> Signed-off-by: Eric Paris <eparis@redhat.com>
 
-This does not work at all.
-UPT_SYSCALL_RET expects something of type struct uml_pt_regs.
+For the x86 portions:
 
-#define regs_return_value REGS_EAX
-Would be correct. (For x86_64 it needs to be REGS_RAX)
+Acked-by: H. Peter Anvin <hpa@zytor.com>
 
-But there seems to be another problem.
-Why is pt_regs of type void *?
+	-hpa
 
-gcc complains:
-In file included from include/linux/fsnotify.h:15:0,
-                 from include/linux/security.h:26,
-                 from init/main.c:32:
-include/linux/audit.h: In function =E2=80=98audit_syscall_exit=E2=80=99=
-:
-include/linux/audit.h:440:17: warning: dereferencing =E2=80=98void *=E2=
-=80=99 pointer
-include/linux/audit.h:440:3: error: invalid use of void expression
-include/linux/audit.h:441:21: warning: dereferencing =E2=80=98void *=E2=
-=80=99 pointer
-include/linux/audit.h:441:21: error: void value not ignored as it ought=
- to be
-
-Thanks,
-//richard
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
 
