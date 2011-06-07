@@ -1,72 +1,208 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QbK5r-0002Xq-Qa
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Jun 2011 22:15:47 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QbK5p-0001B9-Ms
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Jun 2011 22:15:47 +0000
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Richard Weinberger <richard@nod.at>
-Date: Tue, 28 Jun 2011 00:15:28 +0200
-Message-Id: <1309212931-19772-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/4] um: Fix _FORTIFY_SOURCE=2 support for
-	kernel modules
+Date: Tue,  7 Jun 2011 17:34:30 +0200
+Message-Id: <1307460870-18234-2-git-send-email-richard@nod.at>
+In-Reply-To: <1307460870-18234-1-git-send-email-richard@nod.at>
+References: <1307460870-18234-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 2/2] um: Clean up delay functions
 To: akpm@linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-When UML is compiled with _FORTIFY_SOURCE we have to
-export all _chk() functions which are used in modules.
-For now it's only the case for __sprintf_chk().
+Both sys-i386 and sys-x86_64 support now ndelay().
+The delay functions are based on arch/x86/lib/delay.c.
 
-Tested-by: Florian Fainelli <florian@openwrt.org>
-Reported-by: Florian Fainelli <florian@openwrt.org>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/os-Linux/user_syms.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ arch/um/include/asm/delay.h |    8 +----
+ arch/um/sys-i386/delay.c    |   63 ++++++++++++++++++++++++++++++++-----------
+ arch/um/sys-x86_64/delay.c  |   54 ++++++++++++++++++++++++++++--------
+ 3 files changed, 91 insertions(+), 34 deletions(-)
 
-diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
-index 05f5ea8..45ffe46 100644
---- a/arch/um/os-Linux/user_syms.c
-+++ b/arch/um/os-Linux/user_syms.c
-@@ -113,3 +113,8 @@ EXPORT_SYMBOL(__stack_smash_handler);
+diff --git a/arch/um/include/asm/delay.h b/arch/um/include/asm/delay.h
+index c71e32b..1094519 100644
+--- a/arch/um/include/asm/delay.h
++++ b/arch/um/include/asm/delay.h
+@@ -1,8 +1,6 @@
+ #ifndef __UM_DELAY_H
+ #define __UM_DELAY_H
  
- extern long __guard __attribute__((weak));
- EXPORT_SYMBOL(__guard);
+-#define MILLION 1000000
+-
+ /* Undefined on purpose */
+ extern void __bad_udelay(void);
+ 
+@@ -12,9 +10,7 @@ extern void __delay(unsigned long loops);
+ #define udelay(n) ((__builtin_constant_p(n) && (n) > 20000) ? \
+ 	__bad_udelay() : __udelay(n))
+ 
+-/* It appears that ndelay is not used at all for UML, and has never been
+- * implemented. */
+-extern void __unimplemented_ndelay(void);
+-#define ndelay(n) __unimplemented_ndelay()
++#define ndelay(n) ((__builtin_constant_p(n) && (n) > 20000) ? \
++	__bad_udelay() : __ndelay(n))
+ 
+ #endif
+diff --git a/arch/um/sys-i386/delay.c b/arch/um/sys-i386/delay.c
+index d623e07..65851ce 100644
+--- a/arch/um/sys-i386/delay.c
++++ b/arch/um/sys-i386/delay.c
+@@ -1,29 +1,60 @@
++/*
++ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
++ * Mostly copied from arch/x86/lib/delay.c
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +
-+#ifdef _FORTIFY_SOURCE
-+extern int __sprintf_chk(char *str, int flag, size_t strlen, const char *format);
-+EXPORT_SYMBOL(__sprintf_chk);
-+#endif
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/delay.h>
+ #include <asm/param.h>
+ 
+-void __delay(unsigned long time)
++void __delay(unsigned long loops)
+ {
+-	/* Stolen from the i386 __loop_delay */
+-	int d0;
+-	__asm__ __volatile__(
+-		"\tjmp 1f\n"
+-		".align 16\n"
+-		"1:\tjmp 2f\n"
+-		".align 16\n"
+-		"2:\tdecl %0\n\tjns 2b"
+-		:"=&a" (d0)
+-		:"0" (time));
++	asm volatile(
++		" test %0,%0  \n"
++		" jz 3f   \n"
++		" jmp 1f    \n"
++
++		".align 16    \n"
++		"1: jmp 2f    \n"
++
++		".align 16    \n"
++		"2: dec %0    \n"
++		" jnz 2b    \n"
++		"3: dec %0    \n"
++
++		: /* we don't need output */
++		:"a" (loops)
++	);
+ }
++EXPORT_SYMBOL(__delay);
+ 
+-void __udelay(unsigned long usecs)
++inline void __const_udelay(unsigned long xloops)
+ {
+-	int i, n;
++	int d0;
+ 
+-	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-        for(i=0;i<n;i++)
+-                cpu_relax();
++	xloops *= 4;
++	asm("mull %%edx"
++		:"=d" (xloops), "=&a" (d0)
++		:"1" (xloops), "0"
++		(loops_per_jiffy * (HZ/4)));
++
++	__delay(++xloops);
+ }
++EXPORT_SYMBOL(__const_udelay);
+ 
++void __udelay(unsigned long usecs)
++{
++	__const_udelay(usecs * 0x000010c7); /* 2**32 / 1000000 (rounded up) */
++}
+ EXPORT_SYMBOL(__udelay);
++
++void __ndelay(unsigned long nsecs)
++{
++	__const_udelay(nsecs * 0x00005); /* 2**32 / 1000000000 (rounded up) */
++}
++EXPORT_SYMBOL(__ndelay);
+diff --git a/arch/um/sys-x86_64/delay.c b/arch/um/sys-x86_64/delay.c
+index dee5be6..65851ce 100644
+--- a/arch/um/sys-x86_64/delay.c
++++ b/arch/um/sys-x86_64/delay.c
+@@ -1,30 +1,60 @@
+ /*
+- * Copyright 2003 PathScale, Inc.
+- * Copied from arch/x86_64
++ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
++ * Mostly copied from arch/x86/lib/delay.c
+  *
+- * Licensed under the GPL
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  */
+ 
+ #include <linux/module.h>
++#include <linux/kernel.h>
+ #include <linux/delay.h>
+-#include <asm/processor.h>
+ #include <asm/param.h>
+ 
+ void __delay(unsigned long loops)
+ {
+-	unsigned long i;
++	asm volatile(
++		" test %0,%0  \n"
++		" jz 3f   \n"
++		" jmp 1f    \n"
+ 
+-        for(i = 0; i < loops; i++)
+-                cpu_relax();
++		".align 16    \n"
++		"1: jmp 2f    \n"
++
++		".align 16    \n"
++		"2: dec %0    \n"
++		" jnz 2b    \n"
++		"3: dec %0    \n"
++
++		: /* we don't need output */
++		:"a" (loops)
++	);
+ }
++EXPORT_SYMBOL(__delay);
+ 
+-void __udelay(unsigned long usecs)
++inline void __const_udelay(unsigned long xloops)
+ {
+-	unsigned long i, n;
++	int d0;
+ 
+-	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-        for(i=0;i<n;i++)
+-                cpu_relax();
++	xloops *= 4;
++	asm("mull %%edx"
++		:"=d" (xloops), "=&a" (d0)
++		:"1" (xloops), "0"
++		(loops_per_jiffy * (HZ/4)));
++
++	__delay(++xloops);
+ }
++EXPORT_SYMBOL(__const_udelay);
+ 
++void __udelay(unsigned long usecs)
++{
++	__const_udelay(usecs * 0x000010c7); /* 2**32 / 1000000 (rounded up) */
++}
+ EXPORT_SYMBOL(__udelay);
++
++void __ndelay(unsigned long nsecs)
++{
++	__const_udelay(nsecs * 0x00005); /* 2**32 / 1000000000 (rounded up) */
++}
++EXPORT_SYMBOL(__ndelay);
 -- 
-1.7.5.4
-
-
-------------------------------------------------------------------------------
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security 
-threats, fraudulent activity, and more. Splunk takes this data and makes 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+1.7.5.3
 
