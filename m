@@ -1,22 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <f.fainelli@gmail.com>) id 1QVid0-0000cx-RJ
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1QTyLF-0006OI-Hl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2011 11:14:50 +0000
-Received: from mail-wy0-f175.google.com ([74.125.82.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1QVid0-0003Iu-0F
+	Tue, 07 Jun 2011 15:37:17 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QTyLD-0000GN-S6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2011 11:14:50 +0000
-Received: by wye20 with SMTP id 20so3911566wye.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 12 Jun 2011 04:14:43 -0700 (PDT)
-From: Florian Fainelli <florian@openwrt.org>
-Date: Sun, 12 Jun 2011 13:14:41 +0200
-MIME-Version: 1.0
-Message-Id: <201106121314.41348.florian@openwrt.org>
+	Tue, 07 Jun 2011 15:37:17 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Tue,  7 Jun 2011 17:34:29 +0200
+Message-Id: <1307460870-18234-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,43 +22,37 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 2/2] um: disable compile-time buffer checks
-To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 1/2] um: Add asm/percpu.h
+To: akpm@linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Nicolas Thill <nico@openwrt.org>
+To make SLUB work on UML we need this_cpu_cmpxchg from
+asm-generic/percpu.h.
 
-Ubuntu 8.10 and newer enable compile-time buffer checks by default,
-which can sometime cause build failures like this:
-
-  LD      vmlinux
-  SYSMAP  System.map
-  SYSMAP  .tmp_System.map
-  LINK linux
-  Building modules, stage 2.
-  MODPOST 51 modules
-ERROR: "__sprintf_chk" [arch/um/drivers/harddog.ko] undefined!
-
-disable compile-time buffer checks to avoid such errors.
-
-Signed-off-by: Nicolas Thill <nico@openwrt.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
-diff --git a/arch/um/Makefile-os-Linux b/arch/um/Makefile-os-Linux
-index 2c8a598..2968e0d 100644
---- a/arch/um/Makefile-os-Linux
-+++ b/arch/um/Makefile-os-Linux
-@@ -6,4 +6,7 @@
- # To get a definition of F_SETSIG
- USER_CFLAGS += -D_GNU_SOURCE -D_LARGEFILE64_SOURCE
- KBUILD_CFLAGS += -D_LARGEFILE64_SOURCE
-+# disable compile-time buffer checks, enabled by default on Ubuntu 8.10
-+# and later
-+KBUILD_CFLAGS += $(call cc-option,-U_FORTIFY_SOURCE)
- DEV_NULL_PATH = \"/dev/null\"
+ arch/um/include/asm/percpu.h |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+ create mode 100644 arch/um/include/asm/percpu.h
+
+diff --git a/arch/um/include/asm/percpu.h b/arch/um/include/asm/percpu.h
+new file mode 100644
+index 0000000..efe7508
+--- /dev/null
++++ b/arch/um/include/asm/percpu.h
+@@ -0,0 +1,6 @@
++#ifndef __UM_PERCPU_H
++#define __UM_PERCPU_H
++
++#include <asm-generic/percpu.h>
++
++#endif /* __UM_PERCPU_H */
 -- 
-1.7.4.1
+1.7.5.3
 
 
 ------------------------------------------------------------------------------
