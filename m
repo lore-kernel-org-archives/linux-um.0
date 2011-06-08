@@ -1,59 +1,30 @@
-Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-Date: Wed, 8 Jun 2011 18:36:53 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Message-ID: <20110608163653.GA9592@redhat.com>
+Return-Path: <linux-mips-bounce@linux-mips.org>
+Date: Wed, 8 Jun 2011 15:04:16 +0100
+From: Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20110608140416.GA19926@linux-mips.org>
 References: <20110603220451.23134.47368.stgit@paris.rdu.redhat.com>
-	<20110607171952.GA25729@redhat.com>
-	<1307472796.2052.12.camel@localhost.localdomain>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1307472796.2052.12.camel@localhost.localdomain>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
-Sender: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+In-Reply-To: <20110603220451.23134.47368.stgit@paris.rdu.redhat.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
 Subject: Re: [PATCH -v2] Audit: push audit success and retcode into arch
-	ptrace.h
+ ptrace.h
 To: Eric Paris <eparis@redhat.com>
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, heiko.carstens@de.ibm.com, paulus@samba.org, hpa@zytor.com, sparclinux@vger.kernel.org, linux-s390@vger.kernel.org, richard@nod.at, x86@kernel.org, mingo@redhat.com, fenghua.yu@intel.com, user-mode-linux-devel@lists.sourceforge.net, microblaze-uclinux@itee.uq.edu.au, jdike@addtoit.com, viro@zeniv.linux.org.uk, tglx@linutronix.de, monstr@monstr.eu, tony.luck@intel.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, lethal@linux-sh.org, schwidefsky@de.ibm.com, linux390@de.ibm.com, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, tony.luck@intel.com, fenghua.yu@intel.com, monstr@monstr.eu, benh@kernel.crashing.org, paulus@samba.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com, linux390@de.ibm.com, lethal@linux-sh.org, davem@davemloft.net, jdike@addtoit.com, richard@nod.at, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, viro@zeniv.linux.org.uk, oleg@redhat.com, akpm@linux-foundation.org, linux-ia64@vger.kernel.org, microblaze-uclinux@itee.uq.edu.au, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 06/07, Eric Paris wrote:
->
-> On Tue, 2011-06-07 at 19:19 +0200, Oleg Nesterov wrote:
-> >
-> > With or without this patch, can't we call audit_syscall_exit() twice
-> > if there is something else in _TIF_WORK_SYSCALL_EXIT mask apart from
-> > SYSCALL_AUDIT ? First time it is called from asm, then from
-> > syscall_trace_leave(), no?
-> >
-> > For example. The task has TIF_SYSCALL_AUDIT and nothing else, it does
-> > system_call->auditsys->system_call_fastpath. What if it gets, say,
-> > TIF_SYSCALL_TRACE before ret_from_sys_call?
->
-> No harm is done calling twice.  The first call will do the real work and
-> cleanup.  It will set a flag in the audit data that the work has been
-> done (in_syscall == 0) thus the second call will then not do any real
-> work and won't have anything to clean up.
+On Fri, Jun 03, 2011 at 06:04:51PM -0400, Eric Paris wrote:
 
-Hmm... and I assume context->previous != NULL is not possible on x86_64.
-OK, thanks.
+Thanks, this looks good & compiles, so:
 
-And I guess, all CONFIG_AUDITSYSCALL code in entry.S is only needed to
-microoptimize the case when TIF_SYSCALL_AUDIT is the only reason for the
-slow path. I wonder if it really makes the measureble difference...
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
 
-Oleg.
+I will rebase my pending MIPS audit patches on top of this patch and resend.
 
-_______________________________________________
-Linuxppc-dev mailing list
-Linuxppc-dev@lists.ozlabs.org
-https://lists.ozlabs.org/listinfo/linuxppc-dev
+Thanks,
+
+  Ralf
+
 
