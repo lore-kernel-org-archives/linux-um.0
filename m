@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QVjHD-00015r-D6
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <f.fainelli@gmail.com>) id 1QVid0-0000cx-RJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2011 11:56:23 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QVjHB-0008A1-UB
+	Sun, 12 Jun 2011 11:14:50 +0000
+Received: from mail-wy0-f175.google.com ([74.125.82.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1QVid0-0003Iu-0F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2011 11:56:23 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Sun, 12 Jun 2011 13:56:14 +0200
-References: <201106121314.41348.florian@openwrt.org>
-In-Reply-To: <201106121314.41348.florian@openwrt.org>
+	Sun, 12 Jun 2011 11:14:50 +0000
+Received: by wye20 with SMTP id 20so3911566wye.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 12 Jun 2011 04:14:43 -0700 (PDT)
+From: Florian Fainelli <florian@openwrt.org>
+Date: Sun, 12 Jun 2011 13:14:41 +0200
 MIME-Version: 1.0
-Message-Id: <201106121356.14546.richard@nod.at>
+Message-Id: <201106121314.41348.florian@openwrt.org>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,29 +29,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH 2/2] um: disable compile-time buffer checks
-To: Florian Fainelli <florian@openwrt.org>
-Cc: nico@openwrt.org, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 2/2] um: disable compile-time buffer checks
+To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 
-Am Sonntag 12 Juni 2011, 13:14:41 schrieb Florian Fainelli:
-> From: Nicolas Thill <nico@openwrt.org>
-> 
-> Ubuntu 8.10 and newer enable compile-time buffer checks by default,
-> which can sometime cause build failures like this:
-> 
->   LD      vmlinux
->   SYSMAP  System.map
->   SYSMAP  .tmp_System.map
->   LINK linux
->   Building modules, stage 2.
->   MODPOST 51 modules
-> ERROR: "__sprintf_chk" [arch/um/drivers/harddog.ko] undefined!
+From: Nicolas Thill <nico@openwrt.org>
 
-Hmm, now I'm wondering why no other Ubuntu users have noticed this.
-Are also current versions of Ubuntu affected?
+Ubuntu 8.10 and newer enable compile-time buffer checks by default,
+which can sometime cause build failures like this:
 
-Thanks,
-//richard
+  LD      vmlinux
+  SYSMAP  System.map
+  SYSMAP  .tmp_System.map
+  LINK linux
+  Building modules, stage 2.
+  MODPOST 51 modules
+ERROR: "__sprintf_chk" [arch/um/drivers/harddog.ko] undefined!
+
+disable compile-time buffer checks to avoid such errors.
+
+Signed-off-by: Nicolas Thill <nico@openwrt.org>
+---
+diff --git a/arch/um/Makefile-os-Linux b/arch/um/Makefile-os-Linux
+index 2c8a598..2968e0d 100644
+--- a/arch/um/Makefile-os-Linux
++++ b/arch/um/Makefile-os-Linux
+@@ -6,4 +6,7 @@
+ # To get a definition of F_SETSIG
+ USER_CFLAGS += -D_GNU_SOURCE -D_LARGEFILE64_SOURCE
+ KBUILD_CFLAGS += -D_LARGEFILE64_SOURCE
++# disable compile-time buffer checks, enabled by default on Ubuntu 8.10
++# and later
++KBUILD_CFLAGS += $(call cc-option,-U_FORTIFY_SOURCE)
+ DEV_NULL_PATH = \"/dev/null\"
+-- 
+1.7.4.1
+
 
 ------------------------------------------------------------------------------
 EditLive Enterprise is the world's most technically advanced content
