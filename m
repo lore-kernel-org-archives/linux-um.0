@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QVuS2-0000DY-DH
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <f.fainelli@gmail.com>) id 1QVicz-0000cl-LF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2011 23:52:18 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QVuS0-0005Uv-K2
+	Sun, 12 Jun 2011 11:14:49 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1QVicy-00021W-Ok
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2011 23:52:18 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 13 Jun 2011 01:45:27 +0200
-References: <201106121314.39884.florian@openwrt.org>
-In-Reply-To: <201106121314.39884.florian@openwrt.org>
+	Sun, 12 Jun 2011 11:14:49 +0000
+Received: by wwj40 with SMTP id 40so3621542wwj.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 12 Jun 2011 04:14:42 -0700 (PDT)
+From: Florian Fainelli <florian@openwrt.org>
+Date: Sun, 12 Jun 2011 13:14:39 +0200
 MIME-Version: 1.0
-Message-Id: <201106130145.27424.richard@nod.at>
+Message-Id: <201106121314.39884.florian@openwrt.org>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,25 +29,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH 1/2] um: disable funit-at-a-time for gcc <
-	4.3
-To: Florian Fainelli <florian@openwrt.org>
-Cc: nico@openwrt.org, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 1/2] um: disable funit-at-a-time for gcc < 4.3
+To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 
-Am Sonntag 12 Juni 2011, 13:14:39 schrieb Florian Fainelli:
-> From: Nicolas Thill <nico@openwrt.org>
-> 
-> Building UML with gcc < 4.3 with -funit-at-a-time for i386 causes startup
-> crashes, disabling funit-at-a-time works around it.
+From: Nicolas Thill <nico@openwrt.org>
 
-Can you show me such a crash?
-How can I reproduce the issue?
+Building UML with gcc < 4.3 with -funit-at-a-time for i386 causes startup
+crashes, disabling funit-at-a-time works around it.
 
-UML works fine on my RHEL5/i386 test box.
-gcc 4.1.2 20080704 (Red Hat 4.1.2-46)
+Signed-off-by: Nicolas Thill <nico@openwrt.org>
+---
+diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-i386
+index 302cbe5..8251030 100644
+--- a/arch/um/Makefile-i386
++++ b/arch/um/Makefile-i386
+@@ -35,7 +35,7 @@ cflags-y += -ffreestanding
+ # Disable unit-at-a-time mode on pre-gcc-4.0 compilers, it makes gcc use
+ # a lot more stack due to the lack of sharing of stacklots.  Also, gcc
+ # 4.3.0 needs -funit-at-a-time for extern inline functions.
+-KBUILD_CFLAGS += $(shell if [ $(call cc-version) -lt 0400 ] ; then \
++KBUILD_CFLAGS += $(shell if [ $(call cc-version) -lt 0403 ] ; then \
+ 			echo $(call cc-option,-fno-unit-at-a-time); \
+ 			else echo $(call cc-option,-funit-at-a-time); fi ;)
+ 
+-- 
+1.7.4.1
 
-Thanks,
-//richard
 
 ------------------------------------------------------------------------------
 EditLive Enterprise is the world's most technically advanced content
