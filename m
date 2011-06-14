@@ -1,20 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QbK5r-0005Xl-66
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <f.fainelli@gmail.com>) id 1QWQ8z-00041m-TV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Jun 2011 22:15:47 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QbK5q-0003XJ-8m
+	Tue, 14 Jun 2011 09:42:45 +0000
+Received: from mail-ww0-f53.google.com ([74.125.82.53])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1QWQ8z-00030G-0A
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Jun 2011 22:15:47 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Tue, 28 Jun 2011 00:15:30 +0200
-Message-Id: <1309212931-19772-3-git-send-email-richard@nod.at>
-In-Reply-To: <1309212931-19772-1-git-send-email-richard@nod.at>
-References: <1309212931-19772-1-git-send-email-richard@nod.at>
+	Tue, 14 Jun 2011 09:42:45 +0000
+Received: by wwj40 with SMTP id 40so5072956wwj.10
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 14 Jun 2011 02:42:38 -0700 (PDT)
+From: Florian Fainelli <florian@openwrt.org>
+Date: Tue, 14 Jun 2011 11:46:54 +0200
+References: <201106121314.39884.florian@openwrt.org>
+	<201106130145.27424.richard@nod.at>
+In-Reply-To: <201106130145.27424.richard@nod.at>
+MIME-Version: 1.0
+Message-Id: <201106141146.55070.florian@openwrt.org>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,48 +29,40 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 3/4] um, exec: remove redundant set_fs(USER_DS)
-To: akpm@linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Mathias Krause <minipli@googlemail.com>
+Subject: Re: [uml-devel] [PATCH 1/2] um: disable funit-at-a-time for gcc <
+	4.3
+To: Richard Weinberger <richard@nod.at>
+Cc: nico@openwrt.org, user-mode-linux-devel@lists.sourceforge.net
 
-From: Mathias Krause <minipli@googlemail.com>
+On Monday 13 June 2011 01:45:27 Richard Weinberger wrote:
+> Am Sonntag 12 Juni 2011, 13:14:39 schrieb Florian Fainelli:
+> > From: Nicolas Thill <nico@openwrt.org>
+> > 
+> > Building UML with gcc < 4.3 with -funit-at-a-time for i386 causes startup
+> > crashes, disabling funit-at-a-time works around it.
+> 
+> Can you show me such a crash?
+> How can I reproduce the issue?
 
-The address limit is already set in flush_old_exec() so this
-set_fs(USER_DS) is redundant.
+Let me get you a test case to reproduce that issue.
 
-Signed-off-by: Mathias Krause <minipli@googlemail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/kernel/exec.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
-index 09bd7b5..939a4a6 100644
---- a/arch/um/kernel/exec.c
-+++ b/arch/um/kernel/exec.c
-@@ -38,7 +38,6 @@ void flush_thread(void)
- 
- void start_thread(struct pt_regs *regs, unsigned long eip, unsigned long esp)
- {
--	set_fs(USER_DS);
- 	PT_REGS_IP(regs) = eip;
- 	PT_REGS_SP(regs) = esp;
- }
--- 
-1.7.5.4
-
+> 
+> UML works fine on my RHEL5/i386 test box.
+> gcc 4.1.2 20080704 (Red Hat 4.1.2-46)
+> 
+> Thanks,
+> //richard
+--
+Florian
 
 ------------------------------------------------------------------------------
-All of the data generated in your IT infrastructure is seriously valuable.
-Why? It contains a definitive record of application performance, security 
-threats, fraudulent activity, and more. Splunk takes this data and makes 
-sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-d2d-c2
+EditLive Enterprise is the world's most technically advanced content
+authoring tool. Experience the power of Track Changes, Inline Image
+Editing and ensure content is compliant with Accessibility Checking.
+http://p.sf.net/sfu/ephox-dev2dev
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
