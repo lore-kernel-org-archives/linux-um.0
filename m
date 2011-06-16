@@ -1,18 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QRmIC-0007fp-7U
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <randy.dunlap@oracle.com>) id 1QXILL-0006Bz-T0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Jun 2011 14:21:04 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	Thu, 16 Jun 2011 19:35:07 +0000
+Received: from rcsinet10.oracle.com ([148.87.113.121])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QRmIA-0006DD-Nj
+	(Exim 4.76) id 1QXILK-0005MP-TO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 01 Jun 2011 14:21:04 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Wed,  1 Jun 2011 16:18:43 +0200
-Message-Id: <1306937924-22135-1-git-send-email-richard@nod.at>
+	Thu, 16 Jun 2011 19:35:07 +0000
+Date: Thu, 16 Jun 2011 12:27:38 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
+Message-Id: <20110616122738.697a7c12.randy.dunlap@oracle.com>
+In-Reply-To: <1308250867-12497-1-git-send-email-richard@nod.at>
+References: <1308250867-12497-1-git-send-email-richard@nod.at>
+Mime-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,45 +25,119 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/2] um: Add asm/percpu.h
-To: linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH] um: Clean up vm-flags.h
+To: Richard Weinberger <richard@nod.at>
+Cc: randy.dunlap@oracle.com, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, mhocko@suse.cz, akpm@linux-foundation.org, torvalds@linux-foundation.org
 
-To make SLUB work on UML we need this_cpu_cmpxchg from
-asm-generic/percpu.h.
+On Thu, 16 Jun 2011 21:01:07 +0200 Richard Weinberger wrote:
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+> There is no need to define VM_{STACK,DATA}_DEFAULT_FLAGS as
+> variable.
+> It's also useless to test for TIF_IA32 as 64bit UML has no
+> IA32 emulation.
+> 
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> CC: randy.dunlap@oracle.com
+
+Acked-by: Randy Dunlap <randy.dunlap@oracle.com>
+
+Thanks.
+
+> CC: mhocko@suse.cz
+> CC: torvalds@linux-foundation.org
+> ---
+>  arch/um/sys-x86_64/Makefile                 |    2 +-
+>  arch/um/sys-x86_64/mem.c                    |   16 ----------------
+>  arch/um/sys-x86_64/shared/sysdep/vm-flags.h |   26 ++++----------------------
+>  3 files changed, 5 insertions(+), 39 deletions(-)
+>  delete mode 100644 arch/um/sys-x86_64/mem.c
+> 
+> diff --git a/arch/um/sys-x86_64/Makefile b/arch/um/sys-x86_64/Makefile
+> index c1ea9eb..63fe0d2 100644
+> --- a/arch/um/sys-x86_64/Makefile
+> +++ b/arch/um/sys-x86_64/Makefile
+> @@ -4,7 +4,7 @@
+>  # Licensed under the GPL
+>  #
+>  
+> -obj-y = bug.o bugs.o delay.o fault.o ldt.o mem.o ptrace.o ptrace_user.o \
+> +obj-y = bug.o bugs.o delay.o fault.o ldt.o ptrace.o ptrace_user.o \
+>  	setjmp.o signal.o stub.o stub_segv.o syscalls.o syscall_table.o \
+>  	sysrq.o ksyms.o tls.o
+>  
+> diff --git a/arch/um/sys-x86_64/mem.c b/arch/um/sys-x86_64/mem.c
+> deleted file mode 100644
+> index 3f8df8a..0000000
+> --- a/arch/um/sys-x86_64/mem.c
+> +++ /dev/null
+> @@ -1,16 +0,0 @@
+> -/*
+> - * Copyright 2003 PathScale, Inc.
+> - *
+> - * Licensed under the GPL
+> - */
+> -
+> -#include "linux/mm.h"
+> -#include "asm/page.h"
+> -#include "asm/mman.h"
+> -
+> -unsigned long vm_stack_flags = __VM_STACK_FLAGS;
+> -unsigned long vm_stack_flags32 = __VM_STACK_FLAGS;
+> -unsigned long vm_data_default_flags = __VM_DATA_DEFAULT_FLAGS;
+> -unsigned long vm_data_default_flags32 = __VM_DATA_DEFAULT_FLAGS;
+> -unsigned long vm_force_exec32 = PROT_EXEC;
+> -
+> diff --git a/arch/um/sys-x86_64/shared/sysdep/vm-flags.h b/arch/um/sys-x86_64/shared/sysdep/vm-flags.h
+> index 3213edf..3978e55 100644
+> --- a/arch/um/sys-x86_64/shared/sysdep/vm-flags.h
+> +++ b/arch/um/sys-x86_64/shared/sysdep/vm-flags.h
+> @@ -7,27 +7,9 @@
+>  #ifndef __VM_FLAGS_X86_64_H
+>  #define __VM_FLAGS_X86_64_H
+>  
+> -#define __VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+> -				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+> -#define __VM_STACK_FLAGS 	(VM_GROWSDOWN | VM_READ | VM_WRITE | \
+> -				 VM_EXEC | VM_MAYREAD | VM_MAYWRITE | \
+> -				 VM_MAYEXEC)
+> -
+> -extern unsigned long vm_stack_flags, vm_stack_flags32;
+> -extern unsigned long vm_data_default_flags, vm_data_default_flags32;
+> -extern unsigned long vm_force_exec32;
+> -
+> -#ifdef TIF_IA32
+> -#define VM_DATA_DEFAULT_FLAGS \
+> -	(test_thread_flag(TIF_IA32) ? vm_data_default_flags32 : \
+> -	  vm_data_default_flags)
+> -
+> -#define VM_STACK_DEFAULT_FLAGS \
+> -	(test_thread_flag(TIF_IA32) ? vm_stack_flags32 : vm_stack_flags)
+> -#endif
+> -
+> -#define VM_DATA_DEFAULT_FLAGS vm_data_default_flags
+> -
+> -#define VM_STACK_DEFAULT_FLAGS vm_stack_flags
+> +#define VM_DATA_DEFAULT_FLAGS (VM_READ | VM_WRITE | VM_EXEC | \
+> +	VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+> +#define VM_STACK_DEFAULT_FLAGS (VM_GROWSDOWN | VM_READ | VM_WRITE | \
+> +	VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+>  
+>  #endif
+> -- 
+
+
 ---
- arch/um/include/asm/percpu.h |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
- create mode 100644 arch/um/include/asm/percpu.h
-
-diff --git a/arch/um/include/asm/percpu.h b/arch/um/include/asm/percpu.h
-new file mode 100644
-index 0000000..efe7508
---- /dev/null
-+++ b/arch/um/include/asm/percpu.h
-@@ -0,0 +1,6 @@
-+#ifndef __UM_PERCPU_H
-+#define __UM_PERCPU_H
-+
-+#include <asm-generic/percpu.h>
-+
-+#endif /* __UM_PERCPU_H */
--- 
-1.7.5.3
-
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
 
 ------------------------------------------------------------------------------
-Simplify data backup and recovery for your virtual environment with vRanger. 
-Installation's a snap, and flexible recovery options mean your data is safe,
-secure and there when you need it. Data protection magic?
-Nope - It's vRanger. Get your free trial download today. 
-http://p.sf.net/sfu/quest-sfdev2dev
+EditLive Enterprise is the world's most technically advanced content
+authoring tool. Experience the power of Track Changes, Inline Image
+Editing and ensure content is compliant with Accessibility Checking.
+http://p.sf.net/sfu/ephox-dev2dev
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
