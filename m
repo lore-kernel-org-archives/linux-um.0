@@ -1,71 +1,75 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1QXGR4-0000ic-GH
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Jun 2011 17:32:54 +0000
+Received: from mail-vx0-f175.google.com ([209.85.220.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1QXGR3-0000Yw-Jq
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 16 Jun 2011 17:32:54 +0000
+Received: by vxd7 with SMTP id 7so1966619vxd.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 16 Jun 2011 10:32:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Message-Id: <20110601081134.410110023@blue.kroah.org>
-Date: Wed, 01 Jun 2011 17:10:45 +0900
-From: Greg KH <gregkh@suse.de>
-In-Reply-To: <20110601081349.GA10017@kroah.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [075/165] um: Use RWSEM_GENERIC_SPINLOCK on x86
-To: linux-kernel@vger.kernel.org, stable@kernel.org
-Cc: stable-review@kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, alan@lxorguk.ukuu.org.uk, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, Thomas Gleixner <tglx@linutronix.de>, Greg Kroah-Hartman <gregkh@suse.de>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <4DFA097E.8030108@panasas.com>
+References: <4DFA097E.8030108@panasas.com>
+Date: Thu, 16 Jun 2011 19:32:48 +0200
+Message-ID: <BANLkTi=p6MpcBxM=7ypm+9SwexV2QKzzsg@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] Is there a git tree with all these patches IN
+To: Boaz Harrosh <bharrosh@panasas.com>
+Cc: Eric Paris <eparis@redhat.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-2.6.39-stable review patch.  If anyone has any objections, please let u=
-s know.
+On Thu, Jun 16, 2011 at 3:47 PM, Boaz Harrosh <bharrosh@panasas.com> wrote:
+> Is there a public tree that has all these patches sent to the mailing list
+> the last couple of month?
 
-------------------
-Content-Length: 1218
-Lines: 40
+All patches go first into -mm and then to Linus.
+When there is a need for it, I can publish my (rebasing) tree on git.kernel=
+.org.
 
-=46rom: Richard Weinberger <richard@nod.at>
+> Is this tree included in linux-next?
 
-commit 3a3679078aed2c451ebc32836bbd3b8219a65e01 upstream.
+No.
 
-Commit d12337 (rwsem: Remove redundant asmregparm annotation)
-broke rwsem on UML.
+> I work with uml every day, but neglect to love it as I should ;-)
+>
+> Richard. Is your goal to have "make allmodconfig" at least compile-able.
+> =A0I've noticed that you supplied patches that are common in the compile =
+breakages.
 
-As we cannot compile UML with -mregparm=3D3 and keeping asmregparm only
-for UML is inadequate the easiest solution is using RWSEM_GENERIC_SPINL=
-OCK.
+In my queue are a few patches to "fix" allmodconfig and allyesconfig.
+These fixes disable some stuff which makes not sense on UML.
+E.g. W(L)AN drivers...
 
-Thanks to Thomas Gleixner for the idea.
+-- =
 
-Reported-by: Toralf F=C3=B6rster <toralf.foerster@gmx.de>
-Tested-by: Toralf F=C3=B6rster <toralf.foerster@gmx.de>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Link: http://lkml.kernel.org/r/%3C1306183893-26655-1-git-send-email-ric=
-hard%40nod.at%3E
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+Thanks,
+//richard
 
+---------------------------------------------------------------------------=
 ---
- arch/um/Kconfig.x86 |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/arch/um/Kconfig.x86
-+++ b/arch/um/Kconfig.x86
-@@ -29,10 +29,10 @@ config X86_64
- 	def_bool 64BIT
-=20
- config RWSEM_XCHGADD_ALGORITHM
--	def_bool X86_XADD
-+	def_bool X86_XADD && 64BIT
-=20
- config RWSEM_GENERIC_SPINLOCK
--	def_bool !X86_XADD
-+	def_bool !RWSEM_XCHGADD_ALGORITHM
-=20
- config 3_LEVEL_PGTABLES
- 	bool "Three-level pagetables (EXPERIMENTAL)" if !64BIT
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+EditLive Enterprise is the world's most technically advanced content
+authoring tool. Experience the power of Track Changes, Inline Image
+Editing and ensure content is compliant with Accessibility Checking.
+http://p.sf.net/sfu/ephox-dev2dev
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
