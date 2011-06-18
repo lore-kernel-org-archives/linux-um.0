@@ -1,108 +1,208 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.74)
-	(envelope-from <richard@nod.at>) id 1QJC2I-0004rg-Gb
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 May 2011 22:01:10 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.74) id 1QJC2H-0004Xq-4n
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 May 2011 22:01:10 +0000
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Richard Weinberger <richard@nod.at>
-Date: Sun,  8 May 2011 23:59:42 +0200
-Message-Id: <1304891985-11569-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/4] um: fix UML_LIB_PATH
-To: linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Date: Sat, 18 Jun 2011 21:06:23 +0200
+Message-Id: <1308423983-7031-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v2] um: Clean up delay functions
+To: akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-UML_LIB_PATH is hardcoded to /usr/lib/uml/,
-on 64bit systems UML_LIB_PATH needs to be /usr/lib64/uml/.
+Both sys-i386 and sys-x86_64 support now ndelay().
+The delay functions are based on arch/x86/lib/delay.c.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/drivers/xterm.c     |    2 +-
- arch/um/include/shared/os.h |    7 +++++++
- arch/um/os-Linux/main.c     |    2 +-
- 3 files changed, 9 insertions(+), 2 deletions(-)
+ arch/um/include/asm/delay.h |   10 +++----
+ arch/um/sys-i386/delay.c    |   59 ++++++++++++++++++++++++++++++++----------
+ arch/um/sys-x86_64/delay.c  |   54 ++++++++++++++++++++++++++++++--------
+ 3 files changed, 91 insertions(+), 32 deletions(-)
 
-diff --git a/arch/um/drivers/xterm.c b/arch/um/drivers/xterm.c
-index da2caa5..8ac7146 100644
---- a/arch/um/drivers/xterm.c
-+++ b/arch/um/drivers/xterm.c
-@@ -90,7 +90,7 @@ static int xterm_open(int input, int output, int primary, void *d,
- 	int pid, fd, new, err;
- 	char title[256], file[] = "/tmp/xterm-pipeXXXXXX";
- 	char *argv[] = { terminal_emulator, title_switch, title, exec_switch,
--			 "/usr/lib/uml/port-helper", "-uml-socket",
-+			 OS_LIB_PATH "/uml/port-helper", "-uml-socket",
- 			 file, NULL };
+diff --git a/arch/um/include/asm/delay.h b/arch/um/include/asm/delay.h
+index c71e32b..8a5576d 100644
+--- a/arch/um/include/asm/delay.h
++++ b/arch/um/include/asm/delay.h
+@@ -1,20 +1,18 @@
+ #ifndef __UM_DELAY_H
+ #define __UM_DELAY_H
  
- 	if (access(argv[4], X_OK) < 0)
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index c4617ba..83c7c2e 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -29,6 +29,12 @@
- #define OS_ACC_R_OK    4       /* Test for read permission.  */
- #define OS_ACC_RW_OK   (OS_ACC_W_OK | OS_ACC_R_OK) /* Test for RW permission */
+-#define MILLION 1000000
+-
+ /* Undefined on purpose */
+ extern void __bad_udelay(void);
++extern void __bad_ndelay(void);
  
-+#ifdef CONFIG_64BIT
-+#define OS_LIB_PATH	"/usr/lib64/"
-+#else
-+#define OS_LIB_PATH	"/usr/lib/"
-+#endif
+ extern void __udelay(unsigned long usecs);
++extern void __ndelay(unsigned long usecs);
+ extern void __delay(unsigned long loops);
+ 
+ #define udelay(n) ((__builtin_constant_p(n) && (n) > 20000) ? \
+ 	__bad_udelay() : __udelay(n))
+ 
+-/* It appears that ndelay is not used at all for UML, and has never been
+- * implemented. */
+-extern void __unimplemented_ndelay(void);
+-#define ndelay(n) __unimplemented_ndelay()
++#define ndelay(n) ((__builtin_constant_p(n) && (n) > 20000) ? \
++	__bad_ndelay() : __ndelay(n))
+ 
+ #endif
+diff --git a/arch/um/sys-i386/delay.c b/arch/um/sys-i386/delay.c
+index d623e07..f3fe1a6 100644
+--- a/arch/um/sys-i386/delay.c
++++ b/arch/um/sys-i386/delay.c
+@@ -1,29 +1,60 @@
++/*
++ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
++ * Mostly copied from arch/x86/lib/delay.c
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +
- /*
-  * types taken from stat_file() in hostfs_user.c
-  * (if they are wrong here, they are wrong there...).
-@@ -238,6 +244,7 @@ extern int raw(int fd);
- extern void setup_machinename(char *machine_out);
- extern void setup_hostinfo(char *buf, int len);
- extern void os_dump_core(void) __attribute__ ((noreturn));
-+extern void um_early_printk(const char *s, unsigned int n);
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/delay.h>
+ #include <asm/param.h>
  
- /* time.c */
- extern void idle_sleep(unsigned long long nsecs);
-diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
-index eee69b9..39613ea 100644
---- a/arch/um/os-Linux/main.c
-+++ b/arch/um/os-Linux/main.c
-@@ -78,7 +78,7 @@ static void install_fatal_handler(int sig)
- 	}
- }
- 
--#define UML_LIB_PATH	":/usr/lib/uml"
-+#define UML_LIB_PATH	":" OS_LIB_PATH "/uml"
- 
- static void setup_env_path(void)
+-void __delay(unsigned long time)
++void __delay(unsigned long loops)
  {
+-	/* Stolen from the i386 __loop_delay */
+-	int d0;
+-	__asm__ __volatile__(
+-		"\tjmp 1f\n"
++	asm volatile(
++		"test %0,%0\n"
++		"jz 3f\n"
++		"jmp 1f\n"
++
+ 		".align 16\n"
+-		"1:\tjmp 2f\n"
++		"1: jmp 2f\n"
++
+ 		".align 16\n"
+-		"2:\tdecl %0\n\tjns 2b"
+-		:"=&a" (d0)
+-		:"0" (time));
++		"2: dec %0\n"
++		" jnz 2b\n"
++		"3: dec %0\n"
++
++		: /* we don't need output */
++		: "a" (loops)
++	);
+ }
++EXPORT_SYMBOL(__delay);
+ 
+-void __udelay(unsigned long usecs)
++inline void __const_udelay(unsigned long xloops)
+ {
+-	int i, n;
++	int d0;
+ 
+-	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-        for(i=0;i<n;i++)
+-                cpu_relax();
++	xloops *= 4;
++	asm("mull %%edx"
++		: "=d" (xloops), "=&a" (d0)
++		: "1" (xloops), "0"
++		(loops_per_jiffy * (HZ/4)));
++
++	__delay(++xloops);
+ }
++EXPORT_SYMBOL(__const_udelay);
+ 
++void __udelay(unsigned long usecs)
++{
++	__const_udelay(usecs * 0x000010c7); /* 2**32 / 1000000 (rounded up) */
++}
+ EXPORT_SYMBOL(__udelay);
++
++void __ndelay(unsigned long nsecs)
++{
++	__const_udelay(nsecs * 0x00005); /* 2**32 / 1000000000 (rounded up) */
++}
++EXPORT_SYMBOL(__ndelay);
+diff --git a/arch/um/sys-x86_64/delay.c b/arch/um/sys-x86_64/delay.c
+index dee5be6..f3fe1a6 100644
+--- a/arch/um/sys-x86_64/delay.c
++++ b/arch/um/sys-x86_64/delay.c
+@@ -1,30 +1,60 @@
+ /*
+- * Copyright 2003 PathScale, Inc.
+- * Copied from arch/x86_64
++ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
++ * Mostly copied from arch/x86/lib/delay.c
+  *
+- * Licensed under the GPL
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  */
+ 
+ #include <linux/module.h>
++#include <linux/kernel.h>
+ #include <linux/delay.h>
+-#include <asm/processor.h>
+ #include <asm/param.h>
+ 
+ void __delay(unsigned long loops)
+ {
+-	unsigned long i;
++	asm volatile(
++		"test %0,%0\n"
++		"jz 3f\n"
++		"jmp 1f\n"
+ 
+-        for(i = 0; i < loops; i++)
+-                cpu_relax();
++		".align 16\n"
++		"1: jmp 2f\n"
++
++		".align 16\n"
++		"2: dec %0\n"
++		" jnz 2b\n"
++		"3: dec %0\n"
++
++		: /* we don't need output */
++		: "a" (loops)
++	);
+ }
++EXPORT_SYMBOL(__delay);
+ 
+-void __udelay(unsigned long usecs)
++inline void __const_udelay(unsigned long xloops)
+ {
+-	unsigned long i, n;
++	int d0;
+ 
+-	n = (loops_per_jiffy * HZ * usecs) / MILLION;
+-        for(i=0;i<n;i++)
+-                cpu_relax();
++	xloops *= 4;
++	asm("mull %%edx"
++		: "=d" (xloops), "=&a" (d0)
++		: "1" (xloops), "0"
++		(loops_per_jiffy * (HZ/4)));
++
++	__delay(++xloops);
+ }
++EXPORT_SYMBOL(__const_udelay);
+ 
++void __udelay(unsigned long usecs)
++{
++	__const_udelay(usecs * 0x000010c7); /* 2**32 / 1000000 (rounded up) */
++}
+ EXPORT_SYMBOL(__udelay);
++
++void __ndelay(unsigned long nsecs)
++{
++	__const_udelay(nsecs * 0x00005); /* 2**32 / 1000000000 (rounded up) */
++}
++EXPORT_SYMBOL(__ndelay);
 -- 
-1.7.4.2
-
-
-------------------------------------------------------------------------------
-WhatsUp Gold - Download Free Network Management Software
-The most intuitive, comprehensive, and cost-effective network 
-management toolset available today.  Delivers lowest initial 
-acquisition cost and overall TCO of any competing solution.
-http://p.sf.net/sfu/whatsupgold-sd
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+1.7.5.4
 
