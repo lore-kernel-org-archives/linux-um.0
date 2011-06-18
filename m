@@ -1,31 +1,36 @@
-Return-Path: <richard@nod.at>
-From: Richard Weinberger <richard@nod.at>
-Date: Sun, 19 Jun 2011 00:43:02 +0200
-References: <1308432865-9730-1-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1308432865-9730-1-git-send-email-geert@linux-m68k.org>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201106190043.02536.richard@nod.at>
-Subject: Re: [PATCH] um: Reinstate kernel version in generated .config
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Jeff Dike <jdike@addtoit.com>, Arnaud Lacombe <lacombar@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-Path: <geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sat, 18 Jun 2011 23:34:25 +0200
+Message-Id: <1308432865-9730-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH] um: Reinstate kernel version in generated .config
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Arnaud Lacombe <lacombar@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am Samstag 18 Juni 2011, 23:34:25 schrieb Geert Uytterhoeven:
-> commit 0954828fcbf3bd13d593499b16b901a4e801b0b9 ("kconfig: replace
-> KERNELVERSION usage by the mainmenu's prompt") made the kernel version
-> disappear from the generated .config file when configuring for UML.
-> As UML's Kconfig doesn't have a mainmenu, kconfig falls back to the
-> default string "Linux Kernel Configuration".
-> 
-> Add a suitable mainmenu to the main UML Kconfig file to fix this.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+commit 0954828fcbf3bd13d593499b16b901a4e801b0b9 ("kconfig: replace
+KERNELVERSION usage by the mainmenu's prompt") made the kernel version
+disappear from the generated .config file when configuring for UML.
+As UML's Kconfig doesn't have a mainmenu, kconfig falls back to the
+default string "Linux Kernel Configuration".
 
-Applied!
+Add a suitable mainmenu to the main UML Kconfig file to fix this.
 
-Thanks,
-//richard
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/um/Kconfig.x86 |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/arch/um/Kconfig.x86 b/arch/um/Kconfig.x86
+index 8aae429..d31ecf3 100644
+--- a/arch/um/Kconfig.x86
++++ b/arch/um/Kconfig.x86
+@@ -1,3 +1,5 @@
++mainmenu "User Mode Linux/$SUBARCH $KERNELVERSION Kernel Configuration"
++
+ source "arch/um/Kconfig.common"
+ 
+ menu "UML-specific options"
+-- 
+1.7.0.4
+
 
