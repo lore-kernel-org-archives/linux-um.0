@@ -1,18 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bharrosh@panasas.com>) id 1QXD7A-0003hl-Gk
+	(envelope-from <richard@nod.at>) id 1QbK5r-0005Xl-66
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Jun 2011 14:00:08 +0000
-Received: from daytona.panasas.com ([67.152.220.89])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QXD75-0001rY-6T for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 16 Jun 2011 14:00:08 +0000
-Message-ID: <4DFA097E.8030108@panasas.com>
-Date: Thu, 16 Jun 2011 09:47:42 -0400
-From: Boaz Harrosh <bharrosh@panasas.com>
-MIME-Version: 1.0
+	Mon, 27 Jun 2011 22:15:47 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QbK5q-0003XJ-8m
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 27 Jun 2011 22:15:47 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Tue, 28 Jun 2011 00:15:30 +0200
+Message-Id: <1309212931-19772-3-git-send-email-richard@nod.at>
+In-Reply-To: <1309212931-19772-1-git-send-email-richard@nod.at>
+References: <1309212931-19772-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,38 +24,48 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Is there a git tree with all these patches IN
-To: richard -rw- weinberger <richard.weinberger@gmail.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Eric Paris <eparis@redhat.com>
+Subject: [uml-devel] [PATCH 3/4] um, exec: remove redundant set_fs(USER_DS)
+To: akpm@linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Mathias Krause <minipli@googlemail.com>
 
+From: Mathias Krause <minipli@googlemail.com>
 
-Hi umlers
+The address limit is already set in flush_old_exec() so this
+set_fs(USER_DS) is redundant.
 
-There's been a stream of nice patches for uml lately. The kind I had on
-my TODO for a while and never had the time to do them. Thanks
+Signed-off-by: Mathias Krause <minipli@googlemail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/kernel/exec.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-Is there a public tree that has all these patches sent to the mailing list 
-the last couple of month?
-
-Is this tree included in linux-next?
-
-I work with uml every day, but neglect to love it as I should ;-)
-
-Richard. Is your goal to have "make allmodconfig" at least compile-able.
- I've noticed that you supplied patches that are common in the compile breakages.
-
-Thanks for all the nice
-Boaz
+diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
+index 09bd7b5..939a4a6 100644
+--- a/arch/um/kernel/exec.c
++++ b/arch/um/kernel/exec.c
+@@ -38,7 +38,6 @@ void flush_thread(void)
+ 
+ void start_thread(struct pt_regs *regs, unsigned long eip, unsigned long esp)
+ {
+-	set_fs(USER_DS);
+ 	PT_REGS_IP(regs) = eip;
+ 	PT_REGS_SP(regs) = esp;
+ }
+-- 
+1.7.5.4
 
 
 ------------------------------------------------------------------------------
-EditLive Enterprise is the world's most technically advanced content
-authoring tool. Experience the power of Track Changes, Inline Image
-Editing and ensure content is compliant with Accessibility Checking.
-http://p.sf.net/sfu/ephox-dev2dev
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security 
+threats, fraudulent activity, and more. Splunk takes this data and makes 
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2d-c2
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
