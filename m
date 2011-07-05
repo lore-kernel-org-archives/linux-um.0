@@ -1,90 +1,54 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QjpPD-0006v3-86
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jul 2011 09:18:55 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QjpP8-0006x6-RB
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jul 2011 09:18:55 +0000
+Return-Path: <richard@nod.at>
 From: Richard Weinberger <richard@nod.at>
-Date: Thu, 21 Jul 2011 11:18:28 +0200
-Message-Id: <1311239914-8301-4-git-send-email-richard@nod.at>
-In-Reply-To: <1311239914-8301-1-git-send-email-richard@nod.at>
-References: <1311239914-8301-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Date: Tue, 5 Jul 2011 13:40:04 +0200
+References: <1309821341.4527.5.camel@vitaliy-Vostro-1400> <201107051331.15504.richard@nod.at> <CAMuHMdWWPiFTwQ+0Et8eZZbCy-DtzRMeK=-rFY_NfEWWjYrZ2Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdWWPiFTwQ+0Et8eZZbCy-DtzRMeK=-rFY_NfEWWjYrZ2Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 04/10] uml: free resources
-To: akpm@linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Davidlohr Bueso <dave@gnu.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201107051340.04949.richard@nod.at>
+Subject: Re: [PATCH 1/4] uml: cow_user.c warning corrections
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Vitaliy Ivanov <vitalivanov@gmail.com>, Jeff Dike <jdike@addtoit.com>, Linus Torvalds <torvalds@linux-foundation.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net, lkml <linux-kernel@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Davidlohr Bueso <dave@gnu.org>
+Am Dienstag 05 Juli 2011, 13:38:05 schrieb Geert Uytterhoeven:
+> On Tue, Jul 5, 2011 at 13:31, Richard Weinberger <richard@nod.at> wrote:
+> > Am Dienstag 05 Juli 2011, 13:10:34 schrieb Vitaliy Ivanov:
+> >> On Tue, Jul 5, 2011 at 12:28 PM, Richard Weinberger <richard@nod.at> w=
+rote:
+> >> > Am Dienstag 05 Juli 2011, 01:15:41 schrieb Vitaliy Ivanov:
+> >> >> From 6201d3e862fca8670b206338dc90303ea0acc77d Mon Sep 17 00:00:00
+> >> >> 2001 From: Vitaliy Ivanov <vitalivanov@gmail.com>
+> >> >> Date: Tue, 5 Jul 2011 01:57:51 +0300
+> >> >> Subject: [PATCH 1/4] uml: cow_user.c warning corrections
+> >> >> MIME-Version: 1.0
+> >> >> Content-Type: text/plain; charset=3DUTF-8
+> >> >> Content-Transfer-Encoding: 8bit
+> >> >>=20
+> >> >> arch/um/drivers/cow_user.c: In function =E2=80=98absolutize=E2=80=
+=99:
+> >> >> arch/um/drivers/cow_user.c:189:7: warning: ignoring return value of
+> >> >> =E2=80=98chdir=E2=80=99, declared with attribute warn_unused_result
+> >> >=20
+> >> > What compiler flags are you using?
+> >> > Using the default settings this warning does not show up.
+> >> > Most of the "ignoring return value" are totally useless.
+> >>=20
+> >> chdir is defined with warn_unused_result attribute and my gcc on
+> >> Ubuntu 11.04 issues warnings.
+> >> I don't use any additional flags on compiling UML.
+> >=20
+> > Ah, because of -D_FORTIFY_SOURCE=3D2, right?
+> > Then your patches makes sense.
+>=20
+> I also saw it, with gcc version 4.4.3 (Ubuntu 4.4.3-4ubuntu5).
+> I never used FORTIFY_SOURCE.
+>
 
-When creating the temp file there's a memory and file descriptor leak upon error.
+Ubuntu uses FORTIFY_SOURCE per default.
 
-Signed-off-by: Davidlohr Bueso <dave@gnu.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Reviewed-by: Vitaliy Ivanov <vitalivanov@gmail.com>
----
- arch/um/os-Linux/mem.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index e696144..62878cf 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -176,7 +176,7 @@ static int __init make_tempfile(const char *template, char **out_tempname,
- 
- 	find_tempdir();
- 	if ((tempdir == NULL) || (strlen(tempdir) >= MAXPATHLEN))
--		return -1;
-+		goto out;
- 
- 	if (template[0] != '/')
- 		strcpy(tempname, tempdir);
-@@ -191,13 +191,15 @@ static int __init make_tempfile(const char *template, char **out_tempname,
- 	}
- 	if (do_unlink && (unlink(tempname) < 0)) {
- 		perror("unlink");
--		goto out;
-+		goto close;
- 	}
- 	if (out_tempname) {
- 		*out_tempname = tempname;
- 	} else
- 		free(tempname);
- 	return fd;
-+close:
-+	close(fd);
- out:
- 	free(tempname);
- 	return -1;
--- 
-1.7.6
-
-
-------------------------------------------------------------------------------
-5 Ways to Improve & Secure Unified Communications
-Unified Communications promises greater efficiencies for business. UC can 
-improve internal communications as well as offer faster, more efficient ways
-to interact with customers and streamline customer service. Learn more!
-http://www.accelacomm.com/jaw/sfnl/114/51426253/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Thanks,
+//richard
 
