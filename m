@@ -1,65 +1,51 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Vitaliy Ivanov <vitalivanov@gmail.com>
-Reply-To: vitalivanov@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 05 Jul 2011 02:15:47 +0300
-Message-ID: <1309821347.4527.6.camel@vitaliy-Vostro-1400>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 07 Jul 2011 19:36:51 +0300
+Message-ID: <1310056611.3528.50.camel@vivanov>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 2/4] uml: helper.c warning corrections
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Linus Torvalds <torvalds@linux-foundation.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH 2/3] uml: drivers/slip_user.c memory leak fix
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>, vitalivanov@gmail.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-=46rom 7296c5b9770e95cd6ad4e9e71d2d14c972abdfe1 Mon Sep 17 00:00:00 200=
-1
-=46rom: Vitaliy Ivanov <vitalivanov@gmail.com>
-Date: Tue, 5 Jul 2011 02:03:06 +0300
-Subject: [PATCH 2/4] uml: helper.c warning corrections
-MIME-Version: 1.0
-Content-Type: text/plain; charset=3DUTF-8
-Content-Transfer-Encoding: 8bit
+>>From d4f92205b89eedb5054091b9fc0e0186e9acd88b Mon Sep 17 00:00:00 2001
+From: Vitaliy Ivanov <vitalivanov@gmail.com>
+Date: Thu, 7 Jul 2011 19:27:32 +0300
+Subject: [PATCH 2/3] uml: drivers/slip_user.c memory leak fix
 
-arch/um/os-Linux/helper.c: In function =E2=80=98helper_child=E2=80=99:
-arch/um/os-Linux/helper.c:38:7: warning: ignoring return value of =E2=80=
-=98write=E2=80=99, declared with attribute warn_unused_result
+Do not free memory when you failed to allocate it.
 
 Signed-off-by: Vitaliy Ivanov <vitalivanov@gmail.com>
 ---
- arch/um/os-Linux/helper.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ arch/um/drivers/slip_user.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index b6b1096..feff22d 100644
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -28,14 +28,14 @@ static int helper_child(void *arg)
- {
- 	struct helper_data *data =3D arg;
- 	char **argv =3D data->argv;
--	int err;
-+	int err, ret;
-=20
- 	if (data->pre_exec !=3D NULL)
- 		(*data->pre_exec)(data->pre_data);
- 	err =3D execvp_noalloc(data->buf, argv[0], argv);
-=20
- 	/* If the exec succeeds, we don't get here */
--	write(data->fd, &err, sizeof(err));
-+	CATCH_EINTR(ret =3D write(data->fd, &err, sizeof(err)));
-=20
- 	return 0;
- }
---=20
-1.7.4.1
+diff --git a/arch/um/drivers/slip_user.c b/arch/um/drivers/slip_user.c
+index a1c2d2c..cbacfc4 100644
+--- a/arch/um/drivers/slip_user.c
++++ b/arch/um/drivers/slip_user.c
+@@ -102,7 +102,7 @@ static int slip_tramp(char **argv, int fd)
+ 		       "buffer\n");
+ 		os_kill_process(pid, 1);
+ 		err = -ENOMEM;
+-		goto out_free;
++		goto out_close;
+ 	}
+ 
+ 	close(fds[1]);
+@@ -112,7 +112,6 @@ static int slip_tramp(char **argv, int fd)
+ 	err = helper_wait(pid);
+ 	close(fds[0]);
+ 
+-out_free:
+ 	kfree(output);
+ 	return err;
+ 
+-- 
+1.7.0.4
 
 
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
 
