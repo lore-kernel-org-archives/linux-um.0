@@ -1,34 +1,70 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Fri, 22 Jul 2011 08:53:46 -0700
-From: Randy Dunlap <rdunlap@xenotime.net>
-Message-Id: <20110722085346.51565411.rdunlap@xenotime.net>
-In-Reply-To: <20110722164237.2b3f6cbdedafa9e1d3f70867@canb.auug.org.au>
-References: <20110722164237.2b3f6cbdedafa9e1d3f70867@canb.auug.org.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From: Richard Weinberger <richard@nod.at>
+Date: Thu, 7 Jul 2011 15:27:08 +0200
+References: <1310011371.3309.2.camel@offbook> <CAGTPOqdm7_PP68mKLQT3gigmUMD6wpoKk3sSWfXk9jeJPX+_6A@mail.gmail.com>
+In-Reply-To: <CAGTPOqdm7_PP68mKLQT3gigmUMD6wpoKk3sSWfXk9jeJPX+_6A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Message-Id: <201107071527.08345.richard@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: linux-next: Tree for July 22 (uml)
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Richard Weinberger <richard@nod.at>
-Cc: linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [PATCH] uml: free resources
+To: Vitaliy Ivanov <vitalivanov@gmail.com>
+Cc: dave@gnu.org, Jeff Dike <jdike@addtoit.com>, uml <user-mode-linux-devel@lists.sourceforge.net>, lkml <linux-kernel@vger.kernel.org>, Jim Meyering <meyering@redhat.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Fri, 22 Jul 2011 16:42:37 +1000 Stephen Rothwell wrote:
+Am Donnerstag 07 Juli 2011, 15:08:22 schrieb Vitaliy Ivanov:
+> On Thu, Jul 7, 2011 at 7:02 AM, Davidlohr Bueso <dave@gnu.org> wrote:
+> > From: Davidlohr Bueso <dave@gnu.org>
+> > 
+> > When creating the temp file there's a memory and file descriptor leak
+> > upon error.
+> > 
+> > Signed-off-by: Davidlohr Bueso <dave@gnu.org>
+> > ---
+> >  arch/um/os-Linux/mem.c |    6 ++++--
+> >  1 files changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
+> > index e696144..62878cf 100644
+> > --- a/arch/um/os-Linux/mem.c
+> > +++ b/arch/um/os-Linux/mem.c
+> > @@ -176,7 +176,7 @@ static int __init make_tempfile(const char *template,
+> > char **out_tempname,
+> > 
+> >        find_tempdir();
+> >        if ((tempdir == NULL) || (strlen(tempdir) >= MAXPATHLEN))
+> > -               return -1;
+> > +               goto out;
+> > 
+> >        if (template[0] != '/')
+> >                strcpy(tempname, tempdir);
+> > @@ -191,13 +191,15 @@ static int __init make_tempfile(const char
+> > *template, char **out_tempname, }
+> >        if (do_unlink && (unlink(tempname) < 0)) {
+> >                perror("unlink");
+> > -               goto out;
+> > +               goto close;
+> >        }
+> >        if (out_tempname) {
+> >                *out_tempname = tempname;
+> >        } else
+> >                free(tempname);
+> >        return fd;
+> > +close:
+> > +       close(fd);
+> >  out:
+> >        free(tempname);
+> >        return -1;
+> > --
+> 
+> Reviewed-by: Vitaliy Ivanov <vitalivanov@gmail.com>
 
-> Hi all,
+Applied!
 
-uml build on i386 fails with:
+Thanks,
+//richard
 
-arch/um/sys-i386/built-in.o: In function `call_rwsem_down_read_failed':
-linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:93: undefined reference to `rwsem_down_read_failed'
-arch/um/sys-i386/built-in.o: In function `call_rwsem_down_write_failed':
-linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:105: undefined reference to `rwsem_down_write_failed'
-arch/um/sys-i386/built-in.o: In function `call_rwsem_wake':
-linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:118: undefined reference to `rwsem_wake'
-arch/um/sys-i386/built-in.o: In function `call_rwsem_downgrade_wake':
-linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:130: undefined reference to `rwsem_downgrade_wake'
-
-
----
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
+P.s: Dave, your patch did not show up on user-mode-linux-devel@lists.sourceforge.net nor 
+richard@nod.at, is your mailer broken?
