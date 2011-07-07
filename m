@@ -1,62 +1,25 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Vitaliy Ivanov <vitalivanov@gmail.com>
-Reply-To: vitalivanov@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 05 Jul 2011 02:15:41 +0300
-Message-ID: <1309821341.4527.5.camel@vitaliy-Vostro-1400>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 07 Jul 2011 19:34:40 +0300
+Message-ID: <1310056480.3528.47.camel@vivanov>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 1/4] uml: cow_user.c warning corrections
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Linus Torvalds <torvalds@linux-foundation.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net, lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] UML: Memory leak fixes.
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>, vitalivanov@gmail.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-=46rom 6201d3e862fca8670b206338dc90303ea0acc77d Mon Sep 17 00:00:00 200=
-1
-=46rom: Vitaliy Ivanov <vitalivanov@gmail.com>
-Date: Tue, 5 Jul 2011 01:57:51 +0300
-Subject: [PATCH 1/4] uml: cow_user.c warning corrections
-MIME-Version: 1.0
-Content-Type: text/plain; charset=3DUTF-8
-Content-Transfer-Encoding: 8bit
+Richard,
 
-arch/um/drivers/cow_user.c: In function =E2=80=98absolutize=E2=80=99:
-arch/um/drivers/cow_user.c:189:7: warning: ignoring return value of =E2=
-=80=98chdir=E2=80=99, declared with attribute warn_unused_result
+Here is a set of fixes for UML memory leak cleanups.
 
-Signed-off-by: Vitaliy Ivanov <vitalivanov@gmail.com>
----
- arch/um/drivers/cow_user.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+ arch/um/drivers/net_user.c  |    5 +++--
+ arch/um/drivers/slip_user.c |    3 +--
+ arch/um/os-Linux/main.c     |    2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/cow_user.c b/arch/um/drivers/cow_user.c
-index 93f227a..9cbb426 100644
---- a/arch/um/drivers/cow_user.c
-+++ b/arch/um/drivers/cow_user.c
-@@ -186,7 +186,11 @@ static int absolutize(char *to, int size, char *fr=
-om)
- 		strcat(to, "/");
- 		strcat(to, from);
- 	}
--	chdir(save_cwd);
-+	if (chdir(save_cwd)) {
-+		cow_printf("absolutize : Can't cd to '%s' - "
-+			   "errno =3D %d\n", save_cwd, errno);
-+		return -1;
-+	}
- 	return 0;
- }
-=20
---=20
-1.7.4.1
-
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+Thanks,
+Vitaliy
 
