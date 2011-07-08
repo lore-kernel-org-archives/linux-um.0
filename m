@@ -1,20 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QjpPE-00078I-Qd
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vitalivanov@gmail.com>) id 1Qf8Ql-000457-1h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jul 2011 09:18:56 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QjpPA-0002Hc-PS
+	Fri, 08 Jul 2011 10:37:07 +0000
+Received: from mail-ey0-f175.google.com ([209.85.215.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Qf8Qi-0005Il-Qe
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jul 2011 09:18:56 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Thu, 21 Jul 2011 11:18:34 +0200
-Message-Id: <1311239914-8301-10-git-send-email-richard@nod.at>
-In-Reply-To: <1311239914-8301-1-git-send-email-richard@nod.at>
-References: <1311239914-8301-1-git-send-email-richard@nod.at>
+	Fri, 08 Jul 2011 10:37:07 +0000
+Received: by eye27 with SMTP id 27so858136eye.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 08 Jul 2011 03:36:58 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <201107081222.48376.richard@nod.at>
+References: <1310056668.3528.51.camel@vivanov>
+	<201107071848.50411.richard@nod.at>
+	<CAGTPOqfT=L4s8-db58mCRXQFvuYOVwNsNDfc4YuRaO7azpZa4A@mail.gmail.com>
+	<201107081222.48376.richard@nod.at>
+Date: Fri, 8 Jul 2011 13:36:58 +0300
+Message-ID: <CAGTPOqc13Fc3d=yBDx6ukYF2oJw0bnEfi66Y_qJ7z4Cehr9g7Q@mail.gmail.com>
+From: Vitaliy Ivanov <vitalivanov@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,81 +31,30 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 10/10] um: Remove dead code
-To: akpm@linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH 3/3] uml: os-Linux/main.c memory leak fix
+To: Richard Weinberger <richard@nod.at>
+Cc: Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
-GCC 4.6's -Wunused-but-set-variable found some dead code.
+>> BTW, you said that you will share your git tree on kernel.org, is
+>> there any news? I'm tracking what patches are accepted not to resend
+>> them again.
+>
+> Yeah, I'll announce it on user-mode-linux-devel@lists.sourceforge.net.
+> It's done when it's done. :-P
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/drivers/chan_kern.c |    3 +--
- arch/um/drivers/line.c      |    3 +--
- arch/um/kernel/reboot.c     |    3 +--
- 3 files changed, 3 insertions(+), 6 deletions(-)
+Sure. No problems.
 
-diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
-index 25e1965..d4191fe 100644
---- a/arch/um/drivers/chan_kern.c
-+++ b/arch/um/drivers/chan_kern.c
-@@ -543,11 +543,10 @@ int parse_chan_pair(char *str, struct line *line, int device,
- 		    const struct chan_opts *opts, char **error_out)
- {
- 	struct list_head *chans = &line->chan_list;
--	struct chan *new, *chan;
-+	struct chan *new;
- 	char *in, *out;
- 
- 	if (!list_empty(chans)) {
--		chan = list_entry(chans->next, struct chan, list);
- 		free_chan(chans, 0);
- 		INIT_LIST_HEAD(chans);
- 	}
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 35dd0b8..d51c404 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -176,10 +176,9 @@ void line_flush_buffer(struct tty_struct *tty)
- {
- 	struct line *line = tty->driver_data;
- 	unsigned long flags;
--	int err;
- 
- 	spin_lock_irqsave(&line->lock, flags);
--	err = flush_buffer(line);
-+	flush_buffer(line);
- 	spin_unlock_irqrestore(&line->lock, flags);
- }
- 
-diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
-index 869bec9..4d93dff 100644
---- a/arch/um/kernel/reboot.c
-+++ b/arch/um/kernel/reboot.c
-@@ -20,9 +20,8 @@ static void kill_off_processes(void)
- 		os_kill_ptraced_process(userspace_pid[0], 1);
- 	else {
- 		struct task_struct *p;
--		int pid, me;
-+		int pid;
- 
--		me = os_getpid();
- 		for_each_process(p) {
- 			if (p->mm == NULL)
- 				continue;
--- 
-1.7.6
-
+- Vitaliy
 
 ------------------------------------------------------------------------------
-5 Ways to Improve & Secure Unified Communications
-Unified Communications promises greater efficiencies for business. UC can 
-improve internal communications as well as offer faster, more efficient ways
-to interact with customers and streamline customer service. Learn more!
-http://www.accelacomm.com/jaw/sfnl/114/51426253/
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security 
+threats, fraudulent activity, and more. Splunk takes this data and makes 
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2d-c2
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
