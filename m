@@ -1,65 +1,85 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QjpPB-00077m-PJ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jul 2011 09:18:53 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QjpP7-0001AR-KT
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jul 2011 09:18:53 +0000
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Richard Weinberger <richard@nod.at>
-Date: Thu, 21 Jul 2011 11:18:26 +0200
-Message-Id: <1311239914-8301-2-git-send-email-richard@nod.at>
-In-Reply-To: <1311239914-8301-1-git-send-email-richard@nod.at>
-References: <1311239914-8301-1-git-send-email-richard@nod.at>
-MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 02/10] uml: helper.c warning corrections
-To: akpm@linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Vitaliy Ivanov <vitalivanov@gmail.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Date: Mon, 18 Jul 2011 15:07:34 +0200
+Message-Id: <1310994456-14142-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 1/3] um: Disable scan_elf_aux() on x86_64
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-RnJvbTogVml0YWxpeSBJdmFub3YgPHZpdGFsaXZhbm92QGdtYWlsLmNvbT4KCmFyY2gvdW0vb3Mt
-TGludXgvaGVscGVyLmM6IEluIGZ1bmN0aW9uIOKAmGhlbHBlcl9jaGlsZOKAmToKYXJjaC91bS9v
-cy1MaW51eC9oZWxwZXIuYzozODo3OiB3YXJuaW5nOiBpZ25vcmluZyByZXR1cm4gdmFsdWUgb2Yg
-4oCYd3JpdGXigJksIGRlY2xhcmVkIHdpdGggYXR0cmlidXRlIHdhcm5fdW51c2VkX3Jlc3VsdAoK
-U2lnbmVkLW9mZi1ieTogVml0YWxpeSBJdmFub3YgPHZpdGFsaXZhbm92QGdtYWlsLmNvbT4KW3Jp
-Y2hhcmRAbm9kLmF0OiBoYXBwZW5zIG9ubHkgd2l0aCAtRF9GT1JUSUZZX1NPVVJDRT0yXQpTaWdu
-ZWQtb2ZmLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgotLS0KIGFyY2gv
-dW0vb3MtTGludXgvaGVscGVyLmMgfCAgICA0ICsrLS0KIDEgZmlsZXMgY2hhbmdlZCwgMiBpbnNl
-cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvdW0vb3MtTGludXgv
-aGVscGVyLmMgYi9hcmNoL3VtL29zLUxpbnV4L2hlbHBlci5jCmluZGV4IGI2YjEwOTYuLmZlZmYy
-MmQgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0vb3MtTGludXgvaGVscGVyLmMKKysrIGIvYXJjaC91bS9v
-cy1MaW51eC9oZWxwZXIuYwpAQCAtMjgsMTQgKzI4LDE0IEBAIHN0YXRpYyBpbnQgaGVscGVyX2No
-aWxkKHZvaWQgKmFyZykKIHsKIAlzdHJ1Y3QgaGVscGVyX2RhdGEgKmRhdGEgPSBhcmc7CiAJY2hh
-ciAqKmFyZ3YgPSBkYXRhLT5hcmd2OwotCWludCBlcnI7CisJaW50IGVyciwgcmV0OwogCiAJaWYg
-KGRhdGEtPnByZV9leGVjICE9IE5VTEwpCiAJCSgqZGF0YS0+cHJlX2V4ZWMpKGRhdGEtPnByZV9k
-YXRhKTsKIAllcnIgPSBleGVjdnBfbm9hbGxvYyhkYXRhLT5idWYsIGFyZ3ZbMF0sIGFyZ3YpOwog
-CiAJLyogSWYgdGhlIGV4ZWMgc3VjY2VlZHMsIHdlIGRvbid0IGdldCBoZXJlICovCi0Jd3JpdGUo
-ZGF0YS0+ZmQsICZlcnIsIHNpemVvZihlcnIpKTsKKwlDQVRDSF9FSU5UUihyZXQgPSB3cml0ZShk
-YXRhLT5mZCwgJmVyciwgc2l6ZW9mKGVycikpKTsKIAogCXJldHVybiAwOwogfQotLSAKMS43LjYK
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KNSBXYXlzIHRvIEltcHJvdmUgJiBTZWN1cmUgVW5pZmll
-ZCBDb21tdW5pY2F0aW9ucwpVbmlmaWVkIENvbW11bmljYXRpb25zIHByb21pc2VzIGdyZWF0ZXIg
-ZWZmaWNpZW5jaWVzIGZvciBidXNpbmVzcy4gVUMgY2FuIAppbXByb3ZlIGludGVybmFsIGNvbW11
-bmljYXRpb25zIGFzIHdlbGwgYXMgb2ZmZXIgZmFzdGVyLCBtb3JlIGVmZmljaWVudCB3YXlzCnRv
-IGludGVyYWN0IHdpdGggY3VzdG9tZXJzIGFuZCBzdHJlYW1saW5lIGN1c3RvbWVyIHNlcnZpY2Uu
-IExlYXJuIG1vcmUhCmh0dHA6Ly93d3cuYWNjZWxhY29tbS5jb20vamF3L3NmbmwvMTE0LzUxNDI2
-MjUzLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2Vy
-LW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0
-cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlz
-dGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+Reusing the host's vsyscall area makes only sense on x86_32.
+
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/os-Linux/Makefile  |    4 +++-
+ arch/um/os-Linux/elf_aux.c |    7 +------
+ arch/um/os-Linux/main.c    |    4 ++++
+ 3 files changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
+index d66f038..b33f4df 100644
+--- a/arch/um/os-Linux/Makefile
++++ b/arch/um/os-Linux/Makefile
+@@ -3,10 +3,12 @@
+ # Licensed under the GPL
+ #
+ 
+-obj-y = aio.o elf_aux.o execvp.o file.o helper.o irq.o main.o mem.o process.o \
++obj-y = aio.o execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 	registers.o sigio.o signal.o start_up.o time.o tty.o uaccess.o \
+ 	umid.o tls.o user_syms.o util.o drivers/ sys-$(SUBARCH)/ skas/
+ 
++obj-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
++
+ USER_OBJS := $(user-objs-y) aio.o elf_aux.o execvp.o file.o helper.o irq.o \
+ 	main.o mem.o process.o registers.o sigio.o signal.o start_up.o time.o \
+ 	tty.o tls.o uaccess.o umid.o util.o
+diff --git a/arch/um/os-Linux/elf_aux.c b/arch/um/os-Linux/elf_aux.c
+index 608784d..9533237 100644
+--- a/arch/um/os-Linux/elf_aux.c
++++ b/arch/um/os-Linux/elf_aux.c
+@@ -14,16 +14,11 @@
+ #include "mem_user.h"
+ #include <kern_constants.h>
+ 
+-/* Use the one from the kernel - the host may miss it, if having old headers. */
+-#if UM_ELF_CLASS == UM_ELFCLASS32
+ typedef Elf32_auxv_t elf_auxv_t;
+-#else
+-typedef Elf64_auxv_t elf_auxv_t;
+-#endif
+ 
+ /* These are initialized very early in boot and never changed */
+ char * elf_aux_platform;
+-long elf_aux_hwcap;
++extern long elf_aux_hwcap;
+ unsigned long vsyscall_ehdr;
+ unsigned long vsyscall_end;
+ unsigned long __kernel_vsyscall;
+diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+index fb2a97a..8471b81 100644
+--- a/arch/um/os-Linux/main.c
++++ b/arch/um/os-Linux/main.c
+@@ -21,6 +21,8 @@
+ #define STACKSIZE (8 * 1024 * 1024)
+ #define THREAD_NAME_LEN (256)
+ 
++long elf_aux_hwcap;
++
+ static void set_stklim(void)
+ {
+ 	struct rlimit lim;
+@@ -143,7 +145,9 @@ int __init main(int argc, char **argv, char **envp)
+ 	install_fatal_handler(SIGINT);
+ 	install_fatal_handler(SIGTERM);
+ 
++#ifdef CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA
+ 	scan_elf_aux(envp);
++#endif
+ 
+ 	do_uml_initcalls();
+ 	ret = linux_main(argc, argv);
+-- 
+1.7.6
 
