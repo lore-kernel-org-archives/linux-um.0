@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1QjpPD-000781-34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1QjpPC-0003fT-Mf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jul 2011 09:18:55 +0000
+	Thu, 21 Jul 2011 09:18:54 +0000
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QjpP9-0001Ag-0j
+	(Exim 4.76) id 1QjpP8-0001Ae-Kg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jul 2011 09:18:55 +0000
+	Thu, 21 Jul 2011 09:18:54 +0000
 From: Richard Weinberger <richard@nod.at>
-Date: Thu, 21 Jul 2011 11:18:30 +0200
-Message-Id: <1311239914-8301-6-git-send-email-richard@nod.at>
+Date: Thu, 21 Jul 2011 11:18:29 +0200
+Message-Id: <1311239914-8301-5-git-send-email-richard@nod.at>
 In-Reply-To: <1311239914-8301-1-git-send-email-richard@nod.at>
 References: <1311239914-8301-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
@@ -28,117 +28,82 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 06/10] um: Set __HAVE_ARCH_GATE_AREA for i386
+Subject: [uml-devel] [PATCH 05/10] um: Disable scan_elf_aux() on x86_64
 To: akpm@linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-When UML is unable to reuse the host's vDSO FIXADDR_USER_START
-is zero.
-To handle this special case correclty we have to implement custom
-gate area helper methods.
+Reusing the host's vDSO makes only sense on x86_32.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/sys-i386/Makefile  |    2 +-
- arch/um/sys-i386/asm/elf.h |    2 +
- arch/um/sys-i386/mem.c     |   62 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 65 insertions(+), 1 deletions(-)
- create mode 100644 arch/um/sys-i386/mem.c
+ arch/um/os-Linux/Makefile  |    4 +++-
+ arch/um/os-Linux/elf_aux.c |    7 +------
+ arch/um/os-Linux/main.c    |    4 ++++
+ 3 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/arch/um/sys-i386/Makefile b/arch/um/sys-i386/Makefile
-index b1da91c..daaea15 100644
---- a/arch/um/sys-i386/Makefile
-+++ b/arch/um/sys-i386/Makefile
-@@ -4,7 +4,7 @@
+diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
+index d66f038..b33f4df 100644
+--- a/arch/um/os-Linux/Makefile
++++ b/arch/um/os-Linux/Makefile
+@@ -3,10 +3,12 @@
+ # Licensed under the GPL
+ #
  
- obj-y = bug.o bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
- 	ptrace_user.o setjmp.o signal.o stub.o stub_segv.o syscalls.o sysrq.o \
--	sys_call_table.o tls.o atomic64_cx8_32.o
-+	sys_call_table.o tls.o atomic64_cx8_32.o mem.o
+-obj-y = aio.o elf_aux.o execvp.o file.o helper.o irq.o main.o mem.o process.o \
++obj-y = aio.o execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 	registers.o sigio.o signal.o start_up.o time.o tty.o uaccess.o \
+ 	umid.o tls.o user_syms.o util.o drivers/ sys-$(SUBARCH)/ skas/
  
- obj-$(CONFIG_BINFMT_ELF) += elfcore.o
++obj-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
++
+ USER_OBJS := $(user-objs-y) aio.o elf_aux.o execvp.o file.o helper.o irq.o \
+ 	main.o mem.o process.o registers.o sigio.o signal.o start_up.o time.o \
+ 	tty.o tls.o uaccess.o umid.o util.o
+diff --git a/arch/um/os-Linux/elf_aux.c b/arch/um/os-Linux/elf_aux.c
+index 608784d..9533237 100644
+--- a/arch/um/os-Linux/elf_aux.c
++++ b/arch/um/os-Linux/elf_aux.c
+@@ -14,16 +14,11 @@
+ #include "mem_user.h"
+ #include <kern_constants.h>
  
-diff --git a/arch/um/sys-i386/asm/elf.h b/arch/um/sys-i386/asm/elf.h
-index d964a41..4230555 100644
---- a/arch/um/sys-i386/asm/elf.h
-+++ b/arch/um/sys-i386/asm/elf.h
-@@ -105,6 +105,8 @@ extern unsigned long __kernel_vsyscall;
- #define FIXADDR_USER_START      VSYSCALL_BASE
- #define FIXADDR_USER_END        VSYSCALL_END
+-/* Use the one from the kernel - the host may miss it, if having old headers. */
+-#if UM_ELF_CLASS == UM_ELFCLASS32
+ typedef Elf32_auxv_t elf_auxv_t;
+-#else
+-typedef Elf64_auxv_t elf_auxv_t;
+-#endif
  
-+#define __HAVE_ARCH_GATE_AREA 1
+ /* These are initialized very early in boot and never changed */
+ char * elf_aux_platform;
+-long elf_aux_hwcap;
++extern long elf_aux_hwcap;
+ unsigned long vsyscall_ehdr;
+ unsigned long vsyscall_end;
+ unsigned long __kernel_vsyscall;
+diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+index fb2a97a..8471b81 100644
+--- a/arch/um/os-Linux/main.c
++++ b/arch/um/os-Linux/main.c
+@@ -21,6 +21,8 @@
+ #define STACKSIZE (8 * 1024 * 1024)
+ #define THREAD_NAME_LEN (256)
+ 
++long elf_aux_hwcap;
 +
- /*
-  * Architecture-neutral AT_ values in 0-17, leave some room
-  * for more of them, start the x86-specific ones at 32.
-diff --git a/arch/um/sys-i386/mem.c b/arch/um/sys-i386/mem.c
-new file mode 100644
-index 0000000..639900a
---- /dev/null
-+++ b/arch/um/sys-i386/mem.c
-@@ -0,0 +1,62 @@
-+/*
-+ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/mm.h>
-+#include <asm/page.h>
-+#include <asm/mman.h>
-+
-+static struct vm_area_struct gate_vma;
-+
-+static int __init gate_vma_init(void)
-+{
-+	if (!FIXADDR_USER_START)
-+		return 0;
-+
-+	gate_vma.vm_mm = NULL;
-+	gate_vma.vm_start = FIXADDR_USER_START;
-+	gate_vma.vm_end = FIXADDR_USER_END;
-+	gate_vma.vm_flags = VM_READ | VM_MAYREAD | VM_EXEC | VM_MAYEXEC;
-+	gate_vma.vm_page_prot = __P101;
-+
-+	/*
-+	 * Make sure the vDSO gets into every core dump.
-+	 * Dumping its contents makes post-mortem fully interpretable later
-+	 * without matching up the same kernel and hardware config to see
-+	 * what PC values meant.
-+	 */
-+	gate_vma.vm_flags |= VM_ALWAYSDUMP;
-+
-+	return 0;
-+}
-+__initcall(gate_vma_init);
-+
-+struct vm_area_struct *get_gate_vma(struct mm_struct *mm)
-+{
-+	return FIXADDR_USER_START ? &gate_vma : NULL;
-+}
-+
-+int in_gate_area_no_mm(unsigned long addr)
-+{
-+	if (!FIXADDR_USER_START)
-+		return 0;
-+
-+	if ((addr >= FIXADDR_USER_START) && (addr < FIXADDR_USER_END))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+int in_gate_area(struct mm_struct *mm, unsigned long addr)
-+{
-+	struct vm_area_struct *vma = get_gate_vma(mm);
-+
-+	if (!vma)
-+		return 0;
-+
-+	return (addr >= vma->vm_start) && (addr < vma->vm_end);
-+}
+ static void set_stklim(void)
+ {
+ 	struct rlimit lim;
+@@ -143,7 +145,9 @@ int __init main(int argc, char **argv, char **envp)
+ 	install_fatal_handler(SIGINT);
+ 	install_fatal_handler(SIGTERM);
+ 
++#ifdef CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA
+ 	scan_elf_aux(envp);
++#endif
+ 
+ 	do_uml_initcalls();
+ 	ret = linux_main(argc, argv);
 -- 
 1.7.6
 
