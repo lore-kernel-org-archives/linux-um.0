@@ -1,157 +1,156 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: David Woodhouse <dwmw2@infradead.org>
-Date: Sun, 31 Jul 2011 00:04:00 +0100
-In-Reply-To: <1312066693.22074.50.camel@i7.infradead.org>
-References: <1312066693.22074.50.camel@i7.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1QjpPD-000781-34
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Jul 2011 09:18:55 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QjpP9-0001Ag-0j
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Jul 2011 09:18:55 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Thu, 21 Jul 2011 11:18:30 +0200
+Message-Id: <1311239914-8301-6-git-send-email-richard@nod.at>
+In-Reply-To: <1311239914-8301-1-git-send-email-richard@nod.at>
+References: <1311239914-8301-1-git-send-email-richard@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1312067041.22074.56.camel@i7.infradead.org>
-Mime-Version: 1.0
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 5/5] um: Fix SUBARCH=x86 build
-To: Arnaud Lacombe <lacombar@gmail.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 06/10] um: Set __HAVE_ARCH_GATE_AREA for i386
+To: akpm@linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-This fixes the build for 'ARCH=um SUBARCH=x86', by introducing a new
-USERARCH variable which is set to either i386 or x86_64 according to the
-configuration option CONFIG_64BIT.
+When UML is unable to reuse the host's vDSO FIXADDR_USER_START
+is zero.
+To handle this special case correclty we have to implement custom
+gate area helper methods.
 
-If we want to support x32 later, that could quite happily be a config
-option too. We have a stated goal of moving even the top-level ARCH=
-setting to a configuration option, and moving away from the hard-coded
-variable overrides on the command line.
-
-Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/Kconfig.x86            |    4 ++--
- arch/um/Makefile               |   25 ++++++++++++++++++-------
- arch/um/os-Linux/Makefile      |    2 +-
- arch/um/scripts/Makefile.rules |    4 ++--
- 4 files changed, 23 insertions(+), 12 deletions(-)
+ arch/um/sys-i386/Makefile  |    2 +-
+ arch/um/sys-i386/asm/elf.h |    2 +
+ arch/um/sys-i386/mem.c     |   62 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 65 insertions(+), 1 deletions(-)
+ create mode 100644 arch/um/sys-i386/mem.c
 
-diff --git a/arch/um/Kconfig.x86 b/arch/um/Kconfig.x86
-index d31ecf3..576b732 100644
---- a/arch/um/Kconfig.x86
-+++ b/arch/um/Kconfig.x86
-@@ -19,8 +19,8 @@ config UML_X86
- 	select GENERIC_FIND_FIRST_BIT
+diff --git a/arch/um/sys-i386/Makefile b/arch/um/sys-i386/Makefile
+index b1da91c..daaea15 100644
+--- a/arch/um/sys-i386/Makefile
++++ b/arch/um/sys-i386/Makefile
+@@ -4,7 +4,7 @@
  
- config 64BIT
--	bool
--	default SUBARCH = "x86_64"
-+	bool "64-bit kernel" if SUBARCH = "x86"
-+	default SUBARCH != "i386"
+ obj-y = bug.o bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
+ 	ptrace_user.o setjmp.o signal.o stub.o stub_segv.o syscalls.o sysrq.o \
+-	sys_call_table.o tls.o atomic64_cx8_32.o
++	sys_call_table.o tls.o atomic64_cx8_32.o mem.o
  
- config X86_32
- 	def_bool !64BIT
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 2a54640..44f89c9 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -12,6 +12,17 @@ OS := $(shell uname -s)
- # features.
- SHELL := /bin/bash
+ obj-$(CONFIG_BINFMT_ELF) += elfcore.o
  
-+# The i386/x86_64 merge hasn't really happened in um-land yet. Fake it.
-+ifeq ($(SUBARCH),x86)
-+ifeq ($(CONFIG_64BIT),y)
-+USERARCH := x86_64
-+else
-+USERARCH := i386
-+endif
-+else
-+USERARCH := $(SUBARCH)
-+endif
+diff --git a/arch/um/sys-i386/asm/elf.h b/arch/um/sys-i386/asm/elf.h
+index d964a41..4230555 100644
+--- a/arch/um/sys-i386/asm/elf.h
++++ b/arch/um/sys-i386/asm/elf.h
+@@ -105,6 +105,8 @@ extern unsigned long __kernel_vsyscall;
+ #define FIXADDR_USER_START      VSYSCALL_BASE
+ #define FIXADDR_USER_END        VSYSCALL_END
+ 
++#define __HAVE_ARCH_GATE_AREA 1
 +
- filechk_gen_header = $<
- 
- core-y			+= $(ARCH_DIR)/kernel/		\
-@@ -24,11 +35,11 @@ include $(srctree)/$(ARCH_DIR)/Makefile-skas
- 
- SHARED_HEADERS	:= $(ARCH_DIR)/include/shared
- ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
--ARCH_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)/shared
-+ARCH_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/sys-$(USERARCH)/shared
- ifneq ($(KBUILD_SRC),)
- ARCH_INCLUDE	+= -I$(SHARED_HEADERS)
- endif
--KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)
-+KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(USERARCH)
- 
- # -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
- # named - it's a common symbol in libpcap, so we get a binary which crashes.
-@@ -49,7 +60,7 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -D__KERNEL__,,\
- 	$(patsubst -I%,,$(KBUILD_CFLAGS)))) $(ARCH_INCLUDE) $(MODE_INCLUDE) \
- 	$(filter -I%,$(CFLAGS)) -D_FILE_OFFSET_BITS=64
- 
--include $(srctree)/$(ARCH_DIR)/Makefile-$(SUBARCH)
-+include $(srctree)/$(ARCH_DIR)/Makefile-$(USERARCH)
- 
- #This will adjust *FLAGS accordingly to the platform.
- include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
-@@ -128,8 +139,8 @@ archclean:
- 
- # Generated files
- 
--$(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s: FORCE
--	$(Q)$(MAKE) $(build)=$(ARCH_DIR)/sys-$(SUBARCH) $@
-+$(ARCH_DIR)/sys-$(USERARCH)/user-offsets.s: FORCE
-+	$(Q)$(MAKE) $(build)=$(ARCH_DIR)/sys-$(USERARCH) $@
- 
- define filechk_gen-asm-offsets
-         (set -e; \
-@@ -144,11 +155,11 @@ define filechk_gen-asm-offsets
-          echo ""; )
- endef
- 
--$(SHARED_HEADERS)/user_constants.h: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s
-+$(SHARED_HEADERS)/user_constants.h: $(ARCH_DIR)/sys-$(USERARCH)/user-offsets.s
- 	$(call filechk,gen-asm-offsets)
- 
- $(SHARED_HEADERS)/kern_constants.h:
- 	$(Q)mkdir -p $(dir $@)
- 	$(Q)echo '#include "../../../../include/generated/asm-offsets.h"' >$@
- 
--export SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING OS HEADER_ARCH DEV_NULL_PATH
-+export SUBARCH USERARCH USER_CFLAGS CFLAGS_NO_HARDENING OS HEADER_ARCH DEV_NULL_PATH
-diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
-index 78658a7..a10a078 100644
---- a/arch/um/os-Linux/Makefile
-+++ b/arch/um/os-Linux/Makefile
-@@ -5,7 +5,7 @@
- 
- obj-y = aio.o execvp.o file.o helper.o irq.o main.o mem.o process.o \
- 	registers.o sigio.o signal.o start_up.o time.o tty.o uaccess.o \
--	umid.o tls.o user_syms.o util.o drivers/ sys-$(SUBARCH)/ skas/
-+	umid.o tls.o user_syms.o util.o drivers/ sys-$(USERARCH)/ skas/
- 
- obj-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
- 
-diff --git a/arch/um/scripts/Makefile.rules b/arch/um/scripts/Makefile.rules
-index 61107b6..9af0cd5 100644
---- a/arch/um/scripts/Makefile.rules
-+++ b/arch/um/scripts/Makefile.rules
-@@ -10,7 +10,7 @@ USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
- $(USER_OBJS:.o=.%): \
- 	c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) $(CFLAGS_$(basetarget).o)
- $(USER_OBJS) : CHECKFLAGS := -D__linux__ -Dlinux -D__STDC__ \
--	-Dunix -D__unix__ -D__$(SUBARCH)__ $(CF)
-+	-Dunix -D__unix__ -D__$(USERARCH)__ $(CF)
- 
- # These are like USER_OBJS but filter USER_CFLAGS through unprofile instead of
- # using it directly.
-@@ -19,7 +19,7 @@ UNPROFILE_OBJS := $(foreach file,$(UNPROFILE_OBJS),$(obj)/$(file))
- $(UNPROFILE_OBJS:.o=.%): \
- 	c_flags = -Wp,-MD,$(depfile) $(call unprofile,$(USER_CFLAGS)) $(CFLAGS_$(basetarget).o)
- $(UNPROFILE_OBJS) : CHECKFLAGS := -D__linux__ -Dlinux -D__STDC__ \
--	-Dunix -D__unix__ -D__$(SUBARCH)__ $(CF)
-+	-Dunix -D__unix__ -D__$(USERARCH)__ $(CF)
- 
- # The stubs can't try to call mcount or update basic block data
- define unprofile
+ /*
+  * Architecture-neutral AT_ values in 0-17, leave some room
+  * for more of them, start the x86-specific ones at 32.
+diff --git a/arch/um/sys-i386/mem.c b/arch/um/sys-i386/mem.c
+new file mode 100644
+index 0000000..639900a
+--- /dev/null
++++ b/arch/um/sys-i386/mem.c
+@@ -0,0 +1,62 @@
++/*
++ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/mm.h>
++#include <asm/page.h>
++#include <asm/mman.h>
++
++static struct vm_area_struct gate_vma;
++
++static int __init gate_vma_init(void)
++{
++	if (!FIXADDR_USER_START)
++		return 0;
++
++	gate_vma.vm_mm = NULL;
++	gate_vma.vm_start = FIXADDR_USER_START;
++	gate_vma.vm_end = FIXADDR_USER_END;
++	gate_vma.vm_flags = VM_READ | VM_MAYREAD | VM_EXEC | VM_MAYEXEC;
++	gate_vma.vm_page_prot = __P101;
++
++	/*
++	 * Make sure the vDSO gets into every core dump.
++	 * Dumping its contents makes post-mortem fully interpretable later
++	 * without matching up the same kernel and hardware config to see
++	 * what PC values meant.
++	 */
++	gate_vma.vm_flags |= VM_ALWAYSDUMP;
++
++	return 0;
++}
++__initcall(gate_vma_init);
++
++struct vm_area_struct *get_gate_vma(struct mm_struct *mm)
++{
++	return FIXADDR_USER_START ? &gate_vma : NULL;
++}
++
++int in_gate_area_no_mm(unsigned long addr)
++{
++	if (!FIXADDR_USER_START)
++		return 0;
++
++	if ((addr >= FIXADDR_USER_START) && (addr < FIXADDR_USER_END))
++		return 1;
++
++	return 0;
++}
++
++int in_gate_area(struct mm_struct *mm, unsigned long addr)
++{
++	struct vm_area_struct *vma = get_gate_vma(mm);
++
++	if (!vma)
++		return 0;
++
++	return (addr >= vma->vm_start) && (addr < vma->vm_end);
++}
 -- 
 1.7.6
 
 
+------------------------------------------------------------------------------
+5 Ways to Improve & Secure Unified Communications
+Unified Communications promises greater efficiencies for business. UC can 
+improve internal communications as well as offer faster, more efficient ways
+to interact with customers and streamline customer service. Learn more!
+http://www.accelacomm.com/jaw/sfnl/114/51426253/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
