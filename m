@@ -1,47 +1,46 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-Id: <4E2D2F40020000780004F5CE@nat28.tlf.novell.com>
-Date: Mon, 25 Jul 2011 07:54:24 +0100
-From: "Jan Beulich" <JBeulich@novell.com>
-References: <20110722164237.2b3f6cbdedafa9e1d3f70867@canb.auug.org.au>
- <20110722085346.51565411.rdunlap@xenotime.net>
- <201107222055.35341.richard@nod.at>
+Date: Fri, 22 Jul 2011 13:15:30 -0700
+From: Randy Dunlap <rdunlap@xenotime.net>
+Message-Id: <20110722131530.7c8949a3.rdunlap@xenotime.net>
 In-Reply-To: <201107222055.35341.richard@nod.at>
+References: <20110722164237.2b3f6cbdedafa9e1d3f70867@canb.auug.org.au>
+	<20110722085346.51565411.rdunlap@xenotime.net>
+	<201107222055.35341.richard@nod.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: linux-next: Tree for July 22 (uml)
-To: mingo@elte.hu, Richard Weinberger <richard@nod.at>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, akpm@linux-foundation.org, user-mode-linux-devel@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>, Randy Dunlap <rdunlap@xenotime.net>
+To: Richard Weinberger <richard@nod.at>
+Cc: JBeulich@novell.com, mingo@elte.hu, akpm@linux-foundation.org, Stephen Rothwell <sfr@canb.auug.org.au>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
->>> On 22.07.11 at 20:55, Richard Weinberger <richard@nod.at> wrote:
+On Fri, 22 Jul 2011 20:55:34 +0200 Richard Weinberger wrote:
+
 > Am Freitag 22 Juli 2011, 17:53:46 schrieben Sie:
->> On Fri, 22 Jul 2011 16:42:37 +1000 Stephen Rothwell wrote:
->> > Hi all,
->> 
->> uml build on i386 fails with:
->> 
->> arch/um/sys-i386/built-in.o: In function `call_rwsem_down_read_failed':
->> linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:93: undefined
->> reference to `rwsem_down_read_failed' arch/um/sys-i386/built-in.o: In
->> function `call_rwsem_down_write_failed':
->> linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:105: undefined
->> reference to `rwsem_down_write_failed' arch/um/sys-i386/built-in.o: In
->> function `call_rwsem_wake':
->> linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:118: undefined
->> reference to `rwsem_wake' arch/um/sys-i386/built-in.o: In function
->> `call_rwsem_downgrade_wake':
->> linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:130: undefined
->> reference to `rwsem_downgrade_wake'
->> 
+> > On Fri, 22 Jul 2011 16:42:37 +1000 Stephen Rothwell wrote:
+> > > Hi all,
+> > 
+> > uml build on i386 fails with:
+> > 
+> > arch/um/sys-i386/built-in.o: In function `call_rwsem_down_read_failed':
+> > linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:93: undefined
+> > reference to `rwsem_down_read_failed' arch/um/sys-i386/built-in.o: In
+> > function `call_rwsem_down_write_failed':
+> > linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:105: undefined
+> > reference to `rwsem_down_write_failed' arch/um/sys-i386/built-in.o: In
+> > function `call_rwsem_wake':
+> > linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:118: undefined
+> > reference to `rwsem_wake' arch/um/sys-i386/built-in.o: In function
+> > `call_rwsem_downgrade_wake':
+> > linux-next-20110722/arch/um/sys-i386/../../x86/lib/rwsem.S:130: undefined
+> > reference to `rwsem_downgrade_wake'
+> > 
 > 
 > Jan,
 > 
 > "x86: Unify rwsem assembly implementation" broke the UML build on i386.
-> Please compile test you changes or CC me when you are touch something in 
-> arch/um/.
+> Please compile test you changes or CC me when you are touch something in arch/um/.
 > 
 > make ARCH=um SUBARCH=i386
 > and
@@ -49,7 +48,7 @@ List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 > 
 > does not hurt. :-)
 
-I'm sorry for that - I actually meant to, but then forgot.
+Ack.
 
 > Thanks,
 > //richard
@@ -67,7 +66,9 @@ I'm sorry for that - I actually meant to, but then forgot.
 > Signed-off-by: Richard Weinberger <richard@nod.at>
 > Reported-by: Randy Dunlap <rdunlap@xenotime.net>
 
-Acked-by: Jan Beulich <jbeulich@novell.com>
+Acked-by: Randy Dunlap <rdunlap@xenotime.net>
+
+Thanks.
 
 > ---
 >  arch/um/sys-i386/Makefile |    3 ++-
@@ -77,8 +78,7 @@ Acked-by: Jan Beulich <jbeulich@novell.com>
 > index 15587ed..87b659d 100644
 > --- a/arch/um/sys-i386/Makefile
 > +++ b/arch/um/sys-i386/Makefile
-> @@ -8,7 +8,8 @@ obj-y = bug.o bugs.o checksum.o delay.o fault.o ksyms.o ldt.o 
-> ptrace.o \
+> @@ -8,7 +8,8 @@ obj-y = bug.o bugs.o checksum.o delay.o fault.o ksyms.o ldt.o ptrace.o \
 >  
 >  obj-$(CONFIG_BINFMT_ELF) += elfcore.o
 >  
@@ -88,7 +88,9 @@ Acked-by: Jan Beulich <jbeulich@novell.com>
 >  subarch-obj-$(CONFIG_HIGHMEM) += mm/highmem_32.o
 >  subarch-obj-$(CONFIG_MODULES) += kernel/module.o
 >  
+> -- 
 
 
-
-
+---
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
