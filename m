@@ -1,59 +1,62 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: David Woodhouse <dwmw2@infradead.org>
-Date: Sun, 31 Jul 2011 00:02:50 +0100
-In-Reply-To: <1312066693.22074.50.camel@i7.infradead.org>
-References: <1312066693.22074.50.camel@i7.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1QlLhh-00012O-B6
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Jul 2011 14:00:17 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QlLhc-0000sb-Ms
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Jul 2011 14:00:17 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 25 Jul 2011 16:00:03 +0200
+References: <1311438111-10961-1-git-send-email-cascardo@holoscopio.com>
+In-Reply-To: <1311438111-10961-1-git-send-email-cascardo@holoscopio.com>
+MIME-Version: 1.0
+Message-Id: <201107251600.03311.richard@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1312066972.22074.55.camel@i7.infradead.org>
-Mime-Version: 1.0
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 4/5] um: Do not define SUBARCH in CFLAGS
-To: Arnaud Lacombe <lacombar@gmail.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH] um: disable CMPXCHG_DOUBLE as it breaks UML
+	build
+To: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
+Cc: jdike@addtoit.com, Christoph Lameter <cl@linux.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-There are no users of this, and not a lot of reasons why people would *need*
-to use it when the compiler defines standard macros for the architecture
-anyway.
+Am Samstag 23 Juli 2011, 18:21:51 schrieb Thadeu Lima de Souza Cascardo:
+> Commit b789ef518b2a7231b0668c813f677cee528a9d3f tests for cmpxchg_double
+> support in the SLUB code and it breaks UML builds with SLUB. Since UML
+> does not support checking for CPU features, disable CMPXCHG_DOUBLE just
+> like CMPXCHG_LOCAL is disabled for UML.
+> 
+> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
 
-Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
----
+Applied!
 
-Did I miss somewhere that this is actually used?
+Thanks,
+//richard
 
- arch/um/Makefile        |    2 +-
- arch/um/kernel/Makefile |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index fab8121..2a54640 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -38,7 +38,7 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)
- #
- # These apply to USER_CFLAGS to.
- 
--KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ -DSUBARCH=\"$(SUBARCH)\" \
-+KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
- 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
- 	-Din6addr_loopback=kernel_in6addr_loopback \
- 	-Din6addr_any=kernel_in6addr_any
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index c4491c1..48a4f9f 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -3,7 +3,7 @@
- # Licensed under the GPL
- #
- 
--CPPFLAGS_vmlinux.lds := -U$(SUBARCH) -DSTART=$(LDS_START) \
-+CPPFLAGS_vmlinux.lds := -DSTART=$(LDS_START) \
-                         -DELF_ARCH=$(LDS_ELF_ARCH)        \
-                         -DELF_FORMAT=$(LDS_ELF_FORMAT)
- extra-y := vmlinux.lds
--- 
-1.7.6
-
-
+------------------------------------------------------------------------------
+Storage Efficiency Calculator
+This modeling tool is based on patent-pending intellectual property that
+has been used successfully in hundreds of IBM storage optimization engage-
+ments, worldwide.  Store less, Store more with what you own, Move data to 
+the right place. Try It Now! http://www.accelacomm.com/jaw/sfnl/114/51427378/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
