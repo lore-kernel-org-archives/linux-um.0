@@ -1,66 +1,59 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 18 Jul 2011 15:07:35 +0200
-Message-Id: <1310994456-14142-2-git-send-email-richard@nod.at>
-In-Reply-To: <1310994456-14142-1-git-send-email-richard@nod.at>
-References: <1310994456-14142-1-git-send-email-richard@nod.at>
+From: David Woodhouse <dwmw2@infradead.org>
+Date: Sun, 31 Jul 2011 00:02:50 +0100
+In-Reply-To: <1312066693.22074.50.camel@i7.infradead.org>
+References: <1312066693.22074.50.camel@i7.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1312066972.22074.55.camel@i7.infradead.org>
+Mime-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 2/3] um: Set __HAVE_ARCH_GATE_AREA
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Subject: [PATCH 4/5] um: Do not define SUBARCH in CFLAGS
+To: Arnaud Lacombe <lacombar@gmail.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Implement arch_vma_name() and make get_gate_vma(),
-in_gate_area() and in_gate_area_no_mm() a nop.
+There are no users of this, and not a lot of reasons why people would *need*
+to use it when the compiler defines standard macros for the architecture
+anyway.
 
-We need arch_vma_name() to support vDSO.
-
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
 ---
- arch/um/sys-x86_64/asm/elf.h |    1 +
- arch/um/sys-x86_64/mem.c     |   22 ++++++++++++++++++++++
- 2 files changed, 23 insertions(+), 0 deletions(-)
 
-diff --git a/arch/um/sys-x86_64/asm/elf.h b/arch/um/sys-x86_64/asm/elf.h
-index d6d5af3..74eb0ac 100644
---- a/arch/um/sys-x86_64/asm/elf.h
-+++ b/arch/um/sys-x86_64/asm/elf.h
-@@ -119,4 +119,5 @@ extern long elf_aux_hwcap;
+Did I miss somewhere that this is actually used?
+
+ arch/um/Makefile        |    2 +-
+ arch/um/kernel/Makefile |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index fab8121..2a54640 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -38,7 +38,7 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)
+ #
+ # These apply to USER_CFLAGS to.
  
- #define SET_PERSONALITY(ex) do ; while(0)
+-KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ -DSUBARCH=\"$(SUBARCH)\" \
++KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
+ 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
+ 	-Din6addr_loopback=kernel_in6addr_loopback \
+ 	-Din6addr_any=kernel_in6addr_any
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index c4491c1..48a4f9f 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -3,7 +3,7 @@
+ # Licensed under the GPL
+ #
  
-+#define __HAVE_ARCH_GATE_AREA 1
- #endif
-diff --git a/arch/um/sys-x86_64/mem.c b/arch/um/sys-x86_64/mem.c
-index 3f8df8a..1bf301e 100644
---- a/arch/um/sys-x86_64/mem.c
-+++ b/arch/um/sys-x86_64/mem.c
-@@ -14,3 +14,25 @@ unsigned long vm_data_default_flags = __VM_DATA_DEFAULT_FLAGS;
- unsigned long vm_data_default_flags32 = __VM_DATA_DEFAULT_FLAGS;
- unsigned long vm_force_exec32 = PROT_EXEC;
- 
-+const char *arch_vma_name(struct vm_area_struct *vma)
-+{
-+	if (vma->vm_mm && vma->vm_start == um_vdso_addr)
-+		return "[vdso]";
-+
-+	return NULL;
-+}
-+
-+struct vm_area_struct *get_gate_vma(struct mm_struct *mm)
-+{
-+	return 0;
-+}
-+
-+int in_gate_area(struct mm_struct *mm, unsigned long addr)
-+{
-+	return 0;
-+}
-+
-+int in_gate_area_no_mm(unsigned long addr)
-+{
-+	return 0;
-+}
+-CPPFLAGS_vmlinux.lds := -U$(SUBARCH) -DSTART=$(LDS_START) \
++CPPFLAGS_vmlinux.lds := -DSTART=$(LDS_START) \
+                         -DELF_ARCH=$(LDS_ELF_ARCH)        \
+                         -DELF_FORMAT=$(LDS_ELF_FORMAT)
+ extra-y := vmlinux.lds
 -- 
 1.7.6
+
+
 
