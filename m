@@ -1,208 +1,85 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Wed,  1 Jun 2011 16:18:44 +0200
-Message-Id: <1306937924-22135-2-git-send-email-richard@nod.at>
-In-Reply-To: <1306937924-22135-1-git-send-email-richard@nod.at>
-References: <1306937924-22135-1-git-send-email-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 2/2] um: Clean up delay functions
-To: linux-kernel@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1QnkAu-0001O9-N1
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Aug 2011 04:32:20 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QnkAs-0001NM-Ej
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Aug 2011 04:32:20 +0000
+Date: Mon, 1 Aug 2011 05:32:08 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Message-ID: <20110801043207.GE2203@ZenIV.linux.org.uk>
+References: <1312066693.22074.50.camel@i7.infradead.org>
+	<1312066923.22074.53.camel@i7.infradead.org>
+	<CAFLxGvy0QqoySDFwZpygHeXvQ7hG-B7z5iZq8qx3GUkFX8w2RQ@mail.gmail.com>
+	<1312151063.18010.25.camel@i7.infradead.org>
+	<20110731224834.GC2203@ZenIV.linux.org.uk>
+	<20110731225801.GD2203@ZenIV.linux.org.uk>
+	<1312153988.18010.39.camel@i7.infradead.org>
+	<CAFLxGvyewG70ZgU41Kmu_eOYpjZ0TVXYwYq1AfS1sXONAM6G_w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvyewG70ZgU41Kmu_eOYpjZ0TVXYwYq1AfS1sXONAM6G_w@mail.gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH 1/5] um: Use __i386__ in ifdef for vsyscall
+ exports, not SUBARCH_i386
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, Arnaud Lacombe <lacombar@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>
 
-Both sys-i386 and sys-x86_64 support now ndelay().
-The delay functions are based on arch/x86/lib/delay.c.
+On Mon, Aug 01, 2011 at 01:17:17AM +0200, richard -rw- weinberger wrote:
+> On Mon, Aug 1, 2011 at 1:13 AM, David Woodhouse <dwmw2@infradead.org> wrote:
+> > On Sun, 2011-07-31 at 23:58 +0100, Al Viro wrote:
+> >> FWIW, the next step (still not pushed there) is to move arch/um/sys-x86 to
+> >> arch/x86/um, with arch/um/os-Linux/sys-x86 becoming arch/x86/um/os-Linux,
+> >> Kconfig.x86 moving to arch/x86/um/Kconfig and Makefile-x86 - to
+> >> arch/x86/um/Makefile.defs. ?Next after that - arch/powerpc/um (and yes,
+> >> it means resurrected uml/ppc port; for now - only ppc32, since I have no
+> >> ppc64 boxen to test on).
+> >
+> > I can give you an account on a ppc64 box if that would help...
+> 
+> Isn't UML on ppc broken since ages?
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/include/asm/delay.h |    8 +----
- arch/um/sys-i386/delay.c    |   63 ++++++++++++++++++++++++++++++++-----------
- arch/um/sys-x86_64/delay.c  |   54 ++++++++++++++++++++++++++++--------
- 3 files changed, 91 insertions(+), 34 deletions(-)
+Yes.  Resurrected is not the right word here, sorry...
 
-diff --git a/arch/um/include/asm/delay.h b/arch/um/include/asm/delay.h
-index c71e32b..1094519 100644
---- a/arch/um/include/asm/delay.h
-+++ b/arch/um/include/asm/delay.h
-@@ -1,8 +1,6 @@
- #ifndef __UM_DELAY_H
- #define __UM_DELAY_H
- 
--#define MILLION 1000000
--
- /* Undefined on purpose */
- extern void __bad_udelay(void);
- 
-@@ -12,9 +10,7 @@ extern void __delay(unsigned long loops);
- #define udelay(n) ((__builtin_constant_p(n) && (n) > 20000) ? \
- 	__bad_udelay() : __udelay(n))
- 
--/* It appears that ndelay is not used at all for UML, and has never been
-- * implemented. */
--extern void __unimplemented_ndelay(void);
--#define ndelay(n) __unimplemented_ndelay()
-+#define ndelay(n) ((__builtin_constant_p(n) && (n) > 20000) ? \
-+	__bad_udelay() : __ndelay(n))
- 
- #endif
-diff --git a/arch/um/sys-i386/delay.c b/arch/um/sys-i386/delay.c
-index d623e07..65851ce 100644
---- a/arch/um/sys-i386/delay.c
-+++ b/arch/um/sys-i386/delay.c
-@@ -1,29 +1,60 @@
-+/*
-+ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
-+ * Mostly copied from arch/x86/lib/delay.c
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/delay.h>
- #include <asm/param.h>
- 
--void __delay(unsigned long time)
-+void __delay(unsigned long loops)
- {
--	/* Stolen from the i386 __loop_delay */
--	int d0;
--	__asm__ __volatile__(
--		"\tjmp 1f\n"
--		".align 16\n"
--		"1:\tjmp 2f\n"
--		".align 16\n"
--		"2:\tdecl %0\n\tjns 2b"
--		:"=&a" (d0)
--		:"0" (time));
-+	asm volatile(
-+		" test %0,%0  \n"
-+		" jz 3f   \n"
-+		" jmp 1f    \n"
-+
-+		".align 16    \n"
-+		"1: jmp 2f    \n"
-+
-+		".align 16    \n"
-+		"2: dec %0    \n"
-+		" jnz 2b    \n"
-+		"3: dec %0    \n"
-+
-+		: /* we don't need output */
-+		:"a" (loops)
-+	);
- }
-+EXPORT_SYMBOL(__delay);
- 
--void __udelay(unsigned long usecs)
-+inline void __const_udelay(unsigned long xloops)
- {
--	int i, n;
-+	int d0;
- 
--	n = (loops_per_jiffy * HZ * usecs) / MILLION;
--        for(i=0;i<n;i++)
--                cpu_relax();
-+	xloops *= 4;
-+	asm("mull %%edx"
-+		:"=d" (xloops), "=&a" (d0)
-+		:"1" (xloops), "0"
-+		(loops_per_jiffy * (HZ/4)));
-+
-+	__delay(++xloops);
- }
-+EXPORT_SYMBOL(__const_udelay);
- 
-+void __udelay(unsigned long usecs)
-+{
-+	__const_udelay(usecs * 0x000010c7); /* 2**32 / 1000000 (rounded up) */
-+}
- EXPORT_SYMBOL(__udelay);
-+
-+void __ndelay(unsigned long nsecs)
-+{
-+	__const_udelay(nsecs * 0x00005); /* 2**32 / 1000000000 (rounded up) */
-+}
-+EXPORT_SYMBOL(__ndelay);
-diff --git a/arch/um/sys-x86_64/delay.c b/arch/um/sys-x86_64/delay.c
-index dee5be6..65851ce 100644
---- a/arch/um/sys-x86_64/delay.c
-+++ b/arch/um/sys-x86_64/delay.c
-@@ -1,30 +1,60 @@
- /*
-- * Copyright 2003 PathScale, Inc.
-- * Copied from arch/x86_64
-+ * Copyright (C) 2011 Richard Weinberger <richrd@nod.at>
-+ * Mostly copied from arch/x86/lib/delay.c
-  *
-- * Licensed under the GPL
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-  */
- 
- #include <linux/module.h>
-+#include <linux/kernel.h>
- #include <linux/delay.h>
--#include <asm/processor.h>
- #include <asm/param.h>
- 
- void __delay(unsigned long loops)
- {
--	unsigned long i;
-+	asm volatile(
-+		" test %0,%0  \n"
-+		" jz 3f   \n"
-+		" jmp 1f    \n"
- 
--        for(i = 0; i < loops; i++)
--                cpu_relax();
-+		".align 16    \n"
-+		"1: jmp 2f    \n"
-+
-+		".align 16    \n"
-+		"2: dec %0    \n"
-+		" jnz 2b    \n"
-+		"3: dec %0    \n"
-+
-+		: /* we don't need output */
-+		:"a" (loops)
-+	);
- }
-+EXPORT_SYMBOL(__delay);
- 
--void __udelay(unsigned long usecs)
-+inline void __const_udelay(unsigned long xloops)
- {
--	unsigned long i, n;
-+	int d0;
- 
--	n = (loops_per_jiffy * HZ * usecs) / MILLION;
--        for(i=0;i<n;i++)
--                cpu_relax();
-+	xloops *= 4;
-+	asm("mull %%edx"
-+		:"=d" (xloops), "=&a" (d0)
-+		:"1" (xloops), "0"
-+		(loops_per_jiffy * (HZ/4)));
-+
-+	__delay(++xloops);
- }
-+EXPORT_SYMBOL(__const_udelay);
- 
-+void __udelay(unsigned long usecs)
-+{
-+	__const_udelay(usecs * 0x000010c7); /* 2**32 / 1000000 (rounded up) */
-+}
- EXPORT_SYMBOL(__udelay);
-+
-+void __ndelay(unsigned long nsecs)
-+{
-+	__const_udelay(nsecs * 0x00005); /* 2**32 / 1000000000 (rounded up) */
-+}
-+EXPORT_SYMBOL(__ndelay);
--- 
-1.7.5.3
+Anyway, could you take a look at the git tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/viro/um-header.git/,
+branch x86_merge and comment?  It doesn't include stuff from this
+thread (yet); what it does is
+	* further headers cleanups
+	* sys-{i386,x86_64} merged; all[1] x86-specific code taken first
+to arch/um/sys-x86 and then (by final commit) to arch/x86/um.  IMO that's
+the right place for it - target-dependent code is better off not hidden
+from maintainers of the target arch.  When we get other ports to working
+shape, their target-specific parts ought to go into arch/<target>/um.
+	* hopefully saner treatment of sigcontext; should make life easier
+for other ports.
+	
+[1] theoretically - in reality we still have more than a few x86-isms in
+"generic" um headers in arch/um/include/asm.
+
+------------------------------------------------------------------------------
+Got Input?   Slashdot Needs You.
+Take our quick survey online.  Come on, we don't ask for help often.
+Plus, you'll get a chance to win $100 to spend on ThinkGeek.
+http://p.sf.net/sfu/slashdot-survey
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
