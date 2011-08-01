@@ -1,92 +1,151 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Date: Mon, 01 Aug 2011 18:01:30 +0200
-From: Marc Zyngier <maz@misterjones.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1Qnt6M-0006AP-Ca
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Aug 2011 14:04:14 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qnt6K-0006n4-Ry
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 01 Aug 2011 14:04:14 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 1 Aug 2011 16:04:05 +0200
+References: <201108011541.59640.richard@nod.at>
+	<20110801134911.GA11705@albatros>
 In-Reply-To: <20110801134911.GA11705@albatros>
-References: <201108011541.59640.richard@nod.at> <20110801134911.GA11705@albatros>
-Message-ID: <43e4e9e98b32d3d3eb06ab837a019ad8@localhost>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: shm updates broke UML
+MIME-Version: 1.0
+Message-Id: <201108011604.05382.richard@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] shm updates broke UML
 To: Vasiliy Kulikov <segoon@openwall.com>
-Cc: Richard Weinberger <richard@nod.at>, serge.hallyn@canonical.com, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, toralf.foerster@gmx.de
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Cc: serge.hallyn@canonical.com, user-mode-linux-devel@lists.sourceforge.net, toralf.foerster@gmx.de, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, torvalds@linux-foundation.org
 
+Hi Vasiliy,
 
-On Mon, 1 Aug 2011 17:49:11 +0400, Vasiliy Kulikov <segoon@openwall.com>
-wrote:
+On Montag 01 August 2011 15:49:11 Vasiliy Kulikov wrote:
 > Hi Richard,
 > 
 > On Mon, Aug 01, 2011 at 15:41 +0200, Richard Weinberger wrote:
->> 5774ed01 (shm: handle separate PID namespaces case)
->> b34a6b1d (ipc: introduce shm_rmid_forced sysctl)
->> 4c677e2e (shm: optimize locking and ipc_namespace getting)
->> 
->> broke UML on i386.
->> It crashes while starting up by SIGSEGV.
->> exit_shm() seems to be the evil doer.
+> > 5774ed01 (shm: handle separate PID namespaces case)
+> > b34a6b1d (ipc: introduce shm_rmid_forced sysctl)
+> > 4c677e2e (shm: optimize locking and ipc_namespace getting)
+> > 
+> > broke UML on i386.
+> > It crashes while starting up by SIGSEGV.
+> > exit_shm() seems to be the evil doer.
 > 
 > I was reported 20 mins ago that it's reproducable on MIPS too.
 > 
->> Reverting all three patches make UML work again.
+> > Reverting all three patches make UML work again.
 > 
 > Can you confirm that 5774ed01 breaks the boot? (it is for MIPS)
 
-It also breaks ARM (at least 11MPCore and Cortex A9).
-The same workaround gets the kernel booting again.
+Yes. But I also had to revert 4c677e2e because 5774ed01 depends on it...
 
-For the record:
-[...]
-CPU: Testing write buffer coherency: ok
-Calibrating local timer... 104.99MHz.
-CPU1: Booted secondary processor
-CPU1: Unknown IPI message 0x1
-CPU2: Booted secondary processor
-CPU2: Unknown IPI message 0x1
-CPU3: Booted secondary processor
-CPU3: Unknown IPI message 0x1
-Brought up 4 CPUs
-SMP: Total of 4 processors activated (333.92 BogoMIPS).
-Unable to handle kernel NULL pointer dereference at virtual address
-00000000
-NET: Registered protocol family 16
-pgd = c0004000
-[00000000] *pgd=00000000
-Internal error: Oops: 805 [#1] SMP
-Modules linked in:
-CPU: 2    Not tainted  (3.0.0-next-20110801+ #801)
-PC is at __down_write_nested+0x88/0xe0
-LR is at __down_write_nested+0x18/0xe0
-pc : [<c0320090>]    lr : [<c0320020>]    psr: 60000093
-sp : df883f68  ip : 00000000  fp : 00000000
-r10: 00000000  r9 : 00000000  r8 : c04474dc
-r7 : c04474d8  r6 : 00000000  r5 : 00000002  r4 : df884000
-r3 : df884008  r2 : 00000000  r1 : 60000013  r0 : c04474e0
-Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 00c5787f  Table: 7000400a  DAC: 00000015
-Process kworker/u:0 (pid: 18, stack limit = 0xdf882270)
-Stack: (0xdf883f68 to 0xdf884000)
-3f60:                   c04474e0 df8b0004 df884000 00000002 c04474d8
-c0447474
-3f80: 00000000 00000000 df8b0000 c015da08 df884000 00000000 00000000
-c002e550
-3fa0: 00000000 00000000 df882000 00000001 00000000 00000000 00000000
-00000000
-3fc0: 00000000 df8238c0 df8a7000 fffffffe 00000013 00000000 00000000
-00000000
-3fe0: 00000000 c003eaac df8238c0 c003e970 c000f630 c000f630 00000000
-00000000
-[<c0320090>] (__down_write_nested+0x88/0xe0) from [<c015da08>]
-(exit_shm+0x28/0x48)
-[<c015da08>] (exit_shm+0x28/0x48) from [<c002e550>] (do_exit+0x59c/0x750)
-[<c002e550>] (do_exit+0x59c/0x750) from [<c003eaac>]
-(____call_usermodehelper+0x13c/0x154)
-[<c003eaac>] (____call_usermodehelper+0x13c/0x154) from [<c000f630>]
-(kernel_thread_exit+0x0/0x8)
-Code: 1afffffa e597c00c e58d0000 e587d00c (e58cd000) 
----[ end trace 1b75b31a2719ed1c ]---
+> Can you post the whole oops message?  I'd want to see what pointer is
+> NULL.
 
-        M.
--- 
-Who you jivin' with that Cosmik Debris?
+UML is not that friendly in reporting NULL pointers :)
+EAX and ECX are NULL.
+
+---cut---
+
+$ ./linux earlyprintk
+Locating the bottom of the address space ... 0x10000
+Locating the top of the address space ... 0xffffd000
+Core dump limits :
+        soft - 0
+        hard - NONE
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+Checking for tmpfs mount on /dev/shm...OK
+Checking PROT_EXEC mmap in /tmp/...OK
+Checking for the skas3 patch in the host:
+  - /proc/mm...not found: No such file or directory
+  - PTRACE_FAULTINFO...not found
+  - PTRACE_LDT...not found
+UML running in SKAS0 mode
+bootconsole [earlycon0] enabled
+PID hash table entries: 128 (order: -3, 512 bytes)
+Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
+Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
+Memory: 29896k available
+NR_IRQS:15
+Calibrating delay loop... 3173.58 BogoMIPS (lpj=15867904)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 512
+Checking for host processor cmov support...Yes
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+
+EIP: 0023:[<081c7b8a>] CPU: 0 Not tainted ESP: 002b:09c74f00 EFLAGS: 00010206
+    Not tainted
+EAX: 00000000 EBX: 0824cc9c ECX: 00000000 EDX: 09c74f00
+ESI: 09c73b60 EDI: 00000001 EBP: 09c74f20 DS: 002b ES: 002b
+0823fb70:  [<0806b6e8>] show_regs+0xc5/0xcd
+0823fb9c:  [<0805a52a>] segv+0x5b/0x234
+0823fc40:  [<0805a74c>] segv_handler+0x49/0x53
+0823fc68:  [<08066776>] sig_handler_common+0x61/0x70
+0823fce0:  [<08066851>] sig_handler+0x31/0x40
+0823fcec:  [<0806653e>] handle_signal+0x50/0x7d
+0823fd0c:  [<08067efb>] hard_handler+0xf/0x14
+0823fd1c:  [<ffffe400>] 0xffffe400
+
+Kernel panic - not syncing: Segfault with no mm
+0823fb4c:  [<081c63da>] dump_stack+0x1c/0x20
+0823fb64:  [<081c642b>] panic+0x4d/0x13e
+0823fb98:  [<0805a5d9>] segv+0x10a/0x234
+0823fc40:  [<0805a74c>] segv_handler+0x49/0x53
+0823fc68:  [<08066776>] sig_handler_common+0x61/0x70
+0823fce0:  [<08066851>] sig_handler+0x31/0x40
+0823fcec:  [<0806653e>] handle_signal+0x50/0x7d
+0823fd0c:  [<08067efb>] hard_handler+0xf/0x14
+0823fd1c:  [<ffffe400>] 0xffffe400
+
+
+EIP: 0023:[<ffffe430>] CPU: 0 Not tainted ESP: 002b:ffaae1c8 EFLAGS: 00000296
+    Not tainted
+EAX: 00000000 EBX: 000017b4 ECX: 00000013 EDX: 000017b4
+ESI: 000017a6 EDI: 0000003d EBP: ffaae1f4 DS: 002b ES: 002b
+0823fafc:  [<0806b6e8>] show_regs+0xc5/0xcd
+0823fb28:  [<0805a97b>] panic_exit+0x25/0x3b
+0823fb3c:  [<0808a9c4>] notifier_call_chain+0x25/0x4a
+0823fb64:  [<0808aa17>] atomic_notifier_call_chain+0x15/0x17
+0823fb74:  [<081c6446>] panic+0x68/0x13e
+0823fb98:  [<0805a5d9>] segv+0x10a/0x234
+0823fc40:  [<0805a74c>] segv_handler+0x49/0x53
+0823fc68:  [<08066776>] sig_handler_common+0x61/0x70
+0823fce0:  [<08066851>] sig_handler+0x31/0x40
+0823fcec:  [<0806653e>] handle_signal+0x50/0x7d
+0823fd0c:  [<08067efb>] hard_handler+0xf/0x14
+0823fd1c:  [<ffffe400>] 0xffffe400
+
+---cut---
+
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+Got Input?   Slashdot Needs You.
+Take our quick survey online.  Come on, we don't ask for help often.
+Plus, you'll get a chance to win $100 to spend on ThinkGeek.
+http://p.sf.net/sfu/slashdot-survey
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
