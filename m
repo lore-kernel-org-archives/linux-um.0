@@ -1,151 +1,63 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1Qnt6M-0006AP-Ca
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Aug 2011 14:04:14 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qnt6K-0006n4-Ry
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 01 Aug 2011 14:04:14 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 1 Aug 2011 16:04:05 +0200
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Mon, 1 Aug 2011 17:49:11 +0400
+From: Vasiliy Kulikov <segoon@openwall.com>
+Message-ID: <20110801134911.GA11705@albatros>
 References: <201108011541.59640.richard@nod.at>
-	<20110801134911.GA11705@albatros>
-In-Reply-To: <20110801134911.GA11705@albatros>
 MIME-Version: 1.0
-Message-Id: <201108011604.05382.richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] shm updates broke UML
-To: Vasiliy Kulikov <segoon@openwall.com>
-Cc: serge.hallyn@canonical.com, user-mode-linux-devel@lists.sourceforge.net, toralf.foerster@gmx.de, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, torvalds@linux-foundation.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201108011541.59640.richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: shm updates broke UML
+To: Richard Weinberger <richard@nod.at>
+Cc: serge.hallyn@canonical.com, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, toralf.foerster@gmx.de
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi Vasiliy,
+Hi Richard,
 
-On Montag 01 August 2011 15:49:11 Vasiliy Kulikov wrote:
-> Hi Richard,
+On Mon, Aug 01, 2011 at 15:41 +0200, Richard Weinberger wrote:
+> 5774ed01 (shm: handle separate PID namespaces case)
+> b34a6b1d (ipc: introduce shm_rmid_forced sysctl)
+> 4c677e2e (shm: optimize locking and ipc_namespace getting)
 > 
-> On Mon, Aug 01, 2011 at 15:41 +0200, Richard Weinberger wrote:
-> > 5774ed01 (shm: handle separate PID namespaces case)
-> > b34a6b1d (ipc: introduce shm_rmid_forced sysctl)
-> > 4c677e2e (shm: optimize locking and ipc_namespace getting)
-> > 
-> > broke UML on i386.
-> > It crashes while starting up by SIGSEGV.
-> > exit_shm() seems to be the evil doer.
-> 
-> I was reported 20 mins ago that it's reproducable on MIPS too.
-> 
-> > Reverting all three patches make UML work again.
-> 
-> Can you confirm that 5774ed01 breaks the boot? (it is for MIPS)
+> broke UML on i386.
+> It crashes while starting up by SIGSEGV.
+> exit_shm() seems to be the evil doer.
 
-Yes. But I also had to revert 4c677e2e because 5774ed01 depends on it...
+I was reported 20 mins ago that it's reproducable on MIPS too.
 
-> Can you post the whole oops message?  I'd want to see what pointer is
-> NULL.
+> Reverting all three patches make UML work again.
 
-UML is not that friendly in reporting NULL pointers :)
-EAX and ECX are NULL.
-
----cut---
-
-$ ./linux earlyprintk
-Locating the bottom of the address space ... 0x10000
-Locating the top of the address space ... 0xffffd000
-Core dump limits :
-        soft - 0
-        hard - NONE
-Checking that ptrace can change system call numbers...OK
-Checking syscall emulation patch for ptrace...OK
-Checking advanced syscall emulation patch for ptrace...OK
-Checking for tmpfs mount on /dev/shm...OK
-Checking PROT_EXEC mmap in /tmp/...OK
-Checking for the skas3 patch in the host:
-  - /proc/mm...not found: No such file or directory
-  - PTRACE_FAULTINFO...not found
-  - PTRACE_LDT...not found
-UML running in SKAS0 mode
-bootconsole [earlycon0] enabled
-PID hash table entries: 128 (order: -3, 512 bytes)
-Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
-Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
-Memory: 29896k available
-NR_IRQS:15
-Calibrating delay loop... 3173.58 BogoMIPS (lpj=15867904)
-pid_max: default: 32768 minimum: 301
-Mount-cache hash table entries: 512
-Checking for host processor cmov support...Yes
-Checking that host ptys support output SIGIO...Yes
-Checking that host ptys support SIGIO on close...No, enabling workaround
-
-EIP: 0023:[<081c7b8a>] CPU: 0 Not tainted ESP: 002b:09c74f00 EFLAGS: 00010206
-    Not tainted
-EAX: 00000000 EBX: 0824cc9c ECX: 00000000 EDX: 09c74f00
-ESI: 09c73b60 EDI: 00000001 EBP: 09c74f20 DS: 002b ES: 002b
-0823fb70:  [<0806b6e8>] show_regs+0xc5/0xcd
-0823fb9c:  [<0805a52a>] segv+0x5b/0x234
-0823fc40:  [<0805a74c>] segv_handler+0x49/0x53
-0823fc68:  [<08066776>] sig_handler_common+0x61/0x70
-0823fce0:  [<08066851>] sig_handler+0x31/0x40
-0823fcec:  [<0806653e>] handle_signal+0x50/0x7d
-0823fd0c:  [<08067efb>] hard_handler+0xf/0x14
-0823fd1c:  [<ffffe400>] 0xffffe400
-
-Kernel panic - not syncing: Segfault with no mm
-0823fb4c:  [<081c63da>] dump_stack+0x1c/0x20
-0823fb64:  [<081c642b>] panic+0x4d/0x13e
-0823fb98:  [<0805a5d9>] segv+0x10a/0x234
-0823fc40:  [<0805a74c>] segv_handler+0x49/0x53
-0823fc68:  [<08066776>] sig_handler_common+0x61/0x70
-0823fce0:  [<08066851>] sig_handler+0x31/0x40
-0823fcec:  [<0806653e>] handle_signal+0x50/0x7d
-0823fd0c:  [<08067efb>] hard_handler+0xf/0x14
-0823fd1c:  [<ffffe400>] 0xffffe400
+Can you confirm that 5774ed01 breaks the boot? (it is for MIPS)
 
 
-EIP: 0023:[<ffffe430>] CPU: 0 Not tainted ESP: 002b:ffaae1c8 EFLAGS: 00000296
-    Not tainted
-EAX: 00000000 EBX: 000017b4 ECX: 00000013 EDX: 000017b4
-ESI: 000017a6 EDI: 0000003d EBP: ffaae1f4 DS: 002b ES: 002b
-0823fafc:  [<0806b6e8>] show_regs+0xc5/0xcd
-0823fb28:  [<0805a97b>] panic_exit+0x25/0x3b
-0823fb3c:  [<0808a9c4>] notifier_call_chain+0x25/0x4a
-0823fb64:  [<0808aa17>] atomic_notifier_call_chain+0x15/0x17
-0823fb74:  [<081c6446>] panic+0x68/0x13e
-0823fb98:  [<0805a5d9>] segv+0x10a/0x234
-0823fc40:  [<0805a74c>] segv_handler+0x49/0x53
-0823fc68:  [<08066776>] sig_handler_common+0x61/0x70
-0823fce0:  [<08066851>] sig_handler+0x31/0x40
-0823fcec:  [<0806653e>] handle_signal+0x50/0x7d
-0823fd0c:  [<08067efb>] hard_handler+0xf/0x14
-0823fd1c:  [<ffffe400>] 0xffffe400
+> Commit 5774ed01 removed the !ns->shm_rmid_forced check, maybe this is wrong?
 
----cut---
+No, it's not the reason.
+
+> ---cut---
+> #13 0x08067efb in hard_handler (sig=11) at arch/um/os-Linux/sys-i386/signal.c:12
+> #14 <signal handler called>
+> #15 __list_add (sem=0x824cc98, subclass=0) at include/linux/list.h:44
+> #16 list_add_tail (sem=0x824cc98, subclass=0) at include/linux/list.h:76
+> #17 __down_write_nested (sem=0x824cc98, subclass=0) at lib/rwsem-spinlock.c:232
+> #18 0x081c7ba1 in __down_write (sem=0x824cc98) at lib/rwsem-spinlock.c:252
+> #19 0x081c74a3 in down_write (sem=0x824cc98) at kernel/rwsem.c:51
+> #20 0x08139913 in exit_shm (task=0x9c73b60) at ipc/shm.c:308
+> #21 0x08075649 in do_exit (code=0) at kernel/exit.c:983
+> #22 0x08081dd2 in ____call_usermodehelper (data=0x9c6bce0) at kernel/kmod.c:187
+> #23 0x08065c18 in run_kernel_thread (fn=0x8081ce4 <____call_usermodehelper>, arg=0x9c6bce0, 
+> jmp_ptr=0x9c73d94)
+>     at arch/um/os-Linux/process.c:268
+> #24 0x080588cb in new_thread_handler () at arch/um/kernel/process.c:153
+> #25 0x00000000 in ?? ()
+> ---cut---
+
+Can you post the whole oops message?  I'd want to see what pointer is
+NULL.
 
 Thanks,
-//richard
 
-------------------------------------------------------------------------------
-Got Input?   Slashdot Needs You.
-Take our quick survey online.  Come on, we don't ask for help often.
-Plus, you'll get a chance to win $100 to spend on ThinkGeek.
-http://p.sf.net/sfu/slashdot-survey
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+-- 
+Vasiliy Kulikov
+http://www.openwall.com - bringing security into open computing environments
