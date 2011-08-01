@@ -1,68 +1,49 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Toralf =?iso-8859-1?q?F=F6rster?= <toralf.foerster@gmx.de>
-Date: Thu, 4 Aug 2011 13:04:40 +0200
-References: <201108011541.59640.richard@nod.at> <08cf4697685ecd9bcb7e4eefe516f2ee@localhost> <20110801172452.GA26190@albatros>
-In-Reply-To: <20110801172452.GA26190@albatros>
+Message-ID: <4E36E5AB.5000509@arm.com>
+Date: Mon, 01 Aug 2011 18:43:07 +0100
+From: Marc Zyngier <marc.zyngier@arm.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Message-Id: <201108041304.41135.toralf.foerster@gmx.de>
+References: <201108011541.59640.richard@nod.at> <20110801134911.GA11705@albatros> <43e4e9e98b32d3d3eb06ab837a019ad8@localhost> <20110801171042.GA25954@albatros> <08cf4697685ecd9bcb7e4eefe516f2ee@localhost> <20110801172452.GA26190@albatros> <20110801173206.GA26440@albatros>
+In-Reply-To: <20110801173206.GA26440@albatros>
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: shm updates broke UML
 To: Vasiliy Kulikov <segoon@openwall.com>
-Cc: Marc Zyngier <marc.zyngier@arm.com>, Richard Weinberger <richard@nod.at>, serge.hallyn@canonical.com, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Richard Weinberger <richard@nod.at>, "serge.hallyn@canonical.com" <serge.hallyn@canonical.com>, "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "toralf.foerster@gmx.de" <toralf.foerster@gmx.de>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-issue solved for the UML, tested linux-v3.0-7347-g288d5ab whcih works f=
-ine.
+On 01/08/11 18:32, Vasiliy Kulikov wrote:
+> Marc,
+> 
+> On Mon, Aug 01, 2011 at 21:24 +0400, Vasiliy Kulikov wrote:
+>> On Mon, Aug 01, 2011 at 19:19 +0200, Marc Zyngier wrote:
+>>> Here you go (sorry about the line wrapping, damned webmail...):
+>>
+>> Thank you!  Now I see that the problem is rw_mutex is not initialized:
+>>
+>> 	down_write(&shm_ids(ns).rw_mutex);
+>>
+>> void __sched __down_write_nested(struct rw_semaphore *sem, int subclass)
+>> {
+>>     ...
+>> 	if (sem->activity == 0 && list_empty(&sem->wait_list)) {
+>>                                          ^^^^^^^^^^^^^^^ is NULL
+>>
+>> Wtf - ipc namespace should be fully initialized for the moment of
+>> threads run...
+> 
+> Does ARM try to run _any_ threads before do_initcalls()?  IPC
+> initialization is initcall, so any thread before do_initcalls() is a
+> dependency bug.
 
-BTW is there a special commit id dealing with this bug or was it solved=
- as a=20
-side effect of another commit ?
+I don't think it does anything different from other architectures.
+The crash I'm observing seem to be from kworker, which is created from
+an early_initcall (kernel/workqueue.c).
 
-Vasiliy Kulikov wrote at 19:24:52
-> On Mon, Aug 01, 2011 at 19:19 +0200, Marc Zyngier wrote:
-> > Here you go (sorry about the line wrapping, damned webmail...):
-> Thank you!  Now I see that the problem is rw_mutex is not initialized=
-:
->=20
-> 	down_write(&shm_ids(ns).rw_mutex);
->=20
-> void __sched __down_write_nested(struct rw_semaphore *sem, int subcla=
-ss)
-> {
->     ...
-> 	if (sem->activity =3D=3D 0 && list_empty(&sem->wait_list)) {
->                                          ^^^^^^^^^^^^^^^ is NULL
->=20
-> Wtf - ipc namespace should be fully initialized for the moment of
-> threads run...
->=20
-> > Calibrating local timer... 104.99MHz.
-> > CPU1: Booted secondary processor
-> > CPU1: Unknown IPI message 0x1
-> > CPU2: Booted secondary processor
-> > CPU2: Unknown IPI message 0x1
-> > CPU3: Booted secondary processor
-> > CPU3: Unknown IPI message 0x1
-> > Brought up 4 CPUs
-> > SMP: Total of 4 processors activated (333.41 BogoMIPS).
-> > ns =3D c0447474, ids =3D c04474d0
-> > ns =3D c0447474, ids =3D c04474d0
-> > wait_list =3D c04474e0
-> > next =3D   (null)
->=20
->            ^^^^^^
+This looks very much like a generic problem to me.
 
-
---=20
-MfG/Sincerely
-Toralf F=F6rster
-pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+	M.
+-- 
+Jazz is not dead. It just smells funny...
 
