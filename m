@@ -1,95 +1,76 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4E4C2B6F.7000800@nod.at>
-Date: Wed, 17 Aug 2011 22:58:23 +0200
-From: Richard Weinberger <richard@nod.at>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <segooon@gmail.com>) id 1Qovub-0005n4-9k
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 04 Aug 2011 11:16:25 +0000
+Received: from mail-fx0-f47.google.com ([209.85.161.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Qovua-0006GH-Bg
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 04 Aug 2011 11:16:25 +0000
+Received: by fxg11 with SMTP id 11so1025336fxg.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 04 Aug 2011 04:16:18 -0700 (PDT)
+Date: Thu, 4 Aug 2011 15:16:13 +0400
+From: Vasiliy Kulikov <segoon@openwall.com>
+Message-ID: <20110804111613.GA2375@albatros>
+References: <201108011541.59640.richard@nod.at>
+	<08cf4697685ecd9bcb7e4eefe516f2ee@localhost>
+	<20110801172452.GA26190@albatros>
+	<201108041304.41135.toralf.foerster@gmx.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------010707040909000705010105"
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Floating point problems on UML - help needed
-To: linux-kernel@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, gunnarlindroth@hotmail.com
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <201108041304.41135.toralf.foerster@gmx.de>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] shm updates broke UML
+To: Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
+Cc: serge.hallyn@canonical.com, user-mode-linux-devel@lists.sourceforge.net, Marc Zyngier <marc.zyngier@arm.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, torvalds@linux-foundation.org
 
-This is a multi-part message in MIME format.
---------------010707040909000705010105
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, Aug 04, 2011 at 13:04 +0200, Toralf F=F6rster wrote:
+> issue solved for the UML, tested linux-v3.0-7347-g288d5ab whcih works fin=
+e.
+> =
 
-Hi,
+> BTW is there a special commit id dealing with this bug or was it solved a=
+s a =
 
-Gunnar reported that some Java program does not work proper within 
-UserModeLinux.
-After looking closer at the problem I was able to reduce it to a small C 
-program. (Program is attached.)
+> side effect of another commit ?
 
-It looks like FPU registers get sometimes lost after switching between 
-two or more threads.
-It also happens not always, that's why my test program contains a 
-infinite loop. After a few million iterations the program abort()s.
-
-I can reproduce the issue on both x86 and x86_64, the host's or UML's 
-kernel version does not matter.
-I've tested 2.6.18 to 3.1-rc2.
-
-Interestingly the problem occurs not on my old Pentium 4 machines.
-One P4 has HT the other not.
-Only "newer" CPUs are affected.
-
-First I thought it's a race in _switch_to(), but adding 
-unblock/block_signals() did not help.
-Currently I'm running out of ideas.
-I'm not an expert in this area of UML. :-(
-
-Any idea what goes wrong here?
+The oops is fixed by 298507d4d2cff2248e84afcf646b697301294442 (shm:
+optimize exit_shm()), but the dependency problem (tasks spawned by the
+kernel are started with uninitialized namespaces) is not solved yet,
+AFAICS.
 
 Thanks,
-//richard
 
---------------010707040909000705010105
-Content-Type: text/x-csrc;
- name="fpu-test.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="fpu-test.c"
+-- =
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
+Vasiliy Kulikov
+http://www.openwall.com - bringing security into open computing environments
 
-static int xxx(float f)
-{
-	if(f <= 0.0){
-		printf("wrong f!: %f\n", f);
-		return -1;
-	}
+---------------------------------------------------------------------------=
+---
+BlackBerry&reg; DevCon Americas, Oct. 18-20, San Francisco, CA
+The must-attend event for mobile developers. Connect with experts. =
 
-	return 0;
-}
+Get tools for creating Super Apps. See the latest technologies.
+Sessions, hands-on labs, demos & much more. Register early & save!
+http://p.sf.net/sfu/rim-blackberry-1
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-static void *fun(void *arg)
-{
-	float f = 5.0;
-
-	for(;;){
-		if(xxx(f) < 0)
-			abort();
-	}
-
-	return NULL;
-}
-
-int main()
-{
-	pthread_t t1, t2;
-
-	pthread_create(&t1, NULL, fun, NULL);
-	pthread_create(&t2, NULL, fun, NULL);
-
-	pthread_join(t1, NULL);
-	pthread_join(t2, NULL);
-
-	return 0;
-}
-
---------------010707040909000705010105--
