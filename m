@@ -1,8 +1,9 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Wed, 10 Aug 2011 18:44:32 +0100
+Date: Wed, 10 Aug 2011 05:04:45 +0100
 From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20110810174432.GN2203@ZenIV.linux.org.uk>
-References: <CAFLxGvy0QqoySDFwZpygHeXvQ7hG-B7z5iZq8qx3GUkFX8w2RQ@mail.gmail.com>
+Message-ID: <20110810040445.GM2203@ZenIV.linux.org.uk>
+References: <1312066923.22074.53.camel@i7.infradead.org>
+ <CAFLxGvy0QqoySDFwZpygHeXvQ7hG-B7z5iZq8qx3GUkFX8w2RQ@mail.gmail.com>
  <1312151063.18010.25.camel@i7.infradead.org>
  <20110731224834.GC2203@ZenIV.linux.org.uk>
  <20110731225801.GD2203@ZenIV.linux.org.uk>
@@ -11,11 +12,10 @@ References: <CAFLxGvy0QqoySDFwZpygHeXvQ7hG-B7z5iZq8qx3GUkFX8w2RQ@mail.gmail.com>
  <20110801043207.GE2203@ZenIV.linux.org.uk>
  <CAFLxGvwxQ2VeqkDpkiVks35DHxZFvAP5nKUtD7i4Z32291otOg@mail.gmail.com>
  <20110809233817.GL2203@ZenIV.linux.org.uk>
- <20110810040445.GM2203@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20110810040445.GM2203@ZenIV.linux.org.uk>
+In-Reply-To: <20110809233817.GL2203@ZenIV.linux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [PATCH 1/5] um: Use __i386__ in ifdef for vsyscall exports, not
  SUBARCH_i386
@@ -23,22 +23,23 @@ To: richard -rw- weinberger <richard.weinberger@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, Arnaud Lacombe <lacombar@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+On Wed, Aug 10, 2011 at 12:38:17AM +0100, Al Viro wrote:
 
-> FWIW, what I'm seeing there is chan_interrupt() with tty that has definitely
-> been kfree'd.  What happens is that we have several opened files for
-> given tty and they all get closed in parallel.  Now, ->release() of
-> tty calls ->close() of driver (line_close() in this case) and then
-> gets around to decrementing tty->count.  As the result, *all* callers
-> of line_close() see line->tty->count > 1 and leave line->tty not reset to
-> NULL.  Oops...
-> 
-> Moral: do not use the counters on upper layer objects unless you know
-> what you are doing *and* know what will happen to that upper layer in
-> years to come...
+> 	* tty-on-xterm sometimes crashes on the first keysyms reaching it;
+> as far as I can tell, it's something related to SIGWINCH handling - whether
+> it happens or not depends on the way xterm windows are laid out and flipping
+> between them first seems to prevent that shit.  If it hasn't happened at once,
+> it won't happen at all...  Something in drivers/chan or drivers/line, most
+> likely...
 
-Fixed and pushed (um-header.git #master); however, looking around that area
-shows more races ;-/  Incidentally, why the hell is ->chan_list a cyclic list?
-Holding at most two elements...  Why not an array of two possibly NULL
-pointers?  And what is chan->primary?  Unless I'm seriously misreading that
-code, it's always 1; moreover, all instances of the method that gets ->primary
-value as argument ignore that argument completely...
+FWIW, what I'm seeing there is chan_interrupt() with tty that has definitely
+been kfree'd.  What happens is that we have several opened files for
+given tty and they all get closed in parallel.  Now, ->release() of
+tty calls ->close() of driver (line_close() in this case) and then
+gets around to decrementing tty->count.  As the result, *all* callers
+of line_close() see line->tty->count > 1 and leave line->tty not reset to
+NULL.  Oops...
+
+Moral: do not use the counters on upper layer objects unless you know
+what you are doing *and* know what will happen to that upper layer in
+years to come...
