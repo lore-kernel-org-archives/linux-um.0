@@ -1,73 +1,41 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20110811042319.GP2203@ZenIV.linux.org.uk>
+Date: Thu, 11 Aug 2011 05:23:19 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Message-ID: <20110811042319.GP2203@ZenIV.linux.org.uk>
 References: <1312151063.18010.25.camel@i7.infradead.org>
-	<20110731224834.GC2203@ZenIV.linux.org.uk>
-	<20110731225801.GD2203@ZenIV.linux.org.uk>
-	<1312153988.18010.39.camel@i7.infradead.org>
-	<CAFLxGvyewG70ZgU41Kmu_eOYpjZ0TVXYwYq1AfS1sXONAM6G_w@mail.gmail.com>
-	<20110801043207.GE2203@ZenIV.linux.org.uk>
-	<CAFLxGvwxQ2VeqkDpkiVks35DHxZFvAP5nKUtD7i4Z32291otOg@mail.gmail.com>
-	<20110809233817.GL2203@ZenIV.linux.org.uk>
-	<20110810040445.GM2203@ZenIV.linux.org.uk>
-	<20110810174432.GN2203@ZenIV.linux.org.uk>
-	<20110811042319.GP2203@ZenIV.linux.org.uk>
-Date: Thu, 11 Aug 2011 14:13:22 +0200
-Message-ID: <CAFLxGvwE8FGcRtY6v=6jqatZEUwvbBc0ki43jiTYsUp9e_uiAQ@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+ <20110731224834.GC2203@ZenIV.linux.org.uk>
+ <20110731225801.GD2203@ZenIV.linux.org.uk>
+ <1312153988.18010.39.camel@i7.infradead.org>
+ <CAFLxGvyewG70ZgU41Kmu_eOYpjZ0TVXYwYq1AfS1sXONAM6G_w@mail.gmail.com>
+ <20110801043207.GE2203@ZenIV.linux.org.uk>
+ <CAFLxGvwxQ2VeqkDpkiVks35DHxZFvAP5nKUtD7i4Z32291otOg@mail.gmail.com>
+ <20110809233817.GL2203@ZenIV.linux.org.uk>
+ <20110810040445.GM2203@ZenIV.linux.org.uk>
+ <20110810174432.GN2203@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20110810174432.GN2203@ZenIV.linux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH 1/5] um: Use __i386__ in ifdef for vsyscall exports, not SUBARCH_i386
-To: Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 1/5] um: Use __i386__ in ifdef for vsyscall exports, not
+ SUBARCH_i386
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, Arnaud Lacombe <lacombar@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Aug 11, 2011 at 6:23 AM, Al Viro <viro@zeniv.linux.org.uk> wrot=
-e:
-> On Wed, Aug 10, 2011 at 06:44:32PM +0100, Al Viro wrote:
->
->> Fixed and pushed (um-header.git #master); however, looking around th=
-at area
->> shows more races ;-/
->
-> Such as, for example, seriously broken handling of free_winch(): dela=
-ying
-> free_irq() until after return from IRQ handler is nice, but not enoug=
-h -
-> freeing struct winch itself (or winch->stack, for that matter) is als=
-o best
-> left until after free_irq(). =A0Normal way to do that is schedule_wor=
-k()...
-> Fixed and pushed...
->
-> Folks, I don't know what to do with all that stuff; as far as I'm con=
-cerned
-> the ideal variant would be to have functioning git tree maintained by=
- Richard.
-> Is that possible? =A0I can ask to start pulling um-header.git into li=
-nux-next,
-> but I would very much prefer to avoid that, TYVM... =A0If nothing els=
-e, ACK/NAK
-> on the stuff in there should be done by architecture maintainer(s).
->
+On Wed, Aug 10, 2011 at 06:44:32PM +0100, Al Viro wrote:
 
-Sorry for the delay.
-Writing my theses consumes a lot of my time...
+> Fixed and pushed (um-header.git #master); however, looking around that area
+> shows more races ;-/
 
-I've already started reviewing and testing your changes.
-Currently they life in my local git repo.
-But a git.kernel.org repo is on the way!
+Such as, for example, seriously broken handling of free_winch(): delaying
+free_irq() until after return from IRQ handler is nice, but not enough -
+freeing struct winch itself (or winch->stack, for that matter) is also best
+left until after free_irq().  Normal way to do that is schedule_work()...
+Fixed and pushed...
 
-Later I'll submit all changes to akpm.
-
---=20
-Thanks,
-//richard
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
-
+Folks, I don't know what to do with all that stuff; as far as I'm concerned
+the ideal variant would be to have functioning git tree maintained by Richard.
+Is that possible?  I can ask to start pulling um-header.git into linux-next,
+but I would very much prefer to avoid that, TYVM...  If nothing else, ACK/NAK
+on the stuff in there should be done by architecture maintainer(s).
