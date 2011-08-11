@@ -1,82 +1,67 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7og-0006Ru-SX
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 18:59:46 +0000
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7og-0008Ph-5U
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 18:59:46 +0000
-Date: Thu, 18 Aug 2011 19:59:39 +0100
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Thu, 11 Aug 2011 15:05:28 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Message-ID: <20110811140528.GR2203@ZenIV.linux.org.uk>
+References: <20110731225801.GD2203@ZenIV.linux.org.uk>
+ <1312153988.18010.39.camel@i7.infradead.org>
+ <CAFLxGvyewG70ZgU41Kmu_eOYpjZ0TVXYwYq1AfS1sXONAM6G_w@mail.gmail.com>
+ <20110801043207.GE2203@ZenIV.linux.org.uk>
+ <CAFLxGvwxQ2VeqkDpkiVks35DHxZFvAP5nKUtD7i4Z32291otOg@mail.gmail.com>
+ <20110809233817.GL2203@ZenIV.linux.org.uk>
+ <20110810040445.GM2203@ZenIV.linux.org.uk>
+ <20110810174432.GN2203@ZenIV.linux.org.uk>
+ <20110811042319.GP2203@ZenIV.linux.org.uk>
+ <CAFLxGvwE8FGcRtY6v=6jqatZEUwvbBc0ki43jiTYsUp9e_uiAQ@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <E1Qu7oZ-0007QL-4L@ZenIV.linux.org.uk>
-From: Al Viro <viro@ftp.linux.org.uk>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 04/91] um: winch_interrupt() can happen
-	inside of free_winch()
-To: richard@nod.at
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvwE8FGcRtY6v=6jqatZEUwvbBc0ki43jiTYsUp9e_uiAQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH 1/5] um: Use __i386__ in ifdef for vsyscall exports, not
+ SUBARCH_i386
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Arnaud Lacombe <lacombar@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+On Thu, Aug 11, 2011 at 02:13:22PM +0200, richard -rw- weinberger wrote:
 
-... so set winch->fd to -1 before doing free_irq(), to avoid having
-winch_interrupt() come from/during the latter and attempt to do
-reactivate_fd() on something that's already gone.
+> Sorry for the delay.
+> Writing my theses consumes a lot of my time...
+> 
+> I've already started reviewing and testing your changes.
+> Currently they life in my local git repo.
+> But a git.kernel.org repo is on the way!
+> 
+> Later I'll submit all changes to akpm.
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- arch/um/drivers/line.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
+OK...  It does end up in linux-next, so...  OTOH, why not send direct pull
+requests to Linus?
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index c5bff1d..91bf1894 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -725,6 +725,8 @@ struct winch {
- 
- static void free_winch(struct winch *winch, int free_irq_ok)
- {
-+	int fd = winch->fd;
-+	winch->fd = -1;
- 	if (free_irq_ok)
- 		free_irq(WINCH_IRQ, winch);
- 
-@@ -732,8 +734,8 @@ static void free_winch(struct winch *winch, int free_irq_ok)
- 
- 	if (winch->pid != -1)
- 		os_kill_process(winch->pid, 1);
--	if (winch->fd != -1)
--		os_close_file(winch->fd);
-+	if (fd != -1)
-+		os_close_file(fd);
- 	if (winch->stack != 0)
- 		free_stack(winch->stack, 0);
- 	kfree(winch);
--- 
-1.7.2.5
+Speaking of more fun in there:
+	* coredumps do not contain fp registers; fixable by switching to
+what x86 is doing (CORE_DUMP_USE_REGSET and corresponding bits in uml-x86
+ptrace.c - arch/x86/um/ptrace*.c in this tree, arch/um/sys-*/ptrace.c in
+mainline)
+	* more drivers/{lin,chan*}.c races ;-/  Protecting setup_one_line()
+from being done on opened ones is nice, but we are really not safe until
+parse_chan_pair() has been finished...  I've partial fixes, but it's not
+quite trivial.
+	* fixrange_init() assumes that start and end are both multiples of
+PMD_SIZE, which is not true, to put it mildly.  Wraparounds are possible
+there - e.g. I've seen it called with 0xfffe000/0xffff000 for 32bit UML
+running on amd64 host.  Not pretty, since vaddr < end will always remain
+true when called that way.  With 3-level pagetables it gets really ugly -
+it's nowhere near the end of upper-level table yet, so i < PTRS_PER_PGD
+also doesn't stop the sucker.  I think the right solution here is to shift
+vaddr down by PMD_SHIFT and do the same to end (taking care of fencepost
+errors, of course).
+	* no biarch support; that one might be really painful to implement,
+but if we want it on something like ppc64 or sparc64 where the userland
+is routinely 32bit...  That's going to be really rough on mm-switching
+variants, BTW - when kernel address space is 64bit one and userland ones
+are 32bit... <shudder>
 
-
-
-------------------------------------------------------------------------------
-Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
-user administration capabilities and model configuration. Take 
-the hassle out of deploying and managing Subversion and the 
-tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+	Anyway, I'm back to pure VFS work for the next few weeks.  I'll
+probably dump fixrange_init() fixes into this tree, but anything beyond
+that will have to wait until I dig myself out of atomic_open work and
+unionfs/overlayfs/aufs/whatnot mess...
