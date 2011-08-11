@@ -1,67 +1,73 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 11 Aug 2011 15:05:28 +0100
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20110811140528.GR2203@ZenIV.linux.org.uk>
-References: <20110731225801.GD2203@ZenIV.linux.org.uk>
- <1312153988.18010.39.camel@i7.infradead.org>
- <CAFLxGvyewG70ZgU41Kmu_eOYpjZ0TVXYwYq1AfS1sXONAM6G_w@mail.gmail.com>
- <20110801043207.GE2203@ZenIV.linux.org.uk>
- <CAFLxGvwxQ2VeqkDpkiVks35DHxZFvAP5nKUtD7i4Z32291otOg@mail.gmail.com>
- <20110809233817.GL2203@ZenIV.linux.org.uk>
- <20110810040445.GM2203@ZenIV.linux.org.uk>
- <20110810174432.GN2203@ZenIV.linux.org.uk>
- <20110811042319.GP2203@ZenIV.linux.org.uk>
- <CAFLxGvwE8FGcRtY6v=6jqatZEUwvbBc0ki43jiTYsUp9e_uiAQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFLxGvwE8FGcRtY6v=6jqatZEUwvbBc0ki43jiTYsUp9e_uiAQ@mail.gmail.com>
+In-Reply-To: <20110811042319.GP2203@ZenIV.linux.org.uk>
+References: <1312151063.18010.25.camel@i7.infradead.org>
+	<20110731224834.GC2203@ZenIV.linux.org.uk>
+	<20110731225801.GD2203@ZenIV.linux.org.uk>
+	<1312153988.18010.39.camel@i7.infradead.org>
+	<CAFLxGvyewG70ZgU41Kmu_eOYpjZ0TVXYwYq1AfS1sXONAM6G_w@mail.gmail.com>
+	<20110801043207.GE2203@ZenIV.linux.org.uk>
+	<CAFLxGvwxQ2VeqkDpkiVks35DHxZFvAP5nKUtD7i4Z32291otOg@mail.gmail.com>
+	<20110809233817.GL2203@ZenIV.linux.org.uk>
+	<20110810040445.GM2203@ZenIV.linux.org.uk>
+	<20110810174432.GN2203@ZenIV.linux.org.uk>
+	<20110811042319.GP2203@ZenIV.linux.org.uk>
+Date: Thu, 11 Aug 2011 14:13:22 +0200
+Message-ID: <CAFLxGvwE8FGcRtY6v=6jqatZEUwvbBc0ki43jiTYsUp9e_uiAQ@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH 1/5] um: Use __i386__ in ifdef for vsyscall exports, not
- SUBARCH_i386
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Subject: Re: [PATCH 1/5] um: Use __i386__ in ifdef for vsyscall exports, not SUBARCH_i386
+To: Al Viro <viro@zeniv.linux.org.uk>
 Cc: David Woodhouse <dwmw2@infradead.org>, Arnaud Lacombe <lacombar@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Aug 11, 2011 at 02:13:22PM +0200, richard -rw- weinberger wrote:
+On Thu, Aug 11, 2011 at 6:23 AM, Al Viro <viro@zeniv.linux.org.uk> wrot=
+e:
+> On Wed, Aug 10, 2011 at 06:44:32PM +0100, Al Viro wrote:
+>
+>> Fixed and pushed (um-header.git #master); however, looking around th=
+at area
+>> shows more races ;-/
+>
+> Such as, for example, seriously broken handling of free_winch(): dela=
+ying
+> free_irq() until after return from IRQ handler is nice, but not enoug=
+h -
+> freeing struct winch itself (or winch->stack, for that matter) is als=
+o best
+> left until after free_irq(). =A0Normal way to do that is schedule_wor=
+k()...
+> Fixed and pushed...
+>
+> Folks, I don't know what to do with all that stuff; as far as I'm con=
+cerned
+> the ideal variant would be to have functioning git tree maintained by=
+ Richard.
+> Is that possible? =A0I can ask to start pulling um-header.git into li=
+nux-next,
+> but I would very much prefer to avoid that, TYVM... =A0If nothing els=
+e, ACK/NAK
+> on the stuff in there should be done by architecture maintainer(s).
+>
 
-> Sorry for the delay.
-> Writing my theses consumes a lot of my time...
-> 
-> I've already started reviewing and testing your changes.
-> Currently they life in my local git repo.
-> But a git.kernel.org repo is on the way!
-> 
-> Later I'll submit all changes to akpm.
+Sorry for the delay.
+Writing my theses consumes a lot of my time...
 
-OK...  It does end up in linux-next, so...  OTOH, why not send direct pull
-requests to Linus?
+I've already started reviewing and testing your changes.
+Currently they life in my local git repo.
+But a git.kernel.org repo is on the way!
 
-Speaking of more fun in there:
-	* coredumps do not contain fp registers; fixable by switching to
-what x86 is doing (CORE_DUMP_USE_REGSET and corresponding bits in uml-x86
-ptrace.c - arch/x86/um/ptrace*.c in this tree, arch/um/sys-*/ptrace.c in
-mainline)
-	* more drivers/{lin,chan*}.c races ;-/  Protecting setup_one_line()
-from being done on opened ones is nice, but we are really not safe until
-parse_chan_pair() has been finished...  I've partial fixes, but it's not
-quite trivial.
-	* fixrange_init() assumes that start and end are both multiples of
-PMD_SIZE, which is not true, to put it mildly.  Wraparounds are possible
-there - e.g. I've seen it called with 0xfffe000/0xffff000 for 32bit UML
-running on amd64 host.  Not pretty, since vaddr < end will always remain
-true when called that way.  With 3-level pagetables it gets really ugly -
-it's nowhere near the end of upper-level table yet, so i < PTRS_PER_PGD
-also doesn't stop the sucker.  I think the right solution here is to shift
-vaddr down by PMD_SHIFT and do the same to end (taking care of fencepost
-errors, of course).
-	* no biarch support; that one might be really painful to implement,
-but if we want it on something like ppc64 or sparc64 where the userland
-is routinely 32bit...  That's going to be really rough on mm-switching
-variants, BTW - when kernel address space is 64bit one and userland ones
-are 32bit... <shudder>
+Later I'll submit all changes to akpm.
 
-	Anyway, I'm back to pure VFS work for the next few weeks.  I'll
-probably dump fixrange_init() fixes into this tree, but anything beyond
-that will have to wait until I dig myself out of atomic_open work and
-unionfs/overlayfs/aufs/whatnot mess...
+--=20
+Thanks,
+//richard
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+
