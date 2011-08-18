@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7tr-0007vN-4a
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7tN-0007Gw-9v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:05:07 +0000
+	Thu, 18 Aug 2011 19:04:37 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7tq-00009D-Cg
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7tM-0004rH-El
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:05:07 +0000
-Date: Thu, 18 Aug 2011 20:04:59 +0100
+	Thu, 18 Aug 2011 19:04:37 +0000
+Date: Thu, 18 Aug 2011 20:04:29 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7tj-0007gP-Fy@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7tF-0007fk-FG@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,59 +26,134 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 36/91] um: take userland definition of
- barrier() to user.h
+Subject: [uml-devel] Subject: [PATCH 33/91] um: simplify set_handler()
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
+For one thing, we always block the same signals (IRQ ones - IO, WINCH, VTALRM),
+so there's no need to pass sa_mask elements in arguments.  For another, the
+flags depend only on whether it's an IRQ signal or not (we add SA_RESTART
+for them).
+
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/include/shared/process.h |    3 ---
- arch/um/include/shared/user.h    |    3 +++
- arch/um/os-Linux/signal.c        |    3 ---
- 3 files changed, 3 insertions(+), 6 deletions(-)
+ arch/um/include/shared/os.h     |    2 +-
+ arch/um/os-Linux/process.c      |   19 ++++++-------------
+ arch/um/os-Linux/signal.c       |   22 +++++++++++-----------
+ arch/um/os-Linux/skas/process.c |    3 +--
+ 4 files changed, 19 insertions(+), 27 deletions(-)
 
-diff --git a/arch/um/include/shared/process.h b/arch/um/include/shared/process.h
-index bb873a5..2821530 100644
---- a/arch/um/include/shared/process.h
-+++ b/arch/um/include/shared/process.h
-@@ -8,9 +8,6 @@
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 2e2663a..598ca82 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -225,7 +225,7 @@ extern char *get_umid(void);
+ extern void timer_init(void);
+ extern void set_sigstack(void *sig_stack, int size);
+ extern void remove_sigstack(void);
+-extern void set_handler(int sig, void (*handler)(int), int flags, ...);
++extern void set_handler(int sig, void (*handler)(int));
+ extern int change_sig(int signal, int on);
+ extern void block_signals(void);
+ extern void unblock_signals(void);
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index c1a8fa7..075ae92 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -235,20 +235,13 @@ out:
  
- #include <signal.h>
- 
--/* Copied from linux/compiler-gcc.h since we can't include it directly */
--#define barrier() __asm__ __volatile__("": : :"memory")
+ void init_new_thread_signals(void)
+ {
+-	set_handler(SIGSEGV, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGIO, SIGWINCH, SIGVTALRM, -1);
+-	set_handler(SIGTRAP, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGIO, SIGWINCH, SIGVTALRM, -1);
+-	set_handler(SIGFPE, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGIO, SIGWINCH, SIGVTALRM, -1);
+-	set_handler(SIGILL, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGIO, SIGWINCH, SIGVTALRM, -1);
+-	set_handler(SIGBUS, (__sighandler_t) sig_handler, SA_ONSTACK,
+-		    SIGIO, SIGWINCH, SIGVTALRM, -1);
++	set_handler(SIGSEGV, (__sighandler_t) sig_handler);
++	set_handler(SIGTRAP, (__sighandler_t) sig_handler);
++	set_handler(SIGFPE, (__sighandler_t) sig_handler);
++	set_handler(SIGILL, (__sighandler_t) sig_handler);
++	set_handler(SIGBUS, (__sighandler_t) sig_handler);
+ 	signal(SIGHUP, SIG_IGN);
 -
- extern void sig_handler(int sig, struct sigcontext *sc);
- extern void alarm_handler(int sig, struct sigcontext *sc);
- 
-diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
-index 58c0581..4fa82c0 100644
---- a/arch/um/include/shared/user.h
-+++ b/arch/um/include/shared/user.h
-@@ -40,4 +40,7 @@ extern int in_aton(char *str);
- extern size_t strlcpy(char *, const char *, size_t);
- extern size_t strlcat(char *, const char *, size_t);
- 
-+/* Copied from linux/compiler-gcc.h since we can't include it directly */
-+#define barrier() __asm__ __volatile__("": : :"memory")
-+
- #endif
+-	set_handler(SIGIO, (__sighandler_t) sig_handler,
+-		    SA_ONSTACK | SA_RESTART, SIGIO, SIGWINCH, SIGVTALRM, -1);
++	set_handler(SIGIO, (__sighandler_t) sig_handler);
+ 	signal(SIGWINCH, SIG_IGN);
+ 	signal(SIGTERM, SIG_DFL);
+ }
 diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index c4a4e20..08d3061 100644
+index 75c3e9c..f248fb2 100644
 --- a/arch/um/os-Linux/signal.c
 +++ b/arch/um/os-Linux/signal.c
-@@ -16,9 +16,6 @@
- #include "sysdep/barrier.h"
- #include "sysdep/sigcontext.h"
+@@ -111,8 +111,7 @@ void alarm_handler(int sig, struct sigcontext *sc)
  
--/* Copied from linux/compiler-gcc.h since we can't include it directly */
--#define barrier() __asm__ __volatile__("": : :"memory")
+ void timer_init(void)
+ {
+-	set_handler(SIGVTALRM, (__sighandler_t) alarm_handler,
+-		    SA_ONSTACK | SA_RESTART, SIGIO, SIGWINCH, -1);
++	set_handler(SIGVTALRM, (__sighandler_t) alarm_handler);
+ }
+ 
+ void set_sigstack(void *sig_stack, int size)
+@@ -174,27 +173,28 @@ static void hard_handler(int sig, siginfo_t *info, void *p)
+ 	handle_signal(sig, (struct sigcontext *) &uc->uc_mcontext);
+ }
+ 
+-void set_handler(int sig, void (*handler)(int), int flags, ...)
++void set_handler(int sig, void (*handler)(int))
+ {
+ 	struct sigaction action;
+-	va_list ap;
++	int flags = SA_SIGINFO | SA_ONSTACK;
+ 	sigset_t sig_mask;
+-	int mask;
+ 
+ 	handlers[sig] = (void (*)(int, struct sigcontext *)) handler;
+ 	action.sa_sigaction = hard_handler;
+ 
++	/* block irq ones */
+ 	sigemptyset(&action.sa_mask);
 -
- void (*sig_info[NSIG])(int, struct uml_pt_regs *) = {
- 	[SIGTRAP]	= relay_signal,
- 	[SIGFPE]	= relay_signal,
+-	va_start(ap, flags);
+-	while ((mask = va_arg(ap, int)) != -1)
+-		sigaddset(&action.sa_mask, mask);
+-	va_end(ap);
++	sigaddset(&action.sa_mask, SIGVTALRM);
++	sigaddset(&action.sa_mask, SIGIO);
++	sigaddset(&action.sa_mask, SIGWINCH);
+ 
+ 	if (sig == SIGSEGV)
+ 		flags |= SA_NODEFER;
+ 
+-	action.sa_flags = flags | SA_SIGINFO;
++	if (sigismember(&action.sa_mask, sig))
++		flags |= SA_RESTART; /* if it's an irq signal */
++
++	action.sa_flags = flags;
+ 	action.sa_restorer = NULL;
+ 	if (sigaction(sig, &action, NULL) < 0)
+ 		panic("sigaction failed - errno = %d\n", errno);
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 6f9fc0d..8515fdd 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -642,8 +642,7 @@ int start_idle_thread(void *stack, jmp_buf *switch_buf)
+ {
+ 	int n;
+ 
+-	set_handler(SIGWINCH, (__sighandler_t) sig_handler,
+-		    SA_ONSTACK | SA_RESTART, SIGIO, SIGVTALRM, -1);
++	set_handler(SIGWINCH, (__sighandler_t) sig_handler);
+ 
+ 	/*
+ 	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
 -- 
 1.7.2.5
 
