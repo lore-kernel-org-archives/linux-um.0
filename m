@@ -1,68 +1,308 @@
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7uD-0007Se-0G
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Aug 2011 19:05:29 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7uC-0003rl-53
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Aug 2011 19:05:28 +0000
+Date: Thu, 18 Aug 2011 20:05:19 +0100
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20110801043207.GE2203@ZenIV.linux.org.uk>
-References: <1312066693.22074.50.camel@i7.infradead.org>
-	<1312066923.22074.53.camel@i7.infradead.org>
-	<CAFLxGvy0QqoySDFwZpygHeXvQ7hG-B7z5iZq8qx3GUkFX8w2RQ@mail.gmail.com>
-	<1312151063.18010.25.camel@i7.infradead.org>
-	<20110731224834.GC2203@ZenIV.linux.org.uk>
-	<20110731225801.GD2203@ZenIV.linux.org.uk>
-	<1312153988.18010.39.camel@i7.infradead.org>
-	<CAFLxGvyewG70ZgU41Kmu_eOYpjZ0TVXYwYq1AfS1sXONAM6G_w@mail.gmail.com>
-	<20110801043207.GE2203@ZenIV.linux.org.uk>
-Date: Mon, 1 Aug 2011 12:04:37 +0200
-Message-ID: <CAMuHMdUXZw=NO-sXLWu8TMkwE-_A_sq60KUVkYZrNFqcLOALrA@mail.gmail.com>
-Subject: Re: [uml-devel] [PATCH 1/5] um: Use __i386__ in ifdef for vsyscall
- exports, not SUBARCH_i386
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: richard -rw- weinberger <richard.weinberger@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, Arnaud Lacombe <lacombar@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Message-Id: <E1Qu7u3-0007h0-GT@ZenIV.linux.org.uk>
+From: Al Viro <viro@ftp.linux.org.uk>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] Subject: [PATCH 38/91] um: finish conversion to
+	mcontext_t
+To: richard@nod.at
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Aug 1, 2011 at 06:32, Al Viro <viro@zeniv.linux.org.uk> wrote:
-> On Mon, Aug 01, 2011 at 01:17:17AM +0200, richard -rw- weinberger wrote:
->> On Mon, Aug 1, 2011 at 1:13 AM, David Woodhouse <dwmw2@infradead.org> wr=
-ote:
->> > On Sun, 2011-07-31 at 23:58 +0100, Al Viro wrote:
->> >> FWIW, the next step (still not pushed there) is to move arch/um/sys-x=
-86 to
->> >> arch/x86/um, with arch/um/os-Linux/sys-x86 becoming arch/x86/um/os-Li=
-nux,
->> >> Kconfig.x86 moving to arch/x86/um/Kconfig and Makefile-x86 - to
->> >> arch/x86/um/Makefile.defs. ?Next after that - arch/powerpc/um (and ye=
-s,
->> >> it means resurrected uml/ppc port; for now - only ppc32, since I have=
- no
->> >> ppc64 boxen to test on).
->> >
->> > I can give you an account on a ppc64 box if that would help...
->>
->> Isn't UML on ppc broken since ages?
->
-> Yes. =C2=A0Resurrected is not the right word here, sorry...
 
-Oh, what a disappointment. I really hoped it was true...
+now we don't mix host and guest signal frame layouts anymore; moreover,
+we don't need host's struct sigcontext at all.
 
-BTW, how much work would it be to port UML to ARM? Would be nice-to-have on
-your Android phone, as it can provide a full Linux userspace without
-requiring rooting
-the phone.
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/um/os-Linux/signal.c                     |    6 ++--
+ arch/um/os-Linux/sys-x86/Makefile             |    2 +-
+ arch/um/os-Linux/sys-x86/mcontext.c           |   31 ++++++++++++++++++++++++
+ arch/um/sys-x86/shared/sysdep/mcontext.h      |   31 ++++++++++++++++++++++++
+ arch/um/sys-x86/shared/sysdep/sigcontext.h    |    5 ----
+ arch/um/sys-x86/shared/sysdep/sigcontext_32.h |   32 -------------------------
+ arch/um/sys-x86/shared/sysdep/sigcontext_64.h |   32 -------------------------
+ arch/um/sys-x86/stub_segv.c                   |    2 +-
+ arch/um/sys-x86/user-offsets.c                |    7 -----
+ 9 files changed, 67 insertions(+), 81 deletions(-)
+ create mode 100644 arch/um/os-Linux/sys-x86/mcontext.c
+ create mode 100644 arch/um/sys-x86/shared/sysdep/mcontext.h
+ delete mode 100644 arch/um/sys-x86/shared/sysdep/sigcontext.h
+ delete mode 100644 arch/um/sys-x86/shared/sysdep/sigcontext_32.h
+ delete mode 100644 arch/um/sys-x86/shared/sysdep/sigcontext_64.h
 
-Gr{oetje,eeting}s,
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index 07d9905..9f2c222 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -14,7 +14,7 @@
+ #include "os.h"
+ #include "process.h"
+ #include "sysdep/barrier.h"
+-#include "sysdep/sigcontext.h"
++#include "sysdep/mcontext.h"
+ 
+ void (*sig_info[NSIG])(int, struct uml_pt_regs *) = {
+ 	[SIGTRAP]	= relay_signal,
+@@ -34,7 +34,7 @@ static void sig_handler_common(int sig, mcontext_t *mc)
+ 	r.is_user = 0;
+ 	if (sig == SIGSEGV) {
+ 		/* For segfaults, we want the data from the sigcontext. */
+-		copy_sc(&r, (struct sigcontext *)mc);
++		get_regs_from_mc(&r, mc);
+ 		GET_FAULTINFO_FROM_MC(r.faultinfo, mc);
+ 	}
+ 
+@@ -84,7 +84,7 @@ static void real_alarm_handler(mcontext_t *mc)
+ 	struct uml_pt_regs regs;
+ 
+ 	if (mc != NULL)
+-		copy_sc(&regs, (struct sigcontext *)mc);
++		get_regs_from_mc(&regs, mc);
+ 	regs.is_user = 0;
+ 	unblock_signals();
+ 	timer_handler(SIGVTALRM, &regs);
+diff --git a/arch/um/os-Linux/sys-x86/Makefile b/arch/um/os-Linux/sys-x86/Makefile
+index 22cc507..253bfb8 100644
+--- a/arch/um/os-Linux/sys-x86/Makefile
++++ b/arch/um/os-Linux/sys-x86/Makefile
+@@ -3,7 +3,7 @@
+ # Licensed under the GPL
+ #
+ 
+-obj-y = registers.o task_size.o
++obj-y = registers.o task_size.o mcontext.o
+ 
+ obj-$(CONFIG_X86_32) += tls.o
+ obj-$(CONFIG_64BIT) += prctl.o
+diff --git a/arch/um/os-Linux/sys-x86/mcontext.c b/arch/um/os-Linux/sys-x86/mcontext.c
+new file mode 100644
+index 0000000..1d33d72
+--- /dev/null
++++ b/arch/um/os-Linux/sys-x86/mcontext.c
+@@ -0,0 +1,31 @@
++#include <sys/ucontext.h>
++#define __FRAME_OFFSETS
++#include <asm/ptrace.h>
++#include <sysdep/ptrace.h>
++
++void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
++{
++#ifdef __i386__
++#define COPY2(X,Y) regs->gp[X] = mc->gregs[REG_##Y]
++#define COPY(X) regs->gp[X] = mc->gregs[REG_##X]
++#define COPY_SEG(X) regs->gp[X] = mc->gregs[REG_##X] & 0xffff;
++#define COPY_SEG_CPL3(X) regs->gp[X] = (mc->gregs[REG_##X] & 0xffff) | 3;
++	COPY_SEG(GS); COPY_SEG(FS); COPY_SEG(ES); COPY_SEG(DS);
++	COPY(EDI); COPY(ESI); COPY(EBP);
++	COPY2(UESP, ESP); /* sic */
++	COPY(EBX); COPY(EDX); COPY(ECX); COPY(EAX);
++	COPY(EIP); COPY_SEG_CPL3(CS); COPY(EFL); COPY_SEG_CPL3(SS);
++#else
++#define COPY2(X,Y) regs->gp[X/sizeof(unsigned long)] = mc->gregs[REG_##Y]
++#define COPY(X) regs->gp[X/sizeof(unsigned long)] = mc->gregs[REG_##X]
++	COPY(R8); COPY(R9); COPY(R10); COPY(R11);
++	COPY(R12); COPY(R13); COPY(R14); COPY(R15);
++	COPY(RDI); COPY(RSI); COPY(RBP); COPY(RBX);
++	COPY(RDX); COPY(RAX); COPY(RCX); COPY(RSP);
++	COPY(RIP);
++	COPY2(EFLAGS, EFL);
++	COPY2(CS, CSGSFS);
++	regs->gp[CS / sizeof(unsigned long)] &= 0xffff;
++	regs->gp[CS / sizeof(unsigned long)] |= 3;
++#endif
++}
+diff --git a/arch/um/sys-x86/shared/sysdep/mcontext.h b/arch/um/sys-x86/shared/sysdep/mcontext.h
+new file mode 100644
+index 0000000..b724c54
+--- /dev/null
++++ b/arch/um/sys-x86/shared/sysdep/mcontext.h
+@@ -0,0 +1,31 @@
++/* 
++ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __SYS_SIGCONTEXT_X86_H
++#define __SYS_SIGCONTEXT_X86_H
++
++extern void get_regs_from_mc(struct uml_pt_regs *, mcontext_t *);
++
++#ifdef __i386__
++
++#define GET_FAULTINFO_FROM_MC(fi, mc) \
++	{ \
++		(fi).cr2 = (mc)->cr2; \
++		(fi).error_code = (mc)->gregs[REG_ERR]; \
++		(fi).trap_no = (mc)->gregs[REG_TRAPNO]; \
++	}
++
++#else
++
++#define GET_FAULTINFO_FROM_MC(fi, mc) \
++	{ \
++		(fi).cr2 = (mc)->gregs[REG_CR2]; \
++		(fi).error_code = (mc)->gregs[REG_ERR]; \
++		(fi).trap_no = (mc)->gregs[REG_TRAPNO]; \
++	}
++
++#endif
++
++#endif
+diff --git a/arch/um/sys-x86/shared/sysdep/sigcontext.h b/arch/um/sys-x86/shared/sysdep/sigcontext.h
+deleted file mode 100644
+index f7f49f4..0000000
+--- a/arch/um/sys-x86/shared/sysdep/sigcontext.h
++++ /dev/null
+@@ -1,5 +0,0 @@
+-#ifdef __i386__
+-#include "sigcontext_32.h"
+-#else
+-#include "sigcontext_64.h"
+-#endif
+diff --git a/arch/um/sys-x86/shared/sysdep/sigcontext_32.h b/arch/um/sys-x86/shared/sysdep/sigcontext_32.h
+deleted file mode 100644
+index 548c3cd..0000000
+--- a/arch/um/sys-x86/shared/sysdep/sigcontext_32.h
++++ /dev/null
+@@ -1,32 +0,0 @@
+-/* 
+- * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __SYS_SIGCONTEXT_I386_H
+-#define __SYS_SIGCONTEXT_I386_H
+-
+-#include <generated/user_constants.h>
+-
+-#define SC_OFFSET(sc, field) \
+-	*((unsigned long *) &(((char *) (sc))[HOST_##field]))
+-
+-#define SC_TRAPNO(sc) SC_OFFSET(sc, SC_TRAPNO)
+-#define SC_ERR(sc) SC_OFFSET(sc, SC_ERR)
+-#define SC_CR2(sc) SC_OFFSET(sc, SC_CR2)
+-
+-#define GET_FAULTINFO_FROM_SC(fi, sc) \
+-	{ \
+-		(fi).cr2 = SC_CR2(sc); \
+-		(fi).error_code = SC_ERR(sc); \
+-		(fi).trap_no = SC_TRAPNO(sc); \
+-	}
+-
+-#define GET_FAULTINFO_FROM_MC(fi, mc) \
+-	{ \
+-		(fi).cr2 = (mc)->cr2; \
+-		(fi).error_code = (mc)->gregs[REG_ERR]; \
+-		(fi).trap_no = (mc)->gregs[REG_TRAPNO]; \
+-	}
+-
+-#endif
+diff --git a/arch/um/sys-x86/shared/sysdep/sigcontext_64.h b/arch/um/sys-x86/shared/sysdep/sigcontext_64.h
+deleted file mode 100644
+index 5c4a6a3..0000000
+--- a/arch/um/sys-x86/shared/sysdep/sigcontext_64.h
++++ /dev/null
+@@ -1,32 +0,0 @@
+-/*
+- * Copyright 2003 PathScale, Inc.
+- *
+- * Licensed under the GPL
+- */
+-
+-#ifndef __SYSDEP_X86_64_SIGCONTEXT_H
+-#define __SYSDEP_X86_64_SIGCONTEXT_H
+-
+-#include <generated/user_constants.h>
+-
+-#define SC_OFFSET(sc, field) \
+-	 *((unsigned long *) &(((char *) (sc))[HOST_##field]))
+-#define SC_CR2(sc) SC_OFFSET(sc, SC_CR2)
+-#define SC_ERR(sc) SC_OFFSET(sc, SC_ERR)
+-#define SC_TRAPNO(sc) SC_OFFSET(sc, SC_TRAPNO)
+-
+-#define GET_FAULTINFO_FROM_SC(fi, sc) \
+-	{ \
+-		(fi).cr2 = SC_CR2(sc); \
+-		(fi).error_code = SC_ERR(sc); \
+-		(fi).trap_no = SC_TRAPNO(sc); \
+-	}
+-
+-#define GET_FAULTINFO_FROM_MC(fi, mc) \
+-	{ \
+-		(fi).cr2 = (mc)->gregs[REG_CR2]; \
+-		(fi).error_code = (mc)->gregs[REG_ERR]; \
+-		(fi).trap_no = (mc)->gregs[REG_TRAPNO]; \
+-	}
+-
+-#endif
+diff --git a/arch/um/sys-x86/stub_segv.c b/arch/um/sys-x86/stub_segv.c
+index bd2eaf6..b7450bd 100644
+--- a/arch/um/sys-x86/stub_segv.c
++++ b/arch/um/sys-x86/stub_segv.c
+@@ -5,7 +5,7 @@
+ 
+ #include "sysdep/stub.h"
+ #include "sysdep/faultinfo.h"
+-#include "sysdep/sigcontext.h"
++#include "sysdep/mcontext.h"
+ 
+ void __attribute__ ((__section__ (".__syscall_stub")))
+ stub_segv_handler(int sig, siginfo_t *info, void *p)
+diff --git a/arch/um/sys-x86/user-offsets.c b/arch/um/sys-x86/user-offsets.c
+index 718f0c0..3c19c48 100644
+--- a/arch/um/sys-x86/user-offsets.c
++++ b/arch/um/sys-x86/user-offsets.c
+@@ -14,15 +14,8 @@
+ #define DEFINE_LONGS(sym, val) \
+ 	asm volatile("\n->" #sym " %0 " #val : : "i" (val/sizeof(unsigned long)))
+ 
+-#define OFFSET(sym, str, mem) \
+-	DEFINE(sym, offsetof(struct str, mem));
+-
+ void foo(void)
+ {
+-	OFFSET(HOST_SC_TRAPNO, sigcontext, trapno);
+-	OFFSET(HOST_SC_ERR, sigcontext, err);
+-	OFFSET(HOST_SC_CR2, sigcontext, cr2);
+-
+ #ifdef __i386__
+ 	DEFINE_LONGS(HOST_FP_SIZE, sizeof(struct user_fpregs_struct));
+ 	DEFINE_LONGS(HOST_FPX_SIZE, sizeof(struct user_fpxregs_struct));
+-- 
+1.7.2.5
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+------------------------------------------------------------------------------
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
