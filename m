@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1Qu81P-0002cM-Fe
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7o3-0007IW-Ri
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:12:55 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu81O-0002c2-1w
+	Thu, 18 Aug 2011 18:59:07 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7o2-0003dD-P0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:12:55 +0000
-Message-ID: <4E4D642F.3010909@nod.at>
-Date: Thu, 18 Aug 2011 21:12:47 +0200
-From: Richard Weinberger <richard@nod.at>
+	Thu, 18 Aug 2011 18:59:07 +0000
+Date: Thu, 18 Aug 2011 19:58:59 +0100
 MIME-Version: 1.0
-References: <E1Qu7nv-0007OP-3E@ZenIV.linux.org.uk>
-In-Reply-To: <E1Qu7nv-0007OP-3E@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7nv-0007OP-3E@ZenIV.linux.org.uk>
+From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,45 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Subject: [PATCH 00/91] pending uml patches
-To: Al Viro <viro@ftp.linux.org.uk>
+Subject: [uml-devel] Subject: [PATCH 00/91] pending uml patches
+To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Al,
 
-Am 18.08.2011 20:58, schrieb Al Viro:
->
-> My apologies for mailbomb from hell.  *All* this stuff is available in
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/um-header.git/ #master,
-> but since uml folks had been stuck with mail and patch for a long time...
+My apologies for mailbomb from hell.  *All* this stuff is available in
+git://git.kernel.org/pub/scm/linux/kernel/git/viro/um-header.git/ #master,
+but since uml folks had been stuck with mail and patch for a long time...
 
-Have you touched your patches since yesterday?
-I've already pulled and uploaded them to my shiny new git repo at:
-git://git.kernel.org/pub/scm/linux/kernel/git/rw/linux-um.git unstable
+Anyway, most of the stuff in this pile is merging, cleaning and mutilating
+subarchitecture-related code in arch/um.  By the end of it we have x86
+bits largely merged between 32bit and 64bit variants and taken to arch/x86/um;
+headers seriously cleaned up and mostly free of x86-isms now (not completely -
+we still have page size dependencies in there).
 
-Due to the current mirroring problems with git.kernel.org I have not 
-sent made it public.
-Sorry for that, I screwed it. :-(
+Beginning of the series are pure build and driver fixes; those should go to
+Linus before 3.1-final, IMO.
 
-> Anyway, most of the stuff in this pile is merging, cleaning and mutilating
-> subarchitecture-related code in arch/um.  By the end of it we have x86
-> bits largely merged between 32bit and 64bit variants and taken to arch/x86/um;
-> headers seriously cleaned up and mostly free of x86-isms now (not completely -
-> we still have page size dependencies in there).
->
-> Beginning of the series are pure build and driver fixes; those should go to
-> Linus before 3.1-final, IMO.
+As far as I know, there's no regressions introduced by that pile; testing
+and comments would be, of course, welcome.
 
-Okay.
-
-> As far as I know, there's no regressions introduced by that pile; testing
-> and comments would be, of course, welcome.
->
-
-There was a small build regression, I've already fixed it!
-
-Thanks,
-//richard
 
 ------------------------------------------------------------------------------
 Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
