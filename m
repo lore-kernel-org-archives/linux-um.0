@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7xj-0003H3-HJ
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu81H-0002aB-MI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:09:07 +0000
+	Thu, 18 Aug 2011 19:12:47 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7xi-0000HX-NM
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu81G-0002bn-UY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:09:07 +0000
-Date: Thu, 18 Aug 2011 20:08:59 +0100
+	Thu, 18 Aug 2011 19:12:47 +0000
+Date: Thu, 18 Aug 2011 20:12:39 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7xb-0007sY-Pq@ZenIV.linux.org.uk>
+Message-Id: <E1Qu819-00085K-Vv@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,31 +26,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 60/91] um: kill useless include of
-	user.h
+Subject: [uml-devel] Subject: [PATCH 82/91] um: kill useless argument of
+ free_chan() and free_one_chan()
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-everything in USER_OBJ gets it via -include user.h
+delay_free_irq is always 0 for those...
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- fs/hostfs/hostfs_user.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ arch/um/drivers/chan_kern.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
-index d51a983..dd7bc38 100644
---- a/fs/hostfs/hostfs_user.c
-+++ b/fs/hostfs/hostfs_user.c
-@@ -16,7 +16,6 @@
- #include <sys/vfs.h>
- #include "hostfs.h"
- #include "os.h"
--#include "user.h"
- #include <utime.h>
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index e040683..420e2c8 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -358,11 +358,11 @@ int chan_window_size(struct list_head *chans, unsigned short *rows_out,
+ 	return 0;
+ }
  
- static void stat64_to_hostfs(const struct stat64 *buf, struct hostfs_stat *p)
+-static void free_one_chan(struct chan *chan, int delay_free_irq)
++static void free_one_chan(struct chan *chan)
+ {
+ 	list_del(&chan->list);
+ 
+-	close_one_chan(chan, delay_free_irq);
++	close_one_chan(chan, 0);
+ 
+ 	if (chan->ops->free != NULL)
+ 		(*chan->ops->free)(chan->data);
+@@ -372,14 +372,14 @@ static void free_one_chan(struct chan *chan, int delay_free_irq)
+ 	kfree(chan);
+ }
+ 
+-static void free_chan(struct list_head *chans, int delay_free_irq)
++static void free_chan(struct list_head *chans)
+ {
+ 	struct list_head *ele, *next;
+ 	struct chan *chan;
+ 
+ 	list_for_each_safe(ele, next, chans) {
+ 		chan = list_entry(ele, struct chan, list);
+-		free_one_chan(chan, delay_free_irq);
++		free_one_chan(chan);
+ 	}
+ }
+ 
+@@ -547,7 +547,7 @@ int parse_chan_pair(char *str, struct line *line, int device,
+ 	char *in, *out;
+ 
+ 	if (!list_empty(chans)) {
+-		free_chan(chans, 0);
++		free_chan(chans);
+ 		INIT_LIST_HEAD(chans);
+ 	}
+ 
 -- 
 1.7.2.5
 
