@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7xP-0008LF-A3
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7wv-0003BC-Gn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:08:47 +0000
+	Thu, 18 Aug 2011 19:08:17 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7xO-0000Gs-IE
+	(Exim 4.76) id 1Qu7wu-0000Fm-Jr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:08:47 +0000
-Date: Thu, 18 Aug 2011 20:08:39 +0100
+	Thu, 18 Aug 2011 19:08:17 +0000
+Date: Thu, 18 Aug 2011 20:08:09 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7xH-0007s8-PK@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7wn-0007rS-OT@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,28 +26,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 58/91] um: take mconsole*.h to
-	arch/um/drivers
+Subject: [uml-devel] Subject: [PATCH 55/91] um: kill shared/mem_kern.h
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
+... nothing declared there exists
+
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/{include/shared => drivers}/mconsole.h     |    0
- .../um/{include/shared => drivers}/mconsole_kern.h |    0
- 2 files changed, 0 insertions(+), 0 deletions(-)
- rename arch/um/{include/shared => drivers}/mconsole.h (100%)
- rename arch/um/{include/shared => drivers}/mconsole_kern.h (100%)
+ arch/um/drivers/ubd_kern.c        |    1 -
+ arch/um/include/shared/mem_kern.h |   20 --------------------
+ 2 files changed, 0 insertions(+), 21 deletions(-)
+ delete mode 100644 arch/um/include/shared/mem_kern.h
 
-diff --git a/arch/um/include/shared/mconsole.h b/arch/um/drivers/mconsole.h
-similarity index 100%
-rename from arch/um/include/shared/mconsole.h
-rename to arch/um/drivers/mconsole.h
-diff --git a/arch/um/include/shared/mconsole_kern.h b/arch/um/drivers/mconsole_kern.h
-similarity index 100%
-rename from arch/um/include/shared/mconsole_kern.h
-rename to arch/um/drivers/mconsole_kern.h
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 0136be1..b3c8545 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -53,7 +53,6 @@
+ #include "ubd_user.h"
+ #include "os.h"
+ #include "mem.h"
+-#include "mem_kern.h"
+ #include "cow.h"
+ 
+ enum ubd_req { UBD_READ, UBD_WRITE };
+diff --git a/arch/um/include/shared/mem_kern.h b/arch/um/include/shared/mem_kern.h
+deleted file mode 100644
+index 69be0fd..0000000
+--- a/arch/um/include/shared/mem_kern.h
++++ /dev/null
+@@ -1,20 +0,0 @@
+-/*
+- * Copyright (C) 2003 Jeff Dike (jdike@addtoit.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __MEM_KERN_H__
+-#define __MEM_KERN_H__
+-
+-#include "linux/list.h"
+-#include "linux/types.h"
+-
+-struct remapper {
+-	struct list_head list;
+-	int (*proc)(int, unsigned long, int, __u64);
+-};
+-
+-extern void register_remapper(struct remapper *info);
+-
+-#endif
+-
 -- 
 1.7.2.5
 
