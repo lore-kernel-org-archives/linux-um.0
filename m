@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7p1-0000w1-Jx
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7uf-0002vl-6i
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:00:07 +0000
+	Thu, 18 Aug 2011 19:05:57 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7p0-0004dX-S1
+	(Exim 4.76) id 1Qu7ue-0004uF-EL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:00:07 +0000
-Date: Thu, 18 Aug 2011 19:59:59 +0100
+	Thu, 18 Aug 2011 19:05:57 +0000
+Date: Thu, 18 Aug 2011 20:05:49 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7ot-0007R0-66@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7uX-0007kB-JX@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,67 +26,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 06/91] um: PTRACE_[GS]ETFPXREGS had
-	been wired on the wrong subarch
+Subject: [uml-devel] Subject: [PATCH 41/91] um: merge skas_ptrace.h 32/64bit
+	variants
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-It's 32bit-only, not 64bit-only...  And while we are at it, it's
-set_fpxregs(), not set_fpregs()...
-
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/sys-i386/ptrace.c   |   14 +++++++++++++-
- arch/um/sys-x86_64/ptrace.c |   14 +-------------
- 2 files changed, 14 insertions(+), 14 deletions(-)
+ arch/um/sys-x86/shared/sysdep/skas_ptrace.h    |   25 ++++++++++++++++++++---
+ arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h |   22 ---------------------
+ arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h |   22 ---------------------
+ 3 files changed, 21 insertions(+), 48 deletions(-)
+ delete mode 100644 arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h
+ delete mode 100644 arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h
 
-diff --git a/arch/um/sys-i386/ptrace.c b/arch/um/sys-i386/ptrace.c
-index d23b2d3..49fd25a 100644
---- a/arch/um/sys-i386/ptrace.c
-+++ b/arch/um/sys-i386/ptrace.c
-@@ -206,5 +206,17 @@ int set_fpxregs(struct user_fxsr_struct __user *buf, struct task_struct *child)
- long subarch_ptrace(struct task_struct *child, long request,
- 		    unsigned long addr, unsigned long data)
- {
--	return -EIO;
-+	int ret = -EIO;
-+	void __user *datap = (void __user *) data;
+diff --git a/arch/um/sys-x86/shared/sysdep/skas_ptrace.h b/arch/um/sys-x86/shared/sysdep/skas_ptrace.h
+index e63b575..453febe 100644
+--- a/arch/um/sys-x86/shared/sysdep/skas_ptrace.h
++++ b/arch/um/sys-x86/shared/sysdep/skas_ptrace.h
+@@ -1,5 +1,22 @@
+-#ifdef __i386__
+-#include "skas_ptrace_32.h"
+-#else
+-#include "skas_ptrace_64.h"
++/*
++ * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
++ * Licensed under the GPL
++ */
 +
-+	switch (request) {
-+	case PTRACE_GETFPXREGS: /* Get the child FPU state. */
-+		ret = get_fpxregs(datap, child);
-+		break;
-+	case PTRACE_SETFPXREGS: /* Set the child FPU state. */
-+		ret = set_fpxregs(datap, child);
-+		break;
-+	}
++#ifndef __SYSDEP_X86_SKAS_PTRACE_H
++#define __SYSDEP_X86_SKAS_PTRACE_H
 +
-+	return ret;
- }
-diff --git a/arch/um/sys-x86_64/ptrace.c b/arch/um/sys-x86_64/ptrace.c
-index f436136..7ed49ac 100644
---- a/arch/um/sys-x86_64/ptrace.c
-+++ b/arch/um/sys-x86_64/ptrace.c
-@@ -178,17 +178,5 @@ int set_fpregs(struct user_i387_struct __user *buf, struct task_struct *child)
- long subarch_ptrace(struct task_struct *child, long request,
- 		    unsigned long addr, unsigned long data)
- {
--	int ret = -EIO;
--	void __user *datap = (void __user *) data;
++struct ptrace_faultinfo {
++        int is_write;
++        unsigned long addr;
++};
++
++struct ptrace_ldt {
++        int func;
++        void *ptr;
++        unsigned long bytecount;
++};
++
++#define PTRACE_LDT 54
++
+ #endif
+diff --git a/arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h b/arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h
+deleted file mode 100644
+index e27b8a7..0000000
+--- a/arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h
++++ /dev/null
+@@ -1,22 +0,0 @@
+-/*
+- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
 -
--	switch (request) {
--	case PTRACE_GETFPXREGS: /* Get the child FPU state. */
--		ret = get_fpregs(datap, child);
--		break;
--	case PTRACE_SETFPXREGS: /* Set the child FPU state. */
--		ret = set_fpregs(datap, child);
--		break;
--	}
+-#ifndef __SYSDEP_I386_SKAS_PTRACE_H
+-#define __SYSDEP_I386_SKAS_PTRACE_H
 -
--	return ret;
-+	return -EIO;
- }
+-struct ptrace_faultinfo {
+-        int is_write;
+-        unsigned long addr;
+-};
+-
+-struct ptrace_ldt {
+-        int func;
+-        void *ptr;
+-        unsigned long bytecount;
+-};
+-
+-#define PTRACE_LDT 54
+-
+-#endif
+diff --git a/arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h b/arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h
+deleted file mode 100644
+index 95db4be7..0000000
+--- a/arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h
++++ /dev/null
+@@ -1,22 +0,0 @@
+-/*
+- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef __SYSDEP_X86_64_SKAS_PTRACE_H
+-#define __SYSDEP_X86_64_SKAS_PTRACE_H
+-
+-struct ptrace_faultinfo {
+-        int is_write;
+-        unsigned long addr;
+-};
+-
+-struct ptrace_ldt {
+-        int func;
+-        void *ptr;
+-        unsigned long bytecount;
+-};
+-
+-#define PTRACE_LDT 54
+-
+-#endif
 -- 
 1.7.2.5
 
