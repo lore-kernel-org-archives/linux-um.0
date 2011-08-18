@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7xt-0002Bn-HP
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7up-0007au-6i
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:09:17 +0000
+	Thu, 18 Aug 2011 19:06:07 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7xs-0002Ui-Og
+	(Exim 4.76) id 1Qu7uo-0002OR-Cx
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:09:17 +0000
-Date: Thu, 18 Aug 2011 20:09:09 +0100
+	Thu, 18 Aug 2011 19:06:07 +0000
+Date: Thu, 18 Aug 2011 20:05:59 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7xl-0007sr-Q3@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7uh-0007kR-Jk@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,106 +26,107 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 61/91] um: take um_mmu.h to asm/mmu.h,
- clean asm/mmu_context.h a bit
+Subject: [uml-devel] Subject: [PATCH 42/91] um: merge kernel_offsets_*.h
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/include/asm/mmu.h         |   22 +++++++++++++++++-----
- arch/um/include/asm/mmu_context.h |    7 ++-----
- arch/um/include/shared/um_mmu.h   |   24 ------------------------
- 3 files changed, 19 insertions(+), 34 deletions(-)
- delete mode 100644 arch/um/include/shared/um_mmu.h
+ arch/um/sys-x86/shared/sysdep/kernel-offsets.h    |   26 +++++++++++++++++----
+ arch/um/sys-x86/shared/sysdep/kernel-offsets_32.h |   21 -----------------
+ arch/um/sys-x86/shared/sysdep/kernel-offsets_64.h |   23 ------------------
+ 3 files changed, 21 insertions(+), 49 deletions(-)
+ delete mode 100644 arch/um/sys-x86/shared/sysdep/kernel-offsets_32.h
+ delete mode 100644 arch/um/sys-x86/shared/sysdep/kernel-offsets_64.h
 
-diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
-index cf259de..b1a7e47 100644
---- a/arch/um/include/asm/mmu.h
-+++ b/arch/um/include/asm/mmu.h
-@@ -1,12 +1,24 @@
- /* 
-- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-+ * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
- 
--#ifndef __MMU_H
--#define __MMU_H
-+#ifndef __ARCH_UM_MMU_H
-+#define __ARCH_UM_MMU_H
- 
--#include "um_mmu.h"
-+#include "mm_id.h"
-+#include "ldt.h"
- 
+diff --git a/arch/um/sys-x86/shared/sysdep/kernel-offsets.h b/arch/um/sys-x86/shared/sysdep/kernel-offsets.h
+index 346bc08..5868526 100644
+--- a/arch/um/sys-x86/shared/sysdep/kernel-offsets.h
++++ b/arch/um/sys-x86/shared/sysdep/kernel-offsets.h
+@@ -1,5 +1,21 @@
+-#ifdef __i386__
+-#include "kernel-offsets_32.h"
+-#else
+-#include "kernel-offsets_64.h"
 -#endif
-+typedef struct mm_context {
-+	struct mm_id id;
-+	struct uml_ldt ldt;
-+	struct page **stub_pages;
-+} mm_context_t;
-+
-+extern void __switch_mm(struct mm_id * mm_idp);
- 
-+/* Avoid tangled inclusion with asm/ldt.h */
-+extern long init_new_ldt(struct mm_context *to_mm, struct mm_context *from_mm);
-+extern void free_ldt(struct mm_context *mm);
-+
-+#endif
-diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
-index 34d8130..591b3d8 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -6,15 +6,12 @@
- #ifndef __UM_MMU_CONTEXT_H
- #define __UM_MMU_CONTEXT_H
- 
--#include "linux/sched.h"
--#include "um_mmu.h"
++#include <linux/stddef.h>
 +#include <linux/sched.h>
-+#include <asm/mmu.h>
- 
- extern void arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm);
- extern void arch_exit_mmap(struct mm_struct *mm);
- 
--#define get_mmu_context(task) do ; while(0)
--#define activate_context(tsk) do ; while(0)
--
- #define deactivate_mm(tsk,mm)	do { } while (0)
- 
- extern void force_flush_all(void);
-diff --git a/arch/um/include/shared/um_mmu.h b/arch/um/include/shared/um_mmu.h
++#include <linux/elf.h>
++#include <linux/crypto.h>
++#include <asm/mman.h>
++
++#define DEFINE(sym, val) \
++	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
++
++#define STR(x) #x
++#define DEFINE_STR(sym, val) asm volatile("\n->" #sym " " STR(val) " " #val: : )
++
++#define BLANK() asm volatile("\n->" : : )
++
++#define OFFSET(sym, str, mem) \
++	DEFINE(sym, offsetof(struct str, mem));
++
++void foo(void)
++{
++#include <common-offsets.h>
++}
+diff --git a/arch/um/sys-x86/shared/sysdep/kernel-offsets_32.h b/arch/um/sys-x86/shared/sysdep/kernel-offsets_32.h
 deleted file mode 100644
-index b1a7e47..0000000
---- a/arch/um/include/shared/um_mmu.h
+index 5868526..0000000
+--- a/arch/um/sys-x86/shared/sysdep/kernel-offsets_32.h
 +++ /dev/null
-@@ -1,24 +0,0 @@
--/* 
-- * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-- */
+@@ -1,21 +0,0 @@
+-#include <linux/stddef.h>
+-#include <linux/sched.h>
+-#include <linux/elf.h>
+-#include <linux/crypto.h>
+-#include <asm/mman.h>
 -
--#ifndef __ARCH_UM_MMU_H
--#define __ARCH_UM_MMU_H
+-#define DEFINE(sym, val) \
+-	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
 -
--#include "mm_id.h"
--#include "ldt.h"
+-#define STR(x) #x
+-#define DEFINE_STR(sym, val) asm volatile("\n->" #sym " " STR(val) " " #val: : )
 -
--typedef struct mm_context {
--	struct mm_id id;
--	struct uml_ldt ldt;
--	struct page **stub_pages;
--} mm_context_t;
+-#define BLANK() asm volatile("\n->" : : )
 -
--extern void __switch_mm(struct mm_id * mm_idp);
+-#define OFFSET(sym, str, mem) \
+-	DEFINE(sym, offsetof(struct str, mem));
 -
--/* Avoid tangled inclusion with asm/ldt.h */
--extern long init_new_ldt(struct mm_context *to_mm, struct mm_context *from_mm);
--extern void free_ldt(struct mm_context *mm);
+-void foo(void)
+-{
+-#include <common-offsets.h>
+-}
+diff --git a/arch/um/sys-x86/shared/sysdep/kernel-offsets_64.h b/arch/um/sys-x86/shared/sysdep/kernel-offsets_64.h
+deleted file mode 100644
+index a307237..0000000
+--- a/arch/um/sys-x86/shared/sysdep/kernel-offsets_64.h
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#include <linux/stddef.h>
+-#include <linux/sched.h>
+-#include <linux/time.h>
+-#include <linux/elf.h>
+-#include <linux/crypto.h>
+-#include <asm/page.h>
+-#include <asm/mman.h>
 -
--#endif
+-#define DEFINE(sym, val) \
+-	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
+-
+-#define DEFINE_STR1(x) #x
+-#define DEFINE_STR(sym, val) asm volatile("\n->" #sym " " DEFINE_STR1(val) " " #val: : )
+-
+-#define BLANK() asm volatile("\n->" : : )
+-
+-#define OFFSET(sym, str, mem) \
+-	DEFINE(sym, offsetof(struct str, mem));
+-
+-void foo(void)
+-{
+-#include <common-offsets.h>
+-}
 -- 
 1.7.2.5
 
