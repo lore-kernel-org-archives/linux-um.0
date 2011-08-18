@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7o3-0007IW-Ri
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7yN-00082m-KZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 18:59:07 +0000
+	Thu, 18 Aug 2011 19:09:47 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7o2-0003dD-P0
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7yM-0000J0-QO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 18:59:07 +0000
-Date: Thu, 18 Aug 2011 19:58:59 +0100
+	Thu, 18 Aug 2011 19:09:47 +0000
+Date: Thu, 18 Aug 2011 20:09:39 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7nv-0007OP-3E@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7yF-0007w6-Qp@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,26 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 00/91] pending uml patches
+Subject: [uml-devel] Subject: [PATCH 64/91] um: move asm/desc.h into
+	arch/x86/um/asm
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-My apologies for mailbomb from hell.  *All* this stuff is available in
-git://git.kernel.org/pub/scm/linux/kernel/git/viro/um-header.git/ #master,
-but since uml folks had been stuck with mail and patch for a long time...
+its only purpose is to shadow the x86 asm/desc.h
 
-Anyway, most of the stuff in this pile is merging, cleaning and mutilating
-subarchitecture-related code in arch/um.  By the end of it we have x86
-bits largely merged between 32bit and 64bit variants and taken to arch/x86/um;
-headers seriously cleaned up and mostly free of x86-isms now (not completely -
-we still have page size dependencies in there).
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/{um/include => x86/um}/asm/desc.h |    0
+ 1 files changed, 0 insertions(+), 0 deletions(-)
+ rename arch/{um/include => x86/um}/asm/desc.h (100%)
 
-Beginning of the series are pure build and driver fixes; those should go to
-Linus before 3.1-final, IMO.
+diff --git a/arch/um/include/asm/desc.h b/arch/x86/um/asm/desc.h
+similarity index 100%
+rename from arch/um/include/asm/desc.h
+rename to arch/x86/um/asm/desc.h
+-- 
+1.7.2.5
 
-As far as I know, there's no regressions introduced by that pile; testing
-and comments would be, of course, welcome.
 
 
 ------------------------------------------------------------------------------
