@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7uf-0002vl-6i
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7t3-0007CX-6H
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:05:57 +0000
+	Thu, 18 Aug 2011 19:04:17 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7ue-0004uF-EL
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7t2-00007Y-Do
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:05:57 +0000
-Date: Thu, 18 Aug 2011 20:05:49 +0100
+	Thu, 18 Aug 2011 19:04:17 +0000
+Date: Thu, 18 Aug 2011 20:04:09 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7uX-0007kB-JX@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7sv-0007fJ-En@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,108 +26,161 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 41/91] um: merge skas_ptrace.h 32/64bit
-	variants
+Subject: [uml-devel] Subject: [PATCH 31/91] um: switch stub_segv_handler to
+	SA_SIGINFO variant, get rid of magic crap in there
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/sys-x86/shared/sysdep/skas_ptrace.h    |   25 ++++++++++++++++++++---
- arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h |   22 ---------------------
- arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h |   22 ---------------------
- 3 files changed, 21 insertions(+), 48 deletions(-)
- delete mode 100644 arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h
- delete mode 100644 arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h
+ arch/um/os-Linux/skas/process.c                 |    4 ++--
+ arch/um/sys-x86/Makefile                        |    2 +-
+ arch/um/sys-x86/shared/sysdep/stub.h            |    9 +++++++++
+ arch/um/sys-x86/shared/sysdep/stub_32.h         |    7 -------
+ arch/um/sys-x86/shared/sysdep/stub_64.h         |    7 -------
+ arch/um/sys-x86/{stub_segv_64.c => stub_segv.c} |    7 ++-----
+ arch/um/sys-x86/stub_segv_32.c                  |   17 -----------------
+ 7 files changed, 14 insertions(+), 39 deletions(-)
+ rename arch/um/sys-x86/{stub_segv_64.c => stub_segv.c} (70%)
+ delete mode 100644 arch/um/sys-x86/stub_segv_32.c
 
-diff --git a/arch/um/sys-x86/shared/sysdep/skas_ptrace.h b/arch/um/sys-x86/shared/sysdep/skas_ptrace.h
-index e63b575..453febe 100644
---- a/arch/um/sys-x86/shared/sysdep/skas_ptrace.h
-+++ b/arch/um/sys-x86/shared/sysdep/skas_ptrace.h
-@@ -1,5 +1,22 @@
--#ifdef __i386__
--#include "skas_ptrace_32.h"
--#else
--#include "skas_ptrace_64.h"
-+/*
-+ * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
-+ * Licensed under the GPL
-+ */
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 913b5a5..896312d 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -255,8 +255,8 @@ static int userspace_tramp(void *stack)
+ 
+ 		set_sigstack((void *) STUB_DATA, UM_KERN_PAGE_SIZE);
+ 		sigemptyset(&sa.sa_mask);
+-		sa.sa_flags = SA_ONSTACK | SA_NODEFER;
+-		sa.sa_handler = (void *) v;
++		sa.sa_flags = SA_ONSTACK | SA_NODEFER | SA_SIGINFO;
++		sa.sa_sigaction = (void *) v;
+ 		sa.sa_restorer = NULL;
+ 		if (sigaction(SIGSEGV, &sa, NULL) < 0) {
+ 			printk(UM_KERN_ERR "userspace_tramp - setting SIGSEGV "
+diff --git a/arch/um/sys-x86/Makefile b/arch/um/sys-x86/Makefile
+index 671de0b..81ab348 100644
+--- a/arch/um/sys-x86/Makefile
++++ b/arch/um/sys-x86/Makefile
+@@ -10,7 +10,7 @@ endif
+ 
+ obj-y = bug.o bugs_$(BITS).o delay_$(BITS).o fault.o ksyms.o ldt.o \
+ 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal_$(BITS).o \
+-	stub_$(BITS).o stub_segv_$(BITS).o syscalls_$(BITS).o \
++	stub_$(BITS).o stub_segv.o syscalls_$(BITS).o \
+ 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o mem_$(BITS).o
+ 
+ ifeq ($(CONFIG_X86_32),y)
+diff --git a/arch/um/sys-x86/shared/sysdep/stub.h b/arch/um/sys-x86/shared/sysdep/stub.h
+index 13f523a..bd161e3 100644
+--- a/arch/um/sys-x86/shared/sysdep/stub.h
++++ b/arch/um/sys-x86/shared/sysdep/stub.h
+@@ -1,5 +1,14 @@
++#include <asm/unistd.h>
++#include <sys/mman.h>
++#include <signal.h>
++#include "as-layout.h"
++#include "stub-data.h"
 +
-+#ifndef __SYSDEP_X86_SKAS_PTRACE_H
-+#define __SYSDEP_X86_SKAS_PTRACE_H
-+
-+struct ptrace_faultinfo {
-+        int is_write;
-+        unsigned long addr;
-+};
-+
-+struct ptrace_ldt {
-+        int func;
-+        void *ptr;
-+        unsigned long bytecount;
-+};
-+
-+#define PTRACE_LDT 54
-+
+ #ifdef __i386__
+ #include "stub_32.h"
+ #else
+ #include "stub_64.h"
  #endif
-diff --git a/arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h b/arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h
++
++extern void stub_segv_handler(int, siginfo_t *, void *);
++extern void stub_clone_handler(void);
+diff --git a/arch/um/sys-x86/shared/sysdep/stub_32.h b/arch/um/sys-x86/shared/sysdep/stub_32.h
+index cca14d4..51fd256 100644
+--- a/arch/um/sys-x86/shared/sysdep/stub_32.h
++++ b/arch/um/sys-x86/shared/sysdep/stub_32.h
+@@ -6,14 +6,7 @@
+ #ifndef __SYSDEP_STUB_H
+ #define __SYSDEP_STUB_H
+ 
+-#include <sys/mman.h>
+ #include <asm/ptrace.h>
+-#include <asm/unistd.h>
+-#include "as-layout.h"
+-#include "stub-data.h"
+-
+-extern void stub_segv_handler(int sig);
+-extern void stub_clone_handler(void);
+ 
+ #define STUB_SYSCALL_RET EAX
+ #define STUB_MMAP_NR __NR_mmap2
+diff --git a/arch/um/sys-x86/shared/sysdep/stub_64.h b/arch/um/sys-x86/shared/sysdep/stub_64.h
+index 922a570..994df93 100644
+--- a/arch/um/sys-x86/shared/sysdep/stub_64.h
++++ b/arch/um/sys-x86/shared/sysdep/stub_64.h
+@@ -6,14 +6,7 @@
+ #ifndef __SYSDEP_STUB_H
+ #define __SYSDEP_STUB_H
+ 
+-#include <sys/mman.h>
+-#include <asm/unistd.h>
+ #include <sysdep/ptrace_user.h>
+-#include "as-layout.h"
+-#include "stub-data.h"
+-
+-extern void stub_segv_handler(int sig);
+-extern void stub_clone_handler(void);
+ 
+ #define STUB_SYSCALL_RET PT_INDEX(RAX)
+ #define STUB_MMAP_NR __NR_mmap
+diff --git a/arch/um/sys-x86/stub_segv_64.c b/arch/um/sys-x86/stub_segv.c
+similarity index 70%
+rename from arch/um/sys-x86/stub_segv_64.c
+rename to arch/um/sys-x86/stub_segv.c
+index ced051a..f62771c 100644
+--- a/arch/um/sys-x86/stub_segv_64.c
++++ b/arch/um/sys-x86/stub_segv.c
+@@ -3,18 +3,15 @@
+  * Licensed under the GPL
+  */
+ 
+-#include <signal.h>
+-#include "as-layout.h"
+ #include "sysdep/stub.h"
+ #include "sysdep/faultinfo.h"
+ #include "sysdep/sigcontext.h"
+ 
+ void __attribute__ ((__section__ (".__syscall_stub")))
+-stub_segv_handler(int sig)
++stub_segv_handler(int sig, siginfo_t *info, void *p)
+ {
+-	struct ucontext *uc;
++	struct ucontext *uc = p;
+ 
+-	__asm__ __volatile__("movq %%rdx, %0" : "=g" (uc) :);
+ 	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) STUB_DATA),
+ 			      &uc->uc_mcontext);
+ 	trap_myself();
+diff --git a/arch/um/sys-x86/stub_segv_32.c b/arch/um/sys-x86/stub_segv_32.c
 deleted file mode 100644
-index e27b8a7..0000000
---- a/arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h
+index 28ccf73..0000000
+--- a/arch/um/sys-x86/stub_segv_32.c
 +++ /dev/null
-@@ -1,22 +0,0 @@
+@@ -1,17 +0,0 @@
 -/*
-- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
+- * Copyright (C) 2004 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
 - * Licensed under the GPL
 - */
 -
--#ifndef __SYSDEP_I386_SKAS_PTRACE_H
--#define __SYSDEP_I386_SKAS_PTRACE_H
+-#include "sysdep/stub.h"
+-#include "sysdep/sigcontext.h"
 -
--struct ptrace_faultinfo {
--        int is_write;
--        unsigned long addr;
--};
+-void __attribute__ ((__section__ (".__syscall_stub")))
+-stub_segv_handler(int sig)
+-{
+-	struct sigcontext *sc = (struct sigcontext *) (&sig + 1);
 -
--struct ptrace_ldt {
--        int func;
--        void *ptr;
--        unsigned long bytecount;
--};
+-	GET_FAULTINFO_FROM_SC(*((struct faultinfo *) STUB_DATA), sc);
 -
--#define PTRACE_LDT 54
--
--#endif
-diff --git a/arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h b/arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h
-deleted file mode 100644
-index 95db4be7..0000000
---- a/arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h
-+++ /dev/null
-@@ -1,22 +0,0 @@
--/*
-- * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
-- * Licensed under the GPL
-- */
--
--#ifndef __SYSDEP_X86_64_SKAS_PTRACE_H
--#define __SYSDEP_X86_64_SKAS_PTRACE_H
--
--struct ptrace_faultinfo {
--        int is_write;
--        unsigned long addr;
--};
--
--struct ptrace_ldt {
--        int func;
--        void *ptr;
--        unsigned long bytecount;
--};
--
--#define PTRACE_LDT 54
--
--#endif
+-	trap_myself();
+-}
 -- 
 1.7.2.5
 
