@@ -1,22 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jagan.kernel@gmail.com>) id 1Qtq6T-0002qL-AH
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7sj-00078Y-Ck
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 00:04:57 +0000
-Received: from mail-pz0-f42.google.com ([209.85.210.42])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Qtq6S-00086S-Im
+	Thu, 18 Aug 2011 19:03:57 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7si-0002JA-Es
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 00:04:57 +0000
-Received: by pzk37 with SMTP id 37so1962154pzk.1
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 17 Aug 2011 17:04:50 -0700 (PDT)
+	Thu, 18 Aug 2011 19:03:57 +0000
+Date: Thu, 18 Aug 2011 20:03:49 +0100
 MIME-Version: 1.0
-Date: Thu, 18 Aug 2011 09:04:50 +0900
-Message-ID: <CANjRM=ZeZJoZDucaTSC4QR-j93EG0Zi1RdDwCi-kAESmRwNj_g@mail.gmail.com>
-From: jagan kernel <jagan.kernel@gmail.com>
+Message-Id: <E1Qu7sb-0007d6-DN@ZenIV.linux.org.uk>
+From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,85 +23,284 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4845895769198727785=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [linux-3.0] Regarding deprecation of
-	__lookup_machine_type in arch/arm/kernel/head.S
-To: linux-kernel@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net
-
---===============4845895769198727785==
-Content-Type: multipart/alternative; boundary=000e0cd312ec95064504aabc5cf1
-
---000e0cd312ec95064504aabc5cf1
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-
-I am Kernel Developer.
-Currently I am working to port Linux-3.0 on to ARM target.
-
-I compiled the kernel with board additions, But it's not booting.
-While I am debugging, I found that __lookup_machine_type is deprecated in
-arch/arm/kernel/head.S
-I manually added this function from previous kernel and again I try to boot
-this time* It will show the
-halting message with all ARM register contents & Stops.*
-
-Could you help me out this issue, adding __lookup_machine_type is reasonable
-or any like implementation in 3.0
-
-Thanks your time  & I am awaiting for your replay
-
-Regards,
-Jagan
-
---000e0cd312ec95064504aabc5cf1
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi,<br><br>I am Kernel Developer.<br>Currently I am working to port Linux-3=
-.0 on to ARM target.<br><br>I compiled the kernel with board additions, But=
- it&#39;s not booting.<br>While I am debugging, I found that <span style=3D=
-"color: rgb(255, 0, 0);">__lookup_machine_type</span> is deprecated in arch=
-/arm/kernel/head.S<br>
-
-
-I manually added this function from previous kernel and again I try to boot=
- this time<b> It will show the<br>halting message with all ARM register con=
-tents &amp; Stops.</b><br><br>Could you help me out this issue, adding __lo=
-okup_machine_type is reasonable or any like implementation in 3.0<br>
-
-
-<br>Thanks your time=A0 &amp; I am awaiting for your replay<br><br>Regards,=
-<br><font color=3D"#888888"><font color=3D"#888888">Jagan</font>
-</font>
-
---000e0cd312ec95064504aabc5cf1--
-
-
---===============4845895769198727785==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] Subject: [PATCH 29/91] um: merge
+ arch/um/os-Linux/sys-{i386, x86_64}
+To: richard@nod.at
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/um/os-Linux/Makefile                          |    2 +-
+ arch/um/os-Linux/{sys-i386 => sys-x86}/Makefile    |    5 ++-
+ arch/um/os-Linux/{sys-x86_64 => sys-x86}/prctl.c   |    0
+ arch/um/os-Linux/{sys-i386 => sys-x86}/registers.c |   58 ++++++++++++++------
+ arch/um/os-Linux/{sys-i386 => sys-x86}/task_size.c |   12 ++++
+ arch/um/os-Linux/{sys-i386 => sys-x86}/tls.c       |    0
+ arch/um/os-Linux/sys-x86_64/Makefile               |   10 ----
+ arch/um/os-Linux/sys-x86_64/registers.c            |   50 -----------------
+ arch/um/os-Linux/sys-x86_64/task_size.c            |    5 --
+ 9 files changed, 57 insertions(+), 85 deletions(-)
+ rename arch/um/os-Linux/{sys-i386 => sys-x86}/Makefile (63%)
+ rename arch/um/os-Linux/{sys-x86_64 => sys-x86}/prctl.c (100%)
+ rename arch/um/os-Linux/{sys-i386 => sys-x86}/registers.c (83%)
+ rename arch/um/os-Linux/{sys-i386 => sys-x86}/task_size.c (95%)
+ rename arch/um/os-Linux/{sys-i386 => sys-x86}/tls.c (100%)
+ delete mode 100644 arch/um/os-Linux/sys-x86_64/Makefile
+ delete mode 100644 arch/um/os-Linux/sys-x86_64/registers.c
+ delete mode 100644 arch/um/os-Linux/sys-x86_64/task_size.c
+
+diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
+index 7aec5bf..7879e76 100644
+--- a/arch/um/os-Linux/Makefile
++++ b/arch/um/os-Linux/Makefile
+@@ -5,7 +5,7 @@
+ 
+ obj-y = aio.o execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 	registers.o sigio.o signal.o start_up.o time.o tty.o \
+-	umid.o tls.o user_syms.o util.o drivers/ sys-$(SUBARCH)/ skas/
++	umid.o tls.o user_syms.o util.o drivers/ sys-$(HEADER_ARCH)/ skas/
+ 
+ obj-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
+ 
+diff --git a/arch/um/os-Linux/sys-i386/Makefile b/arch/um/os-Linux/sys-x86/Makefile
+similarity index 63%
+rename from arch/um/os-Linux/sys-i386/Makefile
+rename to arch/um/os-Linux/sys-x86/Makefile
+index d491754..22cc507 100644
+--- a/arch/um/os-Linux/sys-i386/Makefile
++++ b/arch/um/os-Linux/sys-x86/Makefile
+@@ -3,7 +3,10 @@
+ # Licensed under the GPL
+ #
+ 
+-obj-y = registers.o task_size.o tls.o
++obj-y = registers.o task_size.o
++
++obj-$(CONFIG_X86_32) += tls.o
++obj-$(CONFIG_64BIT) += prctl.o
+ 
+ USER_OBJS := $(obj-y)
+ 
+diff --git a/arch/um/os-Linux/sys-x86_64/prctl.c b/arch/um/os-Linux/sys-x86/prctl.c
+similarity index 100%
+rename from arch/um/os-Linux/sys-x86_64/prctl.c
+rename to arch/um/os-Linux/sys-x86/prctl.c
+diff --git a/arch/um/os-Linux/sys-i386/registers.c b/arch/um/os-Linux/sys-x86/registers.c
+similarity index 83%
+rename from arch/um/os-Linux/sys-i386/registers.c
+rename to arch/um/os-Linux/sys-x86/registers.c
+index 913d811..3a9b624 100644
+--- a/arch/um/os-Linux/sys-i386/registers.c
++++ b/arch/um/os-Linux/sys-x86/registers.c
+@@ -24,6 +24,8 @@ int restore_fp_registers(int pid, unsigned long *fp_regs)
+ 	return 0;
+ }
+ 
++#ifdef __i386__
++int have_fpx_regs = 1;
+ int save_fpx_registers(int pid, unsigned long *fp_regs)
+ {
+ 	if (ptrace(PTRACE_GETFPXREGS, pid, 0, fp_regs) < 0)
+@@ -38,24 +40,6 @@ int restore_fpx_registers(int pid, unsigned long *fp_regs)
+ 	return 0;
+ }
+ 
+-unsigned long get_thread_reg(int reg, jmp_buf *buf)
+-{
+-	switch (reg) {
+-	case EIP:
+-		return buf[0]->__eip;
+-	case UESP:
+-		return buf[0]->__esp;
+-	case EBP:
+-		return buf[0]->__ebp;
+-	default:
+-		printk(UM_KERN_ERR "get_thread_regs - unknown register %d\n",
+-		       reg);
+-		return 0;
+-	}
+-}
+-
+-int have_fpx_regs = 1;
+-
+ int get_fp_registers(int pid, unsigned long *regs)
+ {
+ 	if (have_fpx_regs)
+@@ -87,3 +71,41 @@ void arch_init_registers(int pid)
+ 
+ 	have_fpx_regs = 0;
+ }
++#else
++
++int get_fp_registers(int pid, unsigned long *regs)
++{
++	return save_fp_registers(pid, regs);
++}
++
++int put_fp_registers(int pid, unsigned long *regs)
++{
++	return restore_fp_registers(pid, regs);
++}
++
++#endif
++
++unsigned long get_thread_reg(int reg, jmp_buf *buf)
++{
++	switch (reg) {
++#ifdef __i386__
++	case EIP:
++		return buf[0]->__eip;
++	case UESP:
++		return buf[0]->__esp;
++	case EBP:
++		return buf[0]->__ebp;
++#else
++	case RIP:
++		return buf[0]->__rip;
++	case RSP:
++		return buf[0]->__rsp;
++	case RBP:
++		return buf[0]->__rbp;
++#endif
++	default:
++		printk(UM_KERN_ERR "get_thread_regs - unknown register %d\n",
++		       reg);
++		return 0;
++	}
++}
+diff --git a/arch/um/os-Linux/sys-i386/task_size.c b/arch/um/os-Linux/sys-x86/task_size.c
+similarity index 95%
+rename from arch/um/os-Linux/sys-i386/task_size.c
+rename to arch/um/os-Linux/sys-x86/task_size.c
+index 4ce09b8..efb16c5 100644
+--- a/arch/um/os-Linux/sys-i386/task_size.c
++++ b/arch/um/os-Linux/sys-x86/task_size.c
+@@ -4,6 +4,8 @@
+ #include <sys/mman.h>
+ #include "longjmp.h"
+ 
++#ifdef __i386__
++
+ static jmp_buf buf;
+ 
+ static void segfault(int sig)
+@@ -136,3 +138,13 @@ out:
+ 
+ 	return top;
+ }
++
++#else
++
++unsigned long os_get_top_address(void)
++{
++	/* The old value of CONFIG_TOP_ADDR */
++	return 0x7fc0000000;
++}
++
++#endif
+diff --git a/arch/um/os-Linux/sys-i386/tls.c b/arch/um/os-Linux/sys-x86/tls.c
+similarity index 100%
+rename from arch/um/os-Linux/sys-i386/tls.c
+rename to arch/um/os-Linux/sys-x86/tls.c
+diff --git a/arch/um/os-Linux/sys-x86_64/Makefile b/arch/um/os-Linux/sys-x86_64/Makefile
+deleted file mode 100644
+index 58f6e0a..0000000
+--- a/arch/um/os-Linux/sys-x86_64/Makefile
++++ /dev/null
+@@ -1,10 +0,0 @@
+-#
+-# Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+-# Licensed under the GPL
+-#
+-
+-obj-y = registers.o prctl.o task_size.o
+-
+-USER_OBJS := $(obj-y)
+-
+-include arch/um/scripts/Makefile.rules
+diff --git a/arch/um/os-Linux/sys-x86_64/registers.c b/arch/um/os-Linux/sys-x86_64/registers.c
+deleted file mode 100644
+index 0594d55..0000000
+--- a/arch/um/os-Linux/sys-x86_64/registers.c
++++ /dev/null
+@@ -1,50 +0,0 @@
+-/*
+- * Copyright (C) 2006 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- * Licensed under the GPL
+- */
+-
+-#include <errno.h>
+-#include <sys/ptrace.h>
+-#define __FRAME_OFFSETS
+-#include <asm/ptrace.h>
+-#include "longjmp.h"
+-
+-int save_fp_registers(int pid, unsigned long *fp_regs)
+-{
+-	if (ptrace(PTRACE_GETFPREGS, pid, 0, fp_regs) < 0)
+-		return -errno;
+-	return 0;
+-}
+-
+-int restore_fp_registers(int pid, unsigned long *fp_regs)
+-{
+-	if (ptrace(PTRACE_SETFPREGS, pid, 0, fp_regs) < 0)
+-		return -errno;
+-	return 0;
+-}
+-
+-unsigned long get_thread_reg(int reg, jmp_buf *buf)
+-{
+-	switch (reg) {
+-	case RIP:
+-		return buf[0]->__rip;
+-	case RSP:
+-		return buf[0]->__rsp;
+-	case RBP:
+-		return buf[0]->__rbp;
+-	default:
+-		printk(UM_KERN_ERR "get_thread_regs - unknown register %d\n",
+-		       reg);
+-		return 0;
+-	}
+-}
+-
+-int get_fp_registers(int pid, unsigned long *regs)
+-{
+-	return save_fp_registers(pid, regs);
+-}
+-
+-int put_fp_registers(int pid, unsigned long *regs)
+-{
+-	return restore_fp_registers(pid, regs);
+-}
+diff --git a/arch/um/os-Linux/sys-x86_64/task_size.c b/arch/um/os-Linux/sys-x86_64/task_size.c
+deleted file mode 100644
+index 26a0dd1..0000000
+--- a/arch/um/os-Linux/sys-x86_64/task_size.c
++++ /dev/null
+@@ -1,5 +0,0 @@
+-unsigned long os_get_top_address(unsigned long shift)
+-{
+-	/* The old value of CONFIG_TOP_ADDR */
+-	return 0x7fc0000000;
+-}
+-- 
+1.7.2.5
+
+
 
 ------------------------------------------------------------------------------
 Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
 user administration capabilities and model configuration. Take 
 the hassle out of deploying and managing Subversion and the 
 tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
---===============4845895769198727785==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============4845895769198727785==--
-
 
