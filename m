@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7yh-00089V-GO
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7r7-0007ZS-4y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:10:07 +0000
+	Thu, 18 Aug 2011 19:02:17 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7yg-00052r-Pv
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7r6-0003k3-B1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:10:07 +0000
-Date: Thu, 18 Aug 2011 20:09:59 +0100
+	Thu, 18 Aug 2011 19:02:17 +0000
+Date: Thu, 18 Aug 2011 20:02:09 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7yZ-0007wi-RH@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7qz-0007YJ-92@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,44 +26,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 66/91] um: sanitize paths in
- sys_call_table* includes
+Subject: [uml-devel] Subject: [PATCH 19/91] um: get rid of sysdep/checksum.h
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
+Move those to sys-.../asm/checksum.h, kill include/asm/checksum.h
+
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/x86/um/sys_call_table_32.S |    2 +-
- arch/x86/um/sys_call_table_64.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/um/include/asm/checksum.h                     |    6 ------
+ arch/um/sys-i386/{shared/sysdep => asm}/checksum.h |    2 +-
+ .../sys-x86_64/{shared/sysdep => asm}/checksum.h   |    0
+ 3 files changed, 1 insertions(+), 7 deletions(-)
+ delete mode 100644 arch/um/include/asm/checksum.h
+ rename arch/um/sys-i386/{shared/sysdep => asm}/checksum.h (99%)
+ rename arch/um/sys-x86_64/{shared/sysdep => asm}/checksum.h (100%)
 
-diff --git a/arch/x86/um/sys_call_table_32.S b/arch/x86/um/sys_call_table_32.S
-index de27407..c3431cf 100644
---- a/arch/x86/um/sys_call_table_32.S
-+++ b/arch/x86/um/sys_call_table_32.S
-@@ -22,7 +22,7 @@
- 
- .section .rodata,"a"
- 
--#include "../../x86/kernel/syscall_table_32.S"
-+#include "../kernel/syscall_table_32.S"
- 
- ENTRY(syscall_table_size)
- .long .-sys_call_table
-diff --git a/arch/x86/um/sys_call_table_64.c b/arch/x86/um/sys_call_table_64.c
-index f46de82..99522f7 100644
---- a/arch/x86/um/sys_call_table_64.c
-+++ b/arch/x86/um/sys_call_table_64.c
-@@ -58,7 +58,7 @@ extern void sys_ni_syscall(void);
+diff --git a/arch/um/include/asm/checksum.h b/arch/um/include/asm/checksum.h
+deleted file mode 100644
+index 5b50136..0000000
+--- a/arch/um/include/asm/checksum.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#ifndef __UM_CHECKSUM_H
+-#define __UM_CHECKSUM_H
+-
+-#include "sysdep/checksum.h"
+-
+-#endif
+diff --git a/arch/um/sys-i386/shared/sysdep/checksum.h b/arch/um/sys-i386/asm/checksum.h
+similarity index 99%
+rename from arch/um/sys-i386/shared/sysdep/checksum.h
+rename to arch/um/sys-i386/asm/checksum.h
+index ed47445..caab742 100644
+--- a/arch/um/sys-i386/shared/sysdep/checksum.h
++++ b/arch/um/sys-i386/asm/checksum.h
+@@ -1,4 +1,4 @@
+-/* 
++/*
+  * Licensed under the GPL
   */
  
- sys_call_ptr_t sys_call_table[] __cacheline_aligned = {
--#include "../../x86/include/asm/unistd_64.h"
-+#include <asm/unistd_64.h>
- };
- 
- int syscall_table_size = sizeof(sys_call_table);
+diff --git a/arch/um/sys-x86_64/shared/sysdep/checksum.h b/arch/um/sys-x86_64/asm/checksum.h
+similarity index 100%
+rename from arch/um/sys-x86_64/shared/sysdep/checksum.h
+rename to arch/um/sys-x86_64/asm/checksum.h
 -- 
 1.7.2.5
 
