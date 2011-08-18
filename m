@@ -1,85 +1,120 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7v9-00085b-AC
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:06:27 +0000
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7v8-0002P8-JM
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:06:27 +0000
-Date: Thu, 18 Aug 2011 20:06:19 +0100
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Thu, 18 Aug 2011 19:59:29 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7v1-0007ks-KC@ZenIV.linux.org.uk>
-From: Al Viro <viro@ftp.linux.org.uk>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 44/91] um: trim detritus from
-	Makefile-i386
+Message-Id: <E1Qu7oP-0007Q4-47@ZenIV.linux.org.uk>
+From: Al Viro <viro@ftp.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Subject: [PATCH 03/91] um: fix oopsable race in line_close()
 To: richard@nod.at
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+
+tty->count is decremented only after ->close() had been called and several
+tasks can hit it in parallel.  As the result, using tty->count to check if
+you are the last one is broken.  We end up leaving line->tty not reset to
+NULL and the next IRQ on that sucker will blow up trying to dereference
+pointers from kfree'd struct tty.
+
+Fix is obvious: we need to use a counter of our own.
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/Makefile-i386 |   10 +++-------
- 1 files changed, 3 insertions(+), 7 deletions(-)
+ arch/um/drivers/line.c        |   25 ++++++++++++-------------
+ arch/um/include/shared/line.h |    1 +
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-i386
-index 7e5f1ba..57acfd6 100644
---- a/arch/um/Makefile-i386
-+++ b/arch/um/Makefile-i386
-@@ -1,13 +1,10 @@
- core-y += arch/um/sys-x86/ arch/x86/crypto/
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index d51c404..c5bff1d 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -399,8 +399,8 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
+  * is done under a spinlock.  Checking whether the device is in use is
+  * line->tty->count > 1, also under the spinlock.
+  *
+- * tty->count serves to decide whether the device should be enabled or
+- * disabled on the host.  If it's equal to 1, then we are doing the
++ * line->count serves to decide whether the device should be enabled or
++ * disabled on the host.  If it's equal to 0, then we are doing the
+  * first open or last close.  Otherwise, open and close just return.
+  */
  
--TOP_ADDR := $(CONFIG_TOP_ADDR)
+@@ -414,16 +414,16 @@ int line_open(struct line *lines, struct tty_struct *tty)
+ 		goto out_unlock;
+ 
+ 	err = 0;
+-	if (tty->count > 1)
++	if (line->count++)
+ 		goto out_unlock;
+ 
+-	spin_unlock(&line->count_lock);
 -
- START := 0x8048000
++	BUG_ON(tty->driver_data);
+ 	tty->driver_data = line;
+ 	line->tty = tty;
  
- LDFLAGS			+= -m elf_i386
--ELF_ARCH		:= $(SUBARCH)
--ELF_FORMAT 		:= elf32-$(SUBARCH)
--OBJCOPYFLAGS  		:= -O binary -R .note -R .comment -S
-+ELF_ARCH		:= i386
-+ELF_FORMAT 		:= elf32-i386
- HEADER_ARCH		:= x86
- CHECKFLAGS	+= -D__i386__
++	spin_unlock(&line->count_lock);
+ 	err = enable_chan(line);
+-	if (err)
++	if (err) /* line_close() will be called by our caller */
+ 		return err;
  
-@@ -16,9 +13,8 @@ ifneq ("$(shell uname -m | sed -e s/i.86/i386/)", "$(SUBARCH)")
- KBUILD_CFLAGS		+= $(call cc-option,-m32)
- KBUILD_AFLAGS		+= $(call cc-option,-m32)
- LINK-y			+= $(call cc-option,-m32)
--UML_OBJCOPYFLAGS	+= -F $(ELF_FORMAT)
+ 	INIT_DELAYED_WORK(&line->task, line_timer_cb);
+@@ -436,7 +436,7 @@ int line_open(struct line *lines, struct tty_struct *tty)
+ 	chan_window_size(&line->chan_list, &tty->winsize.ws_row,
+ 			 &tty->winsize.ws_col);
  
--export LDFLAGS HOSTCFLAGS HOSTLDFLAGS UML_OBJCOPYFLAGS
-+export LDFLAGS
- endif
- endif
+-	return err;
++	return 0;
  
+ out_unlock:
+ 	spin_unlock(&line->count_lock);
+@@ -460,17 +460,16 @@ void line_close(struct tty_struct *tty, struct file * filp)
+ 	flush_buffer(line);
+ 
+ 	spin_lock(&line->count_lock);
+-	if (!line->valid)
+-		goto out_unlock;
++	BUG_ON(!line->valid);
+ 
+-	if (tty->count > 1)
++	if (--line->count)
+ 		goto out_unlock;
+ 
+-	spin_unlock(&line->count_lock);
+-
+ 	line->tty = NULL;
+ 	tty->driver_data = NULL;
+ 
++	spin_unlock(&line->count_lock);
++
+ 	if (line->sigio) {
+ 		unregister_winch(tty);
+ 		line->sigio = 0;
+@@ -498,7 +497,7 @@ static int setup_one_line(struct line *lines, int n, char *init, int init_prio,
+ 
+ 	spin_lock(&line->count_lock);
+ 
+-	if (line->tty != NULL) {
++	if (line->count) {
+ 		*error_out = "Device is already open";
+ 		goto out;
+ 	}
+diff --git a/arch/um/include/shared/line.h b/arch/um/include/shared/line.h
+index 72f4f25..63df3ca 100644
+--- a/arch/um/include/shared/line.h
++++ b/arch/um/include/shared/line.h
+@@ -33,6 +33,7 @@ struct line_driver {
+ struct line {
+ 	struct tty_struct *tty;
+ 	spinlock_t count_lock;
++	unsigned long count;
+ 	int valid;
+ 
+ 	char *init_str;
 -- 
 1.7.2.5
 
-
-
-------------------------------------------------------------------------------
-Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
-user administration capabilities and model configuration. Take 
-the hassle out of deploying and managing Subversion and the 
-tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
