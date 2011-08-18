@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7s5-00071l-Tz
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7rR-0002jN-Oy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:03:17 +0000
+	Thu, 18 Aug 2011 19:02:37 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7s4-0003mx-Nu
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7rQ-0002Bh-LB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:03:17 +0000
-Date: Thu, 18 Aug 2011 20:03:09 +0100
+	Thu, 18 Aug 2011 19:02:37 +0000
+Date: Thu, 18 Aug 2011 20:02:29 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7rx-0007c8-CM@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7rJ-0007Yr-9Y@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,478 +26,452 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 25/91] um: merge arch/um/sys-{i386,
-	x86_64}/shared
+Subject: [uml-devel] Subject: [PATCH 21/91] um: Get rid of UPT_SET/UPT_REG
+	macros
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
+the only users are arch getreg()/putreg() and it's easier to handle
+it there instead of playing with macros from hell
+
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/Makefile                                   |    3 +-
- arch/um/sys-x86/shared/sysdep/archsetjmp.h         |    5 +
- .../shared/sysdep/archsetjmp_32.h}                 |    0
- .../shared/sysdep/archsetjmp_64.h}                 |    0
- arch/um/sys-x86/shared/sysdep/barrier.h            |    5 +
- .../shared/sysdep/barrier_32.h}                    |    0
- .../shared/sysdep/barrier_64.h}                    |    0
- arch/um/sys-x86/shared/sysdep/faultinfo.h          |    5 +
- .../shared/sysdep/faultinfo_32.h}                  |    0
- .../shared/sysdep/faultinfo_64.h}                  |    0
- arch/um/sys-x86/shared/sysdep/host_ldt.h           |    5 +
- .../shared/sysdep/host_ldt_32.h}                   |    0
- .../shared/sysdep/host_ldt_64.h}                   |    0
- arch/um/sys-x86/shared/sysdep/kernel-offsets.h     |    5 +
- .../shared/sysdep/kernel-offsets_32.h}             |    0
- .../shared/sysdep/kernel-offsets_64.h}             |    0
- arch/um/sys-x86/shared/sysdep/ptrace.h             |    5 +
- .../ptrace.h => sys-x86/shared/sysdep/ptrace_32.h} |    0
- .../ptrace.h => sys-x86/shared/sysdep/ptrace_64.h} |    0
- arch/um/sys-x86/shared/sysdep/ptrace_user.h        |    5 +
- .../shared/sysdep/ptrace_user_32.h}                |    0
- .../shared/sysdep/ptrace_user_64.h}                |    0
- arch/um/sys-x86/shared/sysdep/sigcontext.h         |    5 +
- .../shared/sysdep/sigcontext_32.h}                 |    0
- .../shared/sysdep/sigcontext_64.h}                 |    0
- arch/um/sys-x86/shared/sysdep/skas_ptrace.h        |    5 +
- .../shared/sysdep/skas_ptrace_32.h}                |    0
- .../shared/sysdep/skas_ptrace_64.h}                |    0
- arch/um/sys-x86/shared/sysdep/stub.h               |    5 +
- .../stub.h => sys-x86/shared/sysdep/stub_32.h}     |    0
- .../stub.h => sys-x86/shared/sysdep/stub_64.h}     |    0
- arch/um/sys-x86/shared/sysdep/syscalls.h           |    5 +
- .../shared/sysdep/syscalls_32.h}                   |    0
- .../shared/sysdep/syscalls_64.h}                   |    0
- .../{sys-i386 => sys-x86}/shared/sysdep/system.h   |    0
- arch/um/sys-x86/shared/sysdep/tls.h                |    5 +
- .../tls.h => sys-x86/shared/sysdep/tls_32.h}       |    0
- .../tls.h => sys-x86/shared/sysdep/tls_64.h}       |    0
- arch/um/sys-x86_64/shared/sysdep/system.h          |  132 --------------------
- 39 files changed, 61 insertions(+), 134 deletions(-)
- create mode 100644 arch/um/sys-x86/shared/sysdep/archsetjmp.h
- rename arch/um/{sys-i386/shared/sysdep/archsetjmp.h => sys-x86/shared/sysdep/archsetjmp_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/archsetjmp.h => sys-x86/shared/sysdep/archsetjmp_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/barrier.h
- rename arch/um/{sys-i386/shared/sysdep/barrier.h => sys-x86/shared/sysdep/barrier_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/barrier.h => sys-x86/shared/sysdep/barrier_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/faultinfo.h
- rename arch/um/{sys-i386/shared/sysdep/faultinfo.h => sys-x86/shared/sysdep/faultinfo_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/faultinfo.h => sys-x86/shared/sysdep/faultinfo_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/host_ldt.h
- rename arch/um/{sys-i386/shared/sysdep/host_ldt.h => sys-x86/shared/sysdep/host_ldt_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/host_ldt.h => sys-x86/shared/sysdep/host_ldt_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/kernel-offsets.h
- rename arch/um/{sys-i386/shared/sysdep/kernel-offsets.h => sys-x86/shared/sysdep/kernel-offsets_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/kernel-offsets.h => sys-x86/shared/sysdep/kernel-offsets_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/ptrace.h
- rename arch/um/{sys-i386/shared/sysdep/ptrace.h => sys-x86/shared/sysdep/ptrace_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/ptrace.h => sys-x86/shared/sysdep/ptrace_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/ptrace_user.h
- rename arch/um/{sys-i386/shared/sysdep/ptrace_user.h => sys-x86/shared/sysdep/ptrace_user_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/ptrace_user.h => sys-x86/shared/sysdep/ptrace_user_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/sigcontext.h
- rename arch/um/{sys-i386/shared/sysdep/sigcontext.h => sys-x86/shared/sysdep/sigcontext_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/sigcontext.h => sys-x86/shared/sysdep/sigcontext_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/skas_ptrace.h
- rename arch/um/{sys-i386/shared/sysdep/skas_ptrace.h => sys-x86/shared/sysdep/skas_ptrace_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/skas_ptrace.h => sys-x86/shared/sysdep/skas_ptrace_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/stub.h
- rename arch/um/{sys-i386/shared/sysdep/stub.h => sys-x86/shared/sysdep/stub_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/stub.h => sys-x86/shared/sysdep/stub_64.h} (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/syscalls.h
- rename arch/um/{sys-i386/shared/sysdep/syscalls.h => sys-x86/shared/sysdep/syscalls_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/syscalls.h => sys-x86/shared/sysdep/syscalls_64.h} (100%)
- rename arch/um/{sys-i386 => sys-x86}/shared/sysdep/system.h (100%)
- create mode 100644 arch/um/sys-x86/shared/sysdep/tls.h
- rename arch/um/{sys-i386/shared/sysdep/tls.h => sys-x86/shared/sysdep/tls_32.h} (100%)
- rename arch/um/{sys-x86_64/shared/sysdep/tls.h => sys-x86/shared/sysdep/tls_64.h} (100%)
- delete mode 100644 arch/um/sys-x86_64/shared/sysdep/system.h
+ arch/um/include/asm/ptrace-generic.h      |    3 -
+ arch/um/sys-i386/ptrace.c                 |   69 ++++++++++++++++----
+ arch/um/sys-i386/shared/sysdep/ptrace.h   |   53 ---------------
+ arch/um/sys-x86_64/ptrace.c               |  103 ++++++++++++++++++++++++----
+ arch/um/sys-x86_64/shared/sysdep/ptrace.h |   75 ---------------------
+ 5 files changed, 145 insertions(+), 158 deletions(-)
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index c121870..184494d 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -25,9 +25,8 @@ include $(srctree)/$(ARCH_DIR)/Makefile-$(SUBARCH)
+diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/asm/ptrace-generic.h
+index ae084ad..d7c94e4 100644
+--- a/arch/um/include/asm/ptrace-generic.h
++++ b/arch/um/include/asm/ptrace-generic.h
+@@ -23,9 +23,6 @@ struct pt_regs {
+ #define PT_REGS_IP(r) UPT_IP(&(r)->regs)
+ #define PT_REGS_SP(r) UPT_SP(&(r)->regs)
  
- SHARED_HEADERS	:= $(ARCH_DIR)/include/shared
- ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
--ARCH_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)/shared
-+ARCH_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/sys-$(HEADER_ARCH)/shared
- KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(HEADER_ARCH)
--KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)
+-#define PT_REG(r, reg) UPT_REG(&(r)->regs, reg)
+-#define PT_REGS_SET(r, reg, val) UPT_SET(&(r)->regs, reg, val)
+-
+ #define PT_REGS_SET_SYSCALL_RETURN(r, res) \
+ 	UPT_SET_SYSCALL_RETURN(&(r)->regs, res)
+ #define PT_REGS_RESTART_SYSCALL(r) UPT_RESTART_SYSCALL(&(r)->regs)
+diff --git a/arch/um/sys-i386/ptrace.c b/arch/um/sys-i386/ptrace.c
+index 49fd25a..7725fc7 100644
+--- a/arch/um/sys-i386/ptrace.c
++++ b/arch/um/sys-i386/ptrace.c
+@@ -50,20 +50,47 @@ int is_syscall(unsigned long addr)
+ /* 1 = access 0 = no access */
+ #define FLAG_MASK 0x00044dd5
  
- # -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
- # named - it's a common symbol in libpcap, so we get a binary which crashes.
-diff --git a/arch/um/sys-x86/shared/sysdep/archsetjmp.h b/arch/um/sys-x86/shared/sysdep/archsetjmp.h
-new file mode 100644
-index 0000000..ff7766d
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/archsetjmp.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "archsetjmp_32.h"
-+#else
-+#include "archsetjmp_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/archsetjmp.h b/arch/um/sys-x86/shared/sysdep/archsetjmp_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/archsetjmp.h
-rename to arch/um/sys-x86/shared/sysdep/archsetjmp_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/archsetjmp.h b/arch/um/sys-x86/shared/sysdep/archsetjmp_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/archsetjmp.h
-rename to arch/um/sys-x86/shared/sysdep/archsetjmp_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/barrier.h b/arch/um/sys-x86/shared/sysdep/barrier.h
-new file mode 100644
-index 0000000..89ee23b
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/barrier.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "barrier_32.h"
-+#else
-+#include "barrier_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/barrier.h b/arch/um/sys-x86/shared/sysdep/barrier_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/barrier.h
-rename to arch/um/sys-x86/shared/sysdep/barrier_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/barrier.h b/arch/um/sys-x86/shared/sysdep/barrier_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/barrier.h
-rename to arch/um/sys-x86/shared/sysdep/barrier_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/faultinfo.h b/arch/um/sys-x86/shared/sysdep/faultinfo.h
-new file mode 100644
-index 0000000..862ecb1
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/faultinfo.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "faultinfo_32.h"
-+#else
-+#include "faultinfo_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/faultinfo.h b/arch/um/sys-x86/shared/sysdep/faultinfo_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/faultinfo.h
-rename to arch/um/sys-x86/shared/sysdep/faultinfo_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/faultinfo.h b/arch/um/sys-x86/shared/sysdep/faultinfo_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/faultinfo.h
-rename to arch/um/sys-x86/shared/sysdep/faultinfo_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/host_ldt.h b/arch/um/sys-x86/shared/sysdep/host_ldt.h
-new file mode 100644
-index 0000000..94518b3
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/host_ldt.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "host_ldt_32.h"
-+#else
-+#include "host_ldt_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/host_ldt.h b/arch/um/sys-x86/shared/sysdep/host_ldt_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/host_ldt.h
-rename to arch/um/sys-x86/shared/sysdep/host_ldt_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/host_ldt.h b/arch/um/sys-x86/shared/sysdep/host_ldt_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/host_ldt.h
-rename to arch/um/sys-x86/shared/sysdep/host_ldt_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/kernel-offsets.h b/arch/um/sys-x86/shared/sysdep/kernel-offsets.h
-new file mode 100644
-index 0000000..346bc08
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/kernel-offsets.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "kernel-offsets_32.h"
-+#else
-+#include "kernel-offsets_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/kernel-offsets.h b/arch/um/sys-x86/shared/sysdep/kernel-offsets_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/kernel-offsets.h
-rename to arch/um/sys-x86/shared/sysdep/kernel-offsets_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/kernel-offsets.h b/arch/um/sys-x86/shared/sysdep/kernel-offsets_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/kernel-offsets.h
-rename to arch/um/sys-x86/shared/sysdep/kernel-offsets_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/ptrace.h b/arch/um/sys-x86/shared/sysdep/ptrace.h
-new file mode 100644
-index 0000000..711b162
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/ptrace.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "ptrace_32.h"
-+#else
-+#include "ptrace_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/ptrace.h b/arch/um/sys-x86/shared/sysdep/ptrace_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/ptrace.h
-rename to arch/um/sys-x86/shared/sysdep/ptrace_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/ptrace.h b/arch/um/sys-x86/shared/sysdep/ptrace_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/ptrace.h
-rename to arch/um/sys-x86/shared/sysdep/ptrace_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/ptrace_user.h b/arch/um/sys-x86/shared/sysdep/ptrace_user.h
-new file mode 100644
-index 0000000..a92f883
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/ptrace_user.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "ptrace_user_32.h"
-+#else
-+#include "ptrace_user_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/ptrace_user.h b/arch/um/sys-x86/shared/sysdep/ptrace_user_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/ptrace_user.h
-rename to arch/um/sys-x86/shared/sysdep/ptrace_user_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/ptrace_user.h b/arch/um/sys-x86/shared/sysdep/ptrace_user_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/ptrace_user.h
-rename to arch/um/sys-x86/shared/sysdep/ptrace_user_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/sigcontext.h b/arch/um/sys-x86/shared/sysdep/sigcontext.h
-new file mode 100644
-index 0000000..f7f49f4
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/sigcontext.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "sigcontext_32.h"
-+#else
-+#include "sigcontext_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/sigcontext.h b/arch/um/sys-x86/shared/sysdep/sigcontext_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/sigcontext.h
-rename to arch/um/sys-x86/shared/sysdep/sigcontext_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/sigcontext.h b/arch/um/sys-x86/shared/sysdep/sigcontext_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/sigcontext.h
-rename to arch/um/sys-x86/shared/sysdep/sigcontext_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/skas_ptrace.h b/arch/um/sys-x86/shared/sysdep/skas_ptrace.h
-new file mode 100644
-index 0000000..e63b575
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/skas_ptrace.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "skas_ptrace_32.h"
-+#else
-+#include "skas_ptrace_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/skas_ptrace.h b/arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/skas_ptrace.h
-rename to arch/um/sys-x86/shared/sysdep/skas_ptrace_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/skas_ptrace.h b/arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/skas_ptrace.h
-rename to arch/um/sys-x86/shared/sysdep/skas_ptrace_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/stub.h b/arch/um/sys-x86/shared/sysdep/stub.h
-new file mode 100644
-index 0000000..13f523a
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/stub.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "stub_32.h"
-+#else
-+#include "stub_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/stub.h b/arch/um/sys-x86/shared/sysdep/stub_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/stub.h
-rename to arch/um/sys-x86/shared/sysdep/stub_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/stub.h b/arch/um/sys-x86/shared/sysdep/stub_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/stub.h
-rename to arch/um/sys-x86/shared/sysdep/stub_64.h
-diff --git a/arch/um/sys-x86/shared/sysdep/syscalls.h b/arch/um/sys-x86/shared/sysdep/syscalls.h
-new file mode 100644
-index 0000000..bd9a89b
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/syscalls.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "syscalls_32.h"
-+#else
-+#include "syscalls_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/syscalls.h b/arch/um/sys-x86/shared/sysdep/syscalls_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/syscalls.h
-rename to arch/um/sys-x86/shared/sysdep/syscalls_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/syscalls.h b/arch/um/sys-x86/shared/sysdep/syscalls_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/syscalls.h
-rename to arch/um/sys-x86/shared/sysdep/syscalls_64.h
-diff --git a/arch/um/sys-i386/shared/sysdep/system.h b/arch/um/sys-x86/shared/sysdep/system.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/system.h
-rename to arch/um/sys-x86/shared/sysdep/system.h
-diff --git a/arch/um/sys-x86/shared/sysdep/tls.h b/arch/um/sys-x86/shared/sysdep/tls.h
-new file mode 100644
-index 0000000..4d8f752
---- /dev/null
-+++ b/arch/um/sys-x86/shared/sysdep/tls.h
-@@ -0,0 +1,5 @@
-+#ifdef __i386__
-+#include "tls_32.h"
-+#else
-+#include "tls_64.h"
-+#endif
-diff --git a/arch/um/sys-i386/shared/sysdep/tls.h b/arch/um/sys-x86/shared/sysdep/tls_32.h
-similarity index 100%
-rename from arch/um/sys-i386/shared/sysdep/tls.h
-rename to arch/um/sys-x86/shared/sysdep/tls_32.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/tls.h b/arch/um/sys-x86/shared/sysdep/tls_64.h
-similarity index 100%
-rename from arch/um/sys-x86_64/shared/sysdep/tls.h
-rename to arch/um/sys-x86/shared/sysdep/tls_64.h
-diff --git a/arch/um/sys-x86_64/shared/sysdep/system.h b/arch/um/sys-x86_64/shared/sysdep/system.h
-deleted file mode 100644
-index d1b93c4..0000000
---- a/arch/um/sys-x86_64/shared/sysdep/system.h
-+++ /dev/null
-@@ -1,132 +0,0 @@
--#ifndef _ASM_X86_SYSTEM_H_
--#define _ASM_X86_SYSTEM_H_
++static const int reg_offsets[] = {
++	[EBX] = HOST_EBX,
++	[ECX] = HOST_ECX,
++	[EDX] = HOST_EDX,
++	[ESI] = HOST_ESI,
++	[EDI] = HOST_EDI,
++	[EBP] = HOST_EBP,
++	[EAX] = HOST_EAX,
++	[DS] = HOST_DS,
++	[ES] = HOST_ES,
++	[FS] = HOST_FS,
++	[GS] = HOST_GS,
++	[EIP] = HOST_IP,
++	[CS] = HOST_CS,
++	[EFL] = HOST_EFLAGS,
++	[UESP] = HOST_SP,
++	[SS] = HOST_SS,
++};
++
+ int putreg(struct task_struct *child, int regno, unsigned long value)
+ {
+ 	regno >>= 2;
+ 	switch (regno) {
++	case EBX:
++	case ECX:
++	case EDX:
++	case ESI:
++	case EDI:
++	case EBP:
++	case EAX:
++	case EIP:
++	case UESP:
++		break;
+ 	case FS:
+ 		if (value && (value & 3) != 3)
+ 			return -EIO;
+-		PT_REGS_FS(&child->thread.regs) = value;
+-		return 0;
++		break;
+ 	case GS:
+ 		if (value && (value & 3) != 3)
+ 			return -EIO;
+-		PT_REGS_GS(&child->thread.regs) = value;
+-		return 0;
++		break;
+ 	case DS:
+ 	case ES:
+ 		if (value && (value & 3) != 3)
+@@ -78,10 +105,15 @@ int putreg(struct task_struct *child, int regno, unsigned long value)
+ 		break;
+ 	case EFL:
+ 		value &= FLAG_MASK;
+-		value |= PT_REGS_EFLAGS(&child->thread.regs);
+-		break;
++		child->thread.regs.regs.gp[HOST_EFLAGS] |= value;
++		return 0;
++	case ORIG_EAX:
++		child->thread.regs.regs.syscall = value;
++		return 0;
++	default :
++		panic("Bad register in putreg() : %d\n", regno);
+ 	}
+-	PT_REGS_SET(&child->thread.regs, regno, value);
++	child->thread.regs.regs.gp[reg_offsets[regno]] = value;
+ 	return 0;
+ }
+ 
+@@ -106,22 +138,35 @@ int poke_user(struct task_struct *child, long addr, long data)
+ 
+ unsigned long getreg(struct task_struct *child, int regno)
+ {
+-	unsigned long retval = ~0UL;
++	unsigned long mask = ~0UL;
+ 
+ 	regno >>= 2;
+ 	switch (regno) {
++	case ORIG_EAX:
++		return child->thread.regs.regs.syscall;
+ 	case FS:
+ 	case GS:
+ 	case DS:
+ 	case ES:
+ 	case SS:
+ 	case CS:
+-		retval = 0xffff;
+-		/* fall through */
++		mask = 0xffff;
++		break;
++	case EIP:
++	case UESP:
++	case EAX:
++	case EBX:
++	case ECX:
++	case EDX:
++	case ESI:
++	case EDI:
++	case EBP:
++	case EFL:
++		break;
+ 	default:
+-		retval &= PT_REG(&child->thread.regs, regno);
++		panic("Bad register in getreg() : %d\n", regno);
+ 	}
+-	return retval;
++	return mask & child->thread.regs.regs.gp[reg_offsets[regno]];
+ }
+ 
+ /* read the word at location addr in the USER area. */
+diff --git a/arch/um/sys-i386/shared/sysdep/ptrace.h b/arch/um/sys-i386/shared/sysdep/ptrace.h
+index e4c1593..8e721ed8 100644
+--- a/arch/um/sys-i386/shared/sysdep/ptrace.h
++++ b/arch/um/sys-i386/shared/sysdep/ptrace.h
+@@ -99,59 +99,6 @@ struct syscall_args {
+ 				     UPT_SYSCALL_ARG5(r),	\
+ 				     UPT_SYSCALL_ARG6(r) } } )
+ 
+-#define UPT_REG(regs, reg) \
+-	({	unsigned long val; \
+-		switch(reg){ \
+-		case EIP: val = UPT_IP(regs); break; \
+-		case UESP: val = UPT_SP(regs); break; \
+-		case EAX: val = UPT_EAX(regs); break; \
+-		case EBX: val = UPT_EBX(regs); break; \
+-		case ECX: val = UPT_ECX(regs); break; \
+-		case EDX: val = UPT_EDX(regs); break; \
+-		case ESI: val = UPT_ESI(regs); break; \
+-		case EDI: val = UPT_EDI(regs); break; \
+-		case EBP: val = UPT_EBP(regs); break; \
+-		case ORIG_EAX: val = UPT_ORIG_EAX(regs); break; \
+-		case CS: val = UPT_CS(regs); break; \
+-		case SS: val = UPT_SS(regs); break; \
+-		case DS: val = UPT_DS(regs); break; \
+-		case ES: val = UPT_ES(regs); break; \
+-		case FS: val = UPT_FS(regs); break; \
+-		case GS: val = UPT_GS(regs); break; \
+-		case EFL: val = UPT_EFLAGS(regs); break; \
+-		default :  \
+-			panic("Bad register in UPT_REG : %d\n", reg);  \
+-			val = -1; \
+-		} \
+-	        val; \
+-	})
 -
--#include <asm/asm.h>
--#include <asm/segment.h>
--#include <asm/cpufeature.h>
--#include <asm/cmpxchg.h>
--#include <asm/nops.h>
+-#define UPT_SET(regs, reg, val) \
+-	do { \
+-		switch(reg){ \
+-		case EIP: UPT_IP(regs) = val; break; \
+-		case UESP: UPT_SP(regs) = val; break; \
+-		case EAX: UPT_EAX(regs) = val; break; \
+-		case EBX: UPT_EBX(regs) = val; break; \
+-		case ECX: UPT_ECX(regs) = val; break; \
+-		case EDX: UPT_EDX(regs) = val; break; \
+-		case ESI: UPT_ESI(regs) = val; break; \
+-		case EDI: UPT_EDI(regs) = val; break; \
+-		case EBP: UPT_EBP(regs) = val; break; \
+-		case ORIG_EAX: UPT_ORIG_EAX(regs) = val; break; \
+-		case CS: UPT_CS(regs) = val; break; \
+-		case SS: UPT_SS(regs) = val; break; \
+-		case DS: UPT_DS(regs) = val; break; \
+-		case ES: UPT_ES(regs) = val; break; \
+-		case FS: UPT_FS(regs) = val; break; \
+-		case GS: UPT_GS(regs) = val; break; \
+-		case EFL: UPT_EFLAGS(regs) = val; break; \
+-		default :  \
+-			panic("Bad register in UPT_SET : %d\n", reg);  \
+-			break; \
+-		} \
+-	} while (0)
 -
--#include <linux/kernel.h>
--#include <linux/irqflags.h>
--
--/* entries in ARCH_DLINFO: */
--#ifdef CONFIG_IA32_EMULATION
--# define AT_VECTOR_SIZE_ARCH 2
--#else
--# define AT_VECTOR_SIZE_ARCH 1
+ #define UPT_SET_SYSCALL_RETURN(r, res) \
+ 	REGS_SET_SYSCALL_RETURN((r)->regs, (res))
+ 
+diff --git a/arch/um/sys-x86_64/ptrace.c b/arch/um/sys-x86_64/ptrace.c
+index 7ed49ac..67fb771 100644
+--- a/arch/um/sys-x86_64/ptrace.c
++++ b/arch/um/sys-x86_64/ptrace.c
+@@ -18,10 +18,39 @@
+  */
+ #define FLAG_MASK 0x44dd5UL
+ 
+-int putreg(struct task_struct *child, int regno, unsigned long value)
++static const int reg_offsets[] =
+ {
+-	unsigned long tmp;
++	[R8 >> 3] = HOST_R8,
++	[R9 >> 3] = HOST_R9,
++	[R10 >> 3] = HOST_R10,
++	[R11 >> 3] = HOST_R11,
++	[R12 >> 3] = HOST_R12,
++	[R13 >> 3] = HOST_R13,
++	[R14 >> 3] = HOST_R14,
++	[R15 >> 3] = HOST_R15,
++	[RIP >> 3] = HOST_IP,
++	[RSP >> 3] = HOST_SP,
++	[RAX >> 3] = HOST_RAX,
++	[RBX >> 3] = HOST_RBX,
++	[RCX >> 3] = HOST_RCX,
++	[RDX >> 3] = HOST_RDX,
++	[RSI >> 3] = HOST_RSI,
++	[RDI >> 3] = HOST_RDI,
++	[RBP >> 3] = HOST_RBP,
++	[CS >> 3] = HOST_CS,
++	[SS >> 3] = HOST_SS,
++	[FS_BASE >> 3] = HOST_FS_BASE,
++	[GS_BASE >> 3] = HOST_GS_BASE,
++	[DS >> 3] = HOST_DS,
++	[ES >> 3] = HOST_ES,
++	[FS >> 3] = HOST_FS,
++	[GS >> 3] = HOST_GS,
++	[EFLAGS >> 3] = HOST_EFLAGS,
++	[ORIG_RAX >> 3] = HOST_ORIG_RAX,
++};
+ 
++int putreg(struct task_struct *child, int regno, unsigned long value)
++{
+ #ifdef TIF_IA32
+ 	/*
+ 	 * Some code in the 64bit emulation may not be 64bit clean.
+@@ -31,6 +60,26 @@ int putreg(struct task_struct *child, int regno, unsigned long value)
+ 		value &= 0xffffffff;
+ #endif
+ 	switch (regno) {
++	case R8:
++	case R9:
++	case R10:
++	case R11:
++	case R12:
++	case R13:
++	case R14:
++	case R15:
++	case RIP:
++	case RSP:
++	case RAX:
++	case RBX:
++	case RCX:
++	case RDX:
++	case RSI:
++	case RDI:
++	case RBP:
++	case ORIG_RAX:
++		break;
++
+ 	case FS:
+ 	case GS:
+ 	case DS:
+@@ -50,12 +99,14 @@ int putreg(struct task_struct *child, int regno, unsigned long value)
+ 
+ 	case EFLAGS:
+ 		value &= FLAG_MASK;
+-		tmp = PT_REGS_EFLAGS(&child->thread.regs) & ~FLAG_MASK;
+-		value |= tmp;
+-		break;
++		child->thread.regs.regs.gp[HOST_EFLAGS] |= value;
++		return 0;
++
++	default:
++		panic("Bad register in putreg(): %d\n", regno);
+ 	}
+ 
+-	PT_REGS_SET(&child->thread.regs, regno, value);
++	child->thread.regs.regs.gp[reg_offsets[regno >> 3]] = value;
+ 	return 0;
+ }
+ 
+@@ -80,24 +131,46 @@ int poke_user(struct task_struct *child, long addr, long data)
+ 
+ unsigned long getreg(struct task_struct *child, int regno)
+ {
+-	unsigned long retval = ~0UL;
++	unsigned long mask = ~0UL;
++#ifdef TIF_IA32
++	if (test_tsk_thread_flag(child, TIF_IA32))
++		mask = 0xffffffff;
++#endif
+ 	switch (regno) {
++	case R8:
++	case R9:
++	case R10:
++	case R11:
++	case R12:
++	case R13:
++	case R14:
++	case R15:
++	case RIP:
++	case RSP:
++	case RAX:
++	case RBX:
++	case RCX:
++	case RDX:
++	case RSI:
++	case RDI:
++	case RBP:
++	case ORIG_RAX:
++	case EFLAGS:
++	case FS_BASE:
++	case GS_BASE:
++		break;
+ 	case FS:
+ 	case GS:
+ 	case DS:
+ 	case ES:
+ 	case SS:
+ 	case CS:
+-		retval = 0xffff;
+-		/* fall through */
++		mask = 0xffff;
++		break;
+ 	default:
+-		retval &= PT_REG(&child->thread.regs, regno);
+-#ifdef TIF_IA32
+-		if (test_tsk_thread_flag(child, TIF_IA32))
+-			retval &= 0xffffffff;
 -#endif
++		panic("Bad register in getreg: %d\n", regno);
+ 	}
+-	return retval;
++	return mask & child->thread.regs.regs.gp[reg_offsets[regno >> 3]];
+ }
+ 
+ int peek_user(struct task_struct *child, long addr, long data)
+diff --git a/arch/um/sys-x86_64/shared/sysdep/ptrace.h b/arch/um/sys-x86_64/shared/sysdep/ptrace.h
+index 8d06d0a..2d4b223 100644
+--- a/arch/um/sys-x86_64/shared/sysdep/ptrace.h
++++ b/arch/um/sys-x86_64/shared/sysdep/ptrace.h
+@@ -146,81 +146,6 @@ struct syscall_args {
+ 				     UPT_SYSCALL_ARG5(r),	 \
+ 				     UPT_SYSCALL_ARG6(r) } } )
+ 
+-#define UPT_REG(regs, reg) \
+-	({      unsigned long val;		\
+-		switch(reg){						\
+-		case R8: val = UPT_R8(regs); break;			\
+-		case R9: val = UPT_R9(regs); break;			\
+-		case R10: val = UPT_R10(regs); break;			\
+-		case R11: val = UPT_R11(regs); break;			\
+-		case R12: val = UPT_R12(regs); break;			\
+-		case R13: val = UPT_R13(regs); break;			\
+-		case R14: val = UPT_R14(regs); break;			\
+-		case R15: val = UPT_R15(regs); break;			\
+-		case RIP: val = UPT_IP(regs); break;			\
+-		case RSP: val = UPT_SP(regs); break;			\
+-		case RAX: val = UPT_RAX(regs); break;			\
+-		case RBX: val = UPT_RBX(regs); break;			\
+-		case RCX: val = UPT_RCX(regs); break;			\
+-		case RDX: val = UPT_RDX(regs); break;			\
+-		case RSI: val = UPT_RSI(regs); break;			\
+-		case RDI: val = UPT_RDI(regs); break;			\
+-		case RBP: val = UPT_RBP(regs); break;			\
+-		case ORIG_RAX: val = UPT_ORIG_RAX(regs); break;		\
+-		case CS: val = UPT_CS(regs); break;			\
+-		case SS: val = UPT_SS(regs); break;			\
+-		case FS_BASE: val = UPT_FS_BASE(regs); break;		\
+-		case GS_BASE: val = UPT_GS_BASE(regs); break;		\
+-		case DS: val = UPT_DS(regs); break;			\
+-		case ES: val = UPT_ES(regs); break;			\
+-		case FS : val = UPT_FS (regs); break;			\
+-		case GS: val = UPT_GS(regs); break;			\
+-		case EFLAGS: val = UPT_EFLAGS(regs); break;		\
+-		default :						\
+-			panic("Bad register in UPT_REG : %d\n", reg);	\
+-			val = -1;					\
+-		}							\
+-		val;							\
+-	})
 -
--extern unsigned long arch_align_stack(unsigned long sp);
 -
--void default_idle(void);
+-#define UPT_SET(regs, reg, val) \
+-	({      unsigned long __upt_val = val;	\
+-		switch(reg){						\
+-		case R8: UPT_R8(regs) = __upt_val; break;		\
+-		case R9: UPT_R9(regs) = __upt_val; break;		\
+-		case R10: UPT_R10(regs) = __upt_val; break;		\
+-		case R11: UPT_R11(regs) = __upt_val; break;		\
+-		case R12: UPT_R12(regs) = __upt_val; break;		\
+-		case R13: UPT_R13(regs) = __upt_val; break;		\
+-		case R14: UPT_R14(regs) = __upt_val; break;		\
+-		case R15: UPT_R15(regs) = __upt_val; break;		\
+-		case RIP: UPT_IP(regs) = __upt_val; break;		\
+-		case RSP: UPT_SP(regs) = __upt_val; break;		\
+-		case RAX: UPT_RAX(regs) = __upt_val; break;		\
+-		case RBX: UPT_RBX(regs) = __upt_val; break;		\
+-		case RCX: UPT_RCX(regs) = __upt_val; break;		\
+-		case RDX: UPT_RDX(regs) = __upt_val; break;		\
+-		case RSI: UPT_RSI(regs) = __upt_val; break;		\
+-		case RDI: UPT_RDI(regs) = __upt_val; break;		\
+-		case RBP: UPT_RBP(regs) = __upt_val; break;		\
+-		case ORIG_RAX: UPT_ORIG_RAX(regs) = __upt_val; break;	\
+-		case CS: UPT_CS(regs) = __upt_val; break;		\
+-		case SS: UPT_SS(regs) = __upt_val; break;		\
+-		case FS_BASE: UPT_FS_BASE(regs) = __upt_val; break;	\
+-		case GS_BASE: UPT_GS_BASE(regs) = __upt_val; break;	\
+-		case DS: UPT_DS(regs) = __upt_val; break;		\
+-		case ES: UPT_ES(regs) = __upt_val; break;		\
+-		case FS: UPT_FS(regs) = __upt_val; break;		\
+-		case GS: UPT_GS(regs) = __upt_val; break;		\
+-		case EFLAGS: UPT_EFLAGS(regs) = __upt_val; break;	\
+-		default :						\
+-			panic("Bad register in UPT_SET : %d\n", reg);	\
+-			break;						\
+-		}							\
+-		__upt_val;						\
+-	})
 -
--/*
-- * Force strict CPU ordering.
-- * And yes, this is required on UP too when we're talking
-- * to devices.
-- */
--#ifdef CONFIG_X86_32
--/*
-- * Some non-Intel clones support out of order store. wmb() ceases to be a
-- * nop for these.
-- */
--#define mb() alternative("lock; addl $0,0(%%esp)", "mfence", X86_FEATURE_XMM2)
--#define rmb() alternative("lock; addl $0,0(%%esp)", "lfence", X86_FEATURE_XMM2)
--#define wmb() alternative("lock; addl $0,0(%%esp)", "sfence", X86_FEATURE_XMM)
--#else
--#define mb() 	asm volatile("mfence":::"memory")
--#define rmb()	asm volatile("lfence":::"memory")
--#define wmb()	asm volatile("sfence" ::: "memory")
--#endif
--
--/**
-- * read_barrier_depends - Flush all pending reads that subsequents reads
-- * depend on.
-- *
-- * No data-dependent reads from memory-like regions are ever reordered
-- * over this barrier.  All reads preceding this primitive are guaranteed
-- * to access memory (but not necessarily other CPUs' caches) before any
-- * reads following this primitive that depend on the data return by
-- * any of the preceding reads.  This primitive is much lighter weight than
-- * rmb() on most CPUs, and is never heavier weight than is
-- * rmb().
-- *
-- * These ordering constraints are respected by both the local CPU
-- * and the compiler.
-- *
-- * Ordering is not guaranteed by anything other than these primitives,
-- * not even by data dependencies.  See the documentation for
-- * memory_barrier() for examples and URLs to more information.
-- *
-- * For example, the following code would force ordering (the initial
-- * value of "a" is zero, "b" is one, and "p" is "&a"):
-- *
-- * <programlisting>
-- *	CPU 0				CPU 1
-- *
-- *	b = 2;
-- *	memory_barrier();
-- *	p = &b;				q = p;
-- *					read_barrier_depends();
-- *					d = *q;
-- * </programlisting>
-- *
-- * because the read of "*q" depends on the read of "p" and these
-- * two reads are separated by a read_barrier_depends().  However,
-- * the following code, with the same initial values for "a" and "b":
-- *
-- * <programlisting>
-- *	CPU 0				CPU 1
-- *
-- *	a = 2;
-- *	memory_barrier();
-- *	b = 3;				y = b;
-- *					read_barrier_depends();
-- *					x = a;
-- * </programlisting>
-- *
-- * does not enforce ordering, since there is no data dependency between
-- * the read of "a" and the read of "b".  Therefore, on some CPUs, such
-- * as Alpha, "y" could be set to 3 and "x" to 0.  Use rmb()
-- * in cases like this where there are no data dependencies.
-- **/
--
--#define read_barrier_depends()	do { } while (0)
--
--#ifdef CONFIG_SMP
--#define smp_mb()	mb()
--#ifdef CONFIG_X86_PPRO_FENCE
--# define smp_rmb()	rmb()
--#else
--# define smp_rmb()	barrier()
--#endif
--#ifdef CONFIG_X86_OOSTORE
--# define smp_wmb() 	wmb()
--#else
--# define smp_wmb()	barrier()
--#endif
--#define smp_read_barrier_depends()	read_barrier_depends()
--#define set_mb(var, value) do { (void)xchg(&var, value); } while (0)
--#else
--#define smp_mb()	barrier()
--#define smp_rmb()	barrier()
--#define smp_wmb()	barrier()
--#define smp_read_barrier_depends()	do { } while (0)
--#define set_mb(var, value) do { var = value; barrier(); } while (0)
--#endif
--
--/*
-- * Stop RDTSC speculation. This is needed when you need to use RDTSC
-- * (or get_cycles or vread that possibly accesses the TSC) in a defined
-- * code region.
-- *
-- * (Could use an alternative three way for this if there was one.)
-- */
--static inline void rdtsc_barrier(void)
--{
--	alternative(ASM_NOP3, "mfence", X86_FEATURE_MFENCE_RDTSC);
--	alternative(ASM_NOP3, "lfence", X86_FEATURE_LFENCE_RDTSC);
--}
--
--#endif
+ #define UPT_SET_SYSCALL_RETURN(r, res) \
+ 	REGS_SET_SYSCALL_RETURN((r)->regs, (res))
+ 
 -- 
 1.7.2.5
 
