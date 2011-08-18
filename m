@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7qJ-000162-0Y
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7zC-0008Iz-4U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:01:27 +0000
+	Thu, 18 Aug 2011 19:10:38 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7qI-0004i2-8E
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7zB-0000Kj-9D
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:01:26 +0000
-Date: Thu, 18 Aug 2011 20:01:19 +0100
+	Thu, 18 Aug 2011 19:10:38 +0000
+Date: Thu, 18 Aug 2011 20:10:29 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7qB-0007Vw-7r@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7z3-0007xa-S0@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,131 +26,242 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 14/91] um: take user_constants.h to
- include/generated
+Subject: [uml-devel] Subject: [PATCH 69/91] um: no need to play with save_sp
+	in signal frame setup anymore
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/Makefile                               |    5 ++---
- arch/um/sys-i386/shared/sysdep/ptrace.h        |    2 +-
- arch/um/sys-i386/shared/sysdep/ptrace_user.h   |    2 +-
- arch/um/sys-i386/shared/sysdep/sc.h            |    2 +-
- arch/um/sys-x86_64/shared/sysdep/ptrace.h      |    2 +-
- arch/um/sys-x86_64/shared/sysdep/ptrace_user.h |    2 +-
- arch/um/sys-x86_64/shared/sysdep/sc.h          |    2 +-
- 7 files changed, 8 insertions(+), 9 deletions(-)
+ arch/x86/um/signal_32.c |   39 ++++++++-------------------------------
+ arch/x86/um/signal_64.c |   33 +++++++--------------------------
+ 2 files changed, 15 insertions(+), 57 deletions(-)
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index deb0553..3aded4e 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -86,7 +86,7 @@ endef
+diff --git a/arch/x86/um/signal_32.c b/arch/x86/um/signal_32.c
+index 2eebdc0..7a206d8 100644
+--- a/arch/x86/um/signal_32.c
++++ b/arch/x86/um/signal_32.c
+@@ -215,8 +215,7 @@ static int copy_sc_from_user(struct pt_regs *regs,
+ }
  
- KBUILD_KCONFIG := arch/um/Kconfig.$(HEADER_ARCH)
+ static int copy_sc_to_user(struct sigcontext __user *to,
+-			   struct _fpstate __user *to_fp, struct pt_regs *regs,
+-			   unsigned long sp)
++			   struct _fpstate __user *to_fp, struct pt_regs *regs)
+ {
+ 	struct sigcontext sc;
+ 	struct faultinfo * fi = &current->thread.arch.faultinfo;
+@@ -230,7 +229,7 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ 	sc.di = REGS_EDI(regs->regs.gp);
+ 	sc.si = REGS_ESI(regs->regs.gp);
+ 	sc.bp = REGS_EBP(regs->regs.gp);
+-	sc.sp = sp;
++	sc.sp = REGS_SP(regs->regs.gp);
+ 	sc.bx = REGS_EBX(regs->regs.gp);
+ 	sc.dx = REGS_EDX(regs->regs.gp);
+ 	sc.cx = REGS_ECX(regs->regs.gp);
+@@ -291,7 +290,7 @@ static int copy_ucontext_to_user(struct ucontext __user *uc,
+ 	err |= put_user(current->sas_ss_sp, &uc->uc_stack.ss_sp);
+ 	err |= put_user(sas_ss_flags(sp), &uc->uc_stack.ss_flags);
+ 	err |= put_user(current->sas_ss_size, &uc->uc_stack.ss_size);
+-	err |= copy_sc_to_user(&uc->uc_mcontext, fp, &current->thread.regs, sp);
++	err |= copy_sc_to_user(&uc->uc_mcontext, fp, &current->thread.regs);
+ 	err |= copy_to_user(&uc->uc_sigmask, set, sizeof(*set));
+ 	return err;
+ }
+@@ -324,7 +323,6 @@ int setup_signal_stack_sc(unsigned long stack_top, int sig,
+ {
+ 	struct sigframe __user *frame;
+ 	void __user *restorer;
+-	unsigned long save_sp = PT_REGS_SP(regs);
+ 	int err = 0;
  
--archprepare: $(SHARED_HEADERS)/user_constants.h
-+archprepare: include/generated/user_constants.h
- archprepare: $(SHARED_HEADERS)/kern_constants.h
+ 	/* This is the same calculation as i386 - ((sp + 4) & 15) == 0 */
+@@ -337,19 +335,9 @@ int setup_signal_stack_sc(unsigned long stack_top, int sig,
+ 	if (ka->sa.sa_flags & SA_RESTORER)
+ 		restorer = ka->sa.sa_restorer;
  
- LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
-@@ -119,7 +119,6 @@ endef
- # When cleaning we don't include .config, so we don't include
- # TT or skas makefiles and don't clean skas_ptregs.h.
- CLEAN_FILES += linux x.i gmon.out \
--	$(SHARED_HEADERS)/user_constants.h \
- 	$(SHARED_HEADERS)/kern_constants.h
+-	/* Update SP now because the page fault handler refuses to extend
+-	 * the stack if the faulting address is too far below the current
+-	 * SP, which frame now certainly is.  If there's an error, the original
+-	 * value is restored on the way out.
+-	 * When writing the sigcontext to the stack, we have to write the
+-	 * original value, so that's passed to copy_sc_to_user, which does
+-	 * the right thing with it.
+-	 */
+-	PT_REGS_SP(regs) = (unsigned long) frame;
+-
+ 	err |= __put_user(restorer, &frame->pretcode);
+ 	err |= __put_user(sig, &frame->sig);
+-	err |= copy_sc_to_user(&frame->sc, NULL, regs, save_sp);
++	err |= copy_sc_to_user(&frame->sc, NULL, regs);
+ 	err |= __put_user(mask->sig[0], &frame->sc.oldmask);
+ 	if (_NSIG_WORDS > 1)
+ 		err |= __copy_to_user(&frame->extramask, &mask->sig[1],
+@@ -367,7 +355,7 @@ int setup_signal_stack_sc(unsigned long stack_top, int sig,
+ 	err |= __put_user(0x80cd, (short __user *)(frame->retcode+6));
  
- archclean:
-@@ -144,7 +143,7 @@ define filechk_gen-asm-offsets
-          echo ""; )
- endef
+ 	if (err)
+-		goto err;
++		return err;
  
--$(SHARED_HEADERS)/user_constants.h: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s
-+include/generated/user_constants.h: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s
- 	$(call filechk,gen-asm-offsets)
+ 	PT_REGS_SP(regs) = (unsigned long) frame;
+ 	PT_REGS_IP(regs) = (unsigned long) ka->sa.sa_handler;
+@@ -378,10 +366,6 @@ int setup_signal_stack_sc(unsigned long stack_top, int sig,
+ 	if ((current->ptrace & PT_DTRACE) && (current->ptrace & PT_PTRACED))
+ 		ptrace_notify(SIGTRAP);
+ 	return 0;
+-
+-err:
+-	PT_REGS_SP(regs) = save_sp;
+-	return err;
+ }
  
- $(SHARED_HEADERS)/kern_constants.h:
-diff --git a/arch/um/sys-i386/shared/sysdep/ptrace.h b/arch/um/sys-i386/shared/sysdep/ptrace.h
-index 06e03b8..e4c1593 100644
---- a/arch/um/sys-i386/shared/sysdep/ptrace.h
-+++ b/arch/um/sys-i386/shared/sysdep/ptrace.h
-@@ -6,7 +6,7 @@
- #ifndef __SYSDEP_I386_PTRACE_H
- #define __SYSDEP_I386_PTRACE_H
+ int setup_signal_stack_si(unsigned long stack_top, int sig,
+@@ -390,7 +374,6 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
+ {
+ 	struct rt_sigframe __user *frame;
+ 	void __user *restorer;
+-	unsigned long save_sp = PT_REGS_SP(regs);
+ 	int err = 0;
  
--#include "user_constants.h"
-+#include <generated/user_constants.h>
- #include "sysdep/faultinfo.h"
+ 	stack_top &= -8UL;
+@@ -402,16 +385,13 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
+ 	if (ka->sa.sa_flags & SA_RESTORER)
+ 		restorer = ka->sa.sa_restorer;
  
- #define MAX_REG_NR (UM_FRAME_SIZE / sizeof(unsigned long))
-diff --git a/arch/um/sys-i386/shared/sysdep/ptrace_user.h b/arch/um/sys-i386/shared/sysdep/ptrace_user.h
-index ef56247..e4398a3 100644
---- a/arch/um/sys-i386/shared/sysdep/ptrace_user.h
-+++ b/arch/um/sys-i386/shared/sysdep/ptrace_user.h
-@@ -9,7 +9,7 @@
- #include <sys/ptrace.h>
- #include <linux/ptrace.h>
- #include <asm/ptrace.h>
--#include "user_constants.h"
-+#include <generated/user_constants.h>
+-	/* See comment above about why this is here */
+-	PT_REGS_SP(regs) = (unsigned long) frame;
+-
+ 	err |= __put_user(restorer, &frame->pretcode);
+ 	err |= __put_user(sig, &frame->sig);
+ 	err |= __put_user(&frame->info, &frame->pinfo);
+ 	err |= __put_user(&frame->uc, &frame->puc);
+ 	err |= copy_siginfo_to_user(&frame->info, info);
+ 	err |= copy_ucontext_to_user(&frame->uc, &frame->fpstate, mask,
+-				     save_sp);
++					PT_REGS_SP(regs));
  
- #define PT_OFFSET(r) ((r) * sizeof(long))
+ 	/*
+ 	 * This is movl $,%eax ; int $0x80
+@@ -425,8 +405,9 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
+ 	err |= __put_user(0x80cd, (short __user *)(frame->retcode+5));
  
-diff --git a/arch/um/sys-i386/shared/sysdep/sc.h b/arch/um/sys-i386/shared/sysdep/sc.h
-index c57d178..7b89240 100644
---- a/arch/um/sys-i386/shared/sysdep/sc.h
-+++ b/arch/um/sys-i386/shared/sysdep/sc.h
-@@ -1,7 +1,7 @@
- #ifndef __SYSDEP_I386_SC_H
- #define __SYSDEP_I386_SC_H
+ 	if (err)
+-		goto err;
++		return err;
  
--#include <user_constants.h>
-+#include <generated/user_constants.h>
++	PT_REGS_SP(regs) = (unsigned long) frame;
+ 	PT_REGS_IP(regs) = (unsigned long) ka->sa.sa_handler;
+ 	PT_REGS_EAX(regs) = (unsigned long) sig;
+ 	PT_REGS_EDX(regs) = (unsigned long) &frame->info;
+@@ -435,10 +416,6 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
+ 	if ((current->ptrace & PT_DTRACE) && (current->ptrace & PT_PTRACED))
+ 		ptrace_notify(SIGTRAP);
+ 	return 0;
+-
+-err:
+-	PT_REGS_SP(regs) = save_sp;
+-	return err;
+ }
  
- #define SC_OFFSET(sc, field) \
- 	*((unsigned long *) &(((char *) (sc))[HOST_##field]))
-diff --git a/arch/um/sys-x86_64/shared/sysdep/ptrace.h b/arch/um/sys-x86_64/shared/sysdep/ptrace.h
-index 096547b..8d06d0a 100644
---- a/arch/um/sys-x86_64/shared/sysdep/ptrace.h
-+++ b/arch/um/sys-x86_64/shared/sysdep/ptrace.h
-@@ -8,7 +8,7 @@
- #ifndef __SYSDEP_X86_64_PTRACE_H
- #define __SYSDEP_X86_64_PTRACE_H
+ long sys_sigreturn(struct pt_regs regs)
+diff --git a/arch/x86/um/signal_64.c b/arch/x86/um/signal_64.c
+index 4e5b9b0..74c2598 100644
+--- a/arch/x86/um/signal_64.c
++++ b/arch/x86/um/signal_64.c
+@@ -68,7 +68,7 @@ static int copy_sc_from_user(struct pt_regs *regs,
  
--#include "user_constants.h"
-+#include <generated/user_constants.h>
- #include "sysdep/faultinfo.h"
+ static int copy_sc_to_user(struct sigcontext __user *to,
+ 			   struct _fpstate __user *to_fp, struct pt_regs *regs,
+-			   unsigned long mask, unsigned long sp)
++			   unsigned long mask)
+ {
+ 	struct faultinfo * fi = &current->thread.arch.faultinfo;
+ 	struct sigcontext sc;
+@@ -81,11 +81,7 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ 	PUTREG(DI, di);
+ 	PUTREG(SI, si);
+ 	PUTREG(BP, bp);
+-	/*
+-	 * Must use original RSP, which is passed in, rather than what's in
+-	 * signal frame.
+-	 */
+-	sc.sp = sp;
++	PUTREG(SP, sp);
+ 	PUTREG(BX, bx);
+ 	PUTREG(DX, dx);
+ 	PUTREG(CX, cx);
+@@ -141,7 +137,6 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
+ 			  siginfo_t *info, sigset_t *set)
+ {
+ 	struct rt_sigframe __user *frame;
+-	unsigned long save_sp = PT_REGS_RSP(regs);
+ 	int err = 0;
+ 	struct task_struct *me = current;
  
- #define MAX_REG_OFFSET (UM_FRAME_SIZE)
-diff --git a/arch/um/sys-x86_64/shared/sysdep/ptrace_user.h b/arch/um/sys-x86_64/shared/sysdep/ptrace_user.h
-index 4dbccdb..faf9cdd 100644
---- a/arch/um/sys-x86_64/shared/sysdep/ptrace_user.h
-+++ b/arch/um/sys-x86_64/shared/sysdep/ptrace_user.h
-@@ -12,7 +12,7 @@
- #include <linux/ptrace.h>
- #include <asm/ptrace.h>
- #undef __FRAME_OFFSETS
--#include "user_constants.h"
-+#include <generated/user_constants.h>
+@@ -159,26 +154,15 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
+ 			goto out;
+ 	}
  
- #define PT_INDEX(off) ((off) / sizeof(unsigned long))
+-	/*
+-	 * Update SP now because the page fault handler refuses to extend
+-	 * the stack if the faulting address is too far below the current
+-	 * SP, which frame now certainly is.  If there's an error, the original
+-	 * value is restored on the way out.
+-	 * When writing the sigcontext to the stack, we have to write the
+-	 * original value, so that's passed to copy_sc_to_user, which does
+-	 * the right thing with it.
+-	 */
+-	PT_REGS_RSP(regs) = (unsigned long) frame;
+-
+ 	/* Create the ucontext.  */
+ 	err |= __put_user(0, &frame->uc.uc_flags);
+ 	err |= __put_user(0, &frame->uc.uc_link);
+ 	err |= __put_user(me->sas_ss_sp, &frame->uc.uc_stack.ss_sp);
+-	err |= __put_user(sas_ss_flags(save_sp),
++	err |= __put_user(sas_ss_flags(PT_REGS_RSP(regs)),
+ 			  &frame->uc.uc_stack.ss_flags);
+ 	err |= __put_user(me->sas_ss_size, &frame->uc.uc_stack.ss_size);
+ 	err |= copy_sc_to_user(&frame->uc.uc_mcontext, &frame->fpstate, regs,
+-			       set->sig[0], save_sp);
++			       set->sig[0]);
+ 	err |= __put_user(&frame->fpstate, &frame->uc.uc_mcontext.fpstate);
+ 	if (sizeof(*set) == 16) {
+ 		__put_user(set->sig[0], &frame->uc.uc_sigmask.sig[0]);
+@@ -197,10 +181,10 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
+ 		err |= __put_user(ka->sa.sa_restorer, &frame->pretcode);
+ 	else
+ 		/* could use a vstub here */
+-		goto restore_sp;
++		return err;
  
-diff --git a/arch/um/sys-x86_64/shared/sysdep/sc.h b/arch/um/sys-x86_64/shared/sysdep/sc.h
-index 8aee45b..20313a2 100644
---- a/arch/um/sys-x86_64/shared/sysdep/sc.h
-+++ b/arch/um/sys-x86_64/shared/sysdep/sc.h
-@@ -5,7 +5,7 @@
-  * Released under the GPL
-  */
+ 	if (err)
+-		goto restore_sp;
++		return err;
  
--#include <user_constants.h>
-+#include <generated/user_constants.h>
+ 	/* Set up registers for signal handler */
+ 	{
+@@ -209,6 +193,7 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
+ 			sig = ed->signal_invmap[sig];
+ 	}
  
- #define SC_OFFSET(sc, field) \
- 	 *((unsigned long *) &(((char *) (sc))[HOST_##field]))
++	PT_REGS_RSP(regs) = (unsigned long) frame;
+ 	PT_REGS_RDI(regs) = sig;
+ 	/* In case the signal handler was declared without prototypes */
+ 	PT_REGS_RAX(regs) = 0;
+@@ -222,10 +207,6 @@ int setup_signal_stack_si(unsigned long stack_top, int sig,
+ 	PT_REGS_RIP(regs) = (unsigned long) ka->sa.sa_handler;
+  out:
+ 	return err;
+-
+-restore_sp:
+-	PT_REGS_RSP(regs) = save_sp;
+-	return err;
+ }
+ 
+ long sys_rt_sigreturn(struct pt_regs *regs)
 -- 
 1.7.2.5
 
