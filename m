@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7pV-0006YZ-01
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7rl-0001JC-4l
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:00:37 +0000
+	Thu, 18 Aug 2011 19:02:57 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7pU-0008R6-67
+	(Exim 4.76) id 1Qu7rk-00004q-9Z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:00:36 +0000
-Date: Thu, 18 Aug 2011 20:00:29 +0100
+	Thu, 18 Aug 2011 19:02:57 +0000
+Date: Thu, 18 Aug 2011 20:02:49 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7pN-0007Th-6h@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7rd-0007az-BQ@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,59 +26,117 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 09/91] um: don't rely on sc.fpstate not
- having been reassigned prior to rt_sigreturn()
+Subject: [uml-devel] Subject: [PATCH 23/91] um: get rid of unused macros in
+ ptrace_user.h
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-native rt_sigreturn() doesn't...
-
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/sys-x86_64/signal.c |   13 ++++++++-----
- 1 files changed, 8 insertions(+), 5 deletions(-)
+ arch/um/sys-i386/shared/sysdep/ptrace_user.h   |   24 --------------
+ arch/um/sys-x86_64/shared/sysdep/ptrace_user.h |   39 ------------------------
+ 2 files changed, 0 insertions(+), 63 deletions(-)
 
-diff --git a/arch/um/sys-x86_64/signal.c b/arch/um/sys-x86_64/signal.c
-index 581b64d..ccfa554 100644
---- a/arch/um/sys-x86_64/signal.c
-+++ b/arch/um/sys-x86_64/signal.c
-@@ -44,10 +44,10 @@ void copy_sc(struct uml_pt_regs *regs, void *from)
- }
+diff --git a/arch/um/sys-i386/shared/sysdep/ptrace_user.h b/arch/um/sys-i386/shared/sysdep/ptrace_user.h
+index e4398a3..9d88a79 100644
+--- a/arch/um/sys-i386/shared/sysdep/ptrace_user.h
++++ b/arch/um/sys-i386/shared/sysdep/ptrace_user.h
+@@ -16,35 +16,11 @@
+ #define PT_SYSCALL_NR(regs) ((regs)[ORIG_EAX])
+ #define PT_SYSCALL_NR_OFFSET PT_OFFSET(ORIG_EAX)
  
- static int copy_sc_from_user(struct pt_regs *regs,
--			     struct sigcontext __user *from,
--			     struct _fpstate __user *fpp)
-+			     struct sigcontext __user *from)
- {
- 	struct user_i387_struct fp;
-+	void __user *buf;
- 	int err = 0;
+-#define PT_SYSCALL_ARG1_OFFSET PT_OFFSET(EBX)
+-#define PT_SYSCALL_ARG2_OFFSET PT_OFFSET(ECX)
+-#define PT_SYSCALL_ARG3_OFFSET PT_OFFSET(EDX)
+-#define PT_SYSCALL_ARG4_OFFSET PT_OFFSET(ESI)
+-#define PT_SYSCALL_ARG5_OFFSET PT_OFFSET(EDI)
+-#define PT_SYSCALL_ARG6_OFFSET PT_OFFSET(EBP)
+-
+ #define PT_SYSCALL_RET_OFFSET PT_OFFSET(EAX)
  
- #define GETREG(regs, regno, sc, regname)				\
-@@ -78,7 +78,11 @@ static int copy_sc_from_user(struct pt_regs *regs,
+-#define REGS_SYSCALL_NR EAX /* This is used before a system call */
+-#define REGS_SYSCALL_ARG1 EBX
+-#define REGS_SYSCALL_ARG2 ECX
+-#define REGS_SYSCALL_ARG3 EDX
+-#define REGS_SYSCALL_ARG4 ESI
+-#define REGS_SYSCALL_ARG5 EDI
+-#define REGS_SYSCALL_ARG6 EBP
+-
+ #define REGS_IP_INDEX EIP
+ #define REGS_SP_INDEX UESP
  
- #undef GETREG
+-#define PT_IP_OFFSET PT_OFFSET(EIP)
+-#define PT_IP(regs) ((regs)[EIP])
+-#define PT_SP_OFFSET PT_OFFSET(UESP)
+-#define PT_SP(regs) ((regs)[UESP])
+-
+ #define FP_SIZE ((HOST_FPX_SIZE > HOST_FP_SIZE) ? HOST_FPX_SIZE : HOST_FP_SIZE)
  
--	err = copy_from_user(&fp, fpp, sizeof(struct user_i387_struct));
-+	err = __get_user(buf, &from->fpstate);
-+	if (err)
-+		return 1;
-+
-+	err = copy_from_user(&fp, buf, sizeof(struct user_i387_struct));
- 	if (err)
- 		return 1;
+-#ifndef FRAME_SIZE
+-#define FRAME_SIZE (17)
+-#endif
+-
+ #endif
+diff --git a/arch/um/sys-x86_64/shared/sysdep/ptrace_user.h b/arch/um/sys-x86_64/shared/sysdep/ptrace_user.h
+index faf9cdd..2f1b6e3 100644
+--- a/arch/um/sys-x86_64/shared/sysdep/ptrace_user.h
++++ b/arch/um/sys-x86_64/shared/sysdep/ptrace_user.h
+@@ -19,35 +19,8 @@
+ #define PT_SYSCALL_NR(regs) ((regs)[PT_INDEX(ORIG_RAX)])
+ #define PT_SYSCALL_NR_OFFSET (ORIG_RAX)
  
-@@ -272,8 +276,7 @@ long sys_rt_sigreturn(struct pt_regs *regs)
- 	sigdelsetmask(&set, ~_BLOCKABLE);
- 	set_current_blocked(&set);
+-#define PT_SYSCALL_ARG1(regs) (((unsigned long *) (regs))[PT_INDEX(RDI)])
+-#define PT_SYSCALL_ARG1_OFFSET (RDI)
+-
+-#define PT_SYSCALL_ARG2(regs) (((unsigned long *) (regs))[PT_INDEX(RSI)])
+-#define PT_SYSCALL_ARG2_OFFSET (RSI)
+-
+-#define PT_SYSCALL_ARG3(regs) (((unsigned long *) (regs))[PT_INDEX(RDX)])
+-#define PT_SYSCALL_ARG3_OFFSET (RDX)
+-
+-#define PT_SYSCALL_ARG4(regs) (((unsigned long *) (regs))[PT_INDEX(RCX)])
+-#define PT_SYSCALL_ARG4_OFFSET (RCX)
+-
+-#define PT_SYSCALL_ARG5(regs) (((unsigned long *) (regs))[PT_INDEX(R8)])
+-#define PT_SYSCALL_ARG5_OFFSET (R8)
+-
+-#define PT_SYSCALL_ARG6(regs) (((unsigned long *) (regs))[PT_INDEX(R9)])
+-#define PT_SYSCALL_ARG6_OFFSET (R9)
+-
+ #define PT_SYSCALL_RET_OFFSET (RAX)
  
--	if (copy_sc_from_user(&current->thread.regs, &uc->uc_mcontext,
--			      &frame->fpstate))
-+	if (copy_sc_from_user(&current->thread.regs, &uc->uc_mcontext))
- 		goto segfault;
+-#define PT_IP_OFFSET (RIP)
+-#define PT_IP(regs) ((regs)[PT_INDEX(RIP)])
+-
+-#define PT_SP_OFFSET (RSP)
+-#define PT_SP(regs) ((regs)[PT_INDEX(RSP)])
+-
+-#define PT_ORIG_RAX_OFFSET (ORIG_RAX)
+-#define PT_ORIG_RAX(regs) ((regs)[PT_INDEX(ORIG_RAX)])
+-
+ /*
+  * x86_64 FC3 doesn't define this in /usr/include/linux/ptrace.h even though
+  * it's defined in the kernel's include/linux/ptrace.h. Additionally, use the
+@@ -57,18 +30,6 @@
+ #define PTRACE_OLDSETOPTIONS 21
+ #endif
  
- 	/* Avoid ERESTART handling */
+-/*
+- * These are before the system call, so the system call number is RAX
+- * rather than ORIG_RAX, and arg4 is R10 rather than RCX
+- */
+-#define REGS_SYSCALL_NR PT_INDEX(RAX)
+-#define REGS_SYSCALL_ARG1 PT_INDEX(RDI)
+-#define REGS_SYSCALL_ARG2 PT_INDEX(RSI)
+-#define REGS_SYSCALL_ARG3 PT_INDEX(RDX)
+-#define REGS_SYSCALL_ARG4 PT_INDEX(R10)
+-#define REGS_SYSCALL_ARG5 PT_INDEX(R8)
+-#define REGS_SYSCALL_ARG6 PT_INDEX(R9)
+-
+ #define REGS_IP_INDEX PT_INDEX(RIP)
+ #define REGS_SP_INDEX PT_INDEX(RSP)
+ 
 -- 
 1.7.2.5
 
