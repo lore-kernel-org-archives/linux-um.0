@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu80n-0002Tc-MH
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu825-0003qK-V2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:12:17 +0000
+	Thu, 18 Aug 2011 19:13:37 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu80m-00045D-Up
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu825-0000Qm-2z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:12:17 +0000
-Date: Thu, 18 Aug 2011 20:12:09 +0100
+	Thu, 18 Aug 2011 19:13:37 +0000
+Date: Thu, 18 Aug 2011 20:13:30 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu80f-00083z-Uy@ZenIV.linux.org.uk>
+Message-Id: <E1Qu81y-00088a-2D@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,90 +26,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 79/91] um: unify KSTK_...
+Subject: [uml-devel] Subject: [PATCH 87/91] um: asm/pda.h is not needed
+	anymore
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-... and switch get_thread_register() to HOST_... for register numbers
-
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/x86/um/asm/processor.h      |    4 ++++
- arch/x86/um/asm/processor_32.h   |    4 ----
- arch/x86/um/asm/processor_64.h   |    3 ---
- arch/x86/um/os-Linux/registers.c |   12 ++++++------
- 4 files changed, 10 insertions(+), 13 deletions(-)
+ arch/um/include/asm/pda.h |   21 ---------------------
+ 1 files changed, 0 insertions(+), 21 deletions(-)
+ delete mode 100644 arch/um/include/asm/pda.h
 
-diff --git a/arch/x86/um/asm/processor.h b/arch/x86/um/asm/processor.h
-index f34c4b2..118c143 100644
---- a/arch/x86/um/asm/processor.h
-+++ b/arch/x86/um/asm/processor.h
-@@ -10,6 +10,10 @@
- # include "processor_64.h"
- #endif
- 
-+#define KSTK_EIP(tsk) KSTK_REG(tsk, HOST_IP)
-+#define KSTK_ESP(tsk) KSTK_REG(tsk, HOST_IP)
-+#define KSTK_EBP(tsk) KSTK_REG(tsk, HOST_BP)
-+
- #define ARCH_IS_STACKGROW(address) \
-        (address + 65536 + 32 * sizeof(unsigned long) >= UPT_SP(&current->thread.regs.regs))
- 
-diff --git a/arch/x86/um/asm/processor_32.h b/arch/x86/um/asm/processor_32.h
-index c4078b5..018f732 100644
---- a/arch/x86/um/asm/processor_32.h
-+++ b/arch/x86/um/asm/processor_32.h
-@@ -63,8 +63,4 @@ static inline void rep_nop(void)
- #define current_text_addr() \
- 	({ void *pc; __asm__("movl $1f,%0\n1:":"=g" (pc)); pc; })
- 
--#define KSTK_EIP(tsk) KSTK_REG(tsk, EIP)
--#define KSTK_ESP(tsk) KSTK_REG(tsk, UESP)
--#define KSTK_EBP(tsk) KSTK_REG(tsk, EBP)
+diff --git a/arch/um/include/asm/pda.h b/arch/um/include/asm/pda.h
+deleted file mode 100644
+index ddcd774..0000000
+--- a/arch/um/include/asm/pda.h
++++ /dev/null
+@@ -1,21 +0,0 @@
+-/*
+- * Copyright 2003 PathScale, Inc.
+- *
+- * Licensed under the GPL
+- */
 -
- #endif
-diff --git a/arch/x86/um/asm/processor_64.h b/arch/x86/um/asm/processor_64.h
-index 0186c61..61de92d 100644
---- a/arch/x86/um/asm/processor_64.h
-+++ b/arch/x86/um/asm/processor_64.h
-@@ -42,7 +42,4 @@ static inline void arch_copy_thread(struct arch_thread *from,
- #define current_text_addr() \
- 	({ void *pc; __asm__("movq $1f,%0\n1:":"=g" (pc)); pc; })
- 
--#define KSTK_EIP(tsk) KSTK_REG(tsk, RIP)
--#define KSTK_ESP(tsk) KSTK_REG(tsk, RSP)
+-#ifndef __UM_PDA_X86_64_H
+-#define __UM_PDA_X86_64_H
 -
- #endif
-diff --git a/arch/x86/um/os-Linux/registers.c b/arch/x86/um/os-Linux/registers.c
-index 3a9b624..fa2e5a6 100644
---- a/arch/x86/um/os-Linux/registers.c
-+++ b/arch/x86/um/os-Linux/registers.c
-@@ -89,18 +89,18 @@ unsigned long get_thread_reg(int reg, jmp_buf *buf)
- {
- 	switch (reg) {
- #ifdef __i386__
--	case EIP:
-+	case HOST_IP:
- 		return buf[0]->__eip;
--	case UESP:
-+	case HOST_SP:
- 		return buf[0]->__esp;
--	case EBP:
-+	case HOST_BP:
- 		return buf[0]->__ebp;
- #else
--	case RIP:
-+	case HOST_IP:
- 		return buf[0]->__rip;
--	case RSP:
-+	case HOST_SP:
- 		return buf[0]->__rsp;
--	case RBP:
-+	case HOST_BP:
- 		return buf[0]->__rbp;
- #endif
- 	default:
+-/* XXX */
+-struct foo {
+-	unsigned int __softirq_pending;
+-	unsigned int __nmi_count;
+-};
+-
+-extern struct foo me;
+-
+-#define read_pda(me) (&me)
+-
+-#endif
+-
 -- 
 1.7.2.5
 
