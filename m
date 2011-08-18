@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7vJ-0002z7-Bx
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7y3-0003Jg-ME
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:06:37 +0000
+	Thu, 18 Aug 2011 19:09:27 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7vI-0002PP-Hs
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7y2-00051g-Pc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:06:37 +0000
-Date: Thu, 18 Aug 2011 20:06:29 +0100
+	Thu, 18 Aug 2011 19:09:27 +0000
+Date: Thu, 18 Aug 2011 20:09:19 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7vB-0007lA-KR@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7xv-0007t6-QK@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,123 +26,138 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 45/91] um: merge Makefile-{i386, x86_64}
+Subject: [uml-devel] Subject: [PATCH 62/91] um: merge tls_{32,64}.h
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/Makefile                        |   12 +++++++++++-
- arch/um/{Makefile-i386 => Makefile-x86} |   25 ++++++++++++++++++++++++-
- arch/um/Makefile-x86_64                 |   26 --------------------------
- 3 files changed, 35 insertions(+), 28 deletions(-)
- rename arch/um/{Makefile-i386 => Makefile-x86} (70%)
- delete mode 100644 arch/um/Makefile-x86_64
+ arch/x86/um/shared/sysdep/tls.h    |   38 +++++++++++++++++++++++++++++++++--
+ arch/x86/um/shared/sysdep/tls_32.h |   32 ------------------------------
+ arch/x86/um/shared/sysdep/tls_64.h |   29 ---------------------------
+ 3 files changed, 35 insertions(+), 64 deletions(-)
+ delete mode 100644 arch/x86/um/shared/sysdep/tls_32.h
+ delete mode 100644 arch/x86/um/shared/sysdep/tls_64.h
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index bd0587e..7492ee5 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -20,8 +20,18 @@ core-y			+= $(ARCH_DIR)/kernel/		\
- 
- MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
- 
-+HEADER_ARCH 	:= $(SUBARCH)
+diff --git a/arch/x86/um/shared/sysdep/tls.h b/arch/x86/um/shared/sysdep/tls.h
+index 4d8f752..db2ae9c 100644
+--- a/arch/x86/um/shared/sysdep/tls.h
++++ b/arch/x86/um/shared/sysdep/tls.h
+@@ -1,5 +1,37 @@
++#ifndef _SYSDEP_TLS_H
++#define _SYSDEP_TLS_H
 +
-+# Additional ARCH settings for x86
-+ifeq ($(SUBARCH),i386)
-+        HEADER_ARCH := x86
-+endif
-+ifeq ($(SUBARCH),x86_64)
-+        HEADER_ARCH := x86
-+endif
++# ifndef __KERNEL__
 +
- include $(srctree)/$(ARCH_DIR)/Makefile-skas
--include $(srctree)/$(ARCH_DIR)/Makefile-$(SUBARCH)
-+include $(srctree)/$(ARCH_DIR)/Makefile-$(HEADER_ARCH)
- 
- SHARED_HEADERS	:= $(ARCH_DIR)/include/shared
- ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
-diff --git a/arch/um/Makefile-i386 b/arch/um/Makefile-x86
-similarity index 70%
-rename from arch/um/Makefile-i386
-rename to arch/um/Makefile-x86
-index 57acfd6..68fbd1b 100644
---- a/arch/um/Makefile-i386
-+++ b/arch/um/Makefile-x86
-@@ -1,11 +1,11 @@
- core-y += arch/um/sys-x86/ arch/x86/crypto/
- 
-+ifeq ($(CONFIG_X86_32),y)
- START := 0x8048000
- 
- LDFLAGS			+= -m elf_i386
- ELF_ARCH		:= i386
- ELF_FORMAT 		:= elf32-i386
--HEADER_ARCH		:= x86
- CHECKFLAGS	+= -D__i386__
- 
- ifeq ("$(origin SUBARCH)", "command line")
-@@ -36,3 +36,26 @@ KBUILD_CFLAGS += $(shell if [ $(call cc-version) -lt 0400 ] ; then \
- 			else echo $(call cc-option,-funit-at-a-time); fi ;)
- 
- KBUILD_CFLAGS += $(cflags-y)
++/* Change name to avoid conflicts with the original one from <asm/ldt.h>, which
++ * may be named user_desc (but in 2.4 and in header matching its API was named
++ * modify_ldt_ldt_s). */
 +
-+else
++typedef struct um_dup_user_desc {
++	unsigned int  entry_number;
++	unsigned int  base_addr;
++	unsigned int  limit;
++	unsigned int  seg_32bit:1;
++	unsigned int  contents:2;
++	unsigned int  read_exec_only:1;
++	unsigned int  limit_in_pages:1;
++	unsigned int  seg_not_present:1;
++	unsigned int  useable:1;
++#ifdef __x86_64__
++	unsigned int  lm:1;
++#endif
++} user_desc_t;
 +
-+START := 0x60000000
++# else /* __KERNEL__ */
 +
-+KBUILD_CFLAGS += -fno-builtin -m64 
++#  include <ldt.h>
++typedef struct user_desc user_desc_t;
 +
-+CHECKFLAGS  += -m64 -D__x86_64__
-+KBUILD_AFLAGS += -m64
-+LDFLAGS += -m elf_x86_64
-+KBUILD_CPPFLAGS += -m64
++# endif /* __KERNEL__ */
 +
-+ELF_ARCH := i386:x86-64
-+ELF_FORMAT := elf64-x86-64
+ #ifdef __i386__
+-#include "tls_32.h"
+-#else
+-#include "tls_64.h"
++#define GDT_ENTRY_TLS_MIN_I386 6
++#define GDT_ENTRY_TLS_MIN_X86_64 12
+ #endif
 +
-+# Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
-+
-+LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
-+LINK-y += -m64
-+
-+# Do unit-at-a-time unconditionally on x86_64, following the host
-+KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
-+endif
-diff --git a/arch/um/Makefile-x86_64 b/arch/um/Makefile-x86_64
++#endif /* _SYSDEP_TLS_H */
+diff --git a/arch/x86/um/shared/sysdep/tls_32.h b/arch/x86/um/shared/sysdep/tls_32.h
 deleted file mode 100644
-index 92d8f8f..0000000
---- a/arch/um/Makefile-x86_64
+index 3455075..0000000
+--- a/arch/x86/um/shared/sysdep/tls_32.h
 +++ /dev/null
-@@ -1,26 +0,0 @@
--# Copyright 2003 - 2004 Pathscale, Inc
--# Released under the GPL
+@@ -1,32 +0,0 @@
+-#ifndef _SYSDEP_TLS_H
+-#define _SYSDEP_TLS_H
 -
--core-y += arch/um/sys-x86/ arch/x86/crypto/
--START := 0x60000000
+-# ifndef __KERNEL__
 -
--_extra_flags_ = -fno-builtin -m64
+-/* Change name to avoid conflicts with the original one from <asm/ldt.h>, which
+- * may be named user_desc (but in 2.4 and in header matching its API was named
+- * modify_ldt_ldt_s). */
 -
--KBUILD_CFLAGS += $(_extra_flags_)
+-typedef struct um_dup_user_desc {
+-	unsigned int  entry_number;
+-	unsigned int  base_addr;
+-	unsigned int  limit;
+-	unsigned int  seg_32bit:1;
+-	unsigned int  contents:2;
+-	unsigned int  read_exec_only:1;
+-	unsigned int  limit_in_pages:1;
+-	unsigned int  seg_not_present:1;
+-	unsigned int  useable:1;
+-} user_desc_t;
 -
--CHECKFLAGS  += -m64 -D__x86_64__
--KBUILD_AFLAGS += -m64
--LDFLAGS += -m elf_x86_64
--KBUILD_CPPFLAGS += -m64
+-# else /* __KERNEL__ */
 -
--ELF_ARCH := i386:x86-64
--ELF_FORMAT := elf64-x86-64
--HEADER_ARCH := x86
+-#  include <ldt.h>
+-typedef struct user_desc user_desc_t;
 -
--# Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
+-# endif /* __KERNEL__ */
 -
--LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
--LINK-y += -m64
+-#define GDT_ENTRY_TLS_MIN_I386 6
+-#define GDT_ENTRY_TLS_MIN_X86_64 12
 -
--# Do unit-at-a-time unconditionally on x86_64, following the host
--KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
+-#endif /* _SYSDEP_TLS_H */
+diff --git a/arch/x86/um/shared/sysdep/tls_64.h b/arch/x86/um/shared/sysdep/tls_64.h
+deleted file mode 100644
+index 18c000d..0000000
+--- a/arch/x86/um/shared/sysdep/tls_64.h
++++ /dev/null
+@@ -1,29 +0,0 @@
+-#ifndef _SYSDEP_TLS_H
+-#define _SYSDEP_TLS_H
+-
+-# ifndef __KERNEL__
+-
+-/* Change name to avoid conflicts with the original one from <asm/ldt.h>, which
+- * may be named user_desc (but in 2.4 and in header matching its API was named
+- * modify_ldt_ldt_s). */
+-
+-typedef struct um_dup_user_desc {
+-	unsigned int  entry_number;
+-	unsigned int  base_addr;
+-	unsigned int  limit;
+-	unsigned int  seg_32bit:1;
+-	unsigned int  contents:2;
+-	unsigned int  read_exec_only:1;
+-	unsigned int  limit_in_pages:1;
+-	unsigned int  seg_not_present:1;
+-	unsigned int  useable:1;
+-	unsigned int  lm:1;
+-} user_desc_t;
+-
+-# else /* __KERNEL__ */
+-
+-#  include <ldt.h>
+-typedef struct user_desc user_desc_t;
+-
+-# endif /* __KERNEL__ */
+-#endif /* _SYSDEP_TLS_H */
 -- 
 1.7.2.5
 
