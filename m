@@ -1,36 +1,375 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 1 Aug 2011 09:36:14 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Message-ID: <20110801083614.GC15578@n2100.arm.linux.org.uk>
-References: <1312042478-26012-1-git-send-email-zdevai@gmail.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7zX-0008No-Fq
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Aug 2011 19:10:59 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7zV-00054l-3c
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 18 Aug 2011 19:10:59 +0000
+Date: Thu, 18 Aug 2011 20:10:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1312042478-26012-1-git-send-email-zdevai@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH] Remove remaining references of CONFIG_GENERIC_TIME
-To: Zoltan Devai <zdevai@gmail.com>
-Cc: linux-kernel@vger.kernel.org, chris@zankel.net, linux-am33-list@redhat.com, trivial@kernel.org, user-mode-linux-devel@lists.sourceforge.net, cmetcalf@tilera.com, linux-arm-kernel@lists.infradead.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Message-Id: <E1Qu7zN-0007zt-TA@ZenIV.linux.org.uk>
+From: Al Viro <viro@ftp.linux.org.uk>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] Subject: [PATCH 71/91] um: take ldt.h to
+ arch/x86/um/asm/mm_context.h
+To: richard@nod.at
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-On Sat, Jul 30, 2011 at 06:14:38PM +0200, Zoltan Devai wrote:
-> Commit 592913ecb87a9e06f98ddb55b298f1a66bf94c6b has killed off any
-> use of this config option long ago.
 
-I don't see the point of this - we were free of GENERIC_TIME on ARM
-shortly after it was originally killed off.  The problem is you can't
-stop people introducing new uses of this - because it existed once and
-there's nothing which errors out on its presence, people are going to
-continue submitting patches with it in.  And it's going to continue
-being missed at the review stage.
+it's x86-only and we have no business playing with it in asm/mmu.h; make
+the latter have
+	struct uml_arch_mm_context arch;
+instead of
+	struct uml_ldt ldt;
+and let arch/<subarch>/um/asm/mm_context.h decide what'll be in there.
+While we are at it, kill host_ldt.h - it's not needed in part of places
+that include it (we want asm/ldt.h in those) and it can be trivially
+expanded into the single remaining one.
 
-I've a similar problem with folk on ARM including mach/gpio.h as their
-sole gpio header file rather than linux/gpio.h - I've been trying for
-the last 1-2 years to educate people to use linux/ in preference.  You
-can't do it, and I'm still just about the only one who picks up on that.
-(SoC maintainers don't care.)  They will end up caring when I push a
-change during the next merge window though, so I'll eventually stop
-mach/gpio.h being included.  (Instead, it'll be asm/gpio.h).
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/um/include/asm/mmu.h            |    4 +-
+ arch/um/include/shared/ldt.h         |   37 -----------------
+ arch/x86/um/asm/mm_context.h         |   72 ++++++++++++++++++++++++++++++++++
+ arch/x86/um/asm/processor_32.h       |    2 +-
+ arch/x86/um/ldt.c                    |   36 ++++++++--------
+ arch/x86/um/shared/sysdep/host_ldt.h |   37 -----------------
+ arch/x86/um/shared/sysdep/tls.h      |    1 -
+ 7 files changed, 93 insertions(+), 96 deletions(-)
+ delete mode 100644 arch/um/include/shared/ldt.h
+ create mode 100644 arch/x86/um/asm/mm_context.h
+ delete mode 100644 arch/x86/um/shared/sysdep/host_ldt.h
 
-GENERIC_TIME though... I don't think you'll ever stop new uses of it
-creeping in unless you can arrange for something to error out.
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+index b1a7e47..30509b9 100644
+--- a/arch/um/include/asm/mmu.h
++++ b/arch/um/include/asm/mmu.h
+@@ -7,11 +7,11 @@
+ #define __ARCH_UM_MMU_H
+ 
+ #include "mm_id.h"
+-#include "ldt.h"
++#include <asm/mm_context.h>
+ 
+ typedef struct mm_context {
+ 	struct mm_id id;
+-	struct uml_ldt ldt;
++	struct uml_arch_mm_context arch;
+ 	struct page **stub_pages;
+ } mm_context_t;
+ 
+diff --git a/arch/um/include/shared/ldt.h b/arch/um/include/shared/ldt.h
+deleted file mode 100644
+index a7f999a..0000000
+--- a/arch/um/include/shared/ldt.h
++++ /dev/null
+@@ -1,37 +0,0 @@
+-/*
+- * Copyright (C) 2004 Fujitsu Siemens Computers GmbH
+- * Licensed under the GPL
+- *
+- * Author: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+- */
+-
+-#ifndef __ASM_LDT_H
+-#define __ASM_LDT_H
+-
+-#include <linux/mutex.h>
+-#include <sysdep/host_ldt.h>
+-
+-extern void ldt_host_info(void);
+-
+-#define LDT_PAGES_MAX \
+-	((LDT_ENTRIES * LDT_ENTRY_SIZE)/PAGE_SIZE)
+-#define LDT_ENTRIES_PER_PAGE \
+-	(PAGE_SIZE/LDT_ENTRY_SIZE)
+-#define LDT_DIRECT_ENTRIES \
+-	((LDT_PAGES_MAX*sizeof(void *))/LDT_ENTRY_SIZE)
+-
+-struct ldt_entry {
+-	__u32 a;
+-	__u32 b;
+-};
+-
+-typedef struct uml_ldt {
+-	int entry_count;
+-	struct mutex lock;
+-	union {
+-		struct ldt_entry * pages[LDT_PAGES_MAX];
+-		struct ldt_entry entries[LDT_DIRECT_ENTRIES];
+-	} u;
+-} uml_ldt_t;
+-
+-#endif
+diff --git a/arch/x86/um/asm/mm_context.h b/arch/x86/um/asm/mm_context.h
+new file mode 100644
+index 0000000..4a73d63
+--- /dev/null
++++ b/arch/x86/um/asm/mm_context.h
+@@ -0,0 +1,72 @@
++/*
++ * Copyright (C) 2004 Fujitsu Siemens Computers GmbH
++ * Licensed under the GPL
++ *
++ * Author: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
++ */
++
++#ifndef __ASM_LDT_H
++#define __ASM_LDT_H
++
++#include <linux/mutex.h>
++#include <asm/ldt.h>
++
++extern void ldt_host_info(void);
++
++#define LDT_PAGES_MAX \
++	((LDT_ENTRIES * LDT_ENTRY_SIZE)/PAGE_SIZE)
++#define LDT_ENTRIES_PER_PAGE \
++	(PAGE_SIZE/LDT_ENTRY_SIZE)
++#define LDT_DIRECT_ENTRIES \
++	((LDT_PAGES_MAX*sizeof(void *))/LDT_ENTRY_SIZE)
++
++struct ldt_entry {
++	__u32 a;
++	__u32 b;
++};
++
++typedef struct uml_ldt {
++	int entry_count;
++	struct mutex lock;
++	union {
++		struct ldt_entry * pages[LDT_PAGES_MAX];
++		struct ldt_entry entries[LDT_DIRECT_ENTRIES];
++	} u;
++} uml_ldt_t;
++
++#define LDT_entry_a(info) \
++	((((info)->base_addr & 0x0000ffff) << 16) | ((info)->limit & 0x0ffff))
++
++#define LDT_entry_b(info) \
++	(((info)->base_addr & 0xff000000) | \
++	(((info)->base_addr & 0x00ff0000) >> 16) | \
++	((info)->limit & 0xf0000) | \
++	(((info)->read_exec_only ^ 1) << 9) | \
++	((info)->contents << 10) | \
++	(((info)->seg_not_present ^ 1) << 15) | \
++	((info)->seg_32bit << 22) | \
++	((info)->limit_in_pages << 23) | \
++	((info)->useable << 20) | \
++	0x7000)
++
++#define _LDT_empty(info) (\
++	(info)->base_addr	== 0	&& \
++	(info)->limit		== 0	&& \
++	(info)->contents	== 0	&& \
++	(info)->read_exec_only	== 1	&& \
++	(info)->seg_32bit	== 0	&& \
++	(info)->limit_in_pages	== 0	&& \
++	(info)->seg_not_present	== 1	&& \
++	(info)->useable		== 0	)
++
++#ifdef CONFIG_X86_64
++#define LDT_empty(info) (_LDT_empty(info) && ((info)->lm == 0))
++#else
++#define LDT_empty(info) (_LDT_empty(info))
++#endif
++
++struct uml_arch_mm_context {
++	uml_ldt_t ldt;
++};
++
++#endif
+diff --git a/arch/x86/um/asm/processor_32.h b/arch/x86/um/asm/processor_32.h
+index e5b72fa..c4078b5 100644
+--- a/arch/x86/um/asm/processor_32.h
++++ b/arch/x86/um/asm/processor_32.h
+@@ -7,8 +7,8 @@
+ #define __UM_PROCESSOR_I386_H
+ 
+ #include <linux/string.h>
+-#include <sysdep/host_ldt.h>
+ #include <asm/segment.h>
++#include <asm/ldt.h>
+ 
+ extern int host_has_cmov;
+ 
+diff --git a/arch/x86/um/ldt.c b/arch/x86/um/ldt.c
+index 3f2bf20..26b0e39 100644
+--- a/arch/x86/um/ldt.c
++++ b/arch/x86/um/ldt.c
+@@ -137,7 +137,7 @@ static int read_ldt(void __user * ptr, unsigned long bytecount)
+ {
+ 	int i, err = 0;
+ 	unsigned long size;
+-	uml_ldt_t * ldt = &current->mm->context.ldt;
++	uml_ldt_t *ldt = &current->mm->context.arch.ldt;
+ 
+ 	if (!ldt->entry_count)
+ 		goto out;
+@@ -205,7 +205,7 @@ static int read_default_ldt(void __user * ptr, unsigned long bytecount)
+ 
+ static int write_ldt(void __user * ptr, unsigned long bytecount, int func)
+ {
+-	uml_ldt_t * ldt = &current->mm->context.ldt;
++	uml_ldt_t *ldt = &current->mm->context.arch.ldt;
+ 	struct mm_id * mm_idp = &current->mm->context.id;
+ 	int i, err;
+ 	struct user_desc ldt_info;
+@@ -397,7 +397,7 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+ 
+ 
+ 	if (!ptrace_ldt)
+-		mutex_init(&new_mm->ldt.lock);
++		mutex_init(&new_mm->arch.ldt.lock);
+ 
+ 	if (!from_mm) {
+ 		memset(&desc, 0, sizeof(desc));
+@@ -429,7 +429,7 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+ 					break;
+ 			}
+ 		}
+-		new_mm->ldt.entry_count = 0;
++		new_mm->arch.ldt.entry_count = 0;
+ 
+ 		goto out;
+ 	}
+@@ -457,26 +457,26 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+ 		 * i.e., we have to use the stub for modify_ldt, which
+ 		 * can't handle the big read buffer of up to 64kB.
+ 		 */
+-		mutex_lock(&from_mm->ldt.lock);
+-		if (from_mm->ldt.entry_count <= LDT_DIRECT_ENTRIES)
+-			memcpy(new_mm->ldt.u.entries, from_mm->ldt.u.entries,
+-			       sizeof(new_mm->ldt.u.entries));
++		mutex_lock(&from_mm->arch.ldt.lock);
++		if (from_mm->arch.ldt.entry_count <= LDT_DIRECT_ENTRIES)
++			memcpy(new_mm->arch.ldt.u.entries, from_mm->arch.ldt.u.entries,
++			       sizeof(new_mm->arch.ldt.u.entries));
+ 		else {
+-			i = from_mm->ldt.entry_count / LDT_ENTRIES_PER_PAGE;
++			i = from_mm->arch.ldt.entry_count / LDT_ENTRIES_PER_PAGE;
+ 			while (i-->0) {
+ 				page = __get_free_page(GFP_KERNEL|__GFP_ZERO);
+ 				if (!page) {
+ 					err = -ENOMEM;
+ 					break;
+ 				}
+-				new_mm->ldt.u.pages[i] =
++				new_mm->arch.ldt.u.pages[i] =
+ 					(struct ldt_entry *) page;
+-				memcpy(new_mm->ldt.u.pages[i],
+-				       from_mm->ldt.u.pages[i], PAGE_SIZE);
++				memcpy(new_mm->arch.ldt.u.pages[i],
++				       from_mm->arch.ldt.u.pages[i], PAGE_SIZE);
+ 			}
+ 		}
+-		new_mm->ldt.entry_count = from_mm->ldt.entry_count;
+-		mutex_unlock(&from_mm->ldt.lock);
++		new_mm->arch.ldt.entry_count = from_mm->arch.ldt.entry_count;
++		mutex_unlock(&from_mm->arch.ldt.lock);
+ 	}
+ 
+     out:
+@@ -488,12 +488,12 @@ void free_ldt(struct mm_context *mm)
+ {
+ 	int i;
+ 
+-	if (!ptrace_ldt && mm->ldt.entry_count > LDT_DIRECT_ENTRIES) {
+-		i = mm->ldt.entry_count / LDT_ENTRIES_PER_PAGE;
++	if (!ptrace_ldt && mm->arch.ldt.entry_count > LDT_DIRECT_ENTRIES) {
++		i = mm->arch.ldt.entry_count / LDT_ENTRIES_PER_PAGE;
+ 		while (i-- > 0)
+-			free_page((long) mm->ldt.u.pages[i]);
++			free_page((long) mm->arch.ldt.u.pages[i]);
+ 	}
+-	mm->ldt.entry_count = 0;
++	mm->arch.ldt.entry_count = 0;
+ }
+ 
+ int sys_modify_ldt(int func, void __user *ptr, unsigned long bytecount)
+diff --git a/arch/x86/um/shared/sysdep/host_ldt.h b/arch/x86/um/shared/sysdep/host_ldt.h
+deleted file mode 100644
+index 246ff7a..0000000
+--- a/arch/x86/um/shared/sysdep/host_ldt.h
++++ /dev/null
+@@ -1,37 +0,0 @@
+-#ifndef __ASM_HOST_LDT_H
+-#define __ASM_HOST_LDT_H
+-
+-#include <asm/ldt.h>
+-
+-#define LDT_entry_a(info) \
+-	((((info)->base_addr & 0x0000ffff) << 16) | ((info)->limit & 0x0ffff))
+-
+-#define LDT_entry_b(info) \
+-	(((info)->base_addr & 0xff000000) | \
+-	(((info)->base_addr & 0x00ff0000) >> 16) | \
+-	((info)->limit & 0xf0000) | \
+-	(((info)->read_exec_only ^ 1) << 9) | \
+-	((info)->contents << 10) | \
+-	(((info)->seg_not_present ^ 1) << 15) | \
+-	((info)->seg_32bit << 22) | \
+-	((info)->limit_in_pages << 23) | \
+-	((info)->useable << 20) | \
+-	0x7000)
+-
+-#define _LDT_empty(info) (\
+-	(info)->base_addr	== 0	&& \
+-	(info)->limit		== 0	&& \
+-	(info)->contents	== 0	&& \
+-	(info)->read_exec_only	== 1	&& \
+-	(info)->seg_32bit	== 0	&& \
+-	(info)->limit_in_pages	== 0	&& \
+-	(info)->seg_not_present	== 1	&& \
+-	(info)->useable		== 0	)
+-
+-#ifdef CONFIG_X86_64
+-#define LDT_empty(info) (_LDT_empty(info) && ((info)->lm == 0))
+-#else
+-#define LDT_empty(info) (_LDT_empty(info))
+-#endif
+-
+-#endif
+diff --git a/arch/x86/um/shared/sysdep/tls.h b/arch/x86/um/shared/sysdep/tls.h
+index f2f30bd..27cce00 100644
+--- a/arch/x86/um/shared/sysdep/tls.h
++++ b/arch/x86/um/shared/sysdep/tls.h
+@@ -24,7 +24,6 @@ typedef struct um_dup_user_desc {
+ 
+ # else /* __KERNEL__ */
+ 
+-#  include <ldt.h>
+ typedef struct user_desc user_desc_t;
+ 
+ # endif /* __KERNEL__ */
+-- 
+1.7.2.5
+
+
+
+------------------------------------------------------------------------------
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
