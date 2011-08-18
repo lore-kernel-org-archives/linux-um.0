@@ -2,17 +2,17 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7uM-0007Up-SA
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7pV-0006YZ-01
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:05:38 +0000
+	Thu, 18 Aug 2011 19:00:37 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7uM-0000Ab-3d
+	(Exim 4.76) id 1Qu7pU-0008R6-67
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:05:38 +0000
-Date: Thu, 18 Aug 2011 20:05:29 +0100
+	Thu, 18 Aug 2011 19:00:36 +0000
+Date: Thu, 18 Aug 2011 20:00:29 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu7uD-0007hs-M2@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7pN-0007Th-6h@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,98 +26,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 39/91] um: shared/process.h is empty
-	now; kill it
+Subject: [uml-devel] Subject: [PATCH 09/91] um: don't rely on sc.fpstate not
+ having been reassigned prior to rt_sigreturn()
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
+native rt_sigreturn() doesn't...
+
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/include/shared/process.h |    9 ---------
- arch/um/os-Linux/irq.c           |    1 -
- arch/um/os-Linux/process.c       |    1 -
- arch/um/os-Linux/sigio.c         |    1 -
- arch/um/os-Linux/signal.c        |    1 -
- arch/um/os-Linux/skas/process.c  |    1 -
- 6 files changed, 0 insertions(+), 14 deletions(-)
- delete mode 100644 arch/um/include/shared/process.h
+ arch/um/sys-x86_64/signal.c |   13 ++++++++-----
+ 1 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/include/shared/process.h b/arch/um/include/shared/process.h
-deleted file mode 100644
-index 2ba310e..0000000
---- a/arch/um/include/shared/process.h
-+++ /dev/null
-@@ -1,9 +0,0 @@
--/* 
-- * Copyright (C) 2000 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-- */
--
--#ifndef __PROCESS_H__
--#define __PROCESS_H__
--
--#endif
-diff --git a/arch/um/os-Linux/irq.c b/arch/um/os-Linux/irq.c
-index 59c592c..9a49908 100644
---- a/arch/um/os-Linux/irq.c
-+++ b/arch/um/os-Linux/irq.c
-@@ -10,7 +10,6 @@
- #include <string.h>
- #include "irq_user.h"
- #include "os.h"
--#include "process.h"
- #include "um_malloc.h"
+diff --git a/arch/um/sys-x86_64/signal.c b/arch/um/sys-x86_64/signal.c
+index 581b64d..ccfa554 100644
+--- a/arch/um/sys-x86_64/signal.c
++++ b/arch/um/sys-x86_64/signal.c
+@@ -44,10 +44,10 @@ void copy_sc(struct uml_pt_regs *regs, void *from)
+ }
  
- /*
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index e08fe30..307f173 100644
---- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -15,7 +15,6 @@
- #include "init.h"
- #include "longjmp.h"
- #include "os.h"
--#include "process.h"
- #include "skas_ptrace.h"
+ static int copy_sc_from_user(struct pt_regs *regs,
+-			     struct sigcontext __user *from,
+-			     struct _fpstate __user *fpp)
++			     struct sigcontext __user *from)
+ {
+ 	struct user_i387_struct fp;
++	void __user *buf;
+ 	int err = 0;
  
- #define ARBITRARY_ADDR -1
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 34bb59b..3c16121 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -14,7 +14,6 @@
- #include "kern_util.h"
- #include "init.h"
- #include "os.h"
--#include "process.h"
- #include "sigio.h"
- #include "um_malloc.h"
+ #define GETREG(regs, regno, sc, regname)				\
+@@ -78,7 +78,11 @@ static int copy_sc_from_user(struct pt_regs *regs,
  
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 9f2c222..4d31688 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -12,7 +12,6 @@
- #include "as-layout.h"
- #include "kern_util.h"
- #include "os.h"
--#include "process.h"
- #include "sysdep/barrier.h"
- #include "sysdep/mcontext.h"
+ #undef GETREG
  
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 8a1ccc7..514683f 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -17,7 +17,6 @@
- #include "kern_util.h"
- #include "mem.h"
- #include "os.h"
--#include "process.h"
- #include "proc_mm.h"
- #include "ptrace_user.h"
- #include "registers.h"
+-	err = copy_from_user(&fp, fpp, sizeof(struct user_i387_struct));
++	err = __get_user(buf, &from->fpstate);
++	if (err)
++		return 1;
++
++	err = copy_from_user(&fp, buf, sizeof(struct user_i387_struct));
+ 	if (err)
+ 		return 1;
+ 
+@@ -272,8 +276,7 @@ long sys_rt_sigreturn(struct pt_regs *regs)
+ 	sigdelsetmask(&set, ~_BLOCKABLE);
+ 	set_current_blocked(&set);
+ 
+-	if (copy_sc_from_user(&current->thread.regs, &uc->uc_mcontext,
+-			      &frame->fpstate))
++	if (copy_sc_from_user(&current->thread.regs, &uc->uc_mcontext))
+ 		goto segfault;
+ 
+ 	/* Avoid ERESTART handling */
 -- 
 1.7.2.5
 
