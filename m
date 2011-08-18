@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu82P-0002o5-OY
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7oD-0000qh-HZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:13:57 +0000
+	Thu, 18 Aug 2011 18:59:17 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu82P-0000RQ-1x
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qu7oC-000212-EE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:13:57 +0000
-Date: Thu, 18 Aug 2011 20:13:50 +0100
+	Thu, 18 Aug 2011 18:59:17 +0000
+Date: Thu, 18 Aug 2011 19:59:09 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu82I-00089B-2e@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7o5-0007Oj-3g@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,33 +26,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 89/91] um: generic ftrace.h will do...
+Subject: [uml-devel] Subject: [PATCH 01/91] um: fix strrchr problems
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
+Several years old patch, originally by jdike, I think...
+
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/include/asm/Kbuild   |    1 +
- arch/um/include/asm/ftrace.h |    1 -
- 2 files changed, 1 insertions(+), 1 deletions(-)
- delete mode 100644 arch/um/include/asm/ftrace.h
+ arch/um/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index 5962826..451f451 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -1,2 +1,3 @@
- generic-y += bug.h cputime.h device.h emergency-restart.h futex.h hardirq.h
- generic-y += hw_irq.h irq_regs.h kdebug.h percpu.h sections.h topology.h xor.h
-+generic-y += ftrace.h
-diff --git a/arch/um/include/asm/ftrace.h b/arch/um/include/asm/ftrace.h
-deleted file mode 100644
-index 40a8c17..0000000
---- a/arch/um/include/asm/ftrace.h
-+++ /dev/null
-@@ -1 +0,0 @@
--/* empty */
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index fab8121..c0f712c 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -41,7 +41,7 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)
+ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ -DSUBARCH=\"$(SUBARCH)\" \
+ 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
+ 	-Din6addr_loopback=kernel_in6addr_loopback \
+-	-Din6addr_any=kernel_in6addr_any
++	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
+ 
+ KBUILD_AFLAGS += $(ARCH_INCLUDE)
+ 
 -- 
 1.7.2.5
 
