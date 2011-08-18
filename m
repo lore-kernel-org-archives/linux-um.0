@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu81m-0000Gm-7r
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7ys-0008Qp-14
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:13:19 +0000
+	Thu, 18 Aug 2011 19:10:18 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu81l-0000Pv-Di
+	(Exim 4.76) id 1Qu7yr-0000KD-5k
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:13:18 +0000
-Date: Thu, 18 Aug 2011 20:13:10 +0100
+	Thu, 18 Aug 2011 19:10:18 +0000
+Date: Thu, 18 Aug 2011 20:10:09 +0100
 MIME-Version: 1.0
-Message-Id: <E1Qu81e-000887-1l@ZenIV.linux.org.uk>
+Message-Id: <E1Qu7yj-0007xC-RW@ZenIV.linux.org.uk>
 From: Al Viro <viro@ftp.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,182 +26,246 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 85/91] um: switch to generic-y
+Subject: [uml-devel] Subject: [PATCH 67/91] um: merge HOST_... of registers
+ common on i386 and amd64
 To: richard@nod.at
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
 
-kill wrapper headers
-
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/um/include/asm/Kbuild              |    2 ++
- arch/um/include/asm/bug.h               |    6 ------
- arch/um/include/asm/cputime.h           |    6 ------
- arch/um/include/asm/device.h            |    7 -------
- arch/um/include/asm/emergency-restart.h |    6 ------
- arch/um/include/asm/futex.h             |    6 ------
- arch/um/include/asm/hardirq.h           |    1 -
- arch/um/include/asm/irq_regs.h          |    1 -
- arch/um/include/asm/kdebug.h            |    1 -
- arch/um/include/asm/percpu.h            |    6 ------
- arch/um/include/asm/sections.h          |    7 -------
- arch/um/include/asm/topology.h          |    6 ------
- arch/um/include/asm/xor.h               |    6 ------
- 13 files changed, 2 insertions(+), 59 deletions(-)
- create mode 100644 arch/um/include/asm/Kbuild
- delete mode 100644 arch/um/include/asm/bug.h
- delete mode 100644 arch/um/include/asm/cputime.h
- delete mode 100644 arch/um/include/asm/device.h
- delete mode 100644 arch/um/include/asm/emergency-restart.h
- delete mode 100644 arch/um/include/asm/futex.h
- delete mode 100644 arch/um/include/asm/hardirq.h
- delete mode 100644 arch/um/include/asm/irq_regs.h
- delete mode 100644 arch/um/include/asm/kdebug.h
- delete mode 100644 arch/um/include/asm/percpu.h
- delete mode 100644 arch/um/include/asm/sections.h
- delete mode 100644 arch/um/include/asm/topology.h
- delete mode 100644 arch/um/include/asm/xor.h
+ arch/x86/um/ptrace_32.c               |   14 +++++++-------
+ arch/x86/um/ptrace_64.c               |   14 +++++++-------
+ arch/x86/um/shared/sysdep/ptrace_32.h |   14 +++++++-------
+ arch/x86/um/shared/sysdep/ptrace_64.h |   14 +++++++-------
+ arch/x86/um/signal_32.c               |   14 +++++++-------
+ arch/x86/um/signal_64.c               |   28 ++++++++++++++--------------
+ arch/x86/um/user-offsets.c            |   28 ++++++++++++++--------------
+ 7 files changed, 63 insertions(+), 63 deletions(-)
 
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-new file mode 100644
-index 0000000..e16895d
---- /dev/null
-+++ b/arch/um/include/asm/Kbuild
-@@ -0,0 +1,2 @@
-+generic-y += bug.h cputime.h device.h emergency-restart.h futex.h hardirq.h
-+generic-y += irq_regs.h kdebug.h percpu.h sections.h topology.h xor.h
-diff --git a/arch/um/include/asm/bug.h b/arch/um/include/asm/bug.h
-deleted file mode 100644
-index 9e33b86..0000000
---- a/arch/um/include/asm/bug.h
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef __UM_BUG_H
--#define __UM_BUG_H
--
--#include <asm-generic/bug.h>
--
--#endif
-diff --git a/arch/um/include/asm/cputime.h b/arch/um/include/asm/cputime.h
-deleted file mode 100644
-index c84acba..0000000
---- a/arch/um/include/asm/cputime.h
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef __UM_CPUTIME_H
--#define __UM_CPUTIME_H
--
--#include <asm-generic/cputime.h>
--
--#endif /* __UM_CPUTIME_H */
-diff --git a/arch/um/include/asm/device.h b/arch/um/include/asm/device.h
-deleted file mode 100644
-index d8f9872..0000000
---- a/arch/um/include/asm/device.h
-+++ /dev/null
-@@ -1,7 +0,0 @@
--/*
-- * Arch specific extensions to struct device
-- *
-- * This file is released under the GPLv2
-- */
--#include <asm-generic/device.h>
--
-diff --git a/arch/um/include/asm/emergency-restart.h b/arch/um/include/asm/emergency-restart.h
-deleted file mode 100644
-index 108d8c4..0000000
---- a/arch/um/include/asm/emergency-restart.h
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef _ASM_EMERGENCY_RESTART_H
--#define _ASM_EMERGENCY_RESTART_H
--
--#include <asm-generic/emergency-restart.h>
--
--#endif /* _ASM_EMERGENCY_RESTART_H */
-diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
-deleted file mode 100644
-index 6a332a9..0000000
---- a/arch/um/include/asm/futex.h
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef _ASM_FUTEX_H
--#define _ASM_FUTEX_H
--
--#include <asm-generic/futex.h>
--
--#endif
-diff --git a/arch/um/include/asm/hardirq.h b/arch/um/include/asm/hardirq.h
-deleted file mode 100644
-index fb3c05a..0000000
---- a/arch/um/include/asm/hardirq.h
-+++ /dev/null
-@@ -1 +0,0 @@
--#include <asm-generic/hardirq.h>
-diff --git a/arch/um/include/asm/irq_regs.h b/arch/um/include/asm/irq_regs.h
-deleted file mode 100644
-index 3dd9c0b..0000000
---- a/arch/um/include/asm/irq_regs.h
-+++ /dev/null
-@@ -1 +0,0 @@
--#include <asm-generic/irq_regs.h>
-diff --git a/arch/um/include/asm/kdebug.h b/arch/um/include/asm/kdebug.h
-deleted file mode 100644
-index 6ece1b0..0000000
---- a/arch/um/include/asm/kdebug.h
-+++ /dev/null
-@@ -1 +0,0 @@
--#include <asm-generic/kdebug.h>
-diff --git a/arch/um/include/asm/percpu.h b/arch/um/include/asm/percpu.h
-deleted file mode 100644
-index efe7508..0000000
---- a/arch/um/include/asm/percpu.h
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef __UM_PERCPU_H
--#define __UM_PERCPU_H
--
--#include <asm-generic/percpu.h>
--
--#endif /* __UM_PERCPU_H */
-diff --git a/arch/um/include/asm/sections.h b/arch/um/include/asm/sections.h
-deleted file mode 100644
-index 6b0231e..0000000
---- a/arch/um/include/asm/sections.h
-+++ /dev/null
-@@ -1,7 +0,0 @@
--#ifndef _UM_SECTIONS_H
--#define _UM_SECTIONS_H
--
--/* nothing to see, move along */
--#include <asm-generic/sections.h>
--
--#endif
-diff --git a/arch/um/include/asm/topology.h b/arch/um/include/asm/topology.h
-deleted file mode 100644
-index 0905e4f..0000000
---- a/arch/um/include/asm/topology.h
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef _ASM_UM_TOPOLOGY_H
--#define _ASM_UM_TOPOLOGY_H
--
--#include <asm-generic/topology.h>
--
--#endif
-diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
-deleted file mode 100644
-index a19db3e..0000000
---- a/arch/um/include/asm/xor.h
-+++ /dev/null
-@@ -1,6 +0,0 @@
--#ifndef __UM_XOR_H
--#define __UM_XOR_H
--
--#include "asm-generic/xor.h"
--
--#endif
+diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
+index 7725fc7..3caaab9 100644
+--- a/arch/x86/um/ptrace_32.c
++++ b/arch/x86/um/ptrace_32.c
+@@ -51,13 +51,13 @@ int is_syscall(unsigned long addr)
+ #define FLAG_MASK 0x00044dd5
+ 
+ static const int reg_offsets[] = {
+-	[EBX] = HOST_EBX,
+-	[ECX] = HOST_ECX,
+-	[EDX] = HOST_EDX,
+-	[ESI] = HOST_ESI,
+-	[EDI] = HOST_EDI,
+-	[EBP] = HOST_EBP,
+-	[EAX] = HOST_EAX,
++	[EBX] = HOST_BX,
++	[ECX] = HOST_CX,
++	[EDX] = HOST_DX,
++	[ESI] = HOST_SI,
++	[EDI] = HOST_DI,
++	[EBP] = HOST_BP,
++	[EAX] = HOST_AX,
+ 	[DS] = HOST_DS,
+ 	[ES] = HOST_ES,
+ 	[FS] = HOST_FS,
+diff --git a/arch/x86/um/ptrace_64.c b/arch/x86/um/ptrace_64.c
+index 67fb771..77b0289 100644
+--- a/arch/x86/um/ptrace_64.c
++++ b/arch/x86/um/ptrace_64.c
+@@ -30,13 +30,13 @@ static const int reg_offsets[] =
+ 	[R15 >> 3] = HOST_R15,
+ 	[RIP >> 3] = HOST_IP,
+ 	[RSP >> 3] = HOST_SP,
+-	[RAX >> 3] = HOST_RAX,
+-	[RBX >> 3] = HOST_RBX,
+-	[RCX >> 3] = HOST_RCX,
+-	[RDX >> 3] = HOST_RDX,
+-	[RSI >> 3] = HOST_RSI,
+-	[RDI >> 3] = HOST_RDI,
+-	[RBP >> 3] = HOST_RBP,
++	[RAX >> 3] = HOST_AX,
++	[RBX >> 3] = HOST_BX,
++	[RCX >> 3] = HOST_CX,
++	[RDX >> 3] = HOST_DX,
++	[RSI >> 3] = HOST_SI,
++	[RDI >> 3] = HOST_DI,
++	[RBP >> 3] = HOST_BP,
+ 	[CS >> 3] = HOST_CS,
+ 	[SS >> 3] = HOST_SS,
+ 	[FS_BASE >> 3] = HOST_FS_BASE,
+diff --git a/arch/x86/um/shared/sysdep/ptrace_32.h b/arch/x86/um/shared/sysdep/ptrace_32.h
+index 967b512..6bdc7c9 100644
+--- a/arch/x86/um/shared/sysdep/ptrace_32.h
++++ b/arch/x86/um/shared/sysdep/ptrace_32.h
+@@ -27,13 +27,13 @@ extern int sysemu_supported;
+ #define REGS_IP(r) ((r)[HOST_IP])
+ #define REGS_SP(r) ((r)[HOST_SP])
+ #define REGS_EFLAGS(r) ((r)[HOST_EFLAGS])
+-#define REGS_EAX(r) ((r)[HOST_EAX])
+-#define REGS_EBX(r) ((r)[HOST_EBX])
+-#define REGS_ECX(r) ((r)[HOST_ECX])
+-#define REGS_EDX(r) ((r)[HOST_EDX])
+-#define REGS_ESI(r) ((r)[HOST_ESI])
+-#define REGS_EDI(r) ((r)[HOST_EDI])
+-#define REGS_EBP(r) ((r)[HOST_EBP])
++#define REGS_EAX(r) ((r)[HOST_AX])
++#define REGS_EBX(r) ((r)[HOST_BX])
++#define REGS_ECX(r) ((r)[HOST_CX])
++#define REGS_EDX(r) ((r)[HOST_DX])
++#define REGS_ESI(r) ((r)[HOST_SI])
++#define REGS_EDI(r) ((r)[HOST_DI])
++#define REGS_EBP(r) ((r)[HOST_BP])
+ #define REGS_CS(r) ((r)[HOST_CS])
+ #define REGS_SS(r) ((r)[HOST_SS])
+ #define REGS_DS(r) ((r)[HOST_DS])
+diff --git a/arch/x86/um/shared/sysdep/ptrace_64.h b/arch/x86/um/shared/sysdep/ptrace_64.h
+index bd7b026..9b933fa 100644
+--- a/arch/x86/um/shared/sysdep/ptrace_64.h
++++ b/arch/x86/um/shared/sysdep/ptrace_64.h
+@@ -17,13 +17,13 @@
+ #define REGS_IP(r) ((r)[HOST_IP])
+ #define REGS_SP(r) ((r)[HOST_SP])
+ 
+-#define REGS_RBX(r) ((r)[HOST_RBX])
+-#define REGS_RCX(r) ((r)[HOST_RCX])
+-#define REGS_RDX(r) ((r)[HOST_RDX])
+-#define REGS_RSI(r) ((r)[HOST_RSI])
+-#define REGS_RDI(r) ((r)[HOST_RDI])
+-#define REGS_RBP(r) ((r)[HOST_RBP])
+-#define REGS_RAX(r) ((r)[HOST_RAX])
++#define REGS_RBX(r) ((r)[HOST_BX])
++#define REGS_RCX(r) ((r)[HOST_CX])
++#define REGS_RDX(r) ((r)[HOST_DX])
++#define REGS_RSI(r) ((r)[HOST_SI])
++#define REGS_RDI(r) ((r)[HOST_DI])
++#define REGS_RBP(r) ((r)[HOST_BP])
++#define REGS_RAX(r) ((r)[HOST_AX])
+ #define REGS_R8(r) ((r)[HOST_R8])
+ #define REGS_R9(r) ((r)[HOST_R9])
+ #define REGS_R10(r) ((r)[HOST_R10])
+diff --git a/arch/x86/um/signal_32.c b/arch/x86/um/signal_32.c
+index bcbfb0d..2eebdc0 100644
+--- a/arch/x86/um/signal_32.c
++++ b/arch/x86/um/signal_32.c
+@@ -160,14 +160,14 @@ static int copy_sc_from_user(struct pt_regs *regs,
+ 	GETREG(FS, fs);
+ 	GETREG(ES, es);
+ 	GETREG(DS, ds);
+-	GETREG(EDI, di);
+-	GETREG(ESI, si);
+-	GETREG(EBP, bp);
++	GETREG(DI, di);
++	GETREG(SI, si);
++	GETREG(BP, bp);
+ 	GETREG(SP, sp);
+-	GETREG(EBX, bx);
+-	GETREG(EDX, dx);
+-	GETREG(ECX, cx);
+-	GETREG(EAX, ax);
++	GETREG(BX, bx);
++	GETREG(DX, dx);
++	GETREG(CX, cx);
++	GETREG(AX, ax);
+ 	GETREG(IP, ip);
+ 	GETREG(CS, cs);
+ 	GETREG(EFLAGS, flags);
+diff --git a/arch/x86/um/signal_64.c b/arch/x86/um/signal_64.c
+index 255b2ca..4e5b9b0 100644
+--- a/arch/x86/um/signal_64.c
++++ b/arch/x86/um/signal_64.c
+@@ -35,13 +35,13 @@ static int copy_sc_from_user(struct pt_regs *regs,
+ 	GETREG(R13, r13);
+ 	GETREG(R14, r14);
+ 	GETREG(R15, r15);
+-	GETREG(RDI, di);
+-	GETREG(RSI, si);
+-	GETREG(RBP, bp);
+-	GETREG(RBX, bx);
+-	GETREG(RDX, dx);
+-	GETREG(RAX, ax);
+-	GETREG(RCX, cx);
++	GETREG(DI, di);
++	GETREG(SI, si);
++	GETREG(BP, bp);
++	GETREG(BX, bx);
++	GETREG(DX, dx);
++	GETREG(AX, ax);
++	GETREG(CX, cx);
+ 	GETREG(SP, sp);
+ 	GETREG(IP, ip);
+ 	GETREG(EFLAGS, flags);
+@@ -78,18 +78,18 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ 
+ #define PUTREG(regno, regname) sc.regname = regs->regs.gp[HOST_##regno]
+ 
+-	PUTREG(RDI, di);
+-	PUTREG(RSI, si);
+-	PUTREG(RBP, bp);
++	PUTREG(DI, di);
++	PUTREG(SI, si);
++	PUTREG(BP, bp);
+ 	/*
+ 	 * Must use original RSP, which is passed in, rather than what's in
+ 	 * signal frame.
+ 	 */
+ 	sc.sp = sp;
+-	PUTREG(RBX, bx);
+-	PUTREG(RDX, dx);
+-	PUTREG(RCX, cx);
+-	PUTREG(RAX, ax);
++	PUTREG(BX, bx);
++	PUTREG(DX, dx);
++	PUTREG(CX, cx);
++	PUTREG(AX, ax);
+ 	PUTREG(R8, r8);
+ 	PUTREG(R9, r9);
+ 	PUTREG(R10, r10);
+diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
+index 3c19c48..88d1255 100644
+--- a/arch/x86/um/user-offsets.c
++++ b/arch/x86/um/user-offsets.c
+@@ -23,13 +23,13 @@ void foo(void)
+ 	DEFINE(HOST_IP, EIP);
+ 	DEFINE(HOST_SP, UESP);
+ 	DEFINE(HOST_EFLAGS, EFL);
+-	DEFINE(HOST_EAX, EAX);
+-	DEFINE(HOST_EBX, EBX);
+-	DEFINE(HOST_ECX, ECX);
+-	DEFINE(HOST_EDX, EDX);
+-	DEFINE(HOST_ESI, ESI);
+-	DEFINE(HOST_EDI, EDI);
+-	DEFINE(HOST_EBP, EBP);
++	DEFINE(HOST_AX, EAX);
++	DEFINE(HOST_BX, EBX);
++	DEFINE(HOST_CX, ECX);
++	DEFINE(HOST_DX, EDX);
++	DEFINE(HOST_SI, ESI);
++	DEFINE(HOST_DI, EDI);
++	DEFINE(HOST_BP, EBP);
+ 	DEFINE(HOST_CS, CS);
+ 	DEFINE(HOST_SS, SS);
+ 	DEFINE(HOST_DS, DS);
+@@ -38,13 +38,13 @@ void foo(void)
+ 	DEFINE(HOST_GS, GS);
+ #else
+ 	DEFINE(HOST_FP_SIZE, sizeof(struct _fpstate) / sizeof(unsigned long));
+-	DEFINE_LONGS(HOST_RBX, RBX);
+-	DEFINE_LONGS(HOST_RCX, RCX);
+-	DEFINE_LONGS(HOST_RDI, RDI);
+-	DEFINE_LONGS(HOST_RSI, RSI);
+-	DEFINE_LONGS(HOST_RDX, RDX);
+-	DEFINE_LONGS(HOST_RBP, RBP);
+-	DEFINE_LONGS(HOST_RAX, RAX);
++	DEFINE_LONGS(HOST_BX, RBX);
++	DEFINE_LONGS(HOST_CX, RCX);
++	DEFINE_LONGS(HOST_DI, RDI);
++	DEFINE_LONGS(HOST_SI, RSI);
++	DEFINE_LONGS(HOST_DX, RDX);
++	DEFINE_LONGS(HOST_BP, RBP);
++	DEFINE_LONGS(HOST_AX, RAX);
+ 	DEFINE_LONGS(HOST_R8, R8);
+ 	DEFINE_LONGS(HOST_R9, R9);
+ 	DEFINE_LONGS(HOST_R10, R10);
 -- 
 1.7.2.5
 
