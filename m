@@ -1,89 +1,90 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qurvr-0000nS-MH
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Aug 2011 20:14:15 +0000
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qurvq-0005es-6S
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Aug 2011 20:14:15 +0000
-Date: Sat, 20 Aug 2011 21:14:06 +0100
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20110820201406.GF2203@ZenIV.linux.org.uk>
-References: <E1Qu7nv-0007OP-3E@ZenIV.linux.org.uk> <4E4D642F.3010909@nod.at>
-	<20110818191946.GW2203@ZenIV.linux.org.uk>
-	<20110819043120.GY2203@ZenIV.linux.org.uk>
-	<4E4E2427.9080602@nod.at>
-	<20110820011845.GC2203@ZenIV.linux.org.uk> <4E4FD12F.70508@nod.at>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <4E4FD12F.70508@nod.at>
+Date: Sat, 20 Aug 2011 17:22:23 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4E4FD12F.70508@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+References: <E1Qu7nv-0007OP-3E@ZenIV.linux.org.uk> <4E4D642F.3010909@nod.at> <20110818191946.GW2203@ZenIV.linux.org.uk> <20110819043120.GY2203@ZenIV.linux.org.uk> <4E4E2427.9080602@nod.at> <20110820011845.GC2203@ZenIV.linux.org.uk>
+In-Reply-To: <20110820011845.GC2203@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [RFC] weird crap with vdso on uml/i386
-To: Richard Weinberger <richard@nod.at>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [RFC] weird crap with vdso on uml/i386
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sat, Aug 20, 2011 at 05:22:23PM +0200, Richard Weinberger wrote:
+Am 20.08.2011 03:18, schrieb Al Viro:
+> 3) with the previous two issues dealt with, we get the following magical
+> mistery shite when running 32bit uml kernel + userland on 64bit host:
+> 	* the system boots all the way to getty/login and sshd (i.e. gets
+> through the debian /etc/init.d (squeeze/i386))
+> 	* one can log into it, both on terminals and over ssh.  shell and
+> a bunch of other stuff works.  Mostly.
+> 	* /bin/bash -c "echo *" reliably segfaults.  Always.  So does tab
+> completion in bash, for that matter.
+> 	* said segfault is reproducible both from shell and under gdb.
+> For /bin/bash -c "echo *" under gdb it's always the 10th call of brk(3).
+> What happens there apparently boils down to __kernel_vsyscall() getting
+> called (and yes, sys_brk() is called, succeeds and results in expected
+> value in %eax) and corrupting the living hell out of %ecx.  Namely, on
+> return from what presumably is __kernel_vsyscall() I'm seeing %ecx equal
+> to (original value of) %ebp.  All registers except %eax and %ecx (including
+> %esp and %ebp) remain unchanged.
+> 	Again, that happens only on the same call of brk(3) - all previous
+> calls succeed as expected.  I don't believe that it's a race.  I also
+> very much doubt that we are calling the wrong location - it's hard to tell
+> with the call being call *%gs:0x10 (is there any way to find what that
+> is equal to in gdb, BTW?  Short of hot-patching movl *%gs:0x10,%eax in place
+> of that call and single-stepping it, that is...) but it *does* end up
+> making the system call that ought to have been made, so I suspect that it
+> does hit __kernel_vsyscall(), after all...
+>
+> The text of __kernel_vsyscall() is
+> 	0xffffe420<__kernel_vsyscall+0>:       push   %ebp
+> 	0xffffe421<__kernel_vsyscall+1>:       mov    %ecx,%ebp
+> 	0xffffe423<__kernel_vsyscall+3>:       syscall
+> 	0xffffe425<__kernel_vsyscall+5>:       mov    $0x2b,%ecx
+> 	0xffffe42a<__kernel_vsyscall+10>:      mov    %ecx,%ss
+> 	0xffffe42c<__kernel_vsyscall+12>:      mov    %ebp,%ecx
+> 	0xffffe42e<__kernel_vsyscall+14>:      pop    %ebp
+> 	0xffffe42f<__kernel_vsyscall+15>:      ret
+> so %ecx on the way out becoming equal to original %ebp is bloody curious -
+> it would smell like entering that sucker 3 bytes too late and skipping
+> mov %ecx, %ebp, but... we would also skip push %ebp, so we'd get trashed
+> on the way out - wrong return address, wrong value in %ebp, changed %esp.
+> None of that happens.  And we are executing that code in userland - i.e.
+> to get corrupt it would have to get corrupt in *HOST* 32bit VDSO.  Which
+> would have much more visible effects, starting with the next attempt to
+> run the testcase blowing up immediately instead of waiting (as it actually
+> does) for the same 10th call of brk()...
+>
+> I'm at loss, to be honest.  The sucker is nicely reproducible, but bisecting
+> doesn't help at all - it seems to be present all the way back at least to
+> 2.6.33.  I hadn't tried to go back further and I hadn't tried to go for
+> older host kernels, but I wouldn't put too much faith into that...  The
+> reason it hadn't been noticed much earlier is that it works fine on i386
+> host - aforementioned shit happens only when the entire thing (identical
+> binary, identical fs image, identical options) is run on amd64.  However,
+> on i386 I have a different __kernel_vsyscall, which might easily be the
+> reason it doesn't happen there.  It's a K7 box with sysenter-based
+> variant ending up as __kernel_vsyscall().  Hell knows what's going on...
+> Behaviour is really weird and I'd appreciate any pointers re debugging
+> that crap.  Suggestions?
 
-> Hmmm, very strange.
-> Sadly I cannot reproduce the issue. :(
-> Everything works fine within UML.
-> (Of course I've applied your vDSO/i386 patches)
-> 
-> My test setup:
-> Host kernel: 2.6.37 and 3.0.1
-> Distro: openSUSE 11.4/x86_64
-> 
-> UML kernel: 3.1-rc2
-> Distro: openSUSE 11.1/i386
-> 
-> Does the problem also occur with another host kernel or a different
-> guest image?
+Hmmm, very strange.
+Sadly I cannot reproduce the issue. :(
+Everything works fine within UML.
+(Of course I've applied your vDSO/i386 patches)
 
-Could you check what you get in __kernel_vsyscall()?  On iAMD64 box
-where that sucker contains sysenter-based variant the bug is not
-present.  IOW, it's sensitive to syscall vs. systenter vs. int 0x80
-differences.
+My test setup:
+Host kernel: 2.6.37 and 3.0.1
+Distro: openSUSE 11.4/x86_64
 
-I can throw the trimmed-down fs image your way, BTW (66MB of bzipped ext2 ;-/)
-if you want to see if that gets reproduced on your box.  I'll drop it on
-anonftp if you are interested.  FWIW, the same kernel binary/same image
-result in
-	* K7 box - no breakage, SYSENTER-based vdso
-	* K8 box - breakage as described, SYSCALL-based vdso32
-	* P4 box - no breakage, SYSENTER-based vdso32
-Hell knows...  In theory that would seem to point towards ia32_cstar_target(),
-so I'm going to RTFS carefully through that animal.
+UML kernel: 3.1-rc2
+Distro: openSUSE 11.1/i386
 
-The thing is, whatever happens happens when victim gets resumed inside
-vdso page.  I'll try to dump PTRACE_SETREGS and see the values host
-kernel asked to set and work from there, but the interesting part is
-bloody hard to singlestep through - the victim is back to user mode and
-it is already traced by the guest kernel, so it's not as if we could
-attach host gdb to it and walk through that crap.  And guest gdb is not
-going to be able to set breakpoints in there - vdso page is r/o...
+Does the problem also occur with another host kernel or a different 
+guest image?
 
-------------------------------------------------------------------------------
-Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
-user administration capabilities and model configuration. Take 
-the hassle out of deploying and managing Subversion and the 
-tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Thanks,
+//richard
