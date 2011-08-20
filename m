@@ -1,30 +1,30 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qv1cW-00034r-5r
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <amluto@gmail.com>) id 1QutHJ-0006DF-Po
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Aug 2011 06:34:56 +0000
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qv1cU-00007N-QV
+	Sat, 20 Aug 2011 21:40:29 +0000
+Received: from mail-gy0-f175.google.com ([209.85.160.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1QutHI-0004gM-Uw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Aug 2011 06:34:56 +0000
-Date: Sun, 21 Aug 2011 07:34:43 +0100
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20110821063443.GH2203@ZenIV.linux.org.uk>
-References: <4E4D642F.3010909@nod.at>
+	Sat, 20 Aug 2011 21:40:29 +0000
+Received: by gyg4 with SMTP id 4so3501915gyg.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 20 Aug 2011 14:40:23 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAObL_7FoPHu6AKneswjEmiU4UBjUuKpYahakOaTNXM3=ZCpYaA@mail.gmail.com>
+References: <E1Qu7nv-0007OP-3E@ZenIV.linux.org.uk> <4E4D642F.3010909@nod.at>
 	<20110818191946.GW2203@ZenIV.linux.org.uk>
 	<20110819043120.GY2203@ZenIV.linux.org.uk>
-	<4E4E2427.9080602@nod.at>
-	<20110820011845.GC2203@ZenIV.linux.org.uk> <4E4FD12F.70508@nod.at>
-	<20110820201406.GF2203@ZenIV.linux.org.uk>
+	<4E4E2427.9080602@nod.at> <20110820011845.GC2203@ZenIV.linux.org.uk>
+	<4E4FD12F.70508@nod.at> <20110820201406.GF2203@ZenIV.linux.org.uk>
 	<4E501F51.9060905@nod.at>
 	<CAObL_7FoPHu6AKneswjEmiU4UBjUuKpYahakOaTNXM3=ZCpYaA@mail.gmail.com>
-	<CAObL_7H8E1fde-d_Kfjrg2mQ5PdAp9X=fVRTqXJKzzYmQ1vAQQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAObL_7H8E1fde-d_Kfjrg2mQ5PdAp9X=fVRTqXJKzzYmQ1vAQQ@mail.gmail.com>
+From: Andrew Lutomirski <luto@mit.edu>
+Date: Sat, 20 Aug 2011 17:40:03 -0400
+Message-ID: <CAObL_7H8E1fde-d_Kfjrg2mQ5PdAp9X=fVRTqXJKzzYmQ1vAQQ@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,59 +34,95 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [RFC] weird crap with vdso on uml/i386
-To: Andrew Lutomirski <luto@mit.edu>
-Cc: Richard Weinberger <richard@nod.at>, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-On Sat, Aug 20, 2011 at 05:40:03PM -0400, Andrew Lutomirski wrote:
+On Sat, Aug 20, 2011 at 5:26 PM, Andrew Lutomirski <luto@mit.edu> wrote:
+> On Sat, Aug 20, 2011 at 4:55 PM, Richard Weinberger <richard@nod.at> wrot=
+e:
 
-> will cause iret (if iret happens) to restore the original rbp in rcx
-> (why? -- it seems okay if syscall is hit in __kernel_vsyscall but not
-> if something else does the syscall).  I don't see what saves rbp to
-> the stack frame.
+> I'm missing a bit of the background. =A0Is the user-on-UML app calling
+> into a vdso entry provided by UML or into a vdso entry provided by the
+> host?
+>
+> Why does anything care whether ecx is saved? =A0Doesn't the default
+> calling convention allow the callee to clobber ecx?
+>
+> But my guess is that the 64-bit host sysret code might be buggy (or
+> the value in gs:whatever is wrong). Can you get gdb to breakpoint at
+> the beginning of __kernel_vsyscall before the crash?
+>
 
-Far more interesting question is how the hell does that thing manage to
-work in face of syscall restarts?  As the matter of fact, how does it
-(and sysenter-based variant) play with ptrace() *and* restarts?
+This is suspicious:
 
-Suppose we have a traced process.  foo6() is called and the thing it
-stopped before the sys_foo6() is reached kernel-side.  The sixth argument
-is on stack, ebp is set to user esp.  SYSENTER happens, we read the
-6th argument from userland stack and put it along with the rest into
-pt_regs.  tracer examines the arguments, modifies them (including the last
-one) and lets the tracee run free - e.g. detaches from the tracee.  
+ENTRY(ia32_cstar_target)
+        CFI_STARTPROC32 simple
+        CFI_SIGNAL_FRAME
+        CFI_DEF_CFA     rsp,KERNEL_STACK_OFFSET
+        CFI_REGISTER    rip,rcx
+        /*CFI_REGISTER  rflags,r11*/
+        SWAPGS_UNSAFE_STACK
+        movl    %esp,%r8d
+        CFI_REGISTER    rsp,r8
+        movq    PER_CPU_VAR(kernel_stack),%rsp
+        /*
+         * No need to follow this irqs on/off section: the syscall
+         * disabled irqs and here we enable it straight after entry:
+         */
+        ENABLE_INTERRUPTS(CLBR_NONE)
+        SAVE_ARGS 8,0,0
+        movl    %eax,%eax       /* zero extension */
+        movq    %rax,ORIG_RAX-ARGOFFSET(%rsp)
+        movq    %rcx,RIP-ARGOFFSET(%rsp)
+        CFI_REL_OFFSET rip,RIP-ARGOFFSET
+        movq    %rbp,RCX-ARGOFFSET(%rsp) /* this lies slightly to ptrace */
 
-What should happen if we happen to get a signal that would restart that
-sucker?  Granted, it's not going to happen with mmap() - it doesn't, AFAICS,
-do anything of that kind.  However, I wouldn't bet a dime on other 6-argument
-syscalls not stepping on that.  sendto() and recvfrom(), in particular...
+The entry code looks something like:
 
-OK, we return to userland.  The sixth argument is placed into %ebp.  Linus'
-"pig and proud of that" trick works and we end up slapping userland
-%esp into %ebp and hitting SYSENTER again.  Only one problem, though -
-the sixth argument on user stack is completely unaffected by what tracer
-had done.  Unlike the rest of arguments, that *are* changed.
+The text of __kernel_vsyscall() is
+	0xffffe420 <__kernel_vsyscall+0>:       push   %ebp
+	0xffffe421 <__kernel_vsyscall+1>:       mov    %ecx,%ebp
+	0xffffe423 <__kernel_vsyscall+3>:       syscall
+	0xffffe425 <__kernel_vsyscall+5>:       mov    $0x2b,%ecx
+	0xffffe42a <__kernel_vsyscall+10>:      mov    %ecx,%ss
+	0xffffe42c <__kernel_vsyscall+12>:      mov    %ebp,%ecx
+	0xffffe42e <__kernel_vsyscall+14>:      pop    %ebp
+	0xffffe42f <__kernel_vsyscall+15>:      ret
 
-We could deal with that in case of SYSENTER if we e.g. replaced that
-        jmp .Lenter_kernel
-with
-        jmp .Lrestart
-and added
-.Lrestart:
-	movl %ebp, (%esp)
-	jmp .Lenter_kernel
-but in case of SYSCALL it seems to be even messier...  Comments?
+so the line:
 
-... and there I thought that last year session of asm glue sniffing couldn't
-be topped by anything more unpleasant ;-/
+movq    %rbp,RCX-ARGOFFSET(%rsp) /* this lies slightly to ptrace */
 
-------------------------------------------------------------------------------
-Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
-user administration capabilities and model configuration. Take 
-the hassle out of deploying and managing Subversion and the 
+will cause iret (if iret happens) to restore the original rbp in rcx
+(why? -- it seems okay if syscall is hit in __kernel_vsyscall but not
+if something else does the syscall).  I don't see what saves rbp to
+the stack frame.
+
+This is also suspicious:
+
+        movq    %r11,EFLAGS-ARGOFFSET(%rsp)
+
+that's inconsistent with my reading of the AMD manual.
+
+How well is the compat syscall entry tested through both the fast and
+slow paths?  UML is unusual in that it uses ptrace to trap all system
+calls, right?  That means that syscalls will enter through the cstar
+target but return through the iret path.
+
+--Andy
+
+---------------------------------------------------------------------------=
+---
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, =
+
+user administration capabilities and model configuration. Take =
+
+the hassle out of deploying and managing Subversion and the =
+
 tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
 _______________________________________________
 User-mode-linux-devel mailing list
