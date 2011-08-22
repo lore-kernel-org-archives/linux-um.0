@@ -1,69 +1,78 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1QvWC8-0006gI-0K
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Aug 2011 15:13:44 +0000
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QvWC6-00079F-OU
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Aug 2011 15:13:43 +0000
-Date: Mon, 22 Aug 2011 16:13:05 +0100
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20110822151305.GV2203@ZenIV.linux.org.uk>
-References: <20110822011645.GM2203@ZenIV.linux.org.uk>
-	<CA+55aFz1jCZGcQ-c6uGN=k8nKDuGoz5g8e+pxpYAg4X_p7=5Mw@mail.gmail.com>
-	<4E51B56F.3080301@zytor.com>
-	<CAObL_7HLDD=FVSN58W7a0g0R--8x7OVrQVCBxWD1DirVZxRn2w@mail.gmail.com>
-	<20110822020737.GP2203@ZenIV.linux.org.uk>
-	<CAObL_7HY7qFUoqtNju42=BHTR8WuuW-cL_cQh_uUfx_7gFfHRg@mail.gmail.com>
-	<4E51D597.3060800@zytor.com> <20110822095336.GB25949@kernel.org>
-	<CAObL_7F6D8nQovf+aJGiEOF1mBpBU8RwtjNA-5myxvEBRRHgsg@mail.gmail.com>
-	<20110822144051.GD2946@aftab>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Mon, 22 Aug 2011 16:40:51 +0200
+From: Borislav Petkov <bp@amd64.org>
+Message-ID: <20110822144051.GD2946@aftab>
+References: <CAObL_7E1vU8+0UQST6Smf9j40TckTzB=QdY0AuAWo4AX6cs2xg@mail.gmail.com>
+ <20110822011645.GM2203@ZenIV.linux.org.uk>
+ <CA+55aFz1jCZGcQ-c6uGN=k8nKDuGoz5g8e+pxpYAg4X_p7=5Mw@mail.gmail.com>
+ <4E51B56F.3080301@zytor.com>
+ <CAObL_7HLDD=FVSN58W7a0g0R--8x7OVrQVCBxWD1DirVZxRn2w@mail.gmail.com>
+ <20110822020737.GP2203@ZenIV.linux.org.uk>
+ <CAObL_7HY7qFUoqtNju42=BHTR8WuuW-cL_cQh_uUfx_7gFfHRg@mail.gmail.com>
+ <4E51D597.3060800@zytor.com>
+ <20110822095336.GB25949@kernel.org>
+ <CAObL_7F6D8nQovf+aJGiEOF1mBpBU8RwtjNA-5myxvEBRRHgsg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20110822144051.GD2946@aftab>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] SYSCALL,
- ptrace and syscall restart breakages (Re: [RFC] weird crap with
- vdso on uml/i386)
-To: Borislav Petkov <bp@amd64.org>
-Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+In-Reply-To: <CAObL_7F6D8nQovf+aJGiEOF1mBpBU8RwtjNA-5myxvEBRRHgsg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [uml-devel] SYSCALL, ptrace and syscall restart breakages (Re:
+ [RFC] weird crap with vdso on uml/i386)
+To: Andrew Lutomirski <luto@mit.edu>
+Cc: Ingo Molnar <mingo@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@amd64.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Mon, Aug 22, 2011 at 04:40:51PM +0200, Borislav Petkov wrote:
+On Mon, Aug 22, 2011 at 09:34:27AM -0400, Andrew Lutomirski wrote:
+> On Mon, Aug 22, 2011 at 5:53 AM, Ingo Molnar <mingo@kernel.org> wrote=
+:
+> >
+> > * H. Peter Anvin <hpa@zytor.com> wrote:
+> >
+> >> Borislav,
+> >>
+> >> We're tracking down an issue with the way system call arguments ar=
+e
+> >> handled on 32 bits. =A0We have a solution for SYSENTER but not
+> >> SYSCALL; fixing SYSCALL "properly" appears to be very difficult at
+> >> best.
+> >>
+> >> So the question is: how much overhead would it be to simply fall
+> >> back to int $0x80 or some other legacy-style domain crossing
+> >> instruction for 32-bit system calls on AMD64 processors? =A0We don=
+'t
+> >> ever use SYSCALL in legacy mode, so native i386 kernels are
+> >> unaffected.
+> >
+> > Last i measured INT80 and SYSCALL costs they were pretty close to
+> > each other on AMD CPUs - closer than on Intel.
+>=20
+> From memory, SYSCALL in 64-bit mode on Sandy Bridge is much faster
+> than int 0xcc, which is presumably about the same speed as int 0x80.
+> That's because SYSCALL is blazingly fast (<30 ns for a whole system
+> call) and int is slower.
 
-> Just to make sure I'm grokking this correctly - we want to use int $0x80
-> only for the SYSCALL variant in __kernel_vsyscall, right? Not for all
-> 32-bit syscalls on a 64-bit kernel.
+Just to make sure I'm grokking this correctly - we want to use int $0x8=
+0
+only for the SYSCALL variant in __kernel_vsyscall, right? Not for all
+32-bit syscalls on a 64-bit kernel.
 
-Um...  The problem is, syscall restart with SYSCALL insn is badly broken;
-we end up with arg2 (expected by SYSCALL in %ebp) overwritten with arg6
-by IRET path.  With obvious nasty results.
+Thanks.
 
-In __kernel_vsyscall() the problem is possible to deal with; there we control
-the code around that sucker.  It's SYSCALL in 32bit binary outside of
-vdso32 that causes real PITA...
+--=20
+Regards/Gruss,
+Boris.
 
-------------------------------------------------------------------------------
-uberSVN's rich system and user administration capabilities and model 
-configuration take the hassle out of deploying and managing Subversion and 
-the tools developers use with it. Learn more about uberSVN and get a free 
-download at:  http://p.sf.net/sfu/wandisco-dev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Advanced Micro Devices GmbH
+Einsteinring 24, 85609 Dornach
+GM: Alberto Bozzo
+Reg: Dornach, Landkreis Muenchen
+HRB Nr. 43632 WEEE Registernr: 129 19551
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
