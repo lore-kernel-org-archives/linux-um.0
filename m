@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hpa@zytor.com>) id 1QvLmD-00039L-Iw
+	(envelope-from <hpa@zytor.com>) id 1QvKLO-0000jd-Fj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Aug 2011 04:06:17 +0000
+	Mon, 22 Aug 2011 02:34:30 +0000
 Received: from terminus.zytor.com ([198.137.202.10] helo=mail.zytor.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QvLmC-0003Rt-RY
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QvKLN-000440-MH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Aug 2011 04:06:17 +0000
-Message-ID: <4E51D597.3060800@zytor.com>
-Date: Sun, 21 Aug 2011 21:05:43 -0700
+	Mon, 22 Aug 2011 02:34:30 +0000
+Message-ID: <4E51C026.7000702@zytor.com>
+Date: Sun, 21 Aug 2011 19:34:14 -0700
 From: "H. Peter Anvin" <hpa@zytor.com>
 MIME-Version: 1.0
 References: <20110821063443.GH2203@ZenIV.linux.org.uk>
@@ -42,26 +42,42 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] SYSCALL,
  ptrace and syscall restart breakages (Re: [RFC] weird crap with
  vdso on uml/i386)
-To: Andrew Lutomirski <luto@mit.edu>, Borislav Petkov <bp@amd64.org>
+To: Andrew Lutomirski <luto@mit.edu>
 Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, mingo@redhat.com, Al Viro <viro@zeniv.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>
 
-Borislav,
+On 08/21/2011 07:26 PM, Andrew Lutomirski wrote:
+> 
+> Which still leaves the question of how to fix it.  Restarting via an
+> int 0x80-based helper might be the only option that leaves everything
+> fully functional.
+> 
 
-We're tracking down an issue with the way system call arguments are
-handled on 32 bits.  We have a solution for SYSENTER but not SYSCALL;
-fixing SYSCALL "properly" appears to be very difficult at best.
+The issue is that we don't represent the entire state ... we represent
+only one metalevel of it, currently the "cooked" one.  The problem is
+that we need the "raw" one as well, and in order to have *both* we need
+to know the entry mechanism.
 
-So the question is: how much overhead would it be to simply fall back to
-int $0x80 or some other legacy-style domain crossing instruction for
-32-bit system calls on AMD64 processors?  We don't ever use SYSCALL in
-legacy mode, so native i386 kernels are unaffected.
+We need that IN EITHER CASE.
 
+This is reasonably straightforward... we can carry the entry mechanism
+forward inside the kernel, and fix it up in the IRET path.
+
+The *really* big issue is what we drop as the sigcontext since this is
+an ABI carried out to userspace.  We could just say "it's currently
+totally broken for SYSCALL" and just change it to drop the raw state,
+but which has the potential for breaking unknown programs, *or* we could
+add a bit of state (presumably by reclaiming one of the padding fields
+around cs and ss) ... which *also* has the potential for breaking programs.
+
+Right now, SYSCALL -> signal -> restart *is broken*, however, so there
+is also the option of just doing nothing in this case, I guess.
+	
 	-hpa
+
 
 -- 
 H. Peter Anvin, Intel Open Source Technology Center
 I work for Intel.  I don't speak on their behalf.
-
 
 ------------------------------------------------------------------------------
 uberSVN's rich system and user administration capabilities and model 
