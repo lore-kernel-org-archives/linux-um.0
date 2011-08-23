@@ -1,31 +1,31 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qvur9-0004L4-NI
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1Qvuna-0005Pz-EH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 17:33:43 +0000
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qvur9-0006yO-5g
+	Tue, 23 Aug 2011 17:30:02 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QvunZ-00073S-7r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 17:33:43 +0000
-Date: Tue, 23 Aug 2011 18:33:17 +0100
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20110823173317.GI2203@ZenIV.linux.org.uk>
-References: <20110823000314.GW2203@ZenIV.linux.org.uk>
-	<4E52EF2A.8060608@zytor.com>
-	<CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
-	<20110823010146.GY2203@ZenIV.linux.org.uk>
+	Tue, 23 Aug 2011 17:30:02 +0000
+Message-ID: <4E53E38F.2060300@nod.at>
+Date: Tue, 23 Aug 2011 19:29:51 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+References: <20110823010146.GY2203@ZenIV.linux.org.uk>
 	<20110823011312.GZ2203@ZenIV.linux.org.uk>
 	<20110823021717.GA2203@ZenIV.linux.org.uk>
 	<20110823061531.GC2203@ZenIV.linux.org.uk>
 	<CA+55aFzUAuPEwcvVvuXooWMT6XpDuOjEHi-Ab+SOhZVjfbVYpA@mail.gmail.com>
 	<CAObL_7F-E2y_cd1MK4ayBx_CqszrewSrBt6V7=ndVuBQrrmTKQ@mail.gmail.com>
-	<CA+55aFwozG02mX5hrjNo4k4i2X2=yNf_dgEnBvv8brYb1q9fDg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+55aFwozG02mX5hrjNo4k4i2X2=yNf_dgEnBvv8brYb1q9fDg@mail.gmail.com>
+	<20110823162251.GC13138@aftab>
+	<CA+55aFxJF88EJ=WhPq08j4+REBgpvVHVwbg5BR05DD+exRyp8A@mail.gmail.com>
+	<20110823165320.GG2203@ZenIV.linux.org.uk>
+	<4E53DC2A.3020004@nod.at>
+	<20110823170740.GH2203@ZenIV.linux.org.uk>
+In-Reply-To: <20110823170740.GH2203@ZenIV.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,44 +41,39 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] SYSCALL,
  ptrace and syscall restart breakages (Re: [RFC] weird crap with
  vdso on uml/i386)
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@amd64.org>, "mingo@redhat.com" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@amd64.org>, "mingo@redhat.com" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
 
-On Tue, Aug 23, 2011 at 09:20:12AM -0700, Linus Torvalds wrote:
+Am 23.08.2011 19:07, schrieb Al Viro:
+> On Tue, Aug 23, 2011 at 06:58:18PM +0200, Richard Weinberger wrote:
+>
+>> What about this hack/solution?
+>> While booting UML can check whether the host's vDSO contains
+>> a SYSCALL instruction.
+>> If so, UML will not make the host's vDSO available to it's
+>> processes...
+>
+> Note that this is *only* for 32bit side of things.  64bit one works fine...
 
-> It's EMULATING A SYSTEM CALL. That original "getregs" value is not
-> some "user space state". It's the *system call* state that you got
-> after the system call trapped. Setting it back is an insane operation,
-> but it would happen to work - if you make no changes.
-> 
-> But UML *does* make changes. It takes that system call state, and then
-> EMULATES THE SYSTEM CALL INCORRECTLY.
-> 
-> If you see it that way (which is the correct way), then it's clearly
-> an UML problem, and it's not at all "madness" that your
-> getregs/setregs pairing doesn't work.
-> 
-> See? Buggy system call emulation. It's really that simple. Of course,
-> "simple" in this case is "really really subtle differences in how the
-> kernel treats syscall/sysenter/int80", so the *details* are certainly
-> not simple, but the concept is.
+I know. :)
 
-It's a bit more than that (ptrace changes to syscall arguments *are*
-lost on syscall restart), but... as far as I'm concerned, the situation
-is simple now:
-	* SYSCALL is not terminally broken wrt restarts.  My apologies for
-misreading what was going on.
-	* SYSENTER with Linus' patch does work just fine wrt restarts + ptrace
-	* SYSCALL is losing ptrace-made changes to arguments when it restarts.
-Might or might not be a problem for somebody.
-	* UML should not touch SYSCALL for 32bit.  Not without serious changes
-in UML and I'm not convinced that it won't be worse than what we probably
-ought to do there: check if __kernel_vsyscall() does SYSCALL (recognizable
-by interaction with POKEUSER) and don't tell about vdso to guest processes.
-Anything well-behaving won't step on SYSCALL and the things that do deserve
-the subtle bugs they get.
-	* asm glue is subtle, evil and doesn't have anywhere near enough
-documentation ;-/
+> I wouldn't search for SYSCALL in vdso, BTW - not when we have a good way
+> to trigger that crap and recognize it.
+>
+> At boot time, fork a child.  Have it traced with PTRACE_SYSCALL.  Let it
+> put recognizable values in registers and call __kernel_vsyscall().  Then
+> let the parent do one more PTRACE_SYSCALL, then PTRACE_POKEUSER and set ebp
+> to 0x69696969.  PTRACE_CONT the sucker and let it report what it sees in ecx.
+> If it's what we'd put there - fine, it looks safe.  If it's 0x69696969 -
+> we have a problem, no vdso for us.
+
+Okay, this is a much cleaner approach.
+But first I've to find a machine where I can test the issue.
+At home none on of my x86_64 machines is SYSCALL-based.
+Tomorrow I'll search at the university for one...
+
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
