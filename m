@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1QvuSH-0007Yi-6w
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1QvuJ4-0007I3-2p
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 17:08:01 +0000
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QvuSF-0003Pb-Sw
+	Tue, 23 Aug 2011 16:58:30 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QvuJ2-0005pA-RL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 17:08:01 +0000
-Date: Tue, 23 Aug 2011 18:07:40 +0100
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20110823170740.GH2203@ZenIV.linux.org.uk>
-References: <20110823010146.GY2203@ZenIV.linux.org.uk>
+	Tue, 23 Aug 2011 16:58:30 +0000
+Message-ID: <4E53DC2A.3020004@nod.at>
+Date: Tue, 23 Aug 2011 18:58:18 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+References: <4E52EF2A.8060608@zytor.com>
+	<CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
+	<20110823010146.GY2203@ZenIV.linux.org.uk>
 	<20110823011312.GZ2203@ZenIV.linux.org.uk>
 	<20110823021717.GA2203@ZenIV.linux.org.uk>
 	<20110823061531.GC2203@ZenIV.linux.org.uk>
@@ -22,10 +25,7 @@ References: <20110823010146.GY2203@ZenIV.linux.org.uk>
 	<20110823162251.GC13138@aftab>
 	<CA+55aFxJF88EJ=WhPq08j4+REBgpvVHVwbg5BR05DD+exRyp8A@mail.gmail.com>
 	<20110823165320.GG2203@ZenIV.linux.org.uk>
-	<4E53DC2A.3020004@nod.at>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4E53DC2A.3020004@nod.at>
+In-Reply-To: <20110823165320.GG2203@ZenIV.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,28 +41,37 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] SYSCALL,
  ptrace and syscall restart breakages (Re: [RFC] weird crap with
  vdso on uml/i386)
-To: Richard Weinberger <richard@nod.at>
+To: Al Viro <viro@ZenIV.linux.org.uk>
 Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@amd64.org>, "mingo@redhat.com" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
 
-On Tue, Aug 23, 2011 at 06:58:18PM +0200, Richard Weinberger wrote:
+Am 23.08.2011 18:53, schrieb Al Viro:
+> On Tue, Aug 23, 2011 at 09:29:29AM -0700, Linus Torvalds wrote:
+>
+>> Oh yes.
+>>
+>> System call performance is *important*. And x86 is *important*.
+>>
+>> UML? In comparison, not that important.
+>>
+>> So quite frankly, if this is purely an UML issue (and unless we're
+>> missing something else, that's what it looks like, despite all the
+>> confusion we've had so far), then if we have a choice between "remove
+>> syscall instruction" and "remove UML", then ...
+>
+> Agreed.  Note, BTW, that UML has perfectly usable workaround for 99% of
+> that - don't tell the binaries it has *any* vdso in such cases.  And
+> "remove UML" turns into "remove support under UML for 32bit binaries
+> that go out of their way to do SYSCALL directly, which wouldn't work
+> on native 32bit", which is really a no-brainer.
 
-> What about this hack/solution?
-> While booting UML can check whether the host's vDSO contains
-> a SYSCALL instruction.
-> If so, UML will not make the host's vDSO available to it's
-> processes...
+What about this hack/solution?
+While booting UML can check whether the host's vDSO contains
+a SYSCALL instruction.
+If so, UML will not make the host's vDSO available to it's
+processes...
 
-Note that this is *only* for 32bit side of things.  64bit one works fine...
-
-I wouldn't search for SYSCALL in vdso, BTW - not when we have a good way
-to trigger that crap and recognize it.
-
-At boot time, fork a child.  Have it traced with PTRACE_SYSCALL.  Let it
-put recognizable values in registers and call __kernel_vsyscall().  Then
-let the parent do one more PTRACE_SYSCALL, then PTRACE_POKEUSER and set ebp
-to 0x69696969.  PTRACE_CONT the sucker and let it report what it sees in ecx.
-If it's what we'd put there - fine, it looks safe.  If it's 0x69696969 -
-we have a problem, no vdso for us.
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
