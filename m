@@ -1,107 +1,37 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1Qy4K8-0004Ol-IL
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Aug 2011 16:04:32 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qy4K4-0001uo-Ob
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Aug 2011 16:04:32 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 29 Aug 2011 18:04:00 +0200
-Message-Id: <1314633842-24515-8-git-send-email-richard@nod.at>
-In-Reply-To: <1314633842-24515-1-git-send-email-richard@nod.at>
-References: <1314633842-24515-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Rusty Russell <rusty@rustcorp.com.au>
+In-Reply-To: <4E52CC63.5070201@nod.at>
+References: <4E52CC63.5070201@nod.at>
+Date: Tue, 23 Aug 2011 13:22:18 +0930
+Message-ID: <878vqk4wel.fsf@rustcorp.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 7/9] um: PTRACE_[GS]ETFPXREGS had been wired on
-	the wrong subarch
-To: akpm@linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=us-ascii
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [RFC] UML/x86_64 module loader
+To: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
+Cc: x86@kernel.org, rostedt@goodmis.org, jbaron@redhat.com, akpm@linux-foundation.org, vapier@gentoo.org, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Al Viro <viro@ftp.linux.org.uk>
+On Mon, 22 Aug 2011 23:38:43 +0200, Richard Weinberger <richard@nod.at> wrote:
+> Hi!
+> 
+> UserModeLinux is using the arch specific module functions from 
+> arch/x86/kernel/module.c.
+> On i386 this works perfectly fine but on x86_64 it causes problems.
+> 
+> apply_relocate_add() assumes modules compiled with -mcmodel=kernel 
+> because the kernel lives in the negative 2GiB of the address space.
+> This assumption is not true for UML.
+> On an UML instance with more than 512MiB of memory no modules can be 
+> loaded because vmalloc() locates the module near the 2GiB limit and the
+> ELF relocations causes an overflow. (Detected by "if ((s64)val != *(s32 
+> *)loc)" in apply_relocate_add()).
+> 
+> Now I'm not sure how to fix this.
+> Mostly because I'm not a module loader nor an ELF expert. 8-)
 
-It's 32bit-only, not 64bit-only...  And while we are at it, it's
-set_fpxregs(), not set_fpregs()...
+I think you need to write your own routines.  It shouldn't be that hard,
+just keep implementing relocations until you're done :)
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/sys-i386/ptrace.c   |   14 +++++++++++++-
- arch/um/sys-x86_64/ptrace.c |   14 +-------------
- 2 files changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/arch/um/sys-i386/ptrace.c b/arch/um/sys-i386/ptrace.c
-index d23b2d3..49fd25a 100644
---- a/arch/um/sys-i386/ptrace.c
-+++ b/arch/um/sys-i386/ptrace.c
-@@ -206,5 +206,17 @@ int set_fpxregs(struct user_fxsr_struct __user *buf, struct task_struct *child)
- long subarch_ptrace(struct task_struct *child, long request,
- 		    unsigned long addr, unsigned long data)
- {
--	return -EIO;
-+	int ret = -EIO;
-+	void __user *datap = (void __user *) data;
-+
-+	switch (request) {
-+	case PTRACE_GETFPXREGS: /* Get the child FPU state. */
-+		ret = get_fpxregs(datap, child);
-+		break;
-+	case PTRACE_SETFPXREGS: /* Set the child FPU state. */
-+		ret = set_fpxregs(datap, child);
-+		break;
-+	}
-+
-+	return ret;
- }
-diff --git a/arch/um/sys-x86_64/ptrace.c b/arch/um/sys-x86_64/ptrace.c
-index f436136..7ed49ac 100644
---- a/arch/um/sys-x86_64/ptrace.c
-+++ b/arch/um/sys-x86_64/ptrace.c
-@@ -178,17 +178,5 @@ int set_fpregs(struct user_i387_struct __user *buf, struct task_struct *child)
- long subarch_ptrace(struct task_struct *child, long request,
- 		    unsigned long addr, unsigned long data)
- {
--	int ret = -EIO;
--	void __user *datap = (void __user *) data;
--
--	switch (request) {
--	case PTRACE_GETFPXREGS: /* Get the child FPU state. */
--		ret = get_fpregs(datap, child);
--		break;
--	case PTRACE_SETFPXREGS: /* Set the child FPU state. */
--		ret = set_fpregs(datap, child);
--		break;
--	}
--
--	return ret;
-+	return -EIO;
- }
--- 
-1.7.6.1
-
-
-------------------------------------------------------------------------------
-EMC VNX: the world's simplest storage, starting under $10K
-The only unified storage solution that offers unified management 
-Up to 160% more powerful than alternatives and 25% more efficient. 
-Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Cheers,
+Rusty.
