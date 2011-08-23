@@ -1,21 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hpa@zytor.com>) id 1QvwUi-0000DG-8J
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hpa@zytor.com>) id 1QvwSe-0005Jy-Fj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 19:18:40 +0000
+	Tue, 23 Aug 2011 19:16:32 +0000
 Received: from terminus.zytor.com ([198.137.202.10] helo=mail.zytor.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QvwUh-0001zH-Kv
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QvwSd-0001kE-DU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 19:18:40 +0000
-Message-ID: <4E53FCF7.7060703@zytor.com>
-Date: Tue, 23 Aug 2011 12:18:15 -0700
+	Tue, 23 Aug 2011 19:16:32 +0000
+Message-ID: <4E53FC6E.1030807@zytor.com>
+Date: Tue, 23 Aug 2011 12:15:58 -0700
 From: "H. Peter Anvin" <hpa@zytor.com>
 MIME-Version: 1.0
-References: <4E52D280.3010107@zytor.com>
-	<CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
+References: <CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
 	<20110823000314.GW2203@ZenIV.linux.org.uk>
 	<4E52EF2A.8060608@zytor.com>
 	<CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
@@ -24,8 +23,9 @@ References: <4E52D280.3010107@zytor.com>
 	<20110823021717.GA2203@ZenIV.linux.org.uk>
 	<20110823061531.GC2203@ZenIV.linux.org.uk>
 	<CA+55aFzUAuPEwcvVvuXooWMT6XpDuOjEHi-Ab+SOhZVjfbVYpA@mail.gmail.com>
-	<20110823164849.GF2203@ZenIV.linux.org.uk>
-In-Reply-To: <20110823164849.GF2203@ZenIV.linux.org.uk>
+	<CAObL_7F-E2y_cd1MK4ayBx_CqszrewSrBt6V7=ndVuBQrrmTKQ@mail.gmail.com>
+	<20110823162251.GC13138@aftab>
+In-Reply-To: <20110823162251.GC13138@aftab>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,26 +41,34 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] SYSCALL,
  ptrace and syscall restart breakages (Re: [RFC] weird crap with
  vdso on uml/i386)
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@amd64.org>, "mingo@redhat.com" <mingo@redhat.com>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
+To: Borislav Petkov <bp@amd64.org>
+Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
 
-On 08/23/2011 09:48 AM, Al Viro wrote:
+On 08/23/2011 09:22 AM, Borislav Petkov wrote:
+> On Tue, Aug 23, 2011 at 12:11:43PM -0400, Andrew Lutomirski wrote:
+>> In any case, this seems insanely overcomplicated.  I'd be less afraid
+>> of something like my approach (which, I think, makes all of the
+>> SYSCALL weirdness pretty much transparent to ptrace users) or of just
+>> removing SYSCALL entirely from 32-bit code.
 > 
-> Um...  How would it know which syscall variant had that been, to start
-> with?  For int 0x80 it would need to use registers as-is.  For SYSENTER
-> it also could use them as-is - ebp will differ from what we put there
-> when entering the sucker, but not critically so; on the way out of
-> syscall we'll overwrite it anyway immediately (either by pop or mov).
-> For SYSCALL... we don't really care about ecx contents prior to entering
-> the kernel (and it'll be blown out anyway), and ebp one could be found in
-> regs.ecx.  So yes, we can do it that way, but... how to tell what variant
-> had been triggered?  Examining two bytes prior to user eip?  Sounds bloody
-> brittle...
+> I don't think that removing SYSCALL from 32-bit code just so that UML
+> trapped syscalls work is something we'd like since SYSCALL is much
+> cheaper than INT $0x80:
+> 
+> "As a result, SYSCALL and SYSRET can take fewer than one-fourth the
+> number of internal clock cycles to complete than the legacy CALL and RET
+> instructions."
+> 
+> http://support.amd.com/us/Processor_TechDocs/24593.pdf, p. 152.
+> 
+> I know, it is 32-bit syscall on 64-bit kernel which should be pretty
+> rare but still...
+> 
 
-We could drop that information in a metaregister.  It's not backward
-compatible, but at least it will be obvious when that information is
-available and not.
-
+Right, but if you had said the difference had disappeared on current AMD
+silicon it would be much less of an issue.  That's why I wanted to find
+that bit out from you.
+	
 	-hpa
 
 ------------------------------------------------------------------------------
