@@ -1,39 +1,55 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20110823162251.GC13138@aftab>
+Date: Tue, 23 Aug 2011 18:22:51 +0200
+From: Borislav Petkov <bp@amd64.org>
+Message-ID: <20110823162251.GC13138@aftab>
 References: <CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
- <20110823000314.GW2203@ZenIV.linux.org.uk> <4E52EF2A.8060608@zytor.com>
+ <20110823000314.GW2203@ZenIV.linux.org.uk>
+ <4E52EF2A.8060608@zytor.com>
  <CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
- <20110823010146.GY2203@ZenIV.linux.org.uk> <20110823011312.GZ2203@ZenIV.linux.org.uk>
- <20110823021717.GA2203@ZenIV.linux.org.uk> <20110823061531.GC2203@ZenIV.linux.org.uk>
+ <20110823010146.GY2203@ZenIV.linux.org.uk>
+ <20110823011312.GZ2203@ZenIV.linux.org.uk>
+ <20110823021717.GA2203@ZenIV.linux.org.uk>
+ <20110823061531.GC2203@ZenIV.linux.org.uk>
  <CA+55aFzUAuPEwcvVvuXooWMT6XpDuOjEHi-Ab+SOhZVjfbVYpA@mail.gmail.com>
- <CAObL_7F-E2y_cd1MK4ayBx_CqszrewSrBt6V7=ndVuBQrrmTKQ@mail.gmail.com> <20110823162251.GC13138@aftab>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 23 Aug 2011 09:29:29 -0700
-Message-ID: <CA+55aFxJF88EJ=WhPq08j4+REBgpvVHVwbg5BR05DD+exRyp8A@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+ <CAObL_7F-E2y_cd1MK4ayBx_CqszrewSrBt6V7=ndVuBQrrmTKQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAObL_7F-E2y_cd1MK4ayBx_CqszrewSrBt6V7=ndVuBQrrmTKQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [uml-devel] SYSCALL, ptrace and syscall restart breakages (Re:
  [RFC] weird crap with vdso on uml/i386)
-To: Borislav Petkov <bp@amd64.org>
-Cc: Andrew Lutomirski <luto@mit.edu>, Al Viro <viro@zeniv.linux.org.uk>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>
+To: Andrew Lutomirski <luto@mit.edu>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@amd64.org>, Ingo Molnar <mingo@kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Aug 23, 2011 at 9:22 AM, Borislav Petkov <bp@amd64.org> wrote:
->
-> I don't think that removing SYSCALL from 32-bit code just so that UML
-> trapped syscalls work is something we'd like since SYSCALL is much
-> cheaper than INT $0x80:
+On Tue, Aug 23, 2011 at 12:11:43PM -0400, Andrew Lutomirski wrote:
+> In any case, this seems insanely overcomplicated.  I'd be less afraid
+> of something like my approach (which, I think, makes all of the
+> SYSCALL weirdness pretty much transparent to ptrace users) or of just
+> removing SYSCALL entirely from 32-bit code.
 
-Oh yes.
+I don't think that removing SYSCALL from 32-bit code just so that UML
+trapped syscalls work is something we'd like since SYSCALL is much
+cheaper than INT $0x80:
 
-System call performance is *important*. And x86 is *important*.
+"As a result, SYSCALL and SYSRET can take fewer than one-fourth the
+number of internal clock cycles to complete than the legacy CALL and RET
+instructions."
 
-UML? In comparison, not that important.
+http://support.amd.com/us/Processor_TechDocs/24593.pdf, p. 152.
 
-So quite frankly, if this is purely an UML issue (and unless we're
-missing something else, that's what it looks like, despite all the
-confusion we've had so far), then if we have a choice between "remove
-syscall instruction" and "remove UML", then ...
+I know, it is 32-bit syscall on 64-bit kernel which should be pretty
+rare but still...
 
-                           Linus
+Thanks.
+
+-- 
+Regards/Gruss,
+Boris.
+
+Advanced Micro Devices GmbH
+Einsteinring 24, 85609 Dornach
+GM: Alberto Bozzo
+Reg: Dornach, Landkreis Muenchen
+HRB Nr. 43632 WEEE Registernr: 129 19551
