@@ -1,55 +1,61 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Tue, 23 Aug 2011 18:22:51 +0200
-From: Borislav Petkov <bp@amd64.org>
-Message-ID: <20110823162251.GC13138@aftab>
-References: <CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
- <20110823000314.GW2203@ZenIV.linux.org.uk>
- <4E52EF2A.8060608@zytor.com>
- <CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
- <20110823010146.GY2203@ZenIV.linux.org.uk>
- <20110823011312.GZ2203@ZenIV.linux.org.uk>
- <20110823021717.GA2203@ZenIV.linux.org.uk>
- <20110823061531.GC2203@ZenIV.linux.org.uk>
- <CA+55aFzUAuPEwcvVvuXooWMT6XpDuOjEHi-Ab+SOhZVjfbVYpA@mail.gmail.com>
- <CAObL_7F-E2y_cd1MK4ayBx_CqszrewSrBt6V7=ndVuBQrrmTKQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <CAObL_7F-E2y_cd1MK4ayBx_CqszrewSrBt6V7=ndVuBQrrmTKQ@mail.gmail.com>
+References: <4E52B7F8.3050002@zytor.com> <CAObL_7GmMXPUE0Oix1CKTYzqheyJV+ua=WEBUQk5m-LGsvqihw@mail.gmail.com>
+ <4E52D280.3010107@zytor.com> <CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
+ <20110823000314.GW2203@ZenIV.linux.org.uk> <4E52EF2A.8060608@zytor.com>
+ <CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
+ <20110823010146.GY2203@ZenIV.linux.org.uk> <20110823011312.GZ2203@ZenIV.linux.org.uk>
+ <20110823021717.GA2203@ZenIV.linux.org.uk> <20110823061531.GC2203@ZenIV.linux.org.uk>
+ <CA+55aFzUAuPEwcvVvuXooWMT6XpDuOjEHi-Ab+SOhZVjfbVYpA@mail.gmail.com> <CAObL_7F-E2y_cd1MK4ayBx_CqszrewSrBt6V7=ndVuBQrrmTKQ@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 23 Aug 2011 09:20:12 -0700
+Message-ID: <CA+55aFwozG02mX5hrjNo4k4i2X2=yNf_dgEnBvv8brYb1q9fDg@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [uml-devel] SYSCALL, ptrace and syscall restart breakages (Re:
  [RFC] weird crap with vdso on uml/i386)
 To: Andrew Lutomirski <luto@mit.edu>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@amd64.org>, Ingo Molnar <mingo@kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@amd64.org>, Ingo Molnar <mingo@kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Aug 23, 2011 at 12:11:43PM -0400, Andrew Lutomirski wrote:
-> In any case, this seems insanely overcomplicated.  I'd be less afraid
-> of something like my approach (which, I think, makes all of the
-> SYSCALL weirdness pretty much transparent to ptrace users) or of just
-> removing SYSCALL entirely from 32-bit code.
+On Tue, Aug 23, 2011 at 9:11 AM, Andrew Lutomirski <luto@mit.edu> wrote=
+:
+>
+> Egads. =A0Does this mean that doing GETREGS and then doing SETREGS la=
+ter
+> on with the *exact same values* is considered incorrect?
 
-I don't think that removing SYSCALL from 32-bit code just so that UML
-trapped syscalls work is something we'd like since SYSCALL is much
-cheaper than INT $0x80:
+No. If it does it with exactly the same values, it's perfectly ok. But
+it isn't. It's changing some of those values.
 
-"As a result, SYSCALL and SYSRET can take fewer than one-fourth the
-number of internal clock cycles to complete than the legacy CALL and RET
-instructions."
+> =A0IMO, this way lies madness.
 
-http://support.amd.com/us/Processor_TechDocs/24593.pdf, p. 152.
+No, the madness is in UML.
 
-I know, it is 32-bit syscall on 64-bit kernel which should be pretty
-rare but still...
+It's EMULATING A SYSTEM CALL. That original "getregs" value is not
+some "user space state". It's the *system call* state that you got
+after the system call trapped. Setting it back is an insane operation,
+but it would happen to work - if you make no changes.
 
-Thanks.
+But UML *does* make changes. It takes that system call state, and then
+EMULATES THE SYSTEM CALL INCORRECTLY.
 
--- 
-Regards/Gruss,
-Boris.
+If you see it that way (which is the correct way), then it's clearly
+an UML problem, and it's not at all "madness" that your
+getregs/setregs pairing doesn't work.
 
-Advanced Micro Devices GmbH
-Einsteinring 24, 85609 Dornach
-GM: Alberto Bozzo
-Reg: Dornach, Landkreis Muenchen
-HRB Nr. 43632 WEEE Registernr: 129 19551
+See? Buggy system call emulation. It's really that simple. Of course,
+"simple" in this case is "really really subtle differences in how the
+kernel treats syscall/sysenter/int80", so the *details* are certainly
+not simple, but the concept is.
+
+                    Linus
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+
