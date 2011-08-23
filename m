@@ -1,31 +1,31 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <luto@mit.edu>) id 1QvjGJ-0007VV-VR
+	(envelope-from <viro@ftp.linux.org.uk>) id 1QvhDk-00035z-9v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 05:10:55 +0000
-Received: from dmz-mailsec-scanner-5.mit.edu ([18.7.68.34])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1QvjGJ-0007sj-Ao for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 05:10:55 +0000
-Message-ID: <4E533651.8070205@mit.edu>
-Date: Tue, 23 Aug 2011 01:10:41 -0400
-From: Andrew Lutomirski <luto@MIT.EDU>
+	Tue, 23 Aug 2011 03:00:08 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QvhDh-0000ou-Tl
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Aug 2011 03:00:08 +0000
+Date: Tue, 23 Aug 2011 03:59:44 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Message-ID: <20110823025944.GB2203@ZenIV.linux.org.uk>
+References: <4E52B7F8.3050002@zytor.com>
+	<CAObL_7GmMXPUE0Oix1CKTYzqheyJV+ua=WEBUQk5m-LGsvqihw@mail.gmail.com>
+	<4E52D280.3010107@zytor.com>
+	<CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
+	<20110823000314.GW2203@ZenIV.linux.org.uk>
+	<4E52EF2A.8060608@zytor.com>
+	<CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
+	<20110823010146.GY2203@ZenIV.linux.org.uk>
+	<20110823011312.GZ2203@ZenIV.linux.org.uk>
+	<CA+55aFygGyi8HRr8wNVDw5xk46D5QDOhis18u2qV-9+h0-4ReA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20110821063443.GH2203@ZenIV.linux.org.uk>
-	<20110821084230.GI2203@ZenIV.linux.org.uk>
-	<CAObL_7GXyzAzNjBtgye9BwXLyHm337oBTdjRDjbSPqoKZGWyyA@mail.gmail.com>
-	<20110821144352.GJ2203@ZenIV.linux.org.uk>
-	<20110821164124.GL2203@ZenIV.linux.org.uk>
-	<CAObL_7E1vU8+0UQST6Smf9j40TckTzB=QdY0AuAWo4AX6cs2xg@mail.gmail.com>
-	<20110822011645.GM2203@ZenIV.linux.org.uk>
-	<CA+55aFz1jCZGcQ-c6uGN=k8nKDuGoz5g8e+pxpYAg4X_p7=5Mw@mail.gmail.com>
-	<20110822040759.GQ2203@ZenIV.linux.org.uk>
-	<4E51D70A.1060001@zytor.com>
-	<20110822042605.GR2203@ZenIV.linux.org.uk>
-	<4E51E325.2050502@zytor.com>
-In-Reply-To: <4E51E325.2050502@zytor.com>
+Content-Disposition: inline
+In-Reply-To: <CA+55aFygGyi8HRr8wNVDw5xk46D5QDOhis18u2qV-9+h0-4ReA@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,180 +41,68 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] SYSCALL,
  ptrace and syscall restart breakages (Re: [RFC] weird crap with
  vdso on uml/i386)
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, mingo@redhat.com, Al Viro <viro@ZenIV.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@amd64.org>, "mingo@redhat.com" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>
 
-On 08/22/2011 01:03 AM, H. Peter Anvin wrote:
-> On 08/21/2011 09:26 PM, Al Viro wrote:
->> On Sun, Aug 21, 2011 at 09:11:54PM -0700, H. Peter Anvin wrote:
->>>> lack of point - the *only* CPU where it would matter would be K6-2, IIRC,
->>>> and (again, IIRC) it had some differences in SYSCALL semantics compared to
->>>> K7 (which supports SYSENTER as well).  Bugger if I remember what those
->>>> differences might've been...  Some flag not cleared?
->>>
->>> The most likely reason for a binary to execute a stray SYSCALL is
->>> because they read it out of the vdso.  Totally daft, but we certainly
->>> see a lot of stupid things as evidenced by the JIT thread earlier this
->>> month.
->>
->> Um...  What, blindly, no matter what surrounds it in there?  What will
->> happen to the same eager JIT when it steps on SYSENTER?
+On Mon, Aug 22, 2011 at 06:59:48PM -0700, Linus Torvalds wrote:
+
+> And the system call restart should actually work fine too, because at
+> syscall entry we save %ebp *both* in the slot for ebp and ecx when we
+> enter the first time. So the second time, we'll re-load the third
+> argument from ebp again, but that's fine - it's still going to be the
+> right value. Yes? No?
 > 
-> The JIT will have had to manage SYSENTER already.  It's not a change,
-> whereas SYSCALL would be.  We could just try it, and see if anything
-> breaks, of course.
+> However, I note that the cstar entrypont has a comment about not saving ebp:
+> 
+>  * %ebp Arg2    [note: not saved in the stack frame, should not be touched]
+> 
+> which sounds odd. Why don't we save it? If we take a signal handler
+> there, don't we want %ebp on the kernel stack in pt_regs, in order to
+> do everything right?
 
-Here's a possible solution that works for standalone SYSCALL and vdso
-SYSCALL.  The idea is to preserve the exact same SYSCALL invocation
-sequence.  Logically, the SYSCALL instruction does:
+That's exactly because it's callee-saved.  amd64 doesn't build full
+pt_regs on stack; there's a part built always (5 words needed for iret
+to work + syscall number + rdi + rsi + rdx + rcx + rax + r8--r11) and
+the rest of registers is not saved in regular cases.  Reason: as long
+as what we are calling follows amd64 ABI, we are guaranteed that
+values of rsp/rbp/rbx/r12--r15 will not change.  So we don't waste
+cycles and stack space unless we need to.  Which is to say,
+	* in fork/clone/vfork - there we want full pt_regs to copy it into
+child's pt_regs.
+	* in {rt_,}sigreturn - we don't care about the current contents of
+those registers, but we want to set them.  Thus the full pt_regs on stack,
+filled by sys_{rt_,}sigreturn() and these extra registers filled with
+values from pt_regs.
+	* execve() - we want all registers reset to know state after
+sys_execve(), so it fills the full pt_regs and we get the extra regs filled
+out of it.
+	* sigaltstack() - there full pt_regs is an overkill, but we do want
+userland sp.
+	* signal delivery - we want these registers preserved across the
+duration of handler and we can't depend on handler following ABI.  So we
+fill the entire pt_regs, and copy it into sigcontext, to be eventually
+picked up by sigreturn and reconstruct the entire state.
+	* ptrace - we want to be able to read/modify *all* these guys.
+So we fill the entire pt_regs, let ptrace play with it and read extra regs
+back.  NOTE: ia32_cstar_tracesys() takes pains to prevent buggering ebp
+there - we read the arg6 into r9, then swap it with ebp for duration of
+that stuff.  So ptrace will see arg6 in regs.bp, but when it's time
+to go into syscall the (possibly modified) value will end in r9.  Which
+is how it's passed to C functions, so we are fine, but it'll be really
+lost before we reach the userland.  However, on the way *OUT* we are not
+that nice, and SETREGS/POKEUSER hitting us there will end up modifying
+ebp.  Which will play hell on __kernel_vsyscall()...
 
-push %ebp
-mov %ebp,%ecx
-mov 4(%esp),%ebp
-call __fake_int80
-
-and __fake_int80 is:
-int 0x80
-mov 4(%esp),%ebp
-ret $4
-
-
-The entire system call sequence is then (effectively):
-
-push %ebp
-movl %ecx,%ebp
-
-; "SYSCALL" starts here
-push %ebp
-mov %ebp,%ecx
-mov 4(%esp),%ebp
-call __fake_int80
-; "SYSCALL ends here
-
-movl %ebp,%ecx
-popl %ebp
-ret
-
-So we rearrange ebp and ecx and then immediately rearrange them back.
-The landing point tweaks them again so that we preserve the old
-semantics of SYSCALL.  But now the pt_regs values exactly match what
-would have happened if we entered via the int 0x80 path, so there
-shouldn't be any corner cases with ptrace or restart -- as far as either
-one is concerned, we actually entered via int 0x80.  If we deliver a
-signal, the signal handler returns to the int 0x80 instruction.
-
-Am I missing something?  Extremely buggy, incomplete code that
-implements this is:
-
-
-diff --git a/arch/x86/ia32/ia32entry.S b/arch/x86/ia32/ia32entry.S
-index a0e866d..6cda8ce 100644
---- a/arch/x86/ia32/ia32entry.S
-+++ b/arch/x86/ia32/ia32entry.S
-@@ -291,24 +291,59 @@ ENTRY(ia32_cstar_target)
- 	ENABLE_INTERRUPTS(CLBR_NONE)
- 	SAVE_ARGS 8,0,0
- 	movl 	%eax,%eax	/* zero extension */
--	movq	%rax,ORIG_RAX-ARGOFFSET(%rsp)
--	movq	%rcx,RIP-ARGOFFSET(%rsp)
--	CFI_REL_OFFSET rip,RIP-ARGOFFSET
--	movq	%rbp,RCX-ARGOFFSET(%rsp) /* this lies slightly to ptrace */
--	movl	%ebp,%ecx
-+
-+	/*
-+	 * This does (from the user's point of view):
-+	 * push %ebp
-+	 * mov %ebp, %ecx
-+	 * mov 4(%esp), %ebp
-+	 * call <function that does int 0x80; mov 4(%esp),%ebp; ret 4>
-+	 *
-+	 * User address access does not need access_ok check as r8
-+	 * has been zero-extended, so even with the offsets it cannot
-+	 * exceed 2**32 + 8.
-+	 */
-+
-+	/* XXX: need to check that vdso actually exists. */
-+	/* XXX: ia32_badarg may do bad things to the user state. */
-+
-+	/* move ebp into place on the user stack */
-+	1:	movl	%ebp,-4(%r8)
-+	.section __ex_table,"a"
-+	.quad 1b,ia32_badarg
-+	.previous
-+
-+	/* move eip into place on the user stack */
-+	1:	movl	%ecx,-8(%r8)  /* user eip is in ecx */
-+	.section __ex_table,"a"
-+	.quad 1b,ia32_badarg
-+	.previous
-+
-+	/* move ebp to ecx in CPU registers and argument save area */
-+	mov %ebp,%ecx
-+	movq %ecx,RCX-ARGOFFSET(%rsp)
-+
-+	/*
-+	 * move arg6 to ebp in CPU registers and argument save area
-+	 * minor optimization: the actual value of ebp is irrelevent,
-+	 * so stick it straight into r9d -- see the definition of
-+	 * IA32_ARG_FIXUP.
-+	 */
-+1:	movl	(%r8),%r9d
-+	.section __ex_table,"a"
-+	.quad 1b,ia32_badarg
-+	.previous	
-+
-+	/* Do the fake call */
-+	movl [insert address of int 0x80; ret helper + 2 here],RIP-ARGOFFSET(%rsp)
-+	subl $8,%r8 /* we pushed twice */
-+
- 	movq	$__USER32_CS,CS-ARGOFFSET(%rsp)
- 	movq	$__USER32_DS,SS-ARGOFFSET(%rsp)
- 	movq	%r11,EFLAGS-ARGOFFSET(%rsp)
- 	/*CFI_REL_OFFSET rflags,EFLAGS-ARGOFFSET*/
- 	movq	%r8,RSP-ARGOFFSET(%rsp)	
- 	CFI_REL_OFFSET rsp,RSP-ARGOFFSET
--	/* no need to do an access_ok check here because r8 has been
--	   32bit zero extended */ 
--	/* hardware stack frame is complete now */	
--1:	movl	(%r8),%r9d
--	.section __ex_table,"a"
--	.quad 1b,ia32_badarg
--	.previous	
- 	GET_THREAD_INFO(%r10)
- 	orl   $TS_COMPAT,TI_status(%r10)
- 	testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%r10)
-diff --git a/arch/x86/vdso/vdso32/syscall.S b/arch/x86/vdso/vdso32/syscall.S
-index 5415b56..a3e48b0 100644
---- a/arch/x86/vdso/vdso32/syscall.S
-+++ b/arch/x86/vdso/vdso32/syscall.S
-@@ -19,8 +19,8 @@ __kernel_vsyscall:
- .Lpush_ebp:
- 	movl	%ecx, %ebp
- 	syscall
--	movl	$__USER32_DS, %ecx
--	movl	%ecx, %ss
-+	/* The ret in the fake int80 entry lands here */
-+	/* ss is already correct AFAICS */
- 	movl	%ebp, %ecx
- 	popl	%ebp
- .Lpop_ebp:
-@@ -28,6 +28,11 @@ __kernel_vsyscall:
- .LEND_vsyscall:
- 	.size __kernel_vsyscall,.-.LSTART_vsyscall
- 
-+__kernel_vsyscall_fake_int80:
-+	int 0x80
-+	mov 4(%esp),%ebp
-+	ret $4
-+
- 	.section .eh_frame,"a",@progbits
- .LSTARTFRAME:
- 	.long .LENDCIE-.LSTARTCIE
-
-
-This could be further simplified by checking if any work flags are set and bailing immediately to the right place in the int 0x80 entry.
-
---Andy
+Hell, you have done something very similar on alpha yourself...  As for
+ebp, it doesn't make any sense to save it on stack - ia32_cstar_entry()
+itself takes care of not stomping on it just fine and IRET path
+(int_ret_from_sys_call) modifies rbp only if explicitly asked to do so...
+Which is most likely where it hits the fan for uml.  Normally it wouldn't
+hurt to ask PTRACE_PUTREGS to put into ebp the value we just got from
+PTRACE_GETREGS.  However, it *does* hurt when it happens on the second
+stop per syscall - i.e. when we are on the way out.  I'm not 100% sure
+that this is what's going on (it's using PTRACE_SYSEMU, which is supposed
+to avoid the second stop completely), but it looks like what I'm seeing...
 
 ------------------------------------------------------------------------------
 Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
