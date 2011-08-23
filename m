@@ -1,76 +1,228 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Tue, 23 Aug 2011 07:15:31 +0100
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20110823061531.GC2203@ZenIV.linux.org.uk>
-References: <4E52B7F8.3050002@zytor.com>
- <CAObL_7GmMXPUE0Oix1CKTYzqheyJV+ua=WEBUQk5m-LGsvqihw@mail.gmail.com>
- <4E52D280.3010107@zytor.com>
- <CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
- <20110823000314.GW2203@ZenIV.linux.org.uk>
- <4E52EF2A.8060608@zytor.com>
- <CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
- <20110823010146.GY2203@ZenIV.linux.org.uk>
- <20110823011312.GZ2203@ZenIV.linux.org.uk>
- <20110823021717.GA2203@ZenIV.linux.org.uk>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <luto@mit.edu>) id 1QvjGJ-0007VV-VR
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Aug 2011 05:10:55 +0000
+Received: from dmz-mailsec-scanner-5.mit.edu ([18.7.68.34])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1QvjGJ-0007sj-Ao for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Aug 2011 05:10:55 +0000
+Message-ID: <4E533651.8070205@mit.edu>
+Date: Tue, 23 Aug 2011 01:10:41 -0400
+From: Andrew Lutomirski <luto@MIT.EDU>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20110823021717.GA2203@ZenIV.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [uml-devel] SYSCALL, ptrace and syscall restart breakages (Re:
- [RFC] weird crap with vdso on uml/i386)
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, Andrew Lutomirski <luto@mit.edu>, Borislav Petkov <bp@amd64.org>, Ingo Molnar <mingo@kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+References: <20110821063443.GH2203@ZenIV.linux.org.uk>
+	<20110821084230.GI2203@ZenIV.linux.org.uk>
+	<CAObL_7GXyzAzNjBtgye9BwXLyHm337oBTdjRDjbSPqoKZGWyyA@mail.gmail.com>
+	<20110821144352.GJ2203@ZenIV.linux.org.uk>
+	<20110821164124.GL2203@ZenIV.linux.org.uk>
+	<CAObL_7E1vU8+0UQST6Smf9j40TckTzB=QdY0AuAWo4AX6cs2xg@mail.gmail.com>
+	<20110822011645.GM2203@ZenIV.linux.org.uk>
+	<CA+55aFz1jCZGcQ-c6uGN=k8nKDuGoz5g8e+pxpYAg4X_p7=5Mw@mail.gmail.com>
+	<20110822040759.GQ2203@ZenIV.linux.org.uk>
+	<4E51D70A.1060001@zytor.com>
+	<20110822042605.GR2203@ZenIV.linux.org.uk>
+	<4E51E325.2050502@zytor.com>
+In-Reply-To: <4E51E325.2050502@zytor.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] SYSCALL,
+ ptrace and syscall restart breakages (Re: [RFC] weird crap with
+ vdso on uml/i386)
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, mingo@redhat.com, Al Viro <viro@ZenIV.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>
 
-On Tue, Aug 23, 2011 at 03:17:18AM +0100, Al Viro wrote:
-
-> I have a very strong suspicion that I know what will turn out to be involved
-> into that - the page eviction done by sys_brk().  Note that dirtying this
-> sucker is really necessary - without *s = 0 it won't segfault at all.  With
-> it we get a segfault described above.
+On 08/22/2011 01:03 AM, H. Peter Anvin wrote:
+> On 08/21/2011 09:26 PM, Al Viro wrote:
+>> On Sun, Aug 21, 2011 at 09:11:54PM -0700, H. Peter Anvin wrote:
+>>>> lack of point - the *only* CPU where it would matter would be K6-2, IIRC,
+>>>> and (again, IIRC) it had some differences in SYSCALL semantics compared to
+>>>> K7 (which supports SYSENTER as well).  Bugger if I remember what those
+>>>> differences might've been...  Some flag not cleared?
+>>>
+>>> The most likely reason for a binary to execute a stray SYSCALL is
+>>> because they read it out of the vdso.  Totally daft, but we certainly
+>>> see a lot of stupid things as evidenced by the JIT thread earlier this
+>>> month.
+>>
+>> Um...  What, blindly, no matter what surrounds it in there?  What will
+>> happen to the same eager JIT when it steps on SYSENTER?
 > 
-> And page eviction on uml is nasty and convoluted as hell.  It has to do
-> munmap() on process' VM.  Which is done in a rather sick way - we have a
-> stub present in address space of all processes, with a function that
-> does a given series of mmap/munmap/mprotect and traps itself.  Guest
-> kernel puts arguments for that sucker into a shared data page and continues
-> the process into that function.  Once it's done, we get the damn thing
-> stopped again, nice and ready for us to continue dealing with it.
-> 
-> Something in that shitstorm of ptrace() calls ends up doing SETREGS
-> when victim sits on the way out of (host) syscall.  Boom...
+> The JIT will have had to manage SYSENTER already.  It's not a change,
+> whereas SYSCALL would be.  We could just try it, and see if anything
+> breaks, of course.
 
-Almost, but not quite.  What happens is:
-* process hits syscall insn
-* it's stopped and tracer (guest kernel) does GETREGS
-	+ looks at the registers (mapped to the normal layout)
-	+ decides to call sys_brk()
-	+ notices pages to kick out
-	+ queues munmap request for stub
-* tracer does SETREGS, pointing the child's eip to stub and sp to stub stack
-* tracer does CONT, letting the child run
-* child finishes with syscall insn, carefully preserving ebp.  It returns to
-  userland, in the beginning of the stub.
-* child does munmap() and hits int 3 in the end of stub.
-* the damn thing is stopped again.  The tracer had been waiting for it.
-* tracer finishes with sys_brk() and returns success.
-* it does SETREGS, setting eax to return value, eip to original return
-address of syscall insn... and ebp to what it had in regs.bp.  I.e. the
-damn arg6 value.
+Here's a possible solution that works for standalone SYSCALL and vdso
+SYSCALL.  The idea is to preserve the exact same SYSCALL invocation
+sequence.  Logically, the SYSCALL instruction does:
 
-And we are fucked.  It doesn't happen in syscall handler.  It's int3().
-Having no idea that this request to set ebp should be interpreted in
-a really different way - "put the value I asked to put into ecx here,
-please, and ignore this one".
+push %ebp
+mov %ebp,%ecx
+mov 4(%esp),%ebp
+call __fake_int80
 
-Sigh...  The really ugly part is that ebp can be changed by the stuff
-done in stub - it's not just munmap, it can do mmap as well.  We can,
-in principle, save ebp on its stack and restore it before trapping.
-Then uml kernel could, in theory, replace that SETREGS with a bunch of
-POKEUSER, leaving ebp alone.  Ho-hum...  In principle, that might even
-be not too horrible - we need eax/eip/esp, of course, but the rest
-could be dealt with by the same trick - have it pushed/popped in the
-stub and to hell with wasting syscalls on setting them...
+and __fake_int80 is:
+int 0x80
+mov 4(%esp),%ebp
+ret $4
 
-Anyway, bedtime for me.  I'll look into that again in the morning...
+
+The entire system call sequence is then (effectively):
+
+push %ebp
+movl %ecx,%ebp
+
+; "SYSCALL" starts here
+push %ebp
+mov %ebp,%ecx
+mov 4(%esp),%ebp
+call __fake_int80
+; "SYSCALL ends here
+
+movl %ebp,%ecx
+popl %ebp
+ret
+
+So we rearrange ebp and ecx and then immediately rearrange them back.
+The landing point tweaks them again so that we preserve the old
+semantics of SYSCALL.  But now the pt_regs values exactly match what
+would have happened if we entered via the int 0x80 path, so there
+shouldn't be any corner cases with ptrace or restart -- as far as either
+one is concerned, we actually entered via int 0x80.  If we deliver a
+signal, the signal handler returns to the int 0x80 instruction.
+
+Am I missing something?  Extremely buggy, incomplete code that
+implements this is:
+
+
+diff --git a/arch/x86/ia32/ia32entry.S b/arch/x86/ia32/ia32entry.S
+index a0e866d..6cda8ce 100644
+--- a/arch/x86/ia32/ia32entry.S
++++ b/arch/x86/ia32/ia32entry.S
+@@ -291,24 +291,59 @@ ENTRY(ia32_cstar_target)
+ 	ENABLE_INTERRUPTS(CLBR_NONE)
+ 	SAVE_ARGS 8,0,0
+ 	movl 	%eax,%eax	/* zero extension */
+-	movq	%rax,ORIG_RAX-ARGOFFSET(%rsp)
+-	movq	%rcx,RIP-ARGOFFSET(%rsp)
+-	CFI_REL_OFFSET rip,RIP-ARGOFFSET
+-	movq	%rbp,RCX-ARGOFFSET(%rsp) /* this lies slightly to ptrace */
+-	movl	%ebp,%ecx
++
++	/*
++	 * This does (from the user's point of view):
++	 * push %ebp
++	 * mov %ebp, %ecx
++	 * mov 4(%esp), %ebp
++	 * call <function that does int 0x80; mov 4(%esp),%ebp; ret 4>
++	 *
++	 * User address access does not need access_ok check as r8
++	 * has been zero-extended, so even with the offsets it cannot
++	 * exceed 2**32 + 8.
++	 */
++
++	/* XXX: need to check that vdso actually exists. */
++	/* XXX: ia32_badarg may do bad things to the user state. */
++
++	/* move ebp into place on the user stack */
++	1:	movl	%ebp,-4(%r8)
++	.section __ex_table,"a"
++	.quad 1b,ia32_badarg
++	.previous
++
++	/* move eip into place on the user stack */
++	1:	movl	%ecx,-8(%r8)  /* user eip is in ecx */
++	.section __ex_table,"a"
++	.quad 1b,ia32_badarg
++	.previous
++
++	/* move ebp to ecx in CPU registers and argument save area */
++	mov %ebp,%ecx
++	movq %ecx,RCX-ARGOFFSET(%rsp)
++
++	/*
++	 * move arg6 to ebp in CPU registers and argument save area
++	 * minor optimization: the actual value of ebp is irrelevent,
++	 * so stick it straight into r9d -- see the definition of
++	 * IA32_ARG_FIXUP.
++	 */
++1:	movl	(%r8),%r9d
++	.section __ex_table,"a"
++	.quad 1b,ia32_badarg
++	.previous	
++
++	/* Do the fake call */
++	movl [insert address of int 0x80; ret helper + 2 here],RIP-ARGOFFSET(%rsp)
++	subl $8,%r8 /* we pushed twice */
++
+ 	movq	$__USER32_CS,CS-ARGOFFSET(%rsp)
+ 	movq	$__USER32_DS,SS-ARGOFFSET(%rsp)
+ 	movq	%r11,EFLAGS-ARGOFFSET(%rsp)
+ 	/*CFI_REL_OFFSET rflags,EFLAGS-ARGOFFSET*/
+ 	movq	%r8,RSP-ARGOFFSET(%rsp)	
+ 	CFI_REL_OFFSET rsp,RSP-ARGOFFSET
+-	/* no need to do an access_ok check here because r8 has been
+-	   32bit zero extended */ 
+-	/* hardware stack frame is complete now */	
+-1:	movl	(%r8),%r9d
+-	.section __ex_table,"a"
+-	.quad 1b,ia32_badarg
+-	.previous	
+ 	GET_THREAD_INFO(%r10)
+ 	orl   $TS_COMPAT,TI_status(%r10)
+ 	testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%r10)
+diff --git a/arch/x86/vdso/vdso32/syscall.S b/arch/x86/vdso/vdso32/syscall.S
+index 5415b56..a3e48b0 100644
+--- a/arch/x86/vdso/vdso32/syscall.S
++++ b/arch/x86/vdso/vdso32/syscall.S
+@@ -19,8 +19,8 @@ __kernel_vsyscall:
+ .Lpush_ebp:
+ 	movl	%ecx, %ebp
+ 	syscall
+-	movl	$__USER32_DS, %ecx
+-	movl	%ecx, %ss
++	/* The ret in the fake int80 entry lands here */
++	/* ss is already correct AFAICS */
+ 	movl	%ebp, %ecx
+ 	popl	%ebp
+ .Lpop_ebp:
+@@ -28,6 +28,11 @@ __kernel_vsyscall:
+ .LEND_vsyscall:
+ 	.size __kernel_vsyscall,.-.LSTART_vsyscall
+ 
++__kernel_vsyscall_fake_int80:
++	int 0x80
++	mov 4(%esp),%ebp
++	ret $4
++
+ 	.section .eh_frame,"a",@progbits
+ .LSTARTFRAME:
+ 	.long .LENDCIE-.LSTARTCIE
+
+
+This could be further simplified by checking if any work flags are set and bailing immediately to the right place in the int 0x80 entry.
+
+--Andy
+
+------------------------------------------------------------------------------
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
+user administration capabilities and model configuration. Take 
+the hassle out of deploying and managing Subversion and the 
+tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
