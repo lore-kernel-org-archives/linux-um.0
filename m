@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hpa@zytor.com>) id 1QveXD-0007IJ-FS
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1QveWk-0004hq-Md
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 00:08:03 +0000
-Received: from terminus.zytor.com ([198.137.202.10] helo=mail.zytor.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QveXC-0004jS-T6
+	Tue, 23 Aug 2011 00:07:34 +0000
+Received: from zeniv.linux.org.uk ([195.92.253.2])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QveWj-0004Js-Gu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 00:08:03 +0000
-Message-ID: <4E52EF2A.8060608@zytor.com>
-Date: Mon, 22 Aug 2011 17:07:06 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-MIME-Version: 1.0
-References: <4E51D597.3060800@zytor.com> <20110822095336.GB25949@kernel.org>
+	Tue, 23 Aug 2011 00:07:34 +0000
+Date: Tue, 23 Aug 2011 01:07:05 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Message-ID: <20110823000705.GX2203@ZenIV.linux.org.uk>
+References: <20110822095336.GB25949@kernel.org>
 	<CAObL_7F6D8nQovf+aJGiEOF1mBpBU8RwtjNA-5myxvEBRRHgsg@mail.gmail.com>
 	<20110822144051.GD2946@aftab>
 	<20110822151305.GV2203@ZenIV.linux.org.uk>
@@ -24,6 +23,8 @@ References: <4E51D597.3060800@zytor.com> <20110822095336.GB25949@kernel.org>
 	<4E52D280.3010107@zytor.com>
 	<CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
 	<20110823000314.GW2203@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Disposition: inline
 In-Reply-To: <20110823000314.GW2203@ZenIV.linux.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -40,17 +41,17 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] SYSCALL,
  ptrace and syscall restart breakages (Re: [RFC] weird crap with
  vdso on uml/i386)
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@amd64.org>, "mingo@redhat.com" <mingo@redhat.com>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@amd64.org>, "mingo@redhat.com" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>
 
-On 08/22/2011 05:03 PM, Al Viro wrote:
+On Tue, Aug 23, 2011 at 01:03:14AM +0100, Al Viro wrote:
 > On Mon, Aug 22, 2011 at 04:27:51PM -0700, Linus Torvalds wrote:
 > 
->> So I think the "let's fix the vdso case for sysenter" + "let's remove
->> the 32-bit syscall vdso" is the right solution. If somebody has
->> hardcoded syscall instructions, or generates them dynamically with
->> some JIT, that's their problem. We'll continue to support it as well
->> as we ever have (read: "almost nobody will ever notice").
+> > So I think the "let's fix the vdso case for sysenter" + "let's remove
+> > the 32-bit syscall vdso" is the right solution. If somebody has
+> > hardcoded syscall instructions, or generates them dynamically with
+> > some JIT, that's their problem. We'll continue to support it as well
+> > as we ever have (read: "almost nobody will ever notice").
 > 
 > Umm...  Maybe, but I really wonder if it would be better to do this:
 > 	* check if %ecx is the right one for vdso32 entry.  If it isn't,
@@ -63,18 +64,7 @@ On 08/22/2011 05:03 PM, Al Viro wrote:
 > that without restart problems.  And the price is comparison + branch not
 > taken + addition for that path...
 
-Checking for SYSCALL in the vdso is cheap... the only problem is if
-someone thinks that they can copy it out of the vdso and run it, having
-special-cased SYSENTER already, but not SYSCALL.  The recent experience
-shows that that is apparently a very real possibility.
-
-Without a SYSCALL in the vdso, anything that examines the vdso will end
-up using int $0x80 and we don't have an issue.
-
-Again, waiting for Borislav & co to tell us how much the SYSCALL
-instruction actually buys us.
-
-	-hpa
+s/whine/set your "don't restart that one" flag/, even...
 
 ------------------------------------------------------------------------------
 Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
