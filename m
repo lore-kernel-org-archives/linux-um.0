@@ -1,59 +1,82 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Tue, 23 Aug 2011 22:56:16 +0200
-From: Borislav Petkov <bp@amd64.org>
-Message-ID: <20110823205616.GA15295@aftab>
-References: <4E52EF2A.8060608@zytor.com>
- <CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
- <20110823010146.GY2203@ZenIV.linux.org.uk>
- <20110823011312.GZ2203@ZenIV.linux.org.uk>
- <20110823021717.GA2203@ZenIV.linux.org.uk>
- <20110823061531.GC2203@ZenIV.linux.org.uk>
- <CA+55aFzUAuPEwcvVvuXooWMT6XpDuOjEHi-Ab+SOhZVjfbVYpA@mail.gmail.com>
- <CAObL_7F-E2y_cd1MK4ayBx_CqszrewSrBt6V7=ndVuBQrrmTKQ@mail.gmail.com>
- <20110823162251.GC13138@aftab>
- <4E53FC6E.1030807@zytor.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <torvalds@linux-foundation.org>) id 1Qvwtg-0002a7-2d
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Aug 2011 19:44:28 +0000
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qvwtf-0002hp-Gh
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 Aug 2011 19:44:28 +0000
+Received: from mail-wy0-f175.google.com (mail-wy0-f175.google.com
+	[74.125.82.175]) (authenticated bits=0)
+	by smtp1.linux-foundation.org (8.14.2/8.13.5/Debian-3ubuntu1.1) with
+	ESMTP id p7NJhoDi022712
+	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=FAIL)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 23 Aug 2011 12:43:52 -0700
+Received: by wyf19 with SMTP id 19so540008wyf.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 23 Aug 2011 12:43:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4E53FC6E.1030807@zytor.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [uml-devel] SYSCALL, ptrace and syscall restart breakages (Re:
- [RFC] weird crap with vdso on uml/i386)
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Borislav Petkov <bp@amd64.org>, Andrew Lutomirski <luto@mit.edu>, Linus Torvalds <torvalds@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, Ingo Molnar <mingo@kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <20110823194103.GK2203@ZenIV.linux.org.uk>
+References: <4E52EF2A.8060608@zytor.com>
+	<CA+55aFx9zRTD72jaztLvyB68ejHcqM3Z3=b+6W64opfYu3ANjA@mail.gmail.com>
+	<20110823010146.GY2203@ZenIV.linux.org.uk>
+	<20110823011312.GZ2203@ZenIV.linux.org.uk>
+	<20110823021717.GA2203@ZenIV.linux.org.uk>
+	<20110823061531.GC2203@ZenIV.linux.org.uk>
+	<CA+55aFzUAuPEwcvVvuXooWMT6XpDuOjEHi-Ab+SOhZVjfbVYpA@mail.gmail.com>
+	<20110823164849.GF2203@ZenIV.linux.org.uk> <4E53FCF7.7060703@zytor.com>
+	<CA+55aFyQTgXD6WeKJLvfOdsgqon=vhnhZ-h9oVpGF1uwQZkdDQ@mail.gmail.com>
+	<20110823194103.GK2203@ZenIV.linux.org.uk>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 23 Aug 2011 12:43:28 -0700
+Message-ID: <CA+55aFzECeh_xRC=sF7qG_nc3bREqUNXXGmzcLHi4vndFvE6cg@mail.gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] SYSCALL,
+ ptrace and syscall restart breakages (Re: [RFC] weird crap with
+ vdso on uml/i386)
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@amd64.org>, "mingo@redhat.com" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>
 
-On Tue, Aug 23, 2011 at 03:15:58PM -0400, H. Peter Anvin wrote:
-> Right, but if you had said the difference had disappeared on current AMD
-> silicon it would be much less of an issue.  That's why I wanted to find
-> that bit out from you.
+On Tue, Aug 23, 2011 at 12:41 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> And it's not cheap - doing that on each syscall will be unpleasant...
+> Frankly, I'd rather stopped telling the uml userland about vdso in such
+> setups. =A0And anything that plays with SYSCALL outside of vdso... <shrug>
+> we already have a "don't run it native on 32bit", adding "don't run
+> it on 32bit uml on amd64 host" is not too serious. =A0At least for now...
 
-Yeah, I dug this out in the APM, btw.
+I do agree that the solution might well be to just stop using the
+non-int80 vdsos for UML. That may just solve everything in practice.
 
-But no, I don't think the difference has disappeared - to the contrary,
-AFAICT, the intention is for SYSCALL to be the fastest way to do
-syscalls on x86 due to diminished number of segment checks etc. INT80
-is legacy, slower, etc. I believe Andy measured a similar situation on
-Sandy Bridge with SYSCALL having latencies in the tens of nsecs range
-and INT80 being much slower. Ingo also measured a similar situation
-where the latency gap between the two on Intel is even bigger.
+                        Linus
 
-So, the only problem left now is what we're going
-to do with cases similar to what Al conjured up:
-http://marc.info/?l=linux-kernel&m=131412271112461&w=2
+---------------------------------------------------------------------------=
+---
+Get a FREE DOWNLOAD! and learn more about uberSVN rich system, =
 
-I don't know, maybe the most cowardly approach is to issue a warning and
-shrug with the shoulders, or do some asm magic... Also, do we care at
-all, how relevant is a case like that?
+user administration capabilities and model configuration. Take =
 
-Hmmm.
+the hassle out of deploying and managing Subversion and the =
 
--- 
-Regards/Gruss,
-Boris.
+tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-Advanced Micro Devices GmbH
-Einsteinring 24, 85609 Dornach
-GM: Alberto Bozzo
-Reg: Dornach, Landkreis Muenchen
-HRB Nr. 43632 WEEE Registernr: 129 19551
