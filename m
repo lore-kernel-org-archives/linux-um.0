@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hpa@zytor.com>) id 1QwKiW-0007oX-4x
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hpa@zytor.com>) id 1Qw02L-0001TO-Li
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Aug 2011 21:10:32 +0000
+	Tue, 23 Aug 2011 23:05:37 +0000
 Received: from terminus.zytor.com ([198.137.202.10] helo=mail.zytor.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QwKiT-0000wP-T2
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qw02L-0008UV-1v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 24 Aug 2011 21:10:32 +0000
-Message-ID: <4E5568AC.2040605@zytor.com>
-Date: Wed, 24 Aug 2011 14:10:04 -0700
+	Tue, 23 Aug 2011 23:05:37 +0000
+Message-ID: <4E54320D.30009@zytor.com>
+Date: Tue, 23 Aug 2011 16:04:45 -0700
 From: "H. Peter Anvin" <hpa@zytor.com>
 MIME-Version: 1.0
 References: <20110823010146.GY2203@ZenIV.linux.org.uk>
@@ -40,7 +40,7 @@ Subject: Re: [uml-devel] SYSCALL,
  ptrace and syscall restart breakages (Re: [RFC] weird crap with
  vdso on uml/i386)
 To: Borislav Petkov <bp@amd64.org>
-Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, Ingo Molnar <mingo@kernel.org>
+Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
 
 On 08/23/2011 02:10 PM, Borislav Petkov wrote:
 > On Tue, Aug 23, 2011 at 05:06:03PM -0400, H. Peter Anvin wrote:
@@ -60,16 +60,11 @@ On 08/23/2011 02:10 PM, Borislav Petkov wrote:
 > Yeah, I was talking about SYSCALL in general.
 > 
 
-By the way, Borislav;
-
-any way you could nudge your hardware people into
-
-a) supporting SYSENTER in compatibility mode, and
-b) giving us a way to turn SYSCALL *off* in compat mode?
-
-... for future chips?
+Right, but there could be an arbitrary chasm between SYSCALL32 and
+SYSCALL64.
 
 	-hpa
+
 
 ------------------------------------------------------------------------------
 EMC VNX: the world's simplest storage, starting under $10K
