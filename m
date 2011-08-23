@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1QveWk-0004hq-Md
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <viro@ftp.linux.org.uk>) id 1QveT9-0007Am-0m
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 00:07:34 +0000
+	Tue, 23 Aug 2011 00:03:51 +0000
 Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1QveWj-0004Js-Gu
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1QveT7-0004EW-Sj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 23 Aug 2011 00:07:34 +0000
-Date: Tue, 23 Aug 2011 01:07:05 +0100
+	Tue, 23 Aug 2011 00:03:50 +0000
+Date: Tue, 23 Aug 2011 01:03:14 +0100
 From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20110823000705.GX2203@ZenIV.linux.org.uk>
-References: <20110822095336.GB25949@kernel.org>
+Message-ID: <20110823000314.GW2203@ZenIV.linux.org.uk>
+References: <4E51D597.3060800@zytor.com> <20110822095336.GB25949@kernel.org>
 	<CAObL_7F6D8nQovf+aJGiEOF1mBpBU8RwtjNA-5myxvEBRRHgsg@mail.gmail.com>
 	<20110822144051.GD2946@aftab>
 	<20110822151305.GV2203@ZenIV.linux.org.uk>
@@ -22,10 +22,9 @@ References: <20110822095336.GB25949@kernel.org>
 	<CAObL_7GmMXPUE0Oix1CKTYzqheyJV+ua=WEBUQk5m-LGsvqihw@mail.gmail.com>
 	<4E52D280.3010107@zytor.com>
 	<CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
-	<20110823000314.GW2203@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20110823000314.GW2203@ZenIV.linux.org.uk>
+In-Reply-To: <CA+55aFw4C+ShLHF2NYZMQ-Lhjow3mJ62_eqO_iAww2nh7V_-Uw@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -44,27 +43,24 @@ Subject: Re: [uml-devel] SYSCALL,
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Andrew Lutomirski <luto@mit.edu>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@amd64.org>, "mingo@redhat.com" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>
 
-On Tue, Aug 23, 2011 at 01:03:14AM +0100, Al Viro wrote:
-> On Mon, Aug 22, 2011 at 04:27:51PM -0700, Linus Torvalds wrote:
-> 
-> > So I think the "let's fix the vdso case for sysenter" + "let's remove
-> > the 32-bit syscall vdso" is the right solution. If somebody has
-> > hardcoded syscall instructions, or generates them dynamically with
-> > some JIT, that's their problem. We'll continue to support it as well
-> > as we ever have (read: "almost nobody will ever notice").
-> 
-> Umm...  Maybe, but I really wonder if it would be better to do this:
-> 	* check if %ecx is the right one for vdso32 entry.  If it isn't,
-> act as we act now (and possibly warn).  If it is, increment it by 4.
-> 	* slap 0x90, 0x90, 0xcd, 0x80 right after that syscall insn -
-> i.e. nop/nop/int 0x80.  Followed by what we currently do there.
-> 
-> 	Those who do syscall insn in 32bit mode outside of vdso will get
-> what they currently get.  __kernel_vsyscall() will keep working and do
-> that without restart problems.  And the price is comparison + branch not
-> taken + addition for that path...
+On Mon, Aug 22, 2011 at 04:27:51PM -0700, Linus Torvalds wrote:
 
-s/whine/set your "don't restart that one" flag/, even...
+> So I think the "let's fix the vdso case for sysenter" + "let's remove
+> the 32-bit syscall vdso" is the right solution. If somebody has
+> hardcoded syscall instructions, or generates them dynamically with
+> some JIT, that's their problem. We'll continue to support it as well
+> as we ever have (read: "almost nobody will ever notice").
+
+Umm...  Maybe, but I really wonder if it would be better to do this:
+	* check if %ecx is the right one for vdso32 entry.  If it isn't,
+act as we act now (and possibly warn).  If it is, increment it by 4.
+	* slap 0x90, 0x90, 0xcd, 0x80 right after that syscall insn -
+i.e. nop/nop/int 0x80.  Followed by what we currently do there.
+
+	Those who do syscall insn in 32bit mode outside of vdso will get
+what they currently get.  __kernel_vsyscall() will keep working and do
+that without restart problems.  And the price is comparison + branch not
+taken + addition for that path...
 
 ------------------------------------------------------------------------------
 Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
