@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1Qy4TF-0008Qk-Os
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1Qy4K8-0004Ol-IL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Aug 2011 16:13:57 +0000
+	Mon, 29 Aug 2011 16:04:32 +0000
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qy4TE-0008EL-TW
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qy4K4-0001uo-Ob
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Aug 2011 16:13:57 +0000
+	Mon, 29 Aug 2011 16:04:32 +0000
 From: Richard Weinberger <richard@nod.at>
-Date: Mon, 29 Aug 2011 18:13:37 +0200
-Message-Id: <1314634419-24766-8-git-send-email-richard@nod.at>
-In-Reply-To: <1314634419-24766-1-git-send-email-richard@nod.at>
-References: <1314634419-24766-1-git-send-email-richard@nod.at>
+Date: Mon, 29 Aug 2011 18:04:00 +0200
+Message-Id: <1314633842-24515-8-git-send-email-richard@nod.at>
+In-Reply-To: <1314633842-24515-1-git-send-email-richard@nod.at>
+References: <1314633842-24515-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
