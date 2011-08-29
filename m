@@ -1,40 +1,22 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Fri, 22 Jul 2011 00:18:45 +0200
-Message-Id: <1311286725-27137-1-git-send-email-richard@nod.at>
+Date: Mon, 29 Aug 2011 12:35:41 -0500 (CDT)
+From: Christoph Lameter <cl@linux.com>
+In-Reply-To: <1314634419-24766-2-git-send-email-richard@nod.at>
+Message-ID: <alpine.DEB.2.00.1108291235180.16005@router.home>
+References: <1314634419-24766-1-git-send-email-richard@nod.at> <1314634419-24766-2-git-send-email-richard@nod.at>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] uml: drivers/net_user.c memory leak fix
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Vitaliy Ivanov <vitalivanov@gmail.com>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 1/9] um: disable CMPXCHG_DOUBLE as it breaks UML build
+To: Richard Weinberger <richard@nod.at>
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>, Jeff Dike <jdike@addtoit.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Vitaliy Ivanov <vitalivanov@gmail.com>
+On Mon, 29 Aug 2011, Richard Weinberger wrote:
 
-Perform memory cleanup on exit.
-On receiving invalid 'pid' we still should clean 'output' variable.
+> Commit b789ef518b2a7231b0668c813f677cee528a9d3f tests for cmpxchg_double
+> support in the SLUB code and it breaks UML builds with SLUB. Since UML
+> does not support checking for CPU features, disable CMPXCHG_DOUBLE just
+> like CMPXCHG_LOCAL is disabled for UML.
 
-Signed-off-by: Vitaliy Ivanov <vitalivanov@gmail.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/drivers/net_user.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/arch/um/drivers/net_user.c b/arch/um/drivers/net_user.c
-index 9415dd9..5201188 100644
---- a/arch/um/drivers/net_user.c
-+++ b/arch/um/drivers/net_user.c
-@@ -228,7 +228,10 @@ static void change(char *dev, char *what, unsigned char *addr,
- 		       "buffer\n");
- 
- 	pid = change_tramp(argv, output, output_len);
--	if (pid < 0) return;
-+	if (pid < 0) {
-+		kfree(output);
-+		return;
-+	}
- 
- 	if (output != NULL) {
- 		printk("%s", output);
--- 
-1.7.6
-
+Reviewed-by: Christoph Lameter <cl@linux.com>
