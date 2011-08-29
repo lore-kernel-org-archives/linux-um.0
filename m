@@ -1,19 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <viro@ftp.linux.org.uk>) id 1Qu7tD-0001Wf-CE
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1Qy4TF-0004rY-7f
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:04:27 +0000
-Received: from zeniv.linux.org.uk ([195.92.253.2])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Qu7tC-0003pr-Hc
+	Mon, 29 Aug 2011 16:13:57 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Qy4TE-0003co-DP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 18 Aug 2011 19:04:27 +0000
-Date: Thu, 18 Aug 2011 20:04:19 +0100
-MIME-Version: 1.0
-Message-Id: <E1Qu7t5-0007fX-F1@ZenIV.linux.org.uk>
-From: Al Viro <viro@ftp.linux.org.uk>
+	Mon, 29 Aug 2011 16:13:57 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 29 Aug 2011 18:13:36 +0200
+Message-Id: <1314634419-24766-7-git-send-email-richard@nod.at>
+In-Reply-To: <1314634419-24766-1-git-send-email-richard@nod.at>
+References: <1314634419-24766-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,92 +24,124 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Subject: [PATCH 32/91] um: don't bother blocking
- SIGARLM and SIGUSR1
-To: richard@nod.at
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 6/9] um: fix free_winch() mess
+To: akpm@linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@ftp.linux.org.uk>
 
+From: Al Viro <viro@ftp.linux.org.uk>
 
-We used to generate those, but we hadn't done that for a long
-time.  No need to bother blocking them for signal handlers.
+while not doing free_irq() from irq handler is commendable, kfree() on
+the data passed to said handler before free_irq() is Not Good(tm).
+Freeing the stack it's being run on is also not nice...  Solution:
+delay actually freeing stuff.
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/os-Linux/process.c      |   13 ++++++-------
- arch/um/os-Linux/signal.c       |    2 +-
- arch/um/os-Linux/skas/process.c |    2 +-
- 3 files changed, 8 insertions(+), 9 deletions(-)
+ arch/um/drivers/line.c |   38 ++++++++++++++++++++++++--------------
+ 1 files changed, 24 insertions(+), 14 deletions(-)
 
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index 0ced30c..c1a8fa7 100644
---- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -236,20 +236,19 @@ out:
- void init_new_thread_signals(void)
- {
- 	set_handler(SIGSEGV, (__sighandler_t) sig_handler, SA_ONSTACK,
--		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
-+		    SIGIO, SIGWINCH, SIGVTALRM, -1);
- 	set_handler(SIGTRAP, (__sighandler_t) sig_handler, SA_ONSTACK,
--		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
-+		    SIGIO, SIGWINCH, SIGVTALRM, -1);
- 	set_handler(SIGFPE, (__sighandler_t) sig_handler, SA_ONSTACK,
--		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
-+		    SIGIO, SIGWINCH, SIGVTALRM, -1);
- 	set_handler(SIGILL, (__sighandler_t) sig_handler, SA_ONSTACK,
--		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
-+		    SIGIO, SIGWINCH, SIGVTALRM, -1);
- 	set_handler(SIGBUS, (__sighandler_t) sig_handler, SA_ONSTACK,
--		    SIGUSR1, SIGIO, SIGWINCH, SIGVTALRM, -1);
-+		    SIGIO, SIGWINCH, SIGVTALRM, -1);
- 	signal(SIGHUP, SIG_IGN);
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index 91bf1894..364c8a1 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -721,43 +721,53 @@ struct winch {
+ 	int pid;
+ 	struct tty_struct *tty;
+ 	unsigned long stack;
++	struct work_struct work;
+ };
  
- 	set_handler(SIGIO, (__sighandler_t) sig_handler,
--		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH, SIGALRM,
--		    SIGVTALRM, -1);
-+		    SA_ONSTACK | SA_RESTART, SIGIO, SIGWINCH, SIGVTALRM, -1);
- 	signal(SIGWINCH, SIG_IGN);
- 	signal(SIGTERM, SIG_DFL);
- }
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 2dde9f6..75c3e9c 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -112,7 +112,7 @@ void alarm_handler(int sig, struct sigcontext *sc)
- void timer_init(void)
+-static void free_winch(struct winch *winch, int free_irq_ok)
++static void __free_winch(struct work_struct *work)
  {
- 	set_handler(SIGVTALRM, (__sighandler_t) alarm_handler,
--		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGWINCH, -1);
-+		    SA_ONSTACK | SA_RESTART, SIGIO, SIGWINCH, -1);
+-	int fd = winch->fd;
+-	winch->fd = -1;
+-	if (free_irq_ok)
+-		free_irq(WINCH_IRQ, winch);
+-
+-	list_del(&winch->list);
++	struct winch *winch = container_of(work, struct winch, work);
++	free_irq(WINCH_IRQ, winch);
+ 
+ 	if (winch->pid != -1)
+ 		os_kill_process(winch->pid, 1);
+-	if (fd != -1)
+-		os_close_file(fd);
+ 	if (winch->stack != 0)
+ 		free_stack(winch->stack, 0);
+ 	kfree(winch);
  }
  
- void set_sigstack(void *sig_stack, int size)
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 896312d..6f9fc0d 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -643,7 +643,7 @@ int start_idle_thread(void *stack, jmp_buf *switch_buf)
- 	int n;
++static void free_winch(struct winch *winch)
++{
++	int fd = winch->fd;
++	winch->fd = -1;
++	if (fd != -1)
++		os_close_file(fd);
++	list_del(&winch->list);
++	__free_winch(&winch->work);
++}
++
+ static irqreturn_t winch_interrupt(int irq, void *data)
+ {
+ 	struct winch *winch = data;
+ 	struct tty_struct *tty;
+ 	struct line *line;
++	int fd = winch->fd;
+ 	int err;
+ 	char c;
  
- 	set_handler(SIGWINCH, (__sighandler_t) sig_handler,
--		    SA_ONSTACK | SA_RESTART, SIGUSR1, SIGIO, SIGVTALRM, -1);
-+		    SA_ONSTACK | SA_RESTART, SIGIO, SIGVTALRM, -1);
+-	if (winch->fd != -1) {
+-		err = generic_read(winch->fd, &c, NULL);
++	if (fd != -1) {
++		err = generic_read(fd, &c, NULL);
+ 		if (err < 0) {
+ 			if (err != -EAGAIN) {
++				winch->fd = -1;
++				list_del(&winch->list);
++				os_close_file(fd);
+ 				printk(KERN_ERR "winch_interrupt : "
+ 				       "read failed, errno = %d\n", -err);
+ 				printk(KERN_ERR "fd %d is losing SIGWINCH "
+ 				       "support\n", winch->tty_fd);
+-				free_winch(winch, 0);
++				INIT_WORK(&winch->work, __free_winch);
++				schedule_work(&winch->work);
+ 				return IRQ_HANDLED;
+ 			}
+ 			goto out;
+@@ -829,7 +839,7 @@ static void unregister_winch(struct tty_struct *tty)
+ 	list_for_each_safe(ele, next, &winch_handlers) {
+ 		winch = list_entry(ele, struct winch, list);
+ 		if (winch->tty == tty) {
+-			free_winch(winch, 1);
++			free_winch(winch);
+ 			break;
+ 		}
+ 	}
+@@ -845,7 +855,7 @@ static void winch_cleanup(void)
  
- 	/*
- 	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
+ 	list_for_each_safe(ele, next, &winch_handlers) {
+ 		winch = list_entry(ele, struct winch, list);
+-		free_winch(winch, 1);
++		free_winch(winch);
+ 	}
+ 
+ 	spin_unlock(&winch_handler_lock);
 -- 
-1.7.2.5
-
+1.7.6.1
 
 
 ------------------------------------------------------------------------------
-Get a FREE DOWNLOAD! and learn more about uberSVN rich system, 
-user administration capabilities and model configuration. Take 
-the hassle out of deploying and managing Subversion and the 
-tools developers use with it. http://p.sf.net/sfu/wandisco-d2d-2
+EMC VNX: the world's simplest storage, starting under $10K
+The only unified storage solution that offers unified management 
+Up to 160% more powerful than alternatives and 25% more efficient. 
+Guaranteed. http://p.sf.net/sfu/emc-vnx-dev2dev
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
