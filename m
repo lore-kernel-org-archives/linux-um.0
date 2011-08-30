@@ -1,47 +1,58 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <4E5CBC3F.9030006@nod.at>
+Date: Tue, 30 Aug 2011 12:32:31 +0200
 From: Richard Weinberger <richard@nod.at>
-Date: Tue, 30 Aug 2011 13:04:04 +0200
-Message-Id: <1314702244-3948-1-git-send-email-richard@nod.at>
+MIME-Version: 1.0
+References: <1314634419-24766-1-git-send-email-richard@nod.at> <1314634419-24766-9-git-send-email-richard@nod.at> <20110829142705.5be82d7c.akpm@linux-foundation.org> <4E5C06DF.60508@nod.at> <20110829221230.GP2203@ZenIV.linux.org.uk> <4E5C0F9F.5000405@nod.at> <20110829221922.GQ2203@ZenIV.linux.org.uk> <4E5C11D5.4020404@nod.at> <20110830002330.GR2203@ZenIV.linux.org.uk> <20110830024853.GS2203@ZenIV.linux.org.uk>
+In-Reply-To: <20110830024853.GS2203@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: fix strrchr problems
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@ftp.linux.org.uk>, jdike@addtoit.com, Al Viro <viro@zeniv.linux.org.uk>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 8/9] um: fix strrchr problems
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Al Viro <viro@ftp.linux.org.uk>
+Am 30.08.2011 04:48, schrieb Al Viro:
+> On Tue, Aug 30, 2011 at 01:23:31AM +0100, Al Viro wrote:
+>> On Tue, Aug 30, 2011 at 12:25:25AM +0200, Richard Weinberger wrote:
+>>
+>>> I'm building most of the time static.
+>>> Using defconfig and
+>>> CONFIG_STATIC_LINK=y
+>>> it builds fine here (x86_64 and i386)
+>>
+>> 32bit build works, 64bit one breaks with
+>>
+>> /usr/lib/gcc/x86_64-linux-gnu/4.4.5/../../../../lib/libc.a(strrchr.o): In function `rindex':
+>> (.text+0x0): multiple definition of `strrchr'
+>>
+>> on squeeze/amd64 with stock toolchain and libc (2.11.2-10).  .config, if
+>> you care, is as below, but I really suspect that most of that is irrelevant.
+>
+> As the matter of fact, on the same build system defconfig + STATIC_LINK +
+> UML_NET_VDE is enough to reproduce it.
+>
+> Toolchain:
+> 	libc6		2.11.2-10
+> 	vde2		2.2.3-3
+> 	gcc		4.4.5-8
+> 	binutils	2.20.1-16
+>
+> all from stock stable/amd64.  Note that debian has the original of that
+> patch in their user-mode-linux package; see http://bugs.debian.org/494995
+> for history.
 
-[richard@nod.at:
-Fixes:
-/usr/lib/gcc/x86_64-linux-gnu/4.4.5/../../../../lib/libc.a(strrchr.o): In function `rindex':
-(.text+0x0): multiple definition of `strrchr'
+defconfig + STATIC_LINK +  UML_NET_VDE builds fine for me.
 
-If both STATIC_LINK and UML_NET_VDE are set to "y" libc's strstr
-may clash with the kernel implementation.
+Toolchain (openSUSE 11.4):
+glibc: 2.11.3
+vde2: 2.3.1
+gcc: 4.5.3
+binutils: 2.21.1
 
-This workaround comes originally from Jeff Dike:
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=494995#35
-]
+Is my vde too new?
+BTW: Why is only strstr affected, what makes it so special?
 
-CC: jdike@addtoit.com
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index fab8121..c0f712c 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -41,7 +41,7 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(ARCH_DIR)/sys-$(SUBARCH)
- KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ -DSUBARCH=\"$(SUBARCH)\" \
- 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
- 	-Din6addr_loopback=kernel_in6addr_loopback \
--	-Din6addr_any=kernel_in6addr_any
-+	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
- 
- KBUILD_AFLAGS += $(ARCH_INCLUDE)
- 
--- 
-1.7.6.1
-
+Thanks,
+//richard
