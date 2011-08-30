@@ -1,58 +1,29 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4E5CBC3F.9030006@nod.at>
-Date: Tue, 30 Aug 2011 12:32:31 +0200
-From: Richard Weinberger <richard@nod.at>
+Date: Mon, 29 Aug 2011 23:41:34 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20110830034134.GA20366@parts.user-mode-linux.org>
+References: <1314634419-24766-1-git-send-email-richard@nod.at>
+ <1314634419-24766-9-git-send-email-richard@nod.at>
+ <20110829142705.5be82d7c.akpm@linux-foundation.org>
 MIME-Version: 1.0
-References: <1314634419-24766-1-git-send-email-richard@nod.at> <1314634419-24766-9-git-send-email-richard@nod.at> <20110829142705.5be82d7c.akpm@linux-foundation.org> <4E5C06DF.60508@nod.at> <20110829221230.GP2203@ZenIV.linux.org.uk> <4E5C0F9F.5000405@nod.at> <20110829221922.GQ2203@ZenIV.linux.org.uk> <4E5C11D5.4020404@nod.at> <20110830002330.GR2203@ZenIV.linux.org.uk> <20110830024853.GS2203@ZenIV.linux.org.uk>
-In-Reply-To: <20110830024853.GS2203@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20110829142705.5be82d7c.akpm@linux-foundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH 8/9] um: fix strrchr problems
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, jdike@addtoit.com
+Subject: Re: [uml-devel] [PATCH 8/9] um: fix strrchr problems
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@ftp.linux.org.uk>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am 30.08.2011 04:48, schrieb Al Viro:
-> On Tue, Aug 30, 2011 at 01:23:31AM +0100, Al Viro wrote:
->> On Tue, Aug 30, 2011 at 12:25:25AM +0200, Richard Weinberger wrote:
->>
->>> I'm building most of the time static.
->>> Using defconfig and
->>> CONFIG_STATIC_LINK=y
->>> it builds fine here (x86_64 and i386)
->>
->> 32bit build works, 64bit one breaks with
->>
->> /usr/lib/gcc/x86_64-linux-gnu/4.4.5/../../../../lib/libc.a(strrchr.o): In function `rindex':
->> (.text+0x0): multiple definition of `strrchr'
->>
->> on squeeze/amd64 with stock toolchain and libc (2.11.2-10).  .config, if
->> you care, is as below, but I really suspect that most of that is irrelevant.
->
-> As the matter of fact, on the same build system defconfig + STATIC_LINK +
-> UML_NET_VDE is enough to reproduce it.
->
-> Toolchain:
-> 	libc6		2.11.2-10
-> 	vde2		2.2.3-3
-> 	gcc		4.4.5-8
-> 	binutils	2.20.1-16
->
-> all from stock stable/amd64.  Note that debian has the original of that
-> patch in their user-mode-linux package; see http://bugs.debian.org/494995
-> for history.
+On Mon, Aug 29, 2011 at 02:27:05PM -0700, Andrew Morton wrote:
+> ok, I give up.  How does this work?
 
-defconfig + STATIC_LINK +  UML_NET_VDE builds fine for me.
+It fixes symbol clashes between libc and kernel names by redefining
+the kernel name in any file that is built against kernel headers.
 
-Toolchain (openSUSE 11.4):
-glibc: 2.11.3
-vde2: 2.3.1
-gcc: 4.5.3
-binutils: 2.21.1
+This fix is fairly nasty, but simple and it works.  My long-range plan
+was to build all of the kernel objects into a single self-contained
+object with no dangling references and link it into the userspace
+stuff, but I never acquired the ld-fu to pull that off.
 
-Is my vde too new?
-BTW: Why is only strstr affected, what makes it so special?
-
-Thanks,
-//richard
+				Jeff
