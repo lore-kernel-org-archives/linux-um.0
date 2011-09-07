@@ -1,8 +1,9 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-MIME-Version: 1.0
-Date: Mon, 5 Sep 2011 14:04:27 +0800
-Message-ID: <CAOz0Q7UdcfyxvaXRj_0XmDmjZhnex8k2VDtrh+OhUWuDErRLYQ@mail.gmail.com>
-From: Qin Bo <kinboster@gmail.com>
+From: Yong Zhang <yong.zhang0@gmail.com>
+Date: Wed,  7 Sep 2011 16:10:18 +0800
+Message-Id: <1315383059-3673-22-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
+References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -12,147 +13,187 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1319317391790019288=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] when config network helper_wait failed
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, pkg-uml-pkgs@lists.alioth.debian.org
-
---===============1319317391790019288==
-Content-Type: multipart/alternative; boundary=20cf307d05e8cb4bbc04ac2b7b9a
-
---20cf307d05e8cb4bbc04ac2b7b9a
-Content-Type: text/plain; charset=ISO-8859-1
-
-hi all:
-    I download kernel from:
-http://uml.devloop.org.uk/kernels/kernel64-2.6.35.14.bz2,
-    download linux filesystem from:
-http://fs.devloop.org.uk/filesystems/Debian-Squeeze/Debian-Squeeze-AMD64-root_fs.bz2
-.
-    After umcompress I do following steps:
-    1) chmod +x   ./kernel64-2.6.35.14
-    2)./kernel64-2.6.35.14 Debian-Squeeze-AMD64-root_fs umid=debian mem=256m
-eth0=tuntap,,,192.168.0.254
-     In uml:
-    1).use root login without password.
-    2). ifconfig eth0 192.168.0.253 up
-[   18.370000] helper_wait : waitpid process 26858 failed, errno = 10
-[   18.370000] * modprobe tun
-[   18.370000] * ifconfig tap0 192.168.0.254 netmask 255.255.255.255 up
-[   18.370000] * bash -c echo 1 > /proc/sys/net/ipv4/ip_forward
-[   18.370000] helper_wait : waitpid process 26867 failed, errno = 10
-[   18.370000] * route add -host 192.168.0.253 dev tap0
-[   18.370000] * bash -c echo 1 > /proc/sys/net/ipv4/conf/tap0/proxy_arp
-    3)ping -c 3 192.168.0.254
-PING 192.168.0.254 (192.168.0.254) 56(84) bytes of data.
-Warning: time of day goes back (-17544us), taking countermeasures.
-64 bytes from 192.168.0.254: icmp_req=1 ttl=64 time=0.259 ms
-64 bytes from 192.168.0.254: icmp_req=2 ttl=64 time=0.313 ms
-64 bytes from 192.168.0.254: icmp_req=3 ttl=64 time=0.403 ms
-
-   At uml step 2 have two failed: "helper_wait : waitpid process 26858
-failed, errno = 10", but the network is reachable.
- When I run: ps axu|grep uml
-uml-net   1352  0.0  0.0   3864   452 ?        S    08:51   0:00
-/usr/bin/uml_switch -unix /var/run/uml-utilities/uml_switch.ctl
-root     23417  0.0  0.0      0     0 pts/3    Z+   13:31   0:00 [uml_net]
-<defunct>
-root     23422  0.0  0.0      0     0 pts/3    Z+   13:31   0:00 [uml_net]
-<defunct>
-   have two zombie process here. When I run:
-   linux Debian-Squeeze-AMD64-root_fs umid=debian mem=256m
-eth0=tuntap,,,192.168.0.254
-   have the same problem.Any idea ?
-   I use debian 6.0 squeeze , uml-utilities version Version: 20070815-1.1
-
--- 
-Best Regards,
-Qin Bo
-
---20cf307d05e8cb4bbc04ac2b7b9a
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<div>hi all:</div><div>=A0 =A0 I download kernel from: <a href=3D"http://um=
-l.devloop.org.uk/kernels/kernel64-2.6.35.14.bz2" target=3D"_blank">http://u=
-ml.devloop.org.uk/kernels/kernel64-2.6.35.14.bz2</a>,</div><div>=A0 =A0 dow=
-nload linux filesystem from: <a href=3D"http://fs.devloop.org.uk/filesystem=
-s/Debian-Squeeze/Debian-Squeeze-AMD64-root_fs.bz2" target=3D"_blank">http:/=
-/fs.devloop.org.uk/filesystems/Debian-Squeeze/Debian-Squeeze-AMD64-root_fs.=
-bz2</a>.</div>
-
-<div>=A0 =A0 After umcompress I do following steps:</div><div>=A0 =A0 1) ch=
-mod +x =A0 ./kernel64-2.6.35.14</div><div>=A0 =A0 2)./kernel64-2.6.35.14 De=
-bian-Squeeze-AMD64-root_fs umid=3Ddebian mem=3D256m eth0=3Dtuntap,,,192.168=
-.0.254</div><div>
-=A0 =A0 =A0In uml:</div><div>=A0 =A0 1).use root login without password.</d=
-iv><div>=A0 =A0 2). ifconfig eth0 192.168.0.253 up =A0=A0</div><div>[ =A0 1=
-8.370000] helper_wait : waitpid process 26858 failed, errno =3D 10</div><di=
-v>[ =A0 18.370000] * modprobe tun</div>
-
-<div>[ =A0 18.370000] * ifconfig tap0 192.168.0.254 netmask 255.255.255.255=
- up</div><div>[ =A0 18.370000] * bash -c echo 1 &gt; /proc/sys/net/ipv4/ip_=
-forward</div><div>[ =A0 18.370000] helper_wait : waitpid process 26867 fail=
-ed, errno =3D 10</div>
-
-<div>[ =A0 18.370000] * route add -host 192.168.0.253 dev tap0</div><div>[ =
-=A0 18.370000] * bash -c echo 1 &gt; /proc/sys/net/ipv4/conf/tap0/proxy_arp=
-</div><div>=A0 =A0 3)ping -c 3 192.168.0.254</div><div>PING 192.168.0.254 (=
-192.168.0.254) 56(84) bytes of data.</div>
-
-<div>Warning: time of day goes back (-17544us), taking countermeasures.</di=
-v><div>64 bytes from <a href=3D"http://192.168.0.254" target=3D"_blank">192=
-.168.0.254</a>: icmp_req=3D1 ttl=3D64 time=3D0.259 ms</div><div>64 bytes fr=
-om <a href=3D"http://192.168.0.254" target=3D"_blank">192.168.0.254</a>: ic=
-mp_req=3D2 ttl=3D64 time=3D0.313 ms</div>
-
-<div>64 bytes from <a href=3D"http://192.168.0.254" target=3D"_blank">192.1=
-68.0.254</a>: icmp_req=3D3 ttl=3D64 time=3D0.403 ms</div><div><br></div><di=
-v>=A0 =A0At uml step 2 have two failed: &quot;helper_wait : waitpid process=
- 26858 failed, errno =3D 10&quot;, but the network is reachable.</div>
-
-<div>=A0When I run: ps axu|grep uml</div><div>uml-net =A0 1352 =A00.0 =A00.=
-0 =A0 3864 =A0 452 ? =A0 =A0 =A0 =A0S =A0 =A008:51 =A0 0:00 /usr/bin/uml_sw=
-itch -unix /var/run/uml-utilities/uml_switch.ctl</div><div>root =A0 =A0 234=
-17 =A00.0 =A00.0 =A0 =A0 =A00 =A0 =A0 0 pts/3 =A0 =A0Z+ =A0 13:31 =A0 0:00 =
-[uml_net] &lt;defunct&gt;</div>
-
-<div>root =A0 =A0 23422 =A00.0 =A00.0 =A0 =A0 =A00 =A0 =A0 0 pts/3 =A0 =A0Z=
-+ =A0 13:31 =A0 0:00 [uml_net] &lt;defunct&gt;</div><div>=A0 =A0have two zo=
-mbie process here. When I run:=A0</div><div>=A0 =A0linux Debian-Squeeze-AMD=
-64-root_fs umid=3Ddebian mem=3D256m eth0=3Dtuntap,,,192.168.0.254</div>
-
-<div>=A0 =A0have the same problem.Any idea ?</div><div>=A0 =A0I use debian =
-6.0 squeeze , uml-utilities version Version: 20070815-1.1</div><div><br></d=
-iv>-- <br><font color=3D"#888888">Best Regards,<br>
-Qin Bo<br></font><br>
-
---20cf307d05e8cb4bbc04ac2b7b9a--
-
-
---===============1319317391790019288==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 21/62] um: irq: Remove IRQF_DISABLED
+To: linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, user-mode-linux-user@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, "David S. Miller" <davem@davemloft.net>, Yong Zhang <yong.zhang0@gmail.com>, Will Newton <will.newton@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, Tejun Heo <tj@kernel.org>, WANG Cong <xiyou.wangcong@gmail.com>, tglx@linutronix.de, Jens Axboe <jaxboe@fusionio.com>, mingo@elte.hu, Al Viro <viro@zeniv.linux.org.uk>
+
+This flag is a NOOP and can be removed now.
+
+Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+---
+ arch/um/drivers/line.c          |    8 ++++----
+ arch/um/drivers/mconsole_kern.c |    2 +-
+ arch/um/drivers/net_kern.c      |    2 +-
+ arch/um/drivers/port_kern.c     |    4 ++--
+ arch/um/drivers/random.c        |    2 +-
+ arch/um/drivers/ubd_kern.c      |    2 +-
+ arch/um/drivers/xterm_kern.c    |    2 +-
+ arch/um/kernel/sigio.c          |    2 +-
+ arch/um/kernel/time.c           |    2 +-
+ 9 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index d51c404..6198719 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -347,8 +347,8 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
+ 	int err;
+ 
+ 	/*
+-	 * Interrupts are disabled here because we registered the interrupt with
+-	 * IRQF_DISABLED (see line_setup_irq).
++	 * Interrupts are disabled here because genirq keep irqs disabled when
++	 * calling the action handler.
+ 	 */
+ 
+ 	spin_lock(&line->lock);
+@@ -371,7 +371,7 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
+ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
+ {
+ 	const struct line_driver *driver = line->driver;
+-	int err = 0, flags = IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM;
++	int err = 0, flags = IRQF_SHARED | IRQF_SAMPLE_RANDOM;
+ 
+ 	if (input)
+ 		err = um_request_irq(driver->read_irq, fd, IRQ_READ,
+@@ -796,7 +796,7 @@ void register_winch_irq(int fd, int tty_fd, int pid, struct tty_struct *tty,
+ 				   .stack	= stack });
+ 
+ 	if (um_request_irq(WINCH_IRQ, fd, IRQ_READ, winch_interrupt,
+-			   IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			   IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			   "winch", winch) < 0) {
+ 		printk(KERN_ERR "register_winch_irq - failed to register "
+ 		       "IRQ\n");
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index c70e047..e672bd6 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -773,7 +773,7 @@ static int __init mconsole_init(void)
+ 	register_reboot_notifier(&reboot_notifier);
+ 
+ 	err = um_request_irq(MCONSOLE_IRQ, sock, IRQ_READ, mconsole_interrupt,
+-			     IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			     IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			     "mconsole", (void *)sock);
+ 	if (err) {
+ 		printk(KERN_ERR "Failed to get IRQ for management console\n");
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index 22745b4..7681df7 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -161,7 +161,7 @@ static int uml_net_open(struct net_device *dev)
+ 	}
+ 
+ 	err = um_request_irq(dev->irq, lp->fd, IRQ_READ, uml_net_interrupt,
+-			     IRQF_DISABLED | IRQF_SHARED, dev->name, dev);
++			     IRQF_SHARED, dev->name, dev);
+ 	if (err != 0) {
+ 		printk(KERN_ERR "uml_net_open: failed to get irq(%d)\n", err);
+ 		err = -ENETUNREACH;
+diff --git a/arch/um/drivers/port_kern.c b/arch/um/drivers/port_kern.c
+index a11573b..e31680e 100644
+--- a/arch/um/drivers/port_kern.c
++++ b/arch/um/drivers/port_kern.c
+@@ -100,7 +100,7 @@ static int port_accept(struct port_list *port)
+ 		  .port 	= port });
+ 
+ 	if (um_request_irq(TELNETD_IRQ, socket[0], IRQ_READ, pipe_interrupt,
+-			  IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			  IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			  "telnetd", conn)) {
+ 		printk(KERN_ERR "port_accept : failed to get IRQ for "
+ 		       "telnetd\n");
+@@ -184,7 +184,7 @@ void *port_data(int port_num)
+ 	}
+ 
+ 	if (um_request_irq(ACCEPT_IRQ, fd, IRQ_READ, port_interrupt,
+-			  IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			  IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			  "port", port)) {
+ 		printk(KERN_ERR "Failed to get IRQ for port %d\n", port_num);
+ 		goto out_close;
+diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
+index 981085a..b25296e 100644
+--- a/arch/um/drivers/random.c
++++ b/arch/um/drivers/random.c
+@@ -131,7 +131,7 @@ static int __init rng_init (void)
+ 	random_fd = err;
+ 
+ 	err = um_request_irq(RANDOM_IRQ, random_fd, IRQ_READ, random_interrupt,
+-			     IRQF_DISABLED | IRQF_SAMPLE_RANDOM, "random",
++			     IRQF_SAMPLE_RANDOM, "random",
+ 			     NULL);
+ 	if (err)
+ 		goto err_out_cleanup_hw;
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 620f5b7..c9dae89 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1088,7 +1088,7 @@ static int __init ubd_driver_init(void){
+ 		return 0;
+ 	}
+ 	err = um_request_irq(UBD_IRQ, thread_fd, IRQ_READ, ubd_intr,
+-			     IRQF_DISABLED, "ubd", ubd_devs);
++			     0, "ubd", ubd_devs);
+ 	if(err != 0)
+ 		printk(KERN_ERR "um_request_irq failed - errno = %d\n", -err);
+ 	return 0;
+diff --git a/arch/um/drivers/xterm_kern.c b/arch/um/drivers/xterm_kern.c
+index b646bcc..8bd130f 100644
+--- a/arch/um/drivers/xterm_kern.c
++++ b/arch/um/drivers/xterm_kern.c
+@@ -50,7 +50,7 @@ int xterm_fd(int socket, int *pid_out)
+ 	init_completion(&data->ready);
+ 
+ 	err = um_request_irq(XTERM_IRQ, socket, IRQ_READ, xterm_interrupt,
+-			     IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			     IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			     "xterm", data);
+ 	if (err) {
+ 		printk(KERN_ERR "xterm_fd : failed to get IRQ for xterm, "
+diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
+index 2b272b6..2a16392 100644
+--- a/arch/um/kernel/sigio.c
++++ b/arch/um/kernel/sigio.c
+@@ -25,7 +25,7 @@ int write_sigio_irq(int fd)
+ 	int err;
+ 
+ 	err = um_request_irq(SIGIO_WRITE_IRQ, fd, IRQ_READ, sigio_interrupt,
+-			     IRQF_DISABLED|IRQF_SAMPLE_RANDOM, "write sigio",
++			     IRQF_SAMPLE_RANDOM, "write sigio",
+ 			     NULL);
+ 	if (err) {
+ 		printk(KERN_ERR "write_sigio_irq : um_request_irq failed, "
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index a08d9fa..9149b5f 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -84,7 +84,7 @@ static void __init setup_itimer(void)
+ {
+ 	int err;
+ 
+-	err = request_irq(TIMER_IRQ, um_timer, IRQF_DISABLED, "timer", NULL);
++	err = request_irq(TIMER_IRQ, um_timer, 0, "timer", NULL);
+ 	if (err != 0)
+ 		printk(KERN_ERR "register_timer : request_irq failed - "
+ 		       "errno = %d\n", -err);
+-- 
+1.7.4.1
+
 
 ------------------------------------------------------------------------------
-Special Offer -- Download ArcSight Logger for FREE!
-Finally, a world-class log management solution at an even better 
-price-free! And you'll get a free "Love Thy Logs" t-shirt when you
-download Logger. Secure your free ArcSight Logger TODAY!
-http://p.sf.net/sfu/arcsisghtdev2dev
---===============1319317391790019288==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Using storage to extend the benefits of virtualization and iSCSI
+Virtualization increases hardware utilization and delivers a new level of
+agility. Learn what those decisions are and how to modernize your storage 
+and backup environments for virtualization.
+http://www.accelacomm.com/jaw/sfnl/114/51434361/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============1319317391790019288==--
-
 
