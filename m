@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1R2LRw-0007EQ-1j
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <oscar@hellstrom.st>) id 1R20NE-0001u6-7u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Sep 2011 11:10:16 +0000
-Received: from mail-qy0-f175.google.com ([209.85.216.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1R2LRv-0004di-29
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Sep 2011 11:10:15 +0000
-Received: by qyk10 with SMTP id 10so687934qyk.13
+	Fri, 09 Sep 2011 12:40:00 +0000
+Received: from mail.hellstrom.st ([65.110.43.110])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1R20N9-0004xJ-5b for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 09 Sep 2011 12:40:00 +0000
+Received: from secure.hellstrom.st (mail.hellstrom.st [65.110.43.110])
+	by mail.hellstrom.st (Postfix) with ESMTP id BE91E1CC055
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 10 Sep 2011 04:10:09 -0700 (PDT)
+	Fri,  9 Sep 2011 13:13:03 +0100 (BST)
 MIME-Version: 1.0
-In-Reply-To: <f3c8fff4b732b2681fb1ea20a80d5b8a@hellstrom.st>
-References: <f3c8fff4b732b2681fb1ea20a80d5b8a@hellstrom.st>
-Date: Sat, 10 Sep 2011 13:10:09 +0200
-Message-ID: <CAFLxGvw=qnpxdfzV0_mzDw7HJTDLfpnVStFXHSKzTRqLh_Q6vw@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Date: Fri, 09 Sep 2011 13:13:03 +0100
+From: =?UTF-8?Q?Oscar_Hellstr=C3=B6m?= <oscar@hellstrom.st>
+Message-ID: <f3c8fff4b732b2681fb1ea20a80d5b8a@hellstrom.st>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,38 +26,60 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Errors in schedule / _switch_to
-To: =?ISO-8859-1?Q?Oscar_Hellstr=F6m?= <oscar@hellstrom.st>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] =?utf-8?q?Errors_in_schedule_/_=5Fswitch=5Fto?=
+To: user-mode-linux-devel@lists.sourceforge.net
 
-2011/9/9 Oscar Hellstr=F6m <oscar@hellstrom.st>:
->
-> Any pointer to what this can be and where I can start looking would be
-> appreciated!
->
-
-Does with also happen with a vanilla kernel?
-Do you have a full trace? The value of EIP would be helpful.
-
--- =
-
-Thanks,
-//richard
-
----------------------------------------------------------------------------=
----
-Malware Security Report: Protecting Your Business, Customers, and the =
-
-Bottom Line. Protect your business and customers by understanding the =
-
-threat from malware and how it can impact your online business. =
-
-http://www.accelacomm.com/jaw/sfnl/114/51427462/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+SGksCgpJJ20gcnVubmluZyBhbiBvbGRlciB2ZXJzaW9uIG9mIHRoZSBrZXJuZWwsIDIuNi4zMi4z
+IGFuZCBJJ20gZXhwZXJpZW5jaW5nCnNlZ21lbnRhdGlvbnMgZmF1bHRzIGluIF9zd2l0Y2hfdG8s
+IHdoaWNoIGlzIGNhbGxlZCBmcm9tIHNjaGVkdWxlLiBNeQpzdGFja3RyYWNlIGxvb2tzIGxpa2U6
+CjMgPHNpZ25hbCBoYW5kbGVyIGNhbGxlZD4KIzE0IF9zd2l0Y2hfdG8gKHByZXY9MHg0M2ZmMTM0
+MCwgbmV4dD0weGZmZmZmZmQ0LCBsYXN0PTB4NDNmZjEzNDApIGF0CmFyY2gvdW0va2VybmVsL3By
+b2Nlc3MuYzo4MgojMTUgMHgwODIwNWNkOSBpbiBzY2hlZHVsZSAoKSBhdCBrZXJuZWwvc2NoZWQu
+YzoyODg2CiMxNiAweDA4MjA1ZGRhIGluIGlvX3NjaGVkdWxlICgpIGF0IGtlcm5lbC9zY2hlZC5j
+OjY3ODQKIzE3IDB4MDgwOWFmNzIgaW4gc3luY19wYWdlICh3b3JkPTB4OTZiYTE4MCkgYXQgbW0v
+ZmlsZW1hcC5jOjE4NwojMTggMHgwODIwNWZkZSBpbiBfX3dhaXRfb25fYml0X2xvY2sgKHdxPTB4
+OTgwYjdkOCwgcT0weDQzZmQ1Y2U0LAphY3Rpb249MHg4MDlhZjM3IDxzeW5jX3BhZ2U+LCBtb2Rl
+PTIpIGF0IGtlcm5lbC93YWl0LmM6MjI5CiMxOSAweDA4MDlhZjIxIGluIF9fbG9ja19wYWdlIChw
+YWdlPTB4OTZiYTE4MCkgYXQgbW0vZmlsZW1hcC5jOjYwMQojMjAgMHgwODA5YWZiZCBpbiBmaW5k
+X2xvY2tfcGFnZSAobWFwcGluZz0weDQ3NjA4NjY4LCBvZmZzZXQ9MjU5NikgYXQKaW5jbHVkZS9s
+aW51eC9wYWdlbWFwLmg6MzE3CiMyMSAweDA4MDljODg4IGluIGZpbGVtYXBfZmF1bHQgKHZtYT0w
+eDQzZDcwNzY0LCB2bWY9MHg0M2ZkNWQ4YykgYXQKbW0vZmlsZW1hcC5jOjE1MzgKIzIyIDB4MDgw
+YTg4YWQgaW4gX19kb19mYXVsdCAobW09MHg0Nzg4NTVlMCwgdm1hPTB4NDNkNzA3NjQsCmFkZHJl
+c3M9MjQzNzQxMjk4MCwgcG1kPTB4NDcyYzA5MTQsIHBnb2ZmPTI1OTYsIGZsYWdzPTAsIApvcmln
+X3B0ZT17cHRlID0gMH0pIGF0IG1tL21lbW9yeS5jOjI3MTkKIzIzIDB4MDgwYTlmZWMgaW4gaGFu
+ZGxlX21tX2ZhdWx0IChtbT0weDQ3ODg1NWUwLCB2bWE9MHg0M2Q3MDc2NCwKYWRkcmVzcz0yNDM3
+NDEyOTgwLCBmbGFncz0wKSBhdCBtbS9tZW1vcnkuYzoyOTE3CiMyNCAweDA4MDVjNWYxIGluIGhh
+bmRsZV9wYWdlX2ZhdWx0IChhZGRyZXNzPTI0Mzc0MTI5ODAsIGlwPTEwNzY0MTAwNDUsCmlzX3dy
+aXRlPTAsIGlzX3VzZXI9MSwgY29kZV9vdXQ9MHg0M2ZkNWU0MCkKYXQgYXJjaC91bS9rZXJuZWwv
+dHJhcC5jOjcxCiMyNSAweDA4MDVjNzI5IGluIHNlZ3YgKGZpPXtlcnJvcl9jb2RlID0gNCwgY3Iy
+ID0gMjQzNzQxMjk4MCwgdHJhcF9ubyA9CjE0fSwgaXA9MTA3NjQxMDA0NSwgaXNfdXNlcj0xLCBy
+ZWdzPTB4NDNmZjE1NTApCmF0IGFyY2gvdW0va2VybmVsL3RyYXAuYzoxNzgKIzI2IDB4MDgwNWM5
+MWUgaW4gc2Vndl9oYW5kbGVyIChzaWc9MTEsIHJlZ3M9MHg0M2ZmMTU1MCkgYXQKYXJjaC91bS9r
+ZXJuZWwvdHJhcC5jOjE1MAojMjcgMHgwODA2YzAwYSBpbiB1c2Vyc3BhY2UgKHJlZ3M9MHg0M2Zm
+MTU1MCkgYXQKYXJjaC91bS9vcy1MaW51eC9za2FzL3Byb2Nlc3MuYzo0MjEKIzI4IDB4MDgwNWFh
+NzUgaW4gZm9ya19oYW5kbGVyICgpIGF0IGFyY2gvdW0va2VybmVsL3Byb2Nlc3MuYzoxNzkKIzI5
+IDB4MDAwMDAwMDAgaW4gPz8gKCkKCkkndmUgY29tcGlsZWQgaW4gYSBkcml2ZXIgaW50byB0aGUg
+a2VybmVsIHdoaWNoIGZha2VzIGludGVycnVwdHMgYnkgc2VuZGluZwpzaWduYWxzIHRvIHRoZSBV
+TUwgcHJvY2Vzcy4gSSBndWVzcyB0aGlzIGNvdWxkIGludGVyZmVyZSB3aXRoIHNvbWV0aGluZywK
+YnV0IEkgZG8gYmVsaWV2ZSBJJ3ZlIHNlZW4gdGhpcyB3aXRob3V0IHRoZSBzaWduYWxzIGJlaW5n
+IGVuYWJsZWQuClVuZm9ydHVuYXRlbHkgSSBkb24ndCBoYXZlIGFueSBlYXN5IHdheSB0byByZXBy
+b2R1Y2UgdGhpcywgaXQgdXN1YWxseQpoYXBwZW5zIHNlZW1pbmdseSBhdCByYW5kb20uCgpBbnkg
+cG9pbnRlciB0byB3aGF0IHRoaXMgY2FuIGJlIGFuZCB3aGVyZSBJIGNhbiBzdGFydCBsb29raW5n
+IHdvdWxkIGJlCmFwcHJlY2lhdGVkIQoKVGhhbmtzCi9Pc2NhcgotLSAKT3NjYXIgSGVsbHN0csO2
+bSwgb3NjYXJAaGVsbHN0cm9tLnN0CndlYjogaHR0cDovL29zY2FyLmhlbGxzdHJvbS5zdAp4bXBw
+OiBvc2NhckBoZWxsc3Ryb20uc3QKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpXaHkgQ2xvdWQtQmFz
+ZWQgU2VjdXJpdHkgYW5kIEFyY2hpdmluZyBNYWtlIFNlbnNlCk9zdGVybWFuIFJlc2VhcmNoIGNv
+bmR1Y3RlZCB0aGlzIHN0dWR5IHRoYXQgb3V0bGluZXMgaG93IGFuZCB3aHkgY2xvdWQKY29tcHV0
+aW5nIHNlY3VyaXR5IGFuZCBhcmNoaXZpbmcgaXMgcmFwaWRseSBiZWluZyBhZG9wdGVkIGFjcm9z
+cyB0aGUgSVQgCnNwYWNlIGZvciBpdHMgZWFzZSBvZiBpbXBsZW1lbnRhdGlvbiwgbG93ZXIgY29z
+dCwgYW5kIGluY3JlYXNlZCAKcmVsaWFiaWxpdHkuIExlYXJuIG1vcmUuIGh0dHA6Ly93d3cuYWNj
+ZWxhY29tbS5jb20vamF3L3NmbmwvMTE0LzUxNDI1MzAxLwpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBs
+aXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVs
+Cg==
 
