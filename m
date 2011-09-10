@@ -1,21 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <oscar@hellstrom.st>) id 1R342S-00043P-5Y
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1R2LRw-0007EQ-1j
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Sep 2011 10:46:56 +0000
-Received: from mail.hellstrom.st ([65.110.43.110])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1R342Q-0004DN-BW for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 12 Sep 2011 10:46:56 +0000
+	Sat, 10 Sep 2011 11:10:16 +0000
+Received: from mail-qy0-f175.google.com ([209.85.216.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1R2LRv-0004di-29
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Sep 2011 11:10:15 +0000
+Received: by qyk10 with SMTP id 10so687934qyk.13
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 10 Sep 2011 04:10:09 -0700 (PDT)
 MIME-Version: 1.0
-Date: Mon, 12 Sep 2011 11:46:43 +0100
-From: =?UTF-8?Q?Oscar_Hellstr=C3=B6m?= <oscar@hellstrom.st>
-In-Reply-To: <CAFLxGvw=qnpxdfzV0_mzDw7HJTDLfpnVStFXHSKzTRqLh_Q6vw@mail.gmail.com>
+In-Reply-To: <f3c8fff4b732b2681fb1ea20a80d5b8a@hellstrom.st>
 References: <f3c8fff4b732b2681fb1ea20a80d5b8a@hellstrom.st>
-	<CAFLxGvw=qnpxdfzV0_mzDw7HJTDLfpnVStFXHSKzTRqLh_Q6vw@mail.gmail.com>
-Message-ID: <258510291d9384e74d6156cafc59dc0c@hellstrom.st>
+Date: Sat, 10 Sep 2011 13:10:09 +0200
+Message-ID: <CAFLxGvw=qnpxdfzV0_mzDw7HJTDLfpnVStFXHSKzTRqLh_Q6vw@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,103 +28,38 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] =?utf-8?q?Errors_in_schedule_/_=5Fswitch=5Fto?=
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Subject: Re: [uml-devel] Errors in schedule / _switch_to
+To: =?ISO-8859-1?Q?Oscar_Hellstr=F6m?= <oscar@hellstrom.st>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-SGksCgpJIGRvbid0IHRoaW5rIEkgY2FuIHJlcHJvZHVjZSB0aGlzIG9uIGEgdmFuaWxsYSBrZXJu
-ZWwsIGJ1dCBJIGNhbid0IHJ1biBteQphcHBsaWNhdGlvbiB3aXRob3V0IG15IGRyaXZlciAoYW5k
-IHNvbWUgb3RoZXIgY2hhbmdlcykuCgpidCBmdWxsIGdpdmVzIG1lOgouLi4uCiMxMyA8c2lnbmFs
-IGhhbmRsZXIgY2FsbGVkPgpObyBzeW1ib2wgdGFibGUgaW5mbyBhdmFpbGFibGUuCiMxNCBfc3dp
-dGNoX3RvIChwcmV2PTB4NDNmZjEzNDAsIG5leHQ9MHhmZmZmZmZkNCwgbGFzdD0weDQzZmYxMzQw
-KSBhdAphcmNoL3VtL2tlcm5lbC9wcm9jZXNzLmM6ODIKZnJvbSA9IChzdHJ1Y3QgdGFza19zdHJ1
-Y3QgKikgMHg0M2ZmMTM0MAp0byA9IChzdHJ1Y3QgdGFza19zdHJ1Y3QgKikgMHhmZmZmZmZkNAoj
-MTUgMHgwODIwNWNkOSBpbiBzY2hlZHVsZSAoKSBhdCBrZXJuZWwvc2NoZWQuYzoyODg2CnByZXYg
-PSAoc3RydWN0IHRhc2tfc3RydWN0ICopIDB4NDNmZjEzNDAKbmV4dCA9IChzdHJ1Y3QgdGFza19z
-dHJ1Y3QgKikgMHhmZmZmZmZkNApzd2l0Y2hfY291bnQgPSAobG9uZyB1bnNpZ25lZCBpbnQgKikg
-MHg0M2ZmMTRjOAojMTYgMHgwODIwNWRkYSBpbiBpb19zY2hlZHVsZSAoKSBhdCBrZXJuZWwvc2No
-ZWQuYzo2Nzg0Ck5vIGxvY2Fscy4KIzE3IDB4MDgwOWFmNzIgaW4gc3luY19wYWdlICh3b3JkPTB4
-OTZiYTE4MCkgYXQgbW0vZmlsZW1hcC5jOjE4NwptYXBwaW5nID0gKHN0cnVjdCBhZGRyZXNzX3Nw
-YWNlICopIDB4MAojMTggMHgwODIwNWZkZSBpbiBfX3dhaXRfb25fYml0X2xvY2sgKHdxPTB4OTgw
-YjdkOCwgcT0weDQzZmQ1Y2U0LAphY3Rpb249MHg4MDlhZjM3IDxzeW5jX3BhZ2U+LCBtb2RlPTIp
-IGF0IGtlcm5lbC93YWl0LmM6MjI5CnJldCA9IDE1ODA0ODY0MAojMTkgMHgwODA5YWYyMSBpbiBf
-X2xvY2tfcGFnZSAocGFnZT0weDk2YmExODApIGF0IG1tL2ZpbGVtYXAuYzo2MDEKd2FpdCA9IHtr
-ZXkgPSB7ZmxhZ3MgPSAweDk2YmExODAsIGJpdF9uciA9IDB9LCB3YWl0ID0ge2ZsYWdzID0gMSwg
-cHJpdmF0ZSA9CjB4NDNmZjEzNDAsIApmdW5jID0gMHg4MDg2ZWY5IDx3YWtlX2JpdF9mdW5jdGlv
-bj4sIHRhc2tfbGlzdCA9IHtuZXh0ID0gMHg5ODBiN2Q4LCBwcmV2ID0KMHg5ODBiN2Q4fX19CiMy
-MCAweDA4MDlhZmJkIGluIGZpbmRfbG9ja19wYWdlIChtYXBwaW5nPTB4NDc2MDg2NjgsIG9mZnNl
-dD0yNTk2KSBhdAppbmNsdWRlL2xpbnV4L3BhZ2VtYXAuaDozMTcKcGFnZSA9IChzdHJ1Y3QgcGFn
-ZSAqKSAweDk2YmExODAKIzIxIDB4MDgwOWM4ODggaW4gZmlsZW1hcF9mYXVsdCAodm1hPTB4NDNk
-NzA3NjQsIHZtZj0weDQzZmQ1ZDhjKSBhdAptbS9maWxlbWFwLmM6MTUzOAplcnJvciA9IDAKZmls
-ZSA9IChzdHJ1Y3QgZmlsZSAqKSAweDQ3M2I4YmEwCm1hcHBpbmcgPSAoc3RydWN0IGFkZHJlc3Nf
-c3BhY2UgKikgMHg0NzYwODY2OApyYSA9IChzdHJ1Y3QgZmlsZV9yYV9zdGF0ZSAqKSAweDQ3M2I4
-YmUwCmlub2RlID0gKHN0cnVjdCBpbm9kZSAqKSAweDQ3NjA4NWNjCm9mZnNldCA9IDI1OTYKcGFn
-ZSA9IChzdHJ1Y3QgcGFnZSAqKSAweDAKcmV0ID0gNAojMjIgMHgwODBhODhhZCBpbiBfX2RvX2Zh
-dWx0IChtbT0weDQ3ODg1NWUwLCB2bWE9MHg0M2Q3MDc2NCwKYWRkcmVzcz0yNDM3NDEyOTgwLCBw
-bWQ9MHg0NzJjMDkxNCwgcGdvZmY9MjU5NiwgZmxhZ3M9MCwgCm9yaWdfcHRlPXtwdGUgPSAwfSkg
-YXQgbW0vbWVtb3J5LmM6MjcxOQpwYWdlID0gPHZhbHVlIG9wdGltaXplZCBvdXQ+CmFub24gPSA8
-dmFsdWUgb3B0aW1pemVkIG91dD4KZGlydHlfcGFnZSA9IDx2YWx1ZSBvcHRpbWl6ZWQgb3V0Pgp2
-bWYgPSB7ZmxhZ3MgPSAwLCBwZ29mZiA9IDI1OTYsIHZpcnR1YWxfYWRkcmVzcyA9IDB4OTE0N2Yw
-MDAsIHBhZ2UgPSAweDB9CnJldCA9IDExNQpwYWdlX21rd3JpdGUgPSA8dmFsdWUgb3B0aW1pemVk
-IG91dD4KIzIzIDB4MDgwYTlmZWMgaW4gaGFuZGxlX21tX2ZhdWx0IChtbT0weDQ3ODg1NWUwLCB2
-bWE9MHg0M2Q3MDc2NCwKYWRkcmVzcz0yNDM3NDEyOTgwLCBmbGFncz0wKSBhdCBtbS9tZW1vcnku
-YzoyOTE3CnBnZCA9IChwZ2RfdCAqKSAweDQ3MmMwOTE0CnB0ZSA9IChwdGVfdCAqKSAweDQwNDU1
-MWZjCiMyNCAweDA4MDVjNWYxIGluIGhhbmRsZV9wYWdlX2ZhdWx0IChhZGRyZXNzPTI0Mzc0MTI5
-ODAsIGlwPTEwNzY0MTAwNDUsCmlzX3dyaXRlPTAsIGlzX3VzZXI9MSwgY29kZV9vdXQ9MHg0M2Zk
-NWU0MCkKYXQgYXJjaC91bS9rZXJuZWwvdHJhcC5jOjcxCmZhdWx0ID0gMAptbSA9IChzdHJ1Y3Qg
-bW1fc3RydWN0ICopIDB4NDc4ODU1ZTAKdm1hID0gKHN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqKSAw
-eDQzZDcwNzY0CmVyciA9IDx2YWx1ZSBvcHRpbWl6ZWQgb3V0PgojMjUgMHgwODA1YzcyOSBpbiBz
-ZWd2IChmaT17ZXJyb3JfY29kZSA9IDQsIGNyMiA9IDI0Mzc0MTI5ODAsIHRyYXBfbm8gPQoxNH0s
-IGlwPTEwNzY0MTAwNDUsIGlzX3VzZXI9MSwgcmVncz0weDQzZmYxNTUwKQphdCBhcmNoL3VtL2tl
-cm5lbC90cmFwLmM6MTc4CnNpID0ge3NpX3NpZ25vID0gMCwgc2lfZXJybm8gPSAwLCBzaV9jb2Rl
-ID0gMTk2NjEwLCBfc2lmaWVsZHMgPSB7X3BhZCA9IHswCjxyZXBlYXRzIDI3IHRpbWVzPiwgMTQs
-IDE2MTU3fSwgX2tpbGwgPSB7Cl9waWQgPSAwLCBfdWlkID0gMH0sIF90aW1lciA9IHtfdGlkID0g
-MCwgX292ZXJydW4gPSAwLCBfcGFkID0gMHg0M2ZkNWU0YwoiIiwgX3NpZ3ZhbCA9IHtzaXZhbF9p
-bnQgPSAwLCAKc2l2YWxfcHRyID0gMHgwfSwgX3N5c19wcml2YXRlID0gMH0sIF9ydCA9IHtfcGlk
-ID0gMCwgX3VpZCA9IDAsIF9zaWd2YWwgPQp7c2l2YWxfaW50ID0gMCwgc2l2YWxfcHRyID0gMHgw
-fX0sIApfc2lnY2hsZCA9IHtfcGlkID0gMCwgX3VpZCA9IDAsIF9zdGF0dXMgPSAwLCBfdXRpbWUg
-PSAwLCBfc3RpbWUgPSAwfSwKX3NpZ2ZhdWx0ID0ge19hZGRyID0gMHgwLCBfYWRkcl9sc2IgPSAw
-fSwgCl9zaWdwb2xsID0ge19iYW5kID0gMCwgX2ZkID0gMH19fQpjYXRjaGVyID0gPHZhbHVlIG9w
-dGltaXplZCBvdXQ+CmVyciA9IDx2YWx1ZSBvcHRpbWl6ZWQgb3V0PgphZGRyZXNzID0gPHZhbHVl
-IG9wdGltaXplZCBvdXQ+CiMyNiAweDA4MDVjOTFlIGluIHNlZ3ZfaGFuZGxlciAoc2lnPTExLCBy
-ZWdzPTB4NDNmZjE1NTApIGF0CmFyY2gvdW0va2VybmVsL3RyYXAuYzoxNTAKZmkgPSA8dmFsdWUg
-b3B0aW1pemVkIG91dD4KIzI3IDB4MDgwNmMwMGEgaW4gdXNlcnNwYWNlIChyZWdzPTB4NDNmZjE1
-NTApIGF0CmFyY2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNzLmM6NDIxCnNpZyA9IDx2YWx1ZSBv
-cHRpbWl6ZWQgb3V0Pgp0aW1lciA9IHtpdF9pbnRlcnZhbCA9IHt0dl9zZWMgPSAwLCB0dl91c2Vj
-ID0gMH0sIGl0X3ZhbHVlID0ge3R2X3NlYyA9IDAsCnR2X3VzZWMgPSAxNjAwMX19Cm5zZWNzID0g
-MTMxNTU2OTM5OTcxMTU1OTAwMAplcnIgPSA8dmFsdWUgb3B0aW1pemVkIG91dD4Kc3RhdHVzID0g
-Mjk0MwpvcCA9IDx2YWx1ZSBvcHRpbWl6ZWQgb3V0PgpwaWQgPSAxNjE1Nwpsb2NhbF91c2luZ19z
-eXNlbXUgPSAyCiMyOCAweDA4MDVhYTc1IGluIGZvcmtfaGFuZGxlciAoKSBhdCBhcmNoL3VtL2tl
-cm5lbC9wcm9jZXNzLmM6MTc5Ck5vIGxvY2Fscy4KIzI5IDB4MDAwMDAwMDAgaW4gPz8gKCkKTm8g
-c3ltYm9sIHRhYmxlIGluZm8gYXZhaWxhYmxlLgoKClN0YWNrIGxldmVsIDE0LCBmcmFtZSBhdCAw
-eDQzZmQ1Yzc0OgplaXAgPSAweDgwNWE5MDAgaW4gX3N3aXRjaF90byAoYXJjaC91bS9rZXJuZWwv
-cHJvY2Vzcy5jOjgyKTsgc2F2ZWQgZWlwCjB4ODIwNWNkOQpjYWxsZWQgYnkgZnJhbWUgYXQgMHg0
-M2ZkNWNhNCwgY2FsbGVyIG9mIGZyYW1lIGF0IDB4NDNmZDVjNjAKc291cmNlIGxhbmd1YWdlIGMu
-CkFyZ2xpc3QgYXQgMHg0M2ZkNWM2YywgYXJnczogcHJldj0weDQzZmYxMzQwLCBuZXh0PTB4ZmZm
-ZmZmZDQsCmxhc3Q9MHg0M2ZmMTM0MApMb2NhbHMgYXQgMHg0M2ZkNWM2YywgUHJldmlvdXMgZnJh
-bWUncyBzcCBpcyAweDQzZmQ1Yzc0ClNhdmVkIHJlZ2lzdGVyczoKZWJ4IGF0IDB4NDNmZDVjNjQs
-IGVicCBhdCAweDQzZmQ1YzZjLCBlc2kgYXQgMHg0M2ZkNWM2OCwgZWlwIGF0IDB4NDNmZDVjNzAK
-ClRoYW5rcwovT3NjYXIgCgpPbiBTYXQsIDEwIFNlcCAyMDExIDEzOjEwOjA5ICswMjAwLCByaWNo
-YXJkIC1ydy0gd2VpbmJlcmdlcgo8cmljaGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbT4gd3JvdGU6
-Cj4gMjAxMS85LzkgT3NjYXIgSGVsbHN0csO2bSA8b3NjYXJAaGVsbHN0cm9tLnN0PjoKPj4KPj4g
-QW55IHBvaW50ZXIgdG8gd2hhdCB0aGlzIGNhbiBiZSBhbmQgd2hlcmUgSSBjYW4gc3RhcnQgbG9v
-a2luZyB3b3VsZCBiZQo+PiBhcHByZWNpYXRlZCEKPj4KPiAKPiBEb2VzIHdpdGggYWxzbyBoYXBw
-ZW4gd2l0aCBhIHZhbmlsbGEga2VybmVsPwo+IERvIHlvdSBoYXZlIGEgZnVsbCB0cmFjZT8gVGhl
-IHZhbHVlIG9mIEVJUCB3b3VsZCBiZSBoZWxwZnVsLgoKLS0gCk9zY2FyIEhlbGxzdHLDtm0sIG9z
-Y2FyQGhlbGxzdHJvbS5zdAp3ZWI6IGh0dHA6Ly9vc2Nhci5oZWxsc3Ryb20uc3QKeG1wcDogb3Nj
-YXJAaGVsbHN0cm9tLnN0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRG9pbmcgTW9yZSB3aXRoIExl
-c3M6IFRoZSBOZXh0IEdlbmVyYXRpb24gVmlydHVhbCBEZXNrdG9wIApXaGF0IGFyZSB0aGUga2V5
-IG9ic3RhY2xlcyB0aGF0IGhhdmUgcHJldmVudGVkIG1hbnkgbWlkLW1hcmtldCBidXNpbmVzc2Vz
-CmZyb20gZGVwbG95aW5nIHZpcnR1YWwgZGVza3RvcHM/ICAgSG93IGRvIG5leHQtZ2VuZXJhdGlv
-biB2aXJ0dWFsIGRlc2t0b3BzCnByb3ZpZGUgY29tcGFuaWVzIGFuIGVhc2llci10by1kZXBsb3ks
-IGVhc2llci10by1tYW5hZ2UgYW5kIG1vcmUgYWZmb3JkYWJsZQp2aXJ0dWFsIGRlc2t0b3AgbW9k
-ZWwuaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZubC8xMTQvNTE0MjY0NzQvCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51
-eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2Vy
-LW1vZGUtbGludXgtZGV2ZWwK
+2011/9/9 Oscar Hellstr=F6m <oscar@hellstrom.st>:
+>
+> Any pointer to what this can be and where I can start looking would be
+> appreciated!
+>
+
+Does with also happen with a vanilla kernel?
+Do you have a full trace? The value of EIP would be helpful.
+
+-- =
+
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
+---
+Malware Security Report: Protecting Your Business, Customers, and the =
+
+Bottom Line. Protect your business and customers by understanding the =
+
+threat from malware and how it can impact your online business. =
+
+http://www.accelacomm.com/jaw/sfnl/114/51427462/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
