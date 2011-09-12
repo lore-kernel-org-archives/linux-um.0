@@ -1,9 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Yong Zhang <yong.zhang0@gmail.com>
-Date: Wed,  7 Sep 2011 16:10:18 +0800
-Message-Id: <1315383059-3673-22-git-send-email-yong.zhang0@gmail.com>
-In-Reply-To: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
-References: <1315383059-3673-1-git-send-email-yong.zhang0@gmail.com>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <oscar@hellstrom.st>) id 1R342S-00043P-5Y
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 12 Sep 2011 10:46:56 +0000
+Received: from mail.hellstrom.st ([65.110.43.110])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1R342Q-0004DN-BW for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 12 Sep 2011 10:46:56 +0000
+MIME-Version: 1.0
+Date: Mon, 12 Sep 2011 11:46:43 +0100
+From: =?UTF-8?Q?Oscar_Hellstr=C3=B6m?= <oscar@hellstrom.st>
+In-Reply-To: <CAFLxGvw=qnpxdfzV0_mzDw7HJTDLfpnVStFXHSKzTRqLh_Q6vw@mail.gmail.com>
+References: <f3c8fff4b732b2681fb1ea20a80d5b8a@hellstrom.st>
+	<CAFLxGvw=qnpxdfzV0_mzDw7HJTDLfpnVStFXHSKzTRqLh_Q6vw@mail.gmail.com>
+Message-ID: <258510291d9384e74d6156cafc59dc0c@hellstrom.st>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -13,187 +25,103 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 21/62] um: irq: Remove IRQF_DISABLED
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, user-mode-linux-user@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, "David S. Miller" <davem@davemloft.net>, Yong Zhang <yong.zhang0@gmail.com>, Will Newton <will.newton@gmail.com>, user-mode-linux-devel@lists.sourceforge.net, Tejun Heo <tj@kernel.org>, WANG Cong <xiyou.wangcong@gmail.com>, tglx@linutronix.de, Jens Axboe <jaxboe@fusionio.com>, mingo@elte.hu, Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [uml-devel] =?utf-8?q?Errors_in_schedule_/_=5Fswitch=5Fto?=
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This flag is a NOOP and can be removed now.
-
-Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
----
- arch/um/drivers/line.c          |    8 ++++----
- arch/um/drivers/mconsole_kern.c |    2 +-
- arch/um/drivers/net_kern.c      |    2 +-
- arch/um/drivers/port_kern.c     |    4 ++--
- arch/um/drivers/random.c        |    2 +-
- arch/um/drivers/ubd_kern.c      |    2 +-
- arch/um/drivers/xterm_kern.c    |    2 +-
- arch/um/kernel/sigio.c          |    2 +-
- arch/um/kernel/time.c           |    2 +-
- 9 files changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index d51c404..6198719 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -347,8 +347,8 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
- 	int err;
- 
- 	/*
--	 * Interrupts are disabled here because we registered the interrupt with
--	 * IRQF_DISABLED (see line_setup_irq).
-+	 * Interrupts are disabled here because genirq keep irqs disabled when
-+	 * calling the action handler.
- 	 */
- 
- 	spin_lock(&line->lock);
-@@ -371,7 +371,7 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
- int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
- {
- 	const struct line_driver *driver = line->driver;
--	int err = 0, flags = IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM;
-+	int err = 0, flags = IRQF_SHARED | IRQF_SAMPLE_RANDOM;
- 
- 	if (input)
- 		err = um_request_irq(driver->read_irq, fd, IRQ_READ,
-@@ -796,7 +796,7 @@ void register_winch_irq(int fd, int tty_fd, int pid, struct tty_struct *tty,
- 				   .stack	= stack });
- 
- 	if (um_request_irq(WINCH_IRQ, fd, IRQ_READ, winch_interrupt,
--			   IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
-+			   IRQF_SHARED | IRQF_SAMPLE_RANDOM,
- 			   "winch", winch) < 0) {
- 		printk(KERN_ERR "register_winch_irq - failed to register "
- 		       "IRQ\n");
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index c70e047..e672bd6 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -773,7 +773,7 @@ static int __init mconsole_init(void)
- 	register_reboot_notifier(&reboot_notifier);
- 
- 	err = um_request_irq(MCONSOLE_IRQ, sock, IRQ_READ, mconsole_interrupt,
--			     IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
-+			     IRQF_SHARED | IRQF_SAMPLE_RANDOM,
- 			     "mconsole", (void *)sock);
- 	if (err) {
- 		printk(KERN_ERR "Failed to get IRQ for management console\n");
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 22745b4..7681df7 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -161,7 +161,7 @@ static int uml_net_open(struct net_device *dev)
- 	}
- 
- 	err = um_request_irq(dev->irq, lp->fd, IRQ_READ, uml_net_interrupt,
--			     IRQF_DISABLED | IRQF_SHARED, dev->name, dev);
-+			     IRQF_SHARED, dev->name, dev);
- 	if (err != 0) {
- 		printk(KERN_ERR "uml_net_open: failed to get irq(%d)\n", err);
- 		err = -ENETUNREACH;
-diff --git a/arch/um/drivers/port_kern.c b/arch/um/drivers/port_kern.c
-index a11573b..e31680e 100644
---- a/arch/um/drivers/port_kern.c
-+++ b/arch/um/drivers/port_kern.c
-@@ -100,7 +100,7 @@ static int port_accept(struct port_list *port)
- 		  .port 	= port });
- 
- 	if (um_request_irq(TELNETD_IRQ, socket[0], IRQ_READ, pipe_interrupt,
--			  IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
-+			  IRQF_SHARED | IRQF_SAMPLE_RANDOM,
- 			  "telnetd", conn)) {
- 		printk(KERN_ERR "port_accept : failed to get IRQ for "
- 		       "telnetd\n");
-@@ -184,7 +184,7 @@ void *port_data(int port_num)
- 	}
- 
- 	if (um_request_irq(ACCEPT_IRQ, fd, IRQ_READ, port_interrupt,
--			  IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
-+			  IRQF_SHARED | IRQF_SAMPLE_RANDOM,
- 			  "port", port)) {
- 		printk(KERN_ERR "Failed to get IRQ for port %d\n", port_num);
- 		goto out_close;
-diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
-index 981085a..b25296e 100644
---- a/arch/um/drivers/random.c
-+++ b/arch/um/drivers/random.c
-@@ -131,7 +131,7 @@ static int __init rng_init (void)
- 	random_fd = err;
- 
- 	err = um_request_irq(RANDOM_IRQ, random_fd, IRQ_READ, random_interrupt,
--			     IRQF_DISABLED | IRQF_SAMPLE_RANDOM, "random",
-+			     IRQF_SAMPLE_RANDOM, "random",
- 			     NULL);
- 	if (err)
- 		goto err_out_cleanup_hw;
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 620f5b7..c9dae89 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1088,7 +1088,7 @@ static int __init ubd_driver_init(void){
- 		return 0;
- 	}
- 	err = um_request_irq(UBD_IRQ, thread_fd, IRQ_READ, ubd_intr,
--			     IRQF_DISABLED, "ubd", ubd_devs);
-+			     0, "ubd", ubd_devs);
- 	if(err != 0)
- 		printk(KERN_ERR "um_request_irq failed - errno = %d\n", -err);
- 	return 0;
-diff --git a/arch/um/drivers/xterm_kern.c b/arch/um/drivers/xterm_kern.c
-index b646bcc..8bd130f 100644
---- a/arch/um/drivers/xterm_kern.c
-+++ b/arch/um/drivers/xterm_kern.c
-@@ -50,7 +50,7 @@ int xterm_fd(int socket, int *pid_out)
- 	init_completion(&data->ready);
- 
- 	err = um_request_irq(XTERM_IRQ, socket, IRQ_READ, xterm_interrupt,
--			     IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
-+			     IRQF_SHARED | IRQF_SAMPLE_RANDOM,
- 			     "xterm", data);
- 	if (err) {
- 		printk(KERN_ERR "xterm_fd : failed to get IRQ for xterm, "
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index 2b272b6..2a16392 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -25,7 +25,7 @@ int write_sigio_irq(int fd)
- 	int err;
- 
- 	err = um_request_irq(SIGIO_WRITE_IRQ, fd, IRQ_READ, sigio_interrupt,
--			     IRQF_DISABLED|IRQF_SAMPLE_RANDOM, "write sigio",
-+			     IRQF_SAMPLE_RANDOM, "write sigio",
- 			     NULL);
- 	if (err) {
- 		printk(KERN_ERR "write_sigio_irq : um_request_irq failed, "
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index a08d9fa..9149b5f 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -84,7 +84,7 @@ static void __init setup_itimer(void)
- {
- 	int err;
- 
--	err = request_irq(TIMER_IRQ, um_timer, IRQF_DISABLED, "timer", NULL);
-+	err = request_irq(TIMER_IRQ, um_timer, 0, "timer", NULL);
- 	if (err != 0)
- 		printk(KERN_ERR "register_timer : request_irq failed - "
- 		       "errno = %d\n", -err);
--- 
-1.7.4.1
-
-
-------------------------------------------------------------------------------
-Using storage to extend the benefits of virtualization and iSCSI
-Virtualization increases hardware utilization and delivers a new level of
-agility. Learn what those decisions are and how to modernize your storage 
-and backup environments for virtualization.
-http://www.accelacomm.com/jaw/sfnl/114/51434361/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+SGksCgpJIGRvbid0IHRoaW5rIEkgY2FuIHJlcHJvZHVjZSB0aGlzIG9uIGEgdmFuaWxsYSBrZXJu
+ZWwsIGJ1dCBJIGNhbid0IHJ1biBteQphcHBsaWNhdGlvbiB3aXRob3V0IG15IGRyaXZlciAoYW5k
+IHNvbWUgb3RoZXIgY2hhbmdlcykuCgpidCBmdWxsIGdpdmVzIG1lOgouLi4uCiMxMyA8c2lnbmFs
+IGhhbmRsZXIgY2FsbGVkPgpObyBzeW1ib2wgdGFibGUgaW5mbyBhdmFpbGFibGUuCiMxNCBfc3dp
+dGNoX3RvIChwcmV2PTB4NDNmZjEzNDAsIG5leHQ9MHhmZmZmZmZkNCwgbGFzdD0weDQzZmYxMzQw
+KSBhdAphcmNoL3VtL2tlcm5lbC9wcm9jZXNzLmM6ODIKZnJvbSA9IChzdHJ1Y3QgdGFza19zdHJ1
+Y3QgKikgMHg0M2ZmMTM0MAp0byA9IChzdHJ1Y3QgdGFza19zdHJ1Y3QgKikgMHhmZmZmZmZkNAoj
+MTUgMHgwODIwNWNkOSBpbiBzY2hlZHVsZSAoKSBhdCBrZXJuZWwvc2NoZWQuYzoyODg2CnByZXYg
+PSAoc3RydWN0IHRhc2tfc3RydWN0ICopIDB4NDNmZjEzNDAKbmV4dCA9IChzdHJ1Y3QgdGFza19z
+dHJ1Y3QgKikgMHhmZmZmZmZkNApzd2l0Y2hfY291bnQgPSAobG9uZyB1bnNpZ25lZCBpbnQgKikg
+MHg0M2ZmMTRjOAojMTYgMHgwODIwNWRkYSBpbiBpb19zY2hlZHVsZSAoKSBhdCBrZXJuZWwvc2No
+ZWQuYzo2Nzg0Ck5vIGxvY2Fscy4KIzE3IDB4MDgwOWFmNzIgaW4gc3luY19wYWdlICh3b3JkPTB4
+OTZiYTE4MCkgYXQgbW0vZmlsZW1hcC5jOjE4NwptYXBwaW5nID0gKHN0cnVjdCBhZGRyZXNzX3Nw
+YWNlICopIDB4MAojMTggMHgwODIwNWZkZSBpbiBfX3dhaXRfb25fYml0X2xvY2sgKHdxPTB4OTgw
+YjdkOCwgcT0weDQzZmQ1Y2U0LAphY3Rpb249MHg4MDlhZjM3IDxzeW5jX3BhZ2U+LCBtb2RlPTIp
+IGF0IGtlcm5lbC93YWl0LmM6MjI5CnJldCA9IDE1ODA0ODY0MAojMTkgMHgwODA5YWYyMSBpbiBf
+X2xvY2tfcGFnZSAocGFnZT0weDk2YmExODApIGF0IG1tL2ZpbGVtYXAuYzo2MDEKd2FpdCA9IHtr
+ZXkgPSB7ZmxhZ3MgPSAweDk2YmExODAsIGJpdF9uciA9IDB9LCB3YWl0ID0ge2ZsYWdzID0gMSwg
+cHJpdmF0ZSA9CjB4NDNmZjEzNDAsIApmdW5jID0gMHg4MDg2ZWY5IDx3YWtlX2JpdF9mdW5jdGlv
+bj4sIHRhc2tfbGlzdCA9IHtuZXh0ID0gMHg5ODBiN2Q4LCBwcmV2ID0KMHg5ODBiN2Q4fX19CiMy
+MCAweDA4MDlhZmJkIGluIGZpbmRfbG9ja19wYWdlIChtYXBwaW5nPTB4NDc2MDg2NjgsIG9mZnNl
+dD0yNTk2KSBhdAppbmNsdWRlL2xpbnV4L3BhZ2VtYXAuaDozMTcKcGFnZSA9IChzdHJ1Y3QgcGFn
+ZSAqKSAweDk2YmExODAKIzIxIDB4MDgwOWM4ODggaW4gZmlsZW1hcF9mYXVsdCAodm1hPTB4NDNk
+NzA3NjQsIHZtZj0weDQzZmQ1ZDhjKSBhdAptbS9maWxlbWFwLmM6MTUzOAplcnJvciA9IDAKZmls
+ZSA9IChzdHJ1Y3QgZmlsZSAqKSAweDQ3M2I4YmEwCm1hcHBpbmcgPSAoc3RydWN0IGFkZHJlc3Nf
+c3BhY2UgKikgMHg0NzYwODY2OApyYSA9IChzdHJ1Y3QgZmlsZV9yYV9zdGF0ZSAqKSAweDQ3M2I4
+YmUwCmlub2RlID0gKHN0cnVjdCBpbm9kZSAqKSAweDQ3NjA4NWNjCm9mZnNldCA9IDI1OTYKcGFn
+ZSA9IChzdHJ1Y3QgcGFnZSAqKSAweDAKcmV0ID0gNAojMjIgMHgwODBhODhhZCBpbiBfX2RvX2Zh
+dWx0IChtbT0weDQ3ODg1NWUwLCB2bWE9MHg0M2Q3MDc2NCwKYWRkcmVzcz0yNDM3NDEyOTgwLCBw
+bWQ9MHg0NzJjMDkxNCwgcGdvZmY9MjU5NiwgZmxhZ3M9MCwgCm9yaWdfcHRlPXtwdGUgPSAwfSkg
+YXQgbW0vbWVtb3J5LmM6MjcxOQpwYWdlID0gPHZhbHVlIG9wdGltaXplZCBvdXQ+CmFub24gPSA8
+dmFsdWUgb3B0aW1pemVkIG91dD4KZGlydHlfcGFnZSA9IDx2YWx1ZSBvcHRpbWl6ZWQgb3V0Pgp2
+bWYgPSB7ZmxhZ3MgPSAwLCBwZ29mZiA9IDI1OTYsIHZpcnR1YWxfYWRkcmVzcyA9IDB4OTE0N2Yw
+MDAsIHBhZ2UgPSAweDB9CnJldCA9IDExNQpwYWdlX21rd3JpdGUgPSA8dmFsdWUgb3B0aW1pemVk
+IG91dD4KIzIzIDB4MDgwYTlmZWMgaW4gaGFuZGxlX21tX2ZhdWx0IChtbT0weDQ3ODg1NWUwLCB2
+bWE9MHg0M2Q3MDc2NCwKYWRkcmVzcz0yNDM3NDEyOTgwLCBmbGFncz0wKSBhdCBtbS9tZW1vcnku
+YzoyOTE3CnBnZCA9IChwZ2RfdCAqKSAweDQ3MmMwOTE0CnB0ZSA9IChwdGVfdCAqKSAweDQwNDU1
+MWZjCiMyNCAweDA4MDVjNWYxIGluIGhhbmRsZV9wYWdlX2ZhdWx0IChhZGRyZXNzPTI0Mzc0MTI5
+ODAsIGlwPTEwNzY0MTAwNDUsCmlzX3dyaXRlPTAsIGlzX3VzZXI9MSwgY29kZV9vdXQ9MHg0M2Zk
+NWU0MCkKYXQgYXJjaC91bS9rZXJuZWwvdHJhcC5jOjcxCmZhdWx0ID0gMAptbSA9IChzdHJ1Y3Qg
+bW1fc3RydWN0ICopIDB4NDc4ODU1ZTAKdm1hID0gKHN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqKSAw
+eDQzZDcwNzY0CmVyciA9IDx2YWx1ZSBvcHRpbWl6ZWQgb3V0PgojMjUgMHgwODA1YzcyOSBpbiBz
+ZWd2IChmaT17ZXJyb3JfY29kZSA9IDQsIGNyMiA9IDI0Mzc0MTI5ODAsIHRyYXBfbm8gPQoxNH0s
+IGlwPTEwNzY0MTAwNDUsIGlzX3VzZXI9MSwgcmVncz0weDQzZmYxNTUwKQphdCBhcmNoL3VtL2tl
+cm5lbC90cmFwLmM6MTc4CnNpID0ge3NpX3NpZ25vID0gMCwgc2lfZXJybm8gPSAwLCBzaV9jb2Rl
+ID0gMTk2NjEwLCBfc2lmaWVsZHMgPSB7X3BhZCA9IHswCjxyZXBlYXRzIDI3IHRpbWVzPiwgMTQs
+IDE2MTU3fSwgX2tpbGwgPSB7Cl9waWQgPSAwLCBfdWlkID0gMH0sIF90aW1lciA9IHtfdGlkID0g
+MCwgX292ZXJydW4gPSAwLCBfcGFkID0gMHg0M2ZkNWU0YwoiIiwgX3NpZ3ZhbCA9IHtzaXZhbF9p
+bnQgPSAwLCAKc2l2YWxfcHRyID0gMHgwfSwgX3N5c19wcml2YXRlID0gMH0sIF9ydCA9IHtfcGlk
+ID0gMCwgX3VpZCA9IDAsIF9zaWd2YWwgPQp7c2l2YWxfaW50ID0gMCwgc2l2YWxfcHRyID0gMHgw
+fX0sIApfc2lnY2hsZCA9IHtfcGlkID0gMCwgX3VpZCA9IDAsIF9zdGF0dXMgPSAwLCBfdXRpbWUg
+PSAwLCBfc3RpbWUgPSAwfSwKX3NpZ2ZhdWx0ID0ge19hZGRyID0gMHgwLCBfYWRkcl9sc2IgPSAw
+fSwgCl9zaWdwb2xsID0ge19iYW5kID0gMCwgX2ZkID0gMH19fQpjYXRjaGVyID0gPHZhbHVlIG9w
+dGltaXplZCBvdXQ+CmVyciA9IDx2YWx1ZSBvcHRpbWl6ZWQgb3V0PgphZGRyZXNzID0gPHZhbHVl
+IG9wdGltaXplZCBvdXQ+CiMyNiAweDA4MDVjOTFlIGluIHNlZ3ZfaGFuZGxlciAoc2lnPTExLCBy
+ZWdzPTB4NDNmZjE1NTApIGF0CmFyY2gvdW0va2VybmVsL3RyYXAuYzoxNTAKZmkgPSA8dmFsdWUg
+b3B0aW1pemVkIG91dD4KIzI3IDB4MDgwNmMwMGEgaW4gdXNlcnNwYWNlIChyZWdzPTB4NDNmZjE1
+NTApIGF0CmFyY2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNzLmM6NDIxCnNpZyA9IDx2YWx1ZSBv
+cHRpbWl6ZWQgb3V0Pgp0aW1lciA9IHtpdF9pbnRlcnZhbCA9IHt0dl9zZWMgPSAwLCB0dl91c2Vj
+ID0gMH0sIGl0X3ZhbHVlID0ge3R2X3NlYyA9IDAsCnR2X3VzZWMgPSAxNjAwMX19Cm5zZWNzID0g
+MTMxNTU2OTM5OTcxMTU1OTAwMAplcnIgPSA8dmFsdWUgb3B0aW1pemVkIG91dD4Kc3RhdHVzID0g
+Mjk0MwpvcCA9IDx2YWx1ZSBvcHRpbWl6ZWQgb3V0PgpwaWQgPSAxNjE1Nwpsb2NhbF91c2luZ19z
+eXNlbXUgPSAyCiMyOCAweDA4MDVhYTc1IGluIGZvcmtfaGFuZGxlciAoKSBhdCBhcmNoL3VtL2tl
+cm5lbC9wcm9jZXNzLmM6MTc5Ck5vIGxvY2Fscy4KIzI5IDB4MDAwMDAwMDAgaW4gPz8gKCkKTm8g
+c3ltYm9sIHRhYmxlIGluZm8gYXZhaWxhYmxlLgoKClN0YWNrIGxldmVsIDE0LCBmcmFtZSBhdCAw
+eDQzZmQ1Yzc0OgplaXAgPSAweDgwNWE5MDAgaW4gX3N3aXRjaF90byAoYXJjaC91bS9rZXJuZWwv
+cHJvY2Vzcy5jOjgyKTsgc2F2ZWQgZWlwCjB4ODIwNWNkOQpjYWxsZWQgYnkgZnJhbWUgYXQgMHg0
+M2ZkNWNhNCwgY2FsbGVyIG9mIGZyYW1lIGF0IDB4NDNmZDVjNjAKc291cmNlIGxhbmd1YWdlIGMu
+CkFyZ2xpc3QgYXQgMHg0M2ZkNWM2YywgYXJnczogcHJldj0weDQzZmYxMzQwLCBuZXh0PTB4ZmZm
+ZmZmZDQsCmxhc3Q9MHg0M2ZmMTM0MApMb2NhbHMgYXQgMHg0M2ZkNWM2YywgUHJldmlvdXMgZnJh
+bWUncyBzcCBpcyAweDQzZmQ1Yzc0ClNhdmVkIHJlZ2lzdGVyczoKZWJ4IGF0IDB4NDNmZDVjNjQs
+IGVicCBhdCAweDQzZmQ1YzZjLCBlc2kgYXQgMHg0M2ZkNWM2OCwgZWlwIGF0IDB4NDNmZDVjNzAK
+ClRoYW5rcwovT3NjYXIgCgpPbiBTYXQsIDEwIFNlcCAyMDExIDEzOjEwOjA5ICswMjAwLCByaWNo
+YXJkIC1ydy0gd2VpbmJlcmdlcgo8cmljaGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbT4gd3JvdGU6
+Cj4gMjAxMS85LzkgT3NjYXIgSGVsbHN0csO2bSA8b3NjYXJAaGVsbHN0cm9tLnN0PjoKPj4KPj4g
+QW55IHBvaW50ZXIgdG8gd2hhdCB0aGlzIGNhbiBiZSBhbmQgd2hlcmUgSSBjYW4gc3RhcnQgbG9v
+a2luZyB3b3VsZCBiZQo+PiBhcHByZWNpYXRlZCEKPj4KPiAKPiBEb2VzIHdpdGggYWxzbyBoYXBw
+ZW4gd2l0aCBhIHZhbmlsbGEga2VybmVsPwo+IERvIHlvdSBoYXZlIGEgZnVsbCB0cmFjZT8gVGhl
+IHZhbHVlIG9mIEVJUCB3b3VsZCBiZSBoZWxwZnVsLgoKLS0gCk9zY2FyIEhlbGxzdHLDtm0sIG9z
+Y2FyQGhlbGxzdHJvbS5zdAp3ZWI6IGh0dHA6Ly9vc2Nhci5oZWxsc3Ryb20uc3QKeG1wcDogb3Nj
+YXJAaGVsbHN0cm9tLnN0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRG9pbmcgTW9yZSB3aXRoIExl
+c3M6IFRoZSBOZXh0IEdlbmVyYXRpb24gVmlydHVhbCBEZXNrdG9wIApXaGF0IGFyZSB0aGUga2V5
+IG9ic3RhY2xlcyB0aGF0IGhhdmUgcHJldmVudGVkIG1hbnkgbWlkLW1hcmtldCBidXNpbmVzc2Vz
+CmZyb20gZGVwbG95aW5nIHZpcnR1YWwgZGVza3RvcHM/ICAgSG93IGRvIG5leHQtZ2VuZXJhdGlv
+biB2aXJ0dWFsIGRlc2t0b3BzCnByb3ZpZGUgY29tcGFuaWVzIGFuIGVhc2llci10by1kZXBsb3ks
+IGVhc2llci10by1tYW5hZ2UgYW5kIG1vcmUgYWZmb3JkYWJsZQp2aXJ0dWFsIGRlc2t0b3AgbW9k
+ZWwuaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZubC8xMTQvNTE0MjY0NzQvCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51
+eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZv
+cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2Vy
+LW1vZGUtbGludXgtZGV2ZWwK
 
