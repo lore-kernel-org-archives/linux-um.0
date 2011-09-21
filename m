@@ -1,16 +1,16 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Yong Zhang <yong.zhang0@gmail.com>
-Date: Thu, 22 Sep 2011 16:58:46 +0800
-Message-Id: <1316681962-8217-20-git-send-email-yong.zhang0@gmail.com>
-In-Reply-To: <1316681962-8217-1-git-send-email-yong.zhang0@gmail.com>
-References: <1316681962-8217-1-git-send-email-yong.zhang0@gmail.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH 19/55] um: irq: Remove IRQF_DISABLED
-To: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Date: Wed, 21 Sep 2011 17:28:20 +0800
+Message-Id: <1316597339-29861-20-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
+References: <1316597339-29861-1-git-send-email-yong.zhang0@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 19/57] um: irq: Remove IRQF_DISABLED
+To: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: tglx@linutronix.de, yong.zhang0@gmail.com, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, Will Newton <will.newton@gmail.com>, WANG Cong <xiyou.wangcong@gmail.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Boaz Harrosh <bharrosh@panasas.com>, Jiri Pirko <jpirko@redhat.com>, Jens Axboe <jaxboe@fusionio.com>, Tejun Heo <tj@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
+Since commit [c58543c8: genirq: Run irq handlers with interrupts disabled],
 We run all interrupt handlers with interrupts disabled
 and we even check and yell when an interrupt handler
 returns with interrupts enabled (see commit [b738a50a:
