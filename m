@@ -1,10 +1,8 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Thu, 22 Sep 2011 14:21:10 -0400 (EDT)
-Message-Id: <20110922.142110.1470776655731016807.davem@davemloft.net>
-From: David Miller <davem@davemloft.net>
-In-Reply-To: <CAGZFCEHtyE1MutMmhKefFm9Xx5rri1j7DR7L=cFU3KUg7ejs4g@mail.gmail.com>
-References: <CAGZFCEHtyE1MutMmhKefFm9Xx5rri1j7DR7L=cFU3KUg7ejs4g@mail.gmail.com>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Date: Thu, 22 Sep 2011 21:25:47 +0530
+Message-ID: <CAGZFCEHtyE1MutMmhKefFm9Xx5rri1j7DR7L=cFU3KUg7ejs4g@mail.gmail.com>
+From: ratheesh kannoth <ratheesh.ksz@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -17,21 +15,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] routing table error in 2.6.39 ..
-To: ratheesh.ksz@gmail.com
-Cc: netdev@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Subject: [uml-devel] routing table error in 2.6.39 ..
+To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, netdev@vger.kernel.org
 
-From: ratheesh kannoth <ratheesh.ksz@gmail.com>
-Date: Thu, 22 Sep 2011 21:25:47 +0530
+I built UML  (user mode linux ) for 2.6.38 and 2.6.39 kernels.
 
-> in 2.6.38 routing  table is  correct. But in 2.6.39 default gw appears
-> on top of the routing table. same problem persist in 3.0.0 also.
+in 2.6.38 routing  table is  correct. But in 2.6.39 default gw appears
+on top of the routing table. same problem persist in 3.0.0 also.
 
-You cannot depend upon the order in which routing table entries
-are listed by the kernel.
+is it a known problem or fixed in higher versions ?
 
-The table internally is correct, and lookups will match using the
-proper longest-matching-prefix algorithm.
+-Ratheesh
 
 ------------------------------------------------------------------------------
 All the data continuously generated in your IT infrastructure contains a
