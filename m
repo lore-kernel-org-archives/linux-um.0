@@ -1,93 +1,54 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <oscar-uml-devel@hellstrom.st>) id 1R20YZ-0002VS-EL
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Sep 2011 12:51:43 +0000
-Received: from mail.hellstrom.st ([65.110.43.110])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1R20YY-0005R7-Ju for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Sep 2011 12:51:43 +0000
-Received: from secure.hellstrom.st (mail.hellstrom.st [65.110.43.110])
-	by mail.hellstrom.st (Postfix) with ESMTP id EE5441CC055
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  9 Sep 2011 13:51:36 +0100 (BST)
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Message-ID: <4E7B1209.3000405@nod.at>
+Date: Thu, 22 Sep 2011 12:46:33 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Date: Fri, 09 Sep 2011 13:51:36 +0100
-From: =?UTF-8?Q?Oscar_Hellstr=C3=B6m?= <oscar-uml-devel@hellstrom.st>
-Message-ID: <dec050d06e01facf32a7f3b6184102c1@hellstrom.st>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] =?utf-8?q?Errors_in_schedule_/_=5Fswitch=5Fto?=
-To: user-mode-linux-devel@lists.sourceforge.net
+References: <1316681962-8217-1-git-send-email-yong.zhang0@gmail.com> <1316681962-8217-20-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <1316681962-8217-20-git-send-email-yong.zhang0@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigCD7C5D6E0CD757D1FCB585B8"
+Sender: linux-arch-owner@vger.kernel.org
+Subject: Re: [PATCH 19/55] um: irq: Remove IRQF_DISABLED
+To: Yong Zhang <yong.zhang0@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, tglx@linutronix.de, Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, Will Newton <will.newton@gmail.com>, WANG Cong <xiyou.wangcong@gmail.com>, Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, Boaz Harrosh <bharrosh@panasas.com>, Jiri Pirko <jpirko@redhat.com>, Jens Axboe <jaxboe@fusionio.com>, Tejun Heo <tj@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigCD7C5D6E0CD757D1FCB585B8
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-I'm running an older version of the kernel, 2.6.32.3, and I'm experiencing
-segmentations faults in _switch_to, which is called from schedule. My
-stacktrace looks like:
-...
-#13 <signal handler called>
-#14 _switch_to (prev=0x43ff1340, next=0xffffffd4, last=0x43ff1340) at
-arch/um/kernel/process.c:82
-#15 0x08205cd9 in schedule () at kernel/sched.c:2886
-#16 0x08205dda in io_schedule () at kernel/sched.c:6784
-#17 0x0809af72 in sync_page (word=0x96ba180) at mm/filemap.c:187
-#18 0x08205fde in __wait_on_bit_lock (wq=0x980b7d8, q=0x43fd5ce4,
-action=0x809af37 <sync_page>, mode=2) at kernel/wait.c:229
-#19 0x0809af21 in __lock_page (page=0x96ba180) at mm/filemap.c:601
-#20 0x0809afbd in find_lock_page (mapping=0x47608668, offset=2596) at
-include/linux/pagemap.h:317
-#21 0x0809c888 in filemap_fault (vma=0x43d70764, vmf=0x43fd5d8c) at
-mm/filemap.c:1538
-#22 0x080a88ad in __do_fault (mm=0x478855e0, vma=0x43d70764,
-address=2437412980, pmd=0x472c0914, pgoff=2596, flags=0, orig_pte={pte =
-0}) at mm/memory.c:2719
-#23 0x080a9fec in handle_mm_fault (mm=0x478855e0, vma=0x43d70764,
-address=2437412980, flags=0) at mm/memory.c:2917
-#24 0x0805c5f1 in handle_page_fault (address=2437412980, ip=1076410045,
-is_write=0, is_user=1, code_out=0x43fd5e40) at arch/um/kernel/trap.c:71
-#25 0x0805c729 in segv (fi={error_code = 4, cr2 = 2437412980, trap_no =
-14}, ip=1076410045, is_user=1, regs=0x43ff1550) at
-arch/um/kernel/trap.c:178
-#26 0x0805c91e in segv_handler (sig=11, regs=0x43ff1550) at
-arch/um/kernel/trap.c:150
-#27 0x0806c00a in userspace (regs=0x43ff1550) at
-arch/um/os-Linux/skas/process.c:421
-#28 0x0805aa75 in fork_handler () at arch/um/kernel/process.c:179
-#29 0x00000000 in ?? ()
+Am 22.09.2011 10:58, schrieb Yong Zhang:
+> Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabl=
+ed],
+> We run all interrupt handlers with interrupts disabled
+> and we even check and yell when an interrupt handler
+> returns with interrupts enabled (see commit [b738a50a:
+> genirq: Warn when handler enables interrupts]).
+>=20
+> So now this flag is a NOOP and can be removed.
+>=20
+> Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
 
-I've compiled in a driver into the kernel which fakes interrupts by sending
-signals to the UML process. I guess this could interfere with something,
-but I do believe I've seen this without the signals being enabled.
-Unfortunately I don't have any easy way to reproduce this, it happens
-seemingly at random.
+Acked-by: Richard Weinberger <richard@nod.at>
 
-Any pointer to what this can be and where I can start looking would be
-appreciated!
 
-Thanks
-/Oscar
+--------------enigCD7C5D6E0CD757D1FCB585B8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-------------------------------------------------------------------------------
-Why Cloud-Based Security and Archiving Make Sense
-Osterman Research conducted this study that outlines how and why cloud
-computing security and archiving is rapidly being adopted across the IT 
-space for its ease of implementation, lower cost, and increased 
-reliability. Learn more. http://www.accelacomm.com/jaw/sfnl/114/51425301/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
 
+iQEcBAEBAgAGBQJOexIJAAoJEN9758yqZn9eHV0IAMflEqTvHKFm2orgjCmVNvBz
+CFoVsLZbck1UMVmBhE+gcbT473A1aMUPsyXFVggCOjEvdHeaXwKp6jEAS8GeuMEN
+KWJiKnJ/D6i01FrnDCxWTMDFcqEfJbHO12eCo7UrXnLC/PmglcBR596BBRnp7Vnt
+W83v3ssMd4iL6hqz0V/4dI1TmAK6otRUTn8KjZ22lxY69QgtoAVSSh0jJQmazctO
+QtwOFe/V12/NtmUUw0s2Azc2yPKKEfW0nGK7MU0sommsWDDNwAzBuI8lfNNW3LAK
+6q5JSnoHYGPdJIhZPlid5mzNe4WiP4PLSsC4MG+p1a2UMZK9lGOuq0aYtkQLXgg=
+=cPjO
+-----END PGP SIGNATURE-----
+
+--------------enigCD7C5D6E0CD757D1FCB585B8--
