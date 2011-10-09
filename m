@@ -1,22 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <oscar@hellstrom.st>) id 1R20NE-0001u6-7u
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1RCwAo-0007uL-UU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Sep 2011 12:40:00 +0000
-Received: from mail.hellstrom.st ([65.110.43.110])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1R20N9-0004xJ-5b for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 Sep 2011 12:40:00 +0000
-Received: from secure.hellstrom.st (mail.hellstrom.st [65.110.43.110])
-	by mail.hellstrom.st (Postfix) with ESMTP id BE91E1CC055
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  9 Sep 2011 13:13:03 +0100 (BST)
+	Sun, 09 Oct 2011 16:24:22 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RCwAn-00030c-E7
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 09 Oct 2011 16:24:22 +0000
+Message-ID: <4E91CAA9.1070401@nod.at>
+Date: Sun, 09 Oct 2011 18:24:09 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Date: Fri, 09 Sep 2011 13:13:03 +0100
-From: =?UTF-8?Q?Oscar_Hellstr=C3=B6m?= <oscar@hellstrom.st>
-Message-ID: <f3c8fff4b732b2681fb1ea20a80d5b8a@hellstrom.st>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,60 +23,78 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============8388815158843220167=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] =?utf-8?q?Errors_in_schedule_/_=5Fswitch=5Fto?=
-To: user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] Advice to all glibc 2.12 users
+To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
 
-SGksCgpJJ20gcnVubmluZyBhbiBvbGRlciB2ZXJzaW9uIG9mIHRoZSBrZXJuZWwsIDIuNi4zMi4z
-IGFuZCBJJ20gZXhwZXJpZW5jaW5nCnNlZ21lbnRhdGlvbnMgZmF1bHRzIGluIF9zd2l0Y2hfdG8s
-IHdoaWNoIGlzIGNhbGxlZCBmcm9tIHNjaGVkdWxlLiBNeQpzdGFja3RyYWNlIGxvb2tzIGxpa2U6
-CjMgPHNpZ25hbCBoYW5kbGVyIGNhbGxlZD4KIzE0IF9zd2l0Y2hfdG8gKHByZXY9MHg0M2ZmMTM0
-MCwgbmV4dD0weGZmZmZmZmQ0LCBsYXN0PTB4NDNmZjEzNDApIGF0CmFyY2gvdW0va2VybmVsL3By
-b2Nlc3MuYzo4MgojMTUgMHgwODIwNWNkOSBpbiBzY2hlZHVsZSAoKSBhdCBrZXJuZWwvc2NoZWQu
-YzoyODg2CiMxNiAweDA4MjA1ZGRhIGluIGlvX3NjaGVkdWxlICgpIGF0IGtlcm5lbC9zY2hlZC5j
-OjY3ODQKIzE3IDB4MDgwOWFmNzIgaW4gc3luY19wYWdlICh3b3JkPTB4OTZiYTE4MCkgYXQgbW0v
-ZmlsZW1hcC5jOjE4NwojMTggMHgwODIwNWZkZSBpbiBfX3dhaXRfb25fYml0X2xvY2sgKHdxPTB4
-OTgwYjdkOCwgcT0weDQzZmQ1Y2U0LAphY3Rpb249MHg4MDlhZjM3IDxzeW5jX3BhZ2U+LCBtb2Rl
-PTIpIGF0IGtlcm5lbC93YWl0LmM6MjI5CiMxOSAweDA4MDlhZjIxIGluIF9fbG9ja19wYWdlIChw
-YWdlPTB4OTZiYTE4MCkgYXQgbW0vZmlsZW1hcC5jOjYwMQojMjAgMHgwODA5YWZiZCBpbiBmaW5k
-X2xvY2tfcGFnZSAobWFwcGluZz0weDQ3NjA4NjY4LCBvZmZzZXQ9MjU5NikgYXQKaW5jbHVkZS9s
-aW51eC9wYWdlbWFwLmg6MzE3CiMyMSAweDA4MDljODg4IGluIGZpbGVtYXBfZmF1bHQgKHZtYT0w
-eDQzZDcwNzY0LCB2bWY9MHg0M2ZkNWQ4YykgYXQKbW0vZmlsZW1hcC5jOjE1MzgKIzIyIDB4MDgw
-YTg4YWQgaW4gX19kb19mYXVsdCAobW09MHg0Nzg4NTVlMCwgdm1hPTB4NDNkNzA3NjQsCmFkZHJl
-c3M9MjQzNzQxMjk4MCwgcG1kPTB4NDcyYzA5MTQsIHBnb2ZmPTI1OTYsIGZsYWdzPTAsIApvcmln
-X3B0ZT17cHRlID0gMH0pIGF0IG1tL21lbW9yeS5jOjI3MTkKIzIzIDB4MDgwYTlmZWMgaW4gaGFu
-ZGxlX21tX2ZhdWx0IChtbT0weDQ3ODg1NWUwLCB2bWE9MHg0M2Q3MDc2NCwKYWRkcmVzcz0yNDM3
-NDEyOTgwLCBmbGFncz0wKSBhdCBtbS9tZW1vcnkuYzoyOTE3CiMyNCAweDA4MDVjNWYxIGluIGhh
-bmRsZV9wYWdlX2ZhdWx0IChhZGRyZXNzPTI0Mzc0MTI5ODAsIGlwPTEwNzY0MTAwNDUsCmlzX3dy
-aXRlPTAsIGlzX3VzZXI9MSwgY29kZV9vdXQ9MHg0M2ZkNWU0MCkKYXQgYXJjaC91bS9rZXJuZWwv
-dHJhcC5jOjcxCiMyNSAweDA4MDVjNzI5IGluIHNlZ3YgKGZpPXtlcnJvcl9jb2RlID0gNCwgY3Iy
-ID0gMjQzNzQxMjk4MCwgdHJhcF9ubyA9CjE0fSwgaXA9MTA3NjQxMDA0NSwgaXNfdXNlcj0xLCBy
-ZWdzPTB4NDNmZjE1NTApCmF0IGFyY2gvdW0va2VybmVsL3RyYXAuYzoxNzgKIzI2IDB4MDgwNWM5
-MWUgaW4gc2Vndl9oYW5kbGVyIChzaWc9MTEsIHJlZ3M9MHg0M2ZmMTU1MCkgYXQKYXJjaC91bS9r
-ZXJuZWwvdHJhcC5jOjE1MAojMjcgMHgwODA2YzAwYSBpbiB1c2Vyc3BhY2UgKHJlZ3M9MHg0M2Zm
-MTU1MCkgYXQKYXJjaC91bS9vcy1MaW51eC9za2FzL3Byb2Nlc3MuYzo0MjEKIzI4IDB4MDgwNWFh
-NzUgaW4gZm9ya19oYW5kbGVyICgpIGF0IGFyY2gvdW0va2VybmVsL3Byb2Nlc3MuYzoxNzkKIzI5
-IDB4MDAwMDAwMDAgaW4gPz8gKCkKCkkndmUgY29tcGlsZWQgaW4gYSBkcml2ZXIgaW50byB0aGUg
-a2VybmVsIHdoaWNoIGZha2VzIGludGVycnVwdHMgYnkgc2VuZGluZwpzaWduYWxzIHRvIHRoZSBV
-TUwgcHJvY2Vzcy4gSSBndWVzcyB0aGlzIGNvdWxkIGludGVyZmVyZSB3aXRoIHNvbWV0aGluZywK
-YnV0IEkgZG8gYmVsaWV2ZSBJJ3ZlIHNlZW4gdGhpcyB3aXRob3V0IHRoZSBzaWduYWxzIGJlaW5n
-IGVuYWJsZWQuClVuZm9ydHVuYXRlbHkgSSBkb24ndCBoYXZlIGFueSBlYXN5IHdheSB0byByZXBy
-b2R1Y2UgdGhpcywgaXQgdXN1YWxseQpoYXBwZW5zIHNlZW1pbmdseSBhdCByYW5kb20uCgpBbnkg
-cG9pbnRlciB0byB3aGF0IHRoaXMgY2FuIGJlIGFuZCB3aGVyZSBJIGNhbiBzdGFydCBsb29raW5n
-IHdvdWxkIGJlCmFwcHJlY2lhdGVkIQoKVGhhbmtzCi9Pc2NhcgotLSAKT3NjYXIgSGVsbHN0csO2
-bSwgb3NjYXJAaGVsbHN0cm9tLnN0CndlYjogaHR0cDovL29zY2FyLmhlbGxzdHJvbS5zdAp4bXBw
-OiBvc2NhckBoZWxsc3Ryb20uc3QKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpXaHkgQ2xvdWQtQmFz
-ZWQgU2VjdXJpdHkgYW5kIEFyY2hpdmluZyBNYWtlIFNlbnNlCk9zdGVybWFuIFJlc2VhcmNoIGNv
-bmR1Y3RlZCB0aGlzIHN0dWR5IHRoYXQgb3V0bGluZXMgaG93IGFuZCB3aHkgY2xvdWQKY29tcHV0
-aW5nIHNlY3VyaXR5IGFuZCBhcmNoaXZpbmcgaXMgcmFwaWRseSBiZWluZyBhZG9wdGVkIGFjcm9z
-cyB0aGUgSVQgCnNwYWNlIGZvciBpdHMgZWFzZSBvZiBpbXBsZW1lbnRhdGlvbiwgbG93ZXIgY29z
-dCwgYW5kIGluY3JlYXNlZCAKcmVsaWFiaWxpdHkuIExlYXJuIG1vcmUuIGh0dHA6Ly93d3cuYWNj
-ZWxhY29tbS5jb20vamF3L3NmbmwvMTE0LzUxNDI1MzAxLwpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBs
-aXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVs
-Cg==
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============8388815158843220167==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig0215B9155377E804C68EDC2A"
+
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig0215B9155377E804C68EDC2A
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
+
+glibc 2.12's pthread_cond_signal() is broken on UML because it does not
+have FUTEX_WAKE_OP.
+
+The issue got fixed in 2.12.2:
+http://sourceware.org/ml/libc-alpha/2010-08/msg00019.html
+
+Sadly, some distros (like CentOS 6.0) still ship glibc 2.12.1.
+So you have to expect problems when them on top of UML...
+
+Thanks,
+//richard
+
+
+--------------enig0215B9155377E804C68EDC2A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+
+iQEcBAEBAgAGBQJOkcqtAAoJEN9758yqZn9eR3QIAJWlfg07ZQk0z90IC/62VPYA
+pKCECLVNCc2PR6adMG8niELg7rVb+n1+LJS0RleeBZ8scDIUtFRZj/q+1bcQZt3k
+ZaKRcqL5uTVV1n/T2pex1ichwWom6AL9GbsgF2HtroIP8B1merzWxMsb7HtKwUSm
+nit8xpuTdKbstB9XP08ilP1KBa1UzOJdFUoWKsNL2o3JAQUMObjMvtq4xVtKRNes
+jA8Mj1D8oM7PPrNc1seOa3eFfS6C0acShFAH2+0Q4N6xcTb3RZv0pYAuQkiQQPEL
+6jNWaK4GNMolWjfmIoF59mSEY1sMcXaEQ85X/Mp/M9elV5Hj3rd+3me8CWDCXZw=
+=xUm3
+-----END PGP SIGNATURE-----
+
+--------------enig0215B9155377E804C68EDC2A--
+
+
+--===============8388815158843220167==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+All of the data generated in your IT infrastructure is seriously valuable.
+Why? It contains a definitive record of application performance, security
+threats, fraudulent activity, and more. Splunk takes this data and makes
+sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-d2dcopy2
+--===============8388815158843220167==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============8388815158843220167==--
+
 
