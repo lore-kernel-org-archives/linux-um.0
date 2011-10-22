@@ -1,59 +1,183 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4EAA89EB.4020503@nod.at>
-Date: Fri, 28 Oct 2011 12:54:35 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-References: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com> <1319277421-9203-19-git-send-email-yong.zhang0@gmail.com>
-In-Reply-To: <1319277421-9203-19-git-send-email-yong.zhang0@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigF977B42524113E1953A58BE1"
+From: Yong Zhang <yong.zhang0@gmail.com>
+Date: Sat, 22 Oct 2011 17:56:30 +0800
+Message-Id: <1319277421-9203-19-git-send-email-yong.zhang0@gmail.com>
+In-Reply-To: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
+References: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH 18/49] um: irq: Remove IRQF_DISABLED
-To: Yong Zhang <yong.zhang0@gmail.com>
-Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Subject: [PATCH 18/49] um: irq: Remove IRQF_DISABLED
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigF977B42524113E1953A58BE1
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
+We run all interrupt handlers with interrupts disabled
+and we even check and yell when an interrupt handler
+returns with interrupts enabled (see commit [b738a50a:
+genirq: Warn when handler enables interrupts]).
 
-Am 22.10.2011 11:56, schrieb Yong Zhang:
-> Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabl=
-ed],
-> We run all interrupt handlers with interrupts disabled
-> and we even check and yell when an interrupt handler
-> returns with interrupts enabled (see commit [b738a50a:
-> genirq: Warn when handler enables interrupts]).
->=20
-> So now this flag is a NOOP and can be removed.
->=20
-> Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
-> Acked-by: Richard Weinberger <richard@nod.at>
+So now this flag is a NOOP and can be removed.
 
-BTW: I think it's better when I carry this patch through my UML tree.
-Okay?
+Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+Acked-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/drivers/line.c          |    8 ++++----
+ arch/um/drivers/mconsole_kern.c |    2 +-
+ arch/um/drivers/net_kern.c      |    2 +-
+ arch/um/drivers/port_kern.c     |    4 ++--
+ arch/um/drivers/random.c        |    2 +-
+ arch/um/drivers/ubd_kern.c      |    2 +-
+ arch/um/drivers/xterm_kern.c    |    2 +-
+ arch/um/kernel/sigio.c          |    2 +-
+ arch/um/kernel/time.c           |    2 +-
+ 9 files changed, 13 insertions(+), 13 deletions(-)
 
-Thanks,
-//richard
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index 364c8a1..d38f475 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -347,8 +347,8 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
+ 	int err;
+ 
+ 	/*
+-	 * Interrupts are disabled here because we registered the interrupt with
+-	 * IRQF_DISABLED (see line_setup_irq).
++	 * Interrupts are disabled here because genirq keep irqs disabled when
++	 * calling the action handler.
+ 	 */
+ 
+ 	spin_lock(&line->lock);
+@@ -371,7 +371,7 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
+ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
+ {
+ 	const struct line_driver *driver = line->driver;
+-	int err = 0, flags = IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM;
++	int err = 0, flags = IRQF_SHARED | IRQF_SAMPLE_RANDOM;
+ 
+ 	if (input)
+ 		err = um_request_irq(driver->read_irq, fd, IRQ_READ,
+@@ -807,7 +807,7 @@ void register_winch_irq(int fd, int tty_fd, int pid, struct tty_struct *tty,
+ 				   .stack	= stack });
+ 
+ 	if (um_request_irq(WINCH_IRQ, fd, IRQ_READ, winch_interrupt,
+-			   IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			   IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			   "winch", winch) < 0) {
+ 		printk(KERN_ERR "register_winch_irq - failed to register "
+ 		       "IRQ\n");
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index c70e047..e672bd6 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -773,7 +773,7 @@ static int __init mconsole_init(void)
+ 	register_reboot_notifier(&reboot_notifier);
+ 
+ 	err = um_request_irq(MCONSOLE_IRQ, sock, IRQ_READ, mconsole_interrupt,
+-			     IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			     IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			     "mconsole", (void *)sock);
+ 	if (err) {
+ 		printk(KERN_ERR "Failed to get IRQ for management console\n");
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index a492e59..46ffd65 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -161,7 +161,7 @@ static int uml_net_open(struct net_device *dev)
+ 	}
+ 
+ 	err = um_request_irq(dev->irq, lp->fd, IRQ_READ, uml_net_interrupt,
+-			     IRQF_DISABLED | IRQF_SHARED, dev->name, dev);
++			     IRQF_SHARED, dev->name, dev);
+ 	if (err != 0) {
+ 		printk(KERN_ERR "uml_net_open: failed to get irq(%d)\n", err);
+ 		err = -ENETUNREACH;
+diff --git a/arch/um/drivers/port_kern.c b/arch/um/drivers/port_kern.c
+index a11573b..e31680e 100644
+--- a/arch/um/drivers/port_kern.c
++++ b/arch/um/drivers/port_kern.c
+@@ -100,7 +100,7 @@ static int port_accept(struct port_list *port)
+ 		  .port 	= port });
+ 
+ 	if (um_request_irq(TELNETD_IRQ, socket[0], IRQ_READ, pipe_interrupt,
+-			  IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			  IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			  "telnetd", conn)) {
+ 		printk(KERN_ERR "port_accept : failed to get IRQ for "
+ 		       "telnetd\n");
+@@ -184,7 +184,7 @@ void *port_data(int port_num)
+ 	}
+ 
+ 	if (um_request_irq(ACCEPT_IRQ, fd, IRQ_READ, port_interrupt,
+-			  IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			  IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			  "port", port)) {
+ 		printk(KERN_ERR "Failed to get IRQ for port %d\n", port_num);
+ 		goto out_close;
+diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
+index 981085a..b25296e 100644
+--- a/arch/um/drivers/random.c
++++ b/arch/um/drivers/random.c
+@@ -131,7 +131,7 @@ static int __init rng_init (void)
+ 	random_fd = err;
+ 
+ 	err = um_request_irq(RANDOM_IRQ, random_fd, IRQ_READ, random_interrupt,
+-			     IRQF_DISABLED | IRQF_SAMPLE_RANDOM, "random",
++			     IRQF_SAMPLE_RANDOM, "random",
+ 			     NULL);
+ 	if (err)
+ 		goto err_out_cleanup_hw;
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 620f5b7..c9dae89 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1088,7 +1088,7 @@ static int __init ubd_driver_init(void){
+ 		return 0;
+ 	}
+ 	err = um_request_irq(UBD_IRQ, thread_fd, IRQ_READ, ubd_intr,
+-			     IRQF_DISABLED, "ubd", ubd_devs);
++			     0, "ubd", ubd_devs);
+ 	if(err != 0)
+ 		printk(KERN_ERR "um_request_irq failed - errno = %d\n", -err);
+ 	return 0;
+diff --git a/arch/um/drivers/xterm_kern.c b/arch/um/drivers/xterm_kern.c
+index b646bcc..8bd130f 100644
+--- a/arch/um/drivers/xterm_kern.c
++++ b/arch/um/drivers/xterm_kern.c
+@@ -50,7 +50,7 @@ int xterm_fd(int socket, int *pid_out)
+ 	init_completion(&data->ready);
+ 
+ 	err = um_request_irq(XTERM_IRQ, socket, IRQ_READ, xterm_interrupt,
+-			     IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
++			     IRQF_SHARED | IRQF_SAMPLE_RANDOM,
+ 			     "xterm", data);
+ 	if (err) {
+ 		printk(KERN_ERR "xterm_fd : failed to get IRQ for xterm, "
+diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
+index 2b272b6..2a16392 100644
+--- a/arch/um/kernel/sigio.c
++++ b/arch/um/kernel/sigio.c
+@@ -25,7 +25,7 @@ int write_sigio_irq(int fd)
+ 	int err;
+ 
+ 	err = um_request_irq(SIGIO_WRITE_IRQ, fd, IRQ_READ, sigio_interrupt,
+-			     IRQF_DISABLED|IRQF_SAMPLE_RANDOM, "write sigio",
++			     IRQF_SAMPLE_RANDOM, "write sigio",
+ 			     NULL);
+ 	if (err) {
+ 		printk(KERN_ERR "write_sigio_irq : um_request_irq failed, "
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index a08d9fa..9149b5f 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -84,7 +84,7 @@ static void __init setup_itimer(void)
+ {
+ 	int err;
+ 
+-	err = request_irq(TIMER_IRQ, um_timer, IRQF_DISABLED, "timer", NULL);
++	err = request_irq(TIMER_IRQ, um_timer, 0, "timer", NULL);
+ 	if (err != 0)
+ 		printk(KERN_ERR "register_timer : request_irq failed - "
+ 		       "errno = %d\n", -err);
+-- 
+1.7.1
 
-
---------------enigF977B42524113E1953A58BE1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
-
-iQEcBAEBAgAGBQJOqonrAAoJEN9758yqZn9easAH/0A1JSqAAvhdCaoUqxMdsqc3
-ImfhENr8E+JYMovspXz93m+H21McaT4ns5cg3kTn54te/21CpGxzp9Xy+Be9J5Cx
-giVI0nhB2JGvAdMeo75thJFsLX99srf+HmkgYMb6zC0/QUtzQm/Qg1iowZAZmGn3
-TZ80Iu9LwhjPCC8RZooiGHgYHLyn0WJgy8C9lYzDOm0yoKPNnMPOM031q3pyNrS9
-W+UUpVR9f75kyCAcz5S9xxB+HOdRcM6XfJDsybZZ+QX9ZlVOlyMn6ah8WBDO2JpB
-De2ykCJYDQZjZd5z5pLvEeFGsxDMbLXp37dgxice1bfGK408LlqWDPP9cOadNgk=
-=sM73
------END PGP SIGNATURE-----
-
---------------enigF977B42524113E1953A58BE1--
