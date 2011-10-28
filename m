@@ -1,38 +1,38 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Paul Bolle <pebolle@tiscali.nl>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 14 Oct 2011 14:27:47 +0200
-Message-ID: <1318595267.6132.60.camel@x61.thuisdomein>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Date: Fri, 28 Oct 2011 19:51:14 +0800
+From: Yong Zhang <yong.zhang0@gmail.com>
+Message-ID: <20111028115114.GA1934@zhy>
+Reply-To: Yong Zhang <yong.zhang0@gmail.com>
+References: <1319277421-9203-1-git-send-email-yong.zhang0@gmail.com>
+ <1319277421-9203-19-git-send-email-yong.zhang0@gmail.com>
+ <4EAA89EB.4020503@nod.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4EAA89EB.4020503@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 04/21] um: drop unused Kconfig symbol
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 18/49] um: irq: Remove IRQF_DISABLED
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
----
- arch/um/Kconfig.x86 |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+On Fri, Oct 28, 2011 at 12:54:35PM +0200, Richard Weinberger wrote:
+> Am 22.10.2011 11:56, schrieb Yong Zhang:
+> > Since commit [e58aa3d2: genirq: Run irq handlers with interrupts disabled],
+> > We run all interrupt handlers with interrupts disabled
+> > and we even check and yell when an interrupt handler
+> > returns with interrupts enabled (see commit [b738a50a:
+> > genirq: Warn when handler enables interrupts]).
+> > 
+> > So now this flag is a NOOP and can be removed.
+> > 
+> > Signed-off-by: Yong Zhang <yong.zhang0@gmail.com>
+> > Acked-by: Richard Weinberger <richard@nod.at>
+> 
+> BTW: I think it's better when I carry this patch through my UML tree.
+> Okay?
 
-diff --git a/arch/um/Kconfig.x86 b/arch/um/Kconfig.x86
-index 21bebe6..1d97bd8 100644
---- a/arch/um/Kconfig.x86
-+++ b/arch/um/Kconfig.x86
-@@ -57,9 +57,6 @@ config ARCH_HAS_SC_SIGNALS
- config ARCH_REUSE_HOST_VSYSCALL_AREA
- 	def_bool !64BIT
- 
--config SMP_BROKEN
--	def_bool 64BIT
--
- config GENERIC_HWEIGHT
- 	def_bool y
- 
--- 
-1.7.4.4
+Good :)
 
-
-
-
+Thanks,
+Yong
