@@ -1,67 +1,51 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Cong Wang <amwang@redhat.com>
-Date: Sun, 27 Nov 2011 13:26:47 +0800
-Message-Id: <1322371662-26166-8-git-send-email-amwang@redhat.com>
-In-Reply-To: <1322371662-26166-1-git-send-email-amwang@redhat.com>
-References: <1322371662-26166-1-git-send-email-amwang@redhat.com>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <4EAFDC5D.8030307@nod.at>
+Date: Tue, 01 Nov 2011 12:47:41 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 07/62] um: remove the second argument of
-	k[un]map_atomic()
-To: linux-kernel@vger.kernel.org
-Cc: Cong Wang <amwang@redhat.com>, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-user@lists.sourceforge.net, akpm@linux-foundation.org
+References: <alpine.LNX.2.00.1111011207190.348@pobox.suse.cz>
+In-Reply-To: <alpine.LNX.2.00.1111011207190.348@pobox.suse.cz>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig4F69D52EC1DE46203943CD0C"
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] um: vDSO: fix vdsop allocation
+To: Jiri Kosina <jkosina@suse.cz>
+Cc: Jeff Dike <jdike@addtoit.com>, Andrew Morton <akpm@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig4F69D52EC1DE46203943CD0C
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Am 01.11.2011 12:09, schrieb Jiri Kosina:
+> The kmalloc() call in init_vdso() has reverse order of arguments.
+>=20
+> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+
+Dave sent me already a patch:
+https://lkml.org/lkml/2011/10/24/388
+
+Thanks,
+//richard
 
 
-Signed-off-by: Cong Wang <amwang@redhat.com>
----
- arch/um/kernel/skas/uaccess.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+--------------enig4F69D52EC1DE46203943CD0C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-diff --git a/arch/um/kernel/skas/uaccess.c b/arch/um/kernel/skas/uaccess.c
-index 9fefd92..cd7df79 100644
---- a/arch/um/kernel/skas/uaccess.c
-+++ b/arch/um/kernel/skas/uaccess.c
-@@ -69,7 +69,7 @@ static int do_op_one_page(unsigned long addr, int len, int is_write,
- 		return -1;
- 
- 	page = pte_page(*pte);
--	addr = (unsigned long) kmap_atomic(page, KM_UML_USERCOPY) +
-+	addr = (unsigned long) kmap_atomic(page) +
- 		(addr & ~PAGE_MASK);
- 
- 	current->thread.fault_catcher = &buf;
-@@ -82,7 +82,7 @@ static int do_op_one_page(unsigned long addr, int len, int is_write,
- 
- 	current->thread.fault_catcher = NULL;
- 
--	kunmap_atomic((void *)addr, KM_UML_USERCOPY);
-+	kunmap_atomic((void *)addr);
- 
- 	return n;
- }
--- 
-1.7.4.4
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
 
+iQEcBAEBAgAGBQJOr9xjAAoJEN9758yqZn9eAHYH/0u5X9Lwc687Dzl4q0rwsllH
+Aay9D0P3ngEMyvzbzuFLZzjV/ehjY2j6HAG+vmZ8GbQ1Qew6TlzgLu9og+DKKqCV
+51kA08VoLRTSzuTximtkUqEppiLD7zUpR6bfTfXlSpZr6RuBucPL6aIfbBUAPhZx
+re9qKZ2AH0XvSQ378FkE3k+AiVf7F8mjOdWAezCe2QmPwHqV9t81o/BlXOslrG9J
+HRMFEidDyO9vEvhE+TnxGVH3cW4voq/q1aBfJ84naBzo7/ZB168KXAJNjbyJn9Oh
+UMTwxAARhZZ+70frOrA+zlnf45d/svFsdNmzcPjwJ9QfgCHqI1nBZgeD29pEs8g=
+=V7VW
+-----END PGP SIGNATURE-----
 
-------------------------------------------------------------------------------
-All the data continuously generated in your IT infrastructure 
-contains a definitive record of customers, application performance, 
-security threats, fraudulent activity, and more. Splunk takes this 
-data and makes sense of it. IT sense. And common sense.
-http://p.sf.net/sfu/splunk-novd2d
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+--------------enig4F69D52EC1DE46203943CD0C--
