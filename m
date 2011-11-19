@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@sigma-star.at>) id 1RRuba-0002z1-6h
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <frank.laub@gmail.com>) id 1RRu9F-0008S4-BH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Nov 2011 23:45:54 +0000
-Received: from hq.miles-group.at ([95.130.255.141] helo=mail.sigma-star.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1RRubY-0006c5-IQ for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Nov 2011 23:45:54 +0000
-Message-ID: <4EC83B50.8090906@sigma-star.at>
-Date: Sun, 20 Nov 2011 00:27:12 +0100
-From: Richard Weinberger <richard@sigma-star.at>
+	Sat, 19 Nov 2011 23:16:37 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1RRu9E-0002ZY-Jb
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Nov 2011 23:16:37 +0000
+Received: by iahk25 with SMTP id k25so6996873iah.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 19 Nov 2011 15:16:31 -0800 (PST)
+Message-ID: <4EC838CB.6080009@gmail.com>
+Date: Sat, 19 Nov 2011 15:16:27 -0800
+From: Frank Laub <frank.laub@gmail.com>
 MIME-Version: 1.0
-References: <4EC838CB.6080009@gmail.com>
-In-Reply-To: <4EC838CB.6080009@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,69 +29,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] VDE backend does not handle EINTR properly
-To: Frank Laub <frank.laub@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] VDE backend does not handle EINTR properly
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Am 20.11.2011 00:16, schrieb Frank Laub:
-> When running the VDE backend with 2 uml instances and running iperf 
-> between them, the vde_send() function often returns EINTR. I noticed 
-> that this is accounted for in net_user.c via the use of the 
-> CATCH_EINTR() macro. Thus the following patch uses the same approach for 
-> calls into VDE. It could be argued that the VDE library itself should 
-> handle EINTR, but this patch will work with older (or current) versions 
-> of VDE. This patch was created against 3.0.3.
+When running the VDE backend with 2 uml instances and running iperf 
+between them, the vde_send() function often returns EINTR. I noticed 
+that this is accounted for in net_user.c via the use of the 
+CATCH_EINTR() macro. Thus the following patch uses the same approach for 
+calls into VDE. It could be argued that the VDE library itself should 
+handle EINTR, but this patch will work with older (or current) versions 
+of VDE. This patch was created against 3.0.3.
 
-Please add a Signed-off-by tag,
-so that I can give you the credit. :-)
-See: http://linux.yyz.us/patch-format.html
+--- a/arch/um/drivers/vde_user.c
++++ b/arch/um/drivers/vde_user.c
+@@ -11,6 +11,7 @@
+  #include "um_malloc.h"
+  #include "user.h"
+  #include "vde.h"
++#include "os.h"
 
-> --- a/arch/um/drivers/vde_user.c
-> +++ b/arch/um/drivers/vde_user.c
-> @@ -11,6 +11,7 @@
->   #include "um_malloc.h"
->   #include "user.h"
->   #include "vde.h"
-> +#include "os.h"
-> 
->   static int vde_user_init(void *data, void *dev)
->   {
-> @@ -103,7 +104,7 @@ int vde_user_read(void *conn, void *buf,
->       if (vconn == NULL)
->           return 0;
-> 
-> -    rv = vde_recv(vconn, buf, len, 0);
-> +    CATCH_EINTR(rv = vde_recv(vconn, buf, len, 0));
->       if (rv < 0) {
->           if (errno == EAGAIN)
->               return 0;
-> @@ -118,10 +119,19 @@ int vde_user_read(void *conn, void *buf,
->   int vde_user_write(void *conn, void *buf, int len)
->   {
->       VDECONN *vconn = conn;
-> +    int rv;
-> 
->       if (vconn == NULL)
->           return 0;
-> 
-> -    return vde_send(vconn, buf, len, 0);
+  static int vde_user_init(void *data, void *dev)
+  {
+@@ -103,7 +104,7 @@ int vde_user_read(void *conn, void *buf,
+      if (vconn == NULL)
+          return 0;
 
-Is the additional if-branch really needed?
+-    rv = vde_recv(vconn, buf, len, 0);
++    CATCH_EINTR(rv = vde_recv(vconn, buf, len, 0));
+      if (rv < 0) {
+          if (errno == EAGAIN)
+              return 0;
+@@ -118,10 +119,19 @@ int vde_user_read(void *conn, void *buf,
+  int vde_user_write(void *conn, void *buf, int len)
+  {
+      VDECONN *vconn = conn;
++    int rv;
 
-> +    CATCH_EINTR(rv = vde_send(vconn, buf, len, 0));
-> +    if (rv < 0) {
-> +        if (errno == EAGAIN)
-> +            return 0;
-> +        return -errno;
-> +    }
-> +    else if (rv == 0)
-> +        return -ENOTCONN;
-> +    return rv;
->   }
-> 
+      if (vconn == NULL)
+          return 0;
 
-Thanks,
-//richard
+-    return vde_send(vconn, buf, len, 0);
++    CATCH_EINTR(rv = vde_send(vconn, buf, len, 0));
++    if (rv < 0) {
++        if (errno == EAGAIN)
++            return 0;
++        return -errno;
++    }
++    else if (rv == 0)
++        return -ENOTCONN;
++    return rv;
+  }
+
+
 
 ------------------------------------------------------------------------------
 All the data continuously generated in your IT infrastructure 
