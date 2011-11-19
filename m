@@ -1,111 +1,104 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4E938A21.70708@panasas.com>
-Date: Tue, 11 Oct 2011 02:13:21 +0200
-From: Boaz Harrosh <bharrosh@panasas.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@sigma-star.at>) id 1RRuba-0002z1-6h
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Nov 2011 23:45:54 +0000
+Received: from hq.miles-group.at ([95.130.255.141] helo=mail.sigma-star.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1RRubY-0006c5-IQ for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 19 Nov 2011 23:45:54 +0000
+Message-ID: <4EC83B50.8090906@sigma-star.at>
+Date: Sun, 20 Nov 2011 00:27:12 +0100
+From: Richard Weinberger <richard@sigma-star.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+References: <4EC838CB.6080009@gmail.com>
+In-Reply-To: <4EC838CB.6080009@gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [RFC]: do_xor_speed Broken on UML do to jiffies
-To: Dan Williams <dan.j.williams@intel.com>, Herbert Xu <herbert@gondor.hengli.com.au>, "David S. Miller" <davem@davemloft.net>, Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] VDE backend does not handle EINTR properly
+To: Frank Laub <frank.laub@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
+Am 20.11.2011 00:16, schrieb Frank Laub:
+> When running the VDE backend with 2 uml instances and running iperf 
+> between them, the vde_send() function often returns EINTR. I noticed 
+> that this is accounted for in net_user.c via the use of the 
+> CATCH_EINTR() macro. Thus the following patch uses the same approach for 
+> calls into VDE. It could be argued that the VDE library itself should 
+> handle EINTR, but this patch will work with older (or current) versions 
+> of VDE. This patch was created against 3.0.3.
 
-Remember that hang I reported a while back on UML. Well
-I'm at it again, and it still hangs and I found why.
+Please add a Signed-off-by tag,
+so that I can give you the credit. :-)
+See: http://linux.yyz.us/patch-format.html
 
-I have dprinted jiffies and it never advances during the
-loop at do_xor_speed. Therefor it is stuck in an endless
-loop. I have also dprinted current_kernel_time() and it
-returns the same constant value as well.
+> --- a/arch/um/drivers/vde_user.c
+> +++ b/arch/um/drivers/vde_user.c
+> @@ -11,6 +11,7 @@
+>   #include "um_malloc.h"
+>   #include "user.h"
+>   #include "vde.h"
+> +#include "os.h"
+> 
+>   static int vde_user_init(void *data, void *dev)
+>   {
+> @@ -103,7 +104,7 @@ int vde_user_read(void *conn, void *buf,
+>       if (vconn == NULL)
+>           return 0;
+> 
+> -    rv = vde_recv(vconn, buf, len, 0);
+> +    CATCH_EINTR(rv = vde_recv(vconn, buf, len, 0));
+>       if (rv < 0) {
+>           if (errno == EAGAIN)
+>               return 0;
+> @@ -118,10 +119,19 @@ int vde_user_read(void *conn, void *buf,
+>   int vde_user_write(void *conn, void *buf, int len)
+>   {
+>       VDECONN *vconn = conn;
+> +    int rv;
+> 
+>       if (vconn == NULL)
+>           return 0;
+> 
+> -    return vde_send(vconn, buf, len, 0);
 
-Note that it does usually work on UML, only during
-the modprobe of xor.ko while that test is running, it is broken.
-It looks like some lucking is preventing the clock from ticking.
+Is the additional if-branch really needed?
 
-However ktime_get_ts does work for me so I changed the code
-as below, so I can work. See how I put several safety
-guards, to never get hangs again.
-And I think my time based approach is more accurate then
-previous system.
+> +    CATCH_EINTR(rv = vde_send(vconn, buf, len, 0));
+> +    if (rv < 0) {
+> +        if (errno == EAGAIN)
+> +            return 0;
+> +        return -errno;
+> +    }
+> +    else if (rv == 0)
+> +        return -ENOTCONN;
+> +    return rv;
+>   }
+> 
 
-UML guys please investigate the jiffies issue? what is
-xor.ko not doing right?
+Thanks,
+//richard
 
-Signed-off-by: Boaz Harrosh <bharrosh@panasas.com>
----
- crypto/xor.c |   46 +++++++++++++++++++++++++++-------------------
- 1 files changed, 27 insertions(+), 19 deletions(-)
-
-diff --git a/crypto/xor.c b/crypto/xor.c
-index b75182d..65433f5 100644
---- a/crypto/xor.c
-+++ b/crypto/xor.c
-@@ -62,37 +62,45 @@ static struct xor_block_template *template_list;
- static void
- do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
- {
--	int speed;
--	unsigned long now;
--	int i, count, max;
-+	unsigned speed, count;
-+	u64 ns_begin;
-+	u64 ns_end;
-+	struct timespec ts;
-+
- 
- 	tmpl->next = template_list;
- 	template_list = tmpl;
- 
- 	/*
--	 * Count the number of XORs done during a whole jiffy, and use
-+	 * Count the number of XORs done during 10 miliseconds, and use
- 	 * this to calculate the speed of checksumming.  We use a 2-page
- 	 * allocation to have guaranteed color L1-cache layout.
- 	 */
--	max = 0;
--	for (i = 0; i < 5; i++) {
--		now = jiffies;
--		count = 0;
--		while (jiffies == now) {
--			mb(); /* prevent loop optimzation */
--			tmpl->do_2(BENCH_SIZE, b1, b2);
--			mb();
--			count++;
--			mb();
--		}
--		if (count > max)
--			max = count;
-+	ktime_get_ts(&ts);
-+	ns_begin = timespec_to_ns(&ts);
-+	count = 0;
-+	while (count < 4000000L) {
-+		mb(); /* prevent loop optimzation */
-+		tmpl->do_2(BENCH_SIZE, b1, b2);
-+		mb();
-+		count++;
-+		mb();
-+
-+		ktime_get_ts(&ts);
-+		ns_end = timespec_to_ns(&ts);
-+		/* Test for 10 miliseconds */
-+		if ((ns_end - ns_begin) > NSEC_PER_SEC / 100)
-+			break;
- 	}
- 
--	speed = max * (HZ * BENCH_SIZE / 1024);
-+	ns_end -= ns_begin;
-+	if (ns_end > 0)
-+		speed = BENCH_SIZE / 1024 * count * NSEC_PER_SEC / ns_end;
-+	else
-+		speed = 17;
- 	tmpl->speed = speed;
- 
--	printk(KERN_INFO "   %-10s: %5d.%03d MB/sec\n", tmpl->name,
-+	printk(KERN_INFO "   %-10s: %5u.%03u MB/sec\n", tmpl->name,
- 	       speed / 1000, speed % 1000);
- }
- 
--- 
-1.7.2.3
+------------------------------------------------------------------------------
+All the data continuously generated in your IT infrastructure 
+contains a definitive record of customers, application performance, 
+security threats, fraudulent activity, and more. Splunk takes this 
+data and makes sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-novd2d
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
