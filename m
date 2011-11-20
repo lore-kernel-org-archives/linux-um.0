@@ -1,20 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jack@suse.cz>) id 1RNYkU-0002yQ-RQ
+	(envelope-from <frank.laub@gmail.com>) id 1RRwE2-0005aV-HM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Nov 2011 23:37:06 +0000
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RNYkT-0000zR-BP
+	Sun, 20 Nov 2011 01:29:42 +0000
+Received: from mail-iy0-f175.google.com ([209.85.210.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1RRwE1-0004iL-Q8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 07 Nov 2011 23:37:06 +0000
-Date: Tue, 8 Nov 2011 00:36:57 +0100
-From: Jan Kara <jack@suse.cz>
-Message-ID: <20111107233657.GL15796@quack.suse.cz>
+	Sun, 20 Nov 2011 01:29:42 +0000
+Received: by iahk25 with SMTP id k25so7119422iah.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 19 Nov 2011 17:29:36 -0800 (PST)
+Message-ID: <4EC857FD.6090709@gmail.com>
+Date: Sat, 19 Nov 2011 17:29:33 -0800
+From: Frank Laub <frank.laub@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
+References: <4EC838CB.6080009@gmail.com> <4EC83B50.8090906@sigma-star.at>
+In-Reply-To: <4EC83B50.8090906@sigma-star.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,102 +31,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Problems with IO-less throttling?
-To: linux-mm@kvack.org
-Cc: Wu Fengguang <fengguang.wu@intel.com>, user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] ]PATCH 3.03 1/1] um: VDE backend needs to handle
+ EINTR/EAGAIN
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-  Hello,
+Handle EINTR and EAGAIN during vde_send() and vde_recv() in case the VDE library doesn't. Use the same approach that net_user.c takes.
 
-  today I was testing some patch with Linus' kernel from today (commit
-31555213f03bca37d2c02e10946296052f4ecfcd)  and I rather easily tripped
-out-of-memory messages and processes got killed.
+Signed-off-by: Frank Laub<flaub@anomali.es>
 
-The unusual thing I'm doing is that I'm using user-mode-linux and
-the started virtual machine has relatively low amount of memory (I was
-tripping OOM immediately with mem=64M or mem=128M, I could still hit it
-after a while with mem=256M). The load I was running was just "dd
-if=/dev/zero of=/tmp/file bs=128k". The backing filesystem was ext3. Now
-with older kernel (e.g. 3.1) running even with mem=64M was fine.
+--- a/arch/um/drivers/vde_user.c
++++ b/arch/um/drivers/vde_user.c
+@@ -11,6 +11,7 @@
+  #include "um_malloc.h"
+  #include "user.h"
+  #include "vde.h"
++#include "os.h"
 
-Example of an OOM message:
+  static int vde_user_init(void *data, void *dev)
+  {
+@@ -103,7 +104,7 @@ int vde_user_read(void *conn, void *buf,
+      if (vconn == NULL)
+          return 0;
 
-dd invoked oom-killer: gfp_mask=0x200da, order=0, oom_adj=0,
-oom_score_adj=0
-Call Trace: 
-6ff5b868:  [<602f550d>] _raw_spin_unlock+0x9/0xb
-6ff5b878:  [<6005ad53>] dump_header.clone.2+0xba/0x1b6
-6ff5b8b8:  [<6005af77>] oom_kill_process.clone.0+0x45/0x236
-6ff5b928:  [<6005b506>] out_of_memory+0x25c/0x305
-6ff5b9a8:  [<6005e563>] __alloc_pages_nodemask+0x558/0x5fd
-6ff5ba08:  [<60270a2b>] radix_tree_lookup_slot+0xe/0x10
-6ff5ba88:  [<60065933>] shmem_getpage_gfp+0x269/0x475
-6ff5bb18:  [<60065b72>] shmem_write_begin+0x33/0x35
-6ff5bb28:  [<60059fa4>] generic_file_buffered_write+0x132/0x28f
-6ff5bbf8:  [<6005a47a>] __generic_file_aio_write+0x379/0x3b5
-6ff5bcb8:  [<6005a53a>] generic_file_aio_write+0x84/0xdd
-6ff5bd28:  [<6007fb09>] do_sync_write+0xd1/0x10e
-6ff5bdc8:  [<600174c1>] segv+0x8f/0x24a
-6ff5be58:  [<6007fc0b>] vfs_write+0xc5/0x16d
-6ff5be98:  [<6007fd64>] sys_write+0x45/0x6c
-6ff5bed8:  [<60017e48>] handle_syscall+0x50/0x70
-6ff5bef8:  [<60024ae6>] userspace+0x320/0x3d6
-6ff5bfc8:  [<600151ac>] fork_handler+0x7d/0x84
+-    rv = vde_recv(vconn, buf, len, 0);
++    CATCH_EINTR(rv = vde_recv(vconn, buf, len, 0));
+      if (rv < 0) {
+          if (errno == EAGAIN)
+              return 0;
+@@ -118,10 +119,17 @@ int vde_user_read(void *conn, void *buf,
+  int vde_user_write(void *conn, void *buf, int len)
+  {
+      VDECONN *vconn = conn;
++    int rv;
 
-Mem-Info:
-Normal per-cpu:
-CPU    0: hi:   90, btch:  15 usd:   0
-active_anon:850 inactive_anon:59583 isolated_anon:0
- active_file:0 inactive_file:16 isolated_file:0
- unevictable:0 dirty:0 writeback:0 unstable:0
- free:510 slab_reclaimable:540 slab_unreclaimable:461
- mapped:0 shmem:59685 pagetables:111 bounce:0
-Normal free:2040kB min:2032kB low:2540kB high:3048kB active_anon:3400kB
-inactive_anon:238332kB active_file:0kB inactive_file:64kB unevictable:0kB
-isolated(anon):0kB isolated(file):0kB present:258560kB mlocked:0kB
-dirty:0kB writeback:0kB mapped:0kB shmem:238740kB slab_reclaimable:2160kB
-slab_unreclaimable:1844kB kernel_stack:272kB pagetables:444kB unstable:0kB
-bounce:0kB writeback_tmp:0kB pages_scanned:46434 all_unreclaimable? yes
-lowmem_reserve[]: 0 0
-Normal: 498*4kB 4*8kB 1*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB
-0*2048kB 0*4096kB = 2040kB
-59701 total pagecache pages
-0 pages in swap cache
-Swap cache stats: add 0, delete 0, find 0/0
-Free swap  = 0kB
-Total swap = 0kB
-65536 pages RAM
-3222 pages reserved
-16 pages shared
-61703 pages non-shared
-[ pid ]   uid  tgid total_vm      rss cpu oom_adj oom_score_adj name
-[  670]     0   670     1489       37   0       0             0 syslogd
-[  676]     0   676      682       21   0       0             0 klogd
-[  720]     0   720     5597       94   0       0             0 exim4
-[  725]     0   725      680       18   0       0             0 inetd
-[  739]     0   739     2282       36   0       0             0 atd
-[  745]     0   745     2890       47   0       0             0 cron
-[  762]     0   762     6338       75   0       0             0 login
-[  763]     0   763     6338       74   0       0             0 login
-[  764]     0   764     2593      131   0       0             0 bash
-[  772]     0   772     2590      129   0       0             0 bash
-[  805]     0   805     1262       58   0       0             0 dd
-Out of memory: Kill process 670 (syslogd) score 1 or sacrifice child
-Killed process 670 (syslogd) total-vm:5956kB, anon-rss:148kB, file-rss:0kB
+      if (vconn == NULL)
+          return 0;
 
-I'd be suspecting new IO-less throttling code but from the OOM report it
-seems there are no dirty or writeback pages so that seems to speak against
-that theory.
+-    return vde_send(vconn, buf, len, 0);
++    CATCH_EINTR(rv = vde_send(vconn, buf, len, 0));
++    if (rv < 0) {
++        if (errno == EAGAIN)
++            return 0;
++        return -errno;
++    }
++    return rv;
+  }
 
-								Honza
--- 
-Jan Kara <jack@suse.cz>
-SUSE Labs, CR
 
 ------------------------------------------------------------------------------
-RSA(R) Conference 2012
-Save $700 by Nov 18
-Register now
-http://p.sf.net/sfu/rsa-sfdev2dev1
+All the data continuously generated in your IT infrastructure 
+contains a definitive record of customers, application performance, 
+security threats, fraudulent activity, and more. Splunk takes this 
+data and makes sense of it. IT sense. And common sense.
+http://p.sf.net/sfu/splunk-novd2d
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
