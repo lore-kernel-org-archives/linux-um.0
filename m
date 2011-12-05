@@ -1,39 +1,50 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: "H. Peter Anvin" <hpa@linux.intel.com>
-Date: Mon,  5 Dec 2011 17:05:48 -0800
-Message-Id: <1323133549-13590-3-git-send-email-hpa@linux.intel.com>
-In-Reply-To: <1323133549-13590-1-git-send-email-hpa@linux.intel.com>
-References: <1323133549-13590-1-git-send-email-hpa@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 2/3] um: Generate headers before generating user-offsets.s
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: Ingo Molnar <mingo@elte.hu>, Thomas Gleixner <tglx@linutronix.de>, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@linux.intel.com>
+Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Date: Mon, 5 Dec 2011 11:44:10 -0000
+Message-ID: <AE90C24D6B3A694183C094C60CF0A2F6D8AEFE@saturn3.aculab.com>
+In-Reply-To: <20111204221850.GC14542@n2100.arm.linux.org.uk>
+From: "David Laight" <David.Laight@ACULAB.COM>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+Sender: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+Subject: RE: Re: [PATCHv5] atomic: add *_dec_not_zero
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Sven Eckelmann <sven@narfation.org>
+Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>, Randy Dunlap <rdunlap@xenotime.net>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ingo Molnar <mingo@redhat.com>, Matt Turner <mattst88@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, Arnd Bergma nn <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, linux-alpha@vger.kernel.org, Chris Metcalf <cmetcalf@tilera.com>, Tony Luck <tony.luck@intel.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, Richard Henderson <rth@twiddle.net>, linux-m32r@ml.linux-m32r.org, linux-parisc@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, "David S. Miller" <davem@davemloft.net>, Kyle McMartin <kyle@mcmartin.ca>, Richard Weinberger <richard@nod.at>, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux390@de.ibm.com, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, Hirokazu Takata <takata@linux-m32r.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: "H. Peter Anvin" <hpa@linux.intel.com>
+Looking at this:
 
-In case we need generated header files for the values in
-user-offsets.h, make sure we build generated header files before
-user-offsets.s is built.
+> #ifndef atomic_inc_unless_negative
+> static inline int atomic_inc_unless_negative(atomic_t *p)
+> {
+>         int v, v1;
+>         for (v = 0; v >= 0; v = v1) {
+>                 v1 = atomic_cmpxchg(p, v, v + 1);
+>                 if (likely(v1 == v))
+>                         return 1;
+>         }
+>         return 0;
+> }
+> #endif
 
-Signed-off-by: H. Peter Anvin <hpa@linux.intel.com>
----
- arch/um/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+why is it optimised for '*p' being zero??
+I'd have though the initial assignment to 'v' should
+be made by reading '*p' without any memory barriers (etc).
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 00210e9..9548ddc 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -140,7 +140,7 @@ archclean:
- 
- # Generated files
- 
--$(HOST_DIR)/um/user-offsets.s: FORCE
-+$(HOST_DIR)/um/user-offsets.s: __headers FORCE
- 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um $@
- 
- define filechk_gen-asm-offsets
--- 
-1.7.6.4
+	David
+
+
+_______________________________________________
+Linuxppc-dev mailing list
+Linuxppc-dev@lists.ozlabs.org
+https://lists.ozlabs.org/listinfo/linuxppc-dev
 
