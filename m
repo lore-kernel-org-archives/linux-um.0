@@ -1,36 +1,39 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Tue, 1 Nov 2011 12:09:03 +0100 (CET)
-From: Jiri Kosina <jkosina@suse.cz>
-Message-ID: <alpine.LNX.2.00.1111011207190.348@pobox.suse.cz>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: "H. Peter Anvin" <hpa@linux.intel.com>
+Date: Mon,  5 Dec 2011 17:05:48 -0800
+Message-Id: <1323133549-13590-3-git-send-email-hpa@linux.intel.com>
+In-Reply-To: <1323133549-13590-1-git-send-email-hpa@linux.intel.com>
+References: <1323133549-13590-1-git-send-email-hpa@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: vDSO: fix vdsop allocation
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] um: Generate headers before generating user-offsets.s
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: Ingo Molnar <mingo@elte.hu>, Thomas Gleixner <tglx@linutronix.de>, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@linux.intel.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The kmalloc() call in init_vdso() has reverse order of arguments.
+From: "H. Peter Anvin" <hpa@linux.intel.com>
 
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+In case we need generated header files for the values in
+user-offsets.h, make sure we build generated header files before
+user-offsets.s is built.
+
+Signed-off-by: H. Peter Anvin <hpa@linux.intel.com>
 ---
- arch/um/sys-x86_64/vdso/vma.c |    2 +-
+ arch/um/Makefile |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/um/sys-x86_64/vdso/vma.c b/arch/um/sys-x86_64/vdso/vma.c
-index 9495c8d..91f4ec9 100644
---- a/arch/um/sys-x86_64/vdso/vma.c
-+++ b/arch/um/sys-x86_64/vdso/vma.c
-@@ -28,7 +28,7 @@ static int __init init_vdso(void)
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 00210e9..9548ddc 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -140,7 +140,7 @@ archclean:
  
- 	um_vdso_addr = task_size - PAGE_SIZE;
+ # Generated files
  
--	vdsop = kmalloc(GFP_KERNEL, sizeof(struct page *));
-+	vdsop = kmalloc(sizeof(struct page *), GFP_KERNEL);
- 	if (!vdsop)
- 		goto oom;
+-$(HOST_DIR)/um/user-offsets.s: FORCE
++$(HOST_DIR)/um/user-offsets.s: __headers FORCE
+ 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um $@
  
+ define filechk_gen-asm-offsets
 -- 
-Jiri Kosina
-SUSE Labs
+1.7.6.4
 
