@@ -1,122 +1,81 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1Rkx4w-0007hL-VA
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Jan 2012 12:14:54 +0000
-Received: from mailout-de.gmx.net ([213.165.64.22])
-	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1Rkx4u-000536-Dg for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Jan 2012 12:14:54 +0000
-From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
-Date: Wed, 11 Jan 2012 13:14:32 +0100
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <4F0A5298.4060807@xenotime.net>
+Date: Sun, 08 Jan 2012 18:36:08 -0800
+From: Randy Dunlap <rdunlap@xenotime.net>
 MIME-Version: 1.0
-Message-Id: <201201111314.32937.toralf.foerster@gmx.de>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] current kernel (git version linux-v3.2-6100-ge343a89)
-	crashes
-To: user-mode-linux-devel@lists.sourceforge.net
+References: <4F0A3C3B.5090700@nod.at>
+In-Reply-To: <4F0A3C3B.5090700@nod.at>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: Is register_cpu() now obligatory?
+To: Richard Weinberger <richard@nod.at>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, gregkh@suse.de, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-SGVsbG8sCgp3aXRoIGEgcmVjZW50IGtlcm5lbCAocHJlLXJjMSkgSSByZWFsaXplZCB0aGlzIGNy
-YXNoIGFuZCB3b25kZXJpbmcKd2hldGhlciBpdCBpcyB3b3J0aCB0byBiaXNlY3Qgb3IgaWYgdGhl
-cmUncyBhbHJlYWR5IGEgZml4IGZseWluZyBhcm91bmQgOgoKCnRmb2Vyc3RlQG4yMiB+L2RldmVs
-L2xpbnV4ICQgc3RhcnRfdW1sLnNoCkxvY2F0aW5nIHRoZSBib3R0b20gb2YgdGhlIGFkZHJlc3Mg
-c3BhY2UgLi4uIDB4MTAwMApMb2NhdGluZyB0aGUgdG9wIG9mIHRoZSBhZGRyZXNzIHNwYWNlIC4u
-LiAweGMwMDAwMDAwCkNvcmUgZHVtcCBsaW1pdHMgOgogICAgICAgIHNvZnQgLSBOT05FCiAgICAg
-ICAgaGFyZCAtIE5PTkUKQ2hlY2tpbmcgdGhhdCBwdHJhY2UgY2FuIGNoYW5nZSBzeXN0ZW0gY2Fs
-bCBudW1iZXJzLi4uT0sKQ2hlY2tpbmcgc3lzY2FsbCBlbXVsYXRpb24gcGF0Y2ggZm9yIHB0cmFj
-ZS4uLk9LCkNoZWNraW5nIGFkdmFuY2VkIHN5c2NhbGwgZW11bGF0aW9uIHBhdGNoIGZvciBwdHJh
-Y2UuLi5PSwpDaGVja2luZyBmb3IgdG1wZnMgbW91bnQgb24gL2Rldi9zaG0uLi5PSwpDaGVja2lu
-ZyBQUk9UX0VYRUMgbW1hcCBpbiAvZGV2L3NobS8uLi5PSwpDaGVja2luZyBmb3IgdGhlIHNrYXMz
-IHBhdGNoIGluIHRoZSBob3N0OgogIC0gL3Byb2MvbW0uLi5ub3QgZm91bmQ6IE5vIHN1Y2ggZmls
-ZSBvciBkaXJlY3RvcnkKICAtIFBUUkFDRV9GQVVMVElORk8uLi5ub3QgZm91bmQKICAtIFBUUkFD
-RV9MRFQuLi5ub3QgZm91bmQKVU1MIHJ1bm5pbmcgaW4gU0tBUzAgbW9kZQpBZGRpbmcgMjAxNDQx
-MjggYnl0ZXMgdG8gcGh5c2ljYWwgbWVtb3J5IHRvIGFjY291bnQgZm9yIGV4ZWMtc2hpZWxkIGdh
-cApib290Y29uc29sZSBbZWFybHljb24wXSBlbmFibGVkClBJRCBoYXNoIHRhYmxlIGVudHJpZXM6
-IDIwNDggKG9yZGVyOiAxLCA4MTkyIGJ5dGVzKQpEZW50cnkgY2FjaGUgaGFzaCB0YWJsZSBlbnRy
-aWVzOiA2NTUzNiAob3JkZXI6IDYsIDI2MjE0NCBieXRlcykKSW5vZGUtY2FjaGUgaGFzaCB0YWJs
-ZSBlbnRyaWVzOiAzMjc2OCAob3JkZXI6IDUsIDEzMTA3MiBieXRlcykKTWVtb3J5OiAzODI2NTJr
-IGF2YWlsYWJsZQpTTFVCOiBHZW5zbGFicz0xNSwgSFdhbGlnbj02NCwgT3JkZXI9MC0zLCBNaW5P
-YmplY3RzPTAsIENQVXM9MSwgTm9kZXM9MQpOUl9JUlFTOjE1CkNhbGlicmF0aW5nIGRlbGF5IGxv
-b3AuLi4gNDcwNy4xMiBCb2dvTUlQUyAobHBqPTIzNTM1NjE2KQpwaWRfbWF4OiBkZWZhdWx0OiAz
-Mjc2OCBtaW5pbXVtOiAzMDEKTW91bnQtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA1MTIKQ2hl
-Y2tpbmcgZm9yIGhvc3QgcHJvY2Vzc29yIGNtb3Ygc3VwcG9ydC4uLlllcwpDaGVja2luZyB0aGF0
-IGhvc3QgcHR5cyBzdXBwb3J0IG91dHB1dCBTSUdJTy4uLlllcwpDaGVja2luZyB0aGF0IGhvc3Qg
-cHR5cyBzdXBwb3J0IFNJR0lPIG9uIGNsb3NlLi4uTm8sIGVuYWJsaW5nIHdvcmthcm91bmQKVXNp
-bmcgMi42IGhvc3QgQUlPCk5FVDogUmVnaXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMTYKYmlvOiBj
-cmVhdGUgc2xhYiA8YmlvLTA+IGF0IDAKU3dpdGNoaW5nIHRvIGNsb2Nrc291cmNlIGl0aW1lcgpO
-RVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDIKSVAgcm91dGUgY2FjaGUgaGFzaCB0YWJs
-ZSBlbnRyaWVzOiA0MDk2IChvcmRlcjogMiwgMTYzODQgYnl0ZXMpClRDUCBlc3RhYmxpc2hlZCBo
-YXNoIHRhYmxlIGVudHJpZXM6IDE2Mzg0IChvcmRlcjogNSwgMTMxMDcyIGJ5dGVzKQpUQ1AgYmlu
-ZCBoYXNoIHRhYmxlIGVudHJpZXM6IDE2Mzg0IChvcmRlcjogNCwgNjU1MzYgYnl0ZXMpClRDUDog
-SGFzaCB0YWJsZXMgY29uZmlndXJlZCAoZXN0YWJsaXNoZWQgMTYzODQgYmluZCAxNjM4NCkKVENQ
-IHJlbm8gcmVnaXN0ZXJlZApVRFAgaGFzaCB0YWJsZSBlbnRyaWVzOiAyNTYgKG9yZGVyOiAwLCA0
-MDk2IGJ5dGVzKQpVRFAtTGl0ZSBoYXNoIHRhYmxlIGVudHJpZXM6IDI1NiAob3JkZXI6IDAsIDQw
-OTYgYnl0ZXMpCk5FVDogUmVnaXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMQpSUEM6IFJlZ2lzdGVy
-ZWQgbmFtZWQgVU5JWCBzb2NrZXQgdHJhbnNwb3J0IG1vZHVsZS4KUlBDOiBSZWdpc3RlcmVkIHVk
-cCB0cmFuc3BvcnQgbW9kdWxlLgpSUEM6IFJlZ2lzdGVyZWQgdGNwIHRyYW5zcG9ydCBtb2R1bGUu
-ClJQQzogUmVnaXN0ZXJlZCB0Y3AgTkZTdjQuMSBiYWNrY2hhbm5lbCB0cmFuc3BvcnQgbW9kdWxl
-LgptY29uc29sZSAodmVyc2lvbiAyKSBpbml0aWFsaXplZCBvbiAvaG9tZS90Zm9lcnN0ZS8udW1s
-L3VtbC9tY29uc29sZQpDaGVja2luZyBob3N0IE1BRFZfUkVNT1ZFIHN1cHBvcnQuLi5PSwpVTUwg
-QXVkaW8gUmVsYXkgKGhvc3QgZHNwID0gL2Rldi9zb3VuZC9kc3AsIGhvc3QgbWl4ZXIgPSAvZGV2
-L3NvdW5kL21peGVyKQpIb3N0IFRMUyBzdXBwb3J0IGRldGVjdGVkCkRldGVjdGVkIGhvc3QgdHlw
-ZTogaTM4NiAoR0RUIGluZGV4ZXMgNiB0byA5KQpSZWdpc3RlcmluZyB0aGUgaWRfcmVzb2x2ZXIg
-a2V5IHR5cGUKbmZzNGZpbGVsYXlvdXRfaW5pdDogTkZTdjQgRmlsZSBMYXlvdXQgRHJpdmVyIFJl
-Z2lzdGVyaW5nLi4uCkluc3RhbGxpbmcga25mc2QgKGNvcHlyaWdodCAoQykgMTk5NiBva2lyQG1v
-bmFkLnN3Yi5kZSkuCm1zZ21uaSBoYXMgYmVlbiBzZXQgdG8gNzQ3CmlvIHNjaGVkdWxlciBub29w
-IHJlZ2lzdGVyZWQKaW8gc2NoZWR1bGVyIGNmcSByZWdpc3RlcmVkIChkZWZhdWx0KQoKRUlQOiAw
-MDczOls8MDgxNDRiZTg+XSBDUFU6IDAgTm90IHRhaW50ZWQgRVNQOiAwMDdiOjIwYzU3ZjBjIEVG
-TEFHUzogMDAyMTAyNDYKICAgIE5vdCB0YWludGVkCkVBWDogMDAwMDAwMDggRUJYOiAwODM4MDI2
-YyBFQ1g6IDA4M2EwOTMwIEVEWDogMDAwMDAwMDAKRVNJOiAwMDAwMDAwMCBFREk6IDA4MDVhMGJi
-IEVCUDogMjBjNTdmM2MgRFM6IDAwN2IgRVM6IDAwN2IKMDgzOGE4ZDg6ICBbPDA4MDc5MjRkPl0g
-c2hvd19yZWdzKzB4ZWQvMHgxMjAKMDgzOGE4ZjQ6ICBbPDA4MDYxNTRkPl0gc2VndisweDI0ZC8w
-eDJjMAowODM4YTlhNDogIFs8MDgwNjE2MTM+XSBzZWd2X2hhbmRsZXIrMHg1My8weDgwCjA4Mzhh
-OWNjOiAgWzwwODA3MmExZD5dIHNpZ19oYW5kbGVyX2NvbW1vbisweDRkLzB4YzAKMDgzOGFjNDg6
-ICBbPDA4MDcyYmIyPl0gc2lnX2hhbmRsZXIrMHg0Mi8weDUwCjA4MzhhYzU4OiAgWzwwODA3MjZl
-Yz5dIGhhcmRfaGFuZGxlcisweDZjLzB4YjAKMDgzOGFjN2M6ICBbPGI3ODFiNDBjPl0gMHhiNzgx
-YjQwYwoKS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IFNlZ2ZhdWx0IHdpdGggbm8gbW0KMDgz
-OGE4YjQ6ICBbPDA4MmYzM2JiPl0gZHVtcF9zdGFjaysweDIyLzB4MjQKMDgzOGE4Y2M6ICBbPDA4
-MmYzNDIwPl0gcGFuaWMrMHg2My8weDE3MAowODM4YThmNDogIFs8MDgwNjE1NTk+XSBzZWd2KzB4
-MjU5LzB4MmMwCjA4MzhhOWE0OiAgWzwwODA2MTYxMz5dIHNlZ3ZfaGFuZGxlcisweDUzLzB4ODAK
-MDgzOGE5Y2M6ICBbPDA4MDcyYTFkPl0gc2lnX2hhbmRsZXJfY29tbW9uKzB4NGQvMHhjMAowODM4
-YWM0ODogIFs8MDgwNzJiYjI+XSBzaWdfaGFuZGxlcisweDQyLzB4NTAKMDgzOGFjNTg6ICBbPDA4
-MDcyNmVjPl0gaGFyZF9oYW5kbGVyKzB4NmMvMHhiMAowODM4YWM3YzogIFs8Yjc4MWI0MGM+XSAw
-eGI3ODFiNDBjCgoKRUlQOiAwMDczOls8Yjc4MWI0MjQ+XSBDUFU6IDAgTm90IHRhaW50ZWQgRVNQ
-OiAwMDdiOmJmYWQyZDIwIEVGTEFHUzogMDAyMDAyNDYKICAgIE5vdCB0YWludGVkCkVBWDogMDAw
-MDAwMDAgRUJYOiAwMDAwNmQ3NSBFQ1g6IDAwMDAwMDEzIEVEWDogMDAwMDZkNzUKRVNJOiAwMDAw
-NmQ3MSBFREk6IGJmYWQyZGI0IEVCUDogYmZhZDJkNTQgRFM6IDAwN2IgRVM6IDAwN2IKMDgzOGE4
-Njg6ICBbPDA4MDc5MjRkPl0gc2hvd19yZWdzKzB4ZWQvMHgxMjAKMDgzOGE4ODQ6ICBbPDA4MDYx
-OGVjPl0gcGFuaWNfZXhpdCsweDJjLzB4NTAKMDgzOGE4OTQ6ICBbPDA4MDljM2VhPl0gbm90aWZp
-ZXJfY2FsbF9jaGFpbisweDRhLzB4NzAKMDgzOGE4YmM6ICBbPDA4MDljNTMzPl0gYXRvbWljX25v
-dGlmaWVyX2NhbGxfY2hhaW4rMHgyMy8weDMwCjA4MzhhOGNjOiAgWzwwODJmMzQ0OD5dIHBhbmlj
-KzB4OGIvMHgxNzAKMDgzOGE4ZjQ6ICBbPDA4MDYxNTU5Pl0gc2VndisweDI1OS8weDJjMAowODM4
-YTlhNDogIFs8MDgwNjE2MTM+XSBzZWd2X2hhbmRsZXIrMHg1My8weDgwCjA4MzhhOWNjOiAgWzww
-ODA3MmExZD5dIHNpZ19oYW5kbGVyX2NvbW1vbisweDRkLzB4YzAKMDgzOGFjNDg6ICBbPDA4MDcy
-YmIyPl0gc2lnX2hhbmRsZXIrMHg0Mi8weDUwCjA4MzhhYzU4OiAgWzwwODA3MjZlYz5dIGhhcmRf
-aGFuZGxlcisweDZjLzB4YjAKMDgzOGFjN2M6ICBbPGI3ODFiNDBjPl0gMHhiNzgxYjQwYwoKVGVy
-bWluYXRlZAoKLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJp
-bnQ6IDdCMUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4OTM2IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLQpSaWRpY3Vsb3VzbHkgZWFzeSBWREkuIFdpdGggQ2l0cml4IFZE
-SS1pbi1hLUJveCwgeW91IGRvbid0IG5lZWQgYSBjb21wbGV4CmluZnJhc3RydWN0dXJlIG9yIHZh
-c3QgSVQgcmVzb3VyY2VzIHRvIGRlbGl2ZXIgc2VhbWxlc3MsIHNlY3VyZSBhY2Nlc3MgdG8Kdmly
-dHVhbCBkZXNrdG9wcy4gV2l0aCB0aGlzIGFsbC1pbi1vbmUgc29sdXRpb24sIGVhc2lseSBkZXBs
-b3kgdmlydHVhbCAKZGVza3RvcHMgZm9yIGxlc3MgdGhhbiB0aGUgY29zdCBvZiBQQ3MgYW5kIHNh
-dmUgNjAlIG9uIFZESSBpbmZyYXN0cnVjdHVyZSAKY29zdHMuIFRyeSBpdCBmcmVlISBodHRwOi8v
-cC5zZi5uZXQvc2Z1L0NpdHJpeC1WRElpbmFib3gKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApV
-c2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
-c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+On 01/08/2012 05:00 PM, Richard Weinberger wrote:
+> Hi!
+> 
+> In Linus' tree as of today UML is broken.
+> It's crashing because get_cpu_device() in topology_add_dev()
+> returns a device with an invalid kobj (address is 0x10).
+> 
+> The code seems to assume that each arch has to register their CPUs
+> using register_cpu().
+> 
+> Is this a regression or was UML always faulty because it did not register it's CPU?
 
+See Linus's comment yesterday:
+  https://lkml.org/lkml/2012/1/7/114
+
+
+> The below patch fixes the issue for UML.
+> 
+> Thanks,
+> //richard
+> 
+> ---
+> diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+> index bc49474..f3b43fe 100644
+> --- a/arch/um/kernel/Makefile
+> +++ b/arch/um/kernel/Makefile
+> @@ -12,7 +12,7 @@ clean-files :=
+>  obj-y = config.o exec.o exitcode.o init_task.o irq.o ksyms.o mem.o \
+>  	physmem.o process.o ptrace.o reboot.o sigio.o \
+>  	signal.o smp.o syscall.o sysrq.o time.o tlb.o trap.o \
+> -	um_arch.o umid.o skas/
+> +	um_arch.o umid.o cpu.o skas/
+> 
+>  obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+>  obj-$(CONFIG_GPROF)	+= gprof_syms.o
+> diff --git a/arch/um/kernel/cpu.c b/arch/um/kernel/cpu.c
+> new file mode 100644
+> index 0000000..4914df2
+> --- /dev/null
+> +++ b/arch/um/kernel/cpu.c
+> @@ -0,0 +1,19 @@
+> +#include <linux/init.h>
+> +#include <linux/device.h>
+> +#include <linux/cpu.h>
+> +#include <linux/percpu.h>
+> +
+> +static DEFINE_PER_CPU(struct cpu, cpu_devices);
+> +
+> +static int __init topology_init(void)
+> +{
+> +	int cpu;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		struct cpu *c = &per_cpu(cpu_devices, cpu);
+> +		register_cpu(c, cpu);
+> +	}
+> +
+> +	return 0;
+> +}
+> +subsys_initcall(topology_init);
+> 
+
+
+-- 
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
