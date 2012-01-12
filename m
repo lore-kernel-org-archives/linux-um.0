@@ -1,87 +1,144 @@
-Return-Path: <geert@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 27 Jan 2012 19:14:58 +0100
-Message-Id: <1327688098-10159-1-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <y>
-References: <y>
-Subject: [PATCH] uml/hostfs: Propagate dirent.d_type to filldir()
-To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1RlRN9-0006qA-H8
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 12 Jan 2012 20:35:43 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RlRN4-0002P2-Jl
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 12 Jan 2012 20:35:43 +0000
+Message-ID: <4F0F440E.2020102@nod.at>
+Date: Thu, 12 Jan 2012 21:35:26 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+References: <201201111314.32937.toralf.foerster@gmx.de>
+	<CAFLxGvwXtinKJSFeD=-YjT9oLuhFSK_0HASjTD_3ib531RxbAA@mail.gmail.com>
+	<201201122130.37127.toralf.foerster@gmx.de>
+In-Reply-To: <201201122130.37127.toralf.foerster@gmx.de>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============0406468721966332020=="
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] current kernel (git version
+ linux-v3.2-6100-ge343a89) crashes
+To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Cc: toralf.foerster@gmx.de
 
-Currently the (optional) d_type member in struct dirent is always
-DT_UNKNOWN on hostfs, which may confuse buggy software using readdir().
-Make sure to propagate its value from the underlying filesystem if it's
-available there.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============0406468721966332020==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig6F96648C9412965CDCED5FA3"
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- fs/hostfs/hostfs.h      |    3 ++-
- fs/hostfs/hostfs_kern.c |    5 +++--
- fs/hostfs/hostfs_user.c |    4 +++-
- 3 files changed, 8 insertions(+), 4 deletions(-)
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig6F96648C9412965CDCED5FA3
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
-index 3cbfa93..1fe7313 100644
---- a/fs/hostfs/hostfs.h
-+++ b/fs/hostfs/hostfs.h
-@@ -67,7 +67,8 @@ extern int access_file(char *path, int r, int w, int x);
- extern int open_file(char *path, int r, int w, int append);
- extern void *open_dir(char *path, int *err_out);
- extern char *read_dir(void *stream, unsigned long long *pos,
--		      unsigned long long *ino_out, int *len_out);
-+		      unsigned long long *ino_out, int *len_out,
-+		      unsigned int *type_out);
- extern void close_file(void *stream);
- extern int replace_file(int oldfd, int fd);
- extern void close_dir(void *stream);
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index e130bd4..dc4222b 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -283,6 +283,7 @@ int hostfs_readdir(struct file *file, void *ent, filldir_t filldir)
- 	char *name;
- 	unsigned long long next, ino;
- 	int error, len;
-+	unsigned int type;
- 
- 	name = dentry_name(file->f_path.dentry);
- 	if (name == NULL)
-@@ -292,9 +293,9 @@ int hostfs_readdir(struct file *file, void *ent, filldir_t filldir)
- 	if (dir == NULL)
- 		return -error;
- 	next = file->f_pos;
--	while ((name = read_dir(dir, &next, &ino, &len)) != NULL) {
-+	while ((name = read_dir(dir, &next, &ino, &len, &type)) != NULL) {
- 		error = (*filldir)(ent, name, len, file->f_pos,
--				   ino, DT_UNKNOWN);
-+				   ino, type);
- 		if (error) break;
- 		file->f_pos = next;
- 	}
-diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
-index dd7bc38..a74ad0d 100644
---- a/fs/hostfs/hostfs_user.c
-+++ b/fs/hostfs/hostfs_user.c
-@@ -98,7 +98,8 @@ void *open_dir(char *path, int *err_out)
- }
- 
- char *read_dir(void *stream, unsigned long long *pos,
--	       unsigned long long *ino_out, int *len_out)
-+	       unsigned long long *ino_out, int *len_out,
-+	       unsigned int *type_out)
- {
- 	DIR *dir = stream;
- 	struct dirent *ent;
-@@ -109,6 +110,7 @@ char *read_dir(void *stream, unsigned long long *pos,
- 		return NULL;
- 	*len_out = strlen(ent->d_name);
- 	*ino_out = ent->d_ino;
-+	*type_out = ent->d_type;
- 	*pos = telldir(dir);
- 	return ent->d_name;
- }
--- 
-1.7.0.4
+Hi!
+
+Am 12.01.2012 21:30, schrieb Toralf F=F6rster:
+>=20
+> richard -rw- weinberger wrote at 13:19:34
+>> 2012/1/11 Toralf F=F6rster <toralf.foerster@gmx.de>:
+>>> Hello,
+>>>
+>>> with a recent kernel (pre-rc1) I realized this crash and wondering
+>>
+>>> whether it is worth to bisect or if there's already a fix flying arou=
+nd :
+>> Could be this one:
+>> http://marc.info/?l=3Dlinux-kernel&m=3D132616456304183&w=3D2
+>> http://marc.info/?l=3Dlinux-kernel&m=3D132616483904249&w=3D2
+
+These two are the solution to it.
+
+> No, rather this :
+>=20
+> tfoerste@n22 ~/devel/linux $ git bisect good
+> ccbc60d3e19a1b6ae66ca0d89b3da02dde62088b is the first bad commit
+> commit ccbc60d3e19a1b6ae66ca0d89b3da02dde62088b
+> Author: Ben Hutchings <ben@decadent.org.uk>
+> Date:   Thu Nov 24 07:04:39 2011 +0000
+>=20
+>     topology: Provide CPU topology in sysfs in !SMP configurations
+>    =20
+>     We should provide topology information to userland even if it's not=
+
+>     very interesting.  The current code appears to work properly for !S=
+MP
+>     (tested on i386).
+>    =20
+>     Reference: http://bugs.debian.org/649216
+>     Reported-by: Marcus Osdoba <marcus.osdoba@googlemail.com>
+>     Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+>=20
+> :040000 040000 35e6984434f296f290d34ed09e7b01803b43eaea=20
+> 12d103589fd05d970d9ac75fd16ad2afc433ac95 M      drivers
+>=20
+>=20
+> ?
+
+Yes, this commit is causing the bug.
+
+Thanks,
+//richard
+
+
+--------------enig6F96648C9412965CDCED5FA3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iQEcBAEBAgAGBQJPD0QSAAoJEN9758yqZn9ekiwH/0HmRxBkjYxIeXYfghEJ8wTe
+G1WlCsVYCZgCqGB8apFX5h0+6i9s6XSctZ6nl1gRyk85GB6ihvB1hUKmMr6MpLqg
+yYlC7e3mncN1/tWydTfk19A0dNUHlU8RtncpbB/W1vKXzZZuW7np0dB8oPOI6Vau
+/KFTGswaEhHVlMkX3OvrVw5S77NOjYqCBpKTRRyFg39R0783L8iORledpW5TqD6r
+H+3YeNYEMd8W8gyS2/hZPuw5KL/2+1yWYbufpheUt7ayWREnUDMMc41RCG3ZO84Y
+OSv1VcYG31D2AK+izZE6YGyyQzttNuiRbfS1Qzbw85tAswIC9Z4PeGlT5sUFeRQ=
+=TfWA
+-----END PGP SIGNATURE-----
+
+--------------enig6F96648C9412965CDCED5FA3--
+
+
+--===============0406468721966332020==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+RSA(R) Conference 2012
+Mar 27 - Feb 2
+Save $400 by Jan. 27
+Register now!
+http://p.sf.net/sfu/rsa-sfdev2dev2
+--===============0406468721966332020==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============0406468721966332020==--
 
 
