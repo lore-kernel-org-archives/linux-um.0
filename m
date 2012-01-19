@@ -1,84 +1,22 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Wed, 25 Jan 2012 18:23:53 +0100
-Message-Id: <1327512234-22578-1-git-send-email-richard@nod.at>
+MIME-Version: 1.0
+In-Reply-To: <20120119131854.d1795a461302e72e727e63df@canb.auug.org.au>
+References: <20120119125932.a4c67005cf6a0938558e8b36@canb.auug.org.au>
+ <4F1788EC.4040901@xenotime.net> <20120119131854.d1795a461302e72e727e63df@canb.auug.org.au>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 18 Jan 2012 19:40:53 -0800
+Message-ID: <CA+55aFyu1t6xuCpNmyrfAtScz2x2o7ozzhU7WQOyz7k1TwmC5w@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 1/2] um: Use generic io.h
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Subject: Re: linux-next: Tree for Jan 19 (uml)
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Randy Dunlap <rdunlap@xenotime.net>, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, Eric Paris <eparis@redhat.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-There is no need to implement our own basic io functions.
-All we need exists already in asm-generic/io.h
+On Wed, Jan 18, 2012 at 6:18 PM, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> This file now needs protection against double inclusion.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/include/asm/io.h |   53 +---------------------------------------------
- 1 files changed, 1 insertions(+), 52 deletions(-)
+Done. I didn't check the UML end result, though, so...
 
-diff --git a/arch/um/include/asm/io.h b/arch/um/include/asm/io.h
-index 44e8b8c..cff48f0 100644
---- a/arch/um/include/asm/io.h
-+++ b/arch/um/include/asm/io.h
-@@ -1,57 +1,6 @@
- #ifndef __UM_IO_H
- #define __UM_IO_H
- 
--#include "asm/page.h"
--
--#define IO_SPACE_LIMIT 0xdeadbeef /* Sure hope nothing uses this */
--
--static inline int inb(unsigned long i) { return(0); }
--static inline void outb(char c, unsigned long i) { }
--
--/*
-- * Change virtual addresses to physical addresses and vv.
-- * These are pretty trivial
-- */
--static inline unsigned long virt_to_phys(volatile void * address)
--{
--	return __pa((void *) address);
--}
--
--static inline void * phys_to_virt(unsigned long address)
--{
--	return __va(address);
--}
--
--/*
-- * Convert a physical pointer to a virtual kernel pointer for /dev/mem
-- * access
-- */
--#define xlate_dev_mem_ptr(p)	__va(p)
--
--/*
-- * Convert a virtual cached pointer to an uncached pointer
-- */
--#define xlate_dev_kmem_ptr(p)	p
--
--static inline void writeb(unsigned char b, volatile void __iomem *addr)
--{
--	*(volatile unsigned char __force *) addr = b;
--}
--static inline void writew(unsigned short b, volatile void __iomem *addr)
--{
--	*(volatile unsigned short __force *) addr = b;
--}
--static inline void writel(unsigned int b, volatile void __iomem *addr)
--{
--	*(volatile unsigned int __force *) addr = b;
--}
--static inline void writeq(unsigned int b, volatile void __iomem *addr)
--{
--	*(volatile unsigned long long __force *) addr = b;
--}
--#define __raw_writeb writeb
--#define __raw_writew writew
--#define __raw_writel writel
--#define __raw_writeq writeq
-+#include <asm-generic/io.h>
- 
- #endif
--- 
-1.7.7
-
+                 Linus
