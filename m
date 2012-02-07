@@ -1,50 +1,58 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Matt Fleming <matt@console-pimps.org>
-Date: Tue, 14 Feb 2012 11:41:07 +0000
-Message-Id: <1329219673-28711-35-git-send-email-matt@console-pimps.org>
-In-Reply-To: <1329219673-28711-1-git-send-email-matt@console-pimps.org>
-References: <1329219673-28711-1-git-send-email-matt@console-pimps.org>
+Message-ID: <1328615930.22240.47.camel@sauron.fi.intel.com>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+Date: Tue, 07 Feb 2012 13:58:50 +0200
+In-Reply-To: <1328574170-2286-5-git-send-email-richard@nod.at>
+References: <1328574170-2286-1-git-send-email-richard@nod.at>
+	 <1328574170-2286-5-git-send-email-richard@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-0uGCJHws4xJraHmzYgy6"
+Mime-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 34/40] um: Don't restore current->blocked on error
-To: linux-arch@vger.kernel.org
-Cc: Oleg Nesterov <oleg@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Matt Fleming <matt.fleming@intel.com>, user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [PATCH 5/5] MTD: Relax dependencies
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk, linux-mtd@lists.infradead.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Matt Fleming <matt.fleming@intel.com>
 
-If we fail to setup the signal stack frame then we don't need to
-restore current->blocked because it is not modified by
-setup_signal_stack_*.
+--=-0uGCJHws4xJraHmzYgy6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Acked-by: Richard Weinberger <richard@nod.at>
-Tested-by: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Signed-off-by: Matt Fleming <matt.fleming@intel.com>
----
- arch/um/kernel/signal.c |    8 ++------
- 1 files changed, 2 insertions(+), 6 deletions(-)
+On Tue, 2012-02-07 at 01:22 +0100, Richard Weinberger wrote:
+> CONFIG_GENERIC_IO is just enough for the basic MTD stuff.
+>=20
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
-index e8b889d..8382e0b 100644
---- a/arch/um/kernel/signal.c
-+++ b/arch/um/kernel/signal.c
-@@ -65,13 +65,9 @@ static int handle_signal(struct pt_regs *regs, unsigned long signr,
- #endif
- 		err = setup_signal_stack_si(sp, signr, ka, regs, info, oldset);
- 
--	if (err) {
--		spin_lock_irq(&current->sighand->siglock);
--		current->blocked = *oldset;
--		recalc_sigpending();
--		spin_unlock_irq(&current->sighand->siglock);
-+	if (err)
- 		force_sigsegv(signr, current);
--	} else {
-+	else {
- 		spin_lock_irq(&current->sighand->siglock);
- 		sigorsets(&current->blocked, &current->blocked,
- 			  &ka->sa.sa_mask);
--- 
-1.7.4.4
+Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-0uGCJHws4xJraHmzYgy6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJPMRH6AAoJECmIfjd9wqK0wQoP/1xKWaIwofLhrWjDPA39+WQq
+6wbWvctSHYhDYYL9WX3gf2qJ4muatsJ3il9TjJBun7XW29S4xMJencahbK1/PKek
+fVv8BHeYMCtSMw9ATlipIA+P80PM3UXcadc1u1tOWqd7cAtr6f4G+3JB2WeAYdpV
+D/djYBisMkalq2XY4SYpNblMUA4K80QmPcTBqMpk2OLngmyXsC9hZCeeOg+4GKJR
+1wqXNGsFEENXbUG70tdbIgukC2Gy+puLWDMBPTlA6YVLr4vFtr18pUWODgUmjcAw
+Sh8UlJ2BIB9FXEDazaO+NNJ2zeDovgKld8hh0mAEWkP320VicT06EPYb+VSZqEuw
+Q/1j4/TyjOl09lU3sm5i2mdM0wXV1L8v8HhXHwZUv7/+KY7BEMq8I7+jScBqI+gC
+JzBLVVn/UUco6TqiT8wWau3IWzJDNfm84KHM9eYhR2ONkFGMVSrPUiz1ed4Oe1SN
+1j07JQPGf/+/OJAKU+vs4V6o0yb39qNR3eKPRgX1aGkBAkEbuCVLu/WcjNQrUxoW
+MI0M/htOKJ7jxysge45qlzH/qDjE1xToJRGaUtNd9JOTg/CZjvxkT4aUfNf3XUk6
+McaA1R9MtKmqZuo/6SQ2T6Co8HqZP27de23TPPOJVyuPhn9F32REp+UfL4i1DfCT
+LIgVud1jTD0AxtyS0ANi
+=ch3m
+-----END PGP SIGNATURE-----
+
+--=-0uGCJHws4xJraHmzYgy6--
 
