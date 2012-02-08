@@ -1,41 +1,78 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4F3E9DC8.6090304@xenotime.net>
-Date: Fri, 17 Feb 2012 10:34:48 -0800
-From: Randy Dunlap <rdunlap@xenotime.net>
-MIME-Version: 1.0
-References: <20120217165045.2394d944d6efc37104421d2e@canb.auug.org.au>
-In-Reply-To: <20120217165045.2394d944d6efc37104421d2e@canb.auug.org.au>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Danny Kukawka <danny.kukawka@bisect.de>
+Date: Wed,  8 Feb 2012 22:10:12 +0100
+Message-Id: <1328735457-29986-6-git-send-email-danny.kukawka@bisect.de>
+In-Reply-To: <1328735457-29986-1-git-send-email-danny.kukawka@bisect.de>
+References: <1328735457-29986-1-git-send-email-danny.kukawka@bisect.de>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: linux-next: Tree for Feb 17 (uml)
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Subject: [PATCH 05/50] UML net: set addr_assign_type if random_ether_addr() used
+To: Jeff Dike <jdike@addtoit.com>
+Cc: Danny Kukawka <dkukawka@suse.de>, Richard Weinberger <richard@nod.at>, "David S. Miller" <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 02/16/2012 09:50 PM, Stephen Rothwell wrote:
-> Hi all,
->
-> Changes since 20120216:
+Set addr_assign_type correctly to NET_ADDR_RANDOM in case
+a random MAC address was generated and assigned to the netdevice.
 
+Signed-off-by: Danny Kukawka <danny.kukawka@bisect.de>
+---
+ arch/um/drivers/net_kern.c |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
 
-uml on x86_64 (defconfig):
-
-   CC      arch/um/kernel/asm-offsets.s
-In file included from linux-next-20120217/include/linux/slab.h:12:0,
-                  from linux-next-20120217/include/linux/crypto.h:23,
-                  from 
-linux-next-20120217/arch/x86/um/shared/sysdep/kernel-offsets.h:4,
-                  from linux-next-20120217/arch/um/kernel/asm-offsets.c:1:
-linux-next-20120217/include/linux/gfp.h: In function 'gfp_zonelist':
-linux-next-20120217/include/linux/gfp.h:267:1: error: 
-'__enabled_CONFIG_NUMA' undeclared (first use in this function)
-linux-next-20120217/include/linux/gfp.h:267:1: note: each undeclared 
-identifier is reported only once for each function it appears in
-linux-next-20120217/include/linux/gfp.h:267:1: error: 
-'__enabled_CONFIG_NUMA_MODULE' undeclared (first use in this function)
-
-
-
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index a492e59..5f274f0 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -293,7 +293,7 @@ static void uml_net_user_timer_expire(unsigned long _conn)
+ #endif
+ }
+ 
+-static void setup_etheraddr(char *str, unsigned char *addr, char *name)
++static int setup_etheraddr(char *str, unsigned char *addr, char *name)
+ {
+ 	char *end;
+ 	int i;
+@@ -334,12 +334,13 @@ static void setup_etheraddr(char *str, unsigned char *addr, char *name)
+ 		       addr[0] | 0x02, addr[1], addr[2], addr[3], addr[4],
+ 		       addr[5]);
+ 	}
+-	return;
++	return 0;
+ 
+ random:
+ 	printk(KERN_INFO
+ 	       "Choosing a random ethernet address for device %s\n", name);
+ 	random_ether_addr(addr);
++	return 1;
+ }
+ 
+ static DEFINE_SPINLOCK(devices_lock);
+@@ -391,6 +392,7 @@ static void eth_configure(int n, void *init, char *mac,
+ 	struct net_device *dev;
+ 	struct uml_net_private *lp;
+ 	int err, size;
++	int is_random;
+ 
+ 	size = transport->private_size + sizeof(struct uml_net_private);
+ 
+@@ -417,7 +419,7 @@ static void eth_configure(int n, void *init, char *mac,
+ 	 */
+ 	snprintf(dev->name, sizeof(dev->name), "eth%d", n);
+ 
+-	setup_etheraddr(mac, device->mac, dev->name);
++	is_random = setup_etheraddr(mac, device->mac, dev->name);
+ 
+ 	printk(KERN_INFO "Netdevice %d (%pM) : ", n, device->mac);
+ 
+@@ -474,6 +476,9 @@ static void eth_configure(int n, void *init, char *mac,
+ 
+ 	/* don't use eth_mac_addr, it will not work here */
+ 	memcpy(dev->dev_addr, device->mac, ETH_ALEN);
++	if (is_random)
++		dev->addr_assign_type |= NET_ADDR_RANDOM;
++
+ 	dev->mtu = transport->user->mtu;
+ 	dev->netdev_ops = &uml_netdev_ops;
+ 	dev->ethtool_ops = &uml_net_ethtool_ops;
 -- 
-~Randy
+1.7.7.3
+
