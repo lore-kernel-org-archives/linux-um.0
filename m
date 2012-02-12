@@ -1,169 +1,234 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4F37BAAA.8080207@nod.at>
-Date: Sun, 12 Feb 2012 14:12:10 +0100
-From: Richard Weinberger <richard@nod.at>
+Message-ID: <4F37B815.8060701@suse.cz>
+Date: Sun, 12 Feb 2012 14:01:09 +0100
+From: Jiri Slaby <jslaby@suse.cz>
 MIME-Version: 1.0
-References: <1329006070-4275-1-git-send-email-richard@nod.at> <4F3706C4.2070102@nod.at> <4F37B815.8060701@suse.cz>
-In-Reply-To: <4F37B815.8060701@suse.cz>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigCCFA582285830E4546E15885"
+References: <1329006070-4275-1-git-send-email-richard@nod.at> <4F3706C4.2070102@nod.at>
+In-Reply-To: <4F3706C4.2070102@nod.at>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [PATCH] um: Use tty_port
-To: Jiri Slaby <jslaby@suse.cz>
+To: Richard Weinberger <richard@nod.at>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, alan@lxorguk.ukuu.org.uk, gregkh@linuxfoundation.org, Jiri Slaby <jirislaby@gmail.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigCCFA582285830E4546E15885
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+On 02/12/2012 01:24 AM, Richard Weinberger wrote:
+>> @@ -228,92 +238,6 @@ void line_set_termios(struct tty_struct *tty, struct ktermios * old)
+>>  	/* nothing */
+>>  }
+>>  
+>> -static const struct {
+>> -	int  cmd;
+>> -	char *level;
+>> -	char *name;
+>> -} tty_ioctls[] = {
+>> -	/* don't print these, they flood the log ... */
+>> -	{ TCGETS,      NULL,       "TCGETS"      },
+>> -	{ TCSETS,      NULL,       "TCSETS"      },
+>> -	{ TCSETSW,     NULL,       "TCSETSW"     },
+>> -	{ TCFLSH,      NULL,       "TCFLSH"      },
+>> -	{ TCSBRK,      NULL,       "TCSBRK"      },
+>> -
+>> -	/* general tty stuff */
+>> -	{ TCSETSF,     KERN_DEBUG, "TCSETSF"     },
+>> -	{ TCGETA,      KERN_DEBUG, "TCGETA"      },
+>> -	{ TIOCMGET,    KERN_DEBUG, "TIOCMGET"    },
+>> -	{ TCSBRKP,     KERN_DEBUG, "TCSBRKP"     },
+>> -	{ TIOCMSET,    KERN_DEBUG, "TIOCMSET"    },
+>> -
+>> -	/* linux-specific ones */
+>> -	{ TIOCLINUX,   KERN_INFO,  "TIOCLINUX"   },
+>> -	{ KDGKBMODE,   KERN_INFO,  "KDGKBMODE"   },
+>> -	{ KDGKBTYPE,   KERN_INFO,  "KDGKBTYPE"   },
+>> -	{ KDSIGACCEPT, KERN_INFO,  "KDSIGACCEPT" },
+>> -};
+>> -
+>> -int line_ioctl(struct tty_struct *tty, unsigned int cmd,
+>> -				unsigned long arg)
+>> -{
+>> -	int ret;
+>> -	int i;
+>> -
+>> -	ret = 0;
+>> -	switch(cmd) {
+>> -#ifdef TIOCGETP
+>> -	case TIOCGETP:
+>> -	case TIOCSETP:
+>> -	case TIOCSETN:
+>> -#endif
+>> -#ifdef TIOCGETC
+>> -	case TIOCGETC:
+>> -	case TIOCSETC:
+>> -#endif
+>> -#ifdef TIOCGLTC
+>> -	case TIOCGLTC:
+>> -	case TIOCSLTC:
+>> -#endif
+>> -	/* Note: these are out of date as we now have TCGETS2 etc but this
+>> -	   whole lot should probably go away */
+>> -	case TCGETS:
+>> -	case TCSETSF:
+>> -	case TCSETSW:
+>> -	case TCSETS:
+>> -	case TCGETA:
+>> -	case TCSETAF:
+>> -	case TCSETAW:
+>> -	case TCSETA:
+>> -	case TCXONC:
+>> -	case TCFLSH:
+>> -	case TIOCOUTQ:
+>> -	case TIOCINQ:
+>> -	case TIOCGLCKTRMIOS:
+>> -	case TIOCSLCKTRMIOS:
+>> -	case TIOCPKT:
+>> -	case TIOCGSOFTCAR:
+>> -	case TIOCSSOFTCAR:
+>> -		return -ENOIOCTLCMD;
+>> -#if 0
+>> -	case TCwhatever:
+>> -		/* do something */
+>> -		break;
+>> -#endif
+>> -	default:
+>> -		for (i = 0; i < ARRAY_SIZE(tty_ioctls); i++)
+>> -			if (cmd == tty_ioctls[i].cmd)
+>> -				break;
+>> -		if (i == ARRAY_SIZE(tty_ioctls)) {
+>> -			printk(KERN_ERR "%s: %s: unknown ioctl: 0x%x\n",
+>> -			       __func__, tty->name, cmd);
+>> -		}
+>> -		ret = -ENOIOCTLCMD;
+>> -		break;
+>> -	}
+>> -	return ret;
+>> -}
+>> -
+>>  void line_throttle(struct tty_struct *tty)
+>>  {
+>>  	struct line *line = tty->driver_data;
+>> @@ -343,7 +267,7 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
+>>  {
+>>  	struct chan *chan = data;
+>>  	struct line *line = chan->line;
+>> -	struct tty_struct *tty = line->tty;
+>> +	struct tty_struct *tty = tty_port_tty_get(&line->port);
+>>  	int err;
+>>  
+>>  	/*
+>> @@ -354,6 +278,9 @@ static irqreturn_t line_write_interrupt(int irq, void *data)
+>>  	spin_lock(&line->lock);
+>>  	err = flush_buffer(line);
+>>  	if (err == 0) {
+>> +		tty_kref_put(tty);
+>> +
+>> +		spin_unlock(&line->lock);
 
-Am 12.02.2012 14:01, schrieb Jiri Slaby:
-> This and the ioctl change above fullfils the subject of the patch in no=
+This and the ioctl change above fullfils the subject of the patch in no
+way. Do this fix and the cleanup above separately, please.
 
-> way. Do this fix and the cleanup above separately, please.
+>> @@ -404,27 +334,27 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
+>>   * first open or last close.  Otherwise, open and close just return.
+>>   */
+>>  
+>> -int line_open(struct line *lines, struct tty_struct *tty)
+>> +int line_open(struct tty_struct *tty, struct file *filp)
+>>  {
+>> -	struct line *line = &lines[tty->index];
+>> -	int err = -ENODEV;
+>> +	struct line *line = tty->driver_data;
+>> +	return tty_port_open(&line->port, tty, filp);
+>> +}
+>>  
+>> -	spin_lock(&line->count_lock);
+>> -	if (!line->valid)
+>> -		goto out_unlock;
+>> +int line_install(struct tty_driver *driver, struct tty_struct *tty, struct line *line)
 
-Fair point.
+As it stands, it should be tty_port->ops->activate, not
+tty->ops->install. Yes, you can still set driver_data and check for
+multiple opens in install. Then use also tty_standard_install.
 
->=20
->>> @@ -404,27 +334,27 @@ int line_setup_irq(int fd, int input, int outpu=
-t, struct line *line, void *data)
->>>   * first open or last close.  Otherwise, open and close just return.=
+>> +{
+>> +	int ret = tty_init_termios(tty);
+>>  
+>> -	err = 0;
+>> -	if (line->count++)
+>> -		goto out_unlock;
+>> +	if (ret)
+>> +		return ret;
+>>  
+>> -	BUG_ON(tty->driver_data);
+>> +	tty_driver_kref_get(driver);
+>> +	tty->count++;
+>>  	tty->driver_data = line;
+>> -	line->tty = tty;
+>> +	driver->ttys[tty->index] = tty;
+>>  
+>> -	spin_unlock(&line->count_lock);
+>> -	err = enable_chan(line);
+>> -	if (err) /* line_close() will be called by our caller */
+>> -		return err;
+>> +	ret = enable_chan(line);
+>> +	if (ret)
+>> +		return ret;
+>>  
+>>  	INIT_DELAYED_WORK(&line->task, line_timer_cb);
+>>  
+>> @@ -437,48 +367,36 @@ int line_open(struct line *lines, struct tty_struct *tty)
+>>  			 &tty->winsize.ws_col);
+>>  
+>>  	return 0;
+>> -
+>> -out_unlock:
+>> -	spin_unlock(&line->count_lock);
+>> -	return err;
+>>  }
+...
+>> +void line_close(struct tty_struct *tty, struct file * filp)
+>> +{
+>> +	struct line *line = tty->driver_data;
+>> +
+>> +	if (!line)
+>> +		return;
 
->>>   */
->>> =20
->>> -int line_open(struct line *lines, struct tty_struct *tty)
->>> +int line_open(struct tty_struct *tty, struct file *filp)
->>>  {
->>> -	struct line *line =3D &lines[tty->index];
->>> -	int err =3D -ENODEV;
->>> +	struct line *line =3D tty->driver_data;
->>> +	return tty_port_open(&line->port, tty, filp);
->>> +}
->>> =20
->>> -	spin_lock(&line->count_lock);
->>> -	if (!line->valid)
->>> -		goto out_unlock;
->>> +int line_install(struct tty_driver *driver, struct tty_struct *tty, =
-struct line *line)
->=20
-> As it stands, it should be tty_port->ops->activate, not
-> tty->ops->install. Yes, you can still set driver_data and check for
-> multiple opens in install. Then use also tty_standard_install.
+Unless you set tty->driver_data to NULL somewhere, this can never
+happen. If you do, why -- this tends to be racy?
 
-Okay.
+>> +	tty_port_close(&line->port, tty, filp);
+>> +}
+...
+>> --- a/arch/um/drivers/ssl.c
+>> +++ b/arch/um/drivers/ssl.c
+>> @@ -92,6 +92,7 @@ static int ssl_remove(int n, char **error_out)
+>>  			   error_out);
+>>  }
+>>  
+>> +#if 0
 
->>> +{
->>> +	int ret =3D tty_init_termios(tty);
->>> =20
->>> -	err =3D 0;
->>> -	if (line->count++)
->>> -		goto out_unlock;
->>> +	if (ret)
->>> +		return ret;
->>> =20
->>> -	BUG_ON(tty->driver_data);
->>> +	tty_driver_kref_get(driver);
->>> +	tty->count++;
->>>  	tty->driver_data =3D line;
->>> -	line->tty =3D tty;
->>> +	driver->ttys[tty->index] =3D tty;
->>> =20
->>> -	spin_unlock(&line->count_lock);
->>> -	err =3D enable_chan(line);
->>> -	if (err) /* line_close() will be called by our caller */
->>> -		return err;
->>> +	ret =3D enable_chan(line);
->>> +	if (ret)
->>> +		return ret;
->>> =20
->>>  	INIT_DELAYED_WORK(&line->task, line_timer_cb);
->>> =20
->>> @@ -437,48 +367,36 @@ int line_open(struct line *lines, struct tty_st=
-ruct *tty)
->>>  			 &tty->winsize.ws_col);
->>> =20
->>>  	return 0;
->>> -
->>> -out_unlock:
->>> -	spin_unlock(&line->count_lock);
->>> -	return err;
->>>  }
-> ...
->>> +void line_close(struct tty_struct *tty, struct file * filp)
->>> +{
->>> +	struct line *line =3D tty->driver_data;
->>> +
->>> +	if (!line)
->>> +		return;
->=20
-> Unless you set tty->driver_data to NULL somewhere, this can never
-> happen. If you do, why -- this tends to be racy?
+Hmm, remove unused code instead.
 
-The old driver set tty->driver_data to NULL.
-I guess we can remove it.
+>>  static int ssl_open(struct tty_struct *tty, struct file *filp)
+>>  {
+>>  	int err = line_open(serial_lines, tty);
+...
+>> @@ -124,8 +124,16 @@ void ssl_hangup(struct tty_struct *tty)
+>>  }
+>>  #endif
+>>  
+>> +static int ssl_install(struct tty_driver *driver, struct tty_struct *tty)
+>> +{
+>> +	if (tty->index < NR_PORTS)
 
->>> +	tty_port_close(&line->port, tty, filp);
->>> +}
-> ...
->>> --- a/arch/um/drivers/ssl.c
->>> +++ b/arch/um/drivers/ssl.c
->>> @@ -92,6 +92,7 @@ static int ssl_remove(int n, char **error_out)
->>>  			   error_out);
->>>  }
->>> =20
->>> +#if 0
->=20
-> Hmm, remove unused code instead.
+Do you register more than NR_PORTS when allocating tty_driver? If not,
+this test is always true. But presumably you won't need this hook anyway.
 
-Will do.
+>> +		return line_install(driver, tty, &serial_lines[tty->index]);
+>> +	else
+>> +		return -ENODEV;
+>> +}
 
->>>  static int ssl_open(struct tty_struct *tty, struct file *filp)
->>>  {
->>>  	int err =3D line_open(serial_lines, tty);
-> ...
->>> @@ -124,8 +124,16 @@ void ssl_hangup(struct tty_struct *tty)
->>>  }
->>>  #endif
->>> =20
->>> +static int ssl_install(struct tty_driver *driver, struct tty_struct =
-*tty)
->>> +{
->>> +	if (tty->index < NR_PORTS)
->=20
-> Do you register more than NR_PORTS when allocating tty_driver? If not,
-> this test is always true. But presumably you won't need this hook anywa=
-y.
-
-Okay.
-
->>> +		return line_install(driver, tty, &serial_lines[tty->index]);
->>> +	else
->>> +		return -ENODEV;
->>> +}
->=20
-> thanks,
-
-Thanks,
-//richard
-
-
---------------enigCCFA582285830E4546E15885
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJPN7quAAoJEN9758yqZn9ef1IH/3HR5gsbPL4nX6/C2ItSzllc
-uvSi46EuPcOIB+3WQt4PqUB3ld0GfBd3ZSozelKonCyGYrqgmDsMD9DdGntQ+iKY
-aFjvTQmmjs+6SBclMz5zf02gkIO1j09GI1NLjvz+grvjTPMJV5iKM+AzxuWaZDPM
-IVZKi++Sx/RiaWGe4CJCxCs9+OASKKapHmqO8KVaXaqbFhvtCGOL3WNa6brPRkUj
-MrotB3g2/fq2/TdePtWoRLXG99HEW1QbBnBGT1NYM2eX02wdwUk1kentAidCqPhV
-GHM7HnanvJcT7ZaK59+75kYYYdFQPeff7dkR+iWnnA3vpwvcZstT34wIUTiZD4Q=
-=6h+9
------END PGP SIGNATURE-----
-
---------------enigCCFA582285830E4546E15885--
+thanks,
+-- 
+js
+suse labs
