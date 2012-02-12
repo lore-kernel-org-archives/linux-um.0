@@ -1,159 +1,169 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <4F37BAAA.8080207@nod.at>
+Date: Sun, 12 Feb 2012 14:12:10 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-From: Venkatesh Pallipadi <venki@google.com>
-Date: Tue, 14 Feb 2012 14:49:43 -0800
-Message-Id: <1329259784-20592-3-git-send-email-venki@google.com>
-In-Reply-To: <1329259784-20592-1-git-send-email-venki@google.com>
-References: <87wr7pbwbz.fsf@rustcorp.com.au>
- <1329259784-20592-1-git-send-email-venki@google.com>
+References: <1329006070-4275-1-git-send-email-richard@nod.at> <4F3706C4.2070102@nod.at> <4F37B815.8060701@suse.cz>
+In-Reply-To: <4F37B815.8060701@suse.cz>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigCCFA582285830E4546E15885"
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 2/3] mips: Avoid raw handling of cpu_possible_map/cpu_online_map
-To: Rusty Russell <rusty@rustcorp.com.au>
-Cc: Tony Luck <tony.luck@gmail.com>, "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, KOSAKI Motohiro <kosaki.motohiro@gmail.com>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, Mike Travis <travis@sgi.com>, "Paul E. McKenney" <paul.mckenney@linaro.org>, "Rafael J. Wysocki" <rjw@sisk.pl>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, Richard Kuo <rkuo@codeaurora.org>, linux-hexagon@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, Venkatesh Pallipadi <venki@google.com>
+Subject: Re: [PATCH] um: Use tty_port
+To: Jiri Slaby <jslaby@suse.cz>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, alan@lxorguk.ukuu.org.uk, gregkh@linuxfoundation.org, Jiri Slaby <jirislaby@gmail.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Use set_cpu_* and init_cpu_* variants instead.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigCCFA582285830E4546E15885
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Venkatesh Pallipadi <venki@google.com>
----
- arch/mips/cavium-octeon/smp.c       |    2 +-
- arch/mips/kernel/smp.c              |    4 ++--
- arch/mips/netlogic/xlr/smp.c        |    4 ++--
- arch/mips/pmc-sierra/yosemite/smp.c |    4 ++--
- arch/mips/sgi-ip27/ip27-smp.c       |    2 +-
- arch/mips/sibyte/bcm1480/smp.c      |    5 ++---
- arch/mips/sibyte/sb1250/smp.c       |    5 ++---
- 7 files changed, 12 insertions(+), 14 deletions(-)
+Am 12.02.2012 14:01, schrieb Jiri Slaby:
+> This and the ioctl change above fullfils the subject of the patch in no=
 
-diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
-index efcfff4..5cce09c 100644
---- a/arch/mips/cavium-octeon/smp.c
-+++ b/arch/mips/cavium-octeon/smp.c
-@@ -268,7 +268,7 @@ static int octeon_cpu_disable(void)
- 
- 	spin_lock(&smp_reserve_lock);
- 
--	cpu_clear(cpu, cpu_online_map);
-+	set_cpu_online(cpu, false);
- 	cpu_clear(cpu, cpu_callin_map);
- 	local_irq_disable();
- 	fixup_irqs();
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index 32c1e95..28777ff 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -148,7 +148,7 @@ static void stop_this_cpu(void *dummy)
- 	/*
- 	 * Remove this CPU:
- 	 */
--	cpu_clear(smp_processor_id(), cpu_online_map);
-+	set_cpu_online(smp_processor_id(), false);
- 	for (;;) {
- 		if (cpu_wait)
- 			(*cpu_wait)();		/* Wait if available. */
-@@ -248,7 +248,7 @@ int __cpuinit __cpu_up(unsigned int cpu)
- 	while (!cpu_isset(cpu, cpu_callin_map))
- 		udelay(100);
- 
--	cpu_set(cpu, cpu_online_map);
-+	set_cpu_online(cpu, true);
- 
- 	return 0;
- }
-diff --git a/arch/mips/netlogic/xlr/smp.c b/arch/mips/netlogic/xlr/smp.c
-index 080284d..8084221 100644
---- a/arch/mips/netlogic/xlr/smp.c
-+++ b/arch/mips/netlogic/xlr/smp.c
-@@ -154,7 +154,7 @@ void __init nlm_smp_setup(void)
- 	cpu_set(boot_cpu, phys_cpu_present_map);
- 	__cpu_number_map[boot_cpu] = 0;
- 	__cpu_logical_map[0] = boot_cpu;
--	cpu_set(0, cpu_possible_map);
-+	set_cpu_possible(0, true);
- 
- 	num_cpus = 1;
- 	for (i = 0; i < NR_CPUS; i++) {
-@@ -166,7 +166,7 @@ void __init nlm_smp_setup(void)
- 			cpu_set(i, phys_cpu_present_map);
- 			__cpu_number_map[i] = num_cpus;
- 			__cpu_logical_map[num_cpus] = i;
--			cpu_set(num_cpus, cpu_possible_map);
-+			set_cpu_possible(num_cpus, true);
- 			++num_cpus;
- 		}
- 	}
-diff --git a/arch/mips/pmc-sierra/yosemite/smp.c b/arch/mips/pmc-sierra/yosemite/smp.c
-index 2608752..b2b23eb 100644
---- a/arch/mips/pmc-sierra/yosemite/smp.c
-+++ b/arch/mips/pmc-sierra/yosemite/smp.c
-@@ -155,10 +155,10 @@ static void __init yos_smp_setup(void)
- {
- 	int i;
- 
--	cpus_clear(cpu_possible_map);
-+	init_cpu_possible(cpumask_of(0));
- 
- 	for (i = 0; i < 2; i++) {
--		cpu_set(i, cpu_possible_map);
-+		set_cpu_possible(i, true);
- 		__cpu_number_map[i]	= i;
- 		__cpu_logical_map[i]	= i;
- 	}
-diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
-index c6851df..735b43b 100644
---- a/arch/mips/sgi-ip27/ip27-smp.c
-+++ b/arch/mips/sgi-ip27/ip27-smp.c
-@@ -76,7 +76,7 @@ static int do_cpumask(cnodeid_t cnode, nasid_t nasid, int highest)
- 			/* Only let it join in if it's marked enabled */
- 			if ((acpu->cpu_info.flags & KLINFO_ENABLE) &&
- 			    (tot_cpus_found != NR_CPUS)) {
--				cpu_set(cpuid, cpu_possible_map);
-+				set_cpu_possible(cpuid, true);
- 				alloc_cpupda(cpuid, tot_cpus_found);
- 				cpus_found++;
- 				tot_cpus_found++;
-diff --git a/arch/mips/sibyte/bcm1480/smp.c b/arch/mips/sibyte/bcm1480/smp.c
-index d667875..63d2211 100644
---- a/arch/mips/sibyte/bcm1480/smp.c
-+++ b/arch/mips/sibyte/bcm1480/smp.c
-@@ -147,14 +147,13 @@ static void __init bcm1480_smp_setup(void)
- {
- 	int i, num;
- 
--	cpus_clear(cpu_possible_map);
--	cpu_set(0, cpu_possible_map);
-+	init_cpu_possible(cpumask_of(0));
- 	__cpu_number_map[0] = 0;
- 	__cpu_logical_map[0] = 0;
- 
- 	for (i = 1, num = 0; i < NR_CPUS; i++) {
- 		if (cfe_cpu_stop(i) == 0) {
--			cpu_set(i, cpu_possible_map);
-+			set_cpu_possible(i, true);
- 			__cpu_number_map[i] = ++num;
- 			__cpu_logical_map[num] = i;
- 		}
-diff --git a/arch/mips/sibyte/sb1250/smp.c b/arch/mips/sibyte/sb1250/smp.c
-index 38e7f6b..77f0df5 100644
---- a/arch/mips/sibyte/sb1250/smp.c
-+++ b/arch/mips/sibyte/sb1250/smp.c
-@@ -135,14 +135,13 @@ static void __init sb1250_smp_setup(void)
- {
- 	int i, num;
- 
--	cpus_clear(cpu_possible_map);
--	cpu_set(0, cpu_possible_map);
-+	init_cpu_possible(cpumask_of(0));
- 	__cpu_number_map[0] = 0;
- 	__cpu_logical_map[0] = 0;
- 
- 	for (i = 1, num = 0; i < NR_CPUS; i++) {
- 		if (cfe_cpu_stop(i) == 0) {
--			cpu_set(i, cpu_possible_map);
-+			set_cpu_possible(i, true);
- 			__cpu_number_map[i] = ++num;
- 			__cpu_logical_map[num] = i;
- 		}
--- 
-1.7.7.3
+> way. Do this fix and the cleanup above separately, please.
 
+Fair point.
+
+>=20
+>>> @@ -404,27 +334,27 @@ int line_setup_irq(int fd, int input, int outpu=
+t, struct line *line, void *data)
+>>>   * first open or last close.  Otherwise, open and close just return.=
+
+>>>   */
+>>> =20
+>>> -int line_open(struct line *lines, struct tty_struct *tty)
+>>> +int line_open(struct tty_struct *tty, struct file *filp)
+>>>  {
+>>> -	struct line *line =3D &lines[tty->index];
+>>> -	int err =3D -ENODEV;
+>>> +	struct line *line =3D tty->driver_data;
+>>> +	return tty_port_open(&line->port, tty, filp);
+>>> +}
+>>> =20
+>>> -	spin_lock(&line->count_lock);
+>>> -	if (!line->valid)
+>>> -		goto out_unlock;
+>>> +int line_install(struct tty_driver *driver, struct tty_struct *tty, =
+struct line *line)
+>=20
+> As it stands, it should be tty_port->ops->activate, not
+> tty->ops->install. Yes, you can still set driver_data and check for
+> multiple opens in install. Then use also tty_standard_install.
+
+Okay.
+
+>>> +{
+>>> +	int ret =3D tty_init_termios(tty);
+>>> =20
+>>> -	err =3D 0;
+>>> -	if (line->count++)
+>>> -		goto out_unlock;
+>>> +	if (ret)
+>>> +		return ret;
+>>> =20
+>>> -	BUG_ON(tty->driver_data);
+>>> +	tty_driver_kref_get(driver);
+>>> +	tty->count++;
+>>>  	tty->driver_data =3D line;
+>>> -	line->tty =3D tty;
+>>> +	driver->ttys[tty->index] =3D tty;
+>>> =20
+>>> -	spin_unlock(&line->count_lock);
+>>> -	err =3D enable_chan(line);
+>>> -	if (err) /* line_close() will be called by our caller */
+>>> -		return err;
+>>> +	ret =3D enable_chan(line);
+>>> +	if (ret)
+>>> +		return ret;
+>>> =20
+>>>  	INIT_DELAYED_WORK(&line->task, line_timer_cb);
+>>> =20
+>>> @@ -437,48 +367,36 @@ int line_open(struct line *lines, struct tty_st=
+ruct *tty)
+>>>  			 &tty->winsize.ws_col);
+>>> =20
+>>>  	return 0;
+>>> -
+>>> -out_unlock:
+>>> -	spin_unlock(&line->count_lock);
+>>> -	return err;
+>>>  }
+> ...
+>>> +void line_close(struct tty_struct *tty, struct file * filp)
+>>> +{
+>>> +	struct line *line =3D tty->driver_data;
+>>> +
+>>> +	if (!line)
+>>> +		return;
+>=20
+> Unless you set tty->driver_data to NULL somewhere, this can never
+> happen. If you do, why -- this tends to be racy?
+
+The old driver set tty->driver_data to NULL.
+I guess we can remove it.
+
+>>> +	tty_port_close(&line->port, tty, filp);
+>>> +}
+> ...
+>>> --- a/arch/um/drivers/ssl.c
+>>> +++ b/arch/um/drivers/ssl.c
+>>> @@ -92,6 +92,7 @@ static int ssl_remove(int n, char **error_out)
+>>>  			   error_out);
+>>>  }
+>>> =20
+>>> +#if 0
+>=20
+> Hmm, remove unused code instead.
+
+Will do.
+
+>>>  static int ssl_open(struct tty_struct *tty, struct file *filp)
+>>>  {
+>>>  	int err =3D line_open(serial_lines, tty);
+> ...
+>>> @@ -124,8 +124,16 @@ void ssl_hangup(struct tty_struct *tty)
+>>>  }
+>>>  #endif
+>>> =20
+>>> +static int ssl_install(struct tty_driver *driver, struct tty_struct =
+*tty)
+>>> +{
+>>> +	if (tty->index < NR_PORTS)
+>=20
+> Do you register more than NR_PORTS when allocating tty_driver? If not,
+> this test is always true. But presumably you won't need this hook anywa=
+y.
+
+Okay.
+
+>>> +		return line_install(driver, tty, &serial_lines[tty->index]);
+>>> +	else
+>>> +		return -ENODEV;
+>>> +}
+>=20
+> thanks,
+
+Thanks,
+//richard
+
+
+--------------enigCCFA582285830E4546E15885
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iQEcBAEBAgAGBQJPN7quAAoJEN9758yqZn9ef1IH/3HR5gsbPL4nX6/C2ItSzllc
+uvSi46EuPcOIB+3WQt4PqUB3ld0GfBd3ZSozelKonCyGYrqgmDsMD9DdGntQ+iKY
+aFjvTQmmjs+6SBclMz5zf02gkIO1j09GI1NLjvz+grvjTPMJV5iKM+AzxuWaZDPM
+IVZKi++Sx/RiaWGe4CJCxCs9+OASKKapHmqO8KVaXaqbFhvtCGOL3WNa6brPRkUj
+MrotB3g2/fq2/TdePtWoRLXG99HEW1QbBnBGT1NYM2eX02wdwUk1kentAidCqPhV
+GHM7HnanvJcT7ZaK59+75kYYYdFQPeff7dkR+iWnnA3vpwvcZstT34wIUTiZD4Q=
+=6h+9
+-----END PGP SIGNATURE-----
+
+--------------enigCCFA582285830E4546E15885--
