@@ -1,70 +1,77 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1RuYpG-0004au-2u
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Feb 2012 00:22:26 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RuYpC-00008b-J7
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Feb 2012 00:22:26 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Tue,  7 Feb 2012 01:22:47 +0100
-Message-Id: <1328574170-2286-2-git-send-email-richard@nod.at>
-In-Reply-To: <1328574170-2286-1-git-send-email-richard@nod.at>
-References: <1328574170-2286-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 2/5] um: Serve io_remap_pfn_range()
-To: linux-kernel@vger.kernel.org
-Cc: Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: Matt Fleming <matt@console-pimps.org>
+Date: Tue, 14 Feb 2012 11:41:08 +0000
+Message-Id: <1329219673-28711-36-git-send-email-matt@console-pimps.org>
+In-Reply-To: <1329219673-28711-1-git-send-email-matt@console-pimps.org>
+References: <1329219673-28711-1-git-send-email-matt@console-pimps.org>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: [PATCH 35/40] um: Use set_current_blocked() and block_sigmask()
+To: linux-arch@vger.kernel.org
+Cc: Oleg Nesterov <oleg@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Matt Fleming <matt.fleming@intel.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-At some places io_remap_pfn_range() is needed.
-UML has to serve it like all other archs do.
+From: Matt Fleming <matt.fleming@intel.com>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+As described in e6fa16ab ("signal: sigprocmask() should do
+retarget_shared_pending()") the modification of current->blocked is
+incorrect as we need to check whether the signal we're about to block
+is pending in the shared queue.
+
+Also, use the new helper function introduced in commit 5e6292c0f28f
+("signal: add block_sigmask() for adding sigmask to current->blocked")
+which centralises the code for updating current->blocked after
+successfully delivering a signal and reduces the amount of duplicate
+code across architectures. In the past some architectures got this
+code wrong, so using this helper function should stop that from
+happening again.
+
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Signed-off-by: Matt Fleming <matt.fleming@intel.com>
 ---
- arch/um/include/asm/pgtable.h |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ arch/um/kernel/signal.c |   20 ++++++--------------
+ 1 files changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 41474fb..6a3f984 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -69,6 +69,8 @@ extern unsigned long end_iomem;
- #define PAGE_KERNEL	__pgprot(_PAGE_PRESENT | _PAGE_RW | _PAGE_DIRTY | _PAGE_ACCESSED)
- #define PAGE_KERNEL_EXEC	__pgprot(__PAGE_KERNEL_EXEC)
+diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
+index 8382e0b..fb12f4c 100644
+--- a/arch/um/kernel/signal.c
++++ b/arch/um/kernel/signal.c
+@@ -67,15 +67,8 @@ static int handle_signal(struct pt_regs *regs, unsigned long signr,
  
-+#define io_remap_pfn_range	remap_pfn_range
+ 	if (err)
+ 		force_sigsegv(signr, current);
+-	else {
+-		spin_lock_irq(&current->sighand->siglock);
+-		sigorsets(&current->blocked, &current->blocked,
+-			  &ka->sa.sa_mask);
+-		if (!(ka->sa.sa_flags & SA_NODEFER))
+-			sigaddset(&current->blocked, signr);
+-		recalc_sigpending();
+-		spin_unlock_irq(&current->sighand->siglock);
+-	}
++	else
++		block_sigmask(ka, signr);
+ 
+ 	return err;
+ }
+@@ -158,12 +151,11 @@ int do_signal(void)
+  */
+ long sys_sigsuspend(int history0, int history1, old_sigset_t mask)
+ {
++	sigset_t blocked;
 +
- /*
-  * The i386 can't do page protection for execute, and considers that the same
-  * are read.
+ 	mask &= _BLOCKABLE;
+-	spin_lock_irq(&current->sighand->siglock);
+-	current->saved_sigmask = current->blocked;
+-	siginitset(&current->blocked, mask);
+-	recalc_sigpending();
+-	spin_unlock_irq(&current->sighand->siglock);
++	siginitset(&blocked, mask);
++	set_current_blocked(&blocked);
+ 
+ 	current->state = TASK_INTERRUPTIBLE;
+ 	schedule();
 -- 
-1.7.6
-
-
-------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+1.7.4.4
 
