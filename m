@@ -1,48 +1,60 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4F1788EC.4040901@xenotime.net>
-Date: Wed, 18 Jan 2012 19:07:24 -0800
-From: Randy Dunlap <rdunlap@xenotime.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <antoine@nagafix.co.uk>) id 1Rxlq7-0005At-HO
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Feb 2012 20:52:35 +0000
+Received: from mamba.nagafix.co.uk ([194.145.196.68] helo=mail.nagafix.co.uk)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Rxlq3-0000is-Br for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Feb 2012 20:52:35 +0000
+Received: (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: antoine@nagafix.co.uk)
+	by mail.nagafix.co.uk (Postfix) with ESMTPSA id 3E3D96710
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 15 Feb 2012 20:52:25 +0000 (GMT)
+Message-ID: <4F3C1B06.7080506@nagafix.co.uk>
+Date: Thu, 16 Feb 2012 03:52:22 +0700
+From: Antoine Martin <antoine@nagafix.co.uk>
 MIME-Version: 1.0
-References: <20120119125932.a4c67005cf6a0938558e8b36@canb.auug.org.au>
-In-Reply-To: <20120119125932.a4c67005cf6a0938558e8b36@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: linux-next: Tree for Jan 19 (uml)
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] X11 vfb forward ported to 3.2
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On 01/18/2012 05:59 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20120118:
-> 
-> Linus' tree gained a build failure for which I applied a patch.
+Whilst I was looking at all the docs and patches that I have for the
+wiki/uml website, I found the old x11-fb patch from Gerd Knorr's and
+forward ported it to 3.2
+Got as far as the point where it builds and shows a window when you
+start the kernel with:
+./vmlinux x11=800x600
+As reported at the time of the original patch, all I get is a black
+window... I'll try to see if I can figure out why it's not updating.
+Here it is if you want to try it / comment / help:
+http://uml.devloop.org.uk/vfb-3.2.patch
 
+Cheers
+Antoine
 
-Building uml on x86_64 gives:
+------------------------------------------------------------------------------
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-  CC      arch/um/kernel/asm-offsets.s
-In file included from /next/linux-next-20120119/arch/um/include/shared/registers.h:9:0,
-                 from /next/linux-next-20120119/arch/um/include/asm/processor-generic.h:14,
-                 from /next/linux-next-20120119/arch/x86/um/asm/processor.h:20,
-                 from /next/linux-next-20120119/arch/um/include/asm/uaccess.h:16,
-                 from /next/linux-next-20120119/arch/um/include/asm/thread_info.h:13,
-                 from /next/linux-next-20120119/include/linux/thread_info.h:53,
-                 from /next/linux-next-20120119/include/linux/preempt.h:9,
-                 from /next/linux-next-20120119/include/linux/spinlock.h:50,
-                 from /next/linux-next-20120119/include/linux/seqlock.h:29,
-                 from /next/linux-next-20120119/include/linux/time.h:8,
-                 from /next/linux-next-20120119/include/linux/timex.h:56,
-                 from /next/linux-next-20120119/include/linux/sched.h:57,
-                 from /next/linux-next-20120119/arch/x86/um/shared/sysdep/kernel-offsets.h:2,
-                 from /next/linux-next-20120119/arch/um/kernel/asm-offsets.c:1:
-/next/linux-next-20120119/arch/x86/um/shared/sysdep/ptrace.h:7:20: error: redefinition of 'regs_return_value'
-/next/linux-next-20120119/arch/x86/um/shared/sysdep/ptrace.h:7:20: note: previous definition of 'regs_return_value' was here
-
-
-
--- 
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
