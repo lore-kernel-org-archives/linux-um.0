@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <davem@davemloft.net>) id 1RyUzo-0005Fd-HP
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <davem@davemloft.net>) id 1RyUFX-0006ek-6P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Feb 2012 21:05:36 +0000
+	Fri, 17 Feb 2012 20:17:47 +0000
 Received: from shards.monkeyblade.net ([198.137.202.13])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RyUzk-0004Qi-Gc
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RyUFS-0001MP-Nl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Feb 2012 21:05:36 +0000
-Date: Fri, 17 Feb 2012 16:05:12 -0500 (EST)
-Message-Id: <20120217.160512.672160259202281785.davem@davemloft.net>
+	Fri, 17 Feb 2012 20:17:47 +0000
+Date: Fri, 17 Feb 2012 15:17:23 -0500 (EST)
+Message-Id: <20120217.151723.439729747666738170.davem@davemloft.net>
 From: David Miller <davem@davemloft.net>
-In-Reply-To: <1329493411-25750-11-git-send-email-danny.kukawka@bisect.de>
+In-Reply-To: <4F3E787D.4020103@nod.at>
 References: <1329493411-25750-1-git-send-email-danny.kukawka@bisect.de>
 	<1329493411-25750-11-git-send-email-danny.kukawka@bisect.de>
+	<4F3E787D.4020103@nod.at>
 Mime-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,21 +32,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH 10/10] UML net: set addr_assign_type if
  random_ether_addr() used
-To: danny.kukawka@bisect.de
-Cc: user-mode-linux-devel@lists.sourceforge.net, jpirko@redhat.com, richard@nod.at, jdike@addtoit.com, dkukawka@suse.de, linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+To: richard@nod.at
+Cc: user-mode-linux-devel@lists.sourceforge.net, jpirko@redhat.com, jdike@addtoit.com, dkukawka@suse.de, linux-kernel@vger.kernel.org, danny.kukawka@bisect.de, akpm@linux-foundation.org
 
-From: Danny Kukawka <danny.kukawka@bisect.de>
-Date: Fri, 17 Feb 2012 16:43:31 +0100
+From: Richard Weinberger <richard@nod.at>
+Date: Fri, 17 Feb 2012 16:55:41 +0100
 
-> Set addr_assign_type correctly to NET_ADDR_RANDOM in case
-> a random MAC address was generated and assigned to the netdevice.
+> On 17.02.2012 16:43, Danny Kukawka wrote:
+>> Set addr_assign_type correctly to NET_ADDR_RANDOM in case
+>> a random MAC address was generated and assigned to the netdevice.
+>>
+>> Return state from setup_etheraddr() about returning a random
+>> MAC address or not and check this state in eth_configure().
+>>
+>> Signed-off-by: Danny Kukawka<danny.kukawka@bisect.de>
 > 
-> Return state from setup_etheraddr() about returning a random
-> MAC address or not and check this state in eth_configure().
+> Acked-by: Richard Weinberger <richard@nod.at>
 > 
-> Signed-off-by: Danny Kukawka <danny.kukawka@bisect.de>
+> Do you want me to pick up this patch or is it supposed to go though
+> the net tree?
 
-Applied.
+I'll take care of it.
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
