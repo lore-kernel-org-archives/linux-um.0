@@ -1,27 +1,59 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 12 Feb 2012 01:25:03 +0100 (CET)
-From: Jesper Juhl <jj@chaosbits.net>
-In-Reply-To: <1329006070-4275-1-git-send-email-richard@nod.at>
-Message-ID: <alpine.LNX.2.00.1202120123110.7100@swampdragon.chaosbits.net>
-References: <1329006070-4275-1-git-send-email-richard@nod.at>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: your mail
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, alan@lxorguk.ukuu.org.uk, gregkh@linuxfoundation.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <davem@davemloft.net>) id 1RyUzo-0005Fd-HP
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Feb 2012 21:05:36 +0000
+Received: from shards.monkeyblade.net ([198.137.202.13])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1RyUzk-0004Qi-Gc
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Feb 2012 21:05:36 +0000
+Date: Fri, 17 Feb 2012 16:05:12 -0500 (EST)
+Message-Id: <20120217.160512.672160259202281785.davem@davemloft.net>
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <1329493411-25750-11-git-send-email-danny.kukawka@bisect.de>
+References: <1329493411-25750-1-git-send-email-danny.kukawka@bisect.de>
+	<1329493411-25750-11-git-send-email-danny.kukawka@bisect.de>
+Mime-Version: 1.0
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH 10/10] UML net: set addr_assign_type if
+ random_ether_addr() used
+To: danny.kukawka@bisect.de
+Cc: user-mode-linux-devel@lists.sourceforge.net, jpirko@redhat.com, richard@nod.at, jdike@addtoit.com, dkukawka@suse.de, linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 
-On Sun, 12 Feb 2012, Richard Weinberger wrote:
+From: Danny Kukawka <danny.kukawka@bisect.de>
+Date: Fri, 17 Feb 2012 16:43:31 +0100
 
-> Can you please review this patch?
+> Set addr_assign_type correctly to NET_ADDR_RANDOM in case
+> a random MAC address was generated and assigned to the netdevice.
 > 
+> Return state from setup_etheraddr() about returning a random
+> MAC address or not and check this state in eth_configure().
+> 
+> Signed-off-by: Danny Kukawka <danny.kukawka@bisect.de>
 
-A subject on the mail along with a description of the patch would make 
-that a great deal easier...
+Applied.
 
--- 
-Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
-Don't top-post http://www.catb.org/jargon/html/T/top-post.html
-Plain text mails only, please.
+------------------------------------------------------------------------------
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
