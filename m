@@ -1,49 +1,55 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Danny Kukawka <danny.kukawka@bisect.de>
-Date: Fri, 17 Feb 2012 16:43:21 +0100
-Message-Id: <1329493411-25750-1-git-send-email-danny.kukawka@bisect.de>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v2 00/10] Part 4: handle addr_assign_type for random addresses
-To: "David S. Miller" <davem@davemloft.net>
-Cc: Danny Kukawka <dkukawka@suse.de>, Jeff Kirsher <jeffrey.t.kirsher@intel.com>, Jiri Pirko <jpirko@redhat.com>, Richard Cochran <richard.cochran@omicron.at>, Jiri Kosina <jkosina@suse.cz>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, e1000-devel@lists.sourceforge.net, b.a.t.m.a.n@lists.open-mesh.org, user-mode-linux-devel@lists.sourceforge.net
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <4F3E9DC8.6090304@xenotime.net>
+References: <20120217165045.2394d944d6efc37104421d2e@canb.auug.org.au>
+	<4F3E9DC8.6090304@xenotime.net>
+Date: Fri, 17 Feb 2012 22:32:40 +0100
+Message-ID: <CAMuHMdUKDFBuWbbCp5maBQHDz7F+=XSUvf=i2nGsgnixUQSSdA@mail.gmail.com>
+Subject: Re: linux-next: Tree for Feb 17 (uml)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+To: Randy Dunlap <rdunlap@xenotime.net>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The fourth part of my patch series to fix the handling of 
-addr_assign_type for random MAC addresses. 
+On Fri, Feb 17, 2012 at 19:34, Randy Dunlap <rdunlap@xenotime.net> wrote:
+> On 02/16/2012 09:50 PM, Stephen Rothwell wrote:
+>> Changes since 20120216:
+>
+> uml on x86_64 (defconfig):
+>
+> =C2=A0CC =C2=A0 =C2=A0 =C2=A0arch/um/kernel/asm-offsets.s
+> In file included from linux-next-20120217/include/linux/slab.h:12:0,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 from linux-next-2=
+0120217/include/linux/crypto.h:23,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 from
+> linux-next-20120217/arch/x86/um/shared/sysdep/kernel-offsets.h:4,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 from linux-next-2=
+0120217/arch/um/kernel/asm-offsets.c:1:
+> linux-next-20120217/include/linux/gfp.h: In function 'gfp_zonelist':
+> linux-next-20120217/include/linux/gfp.h:267:1: error:
+> '__enabled_CONFIG_NUMA' undeclared (first use in this function)
+> linux-next-20120217/include/linux/gfp.h:267:1: note: each undeclared
+> identifier is reported only once for each function it appears in
+> linux-next-20120217/include/linux/gfp.h:267:1: error:
+> '__enabled_CONFIG_NUMA_MODULE' undeclared (first use in this function)
 
-This most of the patches in this series are for slightly 
-more complex cases to handle addr_assign_type and the
-reset to NET_ADDR_PERM as soon as the MAC get changed via 
-.ndo_set_mac_address where eth_mac_addr wasn't used.
+That's due to the lack of CONFIG_NUMA in various archs (also m68k).
 
-Danny Kukawka (10):
-  au1000_eth: use eth_hw_addr_random() instead of random_ether_addr()
-  lantiq_etop: set addr_assign_type if random_ether_addr() used
-  davinci_emac: use eth_hw_addr_random() instead of random_ether_addr()
-  xilinx ll_temac: use eth_hw_addr_random() instead of
-    random_ether_addr()
-  igbvf: reset netdevice addr_assign_type if changed
-  batman-adv: use eth_hw_addr_random() instead of random_ether_addr()
-  cisco/enic: use eth_hw_addr_random() instead of random_ether_addr()
-  ethoc: set addr_assign_type if random_ether_addr() used
-  atheros eth: set addr_assign_type if random_ether_addr() used
-  UML net: set addr_assign_type if random_ether_addr() used
+Gr{oetje,eeting}s,
 
- arch/um/drivers/net_kern.c                      |   11 ++++++++---
- drivers/net/ethernet/amd/au1000_eth.c           |    9 +++++----
- drivers/net/ethernet/atheros/atl1c/atl1c_hw.c   |    2 +-
- drivers/net/ethernet/atheros/atl1c/atl1c_main.c |    9 ++++-----
- drivers/net/ethernet/atheros/atlx/atl1.c        |   12 +++++++++---
- drivers/net/ethernet/atheros/atlx/atlx.c        |    1 +
- drivers/net/ethernet/cisco/enic/enic_main.c     |   14 ++++++++++++--
- drivers/net/ethernet/ethoc.c                    |   20 ++++++++++++++++++--
- drivers/net/ethernet/intel/igbvf/netdev.c       |    1 +
- drivers/net/ethernet/lantiq_etop.c              |    7 +++++++
- drivers/net/ethernet/ti/davinci_emac.c          |    5 +++--
- drivers/net/ethernet/xilinx/ll_temac_main.c     |    4 +++-
- net/batman-adv/soft-interface.c                 |    5 ++---
- 13 files changed, 74 insertions(+), 26 deletions(-)
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
--- 
-1.7.8.3
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
 
