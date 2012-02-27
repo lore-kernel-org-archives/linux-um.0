@@ -1,126 +1,168 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1RuYpE-0003l0-Mz
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Feb 2012 00:22:24 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1RuYpD-0004DD-Q3
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 07 Feb 2012 00:22:24 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Tue,  7 Feb 2012 01:22:50 +0100
-Message-Id: <1328574170-2286-5-git-send-email-richard@nod.at>
-In-Reply-To: <1328574170-2286-1-git-send-email-richard@nod.at>
-References: <1328574170-2286-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <4F4C017E.5040200@gmail.com>
+Date: Mon, 27 Feb 2012 14:19:42 -0800
+From: David Daney <ddaney.cavm@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+References: <87wr7pbwbz.fsf@rustcorp.com.au> <1329259784-20592-1-git-send-email-venki@google.com> <1329259784-20592-3-git-send-email-venki@google.com>
+In-Reply-To: <1329259784-20592-3-git-send-email-venki@google.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 5/5] MTD: Relax dependencies
-To: linux-kernel@vger.kernel.org
-Cc: Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH 2/3] mips: Avoid raw handling of cpu_possible_map/cpu_online_map
+To: Venkatesh Pallipadi <venki@google.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: Rusty Russell <rusty@rustcorp.com.au>, Tony Luck <tony.luck@gmail.com>, "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, KOSAKI Motohiro <kosaki.motohiro@gmail.com>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, Mike Travis <travis@sgi.com>, "Paul E. McKenney" <paul.mckenney@linaro.org>, "Rafael J. Wysocki" <rjw@sisk.pl>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, Richard Kuo <rkuo@codeaurora.org>, linux-hexagon@vger.kernel.org, linux-mips@linux-mips.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-CONFIG_GENERIC_IO is just enough for the basic MTD stuff.
+On 02/14/2012 02:49 PM, Venkatesh Pallipadi wrote:
+> Use set_cpu_* and init_cpu_* variants instead.
+>
+> Signed-off-by: Venkatesh Pallipadi<venki@google.com>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/Kconfig         |    2 +-
- drivers/mtd/devices/Kconfig |    1 +
- drivers/mtd/maps/Kconfig    |    1 +
- drivers/mtd/nand/Kconfig    |    2 ++
- drivers/mtd/onenand/Kconfig |    1 +
- 5 files changed, 6 insertions(+), 1 deletions(-)
+I came up with the same thing, so...
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 1be6218..284cf34 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -1,6 +1,6 @@
- menuconfig MTD
- 	tristate "Memory Technology Device (MTD) support"
--	depends on HAS_IOMEM
-+	depends on GENERIC_IO
- 	help
- 	  Memory Technology Devices are flash, RAM and similar chips, often
- 	  used for solid state file systems on embedded devices. This option
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 37b05c3..8d3dac4 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -1,5 +1,6 @@
- menu "Self-contained MTD device drivers"
- 	depends on MTD!=n
-+	depends on HAS_IOMEM
- 
- config MTD_PMC551
- 	tristate "Ramix PMC551 PCI Mezzanine RAM card support"
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 6c5c431..8af67cf 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -1,5 +1,6 @@
- menu "Mapping drivers for chip access"
- 	depends on MTD!=n
-+	depends on HAS_IOMEM
- 
- config MTD_COMPLEX_MAPPINGS
- 	bool "Support non-linear mappings of flash chips"
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 31b034b..80de7b3 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -246,6 +246,7 @@ config MTD_NAND_BCM_UMI_HWCS
- config MTD_NAND_DISKONCHIP
- 	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation) (EXPERIMENTAL)"
- 	depends on EXPERIMENTAL
-+	depends on HAS_IOMEM
- 	select REED_SOLOMON
- 	select REED_SOLOMON_DEC16
- 	help
-@@ -431,6 +432,7 @@ config MTD_NAND_GPMI_NAND
- 
- config MTD_NAND_PLATFORM
- 	tristate "Support for generic platform NAND driver"
-+	depends on HAS_IOMEM
- 	help
- 	  This implements a generic NAND driver for on-SOC platform
- 	  devices. You will need to provide platform-specific functions
-diff --git a/drivers/mtd/onenand/Kconfig b/drivers/mtd/onenand/Kconfig
-index 772ad29..91467bb 100644
---- a/drivers/mtd/onenand/Kconfig
-+++ b/drivers/mtd/onenand/Kconfig
-@@ -1,6 +1,7 @@
- menuconfig MTD_ONENAND
- 	tristate "OneNAND Device Support"
- 	depends on MTD
-+	depends on HAS_IOMEM
- 	help
- 	  This enables support for accessing all type of OneNAND flash
- 	  devices. For further information see
--- 
-1.7.6
+Acked-by: David Daney <david.daney@cavium.com>
 
+Ralf:  If you too were to Acknowledge the patch, we might get it merged.
 
-------------------------------------------------------------------------------
-Keep Your Developer Skills Current with LearnDevNow!
-The most comprehensive online learning library for Microsoft developers
-is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
-Metro Style Apps, more. Free future releases when you subscribe now!
-http://p.sf.net/sfu/learndevnow-d2d
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+David Daney
+
+> ---
+>   arch/mips/cavium-octeon/smp.c       |    2 +-
+>   arch/mips/kernel/smp.c              |    4 ++--
+>   arch/mips/netlogic/xlr/smp.c        |    4 ++--
+>   arch/mips/pmc-sierra/yosemite/smp.c |    4 ++--
+>   arch/mips/sgi-ip27/ip27-smp.c       |    2 +-
+>   arch/mips/sibyte/bcm1480/smp.c      |    5 ++---
+>   arch/mips/sibyte/sb1250/smp.c       |    5 ++---
+>   7 files changed, 12 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
+> index efcfff4..5cce09c 100644
+> --- a/arch/mips/cavium-octeon/smp.c
+> +++ b/arch/mips/cavium-octeon/smp.c
+> @@ -268,7 +268,7 @@ static int octeon_cpu_disable(void)
+>
+>   	spin_lock(&smp_reserve_lock);
+>
+> -	cpu_clear(cpu, cpu_online_map);
+> +	set_cpu_online(cpu, false);
+>   	cpu_clear(cpu, cpu_callin_map);
+>   	local_irq_disable();
+>   	fixup_irqs();
+> diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+> index 32c1e95..28777ff 100644
+> --- a/arch/mips/kernel/smp.c
+> +++ b/arch/mips/kernel/smp.c
+> @@ -148,7 +148,7 @@ static void stop_this_cpu(void *dummy)
+>   	/*
+>   	 * Remove this CPU:
+>   	 */
+> -	cpu_clear(smp_processor_id(), cpu_online_map);
+> +	set_cpu_online(smp_processor_id(), false);
+>   	for (;;) {
+>   		if (cpu_wait)
+>   			(*cpu_wait)();		/* Wait if available. */
+> @@ -248,7 +248,7 @@ int __cpuinit __cpu_up(unsigned int cpu)
+>   	while (!cpu_isset(cpu, cpu_callin_map))
+>   		udelay(100);
+>
+> -	cpu_set(cpu, cpu_online_map);
+> +	set_cpu_online(cpu, true);
+>
+>   	return 0;
+>   }
+> diff --git a/arch/mips/netlogic/xlr/smp.c b/arch/mips/netlogic/xlr/smp.c
+> index 080284d..8084221 100644
+> --- a/arch/mips/netlogic/xlr/smp.c
+> +++ b/arch/mips/netlogic/xlr/smp.c
+> @@ -154,7 +154,7 @@ void __init nlm_smp_setup(void)
+>   	cpu_set(boot_cpu, phys_cpu_present_map);
+>   	__cpu_number_map[boot_cpu] = 0;
+>   	__cpu_logical_map[0] = boot_cpu;
+> -	cpu_set(0, cpu_possible_map);
+> +	set_cpu_possible(0, true);
+>
+>   	num_cpus = 1;
+>   	for (i = 0; i<  NR_CPUS; i++) {
+> @@ -166,7 +166,7 @@ void __init nlm_smp_setup(void)
+>   			cpu_set(i, phys_cpu_present_map);
+>   			__cpu_number_map[i] = num_cpus;
+>   			__cpu_logical_map[num_cpus] = i;
+> -			cpu_set(num_cpus, cpu_possible_map);
+> +			set_cpu_possible(num_cpus, true);
+>   			++num_cpus;
+>   		}
+>   	}
+> diff --git a/arch/mips/pmc-sierra/yosemite/smp.c b/arch/mips/pmc-sierra/yosemite/smp.c
+> index 2608752..b2b23eb 100644
+> --- a/arch/mips/pmc-sierra/yosemite/smp.c
+> +++ b/arch/mips/pmc-sierra/yosemite/smp.c
+> @@ -155,10 +155,10 @@ static void __init yos_smp_setup(void)
+>   {
+>   	int i;
+>
+> -	cpus_clear(cpu_possible_map);
+> +	init_cpu_possible(cpumask_of(0));
+>
+>   	for (i = 0; i<  2; i++) {
+> -		cpu_set(i, cpu_possible_map);
+> +		set_cpu_possible(i, true);
+>   		__cpu_number_map[i]	= i;
+>   		__cpu_logical_map[i]	= i;
+>   	}
+> diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
+> index c6851df..735b43b 100644
+> --- a/arch/mips/sgi-ip27/ip27-smp.c
+> +++ b/arch/mips/sgi-ip27/ip27-smp.c
+> @@ -76,7 +76,7 @@ static int do_cpumask(cnodeid_t cnode, nasid_t nasid, int highest)
+>   			/* Only let it join in if it's marked enabled */
+>   			if ((acpu->cpu_info.flags&  KLINFO_ENABLE)&&
+>   			(tot_cpus_found != NR_CPUS)) {
+> -				cpu_set(cpuid, cpu_possible_map);
+> +				set_cpu_possible(cpuid, true);
+>   				alloc_cpupda(cpuid, tot_cpus_found);
+>   				cpus_found++;
+>   				tot_cpus_found++;
+> diff --git a/arch/mips/sibyte/bcm1480/smp.c b/arch/mips/sibyte/bcm1480/smp.c
+> index d667875..63d2211 100644
+> --- a/arch/mips/sibyte/bcm1480/smp.c
+> +++ b/arch/mips/sibyte/bcm1480/smp.c
+> @@ -147,14 +147,13 @@ static void __init bcm1480_smp_setup(void)
+>   {
+>   	int i, num;
+>
+> -	cpus_clear(cpu_possible_map);
+> -	cpu_set(0, cpu_possible_map);
+> +	init_cpu_possible(cpumask_of(0));
+>   	__cpu_number_map[0] = 0;
+>   	__cpu_logical_map[0] = 0;
+>
+>   	for (i = 1, num = 0; i<  NR_CPUS; i++) {
+>   		if (cfe_cpu_stop(i) == 0) {
+> -			cpu_set(i, cpu_possible_map);
+> +			set_cpu_possible(i, true);
+>   			__cpu_number_map[i] = ++num;
+>   			__cpu_logical_map[num] = i;
+>   		}
+> diff --git a/arch/mips/sibyte/sb1250/smp.c b/arch/mips/sibyte/sb1250/smp.c
+> index 38e7f6b..77f0df5 100644
+> --- a/arch/mips/sibyte/sb1250/smp.c
+> +++ b/arch/mips/sibyte/sb1250/smp.c
+> @@ -135,14 +135,13 @@ static void __init sb1250_smp_setup(void)
+>   {
+>   	int i, num;
+>
+> -	cpus_clear(cpu_possible_map);
+> -	cpu_set(0, cpu_possible_map);
+> +	init_cpu_possible(cpumask_of(0));
+>   	__cpu_number_map[0] = 0;
+>   	__cpu_logical_map[0] = 0;
+>
+>   	for (i = 1, num = 0; i<  NR_CPUS; i++) {
+>   		if (cfe_cpu_stop(i) == 0) {
+> -			cpu_set(i, cpu_possible_map);
+> +			set_cpu_possible(i, true);
+>   			__cpu_number_map[i] = ++num;
+>   			__cpu_logical_map[num] = i;
+>   		}
 
