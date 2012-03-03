@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bharrosh@panasas.com>) id 1SCLzY-0005Ye-O8
+	(envelope-from <toralf.foerster@gmx.de>) id 1S3khm-0002OA-0v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2012 02:18:36 +0000
-Received: from natasha.panasas.com ([67.152.220.90])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SCLzY-0004PK-0c for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2012 02:18:36 +0000
-Message-ID: <4F71236E.6040400@panasas.com>
-Date: Mon, 26 Mar 2012 19:18:22 -0700
-From: Boaz Harrosh <bharrosh@panasas.com>
+	Sat, 03 Mar 2012 08:52:42 +0000
+Received: from mailout-de.gmx.net ([213.165.64.23])
+	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1S3khl-0006Fy-4v for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 03 Mar 2012 08:52:41 +0000
+From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Date: Sat, 3 Mar 2012 09:52:32 +0100
 MIME-Version: 1.0
+Message-Id: <201203030952.33510.toralf.foerster@gmx.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,45 +22,36 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH ] um: uml_setup_stubs': warning: unused variable
-	'pages'
-To: Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] make oldconfig asks every time for the 3 new options
+To: user-mode-linux-devel@lists.sourceforge.net
 
-
-Fix the following gcc complain
-arch/um/kernel/skas/mmu.c: In function 'uml_setup_stubs':
-arch/um/kernel/skas/mmu.c:106:16: warning: unused variable 'pages' [-Wunused-variable]
-
-Signed-Signed-off-by: Boaz Harrosh <bharrosh@panasas.com>
----
- arch/um/kernel/skas/mmu.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 4947b31..0a49ef0 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -103,7 +103,6 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 
- void uml_setup_stubs(struct mm_struct *mm)
- {
--	struct page **pages;
- 	int err, ret;
- 
- 	if (!skas_needs_stub)
--- 
-1.7.6.5
-
-
-------------------------------------------------------------------------------
-This SF email is sponsosred by:
-Try Windows Azure free for 90 days Click Here 
-http://p.sf.net/sfu/sfd2d-msazure
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+SSdtIGF0IHRoaXMgbGV2ZWwgOgoKJCBnaXQgZGVzY3JpYmUKdjMuMy1yYzUtMjA0LWdhZTk0MmFl
+Cgp1c2luZyBvbGQgdW1sIGxpbnV4IGV4ZSB0byBnZW5lcmF0ZSBhIC5jb25maWcgOgoKJCAvdXNy
+L2xvY2FsL2Jpbi9saW51eC12My4zLXJjNS0yMDQtZ2FlOTQyYWUgLS1zaG93Y29uZmlnID4gLmNv
+bmZpZwoKYW5kIGJlaW5nIGFzayBldmVyeSB0aW1lIGZvciB0aGVzZSAzIG9wdGlvbnM6CgokIG1h
+a2Ugb2xkY29uZmlnIEFSQ0g9dW0Kc2NyaXB0cy9rY29uZmlnL2NvbmYgLS1vbGRjb25maWcgYXJj
+aC94ODYvdW0vS2NvbmZpZwoqCiogUmVzdGFydCBjb25maWcuLi4KKgoqCiogTWlzYyBkZXZpY2Vz
+CioKRW5jbG9zdXJlIFNlcnZpY2VzIChFTkNMT1NVUkVfU0VSVklDRVMpIFtOL3kvP10gKE5FVykg
+TgoqCiogU2lsaWNvbiBMYWJzIEMyIHBvcnQgc3VwcG9ydCAoRVhQRVJJTUVOVEFMKQoqClNpbGlj
+b24gTGFicyBDMiBwb3J0IHN1cHBvcnQgKEVYUEVSSU1FTlRBTCkgKEMyUE9SVCkgW04veS8/XSAo
+TkVXKSBOCioKKiBFRVBST00gc3VwcG9ydAoqCkVFUFJPTSA5M0NYNiBzdXBwb3J0IChFRVBST01f
+OTNDWDYpIFtOL3kvP10gKE5FVykgTgoqCiogVGV4YXMgSW5zdHJ1bWVudHMgc2hhcmVkIHRyYW5z
+cG9ydCBsaW5lIGRpc2NpcGxpbmUKKgoqCiogQWx0ZXJhIEZQR0EgZmlybXdhcmUgZG93bmxvYWQg
+bW9kdWxlCioKIwojIGNvbmZpZ3VyYXRpb24gd3JpdHRlbiB0byAuY29uZmlnCiMKCgpJJ20gd29u
+ZGVyaW5nIHdoeSB0aGlzIGhhcHBlbnMgb25seSBmb3IgdGhlc2UgMyBvcHRpb25zIHNpbmNlIHRo
+aXMgcmVsZWFzZQphbmQgbm90IGFsd2F5cyBiZWZvcmUgZm9yIGFsbCBvdGhlciBub3Qtc2V0IHBh
+cmFtZXRlci4KCi0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHBy
+aW50OiA3QjFBIDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1MDggN0RCNiA5REEzCgot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KVmlydHVhbGl6YXRpb24gJiBDbG91ZCBNYW5hZ2VtZW50IFVz
+aW5nIENhcGFjaXR5IFBsYW5uaW5nCkNsb3VkIGNvbXB1dGluZyBtYWtlcyB1c2Ugb2YgdmlydHVh
+bGl6YXRpb24gLSBidXQgY2xvdWQgY29tcHV0aW5nIAphbHNvIGZvY3VzZXMgb24gYWxsb3dpbmcg
+Y29tcHV0aW5nIHRvIGJlIGRlbGl2ZXJlZCBhcyBhIHNlcnZpY2UuCmh0dHA6Ly93d3cuYWNjZWxh
+Y29tbS5jb20vamF3L3NmbmwvMTE0LzUxNTIxMjIzLwpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0
+ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
+cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
