@@ -1,20 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bharrosh@panasas.com>) id 1S7bsf-00084L-Pw
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1S7bcX-00008n-FJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Mar 2012 00:15:53 +0000
-Received: from natasha.panasas.com ([67.152.220.90])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S7bsd-0001ZM-IE for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Mar 2012 00:15:53 +0000
-Message-ID: <4F5FE32B.9040301@panasas.com>
-Date: Tue, 13 Mar 2012 17:15:39 -0700
-From: Boaz Harrosh <bharrosh@panasas.com>
+	Tue, 13 Mar 2012 23:59:13 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S7bcW-0005Ud-1B
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Mar 2012 23:59:13 +0000
+Message-ID: <4F5FDF42.90004@nod.at>
+Date: Wed, 14 Mar 2012 00:58:58 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-References: <4F5FCC7D.5090307@panasas.com> <4F5FDF42.90004@nod.at>
-In-Reply-To: <4F5FDF42.90004@nod.at>
+References: <4F5FCC7D.5090307@panasas.com>
+In-Reply-To: <4F5FCC7D.5090307@panasas.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,106 +29,74 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] UML: Please help with __module_text_address crashing
-To: Richard Weinberger <richard@nod.at>
+To: Boaz Harrosh <bharrosh@panasas.com>
 Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On 03/13/2012 04:58 PM, Richard Weinberger wrote:
-> 
-> What exactly triggers the crash?
-> IOW, how can I reproduce it?
-> 
+Am 13.03.2012 23:38, schrieb Boaz Harrosh:
+> Since a while now my UMLs are constantly crashing in __module_text_address
+>
+> which makes no sense because if I do gdb>  list *(__module_text_address+0xd)
+> I get:
+>
+> 0x6005614e is in __module_text_address (/media/usr0/export/dev/bharrosh/git/pub/linux-open-osd/kernel/module.c:3469).
+> 3464     * module doesn't get freed during this.
+> 3465     */
+> 3466    struct module *__module_text_address(unsigned long addr)
+> 3467    {
+> 3468            struct module *mod = __module_address(addr);
+> 3469            if (mod) {
+> 3470                    /* Make sure it's within the text section. */
+> 3471                    if (!within(addr, mod->module_init, mod->init_text_size)
+> 3472&&  !within(addr, mod->module_core, mod->core_text_size))
+> 3473                            mod = NULL;
+>
+> It can not be crashing in line 3469, I suspect it's crashing inside __module_address(addr); at line 3468
+>
+> Below it's crashing as part of the console operation, which is the most common one, but it can crash in
+> __module_text_address as part of other stack traces like networking and so on. From my feel it's always
+> related to some UML driver that actually operates as part of the host. But I can't be sure.
+>
+> I'm running with 3.3-rc4 but I'm hit with this since 3.0, I tried to bisect
+> this at the time, but I found out that I could not find a perfectly good point
+> even as far as 3.6.37. So I suspected there is something wrong with my uml-image file
+> or my host. But now I upgraded both host and image to FC15 (was FC12/FC13) and I get
+> the same exact crashes. It came to a situation that I can't complete any kind
+> of heavy operation anymore and have abandoned UML for VMS for now. But I'm
+> very sorry to see UML go.
+>
+> Can anyone help me with some insight on what I should try, to debug this thing.
+>
 
-It's totally random, but always the same crash.
+What exactly triggers the crash?
+IOW, how can I reproduce it?
 
-I guess if you don't have it then you don't. The most reliable way for me to get
-it is a simple "halt". I'm not able to ever shut down properly it reliably crashes
-like:
+> BTW:
+> How to debug UML under gdb, it forks like mad and if I do:
+> 	gdb>  set detach-on-fork off
+> It will just freeze. And if I do
+> 	gdb>  attach<some-vmlinux-child-process>
+> (Try to attach to any but the top parent process)
+> Will return "access not permitted". I guess UML is a debugger of sorts and it can't be
+> double debugged.
 
-Kernel panic - not syncing: Kernel mode fault at addr 0x54, ip 0x6015c233
+e.g:
+$ gdb linux
+(gdb) handle SIGSEGV noprint nostop pass
+(gdb) set args <your kernel args>
+(gdb) run
 
-Modules linked in: nfs lockd auth_rpcgss nfs_acl sunrpc ipv6 [last unloaded: scsi_wait_scan]
-Pid: 1210, comm: autofs Not tainted 3.3.0-rc4-pnfs+
-RIP: 0033:[<000000387aed28d0>]
-RSP: 0000007fbf9876d8  EFLAGS: 00000246
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: ffffffffffffffff
-RDX: 0000000000000001 RSI: 0000000040008000 RDI: 0000000000000001
-RBP: 0000000040008000 R08: 00000000ffffffff R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000387b1928e0
-R13: 0000000000000001 R14: 000000000093eb80 R15: 000000000093eb80
-Call Trace: 
-602ab598:  [<6001697c>] panic_exit+0x2f/0x45
-602ab5b8:  [<60046678>] notifier_call_chain+0x32/0x5e
-602ab5e8:  [<6015c233>] do_raw_spin_lock+0x12/0xdb
-602ab5f8:  [<600466c6>] atomic_notifier_call_chain+0x13/0x15
-602ab608:  [<601e90a4>] panic+0x112/0x1ea
-602ab640:  [<6015c233>] do_raw_spin_lock+0x12/0xdb
-602ab660:  [<6005614e>] __module_text_address+0xd/0x56
-602ab678:  [<60059324>] is_module_text_address+0x9/0x11
-602ab688:  [<6004019b>] __kernel_text_address+0x21/0x47
-602ab6a8:  [<600154de>] show_trace+0x8e/0x95
-602ab6b0:  [<6015c233>] do_raw_spin_lock+0x12/0xdb
-602ab6d8:  [<60028683>] show_regs+0x2b/0x30
-602ab6f8:  [<6015c233>] do_raw_spin_lock+0x12/0xdb
-602ab708:  [<60016713>] segv_handler+0x0/0x81
-602ab718:  [<600603d1>] handle_irq_event_percpu+0xfd/0x119
-602ab758:  [<6006300f>] rcu_sched_qs+0x74/0x79
-602ab7d8:  [<6001678a>] segv_handler+0x77/0x81
-602ab808:  [<60013c26>] sigio_handler+0x58/0x5d
-602ab828:  [<60023e9d>] sig_handler_common+0x84/0x98
-602ab890:  [<60018eb8>] line_write_room+0x0/0x44
-602ab8b0:  [<6015c233>] do_raw_spin_lock+0x12/0xdb
-602ab8d0:  [<6015435a>] prio_tree_insert+0x4c/0x23b
-602ab928:  [<6001141c>] _einittext+0x1a0d/0x2c91
-602ab938:  [<60010760>] _einittext+0xd51/0x2c91
-602aba18:  [<6001141c>] _einittext+0x1a0d/0x2c91
-602abb58:  [<60023f8d>] sig_handler+0x2d/0x38
-602abb78:  [<60023bc3>] hard_handler+0x6b/0x9d
-602abc48:  [<60018eb8>] line_write_room+0x0/0x44
-602abc68:  [<6015c233>] do_raw_spin_lock+0x12/0xdb
+UML "forks like mad" because it creates an thread for each process 
+within UML...
 
-I'd give anything to get your setup that works. 
-
-Though I have everything by the letter:
-- Newly installed FC15 host
-- Copied over FC15 image from a KVM with the tty0 /etc fixes.
-- commandline:
-  ./vmlinux ubd0=Fedora15-AMD64-root_fs-1 ubd1=swap_file-1 eth0=tuntap,,,172.17.132.231 mem=384M
-
-It'll crash every time
-
->> BTW:
->> How to debug UML under gdb, it forks like mad and if I do:
->> 	gdb>  set detach-on-fork off
->> It will just freeze. And if I do
->> 	gdb>  attach<some-vmlinux-child-process>
->> (Try to attach to any but the top parent process)
->> Will return "access not permitted". I guess UML is a debugger of sorts and it can't be
->> double debugged.
-> 
-> e.g:
-> $ gdb linux
-> (gdb) handle SIGSEGV noprint nostop pass
-> (gdb) set args <your kernel args>
-> (gdb) run
-> 
-> UML "forks like mad" because it creates an thread for each process 
-> within UML...
-> 
-
-OK then I have a problem because I get the "access not permitted" on attaching to any of these
-forks but the top most parent. (as sudo)
-
-> Thanks,
-> //richard
-
-Thanks for your reply
-Boaz
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
-Virtualization & Cloud Management Using Capacity Planning
-Cloud computing makes use of virtualization - but cloud computing 
-also focuses on allowing computing to be delivered as a service.
-http://www.accelacomm.com/jaw/sfnl/114/51521223/
+Keep Your Developer Skills Current with LearnDevNow!
+The most comprehensive online learning library for Microsoft developers
+is just $99.99! Visual Studio, SharePoint, SQL - plus HTML5, CSS3, MVC3,
+Metro Style Apps, more. Free future releases when you subscribe now!
+http://p.sf.net/sfu/learndevnow-d2d
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
