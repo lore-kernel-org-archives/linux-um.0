@@ -1,69 +1,81 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sat, 24 Mar 2012 14:28:08 +0400
-From: Anton Vorontsov <anton.vorontsov@linaro.org>
-Message-ID: <20120324102808.GB29067@lizard>
-References: <20120324102609.GA28356@lizard>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1S7ws4-0007WU-6F
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Mar 2012 22:40:40 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S7ws2-0000HI-MR
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Mar 2012 22:40:40 +0000
+Message-ID: <4F611E5E.2090604@nod.at>
+Date: Wed, 14 Mar 2012 23:40:30 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20120324102609.GA28356@lizard>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 02/10] arm: Use clear_tasks_mm_cpumask()
-To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-mm@kvack.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+References: <4F5FCC7D.5090307@panasas.com> <4F5FDF42.90004@nod.at>
+	<4F5FE32B.9040301@panasas.com> <4F5FE4B8.4020006@nod.at>
+	<4F5FEBA0.5010905@panasas.com> <4F60557B.7020704@nod.at>
+	<4F611B97.1050809@panasas.com>
+In-Reply-To: <4F611B97.1050809@panasas.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] UML: Please help with __module_text_address crashing
+To: Boaz Harrosh <bharrosh@panasas.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Current CPU hotplug code has some task->mm handling issues:
+Am 14.03.2012 23:28, schrieb Boaz Harrosh:
+> But surly it needs to go upstream. I'll run with it out of tree for now.
 
-1. Working with task->mm w/o getting mm or grabing the task lock is
-   dangerous as ->mm might disappear (exit_mm() assigns NULL under
-   task_lock(), so tasklist lock is not enough).
+As of now it's not ready for upstream.
+I'll submit it as -stable patch as soon as possible.
 
-   We can't use get_task_mm()/mmput() pair as mmput() might sleep,
-   so we must take the task lock while handle its mm.
+> I have an administrative question. (If I may). This came up now with my FC15
+> setups. (I did not have these problem with my old FC12 setup)
+>
+> In a default setup (make defconfig) I have:
+>
+> CONFIG_XTERM_CHAN=y
+> CONFIG_CON_CHAN=xterm
+>
+> If I leave it at that then very early in the boot an xterm X11 window comes up
+> the terminal is on the host (I see my host name and environment, not the UML one)
+> and the boot process just stops. Even if I close the window the boot is just stuck
+> I can only do "sudo killall vmlinux" from the host.
+>
+> If I change "CONFIG_CON_CHAN not set" or just "CONFIG_CON_CHAN=nothing" then the
+> boot process complains but continues to a login prompt like I use to.
+>
+> Do you know how to fix that?
+>
+> Also in vi, it thinks I only have 25 lines. Do you know in FC where I say console
+> have more lines, or better yet auto adopt to my host console. I guess it might be
+> related to my first Q. I did not use to have these problems with my old setup
 
-2. Checking for process->mm is not enough because process' main
-   thread may exit or detach its mm via use_mm(), but other threads
-   may still have a valid mm.
+This is most likely because tty has still some problems.
+Can you please provide the exact kernel command line and output?
 
-   To fix this we would need to use find_lock_task_mm(), which would
-   walk up all threads and returns an appropriate task (with task
-   lock held).
+Thanks,
+//richard
 
-clear_tasks_mm_cpumask() has all the issues fixed, so let's use it.
-
-Suggested-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
----
- arch/arm/kernel/smp.c |    8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
-
-diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-index cdeb727..880b93a 100644
---- a/arch/arm/kernel/smp.c
-+++ b/arch/arm/kernel/smp.c
-@@ -136,7 +136,6 @@ static void percpu_timer_stop(void);
- int __cpu_disable(void)
- {
- 	unsigned int cpu = smp_processor_id();
--	struct task_struct *p;
- 	int ret;
- 
- 	ret = platform_cpu_disable(cpu);
-@@ -166,12 +165,7 @@ int __cpu_disable(void)
- 	flush_cache_all();
- 	local_flush_tlb_all();
- 
--	read_lock(&tasklist_lock);
--	for_each_process(p) {
--		if (p->mm)
--			cpumask_clear_cpu(cpu, mm_cpumask(p->mm));
--	}
--	read_unlock(&tasklist_lock);
-+	clear_tasks_mm_cpumask(cpu);
- 
- 	return 0;
- }
--- 
-1.7.9.2
+------------------------------------------------------------------------------
+Virtualization & Cloud Management Using Capacity Planning
+Cloud computing makes use of virtualization - but cloud computing 
+also focuses on allowing computing to be delivered as a service.
+http://www.accelacomm.com/jaw/sfnl/114/51521223/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
