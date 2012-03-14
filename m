@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1S7jUf-0001oQ-4S
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stian@nixia.no>) id 1S7ie4-0001P8-1h
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Mar 2012 08:23:37 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1S7jUZ-00050q-Uh
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Mar 2012 08:23:37 +0000
-Message-ID: <4F60557B.7020704@nod.at>
-Date: Wed, 14 Mar 2012 09:23:23 +0100
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
+	Wed, 14 Mar 2012 07:29:16 +0000
+Received: from [195.159.66.52] (helo=lauken.nlc.no)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1S7idv-0004Uk-HV for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Mar 2012 07:29:16 +0000
+Message-ID: <3c4d14d64492ddd8be406d4a15f1ee63.squirrel@nlc.no>
+In-Reply-To: <4F5FDF42.90004@nod.at>
 References: <4F5FCC7D.5090307@panasas.com> <4F5FDF42.90004@nod.at>
-	<4F5FE32B.9040301@panasas.com> <4F5FE4B8.4020006@nod.at>
-	<4F5FEBA0.5010905@panasas.com>
-In-Reply-To: <4F5FEBA0.5010905@panasas.com>
+Date: Wed, 14 Mar 2012 08:28:59 +0100
+From: "Stian Skjelstad" <stian@nixia.no>
+MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,28 +28,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] UML: Please help with __module_text_address crashing
-To: Boaz Harrosh <bharrosh@panasas.com>
+To: Richard Weinberger <richard@nod.at>
 Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Am 14.03.2012 01:51, schrieb Boaz Harrosh:
-> Yes, you mean git checkout v3.2 Yes it's the same all the way back to 2.6.39 or so
->
-> I just did that I get the same as above: addr2line -e .build_um/vmlinux 0x600179b8
-> linux-open-osd/arch/um/drivers/line.c:46
+> Am 13.03.2012 23:38, schrieb Boaz Harrosh:
+>> Since a while now my UMLs are constantly crashing in
+>> __module_text_address
+>>
+>> which makes no sense because if I do gdb>  list
+>> *(__module_text_address+0xd)
+>> I get:t
+>>
+>> 0x6005614e is in __module_text_address
+>> (/media/usr0/export/dev/bharrosh/git/pub/linux-open-osd/kernel/module.c:3469).
+>> 3464     * module doesn't get freed during this.
+>> 3465     */
+>> 3466    struct module *__module_text_address(unsigned long addr)
+>> 3467    {
+>> 3468            struct module *mod = __module_address(addr);
+>> 3469            if (mod) {
+>> 3470                    /* Make sure it's within the text section. */
+>> 3471                    if (!within(addr, mod->module_init,
+>> mod->init_text_size)
+>> 3472&&  !within(addr, mod->module_core, mod->core_text_size))
+>> 3473                            mod = NULL;
 
-Please give this patch a try:
-https://lkml.org/lkml/2012/3/10/163
+source listing vs where it crashes can be off aslong as you use CFLAGS
+with -On where n is greater than 0. So the first thing you can test is to
+compile UML with CFLAGS="-g -O0". It might be that it doesn't crash
+anymore then, if so, you can try to play with different gcc optimization
+flags in order to find out what triggers it.
 
-> My current theory is that Fedora became UML unfriendly is there some random-exec-mem thingy
-> I need to turn off?
->
+Other sources of the crash can be gcc bugs, or some special CPU
+optimization BUG (either in gcc or the UML source).
 
-No. UML tty driver is broken like hell and newer distors seem to trigger it.
-I thought only Fc16 with systemd is affected. But as you using Fc15, I 
-was wrong...
+Your backtrace also included spin-lock right before the panic, which could
+be the source of the issue. If I remember right, the kernel has some debug
+options that can be enabled for spin-locks.
 
-Thanks,
-//richard
+Stian Skjelstad
+
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
