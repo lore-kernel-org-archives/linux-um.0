@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bharrosh@panasas.com>) id 1S7wge-0006sv-Vq
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1S7jpK-0007Nn-NA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Mar 2012 22:28:52 +0000
-Received: from natasha.panasas.com ([67.152.220.90])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1S7wge-0004yC-0J for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Mar 2012 22:28:52 +0000
-Message-ID: <4F611B97.1050809@panasas.com>
-Date: Wed, 14 Mar 2012 15:28:39 -0700
-From: Boaz Harrosh <bharrosh@panasas.com>
+	Wed, 14 Mar 2012 08:44:58 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1S7jpE-0003PQ-Mo
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Mar 2012 08:44:58 +0000
+Message-ID: <4F605A7D.6070700@nod.at>
+Date: Wed, 14 Mar 2012 09:44:45 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 References: <4F5FCC7D.5090307@panasas.com> <4F5FDF42.90004@nod.at>
-	<4F5FE32B.9040301@panasas.com> <4F5FE4B8.4020006@nod.at>
-	<4F5FEBA0.5010905@panasas.com> <4F60557B.7020704@nod.at>
-In-Reply-To: <4F60557B.7020704@nod.at>
+	<3c4d14d64492ddd8be406d4a15f1ee63.squirrel@nlc.no>
+In-Reply-To: <3c4d14d64492ddd8be406d4a15f1ee63.squirrel@nlc.no>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,64 +30,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] UML: Please help with __module_text_address crashing
-To: Richard Weinberger <richard@nod.at>
+To: Stian Skjelstad <stian@nixia.no>
 Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On 03/14/2012 01:23 AM, Richard Weinberger wrote:
-> Am 14.03.2012 01:51, schrieb Boaz Harrosh:
->> Yes, you mean git checkout v3.2 Yes it's the same all the way back to 2.6.39 or so
->>
->> I just did that I get the same as above: addr2line -e .build_um/vmlinux 0x600179b8
->> linux-open-osd/arch/um/drivers/line.c:46
-> 
-> Please give this patch a try:
-> https://lkml.org/lkml/2012/3/10/163
-> 
+On 14.03.2012 08:28, Stian Skjelstad wrote:
+>> Am 13.03.2012 23:38, schrieb Boaz Harrosh:
+>>> Since a while now my UMLs are constantly crashing in
+>>> __module_text_address
+>>>
+>>> which makes no sense because if I do gdb>   list
+>>> *(__module_text_address+0xd)
+>>> I get:t
+>>>
+>>> 0x6005614e is in __module_text_address
+>>> (/media/usr0/export/dev/bharrosh/git/pub/linux-open-osd/kernel/module.c:3469).
+>>> 3464     * module doesn't get freed during this.
+>>> 3465     */
+>>> 3466    struct module *__module_text_address(unsigned long addr)
+>>> 3467    {
+>>> 3468            struct module *mod = __module_address(addr);
+>>> 3469            if (mod) {
+>>> 3470                    /* Make sure it's within the text section. */
+>>> 3471                    if (!within(addr, mod->module_init,
+>>> mod->init_text_size)
+>>> 3472&&   !within(addr, mod->module_core, mod->core_text_size))
+>>> 3473                            mod = NULL;
+>
+> source listing vs where it crashes can be off aslong as you use CFLAGS
+> with -On where n is greater than 0. So the first thing you can test is to
+> compile UML with CFLAGS="-g -O0". It might be that it doesn't crash
+> anymore then, if so, you can try to play with different gcc optimization
+> flags in order to find out what triggers it.
 
-Yes with this patch I'm not crashing with halt anymore. Cheers.
+Building the kernel with -O0 is also dangerous.
+It relies on the fact that some functions need to be inlined in any case.
 
-Let me test some more and see if I have other problems. I crashed once in some
-networking stack-trace but did not save it, let me see play with it some more.
-
-But surly it needs to go upstream. I'll run with it out of tree for now.
-
->> My current theory is that Fedora became UML unfriendly is there some random-exec-mem thingy
->> I need to turn off?
->>
-> 
-> No. UML tty driver is broken like hell and newer distors seem to trigger it.
-> I thought only Fc16 with systemd is affected. But as you using Fc15, I 
-> was wrong...
-> 
-
-
-I have an administrative question. (If I may). This came up now with my FC15
-setups. (I did not have these problem with my old FC12 setup)
-
-In a default setup (make defconfig) I have:
-
-CONFIG_XTERM_CHAN=y
-CONFIG_CON_CHAN=xterm
-
-If I leave it at that then very early in the boot an xterm X11 window comes up
-the terminal is on the host (I see my host name and environment, not the UML one)
-and the boot process just stops. Even if I close the window the boot is just stuck
-I can only do "sudo killall vmlinux" from the host.
-
-If I change "CONFIG_CON_CHAN not set" or just "CONFIG_CON_CHAN=nothing" then the
-boot process complains but continues to a login prompt like I use to.
-
-Do you know how to fix that?
-
-Also in vi, it thinks I only have 25 lines. Do you know in FC where I say console
-have more lines, or better yet auto adopt to my host console. I guess it might be
-related to my first Q. I did not use to have these problems with my old setup
-
-> Thanks,
-> //richard
-
-Thanks a million, for being so patient with me
-Boaz
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Virtualization & Cloud Management Using Capacity Planning
