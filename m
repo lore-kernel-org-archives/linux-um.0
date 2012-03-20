@@ -1,64 +1,87 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sat, 24 Mar 2012 14:31:10 +0400
-From: Anton Vorontsov <anton.vorontsov@linaro.org>
-Message-ID: <20120324103110.GI29067@lizard>
-References: <20120324102609.GA28356@lizard>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20120324102609.GA28356@lizard>
+From: Kautuk Consul <consul.kautuk@gmail.com>
+Date: Tue, 20 Mar 2012 12:17:20 -0400
+Message-Id: <1332260240-2251-1-git-send-email-consul.kautuk@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 09/10] um: Properly check all process' threads for a live mm
-To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-mm@kvack.org
+Subject: [PATCH 1/1 v2] um/kernel/trap.c: Port OOM changes to handle_page_fault
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, Kautuk Consul <consul.kautuk@gmail.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-kill_off_processes() might miss a valid process, this is because
-checking for process->mm is not enough. Process' main thread may
-exit or detach its mm via use_mm(), but other threads may still
-have a valid mm.
+Commit d065bd810b6deb67d4897a14bfe21f8eb526ba99
+(mm: retry page fault when blocking on disk transfer) and
+commit 37b23e0525d393d48a7d59f870b3bc061a30ccdb
+(x86,mm: make pagefault killable)
 
-To catch this we use find_lock_task_mm(), which walks up all
-threads and returns an appropriate task (with task lock held).
+The above commits introduced changes into the x86 pagefault handler
+for making the page fault handler retryable as well as killable.
 
-Suggested-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
+These changes reduce the mmap_sem hold time, which is crucial
+during OOM killer invocation.
+
+Port these changes to um.
+
+Signed-off-by: Kautuk Consul <consul.kautuk@gmail.com>
 ---
- arch/um/kernel/reboot.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/um/kernel/trap.c |   24 +++++++++++++++++++-----
+ 1 files changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
-index 1411f4e..3d15243 100644
---- a/arch/um/kernel/reboot.c
-+++ b/arch/um/kernel/reboot.c
-@@ -6,6 +6,7 @@
- #include "linux/sched.h"
- #include "linux/spinlock.h"
- #include "linux/slab.h"
-+#include "linux/oom.h"
- #include "kern_util.h"
- #include "os.h"
- #include "skas.h"
-@@ -25,13 +26,13 @@ static void kill_off_processes(void)
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index dafc947..76adb61 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -30,6 +30,8 @@ int handle_page_fault(unsigned long address, unsigned long ip,
+ 	pmd_t *pmd;
+ 	pte_t *pte;
+ 	int err = -EFAULT;
++	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
++				 (is_write ? FAULT_FLAG_WRITE : 0);
  
- 		read_lock(&tasklist_lock);
- 		for_each_process(p) {
--			task_lock(p);
--			if (!p->mm) {
--				task_unlock(p);
-+			struct task_struct *t;
+ 	*code_out = SEGV_MAPERR;
+ 
+@@ -40,6 +42,7 @@ int handle_page_fault(unsigned long address, unsigned long ip,
+ 	if (in_atomic())
+ 		goto out_nosemaphore;
+ 
++retry:
+ 	down_read(&mm->mmap_sem);
+ 	vma = find_vma(mm, address);
+ 	if (!vma)
+@@ -65,7 +68,11 @@ good_area:
+ 	do {
+ 		int fault;
+ 
+-		fault = handle_mm_fault(mm, vma, address, is_write ? FAULT_FLAG_WRITE : 0);
++		fault = handle_mm_fault(mm, vma, address, flags);
 +
-+			t = find_lock_task_mm(p);
-+			if (!t)
- 				continue;
--			}
--			pid = p->mm->context.id.u.pid;
--			task_unlock(p);
-+			pid = t->mm->context.id.u.pid;
-+			task_unlock(t);
- 			os_kill_ptraced_process(pid, 1);
++		if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
++			goto out_nosemaphore;
++
+ 		if (unlikely(fault & VM_FAULT_ERROR)) {
+ 			if (fault & VM_FAULT_OOM) {
+ 				goto out_of_memory;
+@@ -75,10 +82,17 @@ good_area:
+ 			}
+ 			BUG();
  		}
- 		read_unlock(&tasklist_lock);
+-		if (fault & VM_FAULT_MAJOR)
+-			current->maj_flt++;
+-		else
+-			current->min_flt++;
++		if (flags & FAULT_FLAG_ALLOW_RETRY) {
++			if (fault & VM_FAULT_MAJOR)
++				current->maj_flt++;
++			else
++				current->min_flt++;
++			if (fault & VM_FAULT_RETRY) {
++				flags &= ~FAULT_FLAG_ALLOW_RETRY;
++
++				goto retry;
++			}
++		}
+ 
+ 		pgd = pgd_offset(mm, address);
+ 		pud = pud_offset(pgd, address);
 -- 
-1.7.9.2
+1.7.5.4
 
