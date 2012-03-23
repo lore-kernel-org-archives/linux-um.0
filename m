@@ -1,151 +1,72 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4F6F1081.5000307@nod.at>
-Date: Sun, 25 Mar 2012 14:33:05 +0200
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1SB1OV-0008TC-RY
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Mar 2012 10:06:51 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SB1OQ-0005f4-B0
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 23 Mar 2012 10:06:51 +0000
+Message-ID: <4F6C4B2E.6030702@nod.at>
+Date: Fri, 23 Mar 2012 11:06:38 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigEDC20BD2B700A8299C286B57"
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [GIT PULL] UML changes for 3.4-rc1
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+References: <201203231101.55668.toralf.foerster@gmx.de>
+	<4F6C4AC8.8090907@nod.at>
+In-Reply-To: <4F6C4AC8.8090907@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============4772813871614513983=="
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] kernel 3.3 panics during shutdown of an UML image
+To: user-mode-linux-devel@lists.sourceforge.net
 
 This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigEDC20BD2B700A8299C286B57
-Content-Type: text/plain; charset=ISO-8859-15
+--===============4772813871614513983==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigF3C140F397E3430A6980BADE"
+
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigF3C140F397E3430A6980BADE
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-Linus,
+Am 23.03.2012 11:04, schrieb Richard Weinberger:
+> Am 23.03.2012 11:01, schrieb Toralf F=F6rster:
+>> Hello,
+>> tried today the new kernel (just to play with my image) and git htis :=
 
-This are the UML changes for for 3.4-rc1.
-Mostly bug fixes and cleanups.
+>>
+>>  * Bringing down interface lo
+>>  *   Removing addresses
+>>  * Stopping syslog-ng ...
+>> Kernel panic - not syncing: Kernel mode fault at addr 0x0, ip 0x0
+>>
+>> EIP: 0073:[<40001172>] CPU: 0 Not tainted ESP: 007b:bff09224 EFLAGS: 0=
+0200246
+>=20
+> What shows?
+> addr2line -v linux 40001172
+
+Ups,
+addr2line -e ...
 
 Thanks,
 //richard
 
----
-The following changes since commit c16fa4f2ad19908a47c63d8fa436a1178438c7=
-e7:
 
-  Linux 3.3 (2012-03-18 16:15:34 -0700)
-
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-3.4-=
-rc1
-
-Al Viro (27):
-      um: clean up the includes in ubd
-      um: auxvec.h is never used
-      um: switch line_remove() to setup_one_line()
-      um: switch line_config() to setup_one_line()
-      um: get rid of the init_prio mess
-      um: convert count_lock to mutex, fix a race in line_open()
-      um: fix races between line_open() and line_config()
-      um: switch line.c tty drivers to dynamic device creation
-      um: get rid of lines_init()
-      um: finally kill ->init_str leaks
-      um: sorting out the chan mess, part 1
-      um: switch users of ->chan_list to ->chan_{in,out} (easy cases)
-      um: chan_init_pri is dead now
-      um: line->have_irq is never checked...
-      um: race fix: initialize delayed_work *before* registering IRQ
-      um: switch close_chan() to struct line
-      um: merge processor_{32,64}.h a bit...
-      um: asm-offsets.h might as well come from underlying arch...
-      um: remove pointless include of asm/fixmap.h from asm/pgtable.h
-      um: kill HOST_TASK_PID
-      um: ptrace-generic.h doesn't need user.h
-      um: a bunch of headers can be killed by using generic-y
-      um: use the right ifdef around exports in user_syms.c
-      um: don't bother trying to rebuild CHECKFLAGS for USER_OBJS
-      um: deadlock in line_write_interrupt()
-      um: most of the SUBARCH uses can be killed
-      um: allow SUBARCH=3Dx86
-
-Geert Uytterhoeven (1):
-      uml/hostfs: Propagate dirent.d_type to filldir()
-
-Richard Weinberger (6):
-      Introduce CONFIG_GENERIC_IO
-      um: Serve io_remap_pfn_range()
-      um: Wire CONFIG_GENERIC_IO up
-      MTD: Relax dependencies
-      um: Switch to large mcmodel on x86_64
-      um: Update defconfig
-
-Yong Zhang (1):
-      um: irq: Remove IRQF_DISABLED
-
- arch/um/Kconfig.common                  |    1 +
- arch/um/Makefile                        |    5 +-
- arch/um/defconfig                       |  655 ++++++++++++++++++++++---=
-------
- arch/um/drivers/chan.h                  |   18 +-
- arch/um/drivers/chan_kern.c             |  198 ++++------
- arch/um/drivers/chan_user.h             |    2 -
- arch/um/drivers/line.c                  |  258 ++++++-------
- arch/um/drivers/line.h                  |   29 +-
- arch/um/drivers/mconsole_kern.c         |    2 +-
- arch/um/drivers/net_kern.c              |    2 +-
- arch/um/drivers/port_kern.c             |    4 +-
- arch/um/drivers/random.c                |    2 +-
- arch/um/drivers/ssl.c                   |   41 +-
- arch/um/drivers/stdio_console.c         |   46 ++--
- arch/um/drivers/{ubd_user.h =3D> ubd.h}   |    0
- arch/um/drivers/ubd_kern.c              |   46 +--
- arch/um/drivers/ubd_user.c              |    8 +-
- arch/um/drivers/xterm_kern.c            |    2 +-
- arch/um/include/asm/Kbuild              |    2 +-
- arch/um/include/asm/asm-offsets.h       |    1 -
- arch/um/include/asm/auxvec.h            |    4 -
- arch/um/include/asm/current.h           |   13 -
- arch/um/include/asm/delay.h             |   18 -
- arch/um/include/asm/io.h                |   57 ---
- arch/um/include/asm/mutex.h             |    9 -
- arch/um/include/asm/param.h             |   20 -
- arch/um/include/asm/pci.h               |    6 -
- arch/um/include/asm/pgalloc.h           |    3 +-
- arch/um/include/asm/pgtable.h           |    2 +
- arch/um/include/asm/ptrace-generic.h    |    1 -
- arch/um/include/shared/common-offsets.h |    2 -
- arch/um/include/shared/kern_util.h      |    2 +-
- arch/um/kernel/Makefile                 |    2 +-
- arch/um/kernel/process.c                |    4 +-
- arch/um/kernel/sigio.c                  |    2 +-
- arch/um/kernel/time.c                   |    2 +-
- arch/um/os-Linux/Makefile               |    2 -
- arch/um/os-Linux/user_syms.c            |    2 +-
- arch/um/scripts/Makefile.rules          |    7 +-
- arch/x86/Makefile.um                    |    4 -
- arch/x86/um/Kconfig                     |    4 +-
- arch/x86/um/asm/processor.h             |   10 +
- arch/x86/um/asm/processor_32.h          |   10 -
- arch/x86/um/asm/processor_64.h          |   10 -
- arch/x86/um/bugs_32.c                   |    4 +-
- drivers/mtd/Kconfig                     |    2 +-
- drivers/mtd/devices/Kconfig             |    1 +
- drivers/mtd/maps/Kconfig                |    1 +
- drivers/mtd/nand/Kconfig                |    2 +
- drivers/mtd/onenand/Kconfig             |    1 +
- fs/hostfs/hostfs.h                      |    3 +-
- fs/hostfs/hostfs_kern.c                 |    5 +-
- fs/hostfs/hostfs_user.c                 |    4 +-
- lib/Kconfig                             |    5 +
- 54 files changed, 813 insertions(+), 733 deletions(-)
- rename arch/um/drivers/{ubd_user.h =3D> ubd.h} (100%)
- delete mode 100644 arch/um/include/asm/asm-offsets.h
- delete mode 100644 arch/um/include/asm/auxvec.h
- delete mode 100644 arch/um/include/asm/current.h
- delete mode 100644 arch/um/include/asm/delay.h
- delete mode 100644 arch/um/include/asm/io.h
- delete mode 100644 arch/um/include/asm/mutex.h
- delete mode 100644 arch/um/include/asm/param.h
- delete mode 100644 arch/um/include/asm/pci.h
-
-
---------------enigEDC20BD2B700A8299C286B57
+--------------enigF3C140F397E3430A6980BADE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -153,19 +74,39 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.18 (GNU/Linux)
 
-iQIcBAEBAgAGBQJPbxCHAAoJEPmeIjfg4UaamQYQAKntRGM45reT/4A1NgpJ8nPf
-Xr3n9VfFH2TbgHFp9eFm6peLlenpI6RHIdFB1m1Tx8T4ab5Rlni76CuBstpG1ZJx
-sOtsXgrtG5rm+s3nprzfNigHlMHnO77i/AMEHl7pLeK5FGdtylZoMiSvNZL5xmi7
-boTMBzwcCyPXAWJoJNjaL0M0EgRcOHKR97G059pKGk/viiSEPeuNCiNdMUyNYGJ8
-tbSPVyjSnSIPqEaLcWPI7Y1mbkzhKQxtRv7d2yDlSdlyDuBj2c4RITIlUCrmtLz5
-cP0tu75EkNG8iJeSomfraeImlGAbhw2Za+n9TTiJhLe4v0/DlZTAGXBIJ46Fa0ad
-akUF5cbhWe7tAr6+TAydTLlt/9+YJCHGPptSuOkVGhnGQbagdkqpbeiHaPo1Kdz0
-VIfFzrnIXKbGD1QqjN03YrfETAnx8dVziknKfLJaUxpA6fVDQGUDFrYRpK3nd9El
-SkNekJ7eUPUvW89BXun4KUkecMct4l+CvJ4Vpn7+QkQycFxe7Z32/k4AwE0fbapG
-O+OiK/XKpdG6eTfMy1IbmzG8LnseCNMmoJkyoIAbRdcuRVcxHnerK62R6mCDBGyH
-03EdvgwCS0nACdLcoRpJ448Ifj1bpLGtGWjLsOui6aMuZi0girGq43icSFVArxaZ
-O23y7YS4Wwy3nqTkjeUT
-=3LpE
+iQEcBAEBAgAGBQJPbEsuAAoJEN9758yqZn9eWv0H/0O1eldx4MP88PtWkuqim48P
+uEGnFnTmFVv+t8vUwlGvn/RjybkVDeNH7wDJI9JEn1fuHfg538AIltf85fu2Nsj0
+KgbahmXrQAP+gMTKfyY4ZiiS8cyj5l0ggOCrZo5efr371NfNnX2aVUpsG/yNEf5s
+JMr8FJTOrIstdDfm3qXXQqSXkOIVeA1YzLwm95h42nizLyIYS8mody3FFxzEotxK
+AlAmH8Xsz0S0f1f3FUiXteR3+DAbb37ACGD/OlVu75ZDyc1FnI82DxPnPYlTPYMc
+TRqBRPWgH48w3cKCW/9DDjXtLWL73ZkiRiNIBWjC+QHair/boXpDQXpIf5hnH/I=
+=5p1J
 -----END PGP SIGNATURE-----
 
---------------enigEDC20BD2B700A8299C286B57--
+--------------enigF3C140F397E3430A6980BADE--
+
+
+--===============4772813871614513983==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
+--===============4772813871614513983==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============4772813871614513983==--
+
+
