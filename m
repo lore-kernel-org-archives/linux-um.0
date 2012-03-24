@@ -1,64 +1,68 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sat, 24 Mar 2012 14:30:08 +0400
+Date: Sat, 24 Mar 2012 14:28:59 +0400
 From: Anton Vorontsov <anton.vorontsov@linaro.org>
-Message-ID: <20120324103008.GF29067@lizard>
+Message-ID: <20120324102859.GD29067@lizard>
 References: <20120324102609.GA28356@lizard>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20120324102609.GA28356@lizard>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 06/10] blackfin: Fix possible deadlock in decode_address()
+Subject: [PATCH 04/10] sh: Use clear_tasks_mm_cpumask()
 To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
 Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-mm@kvack.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Oleg Nesterov found an interesting deadlock possibility:
+Current CPU hotplug code has some task->mm handling issues:
 
-> sysrq_showregs_othercpus() does smp_call_function(showacpu)
-> and showacpu() show_stack()->decode_address(). Now suppose that IPI
-> interrupts the task holding read_lock(tasklist).
+1. Working with task->mm w/o getting mm or grabing the task lock is
+   dangerous as ->mm might disappear (exit_mm() assigns NULL under
+   task_lock(), so tasklist lock is not enough).
 
-To fix this, blackfin should not grab the write_ variant of the
-tasklist lock, read_ one is enough.
+   We can't use get_task_mm()/mmput() pair as mmput() might sleep,
+   so we must take the task lock while handle its mm.
+
+2. Checking for process->mm is not enough because process' main
+   thread may exit or detach its mm via use_mm(), but other threads
+   may still have a valid mm.
+
+   To fix this we would need to use find_lock_task_mm(), which would
+   walk up all threads and returns an appropriate task (with task
+   lock held).
+
+clear_tasks_mm_cpumask() has all the issues fixed, so let's use it.
 
 Suggested-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
 ---
- arch/blackfin/kernel/trace.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/sh/kernel/smp.c |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/arch/blackfin/kernel/trace.c b/arch/blackfin/kernel/trace.c
-index 5102cdf..9cc9302 100644
---- a/arch/blackfin/kernel/trace.c
-+++ b/arch/blackfin/kernel/trace.c
-@@ -28,7 +28,7 @@ void decode_address(char *buf, unsigned long address)
+diff --git a/arch/sh/kernel/smp.c b/arch/sh/kernel/smp.c
+index f624174..2470c83 100644
+--- a/arch/sh/kernel/smp.c
++++ b/arch/sh/kernel/smp.c
+@@ -123,7 +123,6 @@ void native_play_dead(void)
+ int __cpu_disable(void)
  {
- 	struct task_struct *p;
- 	struct mm_struct *mm;
--	unsigned long flags, offset;
-+	unsigned long offset;
- 	struct rb_node *n;
+ 	unsigned int cpu = smp_processor_id();
+-	struct task_struct *p;
+ 	int ret;
  
- #ifdef CONFIG_KALLSYMS
-@@ -112,7 +112,7 @@ void decode_address(char *buf, unsigned long address)
- 	 * mappings of all our processes and see if we can't be a whee
- 	 * bit more specific
- 	 */
--	write_lock_irqsave(&tasklist_lock, flags);
-+	read_lock(&tasklist_lock);
- 	for_each_process(p) {
- 		struct task_struct *t;
+ 	ret = mp_ops->cpu_disable(cpu);
+@@ -153,11 +152,7 @@ int __cpu_disable(void)
+ 	flush_cache_all();
+ 	local_flush_tlb_all();
  
-@@ -185,7 +185,7 @@ __continue:
- 	sprintf(buf, "/* kernel dynamic memory */");
+-	read_lock(&tasklist_lock);
+-	for_each_process(p)
+-		if (p->mm)
+-			cpumask_clear_cpu(cpu, mm_cpumask(p->mm));
+-	read_unlock(&tasklist_lock);
++	clear_tasks_mm_cpumask(cpu);
  
- done:
--	write_unlock_irqrestore(&tasklist_lock, flags);
-+	read_unlock(&tasklist_lock);
+ 	return 0;
  }
- 
- #define EXPAND_LEN ((1 << CONFIG_DEBUG_BFIN_HWTRACE_EXPAND_LEN) * 256 - 1)
 -- 
 1.7.9.2
 
