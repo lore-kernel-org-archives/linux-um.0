@@ -1,21 +1,57 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <1332593303.16159.28.camel@twins>
-From: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Date: Sat, 24 Mar 2012 13:48:23 +0100
-In-Reply-To: <20120324103030.GG29067@lizard>
+Message-ID: <4F6DAC28.301@nod.at>
+Date: Sat, 24 Mar 2012 12:12:40 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
 References: <20120324102609.GA28356@lizard> <20120324103030.GG29067@lizard>
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Mime-Version: 1.0
+In-Reply-To: <20120324103030.GG29067@lizard>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigE41A5EA7F7A3D882738B89D5"
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [PATCH 07/10] um: Should hold tasklist_lock while traversing
  processes
 To: Anton Vorontsov <anton.vorontsov@linaro.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>, Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>, Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-mm@kvack.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sat, 2012-03-24 at 14:30 +0400, Anton Vorontsov wrote:
-> Traversing the tasks requires holding tasklist_lock, otherwise it
-> is unsafe. 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigE41A5EA7F7A3D882738B89D5
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-No it doesn't, it either requires tasklist_lock or rcu_read_lock().
+Am 24.03.2012 11:30, schrieb Anton Vorontsov:
+> Traversing the tasks requires holding tasklist_lock, otherwise it
+> is unsafe.
+>=20
+> p.s. However, I'm not sure that calling os_kill_ptraced_process()
+> in the atomic context is correct. It seem to work, but please
+> take a closer look.
+
+os_kill_ptraced_process() calls a host function.
+=46rom UML's point of view nothing sleeps, so this is fine.
+
+Acked-by: Richard Weinberger <richard@nod.at>
+
+Thanks,
+//richard
+
+
+--------------enigE41A5EA7F7A3D882738B89D5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iQEcBAEBAgAGBQJPbawoAAoJEN9758yqZn9enHsH/04wJSPdhgma1hiCpbwhLKzT
+jLaxk9Jl2lXj7n7ydXmtkkiYkO9QCi9syUAFKi5fV0HDyI4Yvo9ymPUOxAd569mQ
+p8Jo3iUBrgDKMbUAHyK+xxawB0TsLynRQbNY1iaKhbjcR9ejqKddlDXlV40GI3k0
+bU/Yk1umtUZhV9sT1ymTiHa/zAzRRhTa/AlOONRsLFWYGwtdYTm2vnDwPR0x18Zg
+kNF0OKf1/4hFCNUHYpJ8F99PDMN/T5hyJ52iXUsqeg/eJS5rJopbtsTFUxf1Fh78
+ksu1G6Xh5iWQVHQPDWcNrSN7t4oWbpb6OlsdojQYdOEXySuUtBVELMcjhwMCELU=
+=bzOH
+-----END PGP SIGNATURE-----
+
+--------------enigE41A5EA7F7A3D882738B89D5--
