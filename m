@@ -1,82 +1,114 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1SC5ow-0004MD-DS
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Mar 2012 09:02:34 +0000
-Received: from mailout-de.gmx.net ([213.165.64.23])
-	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1SC5os-0006p5-9C for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Mar 2012 09:02:34 +0000
-From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
-Date: Mon, 26 Mar 2012 11:02:21 +0200
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Sat, 24 Mar 2012 14:29:39 +0400
+From: Anton Vorontsov <anton.vorontsov@linaro.org>
+Message-ID: <20120324102939.GE29067@lizard>
+References: <20120324102609.GA28356@lizard>
 MIME-Version: 1.0
-Message-Id: <201203261102.22051.toralf.foerster@gmx.de>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] v3.3-6972-ge22057c core dumped
-To: user-mode-linux-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20120324102609.GA28356@lizard>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 05/10] blackfin: A couple of task->mm handling fixes
+To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
+Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-mm@kvack.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-SGVsbG8sCgpJJ20gdW5zdXJlIHdoZXRlaHIgaXQgaXMgd29ydGgvaGVscGZ1bCB0byByZXBvcnQg
-Y29yZSBkdW1wcyBkdXJpbmcgbWVyZ2Ugd2luZG93LCBidXQgbmV2ZXJ0aGVsZXNzIGhlcmUncyBh
-IGJhY2t0cmFjZSA6CgoKdGZvZXJzdGVAbjIyIH4gJCBnZGIgLS1jb3JlPWNvcmUgL3Vzci9sb2Nh
-bC9iaW4vbGludXgtdjMuMy02OTcyLWdlMjIwNTdjIApHTlUgZ2RiIChHZW50b28gNy4zLjEgcDIp
-IDcuMy4xCkNvcHlyaWdodCAoQykgMjAxMSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4K
-TGljZW5zZSBHUEx2Mys6IEdOVSBHUEwgdmVyc2lvbiAzIG9yIGxhdGVyIDxodHRwOi8vZ251Lm9y
-Zy9saWNlbnNlcy9ncGwuaHRtbD4KVGhpcyBpcyBmcmVlIHNvZnR3YXJlOiB5b3UgYXJlIGZyZWUg
-dG8gY2hhbmdlIGFuZCByZWRpc3RyaWJ1dGUgaXQuClRoZXJlIGlzIE5PIFdBUlJBTlRZLCB0byB0
-aGUgZXh0ZW50IHBlcm1pdHRlZCBieSBsYXcuICBUeXBlICJzaG93IGNvcHlpbmciCmFuZCAic2hv
-dyB3YXJyYW50eSIgZm9yIGRldGFpbHMuClRoaXMgR0RCIHdhcyBjb25maWd1cmVkIGFzICJpNjg2
-LXBjLWxpbnV4LWdudSIuCkZvciBidWcgcmVwb3J0aW5nIGluc3RydWN0aW9ucywgcGxlYXNlIHNl
-ZToKPGh0dHA6Ly9idWdzLmdlbnRvby5vcmcvPi4uLgpSZWFkaW5nIHN5bWJvbHMgZnJvbSAvdXNy
-L2xvY2FsL2Jpbi9saW51eC12My4zLTY5NzItZ2UyMjA1N2MuLi5kb25lLgoKd2FybmluZzogY29y
-ZSBmaWxlIG1heSBub3QgbWF0Y2ggc3BlY2lmaWVkIGV4ZWN1dGFibGUgZmlsZS4KW05ldyBMV1Ag
-MTcyNTBdCltOZXcgTFdQIDE3MjYzXQoKd2FybmluZzogQ2FuJ3QgcmVhZCBwYXRobmFtZSBmb3Ig
-bG9hZCBtYXA6IElucHV0L291dHB1dCBlcnJvci4KQ29yZSB3YXMgZ2VuZXJhdGVkIGJ5IGAvdXNy
-L2xvY2FsL2Jpbi9saW51eC12My4zLTY5NzItZ2UyMjA1N2MgLWgnLgpQcm9ncmFtIHRlcm1pbmF0
-ZWQgd2l0aCBzaWduYWwgNiwgQWJvcnRlZC4KIzAgIDB4Yjc3Nzg0MjQgaW4gX19rZXJuZWxfdnN5
-c2NhbGwgKCkKKGdkYikgYnQKIzAgIDB4Yjc3Nzg0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkK
-IzEgIDB4NGVjZDc0NDYgaW4ga2lsbCAoKSBhdCAuLi9zeXNkZXBzL3VuaXgvc3lzY2FsbC10ZW1w
-bGF0ZS5TOjgyCiMyICAweDA4MDczODI1IGluIHVtbF9hYm9ydCAoKSBhdCBhcmNoL3VtL29zLUxp
-bnV4L3V0aWwuYzo5MwojMyAgMHgwODA3M2I2NSBpbiBvc19kdW1wX2NvcmUgKCkgYXQgYXJjaC91
-bS9vcy1MaW51eC91dGlsLmM6MTM4CiM0ICAweDA4MDYxN2U3IGluIHBhbmljX2V4aXQgKHNlbGY9
-MHg4Mzc3NGQ4LCB1bnVzZWQxPTAsIHVudXNlZDI9MHg4Mzk5ZTIwKSBhdCBhcmNoL3VtL2tlcm5l
-bC91bV9hcmNoLmM6MjM1CiM1ICAweDA4MDliZmRhIGluIG5vdGlmaWVyX2NhbGxfY2hhaW4gKG5s
-PTxvcHRpbWl6ZWQgb3V0PiwgdmFsPTAsIHY9MHg4Mzk5ZTIwLCBucl90b19jYWxsPS0yLCBucl9j
-YWxscz0weDApCiAgICBhdCBrZXJuZWwvbm90aWZpZXIuYzo5MwojNiAgMHgwODA5YzEyMyBpbiBf
-X2F0b21pY19ub3RpZmllcl9jYWxsX2NoYWluIChucl9jYWxscz0weDAsIG5yX3RvX2NhbGw9LTEs
-IHY9MHg4Mzk5ZTIwLCB2YWw9MCwgbmg9MHg4Mzk5ZGMwKQogICAgYXQga2VybmVsL25vdGlmaWVy
-LmM6MTgyCiM3ICBhdG9taWNfbm90aWZpZXJfY2FsbF9jaGFpbiAobmg9MHg4Mzk5ZGMwLCB2YWw9
-MCwgdj0weDgzOTllMjApIGF0IGtlcm5lbC9ub3RpZmllci5jOjE5MQojOCAgMHgwODJlYTQ3ZSBp
-biBwYW5pYyAoZm10PTB4ODMzYWJkMCAiVkZTOiBVbmFibGUgdG8gbW91bnQgcm9vdCBmcyBvbiAl
-cyIpIGF0IGtlcm5lbC9wYW5pYy5jOjEyMAojOSAgMHgwODA0OWJlOCBpbiBtb3VudF9ibG9ja19y
-b290IChuYW1lPTB4ODMzYTgxMiAiL2Rldi9yb290IiwgZmxhZ3M9PG9wdGltaXplZCBvdXQ+KSBh
-dCBpbml0L2RvX21vdW50cy5jOjM4NQojMTAgMHgwODA0OWNkZSBpbiBtb3VudF9yb290ICgpIGF0
-IGluaXQvZG9fbW91bnRzLmM6NDk3CiMxMSAweDA4MDQ5ZTIzIGluIHByZXBhcmVfbmFtZXNwYWNl
-ICgpIGF0IGluaXQvZG9fbW91bnRzLmM6NTU1CiMxMiAweDA4MDQ5OTJiIGluIGtlcm5lbF9pbml0
-ICh1bnVzZWQ9MHgwKSBhdCBpbml0L21haW4uYzo4MjkKIzEzIDB4MDgwNzE4OWUgaW4gcnVuX2tl
-cm5lbF90aHJlYWQgKGZuPTB4ODA0OTgxNiA8a2VybmVsX2luaXQ+LCBhcmc9MHgwLCBqbXBfcHRy
-PTB4YTQ2NDQ0MCkKICAgIGF0IGFyY2gvdW0vb3MtTGludXgvcHJvY2Vzcy5jOjI1NwojMTQgMHgw
-ODA1ZWNmNSBpbiBuZXdfdGhyZWFkX2hhbmRsZXIgKCkgYXQgYXJjaC91bS9rZXJuZWwvcHJvY2Vz
-cy5jOjE1NAojMTUgMHgwMDAwMDAwMCBpbiA/PyAoKQoKCi0tIApNZkcvU2luY2VyZWx5ClRvcmFs
-ZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHByaW50OiA3QjFBIDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkz
-NiA4NzJBIEU1MDggN0RCNiA5REEzCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRiBlbWFp
-bCBpcyBzcG9uc29zcmVkIGJ5OgpUcnkgV2luZG93cyBBenVyZSBmcmVlIGZvciA5MCBkYXlzIENs
-aWNrIEhlcmUgCmh0dHA6Ly9wLnNmLm5ldC9zZnUvc2ZkMmQtbXNhenVyZQpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwg
-bWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxp
-bnV4LWRldmVsCg==
+The patch fixes two problems:
+
+1. Working with task->mm w/o getting mm or grabing the task lock is
+   dangerous as ->mm might disappear (exit_mm() assigns NULL under
+   task_lock(), so tasklist lock is not enough).
+
+   We can't use get_task_mm()/mmput() pair as mmput() might sleep,
+   so we have to take the task lock while handle its mm.
+
+2. Checking for process->mm is not enough because process' main
+   thread may exit or detach its mm via use_mm(), but other threads
+   may still have a valid mm.
+
+   To catch this we use find_lock_task_mm(), which walks up all
+   threads and returns an appropriate task (with task lock held).
+
+Suggested-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
+---
+ arch/blackfin/kernel/trace.c |   26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/arch/blackfin/kernel/trace.c b/arch/blackfin/kernel/trace.c
+index 050db44..5102cdf 100644
+--- a/arch/blackfin/kernel/trace.c
++++ b/arch/blackfin/kernel/trace.c
+@@ -10,6 +10,8 @@
+ #include <linux/hardirq.h>
+ #include <linux/thread_info.h>
+ #include <linux/mm.h>
++#include <linux/oom.h>
++#include <linux/sched.h>
+ #include <linux/uaccess.h>
+ #include <linux/module.h>
+ #include <linux/kallsyms.h>
+@@ -27,7 +29,6 @@ void decode_address(char *buf, unsigned long address)
+ 	struct task_struct *p;
+ 	struct mm_struct *mm;
+ 	unsigned long flags, offset;
+-	unsigned char in_atomic = (bfin_read_IPEND() & 0x10) || in_atomic();
+ 	struct rb_node *n;
+ 
+ #ifdef CONFIG_KALLSYMS
+@@ -113,15 +114,15 @@ void decode_address(char *buf, unsigned long address)
+ 	 */
+ 	write_lock_irqsave(&tasklist_lock, flags);
+ 	for_each_process(p) {
+-		mm = (in_atomic ? p->mm : get_task_mm(p));
+-		if (!mm)
+-			continue;
++		struct task_struct *t;
+ 
+-		if (!down_read_trylock(&mm->mmap_sem)) {
+-			if (!in_atomic)
+-				mmput(mm);
++		t = find_lock_task_mm(p);
++		if (!t)
+ 			continue;
+-		}
++
++		mm = t->mm;
++		if (!down_read_trylock(&mm->mmap_sem))
++			goto __continue;
+ 
+ 		for (n = rb_first(&mm->mm_rb); n; n = rb_next(n)) {
+ 			struct vm_area_struct *vma;
+@@ -130,7 +131,7 @@ void decode_address(char *buf, unsigned long address)
+ 
+ 			if (address >= vma->vm_start && address < vma->vm_end) {
+ 				char _tmpbuf[256];
+-				char *name = p->comm;
++				char *name = t->comm;
+ 				struct file *file = vma->vm_file;
+ 
+ 				if (file) {
+@@ -163,8 +164,7 @@ void decode_address(char *buf, unsigned long address)
+ 						name, vma->vm_start, vma->vm_end);
+ 
+ 				up_read(&mm->mmap_sem);
+-				if (!in_atomic)
+-					mmput(mm);
++				task_unlock(t);
+ 
+ 				if (buf[0] == '\0')
+ 					sprintf(buf, "[ %s ] dynamic memory", name);
+@@ -174,8 +174,8 @@ void decode_address(char *buf, unsigned long address)
+ 		}
+ 
+ 		up_read(&mm->mmap_sem);
+-		if (!in_atomic)
+-			mmput(mm);
++__continue:
++		task_unlock(t);
+ 	}
+ 
+ 	/*
+-- 
+1.7.9.2
 
