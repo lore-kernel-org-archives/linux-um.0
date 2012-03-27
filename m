@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@sigma-star.at>) id 1SCRl3-0006F3-6W
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bharrosh@panasas.com>) id 1SCM1Q-0008Nz-F8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2012 08:28:01 +0000
-Received: from gandalf.sigma-star.at ([95.130.255.141] helo=mail.sigma-star.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SCRkx-0006Qf-Bl for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 Mar 2012 08:28:01 +0000
-Message-ID: <4F717A03.4070404@sigma-star.at>
-Date: Tue, 27 Mar 2012 10:27:47 +0200
-From: Richard Weinberger <richard@sigma-star.at>
+	Tue, 27 Mar 2012 02:20:32 +0000
+Received: from natasha.panasas.com ([67.152.220.90])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SCM1O-0002la-12 for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Mar 2012 02:20:32 +0000
+Message-ID: <4F7123E1.6080804@panasas.com>
+Date: Mon, 26 Mar 2012 19:20:17 -0700
+From: Boaz Harrosh <bharrosh@panasas.com>
 MIME-Version: 1.0
 References: <4F71236E.6040400@panasas.com>
 In-Reply-To: <4F71236E.6040400@panasas.com>
@@ -29,21 +29,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH ] um: uml_setup_stubs': warning: unused
  variable 'pages'
-To: Boaz Harrosh <bharrosh@panasas.com>
-Cc: Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Am 27.03.2012 04:18, schrieb Boaz Harrosh:
+On 03/26/2012 07:18 PM, Boaz Harrosh wrote:
+
 > 
 > Fix the following gcc complain
 > arch/um/kernel/skas/mmu.c: In function 'uml_setup_stubs':
 > arch/um/kernel/skas/mmu.c:106:16: warning: unused variable 'pages' [-Wunused-variable]
 > 
+
+
+I get this on today's linus tree. If a fix is already queued please ignore
+
+Thanks
+Boaz
+
 > Signed-Signed-off-by: Boaz Harrosh <bharrosh@panasas.com>
+> ---
+>  arch/um/kernel/skas/mmu.c |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+> index 4947b31..0a49ef0 100644
+> --- a/arch/um/kernel/skas/mmu.c
+> +++ b/arch/um/kernel/skas/mmu.c
+> @@ -103,7 +103,6 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+>  
+>  void uml_setup_stubs(struct mm_struct *mm)
+>  {
+> -	struct page **pages;
+>  	int err, ret;
+>  
+>  	if (!skas_needs_stub)
 
-Applied.
 
-Thanks,
-//richard
 
 ------------------------------------------------------------------------------
 This SF email is sponsosred by:
