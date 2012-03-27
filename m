@@ -1,87 +1,56 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kautuk Consul <consul.kautuk@gmail.com>
-Date: Tue, 20 Mar 2012 09:45:59 -0400
-Message-Id: <1332251159-3582-1-git-send-email-consul.kautuk@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 1/1] um/kernel/trap.c: Port OOM changes to handle_page_fault
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, Kautuk Consul <consul.kautuk@gmail.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@sigma-star.at>) id 1SCRl3-0006F3-6W
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Mar 2012 08:28:01 +0000
+Received: from gandalf.sigma-star.at ([95.130.255.141] helo=mail.sigma-star.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1SCRkx-0006Qf-Bl for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 27 Mar 2012 08:28:01 +0000
+Message-ID: <4F717A03.4070404@sigma-star.at>
+Date: Tue, 27 Mar 2012 10:27:47 +0200
+From: Richard Weinberger <richard@sigma-star.at>
+MIME-Version: 1.0
+References: <4F71236E.6040400@panasas.com>
+In-Reply-To: <4F71236E.6040400@panasas.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH ] um: uml_setup_stubs': warning: unused
+ variable 'pages'
+To: Boaz Harrosh <bharrosh@panasas.com>
+Cc: Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Commit d065bd810b6deb67d4897a14bfe21f8eb526ba99
-(mm: retry page fault when blocking on disk transfer) and
-commit 37b23e0525d393d48a7d59f870b3bc061a30ccdb
-(x86,mm: make pagefault killable)
+Am 27.03.2012 04:18, schrieb Boaz Harrosh:
+> 
+> Fix the following gcc complain
+> arch/um/kernel/skas/mmu.c: In function 'uml_setup_stubs':
+> arch/um/kernel/skas/mmu.c:106:16: warning: unused variable 'pages' [-Wunused-variable]
+> 
+> Signed-Signed-off-by: Boaz Harrosh <bharrosh@panasas.com>
 
-The above commits introduced changes into the x86 pagefault handler
-for making the page fault handler retryable as well as killable.
+Applied.
 
-These changes reduce the mmap_sem hold time, which is crucial
-during OOM killer invocation.
+Thanks,
+//richard
 
-Port these changes to um.
-
-Signed-off-by: Kautuk Consul <consul.kautuk@gmail.com>
----
- arch/um/kernel/trap.c |   24 +++++++++++++++++++-----
- 1 files changed, 19 insertions(+), 5 deletions(-)
-
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index dafc947..76adb61 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -30,6 +30,8 @@ int handle_page_fault(unsigned long address, unsigned long ip,
- 	pmd_t *pmd;
- 	pte_t *pte;
- 	int err = -EFAULT;
-+	unsigned int flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE |
-+				 (is_write ? FAULT_FLAG_WRITE : 0);
- 
- 	*code_out = SEGV_MAPERR;
- 
-@@ -40,6 +42,7 @@ int handle_page_fault(unsigned long address, unsigned long ip,
- 	if (in_atomic())
- 		goto out_nosemaphore;
- 
-+retry:
- 	down_read(&mm->mmap_sem);
- 	vma = find_vma(mm, address);
- 	if (!vma)
-@@ -65,7 +68,11 @@ good_area:
- 	do {
- 		int fault;
- 
--		fault = handle_mm_fault(mm, vma, address, is_write ? FAULT_FLAG_WRITE : 0);
-+		fault = handle_mm_fault(mm, vma, address, flags);
-+
-+		if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
-+			goto out;
-+
- 		if (unlikely(fault & VM_FAULT_ERROR)) {
- 			if (fault & VM_FAULT_OOM) {
- 				goto out_of_memory;
-@@ -75,10 +82,17 @@ good_area:
- 			}
- 			BUG();
- 		}
--		if (fault & VM_FAULT_MAJOR)
--			current->maj_flt++;
--		else
--			current->min_flt++;
-+		if (flags & FAULT_FLAG_ALLOW_RETRY) {
-+			if (fault & VM_FAULT_MAJOR)
-+				current->maj_flt++;
-+			else
-+				current->min_flt++;
-+			if (fault & VM_FAULT_RETRY) {
-+				flags &= ~FAULT_FLAG_ALLOW_RETRY;
-+
-+				goto retry;
-+			}
-+		}
- 
- 		pgd = pgd_offset(mm, address);
- 		pud = pud_offset(pgd, address);
--- 
-1.7.5.4
+------------------------------------------------------------------------------
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here 
+http://p.sf.net/sfu/sfd2d-msazure
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
