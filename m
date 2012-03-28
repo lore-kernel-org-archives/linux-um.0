@@ -1,68 +1,24 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sat, 24 Mar 2012 14:28:59 +0400
-From: Anton Vorontsov <anton.vorontsov@linaro.org>
-Message-ID: <20120324102859.GD29067@lizard>
-References: <20120324102609.GA28356@lizard>
+Date: Wed, 28 Mar 2012 00:20:32 -0700 (PDT)
+From: David Rientjes <rientjes@google.com>
+In-Reply-To: <1332593574.16159.31.camel@twins>
+Message-ID: <alpine.DEB.2.00.1203280020100.16201@chino.kir.corp.google.com>
+References: <20120324102609.GA28356@lizard> <20120324103127.GJ29067@lizard> <1332593574.16159.31.camel@twins>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20120324102609.GA28356@lizard>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 04/10] sh: Use clear_tasks_mm_cpumask()
-To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-mm@kvack.org
+Subject: Re: [PATCH 10/10] oom: Make find_lock_task_mm() sparse-aware
+To: Peter Zijlstra <a.p.zijlstra@chello.nl>
+Cc: Anton Vorontsov <anton.vorontsov@linaro.org>, Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>, Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-mm@kvack.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Current CPU hotplug code has some task->mm handling issues:
+On Sat, 24 Mar 2012, Peter Zijlstra wrote:
 
-1. Working with task->mm w/o getting mm or grabing the task lock is
-   dangerous as ->mm might disappear (exit_mm() assigns NULL under
-   task_lock(), so tasklist lock is not enough).
+> Yeah, so Nacked-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
+> 
+> Also, why didn't lockdep catch it?
+> 
+> Fix sparse already instead of smearing ugly all over.
+> 
 
-   We can't use get_task_mm()/mmput() pair as mmput() might sleep,
-   so we must take the task lock while handle its mm.
-
-2. Checking for process->mm is not enough because process' main
-   thread may exit or detach its mm via use_mm(), but other threads
-   may still have a valid mm.
-
-   To fix this we would need to use find_lock_task_mm(), which would
-   walk up all threads and returns an appropriate task (with task
-   lock held).
-
-clear_tasks_mm_cpumask() has all the issues fixed, so let's use it.
-
-Suggested-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
----
- arch/sh/kernel/smp.c |    7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/arch/sh/kernel/smp.c b/arch/sh/kernel/smp.c
-index f624174..2470c83 100644
---- a/arch/sh/kernel/smp.c
-+++ b/arch/sh/kernel/smp.c
-@@ -123,7 +123,6 @@ void native_play_dead(void)
- int __cpu_disable(void)
- {
- 	unsigned int cpu = smp_processor_id();
--	struct task_struct *p;
- 	int ret;
- 
- 	ret = mp_ops->cpu_disable(cpu);
-@@ -153,11 +152,7 @@ int __cpu_disable(void)
- 	flush_cache_all();
- 	local_flush_tlb_all();
- 
--	read_lock(&tasklist_lock);
--	for_each_process(p)
--		if (p->mm)
--			cpumask_clear_cpu(cpu, mm_cpumask(p->mm));
--	read_unlock(&tasklist_lock);
-+	clear_tasks_mm_cpumask(cpu);
- 
- 	return 0;
- }
--- 
-1.7.9.2
-
+Fully agreed, please don't add this to the oom killer.
