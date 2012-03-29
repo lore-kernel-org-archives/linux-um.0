@@ -1,57 +1,70 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1S3khm-0002OA-0v
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 03 Mar 2012 08:52:42 +0000
-Received: from mailout-de.gmx.net ([213.165.64.23])
-	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1S3khl-0006Fy-4v for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 03 Mar 2012 08:52:41 +0000
-From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
-Date: Sat, 3 Mar 2012 09:52:32 +0100
-MIME-Version: 1.0
-Message-Id: <201203030952.33510.toralf.foerster@gmx.de>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] make oldconfig asks every time for the 3 new options
-To: user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Date: Thu, 29 Mar 2012 19:18:50 +0200
+Message-Id: <1333041530-2998-2-git-send-email-richard@nod.at>
+In-Reply-To: <1333041530-2998-1-git-send-email-richard@nod.at>
+References: <1333041530-2998-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 2/2] um: Use asm-generic/switch_to.h
+To: linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, toralf.foerster@gmx.de, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-SSdtIGF0IHRoaXMgbGV2ZWwgOgoKJCBnaXQgZGVzY3JpYmUKdjMuMy1yYzUtMjA0LWdhZTk0MmFl
-Cgp1c2luZyBvbGQgdW1sIGxpbnV4IGV4ZSB0byBnZW5lcmF0ZSBhIC5jb25maWcgOgoKJCAvdXNy
-L2xvY2FsL2Jpbi9saW51eC12My4zLXJjNS0yMDQtZ2FlOTQyYWUgLS1zaG93Y29uZmlnID4gLmNv
-bmZpZwoKYW5kIGJlaW5nIGFzayBldmVyeSB0aW1lIGZvciB0aGVzZSAzIG9wdGlvbnM6CgokIG1h
-a2Ugb2xkY29uZmlnIEFSQ0g9dW0Kc2NyaXB0cy9rY29uZmlnL2NvbmYgLS1vbGRjb25maWcgYXJj
-aC94ODYvdW0vS2NvbmZpZwoqCiogUmVzdGFydCBjb25maWcuLi4KKgoqCiogTWlzYyBkZXZpY2Vz
-CioKRW5jbG9zdXJlIFNlcnZpY2VzIChFTkNMT1NVUkVfU0VSVklDRVMpIFtOL3kvP10gKE5FVykg
-TgoqCiogU2lsaWNvbiBMYWJzIEMyIHBvcnQgc3VwcG9ydCAoRVhQRVJJTUVOVEFMKQoqClNpbGlj
-b24gTGFicyBDMiBwb3J0IHN1cHBvcnQgKEVYUEVSSU1FTlRBTCkgKEMyUE9SVCkgW04veS8/XSAo
-TkVXKSBOCioKKiBFRVBST00gc3VwcG9ydAoqCkVFUFJPTSA5M0NYNiBzdXBwb3J0IChFRVBST01f
-OTNDWDYpIFtOL3kvP10gKE5FVykgTgoqCiogVGV4YXMgSW5zdHJ1bWVudHMgc2hhcmVkIHRyYW5z
-cG9ydCBsaW5lIGRpc2NpcGxpbmUKKgoqCiogQWx0ZXJhIEZQR0EgZmlybXdhcmUgZG93bmxvYWQg
-bW9kdWxlCioKIwojIGNvbmZpZ3VyYXRpb24gd3JpdHRlbiB0byAuY29uZmlnCiMKCgpJJ20gd29u
-ZGVyaW5nIHdoeSB0aGlzIGhhcHBlbnMgb25seSBmb3IgdGhlc2UgMyBvcHRpb25zIHNpbmNlIHRo
-aXMgcmVsZWFzZQphbmQgbm90IGFsd2F5cyBiZWZvcmUgZm9yIGFsbCBvdGhlciBub3Qtc2V0IHBh
-cmFtZXRlci4KCi0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHBy
-aW50OiA3QjFBIDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1MDggN0RCNiA5REEzCgot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KVmlydHVhbGl6YXRpb24gJiBDbG91ZCBNYW5hZ2VtZW50IFVz
-aW5nIENhcGFjaXR5IFBsYW5uaW5nCkNsb3VkIGNvbXB1dGluZyBtYWtlcyB1c2Ugb2YgdmlydHVh
-bGl6YXRpb24gLSBidXQgY2xvdWQgY29tcHV0aW5nIAphbHNvIGZvY3VzZXMgb24gYWxsb3dpbmcg
-Y29tcHV0aW5nIHRvIGJlIGRlbGl2ZXJlZCBhcyBhIHNlcnZpY2UuCmh0dHA6Ly93d3cuYWNjZWxh
-Y29tbS5jb20vamF3L3NmbmwvMTE0LzUxNTIxMjIzLwpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0
-ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
-cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/include/asm/Kbuild  |    1 +
+ arch/um/kernel/process.c    |    6 +-----
+ arch/x86/um/asm/switch_to.h |    7 -------
+ 3 files changed, 2 insertions(+), 12 deletions(-)
+ delete mode 100644 arch/x86/um/asm/switch_to.h
+
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index bb5d6e6..fff2435 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -1,3 +1,4 @@
+ generic-y += bug.h cputime.h device.h emergency-restart.h futex.h hardirq.h
+ generic-y += hw_irq.h irq_regs.h kdebug.h percpu.h sections.h topology.h xor.h
+ generic-y += ftrace.h pci.h io.h param.h delay.h mutex.h current.h exec.h
++generic-y += switch_to.h
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index f386d04..2b73ded 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -88,11 +88,8 @@ static inline void set_current(struct task_struct *task)
+ 
+ extern void arch_switch_to(struct task_struct *to);
+ 
+-void *_switch_to(void *prev, void *next, void *last)
++void *__switch_to(struct task_struct *from, struct task_struct *to)
+ {
+-	struct task_struct *from = prev;
+-	struct task_struct *to = next;
+-
+ 	to->thread.prev_sched = from;
+ 	set_current(to);
+ 
+@@ -111,7 +108,6 @@ void *_switch_to(void *prev, void *next, void *last)
+ 	} while (current->thread.saved_task);
+ 
+ 	return current->thread.prev_sched;
+-
+ }
+ 
+ void interrupt_end(void)
+diff --git a/arch/x86/um/asm/switch_to.h b/arch/x86/um/asm/switch_to.h
+deleted file mode 100644
+index cf97d20..0000000
+--- a/arch/x86/um/asm/switch_to.h
++++ /dev/null
+@@ -1,7 +0,0 @@
+-#ifndef _ASM_UM_SWITCH_TO_H_
+-#define _ASM_UM_SWITCH_TO_H_
+-
+-extern void *_switch_to(void *prev, void *next, void *last);
+-#define switch_to(prev, next, last) prev = _switch_to(prev, next, last)
+-
+-#endif
+-- 
+1.7.7.3
 
