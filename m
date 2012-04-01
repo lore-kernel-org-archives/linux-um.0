@@ -1,64 +1,63 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 23 Apr 2012 00:09:15 -0700
-From: Anton Vorontsov <anton.vorontsov@linaro.org>
-Message-ID: <20120423070915.GF30752@lizard>
-References: <20120423070641.GA27702@lizard>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1SEIRA-0002TF-IP
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 Apr 2012 10:55:08 +0000
+Received: from mail-lpp01m010-f47.google.com ([209.85.215.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SEIR9-0000gv-Mk
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 Apr 2012 10:55:08 +0000
+Received: by lagw12 with SMTP id w12so3127544lag.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 01 Apr 2012 03:55:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20120423070641.GA27702@lizard>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 6/9] blackfin: Fix possible deadlock in decode_address()
-To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linaro-kernel@lists.linaro.org, patches@linaro.org, linux-mm@kvack.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <201204011114.57481.toralf.foerster@gmx.de>
+References: <201204011114.57481.toralf.foerster@gmx.de>
+Date: Sun, 1 Apr 2012 12:55:01 +0200
+Message-ID: <CAFLxGvzerM_PMBSfmUzSSsEmEUgXfQd_dMsTFeWirwQEuOK9KA@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] UML 3-4-rc1 /(rarely) core dumps
+To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Oleg Nesterov found an interesting deadlock possibility:
+2012/4/1 Toralf F=F6rster <toralf.foerster@gmx.de>:
+> While playing with different tty settings I observed today a crash.
+> Unfortunately I do not have any other information than the back trace :
 
-> sysrq_showregs_othercpus() does smp_call_function(showacpu)
-> and showacpu() show_stack()->decode_address(). Now suppose that IPI
-> interrupts the task holding read_lock(tasklist).
+Please more details.
+What exactly have you done?
 
-To fix this, blackfin should not grab the write_ variant of the
-tasklist lock, read_ one is enough.
+Do you also have a stack trace from UML itself?
+I'm also interested in the registers...
 
-Suggested-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
+-- =
+
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
 ---
- arch/blackfin/kernel/trace.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This SF email is sponsosred by:
+Try Windows Azure free for 90 days Click Here =
 
-diff --git a/arch/blackfin/kernel/trace.c b/arch/blackfin/kernel/trace.c
-index d08f0e3..f7f7a18 100644
---- a/arch/blackfin/kernel/trace.c
-+++ b/arch/blackfin/kernel/trace.c
-@@ -29,7 +29,7 @@ void decode_address(char *buf, unsigned long address)
- {
- 	struct task_struct *p;
- 	struct mm_struct *mm;
--	unsigned long flags, offset;
-+	unsigned long offset;
- 	struct rb_node *n;
- 
- #ifdef CONFIG_KALLSYMS
-@@ -113,7 +113,7 @@ void decode_address(char *buf, unsigned long address)
- 	 * mappings of all our processes and see if we can't be a whee
- 	 * bit more specific
- 	 */
--	write_lock_irqsave(&tasklist_lock, flags);
-+	read_lock(&tasklist_lock);
- 	for_each_process(p) {
- 		struct task_struct *t;
- 
-@@ -186,7 +186,7 @@ __continue:
- 	sprintf(buf, "/* kernel dynamic memory */");
- 
- done:
--	write_unlock_irqrestore(&tasklist_lock, flags);
-+	read_unlock(&tasklist_lock);
- }
- 
- #define EXPAND_LEN ((1 << CONFIG_DEBUG_BFIN_HWTRACE_EXPAND_LEN) * 256 - 1)
--- 
-1.7.9.2
+http://p.sf.net/sfu/sfd2d-msazure
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
