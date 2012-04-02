@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rrs@researchut.com>) id 1SEbxf-0004mG-4V
+	(envelope-from <richard.weinberger@gmail.com>) id 1SEam6-0001tz-Tj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Apr 2012 07:45:59 +0000
-Received: from mail-pz0-f46.google.com ([209.85.210.46])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SEbxZ-0002Ul-Lh
+	Mon, 02 Apr 2012 06:29:59 +0000
+Received: from mail-lpp01m010-f47.google.com ([209.85.215.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SEam5-0000Jn-Uv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Apr 2012 07:45:59 +0000
-Received: by dadz9 with SMTP id z9so2422469dad.33
+	Mon, 02 Apr 2012 06:29:58 +0000
+Received: by lagw12 with SMTP id w12so3945724lag.34
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 02 Apr 2012 00:45:47 -0700 (PDT)
-Message-ID: <4F795309.7030206@debian.org>
-Date: Mon, 02 Apr 2012 12:49:37 +0530
-From: Ritesh Raj Sarraf <rrs@debian.org>
+	Sun, 01 Apr 2012 23:29:51 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <0uvj49xgsm.ln2@news.researchut.com>
 References: <0uvj49xgsm.ln2@news.researchut.com>
-	<CAFLxGvx2fDWexwA1wmLZ4T0EDaUcaMiROrP-_diQi6bGTNEkyw@mail.gmail.com>
-In-Reply-To: <CAFLxGvx2fDWexwA1wmLZ4T0EDaUcaMiROrP-_diQi6bGTNEkyw@mail.gmail.com>
-Reply-To: rrs@debian.org
+Date: Mon, 2 Apr 2012 08:29:51 +0200
+Message-ID: <CAFLxGvx2fDWexwA1wmLZ4T0EDaUcaMiROrP-_diQi6bGTNEkyw@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,88 +28,43 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5576568070075599032=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] uml build failure on arch i386
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: Ritesh Raj Sarraf <rrs@debian.org>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============5576568070075599032==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature";
-	boundary="------------enig7BB7C71B0D37DAB814DC9BB7"
+On Sat, Mar 31, 2012 at 8:44 PM, Ritesh Raj Sarraf <rrs@debian.org> wrote:
+> Hello,
+>
+> I am trying to build uml on kernel 3.2. Following is the build failure I
+> get when building on my kvm x86 box.
+>
+> The kvm box is arch:
+> root@debian-x86:~/user-mode-linux (build)# uname -a
+> Linux debian-x86 3.0.0-1-686-pae #1 SMP Sat Aug 27 16:41:03 UTC 2011
+> i686 GNU/Linux
+>
+>
+> My initial search led me to:
+> http://sourceforge.net/mailarchive/message.php?msg_id=27848489
+>
+> Based on the comment there, I've tried SUBARCH=i386. But that didn't
+> help. Any suggestions?
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig7BB7C71B0D37DAB814DC9BB7
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Please share your .config.
 
-On Monday 02 April 2012 11:59 AM, richard -rw- weinberger wrote:
->> > My initial search led me to:
->> > http://sourceforge.net/mailarchive/message.php?msg_id=3D27848489
->> >
->> > Based on the comment there, I've tried SUBARCH=3Di386. But that didn=
-'t
->> > help. Any suggestions?
-> Please share your .config.
-
-Config file available at:
-http://people.debian.org/~rrs/tmp/config.i386
-
---=20
-Ritesh Raj Sarraf | http://people.debian.org/~rrs
-Debian - The Universal Operating System
-
-
---------------enig7BB7C71B0D37DAB814DC9BB7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iQIcBAEBCgAGBQJPeVMUAAoJEKY6WKPy4XVp9IsQALquYylnQcAkCRbD3wlUsrAn
-1yzSTXS+o1s7sKadOUIFz305ict7LcqtcndrijEQ6Kcj0G++QQBk0wmVSXVlawt1
-gSBfdhQoY+aKPqIZWPKXdVvVFWCnnQOOCzOT5B5qYeS3PjkshxBkP5Q3Hyk76c1d
-qUOA9tcLGja2FY0ItO9SlD1H20kUEgB2Y+PZ9jOtum6AHfwJjbRRORh3ycnLTroJ
-/MF8WfSkRWffWvCRhpZIClVOKPEvUUhu6oalJdTLat2w6Za0drRh45VallGdQI7g
-iIJOkUaQj0XW720kQklHKBbJjSLPDEVISfmbQAj3dO9RsfnJLdUsr7jd77veCN3z
-0c4t/ocA9TQ3agT6fkLGP9f2Ox1ggsnbuptDBecMpVrfylMwPyrK3A1te5gpYfxw
-p3uw/4dYjNXETjNhtNsrxSze9zOuvAi5tMKmLliiqhnGDoq2zyanx3t9rZfhbBdO
-fyDSaLOQkubx2OCha2kCbosqyEAQPNtg2+J4Zkm3p9NGX3PHmHnD7WGLzQkfMli5
-klYsb7JfaNKCtP0vwHsyO1bLBkM/ODTplFt5eGit4t+bgkAXSPxINdWHQ2l9GxAA
-mDcLCyeC6dSm1BOxAdReo/pgsdldzPfIntcdseCuYTPDdsit1zPYZePtzwmOhxnL
-vHnoHdZwtuoy7MeUaGJi
-=L50+
------END PGP SIGNATURE-----
-
---------------enig7BB7C71B0D37DAB814DC9BB7--
-
-
---===============5576568070075599032==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 This SF email is sponsosred by:
 Try Windows Azure free for 90 days Click Here 
 http://p.sf.net/sfu/sfd2d-msazure
---===============5576568070075599032==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============5576568070075599032==--
-
 
