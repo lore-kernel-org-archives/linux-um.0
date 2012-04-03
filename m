@@ -1,24 +1,35 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <malattia@linux.it>) id 1SFvJq-0004X0-EP
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
+	id 1SFAV8-0004LR-2W for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Apr 2012 20:38:50 +0000
+Received: from plane.gmane.org ([80.91.229.3])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SFAV5-0007l8-DO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Apr 2012 22:38:18 +0000
-Received: from ac250205.ppp.asahi-net.or.jp ([183.77.250.205]
-	helo=smtp.kamineko.org)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SFvJp-0006Gk-AQ for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 05 Apr 2012 22:38:18 +0000
-Date: Fri, 6 Apr 2012 07:21:01 +0900
-From: Mattia Dongili <malattia@linux.it>
-Message-ID: <20120405222100.GA6372@kamineko.org>
+	Tue, 03 Apr 2012 20:38:50 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
+	id 1SFAUx-0005r4-6E for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Apr 2012 22:38:39 +0200
+Received: from 122.167.229.251 ([122.167.229.251])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 03 Apr 2012 22:38:39 +0200
+Received: from rrs by 122.167.229.251 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 03 Apr 2012 22:38:39 +0200
+From: Ritesh Raj Sarraf <rrs@debian.org>
+Date: Wed, 04 Apr 2012 01:17:40 +0530
+Message-ID: <4F7B53DC.1040602@debian.org>
 References: <E1SEjI8-0007kU-RE@franck.debian.org> <4F7AFA9E.5020306@debian.org>
 	<CAFLxGvwSVTnoaky43CvUHs8gKT5m5w81YcUw6DC_PTeN2DF+AA@mail.gmail.com>
-	<4F7B53DC.1040602@debian.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4F7B53DC.1040602@debian.org>
+Mime-Version: 1.0
+In-Reply-To: <CAFLxGvwSVTnoaky43CvUHs8gKT5m5w81YcUw6DC_PTeN2DF+AA@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,70 +43,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] UML static linking and embedded library
-To: Ritesh Raj Sarraf <rrs@debian.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Apr 04, 2012 at 01:17:40AM +0530, Ritesh Raj Sarraf wrote:
-> On Tuesday 03 April 2012 10:35 PM, richard -rw- weinberger wrote:
-> > Solving the first issue is straight forward.
-> > For the second one I've to think a bit why Jeff took the current
-> > static linking approach.
-> > 
-> > Expect patches for both issues in 3.5. :-)
+On Tuesday 03 April 2012 10:35 PM, richard -rw- weinberger wrote:
+> Solving the first issue is straight forward.
+> For the second one I've to think a bit why Jeff took the current
+> static linking approach.
 > 
-> Thanks. Can you prepare the patch?
-> 
-> We are going to ship Debian 7 (Wheezy) with kernel v3.2. Based on what
-> you prepare, I will backport it.
+> Expect patches for both issues in 3.5. :-)
 
-the rpath one should be as simple as the attached one but honestly I
-kind of recall there was a reason for RPATH to be defined. Maybe that
-reason is no longer valid though...
+Thanks. Can you prepare the patch?
 
---- 
-commit ea13ff7608ea92df6ffa41e1124e5d3e6d7984fb
-Author: Mattia Dongili <malattia@linux.it>
-Date:   Fri Apr 6 07:18:17 2012 +0900
+We are going to ship Debian 7 (Wheezy) with kernel v3.2. Based on what
+you prepare, I will backport it.
 
-    Remove unnecessary RPATH definition
-    
-    Signed-off-by: Mattia Dongili <malattia@linux.it>
+Thanks,
+Ritesh
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 55c0661..b836776 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -105,7 +105,6 @@ archheaders:
- archprepare: include/generated/user_constants.h
- 
- LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
--LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib
- 
- CFLAGS_NO_HARDENING := $(call cc-option, -fno-PIC,) $(call cc-option, -fno-pic,) \
- 	$(call cc-option, -fno-stack-protector,) \
-diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-index 4be406a..8368350 100644
---- a/arch/x86/Makefile.um
-+++ b/arch/x86/Makefile.um
-@@ -47,9 +47,6 @@ KBUILD_CPPFLAGS += -m64
- ELF_ARCH := i386:x86-64
- ELF_FORMAT := elf64-x86-64
- 
--# Not on all 64-bit distros /lib is a symlink to /lib64. PLD is an example.
--
--LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib64
- LINK-y += -m64
- 
- # Do unit-at-a-time unconditionally on x86_64, following the host
 -- 
-mattia
-:wq!
+Given the large number of mailing lists I follow, I request you to CC me
+in replies for quicker response
+
 
 ------------------------------------------------------------------------------
-For Developers, A Lot Can Happen In A Second.
-Boundary is the first to Know...and Tell You.
-Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
-http://p.sf.net/sfu/Boundary-d2dvs2
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
