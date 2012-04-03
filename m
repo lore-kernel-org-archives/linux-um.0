@@ -1,35 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
-	id 1SFAV8-0004LR-2W for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Apr 2012 20:38:50 +0000
-Received: from plane.gmane.org ([80.91.229.3])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SFAV5-0007l8-DO
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1SF7Ay-0000LE-Gb
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Apr 2012 20:38:50 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
-	id 1SFAUx-0005r4-6E for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Apr 2012 22:38:39 +0200
-Received: from 122.167.229.251 ([122.167.229.251])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
+	Tue, 03 Apr 2012 17:05:48 +0000
+Received: from mail-lpp01m010-f47.google.com ([209.85.215.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.76) id 1SF7Ax-0002Nb-J2
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Apr 2012 17:05:48 +0000
+Received: by lagw12 with SMTP id w12so6658070lag.34
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 03 Apr 2012 22:38:39 +0200
-Received: from rrs by 122.167.229.251 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 03 Apr 2012 22:38:39 +0200
-From: Ritesh Raj Sarraf <rrs@debian.org>
-Date: Wed, 04 Apr 2012 01:17:40 +0530
-Message-ID: <4F7B53DC.1040602@debian.org>
+	Tue, 03 Apr 2012 10:05:41 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4F7AFA9E.5020306@debian.org>
 References: <E1SEjI8-0007kU-RE@franck.debian.org> <4F7AFA9E.5020306@debian.org>
-	<CAFLxGvwSVTnoaky43CvUHs8gKT5m5w81YcUw6DC_PTeN2DF+AA@mail.gmail.com>
-Mime-Version: 1.0
-In-Reply-To: <CAFLxGvwSVTnoaky43CvUHs8gKT5m5w81YcUw6DC_PTeN2DF+AA@mail.gmail.com>
+Date: Tue, 3 Apr 2012 19:05:40 +0200
+Message-ID: <CAFLxGvwSVTnoaky43CvUHs8gKT5m5w81YcUw6DC_PTeN2DF+AA@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -43,27 +32,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] UML static linking and embedded library
-To: user-mode-linux-devel@lists.sourceforge.net
+To: rrs@debian.org
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Tuesday 03 April 2012 10:35 PM, richard -rw- weinberger wrote:
-> Solving the first issue is straight forward.
-> For the second one I've to think a bit why Jeff took the current
-> static linking approach.
-> 
-> Expect patches for both issues in 3.5. :-)
+On Tue, Apr 3, 2012 at 3:26 PM, Ritesh Raj Sarraf <rrs@debian.org> wrote:
+> Hello Richard and others,
+>
+> I currently have 2 severity E(rrors) lintian rejects for the build I am
+> preparing for Debian.
+>
+> The details for both the rejects are explained at:
+>
+> http://lintian.debian.org/tags/binary-or-shlib-defines-rpath.html
+> http://lintian.debian.org/tags/embedded-library.html
+>
+>
+> Richard, Is this something that can be worked out upstream?
 
-Thanks. Can you prepare the patch?
+Solving the first issue is straight forward.
+For the second one I've to think a bit why Jeff took the current
+static linking approach.
 
-We are going to ship Debian 7 (Wheezy) with kernel v3.2. Based on what
-you prepare, I will backport it.
-
-Thanks,
-Ritesh
+Expect patches for both issues in 3.5. :-)
 
 -- 
-Given the large number of mailing lists I follow, I request you to CC me
-in replies for quicker response
-
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Better than sec? Nothing is better than sec when it comes to
