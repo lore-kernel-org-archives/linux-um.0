@@ -1,52 +1,87 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 23 Apr 2012 00:09:35 -0700
-From: Anton Vorontsov <anton.vorontsov@linaro.org>
-Message-ID: <20120423070935.GH30752@lizard>
-References: <20120423070641.GA27702@lizard>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1SHN6d-0006ZN-Mv
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 Apr 2012 22:30:39 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SHN6c-0004me-9j
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 Apr 2012 22:30:39 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20120423070641.GA27702@lizard>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 8/9] um: Fix possible race on task->mm
-To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linaro-kernel@lists.linaro.org, patches@linaro.org, linux-mm@kvack.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Date: Tue, 10 Apr 2012 00:30:28 +0200
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <905c4f872802ba8c93fe28bc2f627407@radon2.swed.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [GIT PULL] UML fixes for 3.4-rc3
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Checking for task->mm is dangerous as ->mm might disappear (exit_mm()
-assigns NULL under task_lock(), so tasklist lock is not enough).
+Linus,
 
-We can't use get_task_mm()/mmput() pair as mmput() might sleep,
-so let's take the task lock while we care about its mm.
+This are the UML fixes for for 3.4-rc3.
 
-Note that we should also use find_lock_task_mm() to check all process'
-threads for a valid mm, but for uml we'll do it in a separate patch.
+Thanks,
+//richard
 
-Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
 ---
- arch/um/kernel/reboot.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+The following changes since commit 
+0034102808e0dbbf3a2394b82b1bb40b5778de9e:
 
-diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
-index 66d754c..1411f4e 100644
---- a/arch/um/kernel/reboot.c
-+++ b/arch/um/kernel/reboot.c
-@@ -25,10 +25,13 @@ static void kill_off_processes(void)
- 
- 		read_lock(&tasklist_lock);
- 		for_each_process(p) {
--			if (p->mm == NULL)
-+			task_lock(p);
-+			if (!p->mm) {
-+				task_unlock(p);
- 				continue;
--
-+			}
- 			pid = p->mm->context.id.u.pid;
-+			task_unlock(p);
- 			os_kill_ptraced_process(pid, 1);
- 		}
- 		read_unlock(&tasklist_lock);
--- 
-1.7.9.2
+  Linux 3.4-rc2 (2012-04-07 18:30:41 -0700)
+
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-3.4-rc3
+
+Al Viro (3):
+      um: fix linker script generation
+      um: several x86 hw-dependent crypto modules won't build on uml
+      um: switch cow_user.h to htobe{32,64}/betoh{32,64}
+
+Boaz Harrosh (1):
+      um: uml_setup_stubs': warning: unused variable 'pages'
+
+Richard Weinberger (2):
+      um: Disintegrate asm/system.h
+      um: Use asm-generic/switch_to.h
+
+ arch/um/drivers/cow.h           |   35 ----------
+ arch/um/drivers/cow_user.c      |   43 ++++++------
+ arch/um/drivers/mconsole_kern.c |    1 +
+ arch/um/include/asm/Kbuild      |    3 +-
+ arch/um/kernel/Makefile         |    7 +-
+ arch/um/kernel/process.c        |    6 +--
+ arch/um/kernel/skas/mmu.c       |    1 -
+ arch/x86/Makefile.um            |    3 +
+ arch/x86/um/asm/barrier.h       |   75 +++++++++++++++++++++
+ arch/x86/um/asm/system.h        |  135 
+---------------------------------------
+ crypto/Kconfig                  |    6 +-
+ 11 files changed, 110 insertions(+), 205 deletions(-)
+ create mode 100644 arch/x86/um/asm/barrier.h
+ delete mode 100644 arch/x86/um/asm/system.h
+
+
+------------------------------------------------------------------------------
+For Developers, A Lot Can Happen In A Second.
+Boundary is the first to Know...and Tell You.
+Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
+http://p.sf.net/sfu/Boundary-d2dvs2
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
