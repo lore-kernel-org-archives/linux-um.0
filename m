@@ -1,18 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1SEGsM-0004Yy-1o
+	(envelope-from <richard@nod.at>) id 1SKF9f-0007Xs-V7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Apr 2012 09:15:06 +0000
-Received: from mailout-de.gmx.net ([213.165.64.23])
-	by sog-mx-4.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1SEGsL-00052j-2Y for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Apr 2012 09:15:06 +0000
-From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
-Date: Sun, 1 Apr 2012 11:14:57 +0200
-MIME-Version: 1.0
-Message-Id: <201204011114.57481.toralf.foerster@gmx.de>
+	Tue, 17 Apr 2012 20:37:39 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SKF9b-0005Ql-Sb
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 17 Apr 2012 20:37:39 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Tue, 17 Apr 2012 22:37:14 +0200
+Message-Id: <1334695036-19977-2-git-send-email-richard@nod.at>
+In-Reply-To: <1334695036-19977-1-git-send-email-richard@nod.at>
+References: <1334695036-19977-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -22,132 +24,52 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] UML 3-4-rc1 /(rarely) core dumps
+Subject: [uml-devel] [PATCH 2/4] um: Remove usage of irq_chip->release()
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Richard Weinberger <richard@nod.at>, tglx@linutronix.de, linux-kernel@vger.kernel.org
 
-V2hpbGUgcGxheWluZyB3aXRoIGRpZmZlcmVudCB0dHkgc2V0dGluZ3MgSSBvYnNlcnZlZCB0b2Rh
-eSBhIGNyYXNoLgpVbmZvcnR1bmF0ZWx5IEkgZG8gbm90IGhhdmUgYW55IG90aGVyIGluZm9ybWF0
-aW9uIHRoYW4gdGhlIGJhY2sgdHJhY2UgOgoKKGdkYikgYnQKIzAgIDB4Yjc3ZmE0MjQgaW4gX19r
-ZXJuZWxfdnN5c2NhbGwgKCkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojMSAgMHg0
-ZWNkNzQ0NiBpbiBraWxsICgpIGF0IC4uL3N5c2RlcHMvdW5peC9zeXNjYWxsLXRlbXBsYXRlLlM6
-ODIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgCiMyICAweDA4MDczOGM1IGluIHVtbF9hYm9ydCAoKSBhdCBhcmNoL3VtL29zLUxpbnV4
-L3V0aWwuYzo5MyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAKIzMgIDB4MDgwNzNjMDUgaW4gb3NfZHVtcF9jb3JlICgpIGF0
-IGFyY2gvdW0vb3MtTGludXgvdXRpbC5jOjEzOCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-CiM0ICAweDA4MDYxN2U3IGluIHBhbmljX2V4aXQgKHNlbGY9MHg4Mzc4NGQ4LCB1bnVzZWQxPTAs
-IHVudXNlZDI9MHg4MzliNWEwKSBhdCBhcmNoL3VtL2tlcm5lbC91bV9hcmNoLmM6MjM1ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojNSAgMHgwODA5YzA2YSBpbiBu
-b3RpZmllcl9jYWxsX2NoYWluIChubD08b3B0aW1pemVkIG91dD4sIHZhbD0wLCB2PTB4ODM5YjVh
-MCwgbnJfdG9fY2FsbD0tMiwgbnJfY2FsbHM9MHgwKSBhdCBrZXJuZWwvbm90aWZpZXIuYzo5MyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAKIzYgIDB4MDgwOWMxYjMgaW4gX19hdG9taWNfbm90aWZpZXJfY2Fs
-bF9jaGFpbiAobnJfY2FsbHM9MHgwLCBucl90b19jYWxsPS0xLCB2PTB4ODM5YjVhMCwgdmFsPTAs
-IG5oPTB4ODM5YjU0MCkgYXQga2VybmVsL25vdGlmaWVyLmM6MTgyICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiM3
-ICBhdG9taWNfbm90aWZpZXJfY2FsbF9jaGFpbiAobmg9MHg4MzliNTQwLCB2YWw9MCwgdj0weDgz
-OWI1YTApIGF0IGtlcm5lbC9ub3RpZmllci5jOjE5MSAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojOCAgMHgwODJlYTlhZSBpbiBwYW5p
-YyAoZm10PTB4ODM0MTE4MCAiS2VybmVsIG1vZGUgZmF1bHQgYXQgYWRkciAweCVseCwgaXAgMHgl
-bHgiKSBhdCBrZXJuZWwvcGFuaWMuYzoxMjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAKIzkgIDB4MDgwNjEzYWMgaW4gc2VndiAoZmk9PGluY29tcGxldGUgdHlw
-ZT4sIGlwPTAsIGlzX3VzZXI9MCwgcmVncz0weDgzNzY1ZDApIGF0IGFyY2gvdW0va2VybmVsL3Ry
-YXAuYzoyMjQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMxMCAw
-eDA4MDYxNGYzIGluIHNlZ3ZfaGFuZGxlciAoc2lnPTExLCByZWdzPTB4ODM3NjVkMCkgYXQgYXJj
-aC91bS9rZXJuZWwvdHJhcC5jOjE3MCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojMTEgMHgwODA3Mjk0ZCBpbiBzaWdfaGFu
-ZGxlcl9jb21tb24gKHNpZz0xMSwgbWM9MHg4Mzc2OTEwKSBhdCBhcmNoL3VtL29zLUxpbnV4L3Np
-Z25hbC5jOjQzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAKIzEyIDB4MDgwNzJhZTIgaW4gc2lnX2hhbmRsZXIgKHNpZz0xMSwgbWM9MHg4
-Mzc2OTEwKSBhdCBhcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjIzMCAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMxMyAweDA4
-MDcyNjFjIGluIGhhcmRfaGFuZGxlciAoc2lnPTxvcHRpbWl6ZWQgb3V0PiwgaW5mbz0weDgzNzY4
-N2MsIHA9MHg4Mzc2OGZjKSBhdCBhcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjE2NCAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IAojMTQgPHNpZ25hbCBoYW5kbGVyIGNhbGxlZD4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAKIzE1IDB4MDAwMDAwMDAgaW4gPz8gKCkgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgCiMxNiAweDA4MGJjMzZmIGluIG1hc2tfYWNrX2lycSAoZGVz
-Yz0weDgzODBmMTApIGF0IGtlcm5lbC9pcnEvY2hpcC5jOjIzNCAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojMTcgaGFuZGxlX2VkZ2VfaXJxIChpcnE9
-NSwgZGVzYz0weDgzODBmMTApIGF0IGtlcm5lbC9pcnEvY2hpcC5jOjQ4NwojMTggMHgwODBiOTll
-ZSBpbiBnZW5lcmljX2hhbmRsZV9pcnFfZGVzYyAoZGVzYz0weDgzODBmMTAsIGlycT01KSBhdCBp
-bmNsdWRlL2xpbnV4L2lycWRlc2MuaDoxMTQKIzE5IGdlbmVyaWNfaGFuZGxlX2lycSAoaXJxPTUp
-IGF0IGtlcm5lbC9pcnEvaXJxZGVzYy5jOjMxMwojMjAgMHgwODA1ZTA1NSBpbiBkb19JUlEgKGly
-cT01LCByZWdzPTB4ODM3NjllMCkgYXQgYXJjaC91bS9rZXJuZWwvaXJxLmM6Mjk0CiMyMSAweDA4
-MDVlMGNiIGluIHNpZ2lvX2hhbmRsZXIgKHNpZz0yOSwgcmVncz0weDgzNzY5ZTApIGF0IGFyY2gv
-dW0va2VybmVsL2lycS5jOjUzCiMyMiAweDA4MDcyOTRkIGluIHNpZ19oYW5kbGVyX2NvbW1vbiAo
-c2lnPTI5LCBtYz0weDgzNzZkMjApIGF0IGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6NDMKIzIz
-IDB4MDgwNzJhZTIgaW4gc2lnX2hhbmRsZXIgKHNpZz0yOSwgbWM9MHg4Mzc2ZDIwKSBhdCBhcmNo
-L3VtL29zLUxpbnV4L3NpZ25hbC5jOjIzMAojMjQgMHgwODA3MjYxYyBpbiBoYXJkX2hhbmRsZXIg
-KHNpZz08b3B0aW1pemVkIG91dD4sIGluZm89MHg4Mzc2YzhjLCBwPTB4ODM3NmQwYykgYXQgYXJj
-aC91bS9vcy1MaW51eC9zaWduYWwuYzoxNjQKIzI1IDxzaWduYWwgaGFuZGxlciBjYWxsZWQ+CiMy
-NiAweDRlZDcyZTlmIGluIF9fdGNnZXRhdHRyIChmZD0xNiwgdGVybWlvc19wPTB4MjBkY2NjODQp
-IGF0IC4uL3N5c2RlcHMvdW5peC9zeXN2L2xpbnV4L3RjZ2V0YXR0ci5jOjgwCiMyNyAweDRlZDZk
-Mjg1IGluIF9faXNhdHR5IChmZD0xNikgYXQgLi4vc3lzZGVwcy9wb3NpeC9pc2F0dHkuYzoyOQoj
-MjggMHgwODA3MjU2YSBpbiBtYXliZV9zaWdpb19icm9rZW4gKGZkPTE2LCByZWFkPTEpIGF0IGFy
-Y2gvdW0vb3MtTGludXgvc2lnaW8uYzozNjcKIzI5IDB4MDgwNWUyNTIgaW4gYWN0aXZhdGVfZmQg
-KGRldl9pZD0weDIwY2MxODAwLCB0eXBlPTAsIGZkPTE2LCBpcnE9NSkgYXQgYXJjaC91bS9rZXJu
-ZWwvaXJxLmM6MTQ0CiMzMCB1bV9yZXF1ZXN0X2lycSAoaXJxPTUsIGZkPTE2LCB0eXBlPTAsIGhh
-bmRsZXI9MHg4MDY3YmQwIDx1bWxfbmV0X2ludGVycnVwdD4sIGlycWZsYWdzPTEyOCwgZGV2bmFt
-ZT0weDIwY2MxODAwICJldGgwIiwgZGV2X2lkPTB4MjBjYzE4MDApCiAgICBhdCBhcmNoL3VtL2tl
-cm5lbC9pcnEuYzozMDgKIzMxIDB4MDgwNjdiNGYgaW4gdW1sX25ldF9vcGVuIChkZXY9MHgyMGNj
-MTgwMCkgYXQgYXJjaC91bS9kcml2ZXJzL25ldF9rZXJuLmM6MTYzCiMzMiAweDA4MjVlNzU0IGlu
-IF9fZGV2X29wZW4gKGRldj0weDIwY2MxODAwKSBhdCBuZXQvY29yZS9kZXYuYzoxMTY3CiMzMyAw
-eDA4MjVlYTQzIGluIF9fZGV2X2NoYW5nZV9mbGFncyAoZGV2PTB4MjBjYzE4MDAsIGZsYWdzPTQx
-NjMpIGF0IG5ldC9jb3JlL2Rldi5jOjQ2OTEKIzM0IDB4MDgyNWViZTcgaW4gZGV2X2NoYW5nZV9m
-bGFncyAoZGV2PTB4MjBjYzE4MDAsIGZsYWdzPTQxNjMpIGF0IG5ldC9jb3JlL2Rldi5jOjQ3NDcK
-IzM1IDB4MDgyYThiZjcgaW4gZGV2aW5ldF9pb2N0bCAobmV0PTB4ODNjNDBhMCwgY21kPTM1MDky
-LCBhcmc9MHhiZmYwYzc0MCkgYXQgbmV0L2lwdjQvZGV2aW5ldC5jOjgxOAojMzYgMHgwODJhOTcz
-NCBpbiBpbmV0X2lvY3RsIChzb2NrPTB4MjA4ZWYxNDAsIGNtZD0zNTA5MiwgYXJnPTMyMjAyMjc5
-MDQpIGF0IG5ldC9pcHY0L2FmX2luZXQuYzo4ODQKIzM3IDB4MDgyNGIzZTYgaW4gc29ja19kb19p
-b2N0bCAoYXJnPTMyMjAyMjc5MDQsIGNtZD0zNTA5Miwgc29jaz0weDIwOGVmMTQwLCBuZXQ9PG9w
-dGltaXplZCBvdXQ+KSBhdCBuZXQvc29ja2V0LmM6OTczCiMzOCBzb2NrX2lvY3RsIChmaWxlPTB4
-MjBmNjY1MDAsIGNtZD0zNTA5MiwgYXJnPTMyMjAyMjc5MDQpIGF0IG5ldC9zb2NrZXQuYzoxMDU4
-CiMzOSAweDA4MTAxN2ZjIGluIHZmc19pb2N0bCAoYXJnPTMyMjAyMjc5MDQsIGNtZD0zNTA5Miwg
-ZmlscD0weDIwZjY2NTAwKSBhdCBmcy9pb2N0bC5jOjQzCiM0MCBkb192ZnNfaW9jdGwgKGZpbHA9
-MHgyMGY2NjUwMCwgZmQ9NCwgY21kPTM1MDkyLCBhcmc9MzIyMDIyNzkwNCkgYXQgZnMvaW9jdGwu
-Yzo1OTgKIzQxIDB4MDgxMDIwMDMgaW4gc3lzX2lvY3RsIChmZD00LCBjbWQ9MzUwOTIsIGFyZz0z
-MjIwMjI3OTA0KSBhdCBmcy9pb2N0bC5jOjYxOAojNDIgMHgwODA2MWQ5MyBpbiBoYW5kbGVfc3lz
-Y2FsbCAocj0weDIwZjU1OGQ0KSBhdCBhcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzozNQoj
-NDMgMHgwODA3NWViNCBpbiBoYW5kbGVfdHJhcCAobG9jYWxfdXNpbmdfc3lzZW11PTIsIHJlZ3M9
-MHgyMGY1NThkNCwgcGlkPTg3NzkpIGF0IGFyY2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNzLmM6
-MTkzCiM0NCB1c2Vyc3BhY2UgKHJlZ3M9MHgyMGY1NThkNCkgYXQgYXJjaC91bS9vcy1MaW51eC9z
-a2FzL3Byb2Nlc3MuYzo0MTgKIzQ1IDB4MDgwNWVjNTQgaW4gZm9ya19oYW5kbGVyICgpIGF0IGFy
-Y2gvdW0va2VybmVsL3Byb2Nlc3MuYzoxNzgKLS0tVHlwZSA8cmV0dXJuPiB0byBjb250aW51ZSwg
-b3IgcSA8cmV0dXJuPiB0byBxdWl0LS0tCiM0NiAweDAwMDAwMDAwIGluID8/ICgpCgoKL21lIHdv
-bmRlcnMgd2hldGhlciBpdCBpcyB1c2VmdWxsIG9yIG5vdC4KCi0tIApNZkcvU2luY2VyZWx5ClRv
-cmFsZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHByaW50OiA3QjFBIDA3RjQgRUM4MiAwRjkwIEQ0QzIg
-ODkzNiA4NzJBIEU1MDggN0RCNiA5REEzCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRiBl
-bWFpbCBpcyBzcG9uc29zcmVkIGJ5OgpUcnkgV2luZG93cyBBenVyZSBmcmVlIGZvciA5MCBkYXlz
-IENsaWNrIEhlcmUgCmh0dHA6Ly9wLnNmLm5ldC9zZnUvc2ZkMmQtbXNhenVyZQpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2
-ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2Rl
-LWxpbnV4LWRldmVsCg==
+UML does no longer need irq_chip->release().
+
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/kernel/irq.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 47a09ee..00506c3 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -334,7 +334,6 @@ static void dummy(struct irq_data *d)
+ /* This is used for everything else than the timer. */
+ static struct irq_chip normal_irq_type = {
+ 	.name = "SIGIO",
+-	.release = free_irq_by_irq_and_dev,
+ 	.irq_disable = dummy,
+ 	.irq_enable = dummy,
+ 	.irq_ack = dummy,
+@@ -342,7 +341,6 @@ static struct irq_chip normal_irq_type = {
+ 
+ static struct irq_chip SIGVTALRM_irq_type = {
+ 	.name = "SIGVTALRM",
+-	.release = free_irq_by_irq_and_dev,
+ 	.irq_disable = dummy,
+ 	.irq_enable = dummy,
+ 	.irq_ack = dummy,
+-- 
+1.7.7.3
+
+
+------------------------------------------------------------------------------
+Better than sec? Nothing is better than sec when it comes to
+monitoring Big Data applications. Try Boundary one-second 
+resolution app monitoring today. Free.
+http://p.sf.net/sfu/Boundary-dev2dev
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
