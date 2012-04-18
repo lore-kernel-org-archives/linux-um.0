@@ -1,114 +1,61 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 23 Apr 2012 00:09:01 -0700
-From: Anton Vorontsov <anton.vorontsov@linaro.org>
-Message-ID: <20120423070901.GE30752@lizard>
-References: <20120423070641.GA27702@lizard>
+Return-Path: <richard@nod.at>
+Message-ID: <4F8E79D7.3030906@nod.at>
+Date: Wed, 18 Apr 2012 10:22:47 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20120423070641.GA27702@lizard>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 5/9] blackfin: A couple of task->mm handling fixes
-To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linaro-kernel@lists.linaro.org, patches@linaro.org, linux-mm@kvack.org
+References: <1334695036-19977-1-git-send-email-richard@nod.at> <1334695036-19977-4-git-send-email-richard@nod.at> <CAMuHMdXXGSyQN0U_KntTn3ydeZ7tAqJh2445ptvo+GYwV_SNMg@mail.gmail.com>
+In-Reply-To: <CAMuHMdXXGSyQN0U_KntTn3ydeZ7tAqJh2445ptvo+GYwV_SNMg@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig38499842B01E484DA3C520F2"
+Subject: Re: [uml-devel] [PATCH 4/4] irq: Remove irq_chip->release()
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, tglx@linutronix.de, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The patch fixes two problems:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig38499842B01E484DA3C520F2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-1. Working with task->mm w/o getting mm or grabing the task lock is
-   dangerous as ->mm might disappear (exit_mm() assigns NULL under
-   task_lock(), so tasklist lock is not enough).
+Am 18.04.2012 09:46, schrieb Geert Uytterhoeven:
+> On Tue, Apr 17, 2012 at 22:37, Richard Weinberger <richard@nod.at> wrot=
+e:
+>> As it's only user (UML) does no longer need it we can get
+>> rid of it.
+>=20
+> But now all drivers have to call um_free_irq() instead of free_irq()?
 
-   We can't use get_task_mm()/mmput() pair as mmput() might sleep,
-   so we have to take the task lock while handle its mm.
+No. They can still use free_irq().
+Only drivers on top of SIGIO and SIGVTALRAM irq chips have to use um_free=
+_irq().
+But ATAIK all drivers on UML use SIGIO, SIGVTALRAM.
 
-2. Checking for process->mm is not enough because process' main
-   thread may exit or detach its mm via use_mm(), but other threads
-   may still have a valid mm.
+> Are there any generic drivers not specific to UML we do want to use on =
+UML?
 
-   To catch this we use find_lock_task_mm(), which walks up all
-   threads and returns an appropriate task (with task lock held).
+I don't think so.
 
-Suggested-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
----
- arch/blackfin/kernel/trace.c |   26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+Thanks,
+//richard
 
-diff --git a/arch/blackfin/kernel/trace.c b/arch/blackfin/kernel/trace.c
-index 44bbf2f..d08f0e3 100644
---- a/arch/blackfin/kernel/trace.c
-+++ b/arch/blackfin/kernel/trace.c
-@@ -10,6 +10,8 @@
- #include <linux/hardirq.h>
- #include <linux/thread_info.h>
- #include <linux/mm.h>
-+#include <linux/oom.h>
-+#include <linux/sched.h>
- #include <linux/uaccess.h>
- #include <linux/module.h>
- #include <linux/kallsyms.h>
-@@ -28,7 +30,6 @@ void decode_address(char *buf, unsigned long address)
- 	struct task_struct *p;
- 	struct mm_struct *mm;
- 	unsigned long flags, offset;
--	unsigned char in_atomic = (bfin_read_IPEND() & 0x10) || in_atomic();
- 	struct rb_node *n;
- 
- #ifdef CONFIG_KALLSYMS
-@@ -114,15 +115,15 @@ void decode_address(char *buf, unsigned long address)
- 	 */
- 	write_lock_irqsave(&tasklist_lock, flags);
- 	for_each_process(p) {
--		mm = (in_atomic ? p->mm : get_task_mm(p));
--		if (!mm)
--			continue;
-+		struct task_struct *t;
- 
--		if (!down_read_trylock(&mm->mmap_sem)) {
--			if (!in_atomic)
--				mmput(mm);
-+		t = find_lock_task_mm(p);
-+		if (!t)
- 			continue;
--		}
-+
-+		mm = t->mm;
-+		if (!down_read_trylock(&mm->mmap_sem))
-+			goto __continue;
- 
- 		for (n = rb_first(&mm->mm_rb); n; n = rb_next(n)) {
- 			struct vm_area_struct *vma;
-@@ -131,7 +132,7 @@ void decode_address(char *buf, unsigned long address)
- 
- 			if (address >= vma->vm_start && address < vma->vm_end) {
- 				char _tmpbuf[256];
--				char *name = p->comm;
-+				char *name = t->comm;
- 				struct file *file = vma->vm_file;
- 
- 				if (file) {
-@@ -164,8 +165,7 @@ void decode_address(char *buf, unsigned long address)
- 						name, vma->vm_start, vma->vm_end);
- 
- 				up_read(&mm->mmap_sem);
--				if (!in_atomic)
--					mmput(mm);
-+				task_unlock(t);
- 
- 				if (buf[0] == '\0')
- 					sprintf(buf, "[ %s ] dynamic memory", name);
-@@ -175,8 +175,8 @@ void decode_address(char *buf, unsigned long address)
- 		}
- 
- 		up_read(&mm->mmap_sem);
--		if (!in_atomic)
--			mmput(mm);
-+__continue:
-+		task_unlock(t);
- 	}
- 
- 	/*
--- 
-1.7.9.2
+
+--------------enig38499842B01E484DA3C520F2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iQEcBAEBAgAGBQJPjnnaAAoJEN9758yqZn9eMhQH/0EqlHXeVHAn3gFWyqt9A7J0
+tDJkQ+p2BFLAt8YPENCmJt0xgHPJxzNqjp9Ws6piZZzsQnQTbQ0ze8J0Z4grEazq
+lk/ECPLbHAm5vqqO0idRtyuScpkWSU5NIgC1dxQKMbr/hIc3yRQrZ8//fLftyR76
+jOcp81irrH4zqHY3Edkqll2RwO3vlrpQ4Jj+es+cxqaI8iH+JGubjl7mc9Ao+e3R
+YZCcV9C1i5CpnZ9KOif07ezDIfoCvSKe7bovrN4L+VKJVqW4S2Kz4oSrTxhen42K
+TqByAMh9cq85iMBIbFxZkekWNJ2DHsKMDF/zhFMeYAPUvqERVGrbG0sM5WtEiho=
+=VOFY
+-----END PGP SIGNATURE-----
+
+--------------enig38499842B01E484DA3C520F2--
 
