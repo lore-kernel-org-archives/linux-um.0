@@ -1,72 +1,66 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 23 Apr 2012 00:08:38 -0700
-From: Anton Vorontsov <anton.vorontsov@linaro.org>
-Message-ID: <20120423070838.GC30752@lizard>
-References: <20120423070641.GA27702@lizard>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20120423070641.GA27702@lizard>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 3/9] powerpc: Use clear_tasks_mm_cpumask()
-To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
-Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linaro-kernel@lists.linaro.org, patches@linaro.org, linux-mm@kvack.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
+	id 1SM3GY-0007ex-LL for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Apr 2012 20:20:14 +0000
+Received: from plane.gmane.org ([80.91.229.3])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SM3GX-0007i7-87
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Apr 2012 20:20:14 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
+	id 1SM3GP-000628-CK for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Apr 2012 22:20:05 +0200
+Received: from ip-62-143-196-122.unitymediagroup.de ([62.143.196.122])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 22 Apr 2012 22:20:05 +0200
+Received: from osi2897 by ip-62-143-196-122.unitymediagroup.de with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 22 Apr 2012 22:20:05 +0200
+From: Osi2897 <osi2897@i2pmail.org>
+Date: Sun, 22 Apr 2012 20:19:56 +0000 (UTC)
+Message-ID: <loom.20120422T221621-489@post.gmane.org>
+References: <loom.20120421T191253-852@post.gmane.org>
+	<CAFLxGvybL7jTMsxD3f7p25Z-8aL9cOtJr-wi1aoO82Ykm98Ong@mail.gmail.com>
+Mime-Version: 1.0
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel]
+	=?utf-8?q?3=2E3=2E2=3A_conflicting_types_for_sys=5Fni?=
+	=?utf-8?q?=5Fsyscall?=
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Current CPU hotplug code has some task->mm handling issues:
+richard -rw- weinberger <richard.weinberger <at> gmail.com> writes:
 
-1. Working with task->mm w/o getting mm or grabing the task lock is
-   dangerous as ->mm might disappear (exit_mm() assigns NULL under
-   task_lock(), so tasklist lock is not enough).
+> Can you try building the kernel again after a "make mrproper ARCH=um"?
 
-   We can't use get_task_mm()/mmput() pair as mmput() might sleep,
-   so we must take the task lock while handle its mm.
+Just tried it... "make ARCH=um" stops with same error message (Archlinux on
+PentiumIII, gcc is 4.7.0 20120414 (prerelease)).
 
-2. Checking for process->mm is not enough because process' main
-   thread may exit or detach its mm via use_mm(), but other threads
-   may still have a valid mm.
 
-   To fix this we would need to use find_lock_task_mm(), which would
-   walk up all threads and returns an appropriate task (with task
-   lock held).
-
-clear_tasks_mm_cpumask() has all the issues fixed, so let's use it.
-
-Suggested-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
----
- arch/powerpc/mm/mmu_context_nohash.c |   11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/arch/powerpc/mm/mmu_context_nohash.c b/arch/powerpc/mm/mmu_context_nohash.c
-index 5b63bd3..e779642 100644
---- a/arch/powerpc/mm/mmu_context_nohash.c
-+++ b/arch/powerpc/mm/mmu_context_nohash.c
-@@ -333,9 +333,7 @@ static int __cpuinit mmu_context_cpu_notify(struct notifier_block *self,
- 					    unsigned long action, void *hcpu)
- {
- 	unsigned int cpu = (unsigned int)(long)hcpu;
--#ifdef CONFIG_HOTPLUG_CPU
--	struct task_struct *p;
--#endif
-+
- 	/* We don't touch CPU 0 map, it's allocated at aboot and kept
- 	 * around forever
- 	 */
-@@ -358,12 +356,7 @@ static int __cpuinit mmu_context_cpu_notify(struct notifier_block *self,
- 		stale_map[cpu] = NULL;
- 
- 		/* We also clear the cpu_vm_mask bits of CPUs going away */
--		read_lock(&tasklist_lock);
--		for_each_process(p) {
--			if (p->mm)
--				cpumask_clear_cpu(cpu, mm_cpumask(p->mm));
--		}
--		read_unlock(&tasklist_lock);
-+		clear_tasks_mm_cpumask(cpu);
- 	break;
- #endif /* CONFIG_HOTPLUG_CPU */
- 	}
--- 
-1.7.9.2
+------------------------------------------------------------------------------
+For Developers, A Lot Can Happen In A Second.
+Boundary is the first to Know...and Tell You.
+Monitor Your Applications in Ultra-Fine Resolution. Try it FREE!
+http://p.sf.net/sfu/Boundary-d2dvs2
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
