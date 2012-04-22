@@ -1,34 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
-	id 1SM3GY-0007ex-LL for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Apr 2012 20:20:14 +0000
-Received: from plane.gmane.org ([80.91.229.3])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SM3GX-0007i7-87
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1SLuwC-0001aq-6g
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Apr 2012 20:20:14 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
-	id 1SM3GP-000628-CK for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Apr 2012 22:20:05 +0200
-Received: from ip-62-143-196-122.unitymediagroup.de ([62.143.196.122])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
+	Sun, 22 Apr 2012 11:26:40 +0000
+Received: from mail-lpp01m010-f47.google.com ([209.85.215.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SLuwB-00006H-9m
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Apr 2012 11:26:40 +0000
+Received: by lagw12 with SMTP id w12so10800370lag.34
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 22 Apr 2012 22:20:05 +0200
-Received: from osi2897 by ip-62-143-196-122.unitymediagroup.de with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 22 Apr 2012 22:20:05 +0200
-From: Osi2897 <osi2897@i2pmail.org>
-Date: Sun, 22 Apr 2012 20:19:56 +0000 (UTC)
-Message-ID: <loom.20120422T221621-489@post.gmane.org>
+	Sun, 22 Apr 2012 04:26:32 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <loom.20120421T191253-852@post.gmane.org>
 References: <loom.20120421T191253-852@post.gmane.org>
-	<CAFLxGvybL7jTMsxD3f7p25Z-8aL9cOtJr-wi1aoO82Ykm98Ong@mail.gmail.com>
-Mime-Version: 1.0
+Date: Sun, 22 Apr 2012 13:21:27 +0200
+Message-ID: <CAFLxGvybL7jTMsxD3f7p25Z-8aL9cOtJr-wi1aoO82Ykm98Ong@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,18 +31,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel]
-	=?utf-8?q?3=2E3=2E2=3A_conflicting_types_for_sys=5Fni?=
-	=?utf-8?q?=5Fsyscall?=
-To: user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] 3.3.2: conflicting types for sys_ni_syscall
+To: Osi2897 <osi2897@i2pmail.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-richard -rw- weinberger <richard.weinberger <at> gmail.com> writes:
+On Sat, Apr 21, 2012 at 7:22 PM, Osi2897 <osi2897@i2pmail.org> wrote:
+> Hi,
+>
+> I tried to compile 3.3.2 UML on an old pentium III system (3.2.12 was no problem
+> on this system). With 3.3.2 I get the following error (conflicting types for
+> "sys_ni_syscall"):
 
-> Can you try building the kernel again after a "make mrproper ARCH=um"?
+Can you try building the kernel again after a "make mrproper ARCH=um"?
 
-Just tried it... "make ARCH=um" stops with same error message (Archlinux on
-PentiumIII, gcc is 4.7.0 20120414 (prerelease)).
-
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 For Developers, A Lot Can Happen In A Second.
