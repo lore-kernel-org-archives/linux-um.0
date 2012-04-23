@@ -1,75 +1,60 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1SKF9f-0007Xs-V7
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Apr 2012 20:37:39 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SKF9b-0005Ql-Sb
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Apr 2012 20:37:39 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Tue, 17 Apr 2012 22:37:14 +0200
-Message-Id: <1334695036-19977-2-git-send-email-richard@nod.at>
-In-Reply-To: <1334695036-19977-1-git-send-email-richard@nod.at>
-References: <1334695036-19977-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Mon, 23 Apr 2012 00:08:28 -0700
+From: Anton Vorontsov <anton.vorontsov@linaro.org>
+Message-ID: <20120423070828.GB30752@lizard>
+References: <20120423070641.GA27702@lizard>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 2/4] um: Remove usage of irq_chip->release()
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Richard Weinberger <richard@nod.at>, tglx@linutronix.de, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20120423070641.GA27702@lizard>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 2/9] arm: Use clear_tasks_mm_cpumask()
+To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
+Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linaro-kernel@lists.linaro.org, patches@linaro.org, linux-mm@kvack.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-UML does no longer need irq_chip->release().
+Checking for process->mm is not enough because process' main
+thread may exit or detach its mm via use_mm(), but other threads
+may still have a valid mm.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+To fix this we would need to use find_lock_task_mm(), which would
+walk up all threads and returns an appropriate task (with task
+lock held).
+
+clear_tasks_mm_cpumask() has this issue fixed, so let's use it.
+
+Suggested-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
 ---
- arch/um/kernel/irq.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ arch/arm/kernel/smp.c |    8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 47a09ee..00506c3 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -334,7 +334,6 @@ static void dummy(struct irq_data *d)
- /* This is used for everything else than the timer. */
- static struct irq_chip normal_irq_type = {
- 	.name = "SIGIO",
--	.release = free_irq_by_irq_and_dev,
- 	.irq_disable = dummy,
- 	.irq_enable = dummy,
- 	.irq_ack = dummy,
-@@ -342,7 +341,6 @@ static struct irq_chip normal_irq_type = {
+diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+index addbbe8..e824ee4 100644
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -130,7 +130,6 @@ static void percpu_timer_stop(void);
+ int __cpu_disable(void)
+ {
+ 	unsigned int cpu = smp_processor_id();
+-	struct task_struct *p;
+ 	int ret;
  
- static struct irq_chip SIGVTALRM_irq_type = {
- 	.name = "SIGVTALRM",
--	.release = free_irq_by_irq_and_dev,
- 	.irq_disable = dummy,
- 	.irq_enable = dummy,
- 	.irq_ack = dummy,
+ 	ret = platform_cpu_disable(cpu);
+@@ -160,12 +159,7 @@ int __cpu_disable(void)
+ 	flush_cache_all();
+ 	local_flush_tlb_all();
+ 
+-	read_lock(&tasklist_lock);
+-	for_each_process(p) {
+-		if (p->mm)
+-			cpumask_clear_cpu(cpu, mm_cpumask(p->mm));
+-	}
+-	read_unlock(&tasklist_lock);
++	clear_tasks_mm_cpumask(cpu);
+ 
+ 	return 0;
+ }
 -- 
-1.7.7.3
-
-
-------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+1.7.9.2
 
