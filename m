@@ -1,189 +1,72 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1SKF9f-0003b2-RB
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Apr 2012 20:37:39 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1SKF9b-00074b-J3
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 17 Apr 2012 20:37:39 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Tue, 17 Apr 2012 22:37:13 +0200
-Message-Id: <1334695036-19977-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Mon, 23 Apr 2012 00:08:38 -0700
+From: Anton Vorontsov <anton.vorontsov@linaro.org>
+Message-ID: <20120423070838.GC30752@lizard>
+References: <20120423070641.GA27702@lizard>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/4] um: Implement um_free_irq()
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Richard Weinberger <richard@nod.at>, tglx@linutronix.de, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20120423070641.GA27702@lizard>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 3/9] powerpc: Use clear_tasks_mm_cpumask()
+To: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>
+Cc: Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linaro-kernel@lists.linaro.org, patches@linaro.org, linux-mm@kvack.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Instead of using chip->release() we can achieve the same
-using a simple wrapper for free_irq().
-We have already um_request_irq(), so um_free_irq() is the perfect
-counterpart.
+Current CPU hotplug code has some task->mm handling issues:
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+1. Working with task->mm w/o getting mm or grabing the task lock is
+   dangerous as ->mm might disappear (exit_mm() assigns NULL under
+   task_lock(), so tasklist lock is not enough).
+
+   We can't use get_task_mm()/mmput() pair as mmput() might sleep,
+   so we must take the task lock while handle its mm.
+
+2. Checking for process->mm is not enough because process' main
+   thread may exit or detach its mm via use_mm(), but other threads
+   may still have a valid mm.
+
+   To fix this we would need to use find_lock_task_mm(), which would
+   walk up all threads and returns an appropriate task (with task
+   lock held).
+
+clear_tasks_mm_cpumask() has all the issues fixed, so let's use it.
+
+Suggested-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Anton Vorontsov <anton.vorontsov@linaro.org>
 ---
- arch/um/drivers/chan_kern.c       |    9 +++++----
- arch/um/drivers/line.c            |    2 +-
- arch/um/drivers/net_kern.c        |    4 ++--
- arch/um/drivers/port_kern.c       |    2 +-
- arch/um/drivers/xterm_kern.c      |    2 +-
- arch/um/include/shared/irq_kern.h |    2 +-
- arch/um/kernel/irq.c              |    7 +++++++
- 7 files changed, 18 insertions(+), 10 deletions(-)
+ arch/powerpc/mm/mmu_context_nohash.c |   11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
-index ca4c7eb..45e248c 100644
---- a/arch/um/drivers/chan_kern.c
-+++ b/arch/um/drivers/chan_kern.c
-@@ -8,6 +8,7 @@
- #include <linux/tty_flip.h>
- #include "chan.h"
- #include "os.h"
-+#include "irq_kern.h"
- 
- #ifdef CONFIG_NOCONFIG_CHAN
- static void *not_configged_init(char *str, int device,
-@@ -213,9 +214,9 @@ void free_irqs(void)
- 		chan = list_entry(ele, struct chan, free_list);
- 
- 		if (chan->input && chan->enabled)
--			free_irq(chan->line->driver->read_irq, chan);
-+			um_free_irq(chan->line->driver->read_irq, chan);
- 		if (chan->output && chan->enabled)
--			free_irq(chan->line->driver->write_irq, chan);
-+			um_free_irq(chan->line->driver->write_irq, chan);
- 		chan->enabled = 0;
- 	}
- }
-@@ -234,9 +235,9 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
- 	}
- 	else {
- 		if (chan->input && chan->enabled)
--			free_irq(chan->line->driver->read_irq, chan);
-+			um_free_irq(chan->line->driver->read_irq, chan);
- 		if (chan->output && chan->enabled)
--			free_irq(chan->line->driver->write_irq, chan);
-+			um_free_irq(chan->line->driver->write_irq, chan);
- 		chan->enabled = 0;
- 	}
- 	if (chan->ops->close != NULL)
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 4ab0d9c..acfd0e0 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -699,7 +699,7 @@ struct winch {
- static void __free_winch(struct work_struct *work)
+diff --git a/arch/powerpc/mm/mmu_context_nohash.c b/arch/powerpc/mm/mmu_context_nohash.c
+index 5b63bd3..e779642 100644
+--- a/arch/powerpc/mm/mmu_context_nohash.c
++++ b/arch/powerpc/mm/mmu_context_nohash.c
+@@ -333,9 +333,7 @@ static int __cpuinit mmu_context_cpu_notify(struct notifier_block *self,
+ 					    unsigned long action, void *hcpu)
  {
- 	struct winch *winch = container_of(work, struct winch, work);
--	free_irq(WINCH_IRQ, winch);
-+	um_free_irq(WINCH_IRQ, winch);
- 
- 	if (winch->pid != -1)
- 		os_kill_process(winch->pid, 1);
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 95f4416..0d60c56 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -195,7 +195,7 @@ static int uml_net_close(struct net_device *dev)
- 
- 	netif_stop_queue(dev);
- 
--	free_irq(dev->irq, dev);
-+	um_free_irq(dev->irq, dev);
- 	if (lp->close != NULL)
- 		(*lp->close)(lp->fd, &lp->user);
- 	lp->fd = -1;
-@@ -835,7 +835,7 @@ static void close_devices(void)
- 	spin_lock(&opened_lock);
- 	list_for_each(ele, &opened) {
- 		lp = list_entry(ele, struct uml_net_private, list);
--		free_irq(lp->dev->irq, lp->dev);
-+		um_free_irq(lp->dev->irq, lp->dev);
- 		if ((lp->close != NULL) && (lp->fd >= 0))
- 			(*lp->close)(lp->fd, &lp->user);
- 		if (lp->remove != NULL)
-diff --git a/arch/um/drivers/port_kern.c b/arch/um/drivers/port_kern.c
-index e31680e..11866ff 100644
---- a/arch/um/drivers/port_kern.c
-+++ b/arch/um/drivers/port_kern.c
-@@ -254,7 +254,7 @@ int port_wait(void *data)
- 		 * connection.  Then we loop here throwing out failed
- 		 * connections until a good one is found.
- 		 */
--		free_irq(TELNETD_IRQ, conn);
-+		um_free_irq(TELNETD_IRQ, conn);
- 
- 		if (conn->fd >= 0)
- 			break;
-diff --git a/arch/um/drivers/xterm_kern.c b/arch/um/drivers/xterm_kern.c
-index 8bd130f..b68bbe2 100644
---- a/arch/um/drivers/xterm_kern.c
-+++ b/arch/um/drivers/xterm_kern.c
-@@ -65,7 +65,7 @@ int xterm_fd(int socket, int *pid_out)
- 	 * isn't set) this will hang... */
- 	wait_for_completion(&data->ready);
- 
--	free_irq(XTERM_IRQ, data);
-+	um_free_irq(XTERM_IRQ, data);
- 
- 	ret = data->new_fd;
- 	*pid_out = data->pid;
-diff --git a/arch/um/include/shared/irq_kern.h b/arch/um/include/shared/irq_kern.h
-index b05d22f..7a5bfa6 100644
---- a/arch/um/include/shared/irq_kern.h
-+++ b/arch/um/include/shared/irq_kern.h
-@@ -13,6 +13,6 @@ extern int um_request_irq(unsigned int irq, int fd, int type,
- 			  irq_handler_t handler,
- 			  unsigned long irqflags,  const char * devname,
- 			  void *dev_id);
--
-+void um_free_irq(unsigned int irq, void *dev);
- #endif
- 
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 71b8c94..47a09ee 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -297,6 +297,13 @@ unsigned int do_IRQ(int irq, struct uml_pt_regs *regs)
- 	return 1;
- }
- 
-+void um_free_irq(unsigned int irq, void *dev)
-+{
-+	free_irq_by_irq_and_dev(irq, dev);
-+	free_irq(irq, dev);
-+}
-+EXPORT_SYMBOL(um_free_irq);
+ 	unsigned int cpu = (unsigned int)(long)hcpu;
+-#ifdef CONFIG_HOTPLUG_CPU
+-	struct task_struct *p;
+-#endif
 +
- int um_request_irq(unsigned int irq, int fd, int type,
- 		   irq_handler_t handler,
- 		   unsigned long irqflags, const char * devname,
+ 	/* We don't touch CPU 0 map, it's allocated at aboot and kept
+ 	 * around forever
+ 	 */
+@@ -358,12 +356,7 @@ static int __cpuinit mmu_context_cpu_notify(struct notifier_block *self,
+ 		stale_map[cpu] = NULL;
+ 
+ 		/* We also clear the cpu_vm_mask bits of CPUs going away */
+-		read_lock(&tasklist_lock);
+-		for_each_process(p) {
+-			if (p->mm)
+-				cpumask_clear_cpu(cpu, mm_cpumask(p->mm));
+-		}
+-		read_unlock(&tasklist_lock);
++		clear_tasks_mm_cpumask(cpu);
+ 	break;
+ #endif /* CONFIG_HOTPLUG_CPU */
+ 	}
 -- 
-1.7.7.3
-
-
-------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+1.7.9.2
 
