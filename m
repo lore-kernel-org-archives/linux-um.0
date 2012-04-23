@@ -1,44 +1,38 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Sat, 14 Apr 2012 17:52:11 +0200
-Message-Id: <1334418731-16498-2-git-send-email-richard@nod.at>
-In-Reply-To: <1334418731-16498-1-git-send-email-richard@nod.at>
-References: <1334418731-16498-1-git-send-email-richard@nod.at>
+Date: Mon, 23 Apr 2012 08:40:27 -0700
+From: Anton Vorontsov <anton.vorontsov@linaro.org>
+Message-ID: <20120423154027.GA23066@lizard>
+References: <20120423070641.GA27702@lizard>
+ <20120423070925.GG30752@lizard>
+ <4F956DF2.7020408@nod.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4F956DF2.7020408@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 2/2] um: Fix __swp_type()
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, hughd@google.com, Richard Weinberger <richard@nod.at>, stable@kernel.org
+Subject: Re: [PATCH 7/9] um: Should hold tasklist_lock while traversing
+ processes
+To: Richard Weinberger <richard@nod.at>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>, Russell King <linux@arm.linux.org.uk>, Mike Frysinger <vapier@gentoo.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linaro-kernel@lists.linaro.org, patches@linaro.org, linux-mm@kvack.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The current __swp_type() function uses a too small bitshift.
-Using more than one swap files causes bad pages because
-the type bits clash with other page flags.
+On Mon, Apr 23, 2012 at 04:57:54PM +0200, Richard Weinberger wrote:
+> On 23.04.2012 09:09, Anton Vorontsov wrote:
+> >Traversing the tasks requires holding tasklist_lock, otherwise it
+> >is unsafe.
+> >
+> >p.s. However, I'm not sure that calling os_kill_ptraced_process()
+> >in the atomic context is correct. It seem to work, but please
+> >take a closer look.
+> >
+> >Signed-off-by: Anton Vorontsov<anton.vorontsov@linaro.org>
+> >---
+> 
+> You forgot my Ack and I've already explained why
+> os_kill_ptraced_process() is fine.
 
-CC: stable@kernel.org
-Analyzed-by: Hugh Dickins <hughd@google.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/include/asm/pgtable.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Ouch, sorry!
 
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 294254e..5888f1b 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -354,11 +354,11 @@ extern pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr);
- #define update_mmu_cache(vma,address,ptep) do ; while (0)
- 
- /* Encode and de-code a swap entry */
--#define __swp_type(x)			(((x).val >> 4) & 0x3f)
-+#define __swp_type(x)			(((x).val >> 5) & 0x1f)
- #define __swp_offset(x)			((x).val >> 11)
- 
- #define __swp_entry(type, offset) \
--	((swp_entry_t) { ((type) << 4) | ((offset) << 11) })
-+	((swp_entry_t) { ((type) << 5) | ((offset) << 11) })
- #define __pte_to_swp_entry(pte) \
- 	((swp_entry_t) { pte_val(pte_mkuptodate(pte)) })
- #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
 -- 
-1.7.7.3
-
+Anton Vorontsov
+Email: cbouatmailru@gmail.com
