@@ -1,156 +1,144 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rrs@researchut.com>) id 1SF4DK-0008VG-A6
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Apr 2012 13:56:02 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SF4DE-0003Wd-Vn
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Apr 2012 13:56:02 +0000
-Received: by obbuo13 with SMTP id uo13so4948830obb.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 03 Apr 2012 06:55:51 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by localhost (Postfix) with ESMTP id 80959420FC0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue,  3 Apr 2012 18:56:54 +0530 (IST)
-Message-ID: <4F7AFA9E.5020306@debian.org>
-Date: Tue, 03 Apr 2012 18:56:54 +0530
-From: Ritesh Raj Sarraf <rrs@debian.org>
-MIME-Version: 1.0
-References: <E1SEjI8-0007kU-RE@franck.debian.org>
-In-Reply-To: <E1SEjI8-0007kU-RE@franck.debian.org>
-Reply-To: rrs@debian.org
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8275971535410045382=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] UML static linking and embedded library
-To: user-mode-linux-devel@lists.sourceforge.net
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============8275971535410045382==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature";
-	boundary="------------enigA7F6BEE15608E23963C192F1"
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigA7F6BEE15608E23963C192F1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Hello Richard and others,
-
-I currently have 2 severity E(rrors) lintian rejects for the build I am
-preparing for Debian.
-
-The details for both the rejects are explained at:
-
-http://lintian.debian.org/tags/binary-or-shlib-defines-rpath.html
-http://lintian.debian.org/tags/embedded-library.html
-
-
-Richard, Is this something that can be worked out upstream?
-
-If there were decisions cautiously made for a reason, I can work it out
-with an override to lintian. Just that I want to check out with you guys
-first.
-
-
-
-Ritesh
-
-
--------- Original Message --------
-Subject: user-mode-linux_3.2-1um-1_i386.changes REJECTED
-Date: Mon, 02 Apr 2012 15:35:36 +0000
-From: Debian FTP Masters <ftpmaster@ftp-master.debian.org>
-To: Ritesh Raj Sarraf <rrs@debian.org>, User Mode Linux Maintainers
-<pkg-uml-pkgs@lists.alioth.debian.org>
-
-
-
-
-Reject Reasons:
-user-mode-linux: lintian output: 'binary-or-shlib-defines-rpath
-usr/bin/linux.uml /lib', automatically rejected package.
-user-mode-linux: If you have a good reason, you may override this
-lintian tag.
-
-user-mode-linux: lintian output: 'embedded-library usr/bin/linux.uml:
-libpcap', automatically rejected package.
-user-mode-linux: If you have a good reason, you may override this
-lintian tag.
-
-
-
-=3D=3D=3D
-
-Please feel free to respond to this email if you don't understand why
-your files were rejected, or if you upload new files which address our
-concerns.
-
-
-
---------------enigA7F6BEE15608E23963C192F1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iQIcBAEBCgAGBQJPevqeAAoJEKY6WKPy4XVpySwP/2P3Z9uoyh7tBsjgn/KzjrC2
-lxIPoBzhn5pTXhM+Kp+mRagF2t6BcztQ1zLBUQNOz7v9163jtnPh1hAmdLz3En8X
-wmy9XfB3T+S8nvs09eqOnoGvtG91LhWt10XnezO8aQ3CHQij2ELxp8oXiJfcxhv+
-ltc+Wz6sQxayxP4Ahm91/Z8D1oGTA71eu3oVOV/Ejcw69JhUE3HAKIICu1jZFzbe
-0JO16aKr6rSSc3fykKJhaJlyrCktK09/BT6aVaOaWCC7jq7VjUbFKcWMPLbuquza
-AEz2b6zeS6xNc6iquUH7icFB8tubntSNGFJdeWDHNjRk6XqHWKqI05qH2e8qSFQc
-ZlONAnSbzuPzOV+gxEPS+r9K3AidTTDgfabOfw0FIYb+5aLTo/qoaMhQig7S54e4
-zRyx1bp6uVwTI5ZRPkOVvKm4qnsoGxIzShd5fltZHJwTXrH3pa+yxzWe9RYej5zy
-UDqYyhL6FE4/yVN6Ys0aJXKzaAkK7XqPO35fGyAFAanUxLFIZNde9YDUiXN8Jkv6
-hEEEXk53tumovMkqdSLFQK64Yk/0eQhRIaq2qwe1f1UsROs17xPYQxrGpGSNZs0A
-bHHibJ9gUQDuRVM0RK/aUoSVBmxnsFWiMh/RnnaYIL8cWrCyBgSwXWW+M7Pb/WRv
-pt6XgTxh4+k29ZSFaWYo
-=pBRh
------END PGP SIGNATURE-----
-
---------------enigA7F6BEE15608E23963C192F1--
-
-
---===============8275971535410045382==
+Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+Date: Thu, 26 Apr 2012 16:59:11 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <20120426165911.00cebd31.akpm@linux-foundation.org>
+In-Reply-To: <20120423070736.GA30752@lizard>
+References: <20120423070641.GA27702@lizard>
+	<20120423070736.GA30752@lizard>
+Mime-Version: 1.0
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+Sender: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+Subject: Re: [PATCH 1/9] cpu: Introduce clear_tasks_mm_cpumask() helper
+To: Anton Vorontsov <anton.vorontsov@linaro.org>
+Cc: linaro-kernel@lists.linaro.org, Mike Frysinger <vapier@gentoo.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, user-mode-linux-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, Richard Weinberger <richard@nod.at>, linuxppc-dev@lists.ozlabs.org, Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, Paul Mundt <lethal@linux-sh.org>, John Stultz <john.stultz@linaro.org>, patches@linaro.org, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, Russell King <linux@arm.linux.org.uk>, uclinux-dist-devel@blackfin.uclinux.org, linux-arm-kernel@lists.infradead.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-------------------------------------------------------------------------------
-Better than sec? Nothing is better than sec when it comes to
-monitoring Big Data applications. Try Boundary one-second 
-resolution app monitoring today. Free.
-http://p.sf.net/sfu/Boundary-dev2dev
---===============8275971535410045382==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Mon, 23 Apr 2012 00:07:36 -0700
+Anton Vorontsov <anton.vorontsov@linaro.org> wrote:
+
+> Many architectures clear tasks' mm_cpumask like this:
+> 
+> 	read_lock(&tasklist_lock);
+> 	for_each_process(p) {
+> 		if (p->mm)
+> 			cpumask_clear_cpu(cpu, mm_cpumask(p->mm));
+> 	}
+> 	read_unlock(&tasklist_lock);
+> 
+> Depending on the context, the code above may have several problems,
+> such as:
+> 
+> 1. Working with task->mm w/o getting mm or grabing the task lock is
+>    dangerous as ->mm might disappear (exit_mm() assigns NULL under
+>    task_lock(), so tasklist lock is not enough).
+> 
+> 2. Checking for process->mm is not enough because process' main
+>    thread may exit or detach its mm via use_mm(), but other threads
+>    may still have a valid mm.
+> 
+> This patch implements a small helper function that does things
+> correctly, i.e.:
+> 
+> 1. We take the task's lock while whe handle its mm (we can't use
+>    get_task_mm()/mmput() pair as mmput() might sleep);
+> 
+> 2. To catch exited main thread case, we use find_lock_task_mm(),
+>    which walks up all threads and returns an appropriate task
+>    (with task lock held).
+> 
+> Also, Per Peter Zijlstra's idea, now we don't grab tasklist_lock in
+> the new helper, instead we take the rcu read lock. We can do this
+> because the function is called after the cpu is taken down and marked
+> offline, so no new tasks will get this cpu set in their mm mask.
+> 
+
+Seems reasonable.
+
+> --- a/include/linux/cpu.h
+> +++ b/include/linux/cpu.h
+> @@ -179,6 +179,7 @@ extern void put_online_cpus(void);
+>  #define hotcpu_notifier(fn, pri)	cpu_notifier(fn, pri)
+>  #define register_hotcpu_notifier(nb)	register_cpu_notifier(nb)
+>  #define unregister_hotcpu_notifier(nb)	unregister_cpu_notifier(nb)
+> +void clear_tasks_mm_cpumask(int cpu);
+>  int cpu_down(unsigned int cpu);
+>  
+>  #ifdef CONFIG_ARCH_CPU_PROBE_RELEASE
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 2060c6e..ecdf499 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -10,6 +10,8 @@
+>  #include <linux/sched.h>
+>  #include <linux/unistd.h>
+>  #include <linux/cpu.h>
+> +#include <linux/oom.h>
+> +#include <linux/rcupdate.h>
+>  #include <linux/export.h>
+>  #include <linux/kthread.h>
+>  #include <linux/stop_machine.h>
+> @@ -171,6 +173,30 @@ void __ref unregister_cpu_notifier(struct notifier_block *nb)
+>  }
+>  EXPORT_SYMBOL(unregister_cpu_notifier);
+>  
+> +void clear_tasks_mm_cpumask(int cpu)
+
+The operation of this function was presumably obvious to you at the
+time you wrote it, but that isn't true of other people at later times.
+
+Please document it?
+
+
+> +{
+> +	struct task_struct *p;
+> +
+> +	/*
+> +	 * This function is called after the cpu is taken down and marked
+> +	 * offline,
+
+hm, well.  Who said that this function will only ever be called
+after that CPU was taken down?  There is nothing in the function name
+nor in the (absent) documentation which enforces this precondition.
+
+If someone tries to use this function for a different purpose, or
+copies-and-modifies it for a different purpose, we just shot them in
+the foot.
+
+They'd be pretty dumb to do that without reading the local comment,
+but still...
+
+> 	 so its not like new tasks will ever get this cpu set in
+> +	 * their mm mask. -- Peter Zijlstra
+> +	 * Thus, we may use rcu_read_lock() here, instead of grabbing
+> +	 * full-fledged tasklist_lock.
+> +	 */
+> +	rcu_read_lock();
+> +	for_each_process(p) {
+> +		struct task_struct *t;
+> +
+> +		t = find_lock_task_mm(p);
+> +		if (!t)
+> +			continue;
+> +		cpumask_clear_cpu(cpu, mm_cpumask(t->mm));
+> +		task_unlock(t);
+> +	}
+> +	rcu_read_unlock();
+> +}
+
+It is good that this code exists under CONFIG_HOTPLUG_CPU.  Did you
+check that everything works correctly with CONFIG_HOTPLUG_CPU=n?
 
 _______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============8275971535410045382==--
-
+Linuxppc-dev mailing list
+Linuxppc-dev@lists.ozlabs.org
+https://lists.ozlabs.org/listinfo/linuxppc-dev
 
