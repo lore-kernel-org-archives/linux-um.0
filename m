@@ -2,19 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bharrosh@panasas.com>) id 1SXqgn-0000cJ-W0
+	(envelope-from <richard@sigma-star.at>) id 1SXpWd-0003wk-D3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 May 2012 09:20:05 +0000
-Received: from natasha.panasas.com ([67.152.220.90])
+	Fri, 25 May 2012 08:05:31 +0000
+Received: from gandalf.sigma-star.at ([95.130.255.141] helo=mail.sigma-star.at)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1SXqgk-0000Hv-9a for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 25 May 2012 09:20:05 +0000
-Message-ID: <4FBF4EAB.7030904@panasas.com>
-Date: Fri, 25 May 2012 12:19:39 +0300
-From: Boaz Harrosh <bharrosh@panasas.com>
+	id 1SXpWZ-0005dV-6y for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 25 May 2012 08:05:31 +0000
+Date: Fri, 25 May 2012 09:40:13 +0200 (CEST)
+From: "Richard RW. Weinberger" <richard@sigma-star.at>
+Message-ID: <161124411.50124.1337931613542.JavaMail.root@sigma-star.at>
+In-Reply-To: <4FBF3625.1010501@panasas.com>
 MIME-Version: 1.0
-References: <161124411.50124.1337931613542.JavaMail.root@sigma-star.at>
-In-Reply-To: <161124411.50124.1337931613542.JavaMail.root@sigma-star.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,30 +27,25 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] UML: Please help with __module_text_address crashing
-To: "Richard RW. Weinberger" <richard@sigma-star.at>
-Cc: Weinberger <richard@nod.at>, Richard, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Boaz Harrosh <bharrosh@panasas.com>
+Cc: Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gMDUvMjUvMjAxMiAxMDo0MCBBTSwgUmljaGFyZCBSVy4gV2VpbmJlcmdlciB3cm90ZToKCj4g
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBJJ3ZlIGJlZW4gcnVubmluZyB3aXRo
-IHlvdXIgdHR5IHBhdGNoIGZvciBhIHdoaWxlIG5vdywgYW5kIHdhcyBhYmxlCj4+IHRvIHdvcmsu
-IDMuMyBLZXJuZWwKPj4KPj4gTm93IGJhc2VkIG9uIDMuNCB0cmVlIHRoZSBwYXRjaCBubyBsb25n
-ZXIgbWVyZ2VzLCB0b28gbWFueSBjaGFuZ2VzLgo+PiBCdXQgYW0gYmFjayB0byB0aGUgc2FtZSBj
-cmFzaGVzIGFzIGJlZm9yZS4gRG8geW91IGhhdmUgYSByb3VnaAo+PiBwYXRjaCBmb3IgMy40IGJh
-c2UgSSBjYW4gdXNlLgo+IAo+IE9rYXksIEknbGwgc2VuZCBhbiB1cGRhdGVkIHZlcnNpb24uCj4g
-Q3VycmVudGx5IHRoZSB0dHkgc3ViLXN5c3RlbSBpcyBoZWF2aWx5IGNoYW5nZWQuCj4gCgoKVGhh
-bmtzLiAKWWVzIEkgbm90aWNlZCBidW5jaCBvZiBzdHVmZiBtb3ZlZCBhcm91bmQgbm90aGluZyB0
-cml2aWFsIHRoYXQgSSBjb3VsZCBmaXgKCgo+IFRoYW5rcywKPiAvL3JpY2hhcmQKCgpXaGF0cyBr
-ZWVwaW5nIHRoaXMgcGF0Y2ggZnJvbSBoaXR0aW5nIG1haW5saW5lPyB0byBtdWNoIHVnbGluZXNz
-PwpJcyB0aGVyZSBhIHdheSB0byB3b3JrIHdpdGhvdXQgaXQgKHNvbWVob3cpCgpUaGFua3MKQm9h
-egoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNl
-CkV4Y2x1c2l2ZSBsaXZlIGV2ZW50IHdpbGwgY292ZXIgYWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2Vj
-dXJpdHkgYW5kIAp0aHJlYXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdl
-cnMgY2FuIHJlc3BvbmQuIERpc2N1c3Npb25zIAp3aWxsIGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJp
-dHksIG1vYmlsZSBzZWN1cml0eSBhbmQgdGhlIGxhdGVzdCBpbiBtYWx3YXJlIAp0aHJlYXRzLiBo
-dHRwOi8vd3d3LmFjY2VsYWNvbW0uY29tL2phdy9zZnJubDA0MjQyMDEyLzExNC81MDEyMjI2My8K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2Rl
-LWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IEkndmUgYmVlbiBydW5uaW5nIHdpdGgg
+eW91ciB0dHkgcGF0Y2ggZm9yIGEgd2hpbGUgbm93LCBhbmQgd2FzIGFibGUKPiB0byB3b3JrLiAz
+LjMgS2VybmVsCj4gCj4gTm93IGJhc2VkIG9uIDMuNCB0cmVlIHRoZSBwYXRjaCBubyBsb25nZXIg
+bWVyZ2VzLCB0b28gbWFueSBjaGFuZ2VzLgo+IEJ1dCBhbSBiYWNrIHRvIHRoZSBzYW1lIGNyYXNo
+ZXMgYXMgYmVmb3JlLiBEbyB5b3UgaGF2ZSBhIHJvdWdoCj4gcGF0Y2ggZm9yIDMuNCBiYXNlIEkg
+Y2FuIHVzZS4KCk9rYXksIEknbGwgc2VuZCBhbiB1cGRhdGVkIHZlcnNpb24uCkN1cnJlbnRseSB0
+aGUgdHR5IHN1Yi1zeXN0ZW0gaXMgaGVhdmlseSBjaGFuZ2VkLgoKVGhhbmtzLAovL3JpY2hhcmQK
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZpcnR1YWwgQ29uZmVyZW5jZQpF
+eGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUgd2F5cyB0b2RheSdzIHNlY3Vy
+aXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBhbmQgaG93IElUIG1hbmFnZXJz
+IGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRlIGVuZHBvaW50IHNlY3VyaXR5
+LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFsd2FyZSAKdGhyZWF0cy4gaHR0
+cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAxMi8xMTQvNTAxMjIyNjMvCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1s
+aW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91
+c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
