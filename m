@@ -1,89 +1,74 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 1 Jun 2012 00:36:35 -0400
+References: <20120423070641.GA27702@lizard> <20120423070901.GE30752@lizard>
+In-Reply-To: <20120423070901.GE30752@lizard>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8;
- format=flowed
+Content-Type: multipart/signed;
+  boundary="nextPart4094434.0m95qSk5yE";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Date: Wed, 23 May 2012 00:18:55 +0200
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <02661875af6e093160428627ea08ea63@radon2.swed.at>
+Message-Id: <201206010036.40468.vapier@gentoo.org>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [GIT PULL] UML changes for 3.5-rc1
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, richard@nod.at
+Subject: Re: [PATCH 5/9] blackfin: A couple of task->mm handling fixes
+To: Anton Vorontsov <anton.vorontsov@linaro.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>, Russell King <linux@arm.linux.org.uk>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Richard Weinberger <richard@nod.at>, Paul Mundt <lethal@linux-sh.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linaro-kernel@lists.linaro.org, patches@linaro.org, linux-mm@kvack.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Linus,
+--nextPart4094434.0m95qSk5yE
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Please pull the latest for-linus tree from:
+On Monday 23 April 2012 03:09:01 Anton Vorontsov wrote:
+> 1. Working with task->mm w/o getting mm or grabing the task lock is
+>    dangerous as ->mm might disappear (exit_mm() assigns NULL under
+>    task_lock(), so tasklist lock is not enough).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus
+that isn't a problem for this code as it specifically checks if it's in an=
+=20
+atomic section.  if it is, then task->mm can't go away on us.
 
-  HEAD: 2ccf62b36097aa88e0ea152d6ef0c0ca2d3884e6:
-  Merge branch 'for-um' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/viro/signal into for-3.5 
-(2012-05-21 23:25:37 +0200)
+>    We can't use get_task_mm()/mmput() pair as mmput() might sleep,
+>    so we have to take the task lock while handle its mm.
 
-Most changes are bug fixes and cleanups.
+if we're not in an atomic section, then sleeping is fine.
 
-Thanks,
-//richard
+> 2. Checking for process->mm is not enough because process' main
+>    thread may exit or detach its mm via use_mm(), but other threads
+>    may still have a valid mm.
 
-----------------------------------------------------------------
+i don't think it matters for this code (per the reasons above).
 
-Al Viro (7):
-      um: ->restart_block.fn needs to be reset on sigreturn
-      um: add TIF_NOTIFY_RESUME
-      um: wrong sigmask saved in case of multiple sigframes
-      um: bury unused _TIF_RESTORE_SIGMASK
-      um/x86: merge (and trim) 32- and 64-bit variants of ptrace.h
-      um: stub_rt_sigsuspend isn't needed these days anymore
-      um: missing checks of __put_user()/__get_user() return values
+>    To catch this we use find_lock_task_mm(), which walks up all
+>    threads and returns an appropriate task (with task lock held).
 
-Richard Weinberger (9):
-      um: Remove unused variables
-      um: Add BUG() to do_ops()'s error path
-      um: Implement a custom pte_same() function
-      um: Fix __swp_type()
-      um: Implement um_free_irq()
-      um: Remove usage of irq_chip->release()
-      um: Remove CONFIG_IRQ_RELEASE_METHOD
-      irq: Remove irq_chip->release()
-      Merge branch 'for-um' of git://git.kernel.org/.../viro/signal 
-into for-3.5
+certainly fine for the non-atomic code path.  i guess we'll notice in crash=
+es=20
+if it causes a problem in atomic code paths as well.
+=2Dmike
 
- arch/um/Kconfig.common                |    5 --
- arch/um/defconfig                     |    1 -
- arch/um/drivers/chan_kern.c           |    9 +--
- arch/um/drivers/line.c                |    2 +-
- arch/um/drivers/net_kern.c            |    4 +-
- arch/um/drivers/port_kern.c           |    2 +-
- arch/um/drivers/xterm_kern.c          |    2 +-
- arch/um/include/asm/pgtable.h         |   10 +++-
- arch/um/include/asm/thread_info.h     |    2 +-
- arch/um/include/shared/irq_kern.h     |    2 +-
- arch/um/kernel/irq.c                  |    9 ++-
- arch/um/kernel/process.c              |   10 +++-
- arch/um/kernel/signal.c               |   14 ++---
- arch/um/kernel/skas/syscall.c         |    2 +-
- arch/um/kernel/tlb.c                  |    1 +
- arch/um/os-Linux/skas/mem.c           |   10 ----
- arch/x86/um/asm/elf.h                 |   42 +++++++-------
- arch/x86/um/asm/ptrace.h              |   34 +++++++++++
- arch/x86/um/asm/ptrace_32.h           |   23 --------
- arch/x86/um/asm/ptrace_64.h           |   26 ---------
- arch/x86/um/shared/sysdep/ptrace.h    |   67 ++++++++++++++++++++--
- arch/x86/um/shared/sysdep/ptrace_32.h |   92 
-+++---------------------------
- arch/x86/um/shared/sysdep/ptrace_64.h |  101 
-++-------------------------------
- arch/x86/um/signal.c                  |   29 +++++-----
- arch/x86/um/sys_call_table_64.c       |    1 -
- arch/x86/um/syscalls_32.c             |   12 ++--
- arch/x86/um/sysrq_32.c                |    8 +--
- arch/x86/um/sysrq_64.c                |    8 +--
- arch/x86/um/tls_32.c                  |    2 +-
- include/linux/irq.h                   |    5 --
- kernel/irq/manage.c                   |    6 --
- 31 files changed, 201 insertions(+), 340 deletions(-)
+--nextPart4094434.0m95qSk5yE
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJPyEbYAAoJEEFjO5/oN/WBjkMP/jWhBHloIwNx3O8WdCb7Jkeb
+oKrprqZwAeiXIZdZz4ENCnxaVidCjzIhkmuRyCyqTGK89Qwz2EDP7mwmIstn88eQ
+XZn77Psp8Qa4F8ZmycV2u+rhqrZK+zybSNNuk05V7K5NrSXPDBSFCYnN0K0svApX
+bG4nRGqPE7gOfHDh62h+r7MIfdCavXgp66xm3cUJ8gDzWCsN8+epSJK/Oh/J8L9b
+FESfd6zyN25ij8+j6K8pY1n0HFBsSCgWFKgz41DDALeNxAspC9Fsn4fjeA8NnpQ6
+6K1COIvAcaQ6zcZlzjcn1igjGCpvkLoXT1nLGuN9cFr/H2JJ5kxxGhQ25I25Voxx
+cPiGjGqTAsl5+PavwNlt6q+dUHT04hdKcJmFad3LJneDmKVw9D/UGY21WWzu7vTP
+ZLotT0ntVjr/Cuqt0J3iBMxUdq2tncWrpXD4cr/TJvvALKXgLQTaO6iVMiptDYVq
+HtSnThyOfplo8vu/l7kYiYPzlGO/uccOrw5kk6lOCokzzzwGZwV+urrDffvH2iWz
++OimgpLcSg8qoqDBQqb3qg5elIbroAcbSfHRDMs6c4Ld9iUcyNyjxJPQDvdU9Hyl
+qJve50YbbUEgcxGQTsVKuzWkrajjeCCQCabGiiHIlLPOSr5nK10WTGTXQVUTivt2
+bZv1rSS6aLk4w6YM4TVm
+=GWQm
+-----END PGP SIGNATURE-----
+
+--nextPart4094434.0m95qSk5yE--
