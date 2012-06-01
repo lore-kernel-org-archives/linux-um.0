@@ -1,101 +1,78 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1Sbdse-0005K9-7b
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Jun 2012 20:28:00 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Sbdsd-0007JE-ER
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Jun 2012 20:28:00 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon,  4 Jun 2012 22:27:37 +0200
-Message-Id: <1338841657-30358-7-git-send-email-richard@nod.at>
-In-Reply-To: <1338841657-30358-1-git-send-email-richard@nod.at>
-References: <1338841657-30358-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: "Srivatsa S. Bhat" <srivatsa.bhat@linux.vnet.ibm.com>
+Date: Fri, 01 Jun 2012 14:45:24 +0530
+Message-ID: <20120601091519.31979.57333.stgit@srivatsabhat.in.ibm.com>
+In-Reply-To: <20120601090952.31979.24799.stgit@srivatsabhat.in.ibm.com>
+References: <20120601090952.31979.24799.stgit@srivatsabhat.in.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 6/6] um: remove count_lock
-To: jslaby@suse.cz
-Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org, alan@linux.intel.com
+Sender: linux-arch-owner@vger.kernel.org
+Subject: [PATCH 22/27] um, smpboot: Use generic SMP booting infrastructure
+To: tglx@linutronix.de, peterz@infradead.org, paulmck@linux.vnet.ibm.com
+Cc: rusty@rustcorp.com.au, mingo@kernel.org, yong.zhang0@gmail.com, akpm@linux-foundation.org, vatsa@linux.vnet.ibm.com, rjw@sisk.pl, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, srivatsa.bhat@linux.vnet.ibm.com, nikunj@linux.vnet.ibm.com, "Nikunj A. Dadhania" <nikunj@linux.vnet.ibm.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, "David S. Miller" <davem@davemloft.net>, Rusty Russell <rusty@rustcorp.com.au>, Chris Metcalf <cmetcalf@tilera.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-this lock is no longer needed.
+From: Nikunj A. Dadhania <nikunj@linux.vnet.ibm.com>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Convert um to use the generic framework to boot secondary CPUs.
+
+Notes:
+1. Removed call to default_idle() in idle_proc(). The generic framework will
+invoke cpu_idle().
+2. The generic code will call preempt_disable() and local_irq_enable() which
+weren't originally present in idle_proc().
+
+Signed-off-by: Nikunj A. Dadhania <nikunj@linux.vnet.ibm.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Rusty Russell <rusty@rustcorp.com.au>
+Cc: Chris Metcalf <cmetcalf@tilera.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: user-mode-linux-user@lists.sourceforge.net
+Signed-off-by: Srivatsa S. Bhat <srivatsa.bhat@linux.vnet.ibm.com>
 ---
- arch/um/drivers/line.c |    6 ------
- 1 files changed, 0 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 95d5e78..555ccfc 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -382,8 +382,6 @@ int setup_one_line(struct line *lines, int n, char *init,
- 	struct tty_driver *driver = line->driver->driver;
- 	int err = -EINVAL;
+ arch/um/kernel/smp.c |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/arch/um/kernel/smp.c b/arch/um/kernel/smp.c
+index a02b7e9..6cffcf4 100644
+--- a/arch/um/kernel/smp.c
++++ b/arch/um/kernel/smp.c
+@@ -10,6 +10,7 @@
+ #ifdef CONFIG_SMP
  
--	mutex_lock(&line->count_lock);
+ #include "linux/sched.h"
++#include "linux/smpboot.h"
+ #include "linux/module.h"
+ #include "linux/threads.h"
+ #include "linux/interrupt.h"
+@@ -58,6 +59,12 @@ static cpumask_t cpu_callin_map = CPU_MASK_NONE;
+ 
+ static int idle_proc(void *cpup)
+ {
++	smpboot_start_secondary(cpup);
++	return 0;
++}
++
++void __cpuinit __cpu_pre_starting(void *unused)
++{
+ 	int cpu = (int) cpup, err;
+ 
+ 	err = os_pipe(cpu_data[cpu].ipi_pipe, 1, 1);
+@@ -74,11 +81,6 @@ static int idle_proc(void *cpup)
+ 
+ 	while (!cpu_isset(cpu, smp_commenced_mask))
+ 		cpu_relax();
 -
- 	if (line->port.count) {
- 		*error_out = "Device is already open";
- 		goto out;
-@@ -425,7 +423,6 @@ int setup_one_line(struct line *lines, int n, char *init,
- 		}
- 	}
- out:
--	mutex_unlock(&line->count_lock);
- 	return err;
+-	notify_cpu_starting(cpu);
+-	set_cpu_online(cpu, true);
+-	default_idle();
+-	return 0;
  }
  
-@@ -513,7 +510,6 @@ int line_get_config(char *name, struct line *lines, unsigned int num, char *str,
- 
- 	line = &lines[dev];
- 
--	mutex_lock(&line->count_lock);
- 	if (!line->valid)
- 		CONFIG_CHUNK(str, size, n, "none", 1);
- 	else {
-@@ -525,7 +521,6 @@ int line_get_config(char *name, struct line *lines, unsigned int num, char *str,
- 			tty_kref_put(tty);
- 		}
- 	}
--	mutex_unlock(&line->count_lock);
- 
- 	return n;
- }
-@@ -578,7 +573,6 @@ int register_lines(struct line_driver *line_driver,
- 		tty_port_init(&lines[i].port);
- 		lines[i].port.ops = &line_port_ops;
- 		spin_lock_init(&lines[i].lock);
--		mutex_init(&lines[i].count_lock);
- 		lines[i].driver = line_driver;
- 		INIT_LIST_HEAD(&lines[i].chan_list);
- 	}
--- 
-1.7.7.3
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+ static struct task_struct *idle_thread(int cpu)
 
