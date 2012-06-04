@@ -1,14 +1,38 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1Sbdsb-00017m-4Z
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Jun 2012 20:27:57 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SbdsY-0005ir-9f
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Jun 2012 20:27:57 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon,  4 Jun 2012 22:27:32 +0200
+Message-Id: <1338841657-30358-2-git-send-email-richard@nod.at>
+In-Reply-To: <1338841657-30358-1-git-send-email-richard@nod.at>
+References: <1338841657-30358-1-git-send-email-richard@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 1/6] TTY: um/line, add tty_port
+To: jslaby@suse.cz
+Cc: user-mode-linux-devel@lists.sourceforge.net, gregkh@linuxfoundation.org, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, Richard Weinberger <richard@nod.at>, alan@linux.intel.com
+
 From: Jiri Slaby <jslaby@suse.cz>
-Date: Mon,  4 Jun 2012 13:35:26 +0200
-Message-Id: <1338809738-18967-13-git-send-email-jslaby@suse.cz>
-In-Reply-To: <1338809738-18967-1-git-send-email-jslaby@suse.cz>
-References: <1338809738-18967-1-git-send-email-jslaby@suse.cz>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 12/24] TTY: um/line, add tty_port
-To: gregkh@linuxfoundation.org
-Cc: alan@linux.intel.com, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 And use count from there.
 
@@ -16,6 +40,7 @@ Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 Cc: Jeff Dike <jdike@addtoit.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: user-mode-linux-devel@lists.sourceforge.net
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
  arch/um/drivers/line.c |    7 ++++---
  arch/um/drivers/line.h |    2 +-
@@ -76,6 +101,17 @@ index 0a18347..0e06a1f 100644
  
  	char *init_str;
 -- 
-1.7.10.3
+1.7.7.3
 
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
