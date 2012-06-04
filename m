@@ -1,97 +1,81 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
-	id 1Shjnv-0000YJ-1K for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jun 2012 16:00:19 +0000
-Received: from plane.gmane.org ([80.91.229.3])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Shjnp-0002Zz-0G
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jun 2012 16:00:18 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
-	id 1Shjng-0006dr-CO for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 21 Jun 2012 18:00:04 +0200
-Received: from 173-164-30-65-Nashville.hfc.comcastbusiness.net
-	([173.164.30.65]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 21 Jun 2012 18:00:04 +0200
-Received: from wad by 173-164-30-65-Nashville.hfc.comcastbusiness.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 21 Jun 2012 18:00:04 +0200
-From: Will Drewry <wad@dataspill.org>
-Date: Thu, 21 Jun 2012 15:56:26 +0000 (UTC)
-Message-ID: <loom.20120621T174831-991@post.gmane.org>
-References: <4F3C1B06.7080506@nagafix.co.uk>
-Mime-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] X11 vfb forward ported to 3.2
-To: user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Jiri Slaby <jslaby@suse.cz>
+Date: Mon,  4 Jun 2012 13:35:26 +0200
+Message-Id: <1338809738-18967-13-git-send-email-jslaby@suse.cz>
+In-Reply-To: <1338809738-18967-1-git-send-email-jslaby@suse.cz>
+References: <1338809738-18967-1-git-send-email-jslaby@suse.cz>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 12/24] TTY: um/line, add tty_port
+To: gregkh@linuxfoundation.org
+Cc: alan@linux.intel.com, linux-kernel@vger.kernel.org, jirislaby@gmail.com, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Antoine Martin <antoine <at> nagafix.co.uk> writes:
+And use count from there.
 
-> 
-> Whilst I was looking at all the docs and patches that I have for the
-> wiki/uml website, I found the old x11-fb patch from Gerd Knorr's and
-> forward ported it to 3.2
-> Got as far as the point where it builds and shows a window when you
-> start the kernel with:
-> ./vmlinux x11=800x600
-> As reported at the time of the original patch, all I get is a black
-> window... I'll try to see if I can figure out why it's not updating.
-> Here it is if you want to try it / comment / help:
-> http://uml.devloop.org.uk/vfb-3.2.patch
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+---
+ arch/um/drivers/line.c |    7 ++++---
+ arch/um/drivers/line.h |    2 +-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-I was just playing with this the other evening. I tweaked your/Gerd's patch in a 
-few places (using it on 3.5.0-rc2), but the main non-porting related change 
-seems to be in the nopage helper.  It uses pgoff as if it were the virtual 
-address instead of as a direct offset for the VMA.  Fixing that got me a working 
-fb.
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index acfd0e0..482a7bd 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -404,7 +404,7 @@ int line_open(struct line *lines, struct tty_struct *tty)
+ 		goto out_unlock;
+ 
+ 	err = 0;
+-	if (line->count++)
++	if (line->port.count++)
+ 		goto out_unlock;
+ 
+ 	BUG_ON(tty->driver_data);
+@@ -446,7 +446,7 @@ void line_close(struct tty_struct *tty, struct file * filp)
+ 	mutex_lock(&line->count_lock);
+ 	BUG_ON(!line->valid);
+ 
+-	if (--line->count)
++	if (--line->port.count)
+ 		goto out_unlock;
+ 
+ 	line->tty = NULL;
+@@ -478,7 +478,7 @@ int setup_one_line(struct line *lines, int n, char *init,
+ 
+ 	mutex_lock(&line->count_lock);
+ 
+-	if (line->count) {
++	if (line->port.count) {
+ 		*error_out = "Device is already open";
+ 		goto out;
+ 	}
+@@ -663,6 +663,7 @@ int register_lines(struct line_driver *line_driver,
+ 	driver->init_termios = tty_std_termios;
+ 	
+ 	for (i = 0; i < nlines; i++) {
++		tty_port_init(&lines[i].port);
+ 		spin_lock_init(&lines[i].lock);
+ 		mutex_init(&lines[i].count_lock);
+ 		lines[i].driver = line_driver;
+diff --git a/arch/um/drivers/line.h b/arch/um/drivers/line.h
+index 0a18347..0e06a1f 100644
+--- a/arch/um/drivers/line.h
++++ b/arch/um/drivers/line.h
+@@ -32,9 +32,9 @@ struct line_driver {
+ };
+ 
+ struct line {
++	struct tty_port port;
+ 	struct tty_struct *tty;
+ 	struct mutex count_lock;
+-	unsigned long count;
+ 	int valid;
+ 
+ 	char *init_str;
+-- 
+1.7.10.3
 
-I've only tested with the test program from here:
-  http://cep.xor.aps.anl.gov/software/qt4-x11-4.2.2/qtopiacore-
-testingframebuffer.html
-which draws a gradient.
-
-Here's the tiny tweak (which is not stylistically correct, etc):
-
-@static int
-@x11_fb_vm_nopage(struct vm_area_struct *vma, struct vm_fault *vmf)
-@{
-...
-->-------int pgnr = (vmf->pgoff - vma->vm_start) >> PAGE_SHIFT;
-+>-------unsigned long pgnr = vmf->pgoff;
-
-Not sure if anyone still cares, but if I end up getting it more cleaned up, I'll 
-post a 3.5 port in a weekend in the near future :)
-
-cheers!
-will
-
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
