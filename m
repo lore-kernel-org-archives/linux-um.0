@@ -1,83 +1,66 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4FCD4161.7060409@nod.at>
-Date: Tue, 05 Jun 2012 01:14:41 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-References: <1338841657-30358-1-git-send-email-richard@nod.at> <20120604221731.5e378fc2@pyramind.ukuu.org.uk>
-In-Reply-To: <20120604221731.5e378fc2@pyramind.ukuu.org.uk>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigB8966F045016342BF92DE81B"
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: um: TTY fixes (?)
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: jslaby@suse.cz, user-mode-linux-devel@lists.sourceforge.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, alan@linux.intel.com, kzak@redhat.com
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alan@lxorguk.ukuu.org.uk>) id 1SbebC-0007uO-Er
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Jun 2012 21:14:02 +0000
+Received: from lxorguk.ukuu.org.uk ([81.2.110.251])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SbebB-0007Dt-9Y
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 04 Jun 2012 21:14:02 +0000
+Date: Mon, 4 Jun 2012 22:17:31 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-ID: <20120604221731.5e378fc2@pyramind.ukuu.org.uk>
+In-Reply-To: <1338841657-30358-1-git-send-email-richard@nod.at>
+References: <1338841657-30358-1-git-send-email-richard@nod.at>
+Mime-Version: 1.0
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] um: TTY fixes (?)
+To: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, jslaby@suse.cz, alan@linux.intel.com
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigB8966F045016342BF92DE81B
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+> 	On all other ttys login works but bash dies because of of -EIO.
+> 	After vhangup() the tty returns -EIO upon read()/write().
 
-Am 04.06.2012 23:17, schrieb Alan Cox:
->> 	On all other ttys login works but bash dies because of of -EIO.
->> 	After vhangup() the tty returns -EIO upon read()/write().
->=20
-> You can't re-open the tty because a process is holding on to it, not
-> closing it and not killable. Fedora shouldn't be holding these devices
-> open this way. The behaviour we have of refusing to reopen them why thi=
-s
-> is the case is both a) what the spec seems to say b) good security.
+You can't re-open the tty because a process is holding on to it, not
+closing it and not killable. Fedora shouldn't be holding these devices
+open this way. The behaviour we have of refusing to reopen them why this
+is the case is both a) what the spec seems to say b) good security.
 
-Hmm, there seems to be a bug in util-linux's login.
-login-utils/login.c::init_tty() does:
-=2E..
-       /* Kill processes left on this tty */
-        tcsetattr(0, TCSAFLUSH, &ttt);
+We can half ignore it on console for the simple reason that you don't
+"dial in" to the console. I suspect it may be abusable but I've not found
+a way to do so.
 
-        signal(SIGHUP, SIG_IGN);        /* so vhangup() wont kill us */
-        vhangup();
-        signal(SIGHUP, SIG_DFL);
+> I have no idea what's the root cause of this, there seems to be a lot of black magic
+> involved.
+> Alan, do you think the issues are caused by Fedora's broken user space?
 
-        /* open stdin,stdout,stderr to the tty */
-        open_tty(cxt->tty_path);
+See what fuser says about open file handles and if that is what is going
+on.
 
-        /* restore tty modes */
-        tcsetattr(0, TCSAFLUSH, &tt);
-=2E..
+Alan
 
-By calling vhangup() it kills all other programs on the current tty.
-open_tty() opens the tty again but it's still open because stdin, stdout =
-and stderr
-belongs to it.
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-If I add:
-        fclose(stdin);
-        fclose(stdout);
-        fclose(stderr);
-before the call to vhangup() login works like charm. :-)
-
-Karel, what do you think?
-
-Thanks,
-//richard
-
-
---------------enigB8966F045016342BF92DE81B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJPzUFiAAoJEN9758yqZn9esOkIAIR6UdfhtnMTrQWOo9/0wb/u
-CCKfeygoBPXHIimHWqyOx+L21FEOVGmNsHJRrPpzfAzPnJ2k//NFeEpGIly6AnKB
-RFrX5eWRldaRy6l6f4b3Z4JhY5ceyCfz1/UfZjZkC6PDZGWBUDttzEQwiQDQBzxQ
-PULJXEYHTUN8+TipJU0H9y00VzMSYYd8Q9IDJKxiyFzh2vQ2joV6hUDUp1opB3Wv
-Tyip415QyiYxtY/OhoZi3ya+3JMCPJ9F36CHIY5zmbZW5ldA84Bge58L0HxxKeVe
-l1Ib4xqFYssjWa3XRKDYEjqbz1Gl1RY3Q5iI93LYfekiMFYk2xuYPdxl6V5Ho5Q=
-=Rz9u
------END PGP SIGNATURE-----
-
---------------enigB8966F045016342BF92DE81B--
