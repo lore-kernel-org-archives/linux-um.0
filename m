@@ -1,61 +1,91 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4FCDF996.9010205@nod.at>
-Date: Tue, 05 Jun 2012 14:20:38 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-References: <1338841657-30358-1-git-send-email-richard@nod.at> <20120604221731.5e378fc2@pyramind.ukuu.org.uk> <4FCD4161.7060409@nod.at> <20120605104125.GA14536@x2.net.home> <20120605121532.366a6526@pyramind.ukuu.org.uk>
-In-Reply-To: <20120605121532.366a6526@pyramind.ukuu.org.uk>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigDA7382F1B5860F4602F148B2"
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: um: TTY fixes (?)
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Karel Zak <kzak@redhat.com>, jslaby@suse.cz, user-mode-linux-devel@lists.sourceforge.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, alan@linux.intel.com
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alan@lxorguk.ukuu.org.uk>) id 1SbrgE-0004nB-Jc
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Jun 2012 11:12:06 +0000
+Received: from lxorguk.ukuu.org.uk ([81.2.110.251])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SbrgA-00071i-EY
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 05 Jun 2012 11:12:06 +0000
+Date: Tue, 5 Jun 2012 12:15:32 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-ID: <20120605121532.366a6526@pyramind.ukuu.org.uk>
+In-Reply-To: <20120605104125.GA14536@x2.net.home>
+References: <1338841657-30358-1-git-send-email-richard@nod.at>
+	<20120604221731.5e378fc2@pyramind.ukuu.org.uk>
+	<4FCD4161.7060409@nod.at> <20120605104125.GA14536@x2.net.home>
+Mime-Version: 1.0
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] um: TTY fixes (?)
+To: Karel Zak <kzak@redhat.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org, jslaby@suse.cz, alan@linux.intel.com
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigDA7382F1B5860F4602F148B2
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+>  open_tty() closes all the old file descriptors after tty open:
 
-Am 05.06.2012 13:15, schrieb Alan Cox:
-> Actually I'd prefer a clever solution which can spot all the fds are th=
-e
-> same process so we can keep compatibility but I've not found a sensible=
+It needs to close them before.
+> 
+>     vhangup();
+>     ...
+> 	fd = open(tty, O_RDWR | O_NONBLOCK);
+>     ...
+> 
+> 	flags = fcntl(fd, F_GETFL);
+> 	flags &= ~O_NONBLOCK;
+> 	fcntl(fd, F_SETFL, flags);
+> 
+> 	for (i = 0; i < fd; i++)
+> 		close(i);
+> 	for (i = 0; i < 3; i++)
+> 		if (fd != i)
+> 			dup2(fd, i);
+> 	if (fd >= 3)
+> 		close(fd);
+> 
+> we use this for pretty long time (17+ years).
+> 
+> > If I add:
+> >         fclose(stdin);
+> >         fclose(stdout);
+> >         fclose(stderr);
+> > before the call to vhangup() login works like charm. :-)
+> > 
+> > Karel, what do you think?
+> 
+>  It's probably no problem to close all the file descriptors before
+>  vhangup(), but it would be nice to know why we need this change after
+>  20 years :-)
 
-> way to do that.
+Because we want to actually fix the standards (and security) violation
+that means it has happened to work on the console for 20 years.
 
-Me too.
+Actually I'd prefer a clever solution which can spot all the fds are the
+same process so we can keep compatibility but I've not found a sensible
+way to do that.
 
-For UML users the current situation is odd.
-They have to select between:
-- Having a UML that crashes randomly on some distros.
-- Applying the TTY fix and break login on every distro that uses util-lin=
-ux's login.
-- Applying the TTY fix and patch util-linux too.
+Alan
 
-Thanks,
-//richard
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-
-
-
---------------enigDA7382F1B5860F4602F148B2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJPzfmdAAoJEN9758yqZn9eOloIAJfvdVD2e8RjLEFFTFiD2DjX
-9I0mnUTCWCJ4ke/THRAHi868iJrgbmG1UdKWzJNAB1CDwW8SLzDg8GUKTvEYv8G3
-9TPoXKjhkdfSZQxahmlMtOEJnjiguvY3kDdR5R123jXleJh3GpgFEvI63mhilZpP
-gwFBgNpFV0XPdyliDjaZurwZ6+4KzC/szyYKvUBlo+5ojVD99nJCq5rS8zY4uqkU
-78hWPs/ZHXlvD9WKrOg1iiJUI27aAuW6HYCmAJ+P9bV1vUUsUObXZrlQubtyo3gt
-wMR/M1TQNpKW9JslLe3x3NLh5Sp3pZ9eD4H9cF2FbVW56kDFdE1pBKVek657BAA=
-=okVX
------END PGP SIGNATURE-----
-
---------------enigDA7382F1B5860F4602F148B2--
