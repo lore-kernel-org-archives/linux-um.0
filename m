@@ -1,98 +1,62 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4FD06A22.6040002@nod.at>
-Date: Thu, 07 Jun 2012 10:45:22 +0200
-From: Richard Weinberger <richard@nod.at>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bharrosh@panasas.com>) id 1ScXNV-000724-S4
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jun 2012 07:43:33 +0000
+Received: from natasha.panasas.com ([67.152.220.90])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ScXNV-00077B-4S for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jun 2012 07:43:33 +0000
+Message-ID: <4FD05B8E.4080503@panasas.com>
+Date: Thu, 7 Jun 2012 10:43:10 +0300
+From: Boaz Harrosh <bharrosh@panasas.com>
 MIME-Version: 1.0
-References: <1338841657-30358-1-git-send-email-richard@nod.at> <4FCF6748.6020005@panasas.com> <4FD059AC.8050808@panasas.com>
+References: <1338841657-30358-1-git-send-email-richard@nod.at>
+	<4FCF6748.6020005@panasas.com> <4FD059AC.8050808@panasas.com>
 In-Reply-To: <4FD059AC.8050808@panasas.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig85F82DD115F8CB8977DFA1CF"
-Sender: linux-kernel-owner@vger.kernel.org
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] um: TTY fixes (?)
-To: Boaz Harrosh <bharrosh@panasas.com>
+To: Richard Weinberger <richard@nod.at>
 Cc: user-mode-linux-devel@lists.sourceforge.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, jslaby@suse.cz, alan@linux.intel.com
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig85F82DD115F8CB8977DFA1CF
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 06/07/2012 10:35 AM, Boaz Harrosh wrote:
+<>
 
-Am 07.06.2012 09:35, schrieb Boaz Harrosh:
->=20
-> OK I've run with these for a few days and they are doing
-> the Job perfectly. Not a single problem.
-
-Good to know.
-
-> You may add tested-by: Boaz Harrosh <bharrosh@panasas.com>
-> on all patches if you'd like.
->=20
-> Please push them ASAP to Linus. They fix a real life breakage
-> that's there since v3.3. At least now we are back to
-> the problems that where there for a long time.
->=20
+> 
 > Please also CC: Stable Tree <stable@kernel.org> for 3.4
 > as clearly 3.4 is unusable at all right now.
-
-We cannot push this patch to Linus or -stable.
-The problem is that will break other things.
-E.g. login on non-tty0 terminals will break if the distro uses
-util-linux's login.
-
-> I wish they would be sent to older stables as well, but
-> they won't patch, so it's not worth the effort.
->=20
->>> 	mingetty is unable to start on anything else than tty0.
->>> 	It exits after a few seconds.
->=20
->=20
-> I suspect this was always so since forever. I don't even know
-> how to configure such a thing. I know that the console I run
-> vmlinux from becomes tty0, until I halt (or crash). How do
-> you open more tty(s) and attach them to console windows?
-> I just use ssh for that.
-
-con=3Dpts is very nice.
-UML allocates a pts for each tty on the *host* side.
-Then you can attach to this tty using screen.
-See: http://user-mode-linux.sourceforge.net/old/input.html
-
-> (The setup of tty(s) for UML on Fedora is always such a pain
->  and it changed 4 times since FC10, I always have to mount
->  the image, figure out how to make tty1 a tty0, and delete
->  all the other tty(s). perhaps I'm just clueless. Is there an
->  easier way? Is there a way to tell UML to make tty0 be a tty1?
->  Because in fedora tty0 is not defined.)
-
-AFAIK no. But you can tell Fedora to use tty0.
-Even with systemd this is possible. :-)
-
-> But please do not delay these patches because of old problems.
-> These can be solved later.
-
-Breaking existing applications is a no-go, sorry.
-
-Thanks,
-//richard
+> 
 
 
---------------enig85F82DD115F8CB8977DFA1CF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+I forgot to ask:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+Please CC: me on these patches I would like to be notified
+of their advancements into the different trees.
 
-iQEcBAEBAgAGBQJP0GoiAAoJEN9758yqZn9eOAEH/ibh7uGmaue2YgEqxgJyZgBE
-tnXVERVfRGNgSEZDhszSEeLYyEASKUFlu7Re8BQBXi4UwXnT3SDOtixwr1cnP/QZ
-wIyJHm/ROEy2gofKmIUiF3I/j3t8EkxlmvnrHTCaD4LfSxCvoLJGQ295ABSZufRH
-rwZ/4Kz3xZPwrmj2Y8HFdeY2Qk0K2apozQgeTqHlUM7G/PqfINWIf7Eoq+WE6n5x
-QszSyQHnOAtyiB0eZdd4D+Ax7PKho0RGAQIFwMV2yMXQemigvwafefnYakQ4x3yP
-M1zSOjQgDnovo64Sx4gUXnIIgkKoEkhLfkdb6CgaV5ab+Xgdd8Bw48XX2SJPhuU=
-=RM+Z
------END PGP SIGNATURE-----
+Thanks
+Boaz
 
---------------enig85F82DD115F8CB8977DFA1CF--
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
