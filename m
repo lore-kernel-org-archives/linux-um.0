@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <martin.partel@gmail.com>) id 1SclPC-0007QB-UV
+	(envelope-from <richard@nod.at>) id 1Scks8-0006Ej-82
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2012 22:42:14 +0000
-Received: from mail-lpp01m010-f47.google.com ([209.85.215.47])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SclPC-0002wg-6X
+	Thu, 07 Jun 2012 22:08:04 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Scks7-00037n-Cm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2012 22:42:14 +0000
-Received: by lags15 with SMTP id s15so955034lag.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 07 Jun 2012 15:42:07 -0700 (PDT)
-Message-ID: <4FD12E3D.7050401@gmail.com>
-Date: Fri, 08 Jun 2012 01:42:05 +0300
-From: =?ISO-8859-1?Q?Martin_P=E4rtel?= <martin.partel@gmail.com>
+	Thu, 07 Jun 2012 22:08:04 +0000
+Message-ID: <4FD1263B.5070208@nod.at>
+Date: Fri, 08 Jun 2012 00:07:55 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 References: <4FD1164B.6060307@gmail.com> <4FD11C88.6090308@nod.at>
-	<4FD11F90.5080407@gmail.com> <4FD1263B.5070208@nod.at>
-In-Reply-To: <4FD1263B.5070208@nod.at>
+	<4FD11F90.5080407@gmail.com>
+In-Reply-To: <4FD11F90.5080407@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,72 +26,115 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3457656376672528886=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] um: pass siginfo to guest process
-To: Richard Weinberger <richard@nod.at>
+To: =?ISO-8859-1?Q?Martin_P=E4rtel?= <martin.partel@gmail.com>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On 06/08/2012 01:07 AM, Richard Weinberger wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============3457656376672528886==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigB192E981B893AE05566981D8"
 
-> Am 07.06.2012 23:39, schrieb Martin P=E4rtel:
->> On 06/08/2012 12:26 AM, Richard Weinberger wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigB192E981B893AE05566981D8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Am 07.06.2012 23:39, schrieb Martin P=E4rtel:
+> On 06/08/2012 12:26 AM, Richard Weinberger wrote:
+>=20
+>> Am 07.06.2012 22:59, schrieb Martin P=E4rtel:
+>>> Signal handlers in UML guest processes now get correct siginfo_t fiel=
+ds
+>>> for SIGTRAP, SIGFPE, SIGILL and SIGBUS. Specifically, si_addr and si_=
+code
+>>> are now correct where previously they were si_addr =3D NULL and si_co=
+de =3D 128.
 >>
->>> Am 07.06.2012 22:59, schrieb Martin P=E4rtel:
->>>> Signal handlers in UML guest processes now get correct siginfo_t fields
->>>> for SIGTRAP, SIGFPE, SIGILL and SIGBUS. Specifically, si_addr and si_c=
-ode
->>>> are now correct where previously they were si_addr =3D NULL and si_cod=
-e =3D 128.
->>>
->>> What exactly is broken?
->>> In my SIGSEGV test case si_addr is not NULL, it contains the correct fa=
-ulting address.
->>>
+>> What exactly is broken?
+>> In my SIGSEGV test case si_addr is not NULL, it contains the correct f=
+aulting address.
 >>
+>=20
+>=20
+> SIGSEGV is probably fine. At least SIGFPE is not. Test program below.
+>=20
+>>> +
+>>> +            ptrace(PTRACE_GETSIGINFO, pid, 0,&si);
+>>> +
 >>
->> SIGSEGV is probably fine. At least SIGFPE is not. Test program below.
+>> Doesn't this leak the host siginfo_t into the guest?
 >>
->>>> +
->>>> +            ptrace(PTRACE_GETSIGINFO, pid, 0,&si);
->>>> +
->>>
->>> Doesn't this leak the host siginfo_t into the guest?
->>>
->>
->>
->> Docs for PTRACE_GETSIGINFO say `si' gets a copy. After that, `si' is not=
- used for anything other than giving it to the guest. But I really can't sa=
-y I
->> understand the surrounding code too well so please review carefully :)
->
-> I was not talking about a memory leak.
-> What I meant was a information leak.
-> Using the host siginfo_t a guest process may get it's UID, PID, memory lo=
+>=20
+>=20
+> Docs for PTRACE_GETSIGINFO say `si' gets a copy. After that, `si' is no=
+t used for anything other than giving it to the guest. But I really can't=
+ say I
+> understand the surrounding code too well so please review carefully :)
+
+I was not talking about a memory leak.
+What I meant was a information leak.
+Using the host siginfo_t a guest process may get it's UID, PID, memory lo=
 cation, etc... on the host side.
->
+
+Anyway, thanks for the test case!
+This seems to be really broken.
+I had only a few minutes to look at the issue but I think the correct way=
+ to fix is changing
+arch/um/kernel/trap.c:relay_signal() to use force_sig_info() instead of f=
+orce_sig().
+Create siginfo_t and fill by hand like segv() does.
+
+Thanks,
+//richard
 
 
-Oh, darn, indeed. Well, getting si_code right fixed my immediate =
+--------------enigB192E981B893AE05566981D8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-problem, but I might look at this again some time next week unless =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
 
-you've fixed it yourself by then. Thanks!
+iQEcBAEBAgAGBQJP0SY7AAoJEN9758yqZn9eFMQH/1yB1SyGrMmGz8llQ4k2Uwm2
+iyySP3vrn6u8iIFUKkxeb6QmvfsFfDOU7K+nAfS9AlPoih4s0BxXXAGJeSUDIcpB
+1ANs+JfMwg9kTeIz6cJEMQmHg4kf4nuPjRVfzwToMUdaj4G1B9PXq2m27rVbkDRM
+tWEQQJGNzAIiVOFycSgvQ0+BeEe1zkvzGHLfinAjtN/p4GVRPrH2aZt8L/vwgR9u
+lyEz6FbLOvp17p2krCU20F4zcam57ZMTTB1jmzpoF0SkPQBgj6x8/TTgrPtROjyH
+sUd+7l/Ctqba/s6hpxtglKKJO9DXXpOdNlpT86P0a/ZjgD61og32otZzmE2xWvk=
+=YNav
+-----END PGP SIGNATURE-----
+
+--------------enigB192E981B893AE05566981D8--
 
 
----------------------------------------------------------------------------=
----
+--===============3457656376672528886==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
-
-threat landscape has changed and how IT managers can respond. Discussions =
-
-will include endpoint security, mobile security and the latest in malware =
-
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============3457656376672528886==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============3457656376672528886==--
+
 
