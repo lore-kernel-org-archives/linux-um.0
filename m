@@ -1,34 +1,98 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 7 Jun 2012 10:19:51 +0100
-From: Alan Cox <alan@linux.intel.com>
-Message-ID: <20120607101951.14d6596d@bob.linux.org.uk>
-In-Reply-To: <4FCFE504.2020100@nod.at>
-References: <1338841657-30358-1-git-send-email-richard@nod.at>
-	<20120604221731.5e378fc2@pyramind.ukuu.org.uk>
-	<4FCFE504.2020100@nod.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <4FD06A22.6040002@nod.at>
+Date: Thu, 07 Jun 2012 10:45:22 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+References: <1338841657-30358-1-git-send-email-richard@nod.at> <4FCF6748.6020005@panasas.com> <4FD059AC.8050808@panasas.com>
+In-Reply-To: <4FD059AC.8050808@panasas.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig85F82DD115F8CB8977DFA1CF"
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: um: TTY fixes (?)
-To: Richard Weinberger <richard@nod.at>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, jslaby@suse.cz, user-mode-linux-devel@lists.sourceforge.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: [uml-devel] um: TTY fixes (?)
+To: Boaz Harrosh <bharrosh@panasas.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, jslaby@suse.cz, alan@linux.intel.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, 07 Jun 2012 01:17:24 +0200
-Richard Weinberger <richard@nod.at> wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig85F82DD115F8CB8977DFA1CF
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> Am 04.06.2012 23:17, schrieb Alan Cox:
-> > We can half ignore it on console for the simple reason that you
-> > don't "dial in" to the console. I suspect it may be abusable but
-> > I've not found a way to do so.
-> > 
-> 
-> BTW: Can't we add such a mode to tty_port?
-> E.g. tty_port->non_dialin_console. 8)
+Am 07.06.2012 09:35, schrieb Boaz Harrosh:
+>=20
+> OK I've run with these for a few days and they are doing
+> the Job perfectly. Not a single problem.
 
-That is basically what you are doing when you omit a hangup method. The
-security consequences on a multi-user box run deeper however so in the
-end we need to fix the util-linux code.
+Good to know.
 
-Alan
+> You may add tested-by: Boaz Harrosh <bharrosh@panasas.com>
+> on all patches if you'd like.
+>=20
+> Please push them ASAP to Linus. They fix a real life breakage
+> that's there since v3.3. At least now we are back to
+> the problems that where there for a long time.
+>=20
+> Please also CC: Stable Tree <stable@kernel.org> for 3.4
+> as clearly 3.4 is unusable at all right now.
+
+We cannot push this patch to Linus or -stable.
+The problem is that will break other things.
+E.g. login on non-tty0 terminals will break if the distro uses
+util-linux's login.
+
+> I wish they would be sent to older stables as well, but
+> they won't patch, so it's not worth the effort.
+>=20
+>>> 	mingetty is unable to start on anything else than tty0.
+>>> 	It exits after a few seconds.
+>=20
+>=20
+> I suspect this was always so since forever. I don't even know
+> how to configure such a thing. I know that the console I run
+> vmlinux from becomes tty0, until I halt (or crash). How do
+> you open more tty(s) and attach them to console windows?
+> I just use ssh for that.
+
+con=3Dpts is very nice.
+UML allocates a pts for each tty on the *host* side.
+Then you can attach to this tty using screen.
+See: http://user-mode-linux.sourceforge.net/old/input.html
+
+> (The setup of tty(s) for UML on Fedora is always such a pain
+>  and it changed 4 times since FC10, I always have to mount
+>  the image, figure out how to make tty1 a tty0, and delete
+>  all the other tty(s). perhaps I'm just clueless. Is there an
+>  easier way? Is there a way to tell UML to make tty0 be a tty1?
+>  Because in fedora tty0 is not defined.)
+
+AFAIK no. But you can tell Fedora to use tty0.
+Even with systemd this is possible. :-)
+
+> But please do not delay these patches because of old problems.
+> These can be solved later.
+
+Breaking existing applications is a no-go, sorry.
+
+Thanks,
+//richard
+
+
+--------------enig85F82DD115F8CB8977DFA1CF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iQEcBAEBAgAGBQJP0GoiAAoJEN9758yqZn9eOAEH/ibh7uGmaue2YgEqxgJyZgBE
+tnXVERVfRGNgSEZDhszSEeLYyEASKUFlu7Re8BQBXi4UwXnT3SDOtixwr1cnP/QZ
+wIyJHm/ROEy2gofKmIUiF3I/j3t8EkxlmvnrHTCaD4LfSxCvoLJGQ295ABSZufRH
+rwZ/4Kz3xZPwrmj2Y8HFdeY2Qk0K2apozQgeTqHlUM7G/PqfINWIf7Eoq+WE6n5x
+QszSyQHnOAtyiB0eZdd4D+Ax7PKho0RGAQIFwMV2yMXQemigvwafefnYakQ4x3yP
+M1zSOjQgDnovo64Sx4gUXnIIgkKoEkhLfkdb6CgaV5ab+Xgdd8Bw48XX2SJPhuU=
+=RM+Z
+-----END PGP SIGNATURE-----
+
+--------------enig85F82DD115F8CB8977DFA1CF--
