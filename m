@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bharrosh@panasas.com>) id 1Sccxs-0006Tr-BM
+	(envelope-from <alan@lxorguk.ukuu.org.uk>) id 1ScaGy-00062I-7y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2012 13:41:28 +0000
-Received: from natasha.panasas.com ([67.152.220.90])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Sccxr-0002Wt-Se for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2012 13:41:28 +0000
-Message-ID: <4FD0AF72.9040003@panasas.com>
-Date: Thu, 7 Jun 2012 16:41:06 +0300
-From: Boaz Harrosh <bharrosh@panasas.com>
-MIME-Version: 1.0
+	Thu, 07 Jun 2012 10:49:00 +0000
+Received: from lxorguk.ukuu.org.uk ([81.2.110.251])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ScaGu-0005y8-5x
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jun 2012 10:49:00 +0000
+Date: Thu, 7 Jun 2012 11:52:27 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-ID: <20120607115227.6643d1ad@pyramind.ukuu.org.uk>
+In-Reply-To: <4FD0802A.1020203@nod.at>
 References: <1338841657-30358-1-git-send-email-richard@nod.at>
 	<4FCF6748.6020005@panasas.com> <4FD059AC.8050808@panasas.com>
 	<4FD06A22.6040002@nod.at> <4FD07F14.50902@panasas.com>
 	<4FD0802A.1020203@nod.at>
-	<20120607115227.6643d1ad@pyramind.ukuu.org.uk>
-In-Reply-To: <20120607115227.6643d1ad@pyramind.ukuu.org.uk>
+Mime-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,49 +32,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] um: TTY fixes (?)
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org, jslaby@suse.cz, alan@linux.intel.com
+To: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, jslaby@suse.cz, alan@linux.intel.com
 
-On 06/07/2012 01:52 PM, Alan Cox wrote:
-
->> No, it works fine.
+> > I really don't get it. You have not broken anything new. Only
+> > not fixed all of the problems. Current code does not work for "non-tty0
+> > terminals" as well right?
 > 
-> Not really. You happen to be lucky. Anyway with no tty port the UML code
-> will soon cease to function completely so a solution of some sort is
-> needed.
->  
+> No, it works fine.
+
+Not really. You happen to be lucky. Anyway with no tty port the UML code
+will soon cease to function completely so a solution of some sort is
+needed.
+ 
+> > I don't see Alan's comment at all. This is not a regression it was always
+> > like that. Ever since Fedora was working on UML, But these fixes are real
+> > live regression crashes.
+> > 
+> > And I don't see the all "leaving other vendors systems insecure". It just
+> > a freaking UML tty. You need to be root 5 times before you have access
+> > to all these, and it's only the UML that's compromised not the "all system"
+> > And surely the current plain tty0 crash is much less secure then this thing.
+> 
+> The "TTY problem" is not UML specific.
+
+That one is. The console driver handles stuff its own way and
+differently. It's eventually got to tackle the same problem.
+
+I still think we ought to be able to solve it cleanly. It's a case of
+getting the tests right so that we allow for the misbehaviour util-linux
+does.
+
+As of itself util-linux behaviour doesn't appear to be something we can't
+permit as the 
+
+	open
+	vhangup
+
+sequence means the file handle that is left from before the vhangup due
+to util-linux misbehaving is a hung-up fd so cannot affect the tty.
+
+UML is a good test case for fixing this properly because it's got almost
+no users, and those it has are fairly technical 8)
 
 
-This is what I understood. That mainline code moved so far that the current
-UML driver was too far behind to properly function and *completely* broke.
-
-If only breakage with new UM-TTY code is old util-linux. And we have a
-ready made patch for it.
-
-Would you please reconsider, and point the util-linux users to the fixing
-patch.
-
-Because as it stands:
-
-Current code:
-util-linux 	-	works
-FC12-17		-	Broken (Patch *not* available)
-Debain based	-	works
-
-New code:
-util-linux	- 	Broken, patch available
-FC12-15		-	Works (with issues)
-Debain based	-	works
-
-So it is not like I'm sacrificing util-linux People
-completely, but I am totally sacrificing FC People by
-not committing.
-
-Please reconsider, unless you have a patch for me for FC systems
-that I can apply so I can use the old code.
-
-Thanks again for everything, so far
-Boaz
+Alan
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
