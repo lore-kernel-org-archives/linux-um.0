@@ -1,9 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Cong Wang <amwang@redhat.com>
-Date: Sat, 23 Jun 2012 18:04:18 +0800
-Message-Id: <1340445863-16111-8-git-send-email-amwang@redhat.com>
-In-Reply-To: <1340445863-16111-1-git-send-email-amwang@redhat.com>
-References: <1340445863-16111-1-git-send-email-amwang@redhat.com>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1SclUC-0002L4-Tu
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jun 2012 22:47:24 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SclUC-00077R-4M
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jun 2012 22:47:24 +0000
+Message-ID: <4FD12F74.7040001@nod.at>
+Date: Fri, 08 Jun 2012 00:47:16 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+References: <4FD1164B.6060307@gmail.com> <4FD11C88.6090308@nod.at>
+	<4FD11F90.5080407@gmail.com> <4FD1263B.5070208@nod.at>
+	<4FD12E3D.7050401@gmail.com>
+In-Reply-To: <4FD12E3D.7050401@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -13,50 +27,62 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6146558929274465156=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 07/12] um: remove km_type definitions
-To: linux-kernel@vger.kernel.org
-Cc: Cong Wang <amwang@redhat.com>, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [uml-devel] [PATCH] um: pass siginfo to guest process
+To: =?ISO-8859-1?Q?Martin_P=E4rtel?= <martin.partel@gmail.com>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Signed-off-by: Cong Wang <amwang@redhat.com>
----
- arch/um/include/asm/kmap_types.h |   18 +-----------------
- 1 files changed, 1 insertions(+), 17 deletions(-)
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============6146558929274465156==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig6393B6849624D49855788F0C"
 
-diff --git a/arch/um/include/asm/kmap_types.h b/arch/um/include/asm/kmap_types.h
-index 6c03acd..2e0a6b1 100644
---- a/arch/um/include/asm/kmap_types.h
-+++ b/arch/um/include/asm/kmap_types.h
-@@ -8,22 +8,6 @@
- 
- /* No more #include "asm/arch/kmap_types.h" ! */
- 
--enum km_type {
--	KM_BOUNCE_READ,
--	KM_SKB_SUNRPC_DATA,
--	KM_SKB_DATA_SOFTIRQ,
--	KM_USER0,
--	KM_USER1,
--	KM_UML_USERCOPY,	/* UML specific, for copy_*_user - used in do_op_one_page */
--	KM_BIO_SRC_IRQ,
--	KM_BIO_DST_IRQ,
--	KM_PTE0,
--	KM_PTE1,
--	KM_IRQ0,
--	KM_IRQ1,
--	KM_SOFTIRQ0,
--	KM_SOFTIRQ1,
--	KM_TYPE_NR
--};
-+#define KM_TYPE_NR 14
- 
- #endif
--- 
-1.7.7.6
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig6393B6849624D49855788F0C
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
+Am 08.06.2012 00:42, schrieb Martin P=E4rtel:
+> Oh, darn, indeed. Well, getting si_code right fixed my immediate proble=
+m, but I might look at this again some time next week unless you've fixed=
+ it
+> yourself by then. Thanks!
+>=20
+
+I can wait for your patch.
+No need to hurry. :)
+
+Thanks,
+//richard
+
+
+--------------enig6393B6849624D49855788F0C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iQEcBAEBAgAGBQJP0S90AAoJEN9758yqZn9eS50H+wRL7x7sZQJI9vO+K+VtkzQM
+SoDwQLxythvUMdSlt6PUPhCT3qMBgXwDPoFWg1GdAwQ9ep/G6gI3vJF40lKcZRfo
+R/ZLpkeYCtIeiQgnjPFJoEoPObpzG0el3hYHTpyewEdX1B+kdr8WytQwlEbhlVy+
+2ZgD76pIazbqKE+QKNcDGDJ0paLzNbVpzlFHSsgYwzn7BBHOtQe6F48/GEhfWCbI
+BKGI3wwdsUFZlH8XBqAecghvFBGZ3xKPunKOK5mK6U6JJbZkJDyRVlVg7cTT99kC
+UjRerVlpOW50QhGKxOC0of19jPueWK9CkOpiZb5T2740EvP40LplLVUUsuJDWZc=
+=jPBm
+-----END PGP SIGNATURE-----
+
+--------------enig6393B6849624D49855788F0C--
+
+
+--===============6146558929274465156==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -64,8 +90,17 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+--===============6146558929274465156==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============6146558929274465156==--
+
 
