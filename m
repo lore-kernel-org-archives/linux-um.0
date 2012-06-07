@@ -1,56 +1,89 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <4FD0C64D.2050302@nod.at>
-Date: Thu, 07 Jun 2012 17:18:37 +0200
-From: Richard Weinberger <richard@nod.at>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bharrosh@panasas.com>) id 1Sccxs-0006Tr-BM
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jun 2012 13:41:28 +0000
+Received: from natasha.panasas.com ([67.152.220.90])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Sccxr-0002Wt-Se for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 07 Jun 2012 13:41:28 +0000
+Message-ID: <4FD0AF72.9040003@panasas.com>
+Date: Thu, 7 Jun 2012 16:41:06 +0300
+From: Boaz Harrosh <bharrosh@panasas.com>
 MIME-Version: 1.0
-References: <1338841657-30358-1-git-send-email-richard@nod.at> <4FCF6748.6020005@panasas.com> <4FD059AC.8050808@panasas.com> <4FD06A22.6040002@nod.at> <4FD07F14.50902@panasas.com> <4FD0802A.1020203@nod.at> <20120607115227.6643d1ad@pyramind.ukuu.org.uk>
+References: <1338841657-30358-1-git-send-email-richard@nod.at>
+	<4FCF6748.6020005@panasas.com> <4FD059AC.8050808@panasas.com>
+	<4FD06A22.6040002@nod.at> <4FD07F14.50902@panasas.com>
+	<4FD0802A.1020203@nod.at>
+	<20120607115227.6643d1ad@pyramind.ukuu.org.uk>
 In-Reply-To: <20120607115227.6643d1ad@pyramind.ukuu.org.uk>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig3293C8C1F47D8C996BB4C705"
-Sender: linux-kernel-owner@vger.kernel.org
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] um: TTY fixes (?)
 To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Boaz Harrosh <bharrosh@panasas.com>, user-mode-linux-devel@lists.sourceforge.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, jslaby@suse.cz, alan@linux.intel.com
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org, jslaby@suse.cz, alan@linux.intel.com
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig3293C8C1F47D8C996BB4C705
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On 06/07/2012 01:52 PM, Alan Cox wrote:
 
-Alan, Jiri!
-
-If I omit ->hangup(), mingetty (And all other getty implementations) are =
-unable to open /dev/ttyX.
-open() returns -EIO.
-Currently I'm testing it on FC12.
-Also if I do something like "echo foo >/dev/tty1" it fails with -EIO.
-And now the strange thing, opening and writing an unknown (unknown to thi=
-s upstart rubbish) tty works.
-E.g.: echo foo >/dev/tty10.
-
-Any ideas what's going wrong?
-
-Thanks,
-//richard
+>> No, it works fine.
+> 
+> Not really. You happen to be lucky. Anyway with no tty port the UML code
+> will soon cease to function completely so a solution of some sort is
+> needed.
+>  
 
 
---------------enig3293C8C1F47D8C996BB4C705
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+This is what I understood. That mainline code moved so far that the current
+UML driver was too far behind to properly function and *completely* broke.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+If only breakage with new UM-TTY code is old util-linux. And we have a
+ready made patch for it.
 
-iQEcBAEBAgAGBQJP0MZNAAoJEN9758yqZn9ePiwIAJ3j+EtbhVDWeCX+7CXY1aXU
-3A5Jjd3cGBo/3TOrQ/6pWzsJYmrru5puFMvSYc2hv2k/+gyqJSHfs9Us4/TF4a2m
-ISE0l4V0zJ9i8zv2HLMB5bl9TNUFw912Vlb1Rwq2OS7Ueadl7GlojOwSuyZg3wC6
-d/6rSo7hqe1LFjZucIqmbcwI7pruuVVoTWc9bakFvrP3zH4lj+voxhhE2ZEP7JrY
-2r3gt1rWVpfD4UjbCvT9aheLm90leLAmr1r9936Me/eVpmZIjXiMlY89yx7+T5o2
-iVCxhr9vKn5RHjIQhyHLe2UCSCENQETiuAJk3CXPrBMGFXAGQXmJK/RB80ykT+k=
-=ddzF
------END PGP SIGNATURE-----
+Would you please reconsider, and point the util-linux users to the fixing
+patch.
 
---------------enig3293C8C1F47D8C996BB4C705--
+Because as it stands:
+
+Current code:
+util-linux 	-	works
+FC12-17		-	Broken (Patch *not* available)
+Debain based	-	works
+
+New code:
+util-linux	- 	Broken, patch available
+FC12-15		-	Works (with issues)
+Debain based	-	works
+
+So it is not like I'm sacrificing util-linux People
+completely, but I am totally sacrificing FC People by
+not committing.
+
+Please reconsider, unless you have a patch for me for FC systems
+that I can apply so I can use the old code.
+
+Thanks again for everything, so far
+Boaz
+
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
