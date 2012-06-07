@@ -1,40 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@sigma-star.at>) id 1Scm5d-0003hq-Ti
+	(envelope-from <martin.partel@gmail.com>) id 1ScdsU-0006Bd-A6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2012 23:26:05 +0000
-Received: from meriadoc.sigma-star.at ([178.63.61.2])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Scm5c-0008E1-KG
+	Thu, 07 Jun 2012 14:39:58 +0000
+Received: from mail-lpp01m010-f47.google.com ([209.85.215.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ScdsO-0005Pv-VW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2012 23:26:05 +0000
-Received: from [95.130.255.111] (helo=mail.sigma-star.at)
-	by meriadoc.sigma-star.at with esmtp (Exim 4.63)
-	(envelope-from <richard@sigma-star.at>) id 1ScsSD-0007JU-2G
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Jun 2012 08:13:49 +0200
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.sigma-star.at (Postfix) with ESMTP id B406C16B402D
+	Thu, 07 Jun 2012 14:39:58 +0000
+Received: by lags15 with SMTP id s15so534962lag.34
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  8 Jun 2012 00:16:49 +0200 (CEST)
-Received: from mail.sigma-star.at ([127.0.0.1])
-	by localhost (mail.sigma-star.at [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 9vamkIptWQDx
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  8 Jun 2012 00:16:49 +0200 (CEST)
-Received: from [192.168.0.2] (178-191-102-27.adsl.highway.telekom.at
-	[178.191.102.27])
-	by mail.sigma-star.at (Postfix) with ESMTPSA id 02CB016B402B
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri,  8 Jun 2012 00:16:48 +0200 (CEST)
-Message-ID: <4FD12850.5080004@sigma-star.at>
-Date: Fri, 08 Jun 2012 00:16:48 +0200
-From: Richard Weinberger <richard@sigma-star.at>
+	Thu, 07 Jun 2012 07:39:46 -0700 (PDT)
+Message-ID: <4FD0BD2F.4090002@gmail.com>
+Date: Thu, 07 Jun 2012 17:39:43 +0300
+From: =?ISO-8859-1?Q?Martin_P=E4rtel?= <martin.partel@gmail.com>
 MIME-Version: 1.0
-References: <4FD0BD2F.4090002@gmail.com>
-In-Reply-To: <4FD0BD2F.4090002@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -47,20 +29,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] um: fix ubd_file_size for read-only files
+Subject: [uml-devel] [PATCH] um: fix ubd_file_size for read-only files
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Am 07.06.2012 16:39, schrieb Martin P=E4rtel:
-> Made ubd_file_size not request write access. Fixes use of read-only image=
-s.
-> =
+Made ubd_file_size not request write access. Fixes use of read-only images.
 
-> Signed-off-by: Martin P=E4rtel <martin.partel@gmail.com>
+Signed-off-by: Martin P=E4rtel <martin.partel@gmail.com>
+---
+diff -uprN -X linux-3.4.1/Documentation/dontdiff linux-3.4.1/arch/um/driver=
+s/ubd_kern.c linux-3.4.1-mod/arch/um/drivers/ubd_kern.c
+--- linux-3.4.1/arch/um/drivers/ubd_kern.c	2012-06-01 10:18:44.000000000 +0=
+300
++++ linux-3.4.1-mod/arch/um/drivers/ubd_kern.c	2012-06-07 17:02:38.62545350=
+4 +0300
+@@ -514,7 +514,7 @@ static inline int ubd_file_size(struct u
+ 		goto out;
+ 	}
+ =
 
-Applied!
+-	fd =3D os_open_file(ubd_dev->file, global_openflags, 0);
++	fd =3D os_open_file(ubd_dev->file, of_read(OPENFLAGS()), 0);
+ 	if (fd < 0)
+ 		return fd;
+ =
 
-Thanks,
-//richard
 
 ---------------------------------------------------------------------------=
 ---
