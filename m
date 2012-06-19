@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <david@dit.upm.es>) id 1Sh6zM-00033w-Vr
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1SguLw-0000qd-2I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Jun 2012 22:33:32 +0000
-Received: from mail.dit.upm.es ([138.4.2.7])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Sh6zJ-0007r9-LQ
+	Tue, 19 Jun 2012 09:04:00 +0000
+Received: from mail-lb0-f175.google.com ([209.85.217.175])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1SguLu-00062A-Uu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Jun 2012 22:33:32 +0000
-Mime-Version: 1.0 (Apple Message framework v1278)
-From: =?iso-8859-1?Q?David_Fern=E1ndez?= <david@dit.upm.es>
-In-Reply-To: <CAFLxGvwqcM4Ajy+DQdpAO8rgc+X_e919_EXKiA8DkTyUQunTOw@mail.gmail.com>
-Date: Wed, 20 Jun 2012 00:33:21 +0200
-Message-Id: <62D36CCF-34D9-4CF9-A563-33D1D5896B73@dit.upm.es>
+	Tue, 19 Jun 2012 09:04:00 +0000
+Received: by lbol5 with SMTP id l5so6188849lbo.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 19 Jun 2012 02:03:52 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4FE03E76.7090400@dit.upm.es>
 References: <4FE03E76.7090400@dit.upm.es>
-	<CAFLxGvwqcM4Ajy+DQdpAO8rgc+X_e919_EXKiA8DkTyUQunTOw@mail.gmail.com>
+Date: Tue, 19 Jun 2012 11:03:48 +0200
+Message-ID: <CAFLxGvwqcM4Ajy+DQdpAO8rgc+X_e919_EXKiA8DkTyUQunTOw@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,41 +32,21 @@ Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] ubd option parsing problem when using cow
-	filesystems in kernel 3.4
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+ filesystems in kernel 3.4
+To: =?ISO-8859-1?Q?David_Fern=E1ndez?= <david@dit.upm.es>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
+On Tue, Jun 19, 2012 at 10:55 AM, David Fern=E1ndez <david@dit.upm.es> wrot=
+e:
+> Any idea of the cause of the problem? A simple 'diff' between 3.3 and
+> 3.4 versions shows the option parsing code has changed significantly.
 
-El 19/06/2012, a las 11:03, richard -rw- weinberger escribi=F3:
+Can you do a git bisect?
 
-> On Tue, Jun 19, 2012 at 10:55 AM, David Fern=E1ndez <david@dit.upm.es> wr=
-ote:
->> Any idea of the cause of the problem? A simple 'diff' between 3.3 and
->> 3.4 versions shows the option parsing code has changed significantly.
-> =
+-- =
 
-> Can you do a git bisect?
-
-I've some problems with git bisect, but I manage to make the tests manually=
- and the result is:
-
-v3.3.8 -> OK
-v3.4-rc1 -> Could not compile (implicit declaration of switch_to function)
-v3.4-rc2 -> Could not compile (implicit declaration of switch_to function)
-v3.4-rc3 -> Fails
-
-Let me know if I can help with any other test.
-
-Best regards,
-David
-
-> =
-
-> -- =
-
-> Thanks,
-> //richard
-
+Thanks,
+//richard
 
 ---------------------------------------------------------------------------=
 ---
