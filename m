@@ -1,34 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rmy@tigress.co.uk>) id 1Shzek-0004Ba-O5
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1Shnfi-0003yh-NZ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 22 Jun 2012 08:55:54 +0000
-Received: from [87.86.166.5] (helo=geotraceuk2.Geotrace.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Shzei-00021A-DS for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 22 Jun 2012 08:55:54 +0000
-Received: (from uucp@localhost)
-	by intgat.tigress.co.uk (8.13.1/8.13.1) id q5M8T94w015752
+	Thu, 21 Jun 2012 20:08:06 +0000
+Received: from mail-lb0-f175.google.com ([209.85.217.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Shnfi-0002pc-1Z
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 21 Jun 2012 20:08:06 +0000
+Received: by lbol5 with SMTP id l5so2822234lbo.34
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 22 Jun 2012 09:29:09 +0100
-Received: from helium.internal.tigress.co.uk (localhost.localdomain
-	[127.0.0.1])
-	by tigress.co.uk (8.13.8/8.13.8) with ESMTP id q5M8SO62019093
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 22 Jun 2012 09:28:24 +0100
-Received: (from rmy@localhost)
-	by helium.internal.tigress.co.uk (8.13.8/8.13.8/Submit) id
-	q5M8SO37019092 for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 22 Jun 2012 09:28:24 +0100
-From: Ron Yorston <rmy@tigress.co.uk>
-Message-Id: <201206220828.q5M8SO37019092@helium.internal.tigress.co.uk>
-Date: Fri, 22 Jun 2012 09:28:24 +0100
+	Thu, 21 Jun 2012 13:07:59 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <loom.20120621T214420-7@post.gmane.org>
 References: <4F3C1B06.7080506@nagafix.co.uk>
 	<loom.20120621T174831-991@post.gmane.org>
-In-Reply-To: <loom.20120621T174831-991@post.gmane.org>
-MIME-Version: 1.0
+	<CAFLxGvzcA7RNyJ_Ax94kQxXhsLx5+g8bBAbz8rKkLr0JfU4xVA@mail.gmail.com>
+	<loom.20120621T214420-7@post.gmane.org>
+Date: Thu, 21 Jun 2012 22:07:59 +0200
+Message-ID: <CAFLxGvwC6AWu2=Fuj1OJR1AyDqPTFg7grfnYEHZ-b2JyCMBV1A@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,24 +31,40 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] X11 vfb forward ported to 3.2
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Will Drewry <wad@dataspill.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-I played with the framebuffer code a few years ago, but haven't
-touched it for a while.  My web page about it is still around:
+On Thu, Jun 21, 2012 at 9:45 PM, Will Drewry <wad@dataspill.org> wrote:
+> Cool! I'll clean it up. =A0So far I also found a use-after-free bug which=
+ broke
+> list traversal (during screen redraw) and moved it from kthread to workqu=
+eues.
+> There are still a lot of pieces which don't make as much sense to me yet,=
+ but
+> once it seems not so crazy, I'll definitely post it for consideration. =
+=A0I'd love
+> to see it in!
 
-   http://intgat.tigress.co.uk/rmy/shmfb/index.html
+Do you have a git repo where your current work is visible?
 
-Ron
+-- =
 
-------------------------------------------------------------------------------
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
+---
 Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
+Exclusive live event will cover all the ways today's security and =
+
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
 _______________________________________________
 User-mode-linux-devel mailing list
