@@ -1,20 +1,9 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1Sbdse-000804-4H
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Jun 2012 20:28:00 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Sbdsd-0006Be-BX
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Jun 2012 20:28:00 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon,  4 Jun 2012 22:27:35 +0200
-Message-Id: <1338841657-30358-5-git-send-email-richard@nod.at>
-In-Reply-To: <1338841657-30358-1-git-send-email-richard@nod.at>
-References: <1338841657-30358-1-git-send-email-richard@nod.at>
+From: Cong Wang <amwang@redhat.com>
+Date: Sat, 23 Jun 2012 18:04:18 +0800
+Message-Id: <1340445863-16111-8-git-send-email-amwang@redhat.com>
+In-Reply-To: <1340445863-16111-1-git-send-email-amwang@redhat.com>
+References: <1340445863-16111-1-git-send-email-amwang@redhat.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,61 +17,45 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 4/6] um: Remove dead code
-To: jslaby@suse.cz
-Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org, alan@linux.intel.com
+Subject: [uml-devel] [PATCH 07/12] um: remove km_type definitions
+To: linux-kernel@vger.kernel.org
+Cc: Cong Wang <amwang@redhat.com>, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net, Andrew Morton <akpm@linux-foundation.org>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Cong Wang <amwang@redhat.com>
 ---
- arch/um/drivers/ssl.c |   26 --------------------------
- 1 files changed, 0 insertions(+), 26 deletions(-)
+ arch/um/include/asm/kmap_types.h |   18 +-----------------
+ 1 files changed, 1 insertions(+), 17 deletions(-)
 
-diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
-index a39d53e..cba95d9 100644
---- a/arch/um/drivers/ssl.c
-+++ b/arch/um/drivers/ssl.c
-@@ -98,27 +98,6 @@ static int ssl_open(struct tty_struct *tty, struct file *filp)
- 	return err;
- }
+diff --git a/arch/um/include/asm/kmap_types.h b/arch/um/include/asm/kmap_types.h
+index 6c03acd..2e0a6b1 100644
+--- a/arch/um/include/asm/kmap_types.h
++++ b/arch/um/include/asm/kmap_types.h
+@@ -8,22 +8,6 @@
  
--#if 0
--static void ssl_flush_buffer(struct tty_struct *tty)
--{
--	return;
--}
--
--static void ssl_stop(struct tty_struct *tty)
--{
--	printk(KERN_ERR "Someone should implement ssl_stop\n");
--}
--
--static void ssl_start(struct tty_struct *tty)
--{
--	printk(KERN_ERR "Someone should implement ssl_start\n");
--}
--
--void ssl_hangup(struct tty_struct *tty)
--{
--}
--#endif
--
- static const struct tty_operations ssl_ops = {
- 	.open 	 		= ssl_open,
- 	.close 	 		= line_close,
-@@ -131,11 +110,6 @@ static const struct tty_operations ssl_ops = {
- 	.set_termios 		= line_set_termios,
- 	.throttle 		= line_throttle,
- 	.unthrottle 		= line_unthrottle,
--#if 0
--	.stop 	 		= ssl_stop,
--	.start 	 		= ssl_start,
--	.hangup 	 	= ssl_hangup,
--#endif
- };
+ /* No more #include "asm/arch/kmap_types.h" ! */
  
- /* Changed by ssl_init and referenced by ssl_exit, which are both serialized
+-enum km_type {
+-	KM_BOUNCE_READ,
+-	KM_SKB_SUNRPC_DATA,
+-	KM_SKB_DATA_SOFTIRQ,
+-	KM_USER0,
+-	KM_USER1,
+-	KM_UML_USERCOPY,	/* UML specific, for copy_*_user - used in do_op_one_page */
+-	KM_BIO_SRC_IRQ,
+-	KM_BIO_DST_IRQ,
+-	KM_PTE0,
+-	KM_PTE1,
+-	KM_IRQ0,
+-	KM_IRQ1,
+-	KM_SOFTIRQ0,
+-	KM_SOFTIRQ1,
+-	KM_TYPE_NR
+-};
++#define KM_TYPE_NR 14
+ 
+ #endif
 -- 
-1.7.7.3
+1.7.7.6
 
 
 ------------------------------------------------------------------------------
