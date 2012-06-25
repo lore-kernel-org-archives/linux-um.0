@@ -1,71 +1,68 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <martin.partel@gmail.com>) id 1ScdsU-0006Bd-A6
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2012 14:39:58 +0000
-Received: from mail-lpp01m010-f47.google.com ([209.85.215.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ScdsO-0005Pv-VW
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 07 Jun 2012 14:39:58 +0000
-Received: by lags15 with SMTP id s15so534962lag.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 07 Jun 2012 07:39:46 -0700 (PDT)
-Message-ID: <4FD0BD2F.4090002@gmail.com>
-Date: Thu, 07 Jun 2012 17:39:43 +0300
-From: =?ISO-8859-1?Q?Martin_P=E4rtel?= <martin.partel@gmail.com>
-MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Return-Path: <david@dit.upm.es>
+Mime-Version: 1.0 (Apple Message framework v1278)
+Content-Type: text/plain; charset=iso-8859-1
+From: =?iso-8859-1?Q?David_Fern=E1ndez?= <david@dit.upm.es>
+In-Reply-To: <CAMuHMdXNJokhVmmAOUgoXynguHUe9fqQ4W7nwx+hkHSy77mVoQ@mail.gmail.com>
+Date: Mon, 25 Jun 2012 02:30:17 +0200
 Content-Transfer-Encoding: quoted-printable
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] um: fix ubd_file_size for read-only files
-To: user-mode-linux-devel@lists.sourceforge.net
-
-Made ubd_file_size not request write access. Fixes use of read-only images.
-
-Signed-off-by: Martin P=E4rtel <martin.partel@gmail.com>
----
-diff -uprN -X linux-3.4.1/Documentation/dontdiff linux-3.4.1/arch/um/driver=
-s/ubd_kern.c linux-3.4.1-mod/arch/um/drivers/ubd_kern.c
---- linux-3.4.1/arch/um/drivers/ubd_kern.c	2012-06-01 10:18:44.000000000 +0=
-300
-+++ linux-3.4.1-mod/arch/um/drivers/ubd_kern.c	2012-06-07 17:02:38.62545350=
-4 +0300
-@@ -514,7 +514,7 @@ static inline int ubd_file_size(struct u
- 		goto out;
- 	}
- =
-
--	fd =3D os_open_file(ubd_dev->file, global_openflags, 0);
-+	fd =3D os_open_file(ubd_dev->file, of_read(OPENFLAGS()), 0);
- 	if (fd < 0)
- 		return fd;
- =
+Message-Id: <63E079BF-179B-4CE8-BB7D-E215F5DE6433@dit.upm.es>
+References: <4FE03E76.7090400@dit.upm.es> <CAFLxGvwqcM4Ajy+DQdpAO8rgc+X_e919_EXKiA8DkTyUQunTOw@mail.gmail.com> <62D36CCF-34D9-4CF9-A563-33D1D5896B73@dit.upm.es> <CAFLxGvxHSwzZe_o=NztS+p=-Sz-MhDqM2MzC-3FsO-bXeENG3Q@mail.gmail.com> <4FE20217.2080101@dit.upm.es> <CAFLxGvw4=mcfqd_0HbP17AR5ZqR-NqMSVgPgFyYamTSu=vgfOQ@mail.gmail.com> <4FE32FBE.4050201@dit.upm.es> <CAFLxGvwE=ecLXN=RLhpSDO9JyDPeS5gr66inS0H2W6soiYUt0A@mail.gmail.com> <CAMuHMdXNJokhVmmAOUgoXynguHUe9fqQ4W7nwx+hkHSy77mVoQ@mail.gmail.com>
+Subject: Re: [uml-devel] ubd option parsing problem when using cow filesystems in kernel 3.4
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: richard -rw- weinberger <richard.weinberger@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 
----------------------------------------------------------------------------=
----
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
+Hi,=20
 
-threat landscape has changed and how IT managers can respond. Discussions =
+I have just repeated the git bisect and confirmed that:
+- the problem was introduced in 026cee00 =20
+- reverting 026cee00 the problem goes away
 
-will include endpoint security, mobile security and the latest in malware =
+That commit includes some modifications in kernel/params.c file. =
+Probably the bug has been introduced by that modifications.
 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Best regards,
+David
+
+
+El 21/06/2012, a las 16:49, Geert Uytterhoeven escribi=F3:
+
+> On Thu, Jun 21, 2012 at 4:42 PM, richard -rw- weinberger
+> <richard.weinberger@gmail.com> wrote:
+>> On Thu, Jun 21, 2012 at 4:29 PM, David Fern=E1ndez <david@dit.upm.es> =
+wrote:
+>>>=20
+>>> What command should I use to revert that specific commit? I'm not an =
+expert
+>>> in git, in fact I just learnt what a 'git bisect' is after your =
+message
+>>> ...:-)
+>>=20
+>> E.g:
+>> $ git show 026cee00 > sucker.diff
+>> $ patch -p1 -R < sucker.diff
+>=20
+>    git revert 026cee00
+>=20
+> or
+>=20
+>    git revert -n 026cee00
+>=20
+> if you don't want to commit the revert.
+>=20
+> Gr{oetje,eeting}s,
+>=20
+>                         Geert
+>=20
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- =
+geert@linux-m68k.org
+>=20
+> In personal conversations with technical people, I call myself a =
+hacker. But
+> when I'm talking to journalists I just say "programmer" or something =
+like that.
+>                                 -- Linus Torvalds
+
 
