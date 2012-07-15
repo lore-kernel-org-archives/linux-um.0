@@ -1,38 +1,57 @@
-Return-Path: <linux-mips-bounce@linux-mips.org>
-From: Mark Salter <msalter@redhat.com>
-Date: Mon, 16 Jul 2012 08:56:36 -0400
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sun, 15 Jul 2012 17:51:29 -0400
+References: <1341968967.13724.23.camel@joe2Laptop> <14a91278564bb5a263c561a7f1bd10ea6386d90a.1342157022.git.joe@perches.com>
 In-Reply-To: <14a91278564bb5a263c561a7f1bd10ea6386d90a.1342157022.git.joe@perches.com>
-References: <1341968967.13724.23.camel@joe2Laptop>
-         <14a91278564bb5a263c561a7f1bd10ea6386d90a.1342157022.git.joe@perches.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: multipart/signed;
+  boundary="nextPart2984557.iEo3zAiUsd";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Message-ID: <1342443401.2880.2.camel@deneb.redhat.com>
-Mime-Version: 1.0
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+Message-Id: <201207151751.32715.vapier@gentoo.org>
+Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [PATCH net-next 8/8] arch: Use eth_random_addr
 To: Joe Perches <joe@perches.com>
-Cc: David Miller <davem@davemloft.net>, linux-kernel@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, Mike Frysinger <vapier@gentoo.org>, Aurelien Jacquiot <a-jacquiot@ti.com>, Ralf Baechle <ralf@linux-mips.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, uclinux-dist-devel@blackfin.uclinux.org, linux-c6x-dev@linux-c6x.org, linux-mips@linux-mips.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: David Miller <davem@davemloft.net>, linux-kernel@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, Ralf Baechle <ralf@linux-mips.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, uclinux-dist-devel@blackfin.uclinux.org, linux-c6x-dev@linux-c6x.org, linux-mips@linux-mips.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, 2012-07-12 at 22:33 -0700, Joe Perches wrote:
+--nextPart2984557.iEo3zAiUsd
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Friday 13 July 2012 01:33:12 Joe Perches wrote:
 > Convert the existing uses of random_ether_addr to
 > the new eth_random_addr.
-> 
+>=20
 > Signed-off-by: Joe Perches <joe@perches.com>
 > ---
 >  arch/blackfin/mach-bf537/boards/stamp.c |    2 +-
->  arch/c6x/kernel/soc.c                   |    2 +-
 
-Acked-by: Mark Salter <msalter@redhat.com>
+Acked-by: Mike Frysinger <vapier@gentoo.org>
+=2Dmike
 
+--nextPart2984557.iEo3zAiUsd
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
 
+iQIcBAABAgAGBQJQAztkAAoJEEFjO5/oN/WBdAEP/2504DMXVeLawf3QYL83Ybgk
+JdSLiVaZvOSvNibDqyWKFczikUDAKeJBBSUYdHht10Jo6By/EHzslxnK+y22yoE9
+bN0Y9bI+7WpOjischyUg7iZzDEOx+sKWK0TooVv15wu68flAy8AY6PnpxKA2+//e
+x28CnNgrc0DbKqTg2FnDtzgZzkOpp1zX/Zdku+oJLBxo6VEBmgVZb8D5Aydoc5fD
+se81hN0yVigA85WfYDt1MaQhf6dc4rauPCEby1NGaB5EAdqy2p1wRsCLCGoIOZsV
+PIEQUfAiNWICF1kkO1QBhmotPTGSWPHo5Iw+DWuud0h7JK5/KQWtYwLcBmSGYlJ3
+fRqzQaI9tmqcXW6sWXT1qPA2pHVGninJ9sJKehdy6dmK7nZqE5KV3B26ntRxUqFB
+tnSKUVaMPFJOlaBCEOi/eKZHEBeLHatev/qYqj7rF3dURWkhmTqDPJy59rgs+sHv
+/YitzpASRvl7M0mKm2RpNtO6/fYK5AO3yr7mfnZ4psXpKutEiMPkEZ13m4Fbp4mW
+tbh65jfkrOHuY02IvTXwqb9Cpl4dzYYEBCBCgD6p6mmXGcT0moBgCiDHF5vKbJMc
++8eKfqsXOz+P3jf1cGGkoSgVZtWKkfm7TX4gfB3+xBXhVQe8k+ljAcNbGuC5M5Mj
+VoGCFnUMFIONUUj71+wZ
+=85OH
+-----END PGP SIGNATURE-----
 
+--nextPart2984557.iEo3zAiUsd--
