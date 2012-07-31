@@ -1,27 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <martin.partel@gmail.com>) id 1SwBJY-00070j-EU
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1SwBIi-0000GX-6K
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 31 Jul 2012 12:12:40 +0000
-Received: from mail-lb0-f175.google.com ([209.85.217.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SwBJX-0000Bl-Pz
+	Tue, 31 Jul 2012 12:11:48 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SwBIc-00024c-2c
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 31 Jul 2012 12:12:40 +0000
-Received: by lbol5 with SMTP id l5so4087923lbo.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 31 Jul 2012 05:12:33 -0700 (PDT)
-Message-ID: <5017CBAE.3080606@gmail.com>
-Date: Tue, 31 Jul 2012 15:12:30 +0300
-From: =?ISO-8859-1?Q?Martin_P=E4rtel?= <martin.partel@gmail.com>
+	Tue, 31 Jul 2012 12:11:48 +0000
+Message-ID: <5017CB76.40200@nod.at>
+Date: Tue, 31 Jul 2012 14:11:34 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 References: <4FDB6EDD.1010102@gmail.com>
 	<CAFLxGvxtN8wdP7g1jowqpAFbewATmTo8ZOWgPkZ6CrFYVQvXtQ@mail.gmail.com>
 	<4FE2D6CD.3030601@gmail.com> <5017C9F5.5070105@gmail.com>
-	<5017CB76.40200@nod.at>
-In-Reply-To: <5017CB76.40200@nod.at>
+In-Reply-To: <5017C9F5.5070105@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,21 +31,20 @@ Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v3] um: pass siginfo to guest process
-To: Richard Weinberger <richard@nod.at>
+To: =?ISO-8859-1?Q?Martin_P=E4rtel?= <martin.partel@gmail.com>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On 07/31/2012 03:11 PM, Richard Weinberger wrote:
-> On 31.07.2012 14:05, Martin P=E4rtel wrote:
->> What's the status with this?
->>
->
-> Oh sorry, I forgot you to answer.
-> It's queued for 3.6 and will be pushed to Linus tomorrow with all other
-> patches.
+On 31.07.2012 14:05, Martin P=E4rtel wrote:
+> What's the status with this?
 >
 
-Cool, thanks!
+Oh sorry, I forgot you to answer.
+It's queued for 3.6 and will be pushed to Linus tomorrow with all other =
 
+patches.
+
+Thanks,
+//richard
 
 ---------------------------------------------------------------------------=
 ---
