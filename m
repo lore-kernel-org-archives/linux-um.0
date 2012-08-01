@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vleclement@gmail.com>) id 1SwpIC-0007b8-Ro
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@sigma-star.at>) id 1SwiIS-0008Mz-1q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Aug 2012 06:53:56 +0000
-Received: from mail-yx0-f175.google.com ([209.85.213.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SwpIB-0003My-U2
+	Wed, 01 Aug 2012 23:25:44 +0000
+Received: from meriadoc.sigma-star.at ([178.63.61.2])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SwiIQ-00017C-NY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Aug 2012 06:53:56 +0000
-Received: by yenl13 with SMTP id l13so8302811yen.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 01 Aug 2012 23:53:50 -0700 (PDT)
+	Wed, 01 Aug 2012 23:25:44 +0000
+Message-ID: <5019B30B.8010306@sigma-star.at>
+Date: Thu, 02 Aug 2012 00:51:55 +0200
+From: Richard Weinberger <richard@sigma-star.at>
 MIME-Version: 1.0
-In-Reply-To: <5019B30B.8010306@sigma-star.at>
 References: <50179725.9cO+m/nAt3rcNdV1%vleclement@gmail.com>
-	<5019B30B.8010306@sigma-star.at>
-From: =?ISO-8859-1?Q?Vianney_le_Cl=E9ment?= <vleclement@gmail.com>
-Date: Thu, 2 Aug 2012 08:53:30 +0200
-Message-ID: <CAMQPmcCJDkBFRLGY861fVDN2W4=71hxK2+buLcPDt938ccUupA@mail.gmail.com>
+In-Reply-To: <50179725.9cO+m/nAt3rcNdV1%vleclement@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,48 +25,30 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] um: fix missing include with glibc 2.16
-To: Richard Weinberger <richard@sigma-star.at>
+To: =?UTF-8?B?Vmlhbm5leSBsZSBDbMOpbWVudCBkZSBTYWludC1NYXJjcQ==?= <vleclement@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Aug 2, 2012 at 12:51 AM, Richard Weinberger
-<richard@sigma-star.at> wrote:
-> On 31.07.2012 10:28, Vianney le Cl=E9ment de Saint-Marcq wrote:
->>
->> From: Vianney le Cl=E9ment de Saint-Marcq <vleclement@gmail.com>
->>
->> As of glibc 2.16, sys/wait.h does no longer include sys/resource.h,
->> which is needed for getrlimit(). This patch fixes compiling UML with
->> glibc 2.16.
->>
->> Signed-off-by: Vianney le Cl=E9ment de Saint-Marcq <vleclement@gmail.com>
->
->
-> Sorry, I cannot apply this patch.
-> It's base64 encoded.
->
-> Can you please send it using git?
-
-Weird, I used heirloom-mailx to try to avoid such problems. I'll try
-to resend the patch using git and another smtp server.
-
-Vianney
-
----------------------------------------------------------------------------=
----
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and =
-
-threat landscape has changed and how IT managers can respond. Discussions =
-
-will include endpoint security, mobile security and the latest in malware =
-
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gMzEuMDcuMjAxMiAxMDoyOCwgVmlhbm5leSBsZSBDbMOpbWVudCBkZSBTYWludC1NYXJjcSB3
+cm90ZToKPiBGcm9tOiBWaWFubmV5IGxlIENsw6ltZW50IGRlIFNhaW50LU1hcmNxIDx2bGVjbGVt
+ZW50QGdtYWlsLmNvbT4KPgo+IEFzIG9mIGdsaWJjIDIuMTYsIHN5cy93YWl0LmggZG9lcyBubyBs
+b25nZXIgaW5jbHVkZSBzeXMvcmVzb3VyY2UuaCwKPiB3aGljaCBpcyBuZWVkZWQgZm9yIGdldHJs
+aW1pdCgpLiBUaGlzIHBhdGNoIGZpeGVzIGNvbXBpbGluZyBVTUwgd2l0aAo+IGdsaWJjIDIuMTYu
+Cj4KPiBTaWduZWQtb2ZmLWJ5OiBWaWFubmV5IGxlIENsw6ltZW50IGRlIFNhaW50LU1hcmNxIDx2
+bGVjbGVtZW50QGdtYWlsLmNvbT4KClNvcnJ5LCBJIGNhbm5vdCBhcHBseSB0aGlzIHBhdGNoLgpJ
+dCdzIGJhc2U2NCBlbmNvZGVkLgoKQ2FuIHlvdSBwbGVhc2Ugc2VuZCBpdCB1c2luZyBnaXQ/CgpU
+aGFua3MsCi8vcmljaGFyZAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMaXZlIFNlY3VyaXR5IFZp
+cnR1YWwgQ29uZmVyZW5jZQpFeGNsdXNpdmUgbGl2ZSBldmVudCB3aWxsIGNvdmVyIGFsbCB0aGUg
+d2F5cyB0b2RheSdzIHNlY3VyaXR5IGFuZCAKdGhyZWF0IGxhbmRzY2FwZSBoYXMgY2hhbmdlZCBh
+bmQgaG93IElUIG1hbmFnZXJzIGNhbiByZXNwb25kLiBEaXNjdXNzaW9ucyAKd2lsbCBpbmNsdWRl
+IGVuZHBvaW50IHNlY3VyaXR5LCBtb2JpbGUgc2VjdXJpdHkgYW5kIHRoZSBsYXRlc3QgaW4gbWFs
+d2FyZSAKdGhyZWF0cy4gaHR0cDovL3d3dy5hY2NlbGFjb21tLmNvbS9qYXcvc2ZybmwwNDI0MjAx
+Mi8xMTQvNTAxMjIyNjMvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4
+LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
+dC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
