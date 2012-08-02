@@ -1,19 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vleclement@gmail.com>) id 1Swq8k-000130-G9
+	(envelope-from <richard.weinberger@gmail.com>) id 1Swq3H-0000m7-Ik
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Aug 2012 07:48:14 +0000
-Received: from smtp.sgsi.ucl.ac.be ([130.104.5.67] helo=smtp5.sgsi.ucl.ac.be)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Swq8e-0006nK-MH for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Aug 2012 07:48:14 +0000
-From: =?UTF-8?q?Vianney=20le=20Cl=C3=A9ment=20de=20Saint-Marcq?=
-	<vleclement@gmail.com>
-Date: Thu,  2 Aug 2012 09:22:24 +0200
-Message-Id: <1343892144-3800-1-git-send-email-vleclement@gmail.com>
+	Thu, 02 Aug 2012 07:42:35 +0000
+Received: from mail-gg0-f175.google.com ([209.85.161.175])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Swq3D-0007i2-Rg
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Aug 2012 07:42:35 +0000
+Received: by ggnp4 with SMTP id p4so8336083ggn.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 02 Aug 2012 00:42:26 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAMQPmcCJDkBFRLGY861fVDN2W4=71hxK2+buLcPDt938ccUupA@mail.gmail.com>
+References: <50179725.9cO+m/nAt3rcNdV1%vleclement@gmail.com>
+	<5019B30B.8010306@sigma-star.at>
+	<CAMQPmcCJDkBFRLGY861fVDN2W4=71hxK2+buLcPDt938ccUupA@mail.gmail.com>
+Date: Thu, 2 Aug 2012 09:42:26 +0200
+Message-ID: <CAFLxGvwBixt9t9cy7-NBRZ=HHo143rx2CdwMB_EOY8+94_rT_A@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,35 +30,57 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] um: fix missing include with glibc 2.16
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: =?UTF-8?q?Vianney=20le=20Cl=C3=A9ment=20de=20Saint-Marcq?= <vleclement@gmail.com>
+Subject: Re: [uml-devel] [PATCH] um: fix missing include with glibc 2.16
+To: =?ISO-8859-1?Q?Vianney_le_Cl=E9ment?= <vleclement@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-VGhlIFBPU0lYIG1hbnBhZ2UgZm9yIGdldHJsaW1pdCgzKSByZXF1aXJlcyBzeXMvcmVzb3VyY2Uu
-aCB0byBiZQppbmNsdWRlZC4gVGhpcyBoZWFkZXIgdXNlZCB0byBiZSBpbmNsdWRlZCBieSBzeXMv
-d2FpdC5oIGluIGdsaWJjLgpBcyBvZiBnbGliYyAyLjE2IGhvd2V2ZXIsIHRoaXMgaXMgbm90IHRo
-ZSBjYXNlIGFueW1vcmUsIHRodXMgYnJlYWtpbmcKdGhlIGNvbXBpbGF0aW9uLgoKU2lnbmVkLW9m
-Zi1ieTogVmlhbm5leSBsZSBDbMOpbWVudCBkZSBTYWludC1NYXJjcSA8dmxlY2xlbWVudEBnbWFp
-bC5jb20+Ci0tLQogYXJjaC91bS9vcy1MaW51eC9zdGFydF91cC5jIHwgMSArCiAxIGZpbGUgY2hh
-bmdlZCwgMSBpbnNlcnRpb24oKykKCmRpZmYgLS1naXQgYS9hcmNoL3VtL29zLUxpbnV4L3N0YXJ0
-X3VwLmMgYi9hcmNoL3VtL29zLUxpbnV4L3N0YXJ0X3VwLmMKaW5kZXggNDI1MTYyZS4uNjc3MDRh
-YiAxMDA2NDQKLS0tIGEvYXJjaC91bS9vcy1MaW51eC9zdGFydF91cC5jCisrKyBiL2FyY2gvdW0v
-b3MtTGludXgvc3RhcnRfdXAuYwpAQCAtMTMsNiArMTMsNyBAQAogI2luY2x1ZGUgPHNpZ25hbC5o
-PgogI2luY2x1ZGUgPHN0cmluZy5oPgogI2luY2x1ZGUgPHN5cy9tbWFuLmg+CisjaW5jbHVkZSA8
-c3lzL3Jlc291cmNlLmg+CiAjaW5jbHVkZSA8c3lzL3N0YXQuaD4KICNpbmNsdWRlIDxzeXMvd2Fp
-dC5oPgogI2luY2x1ZGUgPGFzbS91bmlzdGQuaD4KLS0gCjEuNy4xMS40CgoKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCkxpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZl
-IGV2ZW50IHdpbGwgY292ZXIgYWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJl
-YXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQu
-IERpc2N1c3Npb25zIAp3aWxsIGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1
-cml0eSBhbmQgdGhlIGxhdGVzdCBpbiBtYWx3YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2Vs
-YWNvbW0uY29tL2phdy9zZnJubDA0MjQyMDEyLzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1h
-aWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51
-eC1kZXZlbAo=
+On Thu, Aug 2, 2012 at 8:53 AM, Vianney le Cl=E9ment <vleclement@gmail.com>=
+ wrote:
+> On Thu, Aug 2, 2012 at 12:51 AM, Richard Weinberger
+> <richard@sigma-star.at> wrote:
+>> On 31.07.2012 10:28, Vianney le Cl=E9ment de Saint-Marcq wrote:
+>>>
+>>> From: Vianney le Cl=E9ment de Saint-Marcq <vleclement@gmail.com>
+>>>
+>>> As of glibc 2.16, sys/wait.h does no longer include sys/resource.h,
+>>> which is needed for getrlimit(). This patch fixes compiling UML with
+>>> glibc 2.16.
+>>>
+>>> Signed-off-by: Vianney le Cl=E9ment de Saint-Marcq <vleclement@gmail.co=
+m>
+>>
+>>
+>> Sorry, I cannot apply this patch.
+>> It's base64 encoded.
+>>
+>> Can you please send it using git?
+>
+> Weird, I used heirloom-mailx to try to avoid such problems. I'll try
+> to resend the patch using git and another smtp server.
+
+As it's a trivial patch you can also send it s attachment.
+(If nothing else works)
+
+-- =
+
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
+---
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and =
+
+threat landscape has changed and how IT managers can respond. Discussions =
+
+will include endpoint security, mobile security and the latest in malware =
+
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
