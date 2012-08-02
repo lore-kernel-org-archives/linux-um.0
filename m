@@ -1,28 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vleclement@gmail.com>) id 1SxIIK-0001Cx-CL
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vleclement@gmail.com>) id 1Swq8k-000130-G9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Aug 2012 13:52:00 +0000
-Received: from mail-gh0-f175.google.com ([209.85.160.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SxIIG-0005Hu-PC
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Aug 2012 13:52:00 +0000
-Received: by ghbz2 with SMTP id z2so821941ghb.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 03 Aug 2012 06:51:51 -0700 (PDT)
+	Thu, 02 Aug 2012 07:48:14 +0000
+Received: from smtp.sgsi.ucl.ac.be ([130.104.5.67] helo=smtp5.sgsi.ucl.ac.be)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Swq8e-0006nK-MH for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 02 Aug 2012 07:48:14 +0000
+From: =?UTF-8?q?Vianney=20le=20Cl=C3=A9ment=20de=20Saint-Marcq?=
+	<vleclement@gmail.com>
+Date: Thu,  2 Aug 2012 09:22:24 +0200
+Message-Id: <1343892144-3800-1-git-send-email-vleclement@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvwBixt9t9cy7-NBRZ=HHo143rx2CdwMB_EOY8+94_rT_A@mail.gmail.com>
-References: <50179725.9cO+m/nAt3rcNdV1%vleclement@gmail.com>
-	<5019B30B.8010306@sigma-star.at>
-	<CAMQPmcCJDkBFRLGY861fVDN2W4=71hxK2+buLcPDt938ccUupA@mail.gmail.com>
-	<CAFLxGvwBixt9t9cy7-NBRZ=HHo143rx2CdwMB_EOY8+94_rT_A@mail.gmail.com>
-From: =?ISO-8859-1?Q?Vianney_le_Cl=E9ment?= <vleclement@gmail.com>
-Date: Fri, 3 Aug 2012 15:51:30 +0200
-Message-ID: <CAMQPmcALSGx4CNyN5N62Tcu_yKgSHWergYg4CiSHB6fcb=_sPw@mail.gmail.com>
-Content-Type: multipart/mixed; boundary=14dae9340a8d79f28204c65cd431
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,31 +23,12 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] um: fix missing include with glibc 2.16
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-
---14dae9340a8d79f28204c65cd431
-Content-Type: text/plain; charset=ISO-8859-1
-
-On Thu, Aug 2, 2012 at 9:42 AM, richard -rw- weinberger
-<richard.weinberger@gmail.com> wrote:
-> As it's a trivial patch you can also send it s attachment.
-> (If nothing else works)
-
-Hi Richard,
-
-Did you receive the patch sent by git? In any case, I have attached it
-to this mail.
-
-Vianney
-
---14dae9340a8d79f28204c65cd431
-Content-Type: application/octet-stream; name="glibc2.16.patch"
-Content-Disposition: attachment; filename="glibc2.16.patch"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_h5fbyz8i0
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH] um: fix missing include with glibc 2.16
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: =?UTF-8?q?Vianney=20le=20Cl=C3=A9ment=20de=20Saint-Marcq?= <vleclement@gmail.com>
 
 VGhlIFBPU0lYIG1hbnBhZ2UgZm9yIGdldHJsaW1pdCgzKSByZXF1aXJlcyBzeXMvcmVzb3VyY2Uu
 aCB0byBiZQppbmNsdWRlZC4gVGhpcyBoZWFkZXIgdXNlZCB0byBiZSBpbmNsdWRlZCBieSBzeXMv
@@ -70,30 +42,16 @@ YiAxMDA2NDQKLS0tIGEvYXJjaC91bS9vcy1MaW51eC9zdGFydF91cC5jCisrKyBiL2FyY2gvdW0v
 b3MtTGludXgvc3RhcnRfdXAuYwpAQCAtMTMsNiArMTMsNyBAQAogI2luY2x1ZGUgPHNpZ25hbC5o
 PgogI2luY2x1ZGUgPHN0cmluZy5oPgogI2luY2x1ZGUgPHN5cy9tbWFuLmg+CisjaW5jbHVkZSA8
 c3lzL3Jlc291cmNlLmg+CiAjaW5jbHVkZSA8c3lzL3N0YXQuaD4KICNpbmNsdWRlIDxzeXMvd2Fp
-dC5oPgogI2luY2x1ZGUgPGFzbS91bmlzdGQuaD4KLS0gCjEuNy4xMS40Cg==
---14dae9340a8d79f28204c65cd431
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---14dae9340a8d79f28204c65cd431
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---14dae9340a8d79f28204c65cd431--
-
+dC5oPgogI2luY2x1ZGUgPGFzbS91bmlzdGQuaD4KLS0gCjEuNy4xMS40CgoKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCkxpdmUgU2VjdXJpdHkgVmlydHVhbCBDb25mZXJlbmNlCkV4Y2x1c2l2ZSBsaXZl
+IGV2ZW50IHdpbGwgY292ZXIgYWxsIHRoZSB3YXlzIHRvZGF5J3Mgc2VjdXJpdHkgYW5kIAp0aHJl
+YXQgbGFuZHNjYXBlIGhhcyBjaGFuZ2VkIGFuZCBob3cgSVQgbWFuYWdlcnMgY2FuIHJlc3BvbmQu
+IERpc2N1c3Npb25zIAp3aWxsIGluY2x1ZGUgZW5kcG9pbnQgc2VjdXJpdHksIG1vYmlsZSBzZWN1
+cml0eSBhbmQgdGhlIGxhdGVzdCBpbiBtYWx3YXJlIAp0aHJlYXRzLiBodHRwOi8vd3d3LmFjY2Vs
+YWNvbW0uY29tL2phdy9zZnJubDA0MjQyMDEyLzExNC81MDEyMjI2My8KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1h
+aWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51
+eC1kZXZlbAo=
 
