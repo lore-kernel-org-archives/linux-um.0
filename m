@@ -1,87 +1,108 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <5019B93E.4080006@nod.at>
-Date: Thu, 02 Aug 2012 01:18:22 +0200
-From: Richard Weinberger <richard@nod.at>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <renzo@cs.unibo.it>) id 1SyQi6-0005xj-Fv
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Aug 2012 17:03:18 +0000
+Received: from leb.cs.unibo.it ([130.136.1.102])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1SyQi4-0001eU-5L
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 06 Aug 2012 17:03:18 +0000
+Date: Mon, 6 Aug 2012 19:03:10 +0200
+From: Renzo Davoli <renzo@cs.unibo.it>
+Message-ID: <20120806170309.GD25078@cs.unibo.it>
+References: <20120806153728.GC25078@cs.unibo.it> <501FEB4A.3060909@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [GIT PULL] UML fixes for 3.6-rc1
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, toralf.foerster@gmx.de
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <501FEB4A.3060909@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] [patch] 3.6rc1 tracehook
+To: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Linus,
+On Mon, Aug 06, 2012 at 06:05:30PM +0200, Richard Weinberger wrote:
+> Hmm, is it a good idea to call syscall_trace_leave() in any case?
+> E.g. if syscall_trace_enter() fails for whatever reason...
 
-The following changes since commit 28a33cbc24e4256c143dce96c7d93bf42322=
-9f92:
+I have replicated the behavior of other architectures.
+For example in x86/32 a.k.a. i386:
+arch/x86/kernel/entry_32.S:
 
-   Linux 3.5 (2012-07-21 13:58:29 -0700)
+ 489 ENTRY(system_call)
+ 490   RING0_INT_FRAME     # can't unwind into user space anyway
+ 491   pushl_cfi %eax      # save orig_eax
+ 492   SAVE_ALL
+ 493   GET_THREAD_INFO(%ebp)
+ 494           # system call tracing in operation / emulation
+ 495   testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%ebp)
+ 496   jnz syscall_trace_entry
+ 497   cmpl $(NR_syscalls), %eax
+ 498   jae syscall_badsys
+ 499 syscall_call:
+ 500   call *sys_call_table(,%eax,4)
+ 501   movl %eax,PT_EAX(%esp)    # store the return value
+ 502 syscall_exit:
+ 503   LOCKDEP_SYS_EXIT
+ 504   DISABLE_INTERRUPTS(CLBR_ANY)  # make sure we don't miss an interrupt
+ 505           # setting need_resched or sigpending
+ 506           # between sampling and the iret
+ 507   TRACE_IRQS_OFF
+ 508   movl TI_flags(%ebp), %ecx
+ 509   testl $_TIF_ALLWORK_MASK, %ecx  # current->work
+ 510   jne syscall_exit_work
+....
+ 647 syscall_trace_entry:
+ 648   movl $-ENOSYS,PT_EAX(%esp)
+ 649   movl %esp, %eax
+ 650   call syscall_trace_enter
+ 651   /* What it returned is what we'll actually use.  */
+ 652   cmpl $(NR_syscalls), %eax
+ 653   jnae syscall_call
+ 654   jmp syscall_exit
+ 655 END(syscall_trace_entry)
+....
+ 659 syscall_exit_work:
+ 660   testl $_TIF_WORK_SYSCALL_EXIT, %ecx
+ 661   jz work_pending
+ 662   TRACE_IRQS_ON
+ 663   ENABLE_INTERRUPTS(CLBR_ANY) # could let syscall_trace_leave() call
+ 664           # schedule() instead
+ 665   movl %esp, %eax
+ 666   call syscall_trace_leave
+ 667   jmp resume_userspace
 
-are available in the git repository at:
-   git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-3=
-=2E6-rc1
+as you can see:
+if the process is traced line 496 jumps to syscall_trace_entry:
+if syscall_trace_entry returns nonzero (line 652-654) jumps to syscall_exit (skipping the 
+system call) otherwise returns to syscall_call.
+whatever is the return value of syscall_trace_enter, if the process is traced 
+(line 510: it jumps to syscall_exit_work) and then it will call syscall_trace_leave.
 
----
-This patch set contains mostly fixes and cleanups.
-The UML tty driver uses now tty_port and is no longer broken
-like hell. :-)
----
+So I think we must replicate the same beavior for user-mode linux, too.
 
-Al Viro (3):
-       um: switch UPT_SET_RETURN_VALUE and regs_return_value to pt_regs
-       um: split syscall_trace(), pass pt_regs to it
-       um: pull interrupt_end() into userspace()
+	renzo
 
-Jiri Slaby (2):
-       TTY: um/line, add tty_port
-       TTY: um/line, use tty from tty_port
-
-Martin P=E4rtel (2):
-       um: fix ubd_file_size for read-only files
-       um: pass siginfo to guest process
-
-Richard Weinberger (6):
-       um: remove line_ioctl()
-       um: Remove dead code
-       um: fully use tty_port
-       um: remove count_lock
-       um: set BLK_CGROUP=3Dy in defconfig
-       um: Add arch/x86/um to MAINTAINERS
-
-  MAINTAINERS                          |    1 +
-  arch/um/defconfig                    |    2 +-
-  arch/um/drivers/chan_kern.c          |    4 +-
-  arch/um/drivers/line.c               |  218 ++++++++++---------------=
----------
-  arch/um/drivers/line.h               |   12 +-
-  arch/um/drivers/ssl.c                |   42 +------
-  arch/um/drivers/stdio_console.c      |   21 ++--
-  arch/um/drivers/ubd_kern.c           |    2 +-
-  arch/um/include/asm/ptrace-generic.h |    2 +
-  arch/um/include/shared/as-layout.h   |    3 +-
-  arch/um/include/shared/irq_user.h    |    3 +-
-  arch/um/include/shared/kern_util.h   |   13 +-
-  arch/um/kernel/irq.c                 |    2 +-
-  arch/um/kernel/process.c             |   13 +--
-  arch/um/kernel/ptrace.c              |   71 +++++-------
-  arch/um/kernel/skas/syscall.c        |    6 +-
-  arch/um/kernel/time.c                |    2 +-
-  arch/um/kernel/trap.c                |   39 +++++-
-  arch/um/os-Linux/internal.h          |    2 +-
-  arch/um/os-Linux/signal.c            |   26 +++--
-  arch/um/os-Linux/skas/process.c      |   16 ++-
-  arch/um/os-Linux/time.c              |    2 +-
-  arch/x86/um/asm/ptrace.h             |    6 +-
-  23 files changed, 206 insertions(+), 302 deletions(-)
-
-Thanks,
-//richard
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+------------------------------------------------------------------------------
+Live Security Virtual Conference
+Exclusive live event will cover all the ways today's security and 
+threat landscape has changed and how IT managers can respond. Discussions 
+will include endpoint security, mobile security and the latest in malware 
+threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
