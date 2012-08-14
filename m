@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <dhowells@redhat.com>) id 1T1IqM-0002dn-57
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <dhowells@redhat.com>) id 1T1IkE-0005oK-7V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Aug 2012 15:15:42 +0000
+	Tue, 14 Aug 2012 15:09:22 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1T1IqL-0005jT-F6 for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 14 Aug 2012 15:15:42 +0000
+	id 1T1IkC-0005My-GX for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 14 Aug 2012 15:09:22 +0000
 From: David Howells <dhowells@redhat.com>
-In-Reply-To: <502A69FA.8040805@nod.at>
-References: <502A69FA.8040805@nod.at> <502A6759.3090802@nod.at>
+In-Reply-To: <18933.1344956788@warthog.procyon.org.uk>
+References: <18933.1344956788@warthog.procyon.org.uk> <502A6759.3090802@nod.at>
 	<15981.1344955883@warthog.procyon.org.uk>
 	<502A613F.1090600@nod.at> <87a9xys53h.fsf@rustcorp.com.au>
 	<20120726150419.0de645e8750e3a15fa0f1aaa@canb.auug.org.au>
 	<50115FCF.4060708@xenotime.net> <502932A0.3060001@xenotime.net>
 	<15532.1344954413@warthog.procyon.org.uk>
 	<18600.1344956051@warthog.procyon.org.uk>
-	<18933.1344956788@warthog.procyon.org.uk>
-Date: Tue, 14 Aug 2012 16:15:28 +0100
-Message-ID: <30102.1344957328@warthog.procyon.org.uk>
+Date: Tue, 14 Aug 2012 16:09:08 +0100
+Message-ID: <19002.1344956948@warthog.procyon.org.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,27 +37,15 @@ Subject: Re: [uml-devel] linux-next: Tree for July 26 (uml)
 To: Richard Weinberger <richard@nod.at>
 Cc: Stephen Rothwell <sfr@canb.auug.org.au>, user-mode-linux-devel@lists.sourceforge.net, Rusty Russell <rusty@rustcorp.com.au>, LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com, Randy Dunlap <rdunlap@xenotime.net>, linux-next@vger.kernel.org
 
+David Howells <dhowells@redhat.com> wrote:
 
-How about this then?
+> > I think arch/x86/um/Kconfig makes more sense.
+> ...
+> It doesn't exist.  Should I create it?
+
+Bah.  Helps if I read your message more closely.
 
 David
----
-diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
-index 9926e11..a4b0c10 100644
---- a/arch/x86/um/Kconfig
-+++ b/arch/x86/um/Kconfig
-@@ -21,9 +21,11 @@ config 64BIT
- config X86_32
- 	def_bool !64BIT
- 	select HAVE_AOUT
-+	select MODULES_USE_ELF_REL
- 
- config X86_64
- 	def_bool 64BIT
-+	select MODULES_USE_ELF_RELA
- 
- config RWSEM_XCHGADD_ALGORITHM
- 	def_bool X86_XADD && 64BIT
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
