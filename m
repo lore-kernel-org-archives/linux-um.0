@@ -1,25 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <martin.partel@gmail.com>) id 1T3Y85-0006Y2-4R
+	(envelope-from <sage@inktank.com>) id 1T3VAQ-0006cx-Mv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Aug 2012 19:59:17 +0000
-Received: from mail-lpp01m010-f47.google.com ([209.85.215.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1T3Y7z-0004WP-Kn
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Aug 2012 19:59:17 +0000
-Received: by lagv3 with SMTP id v3so3565200lag.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 20 Aug 2012 12:59:05 -0700 (PDT)
-Message-ID: <50329707.1000900@gmail.com>
-Date: Mon, 20 Aug 2012 22:59:03 +0300
-From: =?ISO-8859-1?Q?Martin_P=E4rtel?= <martin.partel@gmail.com>
+	Mon, 20 Aug 2012 16:49:30 +0000
+Received: from cobra.newdream.net ([66.33.216.30])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1T3VAP-000868-Io for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Aug 2012 16:49:30 +0000
+Date: Mon, 20 Aug 2012 09:49:23 -0700 (PDT)
+From: Sage Weil <sage@inktank.com>
+Message-ID: <alpine.DEB.2.00.1208200947470.9242@cobra.newdream.net>
 MIME-Version: 1.0
-References: <alpine.DEB.2.00.1208200947470.9242@cobra.newdream.net>
-	<50326B64.7020904@nod.at>
-In-Reply-To: <50326B64.7020904@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,48 +25,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] build error on 3.6-rc1 and later
-To: Richard Weinberger <richard@nod.at>
-Cc: jdike@addtoit.com, Sage Weil <sage@inktank.com>, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] build error on 3.6-rc1 and later
+To: jdike@addtoit.com, richard@nod.at, user-mode-linux-devel@lists.sourceforge.net
 
-Darn, sorry! I should have tried to compile under different 
-configurations. Adding the NULL is the correct fix.
+I'm getting
 
-On 08/20/2012 07:52 PM, Richard Weinberger wrote:
-> Am 20.08.2012 18:49, schrieb Sage Weil:
->> I'm getting
->>
->> arch/um/os-Linux/time.c: In function 'deliver_alarm':
->> arch/um/os-Linux/time.c:117:3: error: too few arguments to function 'alarm_handler'
->> In file included from arch/um/os-Linux/time.c:13:0:
->> arch/um/os-Linux/internal.h:1:6: note: declared here
->>
->> on 3.6-rc1 and later.  FWIW I blindly added an extra NULL argument and it
->> seems to behave:
->>
->> diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
->> index f602385..0748fe0 100644
->> --- a/arch/um/os-Linux/time.c
->> +++ b/arch/um/os-Linux/time.c
->> @@ -114,7 +114,7 @@ static void deliver_alarm(void)
->>          skew += this_tick - last_tick;
->>
->>          while (skew >= one_tick) {
->> -               alarm_handler(SIGVTALRM, NULL);
->> +               alarm_handler(SIGVTALRM, NULL, NULL);
->>                  skew -= one_tick;
->>          }
->>
->
-> Martin,
->
-> looks like you've introduced this regression.
-> Can you please have a look?
->
-> Thanks,
-> //richard
->
+arch/um/os-Linux/time.c: In function 'deliver_alarm':
+arch/um/os-Linux/time.c:117:3: error: too few arguments to function 'alarm_handler'
+In file included from arch/um/os-Linux/time.c:13:0:
+arch/um/os-Linux/internal.h:1:6: note: declared here
 
+on 3.6-rc1 and later.  FWIW I blindly added an extra NULL argument and it 
+seems to behave:
+
+diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
+index f602385..0748fe0 100644
+--- a/arch/um/os-Linux/time.c
++++ b/arch/um/os-Linux/time.c
+@@ -114,7 +114,7 @@ static void deliver_alarm(void)
+        skew += this_tick - last_tick;
+ 
+        while (skew >= one_tick) {
+-               alarm_handler(SIGVTALRM, NULL);
++               alarm_handler(SIGVTALRM, NULL, NULL);
+                skew -= one_tick;
+        }
+ 
+sage
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
