@@ -1,8 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <martin.partel@gmail.com>) id 1T3Y85-0006Y2-4R
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Aug 2012 19:59:17 +0000
+Received: from mail-lpp01m010-f47.google.com ([209.85.215.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1T3Y7z-0004WP-Kn
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 20 Aug 2012 19:59:17 +0000
+Received: by lagv3 with SMTP id v3so3565200lag.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 20 Aug 2012 12:59:05 -0700 (PDT)
+Message-ID: <50329707.1000900@gmail.com>
+Date: Mon, 20 Aug 2012 22:59:03 +0300
+From: =?ISO-8859-1?Q?Martin_P=E4rtel?= <martin.partel@gmail.com>
 MIME-Version: 1.0
-Date: Fri, 24 Aug 2012 19:19:02 +0300
-Message-ID: <CAKiyQA_DFqAKWF2_wU52WURf5+8NkQecE4dqQLtn4VMcFT0G9w@mail.gmail.com>
-From: Dragos Diaconescu <diaconescud@gmail.com>
+References: <alpine.DEB.2.00.1208200947470.9242@cobra.newdream.net>
+	<50326B64.7020904@nod.at>
+In-Reply-To: <50326B64.7020904@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -12,78 +29,51 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2068204636006600278=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] SMP on UML
-To: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
-
---===============2068204636006600278==
-Content-Type: multipart/alternative; boundary=000e0ce005fe855dad04c80555b8
-
---000e0ce005fe855dad04c80555b8
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-I try to compile the UML, from a linux kernel(make ARCH=3Dum SUBARCH=3Di386=
-)
-and I have configured it to use SMP (make config). I am getting the
-following error:
-
-  CHK     include/generated/utsrelease.h
-  CC      arch/um/kernel/asm-offsets.s
-In file included from include/linux/sched.h:77:0,
-                 from
-/home/dragos/work/linux-3.5.2/arch/x86/um/shared/sysdep/kernel-offsets.h:2,
-                 from arch/um/kernel/asm-offsets.c:1:
-include/linux/topology.h: In function =91numa_node_id=92:
-include/linux/topology.h:217:9: error: =91current_thread=92 undeclared (fir=
-st
-use in this function)
-include/linux/topology.h:217:9: note: each undeclared identifier is
-reported only once for each function it appears in
-include/linux/topology.h:217:9: warning: left-hand operand of comma
-expression has no effect [-Wunused-value]
-make[1]: *** [arch/um/kernel/asm-offsets.s] Error 1
-
-Do you have any ideas?
-
-Thanks,
-
-Dragos
-
---000e0ce005fe855dad04c80555b8
-Content-Type: text/html; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-Hello,<br><br>I try to compile the UML, from a linux kernel(make ARCH=3Dum =
-SUBARCH=3Di386) <br>and I have configured it to use SMP (make config). I am=
- getting the following error:<br><br>=A0 CHK=A0=A0=A0=A0 include/generated/=
-utsrelease.h<br>
-=A0 CC=A0=A0=A0=A0=A0 arch/um/kernel/asm-offsets.s<br>In file included from=
- include/linux/sched.h:77:0,<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0 from /home/dragos/work/linux-3.5.2/arch/x86/um/shared/sysdep/kernel-=
-offsets.h:2,<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 from arch/=
-um/kernel/asm-offsets.c:1:<br>
-include/linux/topology.h: In function =91numa_node_id=92:<br>include/linux/=
-topology.h:217:9: error: =91current_thread=92 undeclared (first use in this=
- function)<br>include/linux/topology.h:217:9: note: each undeclared identif=
-ier is reported only once for each function it appears in<br>
-include/linux/topology.h:217:9: warning: left-hand operand of comma express=
-ion has no effect [-Wunused-value]<br>make[1]: *** [arch/um/kernel/asm-offs=
-ets.s] Error 1<br><br>Do you have any ideas?<br><br>Thanks,<br><br>Dragos<b=
-r>
-<br>
-
---000e0ce005fe855dad04c80555b8--
-
-
---===============2068204636006600278==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] build error on 3.6-rc1 and later
+To: Richard Weinberger <richard@nod.at>
+Cc: jdike@addtoit.com, Sage Weil <sage@inktank.com>, user-mode-linux-devel@lists.sourceforge.net
+
+Darn, sorry! I should have tried to compile under different 
+configurations. Adding the NULL is the correct fix.
+
+On 08/20/2012 07:52 PM, Richard Weinberger wrote:
+> Am 20.08.2012 18:49, schrieb Sage Weil:
+>> I'm getting
+>>
+>> arch/um/os-Linux/time.c: In function 'deliver_alarm':
+>> arch/um/os-Linux/time.c:117:3: error: too few arguments to function 'alarm_handler'
+>> In file included from arch/um/os-Linux/time.c:13:0:
+>> arch/um/os-Linux/internal.h:1:6: note: declared here
+>>
+>> on 3.6-rc1 and later.  FWIW I blindly added an extra NULL argument and it
+>> seems to behave:
+>>
+>> diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
+>> index f602385..0748fe0 100644
+>> --- a/arch/um/os-Linux/time.c
+>> +++ b/arch/um/os-Linux/time.c
+>> @@ -114,7 +114,7 @@ static void deliver_alarm(void)
+>>          skew += this_tick - last_tick;
+>>
+>>          while (skew >= one_tick) {
+>> -               alarm_handler(SIGVTALRM, NULL);
+>> +               alarm_handler(SIGVTALRM, NULL, NULL);
+>>                  skew -= one_tick;
+>>          }
+>>
+>
+> Martin,
+>
+> looks like you've introduced this regression.
+> Can you please have a look?
+>
+> Thanks,
+> //richard
+>
+
 
 ------------------------------------------------------------------------------
 Live Security Virtual Conference
@@ -91,17 +81,8 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---===============2068204636006600278==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============2068204636006600278==--
-
 
