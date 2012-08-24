@@ -1,24 +1,13 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1SxnFN-0000eb-Db
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 04 Aug 2012 22:55:01 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1SxnFM-0002ud-EZ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 04 Aug 2012 22:55:01 +0000
-Received: by mail-ob0-f175.google.com with SMTP id 16so4633obc.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 04 Aug 2012 15:55:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvzOZuS2xDkMxeV=ZEwfvdFgtXLC9xE2y9ao8gL+J2AGHA@mail.gmail.com>
-References: <CAHj3AVm=xxKnBNKqCXnra7V6b=b4k+LK+mpdKPG326S_=fKGvA@mail.gmail.com>
-	<CAFLxGvzOZuS2xDkMxeV=ZEwfvdFgtXLC9xE2y9ao8gL+J2AGHA@mail.gmail.com>
-Date: Sun, 5 Aug 2012 00:54:59 +0200
-Message-ID: <CAFLxGvwRof87o-nCv9YusYXD08fPoLtQ8g1mJZ7T9ckydBAZ=Q@mail.gmail.com>
+In-Reply-To: <CAKiyQA8syfUucN2YKo7vTS=M8T0wipnmdEGq0KDGhhj-oEWKfg@mail.gmail.com>
+References: <CAKiyQA_p+wCCYEmsrau7X=V8mtcY1+MdpDX9RZz8PLB0sQHKuA@mail.gmail.com>
+	<CAFLxGvymOuLznwat+4VdWPZJX4bJ=EecJwEezd_DgoRkm3FBTA@mail.gmail.com>
+	<CAKiyQA_Lfiv8ex3+nRn+U386HPsgjo_iYB24kixDAwt7Qeuqng@mail.gmail.com>
+	<CAFLxGvzmyfzG-fx9BMzfO1gFjBjMnP0eJeGJN_B_Zj=EMe7r8Q@mail.gmail.com>
+	<CAKiyQA8syfUucN2YKo7vTS=M8T0wipnmdEGq0KDGhhj-oEWKfg@mail.gmail.com>
+Date: Fri, 24 Aug 2012 17:46:17 +0200
+Message-ID: <CAFLxGvxXQuw4VVoQ5hQX7V2MA7jxgNJYZs9nE-nRCy6JTxgYDw@mail.gmail.com>
 From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -32,30 +21,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Bring up UML PowerPC port
-To: Denis Kirjanov <kirjanov@gmail.com>
-Cc: viro@zeniv.linux.org.uk, user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] [uml-user] TSC register
+To: Dragos Diaconescu <diaconescud@gmail.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 
-On Fri, Jul 6, 2012 at 4:19 PM, richard -rw- weinberger
-<richard.weinberger@gmail.com> wrote:
-> Hi!
->
-> On Fri, Jul 6, 2012 at 2:45 PM, Denis Kirjanov <kirjanov@gmail.com> wrote:
->> So I want to bring up powerpc port which has never been in working
->> state. I've created git tree on github:
->> https://github.com/dkirjanov/uml-powerpc
->
-> Awesome!
-> What do you have so far?
-> The tree on github seems to be only clone from Linus' tree.
-> Please send patches are early as possible.
-> I have access to various PPC systems and can help/test.
->
-> Are you targeting PPC32 or 64 or both?
-> Also please coordinate yourself with Al, AFAIK he did already some UML/PPC work.
->
+On Fri, Aug 24, 2012 at 5:09 PM, Dragos Diaconescu
+<diaconescud@gmail.com> wrote:
+> Can you please
+>   give me some directions? Shall I implement in the same manner as is
+> implemented in
+>   /arch/x86/lib/delay.c . What are the big differences between this
+> implementation and in an implementation
+>   for UML?
 
-ping?
+If you are lucky you can copy&paste it. :-)
 
 -- 
 Thanks,
