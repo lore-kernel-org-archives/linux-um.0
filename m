@@ -1,138 +1,43 @@
-Return-Path: <geert@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 16 Aug 2012 20:15:05 +0200
-Message-Id: <1345140905-10209-1-git-send-email-geert@linux-m68k.org>
-Subject: [PATCH/RFC] um: Preinclude include/linux/kern_levels.h
-To: Richard Weinberger <richard@nod.at>, Joe Perches <joe@perches.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <5040AAAE.30501@gmail.com>
+References: <5040AAAE.30501@gmail.com>
+Date: Fri, 31 Aug 2012 14:27:09 +0200
+Message-ID: <CAFLxGvxh962CZxgF86nL2ULsy-a2BRXFszDHceeSsZm0DTJgfg@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: 3.6rc-3 doesn't compile um arch
+To: Marco Stornelli <marco.stornelli@gmail.com>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, torvalds@linux-foundation.org, Linux Kernel <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, martin.partel@gmail.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The userspace part of UML uses the asm-offsets.h generator mechanism to
-create definitions for UM_KERN_<LEVEL> that match the in-kernel
-KERN_<LEVEL> constant definitions.
+On Fri, Aug 31, 2012 at 2:14 PM, Marco Stornelli
+<marco.stornelli@gmail.com> wrote:
+> Hi,
+>
+> I'm trying to compile the latest kernel for arch um, using the latest
+> Linus's tree, but it doesn't compile due to the commit:
+>
+> um: pass siginfo to the guest process.
+>
+> I think the fix is trivial. At line 117 of os-Linux/time.c you find
+> this line:
+>
+>   alarm_handler(SIGVTALRM, NULL);
+>
+> but it should be:
+>
+>   alarm_handler(SIGVTALRM, NULL, NULL);
+>
+> Is it already fixed?
 
-As of commit 04d2c8c83d0e3ac5f78aeede51babb3236200112 ("printk: convert
-the format for KERN_<LEVEL> to a 2 byte pattern"), KERN_<LEVEL> is no
-longer expanded to the literal '"<LEVEL>"', but to '"\001" "LEVEL"', i.e.
-it contains two parts.
+It's known but nobody cared to send a fix for that.
+Who wants the credit?
 
-However, the combo of DEFINE_STR() in
-arch/x86/um/shared/sysdep/kernel-offsets.h and sed-y in Kbuild doesn't
-support string literals consisting of multiple parts. Hence for all
-UM_KERN_<LEVEL> definitions, only the SOH character is retained in the actual
-definition, while the remainder ends up in the comment. E.g. in
-include/generated/asm-offsets.h we get
+Otherwise I'll fix it in -rc4 or 5.
+(Currently I'm on holiday...)
 
-    #define UM_KERN_INFO "\001" /* "6" KERN_INFO */
-
-instead of
-
-    #define UM_KERN_INFO "\001" "6" /* KERN_INFO */
-
-This causes spurious '^A' output in some kernel messages:
-
-    Calibrating delay loop... 4640.76 BogoMIPS (lpj=23203840)
-    pid_max: default: 32768 minimum: 301
-    Mount-cache hash table entries: 256
-    ^AChecking that host ptys support output SIGIO...Yes
-    ^AChecking that host ptys support SIGIO on close...No, enabling workaround
-    ^AUsing 2.6 host AIO
-    NET: Registered protocol family 16
-    bio: create slab <bio-0> at 0
-    Switching to clocksource itimer
-
-To fix this:
-  - Move the mapping from UM_KERN_<LEVEL> to KERN_<LEVEL> from
-    arch/um/include/shared/common-offsets.h to
-    arch/um/include/shared/user.h, which is preincluded for all userspace
-    parts,
-  - Preinclude include/linux/kern_levels.h for all userspace parts, to
-    obtain the in-kernel KERN_<LEVEL> constant definitions. This doesn't
-    violate the kernel/userspace separation, as include/linux/kern_levels.h
-    is self-contained and doesn't expose any other kernel internals.
-  - Remove the now unused STR() and DEFINE_STR() macros.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-We may convert all UM_KERN_* users to KERN_* and drop the extra defines?
----
- arch/um/include/shared/common-offsets.h    |   10 ----------
- arch/um/include/shared/user.h              |   11 +++++++++++
- arch/um/scripts/Makefile.rules             |    2 +-
- arch/x86/um/shared/sysdep/kernel-offsets.h |    3 ---
- 4 files changed, 12 insertions(+), 14 deletions(-)
-
-diff --git a/arch/um/include/shared/common-offsets.h b/arch/um/include/shared/common-offsets.h
-index 40db8f7..2df313b 100644
---- a/arch/um/include/shared/common-offsets.h
-+++ b/arch/um/include/shared/common-offsets.h
-@@ -7,16 +7,6 @@ DEFINE(UM_KERN_PAGE_MASK, PAGE_MASK);
- DEFINE(UM_KERN_PAGE_SHIFT, PAGE_SHIFT);
- DEFINE(UM_NSEC_PER_SEC, NSEC_PER_SEC);
- 
--DEFINE_STR(UM_KERN_EMERG, KERN_EMERG);
--DEFINE_STR(UM_KERN_ALERT, KERN_ALERT);
--DEFINE_STR(UM_KERN_CRIT, KERN_CRIT);
--DEFINE_STR(UM_KERN_ERR, KERN_ERR);
--DEFINE_STR(UM_KERN_WARNING, KERN_WARNING);
--DEFINE_STR(UM_KERN_NOTICE, KERN_NOTICE);
--DEFINE_STR(UM_KERN_INFO, KERN_INFO);
--DEFINE_STR(UM_KERN_DEBUG, KERN_DEBUG);
--DEFINE_STR(UM_KERN_CONT, KERN_CONT);
--
- DEFINE(UM_ELF_CLASS, ELF_CLASS);
- DEFINE(UM_ELFCLASS32, ELFCLASS32);
- DEFINE(UM_ELFCLASS64, ELFCLASS64);
-diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
-index 4fa82c0..cef0685 100644
---- a/arch/um/include/shared/user.h
-+++ b/arch/um/include/shared/user.h
-@@ -26,6 +26,17 @@
- extern void panic(const char *fmt, ...)
- 	__attribute__ ((format (printf, 1, 2)));
- 
-+/* Requires preincluding include/linux/kern_levels.h */
-+#define UM_KERN_EMERG	KERN_EMERG
-+#define UM_KERN_ALERT	KERN_ALERT
-+#define UM_KERN_CRIT	KERN_CRIT
-+#define UM_KERN_ERR	KERN_ERR
-+#define UM_KERN_WARNING	KERN_WARNING
-+#define UM_KERN_NOTICE	KERN_NOTICE
-+#define UM_KERN_INFO	KERN_INFO
-+#define UM_KERN_DEBUG	KERN_DEBUG
-+#define UM_KERN_CONT	KERN_CONT
-+
- #ifdef UML_CONFIG_PRINTK
- extern int printk(const char *fmt, ...)
- 	__attribute__ ((format (printf, 1, 2)));
-diff --git a/arch/um/scripts/Makefile.rules b/arch/um/scripts/Makefile.rules
-index d50270d..15889df 100644
---- a/arch/um/scripts/Makefile.rules
-+++ b/arch/um/scripts/Makefile.rules
-@@ -8,7 +8,7 @@ USER_OBJS += $(filter %_user.o,$(obj-y) $(obj-m)  $(USER_SINGLE_OBJS))
- USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
- 
- $(USER_OBJS:.o=.%): \
--	c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) -include user.h $(CFLAGS_$(basetarget).o)
-+	c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) -include $(srctree)/include/linux/kern_levels.h -include user.h $(CFLAGS_$(basetarget).o)
- 
- # These are like USER_OBJS but filter USER_CFLAGS through unprofile instead of
- # using it directly.
-diff --git a/arch/x86/um/shared/sysdep/kernel-offsets.h b/arch/x86/um/shared/sysdep/kernel-offsets.h
-index 5868526..46a9df9 100644
---- a/arch/x86/um/shared/sysdep/kernel-offsets.h
-+++ b/arch/x86/um/shared/sysdep/kernel-offsets.h
-@@ -7,9 +7,6 @@
- #define DEFINE(sym, val) \
- 	asm volatile("\n->" #sym " %0 " #val : : "i" (val))
- 
--#define STR(x) #x
--#define DEFINE_STR(sym, val) asm volatile("\n->" #sym " " STR(val) " " #val: : )
--
- #define BLANK() asm volatile("\n->" : : )
- 
- #define OFFSET(sym, str, mem) \
 -- 
-1.7.0.4
-
-
+Thanks,
+//richard
