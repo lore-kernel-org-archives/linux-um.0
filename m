@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <PeterHuewe@gmx.de>) id 1TAVwj-0003uT-VS
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1T8W9D-0002E9-OJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Sep 2012 01:04:21 +0000
-Received: from mailout-de.gmx.net ([213.165.64.23])
-	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1TAVwi-0001LA-Ko for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Sep 2012 01:04:21 +0000
-From: Peter =?iso-8859-15?q?H=FCwe?= <PeterHuewe@gmx.de>
-Date: Sun, 9 Sep 2012 03:08:08 +0200
-References: <201209022245.20413.PeterHuewe@gmx.de> <5044A81B.4080209@nod.at>
-In-Reply-To: <5044A81B.4080209@nod.at>
+	Mon, 03 Sep 2012 12:52:59 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1T8W99-0003HA-DY
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 03 Sep 2012 12:52:59 +0000
+Message-ID: <5044A81B.4080209@nod.at>
+Date: Mon, 03 Sep 2012 14:52:43 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_4v+SQIxlt6eADvi"
-Message-Id: <201209090308.08766.PeterHuewe@gmx.de>
+References: <201209022245.20413.PeterHuewe@gmx.de>
+In-Reply-To: <201209022245.20413.PeterHuewe@gmx.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,142 +25,77 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============0347607080745167525=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] Emulate I2C subsystem/slaves
-To: Richard Weinberger <richard@nod.at>
+To: =?ISO-8859-1?Q?Peter_H=FCwe?= <PeterHuewe@gmx.de>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
---Boundary-00=_4v+SQIxlt6eADvi
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============0347607080745167525==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig92680F4B337C02581D2A9BEE"
 
-Hi Richard,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig92680F4B337C02581D2A9BEE
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-sorry for the late reply.
+Am 02.09.2012 22:45, schrieb Peter H=FCwe:
+> I'm curious if there have ever been any attempts to emulate i2c devices=
+ under=20
+> uml in order to facilitate driver development by using stub drivers.
 
-> > I'm curious if there have ever been any attempts to emulate i2c devices
-> > under uml in order to facilitate driver development by using stub
-> > drivers.
-> I know none.
+I know none.
 
-> If there is a use case, why not. :-)
-Thanks for your encouraging words ;)
+> If there weren't any attemps yet, what to you thing would be the best s=
+trategy =20
+> to achieve this goal?
+> Are there any good starting points?=20
+> The main thing I'm lacking is a good idea how to register the 'stub dev=
+ices'.
 
-I had a look around and found the nice CONFIG_I2C_STUB driver,
-which is described in detail at 
-http://www.kernel.org/doc/Documentation/i2c/i2c-stub
+Look at any i2c driver. Implement the i2c driver interface and instead of=
+ directly
+writing to hardware registers write to something else.
+Same for read...
+E.g. Your i2c emulator could have a TCP back-end.
+Host<->Guest i2c pass-through is also possible.
+BTW: All this is not UML specific. Iff it makes sense for only UML we can=
 
-"""This module is a very simple fake I2C/SMBus driver.  It implements five
-types of SMBus commands: write quick, (r/w) byte, (r/w) byte data, (r/w)
-word data, and (r/w) I2C block data."""
-which more or less exactly fits my need.
+put it into arch/um/drivers/.
+Otherwise drivers/ is fine.
 
-The only thing that was missing was general support for I2C which is dependent 
-on CONFIG_HAS_IOMEM which unfortunately isn't available on UML,
-but I simply added a || UML to the Kconfig and was now able to build the I2C 
-Support, the i2c-dev module (for userspace access) and the i2c-stub driver.
+> Or is this something that is not really desired by the uml project?
 
-If I  know load the i2c_stub module I have a emulated i2c device ;)
-
-I adapted the stub driver to my needs and was now able to create my own 
-emulated i2c device and start with driver and tools development for it ;)
-
-
-I added the patch, in case you're interested.
-
-Unfortunately some I2C drivers fail to build if CONFIG_HAS_IOMEM = n, but 
-don't have that dependency in Kconfig - I simply added it to prevent them from 
-inclusion.
-
-Do you think I should try to push this mainline via the i2c subsystem?
+If there is a use case, why not. :-)
 
 Thanks,
-Peter
-
---Boundary-00=_4v+SQIxlt6eADvi
-Content-Type: text/x-patch; charset="UTF-8";
-	name="0001-i2c-Fix-Change-dependencies-to-make-I2C-available-on.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="0001-i2c-Fix-Change-dependencies-to-make-I2C-available-on.patch"
-
-=46rom 44d8ec6fa1466c226b605baae9483749ea9de200 Mon Sep 17 00:00:00 2001
-=46rom: Peter Huewe <peterhuewe@gmx.de>
-Date: Sun, 9 Sep 2012 03:03:29 +0200
-Subject: [PATCH] i2c: Fix/Change dependencies to make I2C available on UML
-
-This patch overwrites the HAS_IOMEM dependency for I2C on UML, as it is not
-really necessary to have HAS_IOMEM in order build the generic I2C part.
-
-In addition to that, every I2C modules available in UML which really
-needs HAS_IOMEM was given this dependency to its KConfig.
-
-The I2C subsystem can now be used, e.g. by the i2c-stub driver, for
-development of I2C device drivers.
-
-Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
-=2D--
- drivers/i2c/Kconfig        |    2 +-
- drivers/i2c/busses/Kconfig |    6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/i2c/Kconfig b/drivers/i2c/Kconfig
-index 5a3bb3d..03ce0cb 100644
-=2D-- a/drivers/i2c/Kconfig
-+++ b/drivers/i2c/Kconfig
-@@ -4,7 +4,7 @@
-=20
- menuconfig I2C
- 	tristate "I2C support"
-=2D	depends on HAS_IOMEM
-+	depends on HAS_IOMEM || UML
- 	select RT_MUTEXES
- 	---help---
- 	  I2C (pronounce: I-squared-C) is a slow serial bus protocol used in
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index b4aaa1b..1e61ad9 100644
-=2D-- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -498,7 +498,7 @@ config I2C_NUC900
-=20
- config I2C_OCORES
- 	tristate "OpenCores I2C Controller"
-=2D	depends on EXPERIMENTAL
-+	depends on EXPERIMENTAL && HAS_IOMEM
- 	help
- 	  If you say yes to this option, support will be included for the
- 	  OpenCores I2C controller. For details see
-@@ -525,6 +525,7 @@ config I2C_PASEMI
-=20
- config I2C_PCA_PLATFORM
- 	tristate "PCA9564/PCA9665 as platform device"
-+	depends on HAS_IOMEM
- 	select I2C_ALGOPCA
- 	default n
- 	help
-@@ -628,6 +629,7 @@ config I2C_SH_MOBILE
-=20
- config I2C_SIMTEC
- 	tristate "Simtec Generic I2C interface"
-+	depends on HAS_IOMEM
- 	select I2C_ALGOBIT
- 	help
- 	  If you say yes to this option, support will be included for
-@@ -772,7 +774,7 @@ config I2C_PARPORT_LIGHT
-=20
- config I2C_TAOS_EVM
- 	tristate "TAOS evaluation module"
-=2D	depends on EXPERIMENTAL
-+	depends on EXPERIMENTAL && HAS_IOMEM
- 	select SERIO
- 	select SERIO_SERPORT
- 	default n
-=2D-=20
-1.7.8.6
+//richard
 
 
---Boundary-00=_4v+SQIxlt6eADvi
+--------------enig92680F4B337C02581D2A9BEE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.18 (GNU/Linux)
+
+iQEcBAEBAgAGBQJQRKggAAoJEN9758yqZn9eRmAIAJvMHTuim5ry0TJgToxmJozS
+Mg03M3FAcUJ5HHQDDFLJT1nJ5bdUt0A+p4o5sK+kdY0DlsV+MuwZWd3ktBgY4nzx
+2ctxwUZT7SJPU/g4vnWptuLZEk50AcgBwxWv1gseFXYelQaSsiRQPDgbezhXzmOJ
+XNetJ7zvsk9+8PzL7rJw9MCeYquxyIcIIM3W6mlPbvOu1ag4v/V3Sy6QpRXgy0GV
+CbLhp1S/T8WRdUFasfvjC/HJ0f8mA5t9kI1QgyqeZPQk6zXCQvQXcC0M8QL0fDwY
+BMDzfgZvUt0I4KeiPyE82thJSeXsiVSaoKdPdGCspOJQjo/RkyKDkenUhIXi/y0=
+=+ZQl
+-----END PGP SIGNATURE-----
+
+--------------enig92680F4B337C02581D2A9BEE--
+
+
+--===============0347607080745167525==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -173,7 +107,7 @@ Exclusive live event will cover all the ways today's security and
 threat landscape has changed and how IT managers can respond. Discussions 
 will include endpoint security, mobile security and the latest in malware 
 threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
---Boundary-00=_4v+SQIxlt6eADvi
+--===============0347607080745167525==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -184,6 +118,6 @@ User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
---Boundary-00=_4v+SQIxlt6eADvi--
+--===============0347607080745167525==--
 
 
