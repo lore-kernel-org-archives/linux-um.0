@@ -1,62 +1,55 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Wed, 05 Sep 2012 18:38:50 +0200
+Message-ID: <87harca0h1.fsf@tucsk.pomaz.szeredi.hu>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Thu, 27 Sep 2012 22:49:11 +0200
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <a6566f1b02f315ebb5669a59b1acce21@radon2.swed.at>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [GIT PULL] UML fixes for 3.6-final
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Subject: [PATCH] uml: fix compile error in deliver_alarm()
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Martin =?utf-8?Q?P=C3=A4rtel?= <martin.partel@gmail.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The following changes since commit 
-5e19997a742c7c8203be628a7a69babc3bcf01a4:
+=46rom: Miklos Szeredi <mszeredi@suse.cz>
 
-  Merge tag 'for-linus' of 
-git://linux-c6x.org/git/projects/linux-c6x-upstreaming (2012-09-26 
-14:28:17 -0700)
+=46ix the following compile error on UML.
 
-are available in the git repository at:
+arch/um/os-Linux/time.c: In function 'deliver_alarm':
+arch/um/os-Linux/time.c:117:3: error: too few arguments to function 'al=
+arm_handler'
+arch/um/os-Linux/internal.h:1:6: note: declared here
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git 
-for-linus-3.6-rc-final
+The error was introduced by commit d3c1cfcd (um: pass siginfo to guest
+process) in 3.6-rc1.
 
-Al Viro (4):
-      um: take cleaning singlestep to start_thread()
-      um: don't leak floating point state and segment registers on 
-execve()
-      um: let signal_delivered() do SIGTRAP on singlestepping into 
-handler
-      um: kill thread->forking
+Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+CC: Martin P=C3=A4rtel <martin.partel@gmail.com>
+---
+ arch/um/os-Linux/time.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Geert Uytterhoeven (1):
-      um: Preinclude include/linux/kern_levels.h
-
-Richard Weinberger (1):
-      um: Fix IPC on um
-
- arch/um/include/asm/processor-generic.h    |    9 ---------
- arch/um/include/shared/common-offsets.h    |   10 ----------
- arch/um/include/shared/user.h              |   11 +++++++++++
- arch/um/kernel/exec.c                      |   25 
-++++++-------------------
- arch/um/kernel/process.c                   |    8 ++++----
- arch/um/kernel/signal.c                    |    6 +++++-
- arch/um/kernel/syscall.c                   |   24 
-++++++++++++------------
- arch/um/scripts/Makefile.rules             |    2 +-
- arch/x86/um/Kconfig                        |    1 +
- arch/x86/um/shared/sysdep/kernel-offsets.h |    3 ---
- arch/x86/um/shared/sysdep/syscalls.h       |    2 ++
- arch/x86/um/signal.c                       |    6 ------
- arch/x86/um/sys_call_table_32.c            |    2 +-
- arch/x86/um/syscalls_32.c                  |   27 
-+++++++--------------------
- arch/x86/um/syscalls_64.c                  |   23 
-+++--------------------
- 15 files changed, 53 insertions(+), 106 deletions(-)
+Index: linux-2.6/arch/um/os-Linux/time.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux-2.6.orig/arch/um/os-Linux/time.c	2012-09-05 17:18:27.00000000=
+0 +0200
++++ linux-2.6/arch/um/os-Linux/time.c	2012-09-05 18:34:35.000000000 +02=
+00
+@@ -114,7 +114,7 @@ static void deliver_alarm(void)
+ 	skew +=3D this_tick - last_tick;
+=20
+ 	while (skew >=3D one_tick) {
+-		alarm_handler(SIGVTALRM, NULL);
++		alarm_handler(SIGVTALRM, NULL, NULL);
+ 		skew -=3D one_tick;
+ 	}
+=20
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
