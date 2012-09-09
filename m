@@ -1,43 +1,27 @@
 Return-Path: <PeterHuewe@gmx.de>
-From: Peter =?iso-8859-1?q?H=FCwe?= <PeterHuewe@gmx.de>
-Date: Sun, 9 Sep 2012 21:17:20 +0200
-References: <201209022245.20413.PeterHuewe@gmx.de> <201209091415.02460.PeterHuewe@gmx.de> <20120909204036.40f2217c@endymion.delvare>
-In-Reply-To: <20120909204036.40f2217c@endymion.delvare>
+From: Peter =?utf-8?q?H=C3=BCwe?= <PeterHuewe@gmx.de>
+Date: Sun, 9 Sep 2012 21:12:16 +0200
+References: <201209022245.20413.PeterHuewe@gmx.de> <CAMuHMdVBEYk0wvG+Xd-pk3DUj852ab1CFwSjg_os3MJpRXcBpA@mail.gmail.com> <709c5ec5-fff8-46af-bd7e-31e1f660285b@email.android.com>
+In-Reply-To: <709c5ec5-fff8-46af-bd7e-31e1f660285b@email.android.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
-  charset="iso-8859-1"
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201209092117.20896.PeterHuewe@gmx.de>
+Message-Id: <201209092112.16527.PeterHuewe@gmx.de>
 Subject: Re: [uml-devel] Emulate I2C subsystem/slaves
-To: Jean Delvare <khali@linux-fr.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Jean Delvare <khali@linux-fr.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi Jean,
-Am Sonntag, 9. September 2012, 20:40:36 schrieb Jean Delvare:
-> There is a problem with the mux chip drivers, which then no longer
-> depend on HAS_IOMEM.
-The selectables on my x86 and UML machine build fine ;)
-But you're correct, we should exclude/guard them.
+> That's why it may break. If you remove the depends on HAS_IOMEM, it will be
+> built on s390 and fail if that codes uses io memory functions. Depending
+> on GENERIC_IO fixes that.
 
-> Also, I think it is about time to admit that
-> i2c-stub does not fit under "I2C Hardware Bus support". It is a driver
-> for development, not hardware support.
-> 
-> So I propose the following instead:
-> 
->  drivers/i2c/Kconfig        |   14 +++++++++++++-
->  drivers/i2c/busses/Kconfig |   14 +-------------
->  drivers/i2c/muxes/Kconfig  |    2 +-
->  3 files changed, 15 insertions(+), 15 deletions(-)
+Everything I can select in I2C subsystem compiles fine on s390.
+(using defconfig + menuconfig).
+Just compiled it.
 
-
-I'm perfectly fine with this.
-
-Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
-
-
-
-
+Thanks,
+Peter
 
 
