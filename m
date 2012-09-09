@@ -1,56 +1,43 @@
-Return-Path: <richard@nod.at>
-Message-ID: <504CF727.8090309@nod.at>
-Date: Sun, 09 Sep 2012 22:08:07 +0200
-From: Richard Weinberger <richard@nod.at>
+Return-Path: <PeterHuewe@gmx.de>
+From: Peter =?iso-8859-1?q?H=FCwe?= <PeterHuewe@gmx.de>
+Date: Sun, 9 Sep 2012 21:17:20 +0200
+References: <201209022245.20413.PeterHuewe@gmx.de> <201209091415.02460.PeterHuewe@gmx.de> <20120909204036.40f2217c@endymion.delvare>
+In-Reply-To: <20120909204036.40f2217c@endymion.delvare>
 MIME-Version: 1.0
-References: <201209022245.20413.PeterHuewe@gmx.de> <CAMuHMdVBEYk0wvG+Xd-pk3DUj852ab1CFwSjg_os3MJpRXcBpA@mail.gmail.com> <709c5ec5-fff8-46af-bd7e-31e1f660285b@email.android.com> <201209092112.16527.PeterHuewe@gmx.de>
-In-Reply-To: <201209092112.16527.PeterHuewe@gmx.de>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig9424E724E998628D361A2B75"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201209092117.20896.PeterHuewe@gmx.de>
 Subject: Re: [uml-devel] Emulate I2C subsystem/slaves
-To: =?UTF-8?B?UGV0ZXIgSMO8d2U=?= <PeterHuewe@gmx.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Jean Delvare <khali@linux-fr.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Jean Delvare <khali@linux-fr.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig9424E724E998628D361A2B75
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Jean,
+Am Sonntag, 9. September 2012, 20:40:36 schrieb Jean Delvare:
+> There is a problem with the mux chip drivers, which then no longer
+> depend on HAS_IOMEM.
+The selectables on my x86 and UML machine build fine ;)
+But you're correct, we should exclude/guard them.
 
-Am 09.09.2012 21:12, schrieb Peter H=C3=BCwe:
->> That's why it may break. If you remove the depends on HAS_IOMEM, it wi=
-ll be
->> built on s390 and fail if that codes uses io memory functions. Dependi=
-ng
->> on GENERIC_IO fixes that.
->=20
-> Everything I can select in I2C subsystem compiles fine on s390.
-> (using defconfig + menuconfig).
-> Just compiled it.
-
-Very good. :-)
-
-Thanks,
-//richard
+> Also, I think it is about time to admit that
+> i2c-stub does not fit under "I2C Hardware Bus support". It is a driver
+> for development, not hardware support.
+> 
+> So I propose the following instead:
+> 
+>  drivers/i2c/Kconfig        |   14 +++++++++++++-
+>  drivers/i2c/busses/Kconfig |   14 +-------------
+>  drivers/i2c/muxes/Kconfig  |    2 +-
+>  3 files changed, 15 insertions(+), 15 deletions(-)
 
 
---------------enig9424E724E998628D361A2B75
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+I'm perfectly fine with this.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
+Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
 
-iQEcBAEBAgAGBQJQTPcnAAoJEN9758yqZn9eQbEH/jg1NlBZSYsPQwNVG2BC4Agh
-+xRBXbgy97bZuM0hBmTRxzQWn+521kus2c6Qk+szoNf+tewUX3ftt5ablXTFvpzx
-KsTPe3tYwaP/7B/3nr87DNkPnRI5zxUsr/nXypMn3LQJWYNWiMbmvTei8VlZEP0Q
-7CIbkROdZLmideX3OsZ5KgT1fv9d+meKaXmNoguJXzd8/zO0ILr1r6tdU82mR552
-j2ziLJZlwK+5kLEpwCoObF3FNT7+K/3M5CBHc8noMvAAZjBixYJUzZ5T9n5egDRc
-jRfGQriqMOQVCEU3FSvQH+LgVSSPfB04dgZY1zxMXdMN6e8HRJ4jAtHujL3yDAE=
-=rlRS
------END PGP SIGNATURE-----
 
---------------enig9424E724E998628D361A2B75--
+
+
+
 
