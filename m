@@ -1,44 +1,66 @@
-Return-Path: <geert@linux-m68k.org>
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1347787283-11994-1-git-send-email-geert@linux-m68k.org>
+References: <1347787283-11994-1-git-send-email-geert@linux-m68k.org>
+Date: Sun, 16 Sep 2012 21:00:00 +0200
+Message-ID: <CAMuHMdXObD5jEKT6BHkZJ6Y-PcW+pD7bO5nkNq0=9V-5e3MNTg@mail.gmail.com>
+Subject: Re: [PATCH -next] [media] altera-stapl should depend on HAS_IOPORT
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sat, 29 Sep 2012 21:04:55 +0200
-Message-Id: <1348945495-1334-1-git-send-email-geert@linux-m68k.org>
-Subject: [PATCH] um: Remove obsolete UM_* definitions
-To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: "Igor M. Liplianin" <liplianin@netup.ru>, Peter Huewe <peterhuewe@gmx.de>, Jean Delvare <khali@linux-fr.org>, Mauro Carvalho Chehab <mchehab@redhat.com>
+Cc: linux-i2c@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-next@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-  - UM_ELF_CLASS and UM_ELFCLASS32 became unused in commit
-    b743ac54e54ca18fb7164a97cc77cf1ccee0b0f7 ("um: disable scan_elf_aux()
-    on x86_64"),
-  - UM_ELFCLASS64 was never used, but only added for consistency with
-    UM_ELFCLASS32,
-  - UM_NR_CPUS became unused in commit
-    e6a2d1f7024f93e4622cd7ba633666a63ccce49e *"uml: clean up
-    sig_handler_common_skas"),
+On Sun, Sep 16, 2012 at 11:21 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On s390:
+>
+> drivers/misc/altera-stapl/altera-lpt.c: In function 'byteblaster_write':
+> drivers/misc/altera-stapl/altera-lpt.c:34:2: error: implicit declaration of function 'outb' [-Werror=implicit-function-declaration]
+> drivers/misc/altera-stapl/altera-lpt.c: In function 'byteblaster_read':
+> drivers/misc/altera-stapl/altera-lpt.c:40:2: error: implicit declaration of function 'inb' [-Werror=implicit-function-declaration]
+> cc1: some warnings being treated as errors
+> make[6]: *** [drivers/misc/altera-stapl/altera-lpt.o] Error 1
+>
+> Before commit 3969d54acd70be70e1b2a72184cba5415bf326c2 ("i2c: Make I2C
+> available on UML"), this was hidden because I2C depended on HAS_IOMEM, which
+> is a superset of HAS_IOPORT.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/um/include/shared/common-offsets.h |    6 ------
- 1 files changed, 0 insertions(+), 6 deletions(-)
+Apparently Arnd sent out a patch to fix this while the driver was
+still in staging:
+http://lkml.indiana.edu/hypermail/linux/kernel/1107.0/00432.html
 
-diff --git a/arch/um/include/shared/common-offsets.h b/arch/um/include/shared/common-offsets.h
-index 2df313b..57853d4 100644
---- a/arch/um/include/shared/common-offsets.h
-+++ b/arch/um/include/shared/common-offsets.h
-@@ -7,12 +7,6 @@ DEFINE(UM_KERN_PAGE_MASK, PAGE_MASK);
- DEFINE(UM_KERN_PAGE_SHIFT, PAGE_SHIFT);
- DEFINE(UM_NSEC_PER_SEC, NSEC_PER_SEC);
- 
--DEFINE(UM_ELF_CLASS, ELF_CLASS);
--DEFINE(UM_ELFCLASS32, ELFCLASS32);
--DEFINE(UM_ELFCLASS64, ELFCLASS64);
--
--DEFINE(UM_NR_CPUS, NR_CPUS);
--
- DEFINE(UM_GFP_KERNEL, GFP_KERNEL);
- DEFINE(UM_GFP_ATOMIC, GFP_ATOMIC);
- 
--- 
-1.7.0.4
+> --
+> http://kisskb.ellerman.id.au/kisskb/buildresult/7194502/
+> http://kisskb.ellerman.id.au/kisskb/buildresult/7194476/
+> ---
+>  drivers/misc/altera-stapl/Kconfig |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/misc/altera-stapl/Kconfig b/drivers/misc/altera-stapl/Kconfig
+> index 7f01d8e..c7e4c77 100644
+> --- a/drivers/misc/altera-stapl/Kconfig
+> +++ b/drivers/misc/altera-stapl/Kconfig
+> @@ -2,7 +2,7 @@ comment "Altera FPGA firmware download module"
+>
+>  config ALTERA_STAPL
+>         tristate "Altera FPGA firmware download module"
+> -       depends on I2C
+> +       depends on I2C && HAS_IOPORT
+>         default n
+>         help
+>           An Altera FPGA module. Say Y when you want to support this tool.
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
