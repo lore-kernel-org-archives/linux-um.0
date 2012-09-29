@@ -1,36 +1,56 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <5046346F.802@xenotime.net>
-Date: Tue, 04 Sep 2012 10:03:43 -0700
-From: Randy Dunlap <rdunlap@xenotime.net>
 MIME-Version: 1.0
-References: <20120904171330.f6b0a922a754ba0f3acc123b@canb.auug.org.au>
-In-Reply-To: <20120904171330.f6b0a922a754ba0f3acc123b@canb.auug.org.au>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20120929204314.GK13973@ZenIV.linux.org.uk>
+References: <1348938460-20919-1-git-send-email-geert@linux-m68k.org>
+	<1348938460-20919-2-git-send-email-geert@linux-m68k.org>
+	<1348949440.3294.2.camel@joe-AO722>
+	<CAMuHMdWiDKV2=kbO8UGqZBETdrYExLRbaRFNnVTVRcWUs16OcA@mail.gmail.com>
+	<20120929204314.GK13973@ZenIV.linux.org.uk>
+Date: Sat, 29 Sep 2012 22:58:58 +0200
+Message-ID: <CAMuHMdVS3Z6bEP=+=oOxvucyz86v7xwB15zDVRNsGYuoAZ7ZpQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] arch/um/os-Linux: Drop UM_ prefix from printk() level specifiers
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: linux-next: Tree for Sept 4 (uml + execve)
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Joe Perches <joe@perches.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, x86@kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 09/04/2012 12:13 AM, Stephen Rothwell wrote:
-
-> Hi all,
-> 
-> Changes since 20120824:
+On Sat, Sep 29, 2012 at 10:43 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Sat, Sep 29, 2012 at 10:27:44PM +0200, Geert Uytterhoeven wrote:
+>> On Sat, Sep 29, 2012 at 10:10 PM, Joe Perches <joe@perches.com> wrote:
+>> >> @@ -88,7 +88,7 @@ static int do_aio(aio_context_t ctx, enum aio_type type, int fd, char *buf,
+>> >>               iocbp->aio_nbytes = sizeof(c);
+>> >>               break;
+>> >>       default:
+>> >> -             printk(UM_KERN_ERR "Bogus op in do_aio - %d\n", type);
+>> >> +             printk(KERN_ERR "Bogus op in do_aio - %d\n", type);
+>> >
+>> > Maybe a follow-on patch to convert these to pr_<level>?
+>>
+>> That requires adding pr_<level> to arch/um/include/shared/user.h first.
+>> Or to avoid duplication, extracting the pr_<level> definitions from
+>> include/linux/printk.h to a new header file, and preincluding that one for
+>> the user part of UML, too.
 >
+> Yecchhh....  Just how many of those pre-includes do you want to add?
+> Seriously, if we get enough of those, it might make more sense to take
+> them into a separate directory and add it to search paths, including
+> that for userland objects of uml.  If not, I'd rather copy them to
+> include/generated in arch/um/Makefile and explicitly #include <generated/foo.h>
+> them from user.h.  It's trivially doable and as long as we have relatively
+> few of those guys it's less PITA...
 
+Fine for me! I was just following the initial example with
+preincluding user.h...
 
-UML on x86_64 (defconfig):
+Gr{oetje,eeting}s,
 
-fs/built-in.o: In function `kernel_execve':
-fs/exec.c:2342: multiple definition of `kernel_execve'
-arch/um/kernel/built-in.o:arch/um/kernel/syscall.c:57: first defined here
-fs/built-in.o: In function `sys_execve':
-fs/exec.c:2327: multiple definition of `sys_execve'
-arch/um/kernel/built-in.o:arch/um/kernel/exec.c:77: first defined here
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
--- 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
-~Randy
