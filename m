@@ -1,94 +1,238 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <508BCFCF.70101@suse.cz>
-Date: Sat, 27 Oct 2012 14:13:03 +0200
-From: Jiri Slaby <jslaby@suse.cz>
 MIME-Version: 1.0
-References: <20121025001628.1DEDE100047@wpzn3.hot.corp.google.com> <50889347.4070801@xenotime.net> <20121025134850.76cdb390565dfe5117bdef7e@canb.auug.org.au>
-In-Reply-To: <20121025134850.76cdb390565dfe5117bdef7e@canb.auug.org.au>
-Content-Type: multipart/mixed;
- boundary="------------060203010301090301010206"
+Content-Type: text/plain;
+ charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Wed, 10 Oct 2012 04:25:44 +0200
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <7368662a7657b4666ed666f4fae9fcef@radon2.swed.at>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: mmotm 2012-10-24-17-15 uploaded (uml)
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Randy Dunlap <rdunlap@xenotime.net>, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, linux-next@vger.kernel.org, Alan Cox <alan@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, Jiri Slaby <jirislaby@gmail.com>
+Subject: [GIT PULL] UML changes for 3.7-rc1
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---------------060203010301090301010206
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Linus,
 
-On 10/25/2012 04:48 AM, Stephen Rothwell wrote:
-> Hi Randy,
-> 
-> On Wed, 24 Oct 2012 18:17:59 -0700 Randy Dunlap <rdunlap@xenotime.net> wrote:
->>
->> uml on x86_64 defconfig:
->>
->> arch/um/drivers/chan_kern.c: In function 'tty_receive_char':
->> arch/um/drivers/chan_kern.c:89:42: error: 'struct tty_struct' has no member named 'raw'
+please issue the following pull request.
 
-Hmm, that code looks doing weird stuff. This patch should fix it. But
-I'm not sure why it was there at all, as n_tty should take care of the
-raw case perfectly right away. I cannot find any clues in the git log as
-to why it was added at all. It's there like since ever.
+UML receives this time only cleanups.
+The most outstanding change is the 'include "foo.h"' do 'include 
+<foo.h>'
+conversion done by Al Viro.
+It touches many files, that's why the diffstat is rather big.
 
-Could anybody with working UML (I'm unable to run UML ATM, it crashes
-heavily during the bootup -- after terminals are shown) check whether
-the patch actually works?
+Thanks,
+//richard
 
-thanks,
--- 
-js
-suse labs
+----
+The following changes since commit 
+a0d271cbfed1dd50278c6b06bead3d00ba0a88f9:
 
---------------060203010301090301010206
-Content-Type: text/x-patch;
- name="0001-UM.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-UM.patch"
+  Linux 3.6 (2012-09-30 16:47:46 -0700)
 
-From 3f60aa996467bf4a1bd4e62f80cb714ea6569fde Mon Sep 17 00:00:00 2001
-From: Jiri Slaby <jslaby@suse.cz>
-Date: Thu, 25 Oct 2012 16:40:59 +0200
-Subject: [PATCH] UM:
+are available in the git repository at:
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
----
- arch/um/drivers/chan_kern.c | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git 
+for-linus-37rc1
 
-diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
-index c3bba73..e9a0abc 100644
---- a/arch/um/drivers/chan_kern.c
-+++ b/arch/um/drivers/chan_kern.c
-@@ -83,21 +83,8 @@ static const struct chan_ops not_configged_ops = {
- 
- static void tty_receive_char(struct tty_struct *tty, char ch)
- {
--	if (tty == NULL)
--		return;
--
--	if (I_IXON(tty) && !I_IXOFF(tty) && !tty->raw) {
--		if (ch == STOP_CHAR(tty)) {
--			stop_tty(tty);
--			return;
--		}
--		else if (ch == START_CHAR(tty)) {
--			start_tty(tty);
--			return;
--		}
--	}
--
--	tty_insert_flip_char(tty, ch, TTY_NORMAL);
-+	if (tty)
-+		tty_insert_flip_char(tty, ch, TTY_NORMAL);
- }
- 
- static int open_one_chan(struct chan *chan)
--- 
-1.7.12.4
+for you to fetch changes up to 
+062d52672446014222942cae6934d97769b329f0:
 
+  typo in UserModeLinux-HOWTO (2012-10-09 22:35:24 +0200)
 
---------------060203010301090301010206--
+----------------------------------------------------------------
+Al Viro (4):
+      um/x86: merge 32 and 64bit variants of checksum.h
+      um/x86: merge 32 and 64 bit variants of ptrace.h
+      um: move sysrq.h out of include/shared
+      um: get rid of pointless include "..." where include <...> will 
+do
+
+Marco Stornelli (1):
+      hostfs: drop vmtruncate
+
+Richard Genoud (1):
+      typo in UserModeLinux-HOWTO
+
+Wei Yongjun (1):
+      hppfs: fix the return value of get_inode()
+
+ Documentation/virtual/uml/UserModeLinux-HOWTO.txt |   2 +-
+ arch/um/drivers/chan_kern.c                       |   4 ++--
+ arch/um/drivers/chan_user.c                       |   4 ++--
+ arch/um/drivers/chan_user.h                       |   2 +-
+ arch/um/drivers/cow_sys.h                         |   6 +++---
+ arch/um/drivers/daemon.h                          |   2 +-
+ arch/um/drivers/daemon_kern.c                     |   4 ++--
+ arch/um/drivers/daemon_user.c                     |   6 +++---
+ arch/um/drivers/fd.c                              |   4 ++--
+ arch/um/drivers/harddog_user.c                    |   2 +-
+ arch/um/drivers/hostaudio_kern.c                  |  18 
+++++++++---------
+ arch/um/drivers/line.c                            |  16 
++++++++--------
+ arch/um/drivers/line.h                            |  12 ++++++------
+ arch/um/drivers/mconsole.h                        |   2 +-
+ arch/um/drivers/mconsole_kern.c                   |  10 +++++-----
+ arch/um/drivers/mconsole_kern.h                   |   2 +-
+ arch/um/drivers/mmapper_kern.c                    |   2 +-
+ arch/um/drivers/net_kern.c                        |  10 +++++-----
+ arch/um/drivers/net_user.c                        |   6 +++---
+ arch/um/drivers/null.c                            |   2 +-
+ arch/um/drivers/pcap_kern.c                       |   4 ++--
+ arch/um/drivers/pcap_user.c                       |   4 ++--
+ arch/um/drivers/pcap_user.h                       |   2 +-
+ arch/um/drivers/port_kern.c                       |  20 
++++++++++----------
+ arch/um/drivers/port_user.c                       |   4 ++--
+ arch/um/drivers/pty.c                             |   4 ++--
+ arch/um/drivers/random.c                          |   4 ++--
+ arch/um/drivers/slip_common.c                     |   2 +-
+ arch/um/drivers/slip_kern.c                       |   2 +-
+ arch/um/drivers/slip_user.c                       |   6 +++---
+ arch/um/drivers/slirp_kern.c                      |   6 +++---
+ arch/um/drivers/slirp_user.c                      |   4 ++--
+ arch/um/drivers/ssl.c                             |  22 
+++++++++++-----------
+ arch/um/drivers/stdio_console.c                   |  36 
++++++++++++++++++-----------------
+ arch/um/drivers/tty.c                             |   4 ++--
+ arch/um/drivers/ubd_kern.c                        |   8 ++++----
+ arch/um/drivers/ubd_user.c                        |   2 +-
+ arch/um/drivers/umcast.h                          |   2 +-
+ arch/um/drivers/umcast_kern.c                     |   4 ++--
+ arch/um/drivers/umcast_user.c                     |   4 ++--
+ arch/um/drivers/vde_kern.c                        |   6 +++---
+ arch/um/drivers/vde_user.c                        |   4 ++--
+ arch/um/drivers/xterm.c                           |   4 ++--
+ arch/um/drivers/xterm_kern.c                      |   4 ++--
+ arch/um/include/asm/dma.h                         |   2 +-
+ arch/um/include/asm/mmu.h                         |   2 +-
+ arch/um/include/asm/page.h                        |   2 +-
+ arch/um/include/asm/pgtable.h                     |   4 ++--
+ arch/um/include/asm/processor-generic.h           |   6 +++---
+ arch/um/include/asm/ptrace-generic.h              |   2 +-
+ arch/um/include/asm/smp.h                         |   6 +++---
+ arch/um/include/{shared => asm}/sysrq.h           |   0
+ arch/um/include/shared/arch.h                     |   2 +-
+ arch/um/include/shared/as-layout.h                |   2 +-
+ arch/um/include/shared/irq_kern.h                 |   4 ++--
+ arch/um/include/shared/irq_user.h                 |   2 +-
+ arch/um/include/shared/kern_util.h                |   4 ++--
+ arch/um/include/shared/longjmp.h                  |   4 ++--
+ arch/um/include/shared/os.h                       |   6 +++---
+ arch/um/include/shared/registers.h                |   4 ++--
+ arch/um/include/shared/skas/skas.h                |   2 +-
+ arch/um/include/shared/skas_ptrace.h              |   2 +-
+ arch/um/kernel/asm-offsets.c                      |   2 +-
+ arch/um/kernel/config.c.in                        |   2 +-
+ arch/um/kernel/dyn.lds.S                          |   2 +-
+ arch/um/kernel/early_printk.c                     |   2 +-
+ arch/um/kernel/exec.c                             |   8 ++++----
+ arch/um/kernel/gmon_syms.c                        |   2 +-
+ arch/um/kernel/gprof_syms.c                       |   2 +-
+ arch/um/kernel/initrd.c                           |  12 ++++++------
+ arch/um/kernel/irq.c                              |  22 
+++++++++++-----------
+ arch/um/kernel/ksyms.c                            |   2 +-
+ arch/um/kernel/mem.c                              |  12 ++++++------
+ arch/um/kernel/process.c                          |   8 ++++----
+ arch/um/kernel/reboot.c                           |  14 ++++++-------
+ arch/um/kernel/sigio.c                            |   6 +++---
+ arch/um/kernel/signal.c                           |   4 ++--
+ arch/um/kernel/skas/clone.c                       |   8 ++++----
+ arch/um/kernel/skas/mmu.c                         |  16 
++++++++--------
+ arch/um/kernel/skas/process.c                     |  12 ++++++------
+ arch/um/kernel/skas/syscall.c                     |  10 +++++-----
+ arch/um/kernel/skas/uaccess.c                     |   4 ++--
+ arch/um/kernel/smp.c                              |  30 
+++++++++++++++--------------
+ arch/um/kernel/syscall.c                          |  20 
++++++++++----------
+ arch/um/kernel/sysrq.c                            |   2 +-
+ arch/um/kernel/time.c                             |   4 ++--
+ arch/um/kernel/tlb.c                              |   8 ++++----
+ arch/um/kernel/trap.c                             |  10 +++++-----
+ arch/um/kernel/um_arch.c                          |  14 ++++++-------
+ arch/um/kernel/umid.c                             |   6 +++---
+ arch/um/kernel/uml.lds.S                          |   2 +-
+ arch/um/os-Linux/aio.c                            |   8 ++++----
+ arch/um/os-Linux/drivers/etap.h                   |   2 +-
+ arch/um/os-Linux/drivers/ethertap_kern.c          |   2 +-
+ arch/um/os-Linux/drivers/ethertap_user.c          |   6 +++---
+ arch/um/os-Linux/drivers/tuntap.h                 |   2 +-
+ arch/um/os-Linux/drivers/tuntap_kern.c            |   2 +-
+ arch/um/os-Linux/drivers/tuntap_user.c            |   4 ++--
+ arch/um/os-Linux/elf_aux.c                        |   6 +++---
+ arch/um/os-Linux/execvp.c                         |   4 ++--
+ arch/um/os-Linux/file.c                           |   2 +-
+ arch/um/os-Linux/helper.c                         |   6 +++---
+ arch/um/os-Linux/irq.c                            |   6 +++---
+ arch/um/os-Linux/main.c                           |  10 +++++-----
+ arch/um/os-Linux/mem.c                            |   4 ++--
+ arch/um/os-Linux/process.c                        |   8 ++++----
+ arch/um/os-Linux/registers.c                      |   6 +++---
+ arch/um/os-Linux/sigio.c                          |  10 +++++-----
+ arch/um/os-Linux/signal.c                         |   8 ++++----
+ arch/um/os-Linux/skas/mem.c                       |  20 
++++++++++----------
+ arch/um/os-Linux/skas/process.c                   |  22 
+++++++++++-----------
+ arch/um/os-Linux/start_up.c                       |  14 ++++++-------
+ arch/um/os-Linux/time.c                           |   4 ++--
+ arch/um/os-Linux/tty.c                            |   4 ++--
+ arch/um/os-Linux/umid.c                           |   4 ++--
+ arch/um/os-Linux/user_syms.c                      |   4 ++--
+ arch/um/os-Linux/util.c                           |   2 +-
+ arch/um/sys-ppc/miscthings.c                      |   6 +++---
+ arch/um/sys-ppc/ptrace.c                          |   2 +-
+ arch/um/sys-ppc/ptrace_user.c                     |   2 +-
+ arch/um/sys-ppc/shared/sysdep/ptrace.h            |   2 +-
+ arch/um/sys-ppc/sigcontext.c                      |   2 +-
+ arch/um/sys-ppc/sysrq.c                           |   4 ++--
+ arch/x86/um/asm/checksum.h                        | 144 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ arch/x86/um/asm/checksum_32.h                     | 140 
+----------------------------------------------------------------------------------------------------------------------------------
+ arch/x86/um/asm/checksum_64.h                     | 125 
+--------------------------------------------------------------------------------------------------------------------
+ arch/x86/um/asm/elf.h                             |   2 +-
+ arch/x86/um/asm/ptrace.h                          |  58 
+++++++++++++++++++++++++++++++++++++++++++++++++++----
+ arch/x86/um/asm/ptrace_32.h                       |  28 
+--------------------------
+ arch/x86/um/asm/ptrace_64.h                       |  46 
+-------------------------------------------
+ arch/x86/um/bugs_32.c                             |   6 +++---
+ arch/x86/um/bugs_64.c                             |   2 +-
+ arch/x86/um/fault.c                               |   2 +-
+ arch/x86/um/ldt.c                                 |  10 +++++-----
+ arch/x86/um/mem_64.c                              |   6 +++---
+ arch/x86/um/os-Linux/registers.c                  |   4 ++--
+ arch/x86/um/os-Linux/task_size.c                  |   2 +-
+ arch/x86/um/os-Linux/tls.c                        |   2 +-
+ arch/x86/um/ptrace_32.c                           |   8 ++++----
+ arch/x86/um/ptrace_user.c                         |   2 +-
+ arch/x86/um/shared/sysdep/ptrace.h                |   2 +-
+ arch/x86/um/shared/sysdep/stub.h                  |   4 ++--
+ arch/x86/um/shared/sysdep/syscalls_32.h           |   4 ++--
+ arch/x86/um/signal.c                              |   4 ++--
+ arch/x86/um/stub_32.S                             |   2 +-
+ arch/x86/um/stub_64.S                             |   2 +-
+ arch/x86/um/stub_segv.c                           |   6 +++---
+ arch/x86/um/sysrq_32.c                            |  12 ++++++------
+ arch/x86/um/sysrq_64.c                            |   2 +-
+ arch/x86/um/tls_32.c                              |  12 ++++++------
+ arch/x86/um/tls_64.c                              |   2 +-
+ fs/hostfs/hostfs.h                                |   2 +-
+ fs/hostfs/hostfs_kern.c                           |  12 +++++++-----
+ fs/hostfs/hostfs_user.c                           |   1 -
+ fs/hppfs/hppfs.c                                  |   4 ++--
+ 155 files changed, 641 insertions(+), 785 deletions(-)
+ rename arch/um/include/{shared => asm}/sysrq.h (100%)
+ delete mode 100644 arch/x86/um/asm/ptrace_32.h
+ delete mode 100644 arch/x86/um/asm/ptrace_64.h
+
