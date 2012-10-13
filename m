@@ -1,18 +1,32 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <dhowells@redhat.com>) id 1TNkRX-0000p7-Mf
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
+	id 1TMvrR-0000QB-Aa for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 13 Oct 2012 07:10:13 +0000
+Received: from plane.gmane.org ([80.91.229.3])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1TMvrO-0004O4-2O
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Oct 2012 13:10:51 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1TNkRW-0001Ks-NS for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Oct 2012 13:10:51 +0000
-From: David Howells <dhowells@redhat.com>
-Date: Mon, 15 Oct 2012 14:10:34 +0100
-Message-ID: <20121015131034.8834.52811.stgit@warthog.procyon.org.uk>
-MIME-Version: 1.0
+	Sat, 13 Oct 2012 07:10:13 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
+	id 1TMvrH-0000Sq-Qz for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 13 Oct 2012 09:10:08 +0200
+Received: from osiris.larina.co.uk ([194.164.140.64])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 13 Oct 2012 09:10:03 +0200
+Received: from office by osiris.larina.co.uk with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 13 Oct 2012 09:10:03 +0200
+From: Dvaid Humphreys <office@datatone.co.uk>
+Date: Sat, 13 Oct 2012 07:04:48 +0000 (UTC)
+Message-ID: <loom.20121013T085850-671@post.gmane.org>
+Mime-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,34 +39,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] UM: linux/coredump.h needs siginfo_t
-To: jdike@addtoit.com, richard@nod.at
-Cc: dhowells@redhat.com, rdunlap@xenotime.net, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] linux-3.6.x ARCH=um won't build
+To: user-mode-linux-devel@lists.sourceforge.net
 
-linux/coredump.h should #include asm/siginfo.h for the siginfo_t type.
-
-Without this the following error occurs when compiling UM defconfig:
-
-	include/linux/coredump.h:15:25: error: unknown type name 'siginfo_t'
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- include/linux/coredump.h |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-index 1775eb8..1d73993 100644
---- a/include/linux/coredump.h
-+++ b/include/linux/coredump.h
-@@ -4,6 +4,7 @@
- #include <linux/types.h>
- #include <linux/mm.h>
- #include <linux/fs.h>
-+#include <asm/siginfo.h>
- 
- /*
-  * These are the only things you should do on a core-file: use only these
+  CC      arch/um/os-Linux/signal.o
 
 
 ------------------------------------------------------------------------------
