@@ -1,114 +1,52 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1TPg4z-0006YQ-13
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Oct 2012 20:55:33 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TPg4x-0005K5-7T
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Oct 2012 20:55:32 +0000
-Message-ID: <50830FBA.8040906@nod.at>
-Date: Sat, 20 Oct 2012 22:55:22 +0200
-From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-References: <50796C57.9070303@nod.at> <1610795.Cjb5TqF7v9@al>
-In-Reply-To: <1610795.Cjb5TqF7v9@al>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <50796C57.9070303@nod.at>
+References: <14846952.alsA7bkick@vault01>
+	<50796C57.9070303@nod.at>
+Date: Sat, 13 Oct 2012 15:53:59 +0200
+Message-ID: <CAMuHMdVxNfsi9DoQe5wukHgxMExgZMx2snoq8SKFoWzWfDddUQ@mail.gmail.com>
 Subject: Re: [uml-devel] linux-3.6.x ARCH=um will not build
-To: Lekensteyn <lekensteyn@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: Richard Weinberger <richard@nod.at>
+Cc: "Dave Humphreys (Bob)" <dave@bob-the-boat.me.uk>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-T24gMjAuMTAuMjAxMiAyMjozMywgTGVrZW5zdGV5biB3cm90ZToKPiBPbiBTYXQsIE9jdCAxMywg
-MjAxMiBhdCAxOjI3IFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IEFtIDEzLjEwLjIw
-MTIgMTU6MTMsIHNjaHJpZWIgRGF2ZSBIdW1waHJleXMgKEJvYik6Cj4+PiBhcmNoL3VtL29zLUxp
-bnV4L3NpZ25hbC5jOjE4Ojg6IGVycm9yOiBjb25mbGljdGluZyB0eXBlcyBmb3IgJ3NpZ19pbmZv
-Jwo+Pj4gL25mczR4cC9zb2Z0d2FyZS9rcm4vbGludXgtMy42LngvbGludXgtMy42LjItCj4gdW02
-NC9hcmNoL3VtL2luY2x1ZGUvc2hhcmVkL2FzLQo+Pj4gbGF5b3V0Lmg6NjQ6MTU6IG5vdGU6IHBy
-ZXZpb3VzIGRlY2xhcmF0aW9uIG9mICdzaWdfaW5mbycgd2FzIGhlcmUKPj4+Cj4+PiBJIGdldCB0
-aGUgYWJvdmUgZXJyb3Igd2hlbiB0cnlpbmcgdG8gYnVpbGQgYm90aCBsaW51eC0zLjYgYW5kIGxp
-bnV4LTMuNi4yCj4gaW4KPj4+IGJvdGggeDg2IChnY2MtNC43LjIpIGFuZCB4ODZfNjQgKGdjYy00
-LjYuMykgZW52aXJvbm1lbnRzLgo+Pj4KPj4KPj4gQWxyZWFkeSBrbm93biBhbmQgZml4ZWQuIDop
-Cj4+IGh0dHA6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvbW0tY29tbWl0cy9tc2c5MTcwMy5odG1s
-Cj4KPiBMaW51eCAzLjYuMiBhbmQgdjMuNy1yYzEtMzMwLWcxOTgxOTBhIGFyZSBzdGlsbCBhZmZl
-Y3RlZDoKPgo+IGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6MTg6ODogZXJyb3I6IGNvbmZsaWN0
-aW5nIHR5cGVzIGZvciDigJhzaWdfaW5mb+KAmQo+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSBhcmNo
-L3VtL29zLUxpbnV4L3NpZ25hbC5jOjEyOjA6Cj4gL3RtcC9saW51eC0zLjcvYXJjaC91bS9pbmNs
-dWRlL3NoYXJlZC9hcy1sYXlvdXQuaDo2NDoxNTogbm90ZTogcHJldmlvdXMKPiBkZWNsYXJhdGlv
-biBvZiDigJhzaWdfaW5mb+KAmSB3YXMgaGVyZQo+IGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6
-MTk6Mjogd2FybmluZzogaW5pdGlhbGl6YXRpb24gZnJvbSBpbmNvbXBhdGlibGUKPiBwb2ludGVy
-IHR5cGUgW2VuYWJsZWQgYnkgZGVmYXVsdF0KPiBhcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjE5
-OjI6IHdhcm5pbmc6IChuZWFyIGluaXRpYWxpemF0aW9uIGZvcgo+IOKAmHNpZ19pbmZvWzVd4oCZ
-KSBbZW5hYmxlZCBieSBkZWZhdWx0XQo+IGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6MjA6Mjog
-d2FybmluZzogaW5pdGlhbGl6YXRpb24gZnJvbSBpbmNvbXBhdGlibGUKPiBwb2ludGVyIHR5cGUg
-W2VuYWJsZWQgYnkgZGVmYXVsdF0KPiBhcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjIwOjI6IHdh
-cm5pbmc6IChuZWFyIGluaXRpYWxpemF0aW9uIGZvcgo+IOKAmHNpZ19pbmZvWzhd4oCZKSBbZW5h
-YmxlZCBieSBkZWZhdWx0XQo+IGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6MjE6Mjogd2Fybmlu
-ZzogaW5pdGlhbGl6YXRpb24gZnJvbSBpbmNvbXBhdGlibGUKPiBwb2ludGVyIHR5cGUgW2VuYWJs
-ZWQgYnkgZGVmYXVsdF0KPiBhcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjIxOjI6IHdhcm5pbmc6
-IChuZWFyIGluaXRpYWxpemF0aW9uIGZvcgo+IOKAmHNpZ19pbmZvWzRd4oCZKSBbZW5hYmxlZCBi
-eSBkZWZhdWx0XQo+IGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6MjI6Mjogd2FybmluZzogaW5p
-dGlhbGl6YXRpb24gZnJvbSBpbmNvbXBhdGlibGUKPiBwb2ludGVyIHR5cGUgW2VuYWJsZWQgYnkg
-ZGVmYXVsdF0KPiAuLi4KPgo+IFRoZSBtaXNtYXRjaGluZyBkZWNsYXJhdGlvbi9kZWZpbml0aW9u
-IHdhcyBpbnRyb2R1Y2VkIHdpdGg6Cj4KPiBjb21taXQgZDNjMWNmY2RiNDNlMDIzYWIxYjFjN2E1
-NTVjZDllOTI5MDI2NTAwYQo+IEF1dGhvcjogTWFydGluIFDDpHJ0ZWwgPG1hcnRpbi5wYXJ0ZWxA
-Z21haWwuY29tPgo+IERhdGU6ICAgVGh1IEF1ZyAyIDAwOjQ5OjE3IDIwMTIgKzAyMDAKPgo+ICAg
-ICAgdW06IHBhc3Mgc2lnaW5mbyB0byBndWVzdCBwcm9jZXNzCj4KPiAgICAgIFVNTCBndWVzdCBw
-cm9jZXNzZXMgbm93IGdldCBjb3JyZWN0IHNpZ2luZm9fdCBmb3IgU0lHVFJBUCwgU0lHRlBFLAo+
-ICAgICAgU0lHSUxMIGFuZCBTSUdCVVMuIFNwZWNpZmljYWxseSwgc2lfYWRkciBhbmQgc2lfY29k
-ZSBhcmUgbm93IGNvcnJlY3QKPiAgICAgIHdoZXJlIHByZXZpb3VzbHkgdGhleSB3ZXJlIHNpX2Fk
-ZHIgPSBOVUxMIGFuZCBzaV9jb2RlID0gMTI4Lgo+Cj4gICAgICBTaWduZWQtb2ZmLWJ5OiBNYXJ0
-aW4gUMOkcnRlbCA8bWFydGluLnBhcnRlbEBnbWFpbC5jb20+Cj4gICAgICBTaWduZWQtb2ZmLWJ5
-OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pgo+Cj4KPiBJbiBhcmNoL3VtL2lu
-Y2x1ZGUvc2hhcmVkL2FzLWxheW91dC5oLCBNYXJ0aW4gZGlkOgo+IC1leHRlcm4gdm9pZCAoKnNp
-Z19pbmZvW10pKGludCwgc3RydWN0IHVtbF9wdF9yZWdzICopOwo+ICtzdHJ1Y3Qgc2lnaW5mbzsK
-PiArZXh0ZXJuIHZvaWQgKCpzaWdfaW5mb1tdKShpbnQsIHN0cnVjdCBzaWdpbmZvICpzaSwgc3Ry
-dWN0IHVtbF9wdF9yZWdzICopOwo+Cj4gYnV0IGluIGFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmMs
-IHRoZSBkZWZpbml0aW9uIGlzIGNvbXBsZXRlbHkgZGlmZmVyZW50Ogo+IC12b2lkICgqc2lnX2lu
-Zm9bTlNJR10pKGludCwgc3RydWN0IHVtbF9wdF9yZWdzICopID0gewo+ICt2b2lkICgqc2lnX2lu
-Zm9bTlNJR10pKGludCwgc2lnaW5mb190ICosIHN0cnVjdCB1bWxfcHRfcmVncyAqKSA9IHsKPgo+
-IEkgd2FudGVkIHRvIGZpeCBpdCwgYnV0IEkgZG8gbm90IGtub3cgd2hhdCB0aGUgY29ycmVjdCB0
-eXBlIHNob3VsZCBiZS4KPiBzaWdpbmZvX3QgaXMgZGVjbGFyZWQgaW4gc2lnbmFsLmguIEkgdHJp
-ZWQgcmVwbGFjaW5nIGFsbCAic3RydWN0IHNpZ2luZm8icyBieQo+IHNpZ2luZm9fdCwgYnV0IHRo
-YXQgZGlkIG5vdCBoZWxwIChzaWduYWwuaCBpcyBub3QgaW5jbHVkZWQpCj4KPgo+IFRoZSBzZWNv
-bmQgYnVpbGQgZXJyb3IgSSBnZXQgaXM6Cj4gYXJjaC91bS9vcy1MaW51eC9zdGFydF91cC5jOiBJ
-biBmdW5jdGlvbiDigJhjaGVja19jb3JlZHVtcF9saW1pdOKAmToKPiBhcmNoL3VtL29zLUxpbnV4
-L3N0YXJ0X3VwLmM6MzM4OjE2OiBlcnJvcjogc3RvcmFnZSBzaXplIG9mIOKAmGxpbeKAmSBpc27i
-gJl0IGtub3duCj4gYXJjaC91bS9vcy1MaW51eC9zdGFydF91cC5jOjMzOToyOiBlcnJvcjogaW1w
-bGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24KPiDigJhnZXRybGltaXTigJkgWy1XZXJyb3I9
-aW1wbGljaXQtZnVuY3Rpb24tZGVjbGFyYXRpb25dCj4gYXJjaC91bS9vcy1MaW51eC9zdGFydF91
-cC5jOjMzOToyMjogZXJyb3I6IOKAmFJMSU1JVF9DT1JF4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVz
-ZQo+IGluIHRoaXMgZnVuY3Rpb24pCj4gYXJjaC91bS9vcy1MaW51eC9zdGFydF91cC5jOjMzOToy
-Mjogbm90ZTogZWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMKPiByZXBvcnRlZCBvbmx5IG9u
-Y2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbgo+IGFyY2gvdW0vb3MtTGludXgvc3Rh
-cnRfdXAuYzozNDc6MjI6IGVycm9yOiDigJhSTElNX0lORklOSVRZ4oCZIHVuZGVjbGFyZWQgKGZp
-cnN0Cj4gdXNlIGluIHRoaXMgZnVuY3Rpb24pCj4gYXJjaC91bS9vcy1MaW51eC9zdGFydF91cC5j
-OjMzODoxNjogd2FybmluZzogdW51c2VkIHZhcmlhYmxlIOKAmGxpbeKAmSBbLVd1bnVzZWQtCj4g
-dmFyaWFibGVdCj4KPiBUaGlzIGNhbiBiZSBmaXhlZCBieSBhZGRpbmcgdGhlIGZvbGxvd2luZyB0
-byBhcmNoL3VtL29zLUxpbnV4L3N0YXJ0X3VwLmM6Cj4gI2luY2x1ZGUgPHN5cy9yZXNvdXJjZS5o
-Pgo+ICh0ZXN0ZWQgd2l0aCAzLjcpCj4KPiBObyBzcGVjaWFsIGNvbmZpZ3VyYXRpb24sIGp1c3Qg
-Im1ha2UgQVJDSD11bSBkZWZjb25maWciIGFuZCAibWFrZSBBUkNIPXVtIi4gR0NDCj4gNC43LjIg
-NjQtYml0LgoKSXMgdGhpcyBnbGliYy0yLjE3PwoKSSd2ZSBhbiBpZGVhIHdoYXRzIGdvaW5nIG9u
-LgoKVGhhbmtzLAovL3JpY2hhcmQKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRXZlcnlvbmUgaGF0
-ZXMgc2xvdyB3ZWJzaXRlcy4gU28gZG8gd2UuCk1ha2UgeW91ciB3ZWIgYXBwcyBmYXN0ZXIgd2l0
-aCBBcHBEeW5hbWljcwpEb3dubG9hZCBBcHBEeW5hbWljcyBMaXRlIGZvciBmcmVlIHRvZGF5Ogpo
-dHRwOi8vcC5zZi5uZXQvc2Z1L2FwcGR5bl9zZmQyZF9vY3QKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcg
-bGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
-bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZl
-bAo=
+On Sat, Oct 13, 2012 at 3:27 PM, Richard Weinberger <richard@nod.at> wrote:
+> Am 13.10.2012 15:13, schrieb Dave Humphreys (Bob):
+>> Apologies if this repeats any previous attempts made by me: problems with
+>> something called 'gmane'
+>>
+>> ===
+>>  ...
+>>   CC      arch/um/os-Linux/signal.o
+>> arch/um/os-Linux/signal.c:18:8: error: conflicting types for 'sig_info'
+>> /nfs4xp/software/krn/linux-3.6.x/linux-3.6.2-um64/arch/um/include/shared/as-
+>> layout.h:64:15: note: previous declaration of 'sig_info' was here
+>>
+>> I get the above error when trying to build both linux-3.6 and linux-3.6.2 in
+>> both x86 (gcc-4.7.2) and x86_64 (gcc-4.6.3) environments.
+>>
+>> Since both files involved in the conflict are part of the source distribution,
+>> I don't think that it can be a fault with my environment; but then I don't
+>> understand why it obviously works for others.
+>>
+>> arch/um/os-Linux/signal.c:18:8
+>> arch/um/include/shared/as-layout.h:64:15
+>
+> Already known and fixed. :)
+> http://www.spinics.net/lists/mm-commits/msg91703.html
+
+Missing "Cc: stable@vger.kernel.org"?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
