@@ -1,53 +1,102 @@
-Return-Path: <linux-mips-bounce@linux-mips.org>
-Date: Fri, 19 Oct 2012 11:55:17 -0400
-From: Pavel Roskin <proski@gnu.org>
-Message-ID: <20121019115517.7b8514a8@mj>
-In-Reply-To: <1350630254.2293.183.camel@edumazet-glaptop>
+Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+In-Reply-To: <cover.1350618006.git.joe@perches.com>
 References: <cover.1350618006.git.joe@perches.com>
-        <1350630254.2293.183.camel@edumazet-glaptop>
+Date: Fri, 19 Oct 2012 09:04:14 +0200
+Message-ID: <1350630254.2293.183.camel@edumazet-glaptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Subject: Re: [ath9k-devel] [PATCH net-next 00/21] treewide: Use consistent
- api style for address testing
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Joe Perches <joe@perches.com>, linux-mips@linux-mips.org, linux-usb@vger.kernel.org, linux-doc@vger.kernel.org, brcm80211-dev-list@broadcom.com, linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org, devel@open-fcoe.org, dev@openvswitch.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, bridge@lists.linux-foundation.org, lvs-devel@vger.kernel.org, coreteam@netfilter.org, b43-dev@lists.infradead.org, cbe-oss-dev@lists.ozlabs.org, devel@driverdev.osuosl.org, wimax@linuxwimax.org, devicetree-discuss@lists.ozlabs.org, linux-nfs@vger.kernel.org, netfilter@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, davinci-linux-open-source@linux.davincidsp.com, linux-parisc@vger.kernel.org, netdev@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org, linux-wireless@vger.kernel.org, users@rt2x00.serialmonkey.com, e1000-devel@lists.sourceforge.net, ath9k-devel@lists.ath9k.org, netfilter-devel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org
+Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+Subject: Re: [PATCH net-next 00/21] treewide: Use consistent api style for
+ address testing
+To: Joe Perches <joe@perches.com>
+Cc: linux-mips@linux-mips.org, linux-usb@vger.kernel.org, linux-doc@vger.kernel.org, brcm80211-dev-list@broadcom.com, linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org, devel@open-fcoe.org, dev@openvswitch.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, bridge@lists.linux-foundation.org, lvs-devel@vger.kernel.org, coreteam@netfilter.org, b43-dev@lists.infradead.org, cbe-oss-dev@lists.ozlabs.org, devel@driverdev.osuosl.org, wimax@linuxwimax.org, devicetree-discuss@lists.ozlabs.org, linux-nfs@vger.kernel.org, netfilter@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, davinci-linux-open-source@linux.davincidsp.com, linux-parisc@vger.kernel.org, netdev@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org, linux-wireless@vger.kernel.org, users@rt2x00.serialmonkey.com, e1000-devel@lists.sourceforge.net, ath9k-devel@lists.ath9k.org, netfilter-devel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Fri, 19 Oct 2012 09:04:14 +0200
-Eric Dumazet <eric.dumazet@gmail.com> wrote:
-
-> Yes they are some names discrepancies, thats a big deal.
+On Thu, 2012-10-18 at 20:55 -0700, Joe Perches wrote:
+> ethernet, ipv4, and ipv6 address testing uses 3 different api naming styles.
 > 
-> And we have alloc_skb() / kfree_skb() / skb_clone() 
+> ethernet uses:	is_<foo>_ether_addr
+> ipv4 uses:	ipv4_is_<foo>
+> ipv6 uses:	ipv6_addr_<foo>
 > 
-> Why not skb_alloc() / skb_free() / skb_clone() ?
+> Standardize on the ipv6 style of <prefix>_addr_<type> to reduce
+> the number of styles to remember.
 > 
-> Some people actually know current code by name of functions, they dont
-> want to change their mind and having to grep include files and git log
-> to learn the new names of an old function, especially when traveling
-> and using a laptop.
+> The new consistent styles are:
+> 
+> eth_addr_<foo>(const u8 *)
+> ipv4_addr_<foo>(__be32)
+> ipv6_addr_<foo>(const struct in6_addr *)
+> 
+> Add temporary backward compatibility #defines for the old names too.
+> 
+> Joe Perches (21):
+>   etherdevice: Rename is_<foo>_ether_addr tests to eth_addr_<foo>
+>   net: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   arch: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   wireless: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   drivers: net: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   staging: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   infiniband: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   scsi: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   of: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   s390: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   usb: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   uwb: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   Documentation: networking: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   llc_if.h: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
+>   in.h: Rename ipv4_is_<foo> functions to ipv4_addr_<foo>
+>   net: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
+>   infiniband: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
+>   ath6kl: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
+>   parisc: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
+>   lockd: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
+>   sctp: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
 
-I agree.
+Yes they are some names discrepancies, thats a big deal.
 
-Also, it makes sense to introduce a more consistent name for a function
-when it's improved in some way and the callers need to be adjusted or
-re-checked.
+And we have alloc_skb() / kfree_skb() / skb_clone() 
 
-That way, the old name can be phased out as the code is made compatible
-with the new function.
+Why not skb_alloc() / skb_free() / skb_clone() ?
 
--- 
-Regards,
-Pavel Roskin
+Some people actually know current code by name of functions, they dont
+want to change their mind and having to grep include files and git log
+to learn the new names of an old function, especially when traveling and
+using a laptop.
 
+Sure, when we want to use eth_random_addr(), a grep into include files
+to check if its still the right name (old one was random_ether_addr())
+is OK because we dont use this one often.
+
+If you think about it, eth_random_addr() was not the perfect name.
+
+Think about all the documentation you can find outside of kernel tree,
+RFC and things like that, copy/pasting some linux kernel code.
+
+This kind of changes make our life more difficult, when we have to
+backport patches or rebase code, or even perform some searches to find
+prior issues/discussions.
+
+Life of a kernel developer is not only dealing with latest Linus (or
+-next) tree, and using automatic 'tools'.
+
+Thats a real pain for me at least.
+
+
+
+_______________________________________________
+Linuxppc-dev mailing list
+Linuxppc-dev@lists.ozlabs.org
+https://lists.ozlabs.org/listinfo/linuxppc-dev
 
