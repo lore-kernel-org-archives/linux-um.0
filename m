@@ -1,185 +1,75 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Joe Perches <joe@perches.com>
-Date: Thu, 18 Oct 2012 20:55:34 -0700
-Message-Id: <58e119fbf38f7559473930089a642ed57d118459.1350618009.git.joe@perches.com>
-In-Reply-To: <cover.1350618006.git.joe@perches.com>
-References: <cover.1350618006.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH net-next 03/21] arch: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
-To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@ti.com>, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Ralf Baechle <ralf@linux-mips.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, davinci-linux-open-source@linux.davincidsp.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lekensteyn@gmail.com>) id 1TPhjc-0000al-RB
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 20 Oct 2012 22:41:36 +0000
+Received: from mail-we0-f175.google.com ([74.125.82.175])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TPhjb-0004bd-Vm
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 20 Oct 2012 22:41:36 +0000
+Received: by mail-we0-f175.google.com with SMTP id t44so892396wey.34
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 20 Oct 2012 15:41:29 -0700 (PDT)
+From: Lekensteyn <lekensteyn@gmail.com>
+Date: Sun, 21 Oct 2012 00:41:28 +0200
+Message-ID: <5676341.xM9MmW8x3d@al>
+In-Reply-To: <CAFLxGvxzz6VKMNanzSx1NqNWwVTn-Fad5oAzT2LdvT5h_RU-jQ@mail.gmail.com>
+References: <50796C57.9070303@nod.at> <3527641.WyP7Gpcf54@al>
+	<CAFLxGvxzz6VKMNanzSx1NqNWwVTn-Fad5oAzT2LdvT5h_RU-jQ@mail.gmail.com>
+MIME-Version: 1.0
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] linux-3.6.x ARCH=um will not build
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 
-Convert the old ether_addr tests to eth_addr_<foo>.
-Adds api consistency.
+On Sunday 21 October 2012 00:18:39 richard -rw- weinberger wrote:
+> >> I've an idea whats going on.
+> > 
+> > Great! Meanwhile I've built 3.6.2 with a hack:
+> >   sed -i '1,1i#include <sys/resource.h>' arch/um/os-Linux/start_up.c
+> >   sed -i 's|siginfo_t \*|struct siginfo *|' arch/um/os-Linux/signal.c
+> >
+> > (taken from https://aur.archlinux.org/packages/li/linux-usermode/PKGBUILD)
+> 
+> Nice hack.
+> Here on (OpenSUSE glibc 2.16, gcc 4.7) everything builds fine.
+> 
+> Does Arch have a livecd or something like that where I can reproduce the
+> issue?
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- arch/arm/mach-davinci/board-mityomapl138.c |    2 +-
- arch/arm/mach-pxa/colibri-pxa3xx.c         |    2 +-
- arch/avr32/boards/atngw100/setup.c         |    2 +-
- arch/avr32/boards/atstk1000/atstk1002.c    |    2 +-
- arch/avr32/boards/favr-32/setup.c          |    2 +-
- arch/avr32/boards/hammerhead/setup.c       |    2 +-
- arch/avr32/boards/merisc/setup.c           |    2 +-
- arch/avr32/boards/mimc200/setup.c          |    2 +-
- arch/mips/alchemy/common/platform.c        |    4 ++--
- arch/um/drivers/net_kern.c                 |    6 +++---
- 10 files changed, 13 insertions(+), 13 deletions(-)
+Arch Linux tries to use as much unpatched source code as possible, any other 
+distribution with recent tools should work. AFAIK there is no "ready to use" 
+Live CD available from the official site since you start with almost nothing and 
+install the programs at your choice (something like Gentoo, but faster). If 
+you want to try it, https://www.archlinux.org/ :)
 
-diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-index 43e4a0d..df45c9c 100644
---- a/arch/arm/mach-davinci/board-mityomapl138.c
-+++ b/arch/arm/mach-davinci/board-mityomapl138.c
-@@ -138,7 +138,7 @@ static void read_factory_config(struct memory_accessor *a, void *context)
- 	}
- 
- 	pr_info("MityOMAPL138: Found MAC = %pM\n", factory_config.mac);
--	if (is_valid_ether_addr(factory_config.mac))
-+	if (eth_addr_valid(factory_config.mac))
- 		memcpy(soc_info->emac_pdata->mac_addr,
- 			factory_config.mac, ETH_ALEN);
- 	else
-diff --git a/arch/arm/mach-pxa/colibri-pxa3xx.c b/arch/arm/mach-pxa/colibri-pxa3xx.c
-index 8240291..839040c 100644
---- a/arch/arm/mach-pxa/colibri-pxa3xx.c
-+++ b/arch/arm/mach-pxa/colibri-pxa3xx.c
-@@ -52,7 +52,7 @@ void __init colibri_pxa3xx_init_eth(struct ax_plat_data *plat_data)
- 		serial >>= 8;
- 	}
- 
--	if (is_valid_ether_addr(ether_mac_addr)) {
-+	if (eth_addr_valid(ether_mac_addr)) {
- 		plat_data->flags |= AXFLG_MAC_FROMPLATFORM;
- 		plat_data->mac_addr = ether_mac_addr;
- 		printk(KERN_INFO "%s(): taking MAC from serial boot tag\n",
-diff --git a/arch/avr32/boards/atngw100/setup.c b/arch/avr32/boards/atngw100/setup.c
-index afeae89..5f7d86d 100644
---- a/arch/avr32/boards/atngw100/setup.c
-+++ b/arch/avr32/boards/atngw100/setup.c
-@@ -175,7 +175,7 @@ static void __init set_hw_addr(struct platform_device *pdev)
- 		return;
- 
- 	addr = hw_addr[pdev->id].addr;
--	if (!is_valid_ether_addr(addr))
-+	if (!eth_addr_valid(addr))
- 		return;
- 
- 	/*
-diff --git a/arch/avr32/boards/atstk1000/atstk1002.c b/arch/avr32/boards/atstk1000/atstk1002.c
-index 6c80aba..7334686 100644
---- a/arch/avr32/boards/atstk1000/atstk1002.c
-+++ b/arch/avr32/boards/atstk1000/atstk1002.c
-@@ -189,7 +189,7 @@ static void __init set_hw_addr(struct platform_device *pdev)
- 		return;
- 
- 	addr = hw_addr[pdev->id].addr;
--	if (!is_valid_ether_addr(addr))
-+	if (!eth_addr_valid(addr))
- 		return;
- 
- 	/*
-diff --git a/arch/avr32/boards/favr-32/setup.c b/arch/avr32/boards/favr-32/setup.c
-index 27bd6fb..0b76aa7 100644
---- a/arch/avr32/boards/favr-32/setup.c
-+++ b/arch/avr32/boards/favr-32/setup.c
-@@ -196,7 +196,7 @@ static void __init set_hw_addr(struct platform_device *pdev)
- 		return;
- 
- 	addr = hw_addr[pdev->id].addr;
--	if (!is_valid_ether_addr(addr))
-+	if (!eth_addr_valid(addr))
- 		return;
- 
- 	/*
-diff --git a/arch/avr32/boards/hammerhead/setup.c b/arch/avr32/boards/hammerhead/setup.c
-index 9d1efd1..d64fa9f 100644
---- a/arch/avr32/boards/hammerhead/setup.c
-+++ b/arch/avr32/boards/hammerhead/setup.c
-@@ -139,7 +139,7 @@ static void __init set_hw_addr(struct platform_device *pdev)
- 
- 	addr = hw_addr[pdev->id].addr;
- 
--	if (!is_valid_ether_addr(addr))
-+	if (!eth_addr_valid(addr))
- 		return;
- 
- 	/*
-diff --git a/arch/avr32/boards/merisc/setup.c b/arch/avr32/boards/merisc/setup.c
-index ed137e3..817d2d8 100644
---- a/arch/avr32/boards/merisc/setup.c
-+++ b/arch/avr32/boards/merisc/setup.c
-@@ -129,7 +129,7 @@ static void __init set_hw_addr(struct platform_device *pdev)
- 		return;
- 
- 	addr = hw_addr[pdev->id].addr;
--	if (!is_valid_ether_addr(addr))
-+	if (!eth_addr_valid(addr))
- 		return;
- 
- 	regs = (void __iomem __force *)res->start;
-diff --git a/arch/avr32/boards/mimc200/setup.c b/arch/avr32/boards/mimc200/setup.c
-index 05358aa..31cd87e 100644
---- a/arch/avr32/boards/mimc200/setup.c
-+++ b/arch/avr32/boards/mimc200/setup.c
-@@ -152,7 +152,7 @@ static void __init set_hw_addr(struct platform_device *pdev)
- 		return;
- 
- 	addr = hw_addr[pdev->id].addr;
--	if (!is_valid_ether_addr(addr))
-+	if (!eth_addr_valid(addr))
- 		return;
- 
- 	/*
-diff --git a/arch/mips/alchemy/common/platform.c b/arch/mips/alchemy/common/platform.c
-index c0f3ce6..5f07da3 100644
---- a/arch/mips/alchemy/common/platform.c
-+++ b/arch/mips/alchemy/common/platform.c
-@@ -343,7 +343,7 @@ static void __init alchemy_setup_macs(int ctype)
- 	au1xxx_eth0_device.resource = macres;
- 
- 	i = prom_get_ethernet_addr(ethaddr);
--	if (!i && !is_valid_ether_addr(au1xxx_eth0_platform_data.mac))
-+	if (!i && !eth_addr_valid(au1xxx_eth0_platform_data.mac))
- 		memcpy(au1xxx_eth0_platform_data.mac, ethaddr, 6);
- 
- 	ret = platform_device_register(&au1xxx_eth0_device);
-@@ -364,7 +364,7 @@ static void __init alchemy_setup_macs(int ctype)
- 	au1xxx_eth1_device.resource = macres;
- 
- 	ethaddr[5] += 1;	/* next addr for 2nd MAC */
--	if (!i && !is_valid_ether_addr(au1xxx_eth1_platform_data.mac))
-+	if (!i && !eth_addr_valid(au1xxx_eth1_platform_data.mac))
- 		memcpy(au1xxx_eth1_platform_data.mac, ethaddr, 6);
- 
- 	/* Register second MAC if enabled in pinfunc */
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index b1314eb..47e11e7 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -312,19 +312,19 @@ static int setup_etheraddr(char *str, unsigned char *addr, char *name)
- 		}
- 		str = end + 1;
- 	}
--	if (is_multicast_ether_addr(addr)) {
-+	if (eth_addr_multicast(addr)) {
- 		printk(KERN_ERR
- 		       "Attempt to assign a multicast ethernet address to a "
- 		       "device disallowed\n");
- 		goto random;
- 	}
--	if (!is_valid_ether_addr(addr)) {
-+	if (!eth_addr_valid(addr)) {
- 		printk(KERN_ERR
- 		       "Attempt to assign an invalid ethernet address to a "
- 		       "device disallowed\n");
- 		goto random;
- 	}
--	if (!is_local_ether_addr(addr)) {
-+	if (!eth_addr_local(addr)) {
- 		printk(KERN_WARNING
- 		       "Warning: Assigning a globally valid ethernet "
- 		       "address to a device\n");
--- 
-1.7.8.111.gad25c.dirty
+If you do not feel adventurous, try the iso from this topic 
+https://bbs.archlinux.org/viewtopic.php?id=150833.
+
+Regards,
+Peter
+
+------------------------------------------------------------------------------
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_sfd2d_oct
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
