@@ -1,41 +1,45 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <506FEC51.3020205@gmail.com>
-Date: Sat, 06 Oct 2012 10:31:13 +0200
+Message-ID: <508276D3.5000708@gmail.com>
+Date: Sat, 20 Oct 2012 12:02:59 +0200
 From: Marco Stornelli <marco.stornelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 14/22] hostfs: drop vmtruncate
-To: Linux FS Devel <linux-fsdevel@vger.kernel.org>, Al Viro <viro@ZenIV.linux.org.uk>
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH] hostfs: fix a not needed double check
+To: Richard Weinberger <richard@nod.at>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>, Linux FS Devel <linux-fsdevel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Removed vmtruncate.
+With the commit 3be2be0a32c18b0fd6d623cda63174a332ca0de1 we removed vmtruncate,
+but actaully there is no need to call inode_newsize_ok() because the checks are
+already done in inode_change_ok() at the begin of the function.
 
 Signed-off-by: Marco Stornelli <marco.stornelli@gmail.com>
 ---
- fs/hostfs/hostfs_kern.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
+ fs/hostfs/hostfs_kern.c |    9 +--------
+ 1 files changed, 1 insertions(+), 8 deletions(-)
 
 diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 6c9f3a9..4348e84 100644
+index 457addc..c9d5254 100644
 --- a/fs/hostfs/hostfs_kern.c
 +++ b/fs/hostfs/hostfs_kern.c
-@@ -848,9 +848,11 @@ int hostfs_setattr(struct dentry *dentry, struct iattr *attr)
- 	    attr->ia_size != i_size_read(inode)) {
- 		int error;
+@@ -845,15 +845,8 @@ int hostfs_setattr(struct dentry *dentry, struct iattr *attr)
+ 		return err;
  
--		error = vmtruncate(inode, attr->ia_size);
--		if (err)
--			return err;
-+		error = inode_newsize_ok(inode, attr->ia_size);
-+		if (error)
-+			return error;
-+
-+		truncate_setsize(inode, attr->ia_size);
- 	}
+ 	if ((attr->ia_valid & ATTR_SIZE) &&
+-	    attr->ia_size != i_size_read(inode)) {
+-		int error;
+-
+-		error = inode_newsize_ok(inode, attr->ia_size);
+-		if (error)
+-			return error;
+-
++	    attr->ia_size != i_size_read(inode))
+ 		truncate_setsize(inode, attr->ia_size);
+-	}
  
  	setattr_copy(inode, attr);
+ 	mark_inode_dirty(inode);
 -- 
 1.7.3.4
