@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lekensteyn@gmail.com>) id 1TPhjc-0000al-RB
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1TPhNW-0001wA-V2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Oct 2012 22:41:36 +0000
-Received: from mail-we0-f175.google.com ([74.125.82.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TPhjb-0004bd-Vm
+	Sat, 20 Oct 2012 22:18:46 +0000
+Received: from mail-bk0-f47.google.com ([209.85.214.47])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TPhNW-0001L3-5U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Oct 2012 22:41:36 +0000
-Received: by mail-we0-f175.google.com with SMTP id t44so892396wey.34
+	Sat, 20 Oct 2012 22:18:46 +0000
+Received: by mail-bk0-f47.google.com with SMTP id jk7so487467bkc.34
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 20 Oct 2012 15:41:29 -0700 (PDT)
-From: Lekensteyn <lekensteyn@gmail.com>
-Date: Sun, 21 Oct 2012 00:41:28 +0200
-Message-ID: <5676341.xM9MmW8x3d@al>
-In-Reply-To: <CAFLxGvxzz6VKMNanzSx1NqNWwVTn-Fad5oAzT2LdvT5h_RU-jQ@mail.gmail.com>
-References: <50796C57.9070303@nod.at> <3527641.WyP7Gpcf54@al>
-	<CAFLxGvxzz6VKMNanzSx1NqNWwVTn-Fad5oAzT2LdvT5h_RU-jQ@mail.gmail.com>
+	Sat, 20 Oct 2012 15:18:39 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <3527641.WyP7Gpcf54@al>
+References: <50796C57.9070303@nod.at> <1610795.Cjb5TqF7v9@al>
+	<50830FBA.8040906@nod.at> <3527641.WyP7Gpcf54@al>
+Date: Sun, 21 Oct 2012 00:18:39 +0200
+Message-ID: <CAFLxGvxzz6VKMNanzSx1NqNWwVTn-Fad5oAzT2LdvT5h_RU-jQ@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,35 +33,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] linux-3.6.x ARCH=um will not build
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: Lekensteyn <lekensteyn@gmail.com>
 Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 
-On Sunday 21 October 2012 00:18:39 richard -rw- weinberger wrote:
-> >> I've an idea whats going on.
-> > 
-> > Great! Meanwhile I've built 3.6.2 with a hack:
-> >   sed -i '1,1i#include <sys/resource.h>' arch/um/os-Linux/start_up.c
-> >   sed -i 's|siginfo_t \*|struct siginfo *|' arch/um/os-Linux/signal.c
-> >
-> > (taken from https://aur.archlinux.org/packages/li/linux-usermode/PKGBUILD)
-> 
-> Nice hack.
-> Here on (OpenSUSE glibc 2.16, gcc 4.7) everything builds fine.
-> 
-> Does Arch have a livecd or something like that where I can reproduce the
-> issue?
+On Sun, Oct 21, 2012 at 12:07 AM, Lekensteyn <lekensteyn@gmail.com> wrote:
+> Hi Richard,
+>
+> On Saturday 20 October 2012 22:55:22 Richard Weinberger wrote:
+>> Is this glibc-2.17?
+> This is glibc 2.16 on Arch Linux.
+>
+>> I've an idea whats going on.
+> Great! Meanwhile I've built 3.6.2 with a hack:
+>   sed -i '1,1i#include <sys/resource.h>' arch/um/os-Linux/start_up.c
+>   sed -i 's|siginfo_t \*|struct siginfo *|' arch/um/os-Linux/signal.c
+> (taken from https://aur.archlinux.org/packages/li/linux-usermode/PKGBUILD)
 
-Arch Linux tries to use as much unpatched source code as possible, any other 
-distribution with recent tools should work. AFAIK there is no "ready to use" 
-Live CD available from the official site since you start with almost nothing and 
-install the programs at your choice (something like Gentoo, but faster). If 
-you want to try it, https://www.archlinux.org/ :)
+Nice hack. ;)
+Here on (OpenSUSE glibc 2.16, gcc 4.7) everything builds fine.
 
-If you do not feel adventurous, try the iso from this topic 
-https://bbs.archlinux.org/viewtopic.php?id=150833.
+Does Arch have a livecd or something like that where I can reproduce the issue?
 
-Regards,
-Peter
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
