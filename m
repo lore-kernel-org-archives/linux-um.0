@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1TPhNW-0001wA-V2
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lekensteyn@gmail.com>) id 1TPfkI-0003Nu-Dx
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Oct 2012 22:18:46 +0000
-Received: from mail-bk0-f47.google.com ([209.85.214.47])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TPhNW-0001L3-5U
+	Sat, 20 Oct 2012 20:34:10 +0000
+Received: from mail-ee0-f47.google.com ([74.125.83.47])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1TPfkE-0005sz-3B
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Oct 2012 22:18:46 +0000
-Received: by mail-bk0-f47.google.com with SMTP id jk7so487467bkc.34
+	Sat, 20 Oct 2012 20:34:10 +0000
+Received: by mail-ee0-f47.google.com with SMTP id t10so608293eei.34
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 20 Oct 2012 15:18:39 -0700 (PDT)
+	Sat, 20 Oct 2012 13:33:59 -0700 (PDT)
+From: Lekensteyn <lekensteyn@gmail.com>
+Date: Sat, 20 Oct 2012 22:33:57 +0200
+Message-ID: <1610795.Cjb5TqF7v9@al>
+In-Reply-To: <50796C57.9070303@nod.at>
+References: <50796C57.9070303@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <3527641.WyP7Gpcf54@al>
-References: <50796C57.9070303@nod.at> <1610795.Cjb5TqF7v9@al>
-	<50830FBA.8040906@nod.at> <3527641.WyP7Gpcf54@al>
-Date: Sun, 21 Oct 2012 00:18:39 +0200
-Message-ID: <CAFLxGvxzz6VKMNanzSx1NqNWwVTn-Fad5oAzT2LdvT5h_RU-jQ@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,42 +28,87 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] linux-3.6.x ARCH=um will not build
-To: Lekensteyn <lekensteyn@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+To: Martin =?ISO-8859-1?Q?P=E4rtel?= <martin.partel@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Sun, Oct 21, 2012 at 12:07 AM, Lekensteyn <lekensteyn@gmail.com> wrote:
-> Hi Richard,
->
-> On Saturday 20 October 2012 22:55:22 Richard Weinberger wrote:
->> Is this glibc-2.17?
-> This is glibc 2.16 on Arch Linux.
->
->> I've an idea whats going on.
-> Great! Meanwhile I've built 3.6.2 with a hack:
->   sed -i '1,1i#include <sys/resource.h>' arch/um/os-Linux/start_up.c
->   sed -i 's|siginfo_t \*|struct siginfo *|' arch/um/os-Linux/signal.c
-> (taken from https://aur.archlinux.org/packages/li/linux-usermode/PKGBUILD)
-
-Nice hack. ;)
-Here on (OpenSUSE glibc 2.16, gcc 4.7) everything builds fine.
-
-Does Arch have a livecd or something like that where I can reproduce the issue?
-
--- 
-Thanks,
-//richard
-
-------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_sfd2d_oct
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gU2F0LCBPY3QgMTMsIDIwMTIgYXQgMToyNyBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3Rl
+Ogo+IEFtIDEzLjEwLjIwMTIgMTU6MTMsIHNjaHJpZWIgRGF2ZSBIdW1waHJleXMgKEJvYik6Cj4g
+PiBhcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jOjE4Ojg6IGVycm9yOiBjb25mbGljdGluZyB0eXBl
+cyBmb3IgJ3NpZ19pbmZvJwo+ID4gL25mczR4cC9zb2Z0d2FyZS9rcm4vbGludXgtMy42LngvbGlu
+dXgtMy42LjItCnVtNjQvYXJjaC91bS9pbmNsdWRlL3NoYXJlZC9hcy0KPiA+IGxheW91dC5oOjY0
+OjE1OiBub3RlOiBwcmV2aW91cyBkZWNsYXJhdGlvbiBvZiAnc2lnX2luZm8nIHdhcyBoZXJlCj4g
+PiAKPiA+IEkgZ2V0IHRoZSBhYm92ZSBlcnJvciB3aGVuIHRyeWluZyB0byBidWlsZCBib3RoIGxp
+bnV4LTMuNiBhbmQgbGludXgtMy42LjIgCmluIAo+ID4gYm90aCB4ODYgKGdjYy00LjcuMikgYW5k
+IHg4Nl82NCAoZ2NjLTQuNi4zKSBlbnZpcm9ubWVudHMuCj4gPiAKPgo+IEFscmVhZHkga25vd24g
+YW5kIGZpeGVkLiA6KQo+IGh0dHA6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvbW0tY29tbWl0cy9t
+c2c5MTcwMy5odG1sCgpMaW51eCAzLjYuMiBhbmQgdjMuNy1yYzEtMzMwLWcxOTgxOTBhIGFyZSBz
+dGlsbCBhZmZlY3RlZDoKCmFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6MTg6ODogZXJyb3I6IGNv
+bmZsaWN0aW5nIHR5cGVzIGZvciDigJhzaWdfaW5mb+KAmQpJbiBmaWxlIGluY2x1ZGVkIGZyb20g
+YXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzoxMjowOgovdG1wL2xpbnV4LTMuNy9hcmNoL3VtL2lu
+Y2x1ZGUvc2hhcmVkL2FzLWxheW91dC5oOjY0OjE1OiBub3RlOiBwcmV2aW91cyAKZGVjbGFyYXRp
+b24gb2Yg4oCYc2lnX2luZm/igJkgd2FzIGhlcmUKYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzox
+OToyOiB3YXJuaW5nOiBpbml0aWFsaXphdGlvbiBmcm9tIGluY29tcGF0aWJsZSAKcG9pbnRlciB0
+eXBlIFtlbmFibGVkIGJ5IGRlZmF1bHRdCmFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6MTk6Mjog
+d2FybmluZzogKG5lYXIgaW5pdGlhbGl6YXRpb24gZm9yIArigJhzaWdfaW5mb1s1XeKAmSkgW2Vu
+YWJsZWQgYnkgZGVmYXVsdF0KYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzoyMDoyOiB3YXJuaW5n
+OiBpbml0aWFsaXphdGlvbiBmcm9tIGluY29tcGF0aWJsZSAKcG9pbnRlciB0eXBlIFtlbmFibGVk
+IGJ5IGRlZmF1bHRdCmFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6MjA6Mjogd2FybmluZzogKG5l
+YXIgaW5pdGlhbGl6YXRpb24gZm9yIArigJhzaWdfaW5mb1s4XeKAmSkgW2VuYWJsZWQgYnkgZGVm
+YXVsdF0KYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzoyMToyOiB3YXJuaW5nOiBpbml0aWFsaXph
+dGlvbiBmcm9tIGluY29tcGF0aWJsZSAKcG9pbnRlciB0eXBlIFtlbmFibGVkIGJ5IGRlZmF1bHRd
+CmFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6MjE6Mjogd2FybmluZzogKG5lYXIgaW5pdGlhbGl6
+YXRpb24gZm9yIArigJhzaWdfaW5mb1s0XeKAmSkgW2VuYWJsZWQgYnkgZGVmYXVsdF0KYXJjaC91
+bS9vcy1MaW51eC9zaWduYWwuYzoyMjoyOiB3YXJuaW5nOiBpbml0aWFsaXphdGlvbiBmcm9tIGlu
+Y29tcGF0aWJsZSAKcG9pbnRlciB0eXBlIFtlbmFibGVkIGJ5IGRlZmF1bHRdCi4uLgoKVGhlIG1p
+c21hdGNoaW5nIGRlY2xhcmF0aW9uL2RlZmluaXRpb24gd2FzIGludHJvZHVjZWQgd2l0aDoKCmNv
+bW1pdCBkM2MxY2ZjZGI0M2UwMjNhYjFiMWM3YTU1NWNkOWU5MjkwMjY1MDBhCkF1dGhvcjogTWFy
+dGluIFDDpHJ0ZWwgPG1hcnRpbi5wYXJ0ZWxAZ21haWwuY29tPgpEYXRlOiAgIFRodSBBdWcgMiAw
+MDo0OToxNyAyMDEyICswMjAwCgogICAgdW06IHBhc3Mgc2lnaW5mbyB0byBndWVzdCBwcm9jZXNz
+CiAgICAKICAgIFVNTCBndWVzdCBwcm9jZXNzZXMgbm93IGdldCBjb3JyZWN0IHNpZ2luZm9fdCBm
+b3IgU0lHVFJBUCwgU0lHRlBFLAogICAgU0lHSUxMIGFuZCBTSUdCVVMuIFNwZWNpZmljYWxseSwg
+c2lfYWRkciBhbmQgc2lfY29kZSBhcmUgbm93IGNvcnJlY3QKICAgIHdoZXJlIHByZXZpb3VzbHkg
+dGhleSB3ZXJlIHNpX2FkZHIgPSBOVUxMIGFuZCBzaV9jb2RlID0gMTI4LgogICAgCiAgICBTaWdu
+ZWQtb2ZmLWJ5OiBNYXJ0aW4gUMOkcnRlbCA8bWFydGluLnBhcnRlbEBnbWFpbC5jb20+CiAgICBT
+aWduZWQtb2ZmLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgoKCkluIGFy
+Y2gvdW0vaW5jbHVkZS9zaGFyZWQvYXMtbGF5b3V0LmgsIE1hcnRpbiBkaWQ6Ci1leHRlcm4gdm9p
+ZCAoKnNpZ19pbmZvW10pKGludCwgc3RydWN0IHVtbF9wdF9yZWdzICopOworc3RydWN0IHNpZ2lu
+Zm87CitleHRlcm4gdm9pZCAoKnNpZ19pbmZvW10pKGludCwgc3RydWN0IHNpZ2luZm8gKnNpLCBz
+dHJ1Y3QgdW1sX3B0X3JlZ3MgKik7CgpidXQgaW4gYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYywg
+dGhlIGRlZmluaXRpb24gaXMgY29tcGxldGVseSBkaWZmZXJlbnQ6Ci12b2lkICgqc2lnX2luZm9b
+TlNJR10pKGludCwgc3RydWN0IHVtbF9wdF9yZWdzICopID0gewordm9pZCAoKnNpZ19pbmZvW05T
+SUddKShpbnQsIHNpZ2luZm9fdCAqLCBzdHJ1Y3QgdW1sX3B0X3JlZ3MgKikgPSB7CgpJIHdhbnRl
+ZCB0byBmaXggaXQsIGJ1dCBJIGRvIG5vdCBrbm93IHdoYXQgdGhlIGNvcnJlY3QgdHlwZSBzaG91
+bGQgYmUuIApzaWdpbmZvX3QgaXMgZGVjbGFyZWQgaW4gc2lnbmFsLmguIEkgdHJpZWQgcmVwbGFj
+aW5nIGFsbCAic3RydWN0IHNpZ2luZm8icyBieSAKc2lnaW5mb190LCBidXQgdGhhdCBkaWQgbm90
+IGhlbHAgKHNpZ25hbC5oIGlzIG5vdCBpbmNsdWRlZCkKCgpUaGUgc2Vjb25kIGJ1aWxkIGVycm9y
+IEkgZ2V0IGlzOgphcmNoL3VtL29zLUxpbnV4L3N0YXJ0X3VwLmM6IEluIGZ1bmN0aW9uIOKAmGNo
+ZWNrX2NvcmVkdW1wX2xpbWl04oCZOgphcmNoL3VtL29zLUxpbnV4L3N0YXJ0X3VwLmM6MzM4OjE2
+OiBlcnJvcjogc3RvcmFnZSBzaXplIG9mIOKAmGxpbeKAmSBpc27igJl0IGtub3duCmFyY2gvdW0v
+b3MtTGludXgvc3RhcnRfdXAuYzozMzk6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9m
+IGZ1bmN0aW9uIArigJhnZXRybGltaXTigJkgWy1XZXJyb3I9aW1wbGljaXQtZnVuY3Rpb24tZGVj
+bGFyYXRpb25dCmFyY2gvdW0vb3MtTGludXgvc3RhcnRfdXAuYzozMzk6MjI6IGVycm9yOiDigJhS
+TElNSVRfQ09SReKAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgCmluIHRoaXMgZnVuY3Rpb24pCmFy
+Y2gvdW0vb3MtTGludXgvc3RhcnRfdXAuYzozMzk6MjI6IG5vdGU6IGVhY2ggdW5kZWNsYXJlZCBp
+ZGVudGlmaWVyIGlzIApyZXBvcnRlZCBvbmx5IG9uY2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBw
+ZWFycyBpbgphcmNoL3VtL29zLUxpbnV4L3N0YXJ0X3VwLmM6MzQ3OjIyOiBlcnJvcjog4oCYUkxJ
+TV9JTkZJTklUWeKAmSB1bmRlY2xhcmVkIChmaXJzdCAKdXNlIGluIHRoaXMgZnVuY3Rpb24pCmFy
+Y2gvdW0vb3MtTGludXgvc3RhcnRfdXAuYzozMzg6MTY6IHdhcm5pbmc6IHVudXNlZCB2YXJpYWJs
+ZSDigJhsaW3igJkgWy1XdW51c2VkLQp2YXJpYWJsZV0KClRoaXMgY2FuIGJlIGZpeGVkIGJ5IGFk
+ZGluZyB0aGUgZm9sbG93aW5nIHRvIGFyY2gvdW0vb3MtTGludXgvc3RhcnRfdXAuYzoKI2luY2x1
+ZGUgPHN5cy9yZXNvdXJjZS5oPgoodGVzdGVkIHdpdGggMy43KQoKTm8gc3BlY2lhbCBjb25maWd1
+cmF0aW9uLCBqdXN0ICJtYWtlIEFSQ0g9dW0gZGVmY29uZmlnIiBhbmQgIm1ha2UgQVJDSD11bSIu
+IEdDQyAKNC43LjIgNjQtYml0LgoKUmVnYXJkcywKUGV0ZXIKCihJIGFtIENDJ2luZyB0aGUgc2Yg
+bWwsIGJ1dCBoYXZlIG5vdCBzdWJzY3JpYmVkLiBJIHdvbmRlciBpZiBpdCB3b3JrcykKCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpFdmVyeW9uZSBoYXRlcyBzbG93IHdlYnNpdGVzLiBTbyBkbyB3ZS4K
+TWFrZSB5b3VyIHdlYiBhcHBzIGZhc3RlciB3aXRoIEFwcER5bmFtaWNzCkRvd25sb2FkIEFwcER5
+bmFtaWNzIExpdGUgZm9yIGZyZWUgdG9kYXk6Cmh0dHA6Ly9wLnNmLm5ldC9zZnUvYXBwZHluX3Nm
+ZDJkX29jdApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpV
+c2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBs
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
+bGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
