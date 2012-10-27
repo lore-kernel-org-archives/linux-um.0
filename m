@@ -1,89 +1,94 @@
-Return-Path: <geert@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sat, 29 Sep 2012 19:07:39 +0200
-Message-Id: <1348938460-20919-3-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1348938460-20919-1-git-send-email-geert@linux-m68k.org>
-References: <1348938460-20919-1-git-send-email-geert@linux-m68k.org>
-Subject: [PATCH 3/4] arch/x86/um: Drop UM_ prefix from printk() level specifiers
-To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, x86@kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <508BCFCF.70101@suse.cz>
+Date: Sat, 27 Oct 2012 14:13:03 +0200
+From: Jiri Slaby <jslaby@suse.cz>
+MIME-Version: 1.0
+References: <20121025001628.1DEDE100047@wpzn3.hot.corp.google.com> <50889347.4070801@xenotime.net> <20121025134850.76cdb390565dfe5117bdef7e@canb.auug.org.au>
+In-Reply-To: <20121025134850.76cdb390565dfe5117bdef7e@canb.auug.org.au>
+Content-Type: multipart/mixed;
+ boundary="------------060203010301090301010206"
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: mmotm 2012-10-24-17-15 uploaded (uml)
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Randy Dunlap <rdunlap@xenotime.net>, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, linux-next@vger.kernel.org, Alan Cox <alan@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, Jiri Slaby <jirislaby@gmail.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Since commit 9429ec96c2718c0d1e3317cf60a87a0405223814 ("um: Preinclude
-include/linux/kern_levels.h") the non-prefixed printk() level specifiers
-are usable for the user parts of UML.
+This is a multi-part message in MIME format.
+--------------060203010301090301010206
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/x86/um/bugs_32.c            |   14 +++++++-------
- arch/x86/um/os-Linux/registers.c |    2 +-
- 2 files changed, 8 insertions(+), 8 deletions(-)
+On 10/25/2012 04:48 AM, Stephen Rothwell wrote:
+> Hi Randy,
+> 
+> On Wed, 24 Oct 2012 18:17:59 -0700 Randy Dunlap <rdunlap@xenotime.net> wrote:
+>>
+>> uml on x86_64 defconfig:
+>>
+>> arch/um/drivers/chan_kern.c: In function 'tty_receive_char':
+>> arch/um/drivers/chan_kern.c:89:42: error: 'struct tty_struct' has no member named 'raw'
 
-diff --git a/arch/x86/um/bugs_32.c b/arch/x86/um/bugs_32.c
-index 17d88cf..d2bccc5 100644
---- a/arch/x86/um/bugs_32.c
-+++ b/arch/x86/um/bugs_32.c
-@@ -23,7 +23,7 @@ void arch_check_bugs(void)
- {
- 	struct sigaction old, new;
- 
--	printk(UM_KERN_INFO "Checking for host processor cmov support...");
-+	printk(KERN_INFO "Checking for host processor cmov support...");
- 	new.sa_handler = cmov_sigill_test_handler;
- 
- 	/* Make sure that SIGILL is enabled after the handler longjmps back */
-@@ -34,9 +34,9 @@ void arch_check_bugs(void)
- 	if (setjmp(cmov_test_return) == 0) {
- 		unsigned long foo = 0;
- 		__asm__ __volatile__("cmovz %0, %1" : "=r" (foo) : "0" (foo));
--		printk(UM_KERN_CONT "Yes\n");
-+		printk(KERN_CONT "Yes\n");
- 	} else
--		printk(UM_KERN_CONT "No\n");
-+		printk(KERN_CONT "No\n");
- 
- 	sigaction(SIGILL, &old, &new);
- }
-@@ -53,7 +53,7 @@ void arch_examine_signal(int sig, struct uml_pt_regs *regs)
- 		return;
- 
- 	if (copy_from_user_proc(tmp, (void *) UPT_IP(regs), 2)) {
--		printk(UM_KERN_ERR "SIGILL in init, could not read "
-+		printk(KERN_ERR "SIGILL in init, could not read "
- 		       "instructions!\n");
- 		return;
- 	}
-@@ -62,13 +62,13 @@ void arch_examine_signal(int sig, struct uml_pt_regs *regs)
- 		return;
- 
- 	if (host_has_cmov == 0)
--		printk(UM_KERN_ERR "SIGILL caused by cmov, which this "
-+		printk(KERN_ERR "SIGILL caused by cmov, which this "
- 		       "processor doesn't implement.  Boot a filesystem "
- 		       "compiled for older processors");
- 	else if (host_has_cmov == 1)
--		printk(UM_KERN_ERR "SIGILL caused by cmov, which this "
-+		printk(KERN_ERR "SIGILL caused by cmov, which this "
- 		       "processor claims to implement");
- 	else
--		printk(UM_KERN_ERR "Bad value for host_has_cmov (%d)",
-+		printk(KERN_ERR "Bad value for host_has_cmov (%d)",
- 			host_has_cmov);
- }
-diff --git a/arch/x86/um/os-Linux/registers.c b/arch/x86/um/os-Linux/registers.c
-index 0cdbb86..7719500 100644
---- a/arch/x86/um/os-Linux/registers.c
-+++ b/arch/x86/um/os-Linux/registers.c
-@@ -106,7 +106,7 @@ unsigned long get_thread_reg(int reg, jmp_buf *buf)
- 		return buf[0]->__rbp;
- #endif
- 	default:
--		printk(UM_KERN_ERR "get_thread_regs - unknown register %d\n",
-+		printk(KERN_ERR "get_thread_regs - unknown register %d\n",
- 		       reg);
- 		return 0;
- 	}
+Hmm, that code looks doing weird stuff. This patch should fix it. But
+I'm not sure why it was there at all, as n_tty should take care of the
+raw case perfectly right away. I cannot find any clues in the git log as
+to why it was added at all. It's there like since ever.
+
+Could anybody with working UML (I'm unable to run UML ATM, it crashes
+heavily during the bootup -- after terminals are shown) check whether
+the patch actually works?
+
+thanks,
 -- 
-1.7.0.4
+js
+suse labs
+
+--------------060203010301090301010206
+Content-Type: text/x-patch;
+ name="0001-UM.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-UM.patch"
+
+From 3f60aa996467bf4a1bd4e62f80cb714ea6569fde Mon Sep 17 00:00:00 2001
+From: Jiri Slaby <jslaby@suse.cz>
+Date: Thu, 25 Oct 2012 16:40:59 +0200
+Subject: [PATCH] UM:
+
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+---
+ arch/um/drivers/chan_kern.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
+
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index c3bba73..e9a0abc 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -83,21 +83,8 @@ static const struct chan_ops not_configged_ops = {
+ 
+ static void tty_receive_char(struct tty_struct *tty, char ch)
+ {
+-	if (tty == NULL)
+-		return;
+-
+-	if (I_IXON(tty) && !I_IXOFF(tty) && !tty->raw) {
+-		if (ch == STOP_CHAR(tty)) {
+-			stop_tty(tty);
+-			return;
+-		}
+-		else if (ch == START_CHAR(tty)) {
+-			start_tty(tty);
+-			return;
+-		}
+-	}
+-
+-	tty_insert_flip_char(tty, ch, TTY_NORMAL);
++	if (tty)
++		tty_insert_flip_char(tty, ch, TTY_NORMAL);
+ }
+ 
+ static int open_one_chan(struct chan *chan)
+-- 
+1.7.12.4
 
 
+--------------060203010301090301010206--
