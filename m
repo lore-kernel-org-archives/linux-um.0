@@ -1,32 +1,9 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
-	id 1TMvrR-0000QB-Aa for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 13 Oct 2012 07:10:13 +0000
-Received: from plane.gmane.org ([80.91.229.3])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1TMvrO-0004O4-2O
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 13 Oct 2012 07:10:13 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
-	(envelope-from <glud-user-mode-linux-devel@m.gmane.org>)
-	id 1TMvrH-0000Sq-Qz for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 13 Oct 2012 09:10:08 +0200
-Received: from osiris.larina.co.uk ([194.164.140.64])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 13 Oct 2012 09:10:03 +0200
-Received: from office by osiris.larina.co.uk with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 13 Oct 2012 09:10:03 +0200
-From: Dvaid Humphreys <office@datatone.co.uk>
-Date: Sat, 13 Oct 2012 07:04:48 +0000 (UTC)
-Message-ID: <loom.20121013T085850-671@post.gmane.org>
-Mime-Version: 1.0
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
+Date: Wed, 21 Nov 2012 16:40:59 -0600
+Message-Id: <1353537671-26284-20-git-send-email-dave.kleikamp@oracle.com>
+In-Reply-To: <1353537671-26284-1-git-send-email-dave.kleikamp@oracle.com>
+References: <1353537671-26284-1-git-send-email-dave.kleikamp@oracle.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,21 +13,491 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] linux-3.6.x ARCH=um won't build
-To: user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH v4 19/31] fs: add read_iter and write_iter to
+	several file systems
+To: linux-fsdevel@vger.kernel.org
+Cc: jfs-discussion@lists.sourceforge.net, Jan Kara <jack@suse.cz>, Bob Copeland <me@bobcopeland.com>, linux-karma-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, linux-nilfs@vger.kernel.org, Richard Weinberger <richard@nod.at>, Christoph Hellwig <hch@infradead.org>, v9fs-developer@lists.sourceforge.net, linux-ext4@vger.kernel.org, Joern Engel <joern@logfs.org>, Evgeniy Dushistov <dushistov@mail.ru>, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, reiserfs-devel@vger.kernel.org, Dave Kleikamp <dave.kleikamp@oracle.com>, osd-dev@open-osd.org, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Prasad Joshi <prasadjoshi.linux@gmail.com>, "Tigran A. Aivazian" <tigran@aivazian.fsnet.co.uk>, linux-kernel@vger.kernel.org, logfs@logfs.org, Benny Halevy <bhalevy@tonian.com>, Andreas Dilger <adilger.kernel@dilger.ca>, Andrew Morton <akpm@linux-foundation.org>, Zach Brown <zab@zabbo.net>, David Woodhouse <dwmw2@infradead.org>, "Maxim V. Patlasov" <mpatlasov@parallels.com>
 
-  CC      arch/um/os-Linux/signal.o
+These are the simple ones.
+
+File systems that use generic_file_aio_read() and generic_file_aio_write()
+can trivially support generic_file_read_iter() and generic_file_write_iter().
+
+This patch adds those file_operations for 9p, adfs, affs, bfs, exofs, ext2,
+ext3, fat, hfs, hfsplus, hostfs, hpfs, jfs, jffs2, logfs, minix, nilfs2,
+omfs, ramfs, reiserfs, romfs, sysv, and ufs.
+
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: Zach Brown <zab@zabbo.net>
+Cc: v9fs-developer@lists.sourceforge.net
+Cc: Tigran A. Aivazian <tigran@aivazian.fsnet.co.uk>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org
+Cc: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Cc: Boaz Harrosh <bharrosh@panasas.com>
+Cc: Benny Halevy <bhalevy@tonian.com>
+Cc: osd-dev@open-osd.org
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Cc: jfs-discussion@lists.sourceforge.net
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Cc: Joern Engel <joern@logfs.org>
+Cc: Prasad Joshi <prasadjoshi.linux@gmail.com>
+Cc: logfs@logfs.org
+Cc: linux-nilfs@vger.kernel.org
+Cc: Bob Copeland <me@bobcopeland.com>
+Cc: linux-karma-devel@lists.sourceforge.net
+Cc: reiserfs-devel@vger.kernel.org
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Evgeniy Dushistov <dushistov@mail.ru>
+---
+ fs/9p/vfs_addr.c        | 4 ++--
+ fs/9p/vfs_file.c        | 8 ++++----
+ fs/adfs/file.c          | 4 ++--
+ fs/affs/file.c          | 4 ++--
+ fs/bfs/file.c           | 4 ++--
+ fs/exofs/file.c         | 4 ++--
+ fs/ext2/file.c          | 4 ++--
+ fs/ext3/file.c          | 4 ++--
+ fs/fat/file.c           | 4 ++--
+ fs/hfs/inode.c          | 4 ++--
+ fs/hfsplus/inode.c      | 4 ++--
+ fs/hostfs/hostfs_kern.c | 4 ++--
+ fs/hpfs/file.c          | 4 ++--
+ fs/jffs2/file.c         | 8 ++++----
+ fs/jfs/file.c           | 4 ++--
+ fs/logfs/file.c         | 4 ++--
+ fs/minix/file.c         | 4 ++--
+ fs/nilfs2/file.c        | 4 ++--
+ fs/omfs/file.c          | 4 ++--
+ fs/ramfs/file-mmu.c     | 4 ++--
+ fs/ramfs/file-nommu.c   | 4 ++--
+ fs/reiserfs/file.c      | 4 ++--
+ fs/romfs/mmap-nommu.c   | 2 +-
+ fs/sysv/file.c          | 4 ++--
+ fs/ufs/file.c           | 4 ++--
+ 25 files changed, 53 insertions(+), 53 deletions(-)
+
+diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
+index e70f239..01c0673 100644
+--- a/fs/9p/vfs_addr.c
++++ b/fs/9p/vfs_addr.c
+@@ -249,8 +249,8 @@ static int v9fs_launder_page(struct page *page)
+  * the VFS gets them, so this method should never be called.
+  *
+  * Direct IO is not 'yet' supported in the cached mode. Hence when
+- * this routine is called through generic_file_aio_read(), the read/write fails
+- * with an error.
++ * this routine is called through generic_file_read_iter(), the read/write
++ * fails with an error.
+  *
+  */
+ static ssize_t
+diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+index c2483e9..2e9441d 100644
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -746,8 +746,8 @@ const struct file_operations v9fs_cached_file_operations = {
+ 	.llseek = generic_file_llseek,
+ 	.read = v9fs_cached_file_read,
+ 	.write = v9fs_cached_file_write,
+-	.aio_read = generic_file_aio_read,
+-	.aio_write = generic_file_aio_write,
++	.read_iter = generic_file_read_iter,
++	.write_iter = generic_file_write_iter,
+ 	.open = v9fs_file_open,
+ 	.release = v9fs_dir_release,
+ 	.lock = v9fs_file_lock,
+@@ -759,8 +759,8 @@ const struct file_operations v9fs_cached_file_operations_dotl = {
+ 	.llseek = generic_file_llseek,
+ 	.read = v9fs_cached_file_read,
+ 	.write = v9fs_cached_file_write,
+-	.aio_read = generic_file_aio_read,
+-	.aio_write = generic_file_aio_write,
++	.read_iter = generic_file_read_iter,
++	.write_iter = generic_file_write_iter,
+ 	.open = v9fs_file_open,
+ 	.release = v9fs_dir_release,
+ 	.lock = v9fs_file_lock_dotl,
+diff --git a/fs/adfs/file.c b/fs/adfs/file.c
+index a36da53..da1e021 100644
+--- a/fs/adfs/file.c
++++ b/fs/adfs/file.c
+@@ -24,11 +24,11 @@
+ const struct file_operations adfs_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.fsync		= generic_file_fsync,
+ 	.write		= do_sync_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.splice_read	= generic_file_splice_read,
+ };
+ 
+diff --git a/fs/affs/file.c b/fs/affs/file.c
+index 2f4c935..2becd58 100644
+--- a/fs/affs/file.c
++++ b/fs/affs/file.c
+@@ -28,9 +28,9 @@ static int affs_file_release(struct inode *inode, struct file *filp);
+ const struct file_operations affs_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.write		= do_sync_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.open		= affs_file_open,
+ 	.release	= affs_file_release,
+diff --git a/fs/bfs/file.c b/fs/bfs/file.c
+index f20e8a7..50d4740 100644
+--- a/fs/bfs/file.c
++++ b/fs/bfs/file.c
+@@ -24,9 +24,9 @@
+ const struct file_operations bfs_file_operations = {
+ 	.llseek 	= generic_file_llseek,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.write		= do_sync_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.splice_read	= generic_file_splice_read,
+ };
+diff --git a/fs/exofs/file.c b/fs/exofs/file.c
+index 491c6c0..20564f8a 100644
+--- a/fs/exofs/file.c
++++ b/fs/exofs/file.c
+@@ -69,8 +69,8 @@ const struct file_operations exofs_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+ 	.write		= do_sync_write,
+-	.aio_read	= generic_file_aio_read,
+-	.aio_write	= generic_file_aio_write,
++	.read_iter	= generic_file_read_iter,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.open		= generic_file_open,
+ 	.release	= exofs_release_file,
+diff --git a/fs/ext2/file.c b/fs/ext2/file.c
+index a5b3a5d..6af043b 100644
+--- a/fs/ext2/file.c
++++ b/fs/ext2/file.c
+@@ -64,8 +64,8 @@ const struct file_operations ext2_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+ 	.write		= do_sync_write,
+-	.aio_read	= generic_file_aio_read,
+-	.aio_write	= generic_file_aio_write,
++	.read_iter	= generic_file_read_iter,
++	.write_iter	= generic_file_write_iter,
+ 	.unlocked_ioctl = ext2_ioctl,
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl	= ext2_compat_ioctl,
+diff --git a/fs/ext3/file.c b/fs/ext3/file.c
+index 25cb413..a796771 100644
+--- a/fs/ext3/file.c
++++ b/fs/ext3/file.c
+@@ -52,8 +52,8 @@ const struct file_operations ext3_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+ 	.write		= do_sync_write,
+-	.aio_read	= generic_file_aio_read,
+-	.aio_write	= generic_file_aio_write,
++	.read_iter	= generic_file_read_iter,
++	.write_iter	= generic_file_write_iter,
+ 	.unlocked_ioctl	= ext3_ioctl,
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl	= ext3_compat_ioctl,
+diff --git a/fs/fat/file.c b/fs/fat/file.c
+index a62e0ec..92d587b 100644
+--- a/fs/fat/file.c
++++ b/fs/fat/file.c
+@@ -164,8 +164,8 @@ const struct file_operations fat_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+ 	.write		= do_sync_write,
+-	.aio_read	= generic_file_aio_read,
+-	.aio_write	= generic_file_aio_write,
++	.read_iter	= generic_file_read_iter,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.release	= fat_file_release,
+ 	.unlocked_ioctl	= fat_generic_ioctl,
+diff --git a/fs/hfs/inode.c b/fs/hfs/inode.c
+index 986cb91..9d432c4 100644
+--- a/fs/hfs/inode.c
++++ b/fs/hfs/inode.c
+@@ -655,9 +655,9 @@ static int hfs_file_fsync(struct file *filp, loff_t start, loff_t end,
+ static const struct file_operations hfs_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.write		= do_sync_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.splice_read	= generic_file_splice_read,
+ 	.fsync		= hfs_file_fsync,
+diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
+index 94fc092..308db38 100644
+--- a/fs/hfsplus/inode.c
++++ b/fs/hfsplus/inode.c
+@@ -368,9 +368,9 @@ static const struct inode_operations hfsplus_file_inode_operations = {
+ static const struct file_operations hfsplus_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.write		= do_sync_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.splice_read	= generic_file_splice_read,
+ 	.fsync		= hfsplus_file_fsync,
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 457addc..4593a9a 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -382,8 +382,8 @@ static const struct file_operations hostfs_file_fops = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+ 	.splice_read	= generic_file_splice_read,
+-	.aio_read	= generic_file_aio_read,
+-	.aio_write	= generic_file_aio_write,
++	.read_iter	= generic_file_read_iter,
++	.write_iter	= generic_file_write_iter,
+ 	.write		= do_sync_write,
+ 	.mmap		= generic_file_mmap,
+ 	.open		= hostfs_file_open,
+diff --git a/fs/hpfs/file.c b/fs/hpfs/file.c
+index 89d2a58..cd9b95d6 100644
+--- a/fs/hpfs/file.c
++++ b/fs/hpfs/file.c
+@@ -155,9 +155,9 @@ const struct file_operations hpfs_file_ops =
+ {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.write		= hpfs_file_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.release	= hpfs_file_release,
+ 	.fsync		= hpfs_file_fsync,
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index 60ef3fb..8e372a3 100644
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -51,10 +51,10 @@ const struct file_operations jffs2_file_operations =
+ {
+ 	.llseek =	generic_file_llseek,
+ 	.open =		generic_file_open,
+- 	.read =		do_sync_read,
+- 	.aio_read =	generic_file_aio_read,
+- 	.write =	do_sync_write,
+- 	.aio_write =	generic_file_aio_write,
++	.read =		do_sync_read,
++	.read_iter =	generic_file_read_iter,
++	.write =	do_sync_write,
++	.write_iter =	generic_file_write_iter,
+ 	.unlocked_ioctl=jffs2_ioctl,
+ 	.mmap =		generic_file_readonly_mmap,
+ 	.fsync =	jffs2_fsync,
+diff --git a/fs/jfs/file.c b/fs/jfs/file.c
+index 9d3afd1..4686fb9 100644
+--- a/fs/jfs/file.c
++++ b/fs/jfs/file.c
+@@ -149,8 +149,8 @@ const struct file_operations jfs_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.write		= do_sync_write,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
+-	.aio_write	= generic_file_aio_write,
++	.read_iter	= generic_file_read_iter,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.splice_read	= generic_file_splice_read,
+ 	.splice_write	= generic_file_splice_write,
+diff --git a/fs/logfs/file.c b/fs/logfs/file.c
+index 3886cde..ca35c88 100644
+--- a/fs/logfs/file.c
++++ b/fs/logfs/file.c
+@@ -263,8 +263,8 @@ const struct inode_operations logfs_reg_iops = {
+ };
+ 
+ const struct file_operations logfs_reg_fops = {
+-	.aio_read	= generic_file_aio_read,
+-	.aio_write	= generic_file_aio_write,
++	.read_iter	= generic_file_read_iter,
++	.write_iter	= generic_file_write_iter,
+ 	.fsync		= logfs_fsync,
+ 	.unlocked_ioctl	= logfs_ioctl,
+ 	.llseek		= generic_file_llseek,
+diff --git a/fs/minix/file.c b/fs/minix/file.c
+index 4493ce6..a7eeecb 100644
+--- a/fs/minix/file.c
++++ b/fs/minix/file.c
+@@ -15,9 +15,9 @@
+ const struct file_operations minix_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.write		= do_sync_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.fsync		= generic_file_fsync,
+ 	.splice_read	= generic_file_splice_read,
+diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
+index 16f35f7..2fc79cc 100644
+--- a/fs/nilfs2/file.c
++++ b/fs/nilfs2/file.c
+@@ -153,8 +153,8 @@ const struct file_operations nilfs_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+ 	.write		= do_sync_write,
+-	.aio_read	= generic_file_aio_read,
+-	.aio_write	= generic_file_aio_write,
++	.read_iter	= generic_file_read_iter,
++	.write_iter	= generic_file_write_iter,
+ 	.unlocked_ioctl	= nilfs_ioctl,
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl	= nilfs_compat_ioctl,
+diff --git a/fs/omfs/file.c b/fs/omfs/file.c
+index 77e3cb2..1efeed5 100644
+--- a/fs/omfs/file.c
++++ b/fs/omfs/file.c
+@@ -332,8 +332,8 @@ const struct file_operations omfs_file_operations = {
+ 	.llseek = generic_file_llseek,
+ 	.read = do_sync_read,
+ 	.write = do_sync_write,
+-	.aio_read = generic_file_aio_read,
+-	.aio_write = generic_file_aio_write,
++	.read_iter = generic_file_read_iter,
++	.write_iter = generic_file_write_iter,
+ 	.mmap = generic_file_mmap,
+ 	.fsync = generic_file_fsync,
+ 	.splice_read = generic_file_splice_read,
+diff --git a/fs/ramfs/file-mmu.c b/fs/ramfs/file-mmu.c
+index 4884ac5..c4d8572 100644
+--- a/fs/ramfs/file-mmu.c
++++ b/fs/ramfs/file-mmu.c
+@@ -39,9 +39,9 @@ const struct address_space_operations ramfs_aops = {
+ 
+ const struct file_operations ramfs_file_operations = {
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.write		= do_sync_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.fsync		= noop_fsync,
+ 	.splice_read	= generic_file_splice_read,
+diff --git a/fs/ramfs/file-nommu.c b/fs/ramfs/file-nommu.c
+index d5378d0..1d6be6c 100644
+--- a/fs/ramfs/file-nommu.c
++++ b/fs/ramfs/file-nommu.c
+@@ -39,9 +39,9 @@ const struct file_operations ramfs_file_operations = {
+ 	.mmap			= ramfs_nommu_mmap,
+ 	.get_unmapped_area	= ramfs_nommu_get_unmapped_area,
+ 	.read			= do_sync_read,
+-	.aio_read		= generic_file_aio_read,
++	.read_iter		= generic_file_read_iter,
+ 	.write			= do_sync_write,
+-	.aio_write		= generic_file_aio_write,
++	.write_iter		= generic_file_write_iter,
+ 	.fsync			= noop_fsync,
+ 	.splice_read		= generic_file_splice_read,
+ 	.splice_write		= generic_file_splice_write,
+diff --git a/fs/reiserfs/file.c b/fs/reiserfs/file.c
+index 8375c92..83ecbd6 100644
+--- a/fs/reiserfs/file.c
++++ b/fs/reiserfs/file.c
+@@ -304,8 +304,8 @@ const struct file_operations reiserfs_file_operations = {
+ 	.open = reiserfs_file_open,
+ 	.release = reiserfs_file_release,
+ 	.fsync = reiserfs_sync_file,
+-	.aio_read = generic_file_aio_read,
+-	.aio_write = generic_file_aio_write,
++	.read_iter = generic_file_read_iter,
++	.write_iter = generic_file_write_iter,
+ 	.splice_read = generic_file_splice_read,
+ 	.splice_write = generic_file_splice_write,
+ 	.llseek = generic_file_llseek,
+diff --git a/fs/romfs/mmap-nommu.c b/fs/romfs/mmap-nommu.c
+index e1a7779..e34d51a 100644
+--- a/fs/romfs/mmap-nommu.c
++++ b/fs/romfs/mmap-nommu.c
+@@ -70,7 +70,7 @@ static int romfs_mmap(struct file *file, struct vm_area_struct *vma)
+ const struct file_operations romfs_ro_fops = {
+ 	.llseek			= generic_file_llseek,
+ 	.read			= do_sync_read,
+-	.aio_read		= generic_file_aio_read,
++	.read_iter		= generic_file_read_iter,
+ 	.splice_read		= generic_file_splice_read,
+ 	.mmap			= romfs_mmap,
+ 	.get_unmapped_area	= romfs_get_unmapped_area,
+diff --git a/fs/sysv/file.c b/fs/sysv/file.c
+index 0a65939..5443ff9 100644
+--- a/fs/sysv/file.c
++++ b/fs/sysv/file.c
+@@ -22,9 +22,9 @@
+ const struct file_operations sysv_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.write		= do_sync_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.fsync		= generic_file_fsync,
+ 	.splice_read	= generic_file_splice_read,
+diff --git a/fs/ufs/file.c b/fs/ufs/file.c
+index 33afa20..e155e4c 100644
+--- a/fs/ufs/file.c
++++ b/fs/ufs/file.c
+@@ -36,9 +36,9 @@
+ const struct file_operations ufs_file_operations = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= do_sync_read,
+-	.aio_read	= generic_file_aio_read,
++	.read_iter	= generic_file_read_iter,
+ 	.write		= do_sync_write,
+-	.aio_write	= generic_file_aio_write,
++	.write_iter	= generic_file_write_iter,
+ 	.mmap		= generic_file_mmap,
+ 	.open           = generic_file_open,
+ 	.fsync		= generic_file_fsync,
+-- 
+1.8.0
 
 
 ------------------------------------------------------------------------------
-Don't let slow site performance ruin your business. Deploy New Relic APM
-Deploy New Relic app performance management and know exactly
-what is happening inside your Ruby, Python, PHP, Java, and .NET app
-Try New Relic at no cost today and get our sweet Data Nerd shirt too!
-http://p.sf.net/sfu/newrelic-dev2dev
+Monitor your physical, virtual and cloud infrastructure from a single
+web console. Get in-depth insight into apps, servers, databases, vmware,
+SAP, cloud infrastructure, etc. Download 30-day Free Trial.
+Pricing starts from $795 for 25 servers or applications!
+http://p.sf.net/sfu/zoho_dev2dev_nov
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
