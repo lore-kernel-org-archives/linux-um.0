@@ -1,25 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richardcochran@gmail.com>) id 1TgVNW-0004se-W2
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Paul.Chavent@onera.fr>) id 1TgGM1-00085p-R6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Dec 2012 06:56:15 +0000
-Received: from mail-ea0-f175.google.com ([209.85.215.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1TgVNU-0002Fv-UC
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Dec 2012 06:56:14 +0000
-Received: by mail-ea0-f175.google.com with SMTP id h11so2411341eaa.34
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 05 Dec 2012 22:56:06 -0800 (PST)
-Date: Thu, 6 Dec 2012 07:55:59 +0100
-From: Richard Cochran <richardcochran@gmail.com>
-Message-ID: <20121206065558.GA2700@netboy.at.omicron.at>
-References: <1354717253-8737-1-git-send-email-paul.chavent@onera.fr>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1354717253-8737-1-git-send-email-paul.chavent@onera.fr>
+	Wed, 05 Dec 2012 14:53:41 +0000
+Received: from briaree.onecert.fr ([134.212.190.4])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1TgGLv-0006JH-Dl for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 05 Dec 2012 14:53:39 +0000
+From: Paul Chavent <Paul.Chavent@onera.fr>
+Date: Wed,  5 Dec 2012 15:20:53 +0100
+Message-Id: <1354717253-8737-1-git-send-email-paul.chavent@onera.fr>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,26 +21,45 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] net: fixup tx time stamping for uml vde
-	driver.
-To: Paul Chavent <Paul.Chavent@onera.fr>
-Cc: richard@nod.at, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, netdev@vger.kernel.org
+Subject: [uml-devel] [PATCH] net: fixup tx time stamping for uml vde driver.
+To: jdike@addtoit.com, richard@nod.at, user-mode-linux-devel@lists.sourceforge.net, netdev@vger.kernel.org
+Cc: Paul Chavent <Paul.Chavent@onera.fr>
 
-On Wed, Dec 05, 2012 at 03:20:53PM +0100, Paul Chavent wrote:
-> Call skb_tx_timestamp after write completion.
-> 
-> Signed-off-by: Paul Chavent <paul.chavent@onera.fr>
+Call skb_tx_timestamp after write completion.
 
-The subject line would better describe the changes if it would read,
-"enable tx time stamping in the uml vde driver."
+Signed-off-by: Paul Chavent <paul.chavent@onera.fr>
+---
+ arch/um/drivers/vde_kern.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Can you please also add support for ethtool get_ts_info?
+diff --git a/arch/um/drivers/vde_kern.c b/arch/um/drivers/vde_kern.c
+index 6a365fa..38fea2f 100644
+--- a/arch/um/drivers/vde_kern.c
++++ b/arch/um/drivers/vde_kern.c
+@@ -52,9 +52,13 @@ static int vde_write(int fd, struct sk_buff *skb, struct uml_net_private *lp)
+ {
+ 	struct vde_data *pri = (struct vde_data *) &lp->user;
+ 
+-	if (pri->conn != NULL)
+-		return vde_user_write((void *)pri->conn, skb->data,
+-				      skb->len);
++	if (pri->conn != NULL) {
++		int count;
++		count = vde_user_write((void *)pri->conn, skb->data,
++				       skb->len);
++		skb_tx_timestamp(skb);
++		return count;
++	}
+ 
+ 	printk(KERN_ERR "vde_write - we have no VDECONN to write to");
+ 	return -EBADF;
+-- 
+1.7.12.1
 
-Thanks,
-Richard
 
 ------------------------------------------------------------------------------
 LogMeIn Rescue: Anywhere, Anytime Remote support for IT. Free Trial
