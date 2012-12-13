@@ -1,62 +1,62 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 13 Dec 2012 19:37:00 +0100
-From: Borislav Petkov <bp@alien8.de>
-Message-ID: <20121213183659.GC31485@liondog.tnic>
+Message-ID: <1355422990.13796.9.camel@joe-AO722>
+From: Joe Perches <joe@perches.com>
+Date: Thu, 13 Dec 2012 10:23:10 -0800
+In-Reply-To: <20121212224550.GJ8760@liondog.tnic>
 References: <cover.1355335227.git.joe@perches.com>
- <054f8a88fe46ae0b4c2669d0e155d84c11b66115.1355335228.git.joe@perches.com>
- <20121212210959.GH8760@liondog.tnic>
- <1355347803.8538.16.camel@joe-AO722>
- <3908561D78D1C84285E8C5FCA982C28F1C969495@ORSMSX108.amr.corp.intel.com>
- <1355351039.27571.2.camel@joe-AO722>
- <20121212224550.GJ8760@liondog.tnic>
- <1355422990.13796.9.camel@joe-AO722>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+	 <054f8a88fe46ae0b4c2669d0e155d84c11b66115.1355335228.git.joe@perches.com>
+	 <20121212210959.GH8760@liondog.tnic> <1355347803.8538.16.camel@joe-AO722>
+	 <3908561D78D1C84285E8C5FCA982C28F1C969495@ORSMSX108.amr.corp.intel.com>
+	 <1355351039.27571.2.camel@joe-AO722> <20121212224550.GJ8760@liondog.tnic>
+Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-In-Reply-To: <1355422990.13796.9.camel@joe-AO722>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [TRIVIAL PATCH 16/26] x86: Convert print_symbol to %pSR
-To: Joe Perches <joe@perches.com>
+To: Borislav Petkov <bp@alien8.de>
 Cc: "Luck, Tony" <tony.luck@intel.com>, Jiri Kosina <trivial@kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Dec 13, 2012 at 10:23:10AM -0800, Joe Perches wrote:
-> m->ip is a u64 so, when compiling x86-32, there's a new warning
-> "cast to pointer from integer of different size".  This isn't new
-> different behavior, just a new warning.  The previous print_symbol
-> took a ulong and the u64 was silently truncated.
+On Wed, 2012-12-12 at 23:45 +0100, Borislav Petkov wrote:
+> On Wed, Dec 12, 2012 at 02:23:59PM -0800, Joe Perches wrote:
+> > On Wed, 2012-12-12 at 21:49 +0000, Luck, Tony wrote:
+> > > > I think I'd go ahead and ACK this unless Tony has some comments=
+=2E I'm not
+> > > > happy about the two pr_emerg calls based on the conditional.
+> > >=20
+> > > As written the patch has the nice property of not making any chan=
+ges to the
+> > > console output (except to eliminate the possibility of interleave=
+d output that
+> > > the original code had).
+> >=20
+> > Well, it does eliminate a trailing space when m->cs !=3D KERNEL_CS.
+> > That probably won't hurt anything, but...
 >=20
->   CC      arch/x86/kernel/cpu/mcheck/mce.o
-> arch/x86/kernel/cpu/mcheck/mce.c: In function =E2=80=98print_mce=E2=80=
-=99:
-> arch/x86/kernel/cpu/mcheck/mce.c:246:4: warning: cast to pointer from=
- integer of different size [-Wint-to-pointer-cast]
->=20
-> If appropriate, the code could be changed to
->=20
-> 	(void *)(unsigned long)m->ip
+> Yeah, that won't be an issue. So let's take it as is, as Tony suggest=
+s.
 
-Can we explicitly cast it to what it is so that we can be explicit as t=
-o
-what we're casting it? IOW:
+Hi again Boris.
 
-	(void *)(__u64)m->ip;
+I should mention one more thing.
 
-Does that even work on 32bit?
+m->ip is a u64 so, when compiling x86-32, there's a new warning
+"cast to pointer from integer of different size".  This isn't new
+different behavior, just a new warning.  The previous print_symbol
+took a ulong and the u64 was silently truncated.
 
-Also, does the compiler bitch about this useless cast when building wit=
-h
-W=3D123?
+  CC      arch/x86/kernel/cpu/mcheck/mce.o
+arch/x86/kernel/cpu/mcheck/mce.c: In function =E2=80=98print_mce=E2=80=99=
+:
+arch/x86/kernel/cpu/mcheck/mce.c:246:4: warning: cast to pointer from i=
+nteger of different size [-Wint-to-pointer-cast]
 
-Thanks.
+If appropriate, the code could be changed to
 
---=20
-Regards/Gruss,
-    Boris.
+	(void *)(unsigned long)m->ip
 
-Sent from a fat crate under my desk. Formatting is fine.
---
+to shut the compiler up.
+
 --
 To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
  in
