@@ -1,34 +1,139 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <50CA4A3F.5040302@zytor.com>
-Date: Thu, 13 Dec 2012 13:35:59 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-MIME-Version: 1.0
-References: <cover.1355335227.git.joe@perches.com> <054f8a88fe46ae0b4c2669d0e155d84c11b66115.1355335228.git.joe@perches.com> <20121212210959.GH8760@liondog.tnic> <1355347803.8538.16.camel@joe-AO722> <3908561D78D1C84285E8C5FCA982C28F1C969495@ORSMSX108.amr.corp.intel.com> <1355351039.27571.2.camel@joe-AO722> <20121212224550.GJ8760@liondog.tnic> <1355422990.13796.9.camel@joe-AO722> <20121213183659.GC31485@liondog.tnic> <50CA2194.40103@zytor.com> <20121213190544.GD31485@liondog.tnic>
-In-Reply-To: <20121213190544.GD31485@liondog.tnic>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <1355426005.13796.35.camel@joe-AO722>
+From: Joe Perches <joe@perches.com>
+Date: Thu, 13 Dec 2012 11:13:25 -0800
+In-Reply-To: <cover.1355335227.git.joe@perches.com>
+References: <cover.1355335227.git.joe@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [TRIVIAL PATCH 16/26] x86: Convert print_symbol to %pSR
-To: Borislav Petkov <bp@alien8.de>, Joe Perches <joe@perches.com>, "Luck, Tony" <tony.luck@intel.com>, Jiri Kosina <trivial@kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "x86@kernel.org" <x86@kernel.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>
+Subject: [TRIVIAL PATCH V2 16/26] x86: Convert print_symbol to %pSR
+To: Jiri Kosina <trivial@kernel.org>, Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 12/13/2012 11:05 AM, Borislav Petkov wrote:
->
-> Ok, I grok it now. So, in most cases, mce.ip comes from pt_regs.ip which
-> is unsigned long so we're fine for both 32- and 64-bit. There's only the
-> case with precise RIP reporting where we get the rip from an MSR but
-> even then, it should be 4 bytes on 32-bit since our addresses there are
-> 4 bytes.
->
-> So, actually struct mce should've had ->ip defined as an unsigned long
-> from the very beginning. But we can't change that now because this
-> struct is shared with userspace :(
->
+Use the new vsprintf extension to avoid any possible
+message interleaving.
 
-Good thing, then,. otherwise we'd have a compat headache.
+Signed-off-by: Joe Perches <joe@perches.com>
+Acked-by: Tony Luck <tony.luck@intel.com>
+Acked-by: Borislav Petkov <bp@alien8.de>
+---
 
-	-hpa
+V2: mce.c: Add cast to (unsigned long) before cast to (void *)
+    to quiet the compiler on x86-32
+
+ arch/x86/kernel/cpu/mcheck/mce.c |   13 +++++++------
+ arch/x86/kernel/dumpstack.c      |    5 ++---
+ arch/x86/kernel/process_32.c     |    2 +-
+ arch/x86/mm/mmio-mod.c           |    4 ++--
+ arch/x86/um/sysrq_32.c           |    9 +++------
+ 5 files changed, 15 insertions(+), 18 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mcheck/mce.c b/arch/x86/kernel/cpu/mcheck/mce.c
+index 80dbda8..996f98a 100644
+--- a/arch/x86/kernel/cpu/mcheck/mce.c
++++ b/arch/x86/kernel/cpu/mcheck/mce.c
+@@ -242,13 +242,14 @@ static void print_mce(struct mce *m)
+ 	       m->extcpu, m->mcgstatus, m->bank, m->status);
+ 
+ 	if (m->ip) {
+-		pr_emerg(HW_ERR "RIP%s %02x:<%016Lx> ",
+-			!(m->mcgstatus & MCG_STATUS_EIPV) ? " !INEXACT!" : "",
+-				m->cs, m->ip);
+-
+ 		if (m->cs == __KERNEL_CS)
+-			print_symbol("{%s}", m->ip);
+-		pr_cont("\n");
++			pr_emerg(HW_ERR "RIP%s %02x:<%016Lx> {%pSR}\n",
++				 !(m->mcgstatus & MCG_STATUS_EIPV) ? " !INEXACT!" : "",
++				 m->cs, m->ip, (void *)(unsigned long)m->ip);
++		else
++			pr_emerg(HW_ERR "RIP%s %02x:<%016Lx>\n",
++				 !(m->mcgstatus & MCG_STATUS_EIPV) ? " !INEXACT!" : "",
++				 m->cs, m->ip);
+ 	}
+ 
+ 	pr_emerg(HW_ERR "TSC %llx ", m->tsc);
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index ae42418b..b6e5bdb 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -281,9 +281,8 @@ int __kprobes __die(const char *str, struct pt_regs *regs, long err)
+ 		sp = kernel_stack_pointer(regs);
+ 		savesegment(ss, ss);
+ 	}
+-	printk(KERN_EMERG "EIP: [<%08lx>] ", regs->ip);
+-	print_symbol("%s", regs->ip);
+-	printk(" SS:ESP %04x:%08lx\n", ss, sp);
++	printk(KERN_EMERG "EIP: [<%08lx>] %pSR SS:ESP %04x:%08lx\n",
++	       regs->ip, (void *)regs->ip, ss, sp);
+ #else
+ 	/* Executive summary in case the oops scrolled away */
+ 	printk(KERN_ALERT "RIP ");
+diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
+index b5a8905..0db77e0 100644
+--- a/arch/x86/kernel/process_32.c
++++ b/arch/x86/kernel/process_32.c
+@@ -89,7 +89,7 @@ void __show_regs(struct pt_regs *regs, int all)
+ 	printk(KERN_DEFAULT "EIP: %04x:[<%08lx>] EFLAGS: %08lx CPU: %d\n",
+ 			(u16)regs->cs, regs->ip, regs->flags,
+ 			smp_processor_id());
+-	print_symbol("EIP is at %s\n", regs->ip);
++	printk(KERN_DEFAULT "EIP is at %pSR\n", (void *)regs->ip);
+ 
+ 	printk(KERN_DEFAULT "EAX: %08lx EBX: %08lx ECX: %08lx EDX: %08lx\n",
+ 		regs->ax, regs->bx, regs->cx, regs->dx);
+diff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c
+index dc0b727..c0ca484 100644
+--- a/arch/x86/mm/mmio-mod.c
++++ b/arch/x86/mm/mmio-mod.c
+@@ -123,8 +123,8 @@ static void die_kmmio_nesting_error(struct pt_regs *regs, unsigned long addr)
+ 	pr_emerg("unexpected fault for address: 0x%08lx, last fault for address: 0x%08lx\n",
+ 		 addr, my_reason->addr);
+ 	print_pte(addr);
+-	print_symbol(KERN_EMERG "faulting IP is at %s\n", regs->ip);
+-	print_symbol(KERN_EMERG "last faulting IP was at %s\n", my_reason->ip);
++	pr_emerg("faulting IP is at %pSR\n", (void *)regs->ip);
++	pr_emerg("last faulting IP was at %pSR\n", (void *)my_reason->ip);
+ #ifdef __i386__
+ 	pr_emerg("eax: %08lx   ebx: %08lx   ecx: %08lx   edx: %08lx\n",
+ 		 regs->ax, regs->bx, regs->cx, regs->dx);
+diff --git a/arch/x86/um/sysrq_32.c b/arch/x86/um/sysrq_32.c
+index c9bee5b..30b4200 100644
+--- a/arch/x86/um/sysrq_32.c
++++ b/arch/x86/um/sysrq_32.c
+@@ -50,18 +50,15 @@ static inline unsigned long print_context_stack(struct thread_info *tinfo,
+ #ifdef CONFIG_FRAME_POINTER
+ 	while (valid_stack_ptr(tinfo, (void *)ebp)) {
+ 		addr = *(unsigned long *)(ebp + 4);
+-		printk("%08lx:  [<%08lx>]", ebp + 4, addr);
+-		print_symbol(" %s", addr);
+-		printk("\n");
++		printk("%08lx:  [<%08lx>] %pSR\n", ebp + 4, addr, (void *)addr);
+ 		ebp = *(unsigned long *)ebp;
+ 	}
+ #else
+ 	while (valid_stack_ptr(tinfo, stack)) {
+ 		addr = *stack;
+ 		if (__kernel_text_address(addr)) {
+-			printk("%08lx:  [<%08lx>]", (unsigned long) stack, addr);
+-			print_symbol(" %s", addr);
+-			printk("\n");
++			printk("%08lx:  [<%08lx>] %pSR\n",
++			       (unsigned long)stack, addr, (void *)addr);
+ 		}
+ 		stack++;
+ 	}
 -- 
-H. Peter Anvin, Intel Open Source Technology Center
-I work for Intel.  I don't speak on their behalf.
+1.7.8.112.g3fd21
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+
+
 
