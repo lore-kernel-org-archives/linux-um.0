@@ -1,99 +1,41 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Joe Perches <joe@perches.com>
-Date: Wed, 12 Dec 2012 10:18:49 -0800
-Message-Id: <cover.1355335227.git.joe@perches.com>
+From: Sergei Trofimovich <slyfox@gentoo.org>
+Date: Sun, 30 Dec 2012 01:37:30 +0300
+Message-Id: <1356820651-8495-1-git-send-email-slyfox@gentoo.org>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [TRIVIAL PATCH 00/26] treewide: Add and use vsprintf extension %pSR
-To: Jiri Kosina <trivial@kernel.org>, linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, cbe-oss-dev@lists.ozlabs.org, linux-edac@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, cluster-devel@redhat.com, linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org, linux-kernel@zh-kernel.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-am33-list@redhat.com, linux@lists.openrisc.net, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org
+Subject: [PATCH 1/2] um: add missing declaration of 'getrlimit()' and friends
+To: 
+Cc: Sergei Trofimovich <slyfox@gentoo.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Remove the somewhat awkward uses of print_symbol and convert all the
-existing uses to a new vsprintf pointer type of %pSR.
+arch/um/os-Linux/start_up.c: In function 'check_coredump_limit':
+arch/um/os-Linux/start_up.c:338:16: error: storage size of 'lim' isn't known
+arch/um/os-Linux/start_up.c:339:2: error: implicit declaration of function 'getrlimit' [-Werror=implicit-function-declaration]
 
-print_symbol can be interleaved when it is used in a sequence like:
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+CC: Jeff Dike <jdike@addtoit.com>
+CC: Richard Weinberger <richard@nod.at>
+CC: Al Viro <viro@zeniv.linux.org.uk>
+CC: user-mode-linux-devel@lists.sourceforge.net
+CC: user-mode-linux-user@lists.sourceforge.net
+CC: linux-kernel@vger.kernel.org
+---
+ arch/um/os-Linux/start_up.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-	printk("something: ...");
-	print_symbol("%s", addr);
-	printk("\n");
-
-Instead use:
-
-	printk("something: %pSR\n", (void *)addr);
-
-Add a new %p[SsFf]R vsprintf extension that can perform the same
-symbol function/address/offset formatting as print_symbol to
-reduce the number and styles of message logging functions.
-
-print_symbol used __builtin_extract_return_addr for those architectures
-like S/390 and SPARC that have offset or masked addressing.
-%p[FfSs]R uses the same gcc __builtin
-
-Joe Perches (26):
-  vsprintf: Add extension %pSR - print_symbol replacement
-  alpha: Convert print_symbol to %pSR
-  arm: Convert print_symbol to %pSR
-  arm64: Convert print_symbol to %pSR
-  avr32: Convert print_symbol to %pSR
-  c6x: Convert print_symbol to %pSR
-  ia64: Convert print_symbol to %pSR
-  m32r: Convert print_symbol to %pSR
-  mn10300: Convert print_symbol to %pSR
-  openrisc: Convert print_symbol to %pSR
-  powerpc: Convert print_symbol to %pSR
-  s390: Convert print_symbol to %pSR
-  sh: Convert print_symbol to %pSR
-  um: Convert print_symbol to %pSR
-  unicore32: Convert print_symbol to %pSR
-  x86: Convert print_symbol to %pSR
-  xtensa: Convert print_symbol to %pSR
-  drivers: base: Convert print_symbol to %pSR
-  gfs2: Convert print_symbol to %pSR
-  sysfs: Convert print_symbol to %pSR
-  irq: Convert print_symbol to %pSR
-  smp_processor_id: Convert print_symbol to %pSR
-  mm: Convert print_symbol to %pSR
-  xtensa: Convert print_symbol to %pSR
-  x86: head_64.S: Use vsprintf extension %pSR not print_symbol
-  kallsyms: Remove print_symbol
-
- Documentation/filesystems/sysfs.txt         |    4 +-
- Documentation/printk-formats.txt            |    2 +
- Documentation/zh_CN/filesystems/sysfs.txt   |    4 +-
- arch/alpha/kernel/traps.c                   |    8 ++----
- arch/arm/kernel/process.c                   |    4 +-
- arch/arm64/kernel/process.c                 |    4 +-
- arch/avr32/kernel/process.c                 |   25 ++++++-----------------
- arch/c6x/kernel/traps.c                     |    3 +-
- arch/ia64/kernel/process.c                  |   13 ++++-------
- arch/m32r/kernel/traps.c                    |    6 +---
- arch/mn10300/kernel/traps.c                 |    8 +++---
- arch/openrisc/kernel/traps.c                |    7 +----
- arch/powerpc/platforms/cell/spu_callbacks.c |   12 ++++------
- arch/s390/kernel/traps.c                    |   28 +++++++++++++++-----------
- arch/sh/kernel/process_32.c                 |    4 +-
- arch/um/kernel/sysrq.c                      |    6 +---
- arch/unicore32/kernel/process.c             |    5 ++-
- arch/x86/kernel/cpu/mcheck/mce.c            |   13 ++++++-----
- arch/x86/kernel/dumpstack.c                 |    5 +--
- arch/x86/kernel/head_64.S                   |    4 +-
- arch/x86/kernel/process_32.c                |    2 +-
- arch/x86/mm/mmio-mod.c                      |    4 +-
- arch/x86/um/sysrq_32.c                      |    9 ++-----
- arch/xtensa/kernel/traps.c                  |    6 +---
- drivers/base/core.c                         |    4 +-
- fs/gfs2/glock.c                             |    4 +-
- fs/gfs2/trans.c                             |    3 +-
- fs/sysfs/file.c                             |    4 +-
- include/linux/kallsyms.h                    |   18 -----------------
- kernel/irq/debug.h                          |   15 ++++++-------
- kernel/kallsyms.c                           |   11 ----------
- lib/smp_processor_id.c                      |    2 +-
- lib/vsprintf.c                              |   18 ++++++++++++----
- mm/memory.c                                 |    8 +++---
- mm/slab.c                                   |    8 ++----
- 35 files changed, 117 insertions(+), 164 deletions(-)
-
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index da4b9e9..337518c 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -15,6 +15,8 @@
+ #include <sys/mman.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
++#include <sys/time.h>
++#include <sys/resource.h>
+ #include <asm/unistd.h>
+ #include <init.h>
+ #include <os.h>
 -- 
-1.7.8.112.g3fd21
+1.8.0.2
 
