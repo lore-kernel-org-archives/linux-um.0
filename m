@@ -1,22 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <dave@bob-the-boat.me.uk>) id 1Tu3NQ-0006e6-R8
+	(envelope-from <richard@sigma-star.at>) id 1Tu263-0003hA-K0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Jan 2013 15:52:08 +0000
-Received: from i01.ip.uk.com ([86.54.60.3])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Tu3NG-0004yK-1S
+	Sat, 12 Jan 2013 14:30:07 +0000
+Received: from meriadoc.sigma-star.at ([178.63.61.2])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Tu25w-0000f5-Ss
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Jan 2013 15:52:08 +0000
-From: "Dave Humphreys (Bob)" <dave@bob-the-boat.me.uk>
-Message-ID: <1556600.9mAckIm5pW@vault01>
-In-Reply-To: <20130112152947.0e89203b@spider.haslach.nod.at>
+	Sat, 12 Jan 2013 14:30:07 +0000
+Date: Sat, 12 Jan 2013 15:29:47 +0100
+From: Richard Weinberger <richard@sigma-star.at>
+Message-ID: <20130112152947.0e89203b@spider.haslach.nod.at>
+In-Reply-To: <50F1585A.8050006@nagafix.co.uk>
 References: <50F132F9.1030601@bob-the-boat.me.uk>
-	<50F1585A.8050006@nagafix.co.uk>
-	<20130112152947.0e89203b@spider.haslach.nod.at>
-MIME-Version: 1.0
+	<20130112105812.4eedc505@spider.haslach.nod.at>
+	<1394921.l9eX0xA5nn@vault01> <50F1585A.8050006@nagafix.co.uk>
+Mime-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,101 +30,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Date: Sat, 12 Jan 2013 15:52:10 +0000
 Subject: Re: [uml-devel] "Couldn't grant pty"
-To: Richard Weinberger <richard@sigma-star.at>
+To: Antoine Martin <antoine@nagafix.co.uk>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Saturday 12 January 2013 15:29:47 Richard Weinberger wrote:
-> Am Sat, 12 Jan 2013 19:34:34 +0700
+Am Sat, 12 Jan 2013 19:34:34 +0700
+schrieb Antoine Martin <antoine@nagafix.co.uk>:
+
+> > DEB1-32 login: get_pty : Couldn't grant pty - errno = -2
+> > open_pts : Failed to open pts
+> > get_pty : Couldn't grant pty - errno = -2
+> > open_pts : Failed to open pts
+> > get_pty : Couldn't grant pty - errno = -2
+> > open_pts : Failed to open pts
+> > get_pty : Couldn't grant pty - errno = -2
+> > open_pts : Failed to open pts
+> > get_pty : Couldn't grant pty - errno = -2
+> > open_pts : Failed to open pts
+> > get_pty : Couldn't grant pty - errno = -2
+> > open_pts : Failed to open pts
+> > get_pty : Couldn't grant pty - errno = -2
+> > open_pts : Failed to open pts
+> > get_pty : Couldn't grant pty - errno = -2
+> > open_pts : Failed to open pts
+> > get_pty : Couldn't grant pty - errno = -2
+> > open_pts : Failed to open pts
+> > INIT: Id "s0" respawning too fast: disabled for 5 minutes
+> Since I made this root_fs, I guess I need to update the webpage as the
+> this one is supposed to boot ok with UML, without any tty issues.
 > 
-> schrieb Antoine Martin <antoine@nagafix.co.uk>:
-> > > DEB1-32 login: get_pty : Couldn't grant pty - errno = -2
-> > > open_pts : Failed to open pts
-> > > get_pty : Couldn't grant pty - errno = -2
-> > > open_pts : Failed to open pts
-> > > get_pty : Couldn't grant pty - errno = -2
-> > > open_pts : Failed to open pts
-> > > get_pty : Couldn't grant pty - errno = -2
-> > > open_pts : Failed to open pts
-> > > get_pty : Couldn't grant pty - errno = -2
-> > > open_pts : Failed to open pts
-> > > get_pty : Couldn't grant pty - errno = -2
-> > > open_pts : Failed to open pts
-> > > get_pty : Couldn't grant pty - errno = -2
-> > > open_pts : Failed to open pts
-> > > get_pty : Couldn't grant pty - errno = -2
-> > > open_pts : Failed to open pts
-> > > get_pty : Couldn't grant pty - errno = -2
-> > > open_pts : Failed to open pts
-> > > INIT: Id "s0" respawning too fast: disabled for 5 minutes
-> > 
-> > Since I made this root_fs, I guess I need to update the webpage as the
-> > this one is supposed to boot ok with UML, without any tty issues.
-> > 
-> > Note however that I rarely use those filesystems with UML anymore, and
-> > many distros have repeatedly moved/changed/broken tty initialization
-> > in so many undocumented ways that I stopped caring a long time ago.
-> > That said, if someone finds the solution, I'll gladly apply it.
-> 
-> I test most of your filesystems on UML.
-> Mostly the Debian ones on both x86_64 and x86.
-> 
-> Bob, what exactly are you doing?
-> I just did:
-> 
-> make defconfig ARCH=um SUBARCH=x86
-> make linux ARCH=um SUBARCH=x86
-> # Image from
-> http://fs.devloop.org.uk/filesystems/Debian-Squeeze/Debian-Squeeze-x86-root_
-> fs.bz2^C ./linux ubda=Debian-Squeeze-x86-root_fs root=/dev/ubda mem=512M
-> 
-> It boots like charm.
-> 
-> *confused*,
-> //richard
+> Note however that I rarely use those filesystems with UML anymore, and
+> many distros have repeatedly moved/changed/broken tty initialization
+> in so many undocumented ways that I stopped caring a long time ago.
+> That said, if someone finds the solution, I'll gladly apply it.
 
-Gentlemen,
+I test most of your filesystems on UML.
+Mostly the Debian ones on both x86_64 and x86.
 
-I have re-tested my side, but this time running the 32 bit UML not in my 
-chroot'ed 32 bit environment, but alongside the 64 bit. It works.
+Bob, what exactly are you doing?
+I just did:
 
-The difference in the boot-up log is:
+make defconfig ARCH=um SUBARCH=x86
+make linux ARCH=um SUBARCH=x86
+# Image from
+http://fs.devloop.org.uk/filesystems/Debian-Squeeze/Debian-Squeeze-x86-root_fs.bz2^C ./linux
+ubda=Debian-Squeeze-x86-root_fs root=/dev/ubda mem=512M
 
-Checking for host processor cmov support...Yes
-Checking that host ptys support output SIGIO...Yes
-Checking that host ptys support SIGIO on close...No, enabling workaround
-devtmpfs: initialized
+It boots like charm.
 
-as opposed to:
-
-Checking for host processor cmov support...Yes
-check_one_sigio failed, errno = 2
-check_one_sigio failed, errno = 2
-devtmpfs: initialized
-
-Why would this be?
-
-I will now push on and attempt to either understand why I am getting my 
-'Network Related UML Crashing', or show how to reproduce it.
-
-However, understanding why this issue with my chroot'ed 32 bit method gives 
-problems would be really advantageous (educational).
-
-The 32 bit kernel was built in the chroot'ed environment and is obviously 
-linked with a 32 bit glibc. The default is not to link static, therefore I 
-need the 32 bit glibc installed and working in the 64 world. If I remove the 
-/lib/ld-linux.so.2 then the 32 bit kernel doesn't work (as expected). 
-
-Regards,
-David
-
-
-
-
-
-
-
+*confused*,
+//richard
 
 ------------------------------------------------------------------------------
 Master Visual Studio, SharePoint, SQL, ASP.NET, C# 2012, HTML5, CSS,
