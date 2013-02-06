@@ -1,12 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Message-ID: <1359705069.32509.67.camel@sauron.fi.intel.com>
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Date: Fri, 01 Feb 2013 09:51:09 +0200
-In-Reply-To: <1359476623-10544-19-git-send-email-dave.kleikamp@oracle.com>
-References: <1359476623-10544-1-git-send-email-dave.kleikamp@oracle.com>
-	<1359476623-10544-19-git-send-email-dave.kleikamp@oracle.com>
-Mime-Version: 1.0
-Reply-To: dedekind1@gmail.com
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sardok@gmail.com>) id 1U3EaB-0004wE-7q
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Feb 2013 23:39:15 +0000
+Received: from mail-ee0-f42.google.com ([74.125.83.42])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1U3Ea9-0007FB-D2
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Feb 2013 23:39:15 +0000
+Received: by mail-ee0-f42.google.com with SMTP id b47so1028874eek.1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 06 Feb 2013 15:39:07 -0800 (PST)
+From: Sinan Nalkaya <sardok@gmail.com>
+Date: Thu,  7 Feb 2013 01:39:00 +0200
+Message-Id: <1360193940-31504-1-git-send-email-sardok@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -16,91 +25,65 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3490741307488342291=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH V6 18/30] fs: add read_iter and write_iter
- to several file systems
-To: Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc: jfs-discussion@lists.sourceforge.net, Jan Kara <jack@suse.cz>, Richard, Bob Copeland <me@bobcopeland.com>, linux-mtd@lists.infradead.org, Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, Joern, linux-nilfs@vger.kernel.org, Zach, Weinberger <richard@nod.at>, Christoph Hellwig <hch@infradead.org>, v9fs-developer@lists.sourceforge.net, linux-ext4@vger.kernel.org, Prasad Joshi <prasadjoshi.linux@gmail.com>, "Maxim V."	Patlasov" <mpatlasov@parallels.com>, Evgeniy Dushistov <dushistov@mail.ru>,"	user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, reiserfs-devel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Engel <joern@logfs.org>, "Tigran A. Aivazian" <tigran@aivazian.fsnet.co.uk>, linux-kernel@vger.kernel.org, logfs@logfs.org, Benny Halevy <bhalevy@tonian.com>, linux-fsdevel@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>, Andrew Morton <akpm@linux-foundation.org>, Brown <zab@zabbo.net>, David Woodhouse <dwmw2@infradead.org>, linux-karma-devel@lists.sourceforge.net, osd-dev@open-osd.org
-
-
---===============3490741307488342291==
-Content-Type: multipart/signed; micalg="pgp-sha1";
-	protocol="application/pgp-signature"; 
-	boundary="=-5GSqoZs9d0FHihhNTP/P"
-
-
---=-5GSqoZs9d0FHihhNTP/P
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2013-01-29 at 10:23 -0600, Dave Kleikamp wrote:
-> -       .aio_read =3D generic_file_aio_read,
-> -       .aio_write =3D generic_file_aio_write,
-> +       .read_iter =3D generic_file_read_iter,
-> +       .write_iter =3D generic_file_write_iter,=20
-
-The new names a lot less self-documenting than the old ones - I read
-them as "read iteration", because "iter" is often used for "iteration",
-and this gives me no clue that they are related to AIO...
-
-I apologize if this was already discussed, but why did you choose
-"iter"?
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-5GSqoZs9d0FHihhNTP/P
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJRC3PtAAoJECmIfjd9wqK0wRMQALvjuIWMlqGKDjYZ+Oc05zpM
-umuYU9hx82FV8OzKkb0EBd2OZyhC5Eujwa2YO+oZUNrhabUexK1D7sTE8PY/mFKs
-jPXtfieaMxyxZr38lM+bFVpbVg/3AHuXd4kUAodYWBR+6UwZt8WQ5MLn1RS1nUYl
-Pki/4MO63nfikAL1va/Ruu3jgw4jZ3Bhr5K9Oa5rpE4YTHAtfwMFMP0DTNyt7r+s
-PlgQtdVPvFTCiGcvdMtXAsKbAb0/3d7cQJdUPtoughEvfpdgkSDRTjaT4iGzx9iC
-cBAYTK/jqSPg2jX0YmHv9NNjNZaPv6yXOq5DW/PpDDzVJyvKRLMfsGxcYgjqej0Q
-0Ph5HjXyhHf+7emKFd9svAzfYapyVoX0AIna5FedSpab4lHTtB4ecydJMG9KgWi5
-zebZ/ZVMmkg+mIs4VNBGIwKpgPebhUUJa1yaK/T2KbGj32y1QnRXdzLjYnMmx83L
-QW+1su+bI4xQQVqsu4WkkfavCsk57nPsiOjSVzHl21RHlz2MkXCtumoHbbQCcrbO
-w3EMCDfXFpjEUX4LpcRiyGHChs5gOZfQuPzP8OwmNUbhHNHX5wginXRnUN4+WFdy
-SlryvuodGFXxHOlGJRb3WDZjE5ucOVc3FsKmdcbyrzcJ/QXtObvk89chzWD5fyrz
-MijqIe/1hjIksBnGPx7F
-=ay3H
------END PGP SIGNATURE-----
-
---=-5GSqoZs9d0FHihhNTP/P--
-
-
-
---===============3490741307488342291==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 1/1] um: Fix broken IRQs if SPARSE_IRQ is
+	selected
+To: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Sinan Nalkaya <sardok@gmail.com>
+
+um: Kconfig.common: enabled SPARSE_IRQ.
+um: kernel/irq: arch_probe_nr_irqs is implemented to prevent use of the default.
+
+Signed-off-by: Sinan Nalkaya <sardok@gmail.com>
+---
+ arch/um/Kconfig.common |    1 +
+ arch/um/kernel/irq.c   |    7 +++++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+index 648121b..8335fdd 100644
+--- a/arch/um/Kconfig.common
++++ b/arch/um/Kconfig.common
+@@ -12,6 +12,7 @@ config UML
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IO
+ 	select GENERIC_CLOCKEVENTS
++	select SPARSE_IRQ
+ 
+ config MMU
+ 	bool
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 36e12f0..93615f0 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -356,6 +356,13 @@ void __init init_IRQ(void)
+ 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
+ }
+ 
++#ifdef CONFIG_SPARSE_IRQ
++int __init arch_probe_nr_irqs(void)
++{
++	return NR_IRQS;
++}
++#endif
++
+ /*
+  * IRQ stack entry and exit:
+  *
+-- 
+1.7.10.4
+
 
 ------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_jan
---===============3490741307488342291==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Free Next-Gen Firewall Hardware Offer
+Buy your Sophos next-gen firewall before the end March 2013 
+and get the hardware for free! Learn more.
+http://p.sf.net/sfu/sophos-d2d-feb
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============3490741307488342291==--
-
-
 
