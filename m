@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sardok@gmail.com>) id 1U3EaB-0004wE-7q
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <earlenceferns@gmail.com>) id 1U7dsi-0007Lg-5I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Feb 2013 23:39:15 +0000
-Received: from mail-ee0-f42.google.com ([74.125.83.42])
+	Tue, 19 Feb 2013 03:28:36 +0000
+Received: from mail-wg0-f54.google.com ([74.125.82.54])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1U3Ea9-0007FB-D2
+	(Exim 4.76) id 1U7dsh-00074i-Ew
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 06 Feb 2013 23:39:15 +0000
-Received: by mail-ee0-f42.google.com with SMTP id b47so1028874eek.1
+	Tue, 19 Feb 2013 03:28:36 +0000
+Received: by mail-wg0-f54.google.com with SMTP id fm10so5046103wgb.21
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 06 Feb 2013 15:39:07 -0800 (PST)
-From: Sinan Nalkaya <sardok@gmail.com>
-Date: Thu,  7 Feb 2013 01:39:00 +0200
-Message-Id: <1360193940-31504-1-git-send-email-sardok@gmail.com>
+	Mon, 18 Feb 2013 19:28:29 -0800 (PST)
+MIME-Version: 1.0
+From: Earlence Fernandes <earlenceferns@gmail.com>
+Date: Mon, 18 Feb 2013 22:28:09 -0500
+Message-ID: <CA+ve00RzzdwACidmDdLzpDawZHqX-kg4sM3K4yN8ns5eE9zHbw@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,65 +26,54 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5417465616978503009=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/1] um: Fix broken IRQs if SPARSE_IRQ is
-	selected
-To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Sinan Nalkaya <sardok@gmail.com>
+Subject: [uml-devel] Adding support for YAFFS2 rootfs
+To: user-mode-linux-devel@lists.sourceforge.net
 
-um: Kconfig.common: enabled SPARSE_IRQ.
-um: kernel/irq: arch_probe_nr_irqs is implemented to prevent use of the default.
+--===============5417465616978503009==
+Content-Type: multipart/alternative; boundary=f46d0438eddb6e601704d60b6fd5
 
-Signed-off-by: Sinan Nalkaya <sardok@gmail.com>
----
- arch/um/Kconfig.common |    1 +
- arch/um/kernel/irq.c   |    7 +++++++
- 2 files changed, 8 insertions(+)
+--f46d0438eddb6e601704d60b6fd5
+Content-Type: text/plain; charset=ISO-8859-1
 
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index 648121b..8335fdd 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -12,6 +12,7 @@ config UML
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IO
- 	select GENERIC_CLOCKEVENTS
-+	select SPARSE_IRQ
- 
- config MMU
- 	bool
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 36e12f0..93615f0 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -356,6 +356,13 @@ void __init init_IRQ(void)
- 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
- }
- 
-+#ifdef CONFIG_SPARSE_IRQ
-+int __init arch_probe_nr_irqs(void)
-+{
-+	return NR_IRQS;
-+}
-+#endif
-+
- /*
-  * IRQ stack entry and exit:
-  *
--- 
-1.7.10.4
+Hi,
 
+I am interested in adding support for using YAFFS2 images as a rootfs.
+Any pointers on how to get started on this?
+
+-Earlence
+
+--f46d0438eddb6e601704d60b6fd5
+Content-Type: text/html; charset=ISO-8859-1
+
+Hi,<div><br></div><div>I am interested in adding support for using YAFFS2 images as a rootfs.</div><div>Any pointers on how to get started on this?</div><div><br></div><div>-Earlence</div>
+
+--f46d0438eddb6e601704d60b6fd5--
+
+
+--===============5417465616978503009==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Free Next-Gen Firewall Hardware Offer
-Buy your Sophos next-gen firewall before the end March 2013 
-and get the hardware for free! Learn more.
-http://p.sf.net/sfu/sophos-d2d-feb
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_feb
+--===============5417465616978503009==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============5417465616978503009==--
+
 
