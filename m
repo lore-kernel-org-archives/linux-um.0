@@ -1,42 +1,64 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Jiang Liu <liuj97@gmail.com>
-Date: Sun, 24 Mar 2013 15:25:24 +0800
-Message-Id: <1364109934-7851-59-git-send-email-jiang.liu@huawei.com>
-In-Reply-To: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
-References: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [RFC PATCH v2, part4 33/39] mm/um: prepare for removing num_physpages and simplify mem_init()
-To: Andrew Morton <akpm@linux-foundation.org>, David Rientjes <rientjes@google.com>
-Cc: Jiang Liu <jiang.liu@huawei.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
-
-Prepare for removing num_physpages and simplify mem_init().
-
-Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1UDHES-0001ym-IX
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Mar 2013 16:30:20 +0000
+Received: from mail-wg0-f51.google.com ([74.125.82.51])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UDHER-0007KS-Oc
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 06 Mar 2013 16:30:20 +0000
+Received: by mail-wg0-f51.google.com with SMTP id 8so7630345wgl.18
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 06 Mar 2013 08:30:13 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CA+ve00R_HB=Zsih=aNFy0j743-tkFeJwpwq-CS8cb_+fPULO-g@mail.gmail.com>
+References: <CA+ve00RzzdwACidmDdLzpDawZHqX-kg4sM3K4yN8ns5eE9zHbw@mail.gmail.com>
+	<CAFLxGvy3oD_AP9+nThUrc5w5m1_xS-WaviTT9h9GPTS40fD05g@mail.gmail.com>
+	<CA+ve00R_HB=Zsih=aNFy0j743-tkFeJwpwq-CS8cb_+fPULO-g@mail.gmail.com>
+Date: Wed, 6 Mar 2013 17:30:13 +0100
+Message-ID: <CAFLxGvxcfytES08LraiQhbdoyAnd56CtFymXr_2bxgTUmRWsxg@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] Adding support for YAFFS2 rootfs
+To: Earlence Fernandes <earlenceferns@gmail.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
----
- arch/um/kernel/mem.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index a7dc6c1..819008f 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -70,10 +70,8 @@ void __init mem_init(void)
- #ifdef CONFIG_HIGHMEM
- 	setup_highmem(end_iomem, highmem);
- #endif
--	num_physpages = totalram_pages;
- 	max_pfn = totalram_pages;
--	printk(KERN_INFO "Memory: %luk available\n",
--	       nr_free_pages() << (PAGE_SHIFT-10));
-+	mem_init_print_info(NULL);
- 	kmalloc_ok = 1;
- }
- 
+On Wed, Mar 6, 2013 at 2:48 PM, Earlence Fernandes
+<earlenceferns@gmail.com> wrote:
+> Hi,
+>
+> I have a small research project, so at the moment, I don't want to try to
+> get it into mainline.
+
+Nandsim works on UML, so you can have an mtd device in UML.
+But I'm not sure if you can boot from it....
+
 -- 
-1.7.9.5
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+Symantec Endpoint Protection 12 positioned as A LEADER in The Forrester  
+Wave(TM): Endpoint Security, Q1 2013 and "remains a good choice" in the  
+endpoint security space. For insight on selecting the right partner to 
+tackle endpoint security challenges, access the full report. 
+http://p.sf.net/sfu/symantec-dev2dev
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
