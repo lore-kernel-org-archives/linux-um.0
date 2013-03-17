@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <f.fainelli@gmail.com>) id 1UHy4u-0000rA-SB
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <f.fainelli@gmail.com>) id 1UHJUH-0004fk-VH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Mar 2013 15:03:52 +0000
-Received: from mail-bk0-f54.google.com ([209.85.214.54])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UHy4s-0005vp-UO
+	Sun, 17 Mar 2013 19:43:22 +0000
+Received: from mail-wg0-f44.google.com ([74.125.82.44])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UHJUG-0006vW-Kk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 Mar 2013 15:03:52 +0000
-Received: by mail-bk0-f54.google.com with SMTP id w5so285704bku.27
+	Sun, 17 Mar 2013 19:43:21 +0000
+Received: by mail-wg0-f44.google.com with SMTP id dr12so4447249wgb.35
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 19 Mar 2013 08:03:44 -0700 (PDT)
-Message-ID: <51487E4C.9040507@openwrt.org>
-Date: Tue, 19 Mar 2013 16:03:40 +0100
+	Sun, 17 Mar 2013 12:43:14 -0700 (PDT)
 From: Florian Fainelli <florian@openwrt.org>
+Date: Sun, 17 Mar 2013 20:43:10 +0100
+Message-ID: <5783794.b5gPVMPLlO@bender>
 MIME-Version: 1.0
-References: <5783794.b5gPVMPLlO@bender>
-In-Reply-To: <5783794.b5gPVMPLlO@bender>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,209 +26,229 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] UM: fix make headers_install after UAPI
-	header installation
+Subject: [uml-devel] [PATCH] UM: fix make headers_install after UAPI header
+	installation
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: dhowells@redhat.com, richard@nod.at, jdike@addtoit.com
 
-UmljaGFyZCwgSmVmZiwgRGF2aWQsCgpEb2VzIHRoZSBmb2xsb3dpbmcgZml4IGxvb2sgdmFsaWQg
-dG8geW91PyBUaGFua3MhCgpMZSAwMy8xNy8xMyAyMDo0MywgRmxvcmlhbiBGYWluZWxsaSBhIMOp
-Y3JpdCA6Cj4gQ29tbWl0IDEwYjYzOTU2IChVQVBJOiBQbHVtYiB0aGUgVUFQSSBLYnVpbGRzIGlu
-dG8gdGhlIHVzZXIKPiBoZWFkZXIgaW5zdGFsbGF0aW9uIGFuZCBjaGVja2luZykgYnJlYWtzIFVN
-TCBtYWtlIGhlYWRlcnNfaW5zdGFsbCB3aXRoCj4gdGhlIGZvbGxvd2luZzoKPgo+ICQgQVJDSD11
-bSBtYWtlIGhlYWRlcnNfaW5zdGFsbAo+ICAgIENISyAgICAgaW5jbHVkZS9nZW5lcmF0ZWQvdWFw
-aS9saW51eC92ZXJzaW9uLmgKPiAgICBVUEQgICAgIGluY2x1ZGUvZ2VuZXJhdGVkL3VhcGkvbGlu
-dXgvdmVyc2lvbi5oCj4gICAgSE9TVENDICBzY3JpcHRzL2Jhc2ljL2ZpeGRlcAo+ICAgIFdSQVAg
-ICAgYXJjaC91bS9pbmNsdWRlL2dlbmVyYXRlZC9hc20vYnVnLmgKPiBbc25pcF0KPiAgICBXUkFQ
-ICAgIGFyY2gvdW0vaW5jbHVkZS9nZW5lcmF0ZWQvYXNtL3RyYWNlX2Nsb2NrLmgKPiAgICBTWVNI
-RFIgIGFyY2gveDg2L3N5c2NhbGxzLy4uL2luY2x1ZGUvZ2VuZXJhdGVkL3VhcGkvYXNtL3VuaXN0
-ZF8zMi5oCj4gICAgU1lTSERSICBhcmNoL3g4Ni9zeXNjYWxscy8uLi9pbmNsdWRlL2dlbmVyYXRl
-ZC91YXBpL2FzbS91bmlzdGRfNjQuaAo+ICAgIFNZU0hEUiAgYXJjaC94ODYvc3lzY2FsbHMvLi4v
-aW5jbHVkZS9nZW5lcmF0ZWQvdWFwaS9hc20vdW5pc3RkX3gzMi5oCj4gICAgU1lTVEJMICBhcmNo
-L3g4Ni9zeXNjYWxscy8uLi9pbmNsdWRlL2dlbmVyYXRlZC9hc20vc3lzY2FsbHNfMzIuaAo+ICAg
-IEhPU1RDQyAgc2NyaXB0cy91bmlmZGVmCj4gTWFrZWZpbGU6OTEyOiAqKiogSGVhZGVycyBub3Qg
-ZXhwb3J0YWJsZSBmb3IgdGhlIHVtIGFyY2hpdGVjdHVyZS4gIFN0b3AuCj4genNoOiBleGl0IDIg
-ICAgIEFSQ0g9dW0gbWFrZSBoZWFkZXJzX2luc3RhbGwKPgo+IFRoZSByZWFzb24gZm9yIHRoYXQg
-aXMgYmVjYXVzZSB0aGUgdG9wLWxldmVsIE1ha2VmaWxlIGRvZXMgdGhlCj4gZm9sbG93aW5nOgo+
-ICAgICAgICAgICQoaWYgJCh3aWxkY2FyZCAkKHNyY3RyZWUpL2FyY2gvJChoZHItYXJjaCkvaW5j
-bHVkZS91YXBpL2FzbS9LYnVpbGQpLCwgXAo+ICAgICAgICAgICAgJChlcnJvciBIZWFkZXJzIG5v
-dCBleHBvcnRhYmxlIGZvciB0aGUgJChTUkNBUkNIKSBhcmNoaXRlY3R1cmUpKQo+Cj4gd2UgZW5k
-LXVwIGluIHRoZSBlbHNlIHBhcnQgb2YgdGhlICQoaWYpIHN0YXRlbWVudCBiZWNhdXNlIFVNTCBz
-dGlsbCB1c2VzCj4gdGhlIG9sZCBwYXRoIGluIGFyY2gvdW0vaW5jbHVkZS9hc20vS2J1aWxkLiBU
-aGlzIHBhdGNoIGZpeGVzIHRoZSBpc3N1ZQo+IGJ5IG1vdmluZyB0aGUgaGVhZGVyIGZpbGVzIHRv
-IGJlIGluIGFyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS8gdGh1cwo+IG1ha2luZyBoZWFkZXJzX2lu
-c3RhbGwgKGFuZCBvdGhlciBtYWtlIHRhcmdldHMgY2hlY2tpbmcgZm9yIHVhcGkpIHRvCj4gc3Vj
-Y2VlZC4KPgo+IFNpZ25lZC1vZmYtYnk6IEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW5Ab3Blbndy
-dC5vcmc+Cj4gLS0tCj4gUmljaGFyZCwgdGhpcyBpcyBhcHBsaWNhYmxlIHRvIDMuNyBvbndhcmRz
-LCBJIHdpbGwgc3VibWl0IHBlci12ZXJzaW9uIHBhdGNoZXMKPiBpZiB5b3Ugd2FudCB0by4gVGhh
-bmtzIQo+Cj4gICBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9hc20vS2J1aWxkICAgICAgICAg
-ICAgICB8ICAgIDAKPiAgIGFyY2gvdW0vaW5jbHVkZS97ID0+IHVhcGl9L2FzbS9hLm91dC1jb3Jl
-LmggICAgICAgIHwgICAgMAo+ICAgYXJjaC91bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL2J1Z3Mu
-aCAgICAgICAgICAgICAgfCAgICAwCj4gICBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9hc20v
-Y2FjaGUuaCAgICAgICAgICAgICB8ICAgIDAKPiAgIGFyY2gvdW0vaW5jbHVkZS97ID0+IHVhcGl9
-L2FzbS9jb21tb24ubGRzLlMgICAgICAgIHwgICAgMAo+ICAgYXJjaC91bS9pbmNsdWRlL3sgPT4g
-dWFwaX0vYXNtL2RtYS5oICAgICAgICAgICAgICAgfCAgICAwCj4gICBhcmNoL3VtL2luY2x1ZGUv
-eyA9PiB1YXBpfS9hc20vZml4bWFwLmggICAgICAgICAgICB8ICAgIDAKPiAgIGFyY2gvdW0vaW5j
-bHVkZS97ID0+IHVhcGl9L2FzbS9pcnEuaCAgICAgICAgICAgICAgIHwgICAgMAo+ICAgYXJjaC91
-bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL2lycWZsYWdzLmggICAgICAgICAgfCAgICAwCj4gICBh
-cmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9hc20va21hcF90eXBlcy5oICAgICAgICB8ICAgIDAK
-PiAgIGFyY2gvdW0vaW5jbHVkZS97ID0+IHVhcGl9L2FzbS9rdm1fcGFyYS5oICAgICAgICAgIHwg
-ICAgMAo+ICAgYXJjaC91bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL21tdS5oICAgICAgICAgICAg
-ICAgfCAgICAwCj4gICBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9hc20vbW11X2NvbnRleHQu
-aCAgICAgICB8ICAgIDAKPiAgIGFyY2gvdW0vaW5jbHVkZS97ID0+IHVhcGl9L2FzbS9wYWdlLmgg
-ICAgICAgICAgICAgIHwgICAgMAo+ICAgYXJjaC91bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL3Bn
-YWxsb2MuaCAgICAgICAgICAgfCAgICAwCj4gICBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9h
-c20vcGd0YWJsZS0ybGV2ZWwuaCAgICB8ICAgIDAKPiAgIGFyY2gvdW0vaW5jbHVkZS97ID0+IHVh
-cGl9L2FzbS9wZ3RhYmxlLTNsZXZlbC5oICAgIHwgICAgMAo+ICAgYXJjaC91bS9pbmNsdWRlL3sg
-PT4gdWFwaX0vYXNtL3BndGFibGUuaCAgICAgICAgICAgfCAgICAwCj4gICBhcmNoL3VtL2luY2x1
-ZGUveyA9PiB1YXBpfS9hc20vcHJvY2Vzc29yLWdlbmVyaWMuaCB8ICAgIDAKPiAgIGFyY2gvdW0v
-aW5jbHVkZS97ID0+IHVhcGl9L2FzbS9wdHJhY2UtZ2VuZXJpYy5oICAgIHwgICAgMAo+ICAgYXJj
-aC91bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL3NldHVwLmggICAgICAgICAgICAgfCAgICAwCj4g
-ICBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9hc20vc21wLmggICAgICAgICAgICAgICB8ICAg
-IDAKPiAgIGFyY2gvdW0vaW5jbHVkZS97ID0+IHVhcGl9L2FzbS9zeXNycS5oICAgICAgICAgICAg
-IHwgICAgMAo+ICAgYXJjaC91bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL3RocmVhZF9pbmZvLmgg
-ICAgICAgfCAgICAwCj4gICBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9hc20vdGltZXguaCAg
-ICAgICAgICAgICB8ICAgIDAKPiAgIGFyY2gvdW0vaW5jbHVkZS97ID0+IHVhcGl9L2FzbS90bGIu
-aCAgICAgICAgICAgICAgIHwgICAgMAo+ICAgYXJjaC91bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNt
-L3RsYmZsdXNoLmggICAgICAgICAgfCAgICAwCj4gICBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBp
-fS9hc20vdWFjY2Vzcy5oICAgICAgICAgICB8ICAgIDAKPiAgIDI4IGZpbGVzIGNoYW5nZWQsIDAg
-aW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKPiAgIHJlbmFtZSBhcmNoL3VtL2luY2x1ZGUv
-eyA9PiB1YXBpfS9hc20vS2J1aWxkICgxMDAlKQo+ICAgcmVuYW1lIGFyY2gvdW0vaW5jbHVkZS97
-ID0+IHVhcGl9L2FzbS9hLm91dC1jb3JlLmggKDEwMCUpCj4gICByZW5hbWUgYXJjaC91bS9pbmNs
-dWRlL3sgPT4gdWFwaX0vYXNtL2J1Z3MuaCAoMTAwJSkKPiAgIHJlbmFtZSBhcmNoL3VtL2luY2x1
-ZGUveyA9PiB1YXBpfS9hc20vY2FjaGUuaCAoMTAwJSkKPiAgIHJlbmFtZSBhcmNoL3VtL2luY2x1
-ZGUveyA9PiB1YXBpfS9hc20vY29tbW9uLmxkcy5TICgxMDAlKQo+ICAgcmVuYW1lIGFyY2gvdW0v
-aW5jbHVkZS97ID0+IHVhcGl9L2FzbS9kbWEuaCAoMTAwJSkKPiAgIHJlbmFtZSBhcmNoL3VtL2lu
-Y2x1ZGUveyA9PiB1YXBpfS9hc20vZml4bWFwLmggKDEwMCUpCj4gICByZW5hbWUgYXJjaC91bS9p
-bmNsdWRlL3sgPT4gdWFwaX0vYXNtL2lycS5oICgxMDAlKQo+ICAgcmVuYW1lIGFyY2gvdW0vaW5j
-bHVkZS97ID0+IHVhcGl9L2FzbS9pcnFmbGFncy5oICgxMDAlKQo+ICAgcmVuYW1lIGFyY2gvdW0v
-aW5jbHVkZS97ID0+IHVhcGl9L2FzbS9rbWFwX3R5cGVzLmggKDEwMCUpCj4gICByZW5hbWUgYXJj
-aC91bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL2t2bV9wYXJhLmggKDEwMCUpCj4gICByZW5hbWUg
-YXJjaC91bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL21tdS5oICgxMDAlKQo+ICAgcmVuYW1lIGFy
-Y2gvdW0vaW5jbHVkZS97ID0+IHVhcGl9L2FzbS9tbXVfY29udGV4dC5oICgxMDAlKQo+ICAgcmVu
-YW1lIGFyY2gvdW0vaW5jbHVkZS97ID0+IHVhcGl9L2FzbS9wYWdlLmggKDEwMCUpCj4gICByZW5h
-bWUgYXJjaC91bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL3BnYWxsb2MuaCAoMTAwJSkKPiAgIHJl
-bmFtZSBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9hc20vcGd0YWJsZS0ybGV2ZWwuaCAoMTAw
-JSkKPiAgIHJlbmFtZSBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9hc20vcGd0YWJsZS0zbGV2
-ZWwuaCAoMTAwJSkKPiAgIHJlbmFtZSBhcmNoL3VtL2luY2x1ZGUveyA9PiB1YXBpfS9hc20vcGd0
-YWJsZS5oICgxMDAlKQo+ICAgcmVuYW1lIGFyY2gvdW0vaW5jbHVkZS97ID0+IHVhcGl9L2FzbS9w
-cm9jZXNzb3ItZ2VuZXJpYy5oICgxMDAlKQo+ICAgcmVuYW1lIGFyY2gvdW0vaW5jbHVkZS97ID0+
-IHVhcGl9L2FzbS9wdHJhY2UtZ2VuZXJpYy5oICgxMDAlKQo+ICAgcmVuYW1lIGFyY2gvdW0vaW5j
-bHVkZS97ID0+IHVhcGl9L2FzbS9zZXR1cC5oICgxMDAlKQo+ICAgcmVuYW1lIGFyY2gvdW0vaW5j
-bHVkZS97ID0+IHVhcGl9L2FzbS9zbXAuaCAoMTAwJSkKPiAgIHJlbmFtZSBhcmNoL3VtL2luY2x1
-ZGUveyA9PiB1YXBpfS9hc20vc3lzcnEuaCAoMTAwJSkKPiAgIHJlbmFtZSBhcmNoL3VtL2luY2x1
-ZGUveyA9PiB1YXBpfS9hc20vdGhyZWFkX2luZm8uaCAoMTAwJSkKPiAgIHJlbmFtZSBhcmNoL3Vt
-L2luY2x1ZGUveyA9PiB1YXBpfS9hc20vdGltZXguaCAoMTAwJSkKPiAgIHJlbmFtZSBhcmNoL3Vt
-L2luY2x1ZGUveyA9PiB1YXBpfS9hc20vdGxiLmggKDEwMCUpCj4gICByZW5hbWUgYXJjaC91bS9p
-bmNsdWRlL3sgPT4gdWFwaX0vYXNtL3RsYmZsdXNoLmggKDEwMCUpCj4gICByZW5hbWUgYXJjaC91
-bS9pbmNsdWRlL3sgPT4gdWFwaX0vYXNtL3VhY2Nlc3MuaCAoMTAwJSkKPgo+IGRpZmYgLS1naXQg
-YS9hcmNoL3VtL2luY2x1ZGUvYXNtL0tidWlsZCBiL2FyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9L
-YnVpbGQKPiBzaW1pbGFyaXR5IGluZGV4IDEwMCUKPiByZW5hbWUgZnJvbSBhcmNoL3VtL2luY2x1
-ZGUvYXNtL0tidWlsZAo+IHJlbmFtZSB0byBhcmNoL3VtL2luY2x1ZGUvdWFwaS9hc20vS2J1aWxk
-Cj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9hc20vYS5vdXQtY29yZS5oIGIvYXJjaC91
-bS9pbmNsdWRlL3VhcGkvYXNtL2Eub3V0LWNvcmUuaAo+IHNpbWlsYXJpdHkgaW5kZXggMTAwJQo+
-IHJlbmFtZSBmcm9tIGFyY2gvdW0vaW5jbHVkZS9hc20vYS5vdXQtY29yZS5oCj4gcmVuYW1lIHRv
-IGFyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9hLm91dC1jb3JlLmgKPiBkaWZmIC0tZ2l0IGEvYXJj
-aC91bS9pbmNsdWRlL2FzbS9idWdzLmggYi9hcmNoL3VtL2luY2x1ZGUvdWFwaS9hc20vYnVncy5o
-Cj4gc2ltaWxhcml0eSBpbmRleCAxMDAlCj4gcmVuYW1lIGZyb20gYXJjaC91bS9pbmNsdWRlL2Fz
-bS9idWdzLmgKPiByZW5hbWUgdG8gYXJjaC91bS9pbmNsdWRlL3VhcGkvYXNtL2J1Z3MuaAo+IGRp
-ZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL2NhY2hlLmggYi9hcmNoL3VtL2luY2x1ZGUv
-dWFwaS9hc20vY2FjaGUuaAo+IHNpbWlsYXJpdHkgaW5kZXggMTAwJQo+IHJlbmFtZSBmcm9tIGFy
-Y2gvdW0vaW5jbHVkZS9hc20vY2FjaGUuaAo+IHJlbmFtZSB0byBhcmNoL3VtL2luY2x1ZGUvdWFw
-aS9hc20vY2FjaGUuaAo+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL2NvbW1vbi5s
-ZHMuUyBiL2FyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9jb21tb24ubGRzLlMKPiBzaW1pbGFyaXR5
-IGluZGV4IDEwMCUKPiByZW5hbWUgZnJvbSBhcmNoL3VtL2luY2x1ZGUvYXNtL2NvbW1vbi5sZHMu
-Uwo+IHJlbmFtZSB0byBhcmNoL3VtL2luY2x1ZGUvdWFwaS9hc20vY29tbW9uLmxkcy5TCj4gZGlm
-ZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9hc20vZG1hLmggYi9hcmNoL3VtL2luY2x1ZGUvdWFw
-aS9hc20vZG1hLmgKPiBzaW1pbGFyaXR5IGluZGV4IDEwMCUKPiByZW5hbWUgZnJvbSBhcmNoL3Vt
-L2luY2x1ZGUvYXNtL2RtYS5oCj4gcmVuYW1lIHRvIGFyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9k
-bWEuaAo+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL2ZpeG1hcC5oIGIvYXJjaC91
-bS9pbmNsdWRlL3VhcGkvYXNtL2ZpeG1hcC5oCj4gc2ltaWxhcml0eSBpbmRleCAxMDAlCj4gcmVu
-YW1lIGZyb20gYXJjaC91bS9pbmNsdWRlL2FzbS9maXhtYXAuaAo+IHJlbmFtZSB0byBhcmNoL3Vt
-L2luY2x1ZGUvdWFwaS9hc20vZml4bWFwLmgKPiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9pbmNsdWRl
-L2FzbS9pcnEuaCBiL2FyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9pcnEuaAo+IHNpbWlsYXJpdHkg
-aW5kZXggMTAwJQo+IHJlbmFtZSBmcm9tIGFyY2gvdW0vaW5jbHVkZS9hc20vaXJxLmgKPiByZW5h
-bWUgdG8gYXJjaC91bS9pbmNsdWRlL3VhcGkvYXNtL2lycS5oCj4gZGlmZiAtLWdpdCBhL2FyY2gv
-dW0vaW5jbHVkZS9hc20vaXJxZmxhZ3MuaCBiL2FyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9pcnFm
-bGFncy5oCj4gc2ltaWxhcml0eSBpbmRleCAxMDAlCj4gcmVuYW1lIGZyb20gYXJjaC91bS9pbmNs
-dWRlL2FzbS9pcnFmbGFncy5oCj4gcmVuYW1lIHRvIGFyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9p
-cnFmbGFncy5oCj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9hc20va21hcF90eXBlcy5o
-IGIvYXJjaC91bS9pbmNsdWRlL3VhcGkvYXNtL2ttYXBfdHlwZXMuaAo+IHNpbWlsYXJpdHkgaW5k
-ZXggMTAwJQo+IHJlbmFtZSBmcm9tIGFyY2gvdW0vaW5jbHVkZS9hc20va21hcF90eXBlcy5oCj4g
-cmVuYW1lIHRvIGFyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9rbWFwX3R5cGVzLmgKPiBkaWZmIC0t
-Z2l0IGEvYXJjaC91bS9pbmNsdWRlL2FzbS9rdm1fcGFyYS5oIGIvYXJjaC91bS9pbmNsdWRlL3Vh
-cGkvYXNtL2t2bV9wYXJhLmgKPiBzaW1pbGFyaXR5IGluZGV4IDEwMCUKPiByZW5hbWUgZnJvbSBh
-cmNoL3VtL2luY2x1ZGUvYXNtL2t2bV9wYXJhLmgKPiByZW5hbWUgdG8gYXJjaC91bS9pbmNsdWRl
-L3VhcGkvYXNtL2t2bV9wYXJhLmgKPiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9pbmNsdWRlL2FzbS9t
-bXUuaCBiL2FyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9tbXUuaAo+IHNpbWlsYXJpdHkgaW5kZXgg
-MTAwJQo+IHJlbmFtZSBmcm9tIGFyY2gvdW0vaW5jbHVkZS9hc20vbW11LmgKPiByZW5hbWUgdG8g
-YXJjaC91bS9pbmNsdWRlL3VhcGkvYXNtL21tdS5oCj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5j
-bHVkZS9hc20vbW11X2NvbnRleHQuaCBiL2FyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9tbXVfY29u
-dGV4dC5oCj4gc2ltaWxhcml0eSBpbmRleCAxMDAlCj4gcmVuYW1lIGZyb20gYXJjaC91bS9pbmNs
-dWRlL2FzbS9tbXVfY29udGV4dC5oCj4gcmVuYW1lIHRvIGFyY2gvdW0vaW5jbHVkZS91YXBpL2Fz
-bS9tbXVfY29udGV4dC5oCj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9hc20vcGFnZS5o
-IGIvYXJjaC91bS9pbmNsdWRlL3VhcGkvYXNtL3BhZ2UuaAo+IHNpbWlsYXJpdHkgaW5kZXggMTAw
-JQo+IHJlbmFtZSBmcm9tIGFyY2gvdW0vaW5jbHVkZS9hc20vcGFnZS5oCj4gcmVuYW1lIHRvIGFy
-Y2gvdW0vaW5jbHVkZS91YXBpL2FzbS9wYWdlLmgKPiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9pbmNs
-dWRlL2FzbS9wZ2FsbG9jLmggYi9hcmNoL3VtL2luY2x1ZGUvdWFwaS9hc20vcGdhbGxvYy5oCj4g
-c2ltaWxhcml0eSBpbmRleCAxMDAlCj4gcmVuYW1lIGZyb20gYXJjaC91bS9pbmNsdWRlL2FzbS9w
-Z2FsbG9jLmgKPiByZW5hbWUgdG8gYXJjaC91bS9pbmNsdWRlL3VhcGkvYXNtL3BnYWxsb2MuaAo+
-IGRpZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL3BndGFibGUtMmxldmVsLmggYi9hcmNo
-L3VtL2luY2x1ZGUvdWFwaS9hc20vcGd0YWJsZS0ybGV2ZWwuaAo+IHNpbWlsYXJpdHkgaW5kZXgg
-MTAwJQo+IHJlbmFtZSBmcm9tIGFyY2gvdW0vaW5jbHVkZS9hc20vcGd0YWJsZS0ybGV2ZWwuaAo+
-IHJlbmFtZSB0byBhcmNoL3VtL2luY2x1ZGUvdWFwaS9hc20vcGd0YWJsZS0ybGV2ZWwuaAo+IGRp
-ZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL3BndGFibGUtM2xldmVsLmggYi9hcmNoL3Vt
-L2luY2x1ZGUvdWFwaS9hc20vcGd0YWJsZS0zbGV2ZWwuaAo+IHNpbWlsYXJpdHkgaW5kZXggMTAw
-JQo+IHJlbmFtZSBmcm9tIGFyY2gvdW0vaW5jbHVkZS9hc20vcGd0YWJsZS0zbGV2ZWwuaAo+IHJl
-bmFtZSB0byBhcmNoL3VtL2luY2x1ZGUvdWFwaS9hc20vcGd0YWJsZS0zbGV2ZWwuaAo+IGRpZmYg
-LS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL3BndGFibGUuaCBiL2FyY2gvdW0vaW5jbHVkZS91
-YXBpL2FzbS9wZ3RhYmxlLmgKPiBzaW1pbGFyaXR5IGluZGV4IDEwMCUKPiByZW5hbWUgZnJvbSBh
-cmNoL3VtL2luY2x1ZGUvYXNtL3BndGFibGUuaAo+IHJlbmFtZSB0byBhcmNoL3VtL2luY2x1ZGUv
-dWFwaS9hc20vcGd0YWJsZS5oCj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9hc20vcHJv
-Y2Vzc29yLWdlbmVyaWMuaCBiL2FyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9wcm9jZXNzb3ItZ2Vu
-ZXJpYy5oCj4gc2ltaWxhcml0eSBpbmRleCAxMDAlCj4gcmVuYW1lIGZyb20gYXJjaC91bS9pbmNs
-dWRlL2FzbS9wcm9jZXNzb3ItZ2VuZXJpYy5oCj4gcmVuYW1lIHRvIGFyY2gvdW0vaW5jbHVkZS91
-YXBpL2FzbS9wcm9jZXNzb3ItZ2VuZXJpYy5oCj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVk
-ZS9hc20vcHRyYWNlLWdlbmVyaWMuaCBiL2FyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9wdHJhY2Ut
-Z2VuZXJpYy5oCj4gc2ltaWxhcml0eSBpbmRleCAxMDAlCj4gcmVuYW1lIGZyb20gYXJjaC91bS9p
-bmNsdWRlL2FzbS9wdHJhY2UtZ2VuZXJpYy5oCj4gcmVuYW1lIHRvIGFyY2gvdW0vaW5jbHVkZS91
-YXBpL2FzbS9wdHJhY2UtZ2VuZXJpYy5oCj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9h
-c20vc2V0dXAuaCBiL2FyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9zZXR1cC5oCj4gc2ltaWxhcml0
-eSBpbmRleCAxMDAlCj4gcmVuYW1lIGZyb20gYXJjaC91bS9pbmNsdWRlL2FzbS9zZXR1cC5oCj4g
-cmVuYW1lIHRvIGFyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9zZXR1cC5oCj4gZGlmZiAtLWdpdCBh
-L2FyY2gvdW0vaW5jbHVkZS9hc20vc21wLmggYi9hcmNoL3VtL2luY2x1ZGUvdWFwaS9hc20vc21w
-LmgKPiBzaW1pbGFyaXR5IGluZGV4IDEwMCUKPiByZW5hbWUgZnJvbSBhcmNoL3VtL2luY2x1ZGUv
-YXNtL3NtcC5oCj4gcmVuYW1lIHRvIGFyY2gvdW0vaW5jbHVkZS91YXBpL2FzbS9zbXAuaAo+IGRp
-ZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL3N5c3JxLmggYi9hcmNoL3VtL2luY2x1ZGUv
-dWFwaS9hc20vc3lzcnEuaAo+IHNpbWlsYXJpdHkgaW5kZXggMTAwJQo+IHJlbmFtZSBmcm9tIGFy
-Y2gvdW0vaW5jbHVkZS9hc20vc3lzcnEuaAo+IHJlbmFtZSB0byBhcmNoL3VtL2luY2x1ZGUvdWFw
-aS9hc20vc3lzcnEuaAo+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL3RocmVhZF9p
-bmZvLmggYi9hcmNoL3VtL2luY2x1ZGUvdWFwaS9hc20vdGhyZWFkX2luZm8uaAo+IHNpbWlsYXJp
-dHkgaW5kZXggMTAwJQo+IHJlbmFtZSBmcm9tIGFyY2gvdW0vaW5jbHVkZS9hc20vdGhyZWFkX2lu
-Zm8uaAo+IHJlbmFtZSB0byBhcmNoL3VtL2luY2x1ZGUvdWFwaS9hc20vdGhyZWFkX2luZm8uaAo+
-IGRpZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL3RpbWV4LmggYi9hcmNoL3VtL2luY2x1
-ZGUvdWFwaS9hc20vdGltZXguaAo+IHNpbWlsYXJpdHkgaW5kZXggMTAwJQo+IHJlbmFtZSBmcm9t
-IGFyY2gvdW0vaW5jbHVkZS9hc20vdGltZXguaAo+IHJlbmFtZSB0byBhcmNoL3VtL2luY2x1ZGUv
-dWFwaS9hc20vdGltZXguaAo+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2luY2x1ZGUvYXNtL3RsYi5o
-IGIvYXJjaC91bS9pbmNsdWRlL3VhcGkvYXNtL3RsYi5oCj4gc2ltaWxhcml0eSBpbmRleCAxMDAl
-Cj4gcmVuYW1lIGZyb20gYXJjaC91bS9pbmNsdWRlL2FzbS90bGIuaAo+IHJlbmFtZSB0byBhcmNo
-L3VtL2luY2x1ZGUvdWFwaS9hc20vdGxiLmgKPiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9pbmNsdWRl
-L2FzbS90bGJmbHVzaC5oIGIvYXJjaC91bS9pbmNsdWRlL3VhcGkvYXNtL3RsYmZsdXNoLmgKPiBz
-aW1pbGFyaXR5IGluZGV4IDEwMCUKPiByZW5hbWUgZnJvbSBhcmNoL3VtL2luY2x1ZGUvYXNtL3Rs
-YmZsdXNoLmgKPiByZW5hbWUgdG8gYXJjaC91bS9pbmNsdWRlL3VhcGkvYXNtL3RsYmZsdXNoLmgK
-PiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9pbmNsdWRlL2FzbS91YWNjZXNzLmggYi9hcmNoL3VtL2lu
-Y2x1ZGUvdWFwaS9hc20vdWFjY2Vzcy5oCj4gc2ltaWxhcml0eSBpbmRleCAxMDAlCj4gcmVuYW1l
-IGZyb20gYXJjaC91bS9pbmNsdWRlL2FzbS91YWNjZXNzLmgKPiByZW5hbWUgdG8gYXJjaC91bS9p
-bmNsdWRlL3VhcGkvYXNtL3VhY2Nlc3MuaAo+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRXZlcnlv
-bmUgaGF0ZXMgc2xvdyB3ZWJzaXRlcy4gU28gZG8gd2UuCk1ha2UgeW91ciB3ZWIgYXBwcyBmYXN0
-ZXIgd2l0aCBBcHBEeW5hbWljcwpEb3dubG9hZCBBcHBEeW5hbWljcyBMaXRlIGZvciBmcmVlIHRv
-ZGF5OgpodHRwOi8vcC5zZi5uZXQvc2Z1L2FwcGR5bl9kMmRfbWFyCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWls
-aW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
-czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgt
-ZGV2ZWwK
+Commit 10b63956 (UAPI: Plumb the UAPI Kbuilds into the user
+header installation and checking) breaks UML make headers_install with
+the following:
+
+$ ARCH=um make headers_install
+  CHK     include/generated/uapi/linux/version.h
+  UPD     include/generated/uapi/linux/version.h
+  HOSTCC  scripts/basic/fixdep
+  WRAP    arch/um/include/generated/asm/bug.h
+[snip]
+  WRAP    arch/um/include/generated/asm/trace_clock.h
+  SYSHDR  arch/x86/syscalls/../include/generated/uapi/asm/unistd_32.h
+  SYSHDR  arch/x86/syscalls/../include/generated/uapi/asm/unistd_64.h
+  SYSHDR  arch/x86/syscalls/../include/generated/uapi/asm/unistd_x32.h
+  SYSTBL  arch/x86/syscalls/../include/generated/asm/syscalls_32.h
+  HOSTCC  scripts/unifdef
+Makefile:912: *** Headers not exportable for the um architecture.  Stop.
+zsh: exit 2     ARCH=um make headers_install
+
+The reason for that is because the top-level Makefile does the
+following:
+        $(if $(wildcard $(srctree)/arch/$(hdr-arch)/include/uapi/asm/Kbuild),, \
+          $(error Headers not exportable for the $(SRCARCH) architecture))
+
+we end-up in the else part of the $(if) statement because UML still uses
+the old path in arch/um/include/asm/Kbuild. This patch fixes the issue
+by moving the header files to be in arch/um/include/uapi/asm/ thus
+making headers_install (and other make targets checking for uapi) to
+succeed.
+
+Signed-off-by: Florian Fainelli <florian@openwrt.org>
+---
+Richard, this is applicable to 3.7 onwards, I will submit per-version patches
+if you want to. Thanks!
+
+ arch/um/include/{ => uapi}/asm/Kbuild              |    0
+ arch/um/include/{ => uapi}/asm/a.out-core.h        |    0
+ arch/um/include/{ => uapi}/asm/bugs.h              |    0
+ arch/um/include/{ => uapi}/asm/cache.h             |    0
+ arch/um/include/{ => uapi}/asm/common.lds.S        |    0
+ arch/um/include/{ => uapi}/asm/dma.h               |    0
+ arch/um/include/{ => uapi}/asm/fixmap.h            |    0
+ arch/um/include/{ => uapi}/asm/irq.h               |    0
+ arch/um/include/{ => uapi}/asm/irqflags.h          |    0
+ arch/um/include/{ => uapi}/asm/kmap_types.h        |    0
+ arch/um/include/{ => uapi}/asm/kvm_para.h          |    0
+ arch/um/include/{ => uapi}/asm/mmu.h               |    0
+ arch/um/include/{ => uapi}/asm/mmu_context.h       |    0
+ arch/um/include/{ => uapi}/asm/page.h              |    0
+ arch/um/include/{ => uapi}/asm/pgalloc.h           |    0
+ arch/um/include/{ => uapi}/asm/pgtable-2level.h    |    0
+ arch/um/include/{ => uapi}/asm/pgtable-3level.h    |    0
+ arch/um/include/{ => uapi}/asm/pgtable.h           |    0
+ arch/um/include/{ => uapi}/asm/processor-generic.h |    0
+ arch/um/include/{ => uapi}/asm/ptrace-generic.h    |    0
+ arch/um/include/{ => uapi}/asm/setup.h             |    0
+ arch/um/include/{ => uapi}/asm/smp.h               |    0
+ arch/um/include/{ => uapi}/asm/sysrq.h             |    0
+ arch/um/include/{ => uapi}/asm/thread_info.h       |    0
+ arch/um/include/{ => uapi}/asm/timex.h             |    0
+ arch/um/include/{ => uapi}/asm/tlb.h               |    0
+ arch/um/include/{ => uapi}/asm/tlbflush.h          |    0
+ arch/um/include/{ => uapi}/asm/uaccess.h           |    0
+ 28 files changed, 0 insertions(+), 0 deletions(-)
+ rename arch/um/include/{ => uapi}/asm/Kbuild (100%)
+ rename arch/um/include/{ => uapi}/asm/a.out-core.h (100%)
+ rename arch/um/include/{ => uapi}/asm/bugs.h (100%)
+ rename arch/um/include/{ => uapi}/asm/cache.h (100%)
+ rename arch/um/include/{ => uapi}/asm/common.lds.S (100%)
+ rename arch/um/include/{ => uapi}/asm/dma.h (100%)
+ rename arch/um/include/{ => uapi}/asm/fixmap.h (100%)
+ rename arch/um/include/{ => uapi}/asm/irq.h (100%)
+ rename arch/um/include/{ => uapi}/asm/irqflags.h (100%)
+ rename arch/um/include/{ => uapi}/asm/kmap_types.h (100%)
+ rename arch/um/include/{ => uapi}/asm/kvm_para.h (100%)
+ rename arch/um/include/{ => uapi}/asm/mmu.h (100%)
+ rename arch/um/include/{ => uapi}/asm/mmu_context.h (100%)
+ rename arch/um/include/{ => uapi}/asm/page.h (100%)
+ rename arch/um/include/{ => uapi}/asm/pgalloc.h (100%)
+ rename arch/um/include/{ => uapi}/asm/pgtable-2level.h (100%)
+ rename arch/um/include/{ => uapi}/asm/pgtable-3level.h (100%)
+ rename arch/um/include/{ => uapi}/asm/pgtable.h (100%)
+ rename arch/um/include/{ => uapi}/asm/processor-generic.h (100%)
+ rename arch/um/include/{ => uapi}/asm/ptrace-generic.h (100%)
+ rename arch/um/include/{ => uapi}/asm/setup.h (100%)
+ rename arch/um/include/{ => uapi}/asm/smp.h (100%)
+ rename arch/um/include/{ => uapi}/asm/sysrq.h (100%)
+ rename arch/um/include/{ => uapi}/asm/thread_info.h (100%)
+ rename arch/um/include/{ => uapi}/asm/timex.h (100%)
+ rename arch/um/include/{ => uapi}/asm/tlb.h (100%)
+ rename arch/um/include/{ => uapi}/asm/tlbflush.h (100%)
+ rename arch/um/include/{ => uapi}/asm/uaccess.h (100%)
+
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/uapi/asm/Kbuild
+similarity index 100%
+rename from arch/um/include/asm/Kbuild
+rename to arch/um/include/uapi/asm/Kbuild
+diff --git a/arch/um/include/asm/a.out-core.h b/arch/um/include/uapi/asm/a.out-core.h
+similarity index 100%
+rename from arch/um/include/asm/a.out-core.h
+rename to arch/um/include/uapi/asm/a.out-core.h
+diff --git a/arch/um/include/asm/bugs.h b/arch/um/include/uapi/asm/bugs.h
+similarity index 100%
+rename from arch/um/include/asm/bugs.h
+rename to arch/um/include/uapi/asm/bugs.h
+diff --git a/arch/um/include/asm/cache.h b/arch/um/include/uapi/asm/cache.h
+similarity index 100%
+rename from arch/um/include/asm/cache.h
+rename to arch/um/include/uapi/asm/cache.h
+diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/uapi/asm/common.lds.S
+similarity index 100%
+rename from arch/um/include/asm/common.lds.S
+rename to arch/um/include/uapi/asm/common.lds.S
+diff --git a/arch/um/include/asm/dma.h b/arch/um/include/uapi/asm/dma.h
+similarity index 100%
+rename from arch/um/include/asm/dma.h
+rename to arch/um/include/uapi/asm/dma.h
+diff --git a/arch/um/include/asm/fixmap.h b/arch/um/include/uapi/asm/fixmap.h
+similarity index 100%
+rename from arch/um/include/asm/fixmap.h
+rename to arch/um/include/uapi/asm/fixmap.h
+diff --git a/arch/um/include/asm/irq.h b/arch/um/include/uapi/asm/irq.h
+similarity index 100%
+rename from arch/um/include/asm/irq.h
+rename to arch/um/include/uapi/asm/irq.h
+diff --git a/arch/um/include/asm/irqflags.h b/arch/um/include/uapi/asm/irqflags.h
+similarity index 100%
+rename from arch/um/include/asm/irqflags.h
+rename to arch/um/include/uapi/asm/irqflags.h
+diff --git a/arch/um/include/asm/kmap_types.h b/arch/um/include/uapi/asm/kmap_types.h
+similarity index 100%
+rename from arch/um/include/asm/kmap_types.h
+rename to arch/um/include/uapi/asm/kmap_types.h
+diff --git a/arch/um/include/asm/kvm_para.h b/arch/um/include/uapi/asm/kvm_para.h
+similarity index 100%
+rename from arch/um/include/asm/kvm_para.h
+rename to arch/um/include/uapi/asm/kvm_para.h
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/uapi/asm/mmu.h
+similarity index 100%
+rename from arch/um/include/asm/mmu.h
+rename to arch/um/include/uapi/asm/mmu.h
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/uapi/asm/mmu_context.h
+similarity index 100%
+rename from arch/um/include/asm/mmu_context.h
+rename to arch/um/include/uapi/asm/mmu_context.h
+diff --git a/arch/um/include/asm/page.h b/arch/um/include/uapi/asm/page.h
+similarity index 100%
+rename from arch/um/include/asm/page.h
+rename to arch/um/include/uapi/asm/page.h
+diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/uapi/asm/pgalloc.h
+similarity index 100%
+rename from arch/um/include/asm/pgalloc.h
+rename to arch/um/include/uapi/asm/pgalloc.h
+diff --git a/arch/um/include/asm/pgtable-2level.h b/arch/um/include/uapi/asm/pgtable-2level.h
+similarity index 100%
+rename from arch/um/include/asm/pgtable-2level.h
+rename to arch/um/include/uapi/asm/pgtable-2level.h
+diff --git a/arch/um/include/asm/pgtable-3level.h b/arch/um/include/uapi/asm/pgtable-3level.h
+similarity index 100%
+rename from arch/um/include/asm/pgtable-3level.h
+rename to arch/um/include/uapi/asm/pgtable-3level.h
+diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/uapi/asm/pgtable.h
+similarity index 100%
+rename from arch/um/include/asm/pgtable.h
+rename to arch/um/include/uapi/asm/pgtable.h
+diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/uapi/asm/processor-generic.h
+similarity index 100%
+rename from arch/um/include/asm/processor-generic.h
+rename to arch/um/include/uapi/asm/processor-generic.h
+diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/uapi/asm/ptrace-generic.h
+similarity index 100%
+rename from arch/um/include/asm/ptrace-generic.h
+rename to arch/um/include/uapi/asm/ptrace-generic.h
+diff --git a/arch/um/include/asm/setup.h b/arch/um/include/uapi/asm/setup.h
+similarity index 100%
+rename from arch/um/include/asm/setup.h
+rename to arch/um/include/uapi/asm/setup.h
+diff --git a/arch/um/include/asm/smp.h b/arch/um/include/uapi/asm/smp.h
+similarity index 100%
+rename from arch/um/include/asm/smp.h
+rename to arch/um/include/uapi/asm/smp.h
+diff --git a/arch/um/include/asm/sysrq.h b/arch/um/include/uapi/asm/sysrq.h
+similarity index 100%
+rename from arch/um/include/asm/sysrq.h
+rename to arch/um/include/uapi/asm/sysrq.h
+diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/uapi/asm/thread_info.h
+similarity index 100%
+rename from arch/um/include/asm/thread_info.h
+rename to arch/um/include/uapi/asm/thread_info.h
+diff --git a/arch/um/include/asm/timex.h b/arch/um/include/uapi/asm/timex.h
+similarity index 100%
+rename from arch/um/include/asm/timex.h
+rename to arch/um/include/uapi/asm/timex.h
+diff --git a/arch/um/include/asm/tlb.h b/arch/um/include/uapi/asm/tlb.h
+similarity index 100%
+rename from arch/um/include/asm/tlb.h
+rename to arch/um/include/uapi/asm/tlb.h
+diff --git a/arch/um/include/asm/tlbflush.h b/arch/um/include/uapi/asm/tlbflush.h
+similarity index 100%
+rename from arch/um/include/asm/tlbflush.h
+rename to arch/um/include/uapi/asm/tlbflush.h
+diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/uapi/asm/uaccess.h
+similarity index 100%
+rename from arch/um/include/asm/uaccess.h
+rename to arch/um/include/uapi/asm/uaccess.h
+-- 
+1.7.10.4
+
+------------------------------------------------------------------------------
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://p.sf.net/sfu/appdyn_d2d_mar
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
