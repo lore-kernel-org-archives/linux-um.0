@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <dhowells@redhat.com>) id 1UIMAY-0008Tw-HZ
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1UHyqW-0006VU-4m
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Mar 2013 16:47:18 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UIMAX-0007wa-Bz for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Mar 2013 16:47:18 +0000
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <5783794.b5gPVMPLlO@bender>
+	Tue, 19 Mar 2013 15:53:04 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UHyqU-0002ag-3l
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 19 Mar 2013 15:53:04 +0000
+Date: Tue, 19 Mar 2013 16:26:16 +0100
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <20130319162616.083e82b3@spider.haslach.nod.at>
+In-Reply-To: <51487E4C.9040507@openwrt.org>
 References: <5783794.b5gPVMPLlO@bender>
-Date: Wed, 20 Mar 2013 16:46:57 +0000
-Message-ID: <2521.1363798017@warthog.procyon.org.uk>
+	<51487E4C.9040507@openwrt.org>
+Mime-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,25 +26,26 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] UM: fix make headers_install after UAPI
-	header installation
+ header installation
 To: Florian Fainelli <florian@openwrt.org>
-Cc: dhowells@redhat.com, richard@nod.at, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+Cc: dhowells@redhat.com, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
 
-Florian Fainelli <florian@openwrt.org> wrote:
+Am Tue, 19 Mar 2013 16:03:40 +0100
+schrieb Florian Fainelli <florian@openwrt.org>:
 
-> Commit 10b63956 (UAPI: Plumb the UAPI Kbuilds into the user
-> header installation and checking) breaks UML make headers_install with
-> the following:
+> Richard, Jeff, David,
+> 
+> Does the following fix look valid to you? Thanks!
 
-Ummm...  Why would you do that?  Surely UML doesn't have its own userspace,
-but rather borrows from the host arch?
+Please give me more than 48h to review a patch. :)
+I'm very busy with $DAYJOB and UML is currently only a private project.
 
-David
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Everyone hates slow websites. So do we.
