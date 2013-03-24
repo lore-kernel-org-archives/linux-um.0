@@ -1,7 +1,9 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Jiang Liu <liuj97@gmail.com>
-Date: Sun, 24 Mar 2013 15:40:34 +0800
-Message-Id: <1364110839-8172-1-git-send-email-jiang.liu@huawei.com>
+Date: Sun, 24 Mar 2013 15:25:25 +0800
+Message-Id: <1364109934-7851-60-git-send-email-jiang.liu@huawei.com>
+In-Reply-To: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
+References: <1364109934-7851-1-git-send-email-jiang.liu@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: [RFC PATCH v2, part4 34/39] mm/um: prepare for removing num_physpages and simplify mem_init()
 To: Andrew Morton <akpm@linux-foundation.org>, David Rientjes <rientjes@google.com>
