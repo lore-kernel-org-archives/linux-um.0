@@ -1,28 +1,40 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: James Hogan <james.hogan@imgtec.com>
-Date: Wed, 27 Mar 2013 10:47:11 +0000
-Message-ID: <1364381234-22960-1-git-send-email-james.hogan@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+From: Jiang Liu <liuj97@gmail.com>
+Date: Sun, 24 Mar 2013 15:40:34 +0800
+Message-Id: <1364110839-8172-1-git-send-email-jiang.liu@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 0/3] hostfs: tweaks from imgdafs review
-To: Jeff Dike <jdike@addtoit.com>, Al Viro <viro@ZenIV.linux.org.uk>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: James Hogan <james.hogan@imgtec.com>
+Subject: [RFC PATCH v2, part4 34/39] mm/um: prepare for removing num_physpages and simplify mem_init()
+To: Andrew Morton <akpm@linux-foundation.org>, David Rientjes <rientjes@google.com>
+Cc: Jiang Liu <jiang.liu@huawei.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This patchset contains some tweaks to hostfs, based on imgdafs review
-comments from Al Viro which also apply to hostfs.
+Prepare for removing num_physpages and simplify mem_init().
 
-James Hogan (3):
-  hostfs: remove "will unlock" comment
-  hostfs: move HOSTFS_SUPER_MAGIC to <linux/magic.h>
-  hostfs: use kmalloc instead of kzalloc
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/um/kernel/mem.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
- fs/hostfs/hostfs_kern.c    | 8 ++++----
- include/uapi/linux/magic.h | 1 +
- 2 files changed, 5 insertions(+), 4 deletions(-)
-
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index a7dc6c1..819008f 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -70,10 +70,8 @@ void __init mem_init(void)
+ #ifdef CONFIG_HIGHMEM
+ 	setup_highmem(end_iomem, highmem);
+ #endif
+-	num_physpages = totalram_pages;
+ 	max_pfn = totalram_pages;
+-	printk(KERN_INFO "Memory: %luk available\n",
+-	       nr_free_pages() << (PAGE_SHIFT-10));
++	mem_init_print_info(NULL);
+ 	kmalloc_ok = 1;
+ }
+ 
 -- 
-1.8.1.2
-
+1.7.9.5
 
