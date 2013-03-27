@@ -1,53 +1,46 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <1364038742.1390.228.camel@x61.thuisdomein>
-From: Paul Bolle <pebolle@tiscali.nl>
-Date: Sat, 23 Mar 2013 12:39:02 +0100
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: James Hogan <james.hogan@imgtec.com>
+Date: Wed, 27 Mar 2013 10:47:14 +0000
+Message-ID: <1364381234-22960-4-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1364381234-22960-1-git-send-email-james.hogan@imgtec.com>
+References: <1364381234-22960-1-git-send-email-james.hogan@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: remove "config STDIO_CONSOLE"
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] hostfs: use kmalloc instead of kzalloc
+To: Jeff Dike <jdike@addtoit.com>, Al Viro <viro@ZenIV.linux.org.uk>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: James Hogan <james.hogan@imgtec.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The only user of Kconfig symbol STDIO_CONSOLE was removed in v2.5.65.
-Its entry can safely be removed.
+The inode info structure is zeroed at allocation with kzalloc, and then
+all but one of the fields (including the largest, vfs_inode) are
+initialised explicitly. Switch to using kmalloc and initialise the
+remaining field too.
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
 ---
-0) Untested.
+ fs/hostfs/hostfs_kern.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-1) A short history of STDIO_CONSOLE and CONFIG_STDIO_CONSOLE
-
-CONFIG_STDIO_CONSOLE was added in v2.4.9 (August 2001). It wrapped a
-call of stdio_console_init() in an #ifdef and #endif pair.
-
-The Kconfig symbol STDIO_CONSOLE was added in v2.5.35 (September 2002).
-That release also introduced a definition of stdio_console_init().
-
-Both CONFIG_STDIO_CONSOLE and the call of stdio_console_init() that it
-guarded were removed in v2.5.65 (March 2003). An instance of the
-console_initcall() macro was then added for stdio_console_init.
-
- arch/um/Kconfig.char | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/arch/um/Kconfig.char b/arch/um/Kconfig.char
-index b9d7c42..f10738d 100644
---- a/arch/um/Kconfig.char
-+++ b/arch/um/Kconfig.char
-@@ -6,10 +6,6 @@ config STDERR_CONSOLE
- 	help
- 	  console driver which dumps all printk messages to stderr.
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index f2372ef..32f35f1 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -228,10 +228,11 @@ static struct inode *hostfs_alloc_inode(struct super_block *sb)
+ {
+ 	struct hostfs_inode_info *hi;
  
--config STDIO_CONSOLE
--	bool
--	default y
--
- config SSL
- 	bool "Virtual serial line"
- 	help
+-	hi = kzalloc(sizeof(*hi), GFP_KERNEL);
++	hi = kmalloc(sizeof(*hi), GFP_KERNEL);
+ 	if (hi == NULL)
+ 		return NULL;
+ 	hi->fd = -1;
++	hi->mode = 0;
+ 	inode_init_once(&hi->vfs_inode);
+ 	return &hi->vfs_inode;
+ }
 -- 
-1.7.11.7
+1.8.1.2
+
 
