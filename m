@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <pbutler@pt.com>) id 1UOIq2-0003w9-I5
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1UO0yE-0001a6-It
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 06 Apr 2013 02:26:42 +0000
-Received: from ottgw.pt.com ([209.217.107.194])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UOIpz-00071f-Ta for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 06 Apr 2013 02:26:42 +0000
-Message-ID: <39656.10.100.142.174.1365215174.squirrel@webmail3.pt.com>
-In-Reply-To: <20130405161541.6e4a2472@spider.haslach.nod.at>
+	Fri, 05 Apr 2013 07:21:58 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1UO0y7-0005xZ-OV
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 05 Apr 2013 07:21:58 +0000
+Date: Fri, 5 Apr 2013 09:21:41 +0200
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <20130405092141.61f2f61c@spider.haslach.nod.at>
+In-Reply-To: <45722.173.206.176.149.1364962278.squirrel@webmail3.pt.com>
 References: <45722.173.206.176.149.1364962278.squirrel@webmail3.pt.com>
-	<20130405092141.61f2f61c@spider.haslach.nod.at>
-	<OFF553D1A8.B32C41CE-ON85257B44.004D6DD3-85257B44.004D81FA@pt.com>
-	<20130405160739.68d74008@spider.haslach.nod.at>
-	<OF04169121.A123E516-ON85257B44.004E1BE5-85257B44.004E21A8@pt.com>
-	<20130405161541.6e4a2472@spider.haslach.nod.at>
-Date: Fri, 5 Apr 2013 22:26:14 -0400 (EDT)
-From: "Peter Butler" <pbutler@pt.com>
-MIME-Version: 1.0
+Mime-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,79 +30,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] BUG: failure at
  block/blk-core.c:2985/blk_flush_plug_list()
-To: Richard Weinberger <richard@nod.at>
+To: Peter Butler <pbutler@pt.com>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Looks like the mainline fails early in the build process (?)
+Am Wed, 3 Apr 2013 00:11:18 -0400 (EDT)
+schrieb "Peter Butler" <pbutler@pt.com>:
 
-after 'make mrproper' and 'make defconfig' I get this:
+> Running UML from vanilla kernel 3.8.5 compiled with default kernel
+> configuration and booted with Fedora 18 root fs (as downloaded from
+> http://fs.devloop.org.uk/).  Boots fine about 3/4 of the time, the
+> rest of the time it crashes - see output below for an example.
+> 
+> 
+> 
+> command line:
+> 
+> ./linux ubd0=Fedora18-AMD64-root_fs rw mem=4096M con0=fd:0,fd:1
+> 
+> 
+> 
+> source code BUG() line:
+> 
+> BUG_ON(plug->magic != PLUG_MAGIC);
 
-bash $ make ARCH=um linux
-scripts/kconfig/conf --silentoldconfig arch/x86/um/Kconfig
-  CHK     include/generated/uapi/linux/version.h
-  UPD     include/generated/uapi/linux/version.h
-  WRAP    arch/um/include/generated/asm/bug.h
-  WRAP    arch/um/include/generated/asm/cputime.h
-  WRAP    arch/um/include/generated/asm/device.h
-  WRAP    arch/um/include/generated/asm/emergency-restart.h
-  WRAP    arch/um/include/generated/asm/futex.h
-  WRAP    arch/um/include/generated/asm/hardirq.h
-  WRAP    arch/um/include/generated/asm/hw_irq.h
-  WRAP    arch/um/include/generated/asm/irq_regs.h
-  WRAP    arch/um/include/generated/asm/kdebug.h
-  WRAP    arch/um/include/generated/asm/percpu.h
-  WRAP    arch/um/include/generated/asm/sections.h
-  WRAP    arch/um/include/generated/asm/topology.h
-  WRAP    arch/um/include/generated/asm/xor.h
-  WRAP    arch/um/include/generated/asm/ftrace.h
-  WRAP    arch/um/include/generated/asm/pci.h
-  WRAP    arch/um/include/generated/asm/io.h
-  WRAP    arch/um/include/generated/asm/param.h
-  WRAP    arch/um/include/generated/asm/delay.h
-  WRAP    arch/um/include/generated/asm/mutex.h
-  WRAP    arch/um/include/generated/asm/current.h
-  WRAP    arch/um/include/generated/asm/exec.h
-  WRAP    arch/um/include/generated/asm/switch_to.h
-  WRAP    arch/um/include/generated/asm/clkdev.h
-  WRAP    arch/um/include/generated/asm/trace_clock.h
-  SYSHDR  arch/x86/syscalls/../include/generated/uapi/asm/unistd_32.h
-  SYSHDR  arch/x86/syscalls/../include/generated/uapi/asm/unistd_64.h
-  SYSHDR  arch/x86/syscalls/../include/generated/uapi/asm/unistd_x32.h
-  SYSTBL  arch/x86/syscalls/../include/generated/asm/syscalls_32.h
-  HOSTCC  scripts/unifdef
-  CC      arch/x86/um/user-offsets.s
-In file included from /usr/include/stdio.h:28:0,
-                 from arch/x86/um/user-offsets.c:1:
-/usr/include/features.h:324:26: fatal error: bits/predefs.h: No such file
-or directory
-compilation terminated.
-make[1]: *** [arch/x86/um/user-offsets.s] Error 1
-make: *** [arch/x86/um/user-offsets.s] Error 2
+Does it always crash exactly here?
+Can you please retry with Linus' tree.
 
 
-
-> Am Fri, 5 Apr 2013 10:13:24 -0400
-> schrieb Peter Butler <PButler@pt.com>:
->
->> OK thanks - will get to that later tonight :-)
->
-> Thanks for testing.
-> I've fixed some odd bugs currently. The code is in Linus's tree.
-> Maybe we need to backport something.
->
-> //richard
->
-
-
--- 
-Peter Butler
-Software Engineer, Signaling Systems Group
-Performance Technologies Inc.
-http://www.pt.com
-Tel: 613-287-5403
-Fax: 613-287-5377
-
-
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Minimize network downtime and maximize team effectiveness.
