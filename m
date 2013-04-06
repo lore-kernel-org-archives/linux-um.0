@@ -1,105 +1,42 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1URnb2-0003W4-AK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Apr 2013 17:53:40 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1URnb0-0004NL-9i
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Apr 2013 17:53:40 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 15 Apr 2013 19:53:25 +0200
-Message-Id: <1366048405-4769-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] um: Use generic idle loop
-To: tglx@linutronix.de
-Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Jiang Liu <liuj97@gmail.com>
+Date: Sat,  6 Apr 2013 22:32:36 +0800
+Message-Id: <1365258760-30821-38-git-send-email-jiang.liu@huawei.com>
+In-Reply-To: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com>
+References: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v4, part3 37/41] mm/um: prepare for removing num_physpages and simplify mem_init()
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Prepare for removing num_physpages and simplify mem_init().
+
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 ---
- arch/um/Kconfig.common   |  1 +
- arch/um/kernel/process.c | 27 ++-------------------------
- 2 files changed, 3 insertions(+), 25 deletions(-)
+ arch/um/kernel/mem.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index bceee66..5783406 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -12,6 +12,7 @@ config UML
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IO
- 	select GENERIC_CLOCKEVENTS
-+	select GENERIC_IDLE_LOOP
- 	select TTY # Needed for line.c
- 
- config MMU
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index b462b13..4d64860 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -210,33 +210,10 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
- 	kmalloc_ok = save_kmalloc_ok;
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index a7dc6c1..819008f 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -70,10 +70,8 @@ void __init mem_init(void)
+ #ifdef CONFIG_HIGHMEM
+ 	setup_highmem(end_iomem, highmem);
+ #endif
+-	num_physpages = totalram_pages;
+ 	max_pfn = totalram_pages;
+-	printk(KERN_INFO "Memory: %luk available\n",
+-	       nr_free_pages() << (PAGE_SHIFT-10));
++	mem_init_print_info(NULL);
+ 	kmalloc_ok = 1;
  }
  
--void default_idle(void)
--{
--	unsigned long long nsecs;
--
--	while (1) {
--		/* endless idle loop with no priority at all */
--
--		/*
--		 * although we are an idle CPU, we do not want to
--		 * get into the scheduler unnecessarily.
--		 */
--		if (need_resched())
--			schedule();
--
--		tick_nohz_idle_enter();
--		rcu_idle_enter();
--		nsecs = disable_timer();
--		idle_sleep(nsecs);
--		rcu_idle_exit();
--		tick_nohz_idle_exit();
--	}
--}
--
--void cpu_idle(void)
-+void arch_cpu_idle(void)
- {
- 	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
--	default_idle();
-+	local_irq_enable();
- }
- 
- int __cant_sleep(void) {
 -- 
-1.8.1.4
-
-
-------------------------------------------------------------------------------
-Precog is a next-generation analytics platform capable of advanced
-analytics on semi-structured data. The platform includes APIs for building
-apps and a phenomenal toolset for data science. Developers can use
-our toolset for easy data analysis & visualization. Get a free account!
-http://www2.precog.com/precogplatform/slashdotnewsletter
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+1.7.9.5
 
