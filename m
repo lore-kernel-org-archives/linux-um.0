@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <terry.shoes@gmail.com>) id 1UQqhP-0006wy-1h
+	(envelope-from <terry.shoes@gmail.com>) id 1UQk8N-0005rQ-Lv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 13 Apr 2013 03:00:19 +0000
-Received: from mail-la0-f42.google.com ([209.85.215.42])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UQqhN-0001JX-CE
+	Fri, 12 Apr 2013 19:59:43 +0000
+Received: from mail-la0-f49.google.com ([209.85.215.49])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UQk8L-0001xz-Rh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 13 Apr 2013 03:00:19 +0000
-Received: by mail-la0-f42.google.com with SMTP id fn20so2752299lab.1
+	Fri, 12 Apr 2013 19:59:43 +0000
+Received: by mail-la0-f49.google.com with SMTP id fs12so2850596lab.36
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 12 Apr 2013 20:00:10 -0700 (PDT)
+	Fri, 12 Apr 2013 12:59:35 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <CAER6CkeTkOWRsYdQyFcutOCYru_nW8Kgp61Yi3w9GZ21VUdX-g@mail.gmail.com>
 References: <CAER6CkdnaFQshNMPkQVdXjB9Z3MyoMTg+grcPwwW=yGVjmhEZg@mail.gmail.com>
@@ -24,8 +24,8 @@ References: <CAER6CkdnaFQshNMPkQVdXjB9Z3MyoMTg+grcPwwW=yGVjmhEZg@mail.gmail.com>
 	<CAER6CkcV+LCLf=iihv_WWuQDJPX1W9ubux4LE3+2yWcHZFUxyA@mail.gmail.com>
 	<CAER6CkeTkOWRsYdQyFcutOCYru_nW8Kgp61Yi3w9GZ21VUdX-g@mail.gmail.com>
 From: Terry Hsu <terry.shoes@gmail.com>
-Date: Fri, 12 Apr 2013 22:59:30 -0400
-Message-ID: <CAER6CkcjCj7HR7X-P4FPGzFkY=2ak9U41a-_mMwR9TwucwuoQg@mail.gmail.com>
+Date: Fri, 12 Apr 2013 15:58:54 -0400
+Message-ID: <CAER6CkcuYOwf2s+n3Gszg4BP55fJQW74KK7W+tQnJiPUpvqSyg@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,59 +35,39 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5891161763293066069=="
+Content-Type: multipart/mixed; boundary="===============7367263348279738088=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] Endless page fault for the same miss address in my
 	UML
 To: richard -rw- weinberger <richard.weinberger@gmail.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
---===============5891161763293066069==
-Content-Type: multipart/alternative; boundary=f46d040714d5c3753f04da3537af
+--===============7367263348279738088==
+Content-Type: multipart/alternative; boundary=089e01176f039cdc5704da2f5780
 
---f46d040714d5c3753f04da3537af
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+--089e01176f039cdc5704da2f5780
+Content-Type: text/plain; charset=ISO-8859-1
+
+Do you know which functions are used by UML to write the to be fixed
+address into SKAS stub? In the handle_page_fault(), the stub mapping is
+never referenced. I print out vm area (in find_vma()) if the address cover
+by the stub mapping is referenced, and it prints nothing there.
+
+I want to know when/where the UML writes the to be fixed address into SKAS
+stub so I can fix the problem accordingly. I think my UML is using the
+wrong SKAS stub to fixed the fault...
+
+Thanks!
+
 
 On Fri, Apr 12, 2013 at 1:14 AM, Terry Hsu <terry.shoes@gmail.com> wrote:
 
 > okay so I looked into the faultinfo structure and was able to obtain the
-> faulting address, error code, and trap number(?). From my understanding t=
-he
-> error code is the bottom 3 bits of the exception code. But I see error co=
-de
+> faulting address, error code, and trap number(?). From my understanding the
+> error code is the bottom 3 bits of the exception code. But I see error code
 > "20" sometimes and do not what it means.
->
-
-According to p.6-55 in Intel=AE 64 and IA-32 Architectures Software
-Developer=92s Manual, Volume 3: System Programming
-Guide<http://download.intel.com/design/processor/manuals/253668.pdf>,
-the lower 5 bits are Present, Read/Write, User/supervisor, RSVD, and
-Instruction/Data bit respectively. So error code 20 means the fault is
-caused by an instruction read to a non-present page in user mode.
-
-I found the the reason why the fault cannot be fixed by UML. It is probably
-because UML puts the faultinfo in the wrong stub, since I changed the vm
-area pointers of the child process, when the fault happens, UML incorrectly
-finds its parent process's stub pages and puts the faultinfo in it.
-Therefore when the child process tries to access its own skas stub and fix
-the fault, it still cannot find the correct instruction pointers hence the
-fault happens endlessly.
-
-Why does every process that runs in UML need its own stub for page fault
-handling? It seems to me they could've shared the SIGSEGV signal handler
-and the function that invokes mmap, munmap, mprotect. In this way only two
-pages are needed for all the processes.
-
-I am not sure if I understand the whole thing correctly. Please correct me
-if it's not right.
-
-Thanks!
-
- I am now looking at how the special mapping works with the host kernel. I
-> think this might lead me to the solution of my problem. It sounds like th=
-e
-> special mapping is not installed correctly so that the UML was not able t=
-o
+> I am now looking at how the special mapping works with the host kernel. I
+> think this might lead me to the solution of my problem. It sounds like the
+> special mapping is not installed correctly so that the UML was not able to
 > fix the fault.
 >
 >
@@ -98,8 +78,7 @@ o
 >> In the unmodified kernel, I did not see the kernel call mmap (which in
 >> turn calls mmap_region) to install the mapping for the faulting page in
 >> child task. The child task does not have the UML invoked mmap to install
->> mapping. So I could not examine the parameters passed to mmap neither th=
-e
+>> mapping. So I could not examine the parameters passed to mmap neither the
 >> return value of it.
 >>
 >> Thanks for the explanation of the special mapping. After reading your
@@ -123,9 +102,9 @@ e
 >> [handle_page_fault] pte does not exist!
 >> [handle_page_fault] before handle_page_fault
 >> [print_mm_rss_stat] mm->rss_stat for mm id: 673
->> [print_mm_rss_stat] mm->rss_stat.count[0] =3D 0
->> [print_mm_rss_stat] mm->rss_stat.count[1] =3D 27
->> [print_mm_rss_stat] mm->rss_stat.count[2] =3D 0
+>> [print_mm_rss_stat] mm->rss_stat.count[0] = 0
+>> [print_mm_rss_stat] mm->rss_stat.count[1] = 27
+>> [print_mm_rss_stat] mm->rss_stat.count[2] = 0
 >> [find_vma] Caller is handle_page_fault+0x1ca/0x957, pid 598 a.out
 >> [handle_mm_fault] Caller is handle_page_fault+0x50d/0x957, pid 598 a.out
 >> [handle_mm_fault] pgd: 295944192
@@ -154,9 +133,9 @@ e
 >> [handle_page_fault] pte for 0x400e9cc8: 0x119e3748
 >> [handle_page_fault] after handle_page_fault
 >> [print_mm_rss_stat] mm->rss_stat for mm id: 673
->> [print_mm_rss_stat] mm->rss_stat.count[0] =3D 1
->> [print_mm_rss_stat] mm->rss_stat.count[1] =3D 27
->> [print_mm_rss_stat] mm->rss_stat.count[2] =3D 0
+>> [print_mm_rss_stat] mm->rss_stat.count[0] = 1
+>> [print_mm_rss_stat] mm->rss_stat.count[1] = 27
+>> [print_mm_rss_stat] mm->rss_stat.count[2] = 0
 >>
 >>
 >>
@@ -175,8 +154,7 @@ e
 >>> I use
 >>> > gdb to trace the function call and notice that mmap_region() is never
 >>> called
->>> > during the execution of the child task. I am guessing it's because th=
-e
+>>> > during the execution of the child task. I am guessing it's because the
 >>> child
 >>> > task does not use large enough memory space to have the UML installed
 >>> > mapping for it.
@@ -186,21 +164,18 @@ e
 >>> kernel finds
 >>> out that there is no memory mapping installed in the _host_ side of
 >>> UML and sends SIGSEGV
->>> to the process. UML's host part catches the SIGSEGV and tries to fix it=
-.
+>>> to the process. UML's host part catches the SIGSEGV and tries to fix it.
 >>> Usually it does so by mmap()'ing the faulting page into the UML guest
 >>> process.
 >>> This is where the SKAS stub magic happens. It write the to be fixed
 >>> address into STUB_DATA
->>> and sets EIP/RIP to STUB_CODE such that the process itself calls mmap()=
-.
+>>> and sets EIP/RIP to STUB_CODE such that the process itself calls mmap().
 >>> After the stub has finished it traps itself and the UML emulation
 >>> continues.
 >>>
 >>> Now we need to figure out a) What address is faulting and why? b) What
 >>> does the UML _host_ side
->>> code to fix it? i.e. What are the mmap() parameters? c) Does this mmap(=
-)
+>>> code to fix it? i.e. What are the mmap() parameters? c) Does this mmap()
 >>> fail?
 >>>
 >>> To me it looks like UML is unable to fix the fault and therefore it
@@ -214,62 +189,33 @@ e
 >>
 >
 
---f46d040714d5c3753f04da3537af
-Content-Type: text/html; charset=windows-1252
+--089e01176f039cdc5704da2f5780
+Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-<div dir=3D"ltr"><br><div class=3D"gmail_extra"><div class=3D"gmail_quote">=
-On Fri, Apr 12, 2013 at 1:14 AM, Terry Hsu <span dir=3D"ltr">&lt;<a href=3D=
-"mailto:terry.shoes@gmail.com" target=3D"_blank">terry.shoes@gmail.com</a>&=
-gt;</span> wrote:<br>
+<div dir=3D"ltr">Do you know which functions are used by UML to write the t=
+o be fixed address into SKAS stub? In the handle_page_fault(), the stub map=
+ping is never referenced. I print out vm area (in find_vma()) if the addres=
+s cover by the stub mapping is referenced, and it prints nothing there.<div=
+>
+
+<br></div><div>I want to know when/where the UML writes the to be fixed add=
+ress into SKAS stub so I can fix the problem accordingly. I think my UML is=
+ using the wrong SKAS stub to fixed the fault...<div><br></div><div style>
+
+Thanks! =A0</div></div></div><div class=3D"gmail_extra"><br><br><div class=
+=3D"gmail_quote">On Fri, Apr 12, 2013 at 1:14 AM, Terry Hsu <span dir=3D"lt=
+r">&lt;<a href=3D"mailto:terry.shoes@gmail.com" target=3D"_blank">terry.sho=
+es@gmail.com</a>&gt;</span> wrote:<br>
+
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"><div dir=3D"ltr">okay so I looked into the f=
+aultinfo structure and was able to obtain the faulting address, error code,=
+ and trap number(?). From my understanding the error code is the bottom 3 b=
+its of the exception code. But I see error code &quot;20&quot; sometimes an=
+d do not what it means.=A0<div>
 
 
-
-<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
-left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
-adding-left:1ex"><div dir=3D"ltr">okay so I looked into the faultinfo struc=
-ture and was able to obtain the faulting address, error code, and trap numb=
-er(?). From my understanding the error code is the bottom 3 bits of the exc=
-eption code. But I see error code &quot;20&quot; sometimes and do not what =
-it means.=A0</div>
-
-
-
-</blockquote><div><br></div><div>According to p.6-55 in <a href=3D"http://d=
-ownload.intel.com/design/processor/manuals/253668.pdf" target=3D"_blank">In=
-tel=AE 64 and IA-32 Architectures Software Developer=92s Manual, Volume 3: =
-System Programming Guide</a>, the lower 5 bits are Present, Read/Write, Use=
-r/supervisor, RSVD, and Instruction/Data bit respectively. So error code 20=
- means the fault is caused by an instruction read to a non-present page in =
-user mode.=A0</div>
-
-
-
-<div><br></div><div>I found the the reason why the fault cannot be fixed by=
- UML. It is probably because UML puts the faultinfo in the wrong stub, sinc=
-e I changed the vm area pointers of the child process, when the fault happe=
-ns, UML incorrectly finds its parent process&#39;s stub pages and puts the =
-faultinfo in it. Therefore when the child process tries to access its own s=
-kas stub and fix the fault, it still cannot find the correct instruction po=
-inters hence the fault happens endlessly.</div>
-
-
-
-<div style><br></div><div style>Why does every process that runs in UML nee=
-d its own stub for page fault handling? It seems to me they could&#39;ve sh=
-ared the SIGSEGV signal handler and the function that invokes mmap, munmap,=
- mprotect. In this way only two pages are needed for all the processes.</di=
-v>
-
-<div style><br></div><div>I am not sure if I understand the whole thing cor=
-rectly. Please correct me if it&#39;s not right.=A0</div><div><br></div><di=
-v>Thanks!</div><div><br></div><blockquote class=3D"gmail_quote" style=3D"ma=
-rgin:0px 0px 0px 0.8ex;border-left-width:1px;border-left-color:rgb(204,204,=
-204);border-left-style:solid;padding-left:1ex">
-
-
-
-<div dir=3D"ltr"><div>
 
 
 I am now looking at how the special mapping works with the host kernel. I t=
@@ -280,27 +226,20 @@ ix the fault.<div>
 
 
 
-
-
-<br></div><div><br></div></div><div><div><div class=3D"gmail_extra"><br><br=
-><div class=3D"gmail_quote">On Thu, Apr 11, 2013 at 7:00 PM, Terry Hsu <spa=
-n dir=3D"ltr">&lt;<a href=3D"mailto:terry.shoes@gmail.com" target=3D"_blank=
-">terry.shoes@gmail.com</a>&gt;</span> wrote:<br>
-
+<br></div><div><br></div></div><div><div class=3D"h5"><div class=3D"gmail_e=
+xtra"><br><br><div class=3D"gmail_quote">On Thu, Apr 11, 2013 at 7:00 PM, T=
+erry Hsu <span dir=3D"ltr">&lt;<a href=3D"mailto:terry.shoes@gmail.com" tar=
+get=3D"_blank">terry.shoes@gmail.com</a>&gt;</span> wrote:<br>
 
 
 
 
-
-<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
-left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
-adding-left:1ex"><div dir=3D"ltr">In the unmodified kernel, I did not see t=
-he kernel call mmap (which in turn calls mmap_region) to install the mappin=
-g for the faulting page in child task. The child task does not have the UML=
- invoked mmap to install mapping.=A0So I could not examine the parameters p=
-assed to mmap neither the return value of it.<div>
-
-
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"><div dir=3D"ltr">In the unmodified kernel, I=
+ did not see the kernel call mmap (which in turn calls mmap_region) to inst=
+all the mapping for the faulting page in child task. The child task does no=
+t have the UML invoked mmap to install mapping.=A0So I could not examine th=
+e parameters passed to mmap neither the return value of it.<div>
 
 
 
@@ -320,16 +259,12 @@ iv>
 
 
 
-
-
 <div><br></div><div>The handle_pte_fault() calls __do_fault(), which in tur=
 n invokes filemap_fault() through=A0<br>vma-&gt;vm_ops-&gt;fault(vma, &amp;=
 vmf). How do I find out exactly what the miss address is for? I am posting =
 the log I print out here. This is the unmodified kernel version. So the pag=
 e is faulted in correctly without calling mmap for the forked child task.</=
 div>
-
-
 
 
 
@@ -347,8 +282,6 @@ a.out</font></div>
 
 
 
-
-
 <div><font face=3D"courier new, monospace">[segv] Caller is segv_handler+0x=
 b1/0xbb, pid 598 a.out</font></div><div><font face=3D"courier new, monospac=
 e">[handle_page_fault] Caller is segv+0xfa/0x324, pid 598 a.out</font></div=
@@ -359,14 +292,10 @@ e">[handle_page_fault] Caller is segv+0xfa/0x324, pid 598 a.out</font></div=
 
 
 
-
-
 <div><font face=3D"courier new, monospace">[handle_page_fault] fault addres=
 s: 0x400e9cc8</font></div><div><font face=3D"courier new, monospace">[handl=
 e_page_fault] page walk for 0x400e9cc8</font></div><div><font face=3D"couri=
 er new, monospace">[handle_page_fault] pte does not exist!</font></div>
-
-
 
 
 
@@ -384,15 +313,11 @@ courier new, monospace">[print_mm_rss_stat] mm-&gt;rss_stat.count[0] =3D 0=
 
 
 
-
-
 <div><font face=3D"courier new, monospace">[print_mm_rss_stat] mm-&gt;rss_s=
 tat.count[1] =3D 27=A0</font></div><div><font face=3D"courier new, monospac=
 e">[print_mm_rss_stat] mm-&gt;rss_stat.count[2] =3D 0=A0</font></div><div><=
 font face=3D"courier new, monospace">[find_vma] Caller is handle_page_fault=
 +0x1ca/0x957, pid 598 a.out</font></div>
-
-
 
 
 
@@ -410,14 +335,10 @@ div>
 
 
 
-
-
 <div><font face=3D"courier new, monospace">[handle_mm_fault] pmd: 294746112=
 </font></div><div><font face=3D"courier new, monospace">[<b>handle_mm_fault=
 </b>] pte: 295581512</font></div><div><font face=3D"courier new, monospace"=
 >[<b>handle_pte_fault</b>] calling do_linear_fault</font></div>
-
-
 
 
 
@@ -435,14 +356,10 @@ emap.c, pid 598</font></div>
 
 
 
-
-
 <div><font face=3D"courier new, monospace">[filemap_fault] line 1622 of fil=
 e mm/filemap.c, pid 598</font></div><div><font face=3D"courier new, monospa=
 ce">[filemap_fault] line 1654 of file mm/filemap.c, pid 598</font></div><di=
 v>
-
-
 
 
 
@@ -460,15 +377,11 @@ pid 598</font></div>
 
 
 
-
-
 <div><font face=3D"courier new, monospace">[__do_fault] line 3395 of file m=
 m/memory.c, pid 598</font></div><div><font face=3D"courier new, monospace">=
 [__do_fault] line 3408 of file mm/memory.c, pid 598</font></div><div><font =
 face=3D"courier new, monospace">[__do_fault] line 3425 of file mm/memory.c,=
  pid 598</font></div>
-
-
 
 
 
@@ -486,13 +399,9 @@ um/kernel/trap.c, pid 598</font></div>
 
 
 
-
-
 <div><font face=3D"courier new, monospace">[handle_page_fault] mm-&gt;mm_id=
 : 673</font></div><div><font face=3D"courier new, monospace">[flush_tlb_pag=
 e] Caller is handle_page_fault+0x7f5/0x957, pid 598 a.out</font></div><div>
-
-
 
 
 
@@ -503,8 +412,6 @@ e] Caller is handle_page_fault+0x7f5/0x957, pid 598 a.out</font></div><div>
 ont></div><div><font face=3D"courier new, monospace">[handle_page_fault] pa=
 ge walk for 0x400e9cc8</font></div><div><font face=3D"courier new, monospac=
 e">[handle_page_fault] pte for 0x400e9cc8: 0x119e3748</font></div>
-
-
 
 
 
@@ -522,14 +429,10 @@ ourier new, monospace">[print_mm_rss_stat] mm-&gt;rss_stat.count[0] =3D 1=
 
 
 
-
-
 <div><font face=3D"courier new, monospace">[print_mm_rss_stat] mm-&gt;rss_s=
 tat.count[1] =3D 27=A0</font></div><div><font face=3D"courier new, monospac=
 e">[print_mm_rss_stat] mm-&gt;rss_stat.count[2] =3D 0=A0</font></div></div>=
 <div><div>
-
-
 
 
 
@@ -547,15 +450,10 @@ weinberger@gmail.com</a>&gt;</span> wrote:<br>
 
 
 
-
-
-<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
-left-width:1px;border-left-color:rgb(204,204,204);border-left-style:solid;p=
-adding-left:1ex"><div>On Thu, Apr 11, 2013 at 10:14 PM, Terry Hsu &lt;<a hr=
-ef=3D"mailto:terry.shoes@gmail.com" target=3D"_blank">terry.shoes@gmail.com=
-</a>&gt; wrote:<br>
-
-
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"><div>On Thu, Apr 11, 2013 at 10:14 PM, Terry=
+ Hsu &lt;<a href=3D"mailto:terry.shoes@gmail.com" target=3D"_blank">terry.s=
+hoes@gmail.com</a>&gt; wrote:<br>
 
 
 
@@ -606,12 +504,12 @@ Thanks,<br>
 //richard<br>
 </blockquote></div><br></div></div></div></div>
 </blockquote></div><br></div></div></div></div>
-</blockquote></div><br></div></div>
+</blockquote></div><br></div>
 
---f46d040714d5c3753f04da3537af--
+--089e01176f039cdc5704da2f5780--
 
 
---===============5891161763293066069==
+--===============7367263348279738088==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -623,7 +521,7 @@ analytics on semi-structured data. The platform includes APIs for building
 apps and a phenomenal toolset for data science. Developers can use
 our toolset for easy data analysis & visualization. Get a free account!
 http://www2.precog.com/precogplatform/slashdotnewsletter
---===============5891161763293066069==
+--===============7367263348279738088==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -634,6 +532,6 @@ User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
---===============5891161763293066069==--
+--===============7367263348279738088==--
 
 
