@@ -1,125 +1,73 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Jiang Liu <liuj97@gmail.com>
-Date: Sat,  6 Apr 2013 22:32:06 +0800
-Message-Id: <1365258760-30821-8-git-send-email-jiang.liu@huawei.com>
-In-Reply-To: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com>
-References: <1365258760-30821-1-git-send-email-jiang.liu@huawei.com>
+From: Richard Weinberger <richard@nod.at>
+Date: Tue, 16 Apr 2013 23:53:29 +0200
+Message-Id: <1366149209-24787-1-git-send-email-richard@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v4, part3 07/41] UML: normalize global variables exported by vmlinux.lds
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net
+Subject: [PATCH] um: Use generic idle loop
+To: linux-kernel@vger.kernel.org
+Cc: tglx@linutronix.de, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Normalize global variables exported by vmlinux.lds to conform usage
-guidelines from include/asm-generic/sections.h.
-
-1) Use _text to mark the start of the kernel image including the head
-text, and _stext to mark the start of the .text section.
-2) Export mandatory global variables __bss_stop.
-3) Adjust __init_begin and __init_end to avoid acrossing .text and
-   .data sections.
-
-Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/include/asm/common.lds.S |    1 -
- arch/um/kernel/dyn.lds.S         |    6 ++++--
- arch/um/kernel/uml.lds.S         |    7 +++++--
- 3 files changed, 9 insertions(+), 5 deletions(-)
+ arch/um/Kconfig.common   |  1 +
+ arch/um/kernel/process.c | 27 ++++-----------------------
+ 2 files changed, 5 insertions(+), 23 deletions(-)
 
-diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
-index 4938de5..1dd5bd8 100644
---- a/arch/um/include/asm/common.lds.S
-+++ b/arch/um/include/asm/common.lds.S
-@@ -57,7 +57,6 @@
- 	*(.uml.initcall.init)
- 	__uml_initcall_end = .;
-   }
--  __init_end = .;
+diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+index bceee66..5783406 100644
+--- a/arch/um/Kconfig.common
++++ b/arch/um/Kconfig.common
+@@ -12,6 +12,7 @@ config UML
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IO
+ 	select GENERIC_CLOCKEVENTS
++	select GENERIC_IDLE_LOOP
+ 	select TTY # Needed for line.c
  
-   SECURITY_INIT
+ config MMU
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index b462b13..bbcef52 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -210,33 +210,14 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
+ 	kmalloc_ok = save_kmalloc_ok;
+ }
  
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index fb8fd6f..adde088 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -14,8 +14,6 @@ SECTIONS
-   __binary_start = .;
-   . = ALIGN(4096);		/* Init code and data */
-   _text = .;
--  _stext = .;
--  __init_begin = .;
-   INIT_TEXT_SECTION(PAGE_SIZE)
+-void default_idle(void)
++void arch_cpu_idle(void)
+ {
+ 	unsigned long long nsecs;
  
-   . = ALIGN(PAGE_SIZE);
-@@ -67,6 +65,7 @@ SECTIONS
-   } =0x90909090
-   .plt            : { *(.plt) }
-   .text           : {
-+    _stext = .;
-     TEXT_TEXT
-     SCHED_TEXT
-     LOCK_TEXT
-@@ -91,7 +90,9 @@ SECTIONS
+-	while (1) {
+-		/* endless idle loop with no priority at all */
+-
+-		/*
+-		 * although we are an idle CPU, we do not want to
+-		 * get into the scheduler unnecessarily.
+-		 */
+-		if (need_resched())
+-			schedule();
+-
+-		tick_nohz_idle_enter();
+-		rcu_idle_enter();
+-		nsecs = disable_timer();
+-		idle_sleep(nsecs);
+-		rcu_idle_exit();
+-		tick_nohz_idle_exit();
+-	}
+-}
+-
+-void cpu_idle(void)
+-{
+ 	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
+-	default_idle();
++	nsecs = disable_timer();
++	idle_sleep(nsecs);
++	local_irq_enable();
+ }
  
-   #include <asm/common.lds.S>
- 
-+  __init_begin = .;
-   init.data : { INIT_DATA }
-+  __init_end = .;
- 
-   /* Ensure the __preinit_array_start label is properly aligned.  We
-      could instead move the label definition inside the section, but
-@@ -155,6 +156,7 @@ SECTIONS
-    . = ALIGN(32 / 8);
-   . = ALIGN(32 / 8);
-   }
-+   __bss_stop = .;
-   _end = .;
-   PROVIDE (end = .);
- 
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index ff65fb4..6899195 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -20,13 +20,12 @@ SECTIONS
-   . = START + SIZEOF_HEADERS;
- 
-   _text = .;
--  _stext = .;
--  __init_begin = .;
-   INIT_TEXT_SECTION(0)
-   . = ALIGN(PAGE_SIZE);
- 
-   .text      :
-   {
-+    _stext = .;
-     TEXT_TEXT
-     SCHED_TEXT
-     LOCK_TEXT
-@@ -62,7 +61,10 @@ SECTIONS
- 
-   #include <asm/common.lds.S>
- 
-+  __init_begin = .;
-   init.data : { INIT_DATA }
-+  __init_end = .;
-+
-   .data    :
-   {
-     INIT_TASK_DATA(KERNEL_STACK_SIZE)
-@@ -97,6 +99,7 @@ SECTIONS
-   PROVIDE(_bss_start = .);
-   SBSS(0)
-   BSS(0)
-+   __bss_stop = .;
-   _end = .;
-   PROVIDE (end = .);
- 
+ int __cant_sleep(void) {
 -- 
-1.7.9.5
+1.8.1.4
 
