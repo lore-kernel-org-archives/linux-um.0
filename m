@@ -1,22 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <earlenceferns@gmail.com>) id 1UWTlg-0007oo-Qb
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <eunb.song@samsung.com>) id 1USFwH-0007Zn-5C
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 28 Apr 2013 15:44:00 +0000
-Received: from mail-wi0-f181.google.com ([209.85.212.181])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UWTlg-0007CY-49
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 28 Apr 2013 15:44:00 +0000
-Received: by mail-wi0-f181.google.com with SMTP id c10so2031603wiw.8
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 28 Apr 2013 08:43:54 -0700 (PDT)
-MIME-Version: 1.0
-From: Earlence Fernandes <earlenceferns@gmail.com>
-Date: Sun, 28 Apr 2013 11:43:33 -0400
-Message-ID: <CA+ve00RvAsBBqZ1TFt_q3fCxDTS54aUN5MpL7pK_+6u3O-=rwg@mail.gmail.com>
+	Wed, 17 Apr 2013 00:09:29 +0000
+Received: from mailout4.samsung.com ([203.254.224.34])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1USFwC-0003mj-7x for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 17 Apr 2013 00:09:26 +0000
+Received: from epcpsbgr1.samsung.com
+	(u141.gpu120.samsung.co.kr [203.254.230.141])
+	by mailout4.samsung.com (Oracle Communications Messaging Server
+	7u4-24.01 (7.0.4.24.0) 64bit (built Nov 17 2011))
+	with ESMTP id <0MLD008JNHR6VM50@mailout4.samsung.com> for
+	user-mode-linux-devel@lists.sourceforge.net; Wed,
+	17 Apr 2013 09:09:17 +0900 (KST)
+Date: Wed, 17 Apr 2013 00:09:17 +0000 (GMT)
+From: EUNBONG SONG <eunb.song@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <8414166.322181366157356551.JavaMail.weblogic@epml27>
+Reply-To: eunb.song@samsung.com
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,58 +31,45 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2005853058875127196=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Code for tracing thread
-To: user-mode-linux-devel@lists.sourceforge.net
-
---===============2005853058875127196==
-Content-Type: multipart/alternative; boundary=f46d043c7ddeac13c404db6da231
-
---f46d043c7ddeac13c404db6da231
-Content-Type: text/plain; charset=ISO-8859-1
-
-I keep reading that there is a tracing thread that intercepts process
-syscalls and I've been grepping thru the kernel sources to find this.
-
-Can anyone point me in the right direction?
-I've looked at os-Linux/ and arch/um/kernel/
-
--Earlence
-
---f46d043c7ddeac13c404db6da231
-Content-Type: text/html; charset=ISO-8859-1
-
-<div dir="ltr">I keep reading that there is a tracing thread that intercepts process syscalls and I&#39;ve been grepping thru the kernel sources to find this.<div><br></div><div>Can anyone point me in the right direction?</div>
-
-<div>I&#39;ve looked at os-Linux/ and arch/um/kernel/</div><div><br></div><div>-Earlence</div></div>
-
---f46d043c7ddeac13c404db6da231--
+Subject: [uml-devel] [PATCH] um: set CONFIG_LOCKDEP_SUPPORT to CONFIG_LOCKDEP
+To: jdike@addtoit.com, richard@nod.at
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 
 
---===============2005853058875127196==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+CONFIG_LOCKDEP_SUPPORT is no longer valid.
 
+Singed-off-by: EunBong Song <eunb.song@samsung.com>
+
+---
+ arch/um/defconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/um/defconfig b/arch/um/defconfig
+index 08107a7..bbc5aa7 100644
+--- a/arch/um/defconfig
++++ b/arch/um/defconfig
+@@ -7,7 +7,7 @@ CONFIG_UML=y
+ CONFIG_MMU=y
+ CONFIG_NO_IOMEM=y
+ # CONFIG_TRACE_IRQFLAGS_SUPPORT is not set
+-CONFIG_LOCKDEP_SUPPORT=y
++CONFIG_LOCKDEP=y
+ # CONFIG_STACKTRACE_SUPPORT is not set
+ CONFIG_GENERIC_CALIBRATE_DELAY=y
+ CONFIG_GENERIC_BUG=y
+-- 
+1.7.0.4
 ------------------------------------------------------------------------------
-Try New Relic Now & We'll Send You this Cool Shirt
-New Relic is the only SaaS-based application performance monitoring service 
-that delivers powerful full stack analytics. Optimize and monitor your
-browser, app, & servers with just a few lines of code. Try New Relic
-and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_apr
---===============2005853058875127196==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Precog is a next-generation analytics platform capable of advanced
+analytics on semi-structured data. The platform includes APIs for building
+apps and a phenomenal toolset for data science. Developers can use
+our toolset for easy data analysis & visualization. Get a free account!
+http://www2.precog.com/precogplatform/slashdotnewsletter
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============2005853058875127196==--
-
 
