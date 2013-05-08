@@ -1,130 +1,42 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1UbWt0-00017S-0m
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 14:04:26 +0000
-Received: from mout.gmx.net ([212.227.17.21])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UbWsw-0008IM-6C for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 14:04:25 +0000
-Received: from mailout-de.gmx.net ([10.1.76.29]) by mrigmx.server.lan
-	(mrigmx001) with ESMTP (Nemesis) id 0Lx1bL-1UUZoX2bpR-016ipC for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 12 May 2013 16:04:16
-	+0200
-Message-ID: <518FA15F.3020502@gmx.de>
-Date: Sun, 12 May 2013 16:04:15 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] trinity triggers often "WARNING: at mm/mmap.c:2757
-	exit_mmap+0x164/0x170()"
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: Jiang Liu <liuj97@gmail.com>
+Date: Wed,  8 May 2013 23:51:34 +0800
+Message-Id: <1368028298-7401-38-git-send-email-jiang.liu@huawei.com>
+In-Reply-To: <1368028298-7401-1-git-send-email-jiang.liu@huawei.com>
+References: <1368028298-7401-1-git-send-email-jiang.liu@huawei.com>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: [PATCH v5, part4 37/41] mm/um: prepare for removing num_physpages and simplify mem_init()
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-YXQgYW4gVU1MIGd1ZXN0ICgzMiBiaXQgc3RhYmxlIEdlbnRvbyBib3RoIGF0IGhvc3QgYW5kIGd1
-ZXN0LApob3N0IGhhcyBrZXJuZWwgdmVyc2lvbiAzLjkuMiwgZ3Vlc3QgaGFzIGtlcm5lbCB2ZXJz
-aW9uIDMuMTAtcmMxICsgMiBwYXRjaGVzIGZyb20gLXJ3LSkuCgoKVGhlIHN5c2xvZyBzYXlzIDoK
-CjIwMTMtMDUtMTJUMTM6NDU6MzguMzgxKzAyOjAwIHRyaW5pdHkga2VybmVsOiAtLS0tLS0tLS0t
-LS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KMjAxMy0wNS0xMlQxMzo0NTozOC4zODErMDI6MDAg
-dHJpbml0eSBrZXJuZWw6IFdBUk5JTkc6IGF0IG1tL21tYXAuYzoyNzU3IGV4aXRfbW1hcCsweDE2
-NC8weDE3MCgpCjIwMTMtMDUtMTJUMTM6NDU6MzguMzgxKzAyOjAwIHRyaW5pdHkga2VybmVsOiBD
-UFU6IDAgUElEOiAxMTkzIENvbW06IHRyaW5pdHktY2hpbGQwIE5vdCB0YWludGVkIDMuMTAuMC1y
-YzEtMDAwMDItZ2NhZWMxNTEgIzUKMjAxMy0wNS0xMlQxMzo0NTozOC4zODErMDI6MDAgdHJpbml0
-eSBrZXJuZWw6IDNmNjhmZDljIDNmNjhmZGM4IDA4MDdiZmNhIDA4M2Q1MWJjIDA4M2Q5YTdhIDAw
-MDAwYWM1IDA4MGViOTE0IDA4MGViOTE0IAoyMDEzLTA1LTEyVDEzOjQ1OjM4LjM4MSswMjowMCB0
-cmluaXR5IGtlcm5lbDogMDAwMDA0ZjAgM2Y1OWI4YzAgM2VhYWZiM2MgM2Y2OGZkZDggMDgwN2Mw
-OTMgMDAwMDAwMDkgMDAwMDAwMDAgM2Y2OGZlMTAgCjIwMTMtMDUtMTJUMTM6NDU6MzguMzgxKzAy
-OjAwIHRyaW5pdHkga2VybmVsOiAwODBlYjkxNCAwODNkOWE3YSAwMDAwMGFjNSBjMDAwMDAwMCAw
-MDAwMDAwMCA0MDcxNjY2MCAzZjU5YjhjMCAwMDAwMDAwMCAzZjY4ZmQ3MDogIFs8MDgwNjBkMmY+
-XSBzaG93X3N0YWNrKzB4Y2YvMHgxMDAKMjAxMy0wNS0xMlQxMzo0NTozOC4zODErMDI6MDAgdHJp
-bml0eSBrZXJuZWw6IDNmNjhmZDk0OiAgWzwwODM1ZWQ5OT5dIGR1bXBfc3RhY2srMHgyNi8weDI4
-CjIwMTMtMDUtMTJUMTM6NDU6MzguMzgxKzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZjY4ZmRhNDog
-IFs8MDgwN2JmY2E+XSB3YXJuX3Nsb3dwYXRoX2NvbW1vbisweDVhLzB4ODAKMjAxMy0wNS0xMlQx
-Mzo0NTozOC4zODErMDI6MDAgdHJpbml0eSBrZXJuZWw6IDNmNjhmZGNjOiAgWzwwODA3YzA5Mz5d
-IHdhcm5fc2xvd3BhdGhfbnVsbCsweDIzLzB4MzAKMjAxMy0wNS0xMlQxMzo0NTozOC4zODErMDI6
-MDAgdHJpbml0eSBrZXJuZWw6IDNmNjhmZGRjOiAgWzwwODBlYjkxND5dIGV4aXRfbW1hcCsweDE2
-NC8weDE3MAoyMDEzLTA1LTEyVDEzOjQ1OjM4LjM4NiswMjowMCB0cmluaXR5IGtlcm5lbDogM2Y2
-OGZlMTQ6ICBbPDA4MDc5OTFkPl0gbW1wdXQrMHgzZC8weGIwCjIwMTMtMDUtMTJUMTM6NDU6Mzgu
-Mzg2KzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZjY4ZmUyODogIFs8MDgwODEwODY+XSBkb19leGl0
-KzB4MmY2LzB4ODgwCjIwMTMtMDUtMTJUMTM6NDU6MzguMzg2KzAyOjAwIHRyaW5pdHkga2VybmVs
-OiAzZjY4ZmU3ODogIFs8MDgwODE2Zjk+XSBkb19ncm91cF9leGl0KzB4YTkvMHhmMAoyMDEzLTA1
-LTEyVDEzOjQ1OjM4LjM4NiswMjowMCB0cmluaXR5IGtlcm5lbDogM2Y2OGZlYTA6ICBbPDA4MDgx
-NzU5Pl0gU3lTX2V4aXRfZ3JvdXArMHgxOS8weDIwCjIwMTMtMDUtMTJUMTM6NDU6MzguMzg2KzAy
-OjAwIHRyaW5pdHkga2VybmVsOiAzZjY4ZmVhYzogIFs8MDgwNjJhYzI+XSBoYW5kbGVfc3lzY2Fs
-bCsweDgyLzB4YjAKMjAxMy0wNS0xMlQxMzo0NTozOC4zODYrMDI6MDAgdHJpbml0eSBrZXJuZWw6
-IDNmNjhmZWY0OiAgWzwwODA3NTE5ZD5dIHVzZXJzcGFjZSsweDQ2ZC8weDU5MAoyMDEzLTA1LTEy
-VDEzOjQ1OjM4LjM4NiswMjowMCB0cmluaXR5IGtlcm5lbDogM2Y2OGZmZWM6ICBbPDA4MDVmODJj
-Pl0gZm9ya19oYW5kbGVyKzB4NmMvMHg3MAoyMDEzLTA1LTEyVDEzOjQ1OjM4LjM4NiswMjowMCB0
-cmluaXR5IGtlcm5lbDogM2Y2OGZmZmM6ICBbPDAwMDAwMDAwPl0gMHgwCjIwMTMtMDUtMTJUMTM6
-NDU6MzguMzg2KzAyOjAwIHRyaW5pdHkga2VybmVsOiAKMjAxMy0wNS0xMlQxMzo0NTozOC4zODYr
-MDI6MDAgdHJpbml0eSBrZXJuZWw6IC0tLVsgZW5kIHRyYWNlIGFlMGE5ZWU3ZmJlM2EyN2MgXS0t
-LQoKCmFuZCB0aGF0J3MgY29ycmVsYXRlZCB0byB0aGlzIHRyaW5pdHkgbG9nOgoKLi4uClsxMTkz
-XSBbNjNdIGdldHJ1c2FnZSh3aG89MHgzOWI2YzcxMCwgcnU9MCkgPSAtMSAoSW52YWxpZCBhcmd1
-bWVudCkKWzExOTNdIFs2NF0gZmNobW9kYXQoZGZkPTEwLCBmaWxlbmFtZT0iL21udC9uMjIvdi92
-aWN0aW1zL2YwOCIsIG1vZGU9MikgPSAtMSAoUGVybWlzc2lvbiBkZW5pZWQpClsxMTkzXSBbNjVd
-IHBpcGUyKGZpbGRlcz0wLCBmbGFncz0weDgwODAwKSA9IC0xIChCYWQgYWRkcmVzcykKWzExOTNd
-IFs2Nl0gc2V0Z3JvdXBzKGdpZHNldHNpemU9NDA5NiwgZ3JvdXBsaXN0PTEpID0gLTEgKE9wZXJh
-dGlvbiBub3QgcGVybWl0dGVkKQpbMTE5M10gWzY3XSB1c2VsaWIobGlicmFyeT0xKSA9IC0xIChC
-YWQgYWRkcmVzcykKWzExOTNdIFs2OF0gc2lncGVuZGluZyhzZXQ9MCkgPSAtMSAoQmFkIGFkZHJl
-c3MpClsxMTkzXSBbNjldIHJlYWR2KGZkPTksIHZlYz0weDgwYzU5ZTAsIHZsZW49MSkgPSAtMSAo
-QmFkIGZpbGUgZGVzY3JpcHRvcikKWzExOTNdIFs3MF0gcHJlYWR2KGZkPTksIHZlYz0weDgwYzVi
-ZDgsIHZsZW49MywgcG9zX2w9NDA5NiwgcG9zX2g9MHg0NWFiODRkMCkgPSAtMSAoSWxsZWdhbCBz
-ZWVrKQpbMTE5M10gWzcxXSBybWRpcihwYXRobmFtZT0iPEQ5PiA8VSswNDg3PjxEOT4gPFUrMDQ4
-Nz48RDk+IDxVKzA0ODc+PEQ5PiA8VSswNDg3PjxEOT4gPFUrMDQ4Nz48ODk+PEI5PjxCOT48RTA+
-PEUwPjw4OT48ODk+PEI5PjxCOT48RTA+PEUwPjw4OT48ODk+PEI5PjxCOT48RTA+PEUwPjw4OT48
-ODk+PEI5PjxCOT48RTA+CjxFMD48ODk+PDg5PjxCOT48Qjk+PEUwPjxFMD48ODk+PDg5PjxCOT48
-Qjk+PEUwPjxFMD48ODk+PDg5PjxCOT48Qjk+PEUwPjxFMD48ODk+PDg5PjxCOT48Qjk+PEUwPjxF
-MD48ODk+PEI4PjxFMD48VSswQUJCPjxFRj7SqSA8ODg+PDg4PjxEMj48RDI+Cjw4OD48QkI+PEVG
-PtKpIDw4OD48ODg+PEQyPjxEMj4KPDg4Pgo8QkY+3InMiNK/zIjSvwo8QkY+3Ik8ODk+PEI5Pgo8
-QkY+3Ik8ODk+PEI5Pjw4OT48Qjk+PEI5PjxFMD48RTA+PDg5Pjw4OT48Qjk+PEI5PjxFMD48RTA+
-PDg5Pjw4OT48Qjk+PEI5PjxFMD48RTA+PDg5Pjw4OT48Qjk+PEI5PjxFMD48RTA+PDg5Pjw4OT48
-Qjk+PEI5PjxFMD48RTA+PDg5Pjw4OT48Qjk+PEI5PjxFMD48RTA+PDg5Pjw4OT48Qjk+PEI5PjxF
-MD48RTA+PDg5Pgo8ODk+PEI5PjxCOT48RTA+PEUwPjw4OT48ODk+PEI5PjxCOT48RTA+PEUwPjw4
-OT48ODk+PEI5PjxCOT48RTA+PEUwPjw4OT48ODk+PEI5PjxCOT48RTA+PEUwPjw4OT48ODk+PEI5
-PjxCOT48RTA+PEUwPjw4OT48ODk+PEI5PjxCOT48RTA+PEUwPjw4OT48ODk+PEI5PjxCOT48RTA+
-PEUwPjw4OT48ODk+PEI5Pjw4OT48Qjk+PEI4PjxFMD48RTA+PEFBPsyI0r/MiNK/zIjSvzw4OT48
-Qjk+PEI5PjxFMD48RTA+PDg5Pjw4OT48Qjk+PEI5PjxFMD48RTA+PDg5Pjw4OT48Qjk+PEI5PjxF
-MD48RTA+PDg5Pjw4OT48Qjk+PEI5PjxFMD48RTA+PDg5Pjw4OT48Qjk+PEI5PjxFMD48RTA+PDg5
-Pjw4OT48Qjk+PEI5PjxFMD48RTA+PDg5Pjw4OT48Qjk+PEI5PjxFMD48RTA+Cjw4OT48QkI+PEVG
-PtKpIDw4OD48ODg+PEQyPjxEMj4KPDg4PsyI0r/MiNK/zIjSvzxCOD48RTA+PEUwPjxBQT5UzKvM
-usyzb8yszJwgw6zMrM2OzLLMn252zJbMl8y7zKPMucyVb82WzJfMoMyczKRrzY3Nmsy5zZbMvGXM
-psyXzKrNjcyqzY0gzKzNhXTMlWjMoM2ZzK7Nlc2TZcyxzJzMl82ZzK0gzKXNlMyrzZnMqs2NzKPN
-neG4pWnMvMymzYjMvHbMqcyfzZrMns2OZc2IzJ/Mu82ZzKbMpC1tzLfMmMydzLHDrc2azJ7Mpsyz
-bsydzLLMr8yZzK7NnmTMtMy6zKbNlcyrIMyXzK3MmM2OzZZyzJ7NjsyczJzNls2OzKvNomVwzYdy
-zJ3Mr8ydzZbNic2OzLplzLRzzKVlzLXMlsyzzYnNjcypzJduzKLNk8yqzZXMnMywzKDMpnTMusye
-zLBpzZ9uzK7MpsyWzJ9nzK7NjcyxzLvNjcyczLMgzLNjzJbMrsyZzKPMsMygzKlozLfMl82NzJbN
-mcytzYfNiGHMp82OzK/MucyyzLrMq8OzzK3MnsyczKPMr82Vc8y2zKTMrsypzJguzKjMu8yqzJbN
-lCAgzLPMrcymzK3MrcymzJ7MgUnMoM2NzK5uzYfMucyqzKx2zLTNlsytzJfMlm/MuGvMrMykzZPN
-msygzY1pzZxuzJvMqcy5zYnMmMy5Z82ZIMygzKXNhXTMsM2WzZ5ozKvMvMyqZcyfzKnMnSDMrcyg
-zLLMq82UZmXMpM2HzJ3MsWXNlsyuzKDMucytzZbNlWzNlsyyzJjNlsygzKppzKLMls2OzK7Ml8yv
-zZPMqW7MuMywZ8yZzLHMmMyXzZrMrM2FIM2Nb82NzY3MqcyuzaJmzJbNk8ymzKUgzJjNmGPMtcyr
-zLHMl82aIikgPSAtMSAoRmlsZSBuYW1lIHRvbyBsb25nKQpbMTAxOV0gUmFuZG9tIHJlc2VlZDog
-MjEyMjA0OTUxCj0gLTEgKEludmFsaWQgYXJndW1lbnQpCgouLi4KClt3YXRjaGRvZ10ga2VybmVs
-IGJlY2FtZSB0YWludGVkISBMYXN0IHNlZWQgd2FzIDIxMjIwNDk1MQpjaGlsZCAxMTk0IGV4aXRp
-bmcKWzEwMThdIFdhdGNoZG9nIGV4aXRpbmcKClJhbiA4NTkxNSBzeXNjYWxscy4gU3VjY2Vzc2Vz
-OiAxNDMzNiAgRmFpbHVyZXM6IDcxNTY0CgoKLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJz
-dGVyCnBncCBmaW5nZXIgcHJpbnQ6IDdCMUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4OTM2IDg3MkEg
-RTUwOCA3REI2IDlEQTMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZWFybiBHcmFwaCBEYXRhYmFz
-ZXMgLSBEb3dubG9hZCBGUkVFIE8nUmVpbGx5IEJvb2sKIkdyYXBoIERhdGFiYXNlcyIgaXMgdGhl
-IGRlZmluaXRpdmUgbmV3IGd1aWRlIHRvIGdyYXBoIGRhdGFiYXNlcyBhbmQgCnRoZWlyIGFwcGxp
-Y2F0aW9ucy4gVGhpcyAyMDAtcGFnZSBib29rIGlzIHdyaXR0ZW4gYnkgdGhyZWUgYWNjbGFpbWVk
-IApsZWFkZXJzIGluIHRoZSBmaWVsZC4gVGhlIGVhcmx5IGFjY2VzcyB2ZXJzaW9uIGlzIGF2YWls
-YWJsZSBub3cuIApEb3dubG9hZCB5b3VyIGZyZWUgYm9vayB0b2RheSEgaHR0cDovL3Auc2YubmV0
-L3NmdS9uZW90ZWNoX2QyZF9tYXkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUt
-bGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
-Z2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+Prepare for removing num_physpages and simplify mem_init().
+
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/um/kernel/mem.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index a7dc6c1..819008f 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -70,10 +70,8 @@ void __init mem_init(void)
+ #ifdef CONFIG_HIGHMEM
+ 	setup_highmem(end_iomem, highmem);
+ #endif
+-	num_physpages = totalram_pages;
+ 	max_pfn = totalram_pages;
+-	printk(KERN_INFO "Memory: %luk available\n",
+-	       nr_free_pages() << (PAGE_SHIFT-10));
++	mem_init_print_info(NULL);
+ 	kmalloc_ok = 1;
+ }
+ 
+-- 
+1.7.9.5
 
