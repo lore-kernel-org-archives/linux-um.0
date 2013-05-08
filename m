@@ -1,52 +1,125 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1UbYUV-0004vx-V4
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 15:47:15 +0000
-Received: from mout.gmx.net ([212.227.15.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UbYUT-0004SF-Px for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 15:47:15 +0000
-Received: from mailout-de.gmx.net ([10.1.76.34]) by mrigmx.server.lan
-	(mrigmx001) with ESMTP (Nemesis) id 0MWvJi-1V5H4a0XWm-00W0b2 for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 12 May 2013 17:47:08
-	+0200
-Message-ID: <518FB97A.5070907@gmx.de>
-Date: Sun, 12 May 2013 17:47:06 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] WARNING: at mm/mmap.c:2757 exit_mmap+0x161/0x170()
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Jiang Liu <liuj97@gmail.com>
+Date: Wed,  8 May 2013 23:51:04 +0800
+Message-Id: <1368028298-7401-8-git-send-email-jiang.liu@huawei.com>
+In-Reply-To: <1368028298-7401-1-git-send-email-jiang.liu@huawei.com>
+References: <1368028298-7401-1-git-send-email-jiang.liu@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v5, part4 07/41] UML: normalize global variables exported by vmlinux.lds
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-V2l0aCByZWNlbnQgaG9zdCBhbmQgZ3Vlc3Qga2VybmVsIHRyaW5pdHkgb2Z0ZW4gdHJpZ2dlcnMg
-dGhhdCB3YXJuaW5nCndoaWNoIHJlZmVycyB0byB0aGlzIGxpbmUKCldBUk5fT04obW0tPm5yX3B0
-ZXMgPiAoRklSU1RfVVNFUl9BRERSRVNTK1BNRF9TSVpFLTEpPj5QTURfU0hJRlQpOwoKL21lIHdv
-bmRlcnMgaWYgKGFuZCBob3cpIEkgY2FuIGhlbHAgdG8gaWRlbnRpZnkgdGhlIHJvb3QgY2F1c2Ug
-KGlmIGl0IGlzCm5vdCBhbHJlYWR5IGtub3duKS4KCgotLSAKTWZHL1NpbmNlcmVseQpUb3JhbGYg
-RsO2cnN0ZXIKcGdwIGZpbmdlciBwcmludDogN0IxQSAwN0Y0IEVDODIgMEY5MCBENEMyIDg5MzYg
-ODcyQSBFNTA4IDdEQjYgOURBMwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxlYXJuIEdyYXBoIERh
-dGFiYXNlcyAtIERvd25sb2FkIEZSRUUgTydSZWlsbHkgQm9vawoiR3JhcGggRGF0YWJhc2VzIiBp
-cyB0aGUgZGVmaW5pdGl2ZSBuZXcgZ3VpZGUgdG8gZ3JhcGggZGF0YWJhc2VzIGFuZCAKdGhlaXIg
-YXBwbGljYXRpb25zLiBUaGlzIDIwMC1wYWdlIGJvb2sgaXMgd3JpdHRlbiBieSB0aHJlZSBhY2Ns
-YWltZWQgCmxlYWRlcnMgaW4gdGhlIGZpZWxkLiBUaGUgZWFybHkgYWNjZXNzIHZlcnNpb24gaXMg
-YXZhaWxhYmxlIG5vdy4gCkRvd25sb2FkIHlvdXIgZnJlZSBib29rIHRvZGF5ISBodHRwOi8vcC5z
-Zi5uZXQvc2Z1L25lb3RlY2hfZDJkX21heQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXIt
-bW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+Normalize global variables exported by vmlinux.lds to conform usage
+guidelines from include/asm-generic/sections.h.
+
+1) Use _text to mark the start of the kernel image including the head
+text, and _stext to mark the start of the .text section.
+2) Export mandatory global variables __bss_stop.
+3) Adjust __init_begin and __init_end to avoid acrossing .text and
+   .data sections.
+
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/um/include/asm/common.lds.S |    1 -
+ arch/um/kernel/dyn.lds.S         |    6 ++++--
+ arch/um/kernel/uml.lds.S         |    7 +++++--
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
+index 4938de5..1dd5bd8 100644
+--- a/arch/um/include/asm/common.lds.S
++++ b/arch/um/include/asm/common.lds.S
+@@ -57,7 +57,6 @@
+ 	*(.uml.initcall.init)
+ 	__uml_initcall_end = .;
+   }
+-  __init_end = .;
+ 
+   SECURITY_INIT
+ 
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+index fb8fd6f..adde088 100644
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -14,8 +14,6 @@ SECTIONS
+   __binary_start = .;
+   . = ALIGN(4096);		/* Init code and data */
+   _text = .;
+-  _stext = .;
+-  __init_begin = .;
+   INIT_TEXT_SECTION(PAGE_SIZE)
+ 
+   . = ALIGN(PAGE_SIZE);
+@@ -67,6 +65,7 @@ SECTIONS
+   } =0x90909090
+   .plt            : { *(.plt) }
+   .text           : {
++    _stext = .;
+     TEXT_TEXT
+     SCHED_TEXT
+     LOCK_TEXT
+@@ -91,7 +90,9 @@ SECTIONS
+ 
+   #include <asm/common.lds.S>
+ 
++  __init_begin = .;
+   init.data : { INIT_DATA }
++  __init_end = .;
+ 
+   /* Ensure the __preinit_array_start label is properly aligned.  We
+      could instead move the label definition inside the section, but
+@@ -155,6 +156,7 @@ SECTIONS
+    . = ALIGN(32 / 8);
+   . = ALIGN(32 / 8);
+   }
++   __bss_stop = .;
+   _end = .;
+   PROVIDE (end = .);
+ 
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index ff65fb4..6899195 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -20,13 +20,12 @@ SECTIONS
+   . = START + SIZEOF_HEADERS;
+ 
+   _text = .;
+-  _stext = .;
+-  __init_begin = .;
+   INIT_TEXT_SECTION(0)
+   . = ALIGN(PAGE_SIZE);
+ 
+   .text      :
+   {
++    _stext = .;
+     TEXT_TEXT
+     SCHED_TEXT
+     LOCK_TEXT
+@@ -62,7 +61,10 @@ SECTIONS
+ 
+   #include <asm/common.lds.S>
+ 
++  __init_begin = .;
+   init.data : { INIT_DATA }
++  __init_end = .;
++
+   .data    :
+   {
+     INIT_TASK_DATA(KERNEL_STACK_SIZE)
+@@ -97,6 +99,7 @@ SECTIONS
+   PROVIDE(_bss_start = .);
+   SBSS(0)
+   BSS(0)
++   __bss_stop = .;
+   _end = .;
+   PROVIDE (end = .);
+ 
+-- 
+1.7.9.5
 
