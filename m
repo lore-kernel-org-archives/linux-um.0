@@ -1,31 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1Ub9pJ-00017y-0Z
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1Ub9i0-0002LB-Bz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 May 2013 13:27:05 +0000
-Received: from mail-we0-f178.google.com ([74.125.82.178])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Ub9pH-0000Tf-S7
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 May 2013 13:27:04 +0000
-Received: by mail-we0-f178.google.com with SMTP id q57so4795417wes.37
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 11 May 2013 06:26:57 -0700 (PDT)
+	Sat, 11 May 2013 13:19:32 +0000
+Received: from mout.gmx.net ([212.227.15.15])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ub9hz-00041M-7U for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 11 May 2013 13:19:32 +0000
+Received: from mailout-de.gmx.net ([10.1.76.29]) by mrigmx.server.lan
+	(mrigmx002) with ESMTP (Nemesis) id 0LnEix-1U3UVU2xW1-00hO21 for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sat, 11 May 2013 15:19:25
+	+0200
+Message-ID: <518E455A.3010105@gmx.de>
+Date: Sat, 11 May 2013 15:19:22 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <518E455A.3010105@gmx.de>
 References: <CAFLxGvwen6WwNoh3iZ2j+dK8iQsxVkjhnvaXjdfXATF+mmwtuw@mail.gmail.com>
 	<518E02FB.6040808@gmx.de>
 	<CAFLxGvxM_zK11csqpFmVw9q1sPTb1nO0=L5r0AUxf9F4mtfXsg@mail.gmail.com>
 	<518E14B7.3030409@gmx.de> <20130511140139.1e6ee40b@sf>
 	<CAFLxGvz1OO4Zet_Yq1GCwDz4D2FKygs45-H4UY_fyJ-SZ5weXQ@mail.gmail.com>
 	<CAFLxGvzPCs3-RC34yxbdDCJOC17nBuhiMQV49wH2zth2JYM0+Q@mail.gmail.com>
-	<518E455A.3010105@gmx.de>
-Date: Sat, 11 May 2013 15:26:57 +0200
-Message-ID: <CAFLxGvzNEcgwDcB2B1Qpo4isppm6u_w60tzLY0Sah5Sj4T_Q4A@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-Content-Type: multipart/mixed; boundary=f46d04389247e2363204dc713c3f
+In-Reply-To: <CAFLxGvzPCs3-RC34yxbdDCJOC17nBuhiMQV49wH2zth2JYM0+Q@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -35,193 +33,136 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] Fwd: Re: [uml-user] WARNING: at
-	mm/slab_common.c:376 kmalloc_slab+0x33/0x80()
-To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
+ mm/slab_common.c:376 kmalloc_slab+0x33/0x80()
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
 Cc: Dave Jones <davej@redhat.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
---f46d04389247e2363204dc713c3f
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, May 11, 2013 at 3:19 PM, Toralf F=F6rster <toralf.foerster@gmx.de> =
-wrote:
-> On 05/11/2013 02:27 PM, richard -rw- weinberger wrote:
->> On Sat, May 11, 2013 at 2:26 PM, richard -rw- weinberger
->> <richard.weinberger@gmail.com> wrote:
->>> On Sat, May 11, 2013 at 1:01 PM, Sergei Trofimovic>> Toralf, please use=
- the attached patch.
->>> Maybe it helps us.
->>> In theory we call kmalloc() with at most PAGE_SIZE, which is okay.
->>
->> fixing -ENOATTACHMENT...
->
-> applying that patch on top of Linus' tree (v3.9-12555-g2dbd3ca) gives :
->
->
-> 2013-05-11T15:15:37.166+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: 5
-> 2013-05-11T15:15:37.166+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: 5
-> 2013-05-11T15:15:37.166+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: 12
-> 2013-05-11T15:15:37.166+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: 12
-> 2013-05-11T15:15:37.166+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: 12
-> 2013-05-11T15:15:37.166+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: 12
-> 2013-05-11T15:15:37.000+02:00 trinity haveged: haveged starting up
-> 2013-05-11T15:15:37.000+02:00 trinity haveged: haveged: Completed tot pro=
-cedure B after 1171643 bytes
-> 2013-05-11T15:15:38.000+02:00 trinity dhcpcd[777]: version 5.6.4 starting
-> 2013-05-11T15:15:38.000+02:00 trinity dhcpcd[777]: ipv6_open: Address fam=
-ily not supported by protocol
-> 2013-05-11T15:15:38.000+02:00 trinity haveged: haveged: Completed tot pro=
-cedure A after 1035716 bytes
-> 2013-05-11T15:15:38.000+02:00 trinity haveged: haveged: version: 1.5; arc=
-h: x86; vendor: GenuineIntel; cores: 1/1, buffer: 128
-> 2013-05-11T15:15:38.000+02:00 trinity haveged: haveged: d_cache: 32K (000=
-020), i_cache: 32K (000020), i_index: 19/40, i_size: 32653/60731
-> 2013-05-11T15:15:38.000+02:00 trinity haveged: haveged: tot tests: BA8, c=
-ontinuous tests: B
-> 2013-05-11T15:15:38.000+02:00 trinity haveged: haveged: Completed continu=
-ous procedure B after 1171643 bytes
-> 2013-05-11T15:15:38.000+02:00 trinity dhcpcd[777]: eth0: rebinding lease =
-of 192.168.1.63
-> 2013-05-11T15:15:38.000+02:00 trinity dhcpcd[777]: eth0: acknowledged 192=
-.168.1.63 from 192.168.0.254
-> 2013-05-11T15:15:38.000+02:00 trinity dhcpcd[777]: eth0: checking for 192=
-.168.1.63
-> 2013-05-11T15:15:43.000+02:00 trinity dhcpcd[777]: eth0: leased 192.168.1=
-.63 for infinity
-> 2013-05-11T15:15:43.000+02:00 trinity dhcpcd[777]: forked to background, =
-child pid 811
-> 2013-05-11T15:15:44.000+02:00 trinity cron[855]: (CRON) STARTUP (V5.0)
-> 2013-05-11T15:15:44.944+02:00 trinity kernel: Virtual console 1 assigned =
-device '/dev/pts/6'
-> 2013-05-11T15:16:01.000+02:00 trinity sshd[874]: pam_unix(sshd:session): =
-session opened for user tfoerste by (uid=3D0)
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: 1
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: 1
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: 25
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: 25
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: -14
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: ------------[ cut here ]---=
----------
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: WARNING: at mm/slab_common.=
-c:376 kmalloc_slab+0x33/0x80()
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: CPU: 0 PID: 880 Comm: trini=
-ty-child0 Not tainted 3.9.0-12555-g2dbd3ca-dirty #1
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: 40db7da0 40db7dcc 0807bfca =
-083d3e6c 083d8623 00000178 080e1273 080e1273
-> 2013-05-11T15:16:02.827+02:00 trinity kernel: ffffffea 000000d0 00001000 =
-40db7ddc 0807c093 00000009 00000000 40db7df0
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 080e1273 083d8623 00000178 =
-00000000 40db7e14 080fac7b fffffff2 000000d0 40db7d74:  [<08060cff>] show_s=
-tack+0xcf/0x100
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 40db7d98:  [<0835d63a>] dum=
-p_stack+0x26/0x28
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 40db7da8:  [<0807bfca>] war=
-n_slowpath_common+0x5a/0x80
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 40db7dd0:  [<0807c093>] war=
-n_slowpath_null+0x23/0x30
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 40db7de0:  [<080e1273>] kma=
-lloc_slab+0x33/0x80
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 40db7df4:  [<080fac7b>] __k=
-malloc_track_caller+0x1b/0x110
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 40db7e18:  [<080de1a6>] mem=
-dup_user+0x26/0x70
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 40db7e34:  [<080de3de>] str=
-ndup_user_debug+0x6e/0xb0
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 40db7e58:  [<0811dd48>] cop=
-y_mount_string+0x38/0x50
-> 2013-05-11T15:16:02.835+02:00 trinity kernel: 40db7e70:  [<0811e760>] SyS=
-_mount+0x30/0xf0
-> 2013-05-11T15:16:02.842+02:00 trinity kernel: 40db7eac:  [<08062ac2>] han=
-dle_syscall+0x82/0xb0
-> 2013-05-11T15:16:02.842+02:00 trinity kernel: 40db7ef4:  [<0807519d>] use=
-rspace+0x46d/0x590
-> 2013-05-11T15:16:02.842+02:00 trinity kernel: 40db7fec:  [<0805f7fc>] for=
-k_handler+0x6c/0x70
-> 2013-05-11T15:16:02.842+02:00 trinity kernel: 40db7ffc:  [<00000000>] 0x0
-> 2013-05-11T15:16:02.842+02:00 trinity kernel:
-> 2013-05-11T15:16:02.842+02:00 trinity kernel: ---[ end trace 06fc96a70dca=
-162e ]---
-> 2013-05-11T15:16:02.842+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: -14
-> 2013-05-11T15:16:02.842+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: -14
-> 2013-05-11T15:16:02.842+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: -14
-> 2013-05-11T15:16:02.842+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: 16
-> 2013-05-11T15:16:02.850+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: 16
-> 2013-05-11T15:16:02.850+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: 1
-> 2013-05-11T15:16:02.850+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: 1
-> 2013-05-11T15:16:02.850+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: 70
-> 2013-05-11T15:16:02.850+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: 70
-> 2013-05-11T15:16:02.850+02:00 trinity kernel: strndup_user_debug: strnlen=
-_user() returned: -14
-> 2013-05-11T15:16:02.850+02:00 trinity kernel: strndup_user_debug: calling=
- memdup_user() with length: -14
->
-> --
-> MfG/Sincerely
-> Toralf F=F6rster
-> pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
-
-Does the attached patch fix the problem?
-
---
-Thanks,
-//richard
-
---f46d04389247e2363204dc713c3f
-Content-Type: application/octet-stream; name="test.patch"
-Content-Disposition: attachment; filename="test.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hgktvj7h0
-
-ZGlmZiAtLWdpdCBhL21tL3V0aWwuYyBiL21tL3V0aWwuYwppbmRleCBhYjE0MjRkLi5jNGViNDM5
-IDEwMDY0NAotLS0gYS9tbS91dGlsLmMKKysrIGIvbW0vdXRpbC5jCkBAIC0yMTAsNyArMjEwLDcg
-QEAgY2hhciAqc3RybmR1cF91c2VyKGNvbnN0IGNoYXIgX191c2VyICpzLCBsb25nIG4pCiAKIAls
-ZW5ndGggPSBzdHJubGVuX3VzZXIocywgbik7CiAKLQlpZiAoIWxlbmd0aCkKKwlpZiAobGVuZ3Ro
-IDwgMSkKIAkJcmV0dXJuIEVSUl9QVFIoLUVGQVVMVCk7CiAKIAlpZiAobGVuZ3RoID4gbikK
---f46d04389247e2363204dc713c3f
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and 
-their applications. This 200-page book is written by three acclaimed 
-leaders in the field. The early access version is available now. 
-Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
---f46d04389247e2363204dc713c3f
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---f46d04389247e2363204dc713c3f--
-
+T24gMDUvMTEvMjAxMyAwMjoyNyBQTSwgcmljaGFyZCAtcnctIHdlaW5iZXJnZXIgd3JvdGU6Cj4g
+T24gU2F0LCBNYXkgMTEsIDIwMTMgYXQgMjoyNiBQTSwgcmljaGFyZCAtcnctIHdlaW5iZXJnZXIK
+PiA8cmljaGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IE9uIFNhdCwgTWF5IDEx
+LCAyMDEzIGF0IDE6MDEgUE0sIFNlcmdlaSBUcm9maW1vdmljPj4gVG9yYWxmLCBwbGVhc2UgdXNl
+IHRoZSBhdHRhY2hlZCBwYXRjaC4KPj4gTWF5YmUgaXQgaGVscHMgdXMuCj4+IEluIHRoZW9yeSB3
+ZSBjYWxsIGttYWxsb2MoKSB3aXRoIGF0IG1vc3QgUEFHRV9TSVpFLCB3aGljaCBpcyBva2F5Lgo+
+IAo+IGZpeGluZyAtRU5PQVRUQUNITUVOVC4uLgoKYXBwbHlpbmcgdGhhdCBwYXRjaCBvbiB0b3Ag
+b2YgTGludXMnIHRyZWUgKHYzLjktMTI1NTUtZzJkYmQzY2EpIGdpdmVzIDoKCgoyMDEzLTA1LTEx
+VDE1OjE1OjM3LjE2NiswMjowMCB0cmluaXR5IGtlcm5lbDogc3RybmR1cF91c2VyX2RlYnVnOiBz
+dHJubGVuX3VzZXIoKSByZXR1cm5lZDogNQoyMDEzLTA1LTExVDE1OjE1OjM3LjE2NiswMjowMCB0
+cmluaXR5IGtlcm5lbDogc3RybmR1cF91c2VyX2RlYnVnOiBjYWxsaW5nIG1lbWR1cF91c2VyKCkg
+d2l0aCBsZW5ndGg6IDUKMjAxMy0wNS0xMVQxNToxNTozNy4xNjYrMDI6MDAgdHJpbml0eSBrZXJu
+ZWw6IHN0cm5kdXBfdXNlcl9kZWJ1Zzogc3Rybmxlbl91c2VyKCkgcmV0dXJuZWQ6IDEyCjIwMTMt
+MDUtMTFUMTU6MTU6MzcuMTY2KzAyOjAwIHRyaW5pdHkga2VybmVsOiBzdHJuZHVwX3VzZXJfZGVi
+dWc6IGNhbGxpbmcgbWVtZHVwX3VzZXIoKSB3aXRoIGxlbmd0aDogMTIKMjAxMy0wNS0xMVQxNTox
+NTozNy4xNjYrMDI6MDAgdHJpbml0eSBrZXJuZWw6IHN0cm5kdXBfdXNlcl9kZWJ1Zzogc3Rybmxl
+bl91c2VyKCkgcmV0dXJuZWQ6IDEyCjIwMTMtMDUtMTFUMTU6MTU6MzcuMTY2KzAyOjAwIHRyaW5p
+dHkga2VybmVsOiBzdHJuZHVwX3VzZXJfZGVidWc6IGNhbGxpbmcgbWVtZHVwX3VzZXIoKSB3aXRo
+IGxlbmd0aDogMTIKMjAxMy0wNS0xMVQxNToxNTozNy4wMDArMDI6MDAgdHJpbml0eSBoYXZlZ2Vk
+OiBoYXZlZ2VkIHN0YXJ0aW5nIHVwCjIwMTMtMDUtMTFUMTU6MTU6MzcuMDAwKzAyOjAwIHRyaW5p
+dHkgaGF2ZWdlZDogaGF2ZWdlZDogQ29tcGxldGVkIHRvdCBwcm9jZWR1cmUgQiBhZnRlciAxMTcx
+NjQzIGJ5dGVzCjIwMTMtMDUtMTFUMTU6MTU6MzguMDAwKzAyOjAwIHRyaW5pdHkgZGhjcGNkWzc3
+N106IHZlcnNpb24gNS42LjQgc3RhcnRpbmcKMjAxMy0wNS0xMVQxNToxNTozOC4wMDArMDI6MDAg
+dHJpbml0eSBkaGNwY2RbNzc3XTogaXB2Nl9vcGVuOiBBZGRyZXNzIGZhbWlseSBub3Qgc3VwcG9y
+dGVkIGJ5IHByb3RvY29sCjIwMTMtMDUtMTFUMTU6MTU6MzguMDAwKzAyOjAwIHRyaW5pdHkgaGF2
+ZWdlZDogaGF2ZWdlZDogQ29tcGxldGVkIHRvdCBwcm9jZWR1cmUgQSBhZnRlciAxMDM1NzE2IGJ5
+dGVzCjIwMTMtMDUtMTFUMTU6MTU6MzguMDAwKzAyOjAwIHRyaW5pdHkgaGF2ZWdlZDogaGF2ZWdl
+ZDogdmVyc2lvbjogMS41OyBhcmNoOiB4ODY7IHZlbmRvcjogR2VudWluZUludGVsOyBjb3Jlczog
+MS8xLCBidWZmZXI6IDEyOAoyMDEzLTA1LTExVDE1OjE1OjM4LjAwMCswMjowMCB0cmluaXR5IGhh
+dmVnZWQ6IGhhdmVnZWQ6IGRfY2FjaGU6IDMySyAoMDAwMDIwKSwgaV9jYWNoZTogMzJLICgwMDAw
+MjApLCBpX2luZGV4OiAxOS80MCwgaV9zaXplOiAzMjY1My82MDczMQoyMDEzLTA1LTExVDE1OjE1
+OjM4LjAwMCswMjowMCB0cmluaXR5IGhhdmVnZWQ6IGhhdmVnZWQ6IHRvdCB0ZXN0czogQkE4LCBj
+b250aW51b3VzIHRlc3RzOiBCCjIwMTMtMDUtMTFUMTU6MTU6MzguMDAwKzAyOjAwIHRyaW5pdHkg
+aGF2ZWdlZDogaGF2ZWdlZDogQ29tcGxldGVkIGNvbnRpbnVvdXMgcHJvY2VkdXJlIEIgYWZ0ZXIg
+MTE3MTY0MyBieXRlcwoyMDEzLTA1LTExVDE1OjE1OjM4LjAwMCswMjowMCB0cmluaXR5IGRoY3Bj
+ZFs3NzddOiBldGgwOiByZWJpbmRpbmcgbGVhc2Ugb2YgMTkyLjE2OC4xLjYzCjIwMTMtMDUtMTFU
+MTU6MTU6MzguMDAwKzAyOjAwIHRyaW5pdHkgZGhjcGNkWzc3N106IGV0aDA6IGFja25vd2xlZGdl
+ZCAxOTIuMTY4LjEuNjMgZnJvbSAxOTIuMTY4LjAuMjU0CjIwMTMtMDUtMTFUMTU6MTU6MzguMDAw
+KzAyOjAwIHRyaW5pdHkgZGhjcGNkWzc3N106IGV0aDA6IGNoZWNraW5nIGZvciAxOTIuMTY4LjEu
+NjMKMjAxMy0wNS0xMVQxNToxNTo0My4wMDArMDI6MDAgdHJpbml0eSBkaGNwY2RbNzc3XTogZXRo
+MDogbGVhc2VkIDE5Mi4xNjguMS42MyBmb3IgaW5maW5pdHkKMjAxMy0wNS0xMVQxNToxNTo0My4w
+MDArMDI6MDAgdHJpbml0eSBkaGNwY2RbNzc3XTogZm9ya2VkIHRvIGJhY2tncm91bmQsIGNoaWxk
+IHBpZCA4MTEKMjAxMy0wNS0xMVQxNToxNTo0NC4wMDArMDI6MDAgdHJpbml0eSBjcm9uWzg1NV06
+IChDUk9OKSBTVEFSVFVQIChWNS4wKQoyMDEzLTA1LTExVDE1OjE1OjQ0Ljk0NCswMjowMCB0cmlu
+aXR5IGtlcm5lbDogVmlydHVhbCBjb25zb2xlIDEgYXNzaWduZWQgZGV2aWNlICcvZGV2L3B0cy82
+JwoyMDEzLTA1LTExVDE1OjE2OjAxLjAwMCswMjowMCB0cmluaXR5IHNzaGRbODc0XTogcGFtX3Vu
+aXgoc3NoZDpzZXNzaW9uKTogc2Vzc2lvbiBvcGVuZWQgZm9yIHVzZXIgdGZvZXJzdGUgYnkgKHVp
+ZD0wKQoyMDEzLTA1LTExVDE1OjE2OjAyLjgyNyswMjowMCB0cmluaXR5IGtlcm5lbDogc3RybmR1
+cF91c2VyX2RlYnVnOiBzdHJubGVuX3VzZXIoKSByZXR1cm5lZDogMQoyMDEzLTA1LTExVDE1OjE2
+OjAyLjgyNyswMjowMCB0cmluaXR5IGtlcm5lbDogc3RybmR1cF91c2VyX2RlYnVnOiBjYWxsaW5n
+IG1lbWR1cF91c2VyKCkgd2l0aCBsZW5ndGg6IDEKMjAxMy0wNS0xMVQxNToxNjowMi44MjcrMDI6
+MDAgdHJpbml0eSBrZXJuZWw6IHN0cm5kdXBfdXNlcl9kZWJ1Zzogc3Rybmxlbl91c2VyKCkgcmV0
+dXJuZWQ6IDI1CjIwMTMtMDUtMTFUMTU6MTY6MDIuODI3KzAyOjAwIHRyaW5pdHkga2VybmVsOiBz
+dHJuZHVwX3VzZXJfZGVidWc6IGNhbGxpbmcgbWVtZHVwX3VzZXIoKSB3aXRoIGxlbmd0aDogMjUK
+MjAxMy0wNS0xMVQxNToxNjowMi44MjcrMDI6MDAgdHJpbml0eSBrZXJuZWw6IHN0cm5kdXBfdXNl
+cl9kZWJ1Zzogc3Rybmxlbl91c2VyKCkgcmV0dXJuZWQ6IC0xNAoyMDEzLTA1LTExVDE1OjE2OjAy
+LjgyNyswMjowMCB0cmluaXR5IGtlcm5lbDogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0t
+LS0tLS0tCjIwMTMtMDUtMTFUMTU6MTY6MDIuODI3KzAyOjAwIHRyaW5pdHkga2VybmVsOiBXQVJO
+SU5HOiBhdCBtbS9zbGFiX2NvbW1vbi5jOjM3NiBrbWFsbG9jX3NsYWIrMHgzMy8weDgwKCkKMjAx
+My0wNS0xMVQxNToxNjowMi44MjcrMDI6MDAgdHJpbml0eSBrZXJuZWw6IENQVTogMCBQSUQ6IDg4
+MCBDb21tOiB0cmluaXR5LWNoaWxkMCBOb3QgdGFpbnRlZCAzLjkuMC0xMjU1NS1nMmRiZDNjYS1k
+aXJ0eSAjMQoyMDEzLTA1LTExVDE1OjE2OjAyLjgyNyswMjowMCB0cmluaXR5IGtlcm5lbDogNDBk
+YjdkYTAgNDBkYjdkY2MgMDgwN2JmY2EgMDgzZDNlNmMgMDgzZDg2MjMgMDAwMDAxNzggMDgwZTEy
+NzMgMDgwZTEyNzMgCjIwMTMtMDUtMTFUMTU6MTY6MDIuODI3KzAyOjAwIHRyaW5pdHkga2VybmVs
+OiBmZmZmZmZlYSAwMDAwMDBkMCAwMDAwMTAwMCA0MGRiN2RkYyAwODA3YzA5MyAwMDAwMDAwOSAw
+MDAwMDAwMCA0MGRiN2RmMCAKMjAxMy0wNS0xMVQxNToxNjowMi44MzUrMDI6MDAgdHJpbml0eSBr
+ZXJuZWw6IDA4MGUxMjczIDA4M2Q4NjIzIDAwMDAwMTc4IDAwMDAwMDAwIDQwZGI3ZTE0IDA4MGZh
+YzdiIGZmZmZmZmYyIDAwMDAwMGQwIDQwZGI3ZDc0OiAgWzwwODA2MGNmZj5dIHNob3dfc3RhY2sr
+MHhjZi8weDEwMAoyMDEzLTA1LTExVDE1OjE2OjAyLjgzNSswMjowMCB0cmluaXR5IGtlcm5lbDog
+NDBkYjdkOTg6ICBbPDA4MzVkNjNhPl0gZHVtcF9zdGFjaysweDI2LzB4MjgKMjAxMy0wNS0xMVQx
+NToxNjowMi44MzUrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDQwZGI3ZGE4OiAgWzwwODA3YmZjYT5d
+IHdhcm5fc2xvd3BhdGhfY29tbW9uKzB4NWEvMHg4MAoyMDEzLTA1LTExVDE1OjE2OjAyLjgzNSsw
+MjowMCB0cmluaXR5IGtlcm5lbDogNDBkYjdkZDA6ICBbPDA4MDdjMDkzPl0gd2Fybl9zbG93cGF0
+aF9udWxsKzB4MjMvMHgzMAoyMDEzLTA1LTExVDE1OjE2OjAyLjgzNSswMjowMCB0cmluaXR5IGtl
+cm5lbDogNDBkYjdkZTA6ICBbPDA4MGUxMjczPl0ga21hbGxvY19zbGFiKzB4MzMvMHg4MAoyMDEz
+LTA1LTExVDE1OjE2OjAyLjgzNSswMjowMCB0cmluaXR5IGtlcm5lbDogNDBkYjdkZjQ6ICBbPDA4
+MGZhYzdiPl0gX19rbWFsbG9jX3RyYWNrX2NhbGxlcisweDFiLzB4MTEwCjIwMTMtMDUtMTFUMTU6
+MTY6MDIuODM1KzAyOjAwIHRyaW5pdHkga2VybmVsOiA0MGRiN2UxODogIFs8MDgwZGUxYTY+XSBt
+ZW1kdXBfdXNlcisweDI2LzB4NzAKMjAxMy0wNS0xMVQxNToxNjowMi44MzUrMDI6MDAgdHJpbml0
+eSBrZXJuZWw6IDQwZGI3ZTM0OiAgWzwwODBkZTNkZT5dIHN0cm5kdXBfdXNlcl9kZWJ1ZysweDZl
+LzB4YjAKMjAxMy0wNS0xMVQxNToxNjowMi44MzUrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDQwZGI3
+ZTU4OiAgWzwwODExZGQ0OD5dIGNvcHlfbW91bnRfc3RyaW5nKzB4MzgvMHg1MAoyMDEzLTA1LTEx
+VDE1OjE2OjAyLjgzNSswMjowMCB0cmluaXR5IGtlcm5lbDogNDBkYjdlNzA6ICBbPDA4MTFlNzYw
+Pl0gU3lTX21vdW50KzB4MzAvMHhmMAoyMDEzLTA1LTExVDE1OjE2OjAyLjg0MiswMjowMCB0cmlu
+aXR5IGtlcm5lbDogNDBkYjdlYWM6ICBbPDA4MDYyYWMyPl0gaGFuZGxlX3N5c2NhbGwrMHg4Mi8w
+eGIwCjIwMTMtMDUtMTFUMTU6MTY6MDIuODQyKzAyOjAwIHRyaW5pdHkga2VybmVsOiA0MGRiN2Vm
+NDogIFs8MDgwNzUxOWQ+XSB1c2Vyc3BhY2UrMHg0NmQvMHg1OTAKMjAxMy0wNS0xMVQxNToxNjow
+Mi44NDIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDQwZGI3ZmVjOiAgWzwwODA1ZjdmYz5dIGZvcmtf
+aGFuZGxlcisweDZjLzB4NzAKMjAxMy0wNS0xMVQxNToxNjowMi44NDIrMDI6MDAgdHJpbml0eSBr
+ZXJuZWw6IDQwZGI3ZmZjOiAgWzwwMDAwMDAwMD5dIDB4MAoyMDEzLTA1LTExVDE1OjE2OjAyLjg0
+MiswMjowMCB0cmluaXR5IGtlcm5lbDogCjIwMTMtMDUtMTFUMTU6MTY6MDIuODQyKzAyOjAwIHRy
+aW5pdHkga2VybmVsOiAtLS1bIGVuZCB0cmFjZSAwNmZjOTZhNzBkY2ExNjJlIF0tLS0KMjAxMy0w
+NS0xMVQxNToxNjowMi44NDIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IHN0cm5kdXBfdXNlcl9kZWJ1
+ZzogY2FsbGluZyBtZW1kdXBfdXNlcigpIHdpdGggbGVuZ3RoOiAtMTQKMjAxMy0wNS0xMVQxNTox
+NjowMi44NDIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IHN0cm5kdXBfdXNlcl9kZWJ1Zzogc3Rybmxl
+bl91c2VyKCkgcmV0dXJuZWQ6IC0xNAoyMDEzLTA1LTExVDE1OjE2OjAyLjg0MiswMjowMCB0cmlu
+aXR5IGtlcm5lbDogc3RybmR1cF91c2VyX2RlYnVnOiBjYWxsaW5nIG1lbWR1cF91c2VyKCkgd2l0
+aCBsZW5ndGg6IC0xNAoyMDEzLTA1LTExVDE1OjE2OjAyLjg0MiswMjowMCB0cmluaXR5IGtlcm5l
+bDogc3RybmR1cF91c2VyX2RlYnVnOiBzdHJubGVuX3VzZXIoKSByZXR1cm5lZDogMTYKMjAxMy0w
+NS0xMVQxNToxNjowMi44NTArMDI6MDAgdHJpbml0eSBrZXJuZWw6IHN0cm5kdXBfdXNlcl9kZWJ1
+ZzogY2FsbGluZyBtZW1kdXBfdXNlcigpIHdpdGggbGVuZ3RoOiAxNgoyMDEzLTA1LTExVDE1OjE2
+OjAyLjg1MCswMjowMCB0cmluaXR5IGtlcm5lbDogc3RybmR1cF91c2VyX2RlYnVnOiBzdHJubGVu
+X3VzZXIoKSByZXR1cm5lZDogMQoyMDEzLTA1LTExVDE1OjE2OjAyLjg1MCswMjowMCB0cmluaXR5
+IGtlcm5lbDogc3RybmR1cF91c2VyX2RlYnVnOiBjYWxsaW5nIG1lbWR1cF91c2VyKCkgd2l0aCBs
+ZW5ndGg6IDEKMjAxMy0wNS0xMVQxNToxNjowMi44NTArMDI6MDAgdHJpbml0eSBrZXJuZWw6IHN0
+cm5kdXBfdXNlcl9kZWJ1Zzogc3Rybmxlbl91c2VyKCkgcmV0dXJuZWQ6IDcwCjIwMTMtMDUtMTFU
+MTU6MTY6MDIuODUwKzAyOjAwIHRyaW5pdHkga2VybmVsOiBzdHJuZHVwX3VzZXJfZGVidWc6IGNh
+bGxpbmcgbWVtZHVwX3VzZXIoKSB3aXRoIGxlbmd0aDogNzAKMjAxMy0wNS0xMVQxNToxNjowMi44
+NTArMDI6MDAgdHJpbml0eSBrZXJuZWw6IHN0cm5kdXBfdXNlcl9kZWJ1Zzogc3Rybmxlbl91c2Vy
+KCkgcmV0dXJuZWQ6IC0xNAoyMDEzLTA1LTExVDE1OjE2OjAyLjg1MCswMjowMCB0cmluaXR5IGtl
+cm5lbDogc3RybmR1cF91c2VyX2RlYnVnOiBjYWxsaW5nIG1lbWR1cF91c2VyKCkgd2l0aCBsZW5n
+dGg6IC0xNAoKLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJp
+bnQ6IDdCMUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4OTM2IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQpMZWFybiBHcmFwaCBEYXRhYmFzZXMgLSBEb3dubG9hZCBGUkVF
+IE8nUmVpbGx5IEJvb2sKIkdyYXBoIERhdGFiYXNlcyIgaXMgdGhlIGRlZmluaXRpdmUgbmV3IGd1
+aWRlIHRvIGdyYXBoIGRhdGFiYXNlcyBhbmQgCnRoZWlyIGFwcGxpY2F0aW9ucy4gVGhpcyAyMDAt
+cGFnZSBib29rIGlzIHdyaXR0ZW4gYnkgdGhyZWUgYWNjbGFpbWVkIApsZWFkZXJzIGluIHRoZSBm
+aWVsZC4gVGhlIGVhcmx5IGFjY2VzcyB2ZXJzaW9uIGlzIGF2YWlsYWJsZSBub3cuIApEb3dubG9h
+ZCB5b3VyIGZyZWUgYm9vayB0b2RheSEgaHR0cDovL3Auc2YubmV0L3NmdS9uZW90ZWNoX2QyZF9t
+YXkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1t
+b2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMu
+c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
+bmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
