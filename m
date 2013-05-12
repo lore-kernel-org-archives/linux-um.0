@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1UbYrW-0006fW-Sj
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1UbYos-0008Nx-Jj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 16:11:02 +0000
-Received: from mail-wg0-f48.google.com ([74.125.82.48])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UbYrW-0005Pq-2I
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 16:11:02 +0000
-Received: by mail-wg0-f48.google.com with SMTP id f11so5586429wgh.27
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 12 May 2013 09:10:55 -0700 (PDT)
+	Sun, 12 May 2013 16:08:18 +0000
+Received: from mout.gmx.net ([212.227.17.22])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1UbYor-0002Od-PN for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 May 2013 16:08:18 +0000
+Received: from mailout-de.gmx.net ([10.1.76.31]) by mrigmx.server.lan
+	(mrigmx002) with ESMTP (Nemesis) id 0MXkSn-1V4RfH06UR-00WlVx for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 12 May 2013 18:08:12
+	+0200
+Message-ID: <518FBE6A.50605@gmx.de>
+Date: Sun, 12 May 2013 18:08:10 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <518FBE6A.50605@gmx.de>
 References: <518FB97A.5070907@gmx.de>
 	<CAFLxGvzn+Q=D4vjTNuggSTnQKVp0QYLPoHmUwAVBcRbSmD3HWQ@mail.gmail.com>
-	<518FBE6A.50605@gmx.de>
-Date: Sun, 12 May 2013 18:10:55 +0200
-Message-ID: <CAFLxGvyvRb+WD-eLBFnH5O-sXjUdtUkXbKzG6HFqgzm+x2LUow@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
+In-Reply-To: <CAFLxGvzn+Q=D4vjTNuggSTnQKVp0QYLPoHmUwAVBcRbSmD3HWQ@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,38 +29,26 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] WARNING: at mm/mmap.c:2757 exit_mmap+0x161/0x170()
-To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sun, May 12, 2013 at 6:08 PM, Toralf F=F6rster <toralf.foerster@gmx.de> =
-wrote:
-> On 05/12/2013 05:58 PM, richard -rw- weinberger wrote:
->> Do you have stub_pte_fix.diff applied?
-> yes, both the stub and the strnlen patch
-
-Okay, I fear stub_pte_fix.diff does not do the right thing.
-/me cooks up a debug patch. Stay tuned.
-
---
-Thanks,
-//richard
-
----------------------------------------------------------------------------=
----
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and =
-
-their applications. This 200-page book is written by three acclaimed =
-
-leaders in the field. The early access version is available now. =
-
-Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gMDUvMTIvMjAxMyAwNTo1OCBQTSwgcmljaGFyZCAtcnctIHdlaW5iZXJnZXIgd3JvdGU6Cj4g
+RG8geW91IGhhdmUgc3R1Yl9wdGVfZml4LmRpZmYgYXBwbGllZD8KeWVzLCBib3RoIHRoZSBzdHVi
+IGFuZCB0aGUgc3RybmxlbiBwYXRjaAoKLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVy
+CnBncCBmaW5nZXIgcHJpbnQ6IDdCMUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4OTM2IDg3MkEgRTUw
+OCA3REI2IDlEQTMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZWFybiBHcmFwaCBEYXRhYmFzZXMg
+LSBEb3dubG9hZCBGUkVFIE8nUmVpbGx5IEJvb2sKIkdyYXBoIERhdGFiYXNlcyIgaXMgdGhlIGRl
+ZmluaXRpdmUgbmV3IGd1aWRlIHRvIGdyYXBoIGRhdGFiYXNlcyBhbmQgCnRoZWlyIGFwcGxpY2F0
+aW9ucy4gVGhpcyAyMDAtcGFnZSBib29rIGlzIHdyaXR0ZW4gYnkgdGhyZWUgYWNjbGFpbWVkIAps
+ZWFkZXJzIGluIHRoZSBmaWVsZC4gVGhlIGVhcmx5IGFjY2VzcyB2ZXJzaW9uIGlzIGF2YWlsYWJs
+ZSBub3cuIApEb3dubG9hZCB5b3VyIGZyZWUgYm9vayB0b2RheSEgaHR0cDovL3Auc2YubmV0L3Nm
+dS9uZW90ZWNoX2QyZF9tYXkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGlu
+dXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
