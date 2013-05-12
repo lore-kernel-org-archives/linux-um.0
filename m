@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1Ubcvi-0006pg-Oh
+	(envelope-from <toralf.foerster@gmx.de>) id 1Ubctf-0006kH-EG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 20:31:38 +0000
-Received: from mail-we0-f170.google.com ([74.125.82.170])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Ubcvh-0000Oe-Uw
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 20:31:38 +0000
-Received: by mail-we0-f170.google.com with SMTP id u54so5732441wes.29
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 12 May 2013 13:31:31 -0700 (PDT)
+	Sun, 12 May 2013 20:29:31 +0000
+Received: from mout.gmx.net ([212.227.15.15])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ubcte-0005XV-FV for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 May 2013 20:29:31 +0000
+Received: from mailout-de.gmx.net ([10.1.76.30]) by mrigmx.server.lan
+	(mrigmx002) with ESMTP (Nemesis) id 0Lzmgv-1UW8lL3sXr-0150PN for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 12 May 2013 22:29:24
+	+0200
+Message-ID: <518FFBA3.6000800@gmx.de>
+Date: Sun, 12 May 2013 22:29:23 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <518FFBA3.6000800@gmx.de>
 References: <518FB97A.5070907@gmx.de>
 	<CAFLxGvzn+Q=D4vjTNuggSTnQKVp0QYLPoHmUwAVBcRbSmD3HWQ@mail.gmail.com>
 	<518FBE6A.50605@gmx.de>
@@ -24,10 +26,7 @@ References: <518FB97A.5070907@gmx.de>
 	<CAFLxGvyiKbbkPAG0h42y1fb=Z6YuboJPdyb+2Xk9Z2YYt7oryg@mail.gmail.com>
 	<518FF354.7020408@gmx.de>
 	<CAFLxGvxYjpt6X9MQF3Huh-Sqzm3CBMJAfGb_Qjpqu00iUzj=qg@mail.gmail.com>
-	<518FFBA3.6000800@gmx.de>
-Date: Sun, 12 May 2013 22:31:31 +0200
-Message-ID: <CAFLxGvx+8wpBeF_TqOk3JKBEoADAS-NeatpJMuSVvaDhZNqE0g@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
+In-Reply-To: <CAFLxGvxYjpt6X9MQF3Huh-Sqzm3CBMJAfGb_Qjpqu00iUzj=qg@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,92 +36,67 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] WARNING: at mm/mmap.c:2757 exit_mmap+0x161/0x170()
-To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sun, May 12, 2013 at 10:29 PM, Toralf F=F6rster <toralf.foerster@gmx.de>=
- wrote:
-> On 05/12/2013 09:56 PM, richard -rw- weinberger wrote:
->> On Sun, May 12, 2013 at 9:53 PM, Toralf F=F6rster <toralf.foerster@gmx.d=
-e> wrote:
->>> On 05/12/2013 09:45 PM, richard -rw- weinberger wrote:
->>>> Damn, we've underrun the counter. :-\
->>>> Can you please test the attached 3rd debug patch?
->>>
->>> yes - but give me a chance and attach a patch ;)
->>
->> *grrrr* I'm a way to stupid for that new gmail user interface.
->>
->> --
->> Thanks,
->> //richard
->>
->
-> now it tooks less than 1/4 hour :
->
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: ------------[ cut here ]---=
----------
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: WARNING: at mm/mmap.c:2757 =
-exit_mmap+0x164/0x190()
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: CPU: 0 PID: 1303 Comm: trin=
-ity-child1 Not tainted 3.10.0-rc1-dirty #7
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: 3e7f7d9c 3e7f7dc8 0807bfca =
-083d51b0 083d9a66 00000ac5 080eb8f4 080eb8f4
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: 000004f2 3f0ff8c0 4022f53c =
-3e7f7dd8 0807c093 00000009 00000000 3e7f7e10
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: 080eb8f4 083d9a66 00000ac5 =
-c0000000 00000000 3e6d7440 3f0ff8c0 00000000 3e7f7d70:  [<08060cff>] show_s=
-tack+0xcf/0x100
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: 3e7f7d94:  [<0835ed99>] dum=
-p_stack+0x26/0x28
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: 3e7f7da4:  [<0807bfca>] war=
-n_slowpath_common+0x5a/0x80
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: 3e7f7dcc:  [<0807c093>] war=
-n_slowpath_null+0x23/0x30
-> 2013-05-12T22:27:14.170+02:00 trinity kernel: 3e7f7ddc:  [<080eb8f4>] exi=
-t_mmap+0x164/0x190
-> 2013-05-12T22:27:14.172+02:00 trinity kernel: 3e7f7e14:  [<0807991d>] mmp=
-ut+0x3d/0xb0
-> 2013-05-12T22:27:14.172+02:00 trinity kernel: 3e7f7e28:  [<08081086>] do_=
-exit+0x2f6/0x880
-> 2013-05-12T22:27:14.172+02:00 trinity kernel: 3e7f7e78:  [<080816f9>] do_=
-group_exit+0xa9/0xf0
-> 2013-05-12T22:27:14.172+02:00 trinity kernel: 3e7f7ea0:  [<08081759>] SyS=
-_exit_group+0x19/0x20
-> 2013-05-12T22:27:14.172+02:00 trinity kernel: 3e7f7eac:  [<08062ac2>] han=
-dle_syscall+0x82/0xb0
-> 2013-05-12T22:27:14.172+02:00 trinity kernel: 3e7f7ef4:  [<0807519d>] use=
-rspace+0x46d/0x590
-> 2013-05-12T22:27:14.172+02:00 trinity kernel: 3e7f7fec:  [<0805f7fc>] for=
-k_handler+0x6c/0x70
-> 2013-05-12T22:27:14.172+02:00 trinity kernel: 3e7f7ffc:  [<00000000>] 0x0
-> 2013-05-12T22:27:14.172+02:00 trinity kernel:
-> 2013-05-12T22:27:14.172+02:00 trinity kernel: ---[ end trace 44efa740a7cc=
-38af ]---
-> 2013-05-12T22:27:14.173+02:00 trinity kernel: XXX mm->nr_ptes: 4294967295
-
-Okay, I have to find another solution for the issue. :-\
-
---
-Thanks,
-//richard
-
----------------------------------------------------------------------------=
----
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and =
-
-their applications. This 200-page book is written by three acclaimed =
-
-leaders in the field. The early access version is available now. =
-
-Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gMDUvMTIvMjAxMyAwOTo1NiBQTSwgcmljaGFyZCAtcnctIHdlaW5iZXJnZXIgd3JvdGU6Cj4g
+T24gU3VuLCBNYXkgMTIsIDIwMTMgYXQgOTo1MyBQTSwgVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYu
+Zm9lcnN0ZXJAZ214LmRlPiB3cm90ZToKPj4gT24gMDUvMTIvMjAxMyAwOTo0NSBQTSwgcmljaGFy
+ZCAtcnctIHdlaW5iZXJnZXIgd3JvdGU6Cj4+PiBEYW1uLCB3ZSd2ZSB1bmRlcnJ1biB0aGUgY291
+bnRlci4gOi1cCj4+PiBDYW4geW91IHBsZWFzZSB0ZXN0IHRoZSBhdHRhY2hlZCAzcmQgZGVidWcg
+cGF0Y2g/Cj4+Cj4+IHllcyAtIGJ1dCBnaXZlIG1lIGEgY2hhbmNlIGFuZCBhdHRhY2ggYSBwYXRj
+aCA7KQo+IAo+ICpncnJyciogSSdtIGEgd2F5IHRvIHN0dXBpZCBmb3IgdGhhdCBuZXcgZ21haWwg
+dXNlciBpbnRlcmZhY2UuCj4gCj4gLS0KPiBUaGFua3MsCj4gLy9yaWNoYXJkCj4gCgpub3cgaXQg
+dG9va3MgbGVzcyB0aGFuIDEvNCBob3VyIDoKCjIwMTMtMDUtMTJUMjI6Mjc6MTQuMTcwKzAyOjAw
+IHRyaW5pdHkga2VybmVsOiAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KMjAx
+My0wNS0xMlQyMjoyNzoxNC4xNzArMDI6MDAgdHJpbml0eSBrZXJuZWw6IFdBUk5JTkc6IGF0IG1t
+L21tYXAuYzoyNzU3IGV4aXRfbW1hcCsweDE2NC8weDE5MCgpCjIwMTMtMDUtMTJUMjI6Mjc6MTQu
+MTcwKzAyOjAwIHRyaW5pdHkga2VybmVsOiBDUFU6IDAgUElEOiAxMzAzIENvbW06IHRyaW5pdHkt
+Y2hpbGQxIE5vdCB0YWludGVkIDMuMTAuMC1yYzEtZGlydHkgIzcKMjAxMy0wNS0xMlQyMjoyNzox
+NC4xNzArMDI6MDAgdHJpbml0eSBrZXJuZWw6IDNlN2Y3ZDljIDNlN2Y3ZGM4IDA4MDdiZmNhIDA4
+M2Q1MWIwIDA4M2Q5YTY2IDAwMDAwYWM1IDA4MGViOGY0IDA4MGViOGY0CjIwMTMtMDUtMTJUMjI6
+Mjc6MTQuMTcwKzAyOjAwIHRyaW5pdHkga2VybmVsOiAwMDAwMDRmMiAzZjBmZjhjMCA0MDIyZjUz
+YyAzZTdmN2RkOCAwODA3YzA5MyAwMDAwMDAwOSAwMDAwMDAwMCAzZTdmN2UxMAoyMDEzLTA1LTEy
+VDIyOjI3OjE0LjE3MCswMjowMCB0cmluaXR5IGtlcm5lbDogMDgwZWI4ZjQgMDgzZDlhNjYgMDAw
+MDBhYzUgYzAwMDAwMDAgMDAwMDAwMDAgM2U2ZDc0NDAgM2YwZmY4YzAgMDAwMDAwMDAgM2U3Zjdk
+NzA6ICBbPDA4MDYwY2ZmPl0gc2hvd19zdGFjaysweGNmLzB4MTAwCjIwMTMtMDUtMTJUMjI6Mjc6
+MTQuMTcwKzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZTdmN2Q5NDogIFs8MDgzNWVkOTk+XSBkdW1w
+X3N0YWNrKzB4MjYvMHgyOAoyMDEzLTA1LTEyVDIyOjI3OjE0LjE3MCswMjowMCB0cmluaXR5IGtl
+cm5lbDogM2U3ZjdkYTQ6ICBbPDA4MDdiZmNhPl0gd2Fybl9zbG93cGF0aF9jb21tb24rMHg1YS8w
+eDgwCjIwMTMtMDUtMTJUMjI6Mjc6MTQuMTcwKzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZTdmN2Rj
+YzogIFs8MDgwN2MwOTM+XSB3YXJuX3Nsb3dwYXRoX251bGwrMHgyMy8weDMwCjIwMTMtMDUtMTJU
+MjI6Mjc6MTQuMTcwKzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZTdmN2RkYzogIFs8MDgwZWI4ZjQ+
+XSBleGl0X21tYXArMHgxNjQvMHgxOTAKMjAxMy0wNS0xMlQyMjoyNzoxNC4xNzIrMDI6MDAgdHJp
+bml0eSBrZXJuZWw6IDNlN2Y3ZTE0OiAgWzwwODA3OTkxZD5dIG1tcHV0KzB4M2QvMHhiMAoyMDEz
+LTA1LTEyVDIyOjI3OjE0LjE3MiswMjowMCB0cmluaXR5IGtlcm5lbDogM2U3ZjdlMjg6ICBbPDA4
+MDgxMDg2Pl0gZG9fZXhpdCsweDJmNi8weDg4MAoyMDEzLTA1LTEyVDIyOjI3OjE0LjE3MiswMjow
+MCB0cmluaXR5IGtlcm5lbDogM2U3ZjdlNzg6ICBbPDA4MDgxNmY5Pl0gZG9fZ3JvdXBfZXhpdCsw
+eGE5LzB4ZjAKMjAxMy0wNS0xMlQyMjoyNzoxNC4xNzIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDNl
+N2Y3ZWEwOiAgWzwwODA4MTc1OT5dIFN5U19leGl0X2dyb3VwKzB4MTkvMHgyMAoyMDEzLTA1LTEy
+VDIyOjI3OjE0LjE3MiswMjowMCB0cmluaXR5IGtlcm5lbDogM2U3ZjdlYWM6ICBbPDA4MDYyYWMy
+Pl0gaGFuZGxlX3N5c2NhbGwrMHg4Mi8weGIwCjIwMTMtMDUtMTJUMjI6Mjc6MTQuMTcyKzAyOjAw
+IHRyaW5pdHkga2VybmVsOiAzZTdmN2VmNDogIFs8MDgwNzUxOWQ+XSB1c2Vyc3BhY2UrMHg0NmQv
+MHg1OTAKMjAxMy0wNS0xMlQyMjoyNzoxNC4xNzIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDNlN2Y3
+ZmVjOiAgWzwwODA1ZjdmYz5dIGZvcmtfaGFuZGxlcisweDZjLzB4NzAKMjAxMy0wNS0xMlQyMjoy
+NzoxNC4xNzIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDNlN2Y3ZmZjOiAgWzwwMDAwMDAwMD5dIDB4
+MAoyMDEzLTA1LTEyVDIyOjI3OjE0LjE3MiswMjowMCB0cmluaXR5IGtlcm5lbDoKMjAxMy0wNS0x
+MlQyMjoyNzoxNC4xNzIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IC0tLVsgZW5kIHRyYWNlIDQ0ZWZh
+NzQwYTdjYzM4YWYgXS0tLQoyMDEzLTA1LTEyVDIyOjI3OjE0LjE3MyswMjowMCB0cmluaXR5IGtl
+cm5lbDogWFhYIG1tLT5ucl9wdGVzOiA0Mjk0OTY3Mjk1CgotLSAKTWZHL1NpbmNlcmVseQpUb3Jh
+bGYgRsO2cnN0ZXIKcGdwIGZpbmdlciBwcmludDogN0IxQSAwN0Y0IEVDODIgMEY5MCBENEMyIDg5
+MzYgODcyQSBFNTA4IDdEQjYgOURBMwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxlYXJuIEdyYXBo
+IERhdGFiYXNlcyAtIERvd25sb2FkIEZSRUUgTydSZWlsbHkgQm9vawoiR3JhcGggRGF0YWJhc2Vz
+IiBpcyB0aGUgZGVmaW5pdGl2ZSBuZXcgZ3VpZGUgdG8gZ3JhcGggZGF0YWJhc2VzIGFuZCAKdGhl
+aXIgYXBwbGljYXRpb25zLiBUaGlzIDIwMC1wYWdlIGJvb2sgaXMgd3JpdHRlbiBieSB0aHJlZSBh
+Y2NsYWltZWQgCmxlYWRlcnMgaW4gdGhlIGZpZWxkLiBUaGUgZWFybHkgYWNjZXNzIHZlcnNpb24g
+aXMgYXZhaWxhYmxlIG5vdy4gCkRvd25sb2FkIHlvdXIgZnJlZSBib29rIHRvZGF5ISBodHRwOi8v
+cC5zZi5uZXQvc2Z1L25lb3RlY2hfZDJkX21heQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVz
+ZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
+b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
