@@ -1,25 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1UbYos-0008Nx-Jj
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1UbYfg-0005XB-8u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 16:08:18 +0000
-Received: from mout.gmx.net ([212.227.17.22])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UbYor-0002Od-PN for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 16:08:18 +0000
-Received: from mailout-de.gmx.net ([10.1.76.31]) by mrigmx.server.lan
-	(mrigmx002) with ESMTP (Nemesis) id 0MXkSn-1V4RfH06UR-00WlVx for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 12 May 2013 18:08:12
-	+0200
-Message-ID: <518FBE6A.50605@gmx.de>
-Date: Sun, 12 May 2013 18:08:10 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Sun, 12 May 2013 15:58:48 +0000
+Received: from mail-wi0-f173.google.com ([209.85.212.173])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UbYff-0004vD-Fb
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 May 2013 15:58:48 +0000
+Received: by mail-wi0-f173.google.com with SMTP id hi5so738082wib.12
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 12 May 2013 08:58:41 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <518FB97A.5070907@gmx.de>
 References: <518FB97A.5070907@gmx.de>
-	<CAFLxGvzn+Q=D4vjTNuggSTnQKVp0QYLPoHmUwAVBcRbSmD3HWQ@mail.gmail.com>
-In-Reply-To: <CAFLxGvzn+Q=D4vjTNuggSTnQKVp0QYLPoHmUwAVBcRbSmD3HWQ@mail.gmail.com>
+Date: Sun, 12 May 2013 17:58:41 +0200
+Message-ID: <CAFLxGvzn+Q=D4vjTNuggSTnQKVp0QYLPoHmUwAVBcRbSmD3HWQ@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,26 +28,62 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] WARNING: at mm/mmap.c:2757 exit_mmap+0x161/0x170()
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gMDUvMTIvMjAxMyAwNTo1OCBQTSwgcmljaGFyZCAtcnctIHdlaW5iZXJnZXIgd3JvdGU6Cj4g
-RG8geW91IGhhdmUgc3R1Yl9wdGVfZml4LmRpZmYgYXBwbGllZD8KeWVzLCBib3RoIHRoZSBzdHVi
-IGFuZCB0aGUgc3RybmxlbiBwYXRjaAoKLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVy
-CnBncCBmaW5nZXIgcHJpbnQ6IDdCMUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4OTM2IDg3MkEgRTUw
-OCA3REI2IDlEQTMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZWFybiBHcmFwaCBEYXRhYmFzZXMg
-LSBEb3dubG9hZCBGUkVFIE8nUmVpbGx5IEJvb2sKIkdyYXBoIERhdGFiYXNlcyIgaXMgdGhlIGRl
-ZmluaXRpdmUgbmV3IGd1aWRlIHRvIGdyYXBoIGRhdGFiYXNlcyBhbmQgCnRoZWlyIGFwcGxpY2F0
-aW9ucy4gVGhpcyAyMDAtcGFnZSBib29rIGlzIHdyaXR0ZW4gYnkgdGhyZWUgYWNjbGFpbWVkIAps
-ZWFkZXJzIGluIHRoZSBmaWVsZC4gVGhlIGVhcmx5IGFjY2VzcyB2ZXJzaW9uIGlzIGF2YWlsYWJs
-ZSBub3cuIApEb3dubG9hZCB5b3VyIGZyZWUgYm9vayB0b2RheSEgaHR0cDovL3Auc2YubmV0L3Nm
-dS9uZW90ZWNoX2QyZF9tYXkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGlu
-dXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+On Sun, May 12, 2013 at 5:47 PM, Toralf F=F6rster <toralf.foerster@gmx.de> =
+wrote:
+> With recent host and guest kernel trinity often triggers that warning
+> which refers to this line
+>
+> WARN_ON(mm->nr_ptes > (FIRST_USER_ADDRESS+PMD_SIZE-1)>>PMD_SHIFT);
+>
+> /me wonders if (and how) I can help to identify the root cause (if it is
+> not already known).
+
+Do you have stub_pte_fix.diff applied?
+
+
+>
+> --
+> MfG/Sincerely
+> Toralf F=F6rster
+> pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+>
+> -------------------------------------------------------------------------=
+-----
+> Learn Graph Databases - Download FREE O'Reilly Book
+> "Graph Databases" is the definitive new guide to graph databases and
+> their applications. This 200-page book is written by three acclaimed
+> leaders in the field. The early access version is available now.
+> Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+
+
+--
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
+---
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and =
+
+their applications. This 200-page book is written by three acclaimed =
+
+leaders in the field. The early access version is available now. =
+
+Download your free book today! http://p.sf.net/sfu/neotech_d2d_may
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
