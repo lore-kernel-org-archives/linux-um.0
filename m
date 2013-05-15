@@ -1,20 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1Uch7G-0008DL-SF
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1Uch1q-0008HF-Oh
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 May 2013 19:11:58 +0000
-Received: from mail-ob0-f180.google.com ([209.85.214.180])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Uch7F-0005wj-69
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 May 2013 19:11:58 +0000
-Received: by mail-ob0-f180.google.com with SMTP id xk17so2377338obc.25
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 15 May 2013 12:11:51 -0700 (PDT)
+	Wed, 15 May 2013 19:06:22 +0000
+Received: from mout.gmx.net ([212.227.15.15])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Uch1p-0003Wq-R0 for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 May 2013 19:06:22 +0000
+Received: from mailout-de.gmx.net ([10.1.76.4]) by mrigmx.server.lan
+	(mrigmx002) with ESMTP (Nemesis) id 0MY1JW-1Uydku1Bsu-00Uq3C for
+	<user-mode-linux-devel@lists.sourceforge.net>; Wed, 15 May 2013 21:06:16
+	+0200
+Message-ID: <5193DCA7.1070708@gmx.de>
+Date: Wed, 15 May 2013 21:06:15 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <5193DCA7.1070708@gmx.de>
 References: <518FB97A.5070907@gmx.de>
 	<CAFLxGvzn+Q=D4vjTNuggSTnQKVp0QYLPoHmUwAVBcRbSmD3HWQ@mail.gmail.com>
 	<518FBE6A.50605@gmx.de>
@@ -29,10 +31,7 @@ References: <518FB97A.5070907@gmx.de>
 	<CAFLxGvzSEY8iciEONkxNGeO6Lt5v4VcB2sF1XPcqLA=n8PUaAQ@mail.gmail.com>
 	<51901400.4060302@gmx.de>
 	<CAFLxGvx-saWcJ+JCubUBAVT70OSMZDYNETqiNijJgXeqCPwwUA@mail.gmail.com>
-	<5193DCA7.1070708@gmx.de>
-Date: Wed, 15 May 2013 21:11:51 +0200
-Message-ID: <CAFLxGvxhDu6jVHZ0iOhjSBEfEY5JZRJ9xw0gxcduvuTR6BGOPg@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
+In-Reply-To: <CAFLxGvx-saWcJ+JCubUBAVT70OSMZDYNETqiNijJgXeqCPwwUA@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -42,78 +41,54 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] WARNING: at mm/mmap.c:2757 exit_mmap+0x161/0x170()
-To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On Wed, May 15, 2013 at 9:06 PM, Toralf F=F6rster <toralf.foerster@gmx.de> =
-wrote:
-> On 05/13/2013 09:12 AM, richard -rw- weinberger wrote:
->> This looks like another issue.
->> Are you testing process_vm_writev() with trinity?
->> Looks like it managed to overwrite the stub page of a process, which
->> is not good.
-> nope, it is the mremap syscall.
->
-> A command like
->
-> $>trinity -c mremap -N 10
->
-> immediately after starting a 32 bit Gentoo linux guest with current kerne=
-l 3.10-rc1-... +
-> strnlen + stub4 patch works, but later a
->
-> $>trinity -c mremap -N 1000
->
-> yields into
->
-> 2013-05-15T21:02:04.061+02:00 trinity kernel: Stub registers -
-> 2013-05-15T21:02:04.061+02:00 trinity kernel:   0 - 100000
-> 2013-05-15T21:02:04.061+02:00 trinity kernel:   1 - 300000
-> 2013-05-15T21:02:04.061+02:00 trinity kernel:   2 - 0
-> 2013-05-15T21:02:04.061+02:00 trinity kernel:   3 - 0
-> 2013-05-15T21:02:04.061+02:00 trinity kernel:   4 - 0
-> 2013-05-15T21:02:04.061+02:00 trinity kernel:   5 - 0
-> 2013-05-15T21:02:04.061+02:00 trinity kernel:   6 - 0
-> 2013-05-15T21:02:04.061+02:00 trinity kernel:   7 - 7b
-> 2013-05-15T21:02:04.061+02:00 trinity kernel:   8 - 7b
-> 2013-05-15T21:02:04.065+02:00 trinity kernel:   9 - 0
-> 2013-05-15T21:02:04.065+02:00 trinity kernel:   10 - 33
-> 2013-05-15T21:02:04.065+02:00 trinity kernel:   11 - ffffffff
-> 2013-05-15T21:02:04.065+02:00 trinity kernel:   12 - 1000c3
-> 2013-05-15T21:02:04.065+02:00 trinity kernel:   13 - 73
-> 2013-05-15T21:02:04.065+02:00 trinity kernel:   14 - 10206
-> 2013-05-15T21:02:04.065+02:00 trinity kernel:   15 - 101028
-> 2013-05-15T21:02:04.065+02:00 trinity kernel:   16 - 7b
-> 2013-05-15T21:02:04.065+02:00 trinity kernel: wait_stub_done : failed to =
-wait for SIGTRAP, pid =3D 15692, n =3D 15692, errno =3D 0, status =3D 0xb7f
->
-> and now that process can't be killed - I had to stop the UML guest.
-
-Hmm, you've remapped the stub page and therefore the process broke.
-I think it would make sense to kill the process in stead of writing
-the "wait_stub_done ..." message.
-Changing the stub page is as destructive than overwriting the stack.
-
-Maybe we can teach triniy to no change the stub page.
-I'm sure trinity has also a mechanism to not destroy the stack.
-
---
-Thanks,
-//richard
-
----------------------------------------------------------------------------=
----
-AlienVault Unified Security Management (USM) platform delivers complete
-security visibility with the essential security capabilities. Easily and
-efficiently configure, manage, and operate all of your security controls
-from a single console and one unified framework. Download a free trial.
-http://p.sf.net/sfu/alienvault_d2d
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gMDUvMTMvMjAxMyAwOToxMiBBTSwgcmljaGFyZCAtcnctIHdlaW5iZXJnZXIgd3JvdGU6Cj4g
+VGhpcyBsb29rcyBsaWtlIGFub3RoZXIgaXNzdWUuCj4gQXJlIHlvdSB0ZXN0aW5nIHByb2Nlc3Nf
+dm1fd3JpdGV2KCkgd2l0aCB0cmluaXR5Pwo+IExvb2tzIGxpa2UgaXQgbWFuYWdlZCB0byBvdmVy
+d3JpdGUgdGhlIHN0dWIgcGFnZSBvZiBhIHByb2Nlc3MsIHdoaWNoCj4gaXMgbm90IGdvb2QuCm5v
+cGUsIGl0IGlzIHRoZSBtcmVtYXAgc3lzY2FsbC4KCkEgY29tbWFuZCBsaWtlIAoKJD50cmluaXR5
+IC1jIG1yZW1hcCAtTiAxMAoKaW1tZWRpYXRlbHkgYWZ0ZXIgc3RhcnRpbmcgYSAzMiBiaXQgR2Vu
+dG9vIGxpbnV4IGd1ZXN0IHdpdGggY3VycmVudCBrZXJuZWwgMy4xMC1yYzEtLi4uICsKc3Rybmxl
+biArIHN0dWI0IHBhdGNoIHdvcmtzLCBidXQgbGF0ZXIgYQoKJD50cmluaXR5IC1jIG1yZW1hcCAt
+TiAxMDAwCgp5aWVsZHMgaW50byAKCjIwMTMtMDUtMTVUMjE6MDI6MDQuMDYxKzAyOjAwIHRyaW5p
+dHkga2VybmVsOiBTdHViIHJlZ2lzdGVycyAtCjIwMTMtMDUtMTVUMjE6MDI6MDQuMDYxKzAyOjAw
+IHRyaW5pdHkga2VybmVsOiAgIDAgLSAxMDAwMDAKMjAxMy0wNS0xNVQyMTowMjowNC4wNjErMDI6
+MDAgdHJpbml0eSBrZXJuZWw6ICAgMSAtIDMwMDAwMAoyMDEzLTA1LTE1VDIxOjAyOjA0LjA2MSsw
+MjowMCB0cmluaXR5IGtlcm5lbDogICAyIC0gMAoyMDEzLTA1LTE1VDIxOjAyOjA0LjA2MSswMjow
+MCB0cmluaXR5IGtlcm5lbDogICAzIC0gMAoyMDEzLTA1LTE1VDIxOjAyOjA0LjA2MSswMjowMCB0
+cmluaXR5IGtlcm5lbDogICA0IC0gMAoyMDEzLTA1LTE1VDIxOjAyOjA0LjA2MSswMjowMCB0cmlu
+aXR5IGtlcm5lbDogICA1IC0gMAoyMDEzLTA1LTE1VDIxOjAyOjA0LjA2MSswMjowMCB0cmluaXR5
+IGtlcm5lbDogICA2IC0gMAoyMDEzLTA1LTE1VDIxOjAyOjA0LjA2MSswMjowMCB0cmluaXR5IGtl
+cm5lbDogICA3IC0gN2IKMjAxMy0wNS0xNVQyMTowMjowNC4wNjErMDI6MDAgdHJpbml0eSBrZXJu
+ZWw6ICAgOCAtIDdiCjIwMTMtMDUtMTVUMjE6MDI6MDQuMDY1KzAyOjAwIHRyaW5pdHkga2VybmVs
+OiAgIDkgLSAwCjIwMTMtMDUtMTVUMjE6MDI6MDQuMDY1KzAyOjAwIHRyaW5pdHkga2VybmVsOiAg
+IDEwIC0gMzMKMjAxMy0wNS0xNVQyMTowMjowNC4wNjUrMDI6MDAgdHJpbml0eSBrZXJuZWw6ICAg
+MTEgLSBmZmZmZmZmZgoyMDEzLTA1LTE1VDIxOjAyOjA0LjA2NSswMjowMCB0cmluaXR5IGtlcm5l
+bDogICAxMiAtIDEwMDBjMwoyMDEzLTA1LTE1VDIxOjAyOjA0LjA2NSswMjowMCB0cmluaXR5IGtl
+cm5lbDogICAxMyAtIDczCjIwMTMtMDUtMTVUMjE6MDI6MDQuMDY1KzAyOjAwIHRyaW5pdHkga2Vy
+bmVsOiAgIDE0IC0gMTAyMDYKMjAxMy0wNS0xNVQyMTowMjowNC4wNjUrMDI6MDAgdHJpbml0eSBr
+ZXJuZWw6ICAgMTUgLSAxMDEwMjgKMjAxMy0wNS0xNVQyMTowMjowNC4wNjUrMDI6MDAgdHJpbml0
+eSBrZXJuZWw6ICAgMTYgLSA3YgoyMDEzLTA1LTE1VDIxOjAyOjA0LjA2NSswMjowMCB0cmluaXR5
+IGtlcm5lbDogd2FpdF9zdHViX2RvbmUgOiBmYWlsZWQgdG8gd2FpdCBmb3IgU0lHVFJBUCwgcGlk
+ID0gMTU2OTIsIG4gPSAxNTY5MiwgZXJybm8gPSAwLCBzdGF0dXMgPSAweGI3ZgoKYW5kIG5vdyB0
+aGF0IHByb2Nlc3MgY2FuJ3QgYmUga2lsbGVkIC0gSSBoYWQgdG8gc3RvcCB0aGUgVU1MIGd1ZXN0
+LgoKLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJpbnQ6IDdC
+MUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4OTM2IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQpBbGllblZhdWx0IFVuaWZpZWQgU2VjdXJpdHkgTWFuYWdlbWVudCAoVVNN
+KSBwbGF0Zm9ybSBkZWxpdmVycyBjb21wbGV0ZQpzZWN1cml0eSB2aXNpYmlsaXR5IHdpdGggdGhl
+IGVzc2VudGlhbCBzZWN1cml0eSBjYXBhYmlsaXRpZXMuIEVhc2lseSBhbmQKZWZmaWNpZW50bHkg
+Y29uZmlndXJlLCBtYW5hZ2UsIGFuZCBvcGVyYXRlIGFsbCBvZiB5b3VyIHNlY3VyaXR5IGNvbnRy
+b2xzCmZyb20gYSBzaW5nbGUgY29uc29sZSBhbmQgb25lIHVuaWZpZWQgZnJhbWV3b3JrLiBEb3du
+bG9hZCBhIGZyZWUgdHJpYWwuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvYWxpZW52YXVsdF9kMmQKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxp
+bnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3Vz
+ZXItbW9kZS1saW51eC1kZXZlbAo=
 
