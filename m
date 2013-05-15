@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1UdHSO-0002C2-Fp
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1UchUD-0004j4-Jn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 May 2013 10:00:12 +0000
-Received: from mail-wg0-f41.google.com ([74.125.82.41])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1UdHSN-00007U-KB
+	Wed, 15 May 2013 19:35:41 +0000
+Received: from mail-oa0-f46.google.com ([209.85.219.46])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1UchUC-00018e-Sy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 May 2013 10:00:12 +0000
-Received: by mail-wg0-f41.google.com with SMTP id y10so418728wgg.0
+	Wed, 15 May 2013 19:35:41 +0000
+Received: by mail-oa0-f46.google.com with SMTP id h2so2706894oag.33
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 17 May 2013 03:00:05 -0700 (PDT)
+	Wed, 15 May 2013 12:35:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvyggXx0grnef3RNPbyDq0scNjDJQ_h0=aRdbe_Aa-p-gQ@mail.gmail.com>
+In-Reply-To: <5193E26E.90003@gmx.de>
 References: <518FB97A.5070907@gmx.de>
 	<CAFLxGvzn+Q=D4vjTNuggSTnQKVp0QYLPoHmUwAVBcRbSmD3HWQ@mail.gmail.com>
 	<518FBE6A.50605@gmx.de>
@@ -32,9 +32,8 @@ References: <518FB97A.5070907@gmx.de>
 	<5193DCA7.1070708@gmx.de>
 	<CAFLxGvxhDu6jVHZ0iOhjSBEfEY5JZRJ9xw0gxcduvuTR6BGOPg@mail.gmail.com>
 	<5193E26E.90003@gmx.de>
-	<CAFLxGvyggXx0grnef3RNPbyDq0scNjDJQ_h0=aRdbe_Aa-p-gQ@mail.gmail.com>
-Date: Fri, 17 May 2013 12:00:05 +0200
-Message-ID: <CAFLxGvz4Ru-TKb34_WE-EC7Z8SenR3HcrDfbpNeO1oOROpzk=A@mail.gmail.com>
+Date: Wed, 15 May 2013 21:35:35 +0200
+Message-ID: <CAFLxGvyggXx0grnef3RNPbyDq0scNjDJQ_h0=aRdbe_Aa-p-gQ@mail.gmail.com>
 From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -52,73 +51,66 @@ Subject: Re: [uml-devel] WARNING: at mm/mmap.c:2757 exit_mmap+0x161/0x170()
 To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, trinity@vger.kernel.org
 
-On Wed, May 15, 2013 at 9:35 PM, richard -rw- weinberger
-<richard.weinberger@gmail.com> wrote:
-> On Wed, May 15, 2013 at 9:30 PM, Toralf F=F6rster <toralf.foerster@gmx.de=
-> wrote:
->> On 05/15/2013 09:11 PM, richard -rw- weinberger wrote:
->>> On Wed, May 15, 2013 at 9:06 PM, Toralf F=F6rster <toralf.foerster@gmx.=
-de> wrote:
->>>> On 05/13/2013 09:12 AM, richard -rw- weinberger wrote:
->>>>> This looks like another issue.
->>>>> Are you testing process_vm_writev() with trinity?
->>>>> Looks like it managed to overwrite the stub page of a process, which
->>>>> is not good.
->>>> nope, it is the mremap syscall.
->>>>
->>>> A command like
->>>>
->>>> $>trinity -c mremap -N 10
->>>>
->>>> immediately after starting a 32 bit Gentoo linux guest with current ke=
-rnel 3.10-rc1-... +
->>>> strnlen + stub4 patch works, but later a
->>>>
->>>> $>trinity -c mremap -N 1000
->>>>
->>>> yields into
->>>>
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel: Stub registers -
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   0 - 100000
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   1 - 300000
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   2 - 0
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   3 - 0
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   4 - 0
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   5 - 0
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   6 - 0
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   7 - 7b
->>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   8 - 7b
->>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   9 - 0
->>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   10 - 33
->>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   11 - ffffffff
->>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   12 - 1000c3
->>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   13 - 73
->>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   14 - 10206
->>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   15 - 101028
->>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   16 - 7b
->>>> 2013-05-15T21:02:04.065+02:00 trinity kernel: wait_stub_done : failed =
-to wait for SIGTRAP, pid =3D 15692, n =3D 15692, errno =3D 0, status =3D 0x=
-b7f
->>>>
->>>> and now that process can't be killed - I had to stop the UML guest.
+On Wed, May 15, 2013 at 9:30 PM, Toralf F=F6rster <toralf.foerster@gmx.de> =
+wrote:
+> On 05/15/2013 09:11 PM, richard -rw- weinberger wrote:
+>> On Wed, May 15, 2013 at 9:06 PM, Toralf F=F6rster <toralf.foerster@gmx.d=
+e> wrote:
+>>> On 05/13/2013 09:12 AM, richard -rw- weinberger wrote:
+>>>> This looks like another issue.
+>>>> Are you testing process_vm_writev() with trinity?
+>>>> Looks like it managed to overwrite the stub page of a process, which
+>>>> is not good.
+>>> nope, it is the mremap syscall.
 >>>
->>> Hmm, you've remapped the stub page and therefore the process broke.
->>> I think it would make sense to kill the process in stead of writing
->>> the "wait_stub_done ..." message.
->>> Changing the stub page is as destructive than overwriting the stack.
+>>> A command like
+>>>
+>>> $>trinity -c mremap -N 10
+>>>
+>>> immediately after starting a 32 bit Gentoo linux guest with current ker=
+nel 3.10-rc1-... +
+>>> strnlen + stub4 patch works, but later a
+>>>
+>>> $>trinity -c mremap -N 1000
+>>>
+>>> yields into
+>>>
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel: Stub registers -
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   0 - 100000
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   1 - 300000
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   2 - 0
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   3 - 0
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   4 - 0
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   5 - 0
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   6 - 0
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   7 - 7b
+>>> 2013-05-15T21:02:04.061+02:00 trinity kernel:   8 - 7b
+>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   9 - 0
+>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   10 - 33
+>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   11 - ffffffff
+>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   12 - 1000c3
+>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   13 - 73
+>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   14 - 10206
+>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   15 - 101028
+>>> 2013-05-15T21:02:04.065+02:00 trinity kernel:   16 - 7b
+>>> 2013-05-15T21:02:04.065+02:00 trinity kernel: wait_stub_done : failed t=
+o wait for SIGTRAP, pid =3D 15692, n =3D 15692, errno =3D 0, status =3D 0xb=
+7f
+>>>
+>>> and now that process can't be killed - I had to stop the UML guest.
 >>
->> Unfortunately no trinity process can be killed as soon as that happen.
->> Neither pgrep, pkill, nor "ps -efla" do return any result.
->> Killing any of those processes by its pid won't work too.
+>> Hmm, you've remapped the stub page and therefore the process broke.
+>> I think it would make sense to kill the process in stead of writing
+>> the "wait_stub_done ..." message.
+>> Changing the stub page is as destructive than overwriting the stack.
 >
-> Hmm, not good.
-> I need to create me a reproducer for that.
-> I'm unsure what exactly is going on.
+> Unfortunately no trinity process can be killed as soon as that happen.
+> Neither pgrep, pkill, nor "ps -efla" do return any result.
+> Killing any of those processes by its pid won't work too.
 
-Good news, I have a reproducer for the problem and found out what the
-root cause is.
-UML is unable to terminate the task with the broken skas page.
-A fix is on the way...
+Hmm, not good.
+I need to create me a reproducer for that.
+I'm unsure what exactly is going on.
 
 --
 Thanks,
