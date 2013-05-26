@@ -1,168 +1,284 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1UbXGk-0002zP-PS
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 14:28:58 +0000
-Received: from mout.gmx.net ([212.227.15.18])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1UbXGj-0000pb-Kx for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 May 2013 14:28:58 +0000
-Received: from mailout-de.gmx.net ([10.1.76.27]) by mrigmx.server.lan
-	(mrigmx002) with ESMTP (Nemesis) id 0MYZHI-1V5piw01h4-00VNz7 for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 12 May 2013 16:28:52
-	+0200
-Message-ID: <518FA722.3020006@gmx.de>
-Date: Sun, 12 May 2013 16:28:50 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <gang.chen@asianux.com>
+Message-ID: <51A192EA.4010607@asianux.com>
+Date: Sun, 26 May 2013 12:43:22 +0800
+From: Chen Gang <gang.chen@asianux.com>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] oom-killer forced by syscall add_key
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+References: <519DCBEF.3090208@asianux.com> <201305231259.43750.arnd@arndb.de> <20130523112401.GO18614@n2100.arm.linux.org.uk> <201305231409.02359.arnd@arndb.de> <20130523125033.GP18614@n2100.arm.linux.org.uk> <CAMuHMdUzcBuDupe4Fa6XieziGPMpPKC_k8X8gUUmDvLJ+Fe=Hg@mail.gmail.com> <519ECCCF.8090909@asianux.com> <519EE9D6.9010707@asianux.com>
+In-Reply-To: <519EE9D6.9010707@asianux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Subject: [PATCH v2] arch: configuration issue, random return value when disable
+ 'CONFIG_BUG'
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>
+Cc: =?UTF-8?B?SMOldmFyZCBTa2lubmVtb2Vu?= <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Mike Frysinger <vapier@gentoo.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "paulus@samba.org" <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Paul Mundt <lethal@linux-sh.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, "Eric W. Biederman" <ebiederm@xmission.com>, Serge Hallyn <serge.hallyn@canonical.com>, Paul McKenney <paulmck@linux.vnet.ibm.com>, Frederic Weisbecker <fweisbec@gmail.com>, David Miller <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>, Akinobu Mita <akinobu.mita@gmail.com>, Catalin Marinas <Catalin.Marinas@arm.com>, Michel Lespinasse <walken@google.com>, Will Deacon <will.deacon@arm.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, linux-hexagon@vger.kernel.org, Parisc List <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, Linux-Arch <linux-arch@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-V2l0aAokPiB0cmluaXR5IC0tY2hpbGRyZW4gMiAtYyBhZGRfa2V5IC0tcXVpZXQKaXQgdGFrZXMg
-b25seSAyIG1pbnV0ZXMgdG8gZm9yY2UgYW4gb29tLWtpbGxlciBhdCBhIHVzZXIgbW9kZSBsaW51
-eCBndWVzdC4KCkknbSBqdXN0IHdvbmRlcmluZyBpZiB0aGlzIGlzIGEgd2FudGVkIGJlaGF2aW91
-ciBvZiB0aGUga2VybmVsLgoKMjAxMy0wNS0xMlQxNjoyNjoyMi42NjIrMDI6MDAgdHJpbml0eSBr
-ZXJuZWw6IHRyaW5pdHktY2hpbGQwIGludm9rZWQgb29tLWtpbGxlcjogZ2ZwX21hc2s9MHgyMDBk
-YSwgb3JkZXI9MCwgb29tX3Njb3JlX2Fkaj01MDAKMjAxMy0wNS0xMlQxNjoyNjoyMi42NjIrMDI6
-MDAgdHJpbml0eSBrZXJuZWw6IENQVTogMCBQSUQ6IDEwMTggQ29tbTogdHJpbml0eS1jaGlsZDAg
-Tm90IHRhaW50ZWQgMy4xMC4wLXJjMS0wMDAwMi1nY2FlYzE1MSAjNQoyMDEzLTA1LTEyVDE2OjI2
-OjIyLjY2MiswMjowMCB0cmluaXR5IGtlcm5lbDogM2ViMDdiZDAgM2ViMDdjMmMgMDgzNWM3YmQg
-M2Y1YTNiM2MgM2Y1YTM3YjAgMDAwMjAwZGEgMDAwMDAwMDAgMDAwMDAxZjQgCjIwMTMtMDUtMTJU
-MTY6MjY6MjIuNjYyKzAyOjAwIHRyaW5pdHkga2VybmVsOiAwODQ0MzkyMCAzZWIwN2MwMCAwODA3
-MWRmZSAwMDAwMDAwMCAzZWIwN2MwYyAwODM2MTRkYyAwMDAwMDAwMSAzZWIwN2MyYyAKMjAxMy0w
-NS0xMlQxNjoyNjoyMi42NjIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDA4Mjc4ZDQ1IDA4NDQzOTIw
-IDAwMDAwMDAxIDNlYjAwMDAwIDNmNWEzNjAwIDNmNWEzNjAwIDNmNWEzNjAwIDNlYjA3YzcwIDNl
-YjA3YmE0OiAgWzwwODA2MGQyZj5dIHNob3dfc3RhY2srMHhjZi8weDEwMAoyMDEzLTA1LTEyVDE2
-OjI2OjIyLjY2MiswMjowMCB0cmluaXR5IGtlcm5lbDogM2ViMDdiYzg6ICBbPDA4MzVlZDk5Pl0g
-ZHVtcF9zdGFjaysweDI2LzB4MjgKMjAxMy0wNS0xMlQxNjoyNjoyMi42NjIrMDI6MDAgdHJpbml0
-eSBrZXJuZWw6IDNlYjA3YmQ4OiAgWzwwODM1YzdiZD5dIGR1bXBfaGVhZGVyLmlzcmEuMTIrMHg5
-My8weDFjOAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY2MiswMjowMCB0cmluaXR5IGtlcm5lbDogM2Vi
-MDdjMzA6ICBbPDA4MGNlNjIwPl0gb29tX2tpbGxfcHJvY2VzcysweDYwLzB4MzEwCjIwMTMtMDUt
-MTJUMTY6MjY6MjIuNjYyKzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZWIwN2M3NDogIFs8MDgwY2Vk
-Y2Q+XSBvdXRfb2ZfbWVtb3J5KzB4MmJkLzB4MzIwCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjYyKzAy
-OjAwIHRyaW5pdHkga2VybmVsOiAzZWIwN2NjMDogIFs8MDgwZDIyNTg+XSBfX2FsbG9jX3BhZ2Vz
-X25vZGVtYXNrKzB4NjI4LzB4NzUwCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjc4KzAyOjAwIHRyaW5p
-dHkga2VybmVsOiAzZWIwN2Q0YzogIFs8MDgwZTY3NTA+XSBoYW5kbGVfcHRlX2ZhdWx0KzB4MTMw
-LzB4NzgwCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjc4KzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZWIw
-N2RhNDogIFs8MDgwZTZlNmM+XSBoYW5kbGVfbW1fZmF1bHQrMHhjYy8weGUwCjIwMTMtMDUtMTJU
-MTY6MjY6MjIuNjc4KzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZWIwN2RkODogIFs8MDgwNjFkODc+
-XSBoYW5kbGVfcGFnZV9mYXVsdCsweDEyNy8weDI4MAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY3OCsw
-MjowMCB0cmluaXR5IGtlcm5lbDogM2ViMDdlMWM6ICBbPDA4MDYxZmI2Pl0gc2VndisweGE2LzB4
-MmIwCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjc4KzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZWIwN2Vj
-YzogIFs8MDgwNjIyMzM+XSBzZWd2X2hhbmRsZXIrMHg3My8weDgwCjIwMTMtMDUtMTJUMTY6MjY6
-MjIuNjc4KzAyOjAwIHRyaW5pdHkga2VybmVsOiAzZWIwN2VmNDogIFs8MDgwNzUwM2E+XSB1c2Vy
-c3BhY2UrMHgzMGEvMHg1OTAKMjAxMy0wNS0xMlQxNjoyNjoyMi42NzgrMDI6MDAgdHJpbml0eSBr
-ZXJuZWw6IDNlYjA3ZmVjOiAgWzwwODA1ZjgyYz5dIGZvcmtfaGFuZGxlcisweDZjLzB4NzAKMjAx
-My0wNS0xMlQxNjoyNjoyMi42NzgrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDNlYjA3ZmZjOiAgWzww
-MDAwMDAwMD5dIDB4MAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY3OCswMjowMCB0cmluaXR5IGtlcm5l
-bDoKMjAxMy0wNS0xMlQxNjoyNjoyMi42NzgrMDI6MDAgdHJpbml0eSBrZXJuZWw6IE1lbS1JbmZv
-OgoyMDEzLTA1LTEyVDE2OjI2OjIyLjY3OSswMjowMCB0cmluaXR5IGtlcm5lbDogTm9ybWFsIHBl
-ci1jcHU6CjIwMTMtMDUtMTJUMTY6MjY6MjIuNjc5KzAyOjAwIHRyaW5pdHkga2VybmVsOiBDUFUg
-ICAgMDogaGk6ICAxODYsIGJ0Y2g6ICAzMSB1c2Q6ICAzNwoyMDEzLTA1LTEyVDE2OjI2OjIyLjY3
-OSswMjowMCB0cmluaXR5IGtlcm5lbDogYWN0aXZlX2Fub246MTA5OTc2IGluYWN0aXZlX2Fub246
-MTA5OTgyIGlzb2xhdGVkX2Fub246MAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY3OSswMjowMCB0cmlu
-aXR5IGtlcm5lbDogYWN0aXZlX2ZpbGU6MjggaW5hY3RpdmVfZmlsZTozMzAgaXNvbGF0ZWRfZmls
-ZTowCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjc5KzAyOjAwIHRyaW5pdHkga2VybmVsOiB1bmV2aWN0
-YWJsZTowIGRpcnR5OjEgd3JpdGViYWNrOjAgdW5zdGFibGU6MAoyMDEzLTA1LTEyVDE2OjI2OjIy
-LjY3OSswMjowMCB0cmluaXR5IGtlcm5lbDogZnJlZTo5Mjggc2xhYl9yZWNsYWltYWJsZTo4MDMg
-c2xhYl91bnJlY2xhaW1hYmxlOjk1OQoyMDEzLTA1LTEyVDE2OjI2OjIyLjY3OSswMjowMCB0cmlu
-aXR5IGtlcm5lbDogbWFwcGVkOjQyOSBzaG1lbTozNzMgcGFnZXRhYmxlczoxNjgzIGJvdW5jZTow
-CjIwMTMtMDUtMTJUMTY6MjY6MjIuNjc5KzAyOjAwIHRyaW5pdHkga2VybmVsOiBmcmVlX2NtYTow
-CjIwMTMtMDUtMTJUMTY6MjY6MjIuNjc5KzAyOjAwIHRyaW5pdHkga2VybmVsOiBOb3JtYWwgZnJl
-ZTozNzEya0IgbWluOjM3OTZrQiBsb3c6NDc0NGtCIGhpZ2g6NTY5MmtCIGFjdGl2ZV9hbm9uOjQz
-OTkwNGtCIGluYWN0aXZlX2Fub246NDM5OTI4a0IgYWN0aXZlX2ZpbGU6MTEya0IgaW5hY3RpdmVf
-ZmlsZToxMzIwa0IgdW5ldmljdGFibGU6MGtCIGlzb2xhdGVkKGFub24pOjBrQiBpc29sYXRlZChm
-aWxlKTowa0IgcHJlc2VudDo5MjgwNTZrQiBtYW5hZ2VkOjkwMTI0OGtCIG1sb2NrZWQ6MGtCIGRp
-cnR5OjRrQiB3cml0ZWJhY2s6MGtCIG1hcHBlZDoxNzE2a0Igc2htZW06MTQ5MmtCIHNsYWJfcmVj
-bGFpbWFibGU6MzIxMmtCIHNsYWJfdW5yZWNsYWltYWJsZTozODM2a0Iga2VybmVsX3N0YWNrOjE1
-MzZrQiBwYWdldGFibGVzOjY3MzJrQiB1bnN0YWJsZTowa0IgYm91bmNlOjBrQiBmcmVlX2NtYTow
-a0Igd3JpdGViYWNrX3RtcDowa0IgcGFnZXNfc2Nhbm5lZDo0MjU4IGFsbF91bnJlY2xhaW1hYmxl
-PyB5ZXMKMjAxMy0wNS0xMlQxNjoyNjoyMi42NzkrMDI6MDAgdHJpbml0eSBrZXJuZWw6IGxvd21l
-bV9yZXNlcnZlW106IDAgMAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4MCswMjowMCB0cmluaXR5IGtl
-cm5lbDogTm9ybWFsOiAwKjRrQiAwKjhrQiAyKjE2a0IgKFIpIDMqMzJrQiAoUikgMCo2NGtCIDAq
-MTI4a0IgMCoyNTZrQiAxKjUxMmtCIChSKSAxKjEwMjRrQiAoUikgMSoyMDQ4a0IgKFIpIDAqNDA5
-NmtCID0gMzcxMmtCCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjgwKzAyOjAwIHRyaW5pdHkga2VybmVs
-OiA4OTkgdG90YWwgcGFnZWNhY2hlIHBhZ2VzCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjgwKzAyOjAw
-IHRyaW5pdHkga2VybmVsOiAxNjggcGFnZXMgaW4gc3dhcCBjYWNoZQoyMDEzLTA1LTEyVDE2OjI2
-OjIyLjY4MCswMjowMCB0cmluaXR5IGtlcm5lbDogU3dhcCBjYWNoZSBzdGF0czogYWRkIDY1Nzg0
-LCBkZWxldGUgNjU2MTYsIGZpbmQgNDQ4LzQ3OAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4MCswMjow
-MCB0cmluaXR5IGtlcm5lbDogRnJlZSBzd2FwICA9IDBrQgoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4
-MCswMjowMCB0cmluaXR5IGtlcm5lbDogVG90YWwgc3dhcCA9IDI2MjE0MGtCCjIwMTMtMDUtMTJU
-MTY6MjY6MjIuNjgwKzAyOjAwIHRyaW5pdHkga2VybmVsOiAyMzIwMTQgcGFnZXMgUkFNCjIwMTMt
-MDUtMTJUMTY6MjY6MjIuNjgwKzAyOjAwIHRyaW5pdHkga2VybmVsOiA2NzAyIHBhZ2VzIHJlc2Vy
-dmVkCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjgwKzAyOjAwIHRyaW5pdHkga2VybmVsOiAyNjMxMDkg
-cGFnZXMgc2hhcmVkCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjgwKzAyOjAwIHRyaW5pdHkga2VybmVs
-OiAyMjM0MTggcGFnZXMgbm9uLXNoYXJlZAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4MSswMjowMCB0
-cmluaXR5IGtlcm5lbDogWyBwaWQgXSAgIHVpZCAgdGdpZCB0b3RhbF92bSAgICAgIHJzcyBucl9w
-dGVzIHN3YXBlbnRzIG9vbV9zY29yZV9hZGogbmFtZQoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4MSsw
-MjowMCB0cmluaXR5IGtlcm5lbDogWyAgNDQ1XSAgICAgMCAgIDQ0NSAgICAgMjI3MyAgICAgICAg
-MCAgICAgICA1ICAgICAgMTA3ICAgICAgICAgLTEwMDAgdWRldmQKMjAxMy0wNS0xMlQxNjoyNjoy
-Mi42ODErMDI6MDAgdHJpbml0eSBrZXJuZWw6IFsgIDg3MF0gICAgIDAgICA4NzAgICAgIDEwNzQg
-ICAgICAgIDAgICAgICAgMyAgICAgICAzOSAgICAgICAgICAgICAwIHN5c2xvZy1uZwoyMDEzLTA1
-LTEyVDE2OjI2OjIyLjY4MSswMjowMCB0cmluaXR5IGtlcm5lbDogWyAgODcxXSAgICAgMCAgIDg3
-MSAgICAgMTgyNSAgICAgICAgMCAgICAgICA0ICAgICAgMTM3ICAgICAgICAgICAgIDAgc3lzbG9n
-LW5nCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjgxKzAyOjAwIHRyaW5pdHkga2VybmVsOiBbICA4ODVd
-ICAgICAwICAgODg1ICAgICAxMzMyICAgICAgICAwICAgICAgIDQgICAgICA4MDUgICAgICAgICAg
-ICAgMCBoYXZlZ2VkCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjgxKzAyOjAwIHRyaW5pdHkga2VybmVs
-OiBbICA4OTldICAgICAwICAgODk5ICAgICAgNTI5ICAgICAgICA1ICAgICAgIDMgICAgICAgMTAg
-ICAgICAgICAgICAgMCBybmdkCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjgxKzAyOjAwIHRyaW5pdHkg
-a2VybmVsOiBbICA5NDZdICAgICAwICAgOTQ2ICAgICAgNTk0ICAgICAgICAwICAgICAgIDMgICAg
-ICAgMjggICAgICAgICAgICAgMCBkaGNwY2QKMjAxMy0wNS0xMlQxNjoyNjoyMi42ODErMDI6MDAg
-dHJpbml0eSBrZXJuZWw6IFsgIDk2Ml0gICAgIDAgICA5NjIgICAgIDEyODcgICAgICAgIDAgICAg
-ICAgNCAgICAgICA4NCAgICAgICAgIC0xMDAwIHNzaGQKMjAxMy0wNS0xMlQxNjoyNjoyMi42ODEr
-MDI6MDAgdHJpbml0eSBrZXJuZWw6IFsgIDk5MF0gICAgIDAgICA5OTAgICAgIDExMzEgICAgICAg
-IDkgICAgICAgNCAgICAgICAyMiAgICAgICAgICAgICAwIGNyb24KMjAxMy0wNS0xMlQxNjoyNjoy
-Mi42ODErMDI6MDAgdHJpbml0eSBrZXJuZWw6IFsgMTAwN10gICAgIDAgIDEwMDcgICAgICA1OTcg
-ICAgICAgIDAgICAgICAgMyAgICAgICAyNyAgICAgICAgICAgICAwIGFnZXR0eQoyMDEzLTA1LTEy
-VDE2OjI2OjIyLjY4MiswMjowMCB0cmluaXR5IGtlcm5lbDogWyAxMDA5XSAgICAgMCAgMTAwOSAg
-ICAgMjA4NiAgICAgICAgMCAgICAgICA0ICAgICAgMTQ3ICAgICAgICAgICAgIDAgc3NoZAoyMDEz
-LTA1LTEyVDE2OjI2OjIyLjY4MiswMjowMCB0cmluaXR5IGtlcm5lbDogWyAxMDExXSAgICAgMCAg
-MTAxMSAgICAgIDU0MyAgICAgICAgMCAgICAgICAzICAgICAgIDE3ICAgICAgICAgICAgIDAgdGFp
-bAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4MiswMjowMCB0cmluaXR5IGtlcm5lbDogWyAxMDEyXSAg
-ICAgMCAgMTAxMiAgICAgMjA4NiAgICAgICAgMCAgICAgICA0ICAgICAgMTQ1ICAgICAgICAgICAg
-IDAgc3NoZAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4MiswMjowMCB0cmluaXR5IGtlcm5lbDogWyAx
-MDE0XSAgMTAwMCAgMTAxNCAgICAgMjA4NiAgICAgICAyNyAgICAgICA0ICAgICAgMTI2ICAgICAg
-ICAgICAgIDAgc3NoZAoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4MiswMjowMCB0cmluaXR5IGtlcm5l
-bDogWyAxMDE1XSAgMTAwMCAgMTAxNSAgICAgMzYyOCAgICAgICAgMiAgICAgICA1ICAgICAxMDQ5
-ICAgICAgICAgICAgIDAgdHJpbml0eQoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4MiswMjowMCB0cmlu
-aXR5IGtlcm5lbDogWyAxMDE2XSAgMTAwMCAgMTAxNiAgICAgMzYyOCAgICAgICAxMSAgICAgICA0
-ICAgICAxMDQxICAgICAgICAgICAgIDAgdHJpbml0eS13YXRjaGRvCjIwMTMtMDUtMTJUMTY6MjY6
-MjIuNjgyKzAyOjAwIHRyaW5pdHkga2VybmVsOiBbIDEwMTddICAxMDAwICAxMDE3ICAgICAzNzQ5
-ICAgICAgICAyICAgICAgIDQgICAgIDExMzggICAgICAgICAgICAgMCB0cmluaXR5LW1haW4KMjAx
-My0wNS0xMlQxNjoyNjoyMi42ODIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IFsgMTAxOF0gIDEwMDAg
-IDEwMTggICAyOTAzNjIgICAxMTE2OTQgICAgIDI4NCAgICAzMzI3NiAgICAgICAgICAgNTAwIHRy
-aW5pdHktY2hpbGQwCjIwMTMtMDUtMTJUMTY6MjY6MjIuNjgyKzAyOjAwIHRyaW5pdHkga2VybmVs
-OiBbIDEwMTldICAxMDAwICAxMDE5ICAgMjgxMTQ2ICAgMTA4NzQ5ICAgICAyNzUgICAgMzE0NDAg
-ICAgICAgICAgIDUwMCB0cmluaXR5LWNoaWxkMQoyMDEzLTA1LTEyVDE2OjI2OjIyLjY4MiswMjow
-MCB0cmluaXR5IGtlcm5lbDogT3V0IG9mIG1lbW9yeTogS2lsbCBwcm9jZXNzIDEwMTggKHRyaW5p
-dHktY2hpbGQwKSBzY29yZSA5OTcgb3Igc2FjcmlmaWNlIGNoaWxkCjIwMTMtMDUtMTJUMTY6MjY6
-MjIuNjgzKzAyOjAwIHRyaW5pdHkga2VybmVsOiBLaWxsZWQgcHJvY2VzcyAxMDE4ICh0cmluaXR5
-LWNoaWxkMCkgdG90YWwtdm06MTE2MTQ0OGtCLCBhbm9uLXJzczo0NDUwNjBrQiwgZmlsZS1yc3M6
-MTcxNmtCCgoKLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJp
-bnQ6IDdCMUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4OTM2IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLQpMZWFybiBHcmFwaCBEYXRhYmFzZXMgLSBEb3dubG9hZCBGUkVF
-IE8nUmVpbGx5IEJvb2sKIkdyYXBoIERhdGFiYXNlcyIgaXMgdGhlIGRlZmluaXRpdmUgbmV3IGd1
-aWRlIHRvIGdyYXBoIGRhdGFiYXNlcyBhbmQgCnRoZWlyIGFwcGxpY2F0aW9ucy4gVGhpcyAyMDAt
-cGFnZSBib29rIGlzIHdyaXR0ZW4gYnkgdGhyZWUgYWNjbGFpbWVkIApsZWFkZXJzIGluIHRoZSBm
-aWVsZC4gVGhlIGVhcmx5IGFjY2VzcyB2ZXJzaW9uIGlzIGF2YWlsYWJsZSBub3cuIApEb3dubG9h
-ZCB5b3VyIGZyZWUgYm9vayB0b2RheSEgaHR0cDovL3Auc2YubmV0L3NmdS9uZW90ZWNoX2QyZF9t
-YXkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1t
-b2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+
+If user disable 'CONFIG_BUG' in menuconfig, many areas not only will
+report compiling warnings, but also may return a random value from the
+function when BUG().
+
+In fact, most of architectures need always let 'CONFIG_BUG' enabled, so
+'#ifdef CONFIG_BUG' is already not 'generic' enough in "include/asm-
+generic/".
+
+Also kernel has already provided the 'generic' implementation in
+"include/asm-generic" when 'CONFIG_BUG' enabled. Even if we disable
+'CONFIG_BUG', we also shall have to implement the BUG() in "include/asm-
+generic", just like when 'CONFIG_BUG' enabled (at least, it is not the
+minimal size implementation).
+
+So need remove 'CONFIG_BUG', and let it always enabled everywhere, then
+fix this issue.
+
+The architectures which need their own architecture specific features
+(e.g. minimal size implementation), can customize their own BUG() and
+__WARN_TAINT() to give a better fix (e.g. use one inline asm code, then
+followed by 'unreachable' function, or another more better fix ways).
+
+
+Signed-off-by: Chen Gang <gang.chen@asianux.com>
+---
+ arch/arm/Kconfig          |    1 -
+ arch/avr32/Kconfig        |    1 -
+ arch/blackfin/Kconfig     |    1 -
+ arch/h8300/Kconfig        |    1 -
+ arch/hexagon/Kconfig      |    1 -
+ arch/parisc/Kconfig       |    2 --
+ arch/powerpc/Kconfig      |    1 -
+ arch/s390/Kconfig         |    2 +-
+ arch/sh/Kconfig           |    2 +-
+ arch/um/Kconfig.common    |    1 -
+ arch/x86/Kconfig          |    1 -
+ include/asm-generic/bug.h |   29 -----------------------------
+ init/Kconfig              |   10 ----------
+ lib/Kconfig.debug         |    2 +-
+ 14 files changed, 3 insertions(+), 52 deletions(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index a7fc5ea..ea4a146 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -265,7 +265,6 @@ config PHYS_OFFSET
+ 
+ config GENERIC_BUG
+ 	def_bool y
+-	depends on BUG
+ 
+ source "init/Kconfig"
+ 
+diff --git a/arch/avr32/Kconfig b/arch/avr32/Kconfig
+index bdc3558..7c9005a 100644
+--- a/arch/avr32/Kconfig
++++ b/arch/avr32/Kconfig
+@@ -55,7 +55,6 @@ config GENERIC_CALIBRATE_DELAY
+ 
+ config GENERIC_BUG
+ 	def_bool y
+-	depends on BUG
+ 
+ source "init/Kconfig"
+ 
+diff --git a/arch/blackfin/Kconfig b/arch/blackfin/Kconfig
+index a117652..637dc42 100644
+--- a/arch/blackfin/Kconfig
++++ b/arch/blackfin/Kconfig
+@@ -47,7 +47,6 @@ config GENERIC_CSUM
+ 
+ config GENERIC_BUG
+ 	def_bool y
+-	depends on BUG
+ 
+ config ZONE_DMA
+ 	def_bool y
+diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
+index 303e4f9..88848da 100644
+--- a/arch/h8300/Kconfig
++++ b/arch/h8300/Kconfig
+@@ -56,7 +56,6 @@ config GENERIC_CALIBRATE_DELAY
+ 
+ config GENERIC_BUG
+         bool
+-        depends on BUG
+ 
+ config TIME_LOW_RES
+ 	bool
+diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+index 33a9792..f50cc8f 100644
+--- a/arch/hexagon/Kconfig
++++ b/arch/hexagon/Kconfig
+@@ -84,7 +84,6 @@ config STACKTRACE_SUPPORT
+ 
+ config GENERIC_BUG
+ 	def_bool y
+-	depends on BUG
+ 
+ menu "Machine selection"
+ 
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 6507dab..5de1f8c 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -10,7 +10,6 @@ config PARISC
+ 	select RTC_CLASS
+ 	select RTC_DRV_GENERIC
+ 	select INIT_ALL_POSSIBLE
+-	select BUG
+ 	select HAVE_PERF_EVENTS
+ 	select GENERIC_ATOMIC64 if !64BIT
+ 	select ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
+@@ -62,7 +61,6 @@ config ARCH_HAS_ILOG2_U64
+ config GENERIC_BUG
+ 	bool
+ 	default y
+-	depends on BUG
+ 
+ config GENERIC_HWEIGHT
+ 	bool
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index c33e3ad..34f4ca9 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -187,7 +187,6 @@ config AUDIT_ARCH
+ config GENERIC_BUG
+ 	bool
+ 	default y
+-	depends on BUG
+ 
+ config SYS_SUPPORTS_APM_EMULATION
+ 	default y if PMAC_APM_EMU
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index da183c5..5d7b3db 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -29,7 +29,7 @@ config GENERIC_HWEIGHT
+ 	def_bool y
+ 
+ config GENERIC_BUG
+-	def_bool y if BUG
++	def_bool y
+ 
+ config GENERIC_BUG_RELATIVE_POINTERS
+ 	def_bool y
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 8c868cf..d555e7f 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -84,7 +84,7 @@ config RWSEM_XCHGADD_ALGORITHM
+ 
+ config GENERIC_BUG
+ 	def_bool y
+-	depends on BUG && SUPERH32
++	depends on SUPERH32
+ 
+ config GENERIC_CSUM
+ 	def_bool y
+diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+index bceee66..7aae42a 100644
+--- a/arch/um/Kconfig.common
++++ b/arch/um/Kconfig.common
+@@ -53,7 +53,6 @@ config GENERIC_CALIBRATE_DELAY
+ config GENERIC_BUG
+ 	bool
+ 	default y
+-	depends on BUG
+ 
+ config HZ
+ 	int
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 723e42e..a36e1b4 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -166,7 +166,6 @@ config GENERIC_ISA_DMA
+ 
+ config GENERIC_BUG
+ 	def_bool y
+-	depends on BUG
+ 	select GENERIC_BUG_RELATIVE_POINTERS if X86_64
+ 
+ config GENERIC_BUG_RELATIVE_POINTERS
+diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
+index 7d10f96..5d50903 100644
+--- a/include/asm-generic/bug.h
++++ b/include/asm-generic/bug.h
+@@ -12,8 +12,6 @@
+ #ifndef __ASSEMBLY__
+ #include <linux/kernel.h>
+ 
+-#ifdef CONFIG_BUG
+-
+ #ifdef CONFIG_GENERIC_BUG
+ struct bug_entry {
+ #ifndef CONFIG_GENERIC_BUG_RELATIVE_POINTERS
+@@ -106,33 +104,6 @@ extern void warn_slowpath_null(const char *file, const int line);
+ 	unlikely(__ret_warn_on);					\
+ })
+ 
+-#else /* !CONFIG_BUG */
+-#ifndef HAVE_ARCH_BUG
+-#define BUG() do {} while(0)
+-#endif
+-
+-#ifndef HAVE_ARCH_BUG_ON
+-#define BUG_ON(condition) do { if (condition) ; } while(0)
+-#endif
+-
+-#ifndef HAVE_ARCH_WARN_ON
+-#define WARN_ON(condition) ({						\
+-	int __ret_warn_on = !!(condition);				\
+-	unlikely(__ret_warn_on);					\
+-})
+-#endif
+-
+-#ifndef WARN
+-#define WARN(condition, format...) ({					\
+-	int __ret_warn_on = !!(condition);				\
+-	unlikely(__ret_warn_on);					\
+-})
+-#endif
+-
+-#define WARN_TAINT(condition, taint, format...) WARN_ON(condition)
+-
+-#endif
+-
+ #define WARN_ON_ONCE(condition)	({				\
+ 	static bool __section(.data.unlikely) __warned;		\
+ 	int __ret_warn_once = !!(condition);			\
+diff --git a/init/Kconfig b/init/Kconfig
+index 7fb26a6..bc1dd49 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1360,16 +1360,6 @@ config PRINTK
+ 	  very difficult to diagnose system problems, saying N here is
+ 	  strongly discouraged.
+ 
+-config BUG
+-	bool "BUG() support" if EXPERT
+-	default y
+-	help
+-          Disabling this option eliminates support for BUG and WARN, reducing
+-          the size of your kernel image and potentially quietly ignoring
+-          numerous fatal conditions. You should only consider disabling this
+-          option for embedded systems with no facilities for reporting errors.
+-          Just say Y.
+-
+ config ELF_CORE
+ 	depends on COREDUMP
+ 	default y
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 566cf2b..54b3251 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -700,7 +700,7 @@ config HAVE_DEBUG_BUGVERBOSE
+ 
+ config DEBUG_BUGVERBOSE
+ 	bool "Verbose BUG() reporting (adds 70K)" if DEBUG_KERNEL && EXPERT
+-	depends on BUG && (GENERIC_BUG || HAVE_DEBUG_BUGVERBOSE)
++	depends on GENERIC_BUG || HAVE_DEBUG_BUGVERBOSE
+ 	default y
+ 	help
+ 	  Say Y here to make BUG() panics output the file name and line number
+-- 
+1.7.7.6
+
 
