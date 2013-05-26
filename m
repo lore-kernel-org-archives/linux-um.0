@@ -1,25 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rob@landley.net>) id 1Uh5NG-0005Oe-86
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1Ugcq4-00012O-SW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 May 2013 21:54:38 +0000
-Received: from mail-oa0-f54.google.com ([209.85.219.54])
+	Sun, 26 May 2013 15:26:28 +0000
+Received: from mail-wg0-f52.google.com ([74.125.82.52])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Uh5ND-0001du-9d
+	(Exim 4.76) id 1Ugcq3-0004qk-QQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 May 2013 21:54:38 +0000
-Received: by mail-oa0-f54.google.com with SMTP id o17so9260670oag.13
+	Sun, 26 May 2013 15:26:28 +0000
+Received: by mail-wg0-f52.google.com with SMTP id z11so3720531wgg.31
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 27 May 2013 14:54:29 -0700 (PDT)
-Date: Mon, 27 May 2013 16:27:45 -0500
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <CAFLxGvy_SvjdTJ97DtCFubUAPgJ4tSgZi8LFYNHEwN94cUZLFQ@mail.gmail.com>
-	(from richard.weinberger@gmail.com on Sun May 26 03:08:17 2013)
-Message-Id: <1369690065.2776.33@driftwood>
+	Sun, 26 May 2013 08:26:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
+In-Reply-To: <CAN-KreN2SQV6Y=6kV7U5DmhxDctQCn-ocJHL=Jst7i7uhE3eOg@mail.gmail.com>
+References: <CAN-KreM81NDbqZ+XhxD_BjsM=VJz=+nJQ0B1fFTNk69cTSV_8g@mail.gmail.com>
+	<CAFLxGvy_SvjdTJ97DtCFubUAPgJ4tSgZi8LFYNHEwN94cUZLFQ@mail.gmail.com>
+	<CAN-KreN2SQV6Y=6kV7U5DmhxDctQCn-ocJHL=Jst7i7uhE3eOg@mail.gmail.com>
+Date: Sun, 26 May 2013 17:26:21 +0200
+Message-ID: <CAFLxGvzucTj7i_74VWstfSizWGR30auax6buSO47aSFbmFmtnA@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,27 +34,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] How is Preemption implemented in User Mode Linux?
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: Hopsing K <hopsingk@gmail.com>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On 05/26/2013 03:08:17 AM, richard -rw- weinberger wrote:
-> On Sun, May 26, 2013 at 1:01 AM, Hopsing K <hopsingk@gmail.com> wrote:
-> > Some question at the side: can you call longjmp from within a signal
-> > handler? My first assumption was that UML uses longjmp from within
-> > the SIGALRM handler to implement preemption, butseems not to .
+On Sun, May 26, 2013 at 4:48 PM, Hopsing K <hopsingk@gmail.com> wrote:
+> Hi, Ok, thanks. I got a little better picture. Is the following true:
+> - The ptrace-ing parent waits in waitpid() called from within the
+> userspace() loops.
 
-Yes, "man longjmp" shows you sigsetjmp() and siglongjmp(), which save  
-and restore the signal mask. This is an important detail because the  
-signal you're handling is disabled in the signal handler (to avoid an  
-infinite loop). You can just setjmp() and longjmp() and fiddle with the  
-signal mask yourself, but signals can nest (a different signal can  
-interrupt a signal handler) so re-enabling just one may not be enough.
+Correct.
 
-On return, the kernel re-enables the signal you were handling, even  
-from nested signal handlers. But if you longjmp() you don't call the  
-kernel return code...
+> - The SIGVTALRM comes in and the signal handler is executed, it'll end up
+>   in scheduler_tick() and set need_resched() true.
 
-Rob
+Yeah. We use SIGVTALRM timer tick.
+
+> - Because of the signal the waitpid() system call is interrupted and the
+>   ptrace-ing parent returnes from waitpid().
+
+Correct.
+
+> - At the same time the ptraced userspace slave is stopped (is this the
+>   case?) therefore the condition WIFSTOPPED(status) is true and
+>   therefore you end up calling interrupt_end() ?
+
+Correct.
+
+--
+Thanks,
+//richard
+
 ------------------------------------------------------------------------------
 Try New Relic Now & We'll Send You this Cool Shirt
 New Relic is the only SaaS-based application performance monitoring service 
