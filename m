@@ -1,125 +1,67 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Jiang Liu <liuj97@gmail.com>
-Date: Wed,  8 May 2013 23:51:04 +0800
-Message-Id: <1368028298-7401-8-git-send-email-jiang.liu@huawei.com>
-In-Reply-To: <1368028298-7401-1-git-send-email-jiang.liu@huawei.com>
-References: <1368028298-7401-1-git-send-email-jiang.liu@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v5, part4 07/41] UML: normalize global variables exported by vmlinux.lds
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rob@landley.net>) id 1Uh5NG-0005Oe-86
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 27 May 2013 21:54:38 +0000
+Received: from mail-oa0-f54.google.com ([209.85.219.54])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Uh5ND-0001du-9d
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 27 May 2013 21:54:38 +0000
+Received: by mail-oa0-f54.google.com with SMTP id o17so9260670oag.13
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 27 May 2013 14:54:29 -0700 (PDT)
+Date: Mon, 27 May 2013 16:27:45 -0500
+From: Rob Landley <rob@landley.net>
+In-Reply-To: <CAFLxGvy_SvjdTJ97DtCFubUAPgJ4tSgZi8LFYNHEwN94cUZLFQ@mail.gmail.com>
+	(from richard.weinberger@gmail.com on Sun May 26 03:08:17 2013)
+Message-Id: <1369690065.2776.33@driftwood>
+MIME-Version: 1.0
+Content-Disposition: inline
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] How is Preemption implemented in User Mode Linux?
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Normalize global variables exported by vmlinux.lds to conform usage
-guidelines from include/asm-generic/sections.h.
+On 05/26/2013 03:08:17 AM, richard -rw- weinberger wrote:
+> On Sun, May 26, 2013 at 1:01 AM, Hopsing K <hopsingk@gmail.com> wrote:
+> > Some question at the side: can you call longjmp from within a signal
+> > handler? My first assumption was that UML uses longjmp from within
+> > the SIGALRM handler to implement preemption, butseems not to .
 
-1) Use _text to mark the start of the kernel image including the head
-text, and _stext to mark the start of the .text section.
-2) Export mandatory global variables __bss_stop.
-3) Adjust __init_begin and __init_end to avoid acrossing .text and
-   .data sections.
+Yes, "man longjmp" shows you sigsetjmp() and siglongjmp(), which save  
+and restore the signal mask. This is an important detail because the  
+signal you're handling is disabled in the signal handler (to avoid an  
+infinite loop). You can just setjmp() and longjmp() and fiddle with the  
+signal mask yourself, but signals can nest (a different signal can  
+interrupt a signal handler) so re-enabling just one may not be enough.
 
-Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
----
- arch/um/include/asm/common.lds.S |    1 -
- arch/um/kernel/dyn.lds.S         |    6 ++++--
- arch/um/kernel/uml.lds.S         |    7 +++++--
- 3 files changed, 9 insertions(+), 5 deletions(-)
+On return, the kernel re-enables the signal you were handling, even  
+from nested signal handlers. But if you longjmp() you don't call the  
+kernel return code...
 
-diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
-index 4938de5..1dd5bd8 100644
---- a/arch/um/include/asm/common.lds.S
-+++ b/arch/um/include/asm/common.lds.S
-@@ -57,7 +57,6 @@
- 	*(.uml.initcall.init)
- 	__uml_initcall_end = .;
-   }
--  __init_end = .;
- 
-   SECURITY_INIT
- 
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index fb8fd6f..adde088 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -14,8 +14,6 @@ SECTIONS
-   __binary_start = .;
-   . = ALIGN(4096);		/* Init code and data */
-   _text = .;
--  _stext = .;
--  __init_begin = .;
-   INIT_TEXT_SECTION(PAGE_SIZE)
- 
-   . = ALIGN(PAGE_SIZE);
-@@ -67,6 +65,7 @@ SECTIONS
-   } =0x90909090
-   .plt            : { *(.plt) }
-   .text           : {
-+    _stext = .;
-     TEXT_TEXT
-     SCHED_TEXT
-     LOCK_TEXT
-@@ -91,7 +90,9 @@ SECTIONS
- 
-   #include <asm/common.lds.S>
- 
-+  __init_begin = .;
-   init.data : { INIT_DATA }
-+  __init_end = .;
- 
-   /* Ensure the __preinit_array_start label is properly aligned.  We
-      could instead move the label definition inside the section, but
-@@ -155,6 +156,7 @@ SECTIONS
-    . = ALIGN(32 / 8);
-   . = ALIGN(32 / 8);
-   }
-+   __bss_stop = .;
-   _end = .;
-   PROVIDE (end = .);
- 
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index ff65fb4..6899195 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -20,13 +20,12 @@ SECTIONS
-   . = START + SIZEOF_HEADERS;
- 
-   _text = .;
--  _stext = .;
--  __init_begin = .;
-   INIT_TEXT_SECTION(0)
-   . = ALIGN(PAGE_SIZE);
- 
-   .text      :
-   {
-+    _stext = .;
-     TEXT_TEXT
-     SCHED_TEXT
-     LOCK_TEXT
-@@ -62,7 +61,10 @@ SECTIONS
- 
-   #include <asm/common.lds.S>
- 
-+  __init_begin = .;
-   init.data : { INIT_DATA }
-+  __init_end = .;
-+
-   .data    :
-   {
-     INIT_TASK_DATA(KERNEL_STACK_SIZE)
-@@ -97,6 +99,7 @@ SECTIONS
-   PROVIDE(_bss_start = .);
-   SBSS(0)
-   BSS(0)
-+   __bss_stop = .;
-   _end = .;
-   PROVIDE (end = .);
- 
--- 
-1.7.9.5
+Rob
+------------------------------------------------------------------------------
+Try New Relic Now & We'll Send You this Cool Shirt
+New Relic is the only SaaS-based application performance monitoring service 
+that delivers powerful full stack analytics. Optimize and monitor your
+browser, app, & servers with just a few lines of code. Try New Relic
+and get this awesome Nerd Life shirt! http://p.sf.net/sfu/newrelic_d2d_may
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
