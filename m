@@ -1,140 +1,63 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1Ui0Ac-0000lx-Qg
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 May 2013 10:33:22 +0000
-Received: from mout.gmx.net ([212.227.15.18])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Ui0Ab-0002sO-NC for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 30 May 2013 10:33:22 +0000
-Received: from mailout-de.gmx.net ([10.1.76.28]) by mrigmx.server.lan
-	(mrigmx002) with ESMTP (Nemesis) id 0LdKAB-1TzpiH0XXV-00iRYM for
-	<user-mode-linux-devel@lists.sourceforge.net>; Thu, 30 May 2013 12:33:16
-	+0200
-Message-ID: <51A72AEB.1000602@gmx.de>
-Date: Thu, 30 May 2013 12:33:15 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 28 May 2013 19:20:37 +0200
+References: <519DCBEF.3090208@asianux.com> <201305281743.52649.arnd@arndb.de>
+ <51A4D618.3080208@zytor.com>
+In-Reply-To: <51A4D618.3080208@zytor.com>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] BUG: spinlock recursion on CPU#0, rngd/1062
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Message-Id: <201305281920.37452.arnd@arndb.de>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+Subject: Re: [PATCH] arch: configuration,
+ deleting 'CONFIG_BUG' since always need it.
+To: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Catalin Marinas <Catalin.Marinas@arm.com>, Linux-sh list <linux-sh@vger.kernel.org>, Chen Gang <gang.chen@asianux.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, "paulus@samba.org" <paulus@samba.org>, Michel Lespinasse <walken@google.com>, Ingo Molnar <mingo@kernel.org>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Linux-Arch <linux-arch@vger.kernel.org>, linux-s390@vger.kernel.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger <richard@nod.at>, Helge Deller <deller@gmx.de>, the arch/x86 maintainers <x86@kernel.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, "mingo@redhat.com" <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Frederic Weisbecker <fweisbec@gmail.com>, Paul McKenney <paulmck@linux.vnet.ibm.com>, H?vard Skinnemoen <hskinnemoen@gmail.com>, Serge Hallyn <serge.hallyn@canonical.com>, Mike Frysinger <vapier@gentoo.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Will Deacon <will.deacon@arm.com>, Jeff Dike <jdike@addtoit.com>, Akinobu Mita <akinobu.mita@gmail.com>, uml-user <user-mode-linux-user@lists.sourceforge.net>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, Thomas Gleixner <tglx@linutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Parisc List <linux-parisc@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Richard Kuo <rkuo@codeaurora.org>, Paul Mundt <lethal@linux-sh.org>, "Eric W. Biederman" <ebiederm@xmission.com>, linux-hexagon@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux390@de.ibm.com, Andrew Morton <akpm@linux-foundation.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, David Miller <davem@davemloft.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-V2hpbGUgZnV6enlpbmcgYW4gVU1MIEkgZG8gb2Z0ZW4gb2JzZXJ2ZXMgaXQgYXQgYSAzMiBiaXQg
-c3RhYmxlIEdlbnRvbyBMaW51eCAoaG9zdCBhbmQgZ3Vlc3QgaGF2ZSBrZXJuZWwgMy4xMC1yYzMp
-IDoKCkJlY2F1c2UgSSBkbyBub3QgZnV6enlpbmcgdGhlIGhvc3Qga2VybmVsIC0ganVzdCBhbiBV
-TUwgKG9yIGEgY2hyb290ZWQgaW1hZ2UpLApJJ20gdW5zdXJlIGlmIHRoaXMgaXMgYSBrZXJuZWwg
-aXNzdWUgb3IganVzdCBzcGVjaWZpYyB0byBVTUwuCgoKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjIr
-MDI6MDAgdHJpbml0eSBrZXJuZWw6IEJVRzogc3BpbmxvY2sgcmVjdXJzaW9uIG9uIENQVSMwLCBy
-bmdkLzEwNjIKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IGxv
-Y2s6IDB4ODViOTRhYywgLm1hZ2ljOiBkZWFkNGVhZCwgLm93bmVyOiBybmdkLzEwNjIsIC5vd25l
-cl9jcHU6IDAKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjIrMDI6MDAgdHJpbml0eSBrZXJuZWw6IENQ
-VTogMCBQSUQ6IDEwNjIgQ29tbTogcm5nZCBOb3QgdGFpbnRlZCAzLjEwLjAtcmMzLTAwMDAzLWcz
-MzE2YzcyICMxCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTYyKzAyOjAwIHRyaW5pdHkga2VybmVsOiAw
-ODViNzZkMCAwODViNzcwMCAwODQxNDg5ZiAwODRkZGZjNCAwODViOTRhYyBkZWFkNGVhZCA0ODVj
-MjViMCAwMDAwMDQyNiAKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjIrMDI6MDAgdHJpbml0eSBrZXJu
-ZWw6IDAwMDAwMDAwIDA4NWIwMDAwIDA4NWI5NGFjIDA4NGRkZWE0IDA4NWI3NzEwIDA4NDE0OGMx
-IDA4NWI5NGFjIDAwMDAwMDA4IAoyMDEzLTA1LTMwVDEyOjI2OjU2Ljk2MiswMjowMCB0cmluaXR5
-IGtlcm5lbDogMDg1Yjc3MzAgMDgyYTM1NGUgMDg1Yjc3MjQgMDgwNzBhOGUgMDg1YjAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDggMDAwMDAwMDAgMDg1Yjc2YTQ6ICBbPDA4MDVmOThmPl0gc2hvd19zdGFj
-aysweGNmLzB4MTAwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTYyKzAyOjAwIHRyaW5pdHkga2VybmVs
-OiAwODViNzZjODogIFs8MDg0MTQ3OGU+XSBkdW1wX3N0YWNrKzB4MjYvMHgyOAoyMDEzLTA1LTMw
-VDEyOjI2OjU2Ljk2MiswMjowMCB0cmluaXR5IGtlcm5lbDogMDg1Yjc2ZDg6ICBbPDA4NDE0ODlm
-Pl0gc3Bpbl9kdW1wKzB4YTUvMHhhYwoyMDEzLTA1LTMwVDEyOjI2OjU2Ljk2MiswMjowMCB0cmlu
-aXR5IGtlcm5lbDogMDg1Yjc3MDQ6ICBbPDA4NDE0OGMxPl0gc3Bpbl9idWcrMHgxYi8weDFmCjIw
-MTMtMDUtMzBUMTI6MjY6NTYuOTYyKzAyOjAwIHRyaW5pdHkga2VybmVsOiAwODViNzcxNDogIFs8
-MDgyYTM1NGU+XSBkb19yYXdfc3Bpbl9sb2NrKzB4NGUvMHgxMDAKMjAxMy0wNS0zMFQxMjoyNjo1
-Ni45NjMrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDA4NWI3NzM0OiAgWzwwODQxN2VjMT5dIF9yYXdf
-c3Bpbl9sb2NrKzB4MTEvMHgyMAoyMDEzLTA1LTMwVDEyOjI2OjU2Ljk2MyswMjowMCB0cmluaXR5
-IGtlcm5lbDogMDg1Yjc3NDA6ICBbPDA4MDVmNGIyPl0gc2lnaW9fbG9jaysweDEyLzB4MjAKMjAx
-My0wNS0zMFQxMjoyNjo1Ni45NjMrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDA4NWI3NzRjOiAgWzww
-ODA3MDE2ND5dIGFkZF9zaWdpb19mZCsweDE0LzB4MTAwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTYz
-KzAyOjAwIHRyaW5pdHkga2VybmVsOiAwODViNzc3NDogIFs8MDgwNWRhMGE+XSByZWFjdGl2YXRl
-X2ZkKzB4NmEvMHg4MAoyMDEzLTA1LTMwVDEyOjI2OjU2Ljk2MyswMjowMCB0cmluaXR5IGtlcm5l
-bDogMDg1Yjc3OTA6ICBbPDA4MDVmNDI3Pl0gc2lnaW9faW50ZXJydXB0KzB4MzcvMHg0MAoyMDEz
-LTA1LTMwVDEyOjI2OjU2Ljk2MyswMjowMCB0cmluaXR5IGtlcm5lbDogMDg1Yjc3YTg6ICBbPDA4
-MGM3MzJmPl0gaGFuZGxlX2lycV9ldmVudF9wZXJjcHUrMHgyZi8weDE1MAoyMDEzLTA1LTMwVDEy
-OjI2OjU2Ljk2MyswMjowMCB0cmluaXR5IGtlcm5lbDogMDg1Yjc3ZDg6ICBbPDA4MGM3NDhhPl0g
-aGFuZGxlX2lycV9ldmVudCsweDNhLzB4NjAKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjMrMDI6MDAg
-dHJpbml0eSBrZXJuZWw6IDA4NWI3N2Y0OiAgWzwwODBjOThhMD5dIGhhbmRsZV9lZGdlX2lycSsw
-eGUwLzB4MTEwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTYzKzAyOjAwIHRyaW5pdHkga2VybmVsOiAw
-ODViNzgwODogIFs8MDgwYzZjZGI+XSBnZW5lcmljX2hhbmRsZV9pcnErMHgyYi8weDMwCjIwMTMt
-MDUtMzBUMTI6MjY6NTYuOTYzKzAyOjAwIHRyaW5pdHkga2VybmVsOiAwODViNzgxODogIFs8MDgw
-NWRiMDU+XSBkb19JUlErMHgyNS8weDQwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY1KzAyOjAwIHRy
-aW5pdHkga2VybmVsOiAwODViNzgyODogIFs8MDgwNWRiODU+XSBzaWdpb19oYW5kbGVyKzB4NjUv
-MHg4MAoyMDEzLTA1LTMwVDEyOjI2OjU2Ljk2NSswMjowMCB0cmluaXR5IGtlcm5lbDogMDg1Yjc4
-NDA6ICBbPDA4MDcwOWU4Pl0gc2lnX2hhbmRsZXJfY29tbW9uKzB4YjgvMHhlMAoyMDEzLTA1LTMw
-VDEyOjI2OjU2Ljk2NSswMjowMCB0cmluaXR5IGtlcm5lbDogMDg1YjdhYzQ6ICBbPDA4MDcwYjJk
-Pl0gc2lnX2hhbmRsZXIrMHgzZC8weDUwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY1KzAyOjAwIHRy
-aW5pdHkga2VybmVsOiAwODViN2FkNDogIFs8MDgwNzA2N2I+XSBoYXJkX2hhbmRsZXIrMHg2Yi8w
-eGEwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY1KzAyOjAwIHRyaW5pdHkga2VybmVsOiAwODViN2Fm
-YzogIFs8Yjc3ODc0MGM+XSAweGI3Nzg3NDBjCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY1KzAyOjAw
-IHRyaW5pdHkga2VybmVsOiAKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjUrMDI6MDAgdHJpbml0eSBr
-ZXJuZWw6IEJVRzogc3BpbmxvY2sgbG9ja3VwIHN1c3BlY3RlZCBvbiBDUFUjMCwgcm5nZC8xMDYy
-CjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY1KzAyOjAwIHRyaW5pdHkga2VybmVsOiBsb2NrOiAweDg1
-Yjk0YWMsIC5tYWdpYzogZGVhZDRlYWQsIC5vd25lcjogcm5nZC8xMDYyLCAub3duZXJfY3B1OiAw
-CjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY1KzAyOjAwIHRyaW5pdHkga2VybmVsOiBDUFU6IDAgUElE
-OiAxMDYyIENvbW06IHJuZ2QgTm90IHRhaW50ZWQgMy4xMC4wLXJjMy0wMDAwMy1nMzMxNmM3MiAj
-MQoyMDEzLTA1LTMwVDEyOjI2OjU2Ljk2NSswMjowMCB0cmluaXR5IGtlcm5lbDogMDg1Yjc2ZTAg
-MDg1Yjc3MTAgMDg0MTQ4OWYgMDg0ZGRmYzQgMDg1Yjk0YWMgZGVhZDRlYWQgNDg1YzI1YjAgMDAw
-MDA0MjYgCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY4KzAyOjAwIHRyaW5pdHkga2VybmVsOiAwMDAw
-MDAwMCAwODViMDAwMCAwODViOTRhYyA1MDUyODAwMCAwODViNzczMCAwODJhMzVjOSAwMDAwMDAw
-MSA1MDUyODAwMCAKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjgrMDI6MDAgdHJpbml0eSBrZXJuZWw6
-IDA4NWIwMDAwIDAwMDAwMDAwIDAwMDAwMDA4IDAwMDAwMDAwIDA4NWI3NzNjIDA4NDE3ZWMxIDA4
-NWI5NGFjIDA4NWI3NzQ4IDA4NWI3NmI0OiAgWzwwODA1Zjk4Zj5dIHNob3dfc3RhY2srMHhjZi8w
-eDEwMAoyMDEzLTA1LTMwVDEyOjI2OjU2Ljk2OCswMjowMCB0cmluaXR5IGtlcm5lbDogMDg1Yjc2
-ZDg6ICBbPDA4NDE0NzhlPl0gZHVtcF9zdGFjaysweDI2LzB4MjgKMjAxMy0wNS0zMFQxMjoyNjo1
-Ni45NjgrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDA4NWI3NmU4OiAgWzwwODQxNDg5Zj5dIHNwaW5f
-ZHVtcCsweGE1LzB4YWMKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjgrMDI6MDAgdHJpbml0eSBrZXJu
-ZWw6IDA4NWI3NzE0OiAgWzwwODJhMzVjOT5dIGRvX3Jhd19zcGluX2xvY2srMHhjOS8weDEwMAoy
-MDEzLTA1LTMwVDEyOjI2OjU2Ljk2OCswMjowMCB0cmluaXR5IGtlcm5lbDogMDg1Yjc3MzQ6ICBb
-PDA4NDE3ZWMxPl0gX3Jhd19zcGluX2xvY2srMHgxMS8weDIwCjIwMTMtMDUtMzBUMTI6MjY6NTYu
-OTY4KzAyOjAwIHRyaW5pdHkga2VybmVsOiAwODViNzc0MDogIFs8MDgwNWY0YjI+XSBzaWdpb19s
-b2NrKzB4MTIvMHgyMAoyMDEzLTA1LTMwVDEyOjI2OjU2Ljk2OCswMjowMCB0cmluaXR5IGtlcm5l
-bDogMDg1Yjc3NGM6ICBbPDA4MDcwMTY0Pl0gYWRkX3NpZ2lvX2ZkKzB4MTQvMHgxMDAKMjAxMy0w
-NS0zMFQxMjoyNjo1Ni45NjgrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDA4NWI3Nzc0OiAgWzwwODA1
-ZGEwYT5dIHJlYWN0aXZhdGVfZmQrMHg2YS8weDgwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY4KzAy
-OjAwIHRyaW5pdHkga2VybmVsOiAwODViNzc5MDogIFs8MDgwNWY0Mjc+XSBzaWdpb19pbnRlcnJ1
-cHQrMHgzNy8weDQwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY5KzAyOjAwIHRyaW5pdHkga2VybmVs
-OiAwODViNzdhODogIFs8MDgwYzczMmY+XSBoYW5kbGVfaXJxX2V2ZW50X3BlcmNwdSsweDJmLzB4
-MTUwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY5KzAyOjAwIHRyaW5pdHkga2VybmVsOiAwODViNzdk
-ODogIFs8MDgwYzc0OGE+XSBoYW5kbGVfaXJxX2V2ZW50KzB4M2EvMHg2MAoyMDEzLTA1LTMwVDEy
-OjI2OjU2Ljk2OSswMjowMCB0cmluaXR5IGtlcm5lbDogMDg1Yjc3ZjQ6ICBbPDA4MGM5OGEwPl0g
-aGFuZGxlX2VkZ2VfaXJxKzB4ZTAvMHgxMTAKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjkrMDI6MDAg
-dHJpbml0eSBrZXJuZWw6IDA4NWI3ODA4OiAgWzwwODBjNmNkYj5dIGdlbmVyaWNfaGFuZGxlX2ly
-cSsweDJiLzB4MzAKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjkrMDI6MDAgdHJpbml0eSBrZXJuZWw6
-IDA4NWI3ODE4OiAgWzwwODA1ZGIwNT5dIGRvX0lSUSsweDI1LzB4NDAKMjAxMy0wNS0zMFQxMjoy
-Njo1Ni45NjkrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDA4NWI3ODI4OiAgWzwwODA1ZGI4NT5dIHNp
-Z2lvX2hhbmRsZXIrMHg2NS8weDgwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY5KzAyOjAwIHRyaW5p
-dHkga2VybmVsOiAwODViNzg0MDogIFs8MDgwNzA5ZTg+XSBzaWdfaGFuZGxlcl9jb21tb24rMHhi
-OC8weGUwCjIwMTMtMDUtMzBUMTI6MjY6NTYuOTY5KzAyOjAwIHRyaW5pdHkga2VybmVsOiAwODVi
-N2FjNDogIFs8MDgwNzBiMmQ+XSBzaWdfaGFuZGxlcisweDNkLzB4NTAKMjAxMy0wNS0zMFQxMjoy
-Njo1Ni45NjkrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDA4NWI3YWQ0OiAgWzwwODA3MDY3Yj5dIGhh
-cmRfaGFuZGxlcisweDZiLzB4YTAKMjAxMy0wNS0zMFQxMjoyNjo1Ni45NjkrMDI6MDAgdHJpbml0
-eSBrZXJuZWw6IDA4NWI3YWZjOiAgWzxiNzc4NzQwYz5dIDB4Yjc3ODc0MGMKMjAxMy0wNS0zMFQx
-MjoyNjo1Ny4wMDcrMDI6MDAgdHJpbml0eSBrZXJuZWw6IAoKLS0gCk1mRy9TaW5jZXJlbHkKVG9y
-YWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJpbnQ6IDdCMUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4
-OTM2IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJbnRyb2R1Y2lu
-ZyBBcHBEeW5hbWljcyBMaXRlLCBhIGZyZWUgdHJvdWJsZXNob290aW5nIHRvb2wgZm9yIEphdmEv
-Lk5FVApHZXQgMTAwJSB2aXNpYmlsaXR5IGludG8geW91ciBwcm9kdWN0aW9uIGFwcGxpY2F0aW9u
-IC0gYXQgbm8gY29zdC4KQ29kZS1sZXZlbCBkaWFnbm9zdGljcyBmb3IgcGVyZm9ybWFuY2UgYm90
-dGxlbmVja3Mgd2l0aCA8MiUgb3ZlcmhlYWQKRG93bmxvYWQgZm9yIGZyZWUgYW5kIGdldCBzdGFy
-dGVkIHRyb3VibGVzaG9vdGluZyBpbiBtaW51dGVzLgpodHRwOi8vcC5zZi5uZXQvc2Z1L2FwcGR5
-bl9kMmRfYXAxCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-ClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVs
-QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0
-cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+On Tuesday 28 May 2013, H. Peter Anvin wrote:
+> On 05/28/2013 08:43 AM, Arnd Bergmann wrote:
+> > 
+> > Right, that is what the patch I just posted does.
+> > 
+> > On a related note, I found that WARN_ON() can no longer be compiled
+> > out since there is already code that relies on the side-effects of
+> > the condition. I assume that was an intentional change I missed,
+> > since it used to be defined so that you could remove it completely.
+> > 
+> 
+> It is possible to define WARN_ON() as:
+> 
+> #define WARN_ON(x) ((void)(x))
+> 
+> ... which preserves side effects.
+
+Yes, actually the return value has to be maintained as well.
+The current (!CONFIG_BUG) default implementation is
+
+#define WARN_ON(condition) ({                                           \
+        int __ret_warn_on = !!(condition);                              \
+        unlikely(__ret_warn_on);                                        \
+})
+
+which seems fine.
+
+#define WARN_ON(condition) unlikely(!!(condition))
+
+is probably just as good.
+
+	Arnd
+_______________________________________________
+Linuxppc-dev mailing list
+Linuxppc-dev@lists.ozlabs.org
+https://lists.ozlabs.org/listinfo/linuxppc-dev
 
