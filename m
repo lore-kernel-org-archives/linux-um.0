@@ -1,46 +1,42 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 12 May 2013 22:47:48 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <alpine.DEB.2.00.1305122239040.5463@ayla.of.borg>
-Message-ID: <alpine.DEB.2.00.1305122247320.5463@ayla.of.borg>
-References: <alpine.DEB.2.00.1305122130270.3789@ayla.of.borg> <alpine.DEB.2.00.1305122239040.5463@ayla.of.borg>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Jiang Liu <liuj97@gmail.com>
+Date: Wed, 29 May 2013 21:57:55 +0800
+Message-Id: <1369835879-23553-38-git-send-email-jiang.liu@huawei.com>
+In-Reply-To: <1369835879-23553-1-git-send-email-jiang.liu@huawei.com>
+References: <1369835879-23553-1-git-send-email-jiang.liu@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: Build regressions/improvements in v3.10-rc1 (um)
-To: Linux Kernel Development <linux-kernel@vger.kernel.org>
-Cc: User-mode Linux Kernel Development <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [PATCH v6, part4 37/41] mm/um: prepare for removing num_physpages and simplify mem_init()
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jiang Liu <jiang.liu@huawei.com>, David Rientjes <rientjes@google.com>, Wen Congyang <wency@cn.fujitsu.com>, Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, Michal Hocko <mhocko@suse.cz>, James Bottomley <James.Bottomley@HansenPartnership.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, David Howells <dhowells@redhat.com>, Mark Salter <msalter@redhat.com>, Jianguo Wu <wujianguo@huawei.com>, linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sun, 12 May 2013, Geert Uytterhoeven wrote:
-> However, the full list of errors isn't that unmanageable, so I'm following
-> up with a digested list...
+Prepare for removing num_physpages and simplify mem_init().
 
-arch/um/drivers/cow_user.c:216: error: implicit declaration of function 'htobe32': 1 errors in 1 logs
-arch/um/drivers/cow_user.c:249: error: implicit declaration of function 'htobe64': 1 errors in 1 logs
-arch/um/drivers/cow_user.c:303: error: implicit declaration of function 'be32toh': 1 errors in 1 logs
-arch/um/drivers/cow_user.c:330: error: implicit declaration of function 'be64toh': 1 errors in 1 logs
-arch/um/os-Linux/skas/process.c:321: error: 'PTRACE_O_TRACESYSGOOD' undeclared (first use in this function): 1 errors in 1 logs
-arch/um/os-Linux/skas/process.c:321: error: (Each undeclared identifier is reported only once: 1 errors in 1 logs
-arch/um/os-Linux/skas/process.c:321: error: for each function it appears in.): 1 errors in 1 logs
-arch/um/os-Linux/skas/process.c:412: error: 'PTRACE_GETSIGINFO' undeclared (first use in this function): 1 errors in 1 logs
-arch/um/os-Linux/skas/process.c:560: error: 'PTRACE_O_TRACESYSGOOD' undeclared (first use in this function): 1 errors in 1 logs
-arch/um/os-Linux/start_up.c:245: error: 'PTRACE_SETOPTIONS' undeclared (first use in this function): 1 errors in 1 logs
-arch/um/os-Linux/start_up.c:245: error: (Each undeclared identifier is reported only once: 1 errors in 1 logs
-arch/um/os-Linux/start_up.c:245: error: for each function it appears in.): 1 errors in 1 logs
-arch/um/os-Linux/start_up.c:246: error: 'PTRACE_O_TRACESYSGOOD' undeclared (first use in this function): 1 errors in 1 logs
-arch/um/os-Linux/start_up.c:303: error: 'PTRACE_SETOPTIONS' undeclared (first use in this function): 1 errors in 1 logs
-arch/um/os-Linux/start_up.c:304: error: 'PTRACE_O_TRACESYSGOOD' undeclared (first use in this function): 1 errors in 1 logs
-	v3.10-rc1/um-i386/um-defconfig
-	Old host environment on kissb?
+Signed-off-by: Jiang Liu <jiang.liu@huawei.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/um/kernel/mem.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Gr{oetje,eeting}s,
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index b0c7630..7ddb64b 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -70,10 +70,8 @@ void __init mem_init(void)
+ #ifdef CONFIG_HIGHMEM
+ 	setup_highmem(end_iomem, highmem);
+ #endif
+-	num_physpages = totalram_pages;
+ 	max_pfn = totalram_pages;
+-	printk(KERN_INFO "Memory: %luk available\n",
+-	       nr_free_pages() << (PAGE_SHIFT-10));
++	mem_init_print_info(NULL);
+ 	kmalloc_ok = 1;
+ }
+ 
+-- 
+1.8.1.2
 
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
