@@ -1,115 +1,27 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1Ub5I0-0001Fm-4K
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 May 2013 08:36:24 +0000
-Received: from mout.gmx.net ([212.227.15.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Ub5Hx-0007m5-KQ for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 11 May 2013 08:36:23 +0000
-Received: from mailout-de.gmx.net ([10.1.76.2]) by mrigmx.server.lan
-	(mrigmx001) with ESMTP (Nemesis) id 0Lg2yr-1UCo2N0E27-00pbNg for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sat, 11 May 2013 10:36:16
-	+0200
-Message-ID: <518E02FB.6040808@gmx.de>
-Date: Sat, 11 May 2013 10:36:11 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <51C3062F.6000304@nod.at>
+Date: Thu, 20 Jun 2013 15:39:59 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-References: <CAFLxGvwen6WwNoh3iZ2j+dK8iQsxVkjhnvaXjdfXATF+mmwtuw@mail.gmail.com>
-In-Reply-To: <CAFLxGvwen6WwNoh3iZ2j+dK8iQsxVkjhnvaXjdfXATF+mmwtuw@mail.gmail.com>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Fwd: Re: [uml-user] WARNING: at mm/slab_common.c:376
-	kmalloc_slab+0x33/0x80()
-To: Dave Jones <davej@redhat.com>, user-mode-linux-devel@lists.sourceforge.net
+References: <51C21645.3050108@google.com> <CADNZ+wRMzCxeUr5nUU43TunCsdN4+S8wHkzAVYvQPsq9G0=PwQ@mail.gmail.com>
+In-Reply-To: <CADNZ+wRMzCxeUr5nUU43TunCsdN4+S8wHkzAVYvQPsq9G0=PwQ@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCHv2] uml: Fix which_tmpdir failure when /dev/shm is a symlink,
+ and in other edge cases
+To: Tristan Schmelcher <tschmelcher@google.com>
+Cc: jdike@addtoit.com, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-CkRhdmUsCgpjYW4geW91IHBscyBhbnN3ZXIgdG8gUmljaGFyZHMgcXVlc3Rpb246CgoJU28sIHdl
-IHRyaWdnZXIgImlmIChXQVJOX09OX09OQ0Uoc2l6ZSA+IEtNQUxMT0NfTUFYX1NJWkUpKSIuCglO
-b3cgSSdtIHdvbmRlcmluZyB3aGF0IGtpbmQgb2YgYXJndW1lbnQgc3RyaW5nIHRyaW5pdHkgZ2F2
-ZSB0byBtb3VudCgpLgoJSG93IGxvbmcgaXMgaXQ/CgoKCi0tLS0tLS0tIE9yaWdpbmFsIE1lc3Nh
-Z2UgLS0tLS0tLS0KU3ViamVjdDogUmU6IFt1bWwtdXNlcl0gV0FSTklORzogYXQgbW0vc2xhYl9j
-b21tb24uYzozNzYga21hbGxvY19zbGFiKzB4MzMvMHg4MCgpCkRhdGU6IFNhdCwgMTEgTWF5IDIw
-MTMgMTA6MjA6MDUgKzAyMDAKRnJvbTogcmljaGFyZCAtcnctIHdlaW5iZXJnZXIgPHJpY2hhcmQu
-d2VpbmJlcmdlckBnbWFpbC5jb20+ClRvOiBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFsZi5mb2Vyc3Rl
-ckBnbXguZGU+CkNDOiBsaW51eC1tbUBrdmFjay5vcmcgPGxpbnV4LW1tQGt2YWNrLm9yZz4sICB1
-c2VyLW1vZGUtbGludXgtdXNlckBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQgPHVzZXItbW9kZS1saW51
-eC11c2VyQGxpc3RzLnNvdXJjZWZvcmdlLm5ldD4KCk9uIEZyaSwgTWF5IDEwLCAyMDEzIGF0IDEx
-OjUyIFBNLCBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFsZi5mb2Vyc3RlckBnbXguZGU+IHdyb3RlOgo+
-IFRoZSBiaXNlY3RlZCBjb21taXQgaW50cm9kdWNlZCB0aGlzIFdBUk5JTkc6IG9uIGEgdXNlciBt
-b2RlIGxpbnV4IGd1ZXN0Cj4gaWYgdGhlIFVNTCBndWVzdCBpcyBmdXp6IHRlc3RlZCB3aXRoIHRy
-aW5pdHkgOgo+Cj4KPiAyMDEzLTA1LTEwVDIyOjM4OjQyLjE5MSswMjowMCB0cmluaXR5IGtlcm5l
-bDogLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tCj4gMjAxMy0wNS0xMFQyMjoz
-ODo0Mi4xOTErMDI6MDAgdHJpbml0eSBrZXJuZWw6IFdBUk5JTkc6IGF0IG1tL3NsYWJfY29tbW9u
-LmM6Mzc2IGttYWxsb2Nfc2xhYisweDMzLzB4ODAoKQo+IDIwMTMtMDUtMTBUMjI6Mzg6NDIuMTkx
-KzAyOjAwIHRyaW5pdHkga2VybmVsOiA0MGUyZmRhODogIFs8MDgzMzY5Mjg+XSBkdW1wX3N0YWNr
-KzB4MjIvMHgyNAo+IDIwMTMtMDUtMTBUMjI6Mzg6NDIuMTkxKzAyOjAwIHRyaW5pdHkga2VybmVs
-OiA0MGUyZmRjMDogIFs8MDgwN2MyZGE+XSB3YXJuX3Nsb3dwYXRoX2NvbW1vbisweDVhLzB4ODAK
-PiAyMDEzLTA1LTEwVDIyOjM4OjQyLjE5MSswMjowMCB0cmluaXR5IGtlcm5lbDogNDBlMmZkZTg6
-ICBbPDA4MDdjM2EzPl0gd2Fybl9zbG93cGF0aF9udWxsKzB4MjMvMHgzMAo+IDIwMTMtMDUtMTBU
-MjI6Mzg6NDIuMTkxKzAyOjAwIHRyaW5pdHkga2VybmVsOiA0MGUyZmRmODogIFs8MDgwZGZjOTM+
-XSBrbWFsbG9jX3NsYWIrMHgzMy8weDgwCj4gMjAxMy0wNS0xMFQyMjozODo0Mi4xOTErMDI6MDAg
-dHJpbml0eSBrZXJuZWw6IDQwZTJmZTBjOiAgWzwwODBmOGJlYj5dIF9fa21hbGxvY190cmFja19j
-YWxsZXIrMHgxYi8weDExMAo+IDIwMTMtMDUtMTBUMjI6Mzg6NDIuMTkxKzAyOjAwIHRyaW5pdHkg
-a2VybmVsOiA0MGUyZmUzMDogIFs8MDgwZGM4NjY+XSBtZW1kdXBfdXNlcisweDI2LzB4NzAKPiAy
-MDEzLTA1LTEwVDIyOjM4OjQyLjE5MSswMjowMCB0cmluaXR5IGtlcm5lbDogNDBlMmZlNGM6ICBb
-PDA4MGRjYTZlPl0gc3RybmR1cF91c2VyKzB4M2UvMHg2MAo+IDIwMTMtMDUtMTBUMjI6Mzg6NDIu
-MTkxKzAyOjAwIHRyaW5pdHkga2VybmVsOiA0MGUyZmU2ODogIFs8MDgxMWJhNjA+XSBjb3B5X21v
-dW50X3N0cmluZysweDMwLzB4NTAKPiAyMDEzLTA1LTEwVDIyOjM4OjQyLjE5NSswMjowMCB0cmlu
-aXR5IGtlcm5lbDogNDBlMmZlN2M6ICBbPDA4MTFjNDZhPl0gc3lzX21vdW50KzB4MWEvMHhlMAo+
-IDIwMTMtMDUtMTBUMjI6Mzg6NDIuMTk1KzAyOjAwIHRyaW5pdHkga2VybmVsOiA0MGUyZmVhYzog
-IFs8MDgwNjJiMzI+XSBoYW5kbGVfc3lzY2FsbCsweDgyLzB4YjAKPiAyMDEzLTA1LTEwVDIyOjM4
-OjQyLjE5NSswMjowMCB0cmluaXR5IGtlcm5lbDogNDBlMmZlZjQ6ICBbPDA4MDc1MjBkPl0gdXNl
-cnNwYWNlKzB4NDZkLzB4NTkwCj4gMjAxMy0wNS0xMFQyMjozODo0Mi4xOTUrMDI6MDAgdHJpbml0
-eSBrZXJuZWw6IDQwZTJmZmVjOiAgWzwwODA1ZjdmYz5dIGZvcmtfaGFuZGxlcisweDZjLzB4NzAK
-PiAyMDEzLTA1LTEwVDIyOjM4OjQyLjE5NSswMjowMCB0cmluaXR5IGtlcm5lbDogNDBlMmZmZmM6
-ICBbPDAwMDAwMDAwPl0gMHgwCj4gMjAxMy0wNS0xMFQyMjozODo0Mi4xOTUrMDI6MDAgdHJpbml0
-eSBrZXJuZWw6Cj4gMjAxMy0wNS0xMFQyMjozODo0Mi4xOTUrMDI6MDAgdHJpbml0eSBrZXJuZWw6
-IC0tLVsgZW5kIHRyYWNlIDE3ZTU5MzE0NjlkMDY5N2QgXS0tLQo+Cj4KPiBUZXN0ZWQgd2l0aCBo
-b3N0IGtlcm5lbCAzLjkuMSwgaG9zdCBhbmQgY2xpZW50IHdlcmUgMzJiaXQgc3RhYmxlIEdlbnRv
-byBMaW51eC4KPgo+Cj4gNjI4NmFlOTdkMTBlYTJiNWNkOTA1MzIxNjM3OTdhYjIxN2JmZGJkZiBp
-cyB0aGUgZmlyc3QgYmFkIGNvbW1pdAo+IGNvbW1pdCA2Mjg2YWU5N2QxMGVhMmI1Y2Q5MDUzMjE2
-Mzc5N2FiMjE3YmZkYmRmCj4gQXV0aG9yOiBDaHJpc3RvcGggTGFtZXRlciA8Y2xAbGludXguY29t
-Pgo+IERhdGU6ICAgRnJpIE1heSAzIDE1OjQzOjE4IDIwMTMgKzAwMDAKPgo+ICAgICBzbGFiOiBS
-ZXR1cm4gTlVMTCBmb3Igb3ZlcnNpemVkIGFsbG9jYXRpb25zCj4KPiAgICAgVGhlIGlubGluZSBw
-YXRoIHNlZW1zIHRvIGhhdmUgY2hhbmdlZCB0aGUgU0xBQiBiZWhhdmlvciBmb3IgdmVyeSBsYXJn
-ZQo+ICAgICBrbWFsbG9jIGFsbG9jYXRpb25zIHdpdGggIGNvbW1pdCBlMzM2NjAxNiAoInNsYWI6
-IFVzZSBjb21tb24KPiAgICAga21hbGxvY19pbmRleC9rbWFsbG9jX3NpemUgZnVuY3Rpb25zIiku
-IFRoaXMgcGF0Y2ggcmVzdG9yZXMgdGhlIG9sZAo+ICAgICBiZWhhdmlvciBidXQgYWxzbyBhZGRz
-IGRpYWdub3N0aWNzIHNvIHRoYXQgd2UgY2FuIGZpZ3VyZSB3aGVyZSBpbiB0aGUKPiAgICAgY29k
-ZSB0aGVzZSBsYXJnZSBhbGxvY2F0aW9ucyBvY2N1ci4KPgo+ICAgICBSZXBvcnRlZC1hbmQtdGVz
-dGVkLWJ5OiBUZXRzdW8gSGFuZGEgPHBlbmd1aW4ta2VybmVsQEktbG92ZS5TQUtVUkEubmUuanA+
-Cj4gICAgIFNpZ25lZC1vZmYtYnk6IENocmlzdG9waCBMYW1ldGVyIDxjbEBsaW51eC5jb20+Cj4g
-ICAgIExpbms6IGh0dHA6Ly9sa21sLmtlcm5lbC5vcmcvci8yMDEzMDUwNDAzNDguQ0lGODE3MTYu
-T1N0UU9IRkpNRkxPVkZASS1sb3ZlLlNBS1VSQS5uZS5qcAo+ICAgICBbIHBlbmJlcmdAa2VybmVs
-Lm9yZzogdXNlIFdBUk5fT05fT05DRSBdCj4gICAgIFNpZ25lZC1vZmYtYnk6IFBla2thIEVuYmVy
-ZyA8cGVuYmVyZ0BrZXJuZWwub3JnPgo+CgpTbywgd2UgdHJpZ2dlciAiaWYgKFdBUk5fT05fT05D
-RShzaXplID4gS01BTExPQ19NQVhfU0laRSkpIi4KTm93IEknbSB3b25kZXJpbmcgd2hhdCBraW5k
-IG9mIGFyZ3VtZW50IHN0cmluZyB0cmluaXR5IGdhdmUgdG8gbW91bnQoKS4KSG93IGxvbmcgaXMg
-aXQ/CgpCVFc6IFRvcmFsZiwgd2h5IGFyZSB5b3Ugc2VuZGluZyB0aGlzIHRvIHVzZXItbW9kZS1s
-aW51eC0qdXNlcipAbGlzdHMuLi4/CldlIGFsc28gaGF2ZSBhIC1kZXZlbCBsaXN0LiBQbGVhc2Ug
-YXQgbGVhc3QgQ0MgbWUuCk90aGVyd2lzZSBpdCBpcyBtb3N0IGxpa2VseSB0aGF0IEkgbWlzcyBz
-dWNoIHJlcG9ydHMuLi4KCi0tClRoYW5rcywKLy9yaWNoYXJkCgoKCgotLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KTGVhcm4gR3JhcGggRGF0YWJhc2VzIC0gRG93bmxvYWQgRlJFRSBPJ1JlaWxseSBCb29r
-CiJHcmFwaCBEYXRhYmFzZXMiIGlzIHRoZSBkZWZpbml0aXZlIG5ldyBndWlkZSB0byBncmFwaCBk
-YXRhYmFzZXMgYW5kIAp0aGVpciBhcHBsaWNhdGlvbnMuIFRoaXMgMjAwLXBhZ2UgYm9vayBpcyB3
-cml0dGVuIGJ5IHRocmVlIGFjY2xhaW1lZCAKbGVhZGVycyBpbiB0aGUgZmllbGQuIFRoZSBlYXJs
-eSBhY2Nlc3MgdmVyc2lvbiBpcyBhdmFpbGFibGUgbm93LiAKRG93bmxvYWQgeW91ciBmcmVlIGJv
-b2sgdG9kYXkhIGh0dHA6Ly9wLnNmLm5ldC9zZnUvbmVvdGVjaF9kMmRfbWF5Cl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZl
-bCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUt
-bGludXgtZGV2ZWwK
+Am 20.06.2013 15:36, schrieb Tristan Schmelcher:
+> *sigh* found another bug. Gonna sit on the patch for a bit before
+> sending v3, just in case I find more issues.
+
+No need to hurry. :-)
+As the patch is non-trivial it's 3.11 material anyway.
+
+Thanks,
+//richard
+
 
