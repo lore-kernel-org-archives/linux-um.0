@@ -1,87 +1,313 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Message-ID: <51CA8AB8.7080504@asianux.com>
-Date: Wed, 26 Jun 2013 14:31:20 +0800
-From: Chen Gang <gang.chen@asianux.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <51C887EA.6030109@google.com>
+Date: Mon, 24 Jun 2013 13:54:50 -0400
+From: Tristan Schmelcher <tschmelcher@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH] include/asm-generic/io.h: add 'UML' case just like 'no-MMU'
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Arnd Bergmann <arnd@arndb.de>
-Cc: dhsharp@google.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCHv3 linux-next] uml: Fix which_tmpdir failure when /dev/shm
+ is a symlink, and in other edge cases
+To: richard@nod.at, jdike@addtoit.com
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-=46or "User Mode Linux", it may enable 'MMU', but not need implement
-ioremap and iounmap, so "include/asm-generic/io.h" need notice this
-case to keep itself 'generic'.
+From: Tristan Schmelcher <tschmelcher@google.com>
 
-The related error (with allmodconfig, without pcap):
+which_tmpdir did the wrong thing if /dev/shm was a symlink (e.g., to /run/shm),
+if there were multiple mounts on top of each other, if the mount(s) were
+obscured by a later mount, or if /dev/shm was a prefix of another mount point.
+This fixes these cases. Applies to 3.9.6.
 
-    CC [M]  drivers/ptp/ptp_pch.o
-  drivers/ptp/ptp_pch.c: In function =91pch_remove=92:
-  drivers/ptp/ptp_pch.c:571:3: error: implicit declaration of function =
-=91iounmap=92 [-Werror=3Dimplicit-function-declaration]
-  drivers/ptp/ptp_pch.c: In function =91pch_probe=92:
-  drivers/ptp/ptp_pch.c:621:2: error: implicit declaration of function =
-=91ioremap=92 [-Werror=3Dimplicit-function-declaration]
-  drivers/ptp/ptp_pch.c:621:13: warning: assignment makes pointer from =
-integer without a cast [enabled by default]
-  cc1: some warnings being treated as errors
-
-
-Signed-off-by: Chen Gang <gang.chen@asianux.com>
+Signed-off-by: Tristan Schmelcher <tschmelcher@google.com>
 ---
- arch/um/include/asm/Kbuild |    1 +
- include/asm-generic/io.h   |    6 +++---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+v2 had a bug where truncation of a path would cause decode_path to say that it
+read one more byte than it really did, causing the terminating null to be
+removed. Now simpler and safer.
 
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index b30f34a..a34ea5d 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -3,3 +3,4 @@ generic-y +=3D hw_irq.h irq_regs.h kdebug.h percpu.h se=
-ctions.h topology.h xor.h
- generic-y +=3D ftrace.h pci.h io.h param.h delay.h mutex.h current.h e=
-xec.h
- generic-y +=3D switch_to.h clkdev.h
- generic-y +=3D trace_clock.h
-+generic-y +=3D io.h
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index d5afe96..e80331d 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -303,10 +303,10 @@ static inline void *phys_to_virt(unsigned long ad=
-dress)
- /*
-  * Change "struct page" to physical address.
-  *
-- * This implementation is for the no-MMU case only... if you have an M=
-MU
-+ * This implementation is for the no-MMU or UML case only... if you ha=
-ve an MMU
-  * you'll need to provide your own definitions.
-  */
--#ifndef CONFIG_MMU
-+#if !CONFIG_MMU || CONFIG_UML
- static inline void __iomem *ioremap(phys_addr_t offset, unsigned long =
-size)
- {
- 	return (void __iomem*) (unsigned long)offset;
-@@ -325,7 +325,7 @@ static inline void __iomem *ioremap(phys_addr_t off=
-set, unsigned long size)
- static inline void iounmap(void __iomem *addr)
- {
+--- linux-3.9.6/arch/um/os-Linux/mem.c.orig	2013-06-24 13:44:10.000000000 -0400
++++ linux-3.9.6/arch/um/os-Linux/mem.c	2013-06-24 13:45:34.000000000 -0400
+@@ -53,6 +53,25 @@ static void __init find_tempdir(void)
  }
--#endif /* CONFIG_MMU */
-+#endif /* !CONFIG_MMU || CONFIG_UML */
-=20
- #ifdef CONFIG_HAS_IOPORT
- #ifndef CONFIG_GENERIC_IOMAP
---=20
-1.7.7.6
---
-To unsubscribe from this list: send the line "unsubscribe linux-arch" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+ 
+ /*
++ * Remove bytes from the front of the buffer and refill it so that if there's a
++ * partial string that we care about, it will be completed, and we can recognize
++ * it.
++ */
++static int pop(int fd, char *buf, size_t size, size_t npop)
++{
++	ssize_t n;
++	size_t len = strlen(&buf[npop]);
++
++	memmove(buf, &buf[npop], len + 1);
++	n = read(fd, &buf[len], size - len - 1);
++	if (n < 0)
++		return -errno;
++
++	buf[len + n] = '\0';
++	return 1;
++}
++
++/*
+  * This will return 1, with the first character in buf being the
+  * character following the next instance of c in the file.  This will
+  * read the file as needed.  If there's an error, -errno is returned;
+@@ -61,7 +80,6 @@ static void __init find_tempdir(void)
+ static int next(int fd, char *buf, size_t size, char c)
+ {
+ 	ssize_t n;
+-	size_t len;
+ 	char *ptr;
+ 
+ 	while ((ptr = strchr(buf, c)) == NULL) {
+@@ -74,20 +92,129 @@ static int next(int fd, char *buf, size_
+ 		buf[n] = '\0';
+ 	}
+ 
+-	ptr++;
+-	len = strlen(ptr);
+-	memmove(buf, ptr, len + 1);
++	return pop(fd, buf, size, ptr - buf + 1);
++}
++
++/*
++ * Decode an octal-escaped and space-terminated path of the form used by
++ * /proc/mounts. May be used to decode a path in-place. "out" must be at least
++ * as large as the input. The output is always null-terminated. "len" gets the
++ * length of the output, excluding the trailing null. Returns 0 if a full path
++ * was successfully decoded, otherwise an error.
++ */
++static int decode_path(const char *in, char *out, size_t *len)
++{
++	char *first = out;
++	int c;
++	int i;
++	int ret = -EINVAL;
++	while (1) {
++		switch (*in) {
++		case '\0':
++			goto out;
++
++		case ' ':
++			ret = 0;
++			goto out;
++
++		case '\\':
++			in++;
++			c = 0;
++			for (i = 0; i < 3; i++) {
++				if (*in < '0' || *in > '7')
++					goto out;
++				c = (c << 3) | (*in++ - '0');
++			}
++			*(unsigned char *)out++ = (unsigned char) c;
++			break;
++
++		default:
++			*out++ = *in++;
++			break;
++		}
++	}
++
++out:
++	*out = '\0';
++	*len = out - first;
++	return ret;
++}
++
++/*
++ * Computes the length of s when encoded with three-digit octal escape sequences
++ * for the characters in chars.
++ */
++static size_t octal_encoded_length(const char *s, const char *chars)
++{
++	size_t len = strlen(s);
++	while ((s = strpbrk(s, chars)) != NULL) {
++		len += 3;
++		s++;
++	}
++
++	return len;
++}
++
++enum {
++	OUTCOME_NOTHING_MOUNTED,
++	OUTCOME_TMPFS_MOUNT,
++	OUTCOME_NON_TMPFS_MOUNT,
++};
++
++/* Read a line of /proc/mounts data looking for a tmpfs mount at "path". */
++static int read_mount(int fd, char *buf, size_t bufsize, const char *path,
++		      int *outcome)
++{
++	int found;
++	int match;
++	char *space;
++	size_t len;
++
++	enum {
++		MATCH_NONE,
++		MATCH_EXACT,
++		MATCH_PARENT,
++	};
++
++	found = next(fd, buf, bufsize, ' ');
++	if (found != 1)
++		return found;
+ 
+ 	/*
+-	 * Refill the buffer so that if there's a partial string that we care
+-	 * about, it will be completed, and we can recognize it.
++	 * If there's no following space in the buffer, then this path is
++	 * truncated, so it can't be the one we're looking for.
+ 	 */
+-	n = read(fd, &buf[len], size - len - 1);
+-	if (n < 0)
+-		return -errno;
++	space = strchr(buf, ' ');
++	if (space) {
++		match = MATCH_NONE;
++		if (!decode_path(buf, buf, &len)) {
++			if (!strcmp(buf, path))
++				match = MATCH_EXACT;
++			else if (!strncmp(buf, path, len)
++				 && (path[len] == '/' || !strcmp(buf, "/")))
++				match = MATCH_PARENT;
++		}
+ 
+-	buf[len + n] = '\0';
+-	return 1;
++		found = pop(fd, buf, bufsize, space - buf + 1);
++		if (found != 1)
++			return found;
++
++		switch (match) {
++		case MATCH_EXACT:
++			if (!strncmp(buf, "tmpfs", strlen("tmpfs")))
++				*outcome = OUTCOME_TMPFS_MOUNT;
++			else
++				*outcome = OUTCOME_NON_TMPFS_MOUNT;
++			break;
++
++		case MATCH_PARENT:
++			/* This mount obscures any previous ones. */
++			*outcome = OUTCOME_NOTHING_MOUNTED;
++			break;
++		}
++	}
++
++	return next(fd, buf, bufsize, '\n');
+ }
+ 
+ /* which_tmpdir is called only during early boot */
+@@ -106,8 +233,12 @@ static int checked_tmpdir = 0;
+  */
+ static void which_tmpdir(void)
+ {
+-	int fd, found;
+-	char buf[128] = { '\0' };
++	int fd;
++	int found;
++	int outcome;
++	char *path;
++	char *buf;
++	size_t bufsize;
+ 
+ 	if (checked_tmpdir)
+ 		return;
+@@ -116,49 +247,66 @@ static void which_tmpdir(void)
+ 
+ 	printf("Checking for tmpfs mount on /dev/shm...");
+ 
++	path = realpath("/dev/shm", NULL);
++	if (!path) {
++		printf("failed to check real path, errno = %d\n", errno);
++		return;
++	}
++	printf("%s...", path);
++
++	/*
++	 * The buffer needs to be able to fit the full octal-escaped path, a
++	 * space, and a trailing null in order to successfully decode it.
++	 */
++	bufsize = octal_encoded_length(path, " \t\n\\") + 2;
++
++	if (bufsize < 128)
++		bufsize = 128;
++
++	buf = malloc(bufsize);
++	if (!buf) {
++		printf("malloc failed, errno = %d\n", errno);
++		goto out;
++	}
++	buf[0] = '\0';
++
+ 	fd = open("/proc/mounts", O_RDONLY);
+ 	if (fd < 0) {
+ 		printf("failed to open /proc/mounts, errno = %d\n", errno);
+-		return;
++		goto out1;
+ 	}
+ 
++	outcome = OUTCOME_NOTHING_MOUNTED;
+ 	while (1) {
+-		found = next(fd, buf, ARRAY_SIZE(buf), ' ');
+-		if (found != 1)
+-			break;
+-
+-		if (!strncmp(buf, "/dev/shm", strlen("/dev/shm")))
+-			goto found;
+-
+-		found = next(fd, buf, ARRAY_SIZE(buf), '\n');
++		found = read_mount(fd, buf, bufsize, path, &outcome);
+ 		if (found != 1)
+ 			break;
+ 	}
+ 
+-err:
+-	if (found == 0)
+-		printf("nothing mounted on /dev/shm\n");
+-	else if (found < 0)
++	if (found < 0) {
+ 		printf("read returned errno %d\n", -found);
++	} else {
++		switch (outcome) {
++		case OUTCOME_TMPFS_MOUNT:
++			printf("OK\n");
++			default_tmpdir = "/dev/shm";
++			break;
+ 
+-out:
+-	close(fd);
+-
+-	return;
+-
+-found:
+-	found = next(fd, buf, ARRAY_SIZE(buf), ' ');
+-	if (found != 1)
+-		goto err;
++		case OUTCOME_NON_TMPFS_MOUNT:
++			printf("not tmpfs\n");
++			break;
+ 
+-	if (strncmp(buf, "tmpfs", strlen("tmpfs"))) {
+-		printf("not tmpfs\n");
+-		goto out;
++		default:
++			printf("nothing mounted on /dev/shm\n");
++			break;
++		}
+ 	}
+ 
+-	printf("OK\n");
+-	default_tmpdir = "/dev/shm";
+-	goto out;
++	close(fd);
++out1:
++	free(buf);
++out:
++	free(path);
+ }
+ 
+ static int __init make_tempfile(const char *template, char **out_tempname,
