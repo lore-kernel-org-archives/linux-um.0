@@ -1,164 +1,112 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Date: Sat, 01 Jun 2013 21:54:29 +0200
-Message-ID: <1473633.hHuG9rKQnc@vostro.rjw.lan>
-In-Reply-To: <20130531161807.GA9536@www.outflux.net>
-References: <20130531161807.GA9536@www.outflux.net>
+Return-Path: <gang.chen@asianux.com>
+Message-ID: <51D0FAFE.5010500@asianux.com>
+Date: Mon, 01 Jul 2013 11:43:58 +0800
+From: Chen Gang <gang.chen@asianux.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH] clean up scary strncpy(dst, src, strlen(src)) uses
-To: Kees Cook <keescook@chromium.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-acpi@vger.kernel.org, linux-s390@vger.kernel.org, devel@driverdev.osuosl.org, user-mode-linux-devel@lists.sourceforge.net
+References: <51CA8AB8.7080504@asianux.com> <51CA900E.9020407@nod.at> <51CA9E92.4000107@asianux.com> <51CAA0C6.60007@nod.at> <51CAA78C.5040900@asianux.com> <51CAA8D6.9000505@nod.at> <51CAAD1D.8050801@asianux.com> <51CAAE7C.9090003@nod.at> <51CAB556.4070700@asianux.com> <51CAB689.70008@nod.at> <CAMuHMdXw6VYhnNWcVfWc9ssxKTqKFcDbN4WXL5i=eNGy+gXcRA@mail.gmail.com> <51CABBDD.403@asianux.com> <51CABFAC.1040505@nod.at> <51CAC0D0.60505@asianux.com> <51D0DE09.4090702@asianux.com>
+In-Reply-To: <51D0DE09.4090702@asianux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] include/asm-generic/io.h: add 'UML' case just like 'no-MMU'
+To: Chen Gang <gang.chen@asianux.com>
+Cc: Richard Weinberger <richard@nod.at>, Geert Uytterhoeven <geert@linux-m68k.org>, Jeff Dike <jdike@addtoit.com>, Arnd Bergmann <arnd@arndb.de>, David Sharp <dhsharp@google.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Mark Brown <broonie@kernel.org>, David Miller <davem@davemloft.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Friday, May 31, 2013 09:18:07 AM Kees Cook wrote:
-> Fix various weird constructions of strncpy(dst, src, strlen(src)). Length
-> limits should be about the space available in the destination, not
-> repurposed as a method to either always include or always exclude
-> a trailing NULL byte. Either the NULL should always be copied
-> (using strlcpy), or it should not be copied (using something like
-> memcpy). Readable code should not depend on the weird behavior of strncpy
-> when it hits the length limit. Better to avoid the anti-pattern entirely.
+On 07/01/2013 09:40 AM, Chen Gang wrote:
+> On 06/26/2013 06:22 PM, Chen Gang wrote:
+>> > On 06/26/2013 06:17 PM, Richard Weinberger wrote:
+>>> >> Am 26.06.2013 12:01, schrieb Chen Gang:
+>>>>> >>>> On 06/26/2013 05:48 PM, Geert Uytterhoeven wrote:
+>>>>>>> >>>>>> On Wed, Jun 26, 2013 at 11:38 AM, Richard Weinberger <richard@nod.at> wrote:
+>>>>>>>>>>>>>>> >>>>>>>>>>>>>> Since the API itself already contents the meaning: "return NULL means
+>>>>>>>>>>>>>>> >>>>>>>>>>>>>> the arch has no related io memory",
+>>>>>>> >>>>>> No, NULL means it could not map the I/O memory.
+>>>>>>> >>>>>>
+>>>>> >>>>
+>>>>> >>>> "it could not map the I/O memory" includes "has no related io memory".
+>>>>> >>>> So it is enough for our case.
+>>>>> >>>>
+>>>>>>>>>>>>>>> >>>>>>>>>>>>>> Why not define a generic dummy one in "include/asm-generic/io.h" instead
+>>>>>>>>>>>>>>> >>>>>>>>>>>>>> of "HAS_IOMEM" (which has already spread many various places, and also,
+>>>>>>>>>>>>>>> >>>>>>>>>>>>>> most of new drivers have to know about it).
+>>>>>>>>>>>>>>> >>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> >>>>>>>>>>>>>> e.g: in "include/asm-generic/io.h", if "CONFIG_HAS_IOMEM=n", define a
+>>>>>>>>>>>>>>> >>>>>>>>>>>>>> dummy ioremap() which return NULL ... (also need consider more details).
+>>>>>>>>>>> >>>>>>>>>>
+>>>>>>>>>>> >>>>>>>>>> Because we don't even want to build these drivers and not make them fail while
+>>>>>>>>>>> >>>>>>>>>> executing io memory related functions.
+>>>>>>> >>>>>> Indeed, it doesn't make sense to build drivers that cannot work.
+>>>>>>> >>>>>> And they may fail in a very bad way.
+>>>>> >>>>
+>>>>> >>>> That is our 'platform' guys feeling, not the 'module' guys, as
+>>>>> >>>> 'platform' guys, it is better to provide the choice to 'module' guys,
+>>>>> >>>> and let them decide by themselves, not forced by us.
+>>> >> FYI, this is my last reply to this thread.
+>>> >>
+>>> >> As Geert and I said, drivers which need io memory have to depend on HAS_IOMEM=y.
+>>> >> If an arch does not have io memory these drivers cannot work and therefore we don't
+>>> >> want them built.
+>> > 
+> Hmm, if the modules select 'COMPILE_TEST', it is better to let asm-generic
+> support this features (at least, not forbid it)
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-For the ACPI part:
-
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-> ---
-> This is a follow-up to the anti-pattern being fixed in iscsi-target,
-> which was exploitable:
-> "iscsi-target: fix heap buffer overflow on error"
-> http://git.kernel.org/cgit/linux/kernel/git/nab/target-pending.git/commit/?id=cea4dcfdad926a27a18e188720efe0f2c9403456
-> ---
->  Documentation/accounting/getdelays.c             |    3 ++-
->  drivers/acpi/sysfs.c                             |    3 +--
->  drivers/s390/net/qeth_l3_sys.c                   |    6 ++----
->  drivers/staging/tidspbridge/rmgr/drv_interface.c |    3 +--
->  fs/hppfs/hppfs.c                                 |   11 ++++++-----
->  5 files changed, 12 insertions(+), 14 deletions(-)
+> So how about the diff below ?  ;-)
 > 
-> diff --git a/Documentation/accounting/getdelays.c b/Documentation/accounting/getdelays.c
-> index f8ebcde..5e4773d 100644
-> --- a/Documentation/accounting/getdelays.c
-> +++ b/Documentation/accounting/getdelays.c
-> @@ -23,6 +23,7 @@
->  #include <sys/socket.h>
->  #include <sys/wait.h>
->  #include <signal.h>
-> +#include <bsd/string.h>
->  
->  #include <linux/genetlink.h>
->  #include <linux/taskstats.h>
-> @@ -299,7 +300,7 @@ int main(int argc, char *argv[])
->  			break;
->  		case 'C':
->  			containerset = 1;
-> -			strncpy(containerpath, optarg, strlen(optarg) + 1);
-> +			strlcpy(containerpath, optarg, sizeof(containerpath));
->  			break;
->  		case 'w':
->  			logfile = strdup(optarg);
-> diff --git a/drivers/acpi/sysfs.c b/drivers/acpi/sysfs.c
-> index fcae5fa..193745d 100644
-> --- a/drivers/acpi/sysfs.c
-> +++ b/drivers/acpi/sysfs.c
-> @@ -677,10 +677,9 @@ void acpi_irq_stats_init(void)
->  		else
->  			sprintf(buffer, "bug%02X", i);
->  
-> -		name = kzalloc(strlen(buffer) + 1, GFP_KERNEL);
-> +		name = kstrdup(buffer, GFP_KERNEL);
->  		if (name == NULL)
->  			goto fail;
-> -		strncpy(name, buffer, strlen(buffer) + 1);
->  
->  		sysfs_attr_init(&counter_attrs[i].attr);
->  		counter_attrs[i].attr.name = name;
-> diff --git a/drivers/s390/net/qeth_l3_sys.c b/drivers/s390/net/qeth_l3_sys.c
-> index e70af24..d1c8025 100644
-> --- a/drivers/s390/net/qeth_l3_sys.c
-> +++ b/drivers/s390/net/qeth_l3_sys.c
-> @@ -315,10 +315,8 @@ static ssize_t qeth_l3_dev_hsuid_store(struct device *dev,
->  	if (qeth_configure_cq(card, QETH_CQ_ENABLED))
->  		return -EPERM;
->  
-> -	for (i = 0; i < 8; i++)
-> -		card->options.hsuid[i] = ' ';
-> -	card->options.hsuid[8] = '\0';
-> -	strncpy(card->options.hsuid, tmp, strlen(tmp));
-> +	snprintf(card->options.hsuid, sizeof(card->options.hsuid),
-> +		 "%-8s", tmp);
->  	ASCEBC(card->options.hsuid, 8);
->  	if (card->dev)
->  		memcpy(card->dev->perm_addr, card->options.hsuid, 9);
-> diff --git a/drivers/staging/tidspbridge/rmgr/drv_interface.c b/drivers/staging/tidspbridge/rmgr/drv_interface.c
-> index df0f37e..c4d632c 100644
-> --- a/drivers/staging/tidspbridge/rmgr/drv_interface.c
-> +++ b/drivers/staging/tidspbridge/rmgr/drv_interface.c
-> @@ -421,12 +421,11 @@ static int omap3_bridge_startup(struct platform_device *pdev)
->  	drv_datap->tc_wordswapon = tc_wordswapon;
->  
->  	if (base_img) {
-> -		drv_datap->base_img = kmalloc(strlen(base_img) + 1, GFP_KERNEL);
-> +		drv_datap->base_img = kstrdup(base_img, GFP_KERNEL);
->  		if (!drv_datap->base_img) {
->  			err = -ENOMEM;
->  			goto err2;
->  		}
-> -		strncpy(drv_datap->base_img, base_img, strlen(base_img) + 1);
->  	}
->  
->  	dev_set_drvdata(bridge, drv_datap);
-> diff --git a/fs/hppfs/hppfs.c b/fs/hppfs/hppfs.c
-> index cd3e389..d619b83 100644
-> --- a/fs/hppfs/hppfs.c
-> +++ b/fs/hppfs/hppfs.c
-> @@ -69,7 +69,7 @@ static char *dentry_name(struct dentry *dentry, int extra)
->  	struct dentry *parent;
->  	char *root, *name;
->  	const char *seg_name;
-> -	int len, seg_len;
-> +	int len, seg_len, root_len;
->  
->  	len = 0;
->  	parent = dentry;
-> @@ -81,7 +81,8 @@ static char *dentry_name(struct dentry *dentry, int extra)
->  	}
->  
->  	root = "proc";
-> -	len += strlen(root);
-> +	root_len = strlen(root);
-> +	len += root_len;
->  	name = kmalloc(len + extra + 1, GFP_KERNEL);
->  	if (name == NULL)
->  		return NULL;
-> @@ -91,7 +92,7 @@ static char *dentry_name(struct dentry *dentry, int extra)
->  	while (parent->d_parent != parent) {
->  		if (is_pid(parent)) {
->  			seg_name = "pid";
-> -			seg_len = strlen("pid");
-> +			seg_len = strlen(seg_name);
->  		}
->  		else {
->  			seg_name = parent->d_name.name;
-> @@ -100,10 +101,10 @@ static char *dentry_name(struct dentry *dentry, int extra)
->  
->  		len -= seg_len + 1;
->  		name[len] = '/';
-> -		strncpy(&name[len + 1], seg_name, seg_len);
-> +		memcpy(&name[len + 1], seg_name, seg_len);
->  		parent = parent->d_parent;
->  	}
-> -	strncpy(name, root, strlen(root));
-> +	memcpy(name, root, root_len);
->  	return name;
+> ---------------------------diff begin-----------------------------------
+> 
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index d5afe96..ede3775 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -303,13 +303,17 @@ static inline void *phys_to_virt(unsigned long address)
+>  /*
+>   * Change "struct page" to physical address.
+>   *
+> - * This implementation is for the no-MMU case only... if you have an MMU
+> - * you'll need to provide your own definitions.
+> + * This for the no-MMU, or no-IOMEM but still try to COMPILE_TEST cases.
+> + * if you have an MMU and IOMEM, you'll need to provide your own definitions.
+>   */
+> -#ifndef CONFIG_MMU
+> +#if !defined(CONFIG_MMU) || \
+> +	(!defined(CONFIG_HAS_IOMEM) && defined(COMPILE_TEST))
+
+Need use 'CONFIG_COMPILE_TEST' instead of 'COMPILE_TEST'.
+
+>  static inline void __iomem *ioremap(phys_addr_t offset, unsigned long size)
+>  {
+> +#if !defined(CONFIG_MMU)
+>  	return (void __iomem*) (unsigned long)offset;
+> +#else
+> +	return NULL;
 >  }
 >  
+>  #define __ioremap(offset, size, flags)	ioremap(offset, size)
+> @@ -325,7 +329,7 @@ static inline void __iomem *ioremap(phys_addr_t offset, unsigned long size)
+>  static inline void iounmap(void __iomem *addr)
+>  {
+>  }
+> -#endif /* CONFIG_MMU */
+> +#endif /* !MMU || (!HAS_IOMEM && COMPILE_TEST) */
+>  
+>  #ifdef CONFIG_HAS_IOPORT
+>  #ifndef CONFIG_GENERIC_IOMAP
 > 
+> ---------------------------diff end-------------------------------------
+> 
+>> > It is really the time for stopping discussion, and thank you all for
+>> > spending your time resources on this discussion.
+>> > 
+>> > Next, I will send related patch for it (also cc to you all).
+>> > 
+>> > 
+>> > Thanks.
+>> > 
+> 
+> -- Chen Gang
+> 
+
+
 -- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+Chen Gang
+
