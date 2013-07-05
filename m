@@ -1,58 +1,73 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 5 Jul 2013 13:13:43 +0200
-References: <20130704011221.GA11230@kroah.com> <51D617E9.8080907@gmail.com> <51D67D6C.4080603@gmail.com>
-In-Reply-To: <51D67D6C.4080603@gmail.com>
+Return-Path: <chen.gang.flying.transformer@gmail.com>
+Message-ID: <51D67D6C.4080603@gmail.com>
+Date: Fri, 05 Jul 2013 16:01:48 +0800
+From: Chen Gang F T <chen.gang.flying.transformer@gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
+References: <20130704011221.GA11230@kroah.com> <20130704061204.GA12148@kroah.com> <51D517A7.6030908@asianux.com> <201307041125.15083.arnd@arndb.de> <51D60D53.7050405@gmail.com> <20130705101446.48deb2694f5fcdb060f41e5b@canb.auug.org.au> <51D617E9.8080907@gmail.com>
+In-Reply-To: <51D617E9.8080907@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <201307051313.43491.arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH] include/asm-generic/io.h: add dummy fuctions to support 'COMPILE_TEST' in 'asm-generic'.
-To: Chen Gang F T <chen.gang.flying.transformer@gmail.com>
-Cc: Chen Gang <gang.chen@asianux.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Greg KH <gregkh@linuxfoundation.org>, Steven Rostedt <rostedt@goodmis.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, David Sharp <dhsharp@google.com>, Ingo Molnar <mingo@kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Mark Brown <broonie@kernel.org>, David Miller <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>, Jiri Kosina <trivial@kernel.org>, Jiri Slaby <jslaby@suse.cz>
+Subject: Re: [PATCH] include/asm-generic/io.h: add dummy fuctions to support
+ 'COMPILE_TEST' in 'asm-generic'.
+To: Chen Gang <gang.chen@asianux.com>, Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Steven Rostedt <rostedt@goodmis.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, David Sharp <dhsharp@google.com>, Ingo Molnar <mingo@kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Mark Brown <broonie@kernel.org>, David Miller <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>, Jiri Kosina <trivial@kernel.org>, Jiri Slaby <jslaby@suse.cz>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Friday 05 July 2013, Chen Gang F T wrote:
-> Hello All:
+Hello All:
+
+It seems 'asm-generic' dislikes 'mad users' (e.g allmodconfig,
+randconfig, and me).
+
+I guess the main reason is: 'asm-generic' thinks what mad users talk
+about is useless in real world, so it is just noisy.
+
+I can understand, at least what I talk about is not for urgent things.
+(maybe 'asm-generic' also thinks it not important either, every members
+have their own opinions).
+
+Next, I still use allmodconfig/randconfig for some architectures which I
+am interested in (and also for learning compilers), but I will skip all
+things which are related with 'asm-generic', since it dislikes me (a mad
+user).
+
+At last, I make an apologize to 'asm-generic' for my mad discussing.
+
+Bye !!
+
+
+On 07/05/2013 08:48 AM, Chen Gang F T wrote:
+> On 07/05/2013 08:14 AM, Stephen Rothwell wrote:
+>> On Fri, 05 Jul 2013 08:03:31 +0800 Chen Gang F T <chen.gang.flying.transformer@gmail.com> wrote:
+>>>>
+>>>> When a module select "COMPILE_TEST=y" (e.g with allmodconfig), it has
+>>>> right to compile under the architecture which no related HW support.
+>>>>
+>>>> If it can not pass compiling, at least it is not the module's issue,
+>>>> neither the architecture's issue.
+>>>>
+>>>> We have to look for who has duty on it. At least now, it seems only
+>>>> 'asm-generic' can be qualified to play this unlucky role.
+>> You keep saying this, but others have told you that this is not the
+>> problem.
+>>
 > 
-> It seems 'asm-generic' dislikes 'mad users' (e.g allmodconfig,
-> randconfig, and me).
+> In real world, it is not the problem.
 > 
-> I guess the main reason is: 'asm-generic' thinks what mad users talk
-> about is useless in real world, so it is just noisy.
+> But for 'mad users' (e.g. allmodconfig, randconfig, and me too), they
+> have not provided enough reason for it (prove that is not a problem for
+> 'mad users').
 > 
-> I can understand, at least what I talk about is not for urgent things.
-> (maybe 'asm-generic' also thinks it not important either, every members
-> have their own opinions).
 > 
-> Next, I still use allmodconfig/randconfig for some architectures which I
-> am interested in (and also for learning compilers), but I will skip all
-> things which are related with 'asm-generic', since it dislikes me (a mad
-> user).
+>>>> Could you provide your suggestions or completions for this issue ?
+>> If something doesn't build for a particular config, then either it needs
+>> to be fixed or excluded from building in that particular config.
+> 
+> I agree with you, if get rid of 'COMPILE_TEST'.
+> 
+> Thanks.
+> 
 
-As the asm-generic maintainer I think I have to clarify a few things:
 
-* Build-time fixes for warnings and randconfig errors are good,
-  and you have sent a number of good bug fixes all over the kernel,
-  I definitely welcome getting more of those. In many cases the
-  fix is trivial and obvious, in other cases you need to know
-  much more of the background to understand what the underlying
-  problem is and why you should not just fix the symptom.
+-- 
+Chen Gang
 
-* You have made an (understandable) mistake with this particular
-  patch. It would have been nice if you had not made it, but I
-  can see that you are still learning about these things. There
-  is a fine line between what makes sense to be enabled as a
-  'compile test' and what should better be left disabled by
-  Kconfig.
-
-* When experienced developers tell you that you are mistaken, you
-  need to make an effort to understand what the mistake was so you
-  can learn from it and not make the same mistake again. If you
-  make the same mistakes again, maintainers will get annoyed and
-  ignore you (or worse), which is not a good situation to be
-  in when you want to get your patches merged.
-
-	Arnd
