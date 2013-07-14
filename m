@@ -1,212 +1,205 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: "Myklebust, Trond" <Trond.Myklebust@netapp.com>
-Date: Mon, 15 Jul 2013 03:01:28 +0000
-Message-ID: <1373857286.3181.1.camel@leira.trondhjem.org>
-References: <51E25B20.7030906@gmx.de>
-In-Reply-To: <51E25B20.7030906@gmx.de>
-Content-Language: en-US
-Content-Type: multipart/mixed;
-	boundary="_002_137385728631811camelleiratrondhjemorg_"
+Message-ID: <51E25B20.7030906@gmx.de>
+Date: Sun, 14 Jul 2013 10:02:40 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: sunrpc/clnt.c: BUG kmalloc-256 (Not tainted): Poison overwritten
-To: =?utf-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-Cc: Linux NFS mailing list <linux-nfs@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Subject: sunrpc/clnt.c: BUG kmalloc-256 (Not tainted): Poison overwritten
+To: Linux NFS mailing list <linux-nfs@vger.kernel.org>
+Cc: Linux Kernel <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
---_002_137385728631811camelleiratrondhjemorg_
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7A1BA6C9556E2B4687A1E99B4BDBC854@hq.netapp.com>
-Content-Transfer-Encoding: base64
+This bisected commit produces at a 32 bit user mode linux guest the att=
+ached BUG :
 
-T24gU3VuLCAyMDEzLTA3LTE0IGF0IDEwOjAyICswMjAwLCBUb3JhbGYgRsO2cnN0ZXIgd3JvdGU6
-DQo+IFRoaXMgYmlzZWN0ZWQgY29tbWl0IHByb2R1Y2VzIGF0IGEgMzIgYml0IHVzZXIgbW9kZSBs
-aW51eCBndWVzdCB0aGUgYXR0YWNoZWQgQlVHIDoNCj4gDQo+IGNvbW1pdCBlZWVlMjQ1MjY4Yzk1
-MTI2MmI4NjFiYzFiZTRlOWRjODEyMzUyNDk5DQo+IEF1dGhvcjogVHJvbmQgTXlrbGVidXN0IDxU
-cm9uZC5NeWtsZWJ1c3RAbmV0YXBwLmNvbT4NCj4gRGF0ZTogICBXZWQgSnVsIDEwIDE1OjMzOjAx
-IDIwMTMgLTA0MDANCj4gDQo+ICAgICBTVU5SUEM6IEZpeCBhIGRlYWRsb2NrIGluIHJwY19jbGll
-bnRfcmVnaXN0ZXIoKQ0KPiANCj4gICAgIENvbW1pdCAzODQ4MTYwNTFjYTkxMjVjZDU0NzUwZTU5
-Yzc4MGMyYTI2NTVmYTRmIChTVU5SUEM6IGZpeCByYWNlcyBvbg0KPiAgICAgUGlwZUZTIE1PVU5U
-IG5vdGlmaWNhdGlvbnMpIGludHJvZHVjZXMgYSByZWdyZXNzaW9uIHdoZW4gd2UgY2FsbA0KPiAg
-ICAgcnBjX3NldHVwX3BpcGVkaXIoKSB3aXRoIFJQQ1NFQ19HU1MgYXMgdGhlIGF1dGggZmxhdm91
-ci4NCj4gDQo+ICAgICBCeSBjYWxsaW5nIHJwY2F1dGhfY3JlYXRlKCkgd2hpbGUgaG9sZGluZyB0
-aGUgc24tPnBpcGVmc19zYl9sb2NrLCB3ZQ0KPiAgICAgZW5kIHVwIGRlYWRsb2NraW5nIGluIGdz
-c19waXBlc19kZW50cmllc19jcmVhdGVfbmV0KCkuDQo+ICAgICBGaXggaXMgdG8gcmVnaXN0ZXIg
-dGhlIGNsaWVudCBhbmQgcmVsZWFzZSB0aGUgbXV0ZXggYmVmb3JlIGNhbGxpbmcNCj4gICAgIHJw
-Y2F1dGhfY3JlYXRlKCkuDQo+IA0KPiAgICAgUmVwb3J0ZWQtYnk6IFdlc3RvbiBBbmRyb3MgQWRh
-bXNvbiA8ZHJvc0BuZXRhcHAuY29tPg0KPiAgICAgVGVzdGVkLWJ5OiBXZXN0b24gQW5kcm9zIEFk
-YW1zb24gPGRyb3NAbmV0YXBwLmNvbT4NCj4gICAgIENjOiBTdGFuaXNsYXYgS2luc2J1cnNreSA8
-c2tpbnNidXJza3lAcGFyYWxsZWxzLmNvbT4NCj4gICAgIENjOiA8c3RhYmxlQHZnZXIua2VybmVs
-Lm9yZz4gIyA6IDM4NDgxNjA6IFNVTlJQQzogZml4IHJhY2VzIG9uIFBpcGVGUyBNT1VOVA0KPiAg
-ICAgQ2M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPiAjIDogZTczZjRjYzogU1VOUlBDOiBzcGxp
-dCBjbGllbnQgY3JlYXRpb24NCj4gICAgIFNpZ25lZC1vZmYtYnk6IFRyb25kIE15a2xlYnVzdCA8
-VHJvbmQuTXlrbGVidXN0QG5ldGFwcC5jb20+DQo+IA0KPiANCj4gDQo+IA0KPiANCj4gDQo+IDIw
-MTMtMDctMTNUMjI6MDk6MDcuMDAwKzAyOjAwIHRyaW5pdHkgc20tbm90aWZ5WzEwNDJdOiBWZXJz
-aW9uIDEuMi42IHN0YXJ0aW5nDQo+IDIwMTMtMDctMTNUMjI6MDk6MDcuMDAwKzAyOjAwIHRyaW5p
-dHkgc20tbm90aWZ5WzEwNDJdOiBCYWNrZ3JvdW5kaW5nIHRvIG5vdGlmeSBob3N0cy4uLg0KPiAy
-MDEzLTA3LTEzVDIyOjA5OjA3LjAwMCswMjowMCB0cmluaXR5IHNtLW5vdGlmeVsxMDQzXTogUnVu
-bmluZyBhcyByb290LiAgY2hvd24gL3Zhci9saWIvbmZzIHRvIGNob29zZSBkaWZmZXJlbnQgdXNl
-cg0KPiAyMDEzLTA3LTEzVDIyOjA5OjEwLjAwMCswMjowMCB0cmluaXR5IG1vdW50WzEwNDddOiBt
-b3VudCB0byBORlMgc2VydmVyICduMjJzdGFiNCcgZmFpbGVkOiBObyByb3V0ZSB0byBob3N0LCBy
-ZXRyeWluZw0KPiAyMDEzLTA3LTEzVDIyOjA5OjExLjAwMCswMjowMCB0cmluaXR5IGRoY3BjZFs5
-NzFdOiBldGgwOiBzZW5kaW5nIElQdjYgUm91dGVyIFNvbGljaXRhdGlvbg0KPiAyMDEzLTA3LTEz
-VDIyOjA5OjExLjAwMCswMjowMCB0cmluaXR5IGRoY3BjZFs5NzFdOiBldGgwOiBubyBJUHY2IFJv
-dXRlcnMgYXZhaWxhYmxlDQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuMDAwKzAyOjAwIHRyaW5pdHkg
-bW91bnRbMTA0OF06IG1vdW50IHRvIE5GUyBzZXJ2ZXIgJ24yMnN0YWI0JyBmYWlsZWQ6IE5vIHJv
-dXRlIHRvIGhvc3QsIHJldHJ5aW5nDQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuNjQ3KzAyOjAwIHRy
-aW5pdHkga2VybmVsOiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPiAyMDEzLTA3LTEzVDIyOjA5OjEz
-LjY0NyswMjowMCB0cmluaXR5IGtlcm5lbDogQlVHIGttYWxsb2MtMjU2IChOb3QgdGFpbnRlZCk6
-IFBvaXNvbiBvdmVyd3JpdHRlbg0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY0NyswMjowMCB0cmlu
-aXR5IGtlcm5lbDogLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gMjAxMy0wNy0xM1QyMjowOToxMy42
-NDcrMDI6MDAgdHJpbml0eSBrZXJuZWw6DQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuNjQ3KzAyOjAw
-IHRyaW5pdHkga2VybmVsOiBEaXNhYmxpbmcgbG9jayBkZWJ1Z2dpbmcgZHVlIHRvIGtlcm5lbCB0
-YWludA0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY0NyswMjowMCB0cmluaXR5IGtlcm5lbDogSU5G
-TzogMHg0OWIxZWQxOC0weDQ5YjFlZDFiLiBGaXJzdCBieXRlIDB4NzQgaW5zdGVhZCBvZiAweDZi
-DQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuNjQ3KzAyOjAwIHRyaW5pdHkga2VybmVsOiBJTkZPOiBB
-bGxvY2F0ZWQgaW4gcnBjX25ld19jbGllbnQrMHg4MS8weDNhMCBhZ2U9MzAwIGNwdT0wIHBpZD0x
-MDQ5DQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuNjQ3KzAyOjAwIHRyaW5pdHkga2VybmVsOiBJTkZP
-OiBGcmVlZCBpbiBycGNfbmV3X2NsaWVudCsweDM1YS8weDNhMCBhZ2U9MzAwIGNwdT0wIHBpZD0x
-MDQ5DQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuNjQ3KzAyOjAwIHRyaW5pdHkga2VybmVsOiBJTkZP
-OiBTbGFiIDB4MGI4N2JhYzAgb2JqZWN0cz0xMyB1c2VkPTEzIGZwPTB4ICAobnVsbCkgZmxhZ3M9
-MHgwMDgwDQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuNjQ3KzAyOjAwIHRyaW5pdHkga2VybmVsOiBJ
-TkZPOiBPYmplY3QgMHg0OWIxZWQxMCBAb2Zmc2V0PTMzNDQgZnA9MHg0OWIxZWU0MA0KPiAyMDEz
-LTA3LTEzVDIyOjA5OjEzLjY1MyswMjowMCB0cmluaXR5IGtlcm5lbDoNCj4gMjAxMy0wNy0xM1Qy
-MjowOToxMy42NTMrMDI6MDAgdHJpbml0eSBrZXJuZWw6IEJ5dGVzIGI0IDQ5YjFlZDAwOiBmNiAw
-MyAwMCAwMCBiZCA5NCBmZiBmZiA1YSA1YSA1YSA1YSA1YSA1YSA1YSA1YSAgLi4uLi4uLi5aWlpa
-WlpaWg0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY1MyswMjowMCB0cmluaXR5IGtlcm5lbDogT2Jq
-ZWN0IDQ5YjFlZDEwOiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA3NCAzYSA4NSA0OSA2YiA2YiA2
-YiA2YiAga2tra2tra2t0Oi5Ja2traw0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY1MyswMjowMCB0
-cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFlZDIwOiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2
-YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiAga2tra2tra2tra2tra2traw0KPiAyMDEzLTA3LTEzVDIy
-OjA5OjEzLjY1MyswMjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFlZDMwOiA2YiA2YiA2
-YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiAga2tra2tra2tra2tra2tr
-aw0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY1MyswMjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0
-IDQ5YjFlZDQwOiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2
-YiAga2tra2tra2tra2tra2traw0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY1MyswMjowMCB0cmlu
-aXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFlZDUwOiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2
-YiA2YiA2YiA2YiA2YiA2YiA2YiAga2tra2tra2tra2tra2traw0KPiAyMDEzLTA3LTEzVDIyOjA5
-OjEzLjY1MyswMjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFlZDYwOiA2YiA2YiA2YiA2
-YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiAga2tra2tra2tra2tra2traw0K
-PiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY1MyswMjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5
-YjFlZDcwOiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiAg
-a2tra2tra2tra2tra2traw0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY1MyswMjowMCB0cmluaXR5
-IGtlcm5lbDogT2JqZWN0IDQ5YjFlZDgwOiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2
-YiA2YiA2YiA2YiA2YiA2YiAga2tra2tra2tra2tra2traw0KPiAyMDEzLTA3LTEzVDIyOjA5OjEz
-LjY2MCswMjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFlZDkwOiA2YiA2YiA2YiA2YiA2
-YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiAga2tra2tra2tra2tra2traw0KPiAy
-MDEzLTA3LTEzVDIyOjA5OjEzLjY2MCswMjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFl
-ZGEwOiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiAga2tr
-a2tra2tra2tra2traw0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY2MCswMjowMCB0cmluaXR5IGtl
-cm5lbDogT2JqZWN0IDQ5YjFlZGIwOiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2
-YiA2YiA2YiA2YiA2YiAga2tra2tra2tra2tra2traw0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY2
-MCswMjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFlZGMwOiA2YiA2YiA2YiA2YiA2YiA2
-YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiAga2tra2tra2tra2tra2traw0KPiAyMDEz
-LTA3LTEzVDIyOjA5OjEzLjY2MCswMjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFlZGQw
-OiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiAga2tra2tr
-a2tra2tra2traw0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY2MCswMjowMCB0cmluaXR5IGtlcm5l
-bDogT2JqZWN0IDQ5YjFlZGUwOiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2
-YiA2YiA2YiA2YiAga2tra2tra2tra2tra2traw0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY2MCsw
-MjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFlZGYwOiA2YiA2YiA2YiA2YiA2YiA2YiA2
-YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiAga2tra2tra2tra2tra2traw0KPiAyMDEzLTA3
-LTEzVDIyOjA5OjEzLjY2MCswMjowMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ5YjFlZTAwOiA2
-YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiA2YiBhNSAga2tra2tra2tr
-a2tra2trLg0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY2MCswMjowMCB0cmluaXR5IGtlcm5lbDog
-UmVkem9uZSA0OWIxZWUxMDogYmIgYmIgYmIgYmIgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIC4uLi4NCj4gMjAxMy0wNy0xM1QyMjowOToxMy42NjArMDI6MDAgdHJpbml0eSBr
-ZXJuZWw6IFBhZGRpbmcgNDliMWVlMzg6IDVhIDVhIDVhIDVhIDVhIDVhIDVhIDVhICAgICAgICAg
-ICAgICAgICAgICAgICAgICBaWlpaWlpaWg0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY2NSswMjow
-MCB0cmluaXR5IGtlcm5lbDogQ1BVOiAwIFBJRDogMTAzMCBDb21tOiBycGMuaWRtYXBkIFRhaW50
-ZWQ6IEcgICAgQiAgICAgICAgMy4xMC4wLTA5MjkyLWc2MjFmYTI4ICMxDQo+IDIwMTMtMDctMTNU
-MjI6MDk6MTMuNjY1KzAyOjAwIHRyaW5pdHkga2VybmVsOiA0ODk1N2ExYyA0ODk1N2E0OCAwODBm
-NzhiMCAwODRhYjBmOCA0OWIxZWQxMCAwMDAwMGQxMCA0OWIxZWU0MCAwYjg3YmFjMA0KPiAyMDEz
-LTA3LTEzVDIyOjA5OjEzLjY2NSswMjowMCB0cmluaXR5IGtlcm5lbDogNDliMWVkMTggMDAwMDAw
-MDQgNDliMWVkMWIgNDg5NTdhODAgMDgwZjdlODggMDg0YWIxZDggNDliMWVkMTggNDliMWVkMWIN
-Cj4gMjAxMy0wNy0xM1QyMjowOToxMy42NjUrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDAwMDAwMDc0
-IDAwMDAwMDZiIDAwMDAwMDVhIDQ5YjFlZDEwIDBiODdiYWMwIDQ5ODQ5YzAwIDQ5ODQ5YzAwIDQ5
-YjFlZDEwIDQ4OTU3OWYwOiAgWzwwODA1ZmIxZj5dIHNob3dfc3RhY2srMHhjZi8weDEwMA0KPiAy
-MDEzLTA3LTEzVDIyOjA5OjEzLjY2NSswMjowMCB0cmluaXR5IGtlcm5lbDogNDg5NTdhMTQ6ICBb
-PDA4NDAzNDVkPl0gZHVtcF9zdGFjaysweDI2LzB4MjgNCj4gMjAxMy0wNy0xM1QyMjowOToxMy42
-NjUrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDQ4OTU3YTI0OiAgWzwwODBmNzhiMD5dIHByaW50X3Ry
-YWlsZXIrMHhlMC8weGYwDQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuNjY1KzAyOjAwIHRyaW5pdHkg
-a2VybmVsOiA0ODk1N2E0YzogIFs8MDgwZjdlODg+XSBjaGVja19ieXRlc19hbmRfcmVwb3J0KzB4
-YTgvMHgxMDANCj4gMjAxMy0wNy0xM1QyMjowOToxMy42NjUrMDI6MDAgdHJpbml0eSBrZXJuZWw6
-IDQ4OTU3YTg0OiAgWzwwODBmN2ZiOD5dIGNoZWNrX29iamVjdCsweGQ4LzB4MjEwDQo+IDIwMTMt
-MDctMTNUMjI6MDk6MTMuNjY1KzAyOjAwIHRyaW5pdHkga2VybmVsOiA0ODk1N2FjMDogIFs8MDg0
-MDFhODQ+XSBhbGxvY19kZWJ1Z19wcm9jZXNzaW5nKzB4N2QvMHgxMGUNCj4gMjAxMy0wNy0xM1Qy
-MjowOToxMy42NjUrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDQ4OTU3YWU0OiAgWzwwODQwMjNjZD5d
-IF9fc2xhYl9hbGxvYy5jb25zdHByb3AuNzQrMHgzNTYvMHgzYTQNCj4gMjAxMy0wNy0xM1QyMjow
-OToxMy42NzMrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDQ4OTU3YjcwOiAgWzwwODBmYWU4NT5dIF9f
-a21hbGxvY190cmFja19jYWxsZXIrMHg4NS8weDE2MA0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY3
-MyswMjowMCB0cmluaXR5IGtlcm5lbDogNDg5NTdiOTg6ICBbPDA4MmM5MGYzPl0gX19rbWFsbG9j
-X3Jlc2VydmUuaXNyYS40NysweDMzLzB4OTANCj4gMjAxMy0wNy0xM1QyMjowOToxMy42NzMrMDI6
-MDAgdHJpbml0eSBrZXJuZWw6IDQ4OTU3YmMwOiAgWzwwODJjOTI3Nj5dIF9fYWxsb2Nfc2tiKzB4
-NzYvMHgyMTANCj4gMjAxMy0wNy0xM1QyMjowOToxMy42NzMrMDI6MDAgdHJpbml0eSBrZXJuZWw6
-IDQ4OTU3YmVjOiAgWzwwODJjNjVhMT5dIHNvY2tfYWxsb2Nfc2VuZF9wc2tiKzB4YjEvMHgzMjAN
-Cj4gMjAxMy0wNy0xM1QyMjowOToxMy42NzMrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDQ4OTU3YzM0
-OiAgWzwwODJjNjgzZT5dIHNvY2tfYWxsb2Nfc2VuZF9za2IrMHgyZS8weDMwDQo+IDIwMTMtMDct
-MTNUMjI6MDk6MTMuNjczKzAyOjAwIHRyaW5pdHkga2VybmVsOiA0ODk1N2M1MDogIFs8MDgzNDQ4
-MzE+XSB1bml4X3N0cmVhbV9zZW5kbXNnKzB4MTYxLzB4M2IwDQo+IDIwMTMtMDctMTNUMjI6MDk6
-MTMuNjczKzAyOjAwIHRyaW5pdHkga2VybmVsOiA0ODk1N2NhODogIFs8MDgyYzIzYmU+XSBzb2Nr
-X3NlbmRtc2crMHg3ZS8weGEwDQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuNjczKzAyOjAwIHRyaW5p
-dHkga2VybmVsOiA0ODk1N2Q2YzogIFs8MDgyYzM3OGE+XSBTeVNfc2VuZHRvKzB4ZWEvMHgxMjAN
-Cj4gMjAxMy0wNy0xM1QyMjowOToxMy42NzMrMDI6MDAgdHJpbml0eSBrZXJuZWw6IDQ4OTU3ZTQ0
-OiAgWzwwODJjMzdmNj5dIFN5U19zZW5kKzB4MzYvMHg0MA0KPiAyMDEzLTA3LTEzVDIyOjA5OjEz
-LjY3MyswMjowMCB0cmluaXR5IGtlcm5lbDogNDg5NTdlNjQ6ICBbPDA4MmM0MjQ3Pl0gU3lTX3Nv
-Y2tldGNhbGwrMHgxNjcvMHgzMDANCj4gMjAxMy0wNy0xM1QyMjowOToxMy42NzgrMDI6MDAgdHJp
-bml0eSBrZXJuZWw6IDQ4OTU3ZWFjOiAgWzwwODA2MThlMj5dIGhhbmRsZV9zeXNjYWxsKzB4ODIv
-MHhiMA0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY3OCswMjowMCB0cmluaXR5IGtlcm5lbDogNDg5
-NTdlZjQ6ICBbPDA4MDczZDZkPl0gdXNlcnNwYWNlKzB4NDZkLzB4NTkwDQo+IDIwMTMtMDctMTNU
-MjI6MDk6MTMuNjc4KzAyOjAwIHRyaW5pdHkga2VybmVsOiA0ODk1N2ZlYzogIFs8MDgwNWU2NWM+
-XSBmb3JrX2hhbmRsZXIrMHg2Yy8weDcwDQo+IDIwMTMtMDctMTNUMjI6MDk6MTMuNjc4KzAyOjAw
-IHRyaW5pdHkga2VybmVsOiA0ODk1N2ZmYzogIFs8MDAwMDAwMDA+XSAweDANCj4gMjAxMy0wNy0x
-M1QyMjowOToxMy42NzgrMDI6MDAgdHJpbml0eSBrZXJuZWw6DQo+IDIwMTMtMDctMTNUMjI6MDk6
-MTMuNjc4KzAyOjAwIHRyaW5pdHkga2VybmVsOiBGSVgga21hbGxvYy0yNTY6IFJlc3RvcmluZyAw
-eDQ5YjFlZDE4LTB4NDliMWVkMWI9MHg2Yg0KPiAyMDEzLTA3LTEzVDIyOjA5OjEzLjY3OCswMjow
-MCB0cmluaXR5IGtlcm5lbDoNCj4gMjAxMy0wNy0xM1QyMjowOToxMy42NzgrMDI6MDAgdHJpbml0
-eSBrZXJuZWw6IEZJWCBrbWFsbG9jLTI1NjogTWFya2luZyBhbGwgb2JqZWN0cyB1c2VkDQo+IDIw
-MTMtMDctMTNUMjI6MDk6MTMuMDAwKzAyOjAwIHRyaW5pdHkgbW91bnRbMTA0OV06IG1vdW50IHRv
-IE5GUyBzZXJ2ZXIgJ24yMnN0YWI0JyBmYWlsZWQ6IE5vIHJvdXRlIHRvIGhvc3QsIHJldHJ5aW5n
-DQo+IDIwMTMtMDctMTNUMjI6MDk6MTYuMDAwKzAyOjAwIHRyaW5pdHkgbW91bnRbMTA0OF06IG1v
-dW50IHRvIE5GUyBzZXJ2ZXIgJ24yMnN0YWI0JyBmYWlsZWQ6IE5vIHJvdXRlIHRvIGhvc3QsIHJl
-dHJ5aW5nDQo+IDIwMTMtMDctMTNUMjI6MDk6MTYuNjQ4KzAyOjAwIHRyaW5pdHkga2VybmVsOiA9
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PQ0KPiAyMDEzLTA3LTEzVDIyOjA5OjE2LjY0OCswMjowMCB0cmlu
-aXR5IGtlcm5lbDogQlVHIGttYWxsb2MtMjU2IChUYWludGVkOiBHICAgIEIgICAgICAgKTogUG9p
-c29uIG92ZXJ3cml0dGVuDQo+IDIwMTMtMDctMTNUMjI6MDk6MTYuNjQ4KzAyOjAwIHRyaW5pdHkg
-a2VybmVsOiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAyMDEzLTA3LTEzVDIyOjA5OjE2LjY0OCsw
-MjowMCB0cmluaXR5IGtlcm5lbDoNCg0KRG9lcyB0aGUgYXR0YWNoZWQgcGF0Y2ggZml4IHRoZSBw
-cm9ibGVtPw0KDQotLSANClRyb25kIE15a2xlYnVzdA0KTGludXggTkZTIGNsaWVudCBtYWludGFp
-bmVyDQoNCk5ldEFwcA0KVHJvbmQuTXlrbGVidXN0QG5ldGFwcC5jb20NCnd3dy5uZXRhcHAuY29t
-DQo=
+commit eeee245268c951262b861bc1be4e9dc812352499
+Author: Trond Myklebust <Trond.Myklebust@netapp.com>
+Date:   Wed Jul 10 15:33:01 2013 -0400
 
---_002_137385728631811camelleiratrondhjemorg_
-Content-Type: text/x-patch;
-	name="0001-SUNRPC-Fix-another-issue-with-rpc_client_register.patch"
-Content-Description: 0001-SUNRPC-Fix-another-issue-with-rpc_client_register.patch
-Content-Disposition: attachment;
-	filename="0001-SUNRPC-Fix-another-issue-with-rpc_client_register.patch";
-	size=806; creation-date="Mon, 15 Jul 2013 03:01:28 GMT";
-	modification-date="Mon, 15 Jul 2013 03:01:28 GMT"
-Content-ID: <78BBBE9A037C574DB61EAD7F8C99183F@hq.netapp.com>
-Content-Transfer-Encoding: base64
+    SUNRPC: Fix a deadlock in rpc_client_register()
 
-RnJvbSA4MGI1YTA1OGIxZWVkNWMyNjcxMTBkZjdlMDQxZDAzMDJlYWZmODFjIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQ0KRnJvbTogVHJvbmQgTXlrbGVidXN0IDxUcm9uZC5NeWtsZWJ1c3RAbmV0
-YXBwLmNvbT4NCkRhdGU6IFN1biwgMTQgSnVsIDIwMTMgMjI6NTc6NTAgLTA0MDANClN1YmplY3Q6
-IFtQQVRDSF0gU1VOUlBDOiBGaXggYW5vdGhlciBpc3N1ZSB3aXRoIHJwY19jbGllbnRfcmVnaXN0
-ZXIoKQ0KDQpGaXggdGhlIGVycm9yIHBhdGh3YXkgaWYgcnBjYXV0aF9jcmVhdGUoKSBmYWlscy4N
-Cg0KU2lnbmVkLW9mZi1ieTogVHJvbmQgTXlrbGVidXN0IDxUcm9uZC5NeWtsZWJ1c3RAbmV0YXBw
-LmNvbT4NCi0tLQ0KIG5ldC9zdW5ycGMvY2xudC5jIHwgMSArDQogMSBmaWxlIGNoYW5nZWQsIDEg
-aW5zZXJ0aW9uKCspDQoNCmRpZmYgLS1naXQgYS9uZXQvc3VucnBjL2NsbnQuYyBiL25ldC9zdW5y
-cGMvY2xudC5jDQppbmRleCBhYTQwMTU2Li40YTM1ZTFkIDEwMDY0NA0KLS0tIGEvbmV0L3N1bnJw
-Yy9jbG50LmMNCisrKyBiL25ldC9zdW5ycGMvY2xudC5jDQpAQCAtMzEzLDYgKzMxMyw3IEBAIHN0
-YXRpYyBpbnQgcnBjX2NsaWVudF9yZWdpc3Rlcihjb25zdCBzdHJ1Y3QgcnBjX2NyZWF0ZV9hcmdz
-ICphcmdzLA0KIAlyZXR1cm4gMDsNCiBlcnJfYXV0aDoNCiAJcGlwZWZzX3NiID0gcnBjX2dldF9z
-Yl9uZXQobmV0KTsNCisJcnBjX3VucmVnaXN0ZXJfY2xpZW50KGNsbnQpOw0KIAlfX3JwY19jbG50
-X3JlbW92ZV9waXBlZGlyKGNsbnQpOw0KIG91dDoNCiAJaWYgKHBpcGVmc19zYikNCi0tIA0KMS44
-LjMuMQ0KDQo=
+    Commit 384816051ca9125cd54750e59c780c2a2655fa4f (SUNRPC: fix races =
+on
+    PipeFS MOUNT notifications) introduces a regression when we call
+    rpc_setup_pipedir() with RPCSEC_GSS as the auth flavour.
 
---_002_137385728631811camelleiratrondhjemorg_--
+    By calling rpcauth_create() while holding the sn->pipefs_sb_lock, w=
+e
+    end up deadlocking in gss_pipes_dentries_create_net().
+    Fix is to register the client and release the mutex before calling
+    rpcauth_create().
+
+    Reported-by: Weston Andros Adamson <dros@netapp.com>
+    Tested-by: Weston Andros Adamson <dros@netapp.com>
+    Cc: Stanislav Kinsbursky <skinsbursky@parallels.com>
+    Cc: <stable@vger.kernel.org> # : 3848160: SUNRPC: fix races on Pipe=
+=46S MOUNT
+    Cc: <stable@vger.kernel.org> # : e73f4cc: SUNRPC: split client crea=
+tion
+    Signed-off-by: Trond Myklebust <Trond.Myklebust@netapp.com>
+
+
+
+
+
+
+2013-07-13T22:09:07.000+02:00 trinity sm-notify[1042]: Version 1.2.6 st=
+arting
+2013-07-13T22:09:07.000+02:00 trinity sm-notify[1042]: Backgrounding to=
+ notify hosts...
+2013-07-13T22:09:07.000+02:00 trinity sm-notify[1043]: Running as root.=
+  chown /var/lib/nfs to choose different user
+2013-07-13T22:09:10.000+02:00 trinity mount[1047]: mount to NFS server =
+'n22stab4' failed: No route to host, retrying
+2013-07-13T22:09:11.000+02:00 trinity dhcpcd[971]: eth0: sending IPv6 R=
+outer Solicitation
+2013-07-13T22:09:11.000+02:00 trinity dhcpcd[971]: eth0: no IPv6 Router=
+s available
+2013-07-13T22:09:13.000+02:00 trinity mount[1048]: mount to NFS server =
+'n22stab4' failed: No route to host, retrying
+2013-07-13T22:09:13.647+02:00 trinity kernel: =3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+2013-07-13T22:09:13.647+02:00 trinity kernel: BUG kmalloc-256 (Not tain=
+ted): Poison overwritten
+2013-07-13T22:09:13.647+02:00 trinity kernel: -------------------------=
+----------------------------------------------------
+2013-07-13T22:09:13.647+02:00 trinity kernel:
+2013-07-13T22:09:13.647+02:00 trinity kernel: Disabling lock debugging =
+due to kernel taint
+2013-07-13T22:09:13.647+02:00 trinity kernel: INFO: 0x49b1ed18-0x49b1ed=
+1b. First byte 0x74 instead of 0x6b
+2013-07-13T22:09:13.647+02:00 trinity kernel: INFO: Allocated in rpc_ne=
+w_client+0x81/0x3a0 age=3D300 cpu=3D0 pid=3D1049
+2013-07-13T22:09:13.647+02:00 trinity kernel: INFO: Freed in rpc_new_cl=
+ient+0x35a/0x3a0 age=3D300 cpu=3D0 pid=3D1049
+2013-07-13T22:09:13.647+02:00 trinity kernel: INFO: Slab 0x0b87bac0 obj=
+ects=3D13 used=3D13 fp=3D0x  (null) flags=3D0x0080
+2013-07-13T22:09:13.647+02:00 trinity kernel: INFO: Object 0x49b1ed10 @=
+offset=3D3344 fp=3D0x49b1ee40
+2013-07-13T22:09:13.653+02:00 trinity kernel:
+2013-07-13T22:09:13.653+02:00 trinity kernel: Bytes b4 49b1ed00: f6 03 =
+00 00 bd 94 ff ff 5a 5a 5a 5a 5a 5a 5a 5a  ........ZZZZZZZZ
+2013-07-13T22:09:13.653+02:00 trinity kernel: Object 49b1ed10: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 74 3a 85 49 6b 6b 6b 6b  kkkkkkkkt:.Ikkkk
+2013-07-13T22:09:13.653+02:00 trinity kernel: Object 49b1ed20: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.653+02:00 trinity kernel: Object 49b1ed30: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.653+02:00 trinity kernel: Object 49b1ed40: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.653+02:00 trinity kernel: Object 49b1ed50: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.653+02:00 trinity kernel: Object 49b1ed60: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.653+02:00 trinity kernel: Object 49b1ed70: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.653+02:00 trinity kernel: Object 49b1ed80: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.660+02:00 trinity kernel: Object 49b1ed90: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.660+02:00 trinity kernel: Object 49b1eda0: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.660+02:00 trinity kernel: Object 49b1edb0: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.660+02:00 trinity kernel: Object 49b1edc0: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.660+02:00 trinity kernel: Object 49b1edd0: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.660+02:00 trinity kernel: Object 49b1ede0: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.660+02:00 trinity kernel: Object 49b1edf0: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+2013-07-13T22:09:13.660+02:00 trinity kernel: Object 49b1ee00: 6b 6b 6b=
+ 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b a5  kkkkkkkkkkkkkkk.
+2013-07-13T22:09:13.660+02:00 trinity kernel: Redzone 49b1ee10: bb bb b=
+b bb                                      ....
+2013-07-13T22:09:13.660+02:00 trinity kernel: Padding 49b1ee38: 5a 5a 5=
+a 5a 5a 5a 5a 5a                          ZZZZZZZZ
+2013-07-13T22:09:13.665+02:00 trinity kernel: CPU: 0 PID: 1030 Comm: rp=
+c.idmapd Tainted: G    B        3.10.0-09292-g621fa28 #1
+2013-07-13T22:09:13.665+02:00 trinity kernel: 48957a1c 48957a48 080f78b=
+0 084ab0f8 49b1ed10 00000d10 49b1ee40 0b87bac0
+2013-07-13T22:09:13.665+02:00 trinity kernel: 49b1ed18 00000004 49b1ed1=
+b 48957a80 080f7e88 084ab1d8 49b1ed18 49b1ed1b
+2013-07-13T22:09:13.665+02:00 trinity kernel: 00000074 0000006b 0000005=
+a 49b1ed10 0b87bac0 49849c00 49849c00 49b1ed10 489579f0:  [<0805fb1f>] =
+show_stack+0xcf/0x100
+2013-07-13T22:09:13.665+02:00 trinity kernel: 48957a14:  [<0840345d>] d=
+ump_stack+0x26/0x28
+2013-07-13T22:09:13.665+02:00 trinity kernel: 48957a24:  [<080f78b0>] p=
+rint_trailer+0xe0/0xf0
+2013-07-13T22:09:13.665+02:00 trinity kernel: 48957a4c:  [<080f7e88>] c=
+heck_bytes_and_report+0xa8/0x100
+2013-07-13T22:09:13.665+02:00 trinity kernel: 48957a84:  [<080f7fb8>] c=
+heck_object+0xd8/0x210
+2013-07-13T22:09:13.665+02:00 trinity kernel: 48957ac0:  [<08401a84>] a=
+lloc_debug_processing+0x7d/0x10e
+2013-07-13T22:09:13.665+02:00 trinity kernel: 48957ae4:  [<084023cd>] _=
+_slab_alloc.constprop.74+0x356/0x3a4
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957b70:  [<080fae85>] _=
+_kmalloc_track_caller+0x85/0x160
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957b98:  [<082c90f3>] _=
+_kmalloc_reserve.isra.47+0x33/0x90
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957bc0:  [<082c9276>] _=
+_alloc_skb+0x76/0x210
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957bec:  [<082c65a1>] s=
+ock_alloc_send_pskb+0xb1/0x320
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957c34:  [<082c683e>] s=
+ock_alloc_send_skb+0x2e/0x30
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957c50:  [<08344831>] u=
+nix_stream_sendmsg+0x161/0x3b0
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957ca8:  [<082c23be>] s=
+ock_sendmsg+0x7e/0xa0
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957d6c:  [<082c378a>] S=
+yS_sendto+0xea/0x120
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957e44:  [<082c37f6>] S=
+yS_send+0x36/0x40
+2013-07-13T22:09:13.673+02:00 trinity kernel: 48957e64:  [<082c4247>] S=
+yS_socketcall+0x167/0x300
+2013-07-13T22:09:13.678+02:00 trinity kernel: 48957eac:  [<080618e2>] h=
+andle_syscall+0x82/0xb0
+2013-07-13T22:09:13.678+02:00 trinity kernel: 48957ef4:  [<08073d6d>] u=
+serspace+0x46d/0x590
+2013-07-13T22:09:13.678+02:00 trinity kernel: 48957fec:  [<0805e65c>] f=
+ork_handler+0x6c/0x70
+2013-07-13T22:09:13.678+02:00 trinity kernel: 48957ffc:  [<00000000>] 0=
+x0
+2013-07-13T22:09:13.678+02:00 trinity kernel:
+2013-07-13T22:09:13.678+02:00 trinity kernel: FIX kmalloc-256: Restorin=
+g 0x49b1ed18-0x49b1ed1b=3D0x6b
+2013-07-13T22:09:13.678+02:00 trinity kernel:
+2013-07-13T22:09:13.678+02:00 trinity kernel: FIX kmalloc-256: Marking =
+all objects used
+2013-07-13T22:09:13.000+02:00 trinity mount[1049]: mount to NFS server =
+'n22stab4' failed: No route to host, retrying
+2013-07-13T22:09:16.000+02:00 trinity mount[1048]: mount to NFS server =
+'n22stab4' failed: No route to host, retrying
+2013-07-13T22:09:16.648+02:00 trinity kernel: =3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+2013-07-13T22:09:16.648+02:00 trinity kernel: BUG kmalloc-256 (Tainted:=
+ G    B       ): Poison overwritten
+2013-07-13T22:09:16.648+02:00 trinity kernel: -------------------------=
+----------------------------------------------------
+2013-07-13T22:09:16.648+02:00 trinity kernel:
+
+
+
+
+
+--=20
+MfG/Sincerely
+Toralf F=C3=B6rster
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+
