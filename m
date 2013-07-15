@@ -1,95 +1,102 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1V0Ykq-0004mc-Bg
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Jul 2013 15:07:28 +0000
-Received: from mout.gmx.net ([212.227.17.21])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V0Yko-0005NO-Ei for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Jul 2013 15:07:28 +0000
-Received: from [80.171.222.82] ([80.171.222.82]) by mail.gmx.com (mrgmx001)
-	with ESMTPSA (Nemesis) id 0LslCb-1TywV71icD-012F1H for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sat, 20 Jul 2013 17:07:20
-	+0200
-Message-ID: <51EAA7A7.4000104@gmx.de>
-Date: Sat, 20 Jul 2013 17:07:19 +0200
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <51E42943.8040001@gmx.de>
+Date: Mon, 15 Jul 2013 18:54:27 +0200
 From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] fuzzying a user mode linux image often core dumps with
-To: linux-ext4@vger.kernel.org
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+References: <51E25B20.7030906@gmx.de> <1373857286.3181.1.camel@leira.trondhjem.org>
+In-Reply-To: <1373857286.3181.1.camel@leira.trondhjem.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: sunrpc/clnt.c: BUG kmalloc-256 (Not tainted): Poison overwritten
+To: "Myklebust, Trond" <Trond.Myklebust@netapp.com>
+Cc: Linux NFS mailing list <linux-nfs@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-SSBkbyBydW4gdGhlIGZ1enplciB0cmluaXR5IHdpdGhpbiBhIDMyIGJpdCB1c2VyIG1vZGUgbGlu
-dXguCldpdGggbGF0ZXN0IGdpdCB0cmVlIEkgZG8gb2Z0ZW4gZ2V0IGEgY29yZSBkdW1wIGxpa2Ug
-dGhlIG9uZSBhdHRhY2hlZC4KCkFsdGhvdWdoIGl0IGlzIHRoZSBuYXR1cmUgb2YgdHJpbml0eSB0
-byBjb3JydXB0IHRoZSBrZXJuZWwgL21lIHdvbmRlcnMgd2h5IGl0IGhhcHBlbnMgbmVhcmx5IGFs
-d2F5CmF0IHRoZSBzYW1lIHBsYWNlLiBUaGF0J3Mgd2h5IEkgZGVjaWRlZCB0byBqdXN0IHJlcG9y
-dCBpdCBoZXJlLgoKCltOZXcgTFdQIDI2NzQzXQpDb3JlIHdhcyBnZW5lcmF0ZWQgYnkgYC91c3Iv
-bG9jYWwvYmluL2xpbnV4LXYzLjExLXJjMS0yMTQtZzZjYzE4NjIgZWFybHlwcmludGsgdWJkYT0v
-aG9tZS90Zm9lcnN0ZS92aXInLgpQcm9ncmFtIHRlcm1pbmF0ZWQgd2l0aCBzaWduYWwgNiwgQWJv
-cnRlZC4KIzAgIDB4Yjc3YjY0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKIzAgIDB4Yjc3YjY0
-MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKIzEgIDB4MDgzYTMyNDUgaW4ga2lsbCAoKQojMiAg
-MHgwODA3MTYzZCBpbiB1bWxfYWJvcnQgKCkgYXQgYXJjaC91bS9vcy1MaW51eC91dGlsLmM6OTMK
-IzMgIDB4MDgwNzE5MjUgaW4gb3NfZHVtcF9jb3JlICgpIGF0IGFyY2gvdW0vb3MtTGludXgvdXRp
-bC5jOjEzOAojNCAgMHgwODA2MTNhNyBpbiBwYW5pY19leGl0IChzZWxmPTB4ODVhMTUxOCA8cGFu
-aWNfZXhpdF9ub3RpZmllcj4sIHVudXNlZDE9MCwgdW51c2VkMj0weDg1ZDZjZTAgPGJ1Zi4xNTkw
-ND4pIGF0IGFyY2gvdW0va2VybmVsL3VtX2FyY2guYzoyNDAKIzUgIDB4MDgwOWQ1ODggaW4gbm90
-aWZpZXJfY2FsbF9jaGFpbiAobmw9MHgwLCB2YWw9MCwgdj0weDg1ZDZjZTAgPGJ1Zi4xNTkwND4s
-IG5yX3RvX2NhbGw9LTIsIG5yX2NhbGxzPTB4MCkgYXQga2VybmVsL25vdGlmaWVyLmM6OTMKIzYg
-IDB4MDgwOWQ2ZDMgaW4gX19hdG9taWNfbm90aWZpZXJfY2FsbF9jaGFpbiAobnJfY2FsbHM9PG9w
-dGltaXplZCBvdXQ+LCBucl90b19jYWxsPTxvcHRpbWl6ZWQgb3V0Piwgdj08b3B0aW1pemVkIG91
-dD4sIHZhbD08b3B0aW1pemVkIG91dD4sIG5oPTxvcHRpbWl6ZWQgb3V0PikgYXQga2VybmVsL25v
-dGlmaWVyLmM6MTgyCiM3ICBhdG9taWNfbm90aWZpZXJfY2FsbF9jaGFpbiAobmg9MHg4NWQ2Y2M0
-IDxwYW5pY19ub3RpZmllcl9saXN0PiwgdmFsPTAsIHY9MHg4NWQ2Y2UwIDxidWYuMTU5MDQ+KSBh
-dCBrZXJuZWwvbm90aWZpZXIuYzoxOTEKIzggIDB4MDg0MDBhMjggaW4gcGFuaWMgKGZtdD0weDAp
-IGF0IGtlcm5lbC9wYW5pYy5jOjEyOAojOSAgMHgwODE4YTRiNSBpbiBleHQ0X29ycGhhbl9hZGQg
-KGhhbmRsZT0weDQ3ODcwMDAwLCBpbm9kZT0weDQ3YTA2YzYwKSBhdCBmcy9leHQ0L25hbWVpLmM6
-MjU3MQojMTAgMHgwODE4YTZlNSBpbiBleHQ0X3RtcGZpbGUgKGRpcj0weDQ3OWY1MzgwLCBkZW50
-cnk9MHg0N2E0YjRkMCwgbW9kZT0wKSBhdCBmcy9leHQ0L25hbWVpLmM6MjMxOQojMTEgMHgwODEw
-YjdhZiBpbiBkb190bXBmaWxlIChvcGVuZWQ9PG9wdGltaXplZCBvdXQ+LCBmaWxlPTxvcHRpbWl6
-ZWQgb3V0Piwgb3A9PG9wdGltaXplZCBvdXQ+LCBmbGFncz08b3B0aW1pemVkIG91dD4sIG5kPTxv
-cHRpbWl6ZWQgb3V0PiwgcGF0aG5hbWU9PG9wdGltaXplZCBvdXQ+LCBkZmQ9PG9wdGltaXplZCBv
-dXQ+KSBhdCBmcy9uYW1laS5jOjI5MzgKIzEyIHBhdGhfb3BlbmF0IChkZmQ9MTIwMTYyMzkzNiwg
-cGF0aG5hbWU9MHg0N2NlOTA0MCwgbmQ9MHg0NmVmZmRlNCwgb3A9MHg0NmVmZmU3MCwgZmxhZ3M9
-NjcpIGF0IGZzL25hbWVpLmM6Mjk4MQojMTMgMHgwODEwYmNiMSBpbiBkb19maWxwX29wZW4gKGRm
-ZD0tMTAwLCBwYXRobmFtZT0weDQ3Y2U5MDQwLCBvcD0weDQ2ZWZmZTcwKSBhdCBmcy9uYW1laS5j
-OjMwNDMKIzE0IDB4MDgwZmU1ZjggaW4gZG9fc3lzX29wZW4gKGRmZD0wLCBmaWxlbmFtZT0weDAs
-IGZsYWdzPTQ4NDE5ODYsIG1vZGU9MCkgYXQgZnMvb3Blbi5jOjk1NAojMTUgMHgwODBmZTZjOCBp
-biBTWVNDX29wZW4gKG1vZGU9PG9wdGltaXplZCBvdXQ+LCBmbGFncz08b3B0aW1pemVkIG91dD4s
-IGZpbGVuYW1lPTxvcHRpbWl6ZWQgb3V0PikgYXQgZnMvb3Blbi5jOjk3MgojMTYgU3lTX29wZW4g
-KGZpbGVuYW1lPTEzNTA3Mzg3MiwgZmxhZ3M9NDg0MTk4NiwgbW9kZT0zMTI3KSBhdCBmcy9vcGVu
-LmM6OTY3CiMxNyAweDA4MDYxOGUyIGluIGhhbmRsZV9zeXNjYWxsIChyPTB4NDZlMGM3ZDQpIGF0
-IGFyY2gvdW0va2VybmVsL3NrYXMvc3lzY2FsbC5jOjM1CiMxOCAweDA4MDczYzBkIGluIGhhbmRs
-ZV90cmFwIChsb2NhbF91c2luZ19zeXNlbXU9PG9wdGltaXplZCBvdXQ+LCByZWdzPTxvcHRpbWl6
-ZWQgb3V0PiwgcGlkPTxvcHRpbWl6ZWQgb3V0PikgYXQgYXJjaC91bS9vcy1MaW51eC9za2FzL3By
-b2Nlc3MuYzoxOTgKIzE5IHVzZXJzcGFjZSAocmVncz0weDQ2ZTBjN2Q0KSBhdCBhcmNoL3VtL29z
-LUxpbnV4L3NrYXMvcHJvY2Vzcy5jOjQzMQojMjAgMHgwODA1ZTY1YyBpbiBmb3JrX2hhbmRsZXIg
-KCkgYXQgYXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jOjE2MAojMjEgMHgwMDAwMDAwMCBpbiA/PyAo
-KQoKCi0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHByaW50OiA3
-QjFBIDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1MDggN0RCNiA5REEzCgotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KU2VlIGV2ZXJ5dGhpbmcgZnJvbSB0aGUgYnJvd3NlciB0byB0aGUgZGF0
-YWJhc2Ugd2l0aCBBcHBEeW5hbWljcwpHZXQgZW5kLXRvLWVuZCB2aXNpYmlsaXR5IHdpdGggYXBw
-bGljYXRpb24gbW9uaXRvcmluZyBmcm9tIEFwcER5bmFtaWNzCklzb2xhdGUgYm90dGxlbmVja3Mg
-YW5kIGRpYWdub3NlIHJvb3QgY2F1c2UgaW4gc2Vjb25kcy4KU3RhcnQgeW91ciBmcmVlIHRyaWFs
-IG9mIEFwcER5bmFtaWNzIFBybyB0b2RheSEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5l
-dC9nYW1wYWQvY2xrP2lkPTQ4ODA4ODMxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZl
-bCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUt
-bGludXgtZGV2ZWwK
+On 07/15/2013 05:01 AM, Myklebust, Trond wrote:
+> On Sun, 2013-07-14 at 10:02 +0200, Toralf F=C3=B6rster wrote:
+>> This bisected commit produces at a 32 bit user mode linux guest the =
+attached BUG :
+>>
+>> commit eeee245268c951262b861bc1be4e9dc812352499
+>> Author: Trond Myklebust <Trond.Myklebust@netapp.com>
+>> Date:   Wed Jul 10 15:33:01 2013 -0400
+>>
+>>     SUNRPC: Fix a deadlock in rpc_client_register()
+>>
+>>     Commit 384816051ca9125cd54750e59c780c2a2655fa4f (SUNRPC: fix rac=
+es on
+>>     PipeFS MOUNT notifications) introduces a regression when we call
+>>     rpc_setup_pipedir() with RPCSEC_GSS as the auth flavour.
+>>
+>>     By calling rpcauth_create() while holding the sn->pipefs_sb_lock=
+, we
+>>     end up deadlocking in gss_pipes_dentries_create_net().
+>>     Fix is to register the client and release the mutex before calli=
+ng
+>>     rpcauth_create().
+>>
+>>     Reported-by: Weston Andros Adamson <dros@netapp.com>
+>>     Tested-by: Weston Andros Adamson <dros@netapp.com>
+>>     Cc: Stanislav Kinsbursky <skinsbursky@parallels.com>
+>>     Cc: <stable@vger.kernel.org> # : 3848160: SUNRPC: fix races on P=
+ipeFS MOUNT
+>>     Cc: <stable@vger.kernel.org> # : e73f4cc: SUNRPC: split client c=
+reation
+>>     Signed-off-by: Trond Myklebust <Trond.Myklebust@netapp.com>
+>>
+>>
+>>
+>>
+>>
+>>
+>> 2013-07-13T22:09:07.000+02:00 trinity sm-notify[1042]: Version 1.2.6=
+ starting
+>> 2013-07-13T22:09:07.000+02:00 trinity sm-notify[1042]: Backgrounding=
+ to notify hosts...
+>> 2013-07-13T22:09:07.000+02:00 trinity sm-notify[1043]: Running as ro=
+ot.  chown /var/lib/nfs to choose different user
+>> 2013-07-13T22:09:10.000+02:00 trinity mount[1047]: mount to NFS serv=
+er 'n22stab4' failed: No route to host, retrying
+>> 2013-07-13T22:09:11.000+02:00 trinity dhcpcd[971]: eth0: sending IPv=
+6 Router Solicitation
+>> 2013-07-13T22:09:11.000+02:00 trinity dhcpcd[971]: eth0: no IPv6 Rou=
+ters available
+>> 2013-07-13T22:09:13.000+02:00 trinity mount[1048]: mount to NFS serv=
+er 'n22stab4' failed: No route to host, retrying
+>> 2013-07-13T22:09:13.647+02:00 trinity kernel: =3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> 2013-07-13T22:09:13.647+02:00 trinity kernel: BUG kmalloc-256 (Not t=
+ainted): Poison overwritten
+>> 2013-07-13T22:09:13.647+02:00 trinity kernel: ----------------------=
+-------------------------------------------------------
+
+<snip>
+
+>> 2013-07-13T22:09:13.647+02:00 trinity kernel:
+
+> Does the attached patch fix the problem?
+
+Yes.
+
+And it solves another related problem too : a soft lookup of CPU0 durin=
+g
+shutdown of the UML guest
+
+:-)
+
+
+
+--=20
+MfG/Sincerely
+Toralf F=C3=B6rster
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
