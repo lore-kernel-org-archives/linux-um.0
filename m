@@ -1,86 +1,165 @@
-Return-Path: <gang.chen@asianux.com>
-Message-ID: <51D23766.8000605@asianux.com>
-Date: Tue, 02 Jul 2013 10:13:58 +0800
-From: Chen Gang <gang.chen@asianux.com>
-MIME-Version: 1.0
-References: <51CA8AB8.7080504@asianux.com> <51CA900E.9020407@nod.at> <51CA9E92.4000107@asianux.com> <51CAA0C6.60007@nod.at> <51CAA78C.5040900@asianux.com> <51CAA8D6.9000505@nod.at> <51CAAD1D.8050801@asianux.com> <51CAAE7C.9090003@nod.at> <51CAB556.4070700@asianux.com> <51CAB689.70008@nod.at> <CAMuHMdXw6VYhnNWcVfWc9ssxKTqKFcDbN4WXL5i=eNGy+gXcRA@mail.gmail.com> <51CABBDD.403@asianux.com> <51CABFAC.1040505@nod.at> <51CAC0D0.60505@asianux.com> <51D0DE09.4090702@asianux.com> <51D0FAFE.5010500@asianux.com>
-In-Reply-To: <51D0FAFE.5010500@asianux.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Subject: [PATCH] include/asm-generic/io.h: add dummy fuctions to support 'COMPILE_TEST'
- in 'asm-generic'.
-To: Richard Weinberger <richard@nod.at>, Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: Jeff Dike <jdike@addtoit.com>, David Sharp <dhsharp@google.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Mark Brown <broonie@kernel.org>, David Miller <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>, 'Jiri Kosina' <trivial@kernel.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Jeff Layton <jlayton@redhat.com>
+Date: Tue, 16 Jul 2013 09:20:27 -0400
+Message-Id: <1373980827-31989-1-git-send-email-jlayton@redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH] libfs: export simple_dentry_operations and eliminate extra copies of it
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-'asm-generic' need provide necessary configuration checking, if can't
-pass checking, 'asm-generic' shouldn't implement it.
+hostfs, procfs, and rpc_pipefs all have functional copies of
+simple_dentry_operations. Export simple_dentry_operations and have those
+filesystems just use it instead.
 
-For 'COMPILE_TEST', according to its help contents, 'asm-generic' need
-let it pass configuration checking, and provide related dummy contents
-for it.
-
-Part of 'COMPLE_TEST' help contents in "init/Kconfig":
-
-  "...Despite they cannot be loaded there (or even when they load they cannot be used due to missing HW support)..."
-
-
-Signed-off-by: Chen Gang <gang.chen@asianux.com>
+Signed-off-by: Jeff Layton <jlayton@redhat.com>
 ---
- include/asm-generic/io.h |   22 ++++++++++++++++++----
- 1 files changed, 18 insertions(+), 4 deletions(-)
+ fs/hostfs/hostfs_kern.c | 11 +----------
+ fs/libfs.c              |  9 +++++----
+ fs/proc/generic.c       | 18 +-----------------
+ include/linux/fs.h      |  1 +
+ net/sunrpc/rpc_pipe.c   | 11 +----------
+ 5 files changed, 9 insertions(+), 41 deletions(-)
 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index d5afe96..301ce80 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -303,13 +303,18 @@ static inline void *phys_to_virt(unsigned long address)
- /*
-  * Change "struct page" to physical address.
-  *
-- * This implementation is for the no-MMU case only... if you have an MMU
-- * you'll need to provide your own definitions.
-+ * This for the no-MMU, or no-IOMEM but still try to COMPILE_TEST cases.
-+ * if you have an MMU and IOMEM, you'll need to provide your own definitions.
-  */
--#ifndef CONFIG_MMU
-+#if !defined(CONFIG_MMU) || \
-+	(!defined(CONFIG_HAS_IOMEM) && defined(CONFIG_COMPILE_TEST))
- static inline void __iomem *ioremap(phys_addr_t offset, unsigned long size)
- {
-+#if !defined(CONFIG_MMU)
- 	return (void __iomem*) (unsigned long)offset;
-+#else
-+	return NULL;
-+#endif
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index cddb052..280b7e0 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -33,15 +33,6 @@ static inline struct hostfs_inode_info *HOSTFS_I(struct inode *inode)
+ 
+ #define FILE_HOSTFS_I(file) HOSTFS_I(file_inode(file))
+ 
+-static int hostfs_d_delete(const struct dentry *dentry)
+-{
+-	return 1;
+-}
+-
+-static const struct dentry_operations hostfs_dentry_ops = {
+-	.d_delete		= hostfs_d_delete,
+-};
+-
+ /* Changed in hostfs_args before the kernel starts running */
+ static char *root_ino = "";
+ static int append = 0;
+@@ -918,7 +909,7 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
+ 	sb->s_blocksize_bits = 10;
+ 	sb->s_magic = HOSTFS_SUPER_MAGIC;
+ 	sb->s_op = &hostfs_sbops;
+-	sb->s_d_op = &hostfs_dentry_ops;
++	sb->s_d_op = &simple_dentry_operations;
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
+ 
+ 	/* NULL is printed as <NULL> by sprintf: avoid that. */
+diff --git a/fs/libfs.c b/fs/libfs.c
+index 3a3a9b5..b87a8ba 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -49,16 +49,16 @@ static int simple_delete_dentry(const struct dentry *dentry)
+ 	return 1;
  }
  
- #define __ioremap(offset, size, flags)	ioremap(offset, size)
-@@ -325,7 +330,7 @@ static inline void __iomem *ioremap(phys_addr_t offset, unsigned long size)
- static inline void iounmap(void __iomem *addr)
- {
- }
--#endif /* CONFIG_MMU */
-+#endif /* !CONFIG_MMU || (!CONFIG_HAS_IOMEM && CONFIG_COMPILE_TEST) */
- 
- #ifdef CONFIG_HAS_IOPORT
- #ifndef CONFIG_GENERIC_IOMAP
-@@ -341,6 +346,15 @@ static inline void ioport_unmap(void __iomem *p)
- extern void __iomem *ioport_map(unsigned long port, unsigned int nr);
- extern void ioport_unmap(void __iomem *p);
- #endif /* CONFIG_GENERIC_IOMAP */
-+#elif defined(CONFIG_COMPILE_TEST) /* CONFIG_HAS_IOPORT */
-+static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
-+{
-+	return NULL;
-+}
++const struct dentry_operations simple_dentry_operations = {
++	.d_delete = simple_delete_dentry,
++};
 +
-+static inline void ioport_unmap(void __iomem *p)
-+{
-+}
- #endif /* CONFIG_HAS_IOPORT */
+ /*
+  * Lookup the data. This is trivial - if the dentry didn't already
+  * exist, we know it is negative.  Set d_op to delete negative dentries.
+  */
+ struct dentry *simple_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+ {
+-	static const struct dentry_operations simple_dentry_operations = {
+-		.d_delete = simple_delete_dentry,
+-	};
+-
+ 	if (dentry->d_name.len > NAME_MAX)
+ 		return ERR_PTR(-ENAMETOOLONG);
+ 	if (!dentry->d_sb->s_d_op)
+@@ -968,6 +968,7 @@ EXPORT_SYMBOL(simple_write_begin);
+ EXPORT_SYMBOL(simple_write_end);
+ EXPORT_SYMBOL(simple_dir_inode_operations);
+ EXPORT_SYMBOL(simple_dir_operations);
++EXPORT_SYMBOL(simple_dentry_operations);
+ EXPORT_SYMBOL(simple_empty);
+ EXPORT_SYMBOL(simple_fill_super);
+ EXPORT_SYMBOL(simple_getattr);
+diff --git a/fs/proc/generic.c b/fs/proc/generic.c
+index 94441a4..bc4aa81 100644
+--- a/fs/proc/generic.c
++++ b/fs/proc/generic.c
+@@ -175,22 +175,6 @@ static const struct inode_operations proc_link_inode_operations = {
+ };
  
- #ifndef xlate_dev_kmem_ptr
+ /*
+- * As some entries in /proc are volatile, we want to 
+- * get rid of unused dentries.  This could be made 
+- * smarter: we could keep a "volatile" flag in the 
+- * inode to indicate which ones to keep.
+- */
+-static int proc_delete_dentry(const struct dentry * dentry)
+-{
+-	return 1;
+-}
+-
+-static const struct dentry_operations proc_dentry_operations =
+-{
+-	.d_delete	= proc_delete_dentry,
+-};
+-
+-/*
+  * Don't create negative dentries here, return -ENOENT by hand
+  * instead.
+  */
+@@ -209,7 +193,7 @@ struct dentry *proc_lookup_de(struct proc_dir_entry *de, struct inode *dir,
+ 			inode = proc_get_inode(dir->i_sb, de);
+ 			if (!inode)
+ 				return ERR_PTR(-ENOMEM);
+-			d_set_d_op(dentry, &proc_dentry_operations);
++			d_set_d_op(dentry, &simple_dentry_operations);
+ 			d_add(dentry, inode);
+ 			return NULL;
+ 		}
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 23d770b..9ec8b4a 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2563,6 +2563,7 @@ extern int simple_write_end(struct file *file, struct address_space *mapping,
+ extern struct dentry *simple_lookup(struct inode *, struct dentry *, unsigned int flags);
+ extern ssize_t generic_read_dir(struct file *, char __user *, size_t, loff_t *);
+ extern const struct file_operations simple_dir_operations;
++extern const struct dentry_operations simple_dentry_operations;
+ extern const struct inode_operations simple_dir_inode_operations;
+ struct tree_descr { char *name; const struct file_operations *ops; int mode; };
+ struct dentry *d_alloc_name(struct dentry *, const char *);
+diff --git a/net/sunrpc/rpc_pipe.c b/net/sunrpc/rpc_pipe.c
+index 017aedc..da7f051 100644
+--- a/net/sunrpc/rpc_pipe.c
++++ b/net/sunrpc/rpc_pipe.c
+@@ -471,15 +471,6 @@ struct rpc_filelist {
+ 	umode_t mode;
+ };
+ 
+-static int rpc_delete_dentry(const struct dentry *dentry)
+-{
+-	return 1;
+-}
+-
+-static const struct dentry_operations rpc_dentry_operations = {
+-	.d_delete = rpc_delete_dentry,
+-};
+-
+ static struct inode *
+ rpc_get_inode(struct super_block *sb, umode_t mode)
+ {
+@@ -1100,7 +1091,7 @@ rpc_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_blocksize_bits = PAGE_CACHE_SHIFT;
+ 	sb->s_magic = RPCAUTH_GSSMAGIC;
+ 	sb->s_op = &s_ops;
+-	sb->s_d_op = &rpc_dentry_operations;
++	sb->s_d_op = &simple_dentry_operations;
+ 	sb->s_time_gran = 1;
+ 
+ 	inode = rpc_get_inode(sb, S_IFDIR | S_IRUGO | S_IXUGO);
 -- 
-1.7.7.6
+1.8.3.1
 
