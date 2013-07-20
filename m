@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <tytso@thunk.org>) id 1V0id3-0005Da-PI
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1V0Ykq-0004mc-Bg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Jul 2013 01:40:05 +0000
-Received: from li9-11.members.linode.com ([67.18.176.11] helo=imap.thunk.org)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps
-	(TLSv1:AES128-SHA:128) (Exim 4.76) id 1V0id2-0002B3-0H
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 21 Jul 2013 01:40:05 +0000
-Date: Sat, 20 Jul 2013 21:03:52 -0400
-From: Theodore Ts'o <tytso@mit.edu>
-Message-ID: <20130721010352.GB21484@thunk.org>
-References: <51EAA7A7.4000104@gmx.de>
+	Sat, 20 Jul 2013 15:07:28 +0000
+Received: from mout.gmx.net ([212.227.17.21])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V0Yko-0005NO-Ei for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 20 Jul 2013 15:07:28 +0000
+Received: from [80.171.222.82] ([80.171.222.82]) by mail.gmx.com (mrgmx001)
+	with ESMTPSA (Nemesis) id 0LslCb-1TywV71icD-012F1H for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sat, 20 Jul 2013 17:07:20
+	+0200
+Message-ID: <51EAA7A7.4000104@gmx.de>
+Date: Sat, 20 Jul 2013 17:07:19 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <51EAA7A7.4000104@gmx.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,43 +26,70 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] fuzzying a user mode linux image often core dumps
-	with
-To: Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
-Cc: linux-ext4@vger.kernel.org, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] fuzzying a user mode linux image often core dumps with
+To: linux-ext4@vger.kernel.org
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sat, Jul 20, 2013 at 05:07:19PM +0200, Toralf F=F6rster wrote:
-> I do run the fuzzer trinity within a 32 bit user mode linux.
-> With latest git tree I do often get a core dump like the one attached.
-> =
-
-> Although it is the nature of trinity to corrupt the kernel /me wonders wh=
-y it happens nearly alway
-> at the same place. That's why I decided to just report it here.
-
-Thanks, this is a known problem for which the fix is can be found here:
-
-	http://patchwork.ozlabs.org/patch/260250/
-
-I hope to get this fixed before -rc2 is released; the only question at
-the moment is whether the fix is going to go to Linus via the ext4
-tree or the VFS tree....
-
-					- Ted
-
----------------------------------------------------------------------------=
----
-See everything from the browser to the database with AppDynamics
-Get end-to-end visibility with application monitoring from AppDynamics
-Isolate bottlenecks and diagnose root cause in seconds.
-Start your free trial of AppDynamics Pro today!
-http://pubads.g.doubleclick.net/gampad/clk?id=3D48808831&iu=3D/4140/ostg.cl=
-ktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+SSBkbyBydW4gdGhlIGZ1enplciB0cmluaXR5IHdpdGhpbiBhIDMyIGJpdCB1c2VyIG1vZGUgbGlu
+dXguCldpdGggbGF0ZXN0IGdpdCB0cmVlIEkgZG8gb2Z0ZW4gZ2V0IGEgY29yZSBkdW1wIGxpa2Ug
+dGhlIG9uZSBhdHRhY2hlZC4KCkFsdGhvdWdoIGl0IGlzIHRoZSBuYXR1cmUgb2YgdHJpbml0eSB0
+byBjb3JydXB0IHRoZSBrZXJuZWwgL21lIHdvbmRlcnMgd2h5IGl0IGhhcHBlbnMgbmVhcmx5IGFs
+d2F5CmF0IHRoZSBzYW1lIHBsYWNlLiBUaGF0J3Mgd2h5IEkgZGVjaWRlZCB0byBqdXN0IHJlcG9y
+dCBpdCBoZXJlLgoKCltOZXcgTFdQIDI2NzQzXQpDb3JlIHdhcyBnZW5lcmF0ZWQgYnkgYC91c3Iv
+bG9jYWwvYmluL2xpbnV4LXYzLjExLXJjMS0yMTQtZzZjYzE4NjIgZWFybHlwcmludGsgdWJkYT0v
+aG9tZS90Zm9lcnN0ZS92aXInLgpQcm9ncmFtIHRlcm1pbmF0ZWQgd2l0aCBzaWduYWwgNiwgQWJv
+cnRlZC4KIzAgIDB4Yjc3YjY0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKIzAgIDB4Yjc3YjY0
+MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKIzEgIDB4MDgzYTMyNDUgaW4ga2lsbCAoKQojMiAg
+MHgwODA3MTYzZCBpbiB1bWxfYWJvcnQgKCkgYXQgYXJjaC91bS9vcy1MaW51eC91dGlsLmM6OTMK
+IzMgIDB4MDgwNzE5MjUgaW4gb3NfZHVtcF9jb3JlICgpIGF0IGFyY2gvdW0vb3MtTGludXgvdXRp
+bC5jOjEzOAojNCAgMHgwODA2MTNhNyBpbiBwYW5pY19leGl0IChzZWxmPTB4ODVhMTUxOCA8cGFu
+aWNfZXhpdF9ub3RpZmllcj4sIHVudXNlZDE9MCwgdW51c2VkMj0weDg1ZDZjZTAgPGJ1Zi4xNTkw
+ND4pIGF0IGFyY2gvdW0va2VybmVsL3VtX2FyY2guYzoyNDAKIzUgIDB4MDgwOWQ1ODggaW4gbm90
+aWZpZXJfY2FsbF9jaGFpbiAobmw9MHgwLCB2YWw9MCwgdj0weDg1ZDZjZTAgPGJ1Zi4xNTkwND4s
+IG5yX3RvX2NhbGw9LTIsIG5yX2NhbGxzPTB4MCkgYXQga2VybmVsL25vdGlmaWVyLmM6OTMKIzYg
+IDB4MDgwOWQ2ZDMgaW4gX19hdG9taWNfbm90aWZpZXJfY2FsbF9jaGFpbiAobnJfY2FsbHM9PG9w
+dGltaXplZCBvdXQ+LCBucl90b19jYWxsPTxvcHRpbWl6ZWQgb3V0Piwgdj08b3B0aW1pemVkIG91
+dD4sIHZhbD08b3B0aW1pemVkIG91dD4sIG5oPTxvcHRpbWl6ZWQgb3V0PikgYXQga2VybmVsL25v
+dGlmaWVyLmM6MTgyCiM3ICBhdG9taWNfbm90aWZpZXJfY2FsbF9jaGFpbiAobmg9MHg4NWQ2Y2M0
+IDxwYW5pY19ub3RpZmllcl9saXN0PiwgdmFsPTAsIHY9MHg4NWQ2Y2UwIDxidWYuMTU5MDQ+KSBh
+dCBrZXJuZWwvbm90aWZpZXIuYzoxOTEKIzggIDB4MDg0MDBhMjggaW4gcGFuaWMgKGZtdD0weDAp
+IGF0IGtlcm5lbC9wYW5pYy5jOjEyOAojOSAgMHgwODE4YTRiNSBpbiBleHQ0X29ycGhhbl9hZGQg
+KGhhbmRsZT0weDQ3ODcwMDAwLCBpbm9kZT0weDQ3YTA2YzYwKSBhdCBmcy9leHQ0L25hbWVpLmM6
+MjU3MQojMTAgMHgwODE4YTZlNSBpbiBleHQ0X3RtcGZpbGUgKGRpcj0weDQ3OWY1MzgwLCBkZW50
+cnk9MHg0N2E0YjRkMCwgbW9kZT0wKSBhdCBmcy9leHQ0L25hbWVpLmM6MjMxOQojMTEgMHgwODEw
+YjdhZiBpbiBkb190bXBmaWxlIChvcGVuZWQ9PG9wdGltaXplZCBvdXQ+LCBmaWxlPTxvcHRpbWl6
+ZWQgb3V0Piwgb3A9PG9wdGltaXplZCBvdXQ+LCBmbGFncz08b3B0aW1pemVkIG91dD4sIG5kPTxv
+cHRpbWl6ZWQgb3V0PiwgcGF0aG5hbWU9PG9wdGltaXplZCBvdXQ+LCBkZmQ9PG9wdGltaXplZCBv
+dXQ+KSBhdCBmcy9uYW1laS5jOjI5MzgKIzEyIHBhdGhfb3BlbmF0IChkZmQ9MTIwMTYyMzkzNiwg
+cGF0aG5hbWU9MHg0N2NlOTA0MCwgbmQ9MHg0NmVmZmRlNCwgb3A9MHg0NmVmZmU3MCwgZmxhZ3M9
+NjcpIGF0IGZzL25hbWVpLmM6Mjk4MQojMTMgMHgwODEwYmNiMSBpbiBkb19maWxwX29wZW4gKGRm
+ZD0tMTAwLCBwYXRobmFtZT0weDQ3Y2U5MDQwLCBvcD0weDQ2ZWZmZTcwKSBhdCBmcy9uYW1laS5j
+OjMwNDMKIzE0IDB4MDgwZmU1ZjggaW4gZG9fc3lzX29wZW4gKGRmZD0wLCBmaWxlbmFtZT0weDAs
+IGZsYWdzPTQ4NDE5ODYsIG1vZGU9MCkgYXQgZnMvb3Blbi5jOjk1NAojMTUgMHgwODBmZTZjOCBp
+biBTWVNDX29wZW4gKG1vZGU9PG9wdGltaXplZCBvdXQ+LCBmbGFncz08b3B0aW1pemVkIG91dD4s
+IGZpbGVuYW1lPTxvcHRpbWl6ZWQgb3V0PikgYXQgZnMvb3Blbi5jOjk3MgojMTYgU3lTX29wZW4g
+KGZpbGVuYW1lPTEzNTA3Mzg3MiwgZmxhZ3M9NDg0MTk4NiwgbW9kZT0zMTI3KSBhdCBmcy9vcGVu
+LmM6OTY3CiMxNyAweDA4MDYxOGUyIGluIGhhbmRsZV9zeXNjYWxsIChyPTB4NDZlMGM3ZDQpIGF0
+IGFyY2gvdW0va2VybmVsL3NrYXMvc3lzY2FsbC5jOjM1CiMxOCAweDA4MDczYzBkIGluIGhhbmRs
+ZV90cmFwIChsb2NhbF91c2luZ19zeXNlbXU9PG9wdGltaXplZCBvdXQ+LCByZWdzPTxvcHRpbWl6
+ZWQgb3V0PiwgcGlkPTxvcHRpbWl6ZWQgb3V0PikgYXQgYXJjaC91bS9vcy1MaW51eC9za2FzL3By
+b2Nlc3MuYzoxOTgKIzE5IHVzZXJzcGFjZSAocmVncz0weDQ2ZTBjN2Q0KSBhdCBhcmNoL3VtL29z
+LUxpbnV4L3NrYXMvcHJvY2Vzcy5jOjQzMQojMjAgMHgwODA1ZTY1YyBpbiBmb3JrX2hhbmRsZXIg
+KCkgYXQgYXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jOjE2MAojMjEgMHgwMDAwMDAwMCBpbiA/PyAo
+KQoKCi0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHByaW50OiA3
+QjFBIDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1MDggN0RCNiA5REEzCgotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KU2VlIGV2ZXJ5dGhpbmcgZnJvbSB0aGUgYnJvd3NlciB0byB0aGUgZGF0
+YWJhc2Ugd2l0aCBBcHBEeW5hbWljcwpHZXQgZW5kLXRvLWVuZCB2aXNpYmlsaXR5IHdpdGggYXBw
+bGljYXRpb24gbW9uaXRvcmluZyBmcm9tIEFwcER5bmFtaWNzCklzb2xhdGUgYm90dGxlbmVja3Mg
+YW5kIGRpYWdub3NlIHJvb3QgY2F1c2UgaW4gc2Vjb25kcy4KU3RhcnQgeW91ciBmcmVlIHRyaWFs
+IG9mIEFwcER5bmFtaWNzIFBybyB0b2RheSEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5l
+dC9nYW1wYWQvY2xrP2lkPTQ4ODA4ODMxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZl
+bCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUt
+bGludXgtZGV2ZWwK
 
