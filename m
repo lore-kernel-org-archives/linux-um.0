@@ -1,165 +1,67 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Jeff Layton <jlayton@redhat.com>
-Date: Tue, 16 Jul 2013 09:20:27 -0400
-Message-Id: <1373980827-31989-1-git-send-email-jlayton@redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] libfs: export simple_dentry_operations and eliminate extra copies of it
-To: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1V0rao-0003yV-2T
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 21 Jul 2013 11:14:22 +0000
+Received: from mout.gmx.net ([212.227.15.19])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V0ram-0004xF-2Y for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 21 Jul 2013 11:14:22 +0000
+Received: from [80.171.226.24] ([80.171.226.24]) by mail.gmx.com (mrgmx002)
+	with ESMTPSA (Nemesis) id 0MQ2zr-1V4SEH0Xpr-005FlK for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 21 Jul 2013 13:14:14
+	+0200
+Message-ID: <51EBC285.2030104@gmx.de>
+Date: Sun, 21 Jul 2013 13:14:13 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+MIME-Version: 1.0
+References: <51EAA7A7.4000104@gmx.de> <20130721010352.GB21484@thunk.org>
+In-Reply-To: <20130721010352.GB21484@thunk.org>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] fuzzying a user mode linux image often core dumps
+	with
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-hostfs, procfs, and rpc_pipefs all have functional copies of
-simple_dentry_operations. Export simple_dentry_operations and have those
-filesystems just use it instead.
-
-Signed-off-by: Jeff Layton <jlayton@redhat.com>
----
- fs/hostfs/hostfs_kern.c | 11 +----------
- fs/libfs.c              |  9 +++++----
- fs/proc/generic.c       | 18 +-----------------
- include/linux/fs.h      |  1 +
- net/sunrpc/rpc_pipe.c   | 11 +----------
- 5 files changed, 9 insertions(+), 41 deletions(-)
-
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index cddb052..280b7e0 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -33,15 +33,6 @@ static inline struct hostfs_inode_info *HOSTFS_I(struct inode *inode)
- 
- #define FILE_HOSTFS_I(file) HOSTFS_I(file_inode(file))
- 
--static int hostfs_d_delete(const struct dentry *dentry)
--{
--	return 1;
--}
--
--static const struct dentry_operations hostfs_dentry_ops = {
--	.d_delete		= hostfs_d_delete,
--};
--
- /* Changed in hostfs_args before the kernel starts running */
- static char *root_ino = "";
- static int append = 0;
-@@ -918,7 +909,7 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 	sb->s_blocksize_bits = 10;
- 	sb->s_magic = HOSTFS_SUPER_MAGIC;
- 	sb->s_op = &hostfs_sbops;
--	sb->s_d_op = &hostfs_dentry_ops;
-+	sb->s_d_op = &simple_dentry_operations;
- 	sb->s_maxbytes = MAX_LFS_FILESIZE;
- 
- 	/* NULL is printed as <NULL> by sprintf: avoid that. */
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 3a3a9b5..b87a8ba 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -49,16 +49,16 @@ static int simple_delete_dentry(const struct dentry *dentry)
- 	return 1;
- }
- 
-+const struct dentry_operations simple_dentry_operations = {
-+	.d_delete = simple_delete_dentry,
-+};
-+
- /*
-  * Lookup the data. This is trivial - if the dentry didn't already
-  * exist, we know it is negative.  Set d_op to delete negative dentries.
-  */
- struct dentry *simple_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
- {
--	static const struct dentry_operations simple_dentry_operations = {
--		.d_delete = simple_delete_dentry,
--	};
--
- 	if (dentry->d_name.len > NAME_MAX)
- 		return ERR_PTR(-ENAMETOOLONG);
- 	if (!dentry->d_sb->s_d_op)
-@@ -968,6 +968,7 @@ EXPORT_SYMBOL(simple_write_begin);
- EXPORT_SYMBOL(simple_write_end);
- EXPORT_SYMBOL(simple_dir_inode_operations);
- EXPORT_SYMBOL(simple_dir_operations);
-+EXPORT_SYMBOL(simple_dentry_operations);
- EXPORT_SYMBOL(simple_empty);
- EXPORT_SYMBOL(simple_fill_super);
- EXPORT_SYMBOL(simple_getattr);
-diff --git a/fs/proc/generic.c b/fs/proc/generic.c
-index 94441a4..bc4aa81 100644
---- a/fs/proc/generic.c
-+++ b/fs/proc/generic.c
-@@ -175,22 +175,6 @@ static const struct inode_operations proc_link_inode_operations = {
- };
- 
- /*
-- * As some entries in /proc are volatile, we want to 
-- * get rid of unused dentries.  This could be made 
-- * smarter: we could keep a "volatile" flag in the 
-- * inode to indicate which ones to keep.
-- */
--static int proc_delete_dentry(const struct dentry * dentry)
--{
--	return 1;
--}
--
--static const struct dentry_operations proc_dentry_operations =
--{
--	.d_delete	= proc_delete_dentry,
--};
--
--/*
-  * Don't create negative dentries here, return -ENOENT by hand
-  * instead.
-  */
-@@ -209,7 +193,7 @@ struct dentry *proc_lookup_de(struct proc_dir_entry *de, struct inode *dir,
- 			inode = proc_get_inode(dir->i_sb, de);
- 			if (!inode)
- 				return ERR_PTR(-ENOMEM);
--			d_set_d_op(dentry, &proc_dentry_operations);
-+			d_set_d_op(dentry, &simple_dentry_operations);
- 			d_add(dentry, inode);
- 			return NULL;
- 		}
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 23d770b..9ec8b4a 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2563,6 +2563,7 @@ extern int simple_write_end(struct file *file, struct address_space *mapping,
- extern struct dentry *simple_lookup(struct inode *, struct dentry *, unsigned int flags);
- extern ssize_t generic_read_dir(struct file *, char __user *, size_t, loff_t *);
- extern const struct file_operations simple_dir_operations;
-+extern const struct dentry_operations simple_dentry_operations;
- extern const struct inode_operations simple_dir_inode_operations;
- struct tree_descr { char *name; const struct file_operations *ops; int mode; };
- struct dentry *d_alloc_name(struct dentry *, const char *);
-diff --git a/net/sunrpc/rpc_pipe.c b/net/sunrpc/rpc_pipe.c
-index 017aedc..da7f051 100644
---- a/net/sunrpc/rpc_pipe.c
-+++ b/net/sunrpc/rpc_pipe.c
-@@ -471,15 +471,6 @@ struct rpc_filelist {
- 	umode_t mode;
- };
- 
--static int rpc_delete_dentry(const struct dentry *dentry)
--{
--	return 1;
--}
--
--static const struct dentry_operations rpc_dentry_operations = {
--	.d_delete = rpc_delete_dentry,
--};
--
- static struct inode *
- rpc_get_inode(struct super_block *sb, umode_t mode)
- {
-@@ -1100,7 +1091,7 @@ rpc_fill_super(struct super_block *sb, void *data, int silent)
- 	sb->s_blocksize_bits = PAGE_CACHE_SHIFT;
- 	sb->s_magic = RPCAUTH_GSSMAGIC;
- 	sb->s_op = &s_ops;
--	sb->s_d_op = &rpc_dentry_operations;
-+	sb->s_d_op = &simple_dentry_operations;
- 	sb->s_time_gran = 1;
- 
- 	inode = rpc_get_inode(sb, S_IFDIR | S_IRUGO | S_IXUGO);
--- 
-1.8.3.1
+T24gMDcvMjEvMjAxMyAwMzowMyBBTSwgVGhlb2RvcmUgVHMnbyB3cm90ZToKPiBPbiBTYXQsIEp1
+bCAyMCwgMjAxMyBhdCAwNTowNzoxOVBNICswMjAwLCBUb3JhbGYgRsO2cnN0ZXIgd3JvdGU6Cj4+
+IEkgZG8gcnVuIHRoZSBmdXp6ZXIgdHJpbml0eSB3aXRoaW4gYSAzMiBiaXQgdXNlciBtb2RlIGxp
+bnV4Lgo+PiBXaXRoIGxhdGVzdCBnaXQgdHJlZSBJIGRvIG9mdGVuIGdldCBhIGNvcmUgZHVtcCBs
+aWtlIHRoZSBvbmUgYXR0YWNoZWQuCj4+Cj4+IEFsdGhvdWdoIGl0IGlzIHRoZSBuYXR1cmUgb2Yg
+dHJpbml0eSB0byBjb3JydXB0IHRoZSBrZXJuZWwgL21lIHdvbmRlcnMgd2h5IGl0IGhhcHBlbnMg
+bmVhcmx5IGFsd2F5Cj4+IGF0IHRoZSBzYW1lIHBsYWNlLiBUaGF0J3Mgd2h5IEkgZGVjaWRlZCB0
+byBqdXN0IHJlcG9ydCBpdCBoZXJlLgo+IAo+IFRoYW5rcywgdGhpcyBpcyBhIGtub3duIHByb2Js
+ZW0gZm9yIHdoaWNoIHRoZSBmaXggaXMgY2FuIGJlIGZvdW5kIGhlcmU6Cj4gCj4gCWh0dHA6Ly9w
+YXRjaHdvcmsub3psYWJzLm9yZy9wYXRjaC8yNjAyNTAvCj4gCkFoIC0gc28gbm8gYmlzZWN0aW5n
+IG5lY2Vzc2FyeS4KCj4gSSBob3BlIHRvIGdldCB0aGlzIGZpeGVkIGJlZm9yZSAtcmMyIGlzIHJl
+bGVhc2VkOyB0aGUgb25seSBxdWVzdGlvbiBhdAo+IHRoZSBtb21lbnQgaXMgd2hldGhlciB0aGUg
+Zml4IGlzIGdvaW5nIHRvIGdvIHRvIExpbnVzIHZpYSB0aGUgZXh0NAo+IHRyZWUgb3IgdGhlIFZG
+UyB0cmVlLi4uLgoKeWVwIC0gTGludXMgaGFkIGl0IG5vdyBpbiBpdHMgdHJlZS0uCgpCVFcgdGhh
+dCBpc3N1ZSBzZWVtcyB0byBiZSB0aGUgcmVhc29uIGZvciBhIGxvdCBvZiBlcnJhdGljYWxseSBj
+cmFzaGVzCm9mIGFuIFVNTCB3aGlsZSBmdXp6eSB0ZXN0ZWQuCgotLSAKTWZHL1NpbmNlcmVseQpU
+b3JhbGYgRsO2cnN0ZXIKcGdwIGZpbmdlciBwcmludDogN0IxQSAwN0Y0IEVDODIgMEY5MCBENEMy
+IDg5MzYgODcyQSBFNTA4IDdEQjYgOURBMwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClNlZSBldmVy
+eXRoaW5nIGZyb20gdGhlIGJyb3dzZXIgdG8gdGhlIGRhdGFiYXNlIHdpdGggQXBwRHluYW1pY3MK
+R2V0IGVuZC10by1lbmQgdmlzaWJpbGl0eSB3aXRoIGFwcGxpY2F0aW9uIG1vbml0b3JpbmcgZnJv
+bSBBcHBEeW5hbWljcwpJc29sYXRlIGJvdHRsZW5lY2tzIGFuZCBkaWFnbm9zZSByb290IGNhdXNl
+IGluIHNlY29uZHMuClN0YXJ0IHlvdXIgZnJlZSB0cmlhbCBvZiBBcHBEeW5hbWljcyBQcm8gdG9k
+YXkhCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD00ODgwODgz
+MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9k
+ZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
+b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
