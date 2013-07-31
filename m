@@ -1,66 +1,82 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cdfrey@foursquare.net>) id 1Um7uD-0007Od-FI
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Jun 2013 19:37:29 +0000
-Received: from nic.netdirect.ca ([216.16.235.2] helo=rubicon.netdirect.ca)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Um7uC-0000yK-JY
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Jun 2013 19:37:29 +0000
-Received: from localhost (nic.NetDirect.CA [216.16.235.2])
-	by rubicon.netdirect.ca (8.13.8/8.13.8) with ESMTP id r5AJbMbT023230
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 10 Jun 2013 15:37:22 -0400
-Date: Mon, 10 Jun 2013 15:37:22 -0400
-From: Chris Frey <cdfrey@foursquare.net>
-Message-ID: <20130610193722.GA23009@foursquare.net>
-Mime-Version: 1.0
-Content-Disposition: inline
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] kernel warning and hang in 3.4.47
-To: user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <51F998EE.80208@gmail.com>
+Date: Thu, 01 Aug 2013 01:08:30 +0200
+From: Gabriel de Perthuis <g2p.code@gmail.com>
+MIME-Version: 1.0
+References: <1374938607-25747-1-git-send-email-g2p.code@gmail.com> <51F4D275.70009@nod.at> <51F4F19D.3000300@gmail.com>
+In-Reply-To: <51F4F19D.3000300@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] um: Accept /dev/fd/* uml block devices
+To: Richard Weinberger <richard@nod.at>
+Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi,
+Le 28/07/2013 12:25, Gabriel de Perthuis a =C3=A9crit :
+> Le dim. 28 juil. 2013 10:12:37 CEST, Richard Weinberger a =C3=A9crit =
+:
+>> Am 27.07.2013 17:23, schrieb Gabriel de Perthuis:
+>>> Useful for
+>>> * limiting privileges
+>>> * opening block devices O_EXCL
+>>
+>> So, the goal of this patch is to allow passing a file descriptor
+>> number as block device instead of a file?
+>=20
+> Yes.  It turns out it already works, but not after dropping privilege=
+s.
+>=20
+>> I assume you have already a wrapper around UML which exec()'s it suc=
+h that
+>> it can reuse a fd?
+>=20
+> Yes, vido: https://github.com/g2p/vido
+>=20
+> Here's the relevant commit:
+> https://github.com/g2p/vido/commit/42d4b86eab13d90ee63138b73146485dc4=
+e47ec6
+>=20
+>>> Use dup to work around the fact /proc/self/fd
+>>> can't be opened after dropping privileges.
+>>> This proc behaviour doesn't match TLPI and might be a bug.
+>>>
+>>> Qemu has a slightly more complex fdset approach
+>>> that provides fds with different access permissions.
+>>
+>> I really don't like that you patch os_open_file(), this is a
+>> generic function.
+>=20
+> The justification was that it unbreaks open("/dev/fd") to be more lik=
+e
+> standards suggest, but I can see how that makes it a special case.
+>=20
+>> What about this one?
+>> Allow ubda=3D (and all other UML block device kernel parameters) to
+>> accept arguments like file:/foo/bar and fd:N.
+>> Where N is a number and file: is default such that we do not break
+>> old kernels.
+>=20
+> Okay, I'll add a prefix.  Maybe file:// + /abs/path | rel/path
+> since that's already standard.
 
-I'm running a 3.4.47 UML kernel on a 3.4.47 system.
+I've done some work on this approach, but it turns out to clash
+with the cow syntax; in ubd0=3Dfile:cowfile, ":" is a path separator.
+Changing things in ubd_kern.c is also more intrusive, even with
+the limited goal of making it work for plain, non-cow files I
+need to duplicate a few code paths to work with fds instead of
+names and the diffstat is getting large.
 
-Recently I got the following warning, just before the UML guest system
-became unresponsive:
+Because of that I'd like to come back to /dev/fd/<n>.
+It does overload the generic file opener, but does so consistently,
+so that you can think of /dev/fd as a virtual filesystem.
+The (arguably broken) /proc/self/fd behaviour remains available
+through the /proc path.
 
-------------[ cut here ]------------
-WARNING: at kernel/softirq.c:159 local_bh_enable+0x3b/0x8b()
-Modules linked in:
-21274430:  [<081f3adb>] dump_stack+0x1c/0x20
-
-This is little to go on, I'm guessing.  What should I do to provide
-more data?
-
-Thanks,
-- Chris
-
-
-------------------------------------------------------------------------------
-This SF.net email is sponsored by Windows:
-
-Build for Windows Store.
-
-http://p.sf.net/sfu/windows-dev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
