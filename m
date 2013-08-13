@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rjones@redhat.com>) id 1V9DKf-0002TB-Rc
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rjones@redhat.com>) id 1V9CRM-0007Ms-99
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Aug 2013 12:04:13 +0000
+	Tue, 13 Aug 2013 11:07:04 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V9DKe-0007xL-Cj for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Aug 2013 12:04:13 +0000
-Date: Tue, 13 Aug 2013 13:04:01 +0100
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V9CRK-0004mj-Pg for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 13 Aug 2013 11:07:04 +0000
+Date: Tue, 13 Aug 2013 12:06:51 +0100
 From: "Richard W.M. Jones" <rjones@redhat.com>
-Message-ID: <20130813120401.GE10864@redhat.com>
+Message-ID: <20130813110651.GX5918@redhat.com>
 References: <20130811174831.GD10864@redhat.com>
 	<CAFLxGvxsdsjJ9LZs4-NFpGYYvRbEQ_YK2D=5W1S6uGCaWcgzSw@mail.gmail.com>
 	<CAFLxGvz-PVQvKcs8cKZ8bpEfRj6Hw5h4-qNYrSRSq5Ga1axRvw@mail.gmail.com>
 	<20130812085300.GV5918@redhat.com>
 	<20130813103603.GA27173@redhat.com> <520A0F35.8000905@nod.at>
-	<20130813110651.GX5918@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20130813110651.GX5918@redhat.com>
+In-Reply-To: <520A0F35.8000905@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,47 +37,31 @@ Subject: Re: [uml-devel] How to reliably kill all vmlinux processes for a
 To: Richard Weinberger <richard@nod.at>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
+On Tue, Aug 13, 2013 at 12:49:25PM +0200, Richard Weinberger wrote:
+> Am 13.08.2013 12:36, schrieb Richard W.M. Jones:
+> > In particular I'm having a problem where it looks as if vmlinux is
+> > sending a signal to its parent process on shutdown.
+> 
+> Really?
+> If so, why does it not kill my shell if I run it directly?
 
-OK, I understand what's going wrong and how to reproduce the
-signal-to-parent problem.  It does look like a bug in vmlinux.
+I've no idea.  Perhaps you never send SIGTERM to the vmlinux process,
+or maybe this is just a very strange bug.  Although it happens
+reliably in two tests from the test suite, it doesn't happen in any of
+the other tests (about 100 of them).
 
-It happens if the init process (PID 1) inside the VM gets a segfault.
-
-In libguestfs we can force that easily, as there is a test path for
-exercising segfaults in our init process:
-
-----------------------------------------------------------------------
-#!/bin/bash -
-export LIBGUESTFS_BACKEND=uml
-export LIBGUESTFS_QEMU=/home/rjones/d/linux/vmlinux
-export LIBGUESTFS_DEBUG=1
-export LIBGUESTFS_TRACE=1
-./run strace -o /tmp/strace.log ./fish/guestfish -a /dev/null <<EOF
-run
-get-pid
-debug segv 1
-!sleep 5
-EOF
-----------------------------------------------------------------------
-
-The output of this and the strace log file is here:
-
-http://oirase.annexia.org/tmp/uml-signal/
-
-output.log.txt shows the PID of vmlinux is 6856.
-
-strace.log.txt shows that the parent process gets terminated by
-SIGTERM *from* PID 6856:
-
---- SIGTERM {si_signo=SIGTERM, si_code=SI_USER, si_pid=6856, si_uid=1000} ---
-+++ killed by SIGTERM +++
+Perhaps I'm wrong about the nature of the bug and the signal is coming
+from somewhere else.  Is there a way that a process inside the guest
+could send a signal to a process on the host?  (I would hope not, but
+have to ask in case something in the guest is going rogue).
 
 Rich.
 
 -- 
 Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
-libguestfs lets you edit virtual machines.  Supports shell scripting,
-bindings from many languages.  http://libguestfs.org
+Fedora Windows cross-compiler. Compile Windows programs, test, and
+build Windows installers. Over 100 libraries supported.
+http://fedoraproject.org/wiki/MinGW
 
 ------------------------------------------------------------------------------
 Get 100% visibility into Java/.NET code with AppDynamics Lite!
