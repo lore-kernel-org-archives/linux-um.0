@@ -1,192 +1,55 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1VAPxK-0006j5-GZ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Aug 2013 19:45:06 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VAPxI-0005qR-LK for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 16 Aug 2013 19:45:06 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Fri, 16 Aug 2013 21:44:48 +0200
-Message-Id: <1376682288-25315-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] um: Implement probe_kernel_read()
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: tj@kernel.org, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20130811192713.GT5918@redhat.com>
+References: <20130809204355.GA10864@redhat.com>
+	<CAMuHMdX-ouj_9N1Kd6AGf_rziQ-ddZhzLaaijOvmxwxEjBoggg@mail.gmail.com>
+	<20130811192713.GT5918@redhat.com>
+Date: Tue, 13 Aug 2013 13:16:14 +0200
+Message-ID: <CAMuHMdV1w8FDREXpqXzp6GRugdD5YofsTRAZsycuTyEbqDVtsg@mail.gmail.com>
+Subject: Re: [uml-devel] Using UML in libguestfs
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: "Richard W.M. Jones" <rjones@redhat.com>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-UML needs it's own probe_kernel_read() to handle kernel
-mode faults correctly.
-The implementation uses mincore() on the host side to detect
-whether a page is owned by the UML kernel process.
+On Sun, Aug 11, 2013 at 9:27 PM, Richard W.M. Jones <rjones@redhat.com> wrote:
+> On Sun, Aug 11, 2013 at 09:05:08PM +0200, Geert Uytterhoeven wrote:
+>> On Fri, Aug 9, 2013 at 10:43 PM, Richard W.M. Jones <rjones@redhat.com> wrote:
+>> > * UML is pretty fast!  It's certainly faster (by a factor of > 5) than
+>> > spinning up a lightweight KVM VM.
+>
+>> This is interesting. Typically people say you have to use KVM or XEN
+>> for good virtualization performance. But for that you need
+>> sufficient privileges.
+>
+> I think this is true of Xen, but to be fair to KVM it doesn't require
+> special privileges, with one exception.  If you want KVM to use a tunX
+> network interface then you have to start it as root (or use a setuid
+> helper).  I think this is probably true of UML too although I've not
 
-This fixes also a possible crash when sysrq-t is used.
-Starting with 3.10 sysrq-t calls probe_kernel_read() to
-read details from the kernel workers. As kernel worker are
-completely async pointers may turn NULL while reading them.
+There you name it...
 
-Cc: <tj@kernel.org>
-Cc: <stable@vger.kernel.org> # 3.10.x
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/include/shared/os.h |  1 +
- arch/um/kernel/Makefile     |  2 +-
- arch/um/kernel/maccess.c    | 24 +++++++++++++++++++++
- arch/um/os-Linux/process.c  | 52 +++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 78 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/kernel/maccess.c
+> explored UML's networking yet.  Basically it's a restriction in Linux
+> itself.
+>
+>> With UML, all you need is to be able to compile and run your own
+>> executables.
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 95feaa4..c70a234 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -200,6 +200,7 @@ extern int os_unmap_memory(void *addr, int len);
- extern int os_drop_memory(void *addr, int length);
- extern int can_drop_memory(void);
- extern void os_flush_stdout(void);
-+extern int os_mincore(void *addr, unsigned long len);
- 
- /* execvp.c */
- extern int execvp_noalloc(char *buf, const char *file, char *const argv[]);
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index babe218..d8b78a0 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -13,7 +13,7 @@ clean-files :=
- obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
- 	physmem.o process.o ptrace.o reboot.o sigio.o \
- 	signal.o smp.o syscall.o sysrq.o time.o tlb.o trap.o \
--	um_arch.o umid.o skas/
-+	um_arch.o umid.o maccess.o skas/
- 
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
-diff --git a/arch/um/kernel/maccess.c b/arch/um/kernel/maccess.c
-new file mode 100644
-index 0000000..214e2e0
---- /dev/null
-+++ b/arch/um/kernel/maccess.c
-@@ -0,0 +1,24 @@
-+/*
-+ * Copyright (C) 2013 Richard Weinberger <richrd@nod.at>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/uaccess.h>
-+#include <linux/kernel.h>
-+#include <os.h>
-+
-+long probe_kernel_read(void *dst, const void *src, size_t size)
-+{
-+	void *psrc = (void *)rounddown((u64)src, PAGE_SIZE);
-+
-+	if ((u64)src < PAGE_SIZE || size <= 0)
-+		return -EFAULT;
-+
-+	if (os_mincore(psrc, size) <= 0)
-+		return -EFAULT;
-+
-+	return __probe_kernel_read(dst, src, size);
-+}
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index b8f34c9..67b9c8f 100644
---- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <stdio.h>
-+#include <stdlib.h>
- #include <unistd.h>
- #include <errno.h>
- #include <signal.h>
-@@ -232,6 +233,57 @@ out:
- 	return ok;
- }
- 
-+static int os_page_mincore(void *addr)
-+{
-+	char vec[2];
-+	int ret;
-+
-+	ret = mincore(addr, UM_KERN_PAGE_SIZE, vec);
-+	if (ret < 0) {
-+		if (errno == ENOMEM || errno == EINVAL)
-+			return 0;
-+		else
-+			return -errno;
-+	}
-+
-+	return vec[0] & 1;
-+}
-+
-+int os_mincore(void *addr, unsigned long len)
-+{
-+	char *vec;
-+	int ret, i;
-+
-+	if (len <= UM_KERN_PAGE_SIZE)
-+		return os_page_mincore(addr);
-+
-+	vec = calloc(1, (len + UM_KERN_PAGE_SIZE - 1) / UM_KERN_PAGE_SIZE);
-+	if (!vec)
-+		return -ENOMEM;
-+
-+	ret = mincore(addr, UM_KERN_PAGE_SIZE, vec);
-+	if (ret < 0) {
-+		if (errno == ENOMEM || errno == EINVAL)
-+			ret = 0;
-+		else
-+			ret = -errno;
-+
-+		goto out;
-+	}
-+
-+	for (i = 0; i < ((len + UM_KERN_PAGE_SIZE - 1) / UM_KERN_PAGE_SIZE); i++) {
-+		if (!(vec[i] & 1)) {
-+			ret = 0;
-+			goto out;
-+		}
-+	}
-+
-+	ret = 1;
-+out:
-+	free(vec);
-+	return ret;
-+}
-+
- void init_new_thread_signals(void)
- {
- 	set_handler(SIGSEGV);
--- 
-1.8.3.1
+With UML, I can use slirp-fullbolt.
 
+So if I want to run e.g. wireshark on the development machine at work (no root
+for me), I just launch a UML with a Debian root fs that has wireshark and
+run my app.
 
-------------------------------------------------------------------------------
-Get 100% visibility into Java/.NET code with AppDynamics Lite!
-It's a free troubleshooting tool designed for production.
-Get down to code-level detail for bottlenecks, with <2% overhead. 
-Download for free and get started troubleshooting in minutes. 
-http://pubads.g.doubleclick.net/gampad/clk?id=48897031&iu=/4140/ostg.clktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
