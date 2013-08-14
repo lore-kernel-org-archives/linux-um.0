@@ -2,24 +2,30 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1VA1U4-0006nb-Th
+	(envelope-from <rjones@redhat.com>) id 1V9fLv-00014O-M4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Aug 2013 17:37:16 +0000
-Received: from mail-vc0-f178.google.com ([209.85.220.178])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VA1U0-0005b4-Gh
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Aug 2013 17:37:16 +0000
-Received: by mail-vc0-f178.google.com with SMTP id ha12so701625vcb.9
+	Wed, 14 Aug 2013 17:59:23 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1V9fLt-0000cs-ES for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 14 Aug 2013 17:59:22 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r7EHxFZ8007983
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 15 Aug 2013 10:37:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20130814175911.GG10864@redhat.com>
+	Wed, 14 Aug 2013 13:59:15 -0400
+Received: from localhost (vpn1-4-41.ams2.redhat.com [10.36.4.41])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id r7EHxE7j028614 for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 14 Aug 2013 13:59:14 -0400
+Date: Wed, 14 Aug 2013 18:59:11 +0100
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Message-ID: <20130814175911.GG10864@redhat.com>
 References: <20130809204355.GA10864@redhat.com>
-	<20130814175911.GG10864@redhat.com>
-Date: Thu, 15 Aug 2013 19:37:06 +0200
-Message-ID: <CAFLxGvyNWbMiDjXREb8AbKHEyGvYBr4WhVAGsg6DfKYc8bfOjA@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20130809204355.GA10864@redhat.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,38 +38,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Performance tests (was: Using UML in libguestfs)
-To: "Richard W.M. Jones" <rjones@redhat.com>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] Performance tests (was: Using UML in libguestfs)
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Aug 14, 2013 at 7:59 PM, Richard W.M. Jones <rjones@redhat.com> wrote:
->
-> I performed some benchmarks against KVM:
->
-> http://rwmj.wordpress.com/2013/08/14/performance-of-user-mode-linux-as-a-libguestfs-backend/#content
->
-> Notes for those that don't want to read all that, there are at least
-> two bugs I found:
->
-> (1) fsync /dev/ubda (in the guest) is not honoured by the user-mode
-> linux process.  It should do an fsync on the corresponding backing file.
 
-What exactly does libguestfs do?
+I performed some benchmarks against KVM:
 
-> (2) The ssl<N>=... serial port is really slow, at least 10 times
-> slower than virtio-serial which is the equivalent KVM feature.
-> libguestfs is chatty over the serial port, and so this has a
-> significant knock-on impact all over the place.
+http://rwmj.wordpress.com/2013/08/14/performance-of-user-mode-linux-as-a-libguestfs-backend/#content
 
-So, libguestfs transfers all data over a serial line?!
-We could hack a faster transport into UML.
-As UML is only a process we can very easily access
-the host.
-Have looked at hostfs?
+Notes for those that don't want to read all that, there are at least
+two bugs I found:
+
+(1) fsync /dev/ubda (in the guest) is not honoured by the user-mode
+linux process.  It should do an fsync on the corresponding backing file.
+
+(2) The ssl<N>=... serial port is really slow, at least 10 times
+slower than virtio-serial which is the equivalent KVM feature.
+libguestfs is chatty over the serial port, and so this has a
+significant knock-on impact all over the place.
+
+Rich.
 
 -- 
-Thanks,
-//richard
+Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
+Fedora Windows cross-compiler. Compile Windows programs, test, and
+build Windows installers. Over 100 libraries supported.
+http://fedoraproject.org/wiki/MinGW
 
 ------------------------------------------------------------------------------
 Get 100% visibility into Java/.NET code with AppDynamics Lite!
