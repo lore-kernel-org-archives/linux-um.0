@@ -1,25 +1,27 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rjones@redhat.com>) id 1VA2lY-0006QM-FA
+	(envelope-from <richard.weinberger@gmail.com>) id 1VA2Ui-0005NP-Op
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Aug 2013 18:59:24 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VA2lU-0001lg-GI for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Aug 2013 18:59:24 +0000
-Date: Thu, 15 Aug 2013 19:59:10 +0100
-From: "Richard W.M. Jones" <rjones@redhat.com>
-Message-ID: <20130815185910.GQ5918@redhat.com>
+	Thu, 15 Aug 2013 18:42:00 +0000
+Received: from mail-vb0-f45.google.com ([209.85.212.45])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VA2Ug-0000mt-SG
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Aug 2013 18:42:00 +0000
+Received: by mail-vb0-f45.google.com with SMTP id e15so885105vbg.4
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 15 Aug 2013 11:41:53 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20130815175945.GO5918@redhat.com>
 References: <20130809204355.GA10864@redhat.com>
 	<20130814175911.GG10864@redhat.com>
 	<CAFLxGvyNWbMiDjXREb8AbKHEyGvYBr4WhVAGsg6DfKYc8bfOjA@mail.gmail.com>
 	<20130815175945.GO5918@redhat.com>
-	<CAFLxGvzaJOtW-evuHvh9Ue+wcYO7BnoGg4dNWp7mYygo4t6gUg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAFLxGvzaJOtW-evuHvh9Ue+wcYO7BnoGg4dNWp7mYygo4t6gUg@mail.gmail.com>
+Date: Thu, 15 Aug 2013 20:41:53 +0200
+Message-ID: <CAFLxGvzaJOtW-evuHvh9Ue+wcYO7BnoGg4dNWp7mYygo4t6gUg@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,44 +35,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] Performance tests (was: Using UML in libguestfs)
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: "Richard W.M. Jones" <rjones@redhat.com>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Aug 15, 2013 at 08:41:53PM +0200, richard -rw- weinberger wrote:
-> Meant regarding fsync()...
+On Thu, Aug 15, 2013 at 7:59 PM, Richard W.M. Jones <rjones@redhat.com> wrote:
+> On Thu, Aug 15, 2013 at 07:37:06PM +0200, richard -rw- weinberger wrote:
+>> On Wed, Aug 14, 2013 at 7:59 PM, Richard W.M. Jones <rjones@redhat.com> wrote:
+>> >
+>> > I performed some benchmarks against KVM:
+>> >
+>> > http://rwmj.wordpress.com/2013/08/14/performance-of-user-mode-linux-as-a-libguestfs-backend/#content
+>> >
+>> > Notes for those that don't want to read all that, there are at least
+>> > two bugs I found:
+>> >
+>> > (1) fsync /dev/ubda (in the guest) is not honoured by the user-mode
+>> > linux process.  It should do an fsync on the corresponding backing file.
+>>
+>> What exactly does libguestfs do?
+>
+> http://libguestfs.org/ ...
 
-Ah right, see what you mean :-)
+Meant regarding fsync()...
 
-It calls sync(2).  Then it opens each /dev/ubdX device and calls fsync
-on the file descriptor:
+>> > (2) The ssl<N>=... serial port is really slow, at least 10 times
+>> > slower than virtio-serial which is the equivalent KVM feature.
+>> > libguestfs is chatty over the serial port, and so this has a
+>> > significant knock-on impact all over the place.
+>>
+>> So, libguestfs transfers all data over a serial line?!
+>
+> Well, it requires an 8-bit clean, reliable, bi-directional connection
+> into the guest.  We used to use TCP/IP but it's pretty slow compared
+> to virtio-serial and has a bunch of other problems.
+>
+> For the UML backend I used the serial port.  There's no problem with
+> it -- it works and it's reliable, it's just slow.
+>
+>> We could hack a faster transport into UML.
+>> As UML is only a process we can very easily access
+>> the host.
+>> Have looked at hostfs?
+>
+> Not sure how hostfs would help?
 
-https://github.com/libguestfs/libguestfs/blob/master/daemon/sync.c#L54
-
-The reason for this is a bit complicated, but has to do with write
-barriers.  I believe this has been fixed since then.
-
-https://github.com/libguestfs/libguestfs/commit/c0a3c9ce70b98171e737e49e6dccc4457963f2ec
-
-In any case, we're calling sync & fsync in the guest, and that ain't
-causing the host cache to be flushed.
-
-It's pretty easy to show this with libguestfs:
-
-LIBGUESTFS_BACKEND=uml LIBGUESTFS_HV=~/d/linux-um/linux \
-time ./run ./fish/guestfish -N fs:ext2:1G -m /dev/sda1 fallocate64 /data 800M
-time sync
-
-The first command finishes in 8 seconds, with barely any disk
-activity.  The sync afterwards takes 9 seconds with the disk light on
-the whole time, while it actually writes the whole 800 MB of data.
-
-Rich.
+hostfs show how you can directly access the host...
 
 -- 
-Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
-virt-top is 'top' for virtual machines.  Tiny program with many
-powerful monitoring features, net stats, disk stats, logging, etc.
-http://people.redhat.com/~rjones/virt-top
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Get 100% visibility into Java/.NET code with AppDynamics Lite!
