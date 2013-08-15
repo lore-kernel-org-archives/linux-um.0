@@ -1,17 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rjones@redhat.com>) id 1VA1rT-0007Dd-Ps
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1VA1R4-0001Ep-VA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Aug 2013 18:01:27 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VA1rS-0002kf-A3 for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 15 Aug 2013 18:01:27 +0000
-Date: Thu, 15 Aug 2013 19:01:14 +0100
-From: "Richard W.M. Jones" <rjones@redhat.com>
-Message-ID: <20130815180114.GP5918@redhat.com>
+	Thu, 15 Aug 2013 17:34:11 +0000
+Received: from mail-vc0-f180.google.com ([209.85.220.180])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VA1R4-0004ho-3U
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 15 Aug 2013 17:34:10 +0000
+Received: by mail-vc0-f180.google.com with SMTP id gf11so661675vcb.25
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 15 Aug 2013 10:34:04 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20130813122533.GF10864@redhat.com>
 References: <20130811174831.GD10864@redhat.com>
 	<CAFLxGvxsdsjJ9LZs4-NFpGYYvRbEQ_YK2D=5W1S6uGCaWcgzSw@mail.gmail.com>
 	<CAFLxGvz-PVQvKcs8cKZ8bpEfRj6Hw5h4-qNYrSRSq5Ga1axRvw@mail.gmail.com>
@@ -20,10 +23,9 @@ References: <20130811174831.GD10864@redhat.com>
 	<20130813110651.GX5918@redhat.com>
 	<20130813120401.GE10864@redhat.com>
 	<20130813122533.GF10864@redhat.com>
-	<CAFLxGvxSW5LD3_wQajM-B9L=x=wrgzZcsUVrPYnAUBhjA2YrDQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAFLxGvxSW5LD3_wQajM-B9L=x=wrgzZcsUVrPYnAUBhjA2YrDQ@mail.gmail.com>
+Date: Thu, 15 Aug 2013 19:34:04 +0200
+Message-ID: <CAFLxGvxSW5LD3_wQajM-B9L=x=wrgzZcsUVrPYnAUBhjA2YrDQ@mail.gmail.com>
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,35 +40,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] How to reliably kill all vmlinux processes for a
  single VM?
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: "Richard W.M. Jones" <rjones@redhat.com>
 Cc: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Aug 15, 2013 at 07:34:04PM +0200, richard -rw- weinberger wrote:
-> On Tue, Aug 13, 2013 at 2:25 PM, Richard W.M. Jones <rjones@redhat.com> wrote:
-> > On Tue, Aug 13, 2013 at 01:04:01PM +0100, Richard W.M. Jones wrote:
-> >> OK, I understand what's going wrong and how to reproduce the
-> >> signal-to-parent problem.  It does look like a bug in vmlinux.
-> >>
-> >> It happens if the init process (PID 1) inside the VM gets a segfault.
-> >
-> > To add an additional data-point, applying the attached patch causes
-> > the rogue SIGTERM-to-parent signal to disappear.  So at least we know
-> > where it comes from!
-> 
-> I think we should call setsid() at UML startup.
-> Thanks for reporting that issue.
-> 
-> BTW: You know that UML has a management console?
-> http://user-mode-linux.sourceforge.net/old/mconsole.html
+On Tue, Aug 13, 2013 at 2:25 PM, Richard W.M. Jones <rjones@redhat.com> wrote:
+> On Tue, Aug 13, 2013 at 01:04:01PM +0100, Richard W.M. Jones wrote:
+>> OK, I understand what's going wrong and how to reproduce the
+>> signal-to-parent problem.  It does look like a bug in vmlinux.
+>>
+>> It happens if the init process (PID 1) inside the VM gets a segfault.
+>
+> To add an additional data-point, applying the attached patch causes
+> the rogue SIGTERM-to-parent signal to disappear.  So at least we know
+> where it comes from!
 
-Yup, using the management console could be a good idea.
+I think we should call setsid() at UML startup.
+Thanks for reporting that issue.
 
-Rich.
+BTW: You know that UML has a management console?
+http://user-mode-linux.sourceforge.net/old/mconsole.html
+
+Killing UML by SIGTERM is not nice. :D
 
 -- 
-Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
-libguestfs lets you edit virtual machines.  Supports shell scripting,
-bindings from many languages.  http://libguestfs.org
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Get 100% visibility into Java/.NET code with AppDynamics Lite!
