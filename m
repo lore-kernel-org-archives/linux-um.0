@@ -1,40 +1,160 @@
-Return-Path: <richard@nod.at>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Richard Weinberger <richard@nod.at>
-Date: Wed, 21 Aug 2013 10:19:30 +0200
-Message-Id: <1377073172-3662-7-git-send-email-richard@nod.at>
-In-Reply-To: <1377073172-3662-1-git-send-email-richard@nod.at>
-References: <1377073172-3662-1-git-send-email-richard@nod.at>
-Subject: [PATCH 6/8] mips: Do not use SUBARCH
-To: linux-arch@vger.kernel.org
-Cc: mmarek@suse.cz, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, jdike@addtoit.com, gxt@mprc.pku.edu.cn, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
+Date: Sat, 17 Aug 2013 18:46:00 +0200
+Message-Id: <1376757960-17112-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v2] um: Implement probe_kernel_read()
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, stian@nixia.no, tj@kernel.org, stable@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Forces the user to specify CROSS_COMPILE at compile time instead
-of automatically selecting more or less randomly a cross compiler.
+UML needs it's own probe_kernel_read() to handle kernel
+mode faults correctly.
+The implementation uses mincore() on the host side to detect
+whether a page is owned by the UML kernel process.
 
+This fixes also a possible crash when sysrq-t is used.
+Starting with 3.10 sysrq-t calls probe_kernel_read() to
+read details from the kernel workers. As kernel worker are
+completely async pointers may turn NULL while reading them.
+
+Cc: <stian@nixia.no>
+Cc: <tj@kernel.org>
+Cc: <stable@vger.kernel.org> # 3.10.x
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/mips/Makefile | 6 ------
- 1 file changed, 6 deletions(-)
+ arch/um/include/shared/os.h |  1 +
+ arch/um/kernel/Makefile     |  2 +-
+ arch/um/kernel/maccess.c    | 24 +++++++++++++++++++++
+ arch/um/os-Linux/process.c  | 52 +++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 78 insertions(+), 1 deletion(-)
+ create mode 100644 arch/um/kernel/maccess.c
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 37f9ef3..514fea6 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -42,12 +42,6 @@ tool-archpref		= $(64bit-tool-archpref)
- UTS_MACHINE		:= mips64
- endif
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 95feaa4..c70a234 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -200,6 +200,7 @@ extern int os_unmap_memory(void *addr, int len);
+ extern int os_drop_memory(void *addr, int length);
+ extern int can_drop_memory(void);
+ extern void os_flush_stdout(void);
++extern int os_mincore(void *addr, unsigned long len);
  
--ifneq ($(SUBARCH),$(ARCH))
--  ifeq ($(CROSS_COMPILE),)
--    CROSS_COMPILE := $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
--  endif
--endif
--
- ifdef CONFIG_FUNCTION_GRAPH_TRACER
-   ifndef KBUILD_MCOUNT_RA_ADDRESS
-     ifeq ($(call cc-option-yn,-mmcount-ra-address), y)
+ /* execvp.c */
+ extern int execvp_noalloc(char *buf, const char *file, char *const argv[]);
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index babe218..d8b78a0 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -13,7 +13,7 @@ clean-files :=
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+ 	signal.o smp.o syscall.o sysrq.o time.o tlb.o trap.o \
+-	um_arch.o umid.o skas/
++	um_arch.o umid.o maccess.o skas/
+ 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+diff --git a/arch/um/kernel/maccess.c b/arch/um/kernel/maccess.c
+new file mode 100644
+index 0000000..1f3d5c4
+--- /dev/null
++++ b/arch/um/kernel/maccess.c
+@@ -0,0 +1,24 @@
++/*
++ * Copyright (C) 2013 Richard Weinberger <richrd@nod.at>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/uaccess.h>
++#include <linux/kernel.h>
++#include <os.h>
++
++long probe_kernel_read(void *dst, const void *src, size_t size)
++{
++	void *psrc = (void *)rounddown((unsigned long)src, PAGE_SIZE);
++
++	if ((unsigned long)src < PAGE_SIZE || size <= 0)
++		return -EFAULT;
++
++	if (os_mincore(psrc, size + src - psrc) <= 0)
++		return -EFAULT;
++
++	return __probe_kernel_read(dst, src, size);
++}
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index b8f34c9..67b9c8f 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -4,6 +4,7 @@
+  */
+ 
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include <signal.h>
+@@ -232,6 +233,57 @@ out:
+ 	return ok;
+ }
+ 
++static int os_page_mincore(void *addr)
++{
++	char vec[2];
++	int ret;
++
++	ret = mincore(addr, UM_KERN_PAGE_SIZE, vec);
++	if (ret < 0) {
++		if (errno == ENOMEM || errno == EINVAL)
++			return 0;
++		else
++			return -errno;
++	}
++
++	return vec[0] & 1;
++}
++
++int os_mincore(void *addr, unsigned long len)
++{
++	char *vec;
++	int ret, i;
++
++	if (len <= UM_KERN_PAGE_SIZE)
++		return os_page_mincore(addr);
++
++	vec = calloc(1, (len + UM_KERN_PAGE_SIZE - 1) / UM_KERN_PAGE_SIZE);
++	if (!vec)
++		return -ENOMEM;
++
++	ret = mincore(addr, UM_KERN_PAGE_SIZE, vec);
++	if (ret < 0) {
++		if (errno == ENOMEM || errno == EINVAL)
++			ret = 0;
++		else
++			ret = -errno;
++
++		goto out;
++	}
++
++	for (i = 0; i < ((len + UM_KERN_PAGE_SIZE - 1) / UM_KERN_PAGE_SIZE); i++) {
++		if (!(vec[i] & 1)) {
++			ret = 0;
++			goto out;
++		}
++	}
++
++	ret = 1;
++out:
++	free(vec);
++	return ret;
++}
++
+ void init_new_thread_signals(void)
+ {
+ 	set_handler(SIGSEGV);
 -- 
-1.8.1.4
-
+1.8.3.1
 
