@@ -1,17 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1VB1Bk-0005fr-NE
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rjones@redhat.com>) id 1VBLlA-0007Mc-4D
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Aug 2013 11:30:28 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VB1Bj-0005F9-3A for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Aug 2013 11:30:28 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Sun, 18 Aug 2013 13:30:06 +0200
-Message-Id: <1376825409-18570-1-git-send-email-richard@nod.at>
+	Mon, 19 Aug 2013 09:28:24 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VBLl6-00048P-Ko for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 19 Aug 2013 09:28:24 +0000
+Date: Mon, 19 Aug 2013 10:28:11 +0100
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Message-ID: <20130819092811.GZ5918@redhat.com>
+References: <1376825409-18570-1-git-send-email-richard@nod.at>
+	<1376825409-18570-3-git-send-email-richard@nod.at>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1376825409-18570-3-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,143 +26,43 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/4] um: ubd: Add REQ_FLUSH suppport
-To: richard@nod.at
+Subject: Re: [uml-devel] [PATCH 3/4] um: Cleanup SIGTERM handling
+To: Richard Weinberger <richard@nod.at>
 Cc: user-mode-linux-devel@lists.sourceforge.net
 
-UML's block device driver does not support write barriers,
-to support this this patch adds REQ_FLUSH suppport.
-Every time the block layer sends a REQ_FLUSH we fsync() now
-our backing file to guarantee data consistency.
+On Sun, Aug 18, 2013 at 01:30:08PM +0200, Richard Weinberger wrote:
+> Richard reported that some UML processes survive if the UML
+> main process receives a SIGTERM.
+> This issue was caused by a wrongly placed signal(SIGTERM, SIG_DFL)
+> in init_new_thread_signals().
+> It disabled the UML exit handler accidently for some processes.
+> The correct solution is to disable the fatal handler for all
+> UML helper threads/processes.
+> Such that last_ditch_exit() does not get called multiple times
+> and all processes can exit due to SIGTERM.
+> 
+> Cc: rjones@redhat.com
+> Reported-by: Richard W.M. Jones <rjones@redhat.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Cc: rjones@redhat.com
-Reported-by: Richard W.M. Jones <rjones@redhat.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/drivers/ubd_kern.c  | 41 ++++++++++++++++++++++++++++++++++++++++-
- arch/um/include/shared/os.h |  1 +
- arch/um/os-Linux/file.c     |  9 +++++++++
- 3 files changed, 50 insertions(+), 1 deletion(-)
+I tested this using the libguestfs UML backend, and the original
+problem with not all processes being cleared up on exit has been fixed.
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 879990c..d27c703 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -41,7 +41,7 @@
- #include <os.h>
- #include "cow.h"
- 
--enum ubd_req { UBD_READ, UBD_WRITE };
-+enum ubd_req { UBD_READ, UBD_WRITE, UBD_FLUSH };
- 
- struct io_thread_req {
- 	struct request *req;
-@@ -866,6 +866,7 @@ static int ubd_add(int n, char **error_out)
- 		goto out;
- 	}
- 	ubd_dev->queue->queuedata = ubd_dev;
-+	blk_queue_flush(ubd_dev->queue, REQ_FLUSH);
- 
- 	blk_queue_max_segments(ubd_dev->queue, MAX_SG);
- 	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, &ubd_gendisk[n]);
-@@ -1239,6 +1240,19 @@ static void prepare_request(struct request *req, struct io_thread_req *io_req,
- }
- 
- /* Called with dev->lock held */
-+static void prepare_flush_request(struct request *req,
-+				  struct io_thread_req *io_req)
-+{
-+	struct gendisk *disk = req->rq_disk;
-+	struct ubd *ubd_dev = disk->private_data;
-+
-+	io_req->req = req;
-+	io_req->fds[0] = (ubd_dev->cow.file != NULL) ? ubd_dev->cow.fd :
-+		ubd_dev->fd;
-+	io_req->op = UBD_FLUSH;
-+}
-+
-+/* Called with dev->lock held */
- static void do_ubd_request(struct request_queue *q)
- {
- 	struct io_thread_req *io_req;
-@@ -1259,6 +1273,20 @@ static void do_ubd_request(struct request_queue *q)
- 		}
- 
- 		req = dev->request;
-+
-+		if (req->cmd_flags & REQ_FLUSH) {
-+			io_req = kmalloc(sizeof(struct io_thread_req),
-+					 GFP_ATOMIC);
-+			if (io_req == NULL) {
-+				if (list_empty(&dev->restart))
-+					list_add(&dev->restart, &restart);
-+				return;
-+			}
-+			prepare_flush_request(req, io_req);
-+			os_write_file(thread_fd, &io_req,
-+					  sizeof(struct io_thread_req *));
-+		}
-+
- 		while(dev->start_sg < dev->end_sg){
- 			struct scatterlist *sg = &dev->sg[dev->start_sg];
- 
-@@ -1367,6 +1395,17 @@ static void do_io(struct io_thread_req *req)
- 	int err;
- 	__u64 off;
- 
-+	if (req->op == UBD_FLUSH) {
-+		/* fds[0] is always either the rw image or our cow file */
-+		n = os_sync_file(req->fds[0]);
-+		if (n != 0) {
-+			printk("do_io - sync failed err = %d "
-+			       "fd = %d\n", -n, req->fds[0]);
-+			req->error = 1;
-+		}
-+		return;
-+	}
-+
- 	nsectors = req->length / req->sectorsize;
- 	start = 0;
- 	do {
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 95feaa4..04859b7 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -141,6 +141,7 @@ extern int os_seek_file(int fd, unsigned long long offset);
- extern int os_open_file(const char *file, struct openflags flags, int mode);
- extern int os_read_file(int fd, void *buf, int len);
- extern int os_write_file(int fd, const void *buf, int count);
-+extern int os_sync_file(int fd);
- extern int os_file_size(const char *file, unsigned long long *size_out);
- extern int os_file_modtime(const char *file, unsigned long *modtime);
- extern int os_pipe(int *fd, int stream, int close_on_exec);
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index c17bd6f..07a7501 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -266,6 +266,15 @@ int os_write_file(int fd, const void *buf, int len)
- 	return n;
- }
- 
-+int os_sync_file(int fd)
-+{
-+	int n = fsync(fd);
-+
-+	if (n < 0)
-+		return -errno;
-+	return n;
-+}
-+
- int os_file_size(const char *file, unsigned long long *size_out)
- {
- 	struct uml_stat buf;
+I also observed that the exit status has changed from "killed by
+SIGTERM" to exit code 1.  Therefore:
+
+Tested-by: Richard W.M. Jones <rjones@redhat.com>
+
+Rich.
+
 -- 
-1.8.3.1
-
+Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
+virt-p2v converts physical machines to virtual machines.  Boot with a
+live CD or over the network (PXE) and turn machines into KVM guests.
+http://libguestfs.org/virt-v2v
 
 ------------------------------------------------------------------------------
 Get 100% visibility into Java/.NET code with AppDynamics Lite!
