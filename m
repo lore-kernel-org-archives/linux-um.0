@@ -1,127 +1,45 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1V34Nu-00075O-Gv
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Jul 2013 13:18:10 +0000
-Received: from mout.gmx.net ([212.227.17.20])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1V34Nt-0000mB-Ci for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 27 Jul 2013 13:18:10 +0000
-Received: from [92.224.45.4] ([92.224.45.4]) by mail.gmx.com (mrgmx102) with
-	ESMTPSA (Nemesis) id 0M7DVi-1U8EyT10WU-00x1A4 for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sat, 27 Jul 2013 15:18:03
-	+0200
-Message-ID: <51F3C88A.5050302@gmx.de>
-Date: Sat, 27 Jul 2013 15:18:02 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <rjones@redhat.com>
+Date: Mon, 19 Aug 2013 12:09:17 +0100
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Message-ID: <20130819110917.GD5918@redhat.com>
+References: <1376777374-17521-1-git-send-email-richard@nod.at>
+ <20130819091839.GX5918@redhat.com>
+ <CAMuHMdXgGPFx6OwHdc73bY6Cb1jYHbjpEqq6e+YC9RuvJYRxDw@mail.gmail.com>
 MIME-Version: 1.0
-References: <51F39AE8.3090401@gmx.de>
-In-Reply-To: <51F39AE8.3090401@gmx.de>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Fwd: fuzz tested user mode linux core dumps in
-	fs/lockd/clntproc.c:131
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXgGPFx6OwHdc73bY6Cb1jYHbjpEqq6e+YC9RuvJYRxDw@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH] um: ubd: Add REQ_FLUSH suppport
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Zm9yb2d0IHRvIENjOiBVTUwgbWwKCgotLS0tLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tLS0t
-ClN1YmplY3Q6IGZ1enogdGVzdGVkIHVzZXIgbW9kZSBsaW51eCBjb3JlIGR1bXBzIGluIGZzL2xv
-Y2tkL2NsbnRwcm9jLmM6MTMxCkRhdGU6IFNhdCwgMjcgSnVsIDIwMTMgMTI6MDM6MjAgKzAyMDAK
-RnJvbTogVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYuZm9lcnN0ZXJAZ214LmRlPgpUbzogQW5kcmV5
-IFZhZ2luIDxhdmFnaW5Ab3BlbnZ6Lm9yZz4sIE9sZWcgTmVzdGVyb3YgPG9sZWdAcmVkaGF0LmNv
-bT4sICAiRXJpYyBXLiBCaWVkZXJtYW4iIDxlYmllZGVybUB4bWlzc2lvbi5jb20+LCBBbmRyZXkg
-VmFnaW4gPGF2YWdpbkBvcGVudnoub3JnPiwgQWwgVmlybyA8dmlyb0B6ZW5pdi5saW51eC5vcmcu
-dWs+CkNDOiBMaW51eCBORlMgbWFpbGluZyBsaXN0IDxsaW51eC1uZnNAdmdlci5rZXJuZWwub3Jn
-PgoKSSBkbyBoYXZlIGEgdXNlciBtb2RlIGxpbnV4IGltYWdlIChzdGFibGUgMzIgYml0IEdlbnRv
-byBMaW51eCApIHdoaWNoIGVycmF0aWNhbGx5IGNyYXNoZXMKd2hpbGUgZnV6eiB0ZXN0ZWQgd2l0
-aCB0cmluaXR5IGlmIHRoZSB2aWN0aW0gZmlsZXMgYXJlIGxvY2F0ZWQgb24gYSBORlMgc2hhcmUu
-CgpUaGUgYmFjayB0cmFjZSBvZiB0aGUgY29yZSBkdW1wcyBhbHdheXMgbG9va3MgbGlrZSB0aGUg
-YXR0YWNoZWQuCgpUbyBiaXNlY3QgaXQgaXMgaGFyZC4gSG93ZXZlciBhZnRlciBmZXcgYXR0ZW1w
-dHMgaW4gdGhlIGxhc3Qgd2Vla3MgdGhlIGZvbGxvd2luZwpjb21taXQgaXMgZWl0aGVyIHRoZSBm
-aXJzdCBiYWQgY29tbWl0IG9yIGF0IGxlYXN0IHRoZSB1cHBlciBsaW1pdCAobGVzcyBsaWtlbHkp
-LgoKCmNvbW1pdCA4YWFjNjI3MDZhZGFhZjBmYWIwMmM0MzI3NzYxNTYxYzhiZGE5NDQ4CkF1dGhv
-cjogT2xlZyBOZXN0ZXJvdiA8b2xlZ0ByZWRoYXQuY29tPgpEYXRlOiAgIEZyaSBKdW4gMTQgMjE6
-MDk6NDkgMjAxMyArMDIwMAoKICAgIG1vdmUgZXhpdF90YXNrX25hbWVzcGFjZXMoKSBvdXRzaWRl
-IG9mIGV4aXRfbm90aWZ5KCkKCgoKdGZvZXJzdGVAbjIyIH4vZGV2ZWwvbGludXggJCBnZGIgLS1j
-b3JlPS9tbnQvcmFtZGlzay9jb3JlIC9ob21lL3Rmb2Vyc3RlL2RldmVsL2xpbnV4L2xpbnV4IC1u
-IC1iYXRjaCAtZXggYnQKW05ldyBMV1AgMjA4MDJdCkNvcmUgd2FzIGdlbmVyYXRlZCBieSBgL2hv
-bWUvdGZvZXJzdGUvZGV2ZWwvbGludXgvbGludXggZWFybHlwcmludGsgdWJkYT0vaG9tZS90Zm9l
-cnN0ZS92aXJ0dWFsL3VtbC90cicuClByb2dyYW0gdGVybWluYXRlZCB3aXRoIHNpZ25hbCA2LCBB
-Ym9ydGVkLgojMCAgMHhiNzc4ZTQyNCBpbiBfX2tlcm5lbF92c3lzY2FsbCAoKQojMCAgMHhiNzc4
-ZTQyNCBpbiBfX2tlcm5lbF92c3lzY2FsbCAoKQojMSAgMHgwODM5NjE3NSBpbiBraWxsICgpCiMy
-ICAweDA4MDcxNTVkIGluIHVtbF9hYm9ydCAoKSBhdCBhcmNoL3VtL29zLUxpbnV4L3V0aWwuYzo5
-MwojMyAgMHgwODA3MTg0NSBpbiBvc19kdW1wX2NvcmUgKCkgYXQgYXJjaC91bS9vcy1MaW51eC91
-dGlsLmM6MTM4CiM0ICAweDA4MDYxMTk3IGluIHBhbmljX2V4aXQgKHNlbGY9MHg4NTkxNTE4IDxw
-YW5pY19leGl0X25vdGlmaWVyPiwgdW51c2VkMT0wLCB1bnVzZWQyPTB4ODVjNWQ2MCA8YnVmLjEy
-MjUxPikgYXQgYXJjaC91bS9rZXJuZWwvdW1fYXJjaC5jOjI0MAojNSAgMHgwODA5ZGFmOCBpbiBu
-b3RpZmllcl9jYWxsX2NoYWluIChubD0weDAsIHZhbD0wLCB2PTB4ODVjNWQ2MCA8YnVmLjEyMjUx
-PiwgbnJfdG9fY2FsbD0tMiwgbnJfY2FsbHM9MHgwKSBhdCBrZXJuZWwvbm90aWZpZXIuYzo5Mwoj
-NiAgMHgwODA5ZGM0MyBpbiBfX2F0b21pY19ub3RpZmllcl9jYWxsX2NoYWluIChucl9jYWxscz08
-b3B0aW1pemVkIG91dD4sIG5yX3RvX2NhbGw9PG9wdGltaXplZCBvdXQ+LCB2PTxvcHRpbWl6ZWQg
-b3V0PiwgdmFsPTxvcHRpbWl6ZWQgb3V0Piwgbmg9PG9wdGltaXplZCBvdXQ+KSBhdCBrZXJuZWwv
-bm90aWZpZXIuYzoxODIKIzcgIGF0b21pY19ub3RpZmllcl9jYWxsX2NoYWluIChuaD0weDg1YzVk
-NDQgPHBhbmljX25vdGlmaWVyX2xpc3Q+LCB2YWw9MCwgdj0weDg1YzVkNjAgPGJ1Zi4xMjI1MT4p
-IGF0IGtlcm5lbC9ub3RpZmllci5jOjE5MQojOCAgMHgwODNmMzRmOCBpbiBwYW5pYyAoZm10PTB4
-MCkgYXQga2VybmVsL3BhbmljLmM6MTI3CiM5ICAweDA4MDYwYjVlIGluIHNlZ3YgKGZpPTxpbmNv
-bXBsZXRlIHR5cGU+LCBpcD0xMzY1MjczNjksIGlzX3VzZXI9MCwgcmVncz0weDg1OGY4NWMgPGNw
-dTBfaXJxc3RhY2srMzA4MTI+KSBhdCBhcmNoL3VtL2tlcm5lbC90cmFwLmM6MjA5CiMxMCAweDA4
-MDYwZTEzIGluIHNlZ3ZfaGFuZGxlciAoc2lnPTExLCB1bnVzZWRfc2k9MHg4NThmYjBjIDxjcHUw
-X2lycXN0YWNrKzMxNTAwPiwgcmVncz0weDg1OGY4NWMgPGNwdTBfaXJxc3RhY2srMzA4MTI+KSBh
-dCBhcmNoL3VtL2tlcm5lbC90cmFwLmM6MTg1CiMxMSAweDA4MDcwNmE4IGluIHNpZ19oYW5kbGVy
-X2NvbW1vbiAoc2lnPTExLCBzaT0weDg1OGZiMGMgPGNwdTBfaXJxc3RhY2srMzE1MDA+LCBtYz0w
-eDg1OGZiYTAgPGNwdTBfaXJxc3RhY2srMzE2NDg+KSBhdCBhcmNoL3VtL29zLUxpbnV4L3NpZ25h
-bC5jOjQ0CiMxMiAweDA4MDcwN2VkIGluIHNpZ19oYW5kbGVyIChzaWc9MCwgc2k9MHg4NThmYjBj
-IDxjcHUwX2lycXN0YWNrKzMxNTAwPiwgbWM9MHg4NThmYmEwIDxjcHUwX2lycXN0YWNrKzMxNjQ4
-PikgYXQgYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzoyMzEKIzEzIDB4MDgwNzAzM2IgaW4gaGFy
-ZF9oYW5kbGVyIChzaWc9Niwgc2k9MHg4NThmYjBjIDxjcHUwX2lycXN0YWNrKzMxNTAwPiwgcD0w
-eDg1OGZiYTAgPGNwdTBfaXJxc3RhY2srMzE2NDg+KSBhdCBhcmNoL3VtL29zLUxpbnV4L3NpZ25h
-bC5jOjE2NQojMTQgPHNpZ25hbCBoYW5kbGVyIGNhbGxlZD4KIzE1IG5sbWNsbnRfc2V0bG9ja2Fy
-Z3MgKHJlcT0weDQ4ZTE4ODYwLCBmbD0weDQ4ZjI3YzhjKSBhdCBmcy9sb2NrZC9jbG50cHJvYy5j
-OjEzMQojMTYgMHgwODIzNDg5MiBpbiBubG1jbG50X3Byb2MgKGhvc3Q9MHg0OGUxODg2MCwgY21k
-PTcsIGZsPTB4NDhmMjdjOGMpIGF0IGZzL2xvY2tkL2NsbnRwcm9jLmM6MTcwCiMxNyAweDA4MWQ5
-MWFlIGluIG5mc19wcm9jX2xvY2sgKGZpbHA9MHgwLCBjbWQ9MCwgZmw9MHgwKSBhdCBmcy9uZnMv
-cHJvYy5jOjY2NwojMTggMHgwODFjYTM4NiBpbiBkb191bmxrIChmaWxwPTB4NDhmYmUwYzAsIGNt
-ZD03LCBmbD0weDQ4ZjI3YzhjLCBpc19sb2NhbD0wKSBhdCBmcy9uZnMvZmlsZS5jOjc3MwojMTkg
-MHgwODFjYTU3MiBpbiBuZnNfZmxvY2sgKGZpbHA9MHg0OGZiZTBjMCwgY21kPTcsIGZsPTB4MCkg
-YXQgZnMvbmZzL2ZpbGUuYzo5MDIKIzIwIDB4MDgxM2VlNmUgaW4gbG9ja3NfcmVtb3ZlX2Zsb2Nr
-IChmaWxwPTB4NDhmYmUwYzApIGF0IGZzL2xvY2tzLmM6MjA3NAojMjEgMHgwODBmZTQzOCBpbiBf
-X2ZwdXQgKGZpbGU9MHg0OGZiZTBjMCkgYXQgZnMvZmlsZV90YWJsZS5jOjI0MAojMjIgMHgwODBm
-ZTU1YiBpbiBfX19fZnB1dCAod29yaz0weDQ4ZmJlMGMwKSBhdCBmcy9maWxlX3RhYmxlLmM6Mjg1
-CiMyMyAweDA4MDk1ZjNlIGluIHRhc2tfd29ya19ydW4gKCkgYXQga2VybmVsL3Rhc2tfd29yay5j
-Ojg3CiMyNCAweDA4MDgwYzlkIGluIGV4aXRfdGFza193b3JrICh0YXNrPTxvcHRpbWl6ZWQgb3V0
-PikgYXQgaW5jbHVkZS9saW51eC90YXNrX3dvcmsuaDoyMQojMjUgZG9fZXhpdCAoY29kZT0xMjI0
-MTUwMDE2KSBhdCBrZXJuZWwvZXhpdC5jOjc5OAojMjYgMHgwODA4MTJhNyBpbiBkb19ncm91cF9l
-eGl0IChleGl0X2NvZGU9MTEpIGF0IGtlcm5lbC9leGl0LmM6OTMxCiMyNyAweDA4MDhiYzJkIGlu
-IGdldF9zaWduYWxfdG9fZGVsaXZlciAoaW5mbz0weDQ4ZjI3ZTM0LCByZXR1cm5fa2E9MHg0OGYy
-N2ViNCwgcmVncz0weDQ4ZGIzMWQ0LCBjb29raWU9MHgwKSBhdCBrZXJuZWwvc2lnbmFsLmM6MjM3
-MAojMjggMHgwODA1ZjZlYyBpbiBrZXJuX2RvX3NpZ25hbCAocmVncz0weDQ4ZGIzMWQ0KSBhdCBh
-cmNoL3VtL2tlcm5lbC9zaWduYWwuYzo3NwojMjkgMHgwODA1ZjdlZCBpbiBkb19zaWduYWwgKCkg
-YXQgYXJjaC91bS9rZXJuZWwvc2lnbmFsLmM6MTIzCiMzMCAweDA4MDVlNmI3IGluIGludGVycnVw
-dF9lbmQgKCkgYXQgYXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jOjEwNwojMzEgMHgwODA3M2MxYiBp
-biB1c2Vyc3BhY2UgKHJlZ3M9MHg0OGRiMzFkNCkgYXQgYXJjaC91bS9vcy1MaW51eC9za2FzL3By
-b2Nlc3MuYzo0NjQKIzMyIDB4MDgwNWU0NGMgaW4gZm9ya19oYW5kbGVyICgpIGF0IGFyY2gvdW0v
-a2VybmVsL3Byb2Nlc3MuYzoxNjAKIzMzIDB4NWE1YTVhNWEgaW4gPz8gKCkKCgotLSAKTWZHL1Np
-bmNlcmVseQpUb3JhbGYgRsO2cnN0ZXIKcGdwIGZpbmdlciBwcmludDogN0IxQSAwN0Y0IEVDODIg
-MEY5MCBENEMyIDg5MzYgODcyQSBFNTA4IDdEQjYgOURBMwoKCgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KU2VlIGV2ZXJ5dGhpbmcgZnJvbSB0aGUgYnJvd3NlciB0byB0aGUgZGF0YWJhc2Ugd2l0aCBB
-cHBEeW5hbWljcwpHZXQgZW5kLXRvLWVuZCB2aXNpYmlsaXR5IHdpdGggYXBwbGljYXRpb24gbW9u
-aXRvcmluZyBmcm9tIEFwcER5bmFtaWNzCklzb2xhdGUgYm90dGxlbmVja3MgYW5kIGRpYWdub3Nl
-IHJvb3QgY2F1c2UgaW4gc2Vjb25kcy4KU3RhcnQgeW91ciBmcmVlIHRyaWFsIG9mIEFwcER5bmFt
-aWNzIFBybyB0b2RheSEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xr
-P2lkPTQ4ODA4ODMxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxp
-c3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xp
-c3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+On Mon, Aug 19, 2013 at 12:13:14PM +0200, Geert Uytterhoeven wrote:
+> Hi Richard,
+> 
+> On Mon, Aug 19, 2013 at 11:18 AM, Richard W.M. Jones <rjones@redhat.com> wrote:
+> > On Sun, Aug 18, 2013 at 12:09:34AM +0200, Richard Weinberger wrote:
+> >> UML's block device driver does not support write barriers,
+> >> to support this this patch adds REQ_FLUSH suppport.
+> >> Every time the block layer sends a REQ_FLUSH we fsync() now
+> >> our backing file to guarantee data consistency.
+> >
+> > This fixes the sync problem I saw before.  So:
+> 
+> What's the impact on your performance figures?
+
+It just moves the sync into the main process, thus making the
+"write-no-upload" test time *increase* to what we expected (the same
+as KVM).
+
+This doesn't address the main performance issue, which appears to lie
+in the serial port emulation.
+
+Rich.
+
+-- 
+Richard Jones, Virtualization Group, Red Hat http://people.redhat.com/~rjones
+virt-df lists disk usage of guests without needing to install any
+software inside the virtual machine.  Supports Linux and Windows.
+http://people.redhat.com/~rjones/virt-df/
 
