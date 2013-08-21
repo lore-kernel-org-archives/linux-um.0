@@ -1,38 +1,39 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Fri, 16 Aug 2013 12:28:44 -0400
-From: Tejun Heo <tj@kernel.org>
-Message-ID: <20130816162844.GJ2505@htj.dyndns.org>
-References: <1376668606-32354-1-git-send-email-richard@nod.at>
- <20130816161229.GI2505@htj.dyndns.org>
- <520E500B.5000408@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <520E500B.5000408@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH] print_worker_info: Handle pointer with more care
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <richard@nod.at>
+From: Richard Weinberger <richard@nod.at>
+Date: Wed, 21 Aug 2013 10:19:29 +0200
+Message-Id: <1377073172-3662-6-git-send-email-richard@nod.at>
+In-Reply-To: <1377073172-3662-1-git-send-email-richard@nod.at>
+References: <1377073172-3662-1-git-send-email-richard@nod.at>
+Subject: [PATCH 5/8] sh: Do not use SUBARCH
+To: linux-arch@vger.kernel.org
+Cc: mmarek@suse.cz, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, jdike@addtoit.com, gxt@mprc.pku.edu.cn, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Fri, Aug 16, 2013 at 06:15:07PM +0200, Richard Weinberger wrote:
-> On UML I hit the case that pwq is NULL.
-> Then we oops at &pwq->wq...
+Forces the user to specify CROSS_COMPILE at compile time instead
+of automatically selecting more or less randomly a cross compiler.
 
-Hmmm?  I'm confused.  &pwq->wq is pwq's pointer + wq's offset in pwq.
-It doesn't involve dereferencing pwq->wq.  Maybe uml isn't
-implementing probe_kernel_thread()?  Now that I think about it, I'm
-not sure how it could.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/sh/Makefile | 5 -----
+ 1 file changed, 5 deletions(-)
 
-cc'ing uml people.  Hey, guys, workqueue uses proble_kernel_read() to
-print out workqueue related information during oops because those
-events are completely asynchronous and workqueue states may not be
-consistently accessible.  It seems like uml doesn't implement
-probe_kernel_read() and tries direct derference of incorrect pointers
-leading to its own oops.  Maybe uml should check whether the memory is
-mapped from probe_kernel_read()?
-
-Thanks.
-
+diff --git a/arch/sh/Makefile b/arch/sh/Makefile
+index aed701c..8772d11 100644
+--- a/arch/sh/Makefile
++++ b/arch/sh/Makefile
+@@ -9,11 +9,6 @@
+ # License.  See the file "COPYING" in the main directory of this archive
+ # for more details.
+ #
+-ifneq ($(SUBARCH),$(ARCH))
+-  ifeq ($(CROSS_COMPILE),)
+-    CROSS_COMPILE := $(call cc-cross-prefix, $(UTS_MACHINE)-linux-  $(UTS_MACHINE)-linux-gnu-  $(UTS_MACHINE)-unknown-linux-gnu-)
+-  endif
+-endif
+ 
+ isa-y					:= any
+ isa-$(CONFIG_SH_DSP)			:= sh
 -- 
-tejun
+1.8.1.4
+
+
