@@ -1,69 +1,52 @@
-Return-Path: <richard@nod.at>
-Message-ID: <5214AF8E.1010406@nod.at>
-Date: Wed, 21 Aug 2013 14:16:14 +0200
-From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-References: <1377073172-3662-1-git-send-email-richard@nod.at> <CAMuHMdWk-EPTNmPB1O1+F7YVQLjhQsFJznYwA3t6UCGUU1T9PQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdWk-EPTNmPB1O1+F7YVQLjhQsFJznYwA3t6UCGUU1T9PQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1377073172-3662-1-git-send-email-richard@nod.at>
+References: <1377073172-3662-1-git-send-email-richard@nod.at>
+Date: Wed, 21 Aug 2013 14:07:33 +0200
+Message-ID: <CAMuHMdWk-EPTNmPB1O1+F7YVQLjhQsFJznYwA3t6UCGUU1T9PQ@mail.gmail.com>
 Subject: Re: [RFC] Get rid of SUBARCH
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: Richard Weinberger <richard@nod.at>
 Cc: Linux-Arch <linux-arch@vger.kernel.org>, Michal Marek <mmarek@suse.cz>, Ralf Baechle <ralf@linux-mips.org>, Paul Mundt <lethal@linux-sh.org>, Jeff Dike <jdike@addtoit.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am 21.08.2013 14:07, schrieb Geert Uytterhoeven:
-> On Wed, Aug 21, 2013 at 10:19 AM, Richard Weinberger <richard@nod.at> wrote:
->> This series is an attempt to remove the SUBARCH make parameter.
->> It as introduced at the times of Linux 2.5 for UML to tell the UML
->> build system what the real architecture is.
->>
->> But we actually don't need SUBARCH, we can store this information
->> in the .config file.
-> 
-> Haha, now you have OS_ARCH (shouldn't that be called HOST_ARCH?) instead,
-> which is available only for UM?
+On Wed, Aug 21, 2013 at 10:19 AM, Richard Weinberger <richard@nod.at> wrote:
+> This series is an attempt to remove the SUBARCH make parameter.
+> It as introduced at the times of Linux 2.5 for UML to tell the UML
+> build system what the real architecture is.
+>
+> But we actually don't need SUBARCH, we can store this information
+> in the .config file.
 
-We have already OS (which is always "Linux"), so OS_ARCH is IMHO a good choice.
-UML always needs to know what the underlying arch is.
+Haha, now you have OS_ARCH (shouldn't that be called HOST_ARCH?) instead,
+which is available only for UM?
 
-OS_ARCH is not only visible to arch/um/ because of that code in the global Makefile:
+> The series touches also m68k, sh, mips and unicore32.
+> These architectures magically select a cross compiler if ARCH != SUBARCH.
+> Do really need that behavior?
 
-# UML needs a little special treatment here.  It wants to use the host
-# toolchain, so needs $(SUBARCH) passed to checkstack.pl.  Everyone
-# else wants $(ARCH), including people doing cross-builds, which means
-# that $(SUBARCH) doesn't work here.
-ifeq ($(ARCH), um)
-CHECKSTACK_ARCH := $(SUBARCH)
-else
-CHECKSTACK_ARCH := $(ARCH)
-endif
+This does remove functionality.
+It allows to build a kernel using e.g. "make ARCH=m68k".
 
-scripts/tags.sh also needs some work. V2 will contain a patch for that.
+Perhaps this can be moved to generic code? Most (not all!) cross-toolchains
+are called $ARCH-{unknown-,}linux{,-gnu}.
+Exceptions are e.g. am33_2.0-linux and bfin-uclinux.
 
->> The series touches also m68k, sh, mips and unicore32.
->> These architectures magically select a cross compiler if ARCH != SUBARCH.
->> Do really need that behavior?
-> 
-> This does remove functionality.
-> It allows to build a kernel using e.g. "make ARCH=m68k".
+> [PATCH 1/8] um: Create defconfigs for i386 and x86_64
+> [PATCH 3/8] um: Remove old defconfig
 
-If this functionality is expected and has users I'll happily keep that.
+Why not merge these two, so git copy/rename detection will show only the real
+changes?
 
-> Perhaps this can be moved to generic code? Most (not all!) cross-toolchains
-> are called $ARCH-{unknown-,}linux{,-gnu}.
-> Exceptions are e.g. am33_2.0-linux and bfin-uclinux.
+Gr{oetje,eeting}s,
 
-Sounds good.
+                        Geert
 
->> [PATCH 1/8] um: Create defconfigs for i386 and x86_64
->> [PATCH 3/8] um: Remove old defconfig
-> 
-> Why not merge these two, so git copy/rename detection will show only the real
-> changes?
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Will do.
-
-Thanks,
-//richard
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
