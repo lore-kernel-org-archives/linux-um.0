@@ -1,38 +1,77 @@
-Return-Path: <richard@nod.at>
-From: Richard Weinberger <richard@nod.at>
-Date: Wed, 21 Aug 2013 10:19:24 +0200
-Message-Id: <1377073172-3662-1-git-send-email-richard@nod.at>
-Subject: [RFC] Get rid of SUBARCH
-To: linux-arch@vger.kernel.org
-Cc: mmarek@suse.cz, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, jdike@addtoit.com, gxt@mprc.pku.edu.cn, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-m68k-owner@vger.kernel.org>
+Date: Thu, 22 Aug 2013 14:55:49 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Message-Id: <20130822145549.7d2de2bd1209fdc850df3198@canb.auug.org.au>
+In-Reply-To: <1377073172-3662-2-git-send-email-richard@nod.at>
+References: <1377073172-3662-1-git-send-email-richard@nod.at>
+	<1377073172-3662-2-git-send-email-richard@nod.at>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA256";
+ boundary="Signature=_Thu__22_Aug_2013_14_55_49_+1000_BCiP2jO/bmXN.v6F"
+Sender: linux-m68k-owner@vger.kernel.org
+Subject: Re: [PATCH 1/8] um: Create defconfigs for i386 and x86_64
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-arch@vger.kernel.org, mmarek@suse.cz, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, jdike@addtoit.com, gxt@mprc.pku.edu.cn, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Ramkumar Ramachandra <artagnon@gmail.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This series is an attempt to remove the SUBARCH make parameter.
-It as introduced at the times of Linux 2.5 for UML to tell the UML
-build system what the real architecture is.
+--Signature=_Thu__22_Aug_2013_14_55_49_+1000_BCiP2jO/bmXN.v6F
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But we actually don't need SUBARCH, we can store this information
-in the .config file.
-i386_defconfig will produce a kernel for x86, and x86_64_defconfig
-for x86_64. There is no need to specify SUBARCH.
-With this patchset applied you can build UML always with "make linux ARCH=um"
-and it will produce the an image for the architecture specified in your .config.
-Currenlty "make linux ARCH=um" will alter your .config to match the detected SUBARCH
-whith sucks and causes problems on automated build systems.
+Hi Richard,
 
-The series touches also m68k, sh, mips and unicore32.
-These architectures magically select a cross compiler if ARCH != SUBARCH.
-Do really need that behavior?
+On Wed, 21 Aug 2013 10:19:25 +0200 Richard Weinberger <richard@nod.at> wrot=
+e:
+>
+> Instead of having one defconfig for both i386 and x86_64
+> we have now two.
+> This is the first step to get rid of SUBARCH.
+>=20
+> This patch is based on: https://lkml.org/lkml/2013/7/4/396
+>=20
+> Cc: Ramkumar Ramachandra <artagnon@gmail.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  arch/um/configs/i386_defconfig   | 954 +++++++++++++++++++++++++++++++++=
+++++++
+>  arch/um/configs/x86_64_defconfig | 943 +++++++++++++++++++++++++++++++++=
++++++
+>  2 files changed, 1897 insertions(+)
+>  create mode 100644 arch/um/configs/i386_defconfig
+>  create mode 100644 arch/um/configs/x86_64_defconfig
 
-[PATCH 1/8] um: Create defconfigs for i386 and x86_64
-[PATCH 2/8] um: Do not use SUBARCH
-[PATCH 3/8] um: Remove old defconfig
-[PATCH 4/8] m68k: Do not use SUBARCH
-[PATCH 5/8] sh: Do not use SUBARCH
-[PATCH 6/8] mips: Do not use SUBARCH
-[PATCH 7/8] unicore32: Do not use SUBARCH
-[PATCH 8/8] Makefile: Remove SUBARCH
+Can these still work if put through "make savedefconfig" like other
+architectures defconfig files?  I did a test and they produce files that
+are only 74-75 lines long and the resulting files produced the
+same .config when used in place of their originals.  But I only did that
+test on an X86_64 host, so I just don't know if there is some strangeness
+of um that would stop us using them.
 
-Thanks,
-//richard
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
 
+--Signature=_Thu__22_Aug_2013_14_55_49_+1000_BCiP2jO/bmXN.v6F
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBCAAGBQJSFZnVAAoJEECxmPOUX5FECykQAKVdAw7YgUXXddRw5aV5pmAy
+NbV0hO6Ier1fY06b+DTdFHXEokRtDxQBqLzxS3DjjQK4c8qjyiwpdJOu7PM//wxv
+NRKtSrI1S6idf0bJJ+Z4n9t+FxlE41bxusf7/mUt6E4s8HFwYvGgpZ8/QUuPLGqY
+mocdz9cxpqfJehtiC8zG7BBH/Lw+y3LyXf12Eyjq0IH41qPICl+sX0D0M/tRCdhI
+gr2lGiq/N8KbtT86RnMI1n82D3JlM6wFgjt7OTozNgeHnYFOrW82LDWQFfstWuqg
+D4X2sGShjq1T6dKXDTtAKAE/BsmQ75UVSCfCJz2HV92KUH/heBs0g2uU2gnGREv/
+5dSRMCsSeRaKPOZCUQR3gll43u/Es90algPNEPQc3fwpataeQu0qeZxGrDm+6j48
+Qt9P20WJVWd/yF8QRsM0IwgFXuHJQdzvHz4dm6NJdRNRCgllT/rL3AjkcnUmD/jV
+uSXGD+WHgky45KIL3jofpZNNmllUn3KLJJN8AS45oZqBWoIRRAQv19287SnMUNav
+kq0ThN7zXMV5bS2xb1t1CHnL5ir/6xoVow8P/d+0To6vQFJhGjlnm2YwXDx0qRqs
+aNPVSiS+STbr915+8jObTSLF9zqEpXgw14B6uL0Zn+tnlMXYKy/CvO66iM9qdutj
+qQDs44nuuEim20i4E0EX
+=mHOY
+-----END PGP SIGNATURE-----
+
+--Signature=_Thu__22_Aug_2013_14_55_49_+1000_BCiP2jO/bmXN.v6F--
