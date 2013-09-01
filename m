@@ -1,27 +1,30 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1VGEzV-0002KF-Ix
+	(envelope-from <toralf.foerster@gmx.de>) id 1VGADo-0008OB-UK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Sep 2013 21:15:25 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VGEzR-0000mx-Ty
+	Sun, 01 Sep 2013 16:09:52 +0000
+Received: from mout.gmx.net ([212.227.15.15])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1VGADn-0003vX-Ir
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Sep 2013 21:15:25 +0000
-Message-ID: <5223AE54.6000606@nod.at>
-Date: Sun, 01 Sep 2013 23:15:00 +0200
-From: Richard Weinberger <richard@nod.at>
+	Sun, 01 Sep 2013 16:09:52 +0000
+Received: from [78.54.53.152] ([78.54.53.152]) by mail.gmx.com (mrgmx002)
+	with ESMTPSA (Nemesis) id 0McmS9-1VXQ5Y0I89-00Hsig for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 01 Sep 2013 18:09:45
+	+0200
+Message-ID: <522366C6.2020702@gmx.de>
+Date: Sun, 01 Sep 2013 18:09:42 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
 References: <52075E01.7030506@gmx.de> <20130812143640.GF4596@quack.suse.cz>
 	<20130813215313.GH17781@fieldses.org>
 	<20130827180655.GE14809@fieldses.org> <521E318C.7040401@gmx.de>
 	<CAFLxGvyK5+nB9TgW1uPho9KGwQrWQHx=wEpj+o-mZcN92bWAOg@mail.gmail.com>
 	<20130829133010.GA14773@fieldses.org> <5220A7E2.1070704@gmx.de>
-	<5220ADE7.1010502@nod.at> <522366C6.2020702@gmx.de>
-In-Reply-To: <522366C6.2020702@gmx.de>
-Content-Type: multipart/mixed; boundary="------------030606090605080205050505"
+	<5220ADE7.1010502@nod.at>
+In-Reply-To: <5220ADE7.1010502@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,139 +34,80 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] Issues with a rather unusual configured NFS server
-To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+To: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---------------030606090605080205050505
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-
-Am 01.09.2013 18:09, schrieb Toralf Förster:
-> On 08/30/2013 04:36 PM, Richard Weinberger wrote:
->> Am 30.08.2013 16:10, schrieb Toralf Förster:
->>> On 08/29/2013 03:30 PM, J. Bruce Fields wrote:
->>>> On Thu, Aug 29, 2013 at 11:57:45AM +0200, richard -rw- weinberger wrote:
->>>>> On Wed, Aug 28, 2013 at 7:21 PM, Toralf Förster <toralf.foerster@gmx.de> wrote:
->>>>>> On 08/27/2013 08:06 PM, J. Bruce Fields wrote:
->>>>>>> On Tue, Aug 13, 2013 at 05:53:14PM -0400, bfields wrote:
->>>>>>>> On Mon, Aug 12, 2013 at 04:36:40PM +0200, Jan Kara wrote:
->>>>>>>>> On Sun 11-08-13 11:48:49, Toralf Förster wrote:
->>>>>>>>>> so that the server either crashes (if it is a user mode linux image) or at least its reboot functionality got broken
->>>>>>>>>> - if the NFS server is hammered with scary NFS calls using a fuzzy tool running at a remote NFS client under a non-privileged user id.
->>>>>>>>>>
->>>>>>>>>> It can re reproduced, if
->>>>>>>>>>    - the NFS share is an EXT3 or EXT4 directory
->>>>>>>>>>    - and it is created at file located at tempfs and mounted via loop device
->>>>>>>>>>    - and the NFS server is forced to umount the NFS share
->>>>>>>>>>    - and the server forced to restart the NSF service afterwards
->>>>>>>>>>    - and trinity is used
->>>>>>>>>>
->>>>>>>>>> I could find a scenario for an automated bisect. 2 times it brought this commit
->>>>>>>>>> commit 68a3396178e6688ad7367202cdf0af8ed03c8727
->>>>>>>>>> Author: J. Bruce Fields <bfields@redhat.com>
->>>>>>>>>> Date:   Thu Mar 21 11:21:50 2013 -0400
->>>>>>>>>>
->>>>>>>>>>     nfsd4: shut down more of delegation earlier
->>>>>>>>
->>>>>>>> Thanks for the report.  I think I see the problem--after this commit
->>>>>>>> nfs4_set_delegation() failures result in nfs4_put_delegation being
->>>>>>>> called, but nfs4_put_delegation doesn't free the nfs4_file that has
->>>>>>>> already been set by alloc_init_deleg().
->>>>>>>>
->>>>>>>> Let me think about how to fix that....
->>>>>>>
->>>>>>> Sorry for the slow response--can you check whether this fixes the
->>>>>>> problem?
->>>>>>>
->>>>>> Yes.
->>>>>>
->>>>>> With the attached patch the problem can't be reproduced any longer with
->>>>>> the prepared test case and current git kernels.
->>>>>
->>>>> BTW: Is nobody else fuzz testing NFS?
->>>>
->>>> I don't know.  Toralf's reports are the only ones I recall off the top
->>>> of my head, but I may have forgotten others.
->>>>
->>>
->>> well, 7255e71 and 3c50ba8 I'd say.
->>>
->>>>> Or are these bugs just more likely to hit on UML?
->>>
->>> This definitely not. I observed at a real system EXT4 corruptions/
->>> issues but reported them to the EXT4 mailing list.
->>> It just took me a longer time to figure out a reliable configuration
->>> with 2 UML machiens to automatic bisect it.
->>>
->>>
->>>> That's also possible.
->>>>
->>>>> This is not the first NFS issue found by Toralf using UML and Trinity.
->>>>
->>>> Yep.  The testing is definitely appreciated.
->>>
->>> Thx - in the mean while although my UML bisect scripts are working fine
->>> and trinity is stable enough even in UML environments to be trust worth.
->>
->> That's good to know.
->> Thanks you and trinity we got rid of some nasty UML bugs.
-> 
-> yeah, but there's (among others) one of them still in the wild:
-> If I start an UML and resize the terminal (KDE Konsole) during the boot
-> phase then it just crashes sometimes.
-
-Does the attached patch fix the problem?
-
-Thanks,
-//richard
-
-
---------------030606090605080205050505
-Content-Type: text/x-patch;
- name="winch_irq.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="winch_irq.diff"
-
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 36e12f0..e7d1983 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -337,6 +337,7 @@ static struct irq_chip normal_irq_type = {
- 	.irq_disable = dummy,
- 	.irq_enable = dummy,
- 	.irq_ack = dummy,
-+	.irq_mask = dummy,
- };
- 
- static struct irq_chip SIGVTALRM_irq_type = {
-
---------------030606090605080205050505
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
-Discover the easy way to master current and previous Microsoft technologies
-and advance your career. Get an incredible 1,500+ hours of step-by-step
-tutorial videos with LearnDevNow. Subscribe today and save!
-http://pubads.g.doubleclick.net/gampad/clk?id=58040911&iu=/4140/ostg.clktrk
---------------030606090605080205050505
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---------------030606090605080205050505--
-
+T24gMDgvMzAvMjAxMyAwNDozNiBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIDMw
+LjA4LjIwMTMgMTY6MTAsIHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVyOgo+PiBPbiAwOC8yOS8yMDEz
+IDAzOjMwIFBNLCBKLiBCcnVjZSBGaWVsZHMgd3JvdGU6Cj4+PiBPbiBUaHUsIEF1ZyAyOSwgMjAx
+MyBhdCAxMTo1Nzo0NUFNICswMjAwLCByaWNoYXJkIC1ydy0gd2VpbmJlcmdlciB3cm90ZToKPj4+
+PiBPbiBXZWQsIEF1ZyAyOCwgMjAxMyBhdCA3OjIxIFBNLCBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFs
+Zi5mb2Vyc3RlckBnbXguZGU+IHdyb3RlOgo+Pj4+PiBPbiAwOC8yNy8yMDEzIDA4OjA2IFBNLCBK
+LiBCcnVjZSBGaWVsZHMgd3JvdGU6Cj4+Pj4+PiBPbiBUdWUsIEF1ZyAxMywgMjAxMyBhdCAwNTo1
+MzoxNFBNIC0wNDAwLCBiZmllbGRzIHdyb3RlOgo+Pj4+Pj4+IE9uIE1vbiwgQXVnIDEyLCAyMDEz
+IGF0IDA0OjM2OjQwUE0gKzAyMDAsIEphbiBLYXJhIHdyb3RlOgo+Pj4+Pj4+PiBPbiBTdW4gMTEt
+MDgtMTMgMTE6NDg6NDksIFRvcmFsZiBGw7Zyc3RlciB3cm90ZToKPj4+Pj4+Pj4+IHNvIHRoYXQg
+dGhlIHNlcnZlciBlaXRoZXIgY3Jhc2hlcyAoaWYgaXQgaXMgYSB1c2VyIG1vZGUgbGludXggaW1h
+Z2UpIG9yIGF0IGxlYXN0IGl0cyByZWJvb3QgZnVuY3Rpb25hbGl0eSBnb3QgYnJva2VuCj4+Pj4+
+Pj4+PiAtIGlmIHRoZSBORlMgc2VydmVyIGlzIGhhbW1lcmVkIHdpdGggc2NhcnkgTkZTIGNhbGxz
+IHVzaW5nIGEgZnV6enkgdG9vbCBydW5uaW5nIGF0IGEgcmVtb3RlIE5GUyBjbGllbnQgdW5kZXIg
+YSBub24tcHJpdmlsZWdlZCB1c2VyIGlkLgo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+IEl0IGNhbiByZSBy
+ZXByb2R1Y2VkLCBpZgo+Pj4+Pj4+Pj4gICAgLSB0aGUgTkZTIHNoYXJlIGlzIGFuIEVYVDMgb3Ig
+RVhUNCBkaXJlY3RvcnkKPj4+Pj4+Pj4+ICAgIC0gYW5kIGl0IGlzIGNyZWF0ZWQgYXQgZmlsZSBs
+b2NhdGVkIGF0IHRlbXBmcyBhbmQgbW91bnRlZCB2aWEgbG9vcCBkZXZpY2UKPj4+Pj4+Pj4+ICAg
+IC0gYW5kIHRoZSBORlMgc2VydmVyIGlzIGZvcmNlZCB0byB1bW91bnQgdGhlIE5GUyBzaGFyZQo+
+Pj4+Pj4+Pj4gICAgLSBhbmQgdGhlIHNlcnZlciBmb3JjZWQgdG8gcmVzdGFydCB0aGUgTlNGIHNl
+cnZpY2UgYWZ0ZXJ3YXJkcwo+Pj4+Pj4+Pj4gICAgLSBhbmQgdHJpbml0eSBpcyB1c2VkCj4+Pj4+
+Pj4+Pgo+Pj4+Pj4+Pj4gSSBjb3VsZCBmaW5kIGEgc2NlbmFyaW8gZm9yIGFuIGF1dG9tYXRlZCBi
+aXNlY3QuIDIgdGltZXMgaXQgYnJvdWdodCB0aGlzIGNvbW1pdAo+Pj4+Pj4+Pj4gY29tbWl0IDY4
+YTMzOTYxNzhlNjY4OGFkNzM2NzIwMmNkZjBhZjhlZDAzYzg3MjcKPj4+Pj4+Pj4+IEF1dGhvcjog
+Si4gQnJ1Y2UgRmllbGRzIDxiZmllbGRzQHJlZGhhdC5jb20+Cj4+Pj4+Pj4+PiBEYXRlOiAgIFRo
+dSBNYXIgMjEgMTE6MjE6NTAgMjAxMyAtMDQwMAo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+ICAgICBuZnNk
+NDogc2h1dCBkb3duIG1vcmUgb2YgZGVsZWdhdGlvbiBlYXJsaWVyCj4+Pj4+Pj4KPj4+Pj4+PiBU
+aGFua3MgZm9yIHRoZSByZXBvcnQuICBJIHRoaW5rIEkgc2VlIHRoZSBwcm9ibGVtLS1hZnRlciB0
+aGlzIGNvbW1pdAo+Pj4+Pj4+IG5mczRfc2V0X2RlbGVnYXRpb24oKSBmYWlsdXJlcyByZXN1bHQg
+aW4gbmZzNF9wdXRfZGVsZWdhdGlvbiBiZWluZwo+Pj4+Pj4+IGNhbGxlZCwgYnV0IG5mczRfcHV0
+X2RlbGVnYXRpb24gZG9lc24ndCBmcmVlIHRoZSBuZnM0X2ZpbGUgdGhhdCBoYXMKPj4+Pj4+PiBh
+bHJlYWR5IGJlZW4gc2V0IGJ5IGFsbG9jX2luaXRfZGVsZWcoKS4KPj4+Pj4+Pgo+Pj4+Pj4+IExl
+dCBtZSB0aGluayBhYm91dCBob3cgdG8gZml4IHRoYXQuLi4uCj4+Pj4+Pgo+Pj4+Pj4gU29ycnkg
+Zm9yIHRoZSBzbG93IHJlc3BvbnNlLS1jYW4geW91IGNoZWNrIHdoZXRoZXIgdGhpcyBmaXhlcyB0
+aGUKPj4+Pj4+IHByb2JsZW0/Cj4+Pj4+Pgo+Pj4+PiBZZXMuCj4+Pj4+Cj4+Pj4+IFdpdGggdGhl
+IGF0dGFjaGVkIHBhdGNoIHRoZSBwcm9ibGVtIGNhbid0IGJlIHJlcHJvZHVjZWQgYW55IGxvbmdl
+ciB3aXRoCj4+Pj4+IHRoZSBwcmVwYXJlZCB0ZXN0IGNhc2UgYW5kIGN1cnJlbnQgZ2l0IGtlcm5l
+bHMuCj4+Pj4KPj4+PiBCVFc6IElzIG5vYm9keSBlbHNlIGZ1enogdGVzdGluZyBORlM/Cj4+Pgo+
+Pj4gSSBkb24ndCBrbm93LiAgVG9yYWxmJ3MgcmVwb3J0cyBhcmUgdGhlIG9ubHkgb25lcyBJIHJl
+Y2FsbCBvZmYgdGhlIHRvcAo+Pj4gb2YgbXkgaGVhZCwgYnV0IEkgbWF5IGhhdmUgZm9yZ290dGVu
+IG90aGVycy4KPj4+Cj4+Cj4+IHdlbGwsIDcyNTVlNzEgYW5kIDNjNTBiYTggSSdkIHNheS4KPj4K
+Pj4+PiBPciBhcmUgdGhlc2UgYnVncyBqdXN0IG1vcmUgbGlrZWx5IHRvIGhpdCBvbiBVTUw/Cj4+
+Cj4+IFRoaXMgZGVmaW5pdGVseSBub3QuIEkgb2JzZXJ2ZWQgYXQgYSByZWFsIHN5c3RlbSBFWFQ0
+IGNvcnJ1cHRpb25zLwo+PiBpc3N1ZXMgYnV0IHJlcG9ydGVkIHRoZW0gdG8gdGhlIEVYVDQgbWFp
+bGluZyBsaXN0Lgo+PiBJdCBqdXN0IHRvb2sgbWUgYSBsb25nZXIgdGltZSB0byBmaWd1cmUgb3V0
+IGEgcmVsaWFibGUgY29uZmlndXJhdGlvbgo+PiB3aXRoIDIgVU1MIG1hY2hpZW5zIHRvIGF1dG9t
+YXRpYyBiaXNlY3QgaXQuCj4+Cj4+Cj4+PiBUaGF0J3MgYWxzbyBwb3NzaWJsZS4KPj4+Cj4+Pj4g
+VGhpcyBpcyBub3QgdGhlIGZpcnN0IE5GUyBpc3N1ZSBmb3VuZCBieSBUb3JhbGYgdXNpbmcgVU1M
+IGFuZCBUcmluaXR5Lgo+Pj4KPj4+IFllcC4gIFRoZSB0ZXN0aW5nIGlzIGRlZmluaXRlbHkgYXBw
+cmVjaWF0ZWQuCj4+Cj4+IFRoeCAtIGluIHRoZSBtZWFuIHdoaWxlIGFsdGhvdWdoIG15IFVNTCBi
+aXNlY3Qgc2NyaXB0cyBhcmUgd29ya2luZyBmaW5lCj4+IGFuZCB0cmluaXR5IGlzIHN0YWJsZSBl
+bm91Z2ggZXZlbiBpbiBVTUwgZW52aXJvbm1lbnRzIHRvIGJlIHRydXN0IHdvcnRoLgo+IAo+IFRo
+YXQncyBnb29kIHRvIGtub3cuCj4gVGhhbmtzIHlvdSBhbmQgdHJpbml0eSB3ZSBnb3QgcmlkIG9m
+IHNvbWUgbmFzdHkgVU1MIGJ1Z3MuCgp5ZWFoLCBidXQgdGhlcmUncyAoYW1vbmcgb3RoZXJzKSBv
+bmUgb2YgdGhlbSBzdGlsbCBpbiB0aGUgd2lsZDoKSWYgSSBzdGFydCBhbiBVTUwgYW5kIHJlc2l6
+ZSB0aGUgdGVybWluYWwgKEtERSBLb25zb2xlKSBkdXJpbmcgdGhlIGJvb3QKcGhhc2UgdGhlbiBp
+dCBqdXN0IGNyYXNoZXMgc29tZXRpbWVzLgoKCj4gVGhhbmtzLAo+IC8vcmljaGFyZAo+IAo+IAoK
+Ci0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHByaW50OiA3QjFB
+IDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1MDggN0RCNiA5REEzCgotLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KTGVhcm4gdGhlIGxhdGVzdC0tVmlzdWFsIFN0dWRpbyAyMDEyLCBTaGFyZVBv
+aW50IDIwMTMsIFNRTCAyMDEyLCBtb3JlIQpEaXNjb3ZlciB0aGUgZWFzeSB3YXkgdG8gbWFzdGVy
+IGN1cnJlbnQgYW5kIHByZXZpb3VzIE1pY3Jvc29mdCB0ZWNobm9sb2dpZXMKYW5kIGFkdmFuY2Ug
+eW91ciBjYXJlZXIuIEdldCBhbiBpbmNyZWRpYmxlIDEsNTAwKyBob3VycyBvZiBzdGVwLWJ5LXN0
+ZXAKdHV0b3JpYWwgdmlkZW9zIHdpdGggTGVhcm5EZXZOb3cuIFN1YnNjcmliZSB0b2RheSBhbmQg
+c2F2ZSEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTU4MDQw
+OTExJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1t
+b2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
+ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
