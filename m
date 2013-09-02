@@ -1,252 +1,120 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <522B9010.8070902@gmx.de>
-Date: Sat, 07 Sep 2013 22:44:00 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1VGXR1-0000Wb-RA
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Sep 2013 16:57:03 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VGXQl-0003Fh-Tw
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Sep 2013 16:57:03 +0000
+Message-ID: <5224C342.9050707@nod.at>
+Date: Mon, 02 Sep 2013 18:56:34 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-References: <52075E01.7030506@gmx.de> <20130812143640.GF4596@quack.suse.cz> <20130813215313.GH17781@fieldses.org> <20130827180655.GE14809@fieldses.org> <521E318C.7040401@gmx.de>
-In-Reply-To: <521E318C.7040401@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: Issues with a rather unusual configured NFS server
-To: "J. Bruce Fields" <bfields@fieldses.org>
-Cc: Jan Kara <jack@suse.cz>, Linux NFS mailing list <linux-nfs@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, linux-ext4@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, "J. Bruce Fields" <bfields@redhat.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+References: <52075E01.7030506@gmx.de> <20130812143640.GF4596@quack.suse.cz>
+	<20130813215313.GH17781@fieldses.org>
+	<20130827180655.GE14809@fieldses.org> <521E318C.7040401@gmx.de>
+	<CAFLxGvyK5+nB9TgW1uPho9KGwQrWQHx=wEpj+o-mZcN92bWAOg@mail.gmail.com>
+	<20130829133010.GA14773@fieldses.org> <5220A7E2.1070704@gmx.de>
+	<5220ADE7.1010502@nod.at> <522366C6.2020702@gmx.de>
+	<5223AE54.6000606@nod.at> <5224C294.9090308@gmx.de>
+In-Reply-To: <5224C294.9090308@gmx.de>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] Issues with a rather unusual configured NFS server
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On 08/28/2013 07:21 PM, Toralf F=C3=B6rster wrote:
-> On 08/27/2013 08:06 PM, J. Bruce Fields wrote:
->> On Tue, Aug 13, 2013 at 05:53:14PM -0400, bfields wrote:
->>> On Mon, Aug 12, 2013 at 04:36:40PM +0200, Jan Kara wrote:
->>>> On Sun 11-08-13 11:48:49, Toralf F=C3=B6rster wrote:
->>>>> so that the server either crashes (if it is a user mode linux ima=
-ge) or at least its reboot functionality got broken
->>>>> - if the NFS server is hammered with scary NFS calls using a fuzz=
-y tool running at a remote NFS client under a non-privileged user id.
->>>>>
->>>>> It can re reproduced, if
->>>>> 	- the NFS share is an EXT3 or EXT4 directory
->>>>> 	- and it is created at file located at tempfs and mounted via lo=
-op device
->>>>> 	- and the NFS server is forced to umount the NFS share
->>>>> 	- and the server forced to restart the NSF service afterwards
->>>>> 	- and trinity is used
->>>>>
->>>>> I could find a scenario for an automated bisect. 2 times it broug=
-ht this commit=20
->>>>> commit 68a3396178e6688ad7367202cdf0af8ed03c8727
->>>>> Author: J. Bruce Fields <bfields@redhat.com>
->>>>> Date:   Thu Mar 21 11:21:50 2013 -0400
->>>>>
->>>>>     nfsd4: shut down more of delegation earlier
->>>
->>> Thanks for the report.  I think I see the problem--after this commi=
-t
->>> nfs4_set_delegation() failures result in nfs4_put_delegation being
->>> called, but nfs4_put_delegation doesn't free the nfs4_file that has
->>> already been set by alloc_init_deleg().
->>>
->>> Let me think about how to fix that....
->>
->> Sorry for the slow response--can you check whether this fixes the
->> problem?
->>
-> Yes.
->=20
-> With the attached patch the problem can't be reproduced any longer wi=
-th
-> the prepared test case and current git kernels.
->=20
->> --b.
->>
->> commit 624a0ee0375940ce4aa36330b0b5a70af6d2b6f5
->> Author: J. Bruce Fields <bfields@redhat.com>
->> Date:   Thu Aug 15 16:55:26 2013 -0400
->>
->>     nfsd4: fix leak of inode reference on delegation failure
->>    =20
->>     This fixes a regression from 68a3396178e6688ad7367202cdf0af8ed03=
-c8727
->>     "nfsd4: shut down more of delegation earlier".
->>    =20
->>     After that commit, nfs4_set_delegation() failures result in
->>     nfs4_put_delegation being called, but nfs4_put_delegation doesn'=
-t free
->>     the nfs4_file that has already been set by alloc_init_deleg().
->>    =20
->>     This can result in an oops on later unmounting the exported file=
-system.
->>    =20
->>     Note also delaying the fi_had_conflict check we're able to retur=
-n a
->>     better error (hence give 4.1 clients a better idea why the deleg=
-ation
->>     failed; though note CONFLICT isn't an exact match here, as that'=
-s
->>     supposed to indicate a current conflict, but all we know here is=
- that
->>     there was one recently).
->>    =20
->>     Reported-by: Toralf F=C3=B6rster <toralf.foerster@gmx.de>
->>     Signed-off-by: J. Bruce Fields <bfields@redhat.com>
->>
->> diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
->> index eb9cf81..0874998 100644
->> --- a/fs/nfsd/nfs4state.c
->> +++ b/fs/nfsd/nfs4state.c
->> @@ -368,11 +368,8 @@ static struct nfs4_delegation *
->>  alloc_init_deleg(struct nfs4_client *clp, struct nfs4_ol_stateid *s=
-tp, struct svc_fh *current_fh)
->>  {
->>  	struct nfs4_delegation *dp;
->> -	struct nfs4_file *fp =3D stp->st_file;
->> =20
->>  	dprintk("NFSD alloc_init_deleg\n");
->> -	if (fp->fi_had_conflict)
->> -		return NULL;
->>  	if (num_delegations > max_delegations)
->>  		return NULL;
->>  	dp =3D delegstateid(nfs4_alloc_stid(clp, deleg_slab));
->> @@ -389,8 +386,7 @@ alloc_init_deleg(struct nfs4_client *clp, struct=
- nfs4_ol_stateid *stp, struct sv
->>  	INIT_LIST_HEAD(&dp->dl_perfile);
->>  	INIT_LIST_HEAD(&dp->dl_perclnt);
->>  	INIT_LIST_HEAD(&dp->dl_recall_lru);
->> -	get_nfs4_file(fp);
->> -	dp->dl_file =3D fp;
->> +	dp->dl_file =3D NULL;
->>  	dp->dl_type =3D NFS4_OPEN_DELEGATE_READ;
->>  	fh_copy_shallow(&dp->dl_fh, &current_fh->fh_handle);
->>  	dp->dl_time =3D 0;
->> @@ -3044,22 +3040,35 @@ static int nfs4_setlease(struct nfs4_delegat=
-ion *dp)
->>  	return 0;
->>  }
->> =20
->> -static int nfs4_set_delegation(struct nfs4_delegation *dp)
->> +static int nfs4_set_delegation(struct nfs4_delegation *dp, struct n=
-fs4_file *fp)
->>  {
->> -	struct nfs4_file *fp =3D dp->dl_file;
->> +	int status;
->> =20
->> -	if (!fp->fi_lease)
->> -		return nfs4_setlease(dp);
->> +	if (fp->fi_had_conflict)
->> +		return -EAGAIN;
->> +	get_nfs4_file(fp);
->> +	dp->dl_file =3D fp;
->> +	if (!fp->fi_lease) {
->> +		status =3D nfs4_setlease(dp);
->> +		if (status)
->> +			goto out_free;
->> +		return 0;
->> +	}
->>  	spin_lock(&recall_lock);
->>  	if (fp->fi_had_conflict) {
->>  		spin_unlock(&recall_lock);
->> -		return -EAGAIN;
->> +		status =3D -EAGAIN;
->> +		goto out_free;
->>  	}
->>  	atomic_inc(&fp->fi_delegees);
->>  	list_add(&dp->dl_perfile, &fp->fi_delegations);
->>  	spin_unlock(&recall_lock);
->>  	list_add(&dp->dl_perclnt, &dp->dl_stid.sc_client->cl_delegations);
->>  	return 0;
->> +out_free:
->> +	put_nfs4_file(fp);
->> +	dp->dl_file =3D fp;
->> +	return status;
->>  }
->> =20
->>  static void nfsd4_open_deleg_none_ext(struct nfsd4_open *open, int =
-status)
->> @@ -3134,7 +3143,7 @@ nfs4_open_delegation(struct net *net, struct s=
-vc_fh *fh,
->>  	dp =3D alloc_init_deleg(oo->oo_owner.so_client, stp, fh);
->>  	if (dp =3D=3D NULL)
->>  		goto out_no_deleg;
->> -	status =3D nfs4_set_delegation(dp);
->> +	status =3D nfs4_set_delegation(dp, stp->st_file);
->>  	if (status)
->>  		goto out_free;
->> =20
->>
->=20
->=20
-
-Today I run latest git tree with a patched UML (this patch + one for xt=
-erm issues) and got 2 times a core dump
-when I fuzzy test an UML machine with a nearly identical scenario as al=
-ready described but just shutdowned
-both UML images instead of shooting one of it in the head.
-
-I'll probably need time to figure out a test case, but just as a pre-in=
-fo here's the back trace:
-
-tfoerste@n22 ~ $ gdb --core=3D/mnt/ramdisk/core /usr/local/bin/linux-v3=
-=2E11-7550-g768c9d3 -n -batch -ex bt
-
-warning: core file may not match specified executable file.
-[New LWP 7470]
-[New LWP 7479]
-[New LWP 7477]
-[New LWP 7478]
-Core was generated by `/usr/local/bin/linux-v3.11-7550-g768c9d3 earlypr=
-intk ubda=3D/home/tfoerste/virtua'.
-Program terminated with signal 6, Aborted.
-#0  0xb77be424 in __kernel_vsyscall ()
-#0  0xb77be424 in __kernel_vsyscall ()
-#1  0x083aada5 in kill ()
-#2  0x0807163d in uml_abort () at arch/um/os-Linux/util.c:93
-#3  0x08071925 in os_dump_core () at arch/um/os-Linux/util.c:138
-#4  0x080613a7 in panic_exit (self=3D0x85b1518 <panic_exit_notifier>, u=
-nused1=3D0, unused2=3D0x85e76e0 <buf.15920>) at arch/um/kernel/um_arch.=
-c:240
-#5  0x0809a398 in notifier_call_chain (nl=3D0x0, val=3D0, v=3D0x85e76e0=
- <buf.15920>, nr_to_call=3D-2, nr_calls=3D0x0) at kernel/notifier.c:93
-#6  0x0809a4e3 in __atomic_notifier_call_chain (nr_calls=3D<optimized o=
-ut>, nr_to_call=3D<optimized out>, v=3D<optimized out>, val=3D<optimize=
-d out>, nh=3D<optimized out>) at kernel/notifier.c:182
-#7  atomic_notifier_call_chain (nh=3D0x85e76c4 <panic_notifier_list>, v=
-al=3D0, v=3D0x85e76e0 <buf.15920>) at kernel/notifier.c:191
-#8  0x08408628 in panic (fmt=3D0x0) at kernel/panic.c:128
-#9  0x081131c9 in shrink_dcache_for_umount_subtree (dentry=3D0x428028f0=
-) at fs/dcache.c:941
-#10 0x08113948 in shrink_dcache_for_umount (sb=3D0x463b8000) at fs/dcac=
-he.c:1002
-#11 0x08101677 in generic_shutdown_super (sb=3D0x463b8000) at fs/super.=
-c:404
-#12 0x08102395 in kill_anon_super (sb=3D0x0) at fs/super.c:875
-#13 0x081d3ff8 in nfs_kill_super (s=3D0x0) at fs/nfs/super.c:2598
-#14 0x0810153a in deactivate_locked_super (s=3D0x463b8000) at fs/super.=
-c:294
-#15 0x081015d1 in deactivate_super (s=3D0x463b8000) at fs/super.c:319
-#16 0x08119c0c in mntfree (mnt=3D<optimized out>) at fs/namespace.c:891
-#17 mntput_no_expire (mnt=3D0x0) at fs/namespace.c:929
-#18 0x0811b195 in SYSC_umount (flags=3D<optimized out>, name=3D<optimiz=
-ed out>) at fs/namespace.c:1335
-#19 SyS_umount (name=3D134633856, flags=3D2) at fs/namespace.c:1305
-#20 0x080618e2 in handle_syscall (r=3D0x498be5d4) at arch/um/kernel/ska=
-s/syscall.c:35
-#21 0x08073c0d in handle_trap (local_using_sysemu=3D<optimized out>, re=
-gs=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/skas/p=
-rocess.c:198
-#22 userspace (regs=3D0x498be5d4) at arch/um/os-Linux/skas/process.c:43=
-1
-#23 0x0805e65c in fork_handler () at arch/um/kernel/process.c:160
-#24 0x00000000 in ?? ()
-
-
-
---=20
-MfG/Sincerely
-Toralf F=C3=B6rster
-pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+QW0gMDIuMDkuMjAxMyAxODo1Mywgc2NocmllYiBUb3JhbGYgRsO2cnN0ZXI6Cj4gT24gMDkvMDEv
+MjAxMyAxMToxNSBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+PiBBbSAwMS4wOS4yMDEz
+IDE4OjA5LCBzY2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPj4+IE9uIDA4LzMwLzIwMTMgMDQ6MzYg
+UE0sIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4+PiBBbSAzMC4wOC4yMDEzIDE2OjEwLCBz
+Y2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPj4+Pj4gT24gMDgvMjkvMjAxMyAwMzozMCBQTSwgSi4g
+QnJ1Y2UgRmllbGRzIHdyb3RlOgo+Pj4+Pj4gT24gVGh1LCBBdWcgMjksIDIwMTMgYXQgMTE6NTc6
+NDVBTSArMDIwMCwgcmljaGFyZCAtcnctIHdlaW5iZXJnZXIgd3JvdGU6Cj4+Pj4+Pj4gT24gV2Vk
+LCBBdWcgMjgsIDIwMTMgYXQgNzoyMSBQTSwgVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYuZm9lcnN0
+ZXJAZ214LmRlPiB3cm90ZToKPj4+Pj4+Pj4gT24gMDgvMjcvMjAxMyAwODowNiBQTSwgSi4gQnJ1
+Y2UgRmllbGRzIHdyb3RlOgo+Pj4+Pj4+Pj4gT24gVHVlLCBBdWcgMTMsIDIwMTMgYXQgMDU6NTM6
+MTRQTSAtMDQwMCwgYmZpZWxkcyB3cm90ZToKPj4+Pj4+Pj4+PiBPbiBNb24sIEF1ZyAxMiwgMjAx
+MyBhdCAwNDozNjo0MFBNICswMjAwLCBKYW4gS2FyYSB3cm90ZToKPj4+Pj4+Pj4+Pj4gT24gU3Vu
+IDExLTA4LTEzIDExOjQ4OjQ5LCBUb3JhbGYgRsO2cnN0ZXIgd3JvdGU6Cj4+Pj4+Pj4+Pj4+PiBz
+byB0aGF0IHRoZSBzZXJ2ZXIgZWl0aGVyIGNyYXNoZXMgKGlmIGl0IGlzIGEgdXNlciBtb2RlIGxp
+bnV4IGltYWdlKSBvciBhdCBsZWFzdCBpdHMgcmVib290IGZ1bmN0aW9uYWxpdHkgZ290IGJyb2tl
+bgo+Pj4+Pj4+Pj4+Pj4gLSBpZiB0aGUgTkZTIHNlcnZlciBpcyBoYW1tZXJlZCB3aXRoIHNjYXJ5
+IE5GUyBjYWxscyB1c2luZyBhIGZ1enp5IHRvb2wgcnVubmluZyBhdCBhIHJlbW90ZSBORlMgY2xp
+ZW50IHVuZGVyIGEgbm9uLXByaXZpbGVnZWQgdXNlciBpZC4KPj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+
+Pj4+PiBJdCBjYW4gcmUgcmVwcm9kdWNlZCwgaWYKPj4+Pj4+Pj4+Pj4+ICAgIC0gdGhlIE5GUyBz
+aGFyZSBpcyBhbiBFWFQzIG9yIEVYVDQgZGlyZWN0b3J5Cj4+Pj4+Pj4+Pj4+PiAgICAtIGFuZCBp
+dCBpcyBjcmVhdGVkIGF0IGZpbGUgbG9jYXRlZCBhdCB0ZW1wZnMgYW5kIG1vdW50ZWQgdmlhIGxv
+b3AgZGV2aWNlCj4+Pj4+Pj4+Pj4+PiAgICAtIGFuZCB0aGUgTkZTIHNlcnZlciBpcyBmb3JjZWQg
+dG8gdW1vdW50IHRoZSBORlMgc2hhcmUKPj4+Pj4+Pj4+Pj4+ICAgIC0gYW5kIHRoZSBzZXJ2ZXIg
+Zm9yY2VkIHRvIHJlc3RhcnQgdGhlIE5TRiBzZXJ2aWNlIGFmdGVyd2FyZHMKPj4+Pj4+Pj4+Pj4+
+ICAgIC0gYW5kIHRyaW5pdHkgaXMgdXNlZAo+Pj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+IEkgY291
+bGQgZmluZCBhIHNjZW5hcmlvIGZvciBhbiBhdXRvbWF0ZWQgYmlzZWN0LiAyIHRpbWVzIGl0IGJy
+b3VnaHQgdGhpcyBjb21taXQKPj4+Pj4+Pj4+Pj4+IGNvbW1pdCA2OGEzMzk2MTc4ZTY2ODhhZDcz
+NjcyMDJjZGYwYWY4ZWQwM2M4NzI3Cj4+Pj4+Pj4+Pj4+PiBBdXRob3I6IEouIEJydWNlIEZpZWxk
+cyA8YmZpZWxkc0ByZWRoYXQuY29tPgo+Pj4+Pj4+Pj4+Pj4gRGF0ZTogICBUaHUgTWFyIDIxIDEx
+OjIxOjUwIDIwMTMgLTA0MDAKPj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+PiAgICAgbmZzZDQ6IHNo
+dXQgZG93biBtb3JlIG9mIGRlbGVnYXRpb24gZWFybGllcgo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4g
+VGhhbmtzIGZvciB0aGUgcmVwb3J0LiAgSSB0aGluayBJIHNlZSB0aGUgcHJvYmxlbS0tYWZ0ZXIg
+dGhpcyBjb21taXQKPj4+Pj4+Pj4+PiBuZnM0X3NldF9kZWxlZ2F0aW9uKCkgZmFpbHVyZXMgcmVz
+dWx0IGluIG5mczRfcHV0X2RlbGVnYXRpb24gYmVpbmcKPj4+Pj4+Pj4+PiBjYWxsZWQsIGJ1dCBu
+ZnM0X3B1dF9kZWxlZ2F0aW9uIGRvZXNuJ3QgZnJlZSB0aGUgbmZzNF9maWxlIHRoYXQgaGFzCj4+
+Pj4+Pj4+Pj4gYWxyZWFkeSBiZWVuIHNldCBieSBhbGxvY19pbml0X2RlbGVnKCkuCj4+Pj4+Pj4+
+Pj4KPj4+Pj4+Pj4+PiBMZXQgbWUgdGhpbmsgYWJvdXQgaG93IHRvIGZpeCB0aGF0Li4uLgo+Pj4+
+Pj4+Pj4KPj4+Pj4+Pj4+IFNvcnJ5IGZvciB0aGUgc2xvdyByZXNwb25zZS0tY2FuIHlvdSBjaGVj
+ayB3aGV0aGVyIHRoaXMgZml4ZXMgdGhlCj4+Pj4+Pj4+PiBwcm9ibGVtPwo+Pj4+Pj4+Pj4KPj4+
+Pj4+Pj4gWWVzLgo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBXaXRoIHRoZSBhdHRhY2hlZCBwYXRjaCB0aGUg
+cHJvYmxlbSBjYW4ndCBiZSByZXByb2R1Y2VkIGFueSBsb25nZXIgd2l0aAo+Pj4+Pj4+PiB0aGUg
+cHJlcGFyZWQgdGVzdCBjYXNlIGFuZCBjdXJyZW50IGdpdCBrZXJuZWxzLgo+Pj4+Pj4+Cj4+Pj4+
+Pj4gQlRXOiBJcyBub2JvZHkgZWxzZSBmdXp6IHRlc3RpbmcgTkZTPwo+Pj4+Pj4KPj4+Pj4+IEkg
+ZG9uJ3Qga25vdy4gIFRvcmFsZidzIHJlcG9ydHMgYXJlIHRoZSBvbmx5IG9uZXMgSSByZWNhbGwg
+b2ZmIHRoZSB0b3AKPj4+Pj4+IG9mIG15IGhlYWQsIGJ1dCBJIG1heSBoYXZlIGZvcmdvdHRlbiBv
+dGhlcnMuCj4+Pj4+Pgo+Pj4+Pgo+Pj4+PiB3ZWxsLCA3MjU1ZTcxIGFuZCAzYzUwYmE4IEknZCBz
+YXkuCj4+Pj4+Cj4+Pj4+Pj4gT3IgYXJlIHRoZXNlIGJ1Z3MganVzdCBtb3JlIGxpa2VseSB0byBo
+aXQgb24gVU1MPwo+Pj4+Pgo+Pj4+PiBUaGlzIGRlZmluaXRlbHkgbm90LiBJIG9ic2VydmVkIGF0
+IGEgcmVhbCBzeXN0ZW0gRVhUNCBjb3JydXB0aW9ucy8KPj4+Pj4gaXNzdWVzIGJ1dCByZXBvcnRl
+ZCB0aGVtIHRvIHRoZSBFWFQ0IG1haWxpbmcgbGlzdC4KPj4+Pj4gSXQganVzdCB0b29rIG1lIGEg
+bG9uZ2VyIHRpbWUgdG8gZmlndXJlIG91dCBhIHJlbGlhYmxlIGNvbmZpZ3VyYXRpb24KPj4+Pj4g
+d2l0aCAyIFVNTCBtYWNoaWVucyB0byBhdXRvbWF0aWMgYmlzZWN0IGl0Lgo+Pj4+Pgo+Pj4+Pgo+
+Pj4+Pj4gVGhhdCdzIGFsc28gcG9zc2libGUuCj4+Pj4+Pgo+Pj4+Pj4+IFRoaXMgaXMgbm90IHRo
+ZSBmaXJzdCBORlMgaXNzdWUgZm91bmQgYnkgVG9yYWxmIHVzaW5nIFVNTCBhbmQgVHJpbml0eS4K
+Pj4+Pj4+Cj4+Pj4+PiBZZXAuICBUaGUgdGVzdGluZyBpcyBkZWZpbml0ZWx5IGFwcHJlY2lhdGVk
+Lgo+Pj4+Pgo+Pj4+PiBUaHggLSBpbiB0aGUgbWVhbiB3aGlsZSBhbHRob3VnaCBteSBVTUwgYmlz
+ZWN0IHNjcmlwdHMgYXJlIHdvcmtpbmcgZmluZQo+Pj4+PiBhbmQgdHJpbml0eSBpcyBzdGFibGUg
+ZW5vdWdoIGV2ZW4gaW4gVU1MIGVudmlyb25tZW50cyB0byBiZSB0cnVzdCB3b3J0aC4KPj4+Pgo+
+Pj4+IFRoYXQncyBnb29kIHRvIGtub3cuCj4+Pj4gVGhhbmtzIHlvdSBhbmQgdHJpbml0eSB3ZSBn
+b3QgcmlkIG9mIHNvbWUgbmFzdHkgVU1MIGJ1Z3MuCj4+Pgo+Pj4geWVhaCwgYnV0IHRoZXJlJ3Mg
+KGFtb25nIG90aGVycykgb25lIG9mIHRoZW0gc3RpbGwgaW4gdGhlIHdpbGQ6Cj4+PiBJZiBJIHN0
+YXJ0IGFuIFVNTCBhbmQgcmVzaXplIHRoZSB0ZXJtaW5hbCAoS0RFIEtvbnNvbGUpIGR1cmluZyB0
+aGUgYm9vdAo+Pj4gcGhhc2UgdGhlbiBpdCBqdXN0IGNyYXNoZXMgc29tZXRpbWVzLgo+Pgo+PiBE
+b2VzIHRoZSBhdHRhY2hlZCBwYXRjaCBmaXggdGhlIHByb2JsZW0/Cj4+Cj4gb2ggeWVzCj4gQW5k
+IEkgZG8gaGF2ZSB0aGUgZmVlbGluZyB0aGF0IHRoZSBVTUwgc3RhcnQgcGhhc2UgdGlsbCB0aGUg
+R2VudG9vCj4gb3BlbnJjIGxpbmUgaXMgc2VlbiBpcyBzcGVlZCB1cCB0b28gOi0pCgpUaGFua3Mg
+Zm9yIHRlc3RpbmchCk5vdyBJJ20gc3VyZSB3aGF0IHRoZSBwcm9ibGVtIGlzLCBwYXRjaCBpcyBv
+biB0aGUgd2F5LiA6KQoKVGhhbmtzLAovL3JpY2hhcmQKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+CkxlYXJuIHRoZSBsYXRlc3QtLVZpc3VhbCBTdHVkaW8gMjAxMiwgU2hhcmVQb2ludCAyMDEzLCBT
+UUwgMjAxMiwgbW9yZSEKRGlzY292ZXIgdGhlIGVhc3kgd2F5IHRvIG1hc3RlciBjdXJyZW50IGFu
+ZCBwcmV2aW91cyBNaWNyb3NvZnQgdGVjaG5vbG9naWVzCmFuZCBhZHZhbmNlIHlvdXIgY2FyZWVy
+LiBHZXQgYW4gaW5jcmVkaWJsZSAxLDUwMCsgaG91cnMgb2Ygc3RlcC1ieS1zdGVwCnR1dG9yaWFs
+IHZpZGVvcyB3aXRoIExlYXJuRGV2Tm93LiBTdWJzY3JpYmUgdG9kYXkgYW5kIHNhdmUhCmh0dHA6
+Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD01ODA0MDkxMSZpdT0vNDE0
+MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1k
+ZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
+bGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
