@@ -1,66 +1,82 @@
-Return-Path: <artagnon@gmail.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1VGuof-0005RX-Qv
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Sep 2013 17:55:01 +0000
+Received: from mout.gmx.net ([212.227.15.15])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1VGuoe-0001nB-Qz
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Sep 2013 17:55:01 +0000
+Received: from [92.231.144.148] ([92.231.144.148]) by mail.gmx.com (mrgmx101)
+	with ESMTPSA (Nemesis) id 0M9wrU-1VAI220KBk-00B0zl for
+	<user-mode-linux-devel@lists.sourceforge.net>; Tue, 03 Sep 2013 19:54:54
+	+0200
+Message-ID: <5226226B.1020107@gmx.de>
+Date: Tue, 03 Sep 2013 19:54:51 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <1377073172-3662-3-git-send-email-richard@nod.at>
-References: <1377073172-3662-1-git-send-email-richard@nod.at> <1377073172-3662-3-git-send-email-richard@nod.at>
-From: Ramkumar Ramachandra <artagnon@gmail.com>
-Date: Thu, 26 Sep 2013 16:10:19 +0530
-Message-ID: <CALkWK0kCrQ9hPABD_XQ9QFG-vByP+xZWZs+RkVK77+cX7Odz7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Subject: Re: [PATCH 2/8] um: Do not use SUBARCH
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-arch@vger.kernel.org, Michal Marek <mmarek@suse.cz>, geert@linux-m68k.org, ralf@linux-mips.org, lethal@linux-sh.org, Jeff Dike <jdike@addtoit.com>, gxt@mprc.pku.edu.cn, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-kbuild@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] reported size of a hostfs file system differs
+To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Richard Weinberger wrote:
-> This patch is based on: https://lkml.org/lkml/2013/7/4/396
-
-This is the original patch I sent across in July.
-
-> diff --git a/arch/um/Makefile b/arch/um/Makefile
-> index 133f7de..5bc7892 100644
-> --- a/arch/um/Makefile
-> +++ b/arch/um/Makefile
-> @@ -8,6 +8,8 @@
->
->  ARCH_DIR := arch/um
->  OS := $(shell uname -s)
-> +OS_ARCH := $(shell uname -m)
-> +
->  # We require bash because the vmlinux link and loader script cpp use bash
->  # features.
->  SHELL := /bin/bash
-> @@ -20,15 +22,14 @@ core-y                      += $(ARCH_DIR)/kernel/          \
->
->  MODE_INCLUDE   += -I$(srctree)/$(ARCH_DIR)/include/shared/skas
->
-> -HEADER_ARCH    := $(SUBARCH)
-> -
-> -# Additional ARCH settings for x86
-> -ifeq ($(SUBARCH),i386)
-> -        HEADER_ARCH := x86
-> -endif
-> -ifeq ($(SUBARCH),x86_64)
-> -        HEADER_ARCH := x86
-> -       KBUILD_CFLAGS += -mcmodel=large
-> +# Currently we support only i386 and x86_64, if you port UML to another arch
-> +# add another if branch...
-> +ifeq ($(OS_ARCH),x86_64)
-> +       HEADER_ARCH := x86
-> +       KBUILD_DEFCONFIG := x86_64_defconfig
-> +else
-> +       HEADER_ARCH := x86
-> +       KBUILD_DEFCONFIG := i386_defconfig
->  endif
-
-I honestly don't get why this approach is superior to the original
-one. In the original, I could set SUBARCH to whatever target
-architecture and attempt to build user-mode Linux. Fact that it is
-only implemented for i386 and x86_64 aside, keeping a SUBARCH means
-that it's possible to build a 32-bit kernel on a 64-bit machine and
-vice-versa. If you want stuff to work automagically (ie. in the 90%
-case), you have to shell out to uname -m to figure out the host's real
-architecture. Which both versions do sufficiently well.
-
-Forget all that. What matters is that upstream is still broken, and
-users are suffering. Despite a reasonable fix being submitted in July.
+SSBzdGFydGVkIDIgVU1MIGluc3RhbnZlcyBhbmQgbW91bnRlZCBmcm9tIG9uZSAodHJpbml0eSkg
+YSByZW1vdGUgc2hhcmUKZnJvbSB0aGUgb3RoZXIgVU1MIG1hY2hpbmUgKG4yMnN0YWI0KS4gRldJ
+VyBpdCBpcyBhbHdheXMgdGhlIHNhbWUKZXhwb3J0ZWQgZGlyZWN0b3J5ICIvbW50L3JhbWRpc2si
+LCBidXQgbW91bnRlZCB3LyBkaWZmZXJlbnQgZnMgdHlwZXMgOgpORlMgdlsyMzRdIGFuZCBob3N0
+ZnMuCgoKSSdtIHdvbmRlcmluZyBhYm91dCB0aGUgb3V0cHV0IG9mIHRoZSBjb21tYW5kIGRmIC1t
+LgoKVGhlIGNsaWVudCBnaXZlcyAzMDcyIE1CIDoKCnRyaW5pdHkgfiAjIGRmIC1tCkZpbGVzeXN0
+ZW0gICAgICAgICAgICAxTS1ibG9ja3MgIFVzZWQgQXZhaWxhYmxlIFVzZSUgTW91bnRlZCBvbgpy
+b290ZnMgICAgICAgICAgICAgICAgICAgICAxODQ2ICAxMjY4ICAgICAgIDQ2NyAgNzQlIC8KL2Rl
+di9yb290ICAgICAgICAgICAgICAgICAgMTg0NiAgMTI2OCAgICAgICA0NjcgIDc0JSAvCmRldnRt
+cGZzICAgICAgICAgICAgICAgICAgICA1MDEgICAgIDAgICAgICAgNTAxICAgMCUgL2Rldgp0bXBm
+cyAgICAgICAgICAgICAgICAgICAgICAgNTAxICAgICAxICAgICAgIDUwMSAgIDElIC9ydW4Kc2ht
+ICAgICAgICAgICAgICAgICAgICAgICAgIDUwMSAgICAgMCAgICAgICA1MDEgICAwJSAvZGV2L3No
+bQpjZ3JvdXBfcm9vdCAgICAgICAgICAgICAgICAgIDEwICAgICAwICAgICAgICAxMCAgIDAlIC9z
+eXMvZnMvY2dyb3VwCnRtcGZzICAgICAgICAgICAgICAgICAgICAgICAzMDAgICAgIDAgICAgICAg
+MzAwICAgMCUgL21udC9yYW1kaXNrCm4yMnN0YWI0OiAgICAgICAgICAgICAgICAgIDMwNzIgIDE1
+MzggICAgICAxNTM1ICA1MSUgL21udC9ob3N0ZnMKbjIyc3RhYjQ6ICAgICAgICAgICAgICAgICAg
+IDMwMCAgICAgMCAgICAgICAzMDAgICAwJSAvbW50L25mc3Y0Cm4yMnN0YWI0Oi9tbnQvcmFtZGlz
+ayAgICAgICAzMDAgICAgIDEgICAgICAgMzAwICAgMSUgL21udC9uZnN2MgpuMjJzdGFiNDovbW50
+L3JhbWRpc2sgICAgICAgMzAwICAgICAwICAgICAgIDMwMCAgIDAlIC9tbnQvbmZzdjMKCgoKd2hl
+cmVhcyB0aGUgc2VydmVyIHNheXMgMTg0NiBNQjoKCgp0Zm9lcnN0ZUBuMjIgfiAkIHNzaCByb290
+QG4yMnN0YWI0Cm4yMnN0YWI0IH4gIyBkZiAtbQpGaWxlc3lzdGVtICAgICAxTS1ibG9ja3MgIFVz
+ZWQgQXZhaWxhYmxlIFVzZSUgTW91bnRlZCBvbgpyb290ZnMgICAgICAgICAgICAgIDE4NDYgIDE1
+MzggICAgICAgMTk3ICA4OSUgLwovZGV2L3Jvb3QgICAgICAgICAgIDE4NDYgIDE1MzggICAgICAg
+MTk3ICA4OSUgLwpkZXZ0bXBmcyAgICAgICAgICAgICA1MDEgICAgIDAgICAgICAgNTAxICAgMCUg
+L2Rldgp0bXBmcyAgICAgICAgICAgICAgICA1MDEgICAgIDEgICAgICAgNTAxICAgMSUgL3J1bgpz
+aG0gICAgICAgICAgICAgICAgICA1MDEgICAgIDAgICAgICAgNTAxICAgMCUgL2Rldi9zaG0KY2dy
+b3VwX3Jvb3QgICAgICAgICAgIDEwICAgICAwICAgICAgICAxMCAgIDAlIC9zeXMvZnMvY2dyb3Vw
+CnRtcGZzICAgICAgICAgICAgICAgIDMwMCAgICAgMSAgICAgICAzMDAgICAxJSAvbW50L3JhbWRp
+c2sKCndoaWNoIGNvcnJlbGF0ZXMgdG8gdGhlIGltYWdlIHNpemUgb2YgMiBHaUJpIDoKCnRmb2Vy
+c3RlQG4yMiB+ICQgbHMgLWwgfi92aXJ0dWFsL3VtbC8KdG90YWwgNTgzNjcxNgotcnctci0tci0t
+IDEgdGZvZXJzdGUgdXNlcnMgMjAwMDAwMDAwMCBTZXAgIDMgMTk6NTMgbjIyc3RhYjQKLXJ3LXIt
+LXItLSAxIHRmb2Vyc3RlIHVzZXJzIDIwMDAwMDAwMDAgU2VwICAzIDE5OjExIG4yMnVuc3Q0Ci1y
+dy1yLS1yLS0gMSB0Zm9lcnN0ZSB1c2VycyAyMDAwMDAwMDAwIFNlcCAgMyAxOTo1MyB0cmluaXR5
+CgotLSAKTWZHL1NpbmNlcmVseQpUb3JhbGYgRsO2cnN0ZXIKcGdwIGZpbmdlciBwcmludDogN0Ix
+QSAwN0Y0IEVDODIgMEY5MCBENEMyIDg5MzYgODcyQSBFNTA4IDdEQjYgOURBMwoKLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCkxlYXJuIHRoZSBsYXRlc3QtLVZpc3VhbCBTdHVkaW8gMjAxMiwgU2hhcmVQ
+b2ludCAyMDEzLCBTUUwgMjAxMiwgbW9yZSEKRGlzY292ZXIgdGhlIGVhc3kgd2F5IHRvIG1hc3Rl
+ciBjdXJyZW50IGFuZCBwcmV2aW91cyBNaWNyb3NvZnQgdGVjaG5vbG9naWVzCmFuZCBhZHZhbmNl
+IHlvdXIgY2FyZWVyLiBHZXQgYW4gaW5jcmVkaWJsZSAxLDUwMCsgaG91cnMgb2Ygc3RlcC1ieS1z
+dGVwCnR1dG9yaWFsIHZpZGVvcyB3aXRoIExlYXJuRGV2Tm93LiBTdWJzY3JpYmUgdG9kYXkgYW5k
+IHNhdmUhCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD01ODA0
+MDkxMSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXIt
+bW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
