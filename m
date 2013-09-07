@@ -1,134 +1,55 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1V8SGh-00044B-OX
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Aug 2013 09:48:59 +0000
-Received: from mout-xforward.gmx.net ([82.165.159.13])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1V8SGg-0007W6-4S
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 11 Aug 2013 09:48:59 +0000
-Received: from [92.224.126.156] ([92.224.126.156]) by mail.gmx.com (mrgmx001)
-	with ESMTPSA (Nemesis) id 0LmrUq-1VnGCk3krc-00h4Gt for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 11 Aug 2013 11:48:51
-	+0200
-Message-ID: <52075E01.7030506@gmx.de>
-Date: Sun, 11 Aug 2013 11:48:49 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <522AEE50.4090105@nod.at>
+Date: Sat, 07 Sep 2013 11:13:52 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Issues with a rather unusual configured NFS server
-To: Linux NFS mailing list <linux-nfs@vger.kernel.org>
-Cc: linux-ext4@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PULL] UML updates for 3.12
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-c28gdGhhdCB0aGUgc2VydmVyIGVpdGhlciBjcmFzaGVzIChpZiBpdCBpcyBhIHVzZXIgbW9kZSBs
-aW51eCBpbWFnZSkgb3IgYXQgbGVhc3QgaXRzIHJlYm9vdCBmdW5jdGlvbmFsaXR5IGdvdCBicm9r
-ZW4KLSBpZiB0aGUgTkZTIHNlcnZlciBpcyBoYW1tZXJlZCB3aXRoIHNjYXJ5IE5GUyBjYWxscyB1
-c2luZyBhIGZ1enp5IHRvb2wgcnVubmluZyBhdCBhIHJlbW90ZSBORlMgY2xpZW50IHVuZGVyIGEg
-bm9uLXByaXZpbGVnZWQgdXNlciBpZC4KCkl0IGNhbiByZSByZXByb2R1Y2VkLCBpZgoJLSB0aGUg
-TkZTIHNoYXJlIGlzIGFuIEVYVDMgb3IgRVhUNCBkaXJlY3RvcnkKCS0gYW5kIGl0IGlzIGNyZWF0
-ZWQgYXQgZmlsZSBsb2NhdGVkIGF0IHRlbXBmcyBhbmQgbW91bnRlZCB2aWEgbG9vcCBkZXZpY2UK
-CS0gYW5kIHRoZSBORlMgc2VydmVyIGlzIGZvcmNlZCB0byB1bW91bnQgdGhlIE5GUyBzaGFyZQoJ
-LSBhbmQgdGhlIHNlcnZlciBmb3JjZWQgdG8gcmVzdGFydCB0aGUgTlNGIHNlcnZpY2UgYWZ0ZXJ3
-YXJkcwoJLSBhbmQgdHJpbml0eSBpcyB1c2VkCgpJIGNvdWxkIGZpbmQgYSBzY2VuYXJpbyBmb3Ig
-YW4gYXV0b21hdGVkIGJpc2VjdC4gMiB0aW1lcyBpdCBicm91Z2h0IHRoaXMgY29tbWl0IApjb21t
-aXQgNjhhMzM5NjE3OGU2Njg4YWQ3MzY3MjAyY2RmMGFmOGVkMDNjODcyNwpBdXRob3I6IEouIEJy
-dWNlIEZpZWxkcyA8YmZpZWxkc0ByZWRoYXQuY29tPgpEYXRlOiAgIFRodSBNYXIgMjEgMTE6MjE6
-NTAgMjAxMyAtMDQwMAoKICAgIG5mc2Q0OiBzaHV0IGRvd24gbW9yZSBvZiBkZWxlZ2F0aW9uIGVh
-cmxpZXIKCgp0byBiZSB0aGUgb25lIGFmdGVyIHdoaWNoIHRoZSB1c2VyIG1vZGUgbGludXggc2Vy
-dmVyIGNyYXNoZXMgd2l0aCBhIGJhY2sgdHJhY2UgbGlrZSB0aGlzOgoKCiQgY2F0IC9tbnQvcmFt
-ZGlzay9idC52My4xMS1yYzQtMTcyLWc4YWUzZjFkCltOZXcgTFdQIDE0MDI1XQpDb3JlIHdhcyBn
-ZW5lcmF0ZWQgYnkgYC9ob21lL3Rmb2Vyc3RlL2RldmVsL2xpbnV4L2xpbnV4IGVhcmx5cHJpbnRr
-IHViZGE9L2hvbWUvdGZvZXJzdGUvdmlydHVhbC91bWwvdHInLgpQcm9ncmFtIHRlcm1pbmF0ZWQg
-d2l0aCBzaWduYWwgNiwgQWJvcnRlZC4KIzAgIDB4Yjc3ZWY0MjQgaW4gX19rZXJuZWxfdnN5c2Nh
-bGwgKCkKIzAgIDB4Yjc3ZWY0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKIzEgIDB4MDgzYTMz
-YzUgaW4ga2lsbCAoKQojMiAgMHgwODA3MTYzZCBpbiB1bWxfYWJvcnQgKCkgYXQgYXJjaC91bS9v
-cy1MaW51eC91dGlsLmM6OTMKIzMgIDB4MDgwNzE5MjUgaW4gb3NfZHVtcF9jb3JlICgpIGF0IGFy
-Y2gvdW0vb3MtTGludXgvdXRpbC5jOjEzOAojNCAgMHgwODA2MTNhNyBpbiBwYW5pY19leGl0IChz
-ZWxmPTB4ODVhMTUxOCA8cGFuaWNfZXhpdF9ub3RpZmllcj4sIHVudXNlZDE9MCwgdW51c2VkMj0w
-eDg1ZDZjZTAgPGJ1Zi4xNTkwND4pIGF0IGFyY2gvdW0va2VybmVsL3VtX2FyY2guYzoyNDAKIzUg
-IDB4MDgwOWEzYjggaW4gbm90aWZpZXJfY2FsbF9jaGFpbiAobmw9MHgwLCB2YWw9MCwgdj0weDg1
-ZDZjZTAgPGJ1Zi4xNTkwND4sIG5yX3RvX2NhbGw9LTIsIG5yX2NhbGxzPTB4MCkgYXQga2VybmVs
-L25vdGlmaWVyLmM6OTMKIzYgIDB4MDgwOWE1MDMgaW4gX19hdG9taWNfbm90aWZpZXJfY2FsbF9j
-aGFpbiAobnJfY2FsbHM9PG9wdGltaXplZCBvdXQ+LCBucl90b19jYWxsPTxvcHRpbWl6ZWQgb3V0
-Piwgdj08b3B0aW1pemVkIG91dD4sIHZhbD08b3B0aW1pemVkIG91dD4sIG5oPTxvcHRpbWl6ZWQg
-b3V0PikgYXQga2VybmVsL25vdGlmaWVyLmM6MTgyCiM3ICBhdG9taWNfbm90aWZpZXJfY2FsbF9j
-aGFpbiAobmg9MHg4NWQ2Y2M0IDxwYW5pY19ub3RpZmllcl9saXN0PiwgdmFsPTAsIHY9MHg4NWQ2
-Y2UwIDxidWYuMTU5MDQ+KSBhdCBrZXJuZWwvbm90aWZpZXIuYzoxOTEKIzggIDB4MDg0MDBiYTgg
-aW4gcGFuaWMgKGZtdD0weDApIGF0IGtlcm5lbC9wYW5pYy5jOjEyOAojOSAgMHgwODE4ZWRmNCBp
-biBleHQ0X3B1dF9zdXBlciAoc2I9MHg0YTA0MjY5MCkgYXQgZnMvZXh0NC9zdXBlci5jOjgxOAoj
-MTAgMHgwODEwMTBkMiBpbiBnZW5lcmljX3NodXRkb3duX3N1cGVyIChzYj0weDRhMDQyNjkwKSBh
-dCBmcy9zdXBlci5jOjQxOAojMTEgMHgwODEwMjA5YSBpbiBraWxsX2Jsb2NrX3N1cGVyIChzYj0w
-eDApIGF0IGZzL3N1cGVyLmM6MTAyOAojMTIgMHgwODEwMGY2YSBpbiBkZWFjdGl2YXRlX2xvY2tl
-ZF9zdXBlciAocz0weDRhMDQyNjkwKSBhdCBmcy9zdXBlci5jOjI5OQojMTMgMHgwODEwMTAwMSBp
-biBkZWFjdGl2YXRlX3N1cGVyIChzPTB4NGEwNDI2OTApIGF0IGZzL3N1cGVyLmM6MzI0CiMxNCAw
-eDA4MTE4ZTBjIGluIG1udGZyZWUgKG1udD08b3B0aW1pemVkIG91dD4pIGF0IGZzL25hbWVzcGFj
-ZS5jOjg5MQojMTUgbW50cHV0X25vX2V4cGlyZSAobW50PTB4MCkgYXQgZnMvbmFtZXNwYWNlLmM6
-OTI5CiMxNiAweDA4MTFhMmY1IGluIFNZU0NfdW1vdW50IChmbGFncz08b3B0aW1pemVkIG91dD4s
-IG5hbWU9PG9wdGltaXplZCBvdXQ+KSBhdCBmcy9uYW1lc3BhY2UuYzoxMzM1CiMxNyBTeVNfdW1v
-dW50IChuYW1lPTEzNDU0MTYzMiwgZmxhZ3M9MCkgYXQgZnMvbmFtZXNwYWNlLmM6MTMwNQojMTgg
-MHgwODExYTM2OSBpbiBTWVNDX29sZHVtb3VudCAobmFtZT08b3B0aW1pemVkIG91dD4pIGF0IGZz
-L25hbWVzcGFjZS5jOjEzNDcKIzE5IFN5U19vbGR1bW91bnQgKG5hbWU9MTM0NTQxNjMyKSBhdCBm
-cy9uYW1lc3BhY2UuYzoxMzQ1CiMyMCAweDA4MDYxOGUyIGluIGhhbmRsZV9zeXNjYWxsIChyPTB4
-NDllOTE5ZDQpIGF0IGFyY2gvdW0va2VybmVsL3NrYXMvc3lzY2FsbC5jOjM1CiMyMSAweDA4MDcz
-YzBkIGluIGhhbmRsZV90cmFwIChsb2NhbF91c2luZ19zeXNlbXU9PG9wdGltaXplZCBvdXQ+LCBy
-ZWdzPTxvcHRpbWl6ZWQgb3V0PiwgcGlkPTxvcHRpbWl6ZWQgb3V0PikgYXQgYXJjaC91bS9vcy1M
-aW51eC9za2FzL3Byb2Nlc3MuYzoxOTgKIzIyIHVzZXJzcGFjZSAocmVncz0weDQ5ZTkxOWQ0KSBh
-dCBhcmNoL3VtL29zLUxpbnV4L3NrYXMvcHJvY2Vzcy5jOjQzMQojMjMgMHgwODA1ZTY1YyBpbiBm
-b3JrX2hhbmRsZXIgKCkgYXQgYXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jOjE2MAojMjQgMHgwMDAw
-MDAwMCBpbiA/PyAoKQoKCgpBIHJlYWwgc3lzdGVtIGhvd2V2ZXIgd291bGQgbm90IGNyYXNoIGJ1
-ZyB3b3VsZCBnaXZlIGEga2VybmVsIEJVRyBhcyByZXBvcnRlZCBoZXJlOgpodHRwOi8vYXJ0aWNs
-ZS5nbWFuZS5vcmcvZ21hbmUuY29tcC5maWxlLXN5c3RlbXMuZXh0NC8zODkxNQpGdXJ0aGVybW9y
-ZSB0aGUgc2VydmVyIHdvbid0IGJlIGFibGUgYW55IGxvbmdlciB0byByZWJvb3QgLSBpdCB3b3Vs
-ZCBoYW5nIGluZmluaXRlbHkgaW4gdGhlIHJlYm9vdCBwaGFzZS4KSnVzdCB0aGUgbWFnaWMgc3lz
-cnEga2V5cyBzdGlsbCB3b3JrcyB0aGVuLgoKCgpTdGVwcyB0byByZXByb2R1Y2UgYXQgdHdvIDMy
-IGJpdCBHZW50b28gTGludXggdXNlciBtb2RlIGxpbnV4IGltYWdlczoKCjEuIHByZXBhcmUgdGhl
-IHNlcnZlciA6Cgk8bW91bnQgYSB0ZW1wZnMgb250byAvbW50L3JhbWRpc2s+Cglta2RpciAvbW50
-L3JhbWRpc2svdmljdGltcwoJZGQgaWY9L2Rldi96ZXJvIG9mPS9tbnQvcmFtZGlzay9kaXNrMSBi
-cz0xTSBjb3VudD0yNTcgMj4vZGV2L251bGwKCXllcyB8IG1rZnMuZXh0NCAtcSAvbW50L3JhbWRp
-c2svZGlzazEgMT4vZGV2L251bGwKCW1vdW50IC1vIGxvb3AgL21udC9yYW1kaXNrL2Rpc2sxIC9t
-bnQvcmFtZGlzay92aWN0aW1zCgljaG1vZCA3NzcgL21udC9yYW1kaXNrL3ZpY3RpbXMKCS9ldGMv
-aW5pdC5kL25mcyByZXN0YXJ0CgoyLiBwcmVwYXJlIHRoZSBjbGllbnQKCW1vdW50IHRoZSBORlMg
-c2hhcmUgb250byB0aGUgbG9jYWwgbW91bnQgcG9pbnQgL21udC9yYW1kaXNrL3ZpY3RpbXMvIHdp
-dGggTkZTdjQKCQozLiBydW4gdGhlIGZ1enp5IHRvb2wgdHJpbml0eSBhdCB0aGUgY2xpZW50OgoJ
-d2hpbGUgW1sgOiBdXTsgZG8KCQk8KHJlLSljcmVhdGUgYW5kIGZpbGwgL21udC9yYW1kaXNrL3Zp
-Y3RpbXMvdjEvdjIgd2l0aCAxMDAgZW1wdHkgZmlsZXMgYW5kIDEwMCBlbXB0eSBkaXJlY3Rvcmll
-cz4KCQl0cmluaXR5IC1WIC9tbnQvcmFtZGlzay92aWN0aW1zL3YxL3YyIC1DIDEgLU4gMTAwMDAg
-LXEKCQlzbGVlcCAzCglkb25lCgo0LiBhZnRlciAxNSBtaW4ga2lsbCB0aGUgdXNlciBtb2RlIGxp
-bnV4IGNsaWVudCB3aXRoIC05Cgo1LiBub3cgcnVuIGF0IHRoZSBzZXJ2ZXIKCXVtb3VudCAvbW50
-L3JhbWRpc2svdmljdGltcyB8fCAvZXRjL2luaXQuZC9uZnMgcmVzdGFydCAmJiB1bW91bnQgL21u
-dC9yYW1kaXNrL3ZpY3RpbXMgJiYgZWNobyAnIG5vIGlzc3VlIHNvIGZhcicKCgpZb3UgbWlnaHQg
-bmVlZCB0aGlzIHBhdGNoIHRvbyBmcm9tIE9sZWcgTmVzdGVyb3YgPG9sZWdAcmVkaGF0LmNvbT4g
-KG5vdCBpbiBtYWlubGluZSBjdXJyZW50bHkpIC4KCi0tLSB4L2tlcm5lbC9leGl0LmMKKysrIHgv
-a2VybmVsL2V4aXQuYwpAQCAtNzgzLDggKzc4Myw4IEBAIHZvaWQgZG9fZXhpdChsb25nIGNvZGUp
-CiAgICAgICAgZXhpdF9zaG0odHNrKTsKICAgICAgICBleGl0X2ZpbGVzKHRzayk7CiAgICAgICAg
-ZXhpdF9mcyh0c2spOwotICAgICAgIGV4aXRfdGFza19uYW1lc3BhY2VzKHRzayk7CiAgICAgICAg
-ZXhpdF90YXNrX3dvcmsodHNrKTsKKyAgICAgICBleGl0X3Rhc2tfbmFtZXNwYWNlcyh0c2spOwog
-ICAgICAgIGNoZWNrX3N0YWNrX3VzYWdlKCk7CiAgICAgICAgZXhpdF90aHJlYWQoKTsKCgotLSAK
-TWZHL1NpbmNlcmVseQpUb3JhbGYgRsO2cnN0ZXIKcGdwIGZpbmdlciBwcmludDogN0IxQSAwN0Y0
-IEVDODIgMEY5MCBENEMyIDg5MzYgODcyQSBFNTA4IDdEQjYgOURBMwoKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCkdldCAxMDAlIHZpc2liaWxpdHkgaW50byBKYXZhLy5ORVQgY29kZSB3aXRoIEFwcER5
-bmFtaWNzIExpdGUhCkl0J3MgYSBmcmVlIHRyb3VibGVzaG9vdGluZyB0b29sIGRlc2lnbmVkIGZv
-ciBwcm9kdWN0aW9uLgpHZXQgZG93biB0byBjb2RlLWxldmVsIGRldGFpbCBmb3IgYm90dGxlbmVj
-a3MsIHdpdGggPDIlIG92ZXJoZWFkLiAKRG93bmxvYWQgZm9yIGZyZWUgYW5kIGdldCBzdGFydGVk
-IHRyb3VibGVzaG9vdGluZyBpbiBtaW51dGVzLiAKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNr
-Lm5ldC9nYW1wYWQvY2xrP2lkPTQ4ODk3MDMxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1k
-ZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1v
-ZGUtbGludXgtZGV2ZWwK
+Linus,
 
+please pull form:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus
+
+to receive UML updates for the 3.12 merge window.
+
+This pile contains mostly fixes and improvements for issues identified
+by Richard W. M. Jones while adding UML as backend to libguestfs.
+
+Thanks,
+//richard
+
+----------------------------------------------------------------
+Richard Weinberger (8):
+      um: hostfs: Fix writeback
+      um: Implement probe_kernel_read()
+      um: ubd: Add REQ_FLUSH suppport
+      um: ubd: Introduce submit_request()
+      um: Cleanup SIGTERM handling
+      um: Run UML in it's own session.
+      um: prctl: Do not include linux/ptrace.h
+      um: Add irq chip um/mask handlers
+
+ arch/um/drivers/ubd.h        |  1 -
+ arch/um/drivers/ubd_kern.c   | 72 ++++++++++++++++++++++++++++++++++++--------
+ arch/um/drivers/ubd_user.c   |  5 ---
+ arch/um/include/shared/os.h  |  3 ++
+ arch/um/kernel/Makefile      |  2 +-
+ arch/um/kernel/irq.c         |  4 +++
+ arch/um/kernel/maccess.c     | 24 +++++++++++++++
+ arch/um/os-Linux/aio.c       |  5 ++-
+ arch/um/os-Linux/file.c      |  9 ++++++
+ arch/um/os-Linux/main.c      |  2 ++
+ arch/um/os-Linux/process.c   | 53 +++++++++++++++++++++++++++++++-
+ arch/um/os-Linux/sigio.c     |  2 +-
+ arch/um/os-Linux/util.c      | 10 ++++++
+ arch/x86/um/os-Linux/prctl.c |  2 +-
+ fs/hostfs/hostfs_kern.c      |  9 +++++-
+ 15 files changed, 176 insertions(+), 27 deletions(-)
+ create mode 100644 arch/um/kernel/maccess.c
