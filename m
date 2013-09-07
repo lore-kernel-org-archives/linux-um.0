@@ -1,114 +1,82 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <524883F9.6060403@gmx.de>
-Date: Sun, 29 Sep 2013 21:48:09 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1VIHRI-0003vg-Ff
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 Sep 2013 12:16:32 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VIHRF-0000o5-MQ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 07 Sep 2013 12:16:32 +0000
+Message-ID: <522B1915.7060400@nod.at>
+Date: Sat, 07 Sep 2013 14:16:21 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: fuzz tested UML cores in pshrink_dcache_for_umount_subtree (dentry=0x47bd7840)
- at fs/dcache.c:928
-To: Linux NFS mailing list <linux-nfs@vger.kernel.org>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel <linux-kernel@vger.kernel.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+References: <1376825409-18570-1-git-send-email-richard@nod.at>
+	<1376825409-18570-4-git-send-email-richard@nod.at>
+	<20130819093049.GA5918@redhat.com>
+	<20130907121450.GA30644@redhat.com>
+In-Reply-To: <20130907121450.GA30644@redhat.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH 4/4] um: Run UML in it's own session.
+To: "Richard W.M. Jones" <rjones@redhat.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-The following commit was bisected 2 times in a row to be the trigger(*)=
- of the given back trace.
-The core dump happens at a 32 bit user mode linux image (stable Gentoo)=
- fuzzy tested with trinity.
-It crashed often if 3 NFS shares heavily used by trinity were tried to =
-be remounted.
+Am 07.09.2013 14:14, schrieb Richard W.M. Jones:
+> On Mon, Aug 19, 2013 at 10:30:49AM +0100, Richard W.M. Jones wrote:
+>> On Sun, Aug 18, 2013 at 01:30:09PM +0200, Richard Weinberger wrote:
+>>> If UML is not run by a shell it can happen that UML
+>>> will kill unrelated proceses upon a fatal exit because
+>>> it issues a kill(0, ...).
+>>> To prevent such oddities we create a new session in main().
+>>>
+>>> Cc: rjones@redhat.com
+>>> Reported-by: Richard W.M. Jones <rjones@redhat.com>
+>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>>
+>> I tested this using the "debug segv" test script that I previously
+>> posted on the user-mode-linux mailing list, and this problem is now
+>> fixed.  Therefore:
+>>
+>> Tested-by: Richard W.M. Jones <rjones@redhat.com>
+>>
+>> Thanks for these great fixes!
+> 
+> I've been using these 4 patches rebased on top of successive Linux
+> HEAD's for nearly a month, and they work great.
+> 
+> But they don't seem to be going upstream, and they are necessary for
+> people who want to use the UML backend with libguestfs (which has
+> garnered some interest).  Anything I can do to help this happen?
 
+Sure they are.
+https://lkml.org/lkml/2013/9/7/52
 
-
-
-BAD commit
-Sun Sep 29 07:34:02 CEST 2013
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-275bb307865a316cef390e01e6ab5e21e97023a2 is the first bad commit
-commit 275bb307865a316cef390e01e6ab5e21e97023a2
-Author: Trond Myklebust <Trond.Myklebust@netapp.com>
-Date:   Wed May 29 13:11:28 2013 -0400
-
-    NFSv4: Move dentry instantiation into the NFSv4-specific atomic ope=
-n
-code
-
-    Signed-off-by: Trond Myklebust <Trond.Myklebust@netapp.com>
-
-:040000 040000 075a18b71db9f50ad71f4637315f7f9c7cc19545
-9bead78040810cb77ced8c134a8315e2e90eb237 M fs
-bisect run success
-
-
-back trace :
-
-tfoerste@n22 ~ $ cat /mnt/ramdisk/bt.v3.10-rc1-24-g275bb30
-[New LWP 5953]
-[New LWP 5962]
-Core was generated by `/home/tfoerste/devel/linux/linux earlyprintk ubd=
-a=3D/home/tfoerste/virtual/uml/tr'.
-Program terminated with signal 6, Aborted.
-#0  0xb77dd424 in __kernel_vsyscall ()
-#0  0xb77dd424 in __kernel_vsyscall ()
-#1  0x0839bc45 in kill ()
-#2  0x0807155d in uml_abort () at arch/um/os-Linux/util.c:93
-#3  0x08071845 in os_dump_core () at arch/um/os-Linux/util.c:138
-#4  0x08061197 in panic_exit (self=3D0x8599518 <panic_exit_notifier>, u=
-nused1=3D0, unused2=3D0x85ced60 <buf.12233>) at arch/um/kernel/um_arch.=
-c:240
-#5  0x0809dac8 in notifier_call_chain (nl=3D0x0, val=3D0, v=3D0x85ced60=
- <buf.12233>, nr_to_call=3D-2, nr_calls=3D0x0) at kernel/notifier.c:93
-#6  0x0809dc13 in __atomic_notifier_call_chain (nr_calls=3D<optimized o=
-ut>, nr_to_call=3D<optimized out>, v=3D<optimized out>, val=3D<optimize=
-d out>, nh=3D<optimized out>) at kernel/notifier.c:182
-#7  atomic_notifier_call_chain (nh=3D0x85ced44 <panic_notifier_list>, v=
-al=3D0, v=3D0x85ced60 <buf.12233>) at kernel/notifier.c:191
-#8  0x083f8fc8 in panic (fmt=3D0x0) at kernel/panic.c:127
-#9  0x0810fee2 in shrink_dcache_for_umount_subtree (dentry=3D0x47bd7840=
-) at fs/dcache.c:928
-#10 0x08110628 in shrink_dcache_for_umount (sb=3D0x47eeef50) at fs/dcac=
-he.c:989
-#11 0x080fed47 in generic_shutdown_super (sb=3D0x47eeef50) at fs/super.=
-c:409
-#12 0x080ffad5 in kill_anon_super (sb=3D0x0) at fs/super.c:880
-#13 0x081cdea8 in nfs_kill_super (s=3D0x0) at fs/nfs/super.c:2563
-#14 0x080fec0a in deactivate_locked_super (s=3D0x47eeef50) at fs/super.=
-c:299
-#15 0x080feca1 in deactivate_super (s=3D0x47eeef50) at fs/super.c:324
-#16 0x0811686c in mntfree (mnt=3D<optimized out>) at fs/namespace.c:891
-#17 mntput_no_expire (mnt=3D0x0) at fs/namespace.c:929
-#18 0x08117d55 in SYSC_umount (flags=3D<optimized out>, name=3D<optimiz=
-ed out>) at fs/namespace.c:1335
-#19 SyS_umount (name=3D134634000, flags=3D1) at fs/namespace.c:1305
-#20 0x080616d2 in handle_syscall (r=3D0x4653f7d4) at arch/um/kernel/ska=
-s/syscall.c:35
-#21 0x08073b1d in handle_trap (local_using_sysemu=3D<optimized out>, re=
-gs=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/skas/p=
-rocess.c:198
-#22 userspace (regs=3D0x4653f7d4) at arch/um/os-Linux/skas/process.c:43=
-1
-#23 0x0805e44c in fork_handler () at arch/um/kernel/process.c:160
-#24 0x00000000 in ?? ()
+Thanks,
+//richard
 
 
-
-(*) due to the erratic nature of the issue the used test case is not 10=
-0% reproducible.
-Therefore although bisected 2 times in a row there's a chance that this=
- commit is rather the upper limit instead of the 1st bad commit
-
---=20
-MfG/Sincerely
-Toralf F=C3=B6rster
-pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+------------------------------------------------------------------------------
+Learn the latest--Visual Studio 2012, SharePoint 2013, SQL 2012, more!
+Discover the easy way to master current and previous Microsoft technologies
+and advance your career. Get an incredible 1,500+ hours of step-by-step
+tutorial videos with LearnDevNow. Subscribe today and save!
+http://pubads.g.doubleclick.net/gampad/clk?id=58041391&iu=/4140/ostg.clktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
