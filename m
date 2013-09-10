@@ -1,6 +1,6 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <523F21B5.2050305@gmx.de>
-Date: Sun, 22 Sep 2013 18:58:29 +0200
+Message-ID: <522F3FEC.7080406@gmx.de>
+Date: Tue, 10 Sep 2013 17:51:08 +0200
 From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
 References: <52075E01.7030506@gmx.de> <20130812143640.GF4596@quack.suse.cz> <20130813215313.GH17781@fieldses.org> <20130827180655.GE14809@fieldses.org> <521E318C.7040401@gmx.de> <522B9010.8070902@gmx.de> <20130910140937.GD16011@fieldses.org>
@@ -25,24 +25,16 @@ On 09/10/2013 04:09 PM, J. Bruce Fields wrote:
 s
 > could be a preexisting problem, not a regression?
 >=20
-Yes, pre-existing. I'm trying to bisect it, the issue is already in 7d3=
-107d.
-
-But every attempt to get the first bad commit before that commit id
-failed till now. I started many attempts between v3.10 and 7d3107d. I
-could not reproduce that issue 100% in that interval. In that interval
-either all tested commits doesn't show the issue or the NFS client hang=
-s
-during the stop of NFS service infinitely - and counting that as a "bad=
-"
-commit doesn't work.
-
-=46WIW a single test case currently takes 2 1/2 hour and even then I do
-not fully trust the result  (except for a bad commit, that's clear.
-
-
 > --b.
->=20
+
+If I found a test case I'll bisect it - but currently it does no longer
+happen during normal operations w/ current git.#
+
+(
+Well, if I kill the NFS client during shutdown, then I get often a core
+dump with the mentioned back trace but I think this doesn't count :-D
+)
+
 >>
 >> I'll probably need time to figure out a test case, but just as a pre=
 -info here's the back trace:
