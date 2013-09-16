@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1VNdWn-0008Lw-Ix
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1VLf2j-0007ru-Or
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Sep 2013 06:52:21 +0000
-Received: from mail-ve0-f175.google.com ([209.85.128.175])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VNdWl-0006GG-Tj
+	Mon, 16 Sep 2013 20:05:09 +0000
+Received: from mout.gmx.net ([212.227.15.18])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1VLf2i-0000Qr-Jr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Sep 2013 06:52:21 +0000
-Received: by mail-ve0-f175.google.com with SMTP id jy13so1438891veb.20
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 21 Sep 2013 23:52:14 -0700 (PDT)
+	Mon, 16 Sep 2013 20:05:09 +0000
+Received: from [92.224.120.219] ([92.224.120.219]) by mail.gmx.com (mrgmx001)
+	with ESMTPSA (Nemesis) id 0LzblK-1VylKR3346-014kWZ for
+	<user-mode-linux-devel@lists.sourceforge.net>; Mon, 16 Sep 2013 22:05:01
+	+0200
+Message-ID: <52376466.2040601@gmx.de>
+Date: Mon, 16 Sep 2013 22:04:54 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <52376466.2040601@gmx.de>
-References: <52376466.2040601@gmx.de>
-Date: Sun, 22 Sep 2013 08:52:14 +0200
-Message-ID: <CAFLxGvyw7j_xGpk0F-DLLhxJFEXUjW_Jc0ggKySmRe0NszDAuw@mail.gmail.com>
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,70 +27,36 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] difference of a shell script versus command line
- WRT "winch_thread : TIOCSCTTY failed on fd 1 err = 1"
-To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] difference of a shell script versus command line WRT
+ "winch_thread : TIOCSCTTY failed on fd 1 err = 1"
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Mon, Sep 16, 2013 at 10:04 PM, Toralf F=F6rster <toralf.foerster@gmx.de>=
- wrote:
-> If I run the following script
->
-> $> cat l.sh
-> #!/bin/sh
-> #
->
-> /usr/local/bin/linux-v3.11-8718-g0fb5ca1 earlyprintk ubda=3D/home/tfoerst=
-e/virtual/uml/n22unst4 ubdb=3D/mnt/ramdisk/n22unst4_swap eth0=3Dtuntap,tap2=
-,72:ef:3d:5d:d3:db mem=3D1025M con0=3Dfd:0,fd:1 con=3Dpts umid=3Duml_n22uns=
-t4 rootfstype=3Dext4
->
->
-> then during start of the UML I get
->
-> ...
-> Netdevice 0 (72:ef:3d:5d:d3:db) :
-> TUN/TAP backend -
-> winch_thread : TIOCSCTTY failed on fd 1 err =3D 1
-
-Hmm, that's a regression introduced by:
-commit 250127216dd6635f5730752d7444bdec992aecb0
-Author: Richard Weinberger <richard@nod.at>
-Date:   Sun Aug 18 13:30:09 2013 +0200
-
-    um: Run UML in it's own session.
-
-    If UML is not run by a shell it can happen that UML
-    will kill unrelated proceses upon a fatal exit because
-    it issues a kill(0, ...).
-    To prevent such oddities we create a new session in main().
-
-    Reported-and-tested-by: Richard W.M. Jones <rjones@redhat.com>
-    Signed-off-by: Richard Weinberger <richard@nod.at>
-
-
-The winch-thread also has it's own session, this seems to be to an issue.
-
--- =
-
-Thanks,
-//richard
-
----------------------------------------------------------------------------=
----
-LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
-1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
-2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack inclu=
-des
-Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/22/13. =
-
-http://pubads.g.doubleclick.net/gampad/clk?id=3D64545871&iu=3D/4140/ostg.cl=
-ktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+SWYgSSBydW4gdGhlIGZvbGxvd2luZyBzY3JpcHQKCiQ+IGNhdCBsLnNoCiMhL2Jpbi9zaAojCgov
+dXNyL2xvY2FsL2Jpbi9saW51eC12My4xMS04NzE4LWcwZmI1Y2ExIGVhcmx5cHJpbnRrIHViZGE9
+L2hvbWUvdGZvZXJzdGUvdmlydHVhbC91bWwvbjIydW5zdDQgdWJkYj0vbW50L3JhbWRpc2svbjIy
+dW5zdDRfc3dhcCBldGgwPXR1bnRhcCx0YXAyLDcyOmVmOjNkOjVkOmQzOmRiIG1lbT0xMDI1TSBj
+b24wPWZkOjAsZmQ6MSBjb249cHRzIHVtaWQ9dW1sX24yMnVuc3Q0IHJvb3Rmc3R5cGU9ZXh0NAoK
+CnRoZW4gZHVyaW5nIHN0YXJ0IG9mIHRoZSBVTUwgSSBnZXQKCi4uLgpOZXRkZXZpY2UgMCAoNzI6
+ZWY6M2Q6NWQ6ZDM6ZGIpIDoKVFVOL1RBUCBiYWNrZW5kIC0Kd2luY2hfdGhyZWFkIDogVElPQ1ND
+VFRZIGZhaWxlZCBvbiBmZCAxIGVyciA9IDEKRVhUNC1mcyAodWJkYSk6IG1vdW50ZWQgZmlsZXN5
+c3RlbSB3aXRoIG9yZGVyZWQgZGF0YSBtb2RlLiBPcHRzOiAobnVsbCkKLi4uCgoKd2hlcmVhcyB0
+aGUgY29tbWFuZCAtIGlmIGRpcmVjdGx5IHJ1biBpbiB0aGUgdGVybWluYWwgLSBkb24ndCBzaG93
+IHRoYXQgbGluZS4KTm93IEknbSB3b25kZXJpbmcgd2hhdCBtYWtlcyB0aGUgZGlmZmVyZW5jZSBh
+bmQgd2hhdCdzIHRoZSBjb3JyZWN0IHdheSB0byBzdGFydCBhbiBVTUwuCgoKLS0gCk1mRy9TaW5j
+ZXJlbHkKVG9yYWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJpbnQ6IDdCMUEgMDdGNCBFQzgyIDBG
+OTAgRDRDMiA4OTM2IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpM
+SU1JVEVEIFRJTUUgU0FMRSAtIEZ1bGwgWWVhciBvZiBNaWNyb3NvZnQgVHJhaW5pbmcgRm9yIEp1
+c3QgJDQ5Ljk5IQoxLDUwMCsgaG91cnMgb2YgdHV0b3JpYWxzIGluY2x1ZGluZyBWaXN1YWxTdHVk
+aW8gMjAxMiwgV2luZG93cyA4LCBTaGFyZVBvaW50CjIwMTMsIFNRTCAyMDEyLCBNVkMgNCwgbW9y
+ZS4gQkVTVCBWQUxVRTogTmV3IE11bHRpLUxpYnJhcnkgUG93ZXIgUGFjayBpbmNsdWRlcwpNb2Jp
+bGUsIENsb3VkLCBKYXZhLCBhbmQgVVggRGVzaWduLiBMb3dlc3QgcHJpY2UgZXZlciEgRW5kcyA5
+LzIwLzEzLiAKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTU4
+MDQxMTUxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNl
+ci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
+dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
