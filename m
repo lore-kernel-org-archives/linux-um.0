@@ -1,55 +1,85 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <522AEE50.4090105@nod.at>
-Date: Sat, 07 Sep 2013 11:13:52 +0200
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1VNgxZ-0007tc-O4
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Sep 2013 10:32:13 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VNgxX-00084I-PL
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 22 Sep 2013 10:32:13 +0000
+Message-ID: <523EC722.2080002@nod.at>
+Date: Sun, 22 Sep 2013 12:32:02 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PULL] UML updates for 3.12
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+References: <52376466.2040601@gmx.de>
+	<CAFLxGvyw7j_xGpk0F-DLLhxJFEXUjW_Jc0ggKySmRe0NszDAuw@mail.gmail.com>
+	<523EA9FF.60804@gmx.de> <523EB66B.5020608@gmx.de>
+In-Reply-To: <523EB66B.5020608@gmx.de>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] difference of a shell script versus command line
+ WRT "winch_thread : TIOCSCTTY failed on fd 1 err = 1"
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Linus,
+QW0gMjIuMDkuMjAxMyAxMToyMCwgc2NocmllYiBUb3JhbGYgRsO2cnN0ZXI6Cj4gT24gMDkvMjIv
+MjAxMyAxMDoyNyBBTSwgVG9yYWxmIEbDtnJzdGVyIHdyb3RlOgo+PiBPbiAwOS8yMi8yMDEzIDA4
+OjUyIEFNLCByaWNoYXJkIC1ydy0gd2VpbmJlcmdlciB3cm90ZToKPj4+IE9uIE1vbiwgU2VwIDE2
+LCAyMDEzIGF0IDEwOjA0IFBNLCBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFsZi5mb2Vyc3RlckBnbXgu
+ZGU+IHdyb3RlOgo+Pj4+IElmIEkgcnVuIHRoZSBmb2xsb3dpbmcgc2NyaXB0Cj4+Pj4KPj4+PiAk
+PiBjYXQgbC5zaAo+Pj4+ICMhL2Jpbi9zaAo+Pj4+ICMKPj4+Pgo+Pj4+IC91c3IvbG9jYWwvYmlu
+L2xpbnV4LXYzLjExLTg3MTgtZzBmYjVjYTEgZWFybHlwcmludGsgdWJkYT0vaG9tZS90Zm9lcnN0
+ZS92aXJ0dWFsL3VtbC9uMjJ1bnN0NCB1YmRiPS9tbnQvcmFtZGlzay9uMjJ1bnN0NF9zd2FwIGV0
+aDA9dHVudGFwLHRhcDIsNzI6ZWY6M2Q6NWQ6ZDM6ZGIgbWVtPTEwMjVNIGNvbjA9ZmQ6MCxmZDox
+IGNvbj1wdHMgdW1pZD11bWxfbjIydW5zdDQgcm9vdGZzdHlwZT1leHQ0Cj4+Pj4KPj4+Pgo+Pj4+
+IHRoZW4gZHVyaW5nIHN0YXJ0IG9mIHRoZSBVTUwgSSBnZXQKPj4+Pgo+Pj4+IC4uLgo+Pj4+IE5l
+dGRldmljZSAwICg3MjplZjozZDo1ZDpkMzpkYikgOgo+Pj4+IFRVTi9UQVAgYmFja2VuZCAtCj4+
+Pj4gd2luY2hfdGhyZWFkIDogVElPQ1NDVFRZIGZhaWxlZCBvbiBmZCAxIGVyciA9IDEKPj4+Cj4+
+PiBIbW0sIHRoYXQncyBhIHJlZ3Jlc3Npb24gaW50cm9kdWNlZCBieToKPj4+IGNvbW1pdCAyNTAx
+MjcyMTZkZDY2MzVmNTczMDc1MmQ3NDQ0YmRlYzk5MmFlY2IwCj4+PiBBdXRob3I6IFJpY2hhcmQg
+V2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+Cj4+PiBEYXRlOiAgIFN1biBBdWcgMTggMTM6MzA6
+MDkgMjAxMyArMDIwMAo+Pj4KPj4+ICAgICB1bTogUnVuIFVNTCBpbiBpdCdzIG93biBzZXNzaW9u
+Lgo+Pj4KPj4+ICAgICBJZiBVTUwgaXMgbm90IHJ1biBieSBhIHNoZWxsIGl0IGNhbiBoYXBwZW4g
+dGhhdCBVTUwKPj4+ICAgICB3aWxsIGtpbGwgdW5yZWxhdGVkIHByb2Nlc2VzIHVwb24gYSBmYXRh
+bCBleGl0IGJlY2F1c2UKPj4+ICAgICBpdCBpc3N1ZXMgYSBraWxsKDAsIC4uLikuCj4+PiAgICAg
+VG8gcHJldmVudCBzdWNoIG9kZGl0aWVzIHdlIGNyZWF0ZSBhIG5ldyBzZXNzaW9uIGluIG1haW4o
+KS4KPj4+Cj4+PiAgICAgUmVwb3J0ZWQtYW5kLXRlc3RlZC1ieTogUmljaGFyZCBXLk0uIEpvbmVz
+IDxyam9uZXNAcmVkaGF0LmNvbT4KPj4+ICAgICBTaWduZWQtb2ZmLWJ5OiBSaWNoYXJkIFdlaW5i
+ZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pgo+Pj4KPj4+Cj4+PiBUaGUgd2luY2gtdGhyZWFkIGFsc28g
+aGFzIGl0J3Mgb3duIHNlc3Npb24sIHRoaXMgc2VlbXMgdG8gYmUgdG8gYW4gaXNzdWUuCj4+Pgo+
+Pgo+PiBzdXJlIC0gSSBjYW4gcmVwcm9kdWNlIGl0IHdpdGggbGludXgtdjMuMTEtODcxOC1nMGZi
+NWNhMSAsIHdoaWNoIGRvZXNuJ3QgY29udGFpbiB0aGF0IGNvbW1pdCwgb3IgPwo+Pgo+IEknZCBs
+aWtlIHRvIGJpc2VjdCBpaXQsayBidXQgYXMgc29vbiBhcyBJIHJ1biBzb21ldGhpbmcgbGlrZQo+
+ICQ+IC4vbC5zaCB8IHRlZSA+bG9nZmlsZT4KPiB0aGVuIHRoZSBpc3N1ZSB2YW5pc2hlcyAtIHNv
+IEkgY2FuIHNlZSBpdCBvbiB0aGUgY29tbWFuZCBsaW5lLgo+IEZ1cnRoZXJtb3JlIEkga25vdywg
+dGhhdCBpdCBpcyBub3QgaW4gMy4xMC4wLTA4NzYzLWc3ZDMxMDdkLCBidXQgaW4KPiB2My4xMi1y
+YzEtNDItZ2Y0MmJjZjEgLSBidXQgd2l0aG91dCBhdXRvbWF0aW9uIGJpc2VjdGluZyBpcyBub3Qg
+ZnVubnkuCgpXaHkgYmlzZWN0PyBDb21taXQgMjUwMTI3MiBpcyB0aGUgZXZpbGRvZXIuCk5vdyBJ
+IGhhdmUgdG8gZmluZCBhIHNhbmUgd2F5IHRvIGZpeCB0aGUga2lsbCgwLC4uLikgaXNzdWUgd2l0
+aG91dCBicmVha2luZyB0aGUgd2luY2gtdGhyZWFkLgoKVGhhbmtzLAovL3JpY2hhcmQKCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpMSU1JVEVEIFRJTUUgU0FMRSAtIEZ1bGwgWWVhciBvZiBNaWNyb3Nv
+ZnQgVHJhaW5pbmcgRm9yIEp1c3QgJDQ5Ljk5IQoxLDUwMCsgaG91cnMgb2YgdHV0b3JpYWxzIGlu
+Y2x1ZGluZyBWaXN1YWxTdHVkaW8gMjAxMiwgV2luZG93cyA4LCBTaGFyZVBvaW50CjIwMTMsIFNR
+TCAyMDEyLCBNVkMgNCwgbW9yZS4gQkVTVCBWQUxVRTogTmV3IE11bHRpLUxpYnJhcnkgUG93ZXIg
+UGFjayBpbmNsdWRlcwpNb2JpbGUsIENsb3VkLCBKYXZhLCBhbmQgVVggRGVzaWduLiBMb3dlc3Qg
+cHJpY2UgZXZlciEgRW5kcyA5LzIyLzEzLiAKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5l
+dC9nYW1wYWQvY2xrP2lkPTY0NTQ1ODcxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZl
+bCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUt
+bGludXgtZGV2ZWwK
 
-please pull form:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus
-
-to receive UML updates for the 3.12 merge window.
-
-This pile contains mostly fixes and improvements for issues identified
-by Richard W. M. Jones while adding UML as backend to libguestfs.
-
-Thanks,
-//richard
-
-----------------------------------------------------------------
-Richard Weinberger (8):
-      um: hostfs: Fix writeback
-      um: Implement probe_kernel_read()
-      um: ubd: Add REQ_FLUSH suppport
-      um: ubd: Introduce submit_request()
-      um: Cleanup SIGTERM handling
-      um: Run UML in it's own session.
-      um: prctl: Do not include linux/ptrace.h
-      um: Add irq chip um/mask handlers
-
- arch/um/drivers/ubd.h        |  1 -
- arch/um/drivers/ubd_kern.c   | 72 ++++++++++++++++++++++++++++++++++++--------
- arch/um/drivers/ubd_user.c   |  5 ---
- arch/um/include/shared/os.h  |  3 ++
- arch/um/kernel/Makefile      |  2 +-
- arch/um/kernel/irq.c         |  4 +++
- arch/um/kernel/maccess.c     | 24 +++++++++++++++
- arch/um/os-Linux/aio.c       |  5 ++-
- arch/um/os-Linux/file.c      |  9 ++++++
- arch/um/os-Linux/main.c      |  2 ++
- arch/um/os-Linux/process.c   | 53 +++++++++++++++++++++++++++++++-
- arch/um/os-Linux/sigio.c     |  2 +-
- arch/um/os-Linux/util.c      | 10 ++++++
- arch/x86/um/os-Linux/prctl.c |  2 +-
- fs/hostfs/hostfs_kern.c      |  9 +++++-
- 15 files changed, 176 insertions(+), 27 deletions(-)
- create mode 100644 arch/um/kernel/maccess.c
