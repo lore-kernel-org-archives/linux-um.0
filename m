@@ -1,68 +1,152 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <artagnon@gmail.com>) id 1VPPYu-0005j5-Nx
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Sep 2013 04:21:52 +0000
-Received: from mail-pd0-f170.google.com ([209.85.192.170])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1VPPYs-00050R-W2
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 27 Sep 2013 04:21:52 +0000
-Received: by mail-pd0-f170.google.com with SMTP id x10so2070910pdj.15
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 26 Sep 2013 21:21:45 -0700 (PDT)
-From: Ramkumar Ramachandra <artagnon@gmail.com>
-Date: Fri, 27 Sep 2013 09:44:47 +0530
-Message-Id: <1380255287-5818-3-git-send-email-artagnon@gmail.com>
-In-Reply-To: <1380255287-5818-1-git-send-email-artagnon@gmail.com>
-References: <1380255287-5818-1-git-send-email-artagnon@gmail.com>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Mon, 23 Sep 2013 13:41:29 -0400
+From: "J. Bruce Fields" <bfields@fieldses.org>
+Message-ID: <20130923174129.GA19720@fieldses.org>
+References: <52075E01.7030506@gmx.de>
+ <20130812143640.GF4596@quack.suse.cz>
+ <20130813215313.GH17781@fieldses.org>
+ <20130827180655.GE14809@fieldses.org>
+ <521E318C.7040401@gmx.de>
+ <522B9010.8070902@gmx.de>
+ <20130910140937.GD16011@fieldses.org>
+ <523F21B5.2050305@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 2/2] um/vdso: add .gitignore for a couple of
-	targets
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Michal Marek <mmarek@suse.cz>, Richard Weinberger <richard@nod.at>, Ingo Molnar <mingo@redhat.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+In-Reply-To: <523F21B5.2050305@gmx.de>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: Issues with a rather unusual configured NFS server
+To: Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Cc: Jan Kara <jack@suse.cz>, Linux NFS mailing list <linux-nfs@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, linux-ext4@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, "J. Bruce Fields" <bfields@redhat.com>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Cc: Richard Weinberger <richard@nod.at>
-Signed-off-by: Ramkumar Ramachandra <artagnon@gmail.com>
----
- arch/x86/um/vdso/.gitignore | 2 ++
- 1 file changed, 2 insertions(+)
- create mode 100644 arch/x86/um/vdso/.gitignore
+On Sun, Sep 22, 2013 at 06:58:29PM +0200, Toralf F=C3=B6rster wrote:
+> On 09/10/2013 04:09 PM, J. Bruce Fields wrote:
+> > On Sat, Sep 07, 2013 at 10:44:00PM +0200, Toralf F=C3=B6rster wrote=
+:
+> >> Today I run latest git tree with a patched UML (this patch + one f=
+or xterm issues) and got 2 times a core dump
+> >> when I fuzzy test an UML machine with a nearly identical scenario =
+as already described but just shutdowned
+> >> both UML images instead of shooting one of it in the head.
+> >=20
+> > This is a slightly different test case, so for now it sounds like t=
+his
+> > could be a preexisting problem, not a regression?
+> >=20
+> Yes, pre-existing. I'm trying to bisect it, the issue is already in 7=
+d3107d.
+>=20
+> But every attempt to get the first bad commit before that commit id
+> failed till now. I started many attempts between v3.10 and 7d3107d. I
+> could not reproduce that issue 100% in that interval. In that interva=
+l
+> either all tested commits doesn't show the issue or the NFS client ha=
+ngs
+> during the stop of NFS service infinitely - and counting that as a "b=
+ad"
+> commit doesn't work.
+>=20
+> FWIW a single test case currently takes 2 1/2 hour and even then I do
+> not fully trust the result  (except for a bad commit, that's clear.
 
-diff --git a/arch/x86/um/vdso/.gitignore b/arch/x86/um/vdso/.gitignore
-new file mode 100644
-index 0000000..9cac6d0
---- /dev/null
-+++ b/arch/x86/um/vdso/.gitignore
-@@ -0,0 +1,2 @@
-+vdso-syms.lds
-+vdso.lds
--- 
-1.8.4.299.gb3e7d24.dirty
+Well, we should figure out some other way to narrow down the problem...=
+=2E
 
+I was trying to at least work out where exactly this crash was, but I
+don't have a commit 768c9d3.
 
-------------------------------------------------------------------------------
-October Webinars: Code for Performance
-Free Intel webinars can help you accelerate application performance.
-Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
-the latest Intel processors and coprocessors. See abstracts and register >
-http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+--b.
+
+>=20
+>=20
+> > --b.
+> >=20
+> >>
+> >> I'll probably need time to figure out a test case, but just as a p=
+re-info here's the back trace:
+> >>
+> >> tfoerste@n22 ~ $ gdb --core=3D/mnt/ramdisk/core /usr/local/bin/lin=
+ux-v3.11-7550-g768c9d3 -n -batch -ex bt
+> >>
+> >> warning: core file may not match specified executable file.
+> >> [New LWP 7470]
+> >> [New LWP 7479]
+> >> [New LWP 7477]
+> >> [New LWP 7478]
+> >> Core was generated by `/usr/local/bin/linux-v3.11-7550-g768c9d3 ea=
+rlyprintk ubda=3D/home/tfoerste/virtua'.
+> >> Program terminated with signal 6, Aborted.
+> >> #0  0xb77be424 in __kernel_vsyscall ()
+> >> #0  0xb77be424 in __kernel_vsyscall ()
+> >> #1  0x083aada5 in kill ()
+> >> #2  0x0807163d in uml_abort () at arch/um/os-Linux/util.c:93
+> >> #3  0x08071925 in os_dump_core () at arch/um/os-Linux/util.c:138
+> >> #4  0x080613a7 in panic_exit (self=3D0x85b1518 <panic_exit_notifie=
+r>, unused1=3D0, unused2=3D0x85e76e0 <buf.15920>) at arch/um/kernel/um_=
+arch.c:240
+> >> #5  0x0809a398 in notifier_call_chain (nl=3D0x0, val=3D0, v=3D0x85=
+e76e0 <buf.15920>, nr_to_call=3D-2, nr_calls=3D0x0) at kernel/notifier.=
+c:93
+> >> #6  0x0809a4e3 in __atomic_notifier_call_chain (nr_calls=3D<optimi=
+zed out>, nr_to_call=3D<optimized out>, v=3D<optimized out>, val=3D<opt=
+imized out>, nh=3D<optimized out>) at kernel/notifier.c:182
+> >> #7  atomic_notifier_call_chain (nh=3D0x85e76c4 <panic_notifier_lis=
+t>, val=3D0, v=3D0x85e76e0 <buf.15920>) at kernel/notifier.c:191
+> >> #8  0x08408628 in panic (fmt=3D0x0) at kernel/panic.c:128
+> >> #9  0x081131c9 in shrink_dcache_for_umount_subtree (dentry=3D0x428=
+028f0) at fs/dcache.c:941
+> >> #10 0x08113948 in shrink_dcache_for_umount (sb=3D0x463b8000) at fs=
+/dcache.c:1002
+> >> #11 0x08101677 in generic_shutdown_super (sb=3D0x463b8000) at fs/s=
+uper.c:404
+> >> #12 0x08102395 in kill_anon_super (sb=3D0x0) at fs/super.c:875
+> >> #13 0x081d3ff8 in nfs_kill_super (s=3D0x0) at fs/nfs/super.c:2598
+> >> #14 0x0810153a in deactivate_locked_super (s=3D0x463b8000) at fs/s=
+uper.c:294
+> >> #15 0x081015d1 in deactivate_super (s=3D0x463b8000) at fs/super.c:=
+319
+> >> #16 0x08119c0c in mntfree (mnt=3D<optimized out>) at fs/namespace.=
+c:891
+> >> #17 mntput_no_expire (mnt=3D0x0) at fs/namespace.c:929
+> >> #18 0x0811b195 in SYSC_umount (flags=3D<optimized out>, name=3D<op=
+timized out>) at fs/namespace.c:1335
+> >> #19 SyS_umount (name=3D134633856, flags=3D2) at fs/namespace.c:130=
+5
+> >> #20 0x080618e2 in handle_syscall (r=3D0x498be5d4) at arch/um/kerne=
+l/skas/syscall.c:35
+> >> #21 0x08073c0d in handle_trap (local_using_sysemu=3D<optimized out=
+>, regs=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/s=
+kas/process.c:198
+> >> #22 userspace (regs=3D0x498be5d4) at arch/um/os-Linux/skas/process=
+=2Ec:431
+> >> #23 0x0805e65c in fork_handler () at arch/um/kernel/process.c:160
+> >> #24 0x00000000 in ?? ()
+> >>
+> >>
+> >>
+> >> --=20
+> >> MfG/Sincerely
+> >> Toralf F=C3=B6rster
+> >> pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA=
+3
+> >=20
+>=20
+>=20
+> --=20
+> MfG/Sincerely
+> Toralf F=C3=B6rster
+> pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-nfs" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
