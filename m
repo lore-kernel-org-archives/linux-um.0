@@ -1,23 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1VJlYM-00041D-N7
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1VO8DU-0005so-9V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Sep 2013 14:37:58 +0000
-Received: from mout.gmx.net ([212.227.15.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1VJlYJ-0006bU-86
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Sep 2013 14:37:58 +0000
-Received: from [92.224.45.48] ([92.224.45.48]) by mail.gmx.com (mrgmx001)
-	with ESMTPSA (Nemesis) id 0Mh9yT-1VXKM12kF7-00MInJ for
-	<user-mode-linux-devel@lists.sourceforge.net>; Wed, 11 Sep 2013 16:37:48
-	+0200
-Message-ID: <5230803A.3030800@gmx.de>
-Date: Wed, 11 Sep 2013 16:37:46 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-MIME-Version: 1.0
+	Mon, 23 Sep 2013 15:38:28 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VO8DS-0000Bf-70 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 23 Sep 2013 15:38:28 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 23 Sep 2013 17:38:01 +0200
+Message-Id: <1379950684-18710-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,35 +21,316 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] winch_thread : TIOCSCTTY failed on fd 1 err = 1
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] [PATCH 1/4] um: Rewrite show_stack()
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
 
-VXNpbmcgTGludXMnIGN1cnJlbnQgZ2l0IHRyZWUgdG8gYmlzZWN0IGEgZnMvZGNhY2hlLmMgaXNz
-dWUgSSByZWFsaXplZAp0aGlzIG1lc3NhZ2UgKG5ld2x5IGludHJvZHVjZWQgaW4gb25lIG9mIHRo
-ZSBsYXN0IGZldyBwdWxscywgbWVhbmluZwpiZXR3ZWVuIGxpbnV4LXYzLjExLTg3MTggYW5kIHYz
-LjExLTkwMzEtZ2EyMmEwZmQpOgoKCi4uLgpOZXRkZXZpY2UgMCAoNzI6ZWY6M2Q6ZmQ6NGE6MGIp
-IDoKVFVOL1RBUCBiYWNrZW5kIC0Kd2luY2hfdGhyZWFkIDogVElPQ1NDVFRZIGZhaWxlZCBvbiBm
-ZCAxIGVyciA9IDEKLi4uCgoKCkRvIEkgaGF2ZSB0byB3b3JyeSBhYm91dCA/CgoKCgpGV0lXIEkg
-anVzdCBwYXRjaGVkIHRoZSBrZXJuZWwgYnkgdGhpcyA6CgotLS0geC9rZXJuZWwvZXhpdC5jCisr
-KyB4L2tlcm5lbC9leGl0LmMKQEAgLTc4Myw4ICs3ODMsOCBAQCB2b2lkIGRvX2V4aXQobG9uZyBj
-b2RlKQogICAgICAgIGV4aXRfc2htKHRzayk7CiAgICAgICAgZXhpdF9maWxlcyh0c2spOwogICAg
-ICAgIGV4aXRfZnModHNrKTsKLSAgICAgICBleGl0X3Rhc2tfbmFtZXNwYWNlcyh0c2spOwogICAg
-ICAgIGV4aXRfdGFza193b3JrKHRzayk7CisgICAgICAgZXhpdF90YXNrX25hbWVzcGFjZXModHNr
-KTsKICAgICAgICBjaGVja19zdGFja191c2FnZSgpOwogICAgICAgIGV4aXRfdGhyZWFkKCk7Cgoo
-Z290IGZyb20gT2xlZyBOZXN0ZXJvdikKCi0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3Rl
-cgpwZ3AgZmluZ2VyIHByaW50OiA3QjFBIDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1
-MDggN0RCNiA5REEzCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSG93IFNlcnZpY2VOb3cgaGVscHMg
-SVQgcGVvcGxlIHRyYW5zZm9ybSBJVCBkZXBhcnRtZW50czoKMS4gQ29uc29saWRhdGUgbGVnYWN5
-IElUIHN5c3RlbXMgdG8gYSBzaW5nbGUgc3lzdGVtIG9mIHJlY29yZCBmb3IgSVQKMi4gU3RhbmRh
-cmRpemUgYW5kIGdsb2JhbGl6ZSBzZXJ2aWNlIHByb2Nlc3NlcyBhY3Jvc3MgSVQKMy4gSW1wbGVt
-ZW50IHplcm8tdG91Y2ggYXV0b21hdGlvbiB0byByZXBsYWNlIG1hbnVhbCwgcmVkdW5kYW50IHRh
-c2tzCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD01MTI3MTEx
-MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9k
-ZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
-b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+Currently on UML stack traces are not very reliable and both
+x86 and x86_64 have their on implementations.
+This patch unifies both and adds support to outline unreliable
+functions calls.
+
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/kernel/sysrq.c         | 85 ++++++++++++++++++++++++++----------------
+ arch/um/kernel/um_arch.c       |  1 -
+ arch/x86/um/asm/processor_32.h |  5 +++
+ arch/x86/um/asm/processor_64.h |  5 +++
+ arch/x86/um/sysrq_32.c         | 66 --------------------------------
+ arch/x86/um/sysrq_64.c         |  8 +---
+ 6 files changed, 64 insertions(+), 106 deletions(-)
+
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index 0dc4d1c..33cc72e 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -1,6 +1,10 @@
+ /*
+  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- * Licensed under the GPL
++ * Copyright (C) 2013 Richard Weinberger <richrd@nod.at>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  */
+ 
+ #include <linux/kallsyms.h>
+@@ -9,58 +13,75 @@
+ #include <linux/sched.h>
+ #include <asm/sysrq.h>
+ 
+-/* Catch non-i386 SUBARCH's. */
+-#if !defined(CONFIG_UML_X86) || defined(CONFIG_64BIT)
+-void show_trace(struct task_struct *task, unsigned long * stack)
++struct stack_frame {
++	struct stack_frame *next_frame;
++	unsigned long return_address;
++};
++
++static void print_stack_trace(unsigned long *sp, unsigned long bp)
+ {
++	int reliable;
+ 	unsigned long addr;
++	struct stack_frame *frame = (struct stack_frame *)bp;
+ 
+-	if (!stack) {
+-		stack = (unsigned long*) &stack;
+-		WARN_ON(1);
+-	}
+-
+-	printk(KERN_INFO "Call Trace: \n");
+-	while (((long) stack & (THREAD_SIZE-1)) != 0) {
+-		addr = *stack;
++	printk(KERN_INFO "Call Trace:\n");
++	while (((long) sp & (THREAD_SIZE-1)) != 0) {
++		addr = *sp;
+ 		if (__kernel_text_address(addr)) {
+-			printk(KERN_INFO "%08lx:  [<%08lx>]",
+-			       (unsigned long) stack, addr);
+-			print_symbol(KERN_CONT " %s", addr);
++			reliable = 0;
++			if ((unsigned long) sp == bp + sizeof(long)) {
++				frame = frame ? frame->next_frame : NULL;
++				bp = (unsigned long)frame;
++				reliable = 1;
++			}
++
++			printk(KERN_INFO " [<%08lx>]", addr);
++			printk(KERN_CONT " %s", reliable ? "" : "? ");
++			print_symbol(KERN_CONT "%s", addr);
+ 			printk(KERN_CONT "\n");
+ 		}
+-		stack++;
++		sp++;
+ 	}
+ 	printk(KERN_INFO "\n");
+ }
+-#endif
+ 
+ /*Stolen from arch/i386/kernel/traps.c */
+ static const int kstack_depth_to_print = 24;
+ 
+-/* This recently started being used in arch-independent code too, as in
+- * kernel/sched/core.c.*/
+-void show_stack(struct task_struct *task, unsigned long *esp)
++static unsigned long get_frame_pointer(struct task_struct *task)
++{
++	if (!task || task == current)
++		return current_bp();
++	else
++		return KSTK_EBP(task);
++}
++
++void show_stack(struct task_struct *task, unsigned long *stack)
+ {
+-	unsigned long *stack;
++	unsigned long *sp = stack, bp = 0;
+ 	int i;
+ 
+-	if (esp == NULL) {
+-		if (task != current && task != NULL) {
+-			esp = (unsigned long *) KSTK_ESP(task);
+-		} else {
+-			esp = (unsigned long *) &esp;
+-		}
++#ifdef CONFIG_FRAME_POINTER
++	bp = get_frame_pointer(task);
++#endif
++
++	if (!stack) {
++		if (!task || task == current)
++			sp = current_sp();
++		else
++			sp = (unsigned long *)KSTK_ESP(task);
+ 	}
+ 
+-	stack = esp;
++	printk(KERN_INFO "Stack:\n");
++	stack = sp;
+ 	for (i = 0; i < kstack_depth_to_print; i++) {
+ 		if (kstack_end(stack))
+ 			break;
+-		if (i && ((i % 8) == 0))
+-			printk(KERN_INFO "       ");
+-		printk(KERN_CONT "%08lx ", *stack++);
++		if (i && ((i % STACKSLOTS_PER_LINE) == 0))
++			printk(KERN_CONT "\n");
++		printk(KERN_CONT " %08lx", *stack++);
+ 	}
++	printk(KERN_CONT "\n");
+ 
+-	show_trace(task, esp);
++	print_stack_trace(sp, bp);
+ }
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 87df5e3..b9dd13e 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -234,7 +234,6 @@ static int panic_exit(struct notifier_block *self, unsigned long unused1,
+ 		      void *unused2)
+ {
+ 	bust_spinlocks(1);
+-	show_regs(&(current->thread.regs));
+ 	bust_spinlocks(0);
+ 	uml_exitcode = 1;
+ 	os_dump_core();
+diff --git a/arch/x86/um/asm/processor_32.h b/arch/x86/um/asm/processor_32.h
+index 6c6689e..c112de8 100644
+--- a/arch/x86/um/asm/processor_32.h
++++ b/arch/x86/um/asm/processor_32.h
+@@ -33,6 +33,8 @@ struct arch_thread {
+ 	.faultinfo		= { 0, 0, 0 } \
+ }
+ 
++#define STACKSLOTS_PER_LINE 8
++
+ static inline void arch_flush_thread(struct arch_thread *thread)
+ {
+ 	/* Clear any TLS still hanging */
+@@ -53,4 +55,7 @@ static inline void arch_copy_thread(struct arch_thread *from,
+ #define current_text_addr() \
+ 	({ void *pc; __asm__("movl $1f,%0\n1:":"=g" (pc)); pc; })
+ 
++#define current_sp() ({ void *sp; __asm__("movl %%esp, %0" : "=r" (sp) : ); sp; })
++#define current_bp() ({ unsigned long bp; __asm__("movl %%ebp, %0" : "=r" (bp) : ); bp; })
++
+ #endif
+diff --git a/arch/x86/um/asm/processor_64.h b/arch/x86/um/asm/processor_64.h
+index 4b02a84..c3be852 100644
+--- a/arch/x86/um/asm/processor_64.h
++++ b/arch/x86/um/asm/processor_64.h
+@@ -19,6 +19,8 @@ struct arch_thread {
+ 			   .fs			= 0, \
+ 			   .faultinfo		= { 0, 0, 0 } }
+ 
++#define STACKSLOTS_PER_LINE 4
++
+ static inline void arch_flush_thread(struct arch_thread *thread)
+ {
+ }
+@@ -32,4 +34,7 @@ static inline void arch_copy_thread(struct arch_thread *from,
+ #define current_text_addr() \
+ 	({ void *pc; __asm__("movq $1f,%0\n1:":"=g" (pc)); pc; })
+ 
++#define current_sp() ({ void *sp; __asm__("movq %%rsp, %0" : "=r" (sp) : ); sp; })
++#define current_bp() ({ unsigned long bp; __asm__("movq %%rbp, %0" : "=r" (bp) : ); bp; })
++
+ #endif
+diff --git a/arch/x86/um/sysrq_32.c b/arch/x86/um/sysrq_32.c
+index c9bee5b..16ee0e4 100644
+--- a/arch/x86/um/sysrq_32.c
++++ b/arch/x86/um/sysrq_32.c
+@@ -30,70 +30,4 @@ void show_regs(struct pt_regs *regs)
+         printk(" DS: %04lx ES: %04lx\n",
+ 	       0xffff & PT_REGS_DS(regs), 
+ 	       0xffff & PT_REGS_ES(regs));
+-
+-        show_trace(NULL, (unsigned long *) &regs);
+ }
+-
+-/* Copied from i386. */
+-static inline int valid_stack_ptr(struct thread_info *tinfo, void *p)
+-{
+-	return	p > (void *)tinfo &&
+-		p < (void *)tinfo + THREAD_SIZE - 3;
+-}
+-
+-/* Adapted from i386 (we also print the address we read from). */
+-static inline unsigned long print_context_stack(struct thread_info *tinfo,
+-				unsigned long *stack, unsigned long ebp)
+-{
+-	unsigned long addr;
+-
+-#ifdef CONFIG_FRAME_POINTER
+-	while (valid_stack_ptr(tinfo, (void *)ebp)) {
+-		addr = *(unsigned long *)(ebp + 4);
+-		printk("%08lx:  [<%08lx>]", ebp + 4, addr);
+-		print_symbol(" %s", addr);
+-		printk("\n");
+-		ebp = *(unsigned long *)ebp;
+-	}
+-#else
+-	while (valid_stack_ptr(tinfo, stack)) {
+-		addr = *stack;
+-		if (__kernel_text_address(addr)) {
+-			printk("%08lx:  [<%08lx>]", (unsigned long) stack, addr);
+-			print_symbol(" %s", addr);
+-			printk("\n");
+-		}
+-		stack++;
+-	}
+-#endif
+-	return ebp;
+-}
+-
+-void show_trace(struct task_struct* task, unsigned long * stack)
+-{
+-	unsigned long ebp;
+-	struct thread_info *context;
+-
+-	/* Turn this into BUG_ON if possible. */
+-	if (!stack) {
+-		stack = (unsigned long*) &stack;
+-		printk("show_trace: got NULL stack, implicit assumption task == current");
+-		WARN_ON(1);
+-	}
+-
+-	if (!task)
+-		task = current;
+-
+-	if (task != current) {
+-		ebp = (unsigned long) KSTK_EBP(task);
+-	} else {
+-		asm ("movl %%ebp, %0" : "=r" (ebp) : );
+-	}
+-
+-	context = (struct thread_info *)
+-		((unsigned long)stack & (~(THREAD_SIZE - 1)));
+-	print_context_stack(context, stack, ebp);
+-
+-	printk("\n");
+-}
+-
+diff --git a/arch/x86/um/sysrq_64.c b/arch/x86/um/sysrq_64.c
+index a0e7fb1..38b4e4a 100644
+--- a/arch/x86/um/sysrq_64.c
++++ b/arch/x86/um/sysrq_64.c
+@@ -12,7 +12,7 @@
+ #include <asm/ptrace.h>
+ #include <asm/sysrq.h>
+ 
+-void __show_regs(struct pt_regs *regs)
++void show_regs(struct pt_regs *regs)
+ {
+ 	printk("\n");
+ 	print_modules();
+@@ -33,9 +33,3 @@ void __show_regs(struct pt_regs *regs)
+ 	printk(KERN_INFO "R13: %016lx R14: %016lx R15: %016lx\n",
+ 	       PT_REGS_R13(regs), PT_REGS_R14(regs), PT_REGS_R15(regs));
+ }
+-
+-void show_regs(struct pt_regs *regs)
+-{
+-	__show_regs(regs);
+-	show_trace(current, (unsigned long *) &regs);
+-}
+-- 
+1.8.3.1
+
+
+------------------------------------------------------------------------------
+LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
+1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
+2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
+Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
+http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
