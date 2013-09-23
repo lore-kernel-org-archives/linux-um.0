@@ -1,113 +1,43 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1VGADo-0008OB-UK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Sep 2013 16:09:52 +0000
-Received: from mout.gmx.net ([212.227.15.15])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1VGADn-0003vX-Ir
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Sep 2013 16:09:52 +0000
-Received: from [78.54.53.152] ([78.54.53.152]) by mail.gmx.com (mrgmx002)
-	with ESMTPSA (Nemesis) id 0McmS9-1VXQ5Y0I89-00Hsig for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 01 Sep 2013 18:09:45
-	+0200
-Message-ID: <522366C6.2020702@gmx.de>
-Date: Sun, 01 Sep 2013 18:09:42 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-MIME-Version: 1.0
-References: <52075E01.7030506@gmx.de> <20130812143640.GF4596@quack.suse.cz>
-	<20130813215313.GH17781@fieldses.org>
-	<20130827180655.GE14809@fieldses.org> <521E318C.7040401@gmx.de>
-	<CAFLxGvyK5+nB9TgW1uPho9KGwQrWQHx=wEpj+o-mZcN92bWAOg@mail.gmail.com>
-	<20130829133010.GA14773@fieldses.org> <5220A7E2.1070704@gmx.de>
-	<5220ADE7.1010502@nod.at>
-In-Reply-To: <5220ADE7.1010502@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Issues with a rather unusual configured NFS server
-To: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 23 Sep 2013 17:38:04 +0200
+Message-Id: <1379950684-18710-4-git-send-email-richard@nod.at>
+In-Reply-To: <1379950684-18710-1-git-send-email-richard@nod.at>
+References: <1379950684-18710-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 4/4] um: Make kstack_depth_to_print conform to arch/x86
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-T24gMDgvMzAvMjAxMyAwNDozNiBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIDMw
-LjA4LjIwMTMgMTY6MTAsIHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVyOgo+PiBPbiAwOC8yOS8yMDEz
-IDAzOjMwIFBNLCBKLiBCcnVjZSBGaWVsZHMgd3JvdGU6Cj4+PiBPbiBUaHUsIEF1ZyAyOSwgMjAx
-MyBhdCAxMTo1Nzo0NUFNICswMjAwLCByaWNoYXJkIC1ydy0gd2VpbmJlcmdlciB3cm90ZToKPj4+
-PiBPbiBXZWQsIEF1ZyAyOCwgMjAxMyBhdCA3OjIxIFBNLCBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFs
-Zi5mb2Vyc3RlckBnbXguZGU+IHdyb3RlOgo+Pj4+PiBPbiAwOC8yNy8yMDEzIDA4OjA2IFBNLCBK
-LiBCcnVjZSBGaWVsZHMgd3JvdGU6Cj4+Pj4+PiBPbiBUdWUsIEF1ZyAxMywgMjAxMyBhdCAwNTo1
-MzoxNFBNIC0wNDAwLCBiZmllbGRzIHdyb3RlOgo+Pj4+Pj4+IE9uIE1vbiwgQXVnIDEyLCAyMDEz
-IGF0IDA0OjM2OjQwUE0gKzAyMDAsIEphbiBLYXJhIHdyb3RlOgo+Pj4+Pj4+PiBPbiBTdW4gMTEt
-MDgtMTMgMTE6NDg6NDksIFRvcmFsZiBGw7Zyc3RlciB3cm90ZToKPj4+Pj4+Pj4+IHNvIHRoYXQg
-dGhlIHNlcnZlciBlaXRoZXIgY3Jhc2hlcyAoaWYgaXQgaXMgYSB1c2VyIG1vZGUgbGludXggaW1h
-Z2UpIG9yIGF0IGxlYXN0IGl0cyByZWJvb3QgZnVuY3Rpb25hbGl0eSBnb3QgYnJva2VuCj4+Pj4+
-Pj4+PiAtIGlmIHRoZSBORlMgc2VydmVyIGlzIGhhbW1lcmVkIHdpdGggc2NhcnkgTkZTIGNhbGxz
-IHVzaW5nIGEgZnV6enkgdG9vbCBydW5uaW5nIGF0IGEgcmVtb3RlIE5GUyBjbGllbnQgdW5kZXIg
-YSBub24tcHJpdmlsZWdlZCB1c2VyIGlkLgo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+IEl0IGNhbiByZSBy
-ZXByb2R1Y2VkLCBpZgo+Pj4+Pj4+Pj4gICAgLSB0aGUgTkZTIHNoYXJlIGlzIGFuIEVYVDMgb3Ig
-RVhUNCBkaXJlY3RvcnkKPj4+Pj4+Pj4+ICAgIC0gYW5kIGl0IGlzIGNyZWF0ZWQgYXQgZmlsZSBs
-b2NhdGVkIGF0IHRlbXBmcyBhbmQgbW91bnRlZCB2aWEgbG9vcCBkZXZpY2UKPj4+Pj4+Pj4+ICAg
-IC0gYW5kIHRoZSBORlMgc2VydmVyIGlzIGZvcmNlZCB0byB1bW91bnQgdGhlIE5GUyBzaGFyZQo+
-Pj4+Pj4+Pj4gICAgLSBhbmQgdGhlIHNlcnZlciBmb3JjZWQgdG8gcmVzdGFydCB0aGUgTlNGIHNl
-cnZpY2UgYWZ0ZXJ3YXJkcwo+Pj4+Pj4+Pj4gICAgLSBhbmQgdHJpbml0eSBpcyB1c2VkCj4+Pj4+
-Pj4+Pgo+Pj4+Pj4+Pj4gSSBjb3VsZCBmaW5kIGEgc2NlbmFyaW8gZm9yIGFuIGF1dG9tYXRlZCBi
-aXNlY3QuIDIgdGltZXMgaXQgYnJvdWdodCB0aGlzIGNvbW1pdAo+Pj4+Pj4+Pj4gY29tbWl0IDY4
-YTMzOTYxNzhlNjY4OGFkNzM2NzIwMmNkZjBhZjhlZDAzYzg3MjcKPj4+Pj4+Pj4+IEF1dGhvcjog
-Si4gQnJ1Y2UgRmllbGRzIDxiZmllbGRzQHJlZGhhdC5jb20+Cj4+Pj4+Pj4+PiBEYXRlOiAgIFRo
-dSBNYXIgMjEgMTE6MjE6NTAgMjAxMyAtMDQwMAo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+ICAgICBuZnNk
-NDogc2h1dCBkb3duIG1vcmUgb2YgZGVsZWdhdGlvbiBlYXJsaWVyCj4+Pj4+Pj4KPj4+Pj4+PiBU
-aGFua3MgZm9yIHRoZSByZXBvcnQuICBJIHRoaW5rIEkgc2VlIHRoZSBwcm9ibGVtLS1hZnRlciB0
-aGlzIGNvbW1pdAo+Pj4+Pj4+IG5mczRfc2V0X2RlbGVnYXRpb24oKSBmYWlsdXJlcyByZXN1bHQg
-aW4gbmZzNF9wdXRfZGVsZWdhdGlvbiBiZWluZwo+Pj4+Pj4+IGNhbGxlZCwgYnV0IG5mczRfcHV0
-X2RlbGVnYXRpb24gZG9lc24ndCBmcmVlIHRoZSBuZnM0X2ZpbGUgdGhhdCBoYXMKPj4+Pj4+PiBh
-bHJlYWR5IGJlZW4gc2V0IGJ5IGFsbG9jX2luaXRfZGVsZWcoKS4KPj4+Pj4+Pgo+Pj4+Pj4+IExl
-dCBtZSB0aGluayBhYm91dCBob3cgdG8gZml4IHRoYXQuLi4uCj4+Pj4+Pgo+Pj4+Pj4gU29ycnkg
-Zm9yIHRoZSBzbG93IHJlc3BvbnNlLS1jYW4geW91IGNoZWNrIHdoZXRoZXIgdGhpcyBmaXhlcyB0
-aGUKPj4+Pj4+IHByb2JsZW0/Cj4+Pj4+Pgo+Pj4+PiBZZXMuCj4+Pj4+Cj4+Pj4+IFdpdGggdGhl
-IGF0dGFjaGVkIHBhdGNoIHRoZSBwcm9ibGVtIGNhbid0IGJlIHJlcHJvZHVjZWQgYW55IGxvbmdl
-ciB3aXRoCj4+Pj4+IHRoZSBwcmVwYXJlZCB0ZXN0IGNhc2UgYW5kIGN1cnJlbnQgZ2l0IGtlcm5l
-bHMuCj4+Pj4KPj4+PiBCVFc6IElzIG5vYm9keSBlbHNlIGZ1enogdGVzdGluZyBORlM/Cj4+Pgo+
-Pj4gSSBkb24ndCBrbm93LiAgVG9yYWxmJ3MgcmVwb3J0cyBhcmUgdGhlIG9ubHkgb25lcyBJIHJl
-Y2FsbCBvZmYgdGhlIHRvcAo+Pj4gb2YgbXkgaGVhZCwgYnV0IEkgbWF5IGhhdmUgZm9yZ290dGVu
-IG90aGVycy4KPj4+Cj4+Cj4+IHdlbGwsIDcyNTVlNzEgYW5kIDNjNTBiYTggSSdkIHNheS4KPj4K
-Pj4+PiBPciBhcmUgdGhlc2UgYnVncyBqdXN0IG1vcmUgbGlrZWx5IHRvIGhpdCBvbiBVTUw/Cj4+
-Cj4+IFRoaXMgZGVmaW5pdGVseSBub3QuIEkgb2JzZXJ2ZWQgYXQgYSByZWFsIHN5c3RlbSBFWFQ0
-IGNvcnJ1cHRpb25zLwo+PiBpc3N1ZXMgYnV0IHJlcG9ydGVkIHRoZW0gdG8gdGhlIEVYVDQgbWFp
-bGluZyBsaXN0Lgo+PiBJdCBqdXN0IHRvb2sgbWUgYSBsb25nZXIgdGltZSB0byBmaWd1cmUgb3V0
-IGEgcmVsaWFibGUgY29uZmlndXJhdGlvbgo+PiB3aXRoIDIgVU1MIG1hY2hpZW5zIHRvIGF1dG9t
-YXRpYyBiaXNlY3QgaXQuCj4+Cj4+Cj4+PiBUaGF0J3MgYWxzbyBwb3NzaWJsZS4KPj4+Cj4+Pj4g
-VGhpcyBpcyBub3QgdGhlIGZpcnN0IE5GUyBpc3N1ZSBmb3VuZCBieSBUb3JhbGYgdXNpbmcgVU1M
-IGFuZCBUcmluaXR5Lgo+Pj4KPj4+IFllcC4gIFRoZSB0ZXN0aW5nIGlzIGRlZmluaXRlbHkgYXBw
-cmVjaWF0ZWQuCj4+Cj4+IFRoeCAtIGluIHRoZSBtZWFuIHdoaWxlIGFsdGhvdWdoIG15IFVNTCBi
-aXNlY3Qgc2NyaXB0cyBhcmUgd29ya2luZyBmaW5lCj4+IGFuZCB0cmluaXR5IGlzIHN0YWJsZSBl
-bm91Z2ggZXZlbiBpbiBVTUwgZW52aXJvbm1lbnRzIHRvIGJlIHRydXN0IHdvcnRoLgo+IAo+IFRo
-YXQncyBnb29kIHRvIGtub3cuCj4gVGhhbmtzIHlvdSBhbmQgdHJpbml0eSB3ZSBnb3QgcmlkIG9m
-IHNvbWUgbmFzdHkgVU1MIGJ1Z3MuCgp5ZWFoLCBidXQgdGhlcmUncyAoYW1vbmcgb3RoZXJzKSBv
-bmUgb2YgdGhlbSBzdGlsbCBpbiB0aGUgd2lsZDoKSWYgSSBzdGFydCBhbiBVTUwgYW5kIHJlc2l6
-ZSB0aGUgdGVybWluYWwgKEtERSBLb25zb2xlKSBkdXJpbmcgdGhlIGJvb3QKcGhhc2UgdGhlbiBp
-dCBqdXN0IGNyYXNoZXMgc29tZXRpbWVzLgoKCj4gVGhhbmtzLAo+IC8vcmljaGFyZAo+IAo+IAoK
-Ci0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHByaW50OiA3QjFB
-IDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1MDggN0RCNiA5REEzCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KTGVhcm4gdGhlIGxhdGVzdC0tVmlzdWFsIFN0dWRpbyAyMDEyLCBTaGFyZVBv
-aW50IDIwMTMsIFNRTCAyMDEyLCBtb3JlIQpEaXNjb3ZlciB0aGUgZWFzeSB3YXkgdG8gbWFzdGVy
-IGN1cnJlbnQgYW5kIHByZXZpb3VzIE1pY3Jvc29mdCB0ZWNobm9sb2dpZXMKYW5kIGFkdmFuY2Ug
-eW91ciBjYXJlZXIuIEdldCBhbiBpbmNyZWRpYmxlIDEsNTAwKyBob3VycyBvZiBzdGVwLWJ5LXN0
-ZXAKdHV0b3JpYWwgdmlkZW9zIHdpdGggTGVhcm5EZXZOb3cuIFN1YnNjcmliZSB0b2RheSBhbmQg
-c2F2ZSEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTU4MDQw
-OTExJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1t
-b2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
-ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/um/kernel/sysrq.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index 7122bf9..4d6fdf6 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -46,9 +46,6 @@ static void print_stack_trace(unsigned long *sp, unsigned long bp)
+ 	printk(KERN_INFO "\n");
+ }
+ 
+-/*Stolen from arch/i386/kernel/traps.c */
+-static const int kstack_depth_to_print = 24;
+-
+ static unsigned long get_frame_pointer(struct task_struct *task,
+ 				       struct pt_regs *segv_regs)
+ {
+@@ -88,7 +85,7 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 
+ 	printk(KERN_INFO "Stack:\n");
+ 	stack = sp;
+-	for (i = 0; i < kstack_depth_to_print; i++) {
++	for (i = 0; i < 3 * STACKSLOTS_PER_LINE; i++) {
+ 		if (kstack_end(stack))
+ 			break;
+ 		if (i && ((i % STACKSLOTS_PER_LINE) == 0))
+-- 
+1.8.3.1
 
