@@ -1,182 +1,80 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 23 Sep 2013 17:38:02 +0200
-Message-Id: <1379950684-18710-2-git-send-email-richard@nod.at>
-In-Reply-To: <1379950684-18710-1-git-send-email-richard@nod.at>
-References: <1379950684-18710-1-git-send-email-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 2/4] um: Make stack trace reliable against kernel mode faults
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <artagnon@gmail.com>) id 1VPPYn-00062D-TB
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Sep 2013 04:21:45 +0000
+Received: from mail-pd0-f173.google.com ([209.85.192.173])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VPPYn-0003IU-8o
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 27 Sep 2013 04:21:45 +0000
+Received: by mail-pd0-f173.google.com with SMTP id p10so2062923pdj.32
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 26 Sep 2013 21:21:39 -0700 (PDT)
+From: Ramkumar Ramachandra <artagnon@gmail.com>
+Date: Fri, 27 Sep 2013 09:44:45 +0530
+Message-Id: <1380255287-5818-1-git-send-email-artagnon@gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 0/2] More plesant User-Mode Linux build
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Michal Marek <mmarek@suse.cz>, Richard Weinberger <richard@nod.at>, Ingo Molnar <mingo@redhat.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-As UML uses an alternative signal stack we cannot use
-the current stack pointer for stack dumping if UML itself
-dies by SIGSEGV. To bypass this issue we save regs taken
-from mcontext in our segv handler into thread_struct and
-use these regs to obtain the stack pointer in show_stack().
+Hi,
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/include/asm/processor-generic.h |  1 +
- arch/um/include/shared/os.h             |  1 +
- arch/um/kernel/sysrq.c                  | 32 +++++++++++++++++++++++---------
- arch/um/kernel/trap.c                   | 14 +++++++++++---
- arch/um/os-Linux/signal.c               |  8 ++++++++
- 5 files changed, 44 insertions(+), 12 deletions(-)
+The first patch does the meat of the work of getting rid of the
+bloated i386-specific defconfig and replacing it with two tiny ones,
+and updating the Makefile/ Kconfig. SUBARCH is now auto-detected
+correctly, and can be overridden on the command-line. I've tested both
+the x86_64 kernel with an x86_64 userland, as well as the i386 kernel
+with an i386 userland.
 
-diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-index c03cd5a..9046903 100644
---- a/arch/um/include/asm/processor-generic.h
-+++ b/arch/um/include/asm/processor-generic.h
-@@ -21,6 +21,7 @@ struct mm_struct;
- struct thread_struct {
- 	struct task_struct *saved_task;
- 	struct pt_regs regs;
-+	struct pt_regs *segv_regs;
- 	int singlestep_syscall;
- 	void *fault_addr;
- 	jmp_buf *fault_catcher;
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 021104d..75298d3 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -227,6 +227,7 @@ extern void block_signals(void);
- extern void unblock_signals(void);
- extern int get_signals(void);
- extern int set_signals(int enable);
-+extern int os_is_signal_stack(void);
- 
- /* util.c */
- extern void stack_protections(unsigned long address);
-diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
-index 33cc72e..7122bf9 100644
---- a/arch/um/kernel/sysrq.c
-+++ b/arch/um/kernel/sysrq.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
- #include <linux/sched.h>
- #include <asm/sysrq.h>
-+#include <os.h>
- 
- struct stack_frame {
- 	struct stack_frame *next_frame;
-@@ -48,29 +49,42 @@ static void print_stack_trace(unsigned long *sp, unsigned long bp)
- /*Stolen from arch/i386/kernel/traps.c */
- static const int kstack_depth_to_print = 24;
- 
--static unsigned long get_frame_pointer(struct task_struct *task)
-+static unsigned long get_frame_pointer(struct task_struct *task,
-+				       struct pt_regs *segv_regs)
- {
- 	if (!task || task == current)
--		return current_bp();
-+		return segv_regs ? PT_REGS_BP(segv_regs) : current_bp();
- 	else
- 		return KSTK_EBP(task);
- }
- 
-+static unsigned long *get_stack_pointer(struct task_struct *task,
-+					struct pt_regs *segv_regs)
-+{
-+	if (!task || task == current)
-+		return segv_regs ? (unsigned long *)PT_REGS_SP(segv_regs) : current_sp();
-+	else
-+		return (unsigned long *)KSTK_ESP(task);
-+}
-+
- void show_stack(struct task_struct *task, unsigned long *stack)
- {
- 	unsigned long *sp = stack, bp = 0;
-+	struct pt_regs *segv_regs = current->thread.segv_regs;
- 	int i;
- 
-+	if (!segv_regs && os_is_signal_stack()) {
-+		printk(KERN_ERR "Received SIGSEGV in SIGSEGV handler,"
-+				" aborting stack trace!\n");
-+		return;
-+	}
-+
- #ifdef CONFIG_FRAME_POINTER
--	bp = get_frame_pointer(task);
-+	bp = get_frame_pointer(task, segv_regs);
- #endif
- 
--	if (!stack) {
--		if (!task || task == current)
--			sp = current_sp();
--		else
--			sp = (unsigned long *)KSTK_ESP(task);
--	}
-+	if (!stack)
-+		sp = get_stack_pointer(task, segv_regs);
- 
- 	printk(KERN_INFO "Stack:\n");
- 	stack = sp;
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index 5c3aef7..974b874 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -206,9 +206,12 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 	int is_write = FAULT_WRITE(fi);
- 	unsigned long address = FAULT_ADDRESS(fi);
- 
-+	if (regs)
-+		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
-+
- 	if (!is_user && (address >= start_vm) && (address < end_vm)) {
- 		flush_tlb_kernel_vm();
--		return 0;
-+		goto out;
- 	}
- 	else if (current->mm == NULL) {
- 		show_regs(container_of(regs, struct pt_regs, regs));
-@@ -230,7 +233,7 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 
- 	catcher = current->thread.fault_catcher;
- 	if (!err)
--		return 0;
-+		goto out;
- 	else if (catcher != NULL) {
- 		current->thread.fault_addr = (void *) address;
- 		UML_LONGJMP(catcher, 1);
-@@ -238,7 +241,7 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 	else if (current->thread.fault_addr != NULL)
- 		panic("fault_addr set but no fault catcher");
- 	else if (!is_user && arch_fixup(ip, regs))
--		return 0;
-+		goto out;
- 
- 	if (!is_user) {
- 		show_regs(container_of(regs, struct pt_regs, regs));
-@@ -262,6 +265,11 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 		current->thread.arch.faultinfo = fi;
- 		force_sig_info(SIGSEGV, &si, current);
- 	}
-+
-+out:
-+	if (regs)
-+		current->thread.segv_regs = NULL;
-+
- 	return 0;
- }
- 
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 905924b..7b605e4 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -304,3 +304,11 @@ int set_signals(int enable)
- 
- 	return ret;
- }
-+
-+int os_is_signal_stack(void)
-+{
-+	stack_t ss;
-+	sigaltstack(NULL, &ss);
-+
-+	return ss.ss_flags & SS_ONSTACK;
-+}
+The second patch is just a related "while we're there".
+
+Thanks.
+
+Ramkumar Ramachandra (2):
+  arch/um: make it work with defconfig and x86_64
+  um/vdso: add .gitignore for a couple of targets
+
+ arch/um/Kconfig.common           |   5 -
+ arch/um/Makefile                 |  11 +
+ arch/um/configs/i386_defconfig   |  76 ++++
+ arch/um/configs/x86_64_defconfig |  75 ++++
+ arch/um/defconfig                | 899 ---------------------------------------
+ arch/x86/um/Kconfig              |   5 +
+ arch/x86/um/vdso/.gitignore      |   2 +
+ 7 files changed, 169 insertions(+), 904 deletions(-)
+ create mode 100644 arch/um/configs/i386_defconfig
+ create mode 100644 arch/um/configs/x86_64_defconfig
+ delete mode 100644 arch/um/defconfig
+ create mode 100644 arch/x86/um/vdso/.gitignore
+
 -- 
-1.8.3.1
+1.8.4.299.gb3e7d24.dirty
+
+
+------------------------------------------------------------------------------
+October Webinars: Code for Performance
+Free Intel webinars can help you accelerate application performance.
+Explore tips for MPI, OpenMP, advanced profiling, and more. Get the most from 
+the latest Intel processors and coprocessors. See abstracts and register >
+http://pubads.g.doubleclick.net/gampad/clk?id=60133471&iu=/4140/ostg.clktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
