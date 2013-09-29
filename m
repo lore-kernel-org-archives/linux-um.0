@@ -1,336 +1,114 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1VO8DU-0005so-9V
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Sep 2013 15:38:28 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VO8DS-0000Bf-70 for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Sep 2013 15:38:28 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 23 Sep 2013 17:38:01 +0200
-Message-Id: <1379950684-18710-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <524883F9.6060403@gmx.de>
+Date: Sun, 29 Sep 2013 21:48:09 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/4] um: Rewrite show_stack()
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: fuzz tested UML cores in pshrink_dcache_for_umount_subtree (dentry=0x47bd7840)
+ at fs/dcache.c:928
+To: Linux NFS mailing list <linux-nfs@vger.kernel.org>
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel <linux-kernel@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Currently on UML stack traces are not very reliable and both
-x86 and x86_64 have their on implementations.
-This patch unifies both and adds support to outline unreliable
-functions calls.
-
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/kernel/sysrq.c         | 85 ++++++++++++++++++++++++++----------------
- arch/um/kernel/um_arch.c       |  1 -
- arch/x86/um/asm/processor_32.h |  5 +++
- arch/x86/um/asm/processor_64.h |  5 +++
- arch/x86/um/sysrq_32.c         | 66 --------------------------------
- arch/x86/um/sysrq_64.c         |  8 +---
- 6 files changed, 64 insertions(+), 106 deletions(-)
-
-diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
-index 0dc4d1c..33cc72e 100644
---- a/arch/um/kernel/sysrq.c
-+++ b/arch/um/kernel/sysrq.c
-@@ -1,6 +1,10 @@
- /*
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- * Licensed under the GPL
-+ * Copyright (C) 2013 Richard Weinberger <richrd@nod.at>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-  */
- 
- #include <linux/kallsyms.h>
-@@ -9,58 +13,75 @@
- #include <linux/sched.h>
- #include <asm/sysrq.h>
- 
--/* Catch non-i386 SUBARCH's. */
--#if !defined(CONFIG_UML_X86) || defined(CONFIG_64BIT)
--void show_trace(struct task_struct *task, unsigned long * stack)
-+struct stack_frame {
-+	struct stack_frame *next_frame;
-+	unsigned long return_address;
-+};
-+
-+static void print_stack_trace(unsigned long *sp, unsigned long bp)
- {
-+	int reliable;
- 	unsigned long addr;
-+	struct stack_frame *frame = (struct stack_frame *)bp;
- 
--	if (!stack) {
--		stack = (unsigned long*) &stack;
--		WARN_ON(1);
--	}
--
--	printk(KERN_INFO "Call Trace: \n");
--	while (((long) stack & (THREAD_SIZE-1)) != 0) {
--		addr = *stack;
-+	printk(KERN_INFO "Call Trace:\n");
-+	while (((long) sp & (THREAD_SIZE-1)) != 0) {
-+		addr = *sp;
- 		if (__kernel_text_address(addr)) {
--			printk(KERN_INFO "%08lx:  [<%08lx>]",
--			       (unsigned long) stack, addr);
--			print_symbol(KERN_CONT " %s", addr);
-+			reliable = 0;
-+			if ((unsigned long) sp == bp + sizeof(long)) {
-+				frame = frame ? frame->next_frame : NULL;
-+				bp = (unsigned long)frame;
-+				reliable = 1;
-+			}
-+
-+			printk(KERN_INFO " [<%08lx>]", addr);
-+			printk(KERN_CONT " %s", reliable ? "" : "? ");
-+			print_symbol(KERN_CONT "%s", addr);
- 			printk(KERN_CONT "\n");
- 		}
--		stack++;
-+		sp++;
- 	}
- 	printk(KERN_INFO "\n");
- }
--#endif
- 
- /*Stolen from arch/i386/kernel/traps.c */
- static const int kstack_depth_to_print = 24;
- 
--/* This recently started being used in arch-independent code too, as in
-- * kernel/sched/core.c.*/
--void show_stack(struct task_struct *task, unsigned long *esp)
-+static unsigned long get_frame_pointer(struct task_struct *task)
-+{
-+	if (!task || task == current)
-+		return current_bp();
-+	else
-+		return KSTK_EBP(task);
-+}
-+
-+void show_stack(struct task_struct *task, unsigned long *stack)
- {
--	unsigned long *stack;
-+	unsigned long *sp = stack, bp = 0;
- 	int i;
- 
--	if (esp == NULL) {
--		if (task != current && task != NULL) {
--			esp = (unsigned long *) KSTK_ESP(task);
--		} else {
--			esp = (unsigned long *) &esp;
--		}
-+#ifdef CONFIG_FRAME_POINTER
-+	bp = get_frame_pointer(task);
-+#endif
-+
-+	if (!stack) {
-+		if (!task || task == current)
-+			sp = current_sp();
-+		else
-+			sp = (unsigned long *)KSTK_ESP(task);
- 	}
- 
--	stack = esp;
-+	printk(KERN_INFO "Stack:\n");
-+	stack = sp;
- 	for (i = 0; i < kstack_depth_to_print; i++) {
- 		if (kstack_end(stack))
- 			break;
--		if (i && ((i % 8) == 0))
--			printk(KERN_INFO "       ");
--		printk(KERN_CONT "%08lx ", *stack++);
-+		if (i && ((i % STACKSLOTS_PER_LINE) == 0))
-+			printk(KERN_CONT "\n");
-+		printk(KERN_CONT " %08lx", *stack++);
- 	}
-+	printk(KERN_CONT "\n");
- 
--	show_trace(task, esp);
-+	print_stack_trace(sp, bp);
- }
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 87df5e3..b9dd13e 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -234,7 +234,6 @@ static int panic_exit(struct notifier_block *self, unsigned long unused1,
- 		      void *unused2)
- {
- 	bust_spinlocks(1);
--	show_regs(&(current->thread.regs));
- 	bust_spinlocks(0);
- 	uml_exitcode = 1;
- 	os_dump_core();
-diff --git a/arch/x86/um/asm/processor_32.h b/arch/x86/um/asm/processor_32.h
-index 6c6689e..c112de8 100644
---- a/arch/x86/um/asm/processor_32.h
-+++ b/arch/x86/um/asm/processor_32.h
-@@ -33,6 +33,8 @@ struct arch_thread {
- 	.faultinfo		= { 0, 0, 0 } \
- }
- 
-+#define STACKSLOTS_PER_LINE 8
-+
- static inline void arch_flush_thread(struct arch_thread *thread)
- {
- 	/* Clear any TLS still hanging */
-@@ -53,4 +55,7 @@ static inline void arch_copy_thread(struct arch_thread *from,
- #define current_text_addr() \
- 	({ void *pc; __asm__("movl $1f,%0\n1:":"=g" (pc)); pc; })
- 
-+#define current_sp() ({ void *sp; __asm__("movl %%esp, %0" : "=r" (sp) : ); sp; })
-+#define current_bp() ({ unsigned long bp; __asm__("movl %%ebp, %0" : "=r" (bp) : ); bp; })
-+
- #endif
-diff --git a/arch/x86/um/asm/processor_64.h b/arch/x86/um/asm/processor_64.h
-index 4b02a84..c3be852 100644
---- a/arch/x86/um/asm/processor_64.h
-+++ b/arch/x86/um/asm/processor_64.h
-@@ -19,6 +19,8 @@ struct arch_thread {
- 			   .fs			= 0, \
- 			   .faultinfo		= { 0, 0, 0 } }
- 
-+#define STACKSLOTS_PER_LINE 4
-+
- static inline void arch_flush_thread(struct arch_thread *thread)
- {
- }
-@@ -32,4 +34,7 @@ static inline void arch_copy_thread(struct arch_thread *from,
- #define current_text_addr() \
- 	({ void *pc; __asm__("movq $1f,%0\n1:":"=g" (pc)); pc; })
- 
-+#define current_sp() ({ void *sp; __asm__("movq %%rsp, %0" : "=r" (sp) : ); sp; })
-+#define current_bp() ({ unsigned long bp; __asm__("movq %%rbp, %0" : "=r" (bp) : ); bp; })
-+
- #endif
-diff --git a/arch/x86/um/sysrq_32.c b/arch/x86/um/sysrq_32.c
-index c9bee5b..16ee0e4 100644
---- a/arch/x86/um/sysrq_32.c
-+++ b/arch/x86/um/sysrq_32.c
-@@ -30,70 +30,4 @@ void show_regs(struct pt_regs *regs)
-         printk(" DS: %04lx ES: %04lx\n",
- 	       0xffff & PT_REGS_DS(regs), 
- 	       0xffff & PT_REGS_ES(regs));
--
--        show_trace(NULL, (unsigned long *) &regs);
- }
--
--/* Copied from i386. */
--static inline int valid_stack_ptr(struct thread_info *tinfo, void *p)
--{
--	return	p > (void *)tinfo &&
--		p < (void *)tinfo + THREAD_SIZE - 3;
--}
--
--/* Adapted from i386 (we also print the address we read from). */
--static inline unsigned long print_context_stack(struct thread_info *tinfo,
--				unsigned long *stack, unsigned long ebp)
--{
--	unsigned long addr;
--
--#ifdef CONFIG_FRAME_POINTER
--	while (valid_stack_ptr(tinfo, (void *)ebp)) {
--		addr = *(unsigned long *)(ebp + 4);
--		printk("%08lx:  [<%08lx>]", ebp + 4, addr);
--		print_symbol(" %s", addr);
--		printk("\n");
--		ebp = *(unsigned long *)ebp;
--	}
--#else
--	while (valid_stack_ptr(tinfo, stack)) {
--		addr = *stack;
--		if (__kernel_text_address(addr)) {
--			printk("%08lx:  [<%08lx>]", (unsigned long) stack, addr);
--			print_symbol(" %s", addr);
--			printk("\n");
--		}
--		stack++;
--	}
--#endif
--	return ebp;
--}
--
--void show_trace(struct task_struct* task, unsigned long * stack)
--{
--	unsigned long ebp;
--	struct thread_info *context;
--
--	/* Turn this into BUG_ON if possible. */
--	if (!stack) {
--		stack = (unsigned long*) &stack;
--		printk("show_trace: got NULL stack, implicit assumption task == current");
--		WARN_ON(1);
--	}
--
--	if (!task)
--		task = current;
--
--	if (task != current) {
--		ebp = (unsigned long) KSTK_EBP(task);
--	} else {
--		asm ("movl %%ebp, %0" : "=r" (ebp) : );
--	}
--
--	context = (struct thread_info *)
--		((unsigned long)stack & (~(THREAD_SIZE - 1)));
--	print_context_stack(context, stack, ebp);
--
--	printk("\n");
--}
--
-diff --git a/arch/x86/um/sysrq_64.c b/arch/x86/um/sysrq_64.c
-index a0e7fb1..38b4e4a 100644
---- a/arch/x86/um/sysrq_64.c
-+++ b/arch/x86/um/sysrq_64.c
-@@ -12,7 +12,7 @@
- #include <asm/ptrace.h>
- #include <asm/sysrq.h>
- 
--void __show_regs(struct pt_regs *regs)
-+void show_regs(struct pt_regs *regs)
- {
- 	printk("\n");
- 	print_modules();
-@@ -33,9 +33,3 @@ void __show_regs(struct pt_regs *regs)
- 	printk(KERN_INFO "R13: %016lx R14: %016lx R15: %016lx\n",
- 	       PT_REGS_R13(regs), PT_REGS_R14(regs), PT_REGS_R15(regs));
- }
--
--void show_regs(struct pt_regs *regs)
--{
--	__show_regs(regs);
--	show_trace(current, (unsigned long *) &regs);
--}
--- 
-1.8.3.1
+The following commit was bisected 2 times in a row to be the trigger(*)=
+ of the given back trace.
+The core dump happens at a 32 bit user mode linux image (stable Gentoo)=
+ fuzzy tested with trinity.
+It crashed often if 3 NFS shares heavily used by trinity were tried to =
+be remounted.
 
 
-------------------------------------------------------------------------------
-LIMITED TIME SALE - Full Year of Microsoft Training For Just $49.99!
-1,500+ hours of tutorials including VisualStudio 2012, Windows 8, SharePoint
-2013, SQL 2012, MVC 4, more. BEST VALUE: New Multi-Library Power Pack includes
-Mobile, Cloud, Java, and UX Design. Lowest price ever! Ends 9/20/13. 
-http://pubads.g.doubleclick.net/gampad/clk?id=58041151&iu=/4140/ostg.clktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+
+BAD commit
+Sun Sep 29 07:34:02 CEST 2013
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+275bb307865a316cef390e01e6ab5e21e97023a2 is the first bad commit
+commit 275bb307865a316cef390e01e6ab5e21e97023a2
+Author: Trond Myklebust <Trond.Myklebust@netapp.com>
+Date:   Wed May 29 13:11:28 2013 -0400
+
+    NFSv4: Move dentry instantiation into the NFSv4-specific atomic ope=
+n
+code
+
+    Signed-off-by: Trond Myklebust <Trond.Myklebust@netapp.com>
+
+:040000 040000 075a18b71db9f50ad71f4637315f7f9c7cc19545
+9bead78040810cb77ced8c134a8315e2e90eb237 M fs
+bisect run success
+
+
+back trace :
+
+tfoerste@n22 ~ $ cat /mnt/ramdisk/bt.v3.10-rc1-24-g275bb30
+[New LWP 5953]
+[New LWP 5962]
+Core was generated by `/home/tfoerste/devel/linux/linux earlyprintk ubd=
+a=3D/home/tfoerste/virtual/uml/tr'.
+Program terminated with signal 6, Aborted.
+#0  0xb77dd424 in __kernel_vsyscall ()
+#0  0xb77dd424 in __kernel_vsyscall ()
+#1  0x0839bc45 in kill ()
+#2  0x0807155d in uml_abort () at arch/um/os-Linux/util.c:93
+#3  0x08071845 in os_dump_core () at arch/um/os-Linux/util.c:138
+#4  0x08061197 in panic_exit (self=3D0x8599518 <panic_exit_notifier>, u=
+nused1=3D0, unused2=3D0x85ced60 <buf.12233>) at arch/um/kernel/um_arch.=
+c:240
+#5  0x0809dac8 in notifier_call_chain (nl=3D0x0, val=3D0, v=3D0x85ced60=
+ <buf.12233>, nr_to_call=3D-2, nr_calls=3D0x0) at kernel/notifier.c:93
+#6  0x0809dc13 in __atomic_notifier_call_chain (nr_calls=3D<optimized o=
+ut>, nr_to_call=3D<optimized out>, v=3D<optimized out>, val=3D<optimize=
+d out>, nh=3D<optimized out>) at kernel/notifier.c:182
+#7  atomic_notifier_call_chain (nh=3D0x85ced44 <panic_notifier_list>, v=
+al=3D0, v=3D0x85ced60 <buf.12233>) at kernel/notifier.c:191
+#8  0x083f8fc8 in panic (fmt=3D0x0) at kernel/panic.c:127
+#9  0x0810fee2 in shrink_dcache_for_umount_subtree (dentry=3D0x47bd7840=
+) at fs/dcache.c:928
+#10 0x08110628 in shrink_dcache_for_umount (sb=3D0x47eeef50) at fs/dcac=
+he.c:989
+#11 0x080fed47 in generic_shutdown_super (sb=3D0x47eeef50) at fs/super.=
+c:409
+#12 0x080ffad5 in kill_anon_super (sb=3D0x0) at fs/super.c:880
+#13 0x081cdea8 in nfs_kill_super (s=3D0x0) at fs/nfs/super.c:2563
+#14 0x080fec0a in deactivate_locked_super (s=3D0x47eeef50) at fs/super.=
+c:299
+#15 0x080feca1 in deactivate_super (s=3D0x47eeef50) at fs/super.c:324
+#16 0x0811686c in mntfree (mnt=3D<optimized out>) at fs/namespace.c:891
+#17 mntput_no_expire (mnt=3D0x0) at fs/namespace.c:929
+#18 0x08117d55 in SYSC_umount (flags=3D<optimized out>, name=3D<optimiz=
+ed out>) at fs/namespace.c:1335
+#19 SyS_umount (name=3D134634000, flags=3D1) at fs/namespace.c:1305
+#20 0x080616d2 in handle_syscall (r=3D0x4653f7d4) at arch/um/kernel/ska=
+s/syscall.c:35
+#21 0x08073b1d in handle_trap (local_using_sysemu=3D<optimized out>, re=
+gs=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/skas/p=
+rocess.c:198
+#22 userspace (regs=3D0x4653f7d4) at arch/um/os-Linux/skas/process.c:43=
+1
+#23 0x0805e44c in fork_handler () at arch/um/kernel/process.c:160
+#24 0x00000000 in ?? ()
+
+
+
+(*) due to the erratic nature of the issue the used test case is not 10=
+0% reproducible.
+Therefore although bisected 2 times in a row there's a chance that this=
+ commit is rather the upper limit instead of the 1st bad commit
+
+--=20
+MfG/Sincerely
+Toralf F=C3=B6rster
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
