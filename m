@@ -1,160 +1,151 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <526FF2BD.8030808@gmx.de>
-Date: Tue, 29 Oct 2013 18:39:09 +0100
+Message-ID: <524C823B.8020900@gmx.de>
+Date: Wed, 02 Oct 2013 22:29:47 +0200
 From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-References: <526696BF.6050909@gmx.de> <CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com> <5266A698.10400@gmx.de> <5266B60A.1000005@nod.at>
-In-Reply-To: <5266B60A.1000005@nod.at>
+References: <52075E01.7030506@gmx.de> <20130812143640.GF4596@quack.suse.cz> <20130813215313.GH17781@fieldses.org> <20130827180655.GE14809@fieldses.org> <521E318C.7040401@gmx.de> <522B9010.8070902@gmx.de> <20130910140937.GD16011@fieldses.org> <523F21B5.2050305@gmx.de> <20130923174129.GA19720@fieldses.org>
+In-Reply-To: <20130923174129.GA19720@fieldses.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [uml-devel] fuzz tested 32 bit user mode linux image hangs at
- in hostfs
-To: Richard Weinberger <richard@nod.at>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>, Linux Kernel <linux-kernel@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: Re: Issues with a rather unusual configured NFS server
+To: "J. Bruce Fields" <bfields@fieldses.org>
+Cc: Jan Kara <jack@suse.cz>, Linux NFS mailing list <linux-nfs@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, linux-ext4@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>, "J. Bruce Fields" <bfields@redhat.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 10/22/2013 07:29 PM, Richard Weinberger wrote:
-> Am 22.10.2013 18:23, schrieb Toralf F=C3=B6rster:
->> On 10/22/2013 06:12 PM, Richard Weinberger wrote:
->>> On Tue, Oct 22, 2013 at 5:16 PM, Toralf F=C3=B6rster <toralf.foerst=
-er@gmx.de> wrote:
+On 09/23/2013 07:41 PM, J. Bruce Fields wrote:
+> On Sun, Sep 22, 2013 at 06:58:29PM +0200, Toralf F=C3=B6rster wrote:
+>> On 09/10/2013 04:09 PM, J. Bruce Fields wrote:
+>>> On Sat, Sep 07, 2013 at 10:44:00PM +0200, Toralf F=C3=B6rster wrote=
+:
+>>>> Today I run latest git tree with a patched UML (this patch + one f=
+or xterm issues) and got 2 times a core dump
+>>>> when I fuzzy test an UML machine with a nearly identical scenario =
+as already described but just shutdowned
+>>>> both UML images instead of shooting one of it in the head.
+>>>
+>>> This is a slightly different test case, so for now it sounds like t=
+his
+>>> could be a preexisting problem, not a regression?
+>>>
+>> Yes, pre-existing. I'm trying to bisect it, the issue is already in =
+7d3107d.
+>>
+>> But every attempt to get the first bad commit before that commit id
+>> failed till now. I started many attempts between v3.10 and 7d3107d. =
+I
+>> could not reproduce that issue 100% in that interval. In that interv=
+al
+>> either all tested commits doesn't show the issue or the NFS client h=
+angs
+>> during the stop of NFS service infinitely - and counting that as a "=
+bad"
+>> commit doesn't work.
+>>
+>> FWIW a single test case currently takes 2 1/2 hour and even then I d=
+o
+>> not fully trust the result  (except for a bad commit, that's clear.
+>=20
+> Well, we should figure out some other way to narrow down the problem.=
+=2E..
+>=20
+> I was trying to at least work out where exactly this crash was, but I
+> don't have a commit 768c9d3.
+>=20
+> --b.
+>=20
+
+just for completeness of this thread, that issue could be bisected in
+the mean while :
+
+http://thread.gmane.org/gmane.linux.kernel/1569818
+
+>>
+>>
+>>> --b.
+>>>
 >>>>
->>>> When I fuzz testing a 32 bit UML at a 32 bit host (guest 3.12.-rc6=
--x, host 3.11.6) with trinity
->>>> and use hostfs for the victom files for trinity. then trintiy ofte=
-n hangs while trying to finish.
+>>>> I'll probably need time to figure out a test case, but just as a p=
+re-info here's the back trace:
 >>>>
->>>> At the host I do have 1 process eating 100% CPU power of 1 core. A=
- back trace of thet linux process at the hosts gives :
+>>>> tfoerste@n22 ~ $ gdb --core=3D/mnt/ramdisk/core /usr/local/bin/lin=
+ux-v3.11-7550-g768c9d3 -n -batch -ex bt
 >>>>
->>>> tfoerste@n22 ~ $ sudo gdb /usr/local/bin/linux-v3.12-rc6-57-g69c88=
-dc 16749 -n -batch -ex bt
->>>> radix_tree_next_chunk (root=3D0x21, iter=3D0x47647c60, flags=3D12)=
- at lib/radix-tree.c:769
->>>> 769                                     while (++offset < RADIX_TR=
-EE_MAP_SIZE) {
->>>> #0  radix_tree_next_chunk (root=3D0x21, iter=3D0x47647c60, flags=3D=
-12) at lib/radix-tree.c:769
->>>> #1  0x080cc13e in find_get_pages (mapping=3D0x483ed240, start=3D0,=
- nr_pages=3D14, pages=3D0xc) at mm/filemap.c:844
->>>> #2  0x080d5caa in pagevec_lookup (pvec=3D0x47647cc4, mapping=3D0x2=
-1, start=3D33, nr_pages=3D33) at mm/swap.c:914
->>>> #3  0x080d609a in truncate_inode_pages_range (mapping=3D0x483ed240=
-, lstart=3D0, lend=3D-1) at mm/truncate.c:241
->>>> #4  0x080d643f in truncate_inode_pages (mapping=3D0x21, lstart=3D5=
-1539607585) at mm/truncate.c:358
->>>> #5  0x08260838 in hostfs_evict_inode (inode=3D0x483ed188) at fs/ho=
-stfs/hostfs_kern.c:242
->>>> #6  0x0811a8cf in evict (inode=3D0x483ed188) at fs/inode.c:549
->>>> #7  0x0811b2ad in iput_final (inode=3D<optimized out>) at fs/inode=
-=2Ec:1391
->>>> #8  iput (inode=3D0x483ed188) at fs/inode.c:1409
->>>> #9  0x08117648 in dentry_iput (dentry=3D<optimized out>) at fs/dca=
-che.c:331
->>>> #10 d_kill (dentry=3D0x47d6d580, parent=3D0x47d95d10) at fs/dcache=
-=2Ec:477
->>>> #11 0x08118068 in dentry_kill (dentry=3D<optimized out>, unlock_on=
-_failure=3D<optimized out>) at fs/dcache.c:586
->>>> #12 dput (dentry=3D0x47d6d580) at fs/dcache.c:641
->>>> #13 0x08104903 in __fput (file=3D0x47471840) at fs/file_table.c:26=
-4
->>>> #14 0x0810496b in ____fput (work=3D0x47471840) at fs/file_table.c:=
-282
->>>> #15 0x08094496 in task_work_run () at kernel/task_work.c:123
->>>> #16 0x0807efd2 in exit_task_work (task=3D<optimized out>) at inclu=
-de/linux/task_work.h:21
->>>> #17 do_exit (code=3D1196535808) at kernel/exit.c:787
->>>> #18 0x0807f5dd in do_group_exit (exit_code=3D0) at kernel/exit.c:9=
-20
->>>> #19 0x0807f649 in SYSC_exit_group (error_code=3D<optimized out>) a=
-t kernel/exit.c:931
->>>> #20 SyS_exit_group (error_code=3D0) at kernel/exit.c:929
->>>> #21 0x08062984 in handle_syscall (r=3D0x4763b1d4) at arch/um/kerne=
+>>>> warning: core file may not match specified executable file.
+>>>> [New LWP 7470]
+>>>> [New LWP 7479]
+>>>> [New LWP 7477]
+>>>> [New LWP 7478]
+>>>> Core was generated by `/usr/local/bin/linux-v3.11-7550-g768c9d3 ea=
+rlyprintk ubda=3D/home/tfoerste/virtua'.
+>>>> Program terminated with signal 6, Aborted.
+>>>> #0  0xb77be424 in __kernel_vsyscall ()
+>>>> #0  0xb77be424 in __kernel_vsyscall ()
+>>>> #1  0x083aada5 in kill ()
+>>>> #2  0x0807163d in uml_abort () at arch/um/os-Linux/util.c:93
+>>>> #3  0x08071925 in os_dump_core () at arch/um/os-Linux/util.c:138
+>>>> #4  0x080613a7 in panic_exit (self=3D0x85b1518 <panic_exit_notifie=
+r>, unused1=3D0, unused2=3D0x85e76e0 <buf.15920>) at arch/um/kernel/um_=
+arch.c:240
+>>>> #5  0x0809a398 in notifier_call_chain (nl=3D0x0, val=3D0, v=3D0x85=
+e76e0 <buf.15920>, nr_to_call=3D-2, nr_calls=3D0x0) at kernel/notifier.=
+c:93
+>>>> #6  0x0809a4e3 in __atomic_notifier_call_chain (nr_calls=3D<optimi=
+zed out>, nr_to_call=3D<optimized out>, v=3D<optimized out>, val=3D<opt=
+imized out>, nh=3D<optimized out>) at kernel/notifier.c:182
+>>>> #7  atomic_notifier_call_chain (nh=3D0x85e76c4 <panic_notifier_lis=
+t>, val=3D0, v=3D0x85e76e0 <buf.15920>) at kernel/notifier.c:191
+>>>> #8  0x08408628 in panic (fmt=3D0x0) at kernel/panic.c:128
+>>>> #9  0x081131c9 in shrink_dcache_for_umount_subtree (dentry=3D0x428=
+028f0) at fs/dcache.c:941
+>>>> #10 0x08113948 in shrink_dcache_for_umount (sb=3D0x463b8000) at fs=
+/dcache.c:1002
+>>>> #11 0x08101677 in generic_shutdown_super (sb=3D0x463b8000) at fs/s=
+uper.c:404
+>>>> #12 0x08102395 in kill_anon_super (sb=3D0x0) at fs/super.c:875
+>>>> #13 0x081d3ff8 in nfs_kill_super (s=3D0x0) at fs/nfs/super.c:2598
+>>>> #14 0x0810153a in deactivate_locked_super (s=3D0x463b8000) at fs/s=
+uper.c:294
+>>>> #15 0x081015d1 in deactivate_super (s=3D0x463b8000) at fs/super.c:=
+319
+>>>> #16 0x08119c0c in mntfree (mnt=3D<optimized out>) at fs/namespace.=
+c:891
+>>>> #17 mntput_no_expire (mnt=3D0x0) at fs/namespace.c:929
+>>>> #18 0x0811b195 in SYSC_umount (flags=3D<optimized out>, name=3D<op=
+timized out>) at fs/namespace.c:1335
+>>>> #19 SyS_umount (name=3D134633856, flags=3D2) at fs/namespace.c:130=
+5
+>>>> #20 0x080618e2 in handle_syscall (r=3D0x498be5d4) at arch/um/kerne=
 l/skas/syscall.c:35
->>>> #22 0x08074fb5 in handle_trap (local_using_sysemu=3D<optimized out=
+>>>> #21 0x08073c0d in handle_trap (local_using_sysemu=3D<optimized out=
 >, regs=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/s=
 kas/process.c:198
->>>> #23 userspace (regs=3D0x4763b1d4) at arch/um/os-Linux/skas/process=
+>>>> #22 userspace (regs=3D0x498be5d4) at arch/um/os-Linux/skas/process=
 =2Ec:431
->>>> #24 0x0805f750 in fork_handler () at arch/um/kernel/process.c:160
->>>> #25 0x00000000 in ?? ()
+>>>> #23 0x0805e65c in fork_handler () at arch/um/kernel/process.c:160
+>>>> #24 0x00000000 in ?? ()
 >>>>
->>>
->>> That trace is identical to the one you reported yesterday.
->>> But this time no nfs is in the game, right?
+>>>>
+>>>>
+>>>> --=20
+>>>> MfG/Sincerely
+>>>> Toralf F=C3=B6rster
+>>>> pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA=
+3
 >>>
 >>
->> Right - I could narrow down it in the meanwhile to hostfs only. Firs=
-t I
->> argued if NFS sometimes might force the issue to happen later but in=
- the
->> mean while I don't think so.
+>>
+>> --=20
+>> MfG/Sincerely
+>> Toralf F=C3=B6rster
+>> pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-nfs"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >=20
-> It looks like we never find a way out of the while(1) in
-> radix_tree_next_chunk().
->=20
-> Thanks,
-> //richard
->=20
 
-But today I found a proof that it is not only fs/hostfs specific :
-
-
-tfoerste@n22 ~ $ sudo gdb /home/tfoerste/devel/linux/linux 22692 -n -ba=
-tch -ex bt
-0x08298fcc in radix_tree_next_chunk (root=3D0x25, iter=3D0x3ba6fc4c, fl=
-ags=3D6) at lib/radix-tree.c:770
-770                                             if (node->slots[offset]=
-)
-#0  0x08298fcc in radix_tree_next_chunk (root=3D0x25, iter=3D0x3ba6fc4c=
-, flags=3D6) at lib/radix-tree.c:770
-#1  0x080cc20e in find_get_pages (mapping=3D0x3b0d61dc, start=3D0, nr_p=
-ages=3D14, pages=3D0x6) at mm/filemap.c:844
-#2  0x080d5d7a in pagevec_lookup (pvec=3D0x3ba6fcb0, mapping=3D0x25, st=
-art=3D37, nr_pages=3D37) at mm/swap.c:914
-#3  0x080d616a in truncate_inode_pages_range (mapping=3D0x3b0d61dc, lst=
-art=3D0, lend=3D-1) at mm/truncate.c:241
-#4  0x080d650f in truncate_inode_pages (mapping=3D0x25, lstart=3D257698=
-03813) at mm/truncate.c:358
-#5  0x08205b08 in nfs4_evict_inode (inode=3D0x3b0d6124) at fs/nfs/nfs4s=
-uper.c:101
-#6  0x0811a99f in evict (inode=3D0x3b0d6124) at fs/inode.c:549
-#7  0x0811b37d in iput_final (inode=3D<optimized out>) at fs/inode.c:13=
-91
-#8  iput (inode=3D0x3b0d6124) at fs/inode.c:1409
-#9  0x081d6014 in nfs_dentry_iput (dentry=3D0x6, inode=3D0x3b0d6124) at=
- fs/nfs/dir.c:1255
-#10 0x08117705 in dentry_iput (dentry=3D<optimized out>) at fs/dcache.c=
-:329
-#11 d_kill (dentry=3D0x4508a000, parent=3D0x47adf790) at fs/dcache.c:47=
-7
-#12 0x08118138 in dentry_kill (dentry=3D<optimized out>, unlock_on_fail=
-ure=3D<optimized out>) at fs/dcache.c:586
-#13 dput (dentry=3D0x4508a000) at fs/dcache.c:641
-#14 0x081049d3 in __fput (file=3D0x3baf3000) at fs/file_table.c:264
-#15 0x08104a3b in ____fput (work=3D0x3baf3000) at fs/file_table.c:282
-#16 0x08094496 in task_work_run () at kernel/task_work.c:123
-#17 0x0807efd2 in exit_task_work (task=3D<optimized out>) at include/li=
-nux/task_work.h:21
-#18 do_exit (code=3D1167823872) at kernel/exit.c:787
-#19 0x0807f5dd in do_group_exit (exit_code=3D0) at kernel/exit.c:920
-#20 0x0807f649 in SYSC_exit_group (error_code=3D<optimized out>) at ker=
-nel/exit.c:931
-#21 SyS_exit_group (error_code=3D0) at kernel/exit.c:929
-#22 0x08062984 in handle_syscall (r=3D0x459741d4) at arch/um/kernel/ska=
-s/syscall.c:35
-#23 0x08074fb5 in handle_trap (local_using_sysemu=3D<optimized out>, re=
-gs=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/skas/p=
-rocess.c:198
-#24 userspace (regs=3D0x459741d4) at arch/um/os-Linux/skas/process.c:43=
-1
-#25 0x0805f750 in fork_handler () at arch/um/kernel/process.c:160
-#26 0x00000000 in ?? ()
-
-
-But it happened rarely and I did not found a scenario to easily reprodu=
-ce it till now.
 
 --=20
 MfG/Sincerely
