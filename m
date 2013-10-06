@@ -1,6 +1,6 @@
 Return-Path: <toralf.foerster@gmx.de>
-Message-ID: <52546386.3050608@gmx.de>
-Date: Tue, 08 Oct 2013 21:56:54 +0200
+Message-ID: <5251CF94.5040101@gmx.de>
+Date: Sun, 06 Oct 2013 23:01:08 +0200
 From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
 References: <524C6643.2040209@gmx.de>	<CAFLxGvwiH7L4oAW8tw6FyeGczg+rKjUDCdkLKdegy9yX==2cMA@mail.gmail.com>	<524DBD5D.1040203@gmx.de>	<524DBFBB.1050002@nod.at>	<524DC278.3020106@gmx.de>	<524DC394.6030406@nod.at>	<524DC675.4020201@gmx.de>	<524E57BA.805@nod.at>	<52517109.90605@gmx.de>	<CAMuHMdXrU0e_6AxvdboMkDs+N+tSWD+b8ou92j28c0vsq2eQQA@mail.gmail.com>	<5251C334.3010604@gmx.de> <CAMuHMdUo8dSd4s3089ZDEc485wL1sFxBKLeaExJuqNiQY+S-Lw@mail.gmail.com>
@@ -9,39 +9,8 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Subject: Re: [uml-devel] BUG: soft lockup for a user mode linux image
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Weinberger <richard@nod.at>, UML devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel <linux-kernel@vger.kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, UML devel <user-mode-linux-devel@lists.sourceforge.net>, trinity@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
-
-Well, the quick&dirty hack below at least works for the moment to
-overcome the soft lookup and the hang/unresponsiveness of the 32 bit
-user mode linux guest :
-
-
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index f5236f8..7e9483c 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -1503,6 +1503,8 @@ static void balance_dirty_pages(struct
-address_space *mapping,
-                }
-
- pause:
-+               if (pause < 0)
-+                       break;
-                trace_balance_dirty_pages(bdi,
-                                          dirty_thresh,
-                                          background_thresh,
-
-
-
-I'm not proud of it but after starring at the source code in
-mm/page-writeback.c too often and too long currently I don't have any
-better clue.
-
-WRT to debug of the culprit: neither printk nor friends worked (maybe
-b/c the affected process is just hanging ?) and BUG_ON doesn't gave me
-any new clues.
-
 
 On 10/06/2013 10:26 PM, Geert Uytterhoeven wrote:
 > On Sun, Oct 6, 2013 at 10:08 PM, Toralf Förster <toralf.foerster@gmx.de> wrote:
@@ -108,6 +77,16 @@ On 10/06/2013 10:26 PM, Geert Uytterhoeven wrote:
 > Gr{oetje,eeting}s,
 > 
 >                         Geert
+I tried it in different ways already - I'm completely unsuccessful in getting any printk output.
+As soon as the issue happens I do have a 
+
+BUG: soft lockup - CPU#0 stuck for 22s! [trinity-child0:1521]
+
+at stderr of the UML and then no further input is accepted. With uml_mconsole I'm however able
+to run very basic commands like a crash dump, sysrq ond so on.
+
+
+
 > 
 > --
 > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
