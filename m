@@ -1,108 +1,78 @@
-Return-Path: <toralf.foerster@gmx.de>
-Message-ID: <525591AD.4060401@gmx.de>
-Date: Wed, 09 Oct 2013 19:26:05 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stian@nixia.no>) id 1VTrRP-00077C-4X
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Oct 2013 10:56:31 +0000
+Received: from ramslauken.nlc.no ([195.159.66.51])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VTrRN-0004al-GZ for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Oct 2013 10:56:31 +0000
+Received: from mail.nlc.no (ramslauken.nlc.no [195.159.66.51])
+	(Authenticated sender: stian@nixia.no)
+	by ramslauken.nlc.no (Postfix) with ESMTPA id A04D21CC755
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed,  9 Oct 2013 12:35:31 +0200 (CEST)
 MIME-Version: 1.0
-References: <524C6643.2040209@gmx.de>	<CAFLxGvwiH7L4oAW8tw6FyeGczg+rKjUDCdkLKdegy9yX==2cMA@mail.gmail.com>	<524DBD5D.1040203@gmx.de>	<524DBFBB.1050002@nod.at>	<524DC278.3020106@gmx.de>	<524DC394.6030406@nod.at>	<524DC675.4020201@gmx.de>	<524E57BA.805@nod.at>	<52517109.90605@gmx.de>	<CAMuHMdXrU0e_6AxvdboMkDs+N+tSWD+b8ou92j28c0vsq2eQQA@mail.gmail.com>	<5251C334.3010604@gmx.de>	<CAMuHMdUo8dSd4s3089ZDEc485wL1sFxBKLeaExJuqNiQY+S-Lw@mail.gmail.com>	<5251CF94.5040101@gmx.de> <CAMuHMdWs6Y7y12STJ+YXKJjxRF0k5yU9C9+0fiPPmq-GgeW-6Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdWs6Y7y12STJ+YXKJjxRF0k5yU9C9+0fiPPmq-GgeW-6Q@mail.gmail.com>
+Date: Wed, 09 Oct 2013 12:35:31 +0200
+From: stian@nixia.no
+In-Reply-To: <52546386.3050608@gmx.de>
+References: "\"<524C6643.2040209@gmx.de>	<CAFLxGvwiH7L4oAW8tw6FyeGczg+rKjUDCdkLKdegy9yX==2cMA@mail.gmail.com>	<524DBD5D.1040203@gmx.de>	<524DBFBB.1050002@nod.at>	<524DC278.3020106@gmx.de>	<524DC394.6030406@nod.at>	<524DC675.4020201@gmx.de>	<524E57BA.805@nod.at>	<52517109.90605@gmx.de>"
+	<CAMuHMdXrU0e_6AxvdboMkDs+N+tSWD+b8ou92j28c0vsq2eQQA@mail.gmail.com>"
+	<5251C334.3010604@gmx.de>
+	<CAMuHMdUo8dSd4s3089ZDEc485wL1sFxBKLeaExJuqNiQY+S-Lw@mail.gmail.com>
+	<52546386.3050608@gmx.de>
+Message-ID: <5c4228ccd2c402864ab4e91d9ec24bf2@nixia.no>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] BUG: soft lockup for a user mode linux image
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Weinberger <richard@nod.at>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On 10/08/2013 10:07 PM, Geert Uytterhoeven wrote:
-> On Sun, Oct 6, 2013 at 11:01 PM, Toralf Förster <toralf.foerster@gmx.de> wrote:
->>> Hmm, now pages_dirtied is zero, according to the backtrace, but the BUG_ON()
->>> asserts its strict positive?!?
->>>
->>> Can you please try the following instead of the BUG_ON():
->>>
->>> if (pause < 0) {
->>>         printk("pages_dirtied = %lu\n", pages_dirtied);
->>>         printk("task_ratelimit = %lu\n", task_ratelimit);
->>>         printk("pause = %ld\n", pause);
->>> }
->>>
->>> Gr{oetje,eeting}s,
->>>
->>>                         Geert
->> I tried it in different ways already - I'm completely unsuccessful in getting any printk output.
->> As soon as the issue happens I do have a
->>
->> BUG: soft lockup - CPU#0 stuck for 22s! [trinity-child0:1521]
->>
->> at stderr of the UML and then no further input is accepted. With uml_mconsole I'm however able
->> to run very basic commands like a crash dump, sysrq ond so on.
-> 
-> You may get an idea of the magnitude of pages_dirtied by using a chain of
-> BUG_ON()s, like:
-> 
-> BUG_ON(pages_dirtied > 2000000000);
-> BUG_ON(pages_dirtied > 1000000000);
-> BUG_ON(pages_dirtied > 100000000);
-> BUG_ON(pages_dirtied > 10000000);
-> BUG_ON(pages_dirtied > 1000000);
-> 
-> Probably 1 million is already too much for normal operation?
-> 
-period = HZ * pages_dirtied / task_ratelimit;
-		BUG_ON(pages_dirtied > 2000000000);
-		BUG_ON(pages_dirtied > 1000000000);      <-------------- this is line 1467
-
-the back trace is :
-
-tfoerste@n22 ~/devel/linux $ gdb --core=/mnt/ramdisk/core /home/tfoerste/devel/linux/linux -batch -ex bt
-[New LWP 6911]
-Core was generated by `/home/tfoerste/devel/linux/linux earlyprintk ubda=/home/tfoerste/virtual/uml/tr'.
-Program terminated with signal 6, Aborted.
-#0  0xb77a7424 in __kernel_vsyscall ()
-#0  0xb77a7424 in __kernel_vsyscall ()
-#1  0x083bdf35 in kill ()
-#2  0x0807296d in uml_abort () at arch/um/os-Linux/util.c:93
-#3  0x08072ca5 in os_dump_core () at arch/um/os-Linux/util.c:148
-#4  0x080623c4 in panic_exit (self=0x85c1558 <panic_exit_notifier>, unused1=0, unused2=0x85f76e0 <buf.16221>) at arch/um/kernel/um_arch.c:240
-#5  0x0809ba86 in notifier_call_chain (nl=0x0, val=0, v=0x85f76e0 <buf.16221>, nr_to_call=-2, nr_calls=0x0) at kernel/notifier.c:93
-#6  0x0809bba1 in __atomic_notifier_call_chain (nh=0x85f76c4 <panic_notifier_list>, val=0, v=0x85f76e0 <buf.16221>, nr_to_call=0, nr_calls=0x0) at kernel/notifier.c:182
-#7  0x0809bbdf in atomic_notifier_call_chain (nh=0x0, val=0, v=0x0) at kernel/notifier.c:191
-#8  0x0841b5bc in panic (fmt=0x0) at kernel/panic.c:130
-#9  0x0841c470 in balance_dirty_pages (pages_dirtied=23, mapping=<optimized out>) at mm/page-writeback.c:1467
-#10 0x080d3595 in balance_dirty_pages_ratelimited (mapping=0x6) at mm/page-writeback.c:1661
-#11 0x080e4a3f in __do_fault (mm=0x45ba3600, vma=0x48777b90, address=1084678144, pmd=0x0, pgoff=0, flags=0, orig_pte=<incomplete type>) at mm/memory.c:3452
-#12 0x080e6e0f in do_linear_fault (orig_pte=..., flags=<optimized out>, pmd=<optimized out>, address=<optimized out>, vma=<optimized out>, mm=<optimized out>, page_table=<optimized out>) at mm/memory.c:3486
-#13 handle_pte_fault (flags=<optimized out>, pmd=<optimized out>, pte=<optimized out>, address=<optimized out>, vma=<optimized out>, mm=<optimized out>) at mm/memory.c:3710
-#14 __handle_mm_fault (flags=<optimized out>, address=<optimized out>, vma=<optimized out>, mm=<optimized out>) at mm/memory.c:3845
-#15 handle_mm_fault (mm=0x45ba3600, vma=0x487034c8, address=1084678144, flags=1) at mm/memory.c:3868
-#16 0x080e7817 in __get_user_pages (tsk=0x48705800, mm=0x45ba3600, start=1084678144, nr_pages=1025, gup_flags=519, pages=0x48558000, vmas=0x0, nonblocking=0x0) at mm/memory.c:1822
-#17 0x080e7ae3 in get_user_pages (tsk=0x0, mm=0x0, start=0, nr_pages=0, write=1, force=0, pages=0x48777b90, vmas=0x6) at mm/memory.c:2019
-#18 0x08143dc6 in aio_setup_ring (ctx=<optimized out>) at fs/aio.c:340
-#19 ioctx_alloc (nr_events=<optimized out>) at fs/aio.c:605
-#20 SYSC_io_setup (ctxp=<optimized out>, nr_events=<optimized out>) at fs/aio.c:1122
-#21 SyS_io_setup (nr_events=65535, ctxp=135081984) at fs/aio.c:1105
-#22 0x08062984 in handle_syscall (r=0x487059d4) at arch/um/kernel/skas/syscall.c:35
-#23 0x08074fb5 in handle_trap (local_using_sysemu=<optimized out>, regs=<optimized out>, pid=<optimized out>) at arch/um/os-Linux/skas/process.c:198
-#24 userspace (regs=0x487059d4) at arch/um/os-Linux/skas/process.c:431
-#25 0x0805f750 in fork_handler () at arch/um/kernel/process.c:160
-#26 0x00000000 in ?? ()
-
-
-
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
-
-
--- 
-MfG/Sincerely
-Toralf Förster
-pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+RGVuIDIwMTMtMTAtMDggMjE6NTYsIHNrcmV2IFRvcmFsZiBGw7Zyc3RlcjoKPiBXZWxsLCB0aGUg
+cXVpY2smZGlydHkgaGFjayBiZWxvdyBhdCBsZWFzdCB3b3JrcyBmb3IgdGhlIG1vbWVudCB0bwo+
+IG92ZXJjb21lIHRoZSBzb2Z0IGxvb2t1cCBhbmQgdGhlIGhhbmcvdW5yZXNwb25zaXZlbmVzcyBv
+ZiB0aGUgMzIgYml0Cj4gdXNlciBtb2RlIGxpbnV4IGd1ZXN0IDoKPgo+Cj4gZGlmZiAtLWdpdCBh
+L21tL3BhZ2Utd3JpdGViYWNrLmMgYi9tbS9wYWdlLXdyaXRlYmFjay5jCj4gaW5kZXggZjUyMzZm
+OC4uN2U5NDgzYyAxMDA2NDQKPiAtLS0gYS9tbS9wYWdlLXdyaXRlYmFjay5jCj4gKysrIGIvbW0v
+cGFnZS13cml0ZWJhY2suYwo+IEBAIC0xNTAzLDYgKzE1MDMsOCBAQCBzdGF0aWMgdm9pZCBiYWxh
+bmNlX2RpcnR5X3BhZ2VzKHN0cnVjdAo+IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcsCj4gICAgICAg
+ICAgICAgICAgIH0KPgo+ICBwYXVzZToKPiArICAgICAgICAgICAgICAgaWYgKHBhdXNlIDwgMCkK
+PiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKCmNhbiB3ZSBjb21iaW5lIGluIHRoZSBk
+ZWJ1ZyBwcmludGsoKSBtZW50aW9uZWQgYmVsb3csIHRoYXQgcHJpbnRzIG91dCAKcGFnZXNfZGly
+dGllZCBhbmQgdGFza19yYXRlbGltaXQ6Cgo+PiBpZiAocGF1c2UgPCAwKSB7Cj4+ICAgICAgICAg
+cHJpbnRrKCJwYWdlc19kaXJ0aWVkID0gJWx1XG4iLCBwYWdlc19kaXJ0aWVkKTsKPj4gICAgICAg
+ICBwcmludGsoInRhc2tfcmF0ZWxpbWl0ID0gJWx1XG4iLCB0YXNrX3JhdGVsaW1pdCk7Cj4+ICAg
+ICAgICAgcHJpbnRrKCJwYXVzZSA9ICVsZFxuIiwgcGF1c2UpOwogICAgICAgICAgICBicmVhazsK
+Pj4gfQoKSSBoYXZlIG5vdCByZWFkIHRoZSBzb3VyY2UsIHNvIHdoYXQgaXMgdGhlIGRlZmluaXRp
+b24gb2YgSFo/IEFyZSAKcGFnZXNfZGlydGllZCBhbmQgdGFza19yYXRlbGltaXQgYXRvbWljYWxs
+eSBzYWZlIHVuZGVyIFVNTCBoZXJlLCBhbmQgYXJlIAp3aGF0IGRhdGF0eXBlIGFyZSB0aGV5PyAo
+dW5zaWduZWQgbG9uZyk/IFRoZSBkZWZpbmluaW9uIG9mIEhaIHdpbGwgYWxsIAppbiBhbGwgZGVj
+aWRlIHdoYXQga2luZCBvZiBtdWx0aXBsaWNhdGlvbiBhbmQgZGl2aXNpb24gd2UgYWN0dWFsbHkg
+CnBlcmZvcm0gaGVyZTsgc28gbGV0IHVzIGhvcGUgaXQgaXMgbm90IHNvbWV0aGluZyBsaWtlIChz
+aWduZWQgY2hhcikKCj4+Pj4+ICAgICAgICAgICAgICAgICBCVUdfT04ocGFnZXNfZGlydGllZCA8
+IDApOwo+Pj4+PiAgICAgICAgICAgICAgICAgQlVHX09OKHRhc2tfcmF0ZWxpbWl0IDwgMCk7CgpU
+aGVzZSB3aWxsIG5ldmVyIGhpdCBpZiBwYWdlc19kaXJ0aWVkIGFuZCB0YXNrX3JhdGVsaW1pdCBh
+cmUgdW5zaWduZWQuCgoKU3RpYW4gU2tqZWxzdGFkCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KT2N0
+b2JlciBXZWJpbmFyczogQ29kZSBmb3IgUGVyZm9ybWFuY2UKRnJlZSBJbnRlbCB3ZWJpbmFycyBj
+YW4gaGVscCB5b3UgYWNjZWxlcmF0ZSBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZS4KRXhwbG9yZSB0
+aXBzIGZvciBNUEksIE9wZW5NUCwgYWR2YW5jZWQgcHJvZmlsaW5nLCBhbmQgbW9yZS4gR2V0IHRo
+ZSBtb3N0IGZyb20gCnRoZSBsYXRlc3QgSW50ZWwgcHJvY2Vzc29ycyBhbmQgY29wcm9jZXNzb3Jz
+LiBTZWUgYWJzdHJhY3RzIGFuZCByZWdpc3RlciA+Cmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGlj
+ay5uZXQvZ2FtcGFkL2Nsaz9pZD02MDEzNDA3MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgt
+ZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1t
+b2RlLWxpbnV4LWRldmVsCg==
 
