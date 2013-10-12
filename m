@@ -1,7 +1,7 @@
 Return-Path: <fengguang.wu@intel.com>
-Date: Sat, 12 Oct 2013 12:45:17 +0800
+Date: Sat, 12 Oct 2013 08:43:55 +0800
 From: Fengguang Wu <fengguang.wu@intel.com>
-Message-ID: <20131012044517.GA32048@localhost>
+Message-ID: <20131012004355.GB7520@localhost>
 References: <CAMuHMdWs6Y7y12STJ+YXKJjxRF0k5yU9C9+0fiPPmq-GgeW-6Q@mail.gmail.com>
  <525591AD.4060401@gmx.de>
  <5255A3E6.6020100@nod.at>
@@ -17,7 +17,7 @@ Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <52580767.6090604@gmx.de>
-Subject: [PATCH v2] writeback: fix negative bdi max pause
+Subject: [PATCH] writeback: fix negative bdi max pause
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>, Richard Weinberger <richard@nod.at>, Jan Kara <jack@suse.cz>, Geert Uytterhoeven <geert@linux-m68k.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, hannes@cmpxchg.org, darrick.wong@oracle.com, Michal Hocko <mhocko@suse.cz>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
@@ -67,17 +67,11 @@ all of them by using "unsigned long" throughout the function.
 
 Reported-by: Toralf Förster <toralf.foerster@gmx.de>
 Tested-by: Toralf Förster <toralf.foerster@gmx.de>
-Cc: <stable@vger.kernel.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
 ---
  mm/page-writeback.c |   10 +++++-----
  mm/readahead.c      |    2 +-
  2 files changed, 6 insertions(+), 6 deletions(-)
-
- Changes since v1: Add CC list.
 
 diff --git a/mm/page-writeback.c b/mm/page-writeback.c
 index 3f0c895..241a746 100644
