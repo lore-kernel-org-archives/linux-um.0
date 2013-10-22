@@ -1,107 +1,137 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1VYfmI-0008W7-HP
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Oct 2013 17:29:58 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VYfmF-0007ck-5C
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 22 Oct 2013 17:29:58 +0000
-Message-ID: <5266B60A.1000005@nod.at>
-Date: Tue, 22 Oct 2013 19:29:46 +0200
-From: Richard Weinberger <richard@nod.at>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <5266A698.10400@gmx.de>
+Date: Tue, 22 Oct 2013 18:23:52 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-References: <526696BF.6050909@gmx.de>
-	<CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com>
-	<5266A698.10400@gmx.de>
-In-Reply-To: <5266A698.10400@gmx.de>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+References: <526696BF.6050909@gmx.de> <CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com>
+In-Reply-To: <CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [uml-devel] fuzz tested 32 bit user mode linux image hangs at
  in histfs
-To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, Linux Kernel <linux-kernel@vger.kernel.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>, "linux-mm@kvack.org" <linux-mm@kvack.org>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Linux Kernel <linux-kernel@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-QW0gMjIuMTAuMjAxMyAxODoyMywgc2NocmllYiBUb3JhbGYgRsO2cnN0ZXI6Cj4gT24gMTAvMjIv
-MjAxMyAwNjoxMiBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+PiBPbiBUdWUsIE9jdCAy
-MiwgMjAxMyBhdCA1OjE2IFBNLCBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFsZi5mb2Vyc3RlckBnbXgu
-ZGU+IHdyb3RlOgo+Pj4KPj4+IFdoZW4gSSBmdXp6IHRlc3RpbmcgYSAzMiBiaXQgVU1MIGF0IGEg
-MzIgYml0IGhvc3QgKGd1ZXN0IDMuMTIuLXJjNi14LCBob3N0IDMuMTEuNikgd2l0aCB0cmluaXR5
-Cj4+PiBhbmQgdXNlIGhvc3RmcyBmb3IgdGhlIHZpY3RvbSBmaWxlcyBmb3IgdHJpbml0eS4gdGhl
-biB0cmludGl5IG9mdGVuIGhhbmdzIHdoaWxlIHRyeWluZyB0byBmaW5pc2guCj4+Pgo+Pj4gQXQg
-dGhlIGhvc3QgSSBkbyBoYXZlIDEgcHJvY2VzcyBlYXRpbmcgMTAwJSBDUFUgcG93ZXIgb2YgMSBj
-b3JlLiBBIGJhY2sgdHJhY2Ugb2YgdGhldCBsaW51eCBwcm9jZXNzIGF0IHRoZSBob3N0cyBnaXZl
-cyA6Cj4+Pgo+Pj4gdGZvZXJzdGVAbjIyIH4gJCBzdWRvIGdkYiAvdXNyL2xvY2FsL2Jpbi9saW51
-eC12My4xMi1yYzYtNTctZzY5Yzg4ZGMgMTY3NDkgLW4gLWJhdGNoIC1leCBidAo+Pj4gcmFkaXhf
-dHJlZV9uZXh0X2NodW5rIChyb290PTB4MjEsIGl0ZXI9MHg0NzY0N2M2MCwgZmxhZ3M9MTIpIGF0
-IGxpYi9yYWRpeC10cmVlLmM6NzY5Cj4+PiA3NjkgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgd2hpbGUgKCsrb2Zmc2V0IDwgUkFESVhfVFJFRV9NQVBfU0laRSkgewo+Pj4gIzAg
-IHJhZGl4X3RyZWVfbmV4dF9jaHVuayAocm9vdD0weDIxLCBpdGVyPTB4NDc2NDdjNjAsIGZsYWdz
-PTEyKSBhdCBsaWIvcmFkaXgtdHJlZS5jOjc2OQo+Pj4gIzEgIDB4MDgwY2MxM2UgaW4gZmluZF9n
-ZXRfcGFnZXMgKG1hcHBpbmc9MHg0ODNlZDI0MCwgc3RhcnQ9MCwgbnJfcGFnZXM9MTQsIHBhZ2Vz
-PTB4YykgYXQgbW0vZmlsZW1hcC5jOjg0NAo+Pj4gIzIgIDB4MDgwZDVjYWEgaW4gcGFnZXZlY19s
-b29rdXAgKHB2ZWM9MHg0NzY0N2NjNCwgbWFwcGluZz0weDIxLCBzdGFydD0zMywgbnJfcGFnZXM9
-MzMpIGF0IG1tL3N3YXAuYzo5MTQKPj4+ICMzICAweDA4MGQ2MDlhIGluIHRydW5jYXRlX2lub2Rl
-X3BhZ2VzX3JhbmdlIChtYXBwaW5nPTB4NDgzZWQyNDAsIGxzdGFydD0wLCBsZW5kPS0xKSBhdCBt
-bS90cnVuY2F0ZS5jOjI0MQo+Pj4gIzQgIDB4MDgwZDY0M2YgaW4gdHJ1bmNhdGVfaW5vZGVfcGFn
-ZXMgKG1hcHBpbmc9MHgyMSwgbHN0YXJ0PTUxNTM5NjA3NTg1KSBhdCBtbS90cnVuY2F0ZS5jOjM1
-OAo+Pj4gIzUgIDB4MDgyNjA4MzggaW4gaG9zdGZzX2V2aWN0X2lub2RlIChpbm9kZT0weDQ4M2Vk
-MTg4KSBhdCBmcy9ob3N0ZnMvaG9zdGZzX2tlcm4uYzoyNDIKPj4+ICM2ICAweDA4MTFhOGNmIGlu
-IGV2aWN0IChpbm9kZT0weDQ4M2VkMTg4KSBhdCBmcy9pbm9kZS5jOjU0OQo+Pj4gIzcgIDB4MDgx
-MWIyYWQgaW4gaXB1dF9maW5hbCAoaW5vZGU9PG9wdGltaXplZCBvdXQ+KSBhdCBmcy9pbm9kZS5j
-OjEzOTEKPj4+ICM4ICBpcHV0IChpbm9kZT0weDQ4M2VkMTg4KSBhdCBmcy9pbm9kZS5jOjE0MDkK
-Pj4+ICM5ICAweDA4MTE3NjQ4IGluIGRlbnRyeV9pcHV0IChkZW50cnk9PG9wdGltaXplZCBvdXQ+
-KSBhdCBmcy9kY2FjaGUuYzozMzEKPj4+ICMxMCBkX2tpbGwgKGRlbnRyeT0weDQ3ZDZkNTgwLCBw
-YXJlbnQ9MHg0N2Q5NWQxMCkgYXQgZnMvZGNhY2hlLmM6NDc3Cj4+PiAjMTEgMHgwODExODA2OCBp
-biBkZW50cnlfa2lsbCAoZGVudHJ5PTxvcHRpbWl6ZWQgb3V0PiwgdW5sb2NrX29uX2ZhaWx1cmU9
-PG9wdGltaXplZCBvdXQ+KSBhdCBmcy9kY2FjaGUuYzo1ODYKPj4+ICMxMiBkcHV0IChkZW50cnk9
-MHg0N2Q2ZDU4MCkgYXQgZnMvZGNhY2hlLmM6NjQxCj4+PiAjMTMgMHgwODEwNDkwMyBpbiBfX2Zw
-dXQgKGZpbGU9MHg0NzQ3MTg0MCkgYXQgZnMvZmlsZV90YWJsZS5jOjI2NAo+Pj4gIzE0IDB4MDgx
-MDQ5NmIgaW4gX19fX2ZwdXQgKHdvcms9MHg0NzQ3MTg0MCkgYXQgZnMvZmlsZV90YWJsZS5jOjI4
-Mgo+Pj4gIzE1IDB4MDgwOTQ0OTYgaW4gdGFza193b3JrX3J1biAoKSBhdCBrZXJuZWwvdGFza193
-b3JrLmM6MTIzCj4+PiAjMTYgMHgwODA3ZWZkMiBpbiBleGl0X3Rhc2tfd29yayAodGFzaz08b3B0
-aW1pemVkIG91dD4pIGF0IGluY2x1ZGUvbGludXgvdGFza193b3JrLmg6MjEKPj4+ICMxNyBkb19l
-eGl0IChjb2RlPTExOTY1MzU4MDgpIGF0IGtlcm5lbC9leGl0LmM6Nzg3Cj4+PiAjMTggMHgwODA3
-ZjVkZCBpbiBkb19ncm91cF9leGl0IChleGl0X2NvZGU9MCkgYXQga2VybmVsL2V4aXQuYzo5MjAK
-Pj4+ICMxOSAweDA4MDdmNjQ5IGluIFNZU0NfZXhpdF9ncm91cCAoZXJyb3JfY29kZT08b3B0aW1p
-emVkIG91dD4pIGF0IGtlcm5lbC9leGl0LmM6OTMxCj4+PiAjMjAgU3lTX2V4aXRfZ3JvdXAgKGVy
-cm9yX2NvZGU9MCkgYXQga2VybmVsL2V4aXQuYzo5MjkKPj4+ICMyMSAweDA4MDYyOTg0IGluIGhh
-bmRsZV9zeXNjYWxsIChyPTB4NDc2M2IxZDQpIGF0IGFyY2gvdW0va2VybmVsL3NrYXMvc3lzY2Fs
-bC5jOjM1Cj4+PiAjMjIgMHgwODA3NGZiNSBpbiBoYW5kbGVfdHJhcCAobG9jYWxfdXNpbmdfc3lz
-ZW11PTxvcHRpbWl6ZWQgb3V0PiwgcmVncz08b3B0aW1pemVkIG91dD4sIHBpZD08b3B0aW1pemVk
-IG91dD4pIGF0IGFyY2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNzLmM6MTk4Cj4+PiAjMjMgdXNl
-cnNwYWNlIChyZWdzPTB4NDc2M2IxZDQpIGF0IGFyY2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNz
-LmM6NDMxCj4+PiAjMjQgMHgwODA1Zjc1MCBpbiBmb3JrX2hhbmRsZXIgKCkgYXQgYXJjaC91bS9r
-ZXJuZWwvcHJvY2Vzcy5jOjE2MAo+Pj4gIzI1IDB4MDAwMDAwMDAgaW4gPz8gKCkKPj4+Cj4+Cj4+
-IFRoYXQgdHJhY2UgaXMgaWRlbnRpY2FsIHRvIHRoZSBvbmUgeW91IHJlcG9ydGVkIHllc3RlcmRh
-eS4KPj4gQnV0IHRoaXMgdGltZSBubyBuZnMgaXMgaW4gdGhlIGdhbWUsIHJpZ2h0Pwo+Pgo+IAo+
-IFJpZ2h0IC0gSSBjb3VsZCBuYXJyb3cgZG93biBpdCBpbiB0aGUgbWVhbndoaWxlIHRvIGhvc3Rm
-cyBvbmx5LiBGaXJzdCBJCj4gYXJndWVkIGlmIE5GUyBzb21ldGltZXMgbWlnaHQgZm9yY2UgdGhl
-IGlzc3VlIHRvIGhhcHBlbiBsYXRlciBidXQgaW4gdGhlCj4gbWVhbiB3aGlsZSBJIGRvbid0IHRo
-aW5rIHNvLgoKSXQgbG9va3MgbGlrZSB3ZSBuZXZlciBmaW5kIGEgd2F5IG91dCBvZiB0aGUgd2hp
-bGUoMSkgaW4KcmFkaXhfdHJlZV9uZXh0X2NodW5rKCkuCgpUaGFua3MsCi8vcmljaGFyZAoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCk9jdG9iZXIgV2ViaW5hcnM6IENvZGUgZm9yIFBlcmZvcm1hbmNl
-CkZyZWUgSW50ZWwgd2ViaW5hcnMgY2FuIGhlbHAgeW91IGFjY2VsZXJhdGUgYXBwbGljYXRpb24g
-cGVyZm9ybWFuY2UuCkV4cGxvcmUgdGlwcyBmb3IgTVBJLCBPcGVuTVAsIGFkdmFuY2VkIHByb2Zp
-bGluZywgYW5kIG1vcmUuIEdldCB0aGUgbW9zdCBmcm9tIAp0aGUgbGF0ZXN0IEludGVsIHByb2Nl
-c3NvcnMgYW5kIGNvcHJvY2Vzc29ycy4gU2VlIGFic3RyYWN0cyBhbmQgcmVnaXN0ZXIgPgpodHRw
-Oi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NjAxMzU5OTEmaXU9LzQx
-NDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgt
-ZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0
-L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+On 10/22/2013 06:12 PM, Richard Weinberger wrote:
+> On Tue, Oct 22, 2013 at 5:16 PM, Toralf F=C3=B6rster <toralf.foerster=
+@gmx.de> wrote:
+>>
+>> When I fuzz testing a 32 bit UML at a 32 bit host (guest 3.12.-rc6-x=
+, host 3.11.6) with trinity
+>> and use hostfs for the victom files for trinity. then trintiy often =
+hangs while trying to finish.
+>>
+>> At the host I do have 1 process eating 100% CPU power of 1 core. A b=
+ack trace of thet linux process at the hosts gives :
+>>
+>> tfoerste@n22 ~ $ sudo gdb /usr/local/bin/linux-v3.12-rc6-57-g69c88dc=
+ 16749 -n -batch -ex bt
+>> radix_tree_next_chunk (root=3D0x21, iter=3D0x47647c60, flags=3D12) a=
+t lib/radix-tree.c:769
+>> 769                                     while (++offset < RADIX_TREE=
+_MAP_SIZE) {
+>> #0  radix_tree_next_chunk (root=3D0x21, iter=3D0x47647c60, flags=3D1=
+2) at lib/radix-tree.c:769
+>> #1  0x080cc13e in find_get_pages (mapping=3D0x483ed240, start=3D0, n=
+r_pages=3D14, pages=3D0xc) at mm/filemap.c:844
+>> #2  0x080d5caa in pagevec_lookup (pvec=3D0x47647cc4, mapping=3D0x21,=
+ start=3D33, nr_pages=3D33) at mm/swap.c:914
+>> #3  0x080d609a in truncate_inode_pages_range (mapping=3D0x483ed240, =
+lstart=3D0, lend=3D-1) at mm/truncate.c:241
+>> #4  0x080d643f in truncate_inode_pages (mapping=3D0x21, lstart=3D515=
+39607585) at mm/truncate.c:358
+>> #5  0x08260838 in hostfs_evict_inode (inode=3D0x483ed188) at fs/host=
+fs/hostfs_kern.c:242
+>> #6  0x0811a8cf in evict (inode=3D0x483ed188) at fs/inode.c:549
+>> #7  0x0811b2ad in iput_final (inode=3D<optimized out>) at fs/inode.c=
+:1391
+>> #8  iput (inode=3D0x483ed188) at fs/inode.c:1409
+>> #9  0x08117648 in dentry_iput (dentry=3D<optimized out>) at fs/dcach=
+e.c:331
+>> #10 d_kill (dentry=3D0x47d6d580, parent=3D0x47d95d10) at fs/dcache.c=
+:477
+>> #11 0x08118068 in dentry_kill (dentry=3D<optimized out>, unlock_on_f=
+ailure=3D<optimized out>) at fs/dcache.c:586
+>> #12 dput (dentry=3D0x47d6d580) at fs/dcache.c:641
+>> #13 0x08104903 in __fput (file=3D0x47471840) at fs/file_table.c:264
+>> #14 0x0810496b in ____fput (work=3D0x47471840) at fs/file_table.c:28=
+2
+>> #15 0x08094496 in task_work_run () at kernel/task_work.c:123
+>> #16 0x0807efd2 in exit_task_work (task=3D<optimized out>) at include=
+/linux/task_work.h:21
+>> #17 do_exit (code=3D1196535808) at kernel/exit.c:787
+>> #18 0x0807f5dd in do_group_exit (exit_code=3D0) at kernel/exit.c:920
+>> #19 0x0807f649 in SYSC_exit_group (error_code=3D<optimized out>) at =
+kernel/exit.c:931
+>> #20 SyS_exit_group (error_code=3D0) at kernel/exit.c:929
+>> #21 0x08062984 in handle_syscall (r=3D0x4763b1d4) at arch/um/kernel/=
+skas/syscall.c:35
+>> #22 0x08074fb5 in handle_trap (local_using_sysemu=3D<optimized out>,=
+ regs=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/ska=
+s/process.c:198
+>> #23 userspace (regs=3D0x4763b1d4) at arch/um/os-Linux/skas/process.c=
+:431
+>> #24 0x0805f750 in fork_handler () at arch/um/kernel/process.c:160
+>> #25 0x00000000 in ?? ()
+>>
+>=20
+> That trace is identical to the one you reported yesterday.
+> But this time no nfs is in the game, right?
+>=20
+
+Right - I could narrow down it in the meanwhile to hostfs only. First I
+argued if NFS sometimes might force the issue to happen later but in th=
+e
+mean while I don't think so.
+
+
+>> Last message of trinity's watchdog are :
+>>
+>> ...
+>> [watchdog] exit_reason=3D2, but 2 children still running.
+>> Bailing main loop. Exit reason: Reached maximum syscall count.
+>> [watchdog] Reached limit 10001. Telling children to exit.
+>> [watchdog] [1516] Watchdog exiting
+>>
+>>
+>> I'm unsure if this is only UML specific, interesting for the fs peop=
+le or mm or ... ?
+>>
+>>
+>> --
+>> MfG/Sincerely
+>> Toralf F=C3=B6rster
+>> pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+>>
+>> --------------------------------------------------------------------=
+----------
+>> October Webinars: Code for Performance
+>> Free Intel webinars can help you accelerate application performance.
+>> Explore tips for MPI, OpenMP, advanced profiling, and more. Get the =
+most from
+>> the latest Intel processors and coprocessors. See abstracts and regi=
+ster >
+>> http://pubads.g.doubleclick.net/gampad/clk?id=3D60135991&iu=3D/4140/=
+ostg.clktrk
+>> _______________________________________________
+>> User-mode-linux-devel mailing list
+>> User-mode-linux-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>=20
+>=20
+>=20
+
+
+--=20
+MfG/Sincerely
+Toralf F=C3=B6rster
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
