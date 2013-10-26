@@ -1,97 +1,94 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1VXrRw-00054g-5j
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Oct 2013 11:45:36 +0000
-Received: from mout.gmx.net ([212.227.17.20])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1VXrRu-0005Ja-UV
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 20 Oct 2013 11:45:36 +0000
-Received: from [85.177.175.87] ([85.177.175.87]) by mail.gmx.com (mrgmx101)
-	with ESMTPSA (Nemesis) id 0LsPwa-1VihIu1mLQ-011yuS for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 20 Oct 2013 13:45:28
-	+0200
-Message-ID: <5263C256.7080708@gmx.de>
-Date: Sun, 20 Oct 2013 13:45:26 +0200
+Return-Path: <toralf.foerster@gmx.de>
+Message-ID: <526B940F.5090803@gmx.de>
+Date: Sat, 26 Oct 2013 12:06:07 +0200
 From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+References: <526AD08D.10506@gmx.de>	<CAMuHMdX+GtHDB5r6-oXyehbemqS36rVE=Agpi0w-6TcCPQotZQ@mail.gmail.com>	<526AE051.5020809@gmx.de> <CAMuHMdWotLn5NwtjxL57YVK_X_N1gb2xxB4qd+sciUTJokourQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdWotLn5NwtjxL57YVK_X_N1gb2xxB4qd+sciUTJokourQ@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] fuzz tested UML guest issue ccuring in fs/hostfs +
-	mm/truncate
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [uml-devel] RFC: Shouldn't "./linux --version" always print the
+ the git commit id
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kbuild <linux-kbuild@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-V2hpbGUgZnV6eiB0ZXN0aW5nIGEgVU1MIChndWVzdCAzLjEyLXJjNiwgaG9zdCAzLjExLjYsIGJv
-dGggMzIgYml0KSB3aXRoIHRyaW5pdHksIHdoZXJlIHRoZSBVTUwgZ3Vlc3QgYWN0IGJvdGggYXMg
-YSBORlMgc2VydmVyIGFuZCBpdHMgb3duIE5TRiBjbGllbnQsIGFuZCBmdXJ0aGVybW9yZSB1c2Vz
-IGhvc3RmcyB0b28gYXMgYSBsY29hdGlvbiBvZiB0aGUgdmljdGltcyBmaWVscyBmb3IgdHJpbml0
-eSwgSSByZWFsaXplZCB0aGF0IGF0IHRoZSBob3N0IHNpZGUgMSBsaW51eCBwcm9jZXNzIGNvbnN1
-bWVzIDEwMCUgb2YgaXRzIENQVSBjb3JlLiBBIGdkYiBiYWNrIHRyYWNlIHNob3dzIDoKCnRmb2Vy
-c3RlQG4yMiB+ICQgc3VkbyBnZGIgL2hvbWUvdGZvZXJzdGUvZGV2ZWwvbGludXgvbGludXggMTIz
-ODkgLW4gLWJhdGNoIC1leCBidApyYWRpeF90cmVlX25leHRfY2h1bmsgKHJvb3Q9MHgxLCBpdGVy
-PTB4NDliYjdjNjAsIGZsYWdzPTApIGF0IGxpYi9yYWRpeC10cmVlLmM6NzcwCjc3MCAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChub2RlLT5zbG90c1tvZmZz
-ZXRdKQojMCAgcmFkaXhfdHJlZV9uZXh0X2NodW5rIChyb290PTB4MSwgaXRlcj0weDQ5YmI3YzYw
-LCBmbGFncz0wKSBhdCBsaWIvcmFkaXgtdHJlZS5jOjc3MAojMSAgMHgwODBjYzExZSBpbiBmaW5k
-X2dldF9wYWdlcyAobWFwcGluZz0weDQ2OGY2NTIwLCBzdGFydD0wLCBucl9wYWdlcz0xNCwgcGFn
-ZXM9MHgwKSBhdCBtbS9maWxlbWFwLmM6ODQ0CiMyICAweDA4MGQ1YzhhIGluIHBhZ2V2ZWNfbG9v
-a3VwIChwdmVjPTB4NDliYjdjYzQsIG1hcHBpbmc9MHgxLCBzdGFydD0xLCBucl9wYWdlcz0xKSBh
-dCBtbS9zd2FwLmM6OTE0CiMzICAweDA4MGQ2MDdhIGluIHRydW5jYXRlX2lub2RlX3BhZ2VzX3Jh
-bmdlIChtYXBwaW5nPTB4NDY4ZjY1MjAsIGxzdGFydD0wLCBsZW5kPS0xKSBhdCBtbS90cnVuY2F0
-ZS5jOjI0MQojNCAgMHgwODBkNjQxZiBpbiB0cnVuY2F0ZV9pbm9kZV9wYWdlcyAobWFwcGluZz0w
-eDEsIGxzdGFydD0xKSBhdCBtbS90cnVuY2F0ZS5jOjM1OAojNSAgMHgwODI2MDgxOCBpbiBob3N0
-ZnNfZXZpY3RfaW5vZGUgKGlub2RlPTB4NDY4ZjY0NjgpIGF0IGZzL2hvc3Rmcy9ob3N0ZnNfa2Vy
-bi5jOjI0MgojNiAgMHgwODExYThhZiBpbiBldmljdCAoaW5vZGU9MHg0NjhmNjQ2OCkgYXQgZnMv
-aW5vZGUuYzo1NDkKIzcgIDB4MDgxMWIyOGQgaW4gaXB1dF9maW5hbCAoaW5vZGU9PG9wdGltaXpl
-ZCBvdXQ+KSBhdCBmcy9pbm9kZS5jOjEzOTEKIzggIGlwdXQgKGlub2RlPTB4NDY4ZjY0NjgpIGF0
-IGZzL2lub2RlLmM6MTQwOQojOSAgMHgwODExNzYyOCBpbiBkZW50cnlfaXB1dCAoZGVudHJ5PTxv
-cHRpbWl6ZWQgb3V0PikgYXQgZnMvZGNhY2hlLmM6MzMxCiMxMCBkX2tpbGwgKGRlbnRyeT0weDQ0
-NmZiYzYwLCBwYXJlbnQ9MHg0NWY3N2U3MCkgYXQgZnMvZGNhY2hlLmM6NDc3CiMxMSAweDA4MTE4
-MDQ4IGluIGRlbnRyeV9raWxsIChkZW50cnk9PG9wdGltaXplZCBvdXQ+LCB1bmxvY2tfb25fZmFp
-bHVyZT08b3B0aW1pemVkIG91dD4pIGF0IGZzL2RjYWNoZS5jOjU4NgojMTIgZHB1dCAoZGVudHJ5
-PTB4NDQ2ZmJjNjApIGF0IGZzL2RjYWNoZS5jOjY0MQojMTMgMHgwODEwNDhlMyBpbiBfX2ZwdXQg
-KGZpbGU9MHg0Njk4NjljMCkgYXQgZnMvZmlsZV90YWJsZS5jOjI2NAojMTQgMHgwODEwNDk0YiBp
-biBfX19fZnB1dCAod29yaz0weDQ2OTg2OWMwKSBhdCBmcy9maWxlX3RhYmxlLmM6MjgyCiMxNSAw
-eDA4MDk0NDk2IGluIHRhc2tfd29ya19ydW4gKCkgYXQga2VybmVsL3Rhc2tfd29yay5jOjEyMwoj
-MTYgMHgwODA3ZWZkMiBpbiBleGl0X3Rhc2tfd29yayAodGFzaz08b3B0aW1pemVkIG91dD4pIGF0
-IGluY2x1ZGUvbGludXgvdGFza193b3JrLmg6MjEKIzE3IGRvX2V4aXQgKGNvZGU9MTE4NDgwOTk4
-NCkgYXQga2VybmVsL2V4aXQuYzo3ODcKIzE4IDB4MDgwN2Y1ZGQgaW4gZG9fZ3JvdXBfZXhpdCAo
-ZXhpdF9jb2RlPTApIGF0IGtlcm5lbC9leGl0LmM6OTIwCiMxOSAweDA4MDdmNjQ5IGluIFNZU0Nf
-ZXhpdF9ncm91cCAoZXJyb3JfY29kZT08b3B0aW1pemVkIG91dD4pIGF0IGtlcm5lbC9leGl0LmM6
-OTMxCiMyMCBTeVNfZXhpdF9ncm91cCAoZXJyb3JfY29kZT0wKSBhdCBrZXJuZWwvZXhpdC5jOjky
-OQojMjEgMHgwODA2Mjk4NCBpbiBoYW5kbGVfc3lzY2FsbCAocj0weDQ4Njk0ZGQ0KSBhdCBhcmNo
-L3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzozNQojMjIgMHgwODA3NGZiNSBpbiBoYW5kbGVfdHJh
-cCAobG9jYWxfdXNpbmdfc3lzZW11PTxvcHRpbWl6ZWQgb3V0PiwgcmVncz08b3B0aW1pemVkIG91
-dD4sIHBpZD08b3B0aW1pemVkIG91dD4pIGF0IGFyY2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNz
-LmM6MTk4CiMyMyB1c2Vyc3BhY2UgKHJlZ3M9MHg0ODY5NGRkNCkgYXQgYXJjaC91bS9vcy1MaW51
-eC9za2FzL3Byb2Nlc3MuYzo0MzEKIzI0IDB4MDgwNWY3NTAgaW4gZm9ya19oYW5kbGVyICgpIGF0
-IGFyY2gvdW0va2VybmVsL3Byb2Nlc3MuYzoxNjAKIzI1IDB4MDAwMDAwMDAgaW4gPz8gKCkKCgpC
-L2Mgb2YgZnMvaG9zdGZzIEkgYXNzdW1lIHRoaXMgbWlnaHQgYmUgYW4gVU1MIHNwZWNpZmljIHRo
-aW5nLCBidXQgSSdtIHVuc3VyZSBob3cgdG8gbmFycm93IGRvZXNuIHRoaXMgbm93Li4uCgotLSAK
-TWZHL1NpbmNlcmVseQpUb3JhbGYgRsO2cnN0ZXIKcGdwIGZpbmdlciBwcmludDogN0IxQSAwN0Y0
-IEVDODIgMEY5MCBENEMyIDg5MzYgODcyQSBFNTA4IDdEQjYgOURBMwoKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCk9jdG9iZXIgV2ViaW5hcnM6IENvZGUgZm9yIFBlcmZvcm1hbmNlCkZyZWUgSW50ZWwg
-d2ViaW5hcnMgY2FuIGhlbHAgeW91IGFjY2VsZXJhdGUgYXBwbGljYXRpb24gcGVyZm9ybWFuY2Uu
-CkV4cGxvcmUgdGlwcyBmb3IgTVBJLCBPcGVuTVAsIGFkdmFuY2VkIHByb2ZpbGluZywgYW5kIG1v
-cmUuIEdldCB0aGUgbW9zdCBmcm9tIAp0aGUgbGF0ZXN0IEludGVsIHByb2Nlc3NvcnMgYW5kIGNv
-cHJvY2Vzc29ycy4gU2VlIGFic3RyYWN0cyBhbmQgcmVnaXN0ZXIgPgpodHRwOi8vcHViYWRzLmcu
-ZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NjAxMzUwMzEmaXU9LzQxNDAvb3N0Zy5jbGt0
-cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1t
-b2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+On 10/26/2013 09:56 AM, Geert Uytterhoeven wrote:
+> On Fri, Oct 25, 2013 at 11:19 PM, Toralf Förster <toralf.foerster@gmx.de> wrote:
+>> On 10/25/2013 10:18 PM, Geert Uytterhoeven wrote:
+>>> On Fri, Oct 25, 2013 at 10:11 PM, Toralf Förster <toralf.foerster@gmx.de> wrote:
+>>>> Just realized today the fact, that v3.11 reports just the tag and not
+>>>> "tag-g<commit id>"
+> 
+> Actually it's "<tag>-<number>-<commit id>", with <number> indicating the
+> number of commits on top of the tag.
+> 
+>>>
+>>> You don't have CONFIG_LOCALVERSION_AUTO=y in your .config?
+>>>
+>>> Gr{oetje,eeting}s,
+>>>
+>> I do :
+>> tfoerste@n22 ~/devel/linux $ ./linux --showconfig | grep AUTO
+>> CONFIG_LOCALVERSION_AUTO=y
+>>
+>> pls look here :
+>>
+>>
+>> $ ./linux --version
+>> 3.11.0-00001-g65984ff-dirty
+>>
+>> versus
+>>
+>> $ git checkout HEAD~1
+>> Previous HEAD position was 65984ff... um: hostfs: Fix writeback
+>> HEAD is now at 6e46645... Linux 3.11
+>>
+>> $ make -j4 ARCH=um CC="ccache gcc"
+>> ...
+>>
+>> $ ./linux --version
+>> 3.11.0
+> 
+> If there are no additional commits on top of the tag, no number and commit
+> ID are printed. I guess the rationale is that tags are global, hence present
+> in all clones, so there's no need to tell what commit ID the tag corresponds
+> to.
+> 
+>> which correlates to
+>>
+>> $ git describe
+>> v3.11
+>>
+>> $ git describe --long
+>> v3.11-0-g6e46645
+> 
+> This is not UML-specific. If you want to change this, you have to involve
+> the kbuild people (CC added).
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+
+Well, the reationale behind my idea comes from the (stupid) logic of one
+of my bisect scripts. I used there the commit id derived from the UML
+linux exe as a suffix for gdb back trace files created during the bisect
+process.
+Sure - logic can be easily adapted and was in the mean while.
+But IMO it would be more stringent to have always the commit id
+presented in the version string for similar cases.
+
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> 
+
+
+-- 
+MfG/Sincerely
+Toralf Förster
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
 
