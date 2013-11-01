@@ -1,19 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <msalter@redhat.com>) id 1Vkyo8-0000Ma-1s
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1VcAw7-0004am-Tt
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Nov 2013 16:14:44 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vkyo5-0003KB-HG for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Nov 2013 16:14:43 +0000
-From: Mark Salter <msalter@redhat.com>
-Date: Mon, 25 Nov 2013 11:14:05 -0500
-Message-Id: <1385396045-15852-12-git-send-email-msalter@redhat.com>
-In-Reply-To: <1385396045-15852-1-git-send-email-msalter@redhat.com>
-References: <1385396045-15852-1-git-send-email-msalter@redhat.com>
+	Fri, 01 Nov 2013 09:22:36 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VcAw4-0003JL-4B
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 01 Nov 2013 09:22:35 +0000
+Message-ID: <527372C4.2080706@nod.at>
+Date: Fri, 01 Nov 2013 10:22:12 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+References: <20131029190604.GA21820@longonot.mountain>
+In-Reply-To: <20131029190604.GA21820@longonot.mountain>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,89 +25,53 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v2 11/11] um: use generic fixmap.h
-To: linux-kernel@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Mark Salter <msalter@redhat.com>
+Subject: Re: [uml-devel] [patch] uml: check length in exitcode_proc_write()
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Fabian Yamaguchi <fabs@goesec.de>, security@kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net, Nico Golde <nico@ngolde.de>
 
-Signed-off-by: Mark Salter <msalter@redhat.com>
-Acked-by: Richard Weinberger <richard@nod.at>
-CC: Jeff Dike <jdike@addtoit.com>
-CC: user-mode-linux-devel@lists.sourceforge.net
----
- arch/um/include/asm/fixmap.h | 40 +---------------------------------------
- 1 file changed, 1 insertion(+), 39 deletions(-)
+Am 29.10.2013 20:06, schrieb Dan Carpenter:
+> We don't cap the size of buffer from the user so we could write past
+> the end of the array here.  Only root can write to this file.
+> 
+> Reported-by: Nico Golde <nico@ngolde.de>
+> Reported-by: Fabian Yamaguchi <fabs@goesec.de>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-diff --git a/arch/um/include/asm/fixmap.h b/arch/um/include/asm/fixmap.h
-index 21a423b..3094ea3c 100644
---- a/arch/um/include/asm/fixmap.h
-+++ b/arch/um/include/asm/fixmap.h
-@@ -43,13 +43,6 @@ enum fixed_addresses {
- extern void __set_fixmap (enum fixed_addresses idx,
- 			  unsigned long phys, pgprot_t flags);
- 
--#define set_fixmap(idx, phys) \
--		__set_fixmap(idx, phys, PAGE_KERNEL)
--/*
-- * Some hardware wants to get fixmapped without caching.
-- */
--#define set_fixmap_nocache(idx, phys) \
--		__set_fixmap(idx, phys, PAGE_KERNEL_NOCACHE)
- /*
-  * used by vmalloc.c.
-  *
-@@ -62,37 +55,6 @@ extern void __set_fixmap (enum fixed_addresses idx,
- #define FIXADDR_SIZE	(__end_of_fixed_addresses << PAGE_SHIFT)
- #define FIXADDR_START	(FIXADDR_TOP - FIXADDR_SIZE)
- 
--#define __fix_to_virt(x)	(FIXADDR_TOP - ((x) << PAGE_SHIFT))
--#define __virt_to_fix(x)      ((FIXADDR_TOP - ((x)&PAGE_MASK)) >> PAGE_SHIFT)
--
--extern void __this_fixmap_does_not_exist(void);
--
--/*
-- * 'index to address' translation. If anyone tries to use the idx
-- * directly without tranlation, we catch the bug with a NULL-deference
-- * kernel oops. Illegal ranges of incoming indices are caught too.
-- */
--static inline unsigned long fix_to_virt(const unsigned int idx)
--{
--	/*
--	 * this branch gets completely eliminated after inlining,
--	 * except when someone tries to use fixaddr indices in an
--	 * illegal way. (such as mixing up address types or using
--	 * out-of-range indices).
--	 *
--	 * If it doesn't get removed, the linker will complain
--	 * loudly with a reasonably clear error message..
--	 */
--	if (idx >= __end_of_fixed_addresses)
--		__this_fixmap_does_not_exist();
--
--        return __fix_to_virt(idx);
--}
--
--static inline unsigned long virt_to_fix(const unsigned long vaddr)
--{
--      BUG_ON(vaddr >= FIXADDR_TOP || vaddr < FIXADDR_START);
--      return __virt_to_fix(vaddr);
--}
-+#include <asm-generic/fixmap.h>
- 
- #endif
--- 
-1.8.3.1
+Thanks everyone!
+Patch applied and an it's way to Linus' tree.
+
+Thanks,
+//richard
+
+> diff --git a/arch/um/kernel/exitcode.c b/arch/um/kernel/exitcode.c
+> index 829df49..41ebbfe 100644
+> --- a/arch/um/kernel/exitcode.c
+> +++ b/arch/um/kernel/exitcode.c
+> @@ -40,9 +40,11 @@ static ssize_t exitcode_proc_write(struct file *file,
+>  		const char __user *buffer, size_t count, loff_t *pos)
+>  {
+>  	char *end, buf[sizeof("nnnnn\0")];
+> +	size_t size;
+>  	int tmp;
+>  
+> -	if (copy_from_user(buf, buffer, count))
+> +	size = min(count, sizeof(buf));
+> +	if (copy_from_user(buf, buffer, size))
+>  		return -EFAULT;
+>  
+>  	tmp = simple_strtol(buf, &end, 0);
+> 
 
 
 ------------------------------------------------------------------------------
-Shape the Mobile Experience: Free Subscription
-Software experts and developers: Be at the forefront of tech innovation.
-Intel(R) Software Adrenaline delivers strategic insight and game-changing 
-conversations that shape the rapidly evolving mobile landscape. Sign up now. 
-http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+Android is increasing in popularity, but the open development platform that
+developers love is also attractive to malware creators. Download this white
+paper to learn more about secure code signing practices that can help keep
+Android apps secure.
+http://pubads.g.doubleclick.net/gampad/clk?id=65839951&iu=/4140/ostg.clktrk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
