@@ -1,72 +1,61 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bharrosh@panasas.com>) id 1Vm2m8-0001qT-5r
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Nov 2013 14:41:04 +0000
-Received: from natasha.panasas.com ([209.166.131.148])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vm2m7-0005tf-9X for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Nov 2013 14:41:04 +0000
-Message-ID: <529755F0.80509@panasas.com>
-Date: Thu, 28 Nov 2013 16:40:48 +0200
-From: Boaz Harrosh <bharrosh@panasas.com>
+Return-Path: <mmarek@suse.cz>
+Message-ID: <527A4498.1080609@suse.cz>
+Date: Wed, 06 Nov 2013 14:31:04 +0100
+From: Michal Marek <mmarek@suse.cz>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] x86_64 when mem > 384M loadable modules do not work
-To: Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+References: <526AD08D.10506@gmx.de>	<CAMuHMdX+GtHDB5r6-oXyehbemqS36rVE=Agpi0w-6TcCPQotZQ@mail.gmail.com>	<526AE051.5020809@gmx.de> <CAMuHMdWotLn5NwtjxL57YVK_X_N1gb2xxB4qd+sciUTJokourQ@mail.gmail.com> <526B940F.5090803@gmx.de>
+In-Reply-To: <526B940F.5090803@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [uml-devel] RFC: Shouldn't "./linux --version" always print the
+ the git commit id
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kbuild <linux-kbuild@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi um hackers
+Dne 26.10.2013 12:06, Toralf F=C3=B6rster napsal(a):
+> On 10/26/2013 09:56 AM, Geert Uytterhoeven wrote:
+>> On Fri, Oct 25, 2013 at 11:19 PM, Toralf F=C3=B6rster <toralf.foerster=
+@gmx.de> wrote:
+>>> $ ./linux --version
+>>> 3.11.0
+>>
+>> If there are no additional commits on top of the tag, no number and co=
+mmit
+>> ID are printed. I guess the rationale is that tags are global, hence p=
+resent
+>> in all clones, so there's no need to tell what commit ID the tag corre=
+sponds
+>> to.
+>>
+>>> which correlates to
+>>>
+>>> $ git describe
+>>> v3.11
+>>>
+>>> $ git describe --long
+>>> v3.11-0-g6e46645
+>>
+>> This is not UML-specific. If you want to change this, you have to invo=
+lve
+>> the kbuild people (CC added).
+>>
+> Well, the reationale behind my idea comes from the (stupid) logic of on=
+e
+> of my bisect scripts. I used there the commit id derived from the UML
+> linux exe as a suffix for gdb back trace files created during the bisec=
+t
+> process.
+> Sure - logic can be easily adapted and was in the mean while.
+> But IMO it would be more stringent to have always the commit id
+> presented in the version string for similar cases.
 
-I'm using an x86_64 deployment both host and um-guest.
-(Fedora 18)
+You define your own versioning scheme if you build with
+CONFIG_LOCALVERSION_AUTO=3Dn and define LOCALVERSION yourself. E.g.
 
-When I load with mem=384M all is well but anything bigger will
-eventually give me problems because loadable modules will no
-longer load. The bigger mem= is, the earlier it will start.
+echo "-g$(git rev-parse --short HEAD)" >localversion-git
 
-When the Kernel tries to load the .ko driver I get these messages:
+or set it in kconfig or on the make commandline.
 
-subarch: overflow in relocation type 11 val 805b1e40
-subarch: `nfsv4' likely not compiled with -mcmodel=kernel
-subarch: overflow in relocation type 11 val 806e4ca0
-subarch: `nfsv3' likely not compiled with -mcmodel=kernel
-   ...
-
-(The first print is always around that same number
- 805b1e40 independent of the mem= (> 384M) 
-)
-
-Do you guys see the same problem? I'm using loadable modules
-because it is kind of mandatory for the kind of development I
-do.
-
-Please help because 384M is not enough for me anymore, even
-when I define a swap device for the uml to use.
-
-Thanks in advance
-Boaz
-
-------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Michal
 
