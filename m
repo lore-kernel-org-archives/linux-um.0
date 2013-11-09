@@ -1,75 +1,113 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1VfEI8-0000Ox-KO
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Nov 2013 19:33:56 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VfEI6-0001bb-Ur
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Nov 2013 19:33:56 +0000
-Message-ID: <527E8E19.9030802@nod.at>
-Date: Sat, 09 Nov 2013 20:33:45 +0100
-From: Richard Weinberger <richard@nod.at>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <527E87EA.8080700@gmx.de>
+Date: Sat, 09 Nov 2013 20:07:22 +0100
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-References: <526696BF.6050909@gmx.de>	<CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com>	<5266A698.10400@gmx.de>	<5266B60A.1000005@nod.at>	<52715AD1.7000703@gmx.de>
-	<CALYGNiPvJF1u8gXNcX1AZR5-VkGqJnaose84KBbdaoBAq8aoGQ@mail.gmail.com>
-	<527AB23D.2060305@gmx.de> <527AB51B.1020005@nod.at>
-	<527E87EA.8080700@gmx.de>
-In-Reply-To: <527E87EA.8080700@gmx.de>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+References: <526696BF.6050909@gmx.de>	<CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com>	<5266A698.10400@gmx.de>	<5266B60A.1000005@nod.at>	<52715AD1.7000703@gmx.de> <CALYGNiPvJF1u8gXNcX1AZR5-VkGqJnaose84KBbdaoBAq8aoGQ@mail.gmail.com> <527AB23D.2060305@gmx.de> <527AB51B.1020005@nod.at>
+In-Reply-To: <527AB51B.1020005@nod.at>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [uml-devel] fuzz tested 32 bit user mode linux image hangs in
  radix_tree_next_chunk()
-To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel <linux-kernel@vger.kernel.org>, Konstantin Khlebnikov <koct9i@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Konstantin Khlebnikov <koct9i@gmail.com>, Linux Kernel <linux-kernel@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-QW0gMDkuMTEuMjAxMyAyMDowNywgc2NocmllYiBUb3JhbGYgRsO2cnN0ZXI6Cj4gT24gMTEvMDYv
-MjAxMyAxMDozMSBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+PiBBbSAwNi4xMS4yMDEz
-IDIyOjE4LCBzY2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPj4+IE9uIDExLzA2LzIwMTMgMDU6MDYg
-UE0sIEtvbnN0YW50aW4gS2hsZWJuaWtvdiB3cm90ZToKPj4+PiBJbiB0aGlzIGNhc2UgaXQgbXVz
-dCBzdG9wIGFmdGVyIHNjYW5uaW5nIHdob2xlIHRyZWUgaW4gbGluZToKPj4+PiAvKiBPdmVyZmxv
-dyBhZnRlciB+MFVMICovCj4+Pj4gaWYgKCFpbmRleCkKPj4+PiAgIHJldHVybiBOVUxMOwo+Pj4+
-Cj4+Pgo+Pj4gQSBmcmVzaCBjdXJyZW50IGV4YW1wbGUgd2l0aCBsYXRlc3QgZ2l0IHRyZWUgc2hv
-d3MgdGhhdCBsaW5lcyA3NjkgYW5kIDc3MCBkbyBhbHRlcm5hdGUgOgo+Pgo+PiBDYW4geW91IHBs
-ZWFzZSBhc2sgZ2RiIGZvciB0aGUgdmFsdWUgb2Ygb2Zmc2V0Pwo+Pgo+PiBUaGFua3MsCj4+IC8v
-cmljaGFyZAo+Pgo+IAo+IFN0aWxsIHRyeWluZyB0byBnZXQgdGhvc2UgdmFsdWVzLiBPbmUgYXR0
-ZW1wdCB0byBkbyB0aGF0IHdhcyB0byByZXBsYWNlIC1PMiB3aXRoIC1PMCBpbiB0aGUgTWFrZWZp
-bGUsCj4gYnV0IHRoYXQgcmVzdWx0ZWQgaW50byB0aGlzIGVycm9yIDoKPiAKPiAgIExEICAgICAg
-a2VybmVsL2J1aWx0LWluLm8KPiAgIENDICAgICAgbW0vbWVtb3J5Lm8KPiBJbiBmdW5jdGlvbiDi
-gJh6YXBfcG1kX3Jhbmdl4oCZLAo+ICAgICBpbmxpbmVkIGZyb20g4oCYemFwX3B1ZF9yYW5nZeKA
-mSBhdCBtbS9tZW1vcnkuYzoxMjY1OjgsCj4gICAgIGlubGluZWQgZnJvbSDigJh1bm1hcF9wYWdl
-X3Jhbmdl4oCZIGF0IG1tL21lbW9yeS5jOjEyOTA6ODoKPiBtbS9tZW1vcnkuYzoxMjIwOjIzOiBl
-cnJvcjogY2FsbCB0byDigJhfX2NvbXBpbGV0aW1lX2Fzc2VydF8xMjIw4oCZIGRlY2xhcmVkIHdp
-dGggYXR0cmlidXRlIGVycm9yOiBCVUlMRF9CVUcgZmFpbGVkCj4gbW0vbWVtb3J5LmM6IEluIGZ1
-bmN0aW9uIOKAmGZvbGxvd19wYWdlX21hc2vigJk6Cj4gbW0vbWVtb3J5LmM6MTUzMDoxODogZXJy
-b3I6IGNhbGwgdG8g4oCYX19jb21waWxldGltZV9hc3NlcnRfMTUzMOKAmSBkZWNsYXJlZCB3aXRo
-IGF0dHJpYnV0ZSBlcnJvcjogQlVJTERfQlVHIGZhaWxlZAo+IG1ha2VbMV06ICoqKiBbbW0vbWVt
-b3J5Lm9dIEVycm9yIDEKPiBtYWtlOiAqKiogW21tXSBFcnJvciAyCj4gCj4gCj4gV2l0aCAtTzEg
-aXQgY29tcGlsZWQgYXQgbGVhc3QuCgpZb3UgY2Fubm90IGJ1aWxkIExpbnV4IHdpdGggLU8xL08w
-LgpUcnkgcHJpbnRpbmcgdGhlIHZhbHVlIHVzaW5nIHByaW50ay4uLgoKVGhhbmtzLAovL3JpY2hh
-cmQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpOb3ZlbWJlciBXZWJpbmFycyBmb3IgQywgQysrLCBG
-b3J0cmFuIERldmVsb3BlcnMKQWNjZWxlcmF0ZSBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZSB3aXRo
-IHNjYWxhYmxlIHByb2dyYW1taW5nIG1vZGVscy4gRXhwbG9yZQp0ZWNobmlxdWVzIGZvciB0aHJl
-YWRpbmcsIGVycm9yIGNoZWNraW5nLCBwb3J0aW5nLCBhbmQgdHVuaW5nLiBHZXQgdGhlIG1vc3Qg
-CmZyb20gdGhlIGxhdGVzdCBJbnRlbCBwcm9jZXNzb3JzIGFuZCBjb3Byb2Nlc3NvcnMuIFNlZSBh
-YnN0cmFjdHMgYW5kIHJlZ2lzdGVyCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2Ft
-cGFkL2Nsaz9pZD02MDEzNjIzMSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFp
-bGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
-cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4
-LWRldmVsCg==
+On 11/06/2013 10:31 PM, Richard Weinberger wrote:
+> Am 06.11.2013 22:18, schrieb Toralf F=C3=B6rster:
+>> On 11/06/2013 05:06 PM, Konstantin Khlebnikov wrote:
+>>> In this case it must stop after scanning whole tree in line:
+>>> /* Overflow after ~0UL */
+>>> if (!index)
+>>>   return NULL;
+>>>
+>>
+>> A fresh current example with latest git tree shows that lines 769 an=
+d 770 do alternate :
+>=20
+> Can you please ask gdb for the value of offset?
+>=20
+> Thanks,
+> //richard
+>=20
+
+Still trying to get those values. One attempt to do that was to replace=
+ -O2 with -O0 in the Makefile,
+but that resulted into this error :
+
+  LD      kernel/built-in.o
+  CC      mm/memory.o
+In function =E2=80=98zap_pmd_range=E2=80=99,
+    inlined from =E2=80=98zap_pud_range=E2=80=99 at mm/memory.c:1265:8,
+    inlined from =E2=80=98unmap_page_range=E2=80=99 at mm/memory.c:1290=
+:8:
+mm/memory.c:1220:23: error: call to =E2=80=98__compiletime_assert_1220=E2=
+=80=99 declared with attribute error: BUILD_BUG failed
+mm/memory.c: In function =E2=80=98follow_page_mask=E2=80=99:
+mm/memory.c:1530:18: error: call to =E2=80=98__compiletime_assert_1530=E2=
+=80=99 declared with attribute error: BUILD_BUG failed
+make[1]: *** [mm/memory.o] Error 1
+make: *** [mm] Error 2
+
+
+With -O1 it compiled at least.
+
+
+>>
+>> tfoerste@n22 ~/devel/linux $ sudo gdb /usr/local/bin/linux-v3.12-48-=
+gbe408cd 16619 -n -batch -ex bt
+>> 0x08296a8c in radix_tree_next_chunk (root=3D0x25, iter=3D0x462e7c64,=
+ flags=3D12) at lib/radix-tree.c:770
+>> 770                                             if (node->slots[offs=
+et])
+>> #0  0x08296a8c in radix_tree_next_chunk (root=3D0x25, iter=3D0x462e7=
+c64, flags=3D12) at lib/radix-tree.c:770
+>> #1  0x080cc1fe in find_get_pages (mapping=3D0x462ad470, start=3D0, n=
+r_pages=3D14, pages=3D0xc) at mm/filemap.c:844
+>> #2  0x080d5d6a in pagevec_lookup (pvec=3D0x462e7cc8, mapping=3D0x25,=
+ start=3D37, nr_pages=3D37) at mm/swap.c:914
+>> #3  0x080d615a in truncate_inode_pages_range (mapping=3D0x462ad470, =
+lstart=3D0, lend=3D-1) at mm/truncate.c:241
+>> #4  0x080d64ff in truncate_inode_pages (mapping=3D0x25, lstart=3D515=
+39607589) at mm/truncate.c:358
+>>
+>>
+>>
+>>
+>> tfoerste@n22 ~/devel/linux $ sudo gdb /usr/local/bin/linux-v3.12-48-=
+gbe408cd 16619 -n -batch -ex bt
+>> radix_tree_next_chunk (root=3D0x28, iter=3D0x462e7c64, flags=3D18) a=
+t lib/radix-tree.c:769
+>> 769                                     while (++offset < RADIX_TREE=
+_MAP_SIZE) {
+>> #0  radix_tree_next_chunk (root=3D0x28, iter=3D0x462e7c64, flags=3D1=
+8) at lib/radix-tree.c:769
+>> #1  0x080cc1fe in find_get_pages (mapping=3D0x462ad470, start=3D0, n=
+r_pages=3D14, pages=3D0x12) at mm/filemap.c:844
+>> #2  0x080d5d6a in pagevec_lookup (pvec=3D0x462e7cc8, mapping=3D0x28,=
+ start=3D40, nr_pages=3D40) at mm/swap.c:914
+>> #3  0x080d615a in truncate_inode_pages_range (mapping=3D0x462ad470, =
+lstart=3D0, lend=3D-1) at mm/truncate.c:241
+>> #4  0x080d64ff in truncate_inode_pages (mapping=3D0x28, lstart=3D773=
+09411368) at mm/truncate.c:358
+>> #5  0x0825e388 in hostfs_evict_inode (inode=3D0x462ad3b8) at fs/host=
+fs/hostfs_kern.c:242
+>> #6  0x0811a8df in evict (inode=3D0x462ad3b8) at fs/inode.c:549
+>>
+>>
+>=20
+>=20
+
+
+--=20
+MfG/Sincerely
+Toralf F=C3=B6rster
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
