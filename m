@@ -1,140 +1,65 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1Vi3tF-0005uc-7t
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Nov 2013 15:03:57 +0000
-Received: from mout.gmx.net ([212.227.17.20])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Vi3tB-0003cN-HK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Nov 2013 15:03:57 +0000
-Received: from [192.168.178.21] ([85.177.123.247]) by mail.gmx.com (mrgmx002)
-	with ESMTPSA (Nemesis) id 0MhRI2-1W4WPp06La-00Me1F for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 17 Nov 2013 16:03:47
-	+0100
-Message-ID: <5288DAD0.5020306@gmx.de>
-Date: Sun, 17 Nov 2013 16:03:44 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <527FAA34.8080307@nod.at>
+Date: Sun, 10 Nov 2013 16:45:56 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-References: <526696BF.6050909@gmx.de>	<CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com>	<5266A698.10400@gmx.de>	<5266B60A.1000005@nod.at>	<52715AD1.7000703@gmx.de>
-	<CALYGNiPvJF1u8gXNcX1AZR5-VkGqJnaose84KBbdaoBAq8aoGQ@mail.gmail.com>
-	<527AB23D.2060305@gmx.de> <527AB51B.1020005@nod.at>
-In-Reply-To: <527AB51B.1020005@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+References: <526696BF.6050909@gmx.de>	<CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com>	<5266A698.10400@gmx.de>	<5266B60A.1000005@nod.at>	<52715AD1.7000703@gmx.de> <CALYGNiPvJF1u8gXNcX1AZR5-VkGqJnaose84KBbdaoBAq8aoGQ@mail.gmail.com> <527AB23D.2060305@gmx.de> <527AB51B.1020005@nod.at> <527FA2BE.6090307@gmx.de>
+In-Reply-To: <527FA2BE.6090307@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [uml-devel] fuzz tested 32 bit user mode linux image hangs in
  radix_tree_next_chunk()
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel <linux-kernel@vger.kernel.org>, Konstantin Khlebnikov <koct9i@gmail.com>
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Cc: Konstantin Khlebnikov <koct9i@gmail.com>, Linux Kernel <linux-kernel@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-T24gMTEvMDYvMjAxMyAxMDozMSBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIDA2
-LjExLjIwMTMgMjI6MTgsIHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVyOgo+PiBPbiAxMS8wNi8yMDEz
-IDA1OjA2IFBNLCBLb25zdGFudGluIEtobGVibmlrb3Ygd3JvdGU6Cj4+PiBJbiB0aGlzIGNhc2Ug
-aXQgbXVzdCBzdG9wIGFmdGVyIHNjYW5uaW5nIHdob2xlIHRyZWUgaW4gbGluZToKPj4+IC8qIE92
-ZXJmbG93IGFmdGVyIH4wVUwgKi8KPj4+IGlmICghaW5kZXgpCj4+PiAgIHJldHVybiBOVUxMOwo+
-Pj4KPj4KPj4gQSBmcmVzaCBjdXJyZW50IGV4YW1wbGUgd2l0aCBsYXRlc3QgZ2l0IHRyZWUgc2hv
-d3MgdGhhdCBsaW5lcyA3NjkgYW5kIDc3MCBkbyBhbHRlcm5hdGUgOgo+IAo+IENhbiB5b3UgcGxl
-YXNlIGFzayBnZGIgZm9yIHRoZSB2YWx1ZSBvZiBvZmZzZXQ/Cj4gCj4gVGhhbmtzLAo+IC8vcmlj
-aGFyZAo+IAoKSW4gdGhlIG1lYW4gd2hpbGUgSSB0aGluayB0aGF0IGl0IGlzIG5vdCB0aGUgcmFk
-aXgtdHJlZSBpdHNlbGYgd2hlcmUgdGhlIGhhbmcgaXMgcmVsYXRlZCB0by4gV2l0aCB0aGlzIHBh
-dGNoIDoKCmRpZmYgLS1naXQgYS9tbS90cnVuY2F0ZS5jIGIvbW0vdHJ1bmNhdGUuYwppbmRleCAz
-NTNiNjgzLi4yMmE1OTI2IDEwMDY0NAotLS0gYS9tbS90cnVuY2F0ZS5jCisrKyBiL21tL3RydW5j
-YXRlLmMKQEAgLTM1NSw2ICszNTUsOCBAQCBFWFBPUlRfU1lNQk9MKHRydW5jYXRlX2lub2RlX3Bh
-Z2VzX3JhbmdlKTsKICAqLwogdm9pZCB0cnVuY2F0ZV9pbm9kZV9wYWdlcyhzdHJ1Y3QgYWRkcmVz
-c19zcGFjZSAqbWFwcGluZywgbG9mZl90IGxzdGFydCkKIHsKKyAgICAgICBpZiAobHN0YXJ0ID4g
-MCkKKyAgICAgICAgICAgICAgIHByaW50ayAoImxzdGFydD0lbGxkXG4iLCBsc3RhcnQpOwogICAg
-ICAgIHRydW5jYXRlX2lub2RlX3BhZ2VzX3JhbmdlKG1hcHBpbmcsIGxzdGFydCwgKGxvZmZfdCkt
-MSk7CiB9CiBFWFBPUlRfU1lNQk9MKHRydW5jYXRlX2lub2RlX3BhZ2VzKTsKCgphZ2FpbnN0IHYz
-LjEyLTEwMDg3LWcxMjEzOTU5IEkgZ2V0IGluIHRoZSBzeXNsb2cgZW50aXJlcyBsaWtlIDoKCgpO
-b3YgMTcgMTQ6MDc6MTIgdHJpbml0eSB0Zm9lcnN0ZTogTT0vbW50L25mc3Y0Ck5vdiAxNyAxNDow
-NzoyNyB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTIxNDc0MTgxMTEKTm92IDE3IDE0OjA3OjMwIHRy
-aW5pdHkga2VybmVsOiBsc3RhcnQ9MTQ1MzE1ODEKTm92IDE3IDE0OjA3OjMwIHRyaW5pdHkga2Vy
-bmVsOiBsc3RhcnQ9ODM4ODYwNwpOb3YgMTcgMTQ6MDc6MzAgdHJpbml0eSBrZXJuZWw6IGxzdGFy
-dD0xODcKTm92IDE3IDE0OjA3OjMyIHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MjA0OApOb3YgMTcg
-MTQ6MDg6MDAgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xMTI2NApOb3YgMTcgMTQ6MDg6MDAgdHJp
-bml0eSBrZXJuZWw6IGxzdGFydD00NDI5NwpOb3YgMTcgMTQ6MDg6MDUgdHJpbml0eSBrZXJuZWw6
-IGxzdGFydD0zMQpOb3YgMTcgMTQ6MDg6MzQgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xNTQyCk5v
-diAxNyAxNDowODozNSB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTMwCk5vdiAxNyAxNDowODozNSB0
-cmluaXR5IGtlcm5lbDogbHN0YXJ0PTIwODg4MDkKTm92IDE3IDE0OjA4OjM3IHRyaW5pdHkga2Vy
-bmVsOiBsc3RhcnQ9MjA4Ck5vdiAxNyAxNDowODozNyB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTcy
-NzY4MDYKTm92IDE3IDE0OjA4OjM3IHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MTkxCi4uLgpOb3Yg
-MTcgMTQ6MTE6MjIgdHJpbml0eSB0Zm9lcnN0ZTogTT0vbW50L25mc3Y0Ck5vdiAxNyAxNDoxMToz
-NiB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTI1NQpOb3YgMTcgMTQ6MTE6MzYgdHJpbml0eSBrZXJu
-ZWw6IGxzdGFydD01MDA2NzY0NDQKTm92IDE3IDE0OjExOjM3IHRyaW5pdHkga2VybmVsOiBsc3Rh
-cnQ9MTAyNApOb3YgMTcgMTQ6MTE6MzcgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xMjc4Njc3NQpO
-b3YgMTcgMTQ6MTE6MzcgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xNjcyODM4NQpOb3YgMTcgMTQ6
-MTE6MzcgdHJpbml0eSBrZXJuZWw6IGxzdGFydD00NApOb3YgMTcgMTQ6MTE6MzcgdHJpbml0eSBr
-ZXJuZWw6IGxzdGFydD01MTYKTm92IDE3IDE0OjExOjM4IHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9
-MTc0MDcKTm92IDE3IDE0OjExOjM4IHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MzEKTm92IDE3IDE0
-OjExOjM4IHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9NjU1MzQKTm92IDE3IDE0OjExOjM5IHRyaW5p
-dHkga2VybmVsOiBsc3RhcnQ9NDMwMjMwNDI3MQpOb3YgMTcgMTQ6MTE6NDAgdHJpbml0eSBrZXJu
-ZWw6IGxzdGFydD02NTUzNgpOb3YgMTcgMTQ6MTE6NDAgdHJpbml0eSBrZXJuZWw6IGxzdGFydD02
-Nzg2MjUwODcKTm92IDE3IDE0OjExOjQwIHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MTkwNDY0MjYy
-Ck5vdiAxNyAxNDoxMTo0MSB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTI2ODQzNTM0MwpOb3YgMTcg
-MTQ6MTE6NDIgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xMDkKTm92IDE3IDE0OjExOjQyIHRyaW5p
-dHkga2VybmVsOiBsc3RhcnQ9MjA4ODk2MApOb3YgMTcgMTQ6MTE6NDIgdHJpbml0eSBrZXJuZWw6
-IGxzdGFydD05ODk1ODI4MzgKTm92IDE3IDE0OjExOjQyIHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9
-MzgzOApOb3YgMTcgMTQ6MTE6NDIgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0zMjcKTm92IDE3IDE0
-OjExOjQzIHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MTE5Ck5vdiAxNyAxNDoxMjoxNCB0cmluaXR5
-IGtlcm5lbDogbHN0YXJ0PTk5NDkKTm92IDE3IDE0OjEyOjE0IHRyaW5pdHkga2VybmVsOiBsc3Rh
-cnQ9NDA5NgpOb3YgMTcgMTQ6MTI6MTUgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0zCk5vdiAxNyAx
-NDoxMjoxOCB0cmluaXR5IHNzaGRbOTYzNl06IHBhbV91bml4KHNzaGQ6c2Vzc2lvbik6IHNlc3Np
-b24gY2xvc2VkIGZvciB1c2VyIHRmb2Vyc3RlCi4uLgoKRG9lcyB0aGlzIGhlbHBzID8KCj4+Cj4+
-IHRmb2Vyc3RlQG4yMiB+L2RldmVsL2xpbnV4ICQgc3VkbyBnZGIgL3Vzci9sb2NhbC9iaW4vbGlu
-dXgtdjMuMTItNDgtZ2JlNDA4Y2QgMTY2MTkgLW4gLWJhdGNoIC1leCBidAo+PiAweDA4Mjk2YThj
-IGluIHJhZGl4X3RyZWVfbmV4dF9jaHVuayAocm9vdD0weDI1LCBpdGVyPTB4NDYyZTdjNjQsIGZs
-YWdzPTEyKSBhdCBsaWIvcmFkaXgtdHJlZS5jOjc3MAo+PiA3NzAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAobm9kZS0+c2xvdHNbb2Zmc2V0XSkKPj4gIzAg
-IDB4MDgyOTZhOGMgaW4gcmFkaXhfdHJlZV9uZXh0X2NodW5rIChyb290PTB4MjUsIGl0ZXI9MHg0
-NjJlN2M2NCwgZmxhZ3M9MTIpIGF0IGxpYi9yYWRpeC10cmVlLmM6NzcwCj4+ICMxICAweDA4MGNj
-MWZlIGluIGZpbmRfZ2V0X3BhZ2VzIChtYXBwaW5nPTB4NDYyYWQ0NzAsIHN0YXJ0PTAsIG5yX3Bh
-Z2VzPTE0LCBwYWdlcz0weGMpIGF0IG1tL2ZpbGVtYXAuYzo4NDQKPj4gIzIgIDB4MDgwZDVkNmEg
-aW4gcGFnZXZlY19sb29rdXAgKHB2ZWM9MHg0NjJlN2NjOCwgbWFwcGluZz0weDI1LCBzdGFydD0z
-NywgbnJfcGFnZXM9MzcpIGF0IG1tL3N3YXAuYzo5MTQKPj4gIzMgIDB4MDgwZDYxNWEgaW4gdHJ1
-bmNhdGVfaW5vZGVfcGFnZXNfcmFuZ2UgKG1hcHBpbmc9MHg0NjJhZDQ3MCwgbHN0YXJ0PTAsIGxl
-bmQ9LTEpIGF0IG1tL3RydW5jYXRlLmM6MjQxCj4+ICM0ICAweDA4MGQ2NGZmIGluIHRydW5jYXRl
-X2lub2RlX3BhZ2VzIChtYXBwaW5nPTB4MjUsIGxzdGFydD01MTUzOTYwNzU4OSkgYXQgbW0vdHJ1
-bmNhdGUuYzozNTgKPj4KPj4KPj4KPj4KPj4gdGZvZXJzdGVAbjIyIH4vZGV2ZWwvbGludXggJCBz
-dWRvIGdkYiAvdXNyL2xvY2FsL2Jpbi9saW51eC12My4xMi00OC1nYmU0MDhjZCAxNjYxOSAtbiAt
-YmF0Y2ggLWV4IGJ0Cj4+IHJhZGl4X3RyZWVfbmV4dF9jaHVuayAocm9vdD0weDI4LCBpdGVyPTB4
-NDYyZTdjNjQsIGZsYWdzPTE4KSBhdCBsaWIvcmFkaXgtdHJlZS5jOjc2OQo+PiA3NjkgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2hpbGUgKCsrb2Zmc2V0IDwgUkFESVhfVFJF
-RV9NQVBfU0laRSkgewo+PiAjMCAgcmFkaXhfdHJlZV9uZXh0X2NodW5rIChyb290PTB4MjgsIGl0
-ZXI9MHg0NjJlN2M2NCwgZmxhZ3M9MTgpIGF0IGxpYi9yYWRpeC10cmVlLmM6NzY5Cj4+ICMxICAw
-eDA4MGNjMWZlIGluIGZpbmRfZ2V0X3BhZ2VzIChtYXBwaW5nPTB4NDYyYWQ0NzAsIHN0YXJ0PTAs
-IG5yX3BhZ2VzPTE0LCBwYWdlcz0weDEyKSBhdCBtbS9maWxlbWFwLmM6ODQ0Cj4+ICMyICAweDA4
-MGQ1ZDZhIGluIHBhZ2V2ZWNfbG9va3VwIChwdmVjPTB4NDYyZTdjYzgsIG1hcHBpbmc9MHgyOCwg
-c3RhcnQ9NDAsIG5yX3BhZ2VzPTQwKSBhdCBtbS9zd2FwLmM6OTE0Cj4+ICMzICAweDA4MGQ2MTVh
-IGluIHRydW5jYXRlX2lub2RlX3BhZ2VzX3JhbmdlIChtYXBwaW5nPTB4NDYyYWQ0NzAsIGxzdGFy
-dD0wLCBsZW5kPS0xKSBhdCBtbS90cnVuY2F0ZS5jOjI0MQo+PiAjNCAgMHgwODBkNjRmZiBpbiB0
-cnVuY2F0ZV9pbm9kZV9wYWdlcyAobWFwcGluZz0weDI4LCBsc3RhcnQ9NzczMDk0MTEzNjgpIGF0
-IG1tL3RydW5jYXRlLmM6MzU4Cj4+ICM1ICAweDA4MjVlMzg4IGluIGhvc3Rmc19ldmljdF9pbm9k
-ZSAoaW5vZGU9MHg0NjJhZDNiOCkgYXQgZnMvaG9zdGZzL2hvc3Rmc19rZXJuLmM6MjQyCj4+ICM2
-ICAweDA4MTFhOGRmIGluIGV2aWN0IChpbm9kZT0weDQ2MmFkM2I4KSBhdCBmcy9pbm9kZS5jOjU0
-OQo+Pgo+Pgo+IAo+IAoKCi0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmlu
-Z2VyIHByaW50OiA3QjFBIDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1MDggN0RCNiA5
-REEzCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRHJlYW1GYWN0b3J5IC0gT3BlbiBTb3VyY2UgUkVT
-VCAmIEpTT04gU2VydmljZXMgZm9yIEhUTUw1ICYgTmF0aXZlIEFwcHMKT0F1dGgsIFVzZXJzLCBS
-b2xlcywgU1FMLCBOb1NRTCwgQkxPQiBTdG9yYWdlIGFuZCBFeHRlcm5hbCBBUEkgQWNjZXNzCkZy
-ZWUgYXBwIGhvc3RpbmcuIE9yIGluc3RhbGwgdGhlIG9wZW4gc291cmNlIHBhY2thZ2Ugb24gYW55
-IExBTVAgc2VydmVyLgpTaWduIHVwIGFuZCBzZWUgZXhhbXBsZXMgZm9yIEFuZ3VsYXJKUywgalF1
-ZXJ5LCBTZW5jaGEgVG91Y2ggYW5kIE5hdGl2ZSEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNr
-Lm5ldC9nYW1wYWQvY2xrP2lkPTYzNDY5NDcxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1k
-ZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1v
-ZGUtbGludXgtZGV2ZWwK
+Am 10.11.2013 16:14, schrieb Toralf F=C3=B6rster:
+> On 11/06/2013 10:31 PM, Richard Weinberger wrote:
+>> Am 06.11.2013 22:18, schrieb Toralf F=C3=B6rster:
+>>> On 11/06/2013 05:06 PM, Konstantin Khlebnikov wrote:
+>>>> In this case it must stop after scanning whole tree in line:
+>>>> /* Overflow after ~0UL */
+>>>> if (!index)
+>>>>   return NULL;
+>>>>
+>>>
+>>> A fresh current example with latest git tree shows that lines 769 a=
+nd 770 do alternate :
+>>
+>> Can you please ask gdb for the value of offset?
+>>
+>> Thanks,
+>> //richard
+>>
+>=20
+> With this change=20
+>=20
+> diff --git a/lib/radix-tree.c b/lib/radix-tree.c
+> index 7811ed3..b2e9db5 100644
+> --- a/lib/radix-tree.c
+> +++ b/lib/radix-tree.c
+> @@ -767,6 +767,7 @@ restart:
+>                                                 offset + 1);
+>                         else
+>                                 while (++offset < RADIX_TREE_MAP_SIZE=
+) {
+> +                                       printk ("node->slots[offset] =
+%p offeset %lu\n", node->slots[offset], offset);
+>                                         if (node->slots[offset])
+>                                                 break;
+>                                 }
+
+Make sure that you print only in case of a enless loop. i.e. add a loop=
+ counter
+and start printing only if the loop was taken *very* often.
+
+Thanks,
+//richard
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
