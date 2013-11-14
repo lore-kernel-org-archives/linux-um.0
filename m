@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <tschmelcher@google.com>) id 1Vgz3P-0007kU-Ue
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stian@nixia.no>) id 1Vgwy2-0001bY-BL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Nov 2013 15:41:59 +0000
-Received: from mail-qe0-f54.google.com ([209.85.128.54])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Vgz3P-0000BQ-1G
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 14 Nov 2013 15:41:59 +0000
-Received: by mail-qe0-f54.google.com with SMTP id 1so1350795qec.41
+	Thu, 14 Nov 2013 13:28:18 +0000
+Received: from [195.159.66.51] (helo=ramslauken.nlc.no)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vgwy0-0002F5-C7 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Nov 2013 13:28:18 +0000
+Received: from mail.polarparty.no (ramslauken.nlc.no [195.159.66.51])
+	(Authenticated sender: stian@nixia.no)
+	by ramslauken.nlc.no (Postfix) with ESMTPA id 3E7791D1C51
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 14 Nov 2013 07:41:53 -0800 (PST)
+	Thu, 14 Nov 2013 14:25:48 +0100 (CET)
 MIME-Version: 1.0
-In-Reply-To: <4f471bf7dfaf984b17121486aeeb8233@nixia.no>
+Date: Thu, 14 Nov 2013 14:25:48 +0100
+From: stian@nixia.no
+In-Reply-To: <52811BDA.2090705@google.com>
 References: <52811BDA.2090705@google.com>
-	<4f471bf7dfaf984b17121486aeeb8233@nixia.no>
-From: Tristan Schmelcher <tschmelcher@google.com>
-Date: Thu, 14 Nov 2013 10:41:33 -0500
-Message-ID: <CADNZ+wSaFNOLbuyLuR0XX5-KagRBR2quJibHA9ncz1jikdV88A@mail.gmail.com>
+Message-ID: <4f471bf7dfaf984b17121486aeeb8233@nixia.no>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,14 +33,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] uml: Simplify tempdir logic.
-To: stian@nixia.no
-Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On 14 November 2013 08:25,  <stian@nixia.no> wrote:
-> You should probably add /run/shm to the list of tmpfs directories to
-> test for (ubuntu systems atleast use this).
+Den 2013-11-11 19:03, skrev Tristan Schmelcher:
+> +	static const char fallback_dir[] = "/tmp";
+> +	static const char * const tmpfs_dirs[] = {
+> +		"/dev/shm",
+> +		fallback_dir,
+> +		NULL
+> +	};
 
-On such systems /dev/shm is typically a symlink to /run/shm, so that's covered.
+You should probably add /run/shm to the list of tmpfs directories to 
+test for (ubuntu systems atleast use this).
+
+Stian Skjelstad
 
 ------------------------------------------------------------------------------
 DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
