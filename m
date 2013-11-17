@@ -1,187 +1,140 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <528FC01A.6000300@gmx.de>
-Date: Fri, 22 Nov 2013 21:35:38 +0100
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1Vi3tF-0005uc-7t
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 17 Nov 2013 15:03:57 +0000
+Received: from mout.gmx.net ([212.227.17.20])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Vi3tB-0003cN-HK
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 17 Nov 2013 15:03:57 +0000
+Received: from [192.168.178.21] ([85.177.123.247]) by mail.gmx.com (mrgmx002)
+	with ESMTPSA (Nemesis) id 0MhRI2-1W4WPp06La-00Me1F for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 17 Nov 2013 16:03:47
+	+0100
+Message-ID: <5288DAD0.5020306@gmx.de>
+Date: Sun, 17 Nov 2013 16:03:44 +0100
 From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-References: <526696BF.6050909@gmx.de>	<CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com>	<5266A698.10400@gmx.de>	<5266B60A.1000005@nod.at>	<52715AD1.7000703@gmx.de> <CALYGNiPvJF1u8gXNcX1AZR5-VkGqJnaose84KBbdaoBAq8aoGQ@mail.gmail.com> <527AB23D.2060305@gmx.de> <527AB51B.1020005@nod.at>
+References: <526696BF.6050909@gmx.de>	<CAFLxGvy3NeRKu+KQCCm0j4LS60PYhH0bC8WWjfiPvpstPBjAkA@mail.gmail.com>	<5266A698.10400@gmx.de>	<5266B60A.1000005@nod.at>	<52715AD1.7000703@gmx.de>
+	<CALYGNiPvJF1u8gXNcX1AZR5-VkGqJnaose84KBbdaoBAq8aoGQ@mail.gmail.com>
+	<527AB23D.2060305@gmx.de> <527AB51B.1020005@nod.at>
 In-Reply-To: <527AB51B.1020005@nod.at>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] fuzz tested 32 bit user mode linux image hangs in
  radix_tree_next_chunk()
 To: Richard Weinberger <richard@nod.at>
-Cc: Konstantin Khlebnikov <koct9i@gmail.com>, Linux Kernel <linux-kernel@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel <linux-kernel@vger.kernel.org>, Konstantin Khlebnikov <koct9i@gmail.com>
 
-On 11/06/2013 10:31 PM, Richard Weinberger wrote:
-> Can you please ask gdb for the value of offset?
-
-With this diff against latest Linus tree v3.12-11355-g57498f9 :
-
-diff --git a/lib/radix-tree.c b/lib/radix-tree.c
-index 7811ed3..54d9802 100644
---- a/lib/radix-tree.c
-+++ b/lib/radix-tree.c
-@@ -750,6 +750,7 @@ restart:
-        /* Index outside of the tree */
-        if (offset >=3D RADIX_TREE_MAP_SIZE)
-                return NULL;
-+       printk ("offset a: %lu \n", offset);
-
-        node =3D rnode;
-        while (1) {
-@@ -770,6 +771,7 @@ restart:
-                                        if (node->slots[offset])
-                                                break;
-                                }
-+                       printk ("offset b: %lu \n", offset);
-                        index &=3D ~((RADIX_TREE_MAP_SIZE << shift) - 1=
-);
-                        index +=3D offset << shift;
-                        /* Overflow after ~0UL */
-@@ -812,6 +814,7 @@ restart:
-                }
-        }
-
-+       printk ("offset c: %lu \n", offset);
-        return node->slots + offset;
- }
- EXPORT_SYMBOL(radix_tree_next_chunk);
-
-
-I got today these syslog message when the trinity process hangs at a 32=
- bit Gentoo linux:
-
-
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset c: 63
-Nov 22 21:29:29 trinity kernel: offset a: 0
-Nov 22 21:29:29 trinity kernel: offset b: 3
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset c: 63
-Nov 22 21:29:29 trinity kernel: offset a: 0
-Nov 22 21:29:29 trinity kernel: offset b: 3
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity sshd[1299]: pam_unix(sshd:session): session clo=
-sed for user tfoerste
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset c: 63
-Nov 22 21:29:29 trinity kernel: offset a: 0
-Nov 22 21:29:29 trinity kernel: offset b: 3
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:29 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset c: 63
-Nov 22 21:29:30 trinity kernel: offset a: 0
-Nov 22 21:29:30 trinity kernel: offset b: 3
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset c: 63
-Nov 22 21:29:30 trinity kernel: offset a: 0
-Nov 22 21:29:30 trinity kernel: offset b: 3
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity sshd[1533]: pam_unix(sshd:session): session ope=
-ned for user root by (uid=3D0)
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset b: 63
-Nov 22 21:29:30 trinity kernel: offset c: 63
-Nov 22 21:29:30 trinity kernel: offset a: 0
-Nov 22 21:29:30 trinity kernel: offset b: 3
-Nov 22 21:29:31 trinity kernel: offset b: 63
-Nov 22 21:29:31 trinity kernel: offset b: 63
-Nov 22 21:29:31 trinity kernel: offset b: 63
-Nov 22 21:29:31 trinity kernel: offset b: 63
-Nov 22 21:29:31 trinity kernel: offset b: 63
-Nov 22 21:29:31 trinity kernel: offset c: 63
-Nov 22 21:29:31 trinity shutdown[1536]: shutting down for system halt
-Nov 22 21:29:31 trinity init: Switching to runlevel: 0
-
-
-=46WIW gdb's output :
-
-
-tfoerste@n22 ~/devel/linux $ sudo gdb /home/tfoerste/devel/linux/linux =
-3612 -n -batch -ex bt
-0x083d3c83 in memcpy ()
-#0  0x083d3c83 in memcpy ()
-#1  0x080a6257 in log_store (facility=3D0, level=3D4, flags=3DLOG_NEWLI=
-NE, ts_nsec=3D0, dict=3D0x86101e0 <__log_buf+25512> "\200=3D\355\265D",=
- dict_len=3D0, text=3D0x86101e0 <__log_buf+25512> "\200=3D\355\265D", t=
-ext_len=3D13) at kernel/printk/printk.c:344
-#2  0x080a7158 in vprintk_emit (facility=3D0, level=3D4, dict=3D0x0, di=
-ctlen=3D0, fmt=3D0x63a8 <Address 0x63a8 out of bounds>, args=3D0x63a8 <=
-Address 0x63a8 out of bounds>) at kernel/printk/printk.c:1610
-#3  0x08423845 in printk (fmt=3D0x63a8 <Address 0x63a8 out of bounds>) =
-at kernel/printk/printk.c:1690
-#4  0x0829c39e in radix_tree_next_chunk (root=3D0x63a8, iter=3D0x3f, fl=
-ags=3D0) at lib/radix-tree.c:774
-#5  0x080cc78e in find_get_pages (mapping=3D0x48c21010, start=3D0, nr_p=
-ages=3D14, pages=3D0x86101e0 <__log_buf+25512>) at mm/filemap.c:844
-#6  0x080d654a in pagevec_lookup (pvec=3D0x49bffcc8, mapping=3D0x63a8, =
-start=3D25512, nr_pages=3D25512) at mm/swap.c:937
-#7  0x080d694a in truncate_inode_pages_range (mapping=3D0x48c21010, lst=
-art=3D0, lend=3D-1) at mm/truncate.c:241
-#8  0x080d6cef in truncate_inode_pages (mapping=3D0x63a8, lstart=3D6037=
-65886628684712) at mm/truncate.c:358
-#9  0x08260a48 in hostfs_evict_inode (inode=3D0x48c20f58) at fs/hostfs/=
-hostfs_kern.c:233
-#10 0x0811b46f in evict (inode=3D0x48c20f58) at fs/inode.c:549
-#11 0x0811bf5d in iput_final (inode=3D<optimized out>) at fs/inode.c:14=
-19
-#12 iput (inode=3D0x48c20f58) at fs/inode.c:1437
-#13 0x08118858 in dentry_iput (dentry=3D<optimized out>) at fs/dcache.c=
-:300
-#14 d_kill (parent=3D<optimized out>, dentry=3D<optimized out>) at fs/d=
-cache.c:447
-#15 dentry_kill (dentry=3D0x4957de70, unlock_on_failure=3D<optimized ou=
-t>) at fs/dcache.c:549
-#16 0x08118b5d in dput (dentry=3D0x4957de70) at fs/dcache.c:605
-#17 0x08105353 in __fput (file=3D0x48a7cd80) at fs/file_table.c:261
-#18 0x081053bb in ____fput (work=3D0x48a7cd80) at fs/file_table.c:279
-#19 0x08094486 in task_work_run () at kernel/task_work.c:123
-#20 0x0807efb2 in exit_task_work (task=3D<optimized out>) at include/li=
-nux/task_work.h:21
-#21 do_exit (code=3D1217397248) at kernel/exit.c:787
-#22 0x0807f5fd in do_group_exit (exit_code=3D0) at kernel/exit.c:920
-#23 0x0807f669 in SYSC_exit_group (error_code=3D<optimized out>) at ker=
-nel/exit.c:931
-#24 SyS_exit_group (error_code=3D0) at kernel/exit.c:929
-#25 0x08062ab4 in handle_syscall (r=3D0x48a787cc) at arch/um/kernel/ska=
-s/syscall.c:35
-#26 0x08075115 in handle_trap (local_using_sysemu=3D<optimized out>, re=
-gs=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/skas/p=
-rocess.c:198
-#27 userspace (regs=3D0x48a787cc) at arch/um/os-Linux/skas/process.c:43=
-1
-#28 0x0805f770 in fork_handler () at arch/um/kernel/process.c:149
-#29 0x00000000 in ?? ()
-
-
---=20
-MfG/Sincerely
-Toralf F=C3=B6rster
-pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+T24gMTEvMDYvMjAxMyAxMDozMSBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIDA2
+LjExLjIwMTMgMjI6MTgsIHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVyOgo+PiBPbiAxMS8wNi8yMDEz
+IDA1OjA2IFBNLCBLb25zdGFudGluIEtobGVibmlrb3Ygd3JvdGU6Cj4+PiBJbiB0aGlzIGNhc2Ug
+aXQgbXVzdCBzdG9wIGFmdGVyIHNjYW5uaW5nIHdob2xlIHRyZWUgaW4gbGluZToKPj4+IC8qIE92
+ZXJmbG93IGFmdGVyIH4wVUwgKi8KPj4+IGlmICghaW5kZXgpCj4+PiAgIHJldHVybiBOVUxMOwo+
+Pj4KPj4KPj4gQSBmcmVzaCBjdXJyZW50IGV4YW1wbGUgd2l0aCBsYXRlc3QgZ2l0IHRyZWUgc2hv
+d3MgdGhhdCBsaW5lcyA3NjkgYW5kIDc3MCBkbyBhbHRlcm5hdGUgOgo+IAo+IENhbiB5b3UgcGxl
+YXNlIGFzayBnZGIgZm9yIHRoZSB2YWx1ZSBvZiBvZmZzZXQ/Cj4gCj4gVGhhbmtzLAo+IC8vcmlj
+aGFyZAo+IAoKSW4gdGhlIG1lYW4gd2hpbGUgSSB0aGluayB0aGF0IGl0IGlzIG5vdCB0aGUgcmFk
+aXgtdHJlZSBpdHNlbGYgd2hlcmUgdGhlIGhhbmcgaXMgcmVsYXRlZCB0by4gV2l0aCB0aGlzIHBh
+dGNoIDoKCmRpZmYgLS1naXQgYS9tbS90cnVuY2F0ZS5jIGIvbW0vdHJ1bmNhdGUuYwppbmRleCAz
+NTNiNjgzLi4yMmE1OTI2IDEwMDY0NAotLS0gYS9tbS90cnVuY2F0ZS5jCisrKyBiL21tL3RydW5j
+YXRlLmMKQEAgLTM1NSw2ICszNTUsOCBAQCBFWFBPUlRfU1lNQk9MKHRydW5jYXRlX2lub2RlX3Bh
+Z2VzX3JhbmdlKTsKICAqLwogdm9pZCB0cnVuY2F0ZV9pbm9kZV9wYWdlcyhzdHJ1Y3QgYWRkcmVz
+c19zcGFjZSAqbWFwcGluZywgbG9mZl90IGxzdGFydCkKIHsKKyAgICAgICBpZiAobHN0YXJ0ID4g
+MCkKKyAgICAgICAgICAgICAgIHByaW50ayAoImxzdGFydD0lbGxkXG4iLCBsc3RhcnQpOwogICAg
+ICAgIHRydW5jYXRlX2lub2RlX3BhZ2VzX3JhbmdlKG1hcHBpbmcsIGxzdGFydCwgKGxvZmZfdCkt
+MSk7CiB9CiBFWFBPUlRfU1lNQk9MKHRydW5jYXRlX2lub2RlX3BhZ2VzKTsKCgphZ2FpbnN0IHYz
+LjEyLTEwMDg3LWcxMjEzOTU5IEkgZ2V0IGluIHRoZSBzeXNsb2cgZW50aXJlcyBsaWtlIDoKCgpO
+b3YgMTcgMTQ6MDc6MTIgdHJpbml0eSB0Zm9lcnN0ZTogTT0vbW50L25mc3Y0Ck5vdiAxNyAxNDow
+NzoyNyB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTIxNDc0MTgxMTEKTm92IDE3IDE0OjA3OjMwIHRy
+aW5pdHkga2VybmVsOiBsc3RhcnQ9MTQ1MzE1ODEKTm92IDE3IDE0OjA3OjMwIHRyaW5pdHkga2Vy
+bmVsOiBsc3RhcnQ9ODM4ODYwNwpOb3YgMTcgMTQ6MDc6MzAgdHJpbml0eSBrZXJuZWw6IGxzdGFy
+dD0xODcKTm92IDE3IDE0OjA3OjMyIHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MjA0OApOb3YgMTcg
+MTQ6MDg6MDAgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xMTI2NApOb3YgMTcgMTQ6MDg6MDAgdHJp
+bml0eSBrZXJuZWw6IGxzdGFydD00NDI5NwpOb3YgMTcgMTQ6MDg6MDUgdHJpbml0eSBrZXJuZWw6
+IGxzdGFydD0zMQpOb3YgMTcgMTQ6MDg6MzQgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xNTQyCk5v
+diAxNyAxNDowODozNSB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTMwCk5vdiAxNyAxNDowODozNSB0
+cmluaXR5IGtlcm5lbDogbHN0YXJ0PTIwODg4MDkKTm92IDE3IDE0OjA4OjM3IHRyaW5pdHkga2Vy
+bmVsOiBsc3RhcnQ9MjA4Ck5vdiAxNyAxNDowODozNyB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTcy
+NzY4MDYKTm92IDE3IDE0OjA4OjM3IHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MTkxCi4uLgpOb3Yg
+MTcgMTQ6MTE6MjIgdHJpbml0eSB0Zm9lcnN0ZTogTT0vbW50L25mc3Y0Ck5vdiAxNyAxNDoxMToz
+NiB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTI1NQpOb3YgMTcgMTQ6MTE6MzYgdHJpbml0eSBrZXJu
+ZWw6IGxzdGFydD01MDA2NzY0NDQKTm92IDE3IDE0OjExOjM3IHRyaW5pdHkga2VybmVsOiBsc3Rh
+cnQ9MTAyNApOb3YgMTcgMTQ6MTE6MzcgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xMjc4Njc3NQpO
+b3YgMTcgMTQ6MTE6MzcgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xNjcyODM4NQpOb3YgMTcgMTQ6
+MTE6MzcgdHJpbml0eSBrZXJuZWw6IGxzdGFydD00NApOb3YgMTcgMTQ6MTE6MzcgdHJpbml0eSBr
+ZXJuZWw6IGxzdGFydD01MTYKTm92IDE3IDE0OjExOjM4IHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9
+MTc0MDcKTm92IDE3IDE0OjExOjM4IHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MzEKTm92IDE3IDE0
+OjExOjM4IHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9NjU1MzQKTm92IDE3IDE0OjExOjM5IHRyaW5p
+dHkga2VybmVsOiBsc3RhcnQ9NDMwMjMwNDI3MQpOb3YgMTcgMTQ6MTE6NDAgdHJpbml0eSBrZXJu
+ZWw6IGxzdGFydD02NTUzNgpOb3YgMTcgMTQ6MTE6NDAgdHJpbml0eSBrZXJuZWw6IGxzdGFydD02
+Nzg2MjUwODcKTm92IDE3IDE0OjExOjQwIHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MTkwNDY0MjYy
+Ck5vdiAxNyAxNDoxMTo0MSB0cmluaXR5IGtlcm5lbDogbHN0YXJ0PTI2ODQzNTM0MwpOb3YgMTcg
+MTQ6MTE6NDIgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0xMDkKTm92IDE3IDE0OjExOjQyIHRyaW5p
+dHkga2VybmVsOiBsc3RhcnQ9MjA4ODk2MApOb3YgMTcgMTQ6MTE6NDIgdHJpbml0eSBrZXJuZWw6
+IGxzdGFydD05ODk1ODI4MzgKTm92IDE3IDE0OjExOjQyIHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9
+MzgzOApOb3YgMTcgMTQ6MTE6NDIgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0zMjcKTm92IDE3IDE0
+OjExOjQzIHRyaW5pdHkga2VybmVsOiBsc3RhcnQ9MTE5Ck5vdiAxNyAxNDoxMjoxNCB0cmluaXR5
+IGtlcm5lbDogbHN0YXJ0PTk5NDkKTm92IDE3IDE0OjEyOjE0IHRyaW5pdHkga2VybmVsOiBsc3Rh
+cnQ9NDA5NgpOb3YgMTcgMTQ6MTI6MTUgdHJpbml0eSBrZXJuZWw6IGxzdGFydD0zCk5vdiAxNyAx
+NDoxMjoxOCB0cmluaXR5IHNzaGRbOTYzNl06IHBhbV91bml4KHNzaGQ6c2Vzc2lvbik6IHNlc3Np
+b24gY2xvc2VkIGZvciB1c2VyIHRmb2Vyc3RlCi4uLgoKRG9lcyB0aGlzIGhlbHBzID8KCj4+Cj4+
+IHRmb2Vyc3RlQG4yMiB+L2RldmVsL2xpbnV4ICQgc3VkbyBnZGIgL3Vzci9sb2NhbC9iaW4vbGlu
+dXgtdjMuMTItNDgtZ2JlNDA4Y2QgMTY2MTkgLW4gLWJhdGNoIC1leCBidAo+PiAweDA4Mjk2YThj
+IGluIHJhZGl4X3RyZWVfbmV4dF9jaHVuayAocm9vdD0weDI1LCBpdGVyPTB4NDYyZTdjNjQsIGZs
+YWdzPTEyKSBhdCBsaWIvcmFkaXgtdHJlZS5jOjc3MAo+PiA3NzAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAobm9kZS0+c2xvdHNbb2Zmc2V0XSkKPj4gIzAg
+IDB4MDgyOTZhOGMgaW4gcmFkaXhfdHJlZV9uZXh0X2NodW5rIChyb290PTB4MjUsIGl0ZXI9MHg0
+NjJlN2M2NCwgZmxhZ3M9MTIpIGF0IGxpYi9yYWRpeC10cmVlLmM6NzcwCj4+ICMxICAweDA4MGNj
+MWZlIGluIGZpbmRfZ2V0X3BhZ2VzIChtYXBwaW5nPTB4NDYyYWQ0NzAsIHN0YXJ0PTAsIG5yX3Bh
+Z2VzPTE0LCBwYWdlcz0weGMpIGF0IG1tL2ZpbGVtYXAuYzo4NDQKPj4gIzIgIDB4MDgwZDVkNmEg
+aW4gcGFnZXZlY19sb29rdXAgKHB2ZWM9MHg0NjJlN2NjOCwgbWFwcGluZz0weDI1LCBzdGFydD0z
+NywgbnJfcGFnZXM9MzcpIGF0IG1tL3N3YXAuYzo5MTQKPj4gIzMgIDB4MDgwZDYxNWEgaW4gdHJ1
+bmNhdGVfaW5vZGVfcGFnZXNfcmFuZ2UgKG1hcHBpbmc9MHg0NjJhZDQ3MCwgbHN0YXJ0PTAsIGxl
+bmQ9LTEpIGF0IG1tL3RydW5jYXRlLmM6MjQxCj4+ICM0ICAweDA4MGQ2NGZmIGluIHRydW5jYXRl
+X2lub2RlX3BhZ2VzIChtYXBwaW5nPTB4MjUsIGxzdGFydD01MTUzOTYwNzU4OSkgYXQgbW0vdHJ1
+bmNhdGUuYzozNTgKPj4KPj4KPj4KPj4KPj4gdGZvZXJzdGVAbjIyIH4vZGV2ZWwvbGludXggJCBz
+dWRvIGdkYiAvdXNyL2xvY2FsL2Jpbi9saW51eC12My4xMi00OC1nYmU0MDhjZCAxNjYxOSAtbiAt
+YmF0Y2ggLWV4IGJ0Cj4+IHJhZGl4X3RyZWVfbmV4dF9jaHVuayAocm9vdD0weDI4LCBpdGVyPTB4
+NDYyZTdjNjQsIGZsYWdzPTE4KSBhdCBsaWIvcmFkaXgtdHJlZS5jOjc2OQo+PiA3NjkgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2hpbGUgKCsrb2Zmc2V0IDwgUkFESVhfVFJF
+RV9NQVBfU0laRSkgewo+PiAjMCAgcmFkaXhfdHJlZV9uZXh0X2NodW5rIChyb290PTB4MjgsIGl0
+ZXI9MHg0NjJlN2M2NCwgZmxhZ3M9MTgpIGF0IGxpYi9yYWRpeC10cmVlLmM6NzY5Cj4+ICMxICAw
+eDA4MGNjMWZlIGluIGZpbmRfZ2V0X3BhZ2VzIChtYXBwaW5nPTB4NDYyYWQ0NzAsIHN0YXJ0PTAs
+IG5yX3BhZ2VzPTE0LCBwYWdlcz0weDEyKSBhdCBtbS9maWxlbWFwLmM6ODQ0Cj4+ICMyICAweDA4
+MGQ1ZDZhIGluIHBhZ2V2ZWNfbG9va3VwIChwdmVjPTB4NDYyZTdjYzgsIG1hcHBpbmc9MHgyOCwg
+c3RhcnQ9NDAsIG5yX3BhZ2VzPTQwKSBhdCBtbS9zd2FwLmM6OTE0Cj4+ICMzICAweDA4MGQ2MTVh
+IGluIHRydW5jYXRlX2lub2RlX3BhZ2VzX3JhbmdlIChtYXBwaW5nPTB4NDYyYWQ0NzAsIGxzdGFy
+dD0wLCBsZW5kPS0xKSBhdCBtbS90cnVuY2F0ZS5jOjI0MQo+PiAjNCAgMHgwODBkNjRmZiBpbiB0
+cnVuY2F0ZV9pbm9kZV9wYWdlcyAobWFwcGluZz0weDI4LCBsc3RhcnQ9NzczMDk0MTEzNjgpIGF0
+IG1tL3RydW5jYXRlLmM6MzU4Cj4+ICM1ICAweDA4MjVlMzg4IGluIGhvc3Rmc19ldmljdF9pbm9k
+ZSAoaW5vZGU9MHg0NjJhZDNiOCkgYXQgZnMvaG9zdGZzL2hvc3Rmc19rZXJuLmM6MjQyCj4+ICM2
+ICAweDA4MTFhOGRmIGluIGV2aWN0IChpbm9kZT0weDQ2MmFkM2I4KSBhdCBmcy9pbm9kZS5jOjU0
+OQo+Pgo+Pgo+IAo+IAoKCi0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmlu
+Z2VyIHByaW50OiA3QjFBIDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1MDggN0RCNiA5
+REEzCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRHJlYW1GYWN0b3J5IC0gT3BlbiBTb3VyY2UgUkVT
+VCAmIEpTT04gU2VydmljZXMgZm9yIEhUTUw1ICYgTmF0aXZlIEFwcHMKT0F1dGgsIFVzZXJzLCBS
+b2xlcywgU1FMLCBOb1NRTCwgQkxPQiBTdG9yYWdlIGFuZCBFeHRlcm5hbCBBUEkgQWNjZXNzCkZy
+ZWUgYXBwIGhvc3RpbmcuIE9yIGluc3RhbGwgdGhlIG9wZW4gc291cmNlIHBhY2thZ2Ugb24gYW55
+IExBTVAgc2VydmVyLgpTaWduIHVwIGFuZCBzZWUgZXhhbXBsZXMgZm9yIEFuZ3VsYXJKUywgalF1
+ZXJ5LCBTZW5jaGEgVG91Y2ggYW5kIE5hdGl2ZSEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNr
+Lm5ldC9nYW1wYWQvY2xrP2lkPTYzNDY5NDcxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1k
+ZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdl
+Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1v
+ZGUtbGludXgtZGV2ZWwK
 
