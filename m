@@ -1,18 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1Vi1p4-0001cc-Ho
+	(envelope-from <toralf.foerster@gmx.de>) id 1Vjqbp-0002ay-UN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Nov 2013 12:51:30 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vi1p0-0004Bq-Fw
+	Fri, 22 Nov 2013 13:17:21 +0000
+Received: from mout.gmx.net ([212.227.15.19])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Vjqbn-0004Cl-TP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 17 Nov 2013 12:51:30 +0000
-Message-ID: <5288BBC2.1040101@nod.at>
-Date: Sun, 17 Nov 2013 13:51:14 +0100
-From: Richard Weinberger <richard@nod.at>
+	Fri, 22 Nov 2013 13:17:21 +0000
+Received: from [192.168.178.21] ([85.177.153.174]) by mail.gmx.com (mrgmx002)
+	with ESMTPSA (Nemesis) id 0LoVBq-1VCPj91jrO-00gW0c for
+	<user-mode-linux-devel@lists.sourceforge.net>; Fri, 22 Nov 2013 14:17:13
+	+0100
+Message-ID: <528F5958.6030309@gmx.de>
+Date: Fri, 22 Nov 2013 14:17:12 +0100
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -23,100 +27,87 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [GIT PULL] UML changes for 3.13-rc1
-To: Linus Torvalds <torvalds@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] fuzzed UML hangs at another place
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-Linus,
-
-The following changes since commit 5e01dc7b26d9f24f39abace5da98ccbd6a5ceb52:
-
-  Linux 3.12 (2013-11-03 15:41:51 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus
-
-for you to fetch changes up to 33a7d42999b1857d4494f6ad6367e3aef0ae8137:
-
-  um: Remove unused declarations from <as-layout.h> (2013-11-17 11:39:22 +0100)
-
-- ----------------------------------------------------------------
-This pile contains a nice defconfig cleanup,
-a rewritten stack unwinder and various cleanups.
-
-- ----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      um: Remove unused declarations from <as-layout.h>
-
-Michael Opdenacker (1):
-      um: remove used STDIO_CONSOLE Kconfig param
-
-Ramkumar Ramachandra (2):
-      arch/um: make it work with defconfig and x86_64
-      um/vdso: add .gitignore for a couple of targets
-
-Richard Weinberger (4):
-      um: Rewrite show_stack()
-      um: Make stack trace reliable against kernel mode faults
-      um: Get rid of thread_struct->saved_task
-      um: Make kstack_depth_to_print conform to arch/x86
-
- arch/um/Kconfig.char                    |   4 -
- arch/um/Kconfig.common                  |   5 -
- arch/um/Makefile                        |  11 +
- arch/um/configs/i386_defconfig          |  76 +++
- arch/um/configs/x86_64_defconfig        |  75 +++
- arch/um/defconfig                       | 899 --------------------------------
- arch/um/drivers/mconsole_kern.c         |   6 +-
- arch/um/include/asm/processor-generic.h |   2 +-
- arch/um/include/shared/as-layout.h      |   3 -
- arch/um/include/shared/os.h             |   1 +
- arch/um/kernel/process.c                |  15 +-
- arch/um/kernel/sysrq.c                  | 102 ++--
- arch/um/kernel/trap.c                   |  14 +-
- arch/um/kernel/um_arch.c                |   2 +-
- arch/um/os-Linux/signal.c               |   8 +
- arch/x86/um/Kconfig                     |   5 +
- arch/x86/um/asm/processor_32.h          |   5 +
- arch/x86/um/asm/processor_64.h          |   5 +
- arch/x86/um/sysrq_32.c                  |  66 ---
- arch/x86/um/sysrq_64.c                  |   8 +-
- arch/x86/um/vdso/.gitignore             |   2 +
- 21 files changed, 273 insertions(+), 1041 deletions(-)
- create mode 100644 arch/um/configs/i386_defconfig
- create mode 100644 arch/um/configs/x86_64_defconfig
- delete mode 100644 arch/um/defconfig
- create mode 100644 arch/x86/um/vdso/.gitignore
-
-Thanks,
-//richard
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQEcBAEBAgAGBQJSiLvCAAoJEN9758yqZn9eSnwH/3/0e+3VcWl5+yxUhD+j/xJi
-dmcO2LLONpHye1KIWn75AlNt91fkc2dauphhg/SRBqi6mVB0NWUUCtFRvWr4Wzht
-5F1aYlPzBmZvChN/1S2QYnldg/EJw7okQEjnFFbWgs1Bh47m3zXU98arbI34JYQA
-WisaUsApY1hejTUPtZM5ixF2+cJtXe0vkXDfdrn188pMxcqfD0hRuWBjmsIHFZC3
-h65exYi3NQUG9kwRNKYYhPMc8ACQ0OEePt5CBDeJytH4LVodhpGd0i55ljWQhhHo
-JQnBnU3eekUcAetLixUTAsRKsCX1xY+xrqFk/MKK/EXzOAfw4F1/90bLtal7OkA=
-=Q9AM
------END PGP SIGNATURE-----
-
-------------------------------------------------------------------------------
-DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-Free app hosting. Or install the open source package on any LAMP server.
-Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+V2hpbGUgdHJ5aW5nIHRvIHJlcHJvZHVjZSBhbiBVTUwgaGFuZyBpbiBtbS8qcmFkaXgqIEkgcmVh
+bGl6ZWQgd2l0aCByZWNlbnQga2VybmVscyBhbmQgdHJpbml0eSwKdGhhdCBhIDMyIGJpdCBHZW50
+b28gTGludXggVU1MIG9mdGVuIG5vdyBqdXN0IGhhbmdzIGhlcmUgOgoKCnRmb2Vyc3RlQG4yMiB+
+ICQgcGdyZXAgbGludXggfCB3aGlsZSByZWFkIHBpZDsgZG8gZWNobzsgZWNobyAkcGlkOyAgc3Vk
+byBnZGIgL2hvbWUvdGZvZXJzdGUvZGV2ZWwvbGludXgvbGludXggJHBpZCAtbiAtYmF0Y2ggLWV4
+IGJ0OyBkb25lCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKODA2NyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIAoweGI3NzYyNDI0IGluIF9fa2VybmVsX3ZzeXNj
+YWxsICgpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgCiMwICAweGI3NzYyNDI0IGluIF9fa2VybmVsX3ZzeXNjYWxsICgpICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIzEgIDB4MDgz
+ZDU5ZWYgaW4gX19uYW5vc2xlZXBfbm9jYW5jZWwgKCkgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojMiAgMHgwODA3MjY5YyBpbiBpZGxlX3NsZWVw
+IChuc2Vjcz02MDI0OTY0NjYxMDQ2NTM0NDApIGF0IGFyY2gvdW0vb3MtTGludXgvdGltZS5jOjE4
+MyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgCiMzICAweDA4MDVmYzJmIGluIGFyY2hfY3B1X2lkbGUgKCkgYXQgYXJjaC91bS9r
+ZXJuZWwvcHJvY2Vzcy5jOjIwOCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIzQgIDB4MDgw
+YTg5MDEgaW4gY3B1X2lkbGVfbG9vcCAoKSBhdCBrZXJuZWwvY3B1L2lkbGUuYzo5OCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojNSAgY3B1X3N0YXJ0dXBfZW50cnkgKHN0YXRl
+PUNQVUhQX09OTElORSkgYXQga2VybmVsL2NwdS9pZGxlLmM6MTQwICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgCiM2ICAweDA4NDIxYjIyIGluIHJlc3RfaW5pdCAoKSBhdCBpbml0L21haW4uYzo0
+MDEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIzcgIDB4MDgw
+NDg3ZTEgaW4gc3RhcnRfa2VybmVsICgpIGF0IGluaXQvbWFpbi5jOjY1NSAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojOCAgMHgwODA0OWUwOSBpbiBzdGFydF9rZXJu
+ZWxfcHJvYyAodW51c2VkPTB4MCkgYXQgYXJjaC91bS9rZXJuZWwvc2thcy9wcm9jZXNzLmM6NDYg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgCiM5ICAweDA4MDVmN2ViIGluIG5ld190aHJlYWRfaGFuZGxlciAoKSBhdCBhcmNo
+L3VtL2tlcm5lbC9wcm9jZXNzLmM6MTI5CiMxMCAweDAwMDAwMDAwIGluID8/ICgpCgo4MDc0Cgp3
+YXJuaW5nOiBwcm9jZXNzIDgwNzQgaXMgYSBjbG9uZWQgcHJvY2VzcwoweGI3NzYyNDI0IGluIF9f
+a2VybmVsX3ZzeXNjYWxsICgpCiMwICAweGI3NzYyNDI0IGluIF9fa2VybmVsX3ZzeXNjYWxsICgp
+CiMxICAweDA4M2Q5MTg2IGluIHN5c2NhbGwgKCkKIzIgIDB4MDgwNmU4OTEgaW4gaW9fZ2V0ZXZl
+bnRzIChldmVudHM9PG9wdGltaXplZCBvdXQ+LCBjdHhfaWQ9PG9wdGltaXplZCBvdXQ+LCBtaW5f
+bnI9PG9wdGltaXplZCBvdXQ+LCBucj08b3B0aW1pemVkIG91dD4sIHRpbWVvdXQ9PG9wdGltaXpl
+ZCBvdXQ+KSBhdCBhcmNoL3VtL29zLUxpbnV4L2Fpby5jOjQ5CiMzICBhaW9fdGhyZWFkIChhcmc9
+MHgwKSBhdCBhcmNoL3VtL29zLUxpbnV4L2Fpby5jOjEwOQojNCAgMHgwODNkYTIwZSBpbiBjbG9u
+ZSAoKQoKODA3NQoKd2FybmluZzogcHJvY2VzcyA4MDc1IGlzIGEgY2xvbmVkIHByb2Nlc3MKMHhi
+Nzc2MjQyNCBpbiBfX2tlcm5lbF92c3lzY2FsbCAoKQojMCAgMHhiNzc2MjQyNCBpbiBfX2tlcm5l
+bF92c3lzY2FsbCAoKQojMSAgMHgwODNkNmZmMiBpbiBfX3JlYWRfbm9jYW5jZWwgKCkKIzIgIDB4
+MDgwNmY0MmYgaW4gcmVhZCAoX19uYnl0ZXM9PG9wdGltaXplZCBvdXQ+LCBfX2J1Zj08b3B0aW1p
+emVkIG91dD4sIF9fZmQ9PG9wdGltaXplZCBvdXQ+KSBhdCAvdXNyL2luY2x1ZGUvYml0cy91bmlz
+dGQuaDo0NQojMyAgb3NfcmVhZF9maWxlIChmZD0tNTEyLCBidWY9MHhmZmZmZmUwMCwgbGVuPS01
+MTIpIGF0IGFyY2gvdW0vb3MtTGludXgvZmlsZS5jOjI1MwojNCAgMHgwODA2YmIyYyBpbiBpb190
+aHJlYWQgKGFyZz0weDApIGF0IGFyY2gvdW0vZHJpdmVycy91YmRfa2Vybi5jOjE0ODIKIzUgIDB4
+MDgzZGEyMGUgaW4gY2xvbmUgKCkKCjgwNzYKCndhcm5pbmc6IHByb2Nlc3MgODA3NiBpcyBhIGNs
+b25lZCBwcm9jZXNzCjB4Yjc3NjI0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKIzAgIDB4Yjc3
+NjI0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKIzEgIDB4MDgzZDdlNmMgaW4gcG9sbCAoKQoj
+MiAgMHgwODA3MTE0NCBpbiB3cml0ZV9zaWdpb190aHJlYWQgKHVudXNlZD0weDApIGF0IGFyY2gv
+dW0vb3MtTGludXgvc2lnaW8uYzo2MQojMyAgMHgwODNkYTIwZSBpbiBjbG9uZSAoKQoKODA3Nwp3
+YXJuaW5nOiBwcm9jZXNzIDgwNzcgaXMgYSB6b21iaWUgLSB0aGUgcHJvY2VzcyBoYXMgYWxyZWFk
+eSB0ZXJtaW5hdGVkCnB0cmFjZTogT3BlcmF0aW9uIG5vdCBwZXJtaXR0ZWQuCi9ob21lL3Rmb2Vy
+c3RlLzgwNzc6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkuCk5vIHN0YWNrLgoKLi4uCgoKQSBz
+c2ggaW50byB0aGUgVU1MIGlzIG5vdyBubyBsb25nZXIgcG9zc2libGUgYW5kIG5vIHN5c2xvZyBt
+ZXNzYWdlcyBhbnkgbG9uZ2VyLCAKSSBkbyBqdXN0IGtpbGwgaXQgdGhlcmVmb3JlLgoKLS0gCk1m
+Ry9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJpbnQ6IDdCMUEgMDdGNCBF
+QzgyIDBGOTAgRDRDMiA4OTM2IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQpTaGFwZSB0aGUgTW9iaWxlIEV4cGVyaWVuY2U6IEZyZWUgU3Vic2NyaXB0aW9uClNvZnR3
+YXJlIGV4cGVydHMgYW5kIGRldmVsb3BlcnM6IEJlIGF0IHRoZSBmb3JlZnJvbnQgb2YgdGVjaCBp
+bm5vdmF0aW9uLgpJbnRlbChSKSBTb2Z0d2FyZSBBZHJlbmFsaW5lIGRlbGl2ZXJzIHN0cmF0ZWdp
+YyBpbnNpZ2h0IGFuZCBnYW1lLWNoYW5naW5nIApjb252ZXJzYXRpb25zIHRoYXQgc2hhcGUgdGhl
+IHJhcGlkbHkgZXZvbHZpbmcgbW9iaWxlIGxhbmRzY2FwZS4gU2lnbiB1cCBub3cuIApodHRwOi8v
+cHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NjM0MzEzMTEmaXU9LzQxNDAv
+b3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2
+ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
+c3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
