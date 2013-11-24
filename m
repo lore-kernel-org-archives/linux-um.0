@@ -1,25 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stian@nixia.no>) id 1VkwgF-0004Qs-U5
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1VkbOJ-0000JF-M2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Nov 2013 13:58:27 +0000
-Received: from [195.159.66.51] (helo=ramslauken.nlc.no)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VkwgE-0005E0-4q for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Nov 2013 13:58:27 +0000
-Received: from mail.polarparty.no (ramslauken.nlc.no [195.159.66.51])
-	(Authenticated sender: stian@nixia.no)
-	by ramslauken.nlc.no (Postfix) with ESMTPA id EBA431D1C54
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 25 Nov 2013 14:55:48 +0100 (CET)
+	Sun, 24 Nov 2013 15:14:31 +0000
+Received: from mout.gmx.net ([212.227.15.19])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1VkbOI-0002Az-Cs
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 24 Nov 2013 15:14:31 +0000
+Received: from [192.168.178.21] ([78.54.156.69]) by mail.gmx.com (mrgmx001)
+	with ESMTPSA (Nemesis) id 0LqQnR-1V7Ol42arx-00e1tw for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 24 Nov 2013 16:14:24
+	+0100
+Message-ID: <529217CD.1000204@gmx.de>
+Date: Sun, 24 Nov 2013 16:14:21 +0100
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-Date: Mon, 25 Nov 2013 14:55:48 +0100
-From: stian@nixia.no
-In-Reply-To: <529217CD.1000204@gmx.de>
-References: <529217CD.1000204@gmx.de>
-Message-ID: <94b43f437c6e933128a54f87dad91593@nixia.no>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,25 +30,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] why does index in truncate_inode_pages_range()
- grows so much ?
-To: user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] why does index in truncate_inode_pages_range() grows so
+	much ?
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Linux Kernel <linux-kernel@vger.kernel.org>
 
-RGVuIDIwMTMtMTEtMjQgMTY6MTQsIHNrcmV2IFRvcmFsZiBGw7Zyc3RlcjoKPiBhbmQgZ290ICh3
-aGlsZSBmdXp6eWluZyB0aGUgVU1MIGd1ZXN0IHdpdGggdHJpbml0eSkgdGhpcyBvdXRwdXQgaW4g
-Cj4gdGhlCj4gVU1MIGd1ZXN0Ogo+Cj4KPiBOb3YgMjQgMTI6MDY6NTMgdHJpbml0eSBrZXJuZWw6
-IGluZGV4OjQyIGVuZDo0Mjk0OTY3Mjk1Cj4gSSdtIHdvbmRlcmluZyBpZiBpbmRleCBpcyBleHBl
-Y3RlZCB0byBiZWNvbWUgc29tZXRpbWVzIHNvIGJpZy4KCjQyOTQ5NjcyOTUgPSAweGZmZmZmZmZm
-Cgpsb29rcyBsaWtlIHNvbWV0aGluZyB1bmRlcmZsb3dlZAoKClN0aWFuIFNramVsc3RhZAoKLS0t
+QXQgYSAzMiBiaXQgZ3Vlc3QgVU1MIHdpdGggY3VycmVudCBrZXJuZWwgZ2l0IHRyZWUgSSBwdXR0
+ZWQgYSBwcmludGsKaW50byB0aGF0IGZ1bmN0aW9uIDoKCnZvaWQgdHJ1bmNhdGVfaW5vZGVfcGFn
+ZXNfcmFuZ2Uoc3RydWN0IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcsCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgbG9mZl90IGxzdGFydCwgbG9mZl90IGxlbmQpCnsKLi4uCgoKICAgICAg
+ICAgICAgICAgIGNvbmRfcmVzY2hlZCgpOwogICAgICAgICAgICAgICAgaW5kZXgrKzsKCQlwcmlu
+dGsgKCIgICAgICAgICAgICA8LS0tLS0tLS0tLS0tCgoKCgphbmQgZ290ICh3aGlsZSBmdXp6eWlu
+ZyB0aGUgVU1MIGd1ZXN0IHdpdGggdHJpbml0eSkgdGhpcyBvdXRwdXQgaW4gdGhlClVNTCBndWVz
+dDoKCgpOb3YgMjQgMTI6MDY6NTMgdHJpbml0eSBrZXJuZWw6IGluZGV4OjQyIGVuZDo0Mjk0OTY3
+Mjk1Ck5vdiAyNCAxMjowNjo1MyB0cmluaXR5IGtlcm5lbDogaW5kZXg6NDMgZW5kOjQyOTQ5Njcy
+OTUKTm92IDI0IDEyOjA2OjUzIHRyaW5pdHkga2VybmVsOiBpbmRleDo1IGVuZDo0Mjk0OTY3Mjk1
+Ck5vdiAyNCAxMjowNjo1MyB0cmluaXR5IGtlcm5lbDogaW5kZXg6MSBlbmQ6NDI5NDk2NzI5NQpO
+b3YgMjQgMTI6MDY6NTMgdHJpbml0eSBrZXJuZWw6IGluZGV4OjEgZW5kOjQyOTQ5NjcyOTUKTm92
+IDI0IDEyOjA2OjUzIHRyaW5pdHkga2VybmVsOiBpbmRleDoxMDM1NDY4ODAwIGVuZDo0Mjk0OTY3
+Mjk1Ck5vdiAyNCAxMjowNjo1MyB0cmluaXR5IGtlcm5lbDogaW5kZXg6MSBlbmQ6NDI5NDk2NzI5
+NQpOb3YgMjQgMTI6MDY6NTMgdHJpbml0eSBrZXJuZWw6IGluZGV4OjEgZW5kOjQyOTQ5NjcyOTUK
+Tm92IDI0IDEyOjA2OjUzIHRyaW5pdHkga2VybmVsOiBpbmRleDoxIGVuZDo0Mjk0OTY3Mjk1Ck5v
+diAyNCAxMjowNjo1MyB0cmluaXR5IGtlcm5lbDogaW5kZXg6MTYgZW5kOjQyOTQ5NjcyOTUKTm92
+IDI0IDEyOjA2OjUzIHRyaW5pdHkga2VybmVsOiBpbmRleDoxIGVuZDo0Mjk0OTY3Mjk1Ck5vdiAy
+NCAxMjowNjo1MyB0cmluaXR5IGtlcm5lbDogaW5kZXg6NCBlbmQ6NDI5NDk2NzI5NQpOb3YgMjQg
+MTI6MDY6NTMgdHJpbml0eSBrZXJuZWw6IGluZGV4OjIgZW5kOjQyOTQ5NjcyOTUKTm92IDI0IDEy
+OjA2OjUzIHRyaW5pdHkga2VybmVsOiBpbmRleDoxIGVuZDo0Mjk0OTY3Mjk1Ck5vdiAyNCAxMjow
+Njo1MyB0cmluaXR5IGtlcm5lbDogaW5kZXg6NDE4NDg2Nzg0NyBlbmQ6NDI5NDk2NzI5NQpOb3Yg
+MjQgMTI6MDY6NTMgdHJpbml0eSBrZXJuZWw6IGluZGV4OjEgZW5kOjQyOTQ5NjcyOTUKTm92IDI0
+IDEyOjA2OjUzIHRyaW5pdHkga2VybmVsOiBpbmRleDozIGVuZDo0Mjk0OTY3Mjk1Ck5vdiAyNCAx
+MjowNjo1MyB0cmluaXR5IGtlcm5lbDogaW5kZXg6MTcyNyBlbmQ6NDI5NDk2NzI5NQpOb3YgMjQg
+MTI6MDY6NTMgdHJpbml0eSBrZXJuZWw6IGluZGV4OjEgZW5kOjQyOTQ5NjcyOTUKCgpJJ20gd29u
+ZGVyaW5nIGlmIGluZGV4IGlzIGV4cGVjdGVkIHRvIGJlY29tZSBzb21ldGltZXMgc28gYmlnLgoK
+LS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJpbnQ6IDdCMUEg
+MDdGNCBFQzgyIDBGOTAgRDRDMiA4OTM2IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0tLS0tLS0tLS0t
 LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tClNoYXBlIHRoZSBNb2JpbGUgRXhwZXJpZW5jZTogRnJlZSBTdWJz
-Y3JpcHRpb24KU29mdHdhcmUgZXhwZXJ0cyBhbmQgZGV2ZWxvcGVyczogQmUgYXQgdGhlIGZvcmVm
-cm9udCBvZiB0ZWNoIGlubm92YXRpb24uCkludGVsKFIpIFNvZnR3YXJlIEFkcmVuYWxpbmUgZGVs
-aXZlcnMgc3RyYXRlZ2ljIGluc2lnaHQgYW5kIGdhbWUtY2hhbmdpbmcgCmNvbnZlcnNhdGlvbnMg
-dGhhdCBzaGFwZSB0aGUgcmFwaWRseSBldm9sdmluZyBtb2JpbGUgbGFuZHNjYXBlLiBTaWduIHVw
-IG5vdy4gCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD02MzQz
-MTMxMSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXIt
-bW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+LS0tLS0tLS0tLQpTaGFwZSB0aGUgTW9iaWxlIEV4cGVyaWVuY2U6IEZyZWUgU3Vic2NyaXB0aW9u
+ClNvZnR3YXJlIGV4cGVydHMgYW5kIGRldmVsb3BlcnM6IEJlIGF0IHRoZSBmb3JlZnJvbnQgb2Yg
+dGVjaCBpbm5vdmF0aW9uLgpJbnRlbChSKSBTb2Z0d2FyZSBBZHJlbmFsaW5lIGRlbGl2ZXJzIHN0
+cmF0ZWdpYyBpbnNpZ2h0IGFuZCBnYW1lLWNoYW5naW5nIApjb252ZXJzYXRpb25zIHRoYXQgc2hh
+cGUgdGhlIHJhcGlkbHkgZXZvbHZpbmcgbW9iaWxlIGxhbmRzY2FwZS4gU2lnbiB1cCBub3cuIApo
+dHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9NjM0MzEzMTEmaXU9
+LzQxNDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGlu
+dXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
