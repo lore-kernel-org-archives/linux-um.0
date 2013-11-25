@@ -1,58 +1,86 @@
-Return-Path: <geert@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 12 Nov 2013 20:42:27 +0100
-Message-Id: <1384285347-13506-18-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1384285347-13506-1-git-send-email-geert@linux-m68k.org>
-References: <1384285347-13506-1-git-send-email-geert@linux-m68k.org>
-Subject: [PATCH 17/17] um: Remove unused declarations from <as-layout.h>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bharrosh@panasas.com>) id 1VkzjG-0000yR-QW
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Nov 2013 17:13:46 +0000
+Received: from natasha.panasas.com ([209.166.131.148])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VkzjF-0006gk-Bz for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Nov 2013 17:13:46 +0000
+Message-ID: <52938537.8010204@panasas.com>
+Date: Mon, 25 Nov 2013 19:13:27 +0200
+From: Boaz Harrosh <bharrosh@panasas.com>
+MIME-Version: 1.0
+References: <20131122060223.GP9991@yliu-dev.sh.intel.com>
+	<2845101.Wgsx5afvdX@sandpuppy> <52936758.405@panasas.com>
+	<1438760.zvSCZ2cKYN@sandpuppy>
+In-Reply-To: <1438760.zvSCZ2cKYN@sandpuppy>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] WARNING: CPU: 0 PID: 1 at init/main.c:711
+	do_one_initcall()
+To: Richard Weinberger <richard@nod.at>
+Cc: Yuanhan Liu <yuanhan.liu@linux.intel.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-_end is used, but it's already provided by <asm/sections.h>, so use that.
+On 11/25/2013 05:09 PM, Richard Weinberger wrote:
+> Am Montag, 25. November 2013, 17:06:00 schrieb Boaz Harrosh:
+>>> Sad to hear.
+>>> Did you try one from http://fs.devloop.org.uk/?
+>>> Just booted a FC18 on UML. Works fine.
+>>
+>> I just tried this exact one last week. (It gets stuck half way through boot)
+>> Could you post me the .config file you used, and command line, and/or any
+>> other info?
+> 
+> Just did (on x86_64):
+> 
+> $ make defconfig ARCH=um
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net
----
- arch/um/include/shared/as-layout.h |    3 ---
- arch/um/kernel/um_arch.c           |    1 +
- 2 files changed, 1 insertion(+), 3 deletions(-)
+For some reason this one (I'm on FC17 x86_64) did not pick up the CONFIG_64BIT
+and compiled a 32bit uml (I should have suspected when build failed with missing
+gnu/stubs-32.h which is in an glibc-devel.i686 package) So after crashing very
+fast I finally inspected under xconfig, fixing that ...
 
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index 694c792bab4e..41c8c774ec10 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -44,7 +44,6 @@ struct cpu_task {
- 
- extern struct cpu_task cpu_tasks[];
- 
--extern unsigned long low_physmem;
- extern unsigned long high_physmem;
- extern unsigned long uml_physmem;
- extern unsigned long uml_reserved;
-@@ -52,8 +51,6 @@ extern unsigned long end_vm;
- extern unsigned long start_vm;
- extern unsigned long long highmem;
- 
--extern unsigned long _stext, _etext, _sdata, _edata, __bss_start, _end;
--extern unsigned long _unprotected_end;
- extern unsigned long brk_start;
- 
- extern unsigned long host_task_size;
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 9fce866b0416..c44139833212 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -17,6 +17,7 @@
- #include <asm/byteorder.h>
- #include <asm/pgtable.h>
- #include <asm/processor.h>
-+#include <asm/sections.h>
- #include <asm/setup.h>
- #include <as-layout.h>
- #include <arch.h>
--- 
-1.7.9.5
+> $ make -j 4 linux ARCH=um
+> $ ./linux ubda=../Fedora18-AMD64-root_fs mem=512M
+> 
 
+My god it works. I even have networking now. I guess the start from
+scratch defconfig, did it for me, go figure. I had a .config that would
+load FC15 but not FC17-FC18. (the new one loads both)
+
+I'll try to put some load on it now. For a long time UM would crap under
+load. Where in FC13 it would run (very slow) under the same load, on FC15
+it would crash. Will report if you want.
+
+> Thanks,
+> //richard
+> 
+
+Thank you! Sir Richard.
+Boaz
+
+
+------------------------------------------------------------------------------
+Shape the Mobile Experience: Free Subscription
+Software experts and developers: Be at the forefront of tech innovation.
+Intel(R) Software Adrenaline delivers strategic insight and game-changing 
+conversations that shape the rapidly evolving mobile landscape. Sign up now. 
+http://pubads.g.doubleclick.net/gampad/clk?id=63431311&iu=/4140/ostg.clktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
