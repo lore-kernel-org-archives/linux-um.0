@@ -1,20 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1Vm3oJ-0001Ur-BB
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bharrosh@panasas.com>) id 1Vm2m8-0001qT-5r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Nov 2013 15:47:23 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Vm3oH-0008E2-IC
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 28 Nov 2013 15:47:23 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Thu, 28 Nov 2013 16:47:13 +0100
-Message-ID: <11957281.y1PM5USAYd@sandpuppy>
-In-Reply-To: <529755F0.80509@panasas.com>
-References: <529755F0.80509@panasas.com>
+	Thu, 28 Nov 2013 14:41:04 +0000
+Received: from natasha.panasas.com ([209.166.131.148])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vm2m7-0005tf-9X for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Nov 2013 14:41:04 +0000
+Message-ID: <529755F0.80509@panasas.com>
+Date: Thu, 28 Nov 2013 16:40:48 +0200
+From: Boaz Harrosh <bharrosh@panasas.com>
 MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -28,46 +25,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] x86_64 when mem > 384M loadable modules do not work
-To: Boaz Harrosh <bharrosh@panasas.com>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] x86_64 when mem > 384M loadable modules do not work
+To: Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Am Donnerstag, 28. November 2013, 16:40:48 schrieb Boaz Harrosh:
-> Hi um hackers
-> 
-> I'm using an x86_64 deployment both host and um-guest.
-> (Fedora 18)
-> 
-> When I load with mem=384M all is well but anything bigger will
-> eventually give me problems because loadable modules will no
-> longer load. The bigger mem= is, the earlier it will start.
-> 
-> When the Kernel tries to load the .ko driver I get these messages:
-> 
-> subarch: overflow in relocation type 11 val 805b1e40
-> subarch: `nfsv4' likely not compiled with -mcmodel=kernel
-> subarch: overflow in relocation type 11 val 806e4ca0
-> subarch: `nfsv3' likely not compiled with -mcmodel=kernel
->    ...
-> 
-> (The first print is always around that same number
->  805b1e40 independent of the mem= (> 384M)
-> )
-> 
-> Do you guys see the same problem? I'm using loadable modules
-> because it is kind of mandatory for the kind of development I
-> do.
-> 
-> Please help because 384M is not enough for me anymore, even
-> when I define a swap device for the uml to use.
+Hi um hackers
 
-/me has a deja vu.
-I've fixed that issue some time ago.
+I'm using an x86_64 deployment both host and um-guest.
+(Fedora 18)
 
-Let's see why it happens again. :)
+When I load with mem=384M all is well but anything bigger will
+eventually give me problems because loadable modules will no
+longer load. The bigger mem= is, the earlier it will start.
 
-Thanks,
-//richard
+When the Kernel tries to load the .ko driver I get these messages:
+
+subarch: overflow in relocation type 11 val 805b1e40
+subarch: `nfsv4' likely not compiled with -mcmodel=kernel
+subarch: overflow in relocation type 11 val 806e4ca0
+subarch: `nfsv3' likely not compiled with -mcmodel=kernel
+   ...
+
+(The first print is always around that same number
+ 805b1e40 independent of the mem= (> 384M) 
+)
+
+Do you guys see the same problem? I'm using loadable modules
+because it is kind of mandatory for the kind of development I
+do.
+
+Please help because 384M is not enough for me anymore, even
+when I define a swap device for the uml to use.
+
+Thanks in advance
+Boaz
 
 ------------------------------------------------------------------------------
 Rapidly troubleshoot problems before they affect your business. Most IT 
