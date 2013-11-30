@@ -1,26 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1VmmuP-0004aR-03
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1VmltC-0004hg-JL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Nov 2013 15:56:41 +0000
-Received: from mout.gmx.net ([212.227.17.20])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1VmmuN-000223-L9
+	Sat, 30 Nov 2013 14:51:22 +0000
+Received: from mail-wg0-f51.google.com ([74.125.82.51])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1VmltB-0007oW-Py
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 30 Nov 2013 15:56:40 +0000
-Received: from [192.168.178.21] ([80.171.148.255]) by mail.gmx.com (mrgmx001)
-	with ESMTPSA (Nemesis) id 0MI5Ve-1Vl8DX0Ytq-003yGG for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sat, 30 Nov 2013 16:56:33
-	+0100
-Message-ID: <529A0AB0.1060107@gmx.de>
-Date: Sat, 30 Nov 2013 16:56:32 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Sat, 30 Nov 2013 14:51:22 +0000
+Received: by mail-wg0-f51.google.com with SMTP id b13so7273038wgh.18
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 30 Nov 2013 06:51:15 -0800 (PST)
 MIME-Version: 1.0
-References: <5299F818.4070408@gmx.de>	<5299F99D.9040503@gmx.de>
-	<CAFLxGvy4y7LpTzsbm6oNn3StFPS1gvKayeR0LcqaVBbz6haiQQ@mail.gmail.com>
-In-Reply-To: <CAFLxGvy4y7LpTzsbm6oNn3StFPS1gvKayeR0LcqaVBbz6haiQQ@mail.gmail.com>
+In-Reply-To: <5299F99D.9040503@gmx.de>
+References: <5299F818.4070408@gmx.de>
+	<5299F99D.9040503@gmx.de>
+Date: Sat, 30 Nov 2013 15:51:15 +0100
+Message-ID: <CAFLxGvy4y7LpTzsbm6oNn3StFPS1gvKayeR0LcqaVBbz6haiQQ@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,67 +29,78 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] does 3.12.2 breaks UML with "con=xterm" ?
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gMTEvMzAvMjAxMyAwMzo1MSBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IE9uIFNh
-dCwgTm92IDMwLCAyMDEzIGF0IDM6NDMgUE0sIFRvcmFsZiBGw7Zyc3RlciA8dG9yYWxmLmZvZXJz
-dGVyQGdteC5kZT4gd3JvdGU6Cj4+IE9uIDExLzMwLzIwMTMgMDM6MzcgUE0sIFRvcmFsZiBGw7Zy
-c3RlciB3cm90ZToKPj4+Cj4+PiBUb2RheSBJIHJlYWxpemVkIHRoYXQgYSBVTUwgY29yZXMgaWYg
-SSB1c2UgdGhlIHh0ZXJtIGZvciB0aGUgaW4vb3V0Lgo+Pj4KPj4+IEkgZG8gdXN1YWxseSB1c2Ug
-ImNvbjA9ZmQ6MCxmZDoxIGNvbj1wdHMiIHRvIHN0YXJ0IGEgMzJiaXQgVU1MIGJ1dCBiZWNhdXNl
-IHRoZSB4dGVybSB3YXkgd2FzIGZpbmUgZHVyaW5nIHRoZSBwYXN0IGZldyB3ZWVrcyAoeWVzLCBJ
-IGtub3csIGl0IHdhcyBicm9rZW4gZm9yIGEgbG9uZ2VyIHRpbWUgYmVmb3JlKSBhbmQgdGhlIG9u
-bHkgY2hhbmdlIHllc3RlcmRheSB3YXMgdG8gdXBncmFkZSBmcm9tIHZhbmlsbGEga2VybmVsIDMu
-MTIuMSB0byAzLjEyLjIgSSdtIHdvbmRlcmluZyBpZiB0aGVyZSdzIGEgInN1c3BpY291cyIgY29t
-bWl0IGluIHRoYXQgc3RhYmxlIGtlcm5lbCB3aGljaCBjb3VsZCBiZSB0aGUgcmVhc29uID8KPj4+
-Cj4+Pgo+Pj4gRldJVyA6Cj4+PiB0Zm9lcnN0ZUBuMjIgfiAkIGdkYiAtLWNvcmU9L21udC9yYW1k
-aXNrL2NvcmUgL2hvbWUvdGZvZXJzdGUvZGV2ZWwvbGludXgvbGludXggLW4gLWJhdGNoIC1leCBi
-dAo+Pj4gW05ldyBMV1AgMjk1NTldCj4+PiBDb3JlIHdhcyBnZW5lcmF0ZWQgYnkgYC9ob21lL3Rm
-b2Vyc3RlL2RldmVsL2xpbnV4L2xpbnV4IGVhcmx5cHJpbnRrIHViZGE9L2hvbWUvdGZvZXJzdGUv
-dmlydHVhbC91bWwvdHInLgo+Pj4gUHJvZ3JhbSB0ZXJtaW5hdGVkIHdpdGggc2lnbmFsIDExLCBT
-ZWdtZW50YXRpb24gZmF1bHQuCj4+PiAjMCAgZmluaXNoX3Rhc2tfc3dpdGNoIChwcmV2PTB4ZmZm
-ZjlkMmYsIHJxPTxvcHRpbWl6ZWQgb3V0PikgYXQga2VybmVsL3NjaGVkL2NvcmUuYzoxOTkzCj4+
-PiAxOTkzICAgICAgICAgICAgcHJldl9zdGF0ZSA9IHByZXYtPnN0YXRlOwo+Pj4gIzAgIGZpbmlz
-aF90YXNrX3N3aXRjaCAocHJldj0weGZmZmY5ZDJmLCBycT08b3B0aW1pemVkIG91dD4pIGF0IGtl
-cm5lbC9zY2hlZC9jb3JlLmM6MTk5Mwo+Pj4gIzEgIDB4MDg0Mjc0MTggaW4gY29udGV4dF9zd2l0
-Y2ggKG5leHQ9PG9wdGltaXplZCBvdXQ+LCBwcmV2PTB4NDZkOWVlY2MsIHJxPTxvcHRpbWl6ZWQg
-b3V0PikgYXQga2VybmVsL3NjaGVkL2NvcmUuYzoyMTMwCj4+PiAjMiAgX19zY2hlZHVsZSAoKSBh
-dCBrZXJuZWwvc2NoZWQvY29yZS5jOjI1NjgKPj4+ICMzICAweDA4NDI3NTA1IGluIHNjaGVkdWxl
-ICgpIGF0IGtlcm5lbC9zY2hlZC9jb3JlLmM6MjYwNAo+Pj4gIzQgIDB4MDgwOGI5MTIgaW4gc2ln
-c3VzcGVuZCAoc2V0PTB4NDZkOWVlY2MpIGF0IGtlcm5lbC9zaWduYWwuYzozNTU5Cj4+PiAjNSAg
-MHgwODA2NDZkOCBpbiB3aW5jaF90aHJlYWQgKGFyZz0weDQ2ZDllZWNjKSBhdCBhcmNoL3VtL2Ry
-aXZlcnMvY2hhbl91c2VyLmM6MjEwCj4+PiAjNiAgMHgwODNkYTM4ZSBpbiBjbG9uZSAoKQo+Pj4K
-Pj4+Cj4+Cj4+IFBmZiAtIGdsaWJjIHdhcyB1cGdyYWRlIGZyb20gMi4xNS1yMyB0byAyLjE2IHRv
-byAtIC9tZSBob3BlLCB0aGF0IGl0IGlzCj4+IG5vdCBnbGliYy4KPiAKCkkgZG8gYmVsaWV2ZSB0
-aGF0IGl0IGlzIHRoZSBnbGliYyAyLjE2IHVwZ3JhZGUuCgo+IFBsZWFzZSBtb3JlIGRldGFpbHMu
-CldpdGggMzIgYml0IGhvc3Qga2VybmVsICgzLjEyLjEgYW5kIDMuMTIuMikgYW5kIGN1cnJlbnQg
-dHJlZSBvZiBsaW51cyBhcyBndWVzdCBrZXJuZWwgKHRlc3RlZCBvbGRlciB0b286My4xMiwgMy4x
-MSAuLi4uKSBvbmUgb2YgdGhlIGxpbnV4IHByb2Nlc3NlcyBjcmFzaGVzIGltbWVkaWF0ZWx5IHVz
-aW5nIHRoaXMgc3RhcnQgY29tbWFuZCA6CgovaG9tZS90Zm9lcnN0ZS9kZXZlbC9saW51eC9saW51
-eCBlYXJseXByaW50ayB1YmRhPS9ob21lL3Rmb2Vyc3RlL3ZpcnR1YWwvdW1sL3RyaW5pdHkgdWJk
-Yj0vbW50L3JhbWRpc2svdHJpbml0eV9zd2FwIGV0aDA9dHVudGFwLHRhcDAsNzI6ZWY6M2Q6OWY6
-YzM6NWEgbWVtPTEwMjVNIGNvbj14dGVybSB1bWlkPXVtbF90cmluaXR5IHJvb3Rmc3R5cGU9ZXh0
-NAoKCj4gRG9lcyBpdCBjcmFzaCBpbW1lZGlhdGVseT8KeWVzLCBidXQgaXQgaXMgImp1c3QiIG9u
-ZSAob3IgbW9yZSA/KSBvZiB0aGUgcHJvY2Vzc2VzLCBhbGwgb3RoZXIgcHJvY2Vzc2VzICBjb250
-aW51ZXMsIHdoaWNoIGdhdmUgbGF0ZXIgYSBsb3Qgb2YgZGlmZmVyZW50IGVycm9yIHBpY3R1cmVz
-L2hhbmdzIHdoZW4gdGhlIFVNTCBpbWFnZSAoc3RhYmxlIDMyIGJpdCBHZW50b28gbGludXgpIHRy
-aWVzIHRvIHN0YXJ0IHNlcnZpY2VzIGR1cmluZyBib290LgoKLS0gCk1mRy9TaW5jZXJlbHkKVG9y
-YWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJpbnQ6IDdCMUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4
-OTM2IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpSYXBpZGx5IHRy
-b3VibGVzaG9vdCBwcm9ibGVtcyBiZWZvcmUgdGhleSBhZmZlY3QgeW91ciBidXNpbmVzcy4gTW9z
-dCBJVCAKb3JnYW5pemF0aW9ucyBkb24ndCBoYXZlIGEgY2xlYXIgcGljdHVyZSBvZiBob3cgYXBw
-bGljYXRpb24gcGVyZm9ybWFuY2UgCmFmZmVjdHMgdGhlaXIgcmV2ZW51ZS4gV2l0aCBBcHBEeW5h
-bWljcywgeW91IGdldCAxMDAlIHZpc2liaWxpdHkgaW50byB5b3VyIApKYXZhLC5ORVQsICYgUEhQ
-IGFwcGxpY2F0aW9uLiBTdGFydCB5b3VyIDE1LWRheSBGUkVFIFRSSUFMIG9mIEFwcER5bmFtaWNz
-IFBybyEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTg0MzQ5
-MzUxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1t
-b2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
-ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+On Sat, Nov 30, 2013 at 3:43 PM, Toralf F=F6rster <toralf.foerster@gmx.de> =
+wrote:
+> On 11/30/2013 03:37 PM, Toralf F=F6rster wrote:
+>>
+>> Today I realized that a UML cores if I use the xterm for the in/out.
+>>
+>> I do usually use "con0=3Dfd:0,fd:1 con=3Dpts" to start a 32bit UML but b=
+ecause the xterm way was fine during the past few weeks (yes, I know, it wa=
+s broken for a longer time before) and the only change yesterday was to upg=
+rade from vanilla kernel 3.12.1 to 3.12.2 I'm wondering if there's a "suspi=
+cous" commit in that stable kernel which could be the reason ?
+>>
+>>
+>> FWIW :
+>> tfoerste@n22 ~ $ gdb --core=3D/mnt/ramdisk/core /home/tfoerste/devel/lin=
+ux/linux -n -batch -ex bt
+>> [New LWP 29559]
+>> Core was generated by `/home/tfoerste/devel/linux/linux earlyprintk ubda=
+=3D/home/tfoerste/virtual/uml/tr'.
+>> Program terminated with signal 11, Segmentation fault.
+>> #0  finish_task_switch (prev=3D0xffff9d2f, rq=3D<optimized out>) at kern=
+el/sched/core.c:1993
+>> 1993            prev_state =3D prev->state;
+>> #0  finish_task_switch (prev=3D0xffff9d2f, rq=3D<optimized out>) at kern=
+el/sched/core.c:1993
+>> #1  0x08427418 in context_switch (next=3D<optimized out>, prev=3D0x46d9e=
+ecc, rq=3D<optimized out>) at kernel/sched/core.c:2130
+>> #2  __schedule () at kernel/sched/core.c:2568
+>> #3  0x08427505 in schedule () at kernel/sched/core.c:2604
+>> #4  0x0808b912 in sigsuspend (set=3D0x46d9eecc) at kernel/signal.c:3559
+>> #5  0x080646d8 in winch_thread (arg=3D0x46d9eecc) at arch/um/drivers/cha=
+n_user.c:210
+>> #6  0x083da38e in clone ()
+>>
+>>
+>
+> Pff - glibc was upgrade from 2.15-r3 to 2.16 too - /me hope, that it is
+> not glibc.
+
+Please more details.
+Does Linus' tree work?
+Does it crash immediately?
+...
+
+Just booted an UML with xterm. Works fine...
+
+-- =
+
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
+---
+Rapidly troubleshoot problems before they affect your business. Most IT =
+
+organizations don't have a clear picture of how application performance =
+
+affects their revenue. With AppDynamics, you get 100% visibility into your =
+
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics P=
+ro!
+http://pubads.g.doubleclick.net/gampad/clk?id=3D84349351&iu=3D/4140/ostg.cl=
+ktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
