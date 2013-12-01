@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1VnAUF-0000Mo-TQ
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1Vn48o-0003mw-02
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Dec 2013 17:07:15 +0000
-Received: from mout.gmx.net ([212.227.15.19])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1VnAUE-0000rL-FQ
+	Sun, 01 Dec 2013 10:20:42 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Vn48m-0003Je-B7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 01 Dec 2013 17:07:15 +0000
-Received: from [192.168.178.21] ([85.177.125.32]) by mail.gmx.com (mrgmx103)
-	with ESMTPSA (Nemesis) id 0MgKoE-1W0rc538Lu-00Nkqq for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 01 Dec 2013 18:07:08
-	+0100
-Message-ID: <529B6CB9.4060602@gmx.de>
-Date: Sun, 01 Dec 2013 18:07:05 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-MIME-Version: 1.0
+	Sun, 01 Dec 2013 10:20:41 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Sun, 01 Dec 2013 11:20:26 +0100
+Message-ID: <1423288.L1vGMMJNcF@sandpuppy>
+In-Reply-To: <529B0CBB.4020607@gmx.de>
 References: <5299F818.4070408@gmx.de> <1555258.aSymPdfuDx@sandpuppy>
-	<529B0CBB.4020607@gmx.de> <1423288.L1vGMMJNcF@sandpuppy>
-In-Reply-To: <1423288.L1vGMMJNcF@sandpuppy>
+	<529B0CBB.4020607@gmx.de>
+MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,138 +26,59 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] does 3.12.2 breaks UML with "con=xterm" ?
-To: Richard Weinberger <richard@nod.at>
+To: Toralf =?ISO-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gMTIvMDEvMjAxMyAxMToyMCBBTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIFNv
-bm50YWcsIDEuIERlemVtYmVyIDIwMTMsIDExOjE3OjMxIHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVy
-Ogo+PiBPbiAxMi8wMS8yMDEzIDEyOjE5IEFNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+
-Pj4+IGFmdGVyIGFub3RoZXIgbWludXRlIG5vdyBhbGwgeHRlcm1zIGFyZSBhd2F5IC4uLi4KPj4+
-Cj4+PiBTbywgaXQgZG9lcyBub3QgY3Jhc2ggaW1tZWRpYXRlbHkuCj4+Cj4+IFJpZ2h0LCB0byBi
-ZSBwcmVjaXNlLCBqdXN0IDEgc3ViLXByb2Nlc3MgY3Jhc2hlcyBpbW1lZGlhdGVseQo+Pgo+Pj4g
-UGxlYXNlIGRvIG5vdCB1c2UgeHRlcm0gZm9yIGNvbjAuIFN1Y2ggdGhhdCB3ZSBjYW4gc2VlIHRo
-ZSBrZXJuZWwgb3V0cHV0Cj4+PiBhZnRlciBhIGNyYXNoLgo+Pj4gTWF5YmUgdGhlcmUgYXJlIHNv
-bWUgZXJyb3IgbWVzc2FnZSBiZWZvcmUuLi4KPj4KPj4gV2l0aG91dCB4dGVybSBJIGRvIG5vdCBz
-ZWUgYW55IGVycm9ycyBleGNlcHQgdGhlICJ3aW5jaF90aHJlYWQgLi4uIiAtIGxpbmUuCj4gCj4g
-SSBtZWFudCB4dGVybSBmb3IgYWxsIGNvbnNvbGVzIGJ1dCBjb24wLi4uCj4gU3VjaCB0aGF0IHlv
-dSBjYW4gdHJpZ2dlciB0aGUgY3Jhc2ggYnV0IGFyZSBzdGlsbCBhYmxlIHRvIHNlZSB0aGUgb3V0
-cHV0Lgo+IApTdGlsbCB0cnlpbmcgdG8gZ2V0IGluZm8sIG5vIGx1Y2sgdGlsbCBub3cuCgoKQW5k
-IHRoZXNlIHN5c2xvZyBtZXNzYWdlcyBmcm9tIHRoZSAzMmJpdCB1bWwgZ3Vlc3QgKDMuMTItcmMy
-LWcuLi4pIGFyZSBqdXN0IGEgZmFsbG91dCBmcm9tIGEgY29yZWQgcHJvY2VzcyBJTU86CgoKCkRl
-YyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogPT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KRGVjICAx
-IDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBCVUcga21hbGxvYy02NCAoTm90IHRhaW50ZWQpOiBQ
-b2lzb24gb3ZlcndyaXR0ZW4KRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiAtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQpEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6CkRlYyAgMSAxNzo1
-OTozMCB0cmluaXR5IGtlcm5lbDogRGlzYWJsaW5nIGxvY2sgZGVidWdnaW5nIGR1ZSB0byBrZXJu
-ZWwgdGFpbnQKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBJTkZPOiAweDQ4YjU5ZGE1
-LTB4NDhiNTlkYWMuIEZpcnN0IGJ5dGUgMHhmZiBpbnN0ZWFkIG9mIDB4NmIKRGVjICAxIDE3OjU5
-OjMwIHRyaW5pdHkga2VybmVsOiBJTkZPOiBBbGxvY2F0ZWQgaW4gZXh0NF9odHJlZV9zdG9yZV9k
-aXJlbnQrMHgyZS8weDEyMCBhZ2U9ODE3IGNwdT0wIHBpZD0xMDc2CkRlYyAgMSAxNzo1OTozMCB0
-cmluaXR5IGtlcm5lbDogSU5GTzogRnJlZWQgaW4gZnJlZV9yYl90cmVlX2ZuYW1lKzB4M2IvMHhh
-MCBhZ2U9ODE3IGNwdT0wIHBpZD0xMDc2CkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDog
-SU5GTzogU2xhYiAweDBhODNmMjIwIG9iamVjdHM9MzYgdXNlZD0zNiBmcD0weCAgKG51bGwpIGZs
-YWdzPTB4MDA4MApEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IElORk86IE9iamVjdCAw
-eDQ4YjU5ZDkwIEBvZmZzZXQ9MzQ3MiBmcD0weDQ4YjU5NjIwCkRlYyAgMSAxNzo1OTozMCB0cmlu
-aXR5IGtlcm5lbDoKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBCeXRlcyBiNCA0OGI1
-OWQ4MDogY2MgMDMgMDAgMDAgMDcgOTggZmYgZmYgNWEgNWEgNWEgNWEgNWEgNWEgNWEgNWEgIC4u
-Li4uLi4uWlpaWlpaWloKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBPYmplY3QgNDhi
-NTlkOTA6IDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiICBr
-a2tra2tra2tra2tra2trCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogT2JqZWN0IDQ4
-YjU5ZGEwOiA2YiA2YiA2YiA2YiA2YiBmZiBmZSBmYiA3NyBmZSBmZiBmZiBmZiA2YiA2YiA2YiAg
-a2tra2suLi53Li4uLmtrawpEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IE9iamVjdCA0
-OGI1OWRiMDogNmIgNmIgNmIgNmIgNmIgNmIgNmIgNmIgNmIgNmIgNmIgNmIgNmIgNmIgNmIgNmIg
-IGtra2tra2tra2tra2tra2sKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBPYmplY3Qg
-NDhiNTlkYzA6IDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIGE1
-ICBra2tra2tra2tra2tra2suCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogUmVkem9u
-ZSA0OGI1OWRkMDogYmIgYmIgYmIgYmIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIC4uLi4KRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBQYWRkaW5nIDQ4YjU5ZGY4
-OiA1YSA1YSA1YSA1YSA1YSA1YSA1YSA1YSAgICAgICAgICAgICAgICAgICAgICAgICAgWlpaWlpa
-WloKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBDUFU6IDAgUElEOiAxMTQ3IENvbW06
-IGhhdmVnZWQgVGFpbnRlZDogRyAgICBCICAgICAgICAzLjEzLjAtcmMyLTAwMDAxLWdhZjkxNzA2
-ICMzCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogU3RhY2s6CkRlYyAgMSAxNzo1OToz
-MCB0cmluaXR5IGtlcm5lbDogMDg0YmY3OTMgMDg0YmY3OTMgNDgxZTdiNzAgMDAwMDAwMDQgMDg1
-ZDA1NDcgNDg4NDlkODAgNDhiNTlkOTAgMGE4M2YyMjAKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkg
-a2VybmVsOiA0ODFlN2I4MCAwODQyNDdlYiAwMDAwMDAwMCAwMDAwMDAwMCA0ODFlN2JiMCAwODBm
-YmVkOCAwODRkMDE2OCA0OGI1OWQ5MApEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IDAw
-MDAwZDkwIDQ4YjU5NjIwIDAwMDAwMDAwIDAwMDAwMDgwIDQ4YjU5MDAwIDQ4YjU5ZGE1IDBhODNm
-MjIwIDQ4ODQ5ZDgwCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogQ2FsbCBUcmFjZToK
-RGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBbPDA4NDI0N2ViPl0gZHVtcF9zdGFjaysw
-eDI2LzB4MjgKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBbPDA4MGZiZWQ4Pl0gcHJp
-bnRfdHJhaWxlcisweDExOC8weDEyMApEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IFs8
-MDgwZmMyOTI+XSBjaGVja19ieXRlc19hbmRfcmVwb3J0KzB4YjIvMHgxMTAKRGVjICAxIDE3OjU5
-OjMwIHRyaW5pdHkga2VybmVsOiBbPDA4MGZjNDBkPl0gY2hlY2tfb2JqZWN0KzB4MTFkLzB4MjIw
-CkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODBmZDBjOT5dID8gY2hlY2tfc2xh
-YisweGI5LzB4ZDAKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBbPDA4NDIzMWY5Pl0g
-YWxsb2NfZGVidWdfcHJvY2Vzc2luZysweDEzMC8weDE0MQpEZWMgIDEgMTc6NTk6MzAgdHJpbml0
-eSBrZXJuZWw6IFs8MDg0MjM3MDU+XSBfX3NsYWJfYWxsb2MuY29uc3Rwcm9wLjc1KzB4MzA1LzB4
-MzE5CkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODE4MDBkZT5dID8gZXh0NF9o
-dHJlZV9zdG9yZV9kaXJlbnQrMHgyZS8weDEyMApEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJu
-ZWw6IFs8MDgxODAwZGU+XSA/IGV4dDRfaHRyZWVfc3RvcmVfZGlyZW50KzB4MmUvMHgxMjAKRGVj
-ICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBbPDA4MGZkYWViPl0gX19rbWFsbG9jKzB4N2Iv
-MHgxNDAKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBbPDA4MTliMzUwPl0gPyBzdHIy
-aGFzaGJ1Zl9zaWduZWQrMHgwLzB4YjAKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBb
-PDA4MTgwMGRlPl0gPyBleHQ0X2h0cmVlX3N0b3JlX2RpcmVudCsweDJlLzB4MTIwCkRlYyAgMSAx
-Nzo1OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODE4MDBkZT5dIGV4dDRfaHRyZWVfc3RvcmVfZGly
-ZW50KzB4MmUvMHgxMjAKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBbPDA4MThmNDIw
-Pl0gaHRyZWVfZGlyYmxvY2tfdG9fdHJlZSsweDExMC8weDE2MApEZWMgIDEgMTc6NTk6MzAgdHJp
-bml0eSBrZXJuZWw6IFs8MDgxOGZjMzA+XSBleHQ0X2h0cmVlX2ZpbGxfdHJlZSsweGQwLzB4Mjcw
-CkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODQyMzM5Nz5dID8gZnJlZV9kZWJ1
-Z19wcm9jZXNzaW5nKzB4MThkLzB4MWY2CkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDog
-WzwwODEwYzZkMT5dID8gZmluYWxfcHV0bmFtZSsweDQxLzB4NTAKRGVjICAxIDE3OjU5OjMwIHRy
-aW5pdHkga2VybmVsOiBbPDA4MTdmODM1Pl0gPyBleHQ0X3JlYWRkaXIrMHg1NS8weDg5MApEZWMg
-IDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IFs8MDg0MjM4YTc+XSA/IF9fc2xhYl9mcmVlKzB4
-MThlLzB4MWY5CkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODE3ZjlhYz5dIGV4
-dDRfcmVhZGRpcisweDFjYy8weDg5MApEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IFs8
-MDgxMTBlN2M+XSA/IGRvX2ZpbHBfb3BlbisweDJjLzB4ODAKRGVjICAxIDE3OjU5OjMwIHRyaW5p
-dHkga2VybmVsOiBbPDA4MGZkYTA4Pl0gPyBrbWVtX2NhY2hlX2ZyZWUrMHhkOC8weDExMApEZWMg
-IDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IFs8MDgxMGM2ZDE+XSA/IGZpbmFsX3B1dG5hbWUr
-MHg0MS8weDUwCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODEwYzZkMT5dID8g
-ZmluYWxfcHV0bmFtZSsweDQxLzB4NTAKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBb
-PDA4MTE1Mjg1Pl0gaXRlcmF0ZV9kaXIrMHg1NS8weGIwCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5
-IGtlcm5lbDogWzwwODExNTQxZj5dIFN5U19nZXRkZW50cysweGFmLzB4MTUwCkRlYyAgMSAxNzo1
-OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODExNGYzMD5dID8gZmlsbGRpcisweDAvMHgxOTAKRGVj
-ICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBbPDA4MDY5M2IwPl0gPyBtY29uc29sZV9oYWx0
-KzB4MjAvMHgzMApEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IFs8MDgwNjkzYjA+XSA/
-IG1jb25zb2xlX2hhbHQrMHgyMC8weDMwCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDog
-WzwwODA2MmE5ND5dIGhhbmRsZV9zeXNjYWxsKzB4NjQvMHg4MApEZWMgIDEgMTc6NTk6MzAgdHJp
-bml0eSBrZXJuZWw6IFs8MDgwNjkzYjA+XSA/IG1jb25zb2xlX2hhbHQrMHgyMC8weDMwCkRlYyAg
-MSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODA2OTM5OD5dID8gbWNvbnNvbGVfaGFsdCsw
-eDgvMHgzMApEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IFs8MDgwNjkzYjA+XSA/IG1j
-b25zb2xlX2hhbHQrMHgyMC8weDMwCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogWzww
-ODNkNzBjMT5dID8gcHRyYWNlKzB4MzEvMHg4MApEZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJu
-ZWw6IFs8MDgwNzlmYjI+XSA/IGdldF9mcF9yZWdpc3RlcnMrMHgyMi8weDQwCkRlYyAgMSAxNzo1
-OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODA3NTA4NT5dIHVzZXJzcGFjZSsweDQ3NS8weDVmMApE
-ZWMgIDEgMTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IFs8MDgzZDcwYzE+XSA/IHB0cmFjZSsweDMx
-LzB4ODAKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOiBbPDA4MDdhNTE2Pl0gPyBvc19z
-ZXRfdGhyZWFkX2FyZWErMHgyNi8weDQwCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDog
-WzwwODA3OTUxMD5dID8gZG9fc2V0X3RocmVhZF9hcmVhKzB4MjAvMHg1MApEZWMgIDEgMTc6NTk6
-MzAgdHJpbml0eSBrZXJuZWw6IFs8MDgwNzk2ODg+XSA/IGFyY2hfc3dpdGNoX3RscysweGI4LzB4
-MTAwCkRlYyAgMSAxNzo1OTozMCB0cmluaXR5IGtlcm5lbDogWzwwODA1Zjc1MD5dIGZvcmtfaGFu
-ZGxlcisweDYwLzB4NzAKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOgpEZWMgIDEgMTc6
-NTk6MzAgdHJpbml0eSBrZXJuZWw6IEZJWCBrbWFsbG9jLTY0OiBSZXN0b3JpbmcgMHg0OGI1OWRh
-NS0weDQ4YjU5ZGFjPTB4NmIKRGVjICAxIDE3OjU5OjMwIHRyaW5pdHkga2VybmVsOgpEZWMgIDEg
-MTc6NTk6MzAgdHJpbml0eSBrZXJuZWw6IEZJWCBrbWFsbG9jLTY0OiBNYXJraW5nIGFsbCBvYmpl
-Y3RzIHVzZWQKCgo+Pgo+PiBCVFcgd3J0IHRoZSByYWRpeC10cmVlLWlzc3VlIHNlZW1zIHRoYXQg
-ZmVkb3JhIGhhcyBub3cgYSBzaW1pbGFyIGJ1Zwo+PiBvcGVuIDogaHR0cHM6Ly9idWd6aWxsYS5y
-ZWRoYXQuY29tL3Nob3dfYnVnLmNnaT9pZD0xMDE1MDI4Cj4gCj4gVGhhbmtzIGZvciB0aGUgaW5m
-byEKPiAKPiBUaGFua3MsCj4gLy9yaWNoYXJkCj4gCgoKLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxm
-IEbDtnJzdGVyCnBncCBmaW5nZXIgcHJpbnQ6IDdCMUEgMDdGNCBFQzgyIDBGOTAgRDRDMiA4OTM2
-IDg3MkEgRTUwOCA3REI2IDlEQTMKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpSYXBpZGx5IHRyb3Vi
-bGVzaG9vdCBwcm9ibGVtcyBiZWZvcmUgdGhleSBhZmZlY3QgeW91ciBidXNpbmVzcy4gTW9zdCBJ
-VCAKb3JnYW5pemF0aW9ucyBkb24ndCBoYXZlIGEgY2xlYXIgcGljdHVyZSBvZiBob3cgYXBwbGlj
-YXRpb24gcGVyZm9ybWFuY2UgCmFmZmVjdHMgdGhlaXIgcmV2ZW51ZS4gV2l0aCBBcHBEeW5hbWlj
-cywgeW91IGdldCAxMDAlIHZpc2liaWxpdHkgaW50byB5b3VyIApKYXZhLC5ORVQsICYgUEhQIGFw
-cGxpY2F0aW9uLiBTdGFydCB5b3VyIDE1LWRheSBGUkVFIFRSSUFMIG9mIEFwcER5bmFtaWNzIFBy
-byEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTg0MzQ5MzUx
-Jml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2Rl
-LWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
-cmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+Am Sonntag, 1. Dezember 2013, 11:17:31 schrieb Toralf F=F6rster:
+> On 12/01/2013 12:19 AM, Richard Weinberger wrote:
+> >> > after another minute now all xterms are away ....
+> > =
+
+> > So, it does not crash immediately.
+> =
+
+> Right, to be precise, just 1 sub-process crashes immediately
+> =
+
+> > Please do not use xterm for con0. Such that we can see the kernel output
+> > after a crash.
+> > Maybe there are some error message before...
+> =
+
+> Without xterm I do not see any errors except the "winch_thread ..." - lin=
+e.
+
+I meant xterm for all consoles but con0...
+Such that you can trigger the crash but are still able to see the output.
+
+> =
+
+> BTW wrt the radix-tree-issue seems that fedora has now a similar bug
+> open : https://bugzilla.redhat.com/show_bug.cgi?id=3D1015028
+
+Thanks for the info!
+
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
+---
+Rapidly troubleshoot problems before they affect your business. Most IT =
+
+organizations don't have a clear picture of how application performance =
+
+affects their revenue. With AppDynamics, you get 100% visibility into your =
+
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics P=
+ro!
+http://pubads.g.doubleclick.net/gampad/clk?id=3D84349351&iu=3D/4140/ostg.cl=
+ktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
