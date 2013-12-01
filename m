@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1VuNfY-00081a-TZ
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bharrosh@panasas.com>) id 1Vn5Th-0005a6-Vu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Dec 2013 14:36:44 +0000
-Received: from mout.gmx.net ([212.227.17.21])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1VuNfX-0004ED-9Y
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 Dec 2013 14:36:44 +0000
-Received: from [192.168.178.21] ([78.54.171.119]) by mail.gmx.com (mrgmx103)
-	with ESMTPSA (Nemesis) id 0MMTZa-1VreNG2oUY-008IlR for
-	<user-mode-linux-devel@lists.sourceforge.net>; Sat, 21 Dec 2013 15:36:36
-	+0100
-Message-ID: <52B5A773.3000705@gmx.de>
-Date: Sat, 21 Dec 2013 15:36:35 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Sun, 01 Dec 2013 11:46:22 +0000
+Received: from natasha.panasas.com ([209.166.131.148])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Vn5Th-000475-5t for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 01 Dec 2013 11:46:21 +0000
+Message-ID: <529B2182.7090006@panasas.com>
+Date: Sun, 1 Dec 2013 13:46:10 +0200
+From: Boaz Harrosh <bharrosh@panasas.com>
 MIME-Version: 1.0
+References: <529755F0.80509@panasas.com> <2225498.R88CYgz3JQ@sandpuppy>
+In-Reply-To: <2225498.R88CYgz3JQ@sandpuppy>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,54 +24,41 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] negative pid -516 possible ?
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: Re: [uml-devel] x86_64 when mem > 384M loadable modules do not work
+To: Richard Weinberger <richard@nod.at>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEEyNTYKClRyaW5pdHkn
-aW5nIGEgMzIgYml0IGxpbnV4IHVzZXIgbW9kZSBsaW51eCAoc3RpbGwgdGhlIHJhaWQgeCB0cmVl
-IGlzc3VlIC4uLi4pIGdpdmVzIGZvciBhIGd1ZXN0IDoKCnRmb2Vyc3RlQG4yMiB+ICQgZGF0ZTsg
-c3VkbyBnZGIgL2hvbWUvdGZvZXJzdGUvZGV2ZWwvbGludXgvbGludXggMTAwNDQgLW4gLWJhdGNo
-IC1leCAnYnQgZnVsbCcKU2F0IERlYyAyMSAxNTozMzowMyBDRVQgMjAxMwoweGI3NzEwNDI0IGlu
-IF9fa2VybmVsX3ZzeXNjYWxsICgpCiMwICAweGI3NzEwNDI0IGluIF9fa2VybmVsX3ZzeXNjYWxs
-ICgpCk5vIHN5bWJvbCB0YWJsZSBpbmZvIGF2YWlsYWJsZS4KIzEgIDB4MDgzZDVkMmYgaW4gX19u
-YW5vc2xlZXBfbm9jYW5jZWwgKCkKTm8gc3ltYm9sIHRhYmxlIGluZm8gYXZhaWxhYmxlLgojMiAg
-MHgwODA3MjY3YyBpbiBpZGxlX3NsZWVwIChuc2Vjcz02MDI0OTY0NjYxMDQ2NTM0NDApIGF0IGFy
-Y2gvdW0vb3MtTGludXgvdGltZS5jOjE4MwogICAgICAgIHRzID0ge3R2X3NlYyA9IDAsIHR2X25z
-ZWMgPSA2NDcxNzg5fQojMyAgMHgwODA1ZmMwZiBpbiBhcmNoX2NwdV9pZGxlICgpIGF0IGFyY2gv
-dW0va2VybmVsL3Byb2Nlc3MuYzoyMDgKTm8gbG9jYWxzLgojNCAgMHgwODBhODk4MSBpbiBjcHVf
-aWRsZV9sb29wICgpIGF0IGtlcm5lbC9jcHUvaWRsZS5jOjk4Ck5vIGxvY2Fscy4KIzUgIGNwdV9z
-dGFydHVwX2VudHJ5IChzdGF0ZT1DUFVIUF9PTkxJTkUpIGF0IGtlcm5lbC9jcHUvaWRsZS5jOjE0
-MApObyBsb2NhbHMuCiM2ICAweDA4NDIxZDAyIGluIHJlc3RfaW5pdCAoKSBhdCBpbml0L21haW4u
-Yzo0MDEKICAgICAgICBwaWQgPSAtNTE2CiM3ICAweDA4MDQ4N2UxIGluIHN0YXJ0X2tlcm5lbCAo
-KSBhdCBpbml0L21haW4uYzo2NTUKICAgICAgICBjb21tYW5kX2xpbmUgPSAweDg1YjY0MDAgPGNv
-bW1hbmRfbGluZT4gImVhcmx5cHJpbnRrIHViZGE9L2hvbWUvdGZvZXJzdGUvdmlydHVhbC91bWwv
-dHJpbml0eSB1YmRiPS9tbnQvcmFtZGlzay90cmluaXR5X3N3YXAgZXRoMD10dW50YXAsdGFwMCw3
-MjplZjozZDo5ZjpjMzo1YSBtZW09MTAyNU0gY29uMD1mZDowLGZkOjEgY29uPXB0cyByb290ZnN0
-eXBlPWV4dDQgIHJvb3Q9OTg6MCIKIzggIDB4MDgwNDllMDkgaW4gc3RhcnRfa2VybmVsX3Byb2Mg
-KHVudXNlZD0weDApIGF0IGFyY2gvdW0va2VybmVsL3NrYXMvcHJvY2Vzcy5jOjQ2CiAgICAgICAg
-cGlkID0gLTUxNgojOSAgMHgwODA1ZjdjYiBpbiBuZXdfdGhyZWFkX2hhbmRsZXIgKCkgYXQgYXJj
-aC91bS9rZXJuZWwvcHJvY2Vzcy5jOjEyOQogICAgICAgIGZuID0gMHgwCiMxMCAweDAwMDAwMDAw
-IGluID8/ICgpCk5vIHN5bWJvbCB0YWJsZSBpbmZvIGF2YWlsYWJsZS4KCgpJcyB0aGlzIGEgdmFs
-aWQgbnVtYmVyID8KCi0gLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVyCnBncCBmaW5n
-ZXIgcHJpbnQ6MUEzNyA2Rjk5IDRBOUQgMDI2RiAxM0UyIDREQ0YgQzRFQSBDRERFIDAwNzYgRTk0
-RQotLS0tLUJFR0lOIFBHUCBTSUdOQVRVUkUtLS0tLQpWZXJzaW9uOiBHbnVQRyB2Mi4wLjIyIChH
-TlUvTGludXgpCkNvbW1lbnQ6IFVzaW5nIEdudVBHIHdpdGggVGh1bmRlcmJpcmQgLSBodHRwOi8v
-d3d3LmVuaWdtYWlsLm5ldC8KCmlGNEVBUkVJQUFZRkFsSzFwM01BQ2drUXhPck4zZ0IyNlU1cmRB
-RC9hWmRONVNsemxOYWU2TlZReUFSYWVDRWgKamx5a2NVUWlJU0pCanpXV2JPc0EvM2hDVk4vSGhx
-TG1RZC9TSFJRblk1VEZkVm15dXRDU3NiQUR4dVpRaFBKUAo9VlN2ZAotLS0tLUVORCBQR1AgU0lH
-TkFUVVJFLS0tLS0KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpSYXBpZGx5IHRyb3VibGVzaG9vdCBw
-cm9ibGVtcyBiZWZvcmUgdGhleSBhZmZlY3QgeW91ciBidXNpbmVzcy4gTW9zdCBJVCAKb3JnYW5p
-emF0aW9ucyBkb24ndCBoYXZlIGEgY2xlYXIgcGljdHVyZSBvZiBob3cgYXBwbGljYXRpb24gcGVy
-Zm9ybWFuY2UgCmFmZmVjdHMgdGhlaXIgcmV2ZW51ZS4gV2l0aCBBcHBEeW5hbWljcywgeW91IGdl
-dCAxMDAlIHZpc2liaWxpdHkgaW50byB5b3VyIApKYXZhLC5ORVQsICYgUEhQIGFwcGxpY2F0aW9u
-LiBTdGFydCB5b3VyIDE1LWRheSBGUkVFIFRSSUFMIG9mIEFwcER5bmFtaWNzIFBybyEKaHR0cDov
-L3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTg0MzQ5ODMxJml1PS80MTQw
-L29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRl
-dmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
-aXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+On 11/28/2013 06:09 PM, Richard Weinberger wrote:
+> 
+> Does the attached patch fix the issue?
+> 
+
+Yes it is good. I'm very grateful. With this I now am able
+to fully stress the UML Fedora18 and almost not get stuck at all.
+
+(stuckness is usually do to stressed system and allocation
+ failing where Kernel would not cope, but an HW system would
+ fail just the same)
+
+> Thanks,
+> //richard
+> 
+
+Thank you sir Richard. One very happy camper here
+Boaz
+
+
+------------------------------------------------------------------------------
+Rapidly troubleshoot problems before they affect your business. Most IT 
+organizations don't have a clear picture of how application performance 
+affects their revenue. With AppDynamics, you get 100% visibility into your 
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
+http://pubads.g.doubleclick.net/gampad/clk?id=84349351&iu=/4140/ostg.clktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
