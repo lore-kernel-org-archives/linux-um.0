@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1Vnb6M-0000jc-0d
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1VnawE-0003uK-6p
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Dec 2013 21:32:22 +0000
-Received: from mout.gmx.net ([212.227.15.18])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Vnb6J-00035c-Rt
+	Mon, 02 Dec 2013 21:21:54 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VnawC-0001P6-6r
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Dec 2013 21:32:21 +0000
-Received: from [192.168.178.21] ([85.177.127.6]) by mail.gmx.com (mrgmx102)
-	with ESMTPSA (Nemesis) id 0M3MAG-1VVnCP1FAW-00qxet for
-	<user-mode-linux-devel@lists.sourceforge.net>; Mon, 02 Dec 2013 22:32:13
-	+0100
-Message-ID: <529CFC5B.60303@gmx.de>
-Date: Mon, 02 Dec 2013 22:32:11 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-MIME-Version: 1.0
+	Mon, 02 Dec 2013 21:21:54 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 02 Dec 2013 22:21:42 +0100
+Message-ID: <7306830.yvMa5tydAA@sandpuppy>
+In-Reply-To: <529B8893.1030703@gmx.de>
 References: <5299F818.4070408@gmx.de> <1423288.L1vGMMJNcF@sandpuppy>
-	<529B8893.1030703@gmx.de> <7306830.yvMa5tydAA@sandpuppy>
-In-Reply-To: <7306830.yvMa5tydAA@sandpuppy>
+	<529B8893.1030703@gmx.de>
+MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,59 +26,71 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] does 3.12.2 breaks UML with "con=xterm" ?
-To: Richard Weinberger <richard@nod.at>
+To: Toralf =?ISO-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gMTIvMDIvMjAxMyAxMDoyMSBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIFNv
-bm50YWcsIDEuIERlemVtYmVyIDIwMTMsIDIwOjA1OjU1IHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVy
-Ogo+PiBPbiAxMi8wMS8yMDEzIDExOjIwIEFNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+
-PiBJIG1lYW50IHh0ZXJtIGZvciBhbGwgY29uc29sZXMgYnV0IGNvbjAuLi4KPj4+IFN1Y2ggdGhh
-dCB5b3UgY2FuIHRyaWdnZXIgdGhlIGNyYXNoIGJ1dCBhcmUgc3RpbGwgYWJsZSB0byBzZWUgdGhl
-IG91dHB1dC4KPj4KPj4gTm90IHN1cmUgaWYgdGhlIDIgYXR0YWNoZWQgZmlsZXMgY29udGFpbnMg
-dXNlZnVsIGluZm8sIGJ1dCBoZXJlIHRoZXkgYXJlOgo+Pgo+PiBUaGUgYmFjayB0cmFjZSBvZiBh
-IGhhbmdpbmcgbGludXggcHJvY2VzcyA6Cj4+ICQ+c3VkbyBnZGIgL2hvbWUvdGZvZXJzdGUvZGV2
-ZWwvbGludXgvbGludXggMjcxNjIgLW4gLWJhdGNoIC1leCAnYnQgZnVsbCcgPgo+PiBidAo+Pgo+
-PiBhbmQgc3Rkb3V0LCBlcnJvciBhbmQgYnQgb2YgdGhlIGNvcmUgZmlsZSBmcm9tIHJvdW5kICMx
-OCBvZiB0aGlzIGNvbW1hbmQgOgo+Pgo+PiAkPiBJPTA7IHdoaWxlIFtbIDogXV07IGRvICgoST1J
-KzEpKTsgZWNobzsgZWNobzsgZWNobyAkSTsgZGF0ZTsgZm9yIGkgaW4KPj4gdHJpbml0eS5zaCB4
-dGVybSBsaW51eCBwb3J0LWhlbHBlciBzdGFydF91bWwuc2ggOyBkbyBwa2lsbCAkaTsgZG9uZTsg
-cm0gLWYKPj4gL21udC9yYW1kaXNrL2NvcmU7IHN0YXJ0X3VtbC5zaCAtciB+L3ZpcnR1YWwvdW1s
-L3RyaW5pdHkgLWwKPj4gL2hvbWUvdGZvZXJzdGUvZGV2ZWwvbGludXgvbGludXggLXkgJ2NvbjA9
-ZmQ6MCxmZDoxIGNvbj14dGVybScKPj4gMT4vbW50L3JhbWRpc2svJEkub3V0IDI+L21udC9yYW1k
-aXNrLyRJLmVycjsgW1sgLWYgL21udC9yYW1kaXNrL2NvcmUgXV0gJiYKPj4gZ2RiIC0tY29yZT0v
-bW50L3JhbWRpc2svY29yZSAvaG9tZS90Zm9lcnN0ZS9kZXZlbC9saW51eC9saW51eCAtbiAtYmF0
-Y2ggLWV4Cj4+ICdidCBmdWxsJyA+IC9tbnQvcmFtZGlzay8kSS5idDsgc2xlZXAgMTA7IGRvbmUK
-PiAKPiBXaGF0IEkgY2FuIHNlZSBpcyB0aGF0IFVNTCBwYW5pYygpZWQgYmVjYXVzZSBQVFJBQ0Vf
-U0VUUkVHUyBpcyBmYWlsaW5nIHdpdGggCj4gRVNSQ0guIFRoaXMgbWVhbnMgb25lIG9mIHRoZSBV
-TUwgU0tBUzAgaGVscGVyIHRocmVhZHMgZ290IGtpbGxlZCBhbmQgaXMgZ29uZS4KPiBUaGlzIGlz
-IHZlcnkgc3RyYW5nZSBhbmQgbWFrZXMgbWUgd29ycnksIGJlY2F1c2UgaW4gdGhpcyBzdGFnZSB0
-aGUgaGVscGVyIGlzIAo+IGluIHN0b3BwZWQgc3RhdGUgYW5kIGNhbm5vdCByZWFsbHkgZGllIGJ5
-IGFuIFVNTCBlcnJvci4gTG9va3MgbGlrZSBpdCBnb3QgCj4ga2lsbGVkIGZyb20gb3V0c2lkZS4K
-PiBJcyB5b3VyIGhvc3Qgc2V0dXAgMTAwJSBzYW5lPyA6KQoKSGhtIC0gSSd2ZSBoYWQgMSBzY3Jp
-cHQgcnVubmluZywgd2hpY2ggc3RhcnQgYW4gVU1MIC0gYW5kIGFub3RoZXIKc2NyaXB0LCB3aGlj
-aCBldmVyeSAzIG1pbnV0ZXMgc3NoIGludG8gdGhlIHN0YXJ0ZWQgVU1MIGFuZCBydW4gImhhbHQ7
-CmV4aXQiLiBCZWZvcmUgdGhhdCBJIG1hbnVhbGx5IGRpZCBib3RoIHN0ZXBzLgoKSSBsZXQgcnVu
-IHRoZSBzY3JpcHQgc29sdXRpb24gZm9yIGEgd2hpbGUgYW5kIGRpZCBkaWZmZXJlbnQgdGhpbmdz
-IC0gYnV0Cm9mIGNvdXJzZSBJIGNhbm5vdCBzd2VhciB0aGF0IEkgZGlkIG5vdCBieSBhY2NpZGVu
-dCByZWNhbGxlZCBhIGNvbW1hbmQKZnJvbSBhIGJhc2ggaGlzdG9yeSBjb21tYW5kIHdoaWNoIGtp
-bGxlZCBwcm9jZXNzZXMgKHdoaWNoIEkgZG8gaGF2ZQpyZWd1bGFybHkgdG8gZG8gaWYgSSB0ZXN0
-IHRoZSBVTUwgd2l0aCB0cmluaXR5KS4KClNvIGxpa2VseSBteSBmYXVsdCBoZXJlIC0geWVzLgoK
-Ci0tIApNZkcvU2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHByaW50OiA3QjFB
-IDA3RjQgRUM4MiAwRjkwIEQ0QzIgODkzNiA4NzJBIEU1MDggN0RCNiA5REEzCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KUmFwaWRseSB0cm91Ymxlc2hvb3QgcHJvYmxlbXMgYmVmb3JlIHRoZXkgYWZm
-ZWN0IHlvdXIgYnVzaW5lc3MuIE1vc3QgSVQgCm9yZ2FuaXphdGlvbnMgZG9uJ3QgaGF2ZSBhIGNs
-ZWFyIHBpY3R1cmUgb2YgaG93IGFwcGxpY2F0aW9uIHBlcmZvcm1hbmNlIAphZmZlY3RzIHRoZWly
-IHJldmVudWUuIFdpdGggQXBwRHluYW1pY3MsIHlvdSBnZXQgMTAwJSB2aXNpYmlsaXR5IGludG8g
-eW91ciAKSmF2YSwuTkVULCAmIFBIUCBhcHBsaWNhdGlvbi4gU3RhcnQgeW91ciAxNS1kYXkgRlJF
-RSBUUklBTCBvZiBBcHBEeW5hbWljcyBQcm8hCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5u
-ZXQvZ2FtcGFkL2Nsaz9pZD04NDM0OTM1MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2
-ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2Rl
-LWxpbnV4LWRldmVsCg==
+Am Sonntag, 1. Dezember 2013, 20:05:55 schrieb Toralf F=F6rster:
+> On 12/01/2013 11:20 AM, Richard Weinberger wrote:
+> > I meant xterm for all consoles but con0...
+> > Such that you can trigger the crash but are still able to see the outpu=
+t.
+> =
+
+> Not sure if the 2 attached files contains useful info, but here they are:
+> =
+
+> The back trace of a hanging linux process :
+> $>sudo gdb /home/tfoerste/devel/linux/linux 27162 -n -batch -ex 'bt full'=
+ >
+> bt
+> =
+
+> and stdout, error and bt of the core file from round #18 of this command :
+> =
+
+> $> I=3D0; while [[ : ]]; do ((I=3DI+1)); echo; echo; echo $I; date; for i=
+ in
+> trinity.sh xterm linux port-helper start_uml.sh ; do pkill $i; done; rm -f
+> /mnt/ramdisk/core; start_uml.sh -r ~/virtual/uml/trinity -l
+> /home/tfoerste/devel/linux/linux -y 'con0=3Dfd:0,fd:1 con=3Dxterm'
+> 1>/mnt/ramdisk/$I.out 2>/mnt/ramdisk/$I.err; [[ -f /mnt/ramdisk/core ]] &&
+> gdb --core=3D/mnt/ramdisk/core /home/tfoerste/devel/linux/linux -n -batch=
+ -ex
+> 'bt full' > /mnt/ramdisk/$I.bt; sleep 10; done
+
+What I can see is that UML panic()ed because PTRACE_SETREGS is failing with =
+
+ESRCH. This means one of the UML SKAS0 helper threads got killed and is gon=
+e.
+This is very strange and makes me worry, because in this stage the helper i=
+s =
+
+in stopped state and cannot really die by an UML error. Looks like it got =
+
+killed from outside.
+Is your host setup 100% sane? :)
+
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
+---
+Rapidly troubleshoot problems before they affect your business. Most IT =
+
+organizations don't have a clear picture of how application performance =
+
+affects their revenue. With AppDynamics, you get 100% visibility into your =
+
+Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics P=
+ro!
+http://pubads.g.doubleclick.net/gampad/clk?id=3D84349351&iu=3D/4140/ostg.cl=
+ktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
