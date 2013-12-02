@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1VnawE-0003uK-6p
+	(envelope-from <bharrosh@panasas.com>) id 1VnWZl-0003iY-NU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Dec 2013 21:21:54 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VnawC-0001P6-6r
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Dec 2013 21:21:54 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 02 Dec 2013 22:21:42 +0100
-Message-ID: <7306830.yvMa5tydAA@sandpuppy>
-In-Reply-To: <529B8893.1030703@gmx.de>
-References: <5299F818.4070408@gmx.de> <1423288.L1vGMMJNcF@sandpuppy>
-	<529B8893.1030703@gmx.de>
+	Mon, 02 Dec 2013 16:42:25 +0000
+Received: from natasha.panasas.com ([209.166.131.148])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1VnWZk-0001Ew-PG for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Dec 2013 16:42:25 +0000
+Message-ID: <529CB864.1070208@panasas.com>
+Date: Mon, 2 Dec 2013 18:42:12 +0200
+From: Boaz Harrosh <bharrosh@panasas.com>
 MIME-Version: 1.0
+References: <5299F818.4070408@gmx.de> <1555258.aSymPdfuDx@sandpuppy>
+	<529B0CBB.4020607@gmx.de> <1423288.L1vGMMJNcF@sandpuppy>
+	<529B8893.1030703@gmx.de>
+In-Reply-To: <529B8893.1030703@gmx.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,71 +26,74 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] does 3.12.2 breaks UML with "con=xterm" ?
-To: Toralf =?ISO-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Cc: Richard Weinberger <richard@nod.at>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Am Sonntag, 1. Dezember 2013, 20:05:55 schrieb Toralf F=F6rster:
-> On 12/01/2013 11:20 AM, Richard Weinberger wrote:
-> > I meant xterm for all consoles but con0...
-> > Such that you can trigger the crash but are still able to see the outpu=
-t.
-> =
-
-> Not sure if the 2 attached files contains useful info, but here they are:
-> =
-
-> The back trace of a hanging linux process :
-> $>sudo gdb /home/tfoerste/devel/linux/linux 27162 -n -batch -ex 'bt full'=
- >
-> bt
-> =
-
-> and stdout, error and bt of the core file from round #18 of this command :
-> =
-
-> $> I=3D0; while [[ : ]]; do ((I=3DI+1)); echo; echo; echo $I; date; for i=
- in
-> trinity.sh xterm linux port-helper start_uml.sh ; do pkill $i; done; rm -f
-> /mnt/ramdisk/core; start_uml.sh -r ~/virtual/uml/trinity -l
-> /home/tfoerste/devel/linux/linux -y 'con0=3Dfd:0,fd:1 con=3Dxterm'
-> 1>/mnt/ramdisk/$I.out 2>/mnt/ramdisk/$I.err; [[ -f /mnt/ramdisk/core ]] &&
-> gdb --core=3D/mnt/ramdisk/core /home/tfoerste/devel/linux/linux -n -batch=
- -ex
-> 'bt full' > /mnt/ramdisk/$I.bt; sleep 10; done
-
-What I can see is that UML panic()ed because PTRACE_SETREGS is failing with =
-
-ESRCH. This means one of the UML SKAS0 helper threads got killed and is gon=
-e.
-This is very strange and makes me worry, because in this stage the helper i=
-s =
-
-in stopped state and cannot really die by an UML error. Looks like it got =
-
-killed from outside.
-Is your host setup 100% sane? :)
-
-Thanks,
-//richard
-
----------------------------------------------------------------------------=
----
-Rapidly troubleshoot problems before they affect your business. Most IT =
-
-organizations don't have a clear picture of how application performance =
-
-affects their revenue. With AppDynamics, you get 100% visibility into your =
-
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics P=
-ro!
-http://pubads.g.doubleclick.net/gampad/clk?id=3D84349351&iu=3D/4140/ostg.cl=
-ktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gMTIvMDEvMjAxMyAwOTowNSBQTSwgVG9yYWxmIEbDtnJzdGVyIHdyb3RlOgo+IEtlcm5lbCBw
+YW5pYyAtIG5vdCBzeW5jaW5nOiBkb19zeXNjYWxsX3N0dWIgOiBQVFJBQ0VfU0VUUkVHUyBmYWls
+ZWQsIGVycm5vID0gMwo+IAo+IENQVTogMCBQSUQ6IDEyNjUgQ29tbTogcm1kaXIgVGFpbnRlZDog
+RyAgICAgICAgVyAgICAzLjEzLjAtcmMyLTAwMDAxLWdhZjkxNzA2ICMzCj4gU3RhY2s6Cj4gIDA4
+NGJmNzkzIDA4NGJmNzkzIDQ2ZDQ3YmI4IDAwMDAwMDA0IDA4NWQwNTQ3IDAwMDA2ZjkxIDAwMDAw
+MDAzIDAwMDAwMDExCj4gIDQ2ZDQ3YmM4IDA4NDI0N2ViIDAwMDAwMDAwIDAwMDAwMDAwIDQ2ZDQ3
+YmYwIDA4NDIxYzUwIDA4NGNiMjAwIDA4NjA3NzIwCj4gIDA4NGM4MDg0IDQ2ZDQ3YzAwIDAwMDAw
+MDAwIDAwMDA2ZjkxIDAwMDAwMDAzIDAwMDAwMDExIDQ2ZDQ3YzI0IDA4MDczZDU1Cj4gQ2FsbCBU
+cmFjZToKPiAgWzwwODA3M2Q1NT5dID8gcnVuX3N5c2NhbGxfc3R1YisweDEyNS8weDJjMAo+ICBb
+PDA4NDI0N2ViPl0gZHVtcF9zdGFjaysweDI2LzB4MjgKPiAgWzwwODQyMWM1MD5dIHBhbmljKzB4
+N2EvMHgxODAKPiAgWzwwODA3M2Q1NT5dIHJ1bl9zeXNjYWxsX3N0dWIrMHgxMjUvMHgyYzAKPiAg
+WzwwODBjYmE4OD5dID8gdW5sb2NrX3BhZ2UrMHgyOC8weDMwCj4gIFs8MDgwNzQyOWY+XSBtYXAr
+MHhmZi8weDExMAo+ICBbPDA4MDYxNmZmPl0gZmx1c2hfdGxiX3BhZ2UrMHhlZi8weDFkMAo+ICBb
+PDA4MDYxZGIxPl0gaGFuZGxlX3BhZ2VfZmF1bHQrMHgyNDEvMHgyOTAKPiAgWzwwODA2MmM5ZT5d
+IGRvX29wX29uZV9wYWdlKzB4NWUvMHgxYTAKPiAgWzwwODA3MWRmZT5dID8gc2V0X3NpZ25hbHMr
+MHgxZS8weDQwCj4gIFs8MDgwYTNlNzE+XSA/IHVwX3dyaXRlKzB4MTEvMHgyMAo+ICBbPDA4MDYy
+ZTE5Pl0gYnVmZmVyX29wKzB4MzkvMHhmMAo+ICBbPDA4MDYyYWYwPl0gPyBjbGVhcl9jaHVuaysw
+eDAvMHgzMAo+ICBbPDA4MDYzMTY5Pl0gY2xlYXJfdXNlcisweDY5LzB4OTAKPiAgWzwwODA2MmFm
+MD5dID8gY2xlYXJfY2h1bmsrMHgwLzB4MzAKPiAgWzwwODBkZjAwZT5dID8gdm1fbW1hcCsweDRl
+LzB4NjAKPiAgWzwwODE0OWY3Mz5dIHBhZHplcm8rMHgyMy8weDQwCj4gIFs8MDgxNGJlYzk+XSBs
+b2FkX2VsZl9iaW5hcnkrMHhhZDkvMHhlNjAKPiAgWzwwODA1MjMwND5dID8gaW5pdF96c3dhcCsw
+eGExLzB4MjFlCj4gIFs8MDgwNTIxNjA+XSA/IF9fYWxsb2NfYm9vdG1lbV9ub2RlX2hpZ2grMHgx
+ZC8weDI4Cj4gIFs8MDgwNTFmMTQ+XSA/IF9fYWxsb2NfYm9vdG1lbV9ub3BhbmljKzB4MS8weDJj
+Cj4gIFs8MDgwNTA5ZjQ+XSA/IHBjcHVfc2V0dXBfZmlyc3RfY2h1bmsrMHg1MjcvMHg4MzQKPiAg
+WzwwODEwOWJkNT5dIHNlYXJjaF9iaW5hcnlfaGFuZGxlcisweDM1LzB4OTAKPiAgWzwwODEwYTA1
+NT5dIGRvX2V4ZWN2ZSsweDQyNS8weDY4MAo+ICBbPDA4MTAzNWEwPl0gPyBkZWZhdWx0X2xsc2Vl
+aysweDcwLzB4MTUwCj4gIFs8MDgxMDM3ODg+XSA/IFN5U19sbHNlZWsrMHgxOC8weGQwCj4gIFs8
+MDgxMGE1YjI+XSBTeVNfZXhlY3ZlKzB4NDIvMHg2MAo+ICBbPDA4MTAzNWEwPl0gPyBkZWZhdWx0
+X2xsc2VlaysweDcwLzB4MTUwCj4gIFs8MDgxMDM3ODg+XSA/IFN5U19sbHNlZWsrMHgxOC8weGQw
+Cj4gIFs8MDgxMDM1ZDg+XSA/IGRlZmF1bHRfbGxzZWVrKzB4YTgvMHgxNTAKPiAgWzwwODA2MmE5
+ND5dIGhhbmRsZV9zeXNjYWxsKzB4NjQvMHg4MAo+ICBbPDA4MTAzNGEwPl0gPyBnZW5lcmljX2Zp
+bGVfbGxzZWVrKzB4NDAvMHg2MAo+ICBbPDA4MTAzNWEwPl0gPyBkZWZhdWx0X2xsc2VlaysweDcw
+LzB4MTUwCj4gIFs8MDgxMDM3ODg+XSA/IFN5U19sbHNlZWsrMHgxOC8weGQwCj4gIFs8MDgxMDM1
+YTA+XSA/IGRlZmF1bHRfbGxzZWVrKzB4NzAvMHgxNTAKPiAgWzwwODEwMzVkOD5dID8gZGVmYXVs
+dF9sbHNlZWsrMHhhOC8weDE1MAo+ICBbPDA4M2Q3MGMxPl0gPyBwdHJhY2UrMHgzMS8weDgwCj4g
+IFs8MDgwNzlmYjI+XSA/IGdldF9mcF9yZWdpc3RlcnMrMHgyMi8weDQwCj4gIFs8MDgwNzUwODU+
+XSB1c2Vyc3BhY2UrMHg0NzUvMHg1ZjAKPiAgWzwwODNkNzBjMT5dID8gcHRyYWNlKzB4MzEvMHg4
+MAo+ICBbPDA4MDdhNTE2Pl0gPyBvc19zZXRfdGhyZWFkX2FyZWErMHgyNi8weDQwCj4gIFs8MDgw
+Nzk1MTA+XSA/IGRvX3NldF90aHJlYWRfYXJlYSsweDIwLzB4NTAKPiAgWzwwODA3OTY4OD5dID8g
+YXJjaF9zd2l0Y2hfdGxzKzB4YjgvMHgxMDAKPiAgWzwwODA1Zjc1MD5dIGZvcmtfaGFuZGxlcisw
+eDYwLzB4NzAKCgpUaGlzIGNsZWFyX3VzZXIoKSBzdGFjay10cmFjZSByZW1pbmRzIG1lIGEgbG90
+IG9mIHRoZSBwcm9ibGVtIEkganVzdApoYWQsIGFuZCBSaWNoYXJkIHNvbHZlZCBmb3IgbWUuCgpJ
+dCB3YXMgdGhhdCBJIHVzZWQgYW4gIm1ha2Ugb2xkY29uZmlnIiB3aXRoIGEgcHJldmlvdXMgS2Vy
+bmVsCi5jb25maWcgZmlsZS4gV2hlbiBkb2luZyBhIG5ldyAibWFrZSBkZWZjb25maWciIHRoZW4g
+bWFudWFsbHkKIm1ha2UgeGNvbmZpZyIgdG8gdHVybiBvbiB0aGUgZXh0cmFzIEkgbmVlZCBsaWtl
+IGlzY3NpIGFuZCBwbmZzCkl0IGFsbCB3ZW50IGJhY2sgdG8gZmluZS4KCihBbHNvIGZvciBtZSBo
+b3N0IGFuZCBndWVzdCA2NGJpdCwgSSBoYWQgdG8gbWFudWFsbHkgc2V0CiA2NGJpdCBmb3IgdGhl
+IGd1ZXN0IGNvbXBpbGF0aW9uLikKCltXaGljaCB3YXMgYSBzbWFjayBvbiBteSBvd24gaGVhZCBi
+ZWNhdXNlIEkga25vdyBmcm9tIHRoZSBwYXN0CiB0aGF0IFVNTCBuZWVkcyBhIGdvb2QnbiBmcmVz
+aCAibWFrZSBkZWZjb25maWciIGV2ZXJ5IG9uY2UgaW4gYQogd2hpbGUuIEFuZCBJIGp1c3QgZm9y
+Z290IGFib3V0IHRoYXRdCgpKdXN0IG15ICQwLjAxNwpCb2F6CgoKLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tClJhcGlkbHkgdHJvdWJsZXNob290IHByb2JsZW1zIGJlZm9yZSB0aGV5IGFmZmVjdCB5b3Vy
+IGJ1c2luZXNzLiBNb3N0IElUIApvcmdhbml6YXRpb25zIGRvbid0IGhhdmUgYSBjbGVhciBwaWN0
+dXJlIG9mIGhvdyBhcHBsaWNhdGlvbiBwZXJmb3JtYW5jZSAKYWZmZWN0cyB0aGVpciByZXZlbnVl
+LiBXaXRoIEFwcER5bmFtaWNzLCB5b3UgZ2V0IDEwMCUgdmlzaWJpbGl0eSBpbnRvIHlvdXIgCkph
+dmEsLk5FVCwgJiBQSFAgYXBwbGljYXRpb24uIFN0YXJ0IHlvdXIgMTUtZGF5IEZSRUUgVFJJQUwg
+b2YgQXBwRHluYW1pY3MgUHJvIQpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBh
+ZC9jbGs/aWQ9ODQzNDkzNTEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxp
+bmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBz
+Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1k
+ZXZlbAo=
 
