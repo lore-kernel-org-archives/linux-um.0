@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gregkh@linuxfoundation.org>) id 1Vpwbj-0004YY-Gz
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1VpvM5-0004hU-7b
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Dec 2013 08:54:27 +0000
-Received: from mail.linuxfoundation.org ([140.211.169.12])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vpwbh-0004ew-Nl for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Dec 2013 08:54:27 +0000
-Date: Mon, 9 Dec 2013 00:20:14 -0800
-From: Greg KH <gregkh@linuxfoundation.org>
-Message-ID: <20131209082014.GA26598@kroah.com>
-References: <2103356.guehJfKbl6@sandpuppy>
+	Mon, 09 Dec 2013 07:34:13 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1VpvM3-0000C0-2k
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 Dec 2013 07:34:13 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 09 Dec 2013 08:33:59 +0100
+Message-ID: <2103356.guehJfKbl6@sandpuppy>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2103356.guehJfKbl6@sandpuppy>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,23 +26,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Please add: um: add missing declaration of
- 'getrlimit()' and friends
-To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, stable@vger.kernel.org
+Subject: [uml-devel] Please add: um: add missing declaration of
+	'getrlimit()' and friends
+To: stable@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-On Mon, Dec 09, 2013 at 08:33:59AM +0100, Richard Weinberger wrote:
-> Hi Greg,
-> 
-> please add commit fdfa4c952844fce881df8c76de9c7180cbe913ab (um: add missing 
-> declaration of 'getrlimit()' and friends) to -stable.
-> The change was introduced in 3.9 and needs backporting to all stable trees.
+Hi Greg,
 
-Which "all"?  Newer than 3.9 you mean?
+please add commit fdfa4c952844fce881df8c76de9c7180cbe913ab (um: add missing 
+declaration of 'getrlimit()' and friends) to -stable.
+The change was introduced in 3.9 and needs backporting to all stable trees.
 
-thanks,
-
-greg k-h
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Sponsored by Intel(R) XDK 
