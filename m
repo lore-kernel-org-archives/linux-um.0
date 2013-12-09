@@ -1,21 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gregkh@linuxfoundation.org>) id 1Vq5oE-0006no-S3
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <luis.henriques@canonical.com>) id 1Vq2ed-0000kV-P3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Dec 2013 18:43:58 +0000
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+	Mon, 09 Dec 2013 15:21:51 +0000
+Received: from youngberry.canonical.com ([91.189.89.112])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Vq5oD-0005d7-RS for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Dec 2013 18:43:58 +0000
-Date: Mon, 9 Dec 2013 10:45:26 -0800
-From: Greg KH <gregkh@linuxfoundation.org>
-Message-ID: <20131209184526.GB29335@kroah.com>
-References: <2103356.guehJfKbl6@sandpuppy> <20131209082014.GA26598@kroah.com>
+	id 1Vq2ec-0001TV-8Y for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 09 Dec 2013 15:21:51 +0000
+Date: Mon, 9 Dec 2013 15:21:39 +0000
+From: Luis Henriques <luis.henriques@canonical.com>
+Message-ID: <20131209152138.GH4278@hercules>
+References: <2103356.guehJfKbl6@sandpuppy>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20131209082014.GA26598@kroah.com>
+In-Reply-To: <2103356.guehJfKbl6@sandpuppy>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,20 +33,25 @@ Subject: Re: [uml-devel] Please add: um: add missing declaration of
 To: Richard Weinberger <richard@nod.at>
 Cc: user-mode-linux-devel@lists.sourceforge.net, stable@vger.kernel.org
 
-On Mon, Dec 09, 2013 at 12:20:14AM -0800, Greg KH wrote:
-> On Mon, Dec 09, 2013 at 08:33:59AM +0100, Richard Weinberger wrote:
-> > Hi Greg,
-> > 
-> > please add commit fdfa4c952844fce881df8c76de9c7180cbe913ab (um: add missing 
-> > declaration of 'getrlimit()' and friends) to -stable.
-> > The change was introduced in 3.9 and needs backporting to all stable trees.
+On Mon, Dec 09, 2013 at 08:33:59AM +0100, Richard Weinberger wrote:
+> Hi Greg,
 > 
-> Which "all"?  Newer than 3.9 you mean?
+> please add commit fdfa4c952844fce881df8c76de9c7180cbe913ab (um: add missing 
+> declaration of 'getrlimit()' and friends) to -stable.
+> The change was introduced in 3.9 and needs backporting to all stable trees.
+> 
+> Thanks,
+> //richard
+> --
+> To unsubscribe from this list: send the line "unsubscribe stable" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Sorry, that should be "older".  I've queued it up for 3.4-stable now,
-thanks.
+Thanks, I'm queuing it for the 3.5 kernel.
 
-greg k-h
+Cheers,
+--
+Luis
 
 ------------------------------------------------------------------------------
 Sponsored by Intel(R) XDK 
