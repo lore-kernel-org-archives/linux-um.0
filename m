@@ -1,79 +1,70 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Tue, 3 Dec 2013 15:02:14 +0100
-From: Jan Kara <jack@suse.cz>
-Message-ID: <20131203140214.GB31128@quack.suse.cz>
-References: <529217CD.1000204@gmx.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-In-Reply-To: <529217CD.1000204@gmx.de>
+From: Luis Henriques <luis.henriques@canonical.com>
+Date: Tue, 10 Dec 2013 14:29:21 +0000
+Message-Id: <1386685761-12095-1-git-send-email-luis.henriques@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: why does index in truncate_inode_pages_range() grows so much ?
-To: Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: [3.5.y.z extended stable] Patch "um: add missing declaration of 'getrlimit()' and friends" has been added to staging queue
+To: Sergei Trofimovich <slyfox@gentoo.org>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, Luis Henriques <luis.henriques@canonical.com>, kernel-team@lists.ubuntu.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sun 24-11-13 16:14:21, Toralf F=F6rster wrote:
-> At a 32 bit guest UML with current kernel git tree I putted a printk
-> into that function :
->=20
-> void truncate_inode_pages_range(struct address_space *mapping,
->                                 loff_t lstart, loff_t lend)
-> {
-> ...
->=20
->=20
->                 cond_resched();
->                 index++;
-> 		printk ("            <------------
->=20
->=20
->=20
->=20
-> and got (while fuzzying the UML guest with trinity) this output in th=
-e
-> UML guest:
->=20
->=20
-> Nov 24 12:06:53 trinity kernel: index:42 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:43 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:5 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1035468800 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:16 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:4 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:2 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:4184867847 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:3 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1727 end:4294967295
-> Nov 24 12:06:53 trinity kernel: index:1 end:4294967295
->=20
->=20
-> I'm wondering if index is expected to become sometimes so big.
-  No, I wouldn't expect such huge indices. OTOH with fuzzing there coul=
-d be
-some valid explanations. Could you move the printk before
-pagevec_release(), print also 'start' variable and in case 'index' is
-suspiciously large, print also 'i' and some info about the page pvec[i]
-page (page->index, page->flags, page->mapping->host->i_sb->s_id,
-page->mapping->host->i_ino)?
+This is a note to let you know that I have just added a patch titled
 
-								Honza
---=20
-Jan Kara <jack@suse.cz>
-SUSE Labs, CR
+    um: add missing declaration of 'getrlimit()' and friends
+
+to the linux-3.5.y-queue branch of the 3.5.y.z extended stable tree 
+which can be found at:
+
+ http://kernel.ubuntu.com/git?p=ubuntu/linux.git;a=shortlog;h=refs/heads/linux-3.5.y-queue
+
+If you, or anyone else, feels it should not be added to this tree, please 
+reply to this email.
+
+For more information about the 3.5.y.z tree, see
+https://wiki.ubuntu.com/Kernel/Dev/ExtendedStable
+
+Thanks.
+-Luis
+
+------
+
+From e79e33d9a4e1a528efc11b7cc3d5eba0871451f8 Mon Sep 17 00:00:00 2001
+From: Sergei Trofimovich <slyfox@gentoo.org>
+Date: Sun, 30 Dec 2012 01:37:30 +0300
+Subject: um: add missing declaration of 'getrlimit()' and friends
+
+commit fdfa4c952844fce881df8c76de9c7180cbe913ab upstream.
+
+arch/um/os-Linux/start_up.c: In function 'check_coredump_limit':
+arch/um/os-Linux/start_up.c:338:16: error: storage size of 'lim' isn't known
+arch/um/os-Linux/start_up.c:339:2: error: implicit declaration of function 'getrlimit' [-Werror=implicit-function-declaration]
+
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+CC: Jeff Dike <jdike@addtoit.com>
+CC: Richard Weinberger <richard@nod.at>
+CC: Al Viro <viro@zeniv.linux.org.uk>
+CC: user-mode-linux-devel@lists.sourceforge.net
+CC: user-mode-linux-user@lists.sourceforge.net
+CC: linux-kernel@vger.kernel.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Luis Henriques <luis.henriques@canonical.com>
+---
+ arch/um/os-Linux/start_up.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 425162e..2f53b89 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -15,6 +15,8 @@
+ #include <sys/mman.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
++#include <sys/time.h>
++#include <sys/resource.h>
+ #include <asm/unistd.h>
+ #include "init.h"
+ #include "os.h"
 --
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+1.8.3.2
 
