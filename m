@@ -1,112 +1,53 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <antoine@nagafix.co.uk>) id 1VptiF-0004gW-H8
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Dec 2013 05:48:59 +0000
-Received: from mail.nagafix.co.uk ([194.145.196.85])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VptiE-00040R-2h for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Dec 2013 05:48:59 +0000
-Message-ID: <52A55556.7090009@nagafix.co.uk>
-Date: Mon, 09 Dec 2013 12:29:58 +0700
-From: Antoine Martin <antoine@nagafix.co.uk>
-MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5743678671916618983=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] 3.4.73 affected by "uml: signal.c build errors"
-To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Luis Henriques <luis.henriques@canonical.com>
+Date: Tue, 17 Dec 2013 18:12:38 +0000
+Message-Id: <1387304012-23805-50-git-send-email-luis.henriques@canonical.com>
+In-Reply-To: <1387304012-23805-1-git-send-email-luis.henriques@canonical.com>
+References: <1387304012-23805-1-git-send-email-luis.henriques@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 3.5 049/103] um: add missing declaration of 'getrlimit()' and friends
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org, kernel-team@lists.ubuntu.com
+Cc: Sergei Trofimovich <slyfox@gentoo.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Luis Henriques <luis.henriques@canonical.com>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---===============5743678671916618983==
-Content-Type: multipart/alternative;
-	boundary="------------060408080808030508080409"
+3.5.7.28 -stable review patch.  If anyone has any objections, please let me know.
 
-This is a multi-part message in MIME format.
---------------060408080808030508080409
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+------------------
 
-Hi Richard,
+From: Sergei Trofimovich <slyfox@gentoo.org>
 
-Not sure how this got fixed in HEAD, but the same fix needs to be
-applied on top of 3.4.73
-I've just added the includes to arch/um/os-Linux/start_up.c, as per:
-https://lkml.org/lkml/2012/10/24/791
-And the kernel builds again.
+commit fdfa4c952844fce881df8c76de9c7180cbe913ab upstream.
 
-Compile-tested-by: Antoine Martin <antoine@nagafix.co.uk>
+arch/um/os-Linux/start_up.c: In function 'check_coredump_limit':
+arch/um/os-Linux/start_up.c:338:16: error: storage size of 'lim' isn't known
+arch/um/os-Linux/start_up.c:339:2: error: implicit declaration of function 'getrlimit' [-Werror=implicit-function-declaration]
 
-Cheers
-Antoine
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+CC: Jeff Dike <jdike@addtoit.com>
+CC: Richard Weinberger <richard@nod.at>
+CC: Al Viro <viro@zeniv.linux.org.uk>
+CC: user-mode-linux-devel@lists.sourceforge.net
+CC: user-mode-linux-user@lists.sourceforge.net
+CC: linux-kernel@vger.kernel.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Luis Henriques <luis.henriques@canonical.com>
+---
+ arch/um/os-Linux/start_up.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---------------060408080808030508080409
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<html>
-  <head>
-
-    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    Hi Richard,<br>
-    <br>
-    Not sure how this got fixed in HEAD, but the same fix needs to be
-    applied on top of 3.4.73<br>
-    I've just added the includes to
-    <meta http-equiv="content-type" content="text/html;
-      charset=ISO-8859-1">
-    <meta http-equiv="content-type" content="text/html;
-      charset=ISO-8859-1">
-    arch/um/os-Linux/start_up.c, as per:<br>
-    <meta http-equiv="content-type" content="text/html;
-      charset=ISO-8859-1">
-    <a href="https://lkml.org/lkml/2012/10/24/791">https://lkml.org/lkml/2012/10/24/791</a><br>
-    And the kernel builds again.<br>
-    <br>
-    Compile-tested-by: Antoine Martin <a class="moz-txt-link-rfc2396E" href="mailto:antoine@nagafix.co.uk">&lt;antoine@nagafix.co.uk&gt;</a><br>
-    <br>
-    Cheers<br>
-    Antoine<br>
-  </body>
-</html>
-
---------------060408080808030508080409--
-
-
---===============5743678671916618983==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Sponsored by Intel(R) XDK 
-Develop, test and display web and hybrid apps with a single code base.
-Download it for free now!
-http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
---===============5743678671916618983==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============5743678671916618983==--
-
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 425162e..2f53b89 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -15,6 +15,8 @@
+ #include <sys/mman.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
++#include <sys/time.h>
++#include <sys/resource.h>
+ #include <asm/unistd.h>
+ #include "init.h"
+ #include "os.h"
+-- 
+1.8.3.2
 
