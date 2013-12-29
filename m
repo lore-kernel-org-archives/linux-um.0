@@ -1,25 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stian@nixia.no>) id 1VxGFU-0006K6-Dx
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1VxFry-0004Oh-TP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Dec 2013 13:17:44 +0000
-Received: from [195.159.66.51] (helo=ramslauken.nlc.no)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1VxGFS-0001EV-SK for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 29 Dec 2013 13:17:44 +0000
-Received: from mail.polarparty.no (ramslauken.nlc.no [195.159.66.51])
-	(Authenticated sender: stian@nixia.no)
-	by ramslauken.nlc.no (Postfix) with ESMTPA id 89C841D1DCC
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 29 Dec 2013 14:14:38 +0100 (CET)
+	Sun, 29 Dec 2013 12:53:26 +0000
+Received: from mout.gmx.net ([212.227.15.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1VxFrx-0008Rl-PR
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Dec 2013 12:53:26 +0000
+Received: from [192.168.178.21] ([78.54.137.146]) by mail.gmx.com (mrgmx101)
+	with ESMTPSA (Nemesis) id 0MZ8fw-1Vj1Kl12U8-00L0jC for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 29 Dec 2013 13:53:19
+	+0100
+Message-ID: <52C01B3D.3010508@gmx.de>
+Date: Sun, 29 Dec 2013 13:53:17 +0100
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-Date: Sun, 29 Dec 2013 14:14:38 +0100
-From: stian@nixia.no
-In-Reply-To: <52C01B3D.3010508@gmx.de>
-References: <52B5A773.3000705@gmx.de> <52C01B3D.3010508@gmx.de>
-Message-ID: <d0b8642ac645400c9e1bf7e4f7d8a4d2@nixia.no>
+References: <52B5A773.3000705@gmx.de>
+In-Reply-To: <52B5A773.3000705@gmx.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,47 +29,59 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] negative pid -516 possible ?
-To: user-mode-linux-devel@lists.sourceforge.net
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
->> #6  0x08421d02 in rest_init () at init/main.c:401
->>         pid = -516
->> #7  0x080487e1 in start_kernel () at init/main.c:655
->>         command_line = 0x85b6400 <command_line> "earlyprintk 
->> ubda=/home/tfoerste/virtual/uml/trinity ubdb=/mnt/ramdisk/trinity_swap 
->> eth0=tuntap,tap0,72:ef:3d:9f:c3:5a mem=1025M con0=fd:0,fd:1 con=pts 
->> rootfstype=ext4  root=98:0"
->> #8  0x08049e09 in start_kernel_proc (unused=0x0) at 
->> arch/um/kernel/skas/process.c:46
->>         pid = -516
->> #9  0x0805f7cb in new_thread_handler () at 
->> arch/um/kernel/process.c:129
->>         fn = 0x0
->> #10 0x00000000 in ?? ()
->> No symbol table info available.
->>
->>
->> Is this a valid number ?
-> I'm asking b/c there's no process group id 516, and -516 always
-> happens in the back traces.
-> And furthermore after a while the UML system does no longer serve any
-> ssh login attempts.
-
-516 ==  -ERESTART_RESTARTBLOCK  ??
-
-Stian
-
-------------------------------------------------------------------------------
-Rapidly troubleshoot problems before they affect your business. Most IT 
-organizations don't have a clear picture of how application performance 
-affects their revenue. With AppDynamics, you get 100% visibility into your 
-Java,.NET, & PHP application. Start your 15-day FREE TRIAL of AppDynamics Pro!
-http://pubads.g.doubleclick.net/gampad/clk?id=84349831&iu=/4140/ostg.clktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEEyNTYKCk9uIDEyLzIx
+LzIwMTMgMDM6MzYgUE0sIFRvcmFsZiBGw7Zyc3RlciB3cm90ZToKPiBUcmluaXR5J2luZyBhIDMy
+IGJpdCBsaW51eCB1c2VyIG1vZGUgbGludXggKHN0aWxsIHRoZSByYWlkIHggdHJlZSBpc3N1ZSAu
+Li4uKSBnaXZlcyBmb3IgYSBndWVzdCA6Cj4gCj4gdGZvZXJzdGVAbjIyIH4gJCBkYXRlOyBzdWRv
+IGdkYiAvaG9tZS90Zm9lcnN0ZS9kZXZlbC9saW51eC9saW51eCAxMDA0NCAtbiAtYmF0Y2ggLWV4
+ICdidCBmdWxsJwo+IFNhdCBEZWMgMjEgMTU6MzM6MDMgQ0VUIDIwMTMKPiAweGI3NzEwNDI0IGlu
+IF9fa2VybmVsX3ZzeXNjYWxsICgpCj4gIzAgIDB4Yjc3MTA0MjQgaW4gX19rZXJuZWxfdnN5c2Nh
+bGwgKCkKPiBObyBzeW1ib2wgdGFibGUgaW5mbyBhdmFpbGFibGUuCj4gIzEgIDB4MDgzZDVkMmYg
+aW4gX19uYW5vc2xlZXBfbm9jYW5jZWwgKCkKPiBObyBzeW1ib2wgdGFibGUgaW5mbyBhdmFpbGFi
+bGUuCj4gIzIgIDB4MDgwNzI2N2MgaW4gaWRsZV9zbGVlcCAobnNlY3M9NjAyNDk2NDY2MTA0NjUz
+NDQwKSBhdCBhcmNoL3VtL29zLUxpbnV4L3RpbWUuYzoxODMKPiAgICAgICAgIHRzID0ge3R2X3Nl
+YyA9IDAsIHR2X25zZWMgPSA2NDcxNzg5fQo+ICMzICAweDA4MDVmYzBmIGluIGFyY2hfY3B1X2lk
+bGUgKCkgYXQgYXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jOjIwOAo+IE5vIGxvY2Fscy4KPiAjNCAg
+MHgwODBhODk4MSBpbiBjcHVfaWRsZV9sb29wICgpIGF0IGtlcm5lbC9jcHUvaWRsZS5jOjk4Cj4g
+Tm8gbG9jYWxzLgo+ICM1ICBjcHVfc3RhcnR1cF9lbnRyeSAoc3RhdGU9Q1BVSFBfT05MSU5FKSBh
+dCBrZXJuZWwvY3B1L2lkbGUuYzoxNDAKPiBObyBsb2NhbHMuCj4gIzYgIDB4MDg0MjFkMDIgaW4g
+cmVzdF9pbml0ICgpIGF0IGluaXQvbWFpbi5jOjQwMQo+ICAgICAgICAgcGlkID0gLTUxNgo+ICM3
+ICAweDA4MDQ4N2UxIGluIHN0YXJ0X2tlcm5lbCAoKSBhdCBpbml0L21haW4uYzo2NTUKPiAgICAg
+ICAgIGNvbW1hbmRfbGluZSA9IDB4ODViNjQwMCA8Y29tbWFuZF9saW5lPiAiZWFybHlwcmludGsg
+dWJkYT0vaG9tZS90Zm9lcnN0ZS92aXJ0dWFsL3VtbC90cmluaXR5IHViZGI9L21udC9yYW1kaXNr
+L3RyaW5pdHlfc3dhcCBldGgwPXR1bnRhcCx0YXAwLDcyOmVmOjNkOjlmOmMzOjVhIG1lbT0xMDI1
+TSBjb24wPWZkOjAsZmQ6MSBjb249cHRzIHJvb3Rmc3R5cGU9ZXh0NCAgcm9vdD05ODowIgo+ICM4
+ICAweDA4MDQ5ZTA5IGluIHN0YXJ0X2tlcm5lbF9wcm9jICh1bnVzZWQ9MHgwKSBhdCBhcmNoL3Vt
+L2tlcm5lbC9za2FzL3Byb2Nlc3MuYzo0Ngo+ICAgICAgICAgcGlkID0gLTUxNgo+ICM5ICAweDA4
+MDVmN2NiIGluIG5ld190aHJlYWRfaGFuZGxlciAoKSBhdCBhcmNoL3VtL2tlcm5lbC9wcm9jZXNz
+LmM6MTI5Cj4gICAgICAgICBmbiA9IDB4MAo+ICMxMCAweDAwMDAwMDAwIGluID8/ICgpCj4gTm8g
+c3ltYm9sIHRhYmxlIGluZm8gYXZhaWxhYmxlLgo+IAo+IAo+IElzIHRoaXMgYSB2YWxpZCBudW1i
+ZXIgPwo+IAo+IAoKSSdtIGFza2luZyBiL2MgdGhlcmUncyBubyBwcm9jZXNzIGdyb3VwIGlkIDUx
+NiwgYW5kIC01MTYgYWx3YXlzIGhhcHBlbnMgaW4gdGhlIGJhY2sgdHJhY2VzLgpBbmQgZnVydGhl
+cm1vcmUgYWZ0ZXIgYSB3aGlsZSB0aGUgVU1MIHN5c3RlbSBkb2VzIG5vIGxvbmdlciBzZXJ2ZSBh
+bnkgc3NoIGxvZ2luIGF0dGVtcHRzLgoKLSAtLSAKTWZHL1NpbmNlcmVseQpUb3JhbGYgRsO2cnN0
+ZXIKcGdwIGZpbmdlciBwcmludDoxQTM3IDZGOTkgNEE5RCAwMjZGIDEzRTIgNERDRiBDNEVBIENE
+REUgMDA3NiBFOTRFCi0tLS0tQkVHSU4gUEdQIFNJR05BVFVSRS0tLS0tClZlcnNpb246IEdudVBH
+IHYyLjAuMjIgKEdOVS9MaW51eCkKQ29tbWVudDogVXNpbmcgR251UEcgd2l0aCBUaHVuZGVyYmly
+ZCAtIGh0dHA6Ly93d3cuZW5pZ21haWwubmV0LwoKaUY0RUFSRUlBQVlGQWxMQUd6d0FDZ2tReE9y
+TjNnQjI2VTRHYUFEK0ovQVczTFRnZW9vVGVoeTR2SXcxUVFPNApvMW02dy8zSXN5NEpoVkUvR0JR
+QS9BcXFxTmV1TFJKc1hyRzBpM05wUmlEOUlwQWlYYnppZURhRlFGT25jR2U1Cj03QnM2Ci0tLS0t
+RU5EIFBHUCBTSUdOQVRVUkUtLS0tLQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClJhcGlkbHkgdHJv
+dWJsZXNob290IHByb2JsZW1zIGJlZm9yZSB0aGV5IGFmZmVjdCB5b3VyIGJ1c2luZXNzLiBNb3N0
+IElUIApvcmdhbml6YXRpb25zIGRvbid0IGhhdmUgYSBjbGVhciBwaWN0dXJlIG9mIGhvdyBhcHBs
+aWNhdGlvbiBwZXJmb3JtYW5jZSAKYWZmZWN0cyB0aGVpciByZXZlbnVlLiBXaXRoIEFwcER5bmFt
+aWNzLCB5b3UgZ2V0IDEwMCUgdmlzaWJpbGl0eSBpbnRvIHlvdXIgCkphdmEsLk5FVCwgJiBQSFAg
+YXBwbGljYXRpb24uIFN0YXJ0IHlvdXIgMTUtZGF5IEZSRUUgVFJJQUwgb2YgQXBwRHluYW1pY3Mg
+UHJvIQpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9ODQzNDk4
+MzEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1v
+ZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
+Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
