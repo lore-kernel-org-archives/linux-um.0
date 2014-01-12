@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1W2naX-0002kl-B8
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1W2UL9-0001Dx-0f
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Jan 2014 19:54:21 +0000
-Received: from mout.gmx.net ([212.227.15.18])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1W2naV-0000NQ-7q
+	Sun, 12 Jan 2014 23:21:11 +0000
+Received: from mail-we0-f181.google.com ([74.125.82.181])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1W2UL7-0001em-Ic
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Jan 2014 19:54:21 +0000
-Received: from [192.168.178.21] ([78.54.168.138]) by mail.gmx.com (mrgmx001)
-	with ESMTPSA (Nemesis) id 0LxPuE-1VJHbi0HBC-01701s for
-	<user-mode-linux-devel@lists.sourceforge.net>; Mon, 13 Jan 2014 20:54:12
-	+0100
-Message-ID: <52D44462.8040808@gmx.de>
-Date: Mon, 13 Jan 2014 20:54:10 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Sun, 12 Jan 2014 23:21:10 +0000
+Received: by mail-we0-f181.google.com with SMTP id u56so3611176wes.40
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 12 Jan 2014 15:21:03 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <52D12125.9060001@gmx.de>
 References: <52D12125.9060001@gmx.de>
-	<CAFLxGvwrbAm5mRkje+TFgpr1Q+UoBEZQxmTaxvwv+6-GwGpMbA@mail.gmail.com>
-In-Reply-To: <CAFLxGvwrbAm5mRkje+TFgpr1Q+UoBEZQxmTaxvwv+6-GwGpMbA@mail.gmail.com>
+Date: Mon, 13 Jan 2014 00:21:03 +0100
+Message-ID: <CAFLxGvwrbAm5mRkje+TFgpr1Q+UoBEZQxmTaxvwv+6-GwGpMbA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,193 +28,210 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] negative pid -516 possible ?
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEEyNTYKCk9uIDAxLzEz
-LzIwMTQgMTI6MjEgQU0sIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPiBPbiBTYXQsIEphbiAx
-MSwgMjAxNCBhdCAxMTo0NyBBTSwgVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYuZm9lcnN0ZXJAZ214
-LmRlPiB3cm90ZToKPiBJIGRvIGZ1enogdGVzdGluZyB3aXRoIHRyaW5pdHkgKGxhdGVzdCBnaXQg
-dmVyc2lvbikgYSBzdGFibGUgMzIgYml0IEdlbnRvbyBMaW51eCB1c2VyIG1vZGUgbGludXggaW1h
-Z2UuCj4gVGhlIGhvc3QgaXMgYSBzdGFibGUgMzIgYml0IHZhbmlsbGEgMy4xMi43IGtlcm5lbCwg
-dGhlIGd1ZXN0IHJ1bnMgbGF0ZXN0IGdpdCB0cmVlICsgMiBwYXRjaGVzIChhdHRhY2hlZCkuCj4g
-Cj4gVGhlIHRyaW5pdHkgY2FsbCBpbiB0aGUgVU1MIGd1ZXN0IGlzIDoKPiAkPiB0cmluaXR5IC1x
-IC1sIG9mZiAtTiAxMDAwMCAtQyAyIC14IG1vdmVfcGFnZXMgLXggbXJlbWFwIC12IC9tbnQvcmFt
-ZGlzawo+IAo+IEFmdGVyIGEgd2hpbGUgdGhlcmUncyBubyBwcm9ncmVzcyBvbiB0aGUgY29tbWFu
-ZCBsaW5lIHNlZW4gYXQgdGhlIGhvc3Qgc3lzdGVtIC0gdGhlIHRyaW5pdHkgcHJvY2VzcyBzZWVt
-cyB0byBqdXN0IGhhbmdzL2lkbGluZy4gV2hlbiB0aGlzIGRvZXMgb2NjdXIgSSBjYW5ub3QgbG9u
-Z2VyIHNzaCBpbnRvIHRoZSBzeXN0ZW0uIFRoZSBzeXN0ZW0gaG93ZXZlciBydW5zIGZ1cnRoZXJt
-b3JlLiBJbiBhbm90aGVyIHRlcm1pbmFsIEkgc3RpbGwgc2VlIHRoZSBvdXRwdXQgb2YgdGhpcyBj
-b21tYW5kOgo+IAo+PiBEb2VzIGl0IGNvbnN1bWUgMTAwJSBDUFU/Cj4gCk5vLgpJdCBqdXN0IGRv
-ZXNudCBhbGxvdyBuZXcgc3NoIGNvbm5lY3Rpb25zLiBFeGlzdGluZyBzc2ggY29uZW5jdGlub3Mg
-YXJlIHN0aWxsIHdvcmtpbmcuCgo+ICQ+IHNzaCByb290QHRyaW5pdHkgInRhaWwgLWYgL3Zhci9s
-b2cvbWVzc2FnZXMiCj4gCj4gVGhhdCdzIHdoeSBJIGRvIGtub3cgdGhhdCB0aGUgc3lzdGVtIGRv
-ZXMgbm90IGhhbmcgY29tcGxldGVseS4gVGhlIG91dHB1dCBvZiB0b3AgYXQgdGhlIGhvc3Qgc3lz
-dGVtIGdpdmVzIG1lIHRoZSBwaWQgb2YgdGhlIGxpbnV4IGV4ZS4gQSBnZGIgY2FsbCBnaXZlcyBm
-b3IgdGhhdCBwaWQgOgo+IAo+ICQgZGF0ZTsgc3VkbyBnZGIgL2hvbWUvdGZvZXJzdGUvZGV2ZWwv
-bGludXgvbGludXggMjUyMjQgLW4gLWJhdGNoIC1leCAnYnQgZnVsbCcKPiBTYXQgSmFuIDExIDEx
-OjM2OjQ3IENFVCAyMDE0Cj4gCj4gd2FybmluZzogQ291bGQgbm90IGxvYWQgc2hhcmVkIGxpYnJh
-cnkgc3ltYm9scyBmb3IgbGludXgtZ2F0ZS5zby4xLgo+IERvIHlvdSBuZWVkICJzZXQgc29saWIt
-c2VhcmNoLXBhdGgiIG9yICJzZXQgc3lzcm9vdCI/Cj4gMHhiNzgwMDQyNCBpbiBfX2tlcm5lbF92
-c3lzY2FsbCAoKQo+ICMwICAweGI3ODAwNDI0IGluIF9fa2VybmVsX3ZzeXNjYWxsICgpCj4gTm8g
-c3ltYm9sIHRhYmxlIGluZm8gYXZhaWxhYmxlLgo+ICMxICAweDA4M2Q2M2ZmIGluIF9fbmFub3Ns
-ZWVwX25vY2FuY2VsICgpCj4gTm8gc3ltYm9sIHRhYmxlIGluZm8gYXZhaWxhYmxlLgo+ICMyICAw
-eDA4MDcyNjZjIGluIGlkbGVfc2xlZXAgKG5zZWNzPTYwMjQ5NjM4MDE5NTMwNzUyMCkgYXQgYXJj
-aC91bS9vcy1MaW51eC90aW1lLmM6MTgzCj4gICAgICAgICB0cyA9IHt0dl9zZWMgPSAwLCB0dl9u
-c2VjID0gODQzNjYwMn0KPiAjMyAgMHgwODA1ZmMwZiBpbiBhcmNoX2NwdV9pZGxlICgpIGF0IGFy
-Y2gvdW0va2VybmVsL3Byb2Nlc3MuYzoyMDgKPiBObyBsb2NhbHMuCj4gIzQgIDB4MDgwYTg5NzEg
-aW4gY3B1X2lkbGVfbG9vcCAoKSBhdCBrZXJuZWwvY3B1L2lkbGUuYzo5OAo+IE5vIGxvY2Fscy4K
-PiAjNSAgY3B1X3N0YXJ0dXBfZW50cnkgKHN0YXRlPUNQVUhQX09OTElORSkgYXQga2VybmVsL2Nw
-dS9pZGxlLmM6MTQwCj4gTm8gbG9jYWxzLgo+ICM2ICAweDA4NDIxNWU5IGluIHJlc3RfaW5pdCAo
-KSBhdCBpbml0L21haW4uYzo0MDIKPiAgICAgICAgIHBpZCA9IC01MTYKPiAgICAgICAgIF9fZnVu
-Y19fID0gInJlc3RfaW5pdCIKPiAjNyAgMHgwODA0ODdlMSBpbiBzdGFydF9rZXJuZWwgKCkgYXQg
-aW5pdC9tYWluLmM6NjU2Cj4gICAgICAgICBjb21tYW5kX2xpbmUgPSAweDg1Yjg0MDAgPGNvbW1h
-bmRfbGluZT4gImVhcmx5cHJpbnRrIHViZGE9L2hvbWUvdGZvZXJzdGUvdmlydHVhbC91bWwvdHJp
-bml0eSB1YmRiPS9tbnQvcmFtZGlzay90cmluaXR5X3N3YXAgZXRoMD10dW50YXAsdGFwMCw3Mjpl
-ZjozZDo5ZjpjMzo1YSBtZW09MTAyNU0gY29uMD1mZDowLGZkOjEgY29uPXB0cyByb290ZnN0eXBl
-PWV4dDQgIHJvb3Q9OTg6MCIKPiAjOCAgMHgwODA0OWU0MiBpbiBzdGFydF9rZXJuZWxfcHJvYyAo
-dW51c2VkPTB4MCkgYXQgYXJjaC91bS9rZXJuZWwvc2thcy9wcm9jZXNzLmM6NDgKPiAgICAgICAg
-IHBpZCA9IC01MTYKPiAgICAgICAgIF9fZnVuY19fID0gInN0YXJ0X2tlcm5lbF9wcm9jIgo+ICM5
-ICAweDA4MDVmN2NiIGluIG5ld190aHJlYWRfaGFuZGxlciAoKSBhdCBhcmNoL3VtL2tlcm5lbC9w
-cm9jZXNzLmM6MTI5Cj4gICAgICAgICBmbiA9IDB4MAo+ICMxMCAweDAwMDAwMDAwIGluID8/ICgp
-Cj4gTm8gc3ltYm9sIHRhYmxlIGluZm8gYXZhaWxhYmxlLgo+IAo+IAo+IAo+IFBsZWFzZSBub3Rl
-IHRoYXQgQlVHX09OIHdhcyBub3QgdHJpZ2dlcmVkLiBGb3IgY29tcGxldGVuZXNzIGhlcmUgYXJl
-IHRoZSBnZGIgdHJhY2VzIGZyb20gYWxsIGxpbnV4IHByb2Nlc3NlcyBjdXJyZW50bHkgcnVubmlu
-ZyBhdCB0aGUgaG9zdDoKPiAKPj4gU28gbGV0J3MgZm9yZ2V0IHRoZSA1MTYgaXNzdWUgZm9yIG5v
-dy4KPj4gV2hhdCB3ZSBubyBmb3Igbm93IGlzIHRoYXQgeW91IG1hbmFnZSB0byB0cmlnZ2VyIGEg
-bG9ja3VwIHdpdGhpbiBVTUwuCj4gCkFncmVlZCwgZXNwZWNpYWxseSBiL2MgSSBhZGRlZCB0aGlz
-IHBhdGNoIHRvbyA6CiQgY2F0IH4vZGV2ZWwvcHJpdi91bWwvcGlkNTE2XzIucGF0Y2gKLSAtLS0g
-aW5pdC9tYWluLmNfb3JpZyAgICAyMDE0LTAxLTEyIDE2OjQzOjQ4LjU4NTQzOTE1OCArMDEwMAor
-KysgaW5pdC9tYWluLmMgMjAxNC0wMS0xMiAxNjo0NDowMS43MDY0Mzg0NTMgKzAxMDAKQEAgLTM4
-OSw2ICszODksNyBAQAogICAgICAgIEJVR19PTihwaWQgPT0gLTUxNik7CiAgICAgICAgcmN1X3Jl
-YWRfbG9jaygpOwogICAgICAgIGt0aHJlYWRkX3Rhc2sgPSBmaW5kX3Rhc2tfYnlfcGlkX25zKHBp
-ZCwgJmluaXRfcGlkX25zKTsKKyAgICAgICBCVUdfT04ocGlkID09IC01MTYpOwogICAgICAgIHJj
-dV9yZWFkX3VubG9jaygpOwogICAgICAgIGNvbXBsZXRlKCZrdGhyZWFkZF9kb25lKTsKCmFuZCB0
-aGlzIHdhc24ndCB0cmlnZ2VyZWQgKC9tZSB3b25kZXJzIGlmIHRoZSAtNTE2IGlzIHNvbWVob3cg
-Z2FyYmFnZSkuCgpCdXQgSSBjYW4gbmFycm93IGRvd24gdGhlIHByb2JsZW0uIEluIGFuIHN0aWxs
-IG9wZW4gc3NoIHNlc3Npb25zIEkgbWFkZSA6CgokIGxzb2YgfCBncmVwIHQzCmJhc2ggICAgICA2
-MTI5ICAgICAgdGZvZXJzdGUgIGN3ZCAgICAgICBESVIgICAgICAgOTgsMCAgICAgNDA5NiAgICA3
-MzQgL2hvbWUvdGZvZXJzdGUvdDMKbG9nZ2VyICAgIDYxMzUgICAgICB0Zm9lcnN0ZSAgY3dkICAg
-ICAgIERJUiAgICAgICA5OCwwICAgICA0MDk2ICAgIDczNCAvaG9tZS90Zm9lcnN0ZS90MwoKKHQz
-IGlzIHRoZSB+L3QzIGRpcmVjdG9yeSB3aGVyZSBJIGNkIGludG8gaXQgYmV3Zm9yZSBJIHJ1biB0
-cmluaXR5LgoKQW5kIGFmdGVyIGtpbGxpbmcgdGhlIGxvZ2dlciBjb21tYW5kIHRoZSB0cmluaXR5
-IGJhdGNoIGNvbnRpbnVlcyA6CgokIHBzIHhmIC1lbyBwaWQsc3RhcnRfdGltZSxjb21tYW5kIHwg
-Z3JlcCB0cmluaXR5CiA2NDEyIDIwOjQ4ICB8ICAgICAgICAgICBcXyBncmVwIC0tY29sb3VyPWF1
-dG8gdHJpbml0eQogNjEyOSAxOToxNyAgICAgICAgICBcXyBiYXNoIC1jIGNkIH47IHN1ZG8gc3Ug
-LWMgJ2lmIFtbIC1kIC4vdDMgXV07IHRoZW4gc3VkbyBjaG1vZCAtUiBhK3J3eCAuL3QzOyBzdWRv
-IHJtIC1yZiAuL3QzOyBmaSc7IG1rZGlyIC4vdDM7IGNkIC4vdDM7IGxvZ2dlciAiMTcjLTEsIE09
-L21udC9yYW1kaXNrIjsgaWYgW1sgLW4gL21udC9yYW1kaXNrIF1dOyB0aGVuIGlmIFtbIC1kIC9t
-bnQvcmFtZGlzay92aWN0aW1zL3YxIF1dOyB0aGVuIHN1ZG8gY2htb2QgLVIgYStyd3ggL21udC9y
-YW1kaXNrL3ZpY3RpbXMvdjE7IHN1ZG8gcm0gLXJmIC9tbnQvcmFtZGlzay92aWN0aW1zL3YxOyBm
-aTsgbWtkaXIgLXAgL21udC9yYW1kaXNrL3ZpY3RpbXMvdjEvdjI7IGZvciBpIGluICQoc2VxIC13
-IDAgOTkpOyBkbyB0b3VjaCAvbW50L3JhbWRpc2svdmljdGltcy92MS92Mi9mJGkgMj4vZGV2L251
-bGw7IG1rZGlyIC9tbnQvcmFtZGlzay92aWN0aW1zL3YxL3YyL2QkaSAyPi9kZXYvbnVsbDsgZG9u
-ZTsgZmk7ICB0cmluaXR5IC1xIC1OIDEwMDAwIC1DIDIgLXggbW92ZV9wYWdlcyAteCBtcmVtYXAg
-LVYgL21udC9yYW1kaXNrL3ZpY3RpbXMvdjEvdjIKIDYzOTAgMjA6NDYgICAgICAgICAgICAgIFxf
-IHRyaW5pdHkgLXEgLU4gMTAwMDAgLUMgMiAteCBtb3ZlX3BhZ2VzIC14IG1yZW1hcCAtViAvbW50
-L3JhbWRpc2svdmljdGltcy92MS92MgogNjM5MSAyMDo0NiAgICAgICAgICAgICAgICAgIFxfIHRy
-aW5pdHkgLXEgLU4gMTAwMDAgLUMgMiAteCBtb3ZlX3BhZ2VzIC14IG1yZW1hcCAtViAvbW50L3Jh
-bWRpc2svdmljdGltcy92MS92MgogNjM5MiAyMDo0NiAgICAgICAgICAgICAgICAgIFxfIHRyaW5p
-dHkgLXEgLU4gMTAwMDAgLUMgMiAteCBtb3ZlX3BhZ2VzIC14IG1yZW1hcCAtViAvbW50L3JhbWRp
-c2svdmljdGltcy92MS92MgogNjQwOCAyMDo0NyAgICAgICAgICAgICAgICAgICAgICBcXyB0cmlu
-aXR5IC1xIC1OIDEwMDAwIC1DIDIgLXggbW92ZV9wYWdlcyAteCBtcmVtYXAgLVYgL21udC9yYW1k
-aXNrL3ZpY3RpbXMvdjEvdjIKIDY0MTAgMjA6NDggICAgICAgICAgICAgICAgICAgICAgXF8gdHJp
-bml0eSAtcSAtTiAxMDAwMCAtQyAyIC14IG1vdmVfcGFnZXMgLXggbXJlbWFwIC1WIC9tbnQvcmFt
-ZGlzay92aWN0aW1zL3YxL3YyCgoKRldJVyBhIHNzaCBpbnRvIHRoZSBVTUwgZ3Vlc3QgaXMgaG93
-ZXZlciBzdGlsbCBubyBsb25nZXIgcG9zc2libGUuIFNvIEknbSBwcmV0dHkgc3VyZSB0aGF0IHRy
-aW5pdHkgZGFtYWdlIHRoZXJlIHNvbWV0aGluZyByZWFsbHkgYnV0IEknZCBleHBlY3QgdGhhdCBz
-dWNoIGEgZGFtYWdlIHNob3VsZCBiZSBzZWVuIHNvbWV3aGVyZSBpbiB0aGUgbG9ncywgb3IgPwoK
-QW5kIGZpbmFsbHkgLSBub3cgdGhlIHRoZSBiYXRjaCB0cmluaXR5IGNvbW1hbmQgaGFuZ3MgYWdh
-aW4gYW5kIG5vdyBub3QgZXZlbiBraWxsaW5nIGxvZ2dlciBoZWxwcy4KQW5kIGEgc2h1dGRvd24g
-KCJzdWRvIGhhbHQ7IGV4aXQiKSBoYW5ncyB0b28uCgo+IAo+IAo+ICQgcGdyZXAgbGludXggfCB4
-YXJncyAtbjEgLUkge30gc3VkbyBnZGIgL2hvbWUvdGZvZXJzdGUvZGV2ZWwvbGludXgvbGludXgg
-e30gLW4gLWJhdGNoIC1leCAnYnQnCj4gd2FybmluZzogcHJvY2VzcyAxNjEzIGlzIGFscmVhZHkg
-dHJhY2VkIGJ5IHByb2Nlc3MgMjUyMjQKPiBwdHJhY2U6IE9wZXJhdGlvbiBub3QgcGVybWl0dGVk
-Lgo+IC9ob21lL3Rmb2Vyc3RlLzE2MTM6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkuCj4gTm8g
-c3RhY2suCj4gd2FybmluZzogcHJvY2VzcyAyMTg0OSBpcyBhbHJlYWR5IHRyYWNlZCBieSBwcm9j
-ZXNzIDI1MjI0Cj4gcHRyYWNlOiBPcGVyYXRpb24gbm90IHBlcm1pdHRlZC4KPiAvaG9tZS90Zm9l
-cnN0ZS8yMTg0OTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeS4KPiBObyBzdGFjay4KPiAKPiB3
-YXJuaW5nOiBDb3VsZCBub3QgbG9hZCBzaGFyZWQgbGlicmFyeSBzeW1ib2xzIGZvciBsaW51eC1n
-YXRlLnNvLjEuCj4gRG8geW91IG5lZWQgInNldCBzb2xpYi1zZWFyY2gtcGF0aCIgb3IgInNldCBz
-eXNyb290Ij8KPiAweGI3ODAwNDI0IGluIF9fa2VybmVsX3ZzeXNjYWxsICgpCj4gIzAgIDB4Yjc4
-MDA0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKPiAjMSAgMHgwODNkNjNmZiBpbiBfX25hbm9z
-bGVlcF9ub2NhbmNlbCAoKQo+ICMyICAweDA4MDcyNjZjIGluIGlkbGVfc2xlZXAgKG5zZWNzPTYw
-MjQ5NjM4MDIwNTMwNzUyMCkgYXQgYXJjaC91bS9vcy1MaW51eC90aW1lLmM6MTgzCj4gIzMgIDB4
-MDgwNWZjMGYgaW4gYXJjaF9jcHVfaWRsZSAoKSBhdCBhcmNoL3VtL2tlcm5lbC9wcm9jZXNzLmM6
-MjA4Cj4gIzQgIDB4MDgwYTg5NzEgaW4gY3B1X2lkbGVfbG9vcCAoKSBhdCBrZXJuZWwvY3B1L2lk
-bGUuYzo5OAo+ICM1ICBjcHVfc3RhcnR1cF9lbnRyeSAoc3RhdGU9Q1BVSFBfT05MSU5FKSBhdCBr
-ZXJuZWwvY3B1L2lkbGUuYzoxNDAKPiAjNiAgMHgwODQyMTVlOSBpbiByZXN0X2luaXQgKCkgYXQg
-aW5pdC9tYWluLmM6NDAyCj4gIzcgIDB4MDgwNDg3ZTEgaW4gc3RhcnRfa2VybmVsICgpIGF0IGlu
-aXQvbWFpbi5jOjY1Ngo+ICM4ICAweDA4MDQ5ZTQyIGluIHN0YXJ0X2tlcm5lbF9wcm9jICh1bnVz
-ZWQ9MHgwKSBhdCBhcmNoL3VtL2tlcm5lbC9za2FzL3Byb2Nlc3MuYzo0OAo+ICM5ICAweDA4MDVm
-N2NiIGluIG5ld190aHJlYWRfaGFuZGxlciAoKSBhdCBhcmNoL3VtL2tlcm5lbC9wcm9jZXNzLmM6
-MTI5Cj4gIzEwIDB4MDAwMDAwMDAgaW4gPz8gKCkKPiAKPiB3YXJuaW5nOiBwcm9jZXNzIDI1MjMx
-IGlzIGEgY2xvbmVkIHByb2Nlc3MKPiAKPiB3YXJuaW5nOiBDb3VsZCBub3QgbG9hZCBzaGFyZWQg
-bGlicmFyeSBzeW1ib2xzIGZvciBsaW51eC1nYXRlLnNvLjEuCj4gRG8geW91IG5lZWQgInNldCBz
-b2xpYi1zZWFyY2gtcGF0aCIgb3IgInNldCBzeXNyb290Ij8KPiAweGI3ODAwNDI0IGluIF9fa2Vy
-bmVsX3ZzeXNjYWxsICgpCj4gIzAgIDB4Yjc4MDA0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkK
-PiAjMSAgMHgwODNkYTQ0NiBpbiBzeXNjYWxsICgpCj4gIzIgIDB4MDgwNmU4NjEgaW4gaW9fZ2V0
-ZXZlbnRzIChldmVudHM9PG9wdGltaXplZCBvdXQ+LCBjdHhfaWQ9PG9wdGltaXplZCBvdXQ+LCBt
-aW5fbnI9PG9wdGltaXplZCBvdXQ+LCBucj08b3B0aW1pemVkIG91dD4sIHRpbWVvdXQ9PG9wdGlt
-aXplZCBvdXQ+KSBhdCBhcmNoL3VtL29zLUxpbnV4L2Fpby5jOjQ5Cj4gIzMgIGFpb190aHJlYWQg
-KGFyZz0weDApIGF0IGFyY2gvdW0vb3MtTGludXgvYWlvLmM6MTA5Cj4gIzQgIDB4MDgzZGI1NmUg
-aW4gY2xvbmUgKCkKPiAKPiB3YXJuaW5nOiBwcm9jZXNzIDI1MjMyIGlzIGEgY2xvbmVkIHByb2Nl
-c3MKPiAKPiB3YXJuaW5nOiBDb3VsZCBub3QgbG9hZCBzaGFyZWQgbGlicmFyeSBzeW1ib2xzIGZv
-ciBsaW51eC1nYXRlLnNvLjEuCj4gRG8geW91IG5lZWQgInNldCBzb2xpYi1zZWFyY2gtcGF0aCIg
-b3IgInNldCBzeXNyb290Ij8KPiAweGI3ODAwNDI0IGluIF9fa2VybmVsX3ZzeXNjYWxsICgpCj4g
-IzAgIDB4Yjc4MDA0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKPiAjMSAgMHgwODNkODJjMiBp
-biBfX3JlYWRfbm9jYW5jZWwgKCkKPiAjMiAgMHgwODA2ZjNmZiBpbiByZWFkIChfX25ieXRlcz08
-b3B0aW1pemVkIG91dD4sIF9fYnVmPTxvcHRpbWl6ZWQgb3V0PiwgX19mZD08b3B0aW1pemVkIG91
-dD4pIGF0IC91c3IvaW5jbHVkZS9iaXRzL3VuaXN0ZC5oOjQ0Cj4gIzMgIG9zX3JlYWRfZmlsZSAo
-ZmQ9LTUxMiwgYnVmPTB4ZmZmZmZlMDAsIGxlbj0tNTEyKSBhdCBhcmNoL3VtL29zLUxpbnV4L2Zp
-bGUuYzoyNTMKPiAjNCAgMHgwODA2YmFmYyBpbiBpb190aHJlYWQgKGFyZz0weDApIGF0IGFyY2gv
-dW0vZHJpdmVycy91YmRfa2Vybi5jOjE0ODIKPiAjNSAgMHgwODNkYjU2ZSBpbiBjbG9uZSAoKQo+
-IAo+IHdhcm5pbmc6IHByb2Nlc3MgMjUyMzMgaXMgYSBjbG9uZWQgcHJvY2Vzcwo+IAo+IHdhcm5p
-bmc6IENvdWxkIG5vdCBsb2FkIHNoYXJlZCBsaWJyYXJ5IHN5bWJvbHMgZm9yIGxpbnV4LWdhdGUu
-c28uMS4KPiBEbyB5b3UgbmVlZCAic2V0IHNvbGliLXNlYXJjaC1wYXRoIiBvciAic2V0IHN5c3Jv
-b3QiPwo+IDB4Yjc4MDA0MjQgaW4gX19rZXJuZWxfdnN5c2NhbGwgKCkKPiAjMCAgMHhiNzgwMDQy
-NCBpbiBfX2tlcm5lbF92c3lzY2FsbCAoKQo+ICMxICAweDA4M2Q5MTMyIGluIF9fcG9sbF9ub2Nh
-bmNlbCAoKQo+ICMyICAweDA4MDcxMTE0IGluIHBvbGwgKF9fdGltZW91dD08b3B0aW1pemVkIG91
-dD4sIF9fbmZkcz08b3B0aW1pemVkIG91dD4sIF9fZmRzPTxvcHRpbWl6ZWQgb3V0PikgYXQgL3Vz
-ci9pbmNsdWRlL2JpdHMvcG9sbDIuaDo0Ngo+ICMzICB3cml0ZV9zaWdpb190aHJlYWQgKHVudXNl
-ZD0weDApIGF0IGFyY2gvdW0vb3MtTGludXgvc2lnaW8uYzo2MQo+ICM0ICAweDA4M2RiNTZlIGlu
-IGNsb25lICgpCj4gd2FybmluZzogcHJvY2VzcyAyNTIzNCBpcyBhIHpvbWJpZSAtIHRoZSBwcm9j
-ZXNzIGhhcyBhbHJlYWR5IHRlcm1pbmF0ZWQKPiBwdHJhY2U6IE9wZXJhdGlvbiBub3QgcGVybWl0
-dGVkLgo+IC9ob21lL3Rmb2Vyc3RlLzI1MjM0OiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Lgo+
-IE5vIHN0YWNrLgo+IC4uLgo+IAo+IAo+IFBsZWFzZSBDYzogbWUgSSdtIG5vdCBzdWJzY3JpYmVk
-Lgo+IAo+PiBXb3VsZG4ndCBpdCBtYWtlIHNlbnNlIHRvIHN1YnNjcmliZT8KPj4gWW91IHBvc3Qg
-dmVyeSBvZnRlbiBvbiB0aGlzIGxpc3QuIDopCj4gCmRvbmUgOykKCj4gCj4gCj4+Cj4+IC0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQo+PiBDZW50dXJ5TGluayBDbG91ZDogVGhlIExlYWRlciBpbiBFbnRl
-cnByaXNlIENsb3VkIFNlcnZpY2VzLgo+PiBMZWFybiBXaHkgTW9yZSBCdXNpbmVzc2VzIEFyZSBD
-aG9vc2luZyBDZW50dXJ5TGluayBDbG91ZCBGb3IKPj4gQ3JpdGljYWwgV29ya2xvYWRzLCBEZXZl
-bG9wbWVudCBFbnZpcm9ubWVudHMgJiBFdmVyeXRoaW5nIEluIEJldHdlZW4uCj4+IEdldCBhIFF1
-b3RlIG9yIFN0YXJ0IGEgRnJlZSBUcmlhbCBUb2RheS4KPj4gaHR0cDovL3B1YmFkcy5nLmRvdWJs
-ZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTExOTQyMDQzMSZpdT0vNDE0MC9vc3RnLmNsa3Ryawo+
-PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBVc2Vy
-LW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+IFVzZXItbW9kZS1saW51eC1kZXZlbEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKPj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlz
-dHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCj4+Cj4gCj4gCj4gCgotIC0tIApNZkcv
-U2luY2VyZWx5ClRvcmFsZiBGw7Zyc3RlcgpwZ3AgZmluZ2VyIHByaW50OjFBMzcgNkY5OSA0QTlE
-IDAyNkYgMTNFMiA0RENGIEM0RUEgQ0RERSAwMDc2IEU5NEUKLS0tLS1CRUdJTiBQR1AgU0lHTkFU
-VVJFLS0tLS0KVmVyc2lvbjogR251UEcgdjIuMC4yMiAoR05VL0xpbnV4KQpDb21tZW50OiBVc2lu
-ZyBHbnVQRyB3aXRoIFRodW5kZXJiaXJkIC0gaHR0cDovL3d3dy5lbmlnbWFpbC5uZXQvCgppRjRF
-QVJFSUFBWUZBbExVUkdJQUNna1F4T3JOM2dCMjZVNDRSUUQrS1VxR0JlUDYvbkprMUsvMVd4Nm56
-N2lqCi9KWGNqTk4rWkJ0OFBzTVdyVjRBL2p4N3c3WHJsMFJQV2N3WFZGWW0rSXhvMGRTYnRyK3p2
-aC8ycGRjQ05VMmMKPXVHaWQKLS0tLS1FTkQgUEdQIFNJR05BVFVSRS0tLS0tCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KQ2VudHVyeUxpbmsgQ2xvdWQ6IFRoZSBMZWFkZXIgaW4gRW50ZXJwcmlzZSBD
-bG91ZCBTZXJ2aWNlcy4KTGVhcm4gV2h5IE1vcmUgQnVzaW5lc3NlcyBBcmUgQ2hvb3NpbmcgQ2Vu
-dHVyeUxpbmsgQ2xvdWQgRm9yCkNyaXRpY2FsIFdvcmtsb2FkcywgRGV2ZWxvcG1lbnQgRW52aXJv
-bm1lbnRzICYgRXZlcnl0aGluZyBJbiBCZXR3ZWVuLgpHZXQgYSBRdW90ZSBvciBTdGFydCBhIEZy
-ZWUgVHJpYWwgVG9kYXkuIApodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9j
-bGs/aWQ9MTE5NDIwNDMxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5n
-IGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
-L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2
-ZWwK
+On Sat, Jan 11, 2014 at 11:47 AM, Toralf F=F6rster <toralf.foerster@gmx.de>=
+ wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA256
+>
+> I do fuzz testing with trinity (latest git version) a stable 32 bit Gento=
+o Linux user mode linux image.
+> The host is a stable 32 bit vanilla 3.12.7 kernel, the guest runs latest =
+git tree + 2 patches (attached).
+>
+> The trinity call in the UML guest is :
+> $> trinity -q -l off -N 10000 -C 2 -x move_pages -x mremap -v /mnt/ramdisk
+>
+> After a while there's no progress on the command line seen at the host sy=
+stem - the trinity process seems to just hangs/idling. When this does occur=
+ I cannot longer ssh into the system. The system however runs furthermore. =
+In another terminal I still see the output of this command:
+
+Does it consume 100% CPU?
+
+> $> ssh root@trinity "tail -f /var/log/messages"
+>
+> That's why I do know that the system does not hang completely. The output=
+ of top at the host system gives me the pid of the linux exe. A gdb call gi=
+ves for that pid :
+>
+> $ date; sudo gdb /home/tfoerste/devel/linux/linux 25224 -n -batch -ex 'bt=
+ full'
+> Sat Jan 11 11:36:47 CET 2014
+>
+> warning: Could not load shared library symbols for linux-gate.so.1.
+> Do you need "set solib-search-path" or "set sysroot"?
+> 0xb7800424 in __kernel_vsyscall ()
+> #0  0xb7800424 in __kernel_vsyscall ()
+> No symbol table info available.
+> #1  0x083d63ff in __nanosleep_nocancel ()
+> No symbol table info available.
+> #2  0x0807266c in idle_sleep (nsecs=3D602496380195307520) at arch/um/os-L=
+inux/time.c:183
+>         ts =3D {tv_sec =3D 0, tv_nsec =3D 8436602}
+> #3  0x0805fc0f in arch_cpu_idle () at arch/um/kernel/process.c:208
+> No locals.
+> #4  0x080a8971 in cpu_idle_loop () at kernel/cpu/idle.c:98
+> No locals.
+> #5  cpu_startup_entry (state=3DCPUHP_ONLINE) at kernel/cpu/idle.c:140
+> No locals.
+> #6  0x084215e9 in rest_init () at init/main.c:402
+>         pid =3D -516
+>         __func__ =3D "rest_init"
+> #7  0x080487e1 in start_kernel () at init/main.c:656
+>         command_line =3D 0x85b8400 <command_line> "earlyprintk ubda=3D/ho=
+me/tfoerste/virtual/uml/trinity ubdb=3D/mnt/ramdisk/trinity_swap eth0=3Dtun=
+tap,tap0,72:ef:3d:9f:c3:5a mem=3D1025M con0=3Dfd:0,fd:1 con=3Dpts rootfstyp=
+e=3Dext4  root=3D98:0"
+> #8  0x08049e42 in start_kernel_proc (unused=3D0x0) at arch/um/kernel/skas=
+/process.c:48
+>         pid =3D -516
+>         __func__ =3D "start_kernel_proc"
+> #9  0x0805f7cb in new_thread_handler () at arch/um/kernel/process.c:129
+>         fn =3D 0x0
+> #10 0x00000000 in ?? ()
+> No symbol table info available.
+>
+>
+>
+> Please note that BUG_ON was not triggered. For completeness here are the =
+gdb traces from all linux processes currently running at the host:
+
+So let's forget the 516 issue for now.
+What we no for now is that you manage to trigger a lockup within UML.
+
+
+>
+> $ pgrep linux | xargs -n1 -I {} sudo gdb /home/tfoerste/devel/linux/linux=
+ {} -n -batch -ex 'bt'
+> warning: process 1613 is already traced by process 25224
+> ptrace: Operation not permitted.
+> /home/tfoerste/1613: No such file or directory.
+> No stack.
+> warning: process 21849 is already traced by process 25224
+> ptrace: Operation not permitted.
+> /home/tfoerste/21849: No such file or directory.
+> No stack.
+>
+> warning: Could not load shared library symbols for linux-gate.so.1.
+> Do you need "set solib-search-path" or "set sysroot"?
+> 0xb7800424 in __kernel_vsyscall ()
+> #0  0xb7800424 in __kernel_vsyscall ()
+> #1  0x083d63ff in __nanosleep_nocancel ()
+> #2  0x0807266c in idle_sleep (nsecs=3D602496380205307520) at arch/um/os-L=
+inux/time.c:183
+> #3  0x0805fc0f in arch_cpu_idle () at arch/um/kernel/process.c:208
+> #4  0x080a8971 in cpu_idle_loop () at kernel/cpu/idle.c:98
+> #5  cpu_startup_entry (state=3DCPUHP_ONLINE) at kernel/cpu/idle.c:140
+> #6  0x084215e9 in rest_init () at init/main.c:402
+> #7  0x080487e1 in start_kernel () at init/main.c:656
+> #8  0x08049e42 in start_kernel_proc (unused=3D0x0) at arch/um/kernel/skas=
+/process.c:48
+> #9  0x0805f7cb in new_thread_handler () at arch/um/kernel/process.c:129
+> #10 0x00000000 in ?? ()
+>
+> warning: process 25231 is a cloned process
+>
+> warning: Could not load shared library symbols for linux-gate.so.1.
+> Do you need "set solib-search-path" or "set sysroot"?
+> 0xb7800424 in __kernel_vsyscall ()
+> #0  0xb7800424 in __kernel_vsyscall ()
+> #1  0x083da446 in syscall ()
+> #2  0x0806e861 in io_getevents (events=3D<optimized out>, ctx_id=3D<optim=
+ized out>, min_nr=3D<optimized out>, nr=3D<optimized out>, timeout=3D<optim=
+ized out>) at arch/um/os-Linux/aio.c:49
+> #3  aio_thread (arg=3D0x0) at arch/um/os-Linux/aio.c:109
+> #4  0x083db56e in clone ()
+>
+> warning: process 25232 is a cloned process
+>
+> warning: Could not load shared library symbols for linux-gate.so.1.
+> Do you need "set solib-search-path" or "set sysroot"?
+> 0xb7800424 in __kernel_vsyscall ()
+> #0  0xb7800424 in __kernel_vsyscall ()
+> #1  0x083d82c2 in __read_nocancel ()
+> #2  0x0806f3ff in read (__nbytes=3D<optimized out>, __buf=3D<optimized ou=
+t>, __fd=3D<optimized out>) at /usr/include/bits/unistd.h:44
+> #3  os_read_file (fd=3D-512, buf=3D0xfffffe00, len=3D-512) at arch/um/os-=
+Linux/file.c:253
+> #4  0x0806bafc in io_thread (arg=3D0x0) at arch/um/drivers/ubd_kern.c:1482
+> #5  0x083db56e in clone ()
+>
+> warning: process 25233 is a cloned process
+>
+> warning: Could not load shared library symbols for linux-gate.so.1.
+> Do you need "set solib-search-path" or "set sysroot"?
+> 0xb7800424 in __kernel_vsyscall ()
+> #0  0xb7800424 in __kernel_vsyscall ()
+> #1  0x083d9132 in __poll_nocancel ()
+> #2  0x08071114 in poll (__timeout=3D<optimized out>, __nfds=3D<optimized =
+out>, __fds=3D<optimized out>) at /usr/include/bits/poll2.h:46
+> #3  write_sigio_thread (unused=3D0x0) at arch/um/os-Linux/sigio.c:61
+> #4  0x083db56e in clone ()
+> warning: process 25234 is a zombie - the process has already terminated
+> ptrace: Operation not permitted.
+> /home/tfoerste/25234: No such file or directory.
+> No stack.
+> ...
+>
+>
+> Please Cc: me I'm not subscribed.
+
+Wouldn't it make sense to subscribe?
+You post very often on this list. :)
+
+>
+>
+> - --
+> MfG/Sincerely
+> Toralf F=F6rster
+> pgp finger print:1A37 6F99 4A9D 026F 13E2 4DCF C4EA CDDE 0076 E94E
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v2.0.22 (GNU/Linux)
+> Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+>
+> iF4EAREIAAYFAlLRISQACgkQxOrN3gB26U54pwD9Eq49Oog5KpSC4+e19t4HG6LA
+> 5d3Oz4/qq98wCb+rF9UA/0j+fT4xjdHbYmLtc8Z0wctVO3DjdQG49/+n81s/gLx3
+> =3DeP08
+> -----END PGP SIGNATURE-----
+>
+> -------------------------------------------------------------------------=
+-----
+> CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+> Learn Why More Businesses Are Choosing CenturyLink Cloud For
+> Critical Workloads, Development Environments & Everything In Between.
+> Get a Quote or Start a Free Trial Today.
+> http://pubads.g.doubleclick.net/gampad/clk?id=3D119420431&iu=3D/4140/ostg=
+.clktrk
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
+
+
+
+-- =
+
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
+---
+CenturyLink Cloud: The Leader in Enterprise Cloud Services.
+Learn Why More Businesses Are Choosing CenturyLink Cloud For
+Critical Workloads, Development Environments & Everything In Between.
+Get a Quote or Start a Free Trial Today.
+http://pubads.g.doubleclick.net/gampad/clk?id=3D119420431&iu=3D/4140/ostg.c=
+lktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
