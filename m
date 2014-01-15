@@ -1,52 +1,40 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1VpvM5-0004hU-7b
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Dec 2013 07:34:13 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1VpvM3-0000C0-2k
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 09 Dec 2013 07:34:13 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 09 Dec 2013 08:33:59 +0100
-Message-ID: <2103356.guehJfKbl6@sandpuppy>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Please add: um: add missing declaration of
-	'getrlimit()' and friends
-To: stable@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1389814553-19861-1-git-send-email-richard@nod.at>
+References: <52D6B591.3070707@infradead.org>
+	<1389814553-19861-1-git-send-email-richard@nod.at>
+Date: Wed, 15 Jan 2014 21:03:48 +0100
+Message-ID: <CAMuHMdVkpd9W_sg2g4uztRVORddmOtuUW+ofweRhOmKcsi6XyA@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH] um: Include generic barrier.h
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: Richard Weinberger <richard@nod.at>
+Cc: Paul McKenney <paulmck@linux.vnet.ibm.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Randy Dunlap <rdunlap@infradead.org>, Linux-Next <linux-next@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi Greg,
+On Wed, Jan 15, 2014 at 8:35 PM, Richard Weinberger <richard@nod.at> wrote:
+> --- a/arch/um/include/asm/Kbuild
+> +++ b/arch/um/include/asm/Kbuild
+> @@ -4,3 +4,4 @@ generic-y += ftrace.h pci.h io.h param.h delay.h mutex.h current.h exec.h
+>  generic-y += switch_to.h clkdev.h
+>  generic-y += trace_clock.h
+>  generic-y += preempt.h
+> +generic-y += barrier.h
 
-please add commit fdfa4c952844fce881df8c76de9c7180cbe913ab (um: add missing 
-declaration of 'getrlimit()' and friends) to -stable.
-The change was introduced in 3.9 and needs backporting to all stable trees.
+Please use insertion sort instead of append, so Stephen doesn't have to
+extend his patch "arch: Re-sort some Kbuild files to hopefully help avoid
+some conflicts" for arch/um/include/asm/Kbuild.
 
-Thanks,
-//richard
+Thanks!
 
-------------------------------------------------------------------------------
-Sponsored by Intel(R) XDK 
-Develop, test and display web and hybrid apps with a single code base.
-Download it for free now!
-http://pubads.g.doubleclick.net/gampad/clk?id=111408631&iu=/4140/ostg.clktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
