@@ -1,65 +1,61 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1W3WGA-00053q-GU
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Jan 2014 19:36:18 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1W3WG7-0002Nh-A5 for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 15 Jan 2014 19:36:18 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Wed, 15 Jan 2014 20:35:53 +0100
-Message-Id: <1389814553-19861-1-git-send-email-richard@nod.at>
-In-Reply-To: <52D6B591.3070707@infradead.org>
-References: <52D6B591.3070707@infradead.org>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
+From: Yijing Wang <wangyijing@huawei.com>
+Date: Thu, 23 Jan 2014 15:12:27 +0800
+Message-ID: <1390461147-36256-1-git-send-email-wangyijing@huawei.com>
 MIME-Version: 1.0
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] um: Include generic barrier.h
-To: richard@nod.at
-Cc: paulmck@linux.vnet.ibm.com, sfr@canb.auug.org.au, rdunlap@infradead.org, linux-next@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+Subject: [PATCH 1/2] clocksource: Remove outdated comments
+To: John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org, Daniel Lezcano <daniel.lezcano@linaro.org>, Kevin Hilman <khilman@deeprootsystems.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux@lists.openrisc.net, Sekhar Nori <nsekhar@ti.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, Yijing Wang <wangyijing@huawei.com>, Daniel Walker <dwalker@fifo99.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Jonas Bonn <jonas@southpole.se>, Kukjin Kim <kgene.kim@samsung.com>, Russell King <linux@arm.linux.org.uk>, Richard Weinberger <richard@nod.at>, x86@kernel.org, Tony Lindgren <tony@atomide.com>, Ingo Molnar <mingo@redhat.com>, linux-arm-msm@vger.kernel.org, David Brown <davidb@codeaurora.org>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Mike Frysinger <vapier@gentoo.org>, user-mode-linux-devel@lists.sourceforge.net, Nicolas Ferre <nicolas.ferre@atmel.com>, Jeff Dike <jdike@addtoit.com>, Barry Song <baohua@kernel.org>, linux-samsung-soc@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, davinci-linux-open-source@linux.davincidsp.com, Michal Simek <monstr@monstr.eu>, Jim Cromie <jim.cromie@gmail.com>, microblaze-uclinux@itee.uq.edu.au, Hanjun Guo <guohanjun@huawei.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Bryan Huntsman <bryanh@codeaurora.org>, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-...to get smp_store_release().
+clocksource_register() and __clocksource_register_scale()
+always return 0, so the comment is just pointless, it's
+outdated, remove it.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Yijing Wang <wangyijing@huawei.com>
 ---
- arch/um/include/asm/Kbuild | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/time/clocksource.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index fdde187..fb3a6cc 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -4,3 +4,4 @@ generic-y += ftrace.h pci.h io.h param.h delay.h mutex.h current.h exec.h
- generic-y += switch_to.h clkdev.h
- generic-y += trace_clock.h
- generic-y += preempt.h
-+generic-y += barrier.h
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index ba3e502..9951575 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -779,8 +779,6 @@ EXPORT_SYMBOL_GPL(__clocksource_updatefreq_scale);
+  * @scale:	Scale factor multiplied against freq to get clocksource hz
+  * @freq:	clocksource frequency (cycles per second) divided by scale
+  *
+- * Returns -EBUSY if registration fails, zero otherwise.
+- *
+  * This *SHOULD NOT* be called directly! Please use the
+  * clocksource_register_hz() or clocksource_register_khz helper functions.
+  */
+@@ -805,7 +803,6 @@ EXPORT_SYMBOL_GPL(__clocksource_register_scale);
+  * clocksource_register - Used to install new clocksources
+  * @cs:		clocksource to be registered
+  *
+- * Returns -EBUSY if registration fails, zero otherwise.
+  */
+ int clocksource_register(struct clocksource *cs)
+ {
 -- 
-1.8.4.2
+1.7.1
 
 
-------------------------------------------------------------------------------
-CenturyLink Cloud: The Leader in Enterprise Cloud Services.
-Learn Why More Businesses Are Choosing CenturyLink Cloud For
-Critical Workloads, Development Environments & Everything In Between.
-Get a Quote or Start a Free Trial Today. 
-http://pubads.g.doubleclick.net/gampad/clk?id=119420431&iu=/4140/ostg.clktrk
+
 _______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
