@@ -1,124 +1,78 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <antivano@cisco.com>) id 1WJIne-0005Gt-7Y
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Feb 2014 08:28:06 +0000
-Received: from rcdn-iport-1.cisco.com ([173.37.86.72])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WJInd-0003cO-8l
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 28 Feb 2014 08:28:06 +0000
-From: "Anton Ivanov (antivano)" <antivano@cisco.com>
-Date: Fri, 28 Feb 2014 08:27:58 +0000
-Message-ID: <53104888.8040404@cisco.com>
-Content-Language: en-US
-Content-ID: <F5FCEBCE1B09BB4089F74CF2D0D258F1@emea.cisco.com>
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
+Message-ID: <52F827D3.5080906@huawei.com>
+Date: Mon, 10 Feb 2014 09:13:55 +0800
+From: Yijing Wang <wangyijing@huawei.com>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+References: <1390461166-36440-1-git-send-email-wangyijing@huawei.com>
+ <52E0C889.6000106@prisktech.co.nz>
+ <063D6719AE5E284EB5DD2968C1650D6D46489C@AcuExch.aculab.com>
+ <alpine.DEB.2.02.1402052139560.24986@ionos.tec.linutronix.de>
+In-Reply-To: <alpine.DEB.2.02.1402052139560.24986@ionos.tec.linutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Contribution - Bug fixes and contributions to UML
-To: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "jdike@addtoit.com" <jdike@addtoit.com>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+Subject: Re: [PATCH 2/2] clocksource: Make clocksource register functions void
+To: Thomas Gleixner <tglx@linutronix.de>, David Laight <David.Laight@ACULAB.COM>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "x86@kernel.org" <x86@kernel.org>, Kevin Hilman <khilman@deeprootsystems.com>, "linux@lists.openrisc.net" <linux@openrisc.net>, Hanjun Guo <guohanjun@huawei.com>, Sekhar Nori <nsekhar@ti.com>, Michal Simek <monstr@monstr.eu>, Paul Mackerras <paulus@samba.org>, Ralf Baechle <ralf@linux-mips.org>, "H. Peter Anvin" <hpa@zytor.com>, Daniel Walker <dwalker@fifo99.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Jonas Bonn <jonas@southpole.se>, Kukjin Kim <kgene.kim@samsung.com>, Russell King <linux@arm.linux.org.uk>, Richard Weinberger <richard@nod.at>, Daniel Lezcano <daniel.lezcano@linaro.org>, Tony Lindgren <tony@atomide.com>, Ingo Molnar <mingo@redhat.com>, "microblaze-uclinux@itee.uq.edu.au" <microblaze-uclinux@itee.uq.edu.au>, David Brown <davidb@codeaurora.org>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Mike Frysinger <vapier@gentoo.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, John Stultz <john.stultz@linaro.org>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Barry Song <baohua@kernel.org>, Jim Cromie <jim.cromie@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Nicolas Ferre <nicolas.ferre@atmel.com>, Bryan Huntsman <bryanh@codeaurora.org>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi Richard, Hi Jeff, hi list,
+On 2014/2/6 4:40, Thomas Gleixner wrote:
+> Yijing,
+> 
+> On Thu, 23 Jan 2014, David Laight wrote:
+> 
+>> From: Linuxppc-dev Tony Prisk
+>>> On 23/01/14 20:12, Yijing Wang wrote:
+>>>> Currently, clocksource_register() and __clocksource_register_scale()
+>>>> functions always return 0, it's pointless, make functions void.
+>>>> And remove the dead code that check the clocksource_register_hz()
+>>>> return value.
+>>> ......
+>>>> -static inline int clocksource_register_hz(struct clocksource *cs, u32 hz)
+>>>> +static inline void clocksource_register_hz(struct clocksource *cs, u32 hz)
+>>>>   {
+>>>>   	return __clocksource_register_scale(cs, 1, hz);
+>>>>   }
+>>>
+>>> This doesn't make sense - you are still returning a value on a function
+>>> declared void, and the return is now from a function that doesn't return
+>>> anything either ?!?!
+>>> Doesn't this throw a compile-time warning??
+>>
+>> It depends on the compiler.
+>> Recent gcc allow it.
+>> I don't know if it is actually valid C though.
+>>
+>> There is no excuse for it on lines like the above though.
+> 
+> Can you please resend with that fixed against 3.14-rc1 ?
 
-On behalf of Cisco systems, I am authorized to make a offer a set bug
-fixes as well as contribute several additional features and performance
-improvements to UML. All of these have been used internally for a couple
-of years and will ship as parts of product(s) in the near future. Some
-of these improve performance by up to 8 times on use cases which are of
-interest to us and are likely to be of interest to the community.
+OK, I will resend later.
 
-As the full patchset is now in the 100k+ zone, so I am going to do only
-the announcement now and submit the patches one by one after that over
-the next 1-2 weeks.
+Thanks!
+Yijing.
 
-We will submit separately bug fixes for:
 
-1. Critical memory corruption on startup observed on heavily loaded
-machines (especially when multiple UMLs run simultaneously).
-2. Fix(es) for incorrect handling of error conditions when UML is run
-under expect and conX=fd: is used to communicate with another process.
-The same error may be observed on internal UML IPCs too leading to
-immediate crash.
+> 
+> .
+> 
 
-I will also file bugs for both vs Debian UML package so that patches for
-both can go in ASAP.
 
-In addition to the bug fixes, the new features include:
+-- 
+Thanks!
+Yijing
 
-1. Several transports. All can do up to multi-gigabit throughput on some
-scenarios. We are contributing their counterparts to qemu/kvm as well.
 
-1.1. Direct connection of UML to overlay networks/L2 VPNs using L2TPv3.
-
-This has a number of advantages compared to the existing UML "multicast"
-and qemu "socket" transports.
-
-    * Standard compliant - RFC 3931 updated recently by RFC 5641
-    * Supported on most network equipment
-    * Allowing to move virtual switching off-host to an NPU or high
-performance physical switch
-    * Allowing to mix virtual and physical switching (well supported on
-modern Linuxes and other OSes)
-    * Well researched security profile as well as established
-interactions with IPSEC allowing to extend virtual networks outside the
-datacenter to remote physical devices and/or VMs.
-
-1.2. Raw transport which allows both bi-directional communication with
-any network device which looks like Ethernet as well as in-span
-listening at speeds in the multi-gigabit range.
-
-1.3. We intend to contribute other key overlay transports like GRE, etc
-as well. The ones we are contributing at this point are the ones which
-we have used most extensively and have had the most testing (~ 1.5-2 years).
-
-2. New high res timer subsystem
-
-Adding these new network transports to UML revealed a key issue - it
-cannot meter or shape any traffic correctly as its internal timer system
-is way off. Personally, I consider it a bug, however there is no "easy"
-fix here. The only way to fix it is a new timer driver. Unfortunately,
-it does not fix uml userspace - timers there remain off. It does fix all
-kernel timer functionality - traffic shaping (both qdisc and iptables
-traffic limits).
-
-As a side effect, this provides performance improvements for tcp and
-other protocols which rely on kernel high res timers for their state
-machines.
-
-We have further scalability contributions lined up which improve network
-and IO performance between 1.5 and 8 times (depending on use case),
-allow hundreds of virtual interfaces per UML without performance
-penalties, allow to run several hundreds (if not thousands) of UMLs per
-machine, etc. All in all, it can no go where no virtualization and no
-virtual networking has gone before.
-
-However, I would prefer to take it one step at a time and get through
-these first (even these are quite a lot for one "sitting").
-
-Best Regards,
-
-Anton.
-------------------------------------------------------------------------------
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=126839071&iu=/4140/ostg.clktrk
 _______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
