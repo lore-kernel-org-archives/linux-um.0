@@ -1,44 +1,41 @@
-Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-From: AKASHI Takahiro <takahiro.akashi@linaro.org>
-Date: Tue, 25 Feb 2014 18:16:23 +0900
-Message-Id: <1393319784-2758-1-git-send-email-takahiro.akashi@linaro.org>
-In-Reply-To: <1391407232-4623-1-git-send-email-takahiro.akashi@linaro.org>
-References: <1391407232-4623-1-git-send-email-takahiro.akashi@linaro.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: David Howells <dhowells@redhat.com>
+Date: Wed, 12 Feb 2014 15:46:07 +0000
+Message-ID: <20140212154607.2405.15741.stgit@warthog.procyon.org.uk>
+In-Reply-To: <20140212154544.2405.2992.stgit@warthog.procyon.org.uk>
+References: <20140212154544.2405.2992.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-Subject: [PATCH v2 0/1] audit: Add CONFIG_HAVE_ARCH_AUDITSYSCALL
-To: viro@zeniv.linux.org.uk, eparis@redhat.com, rgb@redhat.com, arndb@arndb.de
-Cc: linux-s390@vger.kernel.org, linaro-kernel@lists.linaro.org, linux-ia64@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, catalin.marinas@arm.com, x86@kernel.org, will.deacon@arm.com, linux-kernel@vger.kernel.org, AKASHI Takahiro <takahiro.akashi@linaro.org>, linux-alpha@vger.kernel.org, dsaxena@linaro.org, user-mode-linux-user@lists.sourceforge.net, linux-audit@redhat.com, sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 3/4] UM: arch_align_stack() moved to asm/exec.h
+To: akpm@linux-foundation.org
+Cc: linux-arch@vger.kernel.org, arnd@arndb.de, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, dhowells@redhat.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Q3VycmVudGx5IEFVRElUU1lTQ0FMTCBoYXMgYSBsb25nIGxpc3Qgb2YgYXJjaGl0ZWN0dXJlIGRl
-cGVuY2VuY3k6CiAgICAgICBkZXBlbmRzIG9uIEFVRElUICYmIChYODYgfHwgUEFSSVNDIHx8IFBQ
-QyB8fCBTMzkwIHx8IElBNjQgfHwgVU1MIHx8CiAgICAgICAgICAgICAgICBTUEFSQzY0IHx8IFNV
-UEVSSCB8fCAoQVJNICYmIEFFQUJJICYmICFPQUJJX0NPTVBBVCkgfHwgQUxQSEEpClRoZSBwdXJw
-b3NlIG9mIHRoaXMgcGF0Y2ggaXMgdG8gcmVwbGFjZSBpdCB3aXRoIEhBVkVfQVJDSF9BVURJVFNZ
-U0NBTEwKZm9yIHNpbXBsaWNpdHkuCgpDaGFuZ2VzIHYxIC0+IHYyOgoqIHJlYmFzZWQgdG8gMy4x
-NC1yY1gsIGFuZCBzbyBhZGRlZCBhIGNoYW5nZSBvbiBBTFBIQQoKQUtBU0hJIFRha2FoaXJvICgx
-KToKICBhdWRpdDogQWRkIENPTkZJR19IQVZFX0FSQ0hfQVVESVRTWVNDQUxMCgogYXJjaC9hbHBo
-YS9LY29uZmlnICAgICB8ICAgIDEgKwogYXJjaC9hcm0vS2NvbmZpZyAgICAgICB8ICAgIDEgKwog
-YXJjaC9pYTY0L0tjb25maWcgICAgICB8ICAgIDEgKwogYXJjaC9wYXJpc2MvS2NvbmZpZyAgICB8
-ICAgIDEgKwogYXJjaC9wb3dlcnBjL0tjb25maWcgICB8ICAgIDEgKwogYXJjaC9zMzkwL0tjb25m
-aWcgICAgICB8ICAgIDEgKwogYXJjaC9zaC9LY29uZmlnICAgICAgICB8ICAgIDEgKwogYXJjaC9z
-cGFyYy9LY29uZmlnICAgICB8ICAgIDEgKwogYXJjaC91bS9LY29uZmlnLmNvbW1vbiB8ICAgIDEg
-KwogYXJjaC94ODYvS2NvbmZpZyAgICAgICB8ICAgIDEgKwogaW5pdC9LY29uZmlnICAgICAgICAg
-ICB8ICAgIDUgKysrKy0KIDExIGZpbGVzIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDEgZGVs
-ZXRpb24oLSkKCi0tIAoxLjcuOS41CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMaW51eHBwYy1kZXYgbWFpbGluZyBsaXN0CkxpbnV4cHBjLWRldkBsaXN0
-cy5vemxhYnMub3JnCmh0dHBzOi8vbGlzdHMub3psYWJzLm9yZy9saXN0aW5mby9saW51eHBwYy1k
-ZXY=
+arch_align_stack() moved to asm/exec.h, so change the comment referring to
+asm/system.h which no longer exists.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Jeff Dike <jdike@addtoit.com>
+cc: Richard Weinberger <richard@nod.at>
+cc: user-mode-linux-devel@lists.sourceforge.net
+---
+
+ arch/um/kernel/process.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index eecc414..f17bca8 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -359,7 +359,7 @@ int singlestepping(void * t)
+ /*
+  * Only x86 and x86_64 have an arch_align_stack().
+  * All other arches have "#define arch_align_stack(x) (x)"
+- * in their asm/system.h
++ * in their asm/exec.h
+  * As this is included in UML from asm-um/system-generic.h,
+  * we can use it to behave as the subarch does.
+  */
 
