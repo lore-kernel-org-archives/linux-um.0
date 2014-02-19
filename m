@@ -1,522 +1,133 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1WGExL-0004KJ-N8
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Feb 2014 21:45:27 +0000
+Received: from mout.gmx.net ([212.227.15.18])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1WGExJ-0008V2-HN
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Feb 2014 21:45:27 +0000
+Received: from [192.168.178.21] ([78.54.175.194]) by mail.gmx.com (mrgmx001)
+	with ESMTPSA (Nemesis) id 0Lxgt9-1XMuOb2oLj-017Fsu for
+	<user-mode-linux-devel@lists.sourceforge.net>; Wed, 19 Feb 2014 22:45:18
+	+0100
+Message-ID: <530525ED.5020503@gmx.de>
+Date: Wed, 19 Feb 2014 22:45:17 +0100
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <5288BD3D.1050302@nod.at>
-References: <52811BDA.2090705@google.com>
-	<5288BD3D.1050302@nod.at>
-Date: Sun, 26 Jan 2014 11:52:34 +0100
-Message-ID: <CAFLxGvxX_ojwSMvpgzX+3DiBT5xDQSSuo2AyVGPwOe9Z5TMV+Q@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [uml-devel] [PATCH] uml: Simplify tempdir logic.
-To: Richard Weinberger <richard@nod.at>
-Cc: Tristan Schmelcher <tschmelcher@google.com>, Thomas Meyer <thomas@m3y3r.de>, LKML <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] where is pid 16666
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sun, Nov 17, 2013 at 1:57 PM, Richard Weinberger <richard@nod.at> wrote:
-> Am 11.11.2013 19:03, schrieb Tristan Schmelcher:
->> From: Tristan Schmelcher <tschmelcher@google.com>
->>
->> Inferring the mount hierarchy correctly from /proc/mounts is hard when MS_MOVE
->> may have been used, and the previous code did it wrongly. This change simplifies
->> the logic to only require that /dev/shm be _on_ tmpfs (which can be checked
->> trivially with statfs) rather than that it be a _mountpoint_ of tmpfs, since
->> there isn't a compelling reason to be that strict. We also now check for tmpfs
->> on whatever directory we ultimately use so that the user is better informed.
->>
->> This change also moves the more standard TMPDIR environment variable check ahead
->> of the others.
->>
->> Applies to 3.12.
->>
->> Signed-off-by: Tristan Schmelcher <tschmelcher@google.com>
->
-> I like what I see but so far I didn't had to time to review your changes carefully.
-> Stay tuned. :)
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEEyNTYKCkZ1enp5aW5n
+IGEgMzIgYml0IExpbnV4IGd1ZXN0IChsaW51eCB2My4xNC1yYzMtMTY4LWc5NjBkZmM0KSB3aXRo
+IHRyaW5pdHkgKDEuMS0xMDgyLWdkYTU1ZDc5KSB5aWVsZHMgYWdhaW4gaW50byB0aGUgc2l0dWF0
+aW9uLCB0aGF0IHRoZSBmdXp6IGpvYiBkb2VzIG5vdCBjb250aW51ZSBhZnRlciBhIHRyaW5pdHkg
+cnVuIHdhcyBmaW5pc2hlZCBhbmQgdGhlIG5leHQgdHJpbml0eSBqb2Igd2FzIHByZXBhcmVkIHRv
+IHN0YXJ0LiBUaGVyZSBzZWVtcyB0byBiZSBhbiBlbmRsZXNzIGxvb3AgdGhydSB0aGUgcmFkaXgt
+dHJlZSBjb2RlLgoKVGhlIFVNTCBndWVzdCBpdHNlbGYgaXMgcmVzcG9uZGluZyBhbmQgd29ya3Mg
+d2VsbCwgbG9naW4gd2l0aCBzc2ggaW50byBpdCB3b3JrcyBmaW5lLgpBZnRlciBydW5uaW5nIGlu
+dG8gdGhpcyB3aXRoIGV4dDQgZmlsZSBzeXN0ZW1zIGluIGZvcm1lciB0aW1lcyBub3cgSSBydW4g
+aW50byB0aGlzIHdoaWxlIHVzaW5nIGEgQlRSRlMgZmlsZSBzeXN0ZW0gZm9yIHRoZSB2aWN0aW0g
+ZmlsZXMuCldoYXQgbGV0IG1lIHdvbmRlciBpcywgd2h5IEkgY2Fubm90IHNlZSBhIFBJRCAxNjY2
+NiB3aXRoaW4gdGhlIFVNTCBndWVzdCA6CihwbHMgbG9vayBmb3IgICAgICAgICBwaWQgPSAxNjY2
+NiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0pCgoKQXQgdGhlIGhvc3QgSSBydW4gdGhpcyBj
+b21tYW5kIHRvIHRyYWNrIHRoZSBob3N0IHByb2NlcyB3aGljaCBpcyByZXNwaW5zaWJsZSB0aGF0
+IHRoZSBVTUwgdHJpbml0eSBqb2IgZG9lcyBub3QgY29udGludWU6CgokPiBzdWRvIGdkYiAvaG9t
+ZS90Zm9lcnN0ZS9kZXZlbC9saW51eC9saW51eCAxMzM2OSAtbiAtYmF0Y2ggLWV4ICdidCBmdWxs
+JwoKd2FybmluZzogQ291bGQgbm90IGxvYWQgc2hhcmVkIGxpYnJhcnkgc3ltYm9scyBmb3IgbGlu
+dXgtZ2F0ZS5zby4xLgpEbyB5b3UgbmVlZCAic2V0IHNvbGliLXNlYXJjaC1wYXRoIiBvciAic2V0
+IHN5c3Jvb3QiPwoweDA4MzQ5ZjRjIGluIHJhZGl4X3RyZWVfbmV4dF9jaHVuayAocm9vdD0weDEx
+LCBpdGVyPTB4M2YyNWZjYTAsIGZsYWdzPTE4KSBhdCBsaWIvcmFkaXgtdHJlZS5jOjc3MAo3NzAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAobm9kZS0+c2xv
+dHNbb2Zmc2V0XSkKIzAgIDB4MDgzNDlmNGMgaW4gcmFkaXhfdHJlZV9uZXh0X2NodW5rIChyb290
+PTB4MTEsIGl0ZXI9MHgzZjI1ZmNhMCwgZmxhZ3M9MTgpIGF0IGxpYi9yYWRpeC10cmVlLmM6Nzcw
+CiAgICAgICAgdGFnID0gMAogICAgICAgIHJub2RlID0gMHgzZWIzYjZkOAogICAgICAgIG5vZGUg
+PSAweDNlZDM3MDIwCiMxICAweDA4MGNkNTFlIGluIGZpbmRfZ2V0X3BhZ2VzIChtYXBwaW5nPTB4
+M2ViNGM4YTgsIHN0YXJ0PTAsIG5yX3BhZ2VzPTE0LCBwYWdlcz0weDEyKSBhdCBtbS9maWxlbWFw
+LmM6ODQ0CiAgICAgICAgaXRlciA9IHtpbmRleCA9IDAsIG5leHRfaW5kZXggPSAwLCB0YWdzID0g
+MTA1OTQ1NDEyMH0KICAgICAgICBzbG90ID0gMHgxMQogICAgICAgIHJldCA9IDAKIzIgIDB4MDgw
+ZDc2MGEgaW4gcGFnZXZlY19sb29rdXAgKHB2ZWM9MHgzZjI1ZmQwNCwgbWFwcGluZz0weDExLCBz
+dGFydD0xNywgbnJfcGFnZXM9MTcpIGF0IG1tL3N3YXAuYzo5NjkKTm8gbG9jYWxzLgojMyAgMHgw
+ODBkN2EwYSBpbiB0cnVuY2F0ZV9pbm9kZV9wYWdlc19yYW5nZSAobWFwcGluZz0weDNlYjRjOGE4
+LCBsc3RhcnQ9MCwgbGVuZD0tMSkgYXQgbW0vdHJ1bmNhdGUuYzoyNDEKICAgICAgICBzdGFydCA9
+IDAKICAgICAgICBlbmQgPSA0Mjk0OTY3Mjk1CiAgICAgICAgcGFydGlhbF9lbmQgPSAwCiAgICAg
+ICAgcHZlYyA9IDxpbmNvbXBsZXRlIHR5cGU+CiM0ICAweDA4MGQ3ZGFmIGluIHRydW5jYXRlX2lu
+b2RlX3BhZ2VzIChtYXBwaW5nPTB4MTEsIGxzdGFydD03NzMwOTQxMTM0NSkgYXQgbW0vdHJ1bmNh
+dGUuYzozNTgKTm8gbG9jYWxzLgojNSAgMHgwODJhMGY0MSBpbiBldmljdF9pbm9kZV90cnVuY2F0
+ZV9wYWdlcyAoaW5vZGU9PG9wdGltaXplZCBvdXQ+KSBhdCBmcy9idHJmcy9pbm9kZS5jOjQ1OTYK
+Tm8gbG9jYWxzLgojNiAgYnRyZnNfZXZpY3RfaW5vZGUgKGlub2RlPTB4M2ViNGM3ZjApIGF0IGZz
+L2J0cmZzL2lub2RlLmM6NDY0NQogICAgICAgIHRyYW5zID0gMHgzZWI0YzcwOAogICAgICAgIHJv
+b3QgPSAweDQ3MTNkOTIwCiAgICAgICAgcnN2ID0gMHgzZWI0YzcxNAogICAgICAgIGdsb2JhbF9y
+c3YgPSAweDEwMDAKICAgICAgICBfX2Z1bmNfXyA9ICJidHJmc19ldmljdF9pbm9kZSIKIzcgIDB4
+MDgxMWMzZWYgaW4gZXZpY3QgKGlub2RlPTB4M2ViNGM3ZjApIGF0IGZzL2lub2RlLmM6NTQ5CiAg
+ICAgICAgb3AgPSAweDg1MGM2MjAgPGJ0cmZzX3N1cGVyX29wcz4KICAgICAgICBfX2Z1bmNfXyA9
+ICJldmljdCIKIzggIDB4MDgxMWNlZGQgaW4gaXB1dF9maW5hbCAoaW5vZGU9PG9wdGltaXplZCBv
+dXQ+KSBhdCBmcy9pbm9kZS5jOjE0MTkKICAgICAgICBzYiA9IDB4NDcxMTFjNzAKICAgICAgICBv
+cCA9IDB4ODUwYzYyMCA8YnRyZnNfc3VwZXJfb3BzPgogICAgICAgIGRyb3AgPSAxNwojOSAgaXB1
+dCAoaW5vZGU9MHgzZWI0YzdmMCkgYXQgZnMvaW5vZGUuYzoxNDM3CiAgICAgICAgX19mdW5jX18g
+PSAiaXB1dCIKIzEwIDB4MDgxMTJlMzYgaW4gZG9fdW5saW5rYXQgKGRmZD01LCBwYXRobmFtZT0w
+eDgwNjFkOWMgPGhhbmRsZV9wYWdlX2ZhdWx0KzUyND4gImxcMzc2XDM3N1wzNzdcMjEzQyBcMjEz
+VVwzNDBcMjEzXDAwNFwwMjAlIikgYXQgZnMvbmFtZWkuYzozNzI5CiAgICAgICAgZXJyb3IgPSAw
+CiAgICAgICAgbmFtZSA9IDB4M2ViNGM3ZjAKICAgICAgICBkZW50cnkgPSAweDEyCiAgICAgICAg
+bmQgPSB7cGF0aCA9IDxpbmNvbXBsZXRlIHR5cGU+LCBsYXN0ID0ge3t7aGFzaCA9IDIyODIxMjYs
+IGxlbiA9IDN9LCBoYXNoX2xlbiA9IDEyODg3MTg0MDE0fSwgbmFtZSA9IDB4NDgwZWQxNTAgImYw
+MSJ9LCByb290ID0gPGluY29tcGxldGUgdHlwZT4sIGlub2RlID0gMHgzZWI0ZGE3MCwgZmxhZ3Mg
+PSAwLCBzZXEgPSA0LCBtX3NlcSA9IDE0MCwgbGFzdF90eXBlID0gMCwgZGVwdGggPSAwLCBzYXZl
+ZF9uYW1lcyA9IHsweDQ4MDU5ZTAwICJcMDAxIiwgMHg0ODA2NmQ4MCAiIiwgMHg0ODA1OWUzOCAi
+IiwgMHg4YjFlODI4ICIiLCAweDNmMjVmZTk4ICJIXDI3M1wyMDFcMjc3KFwzNTBcMjYxXGJcMjU0
+XDM3NiU/XDI0NS9cMDIxXGJINlx2P1wzNTRcMzc2JT9cMjY0KlwwMDZcYlwwMDUiLCAweDgxMWVk
+ZDIgPF9fY2xvc2VfZmQrODI+ICJcMzUzXGZcMjE1dCYiLCAweDQ4MDY2ZDgwICIiLCAweDQ4MDU5
+ZTAwICJcMDAxIiwgMHgzZjBiMzY0OCAiXDAwNSJ9fQogICAgICAgIGlub2RlID0gMHgzZWI0Yzdm
+MAogICAgICAgIGRlbGVnYXRlZF9pbm9kZSA9IDB4MAogICAgICAgIGxvb2t1cF9mbGFncyA9IDAK
+IzExIDB4MDgxMTJmYTUgaW4gU1lTQ191bmxpbmthdCAoZmxhZz08b3B0aW1pemVkIG91dD4sIHBh
+dGhuYW1lPTxvcHRpbWl6ZWQgb3V0PiwgZGZkPTxvcHRpbWl6ZWQgb3V0PikgYXQgZnMvbmFtZWku
+YzozNzY1Ck5vIGxvY2Fscy4KIzEyIFN5U191bmxpbmthdCAoZGZkPTUsIHBhdGhuYW1lPTEzNDYx
+ODUyNCwgZmxhZz0wKSBhdCBmcy9uYW1laS5jOjM3NTcKICAgICAgICByZXQgPSAxNwojMTMgMHgw
+ODA2MmFiNCBpbiBoYW5kbGVfc3lzY2FsbCAocj0weDNmMGIzNjQ4KSBhdCBhcmNoL3VtL2tlcm5l
+bC9za2FzL3N5c2NhbGwuYzozNQogICAgICAgIHN5c2NhbGwgPSAwCiMxNCAweDA4MDc0OTA1IGlu
+IGhhbmRsZV90cmFwIChsb2NhbF91c2luZ19zeXNlbXU9PG9wdGltaXplZCBvdXQ+LCByZWdzPTxv
+cHRpbWl6ZWQgb3V0PiwgcGlkPTxvcHRpbWl6ZWQgb3V0PikgYXQgYXJjaC91bS9vcy1MaW51eC9z
+a2FzL3Byb2Nlc3MuYzoxOTgKICAgICAgICBzdGF0dXMgPSAxMDMwNDEzMjg4CiMxNSB1c2Vyc3Bh
+Y2UgKHJlZ3M9MHgzZjBiMzY0OCkgYXQgYXJjaC91bS9vcy1MaW51eC9za2FzL3Byb2Nlc3MuYzo0
+MzEKICAgICAgICBzaWcgPSAxOAogICAgICAgIHRpbWVyID0ge2l0X2ludGVydmFsID0ge3R2X3Nl
+YyA9IDAsIHR2X3VzZWMgPSAwfSwgaXRfdmFsdWUgPSB7dHZfc2VjID0gMCwgdHZfdXNlYyA9IDEw
+MDAwfX0KICAgICAgICBlcnIgPSAxNwogICAgICAgIHN0YXR1cyA9IDM0MTc1CiAgICAgICAgb3Ag
+PSAxNDU4NzcwMzIKICAgICAgICBwaWQgPSAxNjY2NiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgPC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0KICAgICAgICBsb2NhbF91c2luZ19zeXNlbXUgPSAyCiAgICAgICAgc2kgPSA8aW5jb21wbGV0
+ZSB0eXBlPgojMTYgMHgwODA1Zjc3MCBpbiBmb3JrX2hhbmRsZXIgKCkgYXQgYXJjaC91bS9rZXJu
+ZWwvcHJvY2Vzcy5jOjE0OQpObyBsb2NhbHMuCiMxNyAweDAwMDAwMDAyIGluID8/ICgpCk5vIHN5
+bWJvbCB0YWJsZSBpbmZvIGF2YWlsYWJsZS4KCi0gLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbD
+tnJzdGVyCnBncCBmaW5nZXIgcHJpbnQ6MUEzNyA2Rjk5IDRBOUQgMDI2RiAxM0UyIDREQ0YgQzRF
+QSBDRERFIDAwNzYgRTk0RQotLS0tLUJFR0lOIFBHUCBTSUdOQVRVUkUtLS0tLQpWZXJzaW9uOiBH
+bnVQRyB2Mi4wLjIyIChHTlUvTGludXgpCkNvbW1lbnQ6IFVzaW5nIEdudVBHIHdpdGggVGh1bmRl
+cmJpcmQgLSBodHRwOi8vd3d3LmVuaWdtYWlsLm5ldC8KCmlGNEVBUkVJQUFZRkFsTUZKZXdBQ2dr
+UXhPck4zZ0IyNlU0RVh3RCtKNC9WV0R2dU9QKzFKZWo4K0RvM1NoRUMKTllOWkI0bWZId1ZDMVZM
+Ymd1NEEvUjZLMUNLVkRjdTNHUDlPQm56YVdlOGZ3NHYvOEtpcFZqWG5oR085eWl3RQo9S2N4Vwot
+LS0tLUVORCBQR1AgU0lHTkFUVVJFLS0tLS0KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpNYW5hZ2lu
+ZyB0aGUgUGVyZm9ybWFuY2Ugb2YgQ2xvdWQtQmFzZWQgQXBwbGljYXRpb25zClRha2UgYWR2YW50
+YWdlIG9mIHdoYXQgdGhlIENsb3VkIGhhcyB0byBvZmZlciAtIEF2b2lkIENvbW1vbiBQaXRmYWxs
+cy4KUmVhZCB0aGUgV2hpdGVwYXBlci4KaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9n
+YW1wYWQvY2xrP2lkPTEyMTA1NDQ3MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwg
+bWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxp
+bnV4LWRldmVsCg==
 
-Shame on me, I've completely forgotten this patch.
-I'll put it into -next such that we can merge it with v3.15.
-
-Sorry for the delay.
-
-> Thanks,
-> //richard
->
->> ---
->>  arch/um/os-Linux/mem.c | 372 ++++++++++---------------------------------------
->>  1 file changed, 75 insertions(+), 297 deletions(-)
->>
->> diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
->> index 3c4af77..897e9ad 100644
->> --- a/arch/um/os-Linux/mem.c
->> +++ b/arch/um/os-Linux/mem.c
->> @@ -12,337 +12,117 @@
->>  #include <string.h>
->>  #include <sys/stat.h>
->>  #include <sys/mman.h>
->> -#include <sys/param.h>
->> +#include <sys/vfs.h>
->> +#include <linux/magic.h>
->>  #include <init.h>
->>  #include <os.h>
->>
->> -/* Modified by which_tmpdir, which is called during early boot */
->> -static char *default_tmpdir = "/tmp";
->> -
->> -/*
->> - *  Modified when creating the physical memory file and when checking
->> - * the tmp filesystem for usability, both happening during early boot.
->> - */
->> +/* Set by make_tempfile() during early boot. */
->>  static char *tempdir = NULL;
->>
->> -static void __init find_tempdir(void)
->> +/* Check if dir is on tmpfs. Return 0 if yes, -1 if no or error. */
->> +static int __init check_tmpfs(const char *dir)
->>  {
->> -     const char *dirs[] = { "TMP", "TEMP", "TMPDIR", NULL };
->> -     int i;
->> -     char *dir = NULL;
->> -
->> -     if (tempdir != NULL)
->> -             /* We've already been called */
->> -             return;
->> -     for (i = 0; dirs[i]; i++) {
->> -             dir = getenv(dirs[i]);
->> -             if ((dir != NULL) && (*dir != '\0'))
->> -                     break;
->> -     }
->> -     if ((dir == NULL) || (*dir == '\0'))
->> -             dir = default_tmpdir;
->> +     struct statfs st;
->>
->> -     tempdir = malloc(strlen(dir) + 2);
->> -     if (tempdir == NULL) {
->> -             fprintf(stderr, "Failed to malloc tempdir, "
->> -                     "errno = %d\n", errno);
->> -             return;
->> -     }
->> -     strcpy(tempdir, dir);
->> -     strcat(tempdir, "/");
->> -}
->> -
->> -/*
->> - * Remove bytes from the front of the buffer and refill it so that if there's a
->> - * partial string that we care about, it will be completed, and we can recognize
->> - * it.
->> - */
->> -static int pop(int fd, char *buf, size_t size, size_t npop)
->> -{
->> -     ssize_t n;
->> -     size_t len = strlen(&buf[npop]);
->> -
->> -     memmove(buf, &buf[npop], len + 1);
->> -     n = read(fd, &buf[len], size - len - 1);
->> -     if (n < 0)
->> -             return -errno;
->> -
->> -     buf[len + n] = '\0';
->> -     return 1;
->> -}
->> -
->> -/*
->> - * This will return 1, with the first character in buf being the
->> - * character following the next instance of c in the file.  This will
->> - * read the file as needed.  If there's an error, -errno is returned;
->> - * if the end of the file is reached, 0 is returned.
->> - */
->> -static int next(int fd, char *buf, size_t size, char c)
->> -{
->> -     ssize_t n;
->> -     char *ptr;
->> -
->> -     while ((ptr = strchr(buf, c)) == NULL) {
->> -             n = read(fd, buf, size - 1);
->> -             if (n == 0)
->> -                     return 0;
->> -             else if (n < 0)
->> -                     return -errno;
->> -
->> -             buf[n] = '\0';
->> +     printf("Checking if %s is on tmpfs...", dir);
->> +     if (statfs(dir, &st) < 0) {
->> +             printf("%s\n", strerror(errno));
->> +     } else if (st.f_type != TMPFS_MAGIC) {
->> +             printf("no\n");
->> +     } else {
->> +             printf("OK\n");
->> +             return 0;
->>       }
->> -
->> -     return pop(fd, buf, size, ptr - buf + 1);
->> +     return -1;
->>  }
->>
->>  /*
->> - * Decode an octal-escaped and space-terminated path of the form used by
->> - * /proc/mounts. May be used to decode a path in-place. "out" must be at least
->> - * as large as the input. The output is always null-terminated. "len" gets the
->> - * length of the output, excluding the trailing null. Returns 0 if a full path
->> - * was successfully decoded, otherwise an error.
->> + * Choose the tempdir to use. We want something on tmpfs so that our memory is
->> + * not subject to the host's vm.dirty_ratio. If a tempdir is specified in the
->> + * environment, we use that even if it's not on tmpfs, but we warn the user.
->> + * Otherwise, we try common tmpfs locations, and if no tmpfs directory is found
->> + * then we fall back to /tmp.
->>   */
->> -static int decode_path(const char *in, char *out, size_t *len)
->> +static char * __init choose_tempdir(void)
->>  {
->> -     char *first = out;
->> -     int c;
->> +     static const char * const vars[] = {
->> +             "TMPDIR",
->> +             "TMP",
->> +             "TEMP",
->> +             NULL
->> +     };
->> +     static const char fallback_dir[] = "/tmp";
->> +     static const char * const tmpfs_dirs[] = {
->> +             "/dev/shm",
->> +             fallback_dir,
->> +             NULL
->> +     };
->>       int i;
->> -     int ret = -EINVAL;
->> -     while (1) {
->> -             switch (*in) {
->> -             case '\0':
->> -                     goto out;
->> -
->> -             case ' ':
->> -                     ret = 0;
->> -                     goto out;
->> -
->> -             case '\\':
->> -                     in++;
->> -                     c = 0;
->> -                     for (i = 0; i < 3; i++) {
->> -                             if (*in < '0' || *in > '7')
->> -                                     goto out;
->> -                             c = (c << 3) | (*in++ - '0');
->> -                     }
->> -                     *(unsigned char *)out++ = (unsigned char) c;
->> -                     break;
->> -
->> -             default:
->> -                     *out++ = *in++;
->> -                     break;
->> +     const char *dir;
->> +
->> +     printf("Checking environment variables for a tempdir...");
->> +     for (i = 0; vars[i]; i++) {
->> +             dir = getenv(vars[i]);
->> +             if ((dir != NULL) && (*dir != '\0')) {
->> +                     printf("%s\n", dir);
->> +                     if (check_tmpfs(dir) >= 0)
->> +                             goto done;
->> +                     else
->> +                             goto warn;
->>               }
->>       }
->> +     printf("none found\n");
->>
->> -out:
->> -     *out = '\0';
->> -     *len = out - first;
->> -     return ret;
->> -}
->> -
->> -/*
->> - * Computes the length of s when encoded with three-digit octal escape sequences
->> - * for the characters in chars.
->> - */
->> -static size_t octal_encoded_length(const char *s, const char *chars)
->> -{
->> -     size_t len = strlen(s);
->> -     while ((s = strpbrk(s, chars)) != NULL) {
->> -             len += 3;
->> -             s++;
->> -     }
->> -
->> -     return len;
->> -}
->> -
->> -enum {
->> -     OUTCOME_NOTHING_MOUNTED,
->> -     OUTCOME_TMPFS_MOUNT,
->> -     OUTCOME_NON_TMPFS_MOUNT,
->> -};
->> -
->> -/* Read a line of /proc/mounts data looking for a tmpfs mount at "path". */
->> -static int read_mount(int fd, char *buf, size_t bufsize, const char *path,
->> -                   int *outcome)
->> -{
->> -     int found;
->> -     int match;
->> -     char *space;
->> -     size_t len;
->> -
->> -     enum {
->> -             MATCH_NONE,
->> -             MATCH_EXACT,
->> -             MATCH_PARENT,
->> -     };
->> -
->> -     found = next(fd, buf, bufsize, ' ');
->> -     if (found != 1)
->> -             return found;
->> -
->> -     /*
->> -      * If there's no following space in the buffer, then this path is
->> -      * truncated, so it can't be the one we're looking for.
->> -      */
->> -     space = strchr(buf, ' ');
->> -     if (space) {
->> -             match = MATCH_NONE;
->> -             if (!decode_path(buf, buf, &len)) {
->> -                     if (!strcmp(buf, path))
->> -                             match = MATCH_EXACT;
->> -                     else if (!strncmp(buf, path, len)
->> -                              && (path[len] == '/' || !strcmp(buf, "/")))
->> -                             match = MATCH_PARENT;
->> -             }
->> -
->> -             found = pop(fd, buf, bufsize, space - buf + 1);
->> -             if (found != 1)
->> -                     return found;
->> -
->> -             switch (match) {
->> -             case MATCH_EXACT:
->> -                     if (!strncmp(buf, "tmpfs", strlen("tmpfs")))
->> -                             *outcome = OUTCOME_TMPFS_MOUNT;
->> -                     else
->> -                             *outcome = OUTCOME_NON_TMPFS_MOUNT;
->> -                     break;
->> -
->> -             case MATCH_PARENT:
->> -                     /* This mount obscures any previous ones. */
->> -                     *outcome = OUTCOME_NOTHING_MOUNTED;
->> -                     break;
->> -             }
->> +     for (i = 0; tmpfs_dirs[i]; i++) {
->> +             dir = tmpfs_dirs[i];
->> +             if (check_tmpfs(dir) >= 0)
->> +                     goto done;
->>       }
->>
->> -     return next(fd, buf, bufsize, '\n');
->> +     dir = fallback_dir;
->> +warn:
->> +     printf("Warning: tempdir %s is not on tmpfs\n", dir);
->> +done:
->> +     /* Make a copy since getenv results may not remain valid forever. */
->> +     return strdup(dir);
->>  }
->>
->> -/* which_tmpdir is called only during early boot */
->> -static int checked_tmpdir = 0;
->> -
->>  /*
->> - * Look for a tmpfs mounted at /dev/shm.  I couldn't find a cleaner
->> - * way to do this than to parse /proc/mounts.  statfs will return the
->> - * same filesystem magic number and fs id for both /dev and /dev/shm
->> - * when they are both tmpfs, so you can't tell if they are different
->> - * filesystems.  Also, there seems to be no other way of finding the
->> - * mount point of a filesystem from within it.
->> - *
->> - * If a /dev/shm tmpfs entry is found, then we switch to using it.
->> - * Otherwise, we stay with the default /tmp.
->> + * Create an unlinked tempfile in a suitable tempdir. template must be the
->> + * basename part of the template with a leading '/'.
->>   */
->> -static void which_tmpdir(void)
->> +static int __init make_tempfile(const char *template)
->>  {
->> +     char *tempname;
->>       int fd;
->> -     int found;
->> -     int outcome;
->> -     char *path;
->> -     char *buf;
->> -     size_t bufsize;
->>
->> -     if (checked_tmpdir)
->> -             return;
->> -
->> -     checked_tmpdir = 1;
->> -
->> -     printf("Checking for tmpfs mount on /dev/shm...");
->> -
->> -     path = realpath("/dev/shm", NULL);
->> -     if (!path) {
->> -             printf("failed to check real path, errno = %d\n", errno);
->> -             return;
->> -     }
->> -     printf("%s...", path);
->> -
->> -     /*
->> -      * The buffer needs to be able to fit the full octal-escaped path, a
->> -      * space, and a trailing null in order to successfully decode it.
->> -      */
->> -     bufsize = octal_encoded_length(path, " \t\n\\") + 2;
->> -
->> -     if (bufsize < 128)
->> -             bufsize = 128;
->> -
->> -     buf = malloc(bufsize);
->> -     if (!buf) {
->> -             printf("malloc failed, errno = %d\n", errno);
->> -             goto out;
->> -     }
->> -     buf[0] = '\0';
->> -
->> -     fd = open("/proc/mounts", O_RDONLY);
->> -     if (fd < 0) {
->> -             printf("failed to open /proc/mounts, errno = %d\n", errno);
->> -             goto out1;
->> -     }
->> -
->> -     outcome = OUTCOME_NOTHING_MOUNTED;
->> -     while (1) {
->> -             found = read_mount(fd, buf, bufsize, path, &outcome);
->> -             if (found != 1)
->> -                     break;
->> -     }
->> -
->> -     if (found < 0) {
->> -             printf("read returned errno %d\n", -found);
->> -     } else {
->> -             switch (outcome) {
->> -             case OUTCOME_TMPFS_MOUNT:
->> -                     printf("OK\n");
->> -                     default_tmpdir = "/dev/shm";
->> -                     break;
->> -
->> -             case OUTCOME_NON_TMPFS_MOUNT:
->> -                     printf("not tmpfs\n");
->> -                     break;
->> -
->> -             default:
->> -                     printf("nothing mounted on /dev/shm\n");
->> -                     break;
->> +     if (tempdir == NULL) {
->> +             tempdir = choose_tempdir();
->> +             if (tempdir == NULL) {
->> +                     fprintf(stderr, "Failed to choose tempdir: %s\n",
->> +                             strerror(errno));
->> +                     return -1;
->>               }
->>       }
->>
->> -     close(fd);
->> -out1:
->> -     free(buf);
->> -out:
->> -     free(path);
->> -}
->> -
->> -static int __init make_tempfile(const char *template, char **out_tempname,
->> -                             int do_unlink)
->> -{
->> -     char *tempname;
->> -     int fd;
->> -
->> -     which_tmpdir();
->> -     tempname = malloc(MAXPATHLEN);
->> +     tempname = malloc(strlen(tempdir) + strlen(template) + 1);
->>       if (tempname == NULL)
->>               return -1;
->>
->> -     find_tempdir();
->> -     if ((tempdir == NULL) || (strlen(tempdir) >= MAXPATHLEN))
->> -             goto out;
->> -
->> -     if (template[0] != '/')
->> -             strcpy(tempname, tempdir);
->> -     else
->> -             tempname[0] = '\0';
->> -     strncat(tempname, template, MAXPATHLEN-1-strlen(tempname));
->> +     strcpy(tempname, tempdir);
->> +     strcat(tempname, template);
->>       fd = mkstemp(tempname);
->>       if (fd < 0) {
->>               fprintf(stderr, "open - cannot create %s: %s\n", tempname,
->>                       strerror(errno));
->>               goto out;
->>       }
->> -     if (do_unlink && (unlink(tempname) < 0)) {
->> +     if (unlink(tempname) < 0) {
->>               perror("unlink");
->>               goto close;
->>       }
->> -     if (out_tempname) {
->> -             *out_tempname = tempname;
->> -     } else
->> -             free(tempname);
->> +     free(tempname);
->>       return fd;
->>  close:
->>       close(fd);
->> @@ -351,14 +131,14 @@ out:
->>       return -1;
->>  }
->>
->> -#define TEMPNAME_TEMPLATE "vm_file-XXXXXX"
->> +#define TEMPNAME_TEMPLATE "/vm_file-XXXXXX"
->>
->>  static int __init create_tmp_file(unsigned long long len)
->>  {
->>       int fd, err;
->>       char zero;
->>
->> -     fd = make_tempfile(TEMPNAME_TEMPLATE, NULL, 1);
->> +     fd = make_tempfile(TEMPNAME_TEMPLATE);
->>       if (fd < 0)
->>               exit(1);
->>
->> @@ -402,7 +182,6 @@ int __init create_mem_file(unsigned long long len)
->>       return fd;
->>  }
->>
->> -
->>  void __init check_tmpexec(void)
->>  {
->>       void *addr;
->> @@ -410,14 +189,13 @@ void __init check_tmpexec(void)
->>
->>       addr = mmap(NULL, UM_KERN_PAGE_SIZE,
->>                   PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE, fd, 0);
->> -     printf("Checking PROT_EXEC mmap in %s...",tempdir);
->> -     fflush(stdout);
->> +     printf("Checking PROT_EXEC mmap in %s...", tempdir);
->>       if (addr == MAP_FAILED) {
->>               err = errno;
->> -             perror("failed");
->> +             printf("%s\n", strerror(err));
->>               close(fd);
->>               if (err == EPERM)
->> -                     printf("%s must be not mounted noexec\n",tempdir);
->> +                     printf("%s must be not mounted noexec\n", tempdir);
->>               exit(1);
->>       }
->>       printf("OK\n");
->>
->
->
-> ------------------------------------------------------------------------------
-> DreamFactory - Open Source REST & JSON Services for HTML5 & Native Apps
-> OAuth, Users, Roles, SQL, NoSQL, BLOB Storage and External API Access
-> Free app hosting. Or install the open source package on any LAMP server.
-> Sign up and see examples for AngularJS, jQuery, Sencha Touch and Native!
-> http://pubads.g.doubleclick.net/gampad/clk?id=63469471&iu=/4140/ostg.clktrk
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
-
-
--- 
-Thanks,
-//richard
