@@ -1,54 +1,46 @@
-Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Wed, 5 Feb 2014 21:39:33 +0100 (CET)
-From: Thomas Gleixner <tglx@linutronix.de>
-In-Reply-To: <52E0D575.5050702@linaro.org>
-Message-ID: <alpine.DEB.2.02.1402052138170.24986@ionos.tec.linutronix.de>
-References: <1390461166-36440-1-git-send-email-wangyijing@huawei.com>
- <52E0D575.5050702@linaro.org>
-MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-Subject: Re: [PATCH 2/2] clocksource: Make clocksource register functions void
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: linux-mips@linux-mips.org, Kevin Hilman <khilman@deeprootsystems.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux@lists.openrisc.net, Sekhar Nori <nsekhar@ti.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, Yijing Wang <wangyijing@huawei.com>, Daniel Walker <dwalker@fifo99.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Jonas Bonn <jonas@southpole.se>, Kukjin Kim <kgene.kim@samsung.com>, Russell King <linux@arm.linux.org.uk>, Richard Weinberger <richard@nod.at>, x86@kernel.org, Tony Lindgren <tony@atomide.com>, Ingo Molnar <mingo@redhat.com>, linux-arm-msm@vger.kernel.org, David Brown <davidb@codeaurora.org>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Mike Frysinger <vapier@gentoo.org>, user-mode-linux-devel@lists.sourceforge.net, Nicolas Ferre <nicolas.ferre@atmel.com>, Jeff Dike <jdike@addtoit.com>, Barry Song <baohua@kernel.org>, linux-samsung-soc@vger.kernel.org, John Stultz <john.stultz@linaro.org>, user-mode-linux-user@lists.sourceforge.net, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, davinci-linux-open-source@linux.davincidsp.com, Michal Simek <monstr@monstr.eu>, Jim Cromie <jim.cromie@gmail.com>, microblaze-uclinux@itee.uq.edu.au, Hanjun Guo <guohanjun@huawei.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Bryan Huntsman <bryanh@codeaurora.org>, uclinux-dist-devel@blackfin.uclinux.org, linuxppc-dev@lists.ozlabs.org
+Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+Message-ID: <1393417896.17341.2.camel@concordia>
+From: Michael Ellerman <mpe@ellerman.id.au>
+Date: Wed, 26 Feb 2014 23:31:36 +1100
+In-Reply-To: <1393319784-2758-2-git-send-email-takahiro.akashi@linaro.org>
+References: <1391407232-4623-1-git-send-email-takahiro.akashi@linaro.org>
+ <1393319784-2758-1-git-send-email-takahiro.akashi@linaro.org>
+ <1393319784-2758-2-git-send-email-takahiro.akashi@linaro.org>
+Mime-Version: 1.0
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+Subject: Re: [PATCH v2 1/1] audit: Add CONFIG_HAVE_ARCH_AUDITSYSCALL
+To: AKASHI Takahiro <takahiro.akashi@linaro.org>
+Cc: linux-s390@vger.kernel.org, linaro-kernel@lists.linaro.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, rgb@redhat.com, catalin.marinas@arm.com, x86@kernel.org, will.deacon@arm.com, arndb@arndb.de, eparis@redhat.com, linux-kernel@vger.kernel.org, dsaxena@linaro.org, viro@zeniv.linux.org.uk, user-mode-linux-user@lists.sourceforge.net, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linux-audit@redhat.com, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, 23 Jan 2014, Daniel Lezcano wrote:
-> On 01/23/2014 08:12 AM, Yijing Wang wrote:
-> > Currently, clocksource_register() and __clocksource_register_scale()
-> > functions always return 0, it's pointless, make functions void.
-> > And remove the dead code that check the clocksource_register_hz()
-> > return value.
-> > 
-> > Signed-off-by: Yijing Wang <wangyijing@huawei.com>
-> 
-> Well, do we really want to change all these files to not take care of a return
-> value ? What about is we have to check it again later ?
-> 
-> I would recommend to investigate __clocksource_register_scale and the
-> underneath functions if there is not an error to be returned in the call stack
-> somewhere which is ignored today.
-> 
-> The same applies for clocksource_register.
-
-There is really no point in making it fail. It's so low level that
-anything more than a proper printk/BUG/WARN is overkill.
-
-Thanks,
-
-	tglx
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+T24gVHVlLCAyMDE0LTAyLTI1IGF0IDE4OjE2ICswOTAwLCBBS0FTSEkgVGFrYWhpcm8gd3JvdGU6
+Cj4gQ3VycmVudGx5IEFVRElUU1lTQ0FMTCBoYXMgYSBsb25nIGxpc3Qgb2YgYXJjaGl0ZWN0dXJl
+IGRlcGVuY2VuY3k6Cj4gICAgICAgIGRlcGVuZHMgb24gQVVESVQgJiYgKFg4NiB8fCBQQVJJU0Mg
+fHwgUFBDIHx8IFMzOTAgfHwgSUE2NCB8fCBVTUwgfHwKPiAJCVNQQVJDNjQgfHwgU1VQRVJIIHx8
+IChBUk0gJiYgQUVBQkkgJiYgIU9BQklfQ09NUEFUKSB8fCBBTFBIQSkKPiBUaGUgcHVycG9zZSBv
+ZiB0aGlzIHBhdGNoIGlzIHRvIHJlcGxhY2UgaXQgd2l0aCBIQVZFX0FSQ0hfQVVESVRTWVNDQUxM
+Cj4gZm9yIHNpbXBsaWNpdHkuCj4gCj4gU2lnbmVkLW9mZi1ieTogQUtBU0hJIFRha2FoaXJvIDx0
+YWthaGlyby5ha2FzaGlAbGluYXJvLm9yZz4KPgo+IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMv
+S2NvbmZpZyBiL2FyY2gvcG93ZXJwYy9LY29uZmlnCj4gaW5kZXggOTU3YmYzNC4uN2IzYjhmZSAx
+MDA2NDQKPiAtLS0gYS9hcmNoL3Bvd2VycGMvS2NvbmZpZwo+ICsrKyBiL2FyY2gvcG93ZXJwYy9L
+Y29uZmlnCj4gQEAgLTE0MSw2ICsxNDEsNyBAQCBjb25maWcgUFBDCj4gIAlzZWxlY3QgSEFWRV9E
+RUJVR19TVEFDS09WRVJGTE9XCj4gIAlzZWxlY3QgSEFWRV9JUlFfRVhJVF9PTl9JUlFfU1RBQ0sK
+PiAgCXNlbGVjdCBBUkNIX1VTRV9DTVBYQ0hHX0xPQ0tSRUYgaWYgUFBDNjQKPiArCXNlbGVjdCBI
+QVZFX0FSQ0hfQVVESVRTWVNDQUxMCj4gIAo+ICBjb25maWcgR0VORVJJQ19DU1VNCj4gIAlkZWZf
+Ym9vbCBDUFVfTElUVExFX0VORElBTgoKTG9va3MgZ29vZCBmb3IgcG93ZXJwYy4KCkFja2VkLWJ5
+OiBNaWNoYWVsIEVsbGVybWFuIDxtcGVAZWxsZXJtYW4uaWQuYXU+CgpjaGVlcnMKCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eHBwYy1kZXYgbWFp
+bGluZyBsaXN0CkxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnCmh0dHBzOi8vbGlzdHMub3ps
+YWJzLm9yZy9saXN0aW5mby9saW51eHBwYy1kZXY=
 
