@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1WJ6Xu-00020d-It
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1WJ6Rr-0007DL-Pn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Feb 2014 19:23:02 +0000
+	Thu, 27 Feb 2014 19:16:47 +0000
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WJ6Xs-0003Zz-W2
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WJ6Ro-0004GF-2O
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Feb 2014 19:23:02 +0000
-Message-ID: <530F908D.6090601@nod.at>
-Date: Thu, 27 Feb 2014 20:22:53 +0100
+	Thu, 27 Feb 2014 19:16:47 +0000
+Message-ID: <530F8F14.9050606@nod.at>
+Date: Thu, 27 Feb 2014 20:16:36 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 References: <530F8C69.9080801@panasas.com>
@@ -31,7 +31,7 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] sysreq t back traces stopped working please help
 To: Boaz Harrosh <bharrosh@panasas.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-
+Hi!
 
 Am 27.02.2014 20:05, schrieb Boaz Harrosh:
 > Hi Richard, uml hackers
@@ -39,7 +39,7 @@ Am 27.02.2014 20:05, schrieb Boaz Harrosh:
 > Since some time my "echo t > /proc/sysrq-trigger" stopped producing the proper global back-traces for all Kernel threads.
 > All I get is:
 
-I have an idea, do you see this regression starting with v3.12?
+"some time" is a bit vague. Do you have more details?
 
 Thanks,
 //richard
