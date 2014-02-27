@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bharrosh@panasas.com>) id 1WJ6d9-0003Xc-Fh
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <bharrosh@panasas.com>) id 1WJ6aQ-00028R-AY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Feb 2014 19:28:27 +0000
+	Thu, 27 Feb 2014 19:25:38 +0000
 Received: from natasha.panasas.com ([209.166.131.148])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WJ6d8-0003nT-Ni for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 27 Feb 2014 19:28:27 +0000
-Message-ID: <530F91D0.1020408@panasas.com>
-Date: Thu, 27 Feb 2014 21:28:16 +0200
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WJ6aP-0004aX-E0 for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 Feb 2014 19:25:38 +0000
+Message-ID: <530F9126.2030206@panasas.com>
+Date: Thu, 27 Feb 2014 21:25:26 +0200
 From: Boaz Harrosh <bharrosh@panasas.com>
 MIME-Version: 1.0
-References: <530F8C69.9080801@panasas.com> <530F908D.6090601@nod.at>
-In-Reply-To: <530F908D.6090601@nod.at>
+References: <530F8C69.9080801@panasas.com> <530F8F14.9050606@nod.at>
+In-Reply-To: <530F8F14.9050606@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,8 +31,8 @@ Subject: Re: [uml-devel] sysreq t back traces stopped working please help
 To: Richard Weinberger <richard@nod.at>
 Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On 02/27/2014 09:22 PM, Richard Weinberger wrote:
-> 
+On 02/27/2014 09:16 PM, Richard Weinberger wrote:
+> Hi!
 > 
 > Am 27.02.2014 20:05, schrieb Boaz Harrosh:
 >> Hi Richard, uml hackers
@@ -40,17 +40,29 @@ On 02/27/2014 09:22 PM, Richard Weinberger wrote:
 >> Since some time my "echo t > /proc/sysrq-trigger" stopped producing the proper global back-traces for all Kernel threads.
 >> All I get is:
 > 
-> I have an idea, do you see this regression starting with v3.12?
+> "some time" is a bit vague. Do you have more details?
 > 
+
+OK I've found my problem Da. It all goes to con0 and not at all to /var/log/messages (Fedora)
+I'll recheck my log levels I see in  code KERN_INFO so i do think it should appear but I'll
+recheck.
+
+Which brings me back to my original problem with my UML setup that Fedora absolutely refuses
+to use con0= as its main prompt and will only use con1= So I need to now chose what will
+go to my bash console, the Kernel console output (printk(s)), or Fedora main prompt. Nothing
+I tried would combine them both. Like it used to be before.
+
+[ Here is what I use:
+ option 1: vmlinux con0=fd:0,fd:1 con=pts (Will only send printk, invoking console becomes read-only)
+ option 2: vmlinux con1=fd:0,fd:1 con=pts (invoking console becomes UML's main console RW. printk through
+                                           log file only, bad for postmortem)
+
+I'll use option 1 for now, so thanks
+Boaz
+
 > Thanks,
 > //richard
 > 
-
-Yes. You are right since 3.12 Yes. 3.11 is like before. But please see my other mail
-it has more info.
-
-Thanks, sir
-Boaz
 
 
 ------------------------------------------------------------------------------
