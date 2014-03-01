@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1WJgJ6-0000Br-TS
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1WJgDw-0002i5-OK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 01 Mar 2014 09:34:08 +0000
-Received: from mail-ve0-f181.google.com ([209.85.128.181])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WJgJ5-0000Md-OG
+	Sat, 01 Mar 2014 09:28:48 +0000
+Received: from mout.gmx.net ([212.227.17.20])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1WJgDv-0000E9-3F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 01 Mar 2014 09:34:08 +0000
-Received: by mail-ve0-f181.google.com with SMTP id jw12so1805522veb.26
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 01 Mar 2014 01:34:02 -0800 (PST)
+	Sat, 01 Mar 2014 09:28:48 +0000
+Received: from [192.168.178.21] ([78.54.129.74]) by mail.gmx.com (mrgmx102)
+	with ESMTPSA (Nemesis) id 0MELdk-1WQFo81MrI-00FS3x for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sat, 01 Mar 2014 10:28:40
+	+0100
+Message-ID: <5311A846.4020303@gmx.de>
+Date: Sat, 01 Mar 2014 10:28:38 +0100
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <5311A846.4020303@gmx.de>
-References: <5311A846.4020303@gmx.de>
-Date: Sat, 1 Mar 2014 10:34:02 +0100
-Message-ID: <CAFLxGvw+1NH-t1jbsc44EzTGD+Jp2jGCn=Ds4dEJ+7LtzDq7pw@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,167 +27,115 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [info] syscall mremap can't be tested at a UML w/
- fuzzy tool trinity
-To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, trinity@vger.kernel.org
+Subject: [uml-devel] [info] syscall mremap can't be tested at a UML w/ fuzzy
+	tool trinity
+To: trinity@vger.kernel.org
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sat, Mar 1, 2014 at 10:28 AM, Toralf F=F6rster <toralf.foerster@gmx.de> =
-wrote:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA256
->
-> Today I tested if I can activate that syscall again here (munmap works fi=
-ne since few days).
-> Testing a 32 bit user mode linux image with "$>trinity -q -N 100000 -C 8"=
- gave in the syslog of the UML guest:
->
-> Mar  1 10:09:18 trinity kernel: Stub registers -
-> Mar  1 10:09:18 trinity kernel:         0 - 100000
-
-Looks like the stub page. You cannot remap it.
-If you do so the calling process will die.
-
-> Mar  1 10:09:18 trinity kernel:         1 - 2000
-> Mar  1 10:09:18 trinity kernel:         2 - 0
-> Mar  1 10:09:18 trinity kernel:         3 - 0
-> Mar  1 10:09:18 trinity kernel:         4 - 0
-> Mar  1 10:09:18 trinity kernel:         5 - 0
-> Mar  1 10:09:18 trinity kernel:         6 - 0
-> Mar  1 10:09:18 trinity kernel:         7 - 7b
-> Mar  1 10:09:18 trinity kernel:         8 - 7b
-> Mar  1 10:09:18 trinity kernel:         9 - 0
-> Mar  1 10:09:18 trinity kernel:         10 - 33
-> Mar  1 10:09:18 trinity kernel:         11 - ffffffff
-> Mar  1 10:09:18 trinity kernel:         12 - 1000c3
-> Mar  1 10:09:18 trinity kernel:         13 - 73
-> Mar  1 10:09:18 trinity kernel:         14 - 10206
-> Mar  1 10:09:18 trinity kernel:         15 - 101028
-> Mar  1 10:09:18 trinity kernel:         16 - 7b
-> Mar  1 10:09:18 trinity kernel: wait_stub_done : failed to wait for SIGTR=
-AP, pid =3D 6662, n =3D 6662, errno =3D 0, status =3D 0xb7f
-> Mar  1 10:09:18 trinity kernel: do_syscall_stub : ret =3D 0, offset =3D 1=
-052680, data =3D 477be008
-> Mar  1 10:09:18 trinity kernel: do_syscall_stub: syscall 91 failed, retur=
-n value =3D 0x0, expected return value =3D 0x0
-> Mar  1 10:09:18 trinity kernel: syscall parameters: 0x100000 0x2000 0x0 0=
-x0 0x0 0x0
->
->
-> and a back trace of the core file of the crashed UML guest process tells:
->
->
-> $ gdb --core=3D/mnt/ramdisk/core /home/tfoerste/devel/linux/linux -n -bat=
-ch -ex 'bt'
-> [New LWP 4841]
->
-> warning: Could not load shared library symbols for linux-gate.so.1.
-> Do you need "set solib-search-path" or "set sysroot"?
-> Core was generated by `/home/tfoerste/devel/linux/linux earlyprintk ubda=
-=3D/home/tfoerste/virtual/uml/tr'.
-> Program terminated with signal 6, Aborted.
-> #0  0xb77c5424 in __kernel_vsyscall ()
-> #0  0xb77c5424 in __kernel_vsyscall ()
-> #1  0x08481b55 in kill ()
-> #2  0x08072acd in uml_abort () at arch/um/os-Linux/util.c:93
-> #3  0x08072e05 in os_dump_core () at arch/um/os-Linux/util.c:148
-> #4  0x080624fd in panic_exit (self=3D0x86c1598 <panic_exit_notifier>, unu=
-sed1=3D0, unused2=3D0x86f89a0 <buf.16970>) at arch/um/kernel/um_arch.c:240
-> #5  0x0809a2e6 in notifier_call_chain (nl=3D0x0, val=3D0, v=3D0x86f89a0 <=
-buf.16970>, nr_to_call=3D-2, nr_calls=3D0x0) at kernel/notifier.c:93
-> #6  0x0809a401 in __atomic_notifier_call_chain (nh=3D0x86f8984 <panic_not=
-ifier_list>, val=3D0, v=3D0x86f89a0 <buf.16970>, nr_to_call=3D0, nr_calls=
-=3D0x0) at kernel/notifier.c:182
-> #7  0x0809a43f in atomic_notifier_call_chain (nh=3D0x0, val=3D0, v=3D0x0)=
- at kernel/notifier.c:191
-> #8  0x084de7fc in panic (fmt=3D0x0) at kernel/panic.c:130
-> #9  0x080735b5 in do_syscall_stub (addr=3D<optimized out>, mm_idp=3D<opti=
-mized out>) at arch/um/os-Linux/skas/mem.c:68
-> #10 run_syscall_stub (mm_idp=3D0x4755d364, syscall=3D6, args=3D0x4490fb60=
-, expected=3D1150352224, addr=3D0x4490fda4, done=3D1) at arch/um/os-Linux/s=
-kas/mem.c:142
-> #11 0x08073c05 in unmap (mm_idp=3D0x0, addr=3D1079300096, len=3D4096, don=
-e=3D1150352224, data=3D0x4490fb60) at arch/um/os-Linux/skas/mem.c:244
-> #12 0x08061047 in do_ops (hvc=3D0x4490fd80, end=3D1, finished=3D1) at arc=
-h/um/kernel/tlb.c:67
-> #13 0x080615f8 in fix_range_common (mm=3D0x0, start_addr=3D1150352224, en=
-d_addr=3D1079840768, force=3D0) at arch/um/kernel/tlb.c:281
-> #14 0x0806193e in fix_range (force=3D<optimized out>, end_addr=3D<optimiz=
-ed out>, start_addr=3D<optimized out>, mm=3D<optimized out>) at arch/um/ker=
-nel/tlb.c:493
-> #15 flush_tlb_range (vma=3D0x0, start=3D1078792192, end=3D1079840768) at =
-arch/um/kernel/tlb.c:501
-> #16 0x080ef1ae in move_page_tables (vma=3D0x47839d48, old_addr=3D10787921=
-92, new_vma=3D0x44856cc0, new_addr=3D2097152, len=3D1048576, need_rmap_lock=
-s=3Dfalse) at mm/mremap.c:222
-> #17 0x080ef2c7 in move_vma (vma=3D0x47839d48, old_addr=3D1150352224, old_=
-len=3D6, new_len=3D1048576, new_addr=3D1048576, locked=3D0x0) at mm/mremap.=
-c:269
-> #18 0x080ef608 in mremap_to (locked=3D<optimized out>, new_len=3D<optimiz=
-ed out>, new_addr=3D<optimized out>, old_len=3D<optimized out>, addr=3D<opt=
-imized out>) at mm/mremap.c:438
-> #19 SYSC_mremap (new_addr=3D<optimized out>, flags=3D<optimized out>, new=
-_len=3D<optimized out>, old_len=3D<optimized out>, addr=3D<optimized out>) =
-at mm/mremap.c:501
-> #20 SyS_mremap (addr=3D1078792192, old_len=3D1048576, new_len=3D1048576, =
-flags=3D3, new_addr=3D1048576) at mm/mremap.c:470
-> #21 0x08062ab4 in handle_syscall (r=3D0x477df0c8) at arch/um/kernel/skas/=
-syscall.c:35
-> #22 0x08074905 in handle_trap (local_using_sysemu=3D<optimized out>, regs=
-=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/skas/process=
-.c:198
-> #23 userspace (regs=3D0x477df0c8) at arch/um/os-Linux/skas/process.c:431
-> #24 0x0805f770 in fork_handler () at arch/um/kernel/process.c:149
->
->
->
->
-> - --
-> MfG/Sincerely
-> Toralf F=F6rster
-> pgp finger print:1A37 6F99 4A9D 026F 13E2 4DCF C4EA CDDE 0076 E94E
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v2.0.22 (GNU/Linux)
-> Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
->
-> iF4EAREIAAYFAlMRqEYACgkQxOrN3gB26U6DrAD/SqDlQgmtzWcG68u16UPHtPEg
-> UmRkKQIdpqQ3iDhK2K8BAIJ3eeIkuItS71Usp4fvGHyp1bZnYZZQJjc+brur7s9G
-> =3D1kbQ
-> -----END PGP SIGNATURE-----
->
-> -------------------------------------------------------------------------=
------
-> Flow-based real-time traffic analytics software. Cisco certified tool.
-> Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-> Customize your own dashboards, set traffic alerts and generate reports.
-> Network behavioral analysis & security monitoring. All-in-one tool.
-> http://pubads.g.doubleclick.net/gampad/clk?id=3D126839071&iu=3D/4140/ostg=
-.clktrk
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
-
-
--- =
-
-Thanks,
-//richard
-
----------------------------------------------------------------------------=
----
-Flow-based real-time traffic analytics software. Cisco certified tool.
-Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
-Customize your own dashboards, set traffic alerts and generate reports.
-Network behavioral analysis & security monitoring. All-in-one tool.
-http://pubads.g.doubleclick.net/gampad/clk?id=3D126839071&iu=3D/4140/ostg.c=
-lktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEEyNTYKClRvZGF5IEkg
+dGVzdGVkIGlmIEkgY2FuIGFjdGl2YXRlIHRoYXQgc3lzY2FsbCBhZ2FpbiBoZXJlIChtdW5tYXAg
+d29ya3MgZmluZSBzaW5jZSBmZXcgZGF5cykuClRlc3RpbmcgYSAzMiBiaXQgdXNlciBtb2RlIGxp
+bnV4IGltYWdlIHdpdGggIiQ+dHJpbml0eSAtcSAtTiAxMDAwMDAgLUMgOCIgZ2F2ZSBpbiB0aGUg
+c3lzbG9nIG9mIHRoZSBVTUwgZ3Vlc3Q6CgpNYXIgIDEgMTA6MDk6MTggdHJpbml0eSBrZXJuZWw6
+IFN0dWIgcmVnaXN0ZXJzIC0KTWFyICAxIDEwOjA5OjE4IHRyaW5pdHkga2VybmVsOiAgICAgICAg
+IDAgLSAxMDAwMDAKTWFyICAxIDEwOjA5OjE4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDEgLSAy
+MDAwCk1hciAgMSAxMDowOToxOCB0cmluaXR5IGtlcm5lbDogICAgICAgICAyIC0gMApNYXIgIDEg
+MTA6MDk6MTggdHJpbml0eSBrZXJuZWw6ICAgICAgICAgMyAtIDAKTWFyICAxIDEwOjA5OjE4IHRy
+aW5pdHkga2VybmVsOiAgICAgICAgIDQgLSAwCk1hciAgMSAxMDowOToxOCB0cmluaXR5IGtlcm5l
+bDogICAgICAgICA1IC0gMApNYXIgIDEgMTA6MDk6MTggdHJpbml0eSBrZXJuZWw6ICAgICAgICAg
+NiAtIDAKTWFyICAxIDEwOjA5OjE4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDcgLSA3YgpNYXIg
+IDEgMTA6MDk6MTggdHJpbml0eSBrZXJuZWw6ICAgICAgICAgOCAtIDdiCk1hciAgMSAxMDowOTox
+OCB0cmluaXR5IGtlcm5lbDogICAgICAgICA5IC0gMApNYXIgIDEgMTA6MDk6MTggdHJpbml0eSBr
+ZXJuZWw6ICAgICAgICAgMTAgLSAzMwpNYXIgIDEgMTA6MDk6MTggdHJpbml0eSBrZXJuZWw6ICAg
+ICAgICAgMTEgLSBmZmZmZmZmZgpNYXIgIDEgMTA6MDk6MTggdHJpbml0eSBrZXJuZWw6ICAgICAg
+ICAgMTIgLSAxMDAwYzMKTWFyICAxIDEwOjA5OjE4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDEz
+IC0gNzMKTWFyICAxIDEwOjA5OjE4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDE0IC0gMTAyMDYK
+TWFyICAxIDEwOjA5OjE4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDE1IC0gMTAxMDI4Ck1hciAg
+MSAxMDowOToxOCB0cmluaXR5IGtlcm5lbDogICAgICAgICAxNiAtIDdiCk1hciAgMSAxMDowOTox
+OCB0cmluaXR5IGtlcm5lbDogd2FpdF9zdHViX2RvbmUgOiBmYWlsZWQgdG8gd2FpdCBmb3IgU0lH
+VFJBUCwgcGlkID0gNjY2MiwgbiA9IDY2NjIsIGVycm5vID0gMCwgc3RhdHVzID0gMHhiN2YKTWFy
+ICAxIDEwOjA5OjE4IHRyaW5pdHkga2VybmVsOiBkb19zeXNjYWxsX3N0dWIgOiByZXQgPSAwLCBv
+ZmZzZXQgPSAxMDUyNjgwLCBkYXRhID0gNDc3YmUwMDgKTWFyICAxIDEwOjA5OjE4IHRyaW5pdHkg
+a2VybmVsOiBkb19zeXNjYWxsX3N0dWI6IHN5c2NhbGwgOTEgZmFpbGVkLCByZXR1cm4gdmFsdWUg
+PSAweDAsIGV4cGVjdGVkIHJldHVybiB2YWx1ZSA9IDB4MApNYXIgIDEgMTA6MDk6MTggdHJpbml0
+eSBrZXJuZWw6IHN5c2NhbGwgcGFyYW1ldGVyczogMHgxMDAwMDAgMHgyMDAwIDB4MCAweDAgMHgw
+IDB4MAoKCmFuZCBhIGJhY2sgdHJhY2Ugb2YgdGhlIGNvcmUgZmlsZSBvZiB0aGUgY3Jhc2hlZCBV
+TUwgZ3Vlc3QgcHJvY2VzcyB0ZWxsczoKCgokIGdkYiAtLWNvcmU9L21udC9yYW1kaXNrL2NvcmUg
+L2hvbWUvdGZvZXJzdGUvZGV2ZWwvbGludXgvbGludXggLW4gLWJhdGNoIC1leCAnYnQnCltOZXcg
+TFdQIDQ4NDFdCgp3YXJuaW5nOiBDb3VsZCBub3QgbG9hZCBzaGFyZWQgbGlicmFyeSBzeW1ib2xz
+IGZvciBsaW51eC1nYXRlLnNvLjEuCkRvIHlvdSBuZWVkICJzZXQgc29saWItc2VhcmNoLXBhdGgi
+IG9yICJzZXQgc3lzcm9vdCI/CkNvcmUgd2FzIGdlbmVyYXRlZCBieSBgL2hvbWUvdGZvZXJzdGUv
+ZGV2ZWwvbGludXgvbGludXggZWFybHlwcmludGsgdWJkYT0vaG9tZS90Zm9lcnN0ZS92aXJ0dWFs
+L3VtbC90cicuClByb2dyYW0gdGVybWluYXRlZCB3aXRoIHNpZ25hbCA2LCBBYm9ydGVkLgojMCAg
+MHhiNzdjNTQyNCBpbiBfX2tlcm5lbF92c3lzY2FsbCAoKQojMCAgMHhiNzdjNTQyNCBpbiBfX2tl
+cm5lbF92c3lzY2FsbCAoKQojMSAgMHgwODQ4MWI1NSBpbiBraWxsICgpCiMyICAweDA4MDcyYWNk
+IGluIHVtbF9hYm9ydCAoKSBhdCBhcmNoL3VtL29zLUxpbnV4L3V0aWwuYzo5MwojMyAgMHgwODA3
+MmUwNSBpbiBvc19kdW1wX2NvcmUgKCkgYXQgYXJjaC91bS9vcy1MaW51eC91dGlsLmM6MTQ4CiM0
+ICAweDA4MDYyNGZkIGluIHBhbmljX2V4aXQgKHNlbGY9MHg4NmMxNTk4IDxwYW5pY19leGl0X25v
+dGlmaWVyPiwgdW51c2VkMT0wLCB1bnVzZWQyPTB4ODZmODlhMCA8YnVmLjE2OTcwPikgYXQgYXJj
+aC91bS9rZXJuZWwvdW1fYXJjaC5jOjI0MAojNSAgMHgwODA5YTJlNiBpbiBub3RpZmllcl9jYWxs
+X2NoYWluIChubD0weDAsIHZhbD0wLCB2PTB4ODZmODlhMCA8YnVmLjE2OTcwPiwgbnJfdG9fY2Fs
+bD0tMiwgbnJfY2FsbHM9MHgwKSBhdCBrZXJuZWwvbm90aWZpZXIuYzo5MwojNiAgMHgwODA5YTQw
+MSBpbiBfX2F0b21pY19ub3RpZmllcl9jYWxsX2NoYWluIChuaD0weDg2Zjg5ODQgPHBhbmljX25v
+dGlmaWVyX2xpc3Q+LCB2YWw9MCwgdj0weDg2Zjg5YTAgPGJ1Zi4xNjk3MD4sIG5yX3RvX2NhbGw9
+MCwgbnJfY2FsbHM9MHgwKSBhdCBrZXJuZWwvbm90aWZpZXIuYzoxODIKIzcgIDB4MDgwOWE0M2Yg
+aW4gYXRvbWljX25vdGlmaWVyX2NhbGxfY2hhaW4gKG5oPTB4MCwgdmFsPTAsIHY9MHgwKSBhdCBr
+ZXJuZWwvbm90aWZpZXIuYzoxOTEKIzggIDB4MDg0ZGU3ZmMgaW4gcGFuaWMgKGZtdD0weDApIGF0
+IGtlcm5lbC9wYW5pYy5jOjEzMAojOSAgMHgwODA3MzViNSBpbiBkb19zeXNjYWxsX3N0dWIgKGFk
+ZHI9PG9wdGltaXplZCBvdXQ+LCBtbV9pZHA9PG9wdGltaXplZCBvdXQ+KSBhdCBhcmNoL3VtL29z
+LUxpbnV4L3NrYXMvbWVtLmM6NjgKIzEwIHJ1bl9zeXNjYWxsX3N0dWIgKG1tX2lkcD0weDQ3NTVk
+MzY0LCBzeXNjYWxsPTYsIGFyZ3M9MHg0NDkwZmI2MCwgZXhwZWN0ZWQ9MTE1MDM1MjIyNCwgYWRk
+cj0weDQ0OTBmZGE0LCBkb25lPTEpIGF0IGFyY2gvdW0vb3MtTGludXgvc2thcy9tZW0uYzoxNDIK
+IzExIDB4MDgwNzNjMDUgaW4gdW5tYXAgKG1tX2lkcD0weDAsIGFkZHI9MTA3OTMwMDA5NiwgbGVu
+PTQwOTYsIGRvbmU9MTE1MDM1MjIyNCwgZGF0YT0weDQ0OTBmYjYwKSBhdCBhcmNoL3VtL29zLUxp
+bnV4L3NrYXMvbWVtLmM6MjQ0CiMxMiAweDA4MDYxMDQ3IGluIGRvX29wcyAoaHZjPTB4NDQ5MGZk
+ODAsIGVuZD0xLCBmaW5pc2hlZD0xKSBhdCBhcmNoL3VtL2tlcm5lbC90bGIuYzo2NwojMTMgMHgw
+ODA2MTVmOCBpbiBmaXhfcmFuZ2VfY29tbW9uIChtbT0weDAsIHN0YXJ0X2FkZHI9MTE1MDM1MjIy
+NCwgZW5kX2FkZHI9MTA3OTg0MDc2OCwgZm9yY2U9MCkgYXQgYXJjaC91bS9rZXJuZWwvdGxiLmM6
+MjgxCiMxNCAweDA4MDYxOTNlIGluIGZpeF9yYW5nZSAoZm9yY2U9PG9wdGltaXplZCBvdXQ+LCBl
+bmRfYWRkcj08b3B0aW1pemVkIG91dD4sIHN0YXJ0X2FkZHI9PG9wdGltaXplZCBvdXQ+LCBtbT08
+b3B0aW1pemVkIG91dD4pIGF0IGFyY2gvdW0va2VybmVsL3RsYi5jOjQ5MwojMTUgZmx1c2hfdGxi
+X3JhbmdlICh2bWE9MHgwLCBzdGFydD0xMDc4NzkyMTkyLCBlbmQ9MTA3OTg0MDc2OCkgYXQgYXJj
+aC91bS9rZXJuZWwvdGxiLmM6NTAxCiMxNiAweDA4MGVmMWFlIGluIG1vdmVfcGFnZV90YWJsZXMg
+KHZtYT0weDQ3ODM5ZDQ4LCBvbGRfYWRkcj0xMDc4NzkyMTkyLCBuZXdfdm1hPTB4NDQ4NTZjYzAs
+IG5ld19hZGRyPTIwOTcxNTIsIGxlbj0xMDQ4NTc2LCBuZWVkX3JtYXBfbG9ja3M9ZmFsc2UpIGF0
+IG1tL21yZW1hcC5jOjIyMgojMTcgMHgwODBlZjJjNyBpbiBtb3ZlX3ZtYSAodm1hPTB4NDc4Mzlk
+NDgsIG9sZF9hZGRyPTExNTAzNTIyMjQsIG9sZF9sZW49NiwgbmV3X2xlbj0xMDQ4NTc2LCBuZXdf
+YWRkcj0xMDQ4NTc2LCBsb2NrZWQ9MHgwKSBhdCBtbS9tcmVtYXAuYzoyNjkKIzE4IDB4MDgwZWY2
+MDggaW4gbXJlbWFwX3RvIChsb2NrZWQ9PG9wdGltaXplZCBvdXQ+LCBuZXdfbGVuPTxvcHRpbWl6
+ZWQgb3V0PiwgbmV3X2FkZHI9PG9wdGltaXplZCBvdXQ+LCBvbGRfbGVuPTxvcHRpbWl6ZWQgb3V0
+PiwgYWRkcj08b3B0aW1pemVkIG91dD4pIGF0IG1tL21yZW1hcC5jOjQzOAojMTkgU1lTQ19tcmVt
+YXAgKG5ld19hZGRyPTxvcHRpbWl6ZWQgb3V0PiwgZmxhZ3M9PG9wdGltaXplZCBvdXQ+LCBuZXdf
+bGVuPTxvcHRpbWl6ZWQgb3V0Piwgb2xkX2xlbj08b3B0aW1pemVkIG91dD4sIGFkZHI9PG9wdGlt
+aXplZCBvdXQ+KSBhdCBtbS9tcmVtYXAuYzo1MDEKIzIwIFN5U19tcmVtYXAgKGFkZHI9MTA3ODc5
+MjE5Miwgb2xkX2xlbj0xMDQ4NTc2LCBuZXdfbGVuPTEwNDg1NzYsIGZsYWdzPTMsIG5ld19hZGRy
+PTEwNDg1NzYpIGF0IG1tL21yZW1hcC5jOjQ3MAojMjEgMHgwODA2MmFiNCBpbiBoYW5kbGVfc3lz
+Y2FsbCAocj0weDQ3N2RmMGM4KSBhdCBhcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzozNQoj
+MjIgMHgwODA3NDkwNSBpbiBoYW5kbGVfdHJhcCAobG9jYWxfdXNpbmdfc3lzZW11PTxvcHRpbWl6
+ZWQgb3V0PiwgcmVncz08b3B0aW1pemVkIG91dD4sIHBpZD08b3B0aW1pemVkIG91dD4pIGF0IGFy
+Y2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNzLmM6MTk4CiMyMyB1c2Vyc3BhY2UgKHJlZ3M9MHg0
+NzdkZjBjOCkgYXQgYXJjaC91bS9vcy1MaW51eC9za2FzL3Byb2Nlc3MuYzo0MzEKIzI0IDB4MDgw
+NWY3NzAgaW4gZm9ya19oYW5kbGVyICgpIGF0IGFyY2gvdW0va2VybmVsL3Byb2Nlc3MuYzoxNDkK
+CgoKCi0gLS0gCk1mRy9TaW5jZXJlbHkKVG9yYWxmIEbDtnJzdGVyCnBncCBmaW5nZXIgcHJpbnQ6
+MUEzNyA2Rjk5IDRBOUQgMDI2RiAxM0UyIDREQ0YgQzRFQSBDRERFIDAwNzYgRTk0RQotLS0tLUJF
+R0lOIFBHUCBTSUdOQVRVUkUtLS0tLQpWZXJzaW9uOiBHbnVQRyB2Mi4wLjIyIChHTlUvTGludXgp
+CkNvbW1lbnQ6IFVzaW5nIEdudVBHIHdpdGggVGh1bmRlcmJpcmQgLSBodHRwOi8vd3d3LmVuaWdt
+YWlsLm5ldC8KCmlGNEVBUkVJQUFZRkFsTVJxRVlBQ2drUXhPck4zZ0IyNlU2RHJBRC9TcURsUWdt
+dHpXY0c2OHUxNlVQSHRQRWcKVW1Sa0tRSWRwcVEzaURoSzJLOEJBSUozZWVJa3VJdFM3MVVzcDRm
+dkdIeXAxYlpuWVpaUUpqYyticnVyN3M5Rwo9MWtiUQotLS0tLUVORCBQR1AgU0lHTkFUVVJFLS0t
+LS0KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpGbG93LWJhc2VkIHJlYWwtdGltZSB0cmFmZmljIGFu
+YWx5dGljcyBzb2Z0d2FyZS4gQ2lzY28gY2VydGlmaWVkIHRvb2wuCk1vbml0b3IgdHJhZmZpYywg
+U0xBcywgUW9TLCBNZWRpYW5ldCwgV0FBUyBldGMuIHdpdGggTmV0RmxvdyBBbmFseXplcgpDdXN0
+b21pemUgeW91ciBvd24gZGFzaGJvYXJkcywgc2V0IHRyYWZmaWMgYWxlcnRzIGFuZCBnZW5lcmF0
+ZSByZXBvcnRzLgpOZXR3b3JrIGJlaGF2aW9yYWwgYW5hbHlzaXMgJiBzZWN1cml0eSBtb25pdG9y
+aW5nLiBBbGwtaW4tb25lIHRvb2wuCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2Ft
+cGFkL2Nsaz9pZD0xMjY4MzkwNzEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1h
+aWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51
+eC1kZXZlbAo=
 
