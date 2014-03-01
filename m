@@ -1,199 +1,194 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-From: Richard Guy Briggs <rgb@redhat.com>
-Date: Wed,  5 Mar 2014 16:27:04 -0500
-Message-Id: <fc170f50376a56ea82d25fbf1587f64b76177e0f.1393974970.git.rgb@redhat.com>
-In-Reply-To: <cover.1393974970.git.rgb@redhat.com>
-References: <cover.1393974970.git.rgb@redhat.com>
-In-Reply-To: <cover.1393974970.git.rgb@redhat.com>
-References: <cover.1393974970.git.rgb@redhat.com>
-Sender: linux-sh-owner@vger.kernel.org
-Subject: [PATCH 3/6][RFC] audit: __audit_syscall_entry: ignore arch arg and call syscall_get_arch() directly
-To: linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Cc: Richard Guy Briggs <rgb@redhat.com>, eparis@redhat.com, sgrubb@redhat.com, oleg@redhat.com, linux-arm-kernel@lists.infradead.org, x86@kernel.org, linux-ia64@vger.kernel.org, microblaze-uclinux@itee.uq.edu.au, linux-mips@linux-mips.org, linux@openrisc.net, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1WJgJ6-0000Br-TS
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 01 Mar 2014 09:34:08 +0000
+Received: from mail-ve0-f181.google.com ([209.85.128.181])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WJgJ5-0000Md-OG
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 01 Mar 2014 09:34:08 +0000
+Received: by mail-ve0-f181.google.com with SMTP id jw12so1805522veb.26
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 01 Mar 2014 01:34:02 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <5311A846.4020303@gmx.de>
+References: <5311A846.4020303@gmx.de>
+Date: Sat, 1 Mar 2014 10:34:02 +0100
+Message-ID: <CAFLxGvw+1NH-t1jbsc44EzTGD+Jp2jGCn=Ds4dEJ+7LtzDq7pw@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] [info] syscall mremap can't be tested at a UML w/
+ fuzzy tool trinity
+To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, trinity@vger.kernel.org
 
-Since all the callers of syscall_get_arch() presently pass "current" and none
-of the arch-specific syscall_get_arch() implementations use the regs parameter,
-ignore the passed in arch parameter to __audit_syscall_entry() and call
-syscall_get_arch() directly.
+On Sat, Mar 1, 2014 at 10:28 AM, Toralf F=F6rster <toralf.foerster@gmx.de> =
+wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA256
+>
+> Today I tested if I can activate that syscall again here (munmap works fi=
+ne since few days).
+> Testing a 32 bit user mode linux image with "$>trinity -q -N 100000 -C 8"=
+ gave in the syslog of the UML guest:
+>
+> Mar  1 10:09:18 trinity kernel: Stub registers -
+> Mar  1 10:09:18 trinity kernel:         0 - 100000
 
-Change the audit header file from the kernel internal to the user api version
-to get the architecture numbers, but to avoid a circular header reference
-between audit and syscall.h
+Looks like the stub page. You cannot remap it.
+If you do so the calling process will die.
 
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> Mar  1 10:09:18 trinity kernel:         1 - 2000
+> Mar  1 10:09:18 trinity kernel:         2 - 0
+> Mar  1 10:09:18 trinity kernel:         3 - 0
+> Mar  1 10:09:18 trinity kernel:         4 - 0
+> Mar  1 10:09:18 trinity kernel:         5 - 0
+> Mar  1 10:09:18 trinity kernel:         6 - 0
+> Mar  1 10:09:18 trinity kernel:         7 - 7b
+> Mar  1 10:09:18 trinity kernel:         8 - 7b
+> Mar  1 10:09:18 trinity kernel:         9 - 0
+> Mar  1 10:09:18 trinity kernel:         10 - 33
+> Mar  1 10:09:18 trinity kernel:         11 - ffffffff
+> Mar  1 10:09:18 trinity kernel:         12 - 1000c3
+> Mar  1 10:09:18 trinity kernel:         13 - 73
+> Mar  1 10:09:18 trinity kernel:         14 - 10206
+> Mar  1 10:09:18 trinity kernel:         15 - 101028
+> Mar  1 10:09:18 trinity kernel:         16 - 7b
+> Mar  1 10:09:18 trinity kernel: wait_stub_done : failed to wait for SIGTR=
+AP, pid =3D 6662, n =3D 6662, errno =3D 0, status =3D 0xb7f
+> Mar  1 10:09:18 trinity kernel: do_syscall_stub : ret =3D 0, offset =3D 1=
+052680, data =3D 477be008
+> Mar  1 10:09:18 trinity kernel: do_syscall_stub: syscall 91 failed, retur=
+n value =3D 0x0, expected return value =3D 0x0
+> Mar  1 10:09:18 trinity kernel: syscall parameters: 0x100000 0x2000 0x0 0=
+x0 0x0 0x0
+>
+>
+> and a back trace of the core file of the crashed UML guest process tells:
+>
+>
+> $ gdb --core=3D/mnt/ramdisk/core /home/tfoerste/devel/linux/linux -n -bat=
+ch -ex 'bt'
+> [New LWP 4841]
+>
+> warning: Could not load shared library symbols for linux-gate.so.1.
+> Do you need "set solib-search-path" or "set sysroot"?
+> Core was generated by `/home/tfoerste/devel/linux/linux earlyprintk ubda=
+=3D/home/tfoerste/virtual/uml/tr'.
+> Program terminated with signal 6, Aborted.
+> #0  0xb77c5424 in __kernel_vsyscall ()
+> #0  0xb77c5424 in __kernel_vsyscall ()
+> #1  0x08481b55 in kill ()
+> #2  0x08072acd in uml_abort () at arch/um/os-Linux/util.c:93
+> #3  0x08072e05 in os_dump_core () at arch/um/os-Linux/util.c:148
+> #4  0x080624fd in panic_exit (self=3D0x86c1598 <panic_exit_notifier>, unu=
+sed1=3D0, unused2=3D0x86f89a0 <buf.16970>) at arch/um/kernel/um_arch.c:240
+> #5  0x0809a2e6 in notifier_call_chain (nl=3D0x0, val=3D0, v=3D0x86f89a0 <=
+buf.16970>, nr_to_call=3D-2, nr_calls=3D0x0) at kernel/notifier.c:93
+> #6  0x0809a401 in __atomic_notifier_call_chain (nh=3D0x86f8984 <panic_not=
+ifier_list>, val=3D0, v=3D0x86f89a0 <buf.16970>, nr_to_call=3D0, nr_calls=
+=3D0x0) at kernel/notifier.c:182
+> #7  0x0809a43f in atomic_notifier_call_chain (nh=3D0x0, val=3D0, v=3D0x0)=
+ at kernel/notifier.c:191
+> #8  0x084de7fc in panic (fmt=3D0x0) at kernel/panic.c:130
+> #9  0x080735b5 in do_syscall_stub (addr=3D<optimized out>, mm_idp=3D<opti=
+mized out>) at arch/um/os-Linux/skas/mem.c:68
+> #10 run_syscall_stub (mm_idp=3D0x4755d364, syscall=3D6, args=3D0x4490fb60=
+, expected=3D1150352224, addr=3D0x4490fda4, done=3D1) at arch/um/os-Linux/s=
+kas/mem.c:142
+> #11 0x08073c05 in unmap (mm_idp=3D0x0, addr=3D1079300096, len=3D4096, don=
+e=3D1150352224, data=3D0x4490fb60) at arch/um/os-Linux/skas/mem.c:244
+> #12 0x08061047 in do_ops (hvc=3D0x4490fd80, end=3D1, finished=3D1) at arc=
+h/um/kernel/tlb.c:67
+> #13 0x080615f8 in fix_range_common (mm=3D0x0, start_addr=3D1150352224, en=
+d_addr=3D1079840768, force=3D0) at arch/um/kernel/tlb.c:281
+> #14 0x0806193e in fix_range (force=3D<optimized out>, end_addr=3D<optimiz=
+ed out>, start_addr=3D<optimized out>, mm=3D<optimized out>) at arch/um/ker=
+nel/tlb.c:493
+> #15 flush_tlb_range (vma=3D0x0, start=3D1078792192, end=3D1079840768) at =
+arch/um/kernel/tlb.c:501
+> #16 0x080ef1ae in move_page_tables (vma=3D0x47839d48, old_addr=3D10787921=
+92, new_vma=3D0x44856cc0, new_addr=3D2097152, len=3D1048576, need_rmap_lock=
+s=3Dfalse) at mm/mremap.c:222
+> #17 0x080ef2c7 in move_vma (vma=3D0x47839d48, old_addr=3D1150352224, old_=
+len=3D6, new_len=3D1048576, new_addr=3D1048576, locked=3D0x0) at mm/mremap.=
+c:269
+> #18 0x080ef608 in mremap_to (locked=3D<optimized out>, new_len=3D<optimiz=
+ed out>, new_addr=3D<optimized out>, old_len=3D<optimized out>, addr=3D<opt=
+imized out>) at mm/mremap.c:438
+> #19 SYSC_mremap (new_addr=3D<optimized out>, flags=3D<optimized out>, new=
+_len=3D<optimized out>, old_len=3D<optimized out>, addr=3D<optimized out>) =
+at mm/mremap.c:501
+> #20 SyS_mremap (addr=3D1078792192, old_len=3D1048576, new_len=3D1048576, =
+flags=3D3, new_addr=3D1048576) at mm/mremap.c:470
+> #21 0x08062ab4 in handle_syscall (r=3D0x477df0c8) at arch/um/kernel/skas/=
+syscall.c:35
+> #22 0x08074905 in handle_trap (local_using_sysemu=3D<optimized out>, regs=
+=3D<optimized out>, pid=3D<optimized out>) at arch/um/os-Linux/skas/process=
+.c:198
+> #23 userspace (regs=3D0x477df0c8) at arch/um/os-Linux/skas/process.c:431
+> #24 0x0805f770 in fork_handler () at arch/um/kernel/process.c:149
+>
+>
+>
+>
+> - --
+> MfG/Sincerely
+> Toralf F=F6rster
+> pgp finger print:1A37 6F99 4A9D 026F 13E2 4DCF C4EA CDDE 0076 E94E
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v2.0.22 (GNU/Linux)
+> Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+>
+> iF4EAREIAAYFAlMRqEYACgkQxOrN3gB26U6DrAD/SqDlQgmtzWcG68u16UPHtPEg
+> UmRkKQIdpqQ3iDhK2K8BAIJ3eeIkuItS71Usp4fvGHyp1bZnYZZQJjc+brur7s9G
+> =3D1kbQ
+> -----END PGP SIGNATURE-----
+>
+> -------------------------------------------------------------------------=
+-----
+> Flow-based real-time traffic analytics software. Cisco certified tool.
+> Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+> Customize your own dashboards, set traffic alerts and generate reports.
+> Network behavioral analysis & security monitoring. All-in-one tool.
+> http://pubads.g.doubleclick.net/gampad/clk?id=3D126839071&iu=3D/4140/ostg=
+.clktrk
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
+
+
+-- =
+
+Thanks,
+//richard
+
+---------------------------------------------------------------------------=
 ---
- arch/arm/include/asm/syscall.h        |    2 +-
- arch/ia64/include/asm/syscall.h       |    2 +-
- arch/microblaze/include/asm/syscall.h |    2 +-
- arch/mips/include/asm/syscall.h       |    2 +-
- arch/openrisc/include/asm/syscall.h   |    2 +-
- arch/parisc/include/asm/syscall.h     |    2 +-
- arch/powerpc/include/asm/syscall.h    |    2 +-
- arch/s390/include/asm/syscall.h       |    2 +-
- arch/sh/include/asm/syscall.h         |    2 +-
- arch/sparc/include/asm/syscall.h      |    2 +-
- arch/x86/include/asm/syscall.h        |    2 +-
- kernel/auditsc.c                      |    2 +-
- 12 files changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/arch/arm/include/asm/syscall.h b/arch/arm/include/asm/syscall.h
-index 73ddd72..a749123 100644
---- a/arch/arm/include/asm/syscall.h
-+++ b/arch/arm/include/asm/syscall.h
-@@ -7,7 +7,7 @@
- #ifndef _ASM_ARM_SYSCALL_H
- #define _ASM_ARM_SYSCALL_H
- 
--#include <linux/audit.h> /* for AUDIT_ARCH_* */
-+#include <uapi/linux/audit.h> /* for AUDIT_ARCH_* */
- #include <linux/elf.h> /* for ELF_EM */
- #include <linux/err.h>
- #include <linux/sched.h>
-diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
-index 0fd2a7a..9c82767 100644
---- a/arch/ia64/include/asm/syscall.h
-+++ b/arch/ia64/include/asm/syscall.h
-@@ -15,7 +15,7 @@
- 
- #include <linux/sched.h>
- #include <linux/err.h>
--#include <linux/audit.h>
-+#include <uapi/linux/audit.h>
- 
- static inline long syscall_get_nr(struct task_struct *task,
- 				  struct pt_regs *regs)
-diff --git a/arch/microblaze/include/asm/syscall.h b/arch/microblaze/include/asm/syscall.h
-index 06854da..e1acf8a 100644
---- a/arch/microblaze/include/asm/syscall.h
-+++ b/arch/microblaze/include/asm/syscall.h
-@@ -3,7 +3,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/sched.h>
--#include <linux/audit.h>
-+#include <uapi/linux/audit.h>
- #include <asm/ptrace.h>
- 
- /* The system call number is given by the user in R12 */
-diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
-index 41ecde4..a8234f2 100644
---- a/arch/mips/include/asm/syscall.h
-+++ b/arch/mips/include/asm/syscall.h
-@@ -13,7 +13,7 @@
- #ifndef __ASM_MIPS_SYSCALL_H
- #define __ASM_MIPS_SYSCALL_H
- 
--#include <linux/audit.h>
-+#include <uapi/linux/audit.h>
- #include <linux/elf-em.h>
- #include <linux/kernel.h>
- #include <linux/sched.h>
-diff --git a/arch/openrisc/include/asm/syscall.h b/arch/openrisc/include/asm/syscall.h
-index 534b9c3..2bbe0e9 100644
---- a/arch/openrisc/include/asm/syscall.h
-+++ b/arch/openrisc/include/asm/syscall.h
-@@ -21,7 +21,7 @@
- 
- #include <linux/err.h>
- #include <linux/sched.h>
--#include <linux/audit.h>
-+#include <uapi/linux/audit.h>
- 
- static inline int
- syscall_get_nr(struct task_struct *task, struct pt_regs *regs)
-diff --git a/arch/parisc/include/asm/syscall.h b/arch/parisc/include/asm/syscall.h
-index b3b604f..2bf23b1 100644
---- a/arch/parisc/include/asm/syscall.h
-+++ b/arch/parisc/include/asm/syscall.h
-@@ -5,7 +5,7 @@
- 
- #include <linux/err.h>
- #include <linux/compat.h>
--#include <linux/audit.h>
-+#include <uapi/linux/audit.h>
- #include <asm/ptrace.h>
- 
- static inline long syscall_get_nr(struct task_struct *tsk,
-diff --git a/arch/powerpc/include/asm/syscall.h b/arch/powerpc/include/asm/syscall.h
-index b824eb2..36bd9ef 100644
---- a/arch/powerpc/include/asm/syscall.h
-+++ b/arch/powerpc/include/asm/syscall.h
-@@ -15,7 +15,7 @@
- 
- #include <linux/sched.h>
- #include <linux/compat.h>
--#include <linux/audit.h>
-+#include <uapi/linux/audit.h>
- 
- /* ftrace syscalls requires exporting the sys_call_table */
- #ifdef CONFIG_FTRACE_SYSCALLS
-diff --git a/arch/s390/include/asm/syscall.h b/arch/s390/include/asm/syscall.h
-index cd29d2f..79d1805 100644
---- a/arch/s390/include/asm/syscall.h
-+++ b/arch/s390/include/asm/syscall.h
-@@ -12,7 +12,7 @@
- #ifndef _ASM_SYSCALL_H
- #define _ASM_SYSCALL_H	1
- 
--#include <linux/audit.h>
-+#include <uapi/linux/audit.h>
- #include <linux/sched.h>
- #include <linux/err.h>
- #include <asm/ptrace.h>
-diff --git a/arch/sh/include/asm/syscall.h b/arch/sh/include/asm/syscall.h
-index f1a79d4..33e60e0 100644
---- a/arch/sh/include/asm/syscall.h
-+++ b/arch/sh/include/asm/syscall.h
-@@ -9,7 +9,7 @@ extern const unsigned long sys_call_table[];
- # include <asm/syscall_64.h>
- #endif
- 
--# include <linux/audit.h>
-+# include <uapi/linux/audit.h>
- 
- static inline int syscall_get_arch(struct task_struct *tsk,
- 				   struct pt_regs *regs)
-diff --git a/arch/sparc/include/asm/syscall.h b/arch/sparc/include/asm/syscall.h
-index c7a8f75..eddc60e 100644
---- a/arch/sparc/include/asm/syscall.h
-+++ b/arch/sparc/include/asm/syscall.h
-@@ -3,7 +3,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/sched.h>
--#include <linux/audit.h>
-+#include <uapi/linux/audit.h>
- #include <asm/ptrace.h>
- 
- /*
-diff --git a/arch/x86/include/asm/syscall.h b/arch/x86/include/asm/syscall.h
-index aea284b..c98e0ec 100644
---- a/arch/x86/include/asm/syscall.h
-+++ b/arch/x86/include/asm/syscall.h
-@@ -13,7 +13,7 @@
- #ifndef _ASM_X86_SYSCALL_H
- #define _ASM_X86_SYSCALL_H
- 
--#include <linux/audit.h>
-+#include <uapi/linux/audit.h>
- #include <linux/sched.h>
- #include <linux/err.h>
- #include <asm/asm-offsets.h>	/* For NR_syscalls */
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 7317f46..0c9fe06 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -1461,7 +1461,7 @@ void __audit_syscall_entry(int arch, int major,
- 	if (!audit_enabled)
- 		return;
- 
--	context->arch	    = arch;
-+	context->arch	    = syscall_get_arch(current, NULL);
- 	context->major      = major;
- 	context->argv[0]    = a1;
- 	context->argv[1]    = a2;
--- 
-1.7.1
+Flow-based real-time traffic analytics software. Cisco certified tool.
+Monitor traffic, SLAs, QoS, Medianet, WAAS etc. with NetFlow Analyzer
+Customize your own dashboards, set traffic alerts and generate reports.
+Network behavioral analysis & security monitoring. All-in-one tool.
+http://pubads.g.doubleclick.net/gampad/clk?id=3D126839071&iu=3D/4140/ostg.c=
+lktrk
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
