@@ -1,22 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1WMQkc-00034i-CK
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1WLzei-00007O-RX
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Mar 2014 23:33:54 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WMQka-0002TL-9j
+	Fri, 07 Mar 2014 18:38:00 +0000
+Received: from ivanoab3.miniserver.com ([89.200.143.206])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WLzeh-0008FN-LQ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 08 Mar 2014 23:33:54 +0000
-Message-ID: <531BA8D0.2050307@nod.at>
-Date: Sun, 09 Mar 2014 00:33:36 +0100
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
+	Fri, 07 Mar 2014 18:38:00 +0000
+From: anton.ivanov@kot-begemot.co.uk
+Date: Fri,  7 Mar 2014 18:37:48 +0000
+Message-Id: <1394217468-734972-3-git-send-email-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <1394217468-734972-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 References: <1394217468-734972-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-	<1394217468-734972-3-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1394217468-734972-3-git-send-email-anton.ivanov@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,94 +24,89 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH 3/3] BUG: Inapprorpiate choice of IPC
-To: anton.ivanov@kot-begemot.co.uk, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 3/3] BUG: Inapprorpiate choice of IPC
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard@nod.at
 
+From: Anton Ivanov <antivano@cisco.com>
 
+PIPE is the wrong IPC for this type of inter-thread communication.
 
-Am 07.03.2014 19:37, schrieb anton.ivanov@kot-begemot.co.uk:
-> From: Anton Ivanov <antivano@cisco.com>
-> 
-> PIPE is the wrong IPC for this type of inter-thread communication.
-> 
-> For more details see:
-> 
-> http://stackoverflow.com/questions/4624071/pipe-buffer-size-is-4k-or-64k
-> 
-> The observations on that thread have been confirmed by us for UML's
-> UBD driver. If you load UML with network IO and do disk IO at the same
-> time the UBD IO helper thread fails to process requests fast enough.
-> 
-> In most cases this will lead to a slowdown in disk IO as well as
-> inability to execute new processes until the network load goes away.
-> In some cases however it will not recover. Example - with our new high
-> performance 1G+ network drivers a wget of 1G file from the network
-> is a nearly guaranteed crash if it writes out to UBD.
-> 
-> The crashes and the slowdowns are not observed with this patch -
-> it switches the IPC to socket which does not have the pipe granularity
-> and queue size problems.
-> 
-> This signifies a problem with overall UBD error handling which this
-> patch fails to fix. The workaround should be good enough for most
-> cases.
-> 
-> Signed-off-by: Anton Ivanov <antivano@cisco.com>
-> ---
->  arch/um/drivers/ubd_kern.c |    2 +-
->  arch/um/drivers/ubd_user.c |    2 +-
->  arch/um/os-Linux/file.c    |    2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-> index 944453a..c9a5717 100644
-> --- a/arch/um/drivers/ubd_kern.c
-> +++ b/arch/um/drivers/ubd_kern.c
-> @@ -1291,7 +1291,7 @@ static void do_ubd_request(struct request_queue *q)
->  			n = os_write_file(thread_fd, &io_req,
->  					  sizeof(struct io_thread_req *));
->  			if(n != sizeof(struct io_thread_req *)){
-> -				if(n != -EAGAIN)
-> +				if(!((n == -EAGAIN) || (n == -ENOBUFS)))
->  					printk("write to io thread failed, "
->  					       "errno = %d\n", -n);
->  				else if(list_empty(&dev->restart))
-> diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
-> index 007b94d..f1f84a4 100644
-> --- a/arch/um/drivers/ubd_user.c
-> +++ b/arch/um/drivers/ubd_user.c
-> @@ -32,7 +32,7 @@ int start_io_thread(unsigned long sp, int *fd_out)
->  {
->  	int pid, fds[2], err;
->  
-> -	err = os_pipe(fds, 1, 1);
-> +	err = socketpair(AF_UNIX, SOCK_STREAM, 0, (int *) &fds);
->  	if(err < 0){
->  		printk("start_io_thread - os_pipe failed, err = %d\n", -err);
->  		goto out;
-> diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-> index c879b12..a4f0e65 100644
-> --- a/arch/um/os-Linux/file.c
-> +++ b/arch/um/os-Linux/file.c
-> @@ -240,7 +240,7 @@ void os_close_file(int fd)
->  int os_fsync_file(int fd)
->  {
->  	if (fsync(fd) < 0) 
-> -	    return -errno
-> +	    return -errno;
+For more details see:
 
-Huh?
-I think this does not belong to the patch.
+http://stackoverflow.com/questions/4624071/pipe-buffer-size-is-4k-or-64k
 
-The other drivers look good. Thanks a lot for pushing this work upstream!
-We are already at -rc5. I'll send the patches to Linus within the next merge window
-and mark them for stable.
+The observations on that thread have been confirmed by us for UML's
+UBD driver. If you load UML with network IO and do disk IO at the same
+time the UBD IO helper thread fails to process requests fast enough.
 
-Thanks,
-//richard
+In most cases this will lead to a slowdown in disk IO as well as
+inability to execute new processes until the network load goes away.
+In some cases however it will not recover. Example - with our new high
+performance 1G+ network drivers a wget of 1G file from the network
+is a nearly guaranteed crash if it writes out to UBD.
+
+The crashes and the slowdowns are not observed with this patch -
+it switches the IPC to socket which does not have the pipe granularity
+and queue size problems.
+
+This signifies a problem with overall UBD error handling which this
+patch fails to fix. The workaround should be good enough for most
+cases.
+
+Signed-off-by: Anton Ivanov <antivano@cisco.com>
+---
+ arch/um/drivers/ubd_kern.c |    2 +-
+ arch/um/drivers/ubd_user.c |    2 +-
+ arch/um/os-Linux/file.c    |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 944453a..c9a5717 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1291,7 +1291,7 @@ static void do_ubd_request(struct request_queue *q)
+ 			n = os_write_file(thread_fd, &io_req,
+ 					  sizeof(struct io_thread_req *));
+ 			if(n != sizeof(struct io_thread_req *)){
+-				if(n != -EAGAIN)
++				if(!((n == -EAGAIN) || (n == -ENOBUFS)))
+ 					printk("write to io thread failed, "
+ 					       "errno = %d\n", -n);
+ 				else if(list_empty(&dev->restart))
+diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
+index 007b94d..f1f84a4 100644
+--- a/arch/um/drivers/ubd_user.c
++++ b/arch/um/drivers/ubd_user.c
+@@ -32,7 +32,7 @@ int start_io_thread(unsigned long sp, int *fd_out)
+ {
+ 	int pid, fds[2], err;
+ 
+-	err = os_pipe(fds, 1, 1);
++	err = socketpair(AF_UNIX, SOCK_STREAM, 0, (int *) &fds);
+ 	if(err < 0){
+ 		printk("start_io_thread - os_pipe failed, err = %d\n", -err);
+ 		goto out;
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index c879b12..a4f0e65 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -240,7 +240,7 @@ void os_close_file(int fd)
+ int os_fsync_file(int fd)
+ {
+ 	if (fsync(fd) < 0) 
+-	    return -errno
++	    return -errno;
+ 	return 0;
+ }
+ 
+-- 
+1.7.10.4
+
 
 ------------------------------------------------------------------------------
 Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
