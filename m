@@ -1,28 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rgb@redhat.com>) id 1WR4nh-0002fF-2N
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <eparis@redhat.com>) id 1WQObA-0003pR-B7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Mar 2014 19:08:17 +0000
+	Wed, 19 Mar 2014 22:04:32 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WR4nf-0005RW-3v for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 21 Mar 2014 19:08:16 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2LJ871Y011785
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WQOb1-0000q0-Ev for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 19 Mar 2014 22:04:32 +0000
+Received: from int-mx12.intmail.prod.int.phx2.redhat.com
+	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2JM4FL5014625
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 21 Mar 2014 15:08:08 -0400
-Date: Fri, 21 Mar 2014 15:08:03 -0400
-From: Richard Guy Briggs <rgb@redhat.com>
-Message-ID: <20140321190803.GD16467@madcap2.tricolour.ca>
+	Wed, 19 Mar 2014 18:04:17 -0400
+From: Eric Paris <eparis@redhat.com>
+Date: Wed, 19 Mar 2014 18:04:01 -0400
+Message-Id: <1395266643-3139-2-git-send-email-eparis@redhat.com>
+In-Reply-To: <1395266643-3139-1-git-send-email-eparis@redhat.com>
 References: <1395266643-3139-1-git-send-email-eparis@redhat.com>
-	<1395266643-3139-2-git-send-email-eparis@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1395266643-3139-2-git-send-email-eparis@redhat.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,83 +29,52 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH 2/4] UM: implement syscall_get_arch()
-To: Eric Paris <eparis@redhat.com>
-Cc: linux-audit@redhat.com, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 2/4] UM: implement syscall_get_arch()
+To: linux-audit@redhat.com
+Cc: user-mode-linux-devel@lists.sourceforge.net, Eric Paris <eparis@redhat.com>
 
-On 14/03/19, Eric Paris wrote:
-> SH: define syscall_get_arch() for superh
-> 
-> This patch defines syscall_get_arch() for the um platform.  It adds a
-> new syscall.h header file to define this.  It copies the HOST_AUDIT_ARCH
-> definition from ptrace.h.  (that definition will be removed when we
-> switch audit to use this new syscall_get_arch() function)
+SH: define syscall_get_arch() for superh
 
-Why not just use:
+This patch defines syscall_get_arch() for the um platform.  It adds a
+new syscall.h header file to define this.  It copies the HOST_AUDIT_ARCH
+definition from ptrace.h.  (that definition will be removed when we
+switch audit to use this new syscall_get_arch() function)
 
-diff --git a/arch/um/include/asm/syscall.h
-b/arch/um/include/asm/syscall.h
+Signed-off-by: Eric Paris <eparis@redhat.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+---
+ arch/x86/um/asm/syscall.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 arch/x86/um/asm/syscall.h
+
+diff --git a/arch/x86/um/asm/syscall.h b/arch/x86/um/asm/syscall.h
 new file mode 100644
-index 0000000..fbcb2e4
+index 0000000..9fe77b7
 --- /dev/null
-+++ b/arch/um/include/asm/syscall.h
-@@ -0,0 +1,9 @@
-+#ifndef __ASM_UM_SYSCALL_H
-+#define __ASM_UM_SYSCALL_H
++++ b/arch/x86/um/asm/syscall.h
+@@ -0,0 +1,15 @@
++#ifndef __UM_ASM_SYSCALL_H
++#define __UM_ASM_SYSCALL_H
++
++#include <uapi/linux/audit.h>
 +
 +static inline int syscall_get_arch(void)
 +{
-+       return HOST_AUDIT_ARCH;
++#ifdef CONFIG_X86_32
++	return AUDIT_ARCH_I386;
++#else
++	return AUDIT_ARCH_X86_64;
++#endif
 +}
 +
-+#endif /* __ASM_SH_SYSCALL_H */
++#endif /* __UM_ASM_SYSCALL_H */
+-- 
+1.8.5.3
 
-> Signed-off-by: Eric Paris <eparis@redhat.com>
-> Cc: user-mode-linux-devel@lists.sourceforge.net
-> ---
->  arch/x86/um/asm/syscall.h | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
->  create mode 100644 arch/x86/um/asm/syscall.h
-> 
-> diff --git a/arch/x86/um/asm/syscall.h b/arch/x86/um/asm/syscall.h
-> new file mode 100644
-> index 0000000..9fe77b7
-> --- /dev/null
-> +++ b/arch/x86/um/asm/syscall.h
-> @@ -0,0 +1,15 @@
-> +#ifndef __UM_ASM_SYSCALL_H
-> +#define __UM_ASM_SYSCALL_H
-> +
-> +#include <uapi/linux/audit.h>
-> +
-> +static inline int syscall_get_arch(void)
-> +{
-> +#ifdef CONFIG_X86_32
-> +	return AUDIT_ARCH_I386;
-> +#else
-> +	return AUDIT_ARCH_X86_64;
-> +#endif
-> +}
-> +
-> +#endif /* __UM_ASM_SYSCALL_H */
-> -- 
-> 1.8.5.3
-> 
-> --
-> Linux-audit mailing list
-> Linux-audit@redhat.com
-> https://www.redhat.com/mailman/listinfo/linux-audit
-
-- RGB
-
---
-Richard Guy Briggs <rbriggs@redhat.com>
-Senior Software Engineer, Kernel Security, AMER ENG Base Operating Systems, Red Hat
-Remote, Ottawa, Canada
-Voice: +1.647.777.2635, Internal: (81) 32635, Alt: +1.613.693.0684x3545
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
