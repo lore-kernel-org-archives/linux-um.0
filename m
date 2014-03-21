@@ -1,28 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eparis@redhat.com>) id 1WRtIk-0005Ny-8h
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rgb@redhat.com>) id 1WR53S-0007zy-Do
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Mar 2014 01:03:42 +0000
+	Fri, 21 Mar 2014 19:24:34 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WRtIi-0005Z3-RZ for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 24 Mar 2014 01:03:42 +0000
-Received: from int-mx12.intmail.prod.int.phx2.redhat.com
-	(int-mx12.intmail.prod.int.phx2.redhat.com [10.5.11.25])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2O13YVS031469
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WR53R-0002Jd-Dd for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 21 Mar 2014 19:24:34 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s2LJOPXr006019
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 23 Mar 2014 21:03:34 -0400
-Message-ID: <1395623012.10106.30.camel@localhost>
-From: Eric Paris <eparis@redhat.com>
-Date: Sun, 23 Mar 2014 21:03:32 -0400
-In-Reply-To: <20140321190803.GD16467@madcap2.tricolour.ca>
+	Fri, 21 Mar 2014 15:24:26 -0400
+Date: Fri, 21 Mar 2014 15:24:22 -0400
+From: Richard Guy Briggs <rgb@redhat.com>
+Message-ID: <20140321192422.GH16467@madcap2.tricolour.ca>
 References: <1395266643-3139-1-git-send-email-eparis@redhat.com>
 	<1395266643-3139-2-git-send-email-eparis@redhat.com>
-	<20140321190803.GD16467@madcap2.tricolour.ca>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1395266643-3139-2-git-send-email-eparis@redhat.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,87 +36,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH 2/4] UM: implement syscall_get_arch()
-To: Richard Guy Briggs <rgb@redhat.com>
+To: Eric Paris <eparis@redhat.com>
 Cc: linux-audit@redhat.com, user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, 2014-03-21 at 15:08 -0400, Richard Guy Briggs wrote:
-> On 14/03/19, Eric Paris wrote:
-> > SH: define syscall_get_arch() for superh
-> > 
-> > This patch defines syscall_get_arch() for the um platform.  It adds a
-> > new syscall.h header file to define this.  It copies the HOST_AUDIT_ARCH
-> > definition from ptrace.h.  (that definition will be removed when we
-> > switch audit to use this new syscall_get_arch() function)
+On 14/03/19, Eric Paris wrote:
+> SH: define syscall_get_arch() for superh
 > 
-> Why not just use:
+> This patch defines syscall_get_arch() for the um platform.  It adds a
+> new syscall.h header file to define this.  It copies the HOST_AUDIT_ARCH
+> definition from ptrace.h.  (that definition will be removed when we
+> switch audit to use this new syscall_get_arch() function)
 > 
-> diff --git a/arch/um/include/asm/syscall.h
-> b/arch/um/include/asm/syscall.h
+> Signed-off-by: Eric Paris <eparis@redhat.com>
+> Cc: user-mode-linux-devel@lists.sourceforge.net
+
+Acked-by: Richard Guy Briggs <rgb@redhat.com>
+
+> ---
+>  arch/x86/um/asm/syscall.h | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>  create mode 100644 arch/x86/um/asm/syscall.h
+> 
+> diff --git a/arch/x86/um/asm/syscall.h b/arch/x86/um/asm/syscall.h
 > new file mode 100644
-> index 0000000..fbcb2e4
+> index 0000000..9fe77b7
 > --- /dev/null
-> +++ b/arch/um/include/asm/syscall.h
-> @@ -0,0 +1,9 @@
-> +#ifndef __ASM_UM_SYSCALL_H
-> +#define __ASM_UM_SYSCALL_H
+> +++ b/arch/x86/um/asm/syscall.h
+> @@ -0,0 +1,15 @@
+> +#ifndef __UM_ASM_SYSCALL_H
+> +#define __UM_ASM_SYSCALL_H
+> +
+> +#include <uapi/linux/audit.h>
 > +
 > +static inline int syscall_get_arch(void)
 > +{
-> +       return HOST_AUDIT_ARCH;
+> +#ifdef CONFIG_X86_32
+> +	return AUDIT_ARCH_I386;
+> +#else
+> +	return AUDIT_ARCH_X86_64;
+> +#endif
 > +}
 > +
-> +#endif /* __ASM_SH_SYSCALL_H */
-
-because then I'm relying on something in ptrace.h that serves no purpose
-other than creating indirection from here...
-
--Eric
-
-> > Signed-off-by: Eric Paris <eparis@redhat.com>
-> > Cc: user-mode-linux-devel@lists.sourceforge.net
-> > ---
-> >  arch/x86/um/asm/syscall.h | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> >  create mode 100644 arch/x86/um/asm/syscall.h
-> > 
-> > diff --git a/arch/x86/um/asm/syscall.h b/arch/x86/um/asm/syscall.h
-> > new file mode 100644
-> > index 0000000..9fe77b7
-> > --- /dev/null
-> > +++ b/arch/x86/um/asm/syscall.h
-> > @@ -0,0 +1,15 @@
-> > +#ifndef __UM_ASM_SYSCALL_H
-> > +#define __UM_ASM_SYSCALL_H
-> > +
-> > +#include <uapi/linux/audit.h>
-> > +
-> > +static inline int syscall_get_arch(void)
-> > +{
-> > +#ifdef CONFIG_X86_32
-> > +	return AUDIT_ARCH_I386;
-> > +#else
-> > +	return AUDIT_ARCH_X86_64;
-> > +#endif
-> > +}
-> > +
-> > +#endif /* __UM_ASM_SYSCALL_H */
-> > -- 
-> > 1.8.5.3
-> > 
-> > --
-> > Linux-audit mailing list
-> > Linux-audit@redhat.com
-> > https://www.redhat.com/mailman/listinfo/linux-audit
-> 
-> - RGB
+> +#endif /* __UM_ASM_SYSCALL_H */
+> -- 
+> 1.8.5.3
 > 
 > --
-> Richard Guy Briggs <rbriggs@redhat.com>
-> Senior Software Engineer, Kernel Security, AMER ENG Base Operating Systems, Red Hat
-> Remote, Ottawa, Canada
-> Voice: +1.647.777.2635, Internal: (81) 32635, Alt: +1.613.693.0684x3545
+> Linux-audit mailing list
+> Linux-audit@redhat.com
+> https://www.redhat.com/mailman/listinfo/linux-audit
 
+- RGB
 
+--
+Richard Guy Briggs <rbriggs@redhat.com>
+Senior Software Engineer, Kernel Security, AMER ENG Base Operating Systems, Red Hat
+Remote, Ottawa, Canada
+Voice: +1.647.777.2635, Internal: (81) 32635, Alt: +1.613.693.0684x3545
 
 ------------------------------------------------------------------------------
 Learn Graph Databases - Download FREE O'Reilly Book
