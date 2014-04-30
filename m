@@ -1,20 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1WLzeh-00007C-CQ
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1WfZ68-0001BH-7Y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Mar 2014 18:37:59 +0000
-Received: from ivanoab3.miniserver.com ([89.200.143.206])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WLzeg-00012z-BT
+	Wed, 30 Apr 2014 18:19:12 +0000
+Received: from mout.gmx.net ([212.227.17.21])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WfZ67-00050e-4Q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Mar 2014 18:37:59 +0000
-From: anton.ivanov@kot-begemot.co.uk
-Date: Fri,  7 Mar 2014 18:37:47 +0000
-Message-Id: <1394217468-734972-2-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1394217468-734972-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-References: <1394217468-734972-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+	Wed, 30 Apr 2014 18:19:12 +0000
+Message-ID: <53613E96.2030006@gmx.de>
+Date: Wed, 30 Apr 2014 20:19:02 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,81 +23,87 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 2/3] BUG: Memory corruption on startup
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: richard@nod.at
+Subject: [uml-devel] trinity commit 23dc478aba breaks syscall "mremap" at a
+ 32 bit user mode linux
+To: trinity@vger.kernel.org
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Anton Ivanov <antivano@cisco.com>
+-or- it uncovers a bug in kernel v3.15-rc3 for UML:
 
-The reverse case of this race (you must msync before read) is
-well known. This is the not so common one.
 
-It can be triggered only on systems which do a lot of task
-switching and only at UML startup. If you are starting 200+ UMLs
-~ 0.5% will always die without this fix.
 
-Signed-off-by: Anton Ivanov <antivano@cisco.com>
----
- arch/um/include/shared/os.h |    1 +
- arch/um/kernel/physmem.c    |    1 +
- arch/um/os-Linux/file.c     |    6 ++++++
- 3 files changed, 8 insertions(+)
+commit 23dc478aba4134db51584d19e4783ec87ce87b88
+Author: Dave Jones <davej@redhat.com>
+Date:   Tue Apr 29 16:42:45 2014 -0400
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 89b686c1..3c9738d 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -136,6 +136,7 @@ extern int os_ioctl_generic(int fd, unsigned int cmd, unsigned long arg);
- extern int os_get_ifname(int fd, char *namebuf);
- extern int os_set_slip(int fd);
- extern int os_mode_fd(int fd, int mode);
-+extern int os_fsync_file(int fd);
- 
- extern int os_seek_file(int fd, unsigned long long offset);
- extern int os_open_file(const char *file, struct openflags flags, int mode);
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index f116db1..30fdd5d0 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -103,6 +103,7 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 	 */
- 	os_seek_file(physmem_fd, __pa(&__syscall_stub_start));
- 	os_write_file(physmem_fd, &__syscall_stub_start, PAGE_SIZE);
-+	os_fsync_file(physmem_fd);
- 
- 	bootmap_size = init_bootmem(pfn, pfn + delta);
- 	free_bootmem(__pa(reserve_end) + bootmap_size,
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index b049a63..c879b12 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -237,6 +237,12 @@ void os_close_file(int fd)
- {
- 	close(fd);
- }
-+int os_fsync_file(int fd)
-+{
-+	if (fsync(fd) < 0) 
-+	    return -errno
-+	return 0;
-+}
- 
- int os_seek_file(int fd, unsigned long long offset)
- {
+    non-biarch arches aren't necessarily 32-bit.
+
+diff --git a/children/random-syscalls.c b/children/random-syscalls.c
+index 82e49f5..1d7e7ce 100644
+--- a/children/random-syscalls.c
++++ b/children/random-syscalls.c
+@@ -32,7 +32,6 @@ static bool choose_syscall_table(void)
+
+        if (biarch == FALSE) {
+                active_syscalls = shm->active_syscalls;
+-               do32 = TRUE;
+        } else {
+
+                /* First, check that we have syscalls enabled in either table. */
+
+
+
+
+I do get :
+
+
+Kernel panic - not syncing: do_syscall_stub : PTRACE_SETREGS failed, errno = 3
+
+CPU: 0 PID: 1303 Comm: trinity-c0 Not tainted 3.15.0-rc3 #1
+Stack:
+ 085a4f54 085a4f54 4841fc48 00000004 086c8547 00002b58 00000003 00000011
+ 4841fc58 084eae75 00000000 00000000 4841fc80 084e72e0 085b08e8 08700960
+ 085ad7b4 4841fc90 00000000 00002b58 00000003 00000011 4841fcb4 080734c5
+Call Trace:
+ [<080734c5>] ? run_syscall_stub+0x125/0x2c0
+ [<084eae75>] dump_stack+0x26/0x28
+ [<084e72e0>] panic+0x7a/0x194
+ [<080734c5>] run_syscall_stub+0x125/0x2c0
+ [<08073b15>] unmap+0xf5/0x110
+ [<08061047>] do_ops+0xb7/0x160
+ [<080615f8>] fix_range_common+0x448/0x480
+ [<080e50f4>] ? vma_interval_tree_insert+0x74/0x80
+ [<0806193e>] flush_tlb_range+0x3e/0x40
+ [<080f045e>] move_page_tables+0x24e/0x280
+ [<080f0577>] move_vma+0xe7/0x230
+ [<080eda20>] ? get_unmapped_area+0xa0/0xc0
+ [<080f08b8>] SyS_mremap+0x1f8/0x4c0
+ [<08062ab4>] handle_syscall+0x64/0x80
+ [<0849d4f1>] ? ptrace+0x31/0x80
+ [<080797a2>] ? get_fp_registers+0x22/0x40
+ [<08074815>] userspace+0x475/0x5f0
+ [<0849d4f1>] ? ptrace+0x31/0x80
+ [<08079d06>] ? os_set_thread_area+0x26/0x40
+ [<08078cd0>] ? do_set_thread_area+0x20/0x50
+ [<08078e48>] ? arch_switch_tls+0xb8/0x100
+ [<0805f770>] fork_handler+0x60/0x70
+
+/home/tfoerste/workspace/bin/start_uml.sh: line 110:  9558 Aborted                 (core dumped) $LINUX earlyprintk ubda=$ROOTFS ubdb=$SWAP eth0=$NET mem=$MEM $TTY umid=uml_$NAME rootfstype=ext4 "$ARGS"
+
+
 -- 
-1.7.10.4
+Toralf
 
 
 ------------------------------------------------------------------------------
-Subversion Kills Productivity. Get off Subversion & Make the Move to Perforce.
-With Perforce, you get hassle-free workflows. Merge that actually works. 
-Faster operations. Version large binaries.  Built-in WAN optimization and the
-freedom to use Git, Perforce or both. Make the move to Perforce.
-http://pubads.g.doubleclick.net/gampad/clk?id=122218951&iu=/4140/ostg.clktrk
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
