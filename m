@@ -1,23 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1WfsiJ-000298-Ds
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1WfqAr-0002VY-Um
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 May 2014 15:15:55 +0000
-Received: from mout.gmx.net ([212.227.17.22])
+	Thu, 01 May 2014 12:33:13 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WfsiH-0008K7-Uy
+	(Exim 4.76) id 1WfqAo-0003EQ-Qf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 May 2014 15:15:55 +0000
-Message-ID: <5362651A.1020504@gmx.de>
-Date: Thu, 01 May 2014 17:15:38 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Thu, 01 May 2014 12:33:13 +0000
+Message-ID: <53623EFE.3040603@nod.at>
+Date: Thu, 01 May 2014 14:33:02 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 References: <53613E96.2030006@gmx.de>
 	<CAFLxGvyyMMSajwOtS1O6R-_XnJv7dc_61k3Hx9JJB7nmVLNWng@mail.gmail.com>
-	<536221F4.6000405@gmx.de> <53623EFE.3040603@nod.at>
-In-Reply-To: <53623EFE.3040603@nod.at>
+	<536221F4.6000405@gmx.de>
+In-Reply-To: <536221F4.6000405@gmx.de>
+Content-Type: multipart/mixed; boundary="------------070904020705090505030100"
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,105 +28,95 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] trinity commit 23dc478aba breaks syscall "mremap"
  at a 32 bit user mode linux
-To: Richard Weinberger <richard@nod.at>
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, trinity@vger.kernel.org
 
-T24gMDUvMDEvMjAxNCAwMjozMyBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIDAx
-LjA1LjIwMTQgMTI6MjksIHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVyOgo+PiBPbiAwNS8wMS8yMDE0
-IDExOjIyIEFNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+PiBPbiBXZWQsIEFwciAzMCwg
-MjAxNCBhdCA4OjE5IFBNLCBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFsZi5mb2Vyc3RlckBnbXguZGU+
-IHdyb3RlOgo+Pj4+IC1vci0gaXQgdW5jb3ZlcnMgYSBidWcgaW4ga2VybmVsIHYzLjE1LXJjMyBm
-b3IgVU1MOgo+Pj4KPj4+IFVNTCBtb3N0IG5vdCBwYW5pYy4gOikKPj4+Cj4+PiBEbyB5b3UgaGF2
-ZSB0aGUgdHJpbml0eSBsb2dzPwo+Pj4gSSdkIGxpa2UgdG8ga25vdyB0aGUgc3lzY2FsbHMgcGFy
-YW1ldGVycy4KPj4gSSBydW4gdHJpbml0eSB3aXRoICItQyAyIC1jIG1yZW1hcCIgd2l0aGluIHRo
-ZSBndWVzdCwgdGhlIGxvZ3MgYXJlIGF0dGFjaGVkCj4gCj4gQ2FuIHlvdSBwbGVhc2UgdHJ5IHRo
-ZSBhdHRhY2hlZCBwcmUtcGF0Y2g/Cj4gSXQgbG9va3MgbGlrZSB0aGUgcGFuaWMoKSBpbiB0aGF0
-IGNvZGUgaXMgYW4gb3ZlcnJlYWN0aW9uLgo+IEknbSBjdXJyZW50bHkgbG9va2luZyBkZWVwZXIg
-aW4gdGhlIGlzc3VlLgo+IAo+IEJUVzogSWYgeW91IGhpdCAiQlVHOiBmYWlsdXJlIGF0IG1tL2Zp
-bGVtYXAuYzoyMDIvX19kZWxldGVfZnJvbV9wYWdlX2NhY2hlKCkhIiwKPiB0aGlzIGlzIGEga25v
-d24gaXNzdWUgaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMTQvNC8xNS81NzcKPiAKPiBUaGFua3Ms
-Cj4gLy9yaWNoYXJkCj4gCgpUaGF0IHBhdGNoIGhlbHBzIGEgbG90LCBpbiB0aGUgc3lzbG9nIEkg
-ZG8gbm93IGdldCA6CgpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6IFN0dWIgcmVnaXN0
-ZXJzIC0KTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDAgLSAxMDAwMDAK
-TWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDEgLSAyMDAwCk1heSAgMSAx
-NzoxMzo0OCB0cmluaXR5IGtlcm5lbDogICAgICAgICAyIC0gMApNYXkgIDEgMTc6MTM6NDggdHJp
-bml0eSBrZXJuZWw6ICAgICAgICAgMyAtIDAKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVs
-OiAgICAgICAgIDQgLSAwCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtlcm5lbDogICAgICAgICA1
-IC0gMApNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6ICAgICAgICAgNiAtIDAKTWF5ICAx
-IDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDcgLSA3YgpNYXkgIDEgMTc6MTM6NDgg
-dHJpbml0eSBrZXJuZWw6ICAgICAgICAgOCAtIDdiCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtl
-cm5lbDogICAgICAgICA5IC0gMApNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6ICAgICAg
-ICAgMTAgLSAzMwpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6ICAgICAgICAgMTEgLSBm
-ZmZmZmZmZgpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6ICAgICAgICAgMTIgLSAxMDAw
-YzMKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDEzIC0gNzMKTWF5ICAx
-IDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDE0IC0gMTAyMDYKTWF5ICAxIDE3OjEz
-OjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDE1IC0gMTAxMDI4Ck1heSAgMSAxNzoxMzo0OCB0
-cmluaXR5IGtlcm5lbDogICAgICAgICAxNiAtIDdiCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtl
-cm5lbDogd2FpdF9zdHViX2RvbmUgOiBmYWlsZWQgdG8gd2FpdCBmb3IgU0lHVFJBUCwgcGlkID0g
-MTQ3NTcsIG4gPSAxNDc1NywgZXJybm8gPSAwLCBzdGF0dXMgPSAweGI3ZgpNYXkgIDEgMTc6MTM6
-NDggdHJpbml0eSBrZXJuZWw6IGRvX3N5c2NhbGxfc3R1YiA6IHJldCA9IDAsIG9mZnNldCA9IDEw
-NTI2ODAsIGRhdGEgPSA0Nzc4ODAwOApNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6IGRv
-X3N5c2NhbGxfc3R1Yjogc3lzY2FsbCA5MSBmYWlsZWQsIHJldHVybiB2YWx1ZSA9IDB4MCwgZXhw
-ZWN0ZWQgcmV0dXJuIHZhbHVlID0gMHgwCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtlcm5lbDog
-c3lzY2FsbCBwYXJhbWV0ZXJzOiAweDEwMDAwMCAweDIwMDAgMHgwIDB4MCAweDAgMHgwCk1heSAg
-MSAxNzoxMzo0OCB0cmluaXR5IGtlcm5lbDogUmVnaXN0ZXJzIC0gCk1heSAgMSAxNzoxMzo0OCB0
-cmluaXR5IGtlcm5lbDogICAgICAgICAwICAgICAgIDB4MmM5MgpNYXkgIDEgMTc6MTM6NDggdHJp
-bml0eSBrZXJuZWw6ICAgICAgICAgMSAgICAgICAweDEzCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5
-IGtlcm5lbDogICAgICAgICAyICAgICAgIDB4MmM5MgpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBr
-ZXJuZWw6ICAgICAgICAgMyAgICAgICAweDJjOGUKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2Vy
-bmVsOiAgICAgICAgIDQgICAgICAgMHhiZmEzOTUwOApNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBr
-ZXJuZWw6ICAgICAgICAgNSAgICAgICAweGJmYTM5NGVjCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5
-IGtlcm5lbDogICAgICAgICA2ICAgICAgIDB4MApNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJu
-ZWw6ICAgICAgICAgNyAgICAgICAweDdiCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtlcm5lbDog
-ICAgICAgICA4ICAgICAgIDB4N2IKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAg
-ICAgIDkgICAgICAgMHgwCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtlcm5lbDogICAgICAgICAx
-MCAgICAgIDB4MzMKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDExICAg
-ICAgMHgyNQpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6ICAgICAgICAgMTIgICAgICAw
-eDEwMDBhMApNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6ICAgICAgICAgMTMgICAgICAw
-eDczCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtlcm5lbDogICAgICAgICAxNCAgICAgIDB4MjQ2
-Ck1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtlcm5lbDogICAgICAgICAxNSAgICAgIDB4YmZhMzk0
-YjgKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDE2ICAgICAgMHg3YgpN
-YXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6IGRvX3N5c2NhbGxfc3R1YiA6IFBUUkFDRV9T
-RVRSRUdTIGZhaWxlZCwgcGlkID0gMTQ3NTcsIGVycm5vID0gMwpNYXkgIDEgMTc6MTM6NDggdHJp
-bml0eSBrZXJuZWw6IGZpeF9yYW5nZV9jb21tb246IGZhaWxlZCwga2lsbGluZyBjdXJyZW50IHBy
-b2Nlc3MKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiBCVUc6IEJhZCByc3MtY291bnRl
-ciBzdGF0ZSBtbTo0NzVhYWI0MCBpZHg6MCB2YWw6MQpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBr
-ZXJuZWw6IFN0dWIgcmVnaXN0ZXJzIC0KTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAg
-ICAgICAgIDAgLSAxMDAwMDAKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAg
-IDEgLSAyMDAwCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtlcm5lbDogICAgICAgICAyIC0gMApN
-YXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6ICAgICAgICAgMyAtIDAKTWF5ICAxIDE3OjEz
-OjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDQgLSAwCk1heSAgMSAxNzoxMzo0OCB0cmluaXR5
-IGtlcm5lbDogICAgICAgICA1IC0gMApNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6ICAg
-ICAgICAgNiAtIDAKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDcgLSA3
-YgpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6ICAgICAgICAgOCAtIDdiCk1heSAgMSAx
-NzoxMzo0OCB0cmluaXR5IGtlcm5lbDogICAgICAgICA5IC0gMApNYXkgIDEgMTc6MTM6NDggdHJp
-bml0eSBrZXJuZWw6ICAgICAgICAgMTAgLSAzMwpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJu
-ZWw6ICAgICAgICAgMTEgLSBmZmZmZmZmZgpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6
-ICAgICAgICAgMTIgLSAxMDAwYzMKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAg
-ICAgIDEzIC0gNzMKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDE0IC0g
-MTAyMDYKTWF5ICAxIDE3OjEzOjQ4IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDE1IC0gMTAxMDI4
-Ck1heSAgMSAxNzoxMzo0OCB0cmluaXR5IGtlcm5lbDogICAgICAgICAxNiAtIDdiCk1heSAgMSAx
-NzoxMzo0OCB0cmluaXR5IGtlcm5lbDogd2FpdF9zdHViX2RvbmUgOiBmYWlsZWQgdG8gd2FpdCBm
-b3IgU0lHVFJBUCwgcGlkID0gMTQ3NTgsIG4gPSAxNDc1OCwgZXJybm8gPSAwLCBzdGF0dXMgPSAw
-eGI3ZgpNYXkgIDEgMTc6MTM6NDggdHJpbml0eSBrZXJuZWw6IGRvX3N5c2NhbGxfc3R1YiA6IHJl
-dCA9IDAsIG9mZnNldCA9IDEwNTI2ODAsIGRhdGEgPSA0NzdhOTAwOApNYXkgIDEgMTc6MTM6NDgg
-dHJpbml0eSBrZXJuZWw6IGRvX3N5c2NhbGxfc3R1Yjogc3lzY2FsbCA5MSBmYWlsZWQsIHJldHVy
-biB2YWx1ZSA9IDB4MCwgZXhwZWN0ZWQgcmV0dXJuIHZhbHVlID0gMHgwCk1heSAgMSAxNzoxMzo0
-OCB0cmluaXR5IGtlcm5lbDogc3lzY2FsbCBwYXJhbWV0ZXJzOiAweDEwMDAwMCAweDIwMDAgMHgw
-IDB4MCAweDAgMHgwCgoKCi0tIApUb3JhbGYKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIkFjY2Vs
-ZXJhdGUgRGV2IEN5Y2xlcyB3aXRoIEF1dG9tYXRlZCBDcm9zcy1Ccm93c2VyIFRlc3RpbmcgLSBG
-b3IgRlJFRQpJbnN0YW50bHkgcnVuIHlvdXIgU2VsZW5pdW0gdGVzdHMgYWNyb3NzIDMwMCsgYnJv
-d3Nlci9PUyBjb21ib3MuICBHZXQgCnVucGFyYWxsZWxlZCBzY2FsYWJpbGl0eSBmcm9tIHRoZSBi
-ZXN0IFNlbGVuaXVtIHRlc3RpbmcgcGxhdGZvcm0gYXZhaWxhYmxlLgpTaW1wbGUgdG8gdXNlLiBO
-b3RoaW5nIHRvIGluc3RhbGwuIEdldCBzdGFydGVkIG5vdyBmb3IgZnJlZS4iCmh0dHA6Ly9wLnNm
-Lm5ldC9zZnUvU2F1Y2VMYWJzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxp
-bnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
-Lm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+This is a multi-part message in MIME format.
+--------------070904020705090505030100
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Am 01.05.2014 12:29, schrieb Toralf Förster:
+> On 05/01/2014 11:22 AM, Richard Weinberger wrote:
+>> On Wed, Apr 30, 2014 at 8:19 PM, Toralf Förster <toralf.foerster@gmx.de> wrote:
+>>> -or- it uncovers a bug in kernel v3.15-rc3 for UML:
+>>
+>> UML most not panic. :)
+>>
+>> Do you have the trinity logs?
+>> I'd like to know the syscalls parameters.
+> I run trinity with "-C 2 -c mremap" within the guest, the logs are attached
+
+Can you please try the attached pre-patch?
+It looks like the panic() in that code is an overreaction.
+I'm currently looking deeper in the issue.
+
+BTW: If you hit "BUG: failure at mm/filemap.c:202/__delete_from_page_cache()!",
+this is a known issue https://lkml.org/lkml/2014/4/15/577
+
+Thanks,
+//richard
+
+--------------070904020705090505030100
+Content-Type: text/x-patch;
+ name="fix.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="fix.patch"
+
+diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
+index 689b18d..2ce5d49 100644
+--- a/arch/um/os-Linux/skas/mem.c
++++ b/arch/um/os-Linux/skas/mem.c
+@@ -65,14 +65,17 @@ static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
+ 		printk(UM_KERN_ERR "Registers - \n");
+ 		for (i = 0; i < MAX_REG_NR; i++)
+ 			printk(UM_KERN_ERR "\t%d\t0x%lx\n", i, syscall_regs[i]);
+-		panic("do_syscall_stub : PTRACE_SETREGS failed, errno = %d\n",
+-		      -n);
++		printk(KERN_ERR "do_syscall_stub : PTRACE_SETREGS failed, pid = %d, errno = %d\n",
++		      pid, -n);
++		return -EFAULT;
+ 	}
+ 
+ 	err = ptrace(PTRACE_CONT, pid, 0, 0);
+-	if (err)
+-		panic("Failed to continue stub, pid = %d, errno = %d\n", pid,
++	if (err) {
++		printk(KERN_ERR "Failed to continue stub, pid = %d, errno = %d\n", pid,
+ 		      errno);
++		return -EFAULT;
++	}
+ 
+ 	wait_stub_done(pid);
+ 
+
+--------------070904020705090505030100
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
+--------------070904020705090505030100
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--------------070904020705090505030100--
+
 
