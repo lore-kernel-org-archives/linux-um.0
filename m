@@ -1,25 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1WgE8O-0006qA-U1
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1WgA5H-0005n8-Mw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2014 14:08:16 +0000
-Received: from mout.gmx.net ([212.227.15.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WgE8N-0006P0-ML
+	Fri, 02 May 2014 09:48:47 +0000
+Received: from mail-yh0-f42.google.com ([209.85.213.42])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WgA5G-0008TU-RN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 02 May 2014 14:08:16 +0000
-Message-ID: <5363A6BF.4060001@gmx.de>
-Date: Fri, 02 May 2014 16:07:59 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Fri, 02 May 2014 09:48:47 +0000
+Received: by mail-yh0-f42.google.com with SMTP id f73so3986287yha.1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 02 May 2014 02:48:41 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <dd7386ea80ce1fd3e5a864966b3b5e80@nixia.no>
 References: <53613E96.2030006@gmx.de>
 	<CAFLxGvyyMMSajwOtS1O6R-_XnJv7dc_61k3Hx9JJB7nmVLNWng@mail.gmail.com>
 	<536221F4.6000405@gmx.de> <53623EFE.3040603@nod.at>
 	<5362651A.1020504@gmx.de> <5362B53E.5060601@nod.at>
-	<5362BDD1.9070105@gmx.de> <53634D64.5060407@nod.at>
-In-Reply-To: <53634D64.5060407@nod.at>
+	<dd7386ea80ce1fd3e5a864966b3b5e80@nixia.no>
+Date: Fri, 2 May 2014 11:48:41 +0200
+Message-ID: <CAFLxGvw4R-hi2j2beE6YGbMHX-eNMoA4TdHMv2rNwSnEePAynA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,99 +32,59 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] trinity commit 23dc478aba breaks syscall "mremap"
  at a 32 bit user mode linux
-To: Richard Weinberger <richard@nod.at>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, trinity@vger.kernel.org
+To: Stian Skjelstad <stian@nixia.no>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gMDUvMDIvMjAxNCAwOTo0NiBBTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIDAx
-LjA1LjIwMTQgMjM6MzQsIHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVyOgo+PiBPbiAwNS8wMS8yMDE0
-IDEwOjU3IFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+PiBUb3JhbGYsCj4+Pgo+Pj4g
-WWVhaCwgdGhpcyBpcyBiZWNhdXNlIHRyaW5pdHkgZGVzdHJveXMgdGhlIFVNTCBzdHViIGNvZGUu
-Cj4+PiBQbGVhc2UgdGVzdCB0aGUgYXR0YWNoZWQgcGF0Y2gsIGl0IHNob3VsZCBmaXggdGhlIHJv
-b3QgY2F1c2Ugb2YgdGhlIHByb2JsZW0uCj4+Pgo+Pj4gVGhhbmtzLAo+Pj4gLy9yaWNoYXJkCj4+
-Pgo+Pgo+PiBJZiBJIGRvIGp1c3QgYXBwbHkgZml4Mi5wYXRjaCBvbnRvIGxhdGVzdCBnaXQgdHJl
-ZSAgdjMuMTUtcmMzLTExMy1nYmE2NzI4ZiB0aGVuIEkgZG8gZ2V0IGFmdGVyIGEgd2hpbGUgOgo+
-Pgo+PiAgKiBTdGFydGluZyBzc2hkIC4uLiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgWyBvayBdCj4+ICAqIFN0YXJ0aW5nIGxvY2FsCj4+IG5ldC5jb3JlLndhcm5pbmdz
-ID0gMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBbIG9rIF0KPj4gS2Vy
-bmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IGRvX3N5c2NhbGxfc3R1YiA6IFBUUkFDRV9TRVRSRUdT
-IGZhaWxlZCwgZXJybm8gPSAzCj4+Cj4+IENQVTogMCBQSUQ6IDE3MjggQ29tbTogdHJpbml0eS1j
-MCBOb3QgdGFpbnRlZCAzLjE1LjAtcmMzLTAwMTEzLWdiYTY3MjhmLWRpcnR5ICM1Cj4+IFN0YWNr
-Ogo+PiBCVUc6IHNvZnQgbG9ja3VwIC0gQ1BVIzAgc3R1Y2sgZm9yIDIycyEgW3RyaW5pdHktYzA6
-MTcyOF0KPj4KPj4gRUlQOiBjNTAwOls8NDdjNmNmMDA+XSBDUFU6IDAgTm90IHRhaW50ZWQgRUZM
-QUdTOiA0NzZhZjcwMAo+PiAgICAgTm90IHRhaW50ZWQKPj4gRUFYOiA0N2NmYzUwMCBFQlg6IDBh
-MDI0ZDAwIEVDWDogMDg2Yzc1ZmMgRURYOiAwODBmZmY4OAo+PiBFU0k6IDA4MzlmNGJjIEVESTog
-NDdjZmM1MDAgRUJQOiAwODM5ZjRiYyBEUzogYzUwMCBFUzogY2Q2Mgo+PiBFWFQ0LWZzICh1YmRh
-KTogZXJyb3IgY291bnQ6IDEKPj4gRVhUNC1mcyAodWJkYSk6IGluaXRpYWwgZXJyb3IgYXQgMTM5
-ODk2MjEzNDogZXh0NF9tYl9nZW5lcmF0ZV9idWRkeTo3NTYKPj4gRVhUNC1mcyAodWJkYSk6IGxh
-c3QgZXJyb3IgYXQgMTM5ODk2MjEzNDogZXh0NF9tYl9nZW5lcmF0ZV9idWRkeTo3NTYKPj4KPj4K
-Pj4gd2hpY2ggaXMgYSBiaWcgaW1wcm92ZW1lbnQgYmVjYXVzZSBiZWZvcmUgaXQgY3Jhc2hlcyBp
-bW1lZGlhdGVseSBhZnRlciBmZXcgc2Vjb25kcy4KPj4KPj4gQWZ0ZXIgYXBwbHlpbmcgYm90aCBm
-aXhlcyB0aGUgdGVzdCBjYXNlIHJ1bnMgdy9vIGEgY3Jhc2ggdGlsbCBub3cuCj4gCj4gQ2FuIHlv
-dSBwbGVhc2UgYWxzbyB0cnkgZml4MyAod2l0aG91dCBmaXgxLzIpPwo+IEkgdGhpbmsgSSd2ZSBm
-b3VuZCB0aGUgb3RoZXIgaGlkZGVuIGlzc3VlLgo+IFNvIGZhciB0cmluaXR5IGRpZCBub3QgY3Jh
-c2ggbXkga2VybmVsLi4uCj4gCj4gVGhhbmtzLAo+IC8vcmljaGFyZAo+IAoKZml4MyBtYWRlIGl0
-IC0gdGlsbCBub3cgaXQgcnVucyBmaW5lLgpPZiBjb3Vyc2UgdGhlIHN5c2xvZyBvZiB0aGUgVU1M
-IGd1ZXN0IGlzIGZsb29kZWQgd2l0aCBtZXNzYWdlcyBsaWtlIDoKCk1heSAgMiAxNTo0NTo1OSB0
-cmluaXR5IGtlcm5lbDogQlVHOiBCYWQgcnNzLWNvdW50ZXIgc3RhdGUgbW06NDdkNGQ4YzAgaWR4
-OjAgdmFsOjIKTWF5ICAyIDE1OjQ2OjAwIHRyaW5pdHkga2VybmVsOiBmaXhfcmFuZ2VfY29tbW9u
-OiBmYWlsZWQsIGtpbGxpbmcgY3VycmVudCBwcm9jZXNzOiAyOTgzCk1heSAgMiAxNTo0NjowMCB0
-cmluaXR5IGtlcm5lbDogZml4X3JhbmdlX2NvbW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJlbnQg
-cHJvY2VzczogMjk4NApNYXkgIDIgMTU6NDY6MzAgdHJpbml0eSBrZXJuZWw6IGZpeF9yYW5nZV9j
-b21tb246IGZhaWxlZCwga2lsbGluZyBjdXJyZW50IHByb2Nlc3M6IDI5ODYKTWF5ICAyIDE1OjQ2
-OjMwIHRyaW5pdHkga2VybmVsOiBmaXhfcmFuZ2VfY29tbW9uOiBmYWlsZWQsIGtpbGxpbmcgY3Vy
-cmVudCBwcm9jZXNzOiAyOTg5Ck1heSAgMiAxNTo0NjozMCB0cmluaXR5IGtlcm5lbDogZml4X3Jh
-bmdlX2NvbW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJlbnQgcHJvY2VzczogMjk5MQpNYXkgIDIg
-MTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6IFN0dWIgcmVnaXN0ZXJzIC0KTWF5ICAyIDE1OjQ2OjMy
-IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDAgLSAxMDAwMDAKTWF5ICAyIDE1OjQ2OjMyIHRyaW5p
-dHkga2VybmVsOiAgICAgICAgIDEgLSAxMDAwCk1heSAgMiAxNTo0NjozMiB0cmluaXR5IGtlcm5l
-bDogICAgICAgICAyIC0gNwpNYXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6ICAgICAgICAg
-MyAtIDExCk1heSAgMiAxNTo0NjozMiB0cmluaXR5IGtlcm5lbDogICAgICAgICA0IC0gMwpNYXkg
-IDIgMTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6ICAgICAgICAgNSAtIDNjYmFlCk1heSAgMiAxNTo0
-NjozMiB0cmluaXR5IGtlcm5lbDogICAgICAgICA2IC0gMTAwMDAwCk1heSAgMiAxNTo0NjozMiB0
-cmluaXR5IGtlcm5lbDogICAgICAgICA3IC0gN2IKTWF5ICAyIDE1OjQ2OjMyIHRyaW5pdHkga2Vy
-bmVsOiAgICAgICAgIDggLSA3YgpNYXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6ICAgICAg
-ICAgOSAtIDAKTWF5ICAyIDE1OjQ2OjMyIHRyaW5pdHkga2VybmVsOiAgICAgICAgIDEwIC0gMzMK
-TWF5ICAyIDE1OjQ2OjMyIHRyaW5pdHkga2VybmVsOiAgICAgICAgIDExIC0gZmZmZmZmZmYKTWF5
-ICAyIDE1OjQ2OjMyIHRyaW5pdHkga2VybmVsOiAgICAgICAgIDEyIC0gMTAwZmZmCk1heSAgMiAx
-NTo0NjozMiB0cmluaXR5IGtlcm5lbDogICAgICAgICAxMyAtIDczCk1heSAgMiAxNTo0NjozMiB0
-cmluaXR5IGtlcm5lbDogICAgICAgICAxNCAtIDEwMjA2Ck1heSAgMiAxNTo0NjozMiB0cmluaXR5
-IGtlcm5lbDogICAgICAgICAxNSAtIDEwMTAyOApNYXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJu
-ZWw6ICAgICAgICAgMTYgLSA3YgpNYXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6IHdhaXRf
-c3R1Yl9kb25lIDogZmFpbGVkIHRvIHdhaXQgZm9yIFNJR1RSQVAsIHBpZCA9IDQ4MywgbiA9IDQ4
-MywgZXJybm8gPSAwLCBzdGF0dXMgPSAweGI3ZgpNYXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJu
-ZWw6IEJVRzogQmFkIHJzcy1jb3VudGVyIHN0YXRlIG1tOjQ3ZDRkOGMwIGlkeDowIHZhbDoxCk1h
-eSAgMiAxNTo0NjozMiB0cmluaXR5IGtlcm5lbDogZml4X3JhbmdlX2NvbW1vbjogZmFpbGVkLCBr
-aWxsaW5nIGN1cnJlbnQgcHJvY2VzczogMzAwMApNYXkgIDIgMTU6NDY6MzMgdHJpbml0eSBrZXJu
-ZWw6IGZpeF9yYW5nZV9jb21tb246IGZhaWxlZCwga2lsbGluZyBjdXJyZW50IHByb2Nlc3M6IDMw
-MDIKTWF5ICAyIDE1OjQ2OjMzIHRyaW5pdHkga2VybmVsOiBmaXhfcmFuZ2VfY29tbW9uOiBmYWls
-ZWQsIGtpbGxpbmcgY3VycmVudCBwcm9jZXNzOiAzMDA0Ck1heSAgMiAxNTo0NjozMyB0cmluaXR5
-IGtlcm5lbDogZml4X3JhbmdlX2NvbW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJlbnQgcHJvY2Vz
-czogMzAwNgpNYXkgIDIgMTU6NDY6MzQgdHJpbml0eSBrZXJuZWw6IGZpeF9yYW5nZV9jb21tb246
-IGZhaWxlZCwga2lsbGluZyBjdXJyZW50IHByb2Nlc3M6IDMwMDkKTWF5ICAyIDE1OjQ2OjM0IHRy
-aW5pdHkga2VybmVsOiBmaXhfcmFuZ2VfY29tbW9uOiBmYWlsZWQsIGtpbGxpbmcgY3VycmVudCBw
-cm9jZXNzOiAzMDEwCk1heSAgMiAxNTo0NjozNCB0cmluaXR5IGtlcm5lbDogZml4X3JhbmdlX2Nv
-bW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJlbnQgcHJvY2VzczogMzAxMgpNYXkgIDIgMTU6NDY6
-MzUgdHJpbml0eSBrZXJuZWw6IEJVRzogQmFkIHJzcy1jb3VudGVyIHN0YXRlIG1tOjQ3ZDRkOGMw
-IGlkeDowIHZhbDoyCk1heSAgMiAxNTo0NjozNSB0cmluaXR5IGtlcm5lbDogZml4X3JhbmdlX2Nv
-bW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJlbnQgcHJvY2VzczogMzAxNQoKCgp3aGljaCBpcyBl
-eHBlY3RlZCAocmlnaHQgPykgYi9jIEkgaGFtbWVyZWQgdGhlIFVNTCB3aXRoIHRoZSBzeXNjYWxs
-ICJtcmVtYXAiIGJ5IDIgdHJpbml0eSBjaGlsZHMgZm9yIGEgd2hpbGUuCgoKVGh4Ci0tIApUb3Jh
-bGYKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIkFjY2VsZXJhdGUgRGV2IEN5Y2xlcyB3aXRoIEF1
-dG9tYXRlZCBDcm9zcy1Ccm93c2VyIFRlc3RpbmcgLSBGb3IgRlJFRQpJbnN0YW50bHkgcnVuIHlv
-dXIgU2VsZW5pdW0gdGVzdHMgYWNyb3NzIDMwMCsgYnJvd3Nlci9PUyBjb21ib3MuICBHZXQgCnVu
-cGFyYWxsZWxlZCBzY2FsYWJpbGl0eSBmcm9tIHRoZSBiZXN0IFNlbGVuaXVtIHRlc3RpbmcgcGxh
-dGZvcm0gYXZhaWxhYmxlLgpTaW1wbGUgdG8gdXNlLiBOb3RoaW5nIHRvIGluc3RhbGwuIEdldCBz
-dGFydGVkIG5vdyBmb3IgZnJlZS4iCmh0dHA6Ly9wLnNmLm5ldC9zZnUvU2F1Y2VMYWJzCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51
-eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2Vy
-LW1vZGUtbGludXgtZGV2ZWwK
+On Fri, May 2, 2014 at 8:43 AM,  <stian@nixia.no> wrote:
+>> Yeah, this is because trinity destroys the UML stub code.
+>> Please test the attached patch, it should fix the root cause of the
+>> problem.
+>
+> @@ -124,6 +125,9 @@ static int add_munmap(unsigned long addr, unsigned
+> long len,
+>         struct host_vm_op *last;
+>         int ret = 0;
+>
+> +       if ((addr >= STUB_START) && (addr < STUB_END))
+> +               return -EINVAL;
+> +
+>         if (hvc->index != 0) {
+>                 last = &hvc->ops[hvc->index - 1];
+>                 if ((last->type == MUNMAP) &&
+>
+> I do not know how add_munmap is called, so this is more of a question.
+> What happens in the use cases where the mmap spans multiple pages, and
+> the stub is in the middle and other variations?
+
+add_munmap() is only called on existing mappings.
+UML ensures that we have always a mapping at STUB_START.
+Doing a mremap() or munmap() i.e. on STUB_START - 4096 won't trigger
+the add_munmap().
+
+It is also not possible to create an overlapping map over the STUB.
+update_pte_range() makes this impossible.
+
+If you find a way to bypass this, please drop me a mail.
+The UML TLB code is not trivial and also not written by me.
+Maybe I've overlooked something. :-)
+
+-- 
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
