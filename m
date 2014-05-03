@@ -1,20 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <joe@perches.com>) id 1WiuRq-0000yV-P9
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1WgfN0-0005D1-5z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 May 2014 23:43:26 +0000
-Received: from smtprelay0253.hostedemail.com ([216.40.44.253]
-	helo=smtprelay.hostedemail.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1WiuRq-0007f4-0W for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 09 May 2014 23:43:26 +0000
-From: Joe Perches <joe@perches.com>
-Date: Fri,  9 May 2014 16:43:11 -0700
-Message-Id: <a0f82001821248eeccf32d1032a17b2d3b1f0add.1399678795.git.joe@perches.com>
-In-Reply-To: <cover.1399678795.git.joe@perches.com>
-References: <cover.1399678795.git.joe@perches.com>
+	Sat, 03 May 2014 19:13:10 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1WgfMy-0001Hs-13 for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 03 May 2014 19:13:10 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Sat,  3 May 2014 21:12:43 +0200
+Message-Id: <1399144364-30696-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,50 +25,63 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 2/4] UserModeLinux: Remove unused #defines of
-	UM_KERN_<LEVEL>
-To: linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 1/2] Revert "um: Fix wait_stub_done() error
+	handling"
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
 
-These are now unused so delete them.
+This reverts commit 0974a9cadc7886f7baaa458bb0c89f5c5f9d458e.
+It was a bad idea and was only papering over the real issue.
 
-Signed-off-by: Joe Perches <joe@perches.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/include/shared/user.h | 11 -----------
- 1 file changed, 11 deletions(-)
+ arch/um/os-Linux/skas/process.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
-index cef0685..4fa82c0 100644
---- a/arch/um/include/shared/user.h
-+++ b/arch/um/include/shared/user.h
-@@ -26,17 +26,6 @@
- extern void panic(const char *fmt, ...)
- 	__attribute__ ((format (printf, 1, 2)));
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index d531879..908579f 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -54,7 +54,7 @@ static int ptrace_dump_regs(int pid)
  
--/* Requires preincluding include/linux/kern_levels.h */
--#define UM_KERN_EMERG	KERN_EMERG
--#define UM_KERN_ALERT	KERN_ALERT
--#define UM_KERN_CRIT	KERN_CRIT
--#define UM_KERN_ERR	KERN_ERR
--#define UM_KERN_WARNING	KERN_WARNING
--#define UM_KERN_NOTICE	KERN_NOTICE
--#define UM_KERN_INFO	KERN_INFO
--#define UM_KERN_DEBUG	KERN_DEBUG
--#define UM_KERN_CONT	KERN_CONT
--
- #ifdef UML_CONFIG_PRINTK
- extern int printk(const char *fmt, ...)
- 	__attribute__ ((format (printf, 1, 2)));
+ void wait_stub_done(int pid)
+ {
+-	int n, status, err, bad_stop = 0;
++	int n, status, err;
+ 
+ 	while (1) {
+ 		CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED | __WALL));
+@@ -74,8 +74,6 @@ void wait_stub_done(int pid)
+ 
+ 	if (((1 << WSTOPSIG(status)) & STUB_DONE_MASK) != 0)
+ 		return;
+-	else
+-		bad_stop = 1;
+ 
+ bad_wait:
+ 	err = ptrace_dump_regs(pid);
+@@ -85,10 +83,7 @@ bad_wait:
+ 	printk(UM_KERN_ERR "wait_stub_done : failed to wait for SIGTRAP, "
+ 	       "pid = %d, n = %d, errno = %d, status = 0x%x\n", pid, n, errno,
+ 	       status);
+-	if (bad_stop)
+-		kill(pid, SIGKILL);
+-	else
+-		fatal_sigsegv();
++	fatal_sigsegv();
+ }
+ 
+ extern unsigned long current_stub_stack(void);
 -- 
-1.8.1.2.459.gbcd45b4.dirty
+1.8.1.4
 
 
 ------------------------------------------------------------------------------
-Is your legacy SCM system holding you back? Join Perforce May 7 to find out:
-&#149; 3 signs your SCM is hindering your productivity
-&#149; Requirements for releasing software faster
-&#149; Expert tips and advice for migrating your SCM now
-http://p.sf.net/sfu/perforce
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
