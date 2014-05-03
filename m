@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1WgfPi-0000P2-0G
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1WgcQm-0007Hp-V1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 03 May 2014 19:15:58 +0000
-Received: from mail-ve0-f169.google.com ([209.85.128.169])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WgfPg-00022L-EN
+	Sat, 03 May 2014 16:04:53 +0000
+Received: from mout.gmx.net ([212.227.17.21])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WgcQl-0001Lq-Di
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 03 May 2014 19:15:57 +0000
-Received: by mail-ve0-f169.google.com with SMTP id jx11so6800061veb.14
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 03 May 2014 12:15:50 -0700 (PDT)
+	Sat, 03 May 2014 16:04:52 +0000
+Received: from [192.168.178.21] ([78.54.173.234]) by mail.gmx.com (mrgmx001)
+	with ESMTPSA (Nemesis) id 0MbfnB-1WNiX209LB-00J0Ws for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sat, 03 May 2014 18:04:45
+	+0200
+Message-ID: <5365139B.2090104@gmx.de>
+Date: Sat, 03 May 2014 18:04:43 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <5365139B.2090104@gmx.de>
-References: <5365139B.2090104@gmx.de>
-Date: Sat, 3 May 2014 21:15:50 +0200
-Message-ID: <CAFLxGvwPFQ1W8nMr01ow2A5yTZb3dEQnQ_MD8mY3z6=SuXmyqg@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,114 +27,112 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] kernel BUG: while fuzzying a 32 bit Linux user mode
- guest with trinity
-To: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] kernel BUG: while fuzzying a 32 bit Linux user mode
+	guest with trinity
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gU2F0LCBNYXkgMywgMjAxNCBhdCA2OjA0IFBNLCBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFsZi5m
-b2Vyc3RlckBnbXguZGU+IHdyb3RlOgo+IEkgY291bGQgZm9yY2UgYSBjcmFzaCB1c2luZyBsYXRl
-c3Qga2VybmVsIHRyZWUgKHYzLjE1LXJjMy0xNTktZzZjNmNhOWMgd2l0aCBhcHBsaWVkIGZpeDMu
-cGF0Y2ggZm9yIHRoZSBtcmVtYXAgc3lzY2FsbCkgYW5kIGxhdGVzdCB0cmluaXR5IHRyZWUgKDEu
-MS0xMzQ5LWcxOGViZjcxKS4KPgo+IFRoZSBiYWNrdHJhY2Ugb2YgdGhlIGNvcmUgZHVtcCBnaXZl
-cyA6Cj4KPiB0Zm9lcnN0ZUBuMjIgfi90bXAgJCBnZGIgL2hvbWUvdGZvZXJzdGUvZGV2ZWwvbGlu
-dXgvbGludXggLS1jb3JlPS9tbnQvcmFtZGlzay9jb3JlIC1iYXRjaCAtZXggJ3RocmVhZCBhcHBs
-eSBhbGwgYnQnCj4gW05ldyBMV1AgMjM5MTJdCj4KPiB3YXJuaW5nOiBDb3VsZCBub3QgbG9hZCBz
-aGFyZWQgbGlicmFyeSBzeW1ib2xzIGZvciBsaW51eC1nYXRlLnNvLjEuCj4gRG8geW91IG5lZWQg
-InNldCBzb2xpYi1zZWFyY2gtcGF0aCIgb3IgInNldCBzeXNyb290Ij8KPiBDb3JlIHdhcyBnZW5l
-cmF0ZWQgYnkgYC9ob21lL3Rmb2Vyc3RlL2RldmVsL2xpbnV4L2xpbnV4IGVhcmx5cHJpbnRrIHVi
-ZGE9L2hvbWUvdGZvZXJzdGUvdmlydHVhbC91bWwvdHInLgo+IFByb2dyYW0gdGVybWluYXRlZCB3
-aXRoIHNpZ25hbCA2LCBBYm9ydGVkLgo+ICMwICAweGI3NzQxNDI0IGluIF9fa2VybmVsX3ZzeXNj
-YWxsICgpCj4KPiBUaHJlYWQgMSAoTFdQIDIzOTEyKToKPiAjMCAgMHhiNzc0MTQyNCBpbiBfX2tl
-cm5lbF92c3lzY2FsbCAoKQo+ICMxICAweDA4NDhhYzc1IGluIGtpbGwgKCkKPiAjMiAgMHgwODA3
-MmE1ZCBpbiB1bWxfYWJvcnQgKCkgYXQgYXJjaC91bS9vcy1MaW51eC91dGlsLmM6OTMKPiAjMyAg
-MHgwODA3MmQ5NSBpbiBvc19kdW1wX2NvcmUgKCkgYXQgYXJjaC91bS9vcy1MaW51eC91dGlsLmM6
-MTQ4Cj4gIzQgIDB4MDgwNjI1N2QgaW4gcGFuaWNfZXhpdCAoc2VsZj0weDg2Yzk2MTggPHBhbmlj
-X2V4aXRfbm90aWZpZXI+LCB1bnVzZWQxPTAsIHVudXNlZDI9MHg4NzAwOTYwIDxidWYuMTcwMTk+
-KSBhdCBhcmNoL3VtL2tlcm5lbC91bV9hcmNoLmM6MjQwCj4gIzUgIDB4MDgwOWEyNjYgaW4gbm90
-aWZpZXJfY2FsbF9jaGFpbiAobmw9MHgwLCB2YWw9MCwgdj0weDg3MDA5NjAgPGJ1Zi4xNzAxOT4s
-IG5yX3RvX2NhbGw9LTIsIG5yX2NhbGxzPTB4MCkgYXQga2VybmVsL25vdGlmaWVyLmM6OTMKPiAj
-NiAgMHgwODA5YTM4MSBpbiBfX2F0b21pY19ub3RpZmllcl9jYWxsX2NoYWluIChuaD0weDg3MDA5
-NDQgPHBhbmljX25vdGlmaWVyX2xpc3Q+LCB2YWw9MCwgdj0weDg3MDA5NjAgPGJ1Zi4xNzAxOT4s
-IG5yX3RvX2NhbGw9MCwgbnJfY2FsbHM9MHgwKSBhdCBrZXJuZWwvbm90aWZpZXIuYzoxODIKPiAj
-NyAgMHgwODA5YTNiZiBpbiBhdG9taWNfbm90aWZpZXJfY2FsbF9jaGFpbiAobmg9MHgwLCB2YWw9
-MCwgdj0weDApIGF0IGtlcm5lbC9ub3RpZmllci5jOjE5MQo+ICM4ICAweDA4NGU3NDJjIGluIHBh
-bmljIChmbXQ9MHgwKSBhdCBrZXJuZWwvcGFuaWMuYzoxMzAKPiAjOSAgMHgwODBjYzI2NSBpbiBf
-X2RlbGV0ZV9mcm9tX3BhZ2VfY2FjaGUgKHBhZ2U9MHhhMzAzNTIwLCBzaGFkb3c9MHgwKSBhdCBt
-bS9maWxlbWFwLmM6MjAyCj4gIzEwIDB4MDgwY2MzMmIgaW4gZGVsZXRlX2Zyb21fcGFnZV9jYWNo
-ZSAocGFnZT0weGEzMDM1MjApIGF0IG1tL2ZpbGVtYXAuYzoyMzQKPiAjMTEgMHgwODBkN2FmNyBp
-biB0cnVuY2F0ZV9jb21wbGV0ZV9wYWdlIChwYWdlPTxvcHRpbWl6ZWQgb3V0PiwgbWFwcGluZz08
-b3B0aW1pemVkIG91dD4pIGF0IG1tL3RydW5jYXRlLmM6MTQ1Cj4gIzEyIHRydW5jYXRlX2lub2Rl
-X3BhZ2UgKG1hcHBpbmc9MHg0NTkyYzk3NCwgcGFnZT0weGEzMDM1MjApIGF0IG1tL3RydW5jYXRl
-LmM6MTgwCj4gIzEzIDB4MDgwZGU2OWQgaW4gc2htZW1fdW5kb19yYW5nZSAoaW5vZGU9MHg0NTky
-YzhiYywgbHN0YXJ0PTI2NTI1ODU4NTE2LCBsZW5kPTMyNDcyMzI3NTMxMDc3MzA0MzIsIHVuZmFs
-bG9jPWZhbHNlKSBhdCBtbS9zaG1lbS5jOjQyOQo+ICMxNCAweDA4MGRmNTkxIGluIHNobWVtX3Ry
-dW5jYXRlX3JhbmdlIChpbm9kZT0weDQ1OTJjOGJjLCBsc3RhcnQ9MCwgbGVuZD0zMjQ3MjMwMzgy
-Mjg1NzgzMDQwKSBhdCBtbS9zaG1lbS5jOjUyNgo+ICMxNSAweDA4MGRmNmE4IGluIHNobWVtX2Zh
-bGxvY2F0ZSAoZmlsZT0weDAsIG1vZGU9Mywgb2Zmc2V0PTAsIGxlbj0xMDQ4NTc2KSBhdCBtbS9z
-aG1lbS5jOjE3NDEKPiAjMTYgMHgwODEwNDVkYSBpbiBkb19mYWxsb2NhdGUgKGZpbGU9MHg0NThi
-ZjMwMCwgbW9kZT0zLCBvZmZzZXQ9MCwgbGVuPTEwNDg1NzYpIGF0IGZzL29wZW4uYzoyOTgKPiAj
-MTcgMHgwODBlNmI5MSBpbiBtYWR2aXNlX3JlbW92ZSAoZW5kPTxvcHRpbWl6ZWQgb3V0Piwgc3Rh
-cnQ9PG9wdGltaXplZCBvdXQ+LCBwcmV2PTxvcHRpbWl6ZWQgb3V0Piwgdm1hPTxvcHRpbWl6ZWQg
-b3V0PikgYXQgbW0vbWFkdmlzZS5jOjMzMgo+ICMxOCBtYWR2aXNlX3ZtYSAoYmVoYXZpb3I9PG9w
-dGltaXplZCBvdXQ+LCBlbmQ9PG9wdGltaXplZCBvdXQ+LCBzdGFydD08b3B0aW1pemVkIG91dD4s
-IHByZXY9PG9wdGltaXplZCBvdXQ+LCB2bWE9PG9wdGltaXplZCBvdXQ+KSBhdCBtbS9tYWR2aXNl
-LmM6Mzg0Cj4gIzE5IFNZU0NfbWFkdmlzZSAoYmVoYXZpb3I9PG9wdGltaXplZCBvdXQ+LCBsZW5f
-aW49PG9wdGltaXplZCBvdXQ+LCBzdGFydD08b3B0aW1pemVkIG91dD4pIGF0IG1tL21hZHZpc2Uu
-Yzo1MzQKPiAjMjAgU3lTX21hZHZpc2UgKHN0YXJ0PTEwNzYzODc4NDAsIGxlbl9pbj0xMDQ4NTc2
-LCBiZWhhdmlvcj05KSBhdCBtbS9tYWR2aXNlLmM6NDY1Cj4gIzIxIDB4MDgwNjJiMzQgaW4gaGFu
-ZGxlX3N5c2NhbGwgKHI9MHgyZDM4ZTNlMCkgYXQgYXJjaC91bS9rZXJuZWwvc2thcy9zeXNjYWxs
-LmM6MzUKPiAjMjIgMHgwODA3NDg3NSBpbiBoYW5kbGVfdHJhcCAobG9jYWxfdXNpbmdfc3lzZW11
-PTxvcHRpbWl6ZWQgb3V0PiwgcmVncz08b3B0aW1pemVkIG91dD4sIHBpZD08b3B0aW1pemVkIG91
-dD4pIGF0IGFyY2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNzLmM6MTkzCj4gIzIzIHVzZXJzcGFj
-ZSAocmVncz0weDJkMzhlM2UwKSBhdCBhcmNoL3VtL29zLUxpbnV4L3NrYXMvcHJvY2Vzcy5jOjQy
-Ngo+ICMyNCAweDA4MDVmNzcwIGluIGZvcmtfaGFuZGxlciAoKSBhdCBhcmNoL3VtL2tlcm5lbC9w
-cm9jZXNzLmM6MTQ5Cj4gIzI1IDB4MDAwMDAwMDAgaW4gPz8gKCkKPgo+Cj4KPiBUaGUgb3V0cHV0
-IG9mIHRoZSBVTUwgZ3Vlc3QgaXMgOgo+Cj4KPiBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzog
-QlVHIQo+IENQVTogMCBQSUQ6IDE5ODggQ29tbTogdHJpbml0eS1jMiBOb3QgdGFpbnRlZCAzLjE1
-LjAtcmMzLTAwMTU5LWc2YzZjYTljLWRpcnR5ICM4Cj4gU3RhY2s6Cj4gIDA4NWE0ZjU0IDA4NWE0
-ZjU0IDJkMTA3YmJjIDAwMDAwMDA0IDA4NmM4NTQ3IDBhMzAzNTIwIDAwMDAwMDNmIDQ1OTJjOTc0
-Cj4gIDJkMTA3YmNjIDA4NGVhZmE1IDAwMDAwMDAwIDAwMDAwMDAwIDJkMTA3YmY0IDA4NGU3NDEw
-IDA4NWIwOGVjIDA4NzAwOTYwCj4gIDA4NWExY2E1IDJkMTA3YzAwIDAwMDAwMDAwIDBhMzAzNTIw
-IDAwMDAwMDNmIDQ1OTJjOTc0IDJkMTA3YzJjIDA4MGNjMjY1Cj4gQ2FsbCBUcmFjZToKPiAgWzww
-ODBjYzI2NT5dID8gX19kZWxldGVfZnJvbV9wYWdlX2NhY2hlKzB4MjE1LzB4MjcwCj4gIFs8MDg0
-ZWFmYTU+XSBkdW1wX3N0YWNrKzB4MjYvMHgyOAo+ICBbPDA4NGU3NDEwPl0gcGFuaWMrMHg3YS8w
-eDE5NAo+ICBbPDA4MGNjMjY1Pl0gX19kZWxldGVfZnJvbV9wYWdlX2NhY2hlKzB4MjE1LzB4Mjcw
-Cj4gIFs8MDgwY2MzMmI+XSBkZWxldGVfZnJvbV9wYWdlX2NhY2hlKzB4NmIvMHg5MAo+ICBbPDA4
-MGQ3YWY3Pl0gdHJ1bmNhdGVfaW5vZGVfcGFnZSsweDk3LzB4YjAKPiAgWzwwODBkZTY5ZD5dIHNo
-bWVtX3VuZG9fcmFuZ2UrMHgxYmQvMHg2MjAKPiAgWzwwODBkZjU5MT5dIHNobWVtX3RydW5jYXRl
-X3JhbmdlKzB4MzEvMHg2MAo+ICBbPDA4MGRmNmE4Pl0gc2htZW1fZmFsbG9jYXRlKzB4ZTgvMHgz
-NjAKPiAgWzwwODQ5YTYwNT5dID8gX19nZXR0aW1lb2ZkYXkrMHgxNS8weDMwCj4gIFs8MDgwNzFk
-ZmU+XSA/IHNldF9zaWduYWxzKzB4MWUvMHg0MAo+ICBbPDA4MTA0NWRhPl0gZG9fZmFsbG9jYXRl
-KzB4MTRhLzB4MWQwCj4gIFs8MDgwZTZiOTE+XSBTeVNfbWFkdmlzZSsweDFkMS8weDcyMAo+ICBb
-PDA4MGFlZjBkPl0gPyBfX2dldG5zdGltZW9mZGF5KzB4M2QvMHgxMDAKPiAgWzwwODA3ZmE2OD5d
-ID8gU3lTX2dldHRpbWVvZmRheSsweDM4LzB4ODAKPiAgWzwwODA2MmIzND5dIGhhbmRsZV9zeXNj
-YWxsKzB4NjQvMHg4MAo+ICBbPDA4NDlkNjIxPl0gPyBwdHJhY2UrMHgzMS8weDgwCj4gIFs8MDgw
-Nzk4MDI+XSA/IGdldF9mcF9yZWdpc3RlcnMrMHgyMi8weDQwCj4gIFs8MDgwNzQ4NzU+XSB1c2Vy
-c3BhY2UrMHg0NzUvMHg1ZjAKPiAgWzwwODQ5ZDYyMT5dID8gcHRyYWNlKzB4MzEvMHg4MAo+ICBb
-PDA4MDc5ZDY2Pl0gPyBvc19zZXRfdGhyZWFkX2FyZWErMHgyNi8weDQwCj4gIFs8MDgwNzhkMzA+
-XSA/IGRvX3NldF90aHJlYWRfYXJlYSsweDIwLzB4NTAKPiAgWzwwODA3OGVhOD5dID8gYXJjaF9z
-d2l0Y2hfdGxzKzB4YjgvMHgxMDAKPiAgWzwwODA1Zjc3MD5dIGZvcmtfaGFuZGxlcisweDYwLzB4
-NzAKPiAvaG9tZS90Zm9lcnN0ZS93b3Jrc3BhY2UvYmluL3N0YXJ0X3VtbC5zaDogbGluZSAxMTA6
-IDIzOTEyIEFib3J0ZWQgICAgICAgICAgICAgICAgIChjb3JlIGR1bXBlZCkgJExJTlVYIGVhcmx5
-cHJpbnRrIHViZGE9JFJPT1RGUyB1YmRiPSRTV0FQIGV0aDA9JE5FVCBtZW09JE1FTSAkVFRZIHVt
-aWQ9dW1sXyROQU1FIHJvb3Rmc3R5cGU9ZXh0NCAiJEFSR1MiCj4gWzNnCj4KPgo+Cj4KPiBUaGVy
-ZSdzIG5vIHRyaW5pdHkgbG9nIGF2YWlsYWJsZSwgSSBsb3N0IGl0LCBzcnkuCj4KPiBGV0lXIHRo
-ZSBob3N0IHN5c3RlbSBpcyBhIHN0YWJsZSAzMiBiaXQgR2VudG9vIExpbnV4IHdpdGgga2VybmVs
-IDMuMTQuMi4KCkFzIHdyaXR0ZW4gdHdvIGRheXMgYWdvLCB0aGlzIHNlZW1zIHRvIGJlIGEga25v
-d24gaXNzdWU6Cmh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDE0LzQvMTUvNTc3CgotLSAKVGhhbmtz
-LAovL3JpY2hhcmQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoiQWNjZWxlcmF0ZSBEZXYgQ3ljbGVz
-IHdpdGggQXV0b21hdGVkIENyb3NzLUJyb3dzZXIgVGVzdGluZyAtIEZvciBGUkVFCkluc3RhbnRs
-eSBydW4geW91ciBTZWxlbml1bSB0ZXN0cyBhY3Jvc3MgMzAwKyBicm93c2VyL09TIGNvbWJvcy4g
-IEdldCAKdW5wYXJhbGxlbGVkIHNjYWxhYmlsaXR5IGZyb20gdGhlIGJlc3QgU2VsZW5pdW0gdGVz
-dGluZyBwbGF0Zm9ybSBhdmFpbGFibGUuClNpbXBsZSB0byB1c2UuIE5vdGhpbmcgdG8gaW5zdGFs
-bC4gR2V0IHN0YXJ0ZWQgbm93IGZvciBmcmVlLiIKaHR0cDovL3Auc2YubmV0L3NmdS9TYXVjZUxh
-YnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1t
-b2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+I could force a crash using latest kernel tree (v3.15-rc3-159-g6c6ca9c with applied fix3.patch for the mremap syscall) and latest trinity tree (1.1-1349-g18ebf71).
+
+The backtrace of the core dump gives :
+
+tfoerste@n22 ~/tmp $ gdb /home/tfoerste/devel/linux/linux --core=/mnt/ramdisk/core -batch -ex 'thread apply all bt'
+[New LWP 23912]
+
+warning: Could not load shared library symbols for linux-gate.so.1.
+Do you need "set solib-search-path" or "set sysroot"?
+Core was generated by `/home/tfoerste/devel/linux/linux earlyprintk ubda=/home/tfoerste/virtual/uml/tr'.
+Program terminated with signal 6, Aborted.
+#0  0xb7741424 in __kernel_vsyscall ()
+
+Thread 1 (LWP 23912):
+#0  0xb7741424 in __kernel_vsyscall ()
+#1  0x0848ac75 in kill ()
+#2  0x08072a5d in uml_abort () at arch/um/os-Linux/util.c:93
+#3  0x08072d95 in os_dump_core () at arch/um/os-Linux/util.c:148
+#4  0x0806257d in panic_exit (self=0x86c9618 <panic_exit_notifier>, unused1=0, unused2=0x8700960 <buf.17019>) at arch/um/kernel/um_arch.c:240
+#5  0x0809a266 in notifier_call_chain (nl=0x0, val=0, v=0x8700960 <buf.17019>, nr_to_call=-2, nr_calls=0x0) at kernel/notifier.c:93
+#6  0x0809a381 in __atomic_notifier_call_chain (nh=0x8700944 <panic_notifier_list>, val=0, v=0x8700960 <buf.17019>, nr_to_call=0, nr_calls=0x0) at kernel/notifier.c:182
+#7  0x0809a3bf in atomic_notifier_call_chain (nh=0x0, val=0, v=0x0) at kernel/notifier.c:191
+#8  0x084e742c in panic (fmt=0x0) at kernel/panic.c:130
+#9  0x080cc265 in __delete_from_page_cache (page=0xa303520, shadow=0x0) at mm/filemap.c:202
+#10 0x080cc32b in delete_from_page_cache (page=0xa303520) at mm/filemap.c:234
+#11 0x080d7af7 in truncate_complete_page (page=<optimized out>, mapping=<optimized out>) at mm/truncate.c:145
+#12 truncate_inode_page (mapping=0x4592c974, page=0xa303520) at mm/truncate.c:180
+#13 0x080de69d in shmem_undo_range (inode=0x4592c8bc, lstart=26525858516, lend=3247232753107730432, unfalloc=false) at mm/shmem.c:429
+#14 0x080df591 in shmem_truncate_range (inode=0x4592c8bc, lstart=0, lend=3247230382285783040) at mm/shmem.c:526
+#15 0x080df6a8 in shmem_fallocate (file=0x0, mode=3, offset=0, len=1048576) at mm/shmem.c:1741
+#16 0x081045da in do_fallocate (file=0x458bf300, mode=3, offset=0, len=1048576) at fs/open.c:298
+#17 0x080e6b91 in madvise_remove (end=<optimized out>, start=<optimized out>, prev=<optimized out>, vma=<optimized out>) at mm/madvise.c:332
+#18 madvise_vma (behavior=<optimized out>, end=<optimized out>, start=<optimized out>, prev=<optimized out>, vma=<optimized out>) at mm/madvise.c:384
+#19 SYSC_madvise (behavior=<optimized out>, len_in=<optimized out>, start=<optimized out>) at mm/madvise.c:534
+#20 SyS_madvise (start=1076387840, len_in=1048576, behavior=9) at mm/madvise.c:465
+#21 0x08062b34 in handle_syscall (r=0x2d38e3e0) at arch/um/kernel/skas/syscall.c:35
+#22 0x08074875 in handle_trap (local_using_sysemu=<optimized out>, regs=<optimized out>, pid=<optimized out>) at arch/um/os-Linux/skas/process.c:193
+#23 userspace (regs=0x2d38e3e0) at arch/um/os-Linux/skas/process.c:426
+#24 0x0805f770 in fork_handler () at arch/um/kernel/process.c:149
+#25 0x00000000 in ?? ()
+
+
+
+The output of the UML guest is :
+
+
+Kernel panic - not syncing: BUG!
+CPU: 0 PID: 1988 Comm: trinity-c2 Not tainted 3.15.0-rc3-00159-g6c6ca9c-dirty #8
+Stack:
+ 085a4f54 085a4f54 2d107bbc 00000004 086c8547 0a303520 0000003f 4592c974
+ 2d107bcc 084eafa5 00000000 00000000 2d107bf4 084e7410 085b08ec 08700960
+ 085a1ca5 2d107c00 00000000 0a303520 0000003f 4592c974 2d107c2c 080cc265
+Call Trace:
+ [<080cc265>] ? __delete_from_page_cache+0x215/0x270
+ [<084eafa5>] dump_stack+0x26/0x28
+ [<084e7410>] panic+0x7a/0x194
+ [<080cc265>] __delete_from_page_cache+0x215/0x270
+ [<080cc32b>] delete_from_page_cache+0x6b/0x90
+ [<080d7af7>] truncate_inode_page+0x97/0xb0
+ [<080de69d>] shmem_undo_range+0x1bd/0x620
+ [<080df591>] shmem_truncate_range+0x31/0x60
+ [<080df6a8>] shmem_fallocate+0xe8/0x360
+ [<0849a605>] ? __gettimeofday+0x15/0x30
+ [<08071dfe>] ? set_signals+0x1e/0x40
+ [<081045da>] do_fallocate+0x14a/0x1d0
+ [<080e6b91>] SyS_madvise+0x1d1/0x720
+ [<080aef0d>] ? __getnstimeofday+0x3d/0x100
+ [<0807fa68>] ? SyS_gettimeofday+0x38/0x80
+ [<08062b34>] handle_syscall+0x64/0x80
+ [<0849d621>] ? ptrace+0x31/0x80
+ [<08079802>] ? get_fp_registers+0x22/0x40
+ [<08074875>] userspace+0x475/0x5f0
+ [<0849d621>] ? ptrace+0x31/0x80
+ [<08079d66>] ? os_set_thread_area+0x26/0x40
+ [<08078d30>] ? do_set_thread_area+0x20/0x50
+ [<08078ea8>] ? arch_switch_tls+0xb8/0x100
+ [<0805f770>] fork_handler+0x60/0x70
+/home/tfoerste/workspace/bin/start_uml.sh: line 110: 23912 Aborted                 (core dumped) $LINUX earlyprintk ubda=$ROOTFS ubdb=$SWAP eth0=$NET mem=$MEM $TTY umid=uml_$NAME rootfstype=ext4 "$ARGS"
+[3g        
+
+
+
+
+There's no trinity log available, I lost it, sry.
+
+FWIW the host system is a stable 32 bit Gentoo Linux with kernel 3.14.2.
+
+-- 
+Toralf
+
+
+------------------------------------------------------------------------------
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.  Get 
+unparalleled scalability from the best Selenium testing platform available.
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
