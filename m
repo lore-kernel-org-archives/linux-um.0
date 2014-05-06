@@ -1,105 +1,39 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1WfnCC-00052Q-2j
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 May 2014 09:22:24 +0000
-Received: from mail-ve0-f177.google.com ([209.85.128.177])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WfnCB-00058F-6L
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 01 May 2014 09:22:24 +0000
-Received: by mail-ve0-f177.google.com with SMTP id sa20so3554754veb.36
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 01 May 2014 02:22:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <53613E96.2030006@gmx.de>
-References: <53613E96.2030006@gmx.de>
-Date: Thu, 1 May 2014 11:22:17 +0200
-Message-ID: <CAFLxGvyyMMSajwOtS1O6R-_XnJv7dc_61k3Hx9JJB7nmVLNWng@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] trinity commit 23dc478aba breaks syscall "mremap"
- at a 32 bit user mode linux
-To: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, trinity@vger.kernel.org
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1399144364-30696-2-git-send-email-richard@nod.at>
+References: <1399144364-30696-1-git-send-email-richard@nod.at>
+	<1399144364-30696-2-git-send-email-richard@nod.at>
+Date: Tue, 6 May 2014 14:03:12 +0200
+Message-ID: <CAMuHMdU8p+4v56OV=09VCjpvm5eE97DgoDd7aA7HoZB2Fa-Fvg@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH 2/2] um: Ensure that nobody remaps the stub vma
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: Richard Weinberger <richard@nod.at>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-T24gV2VkLCBBcHIgMzAsIDIwMTQgYXQgODoxOSBQTSwgVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYu
-Zm9lcnN0ZXJAZ214LmRlPiB3cm90ZToKPiAtb3ItIGl0IHVuY292ZXJzIGEgYnVnIGluIGtlcm5l
-bCB2My4xNS1yYzMgZm9yIFVNTDoKClVNTCBtb3N0IG5vdCBwYW5pYy4gOikKCkRvIHlvdSBoYXZl
-IHRoZSB0cmluaXR5IGxvZ3M/CkknZCBsaWtlIHRvIGtub3cgdGhlIHN5c2NhbGxzIHBhcmFtZXRl
-cnMuCgpJdCBsb29rcyBsaWtlIHRyaW5pdHkgbWFuYWdlZCBpdCB0byBjcmFzaCBhIHRocmVhZCBv
-biB0aGUgaG9zdCBzaWRlLgpUaGlzIGlzIHdoeSBwdHJhY2UoKSBmYWlsZWQgd2l0aCBFU1JDSC4K
-Cj4KPgo+IGNvbW1pdCAyM2RjNDc4YWJhNDEzNGRiNTE1ODRkMTllNDc4M2VjODdjZTg3Yjg4Cj4g
-QXV0aG9yOiBEYXZlIEpvbmVzIDxkYXZlakByZWRoYXQuY29tPgo+IERhdGU6ICAgVHVlIEFwciAy
-OSAxNjo0Mjo0NSAyMDE0IC0wNDAwCj4KPiAgICAgbm9uLWJpYXJjaCBhcmNoZXMgYXJlbid0IG5l
-Y2Vzc2FyaWx5IDMyLWJpdC4KPgo+IGRpZmYgLS1naXQgYS9jaGlsZHJlbi9yYW5kb20tc3lzY2Fs
-bHMuYyBiL2NoaWxkcmVuL3JhbmRvbS1zeXNjYWxscy5jCj4gaW5kZXggODJlNDlmNS4uMWQ3ZTdj
-ZSAxMDA2NDQKPiAtLS0gYS9jaGlsZHJlbi9yYW5kb20tc3lzY2FsbHMuYwo+ICsrKyBiL2NoaWxk
-cmVuL3JhbmRvbS1zeXNjYWxscy5jCj4gQEAgLTMyLDcgKzMyLDYgQEAgc3RhdGljIGJvb2wgY2hv
-b3NlX3N5c2NhbGxfdGFibGUodm9pZCkKPgo+ICAgICAgICAgaWYgKGJpYXJjaCA9PSBGQUxTRSkg
-ewo+ICAgICAgICAgICAgICAgICBhY3RpdmVfc3lzY2FsbHMgPSBzaG0tPmFjdGl2ZV9zeXNjYWxs
-czsKPiAtICAgICAgICAgICAgICAgZG8zMiA9IFRSVUU7Cj4gICAgICAgICB9IGVsc2Ugewo+Cj4g
-ICAgICAgICAgICAgICAgIC8qIEZpcnN0LCBjaGVjayB0aGF0IHdlIGhhdmUgc3lzY2FsbHMgZW5h
-YmxlZCBpbiBlaXRoZXIgdGFibGUuICovCj4KPgo+Cj4KPiBJIGRvIGdldCA6Cj4KPgo+IEtlcm5l
-bCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBkb19zeXNjYWxsX3N0dWIgOiBQVFJBQ0VfU0VUUkVHUyBm
-YWlsZWQsIGVycm5vID0gMwo+Cj4gQ1BVOiAwIFBJRDogMTMwMyBDb21tOiB0cmluaXR5LWMwIE5v
-dCB0YWludGVkIDMuMTUuMC1yYzMgIzEKPiBTdGFjazoKPiAgMDg1YTRmNTQgMDg1YTRmNTQgNDg0
-MWZjNDggMDAwMDAwMDQgMDg2Yzg1NDcgMDAwMDJiNTggMDAwMDAwMDMgMDAwMDAwMTEKPiAgNDg0
-MWZjNTggMDg0ZWFlNzUgMDAwMDAwMDAgMDAwMDAwMDAgNDg0MWZjODAgMDg0ZTcyZTAgMDg1YjA4
-ZTggMDg3MDA5NjAKPiAgMDg1YWQ3YjQgNDg0MWZjOTAgMDAwMDAwMDAgMDAwMDJiNTggMDAwMDAw
-MDMgMDAwMDAwMTEgNDg0MWZjYjQgMDgwNzM0YzUKPiBDYWxsIFRyYWNlOgo+ICBbPDA4MDczNGM1
-Pl0gPyBydW5fc3lzY2FsbF9zdHViKzB4MTI1LzB4MmMwCj4gIFs8MDg0ZWFlNzU+XSBkdW1wX3N0
-YWNrKzB4MjYvMHgyOAo+ICBbPDA4NGU3MmUwPl0gcGFuaWMrMHg3YS8weDE5NAo+ICBbPDA4MDcz
-NGM1Pl0gcnVuX3N5c2NhbGxfc3R1YisweDEyNS8weDJjMAo+ICBbPDA4MDczYjE1Pl0gdW5tYXAr
-MHhmNS8weDExMAo+ICBbPDA4MDYxMDQ3Pl0gZG9fb3BzKzB4YjcvMHgxNjAKPiAgWzwwODA2MTVm
-OD5dIGZpeF9yYW5nZV9jb21tb24rMHg0NDgvMHg0ODAKPiAgWzwwODBlNTBmND5dID8gdm1hX2lu
-dGVydmFsX3RyZWVfaW5zZXJ0KzB4NzQvMHg4MAo+ICBbPDA4MDYxOTNlPl0gZmx1c2hfdGxiX3Jh
-bmdlKzB4M2UvMHg0MAo+ICBbPDA4MGYwNDVlPl0gbW92ZV9wYWdlX3RhYmxlcysweDI0ZS8weDI4
-MAo+ICBbPDA4MGYwNTc3Pl0gbW92ZV92bWErMHhlNy8weDIzMAo+ICBbPDA4MGVkYTIwPl0gPyBn
-ZXRfdW5tYXBwZWRfYXJlYSsweGEwLzB4YzAKPiAgWzwwODBmMDhiOD5dIFN5U19tcmVtYXArMHgx
-ZjgvMHg0YzAKPiAgWzwwODA2MmFiND5dIGhhbmRsZV9zeXNjYWxsKzB4NjQvMHg4MAo+ICBbPDA4
-NDlkNGYxPl0gPyBwdHJhY2UrMHgzMS8weDgwCj4gIFs8MDgwNzk3YTI+XSA/IGdldF9mcF9yZWdp
-c3RlcnMrMHgyMi8weDQwCj4gIFs8MDgwNzQ4MTU+XSB1c2Vyc3BhY2UrMHg0NzUvMHg1ZjAKPiAg
-WzwwODQ5ZDRmMT5dID8gcHRyYWNlKzB4MzEvMHg4MAo+ICBbPDA4MDc5ZDA2Pl0gPyBvc19zZXRf
-dGhyZWFkX2FyZWErMHgyNi8weDQwCj4gIFs8MDgwNzhjZDA+XSA/IGRvX3NldF90aHJlYWRfYXJl
-YSsweDIwLzB4NTAKPiAgWzwwODA3OGU0OD5dID8gYXJjaF9zd2l0Y2hfdGxzKzB4YjgvMHgxMDAK
-PiAgWzwwODA1Zjc3MD5dIGZvcmtfaGFuZGxlcisweDYwLzB4NzAKPgo+IC9ob21lL3Rmb2Vyc3Rl
-L3dvcmtzcGFjZS9iaW4vc3RhcnRfdW1sLnNoOiBsaW5lIDExMDogIDk1NTggQWJvcnRlZCAgICAg
-ICAgICAgICAgICAgKGNvcmUgZHVtcGVkKSAkTElOVVggZWFybHlwcmludGsgdWJkYT0kUk9PVEZT
-IHViZGI9JFNXQVAgZXRoMD0kTkVUIG1lbT0kTUVNICRUVFkgdW1pZD11bWxfJE5BTUUgcm9vdGZz
-dHlwZT1leHQ0ICIkQVJHUyIKPgo+Cj4gLS0KPiBUb3JhbGYKPgo+Cj4gLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCj4gIkFjY2VsZXJhdGUgRGV2IEN5Y2xlcyB3aXRoIEF1dG9tYXRlZCBDcm9zcy1Ccm93
-c2VyIFRlc3RpbmcgLSBGb3IgRlJFRQo+IEluc3RhbnRseSBydW4geW91ciBTZWxlbml1bSB0ZXN0
-cyBhY3Jvc3MgMzAwKyBicm93c2VyL09TIGNvbWJvcy4gIEdldAo+IHVucGFyYWxsZWxlZCBzY2Fs
-YWJpbGl0eSBmcm9tIHRoZSBiZXN0IFNlbGVuaXVtIHRlc3RpbmcgcGxhdGZvcm0gYXZhaWxhYmxl
-Lgo+IFNpbXBsZSB0byB1c2UuIE5vdGhpbmcgdG8gaW5zdGFsbC4gR2V0IHN0YXJ0ZWQgbm93IGZv
-ciBmcmVlLiIKPiBodHRwOi8vcC5zZi5uZXQvc2Z1L1NhdWNlTGFicwo+IF9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gVXNlci1tb2RlLWxpbnV4LWRldmVs
-IG1haWxpbmcgbGlzdAo+IFVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1v
-ZGUtbGludXgtZGV2ZWwKCgoKLS0gClRoYW5rcywKLy9yaWNoYXJkCgotLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KIkFjY2VsZXJhdGUgRGV2IEN5Y2xlcyB3aXRoIEF1dG9tYXRlZCBDcm9zcy1Ccm93c2Vy
-IFRlc3RpbmcgLSBGb3IgRlJFRQpJbnN0YW50bHkgcnVuIHlvdXIgU2VsZW5pdW0gdGVzdHMgYWNy
-b3NzIDMwMCsgYnJvd3Nlci9PUyBjb21ib3MuICBHZXQgCnVucGFyYWxsZWxlZCBzY2FsYWJpbGl0
-eSBmcm9tIHRoZSBiZXN0IFNlbGVuaXVtIHRlc3RpbmcgcGxhdGZvcm0gYXZhaWxhYmxlLgpTaW1w
-bGUgdG8gdXNlLiBOb3RoaW5nIHRvIGluc3RhbGwuIEdldCBzdGFydGVkIG5vdyBmb3IgZnJlZS4i
-Cmh0dHA6Ly9wLnNmLm5ldC9zZnUvU2F1Y2VMYWJzCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QK
-VXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3Rz
-LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+Hi Richard,
+
+On Sat, May 3, 2014 at 9:12 PM, Richard Weinberger <richard@nod.at> wrote:
+> @@ -90,6 +91,9 @@ static int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
+>         struct host_vm_op *last;
+>         int fd, ret = 0;
+>
+> +       if ((virt >= STUB_START) && (virt < STUB_END))
+> +               return -EINVAL;
+> +
+
+As you have this exact same check in three different places, I think it's worth
+splitting it off in a helper function.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
