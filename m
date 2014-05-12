@@ -1,45 +1,39 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Thu, 29 May 2014 11:51:29 +0200
-Message-Id: <1401357089-24959-2-git-send-email-richard@nod.at>
-In-Reply-To: <1401357089-24959-1-git-send-email-richard@nod.at>
-References: <1401357089-24959-1-git-send-email-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 2/2] um: Detect kernel userspace access
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <e519609e20be6c6be87bbf0e2dd716abdfaa698e.1399678795.git.joe@perches.com>
+References: <cover.1399678795.git.joe@perches.com>
+	<e519609e20be6c6be87bbf0e2dd716abdfaa698e.1399678795.git.joe@perches.com>
+Date: Mon, 12 May 2014 09:59:09 +0200
+Message-ID: <CAMuHMdUVzOtBtDc3atrsmEcrr0_xHR3ujnzWKSZaN_mvKs_jkA@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH 1/4] UserModeLinux: Convert UM_KERN_<LEVEL> to KERN_<LEVEL>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: Joe Perches <joe@perches.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From time to time users report that UML hangs and consumes 100% CPU
-on the host side.
-Analyzing such an issue uncovered a bug in UML's page fault
-handler. If the kernel tries to access userspace memory without
-copy_from/to_user() UML receives a SIGSEGV and tries to handle
-it. As the page fault handler is not designed to fix such faults the
-SIGSEGV stays and UML consumes all CPU handling SIGSEGV.
-The only sane thing we can do here is calling panic().
+On Sat, May 10, 2014 at 1:43 AM, Joe Perches <joe@perches.com> wrote:
+> The defines are the same since commit 9429ec96c2718
+> ("um: Preinclude include/linux/kern_levels.h")
+> so just convert them to the normal KERN_<LEVEL> uses.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-This patch helps to detect bad memory access from the kernel side.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/kernel/trap.c | 3 +++
- 1 file changed, 3 insertions(+)
+Cfr.
+https://lkml.org/lkml/2012/9/29/77
+https://lkml.org/lkml/2012/9/29/106
 
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index b0a3017..04a6de4 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -222,6 +222,9 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 		if (!is_user && address < PAGE_SIZE) {
- 			show_regs(container_of(regs, struct pt_regs, regs));
- 			panic("NULL pointer dereference at ip:0x%lx address:0x%lx", ip, address);
-+		} else if (!is_user && address < task_size) {
-+			show_regs(container_of(regs, struct pt_regs, regs));
-+			panic("Kernel tried to access userspace at ip:0x%lx address:0x%lx", ip, address);
- 		}
- 
- 		err = handle_page_fault(address, ip, is_write, is_user,
--- 
-1.8.4.2
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus
+Torvaldshttps://lkml.org/lkml/2012/9/29/106
 
