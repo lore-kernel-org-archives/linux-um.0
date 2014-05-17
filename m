@@ -1,39 +1,135 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Real Name <enjoymindful@gmail.com>
-Date: Sun,  1 Jun 2014 07:34:42 +0800
-Message-Id: <1401579282-17987-1-git-send-email-enjoymindful@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] delete unnecessary bootmem struct page array
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: richard@nod.at, linux-kernel@vger.kernel.org, Real Name <enjoymindful@gmail.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1WljFY-0003qZ-Tb
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 May 2014 18:22:25 +0000
+Received: from mout.gmx.net ([212.227.15.18])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1WljFV-0005rC-He
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 17 May 2014 18:22:24 +0000
+Message-ID: <5377A8D6.1060104@gmx.de>
+Date: Sat, 17 May 2014 20:22:14 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+MIME-Version: 1.0
+References: <5365139B.2090104@gmx.de>
+	<CAFLxGvwPFQ1W8nMr01ow2A5yTZb3dEQnQ_MD8mY3z6=SuXmyqg@mail.gmail.com>
+	<53777F1A.20402@gmx.de>
+In-Reply-To: <53777F1A.20402@gmx.de>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] kernel BUG: while fuzzying a 32 bit Linux user mode
+ guest with trinity
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-1) uml kernel bootmem managed through bootmem_data->node_bootmem_map,
-not struct page array, so it is unnecessary.
-
-2) the struct page array allocate has been pointer by a *loacl* pointer
-struct page *map in init_maps function. The array can't be access after
-the init_maps exit. As a result, there is about 1% of total memory leak.
----
- arch/um/kernel/um_arch.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 016adf0..9f3c6d1 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -309,11 +309,6 @@ int __init linux_main(int argc, char **argv)
- 	 */
- 
- 	diff = UML_ROUND_UP(brk_start) - UML_ROUND_UP(&_end);
--	if (diff > 1024 * 1024) {
--		printf("Adding %ld bytes to physical memory to account for "
--		       "exec-shield gap\n", diff);
--		physmem_size += UML_ROUND_UP(brk_start) - UML_ROUND_UP(&_end);
--	}
- 
- 	uml_physmem = (unsigned long) &__binary_start & PAGE_MASK;
- 
--- 
-1.8.3.1
+T24gMDUvMTcvMjAxNCAwNToyNCBQTSwgVG9yYWxmIEbDtnJzdGVyIHdyb3RlOgo+IE9uIDA1LzAz
+LzIwMTQgMDk6MTUgUE0sIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4gT24gU2F0LCBNYXkg
+MywgMjAxNCBhdCA2OjA0IFBNLCBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFsZi5mb2Vyc3RlckBnbXgu
+ZGU+IHdyb3RlOgo+Pj4gSSBjb3VsZCBmb3JjZSBhIGNyYXNoIHVzaW5nIGxhdGVzdCBrZXJuZWwg
+dHJlZSAodjMuMTUtcmMzLTE1OS1nNmM2Y2E5YyB3aXRoIGFwcGxpZWQgZml4My5wYXRjaCBmb3Ig
+dGhlIG1yZW1hcCBzeXNjYWxsKSBhbmQgbGF0ZXN0IHRyaW5pdHkgdHJlZSAoMS4xLTEzNDktZzE4
+ZWJmNzEpLgo+IC4uLgo+Pj4gIzkgIDB4MDgwY2MyNjUgaW4gX19kZWxldGVfZnJvbV9wYWdlX2Nh
+Y2hlIChwYWdlPTB4YTMwMzUyMCwgc2hhZG93PTB4MCkgYXQgbW0vZmlsZW1hcC5jOjIwMgo+IC4u
+Lgo+PiBBcyB3cml0dGVuIHR3byBkYXlzIGFnbywgdGhpcyBzZWVtcyB0byBiZSBhIGtub3duIGlz
+c3VlOgo+PiBodHRwczovL2xrbWwub3JnL2xrbWwvMjAxNC80LzE1LzU3Nwo+IAo+IEp1c3QgRldJ
+VyA6Cj4gSWYgSSBleGNsdWRlIHRoZSBzeXNjYWxsICJtYWR2aXNlIiBmcm9tIHRoZSB0cmluaXR5
+IGZ1enplciB0aGVuIHRoaXMKPiBpc3N1ZSBjYW4ndCBiZSByZXByb2R1Y2VkICh0aWxsIG5vdyku
+IEFsbG93aW5nIHRoYXQgc3lzY2FsbCBob3dldmVyCj4gY3Jhc2hlcyB0aGUgVU1MIHVzdWFsbHkg
+d2l0aGluIGxlc3MgdGhhbiAxLzIgaG91ci4KPiAKPiAKV2VsbCwgSSB3YXMgd3JvbmcsIGl0IGp1
+c3QgdGFrZXMgbG9uZ2VyIHRpbWUsIGJ1dCBoZXJlJ3MgYW4gZXhhbXBsZSBmb3IgdGhlIGlzc3Vl
+IHVzaW5nIGFub3RoZXIgc3lzY2FsbCAKCktlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBCVUch
+CkNQVTogMCBQSUQ6IDQ0MDAgQ29tbTogdHJpbml0eSBOb3QgdGFpbnRlZCAzLjE1LjAtcmM1LTAw
+MDc3LWcxNDE4NmZlLWRpcnR5ICMxNwpTdGFjazoKIDA4NWE0ZmQ0IDA4NWE0ZmQ0IDQ4Mzk3YzIw
+IDAwMDAwMDA0IDA4NmM4NTQ3IDBhNWI4YmMwIDAwMDAwMDNmIDQ4MDU0MjQ0CiA0ODM5N2MzMCAw
+ODRlYjExNSAwMDAwMDAwMCAwMDAwMDAwMCA0ODM5N2M1OCAwODRlNzU4MCAwODViMDk2YyAwODcw
+MDk2MAogMDg1YTFkMjUgNDgzOTdjNjQgMDAwMDAwMDAgMGE1YjhiYzAgMDAwMDAwM2YgNDgwNTQy
+NDQgNDgzOTdjOTAgMDgwY2MyYzUKQ2FsbCBUcmFjZToKIFs8MDgwY2MyYzU+XSA/IF9fZGVsZXRl
+X2Zyb21fcGFnZV9jYWNoZSsweDIxNS8weDI3MAogWzwwODRlYjExNT5dIGR1bXBfc3RhY2srMHgy
+Ni8weDI4CiBbPDA4NGU3NTgwPl0gcGFuaWMrMHg3YS8weDE5NAogWzwwODBjYzJjNT5dIF9fZGVs
+ZXRlX2Zyb21fcGFnZV9jYWNoZSsweDIxNS8weDI3MAogWzwwODBjYzM4Yj5dIGRlbGV0ZV9mcm9t
+X3BhZ2VfY2FjaGUrMHg2Yi8weDkwCiBbPDA4MGQ3YTg3Pl0gdHJ1bmNhdGVfaW5vZGVfcGFnZSsw
+eDk3LzB4YjAKIFs8MDgwZGU2NGQ+XSBzaG1lbV91bmRvX3JhbmdlKzB4MWJkLzB4NjIwCiBbPDA4
+MGRmNTQxPl0gc2htZW1fdHJ1bmNhdGVfcmFuZ2UrMHgzMS8weDYwCiBbPDA4MGRmYjA2Pl0gc2ht
+ZW1fZXZpY3RfaW5vZGUrMHg4Ni8weDE1MAogWzwwODExZDg3Zj5dIGV2aWN0KzB4YmYvMHgxNzAK
+IFs8MDgwZmZmOTg+XSA/IGttZW1fY2FjaGVfZnJlZSsweGU4LzB4MTIwCiBbPDA4MGVjNWE0Pl0g
+PyByZW1vdmVfdm1hKzB4NDQvMHg1MAogWzwwODExZTJmZD5dIGlwdXQrMHgxNGQvMHgxNjAKIFs8
+MDgxMWFiMDg+XSBkZW50cnlfa2lsbC5pc3JhLjI5KzB4MTU4LzB4MjIwCiBbPDA4MTFhZThkPl0g
+ZHB1dCsweGZkLzB4MTIwCiBbPDA4MTA3Nzk1Pl0gX19mcHV0KzB4MTc1LzB4MTkwCiBbPDA4MTA3
+NWUwPl0gPyBmaWxlX2ZyZWVfcmN1KzB4MC8weDQwCiBbPDA4MTA3N2ViPl0gX19fX2ZwdXQrMHhi
+LzB4MTAKIFs8MDgwOTNiMjY+XSB0YXNrX3dvcmtfcnVuKzB4NzYvMHg5MAogWzwwODA1Zjk1YT5d
+IGludGVycnVwdF9lbmQrMHg0YS8weDgwCiBbPDA4MDc0OTdiPl0gdXNlcnNwYWNlKzB4NTdiLzB4
+NWYwCiBbPDA4NDlkN2ExPl0gPyBwdHJhY2UrMHgzMS8weDgwCiBbPDA4MDc5ZDY2Pl0gPyBvc19z
+ZXRfdGhyZWFkX2FyZWErMHgyNi8weDQwCiBbPDA4MDc4ZDMwPl0gPyBkb19zZXRfdGhyZWFkX2Fy
+ZWErMHgyMC8weDUwCiBbPDA4MDc4ZWE4Pl0gPyBhcmNoX3N3aXRjaF90bHMrMHhiOC8weDEwMAog
+WzwwODA1Zjc3MD5dIGZvcmtfaGFuZGxlcisweDYwLzB4NzAKL2hvbWUvdGZvZXJzdGUvd29ya3Nw
+YWNlL2Jpbi9zdGFydF91bWwuc2g6IGxpbmUgMTEwOiAgODM0MiBBYm9ydGVkICAgICAgICAgICAg
+ICAgICAoY29yZSBkdW1wZWQpICRMSU5VWCBlYXJseXByaW50ayB1YmRhPSRST09URlMgdWJkYj0k
+U1dBUCBldGgwPSRORVQgbWVtPSRNRU0gJFRUWSB1bWlkPXVtbF8kTkFNRSByb290ZnN0eXBlPWV4
+dDQgIiRBUkdTIgoKCgoKYW5kIHRoZSBnZGIgYmFjayB0cmFjZSBvZiB0aGUgY29yZSBmaWxlIGdp
+dmVzIDoKClRocmVhZCAxIChMV1AgODM0Mik6CiMwICAweGI3NzU5NDI0IGluIF9fa2VybmVsX3Zz
+eXNjYWxsICgpCiMxICAweDA4NDhhZGY1IGluIGtpbGwgKCkKIzIgIDB4MDgwNzJhNWQgaW4gdW1s
+X2Fib3J0ICgpIGF0IGFyY2gvdW0vb3MtTGludXgvdXRpbC5jOjkzCiMzICAweDA4MDcyZDk1IGlu
+IG9zX2R1bXBfY29yZSAoKSBhdCBhcmNoL3VtL29zLUxpbnV4L3V0aWwuYzoxNDgKIzQgIDB4MDgw
+NjI1N2QgaW4gcGFuaWNfZXhpdCAoc2VsZj0weDg2Yzk2MTggPHBhbmljX2V4aXRfbm90aWZpZXI+
+LCB1bnVzZWQxPTAsIHVudXNlZDI9MHg4NzAwOTYwIDxidWYuMTcwMjE+KSBhdCBhcmNoL3VtL2tl
+cm5lbC91bV9hcmNoLmM6MjQwCiM1ICAweDA4MDlhMmM2IGluIG5vdGlmaWVyX2NhbGxfY2hhaW4g
+KG5sPTB4MCwgdmFsPTAsIHY9MHg4NzAwOTYwIDxidWYuMTcwMjE+LCBucl90b19jYWxsPS0yLCBu
+cl9jYWxscz0weDApIGF0IGtlcm5lbC9ub3RpZmllci5jOjkzCiM2ICAweDA4MDlhM2UxIGluIF9f
+YXRvbWljX25vdGlmaWVyX2NhbGxfY2hhaW4gKG5oPTB4ODcwMDk0NCA8cGFuaWNfbm90aWZpZXJf
+bGlzdD4sIHZhbD0wLCB2PTB4ODcwMDk2MCA8YnVmLjE3MDIxPiwgbnJfdG9fY2FsbD0wLCBucl9j
+YWxscz0weDApIGF0IGtlcm5lbC9ub3RpZmllci5jOjE4MgojNyAgMHgwODA5YTQxZiBpbiBhdG9t
+aWNfbm90aWZpZXJfY2FsbF9jaGFpbiAobmg9MHgwLCB2YWw9MCwgdj0weDApIGF0IGtlcm5lbC9u
+b3RpZmllci5jOjE5MQojOCAgMHgwODRlNzU5YyBpbiBwYW5pYyAoZm10PTB4MCkgYXQga2VybmVs
+L3BhbmljLmM6MTMwCiM5ICAweDA4MGNjMmM1IGluIF9fZGVsZXRlX2Zyb21fcGFnZV9jYWNoZSAo
+cGFnZT0weGE1YjhiYzAsIHNoYWRvdz0weDApIGF0IG1tL2ZpbGVtYXAuYzoyMDIKIzEwIDB4MDgw
+Y2MzOGIgaW4gZGVsZXRlX2Zyb21fcGFnZV9jYWNoZSAocGFnZT0weGE1YjhiYzApIGF0IG1tL2Zp
+bGVtYXAuYzoyMzQKIzExIDB4MDgwZDdhODcgaW4gdHJ1bmNhdGVfY29tcGxldGVfcGFnZSAocGFn
+ZT08b3B0aW1pemVkIG91dD4sIG1hcHBpbmc9PG9wdGltaXplZCBvdXQ+KSBhdCBtbS90cnVuY2F0
+ZS5jOjE0NQojMTIgdHJ1bmNhdGVfaW5vZGVfcGFnZSAobWFwcGluZz0weDQ4MDU0MjQ0LCBwYWdl
+PTB4YTViOGJjMCkgYXQgbW0vdHJ1bmNhdGUuYzoxODAKIzEzIDB4MDgwZGU2NGQgaW4gc2htZW1f
+dW5kb19yYW5nZSAoaW5vZGU9MHg0ODA1NDE4YywgbHN0YXJ0PTI2OTgxNTMwNDI0LCBsZW5kPTUy
+MDQzMjg2OTU2NzM2NTM2MzIsIHVuZmFsbG9jPWZhbHNlKSBhdCBtbS9zaG1lbS5jOjQyOQojMTQg
+MHgwODBkZjU0MSBpbiBzaG1lbV90cnVuY2F0ZV9yYW5nZSAoaW5vZGU9MHg0ODA1NDE4YywgbHN0
+YXJ0PTAsIGxlbmQ9NTIwNDMyNjMyNDg1MTcwMzgwOCkgYXQgbW0vc2htZW0uYzo1MjYKIzE1IDB4
+MDgwZGZiMDYgaW4gc2htZW1fZXZpY3RfaW5vZGUgKGlub2RlPTB4NDgwNTQxOGMpIGF0IG1tL3No
+bWVtLmM6NTcwCiMxNiAweDA4MTFkODdmIGluIGV2aWN0IChpbm9kZT0weDQ4MDU0MThjKSBhdCBm
+cy9pbm9kZS5jOjU1MAojMTcgMHgwODExZTJmZCBpbiBpcHV0X2ZpbmFsIChpbm9kZT08b3B0aW1p
+emVkIG91dD4pIGF0IGZzL2lub2RlLmM6MTQxOAojMTggaXB1dCAoaW5vZGU9MHg0ODA1NDE4Yykg
+YXQgZnMvaW5vZGUuYzoxNDM2CiMxOSAweDA4MTFhYjA4IGluIGRlbnRyeV9pcHV0IChkZW50cnk9
+PG9wdGltaXplZCBvdXQ+KSBhdCBmcy9kY2FjaGUuYzoyOTIKIzIwIGRlbnRyeV9raWxsIChkZW50
+cnk9MHgzNzg5ZDRkMCwgdW5sb2NrX29uX2ZhaWx1cmU9PG9wdGltaXplZCBvdXQ+KSBhdCBmcy9k
+Y2FjaGUuYzo1MDcKIzIxIDB4MDgxMWFlOGQgaW4gZHB1dCAoZGVudHJ5PTB4Mzc4OWQ0ZDApIGF0
+IGZzL2RjYWNoZS5jOjU4MgojMjIgMHgwODEwNzc5NSBpbiBfX2ZwdXQgKGZpbGU9MHg0OGFjODlj
+MCkgYXQgZnMvZmlsZV90YWJsZS5jOjIyOAojMjMgMHgwODEwNzdlYiBpbiBfX19fZnB1dCAod29y
+az0weDQ4YWM4OWMwKSBhdCBmcy9maWxlX3RhYmxlLmM6MjQ2CiMyNCAweDA4MDkzYjI2IGluIHRh
+c2tfd29ya19ydW4gKCkgYXQga2VybmVsL3Rhc2tfd29yay5jOjEyMwojMjUgMHgwODA1Zjk1YSBp
+biB0cmFjZWhvb2tfbm90aWZ5X3Jlc3VtZSAocmVncz08b3B0aW1pemVkIG91dD4pIGF0IGluY2x1
+ZGUvbGludXgvdHJhY2Vob29rLmg6MTk2CiMyNiBpbnRlcnJ1cHRfZW5kICgpIGF0IGFyY2gvdW0v
+a2VybmVsL3Byb2Nlc3MuYzo5OAojMjcgMHgwODA3NDk3YiBpbiB1c2Vyc3BhY2UgKHJlZ3M9MHg0
+NWY4MjJlMCkgYXQgYXJjaC91bS9vcy1MaW51eC9za2FzL3Byb2Nlc3MuYzo0NTkKIzI4IDB4MDgw
+NWY3NzAgaW4gZm9ya19oYW5kbGVyICgpIGF0IGFyY2gvdW0va2VybmVsL3Byb2Nlc3MuYzoxNDkK
+IzI5IDB4MDAwMDAwMDAgaW4gPz8gKCkKCi0tIApUb3JhbGYKCgotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0KIkFjY2VsZXJhdGUgRGV2IEN5Y2xlcyB3aXRoIEF1dG9tYXRlZCBDcm9zcy1Ccm93c2VyIFRl
+c3RpbmcgLSBGb3IgRlJFRQpJbnN0YW50bHkgcnVuIHlvdXIgU2VsZW5pdW0gdGVzdHMgYWNyb3Nz
+IDMwMCsgYnJvd3Nlci9PUyBjb21ib3MuCkdldCB1bnBhcmFsbGVsZWQgc2NhbGFiaWxpdHkgZnJv
+bSB0aGUgYmVzdCBTZWxlbml1bSB0ZXN0aW5nIHBsYXRmb3JtIGF2YWlsYWJsZQpTaW1wbGUgdG8g
+dXNlLiBOb3RoaW5nIHRvIGluc3RhbGwuIEdldCBzdGFydGVkIG5vdyBmb3IgZnJlZS4iCmh0dHA6
+Ly9wLnNmLm5ldC9zZnUvU2F1Y2VMYWJzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1t
+b2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
+ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
