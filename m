@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mcr@sandelman.ca>) id 1WpMjo-00084z-GK
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sebastien.fremal@gmail.com>) id 1WpHu0-0007Ru-2I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 May 2014 19:08:40 +0000
-Received: from tuna.sandelman.ca ([209.87.252.184])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WpMjn-0004ty-6n
+	Tue, 27 May 2014 13:58:52 +0000
+Received: from mail-oa0-f50.google.com ([209.85.219.50])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WpHty-0005JK-BN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 27 May 2014 19:08:40 +0000
-From: Michael Richardson <mcr@sandelman.ca>
-In-Reply-To: <CAOV6k-BK_oQQ9MwQ1ggp==QPh-vQ=_Kz7j0rVquqAeuoyjr=4w@mail.gmail.com>
-References: <CAOV6k-BK_oQQ9MwQ1ggp==QPh-vQ=_Kz7j0rVquqAeuoyjr=4w@mail.gmail.com>
+	Tue, 27 May 2014 13:58:51 +0000
+Received: by mail-oa0-f50.google.com with SMTP id i7so9565529oag.23
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 27 May 2014 06:58:44 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 27 May 2014 15:08:29 -0400
-Message-ID: <14516.1401217709@sandelman.ca>
+From: =?UTF-8?B?U8OpYmFzdGllbiBGcsOpbWFs?= <sebastien.fremal@gmail.com>
+Date: Tue, 27 May 2014 15:58:24 +0200
+Message-ID: <CAOV6k-BK_oQQ9MwQ1ggp==QPh-vQ=_Kz7j0rVquqAeuoyjr=4w@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,39 +26,81 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4030680064919585869=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Skas Mode : How does it work ?
-To: =?us-ascii?Q?=3D=3FUTF-8=3FB=3FU8OpYmFzdGllbiBGcsOpbWFs=3F=3D?= <sebastien.fremal@gmail.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] Skas Mode : How does it work ?
+To: user-mode-linux-devel@lists.sourceforge.net
 
-ClPDqWJhc3RpZW4gRnLDqW1hbCA8c2ViYXN0aWVuLmZyZW1hbEBnbWFpbC5jb20+IHdyb3RlOgog
-ICAgPiBJJ20gYSBQaEQgU3R1ZGVudCBzdHVkeWluZyB2aXJ0dWFsaXphdGlvbiBtZXRob2RzLiBJ
-IGZvdW5kIGFuIGFydGljbGUKICAgID4gb24gVU1MIGV4cGxhaW5pbmcgaG93IGl0IHdvcmtzIGlu
-IFRUIG1vZGUKICAgID4gKGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL29scy8yMDAxL3VtbC5w
-ZGYgKS4KCiAgICA+IEkgcmVhZCB0aGF0IHRoZXJlIGlzIG5vdyBhIHNrYXMgbW9kZSBmaXhpbmcg
-c2VjdXJpdHkgYW5kIHBlcmZvcm1hbmNlCiAgICA+IGlzc3VzZXMgb2YgdGhlIFRUIG1vZGUKICAg
-ID4gKGh0dHA6Ly91c2VyLW1vZGUtbGludXguc291cmNlZm9yZ2UubmV0L29sZC9za2FzLmh0bWwp
-LCBidXQgSSBkb24ndAogICAgPiBmaW5kIGluZm9ybWF0aW9ucyBvbiBob3cgaXQgd29ya3MuIEl0
-IHNlZW1zIHRoYXQgdGhlIHRyYWNpbmcgdGhyZWFkCgpZb3UgbWF5IGJlIGFibGUgdG8gZmluZCBz
-b21lIHRhbGtzL2V0Yy4gb24gdGhpcyBpbiBhcmNoaXZlcy4KSmVmZiBEaWtlIG1pZ2h0IGJlIGFi
-bGUgdG8gcmVjYWxsIHdoaWNoIHllYXJzLi4uCk1heWJlIExpbnV4U3ltcG9zaXVtIGluIDE5OTkg
-YW5kIDIwMDAuCgpBbHNvLCBJIHN1Z2dlc3QgeW91IHJlYWQgdGhlIHNvdXJjZSBjb2RlOiB0aGF0
-IG1lYW5zIGdvaW5nIGJhY2sgdG8KTGludXggMi42LiBhbmQgMi40IHZlcnNpb25zLgoKLS0KXSAg
-ICAgICAgICAgICAgIE5ldmVyIHRlbGwgbWUgdGhlIG9kZHMhICAgICAgICAgICAgICAgICB8IGlw
-djYgbWVzaCBuZXR3b3JrcyBbCl0gICBNaWNoYWVsIFJpY2hhcmRzb24sIFNhbmRlbG1hbiBTb2Z0
-d2FyZSBXb3JrcyAgICAgICAgfCBuZXR3b3JrIGFyY2hpdGVjdCAgWwpdICAgICBtY3JAc2FuZGVs
-bWFuLmNhICBodHRwOi8vd3d3LnNhbmRlbG1hbi5jYS8gICAgICAgIHwgICBydWJ5IG9uIHJhaWxz
-ICAgIFsKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhlIGJlc3QgcG9zc2libGUgc2VhcmNoIHRl
-Y2hub2xvZ2llcyBhcmUgbm93IGFmZm9yZGFibGUgZm9yIGFsbCBjb21wYW5pZXMuCkRvd25sb2Fk
-IHlvdXIgRlJFRSBvcGVuIHNvdXJjZSBFbnRlcnByaXNlIFNlYXJjaCBFbmdpbmUgdG9kYXkhCk91
-ciBleHBlcnRzIHdpbGwgYXNzaXN0IHlvdSBpbiBpdHMgaW5zdGFsbGF0aW9uIGZvciAkNTkvbW8s
-IG5vIGNvbW1pdG1lbnQuClRlc3QgaXQgZm9yIEZSRUUgb24gb3VyIENsb3VkIHBsYXRmb3JtIGFu
-eXRpbWUhCmh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD0xNDUz
-MjgxOTEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2Vy
-LW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291
-cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+--===============4030680064919585869==
+Content-Type: multipart/alternative; boundary=001a11c20c5619155104fa621878
+
+--001a11c20c5619155104fa621878
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+I'm a PhD Student studying virtualization methods. I found an article on
+UML explaining how it works in TT mode (
+https://www.kernel.org/doc/ols/2001/uml.pdf).
+
+I read that there is now a skas mode fixing security and performance
+issuses of the TT mode (http://user-mode-linux.sourceforge.net/old/skas.htm=
+l),
+but I don't find informations on how it works. It seems that the tracing
+thread doesn't exist in skas mode. I'm searching informations on how this
+system works, especially how system calls are virtualized. Is this
+information available somewhere ?
+
+Best regards,
+
+S=C3=A9bastien Fr=C3=A9mal
+
+--001a11c20c5619155104fa621878
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div><div>Hello,<br><br></div>I&#39;m a PhD Student s=
+tudying virtualization methods. I found an article on UML explaining how it=
+ works in TT mode (<a href=3D"https://www.kernel.org/doc/ols/2001/uml.pdf">=
+https://www.kernel.org/doc/ols/2001/uml.pdf</a>).<br>
+
+<br></div>I read that there is now a skas mode fixing security and performa=
+nce issuses of the TT mode (<a href=3D"http://user-mode-linux.sourceforge.n=
+et/old/skas.html">http://user-mode-linux.sourceforge.net/old/skas.html</a>)=
+, but I don&#39;t find informations on how it works. It seems that the trac=
+ing thread doesn&#39;t exist in skas mode. I&#39;m searching informations o=
+n how this system works, especially how system calls are virtualized. Is th=
+is information available somewhere ?<br>
+
+<br></div>Best regards,<br><br>S=C3=A9bastien Fr=C3=A9mal<br></div>
+
+--001a11c20c5619155104fa621878--
+
+
+--===============4030680064919585869==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+The best possible search technologies are now affordable for all companies.
+Download your FREE open source Enterprise Search Engine today!
+Our experts will assist you in its installation for $59/mo, no commitment.
+Test it for FREE on our Cloud platform anytime!
+http://pubads.g.doubleclick.net/gampad/clk?id=145328191&iu=/4140/ostg.clktrk
+--===============4030680064919585869==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============4030680064919585869==--
+
 
