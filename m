@@ -1,59 +1,34 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1Wrt8i-0005H8-Pm
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2014 18:08:48 +0000
-Received: from mout.gmx.net ([212.227.15.18])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Wrt8h-0006qS-Al
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Jun 2014 18:08:48 +0000
-Message-ID: <538E0F27.908@gmx.de>
-Date: Tue, 03 Jun 2014 20:08:39 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <538B314B.2050604@nod.at>
+Date: Sun, 01 Jun 2014 15:57:31 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+References: <1401628131-1948-1-git-send-email-enjoymindful@gmail.com> <1401628131-1948-2-git-send-email-enjoymindful@gmail.com>
+In-Reply-To: <1401628131-1948-2-git-send-email-enjoymindful@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] /sys/fs/cgroup/openrc/???/tasks sometimes missing
-To: cgroups@vger.kernel.org
-Cc: gentoo-dev@lists.gentoo.org, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] delete unnecessary bootmem struct page array
+To: Real Name <enjoymindful@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-If I boot a 32 bit stable Gentoo Linux as a user mode linux guest with current kernels (host is a 32 bit stable Gentoo too), then I do observe sometimes during the boot process error messages from the init system of Gentoo (OpenRC) like the following (for subsystem rngd in this example) :
+Am 01.06.2014 15:08, schrieb Real Name:
+> From: Honggang Li <enjoymindful@gmail.com>
+> 
+> 1) uml kernel bootmem managed through bootmem_data->node_bootmem_map,
+> not the struct page array, so the array is unnecessary.
+> 
+> 2) the bootmem struct page array has been pointed by a *local* pointer,
+> struct page *map, in init_maps function. The array can be accessed only
+> in init_maps's scope. As a result, uml kernel wastes about 1% of total
+> memory.
 
- * Starting haveged ...                                                                                               [ ok ]
-/lib/rc/sh/rc-cgroup.sh: line 87: /sys/fs/cgroup/openrc/rngd/tasks: No such file or directory
- * Starting rngd ...                                                                                                  [ ok ]
+I reread your patch again.
+You missed one important point. init_maps() setups max_mapnr which is used by
+virt_addr_valid().
 
-And indeed, that directory is missing. A restart of the appropriate service however creates those entries. The Gentoo bug entry https://bugs.gentoo.org/show_bug.cgi?id=489386 tells me :
+We have to be extremely careful here to not introduce a subtle fuckup.
 
-"It's known race in cgroups, I'm going to address this issue on one of the following weekends. The problem is that issue is not reproducible on my systems."
-
-but  that's all since 5 months. Now I'm wondering if this just happens for an UML guest and who knows how to fix it ?
-
--- 
-Toralf
-
-
-------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their 
-applications. Written by three acclaimed leaders in the field, 
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Thanks,
+//richard
