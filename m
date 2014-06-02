@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1WrOKN-0002o1-AU
+	(envelope-from <sebastien.fremal@gmail.com>) id 1WrOC5-0002PY-TN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Jun 2014 09:14:47 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WrOKM-0002ar-1D
+	Mon, 02 Jun 2014 09:06:13 +0000
+Received: from mail-oa0-f47.google.com ([209.85.219.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1WrOC5-0005ly-2X
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Jun 2014 09:14:47 +0000
-Message-ID: <538C407E.5080203@nod.at>
-Date: Mon, 02 Jun 2014 11:14:38 +0200
-From: Richard Weinberger <richard@nod.at>
+	Mon, 02 Jun 2014 09:06:13 +0000
+Received: by mail-oa0-f47.google.com with SMTP id i7so4343344oag.6
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 02 Jun 2014 02:06:07 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAFLxGvw+0L2SSXGzddOgG56g1avyuU4EvUG_peMowe65fh02pQ@mail.gmail.com>
 References: <CAOV6k-BK_oQQ9MwQ1ggp==QPh-vQ=_Kz7j0rVquqAeuoyjr=4w@mail.gmail.com>
 	<CAFLxGvw+0L2SSXGzddOgG56g1avyuU4EvUG_peMowe65fh02pQ@mail.gmail.com>
-	<CAOV6k-Br0_aa6+3CDZVcqpOwY+YQR7BE8L2kUTSusp8W-3bBKw@mail.gmail.com>
-In-Reply-To: <CAOV6k-Br0_aa6+3CDZVcqpOwY+YQR7BE8L2kUTSusp8W-3bBKw@mail.gmail.com>
+From: =?UTF-8?B?U8OpYmFzdGllbiBGcsOpbWFs?= <sebastien.fremal@gmail.com>
+Date: Mon, 2 Jun 2014 11:05:47 +0200
+Message-ID: <CAOV6k-Br0_aa6+3CDZVcqpOwY+YQR7BE8L2kUTSusp8W-3bBKw@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,35 +29,76 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6490524225841689187=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] Skas Mode : How does it work ?
-To: =?UTF-8?B?U8OpYmFzdGllbiBGcsOpbWFs?= <sebastien.fremal@gmail.com>, Richard Weinberger <richard.weinberger@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
+To: Richard Weinberger <richard.weinberger@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
 
-SGkhCgpBbSAwMi4wNi4yMDE0IDExOjA1LCBzY2hyaWViIFPDqWJhc3RpZW4gRnLDqW1hbDoKPiBI
-ZWxsbywKPiAKPiBUaGFuayB5b3UgZm9yIHRoZXNlIGluZm9ybWF0aW9ucywgaXQgaGVscHMgbWUg
-dG8gdW5kZXJzdGFuZCBob3cgc2thcyB3b3Jrcy4gSSByZWFkIG9uIHRoZSBza2FzIHdlYnNpdGUg
-dGhhdCAiVGhpcyBhbHNvIHByb3ZpZGVzIGEgbm90aWNhYmxlIHNwZWVkdXAgYnkgZWxpbWluYXRp
-bmcgdGhlIHNpZ25hbAo+IGRlbGl2ZXJ5IHRoYXQgdXNlZCB0byBoYXBwZW4gZm9yIGV2ZXJ5IFVN
-TCBzeXN0ZW0gY2FsbC4iIEkgcmVhZCB0aGF0IFVNTCBwcm9jZXNzZXMgKGluIFRUIG1vZGUpIGlu
-IHVzZXIgc3BhY2Ugd2VyZSBjb250cm9sbGVkIHdpdGggc2lnbmFscyAoZXNwZWNpYWxseSB0byBk
-byB0aGUgdHJhbnNpdGlvbiBiZXR3ZWVuCj4gdGhlIHVzZXIgbW9kZSBhbmQgdGhlIGtlcm5lbCBt
-b2RlKS4gVGhlIHByZXNlbnRhdGlvbiBvZiBza2FzIHN1Z2dlc3RzIHRoYXQgdGhpcyB0cmFuc2l0
-aW9uIGFuZCBjb21tdW5pY2F0aW9ucyBiZXR3ZWVuIFVNTCBhbmQgaXRzIHByb2Nlc3NlcyBhcmUg
-bm90IGV4ZWN1dGVkIGFueW1vcmUgd2l0aCBzaWduYWxzLgo+IERvIHlvdSBrbm93IHdoYXQgaXMg
-dXNlZCBpbnN0ZWFkID8KCkluIFNBU0swIG1vZGUgVU1MIGNvbnRyb2xzIHRoZSBndWVzdCBwcm9j
-ZXNzZXMgdXNpbmcgdGhlIHN0dWIgcGFnZXMuCkV2ZXJ5IGd1ZXN0IHByb2Nlc3MgaGFzIHR3byBp
-bnN0YWxsZWQgd2hlcmUgdGhlIFVNTCBrZXJuZWwgY2FuIGluamVjdCBjb21tYW5kcy4KSnVzdCBn
-cmVwIHRoZSBzb3VyY2VzIGZvciBTVFVCX0NPREUgYW5kIFNUVUJfREFUQS4KClRoYW5rcywKLy9y
-aWNoYXJkCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGVhcm4gR3JhcGggRGF0YWJhc2VzIC0gRG93
-bmxvYWQgRlJFRSBPJ1JlaWxseSBCb29rCiJHcmFwaCBEYXRhYmFzZXMiIGlzIHRoZSBkZWZpbml0
-aXZlIG5ldyBndWlkZSB0byBncmFwaCBkYXRhYmFzZXMgYW5kIHRoZWlyIAphcHBsaWNhdGlvbnMu
-IFdyaXR0ZW4gYnkgdGhyZWUgYWNjbGFpbWVkIGxlYWRlcnMgaW4gdGhlIGZpZWxkLCAKdGhpcyBm
-aXJzdCBlZGl0aW9uIGlzIG5vdyBhdmFpbGFibGUuIERvd25sb2FkIHlvdXIgZnJlZSBib29rIHRv
-ZGF5IQpodHRwOi8vcC5zZi5uZXQvc2Z1L05lb1RlY2gKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlz
-dApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlz
-dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+--===============6490524225841689187==
+Content-Type: multipart/alternative; boundary=e89a8ff1ceb8a6ad4304fad6b468
+
+--e89a8ff1ceb8a6ad4304fad6b468
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+Thank you for these informations, it helps me to understand how skas works.
+I read on the skas website that "This also provides a noticable speedup by
+eliminating the signal delivery that used to happen for every UML system
+call." I read that UML processes (in TT mode) in user space were controlled
+with signals (especially to do the transition between the user mode and the
+kernel mode). The presentation of skas suggests that this transition and
+communications between UML and its processes are not executed anymore with
+signals. Do you know what is used instead ?
+
+Best regards,
+
+Fr=C3=A9mal S=C3=A9bastien
+
+--e89a8ff1ceb8a6ad4304fad6b468
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hello,<div><br></div><div>Thank you for these informations=
+, it helps me to understand how skas works. I read on the skas website that=
+ &quot;This also provides a noticable speedup by eliminating the signal del=
+ivery that used to happen for every UML system call.&quot; I read that UML =
+processes (in TT mode) in user space were controlled with signals (especial=
+ly to do the transition between the user mode and the kernel mode). The pre=
+sentation of skas suggests that this transition and communications between =
+UML and its processes are not executed anymore with signals. Do you know wh=
+at is used instead ?</div>
+
+<div><br></div><div>Best regards,</div><div><br></div><div>Fr=C3=A9mal S=C3=
+=A9bastien</div></div>
+
+--e89a8ff1ceb8a6ad4304fad6b468--
+
+
+--===============6490524225841689187==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their 
+applications. Written by three acclaimed leaders in the field, 
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
+--===============6490524225841689187==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============6490524225841689187==--
+
 
