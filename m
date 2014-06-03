@@ -1,21 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1WzXhj-0005Q8-3x
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1Wrt8i-0005H8-Pm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Jun 2014 20:52:35 +0000
-Received: from mout.gmx.net ([212.227.17.21])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1WzXhg-0006uL-Vm
+	Tue, 03 Jun 2014 18:08:48 +0000
+Received: from mout.gmx.net ([212.227.15.18])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Wrt8h-0006qS-Al
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Jun 2014 20:52:34 +0000
-Received: from [192.168.178.21] ([78.54.143.120]) by mail.gmx.com (mrgmx102)
-	with ESMTPSA (Nemesis) id 0MUCTO-1X8n841UnK-00R47Y for
-	<user-mode-linux-devel@lists.sourceforge.net>; Tue, 24 Jun 2014 22:52:26
-	+0200
-Message-ID: <53A9E509.4020103@gmx.de>
-Date: Tue, 24 Jun 2014 22:52:25 +0200
+	Tue, 03 Jun 2014 18:08:48 +0000
+Message-ID: <538E0F27.908@gmx.de>
+Date: Tue, 03 Jun 2014 20:08:39 +0200
 From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
 List-Id: The user-mode Linux development list
@@ -30,25 +26,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] was is the max. memory for a 32 bit UML decreased ?
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] /sys/fs/cgroup/openrc/???/tasks sometimes missing
+To: cgroups@vger.kernel.org
+Cc: gentoo-dev@lists.gentoo.org, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-IIRC in former times I could assign an UML instance 2047M, but nowadays
-even 2044M is too big.
+If I boot a 32 bit stable Gentoo Linux as a user mode linux guest with current kernels (host is a 32 bit stable Gentoo too), then I do observe sometimes during the boot process error messages from the init system of Gentoo (OpenRC) like the following (for subsystem rngd in this example) :
 
-FWIW my host and guest are both 32 bit Gentoo Linux, I do use kernel
-3.15.1 for the host system and latest git tree kernel for the UML guest.
+ * Starting haveged ...                                                                                               [ ok ]
+/lib/rc/sh/rc-cgroup.sh: line 87: /sys/fs/cgroup/openrc/rngd/tasks: No such file or directory
+ * Starting rngd ...                                                                                                  [ ok ]
+
+And indeed, that directory is missing. A restart of the appropriate service however creates those entries. The Gentoo bug entry https://bugs.gentoo.org/show_bug.cgi?id=489386 tells me :
+
+"It's known race in cgroups, I'm going to address this issue on one of the following weekends. The problem is that issue is not reproducible on my systems."
+
+but  that's all since 5 months. Now I'm wondering if this just happens for an UML guest and who knows how to fix it ?
 
 -- 
 Toralf
 
 
 ------------------------------------------------------------------------------
-Open source business process management suite built on Java and Eclipse
-Turn processes into business applications with Bonita BPM Community Edition
-Quickly connect people, data, and systems into organized workflows
-Winner of BOSSIE, CODIE, OW2 and Gartner awards
-http://p.sf.net/sfu/Bonitasoft
+Learn Graph Databases - Download FREE O'Reilly Book
+"Graph Databases" is the definitive new guide to graph databases and their 
+applications. Written by three acclaimed leaders in the field, 
+this first edition is now available. Download your free book today!
+http://p.sf.net/sfu/NeoTech
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
