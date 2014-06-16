@@ -1,104 +1,165 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sebastien.fremal@gmail.com>) id 1WrOC5-0002PY-TN
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Jun 2014 09:06:13 +0000
-Received: from mail-oa0-f47.google.com ([209.85.219.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1WrOC5-0005ly-2X
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 02 Jun 2014 09:06:13 +0000
-Received: by mail-oa0-f47.google.com with SMTP id i7so4343344oag.6
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 02 Jun 2014 02:06:07 -0700 (PDT)
+Return-Path: <enjoymindful@gmail.com>
+Date: Mon, 16 Jun 2014 18:30:36 +0800
+From: Real Name <enjoymindful@gmail.com>
+Message-ID: <20140616103036.GA3999@name>
+References: <1401773445-25256-1-git-send-email-enjoymindful@gmail.com>
+ <539C1964.4050504@nod.at>
+ <20140616032852.GA1763@name>
+ <539E93B9.5070407@nod.at>
+ <20140616081238.GA1840@name>
+ <20140616082855.GB1840@name>
+ <CAMuHMdV9SA0zZz0u=VKWWXNRL186hunrMYuZ=RUcAjqRes8r8A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvw+0L2SSXGzddOgG56g1avyuU4EvUG_peMowe65fh02pQ@mail.gmail.com>
-References: <CAOV6k-BK_oQQ9MwQ1ggp==QPh-vQ=_Kz7j0rVquqAeuoyjr=4w@mail.gmail.com>
-	<CAFLxGvw+0L2SSXGzddOgG56g1avyuU4EvUG_peMowe65fh02pQ@mail.gmail.com>
-From: =?UTF-8?B?U8OpYmFzdGllbiBGcsOpbWFs?= <sebastien.fremal@gmail.com>
-Date: Mon, 2 Jun 2014 11:05:47 +0200
-Message-ID: <CAOV6k-Br0_aa6+3CDZVcqpOwY+YQR7BE8L2kUTSusp8W-3bBKw@mail.gmail.com>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6490524225841689187=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Skas Mode : How does it work ?
-To: Richard Weinberger <richard.weinberger@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
-
---===============6490524225841689187==
-Content-Type: multipart/alternative; boundary=e89a8ff1ceb8a6ad4304fad6b468
-
---e89a8ff1ceb8a6ad4304fad6b468
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-Thank you for these informations, it helps me to understand how skas works.
-I read on the skas website that "This also provides a noticable speedup by
-eliminating the signal delivery that used to happen for every UML system
-call." I read that UML processes (in TT mode) in user space were controlled
-with signals (especially to do the transition between the user mode and the
-kernel mode). The presentation of skas suggests that this transition and
-communications between UML and its processes are not executed anymore with
-signals. Do you know what is used instead ?
-
-Best regards,
-
-Fr=C3=A9mal S=C3=A9bastien
-
---e89a8ff1ceb8a6ad4304fad6b468
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">Hello,<div><br></div><div>Thank you for these informations=
-, it helps me to understand how skas works. I read on the skas website that=
- &quot;This also provides a noticable speedup by eliminating the signal del=
-ivery that used to happen for every UML system call.&quot; I read that UML =
-processes (in TT mode) in user space were controlled with signals (especial=
-ly to do the transition between the user mode and the kernel mode). The pre=
-sentation of skas suggests that this transition and communications between =
-UML and its processes are not executed anymore with signals. Do you know wh=
-at is used instead ?</div>
-
-<div><br></div><div>Best regards,</div><div><br></div><div>Fr=C3=A9mal S=C3=
-=A9bastien</div></div>
-
---e89a8ff1ceb8a6ad4304fad6b468--
+Content-Type: multipart/mixed; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdV9SA0zZz0u=VKWWXNRL186hunrMYuZ=RUcAjqRes8r8A@mail.gmail.com>
+Subject: Re: [PATCH v2] delete unnecessary bootmem struct page array
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 
---===============6490524225841689187==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-------------------------------------------------------------------------------
-Learn Graph Databases - Download FREE O'Reilly Book
-"Graph Databases" is the definitive new guide to graph databases and their 
-applications. Written by three acclaimed leaders in the field, 
-this first edition is now available. Download your free book today!
-http://p.sf.net/sfu/NeoTech
---===============6490524225841689187==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Mon, Jun 16, 2014 at 11:15:23AM +0200, Geert Uytterhoeven wrote:
+> On Mon, Jun 16, 2014 at 10:28 AM, Real Name <enjoymindful@gmail.com> wrote:
+> >> > >> Can you please include in the changelog the commit sha1 which made the old init_maps() obsolete?
 
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+hi,
 
---===============6490524225841689187==--
+The commit sha1 had been included as required. Please review the attached patch. 
+I only update the changlog of the patch.
 
+thanks
+> >
+> > I think we need find out which commit deleted the line "mem_map = map;" in init_maps function.
+> 
+> 
+> v2.6.12-rc1
+> 
+> commit 5678d7fc97ac75f7401ce77897773cc0bb3afee5
+
+Geert, thank you.
+
+> Author: Dave Hansen <haveblue@us.ibm.com>
+> Date:   Sun Mar 13 00:22:56 2005 -0800
+> 
+>     [PATCH] no arch-specific mem_map init
+> 
+
+--envbJBWh7q8WU6mo
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="0001-UML-delete-unnecessary-bootmem-struct-page-array.patch"
+
+From 29e5e83f8f3988ea1396d61b4d5764e7904f82c5 Mon Sep 17 00:00:00 2001
+From: Honggang Li <enjoymindful@gmail.com>
+Date: Mon, 16 Jun 2014 18:05:47 +0800
+Subject: [PATCH] UML delete unnecessary bootmem struct page array
+
+1) uml kernel bootmem managed through bootmem_data->node_bootmem_map,
+not the struct page array, so the array is unnecessary.
+
+2) the bootmem struct page array has been pointed by a *local* pointer,
+struct page *map, in init_maps function. The array can be accessed only
+in init_maps's scope. As a result, uml kernel wastes about 1% of total
+memory.
+
+3) commit 5678d7fc97ac75f7401ce77897773cc0bb3afee5 obsoleted
+the init_maps function.
+
+Signed-off-by: Honggang Li <enjoymindful@gmail.com>
+---
+ arch/um/include/shared/mem_user.h |  2 +-
+ arch/um/kernel/physmem.c          | 32 ++++++--------------------------
+ arch/um/kernel/um_arch.c          |  7 +------
+ 3 files changed, 8 insertions(+), 33 deletions(-)
+
+diff --git a/arch/um/include/shared/mem_user.h b/arch/um/include/shared/mem_user.h
+index 46384ac..cb84414 100644
+--- a/arch/um/include/shared/mem_user.h
++++ b/arch/um/include/shared/mem_user.h
+@@ -49,7 +49,7 @@ extern int iomem_size;
+ extern int init_mem_user(void);
+ extern void setup_memory(void *entry);
+ extern unsigned long find_iomem(char *driver, unsigned long *len_out);
+-extern int init_maps(unsigned long physmem, unsigned long iomem,
++extern void mem_total_pages(unsigned long physmem, unsigned long iomem,
+ 		     unsigned long highmem);
+ extern unsigned long get_vm(unsigned long len);
+ extern void setup_physmem(unsigned long start, unsigned long usable,
+diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+index 30fdd5d..549ecf3 100644
+--- a/arch/um/kernel/physmem.c
++++ b/arch/um/kernel/physmem.c
+@@ -22,39 +22,19 @@ EXPORT_SYMBOL(high_physmem);
+ 
+ extern unsigned long long physmem_size;
+ 
+-int __init init_maps(unsigned long physmem, unsigned long iomem,
++void __init mem_total_pages(unsigned long physmem, unsigned long iomem,
+ 		     unsigned long highmem)
+ {
+-	struct page *p, *map;
+-	unsigned long phys_len, phys_pages, highmem_len, highmem_pages;
+-	unsigned long iomem_len, iomem_pages, total_len, total_pages;
+-	int i;
+-
+-	phys_pages = physmem >> PAGE_SHIFT;
+-	phys_len = phys_pages * sizeof(struct page);
+-
+-	iomem_pages = iomem >> PAGE_SHIFT;
+-	iomem_len = iomem_pages * sizeof(struct page);
++	unsigned long phys_pages, highmem_pages;
++	unsigned long iomem_pages, total_pages;
+ 
++	phys_pages    = physmem >> PAGE_SHIFT;
++	iomem_pages   = iomem   >> PAGE_SHIFT;
+ 	highmem_pages = highmem >> PAGE_SHIFT;
+-	highmem_len = highmem_pages * sizeof(struct page);
+-
+-	total_pages = phys_pages + iomem_pages + highmem_pages;
+-	total_len = phys_len + iomem_len + highmem_len;
+ 
+-	map = alloc_bootmem_low_pages(total_len);
+-	if (map == NULL)
+-		return -ENOMEM;
+-
+-	for (i = 0; i < total_pages; i++) {
+-		p = &map[i];
+-		memset(p, 0, sizeof(struct page));
+-		SetPageReserved(p);
+-		INIT_LIST_HEAD(&p->lru);
+-	}
++	total_pages   = phys_pages + iomem_pages + highmem_pages;
+ 
+ 	max_mapnr = total_pages;
+-	return 0;
+ }
+ 
+ void map_memory(unsigned long virt, unsigned long phys, unsigned long len,
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 6043c76..dbd5bda 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -338,12 +338,7 @@ int __init linux_main(int argc, char **argv)
+ 	start_vm = VMALLOC_START;
+ 
+ 	setup_physmem(uml_physmem, uml_reserved, physmem_size, highmem);
+-	if (init_maps(physmem_size, iomem_size, highmem)) {
+-		printf("Failed to allocate mem_map for %Lu bytes of physical "
+-		       "memory and %Lu bytes of highmem\n", physmem_size,
+-		       highmem);
+-		exit(1);
+-	}
++	mem_total_pages(physmem_size, iomem_size, highmem);
+ 
+ 	virtmem_size = physmem_size;
+ 	stack = (unsigned long) argv;
+-- 
+1.8.3.1
+
+
+--envbJBWh7q8WU6mo--
 
