@@ -1,51 +1,43 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sat, 21 Jun 2014 15:28:52 +0800
+Date: Tue, 17 Jun 2014 21:45:01 +0800
 From: Real Name <enjoymindful@gmail.com>
-Message-ID: <20140621072852.GA6538@name>
+Message-ID: <20140617134501.GA3604@name>
 References: <538F275B.7000508@nod.at>
  <1401941724-6703-1-git-send-email-enjoymindful@gmail.com>
  <1401941724-6703-2-git-send-email-enjoymindful@gmail.com>
  <5390E5FD.5030400@nod.at>
+ <20140609054556.GA2465@name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5390E5FD.5030400@nod.at>
+In-Reply-To: <20140609054556.GA2465@name>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [PATCH] remove csum_partial_copy_generic_i386 to clean up
  exception table
 To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, jdike@addtoit.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Jun 05, 2014 at 11:49:49PM +0200, Richard Weinberger wrote:
-> Am 05.06.2014 06:15, schrieb Honggang Li:
-> > arch/x86/um/checksum_32.S had been copy & paste from x86. When build
-> > x86 uml, csum_partial_copy_generic_i386 mess up the exception table.
-> > In fact, exception table dose not work in uml kernel.
+On Mon, Jun 09, 2014 at 01:45:56PM +0800, Real Name wrote:
+> On Thu, Jun 05, 2014 at 11:49:49PM +0200, Richard Weinberger wrote:
+> > Am 05.06.2014 06:15, schrieb Honggang Li:
+> > > arch/x86/um/checksum_32.S had been copy & paste from x86. When build
+> > > x86 uml, csum_partial_copy_generic_i386 mess up the exception table.
+> > > In fact, exception table dose not work in uml kernel.
+> > 
+> > Are you sure that exception tables do not work on UML?
+> > I said, I'm not sure. Can you please find out?
 > 
-> Are you sure that exception tables do not work on UML?
-> I said, I'm not sure. Can you please find out?
+> I think we can't test the exception table with linux-next uml kernel, because
+> the exception table is broken.
+>
 
-Hi,
- After traced i386 uml kernel with gdb , I'm sure exception tables 
-do *not* work. When csum_partial_copy_generic_i386 read user space memory, 
-an access error exception arises, however, the segv function always
-return zero. So, the fixup nerver executed. The uml system hang (not
-kernel panic).
+This patch is the root source of the broken exception table of UML
+kernel. 
 
-thanks.
+linux]# git bisect visualize 
+commit 706276543b699d80f546e45f8b12574e7b18d952
+Author: H. Peter Anvin <hpa@zytor.com>
+Date:   Fri Apr 20 17:12:48 2012 -0700
 
-> 
-> In arch/um/kernel/trap.c:segv() we have the mechanism for it:
->         else if (!is_user && arch_fixup(ip, regs))
->                 goto out;
-> 
-> The interesting question is, is this by design or was it just copy&pasted from x86
-> many moons ago? :)
-> 
-> > And csum_partial_copy_generic_i386 never been called. So, delete it.
-> 
-> I like such clean ups. :-)
-> 
-> Thanks,
-> //richard
+    x86, extable: Switch to relative exception table entries
