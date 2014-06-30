@@ -1,11 +1,15 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
+Return-Path: <linux-sh-owner@vger.kernel.org>
 From: Andy Lutomirski <luto@amacapital.net>
-Date: Fri, 20 Jun 2014 17:09:48 -0700
-Message-Id: <5a78777a8fc1325e6f0ed7a802231b18250459c1.1403309371.git.luto@amacapital.net>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH] arm64,ia64,ppc,s390,sh,tile,um,x86,mm: Remove default gate area
-To: linux-arch@vger.kernel.org
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Chris Metcalf <cmetcalf@tilera.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-mm@kvack.org, Andy Lutomirski <luto@amacapital.net>
+Date: Mon, 30 Jun 2014 14:53:20 -0700
+Message-Id: <e1656ab2adfd1891f62610abe3e85ad992ee0cbf.1404164803.git.luto@amacapital.net>
+In-Reply-To: <cover.1404164803.git.luto@amacapital.net>
+References: <cover.1404164803.git.luto@amacapital.net>
+In-Reply-To: <cover.1404164803.git.luto@amacapital.net>
+References: <cover.1404164803.git.luto@amacapital.net>
+Sender: linux-sh-owner@vger.kernel.org
+Subject: [PATCH v2 09/10] arm64,ia64,ppc,s390,sh,tile,um,x86,mm: Remove default gate area
+To: x86@kernel.org, hpa@zytor.org
+Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Chris Metcalf <cmetcalf@tilera.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Nathan Lynch <Nathan_Lynch@mentor.com>, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-mm@kvack.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 The core mm code will provide a default gate area based on
@@ -22,6 +26,32 @@ This gets rid of the default and moves the code into ia64.
 This should save some code on architectures without a gate area: it's
 now possible to inline the gate_area functions in the default case.
 
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: linux390@de.ibm.com
+Cc: Chris Metcalf <cmetcalf@tilera.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Nathan Lynch <Nathan_Lynch@mentor.com>
+Cc: x86@kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-mm@kvack.org
 Signed-off-by: Andy Lutomirski <luto@amacapital.net>
 ---
  arch/arm64/include/asm/page.h      |  3 ---
@@ -473,7 +503,7 @@ index d67fd9f..099d234 100644
  		pte_t **ptepp, spinlock_t **ptlp)
  {
 diff --git a/mm/nommu.c b/mm/nommu.c
-index b78e3a8..c4ca56b 100644
+index 4a852f6..a881d96 100644
 --- a/mm/nommu.c
 +++ b/mm/nommu.c
 @@ -1981,11 +1981,6 @@ error:
