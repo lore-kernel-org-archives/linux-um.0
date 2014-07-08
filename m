@@ -1,57 +1,28 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <richard@nod.at>
+Message-ID: <53BBB89F.3090706@nod.at>
+Date: Tue, 08 Jul 2014 11:23:43 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <CALYGNiMjL_GYqqkid4yQsubpnbydVXxTPnKW0GqJcg05x9zbHQ@mail.gmail.com>
-References: <20140705112238.16142.42735.stgit@zurg>
-	<20140707150523.cc671116bf366e8db73209c5@linux-foundation.org>
-	<CALYGNiMjL_GYqqkid4yQsubpnbydVXxTPnKW0GqJcg05x9zbHQ@mail.gmail.com>
-Date: Tue, 8 Jul 2014 14:31:36 +0400
-Message-ID: <CALYGNiOkiBWfT1+SeAkx1qEZKFm2y9G1gXhVEyNC0OrewB2ktA@mail.gmail.com>
-From: Konstantin Khlebnikov <koct9i@gmail.com>
+References: <20140705112238.16142.42735.stgit@zurg>	<20140707150523.cc671116bf366e8db73209c5@linux-foundation.org>	<CALYGNiMjL_GYqqkid4yQsubpnbydVXxTPnKW0GqJcg05x9zbHQ@mail.gmail.com>	<CAFLxGvzxvuizdHyjQ0SjUm8jJcj=w+qS5ut-u76Xo-m2sftvvw@mail.gmail.com>	<CALYGNiOTC8KOxWwRo+f=6JmtUYhJ=1cQNq-Us1BZbW85r4P+ug@mail.gmail.com>	<53BBA9B4.7050609@nod.at>	<CALYGNiNSFoW6Z_1o3JfV-cCeay1QmTptrt4kWHVegkuw+-6A8A@mail.gmail.com>	<53BBACF4.4070800@nod.at>	<CALYGNiND3xk4DGkM_RYApmX7BMkg=cKX2gUpyyOry0ny_DVrkA@mail.gmail.com>	<53BBB0F2.20109@nod.at>	<CALYGNiPakwGquDk9MVGeSrx4RmUOg21=_Zcw097Z5sGTsP=Cwg@mail.gmail.com>	<53BBB4AF.1080507@nod.at>	<CAMuHMdXczkVGAejZ2RnsdXYvTq-8eZAhheR-ygXmXKMmh9VsEA@mail.gmail.com>	<53BBB677.2010401@nod.at> <CAMuHMdVFh8N0Y3bMj8JomkXrYDBu5HkvL_FxU_et9QeShvztMg@mail.gmail.com>
+In-Reply-To: <CAMuHMdVFh8N0Y3bMj8JomkXrYDBu5HkvL_FxU_et9QeShvztMg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH] checkstack: use $UTS_MACHINE as target architecture
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kbuild <linux-kbuild@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [uml-devel] [PATCH] checkstack: use $UTS_MACHINE as target architecture
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Konstantin Khlebnikov <koct9i@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, "x86@kernel.org" <x86@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, UML devel <user-mode-linux-devel@lists.sourceforge.net>, linux-kbuild <linux-kbuild@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Jul 8, 2014 at 9:48 AM, Konstantin Khlebnikov <koct9i@gmail.com> wrote:
-> On Tue, Jul 8, 2014 at 2:05 AM, Andrew Morton <akpm@linux-foundation.org> wrote:
->> On Sat, 05 Jul 2014 15:22:38 +0400 Konstantin Khlebnikov <koct9i@gmail.com> wrote:
+Am 08.07.2014 11:22, schrieb Geert Uytterhoeven:
+> On Tue, Jul 8, 2014 at 11:14 AM, Richard Weinberger <richard@nod.at> wrote:
+>>> And that you don't need root permissions to run it.
 >>
->>> This fixes command # make checkstack for i386/x86_64.
->>> Looks like $UTS_MACHINE is exactly what scripts/checkstack.pl needs.
->>>
->>> By default $UTS_MACHINE is equal to $ARCH, but some arch/${ARCH}/Makefile
->>> overrides it. This patch updates it also in arch/x86/Makefile.um
->>>
->>> broken in ffee0de ("x86: Default to ARCH=x86 to avoid overriding CONFIG_64BIT")
->>
->> The changelog doesn't describe the bug which is being fixed.  It should
->> do so please.  If there are any compiler/make error messages then those
->> should be included.
->>
->
-> Oh, ok. checkstalk.pl needs either i386 or x86_64, x86 isn't enough.
->
-> $ make checkstack
-> objdump -d vmlinux $(find . -name '*.ko') | \
-> perl /home/blind/src/linux-stable/scripts/checkstack.pl x86
-> wrong or unknown architecture "x86"
+>> You can use KVM also without being root.
+>> It depends on the rights of /dev/kvm.
+> 
+> Which are controlled by... root.
 
-I guess it still not descriptive enough.
+Okay, you need to run KVM on machines where root does not like you? ;-)
 
-checkstack.pl searches patterns of machine instructions which are
-usually used for allocating stack frames. commit ffee0de
-("x86: Default to ARCH=x86 to avoid overriding CONFIG_64BIT")
-had merged ARCH=i386 and ARCH=x86_64 into one ARCH=x86.
-checkstalk.pl needs either i386 or x86_64, x86 isn't enough.
+Thanks,
+//richard
 
-$ make checkstack
-objdump -d vmlinux $(find . -name '*.ko') | \
-perl linux/scripts/checkstack.pl x86
-wrong or unknown architecture "x86"
-
-
-
-This also might be fixed in checkstack.pl: i386 and x86_64 differs only
-in name of  sp register: %esp/%rsp.
