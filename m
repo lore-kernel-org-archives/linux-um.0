@@ -1,15 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Fri, 18 Jul 2014 07:13:29 +0800
-From: Real Name <enjoymindful@gmail.com>
-Message-ID: <20140717231329.GB27382@name>
-References: <538F275B.7000508@nod.at>
-	<1401941724-6703-1-git-send-email-enjoymindful@gmail.com>
-	<1401941724-6703-2-git-send-email-enjoymindful@gmail.com>
-	<5390E5FD.5030400@nod.at> <20140621072852.GA6538@name>
-	<20140628040628.GA23770@name>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <luto@amacapital.net>) id 1X8BPj-0001Su-4r
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 Jul 2014 16:53:43 +0000
+Received: from mail-la0-f54.google.com ([209.85.215.54])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1X8BPh-0004x1-Tr
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 18 Jul 2014 16:53:43 +0000
+Received: by mail-la0-f54.google.com with SMTP id el20so3115686lab.27
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 18 Jul 2014 09:53:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20140628040628.GA23770@name>
+In-Reply-To: <53C8F4DF.8020103@nod.at>
+References: <70f331f59e620dc4e66bd3fa095e6f6b744b532b.1405281639.git.luto@amacapital.net>
+	<CALCETrXG6nL4K=Er+kv5-CXBDVa0TLg9yR6iePnMyE2ufXgKkw@mail.gmail.com>
+	<20140718101416.GB1818@arm.com> <53C8F4DF.8020103@nod.at>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Fri, 18 Jul 2014 09:53:14 -0700
+Message-ID: <CALCETrXve-=N5yzqDw2YQee4BmC6sb8GYWYJcV2780V38OuJiQ@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -19,91 +30,148 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5045022969464888258=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] remove csum_partial_copy_generic_i386 to
- clean up exception table
-To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH v3] arm64, ia64, ppc, s390, sh, tile, um, x86,
+ mm: Remove default gate area
+To: Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>
+Cc: "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, Catalin Marinas <Catalin.Marinas@arm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, linux-arch <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, X86 ML <x86@kernel.org>, Ingo Molnar <mingo@redhat.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Fenghua Yu <fenghua.yu@intel.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Will Deacon <will.deacon@arm.com>, Jeff Dike <jdike@addtoit.com>, Chris Metcalf <cmetcalf@tilera.com>, Thomas Gleixner <tglx@linutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Tony Luck <tony.luck@intel.com>, Nathan Lynch <Nathan_Lynch@mentor.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, "linux390@de.ibm.com" <linux390@de.ibm.com>, linuxppc-dev@lists.ozlabs.org
 
-On Sat, Jun 28, 2014 at 12:06:28PM +0800, Real Name wrote:
-> On Sat, Jun 21, 2014 at 03:28:52PM +0800, Real Name wrote:
-> > On Thu, Jun 05, 2014 at 11:49:49PM +0200, Richard Weinberger wrote:
-> > > Am 05.06.2014 06:15, schrieb Honggang Li:
-> > > > arch/x86/um/checksum_32.S had been copy & paste from x86. When build
-> > > > x86 uml, csum_partial_copy_generic_i386 mess up the exception table.
-> > > > In fact, exception table dose not work in uml kernel.
-> > > 
-> > > Are you sure that exception tables do not work on UML?
-> > > I said, I'm not sure. Can you please find out?
-> > 
-> > Hi,
-> >  After traced i386 uml kernel with gdb , I'm sure exception tables 
-> > do *not* work. When csum_partial_copy_generic_i386 read user space memory, 
-> > an access error exception arises, however, the segv function always
-> > return zero. So, the fixup nerver executed. The uml system hang (not
-> > kernel panic).
-> 
-> The kernel hang because the SEGV signal handler can't modify the EIP
-> register in signal context. 
-> 
-> Here is the summary why exception table dose not works for linux (>3.3):
-> 1) broken exception table (706276543b699d80f546e45f8b12574e7b18d952)
-> 2) arch_fixup modify the local copy of regs. 	
+--===============5045022969464888258==
+Content-Type: multipart/alternative; boundary=001a11c3f90a12d5e104fe7a9985
 
-hi, Richard
-ping? are you agree with what i said?
+--001a11c3f90a12d5e104fe7a9985
+Content-Type: text/plain; charset=UTF-8
 
-> > 
-> > thanks.
-> > 
-> > > 
-> > > In arch/um/kernel/trap.c:segv() we have the mechanism for it:
-> > >         else if (!is_user && arch_fixup(ip, regs))
-> > >                 goto out;
-> 0) access invalid memory address in kernel (no mm for the address. it is
-> easy to force invalid memory acess in kernel. I cast 0x1234 as a void
-> pointer, and pass it to csum_partial_copy_generic_i386)
-> 1) SEGV signal arise
-> 1.1) hard_handler (arch/um/os-Linux/signal.c)
-> The third argument of hard_handler point to signal context.
-> 1.2) call sig_handler 
-> 1.3) call sig_handler_common (dump the registers in signal context into
-> 	local var struct uml_pt_regs r.). line 36 is the key point why
-> exception table dose not works in UML.
-> 
-> 34         if (sig == SIGSEGV) {
-> 35                 /* For segfaults, we want the data from the	sigcontext. */
-> 36                 get_regs_from_mc(&r, mc);
-> 37                 GET_FAULTINFO_FROM_MC(r.faultinfo, mc);
-> 38         
-> 
-> 1.4) call segv_handler (arch/um/kernel/trap.c)
-> 1.5) call segv
-> 1.6) call arch_fixup (arch/x86/um/fault.c)
-> 1.7) arch_fixup (UPT_IP(regs) = fixup->fixup;) set the EIP register of
-> local copy uml_pt_regs
-> 1.8) When function return to sig_handler, the EIP change lost
-> 1.9) When hard_handler signal handler return, it restore the EIP with
-> the address arise the SEGV in step 0. The fixup section never be
-> executed. If exception table works, UML kernel should run fixup code in
-> here.
-> 
-> Then repeate step 0 to 1.9, kernel hang on.
-> 
-> thanks
-> 
-> > > 
-> > > The interesting question is, is this by design or was it just copy&pasted from x86
-> > > many moons ago? :)
-> > > 
-> > > > And csum_partial_copy_generic_i386 never been called. So, delete it.
-> > > 
-> > > I like such clean ups. :-)
-> > > 
-> > > Thanks,
-> > > //richard
+On Jul 18, 2014 3:20 AM, "Richard Weinberger" <richard@nod.at> wrote:
+>
+> Am 18.07.2014 12:14, schrieb Will Deacon:
+> > On Tue, Jul 15, 2014 at 03:47:26PM +0100, Andy Lutomirski wrote:
+> >> On Sun, Jul 13, 2014 at 1:01 PM, Andy Lutomirski <luto@amacapital.net>
+wrote:
+> >>> The core mm code will provide a default gate area based on
+> >>> FIXADDR_USER_START and FIXADDR_USER_END if
+> >>> !defined(__HAVE_ARCH_GATE_AREA) && defined(AT_SYSINFO_EHDR).
+> >>>
+> >>> This default is only useful for ia64.  arm64, ppc, s390, sh, tile,
+> >>> 64-bit UML, and x86_32 have their own code just to disable it.  arm,
+> >>> 32-bit UML, and x86_64 have gate areas, but they have their own
+> >>> implementations.
+> >>>
+> >>> This gets rid of the default and moves the code into ia64.
+> >>>
+> >>> This should save some code on architectures without a gate area: it's
+> >>> now possible to inline the gate_area functions in the default case.
+> >>
+> >> Can one of you pull this somewhere?  Otherwise I can put it somewhere
+> >> stable and ask for -next inclusion, but that seems like overkill for a
+> >> single patch.
+>
+> For the um bits:
+> Acked-by: Richard Weinberger <richard@nod.at>
+>
+> > I'd be happy to take the arm64 part, but it doesn't feel right for mm/*
+> > changes (or changes to other archs) to go via our tree.
+> >
+> > I'm not sure what the best approach is if you want to send this via a
+single
+> > tree. Maybe you could ask akpm nicely?
+>
+> Going though Andrew's tree sounds sane to me.
+
+Splitting this will be annoying: I'd probably have to add a flag asking for
+the new behavior, update all the arches, then remove the flag.  The chance
+of screwing up bisectability in the process seems pretty high.  This seems
+like overkill for a patch that mostly deletes code.
+
+Akpm, can you take this?
+
+--Andy
+
+>
+> Thanks,
+> //richard
+
+--001a11c3f90a12d5e104fe7a9985
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><p dir=3D"ltr"><br>
+On Jul 18, 2014 3:20 AM, &quot;Richard Weinberger&quot; &lt;<a href=3D"mail=
+to:richard@nod.at" target=3D"_blank">richard@nod.at</a>&gt; wrote:<br>
+&gt;<br>
+&gt; Am 18.07.2014 12:14, schrieb Will Deacon:<br>
+&gt; &gt; On Tue, Jul 15, 2014 at 03:47:26PM +0100, Andy Lutomirski wrote:<=
+br>
+&gt; &gt;&gt; On Sun, Jul 13, 2014 at 1:01 PM, Andy Lutomirski &lt;<a href=
+=3D"mailto:luto@amacapital.net" target=3D"_blank">luto@amacapital.net</a>&g=
+t; wrote:<br>
+&gt; &gt;&gt;&gt; The core mm code will provide a default gate area based o=
+n<br>
+&gt; &gt;&gt;&gt; FIXADDR_USER_START and FIXADDR_USER_END if<br>
+&gt; &gt;&gt;&gt; !defined(__HAVE_ARCH_GATE_AREA) &amp;&amp; defined(AT_SYS=
+INFO_EHDR).<br>
+&gt; &gt;&gt;&gt;<br>
+&gt; &gt;&gt;&gt; This default is only useful for ia64. =C2=A0arm64, ppc, s=
+390, sh, tile,<br>
+&gt; &gt;&gt;&gt; 64-bit UML, and x86_32 have their own code just to disabl=
+e it. =C2=A0arm,<br>
+&gt; &gt;&gt;&gt; 32-bit UML, and x86_64 have gate areas, but they have the=
+ir own<br>
+&gt; &gt;&gt;&gt; implementations.<br>
+&gt; &gt;&gt;&gt;<br>
+&gt; &gt;&gt;&gt; This gets rid of the default and moves the code into ia64=
+.<br>
+&gt; &gt;&gt;&gt;<br>
+&gt; &gt;&gt;&gt; This should save some code on architectures without a gat=
+e area: it&#39;s<br>
+&gt; &gt;&gt;&gt; now possible to inline the gate_area functions in the def=
+ault case.<br>
+&gt; &gt;&gt;<br>
+&gt; &gt;&gt; Can one of you pull this somewhere? =C2=A0Otherwise I can put=
+ it somewhere<br>
+&gt; &gt;&gt; stable and ask for -next inclusion, but that seems like overk=
+ill for a<br>
+&gt; &gt;&gt; single patch.<br>
+&gt;<br>
+&gt; For the um bits:<br>
+&gt; Acked-by: Richard Weinberger &lt;<a href=3D"mailto:richard@nod.at" tar=
+get=3D"_blank">richard@nod.at</a>&gt;<br>
+&gt;<br>
+&gt; &gt; I&#39;d be happy to take the arm64 part, but it doesn&#39;t feel =
+right for mm/*<br>
+&gt; &gt; changes (or changes to other archs) to go via our tree.<br>
+&gt; &gt;<br>
+&gt; &gt; I&#39;m not sure what the best approach is if you want to send th=
+is via a single<br>
+&gt; &gt; tree. Maybe you could ask akpm nicely?<br>
+&gt;<br>
+&gt; Going though Andrew&#39;s tree sounds sane to me.</p>
+<p dir=3D"ltr">Splitting this will be annoying: I&#39;d probably have to ad=
+d a flag asking for the new behavior, update all the arches, then remove th=
+e flag.=C2=A0 The chance of screwing up bisectability in the process seems =
+pretty high.=C2=A0 This seems like overkill for a patch that mostly deletes=
+ code.</p>
+
+
+
+
+<p dir=3D"ltr">Akpm, can you take this?</p>
+<p dir=3D"ltr">--Andy</p>
+<p dir=3D"ltr">&gt;<br>
+&gt; Thanks,<br>
+&gt; //richard<br>
+</p>
+</div>
+
+--001a11c3f90a12d5e104fe7a9985--
+
+
+--===============5045022969464888258==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Want fast and easy access to all the code in your enterprise? Index and
@@ -111,8 +179,17 @@ search up to 200,000 lines of code with a free copy of Black Duck
 Code Sight - the same software that powers the world's largest code
 search on Ohloh, the Black Duck Open Hub! Try it now.
 http://p.sf.net/sfu/bds
+--===============5045022969464888258==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============5045022969464888258==--
+
 
