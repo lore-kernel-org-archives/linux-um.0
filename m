@@ -1,131 +1,49 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1X60ua-0008Gw-69
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Jul 2014 17:16:36 +0000
-Received: from mout.gmx.net ([212.227.15.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1X60uY-0002N6-AK
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 12 Jul 2014 17:16:36 +0000
-Message-ID: <53C16D6A.5070102@gmx.de>
-Date: Sat, 12 Jul 2014 19:16:26 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Sat, 19 Jul 2014 17:01:57 +0530
+From: Himangi Saraogi <himangi774@gmail.com>
+Message-ID: <20140719113157.GA23517@himangi-Dell>
 MIME-Version: 1.0
-References: <53613E96.2030006@gmx.de>
-	<CAFLxGvyyMMSajwOtS1O6R-_XnJv7dc_61k3Hx9JJB7nmVLNWng@mail.gmail.com>
-	<536221F4.6000405@gmx.de> <53623EFE.3040603@nod.at>
-	<5362651A.1020504@gmx.de> <5362B53E.5060601@nod.at>
-	<5362BDD1.9070105@gmx.de> <53634D64.5060407@nod.at>
-	<5363A6BF.4060001@gmx.de> <5363A82C.9060107@nod.at>
-In-Reply-To: <5363A82C.9060107@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] trinity commit 23dc478aba breaks syscall "mremap"
- at a 32 bit user mode linux
-To: Richard Weinberger <richard@nod.at>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH] UML: Eliminate NULL test after alloc_bootmem_low_pages
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: Julia Lawall <julia.lawall@lip6.fr>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-T24gMDUvMDIvMjAxNCAwNDoxNCBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIDAy
-LjA1LjIwMTQgMTY6MDcsIHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVyOgo+PiBPbiAwNS8wMi8yMDE0
-IDA5OjQ2IEFNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+PiBBbSAwMS4wNS4yMDE0IDIz
-OjM0LCBzY2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPj4+PiBPbiAwNS8wMS8yMDE0IDEwOjU3IFBN
-LCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+Pj4+IFRvcmFsZiwKPj4+Pj4KPj4+Pj4gWWVh
-aCwgdGhpcyBpcyBiZWNhdXNlIHRyaW5pdHkgZGVzdHJveXMgdGhlIFVNTCBzdHViIGNvZGUuCj4+
-Pj4+IFBsZWFzZSB0ZXN0IHRoZSBhdHRhY2hlZCBwYXRjaCwgaXQgc2hvdWxkIGZpeCB0aGUgcm9v
-dCBjYXVzZSBvZiB0aGUgcHJvYmxlbS4KPj4+Pj4KPj4+Pj4gVGhhbmtzLAo+Pj4+PiAvL3JpY2hh
-cmQKPj4+Pj4KPj4+Pgo+Pj4+IElmIEkgZG8ganVzdCBhcHBseSBmaXgyLnBhdGNoIG9udG8gbGF0
-ZXN0IGdpdCB0cmVlICB2My4xNS1yYzMtMTEzLWdiYTY3MjhmIHRoZW4gSSBkbyBnZXQgYWZ0ZXIg
-YSB3aGlsZSA6Cj4+Pj4KPj4+PiAgKiBTdGFydGluZyBzc2hkIC4uLiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgWyBvayBdCj4+Pj4gICogU3RhcnRpbmcgbG9jYWwKPj4+
-PiBuZXQuY29yZS53YXJuaW5ncyA9IDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgWyBvayBdCj4+Pj4gS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IGRvX3N5c2NhbGxf
-c3R1YiA6IFBUUkFDRV9TRVRSRUdTIGZhaWxlZCwgZXJybm8gPSAzCj4+Pj4KPj4+PiBDUFU6IDAg
-UElEOiAxNzI4IENvbW06IHRyaW5pdHktYzAgTm90IHRhaW50ZWQgMy4xNS4wLXJjMy0wMDExMy1n
-YmE2NzI4Zi1kaXJ0eSAjNQo+Pj4+IFN0YWNrOgo+Pj4+IEJVRzogc29mdCBsb2NrdXAgLSBDUFUj
-MCBzdHVjayBmb3IgMjJzISBbdHJpbml0eS1jMDoxNzI4XQo+Pj4+Cj4+Pj4gRUlQOiBjNTAwOls8
-NDdjNmNmMDA+XSBDUFU6IDAgTm90IHRhaW50ZWQgRUZMQUdTOiA0NzZhZjcwMAo+Pj4+ICAgICBO
-b3QgdGFpbnRlZAo+Pj4+IEVBWDogNDdjZmM1MDAgRUJYOiAwYTAyNGQwMCBFQ1g6IDA4NmM3NWZj
-IEVEWDogMDgwZmZmODgKPj4+PiBFU0k6IDA4MzlmNGJjIEVESTogNDdjZmM1MDAgRUJQOiAwODM5
-ZjRiYyBEUzogYzUwMCBFUzogY2Q2Mgo+Pj4+IEVYVDQtZnMgKHViZGEpOiBlcnJvciBjb3VudDog
-MQo+Pj4+IEVYVDQtZnMgKHViZGEpOiBpbml0aWFsIGVycm9yIGF0IDEzOTg5NjIxMzQ6IGV4dDRf
-bWJfZ2VuZXJhdGVfYnVkZHk6NzU2Cj4+Pj4gRVhUNC1mcyAodWJkYSk6IGxhc3QgZXJyb3IgYXQg
-MTM5ODk2MjEzNDogZXh0NF9tYl9nZW5lcmF0ZV9idWRkeTo3NTYKPj4+Pgo+Pj4+Cj4+Pj4gd2hp
-Y2ggaXMgYSBiaWcgaW1wcm92ZW1lbnQgYmVjYXVzZSBiZWZvcmUgaXQgY3Jhc2hlcyBpbW1lZGlh
-dGVseSBhZnRlciBmZXcgc2Vjb25kcy4KPj4+Pgo+Pj4+IEFmdGVyIGFwcGx5aW5nIGJvdGggZml4
-ZXMgdGhlIHRlc3QgY2FzZSBydW5zIHcvbyBhIGNyYXNoIHRpbGwgbm93Lgo+Pj4KPj4+IENhbiB5
-b3UgcGxlYXNlIGFsc28gdHJ5IGZpeDMgKHdpdGhvdXQgZml4MS8yKT8KPj4+IEkgdGhpbmsgSSd2
-ZSBmb3VuZCB0aGUgb3RoZXIgaGlkZGVuIGlzc3VlLgo+Pj4gU28gZmFyIHRyaW5pdHkgZGlkIG5v
-dCBjcmFzaCBteSBrZXJuZWwuLi4KPj4+Cj4+PiBUaGFua3MsCj4+PiAvL3JpY2hhcmQKPj4+Cj4+
-Cj4+IGZpeDMgbWFkZSBpdCAtIHRpbGwgbm93IGl0IHJ1bnMgZmluZS4KPj4gT2YgY291cnNlIHRo
-ZSBzeXNsb2cgb2YgdGhlIFVNTCBndWVzdCBpcyBmbG9vZGVkIHdpdGggbWVzc2FnZXMgbGlrZSA6
-Cj4+Cj4+IE1heSAgMiAxNTo0NTo1OSB0cmluaXR5IGtlcm5lbDogQlVHOiBCYWQgcnNzLWNvdW50
-ZXIgc3RhdGUgbW06NDdkNGQ4YzAgaWR4OjAgdmFsOjIKPj4gTWF5ICAyIDE1OjQ2OjAwIHRyaW5p
-dHkga2VybmVsOiBmaXhfcmFuZ2VfY29tbW9uOiBmYWlsZWQsIGtpbGxpbmcgY3VycmVudCBwcm9j
-ZXNzOiAyOTgzCj4+IE1heSAgMiAxNTo0NjowMCB0cmluaXR5IGtlcm5lbDogZml4X3JhbmdlX2Nv
-bW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJlbnQgcHJvY2VzczogMjk4NAo+PiBNYXkgIDIgMTU6
-NDY6MzAgdHJpbml0eSBrZXJuZWw6IGZpeF9yYW5nZV9jb21tb246IGZhaWxlZCwga2lsbGluZyBj
-dXJyZW50IHByb2Nlc3M6IDI5ODYKPj4gTWF5ICAyIDE1OjQ2OjMwIHRyaW5pdHkga2VybmVsOiBm
-aXhfcmFuZ2VfY29tbW9uOiBmYWlsZWQsIGtpbGxpbmcgY3VycmVudCBwcm9jZXNzOiAyOTg5Cj4+
-IE1heSAgMiAxNTo0NjozMCB0cmluaXR5IGtlcm5lbDogZml4X3JhbmdlX2NvbW1vbjogZmFpbGVk
-LCBraWxsaW5nIGN1cnJlbnQgcHJvY2VzczogMjk5MQo+PiBNYXkgIDIgMTU6NDY6MzIgdHJpbml0
-eSBrZXJuZWw6IFN0dWIgcmVnaXN0ZXJzIC0KPj4gTWF5ICAyIDE1OjQ2OjMyIHRyaW5pdHkga2Vy
-bmVsOiAgICAgICAgIDAgLSAxMDAwMDAKPj4gTWF5ICAyIDE1OjQ2OjMyIHRyaW5pdHkga2VybmVs
-OiAgICAgICAgIDEgLSAxMDAwCj4+IE1heSAgMiAxNTo0NjozMiB0cmluaXR5IGtlcm5lbDogICAg
-ICAgICAyIC0gNwo+PiBNYXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6ICAgICAgICAgMyAt
-IDExCj4+IE1heSAgMiAxNTo0NjozMiB0cmluaXR5IGtlcm5lbDogICAgICAgICA0IC0gMwo+PiBN
-YXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6ICAgICAgICAgNSAtIDNjYmFlCj4+IE1heSAg
-MiAxNTo0NjozMiB0cmluaXR5IGtlcm5lbDogICAgICAgICA2IC0gMTAwMDAwCj4+IE1heSAgMiAx
-NTo0NjozMiB0cmluaXR5IGtlcm5lbDogICAgICAgICA3IC0gN2IKPj4gTWF5ICAyIDE1OjQ2OjMy
-IHRyaW5pdHkga2VybmVsOiAgICAgICAgIDggLSA3Ygo+PiBNYXkgIDIgMTU6NDY6MzIgdHJpbml0
-eSBrZXJuZWw6ICAgICAgICAgOSAtIDAKPj4gTWF5ICAyIDE1OjQ2OjMyIHRyaW5pdHkga2VybmVs
-OiAgICAgICAgIDEwIC0gMzMKPj4gTWF5ICAyIDE1OjQ2OjMyIHRyaW5pdHkga2VybmVsOiAgICAg
-ICAgIDExIC0gZmZmZmZmZmYKPj4gTWF5ICAyIDE1OjQ2OjMyIHRyaW5pdHkga2VybmVsOiAgICAg
-ICAgIDEyIC0gMTAwZmZmCj4+IE1heSAgMiAxNTo0NjozMiB0cmluaXR5IGtlcm5lbDogICAgICAg
-ICAxMyAtIDczCj4+IE1heSAgMiAxNTo0NjozMiB0cmluaXR5IGtlcm5lbDogICAgICAgICAxNCAt
-IDEwMjA2Cj4+IE1heSAgMiAxNTo0NjozMiB0cmluaXR5IGtlcm5lbDogICAgICAgICAxNSAtIDEw
-MTAyOAo+PiBNYXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6ICAgICAgICAgMTYgLSA3Ygo+
-PiBNYXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6IHdhaXRfc3R1Yl9kb25lIDogZmFpbGVk
-IHRvIHdhaXQgZm9yIFNJR1RSQVAsIHBpZCA9IDQ4MywgbiA9IDQ4MywgZXJybm8gPSAwLCBzdGF0
-dXMgPSAweGI3Zgo+PiBNYXkgIDIgMTU6NDY6MzIgdHJpbml0eSBrZXJuZWw6IEJVRzogQmFkIHJz
-cy1jb3VudGVyIHN0YXRlIG1tOjQ3ZDRkOGMwIGlkeDowIHZhbDoxCj4+IE1heSAgMiAxNTo0Njoz
-MiB0cmluaXR5IGtlcm5lbDogZml4X3JhbmdlX2NvbW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJl
-bnQgcHJvY2VzczogMzAwMAo+PiBNYXkgIDIgMTU6NDY6MzMgdHJpbml0eSBrZXJuZWw6IGZpeF9y
-YW5nZV9jb21tb246IGZhaWxlZCwga2lsbGluZyBjdXJyZW50IHByb2Nlc3M6IDMwMDIKPj4gTWF5
-ICAyIDE1OjQ2OjMzIHRyaW5pdHkga2VybmVsOiBmaXhfcmFuZ2VfY29tbW9uOiBmYWlsZWQsIGtp
-bGxpbmcgY3VycmVudCBwcm9jZXNzOiAzMDA0Cj4+IE1heSAgMiAxNTo0NjozMyB0cmluaXR5IGtl
-cm5lbDogZml4X3JhbmdlX2NvbW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJlbnQgcHJvY2Vzczog
-MzAwNgo+PiBNYXkgIDIgMTU6NDY6MzQgdHJpbml0eSBrZXJuZWw6IGZpeF9yYW5nZV9jb21tb246
-IGZhaWxlZCwga2lsbGluZyBjdXJyZW50IHByb2Nlc3M6IDMwMDkKPj4gTWF5ICAyIDE1OjQ2OjM0
-IHRyaW5pdHkga2VybmVsOiBmaXhfcmFuZ2VfY29tbW9uOiBmYWlsZWQsIGtpbGxpbmcgY3VycmVu
-dCBwcm9jZXNzOiAzMDEwCj4+IE1heSAgMiAxNTo0NjozNCB0cmluaXR5IGtlcm5lbDogZml4X3Jh
-bmdlX2NvbW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJlbnQgcHJvY2VzczogMzAxMgo+PiBNYXkg
-IDIgMTU6NDY6MzUgdHJpbml0eSBrZXJuZWw6IEJVRzogQmFkIHJzcy1jb3VudGVyIHN0YXRlIG1t
-OjQ3ZDRkOGMwIGlkeDowIHZhbDoyCj4+IE1heSAgMiAxNTo0NjozNSB0cmluaXR5IGtlcm5lbDog
-Zml4X3JhbmdlX2NvbW1vbjogZmFpbGVkLCBraWxsaW5nIGN1cnJlbnQgcHJvY2VzczogMzAxNQo+
-Pgo+Pgo+Pgo+PiB3aGljaCBpcyBleHBlY3RlZCAocmlnaHQgPykgYi9jIEkgaGFtbWVyZWQgdGhl
-IFVNTCB3aXRoIHRoZSBzeXNjYWxsICJtcmVtYXAiIGJ5IDIgdHJpbml0eSBjaGlsZHMgZm9yIGEg
-d2hpbGUuCj4gCj4gWWVhaC4gTWF5YmUgSSBmaW5kIGEgd2F5IHRvIHByZXZlbnQgIkJVRzogQmFk
-IHJzcy1jb3VudGVyIHN0YXRlIG1tOjQ3ZDRkOGMwIGlkeDowIHZhbDoxIiB0b28uCj4gCj4gVGhh
-bmtzIGZvciB0ZXN0aW5nIQo+IC8vcmljaGFyZAo+IAovbWUgd29uZGVycywgaWYgZml4MyB3aWxs
-IG1ha2UgaXQgaW4gbWFpbmxpbmUgPwoKCi0tIApUb3JhbGYKCgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1t
-b2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+alloc_bootmem and related functions never return NULL. Thus a NULL
+test after calls to these functions is unnecessary.
+
+The following Coccinelle semantic patch was used for making the change:
+
+@@
+expression E;
+statement S;
+@@
+
+E = \(alloc_bootmem\|alloc_bootmem_low\|alloc_bootmem_pages\|alloc_bootmem_low_pages\)(...)
+... when != E
+- if (E == NULL) S
+
+Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+Acked-by: Julia Lawall <julia.lawall@lip6.fr>
+---
+ arch/um/kernel/physmem.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+index 30fdd5d..fb041cf 100644
+--- a/arch/um/kernel/physmem.c
++++ b/arch/um/kernel/physmem.c
+@@ -43,8 +43,6 @@ int __init init_maps(unsigned long physmem, unsigned long iomem,
+ 	total_len = phys_len + iomem_len + highmem_len;
+ 
+ 	map = alloc_bootmem_low_pages(total_len);
+-	if (map == NULL)
+-		return -ENOMEM;
+ 
+ 	for (i = 0; i < total_pages; i++) {
+ 		p = &map[i];
+-- 
+1.9.1
 
