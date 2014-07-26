@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1XB9P4-0008QT-8C
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1XB8Fv-0001im-Oy
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Jul 2014 21:21:18 +0000
-Received: from mout.gmx.net ([212.227.15.19])
+	Sat, 26 Jul 2014 20:07:47 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XB9P3-0002dW-2I
+	(Exim 4.76) id 1XB8Fu-0000Z3-28
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Jul 2014 21:21:18 +0000
-Message-ID: <53D41BC5.1090500@gmx.de>
-Date: Sat, 26 Jul 2014 23:21:09 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Sat, 26 Jul 2014 20:07:47 +0000
+Message-ID: <53D40A88.7030902@nod.at>
+Date: Sat, 26 Jul 2014 22:07:36 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 References: <53613E96.2030006@gmx.de>
 	<CAFLxGvyyMMSajwOtS1O6R-_XnJv7dc_61k3Hx9JJB7nmVLNWng@mail.gmail.com>
 	<536221F4.6000405@gmx.de> <53623EFE.3040603@nod.at>
-	<53D40919.8040803@gmx.de> <53D40A88.7030902@nod.at>
-In-Reply-To: <53D40A88.7030902@nod.at>
+	<53D40919.8040803@gmx.de>
+In-Reply-To: <53D40919.8040803@gmx.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,32 +33,28 @@ Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] trinity commit 23dc478aba breaks syscall "mremap"
  at a 32 bit user mode linux
-To: Richard Weinberger <richard@nod.at>
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gMDcvMjYvMjAxNCAxMDowNyBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIDI2
-LjA3LjIwMTQgMjI6MDEsIHNjaHJpZWIgVG9yYWxmIEbDtnJzdGVyOgo+PiBPbiAwNS8wMS8yMDE0
-IDAyOjMzIFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+PiBCVFc6IElmIHlvdSBoaXQg
-IkJVRzogZmFpbHVyZSBhdCBtbS9maWxlbWFwLmM6MjAyL19fZGVsZXRlX2Zyb21fcGFnZV9jYWNo
-ZSgpISIsCj4+PiB0aGlzIGlzIGEga25vd24gaXNzdWUgaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIw
-MTQvNC8xNS81NzcKPj4KPj4gU2luY2UgSSBkbyBleGNsdWRlIHRoZSAibWFkdmlzZSIgc3lzY2Fs
-bCBmcm9tIGZ1enogdGVzdGluZyBJIGRvIG5vIGxvbmdlciBydW4gaW50byB0aGlzIGlzc3VlCj4+
-IChhdCBsZWFzdCB3aXRoIHJlY2VudCBnaXQgdHJlZSkuCj4+Cj4+IEJ1dCB0aGVyZSdzIHN0aWxs
-IHRoaXMgdW5zb2x2ZWQgaXNzdWUgaW4gdGhlIGtlcm5lbCwgb3IgPwo+IAo+IEFGQUlLIHRoZSBy
-ZXNvbHV0aW9uIGlzIG5lYXIuCj4gUGxlYXNlIHNlZSB0aHJlYWQgIlBST0JMRU06IHJlcGVhdGVk
-IHJlbWFwX2ZpbGVfcGFnZXMgb24gdG1wZnMgdHJpZ2dlcnMgYnVnIG9uIHByb2Nlc3MgZXhpdCIu
-Cj4gSWYgeW91IHN0aWxsIGZhY2UgdGhlIGlzc3VlIGl0IG1heSBVTUwgc3BlY2lmaWMuCj4gCj4g
-VGhhbmtzLAo+IC8vcmljaGFyZAo+IAp5ZXAsIGMxMTg2NzhiYzcgc2VlbXMgdG8gc29sdmUgaXQg
-LSBnb29kIG5ld3MsIG5vdyBJIGNhbiBjb250aW51ZSB3aXRoIGEgbW9yZSB1bmxpbWl0ZWQgZnV6
-eiB0ZXN0aW5nIC4uLgp0aHgKCi0tIApUb3JhbGYKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KV2Fu
-dCBmYXN0IGFuZCBlYXN5IGFjY2VzcyB0byBhbGwgdGhlIGNvZGUgaW4geW91ciBlbnRlcnByaXNl
-PyBJbmRleCBhbmQKc2VhcmNoIHVwIHRvIDIwMCwwMDAgbGluZXMgb2YgY29kZSB3aXRoIGEgZnJl
-ZSBjb3B5IG9mIEJsYWNrIER1Y2sKQ29kZSBTaWdodCAtIHRoZSBzYW1lIHNvZnR3YXJlIHRoYXQg
-cG93ZXJzIHRoZSB3b3JsZCdzIGxhcmdlc3QgY29kZQpzZWFyY2ggb24gT2hsb2gsIHRoZSBCbGFj
-ayBEdWNrIE9wZW4gSHViISBUcnkgaXQgbm93LgpodHRwOi8vcC5zZi5uZXQvc2Z1L2JkcwpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGlu
-dXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNl
-ci1tb2RlLWxpbnV4LWRldmVsCg==
+QW0gMjYuMDcuMjAxNCAyMjowMSwgc2NocmllYiBUb3JhbGYgRsO2cnN0ZXI6Cj4gT24gMDUvMDEv
+MjAxNCAwMjozMyBQTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+PiBCVFc6IElmIHlvdSBo
+aXQgIkJVRzogZmFpbHVyZSBhdCBtbS9maWxlbWFwLmM6MjAyL19fZGVsZXRlX2Zyb21fcGFnZV9j
+YWNoZSgpISIsCj4+IHRoaXMgaXMgYSBrbm93biBpc3N1ZSBodHRwczovL2xrbWwub3JnL2xrbWwv
+MjAxNC80LzE1LzU3Nwo+IAo+IFNpbmNlIEkgZG8gZXhjbHVkZSB0aGUgIm1hZHZpc2UiIHN5c2Nh
+bGwgZnJvbSBmdXp6IHRlc3RpbmcgSSBkbyBubyBsb25nZXIgcnVuIGludG8gdGhpcyBpc3N1ZQo+
+IChhdCBsZWFzdCB3aXRoIHJlY2VudCBnaXQgdHJlZSkuCj4gCj4gQnV0IHRoZXJlJ3Mgc3RpbGwg
+dGhpcyB1bnNvbHZlZCBpc3N1ZSBpbiB0aGUga2VybmVsLCBvciA/CgpBRkFJSyB0aGUgcmVzb2x1
+dGlvbiBpcyBuZWFyLgpQbGVhc2Ugc2VlIHRocmVhZCAiUFJPQkxFTTogcmVwZWF0ZWQgcmVtYXBf
+ZmlsZV9wYWdlcyBvbiB0bXBmcyB0cmlnZ2VycyBidWcgb24gcHJvY2VzcyBleGl0Ii4KSWYgeW91
+IHN0aWxsIGZhY2UgdGhlIGlzc3VlIGl0IG1heSBVTUwgc3BlY2lmaWMuCgpUaGFua3MsCi8vcmlj
+aGFyZAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCldhbnQgZmFzdCBhbmQgZWFzeSBhY2Nlc3MgdG8g
+YWxsIHRoZSBjb2RlIGluIHlvdXIgZW50ZXJwcmlzZT8gSW5kZXggYW5kCnNlYXJjaCB1cCB0byAy
+MDAsMDAwIGxpbmVzIG9mIGNvZGUgd2l0aCBhIGZyZWUgY29weSBvZiBCbGFjayBEdWNrCkNvZGUg
+U2lnaHQgLSB0aGUgc2FtZSBzb2Z0d2FyZSB0aGF0IHBvd2VycyB0aGUgd29ybGQncyBsYXJnZXN0
+IGNvZGUKc2VhcmNoIG9uIE9obG9oLCB0aGUgQmxhY2sgRHVjayBPcGVuIEh1YiEgVHJ5IGl0IG5v
+dy4KaHR0cDovL3Auc2YubmV0L3NmdS9iZHMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2Vy
+LW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291
+cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
