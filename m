@@ -1,20 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XNGww-0006lS-N5
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1XDInV-0002CP-5I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Aug 2014 07:50:22 +0000
-Received: from ivanoab3.miniserver.com ([89.200.143.206])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XNGwt-0006l3-7u
+	Fri, 01 Aug 2014 19:47:25 +0000
+Received: from mout.gmx.net ([212.227.17.21])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XDInT-0001g9-NM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Aug 2014 07:50:22 +0000
-From: anton.ivanov@kot-begemot.co.uk
-Date: Fri, 29 Aug 2014 08:05:07 +0100
-Message-Id: <1409295915-130538-2-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1409295915-130538-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-References: <1409295915-130538-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+	Fri, 01 Aug 2014 19:47:24 +0000
+Received: from [192.168.178.21] ([78.54.139.125]) by mail.gmx.com (mrgmx103)
+	with ESMTPSA (Nemesis) id 0LhwAY-1WhnTb11mM-00nAeA for
+	<user-mode-linux-devel@lists.sourceforge.net>; Fri, 01 Aug 2014 21:47:17
+	+0200
+Message-ID: <53DBEEC4.9020406@gmx.de>
+Date: Fri, 01 Aug 2014 21:47:16 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,134 +27,79 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 02/10] Remove unnecessary 'reactivate' statements
-To: user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] fuzz testing a 32 bit UML guest - ssh login won't work
+	since a hour
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Anton Ivanov <antivano@cisco.com>
+Fuzz testing a 32 bit x86 Gentoo UML guest (especially NFSv4 files, nfs sserver and client runs within the UML guest) with current git kernel brought the guest into a state, where no ssh login is any longer possible.
 
-The epoll based controller has real (not emulated) edge and
-level semantics and the edge/level is handled by epoll. There
-is no toggling of the poll set any more, thus it is removed
-throughout
+At the host side I can see that the linux processes are still running.
 
-Signed-off-by: Anton Ivanov <antivano@cisco.com>
----
- arch/um/drivers/chan_kern.c     |    2 --
- arch/um/drivers/line.c          |    2 --
- arch/um/drivers/mconsole_kern.c |    2 --
- arch/um/drivers/net_kern.c      |    2 --
- arch/um/drivers/port_kern.c     |    1 -
- arch/um/drivers/random.c        |    1 -
- arch/um/drivers/ubd_kern.c      |    1 -
- 7 files changed, 11 deletions(-)
+I attached the gdb to the linux processes at the host (even 32 bit x86 Gentoo). I do get nearly all the time:
 
-diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
-index acbe6c6..db0ff51 100644
---- a/arch/um/drivers/chan_kern.c
-+++ b/arch/um/drivers/chan_kern.c
-@@ -564,8 +564,6 @@ void chan_interrupt(struct line *line, int irq)
- 			tty_insert_flip_char(port, c, TTY_NORMAL);
- 	} while (err > 0);
- 
--	if (err == 0)
--		reactivate_fd(chan->fd, irq);
- 	if (err == -EIO) {
- 		if (chan->primary) {
- 			tty_port_tty_hangup(&line->port, false);
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 6c4511f..1e8df84 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -663,8 +663,6 @@ static irqreturn_t winch_interrupt(int irq, void *data)
- 		tty_kref_put(tty);
- 	}
-  out:
--	if (winch->fd != -1)
--		reactivate_fd(winch->fd, WINCH_IRQ);
- 	return IRQ_HANDLED;
- }
- 
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index 3df3bd5..2b9bfa7 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -95,7 +95,6 @@ static irqreturn_t mconsole_interrupt(int irq, void *dev_id)
- 	}
- 	if (!list_empty(&mc_requests))
- 		schedule_work(&mconsole_work);
--	reactivate_fd(fd, MCONSOLE_IRQ);
- 	return IRQ_HANDLED;
- }
- 
-@@ -243,7 +242,6 @@ void mconsole_stop(struct mc_request *req)
- 		(*req->cmd->handler)(req);
- 	}
- 	os_set_fd_block(req->originating_fd, 0);
--	reactivate_fd(req->originating_fd, MCONSOLE_IRQ);
- 	mconsole_reply(req, "", 0, 0);
- }
- 
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 39f1862..64d8426 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -137,8 +137,6 @@ static irqreturn_t uml_net_interrupt(int irq, void *dev_id)
- 		schedule_work(&lp->work);
- 		goto out;
- 	}
--	reactivate_fd(lp->fd, UM_ETH_IRQ);
--
- out:
- 	spin_unlock(&lp->lock);
- 	return IRQ_HANDLED;
-diff --git a/arch/um/drivers/port_kern.c b/arch/um/drivers/port_kern.c
-index 40ca5cc..b0e9ff3 100644
---- a/arch/um/drivers/port_kern.c
-+++ b/arch/um/drivers/port_kern.c
-@@ -137,7 +137,6 @@ static void port_work_proc(struct work_struct *unused)
- 		if (!port->has_connection)
- 			continue;
- 
--		reactivate_fd(port->fd, ACCEPT_IRQ);
- 		while (port_accept(port))
- 			;
- 		port->has_connection = 0;
-diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
-index 9e3a722..ec3d788 100644
---- a/arch/um/drivers/random.c
-+++ b/arch/um/drivers/random.c
-@@ -72,7 +72,6 @@ static ssize_t rng_dev_read (struct file *filp, char __user *buf, size_t size,
- 				return ret ? : -EAGAIN;
- 
- 			atomic_inc(&host_sleep_count);
--			reactivate_fd(random_fd, RANDOM_IRQ);
- 			add_sigio_fd(random_fd);
- 
- 			add_wait_queue(&host_read_wait, &wait);
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 3716e69..1cc72ae5 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -466,7 +466,6 @@ static void ubd_handler(void)
- 		blk_end_request(req->req, 0, req->length);
- 		kfree(req);
- 	}
--	reactivate_fd(thread_fd, UBD_IRQ);
- 
- 	list_for_each_safe(list, next_ele, &restart){
- 		ubd = container_of(list, struct ubd, restart);
+
+Thread 1 (process 4252):
+#0  0xb7736aec in __kernel_vsyscall ()
+#1  0x08496faf in __nanosleep_nocancel () at ../sysdeps/unix/syscall-template.S:81
+#2  0x08073124 in idle_sleep (nsecs=606859328243668608) at arch/um/os-Linux/time.c:183
+#3  0x08060b3f in arch_cpu_idle () at arch/um/kernel/process.c:208
+#4  0x080a5405 in cpuidle_idle_call () at kernel/sched/idle.c:120
+#5  cpu_idle_loop () at kernel/sched/idle.c:224
+#6  cpu_startup_entry (state=CPUHP_ONLINE) at kernel/sched/idle.c:272
+#7  0x084e16d2 in rest_init () at init/main.c:419
+#8  0x0804892e in start_kernel () at init/main.c:679
+#9  0x08049fc9 in start_kernel_proc (unused=0x0) at arch/um/kernel/skas/process.c:46
+#10 0x0806064b in new_thread_handler () at arch/um/kernel/process.c:129
+#11 0x00000000 in ?? ()
+
+...
+
+
+
+but at least one time I got:
+
+
+0x08108de3 in __put_super (sb=0x86a60000) at fs/super.c:246
+246             if (!--sb->s_count) {
+
+Thread 1 (process 4252):
+#0  0x08108de3 in __put_super (sb=0x86a60000) at fs/super.c:246
+#1  0x081096ac in put_super (sb=<optimized out>) at fs/super.c:262
+#2  drop_super (sb=0x86a60000) at fs/super.c:487
+#3  0x0812a337 in __writeback_inodes_wb (wb=0x8421c09c, work=0x1) at fs/fs-writeback.c:733
+#4  0x0812a479 in wb_writeback (wb=0x8421c09c, work=0x869d7efc) at fs/fs-writeback.c:863
+#5  0x0812a74e in wb_check_background_flush (wb=<optimized out>) at fs/fs-writeback.c:944
+#6  wb_do_writeback (wb=<optimized out>) at fs/fs-writeback.c:1014
+#7  bdi_writeback_workfn (work=0x8421c0a8) at fs/fs-writeback.c:1043
+#8  0x08090d11 in process_one_work (worker=0x84325000, work=0x8421c0a8) at kernel/workqueue.c:2081
+#9  0x0809116a in worker_thread (__worker=0x84325000) at kernel/workqueue.c:2212
+#10 0x08096806 in kthread (_create=0x84207410) at kernel/kthread.c:207
+#11 0x0806064b in new_thread_handler () at arch/um/kernel/process.c:129
+#12 0x00000000 in ?? ()
+
+...
+
+
+Now I'm wondering if this is an issue which is worth to be debugged or whether I just should ignore it.
+
+BTW the nsecs of 2 gdb calls in a row are identical since few minutes : 606859328243668608
+before the value was : 606859328233668608
+
+
+
 -- 
-1.7.10.4
+Toralf
 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
