@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1XGBeO-00085K-Fj
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <tytso@thunk.org>) id 1XE0u9-00021x-Up
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Aug 2014 18:45:56 +0000
-Received: from mout.gmx.net ([212.227.15.18])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XGBeN-0003z9-01
+	Sun, 03 Aug 2014 18:53:14 +0000
+Received: from imap.thunk.org ([74.207.234.97])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1XE0u8-0007cb-HY
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Aug 2014 18:45:56 +0000
-Message-ID: <53E66C57.8010303@gmx.de>
-Date: Sat, 09 Aug 2014 20:45:43 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Sun, 03 Aug 2014 18:53:13 +0000
+Date: Sun, 3 Aug 2014 14:42:10 -0400
+From: Theodore Ts'o <tytso@mit.edu>
+Message-ID: <20140803184210.GV24826@thunk.org>
+References: <53DE3E92.3060304@gmx.de>
 MIME-Version: 1.0
-References: <53DE3E92.3060304@gmx.de> <20140803184210.GV24826@thunk.org>
-In-Reply-To: <20140803184210.GV24826@thunk.org>
+Content-Disposition: inline
+In-Reply-To: <53DE3E92.3060304@gmx.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,63 +26,50 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] fuzz testing an ext4fs file system under a 32 bit
  Linux user mode linux guest let task jbd2/ubda hang
-To: Theodore Ts'o <tytso@mit.edu>
+To: Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
 Cc: linux-ext4@vger.kernel.org, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gMDgvMDMvMjAxNCAwODo0MiBQTSwgVGhlb2RvcmUgVHMnbyB3cm90ZToKPiBPbiBTdW4sIEF1
-ZyAwMywgMjAxNCBhdCAwMzo1MjoxOFBNICswMjAwLCBUb3JhbGYgRsO2cnN0ZXIgd3JvdGU6Cj4+
-IEhlbGxvLAo+Pgo+PiBmdXp6eWluZyBhIDMyIGJpdCBzdGFibGUgR2VudG9vIHg4NiBsaW51eCB3
-aXRoIHRyaW5pdHkgKGFuZCB3aXRob3V0IGV4Y2x1ZGluZyB0aGUgbXVubWFwIHN5c2NhbGwgYnV0
-IGl0IG1pZ2h0IGJlIGluZGVwZW5kZWQgZnJvbSB0aGlzKSBnaXZlcyB3aXRoaW4gYSAzMiBiaXQg
-dXNlciBtb2RlIGxpbnV4IGd1ZXN0IDoKPiAKPiBUaGUgcHJvYmxlbSB3aXRoIHRoZXNlIHNvcnRz
-IG9mIHRyaW5pdHkgYnVnIHJlcG9ydHMgaXMgdGhhdCB3ZSBoYXZlIG5vCj4gaWRlYSB3aGljaCBz
-eXNjYWxsIG9yIHNldCBvZiBzeXNjYWxscyBtaWdodCBoYXZlIGNvcnJ1cHRlZCBrZXJuZWwKPiBz
-dGF0ZSB0byB0aGUgcG9pbnQgd2hlcmUgdGhlIGtlcm5lbCBzdGFydGVkIG1hbGZ1bmN0aW9uaW5n
-Lgo+IAo+IFNvbWV0aW1lcywgYSB0cmluaXR5IGluZHVjZWQgYnVnIGlzIG9idmlvdXMsIHdoZW4g
-aXQgY2F1c2VzIGEgc3lzdGVtCj4gY2FsbCB0byBpbW1lZGlhdGVseSBhY2Nlc3MgYW4gaWxsZWdh
-bCBtZW1vcnkgbG9jYXRpb24uICBCdXQgaWYgaXQKPiBjYXVzZXMgc29tZSBtb3JlIHN1YnRsZSBj
-b3JydXB0aW9uLCBwb3NzaWJseSBpbiBhIGNvbXBsZXRlbHkgdW5yZWxhdGVkCj4gc3Vic3lzdGVt
-LCBmaWd1cmluZyBvdXQgd2hhdCBhY3R1YWxseSBoYXBwZW5lZCBjYW4gYmUgY2xvc2UgdG8KPiBp
-bXBvc3NpYmxlLgo+IAo+IFNvIHRoZXJlJ3Mgbm90IG11Y2ggSSBjYW4gZG8gd2l0aCB0aGlzIHNv
-cnQgb2YgYnVnIHJlcG9ydC4gIElmIHlvdSBjYW4KPiBlYXNpbHkgcmVwZWF0IGl0LCBhbmQgeW91
-IGNhbiBkdW1wIG91dCB0aGUgc3lzdGVtIGNhbGwgc3RyZWFtLCB3ZQo+IG1pZ2h0IGJlIGFibGUg
-dG8gbWFrZSBhIHNtYWxsZXIgcmVwcm9kdWN0aW9uIGNhc2UsIGF0IHdoaWNoIHBvaW50Cj4gdHJ5
-aW5nIHRvIGRlYnVnIHRoaXMgc29ydCBvZiBmYWlsdXJlIHdvdWxkIGJlIHRyYWN0YWJsZS4KPiAK
-PiBDaGVlcnMsCj4gCj4gCQkJCQkJLSBUZWQKPiAKb2ssIGZhaXIgZW5vdWdoLgoKCkJUVyBtYXkg
-SSBqdXN0IGFzaywgaWYgdGhlIGZvbGxvd2luZyAoc2FtZSAzMiBiaXQgc3lzdGVtLCBob3N0IGFu
-ZCBVTUwgZ3Vlc3QgYXJlIGJvdGggYXQgdjMuMTYsIDQgdHJpbml0eSBjaGlsZHMgaGFtbWVyaW5n
-IHZpY3RpbXMgZmlsZXMgaW4gYSByYW1kaXNrIHdpdGhpbiB0aGUgdU1MIGd1ZXN0KSBtYXRjaGVz
-IHRoZSBhYm92ZSB0b28gPyBPciBkb2VzIHRoZSBCVUcgb3V0cHV0IGhlcmUgbW9yZSBoZWxwZnVs
-IGRhdGEgPyA6CgoKS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IEJVRyEKQ1BVOiAwIFBJRDog
-MTA1IENvbW06IGt3b3JrZXIvdTI6MiBOb3QgdGFpbnRlZCAzLjE2LjAgIzIKV29ya3F1ZXVlOiB3
-cml0ZWJhY2sgYmRpX3dyaXRlYmFja193b3JrZm4gKGZsdXNoLTk4OjApClN0YWNrOgogMDg1YmUx
-MmUgMDg1YmUxMmUgMDAwMDAwMDMgMDg2ZTg1NDcgMDAwMDAwMGMgMDAwMDAyYjMgODUxNzdjYzQg
-ODUxNzdjNzQKIDA4NTAxNWMzIDAwMDAwMDAwIDg1MTc3YzQ4IDg1MTc3YzljIDA4NGZkNmRkIDA4
-NWM5ZGMwIDA4NzI3MTgwIDA4NWJhZTRhCiA4NTE3N2NhOCAwMDAwMDAwMCAwMDAwMDAwYyAwMDAw
-MDJiMyA4NTE3N2NjNCA4NTE3N2QxMCAwODE4ZWMwZiAwODViYWU0YQpDYWxsIFRyYWNlOgogWzww
-ODUwMTVjMz5dIGR1bXBfc3RhY2srMHgyNi8weDI4CiBbPDA4NGZkNmRkPl0gcGFuaWMrMHg4Zi8w
-eDFhOQogWzwwODE4ZWMwZj5dIG1wYWdlX3JlbGVhc2VfdW51c2VkX3BhZ2VzKzB4MTFmLzB4MWIw
-CiBbPDA4MTkzOTVhPl0gZXh0NF93cml0ZXBhZ2VzKzB4NDJhLzB4NjQwCiBbPDA4MGQ4N2U1Pl0g
-ZG9fd3JpdGVwYWdlcysweDI1LzB4NTAKIFs8MDgxMmZkMmM+XSBfX3dyaXRlYmFja19zaW5nbGVf
-aW5vZGUrMHgzYy8weGYwCiBbPDA4MTMwMDY0Pl0gd3JpdGViYWNrX3NiX2lub2RlcysweDFkNC8w
-eDMyMAogWzwwODEzMDIxND5dIF9fd3JpdGViYWNrX2lub2Rlc193YisweDY0LzB4YTAKIFs8MDgx
-MzA1MDE+XSB3Yl93cml0ZWJhY2srMHhmMS8weDE5MAogWzwwODEzMDhhMj5dIGJkaV93cml0ZWJh
-Y2tfd29ya2ZuKzB4YTIvMHgyZDAKIFs8MDg1MDRjNTY+XSA/IF9yYXdfc3Bpbl91bmxvY2tfaXJx
-KzB4MTYvMHgyMAogWzwwODA5ZTMwYz5dID8gZmluaXNoX3Rhc2tfc3dpdGNoLmNvbnN0cHJvcC41
-MisweDNjLzB4OTAKIFs8MDgwOTE0NzQ+XSBwcm9jZXNzX29uZV93b3JrKzB4MTg0LzB4MmYwCiBb
-PDA4MDkxOGRhPl0gd29ya2VyX3RocmVhZCsweDJmYS8weDU0MAogWzwwODUwNGMzYz5dID8gX3Jh
-d19zcGluX3VubG9ja19pcnFyZXN0b3JlKzB4MWMvMHgyMAogWzwwODUwMmQ2NT5dID8gc2NoZWR1
-bGUrMHg1NS8weDYwCiBbPDA4MDkxNWUwPl0gPyB3b3JrZXJfdGhyZWFkKzB4MC8weDU0MAogWzww
-ODA5NzFiNj5dIGt0aHJlYWQrMHhkNi8weGUwCiBbPDA4MDVmNjhiPl0gbmV3X3RocmVhZF9oYW5k
-bGVyKzB4NmIvMHg5MAoKCgotLSAKVG9yYWxmCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51
-eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2Vy
-LW1vZGUtbGludXgtZGV2ZWwK
+On Sun, Aug 03, 2014 at 03:52:18PM +0200, Toralf F=F6rster wrote:
+> Hello,
+> =
+
+> fuzzying a 32 bit stable Gentoo x86 linux with trinity (and without exclu=
+ding the munmap syscall but it might be independed from this) gives within =
+a 32 bit user mode linux guest :
+
+The problem with these sorts of trinity bug reports is that we have no
+idea which syscall or set of syscalls might have corrupted kernel
+state to the point where the kernel started malfunctioning.
+
+Sometimes, a trinity induced bug is obvious, when it causes a system
+call to immediately access an illegal memory location.  But if it
+causes some more subtle corruption, possibly in a completely unrelated
+subsystem, figuring out what actually happened can be close to
+impossible.
+
+So there's not much I can do with this sort of bug report.  If you can
+easily repeat it, and you can dump out the system call stream, we
+might be able to make a smaller reproduction case, at which point
+trying to debug this sort of failure would be tractable.
+
+Cheers,
+
+						- Ted
+
+---------------------------------------------------------------------------=
+---
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
