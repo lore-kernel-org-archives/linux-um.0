@@ -1,52 +1,59 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Honggang Li <enjoymindful@gmail.com>
-Date: Tue, 12 Aug 2014 21:36:14 +0800
-Message-Id: <1407850575-18794-1-git-send-email-enjoymindful@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [linux-next PATCH] Free percpu allocation info for uniprocessor system
-To: tj@kernel.org, cl@linux-foundation.org, linux-mm@kvack.org, user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, Honggang Li <enjoymindful@gmail.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <tytso@thunk.org>) id 1XGCxh-0004LU-6E
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Aug 2014 20:09:57 +0000
+Received: from imap.thunk.org ([74.207.234.97])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1XGCxe-0000Nh-RR
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 09 Aug 2014 20:09:56 +0000
+Date: Sat, 9 Aug 2014 16:00:18 -0400
+From: Theodore Ts'o <tytso@mit.edu>
+Message-ID: <20140809200018.GG15431@thunk.org>
+References: <53DE3E92.3060304@gmx.de> <20140803184210.GV24826@thunk.org>
+	<53E66C57.8010303@gmx.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <53E66C57.8010303@gmx.de>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] fuzz testing an ext4fs file system under a 32 bit
+ Linux user mode linux guest let task jbd2/ubda hang
+To: Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
+Cc: linux-ext4@vger.kernel.org, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Uniprocessor system should free percpu allocation info after use as SMP system.
+On Sat, Aug 09, 2014 at 08:45:43PM +0200, Toralf F=F6rster wrote:
+> =
 
-Following table is the bootmem allocation information of one x86 UML virtual
-machine with 256MB memory. The virtual machine is running linux-3.12.6. 
-Page (0x8c07000) is wasted.
-|------------------------------------------------------------------------------
-|0x8a02000 empty_zero_page                         size=4096,    align=4096
-|0x8a03000 empty_bad_page                          size=4096,    align=4096
-|0x8a04000 mem_map,contig_page_data->node_mem_map  size=2097152, align=32
-|0x8c04000 contig_page_data->pageblock_flags       size=24,      align=32
-|0x8c04020 contig_page_data->wait_table            size=2048,    align=32
-|0x8c05000 pte_t*                                  size=4096,    align=4096
-|0x8c06000 saved_command_line                      size=91,      align=32
-|0x8c06060 static_command_line                     size=91,      align=32
-|0x8c060c0 pcpu_alloc_info *ai                     size=4096,    align=32
-|0x8c08000 pcpu_base_addr                          size=32768,   align=4096
-|0x8c10000 pcpu_group_offsets                      size=4,       align=32
-|0x8c10020 pcpu_group_sizes                        size=4,       align=32
-|0x8c10040 pcpu_unit_map                           size=4,       align=32
-|0x8c10060 pcpu_unit_offsets                       size=4,       align=32
-|0x8c10080 pcpu_slot                               size=120,     align=32
-|0x8c10100 pcpu_first_chunk                        size=44,      align=32
-|0x8c10140 pid_hash                                size=4096,    align=32
-|0x8c11140 dentry_hashtable                        size=131072,  align=32
-|0x8c31140 inode_hashtable                         size=65536,   align=32
-|------------------------------------------------------------------------------
+> BTW may I just ask, if the following (same 32 bit system, host and
+> UML guest are both at v3.16, 4 trinity childs hammering victims
+> files in a ramdisk within the uML guest) matches the above too ? Or
+> does the BUG output here more helpful data ? :
 
-Recent UML is broken because of the commit:
-"resource: provide new functions to walk through resources"
+Unfortunately, there's nothing useful here.  There is more than one
+BUG_ON() in this mpage_release_unused_pages function, and what's more,
+we have no idea which syscall or combination of syscalls might have
+left a page in a particular state.
 
-As a result, the patch had been tested on x86 and x86_64 UML virtual 
-machines based on linux-next-v3.16.
+					- Ted
 
-Honggang Li (1):
-  Free percpu allocation info for uniprocessor system
-
- mm/percpu.c | 2 ++
- 1 file changed, 2 insertions(+)
-
--- 
-1.8.3.1
+---------------------------------------------------------------------------=
+---
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
