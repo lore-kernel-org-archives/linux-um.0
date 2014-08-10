@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1XGWYQ-00049B-3E
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1XGVt4-0003iS-C9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Aug 2014 17:05:10 +0000
-Received: from mail-vc0-f179.google.com ([209.85.220.179])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XGWYP-0004z8-0i
+	Sun, 10 Aug 2014 16:22:26 +0000
+Received: from mout.gmx.net ([212.227.17.22])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XGVt3-0006ol-17
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Aug 2014 17:05:10 +0000
-Received: by mail-vc0-f179.google.com with SMTP id hq11so10614435vcb.10
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 10 Aug 2014 10:05:03 -0700 (PDT)
+	Sun, 10 Aug 2014 16:22:26 +0000
+Received: from [192.168.178.21] ([78.54.145.19]) by mail.gmx.com (mrgmx103)
+	with ESMTPSA (Nemesis) id 0MSdRI-1Wp78A2Nfg-00RZbw for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 10 Aug 2014 18:22:18
+	+0200
+Message-ID: <53E79C39.3070606@gmx.de>
+Date: Sun, 10 Aug 2014 18:22:17 +0200
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <53E79C39.3070606@gmx.de>
-References: <53E79C39.3070606@gmx.de>
-Date: Sun, 10 Aug 2014 19:05:03 +0200
-Message-ID: <CAFLxGvw1GhJo4U30stD3koHsXTkChznh2uQ6O8Go7-OPY6Da4Q@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,110 +27,123 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] 3.16.0-10436-g9138475 - first impression
-To: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] 3.16.0-10436-g9138475 - first impression
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gU3VuLCBBdWcgMTAsIDIwMTQgYXQgNjoyMiBQTSwgVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYu
-Zm9lcnN0ZXJAZ214LmRlPiB3cm90ZToKPiBXZWxsLCBtaWdodCBiZSB0b28gZWFybHkgdG8gdHJ5
-IHRoZSBuZXcga2VybmVsIGF0IGEgMzIgYml0IExpbnV4LCBidXQgdGhpcyBpcyB3aGF0IEkgZ290
-IHRvZGF5IChqdXN0IG9uY2UsIG5leHQgYXR0ZW1wdCB0byBzdGFydCB0aGUga2VybmVsIHdvcmtl
-ZCBmaW5lKSA6Cj4KPiB0Zm9lcnN0ZUBuMjIgL21udC9yYW1kaXNrICQgc3RyZXNjIFh0ZXJtLmxv
-Zy5uMjIuMjAxNC4wOC4xMC4xNy40My4zNi45MjAyCj4gTG9jYXRpbmcgdGhlIGJvdHRvbSBvZiB0
-aGUgYWRkcmVzcyBzcGFjZSAuLi4gMHgxMDAwCj4gTG9jYXRpbmcgdGhlIHRvcCBvZiB0aGUgYWRk
-cmVzcyBzcGFjZSAuLi4gMHhjMDAwMDAwMAo+IENvcmUgZHVtcCBsaW1pdHMgOgo+ICAgICAgICAg
-c29mdCAtIDAKPiAgICAgICAgIGhhcmQgLSBOT05FCj4gQ2hlY2tpbmcgdGhhdCBwdHJhY2UgY2Fu
-IGNoYW5nZSBzeXN0ZW0gY2FsbCBudW1iZXJzLi4uT0sKPiBDaGVja2luZyBzeXNjYWxsIGVtdWxh
-dGlvbiBwYXRjaCBmb3IgcHRyYWNlLi4uT0sKPiBDaGVja2luZyBhZHZhbmNlZCBzeXNjYWxsIGVt
-dWxhdGlvbiBwYXRjaCBmb3IgcHRyYWNlLi4uT0sKPiBDaGVja2luZyBlbnZpcm9ubWVudCB2YXJp
-YWJsZXMgZm9yIGEgdGVtcGRpci4uLm5vbmUgZm91bmQKPiBDaGVja2luZyBpZiAvZGV2L3NobSBp
-cyBvbiB0bXBmcy4uLk9LCj4gQ2hlY2tpbmcgUFJPVF9FWEVDIG1tYXAgaW4gL2Rldi9zaG0uLi5P
-Swo+IENoZWNraW5nIGZvciB0aGUgc2thczMgcGF0Y2ggaW4gdGhlIGhvc3Q6Cj4gICAtIC9wcm9j
-L21tLi4ubm90IGZvdW5kOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gICAtIFBUUkFDRV9G
-QVVMVElORk8uLi5ub3QgZm91bmQKPiAgIC0gUFRSQUNFX0xEVC4uLm5vdCBmb3VuZAo+IFVNTCBy
-dW5uaW5nIGluIFNLQVMwIG1vZGUKPiBBZGRpbmcgMzM1NDYyNCBieXRlcyB0byBwaHlzaWNhbCBt
-ZW1vcnkgdG8gYWNjb3VudCBmb3IgZXhlYy1zaGllbGQgZ2FwCj4gS2VybmVsIHZpcnR1YWwgbWVt
-b3J5IHNpemUgc2hydW5rIHRvIDk3NjIyNDI1NiBieXRlcwo+IGJvb3Rjb25zb2xlIFtlYXJseWNv
-bjBdIGVuYWJsZWQKPiBQSUQgaGFzaCB0YWJsZSBlbnRyaWVzOiA0MDk2IChvcmRlcjogMiwgMTYz
-ODQgYnl0ZXMpCj4gRGVudHJ5IGNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMjYyMTQ0IChvcmRl
-cjogOCwgMTA0ODU3NiBieXRlcykKPiBJbm9kZS1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDEz
-MTA3MiAob3JkZXI6IDcsIDUyNDI4OCBieXRlcykKPiBTb3J0aW5nIF9fZXhfdGFibGUuLi4KPiBN
-ZW1vcnk6IDIwMDcwMDRLLzIwNTEyNzZLIGF2YWlsYWJsZSAoNDgyNEsga2VybmVsIGNvZGUsIDMw
-NEsgcndkYXRhLCAxNzc2SyByb2RhdGEsIDExOEsgaW5pdCwgMjQxSyBic3MsIDQ0MjcySyByZXNl
-cnZlZCkKPiBTTFVCOiBIV2FsaWduPTY0LCBPcmRlcj0wLTMsIE1pbk9iamVjdHM9MCwgQ1BVcz0x
-LCBOb2Rlcz0xCj4gTlJfSVJRUzoxNQo+IENhbGlicmF0aW5nIGRlbGF5IGxvb3AuLi4gODk4LjY2
-IEJvZ29NSVBTIChscGo9NDQ5MzMxMikKPiBwaWRfbWF4OiBkZWZhdWx0OiAzMjc2OCBtaW5pbXVt
-OiAzMDEKPiBNb3VudC1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDQwOTYgKG9yZGVyOiAyLCAx
-NjM4NCBieXRlcykKPiBNb3VudHBvaW50LWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogNDA5NiAo
-b3JkZXI6IDIsIDE2Mzg0IGJ5dGVzKQo+IENoZWNraW5nIGZvciBob3N0IHByb2Nlc3NvciBjbW92
-IHN1cHBvcnQuLi5ZZXMKPiBDaGVja2luZyB0aGF0IGhvc3QgcHR5cyBzdXBwb3J0IG91dHB1dCBT
-SUdJTy4uLlllcwo+IENoZWNraW5nIHRoYXQgaG9zdCBwdHlzIHN1cHBvcnQgU0lHSU8gb24gY2xv
-c2UuLi5ObywgZW5hYmxpbmcgd29ya2Fyb3VuZAo+IGRldnRtcGZzOiBpbml0aWFsaXplZAo+IFVz
-aW5nIDIuNiBob3N0IEFJTwo+IHhvcjogbWVhc3VyaW5nIHNvZnR3YXJlIGNoZWNrc3VtIHNwZWVk
-Cj4gICAgOHJlZ3MgICAgIDogIDEzNTEuNjAwIE1CL3NlYwo+ICAgIDhyZWdzX3ByZWZldGNoOiAg
-MTE5Mi40MDAgTUIvc2VjCj4gICAgMzJyZWdzICAgIDogICA3NDAuNDAwIE1CL3NlYwo+ICAgIDMy
-cmVnc19wcmVmZXRjaDogICA2NjYuNDAwIE1CL3NlYwo+IHhvcjogdXNpbmcgZnVuY3Rpb246IDhy
-ZWdzICgxMzUxLjYwMCBNQi9zZWMpCj4gcHJhbmRvbTogc2VlZCBib3VuZGFyeSBzZWxmIHRlc3Qg
-cGFzc2VkCj4gcHJhbmRvbTogMTAwIHNlbGYgdGVzdHMgcGFzc2VkCj4gTkVUOiBSZWdpc3RlcmVk
-IHByb3RvY29sIGZhbWlseSAxNgo+IHJhaWQ2OiBpbnQzMngxICAgIDIzNSBNQi9zCj4gcmFpZDY6
-IGludDMyeDIgICAgMjE2IE1CL3MKPiByYWlkNjogaW50MzJ4NCAgICAxNTMgTUIvcwo+IHJhaWQ2
-OiBpbnQzMng4ICAgIDIzNyBNQi9zCj4gcmFpZDY6IHVzaW5nIGFsZ29yaXRobSBpbnQzMng4ICgy
-MzcgTUIvcykKPiByYWlkNjogdXNpbmcgaW50eDEgcmVjb3ZlcnkgYWxnb3JpdGhtCj4gU3dpdGNo
-ZWQgdG8gY2xvY2tzb3VyY2UgaXRpbWVyCj4KPiBFSVA6IDAwNzM6WzwwODA4MDI4Yz5dIENQVTog
-MCBOb3QgdGFpbnRlZCBFU1A6IDAwN2I6ODRjYTdlNjAgRUZMQUdTOiAwMDAxMDIwMgo+ICAgICBO
-b3QgdGFpbnRlZAo+IEVBWDogMDg2Zjc5NzAgRUJYOiAwMDAwMDAwMCBFQ1g6IDAwMDAwMDAxIEVE
-WDogN2QzMzJmZmYKPiBFU0k6IDg0Y2E3ZTljIEVESTogMDg1Y2MwYjIgRUJQOiA4NGNhN2U4OCBE
-UzogMDA3YiBFUzogMDA3Ygo+IEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBTZWdmYXVsdCB3
-aXRoIG5vIG1tCj4gQ1BVOiAwIFBJRDogMSBDb21tOiBzd2FwcGVyIE5vdCB0YWludGVkIDMuMTYu
-MC0xMDQzNi1nOTEzODQ3NSAjMwo+IFN0YWNrOgo+ICAwODZmNzk3MCAwODM2NGY0ZCA4NGM0OTlj
-MCA4NGNkMDhiMCAwMDAwMDAwMCA3ZDMzMmZmZiAwODZmZWU3MCA3ZDMzMmZmZgo+ICBmZmZmZmZm
-ZiAwODE2Njk4MCA4NGNhN2VjNCAwODA4MDhiYSA4NGNhN2ViOCAwMDAwMDAwMCA4NGNhN2VhNCAw
-MDAwMDAwMAo+ICA3ZDMzMmZmZiA4NGNhN2VjNCA4MDAwMDIwMCA4NGQ1YWE1MCA4NGQ1YWE1MCA4
-NGQ1YWFhOSAwODZkNTA2NCAwMDAwMDAwMAo+IENhbGwgVHJhY2U6Cj4gIFs8MDgzNjRmNGQ+XSA/
-IGlkYV9nZXRfbmV3X2Fib3ZlKzB4MThkLzB4MWIwCj4gIFs8MDgxNjY5ODA+XSA/IGtjbGlzdF9h
-ZGRfcHJpdmF0ZSsweDAvMHhiMAo+ICBbPDA4MDgwOGJhPl0gd2Fsa19zeXN0ZW1fcmFtX3Jhbmdl
-KzB4OGEvMHhhMAo+ICBbPDA4MTY2YTY5Pl0ga2NvcmVfdXBkYXRlX3JhbSsweDM5LzB4MTYwCj4g
-IFs8MDgxNjY5ODA+XSA/IGtjbGlzdF9hZGRfcHJpdmF0ZSsweDAvMHhiMAo+ICBbPDA4MDUzZWQ0
-Pl0gcHJvY19rY29yZV9pbml0KzB4ODcvMHg4Ygo+ICBbPDA4MDQ4YTY4Pl0gZG9fb25lX2luaXRj
-YWxsKzB4MTE1LzB4MWMzCj4gIFs8MDgwNTNlNGQ+XSA/IHByb2Nfa2NvcmVfaW5pdCsweDAvMHg4
-Ygo+ICBbPDA4NTA3YWJjPl0gPyBfcmF3X3NwaW5fdW5sb2NrX2lycXJlc3RvcmUrMHgxYy8weDIw
-Cj4gIFs8MDgwNzFjMmU+XSA/IHNldF9zaWduYWxzKzB4MWUvMHg0MAo+ICBbPDA4MDQ4MjM5Pl0g
-PyByZXBhaXJfZW52X3N0cmluZysweDFhLzB4OTEKPiAgWzwwODA5MzY1ND5dID8gcGFyc2VfYXJn
-cysweDIxNC8weDM2MAo+ICBbPDA4MDQ4YzBmPl0ga2VybmVsX2luaXRfZnJlZWFibGUrMHhmOS8w
-eDE5ZAo+ICBbPDA4MDUzZTRkPl0gPyBwcm9jX2tjb3JlX2luaXQrMHgwLzB4OGIKPiAgWzwwODA0
-ODIxZj5dID8gcmVwYWlyX2Vudl9zdHJpbmcrMHgwLzB4OTEKPiAgWzwwODRmZjAwYj5dIGtlcm5l
-bF9pbml0KzB4Yi8weGUwCj4gIFs8MDgwNWY2OWI+XSBuZXdfdGhyZWFkX2hhbmRsZXIrMHg2Yi8w
-eDkwCj4KPiAvaG9tZS90Zm9lcnN0ZS93b3Jrc3BhY2UvYmluL3N0YXJ0X3VtbC5zaDogbGluZSAx
-MTA6ICA5MjMxIEFib3J0ZWQgICAgICAgICAgICAgICAgICRMSU5VWCBlYXJseXByaW50ayB1YmRh
-PSRST09URlMgdWJkYj0kU1dBUCBldGgwPSRORVQgbWVtPSRNRU0gJFRUWSB1bWlkPXVtbF8kTkFN
-RSByb290ZnN0eXBlPWV4dDQgIiRBUkdTIgo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgcmFzZSBpcyBiYWNrc3BhY2UuCj4KPgo+Cj4gVXN1YWxseSBzb21l
-dGhpbmcgbGlrZSB0aGUgZm9sbG93aW5nIEknZCBleHBlY3RlZCA6Cj4KPiBORVQ6IFJlZ2lzdGVy
-ZWQgcHJvdG9jb2wgZmFtaWx5IDIKPiBUQ1AgZXN0YWJsaXNoZWQgaGFzaCB0YWJsZSBlbnRyaWVz
-OiAxNjM4NCAob3JkZXI6IDQsIDY1NTM2IGJ5dGVzKQo+IFRDUCBiaW5kIGhhc2ggdGFibGUgZW50
-cmllczogMTYzODQgKG9yZGVyOiA2LCAzMjc2ODAgYnl0ZXMpCj4gVENQOiBIYXNoIHRhYmxlcyBj
-b25maWd1cmVkIChlc3RhYmxpc2hlZCAxNjM4NCBiaW5kIDE2Mzg0KQo+IFRDUDogcmVubyByZWdp
-c3RlcmVkCj4gVURQIGhhc2ggdGFibGUgZW50cmllczogMTAyNCAob3JkZXI6IDMsIDQ5MTUyIGJ5
-dGVzKQo+IFVEUC1MaXRlIGhhc2ggdGFibGUgZW50cmllczogMTAyNCAob3JkZXI6IDMsIDQ5MTUy
-IGJ5dGVzKQo+IE5FVDogUmVnaXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMQo+IFJQQzogUmVnaXN0
-ZXJlZCBuYW1lZCBVTklYIHNvY2tldCB0cmFuc3BvcnQgbW9kdWxlLgo+IFJQQzogUmVnaXN0ZXJl
-ZCB1ZHAgdHJhbnNwb3J0IG1vZHVsZS4KPiBSUEM6IFJlZ2lzdGVyZWQgdGNwIHRyYW5zcG9ydCBt
-b2R1bGUuCj4gUlBDOiBSZWdpc3RlcmVkIHRjcCBORlN2NC4xIGJhY2tjaGFubmVsIHRyYW5zcG9y
-dCBtb2R1bGUuCj4KClBsZWFzZSBzZWU6Clt1bWwtZGV2ZWxdICJyZXNvdXJjZTogcHJvdmlkZSBu
-ZXcgZnVuY3Rpb25zIHRvIHdhbGsgdGhyb3VnaApyZXNvdXJjZXMiIGJyZWFrcyBVTUwKCgoKPiAt
-LQo+IFRvcmFsZgo+Cj4KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IFVzZXItbW9kZS1saW51eC1kZXZlbCBt
-YWlsaW5nIGxpc3QKPiBVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2Rl
-LWxpbnV4LWRldmVsCgoKCi0tIApUaGFua3MsCi8vcmljaGFyZAoKLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXIt
-bW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3Rz
-LnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
-aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+Well, might be too early to try the new kernel at a 32 bit Linux, but this is what I got today (just once, next attempt to start the kernel worked fine) :
+
+tfoerste@n22 /mnt/ramdisk $ stresc Xterm.log.n22.2014.08.10.17.43.36.9202    
+Locating the bottom of the address space ... 0x1000
+Locating the top of the address space ... 0xc0000000
+Core dump limits :
+        soft - 0
+        hard - NONE
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+Checking environment variables for a tempdir...none found
+Checking if /dev/shm is on tmpfs...OK
+Checking PROT_EXEC mmap in /dev/shm...OK
+Checking for the skas3 patch in the host:
+  - /proc/mm...not found: No such file or directory
+  - PTRACE_FAULTINFO...not found
+  - PTRACE_LDT...not found
+UML running in SKAS0 mode
+Adding 3354624 bytes to physical memory to account for exec-shield gap
+Kernel virtual memory size shrunk to 976224256 bytes
+bootconsole [earlycon0] enabled
+PID hash table entries: 4096 (order: 2, 16384 bytes)
+Dentry cache hash table entries: 262144 (order: 8, 1048576 bytes)
+Inode-cache hash table entries: 131072 (order: 7, 524288 bytes)
+Sorting __ex_table...
+Memory: 2007004K/2051276K available (4824K kernel code, 304K rwdata, 1776K rodata, 118K init, 241K bss, 44272K reserved)
+SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+NR_IRQS:15
+Calibrating delay loop... 898.66 BogoMIPS (lpj=4493312)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Mountpoint-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Checking for host processor cmov support...Yes
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+devtmpfs: initialized
+Using 2.6 host AIO
+xor: measuring software checksum speed
+   8regs     :  1351.600 MB/sec
+   8regs_prefetch:  1192.400 MB/sec
+   32regs    :   740.400 MB/sec
+   32regs_prefetch:   666.400 MB/sec
+xor: using function: 8regs (1351.600 MB/sec)
+prandom: seed boundary self test passed
+prandom: 100 self tests passed
+NET: Registered protocol family 16
+raid6: int32x1    235 MB/s
+raid6: int32x2    216 MB/s
+raid6: int32x4    153 MB/s
+raid6: int32x8    237 MB/s
+raid6: using algorithm int32x8 (237 MB/s)
+raid6: using intx1 recovery algorithm
+Switched to clocksource itimer
+
+EIP: 0073:[<0808028c>] CPU: 0 Not tainted ESP: 007b:84ca7e60 EFLAGS: 00010202
+    Not tainted
+EAX: 086f7970 EBX: 00000000 ECX: 00000001 EDX: 7d332fff
+ESI: 84ca7e9c EDI: 085cc0b2 EBP: 84ca7e88 DS: 007b ES: 007b
+Kernel panic - not syncing: Segfault with no mm
+CPU: 0 PID: 1 Comm: swapper Not tainted 3.16.0-10436-g9138475 #3
+Stack:
+ 086f7970 08364f4d 84c499c0 84cd08b0 00000000 7d332fff 086fee70 7d332fff
+ ffffffff 08166980 84ca7ec4 080808ba 84ca7eb8 00000000 84ca7ea4 00000000
+ 7d332fff 84ca7ec4 80000200 84d5aa50 84d5aa50 84d5aaa9 086d5064 00000000
+Call Trace:
+ [<08364f4d>] ? ida_get_new_above+0x18d/0x1b0
+ [<08166980>] ? kclist_add_private+0x0/0xb0
+ [<080808ba>] walk_system_ram_range+0x8a/0xa0
+ [<08166a69>] kcore_update_ram+0x39/0x160
+ [<08166980>] ? kclist_add_private+0x0/0xb0
+ [<08053ed4>] proc_kcore_init+0x87/0x8b
+ [<08048a68>] do_one_initcall+0x115/0x1c3
+ [<08053e4d>] ? proc_kcore_init+0x0/0x8b
+ [<08507abc>] ? _raw_spin_unlock_irqrestore+0x1c/0x20
+ [<08071c2e>] ? set_signals+0x1e/0x40
+ [<08048239>] ? repair_env_string+0x1a/0x91
+ [<08093654>] ? parse_args+0x214/0x360
+ [<08048c0f>] kernel_init_freeable+0xf9/0x19d
+ [<08053e4d>] ? proc_kcore_init+0x0/0x8b
+ [<0804821f>] ? repair_env_string+0x0/0x91
+ [<084ff00b>] kernel_init+0xb/0xe0
+ [<0805f69b>] new_thread_handler+0x6b/0x90
+
+/home/tfoerste/workspace/bin/start_uml.sh: line 110:  9231 Aborted                 $LINUX earlyprintk ubda=$ROOTFS ubdb=$SWAP eth0=$NET mem=$MEM $TTY umid=uml_$NAME rootfstype=ext4 "$ARGS"
+                                                                                                        rase is backspace.
+
+
+
+Usually something like the following I'd expected :
+
+NET: Registered protocol family 2
+TCP established hash table entries: 16384 (order: 4, 65536 bytes)
+TCP bind hash table entries: 16384 (order: 6, 327680 bytes)
+TCP: Hash tables configured (established 16384 bind 16384)
+TCP: reno registered
+UDP hash table entries: 1024 (order: 3, 49152 bytes)
+UDP-Lite hash table entries: 1024 (order: 3, 49152 bytes)
+NET: Registered protocol family 1
+RPC: Registered named UNIX socket transport module.
+RPC: Registered udp transport module.
+RPC: Registered tcp transport module.
+RPC: Registered tcp NFSv4.1 backchannel transport module.
+
+-- 
+Toralf
+
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
