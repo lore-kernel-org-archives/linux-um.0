@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1XLHYt-0006Ts-7k
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1XGWnB-0005kw-31
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 23 Aug 2014 20:05:19 +0000
+	Sun, 10 Aug 2014 17:20:25 +0000
 Received: from mout.gmx.net ([212.227.17.20])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XLHYr-0001EQ-AD
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XGWn9-0005Of-Ow
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 23 Aug 2014 20:05:19 +0000
-Message-ID: <53F8F3F2.7010502@gmx.de>
-Date: Sat, 23 Aug 2014 22:05:06 +0200
+	Sun, 10 Aug 2014 17:20:24 +0000
+Message-ID: <53E7A9CF.1040001@gmx.de>
+Date: Sun, 10 Aug 2014 19:20:15 +0200
 From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
+References: <53E79C39.3070606@gmx.de>
+	<CAFLxGvw1GhJo4U30stD3koHsXTkChznh2uQ6O8Go7-OPY6Da4Q@mail.gmail.com>
+In-Reply-To: <CAFLxGvw1GhJo4U30stD3koHsXTkChznh2uQ6O8Go7-OPY6Da4Q@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,21 +29,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] UML: UBD: Fix for processes stuck in D
- state forever in UserModeLinux
-To: Thorsten Knabe <linux@thorsten-knabe.de>, Richard Weinberger <richard@nod.at>
+Subject: Re: [uml-devel] 3.16.0-10436-g9138475 - first impression
+To: Richard Weinberger <richard.weinberger@gmail.com>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-I just applied the patch in http://article.gmane.org/gmane.linux.kernel/1773197 on top of latest git tree of Linus and fuzz tested a 32bit UML - works better than before. I'd say it now hangs less often than before - just a first impression.
+On 08/10/2014 07:05 PM, Richard Weinberger wrote:
+> Please see:
+> [uml-devel] "resource: provide new functions to walk through
+> resources" breaks UML
+ah - thx - I should been waiting for just 10 min more before sending out such emails :-)
 
 -- 
 Toralf
 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
