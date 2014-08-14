@@ -1,49 +1,106 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sat, 19 Jul 2014 17:01:57 +0530
-From: Himangi Saraogi <himangi774@gmail.com>
-Message-ID: <20140719113157.GA23517@himangi-Dell>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1XHpwU-0004we-Nn
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Aug 2014 07:59:26 +0000
+Received: from mail-vc0-f172.google.com ([209.85.220.172])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XHpwP-0000VP-2D
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 14 Aug 2014 07:59:26 +0000
+Received: by mail-vc0-f172.google.com with SMTP id im17so993135vcb.3
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 14 Aug 2014 00:59:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] UML: Eliminate NULL test after alloc_bootmem_low_pages
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: Julia Lawall <julia.lawall@lip6.fr>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <53EBB865.5010901@gmx.de>
+References: <20140813150231.GA11344@redhat.com>
+	<53EBB865.5010901@gmx.de>
+Date: Thu, 14 Aug 2014 09:59:15 +0200
+Message-ID: <CAFLxGvz_L6vH9jWM8pkJ4e0+K4c5qtrZR=J9_c+oUQ+acmm9nw@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] How can I enable the config option
+ STACKTRACE_SUPPORT for an UML guest ? [was: Fwd: Re: trinity seems not to
+ reap all childs]
+To: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
+Cc: sahne@0x90.at, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-alloc_bootmem and related functions never return NULL. Thus a NULL
-test after calls to these functions is unnecessary.
-
-The following Coccinelle semantic patch was used for making the change:
-
-@@
-expression E;
-statement S;
-@@
-
-E = \(alloc_bootmem\|alloc_bootmem_low\|alloc_bootmem_pages\|alloc_bootmem_low_pages\)(...)
-... when != E
-- if (E == NULL) S
-
-Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
-Acked-by: Julia Lawall <julia.lawall@lip6.fr>
----
- arch/um/kernel/physmem.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index 30fdd5d..fb041cf 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -43,8 +43,6 @@ int __init init_maps(unsigned long physmem, unsigned long iomem,
- 	total_len = phys_len + iomem_len + highmem_len;
- 
- 	map = alloc_bootmem_low_pages(total_len);
--	if (map == NULL)
--		return -ENOMEM;
- 
- 	for (i = 0; i < total_pages; i++) {
- 		p = &map[i];
--- 
-1.9.1
+T24gV2VkLCBBdWcgMTMsIDIwMTQgYXQgOToxMSBQTSwgVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYu
+Zm9lcnN0ZXJAZ214LmRlPiB3cm90ZToKPgo+IFRoZSBsb25nIHN0b3J5IGlzIGJlbG93LgoKQXMg
+b2Ygbm93IFVNTCBoYXMgbm8gQ09ORklHX1NUQUNLVFJBQ0VfU1VQUE9SVC4KQnV0IERhbmllbCAo
+Q0MnZCkgaXMgd29ya2luZyBvbiBpdC4KCj4KPiAtLS0tLS0tLSBGb3J3YXJkZWQgTWVzc2FnZSAt
+LS0tLS0tLQo+IFN1YmplY3Q6IFJlOiB0cmluaXR5IHNlZW1zIG5vdCB0byByZWFwIGFsbCBjaGls
+ZHMKPiBEYXRlOiBXZWQsIDEzIEF1ZyAyMDE0IDExOjAyOjMxIC0wNDAwCj4gRnJvbTogRGF2ZSBK
+b25lcyA8ZGF2ZWpAcmVkaGF0LmNvbT4KPiBUbzogVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYuZm9l
+cnN0ZXJAZ214LmRlPgo+IENDOiB0cmluaXR5QHZnZXIua2VybmVsLm9yZwo+Cj4gT24gU2F0LCBB
+dWcgMDksIDIwMTQgYXQgMDY6MzU6NDVQTSArMDIwMCwgVG9yYWxmIEbDtnJzdGVyIHdyb3RlOgo+
+ICA+IEkgZG8gb2JzZXJ2ZSBpbiB0aGUgbGFzdCBmZXcgZGF5cyB0aGF0IHVuZGVyIGEgMzIgYml0
+IEdlbnRvbyBVTUwgZ3Vlc3Qgc29tZXRpbWVzIDEgdHJpbml0eSBqb2Igc3Vydml2ZXMgYWx0aG91
+Z2ggYWxsIG9mIGl0cyBwYXJlbnRzIGFyZSBnb25lIGFscmVhZHkuCj4gID4KPiAgPgo+ICA+IFRo
+ZSBjb25zb2xlIG91dHB1dCBhdCB0aCBlaG9zdCBzeXN0ZW0gaXMgOgo+ICA+Cj4gID4gW21haW5d
+IEJhaWxpbmcgbWFpbiBsb29wIGJlY2F1c2UgQ29tcGxldGVkIG1heGltdW0gbnVtYmVyIG9mIG9w
+ZXJhdGlvbnMuLgo+ICA+IFt3YXRjaGRvZ10gWzI2MDRdIFdhdGNoZG9nIGV4aXRpbmcgYmVjYXVz
+ZSBDb21wbGV0ZWQgbWF4aW11bSBudW1iZXIgb2Ygb3BlcmF0aW9ucy4uCj4gID4gW2luaXRdIFJh
+biAxMDAwMDEgc3lzY2FsbHMuIFN1Y2Nlc3NlczogMjExOTkgIEZhaWx1cmVzOiA3ODgwMgo+ICA+
+Cj4gID4KPiAgPiBBIHBzIHNob3dzIHRoYXQgdGhlcmUncyBzdGlsbCAxIGpvYiBydW5uaW5nIGlu
+IHRoZSBndWVzdCA6Cj4gID4KPiAgPiAkIHNzaCB0Zm9lcnN0ZUB0cmluaXR5ICJwcyBmeCAtZW8g
+cGlkLHN0YXJ0X3RpbWUsY29tbWFuZCB8IGdyZXAgLWUgdHJpbml0eSAtZSBzbGVlcCB8IGdyZXAg
+LXYgZ3JlcCIKPiAgPiAgMjcyMyAxNzo1NSB0cmluaXR5IC1DIDIgLU4gMTAwMDAwIC14IG1yZW1h
+cCAtcSAtViAvbW50L3JhbWRpc2svdmljdGltcy92MS92Mgo+Cj4gSWYgaXQgaGFwcGVucyBhZ2Fp
+biwgZ3JhYiB0aGUgb3V0cHV0IG9mIC9wcm9jLzI3MjMvc3RhY2sKPiAoWW91IG1pZ2h0IG5lZWQg
+c29tZXRoaW5nIHRoYXQgZW5hYmxlcyBDT05GSUdfU1RBQ0tUUkFDRSBpbiB5b3VyIGtlcm5lbCwK
+PiAgb3IgYXBwbHkgdGhlIHBhdGNoIGJlbG93IGlmIG5vdGhpbmcgZG9lcyAtLSBJIHN0aWxsIG5l
+ZWQgdG8gZ2V0IHRoYXQKPiAgdXBzdHJlYW0pCj4KPgo+ICA+IFt3YXRjaGRvZ10gMzAwODcgaXRl
+cmF0aW9ucy4gW0Y6MjM2MjMgUzo2NDYzIEhJOjk3MDZdCj4gID4gW3dhdGNoZG9nXSA0MDEzOCBp
+dGVyYXRpb25zLiBbRjozMTQ0MyBTOjg2OTQgSEk6OTcwNl0KPiAgPiBbd2F0Y2hkb2ddIDUwMjE1
+IGl0ZXJhdGlvbnMuIFtGOjM5MzcwIFM6MTA4NDQgSEk6OTcwNl0KPiAgPiBbd2F0Y2hkb2ddIDYw
+MjIxIGl0ZXJhdGlvbnMuIFtGOjQ3MjI4IFM6MTI5OTIgSEk6OTcwNl0KPiAgPiBbd2F0Y2hkb2dd
+IDcwMjI1IGl0ZXJhdGlvbnMuIFtGOjU1MTAwIFM6MTUxMjQgSEk6OTcwNl0KPiAgPiBbd2F0Y2hk
+b2ddIDgwMjc4IGl0ZXJhdGlvbnMuIFtGOjYzMDA3IFM6MTcyNzAgSEk6OTcwNl0KPiAgPiBbd2F0
+Y2hkb2ddIDkwMjg3IGl0ZXJhdGlvbnMuIFtGOjcxMDEzIFM6MTkyNzMgSEk6OTcwNl0KPiAgPiBb
+bWFpbl0gQmFpbGluZyBtYWluIGxvb3AgYmVjYXVzZSBDb21wbGV0ZWQgbWF4aW11bSBudW1iZXIg
+b2Ygb3BlcmF0aW9ucy4uCj4gID4gW3dhdGNoZG9nXSBbMjYwNF0gV2F0Y2hkb2cgZXhpdGluZyBi
+ZWNhdXNlIENvbXBsZXRlZCBtYXhpbXVtIG51bWJlciBvZiBvcGVyYXRpb25zLi4KPiAgPiBbaW5p
+dF0gUmFuIDEwMDAwMSBzeXNjYWxscy4gU3VjY2Vzc2VzOiAyMTE5OSAgRmFpbHVyZXM6IDc4ODAy
+Cj4gID4KPiAgPiBraWxsaW5nIHRoZSBqb2IgaGVscGVkIGZvcnR1bmF0ZWx5Ogo+ICA+Cj4gID4K
+PiAgPiAkIHNzaCB0Zm9lcnN0ZUB0cmluaXR5IGtpbGwgMjcyMwo+Cj4gUHV6emxpbmcgdGhhdCB0
+aGUgd2F0Y2hkb2cgZXhpdGVkIHdoaWxlIHRoZXJlIHdlcmUgc3RpbGwgY2hpbGRyZW4gYXJvdW5k
+Lgo+Cj4gU29tZXRoaW5nIGVsc2UgdGhhdCBtaWdodCBiZSBpbnRlcmVzdGluZyB3b3VsZCBiZSB0
+byBhdHRhY2ggdG8gdGhlCj4gc3RpbGwgcnVubmluZyBwaWQsIGFuZCBleGFtaW5lIHNobS0+cnVu
+bmluZ19jaGlsZHMKPgo+ICAgICAgICAgRGF2ZQo+Cj4gZGlmZiAtLWdpdCBhL2xpYi9LY29uZmln
+LmRlYnVnIGIvbGliL0tjb25maWcuZGVidWcKPiBpbmRleCBjYjQ1ZjU5Njg1ZTYuLjM4MTMzZGRi
+OGJiNCAxMDA2NDQKPiAtLS0gYS9saWIvS2NvbmZpZy5kZWJ1Zwo+ICsrKyBiL2xpYi9LY29uZmln
+LmRlYnVnCj4gQEAgLTEwMDgsOCArMTAwOCwxMyBAQCBjb25maWcgVFJBQ0VfSVJRRkxBR1MKPiAg
+ICAgICAgICAgZWl0aGVyIHRyYWNpbmcgb3IgbG9jayBkZWJ1Z2dpbmcuCj4KPiAgY29uZmlnIFNU
+QUNLVFJBQ0UKPiAtICAgICAgIGJvb2wKPiArICAgICAgIGJvb2wgIlN0YWNrIGJhY2t0cmFjZSBz
+dXBwb3J0Igo+ICAgICAgICAgZGVwZW5kcyBvbiBTVEFDS1RSQUNFX1NVUFBPUlQKPiArICAgICAg
+IGhlbHAKPiArICAgICAgICAgVGhpcyBvcHRpb24gY2F1c2VzIHRoZSBrZXJuZWwgdG8gY3JlYXRl
+IGEgL3Byb2MvcGlkL3N0YWNrIGZvcgo+ICsgICAgICAgICBldmVyeSBwcm9jZXNzLCBzaG93aW5n
+IGl0cyBjdXJyZW50IHN0YWNrIHRyYWNlLgo+ICsgICAgICAgICBJdCBpcyBhbHNvIHVzZWQgYnkg
+dmFyaW91cyBrZXJuZWwgZGVidWdnaW5nIGZlYXR1cmVzIHRoYXQgcmVxdWlyZQo+ICsgICAgICAg
+ICBzdGFjayB0cmFjZSBnZW5lcmF0aW9uLgo+Cj4gIGNvbmZpZyBERUJVR19LT0JKRUNUCj4gICAg
+ICAgICBib29sICJrb2JqZWN0IGRlYnVnZ2luZyIKPgo+Cj4KPgo+IC0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
+VXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdAo+IFVzZXItbW9kZS1saW51eC1kZXZl
+bEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
+aXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwKCgoKLS0gClRoYW5rcywKLy9yaWNo
+YXJkCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2Vy
+LW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291
+cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
