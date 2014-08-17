@@ -1,86 +1,45 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XNGxa-0007oV-Pn
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Aug 2014 07:51:02 +0000
-Received: from ivanoab3.miniserver.com ([89.200.143.206])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XNGxa-0001xt-0I
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 29 Aug 2014 07:51:02 +0000
-From: anton.ivanov@kot-begemot.co.uk
-Date: Fri, 29 Aug 2014 08:05:14 +0100
-Message-Id: <1409295915-130538-9-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1409295915-130538-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-References: <1409295915-130538-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 09/10] Better IPC for UBD
-To: user-mode-linux-devel@lists.sourceforge.net
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1408308358-27494-1-git-send-email-geert@linux-m68k.org>
+References: <1408308358-27494-1-git-send-email-geert@linux-m68k.org>
+Date: Sun, 17 Aug 2014 22:58:14 +0200
+Message-ID: <CAMuHMdUrBYrHiwj=S-kWYEHb+1CX2VUgYmvJhj_aaC-8ChFL_g@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v3.17-rc1
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Linux-sh list <linux-sh@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Anton Ivanov <antivano@cisco.com>
+On Sun, Aug 17, 2014 at 10:45 PM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> 16 regressions:
+>   + /scratch/kisskb/src/arch/powerpc/include/asm/floppy.h: error: 'isa_bridge_pcidev' undeclared (first use in this function):  => 142:20
 
-socketpair() is a better IPC choice for lots of small requests
-as it allows deeper (and configurable) queues than pipe()
+powerpc-randconfig
 
-As a result UBD will process nearly all of the requests submitted
-to it instead of bouncing a significant percentage under load
+>   + /scratch/kisskb/src/fs/hostfs/hostfs_user.c: error: 'AT_FDCWD' undeclared (first use in this function):  => 378
+>   + /scratch/kisskb/src/fs/hostfs/hostfs_user.c: error: (Each undeclared identifier is reported only once:  => 378
+>   + /scratch/kisskb/src/fs/hostfs/hostfs_user.c: error: for each function it appears in.):  => 378
 
-Signed-off-by: Anton Ivanov <antivano@cisco.com>
----
- arch/um/drivers/ubd_kern.c |    2 +-
- arch/um/drivers/ubd_user.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+um-defconfig
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 66d424a..ae78211 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1268,7 +1268,7 @@ static bool submit_request(struct io_thread_req *io_req, struct ubd *dev)
- 	int n = os_write_file(thread_fd, &io_req,
- 			     sizeof(io_req));
- 	if (n != sizeof(io_req)) {
--		if (n != -EAGAIN)
-+		if ((n != -EAGAIN) && (n != -ENOBUFS))
- 			printk("write to io thread failed, "
- 			       "errno = %d\n", -n);
- 		else if (list_empty(&dev->restart))
-diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
-index e376f9b..117ff13 100644
---- a/arch/um/drivers/ubd_user.c
-+++ b/arch/um/drivers/ubd_user.c
-@@ -25,7 +25,7 @@ int start_io_thread(unsigned long sp, int *fd_out)
- {
- 	int pid, fds[2], err;
- 
--	err = os_pipe(fds, 1, 1);
-+	err = socketpair(AF_UNIX, SOCK_STREAM, 0, (int *) &fds);
- 	if(err < 0){
- 		printk("start_io_thread - os_pipe failed, err = %d\n", -err);
- 		goto out;
--- 
-1.7.10.4
+>   + /scratch/kisskb/src/kernel/locking/mcs_spinlock.h: error: implicit declaration of function 'cpu_relax_lowlatency' [-Werror=implicit-function-declaration]:  => 87:2
 
+frv-defconfig (somehow the fix never made it past Linus' mbox)
 
-------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>   + error: "flush_icache_range" [drivers/misc/lkdtm.ko] undefined!:  => N/A
+
+sh-allmodconfig (woohoo, this means it has reached the link phase!)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
