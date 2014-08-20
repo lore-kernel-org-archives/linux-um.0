@@ -1,112 +1,293 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1XGvAh-0007jh-Gf
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Aug 2014 19:22:19 +0000
-Received: from mout.gmx.net ([212.227.17.20])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XGvAg-0002p8-77
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 Aug 2014 19:22:19 +0000
-Received: from [192.168.178.21] ([80.171.177.84]) by mail.gmx.com (mrgmx103)
-	with ESMTPSA (Nemesis) id 0M2L60-1WRQRj2RIC-00s8cq for
-	<user-mode-linux-devel@lists.sourceforge.net>; Mon, 11 Aug 2014 21:22:11
-	+0200
-Message-ID: <53E917E2.7060704@gmx.de>
-Date: Mon, 11 Aug 2014 21:22:10 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Wed, 20 Aug 2014 10:56:00 +0100
+From: Daniel Walter <dwalter@google.com>
+Message-ID: <20140820095600.GA19605@google.com>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] spinlock recursion w/ 3.16.0-10473-gc8d6637
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH] uml: Add support for CONFIG_STACKTRACE
+To: richard@nod.at
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-/me wonders who could/should be informed about this BUG message from a 32 bit UML guest (the "dirty" comes from reverted commit 8c86e70a)
+Add stacktrace support for User Mode Linux
 
+Signed-off-by: Daniel Walter <dwalter@google.com>
+---
+ arch/um/Kconfig.common           |  3 +-
+ arch/um/include/asm/stacktrace.h | 42 +++++++++++++++++++++
+ arch/um/kernel/Makefile          |  1 +
+ arch/um/kernel/stacktrace.c      | 80 ++++++++++++++++++++++++++++++++++++++++
+ arch/um/kernel/sysrq.c           | 69 +++++++++-------------------------
+ 5 files changed, 142 insertions(+), 53 deletions(-)
+ create mode 100644 arch/um/include/asm/stacktrace.h
+ create mode 100644 arch/um/kernel/stacktrace.c
 
-BUG: spinlock recursion on CPU#0, rngd/1231
- lock: 0x86f1588, .magic: dead4ead, .owner: rngd/1231, .owner_cpu: 0
-CPU: 0 PID: 1231 Comm: rngd Not tainted 3.16.0-10473-gc8d6637-dirty #3
-Stack:
- 085bfb48 085bfb48 00000003 086f0547 85f6e1c0 086f1588 00000008 85f9f990
- 08500fcf 00000000 85f9f964 85f9f9bc 084fd789 085cc734 086f1588 dead4ead
- 85f6e408 000004cf 00000000 8437ab40 086f1588 085ca958 85f9f9cc 084fd7ab
-Call Trace:
- [<084fd7ab>] ? spin_bug+0x1b/0x1f
- [<08500fcf>] dump_stack+0x26/0x28
- [<084fd789>] spin_dump+0xa1/0xa8
- [<084fd7ab>] spin_bug+0x1b/0x1f
- [<080a0db3>] do_raw_spin_lock+0x43/0x100
- [<0809739c>] ? finish_task_switch.constprop.53+0x3c/0x90
- [<08505421>] _raw_spin_lock+0x11/0x20
- [<08060622>] sigio_lock+0x12/0x20
- [<08071261>] add_sigio_fd+0x11/0x100
- [<0805ec9a>] reactivate_fd+0x6a/0x80
- [<08060597>] sigio_interrupt+0x37/0x40
- [<080a59bf>] handle_irq_event_percpu+0x2f/0x130
- [<080a9c94>] ? rcu_bh_qs+0x44/0x50
- [<080a5af4>] handle_irq_event+0x34/0x50
- [<080a8100>] handle_edge_irq+0xf0/0x120
- [<080a53cb>] generic_handle_irq+0x2b/0x30
- [<0805eda5>] do_IRQ+0x25/0x40
- [<0805ee25>] sigio_handler+0x65/0x90
- [<08071ade>] sig_handler_common+0xae/0xd0
- [<08071c2e>] ? set_signals+0x1e/0x40
- [<080d6d87>] ? get_page_from_freelist+0x327/0x5b0
- [<080d77d7>] ? __alloc_pages_nodemask+0xe7/0x7e0
- [<08062a23>] ? copy_chunk_from_user+0x23/0x30
- [<085054c1>] ? _raw_spin_unlock+0x11/0x20
- [<08106514>] ? deactivate_slab+0x424/0x470
- [<084fec79>] ? alloc_debug_processing+0xce/0x152
- [<0805f388>] ? uml_kmalloc+0x18/0x20
- [<08062a23>] ? copy_chunk_from_user+0x23/0x30
- [<08071c2e>] ? set_signals+0x1e/0x40
- [<084fef8f>] ? __slab_alloc.constprop.65+0x292/0x2be
- [<085054ec>] ? _raw_spin_unlock_irqrestore+0x1c/0x20
- [<0805f388>] ? uml_kmalloc+0x18/0x20
- [<080980f4>] ? default_wake_function+0x14/0x20
- [<0811f67e>] ? pollwake+0x6e/0x70
- [<08062a53>] ? copy_chunk_to_user+0x23/0x30
- [<0810690b>] ? __kmalloc+0x7b/0x140
- [<08071a0b>] unblock_signals+0x4b/0x70
- [<08071c2e>] set_signals+0x1e/0x40
- [<08070ef4>] update_thread+0x134/0x140
- [<0807132d>] add_sigio_fd+0xdd/0x100
- [<0805ec9a>] reactivate_fd+0x6a/0x80
- [<0806e3e9>] rng_dev_read+0x149/0x260
- [<080980e0>] ? default_wake_function+0x0/0x20
- [<0810d713>] vfs_read+0x93/0x190
- [<0810dd01>] SyS_read+0x51/0xa0
- [<080629e0>] handle_syscall+0x60/0x80
- [<0804d120>] ? pidmap_init+0x8b/0xaf
- [<084bf67c>] ? ptrace+0x2c/0x70
- [<080794a2>] ? get_fp_registers+0x22/0x40
- [<080745ac>] userspace+0x46c/0x5e0
- [<080799f6>] ? os_set_thread_area+0x26/0x40
- [<08078a0c>] ? do_set_thread_area+0x1c/0x50
- [<08078b88>] ? arch_switch_tls+0xb8/0x100
- [<0805f720>] fork_handler+0x60/0x70
-
-
+diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+index 6915d28..87bc868 100644
+--- a/arch/um/Kconfig.common
++++ b/arch/um/Kconfig.common
+@@ -39,7 +39,8 @@ config LOCKDEP_SUPPORT
+ 
+ config STACKTRACE_SUPPORT
+ 	bool
+-	default n
++	default y
++	select STACKTRACE
+ 
+ config GENERIC_CALIBRATE_DELAY
+ 	bool
+diff --git a/arch/um/include/asm/stacktrace.h b/arch/um/include/asm/stacktrace.h
+new file mode 100644
+index 0000000..9a86432
+--- /dev/null
++++ b/arch/um/include/asm/stacktrace.h
+@@ -0,0 +1,42 @@
++#ifndef _ASM_UML_STACKTRACE_H
++#define _ASM_UML_STACKTRACE_H
++
++#include <linux/uaccess.h>
++#include <linux/ptrace.h>
++
++struct stack_frame {
++	struct stack_frame *next_frame;
++	unsigned long return_address;
++};
++
++struct stacktrace_ops {
++	void (*address)(void *data, unsigned long address, int reliable);
++};
++
++#ifdef CONFIG_FRAME_POINTER
++static inline unsigned long
++get_frame_pointer(struct task_struct *task, struct pt_regs *segv_regs)
++{
++	if (!task || task == current)
++		return segv_regs ? PT_REGS_BP(segv_regs) : current_bp();
++	return KSTK_EBP(task);
++}
++#else
++static inline unsigned long
++get_frame_pointer(struct task_struct *task, struct pt_regs *segv_regs)
++{
++	return 0;
++}
++#endif
++
++static inline unsigned long
++*get_stack_pointer(struct task_struct *task, struct pt_regs *segv_regs)
++{
++	if (!task || task == current)
++		return segv_regs ? (unsigned long *)PT_REGS_SP(segv_regs) : current_sp();
++	return (unsigned long *)KSTK_ESP(task);
++}
++
++void dump_trace(struct task_struct *tsk, const struct stacktrace_ops *ops, void *data);
++
++#endif /* _ASM_UML_STACKTRACE_H */
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index d8b78a0..2d840a0 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -19,6 +19,7 @@ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+ obj-$(CONFIG_GCOV)	+= gmon_syms.o
+ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
++obj-$(CONFIG_STACKTRACE) += stacktrace.o
+ 
+ USER_OBJS := config.o
+ 
+diff --git a/arch/um/kernel/stacktrace.c b/arch/um/kernel/stacktrace.c
+new file mode 100644
+index 0000000..ebe7bcf
+--- /dev/null
++++ b/arch/um/kernel/stacktrace.c
+@@ -0,0 +1,80 @@
++/*
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Copyright (C) 2013 Richard Weinberger <richard@nod.at>
++ * Copyright (C) 2014 Google Inc., Author: Daniel Walter <dwalter@google.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/kallsyms.h>
++#include <linux/kernel.h>
++#include <linux/sched.h>
++#include <linux/stacktrace.h>
++#include <linux/module.h>
++#include <linux/uaccess.h>
++#include <asm/stacktrace.h>
++
++void dump_trace(struct task_struct *tsk,
++		const struct stacktrace_ops *ops,
++		void *data)
++{
++	int reliable = 0;
++	unsigned long *sp, bp, addr;
++	struct pt_regs *segv_regs = tsk->thread.segv_regs;
++	struct stack_frame *frame;
++
++	bp = get_frame_pointer(tsk, segv_regs);
++	sp = get_stack_pointer(tsk, segv_regs);
++
++	frame = (struct stack_frame *)bp;
++	while (((long) sp & (THREAD_SIZE-1)) != 0) {
++		addr = *sp;
++		if (__kernel_text_address(addr)) {
++			reliable = 0;
++			if ((unsigned long) sp == bp + sizeof(long)) {
++				frame = frame ? frame->next_frame : NULL;
++				bp = (unsigned long)frame;
++				reliable = 1;
++			}
++			ops->address(data, addr, reliable);
++		}
++		sp++;
++	}
++}
++
++static void save_addr(void *data, unsigned long address, int reliable)
++{
++	struct stack_trace *trace = data;
++
++	if (!reliable)
++		return;
++	if (trace->nr_entries >= trace->max_entries)
++		return;
++
++	trace->entries[trace->nr_entries++] = address;
++}
++
++static const struct stacktrace_ops dump_ops = {
++	.address = save_addr
++};
++
++static void __save_stack_trace(struct task_struct *tsk, struct stack_trace *trace)
++{
++	dump_trace(tsk, &dump_ops, trace);
++	if (trace->nr_entries < trace->max_entries)
++		trace->entries[trace->nr_entries++] = ULONG_MAX;
++}
++
++void save_stack_trace(struct stack_trace *trace)
++{
++	__save_stack_trace(current, trace);
++}
++EXPORT_SYMBOL_GPL(save_stack_trace);
++
++void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
++{
++	__save_stack_trace(tsk, trace);
++}
++EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index 799d7e4..894c8d3 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -12,57 +12,20 @@
+ #include <linux/module.h>
+ #include <linux/sched.h>
+ #include <asm/sysrq.h>
++#include <asm/stacktrace.h>
+ #include <os.h>
+ 
+-struct stack_frame {
+-	struct stack_frame *next_frame;
+-	unsigned long return_address;
+-};
+-
+-static void do_stack_trace(unsigned long *sp, unsigned long bp)
++static void _print_addr(void *data, unsigned long address, int reliable)
+ {
+-	int reliable;
+-	unsigned long addr;
+-	struct stack_frame *frame = (struct stack_frame *)bp;
+-
+-	printk(KERN_INFO "Call Trace:\n");
+-	while (((long) sp & (THREAD_SIZE-1)) != 0) {
+-		addr = *sp;
+-		if (__kernel_text_address(addr)) {
+-			reliable = 0;
+-			if ((unsigned long) sp == bp + sizeof(long)) {
+-				frame = frame ? frame->next_frame : NULL;
+-				bp = (unsigned long)frame;
+-				reliable = 1;
+-			}
+-
+-			printk(KERN_INFO " [<%08lx>]", addr);
+-			printk(KERN_CONT " %s", reliable ? "" : "? ");
+-			print_symbol(KERN_CONT "%s", addr);
+-			printk(KERN_CONT "\n");
+-		}
+-		sp++;
+-	}
+-	printk(KERN_INFO "\n");
++	pr_info(" [<%08lx>]", address);
++	pr_cont(" %s", reliable ? "" : "? ");
++	print_symbol("%s", address);
++	pr_cont("\n");
+ }
+ 
+-static unsigned long get_frame_pointer(struct task_struct *task,
+-				       struct pt_regs *segv_regs)
+-{
+-	if (!task || task == current)
+-		return segv_regs ? PT_REGS_BP(segv_regs) : current_bp();
+-	else
+-		return KSTK_EBP(task);
+-}
+-
+-static unsigned long *get_stack_pointer(struct task_struct *task,
+-					struct pt_regs *segv_regs)
+-{
+-	if (!task || task == current)
+-		return segv_regs ? (unsigned long *)PT_REGS_SP(segv_regs) : current_sp();
+-	else
+-		return (unsigned long *)KSTK_ESP(task);
+-}
++static const struct stacktrace_ops stackops = {
++	.address = _print_addr
++};
+ 
+ void show_stack(struct task_struct *task, unsigned long *stack)
+ {
+@@ -71,7 +34,7 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 	int i;
+ 
+ 	if (!segv_regs && os_is_signal_stack()) {
+-		printk(KERN_ERR "Received SIGSEGV in SIGSEGV handler,"
++		pr_err("Received SIGSEGV in SIGSEGV handler,"
+ 				" aborting stack trace!\n");
+ 		return;
+ 	}
+@@ -83,16 +46,18 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 	if (!stack)
+ 		sp = get_stack_pointer(task, segv_regs);
+ 
+-	printk(KERN_INFO "Stack:\n");
++	pr_info("Stack:\n");
+ 	stack = sp;
+ 	for (i = 0; i < 3 * STACKSLOTS_PER_LINE; i++) {
+ 		if (kstack_end(stack))
+ 			break;
+ 		if (i && ((i % STACKSLOTS_PER_LINE) == 0))
+-			printk(KERN_CONT "\n");
+-		printk(KERN_CONT " %08lx", *stack++);
++			pr_cont("\n");
++		pr_cont(" %08lx", *stack++);
+ 	}
+-	printk(KERN_CONT "\n");
++	pr_cont("\n");
+ 
+-	do_stack_trace(sp, bp);
++	pr_info("Call Trace:\n");
++	dump_trace(current, &stackops, NULL);
++	pr_info("\n");
+ }
 -- 
-Toralf
-
-
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+2.1.0.rc2.206.gedb03e5
 
