@@ -1,125 +1,84 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1XDwD7-0002Of-M9
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Aug 2014 13:52:29 +0000
-Received: from mout.gmx.net ([212.227.17.20])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XDwD6-0007BD-4U
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 03 Aug 2014 13:52:29 +0000
-Message-ID: <53DE3E92.3060304@gmx.de>
-Date: Sun, 03 Aug 2014 15:52:18 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Return-Path: <gang.chen.5i5j@gmail.com>
+Message-ID: <53FB2B77.8070606@gmail.com>
+Date: Mon, 25 Aug 2014 20:26:31 +0800
+From: Chen Gang <gang.chen.5i5j@gmail.com>
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+References: <53ECE9DD.80004@gmail.com> <20140814180418.GA20777@linux-mips.org> <53ED34CE.3040001@gmail.com> <53EDCC60.5040608@gmail.com> <53F9A48F.3020803@gmail.com>
+In-Reply-To: <53F9A48F.3020803@gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] fuzz testing an ext4fs file system under a 32 bit Linux
- user mode linux guest let task jbd2/ubda hang
-To: linux-ext4@vger.kernel.org
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: Re: [PATCH v3] arch: Kconfig: Let all architectures set endian explicitly
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, akpm@linux-foundation.org, rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com, Geert Uytterhoeven <geert@linux-m68k.org>, Jean Delvare <jdelvare@suse.de>, linux@arm.linux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, hskinnemoen@gmail.com, egtvedt@samfundet.no, realmz6@gmail.com, msalter@redhat.com, a-jacquiot@ti.com, starvik@axis.com, jesper.nilsson@axis.com, dhowells@redhat.com, rkuo@codeaurora.org, tony.luck@intel.com, fenghua.yu@intel.com, takata@linux-m32r.org, james.hogan@imgtec.com, Michal Simek <monstr@monstr.eu>, yasutake.koichi@jp.panasonic.com, jonas@southpole.se, jejb@parisc-linux.org, deller@gmx.de, Benjamin Herrenschmidt <benh@kernel.crashing.org>, paulus@samba.org, mpe@ellerman.id.au, Martin Schwidefsky <schwidefsky@de.ibm.com>, heiko.carstens@de.ibm.com, Liqin Chen <liqin.linux@gmail.com>, Lennox Wu <lennox.wu@gmail.com>, "David S. Miller" <davem@davemloft.net>, cmetcalf@tilera.com, jdike@addtoit.com, Richard Weinberger <richard@nod.at>, gxt@mprc.pku.edu.cn, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com, linux390@de.ibm.com, x86@kernel.org, linux-alpha@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m32r@ml.linux-m32r.org, linux-m32r-ja@ml.linux-m32r.org, linux-m68k@vger.kernel.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, linux@openrisc.net, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-xtensa@linux-xtensa.org, linux-sh@vger.kernel.org, torvalds@linux-foundation.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hello,
+Hello all:
 
-fuzzying a 32 bit stable Gentoo x86 linux with trinity (and without excluding the munmap syscall but it might be independed from this) gives within a 32 bit user mode linux guest :
+It seems no any additional rejections for it. I guess, I need split the
+'big' patch into pieces, and each send to its' related mailing list, so
+let it not like a spam. And the schedule may like:
 
+ - Firstly, send patch for "init/Kconfig" to add CPU_*_ENDIAN. If pass
+   checking (hope it can be passed checking), then
 
-Aug  3 15:31:19 trinity su[1475]: Successful su for root by root
-Aug  3 15:31:19 trinity su[1475]: + ??? root:root
-Aug  3 15:31:19 trinity su[1475]: pam_unix(su:session): session opened for user root by (uid=0)
-Aug  3 15:31:19 trinity su[1475]: pam_unix(su:session): session closed for user root
-Aug  3 15:31:23 trinity kernel: VFS: Warning: trinity-c1 using old stat() call. Recompile your binary.
-Aug  3 15:31:23 trinity kernel: VFS: Warning: trinity-c1 using old stat() call. Recompile your binary.
-Aug  3 15:31:23 trinity kernel: VFS: Warning: trinity-c1 using old stat() call. Recompile your binary.
-Aug  3 15:31:23 trinity kernel: trinity-c1 (1687) uses deprecated remap_file_pages() syscall. See Documentation/vm/remap_file_pages.txt.
-Aug  3 15:31:23 trinity kernel: VFS: Warning: trinity-c0 using old stat() call. Recompile your binary.
-Aug  3 15:31:23 trinity kernel: warning: process `trinity-c0' used the deprecated sysctl system call with 
-Aug  3 15:31:23 trinity kernel: VFS: Warning: trinity-c1 using old stat() call. Recompile your binary.
-Aug  3 15:37:50 trinity kernel: INFO: task jbd2/ubda-8:397 blocked for more than 120 seconds.
-Aug  3 15:37:50 trinity kernel: Not tainted 3.16.0-rc7-00111-g3f9c08f #92
-Aug  3 15:37:50 trinity kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-Aug  3 15:37:50 trinity kernel: jbd2/ubda-8     D 400011d2     0   397      2 0x00000000
-Aug  3 15:37:50 trinity kernel: Stack:
-Aug  3 15:37:50 trinity kernel: 086c8b7c 00000001 00000000 8486fd88 08060864 851e9f3c 086c8b7c 851e9a00
-Aug  3 15:37:50 trinity kernel: 851e9a00 8486fdb0 084e7d14 851e9a00 086c8640 00000001 00000010 00001000
-Aug  3 15:37:50 trinity kernel: 8486fe28 8486fe20 ffffffff 8486fdc4 084e7e05 080729be 00000000 8486fde0
-Aug  3 15:37:50 trinity kernel: Call Trace:
-Aug  3 15:37:50 trinity kernel: [<08060864>] __switch_to+0x44/0x70
-Aug  3 15:37:50 trinity kernel: [<084e7d14>] __schedule+0x2c4/0x360
-Aug  3 15:37:50 trinity kernel: [<084e7e05>] schedule+0x55/0x60
-Aug  3 15:37:50 trinity kernel: [<080729be>] ? set_signals+0x1e/0x40
-Aug  3 15:37:50 trinity kernel: [<084e8106>] io_schedule+0x46/0x60
-Aug  3 15:37:50 trinity kernel: [<0812f628>] sleep_on_buffer+0x8/0x10
-Aug  3 15:37:50 trinity kernel: [<084e81cc>] __wait_on_bit+0x3c/0x70
-Aug  3 15:37:50 trinity kernel: [<084e82f9>] out_of_line_wait_on_bit+0x69/0x80
-Aug  3 15:37:50 trinity kernel: [<0812f620>] ? sleep_on_buffer+0x0/0x10
-Aug  3 15:37:50 trinity kernel: [<080a4b60>] ? wake_bit_function+0x0/0x50
-Aug  3 15:37:50 trinity kernel: [<08130290>] __wait_on_buffer+0x30/0x40
-Aug  3 15:37:50 trinity kernel: [<0812f620>] ? sleep_on_buffer+0x0/0x10
-Aug  3 15:37:50 trinity kernel: [<081c841a>] jbd2_journal_commit_transaction+0xe1a/0x1390
-Aug  3 15:37:50 trinity kernel: [<080729be>] ? set_signals+0x1e/0x40
-Aug  3 15:37:50 trinity kernel: [<081cbc8f>] kjournald2+0xaf/0x1f0
-Aug  3 15:37:50 trinity kernel: [<081cbc8f>] ? kjournald2+0xaf/0x1f0
-Aug  3 15:37:50 trinity kernel: [<080729be>] ? set_signals+0x1e/0x40
-Aug  3 15:37:50 trinity kernel: [<080a4b10>] ? autoremove_wake_function+0x0/0x50
-Aug  3 15:37:50 trinity kernel: [<081cbbe0>] ? kjournald2+0x0/0x1f0
-Aug  3 15:37:50 trinity kernel: [<08096806>] kthread+0xd6/0xe0
-Aug  3 15:37:50 trinity kernel: [<0809dd7d>] ? finish_task_switch.isra.56+0x1d/0x70
-Aug  3 15:37:50 trinity kernel: [<0806064b>] new_thread_handler+0x6b/0x90
-Aug  3 15:37:50 trinity kernel: 
-Aug  3 15:39:50 trinity kernel: INFO: task jbd2/ubda-8:397 blocked for more than 120 seconds.
+ - Send each related patch to each related architectures which already
+   knew their ENDIAN attributes in config time (24 patches, I guess),
+   then
+
+ - Make patch for Kbuild to support __BUILDING_TIME_BIG_ENDIAN__, and
+   pass checking (hope I can finish), then
+
+ - Finish left architectures which need __BUILDING_TIME_BIG_ENDIAN__
+   (4 patches, I guess).
+
+Welcome any ideas, suggestions, or completions. And if no additional
+reply, I shall not send any additional information any more to avoid
+spam to other members.
 
 
+Thanks.
 
-The trinity fuzzer now seems to be in an endless loop, the corresponding process at the host side gives always :
-
-
-Thread 1 (process 21625):
-#0  0xb7726aec in __kernel_vsyscall ()
-#1  0x08496f6f in __nanosleep_nocancel () at ../sysdeps/unix/syscall-template.S:81
-#2  0x08073124 in idle_sleep (nsecs=606859328233668608) at arch/um/os-Linux/time.c:183
-#3  0x08060b3f in arch_cpu_idle () at arch/um/kernel/process.c:208
-#4  0x080a5405 in cpuidle_idle_call () at kernel/sched/idle.c:120
-#5  cpu_idle_loop () at kernel/sched/idle.c:224
-#6  cpu_startup_entry (state=CPUHP_ONLINE) at kernel/sched/idle.c:272
-#7  0x084e1692 in rest_init () at init/main.c:419
-#8  0x0804892e in start_kernel () at init/main.c:679
-#9  0x08049fc9 in start_kernel_proc (unused=0x0) at arch/um/kernel/skas/process.c:46
-#10 0x0806064b in new_thread_handler () at arch/um/kernel/process.c:129
-#11 0x00000000 in ?? ()
-
-
-It might be that [1] has few more info/data, or ?
-The diff to [1] is just that I'm still able to login into the UML guest.
-
-
-
-[1] http://sourceforge.net/p/user-mode-linux/mailman/message/32673925/
+On 08/24/2014 04:38 PM, Chen Gang wrote:
+> Hello Maintainers:
+> 
+> Is this patch OK? If it pass basic checking, please let me know, and I
+> shall try to make another related patch for KBuild (I can do nothing
+> related with Kbuild, before get confirmation for this patch).
+> 
+> Thanks.
+> 
+> On 8/15/14 17:01, Chen Gang wrote:
+>>
+>>
+>> On 8/15/14 6:14, Chen Gang wrote:
+>>> On 08/15/2014 02:04 AM, Ralf Baechle wrote:
+>>>>
+>>>
+>>> OK, thanks, I assumes when support both endian, the default choice is
+>>> CPU_BIG_ENDIAN, although no default value for choice (originally, I did
+>>> worry about it).
+>>>
+>>>> So I think you can just drop the MIPS segment from your patch.
+>>>>
+>>>
+>>> If what I assumes is correct, what you said sounds reasonable to me.
+>>>
+>>>
+>>
+>> So for me, it is harmless to add CPU_*_ENDIAN explicitly, and can let
+>> other members don't need think of.
+>>
+>> By the way, for sh, it is almost the same case, except it contents the
+>> default value, for me, it is clear enough, so I skip sh architecture in
+>> this patch.
+>>
+>>
+>> Thanks
+>>
+> 
 
 -- 
-Toralf
+Chen Gang
 
-
-------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Open, share, and attitude like air, water, and life which God blessed
 
