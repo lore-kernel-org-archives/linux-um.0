@@ -1,25 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1XHdxW-0007Xy-O7
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XNGxi-0007Py-It
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Aug 2014 19:11:42 +0000
-Received: from mout.gmx.net ([212.227.17.21])
+	Fri, 29 Aug 2014 07:51:10 +0000
+Received: from ivanoab3.miniserver.com ([89.200.143.206])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XHdxU-0000KV-Os
+	(Exim 4.76) id 1XNGxh-0002Xy-Ib
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Aug 2014 19:11:42 +0000
-Received: from [192.168.178.21] ([80.171.231.63]) by mail.gmx.com (mrgmx101)
-	with ESMTPSA (Nemesis) id 0M8ZtH-1WUL5x10K3-00wI6r for
-	<user-mode-linux-devel@lists.sourceforge.net>; Wed, 13 Aug 2014 21:11:34
-	+0200
-Message-ID: <53EBB865.5010901@gmx.de>
-Date: Wed, 13 Aug 2014 21:11:33 +0200
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
-MIME-Version: 1.0
-References: <20140813150231.GA11344@redhat.com>
-In-Reply-To: <20140813150231.GA11344@redhat.com>
+	Fri, 29 Aug 2014 07:51:10 +0000
+From: anton.ivanov@kot-begemot.co.uk
+Date: Fri, 29 Aug 2014 08:05:12 +0100
+Message-Id: <1409295915-130538-7-git-send-email-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <1409295915-130538-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+References: <1409295915-130538-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,65 +24,154 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] How can I enable the config option STACKTRACE_SUPPORT
- for an UML guest ? [was: Fwd: Re: trinity seems not to reap all childs]
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] [PATCH 07/10] Performance and NUMA improvements for ubd
+To: user-mode-linux-devel@lists.sourceforge.net
 
-ClRoZSBsb25nIHN0b3J5IGlzIGJlbG93LgoKCi0tLS0tLS0tIEZvcndhcmRlZCBNZXNzYWdlIC0t
-LS0tLS0tClN1YmplY3Q6IFJlOiB0cmluaXR5IHNlZW1zIG5vdCB0byByZWFwIGFsbCBjaGlsZHMK
-RGF0ZTogV2VkLCAxMyBBdWcgMjAxNCAxMTowMjozMSAtMDQwMApGcm9tOiBEYXZlIEpvbmVzIDxk
-YXZlakByZWRoYXQuY29tPgpUbzogVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYuZm9lcnN0ZXJAZ214
-LmRlPgpDQzogdHJpbml0eUB2Z2VyLmtlcm5lbC5vcmcKCk9uIFNhdCwgQXVnIDA5LCAyMDE0IGF0
-IDA2OjM1OjQ1UE0gKzAyMDAsIFRvcmFsZiBGw7Zyc3RlciB3cm90ZToKID4gSSBkbyBvYnNlcnZl
-IGluIHRoZSBsYXN0IGZldyBkYXlzIHRoYXQgdW5kZXIgYSAzMiBiaXQgR2VudG9vIFVNTCBndWVz
-dCBzb21ldGltZXMgMSB0cmluaXR5IGpvYiBzdXJ2aXZlcyBhbHRob3VnaCBhbGwgb2YgaXRzIHBh
-cmVudHMgYXJlIGdvbmUgYWxyZWFkeS4KID4gCiA+IAogPiBUaGUgY29uc29sZSBvdXRwdXQgYXQg
-dGggZWhvc3Qgc3lzdGVtIGlzIDoKID4gCiA+IFttYWluXSBCYWlsaW5nIG1haW4gbG9vcCBiZWNh
-dXNlIENvbXBsZXRlZCBtYXhpbXVtIG51bWJlciBvZiBvcGVyYXRpb25zLi4KID4gW3dhdGNoZG9n
-XSBbMjYwNF0gV2F0Y2hkb2cgZXhpdGluZyBiZWNhdXNlIENvbXBsZXRlZCBtYXhpbXVtIG51bWJl
-ciBvZiBvcGVyYXRpb25zLi4KID4gW2luaXRdIFJhbiAxMDAwMDEgc3lzY2FsbHMuIFN1Y2Nlc3Nl
-czogMjExOTkgIEZhaWx1cmVzOiA3ODgwMgogPiAKID4gCiA+IEEgcHMgc2hvd3MgdGhhdCB0aGVy
-ZSdzIHN0aWxsIDEgam9iIHJ1bm5pbmcgaW4gdGhlIGd1ZXN0IDoKID4gCiA+ICQgc3NoIHRmb2Vy
-c3RlQHRyaW5pdHkgInBzIGZ4IC1lbyBwaWQsc3RhcnRfdGltZSxjb21tYW5kIHwgZ3JlcCAtZSB0
-cmluaXR5IC1lIHNsZWVwIHwgZ3JlcCAtdiBncmVwIgogPiAgMjcyMyAxNzo1NSB0cmluaXR5IC1D
-IDIgLU4gMTAwMDAwIC14IG1yZW1hcCAtcSAtViAvbW50L3JhbWRpc2svdmljdGltcy92MS92MgoK
-SWYgaXQgaGFwcGVucyBhZ2FpbiwgZ3JhYiB0aGUgb3V0cHV0IG9mIC9wcm9jLzI3MjMvc3RhY2sK
-KFlvdSBtaWdodCBuZWVkIHNvbWV0aGluZyB0aGF0IGVuYWJsZXMgQ09ORklHX1NUQUNLVFJBQ0Ug
-aW4geW91ciBrZXJuZWwsCiBvciBhcHBseSB0aGUgcGF0Y2ggYmVsb3cgaWYgbm90aGluZyBkb2Vz
-IC0tIEkgc3RpbGwgbmVlZCB0byBnZXQgdGhhdAogdXBzdHJlYW0pCgoKID4gW3dhdGNoZG9nXSAz
-MDA4NyBpdGVyYXRpb25zLiBbRjoyMzYyMyBTOjY0NjMgSEk6OTcwNl0KID4gW3dhdGNoZG9nXSA0
-MDEzOCBpdGVyYXRpb25zLiBbRjozMTQ0MyBTOjg2OTQgSEk6OTcwNl0KID4gW3dhdGNoZG9nXSA1
-MDIxNSBpdGVyYXRpb25zLiBbRjozOTM3MCBTOjEwODQ0IEhJOjk3MDZdCiA+IFt3YXRjaGRvZ10g
-NjAyMjEgaXRlcmF0aW9ucy4gW0Y6NDcyMjggUzoxMjk5MiBISTo5NzA2XQogPiBbd2F0Y2hkb2dd
-IDcwMjI1IGl0ZXJhdGlvbnMuIFtGOjU1MTAwIFM6MTUxMjQgSEk6OTcwNl0KID4gW3dhdGNoZG9n
-XSA4MDI3OCBpdGVyYXRpb25zLiBbRjo2MzAwNyBTOjE3MjcwIEhJOjk3MDZdCiA+IFt3YXRjaGRv
-Z10gOTAyODcgaXRlcmF0aW9ucy4gW0Y6NzEwMTMgUzoxOTI3MyBISTo5NzA2XQogPiBbbWFpbl0g
-QmFpbGluZyBtYWluIGxvb3AgYmVjYXVzZSBDb21wbGV0ZWQgbWF4aW11bSBudW1iZXIgb2Ygb3Bl
-cmF0aW9ucy4uCiA+IFt3YXRjaGRvZ10gWzI2MDRdIFdhdGNoZG9nIGV4aXRpbmcgYmVjYXVzZSBD
-b21wbGV0ZWQgbWF4aW11bSBudW1iZXIgb2Ygb3BlcmF0aW9ucy4uCiA+IFtpbml0XSBSYW4gMTAw
-MDAxIHN5c2NhbGxzLiBTdWNjZXNzZXM6IDIxMTk5ICBGYWlsdXJlczogNzg4MDIKID4gCiA+IGtp
-bGxpbmcgdGhlIGpvYiBoZWxwZWQgZm9ydHVuYXRlbHk6CiA+IAogPiAKID4gJCBzc2ggdGZvZXJz
-dGVAdHJpbml0eSBraWxsIDI3MjMKClB1enpsaW5nIHRoYXQgdGhlIHdhdGNoZG9nIGV4aXRlZCB3
-aGlsZSB0aGVyZSB3ZXJlIHN0aWxsIGNoaWxkcmVuIGFyb3VuZC4KClNvbWV0aGluZyBlbHNlIHRo
-YXQgbWlnaHQgYmUgaW50ZXJlc3Rpbmcgd291bGQgYmUgdG8gYXR0YWNoIHRvIHRoZQpzdGlsbCBy
-dW5uaW5nIHBpZCwgYW5kIGV4YW1pbmUgc2htLT5ydW5uaW5nX2NoaWxkcwoKCURhdmUKCmRpZmYg
-LS1naXQgYS9saWIvS2NvbmZpZy5kZWJ1ZyBiL2xpYi9LY29uZmlnLmRlYnVnCmluZGV4IGNiNDVm
-NTk2ODVlNi4uMzgxMzNkZGI4YmI0IDEwMDY0NAotLS0gYS9saWIvS2NvbmZpZy5kZWJ1ZworKysg
-Yi9saWIvS2NvbmZpZy5kZWJ1ZwpAQCAtMTAwOCw4ICsxMDA4LDEzIEBAIGNvbmZpZyBUUkFDRV9J
-UlFGTEFHUwogCSAgZWl0aGVyIHRyYWNpbmcgb3IgbG9jayBkZWJ1Z2dpbmcuCiAKIGNvbmZpZyBT
-VEFDS1RSQUNFCi0JYm9vbAorCWJvb2wgIlN0YWNrIGJhY2t0cmFjZSBzdXBwb3J0IgogCWRlcGVu
-ZHMgb24gU1RBQ0tUUkFDRV9TVVBQT1JUCisJaGVscAorCSAgVGhpcyBvcHRpb24gY2F1c2VzIHRo
-ZSBrZXJuZWwgdG8gY3JlYXRlIGEgL3Byb2MvcGlkL3N0YWNrIGZvcgorCSAgZXZlcnkgcHJvY2Vz
-cywgc2hvd2luZyBpdHMgY3VycmVudCBzdGFjayB0cmFjZS4KKwkgIEl0IGlzIGFsc28gdXNlZCBi
-eSB2YXJpb3VzIGtlcm5lbCBkZWJ1Z2dpbmcgZmVhdHVyZXMgdGhhdCByZXF1aXJlCisJICBzdGFj
-ayB0cmFjZSBnZW5lcmF0aW9uLgogCiBjb25maWcgREVCVUdfS09CSkVDVAogCWJvb2wgImtvYmpl
-Y3QgZGVidWdnaW5nIgoKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWls
-aW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
-czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgt
-ZGV2ZWwK
+From: Anton Ivanov <antivano@cisco.com>
+
+The use of the seek()/read() and seek()/write() is a terminal
+disease on NUMA. Intense use of this on shared files (f.e.
+the master for a COW image) can cause anything up to and including
+killing CPUs on unhandled NMIs.
+
+This patch deals with this UML major issue (and one of UML biggest
+performance pitfalls). As a result you can now run (subject to
+correct pinning) 2000+ UMLs on a NUMA box without crashing it.
+
+Signed-off-by: Anton Ivanov <antivano@cisco.com>
+---
+ arch/um/drivers/ubd_kern.c  |   29 ++++++++---------------------
+ arch/um/include/shared/os.h |    2 ++
+ arch/um/os-Linux/file.c     |   18 ++++++++++++++++++
+ 3 files changed, 28 insertions(+), 21 deletions(-)
+
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 1cc72ae5..35ba00b 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2012-2014 Cisco Systems
+  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
+  * Licensed under the GPL
+  */
+@@ -534,11 +535,7 @@ static int read_cow_bitmap(int fd, void *buf, int offset, int len)
+ {
+ 	int err;
+ 
+-	err = os_seek_file(fd, offset);
+-	if (err < 0)
+-		return err;
+-
+-	err = os_read_file(fd, buf, len);
++	err = os_pread_file(fd, buf, len, offset);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -1375,14 +1372,10 @@ static int update_bitmap(struct io_thread_req *req)
+ 	if(req->cow_offset == -1)
+ 		return 0;
+ 
+-	n = os_seek_file(req->fds[1], req->cow_offset);
+-	if(n < 0){
+-		printk("do_io - bitmap lseek failed : err = %d\n", -n);
+-		return 1;
+-	}
+-
+-	n = os_write_file(req->fds[1], &req->bitmap_words,
+-			  sizeof(req->bitmap_words));
++	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
++			  sizeof(req->bitmap_words),
++			  req->cow_offset
++			);
+ 	if(n != sizeof(req->bitmap_words)){
+ 		printk("do_io - bitmap update failed, err = %d fd = %d\n", -n,
+ 		       req->fds[1]);
+@@ -1426,18 +1419,12 @@ static void do_io(struct io_thread_req *req)
+ 		len = (end - start) * req->sectorsize;
+ 		buf = &req->buffer[start * req->sectorsize];
+ 
+-		err = os_seek_file(req->fds[bit], off);
+-		if(err < 0){
+-			printk("do_io - lseek failed : err = %d\n", -err);
+-			req->error = 1;
+-			return;
+-		}
+ 		if(req->op == UBD_READ){
+ 			n = 0;
+ 			do {
+ 				buf = &buf[n];
+ 				len -= n;
+-				n = os_read_file(req->fds[bit], buf, len);
++				n = os_pread_file(req->fds[bit], buf, len, off);
+ 				if (n < 0) {
+ 					printk("do_io - read failed, err = %d "
+ 					       "fd = %d\n", -n, req->fds[bit]);
+@@ -1447,7 +1434,7 @@ static void do_io(struct io_thread_req *req)
+ 			} while((n < len) && (n != 0));
+ 			if (n < len) memset(&buf[n], 0, len - n);
+ 		} else {
+-			n = os_write_file(req->fds[bit], buf, len);
++			n = os_pwrite_file(req->fds[bit], buf, len, off);
+ 			if(n != len){
+ 				printk("do_io - write failed err = %d "
+ 				       "fd = %d\n", -n, req->fds[bit]);
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 17b4e9f..7f544f4 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -142,6 +142,8 @@ extern int os_seek_file(int fd, unsigned long long offset);
+ extern int os_open_file(const char *file, struct openflags flags, int mode);
+ extern int os_read_file(int fd, void *buf, int len);
+ extern int os_write_file(int fd, const void *buf, int count);
++extern int os_pread_file(int fd, void *buf, int len, unsigned long long offset);
++extern int os_pwrite_file(int fd, const void *buf, int count, unsigned long long offset);
+ extern int os_sync_file(int fd);
+ extern int os_file_size(const char *file, unsigned long long *size_out);
+ extern int os_file_modtime(const char *file, unsigned long *modtime);
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index 07a7501..64951fd 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -266,6 +266,24 @@ int os_write_file(int fd, const void *buf, int len)
+ 	return n;
+ }
+ 
++int os_pread_file(int fd, void *buf, int len, unsigned long long offset)
++{
++	int n = pread(fd, buf, len, offset);
++
++	if (n < 0)
++		return -errno;
++	return n;
++}
++
++int os_pwrite_file(int fd, const void *buf, int len, unsigned long long offset)
++{
++	int n = pwrite(fd, (void *) buf, len, offset);
++
++	if (n < 0)
++		return -errno;
++	return n;
++}
++
+ int os_sync_file(int fd)
+ {
+ 	int n = fsync(fd);
+-- 
+1.7.10.4
+
+
+------------------------------------------------------------------------------
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
