@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XPcKo-0005P1-Mc
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XPcGv-0008Cv-1S
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 04 Sep 2014 19:04:42 +0000
+	Thu, 04 Sep 2014 19:00:41 +0000
 Received: from ivanoab3.miniserver.com ([89.200.143.206])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XPcKm-0006sn-Dp
+	(Exim 4.76) id 1XPcGs-0006kY-G0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 04 Sep 2014 19:04:42 +0000
+	Thu, 04 Sep 2014 19:00:40 +0000
 From: anton.ivanov@kot-begemot.co.uk
-Date: Thu,  4 Sep 2014 20:00:27 +0100
-Message-Id: <1409857227-717756-11-git-send-email-anton.ivanov@kot-begemot.co.uk>
+Date: Thu,  4 Sep 2014 20:00:20 +0100
+Message-Id: <1409857227-717756-4-git-send-email-anton.ivanov@kot-begemot.co.uk>
 In-Reply-To: <1409857227-717756-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 References: <1409857227-717756-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
@@ -28,740 +28,1065 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v3 10/10] High Resolution Timer subsystem for UML
+Subject: [uml-devel] [PATCH v3 03/10] High performance networking subsystem
 To: user-mode-linux-devel@lists.sourceforge.net
 
 From: Anton Ivanov <antivano@cisco.com>
 
-This patch adds an extra timer source which has correct timing
-and uses an up-to-date OS API and.
+    Support for multi-packet vector IO - multiple packets
+    read in one syscall and (optionally) written in one syscall.
+    Support for (optional) queueing on EAGAIN/ENOBUFS - applies
+    only to socket transports. Sorry TAP, -EYOULOSE - it will remain
+    slower than any socket transport for a very log time because
+    sendmmsg/recvmmsg is supported only for sockets, not for tap fds.
 
-Results - correct kernel behaviour on timer related tasks.
+    Should work with legacy UML, thorough tested only for the epoll
+    based IRQ controller
 
-    1. Improvement in network performance (TCP state machines
-are now fed correct time).
-    2. Correct QoS and traffic shaping.
+    Minimal host kernel version for RX - 2.6.32
+    Minimal host kernel version for TX - 3.0 - optional, config
+    option UML_NET_VECTOR_TX
 
-This improvement does not (and cannot) fix UML userspace. Its
-timer/time related behaviour is heavily dependent on getting
-VTALRM pacing which is instantiated on a per userspace thread
-basis. This patch does not fix this!!! It sorts out only the
-kernel side - forwarding, qos, tcp, etc.
+    Tested on Debian 7.0/Ubuntu 12.x LTS host which have the relevant
+    syscalls, but do not have the appropriate glibc routine for TX
+    (this is why it is a direct syscall).
+
+    Tested thoroughly with Debian and OpenWRT guests across a range of
+    kernels (3.2, 3.3, 3.4, 3.8, 3.12).
 
 Signed-off-by: Anton Ivanov <antivano@cisco.com>
 ---
- arch/um/Makefile                        |    2 +-
- arch/um/include/asm/irq.h               |    3 +-
- arch/um/include/shared/kern_util.h      |    1 +
- arch/um/include/shared/os.h             |    5 +
- arch/um/include/shared/timer-internal.h |   19 +++
- arch/um/kernel/irq.c                    |   11 ++
- arch/um/kernel/process.c                |    9 +-
- arch/um/kernel/time.c                   |   42 +++++--
- arch/um/os-Linux/signal.c               |   49 +++++++-
- arch/um/os-Linux/skas/process.c         |   22 ++--
- arch/um/os-Linux/time.c                 |  196 +++++++++++++++++++++++--------
- 11 files changed, 277 insertions(+), 82 deletions(-)
- create mode 100644 arch/um/include/shared/timer-internal.h
+ arch/um/Kconfig.net               |    9 ++
+ arch/um/drivers/Makefile          |    2 +-
+ arch/um/drivers/net_extra_kern.c  |  308 +++++++++++++++++++++++++++++++++++
+ arch/um/drivers/net_extra_user.c  |  317 +++++++++++++++++++++++++++++++++++++
+ arch/um/drivers/net_kern.c        |   63 +++++---
+ arch/um/include/asm/irq.h         |   26 +--
+ arch/um/include/shared/net_kern.h |   31 ++++
+ arch/um/include/shared/net_user.h |   24 +++
+ arch/um/kernel/irq.c              |    5 +
+ 9 files changed, 752 insertions(+), 33 deletions(-)
+ create mode 100644 arch/um/drivers/net_extra_kern.c
+ create mode 100644 arch/um/drivers/net_extra_user.c
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 133f7de..9864fb7 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -121,7 +121,7 @@ export LDS_ELF_FORMAT := $(ELF_FORMAT)
- # The wrappers will select whether using "malloc" or the kernel allocator.
- LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
+diff --git a/arch/um/Kconfig.net b/arch/um/Kconfig.net
+index 820a56f..e4a7cf2 100644
+--- a/arch/um/Kconfig.net
++++ b/arch/um/Kconfig.net
+@@ -21,6 +21,15 @@ config UML_NET
+         enable at least one of the following transport options to actually
+         make use of UML networking.
  
--LD_FLAGS_CMDLINE = $(foreach opt,$(LDFLAGS),-Wl,$(opt))
-+LD_FLAGS_CMDLINE = $(foreach opt,$(LDFLAGS),-Wl,$(opt)) -lrt
- 
- # Used by link-vmlinux.sh which has special support for um link
- export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
-diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
-index be9128b..4dd2f07 100644
---- a/arch/um/include/asm/irq.h
-+++ b/arch/um/include/asm/irq.h
-@@ -22,8 +22,9 @@
- #define TELNETD_IRQ 		UM_END_ETH_IRQ + 7
- #define XTERM_IRQ 		UM_END_ETH_IRQ + 8
- #define RANDOM_IRQ 		UM_END_ETH_IRQ + 9
-+#define HRTIMER_IRQ             UM_END_ETH_IRQ + 10
- 
--#define LAST_IRQ RANDOM_IRQ
-+#define LAST_IRQ HRTIMER_IRQ
- #define NR_IRQS (LAST_IRQ + 1)
- 
- #endif
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index 83a91f9..0282b36 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -37,6 +37,7 @@ extern void initial_thread_cb(void (*proc)(void *), void *arg);
- extern int is_syscall(unsigned long addr);
- 
- extern void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
-+extern void hrtimer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
- 
- extern int start_uml(void);
- extern void paging_init(void);
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 7f544f4..d4fefb9 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -222,6 +222,7 @@ extern char *get_umid(void);
- 
- /* signal.c */
- extern void timer_init(void);
-+extern void uml_hrtimer_init(void);
- extern void set_sigstack(void *sig_stack, int size);
- extern void remove_sigstack(void);
- extern void set_handler(int sig);
-@@ -245,8 +246,12 @@ extern void idle_sleep(unsigned long long nsecs);
- extern int set_interval(void);
- extern int timer_one_shot(int ticks);
- extern long long disable_timer(void);
-+extern long long timer_remain(void);
- extern void uml_idle_timer(void);
-+extern long long persistent_clock_emulation(void);
- extern long long os_nsecs(void);
-+extern long long os_vnsecs(void);
-+extern int itimer_init(void);
- 
- /* skas/mem.c */
- extern long run_syscall_stub(struct mm_id * mm_idp,
-diff --git a/arch/um/include/shared/timer-internal.h b/arch/um/include/shared/timer-internal.h
++config UML_NET_VECTOR_TX
++        bool "Vector transmit in network devices"
++        depends on UML_NET
++    help
++        Accelerate network IO by using sendmmsg() linux syscall. This option
++        requires the host running UML to run at least linux 3.0
++        Presently the acceleration is only for forwarding including firewall,
++        NAT, etc where it yields 25%+ improvement in packet rates and throughput
++
+ config UML_NET_ETHERTAP
+ 	bool "Ethertap transport"
+ 	depends on UML_NET
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index e7582e1..836baaf 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -10,7 +10,7 @@ slip-objs := slip_kern.o slip_user.o
+ slirp-objs := slirp_kern.o slirp_user.o
+ daemon-objs := daemon_kern.o daemon_user.o
+ umcast-objs := umcast_kern.o umcast_user.o
+-net-objs := net_kern.o net_user.o
++net-objs := net_kern.o net_user.o net_extra_user.o net_extra_kern.o
+ mconsole-objs := mconsole_kern.o mconsole_user.o
+ hostaudio-objs := hostaudio_kern.o
+ ubd-objs := ubd_kern.o ubd_user.o
+diff --git a/arch/um/drivers/net_extra_kern.c b/arch/um/drivers/net_extra_kern.c
 new file mode 100644
-index 0000000..3e78d83
+index 0000000..5ee6f9b
 --- /dev/null
-+++ b/arch/um/include/shared/timer-internal.h
-@@ -0,0 +1,19 @@
++++ b/arch/um/drivers/net_extra_kern.c
+@@ -0,0 +1,308 @@
 +/*
 + * Copyright (C) 2012 - 2014 Cisco Systems
-+ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
++ * James Leu (jleu@mindspring.net).
++ * Copyright (C) 2001 by various other people who didn't put their name here.
++ * Licensed under the GPL.
++ */
++
++#include <linux/bootmem.h>
++#include <linux/etherdevice.h>
++#include <linux/ethtool.h>
++#include <linux/inetdevice.h>
++#include <linux/init.h>
++#include <linux/list.h>
++#include <linux/netdevice.h>
++#include <linux/platform_device.h>
++#include <linux/rtnetlink.h>
++#include <linux/skbuff.h>
++#include <linux/slab.h>
++#include <linux/spinlock.h>
++#include "init.h"
++#include "irq_kern.h"
++#include "irq_user.h"
++#include "mconsole_kern.h"
++#include "net_kern.h"
++#include "net_user.h"
++
++#define DRIVER_NAME "uml-netdev"
++
++/*
++	These are wrappers around key kernel side functions so we can
++	invoke them from the user side of our Schizofreniac self
++
++*/
++
++extern spinlock_t uml_sigio_lock;
++extern int in_epoll_loop;
++
++static DEFINE_SPINLOCK(net_queue_list);
++
++static struct mmsg_queue_info * pending_queue = NULL;
++
++void uml_net_destroy_skb(void * skb)
++{
++	if (skb) {
++		kfree_skb((struct sk_buff *) skb);
++	}
++}
++
++void * uml_net_build_skb (void * dev)
++{
++	struct uml_net_private *lp = netdev_priv((struct net_device *) dev);
++	struct sk_buff * skb;
++
++	skb =  dev_alloc_skb(lp->max_packet + 32);
++	if (skb) {
++	/* add some tunneling space just in case, we usually do not need it as we use vector IO */
++		skb_reserve(skb,32);
++		skb->dev = dev;
++		skb_put(skb, lp->max_packet);
++		skb_reset_mac_header(skb);
++		skb->ip_summed =  CHECKSUM_NONE;
++	} else {
++		printk("Failed Atomic SKB Allocation, will drop\n");
++	}
++	return skb;
++}
++
++void * uml_net_skb_data (void * skb) {
++	if (skb) {
++		return ((struct sk_buff *) skb)->data;
++	} else {
++		printk("hole in vector!!!\n");
++		return NULL;
++	}
++}
++
++int uml_net_advance_head( struct mmsg_queue_info * queue_info, int advance)
++{
++	int queue_depth;
++	queue_info->head =
++		(queue_info->head + advance)
++			% queue_info->max_depth;
++
++	/* caller is already holding the head_lock */
++
++	spin_lock(&queue_info->tail_lock);
++	queue_info->queue_depth -= advance;
++
++	/* we are at 0, use this to
++	 * reset head and tail so we can use max size vectors
++	 */
++	if (queue_info->queue_depth == 0) {
++		queue_info->head = 0;
++		queue_info->tail = 0;
++	}
++	queue_depth = queue_info->queue_depth;
++	spin_unlock(&queue_info->tail_lock);
++	return queue_depth;
++}
++
++/*
++*	This is called by enqueuers which should hold the
++*	head lock already
++*/
++
++int uml_net_advance_tail( struct mmsg_queue_info * queue_info, int advance)
++{
++	int queue_depth;
++	queue_info->tail =
++		(queue_info->tail + advance)
++			% queue_info->max_depth;
++	spin_lock(&queue_info->head_lock);
++	queue_info->queue_depth += advance;
++	queue_depth = queue_info->queue_depth;
++	spin_unlock(&queue_info->head_lock);
++	return queue_depth;
++}
++
++/*
++* Generic vector enqueue with support for forming headers using transport
++* specific callback. Allows GRE, L2TPv3, RAW (and potentially when ported)
++* daemon to use a common enqueue procedure in vector mode
++*/
++
++int uml_net_enqueue (
++	struct mmsg_queue_info * queue_info,
++	struct sk_buff * skb,
++	struct uml_net_private *lp,
++	void (*form_header)(void * header, struct sk_buff * skb, struct uml_net_private * lp),
++	void * remote_addr,
++	int remote_addr_size)
++{
++
++	int queue_depth;
++	struct sk_buff * mmsg_clone;
++	struct mmsghdr * mmsg_send_vector;
++	void ** skb_send_vector;
++	struct iovec * iov;
++
++	if (!queue_info) {
++		/* someone passed us a NULL queue */
++		return 0;
++	}
++
++	spin_lock(&queue_info->tail_lock);
++	spin_lock(&queue_info->head_lock);
++	queue_depth = queue_info->queue_depth;
++	spin_unlock(&queue_info->head_lock);
++
++	if (queue_depth < queue_info->max_depth) {
++		mmsg_clone = skb_clone(skb, GFP_ATOMIC);
++		if (mmsg_clone) {
++
++			skb_send_vector = queue_info->skb_send_vector;
++			skb_send_vector +=  queue_info->tail;
++
++			(* skb_send_vector) = mmsg_clone;
++
++			mmsg_send_vector = queue_info->mmsg_send_vector;
++			mmsg_send_vector += queue_info->tail;
++
++			iov = mmsg_send_vector->msg_hdr.msg_iov;
++
++			if (iov) {
++				mmsg_send_vector->msg_hdr.msg_name = remote_addr;
++				mmsg_send_vector->msg_hdr.msg_namelen = remote_addr_size;
++				if (form_header != NULL) {
++					(* form_header)(iov->iov_base, skb, lp);
++					iov++;
++				}
++				iov->iov_base = skb->data;
++				iov->iov_len = skb->len;
++
++				queue_depth = uml_net_advance_tail(queue_info, 1);
++			} else {
++				printk("no iov, cannot enqueue\n");
++			}
++		} else {
++			printk("cloning failed\n");
++		}
++	}
++	spin_unlock(&queue_info->tail_lock);
++	return queue_depth;
++}
++
++static int send_mmsg_queue(struct mmsg_queue_info * queue_info, int queue_depth)
++{
++	int fd = queue_info->fd;
++	struct mmsghdr * send_from;
++	void ** skb_send_vector;
++	int result = 0, send_len, skb_index, allowed_drop = 0;
++
++	if (! queue_info) {
++		/* someone passed a null queue, should not occur */
++		return 0;
++	}
++
++	if (spin_trylock(&queue_info->head_lock))   {
++		if (spin_trylock(&queue_info->tail_lock)) {
++			/* update queue_depth to current value */
++			queue_depth = queue_info->queue_depth;
++			spin_unlock(&queue_info->tail_lock);
++			if (queue_depth > 0) {
++				send_len = queue_depth;
++				send_from = queue_info->mmsg_send_vector;
++				send_from += queue_info->head;
++				if (send_len + queue_info->head > queue_info->max_depth) {
++					send_len = queue_info->max_depth - queue_info->head;
++				}
++				if (send_len > 0) {
++					result = net_sendmmsg(
++					    fd, send_from, send_len, 0
++					);
++				}
++				if (result < 0) {
++					printk("error %i in multisend\n", result);
++					result = send_len; /* drop the lot */
++				}
++				if (result > 0) {
++					if (result != send_len) {
++						/* we need to drop a few, exponentially increasing
++						 * drop bucket in use
++						 */
++						result += allowed_drop;
++						allowed_drop += allowed_drop * 2 + 1;
++						if (result > send_len) {
++							/* do not drop beyond requested size */
++							result = send_len;
++						}
++					} else {
++						/* clear drop bucket size */
++						allowed_drop = 0;
++					}
++					skb_send_vector = queue_info->skb_send_vector;
++					skb_send_vector += queue_info->head;
++					for (skb_index = 0; skb_index < send_len; skb_index++) {
++						uml_net_destroy_skb(* skb_send_vector);
++						(* skb_send_vector) = NULL; /* just in case */
++						skb_send_vector ++ ;
++					}
++					queue_depth = uml_net_advance_head(queue_info, result);
++				}
++			}
++		}
++		spin_unlock(&queue_info->head_lock);
++	}
++	return queue_depth;
++}
++
++int uml_net_flush_mmsg_queue(
++    struct mmsg_queue_info * queue_info, int queue_depth)
++{
++	int old_queue_depth;
++
++	if (queue_depth >= (queue_info->max_depth - 1)) {
++		/* queue full, flush some regardless */
++		queue_depth = send_mmsg_queue(queue_info, queue_depth);
++	}
++	if ((queue_depth > 0) && (spin_trylock(&uml_sigio_lock))) {
++		/* unconditional flush, non zero queue - not in epoll loop so not forwarding */
++		if (!(in_epoll_loop)) {
++			while (queue_depth > 0) {
++				queue_depth = send_mmsg_queue(queue_info, queue_depth);
++			}
++		}
++		spin_unlock(&uml_sigio_lock);
++	}
++
++	/* we are forwarding (most likely) - check if there is a pending queue, if there is a
++	 * pending queue, flush it, then put the current queue as pending
++	 */
++
++	spin_lock(&net_queue_list);
++	if ((pending_queue) && (pending_queue != queue_info)) {
++		old_queue_depth = send_mmsg_queue(pending_queue, 1);
++		while (old_queue_depth > 0) {
++			old_queue_depth =
++				send_mmsg_queue(pending_queue, old_queue_depth);
++		}
++	}
++	if (queue_depth) {
++		pending_queue = queue_info;
++	} else {
++		pending_queue = NULL;
++	}
++	spin_unlock(&net_queue_list);
++
++	return queue_depth;
++}
++
++/*
++* this is invoked out of the IRQ IO event loop to flush pending
++* packets on "current" interface
++*/
++
++void flush_pending_netio(void) {
++	int result;
++	spin_lock(&net_queue_list);
++	if (pending_queue) {
++		do {
++			result = send_mmsg_queue(pending_queue, 1);
++		} while (result > 0);
++	}
++	pending_queue = NULL;
++	spin_unlock(&net_queue_list);
++}
+diff --git a/arch/um/drivers/net_extra_user.c b/arch/um/drivers/net_extra_user.c
+new file mode 100644
+index 0000000..1037899
+--- /dev/null
++++ b/arch/um/drivers/net_extra_user.c
+@@ -0,0 +1,317 @@
++/*
++ * Copyright (C) 2012 - 2014 Cisco Systems
 + * Licensed under the GPL
 + */
 +
-+#ifndef __TIMER_INTERNAL_H__
-+#define __TIMER_INTERNAL_H__
-+
-+#define TIMER_MULTIPLIER 256
-+#define TIMER_MIN_DELTA 500
-+
-+extern void timer_lock(void);
-+extern void timer_unlock(void);
-+
-+extern long long hrtimer_disable(void);
-+extern long long tracingtimer_disable(void);
-+
-+#endif
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index a67a551..26f29d1 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -531,11 +531,22 @@ static struct irq_chip SIGVTALRM_irq_type = {
- 	.irq_unmask = dummy,
- };
- 
-+static struct irq_chip SIGUSR2_irq_type = {
-+	.name = "SIGUSR2",
-+	.irq_disable = dummy,
-+	.irq_enable = dummy,
-+	.irq_ack = dummy,
-+	.irq_mask = dummy,
-+	.irq_unmask = dummy,
-+};
-+
-+
- void __init init_IRQ(void)
- {
- 	int i;
- 
- 	irq_set_chip_and_handler(TIMER_IRQ, &SIGVTALRM_irq_type, handle_edge_irq);
-+	irq_set_chip_and_handler(HRTIMER_IRQ, &SIGUSR2_irq_type, handle_edge_irq);
- 	for (i = 1; i < NR_IRQS - 1 ; i++)
- 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
- 	os_setup_epoll(MAX_EPOLL_EVENTS);
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index bbcef52..3daf56b 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -27,6 +27,7 @@
- #include <kern_util.h>
- #include <os.h>
- #include <skas.h>
-+#include <timer-internal.h>
- 
- /*
-  * This is a per-cpu array.  A processor only modifies its entry and it only
-@@ -215,7 +216,13 @@ void arch_cpu_idle(void)
- 	unsigned long long nsecs;
- 
- 	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
--	nsecs = disable_timer();
-+
-+	/* there is no benefit whatsoever in disabling a pending
-+	* hrtimer and setting a nanowait for the same value instead
-+	* so we do timer disable + wait only for the tracing one here
-+	*/
-+
-+	nsecs = tracingtimer_disable();
- 	idle_sleep(nsecs);
- 	local_irq_enable();
- }
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 117568d..e714ecf 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012-2014 Cisco Systems
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
-@@ -12,6 +13,8 @@
- #include <asm/param.h>
- #include <kern_util.h>
- #include <os.h>
-+#include <timer-internal.h>
-+
- 
- void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- {
-@@ -22,6 +25,15 @@ void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 	local_irq_restore(flags);
- }
- 
-+void hrtimer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	do_IRQ(HRTIMER_IRQ, regs);
-+	local_irq_restore(flags);
-+}
-+
- static void itimer_set_mode(enum clock_event_mode mode,
- 			    struct clock_event_device *evt)
- {
-@@ -44,7 +56,7 @@ static void itimer_set_mode(enum clock_event_mode mode,
- static int itimer_next_event(unsigned long delta,
- 			     struct clock_event_device *evt)
- {
--	return timer_one_shot(delta + 1);
-+	return timer_one_shot(delta);
- }
- 
- static struct clock_event_device itimer_clockevent = {
-@@ -54,8 +66,11 @@ static struct clock_event_device itimer_clockevent = {
- 	.features	= CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
- 	.set_mode	= itimer_set_mode,
- 	.set_next_event = itimer_next_event,
--	.shift		= 32,
-+	.shift		= 0,
-+	.max_delta_ns	= 0xffffffff,
-+	.min_delta_ns	= TIMER_MIN_DELTA, //microsecond resolution should be enough for anyone, same as 640K RAM
- 	.irq		= 0,
-+	.mult		= 1,
- };
- 
- static irqreturn_t um_timer(int irq, void *dev)
-@@ -67,7 +82,7 @@ static irqreturn_t um_timer(int irq, void *dev)
- 
- static cycle_t itimer_read(struct clocksource *cs)
- {
--	return os_nsecs() / 1000;
-+	return os_nsecs() / TIMER_MULTIPLIER;
- }
- 
- static struct clocksource itimer_clocksource = {
-@@ -82,17 +97,21 @@ static void __init setup_itimer(void)
- {
- 	int err;
- 
--	err = request_irq(TIMER_IRQ, um_timer, 0, "timer", NULL);
-+	err = request_irq(TIMER_IRQ, um_timer, IRQF_DISABLED, "timer", NULL);
-+	if (err != 0)
-+		printk(KERN_ERR "register_timer : request_irq failed - "
-+		       "errno = %d\n", -err);
-+	err = request_irq(HRTIMER_IRQ, um_timer, IRQF_DISABLED, "hr timer", NULL);
- 	if (err != 0)
- 		printk(KERN_ERR "register_timer : request_irq failed - "
- 		       "errno = %d\n", -err);
-+        err = itimer_init();
-+
-+	if (err != 0)
-+		printk(KERN_ERR "init itimer failed - "
-+		       "errno = %d\n", -err);
- 
--	itimer_clockevent.mult = div_sc(HZ, NSEC_PER_SEC, 32);
--	itimer_clockevent.max_delta_ns =
--		clockevent_delta2ns(60 * HZ, &itimer_clockevent);
--	itimer_clockevent.min_delta_ns =
--		clockevent_delta2ns(1, &itimer_clockevent);
--	err = clocksource_register_hz(&itimer_clocksource, USEC_PER_SEC);
-+	err = clocksource_register_hz(&itimer_clocksource, NSEC_PER_SEC/TIMER_MULTIPLIER);
- 	if (err) {
- 		printk(KERN_ERR "clocksource_register_hz returned %d\n", err);
- 		return;
-@@ -102,7 +121,7 @@ static void __init setup_itimer(void)
- 
- void read_persistent_clock(struct timespec *ts)
- {
--	long long nsecs = os_nsecs();
-+	long long nsecs = persistent_clock_emulation();
- 
- 	set_normalized_timespec(ts, nsecs / NSEC_PER_SEC,
- 				nsecs % NSEC_PER_SEC);
-@@ -111,5 +130,6 @@ void read_persistent_clock(struct timespec *ts)
- void __init time_init(void)
- {
- 	timer_init();
-+	uml_hrtimer_init();
- 	late_time_init = setup_itimer;
- }
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 905924b..5edbc8d 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -23,7 +23,8 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
- 	[SIGBUS]	= bus_handler,
- 	[SIGSEGV]	= segv_handler,
- 	[SIGIO]		= sigio_handler,
--	[SIGVTALRM]	= timer_handler };
-+	[SIGVTALRM]	= timer_handler,
-+	[SIGUSR2]	= hrtimer_handler };
- 
- static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- {
-@@ -38,7 +39,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- 	}
- 
- 	/* enable signals if sig isn't IRQ signal */
--	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGVTALRM))
-+	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGVTALRM) && (sig != SIGUSR2))
- 		unblock_signals();
- 
- 	(*sig_info[sig])(sig, si, &r);
-@@ -58,6 +59,10 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- #define SIGVTALRM_BIT 1
- #define SIGVTALRM_MASK (1 << SIGVTALRM_BIT)
- 
-+#define SIGUSR2_BIT 1
-+#define SIGUSR2_MASK (1 << SIGUSR2_BIT)
-+
-+
- static int signals_enabled;
- static unsigned int signals_pending;
- 
-@@ -89,6 +94,17 @@ static void real_alarm_handler(mcontext_t *mc)
- 	timer_handler(SIGVTALRM, NULL, &regs);
- }
- 
-+static void real_hralarm_handler(mcontext_t *mc)
-+{
-+	struct uml_pt_regs regs;
-+
-+	if (mc != NULL)
-+		get_regs_from_mc(&regs, mc);
-+	regs.is_user = 0;
-+	hrtimer_handler(SIGUSR2, NULL, &regs);
-+}
-+
-+
- void alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
- {
- 	int enabled;
-@@ -105,11 +121,33 @@ void alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
- 	set_signals(enabled);
- }
- 
-+void hralarm_handler(int sig, mcontext_t *mc)
-+{
-+	int enabled;
-+
-+	enabled = signals_enabled;
-+	if (!signals_enabled) {
-+		signals_pending |= SIGUSR2_MASK;
-+		return;
-+	}
-+
-+	block_signals();
-+
-+	real_hralarm_handler(mc);
-+	set_signals(enabled);
-+}
-+
-+
- void timer_init(void)
- {
- 	set_handler(SIGVTALRM);
- }
- 
-+void uml_hrtimer_init(void)
-+{
-+	set_handler(SIGUSR2);
-+}
-+
- void set_sigstack(void *sig_stack, int size)
- {
- 	stack_t stack = ((stack_t) { .ss_flags	= 0,
-@@ -129,7 +167,8 @@ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
- 
- 	[SIGIO] = sig_handler,
- 	[SIGWINCH] = sig_handler,
--	[SIGVTALRM] = alarm_handler
-+	[SIGVTALRM] = alarm_handler,
-+	[SIGUSR2] = hralarm_handler
- };
- 
- 
-@@ -189,6 +228,7 @@ void set_handler(int sig)
- 	sigaddset(&action.sa_mask, SIGVTALRM);
- 	sigaddset(&action.sa_mask, SIGIO);
- 	sigaddset(&action.sa_mask, SIGWINCH);
-+	sigaddset(&action.sa_mask, SIGUSR2);
- 
- 	if (sig == SIGSEGV)
- 		flags |= SA_NODEFER;
-@@ -283,6 +323,9 @@ void unblock_signals(void)
- 
- 		if (save_pending & SIGVTALRM_MASK)
- 			real_alarm_handler(NULL);
-+
-+		if (save_pending & SIGUSR2_MASK)
-+			real_hralarm_handler(NULL);
- 	}
- }
- 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index d531879..a2fd9407 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -346,8 +346,7 @@ int start_userspace(unsigned long stub_stack)
- 
- void userspace(struct uml_pt_regs *regs)
- {
--	struct itimerval timer;
--	unsigned long long nsecs, now;
-+	unsigned long long nsecs;
- 	int err, status, op, pid = userspace_pid[0];
- 	/* To prevent races if using_sysemu changes under us.*/
- 	int local_using_sysemu;
-@@ -356,13 +355,11 @@ void userspace(struct uml_pt_regs *regs)
- 	/* Handle any immediate reschedules or signals */
- 	interrupt_end();
- 
--	if (getitimer(ITIMER_VIRTUAL, &timer))
--		printk(UM_KERN_ERR "Failed to get itimer, errno = %d\n", errno);
--	nsecs = timer.it_value.tv_sec * UM_NSEC_PER_SEC +
--		timer.it_value.tv_usec * UM_NSEC_PER_USEC;
--	nsecs += os_nsecs();
--
- 	while (1) {
-+
-+		nsecs = timer_remain();
-+	        nsecs += os_nsecs();
-+
- 		/*
- 		 * This can legitimately fail if the process loads a
- 		 * bogus value into a segment register.  It will
-@@ -434,23 +431,18 @@ void userspace(struct uml_pt_regs *regs)
- 				relay_signal(SIGTRAP, (struct siginfo *)&si, regs);
- 				break;
- 			case SIGVTALRM:
--				now = os_nsecs();
--				if (now < nsecs)
-+				if (nsecs < os_nsecs())
- 					break;
- 				block_signals();
- 				(*sig_info[sig])(sig, (struct siginfo *)&si, regs);
- 				unblock_signals();
--				nsecs = timer.it_value.tv_sec *
--					UM_NSEC_PER_SEC +
--					timer.it_value.tv_usec *
--					UM_NSEC_PER_USEC;
--				nsecs += os_nsecs();
- 				break;
- 			case SIGIO:
- 			case SIGILL:
- 			case SIGBUS:
- 			case SIGFPE:
- 			case SIGWINCH:
-+			case SIGUSR2:
- 				block_signals();
- 				(*sig_info[sig])(sig, (struct siginfo *)&si, regs);
- 				unblock_signals();
-diff --git a/arch/um/os-Linux/time.c b/arch/um/os-Linux/time.c
-index e9824d5..1dd9c53 100644
---- a/arch/um/os-Linux/time.c
-+++ b/arch/um/os-Linux/time.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012-2014 Cisco Systems
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
-@@ -10,13 +11,59 @@
- #include <sys/time.h>
- #include <kern_util.h>
- #include <os.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <stdarg.h>
++#include <errno.h>
++#include <stddef.h>
 +#include <string.h>
- #include "internal.h"
-+#include <timer-internal.h>
-+
-+static timer_t event_high_res_timer = 0;
-+
-+static inline long long timeval_to_ns(const struct timeval *tv)
-+{
-+	return ((long long) tv->tv_sec * UM_NSEC_PER_SEC) +
-+		tv->tv_usec * UM_NSEC_PER_USEC;
-+}
-+
-+static inline long long timespec_to_ns(const struct timespec *ts)
-+{
-+	return ((long long) ts->tv_sec * UM_NSEC_PER_SEC) +
-+		ts->tv_nsec;
-+}
-+
-+long long  persistent_clock_emulation (void) {
-+	struct timespec realtime_tp;
-+
-+	clock_gettime(CLOCK_REALTIME, &realtime_tp);
-+	return timespec_to_ns(&realtime_tp);
-+}
-+
-+
-+int itimer_init(void) {
-+	struct sigevent sev, bbev;
-+	sev.sigev_notify = SIGEV_SIGNAL;
-+	sev.sigev_signo = SIGUSR2; /* note - hrtimer now has its own signal */
-+	sev.sigev_value.sival_ptr = &event_high_res_timer;
-+	if (timer_create(
-+		CLOCK_MONOTONIC,
-+		&sev,
-+		&event_high_res_timer) == -1
-+	) {
-+		printk("Failed to create Timer");
-+		return -1;
-+	} else {
-+		printk("Event timer ID is 0x%lx\n", (long) event_high_res_timer);
-+	}
-+	return 0;
-+}
++#include <sys/socket.h>
++#include <sys/wait.h>
++#include <asm/unistd.h>
++#include "net_user.h"
++#include "os.h"
++#include "um_malloc.h"
 +
 +/*
-+* This is used for tracing and cannot be removed at this point (TODO)
++* Principles of operation:
++*
++* EVERYTHING here is built to tolerate a failed memory allocation.
++* If either a header buffer or a data buffer (taken from skb->data)
++* is NULL the read will fail and the packet will be dropped. This
++* is the normal behaviour of recvmsg and recvmmsg functions - if a
++* particular iov_base == NULL and its corresponding iov_baselen is
++* 0 we truncate and/or drop the packet altogether.
++*
++* On the negative side this means that we have to do a few more
++* checks for NULL here and there. On the positive side this means
++* that the whole thing is more robust including under low
++* memory conditions.
++*
++* There is one special case which we need to handle as a result of
++* this - any header verification functions should return "broken
++* header" on hitting a NULL. This will in turn invoke the applicable
++* packet drop logic.
++*
++* Any changes should follow this overall design.
++*
++* Side effect - none of these need to use the shared (and mutexed)
++* drop skb. This is surplus to reqs, the normal recvm(m)msg drop
++* mechanics will drop it.
 +*/
- 
- int set_interval(void)
- {
- 	int usec = UM_USEC_PER_SEC / UM_HZ;
- 	struct itimerval interval = ((struct itimerval) { { 0, usec },
--							  { 0, usec } });
-+							{ 0, usec } });
- 
- 	if (setitimer(ITIMER_VIRTUAL, &interval, NULL) == -1)
- 		return -errno;
-@@ -24,61 +71,104 @@ int set_interval(void)
- 	return 0;
- }
- 
--int timer_one_shot(int ticks)
-+long long timer_remain (void)
- {
--	unsigned long usec = ticks * UM_USEC_PER_SEC / UM_HZ;
--	unsigned long sec = usec / UM_USEC_PER_SEC;
- 	struct itimerval interval;
-+	long long remain = 0;
-+	if (getitimer(ITIMER_VIRTUAL, &interval)) {
-+		printk(UM_KERN_ERR "Failed to get itimer, errno = %d\n", errno);
-+	} else {
-+		remain = timeval_to_ns(&interval.it_value);
++
++int net_readv(int fd, void *iov, int iovcnt)
++{
++	int n;
++
++	CATCH_EINTR(n = readv(fd,  iov,  iovcnt));
++	if ((n < 0) && (errno == EAGAIN))
++		return 0;
++	else if (n == 0)
++		return -ENOTCONN;
++	return n;
++}
++
++int net_recvfrom2(int fd, void *buf, int len, void *src_addr, int *addrlen)
++{
++	int n;
++
++	CATCH_EINTR(n = recvfrom(fd,  buf,  len, 0, src_addr, addrlen));
++	if (n < 0) {
++		if (errno == EAGAIN)
++			return 0;
++		return -errno;
 +	}
-+	return remain;
-+}
- 
--	usec %= UM_USEC_PER_SEC;
--	interval = ((struct itimerval) { { 0, 0 }, { sec, usec } });
-+int timer_one_shot(int ticks)
-+{
-+	struct itimerspec its;
-+	unsigned long long nsec;
-+	unsigned long sec;
- 
--	if (setitimer(ITIMER_VIRTUAL, &interval, NULL) == -1)
--		return -errno;
-+
-+        nsec = (ticks + 1);
-+
-+        sec = nsec / UM_NSEC_PER_SEC;
-+
-+	nsec = nsec % UM_NSEC_PER_SEC;
-+
-+	its.it_value.tv_sec = nsec / UM_NSEC_PER_SEC;
-+	its.it_value.tv_nsec = nsec ;
-+
-+	its.it_interval.tv_sec = 0;
-+	its.it_interval.tv_nsec = 0; // we cheat here
-+
-+	timer_settime(event_high_res_timer, 0, &its, NULL);
- 
- 	return 0;
- }
- 
--/**
-- * timeval_to_ns - Convert timeval to nanoseconds
-- * @ts:		pointer to the timeval variable to be converted
-- *
-- * Returns the scalar nanosecond representation of the timeval
-- * parameter.
-- *
-- * Ripped from linux/time.h because it's a kernel header, and thus
-- * unusable from here.
-- */
--static inline long long timeval_to_ns(const struct timeval *tv)
-+long long hrtimer_disable(void)
- {
--	return ((long long) tv->tv_sec * UM_NSEC_PER_SEC) +
--		tv->tv_usec * UM_NSEC_PER_USEC;
-+	struct itimerspec its;
-+
-+	memset(&its, 0, sizeof(struct itimerspec));
-+	timer_settime(event_high_res_timer, 0, &its, &its);
-+
-+	return its.it_value.tv_sec * UM_NSEC_PER_SEC + its.it_value.tv_nsec;
++	else if (n == 0)
++		return -ENOTCONN;
++	return n;
 +}
 +
-+long long tracingtimer_disable(void)
++int net_writev(int fd, void *iov, int iovcnt)
 +{
-+	struct itimerval itv;
++	int n;
 +
-+	memset(&itv, 0, sizeof(struct itimerval));
-+	setitimer(ITIMER_VIRTUAL, &itv, &itv);
++	CATCH_EINTR(n = writev(fd, iov, iovcnt));
 +
-+	return itv.it_value.tv_sec * UM_NSEC_PER_SEC + itv.it_value.tv_usec * 1000;
- }
- 
- long long disable_timer(void)
- {
--	struct itimerval time = ((struct itimerval) { { 0, 0 }, { 0, 0 } });
--	long long remain, max = UM_NSEC_PER_SEC / UM_HZ;
-+	long long nsec;
-+	long long tnsec;
-+
-+        /*
-+	* This is now fixed in the main idle loop so we really kill
-+	* both timers here to ensure that UML can exit cleanly and
-+	* not die on a spurious SIG_VTALRM
-+        */
-+
-+
-+        nsec = hrtimer_disable();
-+        tnsec = tracingtimer_disable();
-+        if (nsec > tnsec) {
-+		return tnsec;
-+        } else {
-+		return nsec;
-+        }
++	if ((n < 0) && ((errno == EAGAIN) || (errno == ENOBUFS)))
++		return 0;
++	else if (n == 0)
++		return -ENOTCONN;
++	return n;
 +}
- 
--	if (setitimer(ITIMER_VIRTUAL, &time, &time) < 0)
--		printk(UM_KERN_ERR "disable_timer - setitimer failed, "
--		       "errno = %d\n", errno);
-+long long os_vnsecs(void)
++
++int net_sendmessage(int fd, void *msg, int flags)
 +{
-+	struct timespec ts;
++	int n;
++
++	CATCH_EINTR(n = sendmsg(fd, msg, flags));
++	if (n < 0) {
++		if ((errno == EAGAIN) || (errno == ENOBUFS))
++			return 0;
++		return -errno;
++	}
++	else if (n == 0)
++		return -ENOTCONN;
++	return n;
++}
++int net_recvmessage(int fd, void *msg, int flags)
++{
++	int n;
++
++	CATCH_EINTR(n = recvmsg(fd, msg, flags));
++	if (n < 0) {
++		if (errno == EAGAIN)
++			return 0;
++		return -errno;
++	}
++	else if (n == 0)
++		return -ENOTCONN;
++	return n;
++}
++
++int net_recvmmsg(int fd, void *msgvec, unsigned int vlen,
++		    unsigned int flags, struct timespec *timeout)
++{
++	int n;
++
++	CATCH_EINTR(n = recvmmsg(fd, msgvec, vlen, flags, timeout));
++	if (n < 0) {
++		if (errno == EAGAIN)
++			return 0;
++		return -errno;
++	}
++	else if (n == 0)
++		return -ENOTCONN;
++	return n;
++}
++
++int net_sendmmsg(int fd, void *msgvec, unsigned int vlen,
++		    unsigned int flags)
++{
++	int n;
++
++#ifdef HAS_SENDMMSG
++
++    /* has proper sendmmsg */
++
++	CATCH_EINTR(n = sendmmsg(fd, msgvec, vlen, flags));
++#else
++
++    /* no glibc wrapper for sendmmsg - Ubuntu LTS 12.04, Debian 7.x */
++
++	CATCH_EINTR(n = syscall(__NR_sendmmsg, fd, msgvec, vlen, flags));
++#endif
++	if (n < 0) {
++		if ((errno == EAGAIN) || (errno == ENOBUFS))
++			return 0;
++		return -errno;
++	}
++	else if (n == 0)
++		return -ENOTCONN;
++	return n;
++}
++
++void destroy_skb_vector(void ** vector, int size)
++{
++	int i;
++	void ** tofree = vector;
++
++	for (i=0;i<size;i++) {
++		if ( * vector) {
++			uml_net_destroy_skb(* vector);
++		}
++	vector ++;
++	}
++	kfree(tofree);
++}
++
++void destroy_mmsg_vector(void * mmsgvector, int size, int free_iov_base)
++{
++	struct mmsghdr * vector = (struct mmsghdr *) mmsgvector;
++	struct iovec * iov;
++	int i;
++	if (vector) {
++		for (i = 0; i < size; i++) {
++			iov = vector->msg_hdr.msg_iov;
++			if (iov) {
++				if (free_iov_base) {
++					kfree(iov->iov_base);
++				}
++				kfree(iov);
++			}
++			vector ++;
++		}
++		kfree(mmsgvector);
++	} else {
++		printk("NULL mmsg vector in destroy, should not occur\n");
++	}
++}
++
++void * build_skbuf_vector(int size, void * dev)
++{
++	int i;
++	void **result, **vector;
++	result = uml_kmalloc(size * sizeof(void *), UM_GFP_KERNEL);
++	vector = result;
++	if (vector) {
++		for (i = 0; i < size; i++) {
++			* vector = uml_net_build_skb(dev);
++			vector++;
++		}
++	}
++	return result;
++}
++
++void rebuild_skbuf_vector(void ** skbvec, int size, void * dev)
++{
++	int i;
++	if (skbvec) {
++		for (i = 0; i < size; i++) {
++			* skbvec = uml_net_build_skb(dev);
++			skbvec++;
++		}
++	}
++}
++
++void repair_mmsg (void *vec, int iovsize, int header_size)
++{
++	struct mmsghdr * msgvec = (struct mmsghdr *) vec;
++	struct iovec * iov;
++	if (! msgvec->msg_hdr.msg_iov) {
++		msgvec->msg_hdr.msg_iov = uml_kmalloc(sizeof(struct iovec) * iovsize, UM_GFP_KERNEL);
++	}
++	iov = msgvec->msg_hdr.msg_iov;
++	if (iov) {
++		if (! iov->iov_base) {
++			iov->iov_base=uml_kmalloc(header_size, UM_GFP_KERNEL);
++		}
++		if (iov->iov_base) {
++			/* put correct header size just in case - we may have had a short frame */
++			iov->iov_len = header_size;
++		} else {
++			printk("failed to allocate a header buffer, will cause a packet drop later\n");
++			iov->iov_len = 0;
++		}
++	}
++}
++
++void * build_mmsg_vector(int size, int iovsize)
++{
++	int i;
++	struct mmsghdr *msgvec, *result;
++	struct iovec * iov;
++
++	result = uml_kmalloc(sizeof(struct mmsghdr) * size, UM_GFP_KERNEL);
++	msgvec = result;
++	if (msgvec) {
++		memset(msgvec, '\0', sizeof(struct mmsghdr) * size);
++		for ( i = 0; i < size; i++) {
++			iov = uml_kmalloc(sizeof(struct iovec) * iovsize, UM_GFP_KERNEL);
++			msgvec->msg_hdr.msg_iov=iov;
++			if (iov) {
++				memset(iov, '\0', sizeof(struct iovec) * iovsize);
++				msgvec->msg_hdr.msg_iovlen=iovsize;
++			} else {
++				printk("failed to allocate iov\n");
++				msgvec->msg_hdr.msg_iovlen=0; /* silent drop on receive, no xmit */
++			}
++			msgvec++;
++		}
++	}
++	return result;
++}
++
++void add_header_buffers(void * msgvec, int size, int header_size)
++{
++	int i;
++	struct iovec * iov;
++	struct mmsghdr * mmsgvec = (struct mmsghdr *) msgvec;
++	for ( i = 0; i < size; i++) {
++		iov = mmsgvec->msg_hdr.msg_iov;
++		if (iov) {
++			iov->iov_base=uml_kmalloc(header_size, UM_GFP_KERNEL);
++			if (iov->iov_base) {
++				iov->iov_len = header_size;
++			} else {
++				printk("failed to allocate a header buffer, will cause a packet drop later\n");
++				iov->iov_len = 0;
++			}
++		}
++	mmsgvec++;
++	}
++}
++
++/* NOTE - this is only for offset = 0 or 1, other cases are unhandled!!! */
++
++void add_skbuffs(void * msgvec, void ** skbvec, int size, int skb_size, int offset) {
++	int i;
++	struct iovec * iov;
++	struct mmsghdr * mmsgvec = (struct mmsghdr *) msgvec;
++	for ( i = 0; i < size; i++) {
++	/*
++	    This heavily relies on all IOVs being present, if the initial allocation
++	    fails it must clean up and switch to "normal" per-packet receive instead
++	    Later allocations of skbufs can fail - this will result in short reads
++	    and skips
++
++	 */
++		iov = mmsgvec->msg_hdr.msg_iov;
++		if (iov) {
++			iov += offset;
++			iov->iov_base=uml_net_skb_data(* skbvec);
++			if (iov->iov_base) {
++				iov->iov_len = skb_size;
++			} else {
++				printk("NULL SKB will drop\n");
++				iov->iov_len = 0;
++			}
++		} else {
++			printk("NULL IOV will drop\n");
++		}
++		mmsgvec++;
++		skbvec++;
++	}
++}
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index 64d8426..2889804 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2012 - 2014 Cisco Systems
+  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
+  * James Leu (jleu@mindspring.net).
+@@ -29,6 +30,7 @@
  
--	remain = timeval_to_ns(&time.it_value);
--	if (remain > max)
--		remain = max;
-+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts);
-+	return timespec_to_ns(&ts);
+ static DEFINE_SPINLOCK(opened_lock);
+ static LIST_HEAD(opened);
++static int rr_counter = 0;
  
--	return remain;
- }
+ /*
+  * The drop_skb is used when we can't allocate an skb.  The
+@@ -42,6 +44,7 @@ static DEFINE_SPINLOCK(drop_lock);
+ static struct sk_buff *drop_skb;
+ static int drop_max;
  
- long long os_nsecs(void)
++
+ static int update_drop_skb(int max)
  {
--	struct timeval tv;
+ 	struct sk_buff *new;
+@@ -77,24 +80,38 @@ static int uml_net_rx(struct net_device *dev)
+ 	struct sk_buff *skb;
  
--	gettimeofday(&tv, NULL);
--	return timeval_to_ns(&tv);
-+	struct timespec ts;
-+
-+        clock_gettime(CLOCK_MONOTONIC,&ts);
-+	return timespec_to_ns(&ts);
-+
- }
- 
-+
-+
- #ifdef UML_CONFIG_NO_HZ_COMMON
- static int after_sleep_interval(struct timespec *ts)
- {
-@@ -140,12 +230,12 @@ static int after_sleep_interval(struct timespec *ts)
- 	struct itimerval interval;
- 
- 	/*
--	 * It seems that rounding can increase the value returned from
--	 * setitimer to larger than the one passed in.  Over time,
--	 * this will cause the remaining time to be greater than the
--	 * tick interval.  If this happens, then just reduce the first
--	 * tick to the interval value.
--	 */
-+	* It seems that rounding can increase the value returned from
-+	* setitimer to larger than the one passed in.  Over time,
-+	* this will cause the remaining time to be greater than the
-+	* tick interval.  If this happens, then just reduce the first
-+	* tick to the interval value.
-+	*/
- 	if (start_usecs > usec)
- 		start_usecs = usec;
- 
-@@ -154,7 +244,7 @@ static int after_sleep_interval(struct timespec *ts)
- 		start_usecs = 0;
- 
- 	tv = ((struct timeval) { .tv_sec  = start_usecs / UM_USEC_PER_SEC,
--				 .tv_usec = start_usecs % UM_USEC_PER_SEC });
-+				.tv_usec = start_usecs % UM_USEC_PER_SEC });
- 	interval = ((struct itimerval) { { 0, usec }, tv });
- 
- 	if (setitimer(ITIMER_VIRTUAL, &interval, NULL) == -1)
-@@ -169,18 +259,24 @@ void idle_sleep(unsigned long long nsecs)
- 	struct timespec ts;
- 
- 	/*
--	 * nsecs can come in as zero, in which case, this starts a
--	 * busy loop.  To prevent this, reset nsecs to the tick
--	 * interval if it is zero.
--	 */
--	if (nsecs == 0)
--		nsecs = UM_NSEC_PER_SEC / UM_HZ;
+ 	/* If we can't allocate memory, try again next round. */
+-	skb = dev_alloc_skb(lp->max_packet);
+-	if (skb == NULL) {
+-		drop_skb->dev = dev;
+-		/* Read a packet into drop_skb and don't do anything with it. */
+-		(*lp->read)(lp->fd, drop_skb, lp);
+-		dev->stats.rx_dropped++;
++	if (lp->options & UML_NET_USE_SKB_READ) {
++	    /* we expect a full formed, well behaved skb from zero copy drivers here */
++	    skb = (*lp->skb_read)(lp);
++	    if (skb == NULL) {
+ 		return 0;
+-	}
 -
--	nsecs = sleep_time(nsecs);
-+	*   We sleep here for an interval that is not greater than HZ
-+	*   We did not disable the timer in "disable" so if there is a timer
-+	*   active it will wake us up right on time instead of doing
-+	*   stupid things trying to program nanosleep in a race condition
-+	*   manner.
-+	*/
+-	skb->dev = dev;
+-	skb_put(skb, lp->max_packet);
+-	skb_reset_mac_header(skb);
+-	pkt_len = (*lp->read)(lp->fd, skb, lp);
+-
+-	if (pkt_len > 0) {
++	    }
++	    pkt_len = skb->len;
++	} else {
++	    skb = dev_alloc_skb(lp->max_packet + 32);
++	    if (skb == NULL) {
++		    drop_skb->dev = dev;
++		    /* Read a packet into drop_skb and don't do anything with it. */
++		    (*lp->read)(lp->fd, drop_skb, lp);
++		    dev->stats.rx_dropped++;
++		    return 0;
++	    }
 +
-+        if ((nsecs == 0) || (nsecs > UM_NSEC_PER_SEC / UM_HZ)) {
-+		nsecs = UM_NSEC_PER_SEC / UM_HZ ;
-+        }
++	    skb_reserve(skb,32);
++	    skb->dev = dev;
++	    skb_put(skb, lp->max_packet);
++	    skb_reset_mac_header(skb);
 +
- 	ts = ((struct timespec) { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
--				  .tv_nsec	= nsecs % UM_NSEC_PER_SEC });
-+				.tv_nsec	= nsecs % UM_NSEC_PER_SEC });
-+
++	    // Mark that virtual devices cannot provide required checksum.
++	    skb->ip_summed = CHECKSUM_NONE;
++	    pkt_len = (*lp->read)(lp->fd, skb, lp);
++	    if (pkt_len > 0) {
+ 		skb_trim(skb, pkt_len);
+ 		skb->protocol = (*lp->protocol)(skb);
++	    }
++	}
  
--	if (nanosleep(&ts, &ts) == 0)
-+	if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, &ts) == 0) {
- 		deliver_alarm();
-+        }
-+        set_interval();
- 	after_sleep_interval(&ts);
++	if (pkt_len > 0) {
+ 		dev->stats.rx_bytes += skb->len;
+ 		dev->stats.rx_packets++;
+ 		netif_rx(skb);
+@@ -192,8 +209,9 @@ static int uml_net_close(struct net_device *dev)
+ 	struct uml_net_private *lp = netdev_priv(dev);
+ 
+ 	netif_stop_queue(dev);
++	deactivate_fd(lp->fd, dev->irq);
+ 
+-	um_free_irq(dev->irq, dev);
++	free_irq(dev->irq, dev);
+ 	if (lp->close != NULL)
+ 		(*lp->close)(lp->fd, &lp->user);
+ 	lp->fd = -1;
+@@ -216,7 +234,6 @@ static int uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	spin_lock_irqsave(&lp->lock, flags);
+ 
+ 	len = (*lp->write)(lp->fd, skb, lp);
+-	skb_tx_timestamp(skb);
+ 
+ 	if (len == skb->len) {
+ 		dev->stats.tx_packets++;
+@@ -273,14 +290,13 @@ static void uml_net_poll_controller(struct net_device *dev)
+ static void uml_net_get_drvinfo(struct net_device *dev,
+ 				struct ethtool_drvinfo *info)
+ {
+-	strlcpy(info->driver, DRIVER_NAME, sizeof(info->driver));
+-	strlcpy(info->version, "42", sizeof(info->version));
++	strcpy(info->driver, DRIVER_NAME);
++	strcpy(info->version, "42");
  }
+ 
+ static const struct ethtool_ops uml_net_ethtool_ops = {
+ 	.get_drvinfo	= uml_net_get_drvinfo,
+ 	.get_link	= ethtool_op_get_link,
+-	.get_ts_info	= ethtool_op_get_ts_info,
+ };
+ 
+ static void uml_net_user_timer_expire(unsigned long _conn)
+@@ -447,6 +463,7 @@ static void eth_configure(int n, void *init, char *mac,
+ 	 * These just fill in a data structure, so there's no failure
+ 	 * to be worried about.
+ 	 */
++	dev->ethtool_ops = &uml_net_ethtool_ops;
+ 	(*transport->kern->init)(dev, init);
+ 
+ 	*lp = ((struct uml_net_private)
+@@ -459,7 +476,9 @@ static void eth_configure(int n, void *init, char *mac,
+ 		  .open 		= transport->user->open,
+ 		  .close 		= transport->user->close,
+ 		  .remove 		= transport->user->remove,
++		  .options 		= transport->kern->options,
+ 		  .read 		= transport->kern->read,
++		  .skb_read 		= transport->kern->skb_read,
+ 		  .write 		= transport->kern->write,
+ 		  .add_address 		= transport->user->add_address,
+ 		  .delete_address  	= transport->user->delete_address });
+@@ -475,9 +494,9 @@ static void eth_configure(int n, void *init, char *mac,
+ 
+ 	dev->mtu = transport->user->mtu;
+ 	dev->netdev_ops = &uml_netdev_ops;
+-	dev->ethtool_ops = &uml_net_ethtool_ops;
+ 	dev->watchdog_timeo = (HZ >> 1);
+-	dev->irq = UM_ETH_IRQ;
++	dev->irq = UM_ETH_BASE_IRQ + (rr_counter % UM_ETH_IRQ_RR);
++	rr_counter++;
+ 
+ 	err = update_drop_skb(lp->max_packet);
+ 	if (err)
+@@ -829,7 +848,7 @@ static void close_devices(void)
+ 	spin_lock(&opened_lock);
+ 	list_for_each(ele, &opened) {
+ 		lp = list_entry(ele, struct uml_net_private, list);
+-		um_free_irq(lp->dev->irq, lp->dev);
++		free_irq(lp->dev->irq, lp->dev);
+ 		if ((lp->close != NULL) && (lp->fd >= 0))
+ 			(*lp->close)(lp->fd, &lp->user);
+ 		if (lp->remove != NULL)
+diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
+index 4a2037f..be9128b 100644
+--- a/arch/um/include/asm/irq.h
++++ b/arch/um/include/asm/irq.h
+@@ -1,21 +1,27 @@
++
+ #ifndef __UM_IRQ_H
+ #define __UM_IRQ_H
+ 
++#define UM_ETH_IRQ_RR	        32
++
+ #define TIMER_IRQ		0
+ #define UMN_IRQ			1
+ #define CONSOLE_IRQ		2
+ #define CONSOLE_WRITE_IRQ	3
+ #define UBD_IRQ			4
+-#define UM_ETH_IRQ		5
+-#define SSL_IRQ			6
+-#define SSL_WRITE_IRQ		7
+-#define ACCEPT_IRQ		8
+-#define MCONSOLE_IRQ		9
+-#define WINCH_IRQ		10
+-#define SIGIO_WRITE_IRQ 	11
+-#define TELNETD_IRQ 		12
+-#define XTERM_IRQ 		13
+-#define RANDOM_IRQ 		14
++#define UM_ETH_BASE_IRQ		5
++
++#define UM_END_ETH_IRQ	        UM_ETH_BASE_IRQ + UM_ETH_IRQ_RR
++
++#define SSL_IRQ			UM_END_ETH_IRQ + 1
++#define SSL_WRITE_IRQ		UM_END_ETH_IRQ + 2
++#define ACCEPT_IRQ		UM_END_ETH_IRQ + 3
++#define MCONSOLE_IRQ		UM_END_ETH_IRQ + 4
++#define WINCH_IRQ		UM_END_ETH_IRQ + 5
++#define SIGIO_WRITE_IRQ 	UM_END_ETH_IRQ + 6
++#define TELNETD_IRQ 		UM_END_ETH_IRQ + 7
++#define XTERM_IRQ 		UM_END_ETH_IRQ + 8
++#define RANDOM_IRQ 		UM_END_ETH_IRQ + 9
+ 
+ #define LAST_IRQ RANDOM_IRQ
+ #define NR_IRQS (LAST_IRQ + 1)
+diff --git a/arch/um/include/shared/net_kern.h b/arch/um/include/shared/net_kern.h
+index 012ac87..1e64658 100644
+--- a/arch/um/include/shared/net_kern.h
++++ b/arch/um/include/shared/net_kern.h
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2012 - 2014 Cisco Systems
+  * Copyright (C) 2002 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+@@ -13,6 +14,8 @@
+ #include <linux/list.h>
+ #include <linux/workqueue.h>
+ 
++#define UML_NET_USE_SKB_READ 1
++
+ struct uml_net {
+ 	struct list_head list;
+ 	struct net_device *dev;
+@@ -28,6 +31,7 @@ struct uml_net_private {
+ 
+ 	struct work_struct work;
+ 	int fd;
++	unsigned int options;
+ 	unsigned char mac[ETH_ALEN];
+ 	int max_packet;
+ 	unsigned short (*protocol)(struct sk_buff *);
+@@ -36,6 +40,7 @@ struct uml_net_private {
+ 	void (*remove)(void *);
+ 	int (*read)(int, struct sk_buff *skb, struct uml_net_private *);
+ 	int (*write)(int, struct sk_buff *skb, struct uml_net_private *);
++	struct sk_buff * (*skb_read)(struct uml_net_private *);
+ 
+ 	void (*add_address)(unsigned char *, unsigned char *, void *);
+ 	void (*delete_address)(unsigned char *, unsigned char *, void *);
+@@ -47,6 +52,8 @@ struct net_kern_info {
+ 	unsigned short (*protocol)(struct sk_buff *);
+ 	int (*read)(int, struct sk_buff *skb, struct uml_net_private *);
+ 	int (*write)(int, struct sk_buff *skb, struct uml_net_private *);
++	struct sk_buff * (*skb_read)(struct uml_net_private *);
++	unsigned int options;
+ };
+ 
+ struct transport {
+@@ -59,11 +66,35 @@ struct transport {
+ 	const int setup_size;
+ };
+ 
++struct mmsg_queue_info {
++	int fd;
++	struct mmsghdr * mmsg_send_vector;
++	void ** skb_send_vector;
++	int queue_depth, head, tail, max_depth;
++	spinlock_t head_lock;
++	spinlock_t tail_lock;
++};
++
+ extern struct net_device *ether_init(int);
+ extern unsigned short ether_protocol(struct sk_buff *);
+ extern int tap_setup_common(char *str, char *type, char **dev_name,
+ 			    char **mac_out, char **gate_addr);
+ extern void register_transport(struct transport *new);
+ extern unsigned short eth_protocol(struct sk_buff *skb);
++extern struct sk_buff *my_build_skb(void * head, void *data, unsigned int frag_size);
++
++extern void flush_pending_netio(void);
++
++extern int uml_net_advance_tail( struct mmsg_queue_info * queue_info, int advance);
++extern int uml_net_advance_head( struct mmsg_queue_info * queue_info, int advance);
++extern int uml_net_flush_mmsg_queue(struct mmsg_queue_info * queue_info, int queue_depth);
++
++extern int uml_net_enqueue (
++	struct mmsg_queue_info * queue_info,
++	struct sk_buff * skb,
++	struct uml_net_private *lp,
++	void (*form_header)(void * header, struct sk_buff * skb, struct uml_net_private * lp),
++	void * remote_addr,
++	int remote_addr_size);
+ 
+ #endif
+diff --git a/arch/um/include/shared/net_user.h b/arch/um/include/shared/net_user.h
+index 3dabbe1..4b46f37 100644
+--- a/arch/um/include/shared/net_user.h
++++ b/arch/um/include/shared/net_user.h
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2012 - 2014 Cisco Systems
+  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+@@ -38,10 +39,15 @@ extern void tap_check_ips(char *gate_addr, unsigned char *eth_addr);
+ extern void read_output(int fd, char *output_out, int len);
+ 
+ extern int net_read(int fd, void *buf, int len);
++extern int net_readv(int fd, void *iov, int iovcnt);
+ extern int net_recvfrom(int fd, void *buf, int len);
++extern int net_recvfrom2(int fd, void *buf, int len, void *src_addr, int *addrlen);
+ extern int net_write(int fd, void *buf, int len);
++extern int net_writev(int fd, void *iov, int iovcnt);
+ extern int net_send(int fd, void *buf, int len);
+ extern int net_sendto(int fd, void *buf, int len, void *to, int sock_len);
++extern int net_sendmessage(int fd, void *msg, int flags);
++extern int net_recvmessage(int fd, void *msg, int flags);
+ 
+ extern void open_addr(unsigned char *addr, unsigned char *netmask, void *arg);
+ extern void close_addr(unsigned char *addr, unsigned char *netmask, void *arg);
+@@ -50,4 +56,22 @@ extern char *split_if_spec(char *str, ...);
+ 
+ extern int dev_netmask(void *d, void *m);
+ 
++
++extern void uml_net_destroy_skb(void * skb);
++extern void * uml_net_build_skb (void * dev);
++extern void * uml_net_skb_data (void * skb);
++
++extern void add_skbuffs(void * msgvec, void ** skbvec, int size, int skb_size, int offset);
++extern void add_header_buffers(void * msgvec, int size, int header_size);
++extern void * build_mmsg_vector(int size, int iovsize);
++extern void rebuild_skbuf_vector(void ** skbvec, int size, void * dev);
++extern void * build_skbuf_vector(int size, void * dev);
++extern int net_recvmmsg(int fd, void *msgvec, unsigned int vlen,
++		unsigned int flags, struct timespec *timeout);
++extern int net_sendmmsg(int fd, void *msgvec, unsigned int vlen,
++		unsigned int flags);
++extern void repair_mmsg (void *msgvec, int iovsize, int header_size);
++extern void destroy_skb_vector(void ** vector, int size);
++extern void destroy_mmsg_vector(void * mmsgvector, int size, int free_iov_base);
++
+ #endif
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 2869160..a67a551 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -17,6 +17,7 @@
+ #include <as-layout.h>
+ #include <kern_util.h>
+ #include <os.h>
++#include <net_kern.h>
+ 
+ /*
+ *	We are on the "kernel side" so we cannot pick up the sys/epoll.h
+@@ -136,6 +137,10 @@ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ 		spin_unlock_irqrestore(&uml_sigio_lock, flags);
+ 	}
+ 
++#ifdef CONFIG_UML_NET_VECTOR_TX
++	flush_pending_netio();
++#endif
++
+ 	/* This needs a better way - it slows down the event loop */
+ 
+ 	free_irqs();
 -- 
 1.7.10.4
 
