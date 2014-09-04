@@ -1,28 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <antivano@cisco.com>) id 1XTPTy-00084T-4z
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <antivano@cisco.com>) id 1XPdvR-0005ET-88
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Sep 2014 06:09:50 +0000
+	Thu, 04 Sep 2014 20:46:37 +0000
 Received: from rcdn-iport-2.cisco.com ([173.37.86.73])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XTPTw-0006Tp-OP
+	(Exim 4.76) id 1XPdvQ-0001cd-1J
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Sep 2014 06:09:50 +0000
-Received: from xhc-rcd-x11.cisco.com (xhc-rcd-x11.cisco.com [173.37.183.85])
-	by rcdn-core-8.cisco.com (8.14.5/8.14.5) with ESMTP id s8F69bbU018018
+	Thu, 04 Sep 2014 20:46:37 +0000
+Received: from xhc-aln-x05.cisco.com (xhc-aln-x05.cisco.com [173.36.12.79])
+	by alln-core-10.cisco.com (8.14.5/8.14.5) with ESMTP id s84KkUsl004450
 	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 15 Sep 2014 06:09:37 GMT
+	Thu, 4 Sep 2014 20:46:30 GMT
 From: "Anton Ivanov (antivano)" <antivano@cisco.com>
-Date: Mon, 15 Sep 2014 06:09:36 +0000
-Message-ID: <5416829E.60303@cisco.com>
+Date: Thu, 4 Sep 2014 20:46:29 +0000
+Message-ID: <5408CF9D.5070501@cisco.com>
 References: <1409857227-717756-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 	<CAFLxGvziZuz1oYAittyKbgeLd24e38Nv05Bqu+KdJ4qRabhQcQ@mail.gmail.com>
 In-Reply-To: <CAFLxGvziZuz1oYAittyKbgeLd24e38Nv05Bqu+KdJ4qRabhQcQ@mail.gmail.com>
 Content-Language: en-US
-Content-ID: <406B85BC305A3E4FAFC8B485EB55A5DF@emea.cisco.com>
+Content-ID: <316C4E4164E1FF4A8A844DBAB3C20753@emea.cisco.com>
 MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -38,34 +38,6 @@ Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] UML Performance improvement patchset
 To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
-
-Hi Richard, hi list.
-
-I have found a couple of minor issues which have crept up during porting 
-from 3.3.8 to 3.12-3.15 (I originally wrote all of the improvements for 
-3.3.8/OpenWRT).
-
-I will reissue the patchset with these fixed sometimes this week - 
-descriptions of issues/coming fixes inline.
-
-I have tried to keep the network patches not invasive, but that is 
-preventing the use of the write poll functionality in the new interrupt 
-controller (there is no way to do that without starting to change the 
-core uml netdev structures). It also prevents a few other potential 
-performance improvements such as skb recycling on rx (to avoid 
-allocating memory every time), etc. I probably will not have the time to 
-get these done for a few weeks as I am snowed under a backlog of work 
-too. Once these are done, TX CPU should drop significantly without 
-losing the performance. RX should pick up as well to match TX for a lot 
-of use cases.
-
-After patching 3.12 and running it for a while on a live system I have 
-run again into my favorite UML issue (occasional process in D state on 
-IO) is back :(. This is something which exists in the stock kernel, but 
-is much more difficult to trigger because the way it the original timer 
-(and to a lesser extent SIGIO) handling. I will add a workaround which 
-does not fix it fully (but at least makes it extremely rare) to the 
-patchset as well on next reissue.
 
 On 04/09/14 20:14, Richard Weinberger wrote:
 > On Thu, Sep 4, 2014 at 9:00 PM,  <anton.ivanov@kot-begemot.co.uk> wrote:
@@ -83,10 +55,6 @@ On 04/09/14 20:14, Richard Weinberger wrote:
 >> This patch fixes the list walking bottleneck and adds all of
 >> the above alowing for UML to be scaled to 100s of devices
 >> (tested with 512+ network devices).
-
-I have found one minor issue - it needs the "turn off sigio" in the exit 
-routine.
-
 >>
 >> [PATCH v3 02/10] Remove unnecessary 'reactivate' statements
 >>
@@ -107,10 +75,6 @@ routine.
 >> This further performance improvement will be submitted separately.
 >>
 >> This patch has been tested extensively only with patchsets 1 and 2.
-
-There is a minor issue in the close(), it needs to call both the uml and 
-linux interrupt release routines and at the moment it does not.
-
 >>
 >> [PATCH v3 04/10] L2TPv3 Transport Driver for UML
 >>
@@ -119,11 +83,6 @@ linux interrupt release routines and at the moment it does not.
 >> It has been extensively tested to interop versus a set of
 >> other implementations including Linux kernel, our port of the
 >> same concept to QEMU/KVM, routers, etc.
-
-There are a couple of "belts and braces" checks missing - it needs to 
-zero the queue counter on a failed read (I have yet to see a single 
-failed read in all my tests though).
-
 >>
 >> Depends on 3.
 >>
@@ -168,6 +127,17 @@ failed read in all my tests though).
 > Thanks a lot for your work!
 > As I'm horrible backlogged I'll at best have next week the time to
 > look at your patches.
+
+No worries,
+
+Whenever you can get around.
+
+I need to write a simple README for the GRE, L2TPv3 and RAW drivers 
+anyway to provide examples of use, this will follow shortly (hopefully 
+tomorrow).
+
+A.
+
 >
 > Thanks,
 > //richard
@@ -182,11 +152,9 @@ failed read in all my tests though).
 > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
 ------------------------------------------------------------------------------
-Want excitement?
-Manually upgrade your production database.
-When you want reliability, choose Perforce
-Perforce version control. Predictably reliable.
-http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
