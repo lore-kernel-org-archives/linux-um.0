@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XW6rp-0000Iu-Su
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XPcGu-00007J-TN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Sep 2014 16:53:37 +0000
+	Thu, 04 Sep 2014 19:00:41 +0000
 Received: from ivanoab3.miniserver.com ([89.200.143.206])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XW6rn-0001i5-3s
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XPcGs-0006ka-G0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Sep 2014 16:53:37 +0000
+	Thu, 04 Sep 2014 19:00:40 +0000
 From: anton.ivanov@kot-begemot.co.uk
-Date: Mon, 22 Sep 2014 17:53:16 +0100
-Message-Id: <1411404804-871910-4-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-References: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+Date: Thu,  4 Sep 2014 20:00:21 +0100
+Message-Id: <1409857227-717756-5-git-send-email-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <1409857227-717756-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+References: <1409857227-717756-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,93 +28,644 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v4 03/11] High performance networking subsystem
+Subject: [uml-devel] [PATCH v3 04/10] L2TPv3 Transport Driver for UML
 To: user-mode-linux-devel@lists.sourceforge.net
 
 From: Anton Ivanov <antivano@cisco.com>
 
-    Support for multi-packet vector IO - multiple packets
-    read in one syscall and (optionally) written in one syscall.
-    Support for (optional) queueing on EAGAIN/ENOBUFS - applies
-    only to socket transports. Sorry TAP, -EYOULOSE - it will remain
-    slower than any socket transport for a very log time because
-    sendmmsg/recvmmsg is supported only for sockets, not for tap fds.
+This transport allows a UML to connect to another UML local
+or remote, the Linux host or any other network device running
+the industry standard Ethernet over L2TPv3 protocol as per
+RFC 3931 (and successors).
 
-    Should work with legacy UML, thorough tested only for the epoll
-    based IRQ controller
+The transport supports a common set of features with the kernel
+implementation as well as the Cisco contributed L2TPv3 transport
+for QEMU/KVM. In all cases this is static tunnels only, no L2TPv3
+control plane.
 
-    Minimal host kernel version for RX - 2.6.32
-    Minimal host kernel version for TX - 3.0 - optional, config
-    option UML_NET_VECTOR_TX
-
-    Tested on Debian 7.0/Ubuntu 12.x LTS host which have the relevant
-    syscalls, but do not have the appropriate glibc routine for TX
-    (this is why it is a direct syscall).
-
-    Tested thoroughly with Debian and OpenWRT guests across a range of
-    kernels (3.2, 3.3, 3.4, 3.8, 3.12).
+Additionally, the transport supports the so called "soft"
+termination where it can listen for an incoming connection
+which does not require the remote endpoint to be specified
+at configuration time.
 
 Signed-off-by: Anton Ivanov <antivano@cisco.com>
 ---
-
-Issues addressed in this version:
-
-1. Incorrect IRQ release in close procedure, close now works correctly
-
- arch/um/Kconfig.net               |    9 ++
- arch/um/drivers/Makefile          |    2 +-
- arch/um/drivers/net_extra_kern.c  |  308 +++++++++++++++++++++++++++++++++++
- arch/um/drivers/net_extra_user.c  |  317 +++++++++++++++++++++++++++++++++++++
- arch/um/drivers/net_kern.c        |   61 ++++---
- arch/um/include/asm/irq.h         |   26 +--
- arch/um/include/shared/net_kern.h |   31 ++++
- arch/um/include/shared/net_user.h |   24 +++
- arch/um/kernel/irq.c              |    5 +
- 9 files changed, 751 insertions(+), 32 deletions(-)
- create mode 100644 arch/um/drivers/net_extra_kern.c
- create mode 100644 arch/um/drivers/net_extra_user.c
+ arch/um/Kconfig.net               |   10 +
+ arch/um/drivers/Makefile          |    2 +
+ arch/um/drivers/uml_l2tpv3.h      |  111 ++++++++++
+ arch/um/drivers/uml_l2tpv3_kern.c |  434 +++++++++++++++++++++++++++++++++++++
+ arch/um/drivers/uml_l2tpv3_user.c |  409 ++++++++++++++++++++++++++++++++++
+ 5 files changed, 966 insertions(+)
+ create mode 100644 arch/um/drivers/uml_l2tpv3.h
+ create mode 100644 arch/um/drivers/uml_l2tpv3_kern.c
+ create mode 100644 arch/um/drivers/uml_l2tpv3_user.c
 
 diff --git a/arch/um/Kconfig.net b/arch/um/Kconfig.net
-index 820a56f..e4a7cf2 100644
+index e4a7cf2..d84a1ee 100644
 --- a/arch/um/Kconfig.net
 +++ b/arch/um/Kconfig.net
-@@ -21,6 +21,15 @@ config UML_NET
-         enable at least one of the following transport options to actually
-         make use of UML networking.
+@@ -93,6 +93,16 @@ config UML_NET_SLIP
+         UMLs on a single host).  You may choose more than one without
+         conflict.  If you don't need UML networking, say N.
  
-+config UML_NET_VECTOR_TX
-+        bool "Vector transmit in network devices"
-+        depends on UML_NET
-+    help
-+        Accelerate network IO by using sendmmsg() linux syscall. This option
-+        requires the host running UML to run at least linux 3.0
-+        Presently the acceleration is only for forwarding including firewall,
-+        NAT, etc where it yields 25%+ improvement in packet rates and throughput
++config UML_NET_L2TPV3
++	bool "L2TPV3 transport"
++	depends on UML_NET
++	help
++        This User-Mode Linux network transport allows one or more running
++        UMLs on single or multiple hosts to communicate with each other,
++        the host as well as other remote or local network devices supporting
++        the industry standard Ethernet over L2TPv3 protocol as described in
++        the applicable RFCs
 +
- config UML_NET_ETHERTAP
- 	bool "Ethertap transport"
+ config UML_NET_DAEMON
+ 	bool "Daemon transport"
  	depends on UML_NET
 diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index e7582e1..836baaf 100644
+index 836baaf..e2dcd85 100644
 --- a/arch/um/drivers/Makefile
 +++ b/arch/um/drivers/Makefile
-@@ -10,7 +10,7 @@ slip-objs := slip_kern.o slip_user.o
+@@ -9,6 +9,7 @@
+ slip-objs := slip_kern.o slip_user.o
  slirp-objs := slirp_kern.o slirp_user.o
  daemon-objs := daemon_kern.o daemon_user.o
++uml_l2tpv3-objs := uml_l2tpv3_kern.o uml_l2tpv3_user.o
  umcast-objs := umcast_kern.o umcast_user.o
--net-objs := net_kern.o net_user.o
-+net-objs := net_kern.o net_user.o net_extra_user.o net_extra_kern.o
+ net-objs := net_kern.o net_user.o net_extra_user.o net_extra_kern.o
  mconsole-objs := mconsole_kern.o mconsole_user.o
- hostaudio-objs := hostaudio_kern.o
- ubd-objs := ubd_kern.o ubd_user.o
-diff --git a/arch/um/drivers/net_extra_kern.c b/arch/um/drivers/net_extra_kern.c
+@@ -43,6 +44,7 @@ obj-$(CONFIG_STDERR_CONSOLE) += stderr_console.o
+ obj-$(CONFIG_UML_NET_SLIP) += slip.o slip_common.o
+ obj-$(CONFIG_UML_NET_SLIRP) += slirp.o slip_common.o
+ obj-$(CONFIG_UML_NET_DAEMON) += daemon.o 
++obj-$(CONFIG_UML_NET_L2TPV3) += uml_l2tpv3.o
+ obj-$(CONFIG_UML_NET_VDE) += vde.o
+ obj-$(CONFIG_UML_NET_MCAST) += umcast.o
+ obj-$(CONFIG_UML_NET_PCAP) += pcap.o
+diff --git a/arch/um/drivers/uml_l2tpv3.h b/arch/um/drivers/uml_l2tpv3.h
 new file mode 100644
-index 0000000..5ee6f9b
+index 0000000..6351590
 --- /dev/null
-+++ b/arch/um/drivers/net_extra_kern.c
-@@ -0,0 +1,308 @@
++++ b/arch/um/drivers/uml_l2tpv3.h
+@@ -0,0 +1,111 @@
 +/*
 + * Copyright (C) 2012 - 2014 Cisco Systems
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Licensed under the GPL
++ */
++
++#ifndef __UML_L2TPV3_H__
++#define __UML_L2TPV3_H__
++
++#include "net_user.h"
++
++
++#define NEW_MODE_IP_VERSION	1		/* on for v6, off for v4 */
++#define NEW_MODE_UDP		2		/* on for udp, off for raw ip */
++#define NEW_MODE_COOKIE		4		/* cookie present */
++#define NEW_MODE_COOKIE_SIZE	8		/* on for 64 bit */
++#define NEW_MODE_NO_COUNTER	16		/* draft-constan - no counter */
++
++#define L2TPV3_HEADER 16
++
++
++struct temphtonl {
++   uint32_t low;
++   uint32_t high;
++};
++
++
++struct uml_l2tpv3_data {
++
++	/* destination (if known) */
++
++	void *remote_addr;
++	int  remote_addr_size;
++
++	/* passed to us by init */
++
++	char *remote_addr_string;
++	char *local_addr_string;
++	char *local_service;
++	char *remote_service;
++	char *local_session_string;
++	char *remote_session_string;
++
++	uint32_t local_session;
++	uint32_t remote_session;
++	char *rx_cookie_string;
++	char *tx_cookie_string;
++	uint64_t rx_cookie;
++	uint64_t tx_cookie;
++
++
++
++	int fd;
++	void *dev;
++
++	uint32_t uml_l2tpv3_flags;
++	uint32_t mode;
++	uint32_t new_mode; /* listening, sending, etc */
++	uint32_t counter;
++
++	/*  Precomputed offsets */
++
++	uint32_t offset;   /* main offset == header offset */
++	uint32_t cookie_offset;
++	uint32_t counter_offset;
++	uint32_t session_offset;
++
++	/* vector IO RX */
++
++	void ** skb_recv_vector;
++	void * mmsg_recv_vector;
++
++	/* high speed vector io data */
++
++	uint32_t vector_len;
++	uint32_t recv_index;
++	uint32_t recv_enqueued;
++
++	void ** skb_send_vector;
++	void * mmsg_send_vector;
++	void * send_queue_info;
++
++/* buffer to form headers in one-at-a time packet write mode */
++	uint8_t *network_buffer;
++
++	/* normally same as offset, add size of
++	* struct ipv4 header in ipv4 raw - API stupiditities
++	*/
++	uint32_t header_size;
++
++};
++
++
++extern const struct net_user_info uml_l2tpv3_user_info;
++
++extern int uml_l2tpv3_user_sendmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_l2tpv3_data *pri);
++
++extern int uml_l2tpv3_user_recvmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_l2tpv3_data *pri);
++
++/* initialize mutexes and queueing */
++
++extern void l2tpv3_complete_init(void * dev_id, int max_depth);
++
++/* flush queue and destroy kernel side structures */
++
++extern void l2tpv3_kern_destroy(struct uml_l2tpv3_data *pri);
++
++#define UML_L2TPV3_FLAG_TX_CHECKSUMS		0x00000001
++#define UML_L2TPV3_FLAG_RX_CHECKSUMS		0x00000002
++
++#endif
+diff --git a/arch/um/drivers/uml_l2tpv3_kern.c b/arch/um/drivers/uml_l2tpv3_kern.c
+new file mode 100644
+index 0000000..c24b1b5
+--- /dev/null
++++ b/arch/um/drivers/uml_l2tpv3_kern.c
+@@ -0,0 +1,434 @@
++/*
++ * Copyright (C) 2012 - 2014 Cisco Systems
++ * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
++ * James Leu (jleu@mindspring.net).
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Copyright (C) 2001 by various other people who didn't put their name here.
++ * Licensed under the GPL.
++ */
++
++#include "linux/init.h"
++#include <linux/netdevice.h>
++#include <linux/ethtool.h>
++#include <linux/ip.h>
++#include <linux/skbuff.h>
++#include <linux/spinlock.h>
++#include <net_kern.h>
++#include <irq_kern.h>
++#include <irq_user.h>
++#include "uml_l2tpv3.h"
++
++#define DRIVER_NAME "uml-l2tpv3"
++
++struct uml_l2tpv3_init {
++	char *local_addr_string;
++	char *remote_addr_string;
++	char *local_service;
++	char *remote_service;
++	char *rx_cookie_string;
++	char *tx_cookie_string;
++	char *local_session_string;
++	char *remote_session_string;
++	char *mode_string;
++};
++
++static void uml_l2tpv3_get_drvinfo(struct net_device *dev,
++				struct ethtool_drvinfo *info)
++{
++	strcpy(info->driver, DRIVER_NAME);
++	strcpy(info->version, "42");
++}
++
++
++static const struct ethtool_ops uml_l2tpv3_ethtool_ops =
++{
++	.get_drvinfo			= uml_l2tpv3_get_drvinfo,
++	.get_link		= ethtool_op_get_link,
++};
++
++static void uml_l2tpv3_init(struct net_device *dev, void *data)
++{
++	struct uml_net_private *pri;
++	struct uml_l2tpv3_data *dpri;
++	struct uml_l2tpv3_init *init = data;
++
++	pri = netdev_priv(dev);
++	dpri = (struct uml_l2tpv3_data *) pri->user;
++
++	/*
++	 *	these are as is, we keep them for future reference
++	 *	and parse them in userspace
++	 */
++
++	dpri->local_addr_string = init->local_addr_string;
++	dpri->remote_addr_string = init->remote_addr_string;
++	dpri->local_service = init->local_service;
++	dpri->remote_service = init->remote_service;
++	dpri->rx_cookie_string = init->rx_cookie_string;
++	dpri->tx_cookie_string = init->tx_cookie_string;
++	dpri->local_session_string = init->local_session_string;
++	dpri->remote_session_string = init->remote_session_string;
++
++	/* the only ones we pre-parse */
++
++	if (init->mode_string != NULL) {
++		sscanf(init->mode_string, "%x", &dpri->new_mode);
++	} else {
++		dpri->new_mode = 0;
++		printk("warning: failed to parse l2tpv3 mode %s\n", init->mode_string);
++	}
++
++	printk("l2tpv3 mode %x\n", dpri->new_mode);
++	dpri->fd = -1;
++	dpri->dev = dev;
++	printk("l2tpv3 backend - %s:%s<->%s:%s, rxcookie: %s, txcookie:%s, local_session: %s, peer_session: %s\n",
++		dpri->local_addr_string,
++		dpri->local_service,
++		dpri->remote_addr_string,
++		dpri->remote_service,
++		dpri->rx_cookie_string,
++		dpri->tx_cookie_string,
++		dpri->local_session_string,
++		dpri->remote_session_string
++	);
++	dpri->uml_l2tpv3_flags = 0; /* we have everything turned off initially */
++	SET_ETHTOOL_OPS(dev, &uml_l2tpv3_ethtool_ops);
++}
++
++static int uml_l2tpv3_verify_header(uint8_t * buffer, struct uml_l2tpv3_data *dpri )
++{
++	uint64_t *cookie64;
++	uint32_t *cookie32;
++	uint32_t *session_id;
++
++
++	if ((!(dpri->new_mode & NEW_MODE_IP_VERSION)) && (!(dpri->new_mode & NEW_MODE_UDP))){
++		buffer += sizeof(struct iphdr) /* fix for ipv4 raw */;
++	}
++
++	session_id = (uint32_t *)(buffer + dpri->session_offset);
++	if (*session_id != dpri->remote_session) {
++		printk("Unknown Sesion id\n");
++		return 0;
++	}
++
++	if (dpri->new_mode & NEW_MODE_COOKIE) {
++		if (dpri->new_mode & NEW_MODE_COOKIE_SIZE) {
++		/* 64 bit cookie */
++			cookie64 = (uint64_t *)(buffer + dpri->cookie_offset);
++			if (*cookie64 != dpri->rx_cookie) {
++				printk("unknown cookie id\n");
++				return 0; /* we need to return 0, otherwise barfus */
++			}
++		} else {
++			cookie32 = (uint32_t *)(buffer + dpri->cookie_offset);
++			if (*cookie32 != * (uint32_t *) &dpri->rx_cookie) {
++				printk("unknown cookie id\n");
++				return 0; /* we need to return 0, otherwise barfus */
++			}
++		}
++	}
++	return 1;
++}
++
++static struct sk_buff * uml_l2tpv3_multiread (struct uml_net_private * lp) {
++	struct uml_l2tpv3_data *dpri = (struct uml_l2tpv3_data *) &lp->user;
++	void ** skb_recv_vector = dpri->skb_recv_vector;
++	struct mmsghdr * mmsg_recv_vector = (struct mmsghdr *) dpri->mmsg_recv_vector;
++	struct sk_buff * result;
++	struct iovec * iov;
++	int ret;
++
++
++	/* Are we done processing the enqueued buffers */
++
++
++	if (dpri->recv_index >= dpri->recv_enqueued) {
++	/* Do we need to refresh the buffer list */
++		if (dpri->recv_enqueued) {
++			/* Replace dpri->recv_enqueued skbuffs */
++			rebuild_skbuf_vector(skb_recv_vector, dpri->recv_enqueued, lp->dev);
++			/* Rebuild message vector */
++			add_skbuffs(dpri->mmsg_recv_vector, skb_recv_vector, dpri->recv_enqueued, lp->max_packet, 1);
++		}
++		ret = net_recvmmsg(
++			dpri->fd, dpri->mmsg_recv_vector, dpri->vector_len, 0,NULL);
++		if (ret >= 0) {
++			dpri->recv_enqueued = ret;
++		} else {
++			printk("Error in multi-packet receive %d\n", ret);
++			return NULL;
++		}
++		dpri->recv_index = 0;
++	}
++
++	/* check if we are done processing the enqueued buffers */
++
++	skb_recv_vector += dpri->recv_index;
++	mmsg_recv_vector += dpri->recv_index;
++	while (dpri->recv_index < dpri->recv_enqueued) {
++		dpri->recv_index ++;
++		iov = mmsg_recv_vector->msg_hdr.msg_iov;
++		if (
++			(iov) &&
++			(mmsg_recv_vector->msg_len > dpri->header_size) &&
++			(uml_l2tpv3_verify_header(iov->iov_base, dpri))
++		) {
++			if ((!dpri->remote_addr) && (mmsg_recv_vector->msg_hdr.msg_name)) {
++				dpri->remote_addr = mmsg_recv_vector->msg_hdr.msg_name;
++				dpri->remote_addr_size = mmsg_recv_vector->msg_hdr.msg_namelen;
++				mmsg_recv_vector->msg_hdr.msg_name = NULL;
++				mmsg_recv_vector->msg_hdr.msg_namelen = 0;
++			}
++			result = (struct sk_buff *)(* skb_recv_vector);
++			if (result) {
++				skb_trim(result, mmsg_recv_vector->msg_len - dpri->header_size);
++				result->protocol = (*lp->protocol)(result);
++				return result;
++			} else {
++				printk("encountered failed atomic allocation, skipping to next\n");
++			}
++		} else {
++			uml_net_destroy_skb(* skb_recv_vector ) ; /* otherwise we leak it */
++			result = NULL;
++		}
++		skb_recv_vector ++;
++		mmsg_recv_vector ++;
++	}
++	return result;
++}
++
++static int uml_l2tpv3_read(int fd, struct sk_buff *skb, struct uml_net_private *lp)
++{
++	int result;
++	struct uml_l2tpv3_data *dpri = (struct uml_l2tpv3_data *) &lp->user;
++	uint8_t  *buffer ;
++
++
++	int offset = dpri->offset;
++
++	buffer = dpri->network_buffer;
++
++	if (!(dpri->new_mode & NEW_MODE_UDP) && !(dpri->new_mode & NEW_MODE_IP_VERSION))
++	{
++		/* IPv4 RAW mode: Account for the IP header that will be received */
++		offset += sizeof(struct iphdr);
++	}
++
++
++	result = uml_l2tpv3_user_recvmsg(
++			fd,
++			buffer, offset,
++			skb->data, skb->dev->mtu + ETH_HEADER_OTHER,
++			dpri
++		);
++	if (result <= 0) {
++		return result;
++	}
++	if (
++	!(dpri->new_mode & NEW_MODE_UDP) &&
++	!(dpri->new_mode & NEW_MODE_IP_VERSION)
++	) {
++	/* IPv4 RAW mode: Ignore the IP header */
++		buffer += sizeof(struct iphdr);
++	}
++
++	if ((result > offset) && (uml_l2tpv3_verify_header(buffer, dpri))) {
++		if ((dpri->uml_l2tpv3_flags & UML_L2TPV3_FLAG_RX_CHECKSUMS) != 0) {
++			skb->ip_summed = CHECKSUM_UNNECESSARY;
++		}
++		return result - offset;
++	} else {
++		return 0;
++	}
++}
++
++static void uml_l2tpv3_form_header(uint8_t * buffer, struct uml_l2tpv3_data *pri) {
++	uint32_t *header;
++	uint32_t *session;
++	uint64_t *cookie64;
++	uint32_t *cookie32;
++	uint32_t *counter;
++	if (pri->new_mode & NEW_MODE_UDP) {
++		header = (uint32_t *) buffer;
++		* header = htonl(0x30000);
++	}
++	session = (uint32_t *) (buffer + pri->session_offset);
++	*session = pri->local_session;
++
++	if (pri->new_mode & NEW_MODE_COOKIE) {
++		if (pri->new_mode & NEW_MODE_COOKIE_SIZE) {
++		   cookie64 = (uint64_t *)(buffer + pri->cookie_offset);
++		   * cookie64 = pri->tx_cookie;
++		} else {
++		   cookie32 = (uint32_t *) (buffer + pri->cookie_offset);
++		   * cookie32 = * ((uint32_t *) &pri->tx_cookie);
++		}
++	}
++
++	if (!(pri->new_mode & NEW_MODE_NO_COUNTER)) {
++		counter = (uint32_t *)(buffer + pri->counter_offset);
++		* counter = htonl(++pri->counter);
++	}
++}
++
++void l2tpv3_complete_init(void * dev_id, int max_depth) {
++
++	struct net_device *dev = dev_id;
++	struct uml_net_private *lp = netdev_priv(dev);
++	struct uml_l2tpv3_data *pri = (struct uml_l2tpv3_data *) &lp->user;
++	struct mmsg_queue_info * queue_info ;
++
++	queue_info =
++		kmalloc(sizeof(struct mmsg_queue_info), GFP_KERNEL);
++	if (queue_info) {
++		queue_info->fd = pri->fd;
++		queue_info->mmsg_send_vector = pri->mmsg_send_vector;
++		queue_info->skb_send_vector = pri->skb_send_vector;
++		queue_info->head = 0;
++		queue_info->tail = 0;
++		queue_info->queue_depth = 0;
++		queue_info->max_depth = max_depth;
++		spin_lock_init(&queue_info->head_lock);
++		spin_lock_init(&queue_info->tail_lock);
++	}
++	pri->send_queue_info = queue_info;
++}
++
++
++void l2tpv3_kern_destroy(struct uml_l2tpv3_data *pri) {
++
++	int ret = -1;
++	struct mmsg_queue_info * queue_info = pri->send_queue_info;
++	/* flush queue */
++	do {
++		ret = uml_net_flush_mmsg_queue(queue_info, 1);
++	} while (ret != 0);
++	pri->send_queue_info = NULL;
++	kfree(queue_info);
++}
++
++
++static void unified_form_header (void * header, struct sk_buff * skb, struct uml_net_private * lp) {
++	struct uml_l2tpv3_data *pri = (struct uml_l2tpv3_data *) &lp->user;
++	uml_l2tpv3_form_header(header, pri);
++}
++
++static int uml_l2tpv3_multiwrite(int fd, struct sk_buff *skb, struct uml_net_private *lp)
++{
++	struct uml_l2tpv3_data *pri = (struct uml_l2tpv3_data *) &lp->user;
++	int queue_depth;
++
++	if (pri->remote_addr) {
++
++		queue_depth = uml_net_enqueue (
++			(struct mmsg_queue_info *) pri->send_queue_info,
++			skb,
++			lp,
++			unified_form_header,
++			pri->remote_addr,
++			pri->remote_addr_size
++		);
++
++		uml_net_flush_mmsg_queue(
++			(struct mmsg_queue_info *) pri->send_queue_info,
++			queue_depth
++		);
++	}
++	return skb->len; /* not particularly correct */
++}
++
++static int uml_l2tpv3_write(int fd, struct sk_buff *skb, struct uml_net_private *lp)
++{
++        struct uml_l2tpv3_data *pri = (struct uml_l2tpv3_data *) &lp->user;
++        uint8_t *buffer = pri->network_buffer;
++        int result;
++
++
++        buffer = (uint8_t *)  pri->network_buffer;
++
++        uml_l2tpv3_form_header(buffer, pri);
++
++        result = uml_l2tpv3_user_sendmsg(
++                fd,
++                buffer, pri->offset,
++                skb->data, skb->len,
++                pri
++        );
++
++        if (result > pri->offset) {
++                return result - pri->offset;
++        } else {
++                return result; /* not particularly correct */
++        }
++}
++
++static const struct net_kern_info uml_l2tpv3_kern_info = {
++	.options		= UML_NET_USE_SKB_READ,
++	.init			= uml_l2tpv3_init,
++	.protocol		= eth_protocol,
++	.read			= uml_l2tpv3_read,
++	.skb_read		= uml_l2tpv3_multiread,
++#ifdef CONFIG_UML_NET_VECTOR_TX
++	.write			= uml_l2tpv3_multiwrite,
++#else
++	.write			= uml_l2tpv3_write,
++#endif
++};
++
++
++
++static int uml_l2tpv3_setup(char *str, char **mac_out, void *data)
++{
++	struct uml_l2tpv3_init *init = data;
++	char *remain;
++
++	*init = (
++		(struct uml_l2tpv3_init)
++		   {
++			 .local_addr_string = "::1",
++			 .local_service = "1701",
++			 .remote_service = "1702",
++			 .rx_cookie_string = "0xdeadbeefdeadbeef",
++			 .tx_cookie_string = "0xdeadbeefdeadbeef",
++			 .local_session_string = "0xFFFFFFFF",
++			 .remote_session_string = "0xFFFFFFFF",
++			 .mode_string = "0",
++		   }
++			);
++
++	remain = split_if_spec(str,
++			mac_out,
++			&init->local_addr_string,
++			&init->local_service,
++			&init->remote_addr_string,
++			&init->remote_service,
++			&init->rx_cookie_string,
++			&init->tx_cookie_string,
++			&init->local_session_string,
++			&init->remote_session_string,
++			&init->mode_string,
++			NULL
++		);
++	if (remain != NULL)
++		printk(KERN_WARNING " Strange interface spec \n");
++	return 1;
++}
++
++static struct transport uml_l2tpv3_transport = {
++	.list		= LIST_HEAD_INIT(uml_l2tpv3_transport.list),
++	.name		= "l2tpv3",
++	.setup		= uml_l2tpv3_setup,
++	.user		= &uml_l2tpv3_user_info,
++	.kern		= &uml_l2tpv3_kern_info,
++	.private_size	= sizeof(struct uml_l2tpv3_data),
++	.setup_size	= sizeof(struct uml_l2tpv3_init),
++};
++
++static int register_uml_l2tpv3(void)
++{
++	register_transport(&uml_l2tpv3_transport);
++	return 0;
++}
++
++late_initcall(register_uml_l2tpv3);
+diff --git a/arch/um/drivers/uml_l2tpv3_user.c b/arch/um/drivers/uml_l2tpv3_user.c
+new file mode 100644
+index 0000000..37d6f9d
+--- /dev/null
++++ b/arch/um/drivers/uml_l2tpv3_user.c
+@@ -0,0 +1,409 @@
++/*
++ * Copyright (C) 2012-2014 Cisco Systems
 + * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
 + * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
 + * James Leu (jleu@mindspring.net).
@@ -122,983 +673,414 @@ index 0000000..5ee6f9b
 + * Licensed under the GPL.
 + */
 +
-+#include <linux/bootmem.h>
-+#include <linux/etherdevice.h>
-+#include <linux/ethtool.h>
-+#include <linux/inetdevice.h>
-+#include <linux/init.h>
-+#include <linux/list.h>
-+#include <linux/netdevice.h>
-+#include <linux/platform_device.h>
-+#include <linux/rtnetlink.h>
-+#include <linux/skbuff.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include "init.h"
-+#include "irq_kern.h"
-+#include "irq_user.h"
-+#include "mconsole_kern.h"
-+#include "net_kern.h"
-+#include "net_user.h"
-+
-+#define DRIVER_NAME "uml-netdev"
-+
-+/*
-+	These are wrappers around key kernel side functions so we can
-+	invoke them from the user side of our Schizofreniac self
-+
-+*/
-+
-+extern spinlock_t uml_sigio_lock;
-+extern int in_epoll_loop;
-+
-+static DEFINE_SPINLOCK(net_queue_list);
-+
-+static struct mmsg_queue_info * pending_queue = NULL;
-+
-+void uml_net_destroy_skb(void * skb)
-+{
-+	if (skb) {
-+		kfree_skb((struct sk_buff *) skb);
-+	}
-+}
-+
-+void * uml_net_build_skb (void * dev)
-+{
-+	struct uml_net_private *lp = netdev_priv((struct net_device *) dev);
-+	struct sk_buff * skb;
-+
-+	skb =  dev_alloc_skb(lp->max_packet + 32);
-+	if (skb) {
-+	/* add some tunneling space just in case, we usually do not need it as we use vector IO */
-+		skb_reserve(skb,32);
-+		skb->dev = dev;
-+		skb_put(skb, lp->max_packet);
-+		skb_reset_mac_header(skb);
-+		skb->ip_summed =  CHECKSUM_NONE;
-+	} else {
-+		printk("Failed Atomic SKB Allocation, will drop\n");
-+	}
-+	return skb;
-+}
-+
-+void * uml_net_skb_data (void * skb) {
-+	if (skb) {
-+		return ((struct sk_buff *) skb)->data;
-+	} else {
-+		printk("hole in vector!!!\n");
-+		return NULL;
-+	}
-+}
-+
-+int uml_net_advance_head( struct mmsg_queue_info * queue_info, int advance)
-+{
-+	int queue_depth;
-+	queue_info->head =
-+		(queue_info->head + advance)
-+			% queue_info->max_depth;
-+
-+	/* caller is already holding the head_lock */
-+
-+	spin_lock(&queue_info->tail_lock);
-+	queue_info->queue_depth -= advance;
-+
-+	/* we are at 0, use this to
-+	 * reset head and tail so we can use max size vectors
-+	 */
-+	if (queue_info->queue_depth == 0) {
-+		queue_info->head = 0;
-+		queue_info->tail = 0;
-+	}
-+	queue_depth = queue_info->queue_depth;
-+	spin_unlock(&queue_info->tail_lock);
-+	return queue_depth;
-+}
-+
-+/*
-+*	This is called by enqueuers which should hold the
-+*	head lock already
-+*/
-+
-+int uml_net_advance_tail( struct mmsg_queue_info * queue_info, int advance)
-+{
-+	int queue_depth;
-+	queue_info->tail =
-+		(queue_info->tail + advance)
-+			% queue_info->max_depth;
-+	spin_lock(&queue_info->head_lock);
-+	queue_info->queue_depth += advance;
-+	queue_depth = queue_info->queue_depth;
-+	spin_unlock(&queue_info->head_lock);
-+	return queue_depth;
-+}
-+
-+/*
-+* Generic vector enqueue with support for forming headers using transport
-+* specific callback. Allows GRE, L2TPv3, RAW (and potentially when ported)
-+* daemon to use a common enqueue procedure in vector mode
-+*/
-+
-+int uml_net_enqueue (
-+	struct mmsg_queue_info * queue_info,
-+	struct sk_buff * skb,
-+	struct uml_net_private *lp,
-+	void (*form_header)(void * header, struct sk_buff * skb, struct uml_net_private * lp),
-+	void * remote_addr,
-+	int remote_addr_size)
-+{
-+
-+	int queue_depth;
-+	struct sk_buff * mmsg_clone;
-+	struct mmsghdr * mmsg_send_vector;
-+	void ** skb_send_vector;
-+	struct iovec * iov;
-+
-+	if (!queue_info) {
-+		/* someone passed us a NULL queue */
-+		return 0;
-+	}
-+
-+	spin_lock(&queue_info->tail_lock);
-+	spin_lock(&queue_info->head_lock);
-+	queue_depth = queue_info->queue_depth;
-+	spin_unlock(&queue_info->head_lock);
-+
-+	if (queue_depth < queue_info->max_depth) {
-+		mmsg_clone = skb_clone(skb, GFP_ATOMIC);
-+		if (mmsg_clone) {
-+
-+			skb_send_vector = queue_info->skb_send_vector;
-+			skb_send_vector +=  queue_info->tail;
-+
-+			(* skb_send_vector) = mmsg_clone;
-+
-+			mmsg_send_vector = queue_info->mmsg_send_vector;
-+			mmsg_send_vector += queue_info->tail;
-+
-+			iov = mmsg_send_vector->msg_hdr.msg_iov;
-+
-+			if (iov) {
-+				mmsg_send_vector->msg_hdr.msg_name = remote_addr;
-+				mmsg_send_vector->msg_hdr.msg_namelen = remote_addr_size;
-+				if (form_header != NULL) {
-+					(* form_header)(iov->iov_base, skb, lp);
-+					iov++;
-+				}
-+				iov->iov_base = skb->data;
-+				iov->iov_len = skb->len;
-+
-+				queue_depth = uml_net_advance_tail(queue_info, 1);
-+			} else {
-+				printk("no iov, cannot enqueue\n");
-+			}
-+		} else {
-+			printk("cloning failed\n");
-+		}
-+	}
-+	spin_unlock(&queue_info->tail_lock);
-+	return queue_depth;
-+}
-+
-+static int send_mmsg_queue(struct mmsg_queue_info * queue_info, int queue_depth)
-+{
-+	int fd = queue_info->fd;
-+	struct mmsghdr * send_from;
-+	void ** skb_send_vector;
-+	int result = 0, send_len, skb_index, allowed_drop = 0;
-+
-+	if (! queue_info) {
-+		/* someone passed a null queue, should not occur */
-+		return 0;
-+	}
-+
-+	if (spin_trylock(&queue_info->head_lock))   {
-+		if (spin_trylock(&queue_info->tail_lock)) {
-+			/* update queue_depth to current value */
-+			queue_depth = queue_info->queue_depth;
-+			spin_unlock(&queue_info->tail_lock);
-+			if (queue_depth > 0) {
-+				send_len = queue_depth;
-+				send_from = queue_info->mmsg_send_vector;
-+				send_from += queue_info->head;
-+				if (send_len + queue_info->head > queue_info->max_depth) {
-+					send_len = queue_info->max_depth - queue_info->head;
-+				}
-+				if (send_len > 0) {
-+					result = net_sendmmsg(
-+					    fd, send_from, send_len, 0
-+					);
-+				}
-+				if (result < 0) {
-+					printk("error %i in multisend\n", result);
-+					result = send_len; /* drop the lot */
-+				}
-+				if (result > 0) {
-+					if (result != send_len) {
-+						/* we need to drop a few, exponentially increasing
-+						 * drop bucket in use
-+						 */
-+						result += allowed_drop;
-+						allowed_drop += allowed_drop * 2 + 1;
-+						if (result > send_len) {
-+							/* do not drop beyond requested size */
-+							result = send_len;
-+						}
-+					} else {
-+						/* clear drop bucket size */
-+						allowed_drop = 0;
-+					}
-+					skb_send_vector = queue_info->skb_send_vector;
-+					skb_send_vector += queue_info->head;
-+					for (skb_index = 0; skb_index < send_len; skb_index++) {
-+						uml_net_destroy_skb(* skb_send_vector);
-+						(* skb_send_vector) = NULL; /* just in case */
-+						skb_send_vector ++ ;
-+					}
-+					queue_depth = uml_net_advance_head(queue_info, result);
-+				}
-+			}
-+		}
-+		spin_unlock(&queue_info->head_lock);
-+	}
-+	return queue_depth;
-+}
-+
-+int uml_net_flush_mmsg_queue(
-+    struct mmsg_queue_info * queue_info, int queue_depth)
-+{
-+	int old_queue_depth;
-+
-+	if (queue_depth >= (queue_info->max_depth - 1)) {
-+		/* queue full, flush some regardless */
-+		queue_depth = send_mmsg_queue(queue_info, queue_depth);
-+	}
-+	if ((queue_depth > 0) && (spin_trylock(&uml_sigio_lock))) {
-+		/* unconditional flush, non zero queue - not in epoll loop so not forwarding */
-+		if (!(in_epoll_loop)) {
-+			while (queue_depth > 0) {
-+				queue_depth = send_mmsg_queue(queue_info, queue_depth);
-+			}
-+		}
-+		spin_unlock(&uml_sigio_lock);
-+	}
-+
-+	/* we are forwarding (most likely) - check if there is a pending queue, if there is a
-+	 * pending queue, flush it, then put the current queue as pending
-+	 */
-+
-+	spin_lock(&net_queue_list);
-+	if ((pending_queue) && (pending_queue != queue_info)) {
-+		old_queue_depth = send_mmsg_queue(pending_queue, 1);
-+		while (old_queue_depth > 0) {
-+			old_queue_depth =
-+				send_mmsg_queue(pending_queue, old_queue_depth);
-+		}
-+	}
-+	if (queue_depth) {
-+		pending_queue = queue_info;
-+	} else {
-+		pending_queue = NULL;
-+	}
-+	spin_unlock(&net_queue_list);
-+
-+	return queue_depth;
-+}
-+
-+/*
-+* this is invoked out of the IRQ IO event loop to flush pending
-+* packets on "current" interface
-+*/
-+
-+void flush_pending_netio(void) {
-+	int result;
-+	spin_lock(&net_queue_list);
-+	if (pending_queue) {
-+		do {
-+			result = send_mmsg_queue(pending_queue, 1);
-+		} while (result > 0);
-+	}
-+	pending_queue = NULL;
-+	spin_unlock(&net_queue_list);
-+}
-diff --git a/arch/um/drivers/net_extra_user.c b/arch/um/drivers/net_extra_user.c
-new file mode 100644
-index 0000000..1037899
---- /dev/null
-+++ b/arch/um/drivers/net_extra_user.c
-@@ -0,0 +1,317 @@
-+/*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-+ * Licensed under the GPL
-+ */
-+
 +#include <stdio.h>
-+#include <unistd.h>
-+#include <stdarg.h>
-+#include <errno.h>
-+#include <stddef.h>
 +#include <string.h>
++#include <stdint.h>
++#include <unistd.h>
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/ioctl.h>
++#include <net/if.h>
++#include <sys/types.h>
 +#include <sys/socket.h>
-+#include <sys/wait.h>
-+#include <asm/unistd.h>
-+#include "net_user.h"
-+#include "os.h"
-+#include "um_malloc.h"
++#include <netdb.h>
++#include <net/ethernet.h>
++#include <netinet/ip.h>
++#include <netinet/ether.h>
++#include <linux/if_ether.h>
++#include <linux/if_packet.h>
++#include <arpa/inet.h>
 +
-+/*
-+* Principles of operation:
-+*
-+* EVERYTHING here is built to tolerate a failed memory allocation.
-+* If either a header buffer or a data buffer (taken from skb->data)
-+* is NULL the read will fail and the packet will be dropped. This
-+* is the normal behaviour of recvmsg and recvmmsg functions - if a
-+* particular iov_base == NULL and its corresponding iov_baselen is
-+* 0 we truncate and/or drop the packet altogether.
-+*
-+* On the negative side this means that we have to do a few more
-+* checks for NULL here and there. On the positive side this means
-+* that the whole thing is more robust including under low
-+* memory conditions.
-+*
-+* There is one special case which we need to handle as a result of
-+* this - any header verification functions should return "broken
-+* header" on hitting a NULL. This will in turn invoke the applicable
-+* packet drop logic.
-+*
-+* Any changes should follow this overall design.
-+*
-+* Side effect - none of these need to use the shared (and mutexed)
-+* drop skb. This is surplus to reqs, the normal recvm(m)msg drop
-+* mechanics will drop it.
-+*/
++#include <net_user.h>
++#include <os.h>
++#include <um_malloc.h>
++#include <user.h>
++#include "uml_l2tpv3.h"
 +
-+int net_readv(int fd, void *iov, int iovcnt)
++#define VECTOR_SIZE 32
++
++int l2tpv3_parse_cookie32(char *src , void * dst)
 +{
-+	int n;
-+
-+	CATCH_EINTR(n = readv(fd,  iov,  iovcnt));
-+	if ((n < 0) && (errno == EAGAIN))
-+		return 0;
-+	else if (n == 0)
-+		return -ENOTCONN;
-+	return n;
-+}
-+
-+int net_recvfrom2(int fd, void *buf, int len, void *src_addr, int *addrlen)
-+{
-+	int n;
-+
-+	CATCH_EINTR(n = recvfrom(fd,  buf,  len, 0, src_addr, addrlen));
-+	if (n < 0) {
-+		if (errno == EAGAIN)
-+			return 0;
-+		return -errno;
++	if (
++		(src == NULL) ||
++		(sscanf(src, "%x", (unsigned int *) dst) != 1)
++	) {
++		printk(UM_KERN_ERR "cannot parse cookie!!!: %s\n", src);
++		return -1;
 +	}
-+	else if (n == 0)
-+		return -ENOTCONN;
-+	return n;
++	* (( uint32_t *) dst) = htonl(* ((uint32_t* )dst));
++	return 0;
 +}
 +
-+int net_writev(int fd, void *iov, int iovcnt)
++int l2tpv3_parse_cookie64(char *src , void * dst)
 +{
-+	int n;
-+
-+	CATCH_EINTR(n = writev(fd, iov, iovcnt));
-+
-+	if ((n < 0) && ((errno == EAGAIN) || (errno == ENOBUFS)))
-+		return 0;
-+	else if (n == 0)
-+		return -ENOTCONN;
-+	return n;
-+}
-+
-+int net_sendmessage(int fd, void *msg, int flags)
-+{
-+	int n;
-+
-+	CATCH_EINTR(n = sendmsg(fd, msg, flags));
-+	if (n < 0) {
-+		if ((errno == EAGAIN) || (errno == ENOBUFS))
-+			return 0;
-+		return -errno;
++	struct temphtonl temph;
++	uint32_t temp;
++	const int num = 42;
++	if (
++		(src == NULL) ||
++		(sscanf(src, "%llx", (long unsigned int *) &temph) != 1)
++	) {
++		printk(UM_KERN_ERR "cannot parse cookie!!!: %s\n", src);
++		return -1;
 +	}
-+	else if (n == 0)
-+		return -ENOTCONN;
-+	return n;
-+}
-+int net_recvmessage(int fd, void *msg, int flags)
-+{
-+	int n;
-+
-+	CATCH_EINTR(n = recvmsg(fd, msg, flags));
-+	if (n < 0) {
-+		if (errno == EAGAIN)
-+			return 0;
-+		return -errno;
-+	}
-+	else if (n == 0)
-+		return -ENOTCONN;
-+	return n;
-+}
-+
-+int net_recvmmsg(int fd, void *msgvec, unsigned int vlen,
-+		    unsigned int flags, struct timespec *timeout)
-+{
-+	int n;
-+
-+	CATCH_EINTR(n = recvmmsg(fd, msgvec, vlen, flags, timeout));
-+	if (n < 0) {
-+		if (errno == EAGAIN)
-+			return 0;
-+		return -errno;
-+	}
-+	else if (n == 0)
-+		return -ENOTCONN;
-+	return n;
-+}
-+
-+int net_sendmmsg(int fd, void *msgvec, unsigned int vlen,
-+		    unsigned int flags)
-+{
-+	int n;
-+
-+#ifdef HAS_SENDMMSG
-+
-+    /* has proper sendmmsg */
-+
-+	CATCH_EINTR(n = sendmmsg(fd, msgvec, vlen, flags));
-+#else
-+
-+    /* no glibc wrapper for sendmmsg - Ubuntu LTS 12.04, Debian 7.x */
-+
-+	CATCH_EINTR(n = syscall(__NR_sendmmsg, fd, msgvec, vlen, flags));
-+#endif
-+	if (n < 0) {
-+		if ((errno == EAGAIN) || (errno == ENOBUFS))
-+			return 0;
-+		return -errno;
-+	}
-+	else if (n == 0)
-+		return -ENOTCONN;
-+	return n;
-+}
-+
-+void destroy_skb_vector(void ** vector, int size)
-+{
-+	int i;
-+	void ** tofree = vector;
-+
-+	for (i=0;i<size;i++) {
-+		if ( * vector) {
-+			uml_net_destroy_skb(* vector);
-+		}
-+	vector ++;
-+	}
-+	kfree(tofree);
-+}
-+
-+void destroy_mmsg_vector(void * mmsgvector, int size, int free_iov_base)
-+{
-+	struct mmsghdr * vector = (struct mmsghdr *) mmsgvector;
-+	struct iovec * iov;
-+	int i;
-+	if (vector) {
-+		for (i = 0; i < size; i++) {
-+			iov = vector->msg_hdr.msg_iov;
-+			if (iov) {
-+				if (free_iov_base) {
-+					kfree(iov->iov_base);
-+				}
-+				kfree(iov);
-+			}
-+			vector ++;
-+		}
-+		kfree(mmsgvector);
++	if(*(char *)&num == 42) {
++		// why oh why there is no htonll
++		temp = htonl(temph.high);
++		temph.high = htonl(temph.low);
++		temph.low = temp;
 +	} else {
-+		printk("NULL mmsg vector in destroy, should not occur\n");
++		temph.low = htonl(temph.low);
++		temph.high = htonl(temph.high);
 +	}
++	memcpy(dst, &temph, sizeof (uint64_t));
++	return 0;
 +}
 +
-+void * build_skbuf_vector(int size, void * dev)
++static void uml_l2tpv3_remove(void *data)
 +{
-+	int i;
-+	void **result, **vector;
-+	result = uml_kmalloc(size * sizeof(void *), UM_GFP_KERNEL);
-+	vector = result;
-+	if (vector) {
-+		for (i = 0; i < size; i++) {
-+			* vector = uml_net_build_skb(dev);
-+			vector++;
-+		}
++	struct uml_l2tpv3_data *pri = data;
++
++	l2tpv3_kern_destroy(pri);
++	if (pri->fd > 0) {
++		close(pri->fd);
 +	}
-+	return result;
++	pri->fd = -1;
++	if (pri->skb_send_vector) {
++		/* this one should be empty - we flushed it so we just free it */
++		kfree(pri->skb_send_vector);
++		pri->skb_send_vector = NULL;
++	}
++	if (pri->mmsg_send_vector) {
++		destroy_mmsg_vector(pri->mmsg_send_vector, VECTOR_SIZE, 1);
++		pri->mmsg_send_vector = NULL;
++	}
++	if (pri->network_buffer) {
++		kfree(pri->network_buffer);
++		pri->network_buffer = NULL;
++	}
++	if (pri->skb_recv_vector) {
++		destroy_skb_vector(pri->skb_recv_vector, VECTOR_SIZE);
++		pri->skb_recv_vector = NULL;
++	}
++	if (pri->mmsg_recv_vector) {
++		destroy_mmsg_vector(pri->mmsg_recv_vector, VECTOR_SIZE, 1);
++		pri->mmsg_recv_vector = NULL;
++	}
 +}
 +
-+void rebuild_skbuf_vector(void ** skbvec, int size, void * dev)
++static int uml_l2tpv3_user_init(void *data, void *dev)
 +{
-+	int i;
-+	if (skbvec) {
-+		for (i = 0; i < size; i++) {
-+			* skbvec = uml_net_build_skb(dev);
-+			skbvec++;
-+		}
-+	}
-+}
-+
-+void repair_mmsg (void *vec, int iovsize, int header_size)
-+{
-+	struct mmsghdr * msgvec = (struct mmsghdr *) vec;
-+	struct iovec * iov;
-+	if (! msgvec->msg_hdr.msg_iov) {
-+		msgvec->msg_hdr.msg_iov = uml_kmalloc(sizeof(struct iovec) * iovsize, UM_GFP_KERNEL);
-+	}
-+	iov = msgvec->msg_hdr.msg_iov;
-+	if (iov) {
-+		if (! iov->iov_base) {
-+			iov->iov_base=uml_kmalloc(header_size, UM_GFP_KERNEL);
-+		}
-+		if (iov->iov_base) {
-+			/* put correct header size just in case - we may have had a short frame */
-+			iov->iov_len = header_size;
-+		} else {
-+			printk("failed to allocate a header buffer, will cause a packet drop later\n");
-+			iov->iov_len = 0;
-+		}
-+	}
-+}
-+
-+void * build_mmsg_vector(int size, int iovsize)
-+{
-+	int i;
-+	struct mmsghdr *msgvec, *result;
-+	struct iovec * iov;
-+
-+	result = uml_kmalloc(sizeof(struct mmsghdr) * size, UM_GFP_KERNEL);
-+	msgvec = result;
-+	if (msgvec) {
-+		memset(msgvec, '\0', sizeof(struct mmsghdr) * size);
-+		for ( i = 0; i < size; i++) {
-+			iov = uml_kmalloc(sizeof(struct iovec) * iovsize, UM_GFP_KERNEL);
-+			msgvec->msg_hdr.msg_iov=iov;
-+			if (iov) {
-+				memset(iov, '\0', sizeof(struct iovec) * iovsize);
-+				msgvec->msg_hdr.msg_iovlen=iovsize;
-+			} else {
-+				printk("failed to allocate iov\n");
-+				msgvec->msg_hdr.msg_iovlen=0; /* silent drop on receive, no xmit */
-+			}
-+			msgvec++;
-+		}
-+	}
-+	return result;
-+}
-+
-+void add_header_buffers(void * msgvec, int size, int header_size)
-+{
-+	int i;
-+	struct iovec * iov;
-+	struct mmsghdr * mmsgvec = (struct mmsghdr *) msgvec;
-+	for ( i = 0; i < size; i++) {
-+		iov = mmsgvec->msg_hdr.msg_iov;
-+		if (iov) {
-+			iov->iov_base=uml_kmalloc(header_size, UM_GFP_KERNEL);
-+			if (iov->iov_base) {
-+				iov->iov_len = header_size;
-+			} else {
-+				printk("failed to allocate a header buffer, will cause a packet drop later\n");
-+				iov->iov_len = 0;
-+			}
-+		}
-+	mmsgvec++;
-+	}
-+}
-+
-+/* NOTE - this is only for offset = 0 or 1, other cases are unhandled!!! */
-+
-+void add_skbuffs(void * msgvec, void ** skbvec, int size, int skb_size, int offset) {
-+	int i;
-+	struct iovec * iov;
-+	struct mmsghdr * mmsgvec = (struct mmsghdr *) msgvec;
-+	for ( i = 0; i < size; i++) {
-+	/*
-+	    This heavily relies on all IOVs being present, if the initial allocation
-+	    fails it must clean up and switch to "normal" per-packet receive instead
-+	    Later allocations of skbufs can fail - this will result in short reads
-+	    and skips
-+
-+	 */
-+		iov = mmsgvec->msg_hdr.msg_iov;
-+		if (iov) {
-+			iov += offset;
-+			iov->iov_base=uml_net_skb_data(* skbvec);
-+			if (iov->iov_base) {
-+				iov->iov_len = skb_size;
-+			} else {
-+				printk("NULL SKB will drop\n");
-+				iov->iov_len = 0;
-+			}
-+		} else {
-+			printk("NULL IOV will drop\n");
-+		}
-+		mmsgvec++;
-+		skbvec++;
-+	}
-+}
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 64d8426..d9d9d93 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
-  * James Leu (jleu@mindspring.net).
-@@ -29,6 +30,7 @@
- 
- static DEFINE_SPINLOCK(opened_lock);
- static LIST_HEAD(opened);
-+static int rr_counter = 0;
- 
- /*
-  * The drop_skb is used when we can't allocate an skb.  The
-@@ -42,6 +44,7 @@ static DEFINE_SPINLOCK(drop_lock);
- static struct sk_buff *drop_skb;
- static int drop_max;
- 
-+
- static int update_drop_skb(int max)
- {
- 	struct sk_buff *new;
-@@ -77,24 +80,38 @@ static int uml_net_rx(struct net_device *dev)
- 	struct sk_buff *skb;
- 
- 	/* If we can't allocate memory, try again next round. */
--	skb = dev_alloc_skb(lp->max_packet);
--	if (skb == NULL) {
--		drop_skb->dev = dev;
--		/* Read a packet into drop_skb and don't do anything with it. */
--		(*lp->read)(lp->fd, drop_skb, lp);
--		dev->stats.rx_dropped++;
-+	if (lp->options & UML_NET_USE_SKB_READ) {
-+	    /* we expect a full formed, well behaved skb from zero copy drivers here */
-+	    skb = (*lp->skb_read)(lp);
-+	    if (skb == NULL) {
- 		return 0;
--	}
--
--	skb->dev = dev;
--	skb_put(skb, lp->max_packet);
--	skb_reset_mac_header(skb);
--	pkt_len = (*lp->read)(lp->fd, skb, lp);
--
--	if (pkt_len > 0) {
-+	    }
-+	    pkt_len = skb->len;
-+	} else {
-+	    skb = dev_alloc_skb(lp->max_packet + 32);
-+	    if (skb == NULL) {
-+		    drop_skb->dev = dev;
-+		    /* Read a packet into drop_skb and don't do anything with it. */
-+		    (*lp->read)(lp->fd, drop_skb, lp);
-+		    dev->stats.rx_dropped++;
-+		    return 0;
-+	    }
-+
-+	    skb_reserve(skb,32);
-+	    skb->dev = dev;
-+	    skb_put(skb, lp->max_packet);
-+	    skb_reset_mac_header(skb);
-+
-+	    // Mark that virtual devices cannot provide required checksum.
-+	    skb->ip_summed = CHECKSUM_NONE;
-+	    pkt_len = (*lp->read)(lp->fd, skb, lp);
-+	    if (pkt_len > 0) {
- 		skb_trim(skb, pkt_len);
- 		skb->protocol = (*lp->protocol)(skb);
-+	    }
-+	}
- 
-+	if (pkt_len > 0) {
- 		dev->stats.rx_bytes += skb->len;
- 		dev->stats.rx_packets++;
- 		netif_rx(skb);
-@@ -192,6 +209,7 @@ static int uml_net_close(struct net_device *dev)
- 	struct uml_net_private *lp = netdev_priv(dev);
- 
- 	netif_stop_queue(dev);
-+	deactivate_fd(lp->fd, dev->irq);
- 
- 	um_free_irq(dev->irq, dev);
- 	if (lp->close != NULL)
-@@ -216,7 +234,6 @@ static int uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	spin_lock_irqsave(&lp->lock, flags);
- 
- 	len = (*lp->write)(lp->fd, skb, lp);
--	skb_tx_timestamp(skb);
- 
- 	if (len == skb->len) {
- 		dev->stats.tx_packets++;
-@@ -273,14 +290,13 @@ static void uml_net_poll_controller(struct net_device *dev)
- static void uml_net_get_drvinfo(struct net_device *dev,
- 				struct ethtool_drvinfo *info)
- {
--	strlcpy(info->driver, DRIVER_NAME, sizeof(info->driver));
--	strlcpy(info->version, "42", sizeof(info->version));
-+	strcpy(info->driver, DRIVER_NAME);
-+	strcpy(info->version, "42");
- }
- 
- static const struct ethtool_ops uml_net_ethtool_ops = {
- 	.get_drvinfo	= uml_net_get_drvinfo,
- 	.get_link	= ethtool_op_get_link,
--	.get_ts_info	= ethtool_op_get_ts_info,
- };
- 
- static void uml_net_user_timer_expire(unsigned long _conn)
-@@ -447,6 +463,7 @@ static void eth_configure(int n, void *init, char *mac,
- 	 * These just fill in a data structure, so there's no failure
- 	 * to be worried about.
- 	 */
-+	dev->ethtool_ops = &uml_net_ethtool_ops;
- 	(*transport->kern->init)(dev, init);
- 
- 	*lp = ((struct uml_net_private)
-@@ -459,7 +476,9 @@ static void eth_configure(int n, void *init, char *mac,
- 		  .open 		= transport->user->open,
- 		  .close 		= transport->user->close,
- 		  .remove 		= transport->user->remove,
-+		  .options 		= transport->kern->options,
- 		  .read 		= transport->kern->read,
-+		  .skb_read 		= transport->kern->skb_read,
- 		  .write 		= transport->kern->write,
- 		  .add_address 		= transport->user->add_address,
- 		  .delete_address  	= transport->user->delete_address });
-@@ -475,9 +494,9 @@ static void eth_configure(int n, void *init, char *mac,
- 
- 	dev->mtu = transport->user->mtu;
- 	dev->netdev_ops = &uml_netdev_ops;
--	dev->ethtool_ops = &uml_net_ethtool_ops;
- 	dev->watchdog_timeo = (HZ >> 1);
--	dev->irq = UM_ETH_IRQ;
-+	dev->irq = UM_ETH_BASE_IRQ + (rr_counter % UM_ETH_IRQ_RR);
-+	rr_counter++;
- 
- 	err = update_drop_skb(lp->max_packet);
- 	if (err)
-@@ -829,7 +848,7 @@ static void close_devices(void)
- 	spin_lock(&opened_lock);
- 	list_for_each(ele, &opened) {
- 		lp = list_entry(ele, struct uml_net_private, list);
--		um_free_irq(lp->dev->irq, lp->dev);
-+		free_irq(lp->dev->irq, lp->dev);
- 		if ((lp->close != NULL) && (lp->fd >= 0))
- 			(*lp->close)(lp->fd, &lp->user);
- 		if (lp->remove != NULL)
-diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
-index 4a2037f..be9128b 100644
---- a/arch/um/include/asm/irq.h
-+++ b/arch/um/include/asm/irq.h
-@@ -1,21 +1,27 @@
-+
- #ifndef __UM_IRQ_H
- #define __UM_IRQ_H
- 
-+#define UM_ETH_IRQ_RR	        32
-+
- #define TIMER_IRQ		0
- #define UMN_IRQ			1
- #define CONSOLE_IRQ		2
- #define CONSOLE_WRITE_IRQ	3
- #define UBD_IRQ			4
--#define UM_ETH_IRQ		5
--#define SSL_IRQ			6
--#define SSL_WRITE_IRQ		7
--#define ACCEPT_IRQ		8
--#define MCONSOLE_IRQ		9
--#define WINCH_IRQ		10
--#define SIGIO_WRITE_IRQ 	11
--#define TELNETD_IRQ 		12
--#define XTERM_IRQ 		13
--#define RANDOM_IRQ 		14
-+#define UM_ETH_BASE_IRQ		5
-+
-+#define UM_END_ETH_IRQ	        UM_ETH_BASE_IRQ + UM_ETH_IRQ_RR
-+
-+#define SSL_IRQ			UM_END_ETH_IRQ + 1
-+#define SSL_WRITE_IRQ		UM_END_ETH_IRQ + 2
-+#define ACCEPT_IRQ		UM_END_ETH_IRQ + 3
-+#define MCONSOLE_IRQ		UM_END_ETH_IRQ + 4
-+#define WINCH_IRQ		UM_END_ETH_IRQ + 5
-+#define SIGIO_WRITE_IRQ 	UM_END_ETH_IRQ + 6
-+#define TELNETD_IRQ 		UM_END_ETH_IRQ + 7
-+#define XTERM_IRQ 		UM_END_ETH_IRQ + 8
-+#define RANDOM_IRQ 		UM_END_ETH_IRQ + 9
- 
- #define LAST_IRQ RANDOM_IRQ
- #define NR_IRQS (LAST_IRQ + 1)
-diff --git a/arch/um/include/shared/net_kern.h b/arch/um/include/shared/net_kern.h
-index 012ac87..1e64658 100644
---- a/arch/um/include/shared/net_kern.h
-+++ b/arch/um/include/shared/net_kern.h
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-  * Copyright (C) 2002 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
-@@ -13,6 +14,8 @@
- #include <linux/list.h>
- #include <linux/workqueue.h>
- 
-+#define UML_NET_USE_SKB_READ 1
-+
- struct uml_net {
- 	struct list_head list;
- 	struct net_device *dev;
-@@ -28,6 +31,7 @@ struct uml_net_private {
- 
- 	struct work_struct work;
- 	int fd;
-+	unsigned int options;
- 	unsigned char mac[ETH_ALEN];
- 	int max_packet;
- 	unsigned short (*protocol)(struct sk_buff *);
-@@ -36,6 +40,7 @@ struct uml_net_private {
- 	void (*remove)(void *);
- 	int (*read)(int, struct sk_buff *skb, struct uml_net_private *);
- 	int (*write)(int, struct sk_buff *skb, struct uml_net_private *);
-+	struct sk_buff * (*skb_read)(struct uml_net_private *);
- 
- 	void (*add_address)(unsigned char *, unsigned char *, void *);
- 	void (*delete_address)(unsigned char *, unsigned char *, void *);
-@@ -47,6 +52,8 @@ struct net_kern_info {
- 	unsigned short (*protocol)(struct sk_buff *);
- 	int (*read)(int, struct sk_buff *skb, struct uml_net_private *);
- 	int (*write)(int, struct sk_buff *skb, struct uml_net_private *);
-+	struct sk_buff * (*skb_read)(struct uml_net_private *);
-+	unsigned int options;
- };
- 
- struct transport {
-@@ -59,11 +66,35 @@ struct transport {
- 	const int setup_size;
- };
- 
-+struct mmsg_queue_info {
++	struct uml_l2tpv3_data *pri = data;
 +	int fd;
-+	struct mmsghdr * mmsg_send_vector;
-+	void ** skb_send_vector;
-+	int queue_depth, head, tail, max_depth;
-+	spinlock_t head_lock;
-+	spinlock_t tail_lock;
++	int sock_family, sock_type, sock_proto;
++	int ret;
++	struct addrinfo hints;
++	struct addrinfo *result;
++	char service[NI_MAXSERV];
++	struct mmsghdr * mmsghdr;
++
++	pri->offset = 4;
++	pri->session_offset = 0;
++	pri->cookie_offset = 4;
++	pri->counter_offset = 4;
++
++	pri->fd = -1;
++
++	/* basic variable parsing */
++
++	pri->local_session = 0;
++	if (l2tpv3_parse_cookie32(pri->local_session_string,&pri->local_session) !=0) {
++		uml_l2tpv3_remove(pri);
++		return -1;
++	}
++	pri->remote_session = 0;
++	if (l2tpv3_parse_cookie32(pri->remote_session_string,&pri->remote_session) !=0) {
++		uml_l2tpv3_remove(pri);
++		return -1;
++	}
++	if (pri->new_mode & NEW_MODE_COOKIE) {
++		if (pri->new_mode & NEW_MODE_COOKIE_SIZE) {
++		/* 64 bit cookie */
++			pri->offset += 8;
++			pri->counter_offset += 8;
++			if (l2tpv3_parse_cookie64(pri->tx_cookie_string,&pri->tx_cookie) !=0) {
++				uml_l2tpv3_remove(pri);
++				return -1;
++			}
++			if (l2tpv3_parse_cookie64(pri->rx_cookie_string,&pri->rx_cookie) !=0) {
++				uml_l2tpv3_remove(pri);
++				return -1;
++			}
++		} else {
++		/* 32 bit cookie */
++			pri->offset += 4;
++			pri->counter_offset +=4;
++			pri->tx_cookie = 0;
++			if (l2tpv3_parse_cookie32(pri->tx_cookie_string,&pri->tx_cookie) !=0) {
++				uml_l2tpv3_remove(pri);
++				return -1;
++			}
++			pri->rx_cookie = 0;
++			if (l2tpv3_parse_cookie32(pri->rx_cookie_string,&pri->rx_cookie) !=0) {
++				uml_l2tpv3_remove(pri);
++				return -1;
++			}
++		}
++	}
++	if (pri->remote_addr_string) {
++	/* we now allocate it only if it we are not "listening" */
++		pri->remote_addr = uml_kmalloc(sizeof(struct sockaddr_storage), UM_GFP_KERNEL);
++	} else {
++		pri->remote_addr = NULL;
++	}
++
++	if (pri->new_mode & NEW_MODE_IP_VERSION) {
++	 /* IPv6 */
++		sock_family = AF_INET6;
++	} else {
++	 /* IPv4 */
++		sock_family = AF_INET;
++	}
++	if (pri->new_mode & NEW_MODE_UDP) {
++		printk(UM_KERN_ERR "uml_l2tpv3_user_init: preparing udp socket for mode %x\n ", pri->new_mode);
++		sock_type = SOCK_DGRAM;
++		sock_proto = 0;
++		/* space for header. In UDP mode, the
++		* egress packet also includes the
++		* 'Ver' and 'Reserved' fields.
++		*/
++
++		pri->offset += 4;
++		pri->counter_offset += 4;
++		pri->session_offset += 4;
++		pri->cookie_offset += 4;
++	} else {
++		printk(UM_KERN_ERR "uml_l2tpv3_user_init: preparing raw socket for mode %x\n ", pri->new_mode);
++		sock_type = SOCK_RAW;
++		sock_proto = 0x73;
++	}
++
++	if (!(pri->new_mode & NEW_MODE_NO_COUNTER)) {
++		pri->offset += 4;
++	}
++
++	memset(&hints, 0, sizeof(hints));
++	hints.ai_flags = AI_PASSIVE;
++	hints.ai_family = sock_family;
++	hints.ai_socktype = sock_type;
++	hints.ai_protocol = sock_proto;
++
++	if ((fd = socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol)) == -1) {
++		fd = -errno;
++		printk(UM_KERN_ERR "uml_l2tpv3_user_init: socket creation failed, "
++			"errno = %d\n", -fd);
++		uml_l2tpv3_remove(pri);
++		return fd;
++	} else {
++		pri->fd = fd;
++	}
++
++	/* Get the details of the local endpoint, and bind it. */
++	memset(service, '\0', NI_MAXSERV);
++	if (pri->new_mode & NEW_MODE_UDP) {
++		strncpy(service, pri->local_service, NI_MAXSERV - 1);
++		service[NI_MAXSERV - 1] = '\0';
++	}
++
++	ret = getaddrinfo(pri->local_addr_string, service, &hints, &result);
++
++	if ((ret != 0) || (result == NULL)) {
++		printk(UM_KERN_ERR "uml_l2tpv3_user_init: Unable to parse the local endpoint: %d\n", ret);
++		uml_l2tpv3_remove(pri);
++		return -1;
++	}
++	if (bind(fd, (struct sockaddr *)result->ai_addr, result->ai_addrlen)) {
++		printk("uml_l2tpv3_user_init:	could not bind socket: %d\n", errno);
++		freeaddrinfo(result);
++		uml_l2tpv3_remove(pri);
++		return -1;
++	}
++	printk("uml_l2tpv3_user_init: socket bound\n");
++	freeaddrinfo(result);
++
++	if (pri->remote_addr != NULL) {
++	/* Get the details of the remote endpoint. */
++		memset(service, '\0', NI_MAXSERV);
++		if (pri->new_mode & NEW_MODE_UDP) {
++			strncpy(service, pri->remote_service, NI_MAXSERV - 1);
++			service[NI_MAXSERV - 1] = '\0';
++		}
++		memset(&hints, 0, sizeof(hints));
++		hints.ai_flags = AI_PASSIVE;
++		hints.ai_family = sock_family;
++		hints.ai_socktype = sock_type;
++		hints.ai_protocol = sock_proto;
++		ret = getaddrinfo(pri->remote_addr_string, service, &hints, &result);
++		if ((ret != 0) || (result == NULL)) {
++			printk(UM_KERN_ERR "uml_l2tpv3_user_init: Unable to parse the remote endpoint: %d\n", ret);
++			uml_l2tpv3_remove(pri);
++			return -1;
++		}
++		memset(pri->remote_addr, '\0' , sizeof(struct sockaddr_storage));
++		memcpy(pri->remote_addr, result->ai_addr, result->ai_addrlen);
++		pri->remote_addr_size = result->ai_addrlen;
++		freeaddrinfo(result);
++	 }
++
++	/* vector IO init */
++
++	pri->vector_len = VECTOR_SIZE;
++	pri->recv_index = 0;
++	pri->recv_enqueued = 0;
++	pri->header_size = pri->offset /* fix for ipv4 raw */;
++
++	if ((!(pri->new_mode & NEW_MODE_IP_VERSION)) && (!(pri->new_mode & NEW_MODE_UDP))){
++		 pri->header_size += sizeof(struct iphdr) /* fix for ipv4 raw */;
++	}
++
++	pri->skb_recv_vector = build_skbuf_vector(VECTOR_SIZE, dev);
++	pri->mmsg_recv_vector = build_mmsg_vector(VECTOR_SIZE, 2);
++	add_header_buffers(pri->mmsg_recv_vector, VECTOR_SIZE, pri->header_size);
++	add_skbuffs(
++		 pri->mmsg_recv_vector,
++		 pri->skb_recv_vector,
++		 VECTOR_SIZE, ETH_MAX_PACKET + ETH_HEADER_OTHER,
++		 1
++	);
++	pri->skb_send_vector = uml_kmalloc(VECTOR_SIZE * sizeof(void *), UM_GFP_KERNEL);
++	if (pri->skb_send_vector) {
++		memset(pri->skb_send_vector, 0, sizeof(void *) * VECTOR_SIZE);
++	} else {
++		uml_l2tpv3_remove(pri);
++		return -1;
++	}
++	pri->mmsg_send_vector = build_mmsg_vector(VECTOR_SIZE, 2);
++	if (! pri->mmsg_send_vector) {
++		uml_l2tpv3_remove(pri);
++		return -1;
++	}
++	/* note - we do not need to do the ipv4 header size correction here */
++	add_header_buffers(pri->mmsg_send_vector, VECTOR_SIZE, pri->offset);
++	/* used only in single packet modes, should be obsoleted one day */
++	pri->network_buffer = uml_kmalloc(pri->header_size, UM_GFP_KERNEL);
++	if (!pri->network_buffer) {
++		printk("uml_l2tpv3_user_init: could not allocate buffer\n");
++		return -1;
++	}
++
++	if (!pri->remote_addr) {
++		mmsghdr = (struct mmsghdr *) pri->mmsg_recv_vector;
++		mmsghdr->msg_hdr.msg_name = uml_kmalloc(sizeof(struct sockaddr_storage), UM_GFP_KERNEL);
++		if (mmsghdr->msg_hdr.msg_name) {
++			mmsghdr->msg_hdr.msg_namelen = sizeof(struct sockaddr_storage);
++		} else {
++			printk("uml_l2tpv3_user_init: Failed to allocate remote address name\n");
++		}
++	}
++	pri->dev = dev;
++
++	/* init kernel side structures that are opaque to userspace -
++	 *  locks, timers, state machine, etc
++	 */
++
++
++	l2tpv3_complete_init(dev, VECTOR_SIZE); /* we really need error checking here */
++
++	if (!pri->send_queue_info) {
++		printk("uml_l2tpv3:queue control allocation failed\n");
++		uml_l2tpv3_remove(pri);
++		return -1;
++	}
++
++	if (pri->fd < 0) {
++		return pri->fd;
++	}
++	return 0;
++}
++
++static int uml_l2tpv3_open(void *data)
++{
++	struct uml_l2tpv3_data *pri = data;
++	return pri->fd;
++}
++
++
++int uml_l2tpv3_user_sendmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_l2tpv3_data *pri)
++{
++	struct msghdr message;
++	struct iovec vec[2];
++
++	vec[0].iov_base = header;
++	vec[0].iov_len = headerlen;
++	vec[1].iov_base = data;
++	vec[1].iov_len = datalen;
++
++	message.msg_name = pri->remote_addr;
++	message.msg_namelen = pri->remote_addr_size;
++	message.msg_iov = (struct iovec *) &vec;
++	message.msg_iovlen = 2;
++	message.msg_control = NULL;
++	message.msg_controllen = 0;
++	message.msg_flags = MSG_DONTWAIT;
++
++
++	if (pri->remote_addr != NULL) {
++		return net_sendmessage(fd, &message, MSG_DONTWAIT);
++	} else {
++		return -1;
++	}
++}
++int uml_l2tpv3_user_recvmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_l2tpv3_data *pri)
++{
++	struct msghdr message;
++	struct iovec vec[2];
++
++	vec[0].iov_base = header;
++	vec[0].iov_len = headerlen;
++	vec[1].iov_base = data;
++	vec[1].iov_len = datalen;
++
++	if (!pri->remote_addr) {
++		pri->remote_addr = uml_kmalloc(sizeof(struct sockaddr_storage), UM_GFP_ATOMIC);
++		if (pri->remote_addr) {
++			message.msg_name = pri->remote_addr;
++			message.msg_namelen = pri->remote_addr_size;
++		} else {
++			message.msg_name = NULL;
++			message.msg_namelen = 0;
++		}
++	} else {
++		message.msg_name = NULL;
++		message.msg_namelen = 0;
++	}
++
++	message.msg_iov = (struct iovec *) &vec;
++	message.msg_iovlen = 2;
++	message.msg_control = NULL;
++	message.msg_controllen = 0;
++	message.msg_flags = MSG_DONTWAIT;
++
++	return net_recvmessage(fd, &message, MSG_DONTWAIT);
++}
++const struct net_user_info uml_l2tpv3_user_info = {
++	.init		= uml_l2tpv3_user_init,
++	.open		= uml_l2tpv3_open,
++	.close	 	= NULL,
++	.remove	 	= uml_l2tpv3_remove,
++	.add_address	= NULL,
++	.delete_address = NULL,
++	.mtu		= ETH_MAX_PACKET,
++	.max_packet	= ETH_MAX_PACKET + ETH_HEADER_OTHER + L2TPV3_HEADER,
 +};
-+
- extern struct net_device *ether_init(int);
- extern unsigned short ether_protocol(struct sk_buff *);
- extern int tap_setup_common(char *str, char *type, char **dev_name,
- 			    char **mac_out, char **gate_addr);
- extern void register_transport(struct transport *new);
- extern unsigned short eth_protocol(struct sk_buff *skb);
-+extern struct sk_buff *my_build_skb(void * head, void *data, unsigned int frag_size);
-+
-+extern void flush_pending_netio(void);
-+
-+extern int uml_net_advance_tail( struct mmsg_queue_info * queue_info, int advance);
-+extern int uml_net_advance_head( struct mmsg_queue_info * queue_info, int advance);
-+extern int uml_net_flush_mmsg_queue(struct mmsg_queue_info * queue_info, int queue_depth);
-+
-+extern int uml_net_enqueue (
-+	struct mmsg_queue_info * queue_info,
-+	struct sk_buff * skb,
-+	struct uml_net_private *lp,
-+	void (*form_header)(void * header, struct sk_buff * skb, struct uml_net_private * lp),
-+	void * remote_addr,
-+	int remote_addr_size);
- 
- #endif
-diff --git a/arch/um/include/shared/net_user.h b/arch/um/include/shared/net_user.h
-index 3dabbe1..4b46f37 100644
---- a/arch/um/include/shared/net_user.h
-+++ b/arch/um/include/shared/net_user.h
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
-@@ -38,10 +39,15 @@ extern void tap_check_ips(char *gate_addr, unsigned char *eth_addr);
- extern void read_output(int fd, char *output_out, int len);
- 
- extern int net_read(int fd, void *buf, int len);
-+extern int net_readv(int fd, void *iov, int iovcnt);
- extern int net_recvfrom(int fd, void *buf, int len);
-+extern int net_recvfrom2(int fd, void *buf, int len, void *src_addr, int *addrlen);
- extern int net_write(int fd, void *buf, int len);
-+extern int net_writev(int fd, void *iov, int iovcnt);
- extern int net_send(int fd, void *buf, int len);
- extern int net_sendto(int fd, void *buf, int len, void *to, int sock_len);
-+extern int net_sendmessage(int fd, void *msg, int flags);
-+extern int net_recvmessage(int fd, void *msg, int flags);
- 
- extern void open_addr(unsigned char *addr, unsigned char *netmask, void *arg);
- extern void close_addr(unsigned char *addr, unsigned char *netmask, void *arg);
-@@ -50,4 +56,22 @@ extern char *split_if_spec(char *str, ...);
- 
- extern int dev_netmask(void *d, void *m);
- 
-+
-+extern void uml_net_destroy_skb(void * skb);
-+extern void * uml_net_build_skb (void * dev);
-+extern void * uml_net_skb_data (void * skb);
-+
-+extern void add_skbuffs(void * msgvec, void ** skbvec, int size, int skb_size, int offset);
-+extern void add_header_buffers(void * msgvec, int size, int header_size);
-+extern void * build_mmsg_vector(int size, int iovsize);
-+extern void rebuild_skbuf_vector(void ** skbvec, int size, void * dev);
-+extern void * build_skbuf_vector(int size, void * dev);
-+extern int net_recvmmsg(int fd, void *msgvec, unsigned int vlen,
-+		unsigned int flags, struct timespec *timeout);
-+extern int net_sendmmsg(int fd, void *msgvec, unsigned int vlen,
-+		unsigned int flags);
-+extern void repair_mmsg (void *msgvec, int iovsize, int header_size);
-+extern void destroy_skb_vector(void ** vector, int size);
-+extern void destroy_mmsg_vector(void * mmsgvector, int size, int free_iov_base);
-+
- #endif
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index eba7f62..12cba21 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -17,6 +17,7 @@
- #include <as-layout.h>
- #include <kern_util.h>
- #include <os.h>
-+#include <net_kern.h>
- 
- /*
- *	We are on the "kernel side" so we cannot pick up the sys/epoll.h
-@@ -136,6 +137,10 @@ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 		spin_unlock_irqrestore(&uml_sigio_lock, flags);
- 	}
- 
-+#ifdef CONFIG_UML_NET_VECTOR_TX
-+	flush_pending_netio();
-+#endif
-+
- 	/* This needs a better way - it slows down the event loop */
- 
- 	free_irqs();
 -- 
 1.7.10.4
 
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
