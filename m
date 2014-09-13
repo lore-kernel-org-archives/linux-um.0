@@ -1,20 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XW6rq-00089q-MJ
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1XSnv5-0001Xs-7j
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Sep 2014 16:53:38 +0000
-Received: from ivanoab3.miniserver.com ([89.200.143.206])
+	Sat, 13 Sep 2014 14:03:19 +0000
+Received: from www17.your-server.de ([213.133.104.17])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XW6ro-0008HG-De
+	(Exim 4.76) id 1XSnv3-0004PN-Au
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Sep 2014 16:53:38 +0000
-From: anton.ivanov@kot-begemot.co.uk
-Date: Mon, 22 Sep 2014 17:53:18 +0100
-Message-Id: <1411404804-871910-6-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-References: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+	Sat, 13 Sep 2014 14:03:19 +0000
+Received: from [217.255.210.209] (helo=[192.168.2.106])
+	by www17.your-server.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
+	(Exim 4.80.1) (envelope-from <thomas@m3y3r.de>) id 1XSnuw-0006ku-3k
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 13 Sep 2014 16:03:10 +0200
+Message-ID: <1410616989.998.6.camel@localhost.localdomain>
+From: Thomas Meyer <thomas@m3y3r.de>
+Date: Sat, 13 Sep 2014 16:03:09 +0200
+Mime-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,990 +28,333 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v4 05/11] GRE transport for UML
+Subject: [uml-devel] [PATCH] um: register with systemd-machined
 To: user-mode-linux-devel@lists.sourceforge.net
 
-From: Anton Ivanov <antivano@cisco.com>
+Hi,
 
-This transport allows a UML to connect to another UML local
-or remote, the Linux host or any other network device running
-the industry standard Ethernet over GRE protocol. The transport
-supports all features of RFC 2784.
+This patch registers an UML instance with systemd-machined.
+You may need to modify the dbus policy to allow this request
+in /etc/dbus-1/system.d/org.freedesktop.machine1.conf
 
-The transport supports a common set of features with the kernel
-implementation. Checksum offload is supported on RX, TODO on TX.
+Attached patch crashes the UML kernel, but I've know idea why!
+Help is appreciated and feedback is welcome!
 
-Additionally, the transport supports the so called "soft"
-termination where it can listen for an incoming connection
-which does not require the remote endpoint to be specified
-at configuration time.
-
-Signed-off-by: Anton Ivanov <antivano@cisco.com>
----
- arch/um/Kconfig.net            |   11 +
- arch/um/drivers/Makefile       |    2 +
- arch/um/drivers/uml_gre.h      |   87 ++++++++
- arch/um/drivers/uml_gre_kern.c |  446 ++++++++++++++++++++++++++++++++++++++++
- arch/um/drivers/uml_gre_user.c |  347 +++++++++++++++++++++++++++++++
- 5 files changed, 893 insertions(+)
- create mode 100644 arch/um/drivers/uml_gre.h
- create mode 100644 arch/um/drivers/uml_gre_kern.c
- create mode 100644 arch/um/drivers/uml_gre_user.c
-
-diff --git a/arch/um/Kconfig.net b/arch/um/Kconfig.net
-index d84a1ee..e372c06 100644
---- a/arch/um/Kconfig.net
-+++ b/arch/um/Kconfig.net
-@@ -103,6 +103,17 @@ config UML_NET_L2TPV3
-         the industry standard Ethernet over L2TPv3 protocol as described in
-         the applicable RFCs
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index e4b1a96..e9e3dee 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -132,8 +132,10 @@ LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
  
-+config UML_NET_GRE
-+	bool "GRE transport"
-+	depends on UML_NET
-+	help
-+        This User-Mode Linux network transport allows one or more running
-+        UMLs on single or multiple hosts to communicate with each other,
-+        the host as well as other remote or local network devices supporting
-+        the industry standard Ethernet over GRE protocol as described in
-+        the applicable RFCs. The driver supports Soft GRE (wait for connect)
-+        as used in Cable systems, etc.
+ LD_FLAGS_CMDLINE = $(foreach opt,$(LDFLAGS),-Wl,$(opt))
+ 
++LINK_DBUS = $(shell pkg-config --libs dbus-1)
 +
- config UML_NET_DAEMON
- 	bool "Daemon transport"
- 	depends on UML_NET
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index e2dcd85..c5427e1 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -10,6 +10,7 @@ slip-objs := slip_kern.o slip_user.o
- slirp-objs := slirp_kern.o slirp_user.o
- daemon-objs := daemon_kern.o daemon_user.o
- uml_l2tpv3-objs := uml_l2tpv3_kern.o uml_l2tpv3_user.o
-+uml_gre-objs := uml_gre_kern.o uml_gre_user.o
- umcast-objs := umcast_kern.o umcast_user.o
- net-objs := net_kern.o net_user.o net_extra_user.o net_extra_kern.o
- mconsole-objs := mconsole_kern.o mconsole_user.o
-@@ -45,6 +46,7 @@ obj-$(CONFIG_UML_NET_SLIP) += slip.o slip_common.o
- obj-$(CONFIG_UML_NET_SLIRP) += slirp.o slip_common.o
- obj-$(CONFIG_UML_NET_DAEMON) += daemon.o 
- obj-$(CONFIG_UML_NET_L2TPV3) += uml_l2tpv3.o
-+obj-$(CONFIG_UML_NET_GRE) += uml_gre.o
- obj-$(CONFIG_UML_NET_VDE) += vde.o
- obj-$(CONFIG_UML_NET_MCAST) += umcast.o
- obj-$(CONFIG_UML_NET_PCAP) += pcap.o
-diff --git a/arch/um/drivers/uml_gre.h b/arch/um/drivers/uml_gre.h
+ # Used by link-vmlinux.sh which has special support for um link
+-export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
++export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE) $(LINK_DBUS)
+ 
+ # When cleaning we don't include .config, so we don't include
+ # TT or skas makefiles and don't clean skas_ptregs.h.
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 08eec0b..13f8f10 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -217,6 +217,7 @@ extern int helper_wait(int pid);
+ extern int umid_file_name(char *name, char *buf, int len);
+ extern int set_umid(char *name);
+ extern char *get_umid(void);
++extern char *get_uml_dir_realpath(void);
+ 
+ /* signal.c */
+ extern void timer_init(void);
+diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
+index 08ff509..23559a3 100644
+--- a/arch/um/os-Linux/Makefile
++++ b/arch/um/os-Linux/Makefile
+@@ -5,16 +5,18 @@
+ 
+ obj-y = aio.o execvp.o file.o helper.o irq.o main.o mem.o process.o \
+        registers.o sigio.o signal.o start_up.o time.o tty.o \
+-       umid.o user_syms.o util.o drivers/ skas/
++       umid.o user_syms.o util.o drivers/ skas/ machined.o
+ 
+ obj-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
+ 
+ USER_OBJS := $(user-objs-y) aio.o elf_aux.o execvp.o file.o helper.o irq.o \
+        main.o mem.o process.o registers.o sigio.o signal.o start_up.o time.o \
+-       tty.o umid.o util.o
++       tty.o umid.o util.o machined.o
+ 
+ HAVE_AIO_ABI := $(shell [ -r /usr/include/linux/aio_abi.h ] && \
+        echo -DHAVE_AIO_ABI )
+ CFLAGS_aio.o += $(HAVE_AIO_ABI)
+ 
++CFLAGS_machined.o += $(shell pkg-config --cflags dbus-1 )
++
+ include arch/um/scripts/Makefile.rules
+diff --git a/arch/um/os-Linux/machined.c b/arch/um/os-Linux/machined.c
 new file mode 100644
-index 0000000..1889842
+index 0000000..d39e7b1
 --- /dev/null
-+++ b/arch/um/drivers/uml_gre.h
-@@ -0,0 +1,87 @@
-+/*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-+ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ * Licensed under the GPL
-+ */
-+
-+#ifndef __UML_GRE_H__
-+#define __UML_GRE_H__
-+
-+#include "net_user.h"
-+
-+/* header bits */
-+
-+#define GRE_MODE_CHECKSUM	8	/* checksum */
-+#define GRE_MODE_RESERVED	4	/* unused */
-+#define GRE_MODE_KEY		2	/* KEY present */
-+#define GRE_MODE_SEQUENCE	1	/* no sequence */
-+
-+/* flags (internal use */
-+
-+#define GRE_MODE_IP_VERSION	16	/* on for v6, off for v4 */
-+
-+
-+/* legacy modes */
-+
-+
-+#define MAX_GRE_HEADER 16
-+
-+
-+struct uml_gre_data {
-+        void *remote_addr;
-+        int  remote_addr_size;
-+        char *remote_addr_string;
-+        char *local_addr_string;
-+        char *rx_key_string;
-+        char *tx_key_string;
-+        uint32_t rx_key;
-+        uint32_t tx_key;
-+        uint8_t *network_buffer;
-+	int fd;
-+	void *dev;
-+
-+        uint32_t sequence;
-+
-+	/* verbatim header bits + control bits */
-+
-+        uint32_t mode;
-+
-+	/*  Precomputed offsets */
-+
-+	uint32_t offset;   /* main offset == header offset */
-+	uint32_t protocol_offset;
-+	uint32_t checksum_offset;
-+	uint32_t key_offset;
-+	uint32_t sequence_offset;
-+
-+	void ** skb_recv_vector;
-+	void * mmsg_recv_vector;
-+
-+	void ** skb_send_vector;
-+	void * mmsg_send_vector;
-+	void * send_queue_info;
-+
-+	uint32_t vector_len;
-+	uint32_t recv_index;
-+	uint32_t recv_enqueued;
-+	/* normally same as offset, add size of struct ipv4 header in ipv4 raw - API stupiditities */
-+	uint32_t header_size;
-+
-+};
-+
-+struct gre_minimal_header {
-+	uint16_t header;
-+	uint16_t arptype;
-+};
-+
-+
-+extern const struct net_user_info uml_gre_user_info;
-+
-+extern int uml_gre_user_sendmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_gre_data *pri);
-+
-+extern int uml_gre_user_recvmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_gre_data *pri);
-+
-+extern void gre_complete_init(void * dev_id, int max_depth);
-+extern void gre_kern_destroy(struct uml_gre_data *pri);
-+
-+#endif
-diff --git a/arch/um/drivers/uml_gre_kern.c b/arch/um/drivers/uml_gre_kern.c
-new file mode 100644
-index 0000000..ee5d732
---- /dev/null
-+++ b/arch/um/drivers/uml_gre_kern.c
-@@ -0,0 +1,446 @@
-+/*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-+ * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
-+ * James Leu (jleu@mindspring.net).
-+ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ * Copyright (C) 2001 by various other people who didn't put their name here.
-+ * Licensed under the GPL.
-+ */
-+
-+#include "linux/init.h"
-+#include <linux/netdevice.h>
-+#include <linux/ethtool.h>
-+#include <linux/ip.h>
-+#include "net_kern.h"
-+#include "uml_gre.h"
-+
-+#define DRIVER_NAME "uml-gre"
-+
-+#define GRE_IRB htons(0x6558)
-+#define ETHER_HEADER_SIZE 14
-+
-+struct uml_gre_init {
-+	char *local_addr_string;
-+	char *remote_addr_string;
-+	char *rx_key_string;
-+	char *tx_key_string;
-+	char *mode_string;
-+};
-+
-+static void uml_gre_get_drvinfo(struct net_device *dev,
-+				struct ethtool_drvinfo *info)
-+{
-+	strcpy(info->driver, DRIVER_NAME);
-+	strcpy(info->version, "42");
-+}
-+
-+
-+
-+static const struct ethtool_ops uml_gre_ethtool_ops =
-+{
-+	.get_drvinfo			= uml_gre_get_drvinfo,
-+	.get_link		= ethtool_op_get_link,
-+};
-+
-+
-+
-+static void uml_gre_init(struct net_device *dev, void *data)
-+{
-+	struct uml_net_private *pri;
-+	struct uml_gre_data *dpri;
-+	struct uml_gre_init *init = data;
-+
-+	pri = netdev_priv(dev);
-+	dpri = (struct uml_gre_data *) pri->user;
-+
-+		/*
-+		these are as is, we keep them for future reference
-+		and parse them in userspace
-+
-+	*/
-+
-+	dpri->local_addr_string = init->local_addr_string;
-+	dpri->remote_addr_string = init->remote_addr_string;
-+	dpri->rx_key_string = init->rx_key_string;
-+	dpri->tx_key_string = init->tx_key_string;
-+
-+	if (init->mode_string != NULL) {
-+	   sscanf(init->mode_string, "%x", &dpri->mode);
-+	} else {
-+	   dpri->mode = 0;
-+	}
-+	dpri->fd = -1;
-+	dpri->dev = dev;
-+	printk("gre backend - %s<->%s, rx_key: %s tx_key: %s, mode %i\n",
-+		dpri->local_addr_string,
-+		dpri->remote_addr_string,
-+		dpri->rx_key_string,
-+		dpri->tx_key_string,
-+		dpri->mode
-+		);
-+	SET_ETHTOOL_OPS(dev, &uml_gre_ethtool_ops);
-+}
-+
-+static int uml_gre_verify_header(uint8_t *header_buffer,
-+		struct sk_buff *skb,
-+		struct uml_gre_data *dpri)
-+{
-+	struct gre_minimal_header * header;
-+	uint16_t old_checksum;
-+	uint32_t data_sum;
-+	uint32_t and_ether_sum;
-+
-+	/* this is never called with a NULL SKB, the SKB must be trimmed
-+	   to correct size prior to calling */
-+
-+	if (!(dpri->mode & GRE_MODE_IP_VERSION)) {
-+		header_buffer += sizeof(struct iphdr) /* fix for ipv4 raw */;
-+	}
-+
-+	header = (struct gre_minimal_header *) header_buffer;
-+
-+	if (
-+		(header->header == htons((dpri->mode & 0xF) << 12)) &&
-+		(header->arptype == GRE_IRB)
-+	   ) {
-+		/* header bits and type match, check key if present */
-+		if (dpri->mode &  GRE_MODE_KEY) {
-+			if (*((uint32_t *)(header_buffer + dpri->key_offset)) != dpri->rx_key) {
-+				/* key mismatch, drop frame */
-+				skb->dev->stats.rx_dropped++;
-+				return 0;
-+			}
-+		}
-+		/*
-+		 We compute the checksum if there is GRE checksum
-+		 and supply it to the kernel as "checksum offload" in a
-+		 CHECKSUM_COMPLETE form so it can be used for any protocol
-+		 */
-+
-+		if (dpri->mode & GRE_MODE_CHECKSUM) {
-+			old_checksum = * ((uint16_t *) (header_buffer + dpri->checksum_offset));
-+			* ((uint32_t *) (header_buffer + dpri->checksum_offset)) = 0;
-+
-+			/* this will break with VLAN tags */
-+
-+			data_sum = csum_partial(skb->data + ETHER_HEADER_SIZE, skb->len - ETHER_HEADER_SIZE, 0);
-+			and_ether_sum = csum_partial(skb->data, ETHER_HEADER_SIZE, data_sum);
-+
-+			if (old_checksum !=  csum_fold(csum_partial(header_buffer, dpri->offset, and_ether_sum))) {
-+				skb->dev->stats.rx_dropped++;
-+				return 0;
-+			} else {
-+				skb->csum=data_sum;
-+				skb->ip_summed = CHECKSUM_COMPLETE;
-+			}
-+		}
-+		return 1;
-+	} else {
-+		skb->dev->stats.rx_dropped++;
-+	}
-+	return 0;
-+}
-+
-+static struct sk_buff * uml_gre_multiread (struct uml_net_private * lp) {
-+	struct uml_gre_data *dpri = (struct uml_gre_data *) &lp->user;
-+	void ** skb_recv_vector = dpri->skb_recv_vector;
-+	struct mmsghdr * mmsg_recv_vector = (struct mmsghdr *) dpri->mmsg_recv_vector;
-+	struct sk_buff * result;
-+	struct iovec * iov;
-+	int ret;
-+
-+
-+	/* Are we done processing the enqueued buffers */
-+
-+
-+	if (dpri->recv_index >= dpri->recv_enqueued) {
-+		ret = net_recvmmsg(
-+			dpri->fd, mmsg_recv_vector, dpri->vector_len, 0,NULL);
-+		if (ret >= 0) {
-+			dpri->recv_enqueued = ret;
-+		} else {
-+			printk("Error in multi-packet receive %d\n", ret);
-+			return NULL;
-+		}
-+		dpri->recv_index = 0;
-+	}
-+
-+	/* check if we are done processing the enqueued buffers */
-+
-+	skb_recv_vector += dpri->recv_index;
-+	mmsg_recv_vector += dpri->recv_index;
-+	while (dpri->recv_index < dpri->recv_enqueued) {
-+		dpri->recv_index ++;
-+		iov = mmsg_recv_vector->msg_hdr.msg_iov;
-+		if (
-+			(iov) &&
-+			(mmsg_recv_vector->msg_len > dpri->header_size) &&
-+			(uml_gre_verify_header(iov->iov_base, result, dpri))
-+		) {
-+			if (!dpri->remote_addr) {
-+				if (mmsg_recv_vector->msg_hdr.msg_name) {
-+					dpri->remote_addr = mmsg_recv_vector->msg_hdr.msg_name;
-+					dpri->remote_addr_size =
-+						mmsg_recv_vector->msg_hdr.msg_namelen;
-+					mmsg_recv_vector->msg_hdr.msg_namelen =  sizeof (struct sockaddr_storage);
-+				}
-+			}
-+			result = (struct sk_buff *)(* skb_recv_vector);
-+			if (result) {
-+				skb_trim(result, mmsg_recv_vector->msg_len - dpri->header_size);
-+				result->protocol = (*lp->protocol)(result);
-+				/* replace the buffer we just (ab)used */
-+				(* skb_recv_vector) = uml_net_build_skb(lp->dev);
-+				add_skbuffs(mmsg_recv_vector, skb_recv_vector, 1, lp->max_packet, 1);
-+				return result;
-+			} else {
-+				printk("encountered failed atomic allocation @%i, skipping to next\n", dpri->recv_index);
-+			}
-+		} else {
-+			if (mmsg_recv_vector->msg_hdr.msg_name) {
-+				/* reset size */
-+				mmsg_recv_vector->msg_hdr.msg_namelen =
-+					sizeof (struct sockaddr_storage);
-+			}
-+			result = NULL;
-+		}
-+		skb_recv_vector ++;
-+		mmsg_recv_vector ++;
-+	}
-+	return result;
-+}
-+
-+static int uml_gre_read(int fd, struct sk_buff *skb, struct uml_net_private *lp)
-+{
-+	int result;
-+	struct uml_gre_data *dpri = (struct uml_gre_data *) &lp->user;
-+	uint8_t  *buffer ;
-+
-+
-+	int offset = dpri->offset;
-+
-+	buffer = dpri->network_buffer;
-+
-+	if (dpri->mode & GRE_MODE_IP_VERSION)
-+	{
-+		/* IPv4 RAW mode: Account for the IP header that will be received */
-+		offset += sizeof(struct iphdr);
-+	}
-+
-+	result = uml_gre_user_recvmsg(
-+			fd,
-+			buffer, offset,
-+			skb->data, skb->dev->mtu + ETH_HEADER_OTHER,
-+			dpri
-+		);
-+	if (result <= 0) {
-+		return result;
-+	}
-+	if (!(dpri->mode & GRE_MODE_IP_VERSION)) {
-+	/* IPv4 RAW mode: Ignore the IP header */
-+		buffer += sizeof(struct iphdr);
-+	}
-+
-+	if ((result > offset) && (uml_gre_verify_header(buffer, skb, dpri))) {
-+		return result - offset;
-+	} else {
-+		return 0;
-+	}
-+}
-+
-+static void uml_gre_form_header(uint8_t * header_buffer,
-+		struct sk_buff* skb,
-+		struct uml_gre_data *pri)
-+{
-+	struct gre_minimal_header *header;
-+
-+	__wsum partial_sum;
-+
-+	if (!header_buffer) {
-+		return;
-+	}
-+
-+	header = (struct gre_minimal_header *) header_buffer;
-+
-+	header->header = htons((pri->mode & 0xF)<<12);
-+	header->arptype = GRE_IRB;
-+
-+	if (pri->mode & GRE_MODE_SEQUENCE) {
-+		* ((uint32_t *)(header_buffer + pri->sequence_offset)) = htonl(++pri->sequence);
-+	}
-+
-+	if (pri->mode & GRE_MODE_KEY) {
-+		* ((uint32_t *)(header_buffer + pri->key_offset)) = pri->tx_key; /* we will keep 'em htonled */
-+	}
-+
-+	/* TODO: The methodology here should be:
-+	 * 1. Report the driver as NETIF_F_HW_CSUM
-+	 * 2. We will get a start csum and an end csum and where to put it
-+	 * 3. Compute the csum, stash it
-+	 * 4. Write where we are told
-+	 * 5. Determine what else do we need to csum on either side of the HW_CSUM instructions
-+	 * 6. Adjust for the fact that we may have modified the packet as part of csum computation
-+	 * 7. Store the newly computed gre csum
-+	 * In the meantime we are just doing brute force on xmit
-+	*/
-+
-+	if (pri->mode & GRE_MODE_CHECKSUM) {
-+		* ((uint32_t *) (header_buffer + pri->checksum_offset)) = 0;
-+		partial_sum = csum_partial(skb->data,skb->len, 0);
-+		partial_sum = csum_partial(header_buffer, pri->offset, partial_sum);
-+		* ((uint16_t *) (header_buffer + pri->checksum_offset))
-+			=  csum_fold(partial_sum);
-+	}
-+}
-+
-+void gre_complete_init(void * dev_id, int max_depth) {
-+
-+	struct net_device *dev = dev_id;
-+	struct uml_net_private *lp = netdev_priv(dev);
-+	struct uml_gre_data *pri = (struct uml_gre_data *) &lp->user;
-+	struct mmsg_queue_info * queue_info ;
-+	int err;
-+
-+	queue_info =
-+		kmalloc(sizeof(struct mmsg_queue_info), GFP_KERNEL);
-+	if (queue_info) {
-+		queue_info->fd = pri->fd;
-+		queue_info->mmsg_send_vector = pri->mmsg_send_vector;
-+		queue_info->skb_send_vector = pri->skb_send_vector;
-+		queue_info->head = 0;
-+		queue_info->tail = 0;
-+		queue_info->queue_depth = 0;
-+		queue_info->max_depth = max_depth;
-+		spin_lock_init(&queue_info->head_lock);
-+		spin_lock_init(&queue_info->tail_lock);
-+	}
-+	pri->send_queue_info = queue_info;
-+}
-+
-+void gre_kern_destroy(struct uml_gre_data *pri) {
-+
-+	int ret = -1;
-+	struct mmsg_queue_info * queue_info = pri->send_queue_info;
-+	/* flush queue */
-+	do {
-+		ret = uml_net_flush_mmsg_queue(queue_info, 1);
-+	} while (ret != 0);
-+	pri->send_queue_info = NULL;
-+	kfree(queue_info);
-+}
-+
-+static void unified_form_header (void * header, struct sk_buff * skb, struct uml_net_private * lp) {
-+	struct uml_gre_data *pri = (struct uml_gre_data *) &lp->user;
-+	uml_gre_form_header(header, skb, pri);
-+}
-+
-+
-+static int uml_gre_multiwrite(int fd, struct sk_buff *skb, struct uml_net_private *lp)
-+{
-+
-+	struct uml_gre_data *pri = (struct uml_gre_data *) &lp->user;
-+	int queue_depth;
-+
-+	if (pri->remote_addr) {
-+
-+		queue_depth = uml_net_enqueue (
-+			(struct mmsg_queue_info *) pri->send_queue_info,
-+			skb,
-+			lp,
-+			unified_form_header,
-+			pri->remote_addr,
-+			pri->remote_addr_size
-+		);
-+
-+		uml_net_flush_mmsg_queue(
-+			(struct mmsg_queue_info *) pri->send_queue_info,
-+			queue_depth
-+		);
-+	}
-+
-+	return skb->len; /* not particularly correct */
-+}
-+
-+static int uml_gre_write(int fd, struct sk_buff *skb, struct uml_net_private *lp)
-+{
-+	struct uml_gre_data *pri = (struct uml_gre_data *) &lp->user;
-+	uint8_t *buffer = pri->network_buffer;
-+	int result;
-+
-+
-+	buffer = (uint8_t *)  pri->network_buffer;
-+
-+	uml_gre_form_header(buffer, skb, pri);
-+
-+	result = uml_gre_user_sendmsg(
-+		fd,
-+		buffer, pri->offset,
-+		skb->data, skb->len,
-+		pri
-+	);
-+
-+	if (result > pri->offset) {
-+		return result - pri->offset;
-+	} else {
-+		return result; /* not particularly correct */
-+	}
-+}
-+
-+static const struct net_kern_info uml_gre_kern_info = {
-+	.options		= UML_NET_USE_SKB_READ,
-+	.init			= uml_gre_init,
-+	.protocol		= eth_protocol,
-+	.read			= uml_gre_read,
-+	.skb_read		= uml_gre_multiread,
-+#ifdef CONFIG_UML_NET_VECTOR_TX
-+	.write			= uml_gre_multiwrite,
-+#else
-+	.write			= uml_gre_write,
-+#endif
-+
-+};
-+
-+static int uml_gre_setup(char *str, char **mac_out, void *data)
-+{
-+	struct uml_gre_init *init = data;
-+	char *remain;
-+
-+	*init = (
-+		(struct uml_gre_init)
-+		   {
-+			 .local_addr_string = "::1",
-+			 .mode_string = "0",
-+		   }
-+			);
-+
-+	remain = split_if_spec(str,
-+			mac_out,
-+			&init->local_addr_string,
-+			&init->remote_addr_string,
-+			&init->rx_key_string,
-+			&init->tx_key_string,
-+			&init->mode_string,
-+			NULL
-+		);
-+	if (remain != NULL)
-+		printk(KERN_WARNING " Strange interface spec \n");
-+	return 1;
-+}
-+
-+static struct transport uml_gre_transport = {
-+	.list		= LIST_HEAD_INIT(uml_gre_transport.list),
-+	.name		= "gre",
-+	.setup		= uml_gre_setup,
-+	.user		= &uml_gre_user_info,
-+	.kern		= &uml_gre_kern_info,
-+	.private_size	= sizeof(struct uml_gre_data),
-+	.setup_size	= sizeof(struct uml_gre_init),
-+};
-+
-+static int register_uml_gre(void)
-+{
-+	register_transport(&uml_gre_transport);
-+	return 0;
-+}
-+
-+late_initcall(register_uml_gre);
-diff --git a/arch/um/drivers/uml_gre_user.c b/arch/um/drivers/uml_gre_user.c
-new file mode 100644
-index 0000000..cf5dd5e
---- /dev/null
-+++ b/arch/um/drivers/uml_gre_user.c
-@@ -0,0 +1,347 @@
-+/*
-+ * Copyright (C) 2012-2014 Cisco Systems
-+ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
-+ * James Leu (jleu@mindspring.net).
-+ * Copyright (C) 2001 by various other people who didn't put their name here.
-+ * Licensed under the GPL.
-+ */
-+
-+#include <stdio.h>
-+#include <string.h>
-+#include <stdint.h>
++++ b/arch/um/os-Linux/machined.c
+@@ -0,0 +1,89 @@
++#include <dbus/dbus.h>
++#include <init.h>
 +#include <unistd.h>
-+#include <errno.h>
++#include <stdbool.h>
++#include <stdio.h>
 +#include <stdlib.h>
-+#include <sys/ioctl.h>
-+#include <net/if.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netdb.h>
-+#include <net/ethernet.h>
-+#include <netinet/ip.h>
-+#include <netinet/ether.h>
-+#include <linux/if_ether.h>
-+#include <linux/if_packet.h>
-+#include <arpa/inet.h>
++#include <os.h>
++#include <string.h>
 +
-+#include "uml_gre.h"
-+#include "net_user.h"
-+#include "os.h"
-+#include "um_malloc.h"
-+#include "user.h"
++static int machined_init(void) {
 +
-+#define VECTOR_SIZE 32
-+#define PROTO_GRE 47
++    DBusMessageIter message_iter;
++    DBusMessageIter message_iter_array;
 +
-+static int gre_parse_key(char *src , void * dst) {
-+	if ((src == NULL) || (sscanf(src, "%x", (unsigned int *) dst) != 1)) {
-+		printk(UM_KERN_ERR "cannot parse key!!!: %s\n", src);
-+		return -1;
-+	}
-+	* (( uint32_t *) dst) = htonl(* ((uint32_t* )dst));
-+	return 0;
++    DBusError dbus_error = {};
++    dbus_bool_t dbus_rc = false;
++
++    DBusConnection *con = NULL;
++    DBusMessage* message = NULL, *reply_message = NULL;
++
++    char *root_dir = get_uml_dir_realpath();
++
++    char *arg_machine_name = NULL;
++    unsigned char arg_uuid[] = { };
++    dbus_uint32_t arg_pid = os_getpid();
++    char *arg_root_dir = root_dir ? "" : root_dir;
++    const char *arg_service = "uml";
++    const char *arg_class = "vm";
++
++#define SLEN 255
++    arg_machine_name = malloc(SLEN);
++    if(arg_machine_name == NULL) {
++        goto out;
++    }
++
++    snprintf(arg_machine_name, SLEN, "uml-uid=%i-umid=%s", getuid(), get_umid());
++
++    con = dbus_bus_get(DBUS_BUS_SYSTEM, NULL);
++    if(con == NULL) {
++        printf("dbus_bus_get: no connection to system bus!\n");
++        goto out;
++    }
++
++    message = dbus_message_new_method_call(
++        "org.freedesktop.machine1",
++        "/org/freedesktop/machine1",
++        "org.freedesktop.machine1.Manager",
++        "CreateMachine");
++    if(message == NULL) {
++        printf("dbus_message_new_method_call: no machined manager found!\n");
++        goto out;
++    }
++
++    dbus_message_iter_init_append (message, &message_iter);
++    /* normal arguments */
++    dbus_rc = dbus_message_iter_append_basic(&message_iter, DBUS_TYPE_STRING, &arg_machine_name);
++    dbus_rc &= dbus_message_iter_open_container(&message_iter, DBUS_TYPE_ARRAY, DBUS_TYPE_BYTE_AS_STRING, &message_iter_array);
++    dbus_rc &= dbus_message_iter_append_fixed_array(&message_iter_array, DBUS_TYPE_BYTE, &arg_uuid, 0);
++    dbus_rc &= dbus_message_iter_close_container(&message_iter, &message_iter_array);
++    dbus_rc &= dbus_message_iter_append_basic(&message_iter, DBUS_TYPE_STRING, &arg_service);
++    dbus_rc &= dbus_message_iter_append_basic(&message_iter, DBUS_TYPE_STRING, &arg_class);
++    dbus_rc &= dbus_message_iter_append_basic(&message_iter, DBUS_TYPE_UINT32, &arg_pid);
++    dbus_rc &= dbus_message_iter_append_basic(&message_iter, DBUS_TYPE_STRING, &arg_root_dir);
++
++    /* append scope properties array */
++    dbus_rc &= dbus_message_iter_open_container(&message_iter, DBUS_TYPE_ARRAY, "(sv)", &message_iter_array);
++    /* ENHANCEME: fill in array of (sv) to control the scope unit */
++    dbus_rc &= dbus_message_iter_close_container(&message_iter, &message_iter_array);
++    if(dbus_rc != true) {
++        printf("DBusMessage: construction of message failed!\n");
++        goto out;
++    }
++
++    reply_message = dbus_connection_send_with_reply_and_block(con, message, -1, &dbus_error);
++    if(reply_message == NULL) {
++        printf("Failed to register with systemd-machined: %s\n", dbus_error.message);
++        goto out;
++    }
++
++out:
++    free(arg_machine_name);
++    free(root_dir);
++    dbus_connection_flush(con);
++    dbus_message_unref(message);
++    dbus_connection_unref(con);
++    return 0;
 +}
 +
-+static void uml_gre_remove(void *data)
++__uml_postsetup(machined_init);
+diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
+index c1dc892..aae05be 100644
+--- a/arch/um/os-Linux/umid.c
++++ b/arch/um/os-Linux/umid.c
+@@ -14,6 +14,7 @@
+ #include <sys/stat.h>
+ #include <init.h>
+ #include <os.h>
++#include <stdbool.h>
+ 
+ #define UML_DIR "~/.uml/"
+ 
+@@ -24,47 +25,55 @@ static char umid[UMID_LEN] = { 0 };
+ 
+ /* Changed by set_uml_dir and make_uml_dir, which are run early in boot */
+ static char *uml_dir = UML_DIR;
++static bool uml_dir_set = false;
++
++char* get_uml_dir_realpath(void) {
+ 
+-static int __init make_uml_dir(void)
+-{
+        char dir[512] = { '\0' };
+-       int len, err;
++       int len = 0;
++       char* uml_dir_real = NULL;
++       char *uml_dir_local = uml_dir;
+ 
+-       if (*uml_dir == '~') {
++       if (*uml_dir_local == '~') {
+                char *home = getenv("HOME");
+ 
+-               err = -ENOENT;
+                if (home == NULL) {
+                        printk(UM_KERN_ERR "make_uml_dir : no value in "
+                               "environment for $HOME\n");
+                        goto err;
+                }
+                strlcpy(dir, home, sizeof(dir));
+-               uml_dir++;
++               uml_dir_local++;
+        }
+-       strlcat(dir, uml_dir, sizeof(dir));
++       strlcat(dir, uml_dir_local, sizeof(dir));
+        len = strlen(dir);
+-       if (len > 0 && dir[len - 1] != '/')
++       if (len > 0 && dir[len - 1] != '/') {
+                strlcat(dir, "/", sizeof(dir));
++       }
+ 
+-       err = -ENOMEM;
+-       uml_dir = malloc(strlen(dir) + 1);
+-       if (uml_dir == NULL) {
+-               printf("make_uml_dir : malloc failed, errno = %d\n", errno);
++       uml_dir_real = malloc(strlen(dir) + 1);
++       if (uml_dir_real == NULL) {
++               printf("get_uml_dir_realpath : malloc failed, errno = %d\n", errno);
+                goto err;
+        }
+-       strcpy(uml_dir, dir);
++       strcpy(uml_dir_real, dir);
++err:
++       return uml_dir_real;
++}
++
++static int __init make_uml_dir(void)
 +{
-+	struct uml_gre_data *pri = data;
++    int err = 0;
++    char* uml_dir_real = get_uml_dir_realpath();
+ 
+-       if ((mkdir(uml_dir, 0777) < 0) && (errno != EEXIST)) {
+-               printf("Failed to mkdir '%s': %s\n", uml_dir, strerror(errno));
++       if ((mkdir(uml_dir_real, 0777) < 0) && (errno != EEXIST)) {
++           printf("Failed to mkdir '%s': %s\n", uml_dir_real, strerror(errno));
+                err = -errno;
+-               goto err_free;
+        }
+-       return 0;
+-
+-err_free:
+-       free(uml_dir);
+-err:
++       free(uml_dir_real);
++       if(uml_dir_set == true) {
++           free(uml_dir);
++       }
+        uml_dir = NULL;
+        return err;
+ }
+@@ -128,18 +137,17 @@ out:
+  *     this boot racing with a shutdown of the other UML
+  * In any of these cases, the directory isn't useful for anything else.
+  *
+- * Boolean return: 1 if in use, 0 otherwise.
++ * Boolean return: true if in use, false otherwise.
+  */
+-static inline int is_umdir_used(char *dir)
++static inline bool is_umdir_used(char *dir)
+ {
+        char file[strlen(uml_dir) + UMID_LEN + sizeof("/pid\0")];
+        char pid[sizeof("nnnnn\0")], *end;
+-       int dead, fd, p, n, err;
++       int dead, fd, p, n;
+ 
+        n = snprintf(file, sizeof(file), "%s/pid", dir);
+        if (n >= sizeof(file)) {
+                printk(UM_KERN_ERR "is_umdir_used - pid filename too long\n");
+-               err = -E2BIG;
+                goto out;
+        }
+ 
+@@ -154,7 +162,6 @@ static inline int is_umdir_used(char *dir)
+                goto out;
+        }
+ 
+-       err = 0;
+        n = read(fd, pid, sizeof(pid));
+        if (n < 0) {
+                printk(UM_KERN_ERR "is_umdir_used : couldn't read pid file "
+@@ -176,13 +183,13 @@ static inline int is_umdir_used(char *dir)
+        if ((kill(p, 0) == 0) || (errno != ESRCH)) {
+                printk(UM_KERN_ERR "umid \"%s\" is already in use by pid %d\n",
+                       umid, p);
+-               return 1;
++               return true;
+        }
+ 
+ out_close:
+        close(fd);
+ out:
+-       return 0;
++       return false;
+ }
+ 
+ /*
+@@ -350,6 +357,10 @@ char *get_umid(void)
+ 
+ static int __init set_uml_dir(char *name, int *add)
+ {
++    if(uml_dir_set == true) {
++        free(uml_dir);
++    }
 +
-+
-+	gre_kern_destroy(pri);
-+
-+	if (pri->fd > 0) {
-+		close(pri->fd);
-+	}
-+	pri->fd = -1;
-+	if (pri->skb_send_vector) {
-+		/* this one should be empty - we flushed it so we just free it */
-+		kfree(pri->skb_send_vector);
-+		pri->skb_send_vector = NULL;
-+	}
-+	if (pri->mmsg_send_vector) {
-+		destroy_mmsg_vector(pri->mmsg_send_vector, VECTOR_SIZE, 1);
-+		pri->mmsg_send_vector = NULL;
-+	}
-+	if (pri->skb_recv_vector) {
-+		destroy_skb_vector(pri->skb_recv_vector, VECTOR_SIZE);
-+		pri->skb_recv_vector = NULL;
-+	}
-+	if (pri->mmsg_recv_vector) {
-+		destroy_mmsg_vector(pri->mmsg_recv_vector, VECTOR_SIZE, 1);
-+		pri->mmsg_recv_vector = NULL;
-+	}
-+	if (pri->network_buffer) {
-+		kfree(pri->network_buffer);
-+		pri->network_buffer = NULL;
-+	}
-+}
-+
-+static int uml_gre_user_init(void *data, void *dev)
-+{
-+	struct uml_gre_data *pri = data;
-+	int fd;
-+
-+	int sock_family;
-+	int ret;
-+	struct addrinfo hints;
-+	struct addrinfo *result;
-+	char service[NI_MAXSERV];
-+	struct mmsghdr * mmsghdr;
-+
-+	printk(UM_KERN_INFO "gre user init mode %i\n", pri->mode);
-+
-+	pri->offset = sizeof(struct gre_minimal_header);
-+	pri->checksum_offset = pri->offset;
-+	pri->key_offset = pri->offset;
-+	pri->sequence_offset = pri->offset;
-+
-+	pri->fd = -1;
-+
-+	if (pri->mode & GRE_MODE_CHECKSUM) {
-+		pri->offset += 4;
-+		pri->key_offset += 4;
-+		pri->sequence_offset += 4;
-+	}
-+
-+	if (pri->mode & GRE_MODE_KEY) {
-+		pri->offset += 4;
-+		pri->sequence_offset +=4;
-+		pri->tx_key = 0;
-+		pri->rx_key = 0;
-+		if (gre_parse_key(pri->tx_key_string,&pri->tx_key) !=0) {
-+			return -1;
-+		}
-+		if (gre_parse_key(pri->rx_key_string,&pri->rx_key) !=0) {
-+			return -1;
-+		}
-+	}
-+
-+	if (pri->mode & GRE_MODE_SEQUENCE) {
-+		pri->offset += 4;
-+	}
-+
-+	/* basic variable parsing */
-+
-+	if (pri->remote_addr_string) {
-+		/* we now allocate it only if it we are not "listening" */
-+		pri->remote_addr = uml_kmalloc(sizeof(struct sockaddr_storage), UM_GFP_KERNEL);
-+	} else {
-+		pri->remote_addr = NULL;
-+	}
-+
-+	if (pri->mode & GRE_MODE_IP_VERSION) {
-+		/* IPv6 */
-+		sock_family = AF_INET6;
-+	} else {
-+		/* IPv4 */
-+		sock_family = AF_INET;
-+	}
-+
-+	printk(UM_KERN_ERR "uml_gre_user_init: preparing raw socket for mode %x\n ", pri->mode);
-+
-+	memset(&hints, 0, sizeof(hints));
-+
-+	hints.ai_flags = AI_PASSIVE;
-+	hints.ai_family = sock_family;
-+	hints.ai_socktype = SOCK_RAW;
-+	hints.ai_protocol = PROTO_GRE;
-+
-+	if ((fd = socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol)) == -1) {
-+		fd = -errno;
-+		printk(UM_KERN_ERR "uml_gre_user_init: socket creation failed, "
-+		 "errno = %d\n", -fd);
-+		return fd;
-+	}
-+
-+	pri->fd = fd;
-+
-+	memset(service, '\0', NI_MAXSERV);
-+	ret = getaddrinfo(pri->local_addr_string, service, &hints, &result);
-+	if ((ret != 0) || (result == NULL)) {
-+		printk(UM_KERN_ERR "uml_gre_user_init: Unable to parse the local endpoint: %d\n", ret);
-+		uml_gre_remove(pri);
-+		return -1;
-+	}
-+	if (bind(fd, (struct sockaddr *)result->ai_addr, result->ai_addrlen)) {
-+		printk("uml_gre_user_init:  could not bind socket: %d\n", errno);
-+		freeaddrinfo(result);
-+		uml_gre_remove(pri);
-+		return -1;
-+	}
-+
-+	printk("uml_gre_user_init: socket bound\n");
-+	freeaddrinfo(result);
-+
-+	if (pri->remote_addr) {
-+		memset(service, '\0', NI_MAXSERV);
-+		memset(&hints, 0, sizeof(hints));
-+
-+		hints.ai_flags = AI_PASSIVE;
-+		hints.ai_family = sock_family;
-+		hints.ai_socktype = SOCK_RAW;
-+		hints.ai_protocol = PROTO_GRE;
-+
-+		ret = getaddrinfo(pri->remote_addr_string, service, &hints, &result);
-+
-+		if ((ret != 0) || (result == NULL)) {
-+			printk(UM_KERN_ERR "uml_gre_user_init: Unable to parse the remote endpoint: %d\n", ret);
-+			uml_gre_remove(pri);
-+			return -1;
-+		}
-+
-+		memset(pri->remote_addr, '\0' , sizeof(struct sockaddr_storage));
-+		memcpy(pri->remote_addr, result->ai_addr, result->ai_addrlen);
-+		pri->remote_addr_size = result->ai_addrlen;
-+		freeaddrinfo(result);
-+	}
-+
-+	/* vector IO init */
-+
-+	pri->vector_len = VECTOR_SIZE;
-+	pri->recv_index = 0;
-+	pri->recv_enqueued = 0;
-+	pri->header_size = pri->offset /* fix for ipv4 raw */;
-+
-+	if (!(pri->mode & GRE_MODE_IP_VERSION)){
-+		pri->header_size += sizeof(struct iphdr) /* fix for ipv4 raw */;
-+	}
-+
-+	pri->skb_recv_vector = build_skbuf_vector(VECTOR_SIZE, dev);
-+	if (! pri->skb_recv_vector) {
-+		uml_gre_remove(pri);
-+		return -1;
-+	}
-+	pri->mmsg_recv_vector = build_mmsg_vector(VECTOR_SIZE, 2);
-+	if (! pri->mmsg_recv_vector) {
-+		uml_gre_remove(pri);
-+		return -1;
-+	}
-+	add_header_buffers(pri->mmsg_recv_vector, VECTOR_SIZE, pri->header_size);
-+	add_skbuffs(
-+		pri->mmsg_recv_vector,
-+		pri->skb_recv_vector,
-+		VECTOR_SIZE, ETH_MAX_PACKET + ETH_HEADER_OTHER,
-+		1
-+	);
-+
-+	pri->skb_send_vector = uml_kmalloc(VECTOR_SIZE * sizeof(void *), UM_GFP_KERNEL);
-+	if (pri->skb_send_vector) {
-+		memset(pri->skb_send_vector, 0, sizeof(void *) * VECTOR_SIZE);
-+	} else {
-+		uml_gre_remove(pri);
-+		return -1;
-+	}
-+	pri->mmsg_send_vector = build_mmsg_vector(VECTOR_SIZE, 2);
-+	if (! pri->mmsg_send_vector) {
-+		uml_gre_remove(pri);
-+		return -1;
-+	}
-+	add_header_buffers(pri->mmsg_send_vector, VECTOR_SIZE, pri->offset);
-+
-+	pri->network_buffer = uml_kmalloc(pri->header_size, UM_GFP_KERNEL); /* enough for any header, regardless how stupid */
-+
-+	if (!pri->network_buffer) {
-+		printk("uml_gre_user_init: could not allocate buffer\n");
-+		close(fd);
-+		return -1;
-+	}
-+
-+	if (!pri->remote_addr) {
-+		mmsghdr = (struct mmsghdr *) pri->mmsg_recv_vector;
-+		mmsghdr->msg_hdr.msg_name = uml_kmalloc(sizeof(struct sockaddr_storage), UM_GFP_KERNEL);
-+		if (mmsghdr->msg_hdr.msg_name) {
-+			mmsghdr->msg_hdr.msg_namelen = sizeof(struct sockaddr_storage);
-+		} else {
-+			printk("uml_gre_user_init: Failed to allocate remote address name\n");
-+		}
-+	}
-+
-+	pri->dev = dev;
-+
-+	gre_complete_init(dev, VECTOR_SIZE); /* we really need error checking here */
-+
-+	if (pri->fd < 0) {
-+		return pri->fd;
-+	}
-+
-+	printk("uml_gre_user_init: init complete, fd %i\n", fd);
-+
-+	return 0;
-+}
-+
-+static int uml_gre_open(void *data)
-+{
-+	struct uml_gre_data *pri = data;
-+	return pri->fd;
-+}
-+
-+
-+int uml_gre_user_sendmsg(int fd,
-+			void *header, int headerlen, void *data,
-+			int datalen, struct uml_gre_data *pri)
-+{
-+	struct msghdr message;
-+	struct iovec vec[2];
-+	vec[0].iov_base = header;
-+	vec[0].iov_len = headerlen;
-+	vec[1].iov_base = data;
-+	vec[1].iov_len = datalen;
-+
-+
-+	message.msg_name = pri->remote_addr;
-+	message.msg_namelen = pri->remote_addr_size;
-+	message.msg_iov = (struct iovec *) &vec;
-+	message.msg_iovlen = 2;
-+	message.msg_control = NULL;
-+	message.msg_controllen = 0;
-+	message.msg_flags = MSG_DONTWAIT;
-+
-+
-+	if (pri->remote_addr != NULL) {
-+		return net_sendmessage(fd, &message, MSG_DONTWAIT);
-+	} else {
-+		return -1;
-+	}
-+}
-+int uml_gre_user_recvmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_gre_data *pri)
-+{
-+	struct msghdr message;
-+	struct iovec vec[2];
-+	vec[0].iov_base = header;
-+	vec[0].iov_len = headerlen;
-+	vec[1].iov_base = data;
-+	vec[1].iov_len = datalen;
-+
-+	if (!pri->remote_addr) {
-+		pri->remote_addr = uml_kmalloc(sizeof(struct sockaddr_storage), UM_GFP_KERNEL);
-+		if (pri->remote_addr) {
-+			message.msg_name = pri->remote_addr;
-+			message.msg_namelen = pri->remote_addr_size;
-+		} else {
-+			message.msg_name = NULL;
-+			message.msg_namelen = 0;
-+		}
-+	} else {
-+			message.msg_name = NULL;
-+			message.msg_namelen = 0;
-+	}
-+
-+	message.msg_iov = (struct iovec *) &vec;
-+	message.msg_iovlen = 2;
-+	message.msg_control = NULL;
-+	message.msg_controllen = 0;
-+	message.msg_flags = MSG_DONTWAIT;
-+
-+	return net_recvmessage(fd, &message, MSG_DONTWAIT);
-+}
-+const struct net_user_info uml_gre_user_info = {
-+	.init			= uml_gre_user_init,
-+	.open			= uml_gre_open,
-+	.close			= NULL,
-+	.remove			= uml_gre_remove,
-+	.add_address		= NULL,
-+	.delete_address		= NULL,
-+	.mtu			= ETH_MAX_PACKET,
-+	.max_packet		= ETH_MAX_PACKET + ETH_HEADER_OTHER + MAX_GRE_HEADER,
-+};
--- 
-1.7.10.4
+        if (*name == '\0') {
+                printf("uml_dir can't be an empty string\n");
+                return 0;
+@@ -371,7 +382,7 @@ static int __init set_uml_dir(char *name, int *add)
+                return 0;
+        }
+        sprintf(uml_dir, "%s/", name);
+-
++       uml_dir_set = true;
+        return 0;
+ }
+ 
+
 
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
