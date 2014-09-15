@@ -1,33 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XVPEP-0000yQ-Ld
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <antivano@cisco.com>) id 1XTPTy-00084T-4z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Sep 2014 18:18:01 +0000
-Received: from ivanoab3.miniserver.com ([89.200.143.206])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XVPEO-00037U-3M
+	Mon, 15 Sep 2014 06:09:50 +0000
+Received: from rcdn-iport-2.cisco.com ([173.37.86.73])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XTPTw-0006Tp-OP
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Sep 2014 18:18:01 +0000
-Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
-	helo=falkor.sigsegv.cx) by ivanoab3.miniserver.com with esmtps
-	(TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16) (Exim 4.72)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XVPDM-0003ui-AZ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Sep 2014 18:16:56 +0000
-Received: from angua.kot-begemot.co.uk ([192.168.18.13])
-	by falkor.sigsegv.cx with esmtpsa (TLS1.0:DHE_RSA_AES_128_CBC_SHA1:128)
-	(Exim 4.80) (envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1XVPEG-0003FZ-Ll for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 20 Sep 2014 19:17:52 +0100
-Message-ID: <541DC4B9.5030202@kot-begemot.co.uk>
-Date: Sat, 20 Sep 2014 18:17:29 +0000
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-MIME-Version: 1.0
+	Mon, 15 Sep 2014 06:09:50 +0000
+Received: from xhc-rcd-x11.cisco.com (xhc-rcd-x11.cisco.com [173.37.183.85])
+	by rcdn-core-8.cisco.com (8.14.5/8.14.5) with ESMTP id s8F69bbU018018
+	(version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 15 Sep 2014 06:09:37 GMT
+From: "Anton Ivanov (antivano)" <antivano@cisco.com>
+Date: Mon, 15 Sep 2014 06:09:36 +0000
+Message-ID: <5416829E.60303@cisco.com>
 References: <1409857227-717756-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 	<CAFLxGvziZuz1oYAittyKbgeLd24e38Nv05Bqu+KdJ4qRabhQcQ@mail.gmail.com>
 In-Reply-To: <CAFLxGvziZuz1oYAittyKbgeLd24e38Nv05Bqu+KdJ4qRabhQcQ@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <406B85BC305A3E4FAFC8B485EB55A5DF@emea.cisco.com>
+MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -41,56 +37,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] UML Performance improvement patchset
-To: user-mode-linux-devel@lists.sourceforge.net
+To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Hi list,
+Hi Richard, hi list.
 
-Some benchmarks (current version, I believe this can do more once it 
-gains full epoll write support).
+I have found a couple of minor issues which have crept up during porting 
+from 3.3.8 to 3.12-3.15 (I originally wrote all of the improvements for 
+3.3.8/OpenWRT).
 
-4 UMLs running in parallel, each pinned to a core, new raw driver - vlan 
-per UML, 10G NIC on 4 core 3.5GHz A8 connected back to back to an 8 core 
-machine running iperf server.
+I will reissue the patchset with these fixed sometimes this week - 
+descriptions of issues/coming fixes inline.
 
-Server listening on TCP port 5001
-TCP window size: 85.3 KByte (default)
-------------------------------------------------------------
-[  4] local 192.168.63.1 port 5001 connected with 192.168.63.18 port 36946
-[  5] local 192.168.63.1 port 5001 connected with 192.168.63.3 port 33628
-[  6] local 192.168.63.1 port 5001 connected with 192.168.63.34 port 50217
-[  7] local 192.168.63.1 port 5001 connected with 192.168.63.50 port 40107
-[ ID] Interval       Transfer     Bandwidth
-[  4]  0.0-240.0 sec  40.8 GBytes  1.46 Gbits/sec
-[  5]  0.0-240.0 sec  40.4 GBytes  1.44 Gbits/sec
-[  6]  0.0-240.0 sec  39.9 GBytes  1.43 Gbits/sec
-[  7]  0.0-240.0 sec  39.5 GBytes  1.41 Gbits/sec
+I have tried to keep the network patches not invasive, but that is 
+preventing the use of the write poll functionality in the new interrupt 
+controller (there is no way to do that without starting to change the 
+core uml netdev structures). It also prevents a few other potential 
+performance improvements such as skb recycling on rx (to avoid 
+allocating memory every time), etc. I probably will not have the time to 
+get these done for a few weeks as I am snowed under a backlog of work 
+too. Once these are done, TX CPU should drop significantly without 
+losing the performance. RX should pick up as well to match TX for a lot 
+of use cases.
 
-For a nice rounded total of: 5.6GBit from a 4 core machine under virtualization, no offloads - true raw power as needed for network applications.
+After patching 3.12 and running it for a while on a live system I have 
+run again into my favorite UML issue (occasional process in D state on 
+IO) is back :(. This is something which exists in the stock kernel, but 
+is much more difficult to trigger because the way it the original timer 
+(and to a lesser extent SIGIO) handling. I will add a workaround which 
+does not fix it fully (but at least makes it extremely rare) to the 
+patchset as well on next reissue.
 
-For comparative purposes one CPU with the other ones not loaded is:
-
-root@Hive:~# iperf -t 240 -c 192.168.63.1
-------------------------------------------------------------
-Client connecting to 192.168.63.1, TCP port 5001
-TCP window size: 22.5 KByte (default)
-------------------------------------------------------------
-[  3] local 192.168.63.3 port 33629 connected with 192.168.63.1 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0-240.0 sec  63.3 GBytes  2.26 Gbits/sec
-
-If I use tap on the same machine I get significantly less than that. It 
-is also more than I can get out kvm on the same machine (with offloads 
-off so it something which is applicable to network applications).
-
-A.
-
-P.S. I think I have found all the issues that were introduced when 
-porting the original 3.3.8 patch to the current linux tree, I will 
-submit a new version which has the fixes on Monday.
-
-A.
-
-On 09/04/14 19:14, Richard Weinberger wrote:
+On 04/09/14 20:14, Richard Weinberger wrote:
 > On Thu, Sep 4, 2014 at 9:00 PM,  <anton.ivanov@kot-begemot.co.uk> wrote:
 >> Patch dependencies:
 >>
@@ -106,6 +83,10 @@ On 09/04/14 19:14, Richard Weinberger wrote:
 >> This patch fixes the list walking bottleneck and adds all of
 >> the above alowing for UML to be scaled to 100s of devices
 >> (tested with 512+ network devices).
+
+I have found one minor issue - it needs the "turn off sigio" in the exit 
+routine.
+
 >>
 >> [PATCH v3 02/10] Remove unnecessary 'reactivate' statements
 >>
@@ -126,6 +107,10 @@ On 09/04/14 19:14, Richard Weinberger wrote:
 >> This further performance improvement will be submitted separately.
 >>
 >> This patch has been tested extensively only with patchsets 1 and 2.
+
+There is a minor issue in the close(), it needs to call both the uml and 
+linux interrupt release routines and at the moment it does not.
+
 >>
 >> [PATCH v3 04/10] L2TPv3 Transport Driver for UML
 >>
@@ -134,6 +119,11 @@ On 09/04/14 19:14, Richard Weinberger wrote:
 >> It has been extensively tested to interop versus a set of
 >> other implementations including Linux kernel, our port of the
 >> same concept to QEMU/KVM, routers, etc.
+
+There are a couple of "belts and braces" checks missing - it needs to 
+zero the queue counter on a failed read (I have yet to see a single 
+failed read in all my tests though).
+
 >>
 >> Depends on 3.
 >>
@@ -191,10 +181,12 @@ On 09/04/14 19:14, Richard Weinberger wrote:
 > User-mode-linux-devel@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
-
 ------------------------------------------------------------------------------
-Slashdot TV.  Video for Nerds.  Stuff that Matters.
-http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
