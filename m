@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XPcGu-0007Kx-Py
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XW6rq-00089q-MJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 04 Sep 2014 19:00:40 +0000
+	Mon, 22 Sep 2014 16:53:38 +0000
 Received: from ivanoab3.miniserver.com ([89.200.143.206])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XPcGs-0000pH-0y
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XW6ro-0008HG-De
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 04 Sep 2014 19:00:40 +0000
+	Mon, 22 Sep 2014 16:53:38 +0000
 From: anton.ivanov@kot-begemot.co.uk
-Date: Thu,  4 Sep 2014 20:00:18 +0100
-Message-Id: <1409857227-717756-2-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1409857227-717756-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-References: <1409857227-717756-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+Date: Mon, 22 Sep 2014 17:53:18 +0100
+Message-Id: <1411404804-871910-6-git-send-email-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+References: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,933 +28,986 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v3 01/10] Epoll based interrupt controller
+Subject: [uml-devel] [PATCH v4 05/11] GRE transport for UML
 To: user-mode-linux-devel@lists.sourceforge.net
 
 From: Anton Ivanov <antivano@cisco.com>
 
-1. Minimum kernel 2.5.99
-2. No "walk the list" lookups for received IRQs - immediate identification
-of the correct handler to invoke
-3. Full set of IRQ semantics - edge, level, read, write
-    3.1. Write is now a *REAL* write - so if you (ab)use the
-    write to signify NONE (as in line.c) you will hang!!!
-    3.2. Read is fully backward compatible
-4. Otherwise mostly compatible with original poll() based controller
-5. Provides significant performance improvement (up to 10x times for
-large device numbers) ands lays the groundwork for the network and
-timer improvements to follow
+This transport allows a UML to connect to another UML local
+or remote, the Linux host or any other network device running
+the industry standard Ethernet over GRE protocol. The transport
+supports all features of RFC 2784.
+
+The transport supports a common set of features with the kernel
+implementation. Checksum offload is supported on RX, TODO on TX.
+
+Additionally, the transport supports the so called "soft"
+termination where it can listen for an incoming connection
+which does not require the remote endpoint to be specified
+at configuration time.
 
 Signed-off-by: Anton Ivanov <antivano@cisco.com>
 ---
- arch/um/drivers/line.c            |    3 +-
- arch/um/include/shared/irq_user.h |   19 +-
- arch/um/include/shared/os.h       |   13 +-
- arch/um/kernel/irq.c              |  454 +++++++++++++++++++++++++------------
- arch/um/os-Linux/irq.c            |  145 +++++-------
- 5 files changed, 391 insertions(+), 243 deletions(-)
+ arch/um/Kconfig.net            |   11 +
+ arch/um/drivers/Makefile       |    2 +
+ arch/um/drivers/uml_gre.h      |   87 ++++++++
+ arch/um/drivers/uml_gre_kern.c |  446 ++++++++++++++++++++++++++++++++++++++++
+ arch/um/drivers/uml_gre_user.c |  347 +++++++++++++++++++++++++++++++
+ 5 files changed, 893 insertions(+)
+ create mode 100644 arch/um/drivers/uml_gre.h
+ create mode 100644 arch/um/drivers/uml_gre_kern.c
+ create mode 100644 arch/um/drivers/uml_gre_user.c
 
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 8035145..6c4511f 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -1,4 +1,5 @@
- /*
+diff --git a/arch/um/Kconfig.net b/arch/um/Kconfig.net
+index d84a1ee..e372c06 100644
+--- a/arch/um/Kconfig.net
++++ b/arch/um/Kconfig.net
+@@ -103,6 +103,17 @@ config UML_NET_L2TPV3
+         the industry standard Ethernet over L2TPv3 protocol as described in
+         the applicable RFCs
+ 
++config UML_NET_GRE
++	bool "GRE transport"
++	depends on UML_NET
++	help
++        This User-Mode Linux network transport allows one or more running
++        UMLs on single or multiple hosts to communicate with each other,
++        the host as well as other remote or local network devices supporting
++        the industry standard Ethernet over GRE protocol as described in
++        the applicable RFCs. The driver supports Soft GRE (wait for connect)
++        as used in Cable systems, etc.
++
+ config UML_NET_DAEMON
+ 	bool "Daemon transport"
+ 	depends on UML_NET
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index e2dcd85..c5427e1 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -10,6 +10,7 @@ slip-objs := slip_kern.o slip_user.o
+ slirp-objs := slirp_kern.o slirp_user.o
+ daemon-objs := daemon_kern.o daemon_user.o
+ uml_l2tpv3-objs := uml_l2tpv3_kern.o uml_l2tpv3_user.o
++uml_gre-objs := uml_gre_kern.o uml_gre_user.o
+ umcast-objs := umcast_kern.o umcast_user.o
+ net-objs := net_kern.o net_user.o net_extra_user.o net_extra_kern.o
+ mconsole-objs := mconsole_kern.o mconsole_user.o
+@@ -45,6 +46,7 @@ obj-$(CONFIG_UML_NET_SLIP) += slip.o slip_common.o
+ obj-$(CONFIG_UML_NET_SLIRP) += slirp.o slip_common.o
+ obj-$(CONFIG_UML_NET_DAEMON) += daemon.o 
+ obj-$(CONFIG_UML_NET_L2TPV3) += uml_l2tpv3.o
++obj-$(CONFIG_UML_NET_GRE) += uml_gre.o
+ obj-$(CONFIG_UML_NET_VDE) += vde.o
+ obj-$(CONFIG_UML_NET_MCAST) += umcast.o
+ obj-$(CONFIG_UML_NET_PCAP) += pcap.o
+diff --git a/arch/um/drivers/uml_gre.h b/arch/um/drivers/uml_gre.h
+new file mode 100644
+index 0000000..1889842
+--- /dev/null
++++ b/arch/um/drivers/uml_gre.h
+@@ -0,0 +1,87 @@
++/*
 + * Copyright (C) 2012 - 2014 Cisco Systems
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
-@@ -283,7 +284,7 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
- 	if (err)
- 		return err;
- 	if (output)
--		err = um_request_irq(driver->write_irq, fd, IRQ_WRITE,
-+		err = um_request_irq(driver->write_irq, fd, IRQ_NONE,
- 				     line_write_interrupt, IRQF_SHARED,
- 				     driver->write_irq_name, data);
- 	return err;
-diff --git a/arch/um/include/shared/irq_user.h b/arch/um/include/shared/irq_user.h
-index df56330..472282c 100644
---- a/arch/um/include/shared/irq_user.h
-+++ b/arch/um/include/shared/irq_user.h
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
-@@ -9,16 +10,18 @@
- #include <sysdep/ptrace.h>
- 
- struct irq_fd {
--	struct irq_fd *next;
--	void *id;
--	int fd;
--	int type;
--	int irq;
--	int events;
--	int current_events;
-+        struct irq_fd *next;
-+        struct irq_fd *leaf;
-+        void *id;
-+        int fd;
-+        int type;
-+        int irq;
-+        int events;
- };
- 
--enum { IRQ_READ, IRQ_WRITE };
-+#define IRQ_NONE 0
-+#define IRQ_READ  1
-+#define IRQ_WRITE 2
- 
- struct siginfo;
- extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 021104d..17b4e9f 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
-@@ -276,15 +277,17 @@ extern void halt_skas(void);
- extern void reboot_skas(void);
- 
- /* irq.c */
--extern int os_waiting_for_events(struct irq_fd *active_fds);
--extern int os_create_pollfd(int fd, int events, void *tmp_pfd, int size_tmpfds);
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Licensed under the GPL
++ */
 +
-+extern int os_setup_epoll(int maxevents);
-+extern int os_waiting_for_events_epoll(void *kernel_events, int maxevents);
-+extern int os_add_epoll_fd (int events, int fd, void * data);
-+extern int os_mod_epoll_fd (int events, int fd, void * data);
-+extern int os_del_epoll_fd (int fd);
++#ifndef __UML_GRE_H__
++#define __UML_GRE_H__
 +
- extern void os_free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg,
- 		struct irq_fd *active_fds, struct irq_fd ***last_irq_ptr2);
- extern void os_free_irq_later(struct irq_fd *active_fds,
- 		int irq, void *dev_id);
--extern int os_get_pollfd(int i);
--extern void os_set_pollfd(int i, int fd);
--extern void os_set_ioignore(void);
- 
- /* sigio.c */
- extern int add_sigio_fd(int fd);
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 1d8505b..2869160 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  * Derived (i.e. mostly copied) from arch/i386/kernel/irq.c:
-@@ -18,6 +19,61 @@
- #include <os.h>
- 
- /*
-+*	We are on the "kernel side" so we cannot pick up the sys/epoll.h
-+*	So we lift out of it the applicable key definitions.
-+*/
++#include "net_user.h"
++
++/* header bits */
++
++#define GRE_MODE_CHECKSUM	8	/* checksum */
++#define GRE_MODE_RESERVED	4	/* unused */
++#define GRE_MODE_KEY		2	/* KEY present */
++#define GRE_MODE_SEQUENCE	1	/* no sequence */
++
++/* flags (internal use */
++
++#define GRE_MODE_IP_VERSION	16	/* on for v6, off for v4 */
 +
 +
-+enum EPOLL_EVENTS
-+  {
-+	EPOLLIN = 0x001,
-+#define EPOLLIN EPOLLIN
-+	EPOLLPRI = 0x002,
-+#define EPOLLPRI EPOLLPRI
-+	EPOLLOUT = 0x004,
-+#define EPOLLOUT EPOLLOUT
-+	EPOLLRDNORM = 0x040,
-+#define EPOLLRDNORM EPOLLRDNORM
-+	EPOLLRDBAND = 0x080,
-+#define EPOLLRDBAND EPOLLRDBAND
-+	EPOLLWRNORM = 0x100,
-+#define EPOLLWRNORM EPOLLWRNORM
-+	EPOLLWRBAND = 0x200,
-+#define EPOLLWRBAND EPOLLWRBAND
-+	EPOLLMSG = 0x400,
-+#define EPOLLMSG EPOLLMSG
-+	EPOLLERR = 0x008,
-+#define EPOLLERR EPOLLERR
-+	EPOLLHUP = 0x010,
-+#define EPOLLHUP EPOLLHUP
-+	EPOLLRDHUP = 0x2000,
-+#define EPOLLRDHUP EPOLLRDHUP
-+	EPOLLONESHOT = (1 << 30),
-+#define EPOLLONESHOT EPOLLONESHOT
-+	EPOLLET = (1 << 31)
-+#define EPOLLET EPOLLET
-+  };
++/* legacy modes */
 +
 +
-+typedef union epoll_data
-+{
-+	void *ptr;
++#define MAX_GRE_HEADER 16
++
++
++struct uml_gre_data {
++        void *remote_addr;
++        int  remote_addr_size;
++        char *remote_addr_string;
++        char *local_addr_string;
++        char *rx_key_string;
++        char *tx_key_string;
++        uint32_t rx_key;
++        uint32_t tx_key;
++        uint8_t *network_buffer;
 +	int fd;
-+	uint32_t u32;
-+	uint64_t u64;
-+} epoll_data_t;
++	void *dev;
 +
-+struct epoll_event
++        uint32_t sequence;
++
++	/* verbatim header bits + control bits */
++
++        uint32_t mode;
++
++	/*  Precomputed offsets */
++
++	uint32_t offset;   /* main offset == header offset */
++	uint32_t protocol_offset;
++	uint32_t checksum_offset;
++	uint32_t key_offset;
++	uint32_t sequence_offset;
++
++	void ** skb_recv_vector;
++	void * mmsg_recv_vector;
++
++	void ** skb_send_vector;
++	void * mmsg_send_vector;
++	void * send_queue_info;
++
++	uint32_t vector_len;
++	uint32_t recv_index;
++	uint32_t recv_enqueued;
++	/* normally same as offset, add size of struct ipv4 header in ipv4 raw - API stupiditities */
++	uint32_t header_size;
++
++};
++
++struct gre_minimal_header {
++	uint16_t header;
++	uint16_t arptype;
++};
++
++
++extern const struct net_user_info uml_gre_user_info;
++
++extern int uml_gre_user_sendmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_gre_data *pri);
++
++extern int uml_gre_user_recvmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_gre_data *pri);
++
++extern void gre_complete_init(void * dev_id, int max_depth);
++extern void gre_kern_destroy(struct uml_gre_data *pri);
++
++#endif
+diff --git a/arch/um/drivers/uml_gre_kern.c b/arch/um/drivers/uml_gre_kern.c
+new file mode 100644
+index 0000000..ee5d732
+--- /dev/null
++++ b/arch/um/drivers/uml_gre_kern.c
+@@ -0,0 +1,446 @@
++/*
++ * Copyright (C) 2012 - 2014 Cisco Systems
++ * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
++ * James Leu (jleu@mindspring.net).
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Copyright (C) 2001 by various other people who didn't put their name here.
++ * Licensed under the GPL.
++ */
++
++#include "linux/init.h"
++#include <linux/netdevice.h>
++#include <linux/ethtool.h>
++#include <linux/ip.h>
++#include "net_kern.h"
++#include "uml_gre.h"
++
++#define DRIVER_NAME "uml-gre"
++
++#define GRE_IRB htons(0x6558)
++#define ETHER_HEADER_SIZE 14
++
++struct uml_gre_init {
++	char *local_addr_string;
++	char *remote_addr_string;
++	char *rx_key_string;
++	char *tx_key_string;
++	char *mode_string;
++};
++
++static void uml_gre_get_drvinfo(struct net_device *dev,
++				struct ethtool_drvinfo *info)
 +{
-+	uint32_t events;	/* Epoll events */
-+	epoll_data_t data;	/* User data variable */
-+} __attribute__ ((__packed__));
-+
-+#define MAX_EPOLL_EVENTS 16
-+
-+static struct epoll_event epoll_events[MAX_EPOLL_EVENTS];
-+
-+/*
-  * This list is accessed under irq_lock, except in sigio_handler,
-  * where it is safe from being modified.  IRQ handlers won't change it -
-  * if an IRQ source has vanished, it will be freed by free_irqs just
-@@ -26,46 +82,98 @@
-  * remove list elements, taking the irq_lock to do so.
-  */
- static struct irq_fd *active_fds = NULL;
--static struct irq_fd **last_irq_ptr = &active_fds;
- 
- extern void free_irqs(void);
- 
-+/*
-+ the in_epoll_loop is not static on purpose - we will use this to
-+ determine if we can do delayed queue flushes in devices. The idea is -
-+ if we read 32 packets at a time using recvmmsg we need an
-+ indication that we will be reading more so no point to send now
-+ and flush the queue only once we are done with it
-+*/
-+
-+DEFINE_SPINLOCK(uml_sigio_lock);
-+
-+int in_epoll_loop = 0;
-+
-+static DEFINE_SPINLOCK(irq_lock);
-+static DEFINE_SPINLOCK(event_loop);
-+
- void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- {
- 	struct irq_fd *irq_fd;
--	int n;
-+	unsigned long flags;
-+
-+	int n, i;
- 
- 	if (smp_sigio_handler())
- 		return;
- 
- 	while (1) {
--		n = os_waiting_for_events(active_fds);
-+		spin_lock_irqsave(&uml_sigio_lock, flags);
-+		in_epoll_loop = 1;
-+		n = os_waiting_for_events_epoll(
-+			&epoll_events, MAX_EPOLL_EVENTS
-+		);
- 		if (n <= 0) {
--			if (n == -EINTR)
--				continue;
--			else break;
-+			in_epoll_loop = 0;
-+			spin_unlock_irqrestore(&uml_sigio_lock, flags);
-+			break;
- 		}
--
--		for (irq_fd = active_fds; irq_fd != NULL;
--		     irq_fd = irq_fd->next) {
--			if (irq_fd->current_events != 0) {
--				irq_fd->current_events = 0;
--				do_IRQ(irq_fd->irq, regs);
-+		for (i = 0; i < n ; i++) {
-+			for (
-+				irq_fd = (struct irq_fd *)
-+					epoll_events[i].data.ptr;
-+				irq_fd != NULL;
-+				irq_fd = irq_fd->leaf) {
-+				if (epoll_events[i].events & irq_fd->events) {
-+					do_IRQ(irq_fd->irq, regs);
-+				}
- 			}
- 		}
-+		in_epoll_loop = 0;
-+		spin_unlock_irqrestore(&uml_sigio_lock, flags);
- 	}
- 
-+	/* This needs a better way - it slows down the event loop */
-+
- 	free_irqs();
- }
--
--static DEFINE_SPINLOCK(irq_lock);
-+#define TRUNK_FORMAT "trunk %d\tfd %03d, events %03x, dev %p\n"
-+#define LEAF_FORMAT "leaf %d\tfd %03d, events %03x, dev %p\n"
-+
-+static void dump_interrupt_map (void) {
-+	struct irq_fd * irq, *leaf ;
-+	printk("MAP:\n");
-+	for (irq  = active_fds; irq != NULL; irq = irq->next) {
-+		printk(
-+			TRUNK_FORMAT,
-+			irq->irq, irq->fd, irq->events, irq->id
-+		);
-+		if (irq->leaf) {
-+			for (
-+				leaf = irq->leaf;
-+				leaf != NULL;
-+				leaf = leaf->leaf
-+			) {
-+				printk(
-+					LEAF_FORMAT,
-+					leaf->irq,
-+					leaf->fd,
-+					leaf->events,
-+					leaf->id
-+				);
-+			}
-+		}
-+	}
++	strcpy(info->driver, DRIVER_NAME);
++	strcpy(info->version, "42");
 +}
- 
- static int activate_fd(int irq, int fd, int type, void *dev_id)
- {
--	struct pollfd *tmp_pfd;
--	struct irq_fd *new_fd, *irq_fd;
-+	struct irq_fd *new_fd, *irq_fd, *leaf ;
- 	unsigned long flags;
--	int events, err, n;
-+	int events = 0, acc_events = 0, err, n, skip = 0;
- 
- 	err = os_set_fd_async(fd);
- 	if (err < 0)
-@@ -76,64 +184,56 @@ static int activate_fd(int irq, int fd, int type, void *dev_id)
- 	if (new_fd == NULL)
- 		goto out;
- 
--	if (type == IRQ_READ)
--		events = UM_POLLIN | UM_POLLPRI;
--	else events = UM_POLLOUT;
-+	if (type & IRQ_READ)
-+		events |= EPOLLIN | EPOLLPRI;
-+	if (type & IRQ_WRITE)
-+		events |= EPOLLOUT;
 +
- 	*new_fd = ((struct irq_fd) { .next  		= NULL,
--				     .id 		= dev_id,
--				     .fd 		= fd,
--				     .type 		= type,
--				     .irq 		= irq,
--				     .events 		= events,
--				     .current_events 	= 0 } );
-+					 .leaf		= NULL,
-+					 .id 		= dev_id,
-+					 .fd 		= fd,
-+					 .type 		= type,
-+					 .irq 		= irq,
-+					 .events 		= events });
- 
- 	err = -EBUSY;
- 	spin_lock_irqsave(&irq_lock, flags);
 +
- 	for (irq_fd = active_fds; irq_fd != NULL; irq_fd = irq_fd->next) {
--		if ((irq_fd->fd == fd) && (irq_fd->type == type)) {
--			printk(KERN_ERR "Registering fd %d twice\n", fd);
--			printk(KERN_ERR "Irqs : %d, %d\n", irq_fd->irq, irq);
--			printk(KERN_ERR "Ids : 0x%p, 0x%p\n", irq_fd->id,
--			       dev_id);
--			goto out_unlock;
-+		if (irq_fd->fd == fd) {
-+		for (leaf = irq_fd; leaf != NULL; leaf = leaf->leaf) {
-+			if (leaf->type == type) {
-+				printk("Irqs : %d, %d\n", leaf->irq, irq);
-+				printk("Ids : 0x%p, 0x%p\n", leaf->id, dev_id);
-+				goto out_unlock;
-+			}
-+			acc_events |= leaf->events;
-+		}
-+		/* we insert it one-off-the-head - easiest
-+		   we also pass our "head" as the pointer to mod
-+		   so it walks correctly
-+		*/
-+		skip = 1;
-+		new_fd->leaf = irq_fd->leaf;
-+		irq_fd->leaf = new_fd;
-+			if ((new_fd->events | acc_events) != acc_events) {
-+				n = os_mod_epoll_fd(new_fd->events | acc_events, fd, irq_fd);
-+			}
- 		}
- 	}
--
--	if (type == IRQ_WRITE)
--		fd = -1;
--
--	tmp_pfd = NULL;
--	n = 0;
--
--	while (1) {
--		n = os_create_pollfd(fd, events, tmp_pfd, n);
--		if (n == 0)
--			break;
--
--		/*
--		 * n > 0
--		 * It means we couldn't put new pollfd to current pollfds
--		 * and tmp_fds is NULL or too small for new pollfds array.
--		 * Needed size is equal to n as minimum.
--		 *
--		 * Here we have to drop the lock in order to call
--		 * kmalloc, which might sleep.
--		 * If something else came in and changed the pollfds array
--		 * so we will not be able to put new pollfd struct to pollfds
--		 * then we free the buffer tmp_fds and try again.
--		 */
--		spin_unlock_irqrestore(&irq_lock, flags);
--		kfree(tmp_pfd);
--
--		tmp_pfd = kmalloc(n, GFP_KERNEL);
--		if (tmp_pfd == NULL)
--			goto out_kfree;
--
--		spin_lock_irqsave(&irq_lock, flags);
-+	if (! skip) {
-+		/* proper IRQ registration */
-+		new_fd->next = active_fds;
-+		active_fds = new_fd;
 +
-+		if (new_fd->type != IRQ_NONE ) {
-+			n = os_add_epoll_fd(new_fd->events, fd, new_fd);
-+		} else {
-+			n = 0;
-+		}
- 	}
- 
--	*last_irq_ptr = new_fd;
--	last_irq_ptr = &new_fd->next;
- 
- 	spin_unlock_irqrestore(&irq_lock, flags);
- 
-@@ -141,122 +241,199 @@ static int activate_fd(int irq, int fd, int type, void *dev_id)
- 	 * This calls activate_fd, so it has to be outside the critical
- 	 * section.
- 	 */
--	maybe_sigio_broken(fd, (type == IRQ_READ));
++static const struct ethtool_ops uml_gre_ethtool_ops =
++{
++	.get_drvinfo			= uml_gre_get_drvinfo,
++	.get_link		= ethtool_op_get_link,
++};
 +
-+	maybe_sigio_broken(fd, (type != IRQ_NONE));
- 
- 	return 0;
- 
-  out_unlock:
- 	spin_unlock_irqrestore(&irq_lock, flags);
-- out_kfree:
- 	kfree(new_fd);
-  out:
- 	return err;
- }
- 
--static void free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg)
-+/* Must be called with irq_lock held */
-+static struct irq_fd *find_irq_chain_by_fd(int fd)
- {
--	unsigned long flags;
-+	struct irq_fd *irq;
- 
--	spin_lock_irqsave(&irq_lock, flags);
--	os_free_irq_by_cb(test, arg, active_fds, &last_irq_ptr);
--	spin_unlock_irqrestore(&irq_lock, flags);
-+	for (irq = active_fds; irq != NULL; irq = irq->next) {
-+		if (irq->fd == fd) {
-+		return irq;
-+		}
-+	}
-+	if (irq == NULL) {
-+		printk(KERN_ERR
-+			"find_irq_chain_by_fd doesn't have descriptor %d\n",
-+			   fd);
-+		dump_interrupt_map();
-+	}
-+	return irq;
- }
- 
--struct irq_and_dev {
--	int irq;
--	void *dev;
--};
--
--static int same_irq_and_dev(struct irq_fd *irq, void *d)
-+static struct irq_fd *find_irq_by_fd(int fd, int irqnum)
- {
--	struct irq_and_dev *data = d;
-+	struct irq_fd *irq;
 +
-+	for (irq = find_irq_chain_by_fd(fd); irq != NULL; irq = irq->leaf) {
-+		if (irq->irq == irqnum)	return irq;
-+	}
-+	if (irq == NULL) {
-+		printk(KERN_ERR "find_irq_by_fd doesn't have descriptor %d\n",
-+			   fd);
-+		dump_interrupt_map();
-+	}
-+	return irq;
-+}
- 
--	return ((irq->irq == data->irq) && (irq->id == data->dev));
-+static void free_leaf_irq_by_irq_and_dev(unsigned int irq, void *dev, struct irq_fd * prev) {
-+	/* this is called out of free_irq_by_irq_and_dev with a held lock */
-+	struct irq_fd *leaf;
-+	if (prev != NULL) {
-+		leaf = prev->leaf;
++
++static void uml_gre_init(struct net_device *dev, void *data)
++{
++	struct uml_net_private *pri;
++	struct uml_gre_data *dpri;
++	struct uml_gre_init *init = data;
++
++	pri = netdev_priv(dev);
++	dpri = (struct uml_gre_data *) pri->user;
++
++		/*
++		these are as is, we keep them for future reference
++		and parse them in userspace
++
++	*/
++
++	dpri->local_addr_string = init->local_addr_string;
++	dpri->remote_addr_string = init->remote_addr_string;
++	dpri->rx_key_string = init->rx_key_string;
++	dpri->tx_key_string = init->tx_key_string;
++
++	if (init->mode_string != NULL) {
++	   sscanf(init->mode_string, "%x", &dpri->mode);
 +	} else {
-+		return;
++	   dpri->mode = 0;
 +	}
-+	while (leaf != NULL) {
-+		if ((leaf->irq == irq) && (leaf->id == dev)) {
-+			if (leaf->events) {
-+				os_del_epoll_fd(leaf->fd);
++	dpri->fd = -1;
++	dpri->dev = dev;
++	printk("gre backend - %s<->%s, rx_key: %s tx_key: %s, mode %i\n",
++		dpri->local_addr_string,
++		dpri->remote_addr_string,
++		dpri->rx_key_string,
++		dpri->tx_key_string,
++		dpri->mode
++		);
++	SET_ETHTOOL_OPS(dev, &uml_gre_ethtool_ops);
++}
++
++static int uml_gre_verify_header(uint8_t *header_buffer,
++		struct sk_buff *skb,
++		struct uml_gre_data *dpri)
++{
++	struct gre_minimal_header * header;
++	uint16_t old_checksum;
++	uint32_t data_sum;
++	uint32_t and_ether_sum;
++
++	/* this is never called with a NULL SKB, the SKB must be trimmed
++	   to correct size prior to calling */
++
++	if (!(dpri->mode & GRE_MODE_IP_VERSION)) {
++		header_buffer += sizeof(struct iphdr) /* fix for ipv4 raw */;
++	}
++
++	header = (struct gre_minimal_header *) header_buffer;
++
++	if (
++		(header->header == htons((dpri->mode & 0xF) << 12)) &&
++		(header->arptype == GRE_IRB)
++	   ) {
++		/* header bits and type match, check key if present */
++		if (dpri->mode &  GRE_MODE_KEY) {
++			if (*((uint32_t *)(header_buffer + dpri->key_offset)) != dpri->rx_key) {
++				/* key mismatch, drop frame */
++				skb->dev->stats.rx_dropped++;
++				return 0;
 +			}
-+			prev->leaf = leaf->leaf;
-+			kfree(leaf);
-+		} else {
-+			prev = leaf;
 +		}
-+		leaf = prev->leaf;
-+	}
- }
- 
--static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
-+static int do_free_irq_by_irq_and_dev(unsigned int irq, void *dev)
- {
--	struct irq_and_dev data = ((struct irq_and_dev) { .irq  = irq,
--							  .dev  = dev });
-+	unsigned long flags;
-+	struct irq_fd *prev, * trunk;
-+	spin_lock_irqsave(&irq_lock, flags);
- 
--	free_irq_by_cb(same_irq_and_dev, &data);
--}
-+	trunk = active_fds;
-+	prev = NULL;
- 
--static int same_fd(struct irq_fd *irq, void *fd)
--{
--	return (irq->fd == *((int *)fd));
--}
-+	while (trunk != NULL) {
- 
--void free_irq_by_fd(int fd)
--{
--	free_irq_by_cb(same_fd, &fd);
--}
-+		/* walk the branch and free irq descriptor if on branch */
- 
--/* Must be called with irq_lock held */
--static struct irq_fd *find_irq_by_fd(int fd, int irqnum, int *index_out)
--{
--	struct irq_fd *irq;
--	int i = 0;
--	int fdi;
-+		if (trunk->leaf != NULL) {
-+			free_leaf_irq_by_irq_and_dev(irq, dev, trunk);
-+		}
- 
--	for (irq = active_fds; irq != NULL; irq = irq->next) {
--		if ((irq->fd == fd) && (irq->irq == irqnum))
--			break;
--		i++;
-+		if ((trunk->irq == irq) && (trunk->id == dev)) {
-+			/* delete irq descriptor off trunk */
-+			if (trunk->leaf != NULL) {
-+				/* leaf non-null, attach instead of
-+				   freed irq descriptor
-+				 */
-+				if (prev != NULL) {
-+					prev->next = trunk->leaf;
-+				} else {
-+					active_fds = trunk->leaf;
-+				}
-+				trunk->leaf->next = trunk->next;
-+				if (trunk->events) {
-+					os_del_epoll_fd(trunk->fd);
-+				}
-+				kfree(trunk);
++		/*
++		 We compute the checksum if there is GRE checksum
++		 and supply it to the kernel as "checksum offload" in a
++		 CHECKSUM_COMPLETE form so it can be used for any protocol
++		 */
++
++		if (dpri->mode & GRE_MODE_CHECKSUM) {
++			old_checksum = * ((uint16_t *) (header_buffer + dpri->checksum_offset));
++			* ((uint32_t *) (header_buffer + dpri->checksum_offset)) = 0;
++
++			/* this will break with VLAN tags */
++
++			data_sum = csum_partial(skb->data + ETHER_HEADER_SIZE, skb->len - ETHER_HEADER_SIZE, 0);
++			and_ether_sum = csum_partial(skb->data, ETHER_HEADER_SIZE, data_sum);
++
++			if (old_checksum !=  csum_fold(csum_partial(header_buffer, dpri->offset, and_ether_sum))) {
++				skb->dev->stats.rx_dropped++;
++				return 0;
 +			} else {
-+				if (prev != NULL) {
-+					prev->next = trunk->next;
-+				} else {
-+					active_fds = trunk->next;
-+				}
-+				if (trunk->events) {
-+					os_del_epoll_fd(trunk->fd);
-+				}
-+				kfree(trunk);
++				skb->csum=data_sum;
++				skb->ip_summed = CHECKSUM_COMPLETE;
 +			}
-+			/* irq + dev should be unique, it is also easier
-+			   to restart than to juggle all the pointers after
-+			   making holes in the list
-+			*/
-+			return 1;
 +		}
-+		prev = trunk;
-+		trunk = trunk->next;
- 	}
--	if (irq == NULL) {
--		printk(KERN_ERR "find_irq_by_fd doesn't have descriptor %d\n",
--		       fd);
--		goto out;
-+	spin_unlock_irqrestore(&irq_lock, flags);
++		return 1;
++	} else {
++		skb->dev->stats.rx_dropped++;
++	}
 +	return 0;
 +}
-+static void free_irq_by_irq_and_dev(unsigned int irq, void *dev) {
-+	while (do_free_irq_by_irq_and_dev(irq, dev) != 0) {
- 	}
--	fdi = os_get_pollfd(i);
--	if ((fdi != -1) && (fdi != fd)) {
--		printk(KERN_ERR "find_irq_by_fd - mismatch between active_fds "
--		       "and pollfds, fd %d vs %d, need %d\n", irq->fd,
--		       fdi, fd);
--		irq = NULL;
--		goto out;
++
++static struct sk_buff * uml_gre_multiread (struct uml_net_private * lp) {
++	struct uml_gre_data *dpri = (struct uml_gre_data *) &lp->user;
++	void ** skb_recv_vector = dpri->skb_recv_vector;
++	struct mmsghdr * mmsg_recv_vector = (struct mmsghdr *) dpri->mmsg_recv_vector;
++	struct sk_buff * result;
++	struct iovec * iov;
++	int ret;
++
++
++	/* Are we done processing the enqueued buffers */
++
++
++	if (dpri->recv_index >= dpri->recv_enqueued) {
++		ret = net_recvmmsg(
++			dpri->fd, mmsg_recv_vector, dpri->vector_len, 0,NULL);
++		if (ret >= 0) {
++			dpri->recv_enqueued = ret;
++		} else {
++			printk("Error in multi-packet receive %d\n", ret);
++			return NULL;
++		}
++		dpri->recv_index = 0;
++	}
++
++	/* check if we are done processing the enqueued buffers */
++
++	skb_recv_vector += dpri->recv_index;
++	mmsg_recv_vector += dpri->recv_index;
++	while (dpri->recv_index < dpri->recv_enqueued) {
++		dpri->recv_index ++;
++		iov = mmsg_recv_vector->msg_hdr.msg_iov;
++		if (
++			(iov) &&
++			(mmsg_recv_vector->msg_len > dpri->header_size) &&
++			(uml_gre_verify_header(iov->iov_base, result, dpri))
++		) {
++			if (!dpri->remote_addr) {
++				if (mmsg_recv_vector->msg_hdr.msg_name) {
++					dpri->remote_addr = mmsg_recv_vector->msg_hdr.msg_name;
++					dpri->remote_addr_size =
++						mmsg_recv_vector->msg_hdr.msg_namelen;
++					mmsg_recv_vector->msg_hdr.msg_namelen =  sizeof (struct sockaddr_storage);
++				}
++			}
++			result = (struct sk_buff *)(* skb_recv_vector);
++			if (result) {
++				skb_trim(result, mmsg_recv_vector->msg_len - dpri->header_size);
++				result->protocol = (*lp->protocol)(result);
++				/* replace the buffer we just (ab)used */
++				(* skb_recv_vector) = uml_net_build_skb(lp->dev);
++				add_skbuffs(mmsg_recv_vector, skb_recv_vector, 1, lp->max_packet, 1);
++				return result;
++			} else {
++				printk("encountered failed atomic allocation @%i, skipping to next\n", dpri->recv_index);
++			}
++		} else {
++			if (mmsg_recv_vector->msg_hdr.msg_name) {
++				/* reset size */
++				mmsg_recv_vector->msg_hdr.msg_namelen =
++					sizeof (struct sockaddr_storage);
++			}
++			result = NULL;
++		}
++		skb_recv_vector ++;
++		mmsg_recv_vector ++;
++	}
++	return result;
 +}
 +
-+void free_irq_by_fd(int fd)
++static int uml_gre_read(int fd, struct sk_buff *skb, struct uml_net_private *lp)
 +{
-+	struct irq_fd *irq, * found;
-+	unsigned long flags;
-+	spin_lock_irqsave(&irq_lock, flags);
-+	found = find_irq_chain_by_fd(fd);
-+	if (found == NULL) {
-+		spin_unlock_irqrestore(&irq_lock, flags);
-+		return;
- 	}
--	*index_out = i;
-- out:
--	return irq;
-+	os_del_epoll_fd(fd);
-+	/* free the whole chain */
-+	while (found != NULL) {
-+		irq = found;
-+		found = found->leaf;
-+		kfree(irq);
++	int result;
++	struct uml_gre_data *dpri = (struct uml_gre_data *) &lp->user;
++	uint8_t  *buffer ;
++
++
++	int offset = dpri->offset;
++
++	buffer = dpri->network_buffer;
++
++	if (dpri->mode & GRE_MODE_IP_VERSION)
++	{
++		/* IPv4 RAW mode: Account for the IP header that will be received */
++		offset += sizeof(struct iphdr);
 +	}
-+	spin_unlock_irqrestore(&irq_lock, flags);
 +
- }
- 
- void reactivate_fd(int fd, int irqnum)
- {
--	struct irq_fd *irq;
-+	struct irq_fd *irq, * found;
- 	unsigned long flags;
--	int i;
-+	int acc_events = 0;
- 
- 	spin_lock_irqsave(&irq_lock, flags);
--	irq = find_irq_by_fd(fd, irqnum, &i);
--	if (irq == NULL) {
-+	found = find_irq_chain_by_fd(fd);
-+	if (found == NULL) {
- 		spin_unlock_irqrestore(&irq_lock, flags);
- 		return;
- 	}
--	os_set_pollfd(i, irq->fd);
-+	for (
-+		irq = found;
-+		irq != NULL;
-+		irq = irq->leaf) {
-+		acc_events |= irq->events;
++	result = uml_gre_user_recvmsg(
++			fd,
++			buffer, offset,
++			skb->data, skb->dev->mtu + ETH_HEADER_OTHER,
++			dpri
++		);
++	if (result <= 0) {
++		return result;
 +	}
-+	if (os_add_epoll_fd(acc_events, fd, found) !=0) {
-+		os_mod_epoll_fd(acc_events, fd, found);
++	if (!(dpri->mode & GRE_MODE_IP_VERSION)) {
++	/* IPv4 RAW mode: Ignore the IP header */
++		buffer += sizeof(struct iphdr);
 +	}
- 	spin_unlock_irqrestore(&irq_lock, flags);
--
- 	add_sigio_fd(fd);
 +
- }
- 
- void deactivate_fd(int fd, int irqnum)
- {
- 	struct irq_fd *irq;
- 	unsigned long flags;
--	int i;
- 
- 	spin_lock_irqsave(&irq_lock, flags);
--	irq = find_irq_by_fd(fd, irqnum, &i);
-+	irq = find_irq_by_fd(fd, irqnum);
- 	if (irq == NULL) {
- 		spin_unlock_irqrestore(&irq_lock, flags);
- 		return;
- 	}
- 
--	os_set_pollfd(i, -1);
-+	os_del_epoll_fd(irq->fd);
- 	spin_unlock_irqrestore(&irq_lock, flags);
--
- 	ignore_sigio_fd(fd);
-+
-+
- }
- EXPORT_SYMBOL(deactivate_fd);
- 
-@@ -272,12 +449,11 @@ int deactivate_all_fds(void)
- 	int err;
- 
- 	for (irq = active_fds; irq != NULL; irq = irq->next) {
-+		os_del_epoll_fd(irq->fd);   /* ignore err, just do it */
- 		err = os_clear_fd_async(irq->fd);
- 		if (err)
- 			return err;
- 	}
--	/* If there is a signal already queued, after unblocking ignore it */
--	os_set_ioignore();
- 
- 	return 0;
- }
-@@ -311,13 +487,13 @@ int um_request_irq(unsigned int irq, int fd, int type,
- {
- 	int err;
- 
--	if (fd != -1) {
-+	err = request_irq(irq, handler, irqflags, devname, dev_id);
-+
-+	if ((!err) && (fd != -1)) {
- 		err = activate_fd(irq, fd, type, dev_id);
--		if (err)
--			return err;
- 	}
- 
--	return request_irq(irq, handler, irqflags, devname, dev_id);
-+	return err;
- }
- 
- EXPORT_SYMBOL(um_request_irq);
-@@ -355,9 +531,9 @@ void __init init_IRQ(void)
- 	int i;
- 
- 	irq_set_chip_and_handler(TIMER_IRQ, &SIGVTALRM_irq_type, handle_edge_irq);
--
--	for (i = 1; i < NR_IRQS; i++)
-+	for (i = 1; i < NR_IRQS - 1 ; i++)
- 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
-+	os_setup_epoll(MAX_EPOLL_EVENTS);
- }
- 
- /*
-@@ -385,11 +561,11 @@ void __init init_IRQ(void)
-  * thread_info.
-  *
-  * There are three cases -
-- *     The first interrupt on the stack - sets up the thread_info and
-+ *	 The first interrupt on the stack - sets up the thread_info and
-  * handles the interrupt
-- *     A nested interrupt interrupting the copying of the thread_info -
-+ *	 A nested interrupt interrupting the copying of the thread_info -
-  * can't handle the interrupt, as the stack is in an unknown state
-- *     A nested interrupt not interrupting the copying of the
-+ *	 A nested interrupt not interrupting the copying of the
-  * thread_info - doesn't do any setup, just handles the interrupt
-  *
-  * The first job is to figure out whether we interrupted stack setup.
-diff --git a/arch/um/os-Linux/irq.c b/arch/um/os-Linux/irq.c
-index b9afb74..837aa68 100644
---- a/arch/um/os-Linux/irq.c
-+++ b/arch/um/os-Linux/irq.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012 - 2014 Cisco Systems
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Licensed under the GPL
-  */
-@@ -6,6 +7,7 @@
- #include <stdlib.h>
- #include <errno.h>
- #include <poll.h>
-+#include <sys/epoll.h>
- #include <signal.h>
- #include <string.h>
- #include <irq_user.h>
-@@ -16,117 +18,80 @@
-  * Locked by irq_lock in arch/um/kernel/irq.c.  Changed by os_create_pollfd
-  * and os_free_irq_by_cb, which are called under irq_lock.
-  */
--static struct pollfd *pollfds = NULL;
--static int pollfds_num = 0;
--static int pollfds_size = 0;
- 
--int os_waiting_for_events(struct irq_fd *active_fds)
-+/* epoll support */
-+
-+
-+static int epollfd = -1;
-+
-+int os_setup_epoll(int maxevents) {
-+	epollfd = epoll_create(maxevents);
-+	return epollfd;
++	if ((result > offset) && (uml_gre_verify_header(buffer, skb, dpri))) {
++		return result - offset;
++	} else {
++		return 0;
++	}
 +}
 +
-+int os_waiting_for_events_epoll(void *kernel_events, int maxevents)
- {
--	struct irq_fd *irq_fd;
--	int i, n, err;
-+	int n, err;
- 
--	n = poll(pollfds, pollfds_num, 0);
-+	n = epoll_wait(epollfd,
-+		(struct epoll_event *) kernel_events, maxevents, 0);
- 	if (n < 0) {
- 		err = -errno;
- 		if (errno != EINTR)
--			printk(UM_KERN_ERR "os_waiting_for_events:"
--			       " poll returned %d, errno = %d\n", n, errno);
-+			printk(
-+				UM_KERN_ERR "os_waiting_for_events:"
-+				" poll returned %d, error = %s\n", n,
-+				strerror(errno)
++static void uml_gre_form_header(uint8_t * header_buffer,
++		struct sk_buff* skb,
++		struct uml_gre_data *pri)
++{
++	struct gre_minimal_header *header;
++
++	__wsum partial_sum;
++
++	if (!header_buffer) {
++		return;
++	}
++
++	header = (struct gre_minimal_header *) header_buffer;
++
++	header->header = htons((pri->mode & 0xF)<<12);
++	header->arptype = GRE_IRB;
++
++	if (pri->mode & GRE_MODE_SEQUENCE) {
++		* ((uint32_t *)(header_buffer + pri->sequence_offset)) = htonl(++pri->sequence);
++	}
++
++	if (pri->mode & GRE_MODE_KEY) {
++		* ((uint32_t *)(header_buffer + pri->key_offset)) = pri->tx_key; /* we will keep 'em htonled */
++	}
++
++	/* TODO: The methodology here should be:
++	 * 1. Report the driver as NETIF_F_HW_CSUM
++	 * 2. We will get a start csum and an end csum and where to put it
++	 * 3. Compute the csum, stash it
++	 * 4. Write where we are told
++	 * 5. Determine what else do we need to csum on either side of the HW_CSUM instructions
++	 * 6. Adjust for the fact that we may have modified the packet as part of csum computation
++	 * 7. Store the newly computed gre csum
++	 * In the meantime we are just doing brute force on xmit
++	*/
++
++	if (pri->mode & GRE_MODE_CHECKSUM) {
++		* ((uint32_t *) (header_buffer + pri->checksum_offset)) = 0;
++		partial_sum = csum_partial(skb->data,skb->len, 0);
++		partial_sum = csum_partial(header_buffer, pri->offset, partial_sum);
++		* ((uint16_t *) (header_buffer + pri->checksum_offset))
++			=  csum_fold(partial_sum);
++	}
++}
++
++void gre_complete_init(void * dev_id, int max_depth) {
++
++	struct net_device *dev = dev_id;
++	struct uml_net_private *lp = netdev_priv(dev);
++	struct uml_gre_data *pri = (struct uml_gre_data *) &lp->user;
++	struct mmsg_queue_info * queue_info ;
++	int err;
++
++	queue_info =
++		kmalloc(sizeof(struct mmsg_queue_info), GFP_KERNEL);
++	if (queue_info) {
++		queue_info->fd = pri->fd;
++		queue_info->mmsg_send_vector = pri->mmsg_send_vector;
++		queue_info->skb_send_vector = pri->skb_send_vector;
++		queue_info->head = 0;
++		queue_info->tail = 0;
++		queue_info->queue_depth = 0;
++		queue_info->max_depth = max_depth;
++		spin_lock_init(&queue_info->head_lock);
++		spin_lock_init(&queue_info->tail_lock);
++	}
++	pri->send_queue_info = queue_info;
++}
++
++void gre_kern_destroy(struct uml_gre_data *pri) {
++
++	int ret = -1;
++	struct mmsg_queue_info * queue_info = pri->send_queue_info;
++	/* flush queue */
++	do {
++		ret = uml_net_flush_mmsg_queue(queue_info, 1);
++	} while (ret != 0);
++	pri->send_queue_info = NULL;
++	kfree(queue_info);
++}
++
++static void unified_form_header (void * header, struct sk_buff * skb, struct uml_net_private * lp) {
++	struct uml_gre_data *pri = (struct uml_gre_data *) &lp->user;
++	uml_gre_form_header(header, skb, pri);
++}
++
++
++static int uml_gre_multiwrite(int fd, struct sk_buff *skb, struct uml_net_private *lp)
++{
++
++	struct uml_gre_data *pri = (struct uml_gre_data *) &lp->user;
++	int queue_depth;
++
++	if (pri->remote_addr) {
++
++		queue_depth = uml_net_enqueue (
++			(struct mmsg_queue_info *) pri->send_queue_info,
++			skb,
++			lp,
++			unified_form_header,
++			pri->remote_addr,
++			pri->remote_addr_size
++		);
++
++		uml_net_flush_mmsg_queue(
++			(struct mmsg_queue_info *) pri->send_queue_info,
++			queue_depth
++		);
++	}
++
++	return skb->len; /* not particularly correct */
++}
++
++static int uml_gre_write(int fd, struct sk_buff *skb, struct uml_net_private *lp)
++{
++	struct uml_gre_data *pri = (struct uml_gre_data *) &lp->user;
++	uint8_t *buffer = pri->network_buffer;
++	int result;
++
++
++	buffer = (uint8_t *)  pri->network_buffer;
++
++	uml_gre_form_header(buffer, skb, pri);
++
++	result = uml_gre_user_sendmsg(
++		fd,
++		buffer, pri->offset,
++		skb->data, skb->len,
++		pri
++	);
++
++	if (result > pri->offset) {
++		return result - pri->offset;
++	} else {
++		return result; /* not particularly correct */
++	}
++}
++
++static const struct net_kern_info uml_gre_kern_info = {
++	.options		= UML_NET_USE_SKB_READ,
++	.init			= uml_gre_init,
++	.protocol		= eth_protocol,
++	.read			= uml_gre_read,
++	.skb_read		= uml_gre_multiread,
++#ifdef CONFIG_UML_NET_VECTOR_TX
++	.write			= uml_gre_multiwrite,
++#else
++	.write			= uml_gre_write,
++#endif
++
++};
++
++static int uml_gre_setup(char *str, char **mac_out, void *data)
++{
++	struct uml_gre_init *init = data;
++	char *remain;
++
++	*init = (
++		(struct uml_gre_init)
++		   {
++			 .local_addr_string = "::1",
++			 .mode_string = "0",
++		   }
 +			);
- 		return err;
- 	}
- 
--	if (n == 0)
--		return 0;
--
--	irq_fd = active_fds;
--
--	for (i = 0; i < pollfds_num; i++) {
--		if (pollfds[i].revents != 0) {
--			irq_fd->current_events = pollfds[i].revents;
--			pollfds[i].fd = -1;
--		}
--		irq_fd = irq_fd->next;
--	}
- 	return n;
- }
- 
--int os_create_pollfd(int fd, int events, void *tmp_pfd, int size_tmpfds)
--{
--	if (pollfds_num == pollfds_size) {
--		if (size_tmpfds <= pollfds_size * sizeof(pollfds[0])) {
--			/* return min size needed for new pollfds area */
--			return (pollfds_size + 1) * sizeof(pollfds[0]);
--		}
--
--		if (pollfds != NULL) {
--			memcpy(tmp_pfd, pollfds,
--			       sizeof(pollfds[0]) * pollfds_size);
--			/* remove old pollfds */
--			kfree(pollfds);
--		}
--		pollfds = tmp_pfd;
--		pollfds_size++;
--	} else
--		kfree(tmp_pfd);	/* remove not used tmp_pfd */
-+int os_add_epoll_fd (int events, int fd, void * data) {
-+	struct epoll_event event;
-+	int result;
- 
--	pollfds[pollfds_num] = ((struct pollfd) { .fd		= fd,
--						  .events	= events,
--						  .revents	= 0 });
--	pollfds_num++;
--
--	return 0;
-+	event.data.ptr = data;
-+	event.events = events | EPOLLET;
-+	result = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event);
-+	if ((result) && (errno == EEXIST)) {
-+		result = os_mod_epoll_fd (events, fd, data);
++
++	remain = split_if_spec(str,
++			mac_out,
++			&init->local_addr_string,
++			&init->remote_addr_string,
++			&init->rx_key_string,
++			&init->tx_key_string,
++			&init->mode_string,
++			NULL
++		);
++	if (remain != NULL)
++		printk(KERN_WARNING " Strange interface spec \n");
++	return 1;
++}
++
++static struct transport uml_gre_transport = {
++	.list		= LIST_HEAD_INIT(uml_gre_transport.list),
++	.name		= "gre",
++	.setup		= uml_gre_setup,
++	.user		= &uml_gre_user_info,
++	.kern		= &uml_gre_kern_info,
++	.private_size	= sizeof(struct uml_gre_data),
++	.setup_size	= sizeof(struct uml_gre_init),
++};
++
++static int register_uml_gre(void)
++{
++	register_transport(&uml_gre_transport);
++	return 0;
++}
++
++late_initcall(register_uml_gre);
+diff --git a/arch/um/drivers/uml_gre_user.c b/arch/um/drivers/uml_gre_user.c
+new file mode 100644
+index 0000000..cf5dd5e
+--- /dev/null
++++ b/arch/um/drivers/uml_gre_user.c
+@@ -0,0 +1,347 @@
++/*
++ * Copyright (C) 2012-2014 Cisco Systems
++ * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Copyright (C) 2001 Lennert Buytenhek (buytenh@gnu.org) and
++ * James Leu (jleu@mindspring.net).
++ * Copyright (C) 2001 by various other people who didn't put their name here.
++ * Licensed under the GPL.
++ */
++
++#include <stdio.h>
++#include <string.h>
++#include <stdint.h>
++#include <unistd.h>
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/ioctl.h>
++#include <net/if.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <netdb.h>
++#include <net/ethernet.h>
++#include <netinet/ip.h>
++#include <netinet/ether.h>
++#include <linux/if_ether.h>
++#include <linux/if_packet.h>
++#include <arpa/inet.h>
++
++#include "uml_gre.h"
++#include "net_user.h"
++#include "os.h"
++#include "um_malloc.h"
++#include "user.h"
++
++#define VECTOR_SIZE 32
++#define PROTO_GRE 47
++
++static int gre_parse_key(char *src , void * dst) {
++	if ((src == NULL) || (sscanf(src, "%x", (unsigned int *) dst) != 1)) {
++		printk(UM_KERN_ERR "cannot parse key!!!: %s\n", src);
++		return -1;
 +	}
-+	if (result) {
-+		printk("epollctl add err fd %d, %s\n", fd, strerror(errno));
++	* (( uint32_t *) dst) = htonl(* ((uint32_t* )dst));
++	return 0;
++}
++
++static void uml_gre_remove(void *data)
++{
++	struct uml_gre_data *pri = data;
++
++
++	gre_kern_destroy(pri);
++
++	if (pri->fd > 0) {
++		close(pri->fd);
 +	}
-+	return result;
- }
- 
--void os_free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg,
--		struct irq_fd *active_fds, struct irq_fd ***last_irq_ptr2)
--{
--	struct irq_fd **prev;
--	int i = 0;
--
--	prev = &active_fds;
--	while (*prev != NULL) {
--		if ((*test)(*prev, arg)) {
--			struct irq_fd *old_fd = *prev;
--			if ((pollfds[i].fd != -1) &&
--			    (pollfds[i].fd != (*prev)->fd)) {
--				printk(UM_KERN_ERR "os_free_irq_by_cb - "
--				       "mismatch between active_fds and "
--				       "pollfds, fd %d vs %d\n",
--				       (*prev)->fd, pollfds[i].fd);
--				goto out;
--			}
--
--			pollfds_num--;
--
--			/*
--			 * This moves the *whole* array after pollfds[i]
--			 * (though it doesn't spot as such)!
--			 */
--			memmove(&pollfds[i], &pollfds[i + 1],
--			       (pollfds_num - i) * sizeof(pollfds[0]));
--			if (*last_irq_ptr2 == &old_fd->next)
--				*last_irq_ptr2 = prev;
--
--			*prev = (*prev)->next;
--			if (old_fd->type == IRQ_WRITE)
--				ignore_sigio_fd(old_fd->fd);
--			kfree(old_fd);
--			continue;
--		}
--		prev = &(*prev)->next;
--		i++;
-+int os_mod_epoll_fd (int events, int fd, void * data) {
-+	struct epoll_event event;
-+	int result;
-+	event.data.ptr = data;
-+	event.events = events;
-+	result = epoll_ctl(epollfd, EPOLL_CTL_MOD, fd, &event);
-+	if (result) {
-+		printk("epollctl mod err fd %d, %s\n", fd, strerror(errno));
- 	}
-- out:
--	return;
-+	return result;
- }
- 
--int os_get_pollfd(int i)
--{
--	return pollfds[i].fd;
-+int os_del_epoll_fd (int fd) {
-+	struct epoll_event event;
-+	int result;
-+	result = epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, &event);
-+	if (result) {
-+		printk("epollctl del err %s\n", strerror(errno));
++	pri->fd = -1;
++	if (pri->skb_send_vector) {
++		/* this one should be empty - we flushed it so we just free it */
++		kfree(pri->skb_send_vector);
++		pri->skb_send_vector = NULL;
 +	}
-+	return result;
- }
- 
--void os_set_pollfd(int i, int fd)
-+void os_free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg,
-+		struct irq_fd *active_fds, struct irq_fd ***last_irq_ptr2)
- {
--	pollfds[i].fd = fd;
-+	printk("Someone invoking obsolete deactivate_by_CB!!!\n");
-+	return;
- }
- 
- void os_set_ioignore(void)
++	if (pri->mmsg_send_vector) {
++		destroy_mmsg_vector(pri->mmsg_send_vector, VECTOR_SIZE, 1);
++		pri->mmsg_send_vector = NULL;
++	}
++	if (pri->skb_recv_vector) {
++		destroy_skb_vector(pri->skb_recv_vector, VECTOR_SIZE);
++		pri->skb_recv_vector = NULL;
++	}
++	if (pri->mmsg_recv_vector) {
++		destroy_mmsg_vector(pri->mmsg_recv_vector, VECTOR_SIZE, 1);
++		pri->mmsg_recv_vector = NULL;
++	}
++	if (pri->network_buffer) {
++		kfree(pri->network_buffer);
++		pri->network_buffer = NULL;
++	}
++}
++
++static int uml_gre_user_init(void *data, void *dev)
++{
++	struct uml_gre_data *pri = data;
++	int fd;
++
++	int sock_family;
++	int ret;
++	struct addrinfo hints;
++	struct addrinfo *result;
++	char service[NI_MAXSERV];
++	struct mmsghdr * mmsghdr;
++
++	printk(UM_KERN_INFO "gre user init mode %i\n", pri->mode);
++
++	pri->offset = sizeof(struct gre_minimal_header);
++	pri->checksum_offset = pri->offset;
++	pri->key_offset = pri->offset;
++	pri->sequence_offset = pri->offset;
++
++	pri->fd = -1;
++
++	if (pri->mode & GRE_MODE_CHECKSUM) {
++		pri->offset += 4;
++		pri->key_offset += 4;
++		pri->sequence_offset += 4;
++	}
++
++	if (pri->mode & GRE_MODE_KEY) {
++		pri->offset += 4;
++		pri->sequence_offset +=4;
++		pri->tx_key = 0;
++		pri->rx_key = 0;
++		if (gre_parse_key(pri->tx_key_string,&pri->tx_key) !=0) {
++			return -1;
++		}
++		if (gre_parse_key(pri->rx_key_string,&pri->rx_key) !=0) {
++			return -1;
++		}
++	}
++
++	if (pri->mode & GRE_MODE_SEQUENCE) {
++		pri->offset += 4;
++	}
++
++	/* basic variable parsing */
++
++	if (pri->remote_addr_string) {
++		/* we now allocate it only if it we are not "listening" */
++		pri->remote_addr = uml_kmalloc(sizeof(struct sockaddr_storage), UM_GFP_KERNEL);
++	} else {
++		pri->remote_addr = NULL;
++	}
++
++	if (pri->mode & GRE_MODE_IP_VERSION) {
++		/* IPv6 */
++		sock_family = AF_INET6;
++	} else {
++		/* IPv4 */
++		sock_family = AF_INET;
++	}
++
++	printk(UM_KERN_ERR "uml_gre_user_init: preparing raw socket for mode %x\n ", pri->mode);
++
++	memset(&hints, 0, sizeof(hints));
++
++	hints.ai_flags = AI_PASSIVE;
++	hints.ai_family = sock_family;
++	hints.ai_socktype = SOCK_RAW;
++	hints.ai_protocol = PROTO_GRE;
++
++	if ((fd = socket(hints.ai_family, hints.ai_socktype, hints.ai_protocol)) == -1) {
++		fd = -errno;
++		printk(UM_KERN_ERR "uml_gre_user_init: socket creation failed, "
++		 "errno = %d\n", -fd);
++		return fd;
++	}
++
++	pri->fd = fd;
++
++	memset(service, '\0', NI_MAXSERV);
++	ret = getaddrinfo(pri->local_addr_string, service, &hints, &result);
++	if ((ret != 0) || (result == NULL)) {
++		printk(UM_KERN_ERR "uml_gre_user_init: Unable to parse the local endpoint: %d\n", ret);
++		uml_gre_remove(pri);
++		return -1;
++	}
++	if (bind(fd, (struct sockaddr *)result->ai_addr, result->ai_addrlen)) {
++		printk("uml_gre_user_init:  could not bind socket: %d\n", errno);
++		freeaddrinfo(result);
++		uml_gre_remove(pri);
++		return -1;
++	}
++
++	printk("uml_gre_user_init: socket bound\n");
++	freeaddrinfo(result);
++
++	if (pri->remote_addr) {
++		memset(service, '\0', NI_MAXSERV);
++		memset(&hints, 0, sizeof(hints));
++
++		hints.ai_flags = AI_PASSIVE;
++		hints.ai_family = sock_family;
++		hints.ai_socktype = SOCK_RAW;
++		hints.ai_protocol = PROTO_GRE;
++
++		ret = getaddrinfo(pri->remote_addr_string, service, &hints, &result);
++
++		if ((ret != 0) || (result == NULL)) {
++			printk(UM_KERN_ERR "uml_gre_user_init: Unable to parse the remote endpoint: %d\n", ret);
++			uml_gre_remove(pri);
++			return -1;
++		}
++
++		memset(pri->remote_addr, '\0' , sizeof(struct sockaddr_storage));
++		memcpy(pri->remote_addr, result->ai_addr, result->ai_addrlen);
++		pri->remote_addr_size = result->ai_addrlen;
++		freeaddrinfo(result);
++	}
++
++	/* vector IO init */
++
++	pri->vector_len = VECTOR_SIZE;
++	pri->recv_index = 0;
++	pri->recv_enqueued = 0;
++	pri->header_size = pri->offset /* fix for ipv4 raw */;
++
++	if (!(pri->mode & GRE_MODE_IP_VERSION)){
++		pri->header_size += sizeof(struct iphdr) /* fix for ipv4 raw */;
++	}
++
++	pri->skb_recv_vector = build_skbuf_vector(VECTOR_SIZE, dev);
++	if (! pri->skb_recv_vector) {
++		uml_gre_remove(pri);
++		return -1;
++	}
++	pri->mmsg_recv_vector = build_mmsg_vector(VECTOR_SIZE, 2);
++	if (! pri->mmsg_recv_vector) {
++		uml_gre_remove(pri);
++		return -1;
++	}
++	add_header_buffers(pri->mmsg_recv_vector, VECTOR_SIZE, pri->header_size);
++	add_skbuffs(
++		pri->mmsg_recv_vector,
++		pri->skb_recv_vector,
++		VECTOR_SIZE, ETH_MAX_PACKET + ETH_HEADER_OTHER,
++		1
++	);
++
++	pri->skb_send_vector = uml_kmalloc(VECTOR_SIZE * sizeof(void *), UM_GFP_KERNEL);
++	if (pri->skb_send_vector) {
++		memset(pri->skb_send_vector, 0, sizeof(void *) * VECTOR_SIZE);
++	} else {
++		uml_gre_remove(pri);
++		return -1;
++	}
++	pri->mmsg_send_vector = build_mmsg_vector(VECTOR_SIZE, 2);
++	if (! pri->mmsg_send_vector) {
++		uml_gre_remove(pri);
++		return -1;
++	}
++	add_header_buffers(pri->mmsg_send_vector, VECTOR_SIZE, pri->offset);
++
++	pri->network_buffer = uml_kmalloc(pri->header_size, UM_GFP_KERNEL); /* enough for any header, regardless how stupid */
++
++	if (!pri->network_buffer) {
++		printk("uml_gre_user_init: could not allocate buffer\n");
++		close(fd);
++		return -1;
++	}
++
++	if (!pri->remote_addr) {
++		mmsghdr = (struct mmsghdr *) pri->mmsg_recv_vector;
++		mmsghdr->msg_hdr.msg_name = uml_kmalloc(sizeof(struct sockaddr_storage), UM_GFP_KERNEL);
++		if (mmsghdr->msg_hdr.msg_name) {
++			mmsghdr->msg_hdr.msg_namelen = sizeof(struct sockaddr_storage);
++		} else {
++			printk("uml_gre_user_init: Failed to allocate remote address name\n");
++		}
++	}
++
++	pri->dev = dev;
++
++	gre_complete_init(dev, VECTOR_SIZE); /* we really need error checking here */
++
++	if (pri->fd < 0) {
++		return pri->fd;
++	}
++
++	printk("uml_gre_user_init: init complete, fd %i\n", fd);
++
++	return 0;
++}
++
++static int uml_gre_open(void *data)
++{
++	struct uml_gre_data *pri = data;
++	return pri->fd;
++}
++
++
++int uml_gre_user_sendmsg(int fd,
++			void *header, int headerlen, void *data,
++			int datalen, struct uml_gre_data *pri)
++{
++	struct msghdr message;
++	struct iovec vec[2];
++	vec[0].iov_base = header;
++	vec[0].iov_len = headerlen;
++	vec[1].iov_base = data;
++	vec[1].iov_len = datalen;
++
++
++	message.msg_name = pri->remote_addr;
++	message.msg_namelen = pri->remote_addr_size;
++	message.msg_iov = (struct iovec *) &vec;
++	message.msg_iovlen = 2;
++	message.msg_control = NULL;
++	message.msg_controllen = 0;
++	message.msg_flags = MSG_DONTWAIT;
++
++
++	if (pri->remote_addr != NULL) {
++		return net_sendmessage(fd, &message, MSG_DONTWAIT);
++	} else {
++		return -1;
++	}
++}
++int uml_gre_user_recvmsg(int fd, void *header, int headerlen, void *data, int datalen, struct uml_gre_data *pri)
++{
++	struct msghdr message;
++	struct iovec vec[2];
++	vec[0].iov_base = header;
++	vec[0].iov_len = headerlen;
++	vec[1].iov_base = data;
++	vec[1].iov_len = datalen;
++
++	if (!pri->remote_addr) {
++		pri->remote_addr = uml_kmalloc(sizeof(struct sockaddr_storage), UM_GFP_KERNEL);
++		if (pri->remote_addr) {
++			message.msg_name = pri->remote_addr;
++			message.msg_namelen = pri->remote_addr_size;
++		} else {
++			message.msg_name = NULL;
++			message.msg_namelen = 0;
++		}
++	} else {
++			message.msg_name = NULL;
++			message.msg_namelen = 0;
++	}
++
++	message.msg_iov = (struct iovec *) &vec;
++	message.msg_iovlen = 2;
++	message.msg_control = NULL;
++	message.msg_controllen = 0;
++	message.msg_flags = MSG_DONTWAIT;
++
++	return net_recvmessage(fd, &message, MSG_DONTWAIT);
++}
++const struct net_user_info uml_gre_user_info = {
++	.init			= uml_gre_user_init,
++	.open			= uml_gre_open,
++	.close			= NULL,
++	.remove			= uml_gre_remove,
++	.add_address		= NULL,
++	.delete_address		= NULL,
++	.mtu			= ETH_MAX_PACKET,
++	.max_packet		= ETH_MAX_PACKET + ETH_HEADER_OTHER + MAX_GRE_HEADER,
++};
 -- 
 1.7.10.4
 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
