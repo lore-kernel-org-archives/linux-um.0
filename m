@@ -1,18 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XXU1z-00044Q-Bm
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XW6rp-0000Ij-4i
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Sep 2014 11:49:47 +0000
+	Mon, 22 Sep 2014 16:53:37 +0000
 Received: from ivanoab3.miniserver.com ([89.200.143.206])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XXU1x-0007Rt-Tr
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XW6ro-0005DU-7o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Sep 2014 11:49:47 +0000
+	Mon, 22 Sep 2014 16:53:37 +0000
 From: anton.ivanov@kot-begemot.co.uk
-Date: Fri, 26 Sep 2014 12:49:26 +0100
-Message-Id: <1411732166-653849-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+Date: Mon, 22 Sep 2014 17:53:21 +0100
+Message-Id: <1411404804-871910-9-git-send-email-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+References: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,51 +28,74 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] Fix for "occasional userspace process in D/Z
-	state" bug
+Subject: [uml-devel] [PATCH v4 08/11] Minor performance optimization for ubd
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: richard@nod.at
 
 From: Anton Ivanov <antivano@cisco.com>
 
-This is a fix for a very old UML bug which can be triggered with stock 
-UML. It takes a lot of effort to trigger it there because the 
-lseek()/read() | write() mechanics of the UBD driver implicitly sync the 
-memory all the time by hitting the appropriate barrier implementation in 
-the host kernel. 
-
-By improving the disk susbsystem we make this bug raise its ugly head
-with a vengeance - you can get a process in D (with an occasional child
-in Z state) simply by running an apt-get on 30-40 large packages. 
-
-Is this correct place to have the sync - no idea. It may need to move
-to somewhere inside tlb.c. With the fence in exec.c it works (TM).
-
-If I understand this correctly, this also needs to be an instruction 
-appropriate for the underlying host so just a barrier() will not cut 
-it. You have to fence. En-guarde... Touche... :)
+Obvious performance optimization - it is not necessary
+to read the requests one at a time in the IRQ handler
 
 Signed-off-by: Anton Ivanov <antivano@cisco.com>
 ---
- arch/um/kernel/exec.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ arch/um/drivers/ubd_kern.c |   29 ++++++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
-index 0d7103c..7cb6805 100644
---- a/arch/um/kernel/exec.c
-+++ b/arch/um/kernel/exec.c
-@@ -27,6 +27,11 @@ void flush_thread(void)
- 	ret = unmap(&current->mm->context.id, 0, STUB_START, 0, &data);
- 	ret = ret || unmap(&current->mm->context.id, STUB_END,
- 			   host_task_size - STUB_END, 1, &data);
-+#ifdef CONFIG_X86_32
-+	alternative("lock; addl $0,0(%%esp)", "mfence", X86_FEATURE_XMM2);
-+#else
-+	asm volatile("mfence":::"memory");
-+#endif
- 	if (ret) {
- 		printk(KERN_ERR "flush_thread - clearing address space failed, "
- 		       "err = %d\n", ret);
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 35ba00b..8568290 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -443,6 +443,8 @@ static void do_ubd_request(struct request_queue * q);
+ static int thread_fd = -1;
+ static LIST_HEAD(restart);
+ 
++static struct io_thread_req  * ubd_request_list[MAX_SG];
++
+ /* XXX - move this inside ubd_intr. */
+ /* Called without dev->lock held, and only in interrupt context. */
+ static void ubd_handler(void)
+@@ -451,21 +453,34 @@ static void ubd_handler(void)
+ 	struct ubd *ubd;
+ 	struct list_head *list, *next_ele;
+ 	unsigned long flags;
+-	int n;
++	int n, i;
++
++	/*
++	 * obvious optimization - we do not need to read the reqs one at a time
++	 * we can read all pending reqs in one interrupt and handle them in bulk
++	 */
+ 
+ 	while(1){
+-		n = os_read_file(thread_fd, &req,
+-				 sizeof(struct io_thread_req *));
+-		if(n != sizeof(req)){
++        do {
++		n = os_read_file(thread_fd, &ubd_request_list,
++				 sizeof(struct io_thread_req *) * MAX_SG);
++        } while (n == -EINTR);
++		if(n < 0){
+ 			if(n == -EAGAIN)
+ 				break;
+ 			printk(KERN_ERR "spurious interrupt in ubd_handler, "
+ 			       "err = %d\n", -n);
+ 			return;
++		} else if (n % sizeof(struct io_thread_req *) != 0)  {
++			printk(KERN_ERR "spurious interrupt in ubd_handler, "
++			       "err = %d\n", -n);
++			return;
++		}
++		for (i = 0; i < n / sizeof(struct io_thread_req *); i++) {
++			req = ubd_request_list[i];
++			blk_end_request(req->req, 0, req->length);
++			kfree(req);
+ 		}
+-
+-		blk_end_request(req->req, 0, req->length);
+-		kfree(req);
+ 	}
+ 
+ 	list_for_each_safe(list, next_ele, &restart){
 -- 
 1.7.10.4
 
