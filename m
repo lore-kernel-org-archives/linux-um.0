@@ -1,18 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XXVQ7-00011A-5k
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XW6ro-0000Id-PT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Sep 2014 13:18:47 +0000
+	Mon, 22 Sep 2014 16:53:36 +0000
 Received: from ivanoab3.miniserver.com ([89.200.143.206])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XXVQ5-0002Ut-Tg
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XW6rm-0004Ao-VB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Sep 2014 13:18:47 +0000
+	Mon, 22 Sep 2014 16:53:36 +0000
 From: anton.ivanov@kot-begemot.co.uk
-Date: Fri, 26 Sep 2014 14:18:36 +0100
-Message-Id: <1411737516-673516-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+Date: Mon, 22 Sep 2014 17:53:15 +0100
+Message-Id: <1411404804-871910-3-git-send-email-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+References: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,55 +28,123 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v2] Fix for occasional userspace process in D/Z
-	state
+Subject: [uml-devel] [PATCH v4 02/11] Remove unnecessary 'reactivate'
+	statements
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: richard@nod.at
 
 From: Anton Ivanov <antivano@cisco.com>
 
-Occasionally, under very heavy load inside UML, on host
-or both one of the processes in UML will remain in D state
-or will fail to reap a child which will sit in Z state.
-
-This is very difficult to reproduce with stock UML because
-the lseek()/read()|write()|fsync() in the ubd driver will
-cause a constant "trickle" of memory synchronization regardless
-of what UML is doing. It is possible though (3-4 hours of
-loadavg >6 stress load with low memory can trigger it).
-
-If lseek()/read()|write() are replaced with its equivalent
-pread()|pwrite() the original bug becomes much easier to
-reproduce. It now takes 5-10 minutes of heavy IO to cause it.
-
-This fix seems to cure it. I am not sure if this is the best
-place to invoke a memory barrier, this one works.
+The epoll based controller has real (not emulated) edge and
+level semantics and the edge/level is handled by epoll. There
+is no toggling of the poll set any more, thus it is removed
+throughout
 
 Signed-off-by: Anton Ivanov <antivano@cisco.com>
 ---
+ arch/um/drivers/chan_kern.c     |    2 --
+ arch/um/drivers/line.c          |    2 --
+ arch/um/drivers/mconsole_kern.c |    2 --
+ arch/um/drivers/net_kern.c      |    2 --
+ arch/um/drivers/port_kern.c     |    1 -
+ arch/um/drivers/random.c        |    1 -
+ arch/um/drivers/ubd_kern.c      |    1 -
+ 7 files changed, 11 deletions(-)
 
-This version takes into account the fact that uml picks up the 
-correct define out of arch/x86/um/barrier.h so no need to invoke it 
-directly - noted by Richard Weinberger
-
-I still do not know if this is the correct location to hit it with a
-mb(). This one seems to cure it.
-
- arch/um/kernel/exec.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
-index 0d7103c..86b1dc1 100644
---- a/arch/um/kernel/exec.c
-+++ b/arch/um/kernel/exec.c
-@@ -27,6 +27,7 @@ void flush_thread(void)
- 	ret = unmap(&current->mm->context.id, 0, STUB_START, 0, &data);
- 	ret = ret || unmap(&current->mm->context.id, STUB_END,
- 			   host_task_size - STUB_END, 1, &data);
-+	mb();
- 	if (ret) {
- 		printk(KERN_ERR "flush_thread - clearing address space failed, "
- 		       "err = %d\n", ret);
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index acbe6c6..db0ff51 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -564,8 +564,6 @@ void chan_interrupt(struct line *line, int irq)
+ 			tty_insert_flip_char(port, c, TTY_NORMAL);
+ 	} while (err > 0);
+ 
+-	if (err == 0)
+-		reactivate_fd(chan->fd, irq);
+ 	if (err == -EIO) {
+ 		if (chan->primary) {
+ 			tty_port_tty_hangup(&line->port, false);
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index 6c4511f..1e8df84 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -663,8 +663,6 @@ static irqreturn_t winch_interrupt(int irq, void *data)
+ 		tty_kref_put(tty);
+ 	}
+  out:
+-	if (winch->fd != -1)
+-		reactivate_fd(winch->fd, WINCH_IRQ);
+ 	return IRQ_HANDLED;
+ }
+ 
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index 3df3bd5..2b9bfa7 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -95,7 +95,6 @@ static irqreturn_t mconsole_interrupt(int irq, void *dev_id)
+ 	}
+ 	if (!list_empty(&mc_requests))
+ 		schedule_work(&mconsole_work);
+-	reactivate_fd(fd, MCONSOLE_IRQ);
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -243,7 +242,6 @@ void mconsole_stop(struct mc_request *req)
+ 		(*req->cmd->handler)(req);
+ 	}
+ 	os_set_fd_block(req->originating_fd, 0);
+-	reactivate_fd(req->originating_fd, MCONSOLE_IRQ);
+ 	mconsole_reply(req, "", 0, 0);
+ }
+ 
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index 39f1862..64d8426 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -137,8 +137,6 @@ static irqreturn_t uml_net_interrupt(int irq, void *dev_id)
+ 		schedule_work(&lp->work);
+ 		goto out;
+ 	}
+-	reactivate_fd(lp->fd, UM_ETH_IRQ);
+-
+ out:
+ 	spin_unlock(&lp->lock);
+ 	return IRQ_HANDLED;
+diff --git a/arch/um/drivers/port_kern.c b/arch/um/drivers/port_kern.c
+index 40ca5cc..b0e9ff3 100644
+--- a/arch/um/drivers/port_kern.c
++++ b/arch/um/drivers/port_kern.c
+@@ -137,7 +137,6 @@ static void port_work_proc(struct work_struct *unused)
+ 		if (!port->has_connection)
+ 			continue;
+ 
+-		reactivate_fd(port->fd, ACCEPT_IRQ);
+ 		while (port_accept(port))
+ 			;
+ 		port->has_connection = 0;
+diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
+index 9e3a722..ec3d788 100644
+--- a/arch/um/drivers/random.c
++++ b/arch/um/drivers/random.c
+@@ -72,7 +72,6 @@ static ssize_t rng_dev_read (struct file *filp, char __user *buf, size_t size,
+ 				return ret ? : -EAGAIN;
+ 
+ 			atomic_inc(&host_sleep_count);
+-			reactivate_fd(random_fd, RANDOM_IRQ);
+ 			add_sigio_fd(random_fd);
+ 
+ 			add_wait_queue(&host_read_wait, &wait);
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 3716e69..1cc72ae5 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -466,7 +466,6 @@ static void ubd_handler(void)
+ 		blk_end_request(req->req, 0, req->length);
+ 		kfree(req);
+ 	}
+-	reactivate_fd(thread_fd, UBD_IRQ);
+ 
+ 	list_for_each_safe(list, next_ele, &restart){
+ 		ubd = container_of(list, struct ubd, restart);
 -- 
 1.7.10.4
 
