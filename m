@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <antivano@cisco.com>) id 1XXUjs-0006Vc-Ol
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1XXU8u-0006Ey-Cc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Sep 2014 12:35:08 +0000
-Received: from rcdn-iport-6.cisco.com ([173.37.86.77])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XXUjr-0000lX-Nl
+	Fri, 26 Sep 2014 11:56:56 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XXU8r-0007io-AH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Sep 2014 12:35:08 +0000
-From: "Anton Ivanov (antivano)" <antivano@cisco.com>
-Date: Fri, 26 Sep 2014 12:35:01 +0000
-Message-ID: <54255D73.1030509@cisco.com>
-References: <1411732166-653849-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-	<5425547C.1080002@nod.at>
-In-Reply-To: <5425547C.1080002@nod.at>
-Content-Language: en-US
-Content-ID: <2DCC713F1B656043961679DFA3382354@emea.cisco.com>
+	Fri, 26 Sep 2014 11:56:56 +0000
+Message-ID: <5425547C.1080002@nod.at>
+Date: Fri, 26 Sep 2014 13:56:44 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
+References: <1411732166-653849-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <1411732166-653849-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,43 +30,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] Fix for "occasional userspace process in
 	D/Z state" bug
-To: Richard Weinberger <richard@nod.at>, "anton.ivanov@kot-begemot.co.uk" <anton.ivanov@kot-begemot.co.uk>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+To: anton.ivanov@kot-begemot.co.uk, user-mode-linux-devel@lists.sourceforge.net
 Cc: Daniel Walter <dwalter@google.com>
 
-On 26/09/14 12:56, Richard Weinberger wrote:
-
-[snip]
-
+Am 26.09.2014 13:49, schrieb anton.ivanov@kot-begemot.co.uk:
+> From: Anton Ivanov <antivano@cisco.com>
+> 
+> This is a fix for a very old UML bug which can be triggered with stock 
+> UML. It takes a lot of effort to trigger it there because the 
+> lseek()/read() | write() mechanics of the UBD driver implicitly sync the 
+> memory all the time by hitting the appropriate barrier implementation in 
+> the host kernel. 
+> 
+> By improving the disk susbsystem we make this bug raise its ugly head
+> with a vengeance - you can get a process in D (with an occasional child
+> in Z state) simply by running an apt-get on 30-40 large packages. 
+> 
+> Is this correct place to have the sync - no idea. It may need to move
+> to somewhere inside tlb.c. With the fence in exec.c it works (TM).
+> 
+> If I understand this correctly, this also needs to be an instruction 
+> appropriate for the underlying host so just a barrier() will not cut 
+> it. You have to fence. En-guarde... Touche... :)
+> 
+> Signed-off-by: Anton Ivanov <antivano@cisco.com>
+> ---
+>  arch/um/kernel/exec.c |    5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
+> index 0d7103c..7cb6805 100644
+> --- a/arch/um/kernel/exec.c
+> +++ b/arch/um/kernel/exec.c
+> @@ -27,6 +27,11 @@ void flush_thread(void)
+>  	ret = unmap(&current->mm->context.id, 0, STUB_START, 0, &data);
+>  	ret = ret || unmap(&current->mm->context.id, STUB_END,
+>  			   host_task_size - STUB_END, 1, &data);
 > +#ifdef CONFIG_X86_32
 > +	alternative("lock; addl $0,0(%%esp)", "mfence", X86_FEATURE_XMM2);
 > +#else
 > +	asm volatile("mfence":::"memory");
 > +#endif
-> Why not mb()?
-> I'm not sure whether this fix is correct.
 
-Looking at the actual defines that would work. I was originally looking 
-at asm-generic instead of x86/um/asm/barrier.h and the asm-generic 
-barrier() would have been insufficent.
+Why not mb()?
+I'm not sure whether this fix is correct.
 
-x86/um/asm/barrier.h has literally the same define, so as you noted - 
-using mb() will have the same effect.
-
-As far as is this fix correct or not - I do not know myself. I said it 
-when submitting it :)
-
-It definitely fixes the problem - both the original (and extremely 
-difficult to reproduce) D|Z in the stock UML and the similar (and much 
-easier to reproduce) D|Z which you get with all the disk subsystem 
-improvement patches.
-
-I will reissue it with mb() shortly.
-
-A.
-
->
-> Thanks,
-> //richard
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
