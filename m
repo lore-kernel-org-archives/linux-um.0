@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XY9ed-0005CV-BN
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <antivano@cisco.com>) id 1XXUjs-0006Vc-Ol
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 28 Sep 2014 08:16:27 +0000
-Received: from ivanoab3.miniserver.com ([89.200.143.206])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XY9eb-0002Cf-PV
+	Fri, 26 Sep 2014 12:35:08 +0000
+Received: from rcdn-iport-6.cisco.com ([173.37.86.77])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XXUjr-0000lX-Nl
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 28 Sep 2014 08:16:27 +0000
-Message-ID: <5427C3BF.6040209@kot-begemot.co.uk>
-Date: Sun, 28 Sep 2014 09:15:59 +0100
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-MIME-Version: 1.0
+	Fri, 26 Sep 2014 12:35:08 +0000
+From: "Anton Ivanov (antivano)" <antivano@cisco.com>
+Date: Fri, 26 Sep 2014 12:35:01 +0000
+Message-ID: <54255D73.1030509@cisco.com>
 References: <1411732166-653849-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 	<5425547C.1080002@nod.at>
 In-Reply-To: <5425547C.1080002@nod.at>
+Content-Language: en-US
+Content-ID: <2DCC713F1B656043961679DFA3382354@emea.cisco.com>
+MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,80 +33,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] Fix for "occasional userspace process in
 	D/Z state" bug
-To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>, "anton.ivanov@kot-begemot.co.uk" <anton.ivanov@kot-begemot.co.uk>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 Cc: Daniel Walter <dwalter@google.com>
 
 On 26/09/14 12:56, Richard Weinberger wrote:
-> Am 26.09.2014 13:49, schrieb anton.ivanov@kot-begemot.co.uk:
->> From: Anton Ivanov <antivano@cisco.com>
->>
->> This is a fix for a very old UML bug which can be triggered with stock 
->> UML. It takes a lot of effort to trigger it there because the 
->> lseek()/read() | write() mechanics of the UBD driver implicitly sync the 
->> memory all the time by hitting the appropriate barrier implementation in 
->> the host kernel. 
->>
->> By improving the disk susbsystem we make this bug raise its ugly head
->> with a vengeance - you can get a process in D (with an occasional child
->> in Z state) simply by running an apt-get on 30-40 large packages. 
->>
->> Is this correct place to have the sync - no idea. It may need to move
->> to somewhere inside tlb.c. With the fence in exec.c it works (TM).
->>
->> If I understand this correctly, this also needs to be an instruction 
->> appropriate for the underlying host so just a barrier() will not cut 
->> it. You have to fence. En-guarde... Touche... :)
->>
->> Signed-off-by: Anton Ivanov <antivano@cisco.com>
->> ---
->>  arch/um/kernel/exec.c |    5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
->> index 0d7103c..7cb6805 100644
->> --- a/arch/um/kernel/exec.c
->> +++ b/arch/um/kernel/exec.c
->> @@ -27,6 +27,11 @@ void flush_thread(void)
->>  	ret = unmap(&current->mm->context.id, 0, STUB_START, 0, &data);
->>  	ret = ret || unmap(&current->mm->context.id, STUB_END,
->>  			   host_task_size - STUB_END, 1, &data);
->> +#ifdef CONFIG_X86_32
->> +	alternative("lock; addl $0,0(%%esp)", "mfence", X86_FEATURE_XMM2);
->> +#else
->> +	asm volatile("mfence":::"memory");
->> +#endif
+
+[snip]
+
+> +#ifdef CONFIG_X86_32
+> +	alternative("lock; addl $0,0(%%esp)", "mfence", X86_FEATURE_XMM2);
+> +#else
+> +	asm volatile("mfence":::"memory");
+> +#endif
 > Why not mb()?
 > I'm not sure whether this fix is correct.
 
-As I said before - neither am I.
+Looking at the actual defines that would work. I was originally looking 
+at asm-generic instead of x86/um/asm/barrier.h and the asm-generic 
+barrier() would have been insufficent.
 
-I have tried to narrow it down and trace it - the right place is
-probably somewhere further downstream in tlb.c (or even further
-downstream from that).
+x86/um/asm/barrier.h has literally the same define, so as you noted - 
+using mb() will have the same effect.
 
-While this place (exec.c) is probably not the best place,  it improves
-things quite a bit (I am not 100% sure it covers all failure cases).
+As far as is this fix correct or not - I do not know myself. I said it 
+when submitting it :)
 
-There is a need to find it and fix it though. You start hitting the bug
-quite a lot, the moment you start changing older calls which implicitly
-synchronize memory by hitting a mb() in the host (lseek, fsync, etc) for
-calls that do not do that.
+It definitely fixes the problem - both the original (and extremely 
+difficult to reproduce) D|Z in the stock UML and the similar (and much 
+easier to reproduce) D|Z which you get with all the disk subsystem 
+improvement patches.
 
-I did not see that during my initial testing, because I always pin UML
-to a single core for performance reasons.
+I will reissue it with mb() shortly.
 
-IMHO long term performance improvement of UML depends on finding and
-fixing the root cause for this. I will try to look at it during whatever
-spare time I have in the next few months.  Without a viable fix, you
-cannot do something as trivial as sorting out the disk subsystem (the
-pwrite/pread/async-fsync fixes are from the realm of bleeding obvious,
-they should not create any races by themselves).
+A.
 
-A
 >
 > Thanks,
 > //richard
-
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
