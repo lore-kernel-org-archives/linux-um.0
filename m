@@ -2,19 +2,30 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XW6rp-0004EI-Cd
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XXQHr-0004Bt-Tk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Sep 2014 16:53:37 +0000
+	Fri, 26 Sep 2014 07:49:55 +0000
 Received: from ivanoab3.miniserver.com ([89.200.143.206])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XW6ro-0005DT-7o
+	(Exim 4.76) id 1XXQHq-0000jf-Bd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 22 Sep 2014 16:53:37 +0000
-From: anton.ivanov@kot-begemot.co.uk
-Date: Mon, 22 Sep 2014 17:53:20 +0100
-Message-Id: <1411404804-871910-8-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+	Fri, 26 Sep 2014 07:49:55 +0000
+Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
+	helo=falkor.sigsegv.cx) by ivanoab3.miniserver.com with esmtps
+	(TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16) (Exim 4.72)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XXQGj-0002Bo-AR
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Sep 2014 07:48:45 +0000
+Received: from [192.168.127.2] by falkor.sigsegv.cx with esmtp (Exim 4.80)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XXQHi-0006n3-M4
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 26 Sep 2014 08:49:46 +0100
+Message-ID: <54251A99.1090305@kot-begemot.co.uk>
+Date: Fri, 26 Sep 2014 08:49:45 +0100
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+MIME-Version: 1.0
 References: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <1411404804-871910-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,147 +35,69 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v4 07/11] Performance and NUMA improvements for
-	ubd
+Subject: Re: [uml-devel] Updated Performance Improvements patchset
 To: user-mode-linux-devel@lists.sourceforge.net
 
-From: Anton Ivanov <antivano@cisco.com>
+I finally nailed the last stability issue related to the patchset this 
+morning. It is an extremely old issue and I tried to locate the root 
+cause for it with Richard off-list 2 years ago. Unfortunately it was 
+without success at that time.
 
-The use of the seek()/read() and seek()/write() is a terminal
-disease on NUMA. Intense use of this on shared files (f.e.
-the master for a COW image) can cause anything up to and including
-killing CPUs on unhandled NMIs.
+This issue is inherent in "stock" UML, but very difficult to trigger. 
+For example, if memory serves me right Toralf recently reported 
+something he ran into while doing trinity fuzz testing which looked 
+exactly like that.
 
-This patch deals with this UML major issue (and one of UML biggest
-performance pitfalls). As a result you can now run (subject to
-correct pinning) 2000+ UMLs on a NUMA box without crashing it.
+The performance improvement patchset makes it considerably more likely 
+to show up.
 
-Signed-off-by: Anton Ivanov <antivano@cisco.com>
----
- arch/um/drivers/ubd_kern.c  |   29 ++++++++---------------------
- arch/um/include/shared/os.h |    2 ++
- arch/um/os-Linux/file.c     |   18 ++++++++++++++++++
- 3 files changed, 28 insertions(+), 21 deletions(-)
+The symptoms are  - processes stuck in D state with an occasional Z 
+child hanging off them.
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 1cc72ae5..35ba00b 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2012-2014 Cisco Systems
-  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
-  * Licensed under the GPL
-  */
-@@ -534,11 +535,7 @@ static int read_cow_bitmap(int fd, void *buf, int offset, int len)
- {
- 	int err;
- 
--	err = os_seek_file(fd, offset);
--	if (err < 0)
--		return err;
--
--	err = os_read_file(fd, buf, len);
-+	err = os_pread_file(fd, buf, len, offset);
- 	if (err < 0)
- 		return err;
- 
-@@ -1375,14 +1372,10 @@ static int update_bitmap(struct io_thread_req *req)
- 	if(req->cow_offset == -1)
- 		return 0;
- 
--	n = os_seek_file(req->fds[1], req->cow_offset);
--	if(n < 0){
--		printk("do_io - bitmap lseek failed : err = %d\n", -n);
--		return 1;
--	}
--
--	n = os_write_file(req->fds[1], &req->bitmap_words,
--			  sizeof(req->bitmap_words));
-+	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
-+			  sizeof(req->bitmap_words),
-+			  req->cow_offset
-+			);
- 	if(n != sizeof(req->bitmap_words)){
- 		printk("do_io - bitmap update failed, err = %d fd = %d\n", -n,
- 		       req->fds[1]);
-@@ -1426,18 +1419,12 @@ static void do_io(struct io_thread_req *req)
- 		len = (end - start) * req->sectorsize;
- 		buf = &req->buffer[start * req->sectorsize];
- 
--		err = os_seek_file(req->fds[bit], off);
--		if(err < 0){
--			printk("do_io - lseek failed : err = %d\n", -err);
--			req->error = 1;
--			return;
--		}
- 		if(req->op == UBD_READ){
- 			n = 0;
- 			do {
- 				buf = &buf[n];
- 				len -= n;
--				n = os_read_file(req->fds[bit], buf, len);
-+				n = os_pread_file(req->fds[bit], buf, len, off);
- 				if (n < 0) {
- 					printk("do_io - read failed, err = %d "
- 					       "fd = %d\n", -n, req->fds[bit]);
-@@ -1447,7 +1434,7 @@ static void do_io(struct io_thread_req *req)
- 			} while((n < len) && (n != 0));
- 			if (n < len) memset(&buf[n], 0, len - n);
- 		} else {
--			n = os_write_file(req->fds[bit], buf, len);
-+			n = os_pwrite_file(req->fds[bit], buf, len, off);
- 			if(n != len){
- 				printk("do_io - write failed err = %d "
- 				       "fd = %d\n", -n, req->fds[bit]);
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 2684d7a..d7bf791 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -142,6 +142,8 @@ extern int os_seek_file(int fd, unsigned long long offset);
- extern int os_open_file(const char *file, struct openflags flags, int mode);
- extern int os_read_file(int fd, void *buf, int len);
- extern int os_write_file(int fd, const void *buf, int count);
-+extern int os_pread_file(int fd, void *buf, int len, unsigned long long offset);
-+extern int os_pwrite_file(int fd, const void *buf, int count, unsigned long long offset);
- extern int os_sync_file(int fd);
- extern int os_file_size(const char *file, unsigned long long *size_out);
- extern int os_file_modtime(const char *file, unsigned long *modtime);
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index 07a7501..64951fd 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -266,6 +266,24 @@ int os_write_file(int fd, const void *buf, int len)
- 	return n;
- }
- 
-+int os_pread_file(int fd, void *buf, int len, unsigned long long offset)
-+{
-+	int n = pread(fd, buf, len, offset);
-+
-+	if (n < 0)
-+		return -errno;
-+	return n;
-+}
-+
-+int os_pwrite_file(int fd, const void *buf, int len, unsigned long long offset)
-+{
-+	int n = pwrite(fd, (void *) buf, len, offset);
-+
-+	if (n < 0)
-+		return -errno;
-+	return n;
-+}
-+
- int os_sync_file(int fd)
- {
- 	int n = fsync(fd);
--- 
-1.7.10.4
+If my diagnosis is right there is a missing barrier (or for "big" 
+machines fence)  in arch/um/kernel/exec.c right after the memory unmap 
+in flush_thread().
+
+Stock UML when run off ubd is less susceptible to this issue because of 
+its heavy use of lseek/read and lseek/write in the disk susbsystem (nfs 
+as in Toralf's case is more likely to make this issue show up). lseek() 
+invokes a fence nearly every time it is called inside the host kernel 
+resulting in the memory being considerably more in-sync (and the issue 
+less likely to happen). By replacing these with pread/pwrite I have made 
+the issue more pronounced.
+
+I have a patch prepared which will work only on P3+ as it uses a 
+verbatim fence instruction and it tests out. My question is - what is 
+the "canonical" way of chosing the correct barrier here and should I 
+bother with pre-P3 anyway (I do not think that you can trigger that 
+issue on them even if you are lucky to have a SMP machine like this)?
+
+A.
+
+
+On 22/09/14 17:53, anton.ivanov@kot-begemot.co.uk wrote:
+> This is an update of the performance improvement patchset, it
+> addresses a number of issues resulting from porting what was
+> originally written for 3.3.8 to the current linux kernel.
+>
+> Changes (where applicable) are annotated in actual patchsets.
+>
+> A.
+>
+> ------------------------------------------------------------------------------
+> Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+> Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+> Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+> Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+> http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
 
 
 ------------------------------------------------------------------------------
