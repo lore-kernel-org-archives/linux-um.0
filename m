@@ -1,55 +1,66 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:45 -0700
-Message-Id: <1412659726-29957-44-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-Sender: linux-m68k-owner@vger.kernel.org
-Subject: [PATCH 43/44] hwmon: (ab8500) Call kernel_power_off instead of pm_power_off
-To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Jean Delvare <jdelvare@suse.de>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <arvidjaar@gmail.com>) id 1XaHSm-0004EQ-6H
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 04 Oct 2014 05:01:00 +0000
+Received: from mail-lb0-f180.google.com ([209.85.217.180])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XaHSl-000130-1S
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 04 Oct 2014 05:01:00 +0000
+Received: by mail-lb0-f180.google.com with SMTP id f15so1966712lbj.25
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 03 Oct 2014 22:00:52 -0700 (PDT)
+Date: Sat, 4 Oct 2014 09:00:47 +0400
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+Message-ID: <20141004090047.4d91d350@opensuse.site>
+In-Reply-To: <542AFAAC.4090100@gmail.com>
+References: <1412015343.9609.13.camel@localhost.localdomain>
+	<CAFLxGvxD=+VxJeGkKS_Ukq5m3KvV5femmhVWYdm1XFYGHauBqw@mail.gmail.com>
+	<1412101656.2769.17.camel@localhost.localdomain>
+	<542AFAAC.4090100@gmail.com>
+Mime-Version: 1.0
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] [systemd-devel] Timed out waiting for device
+ dev-disk-by...
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: "systemd-devel@lists.freedesktop.org" <systemd-devel@lists.freedesktop.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Thomas Meyer <thomas@m3y3r.de>
 
-Drivers should not call pm_power_off directly; it is not guaranteed
-to be non-NULL. Call kernel_power_off instead.
-
-Cc: Jean Delvare <jdelvare@suse.de>
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/hwmon/ab8500.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hwmon/ab8500.c b/drivers/hwmon/ab8500.c
-index d844dc8..8b6a4f4 100644
---- a/drivers/hwmon/ab8500.c
-+++ b/drivers/hwmon/ab8500.c
-@@ -6,7 +6,7 @@
-  *
-  * When the AB8500 thermal warning temperature is reached (threshold cannot
-  * be changed by SW), an interrupt is set, and if no further action is taken
-- * within a certain time frame, pm_power off will be called.
-+ * within a certain time frame, kernel_power_off will be called.
-  *
-  * When AB8500 thermal shutdown temperature is reached a hardware shutdown of
-  * the AB8500 will occur.
-@@ -21,6 +21,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/power/ab8500.h>
-+#include <linux/reboot.h>
- #include <linux/slab.h>
- #include <linux/sysfs.h>
- #include "abx500.h"
-@@ -106,7 +107,7 @@ static void ab8500_thermal_power_off(struct work_struct *work)
- 
- 	dev_warn(&abx500_data->pdev->dev, "Power off due to critical temp\n");
- 
--	pm_power_off();
-+	kernel_power_off();
- }
- 
- static ssize_t ab8500_show_name(struct device *dev,
--- 
-1.9.1
+0JIgV2VkLCAwMSBPY3QgMjAxNCAwMDo0NzowOCArMDYwMAoiQWxleGFuZGVyIEUuIFBhdHJha292
+IiA8cGF0cmFrb3ZAZ21haWwuY29tPiDQv9C40YjQtdGCOgoKPiAwMS4xMC4yMDE0IDAwOjI3LCBU
+aG9tYXMgTWV5ZXIgd3JvdGU6Cj4gPiBBbSBNb250YWcsIGRlbiAyOS4wOS4yMDE0LCAyMjoyMCAr
+MDIwMCBzY2hyaWViIFJpY2hhcmQgV2VpbmJlcmdlcjoKPiA+PiBPbiBNb24sIFNlcCAyOSwgMjAx
+NCBhdCA4OjI5IFBNLCBUaG9tYXMgTWV5ZXIgPHRob21hc0BtM3kzci5kZT4gd3JvdGU6Cj4gPj4+
+IEhpLAo+ID4+Pgo+ID4+PiBJIGdldCBhIHRpbWVvdXQgaW4gdGhlIEZlZG9yYSAyMSBhbHBoYToK
+PiA+Pj4KPiA+Pj4gWyBUSU1FIF0gVGltZWQgb3V0IHdhaXRpbmcgZm9yIGRldmljZSBkZXYtZGlz
+ay1ieVx4MmR1dWlkLTAwOGFmMTlkXHgyZDI1NjJceDJkNDliZFx4MmQ4OTA3XHgyZDcyMWVhMDhm
+M2UxNC5kZXZpY2UuCi4uLgo+IAo+IEltaG8gdGhlIHByb2JsZW0gaXMgbm90IHNwZWNpZmljIHRv
+IFVNTC4gU29tZXRoaW5nIHNpbWlsYXIgaGFzIGJlZW4gCj4gdHJpZ2dlcmVkIG9uIG15IGRlc2t0
+b3AgUEMsIGFuZCBub2JvZHkgcmVwbGllZDoKPiAKPiBodHRwczovL3d3dy5tYWlsLWFyY2hpdmUu
+Y29tL3N5c3RlbWQtZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21zZzIyNDkwLmh0bWwKPiAK
+PiBJZiB0aGlzIHRyaWdnZXJzIGFnYWluLCBJIHdpbGwgcHJvdmlkZSBkdW1wcy4KPiAKCldlbGws
+IHlvdXIgcHJvYmxlbSBzZWVtcyB0byBiZSBlbnRpcmVseSBkaWZmZXJlbnQuIEhlcmUgZGV2aWNl
+IGxpbmtzCmFyZSBjcmVhdGVkIGJ1dCBzeXN0ZW1kIGRvZXMgbm90IGdldCBub3RpZmljYXRpb24g
+YWJvdXQgdGhlbS4gSW4geW91cgpjYXNlIGRldmljZSBsaW5rcyBhcmUgbWlzc2luZyB3aGljaCB1
+c3VhbGx5IG1lYW5zIHNvbWV0aGluZyB3cm9uZyB3aXRoCnVkZXYgcnVsZXMuCgotLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KU2xhc2hkb3QgVFYuICBWaWRlb3MgZm9yIE5lcmRzLiAgU3R1ZmYgdGhhdCBN
+YXR0ZXJzLgpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/aWQ9MTYw
+NTkxNDcxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNl
+ci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
+dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
