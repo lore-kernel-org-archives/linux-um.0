@@ -1,123 +1,139 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <patrakov@gmail.com>) id 1XZ2SE-0005gl-Qd
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Sep 2014 18:47:18 +0000
-Received: from mail-wg0-f50.google.com ([74.125.82.50])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XZ2SD-0002HE-MW
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 30 Sep 2014 18:47:18 +0000
-Received: by mail-wg0-f50.google.com with SMTP id l18so15384397wgh.9
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 30 Sep 2014 11:47:11 -0700 (PDT)
-Message-ID: <542AFAAC.4090100@gmail.com>
-Date: Wed, 01 Oct 2014 00:47:08 +0600
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Return-Path: <devicetree-owner@vger.kernel.org>
+Date: Tue, 7 Oct 2014 18:00:56 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+Message-ID: <20141007160056.GC19005@lunn.ch>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-22-git-send-email-linux@roeck-us.net>
 MIME-Version: 1.0
-References: <1412015343.9609.13.camel@localhost.localdomain>
-	<CAFLxGvxD=+VxJeGkKS_Ukq5m3KvV5femmhVWYdm1XFYGHauBqw@mail.gmail.com>
-	<1412101656.2769.17.camel@localhost.localdomain>
-In-Reply-To: <1412101656.2769.17.camel@localhost.localdomain>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [systemd-devel] Timed out waiting for device
-	dev-disk-by...
-To: Thomas Meyer <thomas@m3y3r.de>, Richard Weinberger <richard.weinberger@gmail.com>, "systemd-devel@lists.freedesktop.org" <systemd-devel@lists.freedesktop.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1412659726-29957-22-git-send-email-linux@roeck-us.net>
+Sender: devicetree-owner@vger.kernel.org
+Subject: Re: [PATCH 21/44] power/reset: gpio-poweroff: Register with kernel
+ poweroff handler
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-acpi@vger.kernel.org, xen-devel@lists.xenproject.org, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, David Woodhouse <dwmw2@infradead.org>, Sebastian Reichel <sre@kernel.org>, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-01.10.2014 00:27, Thomas Meyer wrote:
-> Am Montag, den 29.09.2014, 22:20 +0200 schrieb Richard Weinberger:
->> On Mon, Sep 29, 2014 at 8:29 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
->>> Hi,
->>>
->>> I get a timeout in the Fedora 21 alpha:
->>>
->>> [ TIME ] Timed out waiting for device dev-disk-by\x2duuid-008af19d\x2d2562\x2d49bd\x2d8907\x2d721ea08f3e14.device.
->>>
->>> But all devices are available from early kernel start:
->>> # ls -l /dev/disk/by-uuid/
->>> total 0
->>> lrwxrwxrwx 1 root root 11 Sep 29 20:17 008af19d-2562-49bd-8907-721ea08f3e14 -> ../../ubda1
->>> lrwxrwxrwx 1 root root 11 Sep 29 20:17 e2bffa45-d84f-47bc-81ba-e7a395751fa6 -> ../../ubda3
->>> lrwxrwxrwx 1 root root 11 Sep 29 20:17 f452f020-a446-41ed-93c0-ee5ce56d6ea4 -> ../../ubda2
->>>
->>> It feels like some event notification is lost in the boot process or something like this?!
->>>
->>> What exactly makes the device unit go into the state active/plugged?
->>>
->>> This is a boot of the Fedora 21 alpha under user mode linux.
->>>
->>> Any ideas what could be wrong here?
->>
->> Please always CC me and/or the UML mailinglist in case of UML related issues.
->> I'm very interested in having UML work with systemd.
->>
-> Okay Richard, will do so in future.
->
-> Some more info about the above systemd wait (with
-> systemd.log_level=debug and DEBUG_KOBJECT)
->
-> Systemd starts and installs a job for each device tagged with "systemd":
-> Sep 30 18:07:58 localhost systemd[1]: Installed new job dev-ubdb3.device/start as 34
-> Sep 30 18:07:58 localhost systemd[1]: Installed new job systemd-fsck@dev-ubdb3.service/start as 35
->
-> Sep 30 18:07:58 localhost systemd[1]: Enqueued job initrd.target/start as 1
-> Sep 30 18:07:58 localhost systemd[1]: Loaded units and determined initial transaction in 837.189ms.
-> Sep 30 18:07:58 localhost systemd[1]: Received SIGCHLD from PID 32 (n/a).
->
-> Device unit is waiting:
-> Sep 30 18:07:58 localhost systemd[1]: Expecting device dev-ubdb3.device...
->
-> udev coldplug:
-> Sep 30 18:08:02 localhost systemd[360]: Executing: /bin/dracut-pre-trigger
-> Sep 30 18:08:02 localhost dracut-pre-trigger[360]: rd.dm=0: removing DM RAID activation
-> Sep 30 18:08:02 localhost systemd-udevd[358]: starting version 215
-> Sep 30 18:08:02 localhost dracut-pre-trigger[360]: rd.md.imsm=0: no MD RAID for imsm/isw raids
-> Sep 30 18:08:03 localhost dracut-pre-trigger[360]: rd.md.ddf=0: no MD RAID for SNIA ddf raids
-> Sep 30 18:08:03 localhost dracut-pre-trigger[360]: rd.md=0: removing MD RAID activation
-> Sep 30 18:08:04 localhost kernel: kobject: 'alarmtimer' (00000000930ef220): kobject_uevent_env
-> Sep 30 18:08:04 localhost kernel: kobject: 'alarmtimer' (00000000930ef220): fill_kobj_path: path = '/devices/platform/alarmtimer'
-> Sep 30 18:08:04 localhost kernel: kobject: 'uml-blkdev.1' (00000000605a1700): kobject_uevent_env
-> Sep 30 18:08:04 localhost kernel: kobject: 'uml-blkdev.1' (00000000605a1700): fill_kobj_path: path = '/devices/platform/uml-blkdev.1'
-> Sep 30 18:08:04 localhost kernel: kobject: 'ubdb' (000000008c030480): kobject_uevent_env
-> Sep 30 18:08:04 localhost kernel: kobject: 'ubdb' (000000008c030480): fill_kobj_path: path = '/devices/platform/uml-blkdev.1/block/ubdb'
-> Sep 30 18:08:04 localhost kernel: kobject: 'ubdb1' (0000000093205838): kobject_uevent_env
-> Sep 30 18:08:04 localhost kernel: kobject: 'ubdb1' (0000000093205838): fill_kobj_path: path = '/devices/platform/uml-blkdev.1/block/ubdb/ubdb1'
-> Sep 30 18:08:04 localhost kernel: kobject: 'ubdb2' (0000000093205638): kobject_uevent_env
-> Sep 30 18:08:04 localhost kernel: kobject: 'ubdb2' (0000000093205638): fill_kobj_path: path = '/devices/platform/uml-blkdev.1/block/ubdb/ubdb2'
-> Sep 30 18:08:04 localhost kernel: kobject: 'ubdb3' (0000000093205438): kobject_uevent_env
-> Sep 30 18:08:04 localhost kernel: kobject: 'ubdb3' (0000000093205438): fill_kobj_path: path = '/devices/platform/uml-blkdev.1/block/ubdb/ubdb3'
->
-> So here the udev coldplug triggers the kernel kobject_uevent for 'ubdb3'.
-> I don't understand why the systemd unit doesn't change to PLUGGED here! It should?! Or shouldn't it?
+On Mon, Oct 06, 2014 at 10:28:23PM -0700, Guenter Roeck wrote:
+> Register with kernel poweroff handler instead of setting pm_power_off
+> directly. Register with a low priority value of 64 to reflect that
+> the original code only sets pm_power_off if it was not already set.
+> 
+> Other changes:
+> 
+> Drop note that there can not be an additional instance of this driver.
+> The original reason no longer applies, it should be obvious that there
+> can only be one instance of the driver if static variables are used to
+> reflect its state, and support for multiple instances can now be added
+> easily if needed by avoiding static variables.
+> 
+> Do not create an error message if another poweroff handler has already been
+> registered. This is perfectly normal and acceptable.
+> 
+> Do not display a warning traceback if the poweroff handler fails to
+> power off the system. There may be other poweroff handlers.
 
-Imho the problem is not specific to UML. Something similar has been 
-triggered on my desktop PC, and nobody replied:
+I would prefer to keep the warning traceback. We found on some
+hardware the GPIO transitions were too fast and it failed to power
+off. Seeing the traceback gives an idea where to go look for the
+problem.
 
-https://www.mail-archive.com/systemd-devel@lists.freedesktop.org/msg22490.html
+Other than that,
 
-If this triggers again, I will provide dumps.
+Acked-by: Andrew Lunn <andrew@lunn.ch>
 
--- 
-Alexander E. Patrakov
-
-------------------------------------------------------------------------------
-Slashdot TV.  Videos for Nerds.  Stuff that Matters.
-http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+> 
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  drivers/power/reset/gpio-poweroff.c | 36 ++++++++++++++++++------------------
+>  1 file changed, 18 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/power/reset/gpio-poweroff.c b/drivers/power/reset/gpio-poweroff.c
+> index ce849bc..e95a7a1 100644
+> --- a/drivers/power/reset/gpio-poweroff.c
+> +++ b/drivers/power/reset/gpio-poweroff.c
+> @@ -14,18 +14,18 @@
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+>  #include <linux/delay.h>
+> +#include <linux/notifier.h>
+> +#include <linux/pm.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/module.h>
+>  
+> -/*
+> - * Hold configuration here, cannot be more than one instance of the driver
+> - * since pm_power_off itself is global.
+> - */
+>  static struct gpio_desc *reset_gpio;
+>  
+> -static void gpio_poweroff_do_poweroff(void)
+> +static int gpio_poweroff_do_poweroff(struct notifier_block *this,
+> +				     unsigned long unused1, void *unused2)
+> +
+>  {
+>  	BUG_ON(!reset_gpio);
+>  
+> @@ -42,20 +42,18 @@ static void gpio_poweroff_do_poweroff(void)
+>  	/* give it some time */
+>  	mdelay(3000);
+>  
+> -	WARN_ON(1);
+> +	return NOTIFY_DONE;
+>  }
+>  
+> +static struct notifier_block gpio_poweroff_nb = {
+> +	.notifier_call = gpio_poweroff_do_poweroff,
+> +	.priority = 64,
+> +};
+> +
+>  static int gpio_poweroff_probe(struct platform_device *pdev)
+>  {
+>  	bool input = false;
+> -
+> -	/* If a pm_power_off function has already been added, leave it alone */
+> -	if (pm_power_off != NULL) {
+> -		dev_err(&pdev->dev,
+> -			"%s: pm_power_off function already registered",
+> -		       __func__);
+> -		return -EBUSY;
+> -	}
+> +	int err;
+>  
+>  	reset_gpio = devm_gpiod_get(&pdev->dev, NULL);
+>  	if (IS_ERR(reset_gpio))
+> @@ -77,14 +75,16 @@ static int gpio_poweroff_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	pm_power_off = &gpio_poweroff_do_poweroff;
+> -	return 0;
+> +	err = register_poweroff_handler(&gpio_poweroff_nb);
+> +	if (err)
+> +		dev_err(&pdev->dev, "Failed to register poweroff handler\n");
+> +
+> +	return err;
+>  }
+>  
+>  static int gpio_poweroff_remove(struct platform_device *pdev)
+>  {
+> -	if (pm_power_off == &gpio_poweroff_do_poweroff)
+> -		pm_power_off = NULL;
+> +	unregister_poweroff_handler(&gpio_poweroff_nb);
+>  
+>  	return 0;
+>  }
+> -- 
+> 1.9.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
