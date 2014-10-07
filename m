@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:08 -0700
-Message-Id: <1412659726-29957-7-git-send-email-linux@roeck-us.net>
+Date: Mon,  6 Oct 2014 22:28:41 -0700
+Message-Id: <1412659726-29957-40-git-send-email-linux@roeck-us.net>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 06/44] gpio-poweroff: Drop reference to pm_power_off from devicetree bindings
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+Subject: [PATCH 39/44] x86: ce4100: Register with kernel poweroff handler
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>
+Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, "H. Peter Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-acpi@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-pm_power_off is an implementation detail. Replace it with a more generic
-description of the driver's functionality.
+Register with kernel poweroff handler instead of setting pm_power_off
+directly.
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Pawel Moll <pawel.moll@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- Documentation/devicetree/bindings/gpio/gpio-poweroff.txt | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/platform/ce4100/ce4100.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt b/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt
-index d4eab92..c95a1a6 100644
---- a/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt
-+++ b/Documentation/devicetree/bindings/gpio/gpio-poweroff.txt
-@@ -2,12 +2,12 @@ Driver a GPIO line that can be used to turn the power off.
+diff --git a/arch/x86/platform/ce4100/ce4100.c b/arch/x86/platform/ce4100/ce4100.c
+index 701fd58..4a7f3d6 100644
+--- a/arch/x86/platform/ce4100/ce4100.c
++++ b/arch/x86/platform/ce4100/ce4100.c
+@@ -164,5 +164,5 @@ void __init x86_ce4100_early_setup(void)
+ 	 */
+ 	reboot_type = BOOT_KBD;
  
- The driver supports both level triggered and edge triggered power off.
- At driver load time, the driver will request the given gpio line and
--install a pm_power_off handler. If the optional properties 'input' is
--not found, the GPIO line will be driven in the inactive
-+install a handler to power off the system. If the optional properties
-+'input' is not found, the GPIO line will be driven in the inactive
- state. Otherwise its configured as an input.
- 
--When the pm_power_off is called, the gpio is configured as an output,
--and drive active, so triggering a level triggered power off
-+When the the poweroff handler is called, the gpio is configured as an
-+output, and drive active, so triggering a level triggered power off
- condition. This will also cause an inactive->active edge condition, so
- triggering positive edge triggered power off. After a delay of 100ms,
- the GPIO is set to inactive, thus causing an active->inactive edge,
-@@ -24,7 +24,7 @@ Required properties:
- 
- Optional properties:
- - input : Initially configure the GPIO line as an input. Only reconfigure
--  it to an output when the pm_power_off function is called. If this optional
-+  it to an output when the poweroff handler is called. If this optional
-   property is not specified, the GPIO is initialized as an output in its
-   inactive state.
- 
+-	pm_power_off = ce4100_power_off;
++	register_poweroff_handler_simple(ce4100_power_off, 128);
+ }
 -- 
 1.9.1
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
