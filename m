@@ -1,102 +1,90 @@
 Return-Path: <linux-m68k-owner@vger.kernel.org>
 From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:12 -0700
-Message-Id: <1412659726-29957-11-git-send-email-linux@roeck-us.net>
+Date: Mon,  6 Oct 2014 22:28:29 -0700
+Message-Id: <1412659726-29957-28-git-send-email-linux@roeck-us.net>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 Sender: linux-m68k-owner@vger.kernel.org
-Subject: [PATCH 10/44] mfd: axp20x: Register with kernel poweroff handler
+Subject: [PATCH 27/44] x86: apm: Register with kernel poweroff handler
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Lee Jones <lee.jones@linaro.org>, Samuel Ortiz <sameo@linux.intel.com>
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Jiri Kosina <jkosina@suse.cz>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with a low priority value of 64 to reflect that
-the original code only sets pm_power_off if it was not already set.
+directly. Register with high priority value of 192 to reflect that
+the original code overwrites existing poweroff handlers.
 
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Samuel Ortiz <sameo@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/mfd/axp20x.c       | 30 +++++++++++++++++-------------
- include/linux/mfd/axp20x.h |  1 +
- 2 files changed, 18 insertions(+), 13 deletions(-)
+ arch/x86/kernel/apm_32.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
-index dee6539..238db4c 100644
---- a/drivers/mfd/axp20x.c
-+++ b/drivers/mfd/axp20x.c
-@@ -17,7 +17,8 @@
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/pm_runtime.h>
+diff --git a/arch/x86/kernel/apm_32.c b/arch/x86/kernel/apm_32.c
+index 5848744..84566a6 100644
+--- a/arch/x86/kernel/apm_32.c
++++ b/arch/x86/kernel/apm_32.c
+@@ -219,6 +219,7 @@
+ #include <linux/init.h>
+ #include <linux/time.h>
+ #include <linux/sched.h>
 +#include <linux/notifier.h>
-+#include <linux/pm.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/regulator/consumer.h>
-@@ -161,11 +162,16 @@ static struct mfd_cell axp20x_cells[] = {
- 	},
- };
+ #include <linux/pm.h>
+ #include <linux/capability.h>
+ #include <linux/device.h>
+@@ -981,7 +982,8 @@ recalc:
+  *	on their first cpu.
+  */
  
--static struct axp20x_dev *axp20x_pm_power_off;
--static void axp20x_power_off(void)
-+static int axp20x_power_off(struct notifier_block *this, unsigned long unused1,
-+			    void *unused2)
-+
+-static void apm_power_off(void)
++static int apm_power_off(struct notifier_block *this, unsigned long unused1,
++			 void *unused2)
  {
--	regmap_write(axp20x_pm_power_off->regmap, AXP20X_OFF_CTRL,
--		     AXP20X_OFF);
-+	struct axp20x_dev *axp20x = container_of(this, struct axp20x_dev,
-+						 poweroff_nb);
-+
-+	regmap_write(axp20x->regmap, AXP20X_OFF_CTRL, AXP20X_OFF);
-+
+ 	/* Some bioses don't like being called from CPU != 0 */
+ 	if (apm_info.realmode_power_off) {
+@@ -990,8 +992,14 @@ static void apm_power_off(void)
+ 	} else {
+ 		(void)set_system_power_state(APM_STATE_OFF);
+ 	}
 +	return NOTIFY_DONE;
  }
  
- static int axp20x_i2c_probe(struct i2c_client *i2c,
-@@ -215,10 +221,11 @@ static int axp20x_i2c_probe(struct i2c_client *i2c,
- 		return ret;
++static struct notifier_block apm_poweroff_nb = {
++	.notifier_call = apm_power_off,
++	.priority = 192,
++};
++
+ #ifdef CONFIG_APM_DO_ENABLE
+ 
+ /**
+@@ -1847,8 +1855,11 @@ static int apm(void *unused)
  	}
  
--	if (!pm_power_off) {
--		axp20x_pm_power_off = axp20x;
--		pm_power_off = axp20x_power_off;
--	}
-+	axp20x->poweroff_nb.notifier_call = axp20x_power_off;
-+	axp20x->poweroff_nb.priority = 64;
-+	ret = register_poweroff_handler(&axp20x->poweroff_nb);
-+	if (ret)
-+		dev_err(&i2c->dev, "failed to register poweroff handler\n");
+ 	/* Install our power off handler.. */
+-	if (power_off)
+-		pm_power_off = apm_power_off;
++	if (power_off) {
++		error = register_poweroff_handler(&apm_poweroff_nb);
++		if (error)
++			pr_err("apm: Failed to register poweroff handler\n");
++	}
  
- 	dev_info(&i2c->dev, "AXP20X driver loaded\n");
- 
-@@ -229,10 +236,7 @@ static int axp20x_i2c_remove(struct i2c_client *i2c)
- {
- 	struct axp20x_dev *axp20x = i2c_get_clientdata(i2c);
- 
--	if (axp20x == axp20x_pm_power_off) {
--		axp20x_pm_power_off = NULL;
+ 	if (num_online_cpus() == 1 || smp) {
+ #if defined(CONFIG_APM_DISPLAY_BLANK) && defined(CONFIG_VT)
+@@ -2408,9 +2419,8 @@ static void __exit apm_exit(void)
+ 			apm_error("disengage power management", error);
+ 	}
+ 	misc_deregister(&apm_device);
++	unregister_poweroff_handler(&apm_poweroff_nb);
+ 	remove_proc_entry("apm", NULL);
+-	if (power_off)
 -		pm_power_off = NULL;
--	}
-+	unregister_poweroff_handler(&axp20x->poweroff_nb);
- 
- 	mfd_remove_devices(axp20x->dev);
- 	regmap_del_irq_chip(axp20x->i2c_client->irq, axp20x->regmap_irqc);
-diff --git a/include/linux/mfd/axp20x.h b/include/linux/mfd/axp20x.h
-index d0e31a2..8f23b39 100644
---- a/include/linux/mfd/axp20x.h
-+++ b/include/linux/mfd/axp20x.h
-@@ -175,6 +175,7 @@ struct axp20x_dev {
- 	struct regmap			*regmap;
- 	struct regmap_irq_chip_data	*regmap_irqc;
- 	long				variant;
-+	struct notifier_block		poweroff_nb;
- };
- 
- #endif /* __LINUX_MFD_AXP20X_H */
+ 	if (kapmd_task) {
+ 		kthread_stop(kapmd_task);
+ 		kapmd_task = NULL;
 -- 
 1.9.1
 
