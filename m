@@ -1,121 +1,118 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1XdITO-0002j2-Kr
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Oct 2014 12:42:06 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XdITL-0000f9-30
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Oct 2014 12:42:06 +0000
-Received: from [217.255.208.138] (helo=[192.168.2.106])
-	by www17.your-server.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
-	(Exim 4.80.1) (envelope-from <thomas@m3y3r.de>) id 1XdITE-0007u6-6V
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Oct 2014 14:41:56 +0200
-Message-ID: <1413117565.13916.6.camel@localhost.localdomain>
-From: Thomas Meyer <thomas@m3y3r.de>
-Date: Sun, 12 Oct 2014 14:39:25 +0200
-Mime-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v2 1/2] um: Move uml_postsetup in the
-	init_thread stack
-To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Return-Path: <devicetree-owner@vger.kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Date: Mon,  6 Oct 2014 22:28:21 -0700
+Message-Id: <1412659726-29957-20-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+Sender: devicetree-owner@vger.kernel.org
+Subject: [PATCH 19/44] ipmi: Register with kernel poweroff handler
+To: linux-kernel@vger.kernel.org
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Corey Minyard <minyard@acm.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+Register with kernel poweroff handler instead of setting pm_power_off
+directly. Register with a high priority value of 192 to reflect that
+the original code overwrites pm_power_off unconditionally.
 
-atomic_notifier_chain_register() and uml_postsetup() do call kernel code
-that rely on the current macro and a valid task_struct resp. thread_info struct.
+Register poweroff handler after the ipmi system is ready, and unregister
+it prior to cleanup. This avoids having to check for the ready variable
+in the poweroff callback.
 
-Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+Cc: Corey Minyard <minyard@acm.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- arch/um/include/shared/as-layout.h |  1 +
- arch/um/kernel/um_arch.c           | 15 ++++++++++-----
- arch/um/os-Linux/skas/process.c    |  2 +-
- 3 files changed, 12 insertions(+), 6 deletions(-)
+ drivers/char/ipmi/ipmi_poweroff.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index 41c8c77..ca1843e 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -56,6 +56,7 @@ extern unsigned long brk_start;
- extern unsigned long host_task_size;
+diff --git a/drivers/char/ipmi/ipmi_poweroff.c b/drivers/char/ipmi/ipmi_poweroff.c
+index 9f2e3be..a942a41 100644
+--- a/drivers/char/ipmi/ipmi_poweroff.c
++++ b/drivers/char/ipmi/ipmi_poweroff.c
+@@ -36,6 +36,7 @@
+ #include <linux/proc_fs.h>
+ #include <linux/string.h>
+ #include <linux/completion.h>
++#include <linux/notifier.h>
+ #include <linux/pm.h>
+ #include <linux/kdev_t.h>
+ #include <linux/ipmi.h>
+@@ -63,9 +64,6 @@ static ipmi_user_t ipmi_user;
+ static int ipmi_ifnum;
+ static void (*specific_poweroff_func)(ipmi_user_t user);
  
- extern int linux_main(int argc, char **argv);
-+extern void uml_finishsetup(void);
- 
- struct siginfo;
- extern void (*sig_info[])(int, struct siginfo *si, struct uml_pt_regs *);
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 016adf0..ab72560 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -247,6 +247,16 @@ static struct notifier_block panic_exit_notifier = {
- 	.priority 		= 0
- };
- 
-+void uml_finishsetup(void)
-+{
-+	atomic_notifier_chain_register(&panic_notifier_list,
-+				       &panic_exit_notifier);
-+
-+	uml_postsetup();
-+
-+	new_thread_handler();
-+}
-+
- /* Set during early boot */
- unsigned long task_size;
- EXPORT_SYMBOL(task_size);
-@@ -367,11 +377,6 @@ int __init linux_main(int argc, char **argv)
- 		printf("Kernel virtual memory size shrunk to %lu bytes\n",
- 		       virtmem_size);
- 
--	atomic_notifier_chain_register(&panic_notifier_list,
--				       &panic_exit_notifier);
+-/* Holds the old poweroff function so we can restore it on removal. */
+-static void (*old_poweroff_func)(void);
 -
--	uml_postsetup();
--
- 	stack_protections((unsigned long) &init_thread_info);
- 	os_flush_stdout();
+ static int set_param_ifnum(const char *val, struct kernel_param *kp)
+ {
+ 	int rv = param_set_int(val, kp);
+@@ -544,15 +542,20 @@ static struct poweroff_function poweroff_functions[] = {
  
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 908579f..8666cb6 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -674,7 +674,7 @@ int start_idle_thread(void *stack, jmp_buf *switch_buf)
- 	n = setjmp(initial_jmpbuf);
- 	switch (n) {
- 	case INIT_JMP_NEW_THREAD:
--		(*switch_buf)[0].JB_IP = (unsigned long) new_thread_handler;
-+		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
- 		(*switch_buf)[0].JB_SP = (unsigned long) stack +
- 			UM_THREAD_SIZE - sizeof(void *);
- 		break;
-
-
-
-
-------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://p.sf.net/sfu/Zoho
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+ 
+ /* Called on a powerdown request. */
+-static void ipmi_poweroff_function(void)
++static int ipmi_poweroff_function(struct notifier_block *this,
++				  unsigned long unused1, void *unused2)
+ {
+-	if (!ready)
+-		return;
+-
+ 	/* Use run-to-completion mode, since interrupts may be off. */
+ 	specific_poweroff_func(ipmi_user);
++
++	return NOTIFY_DONE;
+ }
+ 
++static struct notifier_block ipmi_poweroff_nb = {
++	.notifier_call = ipmi_poweroff_function,
++	.priority = 192,
++};
++
+ /* Wait for an IPMI interface to be installed, the first one installed
+    will be grabbed by this code and used to perform the powerdown. */
+ static void ipmi_po_new_smi(int if_num, struct device *device)
+@@ -631,9 +634,12 @@ static void ipmi_po_new_smi(int if_num, struct device *device)
+ 	printk(KERN_INFO PFX "Found a %s style poweroff function\n",
+ 	       poweroff_functions[i].platform_type);
+ 	specific_poweroff_func = poweroff_functions[i].poweroff_func;
+-	old_poweroff_func = pm_power_off;
+-	pm_power_off = ipmi_poweroff_function;
++
+ 	ready = 1;
++
++	rv = register_poweroff_handler(&ipmi_poweroff_nb);
++	if (rv)
++		pr_err(PFX "failed to register poweroff handler\n");
+ }
+ 
+ static void ipmi_po_smi_gone(int if_num)
+@@ -644,9 +650,10 @@ static void ipmi_po_smi_gone(int if_num)
+ 	if (ipmi_ifnum != if_num)
+ 		return;
+ 
++	unregister_poweroff_handler(&ipmi_poweroff_nb);
++
+ 	ready = 0;
+ 	ipmi_destroy_user(ipmi_user);
+-	pm_power_off = old_poweroff_func;
+ }
+ 
+ static struct ipmi_smi_watcher smi_watcher = {
+@@ -732,12 +739,13 @@ static void __exit ipmi_poweroff_cleanup(void)
+ 
+ 	ipmi_smi_watcher_unregister(&smi_watcher);
+ 
++	unregister_poweroff_handler(&ipmi_poweroff_nb);
++
+ 	if (ready) {
+ 		rv = ipmi_destroy_user(ipmi_user);
+ 		if (rv)
+ 			printk(KERN_ERR PFX "could not cleanup the IPMI"
+ 			       " user: 0x%x\n", rv);
+-		pm_power_off = old_poweroff_func;
+ 	}
+ }
+ module_exit(ipmi_poweroff_cleanup);
+-- 
+1.9.1
 
