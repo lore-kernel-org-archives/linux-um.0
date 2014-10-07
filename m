@@ -1,77 +1,73 @@
-Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:18 -0700
-Message-Id: <1412659726-29957-17-git-send-email-linux@roeck-us.net>
+Date: Mon,  6 Oct 2014 22:28:32 -0700
+Message-Id: <1412659726-29957-31-git-send-email-linux@roeck-us.net>
 In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-Subject: [PATCH 16/44] mfd: tps6586x: Register with kernel poweroff handler
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 30/44] acpi: Register poweroff handler with kernel poweroff handler
 To: linux-kernel@vger.kernel.org
-Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, Lee Jones <lee.jones@linaro.org>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-acpi@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Samuel Ortiz <sameo@linux.intel.com>, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-UmVnaXN0ZXIgd2l0aCBrZXJuZWwgcG93ZXJvZmYgaGFuZGxlciBpbnN0ZWFkIG9mIHNldHRpbmcg
-cG1fcG93ZXJfb2ZmCmRpcmVjdGx5LiBSZWdpc3RlciB3aXRoIGEgbG93IHByaW9yaXR5IHZhbHVl
-IG9mIDY0IHRvIHJlZmxlY3QgdGhhdAp0aGUgb3JpZ2luYWwgY29kZSBvbmx5IHNldHMgcG1fcG93
-ZXJfb2ZmIGlmIGl0IHdhcyBub3QgYWxyZWFkeSBzZXQuCgpDYzogU2FtdWVsIE9ydGl6IDxzYW1l
-b0BsaW51eC5pbnRlbC5jb20+CkNjOiBMZWUgSm9uZXMgPGxlZS5qb25lc0BsaW5hcm8ub3JnPgpT
-aWduZWQtb2ZmLWJ5OiBHdWVudGVyIFJvZWNrIDxsaW51eEByb2Vjay11cy5uZXQ+Ci0tLQogZHJp
-dmVycy9tZmQvdHBzNjU4NnguYyB8IDMxICsrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0K
-IDEgZmlsZSBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQoKZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbWZkL3RwczY1ODZ4LmMgYi9kcml2ZXJzL21mZC90cHM2NTg2eC5jCmlu
-ZGV4IDhlMWRiYzQuLmJjMTQ1MDkgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbWZkL3RwczY1ODZ4LmMK
-KysrIGIvZHJpdmVycy9tZmQvdHBzNjU4NnguYwpAQCAtMjEsMTAgKzIxLDEyIEBACiAjaW5jbHVk
-ZSA8bGludXgva2VybmVsLmg+CiAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+CiAjaW5jbHVkZSA8
-bGludXgvbXV0ZXguaD4KKyNpbmNsdWRlIDxsaW51eC9ub3RpZmllci5oPgogI2luY2x1ZGUgPGxp
-bnV4L3NsYWIuaD4KICNpbmNsdWRlIDxsaW51eC9lcnIuaD4KICNpbmNsdWRlIDxsaW51eC9pMmMu
-aD4KICNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4KKyNpbmNsdWRlIDxsaW51eC9w
-bS5oPgogI2luY2x1ZGUgPGxpbnV4L3JlZ21hcC5oPgogI2luY2x1ZGUgPGxpbnV4L29mLmg+CiAK
-QEAgLTEzMyw2ICsxMzUsOCBAQCBzdHJ1Y3QgdHBzNjU4NnggewogCXUzMgkJCWlycV9lbjsKIAl1
-OAkJCW1hc2tfcmVnWzVdOwogCXN0cnVjdCBpcnFfZG9tYWluCSppcnFfZG9tYWluOworCisJc3Ry
-dWN0IG5vdGlmaWVyX2Jsb2NrCXBvd2Vyb2ZmX25iOwogfTsKIAogc3RhdGljIGlubGluZSBzdHJ1
-Y3QgdHBzNjU4NnggKmRldl90b190cHM2NTg2eChzdHJ1Y3QgZGV2aWNlICpkZXYpCkBAIC00NzIs
-MTMgKzQ3NiwxOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ21hcF9jb25maWcgdHBzNjU4Nnhf
-cmVnbWFwX2NvbmZpZyA9IHsKIAkuY2FjaGVfdHlwZSA9IFJFR0NBQ0hFX1JCVFJFRSwKIH07CiAK
-LXN0YXRpYyBzdHJ1Y3QgZGV2aWNlICp0cHM2NTg2eF9kZXY7Ci1zdGF0aWMgdm9pZCB0cHM2NTg2
-eF9wb3dlcl9vZmYodm9pZCkKK3N0YXRpYyBpbnQgdHBzNjU4NnhfcG93ZXJfb2ZmKHN0cnVjdCBu
-b3RpZmllcl9ibG9jayAqdGhpcywKKwkJCSAgICAgIHVuc2lnbmVkIGxvbmcgdW51c2VkMSwgdm9p
-ZCAqdW51c2VkMikKIHsKLQlpZiAodHBzNjU4NnhfY2xyX2JpdHModHBzNjU4NnhfZGV2LCBUUFM2
-NTg2WF9TVVBQTFlFTkUsIEVYSVRTTFJFUV9CSVQpKQotCQlyZXR1cm47CisJc3RydWN0IHRwczY1
-ODZ4ICp0cHM2NTg2eCA9IGNvbnRhaW5lcl9vZih0aGlzLCBzdHJ1Y3QgdHBzNjU4NngsCisJCQkJ
-CQkgcG93ZXJvZmZfbmIpOworCisJaWYgKHRwczY1ODZ4X2Nscl9iaXRzKHRwczY1ODZ4LT5kZXYs
-IFRQUzY1ODZYX1NVUFBMWUVORSwgRVhJVFNMUkVRX0JJVCkpCisJCXJldHVybiBOT1RJRllfRE9O
-RTsKIAotCXRwczY1ODZ4X3NldF9iaXRzKHRwczY1ODZ4X2RldiwgVFBTNjU4NlhfU1VQUExZRU5F
-LCBTTEVFUF9NT0RFX0JJVCk7CisJdHBzNjU4Nnhfc2V0X2JpdHModHBzNjU4NngtPmRldiwgVFBT
-NjU4NlhfU1VQUExZRU5FLCBTTEVFUF9NT0RFX0JJVCk7CisKKwlyZXR1cm4gTk9USUZZX0RPTkU7
-CiB9CiAKIHN0YXRpYyB2b2lkIHRwczY1ODZ4X3ByaW50X3ZlcnNpb24oc3RydWN0IGkyY19jbGll
-bnQgKmNsaWVudCwgaW50IHZlcnNpb24pCkBAIC01NzUsOSArNTg0LDEzIEBAIHN0YXRpYyBpbnQg
-dHBzNjU4NnhfaTJjX3Byb2JlKHN0cnVjdCBpMmNfY2xpZW50ICpjbGllbnQsCiAJCWdvdG8gZXJy
-X2FkZF9kZXZzOwogCX0KIAotCWlmIChwZGF0YS0+cG1fb2ZmICYmICFwbV9wb3dlcl9vZmYpIHsK
-LQkJdHBzNjU4NnhfZGV2ID0gJmNsaWVudC0+ZGV2OwotCQlwbV9wb3dlcl9vZmYgPSB0cHM2NTg2
-eF9wb3dlcl9vZmY7CisJaWYgKHBkYXRhLT5wbV9vZmYpIHsKKwkJdHBzNjU4NngtPnBvd2Vyb2Zm
-X25iLm5vdGlmaWVyX2NhbGwgPSB0cHM2NTg2eF9wb3dlcl9vZmY7CisJCXRwczY1ODZ4LT5wb3dl
-cm9mZl9uYi5wcmlvcml0eSA9IDY0OworCQlyZXQgPSByZWdpc3Rlcl9wb3dlcm9mZl9oYW5kbGVy
-KCZ0cHM2NTg2eC0+cG93ZXJvZmZfbmIpOworCQlpZiAocmV0KQorCQkJZGV2X2VycigmY2xpZW50
-LT5kZXYsCisJCQkJImZhaWxlZCB0byByZWdpc3RlciBwb3dlcm9mZiBoYW5kbGVyXG4iKTsKIAl9
-CiAKIAlyZXR1cm4gMDsKQEAgLTU5NCw2ICs2MDcsOCBAQCBzdGF0aWMgaW50IHRwczY1ODZ4X2ky
-Y19yZW1vdmUoc3RydWN0IGkyY19jbGllbnQgKmNsaWVudCkKIHsKIAlzdHJ1Y3QgdHBzNjU4Nngg
-KnRwczY1ODZ4ID0gaTJjX2dldF9jbGllbnRkYXRhKGNsaWVudCk7CiAKKwl1bnJlZ2lzdGVyX3Bv
-d2Vyb2ZmX2hhbmRsZXIoJnRwczY1ODZ4LT5wb3dlcm9mZl9uYik7CisKIAl0cHM2NTg2eF9yZW1v
-dmVfc3ViZGV2cyh0cHM2NTg2eCk7CiAJbWZkX3JlbW92ZV9kZXZpY2VzKHRwczY1ODZ4LT5kZXYp
-OwogCWlmIChjbGllbnQtPmlycSkKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eHBwYy1kZXYgbWFpbGluZyBsaXN0CkxpbnV4cHBj
-LWRldkBsaXN0cy5vemxhYnMub3JnCmh0dHBzOi8vbGlzdHMub3psYWJzLm9yZy9saXN0aW5mby9s
-aW51eHBwYy1kZXY=
+Register with kernel poweroff handler instead of setting pm_power_off
+directly. Register with high priority value of 192 to reflect that
+the driver explicitly overrides existing poweroff handlers.
+
+Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+Cc: Len Brown <lenb@kernel.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/acpi/sleep.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+index 54da4a3..25aad22 100644
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -15,6 +15,8 @@
+ #include <linux/dmi.h>
+ #include <linux/device.h>
+ #include <linux/suspend.h>
++#include <linux/notifier.h>
++#include <linux/pm.h>
+ #include <linux/reboot.h>
+ #include <linux/acpi.h>
+ #include <linux/module.h>
+@@ -811,14 +813,22 @@ static void acpi_power_off_prepare(void)
+ 	acpi_disable_all_gpes();
+ }
+ 
+-static void acpi_power_off(void)
++static int acpi_power_off(struct notifier_block *this,
++			  unsigned long unused1, void *unused2)
+ {
+ 	/* acpi_sleep_prepare(ACPI_STATE_S5) should have already been called */
+ 	printk(KERN_DEBUG "%s called\n", __func__);
+ 	local_irq_disable();
+ 	acpi_enter_sleep_state(ACPI_STATE_S5);
++
++	return NOTIFY_DONE;
+ }
+ 
++static struct notifier_block acpi_poweroff_nb = {
++	.notifier_call = acpi_power_off,
++	.priority = 192,
++};
++
+ int __init acpi_sleep_init(void)
+ {
+ 	char supported[ACPI_S_STATE_COUNT * 3 + 1];
+@@ -835,7 +845,8 @@ int __init acpi_sleep_init(void)
+ 	if (acpi_sleep_state_supported(ACPI_STATE_S5)) {
+ 		sleep_states[ACPI_STATE_S5] = 1;
+ 		pm_power_off_prepare = acpi_power_off_prepare;
+-		pm_power_off = acpi_power_off;
++		if (register_poweroff_handler(&acpi_poweroff_nb))
++			pr_err("acpi: Failed to register poweroff handler\n");
+ 	}
+ 
+ 	supported[0] = 0;
+-- 
+1.9.1
 
