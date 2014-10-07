@@ -1,9 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Date: Sun, 12 Oct 2014 13:02:12 +0200
-Message-Id: <1413111733-10763-2-git-send-email-nicolas.iooss_linux@m4x.org>
-In-Reply-To: <1413111733-10763-1-git-send-email-nicolas.iooss_linux@m4x.org>
-References: <1413111733-10763-1-git-send-email-nicolas.iooss_linux@m4x.org>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sahne@0x90.at>) id 1XbQNI-0000PV-EF
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Oct 2014 08:44:04 +0000
+Received: from zimbra.brainity.com ([188.40.76.72])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XbQNG-0006gX-EJ for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 07 Oct 2014 08:44:04 +0000
+Date: Tue, 7 Oct 2014 10:28:24 +0200 (CEST)
+From: Daniel Walter <d.walter@0x90.at>
+Message-ID: <779241076.3024.1412670504362.JavaMail.root@0x90.at>
+In-Reply-To: <1487140382.2997.1412670384789.JavaMail.root@0x90.at>
+MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -13,103 +23,61 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 2/3] um: Use char[] for linker script address
-	declarations
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
+Subject: Re: [uml-devel] [PATCH] Dump really early stack traces
+To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Richard Weinberger <richard@nod.at>, thomas@m3y3r.de
 
-The linker script defines some variables which are declared either with
-type char[] in include/asm-generic/sections.h or with a meaningless
-integer type in arch/um/include/asm/sections.h.
+> <snip>
 
-Fix this inconsistency by declaring every variable char[].
+Hi Thomas,
 
-Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
----
- arch/um/include/asm/sections.h | 4 ++--
- arch/um/kernel/physmem.c       | 4 ++--
- arch/um/kernel/skas/mmu.c      | 4 ++--
- arch/um/kernel/um_arch.c       | 2 +-
- 4 files changed, 7 insertions(+), 7 deletions(-)
+Could you please fix your patch since there are multiple issues with it
+1) I does not apply cleanly against the current linux tree 
+   mostly due to kmsg_dump.c which is not in the proper format
+   it should be b/arch/um/kernel/kmsg_dump.c like the rest of the patch
 
-diff --git a/arch/um/include/asm/sections.h b/arch/um/include/asm/sections.h
-index 3a6ebcc65519..cafcf684d947 100644
---- a/arch/um/include/asm/sections.h
-+++ b/arch/um/include/asm/sections.h
-@@ -3,7 +3,7 @@
- 
- #include <asm-generic/sections.h>
- 
--extern char __binary_start;
--extern int __syscall_stub_start, __syscall_stub_end;
-+extern char __binary_start[];
-+extern char __syscall_stub_start[], __syscall_stub_end[];
- 
- #endif
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index db05c067665a..c833a5dec1e7 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -100,8 +100,8 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 	 * Special kludge - This page will be mapped in to userspace processes
- 	 * from physmem_fd, so it needs to be written out there.
- 	 */
--	os_seek_file(physmem_fd, __pa(&__syscall_stub_start));
--	os_write_file(physmem_fd, &__syscall_stub_start, PAGE_SIZE);
-+	os_seek_file(physmem_fd, __pa(__syscall_stub_start));
-+	os_write_file(physmem_fd, __syscall_stub_start, PAGE_SIZE);
- 	os_fsync_file(physmem_fd);
- 
- 	bootmap_size = init_bootmem(pfn, pfn + delta);
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index d2a0a4c0cd91..e40ce29bdc2c 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -108,7 +108,7 @@ void uml_setup_stubs(struct mm_struct *mm)
- 		return;
- 
- 	ret = init_stub_pte(mm, STUB_CODE,
--			    (unsigned long) &__syscall_stub_start);
-+			    (unsigned long) __syscall_stub_start);
- 	if (ret)
- 		goto out;
- 
-@@ -116,7 +116,7 @@ void uml_setup_stubs(struct mm_struct *mm)
- 	if (ret)
- 		goto out;
- 
--	mm->context.stub_pages[0] = virt_to_page(&__syscall_stub_start);
-+	mm->context.stub_pages[0] = virt_to_page(__syscall_stub_start);
- 	mm->context.stub_pages[1] = virt_to_page(mm->context.id.stack);
- 
- 	/* dup_mmap already holds mmap_sem */
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 02c21f6e0983..5dd632203dca 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -313,7 +313,7 @@ int __init linux_main(int argc, char **argv)
- 		physmem_size += UML_ROUND_UP(brk_start) - UML_ROUND_UP(&_end);
- 	}
- 
--	uml_physmem = (unsigned long) &__binary_start & PAGE_MASK;
-+	uml_physmem = (unsigned long) __binary_start & PAGE_MASK;
- 
- 	/* Reserve up to 4M after the current brk */
- 	uml_reserved = ROUND_4M(brk_start) + (1 << 22);
--- 
-2.1.1
+2) After fixing this it did not build
+   Please make sure to build test your patch on a fresh checkout of the tree
+   by applying your patch, make ARCH=um mrproper, make ARCH=um defconfig make ARCH=um
 
+3) The patch itself does not comply to patch standards.
+   please read Documentation/SubmittingPatches for more information
+   you can use scripts/checkpatch.pl to check for common errors
+   eg: Signed-off-by is missing, etc.
+
+
+Now that we're done with the non-technical things, I don't like 
+
+a) that you move the inline function (current_thread_info) out of the
+   header file
+
+b) introduce a branch into this function which is most likely never taken
+   (you could use if (unlikely(!is_kernel_addr((void *)ti)) )
+
+c) I'd personally would make is_kernel_addr either an inline function or a macro
+
+d) please split up the 2 changes in to different patches
+   1) return init_thread_info if not kernel_addr
+   2) add kmsg_dumper to panic_exit()
+
+e) I'm not sure if returning init_thread_info is the right approach, it might
+   mask other errors like memory corruption bugs, etc.
+
+I do like the kmsg_dumper thing, so would you mind sending this as a separate patch ?
+
+Cheers,
+
+Daniel
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
 Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
 Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
 Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://p.sf.net/sfu/Zoho
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
