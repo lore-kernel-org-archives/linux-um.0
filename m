@@ -1,58 +1,52 @@
-Return-Path: <pavel@ucw.cz>
-Date: Thu, 9 Oct 2014 12:31:43 +0200
-From: Pavel Machek <pavel@ucw.cz>
-Message-ID: <20141009103143.GA6787@amd>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
- <1412659726-29957-2-git-send-email-linux@roeck-us.net>
+Return-Path: <philippe.retornaz@gmail.com>
+Message-ID: <54339A73.40107@gmail.com>
+Date: Tue, 07 Oct 2014 09:46:59 +0200
+From: =?windows-1252?Q?Philippe_R=E9tornaz?=
+ <philippe.retornaz@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net> <1412659726-29957-2-git-send-email-linux@roeck-us.net>
 In-Reply-To: <1412659726-29957-2-git-send-email-linux@roeck-us.net>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Subject: Re: [PATCH 01/44] kernel: Add support for poweroff handler call chain
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Andrew Morton <akpm@linux-foundation.org>, Heiko Stuebner <heiko@sntech.de>, Romain Perier <romain.perier@gmail.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <len.brown@intel.com>, Alexander Graf <agraf@suse.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
+Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, Len Brown <len.brown@intel.com>, linux-xtensa@linux-xtensa.org, Pavel Machek <pavel@ucw.cz>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, Alexander Graf <agraf@suse.de>, linux-acpi@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, xen-devel@lists.xenproject.org, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Romain Perier <romain.perier@gmail.com>, linuxppc-dev@lists.ozlabs.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi!
+Hello
 
-> +/**
-> + *	register_poweroff_handler_simple - Register function to be called to power off
-> + *					   the system
-> + *	@handler:	Function to be called to power off the system
-> + *	@priority:	Handler priority. For priority guidelines see
-> + *			register_poweroff_handler.
-> + *
-> + *	This is a simplified version of register_poweroff_handler. It does not
-> + *	take a notifier as argument, but a function pointer. The function
-> + *	registers a poweroff handler with specified priority. Poweroff
-> + *	handlers registered with this function can not be unregistered,
-> + *	and only a single poweroff handler can be installed using it.
-> + *
-> + *	This function must not be called from modules and is therefore
-> + *	not exported.
-> + *
-> + *	Returns -EBUSY if a poweroff handler has already been registered
-> + *	using register_poweroff_handler_simple. Otherwise returns zero,
-> + *	since atomic_notifier_chain_register() currently always returns zero.
+This seems exactly what I would need on the mc13783 to handle cleanly 
+the poweroff,
+but after reading this patchset I have the following question:
+
+[...]
+
+> +/*
+> + *	Notifier list for kernel code which wants to be called
+> + *	to power off the system.
 > + */
-> +int register_poweroff_handler_simple(void (*handler)(void), int priority)
-> +{
-> +	char symname[KSYM_NAME_LEN];
-> +
-> +	if (poweroff_handler_data.handler) {
-> +		lookup_symbol_name((unsigned long)poweroff_handler_data.handler,
-> +				   symname);
-> +		pr_warn("Poweroff function already registered (%s)", symname);
-> +		lookup_symbol_name((unsigned long)handler, symname);
-> +		pr_cont(", cannot register %s\n", symname);
-> +		return -EBUSY;
-> +	}
+> +static ATOMIC_NOTIFIER_HEAD(poweroff_handler_list);
 
-Dunno, are you maybe overdoing the debugging infrastructure a bit?
-This is not going to happen in production, and if it does happen,
-developer can look the symbol name himself.
-									Pavel
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+[...]
+
+> +void do_kernel_poweroff(void)
+> +{
+> +	atomic_notifier_call_chain(&poweroff_handler_list, 0, NULL);
+> +}
+> +
+
+It seems that the poweroff callback needs to be atomic as per
+_atomic_notifier_call_chain documentation:
+
+	"Calls each function in a notifier chain in turn.  The functions
+	 run in an atomic context"
+
+But this is a problem for many MFD (mc13783, twl4030 etc ...) which are
+accessible on only a blocking bus (SPI, I2C).
+
+What I am missing here ?
+
+Thanks,
+
+Philippe
 
