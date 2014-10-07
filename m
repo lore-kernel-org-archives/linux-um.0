@@ -1,120 +1,41 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1XZpgY-00061R-B2
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Oct 2014 23:21:22 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XZpgW-0007Of-9U
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 02 Oct 2014 23:21:22 +0000
-Received: from [88.68.116.213] (helo=[192.168.2.108])
-	by www17.your-server.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
-	(Exim 4.80.1) (envelope-from <thomas@m3y3r.de>) id 1XZpgP-0000Sw-Li
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Oct 2014 01:21:13 +0200
-Message-ID: <1412292073.14180.16.camel@localhost.localdomain>
-From: Thomas Meyer <thomas@m3y3r.de>
-Date: Fri, 03 Oct 2014 01:21:13 +0200
-Mime-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] panic() call from non-kernel stack in uml_postsetup
-To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Date: Mon,  6 Oct 2014 22:28:04 -0700
+Message-Id: <1412659726-29957-3-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 02/44] memory: emif: Use API function to determine poweroff capability
+To: linux-kernel@vger.kernel.org
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Santosh Shilimkar <santosh.shilimkar@ti.com>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-SGksCgpXaGVuIHlvdSBwYXNzIGFuIGluaXRyZCB0byBVTUwgYW5kIHRoZSBzaXplIG9mIHRoZSBp
-bml0cmQgaXMgdG9vIGJpZyBmb3IKdGhlIGN1cnJlbnQga2VybmVsIG1lbW9yeSwgYSBwYW5pYygp
-IGNhbGwgaXMgZG9uZSB3aXRoIHRoZSBtZXNzYWdlKCJPdXQKb2YgbWVtb3J5IikuCgpCdXQgdGhp
-cyBtZXNzYWdlIG5ldmVyIGhpdHMgdGhlIHN0ZG91dCBhcyB0aGUgZm9sbG93aW5nIHN0YWNrIHRy
-YWNlCmR1bXBzIGJlY2F1c2UgdGhlcmUgaXMgbm8gY3VycmVudF90aHJlYWRfaW5mbygpIGluIHRo
-ZSBVTUwgc3RhY2ssIHdoaWNoCmlzIHN0aWxsIGFjdGl2ZSBhdCB0aGlzIHRpbWU6CgooZ2RiKSBi
-dAojMCAgZHVtcF9zdGFja19wcmludF9pbmZvIChsb2dfbHZsPTB4NjA1M2Y1ODMgIlwwMDFkIikg
-YXQga2VybmVsL3ByaW50ay9wcmludGsuYzoyOTc5CiMxICAweDAwMDAwMDAwNjA0NzEyNmIgaW4g
-X19kdW1wX3N0YWNrICgpIGF0IGxpYi9kdW1wX3N0YWNrLmM6MTQKIzIgIGR1bXBfc3RhY2sgKCkg
-YXQgbGliL2R1bXBfc3RhY2suYzo1MAojMyAgMHgwMDAwMDAwMDYwNDZiZjg3IGluIHBhbmljCShm
-bXQ9PG9wdGltaXplZCBvdXQ+KSBhdCBrZXJuZWwvcGFuaWMuYzoxMTAKIzQgIDB4MDAwMDAwMDA2
-MDAxMGJjNyBpbiBfX19hbGxvY19ib290bWVtIChsaW1pdD08b3B0aW1pemVkIG91dD4sIGdvYWw9
-PG9wdGltaXplZCBvdXQ+LCBhbGlnbj08b3B0aW1pemVkIG91dD4sIHNpemU9PG9wdGltaXplZCBv
-dXQ+KSBhCnQgbW0vYm9vdG1lbS5jOjY3NAojNSAgX19hbGxvY19ib290bWVtIChzaXplPTU1Nzky
-MjI4LCBhbGlnbj08b3B0aW1pemVkIG91dD4sIGdvYWw9PG9wdGltaXplZCBvdXQ+KSBhdCBtbS9i
-b290bWVtLmM6Njk2CiM2ICAweDAwMDAwMDAwNjAwMDRlY2EgaW4gcmVhZF9pbml0cmQgKCkgYXQg
-YXJjaC91bS9rZXJuZWwvaW5pdHJkLmM6MzkKIzcgIDB4MDAwMDAwMDA2MDAwNGI3MSBpbiB1bWxf
-cG9zdHNldHVwCSgpIGF0IGFyY2gvdW0va2VybmVsL3VtX2FyY2guYzoyMjgKIzggIGxpbnV4X21h
-aW4gKGFyZ2M9PG9wdGltaXplZCBvdXQ+LCBhcmd2PTB4N2ZmZmZmZmZkZjk4KSBhdCBhcmNoL3Vt
-L2tlcm5lbC91bV9hcmNoLmM6Mzc3CiM5ICAweDAwMDAwMDAwNjAwMDU5ZGIgaW4gbWFpbiAoYXJn
-Yz08b3B0aW1pemVkIG91dD4sIGFyZ3Y9MHg3ZmZmZmZmZmRmOTgsIGVudnA9PG9wdGltaXplZCBv
-dXQ+KSBhdCBhcmNoL3VtL29zLUxpbnV4L21haW4uYzoxNTYKClNvIGN1cnJlbnRfdGhyZWFkX2lu
-Zm8oKSB3aWxsIHJldHVybiB0aGUgc3RhY2sgb2YgdGhlIFVNTCBwcm9ncmFtCml0c2VsZiwgd2hp
-Y2ggaXMgYW4gaW52YWxpZCBzdHJ1Y3QgdGhyZWFkX2luZm86CnRocmVhZCBpbmZvPSAweDdmZmZm
-ZmZmYzAwMAoKc28gdGhlIGFjY2VzcyB0byBjdXJyZW50LT5waWQsIHdpbGwgc2VnZmF1bHQgYXMg
-ImN1cnJlbnQiIGlzIGEgbWFjcm8gZm9yCmN1cnJlbnRfdGhyZWFkX2luZm8oKS0+dGFzay0+cGlk
-IGFuZCB0YXNrIGlzIE5VTEwuCgoyOTc44pSCIHZvaWQgZHVtcF9zdGFja19wcmludF9pbmZvKGNv
-bnN0IGNoYXIgKmxvZ19sdmwpCjI5NznilIIgewoyOTgw4pSCICAgICAgICAgc3RydWN0IHRocmVh
-ZF9pbmZvICogdGkgPSBjdXJyZW50X3RocmVhZF9pbmZvKCk7CjI5ODHilIIgICAgICAgICBwcmlu
-dGYoInRocmVhZCBpbmZvID0lcFxuIiwgdGkpOwoyOTgy4pSCCjI5ODPilIIgICAgICAgICBwcmlu
-dGsoIiVzQ1BVOiAlZCBQSUQ6ICVkIENvbW06ICUuMjBzICVzICVzICUuKnNcbiIsCjI5ODTilIIg
-ICAgICAgICAgICAgICAgbG9nX2x2bCwgcmF3X3NtcF9wcm9jZXNzb3JfaWQoKSwgY3VycmVudC0+
-cGlkLCBjdXJyZW50LT5jb21tLAoyOTg14pSCICAgICAgICAgICAgICAgIHByaW50X3RhaW50ZWQo
-KSwgaW5pdF91dHNuYW1lKCktPnJlbGVhc2UsCjI5ODbilJw+ICAgICAgICAgICAgICAgKGludClz
-dHJjc3BuKGluaXRfdXRzbmFtZSgpLT52ZXJzaW9uLCAiICIpLAoyOTg34pSCICAgICAgICAgICAg
-ICAgIGluaXRfdXRzbmFtZSgpLT52ZXJzaW9uKTsKCgphbnkgaWRlYXMgaG93IHRvIGZpeCB0aGlz
-PwoKSSB0cmllZCB0byBhZGQgdGhpcywgYnV0IHRoaXMgZmFpbGVkIGhvcnJpYmx5OgoKZGlmZiAt
-LWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9hc20vdGhyZWFkX2luZm8uaCBiL2FyY2gvdW0vaW5jbHVk
-ZS9hc20vdGhyZWFkX2luZm8uaAotLS0gYS9hcmNoL3VtL2luY2x1ZGUvYXNtL3RocmVhZF9pbmZv
-LmgKKysrIGIvYXJjaC91bS9pbmNsdWRlL2FzbS90aHJlYWRfaW5mby5oCkBAIC0xMiw2ICsxMiwx
-MSBAQAogI2luY2x1ZGUgPGFzbS9wYWdlLmg+CiAjaW5jbHVkZSA8YXNtL3VhY2Nlc3MuaD4KIAor
-I2RlZmluZSBERUJVR19DSEVDS19DVVJSRU5UX1RJCisjaWZkZWYgREVCVUdfQ0hFQ0tfQ1VSUkVO
-VF9USQorI2luY2x1ZGUgPGtlcm5fdXRpbC5oPgorI2VuZGlmCisKIHN0cnVjdCB0aHJlYWRfaW5m
-byB7CiAJc3RydWN0IHRhc2tfc3RydWN0CSp0YXNrOwkJLyogbWFpbiB0YXNrIHN0cnVjdHVyZSAq
-LwogCXN0cnVjdCBleGVjX2RvbWFpbgkqZXhlY19kb21haW47CS8qIGV4ZWN1dGlvbiBkb21haW4g
-Ki8KQEAgLTUzLDYgKzU5LDEyIEBAIHN0YXRpYyBpbmxpbmUgc3RydWN0IHRocmVhZF9pbmZvICpj
-dXJyZW50X3RocmVhZF9pbmZvKHZvaWQpCiAKIAlhc20gdm9sYXRpbGUgKCIiIDogIj1yIiAocCkg
-OiAiMCIgKCZ0aSkpOwogCXRpID0gKHN0cnVjdCB0aHJlYWRfaW5mbyAqKSAoKCh1bnNpZ25lZCBs
-b25nKXApICYgfm1hc2spOworI2lmZGVmIERFQlVHX0NIRUNLX0NVUlJFTlRfVEkKKwlpZighaXNf
-a2VybmVsX2FkZHIoKHZvaWQqKXRpKSkgeworCQlwcmludGsoS0VSTl9DUklUICJBY2Nlc3MgdG8g
-Y3VycmVudF90aHJlYWRfaW5mbygpIGZyb20gbm9uLWtlcm5lbCBzdGFjayFcbiIpOworLy8JCXJl
-dHVybiAmaW5pdF90aHJlYWRfaW5mbzsKKwl9CisjZW5kaWYKIAlyZXR1cm4gdGk7CiB9CiAKZGlm
-ZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9zaGFyZWQva2Vybl91dGlsLmggYi9hcmNoL3VtL2lu
-Y2x1ZGUvc2hhcmVkL2tlcm5fdXRpbC5oCmluZGV4IDgzYTkxZjkuLjU0NTUwM2UgMTAwNjQ0Ci0t
-LSBhL2FyY2gvdW0vaW5jbHVkZS9zaGFyZWQva2Vybl91dGlsLmgKKysrIGIvYXJjaC91bS9pbmNs
-dWRlL3NoYXJlZC9rZXJuX3V0aWwuaApAQCAtMTksNiArMTksNyBAQCBleHRlcm4gaW50IGttYWxs
-b2Nfb2s7CiAjZGVmaW5lIFVNTF9ST1VORF9VUChhZGRyKSBcCiAJKCgoKHVuc2lnbmVkIGxvbmcp
-IGFkZHIpICsgUEFHRV9TSVpFIC0gMSkgJiBQQUdFX01BU0spCiAKK2V4dGVybiBpbnQgaXNfa2Vy
-bmVsX2FkZHIodm9pZCogYWRkcik7CiBleHRlcm4gdW5zaWduZWQgbG9uZyBhbGxvY19zdGFjayhp
-bnQgb3JkZXIsIGludCBhdG9taWMpOwogZXh0ZXJuIHZvaWQgZnJlZV9zdGFjayh1bnNpZ25lZCBs
-b25nIHN0YWNrLCBpbnQgb3JkZXIpOwogCmRpZmYgLS1naXQgYS9hcmNoL3VtL29zLUxpbnV4L21h
-aW4uYyBiL2FyY2gvdW0vb3MtTGludXgvbWFpbi5jCmluZGV4IGRmOTE5MWEuLmExY2FlYmIgMTAw
-NjQ0Ci0tLSBhL2FyY2gvdW0vb3MtTGludXgvbWFpbi5jCisrKyBiL2FyY2gvdW0vb3MtTGludXgv
-bWFpbi5jCkBAIC0yNTQsNyArMjU1LDcgQEAgdm9pZCBfX3dyYXBfZnJlZSh2b2lkICpwdHIpCiAJ
-ICogdGhlcmUgaXMgYSBwb3NzaWJpbGl0eSBmb3IgbWVtb3J5IGxlYWtzLgogCSAqLwogCi0JaWYg
-KChhZGRyID49IHVtbF9waHlzbWVtKSAmJiAoYWRkciA8IGhpZ2hfcGh5c21lbSkpIHsKKwlpZiAo
-aXNfa2VybmVsX2FkZHIoYWRkcikpIHsKIAkJaWYgKGttYWxsb2Nfb2spCiAJCQlrZnJlZShwdHIp
-OwogCX0KQEAgLTI2NCwzICsyNjUsMTAgQEAgdm9pZCBfX3dyYXBfZnJlZSh2b2lkICpwdHIpCiAJ
-fQogCWVsc2UgX19yZWFsX2ZyZWUocHRyKTsKIH0KKworaW50IGlzX2tlcm5lbF9hZGRyKHZvaWQq
-IGFkZHIpCit7CisJaWYoKGFkZHIgPj0gdW1sX3BoeXNtZW0pICYmIChhZGRyIDwgaGlnaF9waHlz
-bWVtKSkKKwkJcmV0dXJuIDE7CisJcmV0dXJuIDA7Cit9ClwgTm8gbmV3bGluZSBhdCBlbmQgb2Yg
-ZmlsZQoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTWVldCBQQ0kgRFNTIDMuMCBDb21wbGlhbmNl
-IFJlcXVpcmVtZW50cyB3aXRoIEV2ZW50TG9nIEFuYWx5emVyCkFjaGlldmUgUENJIERTUyAzLjAg
-Q29tcGxpYW50IFN0YXR1cyB3aXRoIE91dC1vZi10aGUtYm94IFBDSSBEU1MgUmVwb3J0cwpBcmUg
-eW91IEF1ZGl0LVJlYWR5IGZvciBQQ0kgRFNTIDMuMCBDb21wbGlhbmNlPyBEb3dubG9hZCBXaGl0
-ZSBwYXBlcgpDb21wbHkgdG8gUENJIERTUyAzLjAgUmVxdWlyZW1lbnQgMTAgYW5kIDExLjUgd2l0
-aCBFdmVudExvZyBBbmFseXplcgpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBh
-ZC9jbGs/aWQ9MTU0NjIyMzExJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWls
-aW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
-czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgt
-ZGV2ZWwK
+Use have_kernel_poweroff() to determine if the kernel is able
+to power off the system.
+
+Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/memory/emif.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
+index 04644e7..acd830a 100644
+--- a/drivers/memory/emif.c
++++ b/drivers/memory/emif.c
+@@ -1053,10 +1053,10 @@ static irqreturn_t emif_threaded_isr(int irq, void *dev_id)
+ 		dev_emerg(emif->dev, "SDRAM temperature exceeds operating limit.. Needs shut down!!!\n");
+ 
+ 		/* If we have Power OFF ability, use it, else try restarting */
+-		if (pm_power_off) {
++		if (have_kernel_poweroff()) {
+ 			kernel_power_off();
+ 		} else {
+-			WARN(1, "FIXME: NO pm_power_off!!! trying restart\n");
++			WARN(1, "FIXME: NO kernel poweroff capability!!! trying restart\n");
+ 			kernel_restart("SDRAM Over-temp Emergency restart");
+ 		}
+ 		return IRQ_HANDLED;
+-- 
+1.9.1
 
