@@ -1,99 +1,32 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <543C317E.5040408@nod.at>
-Date: Mon, 13 Oct 2014 22:09:34 +0200
-From: Richard Weinberger <richard@nod.at>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
+Date: Tue, 7 Oct 2014 09:23:06 -0700
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-ID: <20141007162306.GA2913@kroah.com>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-30-git-send-email-linux@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="FrRlpxajtFTTNta1SKUPeU1sWGUkdDJbF"
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [GIT PULL] UML changes for v3.18-rc1
-To: linus Torvalds <torvalds@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, sahne@0x90.at
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1412659726-29957-30-git-send-email-linux@roeck-us.net>
+Sender: linux-m68k-owner@vger.kernel.org
+Subject: Re: [PATCH 29/44] staging: nvec: Register with kernel poweroff
+ handler
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Julian Andres Klode <jak@jak-linux.org>, Marc Dietrich <marvin24@gmx.de>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---FrRlpxajtFTTNta1SKUPeU1sWGUkdDJbF
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 06, 2014 at 10:28:31PM -0700, Guenter Roeck wrote:
+> Register with kernel poweroff handler instead of setting pm_power_off
+> directly. Register with default priority value of 128 since we don't know
+> any better.
+> 
+> Cc: Julian Andres Klode <jak@jak-linux.org>
+> Cc: Marc Dietrich <marvin24@gmx.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  drivers/staging/nvec/nvec.c | 24 +++++++++++++++---------
+>  drivers/staging/nvec/nvec.h |  2 ++
+>  2 files changed, 17 insertions(+), 9 deletions(-)
 
-Linus,
-
-The following changes since commit c798360cd1438090d51eeaa8e67985da11362e=
-ba:
-
-  Merge branch 'for-3.18' of git://git.kernel.org/pub/scm/linux/kernel/gi=
-t/tj/percpu (2014-10-10 07:26:02 -0400)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus
-
-for you to fetch changes up to 5f786595a291092d20fafe10c5a30378971a8cc3:
-
-  um: net: Eliminate NULL test after alloc_bootmem (2014-10-13 21:46:26 +=
-0200)
-
-----------------------------------------------------------------
-Besides of fixes this contains also support for CONFIG_STACKTRACE
-by Daniel Walter.
-----------------------------------------------------------------
-
-Daniel Walter (1):
-      um: Add support for CONFIG_STACKTRACE
-
-Himangi Saraogi (1):
-      um: net: Eliminate NULL test after alloc_bootmem
-
-Honggang Li (2):
-      um: remove csum_partial_copy_generic_i386 to clean up exception tab=
-le
-      um: delete unnecessary bootmem struct page array
-
-Thorsten Knabe (1):
-      um: ubd: Fix for processes stuck in D state forever
-
- arch/um/Kconfig.common            |   3 +-
- arch/um/drivers/net_kern.c        |   4 -
- arch/um/drivers/ubd_kern.c        |   5 +-
- arch/um/include/asm/stacktrace.h  |  42 +++++++
- arch/um/include/shared/mem_user.h |   2 +-
- arch/um/kernel/Makefile           |   1 +
- arch/um/kernel/physmem.c          |  32 +----
- arch/um/kernel/stacktrace.c       |  80 +++++++++++++
- arch/um/kernel/sysrq.c            |  69 +++--------
- arch/um/kernel/um_arch.c          |   7 +-
- arch/x86/um/checksum_32.S         | 239 --------------------------------=
-------
- 11 files changed, 153 insertions(+), 331 deletions(-)
- create mode 100644 arch/um/include/asm/stacktrace.h
- create mode 100644 arch/um/kernel/stacktrace.c
-
-Thanks,
-//richard
-
-
---FrRlpxajtFTTNta1SKUPeU1sWGUkdDJbF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJUPDF+AAoJEPmeIjfg4UaaJSsP/1K/Edz5daMkgES6JXiqyoEh
-GGRupgL2rAbrWjE8AsC95DQFH7vm+sTg/CHGvdZfUNI6dO5DUHX2xosM2Dw4qE/0
-phmMfo5FUgLZqRBIxt+a9QdvwPQttNamI8E31BWebNXTTHPx4OorrrUp+O+YZ+4q
-evyaFMCl3QD+uP474foaBsP4dZEIJpszxQrRXDtNpIZSOdZM5Ocdvk0zefeaZMMI
-DjxVcmDbTkaEk3w6Sz4AT8C9IkmYVj5P23726f8C9GG4bQGlJpRyTrBTHNoYKPXN
-l/IqVVQpzY7MoQ+LyHKoVJFLX9ZweXy6vbQ8nxKITY2vGd6GfTfWFNQti5KGZFvY
-Zyfj6o9FJnrG+Z3ph4EX00fSWzvWxIuKm6b1om+P0iThdue0/pYEP7IIYKxC+Y5/
-/0BhKPc1kXYyjz/DOIHvCRoc/B4hGKOPiWPvkPvXopurC+i6Qgw6MCUzTwV/h9Eh
-RT4rb5kcHQvXTFl6PtFFxlYCFTs0GP6kVM/Z77noVs6KnqS+9OEM/cX+bxq1UKD9
-j/Du1M6hUcY7pS8k2IQsuaJY16V+jHA4tVaA9hlFryGCKfwJQbOztcNi7vXep7oy
-lmLvO/DksUDRLsdx1YISEEcAnr9+duVbrm/hUh0UinfHn0C5j3+Ketbms10RTXv1
-Q5qVKR8W8WqwSlu7hzNV
-=2VCw
------END PGP SIGNATURE-----
-
---FrRlpxajtFTTNta1SKUPeU1sWGUkdDJbF--
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
