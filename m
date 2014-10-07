@@ -1,80 +1,77 @@
-Return-Path: <devicetree-owner@vger.kernel.org>
-Date: Tue, 7 Oct 2014 09:00:48 +0100
-From: Lee Jones <lee.jones@linaro.org>
-Message-ID: <20141007080048.GB25331@lee--X1>
+Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Date: Mon,  6 Oct 2014 22:28:14 -0700
+Message-Id: <1412659726-29957-13-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
- <1412659726-29957-13-git-send-email-linux@roeck-us.net>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-In-Reply-To: <1412659726-29957-13-git-send-email-linux@roeck-us.net>
-Sender: devicetree-owner@vger.kernel.org
-Subject: Re: [PATCH 12/44] mfd: ab8500-sysctrl: Register with kernel poweroff
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+Subject: [PATCH 12/44] mfd: ab8500-sysctrl: Register with kernel poweroff
  handler
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Linus Walleij <linus.walleij@linaro.org>, Samuel Ortiz <sameo@linux.intel.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, Linus Walleij <linus.walleij@linaro.org>, Lee Jones <lee.jones@linaro.org>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-acpi@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Samuel Ortiz <sameo@linux.intel.com>, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Mon, 06 Oct 2014, Guenter Roeck wrote:
-
-> Register with kernel poweroff handler instead of setting pm_power_off
-> directly. Register with a low priority value of 64 to reflect that
-> the original code only sets pm_power_off if it was not already set.
->=20
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Samuel Ortiz <sameo@linux.intel.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
->  drivers/mfd/ab8500-sysctrl.c | 26 +++++++++++++++-----------
->  1 file changed, 15 insertions(+), 11 deletions(-)
->=20
-> diff --git a/drivers/mfd/ab8500-sysctrl.c b/drivers/mfd/ab8500-sysctr=
-l.c
-> index 8e0dae5..677438f 100644
-> --- a/drivers/mfd/ab8500-sysctrl.c
-> +++ b/drivers/mfd/ab8500-sysctrl.c
-> @@ -6,6 +6,7 @@
-
-[...]
-
-> +static int ab8500_power_off(struct notifier_block *this, unsigned lo=
-ng unused1,
-> +			    void *unused2)
->  {
->  	sigset_t old;
->  	sigset_t all;
-> @@ -34,11 +36,6 @@ static void ab8500_power_off(void)
->  	struct power_supply *psy;
->  	int ret;
-> =20
-> -	if (sysctrl_dev =3D=3D NULL) {
-> -		pr_err("%s: sysctrl not initialized\n", __func__);
-> -		return;
-> -	}
-
-Can you explain the purpose of this change please?
-
->  	/*
->  	 * If we have a charger connected and we're powering off,
->  	 * reboot into charge-only mode.
-> @@ -83,8 +80,15 @@ shutdown:
->  					 AB8500_STW4500CTRL1_SWRESET4500N);
->  		(void)sigprocmask(SIG_SETMASK, &old, NULL);
->  	}
-> +
-> +	return NOTIFY_DONE;
->  }
-
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+UmVnaXN0ZXIgd2l0aCBrZXJuZWwgcG93ZXJvZmYgaGFuZGxlciBpbnN0ZWFkIG9mIHNldHRpbmcg
+cG1fcG93ZXJfb2ZmCmRpcmVjdGx5LiBSZWdpc3RlciB3aXRoIGEgbG93IHByaW9yaXR5IHZhbHVl
+IG9mIDY0IHRvIHJlZmxlY3QgdGhhdAp0aGUgb3JpZ2luYWwgY29kZSBvbmx5IHNldHMgcG1fcG93
+ZXJfb2ZmIGlmIGl0IHdhcyBub3QgYWxyZWFkeSBzZXQuCgpDYzogTGludXMgV2FsbGVpaiA8bGlu
+dXMud2FsbGVpakBsaW5hcm8ub3JnPgpDYzogTGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9y
+Zz4KQ2M6IFNhbXVlbCBPcnRpeiA8c2FtZW9AbGludXguaW50ZWwuY29tPgpTaWduZWQtb2ZmLWJ5
+OiBHdWVudGVyIFJvZWNrIDxsaW51eEByb2Vjay11cy5uZXQ+Ci0tLQogZHJpdmVycy9tZmQvYWI4
+NTAwLXN5c2N0cmwuYyB8IDI2ICsrKysrKysrKysrKysrKy0tLS0tLS0tLS0tCiAxIGZpbGUgY2hh
+bmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tZmQvYWI4NTAwLXN5c2N0cmwuYyBiL2RyaXZlcnMvbWZkL2FiODUwMC1zeXNjdHJsLmMK
+aW5kZXggOGUwZGFlNS4uNjc3NDM4ZiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tZmQvYWI4NTAwLXN5
+c2N0cmwuYworKysgYi9kcml2ZXJzL21mZC9hYjg1MDAtc3lzY3RybC5jCkBAIC02LDYgKzYsNyBA
+QAogCiAjaW5jbHVkZSA8bGludXgvZXJyLmg+CiAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+Cisj
+aW5jbHVkZSA8bGludXgvbm90aWZpZXIuaD4KICNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZp
+Y2UuaD4KICNpbmNsdWRlIDxsaW51eC9wbS5oPgogI2luY2x1ZGUgPGxpbnV4L3JlYm9vdC5oPgpA
+QCAtMjMsNyArMjQsOCBAQAogCiBzdGF0aWMgc3RydWN0IGRldmljZSAqc3lzY3RybF9kZXY7CiAK
+LXN0YXRpYyB2b2lkIGFiODUwMF9wb3dlcl9vZmYodm9pZCkKK3N0YXRpYyBpbnQgYWI4NTAwX3Bv
+d2VyX29mZihzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgKnRoaXMsIHVuc2lnbmVkIGxvbmcgdW51c2Vk
+MSwKKwkJCSAgICB2b2lkICp1bnVzZWQyKQogewogCXNpZ3NldF90IG9sZDsKIAlzaWdzZXRfdCBh
+bGw7CkBAIC0zNCwxMSArMzYsNiBAQCBzdGF0aWMgdm9pZCBhYjg1MDBfcG93ZXJfb2ZmKHZvaWQp
+CiAJc3RydWN0IHBvd2VyX3N1cHBseSAqcHN5OwogCWludCByZXQ7CiAKLQlpZiAoc3lzY3RybF9k
+ZXYgPT0gTlVMTCkgewotCQlwcl9lcnIoIiVzOiBzeXNjdHJsIG5vdCBpbml0aWFsaXplZFxuIiwg
+X19mdW5jX18pOwotCQlyZXR1cm47Ci0JfQotCiAJLyoKIAkgKiBJZiB3ZSBoYXZlIGEgY2hhcmdl
+ciBjb25uZWN0ZWQgYW5kIHdlJ3JlIHBvd2VyaW5nIG9mZiwKIAkgKiByZWJvb3QgaW50byBjaGFy
+Z2Utb25seSBtb2RlLgpAQCAtODMsOCArODAsMTUgQEAgc2h1dGRvd246CiAJCQkJCSBBQjg1MDBf
+U1RXNDUwMENUUkwxX1NXUkVTRVQ0NTAwTik7CiAJCSh2b2lkKXNpZ3Byb2NtYXNrKFNJR19TRVRN
+QVNLLCAmb2xkLCBOVUxMKTsKIAl9CisKKwlyZXR1cm4gTk9USUZZX0RPTkU7CiB9CiAKK3N0YXRp
+YyBzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgYWI4NTAwX3Bvd2Vyb2ZmX25iID0geworCS5ub3RpZmll
+cl9jYWxsID0gYWI4NTAwX3Bvd2VyX29mZiwKKwkucHJpb3JpdHkgPSA2NCwKK307CisKIC8qCiAg
+KiBVc2UgdGhlIEFCIFdEIHRvIHJlc2V0IHRoZSBwbGF0Zm9ybS4gSXQgd2lsbCBwZXJmb3JtIGEg
+aGFyZAogICogcmVzZXQgaW5zdGVhZCBvZiBhIHNvZnQgcmVzZXQuIFdyaXRlIHRoZSByZXNldCBy
+ZWFzb24gdG8KQEAgLTE4NSw2ICsxODksNyBAQCBzdGF0aWMgaW50IGFiODUwMF9zeXNjdHJsX3By
+b2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJc3RydWN0IGFiODUwMCAqYWI4NTAw
+ID0gZGV2X2dldF9kcnZkYXRhKHBkZXYtPmRldi5wYXJlbnQpOwogCXN0cnVjdCBhYjg1MDBfcGxh
+dGZvcm1fZGF0YSAqcGxhdDsKIAlzdHJ1Y3QgYWI4NTAwX3N5c2N0cmxfcGxhdGZvcm1fZGF0YSAq
+cGRhdGE7CisJaW50IGVycjsKIAogCXBsYXQgPSBkZXZfZ2V0X3BsYXRkYXRhKHBkZXYtPmRldi5w
+YXJlbnQpOwogCkBAIC0xOTMsOCArMTk4LDkgQEAgc3RhdGljIGludCBhYjg1MDBfc3lzY3RybF9w
+cm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCiAJc3lzY3RybF9kZXYgPSAmcGRl
+di0+ZGV2OwogCi0JaWYgKCFwbV9wb3dlcl9vZmYpCi0JCXBtX3Bvd2VyX29mZiA9IGFiODUwMF9w
+b3dlcl9vZmY7CisJZXJyID0gcmVnaXN0ZXJfcG93ZXJvZmZfaGFuZGxlcigmYWI4NTAwX3Bvd2Vy
+b2ZmX25iKTsKKwlpZiAoZXJyKQorCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWlsZWQgdG8gcmVn
+aXN0ZXIgcG93ZXJvZmYgaGFuZGxlclxuIik7CiAKIAlwZGF0YSA9IHBsYXQtPnN5c2N0cmw7CiAJ
+aWYgKHBkYXRhKSB7CkBAIC0yMjYsMTEgKzIzMiw5IEBAIHN0YXRpYyBpbnQgYWI4NTAwX3N5c2N0
+cmxfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAogc3RhdGljIGludCBhYjg1
+MDBfc3lzY3RybF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIHsKKwl1bnJl
+Z2lzdGVyX3Bvd2Vyb2ZmX2hhbmRsZXIoJmFiODUwMF9wb3dlcm9mZl9uYik7CiAJc3lzY3RybF9k
+ZXYgPSBOVUxMOwogCi0JaWYgKHBtX3Bvd2VyX29mZiA9PSBhYjg1MDBfcG93ZXJfb2ZmKQotCQlw
+bV9wb3dlcl9vZmYgPSBOVUxMOwotCiAJcmV0dXJuIDA7CiB9CiAKLS0gCjEuOS4xCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eHBwYy1kZXYgbWFp
+bGluZyBsaXN0CkxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnCmh0dHBzOi8vbGlzdHMub3ps
+YWJzLm9yZy9saXN0aW5mby9saW51eHBwYy1kZXY=
 
