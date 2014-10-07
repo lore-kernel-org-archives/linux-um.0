@@ -1,137 +1,94 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1XfsBz-00053e-Ud
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 19 Oct 2014 15:14:47 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XfsBy-00041b-6t
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 19 Oct 2014 15:14:47 +0000
-Received: from [94.219.115.221] (helo=[192.168.2.108])
-	by www17.your-server.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
-	(Exim 4.80.1) (envelope-from <thomas@m3y3r.de>) id 1XfsBs-0005sP-0u
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 19 Oct 2014 17:14:40 +0200
-Message-ID: <1413731391.2991.20.camel@localhost.localdomain>
-From: Thomas Meyer <thomas@m3y3r.de>
-Date: Sun, 19 Oct 2014 17:09:51 +0200
-Mime-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v3 2/3] um: add a kmsg_dumper
-To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Date: Mon,  6 Oct 2014 22:28:30 -0700
+Message-Id: <1412659726-29957-29-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+Sender: linux-m68k-owner@vger.kernel.org
+Subject: [PATCH 28/44] x86: olpc: Register xo1 poweroff handler with kernel poweroff handler
+To: linux-kernel@vger.kernel.org
+Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+Register with kernel poweroff handler instead of setting pm_power_off
+directly. Register with high priority value of 192 to reflect that
+the driver explicitly wants to override default poweroff handlers.
 
-Add a kmsg_dumper, that dumps the kmsg buffer to stdout, when no
-console is available.
-This an enables the printing of early panic() calls triggered in
-uml_postsetup().
-
-Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
+ arch/x86/platform/olpc/olpc-xo1-pm.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-diff -r ee0ba83fd81e arch/um/kernel/Makefile
---- a/arch/um/kernel/Makefile	Sat Oct 11 18:55:17 2014 +0200
-+++ b/arch/um/kernel/Makefile	Sun Oct 12 14:42:48 2014 +0200
-@@ -13,7 +13,7 @@
- obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
- 	physmem.o process.o ptrace.o reboot.o sigio.o \
- 	signal.o smp.o syscall.o sysrq.o time.o tlb.o trap.o \
--	um_arch.o umid.o maccess.o skas/
-+	um_arch.o umid.o maccess.o kmsg_dump.o skas/
+diff --git a/arch/x86/platform/olpc/olpc-xo1-pm.c b/arch/x86/platform/olpc/olpc-xo1-pm.c
+index a9acde7..96fba36 100644
+--- a/arch/x86/platform/olpc/olpc-xo1-pm.c
++++ b/arch/x86/platform/olpc/olpc-xo1-pm.c
+@@ -15,6 +15,7 @@
+ #include <linux/cs5535.h>
+ #include <linux/platform_device.h>
+ #include <linux/export.h>
++#include <linux/notifier.h>
+ #include <linux/pm.h>
+ #include <linux/mfd/core.h>
+ #include <linux/suspend.h>
+@@ -92,7 +93,8 @@ asmlinkage __visible int xo1_do_sleep(u8 sleep_state)
+ 	return 0;
+ }
  
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
-diff -r ee0ba83fd81e arch/um/kernel/kmsg_dump.c
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/arch/um/kernel/kmsg_dump.c	Sun Oct 12 14:42:48 2014 +0200
-@@ -0,0 +1,43 @@
-+#include <linux/kmsg_dump.h>
-+#include <linux/console.h>
-+#include <shared/init.h>
-+#include <shared/kern.h>
-+#include <os.h>
+-static void xo1_power_off(void)
++static int xo1_power_off(struct notifier_block *this, unsigned long unused1,
++			 void *unused2)
+ {
+ 	printk(KERN_INFO "OLPC XO-1 power off sequence...\n");
+ 
+@@ -108,8 +110,15 @@ static void xo1_power_off(void)
+ 
+ 	/* Write SLP_EN bit to start the machinery */
+ 	outl(0x00002000, acpi_base + CS5536_PM1_CNT);
 +
-+static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
-+				enum kmsg_dump_reason reason)
-+{
-+	static char line[1024];
-+
-+	size_t len = 0;
-+	bool con_available = false;
-+
-+	/* only dump kmsg when no console is available */
-+	if (!console_trylock())
-+		return;
-+
-+	if (console_drivers != NULL)
-+		con_available = true;
-+
-+	console_unlock();
-+
-+	if (con_available == true)
-+		return;
-+
-+	printf("kmsg_dump:\n");
-+	while (kmsg_dump_get_line(dumper, true, line, sizeof(line), &len)) {
-+		line[len] = '\0';
-+		printf("%s", line);
-+	}
-+}
-+
-+static struct kmsg_dumper kmsg_dumper = {
-+	.dump = kmsg_dumper_stdout
++	return NOTIFY_DONE;
+ }
+ 
++static struct notifier_block xo1_poweroff_nb = {
++	.notifier_call = xo1_power_off,
++	.priority = 192,
 +};
 +
-+int __init kmsg_dumper_stdout_init(void)
-+{
-+	return kmsg_dump_register(&kmsg_dumper);
-+}
-+
-+__uml_postsetup(kmsg_dumper_stdout_init);
-diff -r ee0ba83fd81e arch/um/kernel/um_arch.c
---- a/arch/um/kernel/um_arch.c	Sat Oct 11 18:55:17 2014 +0200
-+++ b/arch/um/kernel/um_arch.c	Sun Oct 12 14:42:48 2014 +0200
-@@ -11,6 +11,7 @@
- #include <linux/string.h>
- #include <linux/utsname.h>
- #include <linux/sched.h>
-+#include <linux/kmsg_dump.h>
- #include <asm/pgtable.h>
- #include <asm/processor.h>
- #include <asm/sections.h>
-@@ -234,6 +235,7 @@
- static int panic_exit(struct notifier_block *self, unsigned long unused1,
- 		      void *unused2)
+ static int xo1_power_state_valid(suspend_state_t pm_state)
  {
-+	kmsg_dump(KMSG_DUMP_PANIC);
- 	bust_spinlocks(1);
- 	bust_spinlocks(0);
- 	uml_exitcode = 1;
-
-
-
-------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+ 	/* suspend-to-RAM only */
+@@ -146,8 +155,12 @@ static int xo1_pm_probe(struct platform_device *pdev)
+ 
+ 	/* If we have both addresses, we can override the poweroff hook */
+ 	if (pms_base && acpi_base) {
++		err = register_poweroff_handler(&xo1_poweroff_nb);
++		if (err) {
++			dev_err(&pdev->dev, "Failed to register poweroff handler\n");
++			return err;
++		}
+ 		suspend_set_ops(&xo1_suspend_ops);
+-		pm_power_off = xo1_power_off;
+ 		printk(KERN_INFO "OLPC XO-1 support registered\n");
+ 	}
+ 
+@@ -158,12 +171,13 @@ static int xo1_pm_remove(struct platform_device *pdev)
+ {
+ 	mfd_cell_disable(pdev);
+ 
++	unregister_poweroff_handler(&xo1_poweroff_nb);
++
+ 	if (strcmp(pdev->name, "cs5535-pms") == 0)
+ 		pms_base = 0;
+ 	else if (strcmp(pdev->name, "olpc-xo1-pm-acpi") == 0)
+ 		acpi_base = 0;
+ 
+-	pm_power_off = NULL;
+ 	return 0;
+ }
+ 
+-- 
+1.9.1
 
