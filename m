@@ -1,94 +1,103 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:28 -0700
-Message-Id: <1412659726-29957-27-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Tue, 7 Oct 2014 18:06:38 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+Message-ID: <20141007160638.GE19005@lunn.ch>
 References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-Sender: linux-m68k-owner@vger.kernel.org
-Subject: [PATCH 26/44] x86: iris: Register with kernel poweroff handler
-To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>
+ <1412659726-29957-21-git-send-email-linux@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1412659726-29957-21-git-send-email-linux@roeck-us.net>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH 20/44] power/reset: restart-poweroff: Register with
+ kernel poweroff handler
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-acpi@vger.kernel.org, xen-devel@lists.xenproject.org, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, David Woodhouse <dwmw2@infradead.org>, Sebastian Reichel <sre@kernel.org>, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with high priority value of 192 to reflect that
-the original code overwrites existing poweroff handlers.
+On Mon, Oct 06, 2014 at 10:28:22PM -0700, Guenter Roeck wrote:
+> Register with kernel poweroff handler instead of seting pm_power_off
+> directly.  Register as poweroff handler of last resort since the driver
+> does not really power off the system but executes a restart.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- arch/x86/platform/iris/iris.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+I would not say last resort, this is how it is designed to work. There
+is no way to turn the power off from with linux, it is designed that
+u-boot will put the hardware into minimal power consumption until the
+"power" button is pressed.
 
-diff --git a/arch/x86/platform/iris/iris.c b/arch/x86/platform/iris/iris.c
-index 4d171e8..662c4e8 100644
---- a/arch/x86/platform/iris/iris.c
-+++ b/arch/x86/platform/iris/iris.c
-@@ -23,6 +23,7 @@
- 
- #include <linux/moduleparam.h>
- #include <linux/module.h>
-+#include <linux/notifier.h>
- #include <linux/platform_device.h>
- #include <linux/kernel.h>
- #include <linux/errno.h>
-@@ -47,15 +48,21 @@ static bool force;
- module_param(force, bool, 0);
- MODULE_PARM_DESC(force, "Set to one to force poweroff handler installation.");
- 
--static void (*old_pm_power_off)(void);
--
--static void iris_power_off(void)
-+static int iris_power_off(struct notifier_block *this, unsigned long unused1,
-+			  void *unused2)
- {
- 	outb(IRIS_GIO_PULSE, IRIS_GIO_OUTPUT);
- 	msleep(850);
- 	outb(IRIS_GIO_REST, IRIS_GIO_OUTPUT);
-+
-+	return NOTIFY_DONE;
- }
- 
-+static struct notifier_block iris_poweroff_nb = {
-+	.notifier_call = iris_power_off,
-+	.priority = 192,
-+};
-+
- /*
-  * Before installing the power_off handler, try to make sure the OS is
-  * running on an Iris.  Since Iris does not support DMI, this is done
-@@ -65,20 +72,26 @@ static void iris_power_off(void)
- static int iris_probe(struct platform_device *pdev)
- {
- 	unsigned char status = inb(IRIS_GIO_INPUT);
-+	int ret;
-+
- 	if (status == IRIS_GIO_NODEV) {
- 		printk(KERN_ERR "This machine does not seem to be an Iris. "
- 			"Power off handler not installed.\n");
- 		return -ENODEV;
- 	}
--	old_pm_power_off = pm_power_off;
--	pm_power_off = &iris_power_off;
-+
-+	ret = register_poweroff_handler(&iris_poweroff_nb);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to register poweroff handler\n");
-+		return ret;
-+	}
- 	printk(KERN_INFO "Iris power_off handler installed.\n");
- 	return 0;
- }
- 
- static int iris_remove(struct platform_device *pdev)
- {
--	pm_power_off = old_pm_power_off;
-+	unregister_poweroff_handler(&iris_poweroff_nb);
- 	printk(KERN_INFO "Iris power_off handler uninstalled.\n");
- 	return 0;
- }
--- 
-1.9.1
+Other than that, 
 
+Acked-by: Andrew Lunn <andrew@lunn.ch>
+
+Thanks
+	Andrew
+
+> 
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  drivers/power/reset/restart-poweroff.c | 25 ++++++++++++-------------
+>  1 file changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/power/reset/restart-poweroff.c b/drivers/power/reset/restart-poweroff.c
+> index edd707e..5437697 100644
+> --- a/drivers/power/reset/restart-poweroff.c
+> +++ b/drivers/power/reset/restart-poweroff.c
+> @@ -12,35 +12,34 @@
+>   */
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+> +#include <linux/notifier.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/module.h>
+> +#include <linux/pm.h>
+>  #include <linux/reboot.h>
+> -#include <asm/system_misc.h>
+>  
+> -static void restart_poweroff_do_poweroff(void)
+> +static int restart_poweroff_do_poweroff(struct notifier_block *this,
+> +					unsigned long unused1, void *unused2)
+>  {
+>  	reboot_mode = REBOOT_HARD;
+>  	machine_restart(NULL);
+> +
+> +	return NOTIFY_DONE;
+>  }
+>  
+> +static struct notifier_block restart_poweroff_handler = {
+> +	.notifier_call = restart_poweroff_do_poweroff,
+> +};
+> +
+>  static int restart_poweroff_probe(struct platform_device *pdev)
+>  {
+> -	/* If a pm_power_off function has already been added, leave it alone */
+> -	if (pm_power_off != NULL) {
+> -		dev_err(&pdev->dev,
+> -			"pm_power_off function already registered");
+> -		return -EBUSY;
+> -	}
+> -
+> -	pm_power_off = &restart_poweroff_do_poweroff;
+> -	return 0;
+> +	return register_poweroff_handler(&restart_poweroff_handler);
+>  }
+>  
+>  static int restart_poweroff_remove(struct platform_device *pdev)
+>  {
+> -	if (pm_power_off == &restart_poweroff_do_poweroff)
+> -		pm_power_off = NULL;
+> +	unregister_poweroff_handler(&restart_poweroff_handler);
+>  
+>  	return 0;
+>  }
+> -- 
+> 1.9.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
