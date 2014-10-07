@@ -1,120 +1,40 @@
-Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:24 -0700
-Message-Id: <1412659726-29957-23-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-Subject: [PATCH 22/44] power/reset: as3722-poweroff: Register with kernel
- poweroff handler
-To: linux-kernel@vger.kernel.org
-Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-acpi@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, David Woodhouse <dwmw2@infradead.org>, Sebastian Reichel <sre@kernel.org>, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1412659726-29957-5-git-send-email-linux@roeck-us.net>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+	<1412659726-29957-5-git-send-email-linux@roeck-us.net>
+Date: Tue, 7 Oct 2014 10:29:52 +0200
+Message-ID: <CAMuHMdVK+h0DAysDrfYQSwN9zjygTpHRkdkfeDucyoTBN5f=+w@mail.gmail.com>
+Subject: Re: [PATCH 04/44] m68k: Replace mach_power_off with pm_power_off
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, driverdevel <devel@driverdev.osuosl.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, lguest@lists.ozlabs.org, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, alpha <linux-alpha@vger.kernel.org>, "moderated list:PANASONIC MN10300..." <linux-am33-list@redhat.com>, Cris <linux-cris-kernel@axis.com>, linux-efi@vger.kernel.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, linux-m32r-ja@ml.linux-m32r.org, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, linux-tegra@vger.kernel.org, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, openipmi-developer@lists.sourceforge.net, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:METAG ARCHITECTURE" <linux-metag@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Parisc List <linux-parisc@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, xen-devel@lists.xenproject.org, Greg Ungerer <gerg@uclinux.org>, Joshua Thompson <funaho@jurai.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with a low priority value of 64 to reflect that
-the original code only sets pm_power_off if it was not already set.
+On Tue, Oct 7, 2014 at 7:28 AM, Guenter Roeck <linux@roeck-us.net> wrote:
+> Replace mach_power_off with pm_power_off to simplify the subsequent
+> move of pm_power_off to generic code.
 
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/power/reset/as3722-poweroff.c | 36 ++++++++++++++++++-----------------
- 1 file changed, 19 insertions(+), 17 deletions(-)
+Thanks!
 
-diff --git a/drivers/power/reset/as3722-poweroff.c b/drivers/power/reset/as3722-poweroff.c
-index 6849711..7ebaed9 100644
---- a/drivers/power/reset/as3722-poweroff.c
-+++ b/drivers/power/reset/as3722-poweroff.c
-@@ -17,32 +17,33 @@
- 
- #include <linux/mfd/as3722.h>
- #include <linux/module.h>
-+#include <linux/notifier.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/pm.h>
- #include <linux/slab.h>
- 
- struct as3722_poweroff {
- 	struct device *dev;
- 	struct as3722 *as3722;
-+	struct notifier_block poweroff_nb;
- };
- 
--static struct as3722_poweroff *as3722_pm_poweroff;
--
--static void as3722_pm_power_off(void)
-+static int as3722_power_off(struct notifier_block *this, unsigned long unused1,
-+			    void *unused2)
- {
-+	struct as3722_poweroff *as3722_poweroff =
-+		container_of(this, struct as3722_poweroff, poweroff_nb);
- 	int ret;
- 
--	if (!as3722_pm_poweroff) {
--		pr_err("AS3722 poweroff is not initialised\n");
--		return;
--	}
--
--	ret = as3722_update_bits(as3722_pm_poweroff->as3722,
-+	ret = as3722_update_bits(as3722_poweroff->as3722,
- 		AS3722_RESET_CONTROL_REG, AS3722_POWER_OFF, AS3722_POWER_OFF);
- 	if (ret < 0)
--		dev_err(as3722_pm_poweroff->dev,
-+		dev_err(as3722_poweroff->dev,
- 			"RESET_CONTROL_REG update failed, %d\n", ret);
-+
-+	return NOTIFY_DONE;
- }
- 
- static int as3722_poweroff_probe(struct platform_device *pdev)
-@@ -63,18 +64,19 @@ static int as3722_poweroff_probe(struct platform_device *pdev)
- 
- 	as3722_poweroff->as3722 = dev_get_drvdata(pdev->dev.parent);
- 	as3722_poweroff->dev = &pdev->dev;
--	as3722_pm_poweroff = as3722_poweroff;
--	if (!pm_power_off)
--		pm_power_off = as3722_pm_power_off;
-+	as3722_poweroff->poweroff_nb.notifier_call = as3722_power_off;
-+	as3722_poweroff->poweroff_nb.priority = 64;
- 
--	return 0;
-+	platform_set_drvdata(pdev, as3722_poweroff);
-+
-+	return register_poweroff_handler(&as3722_poweroff->poweroff_nb);
- }
- 
- static int as3722_poweroff_remove(struct platform_device *pdev)
- {
--	if (pm_power_off == as3722_pm_power_off)
--		pm_power_off = NULL;
--	as3722_pm_poweroff = NULL;
-+	struct as3722_poweroff *as3722_poweroff = platform_get_drvdata(pdev);
-+
-+	unregister_poweroff_handler(&as3722_poweroff->poweroff_nb);
- 
- 	return 0;
- }
--- 
-1.9.1
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Greg Ungerer <gerg@uclinux.org>
+> Cc: Joshua Thompson <funaho@jurai.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
+Looks OK, so since you said it builds ;-)
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
