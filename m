@@ -1,51 +1,47 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <54341BF1.9020001@gmail.com>
-Date: Tue, 07 Oct 2014 09:59:29 -0700
-From: David Daney <ddaney.cavm@gmail.com>
+Return-Path: <devicetree-owner@vger.kernel.org>
+Date: Tue, 7 Oct 2014 17:58:35 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+Message-ID: <20141007165835.GE27216@leverpostej>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-6-git-send-email-linux@roeck-us.net>
+ <543412F7.8040909@landley.net>
 MIME-Version: 1.0
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net> <1412659726-29957-6-git-send-email-linux@roeck-us.net> <543412F7.8040909@landley.net> <20141007163131.GE28835@roeck-us.net>
-In-Reply-To: <20141007163131.GE28835@roeck-us.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <543412F7.8040909@landley.net>
+Sender: devicetree-owner@vger.kernel.org
 Subject: Re: [PATCH 05/44] mfd: as3722: Drop reference to pm_power_off from
  devicetree bindings
-To: Guenter Roeck <linux@roeck-us.net>, Rob Landley <rob@landley.net>
-Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>
+To: Rob Landley <rob@landley.net>
+Cc: Guenter Roeck <linux@roeck-us.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <Pawel.Moll@arm.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 10/07/2014 09:31 AM, Guenter Roeck wrote:
-> On Tue, Oct 07, 2014 at 11:21:11AM -0500, Rob Landley wrote:
->> On 10/07/14 00:28, Guenter Roeck wrote:
->>> Devicetree bindings are supposed to be operating system independent
->>> and should thus not describe how a specific functionality is implemented
->>> in Linux.
->>
->> So your argument is that linux/Documentation/devicetree/bindings should
->> not be specific to Linux. Merely hosted in the Linux kernel source
->> repository.
->>
->> Well that's certainly a point of view.
->>
-> Not specifically my argument, really, and nothing new either. But, yes, I do
-> think that devicetree bindings descriptions should not include implementation
-> details, especially since those may change over time (as is the case here).
->
+On Tue, Oct 07, 2014 at 05:21:11PM +0100, Rob Landley wrote:
+> On 10/07/14 00:28, Guenter Roeck wrote:
+> > Devicetree bindings are supposed to be operating system independent
+> > and should thus not describe how a specific functionality is implemented
+> > in Linux.
+> 
+> So your argument is that linux/Documentation/devicetree/bindings should
+> not be specific to Linux. Merely hosted in the Linux kernel source
+> repository.
 
-I fully agree.
+Precisely. If nothing else as a general guideline this keeps us honest,
+and prevents us from embedding arbitrary implementation details into
+bidnings that cause pain later when we want to change things at either
+end.
 
-Many device trees come from outside the kernel (i.e. they are supplied 
-by the system boot environment).  Obviously these device trees cannot be 
-changed at the whim of kernel developers, *and* it is perfectly 
-reasonable to think that software other than the Linux kernel will run 
-on this type of system too.
+There are already otehr users of these bindings, so we can't really
+claim they're strictly Linux-specific anyhow.
 
-So yes, it is really true, device trees are not a Linux kernel private 
-implementation detail, they are really an external ABI that, although 
-documented in the kernel source tree, cannot be changed in incompatible 
-ways as time progresses.
+> Well that's certainly a point of view.
 
-David Daney
+As far as I am aware, it's the point of view shared by the device tree
+maintainers, and it's been that way for a while.
 
+I don't really follow your concern. For one thing were this followed
+more strictly this file wouldn't need patching at all to correct for
+this Linux-internal rework...
 
-
+Thanks,
+Mark.
