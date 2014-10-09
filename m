@@ -1,124 +1,62 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Date: Sun, 12 Oct 2014 13:02:13 +0200
-Message-Id: <1413111733-10763-3-git-send-email-nicolas.iooss_linux@m4x.org>
-In-Reply-To: <1413111733-10763-1-git-send-email-nicolas.iooss_linux@m4x.org>
-References: <1413111733-10763-1-git-send-email-nicolas.iooss_linux@m4x.org>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <groeck7@gmail.com>
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Thu, 9 Oct 2014 08:38:36 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+Message-ID: <20141009153836.GA31987@roeck-us.net>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-2-git-send-email-linux@roeck-us.net>
+ <20141009103143.GA6787@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 3/3] um/os-Linux: Use char[] for syscall_stub
-	declarations
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20141009103143.GA6787@amd>
+Subject: Re: [PATCH 01/44] kernel: Add support for poweroff handler call chain
+To: Pavel Machek <pavel@ucw.cz>
+Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Andrew Morton <akpm@linux-foundation.org>, Heiko Stuebner <heiko@sntech.de>, Romain Perier <romain.perier@gmail.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <len.brown@intel.com>, Alexander Graf <agraf@suse.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-When declaring __syscall_stub_start, use the same type in UML userspace
-code as in arch/um/include/asm/sections.h.
+On Thu, Oct 09, 2014 at 12:31:43PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > +/**
+> > + *	register_poweroff_handler_simple - Register function to be called to power off
+> > + *					   the system
+> > + *	@handler:	Function to be called to power off the system
+> > + *	@priority:	Handler priority. For priority guidelines see
+> > + *			register_poweroff_handler.
+> > + *
+> > + *	This is a simplified version of register_poweroff_handler. It does not
+> > + *	take a notifier as argument, but a function pointer. The function
+> > + *	registers a poweroff handler with specified priority. Poweroff
+> > + *	handlers registered with this function can not be unregistered,
+> > + *	and only a single poweroff handler can be installed using it.
+> > + *
+> > + *	This function must not be called from modules and is therefore
+> > + *	not exported.
+> > + *
+> > + *	Returns -EBUSY if a poweroff handler has already been registered
+> > + *	using register_poweroff_handler_simple. Otherwise returns zero,
+> > + *	since atomic_notifier_chain_register() currently always returns zero.
+> > + */
+> > +int register_poweroff_handler_simple(void (*handler)(void), int priority)
+> > +{
+> > +	char symname[KSYM_NAME_LEN];
+> > +
+> > +	if (poweroff_handler_data.handler) {
+> > +		lookup_symbol_name((unsigned long)poweroff_handler_data.handler,
+> > +				   symname);
+> > +		pr_warn("Poweroff function already registered (%s)", symname);
+> > +		lookup_symbol_name((unsigned long)handler, symname);
+> > +		pr_cont(", cannot register %s\n", symname);
+> > +		return -EBUSY;
+> > +	}
+> 
+> Dunno, are you maybe overdoing the debugging infrastructure a bit?
+> This is not going to happen in production, and if it does happen,
+> developer can look the symbol name himself.
 
-While at it, also declare batch_syscall_stub as char[].
+On the other side, I don't think it hurts to have that message.
+Anyway, I'll use %ps as suggested by Geert.
 
-Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
----
- arch/um/os-Linux/skas/mem.c     |  6 +++---
- arch/um/os-Linux/skas/process.c | 11 +++++------
- 2 files changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 689b18db798f..abb02becca80 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -19,7 +19,7 @@
- #include <sysdep/ptrace.h>
- #include <sysdep/stub.h>
- 
--extern unsigned long batch_syscall_stub, __syscall_stub_start;
-+extern char batch_syscall_stub[], __syscall_stub_start[];
- 
- extern void wait_stub_done(int pid);
- 
-@@ -39,8 +39,8 @@ static int __init init_syscall_regs(void)
- {
- 	get_safe_registers(syscall_regs, NULL);
- 	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
--		((unsigned long) &batch_syscall_stub -
--		 (unsigned long) &__syscall_stub_start);
-+		((unsigned long) batch_syscall_stub -
-+		 (unsigned long) __syscall_stub_start);
- 	return 0;
- }
- 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 908579f2b0ab..fa934d0c8932 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -193,7 +193,7 @@ static void handle_trap(int pid, struct uml_pt_regs *regs,
- 	handle_syscall(regs);
- }
- 
--extern int __syscall_stub_start;
-+extern char __syscall_stub_start[];
- 
- static int userspace_tramp(void *stack)
- {
-@@ -218,7 +218,7 @@ static int userspace_tramp(void *stack)
- 		 */
- 		int fd;
- 		unsigned long long offset;
--		fd = phys_mapping(to_phys(&__syscall_stub_start), &offset);
-+		fd = phys_mapping(to_phys(__syscall_stub_start), &offset);
- 		addr = mmap64((void *) STUB_CODE, UM_KERN_PAGE_SIZE,
- 			      PROT_EXEC, MAP_FIXED | MAP_PRIVATE, fd, offset);
- 		if (addr == MAP_FAILED) {
-@@ -245,7 +245,7 @@ static int userspace_tramp(void *stack)
- 
- 		unsigned long v = STUB_CODE +
- 				  (unsigned long) stub_segv_handler -
--				  (unsigned long) &__syscall_stub_start;
-+				  (unsigned long) __syscall_stub_start;
- 
- 		set_sigstack((void *) STUB_DATA, UM_KERN_PAGE_SIZE);
- 		sigemptyset(&sa.sa_mask);
-@@ -474,7 +474,7 @@ static int __init init_thread_regs(void)
- 	/* Set parent's instruction pointer to start of clone-stub */
- 	thread_regs[REGS_IP_INDEX] = STUB_CODE +
- 				(unsigned long) stub_clone_handler -
--				(unsigned long) &__syscall_stub_start;
-+				(unsigned long) __syscall_stub_start;
- 	thread_regs[REGS_SP_INDEX] = STUB_DATA + UM_KERN_PAGE_SIZE -
- 		sizeof(void *);
- #ifdef __SIGNAL_FRAMESIZE
-@@ -582,8 +582,7 @@ int map_stub_pages(int fd, unsigned long code, unsigned long data,
- 	struct proc_mm_op mmop;
- 	int n;
- 	unsigned long long code_offset;
--	int code_fd = phys_mapping(to_phys((void *) &__syscall_stub_start),
--				   &code_offset);
-+	int code_fd = phys_mapping(to_phys(__syscall_stub_start), &code_offset);
- 
- 	mmop = ((struct proc_mm_op) { .op        = MM_MMAP,
- 				      .u         =
--- 
-2.1.1
-
-
-------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://p.sf.net/sfu/Zoho
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Guenter
 
