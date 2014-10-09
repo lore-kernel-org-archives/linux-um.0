@@ -1,132 +1,62 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Date: Sun, 12 Oct 2014 13:02:11 +0200
-Message-Id: <1413111733-10763-1-git-send-email-nicolas.iooss_linux@m4x.org>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <devicetree-owner@vger.kernel.org>
+Date: Thu, 9 Oct 2014 08:54:04 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+Message-ID: <20141009155404.GC31987@roeck-us.net>
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
+ <1412659726-29957-13-git-send-email-linux@roeck-us.net>
+ <20141007080048.GB25331@lee--X1>
+ <20141009103656.GF17836@e104818-lin.cambridge.arm.com>
+ <20141009104927.GN20647@lee--X1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/3] um: Create asm/sections.h
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20141009104927.GN20647@lee--X1>
+Sender: devicetree-owner@vger.kernel.org
+Subject: Re: [PATCH 12/44] mfd: ab8500-sysctrl: Register with kernel poweroff
+ handler
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, "linux-m32r-ja@ml.linux-m32r.org" <linux-m32r-ja@ml.linux-m32r.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, Linus Walleij <linus.walleij@linaro.org>, "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "lguest@lists.ozlabs.org" <lguest@lists.ozlabs.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Samuel Ortiz <sameo@linux.intel.com>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-arch/um/kernel/dyn.lds.S and arch/um/kernel/uml.lds.S define some
-UML-specific symbols.  These symbols are used in the kernel part of UML
-with extern declarations.
+On Thu, Oct 09, 2014 at 11:49:27AM +0100, Lee Jones wrote:
+> On Thu, 09 Oct 2014, Catalin Marinas wrote:
+> 
+> > On Tue, Oct 07, 2014 at 09:00:48AM +0100, Lee Jones wrote:
+> > > On Mon, 06 Oct 2014, Guenter Roeck wrote:
+> > > > --- a/drivers/mfd/ab8500-sysctrl.c
+> > > > +++ b/drivers/mfd/ab8500-sysctrl.c
+> > > > @@ -6,6 +6,7 @@
+> > > 
+> > > [...]
+> > > 
+> > > > +static int ab8500_power_off(struct notifier_block *this, unsigned long unused1,
+> > > > +			    void *unused2)
+> > > >  {
+> > > >  	sigset_t old;
+> > > >  	sigset_t all;
+> > > > @@ -34,11 +36,6 @@ static void ab8500_power_off(void)
+> > > >  	struct power_supply *psy;
+> > > >  	int ret;
+> > > >  
+> > > > -	if (sysctrl_dev == NULL) {
+> > > > -		pr_err("%s: sysctrl not initialized\n", __func__);
+> > > > -		return;
+> > > > -	}
+> > > 
+> > > Can you explain the purpose of this change please?
+> > 
+> > I guess it's because the sysctrl_dev is already initialised when
+> > registering the power_off handler, so there isn't a way to call the
+> > above function with a NULL sysctrl_dev. Probably even with the original
+> > code you didn't need this check (after some race fix in
+> > ab8500_sysctrl_remove but races is one of the things Guenter's patches
+> > try to address).
+> 
+> Sounds reasonable, although I think this change should be part of
+> another patch.
+> 
+Turns out the options are to either drop the check or to use the device
+managed function to register the poweroff handler. I decided to keep
+the check and use the device managed function.
 
-Move these declarations to a new header, asm/sections.h, like other
-architectures do.
-
-Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
----
- arch/um/include/asm/Kbuild     | 1 -
- arch/um/include/asm/sections.h | 9 +++++++++
- arch/um/kernel/physmem.c       | 3 +--
- arch/um/kernel/skas/mmu.c      | 3 +--
- arch/um/kernel/um_arch.c       | 2 --
- 5 files changed, 11 insertions(+), 7 deletions(-)
- create mode 100644 arch/um/include/asm/sections.h
-
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index 244b12c8cb39..21fd5c647442 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -23,7 +23,6 @@ generic-y += pci.h
- generic-y += percpu.h
- generic-y += preempt.h
- generic-y += scatterlist.h
--generic-y += sections.h
- generic-y += switch_to.h
- generic-y += topology.h
- generic-y += trace_clock.h
-diff --git a/arch/um/include/asm/sections.h b/arch/um/include/asm/sections.h
-new file mode 100644
-index 000000000000..3a6ebcc65519
---- /dev/null
-+++ b/arch/um/include/asm/sections.h
-@@ -0,0 +1,9 @@
-+#ifndef __UM_SECTIONS_H
-+#define __UM_SECTIONS_H
-+
-+#include <asm-generic/sections.h>
-+
-+extern char __binary_start;
-+extern int __syscall_stub_start, __syscall_stub_end;
-+
-+#endif
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index 30fdd5d0067b..db05c067665a 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -8,6 +8,7 @@
- #include <linux/mm.h>
- #include <linux/pfn.h>
- #include <asm/page.h>
-+#include <asm/sections.h>
- #include <as-layout.h>
- #include <init.h>
- #include <kern.h>
-@@ -75,8 +76,6 @@ void map_memory(unsigned long virt, unsigned long phys, unsigned long len,
- 	}
- }
- 
--extern int __syscall_stub_start;
--
- void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 			  unsigned long len, unsigned long long highmem)
- {
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 007d5503f49b..d2a0a4c0cd91 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -8,12 +8,11 @@
- #include <linux/slab.h>
- #include <asm/pgalloc.h>
- #include <asm/pgtable.h>
-+#include <asm/sections.h>
- #include <as-layout.h>
- #include <os.h>
- #include <skas.h>
- 
--extern int __syscall_stub_start;
--
- static int init_stub_pte(struct mm_struct *mm, unsigned long proc,
- 			 unsigned long kernel)
- {
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 016adf0985d5..02c21f6e0983 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -259,8 +259,6 @@ EXPORT_SYMBOL(end_iomem);
- 
- #define MIN_VMALLOC (32 * 1024 * 1024)
- 
--extern char __binary_start;
--
- int __init linux_main(int argc, char **argv)
- {
- 	unsigned long avail, diff;
--- 
-2.1.1
-
-
-------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://p.sf.net/sfu/Zoho
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Guenter
