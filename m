@@ -1,112 +1,69 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-ID: <54368C7D.5040402@roeck-us.net>
+Date: Thu, 09 Oct 2014 06:24:13 -0700
 From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:31 -0700
-Message-Id: <1412659726-29957-30-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-Sender: linux-m68k-owner@vger.kernel.org
-Subject: [PATCH 29/44] staging: nvec: Register with kernel poweroff handler
-To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Julian Andres Klode <jak@jak-linux.org>, Marc Dietrich <marvin24@gmx.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+MIME-Version: 1.0
+References: <1412659726-29957-1-git-send-email-linux@roeck-us.net> <1412659726-29957-4-git-send-email-linux@roeck-us.net> <20141009103254.GB6787@amd>
+In-Reply-To: <20141009103254.GB6787@amd>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Sender: linux-sh-owner@vger.kernel.org
+Subject: Re: [PATCH 03/44] hibernate: Call have_kernel_poweroff instead of
+ checking pm_power_off
+To: Pavel Machek <pavel@ucw.cz>
+Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <len.brown@intel.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with default priority value of 128 since we don't know
-any better.
+On 10/09/2014 03:32 AM, Pavel Machek wrote:
+> On Mon 2014-10-06 22:28:05, Guenter Roeck wrote:
+>> Poweroff handlers may now be installed with register_poweroff_handler.
+>> Use the new API function have_kernel_poweroff to determine if a poweroff
+>> handler has been installed.
+>>
+>> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+>> Cc: Pavel Machek <pavel@ucw.cz>
+>> Cc: Len Brown <len.brown@intel.com>
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>>   kernel/power/hibernate.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+>> index a9dfa79..20353c5 100644
+>> --- a/kernel/power/hibernate.c
+>> +++ b/kernel/power/hibernate.c
+>> @@ -602,7 +602,7 @@ static void power_down(void)
+>>   	case HIBERNATION_PLATFORM:
+>>   		hibernation_platform_enter();
+>>   	case HIBERNATION_SHUTDOWN:
+>> -		if (pm_power_off)
+>> +		if (have_kernel_poweroff())
+>>   			kernel_power_off();
+>>   		break;
+>
+> poweroff -> power_off.
+>
+As mentioned in my other reply, that was on purpose to distinguish
+existing functions from poweroff handler functions.
 
-Cc: Julian Andres Klode <jak@jak-linux.org>
-Cc: Marc Dietrich <marvin24@gmx.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/staging/nvec/nvec.c | 24 +++++++++++++++---------
- drivers/staging/nvec/nvec.h |  2 ++
- 2 files changed, 17 insertions(+), 9 deletions(-)
+> But if you are playing with this, anyway... does it make sense to
+> introduce kernel_power_off() that just works, no need to check
+> have_..?
+> 									Pavel
 
-diff --git a/drivers/staging/nvec/nvec.c b/drivers/staging/nvec/nvec.c
-index a93208a..33d406c 100644
---- a/drivers/staging/nvec/nvec.c
-+++ b/drivers/staging/nvec/nvec.c
-@@ -33,6 +33,7 @@
- #include <linux/mfd/core.h>
- #include <linux/mutex.h>
- #include <linux/notifier.h>
-+#include <linux/pm.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/workqueue.h>
-@@ -80,8 +81,6 @@ enum nvec_sleep_subcmds {
- #define LID_SWITCH BIT(1)
- #define PWR_BUTTON BIT(15)
- 
--static struct nvec_chip *nvec_power_handle;
--
- static const struct mfd_cell nvec_devices[] = {
- 	{
- 		.name = "nvec-kbd",
-@@ -759,12 +758,17 @@ static void nvec_disable_i2c_slave(struct nvec_chip *nvec)
- }
- #endif
- 
--static void nvec_power_off(void)
-+static int nvec_power_off(struct notifier_block *this, unsigned long unused1,
-+			  void *unused2)
- {
-+	struct nvec_chip *nvec = container_of(this, struct nvec_chip,
-+					      poweroff_nb);
- 	char ap_pwr_down[] = { NVEC_SLEEP, AP_PWR_DOWN };
- 
--	nvec_toggle_global_events(nvec_power_handle, false);
--	nvec_write_async(nvec_power_handle, ap_pwr_down, 2);
-+	nvec_toggle_global_events(nvec, false);
-+	nvec_write_async(nvec, ap_pwr_down, 2);
-+
-+	return NOTIFY_DONE;
- }
- 
- /*
-@@ -878,8 +882,11 @@ static int tegra_nvec_probe(struct platform_device *pdev)
- 	nvec->nvec_status_notifier.notifier_call = nvec_status_notifier;
- 	nvec_register_notifier(nvec, &nvec->nvec_status_notifier, 0);
- 
--	nvec_power_handle = nvec;
--	pm_power_off = nvec_power_off;
-+	nvec->poweroff_nb.notifier_call = nvec_power_off;
-+	nvec->poweroff_nb.priority = 128;
-+	ret = register_poweroff_handler(&nvec->poweroff_nb);
-+	if (ret)
-+		dev_err(nvec->dev, "Failed to register poweroff handler\n");
- 
- 	/* Get Firmware Version */
- 	msg = nvec_write_sync(nvec, get_firmware_version, 2);
-@@ -914,13 +921,12 @@ static int tegra_nvec_remove(struct platform_device *pdev)
- {
- 	struct nvec_chip *nvec = platform_get_drvdata(pdev);
- 
-+	unregister_poweroff_handler(&nvec->poweroff_nb);
- 	nvec_toggle_global_events(nvec, false);
- 	mfd_remove_devices(nvec->dev);
- 	nvec_unregister_notifier(nvec, &nvec->nvec_status_notifier);
- 	cancel_work_sync(&nvec->rx_work);
- 	cancel_work_sync(&nvec->tx_work);
--	/* FIXME: needs check wether nvec is responsible for power off */
--	pm_power_off = NULL;
- 
- 	return 0;
- }
-diff --git a/drivers/staging/nvec/nvec.h b/drivers/staging/nvec/nvec.h
-index e271375..e5ee2af 100644
---- a/drivers/staging/nvec/nvec.h
-+++ b/drivers/staging/nvec/nvec.h
-@@ -163,6 +163,8 @@ struct nvec_chip {
- 	struct nvec_msg *last_sync_msg;
- 
- 	int state;
-+
-+	struct notifier_block poweroff_nb;
- };
- 
- extern int nvec_write_async(struct nvec_chip *nvec, const unsigned char *data,
--- 
-1.9.1
+I am trying not to change existing behavior.
+
+kernel_power_off is an existing function which does some cleanup
+before calling machine_power_off which in turn calls do_kernel_poweroff
+(or currently pm_power_off and may do some other machine specific stuff.
+
+Sure, poweroff handling could be unified further. We could decide to
+enter an endless loop if machine_power_off() returns, or we could decide
+to dump a warning or panic in this case. But that is all separate from
+the issue I am trying to solve here, which is to provide a capability to
+register more than one poweroff handler. It would also not be that simple,
+since some architectures call machine_power_off() directly from various
+places.
+
+Guenter
 
