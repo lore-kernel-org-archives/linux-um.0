@@ -1,50 +1,71 @@
-Return-Path: <linux@roeck-us.net>
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:37 -0700
-Message-Id: <1412659726-29957-36-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-Subject: [PATCH 35/44] m68k: Register with kernel poweroff handler
-To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Joshua Thompson <funaho@jurai.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <54392FE8.8060904@m4x.org>
+Date: Sat, 11 Oct 2014 15:26:00 +0200
+From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+MIME-Version: 1.0
+References: <1413026981-9667-1-git-send-email-nicolas.iooss_linux@m4x.org> <54391792.40508@nod.at> <54391F7C.1050001@m4x.org> <54392181.8050707@nod.at>
+In-Reply-To: <54392181.8050707@nod.at>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] um: always use the same type for __syscall_stub_start
+To: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly.
+Le 11/10/2014 14:24, Richard Weinberger a =E9crit :
+> Am 11.10.2014 um 14:15 schrieb Nicolas Iooss:
+>> 2014-10-11 13:42 GMT+02:00 Richard Weinberger:
+>>> Am 11.10.2014 um 13:29 schrieb Nicolas Iooss:
+>>>> syscall_stub_start is declared with different types in C files:
+>>>>
+>>>>   arch/um/kernel/physmem.c: extern int __syscall_stub_start;
+>>>>   arch/um/kernel/skas/mmu.c: extern int __syscall_stub_start;
+>>>>   arch/um/os-Linux/skas/mem.c: extern unsigned long __syscall_stub=
+_start;
+>>>>   arch/um/os-Linux/skas/process.c: extern int __syscall_stub_start=
+;
+>>>>
+>>>> Fix this inconsistency by always using unsigned long.  This does n=
+ot
+>>>> change anything in the compiled code because only the address of
+>>>> __syscall_stub_start is used, but it makes the static checker I us=
+e
+>>>> stop complaining about incompatible declarations.
+>>>
+>>> While we're here, can you put these declarations into a single head=
+er
+>> file?
+>>
+>> Sure.  Do you have a specific header file in mind or shall I create
+>> arch/um/include/asm/sections.h with declarations for
+>> __syscall_stub_start, __syscall_stub_end and __binary_start (used in
+>> arch/um/kernel/um_arch.c)?
+>=20
+> Not really. Maybe you can find a common header for all.
+> But I fear where is a reason why these declarations are not in a
+> common header. They are used in the kernel- and userspace part of
+> UML.
+> Anyway, please give it a try. :)
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- arch/m68k/emu/natfeat.c | 2 +-
- arch/m68k/mac/config.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Ok.  I'll at least try to add a kernel header and send a new patch afte=
+r
+some tests.
 
-diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
-index 91e2ae7..c4d5bd8 100644
---- a/arch/m68k/emu/natfeat.c
-+++ b/arch/m68k/emu/natfeat.c
-@@ -91,5 +91,5 @@ void __init nf_init(void)
- 	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
- 		version & 0xffff);
- 
--	pm_power_off = nf_poweroff;
-+	register_poweroff_handler_simple(nf_poweroff, 128);
- }
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 677913ff..5d8e2e6 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -160,7 +160,7 @@ void __init config_mac(void)
- 	mach_set_clock_mmss = mac_set_clock_mmss;
- 	mach_reset = mac_reset;
- 	mach_halt = mac_poweroff;
--	pm_power_off = mac_poweroff;
-+	register_poweroff_handler_simple(mac_poweroff, 128);
- 	mach_max_dma_address = 0xffffffff;
- #if defined(CONFIG_INPUT_M68K_BEEP) || defined(CONFIG_INPUT_M68K_BEEP_MODULE)
- 	mach_beep = mac_mksound;
--- 
-1.9.1
+By the way, most variables in include/asm-generic/sections.h are
+declared "char[]" and used without operator, contrary to
+__syscall_stub_start, declared "int" or "unsigned long" and only used
+with "&" operator.  Is there any reason why there are in the kernel two
+ways of declaring/accessing code addresses defined in linker files?  If
+not, I can send a patch which makes __syscall_stub_start "char[]"
+instead of "unsigned long" to make the code a little bit clearer.
 
+Nicolas
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
