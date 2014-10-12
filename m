@@ -1,73 +1,146 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:32 -0700
-Message-Id: <1412659726-29957-31-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 30/44] acpi: Register poweroff handler with kernel poweroff handler
-To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1XdITP-00006N-ER
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Oct 2014 12:42:07 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XdITM-0001Km-8j
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Oct 2014 12:42:07 +0000
+Received: from [217.255.208.138] (helo=[192.168.2.106])
+	by www17.your-server.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
+	(Exim 4.80.1) (envelope-from <thomas@m3y3r.de>) id 1XdITF-0007u6-Fl
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Oct 2014 14:41:57 +0200
+Message-ID: <1413117596.13916.7.camel@localhost.localdomain>
+From: Thomas Meyer <thomas@m3y3r.de>
+Date: Sun, 12 Oct 2014 14:39:57 +0200
+Mime-Version: 1.0
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH v2 2/2] um: add a kmsg_dumper
+To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with high priority value of 192 to reflect that
-the driver explicitly overrides existing poweroff handlers.
 
-Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-Cc: Len Brown <lenb@kernel.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Add a kmsg_dumper, that dumps the kmsg buffer to stdout, when no
+console is available.
+This an enables the printing of early panic() calls triggered in
+uml_postsetup().
+
+Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
 ---
- drivers/acpi/sleep.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ arch/um/drivers/ubd_kern.c  |  5 +++--
+ arch/um/include/shared/os.h |  1 +
+ arch/um/kernel/Makefile     |  2 +-
+ arch/um/kernel/kmsg_dump.c  | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ arch/um/kernel/um_arch.c    |  2 ++
+ arch/um/os-Linux/util.c     | 12 ++++++++++++
+ 6 files changed, 63 insertions(+), 3 deletions(-)
+ create mode 100644 arch/um/kernel/kmsg_dump.c
 
-diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-index 54da4a3..25aad22 100644
---- a/drivers/acpi/sleep.c
-+++ b/drivers/acpi/sleep.c
-@@ -15,6 +15,8 @@
- #include <linux/dmi.h>
- #include <linux/device.h>
- #include <linux/suspend.h>
-+#include <linux/notifier.h>
-+#include <linux/pm.h>
- #include <linux/reboot.h>
- #include <linux/acpi.h>
- #include <linux/module.h>
-@@ -811,14 +813,22 @@ static void acpi_power_off_prepare(void)
- 	acpi_disable_all_gpes();
- }
+diff -r ee0ba83fd81e arch/um/kernel/Makefile
+--- a/arch/um/kernel/Makefile	Sat Oct 11 18:55:17 2014 +0200
++++ b/arch/um/kernel/Makefile	Sun Oct 12 14:24:54 2014 +0200
+@@ -13,7 +13,7 @@
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+ 	signal.o smp.o syscall.o sysrq.o time.o tlb.o trap.o \
+-	um_arch.o umid.o maccess.o skas/
++	um_arch.o umid.o maccess.o kmsg_dump.o skas/
  
--static void acpi_power_off(void)
-+static int acpi_power_off(struct notifier_block *this,
-+			  unsigned long unused1, void *unused2)
- {
- 	/* acpi_sleep_prepare(ACPI_STATE_S5) should have already been called */
- 	printk(KERN_DEBUG "%s called\n", __func__);
- 	local_irq_disable();
- 	acpi_enter_sleep_state(ACPI_STATE_S5);
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+diff -r ee0ba83fd81e arch/um/kernel/kmsg_dump.c
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/arch/um/kernel/kmsg_dump.c	Sun Oct 12 14:24:54 2014 +0200
+@@ -0,0 +1,43 @@
++#include <linux/kmsg_dump.h>
++#include <linux/console.h>
++#include <shared/init.h>
++#include <shared/kern.h>
++#include <os.h>
 +
-+	return NOTIFY_DONE;
- }
- 
-+static struct notifier_block acpi_poweroff_nb = {
-+	.notifier_call = acpi_power_off,
-+	.priority = 192,
++static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
++				enum kmsg_dump_reason reason)
++{
++	static char line[1024];
++
++	size_t len = 0;
++	bool con_available = false;
++
++	/* only dump kmsg when no console is available */
++	if (!console_trylock())
++		return;
++
++	if (console_drivers != NULL)
++		con_available = true;
++
++	console_unlock();
++
++	if (con_available == true)
++		return;
++
++	printf("kmsg_dump:\n");
++	while (kmsg_dump_get_line(dumper, true, line, sizeof(line), &len)) {
++		line[len] = '\0';
++		printf("%s", line);
++	}
++}
++
++static struct kmsg_dumper kmsg_dumper = {
++	.dump = kmsg_dumper_stdout
 +};
 +
- int __init acpi_sleep_init(void)
++int __init kmsg_dumper_stdout_init(void)
++{
++	return kmsg_dump_register(&kmsg_dumper);
++}
++
++__uml_initcall(kmsg_dumper_stdout_init);
+diff -r ee0ba83fd81e arch/um/kernel/um_arch.c
+--- a/arch/um/kernel/um_arch.c	Sat Oct 11 18:55:17 2014 +0200
++++ b/arch/um/kernel/um_arch.c	Sun Oct 12 14:24:54 2014 +0200
+@@ -11,6 +11,7 @@
+ #include <linux/string.h>
+ #include <linux/utsname.h>
+ #include <linux/sched.h>
++#include <linux/kmsg_dump.h>
+ #include <asm/pgtable.h>
+ #include <asm/processor.h>
+ #include <asm/sections.h>
+@@ -234,6 +235,7 @@
+ static int panic_exit(struct notifier_block *self, unsigned long unused1,
+ 		      void *unused2)
  {
- 	char supported[ACPI_S_STATE_COUNT * 3 + 1];
-@@ -835,7 +845,8 @@ int __init acpi_sleep_init(void)
- 	if (acpi_sleep_state_supported(ACPI_STATE_S5)) {
- 		sleep_states[ACPI_STATE_S5] = 1;
- 		pm_power_off_prepare = acpi_power_off_prepare;
--		pm_power_off = acpi_power_off;
-+		if (register_poweroff_handler(&acpi_poweroff_nb))
-+			pr_err("acpi: Failed to register poweroff handler\n");
- 	}
- 
- 	supported[0] = 0;
--- 
-1.9.1
++	kmsg_dump(KMSG_DUMP_PANIC);
+ 	bust_spinlocks(1);
+ 	bust_spinlocks(0);
+ 	uml_exitcode = 1;
+
+
+
+
+------------------------------------------------------------------------------
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://p.sf.net/sfu/Zoho
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
