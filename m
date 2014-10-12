@@ -1,8 +1,9 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Message-ID: <542FF203.50907@gmail.com>
-Date: Sat, 04 Oct 2014 21:11:31 +0800
-From: Chen Gang <gang.chen.5i5j@gmail.com>
-MIME-Version: 1.0
+From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Date: Sun, 12 Oct 2014 13:02:13 +0200
+Message-Id: <1413111733-10763-3-git-send-email-nicolas.iooss_linux@m4x.org>
+In-Reply-To: <1413111733-10763-1-git-send-email-nicolas.iooss_linux@m4x.org>
+References: <1413111733-10763-1-git-send-email-nicolas.iooss_linux@m4x.org>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -12,51 +13,110 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] um: kernel: ksyms: Export symbol syscall() for
- fixing modpost issue
-To: richard@nod.at, jdike@addtoit.com
-Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [uml-devel] [PATCH 3/3] um/os-Linux: Use char[] for syscall_stub
+	declarations
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 
-syscall() is implemented in libc.so/a (e.g. for glibc, in "syscall.o"),
-so for normal ".o" files, it is undefined, neither can be found within
-kernel wide, so will break modpost.
+When declaring __syscall_stub_start, use the same type in UML userspace
+code as in arch/um/include/asm/sections.h.
 
-Since ".o" files is OK, can simply export 'syscall' symbol, let modpost
-know about that, then can fix this issue.
+While at it, also declare batch_syscall_stub as char[].
 
-The related error (with allmodconfig under um):
-
-    MODPOST 1205 modules
-  ERROR: "syscall" [fs/hostfs/hostfs.ko] undefined!
-
-Signed-off-by: Chen Gang <gang.chen.5i5j@gmail.com>
+Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
 ---
- arch/um/kernel/ksyms.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/um/os-Linux/skas/mem.c     |  6 +++---
+ arch/um/os-Linux/skas/process.c | 11 +++++------
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/arch/um/kernel/ksyms.c b/arch/um/kernel/ksyms.c
-index 543c047..e7780f3 100644
---- a/arch/um/kernel/ksyms.c
-+++ b/arch/um/kernel/ksyms.c
-@@ -42,3 +42,6 @@ EXPORT_SYMBOL(os_makedev);
- EXPORT_SYMBOL(add_sigio_fd);
- EXPORT_SYMBOL(ignore_sigio_fd);
- EXPORT_SYMBOL(sigio_broken);
-+
-+extern long int syscall (long int __sysno, ...);
-+EXPORT_SYMBOL(syscall);
+diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
+index 689b18db798f..abb02becca80 100644
+--- a/arch/um/os-Linux/skas/mem.c
++++ b/arch/um/os-Linux/skas/mem.c
+@@ -19,7 +19,7 @@
+ #include <sysdep/ptrace.h>
+ #include <sysdep/stub.h>
+ 
+-extern unsigned long batch_syscall_stub, __syscall_stub_start;
++extern char batch_syscall_stub[], __syscall_stub_start[];
+ 
+ extern void wait_stub_done(int pid);
+ 
+@@ -39,8 +39,8 @@ static int __init init_syscall_regs(void)
+ {
+ 	get_safe_registers(syscall_regs, NULL);
+ 	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
+-		((unsigned long) &batch_syscall_stub -
+-		 (unsigned long) &__syscall_stub_start);
++		((unsigned long) batch_syscall_stub -
++		 (unsigned long) __syscall_stub_start);
+ 	return 0;
+ }
+ 
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 908579f2b0ab..fa934d0c8932 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -193,7 +193,7 @@ static void handle_trap(int pid, struct uml_pt_regs *regs,
+ 	handle_syscall(regs);
+ }
+ 
+-extern int __syscall_stub_start;
++extern char __syscall_stub_start[];
+ 
+ static int userspace_tramp(void *stack)
+ {
+@@ -218,7 +218,7 @@ static int userspace_tramp(void *stack)
+ 		 */
+ 		int fd;
+ 		unsigned long long offset;
+-		fd = phys_mapping(to_phys(&__syscall_stub_start), &offset);
++		fd = phys_mapping(to_phys(__syscall_stub_start), &offset);
+ 		addr = mmap64((void *) STUB_CODE, UM_KERN_PAGE_SIZE,
+ 			      PROT_EXEC, MAP_FIXED | MAP_PRIVATE, fd, offset);
+ 		if (addr == MAP_FAILED) {
+@@ -245,7 +245,7 @@ static int userspace_tramp(void *stack)
+ 
+ 		unsigned long v = STUB_CODE +
+ 				  (unsigned long) stub_segv_handler -
+-				  (unsigned long) &__syscall_stub_start;
++				  (unsigned long) __syscall_stub_start;
+ 
+ 		set_sigstack((void *) STUB_DATA, UM_KERN_PAGE_SIZE);
+ 		sigemptyset(&sa.sa_mask);
+@@ -474,7 +474,7 @@ static int __init init_thread_regs(void)
+ 	/* Set parent's instruction pointer to start of clone-stub */
+ 	thread_regs[REGS_IP_INDEX] = STUB_CODE +
+ 				(unsigned long) stub_clone_handler -
+-				(unsigned long) &__syscall_stub_start;
++				(unsigned long) __syscall_stub_start;
+ 	thread_regs[REGS_SP_INDEX] = STUB_DATA + UM_KERN_PAGE_SIZE -
+ 		sizeof(void *);
+ #ifdef __SIGNAL_FRAMESIZE
+@@ -582,8 +582,7 @@ int map_stub_pages(int fd, unsigned long code, unsigned long data,
+ 	struct proc_mm_op mmop;
+ 	int n;
+ 	unsigned long long code_offset;
+-	int code_fd = phys_mapping(to_phys((void *) &__syscall_stub_start),
+-				   &code_offset);
++	int code_fd = phys_mapping(to_phys(__syscall_stub_start), &code_offset);
+ 
+ 	mmop = ((struct proc_mm_op) { .op        = MM_MMAP,
+ 				      .u         =
 -- 
-1.9.3
+2.1.1
+
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
 Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
 Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
 Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+http://p.sf.net/sfu/Zoho
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
