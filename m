@@ -1,72 +1,117 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:42 -0700
-Message-Id: <1412659726-29957-41-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-Sender: linux-m68k-owner@vger.kernel.org
-Subject: [PATCH 40/44] x86: intel-mid: Drop registration of dummy poweroff handlers
-To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Date: Sun, 12 Oct 2014 13:02:12 +0200
+Message-Id: <1413111733-10763-2-git-send-email-nicolas.iooss_linux@m4x.org>
+In-Reply-To: <1413111733-10763-1-git-send-email-nicolas.iooss_linux@m4x.org>
+References: <1413111733-10763-1-git-send-email-nicolas.iooss_linux@m4x.org>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 2/3] um: Use char[] for linker script address
+	declarations
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 
-A dummy poweroff handler does not serve any purpose. Drop it.
+The linker script defines some variables which are declared either with
+type char[] in include/asm-generic/sections.h or with a meaningless
+integer type in arch/um/include/asm/sections.h.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Fix this inconsistency by declaring every variable char[].
+
+Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
 ---
- arch/x86/platform/intel-mid/intel-mid.c | 5 -----
- arch/x86/platform/intel-mid/mfld.c      | 5 -----
- 2 files changed, 10 deletions(-)
+ arch/um/include/asm/sections.h | 4 ++--
+ arch/um/kernel/physmem.c       | 4 ++--
+ arch/um/kernel/skas/mmu.c      | 4 ++--
+ arch/um/kernel/um_arch.c       | 2 +-
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/platform/intel-mid/intel-mid.c b/arch/x86/platform/intel-mid/intel-mid.c
-index 1bbedc4..4b70666 100644
---- a/arch/x86/platform/intel-mid/intel-mid.c
-+++ b/arch/x86/platform/intel-mid/intel-mid.c
-@@ -67,10 +67,6 @@ static void *(*get_intel_mid_ops[])(void) = INTEL_MID_OPS_INIT;
- enum intel_mid_cpu_type __intel_mid_cpu_chip;
- EXPORT_SYMBOL_GPL(__intel_mid_cpu_chip);
+diff --git a/arch/um/include/asm/sections.h b/arch/um/include/asm/sections.h
+index 3a6ebcc65519..cafcf684d947 100644
+--- a/arch/um/include/asm/sections.h
++++ b/arch/um/include/asm/sections.h
+@@ -3,7 +3,7 @@
  
--static void intel_mid_power_off(void)
--{
--};
--
- static void intel_mid_reboot(void)
- {
- 	intel_scu_ipc_simple_command(IPCMSG_COLD_BOOT, 0);
-@@ -183,7 +179,6 @@ void __init x86_intel_mid_early_setup(void)
+ #include <asm-generic/sections.h>
  
- 	legacy_pic = &null_legacy_pic;
+-extern char __binary_start;
+-extern int __syscall_stub_start, __syscall_stub_end;
++extern char __binary_start[];
++extern char __syscall_stub_start[], __syscall_stub_end[];
  
--	pm_power_off = intel_mid_power_off;
- 	machine_ops.emergency_restart  = intel_mid_reboot;
+ #endif
+diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+index db05c067665a..c833a5dec1e7 100644
+--- a/arch/um/kernel/physmem.c
++++ b/arch/um/kernel/physmem.c
+@@ -100,8 +100,8 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+ 	 * Special kludge - This page will be mapped in to userspace processes
+ 	 * from physmem_fd, so it needs to be written out there.
+ 	 */
+-	os_seek_file(physmem_fd, __pa(&__syscall_stub_start));
+-	os_write_file(physmem_fd, &__syscall_stub_start, PAGE_SIZE);
++	os_seek_file(physmem_fd, __pa(__syscall_stub_start));
++	os_write_file(physmem_fd, __syscall_stub_start, PAGE_SIZE);
+ 	os_fsync_file(physmem_fd);
  
- 	/* Avoid searching for BIOS MP tables */
-diff --git a/arch/x86/platform/intel-mid/mfld.c b/arch/x86/platform/intel-mid/mfld.c
-index 23381d2..cf6842f 100644
---- a/arch/x86/platform/intel-mid/mfld.c
-+++ b/arch/x86/platform/intel-mid/mfld.c
-@@ -23,10 +23,6 @@ static struct intel_mid_ops penwell_ops = {
- 	.arch_setup = penwell_arch_setup,
- };
+ 	bootmap_size = init_bootmem(pfn, pfn + delta);
+diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+index d2a0a4c0cd91..e40ce29bdc2c 100644
+--- a/arch/um/kernel/skas/mmu.c
++++ b/arch/um/kernel/skas/mmu.c
+@@ -108,7 +108,7 @@ void uml_setup_stubs(struct mm_struct *mm)
+ 		return;
  
--static void mfld_power_off(void)
--{
--}
--
- static unsigned long __init mfld_calibrate_tsc(void)
- {
- 	unsigned long fast_calibrate;
-@@ -61,7 +57,6 @@ static unsigned long __init mfld_calibrate_tsc(void)
- static void __init penwell_arch_setup(void)
- {
- 	x86_platform.calibrate_tsc = mfld_calibrate_tsc;
--	pm_power_off = mfld_power_off;
- }
+ 	ret = init_stub_pte(mm, STUB_CODE,
+-			    (unsigned long) &__syscall_stub_start);
++			    (unsigned long) __syscall_stub_start);
+ 	if (ret)
+ 		goto out;
  
- void *get_penwell_ops(void)
+@@ -116,7 +116,7 @@ void uml_setup_stubs(struct mm_struct *mm)
+ 	if (ret)
+ 		goto out;
+ 
+-	mm->context.stub_pages[0] = virt_to_page(&__syscall_stub_start);
++	mm->context.stub_pages[0] = virt_to_page(__syscall_stub_start);
+ 	mm->context.stub_pages[1] = virt_to_page(mm->context.id.stack);
+ 
+ 	/* dup_mmap already holds mmap_sem */
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 02c21f6e0983..5dd632203dca 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -313,7 +313,7 @@ int __init linux_main(int argc, char **argv)
+ 		physmem_size += UML_ROUND_UP(brk_start) - UML_ROUND_UP(&_end);
+ 	}
+ 
+-	uml_physmem = (unsigned long) &__binary_start & PAGE_MASK;
++	uml_physmem = (unsigned long) __binary_start & PAGE_MASK;
+ 
+ 	/* Reserve up to 4M after the current brk */
+ 	uml_reserved = ROUND_4M(brk_start) + (1 << 22);
 -- 
-1.9.1
+2.1.1
+
+
+------------------------------------------------------------------------------
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://p.sf.net/sfu/Zoho
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
