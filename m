@@ -1,57 +1,43 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1XfVDC-0003Nh-Oz
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Oct 2014 14:42:30 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XfVD9-0000eV-L4
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 18 Oct 2014 14:42:30 +0000
-Message-ID: <54427C48.9050608@nod.at>
-Date: Sat, 18 Oct 2014 16:42:16 +0200
-From: Richard Weinberger <richard@nod.at>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <544277C5.9030302@gmx.at>
+Date: Sat, 18 Oct 2014 16:23:01 +0200
+From: Manfred Schlaegl <manfred.schlaegl@gmx.at>
 MIME-Version: 1.0
-References: <544277C5.9030302@gmx.at>
-In-Reply-To: <544277C5.9030302@gmx.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] um: Remove unused bp stack-frame pointer
-To: Manfred Schlaegl <manfred.schlaegl@gmx.at>, Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-user@lists.sourceforge.net, Randy Dunlap <rdunlap@infradead.org>, Daniel Walter <dwalter@google.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH] um: Remove unused bp stack-frame pointer
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: Daniel Walter <dwalter@google.com>, Manfred Schlaegl <manfred.schlaegl@gmx.at>, Randy Dunlap <rdunlap@infradead.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am 18.10.2014 um 16:23 schrieb Manfred Schlaegl:
-> The pointer to bp stack-frame is no longer used. Removed it.
+The pointer to bp stack-frame is no longer used. Removed it.
+This also removes a corresponding compiler-warning.
 
-Good catch!
+Signed-off-by: Manfred Schlaegl <manfred.schlaegl@gmx.at>
+---
+ arch/um/kernel/sysrq.c |    6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-> This also removes a corresponding compiler-warning.
-
-Which warning exactly?
-
-Thanks,
-//richard
-
-------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index 894c8d3..aa1b56f 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -29,7 +29,7 @@ static const struct stacktrace_ops stackops = {
+  void show_stack(struct task_struct *task, unsigned long *stack)
+ {
+-	unsigned long *sp = stack, bp = 0;
++	unsigned long *sp = stack;
+ 	struct pt_regs *segv_regs = current->thread.segv_regs;
+ 	int i;
+ @@ -39,10 +39,6 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 		return;
+ 	}
+ -#ifdef CONFIG_FRAME_POINTER
+-	bp = get_frame_pointer(task, segv_regs);
+-#endif
+-
+ 	if (!stack)
+ 		sp = get_stack_pointer(task, segv_regs);
+ -- 1.7.10.4
 
