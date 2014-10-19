@@ -1,71 +1,137 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Nicolas Iooss <nicolas.iooss@polytechnique.org>
-Date: Sat, 11 Oct 2014 13:29:41 +0200
-Message-Id: <1413026981-9667-1-git-send-email-nicolas.iooss_linux@m4x.org>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: always use the same type for __syscall_stub_start
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1XfsBz-00053e-Ud
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 19 Oct 2014 15:14:47 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XfsBy-00041b-6t
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 19 Oct 2014 15:14:47 +0000
+Received: from [94.219.115.221] (helo=[192.168.2.108])
+	by www17.your-server.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
+	(Exim 4.80.1) (envelope-from <thomas@m3y3r.de>) id 1XfsBs-0005sP-0u
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 19 Oct 2014 17:14:40 +0200
+Message-ID: <1413731391.2991.20.camel@localhost.localdomain>
+From: Thomas Meyer <thomas@m3y3r.de>
+Date: Sun, 19 Oct 2014 17:09:51 +0200
+Mime-Version: 1.0
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH v3 2/3] um: add a kmsg_dumper
+To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-syscall_stub_start is declared with different types in C files:
 
-  arch/um/kernel/physmem.c: extern int __syscall_stub_start;
-  arch/um/kernel/skas/mmu.c: extern int __syscall_stub_start;
-  arch/um/os-Linux/skas/mem.c: extern unsigned long __syscall_stub_start;
-  arch/um/os-Linux/skas/process.c: extern int __syscall_stub_start;
+Add a kmsg_dumper, that dumps the kmsg buffer to stdout, when no
+console is available.
+This an enables the printing of early panic() calls triggered in
+uml_postsetup().
 
-Fix this inconsistency by always using unsigned long.  This does not
-change anything in the compiled code because only the address of
-__syscall_stub_start is used, but it makes the static checker I use
-stop complaining about incompatible declarations.
-
-Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
 ---
- arch/um/kernel/physmem.c        | 2 +-
- arch/um/kernel/skas/mmu.c       | 2 +-
- arch/um/os-Linux/skas/process.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index 30fdd5d0067b..f1d7ed26d638 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -75,7 +75,7 @@ void map_memory(unsigned long virt, unsigned long phys, unsigned long len,
- 	}
- }
+diff -r ee0ba83fd81e arch/um/kernel/Makefile
+--- a/arch/um/kernel/Makefile	Sat Oct 11 18:55:17 2014 +0200
++++ b/arch/um/kernel/Makefile	Sun Oct 12 14:42:48 2014 +0200
+@@ -13,7 +13,7 @@
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+ 	signal.o smp.o syscall.o sysrq.o time.o tlb.o trap.o \
+-	um_arch.o umid.o maccess.o skas/
++	um_arch.o umid.o maccess.o kmsg_dump.o skas/
  
--extern int __syscall_stub_start;
-+extern unsigned long __syscall_stub_start;
- 
- void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 			  unsigned long len, unsigned long long highmem)
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 007d5503f49b..4bdd49e0bdc3 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -12,7 +12,7 @@
- #include <os.h>
- #include <skas.h>
- 
--extern int __syscall_stub_start;
-+extern unsigned long __syscall_stub_start;
- 
- static int init_stub_pte(struct mm_struct *mm, unsigned long proc,
- 			 unsigned long kernel)
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 908579f2b0ab..f30575557791 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -193,7 +193,7 @@ static void handle_trap(int pid, struct uml_pt_regs *regs,
- 	handle_syscall(regs);
- }
- 
--extern int __syscall_stub_start;
-+extern unsigned long __syscall_stub_start;
- 
- static int userspace_tramp(void *stack)
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+diff -r ee0ba83fd81e arch/um/kernel/kmsg_dump.c
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/arch/um/kernel/kmsg_dump.c	Sun Oct 12 14:42:48 2014 +0200
+@@ -0,0 +1,43 @@
++#include <linux/kmsg_dump.h>
++#include <linux/console.h>
++#include <shared/init.h>
++#include <shared/kern.h>
++#include <os.h>
++
++static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
++				enum kmsg_dump_reason reason)
++{
++	static char line[1024];
++
++	size_t len = 0;
++	bool con_available = false;
++
++	/* only dump kmsg when no console is available */
++	if (!console_trylock())
++		return;
++
++	if (console_drivers != NULL)
++		con_available = true;
++
++	console_unlock();
++
++	if (con_available == true)
++		return;
++
++	printf("kmsg_dump:\n");
++	while (kmsg_dump_get_line(dumper, true, line, sizeof(line), &len)) {
++		line[len] = '\0';
++		printf("%s", line);
++	}
++}
++
++static struct kmsg_dumper kmsg_dumper = {
++	.dump = kmsg_dumper_stdout
++};
++
++int __init kmsg_dumper_stdout_init(void)
++{
++	return kmsg_dump_register(&kmsg_dumper);
++}
++
++__uml_postsetup(kmsg_dumper_stdout_init);
+diff -r ee0ba83fd81e arch/um/kernel/um_arch.c
+--- a/arch/um/kernel/um_arch.c	Sat Oct 11 18:55:17 2014 +0200
++++ b/arch/um/kernel/um_arch.c	Sun Oct 12 14:42:48 2014 +0200
+@@ -11,6 +11,7 @@
+ #include <linux/string.h>
+ #include <linux/utsname.h>
+ #include <linux/sched.h>
++#include <linux/kmsg_dump.h>
+ #include <asm/pgtable.h>
+ #include <asm/processor.h>
+ #include <asm/sections.h>
+@@ -234,6 +235,7 @@
+ static int panic_exit(struct notifier_block *self, unsigned long unused1,
+ 		      void *unused2)
  {
--- 
-2.1.2
++	kmsg_dump(KMSG_DUMP_PANIC);
+ 	bust_spinlocks(1);
+ 	bust_spinlocks(0);
+ 	uml_exitcode = 1;
+
+
+
+------------------------------------------------------------------------------
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
