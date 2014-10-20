@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1XgFc0-00032P-8p
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1XgBq7-0001JV-Tt
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Oct 2014 16:15:12 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XgFby-0005qt-2H
+	Mon, 20 Oct 2014 12:13:31 +0000
+Received: from mail-vc0-f169.google.com ([209.85.220.169])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XgBq6-0002xm-6R
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Oct 2014 16:15:12 +0000
+	Mon, 20 Oct 2014 12:13:31 +0000
+Received: by mail-vc0-f169.google.com with SMTP id hy4so3437378vcb.28
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 20 Oct 2014 05:13:24 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <E1XgAye-0000BK-Rd@www17.your-server.de>
 References: <E1XgAye-0000BK-Rd@www17.your-server.de>
-	<CAFLxGvxCWPrC1w-DWn6chseG=HcZ1jg7Sa0gUodmOYu05wrJKQ@mail.gmail.com>
-In-Reply-To: <CAFLxGvxCWPrC1w-DWn6chseG=HcZ1jg7Sa0gUodmOYu05wrJKQ@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v1085)
-Message-Id: <4CA477DE-7D40-4685-8737-142D0A81C3DF@m3y3r.de>
-From: Thomas Meyer <thomas@m3y3r.de>
-Date: Mon, 20 Oct 2014 18:14:51 +0200
+Date: Mon, 20 Oct 2014 14:13:24 +0200
+Message-ID: <CAFLxGvxCWPrC1w-DWn6chseG=HcZ1jg7Sa0gUodmOYu05wrJKQ@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,50 +32,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v3 3/3] um: enable trace irqflags support
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: Thomas Meyer <thomas@m3y3r.de>
 Cc: Daniel Walter <sahne@0x90.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
+On Mon, Oct 20, 2014 at 1:18 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
+> Am 20.10.2014 11:28 schrieb Daniel Walter <sahne@0x90.at>:
+>>
+>> ----- Original Message -----
+>> > From: "Thomas Meyer" <thomas@m3y3r.de>
+>> > To: "user-mode-linux-devel" <user-mode-linux-devel@lists.sourceforge.net>
+>> > Sent: Sunday, October 19, 2014 4:14:13 PM
+>> > Subject: [uml-devel] [PATCH v3 3/3] um: enable trace irqflags support
+>> >
+>> > Add TRACE_IRQFLAGS_SUPPORT to UML.
+>> > This enables LOCKDEP_SUPPORT and TRACING_SUPPORT.
+>>
+>>
+>> FYI: I'm currently working on porting ftrace() support to
+>> uml. It will take another week or two since I don't have enough
+>> time to debug, and it isn't stable yet (read as is panic()ing randomly)
+>
+> Good to know :-)
+>
+> Thanks for you stack trace support work!
+>
+> BTW. When triggering a sysrq t with the uml console the stack trace is not displayed, it says that the stack trace failed because a sigsegv happens in the stack trace or something like that. Bug or feature?
 
-Am 20.10.2014 um 14:13 schrieb Richard Weinberger:
+Huh? More details please. uml_mconsole's sysrq t works fine here with
+both x86 and x86_86 uml.
 
-> On Mon, Oct 20, 2014 at 1:18 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
->> Am 20.10.2014 11:28 schrieb Daniel Walter <sahne@0x90.at>:
->>> 
->>> ----- Original Message -----
->>>> From: "Thomas Meyer" <thomas@m3y3r.de>
->>>> To: "user-mode-linux-devel" <user-mode-linux-devel@lists.sourceforge.net>
->>>> Sent: Sunday, October 19, 2014 4:14:13 PM
->>>> Subject: [uml-devel] [PATCH v3 3/3] um: enable trace irqflags support
->>>> 
->>>> Add TRACE_IRQFLAGS_SUPPORT to UML.
->>>> This enables LOCKDEP_SUPPORT and TRACING_SUPPORT.
->>> 
->>> 
->>> FYI: I'm currently working on porting ftrace() support to
->>> uml. It will take another week or two since I don't have enough
->>> time to debug, and it isn't stable yet (read as is panic()ing randomly)
->> 
->> Good to know :-)
->> 
->> Thanks for you stack trace support work!
->> 
->> BTW. When triggering a sysrq t with the uml console the stack trace is not displayed, it says that the stack trace failed because a sigsegv happens in the stack trace or something like that. Bug or feature?
-> 
-> Huh? More details please. uml_mconsole's sysrq t works fine here with
-> both x86 and x86_86 uml.
-Hi,
-
-sorry about the fuss. everything seems to work correctly.
-
-Maybe I did see this while doing some testing with some fixes.
-
-sorry.
-
-> 
-> -- 
-> Thanks,
-> //richard
-
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Comprehensive Server Monitoring with Site24x7.
