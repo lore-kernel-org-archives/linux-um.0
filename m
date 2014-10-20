@@ -1,37 +1,43 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <5444DC3F.20601@nod.at>
-Date: Mon, 20 Oct 2014 11:56:15 +0200
-From: Richard Weinberger <richard@nod.at>
+Date: Mon, 20 Oct 2014 11:51:33 +0200
+From: Thomas Meyer <thomas@m3y3r.de>
 MIME-Version: 1.0
-References: <E1Xg9cr-0007LK-S6@www17.your-server.de>
-In-Reply-To: <E1Xg9cr-0007LK-S6@www17.your-server.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Message-Id: <E1Xg9cr-0007LK-S6@www17.your-server.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [uml-devel] [UM] Long loop in __getnsdayoftime() after resume
  from ram
-To: Thomas Meyer <thomas@m3y3r.de>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am 20.10.2014 um 11:51 schrieb Thomas Meyer:
->> Hmm, does this always happen?
-> 
-> Yes, my single core system seems to trigger this every time after resume from ram.
+QW0gMjAuMTAuMjAxNCAxMDoyNyBzY2hyaWViIFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZC53
+ZWluYmVyZ2VyQGdtYWlsLmNvbT46Cj4KPiBPbiBTdW4sIE9jdCAxOSwgMjAxNCBhdCAyOjM5IFBN
+LCBUaG9tYXMgTWV5ZXIgPHRob21hc0BtM3kzci5kZT4gd3JvdGU6IAo+ID4gSGVsbG8sIAo+ID4g
+Cj4gPiBpbiBVTUwga2VybmVsIEkgZ2V0IGEgbG9uZyBjcHUgdXNpbmcgbG9vcCBpbiBfX2dldG5z
+dGltZW9mZGF5KCkgCj4gPiAoa2VybmVsL3RpbWUvdGltZWtlZXBpbmcuYzozMTUpIGluIHRoZSBj
+YWxsIG9mIHRpbWVzcGVjX2FkZF9ucygpLCAKPiA+IHdoZW4gSSBsZWZ0IHRoZSBob3N0IGtlcm5l
+bCBzdXNwZW5kZWQgdG8gcmFtIGZvciBhIGZldyBob3VycyBhbmQgcmVzdW1lIAo+ID4gYWdhaW4u
+IAo+ID4gdGhpcyBpcyBiZWNhdXNlIGl0IHNlZW1zIGxpa2UgdGhlIHRrLT54dGltZV9zZWMgd2Fz
+bid0IHVwZGF0ZWQgeWV0LCBidXQgCj4gPiB0aGUgbnNlY3Mgd2VyZS4gbnNlY3MgY2FuIGJlIGFz
+IGhpZ2ggYXMgODExMTAwMDExMTAwMDExMTAwMGwgCj4gPiAKPiA+IHRoZSBmdW5jdGlvbiB0aW1l
+c3BlY19hZGRfbnMoKSAoaW5jbHVkZS9saW51eC90aW1lLmg6MjY2KSB3aWxsIGNhbGwgCj4gPiBf
+X2l0ZXJfZGl2X3U2NF9yZW0oKSB3aGljaCBoYXMgYW4gb3B0aW1pemVkIGxvb3AgZm9yIHRoZSBj
+YXNlIAo+ID4gdGhhdCB0aGUgZGl2aWRlbmQgaXMgbm90IG11Y2ggYmlnZ2VyIGFzIHRoZSBkaXZp
+c2lvci4gCj4gPiBidXQgdGhpcyBpc24ndCB0aGUgY2FzZSBmb3IgcmVzdW1lIGZyb20gcmFtIG9u
+IHRoZSBob3N0IGtlcm5lbC4gCj4gPiAKPiA+IGFueSBpZGVhcyBob3cgdG8gZml4IHRoaXM/IGlz
+IGl0IHBvc3NpYmxlIHRvIGludGVyY2VwdCB0aGUgcmVzdW1lIGZyb20gCj4gPiByYW0gYW5kIHVw
+ZGF0ZSB0aGUgdGltZWtlZXBlci0+eHRpbWVfc2VjIHNvbWVob3c/IAo+ID4gb3IgY2FuIHRoZSB1
+bSBhcmNoIHNvbWVob3cgb3ZlcndyaXRlIHRpbWVzcGVjX2FkZF9ucygpIHRvIGFsd2F5cyB1c2Ug
+Cj4gPiBkaXZfdTY0X3JlbSgpIGluc3RlYWQ/IAo+Cj4gSG1tLCBkb2VzIHRoaXMgYWx3YXlzIGhh
+cHBlbj8KClllcywgbXkgc2luZ2xlIGNvcmUgc3lzdGVtIHNlZW1zIHRvIHRyaWdnZXIgdGhpcyBl
+dmVyeSB0aW1lIGFmdGVyIHJlc3VtZSBmcm9tIHJhbS4KCj4gQXQgbGVhc3Qgb24gbXkgbm90ZWJv
+b2sgaXQgZGlkIG5vdCBoYXBwZW4uIEkndmUgc3RhcnRlZCBhbiBVTUwgeWVzdGVyZGF5IAo+IHN1
+c3BlbmRlZCBpdCBhbmQgYWZ0ZXIgbW9yZSB0aGFuIDEyaCBpdCB3b3JrZWQgZmluZSB0b2RheS4g
+Cj4KPiBCVFc6IERvIHlvdSBzZWUgdGhlIGlzc3VlIGFsc28gdGhlbiBmcmVlemluZyBVTUwgdXNp
+bmcgdGhlIGZyZWV6ZXIgY2dyb3VwPwoKSSdtIG5vdCBzdXJlIHdoYXQgZG8geW91IG1lYW4gYnkg
+dGhpcy4gRG8gSSBuZWVkIHRvIGVuYWJsZSBzb21lIHNwZWNpYWwgY29uZmlncyBmb3IgdGhpcyBp
+biB0aGUgaG9zdCBvciB1bWwga2VybmVsPwoKPiBXb3VsZCBiZSBlYXNpZXIgdG8gZGVidWcuIDop
+IAo+Cj4gLS0gCj4gVGhhbmtzLCAKPiAvL3JpY2hhcmQgCg==
 
-What is your host kernel?
-
->> At least on my notebook it did not happen. I've started an UML yesterday 
->> suspended it and after more than 12h it worked fine today. 
->>
->> BTW: Do you see the issue also then freezing UML using the freezer cgroup?
-> 
-> I'm not sure what do you mean by this. Do I need to enable some special configs for this in the host or uml kernel?
-
-Create on the host side a new freezer cgroup, put UML into it and freeze/thaw it.
-i.e. mkdir /sys/fs/cgroup/freezer/uml ; echo <pid of a shell> >  /sys/fs/cgroup/freezer/uml/tasks.
-In the said shell run UML and then freeze it using echo FROZEN > /sys/fs/cgroup/freezer/uml/freezer.state.
-Later thaw it: echo THAWED > /sys/fs/cgroup/freezer/uml/freezer.state
-
-Thanks,
-//richard
