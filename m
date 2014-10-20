@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1XcHxF-0007gk-Vn
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1XgFc0-00032P-8p
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Oct 2014 17:56:46 +0000
+	Mon, 20 Oct 2014 16:15:12 +0000
 Received: from www17.your-server.de ([213.133.104.17])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XcHxE-0003KW-1E
+	(Exim 4.76) id 1XgFby-0005qt-2H
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 09 Oct 2014 17:56:45 +0000
-Message-ID: <1412877284.13744.3.camel@localhost.localdomain>
+	Mon, 20 Oct 2014 16:15:12 +0000
+References: <E1XgAye-0000BK-Rd@www17.your-server.de>
+	<CAFLxGvxCWPrC1w-DWn6chseG=HcZ1jg7Sa0gUodmOYu05wrJKQ@mail.gmail.com>
+In-Reply-To: <CAFLxGvxCWPrC1w-DWn6chseG=HcZ1jg7Sa0gUodmOYu05wrJKQ@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Message-Id: <4CA477DE-7D40-4685-8737-142D0A81C3DF@m3y3r.de>
 From: Thomas Meyer <thomas@m3y3r.de>
-Date: Thu, 09 Oct 2014 19:54:44 +0200
-Mime-Version: 1.0
+Date: Mon, 20 Oct 2014 18:14:51 +0200
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,91 +29,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/2] um: Move uml_postsetup in the init_thread
-	stack
-To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Richard Weinberger <richard@nod.at>
+Subject: Re: [uml-devel] [PATCH v3 3/3] um: enable trace irqflags support
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Daniel Walter <sahne@0x90.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
 
-atomic_notifier_chain_register() and uml_postsetup() do call kernel code
-that rely on the current macro and a valid task_struct resp. thread_info struct.
+Am 20.10.2014 um 14:13 schrieb Richard Weinberger:
 
-Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
----
- arch/um/include/shared/as-layout.h |  1 +
- arch/um/kernel/um_arch.c           | 15 ++++++++++-----
- arch/um/os-Linux/skas/process.c    |  2 +-
- 3 files changed, 12 insertions(+), 6 deletions(-)
+> On Mon, Oct 20, 2014 at 1:18 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
+>> Am 20.10.2014 11:28 schrieb Daniel Walter <sahne@0x90.at>:
+>>> 
+>>> ----- Original Message -----
+>>>> From: "Thomas Meyer" <thomas@m3y3r.de>
+>>>> To: "user-mode-linux-devel" <user-mode-linux-devel@lists.sourceforge.net>
+>>>> Sent: Sunday, October 19, 2014 4:14:13 PM
+>>>> Subject: [uml-devel] [PATCH v3 3/3] um: enable trace irqflags support
+>>>> 
+>>>> Add TRACE_IRQFLAGS_SUPPORT to UML.
+>>>> This enables LOCKDEP_SUPPORT and TRACING_SUPPORT.
+>>> 
+>>> 
+>>> FYI: I'm currently working on porting ftrace() support to
+>>> uml. It will take another week or two since I don't have enough
+>>> time to debug, and it isn't stable yet (read as is panic()ing randomly)
+>> 
+>> Good to know :-)
+>> 
+>> Thanks for you stack trace support work!
+>> 
+>> BTW. When triggering a sysrq t with the uml console the stack trace is not displayed, it says that the stack trace failed because a sigsegv happens in the stack trace or something like that. Bug or feature?
+> 
+> Huh? More details please. uml_mconsole's sysrq t works fine here with
+> both x86 and x86_86 uml.
+Hi,
 
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index 41c8c77..ca1843e 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -56,6 +56,7 @@ extern unsigned long brk_start;
- extern unsigned long host_task_size;
- 
- extern int linux_main(int argc, char **argv);
-+extern void uml_finishsetup(void);
- 
- struct siginfo;
- extern void (*sig_info[])(int, struct siginfo *si, struct uml_pt_regs *);
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 016adf0..ab72560 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -247,6 +247,16 @@ static struct notifier_block panic_exit_notifier = {
- 	.priority 		= 0
- };
- 
-+void uml_finishsetup(void)
-+{
-+	atomic_notifier_chain_register(&panic_notifier_list,
-+				       &panic_exit_notifier);
-+
-+	uml_postsetup();
-+
-+	new_thread_handler();
-+}
-+
- /* Set during early boot */
- unsigned long task_size;
- EXPORT_SYMBOL(task_size);
-@@ -367,11 +377,6 @@ int __init linux_main(int argc, char **argv)
- 		printf("Kernel virtual memory size shrunk to %lu bytes\n",
- 		       virtmem_size);
- 
--	atomic_notifier_chain_register(&panic_notifier_list,
--				       &panic_exit_notifier);
--
--	uml_postsetup();
--
- 	stack_protections((unsigned long) &init_thread_info);
- 	os_flush_stdout();
- 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 908579f..8666cb6 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -674,7 +674,7 @@ int start_idle_thread(void *stack, jmp_buf *switch_buf)
- 	n = setjmp(initial_jmpbuf);
- 	switch (n) {
- 	case INIT_JMP_NEW_THREAD:
--		(*switch_buf)[0].JB_IP = (unsigned long) new_thread_handler;
-+		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
- 		(*switch_buf)[0].JB_SP = (unsigned long) stack +
- 			UM_THREAD_SIZE - sizeof(void *);
- 		break;
--- 
-1.9.3
+sorry about the fuss. everything seems to work correctly.
 
+Maybe I did see this while doing some testing with some fixes.
+
+sorry.
+
+> 
+> -- 
+> Thanks,
+> //richard
 
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
