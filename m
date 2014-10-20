@@ -1,24 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1XgBq7-0001JV-Tt
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1XgAyp-0004dS-KA
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Oct 2014 12:13:31 +0000
-Received: from mail-vc0-f169.google.com ([209.85.220.169])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XgBq6-0002xm-6R
+	Mon, 20 Oct 2014 11:18:27 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XgAyo-0001Cd-4S
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 20 Oct 2014 12:13:31 +0000
-Received: by mail-vc0-f169.google.com with SMTP id hy4so3437378vcb.28
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 20 Oct 2014 05:13:24 -0700 (PDT)
+	Mon, 20 Oct 2014 11:18:27 +0000
+Date: Mon, 20 Oct 2014 13:18:09 +0200
+From: Thomas Meyer <thomas@m3y3r.de>
 MIME-Version: 1.0
-In-Reply-To: <E1XgAye-0000BK-Rd@www17.your-server.de>
-References: <E1XgAye-0000BK-Rd@www17.your-server.de>
-Date: Mon, 20 Oct 2014 14:13:24 +0200
-Message-ID: <CAFLxGvxCWPrC1w-DWn6chseG=HcZ1jg7Sa0gUodmOYu05wrJKQ@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
+Message-Id: <E1XgAye-0000BK-Rd@www17.your-server.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,51 +23,60 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v3 3/3] um: enable trace irqflags support
-To: Thomas Meyer <thomas@m3y3r.de>
-Cc: Daniel Walter <sahne@0x90.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Daniel Walter <sahne@0x90.at>
+Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Mon, Oct 20, 2014 at 1:18 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
-> Am 20.10.2014 11:28 schrieb Daniel Walter <sahne@0x90.at>:
->>
->> ----- Original Message -----
->> > From: "Thomas Meyer" <thomas@m3y3r.de>
->> > To: "user-mode-linux-devel" <user-mode-linux-devel@lists.sourceforge.net>
->> > Sent: Sunday, October 19, 2014 4:14:13 PM
->> > Subject: [uml-devel] [PATCH v3 3/3] um: enable trace irqflags support
->> >
->> > Add TRACE_IRQFLAGS_SUPPORT to UML.
->> > This enables LOCKDEP_SUPPORT and TRACING_SUPPORT.
->>
->>
->> FYI: I'm currently working on porting ftrace() support to
->> uml. It will take another week or two since I don't have enough
->> time to debug, and it isn't stable yet (read as is panic()ing randomly)
->
-> Good to know :-)
->
-> Thanks for you stack trace support work!
->
-> BTW. When triggering a sysrq t with the uml console the stack trace is not displayed, it says that the stack trace failed because a sigsegv happens in the stack trace or something like that. Bug or feature?
-
-Huh? More details please. uml_mconsole's sysrq t works fine here with
-both x86 and x86_86 uml.
-
--- 
-Thanks,
-//richard
-
-------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+QW0gMjAuMTAuMjAxNCAxMToyOCBzY2hyaWViIERhbmllbCBXYWx0ZXIgPHNhaG5lQDB4OTAuYXQ+
+Ogo+Cj4gLS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLSAKPiA+IEZyb206ICJUaG9tYXMgTWV5
+ZXIiIDx0aG9tYXNAbTN5M3IuZGU+IAo+ID4gVG86ICJ1c2VyLW1vZGUtbGludXgtZGV2ZWwiIDx1
+c2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0PiAKPiA+IFNlbnQ6IFN1
+bmRheSwgT2N0b2JlciAxOSwgMjAxNCA0OjE0OjEzIFBNIAo+ID4gU3ViamVjdDogW3VtbC1kZXZl
+bF0gW1BBVENIIHYzIDMvM10gdW06IGVuYWJsZSB0cmFjZSBpcnFmbGFncyBzdXBwb3J0IAo+ID4g
+Cj4gPiBBZGQgVFJBQ0VfSVJRRkxBR1NfU1VQUE9SVCB0byBVTUwuIAo+ID4gVGhpcyBlbmFibGVz
+IExPQ0tERVBfU1VQUE9SVCBhbmQgVFJBQ0lOR19TVVBQT1JULiAKPgo+Cj4gRllJOiBJJ20gY3Vy
+cmVudGx5IHdvcmtpbmcgb24gcG9ydGluZyBmdHJhY2UoKSBzdXBwb3J0IHRvIAo+IHVtbC4gSXQg
+d2lsbCB0YWtlIGFub3RoZXIgd2VlayBvciB0d28gc2luY2UgSSBkb24ndCBoYXZlIGVub3VnaCAK
+PiB0aW1lIHRvIGRlYnVnLCBhbmQgaXQgaXNuJ3Qgc3RhYmxlIHlldCAocmVhZCBhcyBpcyBwYW5p
+YygpaW5nIHJhbmRvbWx5KQoKR29vZCB0byBrbm93IDotKQoKVGhhbmtzIGZvciB5b3Ugc3RhY2sg
+dHJhY2Ugc3VwcG9ydCB3b3JrIQoKQlRXLiBXaGVuIHRyaWdnZXJpbmcgYSBzeXNycSB0IHdpdGgg
+dGhlIHVtbCBjb25zb2xlIHRoZSBzdGFjayB0cmFjZSBpcyBub3QgZGlzcGxheWVkLCBpdCBzYXlz
+IHRoYXQgdGhlIHN0YWNrIHRyYWNlIGZhaWxlZCBiZWNhdXNlIGEgc2lnc2VndiBoYXBwZW5zIGlu
+IHRoZSBzdGFjayB0cmFjZSBvciBzb21ldGhpbmcgbGlrZSB0aGF0LiBCdWcgb3IgZmVhdHVyZT8K
+Cj4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogVGhvbWFzIE1leWVyIDx0aG9tYXNAbTN5M3IuZGU+
+IAo+ID4gLS0tIAo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vS2NvbmZpZy5jb21tb24gYi9hcmNo
+L3VtL0tjb25maWcuY29tbW9uIAo+ID4gaW5kZXggODdiYzg2OC4uNmEzM2MzYSAxMDA2NDQgCj4g
+PiAtLS0gYS9hcmNoL3VtL0tjb25maWcuY29tbW9uIAo+ID4gKysrIGIvYXJjaC91bS9LY29uZmln
+LmNvbW1vbiAKPiA+IEBAIC0yOCwxMCArMjgsOSBAQCBjb25maWcgUENJIAo+ID7CoCBjb25maWcg
+UENNQ0lBIAo+ID7CoCBib29sIAo+ID7CoCAKPiA+IC0jIFlldCB0byBkbyEgCj4gPsKgIGNvbmZp
+ZyBUUkFDRV9JUlFGTEFHU19TVVBQT1JUIAo+ID7CoCBib29sIAo+ID4gLSBkZWZhdWx0IG4gCj4g
+PiArIGRlZmF1bHQgeSAKPiA+wqAgCj4gPsKgIGNvbmZpZyBMT0NLREVQX1NVUFBPUlQgCj4gPsKg
+IGJvb2wgCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC91bS9pbmNsdWRlL2FzbS9pcnFmbGFncy5oIAo+
+ID4gYi9hcmNoL3VtL2luY2x1ZGUvYXNtL2lycWZsYWdzLmggCj4gPiBpbmRleCBjNzgwZDhhLi5j
+NWI2MzZlIDEwMDY0NCAKPiA+IC0tLSBhL2FyY2gvdW0vaW5jbHVkZS9hc20vaXJxZmxhZ3MuaCAK
+PiA+ICsrKyBiL2FyY2gvdW0vaW5jbHVkZS9hc20vaXJxZmxhZ3MuaCAKPiA+IEBAIC0zNCw5ICsz
+NCw5IEBAIHN0YXRpYyBpbmxpbmUgdW5zaWduZWQgbG9uZyAKPiA+IGFyY2hfbG9jYWxfaXJxX3Nh
+dmUodm9pZCkgCj4gPsKgIHJldHVybiBmbGFnczsgCj4gPsKgIH0gCj4gPsKgIAo+ID4gLXN0YXRp
+YyBpbmxpbmUgYm9vbCBhcmNoX2lycXNfZGlzYWJsZWQodm9pZCkgCj4gPiArc3RhdGljIGlubGlu
+ZSBpbnQgYXJjaF9pcnFzX2Rpc2FibGVkX2ZsYWdzKHVuc2lnbmVkIGxvbmcgZmxhZ3MpIAo+ID7C
+oCB7IAo+ID4gLSByZXR1cm4gYXJjaF9sb2NhbF9zYXZlX2ZsYWdzKCkgPT0gMDsgCj4gPiArIHJl
+dHVybiBmbGFncyA9PSAwOyAKPiA+wqAgfSAKPiA+wqAgCj4gPsKgICNlbmRpZiAKPgo+IEknbSBu
+b3Qgc3VyZSBpZiB0aGlzIGlzIGNvcnJlY3QuIEknZCByYXRoZXIgd291bGQgaGF2ZSBhbm90aGVy
+IGZ1bmN0aW9uIAo+IGltcGxlbWVudGVkIGluc3RlYWQgb2YgcmVtb3ZpbmcgdGhlIGNoZWNrIGZv
+ciBkaXNhYmxlZCBpcnFzLgoKVGhlcmUgaXMgYSBkZWZhdWx0IGNvZGluZyBmb3IgYXJjaF9pcnFz
+X2Rpc2FibGVkIHdoaWNoIGNhbGxzIGFyY2hfaXJxc19kaXNhYmxlZF9mbGFncy4KClRoZSBsb2dp
+YyBhZnRlciBhYm92ZSBjaGFuZ2Ugc2hvdWxkIGJlIHRoZSBzYW1lIGFzIGJlZm9yZS4KCj4KPgo+
+IGNoZWVycywgCj4KPiBkYW5pZWwgCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDb21wcmVoZW5zaXZl
+IFNlcnZlciBNb25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCk1vbml0b3IgMTAgc2VydmVycyBmb3Ig
+JDkvTW9udGguCkdldCBhbGVydGVkIHRocm91Z2ggZW1haWwsIFNNUywgdm9pY2UgY2FsbHMgb3Ig
+bW9iaWxlIHB1c2ggbm90aWZpY2F0aW9ucy4KVGFrZSBjb3JyZWN0aXZlIGFjdGlvbnMgZnJvbSB5
+b3VyIG1vYmlsZSBkZXZpY2UuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvWm9obwpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwg
+bWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxp
+bnV4LWRldmVsCg==
 
