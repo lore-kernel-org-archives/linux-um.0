@@ -1,43 +1,45 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 20 Oct 2014 11:51:33 +0200
-From: Thomas Meyer <thomas@m3y3r.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Message-Id: <E1Xg9cr-0007LK-S6@www17.your-server.de>
+In-Reply-To: <1413722356.2991.8.camel@localhost.localdomain>
+References: <1413722356.2991.8.camel@localhost.localdomain>
+Date: Mon, 20 Oct 2014 10:27:50 +0200
+Message-ID: <CAFLxGvzb1YWc49=dwcJQRNDpxjBSm6PNpxxt6oKi-0uuvSC+bg@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [uml-devel] [UM] Long loop in __getnsdayoftime() after resume
  from ram
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: Thomas Meyer <thomas@m3y3r.de>
 Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-QW0gMjAuMTAuMjAxNCAxMDoyNyBzY2hyaWViIFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZC53
-ZWluYmVyZ2VyQGdtYWlsLmNvbT46Cj4KPiBPbiBTdW4sIE9jdCAxOSwgMjAxNCBhdCAyOjM5IFBN
-LCBUaG9tYXMgTWV5ZXIgPHRob21hc0BtM3kzci5kZT4gd3JvdGU6IAo+ID4gSGVsbG8sIAo+ID4g
-Cj4gPiBpbiBVTUwga2VybmVsIEkgZ2V0IGEgbG9uZyBjcHUgdXNpbmcgbG9vcCBpbiBfX2dldG5z
-dGltZW9mZGF5KCkgCj4gPiAoa2VybmVsL3RpbWUvdGltZWtlZXBpbmcuYzozMTUpIGluIHRoZSBj
-YWxsIG9mIHRpbWVzcGVjX2FkZF9ucygpLCAKPiA+IHdoZW4gSSBsZWZ0IHRoZSBob3N0IGtlcm5l
-bCBzdXNwZW5kZWQgdG8gcmFtIGZvciBhIGZldyBob3VycyBhbmQgcmVzdW1lIAo+ID4gYWdhaW4u
-IAo+ID4gdGhpcyBpcyBiZWNhdXNlIGl0IHNlZW1zIGxpa2UgdGhlIHRrLT54dGltZV9zZWMgd2Fz
-bid0IHVwZGF0ZWQgeWV0LCBidXQgCj4gPiB0aGUgbnNlY3Mgd2VyZS4gbnNlY3MgY2FuIGJlIGFz
-IGhpZ2ggYXMgODExMTAwMDExMTAwMDExMTAwMGwgCj4gPiAKPiA+IHRoZSBmdW5jdGlvbiB0aW1l
-c3BlY19hZGRfbnMoKSAoaW5jbHVkZS9saW51eC90aW1lLmg6MjY2KSB3aWxsIGNhbGwgCj4gPiBf
-X2l0ZXJfZGl2X3U2NF9yZW0oKSB3aGljaCBoYXMgYW4gb3B0aW1pemVkIGxvb3AgZm9yIHRoZSBj
-YXNlIAo+ID4gdGhhdCB0aGUgZGl2aWRlbmQgaXMgbm90IG11Y2ggYmlnZ2VyIGFzIHRoZSBkaXZp
-c2lvci4gCj4gPiBidXQgdGhpcyBpc24ndCB0aGUgY2FzZSBmb3IgcmVzdW1lIGZyb20gcmFtIG9u
-IHRoZSBob3N0IGtlcm5lbC4gCj4gPiAKPiA+IGFueSBpZGVhcyBob3cgdG8gZml4IHRoaXM/IGlz
-IGl0IHBvc3NpYmxlIHRvIGludGVyY2VwdCB0aGUgcmVzdW1lIGZyb20gCj4gPiByYW0gYW5kIHVw
-ZGF0ZSB0aGUgdGltZWtlZXBlci0+eHRpbWVfc2VjIHNvbWVob3c/IAo+ID4gb3IgY2FuIHRoZSB1
-bSBhcmNoIHNvbWVob3cgb3ZlcndyaXRlIHRpbWVzcGVjX2FkZF9ucygpIHRvIGFsd2F5cyB1c2Ug
-Cj4gPiBkaXZfdTY0X3JlbSgpIGluc3RlYWQ/IAo+Cj4gSG1tLCBkb2VzIHRoaXMgYWx3YXlzIGhh
-cHBlbj8KClllcywgbXkgc2luZ2xlIGNvcmUgc3lzdGVtIHNlZW1zIHRvIHRyaWdnZXIgdGhpcyBl
-dmVyeSB0aW1lIGFmdGVyIHJlc3VtZSBmcm9tIHJhbS4KCj4gQXQgbGVhc3Qgb24gbXkgbm90ZWJv
-b2sgaXQgZGlkIG5vdCBoYXBwZW4uIEkndmUgc3RhcnRlZCBhbiBVTUwgeWVzdGVyZGF5IAo+IHN1
-c3BlbmRlZCBpdCBhbmQgYWZ0ZXIgbW9yZSB0aGFuIDEyaCBpdCB3b3JrZWQgZmluZSB0b2RheS4g
-Cj4KPiBCVFc6IERvIHlvdSBzZWUgdGhlIGlzc3VlIGFsc28gdGhlbiBmcmVlemluZyBVTUwgdXNp
-bmcgdGhlIGZyZWV6ZXIgY2dyb3VwPwoKSSdtIG5vdCBzdXJlIHdoYXQgZG8geW91IG1lYW4gYnkg
-dGhpcy4gRG8gSSBuZWVkIHRvIGVuYWJsZSBzb21lIHNwZWNpYWwgY29uZmlncyBmb3IgdGhpcyBp
-biB0aGUgaG9zdCBvciB1bWwga2VybmVsPwoKPiBXb3VsZCBiZSBlYXNpZXIgdG8gZGVidWcuIDop
-IAo+Cj4gLS0gCj4gVGhhbmtzLCAKPiAvL3JpY2hhcmQgCg==
+On Sun, Oct 19, 2014 at 2:39 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
+> Hello,
+>
+> in UML kernel I get a long cpu using loop in __getnstimeofday()
+> (kernel/time/timekeeping.c:315) in the call of timespec_add_ns(),
+> when I left the host kernel suspended to ram for a few hours and resume
+> again.
+> this is because it seems like the tk->xtime_sec wasn't updated yet, but
+> the nsecs were. nsecs can be as high as 8111000111000111000l
+>
+> the function timespec_add_ns() (include/linux/time.h:266) will call
+> __iter_div_u64_rem() which has an optimized loop for the case
+> that the dividend is not much bigger as the divisior.
+> but this isn't the case for resume from ram on the host kernel.
+>
+> any ideas how to fix this? is it possible to intercept the resume from
+> ram and update the timekeeper->xtime_sec somehow?
+> or can the um arch somehow overwrite timespec_add_ns() to always use
+> div_u64_rem() instead?
 
+Hmm, does this always happen?
+At least on my notebook it did not happen. I've started an UML yesterday
+suspended it and after more than 12h it worked fine today.
+
+BTW: Do you see the issue also then freezing UML using the freezer cgroup?
+Would be easier to debug. :)
+
+-- 
+Thanks,
+//richard
