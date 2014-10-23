@@ -1,100 +1,84 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:25 -0700
-Message-Id: <1412659726-29957-24-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-Sender: linux-m68k-owner@vger.kernel.org
-Subject: [PATCH 23/44] power/reset: qnap-poweroff: Register with kernel poweroff handler
-To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Sebastian Reichel <sre@kernel.org>, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XhE3Y-00066V-A3
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Oct 2014 08:47:40 +0000
+Received: from ivanoab3.miniserver.com ([89.200.143.206])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XhE3W-0003Q6-SE
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Oct 2014 08:47:40 +0000
+Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
+	helo=falkor.sigsegv.cx) by ivanoab3.miniserver.com with esmtps
+	(TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16) (Exim 4.72)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XhE21-0001Cs-IK
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Oct 2014 08:46:05 +0000
+Received: from [192.168.127.2] by falkor.sigsegv.cx with esmtp (Exim 4.80)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1XhE3P-0000zv-P4
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 23 Oct 2014 09:47:31 +0100
+Message-ID: <5448C0A0.5030200@kot-begemot.co.uk>
+Date: Thu, 23 Oct 2014 09:47:28 +0100
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+MIME-Version: 1.0
+References: <1413236904.13916.13.camel@localhost.localdomain>	<543CB6BA.9030907@kot-begemot.co.uk>	<543CC5FE.4000601@kot-begemot.co.uk>	<1413271301.13744.13.camel@localhost.localdomain>	<543CD148.7010904@kot-begemot.co.uk>	<1413730776.2991.16.camel@localhost.localdomain>	<5443E097.2000801@kot-begemot.co.uk>	<1413747337.2991.36.camel@localhost.localdomain>	<1413835305.2991.46.camel@localhost.localdomain>	<5448AF6E.6090201@kot-begemot.co.uk>
+	<5448BE29.6080103@nod.at>
+In-Reply-To: <5448BE29.6080103@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] kernel stalls in balance_dirty_pages_ratelimited()
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly. Register with default priority value of 128 to reflect that
-the original code generates an error if another poweroff handler has
-already been registered when the driver is loaded.
+On 23/10/14 09:36, Richard Weinberger wrote:
+> Anton,
+>
+> Am 23.10.2014 um 09:34 schrieb Anton Ivanov:
+>> Hi Richard,
+>>
+>> I have had a question in my mind on this for quite a while around this bug (and a quite a few others).
+> Fell free to ask, I'll try hand to find time to answer.
+>
+>> UML by the nature of being UP includes the generic spinlock definition for UP which does very little if any.
+> Correct. IIRC they are a NOP on UML as it does not support preemption.
+>
+>> How exactly does this work on a multicore host if you have a different thread hitting the same critical section and that thread is running on a different core? Isn't that
+>> effectively a form of weird SMP (which in turn requires stricter locking). Am I missing something here?
+> >From the host side of view the UML kernel a single process and therefore there is no parallel execution at all.
+>
+> Does this help?
 
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/power/reset/qnap-poweroff.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+That is what I have always thought as well.
 
-diff --git a/drivers/power/reset/qnap-poweroff.c b/drivers/power/reset/qnap-poweroff.c
-index a75db7f..c474980 100644
---- a/drivers/power/reset/qnap-poweroff.c
-+++ b/drivers/power/reset/qnap-poweroff.c
-@@ -16,7 +16,9 @@
- 
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/notifier.h>
- #include <linux/platform_device.h>
-+#include <linux/pm.h>
- #include <linux/serial_reg.h>
- #include <linux/kallsyms.h>
- #include <linux/of.h>
-@@ -55,7 +57,8 @@ static void __iomem *base;
- static unsigned long tclk;
- static const struct power_off_cfg *cfg;
- 
--static void qnap_power_off(void)
-+static int qnap_power_off(struct notifier_block *this, unsigned long unused1,
-+			  void *unused2)
- {
- 	const unsigned divisor = ((tclk + (8 * cfg->baud)) / (16 * cfg->baud));
- 
-@@ -72,14 +75,20 @@ static void qnap_power_off(void)
- 
- 	/* send the power-off command to PIC */
- 	writel(cfg->cmd, UART1_REG(TX));
-+
-+	return NOTIFY_DONE;
- }
- 
-+static struct notifier_block qnap_poweroff_nb = {
-+	.notifier_call = qnap_power_off,
-+	.priority = 128,
-+};
-+
- static int qnap_power_off_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct resource *res;
- 	struct clk *clk;
--	char symname[KSYM_NAME_LEN];
- 
- 	const struct of_device_id *match =
- 		of_match_node(qnap_power_off_of_match_table, np);
-@@ -106,22 +115,13 @@ static int qnap_power_off_probe(struct platform_device *pdev)
- 
- 	tclk = clk_get_rate(clk);
- 
--	/* Check that nothing else has already setup a handler */
--	if (pm_power_off) {
--		lookup_symbol_name((ulong)pm_power_off, symname);
--		dev_err(&pdev->dev,
--			"pm_power_off already claimed %p %s",
--			pm_power_off, symname);
--		return -EBUSY;
--	}
--	pm_power_off = qnap_power_off;
--
--	return 0;
-+	return register_poweroff_handler(&qnap_poweroff_nb);
- }
- 
- static int qnap_power_off_remove(struct platform_device *pdev)
- {
--	pm_power_off = NULL;
-+	unregister_poweroff_handler(&qnap_poweroff_nb);
-+
- 	return 0;
- }
- 
--- 
-1.9.1
+Just checking that I am not missing something, thanks.
+
+A.
+>
+> Thanks,
+> //richard
+>
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
