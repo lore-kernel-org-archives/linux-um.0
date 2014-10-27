@@ -1,717 +1,898 @@
-Return-Path: <devicetree-owner@vger.kernel.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:33 -0700
-Message-Id: <1412659726-29957-32-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-Sender: devicetree-owner@vger.kernel.org
-Subject: [PATCH 31/44] arm: Register with kernel poweroff handler
+Date: Mon, 27 Oct 2014 08:55:15 -0700
+Message-Id: <1414425354-10359-9-git-send-email-linux@roeck-us.net>
+In-Reply-To: <1414425354-10359-1-git-send-email-linux@roeck-us.net>
+References: <1414425354-10359-1-git-send-email-linux@roeck-us.net>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v3 08/47] kernel: Move pm_power_off to common code
 To: linux-kernel@vger.kernel.org
-Cc: adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, Russell King <linux@arm.linux.org.uk>, Andrew Victor <linux@maxim.org.za>, Nicolas Ferre <nicolas.ferre@atmel.com>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Stephen Warren <swarren@wwwdotorg.org>, Christian Daudt <bcm@fixthebug.org>, Matt Porter <mporter@linaro.org>, Anton Vorontsov <anton@enomsg.org>, Rob Herring <robh@kernel.org>, Shawn Guo <shawn.guo@freescale.com>, Sascha Hauer <kernel@pengutronix.de>, Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khc@pm.waw.pl>, Tony Lindgren <tony@atomide.com>, Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Marek Vasut <marek.vasut@gmail.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Linus Walleij <linus.walleij@linaro.org>, Tony Prisk <linux@prisktech.co.nz>, Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+Cc: linux-pm@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>, adi-buildroot-devel@lists.sourceforge.net, linux390@de.ibm.com, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux@lists.openrisc.net, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, x86@kernel.org, xen-devel@lists.xenproject.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Register with kernel poweroff handler instead of setting pm_power_off
-directly. Always use register_poweroff_handler_simple as there is no
-indication that more than one poweroff handler is registered.
+pm_power_off is defined for all architectures. Move it to common code.
 
-If the poweroff handler only resets the system or puts the CPU in sleep mode,
-select a priority of 0 to indicate that the poweroff handler is one of last
-resort. If the poweroff handler powers off the system, select a priority
-of 128.
+Have all architectures call do_kernel_power_off instead of pm_power_off.
+Some architectures point pm_power_off to machine_power_off. For those,
+call do_kernel_power_off from machine_power_off instead.
 
-Cc: Russell King <linux@arm.linux.org.uk>
-Cc: Andrew Victor <linux@maxim.org.za>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
-Cc: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Christian Daudt <bcm@fixthebug.org>
-Cc: Matt Porter <mporter@linaro.org>
-Cc: Anton Vorontsov <anton@enomsg.org>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Shawn Guo <shawn.guo@freescale.com>
-Cc: Sascha Hauer <kernel@pengutronix.de>
-Cc: Imre Kaloz <kaloz@openwrt.org>
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: Eric Miao <eric.y.miao@gmail.com>
-Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Ben Dooks <ben-linux@fluff.org>
-Cc: Kukjin Kim <kgene.kim@samsung.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Tony Prisk <linux@prisktech.co.nz>
-Cc: Stefano Stabellini <stefano.stabellini@eu.citrix.com>
+Acked-by: David Vrabel <david.vrabel@citrix.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Hirokazu Takata <takata@linux-m32r.org>
+Acked-by: James Hogan <james.hogan@imgtec.com>
+Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+Acked-by: Rafael J. Wysocki <rjw@rjwysocki.net>
+Acked-by: Richard Weinberger <richard@nod.at>
+Acked-by: Xuetao Guan <gxt@mprc.pku.edu.cn>
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- arch/arm/kernel/psci.c                         | 2 +-
- arch/arm/mach-at91/board-gsia18s.c             | 2 +-
- arch/arm/mach-at91/setup.c                     | 4 ++--
- arch/arm/mach-bcm/board_bcm2835.c              | 2 +-
- arch/arm/mach-cns3xxx/cns3420vb.c              | 2 +-
- arch/arm/mach-cns3xxx/core.c                   | 2 +-
- arch/arm/mach-highbank/highbank.c              | 2 +-
- arch/arm/mach-imx/mach-mx31moboard.c           | 2 +-
- arch/arm/mach-iop32x/em7210.c                  | 2 +-
- arch/arm/mach-iop32x/glantank.c                | 2 +-
- arch/arm/mach-iop32x/iq31244.c                 | 2 +-
- arch/arm/mach-iop32x/n2100.c                   | 2 +-
- arch/arm/mach-ixp4xx/dsmg600-setup.c           | 2 +-
- arch/arm/mach-ixp4xx/nas100d-setup.c           | 2 +-
- arch/arm/mach-ixp4xx/nslu2-setup.c             | 2 +-
- arch/arm/mach-omap2/board-omap3touchbook.c     | 2 +-
- arch/arm/mach-orion5x/board-mss2.c             | 2 +-
- arch/arm/mach-orion5x/dns323-setup.c           | 6 +++---
- arch/arm/mach-orion5x/kurobox_pro-setup.c      | 2 +-
- arch/arm/mach-orion5x/ls-chl-setup.c           | 2 +-
- arch/arm/mach-orion5x/ls_hgl-setup.c           | 2 +-
- arch/arm/mach-orion5x/lsmini-setup.c           | 2 +-
- arch/arm/mach-orion5x/mv2120-setup.c           | 2 +-
- arch/arm/mach-orion5x/net2big-setup.c          | 2 +-
- arch/arm/mach-orion5x/terastation_pro2-setup.c | 2 +-
- arch/arm/mach-orion5x/ts209-setup.c            | 2 +-
- arch/arm/mach-orion5x/ts409-setup.c            | 2 +-
- arch/arm/mach-pxa/corgi.c                      | 2 +-
- arch/arm/mach-pxa/mioa701.c                    | 2 +-
- arch/arm/mach-pxa/poodle.c                     | 2 +-
- arch/arm/mach-pxa/spitz.c                      | 2 +-
- arch/arm/mach-pxa/tosa.c                       | 2 +-
- arch/arm/mach-pxa/viper.c                      | 2 +-
- arch/arm/mach-pxa/z2.c                         | 6 +++---
- arch/arm/mach-pxa/zeus.c                       | 6 +++---
- arch/arm/mach-s3c24xx/mach-gta02.c             | 2 +-
- arch/arm/mach-s3c24xx/mach-jive.c              | 2 +-
- arch/arm/mach-s3c24xx/mach-vr1000.c            | 2 +-
- arch/arm/mach-s3c64xx/mach-smartq.c            | 2 +-
- arch/arm/mach-sa1100/generic.c                 | 2 +-
- arch/arm/mach-sa1100/simpad.c                  | 2 +-
- arch/arm/mach-u300/regulator.c                 | 2 +-
- arch/arm/mach-vt8500/vt8500.c                  | 2 +-
- arch/arm/xen/enlighten.c                       | 2 +-
- 44 files changed, 51 insertions(+), 51 deletions(-)
+v3:
+- Replace poweroff in all newly introduced variables and in text
+  with power_off or power-off as appropriate
+v2:
+- do_kernel_poweroff -> do_kernel_power_off
+- have_kernel_poweroff -> have_kernel_power_off
 
-diff --git a/arch/arm/kernel/psci.c b/arch/arm/kernel/psci.c
-index f73891b..dd58d86 100644
---- a/arch/arm/kernel/psci.c
-+++ b/arch/arm/kernel/psci.c
-@@ -264,7 +264,7 @@ static int psci_0_2_init(struct device_node *np)
+ arch/alpha/kernel/process.c        |  9 +++------
+ arch/arc/kernel/reset.c            |  5 +----
+ arch/arm/kernel/process.c          |  5 +----
+ arch/arm64/kernel/process.c        |  5 +----
+ arch/avr32/kernel/process.c        |  6 +-----
+ arch/blackfin/kernel/process.c     |  3 ---
+ arch/blackfin/kernel/reboot.c      |  2 ++
+ arch/c6x/kernel/process.c          |  9 +--------
+ arch/cris/kernel/process.c         |  4 +---
+ arch/frv/kernel/process.c          |  5 ++---
+ arch/hexagon/kernel/reset.c        |  5 ++---
+ arch/ia64/kernel/process.c         |  5 +----
+ arch/m32r/kernel/process.c         |  8 ++++----
+ arch/m68k/kernel/process.c         |  6 +-----
+ arch/metag/kernel/process.c        |  6 +-----
+ arch/microblaze/kernel/process.c   |  3 ---
+ arch/microblaze/kernel/reset.c     |  1 +
+ arch/mips/kernel/reset.c           |  6 +-----
+ arch/mn10300/kernel/process.c      |  8 ++------
+ arch/openrisc/kernel/process.c     |  8 +++++---
+ arch/parisc/kernel/process.c       |  8 ++++----
+ arch/powerpc/kernel/setup-common.c |  6 +++---
+ arch/s390/kernel/setup.c           |  8 ++------
+ arch/score/kernel/process.c        |  8 ++++----
+ arch/sh/kernel/reboot.c            |  6 +-----
+ arch/sparc/kernel/process_32.c     | 10 ++--------
+ arch/sparc/kernel/reboot.c         |  8 ++------
+ arch/tile/kernel/reboot.c          |  7 +++----
+ arch/um/kernel/reboot.c            |  2 --
+ arch/unicore32/kernel/process.c    |  9 +--------
+ arch/x86/kernel/reboot.c           | 11 +++--------
+ arch/x86/xen/enlighten.c           |  3 +--
+ arch/xtensa/kernel/process.c       |  4 ----
+ drivers/parisc/power.c             |  3 +--
+ kernel/power/power_off_handler.c   |  8 ++++++++
+ kernel/reboot.c                    |  4 ++--
+ 36 files changed, 68 insertions(+), 146 deletions(-)
+
+diff --git a/arch/alpha/kernel/process.c b/arch/alpha/kernel/process.c
+index 1941a07..81c43f8 100644
+--- a/arch/alpha/kernel/process.c
++++ b/arch/alpha/kernel/process.c
+@@ -24,6 +24,7 @@
+ #include <linux/vt.h>
+ #include <linux/mman.h>
+ #include <linux/elfcore.h>
++#include <linux/pm.h>
+ #include <linux/reboot.h>
+ #include <linux/tty.h>
+ #include <linux/console.h>
+@@ -40,12 +41,6 @@
+ #include "proto.h"
+ #include "pci_impl.h"
  
- 	arm_pm_restart = psci_sys_reset;
- 
--	pm_power_off = psci_sys_poweroff;
-+	register_poweroff_handler_simple(psci_sys_poweroff, 128);
- 
- out_put_node:
- 	of_node_put(np);
-diff --git a/arch/arm/mach-at91/board-gsia18s.c b/arch/arm/mach-at91/board-gsia18s.c
-index b729dd1..6722e66 100644
---- a/arch/arm/mach-at91/board-gsia18s.c
-+++ b/arch/arm/mach-at91/board-gsia18s.c
-@@ -521,7 +521,7 @@ static void gsia18s_power_off(void)
- 
- static int __init gsia18s_power_off_init(void)
+-/*
+- * Power off function, if any
+- */
+-void (*pm_power_off)(void) = machine_power_off;
+-EXPORT_SYMBOL(pm_power_off);
+-
+ #ifdef CONFIG_ALPHA_WTINT
+ /*
+  * Sleep the CPU.
+@@ -184,6 +179,8 @@ machine_halt(void)
+ void
+ machine_power_off(void)
  {
--	pm_power_off = gsia18s_power_off;
-+	register_poweroff_handler_simple(gsia18s_power_off, 128);
- 	return 0;
++	do_kernel_power_off();
++
+ 	common_shutdown(LINUX_REBOOT_CMD_POWER_OFF, NULL);
  }
  
-diff --git a/arch/arm/mach-at91/setup.c b/arch/arm/mach-at91/setup.c
-index f7a07a5..9989e88 100644
---- a/arch/arm/mach-at91/setup.c
-+++ b/arch/arm/mach-at91/setup.c
-@@ -329,7 +329,7 @@ void __init at91_ioremap_shdwc(u32 base_addr)
- 	at91_shdwc_base = ioremap(base_addr, 16);
- 	if (!at91_shdwc_base)
- 		panic("Impossible to ioremap at91_shdwc_base\n");
--	pm_power_off = at91sam9_poweroff;
-+	register_poweroff_handler_simple(at91sam9_poweroff, 128);
- }
+diff --git a/arch/arc/kernel/reset.c b/arch/arc/kernel/reset.c
+index 2768fa1..0758d9d 100644
+--- a/arch/arc/kernel/reset.c
++++ b/arch/arc/kernel/reset.c
+@@ -26,9 +26,6 @@ void machine_restart(char *__unused)
  
- void __iomem *at91_rstc_base;
-@@ -482,7 +482,7 @@ static void at91_dt_shdwc(void)
- 	at91_shdwc_write(AT91_SHDW_MR, wakeup_mode | mode);
- 
- end:
--	pm_power_off = at91sam9_poweroff;
-+	register_poweroff_handler_simple(at91sam9_poweroff, 128);
- 
- 	of_node_put(np);
- }
-diff --git a/arch/arm/mach-bcm/board_bcm2835.c b/arch/arm/mach-bcm/board_bcm2835.c
-index 70f2f39..7d5784f 100644
---- a/arch/arm/mach-bcm/board_bcm2835.c
-+++ b/arch/arm/mach-bcm/board_bcm2835.c
-@@ -111,7 +111,7 @@ static void __init bcm2835_init(void)
- 
- 	bcm2835_setup_restart();
- 	if (wdt_regs)
--		pm_power_off = bcm2835_power_off;
-+		register_poweroff_handler_simple(bcm2835_power_off, 0);
- 
- 	bcm2835_init_clocks();
- 
-diff --git a/arch/arm/mach-cns3xxx/cns3420vb.c b/arch/arm/mach-cns3xxx/cns3420vb.c
-index d863d87..136b7c6 100644
---- a/arch/arm/mach-cns3xxx/cns3420vb.c
-+++ b/arch/arm/mach-cns3xxx/cns3420vb.c
-@@ -224,7 +224,7 @@ static void __init cns3420_init(void)
- 	cns3xxx_ahci_init();
- 	cns3xxx_sdhci_init();
- 
--	pm_power_off = cns3xxx_power_off;
-+	register_poweroff_handler_simple(cns3xxx_power_off, 128);
- }
- 
- static struct map_desc cns3420_io_desc[] __initdata = {
-diff --git a/arch/arm/mach-cns3xxx/core.c b/arch/arm/mach-cns3xxx/core.c
-index f85449a..79e6ead 100644
---- a/arch/arm/mach-cns3xxx/core.c
-+++ b/arch/arm/mach-cns3xxx/core.c
-@@ -386,7 +386,7 @@ static void __init cns3xxx_init(void)
- 		cns3xxx_pwr_soft_rst(CNS3XXX_PWR_SOFTWARE_RST(SDIO));
- 	}
- 
--	pm_power_off = cns3xxx_power_off;
-+	register_poweroff_handler_simple(cns3xxx_power_off, 128);
- 
- 	of_platform_populate(NULL, of_default_bus_match_table,
-                         cns3xxx_auxdata, NULL);
-diff --git a/arch/arm/mach-highbank/highbank.c b/arch/arm/mach-highbank/highbank.c
-index 8c35ae4..25d0134 100644
---- a/arch/arm/mach-highbank/highbank.c
-+++ b/arch/arm/mach-highbank/highbank.c
-@@ -155,7 +155,7 @@ static void __init highbank_init(void)
- 	sregs_base = of_iomap(np, 0);
- 	WARN_ON(!sregs_base);
- 
--	pm_power_off = highbank_power_off;
-+	register_poweroff_handler_simple(highbank_power_off, 0);
- 	highbank_pm_init();
- 
- 	bus_register_notifier(&platform_bus_type, &highbank_platform_nb);
-diff --git a/arch/arm/mach-imx/mach-mx31moboard.c b/arch/arm/mach-imx/mach-mx31moboard.c
-index bb6f8a5..9b3616f 100644
---- a/arch/arm/mach-imx/mach-mx31moboard.c
-+++ b/arch/arm/mach-imx/mach-mx31moboard.c
-@@ -559,7 +559,7 @@ static void __init mx31moboard_init(void)
- 
- 	imx_add_platform_device("imx_mc13783", 0, NULL, 0, NULL, 0);
- 
--	pm_power_off = mx31moboard_poweroff;
-+	register_poweroff_handler_simple(mx31moboard_poweroff, 128);
- 
- 	switch (mx31moboard_baseboard) {
- 	case MX31NOBOARD:
-diff --git a/arch/arm/mach-iop32x/em7210.c b/arch/arm/mach-iop32x/em7210.c
-index 77e1ff0..beeeb0c2 100644
---- a/arch/arm/mach-iop32x/em7210.c
-+++ b/arch/arm/mach-iop32x/em7210.c
-@@ -201,7 +201,7 @@ static int __init em7210_request_gpios(void)
- 		return 0;
- 	}
- 
--	pm_power_off = em7210_power_off;
-+	register_poweroff_handler_simple(em7210_power_off, 128);
- 
- 	return 0;
- }
-diff --git a/arch/arm/mach-iop32x/glantank.c b/arch/arm/mach-iop32x/glantank.c
-index 547b234..050a8e6 100644
---- a/arch/arm/mach-iop32x/glantank.c
-+++ b/arch/arm/mach-iop32x/glantank.c
-@@ -199,7 +199,7 @@ static void __init glantank_init_machine(void)
- 	i2c_register_board_info(0, glantank_i2c_devices,
- 		ARRAY_SIZE(glantank_i2c_devices));
- 
--	pm_power_off = glantank_power_off;
-+	register_poweroff_handler_simple(glantank_power_off, 128);
- }
- 
- MACHINE_START(GLANTANK, "GLAN Tank")
-diff --git a/arch/arm/mach-iop32x/iq31244.c b/arch/arm/mach-iop32x/iq31244.c
-index 0e1392b..4e9b972 100644
---- a/arch/arm/mach-iop32x/iq31244.c
-+++ b/arch/arm/mach-iop32x/iq31244.c
-@@ -293,7 +293,7 @@ static void __init iq31244_init_machine(void)
- 	platform_device_register(&iop3xx_dma_1_channel);
- 
- 	if (is_ep80219())
--		pm_power_off = ep80219_power_off;
-+		register_poweroff_handler_simple(ep80219_power_off, 128);
- 
- 	if (!is_80219())
- 		platform_device_register(&iop3xx_aau_channel);
-diff --git a/arch/arm/mach-iop32x/n2100.c b/arch/arm/mach-iop32x/n2100.c
-index c1cd80e..171d496 100644
---- a/arch/arm/mach-iop32x/n2100.c
-+++ b/arch/arm/mach-iop32x/n2100.c
-@@ -356,7 +356,7 @@ static void __init n2100_init_machine(void)
- 	i2c_register_board_info(0, n2100_i2c_devices,
- 		ARRAY_SIZE(n2100_i2c_devices));
- 
--	pm_power_off = n2100_power_off;
-+	register_poweroff_handler_simple(n2100_power_off, 128);
- }
- 
- MACHINE_START(N2100, "Thecus N2100")
-diff --git a/arch/arm/mach-ixp4xx/dsmg600-setup.c b/arch/arm/mach-ixp4xx/dsmg600-setup.c
-index 43ee06d..6fb5072 100644
---- a/arch/arm/mach-ixp4xx/dsmg600-setup.c
-+++ b/arch/arm/mach-ixp4xx/dsmg600-setup.c
-@@ -281,7 +281,7 @@ static void __init dsmg600_init(void)
- 
- 	platform_add_devices(dsmg600_devices, ARRAY_SIZE(dsmg600_devices));
- 
--	pm_power_off = dsmg600_power_off;
-+	register_poweroff_handler_simple(dsmg600_power_off, 128);
- }
- 
- MACHINE_START(DSMG600, "D-Link DSM-G600 RevA")
-diff --git a/arch/arm/mach-ixp4xx/nas100d-setup.c b/arch/arm/mach-ixp4xx/nas100d-setup.c
-index 4e0f762..bd9a8d6 100644
---- a/arch/arm/mach-ixp4xx/nas100d-setup.c
-+++ b/arch/arm/mach-ixp4xx/nas100d-setup.c
-@@ -292,7 +292,7 @@ static void __init nas100d_init(void)
- 
- 	platform_add_devices(nas100d_devices, ARRAY_SIZE(nas100d_devices));
- 
--	pm_power_off = nas100d_power_off;
-+	register_poweroff_handler_simple(nas100d_power_off, 128);
- 
- 	if (request_irq(gpio_to_irq(NAS100D_RB_GPIO), &nas100d_reset_handler,
- 		IRQF_TRIGGER_LOW, "NAS100D reset button", NULL) < 0) {
-diff --git a/arch/arm/mach-ixp4xx/nslu2-setup.c b/arch/arm/mach-ixp4xx/nslu2-setup.c
-index 88c025f..c4c5475 100644
---- a/arch/arm/mach-ixp4xx/nslu2-setup.c
-+++ b/arch/arm/mach-ixp4xx/nslu2-setup.c
-@@ -262,7 +262,7 @@ static void __init nslu2_init(void)
- 
- 	platform_add_devices(nslu2_devices, ARRAY_SIZE(nslu2_devices));
- 
--	pm_power_off = nslu2_power_off;
-+	register_poweroff_handler_simple(nslu2_power_off, 128);
- 
- 	if (request_irq(gpio_to_irq(NSLU2_RB_GPIO), &nslu2_reset_handler,
- 		IRQF_TRIGGER_LOW, "NSLU2 reset button", NULL) < 0) {
-diff --git a/arch/arm/mach-omap2/board-omap3touchbook.c b/arch/arm/mach-omap2/board-omap3touchbook.c
-index 70b904c..0c0a0e2 100644
---- a/arch/arm/mach-omap2/board-omap3touchbook.c
-+++ b/arch/arm/mach-omap2/board-omap3touchbook.c
-@@ -344,7 +344,7 @@ static void __init omap3_touchbook_init(void)
+ void machine_power_off(void)
  {
- 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
- 
--	pm_power_off = omap3_touchbook_poweroff;
-+	register_poweroff_handler_simple(omap3_touchbook_poweroff, 128);
- 
- 	if (system_rev >= 0x20 && system_rev <= 0x34301000) {
- 		omap_mux_init_gpio(23, OMAP_PIN_INPUT);
-diff --git a/arch/arm/mach-orion5x/board-mss2.c b/arch/arm/mach-orion5x/board-mss2.c
-index 66f9c3b..3840d66 100644
---- a/arch/arm/mach-orion5x/board-mss2.c
-+++ b/arch/arm/mach-orion5x/board-mss2.c
-@@ -86,5 +86,5 @@ static void mss2_power_off(void)
- void __init mss2_init(void)
- {
- 	/* register mss2 specific power-off method */
--	pm_power_off = mss2_power_off;
-+	register_poweroff_handler_simple(mss2_power_off, 0);
+-	/* FIXME ::  power off ??? */
++	do_kernel_power_off();
+ 	machine_halt();
  }
-diff --git a/arch/arm/mach-orion5x/dns323-setup.c b/arch/arm/mach-orion5x/dns323-setup.c
-index 56edeab..353ca3d 100644
---- a/arch/arm/mach-orion5x/dns323-setup.c
-+++ b/arch/arm/mach-orion5x/dns323-setup.c
-@@ -669,7 +669,7 @@ static void __init dns323_init(void)
- 		if (gpio_request(DNS323_GPIO_POWER_OFF, "POWEROFF") != 0 ||
- 		    gpio_direction_output(DNS323_GPIO_POWER_OFF, 0) != 0)
- 			pr_err("DNS-323: failed to setup power-off GPIO\n");
--		pm_power_off = dns323a_power_off;
-+		register_poweroff_handler_simple(dns323a_power_off, 128);
- 		break;
- 	case DNS323_REV_B1:
- 		/* 5182 built-in SATA init */
-@@ -686,7 +686,7 @@ static void __init dns323_init(void)
- 		if (gpio_request(DNS323_GPIO_POWER_OFF, "POWEROFF") != 0 ||
- 		    gpio_direction_output(DNS323_GPIO_POWER_OFF, 0) != 0)
- 			pr_err("DNS-323: failed to setup power-off GPIO\n");
--		pm_power_off = dns323b_power_off;
-+		register_poweroff_handler_simple(dns323b_power_off, 128);
- 		break;
- 	case DNS323_REV_C1:
- 		/* 5182 built-in SATA init */
-@@ -696,7 +696,7 @@ static void __init dns323_init(void)
- 		if (gpio_request(DNS323C_GPIO_POWER_OFF, "POWEROFF") != 0 ||
- 		    gpio_direction_output(DNS323C_GPIO_POWER_OFF, 0) != 0)
- 			pr_err("DNS-323: failed to setup power-off GPIO\n");
--		pm_power_off = dns323c_power_off;
-+		register_poweroff_handler_simple(dns323c_power_off, 128);
+-
+-void (*pm_power_off) (void) = NULL;
+-EXPORT_SYMBOL(pm_power_off);
+diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
+index fe972a2..aa3f656 100644
+--- a/arch/arm/kernel/process.c
++++ b/arch/arm/kernel/process.c
+@@ -117,8 +117,6 @@ void soft_restart(unsigned long addr)
+ /*
+  * Function pointers to optional machine specific functions
+  */
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
  
- 		/* Now, -this- should theorically be done by the sata_mv driver
- 		 * once I figure out what's going on there. Maybe the behaviour
-diff --git a/arch/arm/mach-orion5x/kurobox_pro-setup.c b/arch/arm/mach-orion5x/kurobox_pro-setup.c
-index fe6a48a..c4101f1 100644
---- a/arch/arm/mach-orion5x/kurobox_pro-setup.c
-+++ b/arch/arm/mach-orion5x/kurobox_pro-setup.c
-@@ -376,7 +376,7 @@ static void __init kurobox_pro_init(void)
- 	i2c_register_board_info(0, &kurobox_pro_i2c_rtc, 1);
+ void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
  
- 	/* register Kurobox Pro specific power-off method */
--	pm_power_off = kurobox_pro_power_off;
-+	register_poweroff_handler_simple(kurobox_pro_power_off, 128);
- }
- 
- #ifdef CONFIG_MACH_KUROBOX_PRO
-diff --git a/arch/arm/mach-orion5x/ls-chl-setup.c b/arch/arm/mach-orion5x/ls-chl-setup.c
-index 028ea03..005bb04 100644
---- a/arch/arm/mach-orion5x/ls-chl-setup.c
-+++ b/arch/arm/mach-orion5x/ls-chl-setup.c
-@@ -312,7 +312,7 @@ static void __init lschl_init(void)
- 	gpio_set_value(LSCHL_GPIO_USB_POWER, 1);
- 
- 	/* register power-off method */
--	pm_power_off = lschl_power_off;
-+	register_poweroff_handler_simple(lschl_power_off, 0);
- 
- 	pr_info("%s: finished\n", __func__);
- }
-diff --git a/arch/arm/mach-orion5x/ls_hgl-setup.c b/arch/arm/mach-orion5x/ls_hgl-setup.c
-index 32b7129..37c29a0 100644
---- a/arch/arm/mach-orion5x/ls_hgl-setup.c
-+++ b/arch/arm/mach-orion5x/ls_hgl-setup.c
-@@ -259,7 +259,7 @@ static void __init ls_hgl_init(void)
- 	gpio_set_value(LS_HGL_GPIO_USB_POWER, 1);
- 
- 	/* register power-off method */
--	pm_power_off = ls_hgl_power_off;
-+	register_poweroff_handler_simple(ls_hgl_power_off, 0);
- 
- 	pr_info("%s: finished\n", __func__);
- }
-diff --git a/arch/arm/mach-orion5x/lsmini-setup.c b/arch/arm/mach-orion5x/lsmini-setup.c
-index a6493e7..ffec72f 100644
---- a/arch/arm/mach-orion5x/lsmini-setup.c
-+++ b/arch/arm/mach-orion5x/lsmini-setup.c
-@@ -260,7 +260,7 @@ static void __init lsmini_init(void)
- 	gpio_set_value(LSMINI_GPIO_USB_POWER, 1);
- 
- 	/* register power-off method */
--	pm_power_off = lsmini_power_off;
-+	register_poweroff_handler_simple(lsmini_power_off, 0);
- 
- 	pr_info("%s: finished\n", __func__);
- }
-diff --git a/arch/arm/mach-orion5x/mv2120-setup.c b/arch/arm/mach-orion5x/mv2120-setup.c
-index e032f01..dadc2b9 100644
---- a/arch/arm/mach-orion5x/mv2120-setup.c
-+++ b/arch/arm/mach-orion5x/mv2120-setup.c
-@@ -225,7 +225,7 @@ static void __init mv2120_init(void)
- 	if (gpio_request(MV2120_GPIO_POWER_OFF, "POWEROFF") != 0 ||
- 	    gpio_direction_output(MV2120_GPIO_POWER_OFF, 1) != 0)
- 		pr_err("mv2120: failed to setup power-off GPIO\n");
--	pm_power_off = mv2120_power_off;
-+	register_poweroff_handler_simple(mv2120_power_off, 128);
- }
- 
- /* Warning: HP uses a wrong mach-type (=526) in their bootloader */
-diff --git a/arch/arm/mach-orion5x/net2big-setup.c b/arch/arm/mach-orion5x/net2big-setup.c
-index ba73dc7..3a73dce 100644
---- a/arch/arm/mach-orion5x/net2big-setup.c
-+++ b/arch/arm/mach-orion5x/net2big-setup.c
-@@ -413,7 +413,7 @@ static void __init net2big_init(void)
- 
- 	if (gpio_request(NET2BIG_GPIO_POWER_OFF, "power-off") == 0 &&
- 	    gpio_direction_output(NET2BIG_GPIO_POWER_OFF, 0) == 0)
--		pm_power_off = net2big_power_off;
-+		register_poweroff_handler_simple(net2big_power_off, 128);
- 	else
- 		pr_err("net2big: failed to configure power-off GPIO\n");
- 
-diff --git a/arch/arm/mach-orion5x/terastation_pro2-setup.c b/arch/arm/mach-orion5x/terastation_pro2-setup.c
-index 6208d12..2a234cb 100644
---- a/arch/arm/mach-orion5x/terastation_pro2-setup.c
-+++ b/arch/arm/mach-orion5x/terastation_pro2-setup.c
-@@ -353,7 +353,7 @@ static void __init tsp2_init(void)
- 	i2c_register_board_info(0, &tsp2_i2c_rtc, 1);
- 
- 	/* register Terastation Pro II specific power-off method */
--	pm_power_off = tsp2_power_off;
-+	register_poweroff_handler_simple(tsp2_power_off, 128);
- }
- 
- MACHINE_START(TERASTATION_PRO2, "Buffalo Terastation Pro II/Live")
-diff --git a/arch/arm/mach-orion5x/ts209-setup.c b/arch/arm/mach-orion5x/ts209-setup.c
-index 9136797..50bdfbc 100644
---- a/arch/arm/mach-orion5x/ts209-setup.c
-+++ b/arch/arm/mach-orion5x/ts209-setup.c
-@@ -318,7 +318,7 @@ static void __init qnap_ts209_init(void)
- 	i2c_register_board_info(0, &qnap_ts209_i2c_rtc, 1);
- 
- 	/* register tsx09 specific power-off method */
--	pm_power_off = qnap_tsx09_power_off;
-+	register_poweroff_handler_simple(qnap_tsx09_power_off, 128);
- }
- 
- MACHINE_START(TS209, "QNAP TS-109/TS-209")
-diff --git a/arch/arm/mach-orion5x/ts409-setup.c b/arch/arm/mach-orion5x/ts409-setup.c
-index 5c079d31..06a7cc0 100644
---- a/arch/arm/mach-orion5x/ts409-setup.c
-+++ b/arch/arm/mach-orion5x/ts409-setup.c
-@@ -307,7 +307,7 @@ static void __init qnap_ts409_init(void)
- 	platform_device_register(&ts409_leds);
- 
- 	/* register tsx09 specific power-off method */
--	pm_power_off = qnap_tsx09_power_off;
-+	register_poweroff_handler_simple(qnap_tsx09_power_off, 128);
- }
- 
- MACHINE_START(TS409, "QNAP TS-409")
-diff --git a/arch/arm/mach-pxa/corgi.c b/arch/arm/mach-pxa/corgi.c
-index 06022b2..a93bac0 100644
---- a/arch/arm/mach-pxa/corgi.c
-+++ b/arch/arm/mach-pxa/corgi.c
-@@ -718,7 +718,7 @@ static void corgi_restart(enum reboot_mode mode, const char *cmd)
- 
- static void __init corgi_init(void)
- {
--	pm_power_off = corgi_poweroff;
-+	register_poweroff_handler_simple(corgi_poweroff, 0);
- 
- 	/* Stop 3.6MHz and drive HIGH to PCMCIA and CS */
- 	PCFR |= PCFR_OPDE;
-diff --git a/arch/arm/mach-pxa/mioa701.c b/arch/arm/mach-pxa/mioa701.c
-index 29997bd..c4345a4 100644
---- a/arch/arm/mach-pxa/mioa701.c
-+++ b/arch/arm/mach-pxa/mioa701.c
-@@ -750,7 +750,7 @@ static void __init mioa701_machine_init(void)
- 	pxa_set_keypad_info(&mioa701_keypad_info);
- 	pxa_set_udc_info(&mioa701_udc_info);
- 	pxa_set_ac97_info(&mioa701_ac97_info);
--	pm_power_off = mioa701_poweroff;
-+	register_poweroff_handler_simple(mioa701_poweroff, 0);
- 	platform_add_devices(devices, ARRAY_SIZE(devices));
- 	gsm_init();
- 
-diff --git a/arch/arm/mach-pxa/poodle.c b/arch/arm/mach-pxa/poodle.c
-index 1319916..c9536ed 100644
---- a/arch/arm/mach-pxa/poodle.c
-+++ b/arch/arm/mach-pxa/poodle.c
-@@ -432,7 +432,7 @@ static void __init poodle_init(void)
- {
- 	int ret = 0;
- 
--	pm_power_off = poodle_poweroff;
-+	register_poweroff_handler_simple(poodle_poweroff, 0);
- 
- 	PCFR |= PCFR_OPDE;
- 
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index 840c3a4..09f0de8 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -944,7 +944,7 @@ static void spitz_restart(enum reboot_mode mode, const char *cmd)
- static void __init spitz_init(void)
- {
- 	init_gpio_reset(SPITZ_GPIO_ON_RESET, 1, 0);
--	pm_power_off = spitz_poweroff;
-+	register_poweroff_handler_simple(spitz_poweroff, 0);
- 
- 	PMCR = 0x00;
- 
-diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
-index c158a6e..3a4af1d 100644
---- a/arch/arm/mach-pxa/tosa.c
-+++ b/arch/arm/mach-pxa/tosa.c
-@@ -940,7 +940,7 @@ static void __init tosa_init(void)
- 
- 	init_gpio_reset(TOSA_GPIO_ON_RESET, 0, 0);
- 
--	pm_power_off = tosa_poweroff;
-+	register_poweroff_handler_simple(tosa_poweroff, 0);
- 
- 	PCFR |= PCFR_OPDE;
- 
-diff --git a/arch/arm/mach-pxa/viper.c b/arch/arm/mach-pxa/viper.c
-index de3b080..679c8ea 100644
---- a/arch/arm/mach-pxa/viper.c
-+++ b/arch/arm/mach-pxa/viper.c
-@@ -919,7 +919,7 @@ static void __init viper_init(void)
- {
- 	u8 version;
- 
--	pm_power_off = viper_power_off;
-+	register_poweroff_handler_simple(viper_power_off, 128);
- 
- 	pxa2xx_mfp_config(ARRAY_AND_SIZE(viper_pin_config));
- 
-diff --git a/arch/arm/mach-pxa/z2.c b/arch/arm/mach-pxa/z2.c
-index e1a121b..e0195ac 100644
---- a/arch/arm/mach-pxa/z2.c
-+++ b/arch/arm/mach-pxa/z2.c
-@@ -693,8 +693,6 @@ static void z2_power_off(void)
- 	pxa27x_set_pwrmode(PWRMODE_DEEPSLEEP);
- 	pxa27x_cpu_pm_enter(PM_SUSPEND_MEM);
- }
--#else
--#define z2_power_off   NULL
- #endif
- 
- /******************************************************************************
-@@ -719,7 +717,9 @@ static void __init z2_init(void)
- 	z2_keys_init();
- 	z2_pmic_init();
- 
--	pm_power_off = z2_power_off;
-+#ifdef CONFIG_PM
-+	register_poweroff_handler_simple(z2_power_off, 0);
-+#endif
- }
- 
- MACHINE_START(ZIPIT2, "Zipit Z2")
-diff --git a/arch/arm/mach-pxa/zeus.c b/arch/arm/mach-pxa/zeus.c
-index 205f9bf..6118fd5 100644
---- a/arch/arm/mach-pxa/zeus.c
-+++ b/arch/arm/mach-pxa/zeus.c
-@@ -690,8 +690,6 @@ static void zeus_power_off(void)
+@@ -205,8 +203,7 @@ void machine_power_off(void)
  	local_irq_disable();
- 	cpu_suspend(PWRMODE_DEEPSLEEP, pxa27x_finish_suspend);
+ 	smp_send_stop();
+ 
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
  }
--#else
--#define zeus_power_off   NULL
+ 
+ /*
+diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+index fde9923..6f623a0 100644
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@ -68,8 +68,6 @@ void soft_restart(unsigned long addr)
+ /*
+  * Function pointers to optional machine specific functions
+  */
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL_GPL(pm_power_off);
+ 
+ void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
+ 
+@@ -129,8 +127,7 @@ void machine_power_off(void)
+ {
+ 	local_irq_disable();
+ 	smp_send_stop();
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ }
+ 
+ /*
+diff --git a/arch/avr32/kernel/process.c b/arch/avr32/kernel/process.c
+index 42a53e74..529c1f6 100644
+--- a/arch/avr32/kernel/process.c
++++ b/arch/avr32/kernel/process.c
+@@ -23,9 +23,6 @@
+ 
+ #include <mach/pm.h>
+ 
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+ /*
+  * This file handles the architecture-dependent parts of process handling..
+  */
+@@ -48,8 +45,7 @@ void machine_halt(void)
+ 
+ void machine_power_off(void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ }
+ 
+ void machine_restart(char *cmd)
+diff --git a/arch/blackfin/kernel/process.c b/arch/blackfin/kernel/process.c
+index 4aa5545..812dd83 100644
+--- a/arch/blackfin/kernel/process.c
++++ b/arch/blackfin/kernel/process.c
+@@ -39,9 +39,6 @@ int nr_l1stack_tasks;
+ void *l1_stack_base;
+ unsigned long l1_stack_len;
+ 
+-void (*pm_power_off)(void) = NULL;
+-EXPORT_SYMBOL(pm_power_off);
+-
+ /*
+  * The idle loop on BFIN
+  */
+diff --git a/arch/blackfin/kernel/reboot.c b/arch/blackfin/kernel/reboot.c
+index c4f50a3..387d610 100644
+--- a/arch/blackfin/kernel/reboot.c
++++ b/arch/blackfin/kernel/reboot.c
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <linux/interrupt.h>
++#include <linux/pm.h>
+ #include <asm/bfin-global.h>
+ #include <asm/reboot.h>
+ #include <asm/bfrom.h>
+@@ -106,6 +107,7 @@ void machine_halt(void)
+ __attribute__((weak))
+ void native_machine_power_off(void)
+ {
++	do_kernel_power_off();
+ 	idle_with_irq_disabled();
+ }
+ 
+diff --git a/arch/c6x/kernel/process.c b/arch/c6x/kernel/process.c
+index 57d2ea8..edf7e5a 100644
+--- a/arch/c6x/kernel/process.c
++++ b/arch/c6x/kernel/process.c
+@@ -27,12 +27,6 @@ void	(*c6x_halt)(void);
+ extern asmlinkage void ret_from_fork(void);
+ extern asmlinkage void ret_from_kernel_thread(void);
+ 
+-/*
+- * power off function, if any
+- */
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+ void arch_cpu_idle(void)
+ {
+ 	unsigned long tmp;
+@@ -73,8 +67,7 @@ void machine_halt(void)
+ 
+ void machine_power_off(void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	halt_loop();
+ }
+ 
+diff --git a/arch/cris/kernel/process.c b/arch/cris/kernel/process.c
+index b78498e..9ebd76b 100644
+--- a/arch/cris/kernel/process.c
++++ b/arch/cris/kernel/process.c
+@@ -31,9 +31,6 @@
+ 
+ extern void default_idle(void);
+ 
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+ void arch_cpu_idle(void)
+ {
+ 	default_idle();
+@@ -60,6 +57,7 @@ void machine_halt(void)
+ 
+ void machine_power_off(void)
+ {
++	do_kernel_power_off();
+ }
+ 
+ /*
+diff --git a/arch/frv/kernel/process.c b/arch/frv/kernel/process.c
+index 5d40aeb77..502dabb 100644
+--- a/arch/frv/kernel/process.c
++++ b/arch/frv/kernel/process.c
+@@ -42,9 +42,6 @@ asmlinkage void ret_from_kernel_thread(void);
+ 
+ #include <asm/pgalloc.h>
+ 
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+ static void core_sleep_idle(void)
+ {
+ #ifdef LED_DEBUG_SLEEP
+@@ -107,6 +104,8 @@ void machine_power_off(void)
+ 	gdbstub_exit(0);
  #endif
  
- #ifdef CONFIG_APM_EMULATION
-@@ -847,7 +845,9 @@ static void __init zeus_init(void)
- 	__raw_writel(msc0, MSC0);
- 	__raw_writel(msc1, MSC1);
- 
--	pm_power_off = zeus_power_off;
-+#ifdef CONFIG_PM
-+	register_poweroff_handler_simple(zeus_power_off, 0);
-+#endif
- 	zeus_setup_apm();
- 
- 	pxa2xx_mfp_config(ARRAY_AND_SIZE(zeus_pin_config));
-diff --git a/arch/arm/mach-s3c24xx/mach-gta02.c b/arch/arm/mach-s3c24xx/mach-gta02.c
-index fc3a08d..ca78150 100644
---- a/arch/arm/mach-s3c24xx/mach-gta02.c
-+++ b/arch/arm/mach-s3c24xx/mach-gta02.c
-@@ -579,7 +579,7 @@ static void __init gta02_machine_init(void)
- 	i2c_register_board_info(0, gta02_i2c_devs, ARRAY_SIZE(gta02_i2c_devs));
- 
- 	platform_add_devices(gta02_devices, ARRAY_SIZE(gta02_devices));
--	pm_power_off = gta02_poweroff;
-+	register_poweroff_handler_simple(gta02_poweroff, 128);
- 
- 	regulator_has_full_constraints();
++	do_kernel_power_off();
++
+ 	for (;;);
  }
-diff --git a/arch/arm/mach-s3c24xx/mach-jive.c b/arch/arm/mach-s3c24xx/mach-jive.c
-index 7804d3c..5a828a3 100644
---- a/arch/arm/mach-s3c24xx/mach-jive.c
-+++ b/arch/arm/mach-s3c24xx/mach-jive.c
-@@ -657,7 +657,7 @@ static void __init jive_machine_init(void)
- 	s3c_i2c0_set_platdata(&jive_i2c_cfg);
- 	i2c_register_board_info(0, jive_i2c_devs, ARRAY_SIZE(jive_i2c_devs));
  
--	pm_power_off = jive_power_off;
-+	register_poweroff_handler_simple(jive_power_off, 128);
+diff --git a/arch/hexagon/kernel/reset.c b/arch/hexagon/kernel/reset.c
+index 76483c1..6f607b6 100644
+--- a/arch/hexagon/kernel/reset.c
++++ b/arch/hexagon/kernel/reset.c
+@@ -16,11 +16,13 @@
+  * 02110-1301, USA.
+  */
  
- 	platform_add_devices(jive_devices, ARRAY_SIZE(jive_devices));
- }
-diff --git a/arch/arm/mach-s3c24xx/mach-vr1000.c b/arch/arm/mach-s3c24xx/mach-vr1000.c
-index f88c584..40d7655 100644
---- a/arch/arm/mach-s3c24xx/mach-vr1000.c
-+++ b/arch/arm/mach-s3c24xx/mach-vr1000.c
-@@ -306,7 +306,7 @@ static void vr1000_power_off(void)
++#include <linux/pm.h>
+ #include <linux/smp.h>
+ #include <asm/hexagon_vm.h>
  
- static void __init vr1000_map_io(void)
+ void machine_power_off(void)
  {
--	pm_power_off = vr1000_power_off;
-+	register_poweroff_handler_simple(vr1000_power_off, 128);
- 
- 	s3c24xx_init_io(vr1000_iodesc, ARRAY_SIZE(vr1000_iodesc));
- 	s3c24xx_init_uarts(vr1000_uartcfgs, ARRAY_SIZE(vr1000_uartcfgs));
-diff --git a/arch/arm/mach-s3c64xx/mach-smartq.c b/arch/arm/mach-s3c64xx/mach-smartq.c
-index b3d1353..61f0893 100644
---- a/arch/arm/mach-s3c64xx/mach-smartq.c
-+++ b/arch/arm/mach-s3c64xx/mach-smartq.c
-@@ -291,7 +291,7 @@ static int __init smartq_power_off_init(void)
- 	/* leave power on */
- 	gpio_direction_output(S3C64XX_GPK(15), 0);
- 
--	pm_power_off = smartq_power_off;
-+	register_poweroff_handler_simple(smartq_power_off, 128);
- 
- 	return ret;
++	do_kernel_power_off();
+ 	smp_send_stop();
+ 	__vmstop();
  }
-diff --git a/arch/arm/mach-sa1100/generic.c b/arch/arm/mach-sa1100/generic.c
-index d4ea142..6b839cf 100644
---- a/arch/arm/mach-sa1100/generic.c
-+++ b/arch/arm/mach-sa1100/generic.c
-@@ -311,7 +311,7 @@ static struct platform_device *sa11x0_devices[] __initdata = {
- 
- static int __init sa1100_init(void)
+@@ -32,6 +34,3 @@ void machine_halt(void)
+ void machine_restart(char *cmd)
  {
--	pm_power_off = sa1100_power_off;
-+	register_poweroff_handler_simple(sa1100_power_off, 0);
- 	return platform_add_devices(sa11x0_devices, ARRAY_SIZE(sa11x0_devices));
+ }
+-
+-void (*pm_power_off)(void) = NULL;
+-EXPORT_SYMBOL(pm_power_off);
+diff --git a/arch/ia64/kernel/process.c b/arch/ia64/kernel/process.c
+index b515149..88121a2 100644
+--- a/arch/ia64/kernel/process.c
++++ b/arch/ia64/kernel/process.c
+@@ -57,8 +57,6 @@ void (*ia64_mark_idle)(int);
+ 
+ unsigned long boot_option_idle_override = IDLE_NO_OVERRIDE;
+ EXPORT_SYMBOL(boot_option_idle_override);
+-void (*pm_power_off) (void);
+-EXPORT_SYMBOL(pm_power_off);
+ 
+ void
+ ia64_do_show_stack (struct unw_frame_info *info, void *arg)
+@@ -675,8 +673,7 @@ machine_halt (void)
+ void
+ machine_power_off (void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	machine_halt();
  }
  
-diff --git a/arch/arm/mach-sa1100/simpad.c b/arch/arm/mach-sa1100/simpad.c
-index 41e476e..a65ca58 100644
---- a/arch/arm/mach-sa1100/simpad.c
-+++ b/arch/arm/mach-sa1100/simpad.c
-@@ -373,7 +373,7 @@ static int __init simpad_init(void)
- 	if (ret)
- 		printk(KERN_WARNING "simpad: Unable to register cs3 GPIO device");
- 
--	pm_power_off = simpad_power_off;
-+	register_poweroff_handler_simple(simpad_power_off, 0);
- 
- 	sa11x0_ppc_configure_mcp();
- 	sa11x0_register_mtd(&simpad_flash_data, simpad_flash_resources,
-diff --git a/arch/arm/mach-u300/regulator.c b/arch/arm/mach-u300/regulator.c
-index 0493a84..c98eb6e 100644
---- a/arch/arm/mach-u300/regulator.c
-+++ b/arch/arm/mach-u300/regulator.c
-@@ -98,7 +98,7 @@ static int __init __u300_init_boardpower(struct platform_device *pdev)
- 			   U300_SYSCON_PMCR_DCON_ENABLE, 0);
- 
- 	/* Register globally exported PM poweroff hook */
--	pm_power_off = u300_pm_poweroff;
-+	register_poweroff_handler_simple(u300_pm_poweroff, 128);
- 
- 	return 0;
+diff --git a/arch/m32r/kernel/process.c b/arch/m32r/kernel/process.c
+index e69221d..65a037e 100644
+--- a/arch/m32r/kernel/process.c
++++ b/arch/m32r/kernel/process.c
+@@ -23,6 +23,7 @@
+ #include <linux/fs.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
++#include <linux/pm.h>
+ #include <linux/ptrace.h>
+ #include <linux/unistd.h>
+ #include <linux/hardirq.h>
+@@ -44,9 +45,6 @@ unsigned long thread_saved_pc(struct task_struct *tsk)
+ 	return tsk->thread.lr;
  }
-diff --git a/arch/arm/mach-vt8500/vt8500.c b/arch/arm/mach-vt8500/vt8500.c
-index 2da7be3..515946b 100644
---- a/arch/arm/mach-vt8500/vt8500.c
-+++ b/arch/arm/mach-vt8500/vt8500.c
-@@ -155,7 +155,7 @@ static void __init vt8500_init(void)
- 			pr_err("%s:ioremap(power_off) failed\n", __func__);
+ 
+-void (*pm_power_off)(void) = NULL;
+-EXPORT_SYMBOL(pm_power_off);
+-
+ void machine_restart(char *__unused)
+ {
+ #if defined(CONFIG_PLAT_MAPPI3)
+@@ -67,7 +65,9 @@ void machine_halt(void)
+ 
+ void machine_power_off(void)
+ {
+-	/* M32R_FIXME */
++	do_kernel_power_off();
++	for (;;)
++		;
+ }
+ 
+ void show_regs(struct pt_regs * regs)
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index afe3d6e..bbc0a63 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -78,14 +78,10 @@ void machine_halt(void)
+ 
+ void machine_power_off(void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	for (;;);
+ }
+ 
+-void (*pm_power_off)(void) = machine_power_off;
+-EXPORT_SYMBOL(pm_power_off);
+-
+ void show_regs(struct pt_regs * regs)
+ {
+ 	printk("\n");
+diff --git a/arch/metag/kernel/process.c b/arch/metag/kernel/process.c
+index 483dff9..8d95773 100644
+--- a/arch/metag/kernel/process.c
++++ b/arch/metag/kernel/process.c
+@@ -67,9 +67,6 @@ void arch_cpu_idle_dead(void)
+ }
+ #endif
+ 
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+ void (*soc_restart)(char *cmd);
+ void (*soc_halt)(void);
+ 
+@@ -90,8 +87,7 @@ void machine_halt(void)
+ 
+ void machine_power_off(void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	smp_send_stop();
+ 	hard_processor_halt(HALT_OK);
+ }
+diff --git a/arch/microblaze/kernel/process.c b/arch/microblaze/kernel/process.c
+index b2dd371..0ebca36 100644
+--- a/arch/microblaze/kernel/process.c
++++ b/arch/microblaze/kernel/process.c
+@@ -44,9 +44,6 @@ void show_regs(struct pt_regs *regs)
+ 				regs->msr, regs->ear, regs->esr, regs->fsr);
+ }
+ 
+-void (*pm_power_off)(void) = NULL;
+-EXPORT_SYMBOL(pm_power_off);
+-
+ void flush_thread(void)
+ {
+ }
+diff --git a/arch/microblaze/kernel/reset.c b/arch/microblaze/kernel/reset.c
+index fbe58c6..2c6b32c 100644
+--- a/arch/microblaze/kernel/reset.c
++++ b/arch/microblaze/kernel/reset.c
+@@ -103,6 +103,7 @@ void machine_halt(void)
+ void machine_power_off(void)
+ {
+ 	pr_notice("Machine power off...\n");
++	do_kernel_power_off();
+ 	while (1)
+ 		;
+ }
+diff --git a/arch/mips/kernel/reset.c b/arch/mips/kernel/reset.c
+index 07fc524..09e74d2 100644
+--- a/arch/mips/kernel/reset.c
++++ b/arch/mips/kernel/reset.c
+@@ -21,9 +21,6 @@
+  */
+ void (*_machine_restart)(char *command);
+ void (*_machine_halt)(void);
+-void (*pm_power_off)(void);
+-
+-EXPORT_SYMBOL(pm_power_off);
+ 
+ void machine_restart(char *command)
+ {
+@@ -39,6 +36,5 @@ void machine_halt(void)
+ 
+ void machine_power_off(void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ }
+diff --git a/arch/mn10300/kernel/process.c b/arch/mn10300/kernel/process.c
+index 3707da5..c78b2eb 100644
+--- a/arch/mn10300/kernel/process.c
++++ b/arch/mn10300/kernel/process.c
+@@ -20,6 +20,7 @@
+ #include <linux/user.h>
+ #include <linux/interrupt.h>
+ #include <linux/delay.h>
++#include <linux/pm.h>
+ #include <linux/reboot.h>
+ #include <linux/percpu.h>
+ #include <linux/err.h>
+@@ -45,12 +46,6 @@ unsigned long thread_saved_pc(struct task_struct *tsk)
+ }
+ 
+ /*
+- * power off function, if any
+- */
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+-/*
+  * On SMP it's slightly faster (but much more power-consuming!)
+  * to poll the ->work.need_resched flag instead of waiting for the
+  * cross-CPU IPI to arrive. Use this option with caution.
+@@ -93,6 +88,7 @@ void machine_power_off(void)
+ #ifdef CONFIG_KERNEL_DEBUGGER
+ 	gdbstub_exit(0);
+ #endif
++	do_kernel_power_off();
+ }
+ 
+ void show_regs(struct pt_regs *regs)
+diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/process.c
+index 386af25..494afd2 100644
+--- a/arch/openrisc/kernel/process.c
++++ b/arch/openrisc/kernel/process.c
+@@ -25,6 +25,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mm.h>
++#include <linux/pm.h>
+ #include <linux/stddef.h>
+ #include <linux/unistd.h>
+ #include <linux/ptrace.h>
+@@ -51,7 +52,7 @@
+  */
+ struct thread_info *current_thread_info_set[NR_CPUS] = { &init_thread_info, };
+ 
+-void machine_restart(void)
++void machine_restart(char *cmd)
+ {
+ 	printk(KERN_INFO "*** MACHINE RESTART ***\n");
+ 	__asm__("l.nop 1");
+@@ -72,11 +73,12 @@ void machine_halt(void)
+ void machine_power_off(void)
+ {
+ 	printk(KERN_INFO "*** MACHINE POWER OFF ***\n");
++
++	do_kernel_power_off();
++
+ 	__asm__("l.nop 1");
+ }
+ 
+-void (*pm_power_off) (void) = machine_power_off;
+-
+ /*
+  * When a process does an "exec", machine state like FPU and debug
+  * registers need to be reset.  This is a hook function for that.
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index 0bbbf0d..3f5d14a 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -41,6 +41,7 @@
+ #include <linux/fs.h>
+ #include <linux/module.h>
+ #include <linux/personality.h>
++#include <linux/pm.h>
+ #include <linux/ptrace.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+@@ -133,7 +134,9 @@ void machine_power_off(void)
+ 	pdc_soft_power_button(0);
+ 	
+ 	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_SHUTDOWN);
+-		
++
++	do_kernel_power_off();
++
+ 	/* It seems we have no way to power the system off via
+ 	 * software. The user has to press the button himself. */
+ 
+@@ -141,9 +144,6 @@ void machine_power_off(void)
+ 	       "Please power this system off now.");
+ }
+ 
+-void (*pm_power_off)(void) = machine_power_off;
+-EXPORT_SYMBOL(pm_power_off);
+-
+ /*
+  * Free current thread data structures etc..
+  */
+diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
+index 1362cd6..5b7a851 100644
+--- a/arch/powerpc/kernel/setup-common.c
++++ b/arch/powerpc/kernel/setup-common.c
+@@ -141,6 +141,9 @@ void machine_power_off(void)
+ 	machine_shutdown();
+ 	if (ppc_md.power_off)
+ 		ppc_md.power_off();
++
++	do_kernel_power_off();
++
+ #ifdef CONFIG_SMP
+ 	smp_send_stop();
+ #endif
+@@ -151,9 +154,6 @@ void machine_power_off(void)
+ /* Used by the G5 thermal driver */
+ EXPORT_SYMBOL_GPL(machine_power_off);
+ 
+-void (*pm_power_off)(void) = machine_power_off;
+-EXPORT_SYMBOL_GPL(pm_power_off);
+-
+ void machine_halt(void)
+ {
+ 	machine_shutdown();
+diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+index e80d9ff..267e025 100644
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -263,13 +263,9 @@ void machine_power_off(void)
+ 		 */
+ 		console_unblank();
+ 	_machine_power_off();
+-}
+ 
+-/*
+- * Dummy power off function.
+- */
+-void (*pm_power_off)(void) = machine_power_off;
+-EXPORT_SYMBOL_GPL(pm_power_off);
++	do_kernel_power_off();
++}
+ 
+ static int __init early_parse_mem(char *p)
+ {
+diff --git a/arch/score/kernel/process.c b/arch/score/kernel/process.c
+index a1519ad3..b76ea67 100644
+--- a/arch/score/kernel/process.c
++++ b/arch/score/kernel/process.c
+@@ -29,9 +29,6 @@
+ #include <linux/pm.h>
+ #include <linux/rcupdate.h>
+ 
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+ /* If or when software machine-restart is implemented, add code here. */
+ void machine_restart(char *command) {}
+ 
+@@ -39,7 +36,10 @@ void machine_restart(char *command) {}
+ void machine_halt(void) {}
+ 
+ /* If or when software machine-power-off is implemented, add code here. */
+-void machine_power_off(void) {}
++void machine_power_off(void)
++{
++	do_kernel_power_off();
++}
+ 
+ void ret_from_fork(void);
+ void ret_from_kernel_thread(void);
+diff --git a/arch/sh/kernel/reboot.c b/arch/sh/kernel/reboot.c
+index 04afe5b..065de12 100644
+--- a/arch/sh/kernel/reboot.c
++++ b/arch/sh/kernel/reboot.c
+@@ -11,9 +11,6 @@
+ #include <asm/tlbflush.h>
+ #include <asm/traps.h>
+ 
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+ #ifdef CONFIG_SUPERH32
+ static void watchdog_trigger_immediate(void)
+ {
+@@ -51,8 +48,7 @@ static void native_machine_shutdown(void)
+ 
+ static void native_machine_power_off(void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ }
+ 
+ static void native_machine_halt(void)
+diff --git a/arch/sparc/kernel/process_32.c b/arch/sparc/kernel/process_32.c
+index 50e7b62..cb8148a 100644
+--- a/arch/sparc/kernel/process_32.c
++++ b/arch/sparc/kernel/process_32.c
+@@ -48,14 +48,6 @@
+  */
+ void (*sparc_idle)(void);
+ 
+-/* 
+- * Power-off handler instantiation for pm.h compliance
+- * This is done via auxio, but could be used as a fallback
+- * handler when auxio is not present-- unused for now...
+- */
+-void (*pm_power_off)(void) = machine_power_off;
+-EXPORT_SYMBOL(pm_power_off);
+-
+ /*
+  * sysctl - toggle power-off restriction for serial console 
+  * systems in machine_power_off()
+@@ -112,6 +104,8 @@ void machine_power_off(void)
+ 		sbus_writeb(power_register, auxio_power_register);
  	}
- 	if (pmc_base)
--		pm_power_off = &vt8500_power_off;
-+		register_poweroff_handler_simple(vt8500_power_off, 0);
- 	else
- 		pr_err("%s: PMC Hibernation register could not be remapped, not enabling power off!\n", __func__);
  
-diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-index 0e15f01..0da639b 100644
---- a/arch/arm/xen/enlighten.c
-+++ b/arch/arm/xen/enlighten.c
-@@ -336,7 +336,7 @@ static int __init xen_pm_init(void)
- 	if (!xen_domain())
- 		return -ENODEV;
++	do_kernel_power_off();
++
+ 	machine_halt();
+ }
  
--	pm_power_off = xen_power_off;
-+	register_poweroff_handler_simple(xen_power_off, 128);
- 	arm_pm_restart = xen_restart;
+diff --git a/arch/sparc/kernel/reboot.c b/arch/sparc/kernel/reboot.c
+index eba7d91..3c0bb03 100644
+--- a/arch/sparc/kernel/reboot.c
++++ b/arch/sparc/kernel/reboot.c
+@@ -16,17 +16,13 @@
+  */
+ int scons_pwroff = 1;
  
- 	return 0;
+-/* This isn't actually used, it exists merely to satisfy the
+- * reference in kernel/sys.c
+- */
+-void (*pm_power_off)(void) = machine_power_off;
+-EXPORT_SYMBOL(pm_power_off);
+-
+ void machine_power_off(void)
+ {
+ 	if (strcmp(of_console_device->type, "serial") || scons_pwroff)
+ 		prom_halt_power_off();
+ 
++	do_kernel_power_off();
++
+ 	prom_halt();
+ }
+ 
+diff --git a/arch/tile/kernel/reboot.c b/arch/tile/kernel/reboot.c
+index 6c5d2c0..8ff4a7f 100644
+--- a/arch/tile/kernel/reboot.c
++++ b/arch/tile/kernel/reboot.c
+@@ -36,6 +36,9 @@ void machine_power_off(void)
+ {
+ 	arch_local_irq_disable_all();
+ 	smp_send_stop();
++
++	do_kernel_power_off();
++
+ 	hv_power_off();
+ }
+ 
+@@ -45,7 +48,3 @@ void machine_restart(char *cmd)
+ 	smp_send_stop();
+ 	hv_restart((HV_VirtAddr) "vmlinux", (HV_VirtAddr) cmd);
+ }
+-
+-/* No interesting distinction to be made here. */
+-void (*pm_power_off)(void) = NULL;
+-EXPORT_SYMBOL(pm_power_off);
+diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
+index ced8903..a82ef28 100644
+--- a/arch/um/kernel/reboot.c
++++ b/arch/um/kernel/reboot.c
+@@ -11,8 +11,6 @@
+ #include <os.h>
+ #include <skas.h>
+ 
+-void (*pm_power_off)(void);
+-
+ static void kill_off_processes(void)
+ {
+ 	if (proc_mm)
+diff --git a/arch/unicore32/kernel/process.c b/arch/unicore32/kernel/process.c
+index b008e99..9490dd5 100644
+--- a/arch/unicore32/kernel/process.c
++++ b/arch/unicore32/kernel/process.c
+@@ -56,16 +56,9 @@ void machine_halt(void)
+ 	gpio_set_value(GPO_SOFT_OFF, 0);
+ }
+ 
+-/*
+- * Function pointers to optional machine specific functions
+- */
+-void (*pm_power_off)(void) = NULL;
+-EXPORT_SYMBOL(pm_power_off);
+-
+ void machine_power_off(void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	machine_halt();
+ }
+ 
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index 17962e6..5c09e28 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -30,12 +30,6 @@
+ #include <asm/x86_init.h>
+ #include <asm/efi.h>
+ 
+-/*
+- * Power off function, if any
+- */
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+ static const struct desc_ptr no_idt = {};
+ 
+ /*
+@@ -647,11 +641,12 @@ static void native_machine_halt(void)
+ 
+ static void native_machine_power_off(void)
+ {
+-	if (pm_power_off) {
++	if (have_kernel_power_off()) {
+ 		if (!reboot_force)
+ 			machine_shutdown();
+-		pm_power_off();
++		do_kernel_power_off();
+ 	}
++
+ 	/* A fallback in case there is no PM info available */
+ 	tboot_shutdown(TB_SHUTDOWN_HALT);
+ }
+diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
+index fac5e4f..bc08998 100644
+--- a/arch/x86/xen/enlighten.c
++++ b/arch/x86/xen/enlighten.c
+@@ -1320,8 +1320,7 @@ static void xen_machine_halt(void)
+ 
+ static void xen_machine_power_off(void)
+ {
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	xen_reboot(SHUTDOWN_poweroff);
+ }
+ 
+diff --git a/arch/xtensa/kernel/process.c b/arch/xtensa/kernel/process.c
+index 1c85323..c487296 100644
+--- a/arch/xtensa/kernel/process.c
++++ b/arch/xtensa/kernel/process.c
+@@ -49,10 +49,6 @@ extern void ret_from_kernel_thread(void);
+ 
+ struct task_struct *current_set[NR_CPUS] = {&init_task, };
+ 
+-void (*pm_power_off)(void) = NULL;
+-EXPORT_SYMBOL(pm_power_off);
+-
+-
+ #if XTENSA_HAVE_COPROCESSORS
+ 
+ void coprocessor_release_all(struct thread_info *ti)
+diff --git a/drivers/parisc/power.c b/drivers/parisc/power.c
+index ef31b77..f10cf92 100644
+--- a/drivers/parisc/power.c
++++ b/drivers/parisc/power.c
+@@ -95,8 +95,7 @@ static void process_shutdown(void)
+ 		/* send kill signal */
+ 		if (kill_cad_pid(SIGINT, 1)) {
+ 			/* just in case killing init process failed */
+-			if (pm_power_off)
+-				pm_power_off();
++			kernel_power_off();
+ 		}
+ 	}
+ }
+diff --git a/kernel/power/power_off_handler.c b/kernel/power/power_off_handler.c
+index f838e63..97b7163 100644
+--- a/kernel/power/power_off_handler.c
++++ b/kernel/power/power_off_handler.c
+@@ -22,6 +22,12 @@
+ #include <linux/types.h>
+ 
+ /*
++ * If set, calling this function will power off the system immediately.
++ */
++void (*pm_power_off)(void);
++EXPORT_SYMBOL(pm_power_off);
++
++/*
+  *	Notifier list for kernel code which wants to be called
+  *	to power off the system.
+  */
+@@ -253,6 +259,8 @@ void do_kernel_power_off(void)
+ 	 * removed while the call chain is traversed, but we'll have to carry
+ 	 * that risk.
+ 	 */
++	if (pm_power_off)
++		pm_power_off();
+ 	raw_notifier_call_chain(&power_off_handler_list, 0, NULL);
+ }
+ 
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 5925f5a..d87d921 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -306,9 +306,9 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
+ 		return ret;
+ 
+ 	/* Instead of trying to make the power_off code look like
+-	 * halt when pm_power_off is not set do it the easy way.
++	 * halt when no power-off handler exists do it the easy way.
+ 	 */
+-	if ((cmd == LINUX_REBOOT_CMD_POWER_OFF) && !pm_power_off)
++	if (cmd == LINUX_REBOOT_CMD_POWER_OFF && !have_kernel_power_off())
+ 		cmd = LINUX_REBOOT_CMD_HALT;
+ 
+ 	mutex_lock(&reboot_mutex);
 -- 
 1.9.1
 
