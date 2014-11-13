@@ -1,47 +1,37 @@
-Return-Path: <linux-m68k-owner@vger.kernel.org>
-Date: Sat, 1 Nov 2014 11:16:37 +0100
-From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-Message-ID: <20141101101637.GA5765@samfundet.no>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
- <1412659726-29957-34-git-send-email-linux@roeck-us.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1412659726-29957-34-git-send-email-linux@roeck-us.net>
-Sender: linux-m68k-owner@vger.kernel.org
-Subject: Re: [PATCH 33/44] avr32: atngw100: Register with kernel poweroff
- handler
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, devel@driverdev.osuosl.org, devicetree@vger.kernel.org, lguest@lists.ozlabs.org, linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, linux-am33-list@redhat.com, linux-cris-kernel@axis.com, linux-efi@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m32r-ja@ml.linux-m32r.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-xtensa@linux-xtensa.org, openipmi-developer@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org, Haavard Skinnemoen <hskinnemoen@gmail.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Pieter Smith <pieter@boesman.nl>
+Date: Thu, 13 Nov 2014 22:23:04 +0100
+Message-Id: <1415913813-362-28-git-send-email-pieter@boesman.nl>
+In-Reply-To: <1415913813-362-1-git-send-email-pieter@boesman.nl>
+References: <pieter@boesman.nl>
+ <1415913813-362-1-git-send-email-pieter@boesman.nl>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 27/56] fs/hostfs: support compiling out splice
+To: pieter@boesman.nl
+Cc: Josh Triplett <josh@joshtriplett.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, open list <linux-kernel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Around Mon 06 Oct 2014 22:28:35 -0700 or thereabout, Guenter Roeck wrote:
-> Register with kernel poweroff handler instead of setting pm_power_off
-> directly.
-> 
-> Cc: Haavard Skinnemoen <hskinnemoen@gmail.com>
-> Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Compile out splice support from hostfs when the splice-family of syscalls is
+not supported by the system (i.e. CONFIG_SYSCALL_SPLICE is undefined).
 
-Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Signed-off-by: Pieter Smith <pieter@boesman.nl>
+---
+ fs/hostfs/hostfs_kern.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  arch/avr32/boards/atngw100/mrmt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/avr32/boards/atngw100/mrmt.c b/arch/avr32/boards/atngw100/mrmt.c
-> index 91146b4..54d0c27 100644
-> --- a/arch/avr32/boards/atngw100/mrmt.c
-> +++ b/arch/avr32/boards/atngw100/mrmt.c
-> @@ -274,7 +274,7 @@ static int __init mrmt1_init(void)
->  {
->  	gpio_set_value( PIN_PWR_ON, 1 );	/* Ensure PWR_ON is enabled */
->  
-> -	pm_power_off = mrmt_power_off;
-> +	register_poweroff_handler_simple(mrmt_power_off, 128);
->  
->  	/* Setup USARTS (other than console) */
->  	at32_map_usart(2, 1, 0);	/* USART 2: /dev/ttyS1, RMT1:DB9M */
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index fd62cae..e750cc0 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -379,7 +379,7 @@ static int hostfs_fsync(struct file *file, loff_t start, loff_t end,
+ static const struct file_operations hostfs_file_fops = {
+ 	.llseek		= generic_file_llseek,
+ 	.read		= new_sync_read,
+-	.splice_read	= generic_file_splice_read,
++	SPLICE_READ_INIT(generic_file_splice_read)
+ 	.read_iter	= generic_file_read_iter,
+ 	.write_iter	= generic_file_write_iter,
+ 	.write		= new_sync_write,
 -- 
-mvh
-Hans-Christian Egtvedt
+1.9.1
+
