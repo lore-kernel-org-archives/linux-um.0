@@ -1,59 +1,128 @@
-Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon,  6 Oct 2014 22:28:09 -0700
-Message-Id: <1412659726-29957-8-git-send-email-linux@roeck-us.net>
-In-Reply-To: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-References: <1412659726-29957-1-git-send-email-linux@roeck-us.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1XrX1H-0005Mw-0c
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 Nov 2014 19:03:55 +0000
+Received: from mail-vc0-f173.google.com ([209.85.220.173])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XrX1F-0007KZ-RT
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 20 Nov 2014 19:03:54 +0000
+Received: by mail-vc0-f173.google.com with SMTP id id10so1706829vcb.18
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 20 Nov 2014 11:03:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-Subject: [PATCH 07/44] qnap-poweroff: Drop reference to pm_power_off from
- devicetree bindings
-To: linux-kernel@vger.kernel.org
-Cc: linux-m32r-ja@ml.linux-m32r.org, linux-mips@linux-mips.org, linux-efi@vger.kernel.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, Mark Rutland <mark.rutland@arm.com>, devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, lguest@lists.ozlabs.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-acpi@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, xen-devel@lists.xenproject.org, Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-pm@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, linux-am33-list@redhat.com, linux-tegra@vger.kernel.org, openipmi-developer@lists.sourceforge.net, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, Rob Herring <robh+dt@kernel.org>, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <546E3A82.1070303@gmx.de>
+References: <20141120182154.GA15680@redhat.com>
+	<546E3A82.1070303@gmx.de>
+Date: Thu, 20 Nov 2014 20:03:48 +0100
+Message-ID: <CAFLxGvxhQbQ6pqW-cPkmwcYi9BuSEsNV0Y_8bFCEwvYdQinMsA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] Fwd: Re: trinity doesn't exit after its finished
+To: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
+Cc: Daniel Walter <sahne@0x90.at>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Replace reference to pm_power_off (which is an implementation detail)
-and replace it with a more generic description of the driver's functionality.
-
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Pawel Moll <pawel.moll@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
-index af25e77..1e2260a 100644
---- a/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
-+++ b/Documentation/devicetree/bindings/power_supply/qnap-poweroff.txt
-@@ -3,8 +3,8 @@
- QNAP NAS devices have a microcontroller controlling the main power
- supply. This microcontroller is connected to UART1 of the Kirkwood and
- Orion5x SoCs. Sending the character 'A', at 19200 baud, tells the
--microcontroller to turn the power off. This driver adds a handler to
--pm_power_off which is called to turn the power off.
-+microcontroller to turn the power off. This driver installs a handler
-+to power off the system.
- 
- Synology NAS devices use a similar scheme, but a different baud rate,
- 9600, and a different character, '1'.
--- 
-1.9.1
-
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+T24gVGh1LCBOb3YgMjAsIDIwMTQgYXQgODowMSBQTSwgVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYu
+Zm9lcnN0ZXJAZ214LmRlPiB3cm90ZToKPiBBIHJlY2VudCBxdWVzdGlvbiBhdCB0cmluaXR5J3Mg
+bWFpbGluZyBsaXN0IChodHRwOi8vbmV3cy5nbWFuZS5vcmcvZ21hbmUuY29tcC5zZWN1cml0eS5m
+dXp6aW5nLnRyaW5pdHkpIHBvaW50cyBwcm9iYWJseSB0byBhIGhvc3RmcyBpc3N1ZSAtIHRoZXJl
+Zm9yZSBJJ2QgbGlrZSB0byBmb3J3YXJkIHRoZSBhbnN3ZXIgIGYgRGF2ZSBKb25lcyBoZXJlLgo+
+Cj4gQU5kIC9tZSB3b25kZXJzIGhvdyB0byB1c2UgZnRyYWNlIHRvIGZ1cnRoZXIgZGlnIGludG8g
+dGhpcyBpc3N1ZSA/CgpVTUwgaGFzIG5vIGZ0cmFjZSBzdXBwb3J0LgpCdXQgRGFuaWVsIGlzIHdv
+cmtpbmcgb24gaXQuCgo+Cj4KPgo+IC0tLS0tLS0tIEZvcndhcmRlZCBNZXNzYWdlIC0tLS0tLS0t
+Cj4gU3ViamVjdDogUmU6IHRyaW5pdHkgZG9lc24ndCBleGl0IGFmdGVyIGl0cyBmaW5pc2hlZAo+
+IERhdGU6IFRodSwgMjAgTm92IDIwMTQgMTM6MjE6NTQgLTA1MDAKPiBGcm9tOiBEYXZlIEpvbmVz
+IDxkYXZlakByZWRoYXQuY29tPgo+IFRvOiBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFsZi5mb2Vyc3Rl
+ckBnbXguZGU+Cj4gQ0M6IHRyaW5pdHlAdmdlci5rZXJuZWwub3JnCj4KPiBPbiBUaHUsIE5vdiAy
+MCwgMjAxNCBhdCAwNzowODoxNVBNICswMTAwLCBUb3JhbGYgRsO2cnN0ZXIgd3JvdGU6Cj4gID4g
+V2l0aCBsYXRlc3QgZ2l0IHRyZWUgb2YgdHJpbml0eSBhdCBhIHVzZXIgbW9kZSBsaW51eCBpbWFn
+ZSBpdCBzdGF5cyBoZXJlIGZvcmV2ZXI6Cj4gID4gW2NoaWxkMDo1MjQ5XSA8dGltZWQgb3V0Pgo+
+ICA+IFttYWluXSBCYWlsaW5nIG1haW4gbG9vcCBiZWNhdXNlIENvbXBsZXRlZCBtYXhpbXVtIG51
+bWJlciBvZiBvcGVyYXRpb25zLi4KPiAgPiBbd2F0Y2hkb2ddIFs1MDk2XSBXYXRjaGRvZyBleGl0
+aW5nIGJlY2F1c2UgQ29tcGxldGVkIG1heGltdW0gbnVtYmVyIG9mIG9wZXJhdGlvbnMuLgo+Cj4g
+U28gdGhhdCBbbWFpbl0gbGluZSBpcyB0aGUgbGFzdCBsaW5lIGluIG1haW5fbG9vcCgpCj4gT24g
+cmV0dXJuLCB3ZSBkbyB0aGlzLi4KPgo+IDE1OSAgICAgICAgICAgICAgICAgbWFpbl9sb29wKCk7
+Cj4gMTYwCj4gMTYxICAgICAgICAgICAgICAgICBzaG0tPm1haW5waWQgPSAwOwo+IDE2MiAgICAg
+ICAgICAgICAgICAgX2V4aXQoRVhJVF9TVUNDRVNTKTsKPgo+IGFuZCB5ZXQuLgo+Cj4gID4gVGhl
+IHByb2NlcyBsaXN0IHNob3dzOgo+ICA+Cj4gID4gJCBwcyBmeCAtZW8gcGlkLHN0YXJ0X3RpbWUs
+Y29tbWFuZCB8IGdyZXAgLWUgdHJpbml0eSAtZSBzbGVlcCB8IGdyZXAgLXYgZ3JlcAo+ICA+ICA0
+ODc4IDE4OjMwICB8ICAgICAgIFxfIGJhc2ggLWMgbG9nZ2VyICIyIy0xLCBNPS9tbnQvaG9zdGZz
+IjsgY2Qgfjsgc3VkbyBzdSAtYyAnaWYgW1sgLWQgLi90MyBdXTsgdGhlbiBzdWRvIGNobW9kIC1S
+IGErcnd4IC4vdDM7IHN1ZG8gcm0gLXJmIC4vdDM7IGZpJzsgbWtkaXIgLi90MyAmJiBjZCAuL3Qz
+IHx8IGV4aXQ7IGlmIFtbIC1uIC9tbnQvaG9zdGZzIF1dOyB0aGVuIGlmIFtbIC1kIC9tbnQvaG9z
+dGZzL3ZpY3RpbXMvdjEgXV07IHRoZW4gc3VkbyBjaG1vZCAtUiBhK3J3eCAvbW50L2hvc3Rmcy92
+aWN0aW1zL3YxOyBzdWRvIHJtIC1yZiAvbW50L2hvc3Rmcy92aWN0aW1zL3YxIHx8IGV4aXQ7IGZp
+OyBta2RpciAtcCAvbW50L2hvc3Rmcy92aWN0aW1zL3YxL3YyOyBmb3IgaSBpbiAkKHNlcSAtdyAw
+IDk5KTsgZG8gdG91Y2ggL21udC9ob3N0ZnMvdmljdGltcy92MS92Mi9mJGk7IG1rZGlyIC9tbnQv
+aG9zdGZzL3ZpY3RpbXMvdjEvdjIvZCRpOyBkb25lOyBmaTsgTUFMTE9DX0NIRUNLXz0yIHRyaW5p
+dHkgLUMgMiAtTiAyNTAwMCAtcSAtViAvbW50L2hvc3Rmcy92aWN0aW1zL3YxL3YyCj4gID4gIDUw
+OTUgMTg6MzAgIHwgICAgICAgICAgIFxfIHRyaW5pdHkgLUMgMiAtTiAyNTAwMCAtcSAtViAvbW50
+L2hvc3Rmcy92aWN0aW1zL3YxL3YyCj4gID4gIDUwOTYgMTg6MzAgIHwgICAgICAgICAgICAgICBc
+XyBbdHJpbml0eS13YXRjaGRvXSA8ZGVmdW5jdD4KPiAgPiAgNTA5NyAxODozMCAgfCAgICAgICAg
+ICAgICAgIFxfIFt0cmluaXR5LW1haW5dCj4KPiBTb21laG93IGl0J3Mgc3RpbGwgYXJvdW5kLgo+
+Cj4gID4gSGVyZSBhcmUgdGhlIHN0YWNrczoKPiAgPgo+ICA+ICQgc3VkbyBjYXQgL3Byb2MvNTA5
+Ny9zdGFjawo+ICA+Cj4gID4gWzwwODA1ZjhiND5dIF9fc3dpdGNoX3RvKzB4NDQvMHg3MAo+ICA+
+IFs8MDg1MGIxOTQ+XSBfX3NjaGVkdWxlKzB4MmY0LzB4M2EwCj4gID4gWzwwODA5N2I4YT5dIF9f
+Y29uZF9yZXNjaGVkKzB4MWEvMHgzMAo+ICA+IFs8MDg1MGIzNzE+XSBfY29uZF9yZXNjaGVkKzB4
+MzEvMHg1MAo+ICA+IFs8MDgwZGJiYjI+XSB0cnVuY2F0ZV9pbm9kZV9wYWdlc19yYW5nZSsweDE5
+Mi8weDY1MAo+ICA+IFs8MDgwZGMxMDI+XSB0cnVuY2F0ZV9pbm9kZV9wYWdlc19maW5hbCsweDUy
+LzB4NjAKPiAgPiBbPDA4Mjc1ZjE4Pl0gaG9zdGZzX2V2aWN0X2lub2RlKzB4MTgvMHg0MAo+ICA+
+IFs8MDgxMjZlOGQ+XSBldmljdCsweGRkLzB4MWIwCj4gID4gWzwwODEyN2IwZD5dIGlwdXQrMHgx
+NmQvMHgxODAKPiAgPiBbPDA4MTIzNTM4Pl0gX19kZW50cnlfa2lsbCsweDEzOC8weDIwMAo+ICA+
+IFs8MDgxMjNmNjY+XSBkcHV0KzB4MTU2LzB4MTgwCj4gID4gWzwwODEwZmExNT5dIF9fZnB1dCsw
+eDE3NS8weDE5MAo+ICA+IFs8MDgxMGZhNmI+XSBfX19fZnB1dCsweGIvMHgxMAo+ICA+IFs8MDgw
+OTI5NTY+XSB0YXNrX3dvcmtfcnVuKzB4NzYvMHg5MAo+ICA+IFs8MDgwN2U5MmQ+XSBkb19leGl0
+KzB4MzJkLzB4OTQwCj4gID4gWzwwODA3ZjAyMj5dIGRvX2dyb3VwX2V4aXQrMHhhMi8weGYwCj4g
+ID4gWzwwODA3ZjA4Nz5dIFN5U19leGl0X2dyb3VwKzB4MTcvMHgyMAo+ICA+IFs8MDgwNjI5ODA+
+XSBoYW5kbGVfc3lzY2FsbCsweDYwLzB4ODAKPiAgPiBbPDA4MDc0NmZjPl0gdXNlcnNwYWNlKzB4
+NDZjLzB4NWUwCj4gID4gWzwwODA1ZjcyMD5dIGZvcmtfaGFuZGxlcisweDYwLzB4NzAKPiAgPiBb
+PGZmZmZmZmZmPl0gMHhmZmZmZmZmZgo+Cj4gVGhpcyBpcyB0aGUgaW50ZXJlc3RpbmcgcGFydC4g
+VGhlIHByb2Nlc3MgaXMgYWJvdXQgdG8gZXhpdCwKPiBidXQgaG9zdGZzIGlzIGRvaW5nLi4gc29t
+ZXRoaW5nLiAgSXQgbWlnaHQganVzdCBiZSB0YWtpbmcgYSByZWFsbHkKPiBsb25nIHRpbWUsIG9y
+IGl0IG1pZ2h0IGJlIHN0dWNrLiAgSWYgaXQgaGFwcGVucyBhZ2FpbiwgeW91IG1pZ2h0Cj4gYmUg
+YWJsZSB0byB1c2UgZnRyYWNlIHRvIGZpZ3VyZSBvdXQgaWYgaG9zdGZzIGlzIGFjdHVhbGx5IG1h
+a2luZwo+IGZvcndhcmQgcHJvZ3Jlc3Mgb3Igbm90Lgo+Cj4gUGVyaGFwcyB0aGUgVU1MIGZvbGtz
+IGhhdmUgc29tZSBpZGVhcy4KPgo+ICA+IE1heWJlIGl0IGhlbHBzIHlvdSB0byBpbXByb3ZlIHRy
+aW5pdHksIGlmIG5vdCwgaWdub3JlIHRoaXMgbWFpbAo+ICA+IDstKQo+Cj4gYWZhaWNzLCB0aGVy
+ZSdzIG5vdGhpbmcgaGVyZSB0aGF0IHRyaW5pdHkgY2FuIGRvLCBvbmNlIHdlJ3ZlCj4gY2FsbGVk
+IF9leGl0KCksIHdlJ3JlIGRvbmUuIEFueXRoaW5nIHRoYXQgaGFwcGVucyBhZnRlcndhcmRzIGlz
+Cj4gdGhlIGtlcm5lbHMgZmF1bHQgOikKPgo+ICAgICAgICAgRGF2ZQo+Cj4KPgo+Cj4KPiAtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0KPiBEb3dubG9hZCBCSVJUIGlIdWIgRi1UeXBlIC0gVGhlIEZyZWUg
+RW50ZXJwcmlzZS1HcmFkZSBCSVJUIFNlcnZlcgo+IGZyb20gQWN0dWF0ZSEgSW5zdGFudGx5IFN1
+cGVyY2hhcmdlIFlvdXIgQnVzaW5lc3MgUmVwb3J0cyBhbmQgRGFzaGJvYXJkcwo+IHdpdGggSW50
+ZXJhY3Rpdml0eSwgU2hhcmluZywgTmF0aXZlIEV4Y2VsIEV4cG9ydHMsIEFwcCBJbnRlZ3JhdGlv
+biAmIG1vcmUKPiBHZXQgdGVjaG5vbG9neSBwcmV2aW91c2x5IHJlc2VydmVkIGZvciBiaWxsaW9u
+LWRvbGxhciBjb3Jwb3JhdGlvbnMsIEZSRUUKPiBodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2su
+bmV0L2dhbXBhZC9jbGs/aWQ9MTU3MDA1NzUxJml1PS80MTQwL29zdGcuY2xrdHJrCj4gX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBVc2VyLW1vZGUtbGlu
+dXgtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L3VzZXItbW9kZS1saW51eC1kZXZlbAoKCgotLSAKVGhhbmtzLAovL3JpY2hhcmQKCi0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQpEb3dubG9hZCBCSVJUIGlIdWIgRi1UeXBlIC0gVGhlIEZyZWUgRW50ZXJw
+cmlzZS1HcmFkZSBCSVJUIFNlcnZlcgpmcm9tIEFjdHVhdGUhIEluc3RhbnRseSBTdXBlcmNoYXJn
+ZSBZb3VyIEJ1c2luZXNzIFJlcG9ydHMgYW5kIERhc2hib2FyZHMKd2l0aCBJbnRlcmFjdGl2aXR5
+LCBTaGFyaW5nLCBOYXRpdmUgRXhjZWwgRXhwb3J0cywgQXBwIEludGVncmF0aW9uICYgbW9yZQpH
+ZXQgdGVjaG5vbG9neSBwcmV2aW91c2x5IHJlc2VydmVkIGZvciBiaWxsaW9uLWRvbGxhciBjb3Jw
+b3JhdGlvbnMsIEZSRUUKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xr
+P2lkPTE1NzAwNTc1MSZpdT0vNDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBs
+aXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVs
+Cg==
 
