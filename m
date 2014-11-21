@@ -1,115 +1,63 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1XrWyx-0006Fj-Jj
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 Nov 2014 19:01:31 +0000
-Received: from mout.gmx.net ([212.227.15.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XrWyw-0000O0-2P
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 20 Nov 2014 19:01:31 +0000
-Received: from [192.168.178.21] ([78.54.136.206]) by mail.gmx.com (mrgmx001)
-	with ESMTPSA (Nemesis) id 0M8eAd-1YDRU82owF-00wCYl for
-	<user-mode-linux-devel@lists.sourceforge.net>; Thu, 20 Nov 2014 20:01:23
-	+0100
-Message-ID: <546E3A82.1070303@gmx.de>
-Date: Thu, 20 Nov 2014 20:01:22 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-References: <20141120182154.GA15680@redhat.com>
-In-Reply-To: <20141120182154.GA15680@redhat.com>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Fwd: Re: trinity doesn't exit after its finished
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <546F3EDD.1000007@gmx.de>
+References: <546CCE10.4010007@gmx.de>
+	<CAFLxGvzYBRM3gos1OwkPfihCc_GPUuPs=Quu42rBd6NnrfFKEQ@mail.gmail.com>
+	<546F3EDD.1000007@gmx.de>
+Date: Fri, 21 Nov 2014 15:20:06 +0100
+Message-ID: <CAMuHMdUX29aKAgH5Qy7OF16c2ChWtgg_vDrdcfmAjBgaZ9GR1A@mail.gmail.com>
+Subject: Re: [uml-devel] starting an UML image sometimes failed, next
+ (identical) attempt works
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+To: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-QSByZWNlbnQgcXVlc3Rpb24gYXQgdHJpbml0eSdzIG1haWxpbmcgbGlzdCAoaHR0cDovL25ld3Mu
-Z21hbmUub3JnL2dtYW5lLmNvbXAuc2VjdXJpdHkuZnV6emluZy50cmluaXR5KSBwb2ludHMgcHJv
-YmFibHkgdG8gYSBob3N0ZnMgaXNzdWUgLSB0aGVyZWZvcmUgSSdkIGxpa2UgdG8gZm9yd2FyZCB0
-aGUgYW5zd2VyICBmIERhdmUgSm9uZXMgaGVyZS4KCkFOZCAvbWUgd29uZGVycyBob3cgdG8gdXNl
-IGZ0cmFjZSB0byBmdXJ0aGVyIGRpZyBpbnRvIHRoaXMgaXNzdWUgPwoKCgotLS0tLS0tLSBGb3J3
-YXJkZWQgTWVzc2FnZSAtLS0tLS0tLQpTdWJqZWN0OiBSZTogdHJpbml0eSBkb2Vzbid0IGV4aXQg
-YWZ0ZXIgaXRzIGZpbmlzaGVkCkRhdGU6IFRodSwgMjAgTm92IDIwMTQgMTM6MjE6NTQgLTA1MDAK
-RnJvbTogRGF2ZSBKb25lcyA8ZGF2ZWpAcmVkaGF0LmNvbT4KVG86IFRvcmFsZiBGw7Zyc3RlciA8
-dG9yYWxmLmZvZXJzdGVyQGdteC5kZT4KQ0M6IHRyaW5pdHlAdmdlci5rZXJuZWwub3JnCgpPbiBU
-aHUsIE5vdiAyMCwgMjAxNCBhdCAwNzowODoxNVBNICswMTAwLCBUb3JhbGYgRsO2cnN0ZXIgd3Jv
-dGU6CiA+IFdpdGggbGF0ZXN0IGdpdCB0cmVlIG9mIHRyaW5pdHkgYXQgYSB1c2VyIG1vZGUgbGlu
-dXggaW1hZ2UgaXQgc3RheXMgaGVyZSBmb3JldmVyOgogPiBbY2hpbGQwOjUyNDldIDx0aW1lZCBv
-dXQ+CiA+IFttYWluXSBCYWlsaW5nIG1haW4gbG9vcCBiZWNhdXNlIENvbXBsZXRlZCBtYXhpbXVt
-IG51bWJlciBvZiBvcGVyYXRpb25zLi4KID4gW3dhdGNoZG9nXSBbNTA5Nl0gV2F0Y2hkb2cgZXhp
-dGluZyBiZWNhdXNlIENvbXBsZXRlZCBtYXhpbXVtIG51bWJlciBvZiBvcGVyYXRpb25zLi4KClNv
-IHRoYXQgW21haW5dIGxpbmUgaXMgdGhlIGxhc3QgbGluZSBpbiBtYWluX2xvb3AoKQpPbiByZXR1
-cm4sIHdlIGRvIHRoaXMuLgoKMTU5ICAgICAgICAgICAgICAgICBtYWluX2xvb3AoKTsKMTYwIAox
-NjEgICAgICAgICAgICAgICAgIHNobS0+bWFpbnBpZCA9IDA7CjE2MiAgICAgICAgICAgICAgICAg
-X2V4aXQoRVhJVF9TVUNDRVNTKTsKCmFuZCB5ZXQuLgoKID4gVGhlIHByb2NlcyBsaXN0IHNob3dz
-OgogPiAKID4gJCBwcyBmeCAtZW8gcGlkLHN0YXJ0X3RpbWUsY29tbWFuZCB8IGdyZXAgLWUgdHJp
-bml0eSAtZSBzbGVlcCB8IGdyZXAgLXYgZ3JlcAogPiAgNDg3OCAxODozMCAgfCAgICAgICBcXyBi
-YXNoIC1jIGxvZ2dlciAiMiMtMSwgTT0vbW50L2hvc3RmcyI7IGNkIH47IHN1ZG8gc3UgLWMgJ2lm
-IFtbIC1kIC4vdDMgXV07IHRoZW4gc3VkbyBjaG1vZCAtUiBhK3J3eCAuL3QzOyBzdWRvIHJtIC1y
-ZiAuL3QzOyBmaSc7IG1rZGlyIC4vdDMgJiYgY2QgLi90MyB8fCBleGl0OyBpZiBbWyAtbiAvbW50
-L2hvc3RmcyBdXTsgdGhlbiBpZiBbWyAtZCAvbW50L2hvc3Rmcy92aWN0aW1zL3YxIF1dOyB0aGVu
-IHN1ZG8gY2htb2QgLVIgYStyd3ggL21udC9ob3N0ZnMvdmljdGltcy92MTsgc3VkbyBybSAtcmYg
-L21udC9ob3N0ZnMvdmljdGltcy92MSB8fCBleGl0OyBmaTsgbWtkaXIgLXAgL21udC9ob3N0ZnMv
-dmljdGltcy92MS92MjsgZm9yIGkgaW4gJChzZXEgLXcgMCA5OSk7IGRvIHRvdWNoIC9tbnQvaG9z
-dGZzL3ZpY3RpbXMvdjEvdjIvZiRpOyBta2RpciAvbW50L2hvc3Rmcy92aWN0aW1zL3YxL3YyL2Qk
-aTsgZG9uZTsgZmk7IE1BTExPQ19DSEVDS189MiB0cmluaXR5IC1DIDIgLU4gMjUwMDAgLXEgLVYg
-L21udC9ob3N0ZnMvdmljdGltcy92MS92MgogPiAgNTA5NSAxODozMCAgfCAgICAgICAgICAgXF8g
-dHJpbml0eSAtQyAyIC1OIDI1MDAwIC1xIC1WIC9tbnQvaG9zdGZzL3ZpY3RpbXMvdjEvdjIKID4g
-IDUwOTYgMTg6MzAgIHwgICAgICAgICAgICAgICBcXyBbdHJpbml0eS13YXRjaGRvXSA8ZGVmdW5j
-dD4KID4gIDUwOTcgMTg6MzAgIHwgICAgICAgICAgICAgICBcXyBbdHJpbml0eS1tYWluXQoKU29t
-ZWhvdyBpdCdzIHN0aWxsIGFyb3VuZC4KCiA+IEhlcmUgYXJlIHRoZSBzdGFja3M6CiA+IAogPiAk
-IHN1ZG8gY2F0IC9wcm9jLzUwOTcvc3RhY2sKID4gCiA+IFs8MDgwNWY4YjQ+XSBfX3N3aXRjaF90
-bysweDQ0LzB4NzAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAKID4gWzwwODUwYjE5ND5dIF9fc2NoZWR1bGUrMHgyZjQvMHgzYTAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAog
-PiBbPDA4MDk3YjhhPl0gX19jb25kX3Jlc2NoZWQrMHgxYS8weDMwICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiA+IFs8MDg1MGIzNzE+XSBf
-Y29uZF9yZXNjaGVkKzB4MzEvMHg1MAogPiBbPDA4MGRiYmIyPl0gdHJ1bmNhdGVfaW5vZGVfcGFn
-ZXNfcmFuZ2UrMHgxOTIvMHg2NTAKID4gWzwwODBkYzEwMj5dIHRydW5jYXRlX2lub2RlX3BhZ2Vz
-X2ZpbmFsKzB4NTIvMHg2MAogPiBbPDA4Mjc1ZjE4Pl0gaG9zdGZzX2V2aWN0X2lub2RlKzB4MTgv
-MHg0MAogPiBbPDA4MTI2ZThkPl0gZXZpY3QrMHhkZC8weDFiMAogPiBbPDA4MTI3YjBkPl0gaXB1
-dCsweDE2ZC8weDE4MAogPiBbPDA4MTIzNTM4Pl0gX19kZW50cnlfa2lsbCsweDEzOC8weDIwMAog
-PiBbPDA4MTIzZjY2Pl0gZHB1dCsweDE1Ni8weDE4MAogPiBbPDA4MTBmYTE1Pl0gX19mcHV0KzB4
-MTc1LzB4MTkwCiA+IFs8MDgxMGZhNmI+XSBfX19fZnB1dCsweGIvMHgxMAogPiBbPDA4MDkyOTU2
-Pl0gdGFza193b3JrX3J1bisweDc2LzB4OTAKID4gWzwwODA3ZTkyZD5dIGRvX2V4aXQrMHgzMmQv
-MHg5NDAKID4gWzwwODA3ZjAyMj5dIGRvX2dyb3VwX2V4aXQrMHhhMi8weGYwCiA+IFs8MDgwN2Yw
-ODc+XSBTeVNfZXhpdF9ncm91cCsweDE3LzB4MjAKID4gWzwwODA2Mjk4MD5dIGhhbmRsZV9zeXNj
-YWxsKzB4NjAvMHg4MAogPiBbPDA4MDc0NmZjPl0gdXNlcnNwYWNlKzB4NDZjLzB4NWUwCiA+IFs8
-MDgwNWY3MjA+XSBmb3JrX2hhbmRsZXIrMHg2MC8weDcwCiA+IFs8ZmZmZmZmZmY+XSAweGZmZmZm
-ZmZmCgpUaGlzIGlzIHRoZSBpbnRlcmVzdGluZyBwYXJ0LiBUaGUgcHJvY2VzcyBpcyBhYm91dCB0
-byBleGl0LApidXQgaG9zdGZzIGlzIGRvaW5nLi4gc29tZXRoaW5nLiAgSXQgbWlnaHQganVzdCBi
-ZSB0YWtpbmcgYSByZWFsbHkKbG9uZyB0aW1lLCBvciBpdCBtaWdodCBiZSBzdHVjay4gIElmIGl0
-IGhhcHBlbnMgYWdhaW4sIHlvdSBtaWdodApiZSBhYmxlIHRvIHVzZSBmdHJhY2UgdG8gZmlndXJl
-IG91dCBpZiBob3N0ZnMgaXMgYWN0dWFsbHkgbWFraW5nCmZvcndhcmQgcHJvZ3Jlc3Mgb3Igbm90
-LgoKUGVyaGFwcyB0aGUgVU1MIGZvbGtzIGhhdmUgc29tZSBpZGVhcy4KCiA+IE1heWJlIGl0IGhl
-bHBzIHlvdSB0byBpbXByb3ZlIHRyaW5pdHksIGlmIG5vdCwgaWdub3JlIHRoaXMgbWFpbAogPiA7
-LSkKCmFmYWljcywgdGhlcmUncyBub3RoaW5nIGhlcmUgdGhhdCB0cmluaXR5IGNhbiBkbywgb25j
-ZSB3ZSd2ZQpjYWxsZWQgX2V4aXQoKSwgd2UncmUgZG9uZS4gQW55dGhpbmcgdGhhdCBoYXBwZW5z
-IGFmdGVyd2FyZHMgaXMKdGhlIGtlcm5lbHMgZmF1bHQgOikKCglEYXZlCgoKCgoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCkRvd25sb2FkIEJJUlQgaUh1YiBGLVR5cGUgLSBUaGUgRnJlZSBFbnRlcnBy
-aXNlLUdyYWRlIEJJUlQgU2VydmVyCmZyb20gQWN0dWF0ZSEgSW5zdGFudGx5IFN1cGVyY2hhcmdl
-IFlvdXIgQnVzaW5lc3MgUmVwb3J0cyBhbmQgRGFzaGJvYXJkcwp3aXRoIEludGVyYWN0aXZpdHks
-IFNoYXJpbmcsIE5hdGl2ZSBFeGNlbCBFeHBvcnRzLCBBcHAgSW50ZWdyYXRpb24gJiBtb3JlCkdl
-dCB0ZWNobm9sb2d5IHByZXZpb3VzbHkgcmVzZXJ2ZWQgZm9yIGJpbGxpb24tZG9sbGFyIGNvcnBv
-cmF0aW9ucywgRlJFRQpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/
-aWQ9MTU3MDA1NzUxJml1PS80MTQwL29zdGcuY2xrdHJrCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxp
-c3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xp
-c3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+On Fri, Nov 21, 2014 at 2:32 PM, Toralf F=C3=B6rster <toralf.foerster@gmx.d=
+e> wrote:
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index e8ab93c..22390f9 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -508,19 +508,25 @@ static inline int ubd_file_size(struct ubd *ubd_dev=
+, __u64 *size_out)
+>         int sector_size;
+>         int bitmap_offset;
+>
+> +printk(KERN_INFO "ubd_file_size 0");
+>         if (ubd_dev->file && ubd_dev->cow.file) {
+>                 file =3D ubd_dev->cow.file;
+> +printk(KERN_INFO "ubd_file_size 1");
+>
+>                 goto out;
+>         }
+>
+>         fd =3D os_open_file(ubd_dev->file, of_read(OPENFLAGS()), 0);
+> +printk(KERN_INFO "ubd_file_size 2");
+>         if (fd < 0)
+>                 return fd;
+> +printk(KERN_INFO "ubd_file_size 3");
+
+Not really on-topic, but it's faster to add lines like
+
+    pr_info("%s:%u\n", __func__, __LINE__);
+
+They're identical (i.e. copy-'n-paste), but give unique output depending
+on context.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
