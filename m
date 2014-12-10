@@ -1,19 +1,22 @@
-Return-Path: <richard@nod.at>
-Message-ID: <548838E5.8060701@nod.at>
-Date: Wed, 10 Dec 2014 13:13:25 +0100
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <54883710.7030305@nod.at>
+Date: Wed, 10 Dec 2014 13:05:36 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-References: <20141210104624.GB32280@tucsk.suse.de>	<54882533.6080901@nod.at> <CAMuHMdUzc2=EodO5vxKVWdaDQeWXUM8w90ssQ4HvPyR6N-g8fA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUzc2=EodO5vxKVWdaDQeWXUM8w90ssQ4HvPyR6N-g8fA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+References: <20141210104624.GB32280@tucsk.suse.de> <54882533.6080901@nod.at> <2739506.ACK9B2Kt4q@wuerfel>
+In-Reply-To: <2739506.ACK9B2Kt4q@wuerfel>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
+Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [BUG] uml panics with "Segfault with no mm" in v3.19-rc
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, Ley Foon Tan <lftan@altera.com>, Arnd Bergmann <arnd@arndb.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Daniel Walter <sahne@0x90.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, Ley Foon Tan <lftan@altera.com>, linux-kernel@vger.kernel.org, Daniel Walter <sahne@0x90.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am 10.12.2014 um 12:59 schrieb Geert Uytterhoeven:
-> On Wed, Dec 10, 2014 at 11:49 AM, Richard Weinberger <richard@nod.at> wrote:
+Am 10.12.2014 um 12:03 schrieb Arnd Bergmann:
+> On Wednesday 10 December 2014 11:49:23 Richard Weinberger wrote:
+>> Hi!
+>>
 >> Am 10.12.2014 um 11:46 schrieb Miklos Szeredi:
 >>> The guilty commit is:
 >>>
@@ -23,28 +26,47 @@ Am 10.12.2014 um 12:59 schrieb Geert Uytterhoeven:
 >> Your bisecting faster than I do.
 >>
 >> Let's dig into the issue!
+>>
 > 
-> Do you need "select HAVE_FUTEX_CMPXCHG if FUTEX"?
+> Did this happen on linux-next as well?
+> 
+> Does this happen only on non-SMP UML running on an SMP host, or also
+> in other combinations?
 
-> Cfr. commit e571c58f313d35c5 ("m68k: Skip futex_atomic_cmpxchg_inatomic()
-> test") and commit 03b8c7b623c80af2 ("futex: Allow architectures to skip
-> futex_atomic_cmpxchg_inatomic() test").
+Had some time to look into the issue.
+UML dies because of futex_detect_cmpxchg().
 
-Bingo!
+        /*
+         * This will fail and we want it. Some arch implementations do
+         * runtime detection of the futex_atomic_cmpxchg_inatomic()
+         * functionality. We want to know that before we call in any
+         * of the complex code paths. Also we want to prevent
+         * registration of robust lists in that case. NULL is
+         * guaranteed to fault and we get -EFAULT on functional
+         * implementation, the non-functional ones will return
+         * -ENOSYS.
+         */
+        if (cmpxchg_futex_value_locked(&curval, NULL, 0, 0) == -EFAULT)
+                futex_cmpxchg_enabled = 1;
 
-If UML selects HAVE_FUTEX_CMPXCHG the code path I've described in my previous mail
-is no longer taken and makes it work again.
-I did only a small test but nothing exploded so far.
+The said commit adds an futex_atomic_cmpxchg_inatomic() implementation for the non-SMP case.
+As UML is non-SMP it will from now on use that code.
 
-> BTW, I still think the real problem is the wrong address space, cfr.
-> "[PATCH/RFC] futex: Switch to USER_DS for futex test"
-> (http://www.spinics.net/lists/linux-m68k/msg06597.html), so you may also
-> want to try that.
-> However, that caused problems on s390, as it ran too early:
-> http://permalink.gmane.org/gmane.linux.kernel.next/30165
+This line of code makes UML die because the kernel tries to access address 0.
 
-Yeah, this would also make sense for UML.
+ if (unlikely(get_user(val, uaddr) != 0)
+	return -EFAULT;
+
+On UML you can access user space memory only from process context.
+Theoretically init calls are process context but not in terms of UML.
+As no user space process called into the kernel UML has no process
+to fetch the data using ptrace(), it will fall back to the "kernel did a boo boo"
+case and panic().
+
+Maybe we can find an easy way to detect this case in arch/um/kernel/trap.c
+but the real question is, does UML need futex_cmpxchg?
+Is there a big benefit?
+I fear it will open a can of worms.
 
 Thanks,
 //richard
-
