@@ -1,49 +1,57 @@
+Return-Path: <sahne@0x90.at>
+Date: Mon, 15 Dec 2014 11:27:36 +0100 (CET)
+From: Daniel Walter <sahne@0x90.at>
+Message-ID: <1164899144.1350.1418639256356.JavaMail.root@0x90.at>
+In-Reply-To: <1418216535-29295-1-git-send-email-richard@nod.at>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1415785566-12758-1-git-send-email-geert@linux-m68k.org>
-References: <1415785566-12758-1-git-send-email-geert@linux-m68k.org>
-Date: Wed, 12 Nov 2014 10:48:14 +0100
-Message-ID: <CAMuHMdXkFo--38rRKSpGTb8U58KavPzmm7vwwdN6_SP01Zxt8w@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v3.18-rc4
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Subject: Re: [uml-devel] [PATCH] um: Skip futex_atomic_cmpxchg_inatomic()
+ test
+To: Richard Weinberger <richard@nod.at>
+Cc: arnd@arndb.de, miklos@szeredi.hu, linux-kernel@vger.kernel.org, geert@linux-m68k.org, lftan@altera.com, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Wed, Nov 12, 2014 at 10:46 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> JFYI, when comparing v3.18-rc4[1]  to v3.18-rc3[3], the summaries are:
->   - build errors: +5/-6
+----- Original Message -----
+> From: "Richard Weinberger" <richard@nod.at>
+> To: user-mode-linux-devel@lists.sourceforge.net
+> Cc: arnd@arndb.de, miklos@szeredi.hu, "Richard Weinberger" <richard@nod.at>, linux-kernel@vger.kernel.org,
+> geert@linux-m68k.org, lftan@altera.com
+> Sent: Wednesday, December 10, 2014 1:02:15 PM
+> Subject: [uml-devel] [PATCH] um: Skip futex_atomic_cmpxchg_inatomic() test
+> 
+> futex_atomic_cmpxchg_inatomic() does not work on UML because
+> it triggers a copy_from_user() in kernel context.
+> On UML copy_from_user() can only be used if the kernel was called
+> by a real user space process such that UML can use ptrace()
+> to fetch the value.
+> 
+> Reported-by: Miklos Szeredi <miklos@szeredi.hu>
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  arch/um/Kconfig.common | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+> index 87bc868..d195a87 100644
+> --- a/arch/um/Kconfig.common
+> +++ b/arch/um/Kconfig.common
+> @@ -3,6 +3,7 @@ config UML
+>  	default y
+>  	select HAVE_ARCH_AUDITSYSCALL
+>  	select HAVE_UID16
+> +	select HAVE_FUTEX_CMPXCHG if FUTEX
+>  	select GENERIC_IRQ_SHOW
+>  	select GENERIC_CPU_DEVICES
+>  	select GENERIC_IO
+> --
+> 2.1.0
+> 
+Hi,
 
-  + /home/kisskb/slave/src/fs/hostfs/hostfs_user.c: error: 'AT_FDCWD'
-undeclared (first use in this function):  => 378
-  + /home/kisskb/slave/src/fs/hostfs/hostfs_user.c: error: (Each
-undeclared identifier is reported only once:  => 378
-  + /home/kisskb/slave/src/fs/hostfs/hostfs_user.c: error: for each
-function it appears in.):  => 378
+tested it a few days, looks good.
 
-um-defconfig
 
-  + error: No rule to make target /etc/sound/dsp001.ld:  => N/A
-
-i386-randconfig
-
-  + error: No rule to make target include/config/auto.conf:  => N/A
-
-powerpc-randconfig
-
-> [1] http://kisskb.ellerman.id.au/kisskb/head/8061/ (120 out of 119 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/head/8044/ (120 out of 119 configs)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Tested-by: Daniel Walter <d.walter@0x90.at>
 
