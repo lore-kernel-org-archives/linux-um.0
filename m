@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1Y9whq-0002Jb-WB
+	(envelope-from <richard.weinberger@gmail.com>) id 1Y8HLM-0004rT-On
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Jan 2015 14:07:59 +0000
-Received: from mout.gmx.net ([212.227.15.18])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Y9whp-0005Xy-1q
+	Mon, 05 Jan 2015 23:45:52 +0000
+Received: from mail-vc0-f179.google.com ([209.85.220.179])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Y8HLH-0003Zx-Vc
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 10 Jan 2015 14:07:58 +0000
-Message-ID: <54B13235.9010402@gmx.de>
-Date: Sat, 10 Jan 2015 15:07:49 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Mon, 05 Jan 2015 23:45:48 +0000
+Received: by mail-vc0-f179.google.com with SMTP id le20so8593021vcb.24
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 05 Jan 2015 15:45:42 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <53A9E509.4020103@gmx.de>
 References: <53A9E509.4020103@gmx.de>
-	<CAFLxGvw7toHySssY6Ee+CakkGXfUoL3g_uUCT6revN+JHEQkEA@mail.gmail.com>
-In-Reply-To: <CAFLxGvw7toHySssY6Ee+CakkGXfUoL3g_uUCT6revN+JHEQkEA@mail.gmail.com>
+Date: Tue, 6 Jan 2015 00:45:42 +0100
+Message-ID: <CAFLxGvw7toHySssY6Ee+CakkGXfUoL3g_uUCT6revN+JHEQkEA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,47 +32,27 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] was is the max. memory for a 32 bit UML decreased ?
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
 Cc: Daniel Walter <sahne@0x90.at>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gMDEvMDYvMjAxNSAxMjo0NSBBTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IE9uIFR1
-ZSwgSnVuIDI0LCAyMDE0IGF0IDEwOjUyIFBNLCBUb3JhbGYgRsO2cnN0ZXIgPHRvcmFsZi5mb2Vy
-c3RlckBnbXguZGU+IHdyb3RlOgo+PiBJSVJDIGluIGZvcm1lciB0aW1lcyBJIGNvdWxkIGFzc2ln
-biBhbiBVTUwgaW5zdGFuY2UgMjA0N00sIGJ1dCBub3dhZGF5cwo+PiBldmVuIDIwNDRNIGlzIHRv
-byBiaWcuCj4gCj4gVGhpcyBkZXBlbmRzIG9uIHRoZSBob3N0IHNpZGUuIFVNTCBoZWF2aWx5IGRl
-cGVuZHMgb24gdGhlIGhvc3QgbWVtb3J5IGxheW91dC4KPiBOb3cgd2l0aCBBU0xSIGFuZCBzdWNo
-IHN0dWZmIHRoZSBsYXlvdXQgY2hhbmdlcyBhbmQgdGhlIGJvYXJkZXIgZm9yCj4gVU1MIGFyZSBu
-byBsb25nZXIgY29uc3RhbnQuCj4gRGFuaWVsIGFuZCBJIGN1cnJlbnRseSBodW50IGRvd24gc3Vj
-aCBhbiBpc3N1ZS4KPiBXaGF0IGV4YWN0bHkgaGFwcGVucyBpZiB5b3VyIGdpdmUgVU1MIHRvbyBt
-dWNoIG1lbW9yeT8KPiAKCnRmb2Vyc3RlQG4yMiB+ICQgc3RhcnRfdW1sLnNoIC1yIHRyaW5pdHkK
-KyAvaG9tZS90Zm9lcnN0ZS9kZXZlbC9saW51eC9saW51eCBlYXJseXByaW50ayB1YmRhPS9ob21l
-L3Rmb2Vyc3RlL3ZpcnR1YWwvdW1sL3RyaW5pdHkgdWJkYj0vbW50L3JhbWRpc2svdHJpbml0eV9z
-d2FwIGV0aDA9dHVudGFwLHRhcDAsNzI6ZWY6M2Q6OWY6YzM6NWEgbWVtPTIwNDRNIGNvbjA9ZmQ6
-MCxmZDoxIGNvbj1wdHMgdW1pZD11bWxfdHJpbml0eSByb290ZnN0eXBlPWV4dDQgc29mdGxvY2t1
-cF9hbGxfY3B1X2JhY2t0cmFjZT0xCkxvY2F0aW5nIHRoZSBib3R0b20gb2YgdGhlIGFkZHJlc3Mg
-c3BhY2UgLi4uIDB4MTAwMApMb2NhdGluZyB0aGUgdG9wIG9mIHRoZSBhZGRyZXNzIHNwYWNlIC4u
-LiAweGMwMDAwMDAwCkNvcmUgZHVtcCBsaW1pdHMgOgogICAgICAgIHNvZnQgLSAwCiAgICAgICAg
-aGFyZCAtIE5PTkUKQ2hlY2tpbmcgdGhhdCBwdHJhY2UgY2FuIGNoYW5nZSBzeXN0ZW0gY2FsbCBu
-dW1iZXJzLi4uT0sKQ2hlY2tpbmcgc3lzY2FsbCBlbXVsYXRpb24gcGF0Y2ggZm9yIHB0cmFjZS4u
-Lk9LCkNoZWNraW5nIGFkdmFuY2VkIHN5c2NhbGwgZW11bGF0aW9uIHBhdGNoIGZvciBwdHJhY2Uu
-Li5PSwpDaGVja2luZyBlbnZpcm9ubWVudCB2YXJpYWJsZXMgZm9yIGEgdGVtcGRpci4uLm5vbmUg
-Zm91bmQKQ2hlY2tpbmcgaWYgL2Rldi9zaG0gaXMgb24gdG1wZnMuLi5PSwpDaGVja2luZyBQUk9U
-X0VYRUMgbW1hcCBpbiAvZGV2L3NobS4uLk9LCkNoZWNraW5nIGZvciB0aGUgc2thczMgcGF0Y2gg
-aW4gdGhlIGhvc3Q6CiAgLSAvcHJvYy9tbS4uLm5vdCBmb3VuZDogTm8gc3VjaCBmaWxlIG9yIGRp
-cmVjdG9yeQogIC0gUFRSQUNFX0ZBVUxUSU5GTy4uLm5vdCBmb3VuZAogIC0gUFRSQUNFX0xEVC4u
-Lm5vdCBmb3VuZApVTUwgcnVubmluZyBpbiBTS0FTMCBtb2RlCkFkZGluZyAxMjMyODk2MCBieXRl
-cyB0byBwaHlzaWNhbCBtZW1vcnkgdG8gYWNjb3VudCBmb3IgZXhlYy1zaGllbGQgZ2FwCndyaXRl
-OiBGaWxlIHRvbyBsYXJnZQoKLS0gClRvcmFsZgpwZ3Aga2V5OiA3QjFBIDA3RjQgRUM4MiAwRjkw
-IEQ0QzIgIDg5MzYgODcyQSBFNTA4IDAwNzYgRTk0RQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpE
-aXZlIGludG8gdGhlIFdvcmxkIG9mIFBhcmFsbGVsIFByb2dyYW1taW5nISBUaGUgR28gUGFyYWxs
-ZWwgV2Vic2l0ZSwKc3BvbnNvcmVkIGJ5IEludGVsIGFuZCBkZXZlbG9wZWQgaW4gcGFydG5lcnNo
-aXAgd2l0aCBTbGFzaGRvdCBNZWRpYSwgaXMgeW91cgpodWIgZm9yIGFsbCB0aGluZ3MgcGFyYWxs
-ZWwgc29mdHdhcmUgZGV2ZWxvcG1lbnQsIGZyb20gd2Vla2x5IHRob3VnaHQKbGVhZGVyc2hpcCBi
-bG9ncyB0byBuZXdzLCB2aWRlb3MsIGNhc2Ugc3R1ZGllcywgdHV0b3JpYWxzIGFuZCBtb3JlLiBU
-YWtlIGEKbG9vayBhbmQgam9pbiB0aGUgY29udmVyc2F0aW9uIG5vdy4gaHR0cDovL2dvcGFyYWxs
-ZWwuc291cmNlZm9yZ2UubmV0Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxp
-bnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
-Lm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+T24gVHVlLCBKdW4gMjQsIDIwMTQgYXQgMTA6NTIgUE0sIFRvcmFsZiBGw7Zyc3RlciA8dG9yYWxm
+LmZvZXJzdGVyQGdteC5kZT4gd3JvdGU6Cj4gSUlSQyBpbiBmb3JtZXIgdGltZXMgSSBjb3VsZCBh
+c3NpZ24gYW4gVU1MIGluc3RhbmNlIDIwNDdNLCBidXQgbm93YWRheXMKPiBldmVuIDIwNDRNIGlz
+IHRvbyBiaWcuCgpUaGlzIGRlcGVuZHMgb24gdGhlIGhvc3Qgc2lkZS4gVU1MIGhlYXZpbHkgZGVw
+ZW5kcyBvbiB0aGUgaG9zdCBtZW1vcnkgbGF5b3V0LgpOb3cgd2l0aCBBU0xSIGFuZCBzdWNoIHN0
+dWZmIHRoZSBsYXlvdXQgY2hhbmdlcyBhbmQgdGhlIGJvYXJkZXIgZm9yClVNTCBhcmUgbm8gbG9u
+Z2VyIGNvbnN0YW50LgpEYW5pZWwgYW5kIEkgY3VycmVudGx5IGh1bnQgZG93biBzdWNoIGFuIGlz
+c3VlLgpXaGF0IGV4YWN0bHkgaGFwcGVucyBpZiB5b3VyIGdpdmUgVU1MIHRvbyBtdWNoIG1lbW9y
+eT8KCi0tIApUaGFua3MsCi8vcmljaGFyZAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkRpdmUgaW50
+byB0aGUgV29ybGQgb2YgUGFyYWxsZWwgUHJvZ3JhbW1pbmchIFRoZSBHbyBQYXJhbGxlbCBXZWJz
+aXRlLApzcG9uc29yZWQgYnkgSW50ZWwgYW5kIGRldmVsb3BlZCBpbiBwYXJ0bmVyc2hpcCB3aXRo
+IFNsYXNoZG90IE1lZGlhLCBpcyB5b3VyCmh1YiBmb3IgYWxsIHRoaW5ncyBwYXJhbGxlbCBzb2Z0
+d2FyZSBkZXZlbG9wbWVudCwgZnJvbSB3ZWVrbHkgdGhvdWdodApsZWFkZXJzaGlwIGJsb2dzIHRv
+IG5ld3MsIHZpZGVvcywgY2FzZSBzdHVkaWVzLCB0dXRvcmlhbHMgYW5kIG1vcmUuIFRha2UgYQps
+b29rIGFuZCBqb2luIHRoZSBjb252ZXJzYXRpb24gbm93LiBodHRwOi8vZ29wYXJhbGxlbC5zb3Vy
+Y2Vmb3JnZS5uZXQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2
+ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
+c3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
