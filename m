@@ -1,42 +1,102 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <54A96470.1000208@nod.at>
-Date: Sun, 04 Jan 2015 17:04:00 +0100
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YA0au-0002gs-J6
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Jan 2015 18:17:04 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YA0at-0006l2-37
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 10 Jan 2015 18:17:04 +0000
+Message-ID: <54B16C96.2020809@nod.at>
+Date: Sat, 10 Jan 2015 19:16:54 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [GIT PULL] UML fixes for v3.19-rc3
-To: Linus Torvalds <torvalds@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+References: <53A9E509.4020103@gmx.de>
+	<CAFLxGvw7toHySssY6Ee+CakkGXfUoL3g_uUCT6revN+JHEQkEA@mail.gmail.com>
+	<54B13235.9010402@gmx.de> <54B1329B.6060708@nod.at>
+	<54B14E7E.1090607@gmx.de> <54B16070.7070807@nod.at>
+	<54B16369.4090604@gmx.de> <54B1652E.50605@nod.at>
+	<54B16B41.7050302@gmx.de>
+In-Reply-To: <54B16B41.7050302@gmx.de>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] was is the max. memory for a 32 bit UML decreased ?
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+Cc: Daniel Walter <sahne@0x90.at>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Linus,
+QW0gMTAuMDEuMjAxNSB1bSAxOToxMSBzY2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPiBPbiAwMS8x
+MC8yMDE1IDA2OjQ1IFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IEFtIDEwLjAxLjIw
+MTUgdW0gMTg6Mzcgc2NocmllYiBUb3JhbGYgRsO2cnN0ZXI6Cj4+PiBPbiAwMS8xMC8yMDE1IDA2
+OjI1IFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+Pj4gQW0gMTAuMDEuMjAxNSB1bSAx
+NzowOCBzY2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPj4+Pj4geWVzLCBpdCBuZXZlciB3b3JrZWQg
+d2l0aCB2YWx1ZXMgYWJvdmUgMjAyNk0gKHRlc3RlZCBhdCBhbiBvbGQgVGhpbmtQYWQgVDQyMCwg
+cnVubmluZyBhIDMyIGJpdCBHZW50b28gTGludXggd2l0aCBob3N0IGtlcm5lbCAzLjE3LjQgKSAK
+Pj4+Pgo+Pj4+IFRoZSB0aGVvcmV0aWNhbCBtYXguIHdhcyBhbHdheXMgMkdpQiBkdWUgdG8gdGhl
+IGxpbWl0ZWQgYWRkcmVzcyBzcGFjZSBvbiBpYTMyLgo+Pj4+IDJHaUIgLSBVTUwgYmluYXJ5IC0g
+QVNMUiBvdmVyaGVhZC9wYWRkaW5nIGlzIHdoYXQgeW91IGNhbiB1c2UuCj4+Pj4gQnV0IHRoZSAi
+d3JpdGU6IEZpbGUgdG9vIGxhcmdlIiBpc3N1ZSBpcyBzb21ldGhpbmcgbmV3LiBJIGJldCBpdCBv
+cmlnaW5zIGZyb20gdG1wZnMgb3Igc2htIG9uIHRoZSBob3N0IHNpZGUuCj4+Pj4KPj4+PiBUaGFu
+a3MsCj4+Pj4gLy9yaWNoYXJkCj4+Pj4KPj4+IFdlbGwsIEkgYWxyZWFkeSBoYWQgZXhwbGljaXRs
+eSB0byBkZWZpbmUgdGhlIG1vdW50LCBiL2MgR2VudG9vJ3MgZGVmYXVsdCBpcyAibm9leGVjIjoK
+Pj4+Cj4+PiB0Zm9lcnN0ZUBuMjIgfiAkIG1vdW50IHwgZ3JlcCBzaG0KPj4+IHNobSBvbiAvZGV2
+L3NobSB0eXBlIHRtcGZzIChydyxub3N1aWQsbm9kZXYscmVsYXRpbWUpCj4+Cj4+IENhbiBpdCBj
+YXJyeSBhIDJHaUIgZmlsZT8KPj4KPiAKPiBJY2ssIGdvb2QgaGludCwgSSBzZXQgbm93IHRoZSBz
+aXplIHRvIDMgR0IgOgo+IHRmb2Vyc3RlQHQ0NCB+ICQgc3NoIHRmb2Vyc3RlQG4yMiBncmVwIHNo
+bSAvZXRjL2ZzdGFiIAo+IHNobSAgICAgICAgICAgICAgICAgICAgIC9kZXYvc2htICAgICAgICB0
+bXBmcyAgICAgICAgICAgbm9kZXYsbm9zdWlkLHNpemU9M0cgCj4gCj4gYW5kIHRyaWVkIGFmdGVy
+IHJlLW1vdW50aW5nIHdpdGggMjAyNk0sIGJ1dCBnb3QgOgo+IAo+ICQgc3RhcnRfdW1sLnNoIC1y
+IHRyaW5pdHkgICAgICAgICAgICAgICAgCj4gKyAvaG9tZS90Zm9lcnN0ZS9kZXZlbC9saW51eC9s
+aW51eCBlYXJseXByaW50ayB1YmRhPS9ob21lL3Rmb2Vyc3RlL3ZpcnR1YWwvdW1sL3RyaW5pdHkg
+dWJkYj0vbW50L3JhbWRpc2svdHJpbml0eV9zd2FwIGV0aDA9dHVudGFwLHRhcDAsNzI6ZWY6M2Q6
+OWY6YzM6NWEgbWVtPTIwMjZNIGNvbjA9ZmQ6MCxmZDoxIGNvbj1wdHMgdW1pZD11bWxfdHJpbml0
+eSByb290ZnN0eXBlPWV4dDQgc29mdGxvY2t1cF9hbGxfY3B1X2JhY2t0cmFjZT0xCj4gTG9jYXRp
+bmcgdGhlIGJvdHRvbSBvZiB0aGUgYWRkcmVzcyBzcGFjZSAuLi4gMHgxMDAwCj4gTG9jYXRpbmcg
+dGhlIHRvcCBvZiB0aGUgYWRkcmVzcyBzcGFjZSAuLi4gMHhjMDAwMDAwMAo+IENvcmUgZHVtcCBs
+aW1pdHMgOgo+ICAgICAgICAgc29mdCAtIDAKPiAgICAgICAgIGhhcmQgLSBOT05FCj4gQ2hlY2tp
+bmcgdGhhdCBwdHJhY2UgY2FuIGNoYW5nZSBzeXN0ZW0gY2FsbCBudW1iZXJzLi4uT0sKPiBDaGVj
+a2luZyBzeXNjYWxsIGVtdWxhdGlvbiBwYXRjaCBmb3IgcHRyYWNlLi4uT0sKPiBDaGVja2luZyBh
+ZHZhbmNlZCBzeXNjYWxsIGVtdWxhdGlvbiBwYXRjaCBmb3IgcHRyYWNlLi4uT0sKPiBDaGVja2lu
+ZyBlbnZpcm9ubWVudCB2YXJpYWJsZXMgZm9yIGEgdGVtcGRpci4uLm5vbmUgZm91bmQKPiBDaGVj
+a2luZyBpZiAvZGV2L3NobSBpcyBvbiB0bXBmcy4uLk9LCj4gQ2hlY2tpbmcgUFJPVF9FWEVDIG1t
+YXAgaW4gL2Rldi9zaG0uLi5PSwo+IENoZWNraW5nIGZvciB0aGUgc2thczMgcGF0Y2ggaW4gdGhl
+IGhvc3Q6Cj4gICAtIC9wcm9jL21tLi4ubm90IGZvdW5kOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0
+b3J5Cj4gICAtIFBUUkFDRV9GQVVMVElORk8uLi5ub3QgZm91bmQKPiAgIC0gUFRSQUNFX0xEVC4u
+Lm5vdCBmb3VuZAo+IFVNTCBydW5uaW5nIGluIFNLQVMwIG1vZGUKPiBBZGRpbmcgMTMyMzgyNzIg
+Ynl0ZXMgdG8gcGh5c2ljYWwgbWVtb3J5IHRvIGFjY291bnQgZm9yIGV4ZWMtc2hpZWxkIGdhcAo+
+IEtlcm5lbCB2aXJ0dWFsIG1lbW9yeSBzaXplIHNocnVuayB0byA5NDQ3NjY5NzYgYnl0ZXMKClVN
+TCBzZWVtcyBvbmx5IGJlIHRvIGFibGUgdG8gdXNlIDkwMU1pQi4KCj4gL2hvbWUvdGZvZXJzdGUv
+d29ya3NwYWNlL2Jpbi9zdGFydF91bWwuc2g6IGxpbmUgMTE1OiAgNDE5NSBTZWdtZW50YXRpb24g
+ZmF1bHQgICAgICAkTElOVVggZWFybHlwcmludGsgdWJkYT0kUk9PVEZTIHViZGI9JFNXQVAgZXRo
+MD0kTkVUIG1lbT0kTUVNICRUVFkgdW1pZD11bWxfJE5BTUUgcm9vdGZzdHlwZT1leHQ0ICIkQVJH
+UyIKPiArIFJDPTEzOQo+ICsgc2V0ICt4Cj4gCj4gCj4gTmV2ZXJ0aGVsZXNzIEkgdHJpZWQgYWdh
+aW4sIGl0IHdvcmtlZCBub3cuIFRoZSBsaW1pdCBpcyBub3cgMjAzMU0gYXMgZmFyIGFzIEkgY2Fu
+IHRlbGwuCgpBYm92ZSB5b3Ugd3JvdGUgMjAyNk1pQj8hCkRvZXMgaXQgd29yayBvciBub3Q/IC9t
+ZSB1cyBjb25mdXNlZC4KCkJUVzogRHVlIHRvIEFTTFIgdGhlIGxpbWl0IHdpbGwgYmUgc3RpbGwg
+ZnV6enkuCldlIGRlZmluaXRlbHkgbmVlZCB0byBhZGQgbW9yZSB0ZXN0cyBpbnRvIFVNTCB0byBk
+ZXRlY3QgdG9vIHNtYWxsIHRtcGZzIG1vdW50cy4KClRoYW5rcywKLy9yaWNoYXJkCgotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KRGl2ZSBpbnRvIHRoZSBXb3JsZCBvZiBQYXJhbGxlbCBQcm9ncmFtbWlu
+ZyEgVGhlIEdvIFBhcmFsbGVsIFdlYnNpdGUsCnNwb25zb3JlZCBieSBJbnRlbCBhbmQgZGV2ZWxv
+cGVkIGluIHBhcnRuZXJzaGlwIHdpdGggU2xhc2hkb3QgTWVkaWEsIGlzIHlvdXIKaHViIGZvciBh
+bGwgdGhpbmdzIHBhcmFsbGVsIHNvZnR3YXJlIGRldmVsb3BtZW50LCBmcm9tIHdlZWtseSB0aG91
+Z2h0CmxlYWRlcnNoaXAgYmxvZ3MgdG8gbmV3cywgdmlkZW9zLCBjYXNlIHN0dWRpZXMsIHR1dG9y
+aWFscyBhbmQgbW9yZS4gVGFrZSBhCmxvb2sgYW5kIGpvaW4gdGhlIGNvbnZlcnNhdGlvbiBub3cu
+IGh0dHA6Ly9nb3BhcmFsbGVsLnNvdXJjZWZvcmdlLm5ldApfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBs
+aXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVs
+Cg==
 
-The following changes since commit d753856c9f9ae33a980192aa7b81d8b97d79dec2:
-
-  Merge tag 'scsi-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi (2015-01-02 13:24:41 -0800)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus
-
-for you to fetch changes up to b485342bd79af363c77ef1a421c4a0aef2de9812:
-
-  x86, um: actually mark system call tables readonly (2015-01-04 14:21:25 +0100)
-
-----------------------------------------------------------------
-Two fixes for UML regressions. Nothing exciting.
-----------------------------------------------------------------
-Daniel Borkmann (1):
-      x86, um: actually mark system call tables readonly
-
-Richard Weinberger (1):
-      um: Skip futex_atomic_cmpxchg_inatomic() test
-
- arch/um/Kconfig.common          | 1 +
- arch/x86/um/sys_call_table_32.c | 2 +-
- arch/x86/um/sys_call_table_64.c | 2 +-
- 3 files changed, 3 insertions(+), 2 deletions(-)
-
-Thanks,
-//richard
