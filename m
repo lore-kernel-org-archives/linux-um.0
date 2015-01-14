@@ -1,57 +1,34 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 18 Jan 2015 02:08:53 +0100 (CET)
-Message-Id: <20150118.020853.431804627633243635.dxld@darkboxed.org>
-From: Daniel =?iso-8859-1?Q?Gr=F6ber?= <dxld@darkboxed.org>
-In-Reply-To: <54B62C49.7030309@nod.at>
-References: <54B59B9E.4000806@nod.at>
-	<20150114083951.GA29714@infradead.org>
-	<54B62C49.7030309@nod.at>
-Mime-Version: 1.0
-Content-Type: Multipart/Signed; protocol="application/pgp-signature";
- micalg=pgp-sha1;
- boundary="--Security_Multipart(Sun_Jan_18_02_08_53_2015_201)--"
+Message-ID: <54B62C49.7030309@nod.at>
+Date: Wed, 14 Jan 2015 09:43:53 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+References: <1421187358-32600-1-git-send-email-richard@nod.at> <20150113221958.GA27739@infradead.org> <54B59B9E.4000806@nod.at> <20150114083951.GA29714@infradead.org>
+In-Reply-To: <20150114083951.GA29714@infradead.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [PATCH] hostfs: Use noop_fsync for directories
-To: richard@nod.at
-Cc: hch@infradead.org, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, stable@vger.kernel.org
+To: Christoph Hellwig <hch@infradead.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, dxld@darkboxed.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, stable@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-----Security_Multipart(Sun_Jan_18_02_08_53_2015_201)--
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Am 14.01.2015 um 09:39 schrieb Christoph Hellwig:
+> On Tue, Jan 13, 2015 at 11:26:38PM +0100, Richard Weinberger wrote:
+>> hostfs tries do reduce the amount of syscall between guest and host as much
+>> as possible. For file operations it passes everything down to the host but
+>> for directory operations only ->iterate() does.
+>>
+>> It is already horrible slow, if we add an ->open() for directory too it would
+>> get even more slower. :-(
+> 
+> This sounds fairlt dangerous.  At least add some good documentation
+> explaining these semantics.
 
-From: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] hostfs: Use noop_fsync for directories
-Date: Wed, 14 Jan 2015 09:43:53 +0100
+Understood. Maybe it is time to rebenchmark hostfs with full directory pass-through support.
+Daniel, are you interested in a small kernel project?
+As explained on IRC adding real support for directory fsync() should be an easy task.
+The only interesting point is how much overhead it will add.
 
-> Daniel, are you interested in a small kernel project?
-
-Sure, I'm just pretty busy with university right now, I'll probably
-pick this back up after exams are finished in a month or so.
-
---Daniel
-
-----Security_Multipart(Sun_Jan_18_02_08_53_2015_201)--
-Content-Type: application/pgp-signature
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAABAgAGBQJUuwelAAoJENOUga4eeaz3F9wP+QEe27kQ8i4saXF0dfSFXwjw
-E8Mdfcjjc6ZqmFLQ715OXX29cC8xxvCWY2+gXzS/XpBhdVnJmosc72JdUsULjULj
-jyb222dT+gpOXDUYevX61Dz7De+9wfUCyjt3K2KMYkI7X2RyH7Y+w94YzSKsHy5R
-sOJWb0s83Ir2ecdkN+WElZ1aD1F3EN+65QVldP5O4+eWpTwhuZdXgZkmB76VrEm1
-VidK4Uy0IQSbdnX3b3woe93zV5ZLLvzJWt468lU07bwHxrL/6mpqeP80v/cYSjNL
-BD5rNcKH0LgsCXR+gMlYzTeqNKLfnZYWjQ5GcSTlo2jqrbg7LsftaiqYNeZJiNrs
-sBykyo/1l2RIX0qv660HXxBszSAxk27KqZFAbawn4a90HqQhuu1t6GHYE3R2g/+B
-pALhAUW5gQ43rJBRHAU7uIOCEC82Wb0VRWNBJ8khirND7slbf81qxZRrfoh+99Va
-qiNDnlaXsaS5vizBNbKVnUEybu443fcF2v+Hv32FZMpFlOUrZnw2hpVae+w0po4q
-9v0c3mo6YqDfgN82OtpcXTP+LLI+FYP1lolWdUcbE1qR5kf3TqNnLKMrQOwletlm
-wR9PqgmC2AWVg59Ysy3kIK6fgDzQxdyUiKeMkTBIMkLYzKZaOC6NFEN2N5oh+mmE
-0idEZFLEH4AeFZd97wv2
-=BVue
------END PGP SIGNATURE-----
-
-----Security_Multipart(Sun_Jan_18_02_08_53_2015_201)----
+Thanks,
+//richard
