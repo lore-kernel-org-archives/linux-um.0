@@ -1,24 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1YFqVz-0001Ra-FT
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1YCoxf-000760-8J
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jan 2015 20:44:07 +0000
-Received: from mail-vc0-f173.google.com ([209.85.220.173])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YFqVy-0004x4-6F
+	Sun, 18 Jan 2015 12:28:11 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YCoxd-0004dq-8q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 26 Jan 2015 20:44:07 +0000
-Received: by mail-vc0-f173.google.com with SMTP id id10so3473940vcb.4
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 26 Jan 2015 12:44:01 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <F66C82F4-14F8-4354-9B7F-FC764D2A18F9@m3y3r.de>
-References: <F66C82F4-14F8-4354-9B7F-FC764D2A18F9@m3y3r.de>
-Date: Mon, 26 Jan 2015 21:44:01 +0100
-Message-ID: <CAFLxGvxqucFWqFxTVCHwwkHQ0s4HUXeJjMmun3tfs_-dQ3JAZA@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
+	Sun, 18 Jan 2015 12:28:11 +0000
+Received: from [217.255.218.253] (helo=[192.168.2.103])
+	by www17.your-server.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
+	(Exim 4.80.1) (envelope-from <thomas@m3y3r.de>) id 1YCoxW-0006jD-Kk
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 18 Jan 2015 13:28:02 +0100
+From: Thomas Meyer <thomas@m3y3r.de>
+Message-Id: <F66C82F4-14F8-4354-9B7F-FC764D2A18F9@m3y3r.de>
+Date: Sun, 18 Jan 2015 13:27:59 +0100
+Mime-Version: 1.0 (1.0)
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,42 +28,65 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1710987138661292054=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Kmsg dumper patches?
-To: Thomas Meyer <thomas@m3y3r.de>
-Cc: Daniel Walter <sahne@0x90.at>, UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] Kmsg dumper patches?
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sun, Jan 18, 2015 at 1:27 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
-> Hi,
->
-> Any news. On this?
->
-> http://sourceforge.net/p/user-mode-linux/mailman/message/32947218/
-> http://sourceforge.net/p/user-mode-linux/mailman/message/32947219/
-> http://sourceforge.net/p/user-mode-linux/mailman/message/32947217/
 
-Easy answer, fallen through the cracks. :-\
-Thanks for the reminder!
+--===============1710987138661292054==
+Content-Type: multipart/alternative;
+	boundary=Apple-Mail-847DB9E1-CF15-4286-8C69-96EB51CEF2E4
+Content-Transfer-Encoding: 7bit
 
-I'm fine with 1/3, please add a more detailed changelog and resend.
-For 2/3 I'm not sure why we need this feature, can't you use earlyprintk?
-earlyprintk on UML will print everything to stdout.
-3/3 is also fine but please coordinate with Daniel and his ftrace work. Daniel?
 
--- 
-Thanks,
-//richard
+--Apple-Mail-847DB9E1-CF15-4286-8C69-96EB51CEF2E4
+Content-Type: text/plain;
+	charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+Any news. On this?
+
+http://sourceforge.net/p/user-mode-linux/mailman/message/32947218/
+http://sourceforge.net/p/user-mode-linux/mailman/message/32947219/
+http://sourceforge.net/p/user-mode-linux/mailman/message/32947217/
+
+With kind regards
+Thomas
+--Apple-Mail-847DB9E1-CF15-4286-8C69-96EB51CEF2E4
+Content-Type: text/html;
+	charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"></head><body dir="auto"><div>Hi,</div><div><br></div><div>Any news. On this?</div><div><br></div><div><a href="http://sourceforge.net/p/user-mode-linux/mailman/message/32947218/">http://sourceforge.net/p/user-mode-linux/mailman/message/32947218/</a></div><div><a href="http://sourceforge.net/p/user-mode-linux/mailman/message/32947219/">http://sourceforge.net/p/user-mode-linux/mailman/message/32947219/</a></div><div><a href="http://sourceforge.net/p/user-mode-linux/mailman/message/32947217/">http://sourceforge.net/p/user-mode-linux/mailman/message/32947217/</a></div><div><br>With kind regards<div>Thomas</div></div></body></html>
+--Apple-Mail-847DB9E1-CF15-4286-8C69-96EB51CEF2E4--
+
+
+--===============1710987138661292054==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+http://p.sf.net/sfu/gigenet
+--===============1710987138661292054==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--===============1710987138661292054==--
+
 
