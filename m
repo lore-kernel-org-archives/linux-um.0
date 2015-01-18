@@ -1,100 +1,57 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Sun, 18 Jan 2015 22:35:08 +0100
-Message-Id: <1421616908-30614-1-git-send-email-richard@nod.at>
+Date: Sun, 18 Jan 2015 02:08:53 +0100 (CET)
+Message-Id: <20150118.020853.431804627633243635.dxld@darkboxed.org>
+From: Daniel =?iso-8859-1?Q?Gr=F6ber?= <dxld@darkboxed.org>
+In-Reply-To: <54B62C49.7030309@nod.at>
+References: <54B59B9E.4000806@nod.at>
+	<20150114083951.GA29714@infradead.org>
+	<54B62C49.7030309@nod.at>
+Mime-Version: 1.0
+Content-Type: Multipart/Signed; protocol="application/pgp-signature";
+ micalg=pgp-sha1;
+ boundary="--Security_Multipart(Sun_Jan_18_02_08_53_2015_201)--"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: x86: Removed orphaned barrier.h
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, bp@suse.de, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] hostfs: Use noop_fsync for directories
+To: richard@nod.at
+Cc: hch@infradead.org, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, stable@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Since commit 9af2452a1839 ("um: Include generic barrier.h")
-UML uses the generic barrier.h, remove this orphaned file.
+----Security_Multipart(Sun_Jan_18_02_08_53_2015_201)--
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Reported-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/x86/um/asm/barrier.h | 71 -----------------------------------------------
- 1 file changed, 71 deletions(-)
- delete mode 100644 arch/x86/um/asm/barrier.h
+From: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] hostfs: Use noop_fsync for directories
+Date: Wed, 14 Jan 2015 09:43:53 +0100
 
-diff --git a/arch/x86/um/asm/barrier.h b/arch/x86/um/asm/barrier.h
-deleted file mode 100644
-index 2d7d9a1..0000000
---- a/arch/x86/um/asm/barrier.h
-+++ /dev/null
-@@ -1,71 +0,0 @@
--#ifndef _ASM_UM_BARRIER_H_
--#define _ASM_UM_BARRIER_H_
--
--#include <asm/asm.h>
--#include <asm/segment.h>
--#include <asm/cpufeature.h>
--#include <asm/cmpxchg.h>
--#include <asm/nops.h>
--
--#include <linux/kernel.h>
--#include <linux/irqflags.h>
--
--/*
-- * Force strict CPU ordering.
-- * And yes, this is required on UP too when we're talking
-- * to devices.
-- */
--#ifdef CONFIG_X86_32
--
--#define mb()	alternative("lock; addl $0,0(%%esp)", "mfence", X86_FEATURE_XMM2)
--#define rmb()	alternative("lock; addl $0,0(%%esp)", "lfence", X86_FEATURE_XMM2)
--#define wmb()	alternative("lock; addl $0,0(%%esp)", "sfence", X86_FEATURE_XMM)
--
--#else /* CONFIG_X86_32 */
--
--#define mb()	asm volatile("mfence" : : : "memory")
--#define rmb()	asm volatile("lfence" : : : "memory")
--#define wmb()	asm volatile("sfence" : : : "memory")
--
--#endif /* CONFIG_X86_32 */
--
--#ifdef CONFIG_X86_PPRO_FENCE
--#define dma_rmb()	rmb()
--#else /* CONFIG_X86_PPRO_FENCE */
--#define dma_rmb()	barrier()
--#endif /* CONFIG_X86_PPRO_FENCE */
--#define dma_wmb()	barrier()
--
--#ifdef CONFIG_SMP
--
--#define smp_mb()	mb()
--#define smp_rmb()	dma_rmb()
--#define smp_wmb()	barrier()
--#define set_mb(var, value) do { (void)xchg(&var, value); } while (0)
--
--#else /* CONFIG_SMP */
--
--#define smp_mb()	barrier()
--#define smp_rmb()	barrier()
--#define smp_wmb()	barrier()
--#define set_mb(var, value) do { var = value; barrier(); } while (0)
--
--#endif /* CONFIG_SMP */
--
--#define read_barrier_depends()		do { } while (0)
--#define smp_read_barrier_depends()	do { } while (0)
--
--/*
-- * Stop RDTSC speculation. This is needed when you need to use RDTSC
-- * (or get_cycles or vread that possibly accesses the TSC) in a defined
-- * code region.
-- *
-- * (Could use an alternative three way for this if there was one.)
-- */
--static inline void rdtsc_barrier(void)
--{
--	alternative(ASM_NOP3, "mfence", X86_FEATURE_MFENCE_RDTSC);
--	alternative(ASM_NOP3, "lfence", X86_FEATURE_LFENCE_RDTSC);
--}
--
--#endif
--- 
-1.8.4.5
+> Daniel, are you interested in a small kernel project?
 
+Sure, I'm just pretty busy with university right now, I'll probably
+pick this back up after exams are finished in a month or so.
+
+--Daniel
+
+----Security_Multipart(Sun_Jan_18_02_08_53_2015_201)--
+Content-Type: application/pgp-signature
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAABAgAGBQJUuwelAAoJENOUga4eeaz3F9wP+QEe27kQ8i4saXF0dfSFXwjw
+E8Mdfcjjc6ZqmFLQ715OXX29cC8xxvCWY2+gXzS/XpBhdVnJmosc72JdUsULjULj
+jyb222dT+gpOXDUYevX61Dz7De+9wfUCyjt3K2KMYkI7X2RyH7Y+w94YzSKsHy5R
+sOJWb0s83Ir2ecdkN+WElZ1aD1F3EN+65QVldP5O4+eWpTwhuZdXgZkmB76VrEm1
+VidK4Uy0IQSbdnX3b3woe93zV5ZLLvzJWt468lU07bwHxrL/6mpqeP80v/cYSjNL
+BD5rNcKH0LgsCXR+gMlYzTeqNKLfnZYWjQ5GcSTlo2jqrbg7LsftaiqYNeZJiNrs
+sBykyo/1l2RIX0qv660HXxBszSAxk27KqZFAbawn4a90HqQhuu1t6GHYE3R2g/+B
+pALhAUW5gQ43rJBRHAU7uIOCEC82Wb0VRWNBJ8khirND7slbf81qxZRrfoh+99Va
+qiNDnlaXsaS5vizBNbKVnUEybu443fcF2v+Hv32FZMpFlOUrZnw2hpVae+w0po4q
+9v0c3mo6YqDfgN82OtpcXTP+LLI+FYP1lolWdUcbE1qR5kf3TqNnLKMrQOwletlm
+wR9PqgmC2AWVg59Ysy3kIK6fgDzQxdyUiKeMkTBIMkLYzKZaOC6NFEN2N5oh+mmE
+0idEZFLEH4AeFZd97wv2
+=BVue
+-----END PGP SIGNATURE-----
+
+----Security_Multipart(Sun_Jan_18_02_08_53_2015_201)----
