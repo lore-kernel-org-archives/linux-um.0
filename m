@@ -1,58 +1,57 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Date: Sat, 20 Dec 2014 17:12:17 +0100
-Message-Id: <1419091937-6536-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] arch: x86: um: tls_32.c:  Remove unused function
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20150120121100.28406.95201.stgit@localhost.localdomain>
+References: <20150120121100.28406.95201.stgit@localhost.localdomain>
+Date: Tue, 20 Jan 2015 13:24:41 +0100
+Message-ID: <CAMuHMdW9MDTMZEN7paytQm+7-6sY_qTHOWQ9KY0ooaggyU8n=w@mail.gmail.com>
+Subject: Re: [PATCH RESEND] um,ethertap: use strncpy
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: Alan <gnomes@lxorguk.ukuu.org.uk>
+Cc: Greg Kroah-Hartman <greg@kroah.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Remove the function needs_TLS_update() that is not used anywhere.
+On Tue, Jan 20, 2015 at 1:11 PM, Alan <gnomes@lxorguk.ukuu.org.uk> wrote:
+> I can't prove the case pointed out in
+> https://bugzilla.kernel.org/show_bug.cgi?id=82341
+> is correct so let us play safe.
+>
+> Signed-off-by: Alan Cox <alan@linux.intel.com>
+> ---
+>  arch/um/os-Linux/drivers/ethertap_user.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/um/os-Linux/drivers/ethertap_user.c b/arch/um/os-Linux/drivers/ethertap_user.c
+> index b39b669..6d49182 100644
+> --- a/arch/um/os-Linux/drivers/ethertap_user.c
+> +++ b/arch/um/os-Linux/drivers/ethertap_user.c
+> @@ -105,7 +105,7 @@ static int etap_tramp(char *dev, char *gate, int control_me,
+>         sprintf(data_fd_buf, "%d", data_remote);
+>         sprintf(version_buf, "%d", UML_NET_VERSION);
 
-This was partially found by using a static code analysis program called cppcheck.
+The two above may also overflow, if the numbers contain more than 5
+resp. 6 digits.
 
-Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
----
- arch/x86/um/tls_32.c |   25 -------------------------
- 1 file changed, 25 deletions(-)
+>         if (gate != NULL) {
+> -               strcpy(gate_buf, gate);
+> +               strncpy(gate_buf, gate, 15);
 
-diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
-index 80ffa5b..587c4a2 100644
---- a/arch/x86/um/tls_32.c
-+++ b/arch/x86/um/tls_32.c
-@@ -125,31 +125,6 @@ out:
- }
- 
- /*
-- * Verify if we need to do a flush for the new process, i.e. if there are any
-- * present desc's, only if they haven't been flushed.
-- */
--static inline int needs_TLS_update(struct task_struct *task)
--{
--	int i;
--	int ret = 0;
--
--	for (i = GDT_ENTRY_TLS_MIN; i < GDT_ENTRY_TLS_MAX; i++) {
--		struct uml_tls_struct* curr =
--			&task->thread.arch.tls_array[i - GDT_ENTRY_TLS_MIN];
--
--		/*
--		 * Can't test curr->present, we may need to clear a descriptor
--		 * which had a value.
--		 */
--		if (curr->flushed)
--			continue;
--		ret = 1;
--		break;
--	}
--	return ret;
--}
--
--/*
-  * On a newly forked process, the TLS descriptors haven't yet been flushed. So
-  * we mark them as such and the first switch_to will do the job.
-  */
--- 
-1.7.10.4
+Same comment as before:
+
+"This will copy at most 15 bytes.
+ If "gate" contains 15 or more characters, gate_buf[] won't be
+ zero-terminated.
+ I think you better use strlcpy(), unless the remaining of the buffer
+ must be filled with zeroes."
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
