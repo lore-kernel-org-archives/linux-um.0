@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1YCoxf-000760-8J
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sgerwk@aol.com>) id 1YRQI8-0001lc-Sv
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2015 12:28:11 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YCoxd-0004dq-8q
+	Fri, 27 Feb 2015 19:09:40 +0000
+Received: from omr-m03.mx.aol.com ([64.12.143.77])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YRQI7-0005It-NU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2015 12:28:11 +0000
-Received: from [217.255.218.253] (helo=[192.168.2.103])
-	by www17.your-server.de with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
-	(Exim 4.80.1) (envelope-from <thomas@m3y3r.de>) id 1YCoxW-0006jD-Kk
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 18 Jan 2015 13:28:02 +0100
-From: Thomas Meyer <thomas@m3y3r.de>
-Message-Id: <F66C82F4-14F8-4354-9B7F-FC764D2A18F9@m3y3r.de>
-Date: Sun, 18 Jan 2015 13:27:59 +0100
-Mime-Version: 1.0 (1.0)
+	Fri, 27 Feb 2015 19:09:40 +0000
+MIME-Version: 1.0
+From: sgerwk@aol.com
+Content-Type: multipart/mixed;
+	boundary="--------MB_8D220D80E03CF63_F88_1B366D_webmail-va010.sysops.aol.com"
+Message-Id: <8D220D80E016E02-F88-C2F3A@webmail-va010.sysops.aol.com>
+Date: Fri, 27 Feb 2015 14:09:33 -0500
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,55 +25,47 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1710987138661292054=="
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Kmsg dumper patches?
-To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] hostfs does not compile as a module
+To: jdike@addtoit.com, richard@nod.at
+Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
+This is a multi-part message in MIME format.
+----------MB_8D220D80E03CF63_F88_1B366D_webmail-va010.sysops.aol.com
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 
---===============1710987138661292054==
-Content-Type: multipart/alternative;
-	boundary=Apple-Mail-847DB9E1-CF15-4286-8C69-96EB51CEF2E4
-Content-Transfer-Encoding: 7bit
+kernel=203.18.3=20with=20CONFIG_HOSTFS=3Dm=20does=20not=20compile=0D=0A=0D=0Asee=
+=20enclosed=20patch=0D=0A=0D=0A=0D=0A
+----------MB_8D220D80E03CF63_F88_1B366D_webmail-va010.sysops.aol.com
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="um-patch-3.18.3"
+Content-Type: application/octet-stream; name="um-patch-3.18.3"
 
-
---Apple-Mail-847DB9E1-CF15-4286-8C69-96EB51CEF2E4
-Content-Type: text/plain;
-	charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-Any news. On this?
-
-http://sourceforge.net/p/user-mode-linux/mailman/message/32947218/
-http://sourceforge.net/p/user-mode-linux/mailman/message/32947219/
-http://sourceforge.net/p/user-mode-linux/mailman/message/32947217/
-
-With kind regards
-Thomas
---Apple-Mail-847DB9E1-CF15-4286-8C69-96EB51CEF2E4
-Content-Type: text/html;
-	charset=utf-8
-Content-Transfer-Encoding: 7bit
-
-<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"></head><body dir="auto"><div>Hi,</div><div><br></div><div>Any news. On this?</div><div><br></div><div><a href="http://sourceforge.net/p/user-mode-linux/mailman/message/32947218/">http://sourceforge.net/p/user-mode-linux/mailman/message/32947218/</a></div><div><a href="http://sourceforge.net/p/user-mode-linux/mailman/message/32947219/">http://sourceforge.net/p/user-mode-linux/mailman/message/32947219/</a></div><div><a href="http://sourceforge.net/p/user-mode-linux/mailman/message/32947217/">http://sourceforge.net/p/user-mode-linux/mailman/message/32947217/</a></div><div><br>With kind regards<div>Thomas</div></div></body></html>
---Apple-Mail-847DB9E1-CF15-4286-8C69-96EB51CEF2E4--
-
-
---===============1710987138661292054==
+ZGlmZiAtTmF1ciBsaW51eC0zLjE4LjMtb3JpZy9hcmNoL3VtL29zLUxpbnV4L3VzZXJf
+c3ltcy5jIGxpbnV4LTMuMTguMy9hcmNoL3VtL29zLUxpbnV4L3VzZXJfc3ltcy5jCi0t
+LSBsaW51eC0zLjE4LjMtb3JpZy9hcmNoL3VtL29zLUxpbnV4L3VzZXJfc3ltcy5jCTIw
+MTUtMDEtMTYgMTY6MDQ6MDguMDAwMDAwMDAwICswMTAwCisrKyBsaW51eC0zLjE4LjMv
+YXJjaC91bS9vcy1MaW51eC91c2VyX3N5bXMuYwkyMDE1LTAxLTMwIDEzOjUzOjUyLjAw
+MDAwMDAwMCArMDEwMApAQCAtMTA3LDYgKzEwNyw4IEBACiBFWFBPUlRfU1lNQk9MX1BS
+T1RPKGZzdGF0NjQpOwogRVhQT1JUX1NZTUJPTF9QUk9UTyhta25vZCk7CiAKK0VYUE9S
+VF9TWU1CT0xfUFJPVE8oc3lzY2FsbCk7CisKIC8qIEV4cG9ydCBzeW1ib2xzIHVzZWQg
+YnkgR0NDIGZvciB0aGUgc3RhY2sgcHJvdGVjdG9yLiAqLwogZXh0ZXJuIHZvaWQgX19z
+dGFja19zbWFzaF9oYW5kbGVyKHZvaWQgKikgX19hdHRyaWJ1dGVfXygod2VhaykpOwog
+RVhQT1JUX1NZTUJPTChfX3N0YWNrX3NtYXNoX2hhbmRsZXIpOwo=
+----------MB_8D220D80E03CF63_F88_1B366D_webmail-va010.sysops.aol.com
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
---===============1710987138661292054==
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
+----------MB_8D220D80E03CF63_F88_1B366D_webmail-va010.sysops.aol.com
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -87,6 +76,6 @@ User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
---===============1710987138661292054==--
+----------MB_8D220D80E03CF63_F88_1B366D_webmail-va010.sysops.aol.com--
 
 
