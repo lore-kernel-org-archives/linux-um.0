@@ -1,85 +1,110 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 16 Mar 2015 12:41:05 +0100
-Message-Id: <1426506079-26183-2-git-send-email-richard@nod.at>
-In-Reply-To: <1426506079-26183-1-git-send-email-richard@nod.at>
-References: <1426506079-26183-1-git-send-email-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 01/15] hostfs: hostfs_file_open: Switch to data locking model
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, richard@nod.at
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rusty@ozlabs.org>) id 1YSOj5-0004M4-Nd
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Mar 2015 11:41:31 +0000
+Received: from ozlabs.org ([103.22.144.67])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YSOj3-0005dX-U9
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 02 Mar 2015 11:41:31 +0000
+From: Rusty Russell <rusty@rustcorp.com.au>
+Date: Mon,  2 Mar 2015 22:05:48 +1030
+Message-Id: <1425296150-4722-7-git-send-email-rusty@rustcorp.com.au>
+In-Reply-To: <1425296150-4722-1-git-send-email-rusty@rustcorp.com.au>
+References: <1425296150-4722-1-git-send-email-rusty@rustcorp.com.au>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 07/16] um: fix up obsolete cpu function usage.
+To: linux-kernel@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Rusty Russell <rusty@rustcorp.com.au>, user-mode-linux-devel@lists.sourceforge.net
 
-Instead of serializing hostfs_file_open() we can use
-a per inode mutex to protect ->mode.
+Thanks to spatch.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 ---
- fs/hostfs/hostfs_kern.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/um/kernel/smp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index fd62cae..104d58d 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -24,6 +24,7 @@ struct hostfs_inode_info {
- 	int fd;
- 	fmode_t mode;
- 	struct inode vfs_inode;
-+	struct mutex open_mutex;
- };
+diff --git a/arch/um/kernel/smp.c b/arch/um/kernel/smp.c
+index 5c8c3ea7db7b..74077892b34a 100644
+--- a/arch/um/kernel/smp.c
++++ b/arch/um/kernel/smp.c
+@@ -67,12 +67,12 @@ static int idle_proc(void *cpup)
+ 	os_set_fd_async(cpu_data[cpu].ipi_pipe[0]);
  
- static inline struct hostfs_inode_info *HOSTFS_I(struct inode *inode)
-@@ -225,6 +226,7 @@ static struct inode *hostfs_alloc_inode(struct super_block *sb)
- 	hi->fd = -1;
- 	hi->mode = 0;
- 	inode_init_once(&hi->vfs_inode);
-+	mutex_init(&hi->open_mutex);
- 	return &hi->vfs_inode;
+ 	wmb();
+-	if (cpu_test_and_set(cpu, cpu_callin_map)) {
++	if (cpumask_test_and_set_cpu(cpu, &cpu_callin_map)) {
+ 		printk(KERN_ERR "huh, CPU#%d already present??\n", cpu);
+ 		BUG();
+ 	}
+ 
+-	while (!cpu_isset(cpu, smp_commenced_mask))
++	while (!cpumask_test_cpu(cpu, &smp_commenced_mask))
+ 		cpu_relax();
+ 
+ 	notify_cpu_starting(cpu);
+@@ -111,7 +111,7 @@ void smp_prepare_cpus(unsigned int maxcpus)
+ 		set_cpu_possible(i, true);
+ 
+ 	set_cpu_online(me, true);
+-	cpu_set(me, cpu_callin_map);
++	cpumask_set_cpu(me, &cpu_callin_map);
+ 
+ 	err = os_pipe(cpu_data[me].ipi_pipe, 1, 1);
+ 	if (err < 0)
+@@ -127,11 +127,11 @@ void smp_prepare_cpus(unsigned int maxcpus)
+ 		init_idle(idle, cpu);
+ 
+ 		waittime = 200000000;
+-		while (waittime-- && !cpu_isset(cpu, cpu_callin_map))
++		while (waittime-- && !cpumask_test_cpu(cpu, &cpu_callin_map))
+ 			cpu_relax();
+ 
+ 		printk(KERN_INFO "%s\n",
+-		       cpu_isset(cpu, cpu_calling_map) ? "done" : "failed");
++		       cpumask_test_cpu(cpu, &cpu_calling_map) ? "done" : "failed");
+ 	}
  }
  
-@@ -295,7 +297,6 @@ static int hostfs_readdir(struct file *file, struct dir_context *ctx)
+@@ -142,7 +142,7 @@ void smp_prepare_boot_cpu(void)
  
- static int hostfs_file_open(struct inode *ino, struct file *file)
+ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
  {
--	static DEFINE_MUTEX(open_mutex);
- 	char *name;
- 	fmode_t mode = 0;
- 	int err;
-@@ -324,15 +325,15 @@ retry:
- 	if (fd < 0)
- 		return fd;
- 
--	mutex_lock(&open_mutex);
-+	mutex_lock(&HOSTFS_I(ino)->open_mutex);
- 	/* somebody else had handled it first? */
- 	if ((mode & HOSTFS_I(ino)->mode) == mode) {
--		mutex_unlock(&open_mutex);
-+		mutex_unlock(&HOSTFS_I(ino)->open_mutex);
- 		return 0;
- 	}
- 	if ((mode | HOSTFS_I(ino)->mode) != mode) {
- 		mode |= HOSTFS_I(ino)->mode;
--		mutex_unlock(&open_mutex);
-+		mutex_unlock(&HOSTFS_I(ino)->open_mutex);
- 		close_file(&fd);
- 		goto retry;
- 	}
-@@ -342,12 +343,12 @@ retry:
- 		err = replace_file(fd, HOSTFS_I(ino)->fd);
- 		close_file(&fd);
- 		if (err < 0) {
--			mutex_unlock(&open_mutex);
-+			mutex_unlock(&HOSTFS_I(ino)->open_mutex);
- 			return err;
- 		}
- 	}
- 	HOSTFS_I(ino)->mode = mode;
--	mutex_unlock(&open_mutex);
-+	mutex_unlock(&HOSTFS_I(ino)->open_mutex);
- 
+-	cpu_set(cpu, smp_commenced_mask);
++	cpumask_set_cpu(cpu, &smp_commenced_mask);
+ 	while (!cpu_online(cpu))
+ 		mb();
  	return 0;
- }
 -- 
-2.3.2
+2.1.0
+
+
+------------------------------------------------------------------------------
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
