@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1YSiGC-0006bI-K0
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <lorenzo@google.com>) id 1YSerx-00040P-Df
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Mar 2015 08:33:00 +0000
-Received: from mail-vc0-f182.google.com ([209.85.220.182])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YSiGA-0008V6-G0
+	Tue, 03 Mar 2015 04:55:45 +0000
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YSerw-0008K6-CR
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Mar 2015 08:33:00 +0000
-Received: by mail-vc0-f182.google.com with SMTP id hy4so58511vcb.13
+	Tue, 03 Mar 2015 04:55:45 +0000
+Received: by iery20 with SMTP id y20so813631ier.12
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 03 Mar 2015 00:32:53 -0800 (PST)
+	Mon, 02 Mar 2015 20:55:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAKD1Yr31WXUM-s71bUw+N13AmuAaT0cEhNGYp+VyOA1biGg16w@mail.gmail.com>
-References: <CAKD1Yr31WXUM-s71bUw+N13AmuAaT0cEhNGYp+VyOA1biGg16w@mail.gmail.com>
-Date: Tue, 3 Mar 2015 09:32:52 +0100
-Message-ID: <CAFLxGvzOyRKxQxtCSXePZWiH4SaJKhErKq20Hucx-_=_eXd8aw@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
+From: Lorenzo Colitti <lorenzo@google.com>
+Date: Tue, 3 Mar 2015 13:55:18 +0900
+Message-ID: <CAKD1Yr31WXUM-s71bUw+N13AmuAaT0cEhNGYp+VyOA1biGg16w@mail.gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,41 +29,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] Warning in syscall_trace_enter
-To: Lorenzo Colitti <lorenzo@google.com>
-Cc: Erik Kline <ek@google.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] Warning in syscall_trace_enter
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Erik Kline <ek@google.com>
 
-T24gVHVlLCBNYXIgMywgMjAxNSBhdCA1OjU1IEFNLCBMb3JlbnpvIENvbGl0dGkgPGxvcmVuem9A
-Z29vZ2xlLmNvbT4gd3JvdGU6Cj4gSGksCj4KPiB3aGVuIGNvbXBpbGluZyBVTUwgd2l0aCAtV2Fs
-bCAtV2Vycm9yLCBJIGdldDoKCkRvbid0IGJ1aWxkIHdpdGggLVdlcnJvci4KCj4gYXJjaC91bS9r
-ZXJuZWwvcHRyYWNlLmM6IEluIGZ1bmN0aW9uIOKAmHN5c2NhbGxfdHJhY2VfZW50ZXLigJk6Cj4g
-YXJjaC91bS9rZXJuZWwvcHRyYWNlLmM6MTc4OjMyOiB3YXJuaW5nOiBpZ25vcmluZyByZXR1cm4g
-dmFsdWUgb2YKPiDigJh0cmFjZWhvb2tfcmVwb3J0X3N5c2NhbGxfZW50cnnigJksIGRlY2xhcmVk
-IHdpdGggYXR0cmlidXRlCj4gd2Fybl91bnVzZWRfcmVzdWx0IFstV3VudXNlZC1yZXN1bHRdCj4g
-ZXJyb3IsIGZvcmJpZGRlbiB3YXJuaW5nOiBwdHJhY2UuYzoxNzgKPiBtYWtlWzFdOiAqKiogW2Fy
-Y2gvdW0va2VybmVsL3B0cmFjZS5vXSBFcnJvciAxCj4KPiBUaGlzIGNvZGUgaGFzbid0IGNoYW5n
-ZWQgaW4gYSBsb25nIHRpbWUgKHNpbmNlIDFiZmEyMzE3IGluIE1heSAyMDEyLCBJCj4gdGhpbmsp
-LCBzbyBJIGFzc3VtZSB0aGlzIGlzIGludGVudGlvbmFsPwo+Cj4gQW55IHRob3VnaHRzIG9uIHdo
-ZXRoZXIgeW91J2QgbGlrZSB0byBmaXggdGhpcyB1cHN0cmVhbSwgYW5kIGlmIHNvCj4gaG93PyBJ
-IGNhbiBwdXQgYSB0cml2aWFsIGZpeCBpbnRvIG91ciB0cmVlcyAoYXNzaWduIHRoZSByZXN1bHQg
-dG8gYQo+IGR1bW15IHZhcmlhYmxlLCBvciBkbyAiaWYgKHRyYWNlaG9va19yZXBvcnRfc3lzY2Fs
-bF9lbnRyeSgpKSByZXR1cm47IikKPiBidXQgaWYgeW91J3JlIHRoaW5raW5nIG9mIGZpeGluZyBp
-dCB1cHN0cmVhbSBJIHNob3VsZCBwcm9iYWJseSB3YWl0IHRvCj4gY2hlcnJ5LXBpY2sgd2hhdGV2
-ZXIgZml4IHlvdSBkZWNpZGUgb24uIEp1c3QgcHV0dGluZyAodm9pZCkgaW4gZnJvbnQKPiBvZiB0
-aGUgZnVuY3Rpb24gZG9lcyBub3Qgc2lsZW5jZSB0aGUgd2FybmluZyBnY2MuIChUaGlzIGlzIGFw
-cGFyZW50bHkKPiB3b3JraW5nIGFzIGludGVuZGVkIC0gc2VlCj4gaHR0cHM6Ly9nY2MuZ251Lm9y
-Zy9idWd6aWxsYS9zaG93X2J1Zy5jZ2k/aWQ9MjU1MDkjYzI2ICkKCklJUkMgdGhlIGJpZyBwbGFu
-IGlzIHRvIG1ha2UgdHJhY2Vob29rX3JlcG9ydF9zeXNjYWxsX2VudHJ5KCkgdHJlZS13aWRlIHZv
-aWQuCgotLSAKVGhhbmtzLAovL3JpY2hhcmQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEaXZlIGlu
-dG8gdGhlIFdvcmxkIG9mIFBhcmFsbGVsIFByb2dyYW1taW5nIFRoZSBHbyBQYXJhbGxlbCBXZWJz
-aXRlLCBzcG9uc29yZWQKYnkgSW50ZWwgYW5kIGRldmVsb3BlZCBpbiBwYXJ0bmVyc2hpcCB3aXRo
-IFNsYXNoZG90IE1lZGlhLCBpcyB5b3VyIGh1YiBmb3IgYWxsCnRoaW5ncyBwYXJhbGxlbCBzb2Z0
-d2FyZSBkZXZlbG9wbWVudCwgZnJvbSB3ZWVrbHkgdGhvdWdodCBsZWFkZXJzaGlwIGJsb2dzIHRv
-Cm5ld3MsIHZpZGVvcywgY2FzZSBzdHVkaWVzLCB0dXRvcmlhbHMgYW5kIG1vcmUuIFRha2UgYSBs
-b29rIGFuZCBqb2luIHRoZSAKY29udmVyc2F0aW9uIG5vdy4gaHR0cDovL2dvcGFyYWxsZWwuc291
-cmNlZm9yZ2UubmV0LwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1k
-ZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
-bGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+SGksCgp3aGVuIGNvbXBpbGluZyBVTUwgd2l0aCAtV2FsbCAtV2Vycm9yLCBJIGdldDoKCmFyY2gv
+dW0va2VybmVsL3B0cmFjZS5jOiBJbiBmdW5jdGlvbiDigJhzeXNjYWxsX3RyYWNlX2VudGVy4oCZ
+OgphcmNoL3VtL2tlcm5lbC9wdHJhY2UuYzoxNzg6MzI6IHdhcm5pbmc6IGlnbm9yaW5nIHJldHVy
+biB2YWx1ZSBvZgrigJh0cmFjZWhvb2tfcmVwb3J0X3N5c2NhbGxfZW50cnnigJksIGRlY2xhcmVk
+IHdpdGggYXR0cmlidXRlCndhcm5fdW51c2VkX3Jlc3VsdCBbLVd1bnVzZWQtcmVzdWx0XQplcnJv
+ciwgZm9yYmlkZGVuIHdhcm5pbmc6IHB0cmFjZS5jOjE3OAptYWtlWzFdOiAqKiogW2FyY2gvdW0v
+a2VybmVsL3B0cmFjZS5vXSBFcnJvciAxCgpUaGlzIGNvZGUgaGFzbid0IGNoYW5nZWQgaW4gYSBs
+b25nIHRpbWUgKHNpbmNlIDFiZmEyMzE3IGluIE1heSAyMDEyLCBJCnRoaW5rKSwgc28gSSBhc3N1
+bWUgdGhpcyBpcyBpbnRlbnRpb25hbD8KCkFueSB0aG91Z2h0cyBvbiB3aGV0aGVyIHlvdSdkIGxp
+a2UgdG8gZml4IHRoaXMgdXBzdHJlYW0sIGFuZCBpZiBzbwpob3c/IEkgY2FuIHB1dCBhIHRyaXZp
+YWwgZml4IGludG8gb3VyIHRyZWVzIChhc3NpZ24gdGhlIHJlc3VsdCB0byBhCmR1bW15IHZhcmlh
+YmxlLCBvciBkbyAiaWYgKHRyYWNlaG9va19yZXBvcnRfc3lzY2FsbF9lbnRyeSgpKSByZXR1cm47
+IikKYnV0IGlmIHlvdSdyZSB0aGlua2luZyBvZiBmaXhpbmcgaXQgdXBzdHJlYW0gSSBzaG91bGQg
+cHJvYmFibHkgd2FpdCB0bwpjaGVycnktcGljayB3aGF0ZXZlciBmaXggeW91IGRlY2lkZSBvbi4g
+SnVzdCBwdXR0aW5nICh2b2lkKSBpbiBmcm9udApvZiB0aGUgZnVuY3Rpb24gZG9lcyBub3Qgc2ls
+ZW5jZSB0aGUgd2FybmluZyBnY2MuIChUaGlzIGlzIGFwcGFyZW50bHkKd29ya2luZyBhcyBpbnRl
+bmRlZCAtIHNlZQpodHRwczovL2djYy5nbnUub3JnL2J1Z3ppbGxhL3Nob3dfYnVnLmNnaT9pZD0y
+NTUwOSNjMjYgKQoKVGhhbmtzLApMb3JlbnpvCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRGl2ZSBp
+bnRvIHRoZSBXb3JsZCBvZiBQYXJhbGxlbCBQcm9ncmFtbWluZyBUaGUgR28gUGFyYWxsZWwgV2Vi
+c2l0ZSwgc3BvbnNvcmVkCmJ5IEludGVsIGFuZCBkZXZlbG9wZWQgaW4gcGFydG5lcnNoaXAgd2l0
+aCBTbGFzaGRvdCBNZWRpYSwgaXMgeW91ciBodWIgZm9yIGFsbAp0aGluZ3MgcGFyYWxsZWwgc29m
+dHdhcmUgZGV2ZWxvcG1lbnQsIGZyb20gd2Vla2x5IHRob3VnaHQgbGVhZGVyc2hpcCBibG9ncyB0
+bwpuZXdzLCB2aWRlb3MsIGNhc2Ugc3R1ZGllcywgdHV0b3JpYWxzIGFuZCBtb3JlLiBUYWtlIGEg
+bG9vayBhbmQgam9pbiB0aGUgCmNvbnZlcnNhdGlvbiBub3cuIGh0dHA6Ly9nb3BhcmFsbGVsLnNv
+dXJjZWZvcmdlLm5ldC8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgt
+ZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0
+L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
