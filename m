@@ -1,24 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1YUiu6-0003nB-1U
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1YUiWH-0003JP-Ox
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 Mar 2015 21:38:30 +0000
-Received: from mail-vc0-f173.google.com ([209.85.220.173])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YUiu4-00036T-QN
+	Sun, 08 Mar 2015 21:13:53 +0000
+Received: from mout.gmx.net ([212.227.15.18])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YUiWF-00064P-DO
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 08 Mar 2015 21:38:30 +0000
-Received: by mail-vc0-f173.google.com with SMTP id hy10so13771397vcb.4
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 08 Mar 2015 14:38:23 -0700 (PDT)
+	Sun, 08 Mar 2015 21:13:53 +0000
+Received: from [192.168.178.24] ([80.171.108.136]) by mail.gmx.com (mrgmx003)
+	with ESMTPSA (Nemesis) id 0LjZhg-1XtAm10368-00bYip for
+	<user-mode-linux-devel@lists.sourceforge.net>; Sun, 08 Mar 2015 22:13:45
+	+0100
+Message-ID: <54FCBB88.70605@gmx.de>
+Date: Sun, 08 Mar 2015 22:13:44 +0100
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <54FCBB88.70605@gmx.de>
-References: <54FCBB88.70605@gmx.de>
-Date: Sun, 8 Mar 2015 22:38:23 +0100
-Message-ID: <CAFLxGvy8mLg9R9J38uAGFdZA_QdN=qZ3L-_niYoX8+n7GA0+Vg@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,124 +27,134 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] starting an 32 bit x86 chroot uml image at a
- ahrdened Gentoo amd64 system fails
-To: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
-Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] starting an 32 bit x86 chroot uml image at a ahrdened
+ Gentoo amd64 system fails
+To: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-T24gU3VuLCBNYXIgOCwgMjAxNSBhdCAxMDoxMyBQTSwgVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYu
-Zm9lcnN0ZXJAZ214LmRlPiB3cm90ZToKPiBXZWxsLCBpbiBmYWN0LCBzaW5jZSBJIHN3aXRjaGVk
-IGZyb20geDg2IHRvIGFtZDY0IHVuZGVyIEdlbnRvbywgSSBuZXZlciBtYW5hZ2VkIHRvIGdldCB0
-aGF0IGNocm9vdCB0byBiZSBib290ZWQuCj4gRHVyaW5nIGJvb3Qgb2YgdGhlIFVNTCBndWVzdCBp
-dCBqdXN0IGhhbmdzIGFyb3VuZCAgImRldnRtcGZzOiBtb3VudGVkIiB3L28gYW55IG91dHB1dAoK
-Qm9vdGluZyBhIGNocm9vdD8hCgo+IFRvZGF5IEkgZGVjaWRlZCB0byB0cnkgIGRlZmNvbmZpZywg
-YW5kIG5vdyBJIGRvIGdldCBhdCBsZWFzdCBhbiBvdXRwdXQuIEFueSBoaW50cyBob3cgdG8gY29u
-dGludWUgPyA6Cj4KPgo+IHRmb2Vyc3RlQHQ0NCB+L2RldmVsL2xpbnV4ICQgc3RhcnRfdW1sLnNo
-IC1yIHRyaW5pdHkKPiArIFNUVFJBQ0U9Cj4gKyAvaG9tZS90Zm9lcnN0ZS9kZXZlbC9saW51eC9s
-aW51eCBlYXJseXByaW50ayB1YmRhPS9ob21lL3Rmb2Vyc3RlL3ZpcnR1YWwvdW1sL3RyaW5pdHkg
-dWJkYj0vbW50L3JhbWRpc2svdHJpbml0eV9zd2FwIGV0aDA9dHVudGFwLHRhcDAsNzI6ZWY6M2Q6
-OWY6YzM6NWEgbWVtPTEwMDBNIGNvbjA9ZmQ6MCxmZDoxIGNvbj1wdHMgdW1pZD11bWxfdHJpbml0
-eSByb290ZnN0eXBlPWV4dDQgc29mdGxvY2t1cF9hbGxfY3B1X2JhY2t0cmFjZT0xCj4gQ29yZSBk
-dW1wIGxpbWl0cyA6Cj4gICAgICAgICBzb2Z0IC0gMAo+ICAgICAgICAgaGFyZCAtIE5PTkUKPiBD
-aGVja2luZyB0aGF0IHB0cmFjZSBjYW4gY2hhbmdlIHN5c3RlbSBjYWxsIG51bWJlcnMuLi5PSwo+
-IENoZWNraW5nIHN5c2NhbGwgZW11bGF0aW9uIHBhdGNoIGZvciBwdHJhY2UuLi5PSwo+IENoZWNr
-aW5nIGFkdmFuY2VkIHN5c2NhbGwgZW11bGF0aW9uIHBhdGNoIGZvciBwdHJhY2UuLi5PSwo+IENo
-ZWNraW5nIGVudmlyb25tZW50IHZhcmlhYmxlcyBmb3IgYSB0ZW1wZGlyLi4ubm9uZSBmb3VuZAo+
-IENoZWNraW5nIGlmIC9kZXYvc2htIGlzIG9uIHRtcGZzLi4uT0sKPiBDaGVja2luZyBQUk9UX0VY
-RUMgbW1hcCBpbiAvZGV2L3NobS4uLk9LCj4gQ2hlY2tpbmcgZm9yIHRoZSBza2FzMyBwYXRjaCBp
-biB0aGUgaG9zdDoKPiAgIC0gL3Byb2MvbW0uLi5ub3QgZm91bmQ6IE5vIHN1Y2ggZmlsZSBvciBk
-aXJlY3RvcnkKPiAgIC0gUFRSQUNFX0ZBVUxUSU5GTy4uLm5vdCBmb3VuZAo+ICAgLSBQVFJBQ0Vf
-TERULi4ubm90IGZvdW5kCj4gVU1MIHJ1bm5pbmcgaW4gU0tBUzAgbW9kZQo+IGJvb3Rjb25zb2xl
-IFtlYXJseWNvbjBdIGVuYWJsZWQKPiBQSUQgaGFzaCB0YWJsZSBlbnRyaWVzOiA0MDk2IChvcmRl
-cjogMywgMzI3NjggYnl0ZXMpCj4gRGVudHJ5IGNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMTMx
-MDcyIChvcmRlcjogOCwgMTA0ODU3NiBieXRlcykKPiBJbm9kZS1jYWNoZSBoYXNoIHRhYmxlIGVu
-dHJpZXM6IDY1NTM2IChvcmRlcjogNywgNTI0Mjg4IGJ5dGVzKQo+IE1lbW9yeTogMTAwMTg5Mksv
-MTAyNDAwMEsgYXZhaWxhYmxlICgyNDgxSyBrZXJuZWwgY29kZSwgNjE5SyByd2RhdGEsIDc3Mksg
-cm9kYXRhLCAxMTJLIGluaXQsIDE1NksgYnNzLCAyMjEwOEsgcmVzZXJ2ZWQsIDBLIGNtYS1yZXNl
-cnZlZCkKPiBOUl9JUlFTOjE1Cj4gQ2FsaWJyYXRpbmcgZGVsYXkgbG9vcC4uLiA1NTk5LjIzIEJv
-Z29NSVBTIChscGo9Mjc5OTYxNjApCj4gcGlkX21heDogZGVmYXVsdDogMzI3NjggbWluaW11bTog
-MzAxCj4gTW91bnQtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiAyMDQ4IChvcmRlcjogMiwgMTYz
-ODQgYnl0ZXMpCj4gTW91bnRwb2ludC1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDIwNDggKG9y
-ZGVyOiAyLCAxNjM4NCBieXRlcykKPiBJbml0aWFsaXppbmcgY2dyb3VwIHN1YnN5cyBibGtpbwo+
-IEluaXRpYWxpemluZyBjZ3JvdXAgc3Vic3lzIGRldmljZXMKPiBJbml0aWFsaXppbmcgY2dyb3Vw
-IHN1YnN5cyBmcmVlemVyCj4gQ2hlY2tpbmcgdGhhdCBob3N0IHB0eXMgc3VwcG9ydCBvdXRwdXQg
-U0lHSU8uLi5ZZXMKPiBDaGVja2luZyB0aGF0IGhvc3QgcHR5cyBzdXBwb3J0IFNJR0lPIG9uIGNs
-b3NlLi4uTm8sIGVuYWJsaW5nIHdvcmthcm91bmQKPiBkZXZ0bXBmczogaW5pdGlhbGl6ZWQKPiBV
-c2luZyAyLjYgaG9zdCBBSU8KPiBORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDE2Cj4g
-U3dpdGNoZWQgdG8gY2xvY2tzb3VyY2UgaXRpbWVyCj4gTkVUOiBSZWdpc3RlcmVkIHByb3RvY29s
-IGZhbWlseSAyCj4gVENQIGVzdGFibGlzaGVkIGhhc2ggdGFibGUgZW50cmllczogODE5MiAob3Jk
-ZXI6IDQsIDY1NTM2IGJ5dGVzKQo+IFRDUCBiaW5kIGhhc2ggdGFibGUgZW50cmllczogODE5MiAo
-b3JkZXI6IDQsIDY1NTM2IGJ5dGVzKQo+IFRDUDogSGFzaCB0YWJsZXMgY29uZmlndXJlZCAoZXN0
-YWJsaXNoZWQgODE5MiBiaW5kIDgxOTIpCj4gVENQOiByZW5vIHJlZ2lzdGVyZWQKPiBVRFAgaGFz
-aCB0YWJsZSBlbnRyaWVzOiA1MTIgKG9yZGVyOiAyLCAxNjM4NCBieXRlcykKPiBVRFAtTGl0ZSBo
-YXNoIHRhYmxlIGVudHJpZXM6IDUxMiAob3JkZXI6IDIsIDE2Mzg0IGJ5dGVzKQo+IE5FVDogUmVn
-aXN0ZXJlZCBwcm90b2NvbCBmYW1pbHkgMQo+IGNvbnNvbGUgW3N0ZGVycjBdIGRpc2FibGVkCj4g
-bWNvbnNvbGUgKHZlcnNpb24gMikgaW5pdGlhbGl6ZWQgb24gL2hvbWUvdGZvZXJzdGUvLnVtbC91
-bWxfdHJpbml0eS9tY29uc29sZQo+IENoZWNraW5nIGhvc3QgTUFEVl9SRU1PVkUgc3VwcG9ydC4u
-Lk9LCj4gZnV0ZXggaGFzaCB0YWJsZSBlbnRyaWVzOiAyNTYgKG9yZGVyOiAwLCA2MTQ0IGJ5dGVz
-KQo+IFZGUzogRGlzayBxdW90YXMgZHF1b3RfNi41LjIKPiBWRlM6IERxdW90LWNhY2hlIGhhc2gg
-dGFibGUgZW50cmllczogNTEyIChvcmRlciAwLCA0MDk2IGJ5dGVzKQo+IGlvIHNjaGVkdWxlciBu
-b29wIHJlZ2lzdGVyZWQKPiBpbyBzY2hlZHVsZXIgZGVhZGxpbmUgcmVnaXN0ZXJlZCAoZGVmYXVs
-dCkKPiBUQ1A6IGN1YmljIHJlZ2lzdGVyZWQKPiBORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFt
-aWx5IDE3Cj4gSW5pdGlhbGl6ZWQgc3RkaW8gY29uc29sZSBkcml2ZXIKPiBDb25zb2xlIGluaXRp
-YWxpemVkIG9uIC9kZXYvdHR5MAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29u
-c29sZSBbdHR5MF0gZW5hYmxlZAo+IGNvbnNvbGUgW3R0eTBdIGVuYWJsZWQKPiAgICAgICAgICAg
-ICAgICAgICAgICAgYm9vdGNvbnNvbGUgW2Vhcmx5Y29uMF0gZGlzYWJsZWQKPiBib290Y29uc29s
-ZSBbZWFybHljb24wXSBkaXNhYmxlZAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-SW5pdGlhbGl6aW5nIHNvZnR3YXJlIHNlcmlhbCBwb3J0IHZlcnNpb24gMQo+IGNvbnNvbGUgW21j
-LTFdIGVuYWJsZWQKPiBOZXRkZXZpY2UgMCAoNzI6ZWY6M2Q6OWY6YzM6NWEpIDoKPiBUVU4vVEFQ
-IGJhY2tlbmQgLQo+IHdpbmNoX3RocmVhZCA6IFRJT0NTQ1RUWSBmYWlsZWQgb24gZmQgMSBlcnIg
-PSAxCj4gRVhUNC1mcyAodWJkYSk6IG1vdW50ZWQgZmlsZXN5c3RlbSB3aXRoIG9yZGVyZWQgZGF0
-YSBtb2RlLiBPcHRzOiAobnVsbCkKPiBWRlM6IE1vdW50ZWQgcm9vdCAoZXh0NCBmaWxlc3lzdGVt
-KSByZWFkb25seSBvbiBkZXZpY2UgOTg6MC4KPiBkZXZ0bXBmczogbW91bnRlZAo+Cj4gTW9kdWxl
-cyBsaW5rZWQgaW46Cj4gUGlkOiAxLCBjb21tOiBzd2FwcGVyIE5vdCB0YWludGVkIDQuMC4wLXJj
-Mi0wMDQyNC1nMTcxMWZkOQo+IFJJUDogMDAzMzpbPDAwMDAwMDAwNjAyNTBhYmU+XQo+IFJTUDog
-MDAwMDAzNzA2NmJhZmYwOCAgRUZMQUdTOiAwMDAxMDIwMgo+IFJBWDogMDAwMDAwMDA2MDI1MGFh
-YyBSQlg6IDAwMDAwMDAwNjA2MDY5YTggUkNYOiAwMDAwMDM3MDY2NGQ3Yjk5Cj4gUkRYOiAwMDAw
-MDAwMDYwMjM1NTUwIFJTSTogMDAwMDAzNzA2NmJiMGZlOCBSREk6IDAwMDAwMDAwOWU1YjEwMDAK
-PiBSQlA6IDAwMDAwMzcwNjZiYjBmZTggUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDAw
-MDAwMDAwMDAwMAo+IFIxMDogMDAwMDAwMDA5ZTAxOTc3OCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYg
-UjEyOiAwMDAwMDAwMDllNWIxMDAwCj4gUjEzOiAwMDAwMDM3MDY2YmIwMDAwIFIxNDogMDAwMDAw
-MDA2MDIzNWE2MCBSMTU6IDAwMDAwMDAwNjAyZDk1YTgKPiBLZXJuZWwgcGFuaWMgLSBub3Qgc3lu
-Y2luZzogU2VnZmF1bHQgd2l0aCBubyBtbQo+IENQVTogMCBQSUQ6IDEgQ29tbTogc3dhcHBlciBO
-b3QgdGFpbnRlZCA0LjAuMC1yYzItMDA0MjQtZzE3MTFmZDkgIzEKPiBTdGFjazoKPgo+IE1vZHVs
-ZXMgbGlua2VkIGluOgo+IFBpZDogMSwgY29tbTogc3dhcHBlciBOb3QgdGFpbnRlZCA0LjAuMC1y
-YzItMDA0MjQtZzE3MTFmZDkKPiBSSVA6IDAwMzM6WzwwMDAwMDAwMDYwMjM4OGIxPl0KPiBSU1A6
-IDAwMDAwMDAwNjA1NzM0NTAgIEVGTEFHUzogMDAwMTAyMDIKPiBSQVg6IDAwMDAwMDAwMDAwMDAw
-MDYgUkJYOiAwMDAwMDAwMDYwNDljMjVlIFJDWDogMDAwMDAwMDA2MDYwNjlhOAo+IFJEWDogMDAw
-MDAwMDAwMDAwMDAwMCBSU0k6IDAwMDAwMDAwNjA2MTUzMzggUkRJOiAwMDAwMDAwMDAwMDAwMDAw
-Cj4gUkJQOiAwMDAwMDAwMDYwNTczNDgwIFIwODogMDAwMDAwMDA2MDU3MzA1OSBSMDk6IDAwMDAw
-MDAwNjAyN2U5MDYKPiBSMTA6IDAwMDAwMDAwMDAwMDAwMDggUjExOiAwMDAwMDAwMDAwM2I5MWI5
-IFIxMjogMDAwMDAzNzA2NmJhZmYwZgo+IFIxMzogMDAwMDAwMDAwMDAwMDAwMSBSMTQ6IDAwMDAw
-MDAwNjA1NzM2ZjAgUjE1OiAwMDAwMDAwMDAwMDAwMDAxCj4gS2VybmVsIHBhbmljIC0gbm90IHN5
-bmNpbmc6IFNlZ2ZhdWx0IHdpdGggbm8gbW0KPiArIHJjPTEKPiArIHJtIC9tbnQvcmFtZGlzay90
-cmluaXR5X3N3YXAKPiArIFtbIDEgLW5lIDAgXV0KPiArKyBleHByIDEgJSAxMjgKPiArIFJDPTEK
-PiArIHJlc2V0Cj4gKyBleGl0IDEKPgo+Cj4KPiAtLQo+IFRvcmFsZgo+IHBncCBrZXk6IDdCMUEg
-MDdGNCBFQzgyIDBGOTAgRDRDMiAgODkzNiA4NzJBIEU1MDggMDA3NiBFOTRFCj4KPgo+IC0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQo+IERpdmUgaW50byB0aGUgV29ybGQgb2YgUGFyYWxsZWwgUHJvZ3Jh
-bW1pbmcgVGhlIEdvIFBhcmFsbGVsIFdlYnNpdGUsIHNwb25zb3JlZAo+IGJ5IEludGVsIGFuZCBk
-ZXZlbG9wZWQgaW4gcGFydG5lcnNoaXAgd2l0aCBTbGFzaGRvdCBNZWRpYSwgaXMgeW91ciBodWIg
-Zm9yIGFsbAo+IHRoaW5ncyBwYXJhbGxlbCBzb2Z0d2FyZSBkZXZlbG9wbWVudCwgZnJvbSB3ZWVr
-bHkgdGhvdWdodCBsZWFkZXJzaGlwIGJsb2dzIHRvCj4gbmV3cywgdmlkZW9zLCBjYXNlIHN0dWRp
-ZXMsIHR1dG9yaWFscyBhbmQgbW9yZS4gVGFrZSBhIGxvb2sgYW5kIGpvaW4gdGhlCj4gY29udmVy
-c2F0aW9uIG5vdy4gaHR0cDovL2dvcGFyYWxsZWwuc291cmNlZm9yZ2UubmV0Lwo+IF9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gVXNlci1tb2RlLWxpbnV4
-LWRldmVsIG1haWxpbmcgbGlzdAo+IFVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91
-c2VyLW1vZGUtbGludXgtZGV2ZWwKCgoKLS0gClRoYW5rcywKLy9yaWNoYXJkCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KRGl2ZSBpbnRvIHRoZSBXb3JsZCBvZiBQYXJhbGxlbCBQcm9ncmFtbWluZyBU
-aGUgR28gUGFyYWxsZWwgV2Vic2l0ZSwgc3BvbnNvcmVkCmJ5IEludGVsIGFuZCBkZXZlbG9wZWQg
-aW4gcGFydG5lcnNoaXAgd2l0aCBTbGFzaGRvdCBNZWRpYSwgaXMgeW91ciBodWIgZm9yIGFsbAp0
-aGluZ3MgcGFyYWxsZWwgc29mdHdhcmUgZGV2ZWxvcG1lbnQsIGZyb20gd2Vla2x5IHRob3VnaHQg
-bGVhZGVyc2hpcCBibG9ncyB0bwpuZXdzLCB2aWRlb3MsIGNhc2Ugc3R1ZGllcywgdHV0b3JpYWxz
-IGFuZCBtb3JlLiBUYWtlIGEgbG9vayBhbmQgam9pbiB0aGUgCmNvbnZlcnNhdGlvbiBub3cuIGh0
-dHA6Ly9nb3BhcmFsbGVsLnNvdXJjZWZvcmdlLm5ldC8KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlz
-dApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlz
-dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+Well, in fact, since I switched from x86 to amd64 under Gentoo, I never managed to get that chroot to be booted.
+During boot of the UML guest it just hangs around  "devtmpfs: mounted" w/o any output
+
+Today I decided to try  defconfig, and now I do get at least an output. Any hints how to continue ? :
+
+
+tfoerste@t44 ~/devel/linux $ start_uml.sh -r trinity                   
++ STTRACE=
++ /home/tfoerste/devel/linux/linux earlyprintk ubda=/home/tfoerste/virtual/uml/trinity ubdb=/mnt/ramdisk/trinity_swap eth0=tuntap,tap0,72:ef:3d:9f:c3:5a mem=1000M con0=fd:0,fd:1 con=pts umid=uml_trinity rootfstype=ext4 softlockup_all_cpu_backtrace=1
+Core dump limits :
+        soft - 0
+        hard - NONE
+Checking that ptrace can change system call numbers...OK
+Checking syscall emulation patch for ptrace...OK
+Checking advanced syscall emulation patch for ptrace...OK
+Checking environment variables for a tempdir...none found
+Checking if /dev/shm is on tmpfs...OK
+Checking PROT_EXEC mmap in /dev/shm...OK
+Checking for the skas3 patch in the host:
+  - /proc/mm...not found: No such file or directory
+  - PTRACE_FAULTINFO...not found
+  - PTRACE_LDT...not found
+UML running in SKAS0 mode
+bootconsole [earlycon0] enabled
+PID hash table entries: 4096 (order: 3, 32768 bytes)
+Dentry cache hash table entries: 131072 (order: 8, 1048576 bytes)
+Inode-cache hash table entries: 65536 (order: 7, 524288 bytes)
+Memory: 1001892K/1024000K available (2481K kernel code, 619K rwdata, 772K rodata, 112K init, 156K bss, 22108K reserved, 0K cma-reserved)
+NR_IRQS:15
+Calibrating delay loop... 5599.23 BogoMIPS (lpj=27996160)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 2048 (order: 2, 16384 bytes)
+Mountpoint-cache hash table entries: 2048 (order: 2, 16384 bytes)
+Initializing cgroup subsys blkio
+Initializing cgroup subsys devices
+Initializing cgroup subsys freezer
+Checking that host ptys support output SIGIO...Yes
+Checking that host ptys support SIGIO on close...No, enabling workaround
+devtmpfs: initialized
+Using 2.6 host AIO
+NET: Registered protocol family 16
+Switched to clocksource itimer
+NET: Registered protocol family 2
+TCP established hash table entries: 8192 (order: 4, 65536 bytes)
+TCP bind hash table entries: 8192 (order: 4, 65536 bytes)
+TCP: Hash tables configured (established 8192 bind 8192)
+TCP: reno registered
+UDP hash table entries: 512 (order: 2, 16384 bytes)
+UDP-Lite hash table entries: 512 (order: 2, 16384 bytes)
+NET: Registered protocol family 1
+console [stderr0] disabled
+mconsole (version 2) initialized on /home/tfoerste/.uml/uml_trinity/mconsole
+Checking host MADV_REMOVE support...OK
+futex hash table entries: 256 (order: 0, 6144 bytes)
+VFS: Disk quotas dquot_6.5.2
+VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+io scheduler noop registered
+io scheduler deadline registered (default)
+TCP: cubic registered
+NET: Registered protocol family 17
+Initialized stdio console driver
+Console initialized on /dev/tty0
+                                console [tty0] enabled
+console [tty0] enabled
+                      bootconsole [earlycon0] disabled
+bootconsole [earlycon0] disabled
+                                Initializing software serial port version 1
+console [mc-1] enabled
+Netdevice 0 (72:ef:3d:9f:c3:5a) : 
+TUN/TAP backend - 
+winch_thread : TIOCSCTTY failed on fd 1 err = 1
+EXT4-fs (ubda): mounted filesystem with ordered data mode. Opts: (null)
+VFS: Mounted root (ext4 filesystem) readonly on device 98:0.
+devtmpfs: mounted
+
+Modules linked in:
+Pid: 1, comm: swapper Not tainted 4.0.0-rc2-00424-g1711fd9
+RIP: 0033:[<0000000060250abe>]
+RSP: 0000037066baff08  EFLAGS: 00010202
+RAX: 0000000060250aac RBX: 00000000606069a8 RCX: 00000370664d7b99
+RDX: 0000000060235550 RSI: 0000037066bb0fe8 RDI: 000000009e5b1000
+RBP: 0000037066bb0fe8 R08: 0000000000000000 R09: 0000000000000000
+R10: 000000009e019778 R11: 0000000000000246 R12: 000000009e5b1000
+R13: 0000037066bb0000 R14: 0000000060235a60 R15: 00000000602d95a8
+Kernel panic - not syncing: Segfault with no mm
+CPU: 0 PID: 1 Comm: swapper Not tainted 4.0.0-rc2-00424-g1711fd9 #1
+Stack:
+
+Modules linked in:
+Pid: 1, comm: swapper Not tainted 4.0.0-rc2-00424-g1711fd9
+RIP: 0033:[<00000000602388b1>]
+RSP: 0000000060573450  EFLAGS: 00010202
+RAX: 0000000000000006 RBX: 000000006049c25e RCX: 00000000606069a8
+RDX: 0000000000000000 RSI: 0000000060615338 RDI: 0000000000000000
+RBP: 0000000060573480 R08: 0000000060573059 R09: 000000006027e906
+R10: 0000000000000008 R11: 00000000003b91b9 R12: 0000037066baff0f
+R13: 0000000000000001 R14: 00000000605736f0 R15: 0000000000000001
+Kernel panic - not syncing: Segfault with no mm
++ rc=1
++ rm /mnt/ramdisk/trinity_swap
++ [[ 1 -ne 0 ]]
+++ expr 1 % 128
++ RC=1
++ reset
++ exit 1
+
+
+
+-- 
+Toralf
+pgp key: 7B1A 07F4 EC82 0F90 D4C2  8936 872A E508 0076 E94E
+
+
+------------------------------------------------------------------------------
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
