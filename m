@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1YVOyf-00057j-6z
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1YVOpK-0004XT-VB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 Mar 2015 18:34:01 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YVOyd-0001zx-Sq
+	Tue, 10 Mar 2015 18:24:22 +0000
+Received: from mout.gmx.net ([212.227.17.21])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YVOpJ-0002CW-R1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 Mar 2015 18:34:01 +0000
-Message-ID: <54FF3910.8060502@nod.at>
-Date: Tue, 10 Mar 2015 19:33:52 +0100
-From: Richard Weinberger <richard@nod.at>
+	Tue, 10 Mar 2015 18:24:22 +0000
+Message-ID: <54FF36CC.4010401@gmx.de>
+Date: Tue, 10 Mar 2015 19:24:12 +0100
+From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
 References: <54FCBB88.70605@gmx.de>
 	<CAFLxGvy8mLg9R9J38uAGFdZA_QdN=qZ3L-_niYoX8+n7GA0+Vg@mail.gmail.com>
@@ -20,8 +20,7 @@ References: <54FCBB88.70605@gmx.de>
 	<54FF01F3.5060203@gmx.de> <54FF03DE.1080206@nod.at>
 	<54FF09B5.5020707@gmx.de> <54FF1281.7070709@nod.at>
 	<54FF2D3B.5090301@gmx.de> <54FF2F89.604@nod.at>
-	<54FF36CC.4010401@gmx.de>
-In-Reply-To: <54FF36CC.4010401@gmx.de>
+In-Reply-To: <54FF2F89.604@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,42 +30,53 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] starting an 32 bit x86 chroot uml image at a
  ahrdened Gentoo amd64 system fails
-To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+To: Richard Weinberger <richard@nod.at>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-QW0gMTAuMDMuMjAxNSB1bSAxOToyNCBzY2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPiBPbiAwMy8x
-MC8yMDE1IDA2OjUzIFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IFdoYXQgaXMgYWRk
-cjJsaW5lIC1lIGxpbnV4IDAwMDAwMDAwNjAyNTBjMGU/Cj4gCj4gJCBhZGRyMmxpbmUgLWUgbGlu
-dXggMDAwMDAwMDA2MDI1MGMwZQo+IC9ob21lL3Rmb2Vyc3RlL2RldmVsL2xpbnV4L2luY2x1ZGUv
-bGludXgvc2tidWZmLmg6MTUwMgo+IAo+ICQgYWRkcjJsaW5lIC1lIGxpbnV4IDAwMDAwMDAwNjAy
-MzhhMDEKPiAvaG9tZS90Zm9lcnN0ZS9kZXZlbC9saW51eC9uZXQvaXB2NC90Y3Bfb3V0cHV0LmM6
-MTkxOQo+IAo+IAo+IFRoZSBjb21tYW5kIGxpbmUgaXM6Cj4gJD4gL2hvbWUvdGZvZXJzdGUvZGV2
-ZWwvbGludXgvbGludXggZWFybHlwcmludGsgdWJkYT0vaG9tZS90Zm9lcnN0ZS92aXJ0dWFsL3Vt
-bC90cmluaXR5IHViZGI9L21udC9yYW1kaXNrL3RyaW5pdHlfc3dhcCBldGgwPXR1bnRhcCx0YXAw
-LDcyOmVmOjNkOjlmOmMzOjVhIG1lbT0xMDAwTSBjb24wPWZkOjAsZmQ6MSBjb249cHRzIHVtaWQ9
-dW1sX3RyaW5pdHkgcm9vdGZzdHlwZT1leHQ0IHNvZnRsb2NrdXBfYWxsX2NwdV9iYWNrdHJhY2U9
-MQo+IAo+IGJ1dCBhIHNpbXBsZSAKPiAkPiAgL2hvbWUvdGZvZXJzdGUvZGV2ZWwvbGludXgvbGlu
-dXggdWJkYT0vaG9tZS90Zm9lcnN0ZS92aXJ0dWFsL3VtbC90cmluaXR5Cj4gaXMgZW5vdWdoIHRv
-byB0byBnZXQgdGhlIGlzc3VlLgoKUmVhbGx5PyBBbHNvIGluIHNrYnVmZiBhbmQgdGNwX291dHB1
-dD8KCj4gV2hhdCBsZXQgbWUgd29uZGVyIGlzIHRoYXQgSSBjYW4ndCByZXByb2R1Y2UgdGhlIFJJ
-UCBmcm9tIHRoZSBmaXJzdCBlbWFpbCBpbiBtb21lbnQuIEhvd2V2ZXIgbm93IEkgZG8gZ2V0IHJl
-cHJvZHVjaWJsZSBhIFJJUCBvZiAwMDAwN2ZjNjQ4Nzc2NWZiIGFuZCAwMDAwMDAwMDYwMDFiMDEx
-IHJlc3BlY3RpdmVseSA6CgpTbyB5b3Ugc2VlICpyYW5kb20qIGNyYXNoZXM/CgpUaGFua3MsCi8v
-cmljaGFyZAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkRpdmUgaW50byB0aGUgV29ybGQgb2YgUGFy
-YWxsZWwgUHJvZ3JhbW1pbmcgVGhlIEdvIFBhcmFsbGVsIFdlYnNpdGUsIHNwb25zb3JlZApieSBJ
-bnRlbCBhbmQgZGV2ZWxvcGVkIGluIHBhcnRuZXJzaGlwIHdpdGggU2xhc2hkb3QgTWVkaWEsIGlz
-IHlvdXIgaHViIGZvciBhbGwKdGhpbmdzIHBhcmFsbGVsIHNvZnR3YXJlIGRldmVsb3BtZW50LCBm
-cm9tIHdlZWtseSB0aG91Z2h0IGxlYWRlcnNoaXAgYmxvZ3MgdG8KbmV3cywgdmlkZW9zLCBjYXNl
-IHN0dWRpZXMsIHR1dG9yaWFscyBhbmQgbW9yZS4gVGFrZSBhIGxvb2sgYW5kIGpvaW4gdGhlIApj
-b252ZXJzYXRpb24gbm93LiBodHRwOi8vZ29wYXJhbGxlbC5zb3VyY2Vmb3JnZS5uZXQvCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51
-eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2Vy
-LW1vZGUtbGludXgtZGV2ZWwK
+On 03/10/2015 06:53 PM, Richard Weinberger wrote:
+> What is addr2line -e linux 0000000060250c0e?
+
+$ addr2line -e linux 0000000060250c0e
+/home/tfoerste/devel/linux/include/linux/skbuff.h:1502
+
+$ addr2line -e linux 0000000060238a01
+/home/tfoerste/devel/linux/net/ipv4/tcp_output.c:1919
+
+
+The command line is:
+$> /home/tfoerste/devel/linux/linux earlyprintk ubda=/home/tfoerste/virtual/uml/trinity ubdb=/mnt/ramdisk/trinity_swap eth0=tuntap,tap0,72:ef:3d:9f:c3:5a mem=1000M con0=fd:0,fd:1 con=pts umid=uml_trinity rootfstype=ext4 softlockup_all_cpu_backtrace=1
+
+but a simple 
+$>  /home/tfoerste/devel/linux/linux ubda=/home/tfoerste/virtual/uml/trinity
+is enough too to get the issue.
+
+What let me wonder is that I can't reproduce the RIP from the first email in moment. However now I do get reproducible a RIP of 00007fc6487765fb and 000000006001b011 respectively :
+
+$ addr2line -e linux 00007fc6487765fb
+??:0
+$ addr2line -e linux 000000006001b011
+/home/tfoerste/devel/linux/arch/um/kernel/sysrq.c:56
+
+
+
+-- 
+Toralf
+pgp key: 7B1A 07F4 EC82 0F90 D4C2  8936 872A E508 0076 E94E
+
+
+------------------------------------------------------------------------------
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
