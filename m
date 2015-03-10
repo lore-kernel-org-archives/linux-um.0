@@ -1,26 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1YVOpK-0004XT-VB
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YVOLP-00039f-KG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 Mar 2015 18:24:22 +0000
-Received: from mout.gmx.net ([212.227.17.21])
+	Tue, 10 Mar 2015 17:53:27 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YVOpJ-0002CW-R1
+	(Exim 4.76) id 1YVOLJ-00013i-Js
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 10 Mar 2015 18:24:22 +0000
-Message-ID: <54FF36CC.4010401@gmx.de>
-Date: Tue, 10 Mar 2015 19:24:12 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Tue, 10 Mar 2015 17:53:27 +0000
+Message-ID: <54FF2F89.604@nod.at>
+Date: Tue, 10 Mar 2015 18:53:13 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 References: <54FCBB88.70605@gmx.de>
 	<CAFLxGvy8mLg9R9J38uAGFdZA_QdN=qZ3L-_niYoX8+n7GA0+Vg@mail.gmail.com>
 	<54FCCFF8.3030209@gmx.de> <54FCD0DB.4060308@nod.at>
 	<54FF01F3.5060203@gmx.de> <54FF03DE.1080206@nod.at>
 	<54FF09B5.5020707@gmx.de> <54FF1281.7070709@nod.at>
-	<54FF2D3B.5090301@gmx.de> <54FF2F89.604@nod.at>
-In-Reply-To: <54FF2F89.604@nod.at>
+	<54FF2D3B.5090301@gmx.de>
+In-Reply-To: <54FF2D3B.5090301@gmx.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,53 +30,37 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] starting an 32 bit x86 chroot uml image at a
  ahrdened Gentoo amd64 system fails
-To: Richard Weinberger <richard@nod.at>
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On 03/10/2015 06:53 PM, Richard Weinberger wrote:
-> What is addr2line -e linux 0000000060250c0e?
-
-$ addr2line -e linux 0000000060250c0e
-/home/tfoerste/devel/linux/include/linux/skbuff.h:1502
-
-$ addr2line -e linux 0000000060238a01
-/home/tfoerste/devel/linux/net/ipv4/tcp_output.c:1919
-
-
-The command line is:
-$> /home/tfoerste/devel/linux/linux earlyprintk ubda=/home/tfoerste/virtual/uml/trinity ubdb=/mnt/ramdisk/trinity_swap eth0=tuntap,tap0,72:ef:3d:9f:c3:5a mem=1000M con0=fd:0,fd:1 con=pts umid=uml_trinity rootfstype=ext4 softlockup_all_cpu_backtrace=1
-
-but a simple 
-$>  /home/tfoerste/devel/linux/linux ubda=/home/tfoerste/virtual/uml/trinity
-is enough too to get the issue.
-
-What let me wonder is that I can't reproduce the RIP from the first email in moment. However now I do get reproducible a RIP of 00007fc6487765fb and 000000006001b011 respectively :
-
-$ addr2line -e linux 00007fc6487765fb
-??:0
-$ addr2line -e linux 000000006001b011
-/home/tfoerste/devel/linux/arch/um/kernel/sysrq.c:56
-
-
-
--- 
-Toralf
-pgp key: 7B1A 07F4 EC82 0F90 D4C2  8936 872A E508 0076 E94E
-
-
-------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+QW0gMTAuMDMuMjAxNSB1bSAxODo0MyBzY2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPiBPbiAwMy8x
+MC8yMDE1IDA0OjQ5IFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IFRoZW4ganVzdCBy
+ZWJvb3QgaW50byBhIHByaXN0aW5lIGtlcm5lbCBhbmQgcmV0ZXN0LiA6LSkKPiAKPiBXaXRoIGxh
+dGVzdCBob3N0IHZhbmlsbGEgNC4wLjAtcmMzIGtlcm5lbCBJIGdldCBhIHNpbWlsYXIgcGljdHVy
+ZToKCkhtbSwgZG9lcyBub3QgbG9vayBhdCBhbGwgbGlrZSB5b3VyIGluaXRpYWwgcmVwb3J0LiBC
+dXQgbWF5YmUgaXQgaXMganVzdCBhbm90aGVyCnN5bXB0b20uCldoYXQgaXMgeW91ciBmdWxsIGtl
+cm5lbCBjb21tYW5kbGluZT8KCj4gVFVOL1RBUCBiYWNrZW5kIC0gCj4gd2luY2hfdGhyZWFkIDog
+VElPQ1NDVFRZIGZhaWxlZCBvbiBmZCAxIGVyciA9IDEKPiBFWFQ0LWZzICh1YmRhKTogbW91bnRl
+ZCBmaWxlc3lzdGVtIHdpdGggb3JkZXJlZCBkYXRhIG1vZGUuIE9wdHM6IChudWxsKQo+IFZGUzog
+TW91bnRlZCByb290IChleHQ0IGZpbGVzeXN0ZW0pIHJlYWRvbmx5IG9uIGRldmljZSA5ODowLgo+
+IGRldnRtcGZzOiBtb3VudGVkCj4gCj4gTW9kdWxlcyBsaW5rZWQgaW46Cj4gUGlkOiAxLCBjb21t
+OiBzd2FwcGVyIE5vdCB0YWludGVkIDQuMC4wLXJjMy0wMDExMS1nYWZmYjgxNwo+IFJJUDogMDAz
+MzpbPDAwMDAwMDAwNjAyNTBjMGU+XQoKV2hhdCBpcyBhZGRyMmxpbmUgLWUgbGludXggMDAwMDAw
+MDA2MDI1MGMwZT8KClRoYW5rcywKLy9yaWNoYXJkCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRGl2
+ZSBpbnRvIHRoZSBXb3JsZCBvZiBQYXJhbGxlbCBQcm9ncmFtbWluZyBUaGUgR28gUGFyYWxsZWwg
+V2Vic2l0ZSwgc3BvbnNvcmVkCmJ5IEludGVsIGFuZCBkZXZlbG9wZWQgaW4gcGFydG5lcnNoaXAg
+d2l0aCBTbGFzaGRvdCBNZWRpYSwgaXMgeW91ciBodWIgZm9yIGFsbAp0aGluZ3MgcGFyYWxsZWwg
+c29mdHdhcmUgZGV2ZWxvcG1lbnQsIGZyb20gd2Vla2x5IHRob3VnaHQgbGVhZGVyc2hpcCBibG9n
+cyB0bwpuZXdzLCB2aWRlb3MsIGNhc2Ugc3R1ZGllcywgdHV0b3JpYWxzIGFuZCBtb3JlLiBUYWtl
+IGEgbG9vayBhbmQgam9pbiB0aGUgCmNvbnZlcnNhdGlvbiBub3cuIGh0dHA6Ly9nb3BhcmFsbGVs
+LnNvdXJjZWZvcmdlLm5ldC8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGlu
+dXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
