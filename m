@@ -1,107 +1,47 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1YXTOw-0002H9-Hh
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Mar 2015 11:41:42 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YXTOv-0006RU-Jo for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Mar 2015 11:41:42 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 16 Mar 2015 12:41:12 +0100
-Message-Id: <1426506079-26183-9-git-send-email-richard@nod.at>
-In-Reply-To: <1426506079-26183-1-git-send-email-richard@nod.at>
-References: <1426506079-26183-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Thu, 12 Mar 2015 15:27:20 -0400 (EDT)
+Message-Id: <20150312.152720.2248943963968220981.davem@redhat.com>
+From: David Miller <davem@redhat.com>
+In-Reply-To: <20150312152409.E7B5C1A2422@localhost.localdomain>
+References: <20150312152409.E7B5C1A2422@localhost.localdomain>
+Mime-Version: 1.0
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 08/15] hostfs: Use __getname() in follow_link
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: richard@nod.at, linux-kernel@vger.kernel.org
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
+Subject: Re: [PATCH 7/8] isdn: replace CONFIG_8xx by CONFIG_PPC_8xx
+To: christophe.leroy@c-s.fr
+Cc: isdn@linux-pingi.de, linux-serial@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-mtd@lists.infradead.org, user-mode-linux-user@lists.sourceforge.net, linuxppc-dev@lists.ozlabs.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Be consistent with all other functions in hostfs and just
-use __getname().
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Date: Thu, 12 Mar 2015 16:24:09 +0100 (CET)
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/hostfs/hostfs_kern.c | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
+> Two config options exist to define powerpc MPC8xx:
+> * CONFIG_PPC_8xx
+> * CONFIG_8xx
+> In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
+> communication co-processor
+> 
+> arch/powerpc/platforms/Kconfig.cputype has contained the following
+> comment about CONFIG_8xx item for some years:
+> "# this is temp to handle compat with arch=ppc"
+> 
+> It looks like not many places still have that old CONFIG_8xx used,
+> so it is likely to be a good time to get rid of it completely ?
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 7260f16..c60d886 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -142,21 +142,19 @@ static char *follow_link(char *link)
- 	int len, n;
- 	char *name, *resolved, *end;
- 
--	len = 64;
--	while (1) {
-+	name = __getname();
-+	if (!name) {
- 		n = -ENOMEM;
--		name = kmalloc(len, GFP_KERNEL);
--		if (name == NULL)
--			goto out;
--
--		n = hostfs_do_readlink(link, name, len);
--		if (n < len)
--			break;
--		len *= 2;
--		kfree(name);
-+		goto out_free;
- 	}
-+
-+	n = hostfs_do_readlink(link, name, PATH_MAX);
- 	if (n < 0)
- 		goto out_free;
-+	else if (n == PATH_MAX) {
-+		n = -E2BIG;
-+		goto out_free;
-+	}
- 
- 	if (*name == '/')
- 		return name;
-@@ -175,13 +173,12 @@ static char *follow_link(char *link)
- 	}
- 
- 	sprintf(resolved, "%s%s", link, name);
--	kfree(name);
-+	__putname(name);
- 	kfree(link);
- 	return resolved;
- 
-  out_free:
--	kfree(name);
-- out:
-+	__putname(name);
- 	return ERR_PTR(n);
- }
- 
--- 
-2.3.2
+Acked-by: David S. Miller <davem@davemloft.net>
 
-
-------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
