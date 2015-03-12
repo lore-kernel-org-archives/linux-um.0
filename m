@@ -1,82 +1,45 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Laurent Dufour <ldufour@linux.vnet.ibm.com>
-Date: Wed, 25 Mar 2015 12:06:36 +0100
-Message-Id: <25152b76585716dc635945c3455ab9b49e645f6d.1427280806.git.ldufour@linux.vnet.ibm.com>
-In-Reply-To: <cover.1427280806.git.ldufour@linux.vnet.ibm.com>
-References: <cover.1427280806.git.ldufour@linux.vnet.ibm.com>
-In-Reply-To: <cover.1427280806.git.ldufour@linux.vnet.ibm.com>
-References: <20150323085209.GA28965@gmail.com> <cover.1427280806.git.ldufour@linux.vnet.ibm.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH v2 2/2] powerpc/mm: Tracking vDSO remap
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org
-Cc: cov@codeaurora.org, criu@openvz.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Message-Id: <20150312152349.943F91A241E@localhost.localdomain>
+Date: Thu, 12 Mar 2015 16:23:49 +0100 (CET)
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 3/8] video: replace CONFIG_8xx by CONFIG_PPC_8xx
+To: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fbdev@vger.kernel.org, netdev@vger.kernel.org, linux-serial@vger.kernel.org, linux-mtd@lists.infradead.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Some processes (CRIU) are moving the vDSO area using the mremap system
-call. As a consequence the kernel reference to the vDSO base address is
-no more valid and the signal return frame built once the vDSO has been
-moved is not pointing to the new sigreturn address.
+Two config options exist to define powerpc MPC8xx:
+* CONFIG_PPC_8xx
+* CONFIG_8xx
+In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
+communication co-processor
 
-This patch handles vDSO remapping and unmapping.
+arch/powerpc/platforms/Kconfig.cputype has contained the following
+comment about CONFIG_8xx item for some years:
+"# this is temp to handle compat with arch=ppc"
 
-Signed-off-by: Laurent Dufour <ldufour@linux.vnet.ibm.com>
+It looks like not many places still have that old CONFIG_8xx used,
+so it is likely to be a good time to get rid of it completely ?
+
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+
 ---
- arch/powerpc/include/asm/mmu_context.h | 36 +++++++++++++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+ drivers/video/console/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/include/asm/mmu_context.h b/arch/powerpc/include/asm/mmu_context.h
-index 73382eba02dc..be5dca3f7826 100644
---- a/arch/powerpc/include/asm/mmu_context.h
-+++ b/arch/powerpc/include/asm/mmu_context.h
-@@ -8,7 +8,6 @@
- #include <linux/spinlock.h>
- #include <asm/mmu.h>	
- #include <asm/cputable.h>
--#include <asm-generic/mm_hooks.h>
- #include <asm/cputhreads.h>
+diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
+index ba97efc..6ee84c3 100644
+--- a/drivers/video/console/Kconfig
++++ b/drivers/video/console/Kconfig
+@@ -6,7 +6,7 @@ menu "Console display driver support"
  
- /*
-@@ -109,5 +108,40 @@ static inline void enter_lazy_tlb(struct mm_struct *mm,
- #endif
- }
- 
-+static inline void arch_dup_mmap(struct mm_struct *oldmm,
-+				 struct mm_struct *mm)
-+{
-+}
-+
-+static inline void arch_exit_mmap(struct mm_struct *mm)
-+{
-+}
-+
-+static inline void arch_unmap(struct mm_struct *mm,
-+			struct vm_area_struct *vma,
-+			unsigned long start, unsigned long end)
-+{
-+	if (start <= mm->context.vdso_base && mm->context.vdso_base < end)
-+		mm->context.vdso_base = 0;
-+}
-+
-+static inline void arch_bprm_mm_init(struct mm_struct *mm,
-+				     struct vm_area_struct *vma)
-+{
-+}
-+
-+#define __HAVE_ARCH_REMAP
-+static inline void arch_remap(struct mm_struct *mm,
-+			      unsigned long old_start, unsigned long old_end,
-+			      unsigned long new_start, unsigned long new_end)
-+{
-+	/*
-+	 * mremap don't allow moving multiple vma so we can limit the check
-+	 * to old_start == vdso_base.
-+	 */
-+	if (old_start == mm->context.vdso_base)
-+		mm->context.vdso_base = new_start;
-+}
-+
- #endif /* __KERNEL__ */
- #endif /* __ASM_POWERPC_MMU_CONTEXT_H */
+ config VGA_CONSOLE
+ 	bool "VGA text console" if EXPERT || !X86
+-	depends on !4xx && !8xx && !SPARC && !M68K && !PARISC && !FRV && \
++	depends on !4xx && !PPC_8xx && !SPARC && !M68K && !PARISC && !FRV && \
+ 		!SUPERH && !BLACKFIN && !AVR32 && !MN10300 && !CRIS && \
+ 		(!ARM || ARCH_FOOTBRIDGE || ARCH_INTEGRATOR || ARCH_NETWINDER) && \
+ 		!ARM64
 -- 
-1.9.1
+2.1.0
 
