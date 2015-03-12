@@ -1,44 +1,44 @@
-Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Message-Id: <20150312152404.D6C391A2421@localhost.localdomain>
-Date: Thu, 12 Mar 2015 16:24:04 +0100 (CET)
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-Subject: [PATCH 6/8] mtd: replace CONFIG_8xx by CONFIG_PPC_8xx
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Cc: linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, user-mode-linux-user@lists.sourceforge.net, linuxppc-dev@lists.ozlabs.org
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20150312152420.11C821A2425@localhost.localdomain>
+References: <20150312152420.11C821A2425@localhost.localdomain>
+Date: Thu, 12 Mar 2015 21:20:01 +0100
+Message-ID: <CAMuHMdVuECs41hdUfdK9Q6-Kf53C874RC7PuvoqU8LieqgmDug@mail.gmail.com>
+Subject: Re: [PATCH 0/8] powerpc/8xx: Getting rid of CONFIG_8xx
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Vitaly Bordug <vitb@kernel.crashing.org>, Scott Wood <scottwood@freescale.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Pantelis Antoniou <pantelis.antoniou@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Karsten Keil <isdn@linux-pingi.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, MTD Maling List <linux-mtd@lists.infradead.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-VHdvIGNvbmZpZyBvcHRpb25zIGV4aXN0IHRvIGRlZmluZSBwb3dlcnBjIE1QQzh4eDoKKiBDT05G
-SUdfUFBDXzh4eAoqIENPTkZJR184eHgKSW4gYWRkaXRpb24sIENPTkZJR19QUENfOHh4IGFsc28g
-ZGVmaW5lcyBDT05GSUdfQ1BNMSBhcwpjb21tdW5pY2F0aW9uIGNvLXByb2Nlc3NvcgoKYXJjaC9w
-b3dlcnBjL3BsYXRmb3Jtcy9LY29uZmlnLmNwdXR5cGUgaGFzIGNvbnRhaW5lZCB0aGUgZm9sbG93
-aW5nCmNvbW1lbnQgYWJvdXQgQ09ORklHXzh4eCBpdGVtIGZvciBzb21lIHllYXJzOgoiIyB0aGlz
-IGlzIHRlbXAgdG8gaGFuZGxlIGNvbXBhdCB3aXRoIGFyY2g9cHBjIgoKSXQgbG9va3MgbGlrZSBu
-b3QgbWFueSBwbGFjZXMgc3RpbGwgaGF2ZSB0aGF0IG9sZCBDT05GSUdfOHh4IHVzZWQsCnNvIGl0
-IGlzIGxpa2VseSB0byBiZSBhIGdvb2QgdGltZSB0byBnZXQgcmlkIG9mIGl0IGNvbXBsZXRlbHkg
-PwoKU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjLXMu
-ZnI+CgotLS0KIGRyaXZlcnMvbXRkL21hcHMvS2NvbmZpZyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2Vk
-LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L21hcHMvS2NvbmZpZyBiL2RyaXZlcnMvbXRkL21hcHMvS2NvbmZpZwppbmRleCBiYTgwMWQyLi5l
-NzE1YWU5IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9tYXBzL0tjb25maWcKKysrIGIvZHJpdmVy
-cy9tdGQvbWFwcy9LY29uZmlnCkBAIC0yNDIsNyArMjQyLDcgQEAgY29uZmlnIE1URF9MNDQwR1gK
-IAogY29uZmlnIE1URF9DRklfRkxBR0FETQogCXRyaXN0YXRlICJDRkkgRmxhc2ggZGV2aWNlIG1h
-cHBpbmcgb24gRmxhZ2FETSIKLQlkZXBlbmRzIG9uIDh4eCAmJiBNVERfQ0ZJCisJZGVwZW5kcyBv
-biBQUENfOHh4ICYmIE1URF9DRkkKIAloZWxwCiAJICBNYXBwaW5nIGZvciB0aGUgRmxhZ2EgZGln
-aXRhbCBtb2R1bGUuIElmIHlvdSBkb24ndCBoYXZlIG9uZSwgaWdub3JlCiAJICB0aGlzIHNldHRp
-bmcuCi0tIAoyLjEuMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXhwcGMtZGV2IG1haWxpbmcgbGlzdApMaW51eHBwYy1kZXZAbGlzdHMub3psYWJz
-Lm9yZwpodHRwczovL2xpc3RzLm96bGFicy5vcmcvbGlzdGluZm8vbGludXhwcGMtZGV2
+On Thu, Mar 12, 2015 at 4:24 PM, Christophe Leroy
+<christophe.leroy@c-s.fr> wrote:
+> Two config options exist to define powerpc MPC8xx:
+> * CONFIG_PPC_8xx
+> * CONFIG_8xx
+> In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
+> communication co-processor
+>
+> arch/powerpc/platforms/Kconfig.cputype has contained the following
+> comment about CONFIG_8xx item for some years:
+> "# this is temp to handle compat with arch=ppc"
+>
+> It looks like not many places still have that old CONFIG_8xx used,
+> so it is likely to be a good time to get rid of it completely ?
+
+We also have CONFIG_40x,. CONFIG_44x, and CONFIG_4xx.
+There's no CONFIG_PPC_4* though.
+
+Do we want (some) consistency?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
