@@ -1,47 +1,59 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Thu, 12 Mar 2015 15:27:29 -0400 (EDT)
-Message-Id: <20150312.152729.567538955925640045.davem@redhat.com>
-From: David Miller <davem@redhat.com>
-In-Reply-To: <20150312152354.A47721A241F@localhost.localdomain>
-References: <20150312152354.A47721A241F@localhost.localdomain>
-Mime-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-Subject: Re: [PATCH 4/8] net: freescale: replace CONFIG_8xx by CONFIG_PPC_8xx
-To: christophe.leroy@c-s.fr
-Cc: linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, vitb@kernel.crashing.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-mtd@lists.infradead.org, user-mode-linux-user@lists.sourceforge.net, pantelis.antoniou@gmail.com, linuxppc-dev@lists.ozlabs.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Message-Id: <20150312152354.A47721A241F@localhost.localdomain>
+Date: Thu, 12 Mar 2015 16:23:54 +0100 (CET)
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 4/8] net: freescale: replace CONFIG_8xx by CONFIG_PPC_8xx
+To: Vitaly Bordug <vitb@kernel.crashing.org>, Pantelis Antoniou <pantelis.antoniou@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fbdev@vger.kernel.org, netdev@vger.kernel.org, linux-serial@vger.kernel.org, linux-mtd@lists.infradead.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Date: Thu, 12 Mar 2015 16:23:54 +0100 (CET)
+Two config options exist to define powerpc MPC8xx:
+* CONFIG_PPC_8xx
+* CONFIG_8xx
+In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
+communication co-processor
 
-> Two config options exist to define powerpc MPC8xx:
-> * CONFIG_PPC_8xx
-> * CONFIG_8xx
-> In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
-> communication co-processor
-> 
-> arch/powerpc/platforms/Kconfig.cputype has contained the following
-> comment about CONFIG_8xx item for some years:
-> "# this is temp to handle compat with arch=ppc"
-> 
-> It looks like not many places still have that old CONFIG_8xx used,
-> so it is likely to be a good time to get rid of it completely ?
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+arch/powerpc/platforms/Kconfig.cputype has contained the following
+comment about CONFIG_8xx item for some years:
+"# this is temp to handle compat with arch=ppc"
 
-Acked-by: David S. Miller <davem@davemloft.net>
+It looks like not many places still have that old CONFIG_8xx used,
+so it is likely to be a good time to get rid of it completely ?
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+
+---
+ drivers/net/ethernet/freescale/fs_enet/mac-fec.c | 2 +-
+ drivers/net/ethernet/freescale/fs_enet/mac-scc.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
+index b34214e..0e02bb4 100644
+--- a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
++++ b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
+@@ -38,7 +38,7 @@
+ #include <asm/irq.h>
+ #include <asm/uaccess.h>
+ 
+-#ifdef CONFIG_8xx
++#ifdef CONFIG_PPC_8xx
+ #include <asm/8xx_immap.h>
+ #include <asm/pgtable.h>
+ #include <asm/cpm1.h>
+diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-scc.c b/drivers/net/ethernet/freescale/fs_enet/mac-scc.c
+index 7a184e8..eec8963 100644
+--- a/drivers/net/ethernet/freescale/fs_enet/mac-scc.c
++++ b/drivers/net/ethernet/freescale/fs_enet/mac-scc.c
+@@ -37,7 +37,7 @@
+ #include <asm/irq.h>
+ #include <asm/uaccess.h>
+ 
+-#ifdef CONFIG_8xx
++#ifdef CONFIG_PPC_8xx
+ #include <asm/8xx_immap.h>
+ #include <asm/pgtable.h>
+ #include <asm/cpm1.h>
+-- 
+2.1.0
 
