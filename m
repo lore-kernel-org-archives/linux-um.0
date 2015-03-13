@@ -1,39 +1,61 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Laurent Dufour <ldufour@linux.vnet.ibm.com>
-Date: Fri, 20 Mar 2015 16:53:26 +0100
-Message-Id: <cover.1426866405.git.ldufour@linux.vnet.ibm.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH 0/2] Tracking user space vDSO remaping
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org
-Cc: cov@codeaurora.org, criu@openvz.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Alex Dowad <alexinbeijing@gmail.com>
+Date: Fri, 13 Mar 2015 20:14:52 +0200
+Message-Id: <1426270496-26362-19-git-send-email-alexinbeijing@gmail.com>
+In-Reply-To: <1426270496-26362-1-git-send-email-alexinbeijing@gmail.com>
+References: <1426270496-26362-1-git-send-email-alexinbeijing@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 29/32] um: copy_thread(): rename 'arg' argument to 'kthread_arg'
+To: linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, David Howells <dhowells@redhat.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-CRIU is recreating the process memory layout by remapping the checkpointee
-memory area on top of the current process (criu). This includes remapping
-the vDSO to the place it has at checkpoint time.
+The 'arg' argument to copy_thread() is only ever used when forking a new
+kernel thread. Hence, rename it to 'kthread_arg' for clarity (and consistency
+with do_fork() and other arch-specific implementations of copy_thread()).
 
-However some architectures like powerpc are keeping a reference to the vDSO
-base address to build the signal return stack frame by calling the vDSO
-sigreturn service. So once the vDSO has been moved, this reference is no
-more valid and the signal frame built later are not usable.
+Signed-off-by: Alex Dowad <alexinbeijing@gmail.com>
+---
+ arch/um/kernel/process.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-This patch serie is introducing a new mm hook 'arch_remap' which is called
-when mremap is done and the mm lock still hold. The next patch is adding the
-vDSO remap and unmap tracking to the powerpc architecture.
-
-Laurent Dufour (2):
-  mm: Introducing arch_remap hook
-  powerpc/mm: Tracking vDSO remap
-
- arch/powerpc/include/asm/mmu_context.h   | 35 +++++++++++++++++++++++++++++++-
- arch/s390/include/asm/mmu_context.h      |  6 ++++++
- arch/um/include/asm/mmu_context.h        |  5 +++++
- arch/unicore32/include/asm/mmu_context.h |  6 ++++++
- arch/x86/include/asm/mmu_context.h       |  6 ++++++
- include/asm-generic/mm_hooks.h           |  6 ++++++
- mm/mremap.c                              |  9 ++++++--
- 7 files changed, 70 insertions(+), 3 deletions(-)
-
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index f17bca8..80ac9fe 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -149,8 +149,11 @@ void fork_handler(void)
+ 	userspace(&current->thread.regs.regs);
+ }
+ 
++/*
++ * Copy architecture-specific thread state
++ */
+ int copy_thread(unsigned long clone_flags, unsigned long sp,
+-		unsigned long arg, struct task_struct * p)
++		unsigned long kthread_arg, struct task_struct *p)
+ {
+ 	void (*handler)(void);
+ 	int kthread = current->flags & PF_KTHREAD;
+@@ -159,6 +162,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
+ 	p->thread = (struct thread_struct) INIT_THREAD;
+ 
+ 	if (!kthread) {
++		/* user thread */
+ 	  	memcpy(&p->thread.regs.regs, current_pt_regs(),
+ 		       sizeof(p->thread.regs.regs));
+ 		PT_REGS_SET_SYSCALL_RETURN(&p->thread.regs, 0);
+@@ -169,9 +173,10 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
+ 
+ 		arch_copy_thread(&current->thread.arch, &p->thread.arch);
+ 	} else {
++		/* kernel thread */
+ 		get_safe_registers(p->thread.regs.regs.gp, p->thread.regs.regs.fp);
+ 		p->thread.request.u.thread.proc = (int (*)(void *))sp;
+-		p->thread.request.u.thread.arg = (void *)arg;
++		p->thread.request.u.thread.arg = (void *)kthread_arg;
+ 		handler = new_thread_handler;
+ 	}
+ 
 -- 
-1.9.1
+2.0.0.GIT
 
