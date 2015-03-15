@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1YX6ht-0002kJ-6x
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YX6Gi-00015P-9z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 15 Mar 2015 11:27:45 +0000
+	Sun, 15 Mar 2015 10:59:40 +0000
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YX6hr-0004wW-GD
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YX6Gg-0000NF-2W
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 15 Mar 2015 11:27:45 +0000
-Message-ID: <55056CA7.1080700@nod.at>
-Date: Sun, 15 Mar 2015 12:27:35 +0100
+	Sun, 15 Mar 2015 10:59:40 +0000
+Message-ID: <55056612.9030000@nod.at>
+Date: Sun, 15 Mar 2015 11:59:30 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 References: <54FCBB88.70605@gmx.de>
@@ -47,17 +47,22 @@ QW0gMTUuMDMuMjAxNSB1bSAxMTo1NCBzY2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPiBPbiAwMy8x
 My8yMDE1IDAzOjMxIFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IEFuZCB3aGF0IGFi
 b3V0IGEgcmVndWxhciAidW5oYXJkZW5lZCIgaG9zdD8KPj4gRG9lcyBpdCB3b3JrIGlmIHlvdSBi
 b290IGEgcmFuZG9tIHg4Nl82NCBsaXZlY2Q/Cj4gCj4gdGVzdGVkIHdpdGggR1JNTCAtIGZhaWxl
-ZCB0b28uCgpCVFc6IEluIEdSTUwgeW91IG5lZWQgdG8gcmVtb3VudCAvZGV2L3NobSB3aXRoIGV4
-ZWMuIERpZCB5b3U/CgpUaGFua3MsCi8vcmljaGFyZAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkRp
-dmUgaW50byB0aGUgV29ybGQgb2YgUGFyYWxsZWwgUHJvZ3JhbW1pbmcgVGhlIEdvIFBhcmFsbGVs
-IFdlYnNpdGUsIHNwb25zb3JlZApieSBJbnRlbCBhbmQgZGV2ZWxvcGVkIGluIHBhcnRuZXJzaGlw
-IHdpdGggU2xhc2hkb3QgTWVkaWEsIGlzIHlvdXIgaHViIGZvciBhbGwKdGhpbmdzIHBhcmFsbGVs
-IHNvZnR3YXJlIGRldmVsb3BtZW50LCBmcm9tIHdlZWtseSB0aG91Z2h0IGxlYWRlcnNoaXAgYmxv
-Z3MgdG8KbmV3cywgdmlkZW9zLCBjYXNlIHN0dWRpZXMsIHR1dG9yaWFscyBhbmQgbW9yZS4gVGFr
-ZSBhIGxvb2sgYW5kIGpvaW4gdGhlIApjb252ZXJzYXRpb24gbm93LiBodHRwOi8vZ29wYXJhbGxl
-bC5zb3VyY2Vmb3JnZS5uZXQvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxp
-bnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
-Lm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+ZCB0b28uCj4gKEFuZCBJIHN3aXRjaGVkIHRoZSBjb21waWxlciB0byBnY2MtNC44LjMtdmFuaWxs
+YSBiZWZvcmUgYW5kIGNvbXBpbGVkIHRoZSBsaW51eCBleGUgd2l0aCBpdCkKPiAKPiBBbmQgbGFz
+dCBidXQgbm90IGxlYXN0IC0gSSBjb21wYXJlZCB0aGUgbWQ1c3VtIHRvIGVuc3VyZSwgdGhhdCB0
+aGUgKDMgR0IgYmlnKSBVTUwgZ3Vlc3RzIHdhcyBjb3BpZWQgZXJyb3ItZnJlZSBmcm9tIHRoZSB4
+ODYgc3lzdGVtLCAod2hlcmUgdGhlIFVNTCBndWVzdCBydW5zIGZpbmUpCgpXYWl0IGEgbW9tZW50
+LiBTbywgdGhlIGZhaWxpbmcgVU1MIGlzIGEgMzJiaXRzIFVNTD8KVGhlIC5jb25maWcgeW91IHNl
+bnQgbWUgaXMgVU1MIHg4Nl82NC4uLgoKVGhhbmtzLAovL3JpY2hhcmQKCi0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQpEaXZlIGludG8gdGhlIFdvcmxkIG9mIFBhcmFsbGVsIFByb2dyYW1taW5nIFRoZSBH
+byBQYXJhbGxlbCBXZWJzaXRlLCBzcG9uc29yZWQKYnkgSW50ZWwgYW5kIGRldmVsb3BlZCBpbiBw
+YXJ0bmVyc2hpcCB3aXRoIFNsYXNoZG90IE1lZGlhLCBpcyB5b3VyIGh1YiBmb3IgYWxsCnRoaW5n
+cyBwYXJhbGxlbCBzb2Z0d2FyZSBkZXZlbG9wbWVudCwgZnJvbSB3ZWVrbHkgdGhvdWdodCBsZWFk
+ZXJzaGlwIGJsb2dzIHRvCm5ld3MsIHZpZGVvcywgY2FzZSBzdHVkaWVzLCB0dXRvcmlhbHMgYW5k
+IG1vcmUuIFRha2UgYSBsb29rIGFuZCBqb2luIHRoZSAKY29udmVyc2F0aW9uIG5vdy4gaHR0cDov
+L2dvcGFyYWxsZWwuc291cmNlZm9yZ2UubmV0LwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVz
+ZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
+b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
