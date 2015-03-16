@@ -1,45 +1,76 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Message-Id: <20150312152349.943F91A241E@localhost.localdomain>
-Date: Thu, 12 Mar 2015 16:23:49 +0100 (CET)
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 3/8] video: replace CONFIG_8xx by CONFIG_PPC_8xx
-To: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fbdev@vger.kernel.org, netdev@vger.kernel.org, linux-serial@vger.kernel.org, linux-mtd@lists.infradead.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YXTOq-0002Gn-F8
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:36 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXTOp-0006RL-AL for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:36 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 16 Mar 2015 12:41:08 +0100
+Message-Id: <1426506079-26183-5-git-send-email-richard@nod.at>
+In-Reply-To: <1426506079-26183-1-git-send-email-richard@nod.at>
+References: <1426506079-26183-1-git-send-email-richard@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 04/15] hostfs: Handle bogus st.mode
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard@nod.at, linux-kernel@vger.kernel.org
 
-Two config options exist to define powerpc MPC8xx:
-* CONFIG_PPC_8xx
-* CONFIG_8xx
-In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
-communication co-processor
+Make sure that we return EIO if one passes an invalid st.mode
+into hostfs.
 
-arch/powerpc/platforms/Kconfig.cputype has contained the following
-comment about CONFIG_8xx item for some years:
-"# this is temp to handle compat with arch=ppc"
-
-It looks like not many places still have that old CONFIG_8xx used,
-so it is likely to be a good time to get rid of it completely ?
-
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/video/console/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/hostfs/hostfs_kern.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
-index ba97efc..6ee84c3 100644
---- a/drivers/video/console/Kconfig
-+++ b/drivers/video/console/Kconfig
-@@ -6,7 +6,7 @@ menu "Console display driver support"
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 92b008f..8163aac 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -534,11 +534,13 @@ static int read_name(struct inode *ino, char *name)
+ 		init_special_inode(ino, st.mode & S_IFMT, rdev);
+ 		ino->i_op = &hostfs_iops;
+ 		break;
+-
+-	default:
++	case S_IFREG:
+ 		ino->i_op = &hostfs_iops;
+ 		ino->i_fop = &hostfs_file_fops;
+ 		ino->i_mapping->a_ops = &hostfs_aops;
++		break;
++	default:
++		return -EIO;
+ 	}
  
- config VGA_CONSOLE
- 	bool "VGA text console" if EXPERT || !X86
--	depends on !4xx && !8xx && !SPARC && !M68K && !PARISC && !FRV && \
-+	depends on !4xx && !PPC_8xx && !SPARC && !M68K && !PARISC && !FRV && \
- 		!SUPERH && !BLACKFIN && !AVR32 && !MN10300 && !CRIS && \
- 		(!ARM || ARCH_FOOTBRIDGE || ARCH_INTEGRATOR || ARCH_NETWINDER) && \
- 		!ARM64
+ 	ino->i_ino = st.ino;
 -- 
-2.1.0
+2.3.2
+
+
+------------------------------------------------------------------------------
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
