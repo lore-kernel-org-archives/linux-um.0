@@ -1,65 +1,72 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Laurent Dufour <ldufour@linux.vnet.ibm.com>
-Date: Thu, 26 Mar 2015 18:37:52 +0100
-Message-Id: <fe0cafd7f98ce8cdd4b695de55a8c22dd903e334.1427390952.git.ldufour@linux.vnet.ibm.com>
-In-Reply-To: <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
-References: <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
-In-Reply-To: <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
-References: <20150326141730.GA23060@gmail.com> <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH v4 1/2] mm: Introducing arch_remap hook
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org
-Cc: cov@codeaurora.org, criu@openvz.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YXTOw-0006NT-V4
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:42 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXTOv-0006RX-W0 for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:42 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 16 Mar 2015 12:41:16 +0100
+Message-Id: <1426506079-26183-13-git-send-email-richard@nod.at>
+In-Reply-To: <1426506079-26183-1-git-send-email-richard@nod.at>
+References: <1426506079-26183-1-git-send-email-richard@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 12/15] hostfs: Remove superfluous
+	initializations in hostfs_open()
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard@nod.at, linux-kernel@vger.kernel.org
 
-Some architecture would like to be triggered when a memory area is moved
-through the mremap system call.
+Only initialize what we really need.
 
-This patch is introducing a new arch_remap mm hook which is placed in the
-path of mremap, and is called before the old area is unmapped (and the
-arch_unmap hook is called).
-
-The architectures which need to call this hook should define
-__HAVE_ARCH_REMAP in their asm/mmu_context.h and provide the arch_remap
-service with the following prototype:
-void arch_remap(struct mm_struct *mm,
-                unsigned long old_start, unsigned long old_end,
-                unsigned long new_start, unsigned long new_end);
-
-Signed-off-by: Laurent Dufour <ldufour@linux.vnet.ibm.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- mm/mremap.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ fs/hostfs/hostfs_kern.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 57dadc025c64..bafc234db45c 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -25,6 +25,7 @@
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 80ced3d..cf80a30 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -304,9 +304,9 @@ static int hostfs_readdir(struct file *file, struct dir_context *ctx)
+ static int hostfs_open(struct inode *ino, struct file *file)
+ {
+ 	char *name;
+-	fmode_t mode = 0;
++	fmode_t mode;
+ 	int err;
+-	int r = 0, w = 0, fd;
++	int r, w, fd;
  
- #include <asm/cacheflush.h>
- #include <asm/tlbflush.h>
-+#include <asm/mmu_context.h>
- 
- #include "internal.h"
- 
-@@ -286,8 +287,14 @@ static unsigned long move_vma(struct vm_area_struct *vma,
- 		old_len = new_len;
- 		old_addr = new_addr;
- 		new_addr = -ENOMEM;
--	} else if (vma->vm_file && vma->vm_file->f_op->mremap)
--		vma->vm_file->f_op->mremap(vma->vm_file, new_vma);
-+	} else {
-+		if (vma->vm_file && vma->vm_file->f_op->mremap)
-+			vma->vm_file->f_op->mremap(vma->vm_file, new_vma);
-+#ifdef __HAVE_ARCH_REMAP
-+		arch_remap(mm, old_addr, old_addr+old_len,
-+			   new_addr, new_addr+new_len);
-+#endif
-+	}
- 
- 	/* Conceal VM_ACCOUNT so old reservation is not undone */
- 	if (vm_flags & VM_ACCOUNT) {
+ 	mode = file->f_mode & (FMODE_READ | FMODE_WRITE);
+ 	if ((mode & HOSTFS_I(ino)->mode) == mode)
 -- 
-1.9.1
+2.3.2
+
+
+------------------------------------------------------------------------------
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
