@@ -1,88 +1,97 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1YXTOx-0006BG-5y
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Mar 2015 11:41:43 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YXTOw-0005fE-6N for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Mar 2015 11:41:43 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 16 Mar 2015 12:41:18 +0100
-Message-Id: <1426506079-26183-15-git-send-email-richard@nod.at>
-In-Reply-To: <1426506079-26183-1-git-send-email-richard@nod.at>
-References: <1426506079-26183-1-git-send-email-richard@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 14/15] hostfs: Use page_offset()
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: richard@nod.at, linux-kernel@vger.kernel.org
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <5506CA23.8090106@nod.at>
+References: <1426506079-26183-1-git-send-email-richard@nod.at>
+	<1426506079-26183-8-git-send-email-richard@nod.at>
+	<CAMuHMdXpkyvoTRYZ5X4dVNKoHA=seiYpS7pFSZc+fzxFRM=r2Q@mail.gmail.com>
+	<5506CA23.8090106@nod.at>
+Date: Mon, 16 Mar 2015 13:44:48 +0100
+Message-ID: <CAMuHMdVjPV27+E9WQp18oZiaUWX2XS=_mTtaZOVN0o4wfjCq1g@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH 07/15] hostfs: Remove open coded strcpy()
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+To: Richard Weinberger <richard@nod.at>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The kernel offers a helper function for that, use it.
+Hi Richard,
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/hostfs/hostfs_kern.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On Mon, Mar 16, 2015 at 1:18 PM, Richard Weinberger <richard@nod.at> wrote:
+> Am 16.03.2015 um 13:03 schrieb Geert Uytterhoeven:
+>> On Mon, Mar 16, 2015 at 12:41 PM, Richard Weinberger <richard@nod.at> wrote:
+>>> --- a/fs/hostfs/hostfs_kern.c
+>>> +++ b/fs/hostfs/hostfs_kern.c
+>>> @@ -105,11 +105,10 @@ static char *__dentry_name(struct dentry *dentry, char *name)
+>>
+>> This code looks fishy to me...
+>>
+>> First we have:
+>>
+>>     len = strlen(root);
+>>     strlcpy(name, root, PATH_MAX);
+>>
+>> (I notice the code used strncpy() before. One difference with strlcpy()
+>>  is that strncpy() fills the remaining of the destination buffer with zeroes.)
+>>
+>> Then:
+>>
+>>>                 __putname(name);
+>>>                 return NULL;
+>>>         }
+>>> -       if (p > name + len) {
+>>> -               char *s = name + len;
+>>
+>> Unless strlcpy() truncated the string (which is unlikely, as root
+>> cannot be longer
+>> than PATH_MAX?), s = name + len now points to the zero terminator.
+>> So the below would copy just one single byte:
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index f154747..f82f98a5 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -410,7 +410,7 @@ static int hostfs_writepage(struct page *page, struct writeback_control *wbc)
- 	struct address_space *mapping = page->mapping;
- 	struct inode *inode = mapping->host;
- 	char *buffer;
--	unsigned long long base;
-+	loff_t base = page_offset(page);
- 	int count = PAGE_CACHE_SIZE;
- 	int end_index = inode->i_size >> PAGE_CACHE_SHIFT;
- 	int err;
-@@ -419,7 +419,6 @@ static int hostfs_writepage(struct page *page, struct writeback_control *wbc)
- 		count = inode->i_size & (PAGE_CACHE_SIZE-1);
- 
- 	buffer = kmap(page);
--	base = ((unsigned long long) page->index) << PAGE_CACHE_SHIFT;
- 
- 	err = write_file(HOSTFS_I(inode)->fd, &base, buffer, count);
- 	if (err != count) {
-@@ -444,10 +443,9 @@ static int hostfs_writepage(struct page *page, struct writeback_control *wbc)
- static int hostfs_readpage(struct file *file, struct page *page)
- {
- 	char *buffer;
--	long long start;
-+	loff_t start = page_offset(page);
- 	int bytes_read, ret = 0;
- 
--	start = (long long) page->index << PAGE_CACHE_SHIFT;
- 	buffer = kmap(page);
- 	bytes_read = read_file(FILE_HOSTFS_I(file)->fd, &start, buffer,
- 			PAGE_CACHE_SIZE);
--- 
-2.3.2
+Oops, that's of course not true, as s is the destination, not the source,
+of the copy operation.
 
+>>> -               while ((*s++ = *p++) != '\0')
+>>> -                       ;
+>>> -       }
+>>> +
+>>> +       if (p > name + len)
+>>> +               strcpy(name + len, p);
+>>> +
+>>
+>> What is this code really supposed to do?
+>
+> Hostfs' __dentry_name() builds the real path. i.e, the prefix on the host side
+> plus the requested path in UML.
+>
+> "strlcpy(name, root, PATH_MAX);" copies the host prefix into name and then
+> the "strcpy(name + len, p);" copies the requested path into it.
+>
+> The trick is that both share the same buffer, allocated by dentry_path_raw().
 
-------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Ah, so the path is stored in the end of the buffer...
+
+> Therefore this bounds check works:
+>         if (len > p - name) {
+
+... and if this is true, prefix and path would overlap, which means there's\
+not enough space in the buffer.
+
+>                 __putname(name);
+>                 return NULL;
+>         }
+>
+> Is it now clearer or did I miss something?
+> I agree that this code is tricky. :)
+
+Yes, thanks for your explanation!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
