@@ -1,17 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1YXTOp-0006AS-V7
+	(envelope-from <richard@nod.at>) id 1YXTOx-0006BF-5g
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Mar 2015 11:41:35 +0000
+	Mon, 16 Mar 2015 11:41:43 +0000
 Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YXTOo-0006DH-Mi for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Mar 2015 11:41:35 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXTOw-00082i-6i for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:43 +0000
 From: Richard Weinberger <richard@nod.at>
-Date: Mon, 16 Mar 2015 12:41:04 +0100
-Message-Id: <1426506079-26183-1-git-send-email-richard@nod.at>
+Date: Mon, 16 Mar 2015 12:41:17 +0100
+Message-Id: <1426506079-26183-14-git-send-email-richard@nod.at>
+In-Reply-To: <1426506079-26183-1-git-send-email-richard@nod.at>
+References: <1426506079-26183-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,30 +27,58 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Hostfs updates
+Subject: [uml-devel] [PATCH 13/15] hostfs: Set page flags in
+	hostfs_readpage() correctly
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: richard@nod.at, linux-kernel@vger.kernel.org
 
-Host got a visit from the janitor.
+In case of an error set the page error flag and clear the up-to-date
+flag.
+If the read was successful clear the error flag unconditionally.
 
-[PATCH 01/15] hostfs: hostfs_file_open: Switch to data locking model
-[PATCH 02/15] hostfs: hostfs_file_open: Fix a fd leak in
-[PATCH 03/15] hostfs: Allow fsync on directories
-[PATCH 04/15] hostfs: Handle bogus st.mode
-[PATCH 05/15] hostfs: Make hostfs_readpage more readable
-[PATCH 06/15] hostfs: Add a BUG_ON to detect behavior changes of
-[PATCH 07/15] hostfs: Remove open coded strcpy()
-[PATCH 08/15] hostfs: Use __getname() in follow_link
-[PATCH 09/15] hostfs: Report append flag in ->show_options()
-[PATCH 10/15] hostfs: Remove superfluous test in hostfs_open()
-[PATCH 11/15] hostfs: hostfs_open: Reset open flags upon each retry
-[PATCH 12/15] hostfs: Remove superfluous initializations in
-[PATCH 13/15] hostfs: Set page flags in hostfs_readpage() correctly
-[PATCH 14/15] hostfs: Use page_offset()
-[PATCH 15/15] hostfs: No need to box and later unbox the file mode
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/hostfs/hostfs_kern.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Thanks,
-//richard
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index cf80a30..f154747 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -445,24 +445,26 @@ static int hostfs_readpage(struct file *file, struct page *page)
+ {
+ 	char *buffer;
+ 	long long start;
+-	int bytes_read, ret;
++	int bytes_read, ret = 0;
+ 
+ 	start = (long long) page->index << PAGE_CACHE_SHIFT;
+ 	buffer = kmap(page);
+ 	bytes_read = read_file(FILE_HOSTFS_I(file)->fd, &start, buffer,
+ 			PAGE_CACHE_SIZE);
+ 	if (bytes_read < 0) {
++		ClearPageUptodate(page);
++		SetPageError(page);
+ 		ret = bytes_read;
+ 		goto out;
+ 	}
+ 
+ 	memset(buffer + bytes_read, 0, PAGE_CACHE_SIZE - bytes_read);
+ 
+-	flush_dcache_page(page);
++	ClearPageError(page);
+ 	SetPageUptodate(page);
+-	if (PageError(page)) ClearPageError(page);
+-	ret = 0;
++
+  out:
++	flush_dcache_page(page);
+ 	kunmap(page);
+ 	unlock_page(page);
+ 	return ret;
+-- 
+2.3.2
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
