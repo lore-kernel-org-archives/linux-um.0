@@ -1,19 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1YXTOq-0002Gn-F8
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YXTOp-0006AS-V7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Mar 2015 11:41:36 +0000
+	Mon, 16 Mar 2015 11:41:35 +0000
 Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YXTOp-0006RL-AL for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 16 Mar 2015 11:41:36 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXTOo-0006DH-Mi for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:35 +0000
 From: Richard Weinberger <richard@nod.at>
-Date: Mon, 16 Mar 2015 12:41:08 +0100
-Message-Id: <1426506079-26183-5-git-send-email-richard@nod.at>
-In-Reply-To: <1426506079-26183-1-git-send-email-richard@nod.at>
-References: <1426506079-26183-1-git-send-email-richard@nod.at>
+Date: Mon, 16 Mar 2015 12:41:04 +0100
+Message-Id: <1426506079-26183-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,41 +25,30 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 04/15] hostfs: Handle bogus st.mode
+Subject: [uml-devel] Hostfs updates
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: richard@nod.at, linux-kernel@vger.kernel.org
 
-Make sure that we return EIO if one passes an invalid st.mode
-into hostfs.
+Host got a visit from the janitor.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/hostfs/hostfs_kern.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+[PATCH 01/15] hostfs: hostfs_file_open: Switch to data locking model
+[PATCH 02/15] hostfs: hostfs_file_open: Fix a fd leak in
+[PATCH 03/15] hostfs: Allow fsync on directories
+[PATCH 04/15] hostfs: Handle bogus st.mode
+[PATCH 05/15] hostfs: Make hostfs_readpage more readable
+[PATCH 06/15] hostfs: Add a BUG_ON to detect behavior changes of
+[PATCH 07/15] hostfs: Remove open coded strcpy()
+[PATCH 08/15] hostfs: Use __getname() in follow_link
+[PATCH 09/15] hostfs: Report append flag in ->show_options()
+[PATCH 10/15] hostfs: Remove superfluous test in hostfs_open()
+[PATCH 11/15] hostfs: hostfs_open: Reset open flags upon each retry
+[PATCH 12/15] hostfs: Remove superfluous initializations in
+[PATCH 13/15] hostfs: Set page flags in hostfs_readpage() correctly
+[PATCH 14/15] hostfs: Use page_offset()
+[PATCH 15/15] hostfs: No need to box and later unbox the file mode
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 92b008f..8163aac 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -534,11 +534,13 @@ static int read_name(struct inode *ino, char *name)
- 		init_special_inode(ino, st.mode & S_IFMT, rdev);
- 		ino->i_op = &hostfs_iops;
- 		break;
--
--	default:
-+	case S_IFREG:
- 		ino->i_op = &hostfs_iops;
- 		ino->i_fop = &hostfs_file_fops;
- 		ino->i_mapping->a_ops = &hostfs_aops;
-+		break;
-+	default:
-+		return -EIO;
- 	}
- 
- 	ino->i_ino = st.ino;
--- 
-2.3.2
-
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
