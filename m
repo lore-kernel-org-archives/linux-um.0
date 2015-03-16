@@ -1,61 +1,77 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Alex Dowad <alexinbeijing@gmail.com>
-Date: Fri, 13 Mar 2015 20:14:52 +0200
-Message-Id: <1426270496-26362-19-git-send-email-alexinbeijing@gmail.com>
-In-Reply-To: <1426270496-26362-1-git-send-email-alexinbeijing@gmail.com>
-References: <1426270496-26362-1-git-send-email-alexinbeijing@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 29/32] um: copy_thread(): rename 'arg' argument to 'kthread_arg'
-To: linux-kernel@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andrew Morton <akpm@linux-foundation.org>, David Howells <dhowells@redhat.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YXTOw-0006NU-VV
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:42 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXTOv-0005fB-Uh for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:42 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 16 Mar 2015 12:41:10 +0100
+Message-Id: <1426506079-26183-7-git-send-email-richard@nod.at>
+In-Reply-To: <1426506079-26183-1-git-send-email-richard@nod.at>
+References: <1426506079-26183-1-git-send-email-richard@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 06/15] hostfs: Add a BUG_ON to detect behavior
+	changes of dentry_path_raw()
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard@nod.at, linux-kernel@vger.kernel.org
 
-The 'arg' argument to copy_thread() is only ever used when forking a new
-kernel thread. Hence, rename it to 'kthread_arg' for clarity (and consistency
-with do_fork() and other arch-specific implementations of copy_thread()).
+hostfs' __dentry_name() relies on the fact that dentry_path_raw() will place
+the path name at the end of the provided buffer.
+While this is okay, add a BUG_ON() to detect behavior changes as soon
+as possible.
 
-Signed-off-by: Alex Dowad <alexinbeijing@gmail.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/kernel/process.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ fs/hostfs/hostfs_kern.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index f17bca8..80ac9fe 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -149,8 +149,11 @@ void fork_handler(void)
- 	userspace(&current->thread.regs.regs);
- }
- 
-+/*
-+ * Copy architecture-specific thread state
-+ */
- int copy_thread(unsigned long clone_flags, unsigned long sp,
--		unsigned long arg, struct task_struct * p)
-+		unsigned long kthread_arg, struct task_struct *p)
- {
- 	void (*handler)(void);
- 	int kthread = current->flags & PF_KTHREAD;
-@@ -159,6 +162,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
- 	p->thread = (struct thread_struct) INIT_THREAD;
- 
- 	if (!kthread) {
-+		/* user thread */
- 	  	memcpy(&p->thread.regs.regs, current_pt_regs(),
- 		       sizeof(p->thread.regs.regs));
- 		PT_REGS_SET_SYSCALL_RETURN(&p->thread.regs, 0);
-@@ -169,9 +173,10 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
- 
- 		arch_copy_thread(&current->thread.arch, &p->thread.arch);
- 	} else {
-+		/* kernel thread */
- 		get_safe_registers(p->thread.regs.regs.gp, p->thread.regs.regs.fp);
- 		p->thread.request.u.thread.proc = (int (*)(void *))sp;
--		p->thread.request.u.thread.arg = (void *)arg;
-+		p->thread.request.u.thread.arg = (void *)kthread_arg;
- 		handler = new_thread_handler;
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 67e556c..3082a7e 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -93,6 +93,13 @@ static char *__dentry_name(struct dentry *dentry, char *name)
+ 		__putname(name);
+ 		return NULL;
  	}
- 
++
++	/*
++	 * This function relies on the fact that dentry_path_raw() will place
++	 * the path name at the end of the provided buffer.
++	 */
++	BUG_ON(p + strlen(p) + 1 != name + PATH_MAX);
++
+ 	strlcpy(name, root, PATH_MAX);
+ 	if (len > p - name) {
+ 		__putname(name);
 -- 
-2.0.0.GIT
+2.3.2
+
+
+------------------------------------------------------------------------------
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
