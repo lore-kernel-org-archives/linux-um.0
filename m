@@ -1,78 +1,107 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Message-Id: <20150312152420.11C821A2425@localhost.localdomain>
-Date: Thu, 12 Mar 2015 16:24:20 +0100 (CET)
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 0/8] powerpc/8xx: Getting rid of CONFIG_8xx
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Vitaly Bordug <vitb@kernel.crashing.org>, scottwood@freescale.com, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Pantelis Antoniou <pantelis.antoniou@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Karsten Keil <isdn@linux-pingi.de>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fbdev@vger.kernel.org, netdev@vger.kernel.org, linux-serial@vger.kernel.org, linux-mtd@lists.infradead.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YXTOw-0002H9-Hh
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:42 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXTOv-0006RU-Jo for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 16 Mar 2015 11:41:42 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 16 Mar 2015 12:41:12 +0100
+Message-Id: <1426506079-26183-9-git-send-email-richard@nod.at>
+In-Reply-To: <1426506079-26183-1-git-send-email-richard@nod.at>
+References: <1426506079-26183-1-git-send-email-richard@nod.at>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 08/15] hostfs: Use __getname() in follow_link
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard@nod.at, linux-kernel@vger.kernel.org
 
-Two config options exist to define powerpc MPC8xx:
-* CONFIG_PPC_8xx
-* CONFIG_8xx
-In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
-communication co-processor
+Be consistent with all other functions in hostfs and just
+use __getname().
 
-arch/powerpc/platforms/Kconfig.cputype has contained the following
-comment about CONFIG_8xx item for some years:
-"# this is temp to handle compat with arch=ppc"
-
-It looks like not many places still have that old CONFIG_8xx used,
-so it is likely to be a good time to get rid of it completely ?
-
-Patchset is composed of the following patches:
-[1/8] powerpc: replace CONFIG_8xx by CONFIG_PPC_8xx
-[2/8] um: replace CONFIG_8xx by CONFIG_PPC_8xx
-[3/8] video: replace CONFIG_8xx by CONFIG_PPC_8xx
-[4/8] net: freescale: replace CONFIG_8xx by CONFIG_PPC_8xx
-[5/8] tty: cpm_uart: replace CONFIG_8xx by CONFIG_CPM1
-[6/8] mtd: replace CONFIG_8xx by CONFIG_PPC_8xx
-[7/8] isdn: replace CONFIG_8xx by CONFIG_PPC_8xx
-[8/8] powerpc: get rid of CONFIG_8xx
-
-All but the last one are independant and can be applied in any
-order. Only the 8th one requires the first 7 patches to be applied.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/powerpc/Kconfig                             | 10 +++++-----
- arch/powerpc/Makefile                            |  2 +-
- arch/powerpc/boot/Makefile                       |  4 ++--
- arch/powerpc/boot/util.S                         |  6 +++---
- arch/powerpc/include/asm/cache.h                 |  2 +-
- arch/powerpc/include/asm/cputable.h              |  4 ++--
- arch/powerpc/include/asm/fs_pd.h                 |  2 +-
- arch/powerpc/include/asm/pgtable-ppc32.h         |  2 +-
- arch/powerpc/include/asm/ppc_asm.h               |  4 ++--
- arch/powerpc/include/asm/reg.h                   | 10 +++++-----
- arch/powerpc/include/asm/timex.h                 |  4 ++--
- arch/powerpc/kernel/Makefile                     |  2 +-
- arch/powerpc/kernel/cputable.c                   |  4 ++--
- arch/powerpc/kernel/irq.c                        |  2 +-
- arch/powerpc/kernel/kgdb.c                       |  4 ++--
- arch/powerpc/kernel/misc_32.S                    |  4 ++--
- arch/powerpc/kernel/traps.c                      |  6 +++---
- arch/powerpc/kernel/vdso32/gettimeofday.S        |  2 +-
- arch/powerpc/mm/fault.c                          |  4 ++--
- arch/powerpc/mm/init_32.c                        |  4 ++--
- arch/powerpc/mm/mem.c                            |  2 +-
- arch/powerpc/mm/mmu_decl.h                       | 12 ++++++------
- arch/powerpc/mm/tlb_nohash_low.S                 |  2 +-
- arch/powerpc/platforms/8xx/Kconfig               |  3 +--
- arch/powerpc/platforms/Kconfig.cputype           |  7 +------
- arch/powerpc/sysdev/Makefile                     |  2 +-
- arch/powerpc/sysdev/fsl_soc.c                    |  3 ++-
- arch/powerpc/sysdev/fsl_soc.h                    |  3 ++-
- arch/powerpc/xmon/xmon.c                         |  2 +-
- arch/um/sys-ppc/misc.S                           | 12 ++++++------
- drivers/isdn/hardware/mISDN/Kconfig              |  4 ++--
- drivers/mtd/maps/Kconfig                         |  2 +-
- drivers/net/ethernet/freescale/fs_enet/mac-fec.c |  2 +-
- drivers/net/ethernet/freescale/fs_enet/mac-scc.c |  2 +-
- drivers/tty/serial/Kconfig                       |  2 +-
- drivers/tty/serial/cpm_uart/Makefile             |  2 +-
- drivers/tty/serial/cpm_uart/cpm_uart.h           |  2 +-
- drivers/video/console/Kconfig                    |  2 +-
- 38 files changed, 72 insertions(+), 76 deletions(-)
+ fs/hostfs/hostfs_kern.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 7260f16..c60d886 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -142,21 +142,19 @@ static char *follow_link(char *link)
+ 	int len, n;
+ 	char *name, *resolved, *end;
+ 
+-	len = 64;
+-	while (1) {
++	name = __getname();
++	if (!name) {
+ 		n = -ENOMEM;
+-		name = kmalloc(len, GFP_KERNEL);
+-		if (name == NULL)
+-			goto out;
+-
+-		n = hostfs_do_readlink(link, name, len);
+-		if (n < len)
+-			break;
+-		len *= 2;
+-		kfree(name);
++		goto out_free;
+ 	}
++
++	n = hostfs_do_readlink(link, name, PATH_MAX);
+ 	if (n < 0)
+ 		goto out_free;
++	else if (n == PATH_MAX) {
++		n = -E2BIG;
++		goto out_free;
++	}
+ 
+ 	if (*name == '/')
+ 		return name;
+@@ -175,13 +173,12 @@ static char *follow_link(char *link)
+ 	}
+ 
+ 	sprintf(resolved, "%s%s", link, name);
+-	kfree(name);
++	__putname(name);
+ 	kfree(link);
+ 	return resolved;
+ 
+  out_free:
+-	kfree(name);
+- out:
++	__putname(name);
+ 	return ERR_PTR(n);
+ }
+ 
+-- 
+2.3.2
+
+
+------------------------------------------------------------------------------
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
