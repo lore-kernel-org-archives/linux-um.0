@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1YZdhf-0008Tk-5Z
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YZRrM-0004sF-KW
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Mar 2015 11:05:59 +0000
-Received: from mout.gmx.net ([212.227.15.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YZdhd-00034F-O7
+	Sat, 21 Mar 2015 22:27:12 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YZRrL-0005Vo-A2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Mar 2015 11:05:59 +0000
-Message-ID: <550EA20E.7000503@gmx.de>
-Date: Sun, 22 Mar 2015 12:05:50 +0100
-From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
+	Sat, 21 Mar 2015 22:27:12 +0000
+Message-ID: <550DF038.70202@nod.at>
+Date: Sat, 21 Mar 2015 23:27:04 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 References: <54FCBB88.70605@gmx.de>
 	<CAFLxGvy8mLg9R9J38uAGFdZA_QdN=qZ3L-_niYoX8+n7GA0+Vg@mail.gmail.com>
@@ -27,8 +27,8 @@ References: <54FCBB88.70605@gmx.de>
 	<550564D2.5070103@gmx.de> <55056CA7.1080700@nod.at>
 	<55057604.6050308@gmx.de> <55059907.9060408@nod.at>
 	<5505B889.4020401@gmx.de> <5505B9A4.8030304@nod.at>
-	<5506D945.809@gmx.de> <550DF038.70202@nod.at>
-In-Reply-To: <550DF038.70202@nod.at>
+	<5506D945.809@gmx.de>
+In-Reply-To: <5506D945.809@gmx.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,116 +38,43 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] starting an 32 bit x86 chroot uml image at a
  ahrdened Gentoo amd64 system fails
-To: Richard Weinberger <richard@nod.at>
+To: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 
-On 03/21/2015 11:27 PM, Richard Weinberger wrote:
-> At least on my PC I can build and run UML with the hardened gcc. But running any UML on a hardened base system (libc) fails badly.
-
-The picture here is the same, gcc isn't the culprit. A vanilla kernel instead of a hardened kernel doesn't help too much too.
-Nowadays I do reliable get either a hang or the following at the hardened system, (tomorrow I'll your advices with a grml live cd or something in that direction) : 
-
-...
-TCP: cubic registered
-NET: Registered protocol family 17
-Key type dns_resolver registered
-Initialized stdio console driver
-Console initialized on /dev/tty0
-                                console [tty0] enabled
-console [tty0] enabled
-                      bootconsole [earlycon0] disabled
-bootconsole [earlycon0] disabled
-                                Initializing software serial port version 1
-console [mc-1] enabled
-Netdevice 0 (72:ef:3d:9f:c3:5a) : 
-TUN/TAP backend - 
-Btrfs loaded
-winch_thread : TIOCSCTTY failed on fd 1 err = 1
-EXT4-fs (ubda): mounted filesystem with ordered data mode. Opts: (null)
-VFS: Mounted root (ext4 filesystem) readonly on device 98:0.
-devtmpfs: mounted
-Stub registers -
-        0 - 0
-        1 - 101b7c
-        2 - 101afc
-        3 - 0
-        4 - 0
-        5 - 101ae8
-        6 - b
-        7 - 2b
-        8 - 2b
-        9 - 0
-        10 - 0
-        11 - ffffffff
-        12 - 1000d9
-        13 - 23
-        14 - 10206
-        15 - 100ad8
-        16 - 2b
-wait_stub_done : failed to wait for SIGTRAP, pid = 24027, n = 24027, errno = 0, status = 0xb7f
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-
-CPU: 0 PID: 1 Comm: init Not tainted 4.0.0-rc4-00241-ge477f3e #10
-Stack:
- 0855d48a 0855d48a 085be547 00000000 84c9be24 84c94000 84c87ac8 084d80f6
- 00000000 84c87aa0 84c87af0 084d4165 08568eac 086a4e00 08569048 84c87b00
- 84c94000 84c9be24 84c94000 84d6c948 84c87b30 08112ade 08569048 0000000b
-Call Trace:
- [<080f2e26>] show_stack+0xd6/0x1a0
- [<084d80f6>] dump_stack+0x26/0x28
- [<084d4165>] panic+0x8f/0x1a9
- [<08112ade>] do_exit+0xa2e/0xa30
- [<08112b59>] do_group_exit+0x39/0xe0
- [<0811bde9>] get_signal+0x199/0x5a0
- [<084dc32c>] ? _raw_spin_unlock_irqrestore+0x1c/0x20
- [<080f29c6>] kern_do_signal+0x46/0x300
- [<0812cbc0>] ? wake_up_state+0x10/0x20
- [<08119f02>] ? signal_wake_up_state+0x22/0x30
- [<0811a56e>] ? __send_signal.constprop.24+0x11e/0x2f0
- [<0810488a>] ? unblock_signals+0x1a/0xa0
- [<08104bb8>] ? set_signals+0x48/0x60
- [<084dc32c>] ? _raw_spin_unlock_irqrestore+0x1c/0x20
- [<0811b004>] ? force_sig_info+0xa4/0xc0
- [<080f2c9a>] do_signal+0x1a/0x20
- [<080f40e5>] fatal_sigsegv+0x25/0x30
- [<0810741b>] wait_stub_done+0xeb/0x130
- [<081074cd>] get_skas_faultinfo.part.1+0x6d/0x100
- [<081075c5>] get_skas_faultinfo+0x65/0x90
- [<0810cecd>] ? get_fp_registers+0x4d/0x60
- [<08107d5a>] userspace+0x55a/0x650
- [<0819d7f4>] ? do_execve+0x24/0x30
- [<080f04fb>] ? run_init_process+0x2b/0x30
- [<080f050f>] ? try_to_run_init_process+0xf/0x40
- [<0812a632>] ? async_synchronize_full+0x22/0x30
- [<084d3cd2>] ? kernel_init+0x92/0xd0
- [<080f1a22>] new_thread_handler+0x82/0x90
-
-/home/tfoerste/workspace/bin/start_uml.sh: line 104: 23974 Aborted                 $STRACE $LINUX earlyprintk ubda=$ROOTFS ubdb=$SWAP eth0=$NET mem=$MEM $TTY umid=uml_$NAME rootfstype=ext4 "$ARGS"
-                                                                                            + rc=134
-                                                                                                    + rm -f /mnt/ramdisk/trinity_swap
-                             + [[ 134 -ne 0 ]]
-                                              ++ expr 134 % 128
-                                                               + RC=6
-                                                                     + reset
-
--- 
-Toralf
-pgp key: 7B1A 07F4 EC82 0F90 D4C2  8936 872A E508 0076 E94E
-
-
-------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+QW0gMTYuMDMuMjAxNSB1bSAxNDoyMyBzY2hyaWViIFRvcmFsZiBGw7Zyc3RlcjoKPiBPbiAwMy8x
+NS8yMDE1IDA1OjU2IFBNLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4+IFRoZW4gcGxlYXNl
+IG1vdmUgdGhlIGhhcmRlbmVkIGdjYyB0byAvZGV2L251bGwuIDstKQo+IAo+IHllcywgYXQgbGVh
+c3QgdG8gY29tcGlsZSB0aGUgVU1MIGxpbnV4Cj4gCj4+IElmIHlvdSBjYW4gdGVsbCBtZSB3aGF0
+IGhhcmRlbmluZyBmZWF0dXJlIGlzIHRoZSByb290IGNhdXNlIEkgY2FuIHRoaW5rIG9mIGEgc29s
+dXRpb24uCj4gV2lsbCBiZSBhIGxvbmdlciB3YXkgSSBmZWFyLgo+IEV2ZXJ5IDJuZCBvciAzcmQg
+YXR0ZW1wdCB0aGUgVU1MIGd1ZXN0IGhhbmdzIGR1cmluZyBib290LCBhbiBpbW1lZGlhdGUgYXR0
+ZW1wdCB3b3JrcyAtIHNvIHJlYWxseSBoYXJkIHRvIGRpZyBpbnRvIHRoZSByb290IGNhdXNlLgo+
+IAo+IEJ1dCBJJ2xsIHRyeSBpdC4KCkkgZGlkIHNvbWUgZnVydGhlciBpbnZlc3RpZ2F0aW9uLiBU
+aGUgcm9vdCBjYXVzZSBvZiB0aGUgZ2VudG9vIGhhcmRlbmVkIHN5c3RlbSBzZWVtcyB0byBiZSB0
+aGUgaGFyZGVuZWQgbGliYy4KQXMgc29vbiBhIFVNTCBrdGhyZWFkIGlzc3VlcyBhIHN5c2NhbGwg
+b24gdGhlIGhvc3Qgc2lkZSBVTUwgZGllcy4KQXQgbGVhc3Qgb24gbXkgUEMgSSBjYW4gYnVpbGQg
+YW5kIHJ1biBVTUwgd2l0aCB0aGUgaGFyZGVuZWQgZ2NjLiBCdXQgcnVubmluZyBhbnkgVU1MIG9u
+IGEgaGFyZGVuZWQgYmFzZSBzeXN0ZW0gKGxpYmMpIGZhaWxzIGJhZGx5LgoKPiBJbiBtb21lbnQg
+bXkgYmlnZ2VzdCBwcm9ibGVtIGlzLCB0aGF0IEkgZ2V0IHRoZSBmb2xsb3dpbmcgZXJyb3IgYXMg
+c29vbiBhcyBJIHRyeSB0byBzZW5kIG91dCBhbiBuZXR3b3JrIHBhY2thZ2UgZnJvbSBldGgwIChE
+SENQIHdvcmtzLCBidXQgdGhlIGZpcnN0IHBpbmcgdG8gYW4gaXAgYWRkcmVzcyBvdXRzaWRlIHRy
+aWdnZXJzIHRoZSBlcnJvcik6CgpEb2VzIHRoaXMgYWxzbyBoYXBwZW4gb24gYSByZWd1bGFyIHN5
+c3RlbT8gQmVjYXVzZSBoZXJlIG5ldHdvcmtpbmcgd29ya3MgZmluZS4KClRoYW5rcywKLy9yaWNo
+YXJkCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRGl2ZSBpbnRvIHRoZSBXb3JsZCBvZiBQYXJhbGxl
+bCBQcm9ncmFtbWluZyBUaGUgR28gUGFyYWxsZWwgV2Vic2l0ZSwgc3BvbnNvcmVkCmJ5IEludGVs
+IGFuZCBkZXZlbG9wZWQgaW4gcGFydG5lcnNoaXAgd2l0aCBTbGFzaGRvdCBNZWRpYSwgaXMgeW91
+ciBodWIgZm9yIGFsbAp0aGluZ3MgcGFyYWxsZWwgc29mdHdhcmUgZGV2ZWxvcG1lbnQsIGZyb20g
+d2Vla2x5IHRob3VnaHQgbGVhZGVyc2hpcCBibG9ncyB0bwpuZXdzLCB2aWRlb3MsIGNhc2Ugc3R1
+ZGllcywgdHV0b3JpYWxzIGFuZCBtb3JlLiBUYWtlIGEgbG9vayBhbmQgam9pbiB0aGUgCmNvbnZl
+cnNhdGlvbiBub3cuIGh0dHA6Ly9nb3BhcmFsbGVsLnNvdXJjZWZvcmdlLm5ldC8KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRl
+dmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9k
+ZS1saW51eC1kZXZlbAo=
 
