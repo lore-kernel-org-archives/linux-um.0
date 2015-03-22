@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <toralf.foerster@gmx.de>) id 1YZmpo-0007c0-FX
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <toralf.foerster@gmx.de>) id 1YZdhf-0008Tk-5Z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Mar 2015 20:51:00 +0000
-Received: from mout.gmx.net ([212.227.17.20])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YZmpn-0002Zy-E8
+	Sun, 22 Mar 2015 11:05:59 +0000
+Received: from mout.gmx.net ([212.227.15.15])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YZdhd-00034F-O7
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 Mar 2015 20:51:00 +0000
-Message-ID: <550F2B2C.8080500@gmx.de>
-Date: Sun, 22 Mar 2015 21:50:52 +0100
+	Sun, 22 Mar 2015 11:05:59 +0000
+Message-ID: <550EA20E.7000503@gmx.de>
+Date: Sun, 22 Mar 2015 12:05:50 +0100
 From: =?UTF-8?B?VG9yYWxmIEbDtnJzdGVy?= <toralf.foerster@gmx.de>
 MIME-Version: 1.0
 References: <54FCBB88.70605@gmx.de>
@@ -49,14 +49,91 @@ Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>
 On 03/21/2015 11:27 PM, Richard Weinberger wrote:
 > At least on my PC I can build and run UML with the hardened gcc. But running any UML on a hardened base system (libc) fails badly.
 
+The picture here is the same, gcc isn't the culprit. A vanilla kernel instead of a hardened kernel doesn't help too much too.
+Nowadays I do reliable get either a hang or the following at the hardened system, (tomorrow I'll your advices with a grml live cd or something in that direction) : 
 
-And now I tested it with the Gentoo Live DVD.
-I had to rebuild the linux executable using the gcc of the Live DVD. Then I was able to start the UML guest (using the linux program compiled under my hardened system produced just the same stub entries error messages as posted before)
+...
+TCP: cubic registered
+NET: Registered protocol family 17
+Key type dns_resolver registered
+Initialized stdio console driver
+Console initialized on /dev/tty0
+                                console [tty0] enabled
+console [tty0] enabled
+                      bootconsole [earlycon0] disabled
+bootconsole [earlycon0] disabled
+                                Initializing software serial port version 1
+console [mc-1] enabled
+Netdevice 0 (72:ef:3d:9f:c3:5a) : 
+TUN/TAP backend - 
+Btrfs loaded
+winch_thread : TIOCSCTTY failed on fd 1 err = 1
+EXT4-fs (ubda): mounted filesystem with ordered data mode. Opts: (null)
+VFS: Mounted root (ext4 filesystem) readonly on device 98:0.
+devtmpfs: mounted
+Stub registers -
+        0 - 0
+        1 - 101b7c
+        2 - 101afc
+        3 - 0
+        4 - 0
+        5 - 101ae8
+        6 - b
+        7 - 2b
+        8 - 2b
+        9 - 0
+        10 - 0
+        11 - ffffffff
+        12 - 1000d9
+        13 - 23
+        14 - 10206
+        15 - 100ad8
+        16 - 2b
+wait_stub_done : failed to wait for SIGTRAP, pid = 24027, n = 24027, errno = 0, status = 0xb7f
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
+CPU: 0 PID: 1 Comm: init Not tainted 4.0.0-rc4-00241-ge477f3e #10
+Stack:
+ 0855d48a 0855d48a 085be547 00000000 84c9be24 84c94000 84c87ac8 084d80f6
+ 00000000 84c87aa0 84c87af0 084d4165 08568eac 086a4e00 08569048 84c87b00
+ 84c94000 84c9be24 84c94000 84d6c948 84c87b30 08112ade 08569048 0000000b
+Call Trace:
+ [<080f2e26>] show_stack+0xd6/0x1a0
+ [<084d80f6>] dump_stack+0x26/0x28
+ [<084d4165>] panic+0x8f/0x1a9
+ [<08112ade>] do_exit+0xa2e/0xa30
+ [<08112b59>] do_group_exit+0x39/0xe0
+ [<0811bde9>] get_signal+0x199/0x5a0
+ [<084dc32c>] ? _raw_spin_unlock_irqrestore+0x1c/0x20
+ [<080f29c6>] kern_do_signal+0x46/0x300
+ [<0812cbc0>] ? wake_up_state+0x10/0x20
+ [<08119f02>] ? signal_wake_up_state+0x22/0x30
+ [<0811a56e>] ? __send_signal.constprop.24+0x11e/0x2f0
+ [<0810488a>] ? unblock_signals+0x1a/0xa0
+ [<08104bb8>] ? set_signals+0x48/0x60
+ [<084dc32c>] ? _raw_spin_unlock_irqrestore+0x1c/0x20
+ [<0811b004>] ? force_sig_info+0xa4/0xc0
+ [<080f2c9a>] do_signal+0x1a/0x20
+ [<080f40e5>] fatal_sigsegv+0x25/0x30
+ [<0810741b>] wait_stub_done+0xeb/0x130
+ [<081074cd>] get_skas_faultinfo.part.1+0x6d/0x100
+ [<081075c5>] get_skas_faultinfo+0x65/0x90
+ [<0810cecd>] ? get_fp_registers+0x4d/0x60
+ [<08107d5a>] userspace+0x55a/0x650
+ [<0819d7f4>] ? do_execve+0x24/0x30
+ [<080f04fb>] ? run_init_process+0x2b/0x30
+ [<080f050f>] ? try_to_run_init_process+0xf/0x40
+ [<0812a632>] ? async_synchronize_full+0x22/0x30
+ [<084d3cd2>] ? kernel_init+0x92/0xd0
+ [<080f1a22>] new_thread_handler+0x82/0x90
 
-And the UML guest itself assigned an static IP to its eth0 interface (I was however to stupid/unexperienced to get a ssh login working at the Live system).
-
-So you're right - it is the hardened glibc which prevents at a hardened Gentoo UML.
+/home/tfoerste/workspace/bin/start_uml.sh: line 104: 23974 Aborted                 $STRACE $LINUX earlyprintk ubda=$ROOTFS ubdb=$SWAP eth0=$NET mem=$MEM $TTY umid=uml_$NAME rootfstype=ext4 "$ARGS"
+                                                                                            + rc=134
+                                                                                                    + rm -f /mnt/ramdisk/trinity_swap
+                             + [[ 134 -ne 0 ]]
+                                              ++ expr 134 % 128
+                                                               + RC=6
+                                                                     + reset
 
 -- 
 Toralf
