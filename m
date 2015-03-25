@@ -1,66 +1,48 @@
-Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-Message-ID: <1427317797.6468.86.camel@kernel.crashing.org>
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Date: Thu, 26 Mar 2015 08:09:57 +1100
-In-Reply-To: <20150325183316.GA9090@gmail.com>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Wed, 25 Mar 2015 19:36:47 +0100
+From: Ingo Molnar <mingo@kernel.org>
+Message-ID: <20150325183647.GA9331@gmail.com>
 References: <20150325121118.GA2542@gmail.com>
  <cover.1427289960.git.ldufour@linux.vnet.ibm.com>
  <b6ce07f8e1e0d654371aee70bd8eac310456d0df.1427289960.git.ldufour@linux.vnet.ibm.com>
  <20150325183316.GA9090@gmail.com>
-Mime-Version: 1.0
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20150325183316.GA9090@gmail.com>
+Sender: linux-arch-owner@vger.kernel.org
 Subject: Re: [PATCH v3 2/2] powerpc/mm: Tracking vDSO remap
-To: Ingo Molnar <mingo@kernel.org>
-Cc: linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Laurent Dufour <ldufour@linux.vnet.ibm.com>, user-mode-linux-devel@lists.sourceforge.net, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-kernel@vger.kernel.org, criu@openvz.org, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Paul Mackerras <paulus@samba.org>, cov@codeaurora.org, user-mode-linux-user@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linuxppc-dev@lists.ozlabs.org
+To: Laurent Dufour <ldufour@linux.vnet.ibm.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org, cov@codeaurora.org, criu@openvz.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-T24gV2VkLCAyMDE1LTAzLTI1IGF0IDE5OjMzICswMTAwLCBJbmdvIE1vbG5hciB3cm90ZToKPiAq
-IExhdXJlbnQgRHVmb3VyIDxsZHVmb3VyQGxpbnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gCj4g
-PiArc3RhdGljIGlubGluZSB2b2lkIGFyY2hfdW5tYXAoc3RydWN0IG1tX3N0cnVjdCAqbW0sCj4g
-PiArCQkJc3RydWN0IHZtX2FyZWFfc3RydWN0ICp2bWEsCj4gPiArCQkJdW5zaWduZWQgbG9uZyBz
-dGFydCwgdW5zaWduZWQgbG9uZyBlbmQpCj4gPiArewo+ID4gKwlpZiAoc3RhcnQgPD0gbW0tPmNv
-bnRleHQudmRzb19iYXNlICYmIG1tLT5jb250ZXh0LnZkc29fYmFzZSA8IGVuZCkKPiA+ICsJCW1t
-LT5jb250ZXh0LnZkc29fYmFzZSA9IDA7Cj4gPiArfQo+IAo+IFNvIEFGQUlDUyBQb3dlclBDIGNh
-biBoYXZlIG11bHRpLXBhZ2UgdkRTT3MsIHJpZ2h0Pwo+IAo+IFNvIHdoYXQgaGFwcGVucyBpZiBJ
-IG11bm1hcCgpIHRoZSBtaWRkbGUgb3IgZW5kIG9mIHRoZSB2RFNPPyBUaGUgYWJvdmUgCj4gY29u
-ZGl0aW9uIG9ubHkgc2VlbXMgdG8gY292ZXIgdW5tYXBzIHRoYXQgYWZmZWN0IHRoZSBmaXJzdCBw
-YWdlLiBJIAo+IHRoaW5rICdhZmZlY3RzIGFueSBwYWdlJyBvdWdodCB0byBiZSB0aGUgcmlnaHQg
-Y29uZGl0aW9uPyAoQnV0IEkga25vdyAKPiBub3RoaW5nIGFib3V0IFBvd2VyUEMgc28gSSBtaWdo
-dCBiZSB3cm9uZy4pCgpZb3UgYXJlIHJpZ2h0LCB3ZSBoYXZlIGF0IGxlYXN0IHR3byBwYWdlcy4K
-PiAKPiA+ICsjZGVmaW5lIF9fSEFWRV9BUkNIX1JFTUFQCj4gPiArc3RhdGljIGlubGluZSB2b2lk
-IGFyY2hfcmVtYXAoc3RydWN0IG1tX3N0cnVjdCAqbW0sCj4gPiArCQkJICAgICAgdW5zaWduZWQg
-bG9uZyBvbGRfc3RhcnQsIHVuc2lnbmVkIGxvbmcgb2xkX2VuZCwKPiA+ICsJCQkgICAgICB1bnNp
-Z25lZCBsb25nIG5ld19zdGFydCwgdW5zaWduZWQgbG9uZyBuZXdfZW5kKQo+ID4gK3sKPiA+ICsJ
-LyoKPiA+ICsJICogbXJlbWFwKCkgZG9lc24ndCBhbGxvdyBtb3ZpbmcgbXVsdGlwbGUgdm1hcyBz
-byB3ZSBjYW4gbGltaXQgdGhlCj4gPiArCSAqIGNoZWNrIHRvIG9sZF9zdGFydCA9PSB2ZHNvX2Jh
-c2UuCj4gPiArCSAqLwo+ID4gKwlpZiAob2xkX3N0YXJ0ID09IG1tLT5jb250ZXh0LnZkc29fYmFz
-ZSkKPiA+ICsJCW1tLT5jb250ZXh0LnZkc29fYmFzZSA9IG5ld19zdGFydDsKPiA+ICt9Cj4gCj4g
-bXJlbWFwKCkgZG9lc24ndCBhbGxvdyBtb3ZpbmcgbXVsdGlwbGUgdm1hcywgYnV0IGl0IGFsbG93
-cyB0aGUgCj4gbW92ZW1lbnQgb2YgbXVsdGktcGFnZSB2bWFzIGFuZCBpdCBhbHNvIGFsbG93cyBw
-YXJ0aWFsIG1yZW1hcCgpcywgCj4gd2hlcmUgaXQgd2lsbCBzcGxpdCB1cCBhIHZtYS4KPiAKPiBJ
-biBwYXJ0aWN1bGFyLCB3aGF0IGhhcHBlbnMgaWYgYW4gbXJlbWFwKCkgaXMgZG9uZSB3aXRoIAo+
-IG9sZF9zdGFydCA9PSB2ZHNvX2Jhc2UsIGJ1dCBhIHNob3J0ZXIgZW5kIHRoYW4gdGhlIGVuZCBv
-ZiB0aGUgdkRTTz8gCj4gKGkuZS4gYSBwYXJ0aWFsIG1yZW1hcCgpIHdpdGggZmV3ZXIgcGFnZXMg
-dGhhbiB0aGUgdkRTTyBzaXplKQoKSXMgdGhlcmUgYSB3YXkgdG8gZm9yYmlkIHNwbGl0dGluZyA/
-IERvZXMgeDg2IGRlYWwgd2l0aCB0aGF0IGNhc2UgYXQgYWxsCm9yIGl0IGRvZXNuJ3QgaGF2ZSB0
-byBmb3Igc29tZSBvdGhlciByZWFzb24gPwoKQ2hlZXJzLApCZW4uCgo+IFRoYW5rcywKPiAKPiAJ
-SW5nbwo+IC0tCj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUg
-InVuc3Vic2NyaWJlIGxpbnV4LWtlcm5lbCIgaW4KPiB0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8g
-bWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZwo+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6
-Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbAo+IFBsZWFzZSByZWFkIHRoZSBG
-QVEgYXQgIGh0dHA6Ly93d3cudHV4Lm9yZy9sa21sLwoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKTGludXhw
-cGMtZGV2QGxpc3RzLm96bGFicy5vcmcKaHR0cHM6Ly9saXN0cy5vemxhYnMub3JnL2xpc3RpbmZv
-L2xpbnV4cHBjLWRldg==
 
+* Ingo Molnar <mingo@kernel.org> wrote:
+
+> > +#define __HAVE_ARCH_REMAP
+> > +static inline void arch_remap(struct mm_struct *mm,
+> > +			      unsigned long old_start, unsigned long old_end,
+> > +			      unsigned long new_start, unsigned long new_end)
+> > +{
+> > +	/*
+> > +	 * mremap() doesn't allow moving multiple vmas so we can limit the
+> > +	 * check to old_start == vdso_base.
+> > +	 */
+> > +	if (old_start == mm->context.vdso_base)
+> > +		mm->context.vdso_base = new_start;
+> > +}
+> 
+> mremap() doesn't allow moving multiple vmas, but it allows the 
+> movement of multi-page vmas and it also allows partial mremap()s, 
+> where it will split up a vma.
+
+I.e. mremap() supports the shrinking (and growing) of vmas. In that 
+case mremap() will unmap the end of the vma and will shrink the 
+remaining vDSO vma.
+
+Doesn't that result in a non-working vDSO that should zero out 
+vdso_base?
+
+Thanks,
+
+	Ingo
