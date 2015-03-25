@@ -1,13 +1,13 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Laurent Dufour <ldufour@linux.vnet.ibm.com>
-Date: Wed, 25 Mar 2015 14:53:51 +0100
-Message-Id: <fe0cafd7f98ce8cdd4b695de55a8c22dd903e334.1427289960.git.ldufour@linux.vnet.ibm.com>
-In-Reply-To: <cover.1427289960.git.ldufour@linux.vnet.ibm.com>
-References: <cover.1427289960.git.ldufour@linux.vnet.ibm.com>
-In-Reply-To: <cover.1427289960.git.ldufour@linux.vnet.ibm.com>
-References: <20150325121118.GA2542@gmail.com> <cover.1427289960.git.ldufour@linux.vnet.ibm.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH v3 1/2] mm: Introducing arch_remap hook
+Date: Wed, 25 Mar 2015 12:06:35 +0100
+Message-Id: <fe0cafd7f98ce8cdd4b695de55a8c22dd903e334.1427280806.git.ldufour@linux.vnet.ibm.com>
+In-Reply-To: <cover.1427280806.git.ldufour@linux.vnet.ibm.com>
+References: <cover.1427280806.git.ldufour@linux.vnet.ibm.com>
+In-Reply-To: <cover.1427280806.git.ldufour@linux.vnet.ibm.com>
+References: <20150323085209.GA28965@gmail.com> <cover.1427280806.git.ldufour@linux.vnet.ibm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v2 1/2] mm: Introducing arch_remap hook
 To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org
 Cc: cov@codeaurora.org, criu@openvz.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
