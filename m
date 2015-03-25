@@ -1,11 +1,11 @@
 Return-Path: <linux-arch-owner@vger.kernel.org>
 From: Laurent Dufour <ldufour@linux.vnet.ibm.com>
-Date: Wed, 25 Mar 2015 14:53:50 +0100
-Message-Id: <cover.1427289960.git.ldufour@linux.vnet.ibm.com>
-In-Reply-To: <20150325121118.GA2542@gmail.com>
-References: <20150325121118.GA2542@gmail.com>
+Date: Wed, 25 Mar 2015 12:06:34 +0100
+Message-Id: <cover.1427280806.git.ldufour@linux.vnet.ibm.com>
+In-Reply-To: <20150323085209.GA28965@gmail.com>
+References: <20150323085209.GA28965@gmail.com>
 Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH v3 0/2] Tracking user space vDSO remaping
+Subject: [PATCH v2 0/2] Tracking user space vDSO remaping
 To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org
 Cc: cov@codeaurora.org, criu@openvz.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
@@ -22,11 +22,6 @@ more valid and the signal frame built later are not usable.
 This patch serie is introducing a new mm hook 'arch_remap' which is called
 when mremap is done and the mm lock still hold. The next patch is adding the
 vDSO remap and unmap tracking to the powerpc architecture.
-
-Changes in v3:
---------------
-- Fixed grammatical error in a comment of the second patch. 
-  Thanks again, Ingo.
 
 Changes in v2:
 --------------
