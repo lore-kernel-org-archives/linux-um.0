@@ -1,72 +1,45 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Message-Id: <20150312152359.B611E1A2420@localhost.localdomain>
-Date: Thu, 12 Mar 2015 16:23:59 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+Date: Thu, 26 Mar 2015 13:27:12 +0100
+Message-Id: <1427372838-16605-1-git-send-email-richard@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 5/8] tty: cpm_uart: replace CONFIG_8xx by CONFIG_CPM1
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fbdev@vger.kernel.org, netdev@vger.kernel.org, linux-serial@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH 1/7] um: Remove dead code from stacktrace
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Two config options exist to define powerpc MPC8xx:
-* CONFIG_PPC_8xx
-* CONFIG_8xx
-In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
-communication co-processor
+Remove left over code from commit 970e51feaddb
+(um: Add support for CONFIG_STACKTRACE)
 
-arch/powerpc/platforms/Kconfig.cputype has contained the following
-comment about CONFIG_8xx item for some years:
-"# this is temp to handle compat with arch=ppc"
-
-It looks like not many places still have that old CONFIG_8xx used,
-so it is likely to be a good time to get rid of it completely ?
-
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/tty/serial/Kconfig             | 2 +-
- drivers/tty/serial/cpm_uart/Makefile   | 2 +-
- drivers/tty/serial/cpm_uart/cpm_uart.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/um/kernel/sysrq.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index c9dbc62..6086586 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -868,7 +868,7 @@ config SERIAL_PMACZILOG_CONSOLE
+diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
+index 894c8d3..aa1b56f 100644
+--- a/arch/um/kernel/sysrq.c
++++ b/arch/um/kernel/sysrq.c
+@@ -29,7 +29,7 @@ static const struct stacktrace_ops stackops = {
  
- config SERIAL_CPM
- 	tristate "CPM SCC/SMC serial port support"
--	depends on CPM2 || 8xx
-+	depends on CPM2 || CPM1
- 	select SERIAL_CORE
- 	help
- 	  This driver supports the SCC and SMC serial ports on Motorola 
-diff --git a/drivers/tty/serial/cpm_uart/Makefile b/drivers/tty/serial/cpm_uart/Makefile
-index e072724..896a5d5 100644
---- a/drivers/tty/serial/cpm_uart/Makefile
-+++ b/drivers/tty/serial/cpm_uart/Makefile
-@@ -6,6 +6,6 @@ obj-$(CONFIG_SERIAL_CPM) += cpm_uart.o
+ void show_stack(struct task_struct *task, unsigned long *stack)
+ {
+-	unsigned long *sp = stack, bp = 0;
++	unsigned long *sp = stack;
+ 	struct pt_regs *segv_regs = current->thread.segv_regs;
+ 	int i;
  
- # Select the correct platform objects.
- cpm_uart-objs-$(CONFIG_CPM2)	+= cpm_uart_cpm2.o
--cpm_uart-objs-$(CONFIG_8xx)	+= cpm_uart_cpm1.o
-+cpm_uart-objs-$(CONFIG_CPM1)	+= cpm_uart_cpm1.o
+@@ -39,10 +39,6 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 		return;
+ 	}
  
- cpm_uart-objs	:= cpm_uart_core.o $(cpm_uart-objs-y)
-diff --git a/drivers/tty/serial/cpm_uart/cpm_uart.h b/drivers/tty/serial/cpm_uart/cpm_uart.h
-index cf34d26..0ad027b 100644
---- a/drivers/tty/serial/cpm_uart/cpm_uart.h
-+++ b/drivers/tty/serial/cpm_uart/cpm_uart.h
-@@ -19,7 +19,7 @@
- 
- #if defined(CONFIG_CPM2)
- #include "cpm_uart_cpm2.h"
--#elif defined(CONFIG_8xx)
-+#elif defined(CONFIG_CPM1)
- #include "cpm_uart_cpm1.h"
- #endif
+-#ifdef CONFIG_FRAME_POINTER
+-	bp = get_frame_pointer(task, segv_regs);
+-#endif
+-
+ 	if (!stack)
+ 		sp = get_stack_pointer(task, segv_regs);
  
 -- 
-2.1.0
+1.8.4.5
 
