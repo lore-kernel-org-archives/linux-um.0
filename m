@@ -1,87 +1,52 @@
-Return-Path: <linux-fbdev-owner@vger.kernel.org>
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Message-Id: <20150312152344.83BA31A241D@localhost.localdomain>
-Date: Thu, 12 Mar 2015 16:23:44 +0100 (CET)
-Sender: linux-fbdev-owner@vger.kernel.org
-Subject: [PATCH 2/8] um: replace CONFIG_8xx by CONFIG_PPC_8xx
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fbdev@vger.kernel.org, netdev@vger.kernel.org, linux-serial@vger.kernel.org, linux-mtd@lists.infradead.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Laurent Dufour <ldufour@linux.vnet.ibm.com>
+Date: Thu, 26 Mar 2015 18:37:51 +0100
+Message-Id: <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
+In-Reply-To: <20150326141730.GA23060@gmail.com>
+References: <20150326141730.GA23060@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v4 0/2] Tracking user space vDSO remaping
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org
+Cc: cov@codeaurora.org, criu@openvz.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Two config options exist to define powerpc MPC8xx:
-* CONFIG_PPC_8xx
-* CONFIG_8xx
-In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
-communication co-processor
+CRIU is recreating the process memory layout by remapping the checkpointee
+memory area on top of the current process (criu). This includes remapping
+the vDSO to the place it has at checkpoint time.
 
-arch/powerpc/platforms/Kconfig.cputype has contained the following
-comment about CONFIG_8xx item for some years:
-"# this is temp to handle compat with arch=ppc"
+However some architectures like powerpc are keeping a reference to the vDSO
+base address to build the signal return stack frame by calling the vDSO
+sigreturn service. So once the vDSO has been moved, this reference is no
+more valid and the signal frame built later are not usable.
 
-It looks like not many places still have that old CONFIG_8xx used,
-so it is likely to be a good time to get rid of it completely ?
+This patch serie is introducing a new mm hook 'arch_remap' which is called
+when mremap is done and the mm lock still hold. The next patch is adding the
+vDSO remap and unmap tracking to the powerpc architecture.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Changes in v4:
+--------------
+- Reviewing the PowerPC part of the patch to handle partial unmap and remap
+  of the vDSO.
 
----
- arch/um/sys-ppc/misc.S | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Changes in v3:
+--------------
+- Fixed grammatical error in a comment of the second patch. 
+  Thanks again, Ingo.
 
-diff --git a/arch/um/sys-ppc/misc.S b/arch/um/sys-ppc/misc.S
-index 1364b7d..163e0b2 100644
---- a/arch/um/sys-ppc/misc.S
-+++ b/arch/um/sys-ppc/misc.S
-@@ -18,7 +18,7 @@
- #include <asm/processor.h>
- #include "ppc_asm.h"
- 
--#if defined(CONFIG_4xx) || defined(CONFIG_8xx)
-+#if defined(CONFIG_4xx) || defined(CONFIG_PPC_8xx)
- #define CACHE_LINE_SIZE		16
- #define LG_CACHE_LINE_SIZE	4
- #define MAX_COPY_PREFETCH	1
-@@ -26,7 +26,7 @@
- #define CACHE_LINE_SIZE		32
- #define LG_CACHE_LINE_SIZE	5
- #define MAX_COPY_PREFETCH	4
--#endif /* CONFIG_4xx || CONFIG_8xx */
-+#endif /* CONFIG_4xx || CONFIG_PPC_8xx */
- 
- 	.text
- 
-@@ -38,7 +38,7 @@
- _GLOBAL(clear_page)
- 	li	r0,4096/CACHE_LINE_SIZE
- 	mtctr	r0
--#ifdef CONFIG_8xx
-+#ifdef CONFIG_PPC_8xx
- 	li	r4, 0
- 1:	stw	r4, 0(r3)
- 	stw	r4, 4(r3)
-@@ -72,7 +72,7 @@ _GLOBAL(copy_page)
- 	addi	r4,r4,-4
- 	li	r5,4
- 
--#ifndef CONFIG_8xx
-+#ifndef CONFIG_PPC_8xx
- #if MAX_COPY_PREFETCH > 1
- 	li	r0,MAX_COPY_PREFETCH
- 	li	r11,4
-@@ -84,12 +84,12 @@ _GLOBAL(copy_page)
- 	dcbt	r5,r4
- 	li	r11,CACHE_LINE_SIZE+4
- #endif /* MAX_COPY_PREFETCH */
--#endif /* CONFIG_8xx */
-+#endif /* CONFIG_PPC_8xx */
- 
- 	li	r0,4096/CACHE_LINE_SIZE
- 	mtctr	r0
- 1:
--#ifndef CONFIG_8xx
-+#ifndef CONFIG_PPC_8xx
- 	dcbt	r11,r4
- 	dcbz	r5,r3
- #endif
+Changes in v2:
+--------------
+- Following the Ingo Molnar's advice, enabling the call to arch_remap through
+  the __HAVE_ARCH_REMAP macro. This reduces considerably the first patch.
+
+Laurent Dufour (2):
+  mm: Introducing arch_remap hook
+  powerpc/mm: Tracking vDSO remap
+
+ arch/powerpc/include/asm/mmu_context.h | 32 +++++++++++++++++++++++++++-
+ arch/powerpc/kernel/vdso.c             | 39 ++++++++++++++++++++++++++++++++++
+ mm/mremap.c                            | 11 ++++++++--
+ 3 files changed, 79 insertions(+), 3 deletions(-)
+
 -- 
-2.1.0
+1.9.1
 
