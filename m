@@ -1,131 +1,77 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <55141866.6080007@linux.vnet.ibm.com>
+Date: Thu, 26 Mar 2015 15:32:06 +0100
 From: Laurent Dufour <ldufour@linux.vnet.ibm.com>
-Date: Thu, 26 Mar 2015 18:37:53 +0100
-Message-Id: <7fdae652993cf88bdd633d65e5a8f81c7ad8a1e3.1427390952.git.ldufour@linux.vnet.ibm.com>
-In-Reply-To: <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
-References: <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
-In-Reply-To: <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
-References: <20150326141730.GA23060@gmail.com> <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
+MIME-Version: 1.0
+References: <20150325121118.GA2542@gmail.com> <cover.1427289960.git.ldufour@linux.vnet.ibm.com> <b6ce07f8e1e0d654371aee70bd8eac310456d0df.1427289960.git.ldufour@linux.vnet.ibm.com> <20150325183316.GA9090@gmail.com> <20150325183647.GA9331@gmail.com> <1427317867.6468.87.camel@kernel.crashing.org> <20150326094330.GA15407@gmail.com> <5513E16D.1030101@linux.vnet.ibm.com> <20150326141730.GA23060@gmail.com>
+In-Reply-To: <20150326141730.GA23060@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v4 2/2] powerpc/mm: Tracking vDSO remap
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org
-Cc: cov@codeaurora.org, criu@openvz.org
+Subject: Re: [PATCH v3 2/2] powerpc/mm: Tracking vDSO remap
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org, cov@codeaurora.org, criu@openvz.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Some processes (CRIU) are moving the vDSO area using the mremap system
-call. As a consequence the kernel reference to the vDSO base address is
-no more valid and the signal return frame built once the vDSO has been
-moved is not pointing to the new sigreturn address.
+On 26/03/2015 15:17, Ingo Molnar wrote:
+> 
+> * Laurent Dufour <ldufour@linux.vnet.ibm.com> wrote:
+> 
+>>> I argue we should use the right condition to clear vdso_base: if 
+>>> the vDSO gets at least partially unmapped. Otherwise there's 
+>>> little point in the whole patch: either correctly track whether 
+>>> the vDSO is OK, or don't ...
+>>
+>> That's a good option, but it may be hard to achieve in the case the 
+>> vDSO area has been splitted in multiple pieces.
+>>
+>> Not sure there is a right way to handle that, here this is a best 
+>> effort, allowing a process to unmap its vDSO and having the 
+>> sigreturn call done through the stack area (it has to make it 
+>> executable).
+>>
+>> Anyway I'll dig into that, assuming that the vdso_base pointer 
+>> should be clear if a part of the vDSO is moved or unmapped. The 
+>> patch will be larger since I'll have to get the vDSO size which is 
+>> private to the vdso.c file.
+> 
+> At least for munmap() I don't think that's a worry: once unmapped 
+> (even if just partially), vdso_base becomes zero and won't ever be set 
+> again.
+> 
+> So no need to track the zillion pieces, should there be any: Humpty 
+> Dumpty won't be whole again, right?
 
-This patch handles vDSO remapping and unmapping.
-Moving or unmapping partially the vDSO lead to invalidate it from the
-kernel point of view.
+My idea is to clear vdso_base if at least part of the vdso is unmap.
+But since some part of the vdso may have been moved and unmapped later,
+to be complete, the patch has to handle partial mremap() of the vDSO
+too. Otherwise such a scenario will not be detected:
 
-Signed-off-by: Laurent Dufour <ldufour@linux.vnet.ibm.com>
----
- arch/powerpc/include/asm/mmu_context.h | 32 +++++++++++++++++++++++++++-
- arch/powerpc/kernel/vdso.c             | 39 ++++++++++++++++++++++++++++++++++
- 2 files changed, 70 insertions(+), 1 deletion(-)
+	new_area = mremap(vdso_base + page_size, ....);
+	munmap(new_area,...);
 
-diff --git a/arch/powerpc/include/asm/mmu_context.h b/arch/powerpc/include/asm/mmu_context.h
-index 73382eba02dc..67734ce8be67 100644
---- a/arch/powerpc/include/asm/mmu_context.h
-+++ b/arch/powerpc/include/asm/mmu_context.h
-@@ -8,7 +8,6 @@
- #include <linux/spinlock.h>
- #include <asm/mmu.h>	
- #include <asm/cputable.h>
--#include <asm-generic/mm_hooks.h>
- #include <asm/cputhreads.h>
- 
- /*
-@@ -109,5 +108,36 @@ static inline void enter_lazy_tlb(struct mm_struct *mm,
- #endif
- }
- 
-+static inline void arch_dup_mmap(struct mm_struct *oldmm,
-+				 struct mm_struct *mm)
-+{
-+}
-+
-+static inline void arch_exit_mmap(struct mm_struct *mm)
-+{
-+}
-+
-+extern void arch_vdso_remap(struct mm_struct *mm,
-+			    unsigned long old_start, unsigned long old_end,
-+			    unsigned long new_start, unsigned long new_end);
-+static inline void arch_unmap(struct mm_struct *mm, struct vm_area_struct *vma,
-+			      unsigned long start, unsigned long end)
-+{
-+	arch_vdso_remap(mm, start, end, 0, 0);
-+}
-+
-+static inline void arch_bprm_mm_init(struct mm_struct *mm,
-+				     struct vm_area_struct *vma)
-+{
-+}
-+
-+#define __HAVE_ARCH_REMAP
-+static inline void arch_remap(struct mm_struct *mm,
-+			      unsigned long old_start, unsigned long old_end,
-+			      unsigned long new_start, unsigned long new_end)
-+{
-+	arch_vdso_remap(mm, old_start, old_end, new_start, new_end);
-+}
-+
- #endif /* __KERNEL__ */
- #endif /* __ASM_POWERPC_MMU_CONTEXT_H */
-diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
-index 305eb0d9b768..a11b5d8f36d6 100644
---- a/arch/powerpc/kernel/vdso.c
-+++ b/arch/powerpc/kernel/vdso.c
-@@ -283,6 +283,45 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	return rc;
- }
- 
-+void arch_vdso_remap(struct mm_struct *mm,
-+		     unsigned long old_start, unsigned long old_end,
-+		     unsigned long new_start, unsigned long new_end)
-+{
-+	unsigned long vdso_end, vdso_start;
-+
-+	if (!mm->context.vdso_base)
-+		return;
-+	vdso_start = mm->context.vdso_base;
-+
-+#ifdef CONFIG_PPC64
-+	/* Calling is_32bit_task() implies that we are dealing with the
-+	 * current process memory. If there is a call path where mm is not
-+	 * owned by the current task, then we'll have need to store the
-+	 * vDSO size in the mm->context.
-+	 */
-+	BUG_ON(current->mm != mm);
-+	if (is_32bit_task())
-+		vdso_end = vdso_start + (vdso32_pages << PAGE_SHIFT);
-+	else
-+		vdso_end = vdso_start + (vdso64_pages << PAGE_SHIFT);
-+#else
-+	vdso_end = vdso_start + (vdso32_pages << PAGE_SHIFT);
-+#endif
-+	vdso_end += (1<<PAGE_SHIFT); /* data page */
-+
-+	/* Check if the vDSO is in the range of the remapped area */
-+	if ((vdso_start <= old_start && old_start < vdso_end) ||
-+	    (vdso_start < old_end && old_end <= vdso_end)  ||
-+	    (old_start <= vdso_start && vdso_start < old_end)) {
-+		/* Update vdso_base if the vDSO is entirely moved. */
-+		if (old_start == vdso_start && old_end == vdso_end &&
-+		    (old_end - old_start) == (new_end - new_start))
-+			mm->context.vdso_base = new_start;
-+		else
-+			mm->context.vdso_base = 0;
-+	}
-+}
-+
- const char *arch_vma_name(struct vm_area_struct *vma)
- {
- 	if (vma->vm_mm && vma->vm_start == vma->vm_mm->context.vdso_base)
--- 
-1.9.1
+>>> There's also the question of mprotect(): can users mprotect() the 
+>>> vDSO on PowerPC?
+>>
+>> Yes, mprotect() the vDSO is allowed on PowerPC, as it is on x86, and 
+>> certainly all the other architectures. Furthermore, if it is done on 
+>> a partial part of the vDSO it is splitting the vma...
+> 
+> btw., CRIU's main purpose here is to reconstruct a vDSO that was 
+> originally randomized, but whose address must now be reproduced as-is, 
+> right?
+
+You're right, CRIU has to move the vDSO to the same address it has at
+checkpoint time.
+
+> In that sense detecting the 'good' mremap() as your patch does should 
+> do the trick and is certainly not objectionable IMHO - I was just 
+> wondering whether we could make a perfect job very simply.
+
+I'd try to address the perfect job, this may complexify the patch,
+especially because the vdso's size is not recorded in the PowerPC
+mm_context structure. Not sure it is a good idea to extend that structure..
+
+Thanks,
+Laurent.
 
