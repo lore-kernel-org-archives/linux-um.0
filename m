@@ -1,73 +1,67 @@
-Return-Path: <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-Message-ID: <1427412183.6468.148.camel@kernel.crashing.org>
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Date: Fri, 27 Mar 2015 10:23:03 +1100
-In-Reply-To: <20150326094330.GA15407@gmail.com>
-References: <20150325121118.GA2542@gmail.com>
- <cover.1427289960.git.ldufour@linux.vnet.ibm.com>
- <b6ce07f8e1e0d654371aee70bd8eac310456d0df.1427289960.git.ldufour@linux.vnet.ibm.com>
- <20150325183316.GA9090@gmail.com> <20150325183647.GA9331@gmail.com>
- <1427317867.6468.87.camel@kernel.crashing.org>
- <20150326094330.GA15407@gmail.com>
-Mime-Version: 1.0
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+geert=linux-m68k.org@lists.ozlabs.org>
-Subject: Re: [PATCH v3 2/2] powerpc/mm: Tracking vDSO remap
-To: Ingo Molnar <mingo@kernel.org>
-Cc: linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Laurent Dufour <ldufour@linux.vnet.ibm.com>, user-mode-linux-devel@lists.sourceforge.net, Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-kernel@vger.kernel.org, criu@openvz.org, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Paul Mackerras <paulus@samba.org>, cov@codeaurora.org, user-mode-linux-user@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Guan Xuetao <gxt@mprc.pku.edu.cn>, linuxppc-dev@lists.ozlabs.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Thu, 26 Mar 2015 19:55:50 +0100
+From: Ingo Molnar <mingo@kernel.org>
+Message-ID: <20150326185550.GA25547@gmail.com>
+References: <20150326141730.GA23060@gmail.com>
+ <cover.1427390952.git.ldufour@linux.vnet.ibm.com>
+ <7fdae652993cf88bdd633d65e5a8f81c7ad8a1e3.1427390952.git.ldufour@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7fdae652993cf88bdd633d65e5a8f81c7ad8a1e3.1427390952.git.ldufour@linux.vnet.ibm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] powerpc/mm: Tracking vDSO remap
+To: Laurent Dufour <ldufour@linux.vnet.ibm.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org, cov@codeaurora.org, criu@openvz.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-T24gVGh1LCAyMDE1LTAzLTI2IGF0IDEwOjQzICswMTAwLCBJbmdvIE1vbG5hciB3cm90ZToKPiAq
-IEJlbmphbWluIEhlcnJlbnNjaG1pZHQgPGJlbmhAa2VybmVsLmNyYXNoaW5nLm9yZz4gd3JvdGU6
-Cj4gCj4gPiBPbiBXZWQsIDIwMTUtMDMtMjUgYXQgMTk6MzYgKzAxMDAsIEluZ28gTW9sbmFyIHdy
-b3RlOgo+ID4gPiAqIEluZ28gTW9sbmFyIDxtaW5nb0BrZXJuZWwub3JnPiB3cm90ZToKPiA+ID4g
-Cj4gPiA+ID4gPiArI2RlZmluZSBfX0hBVkVfQVJDSF9SRU1BUAo+ID4gPiA+ID4gK3N0YXRpYyBp
-bmxpbmUgdm9pZCBhcmNoX3JlbWFwKHN0cnVjdCBtbV9zdHJ1Y3QgKm1tLAo+ID4gPiA+ID4gKwkJ
-CSAgICAgIHVuc2lnbmVkIGxvbmcgb2xkX3N0YXJ0LCB1bnNpZ25lZCBsb25nIG9sZF9lbmQsCj4g
-PiA+ID4gPiArCQkJICAgICAgdW5zaWduZWQgbG9uZyBuZXdfc3RhcnQsIHVuc2lnbmVkIGxvbmcg
-bmV3X2VuZCkKPiA+ID4gPiA+ICt7Cj4gPiA+ID4gPiArCS8qCj4gPiA+ID4gPiArCSAqIG1yZW1h
-cCgpIGRvZXNuJ3QgYWxsb3cgbW92aW5nIG11bHRpcGxlIHZtYXMgc28gd2UgY2FuIGxpbWl0IHRo
-ZQo+ID4gPiA+ID4gKwkgKiBjaGVjayB0byBvbGRfc3RhcnQgPT0gdmRzb19iYXNlLgo+ID4gPiA+
-ID4gKwkgKi8KPiA+ID4gPiA+ICsJaWYgKG9sZF9zdGFydCA9PSBtbS0+Y29udGV4dC52ZHNvX2Jh
-c2UpCj4gPiA+ID4gPiArCQltbS0+Y29udGV4dC52ZHNvX2Jhc2UgPSBuZXdfc3RhcnQ7Cj4gPiA+
-ID4gPiArfQo+ID4gPiA+IAo+ID4gPiA+IG1yZW1hcCgpIGRvZXNuJ3QgYWxsb3cgbW92aW5nIG11
-bHRpcGxlIHZtYXMsIGJ1dCBpdCBhbGxvd3MgdGhlIAo+ID4gPiA+IG1vdmVtZW50IG9mIG11bHRp
-LXBhZ2Ugdm1hcyBhbmQgaXQgYWxzbyBhbGxvd3MgcGFydGlhbCBtcmVtYXAoKXMsIAo+ID4gPiA+
-IHdoZXJlIGl0IHdpbGwgc3BsaXQgdXAgYSB2bWEuCj4gPiA+IAo+ID4gPiBJLmUuIG1yZW1hcCgp
-IHN1cHBvcnRzIHRoZSBzaHJpbmtpbmcgKGFuZCBncm93aW5nKSBvZiB2bWFzLiBJbiB0aGF0IAo+
-ID4gPiBjYXNlIG1yZW1hcCgpIHdpbGwgdW5tYXAgdGhlIGVuZCBvZiB0aGUgdm1hIGFuZCB3aWxs
-IHNocmluayB0aGUgCj4gPiA+IHJlbWFpbmluZyB2RFNPIHZtYS4KPiA+ID4gCj4gPiA+IERvZXNu
-J3QgdGhhdCByZXN1bHQgaW4gYSBub24td29ya2luZyB2RFNPIHRoYXQgc2hvdWxkIHplcm8gb3V0
-IAo+ID4gPiB2ZHNvX2Jhc2U/Cj4gPiAKPiA+IFJpZ2h0LiBOb3cgd2UgY2FuJ3QgY29tcGxldGVs
-eSBwcmV2ZW50IHRoZSB1c2VyIGZyb20gc2hvb3RpbmcgaXRzZWxmIAo+ID4gaW4gdGhlIGZvb3Qg
-SSBzdXBwb3NlLCB0aG91Z2ggdGhlcmUgaXMgYSBsZWdpdCB1c2FnZSBzY2VuYXJpbyB3aGljaCAK
-PiA+IGlzIHRvIG1vdmUgdGhlIHZEU08gYXJvdW5kIHdoaWNoIGl0IHdvdWxkIGJlIG5pY2UgdG8g
-c3VwcG9ydC4gSSAKPiA+IHRoaW5rIGl0J3MgcmVhc29uYWJsZSB0byBwdXQgdGhlIG9udXMgb24g
-dGhlIHVzZXIgaGVyZSB0byBkbyB0aGUgCj4gPiByaWdodCB0aGluZy4KPiAKPiBJIGFyZ3VlIHdl
-IHNob3VsZCB1c2UgdGhlIHJpZ2h0IGNvbmRpdGlvbiB0byBjbGVhciB2ZHNvX2Jhc2U6IGlmIHRo
-ZSAKPiB2RFNPIGdldHMgYXQgbGVhc3QgcGFydGlhbGx5IHVubWFwcGVkLiBPdGhlcndpc2UgdGhl
-cmUncyBsaXR0bGUgcG9pbnQgCj4gaW4gdGhlIHdob2xlIHBhdGNoOiBlaXRoZXIgY29ycmVjdGx5
-IHRyYWNrIHdoZXRoZXIgdGhlIHZEU08gaXMgT0ssIG9yIAo+IGRvbid0IC4uLgoKV2VsbCwgaWYg
-d2UgYXJlIGdvaW5nIHRvIGNsZWFyIGl0IGF0IGFsbCB5ZXMsIHdlIHNob3VsZCBwcm9iYWJseSBi
-ZSBhCmJpdCBzbWFydGVyIGFib3V0IGl0LiBNeSBwb2ludCBob3dldmVyIHdhcyB3ZSBwcm9iYWJs
-eSBkb24ndCBuZWVkIHRvIGJlCnN1cGVyIHJvYnVzdCBhYm91dCBkZWFsaW5nIHdpdGggYW55IGNy
-YXp5IHNjZW5hcmlvIHVzZXJzcGFjZSBtaWdodApjb25jZWl2ZS4KCj4gVGhlcmUncyBhbHNvIHRo
-ZSBxdWVzdGlvbiBvZiBtcHJvdGVjdCgpOiBjYW4gdXNlcnMgbXByb3RlY3QoKSB0aGUgdkRTTyAK
-PiBvbiBQb3dlclBDPwoKTm90aGluZyBwcmV2ZW50cyBpdC4gQnV0IGhlcmUgdG9vLCBJIHdvdWxk
-bid0IGJvdGhlci4gVGhlIHVzZXIgbWlnaHQgYmUKZG9pbmcgb24gcHVycG9zZSBleHBlY3Rpbmcg
-dG8gY2F0Y2ggdGhlIHJlc3VsdGluZyBzaWduYWwgZm9yIGV4YW1wbGUKKHRob3VnaCBhcmd1YWJs
-eSBhIHNpZ25hbCBmcm9tIGEgc2lncmV0dXJuIGZyYW1lIGlzIC4uLiBvZGQpLgoKQ2hlZXJzLApC
-ZW4uCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
-eHBwYy1kZXYgbWFpbGluZyBsaXN0CkxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnCmh0dHBz
-Oi8vbGlzdHMub3psYWJzLm9yZy9saXN0aW5mby9saW51eHBwYy1kZXY=
 
+* Laurent Dufour <ldufour@linux.vnet.ibm.com> wrote:
+
+> +{
+> +	unsigned long vdso_end, vdso_start;
+> +
+> +	if (!mm->context.vdso_base)
+> +		return;
+> +	vdso_start = mm->context.vdso_base;
+> +
+> +#ifdef CONFIG_PPC64
+> +	/* Calling is_32bit_task() implies that we are dealing with the
+> +	 * current process memory. If there is a call path where mm is not
+> +	 * owned by the current task, then we'll have need to store the
+> +	 * vDSO size in the mm->context.
+> +	 */
+> +	BUG_ON(current->mm != mm);
+> +	if (is_32bit_task())
+> +		vdso_end = vdso_start + (vdso32_pages << PAGE_SHIFT);
+> +	else
+> +		vdso_end = vdso_start + (vdso64_pages << PAGE_SHIFT);
+> +#else
+> +	vdso_end = vdso_start + (vdso32_pages << PAGE_SHIFT);
+> +#endif
+> +	vdso_end += (1<<PAGE_SHIFT); /* data page */
+> +
+> +	/* Check if the vDSO is in the range of the remapped area */
+> +	if ((vdso_start <= old_start && old_start < vdso_end) ||
+> +	    (vdso_start < old_end && old_end <= vdso_end)  ||
+> +	    (old_start <= vdso_start && vdso_start < old_end)) {
+> +		/* Update vdso_base if the vDSO is entirely moved. */
+> +		if (old_start == vdso_start && old_end == vdso_end &&
+> +		    (old_end - old_start) == (new_end - new_start))
+> +			mm->context.vdso_base = new_start;
+> +		else
+> +			mm->context.vdso_base = 0;
+> +	}
+> +}
+
+Oh my, that really looks awfully complex, as you predicted, and right 
+in every mremap() call.
+
+I'm fine with your original, imperfect, KISS approach. Sorry about 
+this detour ...
+
+Reviewed-by: Ingo Molnar <mingo@kernel.org>
+
+Thanks,
+
+	Ingo
