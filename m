@@ -1,71 +1,26 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Message-Id: <20150312152415.01E7C1A2423@localhost.localdomain>
-Date: Thu, 12 Mar 2015 16:24:14 +0100 (CET)
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <551D5FF5.7070503@suse.cz>
+Date: Thu, 02 Apr 2015 17:27:49 +0200
+From: Michal Marek <mmarek@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+References: <1427456618-23830-1-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1427456618-23830-1-git-send-email-yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-Subject: [PATCH 8/8] powerpc: get rid of CONFIG_8xx
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Vitaly Bordug <vitb@kernel.crashing.org>, scottwood@freescale.com
-Cc: linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, user-mode-linux-user@lists.sourceforge.net, linuxppc-dev@lists.ozlabs.org
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH 0/4] kbuild: refactor Makefile inclusion
+To: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kbuild@vger.kernel.org
+Cc: linux-mips@linux-mips.org, Tony Luck <tony.luck@intel.com>, x86@kernel.org, linux-ia64@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Russell King <linux@arm.linux.org.uk>, Richard Weinberger <richard@nod.at>, user-mode-linux-user@lists.sourceforge.net, Ingo Molnar <mingo@redhat.com>, Fenghua Yu <fenghua.yu@intel.com>, Ralf Baechle <ralf@linux-mips.org>, linux-arm-kernel@lists.infradead.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Two config options exist to define powerpc MPC8xx:
-* CONFIG_PPC_8xx
-* CONFIG_8xx
-In addition, CONFIG_PPC_8xx also defines CONFIG_CPM1 as
-communication co-processor
+On 2015-03-27 12:43, Masahiro Yamada wrote:
+> Masahiro Yamada (4):
+>   kbuild: use relative path to include Makefile
+>   kbuild: use relative path more to include Makefile
+>   kbuild: include $(src)/Makefile rather than $(obj)/Makefile
+>   kbuild: ia64: use $(src)/Makefile.gate rather than particular path
 
-arch/powerpc/platforms/Kconfig.cputype has contained the following
-comment about CONFIG_8xx item for some years:
-"# this is temp to handle compat with arch=ppc"
+Applied to kbuild.git#kbuild.
 
-It looks like not many places still have that old CONFIG_8xx used,
-so it is likely to be a good time to get rid of it completely ?
-
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-
----
- arch/powerpc/platforms/Kconfig.cputype | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index 6d481ff..beca3ce 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -32,7 +32,6 @@ config PPC_85xx
- config PPC_8xx
- 	bool "Freescale 8xx"
- 	select FSL_SOC
--	select 8xx
- 	select PPC_LIB_RHEAP
- 
- config 40x
-@@ -157,10 +156,6 @@ config TUNE_CELL
- 	  itself, so the resulting kernel will keep running on all other
- 	  machines.
- 
--# this is temp to handle compat with arch=ppc
--config 8xx
--	bool
--
- config E500
- 	select FSL_EMB_PERFMON
- 	select PPC_FSL_BOOK3E
--- 
-2.1.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Michal
 
