@@ -1,24 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1YhjxC-00059m-RU
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rmy@tigress.co.uk>) id 1YeI9d-0000yp-8v
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Apr 2015 19:23:30 +0000
-Received: from mail-vn0-f44.google.com ([209.85.216.44])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YhjxB-0001O3-RN
+	Sat, 04 Apr 2015 07:06:05 +0000
+Received: from [87.86.166.5] (helo=intgat.tigress.co.uk)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YeI9b-00025L-KV
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 13 Apr 2015 19:23:30 +0000
-Received: by vnbf1 with SMTP id f1so22966531vnb.5
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 13 Apr 2015 12:23:24 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1428072686.106641.7.camel@m3y3r.de>
+	Sat, 04 Apr 2015 07:06:05 +0000
+From: Ron Yorston <rmy@tigress.co.uk>
+Message-Id: <201504040650.t346ofGm029561@helium.internal.tigress.co.uk>
+Date: Sat, 04 Apr 2015 07:50:41 +0100
 References: <1428072686.106641.7.camel@m3y3r.de>
-Date: Mon, 13 Apr 2015 21:23:24 +0200
-Message-ID: <CAFLxGvxOU+gwLPTZCOQ90TLjDdWXppMJDJZsYGu3tQ5ZHfmd8Q@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
+In-Reply-To: <1428072686.106641.7.camel@m3y3r.de>
+MIME-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,28 +29,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v3] um: Print minimum physical memory
-	requirement
-To: Thomas Meyer <thomas@m3y3r.de>
-Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+ requirement
+To: user-mode-linux-devel@lists.sourceforge.net, thomas@m3y3r.de
 
-On Fri, Apr 3, 2015 at 4:51 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
-> Print a more sensible message about the minimum physical memory
-> requirement.
->
-> Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+Thomas Meyer wrote:
+>+		printf("Too few physical memory! Needed=%d, given=%d\n",
 
-All of your three patches are queued for 4.1! :-)
+I think 'Too little physical memory' would be more correct.  Or maybe
+'Insufficient physical memory'.
 
--- 
-Thanks,
-//richard
+Ron
 
 ------------------------------------------------------------------------------
-BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-Develop your own process in accordance with the BPMN 2 standard
-Learn Process modeling best practices with Bonita BPM through live exercises
-http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
