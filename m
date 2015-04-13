@@ -1,25 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1Ye0GZ-0007xa-CV
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1Yhl6f-0004lN-BJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Apr 2015 12:00:03 +0000
+	Mon, 13 Apr 2015 20:37:21 +0000
 Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Ye0GX-0006vW-6w
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Yhl6d-0003zo-D1
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Apr 2015 12:00:03 +0000
-Received: from [217.255.221.57] (helo=localhost.localdomain)
-	by www17.your-server.de with esmtpsa
-	(TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256) (Exim 4.80.1)
-	(envelope-from <thomas@m3y3r.de>) id 1Ye0GQ-0006ij-7y
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 03 Apr 2015 13:59:54 +0200
-Message-ID: <1428062392.106641.3.camel@m3y3r.de>
+	Mon, 13 Apr 2015 20:37:21 +0000
+References: <1428072686.106641.7.camel@m3y3r.de>
+	<CAFLxGvxOU+gwLPTZCOQ90TLjDdWXppMJDJZsYGu3tQ5ZHfmd8Q@mail.gmail.com>
+Mime-Version: 1.0 (1.0)
+In-Reply-To: <CAFLxGvxOU+gwLPTZCOQ90TLjDdWXppMJDJZsYGu3tQ5ZHfmd8Q@mail.gmail.com>
+Message-Id: <AA52462C-D116-4116-AB55-6299A8D91065@m3y3r.de>
 From: Thomas Meyer <thomas@m3y3r.de>
-Date: Fri, 03 Apr 2015 13:59:52 +0200
-Mime-Version: 1.0
+Date: Mon, 13 Apr 2015 22:37:11 +0200
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,60 +29,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v2] um: Print minimum physical memory requirement
-To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: Re: [uml-devel] [PATCH v3] um: Print minimum physical memory
+	requirement
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Print a more sensible message about the minimum physical memory
-requirement.
+Thanks Richard :-)
 
-Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
----
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index 549ecf3..f7af5e6 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -61,18 +61,26 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 			  unsigned long len, unsigned long long highmem)
- {
- 	unsigned long reserve = reserve_end - start;
--	int pfn = PFN_UP(__pa(reserve_end));
--	int delta = (len - reserve) >> PAGE_SHIFT;
--	int err, offset, bootmap_size;
-+	unsigned long pfn = PFN_UP(__pa(reserve_end));
-+	unsigned long delta = (len - reserve) >> PAGE_SHIFT;
-+	unsigned long offset, bootmap_size;
-+	int err, map_size;
-+
-+	offset = uml_reserved - uml_physmem;
-+	map_size = len - offset;
-+	if(map_size <= 0) {
-+		printf("Too few physical memory! Needed=%d, given=%d\n",
-+		       offset, len);
-+		exit(1);
-+	}
- 
- 	physmem_fd = create_mem_file(len + highmem);
- 
--	offset = uml_reserved - uml_physmem;
- 	err = os_map_memory((void *) uml_reserved, physmem_fd, offset,
--			    len - offset, 1, 1, 1);
-+			    map_size, 1, 1, 1);
- 	if (err < 0) {
- 		printf("setup_physmem - mapping %ld bytes of memory at 0x%p "
--		       "failed - errno = %d\n", len - offset,
-+		       "failed - errno = %d\n", map_size,
- 		       (void *) uml_reserved, err);
- 		exit(1);
- 	}
+With kind regards
+Thomas
 
-
+> Am 13.04.2015 um 21:23 schrieb Richard Weinberger <richard.weinberger@gmail.com>:
+> 
+>> On Fri, Apr 3, 2015 at 4:51 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
+>> Print a more sensible message about the minimum physical memory
+>> requirement.
+>> 
+>> Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+> 
+> All of your three patches are queued for 4.1! :-)
+> 
+> -- 
+> Thanks,
+> //richard
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
