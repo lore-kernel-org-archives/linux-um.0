@@ -1,76 +1,190 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <1429905520.157088.6.camel@m3y3r.de>
-From: Thomas Meyer <thomas@m3y3r.de>
-Date: Fri, 24 Apr 2015 21:58:40 +0200
-In-Reply-To: <5444DC3F.20601@nod.at>
-References: <E1Xg9cr-0007LK-S6@www17.your-server.de> <5444DC3F.20601@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-ID: <552EC316.9080802@nod.at>
+Date: Wed, 15 Apr 2015 21:59:18 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="BISn8IWxqm2p0N8ahAp3IligESLvkuMVJ"
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [uml-devel] [UM] Long loop in __getnsdayoftime() after resume
- from ram
-To: Richard Weinberger <richard@nod.at>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [GIT PULL] UML updates for 4.1
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am Montag, den 20.10.2014, 11:56 +0200 schrieb Richard Weinberger:
-> Am 20.10.2014 um 11:51 schrieb Thomas Meyer:
-> >> Hmm, does this always happen?
-> > 
-> > Yes, my single core system seems to trigger this every time after resume from ram.
-> 
-> What is your host kernel?
-> 
-> >> At least on my notebook it did not happen. I've started an UML yesterday 
-> >> suspended it and after more than 12h it worked fine today. 
-> >>
-> >> BTW: Do you see the issue also then freezing UML using the freezer cgroup?
-> > 
-> > I'm not sure what do you mean by this. Do I need to enable some special configs for this in the host or uml kernel?
-> 
-> Create on the host side a new freezer cgroup, put UML into it and freeze/thaw it.
-> i.e. mkdir /sys/fs/cgroup/freezer/uml ; echo <pid of a shell> >  /sys/fs/cgroup/freezer/uml/tasks.
-> In the said shell run UML and then freeze it using echo FROZEN > /sys/fs/cgroup/freezer/uml/freezer.state.
-> Later thaw it: echo THAWED > /sys/fs/cgroup/freezer/uml/freezer.state
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BISn8IWxqm2p0N8ahAp3IligESLvkuMVJ
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Sadly, this also happens with a cgroup freezer group :-(
+Linus,
 
-bt
-#0  __iter_div_u64_rem (remainder=<optimized out>, divisor=<optimized out>, dividend=14641577537827850536) at include/linux/math64.h:12
-7
-#1  timespec_add_ns (ns=<optimized out>, a=<optimized out>) at include/linux/time.h:235
-#2  __getnstimeofday64 (ts=0xffffffffffffffff) at kernel/time/timekeeping.c:658
-#3  0x0000000060098a00 in getnstimeofday64 (ts=<optimized out>) at kernel/time/timekeeping.c:678
-#4  0x0000000060098a4c in do_gettimeofday (tv=0xab359e50) at kernel/time/timekeeping.c:897
-#5  0x0000000060090d66 in SYSC_gettimeofday (tz=<optimized out>, tv=<optimized out>) at	kernel/time/time.c:107
-#6  SyS_gettimeofday (tv=-1, tz=2097152000) at kernel/time/time.c:102
-#7  0x0000000060032cf3 in handle_syscall (r=0xa39db9e8)	at arch/um/kernel/skas/syscall.c:35
-#8  0x000000006004a247 in handle_trap (local_using_sysemu=<optimized out>, regs=<optimized out>, pid=<optimized out>) at arch/um/os-Lin
-ux/skas/process.c:174
-#9  userspace (regs=0xa39db9e8)	at arch/um/os-Linux/skas/process.c:399
-#10 0x000000006002f125 in fork_handler () at arch/um/kernel/process.c:149
-#11 0x0000000000000000 in ?? ()
+the following changes since commit bc465aa9d045feb0e13b4a8f32cc33c1943f62=
+d6:
 
-It seems as only very few people running UML kernels and suspend their host systems...
+  Linux 4.0-rc5 (2015-03-22 16:50:21 -0700)
 
-Any ideas?
+are available in the git repository at:
 
-I'll go with this patch so long:
-diff --git a/include/linux/time.h b/include/linux/time.h
-index beebe3a..3486050 100644
---- a/include/linux/time.h
-+++ b/include/linux/time.h
-@@ -232,7 +232,7 @@ extern struct timeval ns_to_timeval(const s64 nsec);
-  */
- static __always_inline void timespec_add_ns(struct timespec *a, u64 ns)
- {
--       a->tv_sec += __iter_div_u64_rem(a->tv_nsec + ns, NSEC_PER_SEC, &ns);
-+       a->tv_sec += div_u64_rem(a->tv_nsec + ns, NSEC_PER_SEC, &ns);
-        a->tv_nsec = ns;
- }
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus=
+-4.1
 
-kind regards
-thomas
+for you to fetch changes up to fe205bdd1321f95f8f3c35d243ea7cb22af8fbe1:
 
+  um: Print minimum physical memory requirement (2015-04-13 21:17:46 +020=
+0)
+
+----------------------------------------------------------------
+* hostfs saw a face lifting
+* Old/broken stuff was removed (SMP, HIGHMEM, SKAS3/4)
+* Random cleanups and bug fixes
+
+----------------------------------------------------------------
+Andrey Ryabinin (1):
+      x86, UML: fix integer overflow in ELF_ET_DYN_BASE
+
+Richard Weinberger (22):
+      hostfs: hostfs_file_open: Switch to data locking model
+      hostfs: hostfs_file_open: Fix a fd leak in hostfs_file_open
+      hostfs: Allow fsync on directories
+      hostfs: Handle bogus st.mode
+      hostfs: Make hostfs_readpage more readable
+      hostfs: Add a BUG_ON to detect behavior changes of dentry_path_raw(=
+)
+      hostfs: Remove open coded strcpy()
+      hostfs: Use __getname() in follow_link
+      hostfs: Report append flag in ->show_options()
+      hostfs: Remove superfluous test in hostfs_open()
+      hostfs: hostfs_open: Reset open flags upon each retry
+      hostfs: Remove superfluous initializations in hostfs_open()
+      hostfs: Set page flags in hostfs_readpage() correctly
+      hostfs: Use page_offset()
+      hostfs: No need to box and later unbox the file mode
+      um: Remove dead code from stacktrace
+      um: Remove ia64 cruft
+      um: Remove ppc cruft
+      um: Remove SKAS3/4 support
+      um: Remove broken SMP support
+      um: Remove broken highmem support
+      um: hostfs: Reduce number of syscalls in readdir
+
+Thomas Meyer (3):
+      um: add a kmsg_dumper
+      um: Move uml_postsetup in the init_thread stack
+      um: Print minimum physical memory requirement
+
+ arch/um/Kconfig.um                          |  42 -----
+ arch/um/Makefile-ia64                       |   1 -
+ arch/um/Makefile-ppc                        |   9 --
+ arch/um/include/asm/fixmap.h                |   4 -
+ arch/um/include/asm/pgtable.h               |   6 +-
+ arch/um/include/asm/processor-generic.h     |   8 -
+ arch/um/include/asm/smp.h                   |  26 ---
+ arch/um/include/shared/as-layout.h          |   1 +
+ arch/um/include/shared/os.h                 |   2 -
+ arch/um/include/shared/skas/proc_mm.h       |  44 -----
+ arch/um/include/shared/skas/skas.h          |   3 -
+ arch/um/include/shared/skas_ptrace.h        |  14 --
+ arch/um/kernel/Makefile                     |   4 +-
+ arch/um/kernel/irq.c                        |   3 -
+ arch/um/kernel/kmsg_dump.c                  |  43 +++++
+ arch/um/kernel/mem.c                        |  66 --------
+ arch/um/kernel/physmem.c                    |  41 ++++-
+ arch/um/kernel/process.c                    |  11 --
+ arch/um/kernel/ptrace.c                     |  32 ----
+ arch/um/kernel/reboot.c                     |  35 ++--
+ arch/um/kernel/skas/mmu.c                   |  68 +++-----
+ arch/um/kernel/skas/process.c               |  31 +---
+ arch/um/kernel/smp.c                        | 238 ----------------------=
+------
+ arch/um/kernel/sysrq.c                      |   6 +-
+ arch/um/kernel/trap.c                       |   2 +-
+ arch/um/kernel/um_arch.c                    |  67 ++------
+ arch/um/os-Linux/process.c                  |  16 --
+ arch/um/os-Linux/skas/mem.c                 | 100 ++----------
+ arch/um/os-Linux/skas/process.c             | 202 ++++++----------------=
+-
+ arch/um/os-Linux/start_up.c                 | 154 ------------------
+ arch/um/sys-ia64/Makefile                   |  11 --
+ arch/um/sys-ia64/sysdep/ptrace.h            |  16 --
+ arch/um/sys-ia64/sysdep/sigcontext.h        |  10 --
+ arch/um/sys-ia64/sysdep/skas_ptrace.h       |  22 ---
+ arch/um/sys-ia64/sysdep/syscalls.h          |  10 --
+ arch/um/sys-ppc/Makefile                    |  65 --------
+ arch/um/sys-ppc/asm/archparam.h             |   8 -
+ arch/um/sys-ppc/asm/elf.h                   |  51 ------
+ arch/um/sys-ppc/asm/processor.h             |  15 --
+ arch/um/sys-ppc/misc.S                      | 111 -------------
+ arch/um/sys-ppc/miscthings.c                |  42 -----
+ arch/um/sys-ppc/ptrace.c                    |  58 -------
+ arch/um/sys-ppc/ptrace_user.c               |  29 ----
+ arch/um/sys-ppc/shared/sysdep/ptrace.h      |  93 -----------
+ arch/um/sys-ppc/shared/sysdep/sigcontext.h  |  52 ------
+ arch/um/sys-ppc/shared/sysdep/skas_ptrace.h |  22 ---
+ arch/um/sys-ppc/shared/sysdep/syscalls.h    |  43 -----
+ arch/um/sys-ppc/sigcontext.c                |   4 -
+ arch/um/sys-ppc/sysrq.c                     |  33 ----
+ arch/x86/um/Makefile                        |   1 -
+ arch/x86/um/asm/barrier.h                   |  11 --
+ arch/x86/um/asm/elf.h                       |   2 +-
+ arch/x86/um/ldt.c                           | 227 ++++++----------------=
+----
+ arch/x86/um/shared/sysdep/faultinfo_32.h    |   3 -
+ arch/x86/um/shared/sysdep/faultinfo_64.h    |   3 -
+ arch/x86/um/shared/sysdep/skas_ptrace.h     |  22 ---
+ fs/hostfs/hostfs.h                          |   6 +-
+ fs/hostfs/hostfs_kern.c                     | 112 +++++++------
+ fs/hostfs/hostfs_user.c                     |  29 ++--
+ 59 files changed, 323 insertions(+), 2067 deletions(-)
+ delete mode 100644 arch/um/Makefile-ia64
+ delete mode 100644 arch/um/Makefile-ppc
+ delete mode 100644 arch/um/include/shared/skas/proc_mm.h
+ delete mode 100644 arch/um/include/shared/skas_ptrace.h
+ create mode 100644 arch/um/kernel/kmsg_dump.c
+ delete mode 100644 arch/um/kernel/smp.c
+ delete mode 100644 arch/um/sys-ia64/Makefile
+ delete mode 100644 arch/um/sys-ia64/sysdep/ptrace.h
+ delete mode 100644 arch/um/sys-ia64/sysdep/sigcontext.h
+ delete mode 100644 arch/um/sys-ia64/sysdep/skas_ptrace.h
+ delete mode 100644 arch/um/sys-ia64/sysdep/syscalls.h
+ delete mode 100644 arch/um/sys-ppc/Makefile
+ delete mode 100644 arch/um/sys-ppc/asm/archparam.h
+ delete mode 100644 arch/um/sys-ppc/asm/elf.h
+ delete mode 100644 arch/um/sys-ppc/asm/processor.h
+ delete mode 100644 arch/um/sys-ppc/misc.S
+ delete mode 100644 arch/um/sys-ppc/miscthings.c
+ delete mode 100644 arch/um/sys-ppc/ptrace.c
+ delete mode 100644 arch/um/sys-ppc/ptrace_user.c
+ delete mode 100644 arch/um/sys-ppc/shared/sysdep/ptrace.h
+ delete mode 100644 arch/um/sys-ppc/shared/sysdep/sigcontext.h
+ delete mode 100644 arch/um/sys-ppc/shared/sysdep/skas_ptrace.h
+ delete mode 100644 arch/um/sys-ppc/shared/sysdep/syscalls.h
+ delete mode 100644 arch/um/sys-ppc/sigcontext.c
+ delete mode 100644 arch/um/sys-ppc/sysrq.c
+ delete mode 100644 arch/x86/um/shared/sysdep/skas_ptrace.h
+
+
+--BISn8IWxqm2p0N8ahAp3IligESLvkuMVJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJVLsMWAAoJEPmeIjfg4UaamqsQAILEpb20tUwL2hXEc5EtCqVy
+srzAwNx1Y6VABEvP4ucXsEJzWbJlQHljfoAql6VwHf3nvTlflq7KCvC0zw+g1cyn
+ee6G4jV/rMUZVKvcdeaXZ38wyQPUN+lbDZslXxQL8KShocXfsBDQ5m7/QIqEQyAV
+V6A+kgjs5QNZTkwo5i8v22Ds9UKsuVye63KTTUQx+PyFR4liqUcByPFBOYNRaaS/
+jJBK0h8AQmlNy4AC2fAx31BIyshuyMW+9xyRxWB2aFhz4DJHf+Ml/19psdc8qeFi
+hT5hjyfs6UmjCPCjOvnxd+fp6UqbpF0DVv3sy7nupkPf5pEZhe86kokNDlelBmCg
+ALJeD1b0wF515fuBObMNc//0Ko9Fx7eleqL+QPkzWDNUNxmWBKOJ1eJ8nysGQge9
+4VapDSE5vWFkYMdb4dRvu+FqBqfGXk5GQhQOpk2q6e801O/1VXI7wHkXjz3ECW4A
+oqUmeqGgcwjS79eTVQEOtJZHb+ZUFtQruRff8EXXxIhYWfI+F05xpxIazSjrP54s
+MryRTcfyGY5WzQTM7x8Ql7RrWRTrCQ/SJIj4+C55a82qezbcLi9xU75hYVK3OG5y
+NtDYJGOhuP4ICkyDodk7KCuOjbkfQvWiWEnmAu16C0GHOOfYnF+AadDwpzuB75XT
+PDELYEU0c3cxF43AEFbN
+=Gcxe
+-----END PGP SIGNATURE-----
+
+--BISn8IWxqm2p0N8ahAp3IligESLvkuMVJ--
