@@ -1,26 +1,38 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <551D5FF5.7070503@suse.cz>
-Date: Thu, 02 Apr 2015 17:27:49 +0200
-From: Michal Marek <mmarek@suse.cz>
 MIME-Version: 1.0
-References: <1427456618-23830-1-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1427456618-23830-1-git-send-email-yamada.masahiro@socionext.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH 0/4] kbuild: refactor Makefile inclusion
-To: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kbuild@vger.kernel.org
-Cc: linux-mips@linux-mips.org, Tony Luck <tony.luck@intel.com>, x86@kernel.org, linux-ia64@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>, "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Russell King <linux@arm.linux.org.uk>, Richard Weinberger <richard@nod.at>, user-mode-linux-user@lists.sourceforge.net, Ingo Molnar <mingo@redhat.com>, Fenghua Yu <fenghua.yu@intel.com>, Ralf Baechle <ralf@linux-mips.org>, linux-arm-kernel@lists.infradead.org
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <55325CA3.8060506@gmx.de>
+References: <55325CA3.8060506@gmx.de>
+Date: Sun, 19 Apr 2015 14:25:32 +0200
+Message-ID: <CAMuHMdWeN38RwpxR6xzGpcMBaxjUP9+R6dPn6L-3hBEtGcTqqw@mail.gmail.com>
+Subject: Re: [uml-devel] UML specific or just a generic 4.0.x glitch :
+ kernel/time/Kconfig:157:warning: range is invalid ?
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+To: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
+Cc: UML devel <user-mode-linux-devel@lists.sourceforge.net>, Paul McKenney <paulmck@linux.vnet.ibm.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 2015-03-27 12:43, Masahiro Yamada wrote:
-> Masahiro Yamada (4):
->   kbuild: use relative path to include Makefile
->   kbuild: use relative path more to include Makefile
->   kbuild: include $(src)/Makefile rather than $(obj)/Makefile
->   kbuild: ia64: use $(src)/Makefile.gate rather than particular path
+On Sat, Apr 18, 2015 at 3:31 PM, Toralf F=C3=B6rster <toralf.foerster@gmx.d=
+e> wrote:
+> tfoerste@t44 ~/devel/linux $ make ARCH=3Dum linux -j3
+> scripts/kconfig/conf  --silentoldconfig arch/x86/um/Kconfig
+> kernel/time/Kconfig:157:warning: range is invalid
 
-Applied to kbuild.git#kbuild.
+This is not UML-specific. It happens on all UP-only architectures, which
+includes UML since commit 28fa468f5316 ("um: Remove broken SMP support").
 
-Michal
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
