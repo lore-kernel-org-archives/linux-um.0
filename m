@@ -1,104 +1,84 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1YmcFt-00062N-9S
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Apr 2015 06:10:57 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1YmcFr-0001Wv-O2
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Apr 2015 06:10:57 +0000
-Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
-	helo=falkor.sigsegv.cx) by ivanoab4.miniserver.com with esmtps
-	(TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1Ymbtt-0007yD-AW
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Apr 2015 05:48:13 +0000
-Received: from wyvern.kot-begemot.co.uk ([192.168.3.72])
-	by falkor.sigsegv.cx with esmtpsa (TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128)
-	(Exim 4.80) (envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1Ymbts-0006zr-Pn for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 27 Apr 2015 06:48:12 +0100
-Message-ID: <553DCD8F.7030007@kot-begemot.co.uk>
-Date: Mon, 27 Apr 2015 06:47:59 +0100
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <553D51F1.9010900@nod.at>
+Date: Sun, 26 Apr 2015 23:00:33 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-References: <E1Xg9cr-0007LK-S6@www17.your-server.de>
-	<5444DC3F.20601@nod.at>		<1429905520.157088.6.camel@m3y3r.de>		<CAFLxGvxq900TTuJ1jAfNx3xTrUTbE3vZkMZ_H=FvsPg3eck9ww@mail.gmail.com>	<1430081853.603436.7.camel@m3y3r.de>
-	<553D51F1.9010900@nod.at>
-In-Reply-To: <553D51F1.9010900@nod.at>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+References: <E1Xg9cr-0007LK-S6@www17.your-server.de> <5444DC3F.20601@nod.at>	 <1429905520.157088.6.camel@m3y3r.de>	 <CAFLxGvxq900TTuJ1jAfNx3xTrUTbE3vZkMZ_H=FvsPg3eck9ww@mail.gmail.com> <1430081853.603436.7.camel@m3y3r.de>
+In-Reply-To: <1430081853.603436.7.camel@m3y3r.de>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [uml-devel] [UM] Long loop in __getnsdayoftime() after resume
  from ram
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Thomas Meyer <thomas@m3y3r.de>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 26/04/15 22:00, Richard Weinberger wrote:
->
->>> Can you give the attached patch a try?
->>> Let's see if it proves my theory.
->>> Looks like UML's clocksource needs fixing.
->> Hi Richard,
+Hi!
+
+Am 26.04.2015 um 22:57 schrieb Thomas Meyer:
+> Am Sonntag, den 26.04.2015, 20:32 +0200 schrieb Richard Weinberger:
+>> On Fri, Apr 24, 2015 at 9:58 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
+>>> Am Montag, den 20.10.2014, 11:56 +0200 schrieb Richard Weinberger:
+>>>> Am 20.10.2014 um 11:51 schrieb Thomas Meyer:
+>>>>>> Hmm, does this always happen?
+>>>>>
+>>>>> Yes, my single core system seems to trigger this every time after resume from ram.
+>>>>
+>>>> What is your host kernel?
+>>>>
+>>>>>> At least on my notebook it did not happen. I've started an UML yesterday
+>>>>>> suspended it and after more than 12h it worked fine today.
+>>>>>>
+>>>>>> BTW: Do you see the issue also then freezing UML using the freezer cgroup?
+>>>>>
+>>>>> I'm not sure what do you mean by this. Do I need to enable some special configs for this in the host or uml kernel?
+>>>>
+>>>> Create on the host side a new freezer cgroup, put UML into it and freeze/thaw it.
+>>>> i.e. mkdir /sys/fs/cgroup/freezer/uml ; echo <pid of a shell> >  /sys/fs/cgroup/freezer/uml/tasks.
+>>>> In the said shell run UML and then freeze it using echo FROZEN > /sys/fs/cgroup/freezer/uml/freezer.state.
+>>>> Later thaw it: echo THAWED > /sys/fs/cgroup/freezer/uml/freezer.state
+>>>>
+>>>
+>>> Sadly, this also happens with a cgroup freezer group :-(
+>>>
+>>> bt
+>>> #0  __iter_div_u64_rem (remainder=<optimized out>, divisor=<optimized out>, dividend=14641577537827850536) at include/linux/math64.h:12
+>>> 7
+>>> #1  timespec_add_ns (ns=<optimized out>, a=<optimized out>) at include/linux/time.h:235
+>>> #2  __getnstimeofday64 (ts=0xffffffffffffffff) at kernel/time/timekeeping.c:658
+>>> #3  0x0000000060098a00 in getnstimeofday64 (ts=<optimized out>) at kernel/time/timekeeping.c:678
+>>> #4  0x0000000060098a4c in do_gettimeofday (tv=0xab359e50) at kernel/time/timekeeping.c:897
+>>> #5  0x0000000060090d66 in SYSC_gettimeofday (tz=<optimized out>, tv=<optimized out>) at kernel/time/time.c:107
+>>> #6  SyS_gettimeofday (tv=-1, tz=2097152000) at kernel/time/time.c:102
+>>> #7  0x0000000060032cf3 in handle_syscall (r=0xa39db9e8) at arch/um/kernel/skas/syscall.c:35
+>>> #8  0x000000006004a247 in handle_trap (local_using_sysemu=<optimized out>, regs=<optimized out>, pid=<optimized out>) at arch/um/os-Lin
+>>> ux/skas/process.c:174
+>>> #9  userspace (regs=0xa39db9e8) at arch/um/os-Linux/skas/process.c:399
+>>> #10 0x000000006002f125 in fork_handler () at arch/um/kernel/process.c:149
+>>> #11 0x0000000000000000 in ?? ()
+>>>
+>>> It seems as only very few people running UML kernels and suspend their host systems...
+>>>
+>>> Any ideas?
 >>
->> I did run this for an hour and did 4 suspend/resume cycles and it seems
->> not to hang any more!
-> Yay!
-> BTW: Changing the host's time should also work for testing...
->
->> I'll test your other patch the next week, but AFAIU using clock_gettime
->> should solve this hangs in a sane way.
-> Yep. I have no idea why UML is currently using gettimeofday() as clocksource,
-> this is completely bogus. ;-\
+>> Can you give the attached patch a try?
+>> Let's see if it proves my theory.
+>> Looks like UML's clocksource needs fixing.
+> 
+> Hi Richard,
+> 
+> I did run this for an hour and did 4 suspend/resume cycles and it seems
+> not to hang any more!
 
-It is even more bogus than you think - read time.c, it is using itimer
-on the virtual clock for all timers for extra spice so the timers are
-dependent on how much cpu it uses at any given time.
+Yay!
+BTW: Changing the host's time should also work for testing...
 
-It does not need to be - I wrote a patchset for it to use posix timers
-and CLOCK_MONOTONIC. It went into Richard's queue ~ a year ago along
-with an epoll based IRQ controller and some vNIC drivers.
+> I'll test your other patch the next week, but AFAIU using clock_gettime
+> should solve this hangs in a sane way.
 
-Have not heard of it since.
+Yep. I have no idea why UML is currently using gettimeofday() as clocksource,
+this is completely bogus. ;-\
 
-A.
-
->
-> Thanks,
-> //richard
->
-> ------------------------------------------------------------------------------
-> One dashboard for servers and applications across Physical-Virtual-Cloud 
-> Widest out-of-the-box monitoring support with 50+ applications
-> Performance metrics, stats and reports that give you Actionable Insights
-> Deep dive visibility with transaction tracing using APM Insight.
-> http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
-> _______________________________________________
-> User-mode-linux-devel mailing list
-> User-mode-linux-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
->
-
-
-------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Thanks,
+//richard
