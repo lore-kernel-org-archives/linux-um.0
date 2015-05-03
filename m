@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1YpJ9S-0003tt-2p
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1Yowld-0002fo-BK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 May 2015 16:23:26 +0000
+	Sun, 03 May 2015 16:29:21 +0000
 Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1YpJ9N-0006oL-Tl
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1YowlZ-0000Ch-Lu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 May 2015 16:23:26 +0000
-Message-ID: <55479CD6.2000000@kot-begemot.co.uk>
-Date: Mon, 04 May 2015 17:22:46 +0100
+	Sun, 03 May 2015 16:29:21 +0000
+Message-ID: <55464CCA.5070802@kot-begemot.co.uk>
+Date: Sun, 03 May 2015 17:28:58 +0100
 From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 MIME-Version: 1.0
 References: <1430560088.603436.25.camel@m3y3r.de>	
@@ -36,15 +36,20 @@ Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
 Hi Thomas,
 
-     I read it and like it except idle sleep. See my comments inline. I 
-killed that nanosleep quite on purpose :)
+I need to read it in detail - this is based on quickly scanning through it.
 
-     With what you did to the tramp the issue of userspace stalling 
-should go away by the way (in theory). I think that it will still show a 
-very HZ behavior, but IMHO that cannot be helped at this stage.
+Based on my "experimental" notes, if you do not have a periodic timer 
+setup in that part you have commented and marked as FIXME userspace at 
+some point hangs (at least used to in 2.6.31 to 3.4, I have not tried 
+later).
+
+If you have managed to fix it somewhere else, congrats. If 4.x does not 
+do that any more - excellent too.
+
+I will read it properly on the plane (travelling) tomorrow and reply 
+sometimes on Tue.
 
 A.
-
 
 On 03/05/15 16:46, Thomas Meyer wrote:
 > Am Samstag, den 02.05.2015, 12:08 +0100 schrieb Anton Ivanov:
@@ -278,27 +283,6 @@ On 03/05/15 16:46, Thomas Meyer wrote:
 > -	idle_sleep(nsecs);
 > +
 > +	//WHAT?
-
-The way idle sleep was originally implemented is by setting a nanosleep 
-for nsecs until the next expected timer firing. After that the sleep 
-routine used to generated a timer interrupt.
-
-It was killing two ducks with one shot - the original timer is based on 
-VTALRM and virtual clock. So if you are idle enough to go into sleep you 
-cannot rely on the signal from itimer (as this is dependent on your CPU 
-usage) to wake you up on time. In fact, you are never going to wake up.
-
-Setting a nano-sleep dealt with both problems - idle sleeping and waking 
-up on time as expressed in absolute wall clock.
-
-If your wall clock is no longer running off VIRTUAL and is now off 
-MONOTONIC you do not need to do this. You just go to sleep without 
-disabling the next timer interrupt, the next timer interrupt happens on 
-schedule (as it is now off the right clock), you wake up from sleep. Two 
-syscalls less, same effect.
-
-
-
 > +	/* there is no benefit whatsoever in disabling a pending
 > +	 * hrtimer and setting a nanowait for the same value instead
 > +	 * so we do timer disable + wait only for the tracing one here
@@ -307,11 +291,6 @@ syscalls less, same effect.
 > +	nsecs = os_timer_disable();
 > +	os_idle_sleep(nsecs);
 > +	os_timer_set_interval(NULL);
-
-This is wrong as nsec is time to next timer firing. You just used two 
-syscalls to achieve the same effect as leaving the timer lapse while 
-going to sleep. See above.
-
 >   	local_irq_enable();
 >   }
 >   
@@ -332,10 +311,6 @@ going to sleep. See above.
 > +//			    (long) &data->timer, 0);
 > +//	if (err)
 > +//		goto out;
-
-Beats me - if you do not do it, userspace stalls. Though I see you do it 
-now in the tramp. I need to test that :)
-
 >   
 >   	remap_stack(data->fd, data->offset);
 >   	goto done;
@@ -820,14 +795,6 @@ now in the tramp. I need to test that :)
 > -				now = os_nsecs();
 > -				if (now < nsecs)
 > +			case SIGUSR2:
-
-We need to look into this one - it was here because VTALRM can produce a 
-significant difference between the time the kernel one fires and the 
-userspace fires. If the kernel one uses MONOTONIC to an exact time and 
-the userspace uses MONOTONIC to pace it to firings from "interval" sets 
-you end up with HZ scheduling and HZ timer precision instead of the 
-scheduler and userspace timers as we know it in today's Linux.
-
 > +				/* only process the timer tick from userspace, if the kernel
 > +				 * timer is not finished yet */
 > +				if (nsecs < os_nsecs()) {
