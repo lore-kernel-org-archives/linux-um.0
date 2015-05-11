@@ -1,20 +1,33 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1Yrrhe-0003tu-0H
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1YrrYD-0004rA-KE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 May 2015 17:41:18 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Yrrhc-00025M-5G
+	Mon, 11 May 2015 17:31:33 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1YrrYC-0005VX-JB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 May 2015 17:41:17 +0000
-Date: Mon, 11 May 2015 19:41:01 +0200
-Message-ID: <8cb3239b-c06a-494b-b765-ee9c5edd5c8f@email.android.com>
-In-Reply-To: <5550E76D.2040107@kot-begemot.co.uk>
-From: Thomas Meyer <thomas@m3y3r.de>
+	Mon, 11 May 2015 17:31:33 +0000
+Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
+	helo=falkor.sigsegv.cx) by ivanoab4.miniserver.com with esmtps
+	(TLS1.2:DHE_RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1YrrY6-0008Js-55
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 May 2015 17:31:26 +0000
+Received: from monstrousnightmare.kot-begemot.co.uk ([192.168.3.80])
+	by falkor.sigsegv.cx with esmtp (Exim 4.80)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1YrrY5-0008Cr-Kp
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 May 2015 18:31:25 +0100
+Message-ID: <5550E76D.2040107@kot-begemot.co.uk>
+Date: Mon, 11 May 2015 18:31:25 +0100
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 MIME-Version: 1.0
+References: <672e7d23-295e-42eb-a92a-d13faa966927@email.android.com>
+	<5550E4E8.1090300@kot-begemot.co.uk>
+In-Reply-To: <5550E4E8.1090300@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,81 +37,76 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v6] um: Add a high resolution timer subsystem
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-QW0gMTEuMDUuMjAxNSA3OjMxIG5hY2htLiBzY2hyaWViIEFudG9uIEl2YW5vdiA8YW50b24uaXZh
-bm92QGtvdC1iZWdlbW90LmNvLnVrPjoKPgo+IE9uIDExLzA1LzE1IDE4OjIwLCBBbnRvbiBJdmFu
-b3Ygd3JvdGU6IAo+ID4gT24gMTEvMDUvMTUgMTg6MDAsIFRob21hcyBNZXllciB3cm90ZTogCj4g
-Pj4gSGksIAo+ID4+IAo+ID4+IG1heWJlIHRoZXJlIGlzIGEgYnVnIGluIGhvdyB0aGUgdGltZXJz
-IGFyZSBjcmVhdGVkIGZvciBhbGwgdXNlciBzcGFjZSBwcm9jZXNzZXMuIAo+ID4+IEluIHRoZSBs
-YXRlc3QgcGF0Y2ggSSB1c2Ugb3NfX3RpbWVyX3JlbWFpbiBmb3IgdGhlIGluaXRpYWwgaW50ZXJ2
-YWwuIAo+ID4+IFRoZSBpZGVhIHdhcyB0byBsYXVuY2ggYWxsIHRpbWVycyBhdCB0aGUgc2FtZSB0
-aW1lLiBCdXQgSSBub3cgdGhpbmsgdGhpcyBjYW4gbmV2ZXIgd29yayB1c2luZyByZWxhdGl2ZSB0
-aW1lcywgZXNwZWNpYWxseSB3aGVuIG9zX190aW1lcl9yZW1haW4gcmV0dXJucyAwLCB0aGVuIHRo
-ZSBuZXcgdGltZXIgaXMgbmV2ZXIgbGF1bmNoZWQuIAo+ID4gVGhhdCBpcyBub3QgYSBiYWQgaWRl
-YSwganVzdCByZXF1aXJlcyBhIG1vcmUgY29tcGxleCBjaGVjayBpbiBzZXR0aW5nIHVwIAo+ID4g
-aW50ZXJ2YWwgc28gaXQgaXMgcmVzZXQgdG8gZGVmYXVsdCB3aGVuIGEgemVybyB2YWx1ZSBvciB2
-YWx1ZSA+IEhaIGlzIAo+ID4gcGFzc2VkLiAKPiA+IAo+ID4gCj4gPj4gVGhhdCBtYXkgZXhwbGFp
-biB0aGUgaGFuZ3MgeW91IHNlZS4gCj4gPj7CoMKgwqAgWW91IGNvdWxkIHRyeSB0byByZXBsYWNl
-IG9zX190aW1lcl9yZW1haW4gd2l0aCB0aGUgY3VycmVudCBIWiB2YWx1ZSBpbiBuYW5vc2Vjb25k
-cy4gCj4gPiBJIGFtIGdvaW5nIHRvIGFkanVzdCB0aW1lLmMgaW5zdGVhZCBhcyBhYm92ZS4gCj4K
-PiBCb3RoIGFwcHJvYWNoZXMgZmFpbCAtIHRoZSBjaGVjayAodGhhdCBpcyBleHBlY3RlZCBhY3R1
-YWxseSwgSSBkaWQgbm90IAo+IHRoaW5rIHByb3Blcmx5IGhlcmUgLSBpdCBkb2VzIG5vdCBjb3Zl
-ciB0aGUgc3R1YiBpbiBrZXJuZWwvc2thcykgYW5kIHRoZSAKPiBzZXR0aW5nIG9mIGRhdGEgdG8g
-dGhlIGNvcnJlY3QgaW5pdGlhbCB2YWx1ZXMuIAo+Cj4gQWxzbywgaWYgaXQgd2FzIGp1c3Qgbm90
-IHN0YXJ0aW5nIHRpbWVycyBpdCB3b3VsZCBoYXZlIGJlZW4gcG9zc2libGUgdG8gCj4gYmVhdCB0
-aGUgcHJvY2VzcyB3aXRoIFVTUjIgb24gdGhlIGhlYWQgdW50aWwgaXRzIG1vcmFsZSBpbXByb3Zl
-cy4gV2VsbCwgCj4gIndoaWxlIHRydWU7IGRvIGtpbGwgLVVTUjIgUElEIDsgZG9uZSIgZG9lcyBu
-b3QgY2hhbmdlIHRoZSBiZWhhdmlvciwgaXQgCj4gc3RpbGwgaGFuZ3MgYW5kIGlzIHN0aWxsIHBv
-c3NpYmxlIHRvIHRlcm1pbmF0ZSB0aGUgZXJyYW50IHByb2Nlc3MgYnkgCj4gc2VuZGluZyBTSUdT
-RUdWIHRvIHRoZSBVTUwgdGhyZWFkIHdoaWNoIGlzIHNob3duIGFzIDEwMCUgQ1BVIGFuZCBpbiBS
-IHN0YXRlLiAKClllcywgc2VuZGluZyBVU1IyIHNob3VsZCBkbyB0aGUgc2FtZS4gQ29ycmVjdC4K
-Cj4KPiBQcm9ibGVtIGlzIHNvbWV3aGVyZSBlbHNlLiBJIGFtIHN1cnByaXNlZCBpdCB3b3JrZWQg
-Y29ycmVjdGx5IGluIHRoZSAKPiBvcmlnaW5hbCBvbmUgYXMgdGhlcmUgZm9yIDEwMCUgZmxhdCBD
-UFUgdXNhZ2UgaXQgc2hvdWxkIGhhdmUgY29udmVyZ2VkIAo+IHRvIGEgYmVoYXZpb3Igd2hpY2gg
-aXMgc2ltaWxhciB0byB3aGF0IHdlIGhhdmUgbm93LiAKCk1oaC4gU3RyYW5nZS4gQW55IGhpbnRz
-IGhvdyBJIGNhbiByZXByb2R1Y2UgdGhpcz8KCkkgbmVlZCB0byBzZWUgdGhlIHNhbWUgYmVoYXZp
-b3VyLCBpLmUuIHRoZSBoYW5nIG9uIG15IG1hY2hpbmUgdG8gYmVnaW4gdG8gdW5kZXJzdGFuZCB3
-aGF0IGlzIGdvaW5nIG9uIGhlcmUuCgpUaGFua3MgZm9yIHRlc3RpbmcgQW50b24uCgoKPgo+IEEu
-IAo+Cj4gPiAKPiA+IEEuIAo+ID4gCj4gPj4gS2luZCByZWdhcmRzIAo+ID4+IFRob21hZCAKPiA+
-PiAKPiA+PiBBIAo+ID4gW3NuaXBdIAo+ID4gCj4gPiBBLiAKPiA+IAo+ID4gLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tIAo+ID4gT25lIGRhc2hib2FyZCBmb3Igc2VydmVycyBhbmQgYXBwbGljYXRpb25z
-IGFjcm9zcyBQaHlzaWNhbC1WaXJ0dWFsLUNsb3VkIAo+ID4gV2lkZXN0IG91dC1vZi10aGUtYm94
-IG1vbml0b3Jpbmcgc3VwcG9ydCB3aXRoIDUwKyBhcHBsaWNhdGlvbnMgCj4gPiBQZXJmb3JtYW5j
-ZSBtZXRyaWNzLCBzdGF0cyBhbmQgcmVwb3J0cyB0aGF0IGdpdmUgeW91IEFjdGlvbmFibGUgSW5z
-aWdodHMgCj4gPiBEZWVwIGRpdmUgdmlzaWJpbGl0eSB3aXRoIHRyYW5zYWN0aW9uIHRyYWNpbmcg
-dXNpbmcgQVBNIEluc2lnaHQuIAo+ID4gaHR0cDovL2FkLmRvdWJsZWNsaWNrLm5ldC9kZG0vY2xr
-LzI5MDQyMDUxMDsxMTc1NjcyOTI7eSAKPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fIAo+ID4gVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlz
-dCAKPiA+IFVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQgCj4gPiBo
-dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGlu
-dXgtZGV2ZWwgCj4gPiAKPgo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIAo+IE9uZSBkYXNoYm9h
-cmQgZm9yIHNlcnZlcnMgYW5kIGFwcGxpY2F0aW9ucyBhY3Jvc3MgUGh5c2ljYWwtVmlydHVhbC1D
-bG91ZCAKPiBXaWRlc3Qgb3V0LW9mLXRoZS1ib3ggbW9uaXRvcmluZyBzdXBwb3J0IHdpdGggNTAr
-IGFwcGxpY2F0aW9ucyAKPiBQZXJmb3JtYW5jZSBtZXRyaWNzLCBzdGF0cyBhbmQgcmVwb3J0cyB0
-aGF0IGdpdmUgeW91IEFjdGlvbmFibGUgSW5zaWdodHMgCj4gRGVlcCBkaXZlIHZpc2liaWxpdHkg
-d2l0aCB0cmFuc2FjdGlvbiB0cmFjaW5nIHVzaW5nIEFQTSBJbnNpZ2h0LiAKPiBodHRwOi8vYWQu
-ZG91YmxlY2xpY2submV0L2RkbS9jbGsvMjkwNDIwNTEwOzExNzU2NzI5Mjt5IAo+IF9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fIAo+IFVzZXItbW9kZS1saW51
-eC1kZXZlbCBtYWlsaW5nIGxpc3QgCj4gVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldCAKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5m
-by91c2VyLW1vZGUtbGludXgtZGV2ZWwgCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpPbmUgZGFzaGJv
-YXJkIGZvciBzZXJ2ZXJzIGFuZCBhcHBsaWNhdGlvbnMgYWNyb3NzIFBoeXNpY2FsLVZpcnR1YWwt
-Q2xvdWQgCldpZGVzdCBvdXQtb2YtdGhlLWJveCBtb25pdG9yaW5nIHN1cHBvcnQgd2l0aCA1MCsg
-YXBwbGljYXRpb25zClBlcmZvcm1hbmNlIG1ldHJpY3MsIHN0YXRzIGFuZCByZXBvcnRzIHRoYXQg
-Z2l2ZSB5b3UgQWN0aW9uYWJsZSBJbnNpZ2h0cwpEZWVwIGRpdmUgdmlzaWJpbGl0eSB3aXRoIHRy
-YW5zYWN0aW9uIHRyYWNpbmcgdXNpbmcgQVBNIEluc2lnaHQuCmh0dHA6Ly9hZC5kb3VibGVjbGlj
-ay5uZXQvZGRtL2Nsay8yOTA0MjA1MTA7MTE3NTY3MjkyO3kKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcg
-bGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
-bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZl
-bAo=
+On 11/05/15 18:20, Anton Ivanov wrote:
+> On 11/05/15 18:00, Thomas Meyer wrote:
+>> Hi,
+>>
+>> maybe there is a bug in how the timers are created for all user space processes.
+>> In the latest patch I use os__timer_remain for the initial interval.
+>> The idea was to launch all timers at the same time. But I now think this can never work using relative times, especially when os__timer_remain returns 0, then the new timer is never launched.
+> That is not a bad idea, just requires a more complex check in setting up
+> interval so it is reset to default when a zero value or value > HZ is
+> passed.
+>
+>
+>> That may explain the hangs you see.
+>>    You could try to replace os__timer_remain with the current HZ value in nanoseconds.
+> I am going to adjust time.c instead as above.
+
+Both approaches fail - the check (that is expected actually, I did not 
+think properly here - it does not cover the stub in kernel/skas) and the 
+setting of data to the correct initial values.
+
+Also, if it was just not starting timers it would have been possible to 
+beat the process with USR2 on the head until its morale improves. Well, 
+"while true; do kill -USR2 PID ; done" does not change the behavior, it 
+still hangs and is still possible to terminate the errant process by 
+sending SIGSEGV to the UML thread which is shown as 100% CPU and in R state.
+
+Problem is somewhere else. I am surprised it worked correctly in the 
+original one as there for 100% flat CPU usage it should have converged 
+to a behavior which is similar to what we have now.
+
+A.
+
+>
+> A.
+>
+>> Kind regards
+>> Thomad
+>>
+>> A
+> [snip]
+>
+> A.
+>
+> ------------------------------------------------------------------------------
+> One dashboard for servers and applications across Physical-Virtual-Cloud
+> Widest out-of-the-box monitoring support with 50+ applications
+> Performance metrics, stats and reports that give you Actionable Insights
+> Deep dive visibility with transaction tracing using APM Insight.
+> http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
+
+
+------------------------------------------------------------------------------
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
