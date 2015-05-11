@@ -1,19 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1YzAwL-0003c8-DU
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YrwCD-0007Yj-5g
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 31 May 2015 21:38:41 +0000
+	Mon, 11 May 2015 22:29:09 +0000
 Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YzAwK-0006R6-LY for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 31 May 2015 21:38:41 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YrwCB-00058f-Ut for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 May 2015 22:29:09 +0000
 From: Richard Weinberger <richard@nod.at>
-Date: Sun, 31 May 2015 23:38:25 +0200
-Message-Id: <1433108305-9255-5-git-send-email-richard@nod.at>
-In-Reply-To: <1433108305-9255-1-git-send-email-richard@nod.at>
-References: <1433108305-9255-1-git-send-email-richard@nod.at>
+Date: Tue, 12 May 2015 00:28:50 +0200
+Message-Id: <1431383335-15315-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,34 +25,26 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 5/5] um: Fix mconsole dependency
-To: richard@nod.at
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] Rework UML's uaccess code
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 
-mconsole depends on CONFIG_PROC_FS.
+By reusing asm-generic/uaccess.h we can drop a lot of UML's
+ad-hoc uaccess code and make it much more straightforward.
+It uncovered also some header issues which got resolved.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/Kconfig.um | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/um/Kconfig.um b/arch/um/Kconfig.um
-index bd5459c..28a9885 100644
---- a/arch/um/Kconfig.um
-+++ b/arch/um/Kconfig.um
-@@ -46,6 +46,7 @@ config HOSTFS
- 
- config MCONSOLE
- 	bool "Management console"
-+	depends on PROC_FS
- 	default y
- 	help
-           The user mode linux management console is a low-level interface to
--- 
-1.8.4.5
-
+[PATCH 1/5] um: Cleanup mem_32/64.c headers
+[PATCH 2/5] um: Add asm/elf.h to vma.c
+[PATCH 3/5] um: Add uaccess.h to syscalls_64.c
+[PATCH 4/5] um: Add uaccess.h to ldt.c
+[PATCH 5/5] um: Rework uaccess code
 
 ------------------------------------------------------------------------------
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
