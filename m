@@ -1,21 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hwhilse@gmail.com>) id 1YwVt7-00015I-1a
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YrwCD-0004gg-7P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 May 2015 13:24:21 +0000
-Received: from mail-wi0-f178.google.com ([209.85.212.178])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YwVt3-0007RA-Df
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 May 2015 13:24:21 +0000
-Received: by wicmc15 with SMTP id mc15so22716606wic.1
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 24 May 2015 06:24:11 -0700 (PDT)
-From: Hans-Werner Hilse <hwhilse@gmail.com>
-Date: Sun, 24 May 2015 15:23:54 +0200
-Message-Id: <1432473834-26391-1-git-send-email-hwhilse@gmail.com>
+	Mon, 11 May 2015 22:29:09 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YrwCC-0005Wc-5N for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 May 2015 22:29:09 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Tue, 12 May 2015 00:28:52 +0200
+Message-Id: <1431383335-15315-3-git-send-email-richard@nod.at>
+In-Reply-To: <1431383335-15315-1-git-send-email-richard@nod.at>
+References: <1431383335-15315-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,34 +27,31 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] um: handle GCC 5.x like GCC 4.x
+Subject: [uml-devel] [PATCH 2/5] um: Add asm/elf.h to vma.c
 To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
 
-Compiler compatibility macros were conditionally defined based on
-the compiler version. The it tested __GNUC__, but compared it to
-a maximum value of 4, breaking compilation on now current GCC 5.x.
-Thus, the check is extended to check for version 4.x and beyond.
+um_vdso_addr is defined in asm/elf.h.
 
-Signed-off-by: Hans-Werner Hilse <hwhilse@gmail.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/include/shared/init.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/um/vdso/vma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/um/include/shared/init.h b/arch/um/include/shared/init.h
-index b3906f8..ecdec48 100644
---- a/arch/um/include/shared/init.h
-+++ b/arch/um/include/shared/init.h
-@@ -54,7 +54,7 @@ typedef void (*exitcall_t)(void);
- #endif
+diff --git a/arch/x86/um/vdso/vma.c b/arch/x86/um/vdso/vma.c
+index 916cda4..237c683 100644
+--- a/arch/x86/um/vdso/vma.c
++++ b/arch/x86/um/vdso/vma.c
+@@ -10,6 +10,7 @@
+ #include <linux/sched.h>
+ #include <linux/mm.h>
+ #include <asm/page.h>
++#include <asm/elf.h>
+ #include <linux/init.h>
  
- #else
--#if __GNUC__ == 4
-+#if __GNUC__ >= 4
- # define __used			__attribute__((__used__))
- #endif
- #endif
+ static unsigned int __read_mostly vdso_enabled = 1;
 -- 
-2.4.1
+1.8.4.5
 
 
 ------------------------------------------------------------------------------
