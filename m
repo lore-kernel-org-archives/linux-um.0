@@ -1,28 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stian@nixia.no>) id 1YxCzt-0003XW-Sr
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1YrwHh-0006Tt-Sw
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 May 2015 11:26:13 +0000
-Received: from [195.159.66.51] (helo=ramslauken.nlc.no)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YxCzr-0006J9-Ql for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 26 May 2015 11:26:13 +0000
-Received: from mail.nlc.no (ramslauken.nlc.no [195.159.66.51])
-	(Authenticated sender: stian@nixia.no)
-	by ramslauken.nlc.no (Postfix) with ESMTPA id 3384B1C76A9
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 26 May 2015 12:56:14 +0200 (CEST)
+	Mon, 11 May 2015 22:34:49 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YrwHg-0001TZ-FJ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 May 2015 22:34:49 +0000
+Message-ID: <55512E81.5080509@nod.at>
+Date: Tue, 12 May 2015 00:34:41 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Date: Tue, 26 May 2015 12:56:14 +0200
-From: stian@nixia.no
-In-Reply-To: <5550CE0F.40504@kot-begemot.co.uk>
-References: "\"<1431213268.603436.33.camel@m3y3r.de>	<CAFLxGvzjETKQ7EMF61WCcb3RBA4QZHdxA5dcx20QHwhwp0hbAg@mail.gmail.com>"
-	<3985DC9F-E8A3-431E-8A7F-B867DB0B99AF@m3y3r.de>"
-	<5550A5FB.4000204@brocade.com> <5550C54F.6040500@kot-begemot.co.uk>
-	<5550CE0F.40504@kot-begemot.co.uk>
-Message-ID: <6c5810675c786f846a68b600d63e46bb@nixia.no>
+References: <1431213268.603436.33.camel@m3y3r.de>
+	<CAFLxGvzjETKQ7EMF61WCcb3RBA4QZHdxA5dcx20QHwhwp0hbAg@mail.gmail.com>
+	<3985DC9F-E8A3-431E-8A7F-B867DB0B99AF@m3y3r.de>
+In-Reply-To: <3985DC9F-E8A3-431E-8A7F-B867DB0B99AF@m3y3r.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,20 +31,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v6] um: Add a high resolution timer subsystem
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Thomas Meyer <thomas@m3y3r.de>
+Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
->                  nsecs = timer.it_value.tv_sec *
->                      UM_NSEC_PER_SEC +
->                      timer.it_value.tv_usec *
->                      UM_NSEC_PER_USEC;
->                  nsecs += os_nsecs();
+Am 10.05.2015 um 16:34 schrieb Thomas Meyer:
+> 
+>> Am 10.05.2015 um 14:35 schrieb Richard Weinberger <richard.weinberger@gmail.com>:
+>>
+>>> On Sun, May 10, 2015 at 1:14 AM, Thomas Meyer <thomas@m3y3r.de> wrote:
+>>> Hi,
+>>>
+>>> Changes:
+>>> - also create posix timer in stub_clone_handler()
+>>> - incorporated antons remarks
+>>
+>> Hm, this patch does a *lot* more than the changelog says.
+> 
+> Hi, yes PATCH was probably the wrong keyword in the subject line. It should have been RFC.
+> I just wanted to have feedback of the current state of this patch/work.
+> 
+> I'm currently working on cleaning up the patch and switch from SIGUSR2 to SIGNALRM, which seems to be the natural thing for posix timers.
+> I will send this next patch as something that should be includable into the kernel, i.e. With correct description and signed off line and so on.
+> 
+> But feel free to have a look at v6 and give feedback.
 
-Not looking at the rest of the code, the first thing that comes to my 
-mind is that this very easy overflows if 32 bit multiplications are used 
-(tv_sec is usually 32bit and dictates the first multiplication unless 
-typecast is used).
+The timer stuff looks generally okay but please submit again as a clean patch series
+with one logical change per patch such that I can review it in depth. :-)
 
-Stian Skjelstad
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
