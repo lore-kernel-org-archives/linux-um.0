@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1YrwCD-0004gg-7P
+	(envelope-from <richard@nod.at>) id 1YrwCD-0004gl-Ef
 	for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 11 May 2015 22:29:09 +0000
 Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YrwCC-0005Wc-5N for user-mode-linux-devel@lists.sourceforge.net;
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YrwCC-0001By-MA for user-mode-linux-devel@lists.sourceforge.net;
 	Mon, 11 May 2015 22:29:09 +0000
 From: Richard Weinberger <richard@nod.at>
-Date: Tue, 12 May 2015 00:28:52 +0200
-Message-Id: <1431383335-15315-3-git-send-email-richard@nod.at>
+Date: Tue, 12 May 2015 00:28:53 +0200
+Message-Id: <1431383335-15315-4-git-send-email-richard@nod.at>
 In-Reply-To: <1431383335-15315-1-git-send-email-richard@nod.at>
 References: <1431383335-15315-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
@@ -27,29 +27,29 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 2/5] um: Add asm/elf.h to vma.c
+Subject: [uml-devel] [PATCH 3/5] um: Add uaccess.h to syscalls_64.c
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
 
-um_vdso_addr is defined in asm/elf.h.
+It's using put_user() and needs this header.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/x86/um/vdso/vma.c | 1 +
+ arch/x86/um/syscalls_64.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/um/vdso/vma.c b/arch/x86/um/vdso/vma.c
-index 916cda4..237c683 100644
---- a/arch/x86/um/vdso/vma.c
-+++ b/arch/x86/um/vdso/vma.c
-@@ -10,6 +10,7 @@
- #include <linux/sched.h>
- #include <linux/mm.h>
- #include <asm/page.h>
-+#include <asm/elf.h>
- #include <linux/init.h>
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index adb08eb..e655227 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -6,6 +6,7 @@
+  */
  
- static unsigned int __read_mostly vdso_enabled = 1;
+ #include <linux/sched.h>
++#include <linux/uaccess.h>
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <os.h>
+ 
 -- 
 1.8.4.5
 
