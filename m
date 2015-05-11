@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1YrwHh-0006Tt-Sw
+	(envelope-from <thomas@m3y3r.de>) id 1YrvAR-0004QW-QJ
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 May 2015 22:34:49 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YrwHg-0001TZ-FJ
+	Mon, 11 May 2015 21:23:15 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YrvAP-0007wW-W9
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 11 May 2015 22:34:49 +0000
-Message-ID: <55512E81.5080509@nod.at>
-Date: Tue, 12 May 2015 00:34:41 +0200
-From: Richard Weinberger <richard@nod.at>
+	Mon, 11 May 2015 21:23:15 +0000
+Date: Mon, 11 May 2015 23:22:55 +0200
+Message-ID: <36e3b03a-755f-4860-a8fb-8734f7c7d672@email.android.com>
+In-Reply-To: <5551061E.9080006@kot-begemot.co.uk>
+From: Thomas Meyer <thomas@m3y3r.de>
 MIME-Version: 1.0
-References: <1431213268.603436.33.camel@m3y3r.de>
-	<CAFLxGvzjETKQ7EMF61WCcb3RBA4QZHdxA5dcx20QHwhwp0hbAg@mail.gmail.com>
-	<3985DC9F-E8A3-431E-8A7F-B867DB0B99AF@m3y3r.de>
-In-Reply-To: <3985DC9F-E8A3-431E-8A7F-B867DB0B99AF@m3y3r.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,48 +24,109 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v6] um: Add a high resolution timer subsystem
-To: Thomas Meyer <thomas@m3y3r.de>
-Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Am 10.05.2015 um 16:34 schrieb Thomas Meyer:
-> 
->> Am 10.05.2015 um 14:35 schrieb Richard Weinberger <richard.weinberger@gmail.com>:
->>
->>> On Sun, May 10, 2015 at 1:14 AM, Thomas Meyer <thomas@m3y3r.de> wrote:
->>> Hi,
->>>
->>> Changes:
->>> - also create posix timer in stub_clone_handler()
->>> - incorporated antons remarks
->>
->> Hm, this patch does a *lot* more than the changelog says.
-> 
-> Hi, yes PATCH was probably the wrong keyword in the subject line. It should have been RFC.
-> I just wanted to have feedback of the current state of this patch/work.
-> 
-> I'm currently working on cleaning up the patch and switch from SIGUSR2 to SIGNALRM, which seems to be the natural thing for posix timers.
-> I will send this next patch as something that should be includable into the kernel, i.e. With correct description and signed off line and so on.
-> 
-> But feel free to have a look at v6 and give feedback.
-
-The timer stuff looks generally okay but please submit again as a clean patch series
-with one logical change per patch such that I can review it in depth. :-)
-
-Thanks,
-//richard
-
-------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+QW0gMTEuMDUuMjAxNSA5OjQyIG5hY2htLiBzY2hyaWViIEFudG9uIEl2YW5vdiA8YW50b24uaXZh
+bm92QGtvdC1iZWdlbW90LmNvLnVrPjoKPgo+IE9uIDExLzA1LzE1IDE4OjQxLCBUaG9tYXMgTWV5
+ZXIgd3JvdGU6IAo+ID4gQW0gMTEuMDUuMjAxNSA3OjMxIG5hY2htLiBzY2hyaWViIEFudG9uIEl2
+YW5vdiA8YW50b24uaXZhbm92QGtvdC1iZWdlbW90LmNvLnVrPjogCj4gPj4gT24gMTEvMDUvMTUg
+MTg6MjAsIEFudG9uIEl2YW5vdiB3cm90ZTogCj4gPj4+IE9uIDExLzA1LzE1IDE4OjAwLCBUaG9t
+YXMgTWV5ZXIgd3JvdGU6IAo+ID4+Pj4gSGksIAo+ID4+Pj4gCj4gPj4+PiBtYXliZSB0aGVyZSBp
+cyBhIGJ1ZyBpbiBob3cgdGhlIHRpbWVycyBhcmUgY3JlYXRlZCBmb3IgYWxsIHVzZXIgc3BhY2Ug
+cHJvY2Vzc2VzLiAKPiA+Pj4+IEluIHRoZSBsYXRlc3QgcGF0Y2ggSSB1c2Ugb3NfX3RpbWVyX3Jl
+bWFpbiBmb3IgdGhlIGluaXRpYWwgaW50ZXJ2YWwuIAo+ID4+Pj4gVGhlIGlkZWEgd2FzIHRvIGxh
+dW5jaCBhbGwgdGltZXJzIGF0IHRoZSBzYW1lIHRpbWUuIEJ1dCBJIG5vdyB0aGluayB0aGlzIGNh
+biBuZXZlciB3b3JrIHVzaW5nIHJlbGF0aXZlIHRpbWVzLCBlc3BlY2lhbGx5IHdoZW4gb3NfX3Rp
+bWVyX3JlbWFpbiByZXR1cm5zIDAsIHRoZW4gdGhlIG5ldyB0aW1lciBpcyBuZXZlciBsYXVuY2hl
+ZC4gCj4gPj4+IFRoYXQgaXMgbm90IGEgYmFkIGlkZWEsIGp1c3QgcmVxdWlyZXMgYSBtb3JlIGNv
+bXBsZXggY2hlY2sgaW4gc2V0dGluZyB1cCAKPiA+Pj4gaW50ZXJ2YWwgc28gaXQgaXMgcmVzZXQg
+dG8gZGVmYXVsdCB3aGVuIGEgemVybyB2YWx1ZSBvciB2YWx1ZSA+IEhaIGlzIAo+ID4+PiBwYXNz
+ZWQuIAo+ID4+PiAKPiA+Pj4gCj4gPj4+PiBUaGF0IG1heSBleHBsYWluIHRoZSBoYW5ncyB5b3Ug
+c2VlLiAKPiA+Pj4+wqDCoMKgwqDCoCBZb3UgY291bGQgdHJ5IHRvIHJlcGxhY2Ugb3NfX3RpbWVy
+X3JlbWFpbiB3aXRoIHRoZSBjdXJyZW50IEhaIHZhbHVlIGluIG5hbm9zZWNvbmRzLiAKPiA+Pj4g
+SSBhbSBnb2luZyB0byBhZGp1c3QgdGltZS5jIGluc3RlYWQgYXMgYWJvdmUuIAo+ID4+IEJvdGgg
+YXBwcm9hY2hlcyBmYWlsIC0gdGhlIGNoZWNrICh0aGF0IGlzIGV4cGVjdGVkIGFjdHVhbGx5LCBJ
+IGRpZCBub3QgCj4gPj4gdGhpbmsgcHJvcGVybHkgaGVyZSAtIGl0IGRvZXMgbm90IGNvdmVyIHRo
+ZSBzdHViIGluIGtlcm5lbC9za2FzKSBhbmQgdGhlIAo+ID4+IHNldHRpbmcgb2YgZGF0YSB0byB0
+aGUgY29ycmVjdCBpbml0aWFsIHZhbHVlcy4gCj4gPj4gCj4gPj4gQWxzbywgaWYgaXQgd2FzIGp1
+c3Qgbm90IHN0YXJ0aW5nIHRpbWVycyBpdCB3b3VsZCBoYXZlIGJlZW4gcG9zc2libGUgdG8gCj4g
+Pj4gYmVhdCB0aGUgcHJvY2VzcyB3aXRoIFVTUjIgb24gdGhlIGhlYWQgdW50aWwgaXRzIG1vcmFs
+ZSBpbXByb3Zlcy4gV2VsbCwgCj4gPj4gIndoaWxlIHRydWU7IGRvIGtpbGwgLVVTUjIgUElEIDsg
+ZG9uZSIgZG9lcyBub3QgY2hhbmdlIHRoZSBiZWhhdmlvciwgaXQgCj4gPj4gc3RpbGwgaGFuZ3Mg
+YW5kIGlzIHN0aWxsIHBvc3NpYmxlIHRvIHRlcm1pbmF0ZSB0aGUgZXJyYW50IHByb2Nlc3MgYnkg
+Cj4gPj4gc2VuZGluZyBTSUdTRUdWIHRvIHRoZSBVTUwgdGhyZWFkIHdoaWNoIGlzIHNob3duIGFz
+IDEwMCUgQ1BVIGFuZCBpbiBSIHN0YXRlLiAKPiA+IFllcywgc2VuZGluZyBVU1IyIHNob3VsZCBk
+byB0aGUgc2FtZS4gQ29ycmVjdC4gCj4gPiAKPiA+PiBQcm9ibGVtIGlzIHNvbWV3aGVyZSBlbHNl
+LiBJIGFtIHN1cnByaXNlZCBpdCB3b3JrZWQgY29ycmVjdGx5IGluIHRoZSAKPiA+PiBvcmlnaW5h
+bCBvbmUgYXMgdGhlcmUgZm9yIDEwMCUgZmxhdCBDUFUgdXNhZ2UgaXQgc2hvdWxkIGhhdmUgY29u
+dmVyZ2VkIAo+ID4+IHRvIGEgYmVoYXZpb3Igd2hpY2ggaXMgc2ltaWxhciB0byB3aGF0IHdlIGhh
+dmUgbm93LiAKPiA+IE1oaC4gU3RyYW5nZS4gQW55IGhpbnRzIGhvdyBJIGNhbiByZXByb2R1Y2Ug
+dGhpcz8gCj4gPiAKPiA+IEkgbmVlZCB0byBzZWUgdGhlIHNhbWUgYmVoYXZpb3VyLCBpLmUuIHRo
+ZSBoYW5nIG9uIG15IG1hY2hpbmUgdG8gYmVnaW4gdG8gdW5kZXJzdGFuZCB3aGF0IGlzIGdvaW5n
+IG9uIGhlcmUuIAo+Cj4gU3RhcnQgb2ZmIHdpdGggYSBEZWJpYW4gaW1hZ2Ugb2YgbGV0J3Mgc2F5
+IHdoZWV6eSBhbmQgaGl0IGl0IHdpdGggYSAKPiBkaXN0LXVwZ3JhZGUgdG8gdGhlIG5leHQgcmVs
+ZWFzZS4gVGhpcyBwcm9kdWNlcyBlbm91Z2ggSU8rQ1BVIGF0IHRoZSAKPiBzYW1lIHRpbWUgdG8g
+dHJpZ2dlciBpdC4gSSBnZXQgaXQgMTAwJSByZXByb2R1Y2libGUgZXZlcnkgdGltZSBpdCB0cmll
+cyAKPiB0byB1bnBhY2sgdGhlIGZpcnN0IGNvdXBsZSBvZiBwYWNrYWdlcy4gCgpPa2F5LCBJJ2xs
+IHRyeSB0aGF0IQoKPgo+IEkgdHJpZWQgdG8gdHJpZ2dlciBiYWNrdHJhY2VzIGJ1dCBjb3VsZCBu
+b3QgZ2V0IGFueXRoaW5nIGluZm9ybWF0aXZlLiAKPiBUaGUgb2xkIHRyaWNrIG9mIGhpdHRpbmcg
+dGhlIGtlcm5lbCB3aXRoIFNJR0lMTCB3aGljaCB3b3JrZWQgdmVyeSBuaWNlbHkgCj4gaW4gb2xk
+ZXIga2VybmVsIHZlcnNpb25zIG5vIGxvbmdlciB3b3JrcyA6KCAKCllvdSBtYXkgY2FuIHRyaWdn
+ZXIgYW4gYmFja3RyYWNlIHZpYSB1bWxfY29uc29sZS4KCj4KPiA+IAo+ID4gVGhhbmtzIGZvciB0
+ZXN0aW5nIEFudG9uLiAKPgo+IEkgd2lzaCBJIGhhZCBtb3JlIHRpbWUgYXQgdGhlIG1vbWVudCB0
+byBkZWJ1ZyBpdCBhbmQgZml4IGl0IDooIFdlIGFyZSAKPiBuZWFybHkgdGhlcmUgYW5kIGl0IGlz
+IHdvcnRoIGl0LiAKClllcywgc2FtZSBoZXJlLgpCdXQgd2Ugd2lsbCBmaW5pc2ggdGhpcyEKCj4K
+PiBBLiAKPgo+ID4gCj4gPiAKPiA+PiBBLiAKPiA+PiAKPiA+Pj4gQS4gCj4gPj4+IAo+ID4+Pj4g
+S2luZCByZWdhcmRzIAo+ID4+Pj4gVGhvbWFkIAo+ID4+Pj4gCj4gPj4+PiBBIAo+ID4+PiBbc25p
+cF0gCj4gPj4+IAo+ID4+PiBBLiAKPiA+Pj4gCj4gPj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAK
+PiA+Pj4gT25lIGRhc2hib2FyZCBmb3Igc2VydmVycyBhbmQgYXBwbGljYXRpb25zIGFjcm9zcyBQ
+aHlzaWNhbC1WaXJ0dWFsLUNsb3VkIAo+ID4+PiBXaWRlc3Qgb3V0LW9mLXRoZS1ib3ggbW9uaXRv
+cmluZyBzdXBwb3J0IHdpdGggNTArIGFwcGxpY2F0aW9ucyAKPiA+Pj4gUGVyZm9ybWFuY2UgbWV0
+cmljcywgc3RhdHMgYW5kIHJlcG9ydHMgdGhhdCBnaXZlIHlvdSBBY3Rpb25hYmxlIEluc2lnaHRz
+IAo+ID4+PiBEZWVwIGRpdmUgdmlzaWJpbGl0eSB3aXRoIHRyYW5zYWN0aW9uIHRyYWNpbmcgdXNp
+bmcgQVBNIEluc2lnaHQuIAo+ID4+PiBodHRwOi8vYWQuZG91YmxlY2xpY2submV0L2RkbS9jbGsv
+MjkwNDIwNTEwOzExNzU2NzI5Mjt5IAo+ID4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXyAKPiA+Pj4gVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcg
+bGlzdCAKPiA+Pj4gVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldCAK
+PiA+Pj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1t
+b2RlLWxpbnV4LWRldmVsIAo+ID4+PiAKPiA+PiAKPiA+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0g
+Cj4gPj4gT25lIGRhc2hib2FyZCBmb3Igc2VydmVycyBhbmQgYXBwbGljYXRpb25zIGFjcm9zcyBQ
+aHlzaWNhbC1WaXJ0dWFsLUNsb3VkIAo+ID4+IFdpZGVzdCBvdXQtb2YtdGhlLWJveCBtb25pdG9y
+aW5nIHN1cHBvcnQgd2l0aCA1MCsgYXBwbGljYXRpb25zIAo+ID4+IFBlcmZvcm1hbmNlIG1ldHJp
+Y3MsIHN0YXRzIGFuZCByZXBvcnRzIHRoYXQgZ2l2ZSB5b3UgQWN0aW9uYWJsZSBJbnNpZ2h0cyAK
+PiA+PiBEZWVwIGRpdmUgdmlzaWJpbGl0eSB3aXRoIHRyYW5zYWN0aW9uIHRyYWNpbmcgdXNpbmcg
+QVBNIEluc2lnaHQuIAo+ID4+IGh0dHA6Ly9hZC5kb3VibGVjbGljay5uZXQvZGRtL2Nsay8yOTA0
+MjA1MTA7MTE3NTY3MjkyO3kgCj4gPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18gCj4gPj4gVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdCAK
+PiA+PiBVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0IAo+ID4+IGh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51
+eC1kZXZlbCAKPgo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIAo+IE9uZSBkYXNoYm9hcmQgZm9y
+IHNlcnZlcnMgYW5kIGFwcGxpY2F0aW9ucyBhY3Jvc3MgUGh5c2ljYWwtVmlydHVhbC1DbG91ZCAK
+PiBXaWRlc3Qgb3V0LW9mLXRoZS1ib3ggbW9uaXRvcmluZyBzdXBwb3J0IHdpdGggNTArIGFwcGxp
+Y2F0aW9ucyAKPiBQZXJmb3JtYW5jZSBtZXRyaWNzLCBzdGF0cyBhbmQgcmVwb3J0cyB0aGF0IGdp
+dmUgeW91IEFjdGlvbmFibGUgSW5zaWdodHMgCj4gRGVlcCBkaXZlIHZpc2liaWxpdHkgd2l0aCB0
+cmFuc2FjdGlvbiB0cmFjaW5nIHVzaW5nIEFQTSBJbnNpZ2h0LiAKPiBodHRwOi8vYWQuZG91Ymxl
+Y2xpY2submV0L2RkbS9jbGsvMjkwNDIwNTEwOzExNzU2NzI5Mjt5IAo+IF9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fIAo+IFVzZXItbW9kZS1saW51eC1kZXZl
+bCBtYWlsaW5nIGxpc3QgCj4gVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdl
+Lm5ldCAKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2Vy
+LW1vZGUtbGludXgtZGV2ZWwgCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpPbmUgZGFzaGJvYXJkIGZv
+ciBzZXJ2ZXJzIGFuZCBhcHBsaWNhdGlvbnMgYWNyb3NzIFBoeXNpY2FsLVZpcnR1YWwtQ2xvdWQg
+CldpZGVzdCBvdXQtb2YtdGhlLWJveCBtb25pdG9yaW5nIHN1cHBvcnQgd2l0aCA1MCsgYXBwbGlj
+YXRpb25zClBlcmZvcm1hbmNlIG1ldHJpY3MsIHN0YXRzIGFuZCByZXBvcnRzIHRoYXQgZ2l2ZSB5
+b3UgQWN0aW9uYWJsZSBJbnNpZ2h0cwpEZWVwIGRpdmUgdmlzaWJpbGl0eSB3aXRoIHRyYW5zYWN0
+aW9uIHRyYWNpbmcgdXNpbmcgQVBNIEluc2lnaHQuCmh0dHA6Ly9hZC5kb3VibGVjbGljay5uZXQv
+ZGRtL2Nsay8yOTA0MjA1MTA7MTE3NTY3MjkyO3kKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApV
+c2VyLW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
