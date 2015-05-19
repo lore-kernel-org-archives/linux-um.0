@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1Yukg6-0001Df-Fs
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1YukXu-0004LC-Jm
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 May 2015 16:47:38 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Yukg5-0005kK-HB
+	Tue, 19 May 2015 16:39:10 +0000
+Received: from mail-vn0-f54.google.com ([209.85.216.54])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YukXt-0005Pb-Tr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 19 May 2015 16:47:38 +0000
-Message-ID: <555B691C.2010303@kot-begemot.co.uk>
-Date: Tue, 19 May 2015 17:47:24 +0100
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+	Tue, 19 May 2015 16:39:10 +0000
+Received: by vnbf62 with SMTP id f62so1526436vnb.7
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 19 May 2015 09:39:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <1431854739.603436.45.camel@m3y3r.de>	<555B62A9.9000902@kot-begemot.co.uk>
-	<CAFLxGvycaHXq52okh+nfihRqAm26uZG=Ax=G6=zfA5DwEJfDWw@mail.gmail.com>
-In-Reply-To: <CAFLxGvycaHXq52okh+nfihRqAm26uZG=Ax=G6=zfA5DwEJfDWw@mail.gmail.com>
+In-Reply-To: <555B62A9.9000902@kot-begemot.co.uk>
+References: <1431854739.603436.45.camel@m3y3r.de>
+	<555B62A9.9000902@kot-begemot.co.uk>
+Date: Tue, 19 May 2015 18:39:04 +0200
+Message-ID: <CAFLxGvycaHXq52okh+nfihRqAm26uZG=Ax=G6=zfA5DwEJfDWw@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,41 +33,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] um: Switch clocksource to hrtimers
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On 19/05/15 17:39, Richard Weinberger wrote:
-> On Tue, May 19, 2015 at 6:19 PM, Anton Ivanov
-> <anton.ivanov@kot-begemot.co.uk> wrote:
->> Same story.
->>
->> Overall works quite well, the moment I give it the "dselect upgrade
->> test" the userspace hangs.
->>
->> Kernel continues to work - forwarding, icmp, uml_mconsole are fine.
-> Do you know where it hangs?
-> Maybe the kernel does not get any scheduler tick and does not schedule a task..,
-
-Kernel continues to get ticks, timers increment, io also works.
-
-If I strace the kernel I see a mix of SIGALRM (or in the oder version 
--USR2), SIGIO and SIGCHLD. Nothing out of the ordinary.
-
-Uml mconsole works. I cannot get meaningful information because trying 
-to invoke backtraces I get "SIGSEGV in SIGSEGV handler" for all 
-processes. Memory looks OK too - 500MB+ free on a 1GB UML.
-
-Syncronous vs asynchronous FS does not change it so it is not a variety 
-of the writeout bug.
-
-If I could get a bt for the userspace task and/or its stub we could have 
-nailed it. I suspect it is spinning in skas/process.c for some reason. 
-No idea why, but it takes 100% CPU.
-
-A.
-
+On Tue, May 19, 2015 at 6:19 PM, Anton Ivanov
+<anton.ivanov@kot-begemot.co.uk> wrote:
+> Same story.
 >
+> Overall works quite well, the moment I give it the "dselect upgrade
+> test" the userspace hangs.
+>
+> Kernel continues to work - forwarding, icmp, uml_mconsole are fine.
 
+Do you know where it hangs?
+Maybe the kernel does not get any scheduler tick and does not schedule a task..,
+
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
