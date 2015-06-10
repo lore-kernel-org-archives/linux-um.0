@@ -1,21 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1Z4VhN-0006B8-20
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Jun 2015 14:49:17 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z4VhL-0001Hd-NI
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Jun 2015 14:49:17 +0000
-Message-ID: <557EE5E2.7080409@nod.at>
-Date: Mon, 15 Jun 2015 16:49:06 +0200
-From: Richard Weinberger <richard@nod.at>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1Z2nhs-0005fS-DJ
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Jun 2015 21:38:44 +0000
+Received: from mail-vn0-f68.google.com ([209.85.216.68])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z2nhr-0007OJ-Kh
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Jun 2015 21:38:44 +0000
+Received: by vnbg129 with SMTP id g129so6086852vnb.0
+	for <User-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 10 Jun 2015 14:38:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <1434379436-8301-1-git-send-email-firogm@gmail.com>
-In-Reply-To: <1434379436-8301-1-git-send-email-firogm@gmail.com>
+In-Reply-To: <5578aab4.c66d320a.18dd.57fbSMTPIN_ADDED_BROKEN@mx.google.com>
+References: <5578aab4.c66d320a.18dd.57fbSMTPIN_ADDED_BROKEN@mx.google.com>
+Date: Wed, 10 Jun 2015 23:38:38 +0200
+Message-ID: <CAFLxGvxcW6NvDKKW6XZYxbRtkBfWqsx+fLmssgOQ_ZDWgyYGcA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,22 +31,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] um: Fix a build error
-To: Firo Yang <firogm@gmail.com>, jdike@addtoit.com
-Cc: kernel-janitors@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH 3/3] um: Include sys/types.h for makedev(),
+ major(), minor()
+To: Hans-Werner Hilse <hwhilse@gmail.com>
+Cc: User-mode-linux Devel <User-mode-linux-devel@lists.sourceforge.net>
 
-Am 15.06.2015 um 16:43 schrieb Firo Yang:
-> Gcc5 failed to build uml.
-> Update codes to test __GNUC__ with 5 will be happier.
-> 
-> Signed-off-by: Firo Yang <firogm@gmail.com>
+On Wed, Jun 10, 2015 at 11:21 PM, Hans-Werner Hilse <hwhilse@gmail.com> wrote:
+> The functions in question are not part of the POSIX standard,
+> documentation however hints that the corresponding header shall
+> be sys/types.h. C libraries other than glibc, namely musl, did
+> not include that header via other ways and complained.
 
-The issue got already addressed by patches:
-[PATCH 2/5] um: Stop abusing __KERNEL__
-[PATCH 3/5] um: Remove copy&paste code from init.h
+Makes sense. :-)
 
-They will appear soon in Linus' tree.
-
+-- 
 Thanks,
 //richard
 
