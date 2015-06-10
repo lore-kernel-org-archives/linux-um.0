@@ -2,23 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1Z2nf7-0005U1-AG
+	(envelope-from <hwhilse@gmail.com>) id 1Z2nTq-000525-No
 	for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Jun 2015 21:35:53 +0000
-Received: from mail-vn0-f65.google.com ([209.85.216.65])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z2nf6-0007Je-Nh
+	Wed, 10 Jun 2015 21:24:14 +0000
+Received: from hilses.de ([213.133.103.163])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z2nTo-0006yt-Ew
 	for User-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Jun 2015 21:35:53 +0000
-Received: by vnbf190 with SMTP id f190so6049413vnb.2
-	for <User-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 10 Jun 2015 14:35:47 -0700 (PDT)
+	Wed, 10 Jun 2015 21:24:14 +0000
+Received: from [10.0.0.1] (helo=localhost) by hilses.de with esmtpa (Exim 4.85)
+	(envelope-from <hwhilse@gmail.com>) id 1Z2nTU-0006PO-KZ
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Jun 2015 23:23:52 +0200
 MIME-Version: 1.0
+Date: Wed, 10 Jun 2015 23:23:52 +0200
+From: Hans-Werner Hilse <hwhilse@gmail.com>
 In-Reply-To: <5578aa6d.417c320a.2479.4260SMTPIN_ADDED_BROKEN@mx.google.com>
 References: <5578aa6d.417c320a.2479.4260SMTPIN_ADDED_BROKEN@mx.google.com>
-Date: Wed, 10 Jun 2015 23:35:47 +0200
-Message-ID: <CAFLxGvwpqYfBD-KFcp2jX9MZwAL8ZrrCOoyJC5xb6J+t8DJpRQ@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
+Message-ID: <98515ab47d325387cf88c5ccd1d6e38f@hilses.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,21 +32,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH 1/3] um: Fallback when C library does not
- provide __ptr_t
-To: Hans-Werner Hilse <hwhilse@gmail.com>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <User-mode-linux-devel@lists.sourceforge.net>
+Subject: Re: [uml-devel]
+ =?utf-8?q?=5BPATCH_1/3=5D_um=3A_Fallback_when_C_libra?=
+ =?utf-8?q?ry_does_not_provide_=5F=5Fptr=5Ft?=
+To: User-mode-linux-devel@lists.sourceforge.net
 
-On Wed, Jun 10, 2015 at 11:20 PM, Hans-Werner Hilse <hwhilse@gmail.com> wrote:
-> Glibc provides __ptr_t for the pointer in the stack_t struct,
-> but other C libraries - namely musl - do not necessarily do so.
-> In that case, fall back to a void* pointer.
+Hi,
 
-Please just kill __ptr_t in UML.
+Am 2015-06-10 23:20, schrieb Hans-Werner Hilse:
+[...]
 
--- 
-Thanks,
-//richard
+This three-part patch series will allow to compile UML against the musl 
+libc implementation - even statically.
+
+Take it as a suggestion, but I think most things are quite sensible. The 
+__ptr_t stuff is admittedly a bit ugly.
+
+-hwh
 
 ------------------------------------------------------------------------------
 _______________________________________________
