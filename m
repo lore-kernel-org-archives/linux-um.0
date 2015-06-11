@@ -1,30 +1,30 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1Z2yQU-0006aB-Kx
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hwhilse@gmail.com>) id 1Z2xor-0000vD-5N
 	for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Jun 2015 09:05:30 +0000
-Received: from mail-vn0-f46.google.com ([209.85.216.46])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z2yQT-0008Qg-Qi
+	Thu, 11 Jun 2015 08:26:37 +0000
+Received: from hilses.de ([213.133.103.163])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z2xoo-0003D6-VM
 	for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Jun 2015 09:05:30 +0000
-Received: by vnbf190 with SMTP id f190so138647vnb.5
-	for <User-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 11 Jun 2015 02:05:24 -0700 (PDT)
+	Thu, 11 Jun 2015 08:26:37 +0000
+Received: from [10.0.0.1] (helo=localhost) by hilses.de with esmtpa (Exim 4.85)
+	(envelope-from <hwhilse@gmail.com>) id 1Z2xoV-0003IU-Jf
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Thu, 11 Jun 2015 10:26:15 +0200
 MIME-Version: 1.0
-In-Reply-To: <f8c70b0b8c5e2ceb7a65929ceb4d17a9@hilses.de>
+Date: Thu, 11 Jun 2015 10:26:15 +0200
+From: Hans-Werner Hilse <hwhilse@gmail.com>
+In-Reply-To: <CAFLxGvyQuZ6aFZ3rVYT1v23nvVrTdx6vceKym1sHs3Brm_oc0A@mail.gmail.com>
 References: <5578aa89.c7542b0a.5b46.ffffe036SMTPIN_ADDED_BROKEN@mx.google.com>
 	<CAFLxGvwfZtaTqJPRMiMbg-fmfvz0iHHNwwQJ-JR6W0DmjEvirw@mail.gmail.com>
 	<6e13f3aadfb37a3593bd0a29d70af17c@hilses.de>
 	<CAFLxGvy8DW2OPZY4BZVsG6GaQKw0i-V4oZqmRjOay5rmw392fA@mail.gmail.com>
 	<d99580704680b019f8fe728c0094832d@hilses.de>
 	<CAFLxGvyQuZ6aFZ3rVYT1v23nvVrTdx6vceKym1sHs3Brm_oc0A@mail.gmail.com>
-	<f8c70b0b8c5e2ceb7a65929ceb4d17a9@hilses.de>
-Date: Thu, 11 Jun 2015 11:05:24 +0200
-Message-ID: <CAFLxGvx0CngPJydEaU1QYo+NLZ9b1q-nh41ZUY8REr8z3vSJPw@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
+Message-ID: <f8c70b0b8c5e2ceb7a65929ceb4d17a9@hilses.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,63 +34,65 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH 2/3] um: Do not use stdin and stdout names
-	for variables
-To: Hans-Werner Hilse <hwhilse@gmail.com>
-Cc: User-mode-linux Devel <User-mode-linux-devel@lists.sourceforge.net>
+ for variables
+To: User-mode-linux Devel <User-mode-linux-devel@lists.sourceforge.net>
 
-On Thu, Jun 11, 2015 at 10:26 AM, Hans-Werner Hilse <hwhilse@gmail.com> wrote:
-> Am 2015-06-11 10:09, schrieb Richard Weinberger:
->> On Thu, Jun 11, 2015 at 9:54 AM, Hans-Werner Hilse <hwhilse@gmail.com>
->> wrote:
->>> About forbidden use of names/identifiers from the stdlib, the C
->>> standard
->>> is a bit hard for me to grasp fully. However, I think C99 7.1.3
->>> paragraph 1, 3rd point is relevant here: "Each macro name in any of
->>> the
->>> following subclauses (including the future library directions) is
->>> reserved for use as specified if any of its associated headers is
->>> included; unless explicitly stated otherwise (see 7.1.4)."
->>
->> Yeah, but we're talking about structure members.
->
-> Indeed, and I can't find more detail about the "reserved for use as
-> specified" part.
-> I think it is saying, though, that those identifiers are macros (and as
-> such will get expanded). The preprocessor will not care if that's in a
-> struct member name.
-
-While I think musl could be more user friendly,
-I fear the easiest solution is really to rename our structure members.
-glibc does a the user a favor by having a simple "#define stdin stdin".
-
->>> So aside from renaming struct members, another option would be to lift
->>> the macro definition by an "#undef" in relevant places. I have a
->>> feeling, though, that this faces new problems with the C99 standard,
->>> 7.1.3 paragraph 3, which says that "If the program removes (with
->>> #undef)
->>> any macro definition of an identifier in the first group listed above,
->>> the behavior is undefined."
->>
->> So, what exactly is the build error you're facing and how can I
->> reproduce?
->
-> Of course I should have told you in the first place:
->
-> [hw@hilses linux-uml]$ make ARCH=um CC="musl-gcc"
-
-Thx!
-
--- 
-Thanks,
-//richard
-
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+QW0gMjAxNS0wNi0xMSAxMDowOSwgc2NocmllYiBSaWNoYXJkIFdlaW5iZXJnZXI6Cj4gT24gVGh1
+LCBKdW4gMTEsIDIwMTUgYXQgOTo1NCBBTSwgSGFucy1XZXJuZXIgSGlsc2UgPGh3aGlsc2VAZ21h
+aWwuY29tPiAKPiB3cm90ZToKPj4gQWJvdXQgZm9yYmlkZGVuIHVzZSBvZiBuYW1lcy9pZGVudGlm
+aWVycyBmcm9tIHRoZSBzdGRsaWIsIHRoZSBDIAo+PiBzdGFuZGFyZAo+PiBpcyBhIGJpdCBoYXJk
+IGZvciBtZSB0byBncmFzcCBmdWxseS4gSG93ZXZlciwgSSB0aGluayBDOTkgNy4xLjMKPj4gcGFy
+YWdyYXBoIDEsIDNyZCBwb2ludCBpcyByZWxldmFudCBoZXJlOiAiRWFjaCBtYWNybyBuYW1lIGlu
+IGFueSBvZiAKPj4gdGhlCj4+IGZvbGxvd2luZyBzdWJjbGF1c2VzIChpbmNsdWRpbmcgdGhlIGZ1
+dHVyZSBsaWJyYXJ5IGRpcmVjdGlvbnMpIGlzCj4+IHJlc2VydmVkIGZvciB1c2UgYXMgc3BlY2lm
+aWVkIGlmIGFueSBvZiBpdHMgYXNzb2NpYXRlZCBoZWFkZXJzIGlzCj4+IGluY2x1ZGVkOyB1bmxl
+c3MgZXhwbGljaXRseSBzdGF0ZWQgb3RoZXJ3aXNlIChzZWUgNy4xLjQpLiIKPiAKPiBZZWFoLCBi
+dXQgd2UncmUgdGFsa2luZyBhYm91dCBzdHJ1Y3R1cmUgbWVtYmVycy4KCkluZGVlZCwgYW5kIEkg
+Y2FuJ3QgZmluZCBtb3JlIGRldGFpbCBhYm91dCB0aGUgInJlc2VydmVkIGZvciB1c2UgYXMgCnNw
+ZWNpZmllZCIgcGFydC4KSSB0aGluayBpdCBpcyBzYXlpbmcsIHRob3VnaCwgdGhhdCB0aG9zZSBp
+ZGVudGlmaWVycyBhcmUgbWFjcm9zIChhbmQgYXMgCnN1Y2ggd2lsbCBnZXQgZXhwYW5kZWQpLiBU
+aGUgcHJlcHJvY2Vzc29yIHdpbGwgbm90IGNhcmUgaWYgdGhhdCdzIGluIGEgCnN0cnVjdCBtZW1i
+ZXIgbmFtZS4KCj4+IFNvIGFzaWRlIGZyb20gcmVuYW1pbmcgc3RydWN0IG1lbWJlcnMsIGFub3Ro
+ZXIgb3B0aW9uIHdvdWxkIGJlIHRvIGxpZnQKPj4gdGhlIG1hY3JvIGRlZmluaXRpb24gYnkgYW4g
+IiN1bmRlZiIgaW4gcmVsZXZhbnQgcGxhY2VzLiBJIGhhdmUgYQo+PiBmZWVsaW5nLCB0aG91Z2gs
+IHRoYXQgdGhpcyBmYWNlcyBuZXcgcHJvYmxlbXMgd2l0aCB0aGUgQzk5IHN0YW5kYXJkLAo+PiA3
+LjEuMyBwYXJhZ3JhcGggMywgd2hpY2ggc2F5cyB0aGF0ICJJZiB0aGUgcHJvZ3JhbSByZW1vdmVz
+ICh3aXRoIAo+PiAjdW5kZWYpCj4+IGFueSBtYWNybyBkZWZpbml0aW9uIG9mIGFuIGlkZW50aWZp
+ZXIgaW4gdGhlIGZpcnN0IGdyb3VwIGxpc3RlZCBhYm92ZSwKPj4gdGhlIGJlaGF2aW9yIGlzIHVu
+ZGVmaW5lZC4iCj4gCj4gU28sIHdoYXQgZXhhY3RseSBpcyB0aGUgYnVpbGQgZXJyb3IgeW91J3Jl
+IGZhY2luZyBhbmQgaG93IGNhbiBJIAo+IHJlcHJvZHVjZT8KCk9mIGNvdXJzZSBJIHNob3VsZCBo
+YXZlIHRvbGQgeW91IGluIHRoZSBmaXJzdCBwbGFjZToKCltod0BoaWxzZXMgbGludXgtdW1sXSQg
+bWFrZSBBUkNIPXVtIENDPSJtdXNsLWdjYyIKLi4uCiAgIENDICAgICAgYXJjaC91bS9kcml2ZXJz
+L3NsaXBfdXNlci5vCkluIGZpbGUgaW5jbHVkZWQgZnJvbSBhcmNoL3VtL2RyaXZlcnMvc2xpcF91
+c2VyLmM6MTI6MDoKL3Vzci9saWIvbXVzbC9pbmNsdWRlL3N5cy90ZXJtaW9zLmg6MToyOiB3YXJu
+aW5nOiAjd2FybmluZyByZWRpcmVjdGluZyAKaW5jb3JyZWN0ICNpbmNsdWRlIDxzeXMvdGVybWlv
+cy5oPiB0byA8dGVybWlvcy5oPiBbLVdjcHBdCiAgI3dhcm5pbmcgcmVkaXJlY3RpbmcgaW5jb3Jy
+ZWN0ICNpbmNsdWRlIDxzeXMvdGVybWlvcy5oPiB0byA8dGVybWlvcy5oPgogICBeCkluIGZpbGUg
+aW5jbHVkZWQgZnJvbSBhcmNoL3VtL2RyaXZlcnMvc2xpcF91c2VyLmM6NjowOgphcmNoL3VtL2Ry
+aXZlcnMvc2xpcF91c2VyLmM6IEluIGZ1bmN0aW9uIOKAmHNsaXBfcHJlX2V4ZWPigJk6CmFyY2gv
+dW0vZHJpdmVycy9zbGlwX3VzZXIuYzo2NzoxMjogZXJyb3I6IGV4cGVjdGVkIGlkZW50aWZpZXIg
+YmVmb3JlIOKAmCjigJkgCnRva2VuCiAgIGlmIChkYXRhLT5zdGRpbiA+PSAwKQogICAgICAgICAg
+ICAgXgphcmNoL3VtL2RyaXZlcnMvc2xpcF91c2VyLmM6Njg6MTQ6IGVycm9yOiBleHBlY3RlZCBp
+ZGVudGlmaWVyIGJlZm9yZSDigJgo4oCZIAp0b2tlbgogICAgZHVwMihkYXRhLT5zdGRpbiwgMCk7
+CiAgICAgICAgICAgICAgIF4KYXJjaC91bS9kcml2ZXJzL3NsaXBfdXNlci5jOjY4OjM6IGVycm9y
+OiB0b28gZmV3IGFyZ3VtZW50cyB0byBmdW5jdGlvbiAK4oCYZHVwMuKAmQogICAgZHVwMihkYXRh
+LT5zdGRpbiwgMCk7CiAgICBeCgooV2UgY2FuIGlnbm9yZSB0aGUgd2FybmluZyBmb3Igbm93L3Ro
+aXMgZGlzY3Vzc2lvbiwgSSB0aGluay4pCgpZb3UgY2FuIHJlcHJvZHVjZSB3aXRob3V0IGFjdHVh
+bGx5IGluc3RhbGxpbmcgYSBtdXNsIHRvb2xjaGFpbiB3aGVuIApjaGFuZ2luZyBnbGliYydzIG1h
+Y3JvIGRlZmluaXRpb24gdG8gbXVzbCdzOgoKbWFrZSBBUkNIPXVtIENGTEFHUz0iLURzdGRvdXQ9
+XFwoc3Rkb3V0XFwpIgoKV2lsbCB0cmlnZ2VyIHRoZSBzYW1lIGVycm9yIGluIHRoZSBzYW1lIHBs
+YWNlLiBPZiBjb3Vyc2UsIHRoaXMgaXMgCmFydGlmaWNpYWxseSBwcm9kdWNpbmcgaXQuIFVzaW5n
+IG11c2wsIGhvd2V2ZXIsIGxlYWRzIHRvIHRoZSBzYW1lIApiZWhhdmlvdXIuCgpJIHVzZWQgdGhl
+IGRlZmNvbmZpZywgdGhhdCdzIHdoeSBpdCB0cmlnZ2VycyBpbiBzbGlwX3VzZXIuYyBmaXJzdCAt
+IApvdGhlciBwbGFjZXMgZG8gdXNlIHN0ZGluL3N0ZG91dCBhcyBzdHJ1Y3QgbWVtYmVyIG5hbWUs
+IHRvby4KCi1od2gKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBs
+aXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVs
+Cg==
 
