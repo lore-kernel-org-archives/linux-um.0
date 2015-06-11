@@ -1,28 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hwhilse@gmail.com>) id 1Z2xKR-000850-Lu
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1Z2wJA-0001Ts-W4
 	for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Jun 2015 07:55:11 +0000
-Received: from hilses.de ([213.133.103.163])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z2xKQ-0005Q5-79
+	Thu, 11 Jun 2015 06:49:49 +0000
+Received: from mail-vn0-f67.google.com ([209.85.216.67])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z2wJA-00061M-68
 	for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Jun 2015 07:55:11 +0000
-Received: from [10.0.0.1] (helo=localhost) by hilses.de with esmtpa (Exim 4.85)
-	(envelope-from <hwhilse@gmail.com>) id 1Z2xK6-00006S-Tm
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Jun 2015 09:54:50 +0200
+	Thu, 11 Jun 2015 06:49:48 +0000
+Received: by vnbf190 with SMTP id f190so8049014vnb.3
+	for <User-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 10 Jun 2015 23:49:42 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 11 Jun 2015 09:54:50 +0200
-From: Hans-Werner Hilse <hwhilse@gmail.com>
-In-Reply-To: <CAFLxGvy8DW2OPZY4BZVsG6GaQKw0i-V4oZqmRjOay5rmw392fA@mail.gmail.com>
+In-Reply-To: <6e13f3aadfb37a3593bd0a29d70af17c@hilses.de>
 References: <5578aa89.c7542b0a.5b46.ffffe036SMTPIN_ADDED_BROKEN@mx.google.com>
 	<CAFLxGvwfZtaTqJPRMiMbg-fmfvz0iHHNwwQJ-JR6W0DmjEvirw@mail.gmail.com>
 	<6e13f3aadfb37a3593bd0a29d70af17c@hilses.de>
-	<CAFLxGvy8DW2OPZY4BZVsG6GaQKw0i-V4oZqmRjOay5rmw392fA@mail.gmail.com>
-Message-ID: <d99580704680b019f8fe728c0094832d@hilses.de>
+Date: Thu, 11 Jun 2015 08:49:42 +0200
+Message-ID: <CAFLxGvy8DW2OPZY4BZVsG6GaQKw0i-V4oZqmRjOay5rmw392fA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -36,76 +34,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH 2/3] um: Do not use stdin and stdout names
- for variables
-To: User-mode-linux Devel <User-mode-linux-devel@lists.sourceforge.net>
+	for variables
+To: Hans-Werner Hilse <hwhilse@gmail.com>
+Cc: User-mode-linux Devel <User-mode-linux-devel@lists.sourceforge.net>
 
-Am 2015-06-11 08:49, schrieb Richard Weinberger:
-> On Thu, Jun 11, 2015 at 8:35 AM, Hans-Werner Hilse <hwhilse@gmail.com> 
-> wrote:
->> Hi,
->> 
->> Am 2015-06-10 23:37, schrieb Richard Weinberger:
->>> On Wed, Jun 10, 2015 at 11:21 PM, Hans-Werner Hilse 
->>> <hwhilse@gmail.com>
->>> wrote:
->>>> Naming local variables "stdin" and "stdout" is fine with glibc,
->>>> other C libraries, namely musl, will however complain.
->>> 
->>> Wait, what?!
->>> These are not local variables, they are struct members.
->>> 
->>> What exactly is the issue with musl? Sounds very odd.
->> 
->> They chose to have stdin and stdout (and, of course, stderr) wrapped 
->> in
->> macros - in a different way than glibc:
->> 
->> [...]
-> 
-> Slow down a bit. Since when is it forbidden to name something "stdin" 
-> in a C
-> program? Does the standard say that? If yes, where?
-> We have to sort this out. If UML violates a rule, we have to fix it.
-> But maybe musl needs fixing...
+On Thu, Jun 11, 2015 at 8:35 AM, Hans-Werner Hilse <hwhilse@gmail.com> wrote:
+> Hi,
+>
+> Am 2015-06-10 23:37, schrieb Richard Weinberger:
+>> On Wed, Jun 10, 2015 at 11:21 PM, Hans-Werner Hilse <hwhilse@gmail.com>
+>> wrote:
+>>> Naming local variables "stdin" and "stdout" is fine with glibc,
+>>> other C libraries, namely musl, will however complain.
+>>
+>> Wait, what?!
+>> These are not local variables, they are struct members.
+>>
+>> What exactly is the issue with musl? Sounds very odd.
+>
+> They chose to have stdin and stdout (and, of course, stderr) wrapped in
+> macros - in a different way than glibc:
+>
+> [...]
+>    extern FILE *const stdin;
+> [...]
+>    #define stdin  (stdin)
+>
+> (http://git.musl-libc.org/cgit/musl/tree/include/stdio.h?id=v1.1.10#n59)
+>
+> The C standards C89/C99 (the last one I even looked up right now) say
+> those identifiers are macros - according to stdio.h from glibc, which
+> does the following:
+>
+>    /* Standard streams.  */
+>    extern struct _IO_FILE *stdin;          /* Standard input stream.  */
+> [...]
+>    /* C89/C99 say they're macros.  Make them happy.  */
+>    #define stdin stdin
+> [...]
+>
+> Of course you're right, of course they are struct members. That's what I
+> get for writing my commit messages too long after going at the issue at
+> hand.
+>
+> I'll send an updated patch series in a few minutes.
 
-Digging further, I think I cannot better describe the issue than Rich 
-Felker did in this message:
-http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20130506/173690.html
+Slow down a bit. Since when is it forbidden to name something "stdin" in a C
+program? Does the standard say that? If yes, where?
+We have to sort this out. If UML violates a rule, we have to fix it.
+But maybe musl needs fixing...
 
-> Per ISO C, stdin, stdout, and stderr are macros "which are expressions
-> of type ''pointer to FILE'' that point to the FILE objects associated,
-> respectively, with the standard error, input, and output streams."
-> (C99 7.19.1 paragraph 3). They are not necessarily objects, merely
-> expressions, and as such, taking their address is invalid.
-
-That last sentence, however, does not apply to the problem I'm facing 
-with UML and musl. Here, the problem is actually that the 
-stdin/stdout/stderr identifiers are per the C standard predefined as 
-being macros.
-
-In the glibc case, it won't break anyway since the macro definition is 
-tight enough to mask the problem. For musl, the macro definition is 
-minimally more complex and the result is a macro expansion that leaves 
-syntactically incorrect code. In the past - see the linked discussion - 
-musl developers stressed that their implementation is conformant to the 
-standard.
-
-About forbidden use of names/identifiers from the stdlib, the C standard 
-is a bit hard for me to grasp fully. However, I think C99 7.1.3 
-paragraph 1, 3rd point is relevant here: "Each macro name in any of the 
-following subclauses (including the future library directions) is 
-reserved for use as specified if any of its associated headers is 
-included; unless explicitly stated otherwise (see 7.1.4)."
-
-So aside from renaming struct members, another option would be to lift 
-the macro definition by an "#undef" in relevant places. I have a 
-feeling, though, that this faces new problems with the C99 standard, 
-7.1.3 paragraph 3, which says that "If the program removes (with #undef) 
-any macro definition of an identifier in the first group listed above, 
-the behavior is undefined."
-
--hwh
-
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 _______________________________________________
