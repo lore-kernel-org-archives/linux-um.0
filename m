@@ -2,22 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hwhilse@gmail.com>) id 1Z8P7i-0005rN-JX
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Jun 2015 08:36:34 +0000
-Received: from mail-wg0-f47.google.com ([74.125.82.47])
+	(envelope-from <richard.weinberger@gmail.com>) id 1Z8DzG-00007H-Ci
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Thu, 25 Jun 2015 20:43:06 +0000
+Received: from mail-vn0-f44.google.com ([209.85.216.44])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z8P7h-0000eS-OO
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Jun 2015 08:36:34 +0000
-Received: by wguu7 with SMTP id u7so82292872wgu.3
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 26 Jun 2015 01:36:27 -0700 (PDT)
-From: Hans-Werner Hilse <hwhilse@gmail.com>
-Date: Fri, 26 Jun 2015 10:36:14 +0200
-Message-Id: <1435307774-3897-2-git-send-email-hwhilse@gmail.com>
-In-Reply-To: <1435307774-3897-1-git-send-email-hwhilse@gmail.com>
-References: <1435307774-3897-1-git-send-email-hwhilse@gmail.com>
+	(Exim 4.76) id 1Z8DzF-0006W5-Nk
+	for User-mode-linux-devel@lists.sourceforge.net;
+	Thu, 25 Jun 2015 20:43:06 +0000
+Received: by vnav203 with SMTP id v203so12800624vna.8
+	for <User-mode-linux-devel@lists.sourceforge.net>;
+	Thu, 25 Jun 2015 13:43:00 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1434014960-14774-1-git-send-email-hwhilse@gmail.com>
+References: <1434014960-14774-1-git-send-email-hwhilse@gmail.com>
+Date: Thu, 25 Jun 2015 22:42:59 +0200
+Message-ID: <CAFLxGvzNcQYhO9a3Ndov1kxKPv_ZWZttHBsLtru=iBouGatU-A@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,52 +28,27 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] um: Do not rely on libc to provide modify_ldt()
-To: user-mode-linux-devel@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH v2 0/3] musl compatibility patches
+To: Hans-Werner Hilse <hwhilse@gmail.com>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <User-mode-linux-devel@lists.sourceforge.net>
 
-modify_ldt() was declared as an external symbol. Despite the man
-page for this syscall telling that there is no wrapper in glibc,
-since version 2.1 there actually is, so linking to the glibc
-works.
+On Thu, Jun 11, 2015 at 11:29 AM, Hans-Werner Hilse <hwhilse@gmail.com> wrote:
+> This set of patches facilitate compilation with the musl libc,
+> either linked to shared libraries or static.
+>
+> Hans-Werner Hilse (3):
+>   um: Do not use __ptr_t type for stack_t's .ss pointer
+>   um: Do not use stdin and stdout identifiers for struct members
+>   um: Include sys/types.h for makedev(), major(), minor()
 
-Since modify_ldt() is not a POSIX interface, other libc
-implementations do not always provide a wrapper function.
-Even glibc headers do not provide a corresponding declaration.
+All three patches applied. :-)
 
-So go the recommended way to call this using syscall().
-
-Signed-off-by: Hans-Werner Hilse <hwhilse@gmail.com>
----
- arch/x86/um/ldt.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/um/ldt.c b/arch/x86/um/ldt.c
-index 9701a4f..6e57c22 100644
---- a/arch/x86/um/ldt.c
-+++ b/arch/x86/um/ldt.c
-@@ -11,8 +11,14 @@
- #include <os.h>
- #include <skas.h>
- #include <sysdep/tls.h>
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+
-+static inline int modify_ldt (int func, void *ptr, unsigned long bytecount)
-+{
-+	return syscall(SYS_modify_ldt, func, ptr, bytecount);
-+}
- 
--extern int modify_ldt(int func, void *ptr, unsigned long bytecount);
- 
- static long write_ldt_entry(struct mm_id *mm_idp, int func,
- 		     struct user_desc *desc, void **addr, int done)
 -- 
-2.4.3
-
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Monitor 25 network devices or servers for free with OpManager!
