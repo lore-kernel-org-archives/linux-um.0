@@ -1,26 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hwhilse@gmail.com>) id 1Z9TIC-0008UT-35
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Jun 2015 07:15:48 +0000
-Received: from hilses.de ([213.133.103.163])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z9TIA-00062m-OX
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Jun 2015 07:15:48 +0000
-Received: from [10.0.0.1] (helo=localhost) by hilses.de with esmtpa (Exim 4.85)
-	(envelope-from <hwhilse@gmail.com>) id 1Z9TIC-00074o-QN
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Mon, 29 Jun 2015 09:15:48 +0200
+	(envelope-from <richard.weinberger@gmail.com>) id 1Z8ugA-000664-Jm
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 27 Jun 2015 18:18:14 +0000
+Received: from mail-vn0-f48.google.com ([209.85.216.48])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z8ug9-0001gc-UZ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 27 Jun 2015 18:18:14 +0000
+Received: by vnbg129 with SMTP id g129so19484752vnb.9
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 27 Jun 2015 11:18:08 -0700 (PDT)
 MIME-Version: 1.0
-Date: Mon, 29 Jun 2015 09:15:48 +0200
-From: Hans-Werner Hilse <hwhilse@gmail.com>
-In-Reply-To: <CAFLxGvxMttkMFkm9CuQUmDfbaYLpMmCX1Hy0B_VDzpX2-LNX-A@mail.gmail.com>
+In-Reply-To: <1435307774-3897-1-git-send-email-hwhilse@gmail.com>
 References: <1435307774-3897-1-git-send-email-hwhilse@gmail.com>
-	<CAFLxGvxMttkMFkm9CuQUmDfbaYLpMmCX1Hy0B_VDzpX2-LNX-A@mail.gmail.com>
-Message-ID: <3faa85268de72e64ff74175f2cf74021@hilses.de>
+Date: Sat, 27 Jun 2015 20:18:08 +0200
+Message-ID: <CAFLxGvxMttkMFkm9CuQUmDfbaYLpMmCX1Hy0B_VDzpX2-LNX-A@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,24 +32,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] missed musl compatibility patch
-To: User-mode-linux Devel <User-mode-linux-devel@lists.sourceforge.net>
+To: Hans-Werner Hilse <hwhilse@gmail.com>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Hi,
+On Fri, Jun 26, 2015 at 10:36 AM, Hans-Werner Hilse <hwhilse@gmail.com> wrote:
+> I'm sorry but one patch that is necessary for compilation against
+> musl libc was still missing in the series I sent earlier.
+> (Thank you very much for applying!)
 
-Am 2015-06-27 20:18, schrieb Richard Weinberger:
-> On Fri, Jun 26, 2015 at 10:36 AM, Hans-Werner Hilse <hwhilse@gmail.com> 
-> wrote:
->> I'm sorry but one patch that is necessary for compilation against
->> musl libc was still missing in the series I sent earlier.
->> (Thank you very much for applying!)
-> 
-> Okay. We can merge it for -rc2.
+Okay. We can merge it for -rc2.
 
-Please ignore for now, I need to fix this patch, unfortunately.
-As it is, it breaks compilation on a much more important target - glibc.
-I'll send a v2 once I got this right.
-
--hwh
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Monitor 25 network devices or servers for free with OpManager!
