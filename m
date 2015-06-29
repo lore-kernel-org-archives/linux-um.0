@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hwhilse@gmail.com>) id 1Z2yoO-0007kg-8b
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Jun 2015 09:30:12 +0000
-Received: from mail-wi0-f173.google.com ([209.85.212.173])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z2yoN-00039J-Gy
-	for User-mode-linux-devel@lists.sourceforge.net;
-	Thu, 11 Jun 2015 09:30:12 +0000
-Received: by wibdq8 with SMTP id dq8so4421046wib.1
-	for <User-mode-linux-devel@lists.sourceforge.net>;
-	Thu, 11 Jun 2015 02:30:05 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hwhilse@gmail.com>) id 1Z9Vi0-0003mb-Fc
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Jun 2015 09:50:36 +0000
+Received: from mail-wg0-f45.google.com ([74.125.82.45])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z9Vhy-0004mf-MG
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 29 Jun 2015 09:50:36 +0000
+Received: by wguu7 with SMTP id u7so136456353wgu.3
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 29 Jun 2015 02:50:28 -0700 (PDT)
 From: Hans-Werner Hilse <hwhilse@gmail.com>
-Date: Thu, 11 Jun 2015 11:29:20 +0200
-Message-Id: <1434014960-14774-4-git-send-email-hwhilse@gmail.com>
-In-Reply-To: <1434014960-14774-1-git-send-email-hwhilse@gmail.com>
-References: <1434014960-14774-1-git-send-email-hwhilse@gmail.com>
+Date: Mon, 29 Jun 2015 11:50:31 +0200
+Message-Id: <1435571432-21125-1-git-send-email-hwhilse@gmail.com>
+In-Reply-To: <3faa85268de72e64ff74175f2cf74021@hilses.de>
+References: <3faa85268de72e64ff74175f2cf74021@hilses.de>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,37 +31,33 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH v2 3/3] um: Include sys/types.h for makedev(),
-	major(), minor()
-To: User-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH v2] missed musl compatibility patch
+To: user-mode-linux-devel@lists.sourceforge.net
 
-The functions in question are not part of the POSIX standard,
-documentation however hints that the corresponding header shall
-be sys/types.h. C libraries other than glibc, namely musl, did
-not include that header via other ways and complained.
+Updated patch to provide our own mofify_ldt() wrapper.
+The earlier version did not take into account that outside
+the "os-Linux" directories the host API is not accessible.
 
-Signed-off-by: Hans-Werner Hilse <hwhilse@gmail.com>
----
- arch/um/os-Linux/file.c | 1 +
- 1 file changed, 1 insertion(+)
+However, an according syscall() definition is in os.h, which
+is already included. The syscall number can be taken from
+the kernel space definition as __NR_modify_ldt.
 
-diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
-index 08d90fb..26e0164 100644
---- a/arch/um/os-Linux/file.c
-+++ b/arch/um/os-Linux/file.c
-@@ -13,6 +13,7 @@
- #include <sys/socket.h>
- #include <sys/stat.h>
- #include <sys/un.h>
-+#include <sys/types.h>
- #include <os.h>
- 
- static void copy_stat(struct uml_stat *dst, const struct stat64 *src)
+Hans-Werner Hilse (1):
+  um: Do not rely on libc to provide modify_ldt()
+
+ arch/x86/um/ldt.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
 -- 
-2.4.2
+2.4.3
 
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
