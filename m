@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1ZCvXB-0006eS-7S
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jdike@addtoit.com>) id 1ZCvSj-0004Xm-32
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Jul 2015 20:01:33 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZCvX9-0006lH-Ru
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 08 Jul 2015 20:01:33 +0000
-Message-ID: <559D8193.3090202@nod.at>
-Date: Wed, 08 Jul 2015 22:01:23 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
+	Wed, 08 Jul 2015 19:56:57 +0000
+Received: from u16576595.onlinehome-server.com ([74.208.238.6]
+	helo=euler.addtoit.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZCvSd-0004Jt-3w for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 08 Jul 2015 19:56:57 +0000
+Date: Wed, 8 Jul 2015 15:56:44 -0400
+From: Jeff Dike <jdike@addtoit.com>
+Message-ID: <20150708195644.GA532@parts.user-mode-linux.org>
 References: <1436382947-13181-1-git-send-email-christophe.jaillet@wanadoo.fr>
 	<559D77D3.3030906@nod.at>
-	<20150708195644.GA532@parts.user-mode-linux.org>
-In-Reply-To: <20150708195644.GA532@parts.user-mode-linux.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <559D77D3.3030906@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,31 +31,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] um: umid: Use strdup to simplify code
-To: Jeff Dike <jdike@addtoit.com>
+To: Richard Weinberger <richard@nod.at>
 Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, user-mode-linux-devel@lists.sourceforge.net
 
-Hi Jeff,
+... Nice patch elided ...
 
-Am 08.07.2015 um 21:56 schrieb Jeff Dike:
-> ... Nice patch elided ...
-> 
-> I have a bit of a problem here - Christophe isn't a member of
-> uml-devel, so Mailman is sitting on his post until it's approved by a
-> list moderator, namely me.
-> 
-> So far, so good, except that my uml-devel password stopped working, so
-> I now have no ability to approve this (and throw out the reasonable
-> amount of spam that's also waiting for (non-)approval.
-> 
-> If anyone has any suggestions about regaining moderator control of
-> this list, please let me know.
+I have a bit of a problem here - Christophe isn't a member of
+uml-devel, so Mailman is sitting on his post until it's approved by a
+list moderator, namely me.
 
-I'm project manager on UML's sf.net site. Maybe I can reset it.
-BTW: I'd like to move away from sf.net soon. Maybe to lists.infradead.org.
-Is that okay for you?
+So far, so good, except that my uml-devel password stopped working, so
+I now have no ability to approve this (and throw out the reasonable
+amount of spam that's also waiting for (non-)approval.
 
-Thanks,
-//richard
+If anyone has any suggestions about regaining moderator control of
+this list, please let me know.
+
+				Jeff
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
