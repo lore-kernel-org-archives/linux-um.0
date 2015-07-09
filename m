@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hwhilse@gmail.com>) id 1Z8P7d-0003rB-Tm
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <christophe.jaillet@wanadoo.fr>) id 1ZD434-0005AM-KS
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Jun 2015 08:36:29 +0000
-Received: from mail-wg0-f44.google.com ([74.125.82.44])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z8P7d-0006p4-7k
+	Thu, 09 Jul 2015 05:07:02 +0000
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
+	helo=smtp.smtpout.orange.fr)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZD433-0001OV-K8
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 26 Jun 2015 08:36:29 +0000
-Received: by wgck11 with SMTP id k11so82451436wgc.0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 26 Jun 2015 01:36:23 -0700 (PDT)
-From: Hans-Werner Hilse <hwhilse@gmail.com>
-Date: Fri, 26 Jun 2015 10:36:13 +0200
-Message-Id: <1435307774-3897-1-git-send-email-hwhilse@gmail.com>
+	Thu, 09 Jul 2015 05:07:02 +0000
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Thu,  9 Jul 2015 07:06:04 +0200
+Message-Id: <1436418364-5201-2-git-send-email-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <1436418364-5201-1-git-send-email-christophe.jaillet@wanadoo.fr>
+References: <1436382947-13181-1-git-send-email-christophe.jaillet@wanadoo.fr>
+	<1436418364-5201-1-git-send-email-christophe.jaillet@wanadoo.fr>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,35 +30,47 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] missed musl compatibility patch
-To: user-mode-linux-devel@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 2/2] um: umid: Use strdup to simplify code
+To: jdike@addtoit.com, richard@nod.at
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, kernel-janitors@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-I'm sorry but one patch that is necessary for compilation against
-musl libc was still missing in the series I sent earlier.
-(Thank you very much for applying!)
+Replace a malloc+strcpy by an equivalent strdup in order to improve
+readability.
 
-This is a bit awkward: It looked so nice and clean to just call
-"modify_ldt()" before. The external declaration is a hint that not
-all was well. Looking at modify_ldt(2), making the syscall via
-syscall() ourselves is actually the recommended way, so I hope
-it isn't too troublesome a patch.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ arch/um/os-Linux/umid.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Hans-Werner Hilse (1):
-  um: Do not rely on libc to provide modify_ldt()
-
- arch/x86/um/ldt.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
+diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
+index b514ead..cc9ac2e 100644
+--- a/arch/um/os-Linux/umid.c
++++ b/arch/um/os-Linux/umid.c
+@@ -48,12 +48,11 @@ static int __init make_uml_dir(void)
+ 		strlcat(dir, "/", sizeof(dir));
+ 
+ 	err = -ENOMEM;
+-	uml_dir = malloc(strlen(dir) + 1);
++	uml_dir = strdup(dir);
+ 	if (uml_dir == NULL) {
+-		printf("make_uml_dir : malloc failed, errno = %d\n", errno);
++		printf("make_uml_dir : strdup failed, errno = %d\n", errno);
+ 		goto err;
+ 	}
+-	strcpy(uml_dir, dir);
+ 
+ 	if ((mkdir(uml_dir, 0777) < 0) && (errno != EEXIST)) {
+ 		printf("Failed to mkdir '%s': %s\n", uml_dir, strerror(errno));
 -- 
-2.4.3
+2.1.4
 
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
