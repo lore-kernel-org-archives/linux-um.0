@@ -1,45 +1,131 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Date: Wed,  8 Jul 2015 21:15:47 +0200
-Message-Id: <1436382947-13181-1-git-send-email-christophe.jaillet@wanadoo.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: umid: Use strdup to simplify code
-To: jdike@addtoit.com, richard@nod.at
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1ZFNCb-0008Vo-CI
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Jul 2015 13:58:25 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZFNCZ-0000eh-KM
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Jul 2015 13:58:25 +0000
+Message-ID: <1436968695.3096.12.camel@m3y3r.de>
+From: Thomas Meyer <thomas@m3y3r.de>
+Date: Wed, 15 Jul 2015 15:58:15 +0200
+In-Reply-To: <CAFLxGvwtR+obJ97Zjh81JMjMgsY4+hhX4qupbhOem7CaGpjGSQ@mail.gmail.com>
+References: <1436794918.3306.5.camel@m3y3r.de>
+	<CAFLxGvwo2hjvrkF_ChR1Ooc6o7OqEGEOKnP=4NAmt8vP07Kd-Q@mail.gmail.com>
+	<1436795884.3306.7.camel@m3y3r.de> <55A3C47B.8040206@nod.at>
+	<1436797445.3306.10.camel@m3y3r.de> <55A3CE2F.5030105@nod.at>
+	<1436800131.3096.1.camel@m3y3r.de> <55A3D510.7000508@nod.at>
+	<1436800335.3096.2.camel@m3y3r.de>
+	<CAFLxGvwtR+obJ97Zjh81JMjMgsY4+hhX4qupbhOem7CaGpjGSQ@mail.gmail.com>
+Mime-Version: 1.0
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] uml_net zombie processes
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Replace a malloc+strcpy by an equivalent strdup in order to improve
-readability.
-Turn a some spaces into a tab to be consistent with the rest of the code.
+Am Mittwoch, den 15.07.2015, 12:12 +0200 schrieb Richard Weinberger:
+> On Mon, Jul 13, 2015 at 5:12 PM, Thomas Meyer <thomas@m3y3r.de> 
+> wrote:
+> > Am Montag, den 13.07.2015, 17:11 +0200 schrieb Richard Weinberger:
+> > > Am 13.07.2015 um 17:08 schrieb Thomas Meyer:
+> > > > Am Montag, den 13.07.2015, 16:41 +0200 schrieb Richard 
+> > > > Weinberger:
+> > > > > Am 13.07.2015 um 16:24 schrieb Thomas Meyer:
+> > > > > > > Yeah. And please add a dump_stack() to figure out where 
+> > > > > > > it
+> > > > > > > was
+> > > > > > > called.
+> > > > > > 
+> > > > > > I think calling dump_stack() somehow changed the errno to 
+> > > > > > 25?!
+> > > > > 
+> > > > > > 
+> > > > > > +extern __attribute__((regparm(0))) void dump_stack(void);
+> > > > > 
+> > > > > Hmm, maybe the regparm(0) kills your stack.
+> > > > > Anyway, how do you trigger the issue?
+> > > > > I tried here and don't see any zombie processes?
+> > > > > In my setup I run UML as non-root and tap0 is owned by root.
+> > > > > -> UML is unable to setup eth0.
+> > > > > But no zombies here.
+> > > > 
+> > > > I run UML as non-root user, tun is:
+> > > > 
+> > > > $ ll /dev/net
+> > > > insgesamt 0
+> > > > crw-rw----. 1 root zml-net 10, 200 13. Jul 14:49 tun
+> > > > 
+> > > > $ ll /usr/bin/uml_net
+> > > > -rwsr-x---. 1 root uml-net 31472 19. Aug 2014  /usr/bin/uml_net
+> > > 
+> > > And eth0=tuntap,tap?
+> > 
+> > yes,
+> > 
+> > eth0=tuntap,,,192.168.10.2
+> 
+> Sorry for the late reply.
+Hi,
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- arch/um/os-Linux/umid.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+null problemo.
 
-diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
-index c1dc892..cc9ac2e 100644
---- a/arch/um/os-Linux/umid.c
-+++ b/arch/um/os-Linux/umid.c
-@@ -48,15 +48,14 @@ static int __init make_uml_dir(void)
- 		strlcat(dir, "/", sizeof(dir));
- 
- 	err = -ENOMEM;
--	uml_dir = malloc(strlen(dir) + 1);
-+	uml_dir = strdup(dir);
- 	if (uml_dir == NULL) {
--		printf("make_uml_dir : malloc failed, errno = %d\n", errno);
-+		printf("make_uml_dir : strdup failed, errno = %d\n", errno);
- 		goto err;
- 	}
--	strcpy(uml_dir, dir);
- 
- 	if ((mkdir(uml_dir, 0777) < 0) && (errno != EEXIST)) {
--	        printf("Failed to mkdir '%s': %s\n", uml_dir, strerror(errno));
-+		printf("Failed to mkdir '%s': %s\n", uml_dir, strerror(errno));
- 		err = -errno;
- 		goto err_free;
- 	}
--- 
-2.1.4
+> I'm still burred in work issues and had no time to look in detail at 
+> this.
+> 
+> But in the meanwhile you can try to gather some more Infos.
+> Remove the dump_stack() and add some printk()s.
+> I'm interested which PIDs are returned and waited for.
+
+Mhh.. I think the pid is already printed in error case:
+
+[   15.930000] helper_wait : waitpid process 11673 failed, errno = 10
+[   15.930000] * modprobe tun
+               * ifconfig tap0 192.168.10.1 netmask 255.255.255.255 up
+               * bash -c echo 1 > /proc/sys/net/ipv4/ip_forward
+[   20.480000] helper_wait : waitpid process 11780 failed, errno = 10
+[   20.480000] * route add -host 192.168.10.2 dev tap0
+               * bash -c echo 1 > /proc/sys/net/ipv4/conf/tap0/proxy_arp
+
+pid 11673 and pid 11780 in above case were the two zombie processes.
+
+errno 10 = ECHILD
+
+which can happen for the waitpid() call, according to the man page:
+
+       ECHILD (for  waitpid()  or waitid()) The process specified by pid (waitpid()) or idtype and id (waitid()) does not exist or
+              is not a child of the calling process.  (This can happen for one's own child if the action for  SIGCHLD  is  set  to
+              SIG_IGN.  See also the Linux Notes section about threads.)
+
+I'm not able to completely figure out above meaning, so...
+But maybe ECHILD is returned because uml_net is run with setuid bit
+set?
+
+any ideas?
+
+
+------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
