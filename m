@@ -1,19 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1ZON5U-00075L-Sr
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1ZOVFY-0004wm-40
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Aug 2015 09:40:16 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZON5T-0008Ss-8j
+	Sun, 09 Aug 2015 18:23:12 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZOVFW-0006le-6F
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Aug 2015 09:40:16 +0000
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <55C71FF5.1020902@nod.at>
-Date: Sun, 9 Aug 2015 11:40:05 +0200
-MIME-Version: 1.0
+	Sun, 09 Aug 2015 18:23:12 +0000
+Message-ID: <1439144576.559700.5.camel@m3y3r.de>
+From: Thomas Meyer <thomas@m3y3r.de>
+Date: Sun, 09 Aug 2015 20:22:56 +0200
+In-Reply-To: <CAFLxGvyaL0WrSmfqrdQ8uV576tg_Jo=hupeEo1x+EF_-sYdF3g@mail.gmail.com>
+References: <1436794918.3306.5.camel@m3y3r.de>
+	<CAFLxGvwo2hjvrkF_ChR1Ooc6o7OqEGEOKnP=4NAmt8vP07Kd-Q@mail.gmail.com>
+	<1436795884.3306.7.camel@m3y3r.de> <55A3C47B.8040206@nod.at>
+	<1436797445.3306.10.camel@m3y3r.de> <55A3CE2F.5030105@nod.at>
+	<1436800131.3096.1.camel@m3y3r.de> <55A3D510.7000508@nod.at>
+	<1436800335.3096.2.camel@m3y3r.de>
+	<CAFLxGvwtR+obJ97Zjh81JMjMgsY4+hhX4qupbhOem7CaGpjGSQ@mail.gmail.com>
+	<1436968695.3096.12.camel@m3y3r.de>
+	<CAFLxGvyaL0WrSmfqrdQ8uV576tg_Jo=hupeEo1x+EF_-sYdF3g@mail.gmail.com>
+Mime-Version: 1.0
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,33 +36,120 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] unmet direct dependencies in -next
-To: linux-next@vger.kernel.org
-Cc: sameo@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, Wolfram Sang <wsa@the-dreams.de>, linux-kbuild <linux-kbuild@vger.kernel.org>, "open list:I2C SUBSYSTEM" <linux-i2c@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, lee.jones@linaro.org, yann.morin.1998@free.fr
+Subject: Re: [uml-devel] uml_net zombie processes
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Hi!
+Am Sonntag, den 09.08.2015, 19:57 +0200 schrieb Richard Weinberger:
+> On Wed, Jul 15, 2015 at 3:58 PM, Thomas Meyer <thomas@m3y3r.de> 
+> wrote:
+> > Am Mittwoch, den 15.07.2015, 12:12 +0200 schrieb Richard 
+> > Weinberger:
+> > > On Mon, Jul 13, 2015 at 5:12 PM, Thomas Meyer <thomas@m3y3r.de>
+> > > wrote:
+> > > > Am Montag, den 13.07.2015, 17:11 +0200 schrieb Richard 
+> > > > Weinberger:
+> > > > > Am 13.07.2015 um 17:08 schrieb Thomas Meyer:
+> > > > > > Am Montag, den 13.07.2015, 16:41 +0200 schrieb Richard
+> > > > > > Weinberger:
+> > > > > > > Am 13.07.2015 um 16:24 schrieb Thomas Meyer:
+> > > > > > > > > Yeah. And please add a dump_stack() to figure out 
+> > > > > > > > > where
+> > > > > > > > > it
+> > > > > > > > > was
+> > > > > > > > > called.
+> > > > > > > > 
+> > > > > > > > I think calling dump_stack() somehow changed the errno 
+> > > > > > > > to
+> > > > > > > > 25?!
+> > > > > > > 
+> > > > > > > > 
+> > > > > > > > +extern __attribute__((regparm(0))) void 
+> > > > > > > > dump_stack(void);
+> > > > > > > 
+> > > > > > > Hmm, maybe the regparm(0) kills your stack.
+> > > > > > > Anyway, how do you trigger the issue?
+> > > > > > > I tried here and don't see any zombie processes?
+> > > > > > > In my setup I run UML as non-root and tap0 is owned by 
+> > > > > > > root.
+> > > > > > > -> UML is unable to setup eth0.
+> > > > > > > But no zombies here.
+> > > > > > 
+> > > > > > I run UML as non-root user, tun is:
+> > > > > > 
+> > > > > > $ ll /dev/net
+> > > > > > insgesamt 0
+> > > > > > crw-rw----. 1 root zml-net 10, 200 13. Jul 14:49 tun
+> > > > > > 
+> > > > > > $ ll /usr/bin/uml_net
+> > > > > > -rwsr-x---. 1 root uml-net 31472 19. Aug 2014 
+> > > > > >  /usr/bin/uml_net
+> > > > > 
+> > > > > And eth0=tuntap,tap?
+> > > > 
+> > > > yes,
+> > > > 
+> > > > eth0=tuntap,,,192.168.10.2
+> > > 
+> > > Sorry for the late reply.
+> > Hi,
+> > 
+> > null problemo.
+> > 
+> > > I'm still burred in work issues and had no time to look in detail 
+> > > at
+> > > this.
+> > > 
+> > > But in the meanwhile you can try to gather some more Infos.
+> > > Remove the dump_stack() and add some printk()s.
+> > > I'm interested which PIDs are returned and waited for.
+> > 
+> > Mhh.. I think the pid is already printed in error case:
+> > 
+> > [   15.930000] helper_wait : waitpid process 11673 failed, errno = 
+> > 10
+> > [   15.930000] * modprobe tun
+> >                * ifconfig tap0 192.168.10.1 netmask 255.255.255.255 
+> > up
+> >                * bash -c echo 1 > /proc/sys/net/ipv4/ip_forward
+> > [   20.480000] helper_wait : waitpid process 11780 failed, errno = 
+> > 10
+> > [   20.480000] * route add -host 192.168.10.2 dev tap0
+> >                * bash -c echo 1 > 
+> > /proc/sys/net/ipv4/conf/tap0/proxy_arp
+> > 
+> > pid 11673 and pid 11780 in above case were the two zombie 
+> > processes.
+> > 
+> > errno 10 = ECHILD
+> > 
+> > which can happen for the waitpid() call, according to the man page:
+> > 
+> >        ECHILD (for  waitpid()  or waitid()) The process specified 
+> > by pid (waitpid()) or idtype and id (waitid()) does not exist or
+> >               is not a child of the calling process.  (This can 
+> > happen for one's own child if the action for  SIGCHLD  is  set  to
+> >               SIG_IGN.  See also the Linux Notes section about 
+> > threads.)
+> > 
+> > I'm not able to completely figure out above meaning, so...
+> > But maybe ECHILD is returned because uml_net is run with setuid bit
+> > set?
+> > 
+> > any ideas?
+> 
+> The attached fix should fix the issue. Please confirm.
+> 
 
--next faces some build issues on UML because of unmet direct dependencies.
-Mostly due to HAS_IOMEM and I2C.
+Hi,
 
-warning: (MEDIA_SUBDRV_AUTOSELECT && VIDEO_CX231XX && INV_MPU6050_IIO) selects I2C_MUX which has unmet direct dependencies (I2C && HAS_IOMEM)
-warning: (ST_IRQCHIP && HIP04_ETH && STMMAC_PLATFORM && DWMAC_IPQ806X && DWMAC_LPC18XX && DWMAC_ROCKCHIP && DWMAC_SOCFPGA && DWMAC_STI && TI_CPSW && PINCTRL_ROCKCHIP &&
-PINCTRL_DOVE && POWER_RESET_KEYSTONE && POWER_RESET_SYSCON && POWER_RESET_SYSCON_POWEROFF && S3C2410_WATCHDOG && VIDEO_OMAP3 && VIDEO_S5P_FIMC && RTC_DRV_AT91SAM9 && VIDEO_OMAP4 &&
-HWSPINLOCK_QCOM && ATMEL_ST && QCOM_GSBI) selects MFD_SYSCON which has unmet direct dependencies (HAS_IOMEM)
-warning: (MEDIA_SUBDRV_AUTOSELECT && VIDEO_CX231XX && INV_MPU6050_IIO) selects I2C_MUX which has unmet direct dependencies (I2C && HAS_IOMEM)
-warning: (ST_IRQCHIP && HIP04_ETH && STMMAC_PLATFORM && DWMAC_IPQ806X && DWMAC_LPC18XX && DWMAC_ROCKCHIP && DWMAC_SOCFPGA && DWMAC_STI && TI_CPSW && PINCTRL_ROCKCHIP &&
-PINCTRL_DOVE && POWER_RESET_KEYSTONE && POWER_RESET_SYSCON && POWER_RESET_SYSCON_POWEROFF && S3C2410_WATCHDOG && VIDEO_OMAP3 && VIDEO_S5P_FIMC && RTC_DRV_AT91SAM9 && VIDEO_OMAP4 &&
-HWSPINLOCK_QCOM && ATMEL_ST && QCOM_GSBI) selects MFD_SYSCON which has unmet direct dependencies (HAS_IOMEM)
+yes, the uml_net zombie processes are gone now!
 
-For example MFD_SYSCON cannot build on UML as it depends on HAS_IOMEM.
-While the symbol MFD_SYSCON has correct dependencies some users of MFD_SYSCON
-just issue a "select MFD_SYSCON" and bypass the HAS_IOMEM dependency and causing the build to fail.
+many thanks for this patch!
 
-This brings me to a question on kconfig itself, wouldn't it be better to just disable a symbol if it has
-unmet direct dependencies?
+with kind regards
+thomas
 
-Thanks,
-//richard
 
 ------------------------------------------------------------------------------
 _______________________________________________
