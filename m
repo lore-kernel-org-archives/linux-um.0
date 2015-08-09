@@ -2,24 +2,18 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lee.jones@linaro.org>) id 1ZOj60-0005YV-Kf
+	(envelope-from <richard@nod.at>) id 1ZON5U-00075L-Sr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Aug 2015 09:10:16 +0000
-Received: from mail-wi0-f174.google.com ([209.85.212.174])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZOj5y-00015b-D9
+	Sun, 09 Aug 2015 09:40:16 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZON5T-0008Ss-8j
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 10 Aug 2015 09:10:16 +0000
-Received: by wicne3 with SMTP id ne3so127454012wic.1
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 10 Aug 2015 02:10:08 -0700 (PDT)
-Date: Mon, 10 Aug 2015 10:10:04 +0100
-From: Lee Jones <lee.jones@linaro.org>
-Message-ID: <20150810091004.GC3249@x1>
-References: <55C71FF5.1020902@nod.at>
+	Sun, 09 Aug 2015 09:40:16 +0000
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <55C71FF5.1020902@nod.at>
+Date: Sun, 9 Aug 2015 11:40:05 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <55C71FF5.1020902@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -29,57 +23,40 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] unmet direct dependencies in -next
-To: Richard Weinberger <richard@nod.at>
-Cc: sameo@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, linux-kbuild <linux-kbuild@vger.kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-next@vger.kernel.org, "open list:I2C SUBSYSTEM" <linux-i2c@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, yann.morin.1998@free.fr
+Subject: [uml-devel] unmet direct dependencies in -next
+To: linux-next@vger.kernel.org
+Cc: sameo@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, Wolfram Sang <wsa@the-dreams.de>, linux-kbuild <linux-kbuild@vger.kernel.org>, "open list:I2C SUBSYSTEM" <linux-i2c@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, lee.jones@linaro.org, yann.morin.1998@free.fr
 
-T24gU3VuLCAwOSBBdWcgMjAxNSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgoKPiBIaSEKPiAK
-PiAtbmV4dCBmYWNlcyBzb21lIGJ1aWxkIGlzc3VlcyBvbiBVTUwgYmVjYXVzZSBvZiB1bm1ldCBk
-aXJlY3QgZGVwZW5kZW5jaWVzLgo+IE1vc3RseSBkdWUgdG8gSEFTX0lPTUVNIGFuZCBJMkMuCj4g
-Cj4gd2FybmluZzogKE1FRElBX1NVQkRSVl9BVVRPU0VMRUNUICYmIFZJREVPX0NYMjMxWFggJiYg
-SU5WX01QVTYwNTBfSUlPKSBzZWxlY3RzIEkyQ19NVVggd2hpY2ggaGFzIHVubWV0IGRpcmVjdCBk
-ZXBlbmRlbmNpZXMgKEkyQyAmJiBIQVNfSU9NRU0pCj4gd2FybmluZzogKFNUX0lSUUNISVAgJiYg
-SElQMDRfRVRIICYmIFNUTU1BQ19QTEFURk9STSAmJiBEV01BQ19JUFE4MDZYICYmIERXTUFDX0xQ
-QzE4WFggJiYgRFdNQUNfUk9DS0NISVAgJiYgRFdNQUNfU09DRlBHQSAmJiBEV01BQ19TVEkgJiYg
-VElfQ1BTVyAmJiBQSU5DVFJMX1JPQ0tDSElQICYmCj4gUElOQ1RSTF9ET1ZFICYmIFBPV0VSX1JF
-U0VUX0tFWVNUT05FICYmIFBPV0VSX1JFU0VUX1NZU0NPTiAmJiBQT1dFUl9SRVNFVF9TWVNDT05f
-UE9XRVJPRkYgJiYgUzNDMjQxMF9XQVRDSERPRyAmJiBWSURFT19PTUFQMyAmJiBWSURFT19TNVBf
-RklNQyAmJiBSVENfRFJWX0FUOTFTQU05ICYmIFZJREVPX09NQVA0ICYmCj4gSFdTUElOTE9DS19R
-Q09NICYmIEFUTUVMX1NUICYmIFFDT01fR1NCSSkgc2VsZWN0cyBNRkRfU1lTQ09OIHdoaWNoIGhh
-cyB1bm1ldCBkaXJlY3QgZGVwZW5kZW5jaWVzIChIQVNfSU9NRU0pCj4gd2FybmluZzogKE1FRElB
-X1NVQkRSVl9BVVRPU0VMRUNUICYmIFZJREVPX0NYMjMxWFggJiYgSU5WX01QVTYwNTBfSUlPKSBz
-ZWxlY3RzIEkyQ19NVVggd2hpY2ggaGFzIHVubWV0IGRpcmVjdCBkZXBlbmRlbmNpZXMgKEkyQyAm
-JiBIQVNfSU9NRU0pCj4gd2FybmluZzogKFNUX0lSUUNISVAgJiYgSElQMDRfRVRIICYmIFNUTU1B
-Q19QTEFURk9STSAmJiBEV01BQ19JUFE4MDZYICYmIERXTUFDX0xQQzE4WFggJiYgRFdNQUNfUk9D
-S0NISVAgJiYgRFdNQUNfU09DRlBHQSAmJiBEV01BQ19TVEkgJiYgVElfQ1BTVyAmJiBQSU5DVFJM
-X1JPQ0tDSElQICYmCj4gUElOQ1RSTF9ET1ZFICYmIFBPV0VSX1JFU0VUX0tFWVNUT05FICYmIFBP
-V0VSX1JFU0VUX1NZU0NPTiAmJiBQT1dFUl9SRVNFVF9TWVNDT05fUE9XRVJPRkYgJiYgUzNDMjQx
-MF9XQVRDSERPRyAmJiBWSURFT19PTUFQMyAmJiBWSURFT19TNVBfRklNQyAmJiBSVENfRFJWX0FU
-OTFTQU05ICYmIFZJREVPX09NQVA0ICYmCj4gSFdTUElOTE9DS19RQ09NICYmIEFUTUVMX1NUICYm
-IFFDT01fR1NCSSkgc2VsZWN0cyBNRkRfU1lTQ09OIHdoaWNoIGhhcyB1bm1ldCBkaXJlY3QgZGVw
-ZW5kZW5jaWVzIChIQVNfSU9NRU0pCj4gCj4gRm9yIGV4YW1wbGUgTUZEX1NZU0NPTiBjYW5ub3Qg
-YnVpbGQgb24gVU1MIGFzIGl0IGRlcGVuZHMgb24gSEFTX0lPTUVNLgo+IFdoaWxlIHRoZSBzeW1i
-b2wgTUZEX1NZU0NPTiBoYXMgY29ycmVjdCBkZXBlbmRlbmNpZXMgc29tZSB1c2VycyBvZiBNRkRf
-U1lTQ09OCj4ganVzdCBpc3N1ZSBhICJzZWxlY3QgTUZEX1NZU0NPTiIgYW5kIGJ5cGFzcyB0aGUg
-SEFTX0lPTUVNIGRlcGVuZGVuY3kgYW5kIGNhdXNpbmcgdGhlIGJ1aWxkIHRvIGZhaWwuCj4gCj4g
-VGhpcyBicmluZ3MgbWUgdG8gYSBxdWVzdGlvbiBvbiBrY29uZmlnIGl0c2VsZiwgd291bGRuJ3Qg
-aXQgYmUgYmV0dGVyIHRvIGp1c3QgZGlzYWJsZSBhIHN5bWJvbCBpZiBpdCBoYXMKPiB1bm1ldCBk
-aXJlY3QgZGVwZW5kZW5jaWVzPwoKSWYgdGhpcyBpcyBhIHF1ZXN0aW9uIGFib3V0ICJrY29uZmln
-IGl0c2VsZiIsIHlvdSBzaG91bGQgcHJvYmFibHkgaGF2ZQppbmNsdWRlZCB0aGUgY29ycmVjdCBN
-TCBhbmQgTWFpbnRhaW5lcjoKCktDT05GSUcKTTogICAgICBNaWNoYWwgTWFyZWsgPG1tYXJla0Bz
-dXNlLmN6PgpMOiAgICAgIGxpbnV4LWtidWlsZEB2Z2VyLmtlcm5lbC5vcmcKUzogICAgICBPZGQg
-Rml4ZXMKRjogICAgICBEb2N1bWVudGF0aW9uL2tidWlsZC9rY29uZmlnLWxhbmd1YWdlLnR4dApG
-OiAgICAgIHNjcmlwdHMva2NvbmZpZy8KClRoZXJlIGFyZSBhbHNvIHF1aXRlIGEgZmV3IGludGVy
-ZXN0ZWQgcGFydGllcyBvbiBMS01MIHdobyBtaWdodCBiZQppbmNsaW5lZCB0byBzdWJtaXQgYSBm
-aXggZm9yIHlvdS4KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNUTWljcm9lbGVjdHJvbmljcyBMYW5k
-aW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJN
-IFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRl
-dmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
-aXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+Hi!
+
+-next faces some build issues on UML because of unmet direct dependencies.
+Mostly due to HAS_IOMEM and I2C.
+
+warning: (MEDIA_SUBDRV_AUTOSELECT && VIDEO_CX231XX && INV_MPU6050_IIO) selects I2C_MUX which has unmet direct dependencies (I2C && HAS_IOMEM)
+warning: (ST_IRQCHIP && HIP04_ETH && STMMAC_PLATFORM && DWMAC_IPQ806X && DWMAC_LPC18XX && DWMAC_ROCKCHIP && DWMAC_SOCFPGA && DWMAC_STI && TI_CPSW && PINCTRL_ROCKCHIP &&
+PINCTRL_DOVE && POWER_RESET_KEYSTONE && POWER_RESET_SYSCON && POWER_RESET_SYSCON_POWEROFF && S3C2410_WATCHDOG && VIDEO_OMAP3 && VIDEO_S5P_FIMC && RTC_DRV_AT91SAM9 && VIDEO_OMAP4 &&
+HWSPINLOCK_QCOM && ATMEL_ST && QCOM_GSBI) selects MFD_SYSCON which has unmet direct dependencies (HAS_IOMEM)
+warning: (MEDIA_SUBDRV_AUTOSELECT && VIDEO_CX231XX && INV_MPU6050_IIO) selects I2C_MUX which has unmet direct dependencies (I2C && HAS_IOMEM)
+warning: (ST_IRQCHIP && HIP04_ETH && STMMAC_PLATFORM && DWMAC_IPQ806X && DWMAC_LPC18XX && DWMAC_ROCKCHIP && DWMAC_SOCFPGA && DWMAC_STI && TI_CPSW && PINCTRL_ROCKCHIP &&
+PINCTRL_DOVE && POWER_RESET_KEYSTONE && POWER_RESET_SYSCON && POWER_RESET_SYSCON_POWEROFF && S3C2410_WATCHDOG && VIDEO_OMAP3 && VIDEO_S5P_FIMC && RTC_DRV_AT91SAM9 && VIDEO_OMAP4 &&
+HWSPINLOCK_QCOM && ATMEL_ST && QCOM_GSBI) selects MFD_SYSCON which has unmet direct dependencies (HAS_IOMEM)
+
+For example MFD_SYSCON cannot build on UML as it depends on HAS_IOMEM.
+While the symbol MFD_SYSCON has correct dependencies some users of MFD_SYSCON
+just issue a "select MFD_SYSCON" and bypass the HAS_IOMEM dependency and causing the build to fail.
+
+This brings me to a question on kconfig itself, wouldn't it be better to just disable a symbol if it has
+unmet direct dependencies?
+
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
