@@ -1,17 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1ZOWly-0007ix-FN
+	(envelope-from <lee.jones@linaro.org>) id 1ZOj60-0005YV-Kf
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Aug 2015 20:00:46 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZOWlv-000441-R7 for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 09 Aug 2015 20:00:46 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Sun,  9 Aug 2015 22:00:28 +0200
-Message-Id: <1439150428-3709-1-git-send-email-richard@nod.at>
+	Mon, 10 Aug 2015 09:10:16 +0000
+Received: from mail-wi0-f174.google.com ([209.85.212.174])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZOj5y-00015b-D9
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 10 Aug 2015 09:10:16 +0000
+Received: by wicne3 with SMTP id ne3so127454012wic.1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 10 Aug 2015 02:10:08 -0700 (PDT)
+Date: Mon, 10 Aug 2015 10:10:04 +0100
+From: Lee Jones <lee.jones@linaro.org>
+Message-ID: <20150810091004.GC3249@x1>
+References: <55C71FF5.1020902@nod.at>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <55C71FF5.1020902@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -21,69 +29,57 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH] um: Fix waitpid() usage in helper code
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, thomas@m3y3r.de
+Subject: Re: [uml-devel] unmet direct dependencies in -next
+To: Richard Weinberger <richard@nod.at>
+Cc: sameo@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, linux-kbuild <linux-kbuild@vger.kernel.org>, Wolfram Sang <wsa@the-dreams.de>, linux-next@vger.kernel.org, "open list:I2C SUBSYSTEM" <linux-i2c@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, yann.morin.1998@free.fr
 
-If UML is executing a helper program it is using
-waitpid() with the __WCLONE flag to wait for the program
-as the helper is executed from a clone()'ed thread.
-While using __WCLONE is perfectly fine for clone()'ed
-childs it won't detect terminated childs if the helper
-has issued an execve().
-
-We have to use __WALL to wait for both clone()'ed and
-regular childs to detect the termination before and
-after an execve().
-
-Reported-and-tested-by: Thomas Meyer <thomas@m3y3r.de>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/os-Linux/helper.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index e3ee4a5..3f02d42 100644
---- a/arch/um/os-Linux/helper.c
-+++ b/arch/um/os-Linux/helper.c
-@@ -96,7 +96,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
- 			       "ret = %d\n", -n);
- 			ret = n;
- 		}
--		CATCH_EINTR(waitpid(pid, NULL, __WCLONE));
-+		CATCH_EINTR(waitpid(pid, NULL, __WALL));
- 	}
- 
- out_free2:
-@@ -129,7 +129,7 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
- 		return err;
- 	}
- 	if (stack_out == NULL) {
--		CATCH_EINTR(pid = waitpid(pid, &status, __WCLONE));
-+		CATCH_EINTR(pid = waitpid(pid, &status, __WALL));
- 		if (pid < 0) {
- 			err = -errno;
- 			printk(UM_KERN_ERR "run_helper_thread - wait failed, "
-@@ -148,7 +148,7 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
- int helper_wait(int pid)
- {
- 	int ret, status;
--	int wflags = __WCLONE;
-+	int wflags = __WALL;
- 
- 	CATCH_EINTR(ret = waitpid(pid, &status, wflags));
- 	if (ret < 0) {
--- 
-1.8.4.5
-
-
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gU3VuLCAwOSBBdWcgMjAxNSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgoKPiBIaSEKPiAK
+PiAtbmV4dCBmYWNlcyBzb21lIGJ1aWxkIGlzc3VlcyBvbiBVTUwgYmVjYXVzZSBvZiB1bm1ldCBk
+aXJlY3QgZGVwZW5kZW5jaWVzLgo+IE1vc3RseSBkdWUgdG8gSEFTX0lPTUVNIGFuZCBJMkMuCj4g
+Cj4gd2FybmluZzogKE1FRElBX1NVQkRSVl9BVVRPU0VMRUNUICYmIFZJREVPX0NYMjMxWFggJiYg
+SU5WX01QVTYwNTBfSUlPKSBzZWxlY3RzIEkyQ19NVVggd2hpY2ggaGFzIHVubWV0IGRpcmVjdCBk
+ZXBlbmRlbmNpZXMgKEkyQyAmJiBIQVNfSU9NRU0pCj4gd2FybmluZzogKFNUX0lSUUNISVAgJiYg
+SElQMDRfRVRIICYmIFNUTU1BQ19QTEFURk9STSAmJiBEV01BQ19JUFE4MDZYICYmIERXTUFDX0xQ
+QzE4WFggJiYgRFdNQUNfUk9DS0NISVAgJiYgRFdNQUNfU09DRlBHQSAmJiBEV01BQ19TVEkgJiYg
+VElfQ1BTVyAmJiBQSU5DVFJMX1JPQ0tDSElQICYmCj4gUElOQ1RSTF9ET1ZFICYmIFBPV0VSX1JF
+U0VUX0tFWVNUT05FICYmIFBPV0VSX1JFU0VUX1NZU0NPTiAmJiBQT1dFUl9SRVNFVF9TWVNDT05f
+UE9XRVJPRkYgJiYgUzNDMjQxMF9XQVRDSERPRyAmJiBWSURFT19PTUFQMyAmJiBWSURFT19TNVBf
+RklNQyAmJiBSVENfRFJWX0FUOTFTQU05ICYmIFZJREVPX09NQVA0ICYmCj4gSFdTUElOTE9DS19R
+Q09NICYmIEFUTUVMX1NUICYmIFFDT01fR1NCSSkgc2VsZWN0cyBNRkRfU1lTQ09OIHdoaWNoIGhh
+cyB1bm1ldCBkaXJlY3QgZGVwZW5kZW5jaWVzIChIQVNfSU9NRU0pCj4gd2FybmluZzogKE1FRElB
+X1NVQkRSVl9BVVRPU0VMRUNUICYmIFZJREVPX0NYMjMxWFggJiYgSU5WX01QVTYwNTBfSUlPKSBz
+ZWxlY3RzIEkyQ19NVVggd2hpY2ggaGFzIHVubWV0IGRpcmVjdCBkZXBlbmRlbmNpZXMgKEkyQyAm
+JiBIQVNfSU9NRU0pCj4gd2FybmluZzogKFNUX0lSUUNISVAgJiYgSElQMDRfRVRIICYmIFNUTU1B
+Q19QTEFURk9STSAmJiBEV01BQ19JUFE4MDZYICYmIERXTUFDX0xQQzE4WFggJiYgRFdNQUNfUk9D
+S0NISVAgJiYgRFdNQUNfU09DRlBHQSAmJiBEV01BQ19TVEkgJiYgVElfQ1BTVyAmJiBQSU5DVFJM
+X1JPQ0tDSElQICYmCj4gUElOQ1RSTF9ET1ZFICYmIFBPV0VSX1JFU0VUX0tFWVNUT05FICYmIFBP
+V0VSX1JFU0VUX1NZU0NPTiAmJiBQT1dFUl9SRVNFVF9TWVNDT05fUE9XRVJPRkYgJiYgUzNDMjQx
+MF9XQVRDSERPRyAmJiBWSURFT19PTUFQMyAmJiBWSURFT19TNVBfRklNQyAmJiBSVENfRFJWX0FU
+OTFTQU05ICYmIFZJREVPX09NQVA0ICYmCj4gSFdTUElOTE9DS19RQ09NICYmIEFUTUVMX1NUICYm
+IFFDT01fR1NCSSkgc2VsZWN0cyBNRkRfU1lTQ09OIHdoaWNoIGhhcyB1bm1ldCBkaXJlY3QgZGVw
+ZW5kZW5jaWVzIChIQVNfSU9NRU0pCj4gCj4gRm9yIGV4YW1wbGUgTUZEX1NZU0NPTiBjYW5ub3Qg
+YnVpbGQgb24gVU1MIGFzIGl0IGRlcGVuZHMgb24gSEFTX0lPTUVNLgo+IFdoaWxlIHRoZSBzeW1i
+b2wgTUZEX1NZU0NPTiBoYXMgY29ycmVjdCBkZXBlbmRlbmNpZXMgc29tZSB1c2VycyBvZiBNRkRf
+U1lTQ09OCj4ganVzdCBpc3N1ZSBhICJzZWxlY3QgTUZEX1NZU0NPTiIgYW5kIGJ5cGFzcyB0aGUg
+SEFTX0lPTUVNIGRlcGVuZGVuY3kgYW5kIGNhdXNpbmcgdGhlIGJ1aWxkIHRvIGZhaWwuCj4gCj4g
+VGhpcyBicmluZ3MgbWUgdG8gYSBxdWVzdGlvbiBvbiBrY29uZmlnIGl0c2VsZiwgd291bGRuJ3Qg
+aXQgYmUgYmV0dGVyIHRvIGp1c3QgZGlzYWJsZSBhIHN5bWJvbCBpZiBpdCBoYXMKPiB1bm1ldCBk
+aXJlY3QgZGVwZW5kZW5jaWVzPwoKSWYgdGhpcyBpcyBhIHF1ZXN0aW9uIGFib3V0ICJrY29uZmln
+IGl0c2VsZiIsIHlvdSBzaG91bGQgcHJvYmFibHkgaGF2ZQppbmNsdWRlZCB0aGUgY29ycmVjdCBN
+TCBhbmQgTWFpbnRhaW5lcjoKCktDT05GSUcKTTogICAgICBNaWNoYWwgTWFyZWsgPG1tYXJla0Bz
+dXNlLmN6PgpMOiAgICAgIGxpbnV4LWtidWlsZEB2Z2VyLmtlcm5lbC5vcmcKUzogICAgICBPZGQg
+Rml4ZXMKRjogICAgICBEb2N1bWVudGF0aW9uL2tidWlsZC9rY29uZmlnLWxhbmd1YWdlLnR4dApG
+OiAgICAgIHNjcmlwdHMva2NvbmZpZy8KClRoZXJlIGFyZSBhbHNvIHF1aXRlIGEgZmV3IGludGVy
+ZXN0ZWQgcGFydGllcyBvbiBMS01MIHdobyBtaWdodCBiZQppbmNsaW5lZCB0byBzdWJtaXQgYSBm
+aXggZm9yIHlvdS4KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNUTWljcm9lbGVjdHJvbmljcyBMYW5k
+aW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJN
+IFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwoKLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRl
+dmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
+aXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
