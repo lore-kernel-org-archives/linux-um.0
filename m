@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZmFwk-0008HN-3R
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1Zm7OP-00040C-A6
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Oct 2015 06:53:58 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1ZmFwi-0004z9-GQ
+	Tue, 13 Oct 2015 21:45:57 +0000
+Received: from mail-oi0-f50.google.com ([209.85.218.50])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Zm7OO-0000Nt-6O
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 14 Oct 2015 06:53:58 +0000
-Message-ID: <561DF24C.1040702@kot-begemot.co.uk>
-Date: Wed, 14 Oct 2015 07:12:28 +0100
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+	Tue, 13 Oct 2015 21:45:57 +0000
+Received: by oiar126 with SMTP id r126so17735163oia.0
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 13 Oct 2015 14:45:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <55CEF513.90604@nod.at>	<4cf7d197-2f4c-4a6f-ae27-44612cc6d8e5@email.android.com>
-	<CAFLxGvwQ4QarNsBGU=Ue7AZZ_QsL7TiWz8Bfkr8ENf9SFpcm7g@mail.gmail.com>
-In-Reply-To: <CAFLxGvwQ4QarNsBGU=Ue7AZZ_QsL7TiWz8Bfkr8ENf9SFpcm7g@mail.gmail.com>
+In-Reply-To: <4cf7d197-2f4c-4a6f-ae27-44612cc6d8e5@email.android.com>
+References: <55CEF513.90604@nod.at>
+	<4cf7d197-2f4c-4a6f-ae27-44612cc6d8e5@email.android.com>
+Date: Tue, 13 Oct 2015 23:45:50 +0200
+Message-ID: <CAFLxGvwQ4QarNsBGU=Ue7AZZ_QsL7TiWz8Bfkr8ENf9SFpcm7g@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -31,36 +34,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] um: Switch clocksource to hrtimers
 To: Thomas Meyer <thomas@m3y3r.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Thomas, I need to know if you have the time-slices for this or I should 
-take over and finish it.
-
-In addition to what Richard said I have the epoll based IRQ controller 
-and high-performance network pipeline which depend on it in the queue.
-
-Brgds,
-
-A.
-
-On 13/10/15 22:45, Richard Weinberger wrote:
-> On Tue, Aug 18, 2015 at 6:04 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
->> Am 15.08.2015 10:15 vorm. schrieb Richard Weinberger <richard@nod.at>:
->>> Am 09.08.2015 um 19:53 schrieb Thomas Meyer:
->>>> Switch the UML clocksource from interval timers to posix interval timers and
->>>> move to a monotonic timer.
->>>>
->>>> This fixes suspend&resume related timer issues and improves network performance
->>>> as TCP state machines are now fed with the correct time; also correct QoS and
->>>> traffic shaping.
->>> The patch is rather big. Please describe in your commit message how exactly
->>> it works and why.
->>> It changes many internals.
->> Will do so!
-> Can I get an updated version of that patch?
-> I really want to merge it in the next merge window.
+On Tue, Aug 18, 2015 at 6:04 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
+> Am 15.08.2015 10:15 vorm. schrieb Richard Weinberger <richard@nod.at>:
+>>
+>> Am 09.08.2015 um 19:53 schrieb Thomas Meyer:
+>> > Switch the UML clocksource from interval timers to posix interval timers and
+>> > move to a monotonic timer.
+>> >
+>> > This fixes suspend&resume related timer issues and improves network performance
+>> > as TCP state machines are now fed with the correct time; also correct QoS and
+>> > traffic shaping.
+>>
+>> The patch is rather big. Please describe in your commit message how exactly
+>> it works and why.
+>> It changes many internals.
 >
+> Will do so!
 
+Can I get an updated version of that patch?
+I really want to merge it in the next merge window.
+
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 _______________________________________________
