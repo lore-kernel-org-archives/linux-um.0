@@ -1,68 +1,44 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1Zm7OP-00040C-A6
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Oct 2015 21:45:57 +0000
-Received: from mail-oi0-f50.google.com ([209.85.218.50])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Zm7OO-0000Nt-6O
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 13 Oct 2015 21:45:57 +0000
-Received: by oiar126 with SMTP id r126so17735163oia.0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 13 Oct 2015 14:45:50 -0700 (PDT)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56255A75.4060200@nod.at>
+Date: Mon, 19 Oct 2015 23:02:45 +0200
 MIME-Version: 1.0
-In-Reply-To: <4cf7d197-2f4c-4a6f-ae27-44612cc6d8e5@email.android.com>
-References: <55CEF513.90604@nod.at>
-	<4cf7d197-2f4c-4a6f-ae27-44612cc6d8e5@email.android.com>
-Date: Tue, 13 Oct 2015 23:45:50 +0200
-Message-ID: <CAFLxGvwQ4QarNsBGU=Ue7AZZ_QsL7TiWz8Bfkr8ENf9SFpcm7g@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [PATCH] um: Switch clocksource to hrtimers
-To: Thomas Meyer <thomas@m3y3r.de>
-Cc: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [GIT PULL] UML fixes for 4.3-rc6
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Aug 18, 2015 at 6:04 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
-> Am 15.08.2015 10:15 vorm. schrieb Richard Weinberger <richard@nod.at>:
->>
->> Am 09.08.2015 um 19:53 schrieb Thomas Meyer:
->> > Switch the UML clocksource from interval timers to posix interval timers and
->> > move to a monotonic timer.
->> >
->> > This fixes suspend&resume related timer issues and improves network performance
->> > as TCP state machines are now fed with the correct time; also correct QoS and
->> > traffic shaping.
->>
->> The patch is rather big. Please describe in your commit message how exactly
->> it works and why.
->> It changes many internals.
->
-> Will do so!
+Linus,
 
-Can I get an updated version of that patch?
-I really want to merge it in the next merge window.
+the following changes since commit 7379047d5585187d1288486d4627873170d0005a:
 
--- 
-Thanks,
-//richard
+  Linux 4.3-rc6 (2015-10-18 16:08:42 -0700)
 
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+are available in the git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.3-rc6
+
+for you to fetch changes up to 56b88a3bf97a39d3f4f010509917b76a865a6dc8:
+
+  um: Fix kernel mode fault condition (2015-10-19 22:53:37 +0200)
+
+----------------------------------------------------------------
+This pull request contains four overdue UML regression fixes
+
+----------------------------------------------------------------
+Hans-Werner Hilse (1):
+      um: Do not rely on libc to provide modify_ldt()
+
+Richard Weinberger (3):
+      um: Fix out-of-tree build
+      um: Fix waitpid() usage in helper code
+      um: Fix kernel mode fault condition
+
+ arch/um/Makefile          | 4 ++--
+ arch/um/kernel/trap.c     | 2 +-
+ arch/um/os-Linux/helper.c | 6 +++---
+ arch/x86/um/ldt.c         | 5 ++++-
+ 4 files changed, 10 insertions(+), 7 deletions(-)
