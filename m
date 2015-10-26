@@ -1,10 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-MIME-Version: 1.0
-In-Reply-To: <1446220968.3024896.424644809.559D7C91@webmail.messagingengine.com>
-References: <1446220968.3024896.424644809.559D7C91@webmail.messagingengine.com>
-Date: Fri, 30 Oct 2015 20:30:53 +0100
-Message-ID: <CAFLxGvwfVaevxHCTUkWcKRT6m9eh8S57i_P1QOLozwzgCoU0bA@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1ZqeOH-0007cx-VR
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Oct 2015 09:48:33 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZqeOH-0002Gs-2M for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 26 Oct 2015 09:48:33 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Mon, 26 Oct 2015 10:48:15 +0100
+Message-Id: <1445852897-13102-5-git-send-email-richard@nod.at>
+In-Reply-To: <1445852897-13102-1-git-send-email-richard@nod.at>
+References: <1445852897-13102-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -14,78 +23,37 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [uml-user] Building from source problems and
-	possibilities
-To: Balaco Baco <balacobaco@imap.cc>
-Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>
+Subject: [uml-devel] [PATCH 5/7] um: Remove dead code from x86_64 syscall
+	stub
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2015 at 5:02 PM, Balaco Baco <balacobaco@imap.cc> wrote:
-> I restarted, now I've got another kernel source (2.6.32.68), knowing
-> that it may be old, but it's the "newer old" for 2.6, and I hoped that
-> it would work.
+syscall_stub is dead code as um is using only
+batch_syscall_stub.
 
-Are you an archeologist? ;-)
-Is there a particular reason why you can't use something recent?
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/x86/um/stub_32.S | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Steps done:
->
-> 1. downloaded https://cdn. kernel
-> .org/pub/linux/kernel/v2.6/longterm/v2.6.32/linux-2.6.32.68.tar.xz
-> 2. extract with tar cJf (whatever)
-> 3. A few commands:
->     make defconfig ARCH=um
->     # config is saved on a file, to be restarted from a known point
->     whenever needed
->     make menuconfig ARCH=um
->     make mrproper                    # zero start guarantee when
->     repeating these steps
->     make mrproper ARCH=um   #  "
->     make ARCH=uml
->
-> 4. It stops a few seconds after, with a few errors that may be simple to
-> fix:
->
-> ===============
-> arch/um/os-Linux/start_up.c: In function 'check_coredump_limit':
-> arch/um/os-Linux/start_up.c:340:16: error: storage size of 'lim' isn't
-> known
->   struct rlimit lim;
->                 ^
-> arch/um/os-Linux/start_up.c:341:2: error: implicit declaration of
-> function 'getrlimit' [-Werror=implicit-function-declaration]
->   int err = getrlimit(RLIMIT_CORE, &lim);
->   ^
-> arch/um/os-Linux/start_up.c:341:22: error: 'RLIMIT_CORE' undeclared
-> (first use in this function)
->   int err = getrlimit(RLIMIT_CORE, &lim);
->                       ^
-> arch/um/os-Linux/start_up.c:341:22: note: each undeclared identifier is
-> reported only once for each function it appears in
-> arch/um/os-Linux/start_up.c:349:22: error: 'RLIM_INFINITY' undeclared
-> (first use in this function)
->   if (lim.rlim_cur == RLIM_INFINITY)
->                       ^
-> arch/um/os-Linux/start_up.c:340:16: warning: unused variable 'lim'
-> [-Wunused-variable]
->   struct rlimit lim;
->                 ^
-> cc1: some warnings being treated as errors
-> make[1]: *** [arch/um/os-Linux/start_up.o] Error 1
-> make: *** [arch/um/os-Linux] Error 2
->
-> ===============
->
-> Do you know the reason for these two errors? And how I should fix them?
-
-It depends what libc you're using. AFAICT libc moved a header file to
-a new location.
-
+diff --git a/arch/x86/um/stub_32.S b/arch/x86/um/stub_32.S
+index b972649..9881680 100644
+--- a/arch/x86/um/stub_32.S
++++ b/arch/x86/um/stub_32.S
+@@ -1,6 +1,5 @@
+ #include <as-layout.h>
+ 
+-	.globl syscall_stub
+ .section .__syscall_stub, "ax"
+ 
+ 	.globl batch_syscall_stub
 -- 
-Thanks,
-//richard
+1.8.4.5
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
