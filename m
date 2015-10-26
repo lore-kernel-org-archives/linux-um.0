@@ -2,21 +2,21 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1Zrge2-0007fa-HI
+	(envelope-from <richard@nod.at>) id 1Zqelh-0001MD-Qn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Oct 2015 06:25:06 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Zrge1-0003DL-7S
+	Mon, 26 Oct 2015 10:12:45 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Zqelb-0002y0-OM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Oct 2015 06:25:06 +0000
-Message-ID: <5631BB4E.4010301@kot-begemot.co.uk>
-Date: Thu, 29 Oct 2015 06:23:10 +0000
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-MIME-Version: 1.0
+	Mon, 26 Oct 2015 10:12:45 +0000
 References: <1445416947-824802-1-git-send-email-aivanov@brocade.com>
-	<562D236E.7020108@kot-begemot.co.uk> <562DFC90.9030308@nod.at>
-In-Reply-To: <562DFC90.9030308@nod.at>
+	<562D236E.7020108@kot-begemot.co.uk>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <562DFC90.9030308@nod.at>
+Date: Mon, 26 Oct 2015 11:12:32 +0100
+MIME-Version: 1.0
+In-Reply-To: <562D236E.7020108@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,42 +30,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v3] um: Switch clocksource to hrtimers
-To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, user-mode-linux-devel@lists.sourceforge.net
 
-I got the first patchset to build, it works very well on a single core 
-host or with CPU pinning of the UML - the performance gain is > 25%.
+Hi!
 
-However, I introduced a race somewhere along the way - it crashes UML 
-reliably if you do not pin CPUs.
+Am 25.10.2015 um 19:46 schrieb Anton Ivanov:
+> Hi List, hi Richard,
+> 
+> I am going to sort out the UBD patchset next as that has no dependencies on timer and the other stuff which is waiting in the queue behind the timers.
+> 
+> That should give UML a significant boost. It is nothing particularly revolutionary (qemu has been using some of that for ages).
+> 
+> I should be able to get these out of the door early on this week.
 
-I will debug it, fix it and submit. I am guessing a week or so. IMHO 25% 
-is worth it :)
+Nice!
 
-A.
+> A.
+> 
+> P.S. If there is anything to fix on the timer one, please shout.
 
+Looks good so far. Unless it breaks a lot it will be part of the 4.4 merge window. :)
 
-On 26/10/15 10:12, Richard Weinberger wrote:
-> Hi!
->
-> Am 25.10.2015 um 19:46 schrieb Anton Ivanov:
->> Hi List, hi Richard,
->>
->> I am going to sort out the UBD patchset next as that has no dependencies on timer and the other stuff which is waiting in the queue behind the timers.
->>
->> That should give UML a significant boost. It is nothing particularly revolutionary (qemu has been using some of that for ages).
->>
->> I should be able to get these out of the door early on this week.
-> Nice!
->
->> A.
->>
->> P.S. If there is anything to fix on the timer one, please shout.
-> Looks good so far. Unless it breaks a lot it will be part of the 4.4 merge window. :)
->
-> Thanks,
-> //richard
->
-
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 _______________________________________________
