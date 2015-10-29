@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1ZsWc7-0008G0-1H
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1Zrge2-0007fa-HI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 31 Oct 2015 13:54:35 +0000
-Received: from mail-ob0-f181.google.com ([209.85.214.181])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZsWc6-0000bl-5y
+	Thu, 29 Oct 2015 06:25:06 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Zrge1-0003DL-7S
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 31 Oct 2015 13:54:35 +0000
-Received: by obdgf3 with SMTP id gf3so1019940obd.3
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 31 Oct 2015 06:54:28 -0700 (PDT)
+	Thu, 29 Oct 2015 06:25:06 +0000
+Message-ID: <5631BB4E.4010301@kot-begemot.co.uk>
+Date: Thu, 29 Oct 2015 06:23:10 +0000
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 MIME-Version: 1.0
-In-Reply-To: <5631BB4E.4010301@kot-begemot.co.uk>
 References: <1445416947-824802-1-git-send-email-aivanov@brocade.com>
 	<562D236E.7020108@kot-begemot.co.uk> <562DFC90.9030308@nod.at>
-	<5631BB4E.4010301@kot-begemot.co.uk>
-Date: Sat, 31 Oct 2015 14:54:28 +0100
-Message-ID: <CAFLxGvwDXWhw+mssT4quUaRC3DFAtRAGksmV-wuYrdzLWZEa0w@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
+In-Reply-To: <562DFC90.9030308@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,35 +30,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v3] um: Switch clocksource to hrtimers
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 
-On Thu, Oct 29, 2015 at 7:23 AM, Anton Ivanov
-<anton.ivanov@kot-begemot.co.uk> wrote:
-> I got the first patchset to build, it works very well on a single core
-> host or with CPU pinning of the UML - the performance gain is > 25%.
+I got the first patchset to build, it works very well on a single core 
+host or with CPU pinning of the UML - the performance gain is > 25%.
+
+However, I introduced a race somewhere along the way - it crashes UML 
+reliably if you do not pin CPUs.
+
+I will debug it, fix it and submit. I am guessing a week or so. IMHO 25% 
+is worth it :)
+
+A.
+
+
+On 26/10/15 10:12, Richard Weinberger wrote:
+> Hi!
 >
-> However, I introduced a race somewhere along the way - it crashes UML
-> reliably if you do not pin CPUs.
+> Am 25.10.2015 um 19:46 schrieb Anton Ivanov:
+>> Hi List, hi Richard,
+>>
+>> I am going to sort out the UBD patchset next as that has no dependencies on timer and the other stuff which is waiting in the queue behind the timers.
+>>
+>> That should give UML a significant boost. It is nothing particularly revolutionary (qemu has been using some of that for ages).
+>>
+>> I should be able to get these out of the door early on this week.
+> Nice!
+>
+>> A.
+>>
+>> P.S. If there is anything to fix on the timer one, please shout.
+> Looks good so far. Unless it breaks a lot it will be part of the 4.4 merge window. :)
+>
+> Thanks,
+> //richard
+>
 
-How does the crash look like?
-I see also an issue with that patch, after UML has an uptime of a few minutes
-a task which does nanosleep() will never wake up.
-
-[<000000006001a29d>] __switch_to+0x53/0x82
-[<00000000602995d2>] __schedule+0x2f4/0x3f7
-[<0000000060299751>] schedule+0x7c/0x95
-[<000000006029b871>] do_nanosleep+0x8b/0x134
-[<0000000060068a41>] hrtimer_nanosleep+0xb2/0x15a
-[<0000000060068b90>] SyS_nanosleep+0xa7/0xbf
-[<000000006001d492>] handle_syscall+0x6a/0x84
-[<00000000600304a8>] userspace+0x3d8/0x463
-[<000000006001a180>] fork_handler+0x85/0x87
-[<ffffffffffffffff>] 0xffffffffffffffff
-
--- 
-Thanks,
-//richard
 
 ------------------------------------------------------------------------------
 _______________________________________________
