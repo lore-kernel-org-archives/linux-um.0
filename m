@@ -1,9 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Date: Sat, 31 Oct 2015 14:17:27 +0100
-Message-ID: <4a122e39-739d-4519-ae49-86c8514bc98b@email.android.com>
-In-Reply-To: <1446262783.3979003.425108769.011FD0ED@webmail.messagingengine.com>
-From: Thomas Meyer <thomas@m3y3r.de>
 MIME-Version: 1.0
+In-Reply-To: <1446186594.2098205.424343233.1586EFFB@webmail.messagingengine.com>
+References: <1446118127.337460.423488209.12F26E25@webmail.messagingengine.com>
+	<CAFLxGvzo2Yw_yYxDOWJJB09OHWM02ex5ivbK2=uV8Xppx53trg@mail.gmail.com>
+	<1446124492.1062111.423580545.6ECCD145@webmail.messagingengine.com>
+	<56321C94.7090702@nod.at>
+	<1446124893.1063455.423585953.2F3C49FD@webmail.messagingengine.com>
+	<CAFLxGvyXud1Nujy3M-xB564B2FM_1AfaEWEpJP3ei1WTnpoRSg@mail.gmail.com>
+	<1446132374.1089982.423700145.2CC8A525@webmail.messagingengine.com>
+	<1446147967.1951472.423938977.3D386707@webmail.messagingengine.com>
+	<CAFLxGvyjM0iaC5cW7Hdy8aU-BctRx8h2-KUso08mx7O_FKkOTw@mail.gmail.com>
+	<1446186594.2098205.424343233.1586EFFB@webmail.messagingengine.com>
+Date: Fri, 30 Oct 2015 20:31:37 +0100
+Message-ID: <CAFLxGvy77pevm20emnnL6JHYJfnZEYYr2mVmby4YCvjqWh8Svw@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -13,131 +23,108 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [uml-user] Website is in need of many small changes
- and updates?
+	and updates?
 To: Balaco Baco <balacobaco@imap.cc>
-Cc: uml-user <user-mode-linux-user@lists.sourceforge.net>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, uml-user <user-mode-linux-user@lists.sourceforge.net>
 
-CkFtIDMxLjEwLjIwMTUgNDozOSB2b3JtLiBzY2hyaWViIEJhbGFjbyBCYWNvIDxiYWxhY29iYWNv
-QGltYXAuY2M+Ogo+Cj4gPiBPbiBGcmksIE9jdCAzMCwgMjAxNSBhdCA3OjI5IEFNLCBCYWxhY28g
-QmFjbyA8YmFsYWNvYmFjb0BpbWFwLmNjPiB3cm90ZTogCj4gPiA+IAo+ID4gPiBPbiBUaHUsIE9j
-dCAyOSwgMjAxNSwgYXQgMTY6NTUsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZTogCj4gPiA+PiBP
-biBUaHUsIE9jdCAyOSwgMjAxNSBhdCA4OjQ2IFBNLCBCYWxhY28gQmFjbyA8YmFsYWNvYmFjb0Bp
-bWFwLmNjPiB3cm90ZTogCj4gPiA+PiA+PiA+ID4gPj4gPiBSZWFsbHkhPyBJIHdpc2ggSSBoYWQg
-cmVhZCB0aGF0IHNvbWV3aGVyZS4gV2VsbCwganVzdCByZXRyaWVkIHdpdGggCj4gPiA+PiA+PiA+
-ID4gPj4gPiBhbm90aGVyIG9wdGlvbiB0aGF0IGlzIHRoZXJlIGZvciBtZS4gSXQgaXMgb25lIG9m
-IHRoZSBjYXNlcyBJIGRldGFpbGVkIAo+ID4gPj4gPj4gPiA+ID4+ID4gYmVmb3JlIHRoYXQgZW5k
-IHdpdGggZXJyb3IuIAo+ID4gPj4gPj4gPiA+ID4+ID4gCj4gPiA+PiA+PiA+ID4gPj4gCj4gPiA+
-PiA+PiA+ID4gPj4gTGludXggMi42LjI0PyEgU1JTTFk/IAo+ID4gPj4gPj4gPiA+IAo+ID4gPj4g
-Pj4gPiA+IElmIHlvdSB3YW50IG1lIHRvIGhlbHAsIHBsZWFzZSB1c2UgYSByZWNlbnQvc3VwcG9y
-dGVkIGtlcm5lbC4gCj4gPiA+PiA+PiA+ID4gUmVhZHktdG8tdXNlIHJvb3QgZmlsZXN5c3RlbXMg
-Y2FuIGJlIGZvdW5kIGV2ZXJ5d2hlcmUuIAo+ID4gPj4gPj4gPiA+IEZvciBleGFtcGxlOiBodHRw
-Oi8vZnMuZGV2bG9vcC5vcmcudWsvIAo+ID4gPj4gPj4gPiA+IAo+ID4gPj4gPj4gPiAKPiA+ID4+
-ID4+ID4gSSdtIG5vdCBzdXJlIG5vdywgYnV0IHRoZSB0d28gRGViaWFuIHJvb3QgZnMgSSdtIHVz
-aW5nIHdlcmUgZG93bmxvYWRlZCAKPiA+ID4+ID4+ID4gZnJvbSB0aGUgc2l0ZSB5b3UgcG9pbnQg
-aGVyZS4gTGF0ZXIgSSdsbCBjaGVjayB0aGVpciBzdW1zLCBhbmQgUFMgdGhpcyAKPiA+ID4+ID4+
-ID4gaW4gYSBuZXh0IG1lc3NhZ2UuIEtlcm5lbHMgMi42Liogd2VyZSByZWNlbnQgYW5kIGFzc3Vt
-ZWQgdG8gYmUgc3VwcG9ydGVkIAo+ID4gPj4gPj4gPiBpbiBtb3N0IHBsYWNlcyBJIGNvdWxkIG5l
-ZWQgLSBvciBzbyBJIGFzc3VtZWQuIAo+ID4gPj4gPj4gCj4gPiA+PiA+PiA+IFdoYXQgaXMgeW91
-ciBkZWZpbml0aW9uIG9mIHJlY2VudCBhbmQgeW91ciBkZWZpbml0aW9uIG9mIHN1cHBvcnRlZD8g
-VGhpcyAKPiA+ID4+ID4+ID4gbWF5IGJlIHVzZWZ1bCBmb3IgbWFueSBvdGhlciB1c2VycyBvZiBV
-TUwgSSBndWVzcy4gVGhlIGZhY3QgdGhhdCB0aGUgCj4gPiA+PiA+PiA+IGtlcm5lbHMgb2ZmZXJl
-ZCBpbiB0aGUgVU1MIHdlYnNpdGUgZGlkbid0IHdvcmssIGFuZCB0aGVuIEkgdHJpZWQgdG8gCj4g
-PiA+PiA+PiA+IGNvbXBpbGUgZnJvbSBzb3VyY2Ugc2hvdWxkIGJlIHBvaW50ZWQgaGVyZS4gSSBk
-b24ndCB0aGluayBJIGhhdmUgZG9uZSAKPiA+ID4+ID4+ID4gc29tZXRoaW5nIHNvIHdlaXJkIG9y
-IHVuY29tbW9uIGhlcmUgLSBtYWlubHkgYmVjYXVzZSBJIGRvbid0IG5lZWQgbXVjaCAKPiA+ID4+
-ID4+ID4gYXMgbG9uZyBhcyBJIGhhdmUgZmxleGliaWxpdHkgdG8gZXhlY3V0ZSBpdC4gCj4gPiA+
-PiA+PiAKPiA+ID4+ID4+IEV2ZXJ5dGhpbmcgdGhhdCBnZXRzIC1zdGFibGUgdXBkYXRlcy4gCj4g
-PiA+PiA+IAo+ID4gPj4gPiBXZWJzaXRlOiBVTUwncywgaHR0cDovL3VzZXItbW9kZS1saW51eC5z
-b3VyY2Vmb3JnZS5uZXQvLCBhY2Nlc3NlZCByaWdodCAKPiA+ID4+ID4gbm93LiAKPiA+ID4+ID4g
-Cj4gPiA+PiA+ICJHZXR0aW5nIHN0YXJ0ZWQiIHNlZW1lZCBsaWtlIGEgZ29vZCBwbGFjZSBmb3Ig
-bWUgYSBmZXcgd2Vla3MgYWdvIChhbmQgCj4gPiA+PiA+IHN0aWxsIGRvZXMsIGJ1dC4uLikuIEFu
-ZCBJIHRoaW5rIGl0IHdpbGwgbWFrZSBtYW55IHVzZXJzIGZlZWwgYW5kIHRoaW5rIAo+ID4gPj4g
-PiB0aGUgc2FtZSB3YXkgSSBkaWQuIEV4Y2VwdCB0aGF0IGl0IGdpdmVzIHVzIHdyb25nIGRpcmVj
-dGlvbnMgLSBidXQgZ2l2ZXMgCj4gPiA+PiA+IGJhZCBkaXJlY3Rpb25zIGZvciB1c2VycyB0aGF0
-IHdpbGwgc3VyZWx5IGZvbGxvdyB0aGVtIHdpdGhvdXQga25vd2luZyAKPiA+ID4+ID4gdGhlIHdy
-b25nIGRldGFpbHMgc2luY2UgdGhleSdyZSBleHBlY3RpbmcgdG8gc2VlIHNvbWV0aGluZyB3b3Jr
-aW5nIHRvIAo+ID4gPj4gPiBnZXQgbW9yZSBmYW1pbGlhciB3aXRoIFVNTC4gIkRvd25sb2FkIFRI
-SVMgKCBwb2ludGluZyB0byAKPiA+ID4+ID4gaHR0cDovL3VzZXItbW9kZS1saW51eC5zb3VyY2Vm
-b3JnZS5uZXQvbGludXgtMi42LjI0LXJjNy5iejIpIG9yIFRISVMgCj4gPiA+PiA+IChwb2ludGlu
-ZyB0byAKPiA+ID4+ID4gaHR0cDovL3VzZXItbW9kZS1saW51eC5zb3VyY2Vmb3JnZS5uZXQvbGlu
-dXgtMi42LjI0LXg4Nl82NC5iejIgKSIuIEFyZSAKPiA+ID4+ID4gdGhlc2Uga2VybmVsIHZlcnNp
-b25zIGZhbWlsaWFyIHRvIHlvdSBpbiB0aGUgbGlzdD8gVGhleSBhcmUgZm9yIG1lLCBub3cgCj4g
-PiA+PiA+IEkganVzdCB1bmRlcnN0b29kIGEgZmV3IG1vcmUgZGV0YWlscywgYW5kIHRoZSBwb3Nz
-aWJsZSBwYXRoIHRvIHNvbHV0aW9uLCAKPiA+ID4+ID4gdG8gZXhlY3V0aW9uIHdpdGhvdXQgdW5l
-eHBlY3RlZCBwcm9ibGVtcyAtIG9yIHNvIEkgaG9wZS4gCj4gPiA+PiA+IAo+ID4gPj4gPiBUaGUg
-dGhyZWFkIEkgc3RhcnRlZCB0b2RheSwgcXVpY2tseSBza2ltbWVkIGluIHRoZSBhYm92ZSBxdW90
-ZXMsIHNob3dzIAo+ID4gPj4gPiB0aGlzLiBUaGUgd2Vic2l0ZSBuZWVkcyB0byBiZSBmaXhlZC4g
-QW5kIG1vcmUgdGhhbiB0aGF0LCBuZWVkcyB0byBiZSAKPiA+ID4+ID4gdXBkYXRlZCBtb3JlIGZy
-ZXF1ZW50bHkgKG9yIHNvIEkgbXVzdCBndWVzcykgb3Igd3JpdGUgYWJvdXQgaG93IHVzZXJzIAo+
-ID4gPj4gPiBjYW4gYmUgc3VyZSB0aGVpciBzZXR1cCBpcyBnb29kIGVub3VnaC4gCj4gPiA+PiA+
-IAo+ID4gPj4gPiBJIGRvd25sb2FkZWQgYm90aCBzdWdnZXN0ZWQga2VybmVscywgZm9sbG93aW5n
-IHRoZSBvZmZpY2lhbCAoYW5kIGFzc3VtZWQgCj4gPiA+PiA+IGJlc3QsIGZvciB0aGF0KSBpbnN0
-cnVjdGlvbnMuIEJvdGggZGlkIG5vdCB3b3JrIChhbmQgc3RpbGwgZG9uJ3QpLiBBbmQgCj4gPiA+
-PiA+IHRoZSBvbmUgdGhhdCB3b3JrZWQgYmFjayB0aGVuIGlzIHByb2JhYmx5IG5lZWRpbmcgc29t
-ZXRoaW5nIEkndmUgCj4gPiA+PiA+IGZvcmdvdHRlbiBpbiB0aGVzZSBkYXlzIG9yIHN0b3BwZWQg
-dG8gd29yayB0b2RheS4gQnV0IHRoYXQgb25lIEkgCj4gPiA+PiA+IGNvbXBpbGVkIGZyb20gc291
-cmNlIC0gYW5kIG5vdyBJIG5lZWQgdG8gZG8gaXQgYWdhaW4sIGZyb20gdGhlIHZlcnkgCj4gPiA+
-PiA+IHN0YXJ0LiAKPiA+ID4+ID4gCj4gPiA+PiA+IEV2ZXJ5dGhpbmcgdGhhdCBnZXRzIHN0YWJs
-ZSB1cGRhdGVzLi4uIGJ1dCB0aGlzIHNob3VsZCBub3QgZXhjbHVkZSB0aGUgCj4gPiA+PiA+IFVN
-TCB3ZWJzaXRlLCByaWdodD8gCj4gPiA+PiAKPiA+ID4+IFRoZSB3ZWJzaXRlIGlzIHZlcnkgb2xk
-IGFuZCBmcm9tIHRoZSBwcmUtbWFpbmxpbmUgdGltZS4gCj4gPiA+PiBJZiB5b3Ugdm9sdW50ZWVy
-IHRvIHVwZGF0ZSBhbmQgbWFpbnRhaW4gaXQgaXQgd291bGQgYmUgd29uZGVyZnVsLiAKPiA+ID4+
-IAo+ID4gPj4gSSdtIG5vdCBhIHdlYiBkZXNpZ25lciBub3IgZG8gSSBoYXZlIHRoZSB0aW1lIGZv
-ciB0aGlzLiAKPiA+ID4+IAo+ID4gPiAKPiA+ID4gUmVhbGx5PyEgSSB3b3VsZCBuZXZlciBiZXQg
-dGhhdCBpdCB3YXMgdGhhdCBvbGQuIAo+ID4gPiAKPiA+ID4gSSBjYW4gdXBkYXRlIGl0LiBBbmQg
-SSBhbHNvIGhhdmUgYSBsaXR0bGUgYml0IG9mIHdlYiBkZXNpZ24ga25vd2xlZGdlIAo+ID4gPiBh
-bmQgcHJhY3RpY2VzIHRoYXQgbWF5IGJlIGV2ZW50dWFsbHkgdXNlZnVsLiBPbiB0aGUgb3RoZXIg
-aGFuZCwgSSB3b3VsZCAKPiA+ID4gbmVlZCBkaXJlY3Rpb25zIGFuZCB0aHVtYnMgdXAgdG8gZ3Vh
-cmFudGVlIHRoYXQgdGhlIGNvbnRlbnRzIGFyZSBrZXB0IAo+ID4gPiBjb3JyZWN0ICh3aGljaCB3
-b3VsZCBiZSBteSBtYWluIG9iamV0aXZlIHdoZW4gY2hhbmdpbmcgdGV4dHMpLiBJIGhhdmUgCj4g
-PiA+IG5vdCBwcm9ncmFtbWVkIHRoYXQgbXVjaCBrZXJuZWwgY29kZSBhbmQgInJlbGF0ZWQgb3Ig
-YWxtb3N0IHNvIiB0aGluZ3MsIAo+ID4gPiBhbHRob3VnaCBJIGhhdmUgYSBzb2xpZCBDIGJhY2tn
-cm91bmQgLSBhbmQgdGhpcyBpcyBzb21ldGhpbmcgdGhhdCBVTUwgCj4gPiA+IHNlZW1zIHRvIGhh
-dmUgYSBicm9hZCBjb250YWN0IHN1cmZhY2UsIGZyb20gdGhlIG1lc3NhZ2VzIEkgaGF2ZSByZWFk
-IAo+ID4gPiBoZXJlLiAKPiA+ID4gCj4gPiA+IEF0IG1vc3QgYSBtb250aCBvZiBtZWRpdW0gc2l0
-ZSBjaGFuZ2VzIGFyZSBnb29kIGFzIGV4cGVjdGF0aW9ucz8gCj4gPiA+IEFsdGhvdWdoIG1vc3Qg
-b2YgdGhlIHRpbWUgSSBjYW4gZ2l2ZSBhIGZldyBob3VycyBwZXIgd2Vlaywgc28gdGhhdCBtb250
-aCAKPiA+ID4gc2hvdWxkIG5vdCBsb29rIHRvbyBiYWQuIAo+ID4gPiAKPiA+ID4gV2hhdCB3b3Vs
-ZCBiZSB0aGUgcHJvY2Vzcz8gSWYgb25seSB3aXRoIHlvdSBkaXJlY3RseSwgSSBndWVzcyB3ZSAK
-PiA+ID4gY29udGludWUgdG8gdGFsayBhYm91dCBpdCBiZXR3ZWVuIHVzLiAKPiA+IAo+ID4gQ3Jl
-YXRlIGEgY29uY2VwdCBhbmQgc2hhcmUgaXQuIDotKSAKPiA+IAo+Cj4gSSBkbyBub3QgaGF2ZSBh
-IGZpbmFsIHdvcmtpbmcgc3RlcCBieSBzdGVwIGZyb20gemVybyB1bnRpbCBub3cuIE9uZSBpcyAK
-PiBnaXZpbmcgY29tcGlsaW5nIGVycm9ycy4gVGhlIHdvcmtpbmcgVU1MICh1bmtub3duIG9yaWdp
-biwgSSBkb24ndCBrbm93IAo+IGhvdyBJIG1hZGUgdGhhdCBiZWZvcmUpICsgRGViaWFuNjQgZG93
-bmxvYWRlZCAoYW5kIGhvdyBjaGFuZ2VkIGEgYml0IAo+IGFmdGVyIGJvb3RpbmcgaXQpLi4uIGJ1
-dCBpdCBoYXMgbm8gbmV0d29yaywgYW5kIEkgZG9uJ3Qga25vdyB3aHkgaXMgCj4gdGhhdC4gQ2Fu
-IHlvdSB0ZWxsPyBOb3QgZXZlbiBhIHBpbmcgd29ya3M6ICJOZXR3b3JrIGlzIHVucmVhY2hhYmxl
-Ii4gVGhlIAo+IGhvc3QgbWFjaGluZSBpcyBub3JtYWwsIG9mIGNvdXJzZS4gCj4KCllvdSBjYW4g
-ZmluZCBzb21lIG1vcmUgcmVjZW50IGluZm8gb24gbXkgYmxvZyBhYm91dCBVTUwsIGUuZy46Cgpo
-dHRwOi8vbTN5M3IuZGUvd29yZHByZXNzLz9wPTI0NjgKaHR0cDovL20zeTNyLmRlL3dvcmRwcmVz
-cy8/cD0zODQ2Cgo+IEJhc2ljIHF1ZXN0aW9uOiBob3cgdG8gc2h1dGRvd24gYSBydW5uaW5nIFVN
-TD8gSG93IGFyZSB3ZSBzdXBwb3NlIHRvIGRvIAo+IGl0PyBSdW5uaW5nICdzaHV0ZG93biBub3cn
-IGZyb20gdGhhdCBEZWJpYW4gZG9lcyBub3QgdHVybiBpdCBvZmYuIE11c3QgSSAKPiBvcGVuIGFu
-b3RoZXIgU1NIIHNlc3Npb24gdG8ga2lsbCBpdCwgb3IganVzdCBjbG9zZSB0aGUgc2Vzc2lvbiBp
-ZiAKPiBub3RoaW5nIGVsc2UgaXMgbmVlZGVkPyAKPgo+IEknbSB1c2VkIGh0dHA6Ly91c2VyLW1v
-ZGUtbGludXguc291cmNlZm9yZ2UubmV0L3NvdXJjZS5odG1sIGFzIGEgYmFzZSB0byAKPiB3aGF0
-IEkgaGF2ZSBkb25lIChhbHRob3VnaCBJICJ1cGRhdGVkIiB0aGUgc3VnZ2VzdGVkIHZlcnNpb24g
-dGhlcmUsIGFzIAo+IGRpc2N1c3NlZCBiZWZvcmUpLiBBbmQgY2hhbmdlZCBhbG1vc3Qgbm90aGlu
-ZyBpbiB0aGUgZGVmYXVsdCBjb25maWcgCj4gYmVmb3JlIGNvbXBpbGluZy4uLiAKPgo+IFdoZW4g
-SSBoYXZlIHNvbWV0aGluZyB0aGF0IHdvcmtzLCB0aGF0IHNvdXJjZS5odG1sIHBhZ2UgaXMgZWFz
-eSB0byAKPiBpbXByb3ZlIGFuZCBuZWVkcyBtYW55IGNoYW5nZXMuIE91dHB1dCBvZiB3Z2V0Li4u
-IG5vdCB1c2VmdWwgYXQgYWxsIC0gd2UgCj4gc3VyZWx5IGNhbiBhc3N1bWUgdXNlcnMgd2lsbCBr
-bm93IGhvdyB0byBkb3dubG9hZCBhbmQgZXh0cmFjdCBmaWxlcywgCj4gcmlnaHQ/IAo+Cj4KPiAt
-LSAKPiBodHRwOi8vd3d3LmZhc3RtYWlsLmNvbSAtIE9yIGhvdyBJIGxlYXJuZWQgdG8gc3RvcCB3
-b3JyeWluZyBhbmQgCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgbG92ZSBlbWFpbCBhZ2FpbiAKPgo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIAo+
-IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fIAo+IFVzZXIt
-bW9kZS1saW51eC11c2VyIG1haWxpbmcgbGlzdCAKPiBVc2VyLW1vZGUtbGludXgtdXNlckBsaXN0
-cy5zb3VyY2Vmb3JnZS5uZXQgCj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LXVzZXIgCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGlu
-dXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNl
-ci1tb2RlLWxpbnV4LWRldmVsCg==
+On Fri, Oct 30, 2015 at 7:29 AM, Balaco Baco <balacobaco@imap.cc> wrote:
+>
+> On Thu, Oct 29, 2015, at 16:55, Richard Weinberger wrote:
+>> On Thu, Oct 29, 2015 at 8:46 PM, Balaco Baco <balacobaco@imap.cc> wrote:
+>> >> > > >> > Really!? I wish I had read that somewhere. Well, just retried with
+>> >> > > >> > another option that is there for me. It is one of the cases I detailed
+>> >> > > >> > before that end with error.
+>> >> > > >> >
+>> >> > > >>
+>> >> > > >> Linux 2.6.24?! SRSLY?
+>> >> > >
+>> >> > > If you want me to help, please use a recent/supported kernel.
+>> >> > > Ready-to-use root filesystems can be found everywhere.
+>> >> > > For example: http://fs.devloop.org.uk/
+>> >> > >
+>> >> >
+>> >> > I'm not sure now, but the two Debian root fs I'm using were downloaded
+>> >> > from the site you point here. Later I'll check their sums, and PS this
+>> >> > in a next message. Kernels 2.6.* were recent and assumed to be supported
+>> >> > in most places I could need - or so I assumed.
+>> >>
+>> >> > What is your definition of recent and your definition of supported? This
+>> >> > may be useful for many other users of UML I guess. The fact that the
+>> >> > kernels offered in the UML website didn't work, and then I tried to
+>> >> > compile from source should be pointed here. I don't think I have done
+>> >> > something so weird or uncommon here - mainly because I don't need much
+>> >> > as long as I have flexibility to execute it.
+>> >>
+>> >> Everything that gets -stable updates.
+>> >
+>> > Website: UML's, http://user-mode-linux.sourceforge.net/, accessed right
+>> > now.
+>> >
+>> > "Getting started" seemed like a good place for me a few weeks ago (and
+>> > still does, but...). And I think it will make many users feel and think
+>> > the same way I did. Except that it gives us wrong directions - but gives
+>> > bad directions for users that will surely follow them without knowing
+>> > the wrong details since they're expecting to see something working to
+>> > get more familiar with UML. "Download THIS ( pointing to
+>> > http://user-mode-linux.sourceforge.net/linux-2.6.24-rc7.bz2) or THIS
+>> > (pointing to
+>> > http://user-mode-linux.sourceforge.net/linux-2.6.24-x86_64.bz2 )". Are
+>> > these kernel versions familiar to you in the list? They are for me, now
+>> > I just understood a few more details, and the possible path to solution,
+>> > to execution without unexpected problems - or so I hope.
+>> >
+>> > The thread I started today, quickly skimmed in the above quotes, shows
+>> > this. The website needs to be fixed. And more than that, needs to be
+>> > updated more frequently (or so I must guess) or write about how users
+>> > can be sure their setup is good enough.
+>> >
+>> > I downloaded both suggested kernels, following the official (and assumed
+>> > best, for that) instructions. Both did not work (and still don't). And
+>> > the one that worked back then is probably needing something I've
+>> > forgotten in these days or stopped to work today. But that one I
+>> > compiled from source - and now I need to do it again, from the very
+>> > start.
+>> >
+>> > Everything that gets stable updates... but this should not exclude the
+>> > UML website, right?
+>>
+>> The website is very old and from the pre-mainline time.
+>> If you volunteer to update and maintain it it would be wonderful.
+>>
+>> I'm not a web designer nor do I have the time for this.
+>>
+>
+> Really?! I would never bet that it was that old.
+>
+> I can update it. And I also have a little bit of web design knowledge
+> and practices that may be eventually useful. On the other hand, I would
+> need directions and thumbs up to guarantee that the contents are kept
+> correct (which would be my main objetive when changing texts). I have
+> not programmed that much kernel code and "related or almost so" things,
+> although I have a solid C background - and this is something that UML
+> seems to have a broad contact surface, from the messages I have read
+> here.
+>
+> At most a month of medium site changes are good as expectations?
+> Although most of the time I can give a few hours per week, so that month
+> should not look too bad.
+>
+> What would be the process? If only with you directly, I guess we
+> continue to talk about it between us.
+
+Create a concept and share it. :-)
+
+-- 
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
