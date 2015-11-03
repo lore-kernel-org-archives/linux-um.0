@@ -1,20 +1,33 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1ZtWUZ-0004FI-Kl
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZtVkx-0000Co-GE
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Nov 2015 07:58:55 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZtWUW-0000ah-5q
+	Tue, 03 Nov 2015 07:11:47 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZtVkw-0007xj-5u
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 03 Nov 2015 07:58:55 +0000
-Date: Tue, 03 Nov 2015 08:58:06 +0100
-Message-ID: <db655703-3d77-40ba-9717-cdf2431bc3cd@email.android.com>
-In-Reply-To: <56385E2A.4040401@kot-begemot.co.uk>
-From: Thomas Meyer <thomas@m3y3r.de>
+	Tue, 03 Nov 2015 07:11:47 +0000
+Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
+	helo=smaug.kot-begemot.co.uk) by ivanoab4.miniserver.com with esmtps
+	(TLS1.2:RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZtVkp-0001cK-Ql
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Nov 2015 07:11:39 +0000
+Received: from monstrousnightmare.kot-begemot.co.uk ([192.168.3.80])
+	by smaug.kot-begemot.co.uk with esmtp (Exim 4.84)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZtVkp-0005nu-ID
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 03 Nov 2015 07:11:39 +0000
+Message-ID: <56385E2A.4040401@kot-begemot.co.uk>
+Date: Tue, 03 Nov 2015 07:11:38 +0000
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 MIME-Version: 1.0
+References: <1446480997-155855-1-git-send-email-aivanov@brocade.com>	<5637DA94.5000302@nod.at>
+	<5637E000.7020202@kot-begemot.co.uk>
+In-Reply-To: <5637E000.7020202@kot-begemot.co.uk>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,71 +37,107 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v4] um: Switch clocksource to hrtimers
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-CkFtIDAzLjExLjIwMTUgODoxMSB2b3JtLiBzY2hyaWViIEFudG9uIEl2YW5vdiA8YW50b24uaXZh
-bm92QGtvdC1iZWdlbW90LmNvLnVrPjoKPgo+IE9uIDAyLzExLzE1IDIyOjEzLCBBbnRvbiBJdmFu
-b3Ygd3JvdGU6IAo+ID4gT24gMDIvMTEvMTUgMjE6NTAsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90
-ZTogCj4gPj4gQW0gMDIuMTEuMjAxNSB1bSAxNzoxNiBzY2hyaWViIEFudG9uIEl2YW5vdjogCj4g
-Pj4+IC12b2lkIGlkbGVfc2xlZXAodW5zaWduZWQgbG9uZyBsb25nIG5zZWNzKSAKPiA+Pj4gKy8q
-KiAKPiA+Pj4gKyAqIG9zX2lkbGVfc2xlZXAoKSAtIHNsZWVwIGZvciBhIGdpdmVuIHRpbWUgb2Yg
-bnNlY3MgCj4gPj4+ICsgKiBAbnNlY3M6IG5hbm9zZWNvbmRzIHRvIHNsZWVwIAo+ID4+PiArICov
-IAo+ID4+PiArdm9pZCBvc19pZGxlX3NsZWVwKHVuc2lnbmVkIGxvbmcgbG9uZyBuc2VjcykgCj4g
-Pj4+wqDCoCB7IAo+ID4+PsKgwqAgc3RydWN0IHRpbWVzcGVjIHRzOyAKPiA+Pj7CoMKgIAo+ID4+
-PiAtIC8qIAo+ID4+PiAtICogbnNlY3MgY2FuIGNvbWUgaW4gYXMgemVybywgaW4gd2hpY2ggY2Fz
-ZSwgdGhpcyBzdGFydHMgYSAKPiA+Pj4gLSAqIGJ1c3kgbG9vcC7CoCBUbyBwcmV2ZW50IHRoaXMs
-IHJlc2V0IG5zZWNzIHRvIHRoZSB0aWNrIAo+ID4+PiAtICogaW50ZXJ2YWwgaWYgaXQgaXMgemVy
-by4gCj4gPj4+IC0gKi8gCj4gPj4+IC0gaWYgKG5zZWNzID09IDApIAo+ID4+PiAtIG5zZWNzID0g
-VU1fTlNFQ19QRVJfU0VDIC8gVU1fSFo7IAo+ID4+PiArIGlmIChuc2VjcyA8PSAwKSB7IAo+ID4+
-PiArIHJldHVybjsgCj4gPj4+ICsgfSAKPiA+Pj7CoMKgIAo+ID4+PiAtIG5zZWNzID0gc2xlZXBf
-dGltZShuc2Vjcyk7IAo+ID4+PiAtIHRzID0gKChzdHJ1Y3QgdGltZXNwZWMpIHsgLnR2X3NlYyA9
-IG5zZWNzIC8gVU1fTlNFQ19QRVJfU0VDLCAKPiA+Pj4gLSDCoCAudHZfbnNlYyA9IG5zZWNzICUg
-VU1fTlNFQ19QRVJfU0VDIH0pOyAKPiA+Pj4gKyB0cyA9ICgoc3RydWN0IHRpbWVzcGVjKSB7IAo+
-ID4+PiArIC50dl9zZWPCoCA9IG5zZWNzIC8gVU1fTlNFQ19QRVJfU0VDLCAKPiA+Pj4gKyAudHZf
-bnNlYyA9IG5zZWNzICUgVU1fTlNFQ19QRVJfU0VDIAo+ID4+PiArIH0pOyAKPiA+Pj7CoMKgIAo+
-ID4+PiAtIGlmIChuYW5vc2xlZXAoJnRzLCAmdHMpID09IDApIAo+ID4+PiArIGlmIChjbG9ja19u
-YW5vc2xlZXAoQ0xPQ0tfTU9OT1RPTklDLCAwLCAmdHMsIE5VTEwpKSB7IAo+ID4+PsKgwqAgZGVs
-aXZlcl9hbGFybSgpOyAKPiA+Pj4gLSBhZnRlcl9zbGVlcF9pbnRlcnZhbCgmdHMpOyAKPiA+Pj4g
-KyB9IAo+ID4+IEhtbSwgbm93IHRoaXMgZnVuY3Rpb24gc2xlZXBzIGF0IG1vc3QgbnNlY3MuIElm
-IGl0IGlzIGludGVycnVwdGVkIAo+ID4+IHRoZSBhbGFybSBpcyBkZWxpdmVyZWQuIAo+ID4+IFdo
-eSBvbmx5IHVwb24gaW50ZXJydXB0aW9uIGFuZCBub3QgYWxzbyBpZiBjbG9ja19uYW5vc2xlZXAo
-KSAKPiA+PiBjb21wbGV0ZXM/IAo+ID4gSXQgaXMgaW52b2tlZCBkaWZmZXJlbnRseS4gCj4gPiAK
-PiA+IFdlIGNoYW5nZWQgcHJvY2Vzcy5jIHRvby4gCj4gPiAKPiA+IFRoZSBvbGQgYmVoYXZpb3Vy
-IHVzZWQgdG8gYmUgdG8gZGlzYWJsZSB0aGUgdGltZXIsIHJlYWQgdGltZXIgcmVtYWluaW5nIAo+
-ID4gYW5kIHByb2dyYW0gYSBuYW5vc2xlZXAgd2l0aCB0aGF0LiBUaGlzIHJlc3VsdGVkIGluIHRo
-ZSB0aW1lciBhY3R1YWxseSAKPiA+IGZpcmluZyBpbiBpZGxlIGRlc3BpdGUgVU1MIHVzaW5nIHRo
-ZSB2aXJ0dWFsIGNsb2NrIGZvciB0aW1lcnMuIAo+ID4gCj4gPiBXaXRoIHRpbWVyIG1vdmluZyB0
-byBNT05PVE9OSUMgd2UgY291bGQgZG8gdGhlIHNhbWUsIGJ1dCB3ZSBkbyBub3QgbmVlZCAKPiA+
-IHRvLiBJbnN0ZWFkIG9mIGRpc2FibGluZyB0aGUgdGltZXIgd2UgY2FuIGxlYXZlIGl0IHJ1bm5p
-bmcgYW5kIHByb2dyYW0gYSAKPiA+IG5hbm9zbGVlcCB3aGljaCBpcyBsb25nIGVub3VnaCBpbiBt
-b3N0IGNhc2VzIGZvciB0aGUgdGltZXIgdG8gZmlyZS4gVGhpcyAKPiA+IGlzIHdoYXQgdGhlIG1h
-dGNoaW5nIGNoYW5nZSBpbiBwcm9jZXNzLmMgZG9lcy4gVG9nZXRoZXIsIHRoaXMgcmVzdWx0cyBp
-biAKPiA+IHNhdmluZyBhdCBsZWFzdCAyIHN5c2NhbGxzIHBlciBlYWNoIGlkbGUgaW52b2NhdGlv
-bi4gCj4KPiBSZS1yZWFkaW5nIHRoaXMsIEkgZGlkIG5vdCBhbnN3ZXIgdGhlIHF1ZXN0aW9uIGZ1
-bGx5LCBhcG9sb2dpZXMuIAo+Cj4gY2xvY2tfbmFub3NsZWVwIGhlcmUgaXMgdXN1YWxseSBwcm9n
-cmFtbWVkIHdpdGggYSBmaXhlZCB2YWx1ZSBpbiAKPiBwcm9jZXNzLmMgd2hpY2ggaXMgb2Ygbm8g
-cmVsYXRpb24gdG8gdGhlIHRpbWUgd2hlbiB0aGUgbmV4dCB0aW1lciAKPiBpbnRlcnJ1cHQgc2hv
-dWxkIGJlIGRlbGl2ZXJlZC4gU28gdGhlcmUgaXMgbm8gbmVlZCB0byByZS1kZWxpdmVyIGFuIAo+
-IGludGVycnVwdCBhdCB0aGUgZW5kIG9mIGEgbmFub3NsZWVwIGFzIHRoZSBlbmQgb2YgdGhlIG5h
-bm9zbGVlcCBpcyBvZiBubyAKPiBzaWduaWZpY2FuY2UgYXMgZmFyIGFzIHRoZSB0aW1lciBzdWJz
-eXN0ZW0gaXMgY29uY2VybmVkLiAKPgo+IElNSE8sIHRoZSBJUlEgb25seSBuZWVkcyB0byBiZSBy
-ZWxheWVkIHdoZW4gdGhlIG5hbm9zbGVlcCBpcyBpbnRlcnJ1cHRlZC4gCgpBaCwgb2theSwgbm93
-IEkgdW5kZXJzdGFuZCB0aGUgcHJvYmxlbS4gSSBkaWRuJ3QgdGhpbmsgYWJvdXQgdGhpcyBjYXNl
-ISAKCk5pY2UgY2F0Y2ggUmljaGFyZCEKClRoYW5rcyBBbnRvbiBmb3IgZmlndXJpbmcgdGhpcyBv
-dXQhCgpXaXRoIGtpbmQgcmVnYXJkcwpUaG9tYXMKCj4KPiBUaGF0IGRpZmZlcnMgdG8gdGhlIG9s
-ZCBiZWhhdmlvdXIgd2hpY2ggcHJvZ3JhbW1lZCB0aGUgbmFub3NsZWVwIHdpdGggCj4gdGhlIHJl
-bWFpbmRlciBvZiB0aGUgdGltZSB0aWxsIHRoZSBuZXh0IGludGVycnVwdCB0aHVzIG1ha2luZyBp
-dCAKPiBuZWNlc3NhcnkgdG8gcmVsYXkgb25jZSB0aGUgbmFub3NsZWVwIGV4cGlyZXMgYW5kIHJl
-c3RhcnQgdGhlIG5hbm9zbGVlcCAKPiBpZiBpdCB3YXMgaW50ZXJydXB0ZWQgYnkgSU8uIAo+Cj4g
-QS4gCj4KPiA+IAo+ID4gQS4gCj4gPiAKPiA+PiBUaGFua3MsIAo+ID4+IC8vcmljaGFyZCAKCi0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1s
-aW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+On 02/11/15 22:13, Anton Ivanov wrote:
+> On 02/11/15 21:50, Richard Weinberger wrote:
+>> Am 02.11.2015 um 17:16 schrieb Anton Ivanov:
+>>> -void idle_sleep(unsigned long long nsecs)
+>>> +/**
+>>> + * os_idle_sleep() - sleep for a given time of nsecs
+>>> + * @nsecs: nanoseconds to sleep
+>>> + */
+>>> +void os_idle_sleep(unsigned long long nsecs)
+>>>   {
+>>>   	struct timespec ts;
+>>>   
+>>> -	/*
+>>> -	 * nsecs can come in as zero, in which case, this starts a
+>>> -	 * busy loop.  To prevent this, reset nsecs to the tick
+>>> -	 * interval if it is zero.
+>>> -	 */
+>>> -	if (nsecs == 0)
+>>> -		nsecs = UM_NSEC_PER_SEC / UM_HZ;
+>>> +	if (nsecs <= 0) {
+>>> +		return;
+>>> +	}
+>>>   
+>>> -	nsecs = sleep_time(nsecs);
+>>> -	ts = ((struct timespec) { .tv_sec	= nsecs / UM_NSEC_PER_SEC,
+>>> -				  .tv_nsec	= nsecs % UM_NSEC_PER_SEC });
+>>> +	ts = ((struct timespec) {
+>>> +			.tv_sec  = nsecs / UM_NSEC_PER_SEC,
+>>> +			.tv_nsec = nsecs % UM_NSEC_PER_SEC
+>>> +	});
+>>>   
+>>> -	if (nanosleep(&ts, &ts) == 0)
+>>> +	if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL)) {
+>>>   		deliver_alarm();
+>>> -	after_sleep_interval(&ts);
+>>> +	}
+>> Hmm, now this function sleeps at most nsecs. If it is interrupted
+>> the alarm is delivered.
+>> Why only upon interruption and not also if clock_nanosleep()
+>> completes?
+> It is invoked differently.
+>
+> We changed process.c too.
+>
+> The old behaviour used to be to disable the timer, read timer remaining
+> and program a nanosleep with that. This resulted in the timer actually
+> firing in idle despite UML using the virtual clock for timers.
+>
+> With timer moving to MONOTONIC we could do the same, but we do not need
+> to. Instead of disabling the timer we can leave it running and program a
+> nanosleep which is long enough in most cases for the timer to fire. This
+> is what the matching change in process.c does. Together, this results in
+> saving at least 2 syscalls per each idle invocation.
+
+Re-reading this, I did not answer the question fully, apologies.
+
+clock_nanosleep here is usually programmed with a fixed value in 
+process.c which is of no relation to the time when the next timer 
+interrupt should be delivered. So there is no need to re-deliver an 
+interrupt at the end of a nanosleep as the end of the nanosleep is of no 
+significance as far as the timer subsystem is concerned.
+
+IMHO, the IRQ only needs to be relayed when the nanosleep is interrupted.
+
+That differs to the old behaviour which programmed the nanosleep with 
+the remainder of the time till the next interrupt thus making it 
+necessary to relay once the nanosleep expires and restart the nanosleep 
+if it was interrupted by IO.
+
+A.
+
+>
+> A.
+>
+>> Thanks,
+>> //richard
+>>
+>> ------------------------------------------------------------------------------
+>> _______________________________________________
+>> User-mode-linux-devel mailing list
+>> User-mode-linux-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>>
+>
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
+
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
