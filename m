@@ -1,39 +1,54 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Sun, 29 Nov 2015 15:03:20 +0100
-Message-Id: <1448805802-12156-1-git-send-email-mic@digikod.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1Zuov5-0004Br-MJ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 Nov 2015 21:51:39 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Zuov4-0002bi-6U
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 06 Nov 2015 21:51:39 +0000
+References: <saurabh.truth@gmail.com>
+	<1446132632-23623-1-git-send-email-saurabh.truth@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <563D20E0.6010702@nod.at>
+Date: Fri, 6 Nov 2015 22:51:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v2 0/2] um: Protect memory mapped file
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <1446132632-23623-1-git-send-email-saurabh.truth@gmail.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] [PATCH v4] um: net: replace GFP_KERNEL with
+ GFP_ATOMIC when spinlock is held
+To: Saurabh Sengar <saurabh.truth@gmail.com>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
 
-This series protect the memory mapped file.
+Am 29.10.2015 um 16:30 schrieb Saurabh Sengar:
+> since GFP_KERNEL with GFP_ATOMIC while spinlock is held,
+> as code while holding a spinlock should be atomic.
+> GFP_KERNEL may sleep and can cause deadlock,
+> where as GFP_ATOMIC may fail but certainly avoids deadlockdex f70dd54..d898f6c 100644
+> 
+> Signed-off-by: Saurabh Sengar <saurabh.truth@gmail.com>
 
-Changes since v1; addressed Richard Weinberger's comments:
-* add attacker model to the patch description [1/2]
-* remove errno reset [2/2]
+Applied!
 
-Regards,
- Micka=C3=ABl
+Thanks,
+//richard
 
-Micka=C3=ABl Sala=C3=BCn (2):
-  um: Set secure access mode for temporary file
-  um: Use race-free temporary file creation
-
- arch/um/os-Linux/mem.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
---=20
-2.6.2
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
