@@ -1,29 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZzqjD-000363-6U
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZvTUl-00054v-C3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 18:48:11 +0000
+	Sun, 08 Nov 2015 17:11:11 +0000
 Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1ZzqjB-0000zf-Ui
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZvTUj-0005wh-TS
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 18:48:11 +0000
+	Sun, 08 Nov 2015 17:11:11 +0000
 Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
 	helo=smaug.kot-begemot.co.uk) by ivanoab4.miniserver.com with esmtps
 	(TLS1.2:RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1Zzqj5-0008UB-G4
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZvTUc-0005EX-RB
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 18:48:03 +0000
-Received: from [85.255.235.174] (helo=[192.168.42.140])
+	Sun, 08 Nov 2015 17:11:02 +0000
+Received: from [64.88.227.134] (helo=[172.19.248.113])
 	by smaug.kot-begemot.co.uk with esmtpsa
 	(TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.84)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1Zzqj4-0002fS-U2
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZvTUa-0005EM-Qn
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 18:48:03 +0000
-Message-ID: <564F6ADE.8030701@kot-begemot.co.uk>
-Date: Fri, 20 Nov 2015 18:47:58 +0000
+	Sun, 08 Nov 2015 17:11:02 +0000
+Message-ID: <563F8210.3070008@kot-begemot.co.uk>
+Date: Sun, 08 Nov 2015 17:10:40 +0000
 From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 MIME-Version: 1.0
 References: <1446996012-31444-1-git-send-email-aivanov@brocade.com>
@@ -44,15 +44,10 @@ Subject: Re: [uml-devel] [PATCH] Update UBD to use pread/pwrite family of
  functions
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi list, hi Richard.
+I am going to send in a couple of more which bulk-up the transactions 
+(this forms most of the improvement) later this week.
 
-Have you had time to review this one? I think it is not contentious - it 
-is something QEMU has been doing for a very long time now. It also gives 
-a measurable speed up, especially for random IO.
-
-I am going to hold off on the rest of the ubd patches because they bulk 
-up the transactions. This is dangerous if you end up in a reentrant 
-situation.
+This one is obvious - qemu has been using it for ages.
 
 A.
 
