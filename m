@@ -1,28 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1ZwcHu-00056r-RJ
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1ZwFSr-0002DA-HL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Nov 2015 20:46:38 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZwcHt-0002Ka-4n
+	Tue, 10 Nov 2015 20:24:25 +0000
+Received: from mail-oi0-f45.google.com ([209.85.218.45])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZwFSq-0008GO-Mu
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Nov 2015 20:46:38 +0000
-Received: from [217.255.220.144] (helo=localhost.localdomain)
-	by www17.your-server.de with esmtpsa
-	(TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256) (Exim 4.80.1)
-	(envelope-from <thomas@m3y3r.de>) id 1ZwcHm-0004NF-2i
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 11 Nov 2015 21:46:30 +0100
-Message-ID: <1447274788.48401.3.camel@m3y3r.de>
-From: Thomas Meyer <thomas@m3y3r.de>
-Date: Wed, 11 Nov 2015 21:46:28 +0100
-In-Reply-To: <5640B5B5.7050907@kot-begemot.co.uk>
+	Tue, 10 Nov 2015 20:24:25 +0000
+Received: by oiad129 with SMTP id d129so4881597oia.0
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 10 Nov 2015 12:24:19 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <56423A89.2040206@kot-begemot.co.uk>
 References: <1447079597-17816-1-git-send-email-aivanov@brocade.com>
 	<5640B5B5.7050907@kot-begemot.co.uk>
-Mime-Version: 1.0
+	<56423A89.2040206@kot-begemot.co.uk>
+Date: Tue, 10 Nov 2015 21:24:19 +0100
+Message-ID: <CAFLxGvx-F1hU8DgrSwBgvbwDFzrz2R5cW-ZSJ0ymazj3jxb6wg@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,112 +30,34 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH v2] EPOLL Interrupt Controller V2.0
-To: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-QW0gTW9udGFnLCBkZW4gMDkuMTEuMjAxNSwgMTU6MDMgKzAwMDAgc2NocmllYiBBbnRvbiBJdmFu
-b3Y6Cj4gSXQgdGhyb3dzIGEgY291cGxlIG9mIGhhcm1sZXNzICJlcG9sbCBkZWwgZmQiIHdhcm5p
-bmdzIG9uIHJlYm9vdAo+IHdoaWNoIAo+IHJlc3VsdCB0aGUgZmFjdCB0aGF0IGRpc2FibGVfZmQv
-ZW5hYmxlX2ZkIGFyZSBub3QgcmVtb3ZlZCBpbiB0aGUgCj4gdGVybWluYWwvbGluZSBjb2RlLgo+
-IAo+IFRoZXNlIGFyZSBoYXJtbGVzcyBhbmQgd2lsbCBnbyBhd2F5IG9uY2UgdGhlIHRlcm0vbGlu
-ZSBjb2RlIGdldHMKPiBzdXBwb3J0IAo+IGZvciByZWFsIHdyaXRlIElSUXMgaW4gYWRkaXRpb24g
-dG8gcmVhZCBhdCBzb21lIHBvaW50IGluIHRoZSBmdXR1cmUuCj4gCj4gSSBoYXZlIGZpeGVkIHRo
-ZSBmaWxlIGRlc2NyaXB0b3IgbGVhayBpbiB0aGUgcmVib290IGNhc2UuCgpIaSwKCm5vdyB3aXRo
-IHRoZSBsaXN0IG9uIGNvcHkhCgpSaWNoYXJkOiBjYW4geW91IG1ha2Ugc29tZSBzZW5zZSBvdXQg
-b2YgdGhlc2Ugc3RhY2sgdHJhY2VzPyBJIGNhbgpwcm92aWRlIHRoZSBjb25maWcgaWYgeW91IHdh
-bnQhCgpJIHNlZSBhIGxvdCBvZiBidWdzIG9mIHR5cGUgIkJVRzogc3BpbmxvY2sgcmVjdXJzaW9u
-IG9uIENQVSMwIiB3aXRoCnRoaXMgcGF0Y2g6CgpJIGRpZCBsb29rIG92ZXIgeW91ciBwYXRjaCBh
-bmQgZm91bmQgdHdvIGVycm9ycyBpbiB0aGUgaXJxX2xvY2sKc3BpbmxvY2sgaGFuZGxpbmc6Cgpo
-dHRwOi8vbTN5M3IuZHluZG5zLm9yZzo5MTAwL2dlcnJpdC8jL2MvMi8xLi4yL2FyY2gvdW0va2Vy
-bmVsL2lycS5jCgpCdXQgaXQgc3RpbGwgc2VlbXMgdG8gbWlzcyBzb21ldGhpbmcgYXMgYWJvdmUg
-YnVncyBzdGlsbCBvY2N1cnMsIGJ1dApub3cgdGhlIHN5c3RlbSBib290cyB1cCBhIGJpdCBtb3Jl
-IGF0IGxlYXN0LgoKRXhhbXBsZToKwqBbwqAgMjI1LjU3MDAwMF0gQlVHOiBzcGlubG9jayBsb2Nr
-dXAgc3VzcGVjdGVkIG9uIENQVSMwLCBjaG1vZC81MTYKwqBbwqAgMjI1LjU3MDAwMF3CoCBsb2Nr
-OiBpcnFfbG9jaysweDAvMHgxOCwgLm1hZ2ljOiBkZWFkNGVhZCwgLm93bmVyOgrCoFvCoCAyMjUu
-NTcwMDAwXSBDUFU6IDAgUElEOiA1MTYgQ29tbTogY2htb2QgTm90IHRhaW50ZWQgNC4zLjAtMDAw
-MTAtCsKgZzk2YjNlOWQgIzEwMArCoFvCoCAyMjUuNTcwMDAwXSBTdGFjazoKwqBbwqAgMjI1LjU3
-MDAwMF3CoCA2OTMyMzQ5MCA2MDA4YmJkMiAwMDAwMDAwMCA2YjBmZDU4MArCoFvCoCAyMjUuNTcw
-MDAwXcKgIDYwODNjNDQwIDYwMGQxOTFhIDY5MzIzNGEwIDYwM2I4NzAxCsKgW8KgIDIyNS41NzAw
-MDBdwqAgNjkzMjM0ZTAgNjAwODU3NzMgMDAwMDAwMDAgMDAwMDAwMDAKwqBbwqAgMjI1LjU3MDAw
-MF0gQ2FsbCBUcmFjZToKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwMGQxOTFhPl0gPyBwcmludGsr
-MHgwLzB4OTQKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwMDQ3Y2MwPl0gPyBfX2RlbGF5KzB4MC8w
-eDMwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDAyZDg0Yj5dIHNob3dfc3RhY2srMHhkYi8weDFh
-MArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwOGJiZDI+XSA/IGR1bXBfc3RhY2tfcHJpbnRfaW5m
-bysweGQyLzB4ZjAKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwMGQxOTFhPl0gPyBwcmludGsrMHgw
-LzB4OTQKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwM2I4NzAxPl0gZHVtcF9zdGFjaysweDJhLzB4
-MzkKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwMDg1NzczPl0gc3Bpbl9kdW1wKzB4YTMvMHhkMArC
-oFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwODU5YmE+XSBkb19yYXdfc3Bpbl9sb2NrKzB4MThhLzB4
-MWEwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDYzZTQ0Mz5dIF9yYXdfc3Bpbl9sb2NrX2lycXNh
-dmUrMHgzMy8weDQwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDAyYjdhMD5dID8gZG9fSVJRKzB4
-MC8weDYwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDAyYjgzNj5dIHNpZ2lvX2hhbmRsZXIrMHgz
-Ni8weDEyMArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwNDNkYjE+XSBzaWdfaGFuZGxlcl9jb21t
-b24rMHg3MS8weGUwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDYzZTU2Nj5dID8gX3Jhd19zcGlu
-X3VubG9ja19pcnFyZXN0b3JlKzB4MjYvMHgzMArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAzZDJh
-MmI+XSA/IGRlYnVnX2NoZWNrX25vX29ial9mcmVlZCsweDI4Yi8weDJhMArCoFvCoCAyMjUuNTcw
-MDAwXcKgIFs8NjAxMWU4YmM+XSA/IGNhY2hlX2ZyZWVfZGVidWdjaGVjaysweDE3Yy8weDQ3MArC
-oFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAxMWY1MjA+XSA/IGtmcmVlKzB4MC8weDE3MArCoFvCoCAy
-MjUuNTcwMDAwXcKgIFs8NjAzOTgzNzc+XSA/IGJsa191cGRhdGVfYmlkaV9yZXF1ZXN0KzB4Mjcv
-MHg5MArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwM2M0MWU+XSA/IHViZF9pbnRyKzB4NGUvMHgx
-NDAKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwMTFmNjI5Pl0gPyBrZnJlZSsweDEwOS8weDE3MArC
-oFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwNDBkMTA+XSA/IG9zX3JlYWRfZmlsZSsweDAvMHgzMArC
-oFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAxMWY1MjA+XSA/IGtmcmVlKzB4MC8weDE3MArCoFvCoCAy
-MjUuNTcwMDAwXcKgIFs8NjAwNDBkMTA+XSA/IG9zX3JlYWRfZmlsZSsweDAvMHgzMArCoFvCoCAy
-MjUuNTcwMDAwXcKgIFs8NjAxMWY1MjA+XSA/IGtmcmVlKzB4MC8weDE3MArCoFvCoCAyMjUuNTcw
-MDAwXcKgIFs8NjAzOTg3OTA+XSA/IGJsa19lbmRfcmVxdWVzdCsweDAvMHgyMArCoFvCoCAyMjUu
-NTcwMDAwXcKgIFs8NjAwNDNmNjA+XSA/IGdldF9zaWduYWxzKzB4MC8weDEwCsKgW8KgIDIyNS41
-NzAwMDBdwqAgWzw2MDA0MGQzNT5dID8gb3NfcmVhZF9maWxlKzB4MjUvMHgzMArCoFvCoCAyMjUu
-NTcwMDAwXcKgIFs8NjAwM2M0MzU+XSA/IHViZF9pbnRyKzB4NjUvMHgxNDAKwqBbwqAgMjI1LjU3
-MDAwMF3CoCBbPDYwMDQzZDQwPl0gPyBzaWdfaGFuZGxlcl9jb21tb24rMHgwLzB4ZTAKwqBbwqAg
-MjI1LjU3MDAwMF3CoCBbPDYwMDQzOGMwPl0gPyB0aW1lcl9yZWFsX2FsYXJtX2hhbmRsZXIrMHgw
-LzB4NTAKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwMDQzZDFjPl0gdW5ibG9ja19zaWduYWxzKzB4
-OGMvMHhiMArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwNTJjMmM+XSBfX2RvX3NvZnRpcnErMHg5
-Yy8weDJhMArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwOGM2M2Y+XSA/IGhhbmRsZV9pcnFfZXZl
-bnQrMHg1Zi8weDgwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDA1MzEzYz5dIGlycV9leGl0KzB4
-YWMvMHhiMArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwOGJjZDM+XSA/IGdlbmVyaWNfaGFuZGxl
-X2lycSsweDMzLzB4NDAKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwMDJiN2U3Pl0gZG9fSVJRKzB4
-NDcvMHg2MArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwMmI3YTA+XSA/IGRvX0lSUSsweDAvMHg2
-MArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwMmI4ZGE+XSBzaWdpb19oYW5kbGVyKzB4ZGEvMHgx
-MjAKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwMDQzZGIxPl0gc2lnX2hhbmRsZXJfY29tbW9uKzB4
-NzEvMHhlMArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwNDY5MWE+XSA/IHVubWFwKzB4NGEvMHg1
-MArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAwNzRmZjY+XSA/IF9fbWlnaHRfc2xlZXArMHg2Ni8w
-eGYwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDBkY2M5MD5dID8gZ2V0X3BhZ2VfZnJvbV9mcmVl
-bGlzdCsweDAvMHhhODAKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwMGYyNDQwPl0gPyBuZXh0X3pv
-bmVzX3pvbmVsaXN0KzB4MC8weDQwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDBkZGE2Nz5dID8g
-X19hbGxvY19wYWdlc19ub2RlbWFzaysweDE3Ny8weGIxMArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8
-NjAwZmZhOTY+XSA/IGRvX3NldF9wdGUrMHhhNi8weGMwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2
-MDBkMjc4MT5dID8gdW5sb2NrX3BhZ2UrMHgzMS8weGEwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2
-MDBkM2Q2ND5dID8gZmlsZW1hcF9tYXBfcGFnZXMrMHgzMjQvMHgzNDAKwqBbwqAgMjI1LjU3MDAw
-MF3CoCBbPDYwMDQ2Y2UyPl0gPyB3YWl0X3N0dWJfZG9uZSsweDYyLzB4MTQwCsKgW8KgIDIyNS41
-NzAwMDBdwqAgWzw2MDA0NjJkMD5dID8gcnVuX3N5c2NhbGxfc3R1YisweGYwLzB4MzUwCsKgW8Kg
-IDIyNS41NzAwMDBdwqAgWzw2MDA0M2Y3MD5dID8gc2V0X3NpZ25hbHMrMHgwLzB4NTAKwqBbwqAg
-MjI1LjU3MDAwMF3CoCBbPDYwMDQ2OGNhPl0gPyBtYXArMHg0YS8weDUwCsKgW8KgIDIyNS41NzAw
-MDBdwqAgWzw2MDAyZTcyND5dID8gZmx1c2hfdGxiX3BhZ2UrMHgxMzQvMHgyNDAKwqBbwqAgMjI1
-LjU3MDAwMF3CoCBbPDYwMTAxMWIwPl0gPyBoYW5kbGVfbW1fZmF1bHQrMHgwLzB4MTYyMArCoFvC
-oCAyMjUuNTcwMDAwXcKgIFs8NjAwMmVkMzU+XSA/IGhhbmRsZV9wYWdlX2ZhdWx0KzB4MjY1LzB4
-MzUwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDA0M2Q0MD5dID8gc2lnX2hhbmRsZXJfY29tbW9u
-KzB4MC8weGUwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDA0MzhjMD5dID8gdGltZXJfcmVhbF9h
-bGFybV9oYW5kbGVyKzB4MC8weDUwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDA0M2QxYz5dIHVu
-YmxvY2tfc2lnbmFscysweDhjLzB4YjAKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYwNjNlNTNjPl0g
-X3Jhd19zcGluX3VubG9ja19pcnErMHgxYy8weDIwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDA3
-NDk5OT5dIGZpbmlzaF90YXNrX3N3aXRjaCsweDU5LzB4ZTAKwqBbwqAgMjI1LjU3MDAwMF3CoCBb
-PDYwMDRhODhiPl0gPyBhcmNoX3N3aXRjaF90bysweDJiLzB4MzAKwqBbwqAgMjI1LjU3MDAwMF3C
-oCBbPDYwNjM5MTQxPl0gX19zY2hlZHVsZSsweDFlMS8weDViMArCoFvCoCAyMjUuNTcwMDAwXcKg
-IFs8NjA2MzhmNjA+XSA/IF9fc2NoZWR1bGUrMHgwLzB4NWIwCsKgW8KgIDIyNS41NzAwMDBdwqAg
-Wzw2MDYzOTU0ND5dIHNjaGVkdWxlKzB4MzQvMHg5MArCoFvCoCAyMjUuNTcwMDAwXcKgIFs8NjAw
-MmY0MjY+XSA/IHNlZ3ZfaGFuZGxlcisweDQ2LzB4OTAKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYw
-MDJjMzc0Pl0gaW50ZXJydXB0X2VuZCsweGE0LzB4YjAKwqBbwqAgMjI1LjU3MDAwMF3CoCBbPDYw
-MDQ3MzczPl0gdXNlcnNwYWNlKzB4MjUzLzB4NGUwCsKgW8KgIDIyNS41NzAwMDBdwqAgWzw2MDAz
-MDMwMz5dID8gZG9fb3Bfb25lX3BhZ2UrMHgxNTMvMHgyNDAKwqBbwqAgMjI1LjU3MDAwMF3CoCBb
-PDYwMDQyOWFmPl0gPyBzYXZlX3JlZ2lzdGVycysweDFmLzB4NDAKwqBbwqAgMjI1LjU3MDAwMF3C
-oCBbPDYwMDRhODA2Pl0gPyBhcmNoX3ByY3RsKzB4MWY2LzB4MjIwCsKgW8KgIDIyNS41NzAwMDBd
-wqAgWzw2MDAyYzA1NT5dIGZvcmtfaGFuZGxlcisweDg1LzB4OTAKwqBbwqAgMjI1LjU3MDAwMF0K
-CndpdGgga2luZCByZWdhcmRzCnRob21hcwoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgt
-ZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1t
-b2RlLWxpbnV4LWRldmVsCg==
+On Tue, Nov 10, 2015 at 7:42 PM, Anton Ivanov
+<anton.ivanov@kot-begemot.co.uk> wrote:
+> Thomas Mayer found a couple of issues which crept up when porting v1 to
+> the newer kernels.
+>
+> It also crashes with his config - I am analyzing the differences between
+> that and mine to find the culrpit.
+>
+> Once I have fixed both I will resubmit v3. So for now this is just
+> "subject for discussion", do not use yet.
+
+There is no need to hurry. :-)
+This is 4.5 material.
+
+-- 
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
