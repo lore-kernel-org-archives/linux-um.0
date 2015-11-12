@@ -1,32 +1,1181 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Sat, 28 Nov 2015 22:32:28 +0100
-Message-Id: <1448746350-19998-1-git-send-email-mic@digikod.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <aivanov@brocade.com>) id 1Zwtqb-0002yQ-Di
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 12 Nov 2015 15:31:37 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZwtqY-0007Sq-J4
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 12 Nov 2015 15:31:37 +0000
+From: Anton Ivanov <aivanov@brocade.com>
+Date: Thu, 12 Nov 2015 15:30:40 +0000
+Message-Id: <1447342240-8853-1-git-send-email-aivanov@brocade.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 0/2] um: Protect memory mapped file
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH v3] EPOLL Interrupt Controller V2.0 - Work in
+	Progress
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Anton Ivanov <aivanov@brocade.com>
 
-These patches protect the memory mapped file.
+    Epoll based interrupt controller.
 
-Micka=C3=ABl Sala=C3=BCn (2):
-  um: Set secure access mode for temporary file
-  um: Use race-free temporary file creation
+    IMPROVES: IO loop performance - no per fd lookups, allowing for
+    15% IO speedup in minimal config going to 100s of % with many
+    devices - a N^N lookup is now replaced by a log(N)
 
- arch/um/os-Linux/mem.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+    ADDS: True Write IRQ functionality
 
---=20
-2.6.2
+    OBSOLETES: The need to call reactivate_fd() in any driver which
+    has only read IRQ semantics. Write IRQs work, but will need to
+    be updated to use this fully.
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+    Potentially (with a change in API) will allow both edge and level
+    IRQ semantics.
+
+    Pre-requisite for using packet mmap and multipacket read/write
+    which do not get along with poll() very well.
+
+Signed-off-by: Anton Ivanov <aivanov@brocade.com>
+---
+ arch/um/drivers/chan_kern.c       |  10 +-
+ arch/um/drivers/line.c            |   5 +-
+ arch/um/drivers/mconsole_kern.c   |   2 -
+ arch/um/drivers/net_kern.c        |   1 -
+ arch/um/drivers/port_kern.c       |   1 -
+ arch/um/drivers/random.c          |   1 -
+ arch/um/drivers/ubd_kern.c        |  28 +--
+ arch/um/include/shared/irq_user.h |  24 ++-
+ arch/um/include/shared/os.h       |  16 +-
+ arch/um/kernel/irq.c              | 438 +++++++++++++++++++++++---------------
+ arch/um/kernel/sigio.c            |   2 +-
+ arch/um/os-Linux/file.c           |  19 ++
+ arch/um/os-Linux/irq.c            | 150 ++++++-------
+ 13 files changed, 382 insertions(+), 315 deletions(-)
+
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index acbe6c6..49717f6 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -244,14 +244,12 @@ void close_chan(struct line *line)
+ 
+ void deactivate_chan(struct chan *chan, int irq)
+ {
+-	if (chan && chan->enabled)
+-		deactivate_fd(chan->fd, irq);
++/* NOP with epoll controller */
+ }
+ 
+ void reactivate_chan(struct chan *chan, int irq)
+ {
+-	if (chan && chan->enabled)
+-		reactivate_fd(chan->fd, irq);
++/* NOP with epoll controller */
+ }
+ 
+ int write_chan(struct chan *chan, const char *buf, int len,
+@@ -265,8 +263,6 @@ int write_chan(struct chan *chan, const char *buf, int len,
+ 	n = chan->ops->write(chan->fd, buf, len, chan->data);
+ 	if (chan->primary) {
+ 		ret = n;
+-		if ((ret == -EAGAIN) || ((ret >= 0) && (ret < len)))
+-			reactivate_fd(chan->fd, write_irq);
+ 	}
+ 	return ret;
+ }
+@@ -564,8 +560,6 @@ void chan_interrupt(struct line *line, int irq)
+ 			tty_insert_flip_char(port, c, TTY_NORMAL);
+ 	} while (err > 0);
+ 
+-	if (err == 0)
+-		reactivate_fd(chan->fd, irq);
+ 	if (err == -EIO) {
+ 		if (chan->primary) {
+ 			tty_port_tty_hangup(&line->port, false);
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index 6208702..84384c8 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2012 - 2014 Cisco Systems
+  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+@@ -283,7 +284,7 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
+ 	if (err)
+ 		return err;
+ 	if (output)
+-		err = um_request_irq(driver->write_irq, fd, IRQ_WRITE,
++		err = um_request_irq(driver->write_irq, fd, IRQ_NONE,
+ 				     line_write_interrupt, IRQF_SHARED,
+ 				     driver->write_irq_name, data);
+ 	return err;
+@@ -666,8 +667,6 @@ static irqreturn_t winch_interrupt(int irq, void *data)
+ 		tty_kref_put(tty);
+ 	}
+  out:
+-	if (winch->fd != -1)
+-		reactivate_fd(winch->fd, WINCH_IRQ);
+ 	return IRQ_HANDLED;
+ }
+ 
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index 29880c9..5e8881c 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -95,7 +95,6 @@ static irqreturn_t mconsole_interrupt(int irq, void *dev_id)
+ 	}
+ 	if (!list_empty(&mc_requests))
+ 		schedule_work(&mconsole_work);
+-	reactivate_fd(fd, MCONSOLE_IRQ);
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -243,7 +242,6 @@ void mconsole_stop(struct mc_request *req)
+ 		(*req->cmd->handler)(req);
+ 	}
+ 	os_set_fd_block(req->originating_fd, 0);
+-	reactivate_fd(req->originating_fd, MCONSOLE_IRQ);
+ 	mconsole_reply(req, "", 0, 0);
+ }
+ 
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index f70dd54..82ea3a2 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -137,7 +137,6 @@ static irqreturn_t uml_net_interrupt(int irq, void *dev_id)
+ 		schedule_work(&lp->work);
+ 		goto out;
+ 	}
+-	reactivate_fd(lp->fd, UM_ETH_IRQ);
+ 
+ out:
+ 	spin_unlock(&lp->lock);
+diff --git a/arch/um/drivers/port_kern.c b/arch/um/drivers/port_kern.c
+index 40ca5cc..b0e9ff3 100644
+--- a/arch/um/drivers/port_kern.c
++++ b/arch/um/drivers/port_kern.c
+@@ -137,7 +137,6 @@ static void port_work_proc(struct work_struct *unused)
+ 		if (!port->has_connection)
+ 			continue;
+ 
+-		reactivate_fd(port->fd, ACCEPT_IRQ);
+ 		while (port_accept(port))
+ 			;
+ 		port->has_connection = 0;
+diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
+index dd16c90..a392828 100644
+--- a/arch/um/drivers/random.c
++++ b/arch/um/drivers/random.c
+@@ -72,7 +72,6 @@ static ssize_t rng_dev_read (struct file *filp, char __user *buf, size_t size,
+ 				return ret ? : -EAGAIN;
+ 
+ 			atomic_inc(&host_sleep_count);
+-			reactivate_fd(random_fd, RANDOM_IRQ);
+ 			add_sigio_fd(random_fd);
+ 
+ 			add_wait_queue(&host_read_wait, &wait);
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index e8ab93c..ad24ac7 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -466,7 +466,6 @@ static void ubd_handler(void)
+ 		blk_end_request(req->req, 0, req->length);
+ 		kfree(req);
+ 	}
+-	reactivate_fd(thread_fd, UBD_IRQ);
+ 
+ 	list_for_each_safe(list, next_ele, &restart){
+ 		ubd = container_of(list, struct ubd, restart);
+@@ -535,11 +534,7 @@ static int read_cow_bitmap(int fd, void *buf, int offset, int len)
+ {
+ 	int err;
+ 
+-	err = os_seek_file(fd, offset);
+-	if (err < 0)
+-		return err;
+-
+-	err = os_read_file(fd, buf, len);
++	err = os_pread_file(fd, buf, len, offset);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -1377,14 +1372,8 @@ static int update_bitmap(struct io_thread_req *req)
+ 	if(req->cow_offset == -1)
+ 		return 0;
+ 
+-	n = os_seek_file(req->fds[1], req->cow_offset);
+-	if(n < 0){
+-		printk("do_io - bitmap lseek failed : err = %d\n", -n);
+-		return 1;
+-	}
+-
+-	n = os_write_file(req->fds[1], &req->bitmap_words,
+-			  sizeof(req->bitmap_words));
++	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
++			  sizeof(req->bitmap_words), req->cow_offset);
+ 	if(n != sizeof(req->bitmap_words)){
+ 		printk("do_io - bitmap update failed, err = %d fd = %d\n", -n,
+ 		       req->fds[1]);
+@@ -1399,7 +1388,6 @@ static void do_io(struct io_thread_req *req)
+ 	char *buf;
+ 	unsigned long len;
+ 	int n, nsectors, start, end, bit;
+-	int err;
+ 	__u64 off;
+ 
+ 	if (req->op == UBD_FLUSH) {
+@@ -1428,18 +1416,12 @@ static void do_io(struct io_thread_req *req)
+ 		len = (end - start) * req->sectorsize;
+ 		buf = &req->buffer[start * req->sectorsize];
+ 
+-		err = os_seek_file(req->fds[bit], off);
+-		if(err < 0){
+-			printk("do_io - lseek failed : err = %d\n", -err);
+-			req->error = 1;
+-			return;
+-		}
+ 		if(req->op == UBD_READ){
+ 			n = 0;
+ 			do {
+ 				buf = &buf[n];
+ 				len -= n;
+-				n = os_read_file(req->fds[bit], buf, len);
++				n = os_pread_file(req->fds[bit], buf, len, off);
+ 				if (n < 0) {
+ 					printk("do_io - read failed, err = %d "
+ 					       "fd = %d\n", -n, req->fds[bit]);
+@@ -1449,7 +1431,7 @@ static void do_io(struct io_thread_req *req)
+ 			} while((n < len) && (n != 0));
+ 			if (n < len) memset(&buf[n], 0, len - n);
+ 		} else {
+-			n = os_write_file(req->fds[bit], buf, len);
++			n = os_pwrite_file(req->fds[bit], buf, len, off);
+ 			if(n != len){
+ 				printk("do_io - write failed err = %d "
+ 				       "fd = %d\n", -n, req->fds[bit]);
+diff --git a/arch/um/include/shared/irq_user.h b/arch/um/include/shared/irq_user.h
+index df56330..0eca64c 100644
+--- a/arch/um/include/shared/irq_user.h
++++ b/arch/um/include/shared/irq_user.h
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2012 - 2014 Cisco Systems
+  * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+@@ -9,16 +10,23 @@
+ #include <sysdep/ptrace.h>
+ 
+ struct irq_fd {
+-	struct irq_fd *next;
+-	void *id;
+-	int fd;
+-	int type;
+-	int irq;
+-	int events;
+-	int current_events;
++        void *id;
++        int irq;
++        int events;
++};
++
++
++#define IRQ_READ  0
++#define IRQ_WRITE 1 
++#define IRQ_NONE 2
++#define MAX_IRQ_TYPE (IRQ_NONE + 1)
++
++struct irq_entry {
++        struct irq_entry *next;
++        int fd;
++	struct irq_fd * irq_array[MAX_IRQ_TYPE + 1];
+ };
+ 
+-enum { IRQ_READ, IRQ_WRITE };
+ 
+ struct siginfo;
+ extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 21d704b..46daa6e 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (C) 2015 Anton Ivanov (aivanov@{brocade.com,kot-begemot.co.uk})
++ * Copyright (C) 2012 - 2014 Cisco Systems
+  * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
+  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+@@ -146,6 +147,8 @@ extern int os_read_file(int fd, void *buf, int len);
+ extern int os_write_file(int fd, const void *buf, int count);
+ extern int os_sync_file(int fd);
+ extern int os_file_size(const char *file, unsigned long long *size_out);
++extern int os_pread_file(int fd, void *buf, int len, unsigned long long offset);
++extern int os_pwrite_file(int fd, const void *buf, int count, unsigned long long offset);
+ extern int os_file_modtime(const char *file, unsigned long *modtime);
+ extern int os_pipe(int *fd, int stream, int close_on_exec);
+ extern int os_set_fd_async(int fd);
+@@ -284,15 +287,18 @@ extern void halt_skas(void);
+ extern void reboot_skas(void);
+ 
+ /* irq.c */
+-extern int os_waiting_for_events(struct irq_fd *active_fds);
+-extern int os_create_pollfd(int fd, int events, void *tmp_pfd, int size_tmpfds);
++
++extern int os_setup_epoll(int maxevents);
++extern int os_waiting_for_events_epoll(void *kernel_events, int maxevents);
++extern int os_add_epoll_fd (int events, int fd, void * data);
++extern int os_mod_epoll_fd (int events, int fd, void * data);
++extern int os_del_epoll_fd (int fd);
++
+ extern void os_free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg,
+ 		struct irq_fd *active_fds, struct irq_fd ***last_irq_ptr2);
+ extern void os_free_irq_later(struct irq_fd *active_fds,
+ 		int irq, void *dev_id);
+-extern int os_get_pollfd(int i);
+-extern void os_set_pollfd(int i, int fd);
+-extern void os_set_ioignore(void);
++extern void os_close_epoll(void);
+ 
+ /* sigio.c */
+ extern int add_sigio_fd(int fd);
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 23cb935..52effff 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -1,4 +1,7 @@
+ /*
++ * Copyright (C) 2015 Brocade Communications Ltd
++ *	Author: Anton Ivanov aivanov@{brocade.com,kot-begemot.co.uk}
++ * Copyright (C) 2012 - 2014 Cisco Systems
+  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  * Derived (i.e. mostly copied) from arch/i386/kernel/irq.c:
+@@ -18,6 +21,61 @@
+ #include <os.h>
+ 
+ /*
++*	We are on the "kernel side" so we cannot pick up the sys/epoll.h
++*	So we lift out of it the applicable key definitions.
++*/
++
++
++enum EPOLL_EVENTS
++  {
++	EPOLLIN = 0x001,
++#define EPOLLIN EPOLLIN
++	EPOLLPRI = 0x002,
++#define EPOLLPRI EPOLLPRI
++	EPOLLOUT = 0x004,
++#define EPOLLOUT EPOLLOUT
++	EPOLLRDNORM = 0x040,
++#define EPOLLRDNORM EPOLLRDNORM
++	EPOLLRDBAND = 0x080,
++#define EPOLLRDBAND EPOLLRDBAND
++	EPOLLWRNORM = 0x100,
++#define EPOLLWRNORM EPOLLWRNORM
++	EPOLLWRBAND = 0x200,
++#define EPOLLWRBAND EPOLLWRBAND
++	EPOLLMSG = 0x400,
++#define EPOLLMSG EPOLLMSG
++	EPOLLERR = 0x008,
++#define EPOLLERR EPOLLERR
++	EPOLLHUP = 0x010,
++#define EPOLLHUP EPOLLHUP
++	EPOLLRDHUP = 0x2000,
++#define EPOLLRDHUP EPOLLRDHUP
++	EPOLLONESHOT = (1 << 30),
++#define EPOLLONESHOT EPOLLONESHOT
++	EPOLLET = (1 << 31)
++#define EPOLLET EPOLLET
++  };
++
++
++typedef union epoll_data
++{
++	void *ptr;
++	int fd;
++	uint32_t u32;
++	uint64_t u64;
++} epoll_data_t;
++
++struct epoll_event
++{
++	uint32_t events;	/* Epoll events */
++	epoll_data_t data;	/* User data variable */
++} __attribute__ ((__packed__));
++
++#define MAX_EPOLL_EVENTS 16
++
++static struct epoll_event epoll_events[MAX_EPOLL_EVENTS];
++
++/*
+  * This list is accessed under irq_lock, except in sigio_handler,
+  * where it is safe from being modified.  IRQ handlers won't change it -
+  * if an IRQ source has vanished, it will be freed by free_irqs just
+@@ -25,44 +83,111 @@
+  * list of irqs to free, with its own locking, coming back here to
+  * remove list elements, taking the irq_lock to do so.
+  */
+-static struct irq_fd *active_fds = NULL;
+-static struct irq_fd **last_irq_ptr = &active_fds;
++static struct irq_entry *active_fds = NULL;
+ 
+ extern void free_irqs(void);
+ 
++
++static DEFINE_SPINLOCK(irq_lock);
++
++
++/*
++ * Principles of Operation:
++ * Each Epoll structure contains a pointer pointing back to an array
++ * with irq entries for read, write and none and their matching event
++ * masks.
++ * This allows us to stop looking up "who talked"
++ * We no longer need to enable/disable any polls while we process them
++ * epoll will take care of that. The exemption to this (for now) are
++ * character devices because of their own internal buffering, which
++ * needs to be updated to leverage the new write IRQ semantics.
++ * We can now support both read and write IRQs and have separate IRQs
++ * for read and write ops.
++ */
++
++/* For now this variable is for debug purposes, we will later re-use
++ * it for the multi-send/multi-write network FSM
++ */
++
++static int in_epoll_loop = 0;
++
+ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ {
+ 	struct irq_fd *irq_fd;
+-	int n;
++	struct irq_entry *irq_entry;
++	unsigned long flags;
++
++	int n, i, j;
++
++        
+ 
+ 	while (1) {
+-		n = os_waiting_for_events(active_fds);
+-		if (n <= 0) {
+-			if (n == -EINTR)
+-				continue;
+-			else break;
++
++		if (!spin_trylock_irqsave(&irq_lock, flags)) {
++			break;
+ 		}
++		WARN_ON(in_epoll_loop);
++		in_epoll_loop = 1;
+ 
+-		for (irq_fd = active_fds; irq_fd != NULL;
+-		     irq_fd = irq_fd->next) {
+-			if (irq_fd->current_events != 0) {
+-				irq_fd->current_events = 0;
+-				do_IRQ(irq_fd->irq, regs);
+-			}
++		n = os_waiting_for_events_epoll(
++			&epoll_events, MAX_EPOLL_EVENTS
++		);
++
++
++ 		if (n <= 0) {
++			in_epoll_loop = 0;
++			spin_unlock_irqrestore(&irq_lock, flags);
++			if (n == -EINTR) { continue; }
++			else { break; }
+ 		}
++
++
++		for (i = 0; i < n ; i++) {
++			/* start from the data ptr, walk the tree branch */
++			irq_entry = (struct irq_entry *) epoll_events[i].data.ptr;
++			for (j = 0; j < MAX_IRQ_TYPE ; j ++ ) {
++				irq_fd = irq_entry->irq_array[j];
++				if (irq_fd != NULL) {
++					if (epoll_events[i].events & irq_fd->events) {
++						do_IRQ(irq_fd->irq, regs);
++					}
++				}
++ 			}
++ 		}
++		in_epoll_loop = 0;
++		spin_unlock_irqrestore(&irq_lock, flags);
+ 	}
+ 
+ 	free_irqs();
+ }
+ 
+-static DEFINE_SPINLOCK(irq_lock);
++static int update_events(struct irq_entry * irq_entry)
++{
++	int i;
++	int events = 0;
++	struct irq_fd * irq_fd;
++	for (i = 0; i < MAX_IRQ_TYPE ; i ++ ) {
++		irq_fd = irq_entry->irq_array[i];
++		if (irq_fd != NULL) {
++			events = irq_fd->events | events;
++		}
++	}
++        if (events > 0) {
++	    /* os_add_epoll will call os_mod_epoll if this already exists */
++            return os_add_epoll_fd(events, irq_entry->fd, irq_entry);
++        } else {
++	    /* No events - delete, because EPOLL_ERR will always trigger */
++            return os_del_epoll_fd(irq_entry->fd);
++        }
++}
++
+ 
+ static int activate_fd(int irq, int fd, int type, void *dev_id)
+ {
+-	struct pollfd *tmp_pfd;
+-	struct irq_fd *new_fd, *irq_fd;
++	struct irq_fd *new_fd;
++	struct irq_entry * irq_entry;
++	int  i, err, events;
+ 	unsigned long flags;
+-	int events, err, n;
+ 
+ 	err = os_set_fd_async(fd);
+ 	if (err < 0)
+@@ -74,186 +199,155 @@ static int activate_fd(int irq, int fd, int type, void *dev_id)
+ 		goto out;
+ 
+ 	if (type == IRQ_READ)
+-		events = UM_POLLIN | UM_POLLPRI;
+-	else events = UM_POLLOUT;
+-	*new_fd = ((struct irq_fd) { .next  		= NULL,
+-				     .id 		= dev_id,
+-				     .fd 		= fd,
+-				     .type 		= type,
+-				     .irq 		= irq,
+-				     .events 		= events,
+-				     .current_events 	= 0 } );
+-
+-	err = -EBUSY;
+-	spin_lock_irqsave(&irq_lock, flags);
+-	for (irq_fd = active_fds; irq_fd != NULL; irq_fd = irq_fd->next) {
+-		if ((irq_fd->fd == fd) && (irq_fd->type == type)) {
+-			printk(KERN_ERR "Registering fd %d twice\n", fd);
+-			printk(KERN_ERR "Irqs : %d, %d\n", irq_fd->irq, irq);
+-			printk(KERN_ERR "Ids : 0x%p, 0x%p\n", irq_fd->id,
+-			       dev_id);
+-			goto out_unlock;
+-		}
+-	}
+-
++		events = EPOLLIN | EPOLLPRI;
+ 	if (type == IRQ_WRITE)
+-		fd = -1;
++		events = EPOLLOUT;
+ 
+-	tmp_pfd = NULL;
+-	n = 0;
++	*new_fd = ((struct irq_fd) {
++		.id 		= dev_id,
++		.irq 		= irq,
++		.events 	= events
++	});
+ 
+-	while (1) {
+-		n = os_create_pollfd(fd, events, tmp_pfd, n);
+-		if (n == 0)
+-			break;
++	err = -EBUSY;
+ 
+-		/*
+-		 * n > 0
+-		 * It means we couldn't put new pollfd to current pollfds
+-		 * and tmp_fds is NULL or too small for new pollfds array.
+-		 * Needed size is equal to n as minimum.
+-		 *
+-		 * Here we have to drop the lock in order to call
+-		 * kmalloc, which might sleep.
+-		 * If something else came in and changed the pollfds array
+-		 * so we will not be able to put new pollfd struct to pollfds
+-		 * then we free the buffer tmp_fds and try again.
+-		 */
+-		spin_unlock_irqrestore(&irq_lock, flags);
+-		kfree(tmp_pfd);
++	spin_lock_irqsave(&irq_lock, flags);
++	WARN_ON(in_epoll_loop);
+ 
+-		tmp_pfd = kmalloc(n, GFP_KERNEL);
+-		if (tmp_pfd == NULL)
+-			goto out_kfree;
++	for (irq_entry = active_fds; irq_entry != NULL; irq_entry = irq_entry->next) {
++		if (irq_entry->fd == fd) break;
++	}
+ 
+-		spin_lock_irqsave(&irq_lock, flags);
++	if (irq_entry == NULL) {
++		irq_entry = kmalloc(sizeof(struct irq_entry), GFP_KERNEL);
++		if (irq_entry == NULL) {
++			printk(KERN_ERR
++				"Failed to allocate new IRQ entry\n");
++			kfree(new_fd);
++			goto out_unlock;
++		}
++		irq_entry->fd = fd;
++		for (i = 0; i < MAX_IRQ_TYPE; i++) {
++			irq_entry->irq_array[i] = NULL;
++		}
++		irq_entry->next = active_fds;
++		active_fds = irq_entry;
+ 	}
+ 
+-	*last_irq_ptr = new_fd;
+-	last_irq_ptr = &new_fd->next;
++	if (irq_entry->irq_array[type] != NULL) {
++		printk(KERN_ERR
++			"Trying to reregister IRQ %d FD %d TYPE %d ID %p\n",
++			irq, fd, type, dev_id
++		);
++		goto out_unlock;
++	} else {
++		irq_entry->irq_array[type] = new_fd;
++	}
+ 
++	update_events(irq_entry);
++	
+ 	spin_unlock_irqrestore(&irq_lock, flags);
+ 
+-	/*
+-	 * This calls activate_fd, so it has to be outside the critical
+-	 * section.
+-	 */
+-	maybe_sigio_broken(fd, (type == IRQ_READ));
++	maybe_sigio_broken(fd, (type != IRQ_NONE));
+ 
+ 	return 0;
+ 
+  out_unlock:
+ 	spin_unlock_irqrestore(&irq_lock, flags);
+- out_kfree:
+ 	kfree(new_fd);
+  out:
+ 	return err;
+ }
+ 
+-static void free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg)
+-{
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
+-	os_free_irq_by_cb(test, arg, active_fds, &last_irq_ptr);
+-	spin_unlock_irqrestore(&irq_lock, flags);
+-}
+-
+-struct irq_and_dev {
+-	int irq;
+-	void *dev;
+-};
+-
+-static int same_irq_and_dev(struct irq_fd *irq, void *d)
++static void do_free_by_irq_and_dev(
++	struct irq_entry* irq_entry,
++	unsigned int irq,
++	void * dev
++)
+ {
+-	struct irq_and_dev *data = d;
+-
+-	return ((irq->irq == data->irq) && (irq->id == data->dev));
+-}
+-
+-static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
+-{
+-	struct irq_and_dev data = ((struct irq_and_dev) { .irq  = irq,
+-							  .dev  = dev });
+-
+-	free_irq_by_cb(same_irq_and_dev, &data);
+-}
+-
+-static int same_fd(struct irq_fd *irq, void *fd)
+-{
+-	return (irq->fd == *((int *)fd));
++	int i;
++	struct irq_fd * to_free;
++	for (i = 0; i < MAX_IRQ_TYPE ; i ++ ) {
++		if (irq_entry->irq_array[i] != NULL) {
++			if (
++				(irq_entry->irq_array[i]->irq == irq) &&
++				(irq_entry->irq_array[i]->id == dev)
++			) {
++				to_free = irq_entry->irq_array[i];
++				irq_entry->irq_array[i] = NULL;
++				update_events(irq_entry);
++				kfree(to_free);
++			}
++		}
++	}
+ }
+ 
+ void free_irq_by_fd(int fd)
+ {
+-	free_irq_by_cb(same_fd, &fd);
+-}
+ 
+-/* Must be called with irq_lock held */
+-static struct irq_fd *find_irq_by_fd(int fd, int irqnum, int *index_out)
+-{
+-	struct irq_fd *irq;
+-	int i = 0;
+-	int fdi;
++	struct irq_entry *irq_entry, *prev = NULL;
++	unsigned long flags;
++	int i;
+ 
+-	for (irq = active_fds; irq != NULL; irq = irq->next) {
+-		if ((irq->fd == fd) && (irq->irq == irqnum))
+-			break;
+-		i++;
+-	}
+-	if (irq == NULL) {
+-		printk(KERN_ERR "find_irq_by_fd doesn't have descriptor %d\n",
+-		       fd);
+-		goto out;
+-	}
+-	fdi = os_get_pollfd(i);
+-	if ((fdi != -1) && (fdi != fd)) {
+-		printk(KERN_ERR "find_irq_by_fd - mismatch between active_fds "
+-		       "and pollfds, fd %d vs %d, need %d\n", irq->fd,
+-		       fdi, fd);
+-		irq = NULL;
+-		goto out;
++	spin_lock_irqsave(&irq_lock, flags);	
++	WARN_ON(in_epoll_loop);
++	for (irq_entry = active_fds; irq_entry != NULL; irq_entry = irq_entry->next) {
++		if (irq_entry->fd == irq_entry->fd) {
++			os_del_epoll_fd(fd);   /* ignore err, just do it */
++			for (i = 0; i < MAX_IRQ_TYPE ; i++) {
++				if (irq_entry->irq_array[i] != NULL) {
++					kfree(irq_entry->irq_array[i]);
++				}
++			}
++			if (prev == NULL) {
++				active_fds = irq_entry->next;
++			} else {
++				prev->next = irq_entry->next;
++			}
++			kfree(irq_entry);
++		} else {
++			prev = irq_entry;
++		}
+ 	}
+-	*index_out = i;
+- out:
+-	return irq;
++	spin_unlock_irqrestore(&irq_lock, flags);
++	
+ }
+ 
+-void reactivate_fd(int fd, int irqnum)
++
++static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
+ {
+-	struct irq_fd *irq;
++
++	struct irq_entry *irq_entry;
+ 	unsigned long flags;
+-	int i;
+ 
+ 	spin_lock_irqsave(&irq_lock, flags);
+-	irq = find_irq_by_fd(fd, irqnum, &i);
+-	if (irq == NULL) {
+-		spin_unlock_irqrestore(&irq_lock, flags);
+-		return;
++	for (irq_entry = active_fds; irq_entry != NULL; irq_entry = irq_entry->next) {
++		do_free_by_irq_and_dev(irq_entry, irq, dev);
+ 	}
+-	os_set_pollfd(i, irq->fd);
+ 	spin_unlock_irqrestore(&irq_lock, flags);
+-
+-	add_sigio_fd(fd);
++	
+ }
+ 
+-void deactivate_fd(int fd, int irqnum)
+-{
+-	struct irq_fd *irq;
+-	unsigned long flags;
+-	int i;
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
+-	irq = find_irq_by_fd(fd, irqnum, &i);
+-	if (irq == NULL) {
+-		spin_unlock_irqrestore(&irq_lock, flags);
+-		return;
++void reactivate_fd(int fd, int irqnum)
++{
++	/* this is always called from interrupt context we
++	* should not need to lock here 
++	*/
++	struct irq_entry *irq_entry;
++	WARN_ON(!in_epoll_loop);
++	for (irq_entry = active_fds; irq_entry != NULL; irq_entry = irq_entry->next) {
++		if (irq_entry->fd == fd) {
++			update_events(irq_entry);
++		}
+ 	}
++	
++}
+ 
+-	os_set_pollfd(i, -1);
+-	spin_unlock_irqrestore(&irq_lock, flags);
+-
+-	ignore_sigio_fd(fd);
++void deactivate_fd(int fd, int irqnum)
++{
++	os_del_epoll_fd(fd);   /* ignore err, just do it */
+ }
+ EXPORT_SYMBOL(deactivate_fd);
+ 
+@@ -265,17 +359,17 @@ EXPORT_SYMBOL(deactivate_fd);
+  */
+ int deactivate_all_fds(void)
+ {
+-	struct irq_fd *irq;
++	struct irq_entry * irq_entry;
+ 	int err;
+ 
+-	for (irq = active_fds; irq != NULL; irq = irq->next) {
+-		err = os_clear_fd_async(irq->fd);
+-		if (err)
+-			return err;
++	for (irq_entry = active_fds; irq_entry != NULL; irq_entry = irq_entry->next) {
++		os_del_epoll_fd(irq_entry->fd);   /* ignore err, just do it */
++		err = os_clear_fd_async(irq_entry->fd);
++		if (err) {
++			printk(KERN_ERR "Clear FD async failed with %d", err);
++		}
+ 	}
+-	/* If there is a signal already queued, after unblocking ignore it */
+-	os_set_ioignore();
+-
++	os_close_epoll();
+ 	return 0;
+ }
+ 
+@@ -308,13 +402,13 @@ int um_request_irq(unsigned int irq, int fd, int type,
+ {
+ 	int err;
+ 
+-	if (fd != -1) {
++	err = request_irq(irq, handler, irqflags, devname, dev_id);
++
++	if ((!err) && (fd != -1)) {
+ 		err = activate_fd(irq, fd, type, dev_id);
+-		if (err)
+-			return err;
+ 	}
+ 
+-	return request_irq(irq, handler, irqflags, devname, dev_id);
++	return err;
+ }
+ 
+ EXPORT_SYMBOL(um_request_irq);
+@@ -352,9 +446,9 @@ void __init init_IRQ(void)
+ 	int i;
+ 
+ 	irq_set_chip_and_handler(TIMER_IRQ, &SIGVTALRM_irq_type, handle_edge_irq);
+-
+-	for (i = 1; i < NR_IRQS; i++)
++	for (i = 1; i < NR_IRQS - 1 ; i++)
+ 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
++	os_setup_epoll(MAX_EPOLL_EVENTS);
+ }
+ 
+ /*
+@@ -382,11 +476,11 @@ void __init init_IRQ(void)
+  * thread_info.
+  *
+  * There are three cases -
+- *     The first interrupt on the stack - sets up the thread_info and
++ *	 The first interrupt on the stack - sets up the thread_info and
+  * handles the interrupt
+- *     A nested interrupt interrupting the copying of the thread_info -
++ *	 A nested interrupt interrupting the copying of the thread_info -
+  * can't handle the interrupt, as the stack is in an unknown state
+- *     A nested interrupt not interrupting the copying of the
++ *	 A nested interrupt not interrupting the copying of the
+  * thread_info - doesn't do any setup, just handles the interrupt
+  *
+  * The first job is to figure out whether we interrupted stack setup.
+diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
+index b5e0cbb..4973f5c 100644
+--- a/arch/um/kernel/sigio.c
++++ b/arch/um/kernel/sigio.c
+@@ -16,7 +16,7 @@ static irqreturn_t sigio_interrupt(int irq, void *data)
+ 	char c;
+ 
+ 	os_read_file(sigio_irq_fd, &c, sizeof(c));
+-	reactivate_fd(sigio_irq_fd, SIGIO_WRITE_IRQ);
++	// reactivate_fd(sigio_irq_fd, SIGIO_WRITE_IRQ);
+ 	return IRQ_HANDLED;
+ }
+ 
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index 26e0164..2db18cb 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -264,6 +264,15 @@ int os_read_file(int fd, void *buf, int len)
+ 	return n;
+ }
+ 
++int os_pread_file(int fd, void *buf, int len, unsigned long long offset)
++{
++	int n = pread(fd, buf, len, offset);
++
++	if (n < 0)
++		return -errno;
++	return n;
++}
++
+ int os_write_file(int fd, const void *buf, int len)
+ {
+ 	int n = write(fd, (void *) buf, len);
+@@ -282,6 +291,16 @@ int os_sync_file(int fd)
+ 	return n;
+ }
+ 
++int os_pwrite_file(int fd, const void *buf, int len, unsigned long long offset)
++{
++	int n = pwrite(fd, (void *) buf, len, offset);
++
++	if (n < 0)
++		return -errno;
++	return n;
++}
++
++
+ int os_file_size(const char *file, unsigned long long *size_out)
+ {
+ 	struct uml_stat buf;
+diff --git a/arch/um/os-Linux/irq.c b/arch/um/os-Linux/irq.c
+index b9afb74..81b135a 100644
+--- a/arch/um/os-Linux/irq.c
++++ b/arch/um/os-Linux/irq.c
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2012 - 2014 Cisco Systems
+  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+@@ -6,6 +7,7 @@
+ #include <stdlib.h>
+ #include <errno.h>
+ #include <poll.h>
++#include <sys/epoll.h>
+ #include <signal.h>
+ #include <string.h>
+ #include <irq_user.h>
+@@ -16,120 +18,88 @@
+  * Locked by irq_lock in arch/um/kernel/irq.c.  Changed by os_create_pollfd
+  * and os_free_irq_by_cb, which are called under irq_lock.
+  */
+-static struct pollfd *pollfds = NULL;
+-static int pollfds_num = 0;
+-static int pollfds_size = 0;
+ 
+-int os_waiting_for_events(struct irq_fd *active_fds)
++/* epoll support */
++
++
++static int epollfd = -1;
++
++int os_setup_epoll(int maxevents) {
++	epollfd = epoll_create(maxevents);
++	return epollfd;
++}
++
++int os_waiting_for_events_epoll(void *kernel_events, int maxevents)
+ {
+-	struct irq_fd *irq_fd;
+-	int i, n, err;
++	int n, err;
+ 
+-	n = poll(pollfds, pollfds_num, 0);
++	n = epoll_wait(epollfd,
++		(struct epoll_event *) kernel_events, maxevents, 0);
+ 	if (n < 0) {
+ 		err = -errno;
+ 		if (errno != EINTR)
+-			printk(UM_KERN_ERR "os_waiting_for_events:"
+-			       " poll returned %d, errno = %d\n", n, errno);
++			printk(
++				UM_KERN_ERR "os_waiting_for_events:"
++				" poll returned %d, error = %s\n", n,
++				strerror(errno)
++			);
+ 		return err;
+ 	}
+ 
+-	if (n == 0)
+-		return 0;
++	return n;
++}
+ 
+-	irq_fd = active_fds;
++int os_add_epoll_fd (int events, int fd, void * data) {
++	struct epoll_event event;
++	int result;
+ 
+-	for (i = 0; i < pollfds_num; i++) {
+-		if (pollfds[i].revents != 0) {
+-			irq_fd->current_events = pollfds[i].revents;
+-			pollfds[i].fd = -1;
+-		}
+-		irq_fd = irq_fd->next;
++	event.data.ptr = data;
++	event.events = events | EPOLLET;
++	result = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event);
++	if ((result) && (errno == EEXIST)) {
++		result = os_mod_epoll_fd (events, fd, data);
+ 	}
+-	return n;
++	if (result) {
++		printk("epollctl add err fd %d, %s\n", fd, strerror(errno));
++	}
++	return result;
+ }
+ 
+-int os_create_pollfd(int fd, int events, void *tmp_pfd, int size_tmpfds)
+-{
+-	if (pollfds_num == pollfds_size) {
+-		if (size_tmpfds <= pollfds_size * sizeof(pollfds[0])) {
+-			/* return min size needed for new pollfds area */
+-			return (pollfds_size + 1) * sizeof(pollfds[0]);
+-		}
+-
+-		if (pollfds != NULL) {
+-			memcpy(tmp_pfd, pollfds,
+-			       sizeof(pollfds[0]) * pollfds_size);
+-			/* remove old pollfds */
+-			kfree(pollfds);
+-		}
+-		pollfds = tmp_pfd;
+-		pollfds_size++;
+-	} else
+-		kfree(tmp_pfd);	/* remove not used tmp_pfd */
+-
+-	pollfds[pollfds_num] = ((struct pollfd) { .fd		= fd,
+-						  .events	= events,
+-						  .revents	= 0 });
+-	pollfds_num++;
+-
+-	return 0;
++int os_mod_epoll_fd (int events, int fd, void * data) {
++	struct epoll_event event;
++	int result;
++	event.data.ptr = data;
++	event.events = events;
++	result = epoll_ctl(epollfd, EPOLL_CTL_MOD, fd, &event);
++	if (result) {
++		printk("epollctl mod err fd %d, %s\n", fd, strerror(errno));
++	}
++	return result;
+ }
+ 
+-void os_free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg,
+-		struct irq_fd *active_fds, struct irq_fd ***last_irq_ptr2)
+-{
+-	struct irq_fd **prev;
+-	int i = 0;
+-
+-	prev = &active_fds;
+-	while (*prev != NULL) {
+-		if ((*test)(*prev, arg)) {
+-			struct irq_fd *old_fd = *prev;
+-			if ((pollfds[i].fd != -1) &&
+-			    (pollfds[i].fd != (*prev)->fd)) {
+-				printk(UM_KERN_ERR "os_free_irq_by_cb - "
+-				       "mismatch between active_fds and "
+-				       "pollfds, fd %d vs %d\n",
+-				       (*prev)->fd, pollfds[i].fd);
+-				goto out;
+-			}
+-
+-			pollfds_num--;
+-
+-			/*
+-			 * This moves the *whole* array after pollfds[i]
+-			 * (though it doesn't spot as such)!
+-			 */
+-			memmove(&pollfds[i], &pollfds[i + 1],
+-			       (pollfds_num - i) * sizeof(pollfds[0]));
+-			if (*last_irq_ptr2 == &old_fd->next)
+-				*last_irq_ptr2 = prev;
+-
+-			*prev = (*prev)->next;
+-			if (old_fd->type == IRQ_WRITE)
+-				ignore_sigio_fd(old_fd->fd);
+-			kfree(old_fd);
+-			continue;
+-		}
+-		prev = &(*prev)->next;
+-		i++;
++int os_del_epoll_fd (int fd) {
++	struct epoll_event event;
++	int result;
++	result = epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, &event);
++	if (result) {
++		printk("epollctl del err %s\n", strerror(errno));
+ 	}
+- out:
+-	return;
++	return result;
+ }
+ 
+-int os_get_pollfd(int i)
++void os_free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg,
++		struct irq_fd *active_fds, struct irq_fd ***last_irq_ptr2)
+ {
+-	return pollfds[i].fd;
++	printk("Someone invoking obsolete deactivate_by_CB!!!\n");
++	return;
+ }
+ 
+-void os_set_pollfd(int i, int fd)
++void os_set_ioignore(void)
+ {
+-	pollfds[i].fd = fd;
++	signal(SIGIO, SIG_IGN);
+ }
+ 
+-void os_set_ioignore(void)
++void os_close_epoll(void)
+ {
+-	signal(SIGIO, SIG_IGN);
++	os_close_file(epollfd);
+ }
+-- 
+2.1.4
+
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
