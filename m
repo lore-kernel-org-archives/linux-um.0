@@ -1,30 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZzkRB-0008J8-M6
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <aivanov@brocade.com>) id 1ZzooW-0001Od-8P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 12:05:09 +0000
+	Fri, 20 Nov 2015 16:45:32 +0000
 Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1ZzkRA-0001It-G1
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZzooV-0001Ws-Ba
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 12:05:09 +0000
-Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
-	helo=smaug.kot-begemot.co.uk) by ivanoab4.miniserver.com with esmtps
-	(TLS1.2:RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZzkR3-0008Jt-Tc
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 12:05:01 +0000
-Received: from monstrousnightmare.kot-begemot.co.uk ([192.168.3.80])
-	by smaug.kot-begemot.co.uk with esmtp (Exim 4.84)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZzkR3-0000MB-Nl
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 12:05:01 +0000
-Message-ID: <564F0C6D.8000806@kot-begemot.co.uk>
-Date: Fri, 20 Nov 2015 12:05:01 +0000
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-MIME-Version: 1.0
+	Fri, 20 Nov 2015 16:45:32 +0000
+From: Anton Ivanov <aivanov@brocade.com>
+Date: Fri, 20 Nov 2015 16:45:15 +0000
+Message-Id: <1448037915-921549-3-git-send-email-aivanov@brocade.com>
+In-Reply-To: <1448037915-921549-1-git-send-email-aivanov@brocade.com>
+References: <1448037915-921549-1-git-send-email-aivanov@brocade.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -34,69 +24,68 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] IRQ handler reentrancy
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [uml-devel] [PATCH 3/3] Signal handling cleanup
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Anton Ivanov <aivanov@brocade.com>
 
-I have gotten to the bottom of this.
+Fix signal handling to use store/restore instead of block/unblock
+as that may cause IRQ reentrancy
 
-1. The IRQ handler re-entrancy issue predates the timer patch. Adding a 
-simple guard with a WARN_ON_ONCE around the device loop in the 
-sig_io_handler catches it in plain 4.3
+Signed-off-by: Anton Ivanov <aivanov@brocade.com>
+---
+ arch/um/os-Linux/skas/process.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 23cb935..ac0bbce 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -30,12 +30,17 @@ static struct irq_fd **last_irq_ptr = &active_fds;
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 13c5a2c..5916267 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -313,6 +313,7 @@ void userspace(struct uml_pt_regs *regs)
+ 	int err, status, op, pid = userspace_pid[0];
+ 	/* To prevent races if using_sysemu changes under us.*/
+ 	int local_using_sysemu;
++	unsigned long flags;
+ 	siginfo_t si;
+ 
+ 	/* Handle any immediate reschedules or signals */
+@@ -396,9 +397,9 @@ void userspace(struct uml_pt_regs *regs)
+ 			case SIGBUS:
+ 			case SIGFPE:
+ 			case SIGWINCH:
+-				block_signals();
++				flags = set_signals(0);
+ 				(*sig_info[sig])(sig, (struct siginfo *)&si, regs);
+-				unblock_signals();
++				set_signals(flags);
+ 				break;
+ 			default:
+ 				printk(UM_KERN_ERR "userspace - child stopped "
+@@ -586,15 +587,16 @@ int start_idle_thread(void *stack, jmp_buf *switch_buf)
+ void initial_thread_cb_skas(void (*proc)(void *), void *arg)
+ {
+ 	jmp_buf here;
++	unsigned long int flags;
+ 
+ 	cb_proc = proc;
+ 	cb_arg = arg;
+ 	cb_back = &here;
+ 
+-	block_signals();
++	flags = set_signals(0);
+ 	if (UML_SETJMP(&here) == 0)
+ 		UML_LONGJMP(&initial_jmpbuf, INIT_JMP_CALLBACK);
+-	unblock_signals();
++	set_signals(flags);
+ 
+ 	cb_proc = NULL;
+ 	cb_arg = NULL;
+-- 
+2.1.4
 
-  extern void free_irqs(void);
-
-+static int in_poll_handler = 0;
-+
-  void sigio_handler(int sig, struct siginfo *unused_si, struct 
-uml_pt_regs *regs)
-  {
-         struct irq_fd *irq_fd;
-         int n;
-
-+    WARN_ON_ONCE(in_poll_handler == 1);
-+
-         while (1) {
-+        in_poll_handler = 1;
-                 n = os_waiting_for_events(active_fds);
-                 if (n <= 0) {
-                         if (n == -EINTR)
-@@ -51,6 +56,7 @@ void sigio_handler(int sig, struct siginfo *unused_si, 
-struct uml_pt_regs *regs)
-                         }
-                 }
-         }
-+    in_poll_handler = 0;
-
-         free_irqs();
-  }
-
-This is dangerously broken - you can under heavy IO exhaust the stack, 
-you can get packets out of order, etc. Most IO is reasonably atomic so 
-corruption is not likely, but not impossible (especially if one or more 
-drivers are optimized to use multi-read/multi-write).
-
-2. I cannot catch what is wrong with the current code in signal.c. When 
-I read it, it should not produce re-entrancy. But it does.
-
-3. I found 2-3 minor issues with signal handling and the timer patch 
-which I will submit a hot-fix for, including a proper fix for the 
-hang-in-sleep issue.
-
-4. While I can propose a brutal patch for signal.c which sets guards 
-against reentrancy which works fine, I suggest we actually get to the 
-bottom of this. Why the code in unblock_signals() does not guard 
-correctly against that?
-
-A.
 
 ------------------------------------------------------------------------------
 _______________________________________________
