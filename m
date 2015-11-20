@@ -1,20 +1,34 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1ZznVj-0003qx-4C
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZzmN5-0005xW-3s
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 15:22:03 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZznVh-0007At-Cb
+	Fri, 20 Nov 2015 14:09:03 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZzmN3-00059J-VC
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 15:22:03 +0000
-Date: Fri, 20 Nov 2015 16:21:50 +0100
-Message-ID: <895313f7-cd23-4139-b991-95a1f858b70f@email.android.com>
-In-Reply-To: <564F2976.20504@kot-begemot.co.uk>
-From: Thomas Meyer <thomas@m3y3r.de>
+	Fri, 20 Nov 2015 14:09:03 +0000
+Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
+	helo=smaug.kot-begemot.co.uk) by ivanoab4.miniserver.com with esmtps
+	(TLS1.2:RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZzmMx-0008Nz-0I
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Nov 2015 14:08:55 +0000
+Received: from monstrousnightmare.kot-begemot.co.uk ([192.168.3.80])
+	by smaug.kot-begemot.co.uk with esmtp (Exim 4.84)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZzmMw-000162-Ht
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Nov 2015 14:08:54 +0000
+Message-ID: <564F2976.20504@kot-begemot.co.uk>
+Date: Fri, 20 Nov 2015 14:08:54 +0000
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 MIME-Version: 1.0
+References: "
+	<564F0C6D.8000806@kot-begemot.co.uk>"	<CAFLxGvwaaWgp1AGh+yRn5QqXvLM-EdPXBD3qSnyPpxDePnZ5zQ@mail.gmail.com>	<1a2b6b675f22380fc7e91e5e16278cb0@nixia.no>	<564F1708.20608@kot-begemot.co.uk>
+	<78c7c1942ac6dcd3e2bef1b916623a2b@nixia.no>
+In-Reply-To: <78c7c1942ac6dcd3e2bef1b916623a2b@nixia.no>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -24,80 +38,121 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] IRQ handler reentrancy
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-QW0gMjAuMTEuMjAxNSAzOjA4IG5hY2htLiBzY2hyaWViIEFudG9uIEl2YW5vdiA8YW50b24uaXZh
-bm92QGtvdC1iZWdlbW90LmNvLnVrPjoKPgo+IE9uIDIwLzExLzE1IDEzOjQ4LCBzdGlhbkBuaXhp
-YS5ubyB3cm90ZTogCj4gPiBEZW4gMjAxNS0xMS0yMCAxMzo1MCwgc2tyZXYgQW50b24gSXZhbm92
-OiAKPiA+PiBPbiAyMC8xMS8xNSAxMjoyNiwgc3RpYW5Abml4aWEubm8gd3JvdGU6IAo+ID4+Pj4+
-IDQuIFdoaWxlIEkgY2FuIHByb3Bvc2UgYSBicnV0YWwgcGF0Y2ggZm9yIHNpZ25hbC5jIHdoaWNo
-IHNldHMgCj4gPj4+Pj4gZ3VhcmRzIAo+ID4+Pj4+IGFnYWluc3QgcmVlbnRyYW5jeSB3aGljaCB3
-b3JrcyBmaW5lLCBJIHN1Z2dlc3Qgd2UgYWN0dWFsbHkgZ2V0IHRvIAo+ID4+Pj4+IHRoZSAKPiA+
-Pj4+PiBib3R0b20gb2YgdGhpcy4gV2h5IHRoZSBjb2RlIGluIHVuYmxvY2tfc2lnbmFscygpIGRv
-ZXMgbm90IGd1YXJkIAo+ID4+Pj4+IGNvcnJlY3RseSBhZ2FpbnN0IHRoYXQ/IAo+ID4+Pj4gVGhh
-bmtzIGZvciBodW50aW5nIHRoaXMgaXNzdWUuIAo+ID4+Pj4gSSBmZWFyIEknbGwgaGF2ZSB0byBn
-cmFiIG15IHNwZWxlb2xvZ2lzdCdzIGhhdCB0byBmaWd1cmUgb3V0IHdoeSAKPiA+Pj4+IFVNTCAK
-PiA+Pj4+IHdvcmtzIHRoaXMgd2F5LiAKPiA+Pj4+IENjJ2luZyBBbCwgZG8geW91IGhhdmUgYW4g
-aWRlYT8gCj4gPj4+IEluIHRoZSBmZXcgc3RhY2stdHJhY2VzIHRoYXQgSSBoYXZlIHNlZW4gcG9z
-dGVkIGhlcmUsIEkgY291bGQgc2VlIAo+ID4+PiBtdWx0aXBsZSBjYWxscyB0byB1bmxvY2tpbmcg
-b2Ygc2lnbmFscyAod2l0aCBhIHNpZ25hbCBvY2N1cnJlZCAKPiA+Pj4gZGlyZWN0bHkgCj4gPj4+
-IGFmdGVyKS4gVGhhdCBwcm9iYWJseSBzaG91bGQgbm90IGhhcHBlbi4gRG8gd2UgY291bnQgdGhl
-IG51bWJlciBvZiAKPiA+Pj4gdGltZXJzIG9mIHRpbWUgd2UgdHJ5IHRvIGJsb2NrL3VuYmxvY2sg
-c2lnbmFscyBhbmQgb25seSBhY3R1YWwgCj4gPj4+IHBlcmZvcm0gCj4gPj4+IHRoZSBhY3Rpb24g
-d2hlbiB0aGUgY291bnRlciByZWFjaGVzL2xlYXZlcyAwPyAKPiA+Pj4gCj4gPj4+IGlmIHRoaXMg
-c2VyaWVzIG9mIGNhbGxzIGhhcHBlbnM6IAo+ID4+PsKgwqDCoMKgIGJsb2NrKCkgCj4gPj4+wqDC
-oMKgwqDCoCBmb28oKSAKPiA+Pj7CoMKgwqDCoMKgwqAgYmxvY2soKSAKPiA+Pj7CoMKgwqDCoMKg
-wqAgYmFyKCkgCj4gPj4+wqDCoMKgwqDCoMKgIHVuYmxvY2soKcKgIDwtIHRoaXMgc2hvdWxkIGJl
-IGEgbm8tb3AgCj4gPj4+wqDCoMKgwqDCoCBmb29iYXIoKSAKPiA+Pj7CoMKgwqDCoCB1bmJsb2Nr
-KCkgPC0gZmlyc3QgaGVyZSB0aGUgc2lnbmFscyBzaG91bGQgYmUgdW5ibG9ja2VkIGFnYWluIAo+
-ID4+IEJsb2NrL3VuYmxvY2sgYXJlIG5vdCBjb3VudGluZyB0aGUgbnVtYmVyIG9mIGVuYWJsZS9k
-aXNhYmxlIGF0IAo+ID4+IHByZXNlbnQuIAo+ID4+IEl0IGlzIGVpdGhlciBvbiBvciBvZmYuIAo+
-ID4+IAo+ID4+IEFueSB1bmJsb2NrIHdpbGwgaW1tZWRpYXRlbHkgcmUtdHJpZ2dlciBhbGwgcGVu
-ZGluZyBpbnRlcnJ1cHRzLiAKPiA+PiAKPiA+PiBTb21lIG9mIHRoZSBlcnJhdGEgcGF0Y2hlcyBJ
-IGhhdmUgb3V0IG9mIGludmVzdGlnYXRpbmcgdGhpcyBkbyAKPiA+PiBleGFjdGx5IAo+ID4+IHRo
-YXQgLSBjaGFuZ2U6IAo+ID4+IAo+ID4+IGJsb2NrIHRvIGZsYWdzID0gc2V0X3NpZ25hbHMoMCk7
-IGJhcigpIDsgc2V0X3NpZ25hbChmbGFncyk7IAo+ID4+IAo+ID4+IFRoaXMsIGlmIG5lc3RlZCBz
-aG91bGTCoCBiZSBhIE5PUC4gCj4gPj4gCj4gPj4gSG93ZXZlciwgZXZlbiBhZnRlciBmaXhpbmcg
-YWxsIG9mIHRoZW0gKGFuZCB0aGVpciBjb3JyZXNwb25kaW5nIAo+ID4+IGtlcm5lbCAKPiA+PiBz
-aWRlIGNvdW50ZXJwYXJ0cyksIEkgc3RpbGwgZ2V0IHJlZW50cmFuY3ksIHNvIHRoZXJlIGlzIHNv
-bWV0aGluZyAKPiA+PiBlbHNlIAo+ID4+IGF0IHBsYXkgdG9vLiAKPiA+IFBsZWFzZSwgc2hhcmUg
-YSBzdGFjay10cmFjZSBpZiBwb3NzaWJsZS4gCj4gPiAKPiA+IAo+ID4gCj4gPiBBcyBhIHNpZGUt
-bm90ZTogCj4gPiBUaGUgc21hbGwgaXNzdWUgd2l0aCB0aGUgY29kZSBleGFtcGxlIGFib3ZlIEkg
-Y2FuIHNlZSBpcyB0aGF0IHdoYXQgaWYgCj4gPiBmbGFncyBzaG91bGQgaGF2ZSBjaGFuZ2UgZHVy
-aW5nIGJhcigpLiAKPgo+IEkgc2VlIGl0IHRvbywgYnV0IEkgaGF2ZSBub3QgZmlndXJlZCBvdXQg
-aG93IHRvIGRlYWwgd2l0aCBpdC4gCj4KPgo+ID7CoMKgIEFuZCBjb2RlIGluc2lkZSBiYXIgY2Fu
-IGRvIAo+ID4gc2V0X3NpZ25hbHMoKSBtYWdpYy4gCj4KPiBDb3JyZWN0LCB3aGljaCBpcyB0byBz
-b21lIGV4dGVudCBvdXIgaXNzdWUuIAo+Cj4gPiAKPiA+IEkgYW0gbm90IGxpbnV4IGtlcm5lbCBB
-QkkgZXhwZXJ0LiAKPiA+IAo+ID4gVG8gbWUsIGl0IHNlZW1zIHRvIGJlIGEgbW9yZSBzYWZlIHRv
-IGhhdmUgYSBBQkkgdGhhdCB0cmFja3MgZWFjaCBzaWduYWwgCj4gPiBibG9ja2VkIG1hc2sgaW5k
-aXZpZHVhbGx5LCBhbmQgaGF2ZSBhIHJlZi1jb3VudGVkIGJsb2NrLWFsbC91bmJsb2NrLWFsbCAK
-PiA+IGNhbGwuIFRoaXMgd291bGQgYmUgbGlrZSBob3cgeW91IG5vcm1hbGx5IHByb2dyYW0gb24g
-YSBDUFUuIFlvdSBoYXZlIGEgCj4gPiBpbnRlcnJ1cHQgY29udHJvbGxlciB0aGF0IHlvdSBzZXR1
-cCAobWFza3MpLCBhbmQgYSBtYXN0ZXIgaW50ZXJydXB0IAo+ID4gZW5hYmxlL2Rpc2FibGUgZmxh
-Zy4gCj4KPiBUaGF0IGlzIHdoYXQgc2lnbmFsLmMgaXMgdHJ5aW5nIHRvIHNpbXVsYXRlIC0geW91
-IGhhdmUgYSBtYXNrIGZvciBBTFJNIAo+IChvciBWVEFMUk0gd2l0aCB0aGUgb2xkZXIgdGltZXJz
-KSBhbmQgU0lHSU8gYW5kIGEgZ2xvYmFsIG9uL29mZi4gCj4KPiBXaGF0IHRoYXQgZmFpbHMgdG8g
-ZW11bGF0ZSwgaG93ZXZlciwgaXMgdGhhdCBhbiBJUlEgaXMgdXN1YWxseSBibG9ja2VkIAo+IHVu
-dGlsIGl0IGlzIGZ1bGx5IHNlcnZpY2VkLiBUaGlzLCBkZXBlbmRpbmcgb24gSVJRIGNvbnRyb2xs
-ZXIgZGVzaWduIG1heSAKPiBibG9jayBhbGwgSVJRcywgYWxsIGxvd2VyIHByaW9yaXR5IElSUXMg
-b3Igbm9uZS4gCj4KPiBUaGUgY3VycmVudCBjb2RlIGluIHVtbCB0cmllcyB0byBibG9jayBhbGwg
-d2hpbGUgcHJvY2Vzc2luZyBhbiBJUlEsIGJ1dCAKPiBmb3Igc29tZSByZWFzb24gZmFpbHMuIAo+
-Cj4gSSB3aWxsIHN1Ym1pdCBhIHBhdGNoIHRvIHB1dCBzb21lIGR1Y2t0YXBlIG92ZXIgdGhpcyBm
-b3IgdGhlIHRpbWUgYmVpbmcsIAo+IHdlIHNob3VsZCB1bmRlcnN0YW5kIHdoYXQgaXMgdGhlIHJv
-b3QgY2F1c2UuIAoKSSBob3BlIHRoZSBjaGFuZ2UgaW4gYXJjaC91bS9rZXJuZWwvc2thcy9NTVUu
-YyBpc24ndCB0aGUgY2F1c2Ugb2YgYWxsIHRoaXMgdHJvdWJsZSEKCkkgd2FudGVkIHRvIGRpc2Fi
-bGUgaW50ZXJydXB0IHByb2Nlc3NpbmcgYW5kIHNvIHRoZSBmb3J3YXJkaW5nIG9mIHRpbWVyIGlu
-dGVycnVwdHMgdG8gdGhlIHVzZXIgc3BhY2UgcHJvY2VzcyB3aGVuIHRoZSB1c2VyIHNwYWNlIGlz
-IGN1cnJlbnRseSBpbiBhIGNyaXRpY2FsIHNlY3Rpb24gb2YgZm9ya2luZyBpdHNlbGYsIGFuZCBu
-byBzaWduYWwgaGFuZGxlciBpcyBpbnN0YWxsZWQgeWV0IQoKPgo+IEEuIAo+Cj4gPiAKPiA+IFN0
-aWFuIAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNl
-ci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
-dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
+On 20/11/15 13:48, stian@nixia.no wrote:
+> Den 2015-11-20 13:50, skrev Anton Ivanov:
+>> On 20/11/15 12:26, stian@nixia.no wrote:
+>>>>> 4. While I can propose a brutal patch for signal.c which sets
+>>>>> guards
+>>>>> against reentrancy which works fine, I suggest we actually get to
+>>>>> the
+>>>>> bottom of this. Why the code in unblock_signals() does not guard
+>>>>> correctly against that?
+>>>> Thanks for hunting this issue.
+>>>> I fear I'll have to grab my speleologist's hat to figure out why
+>>>> UML
+>>>> works this way.
+>>>> Cc'ing Al, do you have an idea?
+>>> In the few stack-traces that I have seen posted here, I could see
+>>> multiple calls to unlocking of signals (with a signal occurred
+>>> directly
+>>> after). That probably should not happen. Do we count the number of
+>>> timers of time we try to block/unblock signals and only actual
+>>> perform
+>>> the action when the counter reaches/leaves 0?
+>>>
+>>> if this series of calls happens:
+>>>     block()
+>>>      foo()
+>>>       block()
+>>>       bar()
+>>>       unblock()  <- this should be a no-op
+>>>      foobar()
+>>>     unblock() <- first here the signals should be unblocked again
+>> Block/unblock are not counting the number of enable/disable at
+>> present.
+>> It is either on or off.
+>>
+>> Any unblock will immediately re-trigger all pending interrupts.
+>>
+>> Some of the errata patches I have out of investigating this do
+>> exactly
+>> that - change:
+>>
+>> block to flags = set_signals(0); bar() ; set_signal(flags);
+>>
+>> This, if nested should  be a NOP.
+>>
+>> However, even after fixing all of them (and their corresponding
+>> kernel
+>> side counterparts), I still get reentrancy, so there is something
+>> else
+>> at play too.
+> Please, share a stack-trace if possible.
+>
+>
+>
+> As a side-note:
+> The small issue with the code example above I can see is that what if
+> flags should have change during bar().
+
+I see it too, but I have not figured out how to deal with it.
+
+
+>   And code inside bar can do
+> set_signals() magic.
+
+Correct, which is to some extent our issue.
+
+>
+> I am not linux kernel ABI expert.
+>
+> To me, it seems to be a more safe to have a ABI that tracks each signal
+> blocked mask individually, and have a ref-counted block-all/unblock-all
+> call. This would be like how you normally program on a CPU. You have a
+> interrupt controller that you setup (masks), and a master interrupt
+> enable/disable flag.
+
+That is what signal.c is trying to simulate - you have a mask for ALRM 
+(or VTALRM with the older timers) and SIGIO and a global on/off.
+
+What that fails to emulate, however, is that an IRQ is usually blocked 
+until it is fully serviced. This, depending on IRQ controller design may 
+block all IRQs, all lower priority IRQs or none.
+
+The current code in uml tries to block all while processing an IRQ, but 
+for some reason fails.
+
+I will submit a patch to put some ducktape over this for the time being, 
+we should understand what is the root cause.
+
+A.
+
+
+
+>
+>
+>
+> --
+>
+> Stian
+>
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
+
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
