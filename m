@@ -1,25 +1,33 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1a0zXm-0008M4-4P
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1ZzqjD-000363-6U
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Nov 2015 22:25:06 +0000
-Received: from mail-oi0-f45.google.com ([209.85.218.45])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1a0zXl-000843-6Z
+	Fri, 20 Nov 2015 18:48:11 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZzqjB-0000zf-Ui
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 Nov 2015 22:25:06 +0000
-Received: by oige206 with SMTP id e206so141495956oig.2
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 23 Nov 2015 14:24:59 -0800 (PST)
+	Fri, 20 Nov 2015 18:48:11 +0000
+Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
+	helo=smaug.kot-begemot.co.uk) by ivanoab4.miniserver.com with esmtps
+	(TLS1.2:RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1Zzqj5-0008UB-G4
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Nov 2015 18:48:03 +0000
+Received: from [85.255.235.174] (helo=[192.168.42.140])
+	by smaug.kot-begemot.co.uk with esmtpsa
+	(TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.84)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1Zzqj4-0002fS-U2
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 Nov 2015 18:48:03 +0000
+Message-ID: <564F6ADE.8030701@kot-begemot.co.uk>
+Date: Fri, 20 Nov 2015 18:47:58 +0000
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 MIME-Version: 1.0
-In-Reply-To: <564F6ADE.8030701@kot-begemot.co.uk>
 References: <1446996012-31444-1-git-send-email-aivanov@brocade.com>
-	<564F6ADE.8030701@kot-begemot.co.uk>
-Date: Mon, 23 Nov 2015 23:24:59 +0100
-Message-ID: <CAFLxGvzjOVC9aNcNurVOS4w-ESBjdiX2ufd6rcmpBLu-fRPrXQ@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
+In-Reply-To: <1446996012-31444-1-git-send-email-aivanov@brocade.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,39 +41,155 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] Update UBD to use pread/pwrite family of
-	functions
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+ functions
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On Fri, Nov 20, 2015 at 7:47 PM, Anton Ivanov
-<anton.ivanov@kot-begemot.co.uk> wrote:
-> Hi list, hi Richard.
+Hi list, hi Richard.
+
+Have you had time to review this one? I think it is not contentious - it 
+is something QEMU has been doing for a very long time now. It also gives 
+a measurable speed up, especially for random IO.
+
+I am going to hold off on the rest of the ubd patches because they bulk 
+up the transactions. This is dangerous if you end up in a reentrant 
+situation.
+
+A.
+
+On 08/11/15 15:20, Anton Ivanov wrote:
+> This decreases the number of syscalls per read/write by half.
 >
-> Have you had time to review this one? I think it is not contentious - it
-> is something QEMU has been doing for a very long time now. It also gives
-> a measurable speed up, especially for random IO.
+> Signed-off-by: Anton Ivanov <aivanov@brocade.com>
+> ---
+>   arch/um/drivers/ubd_kern.c  | 27 +++++----------------------
+>   arch/um/include/shared/os.h |  2 ++
+>   arch/um/os-Linux/file.c     | 19 +++++++++++++++++++
+>   3 files changed, 26 insertions(+), 22 deletions(-)
 >
-> I am going to hold off on the rest of the ubd patches because they bulk
-> up the transactions. This is dangerous if you end up in a reentrant
-> situation.
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index e8ab93c..39ba207 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -535,11 +535,7 @@ static int read_cow_bitmap(int fd, void *buf, int offset, int len)
+>   {
+>   	int err;
+>   
+> -	err = os_seek_file(fd, offset);
+> -	if (err < 0)
+> -		return err;
+> -
+> -	err = os_read_file(fd, buf, len);
+> +	err = os_pread_file(fd, buf, len, offset);
+>   	if (err < 0)
+>   		return err;
+>   
+> @@ -1377,14 +1373,8 @@ static int update_bitmap(struct io_thread_req *req)
+>   	if(req->cow_offset == -1)
+>   		return 0;
+>   
+> -	n = os_seek_file(req->fds[1], req->cow_offset);
+> -	if(n < 0){
+> -		printk("do_io - bitmap lseek failed : err = %d\n", -n);
+> -		return 1;
+> -	}
+> -
+> -	n = os_write_file(req->fds[1], &req->bitmap_words,
+> -			  sizeof(req->bitmap_words));
+> +	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
+> +			  sizeof(req->bitmap_words), req->cow_offset);
+>   	if(n != sizeof(req->bitmap_words)){
+>   		printk("do_io - bitmap update failed, err = %d fd = %d\n", -n,
+>   		       req->fds[1]);
+> @@ -1399,7 +1389,6 @@ static void do_io(struct io_thread_req *req)
+>   	char *buf;
+>   	unsigned long len;
+>   	int n, nsectors, start, end, bit;
+> -	int err;
+>   	__u64 off;
+>   
+>   	if (req->op == UBD_FLUSH) {
+> @@ -1428,18 +1417,12 @@ static void do_io(struct io_thread_req *req)
+>   		len = (end - start) * req->sectorsize;
+>   		buf = &req->buffer[start * req->sectorsize];
+>   
+> -		err = os_seek_file(req->fds[bit], off);
+> -		if(err < 0){
+> -			printk("do_io - lseek failed : err = %d\n", -err);
+> -			req->error = 1;
+> -			return;
+> -		}
+>   		if(req->op == UBD_READ){
+>   			n = 0;
+>   			do {
+>   				buf = &buf[n];
+>   				len -= n;
+> -				n = os_read_file(req->fds[bit], buf, len);
+> +				n = os_pread_file(req->fds[bit], buf, len, off);
+>   				if (n < 0) {
+>   					printk("do_io - read failed, err = %d "
+>   					       "fd = %d\n", -n, req->fds[bit]);
+> @@ -1449,7 +1432,7 @@ static void do_io(struct io_thread_req *req)
+>   			} while((n < len) && (n != 0));
+>   			if (n < len) memset(&buf[n], 0, len - n);
+>   		} else {
+> -			n = os_write_file(req->fds[bit], buf, len);
+> +			n = os_pwrite_file(req->fds[bit], buf, len, off);
+>   			if(n != len){
+>   				printk("do_io - write failed err = %d "
+>   				       "fd = %d\n", -n, req->fds[bit]);
+> diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+> index 21d704b..de5d572 100644
+> --- a/arch/um/include/shared/os.h
+> +++ b/arch/um/include/shared/os.h
+> @@ -146,6 +146,8 @@ extern int os_read_file(int fd, void *buf, int len);
+>   extern int os_write_file(int fd, const void *buf, int count);
+>   extern int os_sync_file(int fd);
+>   extern int os_file_size(const char *file, unsigned long long *size_out);
+> +extern int os_pread_file(int fd, void *buf, int len, unsigned long long offset);
+> +extern int os_pwrite_file(int fd, const void *buf, int count, unsigned long long offset);
+>   extern int os_file_modtime(const char *file, unsigned long *modtime);
+>   extern int os_pipe(int *fd, int stream, int close_on_exec);
+>   extern int os_set_fd_async(int fd);
+> diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+> index 26e0164..2db18cb 100644
+> --- a/arch/um/os-Linux/file.c
+> +++ b/arch/um/os-Linux/file.c
+> @@ -264,6 +264,15 @@ int os_read_file(int fd, void *buf, int len)
+>   	return n;
+>   }
+>   
+> +int os_pread_file(int fd, void *buf, int len, unsigned long long offset)
+> +{
+> +	int n = pread(fd, buf, len, offset);
+> +
+> +	if (n < 0)
+> +		return -errno;
+> +	return n;
+> +}
+> +
+>   int os_write_file(int fd, const void *buf, int len)
+>   {
+>   	int n = write(fd, (void *) buf, len);
+> @@ -282,6 +291,16 @@ int os_sync_file(int fd)
+>   	return n;
+>   }
+>   
+> +int os_pwrite_file(int fd, const void *buf, int len, unsigned long long offset)
+> +{
+> +	int n = pwrite(fd, (void *) buf, len, offset);
+> +
+> +	if (n < 0)
+> +		return -errno;
+> +	return n;
+> +}
+> +
+> +
+>   int os_file_size(const char *file, unsigned long long *size_out)
+>   {
+>   	struct uml_stat buf;
 
-Sorry for the delay.
-The patch looks useful! Thanks a lot!
-
-Please CC me in future such that patches don't get lost.
-I handle CC'ed mails with higher priority.
-(This is my way to deal with the LKML storm ;))
-
--- 
-Thanks,
-//richard
 
 ------------------------------------------------------------------------------
-Go from Idea to Many App Stores Faster with Intel(R) XDK
-Give your users amazing mobile app experiences with Intel(R) XDK.
-Use one codebase in this all-in-one HTML5 development environment.
-Design, debug & build mobile apps & 2D/3D high-impact games for multiple OSs.
-http://pubads.g.doubleclick.net/gampad/clk?id=254741551&iu=/4140
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
