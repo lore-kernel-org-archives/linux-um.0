@@ -1,22 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1a18YY-0006MA-7D
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1a0zXm-0008M4-4P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Nov 2015 08:02:30 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1a18YW-0008JU-Qp
+	Mon, 23 Nov 2015 22:25:06 +0000
+Received: from mail-oi0-f45.google.com ([209.85.218.45])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1a0zXl-000843-6Z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 24 Nov 2015 08:02:30 +0000
-Message-ID: <5654198B.5060608@kot-begemot.co.uk>
-Date: Tue, 24 Nov 2015 08:02:19 +0000
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+	Mon, 23 Nov 2015 22:25:06 +0000
+Received: by oige206 with SMTP id e206so141495956oig.2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 23 Nov 2015 14:24:59 -0800 (PST)
 MIME-Version: 1.0
-References: <1446996012-31444-1-git-send-email-aivanov@brocade.com>	<564F6ADE.8030701@kot-begemot.co.uk>
-	<CAFLxGvzjOVC9aNcNurVOS4w-ESBjdiX2ufd6rcmpBLu-fRPrXQ@mail.gmail.com>
-In-Reply-To: <CAFLxGvzjOVC9aNcNurVOS4w-ESBjdiX2ufd6rcmpBLu-fRPrXQ@mail.gmail.com>
+In-Reply-To: <564F6ADE.8030701@kot-begemot.co.uk>
+References: <1446996012-31444-1-git-send-email-aivanov@brocade.com>
+	<564F6ADE.8030701@kot-begemot.co.uk>
+Date: Mon, 23 Nov 2015 23:24:59 +0100
+Message-ID: <CAFLxGvzjOVC9aNcNurVOS4w-ESBjdiX2ufd6rcmpBLu-fRPrXQ@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,40 +33,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] [PATCH] Update UBD to use pread/pwrite family of
- functions
-To: Richard Weinberger <richard.weinberger@gmail.com>
+	functions
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On 23/11/15 22:24, Richard Weinberger wrote:
-> On Fri, Nov 20, 2015 at 7:47 PM, Anton Ivanov
-> <anton.ivanov@kot-begemot.co.uk> wrote:
->> Hi list, hi Richard.
->>
->> Have you had time to review this one? I think it is not contentious - it
->> is something QEMU has been doing for a very long time now. It also gives
->> a measurable speed up, especially for random IO.
->>
->> I am going to hold off on the rest of the ubd patches because they bulk
->> up the transactions. This is dangerous if you end up in a reentrant
->> situation.
-> Sorry for the delay.
-> The patch looks useful! Thanks a lot!
+On Fri, Nov 20, 2015 at 7:47 PM, Anton Ivanov
+<anton.ivanov@kot-begemot.co.uk> wrote:
+> Hi list, hi Richard.
 >
-> Please CC me in future such that patches don't get lost.
-
-OK.
-
-I have a few that follow it to improve UBD even further, but I am going 
-to hold them off for now until we have the IRQ controller sorted.
-
-Multi-read/write and irq/io handler reentrancy do not get along very well :(
-
-A.
-
-> I handle CC'ed mails with higher priority.
-> (This is my way to deal with the LKML storm ;))
+> Have you had time to review this one? I think it is not contentious - it
+> is something QEMU has been doing for a very long time now. It also gives
+> a measurable speed up, especially for random IO.
 >
+> I am going to hold off on the rest of the ubd patches because they bulk
+> up the transactions. This is dangerous if you end up in a reentrant
+> situation.
 
+Sorry for the delay.
+The patch looks useful! Thanks a lot!
+
+Please CC me in future such that patches don't get lost.
+I handle CC'ed mails with higher priority.
+(This is my way to deal with the LKML storm ;))
+
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Go from Idea to Many App Stores Faster with Intel(R) XDK
