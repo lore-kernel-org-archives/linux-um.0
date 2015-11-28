@@ -1,80 +1,72 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1a1tB0-00017E-M7
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Nov 2015 09:49:18 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1a1tAz-0004ub-Hj
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 26 Nov 2015 09:49:18 +0000
-Message-ID: <5656D596.4060906@kot-begemot.co.uk>
-Date: Thu, 26 Nov 2015 09:49:10 +0000
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+References: <1448746350-19998-1-git-send-email-mic@digikod.net>
+ <1448746350-19998-2-git-send-email-mic@digikod.net> <565A1F49.3040408@nod.at>
+ <565A3035.6030104@digikod.net> <565A30DB.1070902@nod.at>
+From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <565A3228.5080908@digikod.net>
+Date: Sun, 29 Nov 2015 00:00:56 +0100
 MIME-Version: 1.0
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] Old process in D state bug
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Richard Weinberger <richard@nod.at>
+In-Reply-To: <565A30DB.1070902@nod.at>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="kgUUBLqs0Fp0jkbRFT3C9RFPaF1JLdc59"
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH 1/2] um: Set secure access mode for temporary file
+To: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi List, hi Richard,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--kgUUBLqs0Fp0jkbRFT3C9RFPaF1JLdc59
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-While working on the EPOLL I managed to consistently reproduce and get 
-down to the bottom of the process in D state bug which you occasionally 
-see with UML. I recall asking Richard's help on this for the first time 
-nearly 5 years ago ;-).
 
-It is extremely rare with the POLL based controller, timers and the 
-stock UBD drivers. As you make things go faster (anywhere in UML) it 
-rares its ugly head. So improving the IRQs, improving UBD itself, etc - 
-all make it easier to trigger.
 
-It looks like it is possible to end up in a state where the restart list 
-is not empty (an earlier transaction to the disk io thread failed with 
-EAGAIN), but with no pending IO on the UBD IPC thread fd. So the restart 
-list is never re-triggered and the UBD device ends up with a non-empty 
-queue. The process that requested the IO ends up in D state. Any other 
-processes trying IO to the same disk join it. As the requests to the 
-same UBD queue up, ultimately, UML goes belly up.
+On 28/11/2015 23:55, Richard Weinberger wrote:
+> Am 28.11.2015 um 23:52 schrieb Micka=C3=ABl Sala=C3=BCn:
+>>
+>> On 28/11/2015 22:40, Richard Weinberger wrote:
+>>> Am 28.11.2015 um 22:32 schrieb Micka=C3=ABl Sala=C3=BCn:
+>>>> Replace the default insecure mode 0777 with 0700 for temporary file.=
 
-Pinging the UML process with SIGIO does not help as there is no IO 
-pending on the fd. So it is not a lost interrupt. It somehow manages to 
-race forming the restart queue.
+>>>>
+>>>> Prohibit other users to change the executable mapped code.
+>>>
+>>> Hmm, isn't the tmp file already unlinked at this stage?
+>>>
+>>
+>> Yes, but if someone could open it before the unlink e.g. because of th=
+e umask (which does not seems to be the case thanks to mkstemp, but remai=
+ns unspecified [1]), this user should then be able to have write access t=
+o the file descriptor/description.
+>=20
+> Yes, someone can open it before the unlink. But you change the file mod=
+e after that.
+> How does it improve the situation? The attacker has already the file ha=
+ndle.
 
-If, however, you have more than one UBD device IO to the other one 
-unstucks it by re-running the restart queue out of the ubd interrupt 
-handler.
+The attacker could have the file handle only in a read-only mode, which i=
+s a bit different than being able to write and execute arbitrary code tha=
+nks to a file descriptor mapped RWX :)
 
-Once again - this is extremely rare at present, but possible (I have 
-seen it a few times over the last 5 years).
+ Micka=C3=ABl
 
-So it needs a viable fix or a workaround. I will have to get this one 
-out of the door first as it constantly gets in the way in debugging both 
-the Epoll and the signals stuff.
 
-A.
+--kgUUBLqs0Fp0jkbRFT3C9RFPaF1JLdc59
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-------------------------------------------------------------------------------
-Go from Idea to Many App Stores Faster with Intel(R) XDK
-Give your users amazing mobile app experiences with Intel(R) XDK.
-Use one codebase in this all-in-one HTML5 development environment.
-Design, debug & build mobile apps & 2D/3D high-impact games for multiple OSs.
-http://pubads.g.doubleclick.net/gampad/clk?id=254741551&iu=/4140
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+-----BEGIN PGP SIGNATURE-----
 
+iQEcBAEBCgAGBQJWWjIoAAoJECLe/t9zvWqVOgUH+gOT7mR/elj1UgzQABTCZxtn
+rDxofKfKpaSpGdo6J8xxFGWJNuErViNht5TwUQ41IbbenB3L45xIE+IUXTXm4hcL
+7Ux2JVeBfIRtPJ8j5XmGOyccTx2e51n/rmx8pfSudk/3rj1XoBZWF2XCv8ysLIgA
+RQfYt1kV3g+8Pz18rrhIy+aYBuoUrj8K0rBAPb3O6UHMiCrcNNTaF6Ri6iz6/LBs
+jTK9v7bAfZuj7141dXH6IXe/1hG6GNZ8hgep1Qo7aBF6DnjwFjlthHjIIKLPF/I9
+FY6+GTuXXpHVc4WAL6ZJ+3irDEAUITciaQs62OxOlwpy+ZF+SXl4b/odUcejwyM=
+=aAkQ
+-----END PGP SIGNATURE-----
+
+--kgUUBLqs0Fp0jkbRFT3C9RFPaF1JLdc59--
