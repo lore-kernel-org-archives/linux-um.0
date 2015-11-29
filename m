@@ -1,18 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <aivanov@brocade.com>) id 1ZzooW-0001Oi-Kp
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1a38MU-00057R-4E
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 16:45:32 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1ZzooV-00056E-P7
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 Nov 2015 16:45:32 +0000
-From: Anton Ivanov <aivanov@brocade.com>
-Date: Fri, 20 Nov 2015 16:45:13 +0000
-Message-Id: <1448037915-921549-1-git-send-email-aivanov@brocade.com>
+	Sun, 29 Nov 2015 20:14:18 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1a38MD-00061z-Oo for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 29 Nov 2015 20:14:03 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Sun, 29 Nov 2015 21:13:50 +0100
+Message-Id: <1448828030-6490-1-git-send-email-richard@nod.at>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -26,108 +25,83 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: [uml-devel] [PATCH 1/3] IRQ Reentrancy guard
+Subject: [uml-devel] [PATCH] um: Fix fpstate handling
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Anton Ivanov <aivanov@brocade.com>
+Cc: Richard Weinberger <richard@nod.at>
 
-Fixes: IRQ Reentrancy
+The x86 FPU cleanup changed fpstate to a plain integer.
+UML on x86 has to deal with that too.
 
-The code in signal.c used in irq controller emulation does not
-prevent IRQ reentrancy which can result in all types of issues
-as IRQs including ones on the same device can be executed in
-a nested manner
+Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Signed-off-by: Anton Ivanov <aivanov@brocade.com>
----
- arch/um/kernel/irq.c      |  8 ++++++++
- arch/um/os-Linux/signal.c | 15 ++++++++++++++-
- 2 files changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 23cb935..4813263 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -30,11 +30,17 @@ static struct irq_fd **last_irq_ptr = &active_fds;
+diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
+index 06934a8..e5f854c 100644
+--- a/arch/x86/um/signal.c
++++ b/arch/x86/um/signal.c
+@@ -211,7 +211,7 @@ static int copy_sc_from_user(struct pt_regs *regs,
+ 		if (err)
+ 			return 1;
  
- extern void free_irqs(void);
+-		err = convert_fxsr_from_user(&fpx, sc.fpstate);
++		err = convert_fxsr_from_user(&fpx, (void *)sc.fpstate);
+ 		if (err)
+ 			return 1;
  
-+static int in_poll_handler = 0;
-+
- void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+@@ -227,7 +227,7 @@ static int copy_sc_from_user(struct pt_regs *regs,
+ 	{
+ 		struct user_i387_struct fp;
+ 
+-		err = copy_from_user(&fp, sc.fpstate,
++		err = copy_from_user(&fp, (void *)sc.fpstate,
+ 				     sizeof(struct user_i387_struct));
+ 		if (err)
+ 			return 1;
+@@ -291,7 +291,7 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ #endif
+ #undef PUTREG
+ 	sc.oldmask = mask;
+-	sc.fpstate = to_fp;
++	sc.fpstate = (unsigned long)to_fp;
+ 
+ 	err = copy_to_user(to, &sc, sizeof(struct sigcontext));
+ 	if (err)
+@@ -468,12 +468,10 @@ long sys_sigreturn(void)
+ 	struct sigframe __user *frame = (struct sigframe __user *)(sp - 8);
+ 	sigset_t set;
+ 	struct sigcontext __user *sc = &frame->sc;
+-	unsigned long __user *oldmask = &sc->oldmask;
+-	unsigned long __user *extramask = frame->extramask;
+ 	int sig_size = (_NSIG_WORDS - 1) * sizeof(unsigned long);
+ 
+-	if (copy_from_user(&set.sig[0], oldmask, sizeof(set.sig[0])) ||
+-	    copy_from_user(&set.sig[1], extramask, sig_size))
++	if (copy_from_user(&set.sig[0], (void *)sc->oldmask, sizeof(set.sig[0])) ||
++	    copy_from_user(&set.sig[1], frame->extramask, sig_size))
+ 		goto segfault;
+ 
+ 	set_current_blocked(&set);
+@@ -505,6 +503,7 @@ int setup_signal_stack_si(unsigned long stack_top, struct ksignal *ksig,
  {
- 	struct irq_fd *irq_fd;
- 	int n;
+ 	struct rt_sigframe __user *frame;
+ 	int err = 0, sig = ksig->sig;
++	unsigned long fp_to;
  
-+	WARN_ON_ONCE(in_poll_handler == 1);
+ 	frame = (struct rt_sigframe __user *)
+ 		round_down(stack_top - sizeof(struct rt_sigframe), 16);
+@@ -526,7 +525,10 @@ int setup_signal_stack_si(unsigned long stack_top, struct ksignal *ksig,
+ 	err |= __save_altstack(&frame->uc.uc_stack, PT_REGS_SP(regs));
+ 	err |= copy_sc_to_user(&frame->uc.uc_mcontext, &frame->fpstate, regs,
+ 			       set->sig[0]);
+-	err |= __put_user(&frame->fpstate, &frame->uc.uc_mcontext.fpstate);
 +
-+	in_poll_handler = 1;
++	fp_to = (unsigned long)&frame->fpstate;
 +
- 	while (1) {
- 		n = os_waiting_for_events(active_fds);
- 		if (n <= 0) {
-@@ -52,6 +58,8 @@ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 		}
- 	}
- 
-+	in_poll_handler = 0;
-+
- 	free_irqs();
- }
- 
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index c211153..9aa7097 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -27,6 +27,8 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
- 	[SIGALRM]	= timer_handler
- };
- 
-+static int irq_guard = 0;
-+
- static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- {
- 	struct uml_pt_regs r;
-@@ -40,11 +42,17 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- 	}
- 
- 	/* enable signals if sig isn't IRQ signal */
--	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGALRM))
-+	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGALRM)) {
- 		unblock_signals();
-+	} else {
-+		irq_guard = 1;
-+	}
- 
- 	(*sig_info[sig])(sig, si, &r);
- 
-+	if (!((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGALRM)))
-+		irq_guard = 0;
-+
- 	errno = save_errno;
- }
- 
-@@ -86,7 +94,9 @@ static void timer_real_alarm_handler(mcontext_t *mc)
- 
- 	if (mc != NULL)
- 		get_regs_from_mc(&regs, mc);
-+	irq_guard = 1;
- 	timer_handler(SIGALRM, NULL, &regs);
-+	irq_guard = 0;
- }
- 
- void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
-@@ -243,6 +253,9 @@ void unblock_signals(void)
- 	if (signals_enabled == 1)
- 		return;
- 
-+	if (irq_guard == 1)
-+		return;
-+
- 	/*
- 	 * We loop because the IRQ handler returns with interrupts off.  So,
- 	 * interrupts may have arrived and we need to re-enable them and
++	err |= __put_user(fp_to, &frame->uc.uc_mcontext.fpstate);
+ 	if (sizeof(*set) == 16) {
+ 		err |= __put_user(set->sig[0], &frame->uc.uc_sigmask.sig[0]);
+ 		err |= __put_user(set->sig[1], &frame->uc.uc_sigmask.sig[1]);
 -- 
-2.1.4
+1.8.4.5
 
 
 ------------------------------------------------------------------------------
