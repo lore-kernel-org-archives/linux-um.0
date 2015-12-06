@@ -1,65 +1,58 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <566449A3.6030504@digikod.net>
 References: <1448805802-12156-1-git-send-email-mic@digikod.net>
- <1448805802-12156-2-git-send-email-mic@digikod.net> <CADNZ+wSJtq9Ymx-2YcYe5XwwXTmMdbtsuBz6JHotnnwH3G7GKg@mail.gmail.com>
- <56641CEA.5080202@digikod.net> <566449A3.6030504@digikod.net>
-From: Tristan Schmelcher <tschmelcher@google.com>
-Date: Tue, 8 Dec 2015 15:37:39 -0500
-Message-ID: <CADNZ+wTtu5gZuztSAnY9TE0fV4cVgqr534gyDUEkp0LS=Vq4Xw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+ <1448805802-12156-2-git-send-email-mic@digikod.net>
+ <CADNZ+wSJtq9Ymx-2YcYe5XwwXTmMdbtsuBz6JHotnnwH3G7GKg@mail.gmail.com>
+ <56641CEA.5080202@digikod.net>
+From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <566449A3.6030504@digikod.net>
+Date: Sun, 6 Dec 2015 15:43:47 +0100
+MIME-Version: 1.0
+In-Reply-To: <56641CEA.5080202@digikod.net>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="jElCOM4HFlslsAGuBtCcCEA6UIBjexP0I"
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [PATCH v2 1/2] um: Set secure access mode for temporary file
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+To: Tristan Schmelcher <tschmelcher@google.com>
 Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 6 December 2015 at 09:43, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>=
- wrote:
-> Well, I'm concerned to use umask because it is not thread-safe and dr=
-ivers may use create_mem_file() in a multi-theaded context.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jElCOM4HFlslsAGuBtCcCEA6UIBjexP0I
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-You are right. We should perhaps set the umask to 0700 permanently
-during process start. But I am not sure if this will interfere with
-other UML code.
+On 06/12/2015 12:32, Micka=C3=ABl Sala=C3=BCn wrote:
+> On 04/12/2015 18:13, Tristan Schmelcher wrote:
+>> If there is a concern that the mkstemp implementation may be insecure,=
 
-> I prefer to stick to fchmod and handle the race-condition with O_TMPF=
-ILE unsell someone is sure that this will not create bugs :)
+>> why not set and restore the umask?
+>>
+>=20
+> I will add this safeguard.
 
-The fchmod call is basically useless and should probably be removed.
-Even mmap only checks the file descriptor, not the file permissions. I
-have pasted a test program below if you wish to confirm. AFAICT
-changing the permissions after file deletion accomplishes nothing
-unless the attacker bizarrely chooses to hard-link the file during the
-race instead of opening it.
+Well, I'm concerned to use umask because it is not thread-safe and driver=
+s may use create_mem_file() in a multi-theaded context. I prefer to stick=
+ to fchmod and handle the race-condition with O_TMPFILE unsell someone is=
+ sure that this will not create bugs :)
 
-#include <assert.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
+ Micka=C3=ABl
 
-int main(int argc, char **argv) {
-  int fd =3D open("./foo", O_RDWR|O_CREAT|O_EXCL, 0700);
-  assert(fd >=3D 0);
-  int ret =3D write(fd, "bar\n", 4);
-  assert(ret =3D=3D 4);
-  ret =3D fchmod(fd, 0400);
-  assert(ret >=3D 0);
-  char *buf =3D mmap(0, 4, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_SHARED, =
-fd, 0);
-  assert(buf);
-  buf[2] =3D 'z';
-  ret =3D munmap(buf, 4);
-  assert(ret >=3D 0);
-  return 0;
-}
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
 
+--jElCOM4HFlslsAGuBtCcCEA6UIBjexP0I
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJWZEmjAAoJECLe/t9zvWqVhNYH/R9MW4vraQsFk20vPa7vIGgP
+a+ijYQxbEj9onoaQ/didHLB/rBUC4mphzyLsqr+SlbhyQMluRYn5oaYteka0/z/X
+SujyElLO1PNLiRftzLn4GQxUG88nVOWbQdpeZ/5eWYJytAhgGEBv8c4gnv86bpfM
+INxSTl7bneyPL1m4uBaeD1JN9NgRp58Fb+CdAtk6FQ4yIljb+rrkuOOFDbpmWfw4
+LhQzgNlKVp5o4CeTdKqbUNdSY3pSSNRRP9M8C+841hVhIJ92SSMCfvbKUQXcJ4zU
+IhGOJNdRAzDWuAsfD7UzWd/bduPTlw4Q2I5RNW8gzalQh41rO5yRk2C4hyNzO5U=
+=09pq
+-----END PGP SIGNATURE-----
+
+--jElCOM4HFlslsAGuBtCcCEA6UIBjexP0I--
