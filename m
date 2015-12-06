@@ -2,15 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 References: <1448805802-12156-1-git-send-email-mic@digikod.net>
  <1448805802-12156-2-git-send-email-mic@digikod.net>
  <CADNZ+wSJtq9Ymx-2YcYe5XwwXTmMdbtsuBz6JHotnnwH3G7GKg@mail.gmail.com>
- <56641CEA.5080202@digikod.net>
 From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <566449A3.6030504@digikod.net>
-Date: Sun, 6 Dec 2015 15:43:47 +0100
+Message-ID: <56641CEA.5080202@digikod.net>
+Date: Sun, 6 Dec 2015 12:32:58 +0100
 MIME-Version: 1.0
-In-Reply-To: <56641CEA.5080202@digikod.net>
+In-Reply-To: <CADNZ+wSJtq9Ymx-2YcYe5XwwXTmMdbtsuBz6JHotnnwH3G7GKg@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="jElCOM4HFlslsAGuBtCcCEA6UIBjexP0I"
+ boundary="IJilABAj6qTSantFpe9fwNbmjbctHgTc3"
 Sender: linux-kernel-owner@vger.kernel.org
 Subject: Re: [PATCH v2 1/2] um: Set secure access mode for temporary file
 To: Tristan Schmelcher <tschmelcher@google.com>
@@ -18,41 +17,42 @@ Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinber
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---jElCOM4HFlslsAGuBtCcCEA6UIBjexP0I
+--IJilABAj6qTSantFpe9fwNbmjbctHgTc3
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 06/12/2015 12:32, Micka=C3=ABl Sala=C3=BCn wrote:
-> On 04/12/2015 18:13, Tristan Schmelcher wrote:
->> If there is a concern that the mkstemp implementation may be insecure,=
+On 04/12/2015 18:13, Tristan Schmelcher wrote:
+> File permissions are checked at time of open, so I think this fchmod
+> call has never had any effect.
 
->> why not set and restore the umask?
->>
+Indeed, mmap doesn't require the file to be executable, only readable and=
+ writable. The fchmod seems to be a guarantee for this permissions but I =
+don't see why a file newly created could not be writable.
+
 >=20
-> I will add this safeguard.
+> If there is a concern that the mkstemp implementation may be insecure,
+> why not set and restore the umask?
+>=20
 
-Well, I'm concerned to use umask because it is not thread-safe and driver=
-s may use create_mem_file() in a multi-theaded context. I prefer to stick=
- to fchmod and handle the race-condition with O_TMPFILE unsell someone is=
- sure that this will not create bugs :)
+I will add this safeguard.
 
  Micka=C3=ABl
 
 
---jElCOM4HFlslsAGuBtCcCEA6UIBjexP0I
+--IJilABAj6qTSantFpe9fwNbmjbctHgTc3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEcBAEBCgAGBQJWZEmjAAoJECLe/t9zvWqVhNYH/R9MW4vraQsFk20vPa7vIGgP
-a+ijYQxbEj9onoaQ/didHLB/rBUC4mphzyLsqr+SlbhyQMluRYn5oaYteka0/z/X
-SujyElLO1PNLiRftzLn4GQxUG88nVOWbQdpeZ/5eWYJytAhgGEBv8c4gnv86bpfM
-INxSTl7bneyPL1m4uBaeD1JN9NgRp58Fb+CdAtk6FQ4yIljb+rrkuOOFDbpmWfw4
-LhQzgNlKVp5o4CeTdKqbUNdSY3pSSNRRP9M8C+841hVhIJ92SSMCfvbKUQXcJ4zU
-IhGOJNdRAzDWuAsfD7UzWd/bduPTlw4Q2I5RNW8gzalQh41rO5yRk2C4hyNzO5U=
-=09pq
+iQEcBAEBCgAGBQJWZBzyAAoJECLe/t9zvWqVI34H/AhdHSEgiee4MrSr190ws4cf
+2M6r7GPezK2D7eqSCSVE/aPvQA6gtpr9c9yW4atir3drGrgd+Z33yv3foeNA/7HL
+/hOrZ5blv1OB9/zZup0ua6AZm90T0i9f7OrAaEdIcqDa7QGkZYy3AlH49RHii0fL
+9icoFDPShoZhfTm0qTHrY2EzZlkdEahLCgXTILifzBLn1XWa7tH1P6PkMUj0S6jM
+wE5eqO+JS+OlBulywiW2Yma1Bf/aSypb9xTx6QLybT9wYlaqonuzgXZ4ZZPcTN+p
+FMqxQj34KoeOOxV7YUgZrPlowiEqiFaaPdvODQFboHAOiqqhZ+L+ATj6/+bvZ0E=
+=m5MX
 -----END PGP SIGNATURE-----
 
---jElCOM4HFlslsAGuBtCcCEA6UIBjexP0I--
+--IJilABAj6qTSantFpe9fwNbmjbctHgTc3--
