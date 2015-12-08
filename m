@@ -1,25 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stian@nixia.no>) id 1a6aqZ-0004fR-S0
+	(envelope-from <richard@nod.at>) id 1a6QCo-00036l-2V
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Dec 2015 09:15:39 +0000
-Received: from [195.159.66.51] (helo=ramslauken.nlc.no)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1a6aqY-0002ca-BV for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Dec 2015 09:15:39 +0000
-Received: from mail.nlc.no (ramslauken.nlc.no [195.159.66.51])
-	(Authenticated sender: stian@nixia.no)
-	by ramslauken.nlc.no (Postfix) with ESMTPA id 7A8CE1D3385
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed,  9 Dec 2015 10:08:11 +0100 (CET)
-MIME-Version: 1.0
-Date: Wed, 09 Dec 2015 10:08:11 +0100
-From: stian@nixia.no
-In-Reply-To: <56645576.3050807@oracle.com>
+	Tue, 08 Dec 2015 21:53:54 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1a6QCn-0007gZ-6u
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 08 Dec 2015 21:53:54 +0000
 References: <56645576.3050807@oracle.com>
-Message-ID: <728d530df51b5c058f69312bbcac2018@nixia.no>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56675169.204@nod.at>
+Date: Tue, 8 Dec 2015 22:53:45 +0100
+MIME-Version: 1.0
+In-Reply-To: <56645576.3050807@oracle.com>
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,21 +29,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] uml instance crashes when started from script
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: Jeff Dike <jdike@addtoit.com>, stian@nixia.no, user-mode-linux-devel@lists.sourceforge.net
 
-Den 2015-12-06 16:34, skrev Vegard Nossum:
+Hi!
+
+Am 06.12.2015 um 16:34 schrieb Vegard Nossum:
 > Hi,
->
-> I've been running into some odd crashes when starting my UML instance
-> from Python. This is my script:
->
+> 
+> I've been running into some odd crashes when starting my UML instance from Python. This is my script:
+> 
 > import subprocess
-> subprocess.check_call(['path/to/vmlinux', 'mem=2048M',
-> 'rootfstype=hostfs', 'rw', 'init=/bin/bash'])
+> subprocess.check_call(['path/to/vmlinux', 'mem=2048M', 'rootfstype=hostfs', 'rw', 'init=/bin/bash'])
+> 
+> This will crash 9 out of 10 times with various strange messages on the console:
 
-Can you please share your kernel config file?
+Hmm, I cannot reproduce here on my laptop.
+Stian, can you?
 
-Stian
+I wonder what could cause this.
+A completely different terminal should not cause a crash.
+
+*confused*,
+//richard
 
 ------------------------------------------------------------------------------
 _______________________________________________
