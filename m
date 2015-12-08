@@ -1,62 +1,82 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <linus971@gmail.com>) id 1a6TfK-0003MZ-Pj
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Dec 2015 01:35:34 +0000
-Received: from mail-ig0-f173.google.com ([209.85.213.173])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1a6TfJ-0001vM-KU
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Dec 2015 01:35:34 +0000
-Received: by igcto18 with SMTP id to18so30078113igc.0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Tue, 08 Dec 2015 17:35:28 -0800 (PST)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56674E18.7020905@nod.at>
+Date: Tue, 8 Dec 2015 22:39:36 +0100
 MIME-Version: 1.0
-In-Reply-To: <56674E18.7020905@nod.at>
-References: <56674E18.7020905@nod.at>
-Date: Tue, 8 Dec 2015 17:35:28 -0800
-Message-ID: <CA+55aFx53MbO2HrVkrMr4K-8DU2gJTsmpaEECT3i4prUjcMUng@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Subject: Re: [uml-devel] [GIT PULL] UML fixes for 4.4-rc5
-To: Richard Weinberger <richard@nod.at>, Ingo Molnar <mingo@kernel.org>
-Cc: the arch/x86 maintainers <x86@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="DXT6oVT45Lb2TmNGuSDf1pIMLvAkoAVHo"
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [GIT PULL] UML fixes for 4.4-rc5
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Dec 8, 2015 at 1:39 PM, Richard Weinberger <richard@nod.at> wrote:
->
-> This pull request contains various bug fixes, most of them are
-> fall out from the merge window.
->
-> Richard Weinberger (2):
->       um: Fix fpstate handling
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--DXT6oVT45Lb2TmNGuSDf1pIMLvAkoAVHo
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Ugh. This is very ugly. It's apparently the result of commit
-530e5c827182 ("x86/headers: Make sigcontext pointers bit independent")
-and apparently nobody noticed the uml fallout.
+Linus,
 
-I've pulled, but I wanted the x86 people involved to be aware of this
-ugly corner. I wonder if there might be some way for uml to continue
-to use that fpstate entry as a pointer, at least when the wordsize
-matches (which it will)?
+The following changes since commit 527e9316f8ec44bd53d90fb9f611fa7ffff52b=
+b9:
 
-                   Linus
+  Linux 4.4-rc4 (2015-12-06 15:43:12 -0800)
 
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+are available in the git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.4-=
+rc5
+
+for you to fetch changes up to 887a9853092c09e20598f4a7f91ac1cfb762be50:
+
+  um: fix returns without va_end (2015-12-08 22:26:00 +0100)
+
+----------------------------------------------------------------
+This pull request contains various bug fixes, most of them are
+fall out from the merge window.
+
+----------------------------------------------------------------
+Geyslan G. Bem (1):
+      um: fix returns without va_end
+
+Lorenzo Colitti (1):
+      arch: um: fix error when linking vmlinux.
+
+Richard Weinberger (2):
+      um: Fix get_signal() usage
+      um: Fix fpstate handling
+
+ arch/um/Makefile           |  2 +-
+ arch/um/drivers/net_user.c | 10 ++++++----
+ arch/um/kernel/signal.c    |  2 +-
+ arch/x86/um/signal.c       | 18 ++++++++++--------
+ scripts/link-vmlinux.sh    |  2 +-
+ 5 files changed, 19 insertions(+), 15 deletions(-)
+
+
+--DXT6oVT45Lb2TmNGuSDf1pIMLvAkoAVHo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJWZ04cAAoJEPmeIjfg4UaaPcoP/0rGWf8vE+SYFYNUHC5C8j/3
+j4QB9gVaNEE4ty4uSTKdg1UbkNzy4Wg9srqXeI92Pi+PrOIXHc94YJDqyP8ms0n5
+N4tyqxMIyqsVlsFjUuATdPUoTJWPo7yqQnDsQ+Ab5/Ov5eqf++nuGyJw1h3B817L
+2Tl0npT7Mb70MD8s5cabOJs126YtKEPybmI+4DuseRnjUE0QkhFs12yvX8lYD7gu
+tZdbzewVhexXety1TUOa/zktFKz3WFee8jHp5WDBOPhwwhkSkVxTX8CzAGbuTpXq
+oNkm08KZZP03mBPbXT+pxv8wJkzALTCHKrgJ0qHiDT4wWXXfaRzuKtCg0Oum/S/l
+cBVEQFM/DHfBzm8uMXD1o3tYhJk+fb69zzsBNETqzplBeYJddRWLR1cuVHLe5AlG
+zvM2hEVri0KJCsB1pY9UwIlLozeMcfBbaTdgJMQ86XMNFHNLXcqb6y1LP3KSY+jm
+XlKKll+V0fDVianA3PjndVyUkuqBxhJARQ/DrkJaH0Ze9uUFMVxhS+Iw+vQ6cUmm
+JmF79b4Q3FESmgCHz/5nUFgM/doCDXWP0hUvJ3XbRhxIv7ba2UOUzztDSAkNdMd5
+i68MgvI85iaNriJWRPEyC1EptFy9yveN90Kw2Pm/ZiGs7Q90RZcc+vn5WY4e+5w9
+W5/Dr31nr7OOjKHzvtuh
+=b+k2
+-----END PGP SIGNATURE-----
+
+--DXT6oVT45Lb2TmNGuSDf1pIMLvAkoAVHo--
