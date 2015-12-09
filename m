@@ -1,45 +1,57 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Date: Thu, 31 Dec 2015 21:08:07 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451572003-2440-19-git-send-email-mst@redhat.com>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stian@nixia.no>) id 1a6aqZ-0004fR-S0
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Dec 2015 09:15:39 +0000
+Received: from [195.159.66.51] (helo=ramslauken.nlc.no)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1a6aqY-0002ca-BV for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Dec 2015 09:15:39 +0000
+Received: from mail.nlc.no (ramslauken.nlc.no [195.159.66.51])
+	(Authenticated sender: stian@nixia.no)
+	by ramslauken.nlc.no (Postfix) with ESMTPA id 7A8CE1D3385
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed,  9 Dec 2015 10:08:11 +0100 (CET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH v2 18/32] blackfin: define __smp_xxx
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Steven Miao <realmz6@gmail.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Date: Wed, 09 Dec 2015 10:08:11 +0100
+From: stian@nixia.no
+In-Reply-To: <56645576.3050807@oracle.com>
+References: <56645576.3050807@oracle.com>
+Message-ID: <728d530df51b5c058f69312bbcac2018@nixia.no>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: Re: [uml-devel] uml instance crashes when started from script
+To: user-mode-linux-devel@lists.sourceforge.net
 
-This defines __smp_xxx barriers for blackfin,
-for use by virtualization.
+Den 2015-12-06 16:34, skrev Vegard Nossum:
+> Hi,
+>
+> I've been running into some odd crashes when starting my UML instance
+> from Python. This is my script:
+>
+> import subprocess
+> subprocess.check_call(['path/to/vmlinux', 'mem=2048M',
+> 'rootfstype=hostfs', 'rw', 'init=/bin/bash'])
 
-smp_xxx barriers are removed as they are
-defined correctly by asm-generic/barriers.h
+Can you please share your kernel config file?
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/blackfin/include/asm/barrier.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Stian
 
-diff --git a/arch/blackfin/include/asm/barrier.h b/arch/blackfin/include/asm/barrier.h
-index dfb66fe..7cca51c 100644
---- a/arch/blackfin/include/asm/barrier.h
-+++ b/arch/blackfin/include/asm/barrier.h
-@@ -78,8 +78,8 @@
- 
- #endif /* !CONFIG_SMP */
- 
--#define smp_mb__before_atomic()	barrier()
--#define smp_mb__after_atomic()	barrier()
-+#define __smp_mb__before_atomic()	barrier()
-+#define __smp_mb__after_atomic()	barrier()
- 
- #include <asm-generic/barrier.h>
- 
--- 
-MST
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
