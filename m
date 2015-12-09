@@ -1,58 +1,43 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Tue, 22 Dec 2015 22:15:10 +0100
-Message-Id: <1450818910-23355-3-git-send-email-mic@digikod.net>
-In-Reply-To: <1450818910-23355-1-git-send-email-mic@digikod.net>
-References: <1450818910-23355-1-git-send-email-mic@digikod.net>
+References: <56674E18.7020905@nod.at>
+ <CA+55aFx53MbO2HrVkrMr4K-8DU2gJTsmpaEECT3i4prUjcMUng@mail.gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5667E9F0.9070102@nod.at>
+Date: Wed, 9 Dec 2015 09:44:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+In-Reply-To: <CA+55aFx53MbO2HrVkrMr4K-8DU2gJTsmpaEECT3i4prUjcMUng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v5 2/2] um: Use race-free temporary file creation
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Subject: Re: [GIT PULL] UML fixes for 4.4-rc5
+To: Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, the arch/x86 maintainers <x86@kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Open the memory mapped file with the O_TMPFILE flag when available.
+Linus,
 
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Acked-by: Tristan Schmelcher <tschmelcher@google.com>
----
- arch/um/os-Linux/mem.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Am 09.12.2015 um 02:35 schrieb Linus Torvalds:
+> On Tue, Dec 8, 2015 at 1:39 PM, Richard Weinberger <richard@nod.at> wrote:
+>>
+>> This pull request contains various bug fixes, most of them are
+>> fall out from the merge window.
+>>
+>> Richard Weinberger (2):
+>>       um: Fix fpstate handling
+> 
+> Ugh. This is very ugly. It's apparently the result of commit
+> 530e5c827182 ("x86/headers: Make sigcontext pointers bit independent")
+> and apparently nobody noticed the uml fallout.
+> 
+> I've pulled, but I wanted the x86 people involved to be aware of this
+> ugly corner. I wonder if there might be some way for uml to continue
+> to use that fpstate entry as a pointer, at least when the wordsize
+> matches (which it will)?
 
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index 840d573f7e38..8b1767668515 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -106,6 +106,17 @@ static int __init make_tempfile(const char *templa=
-te)
- 		}
- 	}
-=20
-+#ifdef O_TMPFILE
-+	fd =3D open(tempdir, O_CLOEXEC | O_RDWR | O_EXCL | O_TMPFILE, 0700);
-+	/*
-+	 * If the running system does not support O_TMPFILE flag then retry
-+	 * without it.
-+	 */
-+	if (fd !=3D -1 || (errno !=3D EINVAL && errno !=3D EISDIR &&
-+			errno !=3D EOPNOTSUPP))
-+		return fd;
-+#endif
-+
- 	tempname =3D malloc(strlen(tempdir) + strlen(template) + 1);
- 	if (tempname =3D=3D NULL)
- 		return -1;
---=20
-2.6.4
+I agree. One way to get rid of the ugliness would be rewriting UML's
+FP code. The code is very old and doing it like x86 does would be a
+good thing anyway. But that's nothing I'll do at this stage of development.
+That's material for the next merge window.
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
-
+Thanks,
+//richard
