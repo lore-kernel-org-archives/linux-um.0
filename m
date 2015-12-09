@@ -1,55 +1,74 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Mon, 21 Dec 2015 20:29:19 +0100
-Message-Id: <1450726163-8399-1-git-send-email-mic@digikod.net>
+References: <1448805802-12156-1-git-send-email-mic@digikod.net>
+ <1448805802-12156-2-git-send-email-mic@digikod.net>
+ <CADNZ+wSJtq9Ymx-2YcYe5XwwXTmMdbtsuBz6JHotnnwH3G7GKg@mail.gmail.com>
+ <56641CEA.5080202@digikod.net> <566449A3.6030504@digikod.net>
+ <CADNZ+wTtu5gZuztSAnY9TE0fV4cVgqr534gyDUEkp0LS=Vq4Xw@mail.gmail.com>
+ <56674F91.8050108@nod.at>
+From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <5668C024.2020803@digikod.net>
+Date: Thu, 10 Dec 2015 00:58:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+In-Reply-To: <56674F91.8050108@nod.at>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="dJ69Bc753TNxvdmFERI47rLwQtIFKMpSN"
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v2 0/4] um: Add seccomp support
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jonathan Corbet <corbet@lwn.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, linux-doc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-api@vger.kernel.org, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
+Subject: Re: [PATCH v2 1/2] um: Set secure access mode for temporary file
+To: Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This series add seccomp support to User-mode Linux (i386 and x86_64
-subarchitectures) and fix ptrace issues. This apply on v4.4-rc4 and pas=
-s all
-the 48 tests from selftest/seccomp plus the UML ptsc test.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dJ69Bc753TNxvdmFERI47rLwQtIFKMpSN
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Changes since v1; addressed Richard Weinberger's comments:
-* fix a new PTRACE_SETREGS bug on x86_64 [1/4]
-* fix an old PTRACE_SETREGS bug when updating orig_ax on i386 [1/4]
+On 08/12/2015 22:45, Richard Weinberger wrote:
+> Am 08.12.2015 um 21:37 schrieb Tristan Schmelcher:
+>> On 6 December 2015 at 09:43, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net=
+> wrote:
+>>> Well, I'm concerned to use umask because it is not thread-safe and dr=
+ivers may use create_mem_file() in a multi-theaded context.
+>>
+>> You are right. We should perhaps set the umask to 0700 permanently
+>> during process start. But I am not sure if this will interfere with
+>> other UML code.
+>=20
+> It *should* not hurt. Let's see what explodes. :)
+
+We can't force the kernel process umask without breaking compatibility wi=
+th current implementation, especially with hostfs (i.e. the host umask pr=
+evail the guest one).
+
+>>> I prefer to stick to fchmod and handle the race-condition with O_TMPF=
+ILE unsell someone is sure that this will not create bugs :)
+>>
+>> The fchmod call is basically useless and should probably be removed.
+>=20
+> I agree.
+
+I propose then to simply remove the fchmod call and let the O_TMPFILE fla=
+g do the magic :)
 
 Regards,
  Micka=C3=ABl
 
-Micka=C3=ABl Sala=C3=BCn (4):
-  um: Fix ptrace GETREGS/SETREGS bugs
-  selftests/seccomp: Remove the need for HAVE_ARCH_TRACEHOOK
-  um: Add full asm/syscall.h support
-  um: Add seccomp support
 
- .../seccomp/seccomp-filter/arch-support.txt        |   2 +-
- arch/um/Kconfig.common                             |   1 +
- arch/um/Kconfig.um                                 |  16 +++
- arch/um/include/asm/syscall-generic.h              | 138 +++++++++++++=
-++++++++
- arch/um/include/asm/thread_info.h                  |   2 +
- arch/um/kernel/skas/syscall.c                      |  30 +++--
- arch/um/os-Linux/skas/process.c                    |   7 --
- arch/x86/um/asm/syscall.h                          |   1 +
- arch/x86/um/ptrace_32.c                            |   8 +-
- tools/testing/selftests/seccomp/seccomp_bpf.c      |  27 +++-
- 10 files changed, 205 insertions(+), 27 deletions(-)
- create mode 100644 arch/um/include/asm/syscall-generic.h
+--dJ69Bc753TNxvdmFERI47rLwQtIFKMpSN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
---=20
-2.6.4
+-----BEGIN PGP SIGNATURE-----
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+iQEcBAEBCgAGBQJWaMAqAAoJECLe/t9zvWqVgCsH+wZdvbx4mG7k/Z4SFgsmECTk
+uKwwK4NivikyNMaYSNtLuJaZf31oYiu2YLlRMGfQ2YFrN0U5nkVhWpjSaMmOC7RD
+nmLBBTEuq+bIjV5S3axT8yzGc/CCMl+VumKrrw07XT6tfdJCM23jCMeDrrpldkSa
+PNKe9JvrJs3+bpWEw2bPXgcXTAHLVCFnTWLrdw62qlduolzmRfWrIbOIT4gTI9Vj
+kdeSfkVUaNIDDjoODu4d2Yh0qo8MP+bvauD9PqUkt/0JTe0+VdoVwYwBjtObA7at
++6sf/fa4TTY/oBPMU1MYjOmUV5AzN2nLs+DhlgWcRoI/lckevT+1NoZB/1vqa20=
+=CFbk
+-----END PGP SIGNATURE-----
 
+--dJ69Bc753TNxvdmFERI47rLwQtIFKMpSN--
