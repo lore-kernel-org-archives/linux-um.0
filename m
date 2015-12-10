@@ -1,19 +1,42 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Date: Thu, 10 Dec 2015 01:09:42 +0100
+Message-Id: <1449706184-19284-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-In-Reply-To: <1448805802-12156-2-git-send-email-mic@digikod.net>
-References: <1448805802-12156-1-git-send-email-mic@digikod.net> <1448805802-12156-2-git-send-email-mic@digikod.net>
-From: Tristan Schmelcher <tschmelcher@google.com>
-Date: Fri, 4 Dec 2015 12:13:12 -0500
-Message-ID: <CADNZ+wSJtq9Ymx-2YcYe5XwwXTmMdbtsuBz6JHotnnwH3G7GKg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] um: Set secure access mode for temporary file
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
+Subject: [PATCH v3 0/2] um: Protect memory mapped file
+To: linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-File permissions are checked at time of open, so I think this fchmod
-call has never had any effect.
+This series protect the memory mapped file.
 
-If there is a concern that the mkstemp implementation may be insecure,
-why not set and restore the umask?
+Changes since v2; addressed Tristan Schmelcher's comment:
+* remove the whole fchmod call [1/2]
+
+Changes since v1; addressed Richard Weinberger's comments:
+* add attacker model to the patch description [1/2]
+* remove errno reset [2/2]
+
+Regards,
+ Micka=C3=ABl
+
+Micka=C3=ABl Sala=C3=BCn (2):
+  um: Do not set unsecure permission for temporary file
+  um: Use race-free temporary file creation
+
+ arch/um/os-Linux/mem.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+--=20
+2.6.2
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+
