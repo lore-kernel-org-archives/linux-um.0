@@ -1,15 +1,64 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Date: Thu, 10 Dec 2015 01:09:43 +0100
+Message-Id: <1449706184-19284-2-git-send-email-mic@digikod.net>
+In-Reply-To: <1449706184-19284-1-git-send-email-mic@digikod.net>
+References: <1449706184-19284-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-In-Reply-To: <1449706184-19284-2-git-send-email-mic@digikod.net>
-References: <1449706184-19284-1-git-send-email-mic@digikod.net> <1449706184-19284-2-git-send-email-mic@digikod.net>
-From: Tristan Schmelcher <tschmelcher@google.com>
-Date: Fri, 11 Dec 2015 14:24:11 -0500
-Message-ID: <CADNZ+wSiyha7+9ftU=DA-cbXksF2XAJkXsfOHBvnQGcK1VCeVw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] um: Do not set unsecure permission for temporary file
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
+Subject: [PATCH v3 1/2] um: Do not set unsecure permission for temporary file
+To: linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Acked-by: Tristan Schmelcher <tschmelcher@google.com>
+Remove the insecure 0777 mode for temporary file to prohibit other user=
+s
+to change the executable mapped code.
+
+An attacker could gain access to the mapped file descriptor from the
+temporary file (before it is unlinked) in a read-only mode but it shoul=
+d
+not be accessible in write mode to avoid arbitrary code execution.
+
+To not change the hostfs behavior, the temporary file creation
+permission now depend on the current umask(2) and the implementation of
+mkstemp(3).
+
+Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Tristan Schmelcher <tschmelcher@google.com>
+---
+ arch/um/os-Linux/mem.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
+index 897e9ad..840d573 100644
+--- a/arch/um/os-Linux/mem.c
++++ b/arch/um/os-Linux/mem.c
+@@ -142,12 +142,6 @@ static int __init create_tmp_file(unsigned long lo=
+ng len)
+ 	if (fd < 0)
+ 		exit(1);
+=20
+-	err =3D fchmod(fd, 0777);
+-	if (err < 0) {
+-		perror("fchmod");
+-		exit(1);
+-	}
+-
+ 	/*
+ 	 * Seek to len - 1 because writing a character there will
+ 	 * increase the file size by one byte, to the desired length.
+--=20
+2.6.2
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+
