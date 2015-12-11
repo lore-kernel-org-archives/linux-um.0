@@ -1,55 +1,15 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Date: Thu, 31 Dec 2015 21:07:59 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451572003-2440-18-git-send-email-mst@redhat.com>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH v2 17/32] arm: define __smp_xxx
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Russell King <linux@arm.linux.org.uk>, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Andrey Konovalov <andreyknvl@google.com>
+In-Reply-To: <1449706184-19284-2-git-send-email-mic@digikod.net>
+References: <1449706184-19284-1-git-send-email-mic@digikod.net> <1449706184-19284-2-git-send-email-mic@digikod.net>
+From: Tristan Schmelcher <tschmelcher@google.com>
+Date: Fri, 11 Dec 2015 14:24:11 -0500
+Message-ID: <CADNZ+wSiyha7+9ftU=DA-cbXksF2XAJkXsfOHBvnQGcK1VCeVw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] um: Do not set unsecure permission for temporary file
+To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This defines __smp_xxx barriers for arm,
-for use by virtualization.
-
-smp_xxx barriers are removed as they are
-defined correctly by asm-generic/barriers.h
-
-This reduces the amount of arch-specific boiler-plate code.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arm/include/asm/barrier.h | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/arch/arm/include/asm/barrier.h b/arch/arm/include/asm/barrier.h
-index 31152e8..112cc1a 100644
---- a/arch/arm/include/asm/barrier.h
-+++ b/arch/arm/include/asm/barrier.h
-@@ -60,15 +60,9 @@ extern void arm_heavy_mb(void);
- #define dma_wmb()	barrier()
- #endif
- 
--#ifndef CONFIG_SMP
--#define smp_mb()	barrier()
--#define smp_rmb()	barrier()
--#define smp_wmb()	barrier()
--#else
--#define smp_mb()	dmb(ish)
--#define smp_rmb()	smp_mb()
--#define smp_wmb()	dmb(ishst)
--#endif
-+#define __smp_mb()	dmb(ish)
-+#define __smp_rmb()	__smp_mb()
-+#define __smp_wmb()	dmb(ishst)
- 
- #include <asm-generic/barrier.h>
- 
--- 
-MST
-
+Acked-by: Tristan Schmelcher <tschmelcher@google.com>
