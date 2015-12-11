@@ -1,17 +1,17 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1aAz4L-0003Sq-6l
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1a7T7R-0005ds-Dt
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 21 Dec 2015 11:56:01 +0000
+	Fri, 11 Dec 2015 19:12:41 +0000
 Received: from ivanoab4.miniserver.com ([78.31.104.92])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1aAz4K-00040U-3t
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1a7T7Q-00077c-6q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 21 Dec 2015 11:56:01 +0000
-Message-ID: <5677E8C9.7040904@kot-begemot.co.uk>
-Date: Mon, 21 Dec 2015 11:55:53 +0000
+	Fri, 11 Dec 2015 19:12:41 +0000
+Message-ID: <566B2013.20301@kot-begemot.co.uk>
+Date: Fri, 11 Dec 2015 19:12:19 +0000
 From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 MIME-Version: 1.0
 References: <564F0C6D.8000806@kot-begemot.co.uk>
@@ -34,13 +34,6 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 Subject: Re: [uml-devel] IRQ handler reentrancy
 To: Richard Weinberger <richard@nod.at>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
-
-Patch in your queue, current code looks OK.
-
-I will try to assemble the full ubd acceleration sequence of patches 
-this afternoon to submit that as well.
-
-A.
 
 On 11/12/15 18:38, Richard Weinberger wrote:
 > Am 11.12.2015 um 12:24 schrieb Anton Ivanov:
@@ -72,7 +65,31 @@ On 11/12/15 18:38, Richard Weinberger wrote:
 >>
 >> However, it is not legit to have sigio on a specific fd nested. That is mostly safe for the poll() version, but will need to be accounted for in any surgery on the irq controller.
 > So, the current code is fine unless you switch to epoll()?
+
+Correct. It looks OK, though I have not looked at it in depth to make 
+sure there is no race somewhere.
+
 > Is it because you use epoll() in edge-triggered mode?
+
+For now it is level which means it should be identical to poll().
+
+I want to be able (long term) to use either - have the user set what 
+they want for a particular IRQ. There are a couple of use cases like 
+packet mmap and can-write IRQs where edge allows for better code.
+
+I have a working POC which sets per - fd flag to avoid reentrancy on a 
+per-fd basis so it behaves identically to the poll one - similar to the 
+"reactivate fd" semantics.
+
+What I see with it however is some weird stalls on ubd and I am not 100% 
+sure that they are epoll specific, it just tends to make them easily 
+reproducible as it is faster.
+
+I will pick it Monday-Tuesday the week before Xmas after I get some work 
+stuff out of the way.
+
+A.
+
 >
 > Thanks,
 > //richard
