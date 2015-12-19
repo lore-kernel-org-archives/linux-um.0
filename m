@@ -1,57 +1,45 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 31 Dec 2015 21:06:30 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451572003-2440-7-git-send-email-mst@redhat.com>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Date: Sat, 19 Dec 2015 19:18:29 +0100
+Message-Id: <1450549111-1297-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v2 06/32] s390: reuse asm-generic/barrier.h
+Subject: [PATCH v4 0/2] um: Protect memory mapped file
 To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Ingo Molnar <mingo@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, Andrey Konovalov <andreyknvl@google.com>, Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On s390 read_barrier_depends, smp_read_barrier_depends
-smp_store_mb(), smp_mb__before_atomic and smp_mb__after_atomic match the
-asm-generic variants exactly. Drop the local definitions and pull in
-asm-generic/barrier.h instead.
+This series protect the memory mapped file.
 
-This is in preparation to refactoring this code area.
+Changes since v3:
+* add Tristan Schmelcher's ack
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/s390/include/asm/barrier.h | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Changes since v2; addressed Tristan Schmelcher's comment:
+* remove the whole fchmod call [1/2]
 
-diff --git a/arch/s390/include/asm/barrier.h b/arch/s390/include/asm/barrier.h
-index 7ffd0b1..c358c31 100644
---- a/arch/s390/include/asm/barrier.h
-+++ b/arch/s390/include/asm/barrier.h
-@@ -30,14 +30,6 @@
- #define smp_rmb()			rmb()
- #define smp_wmb()			wmb()
- 
--#define read_barrier_depends()		do { } while (0)
--#define smp_read_barrier_depends()	do { } while (0)
--
--#define smp_mb__before_atomic()		smp_mb()
--#define smp_mb__after_atomic()		smp_mb()
--
--#define smp_store_mb(var, value)	do { WRITE_ONCE(var, value); smp_mb(); } while (0)
--
- #define smp_store_release(p, v)						\
- do {									\
- 	compiletime_assert_atomic_type(*p);				\
-@@ -53,4 +45,6 @@ do {									\
- 	___p1;								\
- })
- 
-+#include <asm-generic/barrier.h>
-+
- #endif /* __ASM_BARRIER_H */
--- 
-MST
+Changes since v1; addressed Richard Weinberger's comments:
+* add attacker model to the patch description [1/2]
+* remove errno reset [2/2]
+
+Regards,
+ Micka=C3=ABl
+
+Micka=C3=ABl Sala=C3=BCn (2):
+  um: Do not set unsecure permission for temporary file
+  um: Use race-free temporary file creation
+
+ arch/um/os-Linux/mem.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+--=20
+2.6.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
