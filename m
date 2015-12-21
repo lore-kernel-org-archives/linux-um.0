@@ -1,224 +1,173 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Mon, 21 Dec 2015 01:03:28 +0100
-Message-Id: <1450656209-2676-4-git-send-email-mic@digikod.net>
-In-Reply-To: <1450656209-2676-1-git-send-email-mic@digikod.net>
-References: <1450656209-2676-1-git-send-email-mic@digikod.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <aivanov@brocade.com>) id 1aB5b3-0006zI-MR
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Dec 2015 18:54:13 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1aB5b2-0006gY-CZ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Dec 2015 18:54:13 +0000
+From: Anton Ivanov <aivanov@brocade.com>
+Date: Mon, 21 Dec 2015 18:54:00 +0000
+Message-Id: <1450724041-708451-1-git-send-email-aivanov@brocade.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v1 3/4] um: Add full asm/syscall.h support
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jonathan Corbet <corbet@lwn.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, linux-doc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-api@vger.kernel.org, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 1/2] Update UBD to use pread/pwrite family of
+	functions
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard@nod.at, Anton Ivanov <aivanov@brocade.com>
 
-Add subarchitecture-independent implementation of asm-generic/syscall.h
-allowing access to user system call parameters and results:
-* syscall_get_nr()
-* syscall_rollback()
-* syscall_get_error()
-* syscall_get_return_value()
-* syscall_set_return_value()
-* syscall_get_arguments()
-* syscall_set_arguments()
-* syscall_get_arch() provided by arch/x86/um/asm/syscall.h
+This decreases the number of syscalls per read/write by half.
 
-This provides the necessary syscall helpers needed by
-HAVE_ARCH_SECCOMP_FILTER plus syscall_get_error().
-
-This is inspired from Meredydd Luff's patch
-(https://gerrit.chromium.org/gerrit/21425).
-
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: x86@kernel.org
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
-Cc: Meredydd Luff <meredydd@senatehouse.org>
-Cc: David Drysdale <drysdale@google.com>
+Signed-off-by: Anton Ivanov <aivanov@brocade.com>
 ---
- arch/um/include/asm/syscall-generic.h | 138 ++++++++++++++++++++++++++=
-++++++++
- arch/x86/um/asm/syscall.h             |   1 +
- 2 files changed, 139 insertions(+)
- create mode 100644 arch/um/include/asm/syscall-generic.h
+ arch/um/drivers/ubd_kern.c  | 27 +++++----------------------
+ arch/um/include/shared/os.h |  2 ++
+ arch/um/os-Linux/file.c     | 19 +++++++++++++++++++
+ 3 files changed, 26 insertions(+), 22 deletions(-)
 
-diff --git a/arch/um/include/asm/syscall-generic.h b/arch/um/include/as=
-m/syscall-generic.h
-new file mode 100644
-index 0000000..9fb9cf8
---- /dev/null
-+++ b/arch/um/include/asm/syscall-generic.h
-@@ -0,0 +1,138 @@
-+/*
-+ * Access to user system call parameters and results
-+ *
-+ * See asm-generic/syscall.h for function descriptions.
-+ *
-+ * Copyright (C) 2015 Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-+ *
-+ * This program is free software; you can redistribute it and/or modif=
-y
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __UM_SYSCALL_GENERIC_H
-+#define __UM_SYSCALL_GENERIC_H
-+
-+#include <asm/ptrace.h>
-+#include <linux/err.h>
-+#include <linux/sched.h>
-+#include <sysdep/ptrace.h>
-+
-+static inline int syscall_get_nr(struct task_struct *task, struct pt_r=
-egs *regs)
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index e8ab93c..39ba207 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -535,11 +535,7 @@ static int read_cow_bitmap(int fd, void *buf, int offset, int len)
+ {
+ 	int err;
+ 
+-	err = os_seek_file(fd, offset);
+-	if (err < 0)
+-		return err;
+-
+-	err = os_read_file(fd, buf, len);
++	err = os_pread_file(fd, buf, len, offset);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -1377,14 +1373,8 @@ static int update_bitmap(struct io_thread_req *req)
+ 	if(req->cow_offset == -1)
+ 		return 0;
+ 
+-	n = os_seek_file(req->fds[1], req->cow_offset);
+-	if(n < 0){
+-		printk("do_io - bitmap lseek failed : err = %d\n", -n);
+-		return 1;
+-	}
+-
+-	n = os_write_file(req->fds[1], &req->bitmap_words,
+-			  sizeof(req->bitmap_words));
++	n = os_pwrite_file(req->fds[1], &req->bitmap_words,
++			  sizeof(req->bitmap_words), req->cow_offset);
+ 	if(n != sizeof(req->bitmap_words)){
+ 		printk("do_io - bitmap update failed, err = %d fd = %d\n", -n,
+ 		       req->fds[1]);
+@@ -1399,7 +1389,6 @@ static void do_io(struct io_thread_req *req)
+ 	char *buf;
+ 	unsigned long len;
+ 	int n, nsectors, start, end, bit;
+-	int err;
+ 	__u64 off;
+ 
+ 	if (req->op == UBD_FLUSH) {
+@@ -1428,18 +1417,12 @@ static void do_io(struct io_thread_req *req)
+ 		len = (end - start) * req->sectorsize;
+ 		buf = &req->buffer[start * req->sectorsize];
+ 
+-		err = os_seek_file(req->fds[bit], off);
+-		if(err < 0){
+-			printk("do_io - lseek failed : err = %d\n", -err);
+-			req->error = 1;
+-			return;
+-		}
+ 		if(req->op == UBD_READ){
+ 			n = 0;
+ 			do {
+ 				buf = &buf[n];
+ 				len -= n;
+-				n = os_read_file(req->fds[bit], buf, len);
++				n = os_pread_file(req->fds[bit], buf, len, off);
+ 				if (n < 0) {
+ 					printk("do_io - read failed, err = %d "
+ 					       "fd = %d\n", -n, req->fds[bit]);
+@@ -1449,7 +1432,7 @@ static void do_io(struct io_thread_req *req)
+ 			} while((n < len) && (n != 0));
+ 			if (n < len) memset(&buf[n], 0, len - n);
+ 		} else {
+-			n = os_write_file(req->fds[bit], buf, len);
++			n = os_pwrite_file(req->fds[bit], buf, len, off);
+ 			if(n != len){
+ 				printk("do_io - write failed err = %d "
+ 				       "fd = %d\n", -n, req->fds[bit]);
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 868e6c3..7a04ddd 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -146,6 +146,8 @@ extern int os_read_file(int fd, void *buf, int len);
+ extern int os_write_file(int fd, const void *buf, int count);
+ extern int os_sync_file(int fd);
+ extern int os_file_size(const char *file, unsigned long long *size_out);
++extern int os_pread_file(int fd, void *buf, int len, unsigned long long offset);
++extern int os_pwrite_file(int fd, const void *buf, int count, unsigned long long offset);
+ extern int os_file_modtime(const char *file, unsigned long *modtime);
+ extern int os_pipe(int *fd, int stream, int close_on_exec);
+ extern int os_set_fd_async(int fd);
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index 26e0164..2db18cb 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -264,6 +264,15 @@ int os_read_file(int fd, void *buf, int len)
+ 	return n;
+ }
+ 
++int os_pread_file(int fd, void *buf, int len, unsigned long long offset)
 +{
++	int n = pread(fd, buf, len, offset);
 +
-+	return PT_REGS_SYSCALL_NR(regs);
++	if (n < 0)
++		return -errno;
++	return n;
 +}
 +
-+static inline void syscall_rollback(struct task_struct *task,
-+				    struct pt_regs *regs)
+ int os_write_file(int fd, const void *buf, int len)
+ {
+ 	int n = write(fd, (void *) buf, len);
+@@ -282,6 +291,16 @@ int os_sync_file(int fd)
+ 	return n;
+ }
+ 
++int os_pwrite_file(int fd, const void *buf, int len, unsigned long long offset)
 +{
-+	/* do nothing */
++	int n = pwrite(fd, (void *) buf, len, offset);
++
++	if (n < 0)
++		return -errno;
++	return n;
 +}
 +
-+static inline long syscall_get_error(struct task_struct *task,
-+				     struct pt_regs *regs)
-+{
-+	const long error =3D regs_return_value(regs);
 +
-+	return IS_ERR_VALUE(error) ? error : 0;
-+}
-+
-+static inline long syscall_get_return_value(struct task_struct *task,
-+					    struct pt_regs *regs)
-+{
-+	return regs_return_value(regs);
-+}
-+
-+static inline void syscall_set_return_value(struct task_struct *task,
-+					    struct pt_regs *regs,
-+					    int error, long val)
-+{
-+	PT_REGS_SET_SYSCALL_RETURN(regs, (long) error ?: val);
-+}
-+
-+static inline void syscall_get_arguments(struct task_struct *task,
-+					 struct pt_regs *regs,
-+					 unsigned int i, unsigned int n,
-+					 unsigned long *args)
-+{
-+	const struct uml_pt_regs *r =3D &regs->regs;
-+
-+	switch (i) {
-+	case 0:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG1(r);
-+	case 1:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG2(r);
-+	case 2:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG3(r);
-+	case 3:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG4(r);
-+	case 4:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG5(r);
-+	case 5:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG6(r);
-+	case 6:
-+		if (!n--)
-+			break;
-+	default:
-+		BUG();
-+		break;
-+	}
-+}
-+
-+static inline void syscall_set_arguments(struct task_struct *task,
-+					 struct pt_regs *regs,
-+					 unsigned int i, unsigned int n,
-+					 const unsigned long *args)
-+{
-+	struct uml_pt_regs *r =3D &regs->regs;
-+
-+	switch (i) {
-+	case 0:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG1(r) =3D *args++;
-+	case 1:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG2(r) =3D *args++;
-+	case 2:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG3(r) =3D *args++;
-+	case 3:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG4(r) =3D *args++;
-+	case 4:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG5(r) =3D *args++;
-+	case 5:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG6(r) =3D *args++;
-+	case 6:
-+		if (!n--)
-+			break;
-+	default:
-+		BUG();
-+		break;
-+	}
-+}
-+
-+/* See arch/x86/um/asm/syscall.h for syscall_get_arch() definition. */
-+
-+#endif	/* __UM_SYSCALL_GENERIC_H */
-diff --git a/arch/x86/um/asm/syscall.h b/arch/x86/um/asm/syscall.h
-index 81d6562..11ab90d 100644
---- a/arch/x86/um/asm/syscall.h
-+++ b/arch/x86/um/asm/syscall.h
-@@ -1,6 +1,7 @@
- #ifndef __UM_ASM_SYSCALL_H
- #define __UM_ASM_SYSCALL_H
-=20
-+#include <asm/syscall-generic.h>
- #include <uapi/linux/audit.h>
-=20
- typedef asmlinkage long (*sys_call_ptr_t)(unsigned long, unsigned long=
-,
---=20
-2.6.4
+ int os_file_size(const char *file, unsigned long long *size_out)
+ {
+ 	struct uml_stat buf;
+-- 
+2.1.4
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
