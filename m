@@ -1,16 +1,16 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Tue, 29 Dec 2015 21:35:45 +0100
-Message-Id: <1451421347-9468-3-git-send-email-mic@digikod.net>
-In-Reply-To: <1451421347-9468-1-git-send-email-mic@digikod.net>
-References: <1451421347-9468-1-git-send-email-mic@digikod.net>
+Date: Mon, 21 Dec 2015 20:29:21 +0100
+Message-Id: <1450726163-8399-3-git-send-email-mic@digikod.net>
+In-Reply-To: <1450726163-8399-1-git-send-email-mic@digikod.net>
+References: <1450726163-8399-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v3 2/4] selftests/seccomp: Remove the need for HAVE_ARCH_TRACEHOOK
+Subject: [PATCH v2 2/4] selftests/seccomp: Remove the need for HAVE_ARCH_TRACEHOOK
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, user-mode-linux-devel@lists.sourceforge.net, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jonathan Corbet <corbet@lwn.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, linux-doc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-api@vger.kernel.org, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 Some architectures do not implement PTRACE_GETREGSET nor
@@ -38,7 +38,7 @@ Cc: David Drysdale <drysdale@google.com>
 
 diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/test=
 ing/selftests/seccomp/seccomp_bpf.c
-index 882fe83a3554..b9453b838162 100644
+index 882fe83..b9453b8 100644
 --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
 +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
 @@ -1246,11 +1246,24 @@ TEST_F(TRACE_poke, getpid_runs_normally)
