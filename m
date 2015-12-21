@@ -3,8 +3,8 @@ References: <1450656209-2676-1-git-send-email-mic@digikod.net>
  <1450656209-2676-2-git-send-email-mic@digikod.net> <567745E3.1030509@nod.at>
  <5677BD23.4060602@digikod.net>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <5677BFBD.3090200@nod.at>
-Date: Mon, 21 Dec 2015 10:00:45 +0100
+Message-ID: <5677BEC3.4000802@nod.at>
+Date: Mon, 21 Dec 2015 09:56:35 +0100
 MIME-Version: 1.0
 In-Reply-To: <5677BD23.4060602@digikod.net>
 Content-Type: text/plain; charset=utf-8
@@ -15,7 +15,7 @@ To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>, linux-kernel@vger.ke
 Cc: Jonathan Corbet <corbet@lwn.net>, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, linux-doc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-api@vger.kernel.org, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-[sending the mail again, Thunderbird crashed :-\]
+Hi!
 
 Am 21.12.2015 um 09:49 schrieb Micka=C3=ABl Sala=C3=BCn:
 >=20
@@ -60,11 +60,12 @@ and all tests (from selftest/seccomp), including PTRACE_SETREGS for sys=
 call numbers tests, passed. However, 2 of this tests still fail for x86=
 _64 (only).
 
-No, the logic is different.
-syscall_trace_enter(regs) enters the ptrace() path and here registers c=
-an be changed.
-Hence "syscall =3D UPT_SYSCALL_NR(r);" will see the old syscall number.
-UPT_SYSCALL_NR() returns the syscall number before the ptrace() path...
+No, you chagned the logic.
+syscall_trace_enter() enters the ptrace() path, and here EAX/RAX can be=
+ changed.
+Hence, "syscall =3D UPT_SYSCALL_NR(r)" will still see the old syscall n=
+umber.
+--> changing syscall numbers got broken by you. :-)
 
 Thanks,
 //richard
