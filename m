@@ -1,220 +1,100 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Mon, 21 Dec 2015 21:26:40 +0100
-Message-Id: <1450729600-9732-1-git-send-email-mic@digikod.net>
-In-Reply-To: <1450726163-8399-1-git-send-email-mic@digikod.net>
-References: <1450726163-8399-1-git-send-email-mic@digikod.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <aivanov@brocade.com>) id 1aAydv-0005il-Fd
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Dec 2015 11:28:43 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1aAydu-0002QB-J7
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 21 Dec 2015 11:28:43 +0000
+From: Anton Ivanov <aivanov@brocade.com>
+Date: Mon, 21 Dec 2015 11:28:02 +0000
+Message-Id: <1450697283-339440-1-git-send-email-aivanov@brocade.com>
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v2 3/4] um: Add full asm/syscall.h support
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jonathan Corbet <corbet@lwn.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, linux-doc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-api@vger.kernel.org, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+Subject: [uml-devel] [PATCH 1/2] Prevent IRQ handler reentrancy
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard@nod.at, Anton Ivanov <aivanov@brocade.com>
 
-Add subarchitecture-independent implementation of asm-generic/syscall.h
-allowing access to user system call parameters and results:
-* syscall_get_nr()
-* syscall_rollback()
-* syscall_get_error()
-* syscall_get_return_value()
-* syscall_set_return_value()
-* syscall_get_arguments()
-* syscall_set_arguments()
-* syscall_get_arch() provided by arch/x86/um/asm/syscall.h
+The existing IRQ handler design in UML does not prevent reentrancy
 
-This provides the necessary syscall helpers needed by
-HAVE_ARCH_SECCOMP_FILTER plus syscall_get_error().
+This is mitigated by fd-enable/fd-disable semantics for the IO
+portion of the UML subsystem. The timer, however, can and is
+re-entered resulting in very deep stack usage and occasional
+stack exhaustion.
 
-This is inspired from Meredydd Luff's patch
-(https://gerrit.chromium.org/gerrit/21425).
+This patch prevents this by checking if there is a timer
+interrupt in-flight before processing any pending timer interrupts.
 
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Meredydd Luff <meredydd@senatehouse.org>
-Cc: David Drysdale <drysdale@google.com>
+Signed-off-by: Anton Ivanov <aivanov@brocade.com>
 ---
- arch/um/include/asm/syscall-generic.h | 138 ++++++++++++++++++++++++++=
-++++++++
- arch/x86/um/asm/syscall.h             |   1 +
- 2 files changed, 139 insertions(+)
- create mode 100644 arch/um/include/asm/syscall-generic.h
+ arch/um/os-Linux/signal.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/include/asm/syscall-generic.h b/arch/um/include/as=
-m/syscall-generic.h
-new file mode 100644
-index 0000000..9fb9cf8
---- /dev/null
-+++ b/arch/um/include/asm/syscall-generic.h
-@@ -0,0 +1,138 @@
-+/*
-+ * Access to user system call parameters and results
-+ *
-+ * See asm-generic/syscall.h for function descriptions.
-+ *
-+ * Copyright (C) 2015 Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-+ *
-+ * This program is free software; you can redistribute it and/or modif=
-y
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index c211153..7801666 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -62,6 +62,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ 
+ static int signals_enabled;
+ static unsigned int signals_pending;
++static unsigned int signals_active = 0;
+ 
+ void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
+ {
+@@ -101,7 +102,12 @@ void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
+ 
+ 	block_signals();
+ 
++	signals_active |= SIGALRM_MASK;
 +
-+#ifndef __UM_SYSCALL_GENERIC_H
-+#define __UM_SYSCALL_GENERIC_H
+ 	timer_real_alarm_handler(mc);
 +
-+#include <asm/ptrace.h>
-+#include <linux/err.h>
-+#include <linux/sched.h>
-+#include <sysdep/ptrace.h>
++	signals_active &= ~SIGALRM_MASK;
 +
-+static inline int syscall_get_nr(struct task_struct *task, struct pt_r=
-egs *regs)
-+{
+ 	set_signals(enabled);
+ }
+ 
+@@ -286,8 +292,16 @@ void unblock_signals(void)
+ 		if (save_pending & SIGIO_MASK)
+ 			sig_handler_common(SIGIO, NULL, NULL);
+ 
+-		if (save_pending & SIGALRM_MASK)
++		/* Do not reenter the handler */
 +
-+	return PT_REGS_SYSCALL_NR(regs);
-+}
++		if ((save_pending & SIGALRM_MASK) && (!(signals_active & SIGALRM_MASK)))
+ 			timer_real_alarm_handler(NULL);
 +
-+static inline void syscall_rollback(struct task_struct *task,
-+				    struct pt_regs *regs)
-+{
-+	/* do nothing */
-+}
++		/* Rerun the loop only if there is still pending SIGIO and not in TIMER handler */
 +
-+static inline long syscall_get_error(struct task_struct *task,
-+				     struct pt_regs *regs)
-+{
-+	const long error =3D regs_return_value(regs);
++		if (!(signals_pending & SIGIO_MASK) && (signals_active & SIGALRM_MASK))
++			return;
 +
-+	return IS_ERR_VALUE(error) ? error : 0;
-+}
-+
-+static inline long syscall_get_return_value(struct task_struct *task,
-+					    struct pt_regs *regs)
-+{
-+	return regs_return_value(regs);
-+}
-+
-+static inline void syscall_set_return_value(struct task_struct *task,
-+					    struct pt_regs *regs,
-+					    int error, long val)
-+{
-+	PT_REGS_SET_SYSCALL_RETURN(regs, (long) error ?: val);
-+}
-+
-+static inline void syscall_get_arguments(struct task_struct *task,
-+					 struct pt_regs *regs,
-+					 unsigned int i, unsigned int n,
-+					 unsigned long *args)
-+{
-+	const struct uml_pt_regs *r =3D &regs->regs;
-+
-+	switch (i) {
-+	case 0:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG1(r);
-+	case 1:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG2(r);
-+	case 2:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG3(r);
-+	case 3:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG4(r);
-+	case 4:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG5(r);
-+	case 5:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG6(r);
-+	case 6:
-+		if (!n--)
-+			break;
-+	default:
-+		BUG();
-+		break;
-+	}
-+}
-+
-+static inline void syscall_set_arguments(struct task_struct *task,
-+					 struct pt_regs *regs,
-+					 unsigned int i, unsigned int n,
-+					 const unsigned long *args)
-+{
-+	struct uml_pt_regs *r =3D &regs->regs;
-+
-+	switch (i) {
-+	case 0:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG1(r) =3D *args++;
-+	case 1:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG2(r) =3D *args++;
-+	case 2:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG3(r) =3D *args++;
-+	case 3:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG4(r) =3D *args++;
-+	case 4:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG5(r) =3D *args++;
-+	case 5:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG6(r) =3D *args++;
-+	case 6:
-+		if (!n--)
-+			break;
-+	default:
-+		BUG();
-+		break;
-+	}
-+}
-+
-+/* See arch/x86/um/asm/syscall.h for syscall_get_arch() definition. */
-+
-+#endif	/* __UM_SYSCALL_GENERIC_H */
-diff --git a/arch/x86/um/asm/syscall.h b/arch/x86/um/asm/syscall.h
-index 81d6562..11ab90d 100644
---- a/arch/x86/um/asm/syscall.h
-+++ b/arch/x86/um/asm/syscall.h
-@@ -1,6 +1,7 @@
- #ifndef __UM_ASM_SYSCALL_H
- #define __UM_ASM_SYSCALL_H
-=20
-+#include <asm/syscall-generic.h>
- #include <uapi/linux/audit.h>
-=20
- typedef asmlinkage long (*sys_call_ptr_t)(unsigned long, unsigned long=
-,
---=20
-2.6.4
+ 	}
+ }
+ 
+-- 
+2.1.4
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
