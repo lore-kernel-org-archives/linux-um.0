@@ -1,54 +1,45 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Thu, 10 Dec 2015 01:09:44 +0100
-Message-Id: <1449706184-19284-3-git-send-email-mic@digikod.net>
-In-Reply-To: <1449706184-19284-1-git-send-email-mic@digikod.net>
-References: <1449706184-19284-1-git-send-email-mic@digikod.net>
+Date: Tue, 22 Dec 2015 22:30:16 +0000
+From: Al Viro <viro@ZenIV.linux.org.uk>
+Message-ID: <20151222223016.GC20997@ZenIV.linux.org.uk>
+References: <1450817041-21236-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: QUOTED-PRINTABLE
+In-Reply-To: <1450817041-21236-1-git-send-email-mic@digikod.net>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v3 2/2] um: Use race-free temporary file creation
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Subject: Re: [PATCH] um: Fix pointer cast
+To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Linus Torvalds <torvalds@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Open the memory mapped file with the O_TMPFILE flag when available.
+On Tue, Dec 22, 2015 at 09:44:01PM +0100, Micka=EBl Sala=FCn wrote:
+> Fix a pointer cast typo introduced in v4.4-rc5 especially visible for
+> the i386 subarchitecture where it results in a kernel crash.
 
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Acked-by: Tristan Schmelcher <tschmelcher@google.com>
----
- arch/um/os-Linux/mem.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Why the hell bother casting it at all?  _Any_ pointer will quietly conv=
+ert
+to void *, no typecasts needed.  The second argument of copy_from_user
+is const void __user *; sc is struct sigcontext __user *sc, so
+&sb->oldmask is either __u32 __user * or __u64 __user *, for 32bit and
+64bit builds resp.  Either is assignment-compatible with
+const void __user *.
 
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index 840d573..8b17676 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -106,6 +106,17 @@ static int __init make_tempfile(const char *templa=
-te)
- 		}
- 	}
-=20
-+#ifdef O_TMPFILE
-+	fd =3D open(tempdir, O_CLOEXEC | O_RDWR | O_EXCL | O_TMPFILE, 0700);
-+	/*
-+	 * If the running system does not support O_TMPFILE flag then retry
-+	 * without it.
-+	 */
-+	if (fd !=3D -1 || (errno !=3D EINVAL && errno !=3D EISDIR &&
-+			errno !=3D EOPNOTSUPP))
-+		return fd;
-+#endif
-+
- 	tempname =3D malloc(strlen(tempdir) + strlen(template) + 1);
- 	if (tempname =3D=3D NULL)
- 		return -1;
---=20
-2.6.2
+Basically, cast is telling the typechecking logics "sod off, I know bet=
+ter".
+And here it's not needed at all.  Moreover, the bug you are fixing here=
+ is
+precisely that this code did *not* know better - if not for that cast,
+compiler would've immediately pointed to the problem.
 
+> -	if (copy_from_user(&set.sig[0], (void *)sc->oldmask, sizeof(set.sig=
+[0])) ||
+> +	if (copy_from_user(&set.sig[0], (void *)&sc->oldmask, sizeof(set.si=
+g[0])) ||
+
+Please, remove the cast completely.  Simply pass it &sc->oldmask and be
+done with that.
 --
 To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
  in
