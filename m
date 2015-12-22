@@ -1,45 +1,47 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Tue, 22 Dec 2015 22:30:16 +0000
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Message-ID: <20151222223016.GC20997@ZenIV.linux.org.uk>
-References: <1450817041-21236-1-git-send-email-mic@digikod.net>
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Date: Tue, 22 Dec 2015 21:44:01 +0100
+Message-Id: <1450817041-21236-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-In-Reply-To: <1450817041-21236-1-git-send-email-mic@digikod.net>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH] um: Fix pointer cast
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Linus Torvalds <torvalds@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net
+Subject: [PATCH] um: Fix pointer cast
+To: linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Linus Torvalds <torvalds@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Dec 22, 2015 at 09:44:01PM +0100, Micka=EBl Sala=FCn wrote:
-> Fix a pointer cast typo introduced in v4.4-rc5 especially visible for
-> the i386 subarchitecture where it results in a kernel crash.
+=46ix a pointer cast typo introduced in v4.4-rc5 especially visible for
+the i386 subarchitecture where it results in a kernel crash.
 
-Why the hell bother casting it at all?  _Any_ pointer will quietly conv=
-ert
-to void *, no typecasts needed.  The second argument of copy_from_user
-is const void __user *; sc is struct sigcontext __user *sc, so
-&sb->oldmask is either __u32 __user * or __u64 __user *, for 32bit and
-64bit builds resp.  Either is assignment-compatible with
-const void __user *.
+=46ixes: 8090bfd2bb9a ("um: Fix fpstate handling")
 
-Basically, cast is telling the typechecking logics "sod off, I know bet=
-ter".
-And here it's not needed at all.  Moreover, the bug you are fixing here=
- is
-precisely that this code did *not* know better - if not for that cast,
-compiler would've immediately pointed to the problem.
+Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ arch/x86/um/signal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> -	if (copy_from_user(&set.sig[0], (void *)sc->oldmask, sizeof(set.sig=
-[0])) ||
-> +	if (copy_from_user(&set.sig[0], (void *)&sc->oldmask, sizeof(set.si=
-g[0])) ||
+diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
+index e5f854ce2d72..cbb541b80358 100644
+--- a/arch/x86/um/signal.c
++++ b/arch/x86/um/signal.c
+@@ -470,7 +470,7 @@ long sys_sigreturn(void)
+ 	struct sigcontext __user *sc =3D &frame->sc;
+ 	int sig_size =3D (_NSIG_WORDS - 1) * sizeof(unsigned long);
+=20
+-	if (copy_from_user(&set.sig[0], (void *)sc->oldmask, sizeof(set.sig[0=
+])) ||
++	if (copy_from_user(&set.sig[0], (void *)&sc->oldmask, sizeof(set.sig[=
+0])) ||
+ 	    copy_from_user(&set.sig[1], frame->extramask, sig_size))
+ 		goto segfault;
+=20
+--=20
+2.6.4
 
-Please, remove the cast completely.  Simply pass it &sc->oldmask and be
-done with that.
 --
 To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
  in
