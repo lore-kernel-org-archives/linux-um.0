@@ -1,65 +1,57 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Date: Thu, 31 Dec 2015 21:06:21 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451572003-2440-6-git-send-email-mst@redhat.com>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+References: <1450876627-4814-1-git-send-email-mic@digikod.net>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <567AEA7E.2090207@nod.at>
+Date: Wed, 23 Dec 2015 19:39:58 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH v2 05/32] powerpc: reuse asm-generic/barrier.h
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Ingo Molnar <mingo@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, Andrey Konovalov <andreyknvl@google.com>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+In-Reply-To: <1450876627-4814-1-git-send-email-mic@digikod.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH v2] um: Fix pointer cast
+To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>, linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Linus Torvalds <torvalds@linux-foundation.org>, user-mode-linux-devel@lists.sourceforge.net, Al Viro <viro@ZenIV.linux.org.uk>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On powerpc read_barrier_depends, smp_read_barrier_depends
-smp_store_mb(), smp_mb__before_atomic and smp_mb__after_atomic match the
-asm-generic variants exactly. Drop the local definitions and pull in
-asm-generic/barrier.h instead.
+Am 23.12.2015 um 14:17 schrieb Micka=C3=ABl Sala=C3=BCn:
+> Fix a pointer cast typo introduced in v4.4-rc5 especially visible for
+> the i386 subarchitecture where it results in a kernel crash.
+>=20
+> Fixes: 8090bfd2bb9a ("um: Fix fpstate handling")
+> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Al Viro <viro@ZenIV.linux.org.uk>
+> ---
+>  arch/x86/um/signal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
+> index e5f854ce2d72..14fcd01ed992 100644
+> --- a/arch/x86/um/signal.c
+> +++ b/arch/x86/um/signal.c
+> @@ -470,7 +470,7 @@ long sys_sigreturn(void)
+>  	struct sigcontext __user *sc =3D &frame->sc;
+>  	int sig_size =3D (_NSIG_WORDS - 1) * sizeof(unsigned long);
+> =20
+> -	if (copy_from_user(&set.sig[0], (void *)sc->oldmask, sizeof(set.sig=
+[0])) ||
+> +	if (copy_from_user(&set.sig[0], &sc->oldmask, sizeof(set.sig[0])) |=
+|
+>  	    copy_from_user(&set.sig[1], frame->extramask, sig_size))
+>  		goto segfault;
 
-This is in preparation to refactoring this code area.
+=46YI Linus already merged your patch. :-)
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3Dde3793796f78e293cc0873744a75588c99ed2fdd
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/powerpc/include/asm/barrier.h | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/barrier.h b/arch/powerpc/include/asm/barrier.h
-index a7af5fb..980ad0c 100644
---- a/arch/powerpc/include/asm/barrier.h
-+++ b/arch/powerpc/include/asm/barrier.h
-@@ -34,8 +34,6 @@
- #define rmb()  __asm__ __volatile__ ("sync" : : : "memory")
- #define wmb()  __asm__ __volatile__ ("sync" : : : "memory")
- 
--#define smp_store_mb(var, value) do { WRITE_ONCE(var, value); smp_mb(); } while (0)
--
- #ifdef __SUBARCH_HAS_LWSYNC
- #    define SMPWMB      LWSYNC
- #else
-@@ -60,9 +58,6 @@
- #define smp_wmb()	barrier()
- #endif /* CONFIG_SMP */
- 
--#define read_barrier_depends()		do { } while (0)
--#define smp_read_barrier_depends()	do { } while (0)
--
- /*
-  * This is a barrier which prevents following instructions from being
-  * started until the value of the argument x is known.  For example, if
-@@ -87,8 +82,8 @@ do {									\
- 	___p1;								\
- })
- 
--#define smp_mb__before_atomic()     smp_mb()
--#define smp_mb__after_atomic()      smp_mb()
- #define smp_mb__before_spinlock()   smp_mb()
- 
-+#include <asm-generic/barrier.h>
-+
- #endif /* _ASM_POWERPC_BARRIER_H */
--- 
-MST
+Thanks,
+//richard
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
