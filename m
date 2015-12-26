@@ -1,93 +1,62 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Date: Thu, 31 Dec 2015 21:08:30 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451572003-2440-22-git-send-email-mst@redhat.com>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Fri, 25 Dec 2015 20:10:01 -0800
+From: Josh Triplett <josh@joshtriplett.org>
+Message-ID: <20151226041000.GA22571@x>
+References: <1450959131-5113-1-git-send-email-mic@digikod.net>
+ <20151225013409.GC12977@x>
+ <567D8ED5.7000409@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH v2 21/32] mips: define __smp_xxx
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, Andrey Konovalov <andreyknvl@google.com>
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+In-Reply-To: <567D8ED5.7000409@digikod.net>
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH v3] um: Fix build error and kconfig for i386
+To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>, Michal Marek <mmarek@suse.cz>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, stable@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This defines __smp_xxx barriers for mips,
-for use by virtualization.
+On Fri, Dec 25, 2015 at 07:45:41PM +0100, Micka=EBl Sala=FCn wrote:
+>=20
+> On 25/12/2015 02:34, Josh Triplett wrote:
+> > On Thu, Dec 24, 2015 at 01:12:11PM +0100, Micka=EBl Sala=FCn wrote:
+> >> Fix build error by generating elfcore.o only when ELF_CORE (depend=
+ing on
+> >> COREDUMP) is selected:
+> >>
+> >> arch/x86/um/built-in.o: In function `elf_core_write_extra_phdrs':
+> >> (.text+0x3e62): undefined reference to `dump_emit'
+> >> arch/x86/um/built-in.o: In function `elf_core_write_extra_data':
+> >> (.text+0x3eef): undefined reference to `dump_emit'
+> >>
+> >> Fixes: 5d2acfc7b974 ("kconfig: make allnoconfig disable options be=
+hind EMBEDDED and EXPERT")
+> >> Signed-off-by: Micka=EBl Sala=FCn <mic@digikod.net>
+> >> Cc: Jeff Dike <jdike@addtoit.com>
+> >> Cc: Richard Weinberger <richard@nod.at>
+> >> Cc: Josh Triplett <josh@joshtriplett.org>
+> >> Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+> >> Cc: Michal Marek <mmarek@suse.cz>
+> >> Cc: Andrew Morton <akpm@linux-foundation.org>
+> >> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> >=20
+> > It looks like ELF_CORE depends on COREDUMP, but not on BINFMT_ELF.
+> > Should it?  What happens if you build this with ELF_CORE=3Dy and
+> > BINFMT_ELF=3Dn?  Does that configuration even make sense?
+>=20
+> It build fine with ELF_CORE=3Dy and BINFMT_ELF=3Dn but does not seem
+> useful. Nevertheless, it's the same for all architectures (cf.
+> init/Kconfig): ELF_CORE only depends on COREDUMP.
 
-smp_xxx barriers are removed as they are
-defined correctly by asm-generic/barriers.h
+As long as that builds, then this patch doesn't introduce an
+un-buildable Kconfig configuration, so it seems reasonable.  Thanks
+again for producing a new version.
 
-Note: the only exception is smp_mb__before_llsc which is mips-specific.
-We define both the __smp_mb__before_llsc variant (for use in
-asm/barriers.h) and smp_mb__before_llsc (for use elsewhere on this
-architecture).
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/mips/include/asm/barrier.h | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/arch/mips/include/asm/barrier.h b/arch/mips/include/asm/barrier.h
-index 3eac4b9..d296633 100644
---- a/arch/mips/include/asm/barrier.h
-+++ b/arch/mips/include/asm/barrier.h
-@@ -85,20 +85,20 @@
- #define wmb()		fast_wmb()
- #define rmb()		fast_rmb()
- 
--#if defined(CONFIG_WEAK_ORDERING) && defined(CONFIG_SMP)
-+#if defined(CONFIG_WEAK_ORDERING)
- # ifdef CONFIG_CPU_CAVIUM_OCTEON
--#  define smp_mb()	__sync()
--#  define smp_rmb()	barrier()
--#  define smp_wmb()	__syncw()
-+#  define __smp_mb()	__sync()
-+#  define __smp_rmb()	barrier()
-+#  define __smp_wmb()	__syncw()
- # else
--#  define smp_mb()	__asm__ __volatile__("sync" : : :"memory")
--#  define smp_rmb()	__asm__ __volatile__("sync" : : :"memory")
--#  define smp_wmb()	__asm__ __volatile__("sync" : : :"memory")
-+#  define __smp_mb()	__asm__ __volatile__("sync" : : :"memory")
-+#  define __smp_rmb()	__asm__ __volatile__("sync" : : :"memory")
-+#  define __smp_wmb()	__asm__ __volatile__("sync" : : :"memory")
- # endif
- #else
--#define smp_mb()	barrier()
--#define smp_rmb()	barrier()
--#define smp_wmb()	barrier()
-+#define __smp_mb()	barrier()
-+#define __smp_rmb()	barrier()
-+#define __smp_wmb()	barrier()
- #endif
- 
- #if defined(CONFIG_WEAK_REORDERING_BEYOND_LLSC) && defined(CONFIG_SMP)
-@@ -111,6 +111,7 @@
- 
- #ifdef CONFIG_CPU_CAVIUM_OCTEON
- #define smp_mb__before_llsc() smp_wmb()
-+#define __smp_mb__before_llsc() __smp_wmb()
- /* Cause previous writes to become visible on all CPUs as soon as possible */
- #define nudge_writes() __asm__ __volatile__(".set push\n\t"		\
- 					    ".set arch=octeon\n\t"	\
-@@ -118,11 +119,12 @@
- 					    ".set pop" : : : "memory")
- #else
- #define smp_mb__before_llsc() smp_llsc_mb()
-+#define __smp_mb__before_llsc() smp_llsc_mb()
- #define nudge_writes() mb()
- #endif
- 
--#define smp_mb__before_atomic()	smp_mb__before_llsc()
--#define smp_mb__after_atomic()	smp_llsc_mb()
-+#define __smp_mb__before_atomic()	__smp_mb__before_llsc()
-+#define __smp_mb__after_atomic()	smp_llsc_mb()
- 
- #include <asm-generic/barrier.h>
- 
--- 
-MST
+Reviewed-by: Josh Triplett <josh@joshtriplett.org>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
