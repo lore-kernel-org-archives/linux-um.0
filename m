@@ -1,54 +1,126 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 31 Dec 2015 21:09:01 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451572003-2440-26-git-send-email-mst@redhat.com>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Date: Tue, 29 Dec 2015 21:35:45 +0100
+Message-Id: <1451421347-9468-3-git-send-email-mic@digikod.net>
+In-Reply-To: <1451421347-9468-1-git-send-email-mic@digikod.net>
+References: <1451421347-9468-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v2 25/32] tile: define __smp_xxx
+Subject: [PATCH v3 2/4] selftests/seccomp: Remove the need for HAVE_ARCH_TRACEHOOK
 To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Chris Metcalf <cmetcalf@ezchip.com>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, user-mode-linux-devel@lists.sourceforge.net, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This defines __smp_xxx barriers for tile,
-for use by virtualization.
+Some architectures do not implement PTRACE_GETREGSET nor
+PTRACE_SETREGSET (required by HAVE_ARCH_TRACEHOOK) but only implement
+PTRACE_GETREGS and PTRACE_SETREGS (e.g. User-mode Linux).
 
-Some smp_xxx barriers are removed as they are
-defined correctly by asm-generic/barriers.h
+This improve seccomp selftest portability for architectures without
+HAVE_ARCH_TRACEHOOK support by defining a new trigger HAVE_GETREGS. For
+now, this is only enabled for i386 and x86_64 architectures. This is
+required to be able to run this tests on User-mode Linux.
 
-Note: for 32 bit, keep smp_mb__after_atomic around since it's faster
-than the generic implementation.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Will Drewry <wad@chromium.org>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: Meredydd Luff <meredydd@senatehouse.org>
+Cc: David Drysdale <drysdale@google.com>
 ---
- arch/tile/include/asm/barrier.h | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 27 +++++++++++++++++++=
++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/arch/tile/include/asm/barrier.h b/arch/tile/include/asm/barrier.h
-index 96a42ae..d552228 100644
---- a/arch/tile/include/asm/barrier.h
-+++ b/arch/tile/include/asm/barrier.h
-@@ -79,11 +79,12 @@ mb_incoherent(void)
-  * But after the word is updated, the routine issues an "mf" before returning,
-  * and since it's a function call, we don't even need a compiler barrier.
-  */
--#define smp_mb__before_atomic()	smp_mb()
--#define smp_mb__after_atomic()	do { } while (0)
-+#define __smp_mb__before_atomic()	__smp_mb()
-+#define __smp_mb__after_atomic()	do { } while (0)
-+#define smp_mb__after_atomic()	__smp_mb__after_atomic()
- #else /* 64 bit */
--#define smp_mb__before_atomic()	smp_mb()
--#define smp_mb__after_atomic()	smp_mb()
-+#define __smp_mb__before_atomic()	__smp_mb()
-+#define __smp_mb__after_atomic()	__smp_mb()
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/test=
+ing/selftests/seccomp/seccomp_bpf.c
+index 882fe83a3554..b9453b838162 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -1246,11 +1246,24 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+ # error "Do not know how to find your architecture's registers and sys=
+calls"
  #endif
- 
- #include <asm-generic/barrier.h>
--- 
-MST
+=20
++/* Use PTRACE_GETREGS and PTRACE_SETREGS when available. This is usefu=
+l for
++ * architectures without HAVE_ARCH_TRACEHOOK (e.g. User-mode Linux).
++ */
++#if defined(__x86_64__) || defined(__i386__)
++#define HAVE_GETREGS
++#endif
++
+ /* Architecture-specific syscall fetching routine. */
+ int get_syscall(struct __test_metadata *_metadata, pid_t tracee)
+ {
+-	struct iovec iov;
+ 	ARCH_REGS regs;
++#ifdef HAVE_GETREGS
++	EXPECT_EQ(0, ptrace(PTRACE_GETREGS, tracee, 0, &regs)) {
++		TH_LOG("PTRACE_GETREGS failed");
++		return -1;
++	}
++#else
++	struct iovec iov;
+=20
+ 	iov.iov_base =3D &regs;
+ 	iov.iov_len =3D sizeof(regs);
+@@ -1258,6 +1271,7 @@ int get_syscall(struct __test_metadata *_metadata=
+, pid_t tracee)
+ 		TH_LOG("PTRACE_GETREGSET failed");
+ 		return -1;
+ 	}
++#endif
+=20
+ 	return regs.SYSCALL_NUM;
+ }
+@@ -1266,13 +1280,16 @@ int get_syscall(struct __test_metadata *_metada=
+ta, pid_t tracee)
+ void change_syscall(struct __test_metadata *_metadata,
+ 		    pid_t tracee, int syscall)
+ {
+-	struct iovec iov;
+ 	int ret;
+ 	ARCH_REGS regs;
+-
++#ifdef HAVE_GETREGS
++	ret =3D ptrace(PTRACE_GETREGS, tracee, 0, &regs);
++#else
++	struct iovec iov;
+ 	iov.iov_base =3D &regs;
+ 	iov.iov_len =3D sizeof(regs);
+ 	ret =3D ptrace(PTRACE_GETREGSET, tracee, NT_PRSTATUS, &iov);
++#endif
+ 	EXPECT_EQ(0, ret);
+=20
+ #if defined(__x86_64__) || defined(__i386__) || defined(__powerpc__) |=
+| \
+@@ -1312,9 +1329,13 @@ void change_syscall(struct __test_metadata *_met=
+adata,
+ 	if (syscall =3D=3D -1)
+ 		regs.SYSCALL_RET =3D 1;
+=20
++#ifdef HAVE_GETREGS
++	ret =3D ptrace(PTRACE_SETREGS, tracee, 0, &regs);
++#else
+ 	iov.iov_base =3D &regs;
+ 	iov.iov_len =3D sizeof(regs);
+ 	ret =3D ptrace(PTRACE_SETREGSET, tracee, NT_PRSTATUS, &iov);
++#endif
+ 	EXPECT_EQ(0, ret);
+ }
+=20
+--=20
+2.6.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
