@@ -1,23 +1,23 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Mon, 21 Dec 2015 20:29:20 +0100
-Message-Id: <1450726163-8399-2-git-send-email-mic@digikod.net>
-In-Reply-To: <1450726163-8399-1-git-send-email-mic@digikod.net>
-References: <1450726163-8399-1-git-send-email-mic@digikod.net>
+Date: Tue, 29 Dec 2015 21:35:44 +0100
+Message-Id: <1451421347-9468-2-git-send-email-mic@digikod.net>
+In-Reply-To: <1451421347-9468-1-git-send-email-mic@digikod.net>
+References: <1451421347-9468-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v2 1/4] um: Fix ptrace GETREGS/SETREGS bugs
+Subject: [PATCH v3 1/4] um: Fix ptrace GETREGS/SETREGS bugs
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jonathan Corbet <corbet@lwn.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, linux-doc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-api@vger.kernel.org, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, user-mode-linux-devel@lists.sourceforge.net, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 This fix two related bugs:
 * PTRACE_GETREGS doesn't get the right orig_ax (syscall) value
 * PTRACE_SETREGS can't set the orig_ax value (erased by initial value)
 
-Remove the now useless and error-prone get_syscall().
+Get rid of the now useless and error-prone get_syscall().
 
 =46ix inconsistent behavior in the ptrace implementation for i386 when
 updating orig_eax automatically update the syscall number as well. This
@@ -36,23 +36,37 @@ Cc: Anton Ivanov <aivanov@brocade.com>
 Cc: Meredydd Luff <meredydd@senatehouse.org>
 Cc: David Drysdale <drysdale@google.com>
 ---
- arch/um/kernel/skas/syscall.c   | 25 ++++++++++++++-----------
+ arch/um/include/shared/os.h     |  1 -
+ arch/um/kernel/skas/syscall.c   | 26 ++++++++++++++------------
  arch/um/os-Linux/skas/process.c |  7 -------
  arch/x86/um/ptrace_32.c         |  8 +++-----
- 3 files changed, 17 insertions(+), 23 deletions(-)
+ 4 files changed, 17 insertions(+), 25 deletions(-)
 
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 868e6c3f83dd..21d704b82e09 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -282,7 +282,6 @@ extern void initial_thread_cb_skas(void (*proc)(voi=
+d *),
+ 				 void *arg);
+ extern void halt_skas(void);
+ extern void reboot_skas(void);
+-extern int get_syscall(struct uml_pt_regs *regs);
+=20
+ /* irq.c */
+ extern int os_waiting_for_events(struct irq_fd *active_fds);
 diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscal=
 l.c
-index 1683b8e..0d624e0 100644
+index 1683b8efdfda..6cadce761bcf 100644
 --- a/arch/um/kernel/skas/syscall.c
 +++ b/arch/um/kernel/skas/syscall.c
-@@ -7,29 +7,32 @@
+@@ -7,29 +7,31 @@
  #include <linux/ptrace.h>
  #include <kern_util.h>
  #include <sysdep/ptrace.h>
 +#include <sysdep/ptrace_user.h>
  #include <sysdep/syscalls.h>
- #include <os.h>
+-#include <os.h>
 =20
  void handle_syscall(struct uml_pt_regs *r)
  {
@@ -93,7 +107,7 @@ ed
  }
 diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/pr=
 ocess.c
-index b856c66..23025d6 100644
+index b856c66ebd3a..23025d645160 100644
 --- a/arch/um/os-Linux/skas/process.c
 +++ b/arch/um/os-Linux/skas/process.c
 @@ -172,13 +172,6 @@ static void handle_trap(int pid, struct uml_pt_reg=
@@ -112,7 +126,7 @@ s *regs,
 =20
  static int userspace_tramp(void *stack)
 diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
-index a29756f..47c78d5 100644
+index a29756f2d940..47c78d5e5c32 100644
 --- a/arch/x86/um/ptrace_32.c
 +++ b/arch/x86/um/ptrace_32.c
 @@ -68,6 +68,7 @@ static const int reg_offsets[] =3D {
