@@ -1,63 +1,61 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Date: Thu, 31 Dec 2015 21:06:13 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451572003-2440-5-git-send-email-mst@redhat.com>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Date: Tue, 29 Dec 2015 21:35:43 +0100
+Message-Id: <1451421347-9468-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
-Sender: linux-sh-owner@vger.kernel.org
-Subject: [PATCH v2 04/32] ia64: reuse asm-generic/barrier.h
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v3 0/4] um: Add seccomp support
 To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, Andrey Konovalov <andreyknvl@google.com>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, user-mode-linux-devel@lists.sourceforge.net, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On ia64 smp_rmb, smp_wmb, read_barrier_depends, smp_read_barrier_depends
-and smp_store_mb() match the asm-generic variants exactly. Drop the
-local definitions and pull in asm-generic/barrier.h instead.
+This series add seccomp support to User-mode Linux (i386 and x86_64
+subarchitectures) and fix ptrace issues. This apply on v4.4-rc7 and pas=
+s all
+the 48 tests from selftest/seccomp plus the UML ptsc test.
 
-This is in preparation to refactoring this code area.
+Changes since v2:
+* remove get_syscall() from os.h and don't include it in syscall.c [1/4=
+]
+* rebase to v4.4-rc7
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Tony Luck <tony.luck@intel.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/ia64/include/asm/barrier.h | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Changes since v1; addressed Richard Weinberger's comments:
+* fix a new PTRACE_SETREGS bug on x86_64 [1/4]
+* fix an old PTRACE_SETREGS bug when updating orig_ax on i386 [1/4]
 
-diff --git a/arch/ia64/include/asm/barrier.h b/arch/ia64/include/asm/barrier.h
-index 209c4b8..2f93348 100644
---- a/arch/ia64/include/asm/barrier.h
-+++ b/arch/ia64/include/asm/barrier.h
-@@ -48,12 +48,6 @@
- # define smp_mb()	barrier()
- #endif
- 
--#define smp_rmb()	smp_mb()
--#define smp_wmb()	smp_mb()
--
--#define read_barrier_depends()		do { } while (0)
--#define smp_read_barrier_depends()	do { } while (0)
--
- #define smp_mb__before_atomic()	barrier()
- #define smp_mb__after_atomic()	barrier()
- 
-@@ -77,12 +71,12 @@ do {									\
- 	___p1;								\
- })
- 
--#define smp_store_mb(var, value) do { WRITE_ONCE(var, value); smp_mb(); } while (0)
--
- /*
-  * The group barrier in front of the rsm & ssm are necessary to ensure
-  * that none of the previous instructions in the same group are
-  * affected by the rsm/ssm.
-  */
- 
-+#include <asm-generic/barrier.h>
-+
- #endif /* _ASM_IA64_BARRIER_H */
--- 
-MST
+Regards,
+ Micka=C3=ABl
+
+Micka=C3=ABl Sala=C3=BCn (4):
+  um: Fix ptrace GETREGS/SETREGS bugs
+  selftests/seccomp: Remove the need for HAVE_ARCH_TRACEHOOK
+  um: Add full asm/syscall.h support
+  um: Add seccomp support
+
+ .../seccomp/seccomp-filter/arch-support.txt        |   2 +-
+ arch/um/Kconfig.common                             |   1 +
+ arch/um/Kconfig.um                                 |  16 +++
+ arch/um/include/asm/syscall-generic.h              | 138 +++++++++++++=
+++++++++
+ arch/um/include/asm/thread_info.h                  |   2 +
+ arch/um/include/shared/os.h                        |   1 -
+ arch/um/kernel/skas/syscall.c                      |  31 +++--
+ arch/um/os-Linux/skas/process.c                    |   7 --
+ arch/x86/um/asm/syscall.h                          |   1 +
+ arch/x86/um/ptrace_32.c                            |   8 +-
+ tools/testing/selftests/seccomp/seccomp_bpf.c      |  27 +++-
+ 11 files changed, 205 insertions(+), 29 deletions(-)
+ create mode 100644 arch/um/include/asm/syscall-generic.h
+
+--=20
+2.6.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
