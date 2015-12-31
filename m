@@ -1,49 +1,65 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Tue, 22 Dec 2015 22:44:52 +0100
-Message-Id: <1450820692-10557-1-git-send-email-mic@digikod.net>
+Date: Thu, 31 Dec 2015 21:06:46 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-9-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: Fix build error and kconfig for i386
+Subject: [PATCH v2 08/32] arm: reuse asm-generic/barrier.h
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Russell King <linux@arm.linux.org.uk>, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Andrey Konovalov <andreyknvl@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-=46ix build error by selecting COREDUMP when X86_32 is selected:
+On arm smp_store_mb, read_barrier_depends, smp_read_barrier_depends,
+smp_store_release, smp_load_acquire, smp_mb__before_atomic and
+smp_mb__after_atomic match the asm-generic variants exactly. Drop the
+local definitions and pull in asm-generic/barrier.h instead.
 
-arch/x86/um/built-in.o: In function `elf_core_write_extra_phdrs':
-(.text+0x3e62): undefined reference to `dump_emit'
-arch/x86/um/built-in.o: In function `elf_core_write_extra_data':
-(.text+0x3eef): undefined reference to `dump_emit'
+This is in preparation to refactoring this code area.
 
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/um/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/include/asm/barrier.h | 23 +----------------------
+ 1 file changed, 1 insertion(+), 22 deletions(-)
 
-diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
-index ed56a1c4ae73..bb7cd8b38043 100644
---- a/arch/x86/um/Kconfig
-+++ b/arch/x86/um/Kconfig
-@@ -26,6 +26,7 @@ config X86_32
- 	select CLONE_BACKWARDS
- 	select OLD_SIGSUSPEND3
- 	select OLD_SIGACTION
-+	select COREDUMP
-=20
- config X86_64
- 	def_bool 64BIT
---=20
-2.6.4
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+diff --git a/arch/arm/include/asm/barrier.h b/arch/arm/include/asm/barrier.h
+index 3ff5642..31152e8 100644
+--- a/arch/arm/include/asm/barrier.h
++++ b/arch/arm/include/asm/barrier.h
+@@ -70,28 +70,7 @@ extern void arm_heavy_mb(void);
+ #define smp_wmb()	dmb(ishst)
+ #endif
+ 
+-#define smp_store_release(p, v)						\
+-do {									\
+-	compiletime_assert_atomic_type(*p);				\
+-	smp_mb();							\
+-	WRITE_ONCE(*p, v);						\
+-} while (0)
+-
+-#define smp_load_acquire(p)						\
+-({									\
+-	typeof(*p) ___p1 = READ_ONCE(*p);				\
+-	compiletime_assert_atomic_type(*p);				\
+-	smp_mb();							\
+-	___p1;								\
+-})
+-
+-#define read_barrier_depends()		do { } while(0)
+-#define smp_read_barrier_depends()	do { } while(0)
+-
+-#define smp_store_mb(var, value)	do { WRITE_ONCE(var, value); smp_mb(); } while (0)
+-
+-#define smp_mb__before_atomic()	smp_mb()
+-#define smp_mb__after_atomic()	smp_mb()
++#include <asm-generic/barrier.h>
+ 
+ #endif /* !__ASSEMBLY__ */
+ #endif /* __ASM_BARRIER_H */
+-- 
+MST
 
