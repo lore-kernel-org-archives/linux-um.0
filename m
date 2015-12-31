@@ -1,64 +1,93 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Thu, 10 Dec 2015 01:09:43 +0100
-Message-Id: <1449706184-19284-2-git-send-email-mic@digikod.net>
-In-Reply-To: <1449706184-19284-1-git-send-email-mic@digikod.net>
-References: <1449706184-19284-1-git-send-email-mic@digikod.net>
+Date: Thu, 31 Dec 2015 21:10:09 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-35-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v3 1/2] um: Do not set unsecure permission for temporary file
+Subject: [PATCH v2 34/34] xen/io: use virt_xxx barriers
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, David Vrabel <david.vrabel@citrix.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Remove the insecure 0777 mode for temporary file to prohibit other user=
-s
-to change the executable mapped code.
+include/xen/interface/io/ring.h uses
+full memory barriers to communicate with the other side.
 
-An attacker could gain access to the mapped file descriptor from the
-temporary file (before it is unlinked) in a read-only mode but it shoul=
-d
-not be accessible in write mode to avoid arbitrary code execution.
+For guests compiled with CONFIG_SMP, smp_wmb and smp_mb
+would be sufficient, so mb() and wmb() here are only needed if
+a non-SMP guest runs on an SMP host.
 
-To not change the hostfs behavior, the temporary file creation
-permission now depend on the current umask(2) and the implementation of
-mkstemp(3).
+Switch to virt_xxx barriers which serve this exact purpose.
 
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Tristan Schmelcher <tschmelcher@google.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- arch/um/os-Linux/mem.c | 6 ------
- 1 file changed, 6 deletions(-)
+ include/xen/interface/io/ring.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index 897e9ad..840d573 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -142,12 +142,6 @@ static int __init create_tmp_file(unsigned long lo=
-ng len)
- 	if (fd < 0)
- 		exit(1);
-=20
--	err =3D fchmod(fd, 0777);
--	if (err < 0) {
--		perror("fchmod");
--		exit(1);
--	}
--
- 	/*
- 	 * Seek to len - 1 because writing a character there will
- 	 * increase the file size by one byte, to the desired length.
---=20
-2.6.2
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+diff --git a/include/xen/interface/io/ring.h b/include/xen/interface/io/ring.h
+index 7dc685b..21f4fbd 100644
+--- a/include/xen/interface/io/ring.h
++++ b/include/xen/interface/io/ring.h
+@@ -208,12 +208,12 @@ struct __name##_back_ring {						\
+ 
+ 
+ #define RING_PUSH_REQUESTS(_r) do {					\
+-    wmb(); /* back sees requests /before/ updated producer index */	\
++    virt_wmb(); /* back sees requests /before/ updated producer index */	\
+     (_r)->sring->req_prod = (_r)->req_prod_pvt;				\
+ } while (0)
+ 
+ #define RING_PUSH_RESPONSES(_r) do {					\
+-    wmb(); /* front sees responses /before/ updated producer index */	\
++    virt_wmb(); /* front sees responses /before/ updated producer index */	\
+     (_r)->sring->rsp_prod = (_r)->rsp_prod_pvt;				\
+ } while (0)
+ 
+@@ -250,9 +250,9 @@ struct __name##_back_ring {						\
+ #define RING_PUSH_REQUESTS_AND_CHECK_NOTIFY(_r, _notify) do {		\
+     RING_IDX __old = (_r)->sring->req_prod;				\
+     RING_IDX __new = (_r)->req_prod_pvt;				\
+-    wmb(); /* back sees requests /before/ updated producer index */	\
++    virt_wmb(); /* back sees requests /before/ updated producer index */	\
+     (_r)->sring->req_prod = __new;					\
+-    mb(); /* back sees new requests /before/ we check req_event */	\
++    virt_mb(); /* back sees new requests /before/ we check req_event */	\
+     (_notify) = ((RING_IDX)(__new - (_r)->sring->req_event) <		\
+ 		 (RING_IDX)(__new - __old));				\
+ } while (0)
+@@ -260,9 +260,9 @@ struct __name##_back_ring {						\
+ #define RING_PUSH_RESPONSES_AND_CHECK_NOTIFY(_r, _notify) do {		\
+     RING_IDX __old = (_r)->sring->rsp_prod;				\
+     RING_IDX __new = (_r)->rsp_prod_pvt;				\
+-    wmb(); /* front sees responses /before/ updated producer index */	\
++    virt_wmb(); /* front sees responses /before/ updated producer index */	\
+     (_r)->sring->rsp_prod = __new;					\
+-    mb(); /* front sees new responses /before/ we check rsp_event */	\
++    virt_mb(); /* front sees new responses /before/ we check rsp_event */	\
+     (_notify) = ((RING_IDX)(__new - (_r)->sring->rsp_event) <		\
+ 		 (RING_IDX)(__new - __old));				\
+ } while (0)
+@@ -271,7 +271,7 @@ struct __name##_back_ring {						\
+     (_work_to_do) = RING_HAS_UNCONSUMED_REQUESTS(_r);			\
+     if (_work_to_do) break;						\
+     (_r)->sring->req_event = (_r)->req_cons + 1;			\
+-    mb();								\
++    virt_mb();								\
+     (_work_to_do) = RING_HAS_UNCONSUMED_REQUESTS(_r);			\
+ } while (0)
+ 
+@@ -279,7 +279,7 @@ struct __name##_back_ring {						\
+     (_work_to_do) = RING_HAS_UNCONSUMED_RESPONSES(_r);			\
+     if (_work_to_do) break;						\
+     (_r)->sring->rsp_event = (_r)->rsp_cons + 1;			\
+-    mb();								\
++    virt_mb();								\
+     (_work_to_do) = RING_HAS_UNCONSUMED_RESPONSES(_r);			\
+ } while (0)
+ 
+-- 
+MST
 
