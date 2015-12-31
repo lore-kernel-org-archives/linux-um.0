@@ -1,45 +1,50 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 31 Dec 2015 21:08:46 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451572003-2440-24-git-send-email-mst@redhat.com>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Date: Thu, 31 Dec 2015 17:21:43 +0100
+Message-ID: <781be574-7acc-4891-a12a-571f9e68e2dc@email.android.com>
+In-Reply-To: <1451577977-12990-1-git-send-email-vegard.nossum@oracle.com>
+From: Thomas Meyer <thomas@m3y3r.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v2 23/32] sh: define __smp_xxx, fix smp_store_mb for !SMP
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [uml-devel] [PATCH] um: link with -lpthread
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-sh variant of smp_store_mb() calls xchg() on !SMP which is stronger than
-implied by both the name and the documentation.
-
-define __smp_store_mb instead: code in asm-generic/barrier.h
-will then define smp_store_mb correctly depending on
-CONFIG_SMP.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/sh/include/asm/barrier.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/sh/include/asm/barrier.h b/arch/sh/include/asm/barrier.h
-index bf91037..f887c64 100644
---- a/arch/sh/include/asm/barrier.h
-+++ b/arch/sh/include/asm/barrier.h
-@@ -32,7 +32,8 @@
- #define ctrl_barrier()	__asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop")
- #endif
- 
--#define smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-+#define __smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
-+#define smp_store_mb(var, value) __smp_store_mb(var, value)
- 
- #include <asm-generic/barrier.h>
- 
--- 
-MST
+QW0gMzEuMTIuMjAxNSA1OjA2IG5hY2htLiBzY2hyaWViIFZlZ2FyZCBOb3NzdW0gPHZlZ2FyZC5u
+b3NzdW1Ab3JhY2xlLmNvbT46Cj4KPiBTaW1pbGFybHkgdG8gY29tbWl0IGZiMTc3MGFhNzhhNDM1
+MzA5NDBkMGMyZGQxNjFlNzdiYzcwNWJkYWMsIHdpdGggZ2NjIDUgCj4gb24gVWJ1bnR1IGFuZCBD
+T05GSUdfU1RBVElDX0xJTks9eSBJIHdhcyBzZWVpbmcgdGhlc2UgbGlua2VyIGVycm9yczogCgpI
+aSwKCk9vcHMsIHllcyB0aGlzIHBhdGNoIGxvb2tzIGdvb2QgdG8gbWUuIEhvbmVzdGx5IEkgZGlk
+IG5ldmVyIHRlc3QgdGhlIHN0YXRpYyBsaW5rIGNhc2UuIFNvcnJ5LgoKV2l0aCBraW5kIHJlZ2Fy
+ZHMKVGhvbWFzCgo+Cj4gL3Vzci9saWIvZ2NjL3g4Nl82NC1saW51eC1nbnUvNS8uLi8uLi8uLi94
+ODZfNjQtbGludXgtZ251L2xpYnJ0LmEodGltZXJfY3JlYXRlLm8pOiBJbiBmdW5jdGlvbiBgX190
+aW1lcl9jcmVhdGVfbmV3JzogCj4gKC50ZXh0KzB4Y2QpOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRv
+IGBwdGhyZWFkX29uY2UnIAo+IC91c3IvbGliL2djYy94ODZfNjQtbGludXgtZ251LzUvLi4vLi4v
+Li4veDg2XzY0LWxpbnV4LWdudS9saWJydC5hKHRpbWVyX2NyZWF0ZS5vKTogSW4gZnVuY3Rpb24g
+YF9fdGltZXJfY3JlYXRlX25ldyc6IAo+ICgudGV4dCsweDEyNik6IHVuZGVmaW5lZCByZWZlcmVu
+Y2UgdG8gYHB0aHJlYWRfYXR0cl9pbml0JyAKPiAvdXNyL2xpYi9nY2MveDg2XzY0LWxpbnV4LWdu
+dS81Ly4uLy4uLy4uL3g4Nl82NC1saW51eC1nbnUvbGlicnQuYSh0aW1lcl9jcmVhdGUubyk6IElu
+IGZ1bmN0aW9uIGBfX3RpbWVyX2NyZWF0ZV9uZXcnOiAKPiAoLnRleHQrMHgxNjgpOiB1bmRlZmlu
+ZWQgcmVmZXJlbmNlIHRvIGBwdGhyZWFkX2F0dHJfc2V0ZGV0YWNoc3RhdGUnIAo+IFsuLi5dIAo+
+Cj4gT2J2aW91c2x5IHdlIGFsc28gbmVlZCAtbHB0aHJlYWQgZm9yIGxpYnJ0LmEuIAo+Cj4gU2ln
+bmVkLW9mZi1ieTogVmVnYXJkIE5vc3N1bSA8dmVnYXJkLm5vc3N1bUBvcmFjbGUuY29tPiAKPiAt
+LS0gCj4gc2NyaXB0cy9saW5rLXZtbGludXguc2ggfCAyICstIAo+IDEgZmlsZSBjaGFuZ2VkLCAx
+IGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKSAKPgo+IGRpZmYgLS1naXQgYS9zY3JpcHRzL2xp
+bmstdm1saW51eC5zaCBiL3NjcmlwdHMvbGluay12bWxpbnV4LnNoIAo+IGluZGV4IGRhY2Y3MWEu
+LmJhNmMzNGUgMTAwNzU1IAo+IC0tLSBhL3NjcmlwdHMvbGluay12bWxpbnV4LnNoIAo+ICsrKyBi
+L3NjcmlwdHMvbGluay12bWxpbnV4LnNoIAo+IEBAIC02Miw3ICs2Miw3IEBAIHZtbGludXhfbGlu
+aygpIAo+IC1XbCwtLXN0YXJ0LWdyb3VwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcIAo+ICR7S0JVSUxEX1ZNTElO
+VVhfTUFJTn3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXCAKPiAt
+V2wsLS1lbmQtZ3JvdXDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcIAo+IC0gLWx1dGlsIC1scnQgJHsxfSAK
+PiArIC1sdXRpbCAtbHJ0IC1scHRocmVhZCAkezF9IAo+IHJtIC1mIGxpbnV4IAo+IGZpIAo+IH0g
+Cj4gLS0gCj4gMS45LjEgCj4KPgo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAKPiBfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXyAKPiBVc2VyLW1vZGUtbGludXgt
+ZGV2ZWwgbWFpbGluZyBsaXN0IAo+IFVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQgCj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
+dXNlci1tb2RlLWxpbnV4LWRldmVsIAo=
 
