@@ -1,220 +1,89 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Tue, 29 Dec 2015 21:35:46 +0100
-Message-Id: <1451421347-9468-4-git-send-email-mic@digikod.net>
-In-Reply-To: <1451421347-9468-1-git-send-email-mic@digikod.net>
-References: <1451421347-9468-1-git-send-email-mic@digikod.net>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:07:10 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-12-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v3 3/4] um: Add full asm/syscall.h support
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: [PATCH v2 11/32] mips: reuse asm-generic/barrier.h
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, user-mode-linux-devel@lists.sourceforge.net, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrey Konovalov <andreyknvl@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Add subarchitecture-independent implementation of asm-generic/syscall.h
-allowing access to user system call parameters and results:
-* syscall_get_nr()
-* syscall_rollback()
-* syscall_get_error()
-* syscall_get_return_value()
-* syscall_set_return_value()
-* syscall_get_arguments()
-* syscall_set_arguments()
-* syscall_get_arch() provided by arch/x86/um/asm/syscall.h
+On mips dma_rmb, dma_wmb, smp_store_mb, read_barrier_depends,
+smp_read_barrier_depends, smp_store_release and smp_load_acquire  match
+the asm-generic variants exactly. Drop the local definitions and pull in
+asm-generic/barrier.h instead.
 
-This provides the necessary syscall helpers needed by
-HAVE_ARCH_SECCOMP_FILTER plus syscall_get_error().
+This is in preparation to refactoring this code area.
 
-This is inspired from Meredydd Luff's patch
-(https://gerrit.chromium.org/gerrit/21425).
-
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Meredydd Luff <meredydd@senatehouse.org>
-Cc: David Drysdale <drysdale@google.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/um/include/asm/syscall-generic.h | 138 ++++++++++++++++++++++++++=
-++++++++
- arch/x86/um/asm/syscall.h             |   1 +
- 2 files changed, 139 insertions(+)
- create mode 100644 arch/um/include/asm/syscall-generic.h
+ arch/mips/include/asm/barrier.h | 25 ++-----------------------
+ 1 file changed, 2 insertions(+), 23 deletions(-)
 
-diff --git a/arch/um/include/asm/syscall-generic.h b/arch/um/include/as=
-m/syscall-generic.h
-new file mode 100644
-index 000000000000..9fb9cf8cd39a
---- /dev/null
-+++ b/arch/um/include/asm/syscall-generic.h
-@@ -0,0 +1,138 @@
-+/*
-+ * Access to user system call parameters and results
-+ *
-+ * See asm-generic/syscall.h for function descriptions.
-+ *
-+ * Copyright (C) 2015 Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-+ *
-+ * This program is free software; you can redistribute it and/or modif=
-y
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
+diff --git a/arch/mips/include/asm/barrier.h b/arch/mips/include/asm/barrier.h
+index 752e0b8..3eac4b9 100644
+--- a/arch/mips/include/asm/barrier.h
++++ b/arch/mips/include/asm/barrier.h
+@@ -10,9 +10,6 @@
+ 
+ #include <asm/addrspace.h>
+ 
+-#define read_barrier_depends()		do { } while(0)
+-#define smp_read_barrier_depends()	do { } while(0)
+-
+ #ifdef CONFIG_CPU_HAS_SYNC
+ #define __sync()				\
+ 	__asm__ __volatile__(			\
+@@ -87,8 +84,6 @@
+ 
+ #define wmb()		fast_wmb()
+ #define rmb()		fast_rmb()
+-#define dma_wmb()	fast_wmb()
+-#define dma_rmb()	fast_rmb()
+ 
+ #if defined(CONFIG_WEAK_ORDERING) && defined(CONFIG_SMP)
+ # ifdef CONFIG_CPU_CAVIUM_OCTEON
+@@ -112,9 +107,6 @@
+ #define __WEAK_LLSC_MB		"		\n"
+ #endif
+ 
+-#define smp_store_mb(var, value) \
+-	do { WRITE_ONCE(var, value); smp_mb(); } while (0)
+-
+ #define smp_llsc_mb()	__asm__ __volatile__(__WEAK_LLSC_MB : : :"memory")
+ 
+ #ifdef CONFIG_CPU_CAVIUM_OCTEON
+@@ -129,22 +121,9 @@
+ #define nudge_writes() mb()
+ #endif
+ 
+-#define smp_store_release(p, v)						\
+-do {									\
+-	compiletime_assert_atomic_type(*p);				\
+-	smp_mb();							\
+-	WRITE_ONCE(*p, v);						\
+-} while (0)
+-
+-#define smp_load_acquire(p)						\
+-({									\
+-	typeof(*p) ___p1 = READ_ONCE(*p);				\
+-	compiletime_assert_atomic_type(*p);				\
+-	smp_mb();							\
+-	___p1;								\
+-})
+-
+ #define smp_mb__before_atomic()	smp_mb__before_llsc()
+ #define smp_mb__after_atomic()	smp_llsc_mb()
+ 
++#include <asm-generic/barrier.h>
 +
-+#ifndef __UM_SYSCALL_GENERIC_H
-+#define __UM_SYSCALL_GENERIC_H
-+
-+#include <asm/ptrace.h>
-+#include <linux/err.h>
-+#include <linux/sched.h>
-+#include <sysdep/ptrace.h>
-+
-+static inline int syscall_get_nr(struct task_struct *task, struct pt_r=
-egs *regs)
-+{
-+
-+	return PT_REGS_SYSCALL_NR(regs);
-+}
-+
-+static inline void syscall_rollback(struct task_struct *task,
-+				    struct pt_regs *regs)
-+{
-+	/* do nothing */
-+}
-+
-+static inline long syscall_get_error(struct task_struct *task,
-+				     struct pt_regs *regs)
-+{
-+	const long error =3D regs_return_value(regs);
-+
-+	return IS_ERR_VALUE(error) ? error : 0;
-+}
-+
-+static inline long syscall_get_return_value(struct task_struct *task,
-+					    struct pt_regs *regs)
-+{
-+	return regs_return_value(regs);
-+}
-+
-+static inline void syscall_set_return_value(struct task_struct *task,
-+					    struct pt_regs *regs,
-+					    int error, long val)
-+{
-+	PT_REGS_SET_SYSCALL_RETURN(regs, (long) error ?: val);
-+}
-+
-+static inline void syscall_get_arguments(struct task_struct *task,
-+					 struct pt_regs *regs,
-+					 unsigned int i, unsigned int n,
-+					 unsigned long *args)
-+{
-+	const struct uml_pt_regs *r =3D &regs->regs;
-+
-+	switch (i) {
-+	case 0:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG1(r);
-+	case 1:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG2(r);
-+	case 2:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG3(r);
-+	case 3:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG4(r);
-+	case 4:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG5(r);
-+	case 5:
-+		if (!n--)
-+			break;
-+		*args++ =3D UPT_SYSCALL_ARG6(r);
-+	case 6:
-+		if (!n--)
-+			break;
-+	default:
-+		BUG();
-+		break;
-+	}
-+}
-+
-+static inline void syscall_set_arguments(struct task_struct *task,
-+					 struct pt_regs *regs,
-+					 unsigned int i, unsigned int n,
-+					 const unsigned long *args)
-+{
-+	struct uml_pt_regs *r =3D &regs->regs;
-+
-+	switch (i) {
-+	case 0:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG1(r) =3D *args++;
-+	case 1:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG2(r) =3D *args++;
-+	case 2:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG3(r) =3D *args++;
-+	case 3:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG4(r) =3D *args++;
-+	case 4:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG5(r) =3D *args++;
-+	case 5:
-+		if (!n--)
-+			break;
-+		UPT_SYSCALL_ARG6(r) =3D *args++;
-+	case 6:
-+		if (!n--)
-+			break;
-+	default:
-+		BUG();
-+		break;
-+	}
-+}
-+
-+/* See arch/x86/um/asm/syscall.h for syscall_get_arch() definition. */
-+
-+#endif	/* __UM_SYSCALL_GENERIC_H */
-diff --git a/arch/x86/um/asm/syscall.h b/arch/x86/um/asm/syscall.h
-index 81d6562ce01d..11ab90dc5f14 100644
---- a/arch/x86/um/asm/syscall.h
-+++ b/arch/x86/um/asm/syscall.h
-@@ -1,6 +1,7 @@
- #ifndef __UM_ASM_SYSCALL_H
- #define __UM_ASM_SYSCALL_H
-=20
-+#include <asm/syscall-generic.h>
- #include <uapi/linux/audit.h>
-=20
- typedef asmlinkage long (*sys_call_ptr_t)(unsigned long, unsigned long=
-,
---=20
-2.6.4
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+ #endif /* __ASM_BARRIER_H */
+-- 
+MST
 
