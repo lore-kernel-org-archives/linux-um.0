@@ -1,82 +1,51 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56674E18.7020905@nod.at>
-Date: Tue, 8 Dec 2015 22:39:36 +0100
+Date: Thu, 31 Dec 2015 21:06:54 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-10-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="DXT6oVT45Lb2TmNGuSDf1pIMLvAkoAVHo"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [GIT PULL] UML fixes for 4.4-rc5
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Subject: [PATCH v2 09/32] arm64: reuse asm-generic/barrier.h
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ingo Molnar <mingo@kernel.org>, Andre Przywara <andre.przywara@arm.com>, Andrey Konovalov <andreyknvl@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DXT6oVT45Lb2TmNGuSDf1pIMLvAkoAVHo
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On arm64 nop, read_barrier_depends, smp_read_barrier_depends
+smp_store_mb(), smp_mb__before_atomic and smp_mb__after_atomic match the
+asm-generic variants exactly. Drop the local definitions and pull in
+asm-generic/barrier.h instead.
 
-Linus,
+This is in preparation to refactoring this code area.
 
-The following changes since commit 527e9316f8ec44bd53d90fb9f611fa7ffff52b=
-b9:
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm64/include/asm/barrier.h | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-  Linux 4.4-rc4 (2015-12-06 15:43:12 -0800)
+diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
+index 9622eb4..91a43f4 100644
+--- a/arch/arm64/include/asm/barrier.h
++++ b/arch/arm64/include/asm/barrier.h
+@@ -91,14 +91,7 @@ do {									\
+ 	__u.__val;							\
+ })
+ 
+-#define read_barrier_depends()		do { } while(0)
+-#define smp_read_barrier_depends()	do { } while(0)
+-
+-#define smp_store_mb(var, value)	do { WRITE_ONCE(var, value); smp_mb(); } while (0)
+-#define nop()		asm volatile("nop");
+-
+-#define smp_mb__before_atomic()	smp_mb()
+-#define smp_mb__after_atomic()	smp_mb()
++#include <asm-generic/barrier.h>
+ 
+ #endif	/* __ASSEMBLY__ */
+ 
+-- 
+MST
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.4-=
-rc5
-
-for you to fetch changes up to 887a9853092c09e20598f4a7f91ac1cfb762be50:
-
-  um: fix returns without va_end (2015-12-08 22:26:00 +0100)
-
-----------------------------------------------------------------
-This pull request contains various bug fixes, most of them are
-fall out from the merge window.
-
-----------------------------------------------------------------
-Geyslan G. Bem (1):
-      um: fix returns without va_end
-
-Lorenzo Colitti (1):
-      arch: um: fix error when linking vmlinux.
-
-Richard Weinberger (2):
-      um: Fix get_signal() usage
-      um: Fix fpstate handling
-
- arch/um/Makefile           |  2 +-
- arch/um/drivers/net_user.c | 10 ++++++----
- arch/um/kernel/signal.c    |  2 +-
- arch/x86/um/signal.c       | 18 ++++++++++--------
- scripts/link-vmlinux.sh    |  2 +-
- 5 files changed, 19 insertions(+), 15 deletions(-)
-
-
---DXT6oVT45Lb2TmNGuSDf1pIMLvAkoAVHo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJWZ04cAAoJEPmeIjfg4UaaPcoP/0rGWf8vE+SYFYNUHC5C8j/3
-j4QB9gVaNEE4ty4uSTKdg1UbkNzy4Wg9srqXeI92Pi+PrOIXHc94YJDqyP8ms0n5
-N4tyqxMIyqsVlsFjUuATdPUoTJWPo7yqQnDsQ+Ab5/Ov5eqf++nuGyJw1h3B817L
-2Tl0npT7Mb70MD8s5cabOJs126YtKEPybmI+4DuseRnjUE0QkhFs12yvX8lYD7gu
-tZdbzewVhexXety1TUOa/zktFKz3WFee8jHp5WDBOPhwwhkSkVxTX8CzAGbuTpXq
-oNkm08KZZP03mBPbXT+pxv8wJkzALTCHKrgJ0qHiDT4wWXXfaRzuKtCg0Oum/S/l
-cBVEQFM/DHfBzm8uMXD1o3tYhJk+fb69zzsBNETqzplBeYJddRWLR1cuVHLe5AlG
-zvM2hEVri0KJCsB1pY9UwIlLozeMcfBbaTdgJMQ86XMNFHNLXcqb6y1LP3KSY+jm
-XlKKll+V0fDVianA3PjndVyUkuqBxhJARQ/DrkJaH0Ze9uUFMVxhS+Iw+vQ6cUmm
-JmF79b4Q3FESmgCHz/5nUFgM/doCDXWP0hUvJ3XbRhxIv7ba2UOUzztDSAkNdMd5
-i68MgvI85iaNriJWRPEyC1EptFy9yveN90Kw2Pm/ZiGs7Q90RZcc+vn5WY4e+5w9
-W5/Dr31nr7OOjKHzvtuh
-=b+k2
------END PGP SIGNATURE-----
-
---DXT6oVT45Lb2TmNGuSDf1pIMLvAkoAVHo--
