@@ -1,48 +1,94 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Tue, 22 Dec 2015 22:15:08 +0100
-Message-Id: <1450818910-23355-1-git-send-email-mic@digikod.net>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:09:32 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-30-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v5 0/2] um: Protect memory mapped file
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: [PATCH v2 29/32] Revert "virtio_ring: Update weak barriers to use
+ dma_wmb/rmb"
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Alexander Duyck <alexander.duyck@gmail.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This series protect the memory mapped file. This apply on v4.4-rc6.
+This reverts commit 9e1a27ea42691429e31f158cce6fc61bc79bb2e9.
 
-Changes since v4:
-* fix spelling [1/2]
+While that commit optimizes !CONFIG_SMP, it mixes
+up DMA and SMP concepts, making the code hard
+to figure out.
 
-Changes since v3:
-* add Tristan Schmelcher's ack
+A better way to optimize this is with the new __smp_XXX
+barriers.
 
-Changes since v2; addressed Tristan Schmelcher's comment:
-* remove the whole fchmod call [1/2]
+As a first step, go back to full rmb/wmb barriers
+for !SMP.
+We switch to __smp_XXX barriers in the next patch.
 
-Changes since v1; addressed Richard Weinberger's comments:
-* add attacker model to the patch description [1/2]
-* remove errno reset [2/2]
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexander Duyck <alexander.duyck@gmail.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ include/linux/virtio_ring.h | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
 
-Regards,
- Micka=C3=ABl
-
-Micka=C3=ABl Sala=C3=BCn (2):
-  um: Do not set unsecure permission for temporary file
-  um: Use race-free temporary file creation
-
- arch/um/os-Linux/mem.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
---=20
-2.6.4
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+diff --git a/include/linux/virtio_ring.h b/include/linux/virtio_ring.h
+index 8e50888..67e06fe 100644
+--- a/include/linux/virtio_ring.h
++++ b/include/linux/virtio_ring.h
+@@ -21,20 +21,19 @@
+  * actually quite cheap.
+  */
+ 
++#ifdef CONFIG_SMP
+ static inline void virtio_mb(bool weak_barriers)
+ {
+-#ifdef CONFIG_SMP
+ 	if (weak_barriers)
+ 		smp_mb();
+ 	else
+-#endif
+ 		mb();
+ }
+ 
+ static inline void virtio_rmb(bool weak_barriers)
+ {
+ 	if (weak_barriers)
+-		dma_rmb();
++		smp_rmb();
+ 	else
+ 		rmb();
+ }
+@@ -42,10 +41,26 @@ static inline void virtio_rmb(bool weak_barriers)
+ static inline void virtio_wmb(bool weak_barriers)
+ {
+ 	if (weak_barriers)
+-		dma_wmb();
++		smp_wmb();
+ 	else
+ 		wmb();
+ }
++#else
++static inline void virtio_mb(bool weak_barriers)
++{
++	mb();
++}
++
++static inline void virtio_rmb(bool weak_barriers)
++{
++	rmb();
++}
++
++static inline void virtio_wmb(bool weak_barriers)
++{
++	wmb();
++}
++#endif
+ 
+ struct virtio_device;
+ struct virtqueue;
+-- 
+MST
 
