@@ -1,102 +1,45 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Mon, 21 Dec 2015 01:03:26 +0100
-Message-Id: <1450656209-2676-2-git-send-email-mic@digikod.net>
-In-Reply-To: <1450656209-2676-1-git-send-email-mic@digikod.net>
-References: <1450656209-2676-1-git-send-email-mic@digikod.net>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:08:07 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-19-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v1 1/4] um: Fix ptrace GETREGS/SETREGS bugs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: [PATCH v2 18/32] blackfin: define __smp_xxx
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jonathan Corbet <corbet@lwn.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, linux-doc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-api@vger.kernel.org, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Steven Miao <realmz6@gmail.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This fix two related bugs:
-* PTRACE_GETREGS doesn't get the right orig_ax (syscall) value
-* PTRACE_SETREGS can't set the orig_ax value (erased by initial value)
+This defines __smp_xxx barriers for blackfin,
+for use by virtualization.
 
-Remove the now useless and error-prone get_syscall().
+smp_xxx barriers are removed as they are
+defined correctly by asm-generic/barriers.h
 
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Thomas Meyer <thomas@m3y3r.de>
-Cc: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Cc: Anton Ivanov <aivanov@brocade.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
-Cc: Meredydd Luff <meredydd@senatehouse.org>
-Cc: David Drysdale <drysdale@google.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/um/kernel/skas/syscall.c   | 7 ++++++-
- arch/um/os-Linux/skas/process.c | 7 -------
- 2 files changed, 6 insertions(+), 8 deletions(-)
+ arch/blackfin/include/asm/barrier.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscal=
-l.c
-index 1683b8e..65f0d1a 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -7,6 +7,7 @@
- #include <linux/ptrace.h>
- #include <kern_util.h>
- #include <sysdep/ptrace.h>
-+#include <sysdep/ptrace_user.h>
- #include <sysdep/syscalls.h>
- #include <os.h>
-=20
-@@ -16,12 +17,16 @@ void handle_syscall(struct uml_pt_regs *r)
- 	long result;
- 	int syscall;
-=20
-+	/* Save the syscall register. */
-+	UPT_SYSCALL_NR(r) =3D PT_SYSCALL_NR(r->gp);
-+
- 	if (syscall_trace_enter(regs)) {
- 		result =3D -ENOSYS;
- 		goto out;
- 	}
-=20
--	syscall =3D get_syscall(r);
-+	/* Get the syscall after being potentially updated with ptrace. */
-+	syscall =3D UPT_SYSCALL_NR(r);
-=20
- 	if ((syscall > __NR_syscall_max) || syscall < 0)
- 		result =3D -ENOSYS;
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/pr=
-ocess.c
-index b856c66..23025d6 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -172,13 +172,6 @@ static void handle_trap(int pid, struct uml_pt_reg=
-s *regs,
- 	handle_syscall(regs);
- }
-=20
--int get_syscall(struct uml_pt_regs *regs)
--{
--	UPT_SYSCALL_NR(regs) =3D PT_SYSCALL_NR(regs->gp);
--
--	return UPT_SYSCALL_NR(regs);
--}
--
- extern char __syscall_stub_start[];
-=20
- static int userspace_tramp(void *stack)
---=20
-2.6.4
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+diff --git a/arch/blackfin/include/asm/barrier.h b/arch/blackfin/include/asm/barrier.h
+index dfb66fe..7cca51c 100644
+--- a/arch/blackfin/include/asm/barrier.h
++++ b/arch/blackfin/include/asm/barrier.h
+@@ -78,8 +78,8 @@
+ 
+ #endif /* !CONFIG_SMP */
+ 
+-#define smp_mb__before_atomic()	barrier()
+-#define smp_mb__after_atomic()	barrier()
++#define __smp_mb__before_atomic()	barrier()
++#define __smp_mb__after_atomic()	barrier()
+ 
+ #include <asm-generic/barrier.h>
+ 
+-- 
+MST
 
