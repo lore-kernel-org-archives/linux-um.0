@@ -1,50 +1,55 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Mon, 21 Dec 2015 01:03:25 +0100
-Message-Id: <1450656209-2676-1-git-send-email-mic@digikod.net>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:07:59 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-18-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v1 0/4] um: Add seccomp support
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: [PATCH v2 17/32] arm: define __smp_xxx
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jonathan Corbet <corbet@lwn.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, linux-doc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-api@vger.kernel.org, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Russell King <linux@arm.linux.org.uk>, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Andrey Konovalov <andreyknvl@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This series add seccomp support to User-mode Linux (i386 and x86_64
-subarchitectures) and fix ptrace issues. This apply on v4.4-rc4 and pas=
-s all
-the 48 tests from selftest/seccomp.
+This defines __smp_xxx barriers for arm,
+for use by virtualization.
 
-Regards,
- Micka=C3=ABl
+smp_xxx barriers are removed as they are
+defined correctly by asm-generic/barriers.h
 
-Micka=C3=ABl Sala=C3=BCn (4):
-  um: Fix ptrace GETREGS/SETREGS bugs
-  selftests/seccomp: Remove the need for HAVE_ARCH_TRACEHOOK
-  um: Add full asm/syscall.h support
-  um: Add seccomp support
+This reduces the amount of arch-specific boiler-plate code.
 
- .../seccomp/seccomp-filter/arch-support.txt        |   2 +-
- arch/um/Kconfig.common                             |   1 +
- arch/um/Kconfig.um                                 |  16 +++
- arch/um/include/asm/syscall-generic.h              | 138 +++++++++++++=
-++++++++
- arch/um/include/asm/thread_info.h                  |   2 +
- arch/um/kernel/skas/syscall.c                      |  16 ++-
- arch/um/os-Linux/skas/process.c                    |   7 --
- arch/x86/um/asm/syscall.h                          |   1 +
- tools/testing/selftests/seccomp/seccomp_bpf.c      |  27 +++-
- 9 files changed, 198 insertions(+), 12 deletions(-)
- create mode 100644 arch/um/include/asm/syscall-generic.h
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm/include/asm/barrier.h | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
---=20
-2.6.4
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+diff --git a/arch/arm/include/asm/barrier.h b/arch/arm/include/asm/barrier.h
+index 31152e8..112cc1a 100644
+--- a/arch/arm/include/asm/barrier.h
++++ b/arch/arm/include/asm/barrier.h
+@@ -60,15 +60,9 @@ extern void arm_heavy_mb(void);
+ #define dma_wmb()	barrier()
+ #endif
+ 
+-#ifndef CONFIG_SMP
+-#define smp_mb()	barrier()
+-#define smp_rmb()	barrier()
+-#define smp_wmb()	barrier()
+-#else
+-#define smp_mb()	dmb(ish)
+-#define smp_rmb()	smp_mb()
+-#define smp_wmb()	dmb(ishst)
+-#endif
++#define __smp_mb()	dmb(ish)
++#define __smp_rmb()	__smp_mb()
++#define __smp_wmb()	dmb(ishst)
+ 
+ #include <asm-generic/barrier.h>
+ 
+-- 
+MST
 
