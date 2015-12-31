@@ -1,44 +1,65 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Thu, 31 Dec 2015 17:06:17 +0100
-Message-Id: <1451577977-12990-1-git-send-email-vegard.nossum@oracle.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: link with -lpthread
-To: Richard Weinberger <richard@nod.at>
-Cc: Lorenzo Colitti <lorenzo@google.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:06:21 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-6-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: [PATCH v2 05/32] powerpc: reuse asm-generic/barrier.h
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Ingo Molnar <mingo@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, Andrey Konovalov <andreyknvl@google.com>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Similarly to commit fb1770aa78a43530940d0c2dd161e77bc705bdac, with gcc 5
-on Ubuntu and CONFIG_STATIC_LINK=y I was seeing these linker errors:
+On powerpc read_barrier_depends, smp_read_barrier_depends
+smp_store_mb(), smp_mb__before_atomic and smp_mb__after_atomic match the
+asm-generic variants exactly. Drop the local definitions and pull in
+asm-generic/barrier.h instead.
 
-/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/librt.a(timer_create.o): In function `__timer_create_new':
-(.text+0xcd): undefined reference to `pthread_once'
-/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/librt.a(timer_create.o): In function `__timer_create_new':
-(.text+0x126): undefined reference to `pthread_attr_init'
-/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/librt.a(timer_create.o): In function `__timer_create_new':
-(.text+0x168): undefined reference to `pthread_attr_setdetachstate'
-[...]
+This is in preparation to refactoring this code area.
 
-Obviously we also need -lpthread for librt.a.
-
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 ---
- scripts/link-vmlinux.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/barrier.h | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index dacf71a..ba6c34e 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -62,7 +62,7 @@ vmlinux_link()
- 			-Wl,--start-group                                    \
- 				 ${KBUILD_VMLINUX_MAIN}                      \
- 			-Wl,--end-group                                      \
--			-lutil -lrt ${1}
-+			-lutil -lrt -lpthread ${1}
- 		rm -f linux
- 	fi
- }
+diff --git a/arch/powerpc/include/asm/barrier.h b/arch/powerpc/include/asm/barrier.h
+index a7af5fb..980ad0c 100644
+--- a/arch/powerpc/include/asm/barrier.h
++++ b/arch/powerpc/include/asm/barrier.h
+@@ -34,8 +34,6 @@
+ #define rmb()  __asm__ __volatile__ ("sync" : : : "memory")
+ #define wmb()  __asm__ __volatile__ ("sync" : : : "memory")
+ 
+-#define smp_store_mb(var, value) do { WRITE_ONCE(var, value); smp_mb(); } while (0)
+-
+ #ifdef __SUBARCH_HAS_LWSYNC
+ #    define SMPWMB      LWSYNC
+ #else
+@@ -60,9 +58,6 @@
+ #define smp_wmb()	barrier()
+ #endif /* CONFIG_SMP */
+ 
+-#define read_barrier_depends()		do { } while (0)
+-#define smp_read_barrier_depends()	do { } while (0)
+-
+ /*
+  * This is a barrier which prevents following instructions from being
+  * started until the value of the argument x is known.  For example, if
+@@ -87,8 +82,8 @@ do {									\
+ 	___p1;								\
+ })
+ 
+-#define smp_mb__before_atomic()     smp_mb()
+-#define smp_mb__after_atomic()      smp_mb()
+ #define smp_mb__before_spinlock()   smp_mb()
+ 
++#include <asm-generic/barrier.h>
++
+ #endif /* _ASM_POWERPC_BARRIER_H */
 -- 
-1.9.1
+MST
 
