@@ -1,42 +1,62 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Thu, 10 Dec 2015 01:09:42 +0100
-Message-Id: <1449706184-19284-1-git-send-email-mic@digikod.net>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:07:51 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-17-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v3 0/2] um: Protect memory mapped file
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Sender: linux-sh-owner@vger.kernel.org
+Subject: [PATCH v2 16/32] arm64: define __smp_xxx
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ingo Molnar <mingo@kernel.org>, Andrey Konovalov <andreyknvl@google.com>, Andre Przywara <andre.przywara@arm.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This series protect the memory mapped file.
+This defines __smp_xxx barriers for arm64,
+for use by virtualization.
 
-Changes since v2; addressed Tristan Schmelcher's comment:
-* remove the whole fchmod call [1/2]
+smp_xxx barriers are removed as they are
+defined correctly by asm-generic/barriers.h
 
-Changes since v1; addressed Richard Weinberger's comments:
-* add attacker model to the patch description [1/2]
-* remove errno reset [2/2]
+Note: arm64 does not support !SMP config,
+so smp_xxx and __smp_xxx are always equivalent.
 
-Regards,
- Micka=C3=ABl
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm64/include/asm/barrier.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Micka=C3=ABl Sala=C3=BCn (2):
-  um: Do not set unsecure permission for temporary file
-  um: Use race-free temporary file creation
-
- arch/um/os-Linux/mem.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
---=20
-2.6.2
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+diff --git a/arch/arm64/include/asm/barrier.h b/arch/arm64/include/asm/barrier.h
+index 91a43f4..dae5c49 100644
+--- a/arch/arm64/include/asm/barrier.h
++++ b/arch/arm64/include/asm/barrier.h
+@@ -35,11 +35,11 @@
+ #define dma_rmb()	dmb(oshld)
+ #define dma_wmb()	dmb(oshst)
+ 
+-#define smp_mb()	dmb(ish)
+-#define smp_rmb()	dmb(ishld)
+-#define smp_wmb()	dmb(ishst)
++#define __smp_mb()	dmb(ish)
++#define __smp_rmb()	dmb(ishld)
++#define __smp_wmb()	dmb(ishst)
+ 
+-#define smp_store_release(p, v)						\
++#define __smp_store_release(p, v)						\
+ do {									\
+ 	compiletime_assert_atomic_type(*p);				\
+ 	switch (sizeof(*p)) {						\
+@@ -62,7 +62,7 @@ do {									\
+ 	}								\
+ } while (0)
+ 
+-#define smp_load_acquire(p)						\
++#define __smp_load_acquire(p)						\
+ ({									\
+ 	union { typeof(*p) __val; char __c[1]; } __u;			\
+ 	compiletime_assert_atomic_type(*p);				\
+-- 
+MST
 
