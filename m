@@ -1,52 +1,115 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: "Geyslan G. Bem" <geyslan@gmail.com>
-Date: Tue,  1 Dec 2015 17:18:55 -0300
-Message-Id: <1449001135-29980-1-git-send-email-geyslan@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] um: fix returns without va_end
-To: jdike@addtoit.com
-Cc: richard@nod.at, hwhilse@gmail.com, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, jg.victorino1@gmail.com, peter.senna@gmail.com, "Geyslan G. Bem" <geyslan@gmail.com>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:09:24 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-29-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Sender: linux-sh-owner@vger.kernel.org
+Subject: [PATCH v2 28/32] asm-generic: implement virt_xxx memory barriers
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-When using va_list ensure that va_start will be followed by va_end.
+Guests running within virtual machines might be affected by SMP effects even if
+the guest itself is compiled without SMP support.  This is an artifact of
+interfacing with an SMP host while running an UP kernel.  Using mandatory
+barriers for this use-case would be possible but is often suboptimal.
 
-Signed-off-by: Geyslan G. Bem <geyslan@gmail.com>
+In particular, virtio uses a bunch of confusing ifdefs to work around
+this, while xen just uses the mandatory barriers.
+
+To better handle this case, low-level virt_mb() etc macros are made available.
+These are implemented trivially using the low-level __smp_xxx macros,
+the purpose of these wrappers is to annotate those specific cases.
+
+These have the same effect as smp_mb() etc when SMP is enabled, but generate
+identical code for SMP and non-SMP systems. For example, virtual machine guests
+should use virt_mb() rather than smp_mb() when synchronizing against a
+(possibly SMP) host.
+
+Suggested-by: David Miller <davem@davemloft.net>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- arch/um/drivers/net_user.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ include/asm-generic/barrier.h     | 11 +++++++++++
+ Documentation/memory-barriers.txt | 28 +++++++++++++++++++++++-----
+ 2 files changed, 34 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/net_user.c b/arch/um/drivers/net_user.c
-index e697a41..e9f8445 100644
---- a/arch/um/drivers/net_user.c
-+++ b/arch/um/drivers/net_user.c
-@@ -249,21 +249,23 @@ void close_addr(unsigned char *addr, unsigned char *netmask, void *arg)
+diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
+index 8752964..1cceca14 100644
+--- a/include/asm-generic/barrier.h
++++ b/include/asm-generic/barrier.h
+@@ -196,5 +196,16 @@ do {									\
  
- char *split_if_spec(char *str, ...)
- {
--	char **arg, *end;
-+	char **arg, *end, *ret = NULL;
- 	va_list ap;
+ #endif
  
- 	va_start(ap, str);
- 	while ((arg = va_arg(ap, char **)) != NULL) {
- 		if (*str == '\0')
--			return NULL;
-+			goto out;
- 		end = strchr(str, ',');
- 		if (end != str)
- 			*arg = str;
- 		if (end == NULL)
--			return NULL;
-+			goto out;
- 		*end++ = '\0';
- 		str = end;
- 	}
-+	ret = str;
-+out:
- 	va_end(ap);
--	return str;
-+	return ret;
- }
++/* Barriers for virtual machine guests when talking to an SMP host */
++#define virt_mb() __smp_mb()
++#define virt_rmb() __smp_rmb()
++#define virt_wmb() __smp_wmb()
++#define virt_read_barrier_depends() __smp_read_barrier_depends()
++#define virt_store_mb(var, value) __smp_store_mb(var, value)
++#define virt_mb__before_atomic() __smp_mb__before_atomic()
++#define virt_mb__after_atomic()	__smp_mb__after_atomic()
++#define virt_store_release(p, v) __smp_store_release(p, v)
++#define virt_load_acquire(p) __smp_load_acquire(p)
++
+ #endif /* !__ASSEMBLY__ */
+ #endif /* __ASM_GENERIC_BARRIER_H */
+diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+index aef9487..8f4a93a 100644
+--- a/Documentation/memory-barriers.txt
++++ b/Documentation/memory-barriers.txt
+@@ -1655,17 +1655,18 @@ macro is a good place to start looking.
+ SMP memory barriers are reduced to compiler barriers on uniprocessor compiled
+ systems because it is assumed that a CPU will appear to be self-consistent,
+ and will order overlapping accesses correctly with respect to itself.
++However, see the subsection on "Virtual Machine Guests" below.
+ 
+ [!] Note that SMP memory barriers _must_ be used to control the ordering of
+ references to shared memory on SMP systems, though the use of locking instead
+ is sufficient.
+ 
+ Mandatory barriers should not be used to control SMP effects, since mandatory
+-barriers unnecessarily impose overhead on UP systems. They may, however, be
+-used to control MMIO effects on accesses through relaxed memory I/O windows.
+-These are required even on non-SMP systems as they affect the order in which
+-memory operations appear to a device by prohibiting both the compiler and the
+-CPU from reordering them.
++barriers impose unnecessary overhead on both SMP and UP systems. They may,
++however, be used to control MMIO effects on accesses through relaxed memory I/O
++windows.  These barriers are required even on non-SMP systems as they affect
++the order in which memory operations appear to a device by prohibiting both the
++compiler and the CPU from reordering them.
+ 
+ 
+ There are some more advanced barrier functions:
+@@ -2948,6 +2949,23 @@ The Alpha defines the Linux kernel's memory barrier model.
+ 
+ See the subsection on "Cache Coherency" above.
+ 
++VIRTUAL MACHINE GUESTS
++-------------------
++
++Guests running within virtual machines might be affected by SMP effects even if
++the guest itself is compiled without SMP support.  This is an artifact of
++interfacing with an SMP host while running an UP kernel.  Using mandatory
++barriers for this use-case would be possible but is often suboptimal.
++
++To handle this case optimally, low-level virt_mb() etc macros are available.
++These have the same effect as smp_mb() etc when SMP is enabled, but generate
++identical code for SMP and non-SMP systems. For example, virtual machine guests
++should use virt_mb() rather than smp_mb() when synchronizing against a
++(possibly SMP) host.
++
++These are equivalent to smp_mb() etc counterparts in all other respects,
++in particular, they do not control MMIO effects: to control
++MMIO effects, use mandatory barriers.
+ 
+ ============
+ EXAMPLE USES
 -- 
-2.6.2
+MST
 
