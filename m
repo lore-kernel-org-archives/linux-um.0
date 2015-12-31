@@ -1,64 +1,100 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Sat, 19 Dec 2015 19:18:30 +0100
-Message-Id: <1450549111-1297-2-git-send-email-mic@digikod.net>
-In-Reply-To: <1450549111-1297-1-git-send-email-mic@digikod.net>
-References: <1450549111-1297-1-git-send-email-mic@digikod.net>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:05:45 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-2-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v4 1/2] um: Do not set unsecure permission for temporary file
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Sender: linux-sh-owner@vger.kernel.org
+Subject: [PATCH v2 01/32] lcoking/barriers, arch: Use smp barriers in
+ smp_store_release()
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Davidlohr Bueso <dave@stgolabs.net>, Davidlohr Bueso <dbueso@suse.de>, Andrew Morton <akpm@linux-foundation.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Linus Torvalds <torvalds@linux-foundation.org>, "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>, Tony Luck <tony.luck@intel.com>, Ingo Molnar <mingo@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Andrey Konovalov <andreyknvl@google.com>, Christian Borntraeger <borntraeger@de.ibm.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Remove the insecure 0777 mode for temporary file to prohibit other user=
-s
-to change the executable mapped code.
+From: Davidlohr Bueso <dave@stgolabs.net>
 
-An attacker could gain access to the mapped file descriptor from the
-temporary file (before it is unlinked) in a read-only mode but it shoul=
-d
-not be accessible in write mode to avoid arbitrary code execution.
+With commit b92b8b35a2e ("locking/arch: Rename set_mb() to smp_store_mb()")
+it was made clear that the context of this call (and thus set_mb)
+is strictly for CPU ordering, as opposed to IO. As such all archs
+should use the smp variant of mb(), respecting the semantics and
+saving a mandatory barrier on UP.
 
-To not change the hostfs behavior, the temporary file creation
-permission now depend on the current umask(2) and the implementation of
-mkstemp(3).
-
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Acked-by: Tristan Schmelcher <tschmelcher@google.com>
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: <linux-arch@vger.kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: dave@stgolabs.net
+Link: http://lkml.kernel.org/r/1445975631-17047-3-git-send-email-dave@stgolabs.net
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- arch/um/os-Linux/mem.c | 6 ------
- 1 file changed, 6 deletions(-)
+ arch/ia64/include/asm/barrier.h    | 2 +-
+ arch/powerpc/include/asm/barrier.h | 2 +-
+ arch/s390/include/asm/barrier.h    | 2 +-
+ include/asm-generic/barrier.h      | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index 897e9ad..840d573 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -142,12 +142,6 @@ static int __init create_tmp_file(unsigned long lo=
-ng len)
- 	if (fd < 0)
- 		exit(1);
-=20
--	err =3D fchmod(fd, 0777);
--	if (err < 0) {
--		perror("fchmod");
--		exit(1);
--	}
--
- 	/*
- 	 * Seek to len - 1 because writing a character there will
- 	 * increase the file size by one byte, to the desired length.
---=20
-2.6.4
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+diff --git a/arch/ia64/include/asm/barrier.h b/arch/ia64/include/asm/barrier.h
+index df896a1..209c4b8 100644
+--- a/arch/ia64/include/asm/barrier.h
++++ b/arch/ia64/include/asm/barrier.h
+@@ -77,7 +77,7 @@ do {									\
+ 	___p1;								\
+ })
+ 
+-#define smp_store_mb(var, value)	do { WRITE_ONCE(var, value); mb(); } while (0)
++#define smp_store_mb(var, value) do { WRITE_ONCE(var, value); smp_mb(); } while (0)
+ 
+ /*
+  * The group barrier in front of the rsm & ssm are necessary to ensure
+diff --git a/arch/powerpc/include/asm/barrier.h b/arch/powerpc/include/asm/barrier.h
+index 0eca6ef..a7af5fb 100644
+--- a/arch/powerpc/include/asm/barrier.h
++++ b/arch/powerpc/include/asm/barrier.h
+@@ -34,7 +34,7 @@
+ #define rmb()  __asm__ __volatile__ ("sync" : : : "memory")
+ #define wmb()  __asm__ __volatile__ ("sync" : : : "memory")
+ 
+-#define smp_store_mb(var, value)	do { WRITE_ONCE(var, value); mb(); } while (0)
++#define smp_store_mb(var, value) do { WRITE_ONCE(var, value); smp_mb(); } while (0)
+ 
+ #ifdef __SUBARCH_HAS_LWSYNC
+ #    define SMPWMB      LWSYNC
+diff --git a/arch/s390/include/asm/barrier.h b/arch/s390/include/asm/barrier.h
+index d68e11e..7ffd0b1 100644
+--- a/arch/s390/include/asm/barrier.h
++++ b/arch/s390/include/asm/barrier.h
+@@ -36,7 +36,7 @@
+ #define smp_mb__before_atomic()		smp_mb()
+ #define smp_mb__after_atomic()		smp_mb()
+ 
+-#define smp_store_mb(var, value)		do { WRITE_ONCE(var, value); mb(); } while (0)
++#define smp_store_mb(var, value)	do { WRITE_ONCE(var, value); smp_mb(); } while (0)
+ 
+ #define smp_store_release(p, v)						\
+ do {									\
+diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
+index b42afad..0f45f93 100644
+--- a/include/asm-generic/barrier.h
++++ b/include/asm-generic/barrier.h
+@@ -93,7 +93,7 @@
+ #endif	/* CONFIG_SMP */
+ 
+ #ifndef smp_store_mb
+-#define smp_store_mb(var, value)  do { WRITE_ONCE(var, value); mb(); } while (0)
++#define smp_store_mb(var, value)  do { WRITE_ONCE(var, value); smp_mb(); } while (0)
+ #endif
+ 
+ #ifndef smp_mb__before_atomic
+-- 
+MST
 
