@@ -1,15 +1,51 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:07:27 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-14-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1448805802-12156-3-git-send-email-mic@digikod.net>
-References: <1448805802-12156-1-git-send-email-mic@digikod.net> <1448805802-12156-3-git-send-email-mic@digikod.net>
-From: Tristan Schmelcher <tschmelcher@google.com>
-Date: Fri, 4 Dec 2015 12:26:51 -0500
-Message-ID: <CADNZ+wRd4FKFCs8e41N-qGFMP1aZgiZevhK1AA6VTPArQJ=9Uw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] um: Use race-free temporary file creation
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, user-mode-linux-user@lists.sourceforge.net
+Subject: [PATCH v2 13/32] x86: reuse asm-generic/barrier.h
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>, Andy Lutomirski <luto@kernel.org>, Andrey Konovalov <andreyknvl@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Acked-by: Tristan Schmelcher <tschmelcher@google.com>
+As on most architectures, on x86 read_barrier_depends and
+smp_read_barrier_depends are empty.  Drop the local definitions and pull
+the generic ones from asm-generic/barrier.h instead: they are identical.
+
+This is in preparation to refactoring this code area.
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/x86/include/asm/barrier.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
+index 0681d25..cc4c2a7 100644
+--- a/arch/x86/include/asm/barrier.h
++++ b/arch/x86/include/asm/barrier.h
+@@ -43,9 +43,6 @@
+ #define smp_store_mb(var, value) do { WRITE_ONCE(var, value); barrier(); } while (0)
+ #endif /* SMP */
+ 
+-#define read_barrier_depends()		do { } while (0)
+-#define smp_read_barrier_depends()	do { } while (0)
+-
+ #if defined(CONFIG_X86_PPRO_FENCE)
+ 
+ /*
+@@ -91,4 +88,6 @@ do {									\
+ #define smp_mb__before_atomic()	barrier()
+ #define smp_mb__after_atomic()	barrier()
+ 
++#include <asm-generic/barrier.h>
++
+ #endif /* _ASM_X86_BARRIER_H */
+-- 
+MST
+
