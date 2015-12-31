@@ -1,58 +1,54 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Sat, 19 Dec 2015 19:18:31 +0100
-Message-Id: <1450549111-1297-3-git-send-email-mic@digikod.net>
-In-Reply-To: <1450549111-1297-1-git-send-email-mic@digikod.net>
-References: <1450549111-1297-1-git-send-email-mic@digikod.net>
+Date: Thu, 31 Dec 2015 21:09:01 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-26-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v4 2/2] um: Use race-free temporary file creation
+Subject: [PATCH v2 25/32] tile: define __smp_xxx
 To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Chris Metcalf <cmetcalf@ezchip.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Open the memory mapped file with the O_TMPFILE flag when available.
+This defines __smp_xxx barriers for tile,
+for use by virtualization.
 
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Acked-by: Tristan Schmelcher <tschmelcher@google.com>
+Some smp_xxx barriers are removed as they are
+defined correctly by asm-generic/barriers.h
+
+Note: for 32 bit, keep smp_mb__after_atomic around since it's faster
+than the generic implementation.
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/um/os-Linux/mem.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/tile/include/asm/barrier.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index 840d573..8b17676 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -106,6 +106,17 @@ static int __init make_tempfile(const char *templa=
-te)
- 		}
- 	}
-=20
-+#ifdef O_TMPFILE
-+	fd =3D open(tempdir, O_CLOEXEC | O_RDWR | O_EXCL | O_TMPFILE, 0700);
-+	/*
-+	 * If the running system does not support O_TMPFILE flag then retry
-+	 * without it.
-+	 */
-+	if (fd !=3D -1 || (errno !=3D EINVAL && errno !=3D EISDIR &&
-+			errno !=3D EOPNOTSUPP))
-+		return fd;
-+#endif
-+
- 	tempname =3D malloc(strlen(tempdir) + strlen(template) + 1);
- 	if (tempname =3D=3D NULL)
- 		return -1;
---=20
-2.6.4
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
+diff --git a/arch/tile/include/asm/barrier.h b/arch/tile/include/asm/barrier.h
+index 96a42ae..d552228 100644
+--- a/arch/tile/include/asm/barrier.h
++++ b/arch/tile/include/asm/barrier.h
+@@ -79,11 +79,12 @@ mb_incoherent(void)
+  * But after the word is updated, the routine issues an "mf" before returning,
+  * and since it's a function call, we don't even need a compiler barrier.
+  */
+-#define smp_mb__before_atomic()	smp_mb()
+-#define smp_mb__after_atomic()	do { } while (0)
++#define __smp_mb__before_atomic()	__smp_mb()
++#define __smp_mb__after_atomic()	do { } while (0)
++#define smp_mb__after_atomic()	__smp_mb__after_atomic()
+ #else /* 64 bit */
+-#define smp_mb__before_atomic()	smp_mb()
+-#define smp_mb__after_atomic()	smp_mb()
++#define __smp_mb__before_atomic()	__smp_mb()
++#define __smp_mb__after_atomic()	__smp_mb()
+ #endif
+ 
+ #include <asm-generic/barrier.h>
+-- 
+MST
 
