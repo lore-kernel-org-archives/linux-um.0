@@ -1,65 +1,36 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Date: Tue, 22 Dec 2015 22:15:09 +0100
-Message-Id: <1450818910-23355-2-git-send-email-mic@digikod.net>
-In-Reply-To: <1450818910-23355-1-git-send-email-mic@digikod.net>
-References: <1450818910-23355-1-git-send-email-mic@digikod.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH v5 1/2] um: Do not set unsecure permission for temporary file
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 14:43:47 -0500 (EST)
+Message-Id: <20151231.144347.54643465516219979.davem@davemloft.net>
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <1451572003-2440-8-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+	<1451572003-2440-8-git-send-email-mst@redhat.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: linux-arch-owner@vger.kernel.org
+Subject: Re: [PATCH v2 07/32] sparc: reuse asm-generic/barrier.h
+To: mst@redhat.com
+Cc: linux-kernel@vger.kernel.org, peterz@infradead.org, arnd@arndb.de, linux-arch@vger.kernel.org, andrew.cooper3@citrix.com, virtualization@lists.linux-foundation.org, stefano.stabellini@eu.citrix.com, tglx@linutronix.de, mingo@elte.hu, hpa@zytor.com, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, mingo@kernel.org, ralf@linux-mips.org, andreyknvl@google.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Remove the insecure 0777 mode for temporary file to prohibit other user=
-s
-to change the executable mapped code.
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Date: Thu, 31 Dec 2015 21:06:38 +0200
 
-An attacker could gain access to the mapped file descriptor from the
-temporary file (before it is unlinked) in a read-only mode but it shoul=
-d
-not be accessible in write mode to avoid arbitrary code execution.
+> On sparc 64 bit dma_rmb, dma_wmb, smp_store_mb, smp_mb, smp_rmb,
+> smp_wmb, read_barrier_depends and smp_read_barrier_depends match the
+> asm-generic variants exactly. Drop the local definitions and pull in
+> asm-generic/barrier.h instead.
+> 
+> nop uses __asm__ __volatile but is otherwise identical to
+> the generic version, drop that as well.
+> 
+> This is in preparation to refactoring this code area.
+> 
+> Note: nop() was in processor.h and not in barrier.h as on other
+> architectures. Nothing seems to depend on it being there though.
+> 
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-To not change the hostfs behavior, the temporary file creation
-permission now depends on the current umask(2) and the implementation o=
-f
-mkstemp(3).
-
-Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Acked-by: Tristan Schmelcher <tschmelcher@google.com>
----
- arch/um/os-Linux/mem.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index 897e9ad0c108..840d573f7e38 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -142,12 +142,6 @@ static int __init create_tmp_file(unsigned long lo=
-ng len)
- 	if (fd < 0)
- 		exit(1);
-=20
--	err =3D fchmod(fd, 0777);
--	if (err < 0) {
--		perror("fchmod");
--		exit(1);
--	}
--
- 	/*
- 	 * Seek to len - 1 because writing a character there will
- 	 * increase the file size by one byte, to the desired length.
---=20
-2.6.4
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
-
+Acked-by: David S. Miller <davem@davemloft.net>
