@@ -1,73 +1,65 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Wed, 16 Dec 2015 21:59:56 +0100
-Message-Id: <1450299596-10780-1-git-send-email-vegard.nossum@oracle.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH] uml: fix hostfs mknod()
-To: Richard Weinberger <richard@nod.at>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Thu, 31 Dec 2015 21:08:38 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Message-ID: <1451572003-2440-23-git-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: [PATCH v2 22/32] s390: define __smp_xxx
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Ingo Molnar <mingo@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, Christian Borntraeger <borntraeger@de.ibm.com>, Andrey Konovalov <andreyknvl@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-An inverted return value check in hostfs_mknod() caused the function
-to return success after handling it as an error (and cleaning up).
+This defines __smp_xxx barriers for s390,
+for use by virtualization.
 
-It resulted in the following segfault when trying to bind() a named
-unix socket:
+Some smp_xxx barriers are removed as they are
+defined correctly by asm-generic/barriers.h
 
-  Pid: 198, comm: a.out Not tainted 4.4.0-rc4
-  RIP: 0033:[<0000000061077df6>]
-  RSP: 00000000daae5d60  EFLAGS: 00010202
-  RAX: 0000000000000000 RBX: 000000006092a460 RCX: 00000000dfc54208
-  RDX: 0000000061073ef1 RSI: 0000000000000070 RDI: 00000000e027d600
-  RBP: 00000000daae5de0 R08: 00000000da980ac0 R09: 0000000000000000
-  R10: 0000000000000003 R11: 00007fb1ae08f72a R12: 0000000000000000
-  R13: 000000006092a460 R14: 00000000daaa97c0 R15: 00000000daaa9a88
-  Kernel panic - not syncing: Kernel mode fault at addr 0x40, ip 0x61077df6
-  CPU: 0 PID: 198 Comm: a.out Not tainted 4.4.0-rc4 #1
-  Stack:
-   e027d620 dfc54208 0000006f da981398
-   61bee000 0000c1ed daae5de0 0000006e
-   e027d620 dfcd4208 00000005 6092a460
-  Call Trace:
-   [<60dedc67>] SyS_bind+0xf7/0x110
-   [<600587be>] handle_syscall+0x7e/0x80
-   [<60066ad7>] userspace+0x3e7/0x4e0
-   [<6006321f>] ? save_registers+0x1f/0x40
-   [<6006c88e>] ? arch_prctl+0x1be/0x1f0
-   [<60054985>] fork_handler+0x85/0x90
+Note: smp_mb, smp_rmb and smp_wmb are defined as full barriers
+unconditionally on this architecture.
 
-Let's also get rid of the "cosmic ray protection" while we're at it.
-
-Fixes: e9193059b1b3 "hostfs: fix races in dentry_name() and inode_name()"
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: stable@vger.kernel.org
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/hostfs/hostfs_kern.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/s390/include/asm/barrier.h | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git fs/hostfs/hostfs_kern.c fs/hostfs/hostfs_kern.c
-index 2ac99db..5a7b322 100644
---- fs/hostfs/hostfs_kern.c
-+++ fs/hostfs/hostfs_kern.c
-@@ -730,15 +730,13 @@ static int hostfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+diff --git a/arch/s390/include/asm/barrier.h b/arch/s390/include/asm/barrier.h
+index c358c31..fbd25b2 100644
+--- a/arch/s390/include/asm/barrier.h
++++ b/arch/s390/include/asm/barrier.h
+@@ -26,18 +26,21 @@
+ #define wmb()				barrier()
+ #define dma_rmb()			mb()
+ #define dma_wmb()			mb()
+-#define smp_mb()			mb()
+-#define smp_rmb()			rmb()
+-#define smp_wmb()			wmb()
+-
+-#define smp_store_release(p, v)						\
++#define __smp_mb()			mb()
++#define __smp_rmb()			rmb()
++#define __smp_wmb()			wmb()
++#define smp_mb()			__smp_mb()
++#define smp_rmb()			__smp_rmb()
++#define smp_wmb()			__smp_wmb()
++
++#define __smp_store_release(p, v)					\
+ do {									\
+ 	compiletime_assert_atomic_type(*p);				\
+ 	barrier();							\
+ 	WRITE_ONCE(*p, v);						\
+ } while (0)
  
- 	init_special_inode(inode, mode, dev);
- 	err = do_mknod(name, mode, MAJOR(dev), MINOR(dev));
--	if (!err)
-+	if (err)
- 		goto out_free;
- 
- 	err = read_name(inode, name);
- 	__putname(name);
- 	if (err)
- 		goto out_put;
--	if (err)
--		goto out_put;
- 
- 	d_instantiate(dentry, inode);
- 	return 0;
+-#define smp_load_acquire(p)						\
++#define __smp_load_acquire(p)						\
+ ({									\
+ 	typeof(*p) ___p1 = READ_ONCE(*p);				\
+ 	compiletime_assert_atomic_type(*p);				\
 -- 
-1.9.1
+MST
 
