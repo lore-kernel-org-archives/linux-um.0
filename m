@@ -1,47 +1,36 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 4 Jan 2016 13:36:53 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451907395-15978-2-git-send-email-mst@redhat.com>
-References: <1451907395-15978-1-git-send-email-mst@redhat.com>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Sat, 2 Jan 2016 11:20:12 +0000
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Message-ID: <20160102112011.GT8644@n2100.arm.linux.org.uk>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+ <1451572003-2440-9-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1451907395-15978-1-git-send-email-mst@redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Subject: [PATCH 1/3] checkpatch.pl: add missing memory barriers
-To: linux-kernel@vger.kernel.org
-Cc: "Cc : Andy Whitcroft" <apw@canonical.com>, Joe Perches <joe@perches.com>, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Andrey Konovalov <andreyknvl@google.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+In-Reply-To: <1451572003-2440-9-git-send-email-mst@redhat.com>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: Re: [PATCH v2 08/32] arm: reuse asm-generic/barrier.h
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Andrey Konovalov <andreyknvl@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-SMP-only barriers were missing in checkpatch.pl
+On Thu, Dec 31, 2015 at 09:06:46PM +0200, Michael S. Tsirkin wrote:
+> On arm smp_store_mb, read_barrier_depends, smp_read_barrier_depends,
+> smp_store_release, smp_load_acquire, smp_mb__before_atomic and
+> smp_mb__after_atomic match the asm-generic variants exactly. Drop the
+> local definitions and pull in asm-generic/barrier.h instead.
+> 
+> This is in preparation to refactoring this code area.
+> 
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Refactor code slightly to make adding more variants easier.
+Thanks, the asm-generic versions looks identical to me, so this should
+result in no code generation difference.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- scripts/checkpatch.pl | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 2b3c228..0245bbe 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -5116,7 +5116,14 @@ sub process {
- 			}
- 		}
- # check for memory barriers without a comment.
--		if ($line =~ /\b(mb|rmb|wmb|read_barrier_depends|smp_mb|smp_rmb|smp_wmb|smp_read_barrier_depends)\(/) {
-+
-+		my @barriers = ('mb', 'rmb', 'wmb', 'read_barrier_depends');
-+		my @smp_barriers = ('smp_store_release', 'smp_load_acquire', 'smp_store_mb');
-+
-+		@smp_barriers = (@smp_barriers, map {"smp_" . $_} @barriers);
-+		my $all_barriers = join('|', (@barriers, @smp_barriers));
-+
-+		if ($line =~ /\b($all_barriers)\(/) {
- 			if (!ctx_has_comment($first_line, $linenr)) {
- 				WARN("MEMORY_BARRIER",
- 				     "memory barrier without comment\n" . $herecurr);
 -- 
-MST
-
+RMK's Patch system: http://www.arm.linux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
+according to speedtest.net.
