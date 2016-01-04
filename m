@@ -1,29 +1,53 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sat, 9 Jan 2016 03:51:25 +0000
-From: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: Re: [PATCH] um: Fix get_signal() usage
-Message-ID: <20160109035125.GA365@ZenIV.linux.org.uk>
-References: <1447836703-32594-1-git-send-email-richard@nod.at>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Mon, 4 Jan 2016 15:05:09 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+Message-ID: <20160104140509.GB6344@twins.programming.kicks-ass.net>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+ <1451572003-2440-32-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1447836703-32594-1-git-send-email-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+In-Reply-To: <1451572003-2440-32-git-send-email-mst@redhat.com>
+Sender: linux-arch-owner@vger.kernel.org
+Subject: Re: [PATCH v2 31/32] sh: support a 2-byte smp_store_mb
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Wed, Nov 18, 2015 at 09:51:43AM +0100, Richard Weinberger wrote:
-> If get_signal() returns us a signal to post
-> we must not call it again, otherwise the already
-> posted signal will be overridden.
-> Before commit a610d6e672d this was the case as we stopped
-> the while after a successful handle_signal().
+On Thu, Dec 31, 2015 at 09:09:47PM +0200, Michael S. Tsirkin wrote:
+> At the moment, xchg on sh only supports 4 and 1 byte values, so using it
+> from smp_store_mb means attempts to store a 2 byte value using this
+> macro fail.
+> 
+> And happens to be exactly what virtio drivers want to do.
+> 
+> Check size and fall back to a slower, but safe, WRITE_ONCE+smp_mb.
+> 
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>  arch/sh/include/asm/barrier.h | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/sh/include/asm/barrier.h b/arch/sh/include/asm/barrier.h
+> index f887c64..0cc5735 100644
+> --- a/arch/sh/include/asm/barrier.h
+> +++ b/arch/sh/include/asm/barrier.h
+> @@ -32,7 +32,15 @@
+>  #define ctrl_barrier()	__asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop")
+>  #endif
+>  
+> -#define __smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
+> +#define __smp_store_mb(var, value) do { \
+> +	if (sizeof(var) != 4 && sizeof(var) != 1) { \
+> +		 WRITE_ONCE(var, value); \
+> +		__smp_mb(); \
+> +	} else { \
+> +		(void)xchg(&var, value);  \
+> +	} \
+> +} while (0)
 
-Old behaviour had been wrong.  If you have several pending signals,
-more than one sigframe should be built, as if the second, etc. had
-been delivered right on the entry into the handler.
+So SH is an orphaned arch, which is also why I did not comment on using
+xchg() for the UP smp_store_mb() thing.
 
-Stopping after the first one is obviously wrong - consider the case
-when attempt to deliver it has raised SIGSEGV.
-
+But I really think we should try fixing the xchg() implementation
+instead of this duct-tape.
