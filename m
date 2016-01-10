@@ -1,82 +1,95 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Sun, 10 Jan 2016 16:21:47 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH v3 38/41] xen/io: use virt_xxx barriers
+Message-ID: <1452426622-4471-39-git-send-email-mst@redhat.com>
+References: <1452426622-4471-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1451421347-9468-1-git-send-email-mic@digikod.net>
-References: <1451421347-9468-1-git-send-email-mic@digikod.net>
-Date: Mon, 4 Jan 2016 12:13:39 -0800
-Message-ID: <CAGXu5jLsEzacZ23Gw2moTdomvDc4ZRHieu_Yi=qpf1NHb2EXzA@mail.gmail.com>
-From: Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] um: Add seccomp support
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, user-mode-linux-devel@lists.sourceforge.net, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, David Vrabel <david.vrabel@citrix.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Dec 29, 2015 at 12:35 PM, Micka=C3=ABl Sala=C3=BCn <mic@digikod=
-=2Enet> wrote:
-> This series add seccomp support to User-mode Linux (i386 and x86_64
-> subarchitectures) and fix ptrace issues. This apply on v4.4-rc7 and p=
-ass all
-> the 48 tests from selftest/seccomp plus the UML ptsc test.
->
-> Changes since v2:
-> * remove get_syscall() from os.h and don't include it in syscall.c [1=
-/4]
-> * rebase to v4.4-rc7
->
-> Changes since v1; addressed Richard Weinberger's comments:
-> * fix a new PTRACE_SETREGS bug on x86_64 [1/4]
-> * fix an old PTRACE_SETREGS bug when updating orig_ax on i386 [1/4]
+include/xen/interface/io/ring.h uses
+full memory barriers to communicate with the other side.
 
-Thanks for working on this!
+For guests compiled with CONFIG_SMP, smp_wmb and smp_mb
+would be sufficient, so mb() and wmb() here are only needed if
+a non-SMP guest runs on an SMP host.
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Switch to virt_xxx barriers which serve this exact purpose.
 
-=46eel free to pull this through the uml tree.
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: David Vrabel <david.vrabel@citrix.com>
+---
+ include/xen/interface/io/ring.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Thanks!
+diff --git a/include/xen/interface/io/ring.h b/include/xen/interface/io/ring.h
+index 7dc685b..21f4fbd 100644
+--- a/include/xen/interface/io/ring.h
++++ b/include/xen/interface/io/ring.h
+@@ -208,12 +208,12 @@ struct __name##_back_ring {						\
+ 
+ 
+ #define RING_PUSH_REQUESTS(_r) do {					\
+-    wmb(); /* back sees requests /before/ updated producer index */	\
++    virt_wmb(); /* back sees requests /before/ updated producer index */	\
+     (_r)->sring->req_prod = (_r)->req_prod_pvt;				\
+ } while (0)
+ 
+ #define RING_PUSH_RESPONSES(_r) do {					\
+-    wmb(); /* front sees responses /before/ updated producer index */	\
++    virt_wmb(); /* front sees responses /before/ updated producer index */	\
+     (_r)->sring->rsp_prod = (_r)->rsp_prod_pvt;				\
+ } while (0)
+ 
+@@ -250,9 +250,9 @@ struct __name##_back_ring {						\
+ #define RING_PUSH_REQUESTS_AND_CHECK_NOTIFY(_r, _notify) do {		\
+     RING_IDX __old = (_r)->sring->req_prod;				\
+     RING_IDX __new = (_r)->req_prod_pvt;				\
+-    wmb(); /* back sees requests /before/ updated producer index */	\
++    virt_wmb(); /* back sees requests /before/ updated producer index */	\
+     (_r)->sring->req_prod = __new;					\
+-    mb(); /* back sees new requests /before/ we check req_event */	\
++    virt_mb(); /* back sees new requests /before/ we check req_event */	\
+     (_notify) = ((RING_IDX)(__new - (_r)->sring->req_event) <		\
+ 		 (RING_IDX)(__new - __old));				\
+ } while (0)
+@@ -260,9 +260,9 @@ struct __name##_back_ring {						\
+ #define RING_PUSH_RESPONSES_AND_CHECK_NOTIFY(_r, _notify) do {		\
+     RING_IDX __old = (_r)->sring->rsp_prod;				\
+     RING_IDX __new = (_r)->rsp_prod_pvt;				\
+-    wmb(); /* front sees responses /before/ updated producer index */	\
++    virt_wmb(); /* front sees responses /before/ updated producer index */	\
+     (_r)->sring->rsp_prod = __new;					\
+-    mb(); /* front sees new responses /before/ we check rsp_event */	\
++    virt_mb(); /* front sees new responses /before/ we check rsp_event */	\
+     (_notify) = ((RING_IDX)(__new - (_r)->sring->rsp_event) <		\
+ 		 (RING_IDX)(__new - __old));				\
+ } while (0)
+@@ -271,7 +271,7 @@ struct __name##_back_ring {						\
+     (_work_to_do) = RING_HAS_UNCONSUMED_REQUESTS(_r);			\
+     if (_work_to_do) break;						\
+     (_r)->sring->req_event = (_r)->req_cons + 1;			\
+-    mb();								\
++    virt_mb();								\
+     (_work_to_do) = RING_HAS_UNCONSUMED_REQUESTS(_r);			\
+ } while (0)
+ 
+@@ -279,7 +279,7 @@ struct __name##_back_ring {						\
+     (_work_to_do) = RING_HAS_UNCONSUMED_RESPONSES(_r);			\
+     if (_work_to_do) break;						\
+     (_r)->sring->rsp_event = (_r)->rsp_cons + 1;			\
+-    mb();								\
++    virt_mb();								\
+     (_work_to_do) = RING_HAS_UNCONSUMED_RESPONSES(_r);			\
+ } while (0)
+ 
+-- 
+MST
 
--Kees
-
->
-> Regards,
->  Micka=C3=ABl
->
-> Micka=C3=ABl Sala=C3=BCn (4):
->   um: Fix ptrace GETREGS/SETREGS bugs
->   selftests/seccomp: Remove the need for HAVE_ARCH_TRACEHOOK
->   um: Add full asm/syscall.h support
->   um: Add seccomp support
->
->  .../seccomp/seccomp-filter/arch-support.txt        |   2 +-
->  arch/um/Kconfig.common                             |   1 +
->  arch/um/Kconfig.um                                 |  16 +++
->  arch/um/include/asm/syscall-generic.h              | 138 +++++++++++=
-++++++++++
->  arch/um/include/asm/thread_info.h                  |   2 +
->  arch/um/include/shared/os.h                        |   1 -
->  arch/um/kernel/skas/syscall.c                      |  31 +++--
->  arch/um/os-Linux/skas/process.c                    |   7 --
->  arch/x86/um/asm/syscall.h                          |   1 +
->  arch/x86/um/ptrace_32.c                            |   8 +-
->  tools/testing/selftests/seccomp/seccomp_bpf.c      |  27 +++-
->  11 files changed, 205 insertions(+), 29 deletions(-)
->  create mode 100644 arch/um/include/asm/syscall-generic.h
->
-> --
-> 2.6.4
->
-
-
-
---=20
-Kees Cook
-Chrome OS & Brillo Security
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
 
