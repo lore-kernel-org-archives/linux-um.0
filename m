@@ -1,63 +1,60 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Date: Sun, 10 Jan 2016 16:16:52 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v3 03/41] ia64: rename nop->iosapic_nop
-Message-ID: <1452426622-4471-4-git-send-email-mst@redhat.com>
-References: <1452426622-4471-1-git-send-email-mst@redhat.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1aIIMi-0002Ys-FY
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Jan 2016 15:57:12 +0000
+Received: from mail-ob0-f196.google.com ([209.85.214.196])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1aIIMh-0005f7-Nu
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Jan 2016 15:57:12 +0000
+Received: by mail-ob0-f196.google.com with SMTP id tr5so26269079obc.2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 10 Jan 2016 07:57:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Jiang Liu <jiang.liu@linux.intel.com>, Rusty Russell <rusty@rustcorp.com.au>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <1450724041-708451-1-git-send-email-aivanov@brocade.com>
+References: <1450724041-708451-1-git-send-email-aivanov@brocade.com>
+Date: Sun, 10 Jan 2016 16:57:06 +0100
+Message-ID: <CAFLxGvyBqp5SKxE9tkokiL7PEz8sqrgoiQ2PxCfJNzkzY=pB5Q@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: [uml-devel] [PATCH 1/2] Update UBD to use pread/pwrite family
+	of functions
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Anton Ivanov <aivanov@brocade.com>
+Cc: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-asm-generic/barrier.h defines a nop() macro.
-To be able to use this header on ia64, we shouldn't
-call local functions/variables nop().
+On Mon, Dec 21, 2015 at 7:54 PM, Anton Ivanov <aivanov@brocade.com> wrote:
+> This decreases the number of syscalls per read/write by half.
+>
+> Signed-off-by: Anton Ivanov <aivanov@brocade.com>
 
-There's one instance where this breaks on ia64:
-rename the function to iosapic_nop to avoid the conflict.
+Applied!
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Tony Luck <tony.luck@intel.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/ia64/kernel/iosapic.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/ia64/kernel/iosapic.c b/arch/ia64/kernel/iosapic.c
-index d2fae05..90fde5b 100644
---- a/arch/ia64/kernel/iosapic.c
-+++ b/arch/ia64/kernel/iosapic.c
-@@ -256,7 +256,7 @@ set_rte (unsigned int gsi, unsigned int irq, unsigned int dest, int mask)
- }
- 
- static void
--nop (struct irq_data *data)
-+iosapic_nop (struct irq_data *data)
- {
- 	/* do nothing... */
- }
-@@ -415,7 +415,7 @@ iosapic_unmask_level_irq (struct irq_data *data)
- #define iosapic_shutdown_level_irq	mask_irq
- #define iosapic_enable_level_irq	unmask_irq
- #define iosapic_disable_level_irq	mask_irq
--#define iosapic_ack_level_irq		nop
-+#define iosapic_ack_level_irq		iosapic_nop
- 
- static struct irq_chip irq_type_iosapic_level = {
- 	.name =			"IO-SAPIC-level",
-@@ -453,7 +453,7 @@ iosapic_ack_edge_irq (struct irq_data *data)
- }
- 
- #define iosapic_enable_edge_irq		unmask_irq
--#define iosapic_disable_edge_irq	nop
-+#define iosapic_disable_edge_irq	iosapic_nop
- 
- static struct irq_chip irq_type_iosapic_edge = {
- 	.name =			"IO-SAPIC-edge",
 -- 
-MST
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+Site24x7 APM Insight: Get Deep Visibility into Application Performance
+APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
+Monitor end-to-end web transactions and take corrective actions now
+Troubleshoot faster and improve end-user experience. Signup Now!
+http://pubads.g.doubleclick.net/gampad/clk?id=267308311&iu=/4140
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
