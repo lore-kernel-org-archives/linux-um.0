@@ -1,40 +1,42 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Date: Sun, 10 Jan 2016 13:57:17 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v2 3/3] checkpatch: add virt barriers
-Message-ID: <1452427000-4520-4-git-send-email-mst@redhat.com>
-References: <1452427000-4520-1-git-send-email-mst@redhat.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Subject: Re: [PATCH v3 0/4] um: Add seccomp support
+References: <1451421347-9468-1-git-send-email-mic@digikod.net>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5692BC92.1010605@nod.at>
+Date: Sun, 10 Jan 2016 21:18:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1452427000-4520-1-git-send-email-mst@redhat.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Andrey Konovalov <andreyknvl@google.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+In-Reply-To: <1451421347-9468-1-git-send-email-mic@digikod.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>, linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuahkh@osg.samsung.com>, Chris Metcalf <cmetcalf@ezchip.com>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, James Hogan <james.hogan@imgtec.com>, Thomas Meyer <thomas@m3y3r.de>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, Anton Ivanov <aivanov@brocade.com>, user-mode-linux-devel@lists.sourceforge.net, Meredydd Luff <meredydd@senatehouse.org>, David Drysdale <drysdale@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Add virt_ barriers to list of barriers to check for
-presence of a comment.
+Am 29.12.2015 um 21:35 schrieb Mickaël Salaün:
+> This series add seccomp support to User-mode Linux (i386 and x86_64
+> subarchitectures) and fix ptrace issues. This apply on v4.4-rc7 and pass all
+> the 48 tests from selftest/seccomp plus the UML ptsc test.
+> 
+> Changes since v2:
+> * remove get_syscall() from os.h and don't include it in syscall.c [1/4]
+> * rebase to v4.4-rc7
+> 
+> Changes since v1; addressed Richard Weinberger's comments:
+> * fix a new PTRACE_SETREGS bug on x86_64 [1/4]
+> * fix an old PTRACE_SETREGS bug when updating orig_ax on i386 [1/4]
+> 
+> Regards,
+>  Mickaël
+> 
+> Mickaël Salaün (4):
+>   um: Fix ptrace GETREGS/SETREGS bugs
+>   selftests/seccomp: Remove the need for HAVE_ARCH_TRACEHOOK
+>   um: Add full asm/syscall.h support
+>   um: Add seccomp support
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- scripts/checkpatch.pl | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Applied!
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index a96adcb..5ca272b 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -5131,7 +5131,8 @@ sub process {
- 		}x;
- 		my $all_barriers = qr{
- 			$barriers|
--			smp_($smp_barriers)
-+			smp_($smp_barriers)|
-+			virt_($smp_barriers)
- 		}x;
- 
- 		if ($line =~ /\b($all_barriers)\s*\(/) {
--- 
-MST
+Thanks,
+//richard
 
