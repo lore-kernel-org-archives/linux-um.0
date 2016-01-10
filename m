@@ -1,35 +1,44 @@
-Return-Path: <richard@nod.at>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 04/22] staging: iio: Fix dependencies for !HAS_IOMEM archs
-Date: Mon, 25 Jan 2016 23:24:03 +0100
-Message-Id: <1453760661-1444-5-git-send-email-richard@nod.at>
-In-Reply-To: <1453760661-1444-1-git-send-email-richard@nod.at>
-References: <1453760661-1444-1-git-send-email-richard@nod.at>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Sun, 10 Jan 2016 16:22:05 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH v3 40/41] s390: use generic memory barriers
+Message-ID: <1452426622-4471-41-git-send-email-mst@redhat.com>
+References: <1452426622-4471-1-git-send-email-mst@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald <pmeerw@pmeerw.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Marek <mmarek@suse.com>, linux-iio@vger.kernel.org, devel@driverdev.osuosl.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Ingo Molnar <mingo@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, Christian Borntraeger <borntraeger@de.ibm.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Not every arch has io memory.
-So, unbreak the build by fixing the dependencies.
+The s390 kernel is SMP to 99.99%, we just didn't bother with a
+non-smp variant for the memory-barriers. If the generic header
+is used we'd get the non-smp version for free. It will save a
+small amount of text space for CONFIG_SMP=n.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Suggested-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- drivers/staging/iio/adc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/s390/include/asm/barrier.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/staging/iio/adc/Kconfig b/drivers/staging/iio/adc/Kconfig
-index 58d4517..b9519be 100644
---- a/drivers/staging/iio/adc/Kconfig
-+++ b/drivers/staging/iio/adc/Kconfig
-@@ -6,6 +6,7 @@ menu "Analog to digital converters"
- config AD7606
- 	tristate "Analog Devices AD7606 ADC driver"
- 	depends on GPIOLIB || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	select IIO_BUFFER
- 	select IIO_TRIGGERED_BUFFER
- 	help
+diff --git a/arch/s390/include/asm/barrier.h b/arch/s390/include/asm/barrier.h
+index fbd25b2..4d26fa4 100644
+--- a/arch/s390/include/asm/barrier.h
++++ b/arch/s390/include/asm/barrier.h
+@@ -29,9 +29,6 @@
+ #define __smp_mb()			mb()
+ #define __smp_rmb()			rmb()
+ #define __smp_wmb()			wmb()
+-#define smp_mb()			__smp_mb()
+-#define smp_rmb()			__smp_rmb()
+-#define smp_wmb()			__smp_wmb()
+ 
+ #define __smp_store_release(p, v)					\
+ do {									\
 -- 
-1.8.4.5
+MST
 
 
