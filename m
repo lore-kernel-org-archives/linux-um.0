@@ -1,16 +1,16 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 10 Jan 2016 21:31:00 +0200
+Date: Sun, 10 Jan 2016 16:21:31 +0200
 From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v3 3/3] checkpatch: add virt barriers
-Message-ID: <1452454200-8844-4-git-send-email-mst@redhat.com>
-References: <1452454200-8844-1-git-send-email-mst@redhat.com>
+Subject: [PATCH v3 36/41] checkpatch: add virt barriers
+Message-ID: <1452426622-4471-37-git-send-email-mst@redhat.com>
+References: <1452426622-4471-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1452454200-8844-1-git-send-email-mst@redhat.com>
+In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Andrey Konovalov <andreyknvl@google.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Andy Whitcroft <apw@canonical.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 Add virt_ barriers to list of barriers to check for
@@ -22,19 +22,19 @@ Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 15cfca4..4466579 100755
+index a96adcb..5ca272b 100755
 --- a/scripts/checkpatch.pl
 +++ b/scripts/checkpatch.pl
-@@ -5133,7 +5133,8 @@ sub process {
+@@ -5131,7 +5131,8 @@ sub process {
  		}x;
  		my $all_barriers = qr{
  			$barriers|
--			smp_(?:$smp_barrier_stems)
-+			smp_(?:$smp_barrier_stems)|
-+			virt_(?:$smp_barrier_stems)
+-			smp_($smp_barriers)
++			smp_($smp_barriers)|
++			virt_($smp_barriers)
  		}x;
  
- 		if ($line =~ /\b(?:$all_barriers)\s*\(/) {
+ 		if ($line =~ /\b($all_barriers)\s*\(/) {
 -- 
 MST
 
