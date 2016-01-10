@@ -1,64 +1,43 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
- <1451572003-2440-33-git-send-email-mst@redhat.com>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <5686B622.6070600@cogentembedded.com>
-Date: Fri, 1 Jan 2016 20:23:46 +0300
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Subject: Re: [PATCH v5 0/2] um: Protect memory mapped file
+References: <1450818910-23355-1-git-send-email-mic@digikod.net>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5692BD91.50100@nod.at>
+Date: Sun, 10 Jan 2016 21:22:41 +0100
 MIME-Version: 1.0
-In-Reply-To: <1451572003-2440-33-git-send-email-mst@redhat.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Sender: linux-arch-owner@vger.kernel.org
-Subject: Re: [PATCH v2 32/32] virtio_ring: use virt_store_mb
-To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org
+In-Reply-To: <1450818910-23355-1-git-send-email-mic@digikod.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>, linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Tristan Schmelcher <tschmelcher@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hello.
+Am 22.12.2015 um 22:15 schrieb Mickaël Salaün:
+> This series protect the memory mapped file. This apply on v4.4-rc6.
+> 
+> Changes since v4:
+> * fix spelling [1/2]
+> 
+> Changes since v3:
+> * add Tristan Schmelcher's ack
+> 
+> Changes since v2; addressed Tristan Schmelcher's comment:
+> * remove the whole fchmod call [1/2]
+> 
+> Changes since v1; addressed Richard Weinberger's comments:
+> * add attacker model to the patch description [1/2]
+> * remove errno reset [2/2]
+> 
+> Regards,
+>  Mickaël
+> 
+> Mickaël Salaün (2):
+>   um: Do not set unsecure permission for temporary file
+>   um: Use race-free temporary file creation
 
-On 12/31/2015 10:09 PM, Michael S. Tsirkin wrote:
+Applied!
 
-> We need a full barrier after writing out event index, using
-> virt_store_mb there seems better than open-coding.  As usual, we need a
-> wrapper to account for strong barriers.
->
-> It's tempting to use this in vhost as well, for that, we'll
-> need a variant of smp_store_mb that works on __user pointers.
->
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->   include/linux/virtio_ring.h  | 12 ++++++++++++
->   drivers/virtio/virtio_ring.c | 15 +++++++++------
->   2 files changed, 21 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/virtio_ring.h b/include/linux/virtio_ring.h
-> index f3fa55b..3a74d91 100644
-> --- a/include/linux/virtio_ring.h
-> +++ b/include/linux/virtio_ring.h
-> @@ -45,6 +45,18 @@ static inline void virtio_wmb(bool weak_barriers)
->   		wmb();
->   }
->
-> +static inline void virtio_store_mb(bool weak_barriers,
-> +				   __virtio16 *p, __virtio16 v)
-> +{
-> +	if (weak_barriers)
-> +		virt_store_mb(*p, v);
-> +	else
-> +	{
-
-    The kernel coding style dictates:
-
-	if (weak_barriers) {
-		virt_store_mb(*p, v);
-	} else {
-
-> +		WRITE_ONCE(*p, v);
-> +		mb();
-> +	}
-> +}
-> +
-[...]
-
-MBR, Sergei
+Thanks,
+//richard
 
