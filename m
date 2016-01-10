@@ -1,52 +1,49 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Date: Mon, 11 Jan 2016 13:00:30 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v4 2/3] checkpatch: check for __smp outside barrier.h
-Message-ID: <1452509968-19778-3-git-send-email-mst@redhat.com>
-References: <1452509968-19778-1-git-send-email-mst@redhat.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1452509968-19778-1-git-send-email-mst@redhat.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Julian Calaby <julian.calaby@gmail.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+In-Reply-To: <1450470533-13115-1-git-send-email-vegard.nossum@oracle.com>
+References: <1450470533-13115-1-git-send-email-vegard.nossum@oracle.com>
+Date: Sun, 10 Jan 2016 16:49:13 +0100
+Message-ID: <CAFLxGvz=CCv5eqJNbMKrPG5FKY89CtZVUwWE=O7d2oQRVqe9=Q@mail.gmail.com>
+Subject: Re: [uml-devel] [PATCH] uml: flush stdout before forking
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Introduction of __smp barriers cleans up a bunch of duplicate code, but
-it gives people an additional handle onto a "new" set of barriers - just
-because they're prefixed with __* unfortunately doesn't stop anyone from
-using it (as happened with other arch stuff before.)
+On Fri, Dec 18, 2015 at 9:28 PM, Vegard Nossum <vegard.nossum@oracle.com> wrote:
+> I was seeing some really weird behaviour where piping UML's output
+> somewhere would cause output to get duplicated:
+>
+>   $ ./vmlinux | head -n 40
+>   Checking that ptrace can change system call numbers...Core dump limits :
+>           soft - 0
+>           hard - NONE
+>   OK
+>   Checking syscall emulation patch for ptrace...Core dump limits :
+>           soft - 0
+>           hard - NONE
+>   OK
+>   Checking advanced syscall emulation patch for ptrace...Core dump limits :
+>           soft - 0
+>           hard - NONE
+>   OK
+>   Core dump limits :
+>           soft - 0
+>           hard - NONE
+>
+> This is because these tests do a fork() which duplicates the non-empty
+> stdout buffer, then glibc flushes the duplicated buffer as each child
+> exits.
+>
+> A simple workaround is to flush before forking.
+>
+> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 
-Add a checkpatch test so it will trigger a warning.
+Applied and queued for stable!
 
-Reported-by: Russell King <linux@arm.linux.org.uk>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- scripts/checkpatch.pl | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 94b4e33..25476c2 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -5143,6 +5143,16 @@ sub process {
- 			}
- 		}
- 
-+		my $underscore_smp_barriers = qr{__smp_(?:$barrier_stems)}x;
-+
-+		if ($realfile !~ m@^include/asm-generic/@ &&
-+		    $realfile !~ m@/barrier\.h$@ &&
-+		    $line =~ m/\b(?:$underscore_smp_barriers)\s*\(/ &&
-+		    $line !~ m/^.\s*\#\s*define\s+(?:$underscore_smp_barriers)\s*\(/) {
-+			WARN("MEMORY_BARRIER",
-+			     "__smp memory barriers shouldn't be used outside barrier.h and asm-generic\n" . $herecurr);
-+		}
-+
- # check for waitqueue_active without a comment.
- 		if ($line =~ /\bwaitqueue_active\s*\(/) {
- 			if (!ctx_has_comment($first_line, $linenr)) {
 -- 
-MST
+Thanks,
+//richard
 
