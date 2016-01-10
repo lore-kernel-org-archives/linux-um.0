@@ -1,27 +1,29 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1aIIQ5-0003Tl-0A
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1aIIJa-0002Rj-V3
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Jan 2016 16:00:41 +0000
-Received: from mail-oi0-f67.google.com ([209.85.218.67])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1aIIQ3-0005ji-GV
+	Sun, 10 Jan 2016 15:53:58 +0000
+Received: from mail-ob0-f171.google.com ([209.85.214.171])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1aIIJa-0006zx-5B
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Jan 2016 16:00:40 +0000
-Received: by mail-oi0-f67.google.com with SMTP id a202so2775625oib.3
+	Sun, 10 Jan 2016 15:53:58 +0000
+Received: by mail-ob0-f171.google.com with SMTP id bx1so362568437obb.0
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 10 Jan 2016 08:00:39 -0800 (PST)
+	Sun, 10 Jan 2016 07:53:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <56784D28.8090103@kot-begemot.co.uk>
-References: <1450724041-708451-1-git-send-email-aivanov@brocade.com>
-	<1450724041-708451-2-git-send-email-aivanov@brocade.com>
-	<56784D28.8090103@kot-begemot.co.uk>
-Date: Sun, 10 Jan 2016 17:00:33 +0100
-Message-ID: <CAFLxGvzKv7jjiid8eKa5=-=PmS-mdWH=PZZsipXOvDG1r-SkWg@mail.gmail.com>
+In-Reply-To: <5677E8C9.7040904@kot-begemot.co.uk>
+References: <564F0C6D.8000806@kot-begemot.co.uk>
+	<CAFLxGvywFjhSwUAsAGtV3FQLvFCS+UaP4rJCDzbvZ3p+4nvjTQ@mail.gmail.com>
+	<566A73FF.6080306@kot-begemot.co.uk> <566A8667.1040808@nod.at>
+	<566AB280.4020109@kot-begemot.co.uk> <566B1812.3080002@nod.at>
+	<5677E8C9.7040904@kot-begemot.co.uk>
+Date: Sun, 10 Jan 2016 16:53:52 +0100
+Message-ID: <CAFLxGvxYJkFJstRVAb=oy0DAwFd4JifYj++P3KQEqmDwV_r8ig@mail.gmail.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: [uml-devel] [PATCH 2/2] Bulk IO Transaction support part 1
+Subject: Re: [uml-devel] IRQ handler reentrancy
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -37,28 +39,14 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 Cc: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On Mon, Dec 21, 2015 at 8:04 PM, Anton Ivanov
+On Mon, Dec 21, 2015 at 12:55 PM, Anton Ivanov
 <anton.ivanov@kot-begemot.co.uk> wrote:
-> Hi list, hi Richard,
+> Patch in your queue, current code looks OK.
 >
-> This rather primitive patchset pushes disk IO by ~ 15%.
->
-> dd to /dev/null on a host memory cached 16G sparse disk image with
-> ubuntu on it goes from 512MB/s on my machine to 580MB/s.
->
-> Part 2 will be ring buffers and read/write poll loop in the io_thread as
-> well as elimination of "partial read/write" workarounds. While it does
-> not push disk benchmarks a lot it makes UML more responsive.
->
-> Part 3 will be merging adjacent IO transactions (by file location) via
-> vector IO. This pushes trhoughput even further by quite a bit.
->
-> While I can try to submit all of that in one go, I'd rather submit it in
-> chunks so it is easier to review even if this will result in patch churn
-> (the whole do_safe_read malarkey will bite the bullet once part 2 is out).
+> I will try to assemble the full ubd acceleration sequence of patches
+> this afternoon to submit that as well.
 
-Is this already stable enough for this merge window?
-At least checkpatch.pl dislikes part 1. :(
+Applied. Let's see how much will explode. :-)
 
 -- 
 Thanks,
