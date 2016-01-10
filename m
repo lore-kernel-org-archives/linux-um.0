@@ -1,46 +1,56 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 10 Jan 2016 16:19:02 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v3 18/41] blackfin: define __smp_xxx
-Message-ID: <1452426622-4471-19-git-send-email-mst@redhat.com>
-References: <1452426622-4471-1-git-send-email-mst@redhat.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1aIOcP-0000Hd-7n
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Jan 2016 22:37:49 +0000
+Received: from mail-ob0-f179.google.com ([209.85.214.179])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1aIOcO-0001um-DT
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 10 Jan 2016 22:37:49 +0000
+Received: by mail-ob0-f179.google.com with SMTP id py5so18210213obc.2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 10 Jan 2016 14:37:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Steven Miao <realmz6@gmail.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Date: Sun, 10 Jan 2016 23:37:42 +0100
+Message-ID: <CAFLxGvzOVT9w_8iqbLLa6eRDMcW3JTvDbvJ4vJFGruEN7U=hQw@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: [uml-devel] Stuff for v4.5
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-This defines __smp_xxx barriers for blackfin,
-for use by virtualization.
+Hi!
 
-smp_xxx barriers are removed as they are
-defined correctly by asm-generic/barriers.h
+I've pushed everything I'd like to see in 4.5 merged.
+Please speak up now if I forgot something!
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/blackfin/include/asm/barrier.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+https://git.kernel.org/cgit/linux/kernel/git/rw/uml.git/log/?h=linux-next
 
-diff --git a/arch/blackfin/include/asm/barrier.h b/arch/blackfin/include/asm/barrier.h
-index dfb66fe..7cca51c 100644
---- a/arch/blackfin/include/asm/barrier.h
-+++ b/arch/blackfin/include/asm/barrier.h
-@@ -78,8 +78,8 @@
- 
- #endif /* !CONFIG_SMP */
- 
--#define smp_mb__before_atomic()	barrier()
--#define smp_mb__after_atomic()	barrier()
-+#define __smp_mb__before_atomic()	barrier()
-+#define __smp_mb__after_atomic()	barrier()
- 
- #include <asm-generic/barrier.h>
- 
 -- 
-MST
+Thanks,
+//richard
 
+------------------------------------------------------------------------------
+Site24x7 APM Insight: Get Deep Visibility into Application Performance
+APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
+Monitor end-to-end web transactions and take corrective actions now
+Troubleshoot faster and improve end-user experience. Signup Now!
+http://pubads.g.doubleclick.net/gampad/clk?id=267308311&iu=/4140
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
