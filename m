@@ -1,142 +1,56 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 10 Jan 2016 16:20:59 +0200
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Date: Sun, 10 Jan 2016 16:18:54 +0200
 From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v3 32/41] sh: move xchg_cmpxchg to a header by itself
-Message-ID: <1452426622-4471-33-git-send-email-mst@redhat.com>
+Subject: [PATCH v3 17/41] arm: define __smp_xxx
+Message-ID: <1452426622-4471-18-git-send-email-mst@redhat.com>
 References: <1452426622-4471-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-sh-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Rich Felker <dalias@libc.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Russell King <rmk+kernel@arm.linux.org.uk>, Ingo Molnar <mingo@kernel.org>, Richard Woodruff <r-woodruff2@ti.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Looks like future sh variants will support a 4-byte cas which will be
-used to implement 1 and 2 byte xchg.
+This defines __smp_xxx barriers for arm,
+for use by virtualization.
 
-This is exactly what we do for llsc now, move the portable part of the
-code into a separate header so it's easy to reuse.
+smp_xxx barriers are removed as they are
+defined correctly by asm-generic/barriers.h
 
-Suggested-by:  Rich Felker <dalias@libc.org>
+This reduces the amount of arch-specific boiler-plate code.
+
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
 ---
- arch/sh/include/asm/cmpxchg-llsc.h | 35 +-------------------------
- arch/sh/include/asm/cmpxchg-xchg.h | 51 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 52 insertions(+), 34 deletions(-)
- create mode 100644 arch/sh/include/asm/cmpxchg-xchg.h
+ arch/arm/include/asm/barrier.h | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/arch/sh/include/asm/cmpxchg-llsc.h b/arch/sh/include/asm/cmpxchg-llsc.h
-index e754794..fcfd322 100644
---- a/arch/sh/include/asm/cmpxchg-llsc.h
-+++ b/arch/sh/include/asm/cmpxchg-llsc.h
-@@ -1,9 +1,6 @@
- #ifndef __ASM_SH_CMPXCHG_LLSC_H
- #define __ASM_SH_CMPXCHG_LLSC_H
+diff --git a/arch/arm/include/asm/barrier.h b/arch/arm/include/asm/barrier.h
+index 31152e8..112cc1a 100644
+--- a/arch/arm/include/asm/barrier.h
++++ b/arch/arm/include/asm/barrier.h
+@@ -60,15 +60,9 @@ extern void arm_heavy_mb(void);
+ #define dma_wmb()	barrier()
+ #endif
  
--#include <linux/bitops.h>
--#include <asm/byteorder.h>
--
- static inline unsigned long xchg_u32(volatile u32 *m, unsigned long val)
- {
- 	unsigned long retval;
-@@ -50,36 +47,6 @@ __cmpxchg_u32(volatile u32 *m, unsigned long old, unsigned long new)
- 	return retval;
- }
- 
--static inline u32 __xchg_cmpxchg(volatile void *ptr, u32 x, int size)
--{
--	int off = (unsigned long)ptr % sizeof(u32);
--	volatile u32 *p = ptr - off;
--#ifdef __BIG_ENDIAN
--	int bitoff = (sizeof(u32) - 1 - off) * BITS_PER_BYTE;
+-#ifndef CONFIG_SMP
+-#define smp_mb()	barrier()
+-#define smp_rmb()	barrier()
+-#define smp_wmb()	barrier()
 -#else
--	int bitoff = off * BITS_PER_BYTE;
+-#define smp_mb()	dmb(ish)
+-#define smp_rmb()	smp_mb()
+-#define smp_wmb()	dmb(ishst)
 -#endif
--	u32 bitmask = ((0x1 << size * BITS_PER_BYTE) - 1) << bitoff;
--	u32 oldv, newv;
--	u32 ret;
--
--	do {
--		oldv = READ_ONCE(*p);
--		ret = (oldv & bitmask) >> bitoff;
--		newv = (oldv & ~bitmask) | (x << bitoff);
--	} while (__cmpxchg_u32(p, oldv, newv) != oldv);
--
--	return ret;
--}
--
--static inline unsigned long xchg_u16(volatile u16 *m, unsigned long val)
--{
--	return __xchg_cmpxchg(m, val, sizeof *m);
--}
--
--static inline unsigned long xchg_u8(volatile u8 *m, unsigned long val)
--{
--	return __xchg_cmpxchg(m, val, sizeof *m);
--}
-+#include <asm/cmpxchg-xchg.h>
++#define __smp_mb()	dmb(ish)
++#define __smp_rmb()	__smp_mb()
++#define __smp_wmb()	dmb(ishst)
  
- #endif /* __ASM_SH_CMPXCHG_LLSC_H */
-diff --git a/arch/sh/include/asm/cmpxchg-xchg.h b/arch/sh/include/asm/cmpxchg-xchg.h
-new file mode 100644
-index 0000000..7219719
---- /dev/null
-+++ b/arch/sh/include/asm/cmpxchg-xchg.h
-@@ -0,0 +1,51 @@
-+#ifndef __ASM_SH_CMPXCHG_XCHG_H
-+#define __ASM_SH_CMPXCHG_XCHG_H
-+
-+/*
-+ * Copyright (C) 2016 Red Hat, Inc.
-+ * Author: Michael S. Tsirkin <mst@redhat.com>
-+ *
-+ * This work is licensed under the terms of the GNU GPL, version 2.  See the
-+ * file "COPYING" in the main directory of this archive for more details.
-+ */
-+#include <linux/bitops.h>
-+#include <asm/byteorder.h>
-+
-+/*
-+ * Portable implementations of 1 and 2 byte xchg using a 4 byte cmpxchg.
-+ * Note: this header isn't self-contained: before including it, __cmpxchg_u32
-+ * must be defined first.
-+ */
-+static inline u32 __xchg_cmpxchg(volatile void *ptr, u32 x, int size)
-+{
-+	int off = (unsigned long)ptr % sizeof(u32);
-+	volatile u32 *p = ptr - off;
-+#ifdef __BIG_ENDIAN
-+	int bitoff = (sizeof(u32) - 1 - off) * BITS_PER_BYTE;
-+#else
-+	int bitoff = off * BITS_PER_BYTE;
-+#endif
-+	u32 bitmask = ((0x1 << size * BITS_PER_BYTE) - 1) << bitoff;
-+	u32 oldv, newv;
-+	u32 ret;
-+
-+	do {
-+		oldv = READ_ONCE(*p);
-+		ret = (oldv & bitmask) >> bitoff;
-+		newv = (oldv & ~bitmask) | (x << bitoff);
-+	} while (__cmpxchg_u32(p, oldv, newv) != oldv);
-+
-+	return ret;
-+}
-+
-+static inline unsigned long xchg_u16(volatile u16 *m, unsigned long val)
-+{
-+	return __xchg_cmpxchg(m, val, sizeof *m);
-+}
-+
-+static inline unsigned long xchg_u8(volatile u8 *m, unsigned long val)
-+{
-+	return __xchg_cmpxchg(m, val, sizeof *m);
-+}
-+
-+#endif /* __ASM_SH_CMPXCHG_XCHG_H */
+ #include <asm-generic/barrier.h>
+ 
 -- 
 MST
-
 
