@@ -1,36 +1,45 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: Re: [PATCH] um: link with -lpthread
-References: <1451577977-12990-1-git-send-email-vegard.nossum@oracle.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5692BB84.5060106@nod.at>
-Date: Sun, 10 Jan 2016 21:13:56 +0100
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Date: Sun, 10 Jan 2016 16:20:09 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH v3 26/41] xtensa: define __smp_xxx
+Message-ID: <1452426622-4471-27-git-send-email-mst@redhat.com>
+References: <1452426622-4471-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1451577977-12990-1-git-send-email-vegard.nossum@oracle.com>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vegard Nossum <vegard.nossum@oracle.com>
-Cc: Lorenzo Colitti <lorenzo@google.com>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am 31.12.2015 um 17:06 schrieb Vegard Nossum:
-> Similarly to commit fb1770aa78a43530940d0c2dd161e77bc705bdac, with gcc 5
-> on Ubuntu and CONFIG_STATIC_LINK=y I was seeing these linker errors:
-> 
-> /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/librt.a(timer_create.o): In function `__timer_create_new':
-> (.text+0xcd): undefined reference to `pthread_once'
-> /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/librt.a(timer_create.o): In function `__timer_create_new':
-> (.text+0x126): undefined reference to `pthread_attr_init'
-> /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/librt.a(timer_create.o): In function `__timer_create_new':
-> (.text+0x168): undefined reference to `pthread_attr_setdetachstate'
-> [...]
-> 
-> Obviously we also need -lpthread for librt.a.
-> 
-> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+This defines __smp_xxx barriers for xtensa,
+for use by virtualization.
 
-Applied!
+smp_xxx barriers are removed as they are
+defined correctly by asm-generic/barriers.h
 
-Thanks,
-//richard
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/xtensa/include/asm/barrier.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/xtensa/include/asm/barrier.h b/arch/xtensa/include/asm/barrier.h
+index 5b88774..956596e 100644
+--- a/arch/xtensa/include/asm/barrier.h
++++ b/arch/xtensa/include/asm/barrier.h
+@@ -13,8 +13,8 @@
+ #define rmb() barrier()
+ #define wmb() mb()
+ 
+-#define smp_mb__before_atomic()		barrier()
+-#define smp_mb__after_atomic()		barrier()
++#define __smp_mb__before_atomic()		barrier()
++#define __smp_mb__after_atomic()		barrier()
+ 
+ #include <asm-generic/barrier.h>
+ 
+-- 
+MST
 
