@@ -1,39 +1,60 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: Re: [PATCH v3] um: Fix build error and kconfig for i386
-References: <1450959131-5113-1-git-send-email-mic@digikod.net>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5692BCFE.10804@nod.at>
-Date: Sun, 10 Jan 2016 21:20:14 +0100
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Date: Sun, 10 Jan 2016 21:30:38 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH v3 1/3] checkpatch.pl: add missing memory barriers
+Message-ID: <1452454200-8844-2-git-send-email-mst@redhat.com>
+References: <1452454200-8844-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1450959131-5113-1-git-send-email-mic@digikod.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>, linux-kernel@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net, Josh Triplett <josh@joshtriplett.org>, "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>, Michal Marek <mmarek@suse.cz>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1452454200-8844-1-git-send-email-mst@redhat.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Andrey Konovalov <andreyknvl@google.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am 24.12.2015 um 13:12 schrieb Mickaël Salaün:
-> Fix build error by generating elfcore.o only when ELF_CORE (depending on
-> COREDUMP) is selected:
-> 
-> arch/x86/um/built-in.o: In function `elf_core_write_extra_phdrs':
-> (.text+0x3e62): undefined reference to `dump_emit'
-> arch/x86/um/built-in.o: In function `elf_core_write_extra_data':
-> (.text+0x3eef): undefined reference to `dump_emit'
-> 
-> Fixes: 5d2acfc7b974 ("kconfig: make allnoconfig disable options behind EMBEDDED and EXPERT")
-> Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
-> Cc: Michal Marek <mmarek@suse.cz>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+SMP-only barriers were missing in checkpatch.pl
 
-Applied!
+Refactor code slightly to make adding more variants easier.
 
-Thanks,
-//richard
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ scripts/checkpatch.pl | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 2b3c228..1c01b7d 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5116,7 +5116,27 @@ sub process {
+ 			}
+ 		}
+ # check for memory barriers without a comment.
+-		if ($line =~ /\b(mb|rmb|wmb|read_barrier_depends|smp_mb|smp_rmb|smp_wmb|smp_read_barrier_depends)\(/) {
++
++		my $barriers = qr{
++			mb|
++			rmb|
++			wmb|
++			read_barrier_depends
++		}x;
++		my $smp_barrier_stems = qr{
++			mb__before_atomic|
++			mb__after_atomic|
++			store_release|
++			load_acquire|
++			store_mb|
++			(?:$barriers)
++		}x;
++		my $all_barriers = qr{
++			$barriers|
++			smp_(?:$smp_barrier_stems)
++		}x;
++
++		if ($line =~ /\b(?:$all_barriers)\s*\(/) {
+ 			if (!ctx_has_comment($first_line, $linenr)) {
+ 				WARN("MEMORY_BARRIER",
+ 				     "memory barrier without comment\n" . $herecurr);
+-- 
+MST
 
