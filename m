@@ -1,58 +1,50 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 25 Jan 2016 23:24:21 +0100
-Message-Id: <1453760661-1444-23-git-send-email-richard@nod.at>
-In-Reply-To: <1453760661-1444-1-git-send-email-richard@nod.at>
-References: <1453760661-1444-1-git-send-email-richard@nod.at>
-Subject: [uml-devel] [PATCH 22/22] um: Export pm_power_off
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Message-ID: <1452438519.7773.23.camel@perches.com>
+Subject: Re: [PATCH v2 2/3] checkpatch: check for __smp outside barrier.h
+From: Joe Perches <joe@perches.com>
+Date: Sun, 10 Jan 2016 07:08:39 -0800
+In-Reply-To: <1452427000-4520-3-git-send-email-mst@redhat.com>
+References: <1452427000-4520-1-git-send-email-mst@redhat.com>
+	 <1452427000-4520-3-git-send-email-mst@redhat.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Sender: linux-sh-owner@vger.kernel.org
+To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Andy Whitcroft <apw@canonical.com>, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>, Tony Lindgren <tony@atomide.com>, Andrey Konovalov <andreyknvl@google.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-...modules are using this symbol.
-Export it like all other archs to.
+On Sun, 2016-01-10 at 13:57 +0200, Michael S. Tsirkin wrote:
+> Introduction of __smp barriers cleans up a bunch of duplicate code, but
+> it gives people an additional handle onto a "new" set of barriers - just
+> because they're prefixed with __* unfortunately doesn't stop anyone from
+> using it (as happened with other arch stuff before.)
+>=20
+> Add a checkpatch test so it will trigger a warning.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -5141,6 +5141,16 @@ sub process {
+> =EF=BF=BD			}
+> =EF=BF=BD		}
+> =EF=BF=BD
+> +		my $underscore_smp_barriers =3D qr{__smp_($smp_barriers)}x;
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/kernel/reboot.c | 1 +
- 1 file changed, 1 insertion(+)
+another unnecessary capture group
 
-diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
-index 9bdf67a..b60a9f8 100644
---- a/arch/um/kernel/reboot.c
-+++ b/arch/um/kernel/reboot.c
-@@ -12,6 +12,7 @@
- #include <skas.h>
- 
- void (*pm_power_off)(void);
-+EXPORT_SYMBOL(pm_power_off);
- 
- static void kill_off_processes(void)
- {
--- 
-1.8.4.5
-
-
-------------------------------------------------------------------------------
-Site24x7 APM Insight: Get Deep Visibility into Application Performance
-APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
-Monitor end-to-end web transactions and take corrective actions now
-Troubleshoot faster and improve end-user experience. Signup Now!
-http://pubads.g.doubleclick.net/gampad/clk?id=267308311&iu=/4140
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> +
+> +		if ($realfile !~ m@^include/asm-generic/@ &&
+> +		=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD$realfile !~ m@/barrier\.h$@ &&
+> +		=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD$line =3D~ m/\b($underscore_smp_ba=
+rriers)\s*\(/ &&
+> +		=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD$line !~ m/^.\s*\#\s*define\s+($un=
+derscore_smp_barriers)\s*\(/) {
+> +			WARN("MEMORY_BARRIER",
+> +			=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD"__smp memory barriers s=
+houldn't be used outside barrier.h and asm-generic\n" . $herecurr);
+> +		}
+> +
+> =EF=BF=BD# check for waitqueue_active without a comment.
+> =EF=BF=BD		if ($line =3D~ /\bwaitqueue_active\s*\(/) {
+> =EF=BF=BD			if (!ctx_has_comment($first_line, $linenr)) {
 
