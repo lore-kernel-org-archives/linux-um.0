@@ -1,60 +1,76 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1aIIMi-0002Ys-FY
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Jan 2016 15:57:12 +0000
-Received: from mail-ob0-f196.google.com ([209.85.214.196])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1aIIMh-0005f7-Nu
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 10 Jan 2016 15:57:12 +0000
-Received: by mail-ob0-f196.google.com with SMTP id tr5so26269079obc.2
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 10 Jan 2016 07:57:11 -0800 (PST)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Sun, 10 Jan 2016 16:17:54 +0200
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH v3 10/41] metag: reuse asm-generic/barrier.h
+Message-ID: <1452426622-4471-11-git-send-email-mst@redhat.com>
+References: <1452426622-4471-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1450724041-708451-1-git-send-email-aivanov@brocade.com>
-References: <1450724041-708451-1-git-send-email-aivanov@brocade.com>
-Date: Sun, 10 Jan 2016 16:57:06 +0100
-Message-ID: <CAFLxGvyBqp5SKxE9tkokiL7PEz8sqrgoiQ2PxCfJNzkzY=pB5Q@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: [uml-devel] [PATCH 1/2] Update UBD to use pread/pwrite family
-	of functions
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Anton Ivanov <aivanov@brocade.com>
-Cc: Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, James Hogan <james.hogan@imgtec.com>, Ingo Molnar <mingo@kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Mon, Dec 21, 2015 at 7:54 PM, Anton Ivanov <aivanov@brocade.com> wrote:
-> This decreases the number of syscalls per read/write by half.
->
-> Signed-off-by: Anton Ivanov <aivanov@brocade.com>
+On metag dma_rmb, dma_wmb, smp_store_mb, read_barrier_depends,
+smp_read_barrier_depends, smp_store_release and smp_load_acquire  match
+the asm-generic variants exactly. Drop the local definitions and pull in
+asm-generic/barrier.h instead.
 
-Applied!
+This is in preparation to refactoring this code area.
 
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/metag/include/asm/barrier.h | 25 ++-----------------------
+ 1 file changed, 2 insertions(+), 23 deletions(-)
+
+diff --git a/arch/metag/include/asm/barrier.h b/arch/metag/include/asm/barrier.h
+index 172b7e5..b5b778b 100644
+--- a/arch/metag/include/asm/barrier.h
++++ b/arch/metag/include/asm/barrier.h
+@@ -44,9 +44,6 @@ static inline void wr_fence(void)
+ #define rmb()		barrier()
+ #define wmb()		mb()
+ 
+-#define dma_rmb()	rmb()
+-#define dma_wmb()	wmb()
+-
+ #ifndef CONFIG_SMP
+ #define fence()		do { } while (0)
+ #define smp_mb()        barrier()
+@@ -81,27 +78,9 @@ static inline void fence(void)
+ #endif
+ #endif
+ 
+-#define read_barrier_depends()		do { } while (0)
+-#define smp_read_barrier_depends()	do { } while (0)
+-
+-#define smp_store_mb(var, value) do { WRITE_ONCE(var, value); smp_mb(); } while (0)
+-
+-#define smp_store_release(p, v)						\
+-do {									\
+-	compiletime_assert_atomic_type(*p);				\
+-	smp_mb();							\
+-	WRITE_ONCE(*p, v);						\
+-} while (0)
+-
+-#define smp_load_acquire(p)						\
+-({									\
+-	typeof(*p) ___p1 = READ_ONCE(*p);				\
+-	compiletime_assert_atomic_type(*p);				\
+-	smp_mb();							\
+-	___p1;								\
+-})
+-
+ #define smp_mb__before_atomic()	barrier()
+ #define smp_mb__after_atomic()	barrier()
+ 
++#include <asm-generic/barrier.h>
++
+ #endif /* _ASM_METAG_BARRIER_H */
 -- 
-Thanks,
-//richard
+MST
 
-------------------------------------------------------------------------------
-Site24x7 APM Insight: Get Deep Visibility into Application Performance
-APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
-Monitor end-to-end web transactions and take corrective actions now
-Troubleshoot faster and improve end-user experience. Signup Now!
-http://pubads.g.doubleclick.net/gampad/clk?id=267308311&iu=/4140
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
