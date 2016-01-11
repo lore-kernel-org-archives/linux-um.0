@@ -1,186 +1,130 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 10 Jan 2016 16:20:50 +0200
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Mon, 11 Jan 2016 13:10:54 +0200
 From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v3 31/41] sh: support 1 and 2 byte xchg
-Message-ID: <1452426622-4471-32-git-send-email-mst@redhat.com>
-References: <1452426622-4471-1-git-send-email-mst@redhat.com>
+Subject: Re: [PATCH v2 20/32] metag: define __smp_xxx
+Message-ID: <20160111131001-mutt-send-email-mst@redhat.com>
+References: <1451572003-2440-1-git-send-email-mst@redhat.com>
+ <1451572003-2440-21-git-send-email-mst@redhat.com>
+ <20160105000929.GM17861@jhogan-linux.le.imgtec.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Rich Felker <dalias@libc.org>
+In-Reply-To: <20160105000929.GM17861@jhogan-linux.le.imgtec.org>
+Sender: linux-arch-owner@vger.kernel.org
+To: James Hogan <james.hogan@imgtec.com>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@kernel.org>, Davidlohr Bueso <dbueso@suse.de>, Andrey Konovalov <andreyknvl@google.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This completes the xchg implementation for sh architecture.  Note: The
-llsc variant is tricky since this only supports 4 byte atomics, the
-existing implementation of 1 byte xchg is wrong: we need to do a 4 byte
-cmpxchg and retry if any bytes changed meanwhile.
+On Tue, Jan 05, 2016 at 12:09:30AM +0000, James Hogan wrote:
+> Hi Michael,
+> 
+> On Thu, Dec 31, 2015 at 09:08:22PM +0200, Michael S. Tsirkin wrote:
+> > This defines __smp_xxx barriers for metag,
+> > for use by virtualization.
+> > 
+> > smp_xxx barriers are removed as they are
+> > defined correctly by asm-generic/barriers.h
+> > 
+> > Note: as __smp_XX macros should not depend on CONFIG_SMP, they can not
+> > use the existing fence() macro since that is defined differently between
+> > SMP and !SMP.  For this reason, this patch introduces a wrapper
+> > metag_fence() that doesn't depend on CONFIG_SMP.
+> > fence() is then defined using that, depending on CONFIG_SMP.
+> 
+> I'm not a fan of the inconsistent commit message wrapping. I wrap to 72
+> columns (although I now notice SubmittingPatches says to use 75...).
+> 
+> > 
+> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  arch/metag/include/asm/barrier.h | 32 +++++++++++++++-----------------
+> >  1 file changed, 15 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/arch/metag/include/asm/barrier.h b/arch/metag/include/asm/barrier.h
+> > index b5b778b..84880c9 100644
+> > --- a/arch/metag/include/asm/barrier.h
+> > +++ b/arch/metag/include/asm/barrier.h
+> > @@ -44,13 +44,6 @@ static inline void wr_fence(void)
+> >  #define rmb()		barrier()
+> >  #define wmb()		mb()
+> >  
+> > -#ifndef CONFIG_SMP
+> > -#define fence()		do { } while (0)
+> > -#define smp_mb()        barrier()
+> > -#define smp_rmb()       barrier()
+> > -#define smp_wmb()       barrier()
+> > -#else
+> 
+> !SMP kernel text differs, but only because of new presence of unused
+> metag_fence() inline function. If I #if 0 that out, then it matches, so
+> thats fine.
+> 
+> > -
+> >  #ifdef CONFIG_METAG_SMP_WRITE_REORDERING
+> >  /*
+> >   * Write to the atomic memory unlock system event register (command 0). This is
+> > @@ -60,26 +53,31 @@ static inline void wr_fence(void)
+> >   * incoherence). It is therefore ineffective if used after and on the same
+> >   * thread as a write.
+> >   */
+> > -static inline void fence(void)
+> > +static inline void metag_fence(void)
+> >  {
+> >  	volatile int *flushptr = (volatile int *) LINSYSEVENT_WR_ATOMIC_UNLOCK;
+> >  	barrier();
+> >  	*flushptr = 0;
+> >  	barrier();
+> >  }
+> > -#define smp_mb()        fence()
+> > -#define smp_rmb()       fence()
+> > -#define smp_wmb()       barrier()
+> > +#define __smp_mb()        metag_fence()
+> > +#define __smp_rmb()       metag_fence()
+> > +#define __smp_wmb()       barrier()
+> >  #else
+> > -#define fence()		do { } while (0)
+> > -#define smp_mb()        barrier()
+> > -#define smp_rmb()       barrier()
+> > -#define smp_wmb()       barrier()
+> > +#define metag_fence()		do { } while (0)
+> > +#define __smp_mb()        barrier()
+> > +#define __smp_rmb()       barrier()
+> > +#define __smp_wmb()       barrier()
+> 
+> Whitespace is now messed up. Admitedly its already inconsistent
+> tabs/spaces, but it'd be nice if the definitions at least still all
+> lined up. You're touching all the definitions which use spaces anyway,
+> so feel free to convert them to tabs while you're at it.
+> 
+> Other than those niggles, it looks sensible to me:
+> Acked-by: James Hogan <james.hogan@imgtec.com>
+> 
+> Cheers
+> James
 
-Write this in C for clarity.
+Thanks!
 
-Suggested-by: Rich Felker <dalias@libc.org>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- arch/sh/include/asm/cmpxchg-grb.h  | 22 +++++++++++++++
- arch/sh/include/asm/cmpxchg-irq.h  | 11 ++++++++
- arch/sh/include/asm/cmpxchg-llsc.h | 58 +++++++++++++++++++++++---------------
- arch/sh/include/asm/cmpxchg.h      |  3 ++
- 4 files changed, 72 insertions(+), 22 deletions(-)
+I did this in my tree (replaced spaces with tabs in the new
+definitions); not reposting just because of this change.
 
-diff --git a/arch/sh/include/asm/cmpxchg-grb.h b/arch/sh/include/asm/cmpxchg-grb.h
-index f848dec..2ed557b 100644
---- a/arch/sh/include/asm/cmpxchg-grb.h
-+++ b/arch/sh/include/asm/cmpxchg-grb.h
-@@ -23,6 +23,28 @@ static inline unsigned long xchg_u32(volatile u32 *m, unsigned long val)
- 	return retval;
- }
- 
-+static inline unsigned long xchg_u16(volatile u16 *m, unsigned long val)
-+{
-+	unsigned long retval;
-+
-+	__asm__ __volatile__ (
-+		"   .align  2             \n\t"
-+		"   mova    1f,   r0      \n\t" /* r0 = end point */
-+		"   mov    r15,   r1      \n\t" /* r1 = saved sp */
-+		"   mov    #-6,   r15     \n\t" /* LOGIN */
-+		"   mov.w  @%1,   %0      \n\t" /* load  old value */
-+		"   extu.w  %0,   %0      \n\t" /* extend as unsigned */
-+		"   mov.w   %2,   @%1     \n\t" /* store new value */
-+		"1: mov     r1,   r15     \n\t" /* LOGOUT */
-+		: "=&r" (retval),
-+		  "+r"  (m),
-+		  "+r"  (val)		/* inhibit r15 overloading */
-+		:
-+		: "memory" , "r0", "r1");
-+
-+	return retval;
-+}
-+
- static inline unsigned long xchg_u8(volatile u8 *m, unsigned long val)
- {
- 	unsigned long retval;
-diff --git a/arch/sh/include/asm/cmpxchg-irq.h b/arch/sh/include/asm/cmpxchg-irq.h
-index bd11f63..f888772 100644
---- a/arch/sh/include/asm/cmpxchg-irq.h
-+++ b/arch/sh/include/asm/cmpxchg-irq.h
-@@ -14,6 +14,17 @@ static inline unsigned long xchg_u32(volatile u32 *m, unsigned long val)
- 	return retval;
- }
- 
-+static inline unsigned long xchg_u16(volatile u16 *m, unsigned long val)
-+{
-+	unsigned long flags, retval;
-+
-+	local_irq_save(flags);
-+	retval = *m;
-+	*m = val;
-+	local_irq_restore(flags);
-+	return retval;
-+}
-+
- static inline unsigned long xchg_u8(volatile u8 *m, unsigned long val)
- {
- 	unsigned long flags, retval;
-diff --git a/arch/sh/include/asm/cmpxchg-llsc.h b/arch/sh/include/asm/cmpxchg-llsc.h
-index 4713666..e754794 100644
---- a/arch/sh/include/asm/cmpxchg-llsc.h
-+++ b/arch/sh/include/asm/cmpxchg-llsc.h
-@@ -1,6 +1,9 @@
- #ifndef __ASM_SH_CMPXCHG_LLSC_H
- #define __ASM_SH_CMPXCHG_LLSC_H
- 
-+#include <linux/bitops.h>
-+#include <asm/byteorder.h>
-+
- static inline unsigned long xchg_u32(volatile u32 *m, unsigned long val)
- {
- 	unsigned long retval;
-@@ -22,29 +25,8 @@ static inline unsigned long xchg_u32(volatile u32 *m, unsigned long val)
- 	return retval;
- }
- 
--static inline unsigned long xchg_u8(volatile u8 *m, unsigned long val)
--{
--	unsigned long retval;
--	unsigned long tmp;
--
--	__asm__ __volatile__ (
--		"1:					\n\t"
--		"movli.l	@%2, %0	! xchg_u8	\n\t"
--		"mov		%0, %1			\n\t"
--		"mov		%3, %0			\n\t"
--		"movco.l	%0, @%2			\n\t"
--		"bf		1b			\n\t"
--		"synco					\n\t"
--		: "=&z"(tmp), "=&r" (retval)
--		: "r" (m), "r" (val & 0xff)
--		: "t", "memory"
--	);
--
--	return retval;
--}
--
- static inline unsigned long
--__cmpxchg_u32(volatile int *m, unsigned long old, unsigned long new)
-+__cmpxchg_u32(volatile u32 *m, unsigned long old, unsigned long new)
- {
- 	unsigned long retval;
- 	unsigned long tmp;
-@@ -68,4 +50,36 @@ __cmpxchg_u32(volatile int *m, unsigned long old, unsigned long new)
- 	return retval;
- }
- 
-+static inline u32 __xchg_cmpxchg(volatile void *ptr, u32 x, int size)
-+{
-+	int off = (unsigned long)ptr % sizeof(u32);
-+	volatile u32 *p = ptr - off;
-+#ifdef __BIG_ENDIAN
-+	int bitoff = (sizeof(u32) - 1 - off) * BITS_PER_BYTE;
-+#else
-+	int bitoff = off * BITS_PER_BYTE;
-+#endif
-+	u32 bitmask = ((0x1 << size * BITS_PER_BYTE) - 1) << bitoff;
-+	u32 oldv, newv;
-+	u32 ret;
-+
-+	do {
-+		oldv = READ_ONCE(*p);
-+		ret = (oldv & bitmask) >> bitoff;
-+		newv = (oldv & ~bitmask) | (x << bitoff);
-+	} while (__cmpxchg_u32(p, oldv, newv) != oldv);
-+
-+	return ret;
-+}
-+
-+static inline unsigned long xchg_u16(volatile u16 *m, unsigned long val)
-+{
-+	return __xchg_cmpxchg(m, val, sizeof *m);
-+}
-+
-+static inline unsigned long xchg_u8(volatile u8 *m, unsigned long val)
-+{
-+	return __xchg_cmpxchg(m, val, sizeof *m);
-+}
-+
- #endif /* __ASM_SH_CMPXCHG_LLSC_H */
-diff --git a/arch/sh/include/asm/cmpxchg.h b/arch/sh/include/asm/cmpxchg.h
-index 85c97b18..5225916 100644
---- a/arch/sh/include/asm/cmpxchg.h
-+++ b/arch/sh/include/asm/cmpxchg.h
-@@ -27,6 +27,9 @@ extern void __xchg_called_with_bad_pointer(void);
- 	case 4:						\
- 		__xchg__res = xchg_u32(__xchg_ptr, x);	\
- 		break;					\
-+	case 2:						\
-+		__xchg__res = xchg_u16(__xchg_ptr, x);	\
-+		break;					\
- 	case 1:						\
- 		__xchg__res = xchg_u8(__xchg_ptr, x);	\
- 		break;					\
--- 
-MST
+> >  #endif
+> > +
+> > +#ifdef CONFIG_SMP
+> > +#define fence() metag_fence()
+> > +#else
+> > +#define fence()		do { } while (0)
+> >  #endif
+> >  
+> > -#define smp_mb__before_atomic()	barrier()
+> > -#define smp_mb__after_atomic()	barrier()
+> > +#define __smp_mb__before_atomic()	barrier()
+> > +#define __smp_mb__after_atomic()	barrier()
+> >  
+> >  #include <asm-generic/barrier.h>
+> >  
+> > -- 
+> > MST
+> > 
 
 
