@@ -1,58 +1,28 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 10 Jan 2016 16:17:18 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v3 06/41] s390: reuse asm-generic/barrier.h
-Message-ID: <1452426622-4471-7-git-send-email-mst@redhat.com>
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Date: Tue, 12 Jan 2016 13:50:07 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v3 00/41] arch: barrier cleanup + barriers for virt
+Message-ID: <20160112125007.GR6344@twins.programming.kicks-ass.net>
 References: <1452426622-4471-1-git-send-email-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Ingo Molnar <mingo@kernel.org>, Davidlohr Bueso <dave@stgolabs.net>, Christian Borntraeger <borntraeger@de.ibm.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On s390 read_barrier_depends, smp_read_barrier_depends
-smp_store_mb(), smp_mb__before_atomic and smp_mb__after_atomic match the
-asm-generic variants exactly. Drop the local definitions and pull in
-asm-generic/barrier.h instead.
+On Sun, Jan 10, 2016 at 04:16:22PM +0200, Michael S. Tsirkin wrote:
+> I parked this in vhost tree for now, though the inclusion of patch 1 from tip
+> creates a merge conflict - but one that is trivial to resolve.
+> 
+> So I intend to just merge it all through my tree, including the
+> duplicate patch, and assume conflict will be resolved.
+> 
+> I would really appreciate some feedback on arch bits (especially the x86 bits),
+> and acks for merging this through the vhost tree.
 
-This is in preparation to refactoring this code area.
+Thanks for doing this, looks good to me.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/s390/include/asm/barrier.h | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
-
-diff --git a/arch/s390/include/asm/barrier.h b/arch/s390/include/asm/barrier.h
-index 7ffd0b1..c358c31 100644
---- a/arch/s390/include/asm/barrier.h
-+++ b/arch/s390/include/asm/barrier.h
-@@ -30,14 +30,6 @@
- #define smp_rmb()			rmb()
- #define smp_wmb()			wmb()
- 
--#define read_barrier_depends()		do { } while (0)
--#define smp_read_barrier_depends()	do { } while (0)
--
--#define smp_mb__before_atomic()		smp_mb()
--#define smp_mb__after_atomic()		smp_mb()
--
--#define smp_store_mb(var, value)	do { WRITE_ONCE(var, value); smp_mb(); } while (0)
--
- #define smp_store_release(p, v)						\
- do {									\
- 	compiletime_assert_atomic_type(*p);				\
-@@ -53,4 +45,6 @@ do {									\
- 	___p1;								\
- })
- 
-+#include <asm-generic/barrier.h>
-+
- #endif /* __ASM_BARRIER_H */
--- 
-MST
-
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
