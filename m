@@ -1,89 +1,60 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Date: Thu, 31 Dec 2015 21:07:10 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Message-ID: <1451572003-2440-12-git-send-email-mst@redhat.com>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451572003-2440-1-git-send-email-mst@redhat.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: [PATCH v2 11/32] mips: reuse asm-generic/barrier.h
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 17/22] media: Fix dependencies for !HAS_IOMEM archs
+Date: Mon, 25 Jan 2016 23:24:16 +0100
+Message-Id: <1453760661-1444-18-git-send-email-richard@nod.at>
+In-Reply-To: <1453760661-1444-1-git-send-email-richard@nod.at>
+References: <1453760661-1444-1-git-send-email-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrey Konovalov <andreyknvl@google.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Olli Salonen <olli.salonen@iki.fi>, linux-media@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On mips dma_rmb, dma_wmb, smp_store_mb, read_barrier_depends,
-smp_read_barrier_depends, smp_store_release and smp_load_acquire  match
-the asm-generic variants exactly. Drop the local definitions and pull in
-asm-generic/barrier.h instead.
+Not every arch has io memory.
+While the driver has correct dependencies the select statement
+will bypass the HAS_IOMEM dependency.
+So, unbreak the build by rendering it into a real dependency.
 
-This is in preparation to refactoring this code area.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/mips/include/asm/barrier.h | 25 ++-----------------------
- 1 file changed, 2 insertions(+), 23 deletions(-)
+ drivers/media/Kconfig             | 3 +--
+ drivers/media/usb/cx231xx/Kconfig | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/barrier.h b/arch/mips/include/asm/barrier.h
-index 752e0b8..3eac4b9 100644
---- a/arch/mips/include/asm/barrier.h
-+++ b/arch/mips/include/asm/barrier.h
-@@ -10,9 +10,6 @@
+diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
+index a8518fb..5553cb1 100644
+--- a/drivers/media/Kconfig
++++ b/drivers/media/Kconfig
+@@ -187,8 +187,7 @@ config MEDIA_SUBDRV_AUTOSELECT
+ 	bool "Autoselect ancillary drivers (tuners, sensors, i2c, frontends)"
+ 	depends on MEDIA_ANALOG_TV_SUPPORT || MEDIA_DIGITAL_TV_SUPPORT || MEDIA_CAMERA_SUPPORT || MEDIA_SDR_SUPPORT
+ 	depends on HAS_IOMEM
+-	select I2C
+-	select I2C_MUX
++	depends on I2C_MUX && I2C
+ 	default y
+ 	help
+ 	  By default, a media driver auto-selects all possible ancillary
+diff --git a/drivers/media/usb/cx231xx/Kconfig b/drivers/media/usb/cx231xx/Kconfig
+index 0cced3e..30ae67d 100644
+--- a/drivers/media/usb/cx231xx/Kconfig
++++ b/drivers/media/usb/cx231xx/Kconfig
+@@ -1,13 +1,13 @@
+ config VIDEO_CX231XX
+ 	tristate "Conexant cx231xx USB video capture support"
+ 	depends on VIDEO_DEV && I2C
++	depends on I2C_MUX
+ 	select VIDEO_TUNER
+ 	select VIDEO_TVEEPROM
+ 	depends on RC_CORE
+ 	select VIDEOBUF_VMALLOC
+ 	select VIDEO_CX25840
+ 	select VIDEO_CX2341X
+-	select I2C_MUX
  
- #include <asm/addrspace.h>
- 
--#define read_barrier_depends()		do { } while(0)
--#define smp_read_barrier_depends()	do { } while(0)
--
- #ifdef CONFIG_CPU_HAS_SYNC
- #define __sync()				\
- 	__asm__ __volatile__(			\
-@@ -87,8 +84,6 @@
- 
- #define wmb()		fast_wmb()
- #define rmb()		fast_rmb()
--#define dma_wmb()	fast_wmb()
--#define dma_rmb()	fast_rmb()
- 
- #if defined(CONFIG_WEAK_ORDERING) && defined(CONFIG_SMP)
- # ifdef CONFIG_CPU_CAVIUM_OCTEON
-@@ -112,9 +107,6 @@
- #define __WEAK_LLSC_MB		"		\n"
- #endif
- 
--#define smp_store_mb(var, value) \
--	do { WRITE_ONCE(var, value); smp_mb(); } while (0)
--
- #define smp_llsc_mb()	__asm__ __volatile__(__WEAK_LLSC_MB : : :"memory")
- 
- #ifdef CONFIG_CPU_CAVIUM_OCTEON
-@@ -129,22 +121,9 @@
- #define nudge_writes() mb()
- #endif
- 
--#define smp_store_release(p, v)						\
--do {									\
--	compiletime_assert_atomic_type(*p);				\
--	smp_mb();							\
--	WRITE_ONCE(*p, v);						\
--} while (0)
--
--#define smp_load_acquire(p)						\
--({									\
--	typeof(*p) ___p1 = READ_ONCE(*p);				\
--	compiletime_assert_atomic_type(*p);				\
--	smp_mb();							\
--	___p1;								\
--})
--
- #define smp_mb__before_atomic()	smp_mb__before_llsc()
- #define smp_mb__after_atomic()	smp_llsc_mb()
- 
-+#include <asm-generic/barrier.h>
-+
- #endif /* __ASM_BARRIER_H */
+ 	---help---
+ 	  This is a video4linux driver for Conexant 231xx USB based TV cards.
 -- 
-MST
+1.8.4.5
+
 
