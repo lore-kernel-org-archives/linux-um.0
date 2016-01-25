@@ -1,60 +1,69 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1aNpZ8-00052q-RL
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Jan 2016 22:24:54 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1aNpZ8-0002pT-4e for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 25 Jan 2016 22:24:54 +0000
 From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 17/22] media: Fix dependencies for !HAS_IOMEM archs
-Date: Mon, 25 Jan 2016 23:24:16 +0100
-Message-Id: <1453760661-1444-18-git-send-email-richard@nod.at>
+Date: Mon, 25 Jan 2016 23:24:09 +0100
+Message-Id: <1453760661-1444-11-git-send-email-richard@nod.at>
 In-Reply-To: <1453760661-1444-1-git-send-email-richard@nod.at>
 References: <1453760661-1444-1-git-send-email-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [uml-devel] [PATCH 10/22] mailbox: Fix dependencies for !HAS_IOMEM
+	archs
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: linux-kernel@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Olli Salonen <olli.salonen@iki.fi>, linux-media@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Cc: Richard Weinberger <richard@nod.at>, Jassi Brar <jassisinghbrar@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
 
 Not every arch has io memory.
-While the driver has correct dependencies the select statement
-will bypass the HAS_IOMEM dependency.
-So, unbreak the build by rendering it into a real dependency.
+So, unbreak the build by fixing the dependencies.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/media/Kconfig             | 3 +--
- drivers/media/usb/cx231xx/Kconfig | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/mailbox/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
-index a8518fb..5553cb1 100644
---- a/drivers/media/Kconfig
-+++ b/drivers/media/Kconfig
-@@ -187,8 +187,7 @@ config MEDIA_SUBDRV_AUTOSELECT
- 	bool "Autoselect ancillary drivers (tuners, sensors, i2c, frontends)"
- 	depends on MEDIA_ANALOG_TV_SUPPORT || MEDIA_DIGITAL_TV_SUPPORT || MEDIA_CAMERA_SUPPORT || MEDIA_SDR_SUPPORT
- 	depends on HAS_IOMEM
--	select I2C
--	select I2C_MUX
-+	depends on I2C_MUX && I2C
- 	default y
+diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+index 546d05f..b2bbe86 100644
+--- a/drivers/mailbox/Kconfig
++++ b/drivers/mailbox/Kconfig
+@@ -81,6 +81,7 @@ config STI_MBOX
+ config MAILBOX_TEST
+ 	tristate "Mailbox Test Client"
+ 	depends on OF
++	depends on HAS_IOMEM
  	help
- 	  By default, a media driver auto-selects all possible ancillary
-diff --git a/drivers/media/usb/cx231xx/Kconfig b/drivers/media/usb/cx231xx/Kconfig
-index 0cced3e..30ae67d 100644
---- a/drivers/media/usb/cx231xx/Kconfig
-+++ b/drivers/media/usb/cx231xx/Kconfig
-@@ -1,13 +1,13 @@
- config VIDEO_CX231XX
- 	tristate "Conexant cx231xx USB video capture support"
- 	depends on VIDEO_DEV && I2C
-+	depends on I2C_MUX
- 	select VIDEO_TUNER
- 	select VIDEO_TVEEPROM
- 	depends on RC_CORE
- 	select VIDEOBUF_VMALLOC
- 	select VIDEO_CX25840
- 	select VIDEO_CX2341X
--	select I2C_MUX
- 
- 	---help---
- 	  This is a video4linux driver for Conexant 231xx USB based TV cards.
+ 	  Test client to help with testing new Controller driver
+ 	  implementations.
 -- 
 1.8.4.5
 
+
+------------------------------------------------------------------------------
+Site24x7 APM Insight: Get Deep Visibility into Application Performance
+APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
+Monitor end-to-end web transactions and take corrective actions now
+Troubleshoot faster and improve end-user experience. Signup Now!
+http://pubads.g.doubleclick.net/gampad/clk?id=267308311&iu=/4140
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
