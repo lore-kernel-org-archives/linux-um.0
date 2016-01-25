@@ -1,76 +1,86 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Sun, 10 Jan 2016 16:17:54 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v3 10/41] metag: reuse asm-generic/barrier.h
-Message-ID: <1452426622-4471-11-git-send-email-mst@redhat.com>
-References: <1452426622-4471-1-git-send-email-mst@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 20/22] clocksource: Fix dependencies for !HAS_IOMEM archs
+Date: Mon, 25 Jan 2016 23:24:19 +0100
+Message-Id: <1453760661-1444-21-git-send-email-richard@nod.at>
+In-Reply-To: <1453760661-1444-1-git-send-email-richard@nod.at>
+References: <1453760661-1444-1-git-send-email-richard@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, James Hogan <james.hogan@imgtec.com>, Ingo Molnar <mingo@kernel.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On metag dma_rmb, dma_wmb, smp_store_mb, read_barrier_depends,
-smp_read_barrier_depends, smp_store_release and smp_load_acquire  match
-the asm-generic variants exactly. Drop the local definitions and pull in
-asm-generic/barrier.h instead.
+Not every arch has io memory.
+So, unbreak the build by fixing the dependencies.
 
-This is in preparation to refactoring this code area.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+[rw: Found these linker issues after
+resolving a pile of other build issues.]
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/metag/include/asm/barrier.h | 25 ++-----------------------
- 1 file changed, 2 insertions(+), 23 deletions(-)
+ drivers/clocksource/Kconfig | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/metag/include/asm/barrier.h b/arch/metag/include/asm/barrier.h
-index 172b7e5..b5b778b 100644
---- a/arch/metag/include/asm/barrier.h
-+++ b/arch/metag/include/asm/barrier.h
-@@ -44,9 +44,6 @@ static inline void wr_fence(void)
- #define rmb()		barrier()
- #define wmb()		mb()
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 56777f0..224841e 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -30,6 +30,7 @@ config CLKSRC_MMIO
+ config DIGICOLOR_TIMER
+ 	bool "Digicolor timer driver" if COMPILE_TEST
+ 	depends on GENERIC_CLOCKEVENTS
++	depends on HAS_IOMEM
+ 	help
+ 	  Enables the support for the digicolor timer driver.
  
--#define dma_rmb()	rmb()
--#define dma_wmb()	wmb()
--
- #ifndef CONFIG_SMP
- #define fence()		do { } while (0)
- #define smp_mb()        barrier()
-@@ -81,27 +78,9 @@ static inline void fence(void)
- #endif
- #endif
+@@ -76,6 +77,7 @@ config ORION_TIMER
+ config SUN4I_TIMER
+ 	bool "Sun4i timer driver" if COMPILE_TEST
+ 	depends on GENERIC_CLOCKEVENTS
++	depends on HAS_IOMEM
+ 	select CLKSRC_MMIO
+ 	help
+ 	  Enables support for the Sun4i timer.
+@@ -96,6 +98,7 @@ config TEGRA_TIMER
+ config VT8500_TIMER
+ 	bool "VT8500 timer driver" if COMPILE_TEST
+ 	depends on GENERIC_CLOCKEVENTS
++	depends on HAS_IOMEM
+ 	help
+ 	  Enables support for the VT8500 driver.
  
--#define read_barrier_depends()		do { } while (0)
--#define smp_read_barrier_depends()	do { } while (0)
--
--#define smp_store_mb(var, value) do { WRITE_ONCE(var, value); smp_mb(); } while (0)
--
--#define smp_store_release(p, v)						\
--do {									\
--	compiletime_assert_atomic_type(*p);				\
--	smp_mb();							\
--	WRITE_ONCE(*p, v);						\
--} while (0)
--
--#define smp_load_acquire(p)						\
--({									\
--	typeof(*p) ___p1 = READ_ONCE(*p);				\
--	compiletime_assert_atomic_type(*p);				\
--	smp_mb();							\
--	___p1;								\
--})
--
- #define smp_mb__before_atomic()	barrier()
- #define smp_mb__after_atomic()	barrier()
+@@ -131,6 +134,7 @@ config CLKSRC_NOMADIK_MTU_SCHED_CLOCK
+ config CLKSRC_DBX500_PRCMU
+ 	bool "Clocksource PRCMU Timer" if COMPILE_TEST
+ 	depends on GENERIC_CLOCKEVENTS
++	depends on HAS_IOMEM
+ 	help
+ 	  Use the always on PRCMU Timer as clocksource
  
-+#include <asm-generic/barrier.h>
-+
- #endif /* _ASM_METAG_BARRIER_H */
+@@ -248,6 +252,7 @@ config CLKSRC_EXYNOS_MCT
+ config CLKSRC_SAMSUNG_PWM
+ 	bool "PWM timer drvier for Samsung S3C, S5P" if COMPILE_TEST
+ 	depends on GENERIC_CLOCKEVENTS
++	depends on HAS_IOMEM
+ 	help
+ 	  This is a new clocksource driver for the PWM timer found in
+ 	  Samsung S3C, S5P and Exynos SoCs, replacing an earlier driver
+@@ -257,6 +262,7 @@ config CLKSRC_SAMSUNG_PWM
+ config FSL_FTM_TIMER
+ 	bool "Freescale FlexTimer Module driver" if COMPILE_TEST
+ 	depends on GENERIC_CLOCKEVENTS
++	depends on HAS_IOMEM
+ 	select CLKSRC_MMIO
+ 	help
+ 	  Support for Freescale FlexTimer Module (FTM) timer.
+@@ -360,6 +366,7 @@ config CLKSRC_TANGO_XTAL
+ config CLKSRC_PXA
+ 	bool "Clocksource for PXA or SA-11x0 platform" if COMPILE_TEST
+ 	depends on GENERIC_CLOCKEVENTS
++	depends on HAS_IOMEM
+ 	select CLKSRC_MMIO
+ 	help
+ 	  This enables OST0 support available on PXA and SA-11x0
 -- 
-MST
+1.8.4.5
 
 
