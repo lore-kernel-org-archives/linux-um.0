@@ -1,77 +1,59 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1aNpZ8-00052Z-5u
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Jan 2016 22:24:54 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1aNpZ7-00046R-Aj for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 25 Jan 2016 22:24:54 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Mon, 25 Jan 2016 23:24:08 +0100
-Message-Id: <1453760661-1444-10-git-send-email-richard@nod.at>
-In-Reply-To: <1453760661-1444-1-git-send-email-richard@nod.at>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Subject: Re: [PATCH 15/22] watchdog: Fix dependencies for !HAS_IOMEM archs
 References: <1453760661-1444-1-git-send-email-richard@nod.at>
-Subject: [uml-devel] [PATCH 09/22] leds: Fix dependencies for !HAS_IOMEM
-	archs
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+ <1453760661-1444-16-git-send-email-richard@nod.at>
+From: Guenter Roeck <linux@roeck-us.net>
+Message-ID: <56A6DE41.9010504@roeck-us.net>
+Date: Mon, 25 Jan 2016 18:47:29 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <1453760661-1444-16-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org
-Cc: linux-leds@vger.kernel.org, Richard Weinberger <richard@nod.at>, Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, user-mode-linux-devel@lists.sourceforge.net
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
+Cc: user-mode-linux-devel@lists.sourceforge.net, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Not every arch has io memory.
-So, unbreak the build by fixing the dependencies.
+On 01/25/2016 02:24 PM, Richard Weinberger wrote:
+> Not every arch has io memory.
+> So, unbreak the build by fixing the dependencies.
+>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/leds/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index 7f940c2..e76a45c 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -54,6 +54,7 @@ config LEDS_BCM6328
- 	depends on LEDS_CLASS
- 	depends on HAS_IOMEM
- 	depends on OF
-+	depends on HAS_IOMEM
- 	help
- 	  This option enables support for LEDs connected to the BCM6328
- 	  LED HW controller accessed via MMIO registers.
-@@ -63,6 +64,7 @@ config LEDS_BCM6358
- 	depends on LEDS_CLASS
- 	depends on HAS_IOMEM
- 	depends on OF
-+	depends on HAS_IOMEM
- 	help
- 	  This option enables support for LEDs connected to the BCM6358
- 	  LED HW controller accessed via MMIO registers.
--- 
-1.8.4.5
+> ---
+>   drivers/watchdog/Kconfig | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 4f0e7be..0bd559a 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -146,6 +146,7 @@ config TANGOX_WATCHDOG
+>   	tristate "Sigma Designs SMP86xx/SMP87xx watchdog"
+>   	select WATCHDOG_CORE
+>   	depends on ARCH_TANGOX || COMPILE_TEST
+> +	depends on HAS_IOMEM
+>   	help
+>   	  Support for the watchdog in Sigma Designs SMP86xx (tango3)
+>   	  and SMP87xx (tango4) family chips.
+> @@ -618,6 +619,7 @@ config DIGICOLOR_WATCHDOG
+>   config LPC18XX_WATCHDOG
+>   	tristate "LPC18xx/43xx Watchdog"
+>   	depends on ARCH_LPC18XX || COMPILE_TEST
+> +	depends on HAS_IOMEM
+>   	select WATCHDOG_CORE
+>   	help
+>   	  Say Y here if to include support for the watchdog timer
+> @@ -1374,6 +1376,7 @@ config BCM_KONA_WDT_DEBUG
+>   config BCM7038_WDT
+>   	tristate "BCM7038 Watchdog"
+>   	select WATCHDOG_CORE
+> +	depends on HAS_IOMEM
+>   	help
+>   	 Watchdog driver for the built-in hardware in Broadcom 7038 SoCs.
+>
+>
 
-
-------------------------------------------------------------------------------
-Site24x7 APM Insight: Get Deep Visibility into Application Performance
-APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
-Monitor end-to-end web transactions and take corrective actions now
-Troubleshoot faster and improve end-user experience. Signup Now!
-http://pubads.g.doubleclick.net/gampad/clk?id=267308311&iu=/4140
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
