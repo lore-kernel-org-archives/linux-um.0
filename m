@@ -1,61 +1,27 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Date: Sun, 10 Jan 2016 16:16:44 +0200
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v3 02/41] asm-generic: guard smp_store_release/load_acquire
-Message-ID: <1452426622-4471-3-git-send-email-mst@redhat.com>
-References: <1452426622-4471-1-git-send-email-mst@redhat.com>
+Return-Path: <computersforpeace@gmail.com>
+Date: Tue, 26 Jan 2016 11:31:12 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 11/22] mtd: Fix dependencies for !HAS_IOMEM archs
+Message-ID: <20160126193112.GA19540@google.com>
+References: <1453760661-1444-1-git-send-email-richard@nod.at>
+ <1453760661-1444-12-git-send-email-richard@nod.at>
+ <CAMuHMdVeayGN8qAmbvE7v=d0XzD3gM4TLop0qU2jf2SH_KKO9w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1452426622-4471-1-git-send-email-mst@redhat.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org
+In-Reply-To: <CAMuHMdVeayGN8qAmbvE7v=d0XzD3gM4TLop0qU2jf2SH_KKO9w@mail.gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, David Woodhouse <dwmw2@infradead.org>, Geert Uytterhoeven <geert+renesas@glider.be>, Bill Pringlemeir <bpringlemeir@nbsps.com>, Stefan Agner <stefan@agner.ch>, Kevin Hao <haokexin@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Alex Smith <alex.smith@imgtec.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Zhou Wang <wangzhou1@hisilicon.com>, Anup Patel <anup.patel@broadcom.com>, Han xu <han.xu@freescale.com>, Joachim Eastwood <manabian@gmail.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Bayi Cheng <bayi.cheng@mediatek.com>, Fabio Estevam <fabio.estevam@freescale.com>, MTD Maling List <linux-mtd@lists.infradead.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Allow architectures to override smp_store_release
-and smp_load_acquire by guarding the defines
-in asm-generic/barrier.h with ifndef directives.
+On Tue, Jan 26, 2016 at 12:00:37PM +0100, Geert Uytterhoeven wrote:
+> On Mon, Jan 25, 2016 at 11:24 PM, Richard Weinberger <richard@nod.at> wrote:
+> > Not every arch has io memory.
+> > So, unbreak the build by fixing the dependencies.
+> >
+> > Signed-off-by: Richard Weinberger <richard@nod.at>
+> 
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-This is in preparation to reusing asm-generic/barrier.h
-on architectures which have their own definition
-of these macros.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- include/asm-generic/barrier.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
-index 0f45f93..987b2e0 100644
---- a/include/asm-generic/barrier.h
-+++ b/include/asm-generic/barrier.h
-@@ -104,13 +104,16 @@
- #define smp_mb__after_atomic()	smp_mb()
- #endif
- 
-+#ifndef smp_store_release
- #define smp_store_release(p, v)						\
- do {									\
- 	compiletime_assert_atomic_type(*p);				\
- 	smp_mb();							\
- 	WRITE_ONCE(*p, v);						\
- } while (0)
-+#endif
- 
-+#ifndef smp_load_acquire
- #define smp_load_acquire(p)						\
- ({									\
- 	typeof(*p) ___p1 = READ_ONCE(*p);				\
-@@ -118,6 +121,7 @@ do {									\
- 	smp_mb();							\
- 	___p1;								\
- })
-+#endif
- 
- #endif /* !__ASSEMBLY__ */
- #endif /* __ASM_GENERIC_BARRIER_H */
--- 
-MST
+Applied this one to l2-mtd.git
 
