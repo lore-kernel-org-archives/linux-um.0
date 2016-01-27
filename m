@@ -1,43 +1,24 @@
-Return-Path: <linux-pm-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH 01/22] power: reset: Fix dependencies for !HAS_IOMEM archs
-Date: Mon, 25 Jan 2016 23:24:00 +0100
-Message-Id: <1453760661-1444-2-git-send-email-richard@nod.at>
-In-Reply-To: <1453760661-1444-1-git-send-email-richard@nod.at>
-References: <1453760661-1444-1-git-send-email-richard@nod.at>
-Sender: linux-pm-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, Sebastian Reichel <sre@kernel.org>, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Moritz Fischer <moritz.fischer@ettus.com>, Florian Fainelli <f.fainelli@gmail.com>, Jun Nie <jun.nie@linaro.org>, linux-pm@vger.kernel.org
+Return-Path: <martin.petersen@oracle.com>
+Subject: Re: [PATCH] hisi_sas: add dependency for HAS_IOMEM
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+References: <1453809552-240944-1-git-send-email-john.garry@huawei.com>
+Date: Tue, 26 Jan 2016 21:17:24 -0500
+In-Reply-To: <1453809552-240944-1-git-send-email-john.garry@huawei.com> (John
+	Garry's message of "Tue, 26 Jan 2016 19:59:12 +0800")
+Message-ID: <yq1y4bbhikr.fsf@sermon.lab.mkp.net>
+MIME-Version: 1.0
+Content-Type: text/plain
+To: John Garry <john.garry@huawei.com>
+Cc: JBottomley@odin.com, martin.petersen@oracle.com, linuxarm@huawei.com, john.garry2@mail.dcu.ie, linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, richard@nod.at, geert@linux-m68k.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Not every arch has io memory.
-So, unbreak the build by fixing the dependencies.
+>>>>> "John" == John Garry <john.garry@huawei.com> writes:
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/power/reset/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+John> Not every arch has io, so fix build by adding necessary
+John> dependency.
 
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index 1131cf7..0a6408a 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -148,6 +148,7 @@ config POWER_RESET_KEYSTONE
- config POWER_RESET_SYSCON
- 	bool "Generic SYSCON regmap reset driver"
- 	depends on OF
-+	depends on HAS_IOMEM
- 	select MFD_SYSCON
- 	help
- 	  Reboot support for generic SYSCON mapped register reset.
-@@ -155,6 +156,7 @@ config POWER_RESET_SYSCON
- config POWER_RESET_SYSCON_POWEROFF
- 	bool "Generic SYSCON regmap poweroff driver"
- 	depends on OF
-+	depends on HAS_IOMEM
- 	select MFD_SYSCON
- 	help
- 	  Poweroff support for generic SYSCON mapped register poweroff.
+Ignore previous mail. Will apply this...
+
 -- 
-1.8.4.5
+Martin K. Petersen	Oracle Linux Engineering
 
