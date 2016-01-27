@@ -1,49 +1,76 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Date: Wed, 27 Jan 2016 09:39:05 +0100
+Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Wed, 27 Jan 2016 08:51:29 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [v3,11/41] mips: reuse asm-generic/barrier.h
-Message-ID: <20160127083905.GK6357@twins.programming.kicks-ass.net>
-References: <20160114212913.GF3818@linux.vnet.ibm.com>
- <20160115085554.GF3421@worktop>
- <20160115091348.GA27936@worktop>
- <20160115174612.GV3818@linux.vnet.ibm.com>
- <20160115212714.GM3421@worktop>
- <20160115215853.GC3818@linux.vnet.ibm.com>
- <20160125164242.GF22927@arm.com>
- <20160126060322.GJ4503@linux.vnet.ibm.com>
- <20160126101927.GD6357@twins.programming.kicks-ass.net>
- <20160126201339.GW4503@linux.vnet.ibm.com>
+Message-ID: <20160127075129.GH6357@twins.programming.kicks-ass.net>
+References: <20160114204827.GE3818@linux.vnet.ibm.com>
+ <20160118081929.GA30420@gondor.apana.org.au>
+ <20160118154629.GB3818@linux.vnet.ibm.com>
+ <20160126165207.GB6029@fixme-laptop.cn.ibm.com>
+ <20160126172227.GG6357@twins.programming.kicks-ass.net>
+ <CA+55aFzcC6C8imPs5vk4yH1Y2YHjnAdFM9HCkVs04COxuDQH6w@mail.gmail.com>
+ <20160126201037.GU4503@linux.vnet.ibm.com>
+ <CA+55aFxjb+2rs2wVHtiSCcOzgMrE8H=yDeNcjyujPQudDCtLgw@mail.gmail.com>
+ <CA+55aFwxTJd+uibcxtZD3tGnj_n=LMwyAa0s8qyx_OF0OMWQkA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20160126201339.GW4503@linux.vnet.ibm.com>
-Sender: linux-arch-owner@vger.kernel.org
-To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Cc: Will Deacon <will.deacon@arm.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, ddaney.cavm@gmail.com, james.hogan@imgtec.com, Michael Ellerman <mpe@ellerman.id.au>
+In-Reply-To: <CA+55aFwxTJd+uibcxtZD3tGnj_n=LMwyAa0s8qyx_OF0OMWQkA@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mips <linux-mips@linux-mips.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>, Will Deacon <will.deacon@arm.com>, virtualization <virtualization@lists.linux-foundation.org>, Peter Anvin <hpa@zytor.com>, sparclinux@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Herbert Xu <herbert@gondor.apana.org.au>, linux-sh@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, the arch/x86 maintainers <x86@kernel.org>, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@elte.hu>, Paul McKenney <paulmck@linux.vnet.ibm.com>, linux-xtensa@linux-xtensa.org, James Hogan <james.hogan@imgtec.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Boqun Feng <boqun.feng@gmail.com>, adi-buildroot-devel@lists.sourceforge.net, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, David Daney <ddaney.cavm@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, linux-metag@vger.kernel.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Andrew Cooper <andrew.cooper3@citrix.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Arnd Bergmann <arnd@arndb.de>, Joe Perches <joe@perches.com>, ppc-dev <linuxppc-dev@lists.ozlabs.org>, David Miller <davem@davemloft.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Jan 26, 2016 at 12:13:39PM -0800, Paul E. McKenney wrote:
-> On Tue, Jan 26, 2016 at 11:19:27AM +0100, Peter Zijlstra wrote:
+On Tue, Jan 26, 2016 at 02:33:40PM -0800, Linus Torvalds wrote:
 
-> > So isn't smp_mb__after_unlock_lock() exactly such a scenario? And would
-> > not someone trying to implement RCsc locks using locally transitive
-> > RELEASE/ACQUIRE operations need exactly this stuff?
-> > 
-> > That is, I am afraid we need to cover the mix of local and global
-> > transitive operations at least in overview.
+> If it turns out that some architecture does actually need a barrier
+> between a read and a dependent write, then that will mean that
 > 
-> True, but we haven't gotten to locking yet.
+>  (a) we'll have to make up a _new_ barrier, because
+> "smp_read_barrier_depends()" is not that barrier. We'll presumably
+> then have to make that new barrier part of "rcu_derefence()" and
+> friends.
+> 
+>  (b) we will have found an architecture with even worse memory
+> ordering semantics than alpha, and we'll have to stop castigating
+> alpha for being the worst memory ordering ever.
+> 
+> but I sincerely hope that we'll never find that kind of broken architecture.
 
-The mythical smp_mb__after_release_acquire() then ;-)
+So for a moment it looked like MIPS wanted to equal or surpass Alpha in
+this respect.
 
-(and yes, I know you're going to say we don't have that)
+And Paul made the point that smp_read_barrier_depends() really should
+be smp_aquire_barrier_depends() in that we rely on both dependent reads
+and writes to be ordered against the initial pointer load.
 
-> That said, I would argue
-> that smp_mb__after_unlock_lock() upgrades locks to transitive, and
-> thus would not be an exception to the "no combining transitive and
-> non-transitive steps in cycles" rule.
+Now, as you've made abundantly clear, Alpha does this, although it needs
+the little extra help in the dependent read department.
 
-But But But ;-) It does that exactly by combining. I suspect this is
-(partly) the source of your SC chains with one PC link example.
+The 'problem' is that someone seemed to have used our
+Documentation/memory-barriers.txt as a specification for what hardware
+is permitted and we require. And in that light Paul noted that
+read_barrier_depends really should be considered an
+acquire_barrier_depends and order both dependent reads and writes
+against the (prior) read (if nothing else already does).
 
+Now clearly, any sane architecture doesn't need anything like this, but
+again our document doesn't seem to judge. That is, from reading the
+document one can get the impression is a perfectly fine thing to do.
+Nowhere does our disdain for this thing show.
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
