@@ -1,88 +1,27 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1aJ5g5-0004UW-6N
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jan 2016 20:36:29 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aJ5g3-0001nn-JZ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 12 Jan 2016 20:36:29 +0000
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <569563C3.3040201@nod.at>
-Date: Tue, 12 Jan 2016 21:36:19 +0100
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Fri, 29 Jan 2016 13:38:59 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [v3,11/41] mips: reuse asm-generic/barrier.h
+In-Reply-To: <56A9656D.3080707@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1601291333130.5958@tp.orcam.me.uk>
+References: <20160113104516.GE25458@arm.com> <5696CF08.8080700@imgtec.com> <20160114121449.GC15828@arm.com> <5697F6D2.60409@imgtec.com> <20160114203430.GC3818@linux.vnet.ibm.com> <56980C91.1010403@imgtec.com> <20160114212913.GF3818@linux.vnet.ibm.com>
+ <569814F2.50801@imgtec.com> <20160114225510.GJ3818@linux.vnet.ibm.com> <56983054.4070807@imgtec.com> <20160115004753.GN3818@linux.vnet.ibm.com> <56984642.3090106@imgtec.com> <alpine.DEB.2.00.1601271116520.5958@tp.orcam.me.uk> <56A9656D.3080707@imgtec.com>
 MIME-Version: 1.0
-Subject: [uml-devel] [GIT PULL] UML updates for 4.5
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Linus Torvalds <torvalds@linux-foundation.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset="US-ASCII"
+Sender: linux-arch-owner@vger.kernel.org
+To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Cc: paulmck@linux.vnet.ibm.com, Will Deacon <will.deacon@arm.com>, Peter Zijlstra <peterz@infradead.org>, "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, ddaney.cavm@gmail.com, james.hogan@imgtec.com, Michael Ellerman <mpe@ellerman.id.au>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-TGludXMsCgp0aGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDc0YmY4ZWZiNWZhNmU5
-NThkMmQ3Yzc5MTdiOGJiNjcyMDg1ZWMwYzY6CgogIExpbnV4IDQuNC1yYzcgKDIwMTUtMTItMjcg
-MTg6MTc6MzcgLTA4MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBnaXQgcmVwb3NpdG9yeSBhdDoK
-CiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3J3L3VtbC5n
-aXQgZm9yLWxpbnVzLTQuNS1yYzEKCmZvciB5b3UgdG8gZmV0Y2ggY2hhbmdlcyB1cCB0byAzZTQ2
-YjI1Mzc2MzIxZGIxMTliYzg1MDdjZThjODg0MWM1ODBlNzM2OgoKICB1bTogVXNlIHJhY2UtZnJl
-ZSB0ZW1wb3JhcnkgZmlsZSBjcmVhdGlvbiAoMjAxNi0wMS0xMCAyMTo0OTo1MCArMDEwMCkKCi0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KQW50b24gSXZhbm92ICgzKToKICAgICAgdW06IFByZXZlbnQgSVJRIGhhbmRsZXIgcmVl
-bnRyYW5jeQogICAgICB1bTogRG8gbm90IGNoYW5nZSBoYXJkIElSUSBmbGFncyBpbiBzb2Z0IElS
-USBwcm9jZXNzaW5nCiAgICAgIHVtOiBVcGRhdGUgVUJEIHRvIHVzZSBwcmVhZC9wd3JpdGUgZmFt
-aWx5IG9mIGZ1bmN0aW9ucwoKTWlja2HDq2wgU2FsYcO8biAoNyk6CiAgICAgIHVtOiBGaXggcHRy
-YWNlIEdFVFJFR1MvU0VUUkVHUyBidWdzCiAgICAgIHNlbGZ0ZXN0cy9zZWNjb21wOiBSZW1vdmUg
-dGhlIG5lZWQgZm9yIEhBVkVfQVJDSF9UUkFDRUhPT0sKICAgICAgdW06IEFkZCBmdWxsIGFzbS9z
-eXNjYWxsLmggc3VwcG9ydAogICAgICB1bTogQWRkIHNlY2NvbXAgc3VwcG9ydAogICAgICB1bTog
-Rml4IGJ1aWxkIGVycm9yIGFuZCBrY29uZmlnIGZvciBpMzg2CiAgICAgIHVtOiBEbyBub3Qgc2V0
-IHVuc2VjdXJlIHBlcm1pc3Npb24gZm9yIHRlbXBvcmFyeSBmaWxlCiAgICAgIHVtOiBVc2UgcmFj
-ZS1mcmVlIHRlbXBvcmFyeSBmaWxlIGNyZWF0aW9uCgpWZWdhcmQgTm9zc3VtICgzKToKICAgICAg
-dW1sOiBmaXggaG9zdGZzIG1rbm9kKCkKICAgICAgdW1sOiBmbHVzaCBzdGRvdXQgYmVmb3JlIGZv
-cmtpbmcKICAgICAgdW06IGxpbmsgd2l0aCAtbHB0aHJlYWQKCiAuLi4vc2VjY29tcC9zZWNjb21w
-LWZpbHRlci9hcmNoLXN1cHBvcnQudHh0ICAgICAgICB8ICAgMiArLQogYXJjaC91bS9LY29uZmln
-LmNvbW1vbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwogYXJjaC91bS9LY29u
-ZmlnLnVtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTYgKysrCiBhcmNoL3Vt
-L2RyaXZlcnMvdWJkX2tlcm4uYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyNyArLS0tCiBh
-cmNoL3VtL2luY2x1ZGUvYXNtL2hhcmRpcnEuaCAgICAgICAgICAgICAgICAgICAgICB8ICAyMyAr
-KysrCiBhcmNoL3VtL2luY2x1ZGUvYXNtL3N5c2NhbGwtZ2VuZXJpYy5oICAgICAgICAgICAgICB8
-IDEzOCArKysrKysrKysrKysrKysrKysrKysKIGFyY2gvdW0vaW5jbHVkZS9hc20vdGhyZWFkX2lu
-Zm8uaCAgICAgICAgICAgICAgICAgIHwgICAyICsKIGFyY2gvdW0vaW5jbHVkZS9zaGFyZWQvb3Mu
-aCAgICAgICAgICAgICAgICAgICAgICAgIHwgICAzICstCiBhcmNoL3VtL2tlcm5lbC9za2FzL3N5
-c2NhbGwuYyAgICAgICAgICAgICAgICAgICAgICB8ICAzMSArKystLQogYXJjaC91bS9vcy1MaW51
-eC9maWxlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTkgKysrCiBhcmNoL3VtL29z
-LUxpbnV4L21lbS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxNyArKy0KIGFyY2gv
-dW0vb3MtTGludXgvc2lnbmFsLmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDE2ICsrLQog
-YXJjaC91bS9vcy1MaW51eC9za2FzL3Byb2Nlc3MuYyAgICAgICAgICAgICAgICAgICAgfCAgIDcg
-LS0KIGFyY2gvdW0vb3MtTGludXgvc3RhcnRfdXAuYyAgICAgICAgICAgICAgICAgICAgICAgIHwg
-ICAyICsKIGFyY2gveDg2L3VtL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICAyICstCiBhcmNoL3g4Ni91bS9hc20vc3lzY2FsbC5oICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgMSArCiBhcmNoL3g4Ni91bS9wdHJhY2VfMzIuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB8ICAgOCArLQogZnMvaG9zdGZzL2hvc3Rmc19rZXJuLmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgIDQgKy0KIHNjcmlwdHMvbGluay12bWxpbnV4LnNoICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgICAyICstCiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9zZWNjb21w
-L3NlY2NvbXBfYnBmLmMgICAgICB8ICAyNyArKystCiAyMCBmaWxlcyBjaGFuZ2VkLCAyODUgaW5z
-ZXJ0aW9ucygrKSwgNjMgZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC91bS9p
-bmNsdWRlL2FzbS9oYXJkaXJxLmgKIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3VtL2luY2x1ZGUv
-YXNtL3N5c2NhbGwtZ2VuZXJpYy5oCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KU2l0ZTI0eDcgQVBN
-IEluc2lnaHQ6IEdldCBEZWVwIFZpc2liaWxpdHkgaW50byBBcHBsaWNhdGlvbiBQZXJmb3JtYW5j
-ZQpBUE0gKyBNb2JpbGUgQVBNICsgUlVNOiBNb25pdG9yIDMgQXBwIGluc3RhbmNlcyBhdCBqdXN0
-ICQzNS9Nb250aApNb25pdG9yIGVuZC10by1lbmQgd2ViIHRyYW5zYWN0aW9ucyBhbmQgdGFrZSBj
-b3JyZWN0aXZlIGFjdGlvbnMgbm93ClRyb3VibGVzaG9vdCBmYXN0ZXIgYW5kIGltcHJvdmUgZW5k
-LXVzZXIgZXhwZXJpZW5jZS4gU2lnbnVwIE5vdyEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNr
-Lm5ldC9nYW1wYWQvY2xrP2lkPTI2NzMwODMxMSZpdT0vNDE0MApfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGlu
-ZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6
-Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRl
-dmVsCg==
+On Thu, 28 Jan 2016, Leonid Yegoshin wrote:
 
+> In http://patchwork.linux-mips.org/patch/10505/ the very last mesg exchange
+> is:
+[...]
+> ... and that stops forever...
+
+ Thanks for the reminder -- last June was very hectic, I travelled a lot 
+and I lost the discussion from my radar.  Apologies for that.  I replied 
+in that thread now with my results.  I hope this helps.
+
+  Maciej
