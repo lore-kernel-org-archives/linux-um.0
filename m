@@ -1,33 +1,49 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Message-ID: <568A5830.9000501@citrix.com>
-Date: Mon, 4 Jan 2016 11:32:00 +0000
-From: David Vrabel <david.vrabel@citrix.com>
+Return-Path: <jic23@kernel.org>
+Subject: Re: [PATCH 04/22] staging: iio: Fix dependencies for !HAS_IOMEM archs
+References: <1453760661-1444-1-git-send-email-richard@nod.at>
+ <1453760661-1444-5-git-send-email-richard@nod.at>
+ <CAMuHMdWk9A+3j85jX00jdqdvhndL4t-VyjF1gj-N7ZnR8DH8dg@mail.gmail.com>
+From: Jonathan Cameron <jic23@kernel.org>
+Message-ID: <56ACDB0E.5070009@kernel.org>
+Date: Sat, 30 Jan 2016 15:47:26 +0000
 MIME-Version: 1.0
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
- <1451572003-2440-34-git-send-email-mst@redhat.com>
-In-Reply-To: <1451572003-2440-34-git-send-email-mst@redhat.com>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <CAMuHMdWk9A+3j85jX00jdqdvhndL4t-VyjF1gj-N7ZnR8DH8dg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Sender: linux-arch-owner@vger.kernel.org
-Subject: Re: [Xen-devel] [PATCH v2 33/34] xenbus: use virt_xxx barriers
-To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, virtualization@lists.linux-foundation.org, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, xen-devel@lists.xenproject.org, Ingo Molnar <mingo@elte.hu>, linux-xtensa@linux-xtensa.org, user-mode-linux-devel@lists.sourceforge.net, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, adi-buildroot-devel@lists.sourceforge.net, Thomas Gleixner <tglx@linutronix.de>, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Andrew Cooper <andrew.cooper3@citrix.com>, David Vrabel <david.vrabel@citrix.com>, linuxppc-dev@lists.ozlabs.org, David Miller <davem@davemloft.net>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger <richard@nod.at>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald <pmeerw@pmeerw.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Michal Marek <mmarek@suse.com>, linux-iio@vger.kernel.org, driverdevel <devel@driverdev.osuosl.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 31/12/15 19:10, Michael S. Tsirkin wrote:
-> drivers/xen/xenbus/xenbus_comms.c uses
-> full memory barriers to communicate with the other side.
+On 26/01/16 10:59, Geert Uytterhoeven wrote:
+> On Mon, Jan 25, 2016 at 11:24 PM, Richard Weinberger <richard@nod.at> wrote:
+>> Not every arch has io memory.
+>> So, unbreak the build by fixing the dependencies.
+>>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
 > 
-> For guests compiled with CONFIG_SMP, smp_wmb and smp_mb
-> would be sufficient, so mb() and wmb() here are only needed if
-> a non-SMP guest runs on an SMP host.
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Applied to the same obscure branch of iio.git as patch 6.
+Will unwind this cross merge window mess in my tree sometime
+in the next week or so.
+
+Thanks,
+
+Jonathan
 > 
-> Switch to virt_xxx barriers which serve this exact purpose.
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-iio" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
 
-Acked-by: David Vrabel <david.vrabel@citrix.com>
 
-If you're feeling particularly keen there's a rmb() consume_one_event()
-in drivers/xen/events/events_fifo.c that can be converted to virt_rmb()
-as well.
-
-David
