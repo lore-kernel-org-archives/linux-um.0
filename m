@@ -1,148 +1,70 @@
-Return-Path: <geert@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 1/3] usb: core: Allow compilation on platforms where NO_DMA=y
-Date: Tue, 16 Feb 2016 16:10:57 +0100
-Message-Id: <1455635459-1576-2-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1455635459-1576-1-git-send-email-geert@linux-m68k.org>
-References: <1455635459-1576-1-git-send-email-geert@linux-m68k.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Vegard Nossum <vegard.nossum@oracle.com>
-Cc: John Youn <johnyoun@synopsys.com>, Richard Weinberger <richard@nod.at>, James McMechan <James_McMechan@hotmail.com>, Alan Stern <stern@rowland.harvard.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux-usb@vger.kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Geert Uytterhoeven <geert@linux-m68k.org>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1aTXh3-0007PE-A3
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Feb 2016 16:32:41 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1aTXh1-0003ly-SJ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Feb 2016 16:32:41 +0000
+References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
+	<1455114596-3532-2-git-send-email-vegard.nossum@oracle.com>
+	<20160210161536.GA11999@kroah.com> <56BB651A.7030107@oracle.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56BB661E.7010308@nod.at>
+Date: Wed, 10 Feb 2016 17:32:30 +0100
+MIME-Version: 1.0
+In-Reply-To: <56BB651A.7030107@oracle.com>
+Subject: Re: [uml-devel] [PATCH 02/21] usb: add HAS_IOMEM dependency to
+	USB_NET2272
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Vegard Nossum <vegard.nossum@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, linux-usb@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>, user-mode-linux-devel@lists.sourceforge.net
 
-Some platforms don't have DMA, but we should still be able to build USB
-drivers for these platforms. They could still be used through vhci_hcd,
-usbip_host, or maybe something like USB passthrough in UML from a
-capable host.
+Am 10.02.2016 um 17:28 schrieb Vegard Nossum:
+> I don't think there is a "correct function" for when HAS_IOMEM is not
+> enabled. There is no IO address space on UML, so it doesn't make sense
+> to compile these drivers in the first place.
+> 
+> Or do you mean to use the dummy implementation from asm-generic/io.h? (I
+> have to admit I don't know how that would work.)
 
-If NO_DMA=y:
+We already had an discussion of having an ioremap() like this for UML and S390:
 
-    ERROR: "dma_pool_destroy" [drivers/usb/core/usbcore.ko] undefined!
-    ERROR: "bad_dma_ops" [drivers/usb/core/usbcore.ko] undefined!
-    ERROR: "dma_pool_free" [drivers/usb/core/usbcore.ko] undefined!
-    ERROR: "dma_pool_alloc" [drivers/usb/core/usbcore.ko] undefined!
-    ERROR: "dma_pool_create" [drivers/usb/core/usbcore.ko] undefined!
+static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
+{
+	BUG();
+	return NULL;
+}
 
-Add a few checks for CONFIG_HAS_DMA to fix this.
+But IMHO we should just fix the driver dependencies instead of providing dummy
+interfaces just for the sake of making things somehow build...
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Vegard Nossum <vegard.nossum@oracle.com>
----
-v2:
-  - Replace remaining #ifdefs by IS_ENABLED() checks,
-  - Add to patch description that this actually allows using USB on UML,
-  - Add Acked-by.
----
- drivers/usb/core/buffer.c | 18 ++++++++++++------
- drivers/usb/core/hcd.c    | 16 ++++++++++------
- 2 files changed, 22 insertions(+), 12 deletions(-)
+Thanks,
+//richard
 
-diff --git a/drivers/usb/core/buffer.c b/drivers/usb/core/buffer.c
-index 89f2e7765093955b..2741566ee4f25849 100644
---- a/drivers/usb/core/buffer.c
-+++ b/drivers/usb/core/buffer.c
-@@ -62,8 +62,9 @@ int hcd_buffer_create(struct usb_hcd *hcd)
- 	char		name[16];
- 	int		i, size;
- 
--	if (!hcd->self.controller->dma_mask &&
--	    !(hcd->driver->flags & HCD_LOCAL_MEM))
-+	if (!IS_ENABLED(CONFIG_HAS_DMA) ||
-+	    (!hcd->self.controller->dma_mask &&
-+	     !(hcd->driver->flags & HCD_LOCAL_MEM)))
- 		return 0;
- 
- 	for (i = 0; i < HCD_BUFFER_POOLS; i++) {
-@@ -93,6 +94,9 @@ void hcd_buffer_destroy(struct usb_hcd *hcd)
- {
- 	int i;
- 
-+	if (!IS_ENABLED(CONFIG_HAS_DMA))
-+		return;
-+
- 	for (i = 0; i < HCD_BUFFER_POOLS; i++) {
- 		struct dma_pool *pool = hcd->pool[i];
- 
-@@ -119,8 +123,9 @@ void *hcd_buffer_alloc(
- 	int			i;
- 
- 	/* some USB hosts just use PIO */
--	if (!bus->controller->dma_mask &&
--	    !(hcd->driver->flags & HCD_LOCAL_MEM)) {
-+	if (!IS_ENABLED(CONFIG_HAS_DMA) ||
-+	    (!bus->controller->dma_mask &&
-+	     !(hcd->driver->flags & HCD_LOCAL_MEM))) {
- 		*dma = ~(dma_addr_t) 0;
- 		return kmalloc(size, mem_flags);
- 	}
-@@ -145,8 +150,9 @@ void hcd_buffer_free(
- 	if (!addr)
- 		return;
- 
--	if (!bus->controller->dma_mask &&
--	    !(hcd->driver->flags & HCD_LOCAL_MEM)) {
-+	if (!IS_ENABLED(CONFIG_HAS_DMA) ||
-+	    (!bus->controller->dma_mask &&
-+	     !(hcd->driver->flags & HCD_LOCAL_MEM))) {
- 		kfree(addr);
- 		return;
- 	}
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index df0e3b92533a745f..b277977cada2b382 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -1408,7 +1408,8 @@ static void hcd_free_coherent(struct usb_bus *bus, dma_addr_t *dma_handle,
- 
- void usb_hcd_unmap_urb_setup_for_dma(struct usb_hcd *hcd, struct urb *urb)
- {
--	if (urb->transfer_flags & URB_SETUP_MAP_SINGLE)
-+	if (IS_ENABLED(CONFIG_HAS_DMA) &&
-+	    (urb->transfer_flags & URB_SETUP_MAP_SINGLE))
- 		dma_unmap_single(hcd->self.controller,
- 				urb->setup_dma,
- 				sizeof(struct usb_ctrlrequest),
-@@ -1440,17 +1441,20 @@ void usb_hcd_unmap_urb_for_dma(struct usb_hcd *hcd, struct urb *urb)
- 	usb_hcd_unmap_urb_setup_for_dma(hcd, urb);
- 
- 	dir = usb_urb_dir_in(urb) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
--	if (urb->transfer_flags & URB_DMA_MAP_SG)
-+	if (IS_ENABLED(CONFIG_HAS_DMA) &&
-+	    (urb->transfer_flags & URB_DMA_MAP_SG))
- 		dma_unmap_sg(hcd->self.controller,
- 				urb->sg,
- 				urb->num_sgs,
- 				dir);
--	else if (urb->transfer_flags & URB_DMA_MAP_PAGE)
-+	else if (IS_ENABLED(CONFIG_HAS_DMA) &&
-+		 (urb->transfer_flags & URB_DMA_MAP_PAGE))
- 		dma_unmap_page(hcd->self.controller,
- 				urb->transfer_dma,
- 				urb->transfer_buffer_length,
- 				dir);
--	else if (urb->transfer_flags & URB_DMA_MAP_SINGLE)
-+	else if (IS_ENABLED(CONFIG_HAS_DMA) &&
-+		 (urb->transfer_flags & URB_DMA_MAP_SINGLE))
- 		dma_unmap_single(hcd->self.controller,
- 				urb->transfer_dma,
- 				urb->transfer_buffer_length,
-@@ -1492,7 +1496,7 @@ int usb_hcd_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
- 	if (usb_endpoint_xfer_control(&urb->ep->desc)) {
- 		if (hcd->self.uses_pio_for_control)
- 			return ret;
--		if (hcd->self.uses_dma) {
-+		if (IS_ENABLED(CONFIG_HAS_DMA) && hcd->self.uses_dma) {
- 			urb->setup_dma = dma_map_single(
- 					hcd->self.controller,
- 					urb->setup_packet,
-@@ -1518,7 +1522,7 @@ int usb_hcd_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
- 	dir = usb_urb_dir_in(urb) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
- 	if (urb->transfer_buffer_length != 0
- 	    && !(urb->transfer_flags & URB_NO_TRANSFER_DMA_MAP)) {
--		if (hcd->self.uses_dma) {
-+		if (IS_ENABLED(CONFIG_HAS_DMA) && hcd->self.uses_dma) {
- 			if (urb->num_sgs) {
- 				int n;
- 
--- 
-1.9.1
-
+------------------------------------------------------------------------------
+Site24x7 APM Insight: Get Deep Visibility into Application Performance
+APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
+Monitor end-to-end web transactions and take corrective actions now
+Troubleshoot faster and improve end-user experience. Signup Now!
+http://pubads.g.doubleclick.net/gampad/clk?id=272487151&iu=/4140
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
