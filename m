@@ -2,22 +2,22 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1aTXh3-0007PE-A3
+	(envelope-from <vegard.nossum@oracle.com>) id 1aTXcx-0007AL-4p
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 16:32:41 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	Wed, 10 Feb 2016 16:28:27 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aTXh1-0003ly-SJ
+	(Exim 4.76) id 1aTXcw-0003fE-9x
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 16:32:41 +0000
+	Wed, 10 Feb 2016 16:28:27 +0000
 References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
 	<1455114596-3532-2-git-send-email-vegard.nossum@oracle.com>
-	<20160210161536.GA11999@kroah.com> <56BB651A.7030107@oracle.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56BB661E.7010308@nod.at>
-Date: Wed, 10 Feb 2016 17:32:30 +0100
+	<20160210161536.GA11999@kroah.com>
+From: Vegard Nossum <vegard.nossum@oracle.com>
+Message-ID: <56BB651A.7030107@oracle.com>
+Date: Wed, 10 Feb 2016 17:28:10 +0100
 MIME-Version: 1.0
-In-Reply-To: <56BB651A.7030107@oracle.com>
+In-Reply-To: <20160210161536.GA11999@kroah.com>
 Subject: Re: [uml-devel] [PATCH 02/21] usb: add HAS_IOMEM dependency to
 	USB_NET2272
 List-Id: The user-mode Linux development list
@@ -29,42 +29,52 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Vegard Nossum <vegard.nossum@oracle.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, linux-usb@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>, user-mode-linux-devel@lists.sourceforge.net
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, James McMechan <James_McMechan@hotmail.com>, linux-usb@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>
 
-Am 10.02.2016 um 17:28 schrieb Vegard Nossum:
-> I don't think there is a "correct function" for when HAS_IOMEM is not
-> enabled. There is no IO address space on UML, so it doesn't make sense
-> to compile these drivers in the first place.
-> 
-> Or do you mean to use the dummy implementation from asm-generic/io.h? (I
-> have to admit I don't know how that would work.)
-
-We already had an discussion of having an ioremap() like this for UML and S390:
-
-static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
-{
-	BUG();
-	return NULL;
-}
-
-But IMHO we should just fix the driver dependencies instead of providing dummy
-interfaces just for the sake of making things somehow build...
-
-Thanks,
-//richard
-
-------------------------------------------------------------------------------
-Site24x7 APM Insight: Get Deep Visibility into Application Performance
-APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
-Monitor end-to-end web transactions and take corrective actions now
-Troubleshoot faster and improve end-user experience. Signup Now!
-http://pubads.g.doubleclick.net/gampad/clk?id=272487151&iu=/4140
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gMDIvMTAvMjAxNiAwNToxNSBQTSwgR3JlZyBLcm9haC1IYXJ0bWFuIHdyb3RlOgo+IE9uIFdl
+ZCwgRmViIDEwLCAyMDE2IGF0IDAzOjI5OjM3UE0gKzAxMDAsIFZlZ2FyZCBOb3NzdW0gd3JvdGU6
+Cj4+IGRyaXZlcnMvdXNiL2dhZGdldC91ZGMvbmV0MjI3Mi5jOiBJbiBmdW5jdGlvbiDigJhuZXQy
+MjcyX3JlbW92ZeKAmToKPj4gZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9uZXQyMjcyLmM6MjIzMjoy
+OiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYaW91bm1hcOKAmSBb
+LVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0KPj4gICAgaW91bm1hcChkZXYt
+PmJhc2VfYWRkcik7Cj4+ICAgIF4KPj4gZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9uZXQyMjcyLmM6
+IEluIGZ1bmN0aW9uIOKAmG5ldDIyNzJfcGxhdF9wcm9iZeKAmToKPj4gZHJpdmVycy91c2IvZ2Fk
+Z2V0L3VkYy9uZXQyMjcyLmM6MjY1MDoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2Yg
+ZnVuY3Rpb24g4oCYaW9yZW1hcF9ub2NhY2hl4oCZIFstV2Vycm9yPWltcGxpY2l0LWZ1bmN0aW9u
+LWRlY2xhcmF0aW9uXQo+PiAgICBkZXYtPmJhc2VfYWRkciA9IGlvcmVtYXBfbm9jYWNoZShiYXNl
+LCBsZW4pOwo+PiAgICBeCj4+IGRyaXZlcnMvdXNiL2dhZGdldC91ZGMvbmV0MjI3Mi5jOjI2NTA6
+MTc6IHdhcm5pbmc6IGFzc2lnbm1lbnQgbWFrZXMgcG9pbnRlciBmcm9tIGludGVnZXIgd2l0aG91
+dCBhIGNhc3QgW2VuYWJsZWQgYnkgZGVmYXVsdF0KPj4gICAgZGV2LT5iYXNlX2FkZHIgPSBpb3Jl
+bWFwX25vY2FjaGUoYmFzZSwgbGVuKTsKPj4gICAgICAgICAgICAgICAgICAgXgo+Pgo+PiBTaWdu
+ZWQtb2ZmLWJ5OiBWZWdhcmQgTm9zc3VtIDx2ZWdhcmQubm9zc3VtQG9yYWNsZS5jb20+Cj4+IC0t
+LQo+PiAgIGRyaXZlcnMvdXNiL2dhZGdldC91ZGMvS2NvbmZpZyB8IDEgKwo+PiAgIDEgZmlsZSBj
+aGFuZ2VkLCAxIGluc2VydGlvbigrKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2Fk
+Z2V0L3VkYy9LY29uZmlnIGIvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9LY29uZmlnCj4+IGluZGV4
+IDc1M2MyOWIuLmNhMTlmNmYgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMv
+S2NvbmZpZwo+PiArKysgYi9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL0tjb25maWcKPj4gQEAgLTI4
+Nyw2ICsyODcsNyBAQCBjb25maWcgVVNCX0ZTTF9RRQo+PiAgIAkgICBkeW5hbWljYWxseSBsaW5r
+ZWQgbW9kdWxlIGNhbGxlZCAiZnNsX3FlX3VkYyIuCj4+Cj4+ICAgY29uZmlnIFVTQl9ORVQyMjcy
+Cj4+ICsJZGVwZW5kcyBvbiBIQVNfSU9NRU0KPgo+IFdoeSBub3QgZml4IHRoZSByb290IG9mIHRo
+ZSBwcm9ibGVtIGFuZCBwcm92aWRlIHRoZSBjb3JyZWN0IGZ1bmN0aW9ucwo+IGZvciB0aGlzIHdo
+ZW4gSEFTX0lPTUVNIGlzIG5vdCBlbmFibGVkPwoKSSBkb24ndCB0aGluayB0aGVyZSBpcyBhICJj
+b3JyZWN0IGZ1bmN0aW9uIiBmb3Igd2hlbiBIQVNfSU9NRU0gaXMgbm90CmVuYWJsZWQuIFRoZXJl
+IGlzIG5vIElPIGFkZHJlc3Mgc3BhY2Ugb24gVU1MLCBzbyBpdCBkb2Vzbid0IG1ha2Ugc2Vuc2UK
+dG8gY29tcGlsZSB0aGVzZSBkcml2ZXJzIGluIHRoZSBmaXJzdCBwbGFjZS4KCk9yIGRvIHlvdSBt
+ZWFuIHRvIHVzZSB0aGUgZHVtbXkgaW1wbGVtZW50YXRpb24gZnJvbSBhc20tZ2VuZXJpYy9pby5o
+PyAoSQpoYXZlIHRvIGFkbWl0IEkgZG9uJ3Qga25vdyBob3cgdGhhdCB3b3VsZCB3b3JrLikKCgpW
+ZWdhcmQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpTaXRlMjR4NyBBUE0gSW5zaWdodDogR2V0IERl
+ZXAgVmlzaWJpbGl0eSBpbnRvIEFwcGxpY2F0aW9uIFBlcmZvcm1hbmNlCkFQTSArIE1vYmlsZSBB
+UE0gKyBSVU06IE1vbml0b3IgMyBBcHAgaW5zdGFuY2VzIGF0IGp1c3QgJDM1L01vbnRoCk1vbml0
+b3IgZW5kLXRvLWVuZCB3ZWIgdHJhbnNhY3Rpb25zIGFuZCB0YWtlIGNvcnJlY3RpdmUgYWN0aW9u
+cyBub3cKVHJvdWJsZXNob290IGZhc3RlciBhbmQgaW1wcm92ZSBlbmQtdXNlciBleHBlcmllbmNl
+LiBTaWdudXAgTm93IQpodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9jbGs/
+aWQ9MjcyNDg3MTUxJml1PS80MTQwCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fClVzZXItbW9kZS1saW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2Rl
+LWxpbnV4LWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
+cmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
