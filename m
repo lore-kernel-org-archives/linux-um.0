@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1aVGbQ-0003hO-IR
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnd-0002pp-QL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Feb 2016 10:42:00 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aVGbO-0002SR-PD
+	Wed, 10 Feb 2016 14:31:21 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1aTVnc-0005f3-NN
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 15 Feb 2016 10:42:00 +0000
+	Wed, 10 Feb 2016 14:31:21 +0000
 From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Mon, 15 Feb 2016 11:41:41 +0100
-Message-Id: <1455532901-5852-2-git-send-email-vegard.nossum@oracle.com>
-In-Reply-To: <1455532901-5852-1-git-send-email-vegard.nossum@oracle.com>
-References: <1455532901-5852-1-git-send-email-vegard.nossum@oracle.com>
-Subject: [uml-devel] [PATCH 2/2] usb: remove HAS_IOMEM dependency from
-	USB_SUPPORT
+Date: Wed, 10 Feb 2016 15:29:46 +0100
+Message-Id: <1455114596-3532-11-git-send-email-vegard.nossum@oracle.com>
+In-Reply-To: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
+References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
+Subject: [uml-devel] [PATCH 11/21] usb: add HAS_IOMEM dependency to
+	USB_XHCI_HCD
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,44 +30,29 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Vegard Nossum <vegard.nossum@oracle.com>, user-mode-linux-devel@lists.sourceforge.net, Richard Weinberger <richard@nod.at>, James McMechan <James_McMechan@hotmail.com>, linux-usb@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>
+To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
 
-USB has not been usable on UML since this commit:
-
-commit e25df1205f37c7bff3ab14fdfc8a5249f3c69c82
-Author: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Date:   Thu May 10 15:45:57 2007 +0200
-
-    [S390] Kconfig: menus with depends on HAS_IOMEM.
-
-    Add "depends on HAS_IOMEM" to a number of menus to make them
-    disappear for s390 which does not have I/O memory.
-
-    Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
-
-With hopefully all USB Host Controller Drivers that need it now
-depending on HAS_IOMEM, we can remove the dependency from USB_SUPPORT
-itself. This makes it possible to include USB support in UML builds
-again.
+drivers/built-in.o: In function `xhci_plat_probe':
+/home/vegard/linux/drivers/usb/host/xhci-plat.c:160: undefined reference to `devm_ioremap_resource'
 
 Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 ---
- drivers/usb/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/usb/host/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/Kconfig b/drivers/usb/Kconfig
-index 8ed451d..93ba109 100644
---- a/drivers/usb/Kconfig
-+++ b/drivers/usb/Kconfig
-@@ -21,7 +21,6 @@ config USB_EHCI_BIG_ENDIAN_DESC
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index 4c2e38a..90cb8d5 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -18,6 +18,7 @@ config USB_C67X00_HCD
  
- menuconfig USB_SUPPORT
- 	bool "USB support"
--	depends on HAS_IOMEM
- 	default y
+ config USB_XHCI_HCD
+ 	tristate "xHCI HCD (USB 3.0) support"
++	depends on HAS_IOMEM
  	---help---
- 	  This option adds core support for Universal Serial Bus (USB).
+ 	  The eXtensible Host Controller Interface (xHCI) is standard for USB 3.0
+ 	  "SuperSpeed" host controller hardware.
 -- 
 1.9.1
 
