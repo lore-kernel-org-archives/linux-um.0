@@ -1,99 +1,70 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 1 Feb 2016 11:26:10 -0200
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH 17/22] media: Fix dependencies for !HAS_IOMEM archs
-Message-ID: <20160201112610.6dc22cd0@recife.lan>
-In-Reply-To: <1453760661-1444-18-git-send-email-richard@nod.at>
-References: <1453760661-1444-1-git-send-email-richard@nod.at>
-	<1453760661-1444-18-git-send-email-richard@nod.at>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnI-0001zE-5w
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Feb 2016 14:31:00 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1aTVnG-0007xH-EQ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Feb 2016 14:31:00 +0000
+From: Vegard Nossum <vegard.nossum@oracle.com>
+Date: Wed, 10 Feb 2016 15:29:36 +0100
+Message-Id: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Olli Salonen <olli.salonen@iki.fi>, linux-media@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Subject: [uml-devel] [PATCH 01/21] usb: add HAS_IOMEM dependency to
+	USB_ISP116X_HCD
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
 
-Em Mon, 25 Jan 2016 23:24:16 +0100
-Richard Weinberger <richard@nod.at> escreveu:
-
-> Not every arch has io memory.
-> While the driver has correct dependencies the select statement
-> will bypass the HAS_IOMEM dependency.
-
-No, if a driver has:
-	config foo
-	depends on HAS_IOMEM
-	select I2C
-
-the select will only be handled if HAS_IOMEM. It won't bypass HAS_IOMEM
-(and if it is bypassing, then there's some regression at the building
-system, and lots of other things would break).
-
-Also, changing from select to depends on I2C_MUX is not nice for users,
-as it is not intuitive that a driver would need such core support for
-a media driver to work.
-
-> So, unbreak the build by rendering it into a real dependency.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/media/Kconfig             | 3 +--
->  drivers/media/usb/cx231xx/Kconfig | 2 +-
->  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/Kconfig b/drivers/media/Kconfig
-> index a8518fb..5553cb1 100644
-> --- a/drivers/media/Kconfig
-> +++ b/drivers/media/Kconfig
-> @@ -187,8 +187,7 @@ config MEDIA_SUBDRV_AUTOSELECT
->  	bool "Autoselect ancillary drivers (tuners, sensors, i2c, frontends)"
->  	depends on MEDIA_ANALOG_TV_SUPPORT || MEDIA_DIGITAL_TV_SUPPORT || MEDIA_CAMERA_SUPPORT || MEDIA_SDR_SUPPORT
->  	depends on HAS_IOMEM
-> -	select I2C
-> -	select I2C_MUX
-> +	depends on I2C_MUX && I2C
->  	default y
->  	help
->  	  By default, a media driver auto-selects all possible ancillary
-
-Here, everything is OK. No need to convert it to depends on.
-
-> diff --git a/drivers/media/usb/cx231xx/Kconfig b/drivers/media/usb/cx231xx/Kconfig
-> index 0cced3e..30ae67d 100644
-> --- a/drivers/media/usb/cx231xx/Kconfig
-> +++ b/drivers/media/usb/cx231xx/Kconfig
-> @@ -1,13 +1,13 @@
->  config VIDEO_CX231XX
->  	tristate "Conexant cx231xx USB video capture support"
->  	depends on VIDEO_DEV && I2C
-> +	depends on I2C_MUX
->  	select VIDEO_TUNER
->  	select VIDEO_TVEEPROM
->  	depends on RC_CORE
->  	select VIDEOBUF_VMALLOC
->  	select VIDEO_CX25840
->  	select VIDEO_CX2341X
-> -	select I2C_MUX
-
-So, just this should be enough to fix the dependencies for HAS_IOMEM/I2C_MUX
-at the drivers under drivers/media:
-
-diff --git a/drivers/media/usb/cx231xx/Kconfig b/drivers/media/usb/cx231xx/Kconfig
-index 0cced3e5b040..67d21b026054 100644
---- a/drivers/media/usb/cx231xx/Kconfig
-+++ b/drivers/media/usb/cx231xx/Kconfig
-@@ -7,6 +7,7 @@ config VIDEO_CX231XX
- 	select VIDEOBUF_VMALLOC
- 	select VIDEO_CX25840
- 	select VIDEO_CX2341X
-+	depends on HAS_IOMEM # due to I2C_MUX
- 	select I2C_MUX
- 
- 	---help---
-
-
-Regards,
-Mauro
-
+ZHJpdmVycy91c2IvaG9zdC9pc3AxMTZ4LWhjZC5jOiBJbiBmdW5jdGlvbiDigJhpc3AxMTZ4X3Jl
+bW92ZeKAmToKZHJpdmVycy91c2IvaG9zdC9pc3AxMTZ4LWhjZC5jOjE1NTI6MjogZXJyb3I6IGlt
+cGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmGlvdW5tYXDigJkgWy1XZXJyb3I9aW1w
+bGljaXQtZnVuY3Rpb24tZGVjbGFyYXRpb25dCiAgaW91bm1hcChpc3AxMTZ4LT5kYXRhX3JlZyk7
+CiAgXgpkcml2ZXJzL3VzYi9ob3N0L2lzcDExNngtaGNkLmM6IEluIGZ1bmN0aW9uIOKAmGlzcDEx
+NnhfcHJvYmXigJk6CmRyaXZlcnMvdXNiL2hvc3QvaXNwMTE2eC1oY2QuYzoxNjA0OjI6IGVycm9y
+OiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhpb3JlbWFw4oCZIFstV2Vycm9y
+PWltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogIGFkZHJfcmVnID0gaW9yZW1hcChhZGRy
+LT5zdGFydCwgcmVzb3VyY2Vfc2l6ZShhZGRyKSk7CiAgXgpkcml2ZXJzL3VzYi9ob3N0L2lzcDEx
+NngtaGNkLmM6MTYwNDoxMTogd2FybmluZzogYXNzaWdubWVudCBtYWtlcyBwb2ludGVyIGZyb20g
+aW50ZWdlciB3aXRob3V0IGEgY2FzdCBbZW5hYmxlZCBieSBkZWZhdWx0XQogIGFkZHJfcmVnID0g
+aW9yZW1hcChhZGRyLT5zdGFydCwgcmVzb3VyY2Vfc2l6ZShhZGRyKSk7CiAgICAgICAgICAgXgpk
+cml2ZXJzL3VzYi9ob3N0L2lzcDExNngtaGNkLmM6MTYxMzoxMTogd2FybmluZzogYXNzaWdubWVu
+dCBtYWtlcyBwb2ludGVyIGZyb20gaW50ZWdlciB3aXRob3V0IGEgY2FzdCBbZW5hYmxlZCBieSBk
+ZWZhdWx0XQogIGRhdGFfcmVnID0gaW9yZW1hcChkYXRhLT5zdGFydCwgcmVzb3VyY2Vfc2l6ZShk
+YXRhKSk7CiAgICAgICAgICAgXgoKU2lnbmVkLW9mZi1ieTogVmVnYXJkIE5vc3N1bSA8dmVnYXJk
+Lm5vc3N1bUBvcmFjbGUuY29tPgotLS0KIGRyaXZlcnMvdXNiL2hvc3QvS2NvbmZpZyB8IDEgKwog
+MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2Iv
+aG9zdC9LY29uZmlnIGIvZHJpdmVycy91c2IvaG9zdC9LY29uZmlnCmluZGV4IDFmMTE3YzMuLjY0
+ZDc4YjEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvdXNiL2hvc3QvS2NvbmZpZworKysgYi9kcml2ZXJz
+L3VzYi9ob3N0L0tjb25maWcKQEAgLTM0MCw2ICszNDAsNyBAQCBjb25maWcgVVNCX09YVTIxMEhQ
+X0hDRAogCiBjb25maWcgVVNCX0lTUDExNlhfSENECiAJdHJpc3RhdGUgIklTUDExNlggSENEIHN1
+cHBvcnQiCisJZGVwZW5kcyBvbiBIQVNfSU9NRU0KIAktLS1oZWxwLS0tCiAJICBUaGUgSVNQMTE2
+MCBhbmQgSVNQMTE2MSBjaGlwcyBhcmUgVVNCIGhvc3QgY29udHJvbGxlcnMuIEVuYWJsZSB0aGlz
+CiAJICBvcHRpb24gaWYgeW91ciBib2FyZCBoYXMgdGhpcyBjaGlwLiBJZiB1bnN1cmUsIHNheSBO
+LgotLSAKMS45LjEKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KU2l0ZTI0eDcgQVBNIEluc2lnaHQ6
+IEdldCBEZWVwIFZpc2liaWxpdHkgaW50byBBcHBsaWNhdGlvbiBQZXJmb3JtYW5jZQpBUE0gKyBN
+b2JpbGUgQVBNICsgUlVNOiBNb25pdG9yIDMgQXBwIGluc3RhbmNlcyBhdCBqdXN0ICQzNS9Nb250
+aApNb25pdG9yIGVuZC10by1lbmQgd2ViIHRyYW5zYWN0aW9ucyBhbmQgdGFrZSBjb3JyZWN0aXZl
+IGFjdGlvbnMgbm93ClRyb3VibGVzaG9vdCBmYXN0ZXIgYW5kIGltcHJvdmUgZW5kLXVzZXIgZXhw
+ZXJpZW5jZS4gU2lnbnVwIE5vdyEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1w
+YWQvY2xrP2lkPTI3MjQ4NzE1MSZpdT0vNDE0MApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVz
+ZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
+b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
