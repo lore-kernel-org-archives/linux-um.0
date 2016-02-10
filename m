@@ -1,36 +1,82 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Date: Mon, 4 Jan 2016 14:26:10 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-Message-ID: <20160104132610.GX6344@twins.programming.kicks-ass.net>
-References: <1451572003-2440-1-git-send-email-mst@redhat.com>
- <1451572003-2440-12-git-send-email-mst@redhat.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnU-0003fX-7O
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Feb 2016 14:31:12 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1aTVnT-0005eh-6M
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Feb 2016 14:31:12 +0000
+From: Vegard Nossum <vegard.nossum@oracle.com>
+Date: Wed, 10 Feb 2016 15:29:43 +0100
+Message-Id: <1455114596-3532-8-git-send-email-vegard.nossum@oracle.com>
+In-Reply-To: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
+References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1451572003-2440-12-git-send-email-mst@redhat.com>
-Sender: linux-arch-owner@vger.kernel.org
-Subject: Re: [PATCH v2 11/32] mips: reuse asm-generic/barrier.h
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrey Konovalov <andreyknvl@google.com>, David Daney <ddaney.cavm@gmail.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Subject: [uml-devel] [PATCH 08/21] usb: add HAS_IOMEM dependency to
+	USB_SL811_HCD
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
 
-On Thu, Dec 31, 2015 at 09:07:10PM +0200, Michael S. Tsirkin wrote:
-> -#define smp_store_release(p, v)						\
-> -do {									\
-> -	compiletime_assert_atomic_type(*p);				\
-> -	smp_mb();							\
-> -	WRITE_ONCE(*p, v);						\
-> -} while (0)
-> -
-> -#define smp_load_acquire(p)						\
-> -({									\
-> -	typeof(*p) ___p1 = READ_ONCE(*p);				\
-> -	compiletime_assert_atomic_type(*p);				\
-> -	smp_mb();							\
-> -	___p1;								\
-> -})
+ICBDQyAgICAgIGRyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsubwpkcml2ZXJzL3VzYi9ob3N0L3ho
+Y2ktbXRrLmM6MTM1OjEyOiB3YXJuaW5nOiDigJh4aGNpX210a19ob3N0X2Rpc2FibGXigJkgZGVm
+aW5lZCBidXQgbm90IHVzZWQgWy1XdW51c2VkLWZ1bmN0aW9uXQogc3RhdGljIGludCB4aGNpX210
+a19ob3N0X2Rpc2FibGUoc3RydWN0IHhoY2lfaGNkX210ayAqbXRrKQogICAgICAgICAgICBeCmRy
+aXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuYzozMTM6MTM6IHdhcm5pbmc6IOKAmHVzYl93YWtldXBf
+ZW5hYmxl4oCZIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC1mdW5jdGlvbl0KIHN0YXRp
+YyB2b2lkIHVzYl93YWtldXBfZW5hYmxlKHN0cnVjdCB4aGNpX2hjZF9tdGsgKm10aykKICAgICAg
+ICAgICAgIF4KZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay5jOjMyMToxMzogd2FybmluZzog4oCY
+dXNiX3dha2V1cF9kaXNhYmxl4oCZIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC1mdW5j
+dGlvbl0KIHN0YXRpYyB2b2lkIHVzYl93YWtldXBfZGlzYWJsZShzdHJ1Y3QgeGhjaV9oY2RfbXRr
+ICptdGspCiAgICAgICAgICAgICBeCiAgQ0MgICAgICBkcml2ZXJzL3VzYi9ob3N0L3NsODExLWhj
+ZC5vCmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6IEluIGZ1bmN0aW9uIOKAmHNsODExaF9y
+ZW1vdmXigJk6CmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6MTYwNzozOiBlcnJvcjogaW1w
+bGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYaW91bm1hcOKAmSBbLVdlcnJvcj1pbXBs
+aWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0KICAgaW91bm1hcChzbDgxMS0+ZGF0YV9yZWcpOwog
+ICBeCmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6IEluIGZ1bmN0aW9uIOKAmHNsODExaF9w
+cm9iZeKAmToKZHJpdmVycy91c2IvaG9zdC9zbDgxMS1oY2QuYzoxNjY5OjM6IGVycm9yOiBpbXBs
+aWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhpb3JlbWFw4oCZIFstV2Vycm9yPWltcGxp
+Y2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogICBhZGRyX3JlZyA9IGlvcmVtYXAoYWRkci0+c3Rh
+cnQsIDEpOwogICBeCmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6MTY2OToxMjogd2Fybmlu
+ZzogYXNzaWdubWVudCBtYWtlcyBwb2ludGVyIGZyb20gaW50ZWdlciB3aXRob3V0IGEgY2FzdCBb
+ZW5hYmxlZCBieSBkZWZhdWx0XQogICBhZGRyX3JlZyA9IGlvcmVtYXAoYWRkci0+c3RhcnQsIDEp
+OwogICAgICAgICAgICBeCmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6MTY3NToxMjogd2Fy
+bmluZzogYXNzaWdubWVudCBtYWtlcyBwb2ludGVyIGZyb20gaW50ZWdlciB3aXRob3V0IGEgY2Fz
+dCBbZW5hYmxlZCBieSBkZWZhdWx0XQogICBkYXRhX3JlZyA9IGlvcmVtYXAoZGF0YS0+c3RhcnQs
+IDEpOwogICAgICAgICAgICBeCgpTaWduZWQtb2ZmLWJ5OiBWZWdhcmQgTm9zc3VtIDx2ZWdhcmQu
+bm9zc3VtQG9yYWNsZS5jb20+Ci0tLQogZHJpdmVycy91c2IvaG9zdC9LY29uZmlnIHwgMSArCiAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9o
+b3N0L0tjb25maWcgYi9kcml2ZXJzL3VzYi9ob3N0L0tjb25maWcKaW5kZXggZTc4MWZiMS4uOTYy
+MjFjNCAxMDA2NDQKLS0tIGEvZHJpdmVycy91c2IvaG9zdC9LY29uZmlnCisrKyBiL2RyaXZlcnMv
+dXNiL2hvc3QvS2NvbmZpZwpAQCAtNjcxLDYgKzY3MSw3IEBAIGNvbmZpZyBVU0JfVTEzMl9IQ0QK
+IAogY29uZmlnIFVTQl9TTDgxMV9IQ0QKIAl0cmlzdGF0ZSAiU0w4MTFIUyBIQ0Qgc3VwcG9ydCIK
+KwlkZXBlbmRzIG9uIEhBU19JT01FTQogCWhlbHAKIAkgIFRoZSBTTDgxMUhTIGlzIGEgc2luZ2xl
+LXBvcnQgVVNCIGNvbnRyb2xsZXIgdGhhdCBzdXBwb3J0cyBlaXRoZXIKIAkgIGhvc3Qgc2lkZSBv
+ciBwZXJpcGhlcmFsIHNpZGUgcm9sZXMuICBFbmFibGUgdGhpcyBvcHRpb24gaWYgeW91cgotLSAK
+MS45LjEKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KU2l0ZTI0eDcgQVBNIEluc2lnaHQ6IEdldCBE
+ZWVwIFZpc2liaWxpdHkgaW50byBBcHBsaWNhdGlvbiBQZXJmb3JtYW5jZQpBUE0gKyBNb2JpbGUg
+QVBNICsgUlVNOiBNb25pdG9yIDMgQXBwIGluc3RhbmNlcyBhdCBqdXN0ICQzNS9Nb250aApNb25p
+dG9yIGVuZC10by1lbmQgd2ViIHRyYW5zYWN0aW9ucyBhbmQgdGFrZSBjb3JyZWN0aXZlIGFjdGlv
+bnMgbm93ClRyb3VibGVzaG9vdCBmYXN0ZXIgYW5kIGltcHJvdmUgZW5kLXVzZXIgZXhwZXJpZW5j
+ZS4gU2lnbnVwIE5vdyEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xr
+P2lkPTI3MjQ4NzE1MSZpdT0vNDE0MApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9k
+ZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
+b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
-David Daney wanted to use fancy new MIPS barriers to provide better
-implementations of this.
-
-This patch isn't in the way of that, just a FYI.
