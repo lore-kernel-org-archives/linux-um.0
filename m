@@ -1,22 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnx-0003ol-P2
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnq-0006mu-9w
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:41 +0000
+	Wed, 10 Feb 2016 14:31:34 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aTVns-0005r2-BH
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1aTVnp-0005fa-HI
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:41 +0000
+	Wed, 10 Feb 2016 14:31:34 +0000
 From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Wed, 10 Feb 2016 15:29:54 +0100
-Message-Id: <1455114596-3532-19-git-send-email-vegard.nossum@oracle.com>
+Date: Wed, 10 Feb 2016 15:29:52 +0100
+Message-Id: <1455114596-3532-17-git-send-email-vegard.nossum@oracle.com>
 In-Reply-To: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
 References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-Subject: [uml-devel] [PATCH 19/21] usb: add HAS_IOMEM dependency to
-	USB_ISP1362_HCD
+Subject: [uml-devel] [PATCH 17/21] usb: add HAS_IOMEM dependency to
+	USB_PXA27X
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,26 +33,26 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
 
-drivers/built-in.o: In function `isp1362_probe':
-/home/vegard/linux/drivers/usb/host/isp1362-hcd.c:2668: undefined reference to `devm_ioremap_resource'
+drivers/built-in.o: In function `pxa_udc_probe':
+/home/vegard/linux/drivers/usb/gadget/udc/pxa27x_udc.c:2430: undefined reference to `devm_ioremap_resource'
 
 Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 ---
- drivers/usb/host/Kconfig | 1 +
+ drivers/usb/gadget/udc/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
-index 85230d6..438dcf6 100644
---- a/drivers/usb/host/Kconfig
-+++ b/drivers/usb/host/Kconfig
-@@ -357,6 +357,7 @@ config USB_ISP116X_HCD
+diff --git a/drivers/usb/gadget/udc/Kconfig b/drivers/usb/gadget/udc/Kconfig
+index 70feaf2..d6ad7e6 100644
+--- a/drivers/usb/gadget/udc/Kconfig
++++ b/drivers/usb/gadget/udc/Kconfig
+@@ -188,6 +188,7 @@ config USB_RENESAS_USB3
  
- config USB_ISP1362_HCD
- 	tristate "ISP1362 HCD support"
+ config USB_PXA27X
+ 	tristate "PXA 27x"
 +	depends on HAS_IOMEM
- 	---help---
- 	  Supports the Philips ISP1362 chip as a host controller
- 
+ 	help
+ 	   Intel's PXA 27x series XScale ARM v5TE processors include
+ 	   an integrated full speed USB 1.1 device controller.
 -- 
 1.9.1
 
