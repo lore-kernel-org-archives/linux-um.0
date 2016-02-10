@@ -1,25 +1,36 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1aTW1C-0004XB-Et
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1aTVvm-0002WD-Ce
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:45:22 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aTW1B-0006RV-Ll
+	Wed, 10 Feb 2016 14:39:46 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1aTVvl-0008W1-8P
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:45:22 +0000
+	Wed, 10 Feb 2016 14:39:46 +0000
+Received: from tun252.maui-covenant.sigsegv.cx ([192.168.17.6]
+	helo=smaug.kot-begemot.co.uk) by ivanoab4.miniserver.com with esmtps
+	(TLS1.2:RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1aTVve-000369-EW
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Feb 2016 14:39:38 +0000
+Received: from monstrousnightmare.kot-begemot.co.uk ([192.168.3.80])
+	by smaug.kot-begemot.co.uk with esmtp (Exim 4.84)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1aTVve-0005QH-6S
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 10 Feb 2016 14:39:38 +0000
 References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
 	<1455114596-3532-21-git-send-email-vegard.nossum@oracle.com>
 	<56BB4AB2.5050400@nod.at>
-From: Vegard Nossum <vegard.nossum@oracle.com>
-Message-ID: <56BB4CF0.90105@oracle.com>
-Date: Wed, 10 Feb 2016 15:45:04 +0100
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <56BB4BAA.4000903@kot-begemot.co.uk>
+Date: Wed, 10 Feb 2016 14:39:38 +0000
 MIME-Version: 1.0
 In-Reply-To: <56BB4AB2.5050400@nod.at>
 Subject: Re: [uml-devel] [PATCH 21/21] usb: remove HAS_IOMEM dependency from
-	USB_SUPPORT
+ USB_SUPPORT
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,10 +43,9 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Weinberger <richard@nod.at>, Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-On 02/10/2016 03:35 PM, Richard Weinberger wrote:
+On 10/02/16 14:35, Richard Weinberger wrote:
 > Am 10.02.2016 um 15:29 schrieb Vegard Nossum:
 >> USB has not been usable on UML since this commit:
 >>
@@ -54,24 +64,29 @@ On 02/10/2016 03:35 PM, Richard Weinberger wrote:
 >> depending on HAS_IOMEM, we can remove the dependency from USB_SUPPORT
 >> itself. This makes it possible to include USB support in UML builds
 >> again.
->
 > How do you use USB on uml?
 > Or is it just for build coverage?
 
-You can use usbip_host (USB over ip) to connect with real devices or
-gadgetfs (e.g. dummy_hcd) to emulate a device in the UML userspace which
-connects to the USB driver in the UML kernel.
+USB over Net should work. if that is working in the first place.
 
-James McMechan at one time had some patches for passing through USB
-devices on the host to the UML kernel but I don't think it was ever
-merged. Anyway, that might be desirable to bring back at some point in
-the future.
+A.
 
-My specific use case is using gadgetfs inside UML for USB device driver
-fuzzing.
+>
+> Thanks,
+> //richard
+>
+> ------------------------------------------------------------------------------
+> Site24x7 APM Insight: Get Deep Visibility into Application Performance
+> APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
+> Monitor end-to-end web transactions and take corrective actions now
+> Troubleshoot faster and improve end-user experience. Signup Now!
+> http://pubads.g.doubleclick.net/gampad/clk?id=272487151&iu=/4140
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
 
-
-Vegard
 
 ------------------------------------------------------------------------------
 Site24x7 APM Insight: Get Deep Visibility into Application Performance
