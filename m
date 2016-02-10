@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnI-0001zE-5w
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnh-0003iV-2J
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:00 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
+	Wed, 10 Feb 2016 14:31:25 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aTVnG-0007xH-EQ
+	(Exim 4.76) id 1aTVng-0007yJ-9W
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:00 +0000
+	Wed, 10 Feb 2016 14:31:25 +0000
 From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Wed, 10 Feb 2016 15:29:36 +0100
-Message-Id: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-MIME-Version: 1.0
-Subject: [uml-devel] [PATCH 01/21] usb: add HAS_IOMEM dependency to
-	USB_ISP116X_HCD
+Date: Wed, 10 Feb 2016 15:29:49 +0100
+Message-Id: <1455114596-3532-14-git-send-email-vegard.nossum@oracle.com>
+In-Reply-To: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
+References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
+Subject: [uml-devel] [PATCH 14/21] usb: add HAS_IOMEM dependency to
+	USB_PXA25X
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -25,46 +26,45 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
 
-ZHJpdmVycy91c2IvaG9zdC9pc3AxMTZ4LWhjZC5jOiBJbiBmdW5jdGlvbiDigJhpc3AxMTZ4X3Jl
-bW92ZeKAmToKZHJpdmVycy91c2IvaG9zdC9pc3AxMTZ4LWhjZC5jOjE1NTI6MjogZXJyb3I6IGlt
-cGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmGlvdW5tYXDigJkgWy1XZXJyb3I9aW1w
-bGljaXQtZnVuY3Rpb24tZGVjbGFyYXRpb25dCiAgaW91bm1hcChpc3AxMTZ4LT5kYXRhX3JlZyk7
-CiAgXgpkcml2ZXJzL3VzYi9ob3N0L2lzcDExNngtaGNkLmM6IEluIGZ1bmN0aW9uIOKAmGlzcDEx
-NnhfcHJvYmXigJk6CmRyaXZlcnMvdXNiL2hvc3QvaXNwMTE2eC1oY2QuYzoxNjA0OjI6IGVycm9y
-OiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhpb3JlbWFw4oCZIFstV2Vycm9y
-PWltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogIGFkZHJfcmVnID0gaW9yZW1hcChhZGRy
-LT5zdGFydCwgcmVzb3VyY2Vfc2l6ZShhZGRyKSk7CiAgXgpkcml2ZXJzL3VzYi9ob3N0L2lzcDEx
-NngtaGNkLmM6MTYwNDoxMTogd2FybmluZzogYXNzaWdubWVudCBtYWtlcyBwb2ludGVyIGZyb20g
-aW50ZWdlciB3aXRob3V0IGEgY2FzdCBbZW5hYmxlZCBieSBkZWZhdWx0XQogIGFkZHJfcmVnID0g
-aW9yZW1hcChhZGRyLT5zdGFydCwgcmVzb3VyY2Vfc2l6ZShhZGRyKSk7CiAgICAgICAgICAgXgpk
-cml2ZXJzL3VzYi9ob3N0L2lzcDExNngtaGNkLmM6MTYxMzoxMTogd2FybmluZzogYXNzaWdubWVu
-dCBtYWtlcyBwb2ludGVyIGZyb20gaW50ZWdlciB3aXRob3V0IGEgY2FzdCBbZW5hYmxlZCBieSBk
-ZWZhdWx0XQogIGRhdGFfcmVnID0gaW9yZW1hcChkYXRhLT5zdGFydCwgcmVzb3VyY2Vfc2l6ZShk
-YXRhKSk7CiAgICAgICAgICAgXgoKU2lnbmVkLW9mZi1ieTogVmVnYXJkIE5vc3N1bSA8dmVnYXJk
-Lm5vc3N1bUBvcmFjbGUuY29tPgotLS0KIGRyaXZlcnMvdXNiL2hvc3QvS2NvbmZpZyB8IDEgKwog
-MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2Iv
-aG9zdC9LY29uZmlnIGIvZHJpdmVycy91c2IvaG9zdC9LY29uZmlnCmluZGV4IDFmMTE3YzMuLjY0
-ZDc4YjEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvdXNiL2hvc3QvS2NvbmZpZworKysgYi9kcml2ZXJz
-L3VzYi9ob3N0L0tjb25maWcKQEAgLTM0MCw2ICszNDAsNyBAQCBjb25maWcgVVNCX09YVTIxMEhQ
-X0hDRAogCiBjb25maWcgVVNCX0lTUDExNlhfSENECiAJdHJpc3RhdGUgIklTUDExNlggSENEIHN1
-cHBvcnQiCisJZGVwZW5kcyBvbiBIQVNfSU9NRU0KIAktLS1oZWxwLS0tCiAJICBUaGUgSVNQMTE2
-MCBhbmQgSVNQMTE2MSBjaGlwcyBhcmUgVVNCIGhvc3QgY29udHJvbGxlcnMuIEVuYWJsZSB0aGlz
-CiAJICBvcHRpb24gaWYgeW91ciBib2FyZCBoYXMgdGhpcyBjaGlwLiBJZiB1bnN1cmUsIHNheSBO
-LgotLSAKMS45LjEKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KU2l0ZTI0eDcgQVBNIEluc2lnaHQ6
-IEdldCBEZWVwIFZpc2liaWxpdHkgaW50byBBcHBsaWNhdGlvbiBQZXJmb3JtYW5jZQpBUE0gKyBN
-b2JpbGUgQVBNICsgUlVNOiBNb25pdG9yIDMgQXBwIGluc3RhbmNlcyBhdCBqdXN0ICQzNS9Nb250
-aApNb25pdG9yIGVuZC10by1lbmQgd2ViIHRyYW5zYWN0aW9ucyBhbmQgdGFrZSBjb3JyZWN0aXZl
-IGFjdGlvbnMgbm93ClRyb3VibGVzaG9vdCBmYXN0ZXIgYW5kIGltcHJvdmUgZW5kLXVzZXIgZXhw
-ZXJpZW5jZS4gU2lnbnVwIE5vdyEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1w
-YWQvY2xrP2lkPTI3MjQ4NzE1MSZpdT0vNDE0MApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVz
-ZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
-b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+drivers/built-in.o: In function `pxa_udc_probe':
+/home/vegard/linux/drivers/usb/gadget/udc/pxa27x_udc.c:2430: undefined reference to `devm_ioremap_resource'
+
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+---
+ drivers/usb/gadget/udc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/gadget/udc/Kconfig b/drivers/usb/gadget/udc/Kconfig
+index e06efa3..70feaf2 100644
+--- a/drivers/usb/gadget/udc/Kconfig
++++ b/drivers/usb/gadget/udc/Kconfig
+@@ -128,6 +128,7 @@ config USB_OMAP
+ config USB_PXA25X
+ 	tristate "PXA 25x or IXP 4xx"
+ 	depends on (ARCH_PXA && PXA25x) || ARCH_IXP4XX
++	depends on HAS_IOMEM
+ 	help
+ 	   Intel's PXA 25x series XScale ARM-5TE processors include
+ 	   an integrated full speed USB 1.1 device controller.  The
+-- 
+1.9.1
+
+
+------------------------------------------------------------------------------
+Site24x7 APM Insight: Get Deep Visibility into Application Performance
+APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
+Monitor end-to-end web transactions and take corrective actions now
+Troubleshoot faster and improve end-user experience. Signup Now!
+http://pubads.g.doubleclick.net/gampad/clk?id=272487151&iu=/4140
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
