@@ -1,21 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnV-0002oF-7b
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnx-0003ol-P2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:13 +0000
+	Wed, 10 Feb 2016 14:31:41 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aTVnU-0008E0-Ej
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1aTVns-0005r2-BH
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:13 +0000
+	Wed, 10 Feb 2016 14:31:41 +0000
 From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Wed, 10 Feb 2016 15:29:44 +0100
-Message-Id: <1455114596-3532-9-git-send-email-vegard.nossum@oracle.com>
+Date: Wed, 10 Feb 2016 15:29:54 +0100
+Message-Id: <1455114596-3532-19-git-send-email-vegard.nossum@oracle.com>
 In-Reply-To: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
 References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-Subject: [uml-devel] [PATCH 09/21] usb: add HAS_IOMEM dependency to USB_DWC2
+Subject: [uml-devel] [PATCH 19/21] usb: add HAS_IOMEM dependency to
+	USB_ISP1362_HCD
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,26 +33,26 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
 
-drivers/built-in.o: In function `dwc2_driver_probe':
-/home/vegard/linux/drivers/usb/dwc2/platform.c:491: undefined reference to `devm_ioremap_resource'
+drivers/built-in.o: In function `isp1362_probe':
+/home/vegard/linux/drivers/usb/host/isp1362-hcd.c:2668: undefined reference to `devm_ioremap_resource'
 
 Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
 ---
- drivers/usb/dwc2/Kconfig | 1 +
+ drivers/usb/host/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/dwc2/Kconfig b/drivers/usb/dwc2/Kconfig
-index fd95ba6..b56920a 100644
---- a/drivers/usb/dwc2/Kconfig
-+++ b/drivers/usb/dwc2/Kconfig
-@@ -1,6 +1,7 @@
- config USB_DWC2
- 	tristate "DesignWare USB2 DRD Core Support"
- 	depends on USB || USB_GADGET
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index 85230d6..438dcf6 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -357,6 +357,7 @@ config USB_ISP116X_HCD
+ 
+ config USB_ISP1362_HCD
+ 	tristate "ISP1362 HCD support"
 +	depends on HAS_IOMEM
- 	help
- 	  Say Y here if your system has a Dual Role Hi-Speed USB
- 	  controller based on the DesignWare HSOTG IP Core.
+ 	---help---
+ 	  Supports the Philips ISP1362 chip as a host controller
+ 
 -- 
 1.9.1
 
