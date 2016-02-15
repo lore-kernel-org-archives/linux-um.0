@@ -1,82 +1,86 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnU-0003fX-7O
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:12 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aTVnT-0005eh-6M
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:12 +0000
-From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Wed, 10 Feb 2016 15:29:43 +0100
-Message-Id: <1455114596-3532-8-git-send-email-vegard.nossum@oracle.com>
-In-Reply-To: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-MIME-Version: 1.0
-Subject: [uml-devel] [PATCH 08/21] usb: add HAS_IOMEM dependency to
-	USB_SL811_HCD
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
+Return-Path: <geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 2/3] usb: host: Some host drivers should depend on HAS_DMA
+Date: Mon, 15 Feb 2016 12:21:44 +0100
+Message-Id: <1455535305-9508-3-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1455535305-9508-1-git-send-email-geert@linux-m68k.org>
+References: <1455535305-9508-1-git-send-email-geert@linux-m68k.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Vegard Nossum <vegard.nossum@oracle.com>
+Cc: John Youn <johnyoun@synopsys.com>, Richard Weinberger <richard@nod.at>, James McMechan <James_McMechan@hotmail.com>, Alan Stern <stern@rowland.harvard.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux-usb@vger.kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Geert Uytterhoeven <geert@linux-m68k.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-ICBDQyAgICAgIGRyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsubwpkcml2ZXJzL3VzYi9ob3N0L3ho
-Y2ktbXRrLmM6MTM1OjEyOiB3YXJuaW5nOiDigJh4aGNpX210a19ob3N0X2Rpc2FibGXigJkgZGVm
-aW5lZCBidXQgbm90IHVzZWQgWy1XdW51c2VkLWZ1bmN0aW9uXQogc3RhdGljIGludCB4aGNpX210
-a19ob3N0X2Rpc2FibGUoc3RydWN0IHhoY2lfaGNkX210ayAqbXRrKQogICAgICAgICAgICBeCmRy
-aXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuYzozMTM6MTM6IHdhcm5pbmc6IOKAmHVzYl93YWtldXBf
-ZW5hYmxl4oCZIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC1mdW5jdGlvbl0KIHN0YXRp
-YyB2b2lkIHVzYl93YWtldXBfZW5hYmxlKHN0cnVjdCB4aGNpX2hjZF9tdGsgKm10aykKICAgICAg
-ICAgICAgIF4KZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay5jOjMyMToxMzogd2FybmluZzog4oCY
-dXNiX3dha2V1cF9kaXNhYmxl4oCZIGRlZmluZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC1mdW5j
-dGlvbl0KIHN0YXRpYyB2b2lkIHVzYl93YWtldXBfZGlzYWJsZShzdHJ1Y3QgeGhjaV9oY2RfbXRr
-ICptdGspCiAgICAgICAgICAgICBeCiAgQ0MgICAgICBkcml2ZXJzL3VzYi9ob3N0L3NsODExLWhj
-ZC5vCmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6IEluIGZ1bmN0aW9uIOKAmHNsODExaF9y
-ZW1vdmXigJk6CmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6MTYwNzozOiBlcnJvcjogaW1w
-bGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYaW91bm1hcOKAmSBbLVdlcnJvcj1pbXBs
-aWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0KICAgaW91bm1hcChzbDgxMS0+ZGF0YV9yZWcpOwog
-ICBeCmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6IEluIGZ1bmN0aW9uIOKAmHNsODExaF9w
-cm9iZeKAmToKZHJpdmVycy91c2IvaG9zdC9zbDgxMS1oY2QuYzoxNjY5OjM6IGVycm9yOiBpbXBs
-aWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhpb3JlbWFw4oCZIFstV2Vycm9yPWltcGxp
-Y2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogICBhZGRyX3JlZyA9IGlvcmVtYXAoYWRkci0+c3Rh
-cnQsIDEpOwogICBeCmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6MTY2OToxMjogd2Fybmlu
-ZzogYXNzaWdubWVudCBtYWtlcyBwb2ludGVyIGZyb20gaW50ZWdlciB3aXRob3V0IGEgY2FzdCBb
-ZW5hYmxlZCBieSBkZWZhdWx0XQogICBhZGRyX3JlZyA9IGlvcmVtYXAoYWRkci0+c3RhcnQsIDEp
-OwogICAgICAgICAgICBeCmRyaXZlcnMvdXNiL2hvc3Qvc2w4MTEtaGNkLmM6MTY3NToxMjogd2Fy
-bmluZzogYXNzaWdubWVudCBtYWtlcyBwb2ludGVyIGZyb20gaW50ZWdlciB3aXRob3V0IGEgY2Fz
-dCBbZW5hYmxlZCBieSBkZWZhdWx0XQogICBkYXRhX3JlZyA9IGlvcmVtYXAoZGF0YS0+c3RhcnQs
-IDEpOwogICAgICAgICAgICBeCgpTaWduZWQtb2ZmLWJ5OiBWZWdhcmQgTm9zc3VtIDx2ZWdhcmQu
-bm9zc3VtQG9yYWNsZS5jb20+Ci0tLQogZHJpdmVycy91c2IvaG9zdC9LY29uZmlnIHwgMSArCiAx
-IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9o
-b3N0L0tjb25maWcgYi9kcml2ZXJzL3VzYi9ob3N0L0tjb25maWcKaW5kZXggZTc4MWZiMS4uOTYy
-MjFjNCAxMDA2NDQKLS0tIGEvZHJpdmVycy91c2IvaG9zdC9LY29uZmlnCisrKyBiL2RyaXZlcnMv
-dXNiL2hvc3QvS2NvbmZpZwpAQCAtNjcxLDYgKzY3MSw3IEBAIGNvbmZpZyBVU0JfVTEzMl9IQ0QK
-IAogY29uZmlnIFVTQl9TTDgxMV9IQ0QKIAl0cmlzdGF0ZSAiU0w4MTFIUyBIQ0Qgc3VwcG9ydCIK
-KwlkZXBlbmRzIG9uIEhBU19JT01FTQogCWhlbHAKIAkgIFRoZSBTTDgxMUhTIGlzIGEgc2luZ2xl
-LXBvcnQgVVNCIGNvbnRyb2xsZXIgdGhhdCBzdXBwb3J0cyBlaXRoZXIKIAkgIGhvc3Qgc2lkZSBv
-ciBwZXJpcGhlcmFsIHNpZGUgcm9sZXMuICBFbmFibGUgdGhpcyBvcHRpb24gaWYgeW91cgotLSAK
-MS45LjEKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KU2l0ZTI0eDcgQVBNIEluc2lnaHQ6IEdldCBE
-ZWVwIFZpc2liaWxpdHkgaW50byBBcHBsaWNhdGlvbiBQZXJmb3JtYW5jZQpBUE0gKyBNb2JpbGUg
-QVBNICsgUlVNOiBNb25pdG9yIDMgQXBwIGluc3RhbmNlcyBhdCBqdXN0ICQzNS9Nb250aApNb25p
-dG9yIGVuZC10by1lbmQgd2ViIHRyYW5zYWN0aW9ucyBhbmQgdGFrZSBjb3JyZWN0aXZlIGFjdGlv
-bnMgbm93ClRyb3VibGVzaG9vdCBmYXN0ZXIgYW5kIGltcHJvdmUgZW5kLXVzZXIgZXhwZXJpZW5j
-ZS4gU2lnbnVwIE5vdyEKaHR0cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xr
-P2lkPTI3MjQ4NzE1MSZpdT0vNDE0MApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9k
-ZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
-b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+If NO_DMA=y:
+
+    ERROR: "bad_dma_ops" [drivers/usb/host/xhci-plat-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/xhci-mtk.ko] undefined!
+    ERROR: "dma_pool_destroy" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "dma_pool_create" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/ohci-platform.ko] undefined!
+    ERROR: "dma_pool_destroy" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "dma_pool_create" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "dma_pool_create" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "dma_pool_destroy" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/ehci-platform.ko] undefined!
+    ERROR: "dma_pool_destroy" [drivers/usb/host/ehci-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/ehci-hcd.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/usb/host/ehci-hcd.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/usb/host/ehci-hcd.ko] undefined!
+    ERROR: "dma_pool_create" [drivers/usb/host/ehci-hcd.ko] undefined!
+
+Add dependencies on HAS_DMA to fix this.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/usb/host/Kconfig | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index 1f117c360ebbba33..573789698474ad8d 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -17,6 +17,7 @@ config USB_C67X00_HCD
+ 
+ config USB_XHCI_HCD
+ 	tristate "xHCI HCD (USB 3.0) support"
++	depends on HAS_DMA
+ 	---help---
+ 	  The eXtensible Host Controller Interface (xHCI) is standard for USB 3.0
+ 	  "SuperSpeed" host controller hardware.
+@@ -70,6 +71,7 @@ endif # USB_XHCI_HCD
+ 
+ config USB_EHCI_HCD
+ 	tristate "EHCI HCD (USB 2.0) support"
++	depends on HAS_DMA
+ 	---help---
+ 	  The Enhanced Host Controller Interface (EHCI) is standard for USB 2.0
+ 	  "high speed" (480 Mbit/sec, 60 Mbyte/sec) host controller hardware.
+@@ -361,7 +363,7 @@ config USB_ISP1362_HCD
+ 
+ config USB_FOTG210_HCD
+ 	tristate "FOTG210 HCD support"
+-	depends on USB
++	depends on USB && HAS_DMA
+ 	---help---
+ 	  Faraday FOTG210 is an OTG controller which can be configured as
+ 	  an USB2.0 host. It is designed to meet USB2.0 EHCI specification
+@@ -383,6 +385,7 @@ config USB_MAX3421_HCD
+ 
+ config USB_OHCI_HCD
+ 	tristate "OHCI HCD (USB 1.1) support"
++	depends on HAS_DMA
+ 	---help---
+ 	  The Open Host Controller Interface (OHCI) is a standard for accessing
+ 	  USB 1.1 host controller hardware.  It does more in hardware than Intel's
+-- 
+1.9.1
+
 
