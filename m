@@ -5,80 +5,101 @@ References: <1455535305-9508-1-git-send-email-geert@linux-m68k.org>
  <1455535305-9508-2-git-send-email-geert@linux-m68k.org>
  <56C1BB63.9070906@oracle.com>
  <CAMuHMdVxNS1_coU6EPZcHYKZqGnOPDmHq9_aQGa08jLNP55Nhg@mail.gmail.com>
- <56C2373A.4010701@oracle.com>
 From: Vegard Nossum <vegard.nossum@oracle.com>
-Message-ID: <56C3178C.80102@oracle.com>
-Date: Tue, 16 Feb 2016 13:35:24 +0100
+Message-ID: <56C2373A.4010701@oracle.com>
+Date: Mon, 15 Feb 2016 21:38:18 +0100
 MIME-Version: 1.0
-In-Reply-To: <56C2373A.4010701@oracle.com>
+In-Reply-To: <CAMuHMdVxNS1_coU6EPZcHYKZqGnOPDmHq9_aQGa08jLNP55Nhg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, John Youn <johnyoun@synopsys.com>, Richard Weinberger <richard@nod.at>, James McMechan <James_McMechan@hotmail.com>, Alan Stern <stern@rowland.harvard.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, USB list <linux-usb@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 02/15/2016 09:38 PM, Vegard Nossum wrote:
-> On 02/15/2016 01:28 PM, Geert Uytterhoeven wrote:
->> On Mon, Feb 15, 2016 at 12:49 PM, Vegard Nossum
->> <vegard.nossum@oracle.com> wrote:
->>> On 02/15/2016 12:21 PM, Geert Uytterhoeven wrote:
-
+On 02/15/2016 01:28 PM, Geert Uytterhoeven wrote:
+> On Mon, Feb 15, 2016 at 12:49 PM, Vegard Nossum
+> <vegard.nossum@oracle.com> wrote:
+>> On 02/15/2016 12:21 PM, Geert Uytterhoeven wrote:
+>>> If NO_DMA=y:
+>>>
+>>>       ERROR: "dma_pool_destroy" [drivers/usb/core/usbcore.ko] undefined!
+>>>       ERROR: "bad_dma_ops" [drivers/usb/core/usbcore.ko] undefined!
+>>>       ERROR: "dma_pool_free" [drivers/usb/core/usbcore.ko] undefined!
+>>>       ERROR: "dma_pool_alloc" [drivers/usb/core/usbcore.ko] undefined!
+>>>       ERROR: "dma_pool_create" [drivers/usb/core/usbcore.ko] undefined!
+>>>
+>>> Add a few checks for CONFIG_HAS_DMA to fix this.
+>>>
+>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>> ---
+>>>    drivers/usb/core/buffer.c | 18 ++++++++++++------
+>>>    drivers/usb/core/hcd.c    | 14 ++++++++++----
+>>>    2 files changed, 22 insertions(+), 10 deletions(-)
+>>>
 [...]
 
->>> Assuming this still lets the platform actually run USB drivers (which it
->>> looks like it does -- I still have to test it), then I'm all for it. You
->>
->> Please give it a try and let me know, as I'm not in a position to
->> test-run
->> this on Sun-3.
+>> Assuming this still lets the platform actually run USB drivers (which it
+>> looks like it does -- I still have to test it), then I'm all for it. You
 >
-> Hrm, I can't quite get usb-over-ip working, I get this in the UML guest
-> when trying to attach the host device:
+> Please give it a try and let me know, as I'm not in a position to test-run
+> this on Sun-3.
 
-[...]
+Hrm, I can't quite get usb-over-ip working, I get this in the UML guest
+when trying to attach the host device:
 
-> That said, I haven't tried if it works with my patches either, so it
-> might be something else.
+# usbip -d attach -r 192.168.0.20 -b 2-1
+usbip: debug: usbip.c:141:[run_command] running command: `attach'
+libusbip: debug: vhci_driver.c:242:[usbip_vhci_driver_open] available 
+ports: 7
+libusbip: debug: vhci_driver.c:71:[parse_status] port 0 status 4 speed 0 
+devid 0
+libusbip: debug: vhci_driver.c:72:[parse_status] socket 0 lbusid 
+0000000000000000
+libusbip: debug: vhci_driver.c:71:[parse_status] port 1 status 4 speed 0 
+devid 0
+libusbip: debug: vhci_driver.c:72:[parse_status] socket 0 lbusid 
+0000000000000000
+libusbip: debug: vhci_driver.c:71:[parse_status] port 2 status 4 speed 0 
+devid 0
+libusbip: debug: vhci_driver.c:72:[parse_status] socket 0 lbusid 
+0000000000000000
+libusbip: debug: vhci_driver.c:71:[parse_status] port 3 status 4 speed 0 
+devid 0
+libusbip: debug: vhci_driver.c:72:[parse_status] socket 0 lbusid 
+0000000000000000
+libusbip: debug: vhci_driver.c:71:[parse_status] port 4 status 4 speed 0 
+devid 0
+libusbip: debug: vhci_driver.c:72:[parse_status] socket 0 lbusid 
+0000000000000000
+libusbip: debug: vhci_driver.c:71:[parse_status] port 5 status 4 speed 0 
+devid 0
+libusbip: debug: vhci_driver.c:72:[parse_status] socket 0 lbusid 
+0000000000000000
+libusbip: debug: vhci_driver.c:71:[parse_status] port 6 status 4 speed 0 
+devid 0
+libusbip: debug: vhci_driver.c:72:[parse_status] socket 0 lbusid 
+0000000000000000
+libusbip: debug: vhci_driver.c:71:[parse_status] port 7 status 4 speed 0 
+devid 0
+libusbip: debug: vhci_driver.c:72:[parse_status] socket 0 lbusid 
+0000000000000000
+libusbip: debug: vhci_driver.c:105:[parse_status] exit
+libusbip: debug: vhci_driver.c:311:[usbip_vhci_attach_device2] writing: 
+0 3 131074 5
+libusbip: debug: vhci_driver.c:316:[usbip_vhci_attach_device2] attach 
+attribute path: /sys/devices/platform/vhci_hcd/attach
+vhci_hcd: Failed attach request for unsupported USB speed: super-speed
+usbip: debug: sysfs_utils.c:23:[write_sysfs_attribute] error writing to 
+attribute /sys/devices/platform/vhci_hcd/attach
+libusbip: debug: vhci_driver.c:320:[usbip_vhci_attach_device2] 
+write_sysfs_attribute failed
+usbip: error: import device
+usbip: error: query
 
-Ok, so I managed to get UML to read a USB flash drive plugged into the 
-host machine using USB-over-IP:
+That said, I haven't tried if it works with my patches either, so it
+might be something else.
 
-mconsole (version 2) initialized on /home/vegard/.uml/eaqEV4/mconsole
-Checking host MADV_REMOVE support...OK
-UML Audio Relay (host dsp = /dev/sound/dsp, host mixer = /dev/sound/mixer)
-[...]
-vhci_hcd vhci_hcd: rhport(0) sockfd(3) devid(65538) speed(3) 
-speed_str(high-speed)
-usb 2-1: new high-speed USB device number 2 using vhci_hcd
-usb 2-1: new high-speed USB device number 3 using vhci_hcd
-usb 2-1: new high-speed USB device number 4 using vhci_hcd
-usb 2-1: SetAddress Request (4) to port 0
-usb 2-1: New USB device found, idVendor=0000, idProduct=0000
-usb 2-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-usb 2-1: Product: USB
-usb 2-1: Manufacturer: SMI Corporation
-usb 2-1: SerialNumber: AA627084901000000298
-usb-storage 2-1:1.0: USB Mass Storage device detected
-scsi host0: usb-storage 2-1:1.0
-scsi 0:0:0:0: Direct-Access     ST       2GB              0000 PQ: 0 
-ANSI: 0 CCS
-sd 0:0:0:0: Attached scsi generic sg0 type 0
-sd 0:0:0:0: [sda] 3915776 512-byte logical blocks: (2.00 GB/1.87 GiB)
-sd 0:0:0:0: [sda] Write Protect is off
-sd 0:0:0:0: [sda] Mode Sense: 43 00 00 00
-sd 0:0:0:0: [sda] No Caching mode page found
-sd 0:0:0:0: [sda] Assuming drive cache: write through
-  sda: sda1
-sd 0:0:0:0: [sda] Attached SCSI removable disk
-
-This is using your patches (on top of the ones Greg already took), so
-feel free to add
-
-     Acked-by: Vegard Nossum <vegard.nossum@oracle.com>
-
-If you post the new version of your patch I can test that too :-)
-
-Thanks,
+I'll dive into it tomorrow.
 
 
 Vegard
