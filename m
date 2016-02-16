@@ -1,47 +1,148 @@
-Return-Path: <gregkh@linuxfoundation.org>
-Date: Sat, 20 Feb 2016 20:23:34 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 1/3] usb: core: Allow compilation on platforms where
- NO_DMA=y
-Message-ID: <20160221042334.GA14825@kroah.com>
+Return-Path: <geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2 1/3] usb: core: Allow compilation on platforms where NO_DMA=y
+Date: Tue, 16 Feb 2016 16:10:57 +0100
+Message-Id: <1455635459-1576-2-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1455635459-1576-1-git-send-email-geert@linux-m68k.org>
 References: <1455635459-1576-1-git-send-email-geert@linux-m68k.org>
- <1455635459-1576-2-git-send-email-geert@linux-m68k.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1455635459-1576-2-git-send-email-geert@linux-m68k.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Vegard Nossum <vegard.nossum@oracle.com>, John Youn <johnyoun@synopsys.com>, Richard Weinberger <richard@nod.at>, James McMechan <James_McMechan@hotmail.com>, Alan Stern <stern@rowland.harvard.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux-usb@vger.kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Vegard Nossum <vegard.nossum@oracle.com>
+Cc: John Youn <johnyoun@synopsys.com>, Richard Weinberger <richard@nod.at>, James McMechan <James_McMechan@hotmail.com>, Alan Stern <stern@rowland.harvard.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux-usb@vger.kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Geert Uytterhoeven <geert@linux-m68k.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Feb 16, 2016 at 04:10:57PM +0100, Geert Uytterhoeven wrote:
-> Some platforms don't have DMA, but we should still be able to build USB
-> drivers for these platforms. They could still be used through vhci_hcd,
-> usbip_host, or maybe something like USB passthrough in UML from a
-> capable host.
-> 
-> If NO_DMA=y:
-> 
->     ERROR: "dma_pool_destroy" [drivers/usb/core/usbcore.ko] undefined!
->     ERROR: "bad_dma_ops" [drivers/usb/core/usbcore.ko] undefined!
->     ERROR: "dma_pool_free" [drivers/usb/core/usbcore.ko] undefined!
->     ERROR: "dma_pool_alloc" [drivers/usb/core/usbcore.ko] undefined!
->     ERROR: "dma_pool_create" [drivers/usb/core/usbcore.ko] undefined!
-> 
-> Add a few checks for CONFIG_HAS_DMA to fix this.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Acked-by: Vegard Nossum <vegard.nossum@oracle.com>
-> ---
-> v2:
->   - Replace remaining #ifdefs by IS_ENABLED() checks,
->   - Add to patch description that this actually allows using USB on UML,
->   - Add Acked-by.
+Some platforms don't have DMA, but we should still be able to build USB
+drivers for these platforms. They could still be used through vhci_hcd,
+usbip_host, or maybe something like USB passthrough in UML from a
+capable host.
 
-This patch didn't apply to my tree, can you rebase it against usb-next
-of usb.git and resend?
+If NO_DMA=y:
 
-thanks,
+    ERROR: "dma_pool_destroy" [drivers/usb/core/usbcore.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/core/usbcore.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/usb/core/usbcore.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/usb/core/usbcore.ko] undefined!
+    ERROR: "dma_pool_create" [drivers/usb/core/usbcore.ko] undefined!
 
-greg k-h
+Add a few checks for CONFIG_HAS_DMA to fix this.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Vegard Nossum <vegard.nossum@oracle.com>
+---
+v2:
+  - Replace remaining #ifdefs by IS_ENABLED() checks,
+  - Add to patch description that this actually allows using USB on UML,
+  - Add Acked-by.
+---
+ drivers/usb/core/buffer.c | 18 ++++++++++++------
+ drivers/usb/core/hcd.c    | 16 ++++++++++------
+ 2 files changed, 22 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/usb/core/buffer.c b/drivers/usb/core/buffer.c
+index 89f2e7765093955b..2741566ee4f25849 100644
+--- a/drivers/usb/core/buffer.c
++++ b/drivers/usb/core/buffer.c
+@@ -62,8 +62,9 @@ int hcd_buffer_create(struct usb_hcd *hcd)
+ 	char		name[16];
+ 	int		i, size;
+ 
+-	if (!hcd->self.controller->dma_mask &&
+-	    !(hcd->driver->flags & HCD_LOCAL_MEM))
++	if (!IS_ENABLED(CONFIG_HAS_DMA) ||
++	    (!hcd->self.controller->dma_mask &&
++	     !(hcd->driver->flags & HCD_LOCAL_MEM)))
+ 		return 0;
+ 
+ 	for (i = 0; i < HCD_BUFFER_POOLS; i++) {
+@@ -93,6 +94,9 @@ void hcd_buffer_destroy(struct usb_hcd *hcd)
+ {
+ 	int i;
+ 
++	if (!IS_ENABLED(CONFIG_HAS_DMA))
++		return;
++
+ 	for (i = 0; i < HCD_BUFFER_POOLS; i++) {
+ 		struct dma_pool *pool = hcd->pool[i];
+ 
+@@ -119,8 +123,9 @@ void *hcd_buffer_alloc(
+ 	int			i;
+ 
+ 	/* some USB hosts just use PIO */
+-	if (!bus->controller->dma_mask &&
+-	    !(hcd->driver->flags & HCD_LOCAL_MEM)) {
++	if (!IS_ENABLED(CONFIG_HAS_DMA) ||
++	    (!bus->controller->dma_mask &&
++	     !(hcd->driver->flags & HCD_LOCAL_MEM))) {
+ 		*dma = ~(dma_addr_t) 0;
+ 		return kmalloc(size, mem_flags);
+ 	}
+@@ -145,8 +150,9 @@ void hcd_buffer_free(
+ 	if (!addr)
+ 		return;
+ 
+-	if (!bus->controller->dma_mask &&
+-	    !(hcd->driver->flags & HCD_LOCAL_MEM)) {
++	if (!IS_ENABLED(CONFIG_HAS_DMA) ||
++	    (!bus->controller->dma_mask &&
++	     !(hcd->driver->flags & HCD_LOCAL_MEM))) {
+ 		kfree(addr);
+ 		return;
+ 	}
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index df0e3b92533a745f..b277977cada2b382 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -1408,7 +1408,8 @@ static void hcd_free_coherent(struct usb_bus *bus, dma_addr_t *dma_handle,
+ 
+ void usb_hcd_unmap_urb_setup_for_dma(struct usb_hcd *hcd, struct urb *urb)
+ {
+-	if (urb->transfer_flags & URB_SETUP_MAP_SINGLE)
++	if (IS_ENABLED(CONFIG_HAS_DMA) &&
++	    (urb->transfer_flags & URB_SETUP_MAP_SINGLE))
+ 		dma_unmap_single(hcd->self.controller,
+ 				urb->setup_dma,
+ 				sizeof(struct usb_ctrlrequest),
+@@ -1440,17 +1441,20 @@ void usb_hcd_unmap_urb_for_dma(struct usb_hcd *hcd, struct urb *urb)
+ 	usb_hcd_unmap_urb_setup_for_dma(hcd, urb);
+ 
+ 	dir = usb_urb_dir_in(urb) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
+-	if (urb->transfer_flags & URB_DMA_MAP_SG)
++	if (IS_ENABLED(CONFIG_HAS_DMA) &&
++	    (urb->transfer_flags & URB_DMA_MAP_SG))
+ 		dma_unmap_sg(hcd->self.controller,
+ 				urb->sg,
+ 				urb->num_sgs,
+ 				dir);
+-	else if (urb->transfer_flags & URB_DMA_MAP_PAGE)
++	else if (IS_ENABLED(CONFIG_HAS_DMA) &&
++		 (urb->transfer_flags & URB_DMA_MAP_PAGE))
+ 		dma_unmap_page(hcd->self.controller,
+ 				urb->transfer_dma,
+ 				urb->transfer_buffer_length,
+ 				dir);
+-	else if (urb->transfer_flags & URB_DMA_MAP_SINGLE)
++	else if (IS_ENABLED(CONFIG_HAS_DMA) &&
++		 (urb->transfer_flags & URB_DMA_MAP_SINGLE))
+ 		dma_unmap_single(hcd->self.controller,
+ 				urb->transfer_dma,
+ 				urb->transfer_buffer_length,
+@@ -1492,7 +1496,7 @@ int usb_hcd_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
+ 	if (usb_endpoint_xfer_control(&urb->ep->desc)) {
+ 		if (hcd->self.uses_pio_for_control)
+ 			return ret;
+-		if (hcd->self.uses_dma) {
++		if (IS_ENABLED(CONFIG_HAS_DMA) && hcd->self.uses_dma) {
+ 			urb->setup_dma = dma_map_single(
+ 					hcd->self.controller,
+ 					urb->setup_packet,
+@@ -1518,7 +1522,7 @@ int usb_hcd_map_urb_for_dma(struct usb_hcd *hcd, struct urb *urb,
+ 	dir = usb_urb_dir_in(urb) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
+ 	if (urb->transfer_buffer_length != 0
+ 	    && !(urb->transfer_flags & URB_NO_TRANSFER_DMA_MAP)) {
+-		if (hcd->self.uses_dma) {
++		if (IS_ENABLED(CONFIG_HAS_DMA) && hcd->self.uses_dma) {
+ 			if (urb->num_sgs) {
+ 				int n;
+ 
+-- 
+1.9.1
+
 
