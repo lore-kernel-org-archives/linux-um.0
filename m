@@ -1,85 +1,94 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnv-0006pB-Fy
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:39 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aTVnu-0007z1-MY
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:39 +0000
-From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Wed, 10 Feb 2016 15:29:56 +0100
-Message-Id: <1455114596-3532-21-git-send-email-vegard.nossum@oracle.com>
-In-Reply-To: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-Subject: [uml-devel] [PATCH 21/21] usb: remove HAS_IOMEM dependency from
-	USB_SUPPORT
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
+Return-Path: <geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v3] usb: host: Host drivers relying on DMA should depend on HAS_DMA
+Date: Sun, 21 Feb 2016 22:48:47 +0100
+Message-Id: <1456091327-13169-1-git-send-email-geert@linux-m68k.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Vegard Nossum <vegard.nossum@oracle.com>
+Cc: John Youn <johnyoun@synopsys.com>, Richard Weinberger <richard@nod.at>, James McMechan <James_McMechan@hotmail.com>, Alan Stern <stern@rowland.harvard.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux-usb@vger.kernel.org, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Geert Uytterhoeven <geert@linux-m68k.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-USB has not been usable on UML since this commit:
+If NO_DMA=y:
 
-commit e25df1205f37c7bff3ab14fdfc8a5249f3c69c82
-Author: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Date:   Thu May 10 15:45:57 2007 +0200
+    ERROR: "bad_dma_ops" [drivers/usb/host/xhci-plat-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/xhci-mtk.ko] undefined!
+    ERROR: "dma_pool_destroy" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "dma_pool_create" [drivers/usb/host/xhci-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/ohci-platform.ko] undefined!
+    ERROR: "dma_pool_destroy" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "dma_pool_create" [drivers/usb/host/ohci-hcd.ko] undefined!
+    ERROR: "dma_pool_create" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "dma_pool_destroy" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/usb/host/fotg210-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/ehci-platform.ko] undefined!
+    ERROR: "dma_pool_destroy" [drivers/usb/host/ehci-hcd.ko] undefined!
+    ERROR: "bad_dma_ops" [drivers/usb/host/ehci-hcd.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/usb/host/ehci-hcd.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/usb/host/ehci-hcd.ko] undefined!
+    ERROR: "dma_pool_create" [drivers/usb/host/ehci-hcd.ko] undefined!
 
-    [S390] Kconfig: menus with depends on HAS_IOMEM.
+Add dependencies on HAS_DMA to fix this.
 
-    Add "depends on HAS_IOMEM" to a number of menus to make them
-    disappear for s390 which does not have I/O memory.
-
-    Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
-
-With hopefully all USB Host Controller Drivers that need it now
-depending on HAS_IOMEM, we can remove the dependency from USB_SUPPORT
-itself. This makes it possible to include USB support in UML builds
-again.
-
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/usb/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+v3:
+  - Rebased against usb-next of usb.git,
 
-diff --git a/drivers/usb/Kconfig b/drivers/usb/Kconfig
-index 8ed451d..93ba109 100644
---- a/drivers/usb/Kconfig
-+++ b/drivers/usb/Kconfig
-@@ -21,7 +21,6 @@ config USB_EHCI_BIG_ENDIAN_DESC
+v2:
+  - Reword one-line summary.
+---
+ drivers/usb/host/Kconfig | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index 438dcf6289b08f82..81bb7d471f4eb51b 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -18,7 +18,7 @@ config USB_C67X00_HCD
  
- menuconfig USB_SUPPORT
- 	bool "USB support"
+ config USB_XHCI_HCD
+ 	tristate "xHCI HCD (USB 3.0) support"
 -	depends on HAS_IOMEM
- 	default y
++	depends on HAS_DMA && HAS_IOMEM
  	---help---
- 	  This option adds core support for Universal Serial Bus (USB).
+ 	  The eXtensible Host Controller Interface (xHCI) is standard for USB 3.0
+ 	  "SuperSpeed" host controller hardware.
+@@ -73,7 +73,7 @@ endif # USB_XHCI_HCD
+ 
+ config USB_EHCI_HCD
+ 	tristate "EHCI HCD (USB 2.0) support"
+-	depends on HAS_IOMEM
++	depends on HAS_DMA && HAS_IOMEM
+ 	---help---
+ 	  The Enhanced Host Controller Interface (EHCI) is standard for USB 2.0
+ 	  "high speed" (480 Mbit/sec, 60 Mbyte/sec) host controller hardware.
+@@ -368,8 +368,7 @@ config USB_ISP1362_HCD
+ 
+ config USB_FOTG210_HCD
+ 	tristate "FOTG210 HCD support"
+-	depends on USB
+-	depends on HAS_IOMEM
++	depends on USB && HAS_DMA && HAS_IOMEM
+ 	---help---
+ 	  Faraday FOTG210 is an OTG controller which can be configured as
+ 	  an USB2.0 host. It is designed to meet USB2.0 EHCI specification
+@@ -391,7 +390,7 @@ config USB_MAX3421_HCD
+ 
+ config USB_OHCI_HCD
+ 	tristate "OHCI HCD (USB 1.1) support"
+-	depends on HAS_IOMEM
++	depends on HAS_DMA && HAS_IOMEM
+ 	---help---
+ 	  The Open Host Controller Interface (OHCI) is a standard for accessing
+ 	  USB 1.1 host controller hardware.  It does more in hardware than Intel's
 -- 
 1.9.1
 
-
-------------------------------------------------------------------------------
-Site24x7 APM Insight: Get Deep Visibility into Application Performance
-APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
-Monitor end-to-end web transactions and take corrective actions now
-Troubleshoot faster and improve end-user experience. Signup Now!
-http://pubads.g.doubleclick.net/gampad/clk?id=272487151&iu=/4140
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
