@@ -1,70 +1,60 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnf-00021t-2o
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:23 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aTVne-0007yB-8H
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:23 +0000
-From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Wed, 10 Feb 2016 15:29:48 +0100
-Message-Id: <1455114596-3532-13-git-send-email-vegard.nossum@oracle.com>
-In-Reply-To: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-Subject: [uml-devel] [PATCH 13/21] usb: add HAS_IOMEM dependency to
-	USB_MUSB_HDRC
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <gregkh@linuxfoundation.org>
+Date: Sun, 21 Feb 2016 19:09:33 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 1/3] usb: core: Allow compilation on platforms where
+ NO_DMA=y
+Message-ID: <20160222030933.GA4033@kroah.com>
+References: <1455635459-1576-1-git-send-email-geert@linux-m68k.org>
+ <1455635459-1576-2-git-send-email-geert@linux-m68k.org>
+ <20160221042334.GA14825@kroah.com>
+ <CAMuHMdWx+8hBGDQyTEuAff4=N259O_+GytPg-PFXnW0Bt4U2RQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWx+8hBGDQyTEuAff4=N259O_+GytPg-PFXnW0Bt4U2RQ@mail.gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Vegard Nossum <vegard.nossum@oracle.com>, John Youn <johnyoun@synopsys.com>, Richard Weinberger <richard@nod.at>, James McMechan <James_McMechan@hotmail.com>, Alan Stern <stern@rowland.harvard.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, USB list <linux-usb@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-drivers/built-in.o: In function `musb_probe':
-/home/vegard/linux/drivers/usb/musb/musb_core.c:2304: undefined reference to `devm_ioremap_resource'
+On Sun, Feb 21, 2016 at 10:46:59PM +0100, Geert Uytterhoeven wrote:
+> Hi Greg,
+> 
+> On Sun, Feb 21, 2016 at 5:23 AM, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> > On Tue, Feb 16, 2016 at 04:10:57PM +0100, Geert Uytterhoeven wrote:
+> >> Some platforms don't have DMA, but we should still be able to build USB
+> >> drivers for these platforms. They could still be used through vhci_hcd,
+> >> usbip_host, or maybe something like USB passthrough in UML from a
+> >> capable host.
+> >>
+> >> If NO_DMA=y:
+> >>
+> >>     ERROR: "dma_pool_destroy" [drivers/usb/core/usbcore.ko] undefined!
+> >>     ERROR: "bad_dma_ops" [drivers/usb/core/usbcore.ko] undefined!
+> >>     ERROR: "dma_pool_free" [drivers/usb/core/usbcore.ko] undefined!
+> >>     ERROR: "dma_pool_alloc" [drivers/usb/core/usbcore.ko] undefined!
+> >>     ERROR: "dma_pool_create" [drivers/usb/core/usbcore.ko] undefined!
+> >>
+> >> Add a few checks for CONFIG_HAS_DMA to fix this.
+> >>
+> >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >> Acked-by: Vegard Nossum <vegard.nossum@oracle.com>
+> >> ---
+> >> v2:
+> >>   - Replace remaining #ifdefs by IS_ENABLED() checks,
+> >>   - Add to patch description that this actually allows using USB on UML,
+> >>   - Add Acked-by.
+> >
+> > This patch didn't apply to my tree, can you rebase it against usb-next
+> > of usb.git and resend?
+> 
+> Are you sure it's this one that didn't apply? It's already in usb-testing?
+> 
+> "[2/3] usb: host: Host drivers relying on DMA should depend on HAS_DMA"
+> doesn't apply, as your tree gained some HAS_IOMEM dependencies, so I'll
+> resend.
 
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
----
- drivers/usb/musb/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Thanks, I think you were right.
 
-diff --git a/drivers/usb/musb/Kconfig b/drivers/usb/musb/Kconfig
-index 0401573..886526b 100644
---- a/drivers/usb/musb/Kconfig
-+++ b/drivers/usb/musb/Kconfig
-@@ -7,6 +7,7 @@
- config USB_MUSB_HDRC
- 	tristate 'Inventra Highspeed Dual Role Controller (TI, ADI, AW, ...)'
- 	depends on (USB || USB_GADGET)
-+	depends on HAS_IOMEM
- 	help
- 	  Say Y here if your system has a dual role high speed USB
- 	  controller based on the Mentor Graphics silicon IP.  Then
--- 
-1.9.1
-
-
-------------------------------------------------------------------------------
-Site24x7 APM Insight: Get Deep Visibility into Application Performance
-APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
-Monitor end-to-end web transactions and take corrective actions now
-Troubleshoot faster and improve end-user experience. Signup Now!
-http://pubads.g.doubleclick.net/gampad/clk?id=272487151&iu=/4140
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+greg k-h
 
