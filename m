@@ -1,99 +1,60 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <elicooper@gmx.com>) id 1ahKDN-0007R3-FF
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2016 16:59:01 +0000
-Received: from mout.gmx.net ([212.227.17.21])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ahKDM-0006c8-6d
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2016 16:59:01 +0000
-From: Eli Cooper <elicooper@gmx.com>
-Date: Sun, 20 Mar 2016 00:58:39 +0800
-Message-Id: <1458406721-7478-2-git-send-email-elicooper@gmx.com>
-In-Reply-To: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
-References: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
-Subject: [uml-devel] [PATCH v3 1/3] um: fix FPU state preservation around
-	signal handlers
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Subject: Re: [PATCH 0/2] Tracking user space vDSO remaping
+References: <cover.1426866405.git.ldufour@linux.vnet.ibm.com>
+From: Christopher Covington <cov@codeaurora.org>
+Message-ID: <56D6D8D6.6060306@codeaurora.org>
+Date: Wed, 2 Mar 2016 07:13:10 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <cover.1426866405.git.ldufour@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>
+Sender: linux-arch-owner@vger.kernel.org
+To: Laurent Dufour <ldufour@linux.vnet.ibm.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-mm@kvack.org, criu@openvz.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Will Deacon <Will.Deacon@arm.com>, Laura Abbott <labbott@fedoraproject.org>, David Brown <david.brown@linaro.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This patch makes UML saves/restores FPU state from/to the fpstate in
-pt_regs when setting up or returning from a signal stack, rather than
-calling ptrace directly. This ensures that FPU state is correctly
-preserved around signal handlers in a multi-threaded scenario.
+Hi,
 
-Signed-off-by: Eli Cooper <elicooper@gmx.com>
----
- arch/x86/um/signal.c | 18 +++---------------
- 1 file changed, 3 insertions(+), 15 deletions(-)
+On 03/20/2015 11:53 AM, Laurent Dufour wrote:
+> CRIU is recreating the process memory layout by remapping the checkpointee
+> memory area on top of the current process (criu). This includes remapping
+> the vDSO to the place it has at checkpoint time.
+> 
+> However some architectures like powerpc are keeping a reference to the vDSO
+> base address to build the signal return stack frame by calling the vDSO
+> sigreturn service. So once the vDSO has been moved, this reference is no
+> more valid and the signal frame built later are not usable.
+> 
+> This patch serie is introducing a new mm hook 'arch_remap' which is called
+> when mremap is done and the mm lock still hold. The next patch is adding the
+> vDSO remap and unmap tracking to the powerpc architecture.
+> 
+> Laurent Dufour (2):
+>   mm: Introducing arch_remap hook
+>   powerpc/mm: Tracking vDSO remap
+> 
+>  arch/powerpc/include/asm/mmu_context.h   | 35 +++++++++++++++++++++++++++++++-
+>  arch/s390/include/asm/mmu_context.h      |  6 ++++++
+>  arch/um/include/asm/mmu_context.h        |  5 +++++
+>  arch/unicore32/include/asm/mmu_context.h |  6 ++++++
+>  arch/x86/include/asm/mmu_context.h       |  6 ++++++
+>  include/asm-generic/mm_hooks.h           |  6 ++++++
+>  mm/mremap.c                              |  9 ++++++--
+>  7 files changed, 70 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
-index 14fcd01..dac23ee 100644
---- a/arch/x86/um/signal.c
-+++ b/arch/x86/um/signal.c
-@@ -225,20 +225,10 @@ static int copy_sc_from_user(struct pt_regs *regs,
- 	} else
- #endif
- 	{
--		struct user_i387_struct fp;
--
--		err = copy_from_user(&fp, (void *)sc.fpstate,
-+		err = copy_from_user(regs->regs.fp, (void *)sc.fpstate,
- 				     sizeof(struct user_i387_struct));
- 		if (err)
- 			return 1;
--
--		err = restore_fp_registers(pid, (unsigned long *) &fp);
--		if (err < 0) {
--			printk(KERN_ERR "copy_sc_from_user - "
--			       "restore_fp_registers failed, errno = %d\n",
--			       -err);
--			return 1;
--		}
- 	}
- 	return 0;
- }
-@@ -325,10 +315,8 @@ static int copy_sc_to_user(struct sigcontext __user *to,
- 	} else
- #endif
- 	{
--		struct user_i387_struct fp;
--
--		err = save_fp_registers(pid, (unsigned long *) &fp);
--		if (copy_to_user(to_fp, &fp, sizeof(struct user_i387_struct)))
-+		if (copy_to_user(to_fp, regs->regs.fp,
-+				 sizeof(struct user_i387_struct)))
- 			return 1;
- 	}
- 
+We would like to be able to remap/unmap the VDSO on arm and arm64 as
+well. When I proposed a patch with mmu_context.h and mmu-arch-hooks.h
+changes to arm64 that were nearly identical to those done to powerpc,
+Will Deacon reasonably suggested [1] attempting to combine the code and
+provide generic VDSO accessors. Unfortunately, I no prior experience
+with generic MM code. Can anyone advise on how to get started with that?
+
+1. http://www.spinics.net/lists/linux-arm-msm/msg18441.html
+
+Thanks,
+Christopher Covington
+
 -- 
-2.7.2
-
-
-------------------------------------------------------------------------------
-Transform Data into Opportunity.
-Accelerate data analysis in your applications with
-Intel Data Analytics Acceleration Library.
-Click to learn more.
-http://pubads.g.doubleclick.net/gampad/clk?id=278785231&iu=/4140
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
+Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
