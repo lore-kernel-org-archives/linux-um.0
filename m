@@ -1,22 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <elicooper@gmx.com>) id 1ahKDP-0002QK-9E
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <elicooper@gmx.com>) id 1acZni-0008Jt-BL
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2016 16:59:03 +0000
-Received: from mout.gmx.net ([212.227.17.20])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ahKDO-0002fv-60
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2016 16:59:03 +0000
+	Sun, 06 Mar 2016 14:36:54 +0000
+Received: from mout.gmx.net ([212.227.15.19])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1acZnh-0006WW-9I for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 06 Mar 2016 14:36:54 +0000
 From: Eli Cooper <elicooper@gmx.com>
-Date: Sun, 20 Mar 2016 00:58:40 +0800
-Message-Id: <1458406721-7478-3-git-send-email-elicooper@gmx.com>
-In-Reply-To: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
-References: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
-Subject: [uml-devel] [PATCH v3 2/3] um: extend fpstate to _xstate to support
-	YMM registers
+Date: Sun,  6 Mar 2016 22:36:26 +0800
+Message-Id: <1457274987-20078-3-git-send-email-elicooper@gmx.com>
+In-Reply-To: <1457274987-20078-1-git-send-email-elicooper@gmx.com>
+References: <1457274987-20078-1-git-send-email-elicooper@gmx.com>
+Subject: [uml-devel] [PATCH 2/3] um: add extended processor state
+	save/restore support
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -33,190 +32,148 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>
 
-Extends fpstate to _xstate, in order to hold AVX/YMM registers.
+This patch extends save_fp_registers() and restore_fp_registers() to use
+PTRACE_GETREGSET and PTRACE_SETREGSET with the XSTATE note type, adding
+support for new processor state extensions.
 
-To avoid oversized stack frame, the following functions have been
-refactored by using malloc.
- - sig_handler_common
- - timer_real_alarm_handler
+Now these functions expect *fp_regs to have the space of an _xstate struct.
+
+When the new ptrace requests are unavailable, it falls back to the old
+PTRACE_GETFPREGS and PTRACE_SETFPREGS methods, which have been renamed to
+save_i387_registers() and restore_i387_registers().
 
 Signed-off-by: Eli Cooper <elicooper@gmx.com>
 ---
- arch/um/os-Linux/signal.c  | 28 ++++++++++++++++++++--------
- arch/x86/um/signal.c       | 23 +++++++++++------------
- arch/x86/um/user-offsets.c |  2 +-
- 3 files changed, 32 insertions(+), 21 deletions(-)
+ arch/um/include/shared/registers.h    |  2 ++
+ arch/um/kernel/process.c              |  2 +-
+ arch/x86/um/os-Linux/registers.c      | 49 +++++++++++++++++++++++++++++++++--
+ arch/x86/um/shared/sysdep/ptrace_64.h |  4 +--
+ 4 files changed, 51 insertions(+), 6 deletions(-)
 
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 7801666..8acaf4e 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -29,23 +29,29 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
+diff --git a/arch/um/include/shared/registers.h b/arch/um/include/shared/registers.h
+index f5b7635..a74449b 100644
+--- a/arch/um/include/shared/registers.h
++++ b/arch/um/include/shared/registers.h
+@@ -9,6 +9,8 @@
+ #include <sysdep/ptrace.h>
+ #include <sysdep/archsetjmp.h>
  
- static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
++extern int save_i387_registers(int pid, unsigned long *fp_regs);
++extern int restore_i387_registers(int pid, unsigned long *fp_regs);
+ extern int save_fp_registers(int pid, unsigned long *fp_regs);
+ extern int restore_fp_registers(int pid, unsigned long *fp_regs);
+ extern int save_fpx_registers(int pid, unsigned long *fp_regs);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 48af59a..d55a473 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -402,6 +402,6 @@ int elf_core_copy_fpregs(struct task_struct *t, elf_fpregset_t *fpu)
  {
--	struct uml_pt_regs r;
-+	struct uml_pt_regs *r;
- 	int save_errno = errno;
+ 	int cpu = current_thread_info()->cpu;
  
--	r.is_user = 0;
-+	r = malloc(sizeof(struct uml_pt_regs));
-+	if (!r)
-+		panic("out of memory");
-+
-+	r->is_user = 0;
- 	if (sig == SIGSEGV) {
- 		/* For segfaults, we want the data from the sigcontext. */
--		get_regs_from_mc(&r, mc);
--		GET_FAULTINFO_FROM_MC(r.faultinfo, mc);
-+		get_regs_from_mc(r, mc);
-+		GET_FAULTINFO_FROM_MC(r->faultinfo, mc);
- 	}
- 
- 	/* enable signals if sig isn't IRQ signal */
- 	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGALRM))
- 		unblock_signals();
- 
--	(*sig_info[sig])(sig, si, &r);
-+	(*sig_info[sig])(sig, si, r);
- 
- 	errno = save_errno;
-+
-+	free(r);
+-	return save_fp_registers(userspace_pid[cpu], (unsigned long *) fpu);
++	return save_i387_registers(userspace_pid[cpu], (unsigned long *) fpu);
  }
  
- /*
-@@ -83,11 +89,17 @@ void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
- 
- static void timer_real_alarm_handler(mcontext_t *mc)
- {
--	struct uml_pt_regs regs;
-+	struct uml_pt_regs *regs;
-+
-+	regs = malloc(sizeof(struct uml_pt_regs));
-+	if (!regs)
-+		panic("out of memory");
- 
- 	if (mc != NULL)
--		get_regs_from_mc(&regs, mc);
--	timer_handler(SIGALRM, NULL, &regs);
-+		get_regs_from_mc(regs, mc);
-+	timer_handler(SIGALRM, NULL, regs);
-+
-+	free(regs);
- }
- 
- void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
-diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
-index dac23ee..49e5036 100644
---- a/arch/x86/um/signal.c
-+++ b/arch/x86/um/signal.c
-@@ -226,7 +226,7 @@ static int copy_sc_from_user(struct pt_regs *regs,
+diff --git a/arch/x86/um/os-Linux/registers.c b/arch/x86/um/os-Linux/registers.c
+index 41bfe84..c7f12c9 100644
+--- a/arch/x86/um/os-Linux/registers.c
++++ b/arch/x86/um/os-Linux/registers.c
+@@ -11,21 +11,56 @@
  #endif
- 	{
- 		err = copy_from_user(regs->regs.fp, (void *)sc.fpstate,
--				     sizeof(struct user_i387_struct));
-+				     sizeof(struct _xstate));
- 		if (err)
- 			return 1;
- 	}
-@@ -234,7 +234,7 @@ static int copy_sc_from_user(struct pt_regs *regs,
+ #include <longjmp.h>
+ #include <sysdep/ptrace_user.h>
++#include <sys/uio.h>
++#include <asm/sigcontext.h>
++#include <linux/elf.h>
+ 
+-int save_fp_registers(int pid, unsigned long *fp_regs)
++int have_xstate_support;
++
++int save_i387_registers(int pid, unsigned long *fp_regs)
+ {
+ 	if (ptrace(PTRACE_GETFPREGS, pid, 0, fp_regs) < 0)
+ 		return -errno;
+ 	return 0;
  }
  
- static int copy_sc_to_user(struct sigcontext __user *to,
--			   struct _fpstate __user *to_fp, struct pt_regs *regs,
-+			   struct _xstate __user *to_fp, struct pt_regs *regs,
- 			   unsigned long mask)
+-int restore_fp_registers(int pid, unsigned long *fp_regs)
++int save_fp_registers(int pid, unsigned long *fp_regs)
++{
++	struct iovec iov;
++
++	if (have_xstate_support) {
++		iov.iov_base = fp_regs;
++		iov.iov_len = sizeof(struct _xstate);
++		if (ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov) < 0)
++			return -errno;
++		return 0;
++	} else {
++		return save_i387_registers(pid, fp_regs);
++	}
++}
++
++int restore_i387_registers(int pid, unsigned long *fp_regs)
  {
- 	struct sigcontext sc;
-@@ -300,23 +300,22 @@ static int copy_sc_to_user(struct sigcontext __user *to,
- 			return 1;
- 		}
+ 	if (ptrace(PTRACE_SETFPREGS, pid, 0, fp_regs) < 0)
+ 		return -errno;
+ 	return 0;
+ }
  
--		err = convert_fxsr_to_user(to_fp, &fpx);
-+		err = convert_fxsr_to_user(&to_fp->fpstate, &fpx);
- 		if (err)
- 			return 1;
++int restore_fp_registers(int pid, unsigned long *fp_regs)
++{
++	struct iovec iov;
++
++	if (have_xstate_support) {
++		iov.iov_base = fp_regs;
++		iov.iov_len = sizeof(struct _xstate);
++		if (ptrace(PTRACE_SETREGSET, pid, NT_X86_XSTATE, &iov) < 0)
++			return -errno;
++		return 0;
++	} else {
++		return restore_i387_registers(pid, fp_regs);
++	}
++}
++
+ #ifdef __i386__
+ int have_fpx_regs = 1;
+ int save_fpx_registers(int pid, unsigned long *fp_regs)
+@@ -85,6 +120,16 @@ int put_fp_registers(int pid, unsigned long *regs)
+ 	return restore_fp_registers(pid, regs);
+ }
  
--		err |= __put_user(fpx.swd, &to_fp->status);
--		err |= __put_user(X86_FXSR_MAGIC, &to_fp->magic);
-+		err |= __put_user(fpx.swd, &to_fp->fpstate.status);
-+		err |= __put_user(X86_FXSR_MAGIC, &to_fp->fpstate.magic);
- 		if (err)
- 			return 1;
- 
--		if (copy_to_user(&to_fp->_fxsr_env[0], &fpx,
-+		if (copy_to_user(&to_fp->fpstate._fxsr_env[0], &fpx,
- 				 sizeof(struct user_fxsr_struct)))
- 			return 1;
- 	} else
++void arch_init_registers(int pid)
++{
++	struct _xstate fp_regs;
++	struct iovec iov;
++
++	iov.iov_base = &fp_regs;
++	iov.iov_len = sizeof(struct _xstate);
++	if (ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov) == 0)
++		have_xstate_support = 1;
++}
  #endif
- 	{
--		if (copy_to_user(to_fp, regs->regs.fp,
--				 sizeof(struct user_i387_struct)))
-+		if (copy_to_user(to_fp, regs->regs.fp, sizeof(struct _xstate)))
- 			return 1;
- 	}
  
-@@ -325,7 +324,7 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ unsigned long get_thread_reg(int reg, jmp_buf *buf)
+diff --git a/arch/x86/um/shared/sysdep/ptrace_64.h b/arch/x86/um/shared/sysdep/ptrace_64.h
+index 919789f..0dc223a 100644
+--- a/arch/x86/um/shared/sysdep/ptrace_64.h
++++ b/arch/x86/um/shared/sysdep/ptrace_64.h
+@@ -57,8 +57,6 @@
+ #define UPT_SYSCALL_ARG5(r) UPT_R8(r)
+ #define UPT_SYSCALL_ARG6(r) UPT_R9(r)
  
- #ifdef CONFIG_X86_32
- static int copy_ucontext_to_user(struct ucontext __user *uc,
--				 struct _fpstate __user *fp, sigset_t *set,
-+				 struct _xstate __user *fp, sigset_t *set,
- 				 unsigned long sp)
- {
- 	int err = 0;
-@@ -341,7 +340,7 @@ struct sigframe
- 	char __user *pretcode;
- 	int sig;
- 	struct sigcontext sc;
--	struct _fpstate fpstate;
-+	struct _xstate fpstate;
- 	unsigned long extramask[_NSIG_WORDS-1];
- 	char retcode[8];
- };
-@@ -354,7 +353,7 @@ struct rt_sigframe
- 	void __user *puc;
- 	struct siginfo info;
- 	struct ucontext uc;
--	struct _fpstate fpstate;
-+	struct _xstate fpstate;
- 	char retcode[8];
- };
+-static inline void arch_init_registers(int pid)
+-{
+-}
++extern void arch_init_registers(int pid);
  
-@@ -483,7 +482,7 @@ struct rt_sigframe
- 	char __user *pretcode;
- 	struct ucontext uc;
- 	struct siginfo info;
--	struct _fpstate fpstate;
-+	struct _xstate fpstate;
- };
- 
- int setup_signal_stack_si(unsigned long stack_top, struct ksignal *ksig,
-diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
-index 470564b..cb3c223 100644
---- a/arch/x86/um/user-offsets.c
-+++ b/arch/x86/um/user-offsets.c
-@@ -50,7 +50,7 @@ void foo(void)
- 	DEFINE(HOST_GS, GS);
- 	DEFINE(HOST_ORIG_AX, ORIG_EAX);
- #else
--	DEFINE(HOST_FP_SIZE, sizeof(struct _fpstate) / sizeof(unsigned long));
-+	DEFINE(HOST_FP_SIZE, sizeof(struct _xstate) / sizeof(unsigned long));
- 	DEFINE_LONGS(HOST_BX, RBX);
- 	DEFINE_LONGS(HOST_CX, RCX);
- 	DEFINE_LONGS(HOST_DI, RDI);
+ #endif
 -- 
 2.7.2
 
 
 ------------------------------------------------------------------------------
-Transform Data into Opportunity.
-Accelerate data analysis in your applications with
-Intel Data Analytics Acceleration Library.
-Click to learn more.
-http://pubads.g.doubleclick.net/gampad/clk?id=278785231&iu=/4140
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
