@@ -2,18 +2,19 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <elicooper@gmx.com>) id 1ahKDN-0007R8-Iq
+	(envelope-from <elicooper@gmx.com>) id 1ag78J-0000it-1j
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2016 16:59:01 +0000
-Received: from mout.gmx.net ([212.227.17.22])
+	Wed, 16 Mar 2016 08:48:47 +0000
+Received: from mout.gmx.net ([212.227.15.18])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ahKDM-0002fs-II
+	(Exim 4.76) id 1ag78I-0004Rh-2i
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 19 Mar 2016 16:59:01 +0000
+	Wed, 16 Mar 2016 08:48:47 +0000
 From: Eli Cooper <elicooper@gmx.com>
-Date: Sun, 20 Mar 2016 00:58:38 +0800
-Message-Id: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
-Subject: [uml-devel] [PATCH v3 0/3] um: fix and extend FPU support
+Date: Wed, 16 Mar 2016 16:48:26 +0800
+Message-Id: <1458118109-3178-1-git-send-email-elicooper@gmx.com>
+Subject: [uml-devel] [PATCH v2 0/3] um: Add support for extended processor
+	state
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,116 +31,73 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>
 
-This series first fixes a bug that results in corrupted FPU state after
-invoking signal handlers. It also adds support for the extended processor
-state (XSTATE) for x86_64 UML, especially the YMM registers used by AVX(2)
-instructions.
+This series adds support for the extended processor state (XSTATE) for
+x86_64 UML, especially the YMM registers used by AVX/AVX2 instructions.
 
-Tested with a minimal multi-threaded FPU-intensive test program (see below).
-This series supersedes the previous sigreturn fix as that one is incorrect
-when the process is multi-threaded.
+Modern userspace programs built with AVX can now run inside x86_64 UML
+without YMM registers getting corrupted.
 
-Changes since v2:
- - Add an improved sigreturn fix to this series
- - Merge the ptrace changes into the last commit
- - Make the selftest program multi-threaded
+Tested with a tiny selftest program below, which of course requires the
+following patch I sent earlier today to run correctly.
+  um: fix FPU register double-restore after sigreturn
+
+Also tested with a latest Arch Linux image on a CPU with AVX2 support.
+Without YMM support in UML, a lot of programs crash unexpectedly,
+or result in bad results (e.g., calculating SHA256 in OpenSSL).
+
 
 Changes since v1:
  - Refactor functions with oversized stack frame
  - Add a tiny selftest program to the cover letter
 
 Eli Cooper (3):
-  um: fix FPU state preservation around signal handlers
-  um: extend fpstate to _xstate to support YMM registers
+  um: extend _fpstate to _xstate
   um: add extended processor state save/restore support
+  um: fix ptrace PTRACE_GETFPREGS and PTRACE_SETFPREG support
 
  arch/um/include/shared/registers.h    |  2 ++
  arch/um/kernel/process.c              |  2 +-
- arch/um/os-Linux/signal.c             | 28 ++++++++++++++------
- arch/x86/um/os-Linux/registers.c      | 49 +++++++++++++++++++++++++++++++++--
- arch/x86/um/ptrace_32.c               |  5 ++--
- arch/x86/um/ptrace_64.c               | 16 ++++++------
+ arch/um/os-Linux/signal.c             | 28 ++++++++++++-----
+ arch/x86/um/os-Linux/registers.c      | 49 ++++++++++++++++++++++++++++--
+ arch/x86/um/ptrace_32.c               |  5 +--
+ arch/x86/um/ptrace_64.c               | 16 +++++-----
  arch/x86/um/shared/sysdep/ptrace_64.h |  4 +--
- arch/x86/um/signal.c                  | 37 +++++++++-----------------
+ arch/x86/um/signal.c                  | 57 +++++++++++++++++++++++------------
  arch/x86/um/user-offsets.c            |  2 +-
- 9 files changed, 95 insertions(+), 50 deletions(-)
+ 9 files changed, 121 insertions(+), 44 deletions(-)
 
---
-/* Test if context switches preserve YMM registers, multi-threaded version
- * The main function, threads and the signal handler all have their unique
- * ymm0 value, and constantly detect if someone steps on their toes.
- * Should loop forever.
- */
-#include <stdio.h>
-#include <stdlib.h>
+---
+/* test if context switches preserve YMM registers, should exit with code 0 */
 #include <stdint.h>
-#include <signal.h>
 #include <unistd.h>
-#include <pthread.h>
-#include <sys/time.h>
+#include <signal.h>
 #include <immintrin.h>
 
-#define N 10
-
+int flag;
 void sighandler(int signum)
 {
-	int n = 0xffff;
-	register uint32_t eax asm("eax");
-
-	__m256i m0 = _mm256_set_epi64x(0x1234L << 32, 0, 0, 0);
-	while (n--) {
-		asm("vextracti128 $1,%ymm0,%xmm1");
-		asm("vpextrd $3,%xmm1,%eax");
-		if (eax != 0x1234)
-			exit(3);
-	}
-}
-
-void thread(void *arg)
-{
-	long n = (long)arg;
-	register uint32_t eax asm("eax");
-
-	__m256i m0 = _mm256_set_epi64x(n << 32, 0, 0, 0);
-	do {
-		asm("vextracti128 $1,%ymm0,%xmm1");
-		asm("vpextrd $3,%xmm1,%eax");
-	} while (eax == n);
-	exit(2);
+	if (flag)
+		exit(0);
+	alarm(1);
+	flag = 1;
+	__m256i m0 = _mm256_set_epi64x(0, 0, 0, 0);
 }
 
 int main()
 {
-	register uint32_t eax asm("eax");
-	pthread_t threads[N];
-	struct itimerval itv;
-	struct timeval tv;
-	struct sigaction act;
+	register uint32_t a asm("eax") = 0;
+	signal(SIGALRM, sighandler);
+	alarm(1);
 
-	tv.tv_sec = 0;
-	tv.tv_usec = 100000;
-	itv.it_interval = tv;
-	itv.it_value = tv;
-
-	act.sa_handler = sighandler;
-	act.sa_flags = 0;
-	sigemptyset(&act.sa_mask);
-	sigaction(SIGALRM, &act, NULL);
-
-	setitimer(ITIMER_REAL, &itv, NULL);
-
-	for (long i = 0; i < N; i++)
-		pthread_create(threads + i, NULL, (void *)thread, (void *)i);
-
-	__m256i m0 = _mm256_set_epi64x(0xabcdL << 32, 0, 0, 0);
+	__m256i m0 = _mm256_set_epi64x(1L << 32, 0, 0, 0);
 	do {
 		asm("vextracti128 $1,%ymm0,%xmm1");
 		asm("vpextrd $3,%xmm1,%eax");
-	} while (eax == 0xabcd);
-	printf("%lx\n", eax);
+	} while (a == 1);
 
 	return 1;
 }
+
 
 ------------------------------------------------------------------------------
 Transform Data into Opportunity.
