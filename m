@@ -2,21 +2,20 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <elicooper@gmx.com>) id 1agjOE-0002ek-I6
+	(envelope-from <richard@nod.at>) id 1aggIk-00050a-JU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Mar 2016 01:39:46 +0000
-Received: from mout.gmx.net ([212.227.17.22])
+	Thu, 17 Mar 2016 22:21:54 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1agjOD-0007nn-Gk
+	(Exim 4.76) id 1aggIj-0000va-3z
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Mar 2016 01:39:46 +0000
+	Thu, 17 Mar 2016 22:21:54 +0000
 References: <1458091505-967-1-git-send-email-elicooper@gmx.com>
-	<56EB2DF8.8030102@nod.at>
-From: Eli Cooper <elicooper@gmx.com>
-Message-ID: <56EB5CC9.1030601@gmx.com>
-Date: Fri, 18 Mar 2016 09:41:29 +0800
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56EB2DF8.8030102@nod.at>
+Date: Thu, 17 Mar 2016 23:21:44 +0100
 MIME-Version: 1.0
-In-Reply-To: <56EB2DF8.8030102@nod.at>
+In-Reply-To: <1458091505-967-1-git-send-email-elicooper@gmx.com>
 Subject: Re: [uml-devel] [PATCH] um: fix FPU register double-restore after
 	sigreturn
 List-Id: The user-mode Linux development list
@@ -31,29 +30,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+To: Eli Cooper <elicooper@gmx.com>, user-mode-linux-devel@lists.sourceforge.net
 Cc: Jeff Dike <jdike@addtoit.com>
 
-Hi Richard,
+Eli,
 
-On 2016/3/18 6:21, Richard Weinberger wrote:
-> Where exactly are the FPU regs restored in the sigregturn case?
-> Not sure if I fully understand the error scenario.
+Am 16.03.2016 um 02:25 schrieb Eli Cooper:
+> This patch prevents userspace() from incorrectly restoring FPU registers
+> after a sigreturn or rt_sigreturn system call, which has already restored
+> FPU registers to the state prior to the signal handler was invoked.
+> 
+> Fixes FPU state corruption after invoking the signal handler.
 
-Well, sys_sigreturn() or sys_rt_sigreturn() calls copy_sc_from_user(),
-and the latter copies fpstate, which is the saved FPU state before the
-signal handler was invoked, from sigframe and restores it.
-That is correct: after returning from the signal handler, the process is
-in the same FPU state before it was invoked.
+First of all, thanks a lot for hunting down these nasty issues!
 
-However, userspace() saves the FPU state before a system call and
-restores it after. In the sigreturn case, after sys_sigreturn() returns,
-which has already made FPU in the right state, userspace() overwrites it
-by making it in the state prior to the sigreturn was called (i.e., the
-signal handler's state). That leaves the process in question a corrupted
-FPU state.
+Where exactly are the FPU regs restored in the sigregturn case?
+Not sure if I fully understand the error scenario.
 
-Eli
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Transform Data into Opportunity.
