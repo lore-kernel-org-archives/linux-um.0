@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <elicooper@gmx.com>) id 1agx0Q-0001Vm-IV
+	(envelope-from <richard@nod.at>) id 1agpeV-0001Yn-9y
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Mar 2016 16:12:06 +0000
-Received: from mout.gmx.net ([212.227.17.22])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1agx0P-0008G3-Im
+	Fri, 18 Mar 2016 08:20:59 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1agpeT-0002J8-S0
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 18 Mar 2016 16:12:06 +0000
+	Fri, 18 Mar 2016 08:20:59 +0000
 References: <1458091505-967-1-git-send-email-elicooper@gmx.com>
 	<56EB2DF8.8030102@nod.at> <56EB5CC9.1030601@gmx.com>
-	<56EBBA61.4090405@nod.at>
-From: Eli Cooper <elicooper@gmx.com>
-Message-ID: <56EC293B.8020407@gmx.com>
-Date: Sat, 19 Mar 2016 00:13:47 +0800
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56EBBA61.4090405@nod.at>
+Date: Fri, 18 Mar 2016 09:20:49 +0100
 MIME-Version: 1.0
-In-Reply-To: <56EBBA61.4090405@nod.at>
+In-Reply-To: <56EB5CC9.1030601@gmx.com>
 Subject: Re: [uml-devel] [PATCH] um: fix FPU register double-restore after
 	sigreturn
 List-Id: The user-mode Linux development list
@@ -32,30 +31,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+To: Eli Cooper <elicooper@gmx.com>, user-mode-linux-devel@lists.sourceforge.net
 Cc: Jeff Dike <jdike@addtoit.com>
 
-Hi Richard,
+Eli,
 
-On 2016/3/18 16:20, Richard Weinberger wrote:
-> I wonder how other architectures handle this case?
-> Ideally I'd like to avoid as much extra code as possible in userspace().
+Am 18.03.2016 um 02:41 schrieb Eli Cooper:
+> Hi Richard,
+> 
+> On 2016/3/18 6:21, Richard Weinberger wrote:
+>> Where exactly are the FPU regs restored in the sigregturn case?
+>> Not sure if I fully understand the error scenario.
+> 
+> Well, sys_sigreturn() or sys_rt_sigreturn() calls copy_sc_from_user(),
+> and the latter copies fpstate, which is the saved FPU state before the
+> signal handler was invoked, from sigframe and restores it.
+> That is correct: after returning from the signal handler, the process is
+> in the same FPU state before it was invoked.
+> 
+> However, userspace() saves the FPU state before a system call and
+> restores it after. In the sigreturn case, after sys_sigreturn() returns,
+> which has already made FPU in the right state, userspace() overwrites it
+> by making it in the state prior to the sigreturn was called (i.e., the
+> signal handler's state). That leaves the process in question a corrupted
+> FPU state.
 
-Please forgive my ignorance of other architectures. But to the best of
-my knowledge, FPU state is not saved and restored around a system call
-in x86.
-
-I agree that we should keep userspace() minimal. So what in the first
-place is the FPU state save/restore code for? Or, what (except for
-sigreturn) could possibly mess the FPU state of the ptrace'd process
-without it?
-
-I tried commenting out the FPU restore code in userspace() and tested
-with a bunch of kernel modules and userland programs. Nothing bad
-happened so far as I can tell.
+Okay. That's what I thought/feared.
+I wonder how other architectures handle this case?
+Ideally I'd like to avoid as much extra code as possible in userspace().
 
 Thanks,
-Eli
+//richard
 
 ------------------------------------------------------------------------------
 Transform Data into Opportunity.
