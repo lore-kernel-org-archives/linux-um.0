@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1aTVnI-0002mS-5y
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <elicooper@gmx.com>) id 1ahKDN-0007R3-FF
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:00 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1aTVnG-0005eT-AP
+	Sat, 19 Mar 2016 16:59:01 +0000
+Received: from mout.gmx.net ([212.227.17.21])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ahKDM-0006c8-6d
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 10 Feb 2016 14:31:00 +0000
-From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Wed, 10 Feb 2016 15:29:37 +0100
-Message-Id: <1455114596-3532-2-git-send-email-vegard.nossum@oracle.com>
-In-Reply-To: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-References: <1455114596-3532-1-git-send-email-vegard.nossum@oracle.com>
-MIME-Version: 1.0
-Subject: [uml-devel] [PATCH 02/21] usb: add HAS_IOMEM dependency to
-	USB_NET2272
+	Sat, 19 Mar 2016 16:59:01 +0000
+From: Eli Cooper <elicooper@gmx.com>
+Date: Sun, 20 Mar 2016 00:58:39 +0800
+Message-Id: <1458406721-7478-2-git-send-email-elicooper@gmx.com>
+In-Reply-To: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
+References: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
+Subject: [uml-devel] [PATCH v3 1/3] um: fix FPU state preservation around
+	signal handlers
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,43 +26,74 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Alan Stern <stern@rowland.harvard.edu>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>, James McMechan <James_McMechan@hotmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>
 
-ZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9uZXQyMjcyLmM6IEluIGZ1bmN0aW9uIOKAmG5ldDIyNzJf
-cmVtb3Zl4oCZOgpkcml2ZXJzL3VzYi9nYWRnZXQvdWRjL25ldDIyNzIuYzoyMjMyOjI6IGVycm9y
-OiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhpb3VubWFw4oCZIFstV2Vycm9y
-PWltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogIGlvdW5tYXAoZGV2LT5iYXNlX2FkZHIp
-OwogIF4KZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9uZXQyMjcyLmM6IEluIGZ1bmN0aW9uIOKAmG5l
-dDIyNzJfcGxhdF9wcm9iZeKAmToKZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9uZXQyMjcyLmM6MjY1
-MDoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYaW9yZW1hcF9u
-b2NhY2hl4oCZIFstV2Vycm9yPWltcGxpY2l0LWZ1bmN0aW9uLWRlY2xhcmF0aW9uXQogIGRldi0+
-YmFzZV9hZGRyID0gaW9yZW1hcF9ub2NhY2hlKGJhc2UsIGxlbik7CiAgXgpkcml2ZXJzL3VzYi9n
-YWRnZXQvdWRjL25ldDIyNzIuYzoyNjUwOjE3OiB3YXJuaW5nOiBhc3NpZ25tZW50IG1ha2VzIHBv
-aW50ZXIgZnJvbSBpbnRlZ2VyIHdpdGhvdXQgYSBjYXN0IFtlbmFibGVkIGJ5IGRlZmF1bHRdCiAg
-ZGV2LT5iYXNlX2FkZHIgPSBpb3JlbWFwX25vY2FjaGUoYmFzZSwgbGVuKTsKICAgICAgICAgICAg
-ICAgICBeCgpTaWduZWQtb2ZmLWJ5OiBWZWdhcmQgTm9zc3VtIDx2ZWdhcmQubm9zc3VtQG9yYWNs
-ZS5jb20+Ci0tLQogZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9LY29uZmlnIHwgMSArCiAxIGZpbGUg
-Y2hhbmdlZCwgMSBpbnNlcnRpb24oKykKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9nYWRnZXQv
-dWRjL0tjb25maWcgYi9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL0tjb25maWcKaW5kZXggNzUzYzI5
-Yi4uY2ExOWY2ZiAxMDA2NDQKLS0tIGEvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9LY29uZmlnCisr
-KyBiL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvS2NvbmZpZwpAQCAtMjg3LDYgKzI4Nyw3IEBAIGNv
-bmZpZyBVU0JfRlNMX1FFCiAJICAgZHluYW1pY2FsbHkgbGlua2VkIG1vZHVsZSBjYWxsZWQgImZz
-bF9xZV91ZGMiLgogCiBjb25maWcgVVNCX05FVDIyNzIKKwlkZXBlbmRzIG9uIEhBU19JT01FTQog
-CXRyaXN0YXRlICJQTFggTkVUMjI3MiIKIAloZWxwCiAJICBQTFggTkVUMjI3MiBpcyBhIFVTQiBw
-ZXJpcGhlcmFsIGNvbnRyb2xsZXIgd2hpY2ggc3VwcG9ydHMKLS0gCjEuOS4xCgoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tClNpdGUyNHg3IEFQTSBJbnNpZ2h0OiBHZXQgRGVlcCBWaXNpYmlsaXR5IGlu
-dG8gQXBwbGljYXRpb24gUGVyZm9ybWFuY2UKQVBNICsgTW9iaWxlIEFQTSArIFJVTTogTW9uaXRv
-ciAzIEFwcCBpbnN0YW5jZXMgYXQganVzdCAkMzUvTW9udGgKTW9uaXRvciBlbmQtdG8tZW5kIHdl
-YiB0cmFuc2FjdGlvbnMgYW5kIHRha2UgY29ycmVjdGl2ZSBhY3Rpb25zIG5vdwpUcm91Ymxlc2hv
-b3QgZmFzdGVyIGFuZCBpbXByb3ZlIGVuZC11c2VyIGV4cGVyaWVuY2UuIFNpZ251cCBOb3chCmh0
-dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Nsaz9pZD0yNzI0ODcxNTEmaXU9
-LzQxNDAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNl
-ci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+This patch makes UML saves/restores FPU state from/to the fpstate in
+pt_regs when setting up or returning from a signal stack, rather than
+calling ptrace directly. This ensures that FPU state is correctly
+preserved around signal handlers in a multi-threaded scenario.
+
+Signed-off-by: Eli Cooper <elicooper@gmx.com>
+---
+ arch/x86/um/signal.c | 18 +++---------------
+ 1 file changed, 3 insertions(+), 15 deletions(-)
+
+diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
+index 14fcd01..dac23ee 100644
+--- a/arch/x86/um/signal.c
++++ b/arch/x86/um/signal.c
+@@ -225,20 +225,10 @@ static int copy_sc_from_user(struct pt_regs *regs,
+ 	} else
+ #endif
+ 	{
+-		struct user_i387_struct fp;
+-
+-		err = copy_from_user(&fp, (void *)sc.fpstate,
++		err = copy_from_user(regs->regs.fp, (void *)sc.fpstate,
+ 				     sizeof(struct user_i387_struct));
+ 		if (err)
+ 			return 1;
+-
+-		err = restore_fp_registers(pid, (unsigned long *) &fp);
+-		if (err < 0) {
+-			printk(KERN_ERR "copy_sc_from_user - "
+-			       "restore_fp_registers failed, errno = %d\n",
+-			       -err);
+-			return 1;
+-		}
+ 	}
+ 	return 0;
+ }
+@@ -325,10 +315,8 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ 	} else
+ #endif
+ 	{
+-		struct user_i387_struct fp;
+-
+-		err = save_fp_registers(pid, (unsigned long *) &fp);
+-		if (copy_to_user(to_fp, &fp, sizeof(struct user_i387_struct)))
++		if (copy_to_user(to_fp, regs->regs.fp,
++				 sizeof(struct user_i387_struct)))
+ 			return 1;
+ 	}
+ 
+-- 
+2.7.2
+
+
+------------------------------------------------------------------------------
+Transform Data into Opportunity.
+Accelerate data analysis in your applications with
+Intel Data Analytics Acceleration Library.
+Click to learn more.
+http://pubads.g.doubleclick.net/gampad/clk?id=278785231&iu=/4140
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
