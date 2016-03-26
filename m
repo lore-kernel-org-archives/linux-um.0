@@ -1,61 +1,63 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1ajtfX-0004WN-Pb
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Mar 2016 19:14:43 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ajtfW-0003lk-FM
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 26 Mar 2016 19:14:43 +0000
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Subject: Re: [PATCH v2 09/10] tty: Consolidate noctty checks in tty_open()
 References: <1448677557-16420-1-git-send-email-peter@hurleysoftware.com>
-	<1452402833-8652-1-git-send-email-peter@hurleysoftware.com>
-	<1452402833-8652-10-git-send-email-peter@hurleysoftware.com>
-	<CAFLxGvwW2A-7bNa0sz72622xDShm_yhSs-JzsiSVh5qd3VBAVQ@mail.gmail.com>
-	<56F6DDC7.6060609@hurleysoftware.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <56F6DF98.8040706@nod.at>
-Date: Sat, 26 Mar 2016 20:14:32 +0100
+ <1452402833-8652-1-git-send-email-peter@hurleysoftware.com>
+ <1452402833-8652-10-git-send-email-peter@hurleysoftware.com>
+ <CAFLxGvwW2A-7bNa0sz72622xDShm_yhSs-JzsiSVh5qd3VBAVQ@mail.gmail.com>
+From: Peter Hurley <peter@hurleysoftware.com>
+Message-ID: <56F6DDC7.6060609@hurleysoftware.com>
+Date: Sat, 26 Mar 2016 12:06:47 -0700
 MIME-Version: 1.0
-In-Reply-To: <56F6DDC7.6060609@hurleysoftware.com>
-Subject: Re: [uml-devel] [PATCH v2 09/10] tty: Consolidate noctty checks in
-	tty_open()
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <CAFLxGvwW2A-7bNa0sz72622xDShm_yhSs-JzsiSVh5qd3VBAVQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Peter Hurley <peter@hurleysoftware.com>
-Cc: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, Jiri Slaby <jslaby@suse.cz>, Linus Torvalds <torvalds@linux-foundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.cz>, LKML <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Linus Torvalds <torvalds@linux-foundation.org>, One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Peter,
+Hi Richard,
 
-Am 26.03.2016 um 20:06 schrieb Peter Hurley:
-> Sorry about that; I hadn't considered the implications of UML console.
-> Can you test the blob below?
+On 03/26/2016 10:58 AM, Richard Weinberger wrote:
+> On Sun, Jan 10, 2016 at 6:13 AM, Peter Hurley <peter@hurleysoftware.com> wrote:
+>> Evaluate the conditions which prevent this tty being the controlling
+>> terminal in one place, just before setting the controlling terminal.
+>>
+>> Signed-off-by: Peter Hurley <peter@hurleysoftware.com>
+>> ---
+>>  drivers/tty/tty_io.c | 17 ++++++++---------
+>>  1 file changed, 8 insertions(+), 9 deletions(-)
+> 
+> Peter,
+> 
+> This commit breaks existing userspace.
+> I noticed that on UserModeLinux with Debian Squeeze as userspace, getty does not
+> give me a controlling tty upon login.
+> It does not seem to happen on newer distros. But still this needs
+> further investigation.
+> 
+> Please me know what debug information you need.
 
-Yep, works like a charm. :-)
+Sorry about that; I hadn't considered the implications of UML console.
+Can you test the blob below?
 
-Thanks,
-//richard
+Regards,
+Peter Hurley
 
-------------------------------------------------------------------------------
-Transform Data into Opportunity.
-Accelerate data analysis in your applications with
-Intel Data Analytics Acceleration Library.
-Click to learn more.
-http://pubads.g.doubleclick.net/gampad/clk?id=278785351&iu=/4140
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+--- >% ---
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 608beb6..a361c61 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2158,7 +2157,9 @@ retry_open:
+ 	read_lock(&tasklist_lock);
+ 	spin_lock_irq(&current->sighand->siglock);
+ 	noctty = (filp->f_flags & O_NOCTTY) ||
++#ifdef CONFIG_VT
+ 			device == MKDEV(TTY_MAJOR, 0) ||
++#endif
+ 			device == MKDEV(TTYAUX_MAJOR, 1) ||
+ 			(tty->driver->type == TTY_DRIVER_TYPE_PTY &&
+ 			 tty->driver->subtype == PTY_TYPE_MASTER);
+
 
