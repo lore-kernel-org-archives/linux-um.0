@@ -1,19 +1,21 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Subject: Re: [PATCH 1/2] asm-generic/io.h: provide default ioremap/iounmap for
+ !HAS_IOMEM
+References: <1459275781-3863-1-git-send-email-robh@kernel.org>
+ <3074778.3TElYrXjM1@wuerfel>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <56FADC77.1060703@nod.at>
+Date: Tue, 29 Mar 2016 21:50:15 +0200
 MIME-Version: 1.0
 In-Reply-To: <3074778.3TElYrXjM1@wuerfel>
-References: <1459275781-3863-1-git-send-email-robh@kernel.org> <3074778.3TElYrXjM1@wuerfel>
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 29 Mar 2016 15:13:38 -0500
-Message-ID: <CAL_JsqKsXirYNa-mUTKqeP4ra8w+MW55we8pFmN=S0a7osLy4w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] asm-generic/io.h: provide default ioremap/iounmap for !HAS_IOMEM
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Lee Jones <lee.jones@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Sender: linux-arch-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>
+Cc: Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Tue, Mar 29, 2016 at 2:37 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+Am 29.03.2016 um 21:37 schrieb Arnd Bergmann:
 > On Tuesday 29 March 2016 13:23:00 Rob Herring wrote:
 >> Drivers shouldn't have to care about HAS_IOMEM to compile and having to
 >> causes a Kconfig mess:
@@ -31,22 +33,33 @@ On Tue, Mar 29, 2016 at 2:37 PM, Arnd Bergmann <arnd@arndb.de> wrote:
 >> Cc: Arnd Bergmann <arnd@arndb.de>
 >> Cc: linux-arch@vger.kernel.org
 >> Signed-off-by: Rob Herring <robh@kernel.org>
->
+> 
 > (adding Richard and the UML list to cc)
->
+
+For the above error I've sent already a fix:
+https://lkml.org/lkml/2016/3/25/321
+
 > I actually prototyped a patch that did the opposite: remove the readl/writel/...
 > definitions when HAS_IOMEM is unset. I didn't get far enough to submit it,
 > but see below for what I did.
+> 
+> I think it makes sense to do either one or the other.
+> 
+> 	Arnd
+> 
+> diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
+> index a043107..f6dc17a 100644
+> --- a/drivers/char/Kconfig
+> +++ b/drivers/char/Kconfig
+> @@ -8,6 +8,7 @@ source "drivers/tty/Kconfig"
+>  
+>  config DEVMEM
+>  	bool "/dev/mem virtual device support"
+> +	depends on HAS_IOMEM
 
-Ewww. Why do the opposite of what we do for every other Kconfig symbol
-which is provide empty functions? It really only functions as a
-disable on UML flag which runs counter to enabling drivers to build
-for all arches.
+Hmm, this means no /dev/mem device for UML? (And some s390 variants).
+Not sure if this a good idea.
+But I like it more than having ioremap/iounmap stubs for !HAS_IOMEM. :)
 
-I actually started a patch to remove the HAS_IOMEM dependency
-everywhere (or just the per driver cases). It didn't break as bad as I
-expected, but became more than I wanted to fix. Mainly, all the devm_
-variants also need empty versions or to be always enabled.
-
-Rob
-
+Thanks,
+//richard
