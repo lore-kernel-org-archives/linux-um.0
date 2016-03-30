@@ -1,88 +1,37 @@
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <CAL_JsqKsXirYNa-mUTKqeP4ra8w+MW55we8pFmN=S0a7osLy4w@mail.gmail.com>
-References: <1459275781-3863-1-git-send-email-robh@kernel.org>
-	<3074778.3TElYrXjM1@wuerfel>
-	<CAL_JsqKsXirYNa-mUTKqeP4ra8w+MW55we8pFmN=S0a7osLy4w@mail.gmail.com>
-Date: Wed, 30 Mar 2016 22:08:59 +0200
-Message-ID: <CAMuHMdWc_97Yk7XJ6e4n6tibs99pPHSnJU2qqC7CGcoo4kWuNA@mail.gmail.com>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [PATCH 1/2] asm-generic/io.h: provide default ioremap/iounmap for !HAS_IOMEM
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Date: Wed, 30 Mar 2016 15:51:19 +0200
+Message-ID: <5372571.zc5TeOVXyF@wuerfel>
+In-Reply-To: <CAL_Jsq+RHwzxfoEFsD_-uAZ7Y_CEdXvv8qamdXtcToeG-ENy7w@mail.gmail.com>
+References: <1459275781-3863-1-git-send-email-robh@kernel.org> <6282729.XLLXSxbzQJ@wuerfel> <CAL_Jsq+RHwzxfoEFsD_-uAZ7Y_CEdXvv8qamdXtcToeG-ENy7w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Sender: linux-arch-owner@vger.kernel.org
 To: Rob Herring <robh@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Richard Weinberger <richard@nod.at>, Lee Jones <lee.jones@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi Rob,
+On Wednesday 30 March 2016 08:29:45 Rob Herring wrote:
+> On Wed, Mar 30, 2016 at 5:03 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Wednesday 30 March 2016 10:13:53 Richard Weinberger wrote:
+> >>
+> >> I fully understand your point of view. COMPILE_TEST is a monster that
+> >> can do the heavy lifting for you, but monsters also have claws and fangs.
+> >>
+> >> Having COMPILE_TEST having depend on !UML works for me. But don't
+> >> we have other archs without io mem? At least a few years ago while
+> >> porting nandsim to UML I found s390 that lacks of io mem too.
+> >
+> > s390 gained IOMEM support when they started having PCI attachments.
+> 
+> I'm confused how s390 defines HAS_IOMEM and includes it from lib/Kconfig though.
 
-On Tue, Mar 29, 2016 at 10:13 PM, Rob Herring <robh@kernel.org> wrote:
-> On Tue, Mar 29, 2016 at 2:37 PM, Arnd Bergmann <arnd@arndb.de> wrote:
->> On Tuesday 29 March 2016 13:23:00 Rob Herring wrote:
->>> Drivers shouldn't have to care about HAS_IOMEM to compile and having to
->>> causes a Kconfig mess:
->>>
->>> warning: (MEDIA_SUBDRV_AUTOSELECT && VIDEO_CX231XX && INV_MPU6050_I2C) =
-selects I2C_MUX which has unmet direct dependencies (I2C && HAS_IOMEM)
->>> warning: (ST_IRQCHIP && STMMAC_PLATFORM && DWMAC_IPQ806X && DWMAC_LPC18=
-XX && DWMAC_ROCKCHIP && DWMAC_SOCFPGA && DWMAC_STI && TI_CPSW && PINCTRL_RO=
-CKCHIP && PINCTRL_DOVE && POWER_RESET_KEYSTONE && S3C2410_WATCHDOG && VIDEO=
-_OMAP3 && VIDEO_S5P_FIMC && USB_XHCI_MTK && RTC_DRV_AT91SAM9 && LPC18XX_DMA=
-MUX && VIDEO_OMAP4 && HWSPINLOCK_QCOM && ATMEL_ST && QCOM_GSBI && PHY_HI622=
-0_USB) selects MFD_SYSCON which has unmet direct dependencies (HAS_IOMEM)
->>>
->>> Reuse the !MMU variants for !HAS_IOMEM as they are sufficient for our
->>> needs. This fixes build errors for UM allyesconfig:
->>>
->>> drivers/mfd/syscon.c:89:2: error: implicit declaration of function 'iou=
-nmap' [-Werror=3Dimplicit-function-declaration]
->>>      iounmap(base);
->>>
->>> Reported-by: Fengguang Wu <fengguang.wu@intel.com>
->>> Cc: Arnd Bergmann <arnd@arndb.de>
->>> Cc: linux-arch@vger.kernel.org
->>> Signed-off-by: Rob Herring <robh@kernel.org>
->>
->> (adding Richard and the UML list to cc)
->>
->> I actually prototyped a patch that did the opposite: remove the readl/wr=
-itel/...
->> definitions when HAS_IOMEM is unset. I didn't get far enough to submit i=
-t,
->> but see below for what I did.
->
-> Ewww. Why do the opposite of what we do for every other Kconfig symbol
-> which is provide empty functions? It really only functions as a
-> disable on UML flag which runs counter to enabling drivers to build
-> for all arches.
+Kconfig can define the same symbol multiple times, which is really
+confusing. I only checked for NO_IOMEM, which s390 no longer defines,
+but I have not checked what actually happens in case of two conflicting
+definitions, where the one lib/Kconfig defaults to 'y' and the one in
+arch/s390 defaults to CONFIG_PCI.
 
-Usually the empty function fall into one of two classes:
-  1. They return an error, so drivers will abort their initialization,
-  2. They are a plain no-op, for functions with harmless side-effects.
-
-The !MMU versions are not dummies, but assume a transparent translation.
-This may lead to drivers continuing their initialization and crashing the
-system.
-
-> I actually started a patch to remove the HAS_IOMEM dependency
-> everywhere (or just the per driver cases). It didn't break as bad as I
-> expected, but became more than I wanted to fix. Mainly, all the devm_
-> variants also need empty versions or to be always enabled.
-
-Should these dependencies on HAS_IOMEM be changed to "HAS_IOMEM ||
-COMPILE_TEST"?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
-
+	Arnd
