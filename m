@@ -1,70 +1,73 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1anCGY-0007Bq-Rx
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Apr 2016 21:42:34 +0000
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1anCGX-00036d-E9
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 04 Apr 2016 21:42:34 +0000
-References: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5702DFC0.4070307@nod.at>
-Date: Mon, 4 Apr 2016 23:42:24 +0200
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Date: Thu, 14 Apr 2016 14:40:54 -0700
+From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Subject: Re: [PATCH] documentation: Add disclaimer
+Message-ID: <20160414214054.GB31866@linux.vnet.ibm.com>
+Reply-To: paulmck@linux.vnet.ibm.com
+References: <20160114120445.GB15828@arm.com>
+ <56980145.5030901@imgtec.com>
+ <20160114204827.GE3818@linux.vnet.ibm.com>
+ <56981212.7050301@imgtec.com>
+ <20160114222046.GH3818@linux.vnet.ibm.com>
+ <20160126102402.GE6357@twins.programming.kicks-ass.net>
+ <20160126103200.GI6375@twins.programming.kicks-ass.net>
+ <20160126110053.GA21553@arm.com>
+ <20160126201143.GV4503@linux.vnet.ibm.com>
+ <15882.1453906627@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
-Subject: Re: [uml-devel] [PATCH v3 0/3] um: fix and extend FPU support
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Eli Cooper <elicooper@gmx.com>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Jeff Dike <jdike@addtoit.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15882.1453906627@warthog.procyon.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: David Howells <dhowells@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Will Deacon <will.deacon@arm.com>, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>, virtualization@lists.linux-foundation.org, Stefano Stabellini <stefano.stabellini@eu.citrix.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, adi-buildroot-devel@lists.sourceforge.net, linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org, xen-devel@lists.xenproject.org, Ralf Baechle <ralf@linux-mips.org>, Ingo Molnar <mingo@kernel.org>, ddaney.cavm@gmail.com, james.hogan@imgtec.com, Michael Ellerman <mpe@ellerman.id.au>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am 19.03.2016 um 17:58 schrieb Eli Cooper:
-> This series first fixes a bug that results in corrupted FPU state after
-> invoking signal handlers. It also adds support for the extended processor
-> state (XSTATE) for x86_64 UML, especially the YMM registers used by AVX(2)
-> instructions.
+On Wed, Jan 27, 2016 at 02:57:07PM +0000, David Howells wrote:
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> Tested with a minimal multi-threaded FPU-intensive test program (see below).
-> This series supersedes the previous sigreturn fix as that one is incorrect
-> when the process is multi-threaded.
+> > +==========
+> > +DISCLAIMER
+> > +==========
+> > +
+> > +This document is not a specification; it is intentionally (for the sake of
+> > +brevity) and unintentionally (due to being human) incomplete. This document is
+> > +meant as a guide to using the various memory barriers provided by Linux, but
+> > +in case of any doubt (and there are many) please ask.
+> > +
+> > +I repeat, this document is not a specification of what Linux expects from
+> > +hardware.
 > 
-> Changes since v2:
->  - Add an improved sigreturn fix to this series
->  - Merge the ptrace changes into the last commit
->  - Make the selftest program multi-threaded
+> The purpose of this document is twofold:
 > 
-> Changes since v1:
->  - Refactor functions with oversized stack frame
->  - Add a tiny selftest program to the cover letter
+>  (1) to specify the minimum functionality that one can rely on for any
+>      particular barrier, and
 > 
-> Eli Cooper (3):
->   um: fix FPU state preservation around signal handlers
->   um: extend fpstate to _xstate to support YMM registers
->   um: add extended processor state save/restore support
+>  (2) to provide a guide as to how to use the barriers that are available.
+> 
+> Note that an architecture can provide more than the minimum requirement for
+> any particular barrier, but if the barrier provides less than that, it is
+> incorrect.
+> 
+> Note also that it is possible that a barrier may be a no-op for an
+> architecture because the way that arch works renders an explicit barrier
+> unnecessary in that case.
+> 
+> > +
+> 
+> Can you bung an extra blank line in here if you have to redo this at all?
 
-Sorry for my late response.
-I'll put this now into -next and give it some testing.
+Done as part of your patch.  Again, apologies for the delay.
 
-Thanks a lot for fixing!
-//richard
+							Thanx, Paul
 
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+> > +========
+> > +CONTENTS
+> > +========
+> >  
+> >   (*) Abstract memory access model.
+> >  
+> 
+> David
+> 
 
