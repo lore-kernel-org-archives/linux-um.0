@@ -1,19 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@oracle.com>) id 1b47VW-0006FS-Nk
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1awxs8-00059V-Ir
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 May 2016 14:03:58 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1b47VU-00024L-US
+	Sun, 01 May 2016 20:21:44 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1awxs7-0003AI-6M
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 21 May 2016 14:03:58 +0000
-From: Vegard Nossum <vegard.nossum@oracle.com>
-Date: Sat, 21 May 2016 16:03:38 +0200
-Message-Id: <1463839418-22282-1-git-send-email-vegard.nossum@oracle.com>
-Subject: [uml-devel] [PATCH] um: support kcov
+	Sun, 01 May 2016 20:21:44 +0000
+References: <1462093338-8759-1-git-send-email-toshiq2@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <5726654D.1070500@nod.at>
+Date: Sun, 1 May 2016 22:21:33 +0200
+MIME-Version: 1.0
+In-Reply-To: <1462093338-8759-1-git-send-email-toshiq2@gmail.com>
+Subject: Re: [uml-devel] [PATCH] hostfs: fix opening file with overlayfs
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -23,68 +26,68 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Weinberger <richard@nod.at>
-Cc: Quentin Casasnovas <quentin.casasnovas@oracle.com>, Vegard Nossum <vegard.nossum@oracle.com>, Dmitry Vyukov <dvyukov@google.com>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, Thomas Meyer <thomas@m3y3r.de>
+To: Toshikuni Fukaya <toshiq2@gmail.com>, user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>, David Howells <dhowells@redhat.com>, jdike@addtoit.com, Al Viro <viro@zeniv.linux.org.uk>, mszeredi@redhat.com
 
-This adds support for kcov to UML.
+CC'ing VFS folks
 
-There is a small problem where UML will randomly segfault during boot;
-this is because current_thread_info() occasionally returns an invalid
-(non-NULL) pointer and we try to dereference it in
-__sanitizer_cov_trace_pc(). I consider this a bug in UML itself and this
-patch merely exposes it.
+Am 01.05.2016 um 11:02 schrieb Toshikuni Fukaya:
+> If a file on overlayfs using hostfs as a lowerdir is opened, it would
+> be failed by ENOENT because hostfs resolves a host path by a host root
+> path stored on the hostfs superblock referred by file->f_path.dentry,
+> but it is replaced with overlayfs's one starting from the
+> commit 4bacc9c9234c ("overlayfs: Make f_path always point to the
+> overlay and f_inode to the underlay").
+> 
+> We replace using file->f_path.dentry directly with calling
+> "file_dentry" from a commit d101a125954e ("fs: add file_dentry()") to
+> fix the issue.
 
-Cc: Quentin Casasnovas <quentin.casasnovas@oracle.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Thomas Meyer <thomas@m3y3r.de>
-Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
----
- arch/um/Kconfig.common    | 1 +
- arch/x86/um/vdso/Makefile | 3 +++
- 2 files changed, 4 insertions(+)
+Is there a reason why not all instances of file->f_path.dentry have
+been replaced by file_dentry()?
+I smell more fallout...
 
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index cc00134..64c1d46 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -1,6 +1,7 @@
- config UML
- 	bool
- 	default y
-+	select ARCH_HAS_KCOV
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_UID16
-diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-index 6c803ca..d72dec4 100644
---- a/arch/x86/um/vdso/Makefile
-+++ b/arch/x86/um/vdso/Makefile
-@@ -2,6 +2,9 @@
- # Building vDSO images for x86.
- #
- 
-+# Prevents link failures: __sanitizer_cov_trace_pc() is not linked in.
-+KCOV_INSTRUMENT                := n
-+
- VDSO64-y		:= y
- 
- vdso-install-$(VDSO64-y)	+= vdso.so
--- 
-1.9.1
+Thanks,
+//richard
 
+> Signed-off-by: Toshikuni Fukaya <toshiq2@gmail.com>
+> ---
+>  fs/hostfs/hostfs_kern.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+> index 7016653..26a9f43 100644
+> --- a/fs/hostfs/hostfs_kern.c
+> +++ b/fs/hostfs/hostfs_kern.c
+> @@ -284,7 +284,7 @@ static int hostfs_readdir(struct file *file, struct dir_context *ctx)
+>  	int error, len;
+>  	unsigned int type;
+>  
+> -	name = dentry_name(file->f_path.dentry);
+> +	name = dentry_name(file_dentry(file));
+>  	if (name == NULL)
+>  		return -ENOMEM;
+>  	dir = open_dir(name, &error);
+> @@ -323,7 +323,7 @@ retry:
+>  	if (mode & FMODE_WRITE)
+>  		r = w = 1;
+>  
+> -	name = dentry_name(file->f_path.dentry);
+> +	name = dentry_name(file_dentry(file));
+>  	if (name == NULL)
+>  		return -ENOMEM;
+>  
+> 
 
 ------------------------------------------------------------------------------
-Mobile security can be enabling, not merely restricting. Employees who
-bring their own devices (BYOD) to work are irked by the imposition of MDM
-restrictions. Mobile Device Manager Plus allows you to control only the
-apps on BYO-devices by containerizing them, leaving personal data untouched!
-https://ad.doubleclick.net/ddm/clk/304595813;131938128;j
+Find and fix application performance issues faster with Applications Manager
+Applications Manager provides deep performance insights into multiple tiers of
+your business applications. It resolves application problems quickly and
+reduces your MTTR. Get your free trial!
+https://ad.doubleclick.net/ddm/clk/302982198;130105516;z
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
