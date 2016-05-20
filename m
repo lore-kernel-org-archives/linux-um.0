@@ -1,18 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1b3mfd-00054h-71
+	(envelope-from <elicooper@gmx.com>) id 1b3mN7-0004bf-Fz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 May 2016 15:49:01 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1b3mfb-0004di-Pt
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 20 May 2016 15:49:01 +0000
-Date: Fri, 20 May 2016 17:48:46 +0200
-From: Richard Weinberger <richard@nod.at>
+	Fri, 20 May 2016 15:29:53 +0000
+Received: from mout.gmx.net ([212.227.17.22])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1b3mN6-0000sQ-Ii for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 20 May 2016 15:29:53 +0000
+References: <1458406721-7478-1-git-send-email-elicooper@gmx.com>
+	<5702DFC0.4070307@nod.at>
+From: Eli Cooper <elicooper@gmx.com>
+Message-ID: <3dac1a1c-a53b-0f44-5378-9a77deeb9cfd@gmx.com>
+Date: Fri, 20 May 2016 23:31:36 +0800
 MIME-Version: 1.0
+In-Reply-To: <5702DFC0.4070307@nod.at>
 Subject: Re: [uml-devel] [PATCH v3 0/3] um: fix and extend FPU support
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -26,22 +29,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-Message-Id: <E1b3mfe-00054u-LT@sfs-ml-1.v29.ch3.sourceforge.com>
-To: Eli Cooper <elicooper@gmx.com>
-Cc: Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Cc: Jeff Dike <jdike@addtoit.com>
 
+On 2016/4/5 5:42, Richard Weinberger wrote:
+> Sorry for my late response.
+> I'll put this now into -next and give it some testing.
 
-Am 20.05.2016 17:31 schrieb Eli Cooper <elicooper@gmx.com>:
->
-> On 2016/4/5 5:42, Richard Weinberger wrote: 
-> > Sorry for my late response. 
-> > I'll put this now into -next and give it some testing. 
->
-> Ping? 
->
-> It has been some time but I don't see this in -next yet. 
+Ping?
 
-Sorry, I'm late. It will hit next tomorrow.
+It has been some time but I don't see this in -next yet.
+
 ------------------------------------------------------------------------------
 Mobile security can be enabling, not merely restricting. Employees who
 bring their own devices (BYOD) to work are irked by the imposition of MDM
