@@ -2,24 +2,23 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vegard.nossum@gmail.com>) id 1b4VU3-0006sC-Qj
+	(envelope-from <richard.weinberger@gmail.com>) id 1b4Em1-0004HS-0O
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 May 2016 15:40:03 +0000
-Received: from mail-vk0-f65.google.com ([209.85.213.65])
+	Sat, 21 May 2016 21:49:29 +0000
+Received: from mail-oi0-f52.google.com ([209.85.218.52])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1b4VU2-0003JQ-Jr
+	(Exim 4.76) id 1b4Em0-00071z-7H
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 22 May 2016 15:40:03 +0000
-Received: by mail-vk0-f65.google.com with SMTP id e126so23229273vkb.2
+	Sat, 21 May 2016 21:49:28 +0000
+Received: by mail-oi0-f52.google.com with SMTP id x19so228363115oix.2
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 22 May 2016 08:40:02 -0700 (PDT)
+	Sat, 21 May 2016 14:49:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6AAB4FAC-99C2-4B3C-88CA-C210193E74EF@m3y3r.de>
+In-Reply-To: <CAOMGZ=GpWk1=9HeTxz6NBVh-Y8TZS8ZBHaaqDdxOqvRHD+f_TQ@mail.gmail.com>
 References: <CAOMGZ=GpWk1=9HeTxz6NBVh-Y8TZS8ZBHaaqDdxOqvRHD+f_TQ@mail.gmail.com>
-	<6AAB4FAC-99C2-4B3C-88CA-C210193E74EF@m3y3r.de>
-Date: Sun, 22 May 2016 17:39:57 +0200
-Message-ID: <CAOMGZ=H-fi-Wqmc36ts5LULSe=QD9Q-ys7GKryFWRZw_iO-J=A@mail.gmail.com>
-From: Vegard Nossum <vegard.nossum@gmail.com>
+Date: Sat, 21 May 2016 23:49:22 +0200
+Message-ID: <CAFLxGvzX30-hW-ARifhsKrOp4L91rV7GH4heC-w7b3fucaYfEw@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
 Subject: Re: [uml-devel] current_thread_info() returns invalid pointer in
  early UML boot code
 List-Id: The user-mode Linux development list
@@ -34,31 +33,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Thomas Meyer <thomas@m3y3r.de>
-Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
+To: Vegard Nossum <vegard.nossum@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, Thomas Meyer <thomas@m3y3r.de>
 
-On 21 May 2016 at 20:18, Thomas Meyer <thomas@m3y3r.de> wrote:
-> Am 21.05.2016 um 15:51 schrieb Vegard Nossum <vegard.nossum@gmail.com>:
->> I'm having some trouble with using current_thread_info() during UML
->> early boot. Sometimes it works just fine, but often I get segfaults
->> because current_thread_info() is returning an invalid pointer. It
->> looks random: 0x202118, 0x1003e0003, 0xd33b90b3, 0x6db043, etc.
+On Sat, May 21, 2016 at 3:51 PM, Vegard Nossum <vegard.nossum@gmail.com> wrote:
+> Hi people,
 >
-> Mhh. Strange. Do you have a stack trace to call to current thread info which ends up with a wrong value. I wonder from were it originates.
+> I'm having some trouble with using current_thread_info() during UML
+> early boot. Sometimes it works just fine, but often I get segfaults
+> because current_thread_info() is returning an invalid pointer. It
+> looks random: 0x202118, 0x1003e0003, 0xd33b90b3, 0x6db043, etc.
 
-One such trace would be:
+Where do you use it?
+Can you rule out a bad compiler optimization?
+(We had such an issue a few years ago)
 
-#2  0x000000006026652c in snprintf (buf=<optimized out>,
-size=<optimized out>, fmt=<optimized out>) at lib/vsprintf.c:2181
-#3  0x00000000600046f8 in setup_env_path () at arch/um/os-Linux/main.c:109
-#4  main (argc=3, argv=0x7ffc3d8c23e8, envp=<optimized out>) at
-arch/um/os-Linux/main.c:125
+> Does anybody understand fully what's going on here, why it returns
+> those invalid (seemingly random) values? If the problem is that we're
+> on a wrong stack, can we switch stacks earlier during boot or
+> something to make current_thread_info() always return a valid
+> thread_info pointer?
 
-I wonder why setup_env_path() ends up calling the kernel's snprintf(),
-I thought that it would be using the glibc snprintf() at this point?
+Can't say much without more details.
 
-
-Vegard
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Mobile security can be enabling, not merely restricting. Employees who
