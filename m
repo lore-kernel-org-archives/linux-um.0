@@ -1,23 +1,25 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1b4uoU-0002p1-0S
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vegard.nossum@gmail.com>) id 1b4VU3-0006sC-Qj
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 May 2016 18:42:50 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1b4uoS-0001H4-Ef
+	Sun, 22 May 2016 15:40:03 +0000
+Received: from mail-vk0-f65.google.com ([209.85.213.65])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1b4VU2-0003JQ-Jr
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 23 May 2016 18:42:49 +0000
-Message-ID: <1464028960.4307.2.camel@m3y3r.de>
-From: Thomas Meyer <thomas@m3y3r.de>
-Date: Mon, 23 May 2016 20:42:40 +0200
-In-Reply-To: <CAOMGZ=H-fi-Wqmc36ts5LULSe=QD9Q-ys7GKryFWRZw_iO-J=A@mail.gmail.com>
+	Sun, 22 May 2016 15:40:03 +0000
+Received: by mail-vk0-f65.google.com with SMTP id e126so23229273vkb.2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sun, 22 May 2016 08:40:02 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <6AAB4FAC-99C2-4B3C-88CA-C210193E74EF@m3y3r.de>
 References: <CAOMGZ=GpWk1=9HeTxz6NBVh-Y8TZS8ZBHaaqDdxOqvRHD+f_TQ@mail.gmail.com>
 	<6AAB4FAC-99C2-4B3C-88CA-C210193E74EF@m3y3r.de>
-	<CAOMGZ=H-fi-Wqmc36ts5LULSe=QD9Q-ys7GKryFWRZw_iO-J=A@mail.gmail.com>
-Mime-Version: 1.0
+Date: Sun, 22 May 2016 17:39:57 +0200
+Message-ID: <CAOMGZ=H-fi-Wqmc36ts5LULSe=QD9Q-ys7GKryFWRZw_iO-J=A@mail.gmail.com>
+From: Vegard Nossum <vegard.nossum@gmail.com>
 Subject: Re: [uml-devel] current_thread_info() returns invalid pointer in
  early UML boot code
 List-Id: The user-mode Linux development list
@@ -29,68 +31,43 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Vegard Nossum <vegard.nossum@gmail.com>
+To: Thomas Meyer <thomas@m3y3r.de>
 Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-QW0gU29ubnRhZywgZGVuIDIyLjA1LjIwMTYsIDE3OjM5ICswMjAwIHNjaHJpZWIgVmVnYXJkIE5v
-c3N1bToKPiBPbiAyMSBNYXkgMjAxNiBhdCAyMDoxOCwgVGhvbWFzIE1leWVyIDx0aG9tYXNAbTN5
-M3IuZGU+IHdyb3RlOgo+ID4gCj4gPiBBbSAyMS4wNS4yMDE2IHVtIDE1OjUxIHNjaHJpZWIgVmVn
-YXJkIE5vc3N1bSA8dmVnYXJkLm5vc3N1bUBnbWFpbC5jCj4gPiBvbT46Cj4gPiA+IAo+ID4gPiBJ
-J20gaGF2aW5nIHNvbWUgdHJvdWJsZSB3aXRoIHVzaW5nIGN1cnJlbnRfdGhyZWFkX2luZm8oKSBk
-dXJpbmcKPiA+ID4gVU1MCj4gPiA+IGVhcmx5IGJvb3QuIFNvbWV0aW1lcyBpdCB3b3JrcyBqdXN0
-IGZpbmUsIGJ1dCBvZnRlbiBJIGdldAo+ID4gPiBzZWdmYXVsdHMKPiA+ID4gYmVjYXVzZSBjdXJy
-ZW50X3RocmVhZF9pbmZvKCkgaXMgcmV0dXJuaW5nIGFuIGludmFsaWQgcG9pbnRlci4gSXQKPiA+
-ID4gbG9va3MgcmFuZG9tOiAweDIwMjExOCwgMHgxMDAzZTAwMDMsIDB4ZDMzYjkwYjMsIDB4NmRi
-MDQzLCBldGMuCj4gPiBNaGguIFN0cmFuZ2UuIERvIHlvdSBoYXZlIGEgc3RhY2sgdHJhY2UgdG8g
-Y2FsbCB0byBjdXJyZW50IHRocmVhZAo+ID4gaW5mbyB3aGljaCBlbmRzIHVwIHdpdGggYSB3cm9u
-ZyB2YWx1ZS4gSSB3b25kZXIgZnJvbSB3ZXJlIGl0Cj4gPiBvcmlnaW5hdGVzLgo+IE9uZSBzdWNo
-IHRyYWNlIHdvdWxkIGJlOgo+IAo+ICMywqDCoDB4MDAwMDAwMDA2MDI2NjUyYyBpbiBzbnByaW50
-ZiAoYnVmPTxvcHRpbWl6ZWQgb3V0PiwKPiBzaXplPTxvcHRpbWl6ZWQgb3V0PiwgZm10PTxvcHRp
-bWl6ZWQgb3V0PikgYXQgbGliL3ZzcHJpbnRmLmM6MjE4MQo+ICMzwqDCoDB4MDAwMDAwMDA2MDAw
-NDZmOCBpbiBzZXR1cF9lbnZfcGF0aCAoKSBhdCBhcmNoL3VtL29zLQo+IExpbnV4L21haW4uYzox
-MDkKPiAjNMKgwqBtYWluIChhcmdjPTMsIGFyZ3Y9MHg3ZmZjM2Q4YzIzZTgsIGVudnA9PG9wdGlt
-aXplZCBvdXQ+KSBhdAo+IGFyY2gvdW0vb3MtTGludXgvbWFpbi5jOjEyNQo+IAo+IEkgd29uZGVy
-IHdoeSBzZXR1cF9lbnZfcGF0aCgpIGVuZHMgdXAgY2FsbGluZyB0aGUga2VybmVsJ3MKPiBzbnBy
-aW50ZigpLAo+IEkgdGhvdWdodCB0aGF0IGl0IHdvdWxkIGJlIHVzaW5nIHRoZSBnbGliYyBzbnBy
-aW50ZigpIGF0IHRoaXMgcG9pbnQ/CgpNaGguIEdvb2QgcXVlc3Rpb24hCgpEb2luZyBhwqBtYWtl
-IEFSQ0g9dW0gVj0xIGFyY2gvdW0vb3MtTGludXgvbWFpbi5vCgpyZXN1bHRzIGluOgoKZ2NjIC1X
-cCwtTUQsYXJjaC91bS9vcy1MaW51eC8ubWFpbi5vLmQgLVdhbGwgLVd1bmRlZiAtV3N0cmljdC0K
-cHJvdG90eXBlcyAtV25vLXRyaWdyYXBocyAtZm5vLXN0cmljdC1hbGlhc2luZyAtZm5vLWNvbW1v
-biAtV2Vycm9yLQppbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbiAtV25vLWZvcm1hdC1zZWN1
-cml0eSAtc3RkPWdudTg5Ci1tY21vZGVsPWxhcmdlIC1mbm8tYnVpbHRpbiAtbTY0IC1mdW5pdC1h
-dC1hLXRpbWUgLURfX2FyY2hfdW1fXwotRHZtYXA9a2VybmVsX3ZtYXAgLURpbjZhZGRyX2xvb3Bi
-YWNrPWtlcm5lbF9pbjZhZGRyX2xvb3BiYWNrCi1EaW42YWRkcl9hbnk9a2VybmVsX2luNmFkZHJf
-YW55IC1Ec3RycmNocj1rZXJuZWxfc3RycmNocgotRF9MQVJHRUZJTEU2NF9TT1VSQ0XCoMKgLWZu
-by1kZWxldGUtbnVsbC1wb2ludGVyLWNoZWNrcyAtTzIgLS0KcGFyYW09YWxsb3ctc3RvcmUtZGF0
-YS1yYWNlcz0wIC1mbm8tcmVvcmRlci1ibG9ja3MgLWZuby1pcGEtY3AtY2xvbmUKLWZuby1wYXJ0
-aWFsLWlubGluaW5nIC1XZnJhbWUtbGFyZ2VyLXRoYW49MTAyNCAtZm5vLXN0YWNrLXByb3RlY3Rv
-cgotV25vLXVudXNlZC1idXQtc2V0LXZhcmlhYmxlIC1mbm8tb21pdC1mcmFtZS1wb2ludGVyIC1m
-bm8tb3B0aW1pemUtCnNpYmxpbmctY2FsbHMgLWZuby12YXItdHJhY2tpbmctYXNzaWdubWVudHMg
-LWcgLWdkd2FyZi00IC1XZGVjbGFyYXRpb24tCmFmdGVyLXN0YXRlbWVudCAtV25vLXBvaW50ZXIt
-c2lnbiAtZm5vLXN0cmljdC1vdmVyZmxvdyAtZmNvbnNlcnZlLXN0YWNrIAotV2Vycm9yPWltcGxp
-Y2l0LWludCAtV2Vycm9yPXN0cmljdC1wcm90b3R5cGVzIC1XZXJyb3I9ZGF0ZS10aW1lCi1XZXJy
-b3I9aW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZXMgLURDQ19IQVZFX0FTTV9HT1RPCi1JLi9hcmNo
-L3VtL2luY2x1ZGUvc2hhcmVkIC1JLi9hcmNoL3g4Ni91bS9zaGFyZWQKLUkuL2FyY2gvdW0vaW5j
-bHVkZS9zaGFyZWQvc2thc8KgwqAtRF9GSUxFX09GRlNFVF9CSVRTPTY0IC1pZGlyYWZ0ZXIKLi9p
-bmNsdWRlIC1pZGlyYWZ0ZXIgLi9pbmNsdWRlIC1EX19LRVJORUxfXyAtRF9fVU1fSE9TVF9fIC1E
-X0dOVV9TT1VSQ0UKLURfTEFSR0VGSUxFNjRfU09VUkNFIC1pbmNsdWRlIC4vaW5jbHVkZS9saW51
-eC9rZXJuX2xldmVscy5oIC1pbmNsdWRlCnVzZXIuaMKgwqAtYyAtbyBhcmNoL3VtL29zLUxpbnV4
-L21haW4ubyBhcmNoL3VtL29zLUxpbnV4L21haW4uYwoKc28gaXQgaW5jbHVkZXMgdXNlci5oIGFu
-ZCBpcyB1bmRlciBvcy1MaW51eC4gU28gSSBndWVzcyBpdCBzaG91bGQKYWN0dWFsbHkgY2FsbCB0
-aGUgZ2xpYmMgdmVyc2lvbiwgSSdtIG5vdCBzdXJlIHdoeSBpdCBkb2Vzbid0LgoKd2l0aCBraW5k
-IHJlZ2FyZHMKdGhvbWFzCgoKPiAKPiAKPiBWZWdhcmQKPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KTW9iaWxlIHNlY3VyaXR5IGNhbiBiZSBlbmFibGluZywgbm90IG1lcmVseSByZXN0cmljdGlu
-Zy4gRW1wbG95ZWVzIHdobwpicmluZyB0aGVpciBvd24gZGV2aWNlcyAoQllPRCkgdG8gd29yayBh
-cmUgaXJrZWQgYnkgdGhlIGltcG9zaXRpb24gb2YgTURNCnJlc3RyaWN0aW9ucy4gTW9iaWxlIERl
-dmljZSBNYW5hZ2VyIFBsdXMgYWxsb3dzIHlvdSB0byBjb250cm9sIG9ubHkgdGhlCmFwcHMgb24g
-QllPLWRldmljZXMgYnkgY29udGFpbmVyaXppbmcgdGhlbSwgbGVhdmluZyBwZXJzb25hbCBkYXRh
-IHVudG91Y2hlZCEKaHR0cHM6Ly9hZC5kb3VibGVjbGljay5uZXQvZGRtL2Nsay8zMDQ1OTU4MTM7
-MTMxOTM4MTI4O2oKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2
-ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
-c3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+On 21 May 2016 at 20:18, Thomas Meyer <thomas@m3y3r.de> wrote:
+> Am 21.05.2016 um 15:51 schrieb Vegard Nossum <vegard.nossum@gmail.com>:
+>> I'm having some trouble with using current_thread_info() during UML
+>> early boot. Sometimes it works just fine, but often I get segfaults
+>> because current_thread_info() is returning an invalid pointer. It
+>> looks random: 0x202118, 0x1003e0003, 0xd33b90b3, 0x6db043, etc.
+>
+> Mhh. Strange. Do you have a stack trace to call to current thread info which ends up with a wrong value. I wonder from were it originates.
+
+One such trace would be:
+
+#2  0x000000006026652c in snprintf (buf=<optimized out>,
+size=<optimized out>, fmt=<optimized out>) at lib/vsprintf.c:2181
+#3  0x00000000600046f8 in setup_env_path () at arch/um/os-Linux/main.c:109
+#4  main (argc=3, argv=0x7ffc3d8c23e8, envp=<optimized out>) at
+arch/um/os-Linux/main.c:125
+
+I wonder why setup_env_path() ends up calling the kernel's snprintf(),
+I thought that it would be using the glibc snprintf() at this point?
+
+
+Vegard
+
+------------------------------------------------------------------------------
+Mobile security can be enabling, not merely restricting. Employees who
+bring their own devices (BYOD) to work are irked by the imposition of MDM
+restrictions. Mobile Device Manager Plus allows you to control only the
+apps on BYO-devices by containerizing them, leaving personal data untouched!
+https://ad.doubleclick.net/ddm/clk/304595813;131938128;j
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
