@@ -1,48 +1,96 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [GIT PULL] UML updates for v4.7-rc1
-Message-ID: <57489CF4.9030801@nod.at>
-Date: Fri, 27 May 2016 21:16:04 +0200
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1b4uoU-0002p1-0S
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 23 May 2016 18:42:50 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1b4uoS-0001H4-Ef
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 23 May 2016 18:42:49 +0000
+Message-ID: <1464028960.4307.2.camel@m3y3r.de>
+From: Thomas Meyer <thomas@m3y3r.de>
+Date: Mon, 23 May 2016 20:42:40 +0200
+In-Reply-To: <CAOMGZ=H-fi-Wqmc36ts5LULSe=QD9Q-ys7GKryFWRZw_iO-J=A@mail.gmail.com>
+References: <CAOMGZ=GpWk1=9HeTxz6NBVh-Y8TZS8ZBHaaqDdxOqvRHD+f_TQ@mail.gmail.com>
+	<6AAB4FAC-99C2-4B3C-88CA-C210193E74EF@m3y3r.de>
+	<CAOMGZ=H-fi-Wqmc36ts5LULSe=QD9Q-ys7GKryFWRZw_iO-J=A@mail.gmail.com>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] current_thread_info() returns invalid pointer in
+ early UML boot code
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Vegard Nossum <vegard.nossum@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Linus,
-
-The following changes since commit 44549e8f5eea4e0a41b487b63e616cb089922b99:
-
-  Linux 4.6-rc7 (2016-05-08 14:38:32 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.7-rc1
-
-for you to fetch changes up to a78ff1112263fdd871d3506dbcff44f6f12e8423:
-
-  um: add extended processor state save/restore support (2016-05-21 23:38:06 +0200)
-
-----------------------------------------------------------------
-This pull request contains a nice FPU fixup from Eli Cooper for
-UML.
-
-----------------------------------------------------------------
-Eli Cooper (3):
-      um: fix FPU state preservation around signal handlers
-      um: extend fpstate to _xstate to support YMM registers
-      um: add extended processor state save/restore support
-
- arch/um/include/shared/registers.h    |  2 ++
- arch/um/kernel/process.c              |  2 +-
- arch/um/os-Linux/signal.c             | 28 ++++++++++++++------
- arch/x86/um/os-Linux/registers.c      | 49 +++++++++++++++++++++++++++++++++--
- arch/x86/um/ptrace_32.c               |  5 ++--
- arch/x86/um/ptrace_64.c               | 16 ++++++------
- arch/x86/um/shared/sysdep/ptrace_64.h |  4 +--
- arch/x86/um/signal.c                  | 37 +++++++++-----------------
- arch/x86/um/user-offsets.c            |  2 +-
- 9 files changed, 95 insertions(+), 50 deletions(-)
+QW0gU29ubnRhZywgZGVuIDIyLjA1LjIwMTYsIDE3OjM5ICswMjAwIHNjaHJpZWIgVmVnYXJkIE5v
+c3N1bToKPiBPbiAyMSBNYXkgMjAxNiBhdCAyMDoxOCwgVGhvbWFzIE1leWVyIDx0aG9tYXNAbTN5
+M3IuZGU+IHdyb3RlOgo+ID4gCj4gPiBBbSAyMS4wNS4yMDE2IHVtIDE1OjUxIHNjaHJpZWIgVmVn
+YXJkIE5vc3N1bSA8dmVnYXJkLm5vc3N1bUBnbWFpbC5jCj4gPiBvbT46Cj4gPiA+IAo+ID4gPiBJ
+J20gaGF2aW5nIHNvbWUgdHJvdWJsZSB3aXRoIHVzaW5nIGN1cnJlbnRfdGhyZWFkX2luZm8oKSBk
+dXJpbmcKPiA+ID4gVU1MCj4gPiA+IGVhcmx5IGJvb3QuIFNvbWV0aW1lcyBpdCB3b3JrcyBqdXN0
+IGZpbmUsIGJ1dCBvZnRlbiBJIGdldAo+ID4gPiBzZWdmYXVsdHMKPiA+ID4gYmVjYXVzZSBjdXJy
+ZW50X3RocmVhZF9pbmZvKCkgaXMgcmV0dXJuaW5nIGFuIGludmFsaWQgcG9pbnRlci4gSXQKPiA+
+ID4gbG9va3MgcmFuZG9tOiAweDIwMjExOCwgMHgxMDAzZTAwMDMsIDB4ZDMzYjkwYjMsIDB4NmRi
+MDQzLCBldGMuCj4gPiBNaGguIFN0cmFuZ2UuIERvIHlvdSBoYXZlIGEgc3RhY2sgdHJhY2UgdG8g
+Y2FsbCB0byBjdXJyZW50IHRocmVhZAo+ID4gaW5mbyB3aGljaCBlbmRzIHVwIHdpdGggYSB3cm9u
+ZyB2YWx1ZS4gSSB3b25kZXIgZnJvbSB3ZXJlIGl0Cj4gPiBvcmlnaW5hdGVzLgo+IE9uZSBzdWNo
+IHRyYWNlIHdvdWxkIGJlOgo+IAo+ICMywqDCoDB4MDAwMDAwMDA2MDI2NjUyYyBpbiBzbnByaW50
+ZiAoYnVmPTxvcHRpbWl6ZWQgb3V0PiwKPiBzaXplPTxvcHRpbWl6ZWQgb3V0PiwgZm10PTxvcHRp
+bWl6ZWQgb3V0PikgYXQgbGliL3ZzcHJpbnRmLmM6MjE4MQo+ICMzwqDCoDB4MDAwMDAwMDA2MDAw
+NDZmOCBpbiBzZXR1cF9lbnZfcGF0aCAoKSBhdCBhcmNoL3VtL29zLQo+IExpbnV4L21haW4uYzox
+MDkKPiAjNMKgwqBtYWluIChhcmdjPTMsIGFyZ3Y9MHg3ZmZjM2Q4YzIzZTgsIGVudnA9PG9wdGlt
+aXplZCBvdXQ+KSBhdAo+IGFyY2gvdW0vb3MtTGludXgvbWFpbi5jOjEyNQo+IAo+IEkgd29uZGVy
+IHdoeSBzZXR1cF9lbnZfcGF0aCgpIGVuZHMgdXAgY2FsbGluZyB0aGUga2VybmVsJ3MKPiBzbnBy
+aW50ZigpLAo+IEkgdGhvdWdodCB0aGF0IGl0IHdvdWxkIGJlIHVzaW5nIHRoZSBnbGliYyBzbnBy
+aW50ZigpIGF0IHRoaXMgcG9pbnQ/CgpNaGguIEdvb2QgcXVlc3Rpb24hCgpEb2luZyBhwqBtYWtl
+IEFSQ0g9dW0gVj0xIGFyY2gvdW0vb3MtTGludXgvbWFpbi5vCgpyZXN1bHRzIGluOgoKZ2NjIC1X
+cCwtTUQsYXJjaC91bS9vcy1MaW51eC8ubWFpbi5vLmQgLVdhbGwgLVd1bmRlZiAtV3N0cmljdC0K
+cHJvdG90eXBlcyAtV25vLXRyaWdyYXBocyAtZm5vLXN0cmljdC1hbGlhc2luZyAtZm5vLWNvbW1v
+biAtV2Vycm9yLQppbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbiAtV25vLWZvcm1hdC1zZWN1
+cml0eSAtc3RkPWdudTg5Ci1tY21vZGVsPWxhcmdlIC1mbm8tYnVpbHRpbiAtbTY0IC1mdW5pdC1h
+dC1hLXRpbWUgLURfX2FyY2hfdW1fXwotRHZtYXA9a2VybmVsX3ZtYXAgLURpbjZhZGRyX2xvb3Bi
+YWNrPWtlcm5lbF9pbjZhZGRyX2xvb3BiYWNrCi1EaW42YWRkcl9hbnk9a2VybmVsX2luNmFkZHJf
+YW55IC1Ec3RycmNocj1rZXJuZWxfc3RycmNocgotRF9MQVJHRUZJTEU2NF9TT1VSQ0XCoMKgLWZu
+by1kZWxldGUtbnVsbC1wb2ludGVyLWNoZWNrcyAtTzIgLS0KcGFyYW09YWxsb3ctc3RvcmUtZGF0
+YS1yYWNlcz0wIC1mbm8tcmVvcmRlci1ibG9ja3MgLWZuby1pcGEtY3AtY2xvbmUKLWZuby1wYXJ0
+aWFsLWlubGluaW5nIC1XZnJhbWUtbGFyZ2VyLXRoYW49MTAyNCAtZm5vLXN0YWNrLXByb3RlY3Rv
+cgotV25vLXVudXNlZC1idXQtc2V0LXZhcmlhYmxlIC1mbm8tb21pdC1mcmFtZS1wb2ludGVyIC1m
+bm8tb3B0aW1pemUtCnNpYmxpbmctY2FsbHMgLWZuby12YXItdHJhY2tpbmctYXNzaWdubWVudHMg
+LWcgLWdkd2FyZi00IC1XZGVjbGFyYXRpb24tCmFmdGVyLXN0YXRlbWVudCAtV25vLXBvaW50ZXIt
+c2lnbiAtZm5vLXN0cmljdC1vdmVyZmxvdyAtZmNvbnNlcnZlLXN0YWNrIAotV2Vycm9yPWltcGxp
+Y2l0LWludCAtV2Vycm9yPXN0cmljdC1wcm90b3R5cGVzIC1XZXJyb3I9ZGF0ZS10aW1lCi1XZXJy
+b3I9aW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZXMgLURDQ19IQVZFX0FTTV9HT1RPCi1JLi9hcmNo
+L3VtL2luY2x1ZGUvc2hhcmVkIC1JLi9hcmNoL3g4Ni91bS9zaGFyZWQKLUkuL2FyY2gvdW0vaW5j
+bHVkZS9zaGFyZWQvc2thc8KgwqAtRF9GSUxFX09GRlNFVF9CSVRTPTY0IC1pZGlyYWZ0ZXIKLi9p
+bmNsdWRlIC1pZGlyYWZ0ZXIgLi9pbmNsdWRlIC1EX19LRVJORUxfXyAtRF9fVU1fSE9TVF9fIC1E
+X0dOVV9TT1VSQ0UKLURfTEFSR0VGSUxFNjRfU09VUkNFIC1pbmNsdWRlIC4vaW5jbHVkZS9saW51
+eC9rZXJuX2xldmVscy5oIC1pbmNsdWRlCnVzZXIuaMKgwqAtYyAtbyBhcmNoL3VtL29zLUxpbnV4
+L21haW4ubyBhcmNoL3VtL29zLUxpbnV4L21haW4uYwoKc28gaXQgaW5jbHVkZXMgdXNlci5oIGFu
+ZCBpcyB1bmRlciBvcy1MaW51eC4gU28gSSBndWVzcyBpdCBzaG91bGQKYWN0dWFsbHkgY2FsbCB0
+aGUgZ2xpYmMgdmVyc2lvbiwgSSdtIG5vdCBzdXJlIHdoeSBpdCBkb2Vzbid0LgoKd2l0aCBraW5k
+IHJlZ2FyZHMKdGhvbWFzCgoKPiAKPiAKPiBWZWdhcmQKPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0KTW9iaWxlIHNlY3VyaXR5IGNhbiBiZSBlbmFibGluZywgbm90IG1lcmVseSByZXN0cmljdGlu
+Zy4gRW1wbG95ZWVzIHdobwpicmluZyB0aGVpciBvd24gZGV2aWNlcyAoQllPRCkgdG8gd29yayBh
+cmUgaXJrZWQgYnkgdGhlIGltcG9zaXRpb24gb2YgTURNCnJlc3RyaWN0aW9ucy4gTW9iaWxlIERl
+dmljZSBNYW5hZ2VyIFBsdXMgYWxsb3dzIHlvdSB0byBjb250cm9sIG9ubHkgdGhlCmFwcHMgb24g
+QllPLWRldmljZXMgYnkgY29udGFpbmVyaXppbmcgdGhlbSwgbGVhdmluZyBwZXJzb25hbCBkYXRh
+IHVudG91Y2hlZCEKaHR0cHM6Ly9hZC5kb3VibGVjbGljay5uZXQvZGRtL2Nsay8zMDQ1OTU4MTM7
+MTMxOTM4MTI4O2oKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2
+ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
+c3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
