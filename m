@@ -1,68 +1,53 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1bCBVE-0008Vo-6P
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2016 19:57:00 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1bCBVC-0000f6-Vb for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2016 19:57:00 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Sun, 12 Jun 2016 21:56:43 +0200
-Message-Id: <1465761403-26619-2-git-send-email-richard@nod.at>
-In-Reply-To: <1465761403-26619-1-git-send-email-richard@nod.at>
-References: <1465761403-26619-1-git-send-email-richard@nod.at>
-Subject: [uml-devel] [PATCH 2/2] um: Select HAVE_DEBUG_KMEMLEAK
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH 09/14] MIPS/ptrace: run seccomp after ptrace
+Date: Thu,  9 Jun 2016 14:01:59 -0700
+Message-Id: <1465506124-21866-10-git-send-email-keescook@chromium.org>
+In-Reply-To: <1465506124-21866-1-git-send-email-keescook@chromium.org>
+References: <1465506124-21866-1-git-send-email-keescook@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>, Ralf Baechle <ralf@linux-mips.org>, "Maciej W. Rozycki" <macro@imgtec.com>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, Andy Lutomirski <luto@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Metcalf <cmetcalf@mellanox.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, Will Deacon <will.deacon@arm.com>, x86@kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Now we have the infrastructure to support kmemleak.
-Enable the HAVE flag.
+Close the hole where ptrace can change a syscall out from under seccomp.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: "Maciej W. Rozycki" <macro@imgtec.com>
+Cc: James Hogan <james.hogan@imgtec.com>
+Cc: linux-mips@linux-mips.org
 ---
- arch/um/Kconfig.common | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/kernel/ptrace.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index cc00134..de562da 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -5,6 +5,7 @@ config UML
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_UID16
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
-+	select HAVE_DEBUG_KMEMLEAK
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IO
+diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
+index c50af846ecf9..6103b24d1bfc 100644
+--- a/arch/mips/kernel/ptrace.c
++++ b/arch/mips/kernel/ptrace.c
+@@ -888,17 +888,16 @@ long arch_ptrace(struct task_struct *child, long request,
+  */
+ asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall)
+ {
+-	long ret = 0;
+ 	user_exit();
+ 
+ 	current_thread_info()->syscall = syscall;
+ 
+-	if (secure_computing(NULL) == -1)
+-		return -1;
+-
+ 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
+ 	    tracehook_report_syscall_entry(regs))
+-		ret = -1;
++		return -1;
++
++	if (secure_computing(NULL) == -1)
++		return -1;
+ 
+ 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+ 		trace_sys_enter(regs, regs->regs[2]);
 -- 
-2.7.3
+2.7.4
 
-
-------------------------------------------------------------------------------
-What NetFlow Analyzer can do for you? Monitors network bandwidth and traffic
-patterns at an interface-level. Reveals which users, apps, and protocols are 
-consuming the most bandwidth. Provides multi-vendor support for NetFlow, 
-J-Flow, sFlow and other flows. Make informed decisions using capacity 
-planning reports. https://ad.doubleclick.net/ddm/clk/305295220;132659582;e
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
