@@ -1,116 +1,103 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1bCBd6-0000HX-4v
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2016 20:05:08 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1bCBd5-0000rr-9B for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2016 20:05:08 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Sun, 12 Jun 2016 22:04:53 +0200
-Message-Id: <1465761894-27078-1-git-send-email-richard@nod.at>
-Subject: [uml-devel] [PATCH 1/2] um: Use asm-generic/irqflags.h
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Richard Weinberger <richard@nod.at>, daniel.wagner@bmw-carit.de, linux-kernel@vger.kernel.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH 12/14] powerpc/ptrace: run seccomp after ptrace
+Date: Thu,  9 Jun 2016 14:02:02 -0700
+Message-Id: <1465506124-21866-13-git-send-email-keescook@chromium.org>
+In-Reply-To: <1465506124-21866-1-git-send-email-keescook@chromium.org>
+References: <1465506124-21866-1-git-send-email-keescook@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org, Andy Lutomirski <luto@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Metcalf <cmetcalf@mellanox.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, James Hogan <james.hogan@imgtec.com>, Jeff Dike <jdike@addtoit.com>, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, "Maciej W. Rozycki" <macro@imgtec.com>, Mark Rutland <mark.rutland@arm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Ralf Baechle <ralf@linux-mips.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, Will Deacon <will.deacon@arm.com>, x86@kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Daniel Wagner <daniel.wagner@bmw-carit.de>
+Close the hole where ptrace can change a syscall out from under seccomp.
 
-Instead proving its own arch_local_irq_save() and arch_irqs_disabled()
-version use the generic version from asm-generic/irqflags.h.
-
-A nice side effect is that um gets a few additional arch_ functions
-as well.
-
-One problem though is the include for the signals. I could figured out
-which header file to pick without trigger a bunch of header include
-clashes. Leaving it away works though it is surely not the best
-practice.
-
-Signed-off-by: Daniel Wagner <daniel.wagner@bmw-carit.de>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: linuxppc-dev@lists.ozlabs.org
 ---
- arch/um/include/asm/irqflags.h | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ arch/powerpc/kernel/ptrace.c | 44 +++++++++++++++++++++++---------------------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
 
-diff --git a/arch/um/include/asm/irqflags.h b/arch/um/include/asm/irqflags.h
-index c780d8a..71c2d64 100644
---- a/arch/um/include/asm/irqflags.h
-+++ b/arch/um/include/asm/irqflags.h
-@@ -6,37 +6,35 @@ extern int set_signals(int enable);
- extern void block_signals(void);
- extern void unblock_signals(void);
+diff --git a/arch/powerpc/kernel/ptrace.c b/arch/powerpc/kernel/ptrace.c
+index ed799e994773..5dc47ebb3840 100644
+--- a/arch/powerpc/kernel/ptrace.c
++++ b/arch/powerpc/kernel/ptrace.c
+@@ -1788,7 +1788,7 @@ static int do_seccomp(struct pt_regs *regs)
  
-+#define arch_local_save_flags arch_local_save_flags
- static inline unsigned long arch_local_save_flags(void)
+ 	/*
+ 	 * The syscall was allowed by seccomp, restore the register
+-	 * state to what ptrace and audit expect.
++	 * state to what audit expects.
+ 	 * Note that we use orig_gpr3, which means a seccomp tracer can
+ 	 * modify the first syscall parameter (in orig_gpr3) and also
+ 	 * allow the syscall to proceed.
+@@ -1822,22 +1822,25 @@ static inline int do_seccomp(struct pt_regs *regs) { return 0; }
+  */
+ long do_syscall_trace_enter(struct pt_regs *regs)
  {
- 	return get_signals();
- }
+-	bool abort = false;
+-
+ 	user_exit();
  
-+#define arch_local_irq_restore arch_local_irq_restore
- static inline void arch_local_irq_restore(unsigned long flags)
- {
- 	set_signals(flags);
- }
- 
-+#define arch_local_irq_enable arch_local_irq_enable
- static inline void arch_local_irq_enable(void)
- {
- 	unblock_signals();
- }
- 
-+#define arch_local_irq_disable arch_local_irq_disable
- static inline void arch_local_irq_disable(void)
- {
- 	block_signals();
- }
- 
--static inline unsigned long arch_local_irq_save(void)
--{
--	unsigned long flags;
--	flags = arch_local_save_flags();
--	arch_local_irq_disable();
--	return flags;
--}
-+/* #include <uapi/asm/signal.h> */
- 
--static inline bool arch_irqs_disabled(void)
--{
--	return arch_local_save_flags() == 0;
--}
-+#define ARCH_IRQ_DISABLED	0
-+#define ARCh_IRQ_ENABLED	(SIGIO|SIGVTALRM)
++	/*
++	 * The tracer may decide to abort the syscall, if so tracehook
++	 * will return !0. Note that the tracer may also just change
++	 * regs->gpr[0] to an invalid syscall number, that is handled
++	 * below on the exit path.
++	 */
++	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
++	    tracehook_report_syscall_entry(regs))
++		goto skip;
 +
-+#include <asm-generic/irqflags.h>
++	/* Run seccomp after ptrace; allow it to set gpr[3]. */
+ 	if (do_seccomp(regs))
+ 		return -1;
  
- #endif
+-	if (test_thread_flag(TIF_SYSCALL_TRACE)) {
+-		/*
+-		 * The tracer may decide to abort the syscall, if so tracehook
+-		 * will return !0. Note that the tracer may also just change
+-		 * regs->gpr[0] to an invalid syscall number, that is handled
+-		 * below on the exit path.
+-		 */
+-		abort = tracehook_report_syscall_entry(regs) != 0;
+-	}
++	/* Avoid trace and audit when syscall is invalid. */
++	if (regs->gpr[0] >= NR_syscalls)
++		goto skip;
+ 
+ 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+ 		trace_sys_enter(regs, regs->gpr[0]);
+@@ -1854,17 +1857,16 @@ long do_syscall_trace_enter(struct pt_regs *regs)
+ 				    regs->gpr[5] & 0xffffffff,
+ 				    regs->gpr[6] & 0xffffffff);
+ 
+-	if (abort || regs->gpr[0] >= NR_syscalls) {
+-		/*
+-		 * If we are aborting explicitly, or if the syscall number is
+-		 * now invalid, set the return value to -ENOSYS.
+-		 */
+-		regs->gpr[3] = -ENOSYS;
+-		return -1;
+-	}
+-
+ 	/* Return the possibly modified but valid syscall number */
+ 	return regs->gpr[0];
++
++skip:
++	/*
++	 * If we are aborting explicitly, or if the syscall number is
++	 * now invalid, set the return value to -ENOSYS.
++	 */
++	regs->gpr[3] = -ENOSYS;
++	return -1;
+ }
+ 
+ void do_syscall_trace_leave(struct pt_regs *regs)
 -- 
-2.7.3
+2.7.4
 
-
-------------------------------------------------------------------------------
-What NetFlow Analyzer can do for you? Monitors network bandwidth and traffic
-patterns at an interface-level. Reveals which users, apps, and protocols are 
-consuming the most bandwidth. Provides multi-vendor support for NetFlow, 
-J-Flow, sFlow and other flows. Make informed decisions using capacity 
-planning reports. https://ad.doubleclick.net/ddm/clk/305295220;132659582;e
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
