@@ -1,88 +1,86 @@
-Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Kees Cook <keescook@chromium.org>
-Subject: [PATCH 11/14] s390/ptrace: run seccomp after ptrace
-Date: Thu,  9 Jun 2016 14:02:01 -0700
-Message-Id: <1465506124-21866-12-git-send-email-keescook@chromium.org>
-In-Reply-To: <1465506124-21866-1-git-send-email-keescook@chromium.org>
-References: <1465506124-21866-1-git-send-email-keescook@chromium.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1bCBbV-0007Y9-QE
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Jun 2016 20:03:29 +0000
+Received: from mail.sigma-star.at ([95.130.255.111])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1bCBbV-0004uZ-49 for user-mode-linux-devel@lists.sourceforge.net;
+	Sun, 12 Jun 2016 20:03:29 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Sun, 12 Jun 2016 22:03:16 +0200
+Message-Id: <1465761796-26950-1-git-send-email-richard@nod.at>
+Subject: [uml-devel] [PATCH] uml: Fix possible deadlock in
+	sig_handler_common()
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Russell King <linux@armlinux.org.uk>, Paul Mackerras <paulus@samba.org>, Chris Metcalf <cmetcalf@mellanox.com>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Catalin Marinas <catalin.marinas@arm.com>, James Hogan <james.hogan@imgtec.com>, Kees Cook <keescook@chromium.org>, user-mode-linux-devel@lists.sourceforge.net, Will Deacon <will.deacon@arm.com>, Jeff Dike <jdike@addtoit.com>, Andy Lutomirski <luto@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Richard Weinberger <richard@nod.at>, Martin Schwidefsky <schwidefsky@de.ibm.com>, "Maciej W. Rozycki" <macro@imgtec.com>, linuxppc-dev@lists.ozlabs.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, aivanov@brocade.com, thomas@m3y3r.de
 
-Close the hole where ptrace can change a syscall out from under seccomp.
+We are in atomic context and must not sleep.
+Sleeping here is possible since malloc() maps
+to kmalloc() with GFP_KERNEL.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: linux-s390@vger.kernel.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/s390/kernel/ptrace.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ arch/um/os-Linux/signal.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/kernel/ptrace.c b/arch/s390/kernel/ptrace.c
-index c238e9958c2a..cea17010448f 100644
---- a/arch/s390/kernel/ptrace.c
-+++ b/arch/s390/kernel/ptrace.c
-@@ -821,15 +821,6 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index 8acaf4e..a86d7cc 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -15,6 +15,7 @@
+ #include <kern_util.h>
+ #include <os.h>
+ #include <sysdep/mcontext.h>
++#include <um_malloc.h>
  
- asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
+ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
+ 	[SIGTRAP]	= relay_signal,
+@@ -32,7 +33,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ 	struct uml_pt_regs *r;
+ 	int save_errno = errno;
+ 
+-	r = malloc(sizeof(struct uml_pt_regs));
++	r = uml_kmalloc(sizeof(struct uml_pt_regs), UM_GFP_ATOMIC);
+ 	if (!r)
+ 		panic("out of memory");
+ 
+@@ -91,7 +92,7 @@ static void timer_real_alarm_handler(mcontext_t *mc)
  {
--	long ret = 0;
--
--	/* Do the secure computing check first. */
--	if (secure_computing(NULL)) {
--		/* seccomp failures shouldn't expose any additional code. */
--		ret = -1;
--		goto out;
--	}
--
- 	/*
- 	 * The sysc_tracesys code in entry.S stored the system
- 	 * call number to gprs[2].
-@@ -843,7 +834,13 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
- 		 * the system call and the system call restart handling.
- 		 */
- 		clear_pt_regs_flag(regs, PIF_SYSCALL);
--		ret = -1;
-+		return -1;
-+	}
-+
-+	/* Do the secure computing check after ptrace. */
-+	if (secure_computing(NULL)) {
-+		/* seccomp failures shouldn't expose any additional code. */
-+		return -1;
- 	}
+ 	struct uml_pt_regs *regs;
  
- 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
-@@ -852,8 +849,8 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
- 	audit_syscall_entry(regs->gprs[2], regs->orig_gpr2,
- 			    regs->gprs[3], regs->gprs[4],
- 			    regs->gprs[5]);
--out:
--	return ret ?: regs->gprs[2];
-+
-+	return regs->gprs[2];
- }
+-	regs = malloc(sizeof(struct uml_pt_regs));
++	regs = uml_kmalloc(sizeof(struct uml_pt_regs), UM_GFP_ATOMIC);
+ 	if (!regs)
+ 		panic("out of memory");
  
- asmlinkage void do_syscall_trace_exit(struct pt_regs *regs)
 -- 
-2.7.4
+2.7.3
 
 
+------------------------------------------------------------------------------
+What NetFlow Analyzer can do for you? Monitors network bandwidth and traffic
+patterns at an interface-level. Reveals which users, apps, and protocols are 
+consuming the most bandwidth. Provides multi-vendor support for NetFlow, 
+J-Flow, sFlow and other flows. Make informed decisions using capacity 
+planning reports. https://ad.doubleclick.net/ddm/clk/305295220;132659582;e
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
