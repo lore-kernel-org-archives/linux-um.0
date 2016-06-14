@@ -1,86 +1,71 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kees Cook <keescook@chromium.org>
-Subject: [PATCH 05/14] seccomp: recheck the syscall after RET_TRACE
-Date: Thu,  9 Jun 2016 14:01:55 -0700
-Message-Id: <1465506124-21866-6-git-send-email-keescook@chromium.org>
-In-Reply-To: <1465506124-21866-1-git-send-email-keescook@chromium.org>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <CALCETrVk-UauwaRtZZR0fKQO6kyAx-r=ZCurKRdhQk9nA-TqeQ@mail.gmail.com>
 References: <1465506124-21866-1-git-send-email-keescook@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Metcalf <cmetcalf@mellanox.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, James Hogan <james.hogan@imgtec.com>, Jeff Dike <jdike@addtoit.com>, linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, "Maciej W. Rozycki" <macro@imgtec.com>, Mark Rutland <mark.rutland@arm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, user-mode-linux-devel@lists.sourceforge.net, Will Deacon <will.deacon@arm.com>, x86@kernel.org
+ <1465506124-21866-7-git-send-email-keescook@chromium.org> <CALCETrVk-UauwaRtZZR0fKQO6kyAx-r=ZCurKRdhQk9nA-TqeQ@mail.gmail.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Mon, 13 Jun 2016 19:27:42 -0700
+Message-ID: <CALCETrUJr25COBeVs_KS1SVk2f7CFzYgDr7MttZanWsJnTk0-g@mail.gmail.com>
+Subject: Re: [PATCH 06/14] x86/ptrace: run seccomp after ptrace
+Content-Type: text/plain; charset=UTF-8
+Sender: linux-arch-owner@vger.kernel.org
+To: Kees Cook <keescook@chromium.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>, Andy Lutomirski <luto@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Metcalf <cmetcalf@mellanox.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, James Hogan <james.hogan@imgtec.com>, Jeff Dike <jdike@addtoit.com>, linux-arch <linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "Maciej W. Rozycki" <macro@imgtec.com>, Mark Rutland <mark.rutland@arm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Will Deacon <will.deacon@arm.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-When RET_TRACE triggers, a tracer may change a syscall into something that
-should be filtered by seccomp. This re-runs seccomp after a trace event
-to make sure things continue to pass.
+On Thu, Jun 9, 2016 at 3:52 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+> On Thu, Jun 9, 2016 at 2:01 PM, Kees Cook <keescook@chromium.org> wrote:
+>> This moves seccomp after ptrace on x86 to that seccomp can catch changes
+>> made by ptrace. Emulation should skip the rest of processing too.
+>>
+>> We can get rid of test_thread_flag because there's no longer any
+>> opportunity for seccomp to mess with ptrace state before invoking
+>> ptrace.
+>>
+>> Suggested-by: Andy Lutomirski <luto@kernel.org>
+>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>> Cc: x86@kernel.org
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> ---
+>>  arch/x86/entry/common.c | 22 ++++++++++++----------
+>>  1 file changed, 12 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+>> index df56ca394877..81c0e12d831c 100644
+>> --- a/arch/x86/entry/common.c
+>> +++ b/arch/x86/entry/common.c
+>> @@ -73,6 +73,7 @@ static long syscall_trace_enter(struct pt_regs *regs)
+>>
+>>         struct thread_info *ti = pt_regs_to_thread_info(regs);
+>>         unsigned long ret = 0;
+>> +       bool emulated = false;
+>>         u32 work;
+>>
+>>         if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
+>> @@ -80,11 +81,19 @@ static long syscall_trace_enter(struct pt_regs *regs)
+>>
+>>         work = ACCESS_ONCE(ti->flags) & _TIF_WORK_SYSCALL_ENTRY;
+>>
+>> +       if (unlikely(work & _TIF_SYSCALL_EMU))
+>> +               emulated = true;
+>> +
+>> +       if ((emulated || (work & _TIF_SYSCALL_TRACE)) &&
+>> +           tracehook_report_syscall_entry(regs))
+>> +               return -1L;
+>> +
+>> +       if (emulated)
+>> +               return -1L;
+>> +
+>
+> I think that this code will result in ptrace-induced skips calling the
+> audit exit hook but not the audit entry hook.  I don't know whether
+> this is a problem.  It's also worth making sure that ptracing a
+> seccomp-skipped syscall calls the exit hook with the right regs.
+>
+> I suspect it's fine, but I want to think about it a little bit more.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@kernel.org>
----
- kernel/seccomp.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+I poked at it a bit and this seems to work correctly.
+selftests/x86/ptrace_syscall.c exercises PTRACE_SYSCALL_EMU pretty
+well, and it still passes.
 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 14a37d71b612..54d15eb2b701 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -556,7 +556,8 @@ void secure_computing_strict(int this_syscall)
- #else
- 
- #ifdef CONFIG_SECCOMP_FILTER
--static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd)
-+static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
-+			    const bool recheck_after_trace)
- {
- 	u32 filter_ret, action;
- 	int data;
-@@ -588,6 +589,10 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd)
- 		goto skip;
- 
- 	case SECCOMP_RET_TRACE:
-+		/* We've been put in this state by the ptracer already. */
-+		if (recheck_after_trace)
-+			return 0;
-+
- 		/* ENOSYS these calls if there is no tracer attached. */
- 		if (!ptrace_event_enabled(current, PTRACE_EVENT_SECCOMP)) {
- 			syscall_set_return_value(current,
-@@ -611,6 +616,15 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd)
- 		if (this_syscall < 0)
- 			goto skip;
- 
-+		/*
-+		 * Recheck the syscall, since it may have changed. This
-+		 * intentionally uses a NULL struct seccomp_data to force
-+		 * a reload of all registers. This does not goto skip since
-+		 * a skip would have already been reported.
-+		 */
-+		if (__seccomp_filter(this_syscall, NULL, true))
-+			return -1;
-+
- 		return 0;
- 
- 	case SECCOMP_RET_ALLOW:
-@@ -629,7 +643,8 @@ skip:
- 	return -1;
- }
- #else
--static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd)
-+static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
-+			    const bool recheck_after_trace)
- {
- 	BUG();
- }
-@@ -652,7 +667,7 @@ int __secure_computing(const struct seccomp_data *sd)
- 		__secure_computing_strict(this_syscall);  /* may call do_exit */
- 		return 0;
- 	case SECCOMP_MODE_FILTER:
--		return __seccomp_filter(this_syscall, sd);
-+		return __seccomp_filter(this_syscall, sd, false);
- 	default:
- 		BUG();
- 	}
--- 
-2.7.4
-
-
+--Andy
