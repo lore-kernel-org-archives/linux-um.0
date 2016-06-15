@@ -1,80 +1,53 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1bCBjM-0007of-5i
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2016 20:11:36 +0000
-Received: from mail-oi0-f68.google.com ([209.85.218.68])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1bCBjL-00055D-Gu
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Jun 2016 20:11:36 +0000
-Received: by mail-oi0-f68.google.com with SMTP id e205so16222529oig.0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sun, 12 Jun 2016 13:11:35 -0700 (PDT)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Wed, 15 Jun 2016 05:45:32 -0700
+From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Subject: Re: [rcu:rcu/next 25/36] include/linux/irqflags.h:79:3: error:
+ implicit declaration of function 'arch_irqs_disabled_flags'
+Reply-To: paulmck@linux.vnet.ibm.com
+References: <201606060200.kVmeQzvA%fengguang.wu@intel.com>
+ <20160614225417.GR3923@linux.vnet.ibm.com>
+ <5760FE41.9060603@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <CAOMGZ=H-fi-Wqmc36ts5LULSe=QD9Q-ys7GKryFWRZw_iO-J=A@mail.gmail.com>
-References: <CAOMGZ=GpWk1=9HeTxz6NBVh-Y8TZS8ZBHaaqDdxOqvRHD+f_TQ@mail.gmail.com>
-	<6AAB4FAC-99C2-4B3C-88CA-C210193E74EF@m3y3r.de>
-	<CAOMGZ=H-fi-Wqmc36ts5LULSe=QD9Q-ys7GKryFWRZw_iO-J=A@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 12 Jun 2016 22:11:29 +0200
-Message-ID: <CAFLxGvw1jahqtNPkyBiMq_P4no+uersN4fGMcFqexikyLwm83w@mail.gmail.com>
-Subject: Re: [uml-devel] current_thread_info() returns invalid pointer in
- early UML boot code
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Vegard Nossum <vegard.nossum@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, Thomas Meyer <thomas@m3y3r.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5760FE41.9060603@nod.at>
+Message-Id: <20160615124532.GW3923@linux.vnet.ibm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>
+Cc: kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org, linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sun, May 22, 2016 at 5:39 PM, Vegard Nossum <vegard.nossum@gmail.com> wrote:
-> On 21 May 2016 at 20:18, Thomas Meyer <thomas@m3y3r.de> wrote:
->> Am 21.05.2016 um 15:51 schrieb Vegard Nossum <vegard.nossum@gmail.com>:
->>> I'm having some trouble with using current_thread_info() during UML
->>> early boot. Sometimes it works just fine, but often I get segfaults
->>> because current_thread_info() is returning an invalid pointer. It
->>> looks random: 0x202118, 0x1003e0003, 0xd33b90b3, 0x6db043, etc.
->>
->> Mhh. Strange. Do you have a stack trace to call to current thread info which ends up with a wrong value. I wonder from were it originates.
->
-> One such trace would be:
->
-> #2  0x000000006026652c in snprintf (buf=<optimized out>,
-> size=<optimized out>, fmt=<optimized out>) at lib/vsprintf.c:2181
-> #3  0x00000000600046f8 in setup_env_path () at arch/um/os-Linux/main.c:109
-> #4  main (argc=3, argv=0x7ffc3d8c23e8, envp=<optimized out>) at
-> arch/um/os-Linux/main.c:125
->
-> I wonder why setup_env_path() ends up calling the kernel's snprintf(),
-> I thought that it would be using the glibc snprintf() at this point?
+On Wed, Jun 15, 2016 at 09:05:37AM +0200, Richard Weinberger wrote:
+> Paul,
+> 
+> Am 15.06.2016 um 00:54 schrieb Paul E. McKenney:
+> > On Mon, Jun 06, 2016 at 02:04:03AM +0800, kbuild test robot wrote:
+> >> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+> >> head:   13ee0de9cd2444b57ce30c4f1607b49b90aa0c38
+> >> commit: f251ac814fc5787765009e60d54a2bd4277350c8 [25/36] rcu: Make call_rcu_tasks() tolerate first call with irqs disabled
+> >> config: um-allmodconfig (attached as .config)
+> >> compiler: gcc-6 (Debian 6.1.1-1) 6.1.1 20160430
+> >> reproduce:
+> >>         git checkout f251ac814fc5787765009e60d54a2bd4277350c8
+> >>         # save the attached .config to linux build tree
+> >>         make ARCH=um 
+> > 
+> > My kneejerk reaction would be to make CONFIG_TASKS_RCU depend on
+> > !UML or something similar.
+> > 
+> > Another approach would be create a arch_irqs_disabled_flags() for UML.
+> > 
+> > Any preferences?
+> 
+> Patches for arch_irqs_disabled_flags() support are already on LKML:
+> https://lkml.org/lkml/2016/6/12/162
+> 
+> My plan was to merge them in the v4.8 merge window.
+> So having CONFIG_TASKS_RCU depend on !UML for now should be fine.
+> We can remove the dependency in v4.8 again.
 
-That early you cannot use current() nor any other core kernel stuff
-since the kernel has not started so far.
-So, the current thread info struct points to garbage.
+Sounds very good, thank you!
 
--- 
-Thanks,
-//richard
+							Thanx, Paul
 
-------------------------------------------------------------------------------
-What NetFlow Analyzer can do for you? Monitors network bandwidth and traffic
-patterns at an interface-level. Reveals which users, apps, and protocols are 
-consuming the most bandwidth. Provides multi-vendor support for NetFlow, 
-J-Flow, sFlow and other flows. Make informed decisions using capacity 
-planning reports. https://ad.doubleclick.net/ddm/clk/305295220;132659582;e
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
