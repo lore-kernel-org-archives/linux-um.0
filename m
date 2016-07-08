@@ -1,34 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1bLe3k-0005zh-RT
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <theartlav@gmail.com>) id 1bLc0J-0003QK-8n
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Jul 2016 22:15:44 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	Fri, 08 Jul 2016 20:04:03 +0000
+Received: from mail-yw0-f174.google.com ([209.85.161.174])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1bLe3j-0000pp-Hz
+	(Exim 4.76) id 1bLc0H-0003yY-Gg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Jul 2016 22:15:44 +0000
-Received: from [192.168.17.6] (helo=smaug.kot-begemot.co.uk)
-	by ivanoab4.miniserver.com with esmtps
-	(TLS1.2:RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1bLdWr-0002Zc-0G
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Jul 2016 21:41:45 +0000
-Received: from wyvern.kot-begemot.co.uk ([192.168.3.72])
-	by smaug.kot-begemot.co.uk with esmtps
-	(TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.84_2)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1bLdWq-0003bs-H2
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Jul 2016 22:41:44 +0100
-References: <CAJRVQkAexcnHwnRb+uKgr_RQNdr2s-GVf5x-SjJivSHwx3Kxiw@mail.gmail.com>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <6d3da52b-06f9-8674-56ca-a2d16aaa00bf@kot-begemot.co.uk>
-Date: Fri, 8 Jul 2016 22:41:44 +0100
+	Fri, 08 Jul 2016 20:04:03 +0000
+Received: by mail-yw0-f174.google.com with SMTP id l125so45389174ywb.2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Fri, 08 Jul 2016 13:04:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJRVQkAexcnHwnRb+uKgr_RQNdr2s-GVf5x-SjJivSHwx3Kxiw@mail.gmail.com>
-Subject: Re: [uml-devel] ubd is slow. I want to try fixing it
+From: =?UTF-8?B?0JDRgNGC0ZHQvCDQm9C40YLQstC40L3QvtCy0LjRhw==?=
+	<theartlav@gmail.com>
+Date: Fri, 8 Jul 2016 23:03:55 +0300
+Message-ID: <CAJRVQkAexcnHwnRb+uKgr_RQNdr2s-GVf5x-SjJivSHwx3Kxiw@mail.gmail.com>
+Subject: [uml-devel] ubd is slow. I want to try fixing it
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -38,62 +28,43 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
-T24gMDgvMDcvMTYgMjE6MDMsINCQ0YDRgtGR0Lwg0JvQuNGC0LLQuNC90L7QstC40Ycgd3JvdGU6
-Cj4gR3JlZXRpbmdzLgo+Cj4gQXBwYXJlbnRseSwgdWJkIGlzIHRvbyBzbG93IGZvciBwcmFjdGlj
-YWwgdXNlLgo+IEknbSBnZXR0aW5nIDAuOCBNYi9zIHdyaXRlIHNwZWVkLCB3aGlsZSBob3N0ZnMg
-ZG9lcyAyNSBNYi9zIChhbmQgb24KPiB0aGUgaG9zdCBpdHNlbGYgaXQncyBzaW1pbGFyKS4KPiBU
-aGlzIGlzIHJhdGhlciBmcnVzdHJhdGluZyBmb3Igc3VjaCBhIGdyZWF0IHByb2plY3QgYXMgVU1M
-IGlzLCBhbmQgaSdkCj4gbGlrZSB0byB0cnkgZml4aW5nIHRoaXMuCj4KPiBTbywgdHdvIHF1ZXN0
-aW9ucy4KPgo+IEZpcnN0LCBhbSBpIG1pc3Npbmcgc29tZXRoaW5nPwo+IElzIGl0IGFjdHVhbGx5
-IG5vcm1hbCBmb3IgdWJkIHRvIGJlIHRoYXQgc2xvdz8KPiBJIGxvb2tlZCBhcm91bmQsIGFuZCBh
-cHBhcmVudGx5IGl0IGlzIHNsb3cgZHVlIHRvIGRlc2lnbi4gVGhlcmUgZXZlbgo+IHdlcmUgc29t
-ZSBhbmNpZW50IHBhdGNoZXMgdG8gdHJ5IHRvIGZpeCB0aGF0LgoKQ2hlY2sgaWYgeW91IGhhdmUg
-c3luYyB0dXJuZWQgb24uCgo+Cj4gU2Vjb25kLCB3aHkgaXMgdGhpcyBwcm9ibGVtIGhhcmQ/Cj4g
-VGhpcyB3YXMgZ29pbmcgb24gZm9yIG92ZXIgYSBkZWNhZGUsIGFuZCBubyBvbmUgbWFkZSBhIGJl
-dHRlciB2ZXJzaW9uLAoKTm90IHF1aXRlLCBJIGhhdmUgb25lIGluIG15IHBhdGNoIHF1ZXVlLCBq
-dXN0IG5vIHRpbWVzbG90cyB0byB3b3JrIG9uIGl0LgoKPiB3aGljaCBpbXBsaWVzIGEgaGFyZCBw
-cm9ibGVtLgoKTm90IHJlYWxseSwgSXQgaXMgYW4gYWdlIG9sZCBwcm9ibGVtIC0gc2luZ2xlIHNl
-Y3RvciB2cyBtdWx0aS1zZWN0b3IKcmVhZC93cml0ZSAtIHNhbWUgYXMgYW5jaWVudCBQSU8gSURF
-IHZzIERNQSB0aGF0IHJlcGxhY2VkIGl0LgoKQXMgSSBzYWlkIC0gSSBoYXZlIHBhdGNoc2V0cywg
-SSBob3dldmVyIG1lc3NlZCB1cCB0aGUgc3VibWlzc2lvbiBsYXN0CnRpbWUgc28gb25seSBzb21l
-IG9mIHRoZSBzaW1wbGUgdGhpbmdzIGxpa2Ugc3lzY2FsbCByZWR1Y3Rpb24gYXJlIHRoZXJlLgoK
-QWN0dWFsIGJ1bGtpbmcgb2YgcmVxdWVzdHMsIGV0YyBkaWQgbm90IGdvIGluLiBJIHBsYW4gdG8g
-Z28gYmFjayB0byBpdApsYXRlciB0aGlzIHN1bW1lciB3aGVuIEkgaGF2ZSBtb3JlIHRpbWUuCgo+
-IEkgd291bGQgbG92ZSB0byBoZWFyIGZyb20gc29tZW9uZSB3aG8gaXMgZmFtaWxpYXIgd2l0aCBo
-b3cgdGhlIGNvZGUKPiB3b3JrcywgYWJvdXQgd2hhdCB0aGUgcHJvYmxlbXMgYXJlIChpbnN0ZWFk
-IG9mIGhpdHRpbmcgbXkgaGVhZCBhZ2FpbnN0Cj4gdGhlbSBsYXRlcikuCj4gU3BlY2lmaWNhbGx5
-LCB3aHkgdXNlIHRoZSBJTyB0aHJlYWQ/CgpGb3JtIG9mIGFzeW5jIElPIC0gdmVyeSBzaW1pbGFy
-IHRvIHdoYXQgcG9zaXggYXN5bmMgSU8gaW1wbGVtZW50YXRpb25zCmRvLiBJZiBkb25lIGNvcnJl
-Y3RseSBpdCBjYW4gc3BlZWQgdXAgdGhpbmdzIHF1aXRlIGEgYml0LiBGb3IgaXQgaG93ZXZlcgph
-Y3R1YWwgZmlsZXMgbmVlZCB0byBiZSBvcGVuZWQgYXN5bmMuIFRoZSBudW1iZXIgeW91IHF1b3Rl
-ZCBtYWtlcyBtZQp0aGluayB5b3UgaGF2ZSBzeW5jIGVuYWJsZWQgKGl0IGlzIGVuYWJsZWQgaW4g
-c29tZSBkaXN0cm9zIGJ5IGRlZmF1bHQKdmlhIGtlcm5lbCBjb25maWcgb3B0aW9ucykuCgpBLgoK
-PiBIb3N0ZnMgc2VlbSB0byB3b3JrIGp1c3QgZmluZSB3aXRoIGNhbGxpbmcgdGhlIG5hdGl2ZSBy
-ZWFkL3dyaXRlIGRpcmVjdGx5Lgo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gQXR0ZW5kIFNo
-YXBlOiBBbiBBVCZUIFRlY2ggRXhwbyBKdWx5IDE1LTE2LiBNZWV0IHVzIGF0IEFUJlQgUGFyayBp
-biBTYW4KPiBGcmFuY2lzY28sIENBIHRvIGV4cGxvcmUgY3V0dGluZy1lZGdlIHRlY2ggYW5kIGxp
-c3RlbiB0byB0ZWNoIGx1bWluYXJpZXMKPiBwcmVzZW50IHRoZWlyIHZpc2lvbiBvZiB0aGUgZnV0
-dXJlLiBUaGlzIGZhbWlseSBldmVudCBoYXMgc29tZXRoaW5nIGZvcgo+IGV2ZXJ5b25lLCBpbmNs
-dWRpbmcga2lkcy4gR2V0IG1vcmUgaW5mb3JtYXRpb24gYW5kIHJlZ2lzdGVyIHRvZGF5Lgo+IGh0
-dHA6Ly9zZG0ubGluay9hdHRzaGFwZQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCj4gVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdAo+IFVz
-ZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3Rz
-LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwKPgoK
-Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBdHRlbmQgU2hhcGU6IEFuIEFUJlQgVGVjaCBFeHBvIEp1
-bHkgMTUtMTYuIE1lZXQgdXMgYXQgQVQmVCBQYXJrIGluIFNhbgpGcmFuY2lzY28sIENBIHRvIGV4
-cGxvcmUgY3V0dGluZy1lZGdlIHRlY2ggYW5kIGxpc3RlbiB0byB0ZWNoIGx1bWluYXJpZXMKcHJl
-c2VudCB0aGVpciB2aXNpb24gb2YgdGhlIGZ1dHVyZS4gVGhpcyBmYW1pbHkgZXZlbnQgaGFzIHNv
-bWV0aGluZyBmb3IKZXZlcnlvbmUsIGluY2x1ZGluZyBraWRzLiBHZXQgbW9yZSBpbmZvcm1hdGlv
-biBhbmQgcmVnaXN0ZXIgdG9kYXkuCmh0dHA6Ly9zZG0ubGluay9hdHRzaGFwZQpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2
-ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2Rl
-LWxpbnV4LWRldmVsCg==
+Greetings.
+
+Apparently, ubd is too slow for practical use.
+I'm getting 0.8 Mb/s write speed, while hostfs does 25 Mb/s (and on
+the host itself it's similar).
+This is rather frustrating for such a great project as UML is, and i'd
+like to try fixing this.
+
+So, two questions.
+
+First, am i missing something?
+Is it actually normal for ubd to be that slow?
+I looked around, and apparently it is slow due to design. There even
+were some ancient patches to try to fix that.
+
+Second, why is this problem hard?
+This was going on for over a decade, and no one made a better version,
+which implies a hard problem.
+I would love to hear from someone who is familiar with how the code
+works, about what the problems are (instead of hitting my head against
+them later).
+Specifically, why use the IO thread?
+Hostfs seem to work just fine with calling the native read/write directly.
+
+------------------------------------------------------------------------------
+Attend Shape: An AT&T Tech Expo July 15-16. Meet us at AT&T Park in San
+Francisco, CA to explore cutting-edge tech and listen to tech luminaries
+present their vision of the future. This family event has something for
+everyone, including kids. Get more information and register today.
+http://sdm.link/attshape
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
