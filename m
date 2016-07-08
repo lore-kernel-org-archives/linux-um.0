@@ -1,23 +1,33 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <theartlav@gmail.com>) id 1bM1hT-0000Iy-QZ
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1bLe3k-0005zh-RT
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Jul 2016 23:30:19 +0000
-Received: from mail-yw0-f196.google.com ([209.85.161.196])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1bM1hT-0003A5-27
+	Fri, 08 Jul 2016 22:15:44 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1bLe3j-0000pp-Hz
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 09 Jul 2016 23:30:19 +0000
-Received: by mail-yw0-f196.google.com with SMTP id i12so10787034ywa.0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Sat, 09 Jul 2016 16:30:19 -0700 (PDT)
+	Fri, 08 Jul 2016 22:15:44 +0000
+Received: from [192.168.17.6] (helo=smaug.kot-begemot.co.uk)
+	by ivanoab4.miniserver.com with esmtps
+	(TLS1.2:RSA_AES_128_CBC_SHA1:128) (Exim 4.80)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1bLdWr-0002Zc-0G
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Jul 2016 21:41:45 +0000
+Received: from wyvern.kot-begemot.co.uk ([192.168.3.72])
+	by smaug.kot-begemot.co.uk with esmtps
+	(TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.84_2)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1bLdWq-0003bs-H2
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 08 Jul 2016 22:41:44 +0100
+References: <CAJRVQkAexcnHwnRb+uKgr_RQNdr2s-GVf5x-SjJivSHwx3Kxiw@mail.gmail.com>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <6d3da52b-06f9-8674-56ca-a2d16aaa00bf@kot-begemot.co.uk>
+Date: Fri, 8 Jul 2016 22:41:44 +0100
 MIME-Version: 1.0
-From: =?UTF-8?B?0JDRgNGC0ZHQvCDQm9C40YLQstC40L3QvtCy0LjRhw==?=
-	<theartlav@gmail.com>
-Date: Sun, 10 Jul 2016 02:30:13 +0300
-Message-ID: <CAJRVQkDmE4PTPAU8L524LrbeumhwSMyLzrQ78cOWq16YsUZY7Q@mail.gmail.com>
+In-Reply-To: <CAJRVQkAexcnHwnRb+uKgr_RQNdr2s-GVf5x-SjJivSHwx3Kxiw@mail.gmail.com>
 Subject: Re: [uml-devel] ubd is slow. I want to try fixing it
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -28,48 +38,62 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 
-Ah, thanks.
-I rebuilt it with sync off, and the performance jumped up to something
-close to the host one.
-Would that actually put ext4 guest fs in any danger in case of a crash?
-
-Sadly, it developed that the 64bit UML can't run 32bit programs, which
-is a deal breaker to me.
-While it's something that was working at one point and apparently also
-fixable with some effort, the sum total of problems makes qemu-kvm
-look more attractive in the end.
-
-It's peculiar to see UML in such a state of disrepair - for a long
-while i thought it was a widely used lean virtualization platform,
-powering things like containers, docker and so on.
-Some research and disillusionment later, i'm left wondering what went wrong.
-Even the ultra-useful Windows port, CoLinux, seems to be abandoned.
-
-In any case, good luck with the patches!
-
-
-> 2016-07-09 1:15 GMT+03:00  <user-mode-linux-devel-request@lists.sourceforge.net>:
-> Check if you have sync turned on.
->
-> Form of async IO - very similar to what posix async IO implementations
-> do. If done correctly it can speed up things quite a bit. For it however
-> actual files need to be opened async. The number you quoted makes me
-> think you have sync enabled (it is enabled in some distros by default
-> via kernel config options).
-
-------------------------------------------------------------------------------
-Attend Shape: An AT&T Tech Expo July 15-16. Meet us at AT&T Park in San
-Francisco, CA to explore cutting-edge tech and listen to tech luminaries
-present their vision of the future. This family event has something for
-everyone, including kids. Get more information and register today.
-http://sdm.link/attshape
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+T24gMDgvMDcvMTYgMjE6MDMsINCQ0YDRgtGR0Lwg0JvQuNGC0LLQuNC90L7QstC40Ycgd3JvdGU6
+Cj4gR3JlZXRpbmdzLgo+Cj4gQXBwYXJlbnRseSwgdWJkIGlzIHRvbyBzbG93IGZvciBwcmFjdGlj
+YWwgdXNlLgo+IEknbSBnZXR0aW5nIDAuOCBNYi9zIHdyaXRlIHNwZWVkLCB3aGlsZSBob3N0ZnMg
+ZG9lcyAyNSBNYi9zIChhbmQgb24KPiB0aGUgaG9zdCBpdHNlbGYgaXQncyBzaW1pbGFyKS4KPiBU
+aGlzIGlzIHJhdGhlciBmcnVzdHJhdGluZyBmb3Igc3VjaCBhIGdyZWF0IHByb2plY3QgYXMgVU1M
+IGlzLCBhbmQgaSdkCj4gbGlrZSB0byB0cnkgZml4aW5nIHRoaXMuCj4KPiBTbywgdHdvIHF1ZXN0
+aW9ucy4KPgo+IEZpcnN0LCBhbSBpIG1pc3Npbmcgc29tZXRoaW5nPwo+IElzIGl0IGFjdHVhbGx5
+IG5vcm1hbCBmb3IgdWJkIHRvIGJlIHRoYXQgc2xvdz8KPiBJIGxvb2tlZCBhcm91bmQsIGFuZCBh
+cHBhcmVudGx5IGl0IGlzIHNsb3cgZHVlIHRvIGRlc2lnbi4gVGhlcmUgZXZlbgo+IHdlcmUgc29t
+ZSBhbmNpZW50IHBhdGNoZXMgdG8gdHJ5IHRvIGZpeCB0aGF0LgoKQ2hlY2sgaWYgeW91IGhhdmUg
+c3luYyB0dXJuZWQgb24uCgo+Cj4gU2Vjb25kLCB3aHkgaXMgdGhpcyBwcm9ibGVtIGhhcmQ/Cj4g
+VGhpcyB3YXMgZ29pbmcgb24gZm9yIG92ZXIgYSBkZWNhZGUsIGFuZCBubyBvbmUgbWFkZSBhIGJl
+dHRlciB2ZXJzaW9uLAoKTm90IHF1aXRlLCBJIGhhdmUgb25lIGluIG15IHBhdGNoIHF1ZXVlLCBq
+dXN0IG5vIHRpbWVzbG90cyB0byB3b3JrIG9uIGl0LgoKPiB3aGljaCBpbXBsaWVzIGEgaGFyZCBw
+cm9ibGVtLgoKTm90IHJlYWxseSwgSXQgaXMgYW4gYWdlIG9sZCBwcm9ibGVtIC0gc2luZ2xlIHNl
+Y3RvciB2cyBtdWx0aS1zZWN0b3IKcmVhZC93cml0ZSAtIHNhbWUgYXMgYW5jaWVudCBQSU8gSURF
+IHZzIERNQSB0aGF0IHJlcGxhY2VkIGl0LgoKQXMgSSBzYWlkIC0gSSBoYXZlIHBhdGNoc2V0cywg
+SSBob3dldmVyIG1lc3NlZCB1cCB0aGUgc3VibWlzc2lvbiBsYXN0CnRpbWUgc28gb25seSBzb21l
+IG9mIHRoZSBzaW1wbGUgdGhpbmdzIGxpa2Ugc3lzY2FsbCByZWR1Y3Rpb24gYXJlIHRoZXJlLgoK
+QWN0dWFsIGJ1bGtpbmcgb2YgcmVxdWVzdHMsIGV0YyBkaWQgbm90IGdvIGluLiBJIHBsYW4gdG8g
+Z28gYmFjayB0byBpdApsYXRlciB0aGlzIHN1bW1lciB3aGVuIEkgaGF2ZSBtb3JlIHRpbWUuCgo+
+IEkgd291bGQgbG92ZSB0byBoZWFyIGZyb20gc29tZW9uZSB3aG8gaXMgZmFtaWxpYXIgd2l0aCBo
+b3cgdGhlIGNvZGUKPiB3b3JrcywgYWJvdXQgd2hhdCB0aGUgcHJvYmxlbXMgYXJlIChpbnN0ZWFk
+IG9mIGhpdHRpbmcgbXkgaGVhZCBhZ2FpbnN0Cj4gdGhlbSBsYXRlcikuCj4gU3BlY2lmaWNhbGx5
+LCB3aHkgdXNlIHRoZSBJTyB0aHJlYWQ/CgpGb3JtIG9mIGFzeW5jIElPIC0gdmVyeSBzaW1pbGFy
+IHRvIHdoYXQgcG9zaXggYXN5bmMgSU8gaW1wbGVtZW50YXRpb25zCmRvLiBJZiBkb25lIGNvcnJl
+Y3RseSBpdCBjYW4gc3BlZWQgdXAgdGhpbmdzIHF1aXRlIGEgYml0LiBGb3IgaXQgaG93ZXZlcgph
+Y3R1YWwgZmlsZXMgbmVlZCB0byBiZSBvcGVuZWQgYXN5bmMuIFRoZSBudW1iZXIgeW91IHF1b3Rl
+ZCBtYWtlcyBtZQp0aGluayB5b3UgaGF2ZSBzeW5jIGVuYWJsZWQgKGl0IGlzIGVuYWJsZWQgaW4g
+c29tZSBkaXN0cm9zIGJ5IGRlZmF1bHQKdmlhIGtlcm5lbCBjb25maWcgb3B0aW9ucykuCgpBLgoK
+PiBIb3N0ZnMgc2VlbSB0byB3b3JrIGp1c3QgZmluZSB3aXRoIGNhbGxpbmcgdGhlIG5hdGl2ZSBy
+ZWFkL3dyaXRlIGRpcmVjdGx5Lgo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gQXR0ZW5kIFNo
+YXBlOiBBbiBBVCZUIFRlY2ggRXhwbyBKdWx5IDE1LTE2LiBNZWV0IHVzIGF0IEFUJlQgUGFyayBp
+biBTYW4KPiBGcmFuY2lzY28sIENBIHRvIGV4cGxvcmUgY3V0dGluZy1lZGdlIHRlY2ggYW5kIGxp
+c3RlbiB0byB0ZWNoIGx1bWluYXJpZXMKPiBwcmVzZW50IHRoZWlyIHZpc2lvbiBvZiB0aGUgZnV0
+dXJlLiBUaGlzIGZhbWlseSBldmVudCBoYXMgc29tZXRoaW5nIGZvcgo+IGV2ZXJ5b25lLCBpbmNs
+dWRpbmcga2lkcy4gR2V0IG1vcmUgaW5mb3JtYXRpb24gYW5kIHJlZ2lzdGVyIHRvZGF5Lgo+IGh0
+dHA6Ly9zZG0ubGluay9hdHRzaGFwZQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCj4gVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdAo+IFVz
+ZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3Rz
+LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91c2VyLW1vZGUtbGludXgtZGV2ZWwKPgoK
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBdHRlbmQgU2hhcGU6IEFuIEFUJlQgVGVjaCBFeHBvIEp1
+bHkgMTUtMTYuIE1lZXQgdXMgYXQgQVQmVCBQYXJrIGluIFNhbgpGcmFuY2lzY28sIENBIHRvIGV4
+cGxvcmUgY3V0dGluZy1lZGdlIHRlY2ggYW5kIGxpc3RlbiB0byB0ZWNoIGx1bWluYXJpZXMKcHJl
+c2VudCB0aGVpciB2aXNpb24gb2YgdGhlIGZ1dHVyZS4gVGhpcyBmYW1pbHkgZXZlbnQgaGFzIHNv
+bWV0aGluZyBmb3IKZXZlcnlvbmUsIGluY2x1ZGluZyBraWRzLiBHZXQgbW9yZSBpbmZvcm1hdGlv
+biBhbmQgcmVnaXN0ZXIgdG9kYXkuCmh0dHA6Ly9zZG0ubGluay9hdHRzaGFwZQpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2
+ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2Rl
+LWxpbnV4LWRldmVsCg==
 
