@@ -1,217 +1,134 @@
-Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Kees Cook <keescook@chromium.org>
-Subject: [PATCH 02/14] seccomp: Add a seccomp_data parameter secure_computing()
-Date: Thu,  9 Jun 2016 14:01:52 -0700
-Message-Id: <1465506124-21866-3-git-send-email-keescook@chromium.org>
-In-Reply-To: <1465506124-21866-1-git-send-email-keescook@chromium.org>
-References: <1465506124-21866-1-git-send-email-keescook@chromium.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1bMjVX-0004Jf-Kr
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Jul 2016 22:16:55 +0000
+Received: from mail-oi0-f68.google.com ([209.85.218.68])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1bMjVW-0000Tl-MC
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 11 Jul 2016 22:16:55 +0000
+Received: by mail-oi0-f68.google.com with SMTP id w143so4582628oiw.2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 11 Jul 2016 15:16:54 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAA7wQYzGEDkqGph5-ruMYmAmpBy9+pqELk5JbNze8y3AyQW0yg@mail.gmail.com>
+References: <CAA7wQYzGEDkqGph5-ruMYmAmpBy9+pqELk5JbNze8y3AyQW0yg@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 12 Jul 2016 00:16:48 +0200
+Message-ID: <CAFLxGvwGsBvZyvqrRb3YV8d2T9r9VbxGPuH0h0qRJXRwFQBQiA@mail.gmail.com>
+Subject: Re: [uml-devel] How to properly load debug symbols for module and
+	set breakpoint
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Russell King <linux@armlinux.org.uk>, Paul Mackerras <paulus@samba.org>, Kees Cook <keescook@chromium.org>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>, x86@kernel.org, "James E.J. Bottomley" <jejb@parisc-linux.org>, Catalin Marinas <catalin.marinas@arm.com>, James Hogan <james.hogan@imgtec.com>, Chris Metcalf <cmetcalf@mellanox.com>, user-mode-linux-devel@lists.sourceforge.net, Will Deacon <will.deacon@arm.com>, Jeff Dike <jdike@addtoit.com>, Andy Lutomirski <luto@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Richard Weinberger <richard@nod.at>, Martin Schwidefsky <schwidefsky@de.ibm.com>, "Maciej W. Rozycki" <macro@imgtec.com>, linuxppc-dev@lists.ozlabs.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Mark Kica <mark.kica@gmail.com>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-From: Andy Lutomirski <luto@kernel.org>
+On Wed, Jul 6, 2016 at 1:31 PM, Mark Kica <mark.kica@gmail.com> wrote:
+> I have build custom 64bit UML Linux kernel with TUN/TAP kernel module
+> (tun.ko) and then I have installed it on small root filesystem with busybox
+> . These module and kernel seems to work and I would like to make simple
+> changes in TUN module and measure it's performance .
+>
+> So I have tried to follow guide from
+> http://user-mode-linux.sourceforge.net/hacking.html which explains how to
+> attach gdb to UML and set breakpoint for module init function .
+>
+> (gdb) p modules
+> $1 = {next = 0x6385cf38, prev = 0x6385cf38}
+>
+> (gdb) p *((struct module *)0x6385cf30)
+> $2 = {state = MODULE_STATE_LIVE, list = {next = 0x6036aee0, prev =
+> 0x6036aee0}, name = "tun", '\000' <repeats 52 times>, mkobj = {kobj = {name
+> = 0x62e95b00 "tun", entry = {next = 0x62c30440, prev = 0x62c30148}, parent =
+> 0x62c30450,
+> kset = 0x62c30440, ktype = 0x603694d0, sd = 0x62dd6fa0, kref = {refcount =
+> {counter = 3}}, state_initialized = 1, state_in_sysfs = 1,
+> state_add_uevent_sent = 1, state_remove_uevent_sent = 0, uevent_suppress =
+> 0},
+> mod = 0x6385cf30, drivers_dir = 0x0, mp = 0x0}, modinfo_attrs = 0x62ea0400,
+> version = 0x0, srcversion = 0x0, holders_dir = 0x62da7400, syms = 0x0, crcs
+> = 0x0, num_syms = 0, kp = 0x0, num_kp = 0, num_gpl_syms = 1,
+> gpl_syms = 0x6385c260, gpl_crcs = 0x0, gpl_future_syms = 0x0,
+> gpl_future_crcs = 0x0, num_gpl_future_syms = 0, num_exentries = 0, extable =
+> 0x0, init = 0x63860000, module_init = 0x0, module_core = 0x6385a000,
+> init_size = 0,
+> core_size = 13990, init_text_size = 0, core_text_size = 8244, init_ro_size =
+> 127, core_ro_size = 11432, arch = {<No data fields>}, taints = 0, num_bugs =
+> 0, bug_list = {next = 0x60376a40, prev = 0x60376a40}, bug_table = 0x0,
+> symtab = 0x6385d120, core_symtab = 0x6385d120, num_symtab = 37,
+> core_num_syms = 37, strtab = 0x6385d498 "", core_strtab = 0x6385d498 "",
+> sect_attrs = 0x62c52000, notes_attrs = 0x62e98240, args = 0x62e95b20 " ",
+> source_list = {
+> next = 0x6385d0e0, prev = 0x6385d0e0}, target_list = {next = 0x6385d0f0,
+> prev = 0x6385d0f0}, waiter = 0x62ea10c0, exit = 0x6385a101, refptr =
+> 0x62176ca0}
+>
+> (gdb) add-symbol-file
+> /home/mark/playground/linux-2.6.39.3/drivers/net/tun.ko 0x6385a000
+> add symbol table from file
+> "/home/mark/playground/linux-2.6.39.3/drivers/net/tun.ko" at
+> .text_addr = 0x6385a000
+> (y or n)
+> Please answer y or n.
+> (y or n) y
+> Reading symbols from
+> /home/mark/playground/linux-2.6.39.3/drivers/net/tun.ko...done.
 
-Currently, if arch code wants to supply seccomp_data directly to
-seccomp (which is generally much faster than having seccomp do it
-using the syscall_get_xyz() API), it has to use the two-phase
-seccomp hooks. Add it to the easy hooks, too.
+Try extracting the addresses from /sys/module/tun/sections/
 
-Cc: linux-arch@vger.kernel.org
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/arm/kernel/ptrace.c              | 2 +-
- arch/arm64/kernel/ptrace.c            | 2 +-
- arch/mips/kernel/ptrace.c             | 2 +-
- arch/parisc/kernel/ptrace.c           | 2 +-
- arch/powerpc/kernel/ptrace.c          | 2 +-
- arch/s390/kernel/ptrace.c             | 2 +-
- arch/tile/kernel/ptrace.c             | 2 +-
- arch/um/kernel/skas/syscall.c         | 2 +-
- arch/x86/entry/vsyscall/vsyscall_64.c | 2 +-
- include/linux/seccomp.h               | 8 ++++----
- kernel/seccomp.c                      | 4 ++--
- 11 files changed, 15 insertions(+), 15 deletions(-)
+> (gdb) p tun_init
+> $3 = {int (void)} 0x24 <tun_init>
+>
+>
+> (gdb) break tun_init
+> Cannot access memory at address 0x24
+>
+>
+>
+> I don't understand why tun_init is located at 0x24 and not at 0x6385a000 ?
+> Can somebody point what I am doing wrong and how to load debug symbols and
+> set breakpoint ?
+>
+>
+> ------------------------------------------------------------------------------
+> Attend Shape: An AT&T Tech Expo July 15-16. Meet us at AT&T Park in San
+> Francisco, CA to explore cutting-edge tech and listen to tech luminaries
+> present their vision of the future. This family event has something for
+> everyone, including kids. Get more information and register today.
+> http://sdm.link/attshape
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
 
-diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
-index ef9119f7462e..ad5e90ab165c 100644
---- a/arch/arm/kernel/ptrace.c
-+++ b/arch/arm/kernel/ptrace.c
-@@ -934,7 +934,7 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs, int scno)
- 
- 	/* Do the secure computing check first; failures should be fast. */
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
--	if (secure_computing() == -1)
-+	if (secure_computing(NULL) == -1)
- 		return -1;
- #else
- 	/* XXX: remove this once OABI gets fixed */
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 3f6cd5c5234f..6e2cf046615d 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1247,7 +1247,7 @@ static void tracehook_report_syscall(struct pt_regs *regs,
- asmlinkage int syscall_trace_enter(struct pt_regs *regs)
- {
- 	/* Do the secure computing check first; failures should be fast. */
--	if (secure_computing() == -1)
-+	if (secure_computing(NULL) == -1)
- 		return -1;
- 
- 	if (test_thread_flag(TIF_SYSCALL_TRACE))
-diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-index 0dcf69194473..c50af846ecf9 100644
---- a/arch/mips/kernel/ptrace.c
-+++ b/arch/mips/kernel/ptrace.c
-@@ -893,7 +893,7 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall)
- 
- 	current_thread_info()->syscall = syscall;
- 
--	if (secure_computing() == -1)
-+	if (secure_computing(NULL) == -1)
- 		return -1;
- 
- 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
-diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
-index b5458b37fc5b..8edc47c0b98e 100644
---- a/arch/parisc/kernel/ptrace.c
-+++ b/arch/parisc/kernel/ptrace.c
-@@ -312,7 +312,7 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
- long do_syscall_trace_enter(struct pt_regs *regs)
- {
- 	/* Do the secure computing check first. */
--	if (secure_computing() == -1)
-+	if (secure_computing(NULL) == -1)
- 		return -1;
- 
- 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
-diff --git a/arch/powerpc/kernel/ptrace.c b/arch/powerpc/kernel/ptrace.c
-index 30a03c03fe73..ed799e994773 100644
---- a/arch/powerpc/kernel/ptrace.c
-+++ b/arch/powerpc/kernel/ptrace.c
-@@ -1783,7 +1783,7 @@ static int do_seccomp(struct pt_regs *regs)
- 	 * have already loaded -ENOSYS into r3, or seccomp has put
- 	 * something else in r3 (via SECCOMP_RET_ERRNO/TRACE).
- 	 */
--	if (__secure_computing())
-+	if (__secure_computing(NULL))
- 		return -1;
- 
- 	/*
-diff --git a/arch/s390/kernel/ptrace.c b/arch/s390/kernel/ptrace.c
-index 49b1c13bf6c9..c238e9958c2a 100644
---- a/arch/s390/kernel/ptrace.c
-+++ b/arch/s390/kernel/ptrace.c
-@@ -824,7 +824,7 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
- 	long ret = 0;
- 
- 	/* Do the secure computing check first. */
--	if (secure_computing()) {
-+	if (secure_computing(NULL)) {
- 		/* seccomp failures shouldn't expose any additional code. */
- 		ret = -1;
- 		goto out;
-diff --git a/arch/tile/kernel/ptrace.c b/arch/tile/kernel/ptrace.c
-index 54e7b723db99..8c6d2f2fefa3 100644
---- a/arch/tile/kernel/ptrace.c
-+++ b/arch/tile/kernel/ptrace.c
-@@ -255,7 +255,7 @@ int do_syscall_trace_enter(struct pt_regs *regs)
- {
- 	u32 work = ACCESS_ONCE(current_thread_info()->flags);
- 
--	if (secure_computing() == -1)
-+	if (secure_computing(NULL) == -1)
- 		return -1;
- 
- 	if (work & _TIF_SYSCALL_TRACE) {
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
-index 48b0dcbd87be..9c5570f0f397 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -21,7 +21,7 @@ void handle_syscall(struct uml_pt_regs *r)
- 	PT_REGS_SET_SYSCALL_RETURN(regs, -ENOSYS);
- 
- 	/* Do the secure computing check first; failures should be fast. */
--	if (secure_computing() == -1)
-+	if (secure_computing(NULL) == -1)
- 		return;
- 
- 	if (syscall_trace_enter(regs))
-diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
-index 174c2549939d..85acde5fa442 100644
---- a/arch/x86/entry/vsyscall/vsyscall_64.c
-+++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-@@ -207,7 +207,7 @@ bool emulate_vsyscall(struct pt_regs *regs, unsigned long address)
- 	 */
- 	regs->orig_ax = syscall_nr;
- 	regs->ax = -ENOSYS;
--	tmp = secure_computing();
-+	tmp = secure_computing(NULL);
- 	if ((!tmp && regs->orig_ax != syscall_nr) || regs->ip != address) {
- 		warn_bad_vsyscall(KERN_DEBUG, regs,
- 				  "seccomp tried to change syscall nr or ip");
-diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-index 2296e6b2f690..9eaa7b34d6da 100644
---- a/include/linux/seccomp.h
-+++ b/include/linux/seccomp.h
-@@ -28,11 +28,11 @@ struct seccomp {
- };
- 
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
--extern int __secure_computing(void);
--static inline int secure_computing(void)
-+extern int __secure_computing(const struct seccomp_data *sd);
-+static inline int secure_computing(const struct seccomp_data *sd)
- {
- 	if (unlikely(test_thread_flag(TIF_SECCOMP)))
--		return  __secure_computing();
-+		return  __secure_computing(sd);
- 	return 0;
- }
- 
-@@ -61,7 +61,7 @@ struct seccomp { };
- struct seccomp_filter { };
- 
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
--static inline int secure_computing(void) { return 0; }
-+static inline int secure_computing(struct seccomp_data *sd) { return 0; }
- #else
- static inline void secure_computing_strict(int this_syscall) { return; }
- #endif
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 7002796f14a4..06816290a212 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -554,9 +554,9 @@ void secure_computing_strict(int this_syscall)
- 		BUG();
- }
- #else
--int __secure_computing(void)
-+int __secure_computing(const struct seccomp_data *sd)
- {
--	u32 phase1_result = seccomp_phase1(NULL);
-+	u32 phase1_result = seccomp_phase1(sd);
- 
- 	if (likely(phase1_result == SECCOMP_PHASE1_OK))
- 		return 0;
+
+
 -- 
-2.7.4
+Thanks,
+//richard
 
-
+------------------------------------------------------------------------------
+Attend Shape: An AT&T Tech Expo July 15-16. Meet us at AT&T Park in San
+Francisco, CA to explore cutting-edge tech and listen to tech luminaries
+present their vision of the future. This family event has something for
+everyone, including kids. Get more information and register today.
+http://sdm.link/attshape
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
