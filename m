@@ -1,70 +1,102 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <theartlav@gmail.com>) id 1bLc0J-0003QK-8n
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Jul 2016 20:04:03 +0000
-Received: from mail-yw0-f174.google.com ([209.85.161.174])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1bLc0H-0003yY-Gg
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 08 Jul 2016 20:04:03 +0000
-Received: by mail-yw0-f174.google.com with SMTP id l125so45389174ywb.2
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 08 Jul 2016 13:04:01 -0700 (PDT)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Subject: [PATCH v1 2/3] um/ptrace: Fix the syscall number update after a ptrace
+Date: Mon, 11 Jul 2016 23:57:01 +0200
+Message-Id: <1468274222-31726-3-git-send-email-mic@digikod.net>
+In-Reply-To: <1468274222-31726-1-git-send-email-mic@digikod.net>
+References: <1468274222-31726-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-From: =?UTF-8?B?0JDRgNGC0ZHQvCDQm9C40YLQstC40L3QvtCy0LjRhw==?=
-	<theartlav@gmail.com>
-Date: Fri, 8 Jul 2016 23:03:55 +0300
-Message-ID: <CAJRVQkAexcnHwnRb+uKgr_RQNdr2s-GVf5x-SjJivSHwx3Kxiw@mail.gmail.com>
-Subject: [uml-devel] ubd is slow. I want to try fixing it
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Kees Cook <keescook@chromium.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Morris <jmorris@namei.org>, Olof Johansson <olof@lixom.net>, user-mode-linux-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Greetings.
+Update the syscall number after earch PTRACE_SETREGS on ORIG_*AX.
 
-Apparently, ubd is too slow for practical use.
-I'm getting 0.8 Mb/s write speed, while hostfs does 25 Mb/s (and on
-the host itself it's similar).
-This is rather frustrating for such a great project as UML is, and i'd
-like to try fixing this.
+This is needed to get the potentially altered syscall number in the
+seccomp filters after RET_TRACE.
 
-So, two questions.
+This fix four seccomp_bpf tests:
+> [ RUN      ] TRACE_syscall.skip_after_RET_TRACE
+> seccomp_bpf.c:1560:TRACE_syscall.skip_after_RET_TRACE:Expected -1 (18446744073709551615) == syscall(39) (26)
+> seccomp_bpf.c:1561:TRACE_syscall.skip_after_RET_TRACE:Expected 1 (1) == (*__errno_location ()) (22)
+> [     FAIL ] TRACE_syscall.skip_after_RET_TRACE
+> [ RUN      ] TRACE_syscall.kill_after_RET_TRACE
+> TRACE_syscall.kill_after_RET_TRACE: Test exited normally instead of by signal (code: 1)
+> [     FAIL ] TRACE_syscall.kill_after_RET_TRACE
+> [ RUN      ] TRACE_syscall.skip_after_ptrace
+> seccomp_bpf.c:1622:TRACE_syscall.skip_after_ptrace:Expected -1 (18446744073709551615) == syscall(39) (26)
+> seccomp_bpf.c:1623:TRACE_syscall.skip_after_ptrace:Expected 1 (1) == (*__errno_location ()) (22)
+> [     FAIL ] TRACE_syscall.skip_after_ptrace
+> [ RUN      ] TRACE_syscall.kill_after_ptrace
+> TRACE_syscall.kill_after_ptrace: Test exited normally instead of by signal (code: 1)
+> [     FAIL ] TRACE_syscall.kill_after_ptrace
 
-First, am i missing something?
-Is it actually normal for ubd to be that slow?
-I looked around, and apparently it is slow due to design. There even
-were some ancient patches to try to fix that.
+Fixes: 26703c636c1f ("um/ptrace: run seccomp after ptrace")
 
-Second, why is this problem hard?
-This was going on for over a decade, and no one made a better version,
-which implies a hard problem.
-I would love to hear from someone who is familiar with how the code
-works, about what the problems are (instead of hitting my head against
-them later).
-Specifically, why use the IO thread?
-Hostfs seem to work just fine with calling the native read/write directly.
+Signed-off-by: Mickaël Salaün <mic@digikod.net>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: James Morris <jmorris@namei.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+---
+ arch/um/kernel/skas/syscall.c | 5 -----
+ arch/x86/um/ptrace_32.c       | 3 +++
+ arch/x86/um/ptrace_64.c       | 4 ++++
+ 3 files changed, 7 insertions(+), 5 deletions(-)
 
-------------------------------------------------------------------------------
-Attend Shape: An AT&T Tech Expo July 15-16. Meet us at AT&T Park in San
-Francisco, CA to explore cutting-edge tech and listen to tech luminaries
-present their vision of the future. This family event has something for
-everyone, including kids. Get more information and register today.
-http://sdm.link/attshape
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
+index 0728fee94398..b783ac87d98a 100644
+--- a/arch/um/kernel/skas/syscall.c
++++ b/arch/um/kernel/skas/syscall.c
+@@ -27,12 +27,7 @@ void handle_syscall(struct uml_pt_regs *r)
+ 	if (secure_computing(NULL) == -1)
+ 		goto out;
+ 
+-	/* Update the syscall number after orig_ax has potentially been updated
+-	 * with ptrace.
+-	 */
+-	UPT_SYSCALL_NR(r) = PT_SYSCALL_NR(r->gp);
+ 	syscall = UPT_SYSCALL_NR(r);
+-
+ 	if (syscall >= 0 && syscall <= __NR_syscall_max)
+ 		PT_REGS_SET_SYSCALL_RETURN(regs,
+ 				EXECUTE_SYSCALL(syscall, regs));
+diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
+index ebd4dd6ef73b..a7ef7b131e25 100644
+--- a/arch/x86/um/ptrace_32.c
++++ b/arch/x86/um/ptrace_32.c
+@@ -84,7 +84,10 @@ int putreg(struct task_struct *child, int regno, unsigned long value)
+ 	case EAX:
+ 	case EIP:
+ 	case UESP:
++		break;
+ 	case ORIG_EAX:
++		/* Update the syscall number. */
++		UPT_SYSCALL_NR(&child->thread.regs.regs) = value;
+ 		break;
+ 	case FS:
+ 		if (value && (value & 3) != 3)
+diff --git a/arch/x86/um/ptrace_64.c b/arch/x86/um/ptrace_64.c
+index faab418876ce..0b5c184dd5b3 100644
+--- a/arch/x86/um/ptrace_64.c
++++ b/arch/x86/um/ptrace_64.c
+@@ -78,7 +78,11 @@ int putreg(struct task_struct *child, int regno, unsigned long value)
+ 	case RSI:
+ 	case RDI:
+ 	case RBP:
++		break;
++
+ 	case ORIG_RAX:
++		/* Update the syscall number. */
++		UPT_SYSCALL_NR(&child->thread.regs.regs) = value;
+ 		break;
+ 
+ 	case FS:
+-- 
+2.8.1
+
 
