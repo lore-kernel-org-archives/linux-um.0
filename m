@@ -1,65 +1,64 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <malattia@linux.it>) id 1bNArI-0000ir-IU
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Jul 2016 03:29:12 +0000
-Received: from picard.linux.it ([213.254.12.146])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1bNAjF-0000nO-Gk
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Jul 2016 03:20:55 +0000
-Received: from taihen.jp (unknown
-	[IPv6:2601:647:4900:7884:5e51:4fff:fe25:f16b])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by picard.linux.it (Postfix) with ESMTPSA id 46B3D3E60B2
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 13 Jul 2016 05:03:01 +0200 (CEST)
-Date: Tue, 12 Jul 2016 20:02:58 -0700
-From: Mattia Dongili <malattia@linux.it>
-Message-ID: <20160713030256.GA26654@taihen.jp>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Subject: [PATCH v1 1/3] um/ptrace: Fix the syscall_trace_leave call
+Date: Mon, 11 Jul 2016 23:57:00 +0200
+Message-Id: <1468274222-31726-2-git-send-email-mic@digikod.net>
+In-Reply-To: <1468274222-31726-1-git-send-email-mic@digikod.net>
+References: <1468274222-31726-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [uml-devel] UML tools anywhere?
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Kees Cook <keescook@chromium.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Morris <jmorris@namei.org>, Olof Johansson <olof@lixom.net>, user-mode-linux-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi,
+Keep the same semantic as before the commit 26703c636c1f: deallocate
+audit context and fake a proper syscall exit.
 
-Does anybody knows if there is any newer version of the tools package
-(the one with tunctl, uml_mount and friends)?
+This fix a kernel panic triggered by the seccomp_bpf test:
+> [ RUN      ] global.ERRNO_valid
+> BUG: failure at kernel/auditsc.c:1504/__audit_syscall_entry()!
+> Kernel panic - not syncing: BUG!
 
-I'm maintaining[1] the package in Debian and I was wondering whether the
-original code is hosted somewhere.
+Fixes: 26703c636c1f ("um/ptrace: run seccomp after ptrace")
 
-Thanks
+Signed-off-by: Mickaël Salaün <mic@digikod.net>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: James Morris <jmorris@namei.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+---
+ arch/um/kernel/skas/syscall.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
+index ef4b8f949b51..0728fee94398 100644
+--- a/arch/um/kernel/skas/syscall.c
++++ b/arch/um/kernel/skas/syscall.c
+@@ -21,11 +21,11 @@ void handle_syscall(struct uml_pt_regs *r)
+ 	PT_REGS_SET_SYSCALL_RETURN(regs, -ENOSYS);
+ 
+ 	if (syscall_trace_enter(regs))
+-		return;
++		goto out;
+ 
+ 	/* Do the seccomp check after ptrace; failures should be fast. */
+ 	if (secure_computing(NULL) == -1)
+-		return;
++		goto out;
+ 
+ 	/* Update the syscall number after orig_ax has potentially been updated
+ 	 * with ptrace.
+@@ -37,5 +37,6 @@ void handle_syscall(struct uml_pt_regs *r)
+ 		PT_REGS_SET_SYSCALL_RETURN(regs,
+ 				EXECUTE_SYSCALL(syscall, regs));
+ 
++out:
+ 	syscall_trace_leave(regs);
+ }
 -- 
-mattia
-:wq!
+2.8.1
 
-[1]: with varying degrees of consistency
-
-------------------------------------------------------------------------------
-What NetFlow Analyzer can do for you? Monitors network bandwidth and traffic
-patterns at an interface-level. Reveals which users, apps, and protocols are 
-consuming the most bandwidth. Provides multi-vendor support for NetFlow, 
-J-Flow, sFlow and other flows. Make informed decisions using capacity planning
-reports.http://sdm.link/zohodev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
