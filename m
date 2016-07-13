@@ -1,25 +1,28 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1bNRR1-0005yz-Dk
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <malattia@linux.it>) id 1bNArI-0000ir-IU
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Jul 2016 21:11:11 +0000
-Received: from mail-oi0-f66.google.com ([209.85.218.66])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1bNRQz-00029e-Ke
+	Wed, 13 Jul 2016 03:29:12 +0000
+Received: from picard.linux.it ([213.254.12.146])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1bNAjF-0000nO-Gk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 13 Jul 2016 21:11:11 +0000
-Received: by mail-oi0-f66.google.com with SMTP id c199so5335812oig.1
+	Wed, 13 Jul 2016 03:20:55 +0000
+Received: from taihen.jp (unknown
+	[IPv6:2601:647:4900:7884:5e51:4fff:fe25:f16b])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by picard.linux.it (Postfix) with ESMTPSA id 46B3D3E60B2
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 13 Jul 2016 14:11:09 -0700 (PDT)
+	Wed, 13 Jul 2016 05:03:01 +0200 (CEST)
+Date: Tue, 12 Jul 2016 20:02:58 -0700
+From: Mattia Dongili <malattia@linux.it>
+Message-ID: <20160713030256.GA26654@taihen.jp>
 MIME-Version: 1.0
-In-Reply-To: <20160713030256.GA26654@taihen.jp>
-References: <20160713030256.GA26654@taihen.jp>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 13 Jul 2016 23:11:03 +0200
-Message-ID: <CAFLxGvyhO87SvLn5ofPMGobT6Y27vA-yzC7KxdVe_h6GPB+6Pg@mail.gmail.com>
-Subject: Re: [uml-devel] UML tools anywhere?
+Content-Disposition: inline
+Subject: [uml-devel] UML tools anywhere?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,31 +35,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Mattia Dongili <malattia@linux.it>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hi!
+Hi,
 
-On Wed, Jul 13, 2016 at 5:02 AM, Mattia Dongili <malattia@linux.it> wrote:
-> Hi,
->
-> Does anybody knows if there is any newer version of the tools package
-> (the one with tunctl, uml_mount and friends)?
->
-> I'm maintaining[1] the package in Debian and I was wondering whether the
-> original code is hosted somewhere.
+Does anybody knows if there is any newer version of the tools package
+(the one with tunctl, uml_mount and friends)?
 
-http://user-mode-linux.sourceforge.net/old/dl-sf.html
+I'm maintaining[1] the package in Debian and I was wondering whether the
+original code is hosted somewhere.
 
-There is no newer version.
-Do you have a list of issues in the current utilities?
-
-Maybe I should take this as chance to convert them to git and make
-a new release.
-
+Thanks
 -- 
-Thanks,
-//richard
+mattia
+:wq!
+
+[1]: with varying degrees of consistency
 
 ------------------------------------------------------------------------------
 What NetFlow Analyzer can do for you? Monitors network bandwidth and traffic
