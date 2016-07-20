@@ -2,22 +2,25 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1bROVt-0004mM-Mz
+	(envelope-from <rrs@researchut.com>) id 1bPw46-0004m0-KM
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Jul 2016 18:52:33 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1bROVs-0006Pd-9n
+	Wed, 20 Jul 2016 18:17:50 +0000
+Received: from mail-pf0-f178.google.com ([209.85.192.178])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1bPw45-00065i-C4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 24 Jul 2016 18:52:33 +0000
+	Wed, 20 Jul 2016 18:17:50 +0000
+Received: by mail-pf0-f178.google.com with SMTP id p64so21512718pfb.1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 20 Jul 2016 11:17:49 -0700 (PDT)
+Message-ID: <1469036869.11733.17.camel@debian.org>
+From: Ritesh Raj Sarraf <rrs@debian.org>
+Date: Wed, 20 Jul 2016 23:17:49 +0530
+In-Reply-To: <578FB74F.8080804@nod.at>
 References: <1469034268.11733.10.camel@debian.org> <578FB74F.8080804@nod.at>
-	<1469036869.11733.17.camel@debian.org>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <57950E67.20100@nod.at>
-Date: Sun, 24 Jul 2016 20:52:23 +0200
-MIME-Version: 1.0
-In-Reply-To: <1469036869.11733.17.camel@debian.org>
+Mime-Version: 1.0
 Subject: Re: [uml-devel] User Mode Linux
+Reply-To: rrs@debian.org
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,70 +30,66 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: rrs@debian.org, jdike@addtoit.com
+To: Richard Weinberger <richard@nod.at>, jdike@addtoit.com
 Cc: Mattia Dongili <malattia@linux.it>, user-mode-linux-devel@lists.sourceforge.net
 
-
-
-Am 20.07.2016 um 19:47 schrieb Ritesh Raj Sarraf:
-> Hello Richard,
-> 
-> On Wed, 2016-07-20 at 19:39 +0200, Richard Weinberger wrote:
->>> The documentation which still is active and useful[1] is marked as "old" on
->> the
->>> website.
->>> The wiki [2] on the other hand, points to a link with no content at all.
->>>  
->>> Could you please share on what the roadmap and future plans for UML are?
-> 
->> Well, I maintain the UML kernel component. That meas I keep it running, fix
->> regressions
->> and try to answer questions from other developers.
->> Since I do this in my spare time there is not much time left for adding new
->> features.
-> 
->> So, my roadmap is "keep it alive" :-)
-> 
-> 
-> Okay! Thanks for the update. I had the same impression and am glad to read that
-> you will continue to maintain it.
-> 
->>> And for the documentation on the old site, do you have it in a Source Markup
->>> Language? What we've used now is a dump of the website from [1]
-> 
->> I don't have such a dump. But I agree that we need to rework the website.
->> It is very, very old.
->> Maybe it is worth adding a UML section to http://kernelnewbies.org/?
-> 
-> IN my opinion, the kernel wiki may be a better option for long term maintenance.
-> https://wiki.kernel.org/
-
-Agreed.
-
-> The main page for wiki points no login link. But once you get into one of the
-> sub wikis, you can see the login link.
-> Take this link for example: https://btrfs.wiki.kernel.org/index.php?title=Specia
-> l:UserLogin&returnto=Main+Page
-> 
-> Maybe you could ask the kernel infra team to create a sub-wiki house for uml ?
-> And then we can all help migrate the content ?
-
-Just sent a request to get a wiki instance. :-)
-
-Thanks,
-//richard
-
-------------------------------------------------------------------------------
-What NetFlow Analyzer can do for you? Monitors network bandwidth and traffic
-patterns at an interface-level. Reveals which users, apps, and protocols are 
-consuming the most bandwidth. Provides multi-vendor support for NetFlow, 
-J-Flow, sFlow and other flows. Make informed decisions using capacity planning
-reports.http://sdm.link/zohodev2dev
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEE1MTIKCkhlbGxvIFJp
+Y2hhcmQsCgpPbiBXZWQsIDIwMTYtMDctMjAgYXQgMTk6MzkgKzAyMDAsIFJpY2hhcmQgV2VpbmJl
+cmdlciB3cm90ZToKPiA+IFRoZSBkb2N1bWVudGF0aW9uIHdoaWNoIHN0aWxsIGlzIGFjdGl2ZSBh
+bmQgdXNlZnVsWzFdIGlzIG1hcmtlZCBhcyAib2xkIiBvbgo+IHRoZQo+ID4gd2Vic2l0ZS4KPiA+
+IFRoZSB3aWtpIFsyXSBvbiB0aGUgb3RoZXIgaGFuZCwgcG9pbnRzIHRvIGEgbGluayB3aXRoIG5v
+IGNvbnRlbnQgYXQgYWxsLgo+ID7CoAo+ID4gQ291bGQgeW91IHBsZWFzZSBzaGFyZSBvbiB3aGF0
+IHRoZSByb2FkbWFwIGFuZCBmdXR1cmUgcGxhbnMgZm9yIFVNTCBhcmU/Cj4gCj4gV2VsbCwgSSBt
+YWludGFpbiB0aGUgVU1MIGtlcm5lbCBjb21wb25lbnQuIFRoYXQgbWVhcyBJIGtlZXAgaXQgcnVu
+bmluZywgZml4Cj4gcmVncmVzc2lvbnMKPiBhbmQgdHJ5IHRvIGFuc3dlciBxdWVzdGlvbnMgZnJv
+bSBvdGhlciBkZXZlbG9wZXJzLgo+IFNpbmNlIEkgZG8gdGhpcyBpbiBteSBzcGFyZSB0aW1lIHRo
+ZXJlIGlzIG5vdCBtdWNoIHRpbWUgbGVmdCBmb3IgYWRkaW5nIG5ldwo+IGZlYXR1cmVzLgo+IAo+
+IFNvLCBteSByb2FkbWFwIGlzICJrZWVwIGl0IGFsaXZlIiA6LSkKPiAKCk9rYXkhIFRoYW5rcyBm
+b3IgdGhlIHVwZGF0ZS4gSSBoYWQgdGhlIHNhbWUgaW1wcmVzc2lvbiBhbmQgYW0gZ2xhZCB0byBy
+ZWFkIHRoYXQKeW91IHdpbGwgY29udGludWUgdG8gbWFpbnRhaW4gaXQuCgo+ID4gQW5kIGZvciB0
+aGUgZG9jdW1lbnRhdGlvbiBvbiB0aGUgb2xkIHNpdGUsIGRvIHlvdSBoYXZlIGl0IGluIGEgU291
+cmNlIE1hcmt1cAo+ID4gTGFuZ3VhZ2U/IFdoYXQgd2UndmUgdXNlZCBub3cgaXMgYSBkdW1wIG9m
+IHRoZSB3ZWJzaXRlIGZyb20gWzFdCj4gCj4gSSBkb24ndCBoYXZlIHN1Y2ggYSBkdW1wLiBCdXQg
+SSBhZ3JlZSB0aGF0IHdlIG5lZWQgdG8gcmV3b3JrIHRoZSB3ZWJzaXRlLgo+IEl0IGlzIHZlcnks
+IHZlcnkgb2xkLgo+IE1heWJlIGl0IGlzIHdvcnRoIGFkZGluZyBhIFVNTCBzZWN0aW9uIHRvIGh0
+dHA6Ly9rZXJuZWxuZXdiaWVzLm9yZy8/CgpJTiBteSBvcGluaW9uLCB0aGUga2VybmVsIHdpa2kg
+bWF5IGJlIGEgYmV0dGVyIG9wdGlvbiBmb3IgbG9uZyB0ZXJtIG1haW50ZW5hbmNlLgpodHRwczov
+L3dpa2kua2VybmVsLm9yZy8KClRoZSBtYWluIHBhZ2UgZm9yIHdpa2kgcG9pbnRzIG5vIGxvZ2lu
+IGxpbmsuIEJ1dCBvbmNlIHlvdSBnZXQgaW50byBvbmUgb2YgdGhlCnN1YiB3aWtpcywgeW91IGNh
+biBzZWUgdGhlIGxvZ2luIGxpbmsuClRha2UgdGhpcyBsaW5rIGZvciBleGFtcGxlOsKgaHR0cHM6
+Ly9idHJmcy53aWtpLmtlcm5lbC5vcmcvaW5kZXgucGhwP3RpdGxlPVNwZWNpYQpsOlVzZXJMb2dp
+biZyZXR1cm50bz1NYWluK1BhZ2UKCk1heWJlIHlvdSBjb3VsZCBhc2sgdGhlIGtlcm5lbCBpbmZy
+YSB0ZWFtIHRvIGNyZWF0ZSBhIHN1Yi13aWtpIGhvdXNlIGZvciB1bWwgPwpBbmQgdGhlbiB3ZSBj
+YW4gYWxsIGhlbHAgbWlncmF0ZSB0aGUgY29udGVudCA/CgoKRm9yIERlYmlhbiwgd2UnbGwga2Vl
+cCB0aGUgZG9jdW1lbnRhdGlvbiBwYWNrYWdlLCBhbmQgdXBkYXRlIHdoZW4gVU1MIHNpdGUgZmlu
+ZHMKYSBuZXcgaG9tZS4KCi0gLS0gClJpdGVzaCBSYWogU2FycmFmIHwgaHR0cDovL3Blb3BsZS5k
+ZWJpYW4ub3JnL35ycnMKRGViaWFuIC0gVGhlIFVuaXZlcnNhbCBPcGVyYXRpbmcgU3lzdGVtCi0t
+LS0tQkVHSU4gUEdQIFNJR05BVFVSRS0tLS0tCgppUUljQkFFQkNnQUdCUUpYajdsRkFBb0pFS1k2
+V0tQeTRYVnA4emNQLzNHakxoRkdmb0s3VGVGNFlwSEg5V29sCjJmSlFRVnZTbGNzMlhEWW9INVVL
+UEpIRG1aTlFuM3NvT09tYW5yUVZDZmo5RjVoTmI1cGY3RFFQM1lSaWQ3c0QKTU1aSzdWOWR5Q09t
+UndPK054elpHSDZMNzQydldOZDFLRHlKQ1BSaTE5TGlWVnZJUmpRaE8zeStNQ3padmU5ZwpMR0lk
+U1lvLzN1bnJpaXRtNmZCT0VkSzFZT3g3MEd6L3RyNklWcnd6Z1dYdlJoSDc2cEdHV3NpbWtpYnhF
+T3c0CkxTWEh6WlV5NU5VZDVSYjNKTVVtK0tDdWdJYWNnbkpkYnVxQTFsQ05YU01CcGNqY2pJT0g5
+QkJuNk1OWmtHNlkKQjdubStYYlVqemMvd2hwVjdpUWtUT3E1c01QeXhqQ05GcVZFdFZod2VYbHdS
+SEFnaHBWOU5jSFZHalVWUVFGegpvNGtId29ZdHRpVC9waGZ6WUR6V09PVGk4WXIwZzNpQlgyVmtL
+TFZZQkFnM2pMY0lUbzZ5U1NCYjJ1ZTFMS1hQCldWRFpaNmx5NG1IZmhTZ2pTZjczMHZFNGhLZlBt
+aTNpWWd6NXVrRVh3cnNwRHkwTFhqRXh4WGhtTGNncXNMYVEKZHh0ZHI3b24rTi9KUk15NzRnUXNh
+c2ZDUjJldlRrYkpzdWxHSzRrM0Q3VGFIaFQ4SGltdUhNY09JT0RPMG9ReApibk9vekhuVDZ4R1dW
+VStCOUZHVjVWdy84aFZhR2xlVktlb3ZMa2d0WS8zclo3cVZDNEFnbkx4TEpHWDIyd2hwClJaZzUr
+ZmFRUWFNWDlJWE9CVDZNZCtzUFpqN25NR1VJcU83eXB6RGw3RmdxVzd4bnRIcmlxU3BJYVVrRDBP
+K2MKNlNpYUhDS0xZREFZU2NIWVllVCsKPUcvVTAKLS0tLS1FTkQgUEdQIFNJR05BVFVSRS0tLS0t
+CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCldoYXQgTmV0RmxvdyBBbmFseXplciBjYW4gZG8gZm9y
+IHlvdT8gTW9uaXRvcnMgbmV0d29yayBiYW5kd2lkdGggYW5kIHRyYWZmaWMKcGF0dGVybnMgYXQg
+YW4gaW50ZXJmYWNlLWxldmVsLiBSZXZlYWxzIHdoaWNoIHVzZXJzLCBhcHBzLCBhbmQgcHJvdG9j
+b2xzIGFyZSAKY29uc3VtaW5nIHRoZSBtb3N0IGJhbmR3aWR0aC4gUHJvdmlkZXMgbXVsdGktdmVu
+ZG9yIHN1cHBvcnQgZm9yIE5ldEZsb3csIApKLUZsb3csIHNGbG93IGFuZCBvdGhlciBmbG93cy4g
+TWFrZSBpbmZvcm1lZCBkZWNpc2lvbnMgdXNpbmcgY2FwYWNpdHkgcGxhbm5pbmcKcmVwb3J0cy5o
+dHRwOi8vc2RtLmxpbmsvem9ob2RldjJkZXYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2Vy
+LW1vZGUtbGludXgtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291
+cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
