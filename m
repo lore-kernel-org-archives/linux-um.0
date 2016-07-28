@@ -1,38 +1,81 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Wed, 13 Jul 2016 13:12:34 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] hostfs: freeing an ERR_PTR in hostfs_fill_sb_common()
-Message-ID: <20160713101234.GG29468@mwanda>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <malattia@linux.it>) id 1bSmMV-00008O-9W
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Jul 2016 14:32:35 +0000
+Received: from picard.linux.it ([213.254.12.146])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1bSmMT-0000Dq-LF
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 28 Jul 2016 14:32:35 +0000
+Date: Thu, 28 Jul 2016 07:32:22 -0700
+From: Mattia Dongili <malattia@linux.it>
+Message-ID: <20160728143220.GA21216@taihen.jp>
+References: <20160713030256.GA26654@taihen.jp>
+	<CAFLxGvyhO87SvLn5ofPMGobT6Y27vA-yzC7KxdVe_h6GPB+6Pg@mail.gmail.com>
+	<20160714030836.GA1538@taihen.jp> <57874E5D.9030906@nod.at>
+	<20160714150731.GB11969@taihen.jp>
+	<20160714151709.GC11969@taihen.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, Al Viro <viro@zeniv.linux.org.uk>
-Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <20160714151709.GC11969@taihen.jp>
+Subject: Re: [uml-devel] UML tools anywhere?
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-We can't pass error pointers to kfree() or it causes an oops.
+On Thu, Jul 14, 2016 at 08:17:09AM -0700, Mattia Dongili wrote:
+> On Thu, Jul 14, 2016 at 08:07:32AM -0700, Mattia Dongili wrote:
+> > On Thu, Jul 14, 2016 at 10:33:33AM +0200, Richard Weinberger wrote:
+> > > 
+> > > 
+> > > Am 14.07.2016 um 05:08 schrieb Mattia Dongili:
+> > ...
+> > > > I can certainly help with that, since I would like to do that work
+> > > > anyway in order to refresh the debian package. If you want to stuff the
+> > > > code in a git repository I can send patches in.
+> > > 
+> > > That would be great!
+> > > 
+> > > Step one would be converting the CVS repo to git:
+> > > http://user-mode-linux.cvs.sourceforge.net/viewvc/user-mode-linux/tools/
+> > > 
+> > > Can you do that?
+> > 
+> > Here's what I got:
+> > https://github.com/malattiad/uml-utilities
+> 
+> This is now:
+> https://github.com/malattia/uml-utilities
+> 
+> > The CVS repo on sourceforge is out of date though, it's missing a good
+> > chunk of code. The last commit is from 2004 or so.
+> > 
+> > If you don't have the remainder of the code history I can import a
+> > single commit with the delta to the latest tarball.
 
-Fixes: 52b209f7b848 ('get rid of hostfs_read_inode()')
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Ping?
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 5c57654..90e46cd 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -959,10 +959,11 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 
- 	if (S_ISLNK(root_inode->i_mode)) {
- 		char *name = follow_link(host_root_path);
--		if (IS_ERR(name))
-+		if (IS_ERR(name)) {
- 			err = PTR_ERR(name);
--		else
--			err = read_name(root_inode, name);
-+			goto out_put;
-+		}
-+		err = read_name(root_inode, name);
- 		kfree(name);
- 		if (err)
- 			goto out_put;
+-- 
+mattia
+:wq!
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
