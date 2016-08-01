@@ -1,58 +1,65 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: Re: [rcu:rcu/next 25/36] include/linux/irqflags.h:79:3: error:
- implicit declaration of function 'arch_irqs_disabled_flags'
-References: <201606060200.kVmeQzvA%fengguang.wu@intel.com>
- <20160614225417.GR3923@linux.vnet.ibm.com> <5760FE41.9060603@nod.at>
- <20160615124532.GW3923@linux.vnet.ibm.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <57A8E79B.7020009@nod.at>
-Date: Mon, 8 Aug 2016 22:12:11 +0200
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+Subject: [PATCH v2 1/3] um/ptrace: Fix the syscall_trace_leave call
+Date: Mon,  1 Aug 2016 23:01:55 +0200
+Message-Id: <1470085317-11932-2-git-send-email-mic@digikod.net>
+In-Reply-To: <1470085317-11932-1-git-send-email-mic@digikod.net>
+References: <alpine.LRH.2.20.1608011053430.15475@namei.org>
+ <1470085317-11932-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-In-Reply-To: <20160615124532.GW3923@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: paulmck@linux.vnet.ibm.com
-Cc: kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org, linux-kernel@vger.kernel.org, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Kees Cook <keescook@chromium.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Morris <jmorris@namei.org>, Olof Johansson <olof@lixom.net>, user-mode-linux-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Paul,
+Keep the same semantic as before the commit 26703c636c1f: deallocate
+audit context and fake a proper syscall exit.
 
-Am 15.06.2016 um 14:45 schrieb Paul E. McKenney:
-> On Wed, Jun 15, 2016 at 09:05:37AM +0200, Richard Weinberger wrote:
->> Paul,
->>
->> Am 15.06.2016 um 00:54 schrieb Paul E. McKenney:
->>> On Mon, Jun 06, 2016 at 02:04:03AM +0800, kbuild test robot wrote:
->>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
->>>> head:   13ee0de9cd2444b57ce30c4f1607b49b90aa0c38
->>>> commit: f251ac814fc5787765009e60d54a2bd4277350c8 [25/36] rcu: Make call_rcu_tasks() tolerate first call with irqs disabled
->>>> config: um-allmodconfig (attached as .config)
->>>> compiler: gcc-6 (Debian 6.1.1-1) 6.1.1 20160430
->>>> reproduce:
->>>>         git checkout f251ac814fc5787765009e60d54a2bd4277350c8
->>>>         # save the attached .config to linux build tree
->>>>         make ARCH=um 
->>>
->>> My kneejerk reaction would be to make CONFIG_TASKS_RCU depend on
->>> !UML or something similar.
->>>
->>> Another approach would be create a arch_irqs_disabled_flags() for UML.
->>>
->>> Any preferences?
->>
->> Patches for arch_irqs_disabled_flags() support are already on LKML:
->> https://lkml.org/lkml/2016/6/12/162
->>
->> My plan was to merge them in the v4.8 merge window.
->> So having CONFIG_TASKS_RCU depend on !UML for now should be fine.
->> We can remove the dependency in v4.8 again.
-> 
-> Sounds very good, thank you!
+This fix a kernel panic triggered by the seccomp_bpf test:
+> [ RUN      ] global.ERRNO_valid
+> BUG: failure at kernel/auditsc.c:1504/__audit_syscall_entry()!
+> Kernel panic - not syncing: BUG!
 
-The patch is now in Linus' tree. So, you can enable CONFIG_TASKS_RCU
-for UML again. :-)
+Fixes: 26703c636c1f ("um/ptrace: run seccomp after ptrace")
 
-Thanks,
-//richard
+Signed-off-by: Mickaël Salaün <mic@digikod.net>
+Acked-by: Kees Cook <keescook@chromium.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: James Morris <jmorris@namei.org>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+---
+ arch/um/kernel/skas/syscall.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
+index ef4b8f949b51..0728fee94398 100644
+--- a/arch/um/kernel/skas/syscall.c
++++ b/arch/um/kernel/skas/syscall.c
+@@ -21,11 +21,11 @@ void handle_syscall(struct uml_pt_regs *r)
+ 	PT_REGS_SET_SYSCALL_RETURN(regs, -ENOSYS);
+ 
+ 	if (syscall_trace_enter(regs))
+-		return;
++		goto out;
+ 
+ 	/* Do the seccomp check after ptrace; failures should be fast. */
+ 	if (secure_computing(NULL) == -1)
+-		return;
++		goto out;
+ 
+ 	/* Update the syscall number after orig_ax has potentially been updated
+ 	 * with ptrace.
+@@ -37,5 +37,6 @@ void handle_syscall(struct uml_pt_regs *r)
+ 		PT_REGS_SET_SYSCALL_RETURN(regs,
+ 				EXECUTE_SYSCALL(syscall, regs));
+ 
++out:
+ 	syscall_trace_leave(regs);
+ }
+-- 
+2.8.1
+
 
