@@ -1,70 +1,61 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 0/5] Define AT_VECTOR_SIZE_ARCH correctly
-Date: Mon, 25 Jul 2016 16:59:49 +0100
-Message-ID: <1469462394-8970-1-git-send-email-james.hogan@imgtec.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Mon, 1 Aug 2016 10:54:06 +1000 (AEST)
+From: James Morris <jmorris@namei.org>
+Subject: Re: [PATCH v1 0/3] Fix seccomp for UM (next)
+In-Reply-To: <CAGXu5j+CODSZa9bZGda2ovwB62y9TkQD8Wqh9KvMrE=SoJxZjg@mail.gmail.com>
+Message-ID: <alpine.LRH.2.20.1608011053430.15475@namei.org>
+References: <1468274222-31726-1-git-send-email-mic@digikod.net> <CAGXu5jLBdhuG1G0xLJk5=XrdT4Vd6ac88_Pz3QKksn5SVPFAxQ@mail.gmail.com> <CAGXu5j+CODSZa9bZGda2ovwB62y9TkQD8Wqh9KvMrE=SoJxZjg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Sender: linux-arch-owner@vger.kernel.org
-To: linux-arch@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Russell King <linux@armlinux.org.uk>, Nathan Lynch <nathan_lynch@mentor.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Chris Metcalf <cmetcalf@mellanox.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-mips@linux-mips.org, linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Content-Type: multipart/mixed; BOUNDARY="1665246916-1153915860-1470012847=:15475"
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kees Cook <keescook@chromium.org>
+Cc: =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>, LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Olof Johansson <olof@lixom.net>, user-mode-linux-devel@lists.sourceforge.net, linux-security-module <linux-security-module@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Several architectures define ARCH_DLINFO to [sometimes] contain
-NEW_AUX_ENT entries, but don't define AT_VECTOR_SIZE_ARCH with the
-corresponding maximum number of NEW_AUX_ENT entries.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-In practice this doesn't cause any problems as AT_VECTOR_SIZE_BASE
-includes space for AT_BASE_PLATFORM which none of these arches use, but
-nevertheless lets define it now and add the comment above ARCH_DLINFO as
-found in several other architectures to remind future modifiers of
-ARCH_DLINFO to keep AT_VECTOR_SIZE_ARCH up to date.
+--1665246916-1153915860-1470012847=:15475
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Arch maintainers, please take via your own trees if you're happy to do
-so.
+On Thu, 28 Jul 2016, Kees Cook wrote:
 
-- I haven't included an update for x86/um as it doesn't follow the same
-  pattern as other architectures so it is unclear to me whether it has
-  the same issue.
+> On Mon, Jul 11, 2016 at 6:59 PM, Kees Cook <keescook@chromium.org> wrote:
+> > On Mon, Jul 11, 2016 at 5:56 PM, Mickaël Salaün <mic@digikod.net> wrote:
+> >> Hi,
+> >>
+> >> This series fix the recent seccomp update for the User-mode Linux architecture
+> >> (32-bit and 64-bit) since commit 26703c636c1f3272b39bd0f6d04d2e970984f1b6
+> >> (close the hole where ptrace can change a syscall out from under seccomp).
+> >>
+> >> Regards,
+> >>
+> >> Mickaël Salaün (3):
+> >>   um/ptrace: Fix the syscall_trace_leave call
+> >>   um/ptrace: Fix the syscall number update after a ptrace
+> >>   seccomp: Remove 2-phase API documentation
+> >>
+> >>  arch/Kconfig                  | 11 -----------
+> >>  arch/um/kernel/skas/syscall.c | 10 +++-------
+> >>  arch/x86/um/ptrace_32.c       |  3 +++
+> >>  arch/x86/um/ptrace_64.c       |  4 ++++
+> >>  4 files changed, 10 insertions(+), 18 deletions(-)
+> >
+> > Ah, perfect! Thanks for fixing this! James, can you pick this up for -next?
+> >
+> > Acked-by: Kees Cook <keescook@chromium.org>
+> 
+> James, can you take these fixes for v4.8? We'll need them for um to
+> work correctly again. (They appear to still be missing from -next.)
+> 
 
-- Build tested on MIPS, ARM & tile.
+I'm pretty sure I don't have these patches, can you or the author send 
+them to me?
 
-- Tested on MIPS.
-
-James Hogan (5):
-  MIPS: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-  ARM: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-  arm64: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-  s390: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-  tile: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-
- arch/arm/include/asm/elf.h           | 1 +
- arch/arm/include/uapi/asm/auxvec.h   | 2 ++
- arch/arm64/include/asm/elf.h         | 1 +
- arch/arm64/include/uapi/asm/auxvec.h | 2 ++
- arch/mips/include/asm/elf.h          | 1 +
- arch/mips/include/uapi/asm/auxvec.h  | 2 ++
- arch/s390/include/asm/elf.h          | 1 +
- arch/s390/include/uapi/asm/auxvec.h  | 2 ++
- arch/tile/include/asm/elf.h          | 1 +
- arch/tile/include/uapi/asm/auxvec.h  | 2 ++
- 10 files changed, 15 insertions(+)
-
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Nathan Lynch <nathan_lynch@mentor.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Chris Metcalf <cmetcalf@mellanox.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mips@linux-mips.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-s390@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net
 -- 
-2.4.10
+James Morris
+<jmorris@namei.org>
+
+--1665246916-1153915860-1470012847=:15475--
 
