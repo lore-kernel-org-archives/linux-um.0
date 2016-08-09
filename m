@@ -1,65 +1,47 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Subject: [PATCH v2 1/3] um/ptrace: Fix the syscall_trace_leave call
-Date: Mon,  1 Aug 2016 23:01:55 +0200
-Message-Id: <1470085317-11932-2-git-send-email-mic@digikod.net>
+Date: Tue, 9 Aug 2016 10:35:28 +1000 (AEST)
+From: James Morris <jmorris@namei.org>
+Subject: Re: [PATCH v2 0/3] Fix seccomp for UM (next)
 In-Reply-To: <1470085317-11932-1-git-send-email-mic@digikod.net>
-References: <alpine.LRH.2.20.1608011053430.15475@namei.org>
- <1470085317-11932-1-git-send-email-mic@digikod.net>
+Message-ID: <alpine.LRH.2.20.1608091035060.31071@namei.org>
+References: <alpine.LRH.2.20.1608011053430.15475@namei.org> <1470085317-11932-1-git-send-email-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; BOUNDARY="1665246916-938110433-1470702928=:31071"
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Kees Cook <keescook@chromium.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Morris <jmorris@namei.org>, Olof Johansson <olof@lixom.net>, user-mode-linux-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org
+To: =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Olof Johansson <olof@lixom.net>, user-mode-linux-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Keep the same semantic as before the commit 26703c636c1f: deallocate
-audit context and fake a proper syscall exit.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This fix a kernel panic triggered by the seccomp_bpf test:
-> [ RUN      ] global.ERRNO_valid
-> BUG: failure at kernel/auditsc.c:1504/__audit_syscall_entry()!
-> Kernel panic - not syncing: BUG!
+--1665246916-938110433-1470702928=:31071
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Fixes: 26703c636c1f ("um/ptrace: run seccomp after ptrace")
+On Mon, 1 Aug 2016, Mickaël Salaün wrote:
 
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Acked-by: Kees Cook <keescook@chromium.org>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: James Morris <jmorris@namei.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
----
- arch/um/kernel/skas/syscall.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> Hi,
+> 
+> This series fix the recent seccomp update for the User-mode Linux architecture
+> (32-bit and 64-bit) since commit 26703c636c1f ("um/ptrace: run seccomp after
+> ptrace") which close the hole where ptrace can change a syscall out from under
+> seccomp.
+> 
+> Changes since v1:
+> * fix commit message typo [2/3]
+> * add Kees Cook's Acked-by
+> * rebased on commit 7616ac70d1bb ("apparmor: fix SECURITY_APPARMOR_HASH_DEFAULT
+>   parameter handling")
 
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
-index ef4b8f949b51..0728fee94398 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -21,11 +21,11 @@ void handle_syscall(struct uml_pt_regs *r)
- 	PT_REGS_SET_SYSCALL_RETURN(regs, -ENOSYS);
- 
- 	if (syscall_trace_enter(regs))
--		return;
-+		goto out;
- 
- 	/* Do the seccomp check after ptrace; failures should be fast. */
- 	if (secure_computing(NULL) == -1)
--		return;
-+		goto out;
- 
- 	/* Update the syscall number after orig_ax has potentially been updated
- 	 * with ptrace.
-@@ -37,5 +37,6 @@ void handle_syscall(struct uml_pt_regs *r)
- 		PT_REGS_SET_SYSCALL_RETURN(regs,
- 				EXECUTE_SYSCALL(syscall, regs));
- 
-+out:
- 	syscall_trace_leave(regs);
- }
+All applied to
+git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git next
+
+
+
 -- 
-2.8.1
+James Morris
+<jmorris@namei.org>
 
+--1665246916-938110433-1470702928=:31071--
 
