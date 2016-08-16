@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jdike@addtoit.com>) id 1ba4US-00030R-1I
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <malattia@linux.it>) id 1bZeoN-0004Nu-Om
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Aug 2016 17:18:56 +0000
-Received: from u16576595.onlinehome-server.com ([74.208.238.6]
-	helo=euler.addtoit.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ba4UR-0003Z0-9V for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 17 Aug 2016 17:18:56 +0000
-Date: Wed, 17 Aug 2016 13:02:25 -0400
-From: Jeff Dike <jdike@addtoit.com>
-Message-ID: <20160817170225.GA9261@parts.user-mode-linux.org>
+	Tue, 16 Aug 2016 13:53:47 +0000
+Received: from picard.linux.it ([213.254.12.146])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1bZeoL-00031m-SZ
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 16 Aug 2016 13:53:47 +0000
+Date: Tue, 16 Aug 2016 06:53:34 -0700
+From: Mattia Dongili <malattia@linux.it>
+Message-ID: <20160816135333.GB29050@taihen.jp>
 References: <20160713030256.GA26654@taihen.jp>
 	<CAFLxGvyhO87SvLn5ofPMGobT6Y27vA-yzC7KxdVe_h6GPB+6Pg@mail.gmail.com>
 	<20160714030836.GA1538@taihen.jp> <57874E5D.9030906@nod.at>
@@ -37,24 +37,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Richard Weinberger <richard@nod.at>
-Cc: Mattia Dongili <malattia@linux.it>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Jeff Dike <jdike@addtoit.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Hi Richard,
-
+On Mon, Aug 15, 2016 at 10:01:11PM +0200, Richard Weinberger wrote:
+> On 28.07.2016 16:32, Mattia Dongili wrote:
+> >> This is now:
+> >> https://github.com/malattia/uml-utilities
+> >>
+> >>> The CVS repo on sourceforge is out of date though, it's missing a good
+> >>> chunk of code. The last commit is from 2004 or so.
+> >>>
+> >>> If you don't have the remainder of the code history I can import a
+> >>> single commit with the delta to the latest tarball.
+> 
+> Sorry for the late answer.
+> First of all, thanks a lot for the CVS import!
+> Yes, please apply the last tarball.
+> 
 > But let's ask Jeff first.
 > Jeff, do you have a more recent SCM repo of uml-utilities?
+> 
+> Another question is future maintenance of the utilities.
+> I'm more than busy with all my other projects and therefore
+> I'd love to have somebody else to take care of uml-utilities.
+> Mattia, do you volunteer? :-)
 
-No, I don't believe so.  Everything I have is out there somewhere.
-You might check with Matt Zimmerman - he might have been doing some
-maintenance on them.
+Sure, sounds good to me.
+For now I'd use this mailing list for coordination, not sure a different
+one makes much sense.
 
-				Jeff
+The code can stay on github for now, unless someone has a different
+preference.
 
 -- 
-Jeff Dike
-AddToIt
-978-254-0789 (o)
-978-394-8986 (c)
+mattia
+:wq!
 
 ------------------------------------------------------------------------------
 _______________________________________________
