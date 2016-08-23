@@ -1,24 +1,32 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rrs@researchut.com>) id 1bPvCJ-0002TY-LT
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1bcJRX-00021g-Et
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Jul 2016 17:22:15 +0000
-Received: from mail-pa0-f68.google.com ([209.85.220.68])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1bPvCF-0008Ba-B9
+	Tue, 23 Aug 2016 21:41:11 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1bcJRW-0003wS-8q
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 20 Jul 2016 17:22:15 +0000
-Received: by mail-pa0-f68.google.com with SMTP id q2so3662569pap.0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 20 Jul 2016 10:22:11 -0700 (PDT)
-Message-ID: <1469034268.11733.10.camel@debian.org>
-From: Ritesh Raj Sarraf <rrs@debian.org>
-Date: Wed, 20 Jul 2016 22:34:28 +0530
-Mime-Version: 1.0
-Subject: [uml-devel] User Mode Linux
-Reply-To: rrs@debian.org
+	Tue, 23 Aug 2016 21:41:11 +0000
+References: <CAFLxGvzB=WGNEdNJVvPpQLpwCqT6oNcvEQnyT2xk0Jv2L3FBaA@mail.gmail.com>
+	<1471446611-16250-1-git-send-email-aryabinin@virtuozzo.com>
+	<CACT4Y+bEnGV0X1MeGvdZM1VWqr25f61GyVqRKvQO46UGpE0VhA@mail.gmail.com>
+	<995ff767-9220-f9c8-c052-2b717cc7e91d@virtuozzo.com>
+	<CACT4Y+bMvLrg_PBrGYPok3j8Y90m2FNzTY9-LuRNNGR_3FgifA@mail.gmail.com>
+	<627a7126-87e6-0a89-19c5-612c5fb9d18f@virtuozzo.com>
+	<e9536af2-7e69-8a53-96d0-7a7a92dbea31@nod.at>
+	<3bc79e3a-9604-3d61-fc68-443d8d8a70b6@virtuozzo.com>
+	<CACT4Y+a+MagkN-sWkiVjYdRrvfnYmB8ewYsDBU-PcAD0FzQtdA@mail.gmail.com>
+	<7ebc07c8-83fd-f5f7-4f80-f53f44ae4c55@nod.at>
+	<496b07cd-2737-e828-3568-f319b9681386@virtuozzo.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <e3c5367b-0225-915a-31dd-67ab15160de7@nod.at>
+Date: Tue, 23 Aug 2016 23:40:51 +0200
+MIME-Version: 1.0
+In-Reply-To: <496b07cd-2737-e828-3568-f319b9681386@virtuozzo.com>
+Subject: Re: [uml-devel] [PATCH] UML: don't discard .text.exit section
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -28,51 +36,27 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com, richard@nod.at
-Cc: Mattia Dongili <malattia@linux.it>, user-mode-linux-devel@lists.sourceforge.net
+To: Andrey Ryabinin <aryabinin@virtuozzo.com>, Dmitry Vyukov <dvyukov@google.com>
+Cc: stable <stable@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEE1MTIKCkhlbGxvIEpl
-ZmYsIFJpY2hhcmQgYW5kIHRoZSBVTUwgVGVhbS4KCk1lIGFuZCBNYXR0aWEgYXJlIG1haW50YWlu
-ZXJzIGZvciBVTUwgaW4gdGhlIERlYmlhbiBEaXN0cmlidXRpb24uCgpSZWNlbnRseSwgZHVyaW5n
-IGEgcmVmcmVzaCBvZiB0aGUgcGFja2FnZSwgd2UgcmVhbGl6ZWQgdGhhdCB0aGUgVXNlciBNb2Rl
-IExpbnV4CndlYnNpdGUsIHdoaWNoIGhvc3RzIHVzZWZ1bCBkb2N1bWVudGF0aW9uLCBkb2Vzbid0
-IHNlZW0gdG8gaGF2ZSBiZWVuIHVwZGF0ZWQgaW4KeWVhcnMuCgpUaGUgZG9jdW1lbnRhdGlvbiB3
-aGljaCBzdGlsbCBpcyBhY3RpdmUgYW5kIHVzZWZ1bFsxXSBpcyBtYXJrZWQgYXMgIm9sZCIgb24g
-dGhlCndlYnNpdGUuClRoZSB3aWtpIFsyXSBvbiB0aGUgb3RoZXIgaGFuZCwgcG9pbnRzIHRvIGEg
-bGluayB3aXRoIG5vIGNvbnRlbnQgYXQgYWxsLgoKQ291bGQgeW91IHBsZWFzZSBzaGFyZSBvbiB3
-aGF0IHRoZSByb2FkbWFwIGFuZCBmdXR1cmUgcGxhbnMgZm9yIFVNTCBhcmU/CkFuZCBmb3IgdGhl
-IGRvY3VtZW50YXRpb24gb24gdGhlIG9sZCBzaXRlLCBkbyB5b3UgaGF2ZSBpdCBpbiBhIFNvdXJj
-ZSBNYXJrdXAKTGFuZ3VhZ2U/IFdoYXQgd2UndmUgdXNlZCBub3cgaXMgYSBkdW1wIG9mIHRoZSB3
-ZWJzaXRlIGZyb20gWzFdCgpbMV3CoGh0dHA6Ly91c2VyLW1vZGUtbGludXguc291cmNlZm9yZ2Uu
-bmV0L29sZC8KWzJdwqBodHRwOi8vdW1sLmhhcmxvd2hpbGwuY29tLwoKLSAtLSAKUml0ZXNoIFJh
-aiBTYXJyYWYgfCBodHRwOi8vcGVvcGxlLmRlYmlhbi5vcmcvfnJycwpEZWJpYW4gLSBUaGUgVW5p
-dmVyc2FsIE9wZXJhdGluZyBTeXN0ZW0KLS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0KCmlR
-SWNCQUVCQ2dBR0JRSlhqNjhkQUFvSkVLWTZXS1B5NFhWcERFTVFBSnV6SlZUOXoyS01MWWwrNjlS
-U2Uxd0wKVkhiclQyM1RQVkV1SUJNRlB4cGlsU2JKY1RHQWc5WEEvV0ovaCt4T056QVExNHJLQnNv
-SkZBdlBHa1pISkhzZgphTlNYTlU0ZkkyRUVQTm9ZQ29jWm5Rd2J1UmVlSTR1cDhCbklYOUt4dVNP
-bU9KaXJia0M4OFlHOUVmbW1walNHCk5tOG5KRlpkWGE4cHNYejd6ZnhIMUJaeU1UV0R3YXFmS2Z4
-dndRbXJBNHMwRmpVWThwTC8yZ2dFZ2dMUnNDbFIKOGx6eHN2enMxWnQvMSt3b3N0R1lDcVhSZlFC
-S2Z5SEJVbHJCQnNJMkdoeGpFbmRaSFFUa3hSOGlXQ1N6ZkFaZwpteWRrejF1RUR5bWUzT3ArclNP
-eVJnTzlEVGxOZG5jek05LzZyTDZaczRDRUR5eTBYb3drMEJaQlRWMEJkM0J3ClU1V3ZqZ0VFbnl2
-R3NtdlN5WTB3ajdBK0ZkUldubFJKckNhblJsUFNMYzFpdUpBZ2ViRERSeUw3cW1WSWFXOVoKSkpy
-T2dIK05MbzdZZXI3eHBPbjdlc0NodTdHancxa082SUZzRDl4cU1Wc0N5NUJ5UE1QcXBEcmZMNVNG
-aE1QbwpDeWNPYWxNdXBUalQ0clJSOW9jTUY3WGViQ0xJSXhBVDBSdnd2bXlrNGdiWXJ5WlpsVDZw
-S0RUZTlYem1IZ0NOCkVNczl0OGt4bGUwaFNEVCt6MkZFOXc1LzZiNmNZYkFBTFJlMzA1bi9YeThH
-bUd3QTFiWi94SkM3NjFKQitUbEcKeHE1amw5NFQ5cmhxUVg5ZXBxdVZHbWdqOGU5TFRhbW0wZXBI
-MWhYNnlxLzRqNlJYSzFKa09TZUJxUCtXdEFONwo3NExBdHNXM05QOGc2emFneC9rYgo9Z2lZVQot
-LS0tLUVORCBQR1AgU0lHTkFUVVJFLS0tLS0KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KV2hhdCBO
-ZXRGbG93IEFuYWx5emVyIGNhbiBkbyBmb3IgeW91PyBNb25pdG9ycyBuZXR3b3JrIGJhbmR3aWR0
-aCBhbmQgdHJhZmZpYwpwYXR0ZXJucyBhdCBhbiBpbnRlcmZhY2UtbGV2ZWwuIFJldmVhbHMgd2hp
-Y2ggdXNlcnMsIGFwcHMsIGFuZCBwcm90b2NvbHMgYXJlIApjb25zdW1pbmcgdGhlIG1vc3QgYmFu
-ZHdpZHRoLiBQcm92aWRlcyBtdWx0aS12ZW5kb3Igc3VwcG9ydCBmb3IgTmV0RmxvdywgCkotRmxv
-dywgc0Zsb3cgYW5kIG90aGVyIGZsb3dzLiBNYWtlIGluZm9ybWVkIGRlY2lzaW9ucyB1c2luZyBj
-YXBhY2l0eSBwbGFubmluZwpyZXBvcnRzLmh0dHA6Ly9zZG0ubGluay96b2hvZGV2MmRldgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGlu
-dXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNl
-ci1tb2RlLWxpbnV4LWRldmVsCg==
+On 23.08.2016 11:59, Andrey Ryabinin wrote:
+>> Andrey, shall I carry this patch through the UML tree or
+>> do you have something else in mind?
+>>
+> 
+> Take it in the UML tree please.
+
+Ok! Applied to -next.
+
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
