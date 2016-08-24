@@ -1,103 +1,64 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-Subject: [PATCH v2 2/3] um/ptrace: Fix the syscall number update after a ptrace
-Date: Mon,  1 Aug 2016 23:01:56 +0200
-Message-Id: <1470085317-11932-3-git-send-email-mic@digikod.net>
-In-Reply-To: <1470085317-11932-1-git-send-email-mic@digikod.net>
-References: <alpine.LRH.2.20.1608011053430.15475@namei.org>
- <1470085317-11932-1-git-send-email-mic@digikod.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1bceJE-0007TF-TK
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Aug 2016 19:58:00 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1bceJD-00053Q-LD
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 24 Aug 2016 19:58:00 +0000
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <27d788f7-ebf9-f131-a316-f5999fad9a8f@nod.at>
+Date: Wed, 24 Aug 2016 21:57:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>, Kees Cook <keescook@chromium.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Morris <jmorris@namei.org>, Olof Johansson <olof@lixom.net>, user-mode-linux-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Subject: [uml-devel] [GIT PULL] UML fixes for 4.8-rc4
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Update the syscall number after each PTRACE_SETREGS on ORIG_*AX.
+Linus,
 
-This is needed to get the potentially altered syscall number in the
-seccomp filters after RET_TRACE.
+The following changes since commit 7a1dcf6adaa7cc4b8cd93a3883267497a77b1051:
 
-This fix four seccomp_bpf tests:
-> [ RUN      ] TRACE_syscall.skip_after_RET_TRACE
-> seccomp_bpf.c:1560:TRACE_syscall.skip_after_RET_TRACE:Expected -1 (18446744073709551615) == syscall(39) (26)
-> seccomp_bpf.c:1561:TRACE_syscall.skip_after_RET_TRACE:Expected 1 (1) == (*__errno_location ()) (22)
-> [     FAIL ] TRACE_syscall.skip_after_RET_TRACE
-> [ RUN      ] TRACE_syscall.kill_after_RET_TRACE
-> TRACE_syscall.kill_after_RET_TRACE: Test exited normally instead of by signal (code: 1)
-> [     FAIL ] TRACE_syscall.kill_after_RET_TRACE
-> [ RUN      ] TRACE_syscall.skip_after_ptrace
-> seccomp_bpf.c:1622:TRACE_syscall.skip_after_ptrace:Expected -1 (18446744073709551615) == syscall(39) (26)
-> seccomp_bpf.c:1623:TRACE_syscall.skip_after_ptrace:Expected 1 (1) == (*__errno_location ()) (22)
-> [     FAIL ] TRACE_syscall.skip_after_ptrace
-> [ RUN      ] TRACE_syscall.kill_after_ptrace
-> TRACE_syscall.kill_after_ptrace: Test exited normally instead of by signal (code: 1)
-> [     FAIL ] TRACE_syscall.kill_after_ptrace
+  Merge tag 'usercopy-v4.8-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux (2016-08-23 14:32:38 -0400)
 
-Fixes: 26703c636c1f ("um/ptrace: run seccomp after ptrace")
+are available in the git repository at:
 
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Acked-by: Kees Cook <keescook@chromium.org>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: James Morris <jmorris@namei.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net
----
- arch/um/kernel/skas/syscall.c | 5 -----
- arch/x86/um/ptrace_32.c       | 3 +++
- arch/x86/um/ptrace_64.c       | 4 ++++
- 3 files changed, 7 insertions(+), 5 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.8-rc4
 
-diff --git a/arch/um/kernel/skas/syscall.c b/arch/um/kernel/skas/syscall.c
-index 0728fee94398..b783ac87d98a 100644
---- a/arch/um/kernel/skas/syscall.c
-+++ b/arch/um/kernel/skas/syscall.c
-@@ -27,12 +27,7 @@ void handle_syscall(struct uml_pt_regs *r)
- 	if (secure_computing(NULL) == -1)
- 		goto out;
- 
--	/* Update the syscall number after orig_ax has potentially been updated
--	 * with ptrace.
--	 */
--	UPT_SYSCALL_NR(r) = PT_SYSCALL_NR(r->gp);
- 	syscall = UPT_SYSCALL_NR(r);
--
- 	if (syscall >= 0 && syscall <= __NR_syscall_max)
- 		PT_REGS_SET_SYSCALL_RETURN(regs,
- 				EXECUTE_SYSCALL(syscall, regs));
-diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
-index ebd4dd6ef73b..a7ef7b131e25 100644
---- a/arch/x86/um/ptrace_32.c
-+++ b/arch/x86/um/ptrace_32.c
-@@ -84,7 +84,10 @@ int putreg(struct task_struct *child, int regno, unsigned long value)
- 	case EAX:
- 	case EIP:
- 	case UESP:
-+		break;
- 	case ORIG_EAX:
-+		/* Update the syscall number. */
-+		UPT_SYSCALL_NR(&child->thread.regs.regs) = value;
- 		break;
- 	case FS:
- 		if (value && (value & 3) != 3)
-diff --git a/arch/x86/um/ptrace_64.c b/arch/x86/um/ptrace_64.c
-index faab418876ce..0b5c184dd5b3 100644
---- a/arch/x86/um/ptrace_64.c
-+++ b/arch/x86/um/ptrace_64.c
-@@ -78,7 +78,11 @@ int putreg(struct task_struct *child, int regno, unsigned long value)
- 	case RSI:
- 	case RDI:
- 	case RBP:
-+		break;
-+
- 	case ORIG_RAX:
-+		/* Update the syscall number. */
-+		UPT_SYSCALL_NR(&child->thread.regs.regs) = value;
- 		break;
- 
- 	case FS:
--- 
-2.8.1
+for you to fetch changes up to dad2232844073295c64e9cc2d734a0ade043e0f6:
 
+  um: Don't discard .text.exit section (2016-08-23 23:16:16 +0200)
+
+----------------------------------------------------------------
+This pull request contains a fix for a build regression
+introduced during the merge window.
+
+----------------------------------------------------------------
+
+Andrey Ryabinin (1):
+      um: Don't discard .text.exit section
+
+ arch/um/include/asm/common.lds.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
