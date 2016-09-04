@@ -1,18 +1,18 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <malattia@linux.it>) id 1bgOGL-0002Iv-2a
+	(envelope-from <malattia@linux.it>) id 1bgO6H-0001qE-1X
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 04 Sep 2016 03:38:29 +0000
+	Sun, 04 Sep 2016 03:28:05 +0000
 Received: from picard.linux.it ([213.254.12.146])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1bgOGK-0004Cl-0p
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1bgO6F-0003Ts-Bi
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 04 Sep 2016 03:38:29 +0000
-Date: Sat, 3 Sep 2016 20:38:15 -0700
+	Sun, 04 Sep 2016 03:28:05 +0000
+Date: Sat, 3 Sep 2016 20:27:51 -0700
 From: Mattia Dongili <malattia@linux.it>
-Message-ID: <20160904033812.GB8364@taihen.jp>
+Message-ID: <20160904032750.GA8364@taihen.jp>
 References: <20160713030256.GA26654@taihen.jp>
 	<CAFLxGvyhO87SvLn5ofPMGobT6Y27vA-yzC7KxdVe_h6GPB+6Pg@mail.gmail.com>
 	<20160714030836.GA1538@taihen.jp> <57874E5D.9030906@nod.at>
@@ -20,11 +20,10 @@ References: <20160713030256.GA26654@taihen.jp>
 	<20160714151709.GC11969@taihen.jp>
 	<20160728143220.GA21216@taihen.jp>
 	<a335d8cf-dc4a-09f6-cbf1-93657f6c9530@nod.at>
-	<20160817170225.GA9261@parts.user-mode-linux.org>
-	<4fc897e7-bbc9-1594-faa8-f8cc0918ea2d@landley.net>
+	<20160816135333.GB29050@taihen.jp>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <4fc897e7-bbc9-1594-faa8-f8cc0918ea2d@landley.net>
+In-Reply-To: <20160816135333.GB29050@taihen.jp>
 Subject: Re: [uml-devel] UML tools anywhere?
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -38,29 +37,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Rob Landley <rob@landley.net>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+To: Richard Weinberger <richard@nod.at>
+Cc: Jeff Dike <jdike@addtoit.com>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On Fri, Aug 26, 2016 at 02:35:55PM -0500, Rob Landley wrote:
-> On 08/17/2016 12:02 PM, Jeff Dike wrote:
-> > Hi Richard,
-> > 
-> >> But let's ask Jeff first.
-> >> Jeff, do you have a more recent SCM repo of uml-utilities?
-> > 
-> > No, I don't believe so.  Everything I have is out there somewhere.
-> > You might check with Matt Zimmerman - he might have been doing some
-> > maintenance on them.
-> > 
-> > 				Jeff
+On Tue, Aug 16, 2016 at 06:53:34AM -0700, Mattia Dongili wrote:
+> On Mon, Aug 15, 2016 at 10:01:11PM +0200, Richard Weinberger wrote:
+...
+> > Mattia, do you volunteer? :-)
 > 
-> With this reminder, I added a quick and dirty tunctl to toybox (since I
-> used it in http://landley.net/lxc/02-networking.html with kvm a while
-> back). I see busybox already has one. I'm reading the kernel tuntap
-> documentation file to see how to add tap support.
+> Sure, sounds good to me.
 
-I think it's just a matter of a different flag (IFF_TAP instead of
-IFF_TUN) to the ioctl.
+For the record, I'll follow-up soon. I'm waiting for approval from my
+employer to make sure there is no conflict with what I'm doing.
+I don't think there will be any problem, but it's a formality that I
+need to get through (and it's taking a bit longer than I expected...).
 
 -- 
 mattia
