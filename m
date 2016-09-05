@@ -1,65 +1,102 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v6 1/6] x86/arch_prctl/64: Use SYSCALL_DEFINE2 to define sys_arch_prctl
-Date: Mon, 26 Sep 2016 14:53:13 -0700
-Message-Id: <20160926215318.9587-2-khuey@kylehuey.com>
-In-Reply-To: <20160926215318.9587-1-khuey@kylehuey.com>
-References: <20160926215318.9587-1-khuey@kylehuey.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Dave Hansen <dave.hansen@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Len Brown <len.brown@intel.com>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rrs@researchut.com>) id 1bgvVE-0003DR-EY
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Sep 2016 15:08:04 +0000
+Received: from mail-pf0-f172.google.com ([209.85.192.172])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1bgvVC-0003UI-87
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Mon, 05 Sep 2016 15:08:04 +0000
+Received: by mail-pf0-f172.google.com with SMTP id w87so7439209pfk.2
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Mon, 05 Sep 2016 08:08:02 -0700 (PDT)
+Message-ID: <1473088072.10346.11.camel@researchut.com>
+From: Ritesh Raj Sarraf <rrs@researchut.com>
+Date: Mon, 05 Sep 2016 20:37:52 +0530
+In-Reply-To: <1473081950.10346.10.camel@researchut.com>
+References: <1473081950.10346.10.camel@researchut.com>
+Mime-Version: 1.0
+Subject: Re: [uml-devel] UML build failure on 4.7
+Reply-To: rrs@researchut.com
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Mattia Dongili <malattia@linux.it>
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
----
- arch/x86/kernel/process_64.c | 3 ++-
- arch/x86/um/syscalls_64.c    | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 63236d8..4d6363c 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -35,6 +35,7 @@
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <linux/ftrace.h>
-+#include <linux/syscalls.h>
- 
- #include <asm/pgtable.h>
- #include <asm/processor.h>
-@@ -585,7 +586,7 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
- 	return ret;
- }
- 
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
- {
- 	return do_arch_prctl(current, code, addr);
- }
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index e655227..ab3f7f4 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/sched.h>
-+#include <linux/syscalls.h>
- #include <linux/uaccess.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
-@@ -72,7 +73,7 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- 	return ret;
- }
- 
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
- {
- 	return arch_prctl(current, code, (unsigned long __user *) addr);
- }
--- 
-2.9.3
-
-base-commit: 08895a8b6b06ed2323cd97a36ee40a116b3db8ed
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEE1MTIKCkRpc2FibGlu
+ZyBkcml2ZXJzL252ZGltbSAoc2VlbiBvbmx5IG9uIHg4Nl82NCBhcmNoaXRlY3R1cmUpIHNvbHZl
+ZCB0aGUgcHJvYmxlbS4KCk9uIE1vbiwgMjAxNi0wOS0wNSBhdCAxODo1NSArMDUzMCwgUml0ZXNo
+IFJhaiBTYXJyYWYgd3JvdGU6Cj4gSGksCj4gCj4gSSdtIHdvcmtpbmcgb24gcmVmcmVzaGluZyBV
+TUwgdG8gdmVyc2lvbiA0LjcgaW4gRGViaWFuLgo+IAo+IFRoZSBsaW51eCBzb3VyY2UgdGFyYmFs
+bCB3ZSB1c2UgaXMgZnJvbSBEZWJpYW4sIHdoaWNoIGlzIG1vc3RseSB0aGUgc3RvY2sKPiBrZXJu
+ZWwuCj4gCj4gVGhlIGJ1aWxkIGZhaWx1cmUgSSd2ZSBydW4gaW50byBpczoKPiAKPiDCoCBDQyBb
+TV3CoMKgbGliL3RzX2ZzbS5vCj4gwqAgQ0MgW01dwqDCoGxpYi9scnVfY2FjaGUubwo+IMKgIEND
+IFtNXcKgwqBsaWIvY29yZGljLm8KPiDCoCBDQyBbTV3CoMKgbGliL2FzbjFfZGVjb2Rlci5vCj4g
+wqAgR0VOwqDCoMKgwqDCoGxpYi9vaWRfcmVnaXN0cnlfZGF0YS5jCj4gwqAgQ0MgW01dwqDCoGxp
+Yi9vaWRfcmVnaXN0cnkubwo+IMKgIExEwqDCoMKgwqDCoMKgdmlydC9saWIvYnVpbHQtaW4ubwo+
+IMKgIExEwqDCoMKgwqDCoMKgdmlydC9idWlsdC1pbi5vCj4gwqAgTElOS8KgwqDCoMKgdm1saW51
+eAo+IMKgIExEwqDCoMKgwqDCoMKgdm1saW51eC5vCj4gwqAgTU9EUE9TVCB2bWxpbnV4Lm8KPiDC
+oCBHRU7CoMKgwqDCoMKgLnZlcnNpb24KPiDCoCBDSEvCoMKgwqDCoMKgaW5jbHVkZS9nZW5lcmF0
+ZWQvY29tcGlsZS5oCj4gwqAgVVBEwqDCoMKgwqDCoGluY2x1ZGUvZ2VuZXJhdGVkL2NvbXBpbGUu
+aAo+IMKgIENDwqDCoMKgwqDCoMKgaW5pdC92ZXJzaW9uLm8KPiDCoCBMRMKgwqDCoMKgwqDCoGlu
+aXQvYnVpbHQtaW4ubwo+IMKgIEtTWU3CoMKgwqDCoC50bXBfa2FsbHN5bXMxLm8KPiDCoCBLU1lN
+wqDCoMKgwqAudG1wX2thbGxzeW1zMi5vCj4gwqAgTETCoMKgwqDCoMKgwqB2bWxpbnV4Cj4gwqAg
+U1lTTUFQwqDCoFN5c3RlbS5tYXAKPiDCoCBMSU5LIGxpbnV4Cj4gwqAgQnVpbGRpbmcgbW9kdWxl
+cywgc3RhZ2UgMi4KPiDCoCBNT0RQT1NUIDkwNiBtb2R1bGVzCj4gRVJST1I6ICJkZXZtX21lbXVu
+bWFwIiBbZHJpdmVycy9udmRpbW0vbGlibnZkaW1tLmtvXSB1bmRlZmluZWQhCj4gRVJST1I6ICJk
+ZXZtX21lbXJlbWFwIiBbZHJpdmVycy9udmRpbW0vbGlibnZkaW1tLmtvXSB1bmRlZmluZWQhCj4g
+c2NyaXB0cy9NYWtlZmlsZS5tb2Rwb3N0OjkxOiByZWNpcGUgZm9yIHRhcmdldCAnX19tb2Rwb3N0
+JyBmYWlsZWQKPiBtYWtlWzJdOiAqKiogW19fbW9kcG9zdF0gRXJyb3IgMQo+IE1ha2VmaWxlOjEx
+ODY6IHJlY2lwZSBmb3IgdGFyZ2V0ICdtb2R1bGVzJyBmYWlsZWQKPiBtYWtlWzFdOiAqKiogW21v
+ZHVsZXNdIEVycm9yIDIKPiBtYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSAnL2J1aWxkL3VzZXIt
+bW9kZS1saW51eC00LjctMXVtL2xpbnV4LXNvdXJjZS00LjcnCj4gZGViaWFuL3J1bGVzOjczOiBy
+ZWNpcGUgZm9yIHRhcmdldCAnYnVpbGQtc3RhbXAnIGZhaWxlZAo+IG1ha2U6ICoqKiBbYnVpbGQt
+c3RhbXBdIEVycm9yIDIKPiBkcGtnLWJ1aWxkcGFja2FnZTogZXJyb3I6IGRlYmlhbi9ydWxlcyBi
+dWlsZCBnYXZlIGVycm9yIGV4aXQgc3RhdHVzIDIKPiBJOiBjb3B5aW5nIGxvY2FsIGNvbmZpZ3Vy
+YXRpb24KPiBXOiBObyBsb2NhbCAvZXRjL3Jlc29sdi5jb25mIHRvIGNvcHksIHJlbHlpbmcgb24g
+L3Zhci90bXAvRGViaWFuLQo+IEJ1aWxkL0J1aWxkLy85NDE5L2V0Yy9yZXNvbHYuY29uZiB0byBi
+ZSBjb3JyZWN0Cj4gRTogRmFpbGVkIGF1dG9idWlsZGluZyBvZiBwYWNrYWdlCj4gVzogbm8gaG9v
+a3Mgb2YgdHlwZSBDIGZvdW5kIC0tIGlnbm9yaW5nCj4gSTogdW5tb3VudGluZyAvdmFyL3RtcC9s
+eGMvY2NhY2hlL2NjYWNoZSBmaWxlc3lzdGVtCj4gSTogdW5tb3VudGluZyAvdmFyL2NhY2hlL2Fw
+dC9hcmNoaXZlcy8gZmlsZXN5c3RlbQo+IEk6IHVubW91bnRpbmcgZGV2L3B0cyBmaWxlc3lzdGVt
+Cj4gSTogdW5tb3VudGluZyBydW4vc2htIGZpbGVzeXN0ZW0KPiBJOiB1bm1vdW50aW5nIHByb2Mg
+ZmlsZXN5c3RlbQo+IEk6IHVubW91bnRpbmcgc3lzIGZpbGVzeXN0ZW0KPiBJOiBjbGVhbmluZyB0
+aGUgYnVpbGQgZW52wqAKPiBJOiByZW1vdmluZyBkaXJlY3RvcnkgL3Zhci90bXAvRGViaWFuLUJ1
+aWxkL0J1aWxkLy85NDE5IGFuZCBpdHMgc3ViZGlyZWN0b3JpZXMKPiAKPiAKPiBUaGUgc2FtZSAu
+Y29uZmlnIGJ1aWxkcyBmaW5lIGZvciA0LjYuIEhhdmUgb3RoZXJzIGJlZW4gYWJsZSB0byBidWls
+ZCBhIDQuNyB1bQo+IGtlcm5lbCA/Cj4gCj4gCi0gLS0gClJpdGVzaCBSYWogU2FycmFmClJFU0VB
+UkNIVVQgLSBodHRwOi8vd3d3LnJlc2VhcmNodXQuY29tCiJOZWNlc3NpdHkgaXMgdGhlIG1vdGhl
+ciBvZiBpbnZlbnRpb24uIgotLS0tLUJFR0lOIFBHUCBTSUdOQVRVUkUtLS0tLQoKaVFJY0JBRUJD
+Z0FHQlFKWHpZcElBQW9KRUtZNldLUHk0WFZwU1FZUUFLRkQ0bHRSU0FFY3Y4bk9PcXFYaTh2bQpX
+NlFGcDRmN1FENnhlaEo4NHlPSnZPYWVZRzc1bDAvSzE2RGFRd2ZEaU9RVDFzRTRGU0RWWjZTSkdi
+dk5oS0trCmRtUlVGenVNQWxpL0xOSmFtVkFmU25Ic21QaTMzVWZBUGNPQjI4ci83Y0t3SDFqRUhC
+b0JnUDdDNTVWdlZJcncKL3IzZEFKSmlyRDQ0N2RqNmZrTjZxTlRsQmh1dU5JWWZxNjhBR0JTbUsz
+M2VOVU1vSWdPdGN5b3EwRDJHa3Z6cgpWY0RqMnpzMzZqejNnYlNYTGRKV3hjdHo0TGk1VE9zdy9F
+VzIxcjYrdGJkb2dmN2RaMW9rdm03K2R3RFdRV3JDClUvcWI0TTQzQ2xZdUwxUVU0TmpuZ3lLOXN1
+UGRhTkJqbE1UQTYzVG51Y1ZpMHVVeHJKbHphOU5FcmJScVkzMysKNFlETVpTRVpmOVdPVGZOTWRL
+M3BBVDJoeXJFdHpXUCtzdUNnMnU1SUtVWnUvNmZlYTdzT0s3dGh5Q0ZNREJQVgpnT2lCRk9HcEth
+RmlrRFZGOGI3ZmhlUXNTdmVzaTJqMzhTVFl2QlY0UkJDekt1TnNSZEFIWkJRSDJzWWR4aS8wClBm
+bXhTd3k4alRzY2h3YWF6M05XWVdnSlVlSDIwUVlTVVpGZ3FyaE5Cc0lUdWQrQ1hLSkRDcEhReThl
+cGJsczMKYUpBZlVkWnFCZVFtdzd0SkFkVWtnS21HZ3kvQjh1RjNKbzhzMUNnMTlRdmJHVkZ5Q2JJ
+SzJTT1ZhRDR3NVZGUgpybllsZkN4UEZ6cldxY2ZIcmlUUm12VlJkRkdhNHgzTmZvcjREb2NETmxy
+Y3BuTzdTMGo4YTVkZlZjZmxaTmdjCllHd0FUUXAyWlBUdW9nV0pmQ1dPCj1hY2FyCi0tLS0tRU5E
+IFBHUCBTSUdOQVRVUkUtLS0tLQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwg
+bWFpbGluZyBsaXN0ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxp
+bnV4LWRldmVsCg==
 
