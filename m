@@ -1,128 +1,98 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v5 4/6] x86/syscalls/32 Wire up arch_prctl on x86-32
-Date: Wed, 21 Sep 2016 11:58:22 -0700
-Message-Id: <20160921185824.18980-5-khuey@kylehuey.com>
-In-Reply-To: <20160921185824.18980-1-khuey@kylehuey.com>
-References: <20160921185824.18980-1-khuey@kylehuey.com>
+Subject: Re: [PATCH v2 0/3] Fix seccomp for UM
+References: <alpine.LRH.2.20.1608011053430.15475@namei.org>
+ <1470085317-11932-1-git-send-email-mic@digikod.net>
+ <alpine.LRH.2.20.1608091035060.31071@namei.org>
+From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <57CF27B7.6080205@digikod.net>
+Date: Tue, 6 Sep 2016 22:31:51 +0200
+MIME-Version: 1.0
+In-Reply-To: <alpine.LRH.2.20.1608091035060.31071@namei.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="jNaFJrnkAXAjnHH8HXB6xuUEof4v4usEc"
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Dave Hansen <dave.hansen@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Len Brown <len.brown@intel.com>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+To: James Morris <jmorris@namei.org>
+Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Olof Johansson <olof@lixom.net>, user-mode-linux-devel@lists.sourceforge.net, linux-security-module@vger.kernel.org, Mimi Zohar <zohar@linux.vnet.ibm.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hook up arch_prctl to call do_arch_prctl on x86-32, and in 32 bit compat
-mode on x86-64. This allows us to have arch_prctls that are not specific to
-64 bits.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jNaFJrnkAXAjnHH8HXB6xuUEof4v4usEc
+Content-Type: multipart/mixed; boundary="I3cWF13jOJk8iI2qdGIWuKuxQ9pciH7u8";
+ protected-headers="v1"
+From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+To: James Morris <jmorris@namei.org>
+Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+ Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+ Olof Johansson <olof@lixom.net>,
+ user-mode-linux-devel@lists.sourceforge.net,
+ linux-security-module@vger.kernel.org, Mimi Zohar <zohar@linux.vnet.ibm.com>
+Message-ID: <57CF27B7.6080205@digikod.net>
+Subject: Re: [PATCH v2 0/3] Fix seccomp for UM
+References: <alpine.LRH.2.20.1608011053430.15475@namei.org>
+ <1470085317-11932-1-git-send-email-mic@digikod.net>
+ <alpine.LRH.2.20.1608091035060.31071@namei.org>
+In-Reply-To: <alpine.LRH.2.20.1608091035060.31071@namei.org>
 
-On UML, simply stub out this syscall.
+--I3cWF13jOJk8iI2qdGIWuKuxQ9pciH7u8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
----
- arch/x86/entry/syscalls/syscall_32.tbl | 1 +
- arch/x86/kernel/process_32.c           | 7 +++++++
- arch/x86/kernel/process_64.c           | 7 +++++++
- arch/x86/um/Makefile                   | 2 +-
- arch/x86/um/syscalls_32.c              | 7 +++++++
- include/linux/compat.h                 | 2 ++
- 6 files changed, 25 insertions(+), 1 deletion(-)
- create mode 100644 arch/x86/um/syscalls_32.c
+Hi,
 
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index f848572..300fdf8 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -386,3 +386,4 @@
- 377	i386	copy_file_range		sys_copy_file_range
- 378	i386	preadv2			sys_preadv2			compat_sys_preadv2
- 379	i386	pwritev2		sys_pwritev2			compat_sys_pwritev2
-+380	i386	arch_prctl		sys_arch_prctl			compat_sys_arch_prctl
-diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
-index d86be29..71770a4 100644
---- a/arch/x86/kernel/process_32.c
-+++ b/arch/x86/kernel/process_32.c
-@@ -35,6 +35,7 @@
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <linux/kdebug.h>
-+#include <linux/syscalls.h>
- 
- #include <asm/pgtable.h>
- #include <asm/ldt.h>
-@@ -54,6 +55,7 @@
- #include <asm/debugreg.h>
- #include <asm/switch_to.h>
- #include <asm/vm86.h>
-+#include <asm/proto.h>
- 
- asmlinkage void ret_from_fork(void) __asm__("ret_from_fork");
- asmlinkage void ret_from_kernel_thread(void) __asm__("ret_from_kernel_thread");
-@@ -316,3 +318,8 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
- 
- 	return prev_p;
- }
-+
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
-+{
-+	return do_arch_prctl(current, code, arg2);
-+}
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 5c60e2c..aa2b99a 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -599,6 +599,13 @@ SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
- 	return ret;
- }
- 
-+#ifdef CONFIG_IA32_EMULATION
-+COMPAT_SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
-+{
-+	return do_arch_prctl(current, code, arg2);
-+}
-+#endif
-+
- unsigned long KSTK_ESP(struct task_struct *task)
- {
- 	return task_pt_regs(task)->sp;
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 3ee2bb6..5e039d6 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -16,7 +16,7 @@ obj-y = bug.o bugs_$(BITS).o delay.o fault.o ksyms.o ldt.o \
- 
- ifeq ($(CONFIG_X86_32),y)
- 
--obj-y += checksum_32.o
-+obj-y += checksum_32.o syscalls_32.o
- obj-$(CONFIG_ELF_CORE) += elfcore.o
- 
- subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
-diff --git a/arch/x86/um/syscalls_32.c b/arch/x86/um/syscalls_32.c
-new file mode 100644
-index 0000000..ccf0598
---- /dev/null
-+++ b/arch/x86/um/syscalls_32.c
-@@ -0,0 +1,7 @@
-+#include <linux/syscalls.h>
-+#include <os.h>
-+
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
-+{
-+	return -EINVAL;
-+}
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index f964ef7..0039d53 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -722,6 +722,8 @@ asmlinkage long compat_sys_sched_rr_get_interval(compat_pid_t pid,
- asmlinkage long compat_sys_fanotify_mark(int, unsigned int, __u32, __u32,
- 					    int, const char __user *);
- 
-+asmlinkage long compat_sys_arch_prctl(int, unsigned long);
-+
- /*
-  * For most but not all architectures, "am I in a compat syscall?" and
-  * "am I a compat task?" are the same question.  For architectures on which
--- 
-2.9.3
+It seems that some of the fixes from linux-security have landed in the
+Linus' tree but some seccomp fixes are still missing. They fix bugs
+introduced in Linux v4.8 and are still present in v4.8-rc5. Could you
+please push this series before the final 4.8 release?
 
+Regards,
+ Micka=C3=ABl
+
+On 09/08/2016 02:35, James Morris wrote:
+> On Mon, 1 Aug 2016, Micka=C3=ABl Sala=C3=BCn wrote:
+>=20
+>> Hi,
+>>
+>> This series fix the recent seccomp update for the User-mode Linux arch=
+itecture
+>> (32-bit and 64-bit) since commit 26703c636c1f ("um/ptrace: run seccomp=
+ after
+>> ptrace") which close the hole where ptrace can change a syscall out fr=
+om under
+>> seccomp.
+>>
+>> Changes since v1:
+>> * fix commit message typo [2/3]
+>> * add Kees Cook's Acked-by
+>> * rebased on commit 7616ac70d1bb ("apparmor: fix SECURITY_APPARMOR_HAS=
+H_DEFAULT
+>>   parameter handling")
+>=20
+> All applied to
+> git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.gi=
+t next
+>=20
+>=20
+>=20
+
+
+--I3cWF13jOJk8iI2qdGIWuKuxQ9pciH7u8--
+
+--jNaFJrnkAXAjnHH8HXB6xuUEof4v4usEc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEcBAEBCgAGBQJXzye8AAoJECLe/t9zvWqVkKcIAITIvIbvrhaxam9PJVV0wRqH
+ONzkvlB7W72QW9PDOByC8PCjBtkp5woDNDR+93JClSVVK+NcJHT3/AQLIEGwpYvY
+h8WefCUXiQFwoQKZo6QnFvJ5dXwVTMmVNXxxD/UqOsy3G2r+fa9j9C0QpHzaxlyt
+bY2HeuWRQSXlgGXlyW3gTIvpNQ3gjHQUjhKn71No9NihrbqDEYiK04nztOOX8rRo
+lFnFLO5pnri/ywPY8DJ7RqBTu37gi/JZihZJ5YFJKxPGVZa6s7hY5Y59GJWkB9SF
+qgrq5zI1tf2/+98F+sEnsSYHuNCARQ+UokzbmVceZSw+y3OUubSPxQ8BEEcO4bw=
+=uPI6
+-----END PGP SIGNATURE-----
+
+--jNaFJrnkAXAjnHH8HXB6xuUEof4v4usEc--
 
