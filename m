@@ -1,72 +1,90 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v5 3/6] x86/arch_prctl Add a new do_arch_prctl
-Date: Wed, 21 Sep 2016 11:58:21 -0700
-Message-Id: <20160921185824.18980-4-khuey@kylehuey.com>
-In-Reply-To: <20160921185824.18980-1-khuey@kylehuey.com>
-References: <20160921185824.18980-1-khuey@kylehuey.com>
+Subject: Re: Unable to boot linux-next build
+References: <20160909083134.999-1-lambert.quentin@gmail.com>
+From: Quentin Lambert <lambert.quentin@gmail.com>
+Message-ID: <26c842c8-3c0a-d857-d11f-d334b96965d7@gmail.com>
+Date: Sun, 11 Sep 2016 20:00:08 +0200
+MIME-Version: 1.0
+In-Reply-To: <20160909083134.999-1-lambert.quentin@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Dave Hansen <dave.hansen@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Len Brown <len.brown@intel.com>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>, Al Viro <viro@zeniv.linux.org.uk>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Add a new do_arch_prctl to handle arch_prctls that are not specific to 64
-bits. Call it from the syscall entry point, but not any of the other
-callsites in the kernel, which all want one of the existing 64 bit only
-arch_prctls.
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
----
- arch/x86/include/asm/proto.h | 1 +
- arch/x86/kernel/process.c    | 5 +++++
- arch/x86/kernel/process_64.c | 8 +++++++-
- 3 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index 95c3e51..94a57cc 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -30,6 +30,7 @@ void x86_report_nx(void);
- 
- extern int reboot_force;
- 
-+long do_arch_prctl(struct task_struct *task, int code, unsigned long arg2);
- #ifdef CONFIG_X86_64
- long do_arch_prctl_64(struct task_struct *task, int code, unsigned long arg2);
- #endif
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 62c0b0e..97aa104 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -567,3 +567,8 @@ unsigned long get_wchan(struct task_struct *p)
- 	} while (count++ < 16 && p->state != TASK_RUNNING);
- 	return 0;
- }
-+
-+long do_arch_prctl(struct task_struct *task, int code, unsigned long arg2)
-+{
-+	return -EINVAL;
-+}
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 292ce48..5c60e2c 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -590,7 +590,13 @@ long do_arch_prctl_64(struct task_struct *task, int code, unsigned long arg2)
- 
- SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
- {
--	return do_arch_prctl_64(current, code, arg2);
-+	long ret;
-+
-+	ret = do_arch_prctl_64(current, code, arg2);
-+	if (ret == -EINVAL)
-+		ret = do_arch_prctl(current, code, arg2);
-+
-+	return ret;
- }
- 
- unsigned long KSTK_ESP(struct task_struct *task)
--- 
-2.9.3
+On 09/09/2016 10:31, Quentin Lambert wrote:
+>   I have been trying to build and boot the last version available on linux-next.
+>   During the build I am being prompted with "has no CRC!" warnings for a bunch
+>   of modules.
+>
+>   Has a result I get the following lines in the Module.symvers:
+>
+>   [qlambert@sloth linux-next]$ grep 0x00000 Module.symvers
+>   0x00000000	phys_base	vmlinux	EXPORT_SYMBOL
+>   0x00000000	memmove	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__copy_user_nocache	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__get_user_4	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__put_user_4	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__memcpy	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__fentry__	vmlinux	EXPORT_SYMBOL
+>   0x00000000	memset	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__sw_hweight64	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__sw_hweight32	vmlinux	EXPORT_SYMBOL
+>   0x00000000	memcpy_mcsafe_unrolled	vmlinux	EXPORT_SYMBOL_GPL
+>   0x00000000	memcpy	vmlinux	EXPORT_SYMBOL
+>   0x00000000	copy_user_enhanced_fast_string	vmlinux	EXPORT_SYMBOL
+>   0x00000000	clear_page	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__put_user_2	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__get_user_2	vmlinux	EXPORT_SYMBOL
+>   0x00000000	copy_page	vmlinux	EXPORT_SYMBOL
+>   0x00000000	copy_user_generic_string	vmlinux	EXPORT_SYMBOL
+>   0x00000000	_copy_to_user	vmlinux	EXPORT_SYMBOL
+>   0x00000000	___preempt_schedule	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__memmove	vmlinux	EXPORT_SYMBOL
+>   0x00000000	empty_zero_page	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__get_user_8	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__put_user_8	vmlinux	EXPORT_SYMBOL
+>   0x00000000	_copy_from_user	vmlinux	EXPORT_SYMBOL
+>   0x00000000	native_load_gs_index	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__memset	vmlinux	EXPORT_SYMBOL
+>   0x00000000	___preempt_schedule_notrace	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__put_user_1	vmlinux	EXPORT_SYMBOL
+>   0x00000000	__get_user_1	vmlinux	EXPORT_SYMBOL
+>   0x00000000	copy_user_generic_unrolled	vmlinux	EXPORT_SYMBOL
+>
+>   If I ignore these and go on to boot the resulting kernel. I am left with:
+>
+>   ERROR: Unable to find root device 'UUID=<omitted>'
+>
+>   I am then dropped to a recovery shell where the keyboard is not answering.
+>
+>   The UUID is valid and is the same being used when I boot the HEAD of the linux
+>   tree. In fact, I am sending this message from the same machine, running
+>   that very kernel.
+>   Prior to failing to find the root device, the kernel prints a series of
+>   messages for each of the above symbol:
+>
+>   scsi_mod: no symbol version for <foo>
+>   scsi_mod: Unknown symbol <foo> (err -22)
+>
+>   Therefore, I suspect that the missing CRC messages are linked to the issue.
+>
+>   I have git bisected this behavior to the patch 784d5699edd.
+>
+>   Simply reverting this patch results in different issues.
+>   The errors I am having due to no CRC are fixed but I receive another error at
+>   boot time:
+>   failed command: WRITE LOG DMA EXT
+>
+>   I mostly asking for help as to what to do next.
+>   Could someone point me toward documentation that would help me understand and
+>   fix this issue?
+I just wanted to add that I tried to compile the kernel on a different 
+machine and I received
+the same warnings and error messages.
+They both run Archlinux, so this may be a factor.
 
+Quentin
 
