@@ -1,65 +1,69 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.20.1609160847420.5384@nanos>
+References: <20160915233324.6060-1-khuey@kylehuey.com> <20160915233324.6060-2-khuey@kylehuey.com>
+ <alpine.DEB.2.20.1609160847420.5384@nanos>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v5 1/6] x86/arch_prctl/64 Use SYSCALL_DEFINE2 to define sys_arch_prctl
-Date: Wed, 21 Sep 2016 11:58:19 -0700
-Message-Id: <20160921185824.18980-2-khuey@kylehuey.com>
-In-Reply-To: <20160921185824.18980-1-khuey@kylehuey.com>
-References: <20160921185824.18980-1-khuey@kylehuey.com>
+Date: Fri, 16 Sep 2016 08:56:30 -0700
+Message-ID: <CAP045Apgof1bfricjo7oONYh1VmCKki4mmYUGOzn15wu+NasXw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] syscalls,x86 Expose arch_prctl on x86-32.
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Dave Hansen <dave.hansen@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Len Brown <len.brown@intel.com>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Robert O'Callahan <robert@ocallahan.org>, open list <linux-kernel@vger.kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@amacapital.net>, Dmitry Safonov <0x7f454c46@gmail.com>, Borislav Petkov <bp@suse.de>, Linux API <linux-api@vger.kernel.org>, "moderated list:XEN HYPERVISOR INTERFACE" <xen-devel@lists.xenproject.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Al Viro <viro@zeniv.linux.org.uk>, David Howells <dhowells@redhat.com>, Anna Schumaker <Anna.Schumaker@netapp.com>, Andy Lutomirski <luto@kernel.org>, Zach Brown <zab@redhat.com>, Eric B Munson <emunson@akamai.com>, "Dmitry V. Levin" <ldv@altlinux.org>, Peter Zijlstra <peterz@infradead.org>, Paul Gortmaker <paul.gortmaker@windriver.com>, Jiri Slaby <jslaby@suse.cz>, Andrey Ryabinin <aryabinin@virtuozzo.com>, "Michael S. Tsirkin" <mst@redhat.com>, Borislav Petkov <bp@alien8.de>, Dmitry Vyukov <dvyukov@google.com>, Jan Beulich <JBeulich@suse.com>, Mateusz Guzik <mguzik@redhat.com>, Chuck Ebbert <cebbert.lkml@gmail.com>, Oleg Nesterov <oleg@redhat.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, "chengang@emindsoft.com.cn" <chengang@emindsoft.com.cn>, Jeff Moyer <jmoyer@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Jiri Kosina <jkosina@suse.cz>, Milosz Tanski <milosz@adfin.com>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
----
- arch/x86/kernel/process_64.c | 3 ++-
- arch/x86/um/syscalls_64.c    | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+On Fri, Sep 16, 2016 at 12:50 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
+> On Thu, 15 Sep 2016, Kyle Huey wrote:
+>
+> First of all, please add a cover letter [PATCH 0/N] to your patch series
+> and send it with something which provides proper mail threading.
+> See: git-send-email, quilt
 
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 63236d8..4d6363c 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -35,6 +35,7 @@
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <linux/ftrace.h>
-+#include <linux/syscalls.h>
- 
- #include <asm/pgtable.h>
- #include <asm/processor.h>
-@@ -585,7 +586,7 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
- 	return ret;
- }
- 
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
- {
- 	return do_arch_prctl(current, code, addr);
- }
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index e655227..ab3f7f4 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -6,6 +6,7 @@
-  */
- 
- #include <linux/sched.h>
-+#include <linux/syscalls.h>
- #include <linux/uaccess.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
-@@ -72,7 +73,7 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- 	return ret;
- }
- 
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
- {
- 	return arch_prctl(current, code, (unsigned long __user *) addr);
- }
--- 
-2.9.3
+I did ... seems like using git-send-email with
+--cc-cmd=scripts/get_maintainer.pl is not a good idea since people get
+CCd to some parts of the thread and not others.
 
-base-commit: 7d1e042314619115153a0f6f06e4552c09a50e13
+https://lkml.org/lkml/2016/9/15/811
+
+>> arch_prctl is currently 64-bit only. Wire it up for 32-bits, as a no-op for
+>> now. Rename the second arg to a more generic name.
+>
+> This changelog is useless.
+>
+> - it does not provide any rationale for this change, i.e. why this is
+>   required. Just because its 64bit only is not a reason.
+>
+> - "Rename the second arg to a more generic name" does not give
+>   any useful information.
+>
+> Misleading information is worse than no information.
+>
+> Further your patch does 5 things at once. It wants to be split into parts:
+>
+> 1) Rename do_arch_prctl() and change the argument name,
+>
+>> -long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
+>> +long do_arch_prctl_64(struct task_struct *task, int code, unsigned long arg2)
+>
+> 2) Provide do_arch_prctl_common() and hook it up to the arch_prctl syscall
+>
+>> -long sys_arch_prctl(int code, unsigned long addr)
+>> +SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
+>>  {
+>> -     return do_arch_prctl(current, code, addr);
+>> +     long ret;
+>> +
+>> +     ret = do_arch_prctl_64(current, code, arg2);
+>> +     if (ret == -EINVAL)
+>> +             ret = do_arch_prctl_common(current, code, arg2);
+>> +
+>> +     return ret;
+>>  }
+>
+> 3) Implement the compat version
+
+Ok.
+
+- Kyle
 
