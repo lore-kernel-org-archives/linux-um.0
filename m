@@ -1,516 +1,235 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v5 6/6] x86/arch_prctl Add ARCH_[GET|SET]_CPUID
-Date: Wed, 21 Sep 2016 11:58:24 -0700
-Message-Id: <20160921185824.18980-7-khuey@kylehuey.com>
-In-Reply-To: <20160921185824.18980-1-khuey@kylehuey.com>
-References: <20160921185824.18980-1-khuey@kylehuey.com>
+From: Daniel Walter <dwalter@sigma-star.at>
+Subject: [PATCH v2 29/46] um: Add nandsim backend driver
+Date: Wed, 21 Sep 2016 11:54:07 +0200
+Message-Id: <55a100c5b7151b3d73eae1b811b260e9164fa4e3.1474450296.git.dwalter@sigma-star.at>
+In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
+References: <cover.1474450295.git.dwalter@sigma-star.at>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Dave Hansen <dave.hansen@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Len Brown <len.brown@intel.com>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, richard@nod.at
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Intel supports faulting on the CPUID instruction beginning with Ivy Bridge.
-When enabled, the processor will fault on attempts to execute the CPUID
-instruction with CPL>0. Exposing this feature to userspace will allow a
-ptracer to trap and emulate the CPUID instruction.
+From: Richard Weinberger <richard@nod.at>
 
-When supported, this feature is controlled by toggling bit 0 of
-MSR_MISC_FEATURES_ENABLES. It is documented in detail in Section 2.3.2 of
-http://www.intel.com/content/dam/www/public/us/en/documents/application-notes/virtualization-technology-flexmigration-application-note.pdf
+Add a small UML driver to act as nandsim backend.
+This allows us to use the nandsim MTD as root device
+and boot from it.
+e.g. ./linux mem=512M unand.backing_file=/home/rw/work/ubifs/mtd4.raw \
+ unand.id_bytes=0x1c,0xd3,0x90,0xa6 unand.no_oob=y nandsim.defaults=n \
+ ubi.mtd=0 rootfstype=ubifs root=ubi0:rootfs
 
-Implement a new pair of arch_prctls, available on both x86-32 and x86-64.
-
-ARCH_GET_CPUID: Returns the current CPUID faulting state, either
-  ARCH_CPUID_ENABLE or ARCH_CPUID_SIGSEGV. arg2 must be 0.
-
-ARCH_SET_CPUID: Set the CPUID faulting state to arg2, which must be either
-  ARCH_CPUID_ENABLE or ARCH_CPUID_SIGSEGV. Returns EINVAL if arg2 is
-  another value or CPUID faulting is not supported on this system.
-
-The state of the CPUID faulting flag is propagated across forks, but reset
-upon exec.
-
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/x86/include/asm/msr-index.h          |   1 +
- arch/x86/include/asm/thread_info.h        |   6 +-
- arch/x86/include/uapi/asm/prctl.h         |   6 +
- arch/x86/kernel/process.c                 |  94 +++++++++++-
- fs/exec.c                                 |   1 +
- include/linux/thread_info.h               |   4 +
- tools/testing/selftests/x86/Makefile      |   2 +-
- tools/testing/selftests/x86/cpuid-fault.c | 231 ++++++++++++++++++++++++++++++
- 8 files changed, 342 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/x86/cpuid-fault.c
+ arch/um/Kconfig.um          |   6 ++
+ arch/um/drivers/Makefile    |   2 +
+ arch/um/drivers/nand_kern.c | 159 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 167 insertions(+)
+ create mode 100644 arch/um/drivers/nand_kern.c
 
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 39aa563..cddefdd 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -53,6 +53,7 @@
- #define MSR_MTRRcap			0x000000fe
- #define MSR_IA32_BBL_CR_CTL		0x00000119
- #define MSR_IA32_BBL_CR_CTL3		0x0000011e
-+#define MSR_MISC_FEATURES_ENABLES	0x00000140
+diff --git a/arch/um/Kconfig.um b/arch/um/Kconfig.um
+index 4b2ed58..f7a1a17 100644
+--- a/arch/um/Kconfig.um
++++ b/arch/um/Kconfig.um
+@@ -44,6 +44,12 @@ config HOSTFS
+           If you'd like to be able to work with files stored on the host,
+           say Y or M here; otherwise say N.
  
- #define MSR_IA32_SYSENTER_CS		0x00000174
- #define MSR_IA32_SYSENTER_ESP		0x00000175
-diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-index 8b7c8d8..1bc79bc 100644
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -93,6 +93,7 @@ struct thread_info {
- #define TIF_SECCOMP		8	/* secure computing */
- #define TIF_USER_RETURN_NOTIFY	11	/* notify kernel of userspace return */
- #define TIF_UPROBE		12	/* breakpointed or singlestepping */
-+#define TIF_NOCPUID		15	/* CPUID is not accessible in userland */
- #define TIF_NOTSC		16	/* TSC is not accessible in userland */
- #define TIF_IA32		17	/* IA32 compatibility process */
- #define TIF_FORK		18	/* ret_from_fork */
-@@ -117,6 +118,7 @@ struct thread_info {
- #define _TIF_SECCOMP		(1 << TIF_SECCOMP)
- #define _TIF_USER_RETURN_NOTIFY	(1 << TIF_USER_RETURN_NOTIFY)
- #define _TIF_UPROBE		(1 << TIF_UPROBE)
-+#define _TIF_NOCPUID		(1 << TIF_NOCPUID)
- #define _TIF_NOTSC		(1 << TIF_NOTSC)
- #define _TIF_IA32		(1 << TIF_IA32)
- #define _TIF_FORK		(1 << TIF_FORK)
-@@ -146,7 +148,7 @@ struct thread_info {
++config UML_NANDSIM
++	tristate "UML nandsim backend"
++	help
++	  Use a file on the host directly as backend for nandsim.
++	  For more help, see modinfo unand.
++
+ config MCONSOLE
+ 	bool "Management console"
+ 	depends on PROC_FS
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index e7582e1..08a806e 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -16,6 +16,7 @@ hostaudio-objs := hostaudio_kern.o
+ ubd-objs := ubd_kern.o ubd_user.o
+ port-objs := port_kern.o port_user.o
+ harddog-objs := harddog_kern.o harddog_user.o
++unand-objs := nand_kern.o
  
- /* flags to check in __switch_to() */
- #define _TIF_WORK_CTXSW							\
--	(_TIF_IO_BITMAP|_TIF_NOTSC|_TIF_BLOCKSTEP)
-+	(_TIF_IO_BITMAP|_TIF_NOCPUID|_TIF_NOTSC|_TIF_BLOCKSTEP)
+ LDFLAGS_pcap.o := -r $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
  
- #define _TIF_WORK_CTXSW_PREV (_TIF_WORK_CTXSW|_TIF_USER_RETURN_NOTIFY)
- #define _TIF_WORK_CTXSW_NEXT (_TIF_WORK_CTXSW)
-@@ -293,6 +295,8 @@ static inline bool in_ia32_syscall(void)
- extern void arch_task_cache_init(void);
- extern int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);
- extern void arch_release_task_struct(struct task_struct *tsk);
-+extern void arch_post_exec(void);
-+#define arch_post_exec arch_post_exec
- #endif	/* !__ASSEMBLY__ */
+@@ -59,6 +60,7 @@ obj-$(CONFIG_XTERM_CHAN) += xterm.o xterm_kern.o
+ obj-$(CONFIG_UML_WATCHDOG) += harddog.o
+ obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
+ obj-$(CONFIG_UML_RANDOM) += random.o
++obj-$(CONFIG_UML_NANDSIM) += unand.o
  
- #endif /* _ASM_X86_THREAD_INFO_H */
-diff --git a/arch/x86/include/uapi/asm/prctl.h b/arch/x86/include/uapi/asm/prctl.h
-index 3ac5032..c087e55 100644
---- a/arch/x86/include/uapi/asm/prctl.h
-+++ b/arch/x86/include/uapi/asm/prctl.h
-@@ -6,4 +6,10 @@
- #define ARCH_GET_FS 0x1003
- #define ARCH_GET_GS 0x1004
- 
-+/* Get/set the process' ability to use the CPUID instruction */
-+#define ARCH_GET_CPUID 0x1005
-+#define ARCH_SET_CPUID 0x1006
-+# define ARCH_CPUID_ENABLE		1	/* allow the use of the CPUID instruction */
-+# define ARCH_CPUID_SIGSEGV		2	/* throw a SIGSEGV instead of reading the CPUID */
-+
- #endif /* _ASM_X86_PRCTL_H */
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 97aa104..3ac90eb 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -32,6 +32,7 @@
- #include <asm/tlbflush.h>
- #include <asm/mce.h>
- #include <asm/vm86.h>
-+#include <asm/prctl.h>
- 
- /*
-  * per-CPU TSS segments. Threads are completely 'soft' on Linux,
-@@ -191,6 +192,68 @@ int set_tsc_mode(unsigned int val)
- 	return 0;
- }
- 
-+static void switch_cpuid_faulting(bool on)
-+{
-+	if (on)
-+		msr_set_bit(MSR_MISC_FEATURES_ENABLES, 0);
-+	else
-+		msr_clear_bit(MSR_MISC_FEATURES_ENABLES, 0);
-+}
-+
-+static void disable_cpuid(void)
-+{
-+	preempt_disable();
-+	if (!test_and_set_thread_flag(TIF_NOCPUID))
-+		/*
-+		 * Must flip the CPU state synchronously with
-+		 * TIF_NOCPUID in the current running context.
-+		 */
-+		switch_cpuid_faulting(true);
-+	preempt_enable();
-+}
-+
-+static void enable_cpuid(void)
-+{
-+	preempt_disable();
-+	if (test_and_clear_thread_flag(TIF_NOCPUID))
-+		/*
-+		 * Must flip the CPU state synchronously with
-+		 * TIF_NOCPUID in the current running context.
-+		 */
-+		switch_cpuid_faulting(false);
-+	preempt_enable();
-+}
-+
-+int get_cpuid_mode(void)
-+{
-+	return test_thread_flag(TIF_NOCPUID) ? ARCH_CPUID_SIGSEGV : ARCH_CPUID_ENABLE;
-+}
-+
-+int set_cpuid_mode(struct task_struct *task, unsigned long val)
-+{
-+	/* Only disable_cpuid() if it is supported on this hardware. */
-+	bool cpuid_fault_supported = static_cpu_has(X86_FEATURE_CPUID_FAULT);
-+
-+	if (val == ARCH_CPUID_ENABLE)
-+		enable_cpuid();
-+	else if (val == ARCH_CPUID_SIGSEGV && cpuid_fault_supported)
-+		disable_cpuid();
-+	else
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Called immediately after a successful exec.
-+ */
-+void arch_post_exec(void)
-+{
-+	/* If cpuid was previously disabled for this task, re-enable it. */
-+	if (test_thread_flag(TIF_NOCPUID))
-+		enable_cpuid();
-+}
-+
- void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p,
- 		      struct tss_struct *tss)
- {
-@@ -210,6 +273,15 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p,
- 		update_debugctlmsr(debugctl);
- 	}
- 
-+	if (test_tsk_thread_flag(prev_p, TIF_NOCPUID) ^
-+	    test_tsk_thread_flag(next_p, TIF_NOCPUID)) {
-+		/* prev and next are different */
-+		if (test_tsk_thread_flag(next_p, TIF_NOCPUID))
-+			switch_cpuid_faulting(true);
-+		else
-+			switch_cpuid_faulting(false);
-+	}
-+
- 	if (test_tsk_thread_flag(prev_p, TIF_NOTSC) ^
- 	    test_tsk_thread_flag(next_p, TIF_NOTSC)) {
- 		/* prev and next are different */
-@@ -570,5 +642,25 @@ unsigned long get_wchan(struct task_struct *p)
- 
- long do_arch_prctl(struct task_struct *task, int code, unsigned long arg2)
- {
--	return -EINVAL;
-+	int ret = 0;
-+
-+	switch (code) {
-+	case ARCH_GET_CPUID: {
-+		if (arg2 != 0)
-+			ret = -EINVAL;
-+		else
-+			ret = get_cpuid_mode();
-+		break;
-+	}
-+	case ARCH_SET_CPUID: {
-+		ret = set_cpuid_mode(task, arg2);
-+		break;
-+	}
-+
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
- }
-diff --git a/fs/exec.c b/fs/exec.c
-index 6fcfb3f..0272b7e 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1287,6 +1287,7 @@ void setup_new_exec(struct linux_binprm * bprm)
- 	else
- 		set_dumpable(current->mm, suid_dumpable);
- 
-+	arch_post_exec();
- 	perf_event_exec();
- 	__set_task_comm(current, kbasename(bprm->filename), true);
- 
-diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
-index 2b5b10e..22a3f61 100644
---- a/include/linux/thread_info.h
-+++ b/include/linux/thread_info.h
-@@ -130,6 +130,10 @@ static inline void check_object_size(const void *ptr, unsigned long n,
- { }
- #endif /* CONFIG_HARDENED_USERCOPY */
- 
-+#ifndef arch_post_exec
-+static inline void arch_post_exec(void) {}
-+#endif
-+
- #endif	/* __KERNEL__ */
- 
- #endif /* _LINUX_THREAD_INFO_H */
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 4f747ee..fbf34d3 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -5,7 +5,7 @@ include ../lib.mk
- .PHONY: all all_32 all_64 warn_32bit_failure clean
- 
- TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt ptrace_syscall test_mremap_vdso \
--			check_initial_reg_state sigreturn ldt_gdt iopl mpx-mini-test
-+			check_initial_reg_state sigreturn ldt_gdt iopl mpx-mini-test cpuid-fault
- TARGETS_C_32BIT_ONLY := entry_from_vm86 syscall_arg_fault test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
- 			vdso_restorer
-diff --git a/tools/testing/selftests/x86/cpuid-fault.c b/tools/testing/selftests/x86/cpuid-fault.c
+ # pcap_user.o must be added explicitly.
+ USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o vde_user.o
+diff --git a/arch/um/drivers/nand_kern.c b/arch/um/drivers/nand_kern.c
 new file mode 100644
-index 0000000..6c257a8
+index 0000000..399d9e6
 --- /dev/null
-+++ b/tools/testing/selftests/x86/cpuid-fault.c
-@@ -0,0 +1,231 @@
++++ b/arch/um/drivers/nand_kern.c
+@@ -0,0 +1,159 @@
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nandsim.h>
++#include <init.h>
++#include <os.h>
 +
-+/*
-+ * Tests for arch_prctl(ARCH_GET_CPUID, ...) / arch_prctl(ARCH_SET_CPUID, ...)
-+ *
-+ * Basic test to test behaviour of ARCH_GET_CPUID and ARCH_SET_CPUID
-+ */
++static u_char id_bytes[8] = {
++	[0 ... 7] = 0xFF,
++};
++static bool no_oob;
++static char *backing_file;
++static unsigned int bus_width;
 +
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <inttypes.h>
-+#include <cpuid.h>
-+#include <err.h>
-+#include <errno.h>
-+#include <sys/wait.h>
++module_param_array(id_bytes, byte, NULL, 0400);
++module_param(no_oob, bool, 0400);
++module_param(backing_file, charp, 0400);
++module_param(bus_width, uint, 0400);
 +
-+#include <sys/prctl.h>
-+#include <linux/prctl.h>
++MODULE_PARM_DESC(backing_file, "File to use as backing store");
++MODULE_PARM_DESC(id_bytes, "The ID bytes returned by NAND Flash 'read ID' command");
++MODULE_PARM_DESC(no_oob, "Set to use an image without OOB data, i.e created by nanddump");
++MODULE_PARM_DESC(bus_width, "Chip's bus width (8- or 16-bit)");
 +
-+const char *cpuid_names[] = {
-+	[0] = "[not set]",
-+	[ARCH_CPUID_ENABLE] = "ARCH_CPUID_ENABLE",
-+	[ARCH_CPUID_SIGSEGV] = "ARCH_CPUID_SIGSEGV",
++struct ns_uml_data {
++	int fd;
++	void *file_buf;
 +};
 +
-+int arch_prctl(int code, unsigned long arg2)
++/*
++ * We support only one instance so far, just to boot from MTD.
++ * If you need more MTDs, use nandsimctl(8).
++ */
++static struct mtd_info *nsmtd;
++
++static int file_read(struct nandsim *ns, char *addr, unsigned long count,
++		     loff_t offset)
 +{
-+	return syscall(SYS_arch_prctl, code, arg2);
++	struct ns_uml_data *data = nandsim_get_backend_data(ns);
++
++	return os_pread_file(data->fd, addr, count, offset);
 +}
 +
-+int cpuid(unsigned int *eax, unsigned int *ebx, unsigned int *ecx,
-+	  unsigned int *edx)
++static ssize_t file_write(struct nandsim *ns, const char *addr, size_t count,
++			  loff_t offset)
 +{
-+	return __get_cpuid(0, eax, ebx, ecx, edx);
++	struct ns_uml_data *data = nandsim_get_backend_data(ns);
++
++	return os_pwrite_file(data->fd, addr, count, offset);
 +}
 +
-+int do_child_exec_test(int eax, int ebx, int ecx, int edx)
++static void ns_uml_read_page(struct nandsim *ns, int num)
 +{
-+	int cpuid_val = 0, child = 0, status = 0;
++	__ns_file_read_page(ns, num, file_read);
++}
 +
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
++static int ns_uml_prog_page(struct nandsim *ns, int num)
++{
++	struct ns_uml_data *data = nandsim_get_backend_data(ns);
 +
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0)
-+		errx(1, "ARCH_GET_CPUID fails now, but not before?");
++	return __ns_file_prog_page(ns, num, data->file_buf, file_read,
++				   file_write);
++}
 +
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	if (cpuid_val != ARCH_CPUID_SIGSEGV)
-+		errx(1, "How did cpuid get re-enabled on fork?");
++static void ns_uml_erase_sector(struct nandsim *ns)
++{
++	struct ns_uml_data *data = nandsim_get_backend_data(ns);
 +
-+	if ((child = fork()) == 0) {
-+		cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+		if (cpuid_val < 0)
-+			errx(1, "ARCH_GET_CPUID fails now, but not before?");
++	__ns_file_erase_sector(ns, data->file_buf, file_write);
++}
 +
-+		printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+		if (cpuid_val != ARCH_CPUID_SIGSEGV)
-+			errx(1, "How did cpuid get re-enabled on fork?");
++static int ns_uml_init(struct nandsim *ns, struct nandsim_params *nsparam)
++{
++	struct ns_uml_data *data = kzalloc(sizeof(*data), GFP_KERNEL);
 +
-+		printf("exec\n");
-+		execl("/proc/self/exe", "cpuid-fault", "-early-return", NULL);
++	if (!data)
++		return -ENOMEM;
++
++	data->file_buf = kmalloc(nandsim_get_geom(ns)->pgszoob, GFP_KERNEL);
++	if (!data->file_buf) {
++		kfree(data);
++		return -ENOMEM;
 +	}
 +
-+	if (child != waitpid(child, &status, 0))
-+		errx(1, "waitpid failed!?");
++	data->fd = os_open_file(nsparam->cache_file, of_set_rw(OPENFLAGS(), 1, 1), 0);
++	if (data->fd < 0) {
++		printk(KERN_ERR "Unable to open %s: %i\n", nsparam->cache_file, data->fd);
++		kfree(data->file);
++		kfree(data);
++		return data->fd;
++	}
 +
-+	if (WEXITSTATUS(status) != 0)
-+		errx(1, "Execed child exited abnormally");
++	nandsim_set_backend_data(ns, data);
 +
 +	return 0;
 +}
 +
-+int child_received_signal;
-+
-+void child_sigsegv_cb(int sig)
++static void ns_uml_destroy(struct nandsim *ns)
 +{
-+	int cpuid_val = 0;
++	struct ns_uml_data *data = nandsim_get_backend_data(ns);
 +
-+	child_received_signal = 1;
-+	printf("[ SIG_SEGV ]\n");
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
++	if (!data)
++		return;
 +
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0)
-+		errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	printf("arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_ENABLE)\n");
-+	if (arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_ENABLE) != 0)
-+		exit(errno);
-+
-+	printf("cpuid() == ");
++	os_close_file(data->fd);
++	kfree(data->file_buf);
++	kfree(data);
 +}
 +
-+int do_child_test(void)
++static struct ns_backend_ops ns_uml_bops = {
++	.erase_sector = ns_uml_erase_sector,
++	.prog_page = ns_uml_prog_page,
++	.read_page = ns_uml_read_page,
++	.init = ns_uml_init,
++	.destroy = ns_uml_destroy,
++	.name = "uml",
++};
++
++static struct nandsim_params params = {
++	.bops = &ns_uml_bops,
++};
++
++static int __init uml_ns_init(void)
 +{
-+	unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
++	struct mtd_info *ret;
 +
-+	signal(SIGSEGV, child_sigsegv_cb);
++	if (!backing_file)
++		return 0;
 +
-+	/* the child starts out with cpuid disabled, the signal handler
-+	 * attempts to enable and retry
++	params.cache_file = backing_file;
++	params.bus_width = bus_width;
++	params.no_oob = no_oob;
++	memcpy(params.id_bytes, id_bytes, sizeof(params.id_bytes));
++
++	ret = ns_new_instance(&params);
++	if (IS_ERR(ret))
++		return PTR_ERR(ret);
++
++	nsmtd = ret;
++
++	return 0;
++}
++late_initcall(uml_ns_init);
++
++static void __exit uml_ns_exit(void)
++{
++	/*
++	 * Since this driver is a singleton we can rely on module refcounting,
++	 * and assume that ns_destroy_instance() will succeed in any case.
++	 * If not, print a frindly warning. B-)
 +	 */
-+	printf("cpuid() == ");
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	return child_received_signal ? 0 : 42;
++	WARN_ON(ns_destroy_instance(nsmtd) != 0);
 +}
++module_exit(uml_ns_exit);
 +
-+int signal_count;
++MODULE_AUTHOR("Richard Weinberger");
++MODULE_DESCRIPTION("UML nandsim backend");
++MODULE_LICENSE("GPL");
 +
-+void sigsegv_cb(int sig)
-+{
-+	int cpuid_val = 0;
-+
-+	signal_count++;
-+	printf("[ SIG_SEGV ]\n");
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
-+
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0)
-+		errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	printf("arch_prctl(ARC_SET_CPUID, ARCH_CPUID_ENABLE)\n");
-+	if (arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_ENABLE) != 0)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	printf("cpuid() == ");
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int cpuid_val = 0, child = 0, status = 0;
-+	unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
-+
-+	signal(SIGSEGV, sigsegv_cb);
-+	setvbuf(stdout, NULL, _IONBF, 0);
-+
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
-+
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0) {
-+		if (errno == EINVAL) {
-+			printf("ARCH_GET_CPUID is unsupported on this system.\n");
-+			fflush(stdout);
-+			exit(0); /* no ARCH_GET_CPUID on this system */
-+		} else {
-+			errx(errno, "ARCH_GET_CPUID failed unexpectedly!");
-+		}
-+	}
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_ENABLE)\n");
-+
-+	if (arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_ENABLE) != 0) {
-+		if (errno == EINVAL) {
-+			printf("ARCH_SET_CPUID is unsupported on this system.");
-+			exit(0); /* no ARCH_SET_CPUID on this system */
-+		} else {
-+			errx(errno, "ARCH_SET_CPUID failed unexpectedly!");
-+		}
-+	}
-+
-+
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_SIGSEGV)\n");
-+	fflush(stdout);
-+
-+	if (arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_SIGSEGV) == -1)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	printf("cpuid() == ");
-+	eax = ebx = ecx = edx = 0;
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_SIGSEGV)\n");
-+
-+	if (signal_count != 1)
-+		errx(1, "cpuid didn't fault!");
-+
-+	if (arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_SIGSEGV) == -1)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	if (argc > 1)
-+		exit(0); /* Don't run the whole test again if we were execed */
-+
-+	printf("do_child_test\n");
-+	if ((child = fork()) == 0)
-+		return do_child_test();
-+
-+	if (child != waitpid(child, &status, 0))
-+		errx(1, "waitpid failed!?");
-+
-+	if (WEXITSTATUS(status) != 0)
-+		errx(1, "Child exited abnormally!");
-+
-+	/* The child enabling cpuid should not have affected us */
-+	printf("cpuid() == ");
-+	eax = ebx = ecx = edx = 0;
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_SIGSEGV)\n");
-+
-+	if (signal_count != 2)
-+		errx(1, "cpuid didn't fault!");
-+
-+	if (arch_prctl(ARCH_SET_CPUID, ARCH_CPUID_SIGSEGV) == -1)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	/* Our ARCH_CPUID_SIGSEGV should not propagate through exec */
-+	printf("do_child_exec_test\n");
-+	fflush(stdout);
-+	if ((child = fork()) == 0)
-+		return do_child_exec_test(eax, ebx, ecx, edx);
-+
-+	if (child != waitpid(child, &status, 0))
-+		errx(1, "waitpid failed!?");
-+
-+	if (WEXITSTATUS(status) != 0)
-+		errx(1, "Child exited abnormally!");
-+
-+	printf("All tests passed!\n");
-+	exit(EXIT_SUCCESS);
-+}
 -- 
-2.9.3
+2.8.3
 
 
