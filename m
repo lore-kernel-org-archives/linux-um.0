@@ -1,8 +1,8 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v5 5/6] x86/cpufeature Detect CPUID faulting support
-Date: Wed, 21 Sep 2016 11:58:23 -0700
-Message-Id: <20160921185824.18980-6-khuey@kylehuey.com>
+Subject: [PATCH v5 1/6] x86/arch_prctl/64 Use SYSCALL_DEFINE2 to define sys_arch_prctl
+Date: Wed, 21 Sep 2016 11:58:19 -0700
+Message-Id: <20160921185824.18980-2-khuey@kylehuey.com>
 In-Reply-To: <20160921185824.18980-1-khuey@kylehuey.com>
 References: <20160921185824.18980-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -10,79 +10,56 @@ To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.d
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Intel supports faulting on the CPUID instruction beginning with Ivy Bridge.
-When enabled, the processor will fault on attempts to execute the CPUID
-instruction with CPL>0. This will allow a ptracer to emulate the CPUID
-instruction.
-
-Bit 31 of MSR_PLATFORM_INFO advertises support for this feature. It is
-documented in detail in Section 2.3.2 of
-http://www.intel.com/content/dam/www/public/us/en/documents/application-notes/virtualization-technology-flexmigration-application-note.pdf
-
-Detect support for this feature and expose it as X86_FEATURE_CPUID_FAULT.
-
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/include/asm/cpufeatures.h |  1 +
- arch/x86/include/asm/msr-index.h   |  1 +
- arch/x86/kernel/cpu/scattered.c    | 13 +++++++++++++
- 3 files changed, 15 insertions(+)
+ arch/x86/kernel/process_64.c | 3 ++-
+ arch/x86/um/syscalls_64.c    | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 92a8308..78b9d06 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -190,6 +190,7 @@
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index 63236d8..4d6363c 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -35,6 +35,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/io.h>
+ #include <linux/ftrace.h>
++#include <linux/syscalls.h>
  
- #define X86_FEATURE_CPB		( 7*32+ 2) /* AMD Core Performance Boost */
- #define X86_FEATURE_EPB		( 7*32+ 3) /* IA32_ENERGY_PERF_BIAS support */
-+#define X86_FEATURE_CPUID_FAULT ( 7*32+ 4) /* Intel CPUID faulting */
+ #include <asm/pgtable.h>
+ #include <asm/processor.h>
+@@ -585,7 +586,7 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
+ 	return ret;
+ }
  
- #define X86_FEATURE_HW_PSTATE	( 7*32+ 8) /* AMD HW-PState */
- #define X86_FEATURE_PROC_FEEDBACK ( 7*32+ 9) /* AMD ProcFeedbackInterface */
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 56f4c66..39aa563 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -41,6 +41,7 @@
- #define MSR_IA32_PERFCTR1		0x000000c2
- #define MSR_FSB_FREQ			0x000000cd
- #define MSR_PLATFORM_INFO		0x000000ce
-+#define PLATINFO_CPUID_FAULT		(1UL << 31)
- 
- #define MSR_NHM_SNB_PKG_CST_CFG_CTL	0x000000e2
- #define NHM_C3_AUTO_DEMOTE		(1UL << 25)
-diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
-index 8cb57df..7901481 100644
---- a/arch/x86/kernel/cpu/scattered.c
-+++ b/arch/x86/kernel/cpu/scattered.c
-@@ -24,6 +24,16 @@ enum cpuid_regs {
- 	CR_EBX
- };
- 
-+static bool supports_cpuid_faulting(void)
-+{
-+	unsigned int lo, hi;
-+
-+	if (rdmsr_safe(MSR_PLATFORM_INFO, &lo, &hi))
-+		return false;
-+
-+	return lo & PLATINFO_CPUID_FAULT;
-+}
-+
- void init_scattered_cpuid_features(struct cpuinfo_x86 *c)
+-long sys_arch_prctl(int code, unsigned long addr)
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
  {
- 	u32 max_level;
-@@ -54,4 +64,7 @@ void init_scattered_cpuid_features(struct cpuinfo_x86 *c)
- 		if (regs[cb->reg] & (1 << cb->bit))
- 			set_cpu_cap(c, cb->feature);
- 	}
-+
-+	if (supports_cpuid_faulting())
-+		set_cpu_cap(c, X86_FEATURE_CPUID_FAULT);
+ 	return do_arch_prctl(current, code, addr);
+ }
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index e655227..ab3f7f4 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <linux/sched.h>
++#include <linux/syscalls.h>
+ #include <linux/uaccess.h>
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <os.h>
+@@ -72,7 +73,7 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ 	return ret;
+ }
+ 
+-long sys_arch_prctl(int code, unsigned long addr)
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
+ {
+ 	return arch_prctl(current, code, (unsigned long __user *) addr);
  }
 -- 
 2.9.3
 
+base-commit: 7d1e042314619115153a0f6f06e4552c09a50e13
 
