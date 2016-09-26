@@ -1,346 +1,128 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1bpi55-0002D1-A0
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Sep 2016 20:37:23 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92]
-	helo=www.kot-begemot.co.uk)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1bpi53-0003qt-AV
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Sep 2016 20:37:23 +0000
-From: anton.ivanov@kot-begemot.co.uk
-Date: Thu, 29 Sep 2016 21:36:57 +0100
-Message-Id: <1475181417-26010-2-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1475181417-26010-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-References: <1475181417-26010-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-Subject: [uml-devel] [PATCH] UBD Improvements Phase 1
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Anton Ivanov <aivanov@brocade.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Kyle Huey <me@kylehuey.com>
+Subject: [PATCH v6 4/6] x86/syscalls/32: Wire up arch_prctl on x86-32
+Date: Mon, 26 Sep 2016 14:53:16 -0700
+Message-Id: <20160926215318.9587-5-khuey@kylehuey.com>
+In-Reply-To: <20160926215318.9587-1-khuey@kylehuey.com>
+References: <20160926215318.9587-1-khuey@kylehuey.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Dave Hansen <dave.hansen@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Len Brown <len.brown@intel.com>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Anton Ivanov <aivanov@brocade.com>
+Hook up arch_prctl to call do_arch_prctl on x86-32, and in 32 bit compat
+mode on x86-64. This allows us to have arch_prctls that are not specific to
+64 bits.
 
-UBD at present is extremely slow because it handles only
-one request at a time in the IO thread and IRQ handler.
+On UML, simply stub out this syscall.
 
-The single request at a time is replaced by handling multiple
-requests as well as necessary workarounds for short reads/writes.
-
-Resulting performance improvement in disk IO - 30%
-
-Signed-off-by: Anton Ivanov <aivanov@brocade.com>
+Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
- arch/um/drivers/ubd.h      |   5 ++
- arch/um/drivers/ubd_kern.c | 161 ++++++++++++++++++++++++++++++++++++++-------
- arch/um/drivers/ubd_user.c |  19 +++++-
- 3 files changed, 159 insertions(+), 26 deletions(-)
+ arch/x86/entry/syscalls/syscall_32.tbl | 1 +
+ arch/x86/kernel/process_32.c           | 7 +++++++
+ arch/x86/kernel/process_64.c           | 7 +++++++
+ arch/x86/um/Makefile                   | 2 +-
+ arch/x86/um/syscalls_32.c              | 7 +++++++
+ include/linux/compat.h                 | 2 ++
+ 6 files changed, 25 insertions(+), 1 deletion(-)
+ create mode 100644 arch/x86/um/syscalls_32.c
 
-diff --git a/arch/um/drivers/ubd.h b/arch/um/drivers/ubd.h
-index 3b48cd2..cc1cc85 100644
---- a/arch/um/drivers/ubd.h
-+++ b/arch/um/drivers/ubd.h
-@@ -11,5 +11,10 @@ extern int start_io_thread(unsigned long sp, int *fds_out);
- extern int io_thread(void *arg);
- extern int kernel_fd;
+diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
+index f848572..300fdf8 100644
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@ -386,3 +386,4 @@
+ 377	i386	copy_file_range		sys_copy_file_range
+ 378	i386	preadv2			sys_preadv2			compat_sys_preadv2
+ 379	i386	pwritev2		sys_pwritev2			compat_sys_pwritev2
++380	i386	arch_prctl		sys_arch_prctl			compat_sys_arch_prctl
+diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
+index d86be29..d3b9dd6 100644
+--- a/arch/x86/kernel/process_32.c
++++ b/arch/x86/kernel/process_32.c
+@@ -35,6 +35,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/io.h>
+ #include <linux/kdebug.h>
++#include <linux/syscalls.h>
  
-+extern int ubd_read_poll(int timeout);
-+extern int ubd_write_poll(int timeout);
-+
-+#define UBD_REQ_BUFFER_SIZE 64
-+
- #endif
+ #include <asm/pgtable.h>
+ #include <asm/ldt.h>
+@@ -54,6 +55,7 @@
+ #include <asm/debugreg.h>
+ #include <asm/switch_to.h>
+ #include <asm/vm86.h>
++#include <asm/proto.h>
  
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index f354027..91f3354 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2015-2016 Anton Ivanov (aivanov@brocade.com)
-  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
-  * Licensed under the GPL
-  */
-@@ -58,6 +59,17 @@ struct io_thread_req {
- 	int error;
- };
+ asmlinkage void ret_from_fork(void) __asm__("ret_from_fork");
+ asmlinkage void ret_from_kernel_thread(void) __asm__("ret_from_kernel_thread");
+@@ -316,3 +318,8 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
  
-+
-+static struct io_thread_req*  (*irq_req_buffer) [];
-+static struct io_thread_req * irq_remainder;
-+static int irq_remainder_size;
-+
-+static struct io_thread_req*  (*io_req_buffer) [];
-+static struct io_thread_req * io_remainder;
-+static int io_remainder_size;
-+
-+
-+
- static inline int ubd_test_bit(__u64 bit, unsigned char *data)
- {
- 	__u64 n;
-@@ -442,29 +454,88 @@ static void do_ubd_request(struct request_queue * q);
- static int thread_fd = -1;
- static LIST_HEAD(restart);
- 
--/* XXX - move this inside ubd_intr. */
-+/* Function to read several request pointers at a time
-+* handling fractional reads if (and as) needed
-+*/
-+
-+static int bulk_req_safe_read(
-+	int fd,
-+	struct io_thread_req*  (*request_buffer) [],
-+	struct io_thread_req * remainder,
-+	int * remainder_size,
-+	int max_recs
-+	)
-+{
-+	int n = 0;
-+	int res = 0;
-+
-+	if (*remainder_size > 0) {
-+		memmove(
-+			(char *) request_buffer,
-+			(char *) & remainder, * remainder_size
-+		);
-+		n = * remainder_size;
-+	}
-+
-+	res = os_read_file(
-+			fd,
-+			((char *) request_buffer) + * remainder_size,
-+			sizeof(struct io_thread_req *) * max_recs - *remainder_size
-+		);
-+	if (res > 0) {
-+		n += res;
-+		if ((n % sizeof(struct io_thread_req *)) > 0) {
-+			/*
-+			* Read somehow returned not a multiple of dword
-+			* theoretically possible, but never observed in the
-+			* wild, so read routine must be able to handle it
-+			*/
-+			*remainder_size = n % sizeof(struct io_thread_req *);
-+			memmove(
-+				& remainder,
-+				((char *) request_buffer) + n/sizeof(struct io_thread_req *),
-+				*remainder_size
-+			);
-+			n = n - *remainder_size;
-+		}
-+	} else {
-+		n = res;
-+	}
-+	return n;
-+}
-+
- /* Called without dev->lock held, and only in interrupt context. */
- static void ubd_handler(void)
- {
--	struct io_thread_req *req;
- 	struct ubd *ubd;
- 	struct list_head *list, *next_ele;
- 	unsigned long flags;
- 	int n;
-+	int count;
- 
- 	while(1){
--		n = os_read_file(thread_fd, &req,
--				 sizeof(struct io_thread_req *));
--		if(n != sizeof(req)){
-+		n = bulk_req_safe_read(
-+			thread_fd,
-+			irq_req_buffer,
-+			irq_remainder,
-+			&irq_remainder_size,
-+			UBD_REQ_BUFFER_SIZE
-+		);
-+		if(n < 0){
- 			if(n == -EAGAIN)
- 				break;
- 			printk(KERN_ERR "spurious interrupt in ubd_handler, "
- 			       "err = %d\n", -n);
- 			return;
- 		}
--
--		blk_end_request(req->req, 0, req->length);
--		kfree(req);
-+		for (count=0;count < n /sizeof(struct io_thread_req *);count++) {
-+			blk_end_request(
-+				(* irq_req_buffer)[count]->req,
-+				0,
-+				(* irq_req_buffer)[count]->length
-+			);
-+			kfree((* irq_req_buffer)[count]);
-+		}
- 	}
- 	reactivate_fd(thread_fd, UBD_IRQ);
- 
-@@ -1064,6 +1135,28 @@ static int __init ubd_init(void)
- 		if (register_blkdev(fake_major, "ubd"))
- 			return -1;
- 	}
-+
-+	irq_req_buffer = kmalloc(
-+			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
-+			GFP_KERNEL
-+		);
-+	irq_remainder = 0;
-+	
-+	if(irq_req_buffer == NULL) {
-+		printk(KERN_ERR "Failed to initialize ubd buffering\n");
-+		return -1;
-+	}
-+	io_req_buffer = kmalloc(
-+			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
-+			GFP_KERNEL
-+		);
-+	
-+	io_remainder = 0;
-+
-+	if(io_req_buffer == NULL) {
-+		printk(KERN_ERR "Failed to initialize ubd buffering\n");
-+		return -1;
-+	}
- 	platform_driver_register(&ubd_driver);
- 	mutex_lock(&ubd_lock);
- 	for (i = 0; i < MAX_DEV; i++){
-@@ -1458,31 +1551,49 @@ static int io_count = 0;
- 
- int io_thread(void *arg)
- {
--	struct io_thread_req *req;
--	int n;
-+	int n, count, written, res;
- 
- 	os_fix_helper_signals();
- 
- 	while(1){
--		n = os_read_file(kernel_fd, &req,
--				 sizeof(struct io_thread_req *));
--		if(n != sizeof(struct io_thread_req *)){
--			if(n < 0)
-+		n = bulk_req_safe_read(
-+			kernel_fd,
-+                        io_req_buffer,
-+                        io_remainder,
-+                        &io_remainder_size,
-+                        UBD_REQ_BUFFER_SIZE
-+                );
-+                if(n < 0){
-+                        if(n == -EAGAIN) {
-+				ubd_read_poll(-1);
-+				continue;
-+			} else {
- 				printk("io_thread - read failed, fd = %d, "
- 				       "err = %d\n", kernel_fd, -n);
--			else {
--				printk("io_thread - short read, fd = %d, "
--				       "length = %d\n", kernel_fd, n);
- 			}
--			continue;
-+                } 
-+
-+                for (count=0;count < n /sizeof(struct io_thread_req *);count++) {
-+			io_count++;
-+			do_io((* io_req_buffer)[count]);
- 		}
--		io_count++;
--		do_io(req);
--		n = os_write_file(kernel_fd, &req,
--				  sizeof(struct io_thread_req *));
--		if(n != sizeof(struct io_thread_req *))
--			printk("io_thread - write failed, fd = %d, err = %d\n",
--			       kernel_fd, -n);
-+
-+		written = 0;
-+
-+		do {
-+			res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
-+			if (res > 0) {
-+				written += res;
-+			} else {
-+				if (res != -EAGAIN) {
-+					printk("io_thread - read failed, fd = %d, "
-+					       "err = %d\n", kernel_fd, -n);
-+				}
-+			}
-+			if (written < n) {
-+				ubd_write_poll(-1);
-+			}
-+		} while (written < n);
- 	}
- 
- 	return 0;
-diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
-index e376f9b..2a7d5b6 100644
---- a/arch/um/drivers/ubd_user.c
-+++ b/arch/um/drivers/ubd_user.c
-@@ -1,4 +1,5 @@
--/* 
-+/*
-+ * Copyright (C) 2016 Anton Ivanov (aivanov@brocade.com)
-  * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
-  * Copyright (C) 2001 Ridgerun,Inc (glonnon@ridgerun.com)
-  * Licensed under the GPL
-@@ -20,6 +21,9 @@
- 
- #include "ubd.h"
- #include <os.h>
-+#include <poll.h>
-+
-+struct pollfd kernel_pollfd;
- 
- int start_io_thread(unsigned long sp, int *fd_out)
- {
-@@ -32,9 +36,12 @@ int start_io_thread(unsigned long sp, int *fd_out)
- 	}
- 
- 	kernel_fd = fds[0];
-+	kernel_pollfd.fd = kernel_fd;
-+	kernel_pollfd.events = POLLIN;
- 	*fd_out = fds[1];
- 
- 	err = os_set_fd_block(*fd_out, 0);
-+	err = os_set_fd_block(kernel_fd, 0);
- 	if (err) {
- 		printk("start_io_thread - failed to set nonblocking I/O.\n");
- 		goto out_close;
-@@ -57,3 +64,13 @@ int start_io_thread(unsigned long sp, int *fd_out)
-  out:
- 	return err;
+ 	return prev_p;
  }
 +
-+int ubd_read_poll(int timeout) {
-+    kernel_pollfd.events = POLLIN;
-+    return poll(&kernel_pollfd, 1, timeout);
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
++{
++	return do_arch_prctl_common(current, code, arg2);
 +}
-+int ubd_write_poll(int timeout) {
-+    kernel_pollfd.events = POLLOUT;
-+    return poll(&kernel_pollfd, 1, timeout);
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index 0e44608..83b3da4 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -599,6 +599,13 @@ SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_IA32_EMULATION
++COMPAT_SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
++{
++	return do_arch_prctl_common(current, code, arg2);
 +}
++#endif
 +
+ unsigned long KSTK_ESP(struct task_struct *task)
+ {
+ 	return task_pt_regs(task)->sp;
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 3ee2bb6..5e039d6 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -16,7 +16,7 @@ obj-y = bug.o bugs_$(BITS).o delay.o fault.o ksyms.o ldt.o \
+ 
+ ifeq ($(CONFIG_X86_32),y)
+ 
+-obj-y += checksum_32.o
++obj-y += checksum_32.o syscalls_32.o
+ obj-$(CONFIG_ELF_CORE) += elfcore.o
+ 
+ subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
+diff --git a/arch/x86/um/syscalls_32.c b/arch/x86/um/syscalls_32.c
+new file mode 100644
+index 0000000..ccf0598
+--- /dev/null
++++ b/arch/x86/um/syscalls_32.c
+@@ -0,0 +1,7 @@
++#include <linux/syscalls.h>
++#include <os.h>
++
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
++{
++	return -EINVAL;
++}
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index f964ef7..0039d53 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -722,6 +722,8 @@ asmlinkage long compat_sys_sched_rr_get_interval(compat_pid_t pid,
+ asmlinkage long compat_sys_fanotify_mark(int, unsigned int, __u32, __u32,
+ 					    int, const char __user *);
+ 
++asmlinkage long compat_sys_arch_prctl(int, unsigned long);
++
+ /*
+  * For most but not all architectures, "am I in a compat syscall?" and
+  * "am I a compat task?" are the same question.  For architectures on which
 -- 
-2.1.4
+2.9.3
 
-
-------------------------------------------------------------------------------
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
