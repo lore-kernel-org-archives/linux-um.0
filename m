@@ -1,95 +1,88 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rrs@researchut.com>) id 1bgu7L-000670-Vr
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Sep 2016 13:39:19 +0000
-Received: from mail-pf0-f195.google.com ([209.85.192.195])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1bgu7K-0003Lp-JD
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 05 Sep 2016 13:39:19 +0000
-Received: by mail-pf0-f195.google.com with SMTP id i6so9832165pfe.0
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Mon, 05 Sep 2016 06:39:18 -0700 (PDT)
-Message-ID: <1473081950.10346.10.camel@researchut.com>
-From: Ritesh Raj Sarraf <rrs@researchut.com>
-Date: Mon, 05 Sep 2016 18:55:50 +0530
-Mime-Version: 1.0
-Subject: [uml-devel] UML build failure on 4.7
-Reply-To: rrs@researchut.com
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Mattia Dongili <malattia@linux.it>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <CALCETrW96hcsSp-YZgNqH_EzTfUyG9yStyp+0nQmpE0o3o__wA@mail.gmail.com>
+References: <20160921185824.18980-1-khuey@kylehuey.com> <20160921185824.18980-7-khuey@kylehuey.com>
+ <CALCETrW96hcsSp-YZgNqH_EzTfUyG9yStyp+0nQmpE0o3o__wA@mail.gmail.com>
+From: Kyle Huey <me@kylehuey.com>
+Date: Mon, 26 Sep 2016 12:56:04 -0700
+Message-ID: <CAP045AqpW09v3HgZN8cxhdegMpDC3dU504K-QuGXmSZS=jJKNw@mail.gmail.com>
+Subject: Re: [PATCH v5 6/6] x86/arch_prctl Add ARCH_[GET|SET]_CPUID
+Content-Type: text/plain; charset=UTF-8
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Dave Hansen <dave.hansen@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Len Brown <len.brown@intel.com>, "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQpIYXNoOiBTSEE1MTIKCkhpLAoKSSdt
-IHdvcmtpbmcgb24gcmVmcmVzaGluZyBVTUwgdG8gdmVyc2lvbiA0LjcgaW4gRGViaWFuLgoKVGhl
-IGxpbnV4IHNvdXJjZSB0YXJiYWxsIHdlIHVzZSBpcyBmcm9tIERlYmlhbiwgd2hpY2ggaXMgbW9z
-dGx5IHRoZSBzdG9jawprZXJuZWwuCgpUaGUgYnVpbGQgZmFpbHVyZSBJJ3ZlIHJ1biBpbnRvIGlz
-OgoKwqAgQ0MgW01dwqDCoGxpYi90c19mc20ubwrCoCBDQyBbTV3CoMKgbGliL2xydV9jYWNoZS5v
-CsKgIENDIFtNXcKgwqBsaWIvY29yZGljLm8KwqAgQ0MgW01dwqDCoGxpYi9hc24xX2RlY29kZXIu
-bwrCoCBHRU7CoMKgwqDCoMKgbGliL29pZF9yZWdpc3RyeV9kYXRhLmMKwqAgQ0MgW01dwqDCoGxp
-Yi9vaWRfcmVnaXN0cnkubwrCoCBMRMKgwqDCoMKgwqDCoHZpcnQvbGliL2J1aWx0LWluLm8KwqAg
-TETCoMKgwqDCoMKgwqB2aXJ0L2J1aWx0LWluLm8KwqAgTElOS8KgwqDCoMKgdm1saW51eArCoCBM
-RMKgwqDCoMKgwqDCoHZtbGludXgubwrCoCBNT0RQT1NUIHZtbGludXgubwrCoCBHRU7CoMKgwqDC
-oMKgLnZlcnNpb24KwqAgQ0hLwqDCoMKgwqDCoGluY2x1ZGUvZ2VuZXJhdGVkL2NvbXBpbGUuaArC
-oCBVUETCoMKgwqDCoMKgaW5jbHVkZS9nZW5lcmF0ZWQvY29tcGlsZS5oCsKgIENDwqDCoMKgwqDC
-oMKgaW5pdC92ZXJzaW9uLm8KwqAgTETCoMKgwqDCoMKgwqBpbml0L2J1aWx0LWluLm8KwqAgS1NZ
-TcKgwqDCoMKgLnRtcF9rYWxsc3ltczEubwrCoCBLU1lNwqDCoMKgwqAudG1wX2thbGxzeW1zMi5v
-CsKgIExEwqDCoMKgwqDCoMKgdm1saW51eArCoCBTWVNNQVDCoMKgU3lzdGVtLm1hcArCoCBMSU5L
-IGxpbnV4CsKgIEJ1aWxkaW5nIG1vZHVsZXMsIHN0YWdlIDIuCsKgIE1PRFBPU1QgOTA2IG1vZHVs
-ZXMKRVJST1I6ICJkZXZtX21lbXVubWFwIiBbZHJpdmVycy9udmRpbW0vbGlibnZkaW1tLmtvXSB1
-bmRlZmluZWQhCkVSUk9SOiAiZGV2bV9tZW1yZW1hcCIgW2RyaXZlcnMvbnZkaW1tL2xpYm52ZGlt
-bS5rb10gdW5kZWZpbmVkIQpzY3JpcHRzL01ha2VmaWxlLm1vZHBvc3Q6OTE6IHJlY2lwZSBmb3Ig
-dGFyZ2V0ICdfX21vZHBvc3QnIGZhaWxlZAptYWtlWzJdOiAqKiogW19fbW9kcG9zdF0gRXJyb3Ig
-MQpNYWtlZmlsZToxMTg2OiByZWNpcGUgZm9yIHRhcmdldCAnbW9kdWxlcycgZmFpbGVkCm1ha2Vb
-MV06ICoqKiBbbW9kdWxlc10gRXJyb3IgMgptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSAnL2J1
-aWxkL3VzZXItbW9kZS1saW51eC00LjctMXVtL2xpbnV4LXNvdXJjZS00LjcnCmRlYmlhbi9ydWxl
-czo3MzogcmVjaXBlIGZvciB0YXJnZXQgJ2J1aWxkLXN0YW1wJyBmYWlsZWQKbWFrZTogKioqIFti
-dWlsZC1zdGFtcF0gRXJyb3IgMgpkcGtnLWJ1aWxkcGFja2FnZTogZXJyb3I6IGRlYmlhbi9ydWxl
-cyBidWlsZCBnYXZlIGVycm9yIGV4aXQgc3RhdHVzIDIKSTogY29weWluZyBsb2NhbCBjb25maWd1
-cmF0aW9uClc6IE5vIGxvY2FsIC9ldGMvcmVzb2x2LmNvbmYgdG8gY29weSwgcmVseWluZyBvbiAv
-dmFyL3RtcC9EZWJpYW4tCkJ1aWxkL0J1aWxkLy85NDE5L2V0Yy9yZXNvbHYuY29uZiB0byBiZSBj
-b3JyZWN0CkU6IEZhaWxlZCBhdXRvYnVpbGRpbmcgb2YgcGFja2FnZQpXOiBubyBob29rcyBvZiB0
-eXBlIEMgZm91bmQgLS0gaWdub3JpbmcKSTogdW5tb3VudGluZyAvdmFyL3RtcC9seGMvY2NhY2hl
-L2NjYWNoZSBmaWxlc3lzdGVtCkk6IHVubW91bnRpbmcgL3Zhci9jYWNoZS9hcHQvYXJjaGl2ZXMv
-IGZpbGVzeXN0ZW0KSTogdW5tb3VudGluZyBkZXYvcHRzIGZpbGVzeXN0ZW0KSTogdW5tb3VudGlu
-ZyBydW4vc2htIGZpbGVzeXN0ZW0KSTogdW5tb3VudGluZyBwcm9jIGZpbGVzeXN0ZW0KSTogdW5t
-b3VudGluZyBzeXMgZmlsZXN5c3RlbQpJOiBjbGVhbmluZyB0aGUgYnVpbGQgZW52wqAKSTogcmVt
-b3ZpbmcgZGlyZWN0b3J5IC92YXIvdG1wL0RlYmlhbi1CdWlsZC9CdWlsZC8vOTQxOSBhbmQgaXRz
-IHN1YmRpcmVjdG9yaWVzCgoKVGhlIHNhbWUgLmNvbmZpZyBidWlsZHMgZmluZSBmb3IgNC42LiBI
-YXZlIG90aGVycyBiZWVuIGFibGUgdG8gYnVpbGQgYSA0LjcgdW0Ka2VybmVsID8KCgotIC0tIApS
-aXRlc2ggUmFqIFNhcnJhZgpSRVNFQVJDSFVUIC0gaHR0cDovL3d3dy5yZXNlYXJjaHV0LmNvbQoi
-TmVjZXNzaXR5IGlzIHRoZSBtb3RoZXIgb2YgaW52ZW50aW9uLiIKLS0tLS1CRUdJTiBQR1AgU0lH
-TkFUVVJFLS0tLS0KCmlRSWNCQUVCQ2dBR0JRSlh6WEplQUFvSkVLWTZXS1B5NFhWcGk0OFAvMmtB
-VGduSmVLbHBVN05xYlU1dG42VVQKTmZXbk96OEp3U29BZVNaWlBGeWZ2U1NTajgyWU53K2Uvbk83
-VCtHRXpObDZvMktQbXFBK2c1NDhKc0tZYWpMTgpwZzQzdkRjeitUVlVmN1l6K0hIdXpScEFqZ0th
-MStpVFBDNmhEajk4V0Zya09DM05oaUJaZ0txVXFFUTMyRVZFCmk0WmxxTTd6MkcxeEJPYTRmSXFM
-VnhNWTZ1YjY0YlVsenM5OFhUQ2pFTFJObWJKTjBuZjR6WjRJVjRqT25jdTkKanlYYWNweHovMDUz
-Ung1Y2VaYUdIaUZsczk3dUthTVBKbWZVYlU4L1NwNUV6R21hVnJYYTMyUVVBbFc4SHRqaQovUFV6
-WC9CVTZPK1B3ckZhbEVqOE1kOEU0TWZPdE9XY1hlMG5jdGwxRkFtYVRmcy9oMTd1NlpsazlEbTRr
-eVpMCmpJK09wbUpzbmFQOVZ5eWI5MDZ5WjY1V053RHFvVXdyU3YzSDBHdzRVOU9Bdy9zMk8xblk1
-UEJNdjdIUnQyVzQKdWJrQklNdjhsT2hsQmw5WnQyLzl0Z3hGTklUKzBVV2ZoS2I2Y0ZuL0xoZzVX
-NDFuRTk1NHRid1NDWng4NTh0TgpyZDd0WmZVOFVSdU9ha2FINGdQMXlrWXFsTWRSdXdmNWI0MEQ3
-b3A4cXBreUdhSkFhenJ3NEtXRmZJYnpPUUxZCld2R3ZyTGdnOWg1cFEydk9BOW9RcGxjemV5Uzdn
-eFp0VHZFcUVlc2VqWEhNTnB2aWdWc3l3VURTYVJFNmhuUkYKSkZid05FbndzelJneDJMSkxTOWFE
-dnIxeldLVmJXQVFWYkhoYVZoajJ2M0h4Ui9pL0pPSkV5bU9KVVNXTS9heApmVnExczlKZURRbFFJ
-SENuMFBSYgo9aXQzRQotLS0tLUVORCBQR1AgU0lHTkFUVVJFLS0tLS0KCgotLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-VXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxA
-bGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3Rz
-L2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+On Thu, Sep 22, 2016 at 3:22 PM, Andy Lutomirski <luto@amacapital.net> wrote:
+> On Wed, Sep 21, 2016 at 11:58 AM, Kyle Huey <me@kylehuey.com> wrote:
+>> Intel supports faulting on the CPUID instruction beginning with Ivy Bridge.
+>> When enabled, the processor will fault on attempts to execute the CPUID
+>> instruction with CPL>0. Exposing this feature to userspace will allow a
+>> ptracer to trap and emulate the CPUID instruction.
+>>
+>> When supported, this feature is controlled by toggling bit 0 of
+>> MSR_MISC_FEATURES_ENABLES. It is documented in detail in Section 2.3.2 of
+>> http://www.intel.com/content/dam/www/public/us/en/documents/application-notes/virtualization-technology-flexmigration-application-note.pdf
+>>
+>
+>> +       if (!test_and_set_thread_flag(TIF_NOCPUID))
+>> +               /*
+>> +                * Must flip the CPU state synchronously with
+>> +                * TIF_NOCPUID in the current running context.
+>> +                */
+>> +               switch_cpuid_faulting(true);
+>
+> If statements with multiple indented lines should have braces in my
+> book.  See, for example, "goto fail".
+>
+>
+> static?
+>
+>> +int set_cpuid_mode(struct task_struct *task, unsigned long val)
+>
+> static?
+>
+>> + * Called immediately after a successful exec.
+>> + */
+>> +void arch_post_exec(void)
+>> +{
+>> +       /* If cpuid was previously disabled for this task, re-enable it. */
+>> +       if (test_thread_flag(TIF_NOCPUID))
+>> +               enable_cpuid();
+>> +}
+>
+>> diff --git a/fs/exec.c b/fs/exec.c
+>> index 6fcfb3f..0272b7e 100644
+>> --- a/fs/exec.c
+>> +++ b/fs/exec.c
+>> @@ -1287,6 +1287,7 @@ void setup_new_exec(struct linux_binprm * bprm)
+>>         else
+>>                 set_dumpable(current->mm, suid_dumpable);
+>>
+>> +       arch_post_exec();
+>
+> Let's call this arch_setup_new_exec().
+>
+>>         perf_event_exec();
+>>         __set_task_comm(current, kbasename(bprm->filename), true);
+>>
+>> diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
+>> index 2b5b10e..22a3f61 100644
+>> --- a/include/linux/thread_info.h
+>> +++ b/include/linux/thread_info.h
+>> @@ -130,6 +130,10 @@ static inline void check_object_size(const void *ptr, unsigned long n,
+>>  { }
+>>  #endif /* CONFIG_HARDENED_USERCOPY */
+>>
+>> +#ifndef arch_post_exec
+>> +static inline void arch_post_exec(void) {}
+>> +#endif
+>> +
+>
+> thread_info.h is a weird place for this IMO.  Admittedly, elf.h isn't
+> a whole lot better.
+
+Maybe fs.h?
+
+- Kyle
 
