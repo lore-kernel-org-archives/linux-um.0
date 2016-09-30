@@ -1,235 +1,344 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Daniel Walter <dwalter@sigma-star.at>
-Subject: [PATCH v2 29/46] um: Add nandsim backend driver
-Date: Wed, 21 Sep 2016 11:54:07 +0200
-Message-Id: <55a100c5b7151b3d73eae1b811b260e9164fa4e3.1474450296.git.dwalter@sigma-star.at>
-In-Reply-To: <cover.1474450295.git.dwalter@sigma-star.at>
-References: <cover.1474450295.git.dwalter@sigma-star.at>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1bprhg-0008E2-PM
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Sep 2016 06:53:52 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92]
+	helo=www.kot-begemot.co.uk)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1bprhf-0000kN-FT
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 30 Sep 2016 06:53:52 +0000
+From: anton.ivanov@kot-begemot.co.uk
+Date: Fri, 30 Sep 2016 07:53:30 +0100
+Message-Id: <1475218410-32852-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+Subject: [uml-devel] [PATCH v2] UBD Improvements Phase 1
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, jdike@addtoit.com, richard@nod.at
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Cc: Anton Ivanov <aivanov@kot-begemot.co.uk>
 
-From: Richard Weinberger <richard@nod.at>
+From: Anton Ivanov <aivanov@kot-begemot.co.uk>
 
-Add a small UML driver to act as nandsim backend.
-This allows us to use the nandsim MTD as root device
-and boot from it.
-e.g. ./linux mem=512M unand.backing_file=/home/rw/work/ubifs/mtd4.raw \
- unand.id_bytes=0x1c,0xd3,0x90,0xa6 unand.no_oob=y nandsim.defaults=n \
- ubi.mtd=0 rootfstype=ubifs root=ubi0:rootfs
+UBD at present is extremely slow because it handles only
+one request at a time in the IO thread and IRQ handler.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+The single request at a time is replaced by handling multiple
+requests as well as necessary workarounds for short reads/writes.
+
+Resulting performance improvement in disk IO - 30%
+
+Signed-off-by: Anton Ivanov <aivanov@kot-begemot.co.uk>
 ---
- arch/um/Kconfig.um          |   6 ++
- arch/um/drivers/Makefile    |   2 +
- arch/um/drivers/nand_kern.c | 159 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 167 insertions(+)
- create mode 100644 arch/um/drivers/nand_kern.c
+ arch/um/drivers/ubd.h      |   5 ++
+ arch/um/drivers/ubd_kern.c | 161 ++++++++++++++++++++++++++++++++++++++-------
+ arch/um/drivers/ubd_user.c |  19 +++++-
+ 3 files changed, 159 insertions(+), 26 deletions(-)
 
-diff --git a/arch/um/Kconfig.um b/arch/um/Kconfig.um
-index 4b2ed58..f7a1a17 100644
---- a/arch/um/Kconfig.um
-+++ b/arch/um/Kconfig.um
-@@ -44,6 +44,12 @@ config HOSTFS
-           If you'd like to be able to work with files stored on the host,
-           say Y or M here; otherwise say N.
+diff --git a/arch/um/drivers/ubd.h b/arch/um/drivers/ubd.h
+index 3b48cd2..cc1cc85 100644
+--- a/arch/um/drivers/ubd.h
++++ b/arch/um/drivers/ubd.h
+@@ -11,5 +11,10 @@ extern int start_io_thread(unsigned long sp, int *fds_out);
+ extern int io_thread(void *arg);
+ extern int kernel_fd;
  
-+config UML_NANDSIM
-+	tristate "UML nandsim backend"
-+	help
-+	  Use a file on the host directly as backend for nandsim.
-+	  For more help, see modinfo unand.
++extern int ubd_read_poll(int timeout);
++extern int ubd_write_poll(int timeout);
 +
- config MCONSOLE
- 	bool "Management console"
- 	depends on PROC_FS
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index e7582e1..08a806e 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -16,6 +16,7 @@ hostaudio-objs := hostaudio_kern.o
- ubd-objs := ubd_kern.o ubd_user.o
- port-objs := port_kern.o port_user.o
- harddog-objs := harddog_kern.o harddog_user.o
-+unand-objs := nand_kern.o
++#define UBD_REQ_BUFFER_SIZE 64
++
+ #endif
  
- LDFLAGS_pcap.o := -r $(shell $(CC) $(KBUILD_CFLAGS) -print-file-name=libpcap.a)
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index f354027..3f610df 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2015-2016 Anton Ivanov (aivanov@brocade.com)
+  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
+  * Licensed under the GPL
+  */
+@@ -58,6 +59,17 @@ struct io_thread_req {
+ 	int error;
+ };
  
-@@ -59,6 +60,7 @@ obj-$(CONFIG_XTERM_CHAN) += xterm.o xterm_kern.o
- obj-$(CONFIG_UML_WATCHDOG) += harddog.o
- obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
- obj-$(CONFIG_UML_RANDOM) += random.o
-+obj-$(CONFIG_UML_NANDSIM) += unand.o
++
++static struct io_thread_req*  (*irq_req_buffer) [];
++static struct io_thread_req * irq_remainder;
++static int irq_remainder_size;
++
++static struct io_thread_req*  (*io_req_buffer) [];
++static struct io_thread_req * io_remainder;
++static int io_remainder_size;
++
++
++
+ static inline int ubd_test_bit(__u64 bit, unsigned char *data)
+ {
+ 	__u64 n;
+@@ -442,29 +454,88 @@ static void do_ubd_request(struct request_queue * q);
+ static int thread_fd = -1;
+ static LIST_HEAD(restart);
  
- # pcap_user.o must be added explicitly.
- USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o vde_user.o
-diff --git a/arch/um/drivers/nand_kern.c b/arch/um/drivers/nand_kern.c
-new file mode 100644
-index 0000000..399d9e6
---- /dev/null
-+++ b/arch/um/drivers/nand_kern.c
-@@ -0,0 +1,159 @@
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nandsim.h>
-+#include <init.h>
-+#include <os.h>
+-/* XXX - move this inside ubd_intr. */
++/* Function to read several request pointers at a time
++* handling fractional reads if (and as) needed
++*/
 +
-+static u_char id_bytes[8] = {
-+	[0 ... 7] = 0xFF,
-+};
-+static bool no_oob;
-+static char *backing_file;
-+static unsigned int bus_width;
++static int bulk_req_safe_read(
++	int fd,
++	struct io_thread_req *  (*request_buffer) [],
++	struct io_thread_req ** remainder,
++	int * remainder_size,
++	int max_recs
++	)
++{
++	int n = 0;
++	int res = 0;
 +
-+module_param_array(id_bytes, byte, NULL, 0400);
-+module_param(no_oob, bool, 0400);
-+module_param(backing_file, charp, 0400);
-+module_param(bus_width, uint, 0400);
++	if (*remainder_size > 0) {
++		memmove(
++			(char *) request_buffer,
++			(char *) remainder, * remainder_size
++		);
++		n = * remainder_size;
++	}
 +
-+MODULE_PARM_DESC(backing_file, "File to use as backing store");
-+MODULE_PARM_DESC(id_bytes, "The ID bytes returned by NAND Flash 'read ID' command");
-+MODULE_PARM_DESC(no_oob, "Set to use an image without OOB data, i.e created by nanddump");
-+MODULE_PARM_DESC(bus_width, "Chip's bus width (8- or 16-bit)");
++	res = os_read_file(
++			fd,
++			((char *) request_buffer) + * remainder_size,
++			sizeof(struct io_thread_req *) * max_recs - *remainder_size
++		);
++	if (res > 0) {
++		n += res;
++		if ((n % sizeof(struct io_thread_req *)) > 0) {
++			/*
++			* Read somehow returned not a multiple of dword
++			* theoretically possible, but never observed in the
++			* wild, so read routine must be able to handle it
++			*/
++			*remainder_size = n % sizeof(struct io_thread_req *);
++			memmove(
++				remainder,
++				((char *) request_buffer) + n/sizeof(struct io_thread_req *),
++				*remainder_size
++			);
++			n = n - *remainder_size;
++		}
++	} else {
++		n = res;
++	}
++	return n;
++}
 +
-+struct ns_uml_data {
-+	int fd;
-+	void *file_buf;
-+};
+ /* Called without dev->lock held, and only in interrupt context. */
+ static void ubd_handler(void)
+ {
+-	struct io_thread_req *req;
+ 	struct ubd *ubd;
+ 	struct list_head *list, *next_ele;
+ 	unsigned long flags;
+ 	int n;
++	int count;
+ 
+ 	while(1){
+-		n = os_read_file(thread_fd, &req,
+-				 sizeof(struct io_thread_req *));
+-		if(n != sizeof(req)){
++		n = bulk_req_safe_read(
++			thread_fd,
++			irq_req_buffer,
++			&irq_remainder,
++			&irq_remainder_size,
++			UBD_REQ_BUFFER_SIZE
++		);
++		if(n < 0){
+ 			if(n == -EAGAIN)
+ 				break;
+ 			printk(KERN_ERR "spurious interrupt in ubd_handler, "
+ 			       "err = %d\n", -n);
+ 			return;
+ 		}
+-
+-		blk_end_request(req->req, 0, req->length);
+-		kfree(req);
++		for (count=0;count < n /sizeof(struct io_thread_req *);count++) {
++			blk_end_request(
++				(* irq_req_buffer)[count]->req,
++				0,
++				(* irq_req_buffer)[count]->length
++			);
++			kfree((* irq_req_buffer)[count]);
++		}
+ 	}
+ 	reactivate_fd(thread_fd, UBD_IRQ);
+ 
+@@ -1064,6 +1135,28 @@ static int __init ubd_init(void)
+ 		if (register_blkdev(fake_major, "ubd"))
+ 			return -1;
+ 	}
 +
++	irq_req_buffer = kmalloc(
++			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
++			GFP_KERNEL
++		);
++	irq_remainder = 0;
++	
++	if(irq_req_buffer == NULL) {
++		printk(KERN_ERR "Failed to initialize ubd buffering\n");
++		return -1;
++	}
++	io_req_buffer = kmalloc(
++			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
++			GFP_KERNEL
++		);
++	
++	io_remainder = 0;
++
++	if(io_req_buffer == NULL) {
++		printk(KERN_ERR "Failed to initialize ubd buffering\n");
++		return -1;
++	}
+ 	platform_driver_register(&ubd_driver);
+ 	mutex_lock(&ubd_lock);
+ 	for (i = 0; i < MAX_DEV; i++){
+@@ -1458,31 +1551,49 @@ static int io_count = 0;
+ 
+ int io_thread(void *arg)
+ {
+-	struct io_thread_req *req;
+-	int n;
++	int n, count, written, res;
+ 
+ 	os_fix_helper_signals();
+ 
+ 	while(1){
+-		n = os_read_file(kernel_fd, &req,
+-				 sizeof(struct io_thread_req *));
+-		if(n != sizeof(struct io_thread_req *)){
+-			if(n < 0)
++		n = bulk_req_safe_read(
++			kernel_fd,
++                        io_req_buffer,
++                        &io_remainder,
++                        &io_remainder_size,
++                        UBD_REQ_BUFFER_SIZE
++                );
++                if(n < 0){
++                        if(n == -EAGAIN) {
++				ubd_read_poll(-1);
++				continue;
++			} else {
+ 				printk("io_thread - read failed, fd = %d, "
+ 				       "err = %d\n", kernel_fd, -n);
+-			else {
+-				printk("io_thread - short read, fd = %d, "
+-				       "length = %d\n", kernel_fd, n);
+ 			}
+-			continue;
++                } 
++
++                for (count=0;count < n /sizeof(struct io_thread_req *);count++) {
++			io_count++;
++			do_io((* io_req_buffer)[count]);
+ 		}
+-		io_count++;
+-		do_io(req);
+-		n = os_write_file(kernel_fd, &req,
+-				  sizeof(struct io_thread_req *));
+-		if(n != sizeof(struct io_thread_req *))
+-			printk("io_thread - write failed, fd = %d, err = %d\n",
+-			       kernel_fd, -n);
++
++		written = 0;
++
++		do {
++			res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
++			if (res > 0) {
++				written += res;
++			} else {
++				if (res != -EAGAIN) {
++					printk("io_thread - read failed, fd = %d, "
++					       "err = %d\n", kernel_fd, -n);
++				}
++			}
++			if (written < n) {
++				ubd_write_poll(-1);
++			}
++		} while (written < n);
+ 	}
+ 
+ 	return 0;
+diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
+index e376f9b..d3240b5 100644
+--- a/arch/um/drivers/ubd_user.c
++++ b/arch/um/drivers/ubd_user.c
+@@ -1,4 +1,5 @@
+-/* 
 +/*
-+ * We support only one instance so far, just to boot from MTD.
-+ * If you need more MTDs, use nandsimctl(8).
-+ */
-+static struct mtd_info *nsmtd;
++ * Copyright (C) 2016 Anton Ivanov (aivanov@brocade.com)
+  * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
+  * Copyright (C) 2001 Ridgerun,Inc (glonnon@ridgerun.com)
+  * Licensed under the GPL
+@@ -20,6 +21,9 @@
+ 
+ #include "ubd.h"
+ #include <os.h>
++#include <poll.h>
 +
-+static int file_read(struct nandsim *ns, char *addr, unsigned long count,
-+		     loff_t offset)
-+{
-+	struct ns_uml_data *data = nandsim_get_backend_data(ns);
++struct pollfd kernel_pollfd;
+ 
+ int start_io_thread(unsigned long sp, int *fd_out)
+ {
+@@ -32,9 +36,12 @@ int start_io_thread(unsigned long sp, int *fd_out)
+ 	}
+ 
+ 	kernel_fd = fds[0];
++	kernel_pollfd.fd = kernel_fd;
++	kernel_pollfd.events = POLLIN;
+ 	*fd_out = fds[1];
+ 
+ 	err = os_set_fd_block(*fd_out, 0);
++	err = os_set_fd_block(kernel_fd, 0);
+ 	if (err) {
+ 		printk("start_io_thread - failed to set nonblocking I/O.\n");
+ 		goto out_close;
+@@ -57,3 +64,13 @@ int start_io_thread(unsigned long sp, int *fd_out)
+  out:
+ 	return err;
+ }
 +
-+	return os_pread_file(data->fd, addr, count, offset);
++int ubd_read_poll(int timeout) {
++	kernel_pollfd.events = POLLIN;
++	return poll(&kernel_pollfd, 1, timeout);
 +}
-+
-+static ssize_t file_write(struct nandsim *ns, const char *addr, size_t count,
-+			  loff_t offset)
-+{
-+	struct ns_uml_data *data = nandsim_get_backend_data(ns);
-+
-+	return os_pwrite_file(data->fd, addr, count, offset);
++int ubd_write_poll(int timeout) {
++	kernel_pollfd.events = POLLOUT;
++	return poll(&kernel_pollfd, 1, timeout);
 +}
-+
-+static void ns_uml_read_page(struct nandsim *ns, int num)
-+{
-+	__ns_file_read_page(ns, num, file_read);
-+}
-+
-+static int ns_uml_prog_page(struct nandsim *ns, int num)
-+{
-+	struct ns_uml_data *data = nandsim_get_backend_data(ns);
-+
-+	return __ns_file_prog_page(ns, num, data->file_buf, file_read,
-+				   file_write);
-+}
-+
-+static void ns_uml_erase_sector(struct nandsim *ns)
-+{
-+	struct ns_uml_data *data = nandsim_get_backend_data(ns);
-+
-+	__ns_file_erase_sector(ns, data->file_buf, file_write);
-+}
-+
-+static int ns_uml_init(struct nandsim *ns, struct nandsim_params *nsparam)
-+{
-+	struct ns_uml_data *data = kzalloc(sizeof(*data), GFP_KERNEL);
-+
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->file_buf = kmalloc(nandsim_get_geom(ns)->pgszoob, GFP_KERNEL);
-+	if (!data->file_buf) {
-+		kfree(data);
-+		return -ENOMEM;
-+	}
-+
-+	data->fd = os_open_file(nsparam->cache_file, of_set_rw(OPENFLAGS(), 1, 1), 0);
-+	if (data->fd < 0) {
-+		printk(KERN_ERR "Unable to open %s: %i\n", nsparam->cache_file, data->fd);
-+		kfree(data->file);
-+		kfree(data);
-+		return data->fd;
-+	}
-+
-+	nandsim_set_backend_data(ns, data);
-+
-+	return 0;
-+}
-+
-+static void ns_uml_destroy(struct nandsim *ns)
-+{
-+	struct ns_uml_data *data = nandsim_get_backend_data(ns);
-+
-+	if (!data)
-+		return;
-+
-+	os_close_file(data->fd);
-+	kfree(data->file_buf);
-+	kfree(data);
-+}
-+
-+static struct ns_backend_ops ns_uml_bops = {
-+	.erase_sector = ns_uml_erase_sector,
-+	.prog_page = ns_uml_prog_page,
-+	.read_page = ns_uml_read_page,
-+	.init = ns_uml_init,
-+	.destroy = ns_uml_destroy,
-+	.name = "uml",
-+};
-+
-+static struct nandsim_params params = {
-+	.bops = &ns_uml_bops,
-+};
-+
-+static int __init uml_ns_init(void)
-+{
-+	struct mtd_info *ret;
-+
-+	if (!backing_file)
-+		return 0;
-+
-+	params.cache_file = backing_file;
-+	params.bus_width = bus_width;
-+	params.no_oob = no_oob;
-+	memcpy(params.id_bytes, id_bytes, sizeof(params.id_bytes));
-+
-+	ret = ns_new_instance(&params);
-+	if (IS_ERR(ret))
-+		return PTR_ERR(ret);
-+
-+	nsmtd = ret;
-+
-+	return 0;
-+}
-+late_initcall(uml_ns_init);
-+
-+static void __exit uml_ns_exit(void)
-+{
-+	/*
-+	 * Since this driver is a singleton we can rely on module refcounting,
-+	 * and assume that ns_destroy_instance() will succeed in any case.
-+	 * If not, print a frindly warning. B-)
-+	 */
-+	WARN_ON(ns_destroy_instance(nsmtd) != 0);
-+}
-+module_exit(uml_ns_exit);
-+
-+MODULE_AUTHOR("Richard Weinberger");
-+MODULE_DESCRIPTION("UML nandsim backend");
-+MODULE_LICENSE("GPL");
 +
 -- 
-2.8.3
+2.1.4
 
+
+------------------------------------------------------------------------------
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
