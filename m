@@ -1,146 +1,66 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v8 7/7] KVM: x86: virtualize cpuid faulting
-Date: Mon, 31 Oct 2016 18:37:49 -0700
-Message-Id: <20161101013749.4003-8-khuey@kylehuey.com>
-In-Reply-To: <20161101013749.4003-1-khuey@kylehuey.com>
-References: <20161101013749.4003-1-khuey@kylehuey.com>
+Subject: [PATCH v7 1/6] x86/arch_prctl/64: Use SYSCALL_DEFINE2 to define sys_arch_prctl
+Date: Tue, 18 Oct 2016 19:03:28 -0700
+Message-Id: <20161019020333.3766-2-khuey@kylehuey.com>
+In-Reply-To: <20161019020333.3766-1-khuey@kylehuey.com>
+References: <20161019020333.3766-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Peter Zijlstra <peterz@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
-
-Hardware support for faulting on the cpuid instruction is not required to
-emulate it, because cpuid triggers a VM exit anyways. KVM handles the relevant
-MSRs (MSR_PLATFORM_INFO and MSR_MISC_FEATURES_ENABLE) and upon a
-cpuid-induced VM exit checks the cpuid faulting state and the CPL.
-kvm_require_cpl is even kind enough to inject the GP fault for us.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/cpuid.c            |  3 +++
- arch/x86/kvm/x86.c              | 16 ++++++++++++++++
- 3 files changed, 20 insertions(+)
+ arch/x86/kernel/process_64.c | 3 ++-
+ arch/x86/um/syscalls_64.c    | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 4b20f73..4a6e62b 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -592,16 +592,17 @@ struct kvm_vcpu_arch {
- 	u64 pat;
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index b3760b3..2718cf9 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -35,6 +35,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/io.h>
+ #include <linux/ftrace.h>
++#include <linux/syscalls.h>
  
- 	unsigned switch_db_regs;
- 	unsigned long db[KVM_NR_DB_REGS];
- 	unsigned long dr6;
- 	unsigned long dr7;
- 	unsigned long eff_db[KVM_NR_DB_REGS];
- 	unsigned long guest_debug_dr7;
-+	bool cpuid_fault;
- 
- 	u64 mcg_cap;
- 	u64 mcg_status;
- 	u64 mcg_ctl;
- 	u64 mcg_ext_ctl;
- 	u64 *mce_banks;
- 
- 	/* Cache MMIO info */
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index afa7bbb..ed8436a 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -862,16 +862,19 @@ void kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx, u32 *ecx, u32 *edx)
- 	trace_kvm_cpuid(function, *eax, *ebx, *ecx, *edx);
+ #include <asm/pgtable.h>
+ #include <asm/processor.h>
+@@ -612,7 +613,7 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(kvm_cpuid);
  
- void kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
+-long sys_arch_prctl(int code, unsigned long addr)
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
  {
- 	u32 function, eax, ebx, ecx, edx;
+ 	return do_arch_prctl(current, code, addr);
+ }
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index e655227..ab3f7f4 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -6,6 +6,7 @@
+  */
  
-+	if (vcpu->arch.cpuid_fault && !kvm_require_cpl(vcpu, 0))
-+		return;
-+
- 	function = eax = kvm_register_read(vcpu, VCPU_REGS_RAX);
- 	ecx = kvm_register_read(vcpu, VCPU_REGS_RCX);
- 	kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx);
- 	kvm_register_write(vcpu, VCPU_REGS_RAX, eax);
- 	kvm_register_write(vcpu, VCPU_REGS_RBX, ebx);
- 	kvm_register_write(vcpu, VCPU_REGS_RCX, ecx);
- 	kvm_register_write(vcpu, VCPU_REGS_RDX, edx);
- 	kvm_x86_ops->skip_emulated_instruction(vcpu);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index e375235..470c553 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2269,16 +2269,21 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			return 1;
- 		vcpu->arch.osvw.length = data;
- 		break;
- 	case MSR_AMD64_OSVW_STATUS:
- 		if (!guest_cpuid_has_osvw(vcpu))
- 			return 1;
- 		vcpu->arch.osvw.status = data;
- 		break;
-+	case MSR_MISC_FEATURES_ENABLES:
-+		if (data & ~CPUID_FAULT_ENABLE)
-+			return 1;
-+		vcpu->arch.cpuid_fault = !!(data & CPUID_FAULT_ENABLE);
-+		break;
- 	default:
- 		if (msr && (msr == vcpu->kvm->arch.xen_hvm_config.msr))
- 			return xen_hvm_config(vcpu, data);
- 		if (kvm_pmu_is_valid_msr(vcpu, msr))
- 			return kvm_pmu_set_msr(vcpu, msr_info);
- 		if (!ignore_msrs) {
- 			vcpu_unimpl(vcpu, "unhandled wrmsr: 0x%x data %llx\n",
- 				    msr, data);
-@@ -2483,16 +2488,25 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			return 1;
- 		msr_info->data = vcpu->arch.osvw.length;
- 		break;
- 	case MSR_AMD64_OSVW_STATUS:
- 		if (!guest_cpuid_has_osvw(vcpu))
- 			return 1;
- 		msr_info->data = vcpu->arch.osvw.status;
- 		break;
-+	case MSR_PLATFORM_INFO:
-+		/* cpuid faulting is supported */
-+		msr_info->data = PLATINFO_CPUID_FAULT;
-+		break;
-+	case MSR_MISC_FEATURES_ENABLES:
-+		msr_info->data = 0;
-+		if (vcpu->arch.cpuid_fault)
-+			msr_info->data |= CPUID_FAULT_ENABLE;
-+		break;
- 	default:
- 		if (kvm_pmu_is_valid_msr(vcpu, msr_info->index))
- 			return kvm_pmu_get_msr(vcpu, msr_info->index, &msr_info->data);
- 		if (!ignore_msrs) {
- 			vcpu_unimpl(vcpu, "unhandled rdmsr: 0x%x\n", msr_info->index);
- 			return 1;
- 		} else {
- 			vcpu_unimpl(vcpu, "ignored rdmsr: 0x%x\n", msr_info->index);
-@@ -7493,16 +7507,18 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	kvm_update_dr0123(vcpu);
- 	vcpu->arch.dr6 = DR6_INIT;
- 	kvm_update_dr6(vcpu);
- 	vcpu->arch.dr7 = DR7_FIXED_1;
- 	kvm_update_dr7(vcpu);
+ #include <linux/sched.h>
++#include <linux/syscalls.h>
+ #include <linux/uaccess.h>
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <os.h>
+@@ -72,7 +73,7 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ 	return ret;
+ }
  
- 	vcpu->arch.cr2 = 0;
- 
-+	vcpu->arch.cpuid_fault = false;
-+
- 	kvm_make_request(KVM_REQ_EVENT, vcpu);
- 	vcpu->arch.apf.msr_val = 0;
- 	vcpu->arch.st.msr_val = 0;
- 
- 	kvmclock_reset(vcpu);
- 
- 	kvm_clear_async_pf_completion_queue(vcpu);
- 	kvm_async_pf_hash_reset(vcpu);
+-long sys_arch_prctl(int code, unsigned long addr)
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
+ {
+ 	return arch_prctl(current, code, (unsigned long __user *) addr);
+ }
+
+base-commit: 1001354ca34179f3db924eb66672442a173147dc
 -- 
-2.10.2
+2.10.1
 
 
