@@ -1,147 +1,206 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v8 5/7] x86/cpufeature: Detect CPUID faulting support
-Date: Mon, 31 Oct 2016 18:37:47 -0700
-Message-Id: <20161101013749.4003-6-khuey@kylehuey.com>
-In-Reply-To: <20161101013749.4003-1-khuey@kylehuey.com>
-References: <20161101013749.4003-1-khuey@kylehuey.com>
+Subject: [PATCH v7 2/6] x86/arch_prctl/64: Rename do_arch_prctl to do_arch_prctl_64
+Date: Tue, 18 Oct 2016 19:03:29 -0700
+Message-Id: <20161019020333.3766-3-khuey@kylehuey.com>
+In-Reply-To: <20161019020333.3766-1-khuey@kylehuey.com>
+References: <20161019020333.3766-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Peter Zijlstra <peterz@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Intel supports faulting on the CPUID instruction beginning with Ivy Bridge.
-When enabled, the processor will fault on attempts to execute the CPUID
-instruction with CPL>0. This will allow a ptracer to emulate the CPUID
-instruction.
-
-Bit 31 of MSR_PLATFORM_INFO advertises support for this feature. It is
-documented in detail in Section 2.3.2 of
-http://www.intel.com/content/dam/www/public/us/en/documents/application-notes/virtualization-technology-flexmigration-application-note.pdf
-
-Detect support for this feature and expose it as X86_FEATURE_CPUID_FAULT.
+In order to introduce new arch_prctls that are not 64 bit only, rename the
+existing 64 bit implementation to do_arch_prctl_64. Also rename the second
+argument to arch_prctl, which will no longer always be an address.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 Reviewed-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/include/asm/cpufeatures.h |  1 +
- arch/x86/include/asm/msr-index.h   |  2 ++
- arch/x86/kernel/cpu/scattered.c    | 22 +++++++++++++++++++++-
- 3 files changed, 24 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/proto.h |  4 +++-
+ arch/x86/kernel/process_64.c | 32 +++++++++++++++++---------------
+ arch/x86/kernel/ptrace.c     |  8 ++++----
+ arch/x86/um/syscalls_64.c    |  4 ++--
+ 4 files changed, 26 insertions(+), 22 deletions(-)
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index a396292..62962e8 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -184,16 +184,17 @@
-  * Auxiliary flags: Linux defined - For features scattered in various
-  * CPUID levels like 0x6, 0xA etc, word 7.
-  *
-  * Reuse free bits when adding new feature flags!
-  */
+diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
+index 9b9b30b..95c3e51 100644
+--- a/arch/x86/include/asm/proto.h
++++ b/arch/x86/include/asm/proto.h
+@@ -30,6 +30,8 @@ void x86_report_nx(void);
  
- #define X86_FEATURE_CPB		( 7*32+ 2) /* AMD Core Performance Boost */
- #define X86_FEATURE_EPB		( 7*32+ 3) /* IA32_ENERGY_PERF_BIAS support */
-+#define X86_FEATURE_CPUID_FAULT ( 7*32+ 4) /* Intel CPUID faulting */
+ extern int reboot_force;
  
- #define X86_FEATURE_HW_PSTATE	( 7*32+ 8) /* AMD HW-PState */
- #define X86_FEATURE_PROC_FEEDBACK ( 7*32+ 9) /* AMD ProcFeedbackInterface */
+-long do_arch_prctl(struct task_struct *task, int code, unsigned long addr);
++#ifdef CONFIG_X86_64
++long do_arch_prctl_64(struct task_struct *task, int code, unsigned long arg2);
++#endif
  
- #define X86_FEATURE_INTEL_PT	( 7*32+15) /* Intel Processor Trace */
- #define X86_FEATURE_AVX512_4VNNIW (7*32+16) /* AVX-512 Neural Network Instructions */
- #define X86_FEATURE_AVX512_4FMAPS (7*32+17) /* AVX-512 Multiply Accumulation Single precision */
- 
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 78f3760..97fb50b 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -36,16 +36,18 @@
- #define EFER_LMSLE		(1<<_EFER_LMSLE)
- #define EFER_FFXSR		(1<<_EFER_FFXSR)
- 
- /* Intel MSRs. Some also available on other CPUs */
- #define MSR_IA32_PERFCTR0		0x000000c1
- #define MSR_IA32_PERFCTR1		0x000000c2
- #define MSR_FSB_FREQ			0x000000cd
- #define MSR_PLATFORM_INFO		0x000000ce
-+#define PLATINFO_CPUID_FAULT_BIT	31
-+#define PLATINFO_CPUID_FAULT		(1ULL << PLATINFO_CPUID_FAULT_BIT)
- 
- #define MSR_NHM_SNB_PKG_CST_CFG_CTL	0x000000e2
- #define NHM_C3_AUTO_DEMOTE		(1UL << 25)
- #define NHM_C1_AUTO_DEMOTE		(1UL << 26)
- #define ATM_LNC_C6_AUTO_DEMOTE		(1UL << 25)
- #define SNB_C1_AUTO_UNDEMOTE		(1UL << 27)
- #define SNB_C3_AUTO_UNDEMOTE		(1UL << 28)
- 
-diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
-index 1db8dc4..97a340d 100644
---- a/arch/x86/kernel/cpu/scattered.c
-+++ b/arch/x86/kernel/cpu/scattered.c
-@@ -19,41 +19,61 @@ struct cpuid_bit {
- 
- enum cpuid_regs {
- 	CR_EAX = 0,
- 	CR_ECX,
- 	CR_EDX,
- 	CR_EBX
- };
- 
-+struct msr_bit {
-+	u16 feature;
-+	u16 msr;
-+	u8 bit;
-+};
-+
- void init_scattered_cpuid_features(struct cpuinfo_x86 *c)
- {
-+	const struct cpuid_bit *cb;
-+	const struct msr_bit *mb;
- 	u32 max_level;
- 	u32 regs[4];
--	const struct cpuid_bit *cb;
-+	u64 msrval;
- 
- 	static const struct cpuid_bit cpuid_bits[] = {
- 		{ X86_FEATURE_INTEL_PT,		CR_EBX,25, 0x00000007, 0 },
- 		{ X86_FEATURE_AVX512_4VNNIW,	CR_EDX, 2, 0x00000007, 0 },
- 		{ X86_FEATURE_AVX512_4FMAPS,	CR_EDX, 3, 0x00000007, 0 },
- 		{ X86_FEATURE_APERFMPERF,	CR_ECX, 0, 0x00000006, 0 },
- 		{ X86_FEATURE_EPB,		CR_ECX, 3, 0x00000006, 0 },
- 		{ X86_FEATURE_HW_PSTATE,	CR_EDX, 7, 0x80000007, 0 },
- 		{ X86_FEATURE_CPB,		CR_EDX, 9, 0x80000007, 0 },
- 		{ X86_FEATURE_PROC_FEEDBACK,	CR_EDX,11, 0x80000007, 0 },
- 		{ 0, 0, 0, 0, 0 }
- 	};
- 
-+	static const struct msr_bit msr_bits[] = {
-+		{ X86_FEATURE_CPUID_FAULT,	MSR_PLATFORM_INFO, 31 },
-+		{ 0, 0, 0 }
-+	};
-+
- 	for (cb = cpuid_bits; cb->feature; cb++) {
- 
- 		/* Verify that the level is valid */
- 		max_level = cpuid_eax(cb->level & 0xffff0000);
- 		if (max_level < cb->level ||
- 		    max_level > (cb->level | 0xffff))
- 			continue;
- 
- 		cpuid_count(cb->level, cb->sub_leaf, &regs[CR_EAX],
- 			    &regs[CR_EBX], &regs[CR_ECX], &regs[CR_EDX]);
- 
- 		if (regs[cb->reg] & (1 << cb->bit))
- 			set_cpu_cap(c, cb->feature);
+ #endif /* _ASM_X86_PROTO_H */
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index 2718cf9..611df20 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -198,7 +198,7 @@ int copy_thread_tls(unsigned long clone_flags, unsigned long sp,
+ 				(struct user_desc __user *)tls, 0);
+ 		else
+ #endif
+-			err = do_arch_prctl(p, ARCH_SET_FS, tls);
++			err = do_arch_prctl_64(p, ARCH_SET_FS, tls);
+ 		if (err)
+ 			goto out;
  	}
-+
-+	for (mb = msr_bits; mb->feature; mb++) {
-+		if (rdmsrl_safe(mb->msr, &msrval))
-+			continue;
-+		if (msrval & (1ULL << mb->bit))
-+			set_cpu_cap(c, mb->feature);
-+	}
+@@ -539,7 +539,7 @@ static long prctl_map_vdso(const struct vdso_image *image, unsigned long addr)
  }
+ #endif
+ 
+-long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
++long do_arch_prctl_64(struct task_struct *task, int code, unsigned long arg2)
+ {
+ 	int ret = 0;
+ 	int doit = task == current;
+@@ -547,62 +547,64 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
+ 
+ 	switch (code) {
+ 	case ARCH_SET_GS:
+-		if (addr >= TASK_SIZE_MAX)
++		if (arg2 >= TASK_SIZE_MAX)
+ 			return -EPERM;
+ 		cpu = get_cpu();
+ 		task->thread.gsindex = 0;
+-		task->thread.gsbase = addr;
++		task->thread.gsbase = arg2;
+ 		if (doit) {
+ 			load_gs_index(0);
+-			ret = wrmsrl_safe(MSR_KERNEL_GS_BASE, addr);
++			ret = wrmsrl_safe(MSR_KERNEL_GS_BASE, arg2);
+ 		}
+ 		put_cpu();
+ 		break;
+ 	case ARCH_SET_FS:
+ 		/* Not strictly needed for fs, but do it for symmetry
+ 		   with gs */
+-		if (addr >= TASK_SIZE_MAX)
++		if (arg2 >= TASK_SIZE_MAX)
+ 			return -EPERM;
+ 		cpu = get_cpu();
+ 		task->thread.fsindex = 0;
+-		task->thread.fsbase = addr;
++		task->thread.fsbase = arg2;
+ 		if (doit) {
+ 			/* set the selector to 0 to not confuse __switch_to */
+ 			loadsegment(fs, 0);
+-			ret = wrmsrl_safe(MSR_FS_BASE, addr);
++			ret = wrmsrl_safe(MSR_FS_BASE, arg2);
+ 		}
+ 		put_cpu();
+ 		break;
+ 	case ARCH_GET_FS: {
+ 		unsigned long base;
++
+ 		if (doit)
+ 			rdmsrl(MSR_FS_BASE, base);
+ 		else
+ 			base = task->thread.fsbase;
+-		ret = put_user(base, (unsigned long __user *)addr);
++		ret = put_user(base, (unsigned long __user *)arg2);
+ 		break;
+ 	}
+ 	case ARCH_GET_GS: {
+ 		unsigned long base;
++
+ 		if (doit)
+ 			rdmsrl(MSR_KERNEL_GS_BASE, base);
+ 		else
+ 			base = task->thread.gsbase;
+-		ret = put_user(base, (unsigned long __user *)addr);
++		ret = put_user(base, (unsigned long __user *)arg2);
+ 		break;
+ 	}
+ 
+ #ifdef CONFIG_CHECKPOINT_RESTORE
+ # ifdef CONFIG_X86_X32_ABI
+ 	case ARCH_MAP_VDSO_X32:
+-		return prctl_map_vdso(&vdso_image_x32, addr);
++		return prctl_map_vdso(&vdso_image_x32, arg2);
+ # endif
+ # if defined CONFIG_X86_32 || defined CONFIG_IA32_EMULATION
+ 	case ARCH_MAP_VDSO_32:
+-		return prctl_map_vdso(&vdso_image_32, addr);
++		return prctl_map_vdso(&vdso_image_32, arg2);
+ # endif
+ 	case ARCH_MAP_VDSO_64:
+-		return prctl_map_vdso(&vdso_image_64, addr);
++		return prctl_map_vdso(&vdso_image_64, arg2);
+ #endif
+ 
+ 	default:
+@@ -613,9 +615,9 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
+ 	return ret;
+ }
+ 
+-SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
+ {
+-	return do_arch_prctl(current, code, addr);
++	return do_arch_prctl_64(current, code, arg2);
+ }
+ 
+ unsigned long KSTK_ESP(struct task_struct *task)
+diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
+index 0e63c02..5004302 100644
+--- a/arch/x86/kernel/ptrace.c
++++ b/arch/x86/kernel/ptrace.c
+@@ -395,12 +395,12 @@ static int putreg(struct task_struct *child,
+ 		if (value >= TASK_SIZE_MAX)
+ 			return -EIO;
+ 		/*
+-		 * When changing the segment base, use do_arch_prctl
++		 * When changing the segment base, use do_arch_prctl_64
+ 		 * to set either thread.fs or thread.fsindex and the
+ 		 * corresponding GDT slot.
+ 		 */
+ 		if (child->thread.fsbase != value)
+-			return do_arch_prctl(child, ARCH_SET_FS, value);
++			return do_arch_prctl_64(child, ARCH_SET_FS, value);
+ 		return 0;
+ 	case offsetof(struct user_regs_struct,gs_base):
+ 		/*
+@@ -409,7 +409,7 @@ static int putreg(struct task_struct *child,
+ 		if (value >= TASK_SIZE_MAX)
+ 			return -EIO;
+ 		if (child->thread.gsbase != value)
+-			return do_arch_prctl(child, ARCH_SET_GS, value);
++			return do_arch_prctl_64(child, ARCH_SET_GS, value);
+ 		return 0;
+ #endif
+ 	}
+@@ -868,7 +868,7 @@ long arch_ptrace(struct task_struct *child, long request,
+ 		   Works just like arch_prctl, except that the arguments
+ 		   are reversed. */
+ 	case PTRACE_ARCH_PRCTL:
+-		ret = do_arch_prctl(child, data, addr);
++		ret = do_arch_prctl_64(child, data, addr);
+ 		break;
+ #endif
+ 
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index ab3f7f4..3362c4e 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -73,9 +73,9 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ 	return ret;
+ }
+ 
+-SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
+ {
+-	return arch_prctl(current, code, (unsigned long __user *) addr);
++	return arch_prctl(current, code, (unsigned long __user *) arg2);
+ }
+ 
+ void arch_switch_to(struct task_struct *to)
 -- 
-2.10.2
+2.10.1
 
 
