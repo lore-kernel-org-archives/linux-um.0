@@ -1,38 +1,35 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v7 0/6] x86/arch_prctl Add ARCH_[GET|SET]_CPUID for controlling the CPUID instruction
-Date: Tue, 18 Oct 2016 19:03:27 -0700
-Message-Id: <20161019020333.3766-1-khuey@kylehuey.com>
+Date: Fri, 28 Oct 2016 00:38:54 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v7 6/6] x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
+In-Reply-To: <CALCETrUXCA+-gWxvAVJf=zRPFP=_t600pdVPC44SFL5v_YxOMQ@mail.gmail.com>
+Message-ID: <alpine.DEB.2.20.1610280038260.4913@nanos>
+References: <20161019020333.3766-1-khuey@kylehuey.com> <20161019020333.3766-7-khuey@kylehuey.com> <alpine.DEB.2.20.1610271022030.4817@nanos> <CALCETrUXCA+-gWxvAVJf=zRPFP=_t600pdVPC44SFL5v_YxOMQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Peter Zijlstra <peterz@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Kyle Huey <me@kylehuey.com>, Robert O'Callahan <robert@ocallahan.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Peter Zijlstra <peterz@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-rr (http://rr-project.org/), a userspace record-and-replay reverse-
-execution debugger, would like to trap and emulate the CPUID instruction.
-This would allow us to a) mask away certain hardware features that rr does
-not support (e.g. RDRAND) and b) enable trace portability across machines
-by providing constant results.
+On Thu, 27 Oct 2016, Andy Lutomirski wrote:
+> On Thu, Oct 27, 2016 at 4:15 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
+> Let's just do this right from day one:
+> 
+> static void set_cpuid_faulting(bool on)
+> {
+>   u64 msrval;
+> 
+>   DEBUG_LOCKS_WARN_ON(!irqs_disabled());
+> 
+>   msrval = this_cpu_read(msr_misc_features_enables_shadow);
+>   msrval &= CPUID_FAULT_ENABLE;
+>   msrval |= (on << CPUID_FAULT_ENABLE_BIT);
+>   this_cpu_write(msr_misc_features_enables_shadow, msrval);
+>   wrmsrl(MSR_MISC_FEATURES_ENABLES, msrval);
+> }
+> 
+> RDMSR may be considerably faster than WRMSR, but that doesn't mean it's *fast*.
 
-Newer Intel CPUs (Ivy Bridge and later) can fault when CPUID is executed at
-CPL > 0.  Expose this capability to userspace as a new pair of arch_prctls,
-ARCH_GET_CPUID and ARCH_SET_CPUID, with two values, ARCH_CPUID_ENABLE and
-ARCH_CPUID_SIGSEGV.
-
-v6 did not get any feedback, so I included the changes since v5.
-
-Since v6:
-- Rebased to 4.9-rc1 (primarily over the new VDSO arch_prctls and the new pkey
-  entries in the syscall table)
-
-Since v5:
-
-Patch 3:
-- do_arch_prctl is again do_arch_prctl_common
-
-Patch 6:
-- Added static qualifiers on get/set_cpuid_mode
-- Braced ifs in disable/enable_cpuid
-- Renamed arch_post_exec to arch_setup_new_exec
-
+Good point!
 
