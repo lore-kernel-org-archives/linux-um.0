@@ -1,80 +1,314 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.1610271022030.4817@nanos>
-References: <20161019020333.3766-1-khuey@kylehuey.com> <20161019020333.3766-7-khuey@kylehuey.com>
- <alpine.DEB.2.20.1610271022030.4817@nanos>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Thu, 27 Oct 2016 15:34:53 -0700
-Message-ID: <CALCETrUXCA+-gWxvAVJf=zRPFP=_t600pdVPC44SFL5v_YxOMQ@mail.gmail.com>
+Date: Thu, 27 Oct 2016 13:15:17 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
 Subject: Re: [PATCH v7 6/6] x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20161019020333.3766-7-khuey@kylehuey.com>
+Message-ID: <alpine.DEB.2.20.1610271022030.4817@nanos>
+References: <20161019020333.3766-1-khuey@kylehuey.com> <20161019020333.3766-7-khuey@kylehuey.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kyle Huey <me@kylehuey.com>, Robert O'Callahan <robert@ocallahan.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Peter Zijlstra <peterz@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>
+To: Kyle Huey <me@kylehuey.com>
+Cc: Robert O'Callahan <robert@ocallahan.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dmitry Safonov <dsafonov@virtuozzo.com>, Peter Zijlstra <peterz@infradead.org>, Dave Hansen <dave.hansen@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Oct 27, 2016 at 4:15 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
-> This is insane. The compiler makes that a conditional jump and then in
-> switch_cpuid_faulting we get another one. Further switch_cpuid_faulting()
-> calls into lib/msr which is adding even more overhead.
->
-> msr_set/clear_bit() are nice for random driver code, but complete overkill
-> for the context switch hotpath.
->
-> That's just not acceptable for switch_to(). We keep adding cruft and then
-> wonder why context switches slow down despite machines getting faster.
->
-> This can and needs to be done smarter. See untested patch below. The
-> resulting code has a single conditional jump, which is obviously the check
-> for a change between prev and next. Everything else is done with straight
-> linear shift,add,and,rdmsr,wrmsr instructions.
->
+On Tue, 18 Oct 2016, Kyle Huey wrote:
+> When supported, this feature is controlled by toggling bit 0 of
+> MSR_MISC_FEATURES_ENABLES. It is documented in detail in Section 2.3.2 of
+> http://www.intel.com/content/dam/www/public/us/en/documents/application-notes/virtualization-technology-flexmigration-application-note.pdf
+> 
 
-...
+Bah. I really dislike these document URLs. They often change before a patch
+hits Linus tree just because $corps think that restructuring their web
+sites every two month is enhancing user experience.
 
->  #define MSR_IA32_SYSENTER_ESP          0x00000175
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -193,12 +193,17 @@ int set_tsc_mode(unsigned int val)
->         return 0;
->  }
->
-> -static void switch_cpuid_faulting(bool on)
-> +#define CPUID_FAULT_ON_MASK    (~0ULL)
-> +#define CPUID_FAULT_OFF_MASK   (~CPUID_FAULT_ENABLE)
+I really wonder if we should start collecting such information in a k.org
+wiki or just stick the PDF into the k.org bugzilla so we get a permanent
+reference. 
+
+<RANT AT INHELL> 
+
+Can Intel please get its act together and stop sticking stuff in random
+application notes instead of properly documenting it in the SDM?
+
+The SDM Sept 2016 still marks bit 31 of the PLATFORM_INFO MSR as reserved
+and the MISC_FEATURE_ENABLES msr is mentioned at all. Really useful, NOT!
+
+</RANT>
+
+> +static void switch_cpuid_faulting(bool on)
+> +{
+> +	if (on)
+> +		msr_set_bit(MSR_MISC_FEATURES_ENABLES, 0);
+
+We really want this '0' to be a proper define and not just a hardcoded
+value.
+
+> +	else
+> +		msr_clear_bit(MSR_MISC_FEATURES_ENABLES, 0);
+> +}
 > +
-> +static void cpuid_fault_ctrl(u64 msk)
+> +static void disable_cpuid(void)
+> +{
+> +	preempt_disable();
+> +	if (!test_and_set_thread_flag(TIF_NOCPUID)) {
+> +		/*
+> +		 * Must flip the CPU state synchronously with
+> +		 * TIF_NOCPUID in the current running context.
+> +		 */
+> +		switch_cpuid_faulting(true);
+> +	}
+> +	preempt_enable();
+> +}
+> +
+> +static void enable_cpuid(void)
+> +{
+> +	preempt_disable();
+> +	if (test_and_clear_thread_flag(TIF_NOCPUID)) {
+> +		/*
+> +		 * Must flip the CPU state synchronously with
+> +		 * TIF_NOCPUID in the current running context.
+> +		 */
+> +		switch_cpuid_faulting(false);
+> +	}
+> +	preempt_enable();
+> +}
+> +
+> +static int get_cpuid_mode(void)
+> +{
+> +	return test_thread_flag(TIF_NOCPUID) ? ARCH_CPUID_SIGSEGV : ARCH_CPUID_ENABLE;
+> +}
+> +
+> +static int set_cpuid_mode(struct task_struct *task, unsigned long val)
+> +{
+> +	/* Only disable_cpuid() if it is supported on this hardware. */
+> +	bool cpuid_fault_supported = static_cpu_has(X86_FEATURE_CPUID_FAULT);
+
+Errm. Why are you restricting this to disable_cpuid()? If that feature is
+off then there is no guarantee that MSR_MISC_FEATURES_ENABLES is
+accessible. This wants to have:
+
+	if (!static_cpu_has(X86_FEATURE_CPUID_FAULT))
+		return -ENODEV;
+
+or some other sensible error code.
+
+> +	if (val == ARCH_CPUID_ENABLE)
+> +		enable_cpuid();
+> +	else if (val == ARCH_CPUID_SIGSEGV && cpuid_fault_supported)
+> +		disable_cpuid();
+> +	else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Called immediately after a successful exec.
+> + */
+> +void arch_setup_new_exec(void)
+> +{
+> +	/* If cpuid was previously disabled for this task, re-enable it. */
+> +	if (test_thread_flag(TIF_NOCPUID))
+> +		enable_cpuid();
+> +}
+> +
+>  void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p,
+>  		      struct tss_struct *tss)
 >  {
-> -       if (on)
-> -               msr_set_bit(MSR_MISC_FEATURES_ENABLES, 0);
-> -       else
-> -               msr_clear_bit(MSR_MISC_FEATURES_ENABLES, 0);
-> +       u64 msrval;
+> @@ -211,6 +276,15 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p,
+>  		update_debugctlmsr(debugctl);
+>  	}
+>  
+> +	if (test_tsk_thread_flag(prev_p, TIF_NOCPUID) ^
+> +	    test_tsk_thread_flag(next_p, TIF_NOCPUID)) {
+> +		/* prev and next are different */
+
+Why commenting the obvious? That's clear from the code.
+
+> +		if (test_tsk_thread_flag(next_p, TIF_NOCPUID))
+> +			switch_cpuid_faulting(true);
+> +		else
+> +			switch_cpuid_faulting(false);
+
+This is insane. The compiler makes that a conditional jump and then in
+switch_cpuid_faulting we get another one. Further switch_cpuid_faulting()
+calls into lib/msr which is adding even more overhead.
+
+msr_set/clear_bit() are nice for random driver code, but complete overkill
+for the context switch hotpath.
+
+That's just not acceptable for switch_to(). We keep adding cruft and then
+wonder why context switches slow down despite machines getting faster.
+
+This can and needs to be done smarter. See untested patch below. The
+resulting code has a single conditional jump, which is obviously the check
+for a change between prev and next. Everything else is done with straight
+linear shift,add,and,rdmsr,wrmsr instructions.
+
+> @@ -587,5 +661,25 @@ unsigned long get_wchan(struct task_struct *p)
+>  
+>  long do_arch_prctl_common(struct task_struct *task, int code, unsigned long arg2)
+>  {
+> -	return -EINVAL;
+> +	int ret = 0;
 > +
-> +       rdmsrl(MSR_MISC_FEATURES_ENABLES, msrval);
-> +       msrval |= CPUID_FAULT_ENABLE;
-> +       msrval &= msk;
-> +       wrmsrl(MSR_MISC_FEATURES_ENABLES, msrval);
->  }
+> +	switch (code) {
+> +	case ARCH_GET_CPUID: {
+> +		if (arg2 != 0)
+> +			ret = -EINVAL;
+> +		else
+> +			ret = get_cpuid_mode();
+> +		break;
+> +	}
+> +	case ARCH_SET_CPUID: {
+> +		ret = set_cpuid_mode(task, arg2);
+> +		break;
+> +	}
+> +
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +
+> +	return ret;
 
-Let's just do this right from day one:
+If you try hard, you might come up with a variant which takes even more
+lines.
 
-static void set_cpuid_faulting(bool on)
-{
-  u64 msrval;
+The delta patch below applies on top of this patch and is completely
+untested. If you find bugs, you own them :)
 
-  DEBUG_LOCKS_WARN_ON(!irqs_disabled());
+Thanks,
 
-  msrval = this_cpu_read(msr_misc_features_enables_shadow);
-  msrval &= CPUID_FAULT_ENABLE;
-  msrval |= (on << CPUID_FAULT_ENABLE_BIT);
-  this_cpu_write(msr_misc_features_enables_shadow, msrval);
-  wrmsrl(MSR_MISC_FEATURES_ENABLES, msrval);
-}
+	tglx
 
-RDMSR may be considerably faster than WRMSR, but that doesn't mean it's *fast*.
+8<-----------------------
 
-Obviously this needs some initialization code, but that's fine IMO.
-
---Andy
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -54,6 +54,7 @@
+ #define MSR_IA32_BBL_CR_CTL		0x00000119
+ #define MSR_IA32_BBL_CR_CTL3		0x0000011e
+ #define MSR_MISC_FEATURES_ENABLES	0x00000140
++#define CPUID_FAULT_ENABLE		(1ULL << 0)
+ 
+ #define MSR_IA32_SYSENTER_CS		0x00000174
+ #define MSR_IA32_SYSENTER_ESP		0x00000175
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -193,12 +193,17 @@ int set_tsc_mode(unsigned int val)
+ 	return 0;
+ }
+ 
+-static void switch_cpuid_faulting(bool on)
++#define CPUID_FAULT_ON_MASK	(~0ULL)
++#define CPUID_FAULT_OFF_MASK	(~CPUID_FAULT_ENABLE)
++
++static void cpuid_fault_ctrl(u64 msk)
+ {
+-	if (on)
+-		msr_set_bit(MSR_MISC_FEATURES_ENABLES, 0);
+-	else
+-		msr_clear_bit(MSR_MISC_FEATURES_ENABLES, 0);
++	u64 msrval;
++
++	rdmsrl(MSR_MISC_FEATURES_ENABLES, msrval);
++	msrval |= CPUID_FAULT_ENABLE;
++	msrval &= msk;
++	wrmsrl(MSR_MISC_FEATURES_ENABLES, msrval);
+ }
+ 
+ static void disable_cpuid(void)
+@@ -209,7 +214,7 @@ static void disable_cpuid(void)
+ 		 * Must flip the CPU state synchronously with
+ 		 * TIF_NOCPUID in the current running context.
+ 		 */
+-		switch_cpuid_faulting(true);
++		cpuid_fault_ctrl(CPUID_FAULT_OFF_MASK);
+ 	}
+ 	preempt_enable();
+ }
+@@ -222,7 +227,7 @@ static void enable_cpuid(void)
+ 		 * Must flip the CPU state synchronously with
+ 		 * TIF_NOCPUID in the current running context.
+ 		 */
+-		switch_cpuid_faulting(false);
++		cpuid_fault_ctrl(CPUID_FAULT_ON_MASK);
+ 	}
+ 	preempt_enable();
+ }
+@@ -234,16 +239,18 @@ static int get_cpuid_mode(void)
+ 
+ static int set_cpuid_mode(struct task_struct *task, unsigned long val)
+ {
+-	/* Only disable_cpuid() if it is supported on this hardware. */
+-	bool cpuid_fault_supported = static_cpu_has(X86_FEATURE_CPUID_FAULT);
++	if (static_cpu_has(X86_FEATURE_CPUID_FAULT))
++		return -ENODEV;
+ 
+-	if (val == ARCH_CPUID_ENABLE)
++	switch (val) {
++	case ARCH_CPUID_ENABLE:
+ 		enable_cpuid();
+-	else if (val == ARCH_CPUID_SIGSEGV && cpuid_fault_supported)
++		break;
++	case ARCH_CPUID_SIGSEGV:
+ 		disable_cpuid();
+-	else
+-		return -EINVAL;
+-
++		break;
++	default: return -EINVAL;
++	}
+ 	return 0;
+ }
+ 
+@@ -278,11 +285,10 @@ void __switch_to_xtra(struct task_struct
+ 
+ 	if (test_tsk_thread_flag(prev_p, TIF_NOCPUID) ^
+ 	    test_tsk_thread_flag(next_p, TIF_NOCPUID)) {
+-		/* prev and next are different */
+-		if (test_tsk_thread_flag(next_p, TIF_NOCPUID))
+-			switch_cpuid_faulting(true);
+-		else
+-			switch_cpuid_faulting(false);
++		bool set = test_tsk_thread_flag(next_p, TIF_NOCPUID);
++		u64 msk = set ? CPUID_FAULT_ON_MASK : CPUID_FAULT_OFF_MASK;
++
++		cpuid_fault_ctrl(msk);
+ 	}
+ 
+ 	if (test_tsk_thread_flag(prev_p, TIF_NOTSC) ^
+@@ -661,25 +667,11 @@ unsigned long get_wchan(struct task_stru
+ 
+ long do_arch_prctl_common(struct task_struct *task, int code, unsigned long arg2)
+ {
+-	int ret = 0;
+-
+ 	switch (code) {
+-	case ARCH_GET_CPUID: {
+-		if (arg2 != 0)
+-			ret = -EINVAL;
+-		else
+-			ret = get_cpuid_mode();
+-		break;
+-	}
+-	case ARCH_SET_CPUID: {
+-		ret = set_cpuid_mode(task, arg2);
+-		break;
++	case ARCH_GET_CPUID:
++		return arg2 ? -EINVAL : get_cpuid_mode();
++	case ARCH_SET_CPUID:
++		return set_cpuid_mode(task, arg2);
+ 	}
+-
+-	default:
+-		ret = -EINVAL;
+-		break;
+-	}
+-
+-	return ret;
++	return -EINVAL;
+ }
 
