@@ -1,184 +1,493 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v9 4/7] x86/syscalls/32: Wire up arch_prctl on x86-32
-Date: Sun,  6 Nov 2016 12:57:39 -0800
-Message-Id: <20161106205742.4042-5-khuey@kylehuey.com>
-In-Reply-To: <20161106205742.4042-1-khuey@kylehuey.com>
-References: <20161106205742.4042-1-khuey@kylehuey.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
+Return-Path: <cov@codeaurora.org>
+From: Christopher Covington <cov@codeaurora.org>
+Subject: [RFC v2 7/7] mm: Remove mm-arch-hooks.h
+Date: Tue,  1 Nov 2016 11:11:01 -0600
+Message-Id: <20161101171101.24704-7-cov@codeaurora.org>
+In-Reply-To: <20161101171101.24704-1-cov@codeaurora.org>
+References: <20161101171101.24704-1-cov@codeaurora.org>
+To: criu@openvz.org, Will Deacon <will.deacon@arm.com>, linux-mm@kvack.org, Laurent Dufour <ldufour@linux.vnet.ibm.com>
+Cc: Christopher Covington <cov@codeaurora.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Steven Miao <realmz6@gmail.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, James Hogan <james.hogan@imgtec.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Chen Liqin <liqin.linux@gmail.com>, Lennox Wu <lennox.wu@gmail.com>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hook up arch_prctl to call do_arch_prctl on x86-32, and in 32 bit compat
-mode on x86-64. This allows us to have arch_prctls that are not specific to
-64 bits.
+The only use case, VDSO remap support for PowerPC, has been made generic
+instead of architecture-specific. Since the infrastructure is no longer
+needed, remove it.
 
-On UML, simply stub out this syscall.
-
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+Signed-off-by: Christopher Covington <cov@codeaurora.org>
 ---
- arch/x86/entry/syscalls/syscall_32.tbl | 1 +
- arch/x86/kernel/process_32.c           | 7 +++++++
- arch/x86/kernel/process_64.c           | 7 +++++++
- arch/x86/um/Makefile                   | 2 +-
- arch/x86/um/syscalls_32.c              | 7 +++++++
- include/linux/compat.h                 | 2 ++
- 6 files changed, 25 insertions(+), 1 deletion(-)
- create mode 100644 arch/x86/um/syscalls_32.c
+ arch/alpha/include/asm/Kbuild      |  1 -
+ arch/arc/include/asm/Kbuild        |  1 -
+ arch/arm/include/asm/Kbuild        |  1 -
+ arch/arm64/include/asm/Kbuild      |  1 -
+ arch/avr32/include/asm/Kbuild      |  1 -
+ arch/blackfin/include/asm/Kbuild   |  1 -
+ arch/c6x/include/asm/Kbuild        |  1 -
+ arch/cris/include/asm/Kbuild       |  1 -
+ arch/frv/include/asm/Kbuild        |  1 -
+ arch/h8300/include/asm/Kbuild      |  1 -
+ arch/hexagon/include/asm/Kbuild    |  1 -
+ arch/ia64/include/asm/Kbuild       |  1 -
+ arch/m32r/include/asm/Kbuild       |  1 -
+ arch/m68k/include/asm/Kbuild       |  1 -
+ arch/metag/include/asm/Kbuild      |  1 -
+ arch/microblaze/include/asm/Kbuild |  1 -
+ arch/mips/include/asm/Kbuild       |  1 -
+ arch/mn10300/include/asm/Kbuild    |  1 -
+ arch/nios2/include/asm/Kbuild      |  1 -
+ arch/openrisc/include/asm/Kbuild   |  1 -
+ arch/parisc/include/asm/Kbuild     |  1 -
+ arch/s390/include/asm/Kbuild       |  1 -
+ arch/score/include/asm/Kbuild      |  1 -
+ arch/sh/include/asm/Kbuild         |  1 -
+ arch/sparc/include/asm/Kbuild      |  1 -
+ arch/tile/include/asm/Kbuild       |  1 -
+ arch/um/include/asm/Kbuild         |  1 -
+ arch/unicore32/include/asm/Kbuild  |  1 -
+ arch/x86/include/asm/Kbuild        |  1 -
+ arch/xtensa/include/asm/Kbuild     |  1 -
+ include/asm-generic/mm_hooks.h     | 16 ----------------
+ mm/mremap.c                        | 20 +++++++++++++++++---
+ 32 files changed, 17 insertions(+), 49 deletions(-)
 
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 2b36185..d78c6b5 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -384,8 +384,9 @@
- 375	i386	membarrier		sys_membarrier
- 376	i386	mlock2			sys_mlock2
- 377	i386	copy_file_range		sys_copy_file_range
- 378	i386	preadv2			sys_preadv2			compat_sys_preadv2
- 379	i386	pwritev2		sys_pwritev2			compat_sys_pwritev2
- 380	i386	pkey_mprotect		sys_pkey_mprotect
- 381	i386	pkey_alloc		sys_pkey_alloc
- 382	i386	pkey_free		sys_pkey_free
-+385	i386	arch_prctl		sys_arch_prctl			compat_sys_arch_prctl
-diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
-index bd7be8e..95d3adc 100644
---- a/arch/x86/kernel/process_32.c
-+++ b/arch/x86/kernel/process_32.c
-@@ -30,16 +30,17 @@
- #include <linux/ptrace.h>
- #include <linux/personality.h>
- #include <linux/percpu.h>
- #include <linux/prctl.h>
- #include <linux/ftrace.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <linux/kdebug.h>
-+#include <linux/syscalls.h>
+diff --git a/arch/alpha/include/asm/Kbuild b/arch/alpha/include/asm/Kbuild
+index bf8475c..0a5e0ec 100644
+--- a/arch/alpha/include/asm/Kbuild
++++ b/arch/alpha/include/asm/Kbuild
+@@ -6,7 +6,6 @@ generic-y += exec.h
+ generic-y += export.h
+ generic-y += irq_work.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += preempt.h
+ generic-y += sections.h
+ generic-y += trace_clock.h
+diff --git a/arch/arc/include/asm/Kbuild b/arch/arc/include/asm/Kbuild
+index c332604..e6059a8 100644
+--- a/arch/arc/include/asm/Kbuild
++++ b/arch/arc/include/asm/Kbuild
+@@ -22,7 +22,6 @@ generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += msgbuf.h
+ generic-y += msi.h
+diff --git a/arch/arm/include/asm/Kbuild b/arch/arm/include/asm/Kbuild
+index 0745538..44b717c 100644
+--- a/arch/arm/include/asm/Kbuild
++++ b/arch/arm/include/asm/Kbuild
+@@ -15,7 +15,6 @@ generic-y += irq_regs.h
+ generic-y += kdebug.h
+ generic-y += local.h
+ generic-y += local64.h
+-generic-y += mm-arch-hooks.h
+ generic-y += msgbuf.h
+ generic-y += msi.h
+ generic-y += param.h
+diff --git a/arch/arm64/include/asm/Kbuild b/arch/arm64/include/asm/Kbuild
+index 44e1d7f..a42a136 100644
+--- a/arch/arm64/include/asm/Kbuild
++++ b/arch/arm64/include/asm/Kbuild
+@@ -20,7 +20,6 @@ generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += msgbuf.h
+ generic-y += msi.h
+diff --git a/arch/avr32/include/asm/Kbuild b/arch/avr32/include/asm/Kbuild
+index 241b9b9..519810d 100644
+--- a/arch/avr32/include/asm/Kbuild
++++ b/arch/avr32/include/asm/Kbuild
+@@ -12,7 +12,6 @@ generic-y += irq_work.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += param.h
+ generic-y += percpu.h
+ generic-y += preempt.h
+diff --git a/arch/blackfin/include/asm/Kbuild b/arch/blackfin/include/asm/Kbuild
+index 91d49c0..c80181e 100644
+--- a/arch/blackfin/include/asm/Kbuild
++++ b/arch/blackfin/include/asm/Kbuild
+@@ -21,7 +21,6 @@ generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += msgbuf.h
+ generic-y += mutex.h
+diff --git a/arch/c6x/include/asm/Kbuild b/arch/c6x/include/asm/Kbuild
+index 64465e7..1b9cbed 100644
+--- a/arch/c6x/include/asm/Kbuild
++++ b/arch/c6x/include/asm/Kbuild
+@@ -27,7 +27,6 @@ generic-y += kdebug.h
+ generic-y += kmap_types.h
+ generic-y += local.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += mmu.h
+ generic-y += mmu_context.h
+diff --git a/arch/cris/include/asm/Kbuild b/arch/cris/include/asm/Kbuild
+index 1778805..8e98d03 100644
+--- a/arch/cris/include/asm/Kbuild
++++ b/arch/cris/include/asm/Kbuild
+@@ -24,7 +24,6 @@ generic-y += linkage.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += module.h
+ generic-y += msgbuf.h
+diff --git a/arch/frv/include/asm/Kbuild b/arch/frv/include/asm/Kbuild
+index 1fa084c..2c987dc 100644
+--- a/arch/frv/include/asm/Kbuild
++++ b/arch/frv/include/asm/Kbuild
+@@ -4,7 +4,6 @@ generic-y += cputime.h
+ generic-y += exec.h
+ generic-y += irq_work.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += preempt.h
+ generic-y += trace_clock.h
+ generic-y += word-at-a-time.h
+diff --git a/arch/h8300/include/asm/Kbuild b/arch/h8300/include/asm/Kbuild
+index 373cb23..2a63a32 100644
+--- a/arch/h8300/include/asm/Kbuild
++++ b/arch/h8300/include/asm/Kbuild
+@@ -33,7 +33,6 @@ generic-y += linkage.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += mmu.h
+ generic-y += mmu_context.h
+diff --git a/arch/hexagon/include/asm/Kbuild b/arch/hexagon/include/asm/Kbuild
+index db8ddab..0988816 100644
+--- a/arch/hexagon/include/asm/Kbuild
++++ b/arch/hexagon/include/asm/Kbuild
+@@ -28,7 +28,6 @@ generic-y += kmap_types.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += msgbuf.h
+ generic-y += pci.h
+diff --git a/arch/ia64/include/asm/Kbuild b/arch/ia64/include/asm/Kbuild
+index 502a91d..dc05773 100644
+--- a/arch/ia64/include/asm/Kbuild
++++ b/arch/ia64/include/asm/Kbuild
+@@ -4,7 +4,6 @@ generic-y += exec.h
+ generic-y += irq_work.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += preempt.h
+ generic-y += trace_clock.h
+ generic-y += vtime.h
+diff --git a/arch/m32r/include/asm/Kbuild b/arch/m32r/include/asm/Kbuild
+index 860e440..f09a5fd 100644
+--- a/arch/m32r/include/asm/Kbuild
++++ b/arch/m32r/include/asm/Kbuild
+@@ -5,7 +5,6 @@ generic-y += exec.h
+ generic-y += irq_work.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += module.h
+ generic-y += preempt.h
+ generic-y += sections.h
+diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
+index eb85bd9..1555bc1 100644
+--- a/arch/m68k/include/asm/Kbuild
++++ b/arch/m68k/include/asm/Kbuild
+@@ -18,7 +18,6 @@ generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += mutex.h
+ generic-y += percpu.h
+diff --git a/arch/metag/include/asm/Kbuild b/arch/metag/include/asm/Kbuild
+index 29acb89d..611c0df 100644
+--- a/arch/metag/include/asm/Kbuild
++++ b/arch/metag/include/asm/Kbuild
+@@ -25,7 +25,6 @@ generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += msgbuf.h
+ generic-y += mutex.h
+ generic-y += param.h
+diff --git a/arch/microblaze/include/asm/Kbuild b/arch/microblaze/include/asm/Kbuild
+index b0ae88c..cefeaba 100644
+--- a/arch/microblaze/include/asm/Kbuild
++++ b/arch/microblaze/include/asm/Kbuild
+@@ -6,7 +6,6 @@ generic-y += device.h
+ generic-y += exec.h
+ generic-y += irq_work.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += preempt.h
+ generic-y += syscalls.h
+ generic-y += trace_clock.h
+diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
+index 9740066..f0ce0ae 100644
+--- a/arch/mips/include/asm/Kbuild
++++ b/arch/mips/include/asm/Kbuild
+@@ -8,7 +8,6 @@ generic-y += emergency-restart.h
+ generic-y += irq_work.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mutex.h
+ generic-y += parport.h
+ generic-y += percpu.h
+diff --git a/arch/mn10300/include/asm/Kbuild b/arch/mn10300/include/asm/Kbuild
+index 1c8dd0f..27cbc02 100644
+--- a/arch/mn10300/include/asm/Kbuild
++++ b/arch/mn10300/include/asm/Kbuild
+@@ -5,7 +5,6 @@ generic-y += cputime.h
+ generic-y += exec.h
+ generic-y += irq_work.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += preempt.h
+ generic-y += sections.h
+ generic-y += trace_clock.h
+diff --git a/arch/nios2/include/asm/Kbuild b/arch/nios2/include/asm/Kbuild
+index d63330e..e224789 100644
+--- a/arch/nios2/include/asm/Kbuild
++++ b/arch/nios2/include/asm/Kbuild
+@@ -30,7 +30,6 @@ generic-y += kmap_types.h
+ generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += module.h
+ generic-y += msgbuf.h
+diff --git a/arch/openrisc/include/asm/Kbuild b/arch/openrisc/include/asm/Kbuild
+index 2832f03..2a2e39b 100644
+--- a/arch/openrisc/include/asm/Kbuild
++++ b/arch/openrisc/include/asm/Kbuild
+@@ -36,7 +36,6 @@ generic-y += kmap_types.h
+ generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += module.h
+ generic-y += msgbuf.h
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index f9b3a81..12b341d 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -15,7 +15,6 @@ generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mutex.h
+ generic-y += param.h
+ generic-y += percpu.h
+diff --git a/arch/s390/include/asm/Kbuild b/arch/s390/include/asm/Kbuild
+index 20f196b..c1ef825 100644
+--- a/arch/s390/include/asm/Kbuild
++++ b/arch/s390/include/asm/Kbuild
+@@ -4,7 +4,6 @@ generic-y += clkdev.h
+ generic-y += export.h
+ generic-y += irq_work.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += preempt.h
+ generic-y += trace_clock.h
+ generic-y += word-at-a-time.h
+diff --git a/arch/score/include/asm/Kbuild b/arch/score/include/asm/Kbuild
+index a05218f..ff19975 100644
+--- a/arch/score/include/asm/Kbuild
++++ b/arch/score/include/asm/Kbuild
+@@ -7,7 +7,6 @@ generic-y += clkdev.h
+ generic-y += cputime.h
+ generic-y += irq_work.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += preempt.h
+ generic-y += sections.h
+ generic-y += trace_clock.h
+diff --git a/arch/sh/include/asm/Kbuild b/arch/sh/include/asm/Kbuild
+index 751c337..7d1fb2c 100644
+--- a/arch/sh/include/asm/Kbuild
++++ b/arch/sh/include/asm/Kbuild
+@@ -17,7 +17,6 @@ generic-y += kvm_para.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += msgbuf.h
+ generic-y += param.h
+diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
+index cfc9180..0867d5a 100644
+--- a/arch/sparc/include/asm/Kbuild
++++ b/arch/sparc/include/asm/Kbuild
+@@ -13,7 +13,6 @@ generic-y += linkage.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += module.h
+ generic-y += mutex.h
+ generic-y += preempt.h
+diff --git a/arch/tile/include/asm/Kbuild b/arch/tile/include/asm/Kbuild
+index ba35c41..40d22b4 100644
+--- a/arch/tile/include/asm/Kbuild
++++ b/arch/tile/include/asm/Kbuild
+@@ -19,7 +19,6 @@ generic-y += irq_regs.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += msgbuf.h
+ generic-y += mutex.h
+ generic-y += param.h
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index 904f3eb..33c1d3e 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -16,7 +16,6 @@ generic-y += irq_regs.h
+ generic-y += irq_work.h
+ generic-y += kdebug.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mutex.h
+ generic-y += param.h
+ generic-y += pci.h
+diff --git a/arch/unicore32/include/asm/Kbuild b/arch/unicore32/include/asm/Kbuild
+index 256c45b..932070c 100644
+--- a/arch/unicore32/include/asm/Kbuild
++++ b/arch/unicore32/include/asm/Kbuild
+@@ -26,7 +26,6 @@ generic-y += kdebug.h
+ generic-y += kmap_types.h
+ generic-y += local.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += mman.h
+ generic-y += module.h
+ generic-y += msgbuf.h
+diff --git a/arch/x86/include/asm/Kbuild b/arch/x86/include/asm/Kbuild
+index 2cfed17..51b3d95 100644
+--- a/arch/x86/include/asm/Kbuild
++++ b/arch/x86/include/asm/Kbuild
+@@ -15,4 +15,3 @@ generic-y += cputime.h
+ generic-y += dma-contiguous.h
+ generic-y += early_ioremap.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+diff --git a/arch/xtensa/include/asm/Kbuild b/arch/xtensa/include/asm/Kbuild
+index 28cf4c5..bdade99 100644
+--- a/arch/xtensa/include/asm/Kbuild
++++ b/arch/xtensa/include/asm/Kbuild
+@@ -18,7 +18,6 @@ generic-y += linkage.h
+ generic-y += local.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += mm-arch-hooks.h
+ generic-y += percpu.h
+ generic-y += preempt.h
+ generic-y += resource.h
+diff --git a/include/asm-generic/mm_hooks.h b/include/asm-generic/mm_hooks.h
+index 73f09f1..f4d43aa 100644
+--- a/include/asm-generic/mm_hooks.h
++++ b/include/asm-generic/mm_hooks.h
+@@ -3,7 +3,6 @@
+  * included in asm-FOO/mmu_context.h for any arch FOO which doesn't need to
+  * specially hook these.
+  *
+- * arch_remap originally from include/linux-mm-arch-hooks.h
+  * arch_unmap originally from arch/powerpc/include/asm/mmu_context.h
+  * Copyright (C) 2015, IBM Corporation
+  * Author: Laurent Dufour <ldufour@linux.vnet.ibm.com>
+@@ -35,21 +34,6 @@ static inline void arch_unmap(struct mm_struct *mm,
+ #endif /* CONFIG_GENERIC_VDSO */
+ }
  
- #include <asm/pgtable.h>
- #include <asm/ldt.h>
- #include <asm/processor.h>
- #include <asm/fpu/internal.h>
- #include <asm/desc.h>
- #ifdef CONFIG_MATH_EMULATION
- #include <asm/math_emu.h>
-@@ -49,16 +50,17 @@
- 
- #include <asm/tlbflush.h>
- #include <asm/cpu.h>
- #include <asm/idle.h>
- #include <asm/syscalls.h>
- #include <asm/debugreg.h>
- #include <asm/switch_to.h>
- #include <asm/vm86.h>
-+#include <asm/proto.h>
- 
- void __show_regs(struct pt_regs *regs, int all)
+-static inline void arch_remap(struct mm_struct *mm,
+-			      unsigned long old_start, unsigned long old_end,
+-			      unsigned long new_start, unsigned long new_end)
+-{
+-#ifdef CONFIG_GENERIC_VDSO
+-	/*
+-	 * mremap() doesn't allow moving multiple vmas so we can limit the
+-	 * check to old_addr == vdso.
+-	 */
+-	if (old_addr == mm->context.vdso)
+-		mm->context.vdso = new_addr;
+-
+-#endif /* CONFIG_GENERIC_VDSO */
+-}
+-
+ static inline void arch_bprm_mm_init(struct mm_struct *mm,
+ 				     struct vm_area_struct *vma)
  {
- 	unsigned long cr0 = 0L, cr2 = 0L, cr3 = 0L, cr4 = 0L;
- 	unsigned long d0, d1, d2, d3, d6, d7;
- 	unsigned long sp;
- 	unsigned short ss, gs;
- 
-@@ -296,8 +298,13 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
- 		lazy_load_gs(next->gs);
- 
- 	switch_fpu_finish(next_fpu, fpu_switch);
- 
- 	this_cpu_write(current_task, next_p);
- 
- 	return prev_p;
- }
-+
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
-+{
-+	return do_arch_prctl_common(current, code, arg2);
-+}
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index bf75d26..3a2a84d 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -621,12 +621,19 @@ SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
- 
- 	ret = do_arch_prctl_64(current, code, arg2);
- 	if (ret == -EINVAL)
- 		ret = do_arch_prctl_common(current, code, arg2);
- 
- 	return ret;
- }
- 
-+#ifdef CONFIG_IA32_EMULATION
-+COMPAT_SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
-+{
-+	return do_arch_prctl_common(current, code, arg2);
-+}
-+#endif
-+
- unsigned long KSTK_ESP(struct task_struct *task)
- {
- 	return task_pt_regs(task)->sp;
- }
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index e7e7055..69f0827 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -11,17 +11,17 @@ endif
- obj-y = bug.o bugs_$(BITS).o delay.o fault.o ldt.o \
- 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
- 	stub_$(BITS).o stub_segv.o \
- 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
- 	mem_$(BITS).o subarch.o os-$(OS)/
- 
- ifeq ($(CONFIG_X86_32),y)
- 
--obj-y += checksum_32.o
-+obj-y += checksum_32.o syscalls_32.o
- obj-$(CONFIG_ELF_CORE) += elfcore.o
- 
- subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
- subarch-$(CONFIG_RWSEM_XCHGADD_ALGORITHM) += ../lib/rwsem.o
- 
- else
- 
- obj-y += syscalls_64.o vdso/
-diff --git a/arch/x86/um/syscalls_32.c b/arch/x86/um/syscalls_32.c
-new file mode 100644
-index 0000000..ccf0598
---- /dev/null
-+++ b/arch/x86/um/syscalls_32.c
-@@ -0,0 +1,7 @@
-+#include <linux/syscalls.h>
-+#include <os.h>
-+
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
-+{
-+	return -EINVAL;
-+}
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index 6360939..500cdb3 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -716,16 +716,18 @@ int __compat_save_altstack(compat_stack_t __user *, unsigned long);
- } while (0);
- 
- asmlinkage long compat_sys_sched_rr_get_interval(compat_pid_t pid,
- 						 struct compat_timespec __user *interval);
- 
- asmlinkage long compat_sys_fanotify_mark(int, unsigned int, __u32, __u32,
- 					    int, const char __user *);
- 
-+asmlinkage long compat_sys_arch_prctl(int, unsigned long);
-+
- /*
-  * For most but not all architectures, "am I in a compat syscall?" and
-  * "am I a compat task?" are the same question.  For architectures on which
-  * they aren't the same question, arch code can override in_compat_syscall.
+diff --git a/mm/mremap.c b/mm/mremap.c
+index da22ad2..0d0ea14 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -5,6 +5,14 @@
+  *
+  *	Address space accounting code	<alan@lxorguk.ukuu.org.uk>
+  *	(C) Copyright 2002 Red Hat Inc, All Rights Reserved
++ *
++ *	arch_remap originally from include/linux-mm-arch-hooks.h
++ *	Copyright (C) 2015, IBM Corporation
++ *	Author: Laurent Dufour <ldufour@linux.vnet.ibm.com>
++ *
++ *	This program is free software; you can redistribute it and/or modify
++ *	it under the terms of the GNU General Public License version 2 as
++ *	published by the Free Software Foundation.
   */
  
- #ifndef in_compat_syscall
- static inline bool in_compat_syscall(void) { return is_compat_task(); }
+ #include <linux/mm.h>
+@@ -21,7 +29,6 @@
+ #include <linux/syscalls.h>
+ #include <linux/mmu_notifier.h>
+ #include <linux/uaccess.h>
+-#include <linux/mm-arch-hooks.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/tlbflush.h>
+@@ -293,8 +300,15 @@ static unsigned long move_vma(struct vm_area_struct *vma,
+ 		old_addr = new_addr;
+ 		new_addr = err;
+ 	} else {
+-		arch_remap(mm, old_addr, old_addr + old_len,
+-			   new_addr, new_addr + new_len);
++#ifdef CONFIG_GENERIC_VDSO
++		/*
++		 * mremap() doesn't allow moving multiple vmas so we can limit
++		 * the check to old_addr == vdso.
++		 */
++		if (old_addr == mm->context.vdso)
++			mm->context.vdso = new_addr;
++
++#endif /* CONFIG_GENERIC_VDSO */
+ 	}
+ 
+ 	/* Conceal VM_ACCOUNT so old reservation is not undone */
 -- 
-2.10.2
+Qualcomm Datacenter Technologies as an affiliate of Qualcomm Technologies, Inc.
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
 
 
