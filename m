@@ -1,107 +1,146 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v12 1/7] x86/arch_prctl/64: Use SYSCALL_DEFINE2 to define sys_arch_prctl
-Date: Wed, 16 Nov 2016 18:06:04 -0800
-Message-Id: <20161117020610.5302-2-khuey@kylehuey.com>
-In-Reply-To: <20161117020610.5302-1-khuey@kylehuey.com>
-References: <20161117020610.5302-1-khuey@kylehuey.com>
+Subject: [PATCH v9 5/7] x86/cpufeature: Detect CPUID faulting support
+Date: Sun,  6 Nov 2016 12:57:40 -0800
+Message-Id: <20161106205742.4042-6-khuey@kylehuey.com>
+In-Reply-To: <20161106205742.4042-1-khuey@kylehuey.com>
+References: <20161106205742.4042-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Use the SYSCALL_DEFINE2 macro instead of manually defining it.
+Intel supports faulting on the CPUID instruction beginning with Ivy Bridge.
+When enabled, the processor will fault on attempts to execute the CPUID
+instruction with CPL>0. This will allow a ptracer to emulate the CPUID
+instruction.
+
+Bit 31 of MSR_PLATFORM_INFO advertises support for this feature. It is
+documented in detail in Section 2.3.2 of
+http://www.intel.com/content/dam/www/public/us/en/documents/application-notes/virtualization-technology-flexmigration-application-note.pdf
+
+Detect support for this feature and expose it as X86_FEATURE_CPUID_FAULT.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/kernel/process_64.c | 3 ++-
- arch/x86/um/syscalls_64.c    | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/cpufeatures.h |  1 +
+ arch/x86/include/asm/msr-index.h   |  2 ++
+ arch/x86/kernel/cpu/scattered.c    | 22 +++++++++++++++++++++-
+ 3 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index b3760b3..2718cf9 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -30,16 +30,17 @@
- #include <linux/ptrace.h>
- #include <linux/notifier.h>
- #include <linux/kprobes.h>
- #include <linux/kdebug.h>
- #include <linux/prctl.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <linux/ftrace.h>
-+#include <linux/syscalls.h>
- 
- #include <asm/pgtable.h>
- #include <asm/processor.h>
- #include <asm/fpu/internal.h>
- #include <asm/mmu_context.h>
- #include <asm/prctl.h>
- #include <asm/desc.h>
- #include <asm/proto.h>
-@@ -607,17 +608,17 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
- 	default:
- 		ret = -EINVAL;
- 		break;
- 	}
- 
- 	return ret;
- }
- 
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
- {
- 	return do_arch_prctl(current, code, addr);
- }
- 
- unsigned long KSTK_ESP(struct task_struct *task)
- {
- 	return task_pt_regs(task)->sp;
- }
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index e655227..ab3f7f4 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -1,16 +1,17 @@
- /*
-  * Copyright (C) 2003 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Copyright 2003 PathScale, Inc.
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index a396292..62962e8 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -184,16 +184,17 @@
+  * Auxiliary flags: Linux defined - For features scattered in various
+  * CPUID levels like 0x6, 0xA etc, word 7.
   *
-  * Licensed under the GPL
+  * Reuse free bits when adding new feature flags!
   */
  
- #include <linux/sched.h>
-+#include <linux/syscalls.h>
- #include <linux/uaccess.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
+ #define X86_FEATURE_CPB		( 7*32+ 2) /* AMD Core Performance Boost */
+ #define X86_FEATURE_EPB		( 7*32+ 3) /* IA32_ENERGY_PERF_BIAS support */
++#define X86_FEATURE_CPUID_FAULT ( 7*32+ 4) /* Intel CPUID faulting */
  
- long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ #define X86_FEATURE_HW_PSTATE	( 7*32+ 8) /* AMD HW-PState */
+ #define X86_FEATURE_PROC_FEEDBACK ( 7*32+ 9) /* AMD ProcFeedbackInterface */
+ 
+ #define X86_FEATURE_INTEL_PT	( 7*32+15) /* Intel Processor Trace */
+ #define X86_FEATURE_AVX512_4VNNIW (7*32+16) /* AVX-512 Neural Network Instructions */
+ #define X86_FEATURE_AVX512_4FMAPS (7*32+17) /* AVX-512 Multiply Accumulation Single precision */
+ 
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 78f3760..97fb50b 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -36,16 +36,18 @@
+ #define EFER_LMSLE		(1<<_EFER_LMSLE)
+ #define EFER_FFXSR		(1<<_EFER_FFXSR)
+ 
+ /* Intel MSRs. Some also available on other CPUs */
+ #define MSR_IA32_PERFCTR0		0x000000c1
+ #define MSR_IA32_PERFCTR1		0x000000c2
+ #define MSR_FSB_FREQ			0x000000cd
+ #define MSR_PLATFORM_INFO		0x000000ce
++#define PLATINFO_CPUID_FAULT_BIT	31
++#define PLATINFO_CPUID_FAULT		(1ULL << PLATINFO_CPUID_FAULT_BIT)
+ 
+ #define MSR_NHM_SNB_PKG_CST_CFG_CTL	0x000000e2
+ #define NHM_C3_AUTO_DEMOTE		(1UL << 25)
+ #define NHM_C1_AUTO_DEMOTE		(1UL << 26)
+ #define ATM_LNC_C6_AUTO_DEMOTE		(1UL << 25)
+ #define SNB_C1_AUTO_UNDEMOTE		(1UL << 27)
+ #define SNB_C3_AUTO_UNDEMOTE		(1UL << 28)
+ 
+diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
+index 1db8dc4..97a340d 100644
+--- a/arch/x86/kernel/cpu/scattered.c
++++ b/arch/x86/kernel/cpu/scattered.c
+@@ -19,41 +19,61 @@ struct cpuid_bit {
+ 
+ enum cpuid_regs {
+ 	CR_EAX = 0,
+ 	CR_ECX,
+ 	CR_EDX,
+ 	CR_EBX
+ };
+ 
++struct msr_bit {
++	u16 feature;
++	u16 msr;
++	u8 bit;
++};
++
+ void init_scattered_cpuid_features(struct cpuinfo_x86 *c)
  {
- 	unsigned long *ptr = addr, tmp;
- 	long ret;
-@@ -67,17 +68,17 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- 	case ARCH_GET_GS:
- 		ret = put_user(tmp, addr);
- 		break;
++	const struct cpuid_bit *cb;
++	const struct msr_bit *mb;
+ 	u32 max_level;
+ 	u32 regs[4];
+-	const struct cpuid_bit *cb;
++	u64 msrval;
+ 
+ 	static const struct cpuid_bit cpuid_bits[] = {
+ 		{ X86_FEATURE_INTEL_PT,		CR_EBX,25, 0x00000007, 0 },
+ 		{ X86_FEATURE_AVX512_4VNNIW,	CR_EDX, 2, 0x00000007, 0 },
+ 		{ X86_FEATURE_AVX512_4FMAPS,	CR_EDX, 3, 0x00000007, 0 },
+ 		{ X86_FEATURE_APERFMPERF,	CR_ECX, 0, 0x00000006, 0 },
+ 		{ X86_FEATURE_EPB,		CR_ECX, 3, 0x00000006, 0 },
+ 		{ X86_FEATURE_HW_PSTATE,	CR_EDX, 7, 0x80000007, 0 },
+ 		{ X86_FEATURE_CPB,		CR_EDX, 9, 0x80000007, 0 },
+ 		{ X86_FEATURE_PROC_FEEDBACK,	CR_EDX,11, 0x80000007, 0 },
+ 		{ 0, 0, 0, 0, 0 }
+ 	};
+ 
++	static const struct msr_bit msr_bits[] = {
++		{ X86_FEATURE_CPUID_FAULT,	MSR_PLATFORM_INFO, 31 },
++		{ 0, 0, 0 }
++	};
++
+ 	for (cb = cpuid_bits; cb->feature; cb++) {
+ 
+ 		/* Verify that the level is valid */
+ 		max_level = cpuid_eax(cb->level & 0xffff0000);
+ 		if (max_level < cb->level ||
+ 		    max_level > (cb->level | 0xffff))
+ 			continue;
+ 
+ 		cpuid_count(cb->level, cb->sub_leaf, &regs[CR_EAX],
+ 			    &regs[CR_EBX], &regs[CR_ECX], &regs[CR_EDX]);
+ 
+ 		if (regs[cb->reg] & (1 << cb->bit))
+ 			set_cpu_cap(c, cb->feature);
  	}
- 
- 	return ret;
++
++	for (mb = msr_bits; mb->feature; mb++) {
++		if (rdmsrl_safe(mb->msr, &msrval))
++			continue;
++		if (msrval & (1ULL << mb->bit))
++			set_cpu_cap(c, mb->feature);
++	}
  }
- 
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
- {
- 	return arch_prctl(current, code, (unsigned long __user *) addr);
- }
- 
- void arch_switch_to(struct task_struct *to)
- {
- 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
- 		return;
-
-base-commit: 961b708e95181041f403251f660bc70be3ff6ba3
 -- 
 2.10.2
 
