@@ -1,64 +1,106 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v12 0/7] x86/arch_prctl Add ARCH_[GET|SET]_CPUID for controlling the CPUID instruction
-Date: Wed, 16 Nov 2016 18:06:03 -0800
-Message-Id: <20161117020610.5302-1-khuey@kylehuey.com>
+Subject: [PATCH v9 1/7] x86/arch_prctl/64: Use SYSCALL_DEFINE2 to define sys_arch_prctl
+Date: Sun,  6 Nov 2016 12:57:36 -0800
+Message-Id: <20161106205742.4042-2-khuey@kylehuey.com>
+In-Reply-To: <20161106205742.4042-1-khuey@kylehuey.com>
+References: <20161106205742.4042-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-rr (http://rr-project.org/), a userspace record-and-replay reverse-
-execution debugger, would like to trap and emulate the CPUID instruction.
-This would allow us to a) mask away certain hardware features that rr does
-not support (e.g. RDRAND) and b) enable trace portability across machines
-by providing constant results.
+Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+---
+ arch/x86/kernel/process_64.c | 3 ++-
+ arch/x86/um/syscalls_64.c    | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-Newer Intel CPUs (Ivy Bridge and later) can fault when CPUID is executed at
-CPL > 0. Expose this capability to userspace as a new pair of arch_prctls,
-ARCH_GET_CPUID and ARCH_SET_CPUID, with two values, ARCH_CPUID_ENABLE and
-ARCH_CPUID_SIGSEGV.
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index b3760b3..2718cf9 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -30,16 +30,17 @@
+ #include <linux/ptrace.h>
+ #include <linux/notifier.h>
+ #include <linux/kprobes.h>
+ #include <linux/kdebug.h>
+ #include <linux/prctl.h>
+ #include <linux/uaccess.h>
+ #include <linux/io.h>
+ #include <linux/ftrace.h>
++#include <linux/syscalls.h>
+ 
+ #include <asm/pgtable.h>
+ #include <asm/processor.h>
+ #include <asm/fpu/internal.h>
+ #include <asm/mmu_context.h>
+ #include <asm/prctl.h>
+ #include <asm/desc.h>
+ #include <asm/proto.h>
+@@ -607,17 +608,17 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+ 
+ 	return ret;
+ }
+ 
+-long sys_arch_prctl(int code, unsigned long addr)
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
+ {
+ 	return do_arch_prctl(current, code, addr);
+ }
+ 
+ unsigned long KSTK_ESP(struct task_struct *task)
+ {
+ 	return task_pt_regs(task)->sp;
+ }
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index e655227..ab3f7f4 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -1,16 +1,17 @@
+ /*
+  * Copyright (C) 2003 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Copyright 2003 PathScale, Inc.
+  *
+  * Licensed under the GPL
+  */
+ 
+ #include <linux/sched.h>
++#include <linux/syscalls.h>
+ #include <linux/uaccess.h>
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <os.h>
+ 
+ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ {
+ 	unsigned long *ptr = addr, tmp;
+ 	long ret;
+@@ -67,17 +68,17 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
+ 	case ARCH_GET_GS:
+ 		ret = put_user(tmp, addr);
+ 		break;
+ 	}
+ 
+ 	return ret;
+ }
+ 
+-long sys_arch_prctl(int code, unsigned long addr)
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
+ {
+ 	return arch_prctl(current, code, (unsigned long __user *) addr);
+ }
+ 
+ void arch_switch_to(struct task_struct *to)
+ {
+ 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
+ 		return;
 
-Since v11:
-Patch 6: x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
-- Moved msr_misc_features_enable_shadow definition back to process.c to
-  allow building without CONFIG_CPU_SUP_INTEL.
-
-Patch 7: KVM: x86: virtualize cpuid faulting
-- Added cpuid faulting support to em_cpuid() as suggested by Nadav Amit.
-
-Since v10:
-Patch 1: x86/arch_prctl/64: Use SYSCALL_DEFINE2 to define sys_arch_prctl
-- Updated commit message.
-
-Patch 2: x86/arch_prctl/64: Rename do_arch_prctl to do_arch_prctl_64
-- Updated commit message.
-- Moved do_arch_prctl_64() declaration into the other CONFIG_X86_64 block.
-- Renamed previously missed 'addr' parameters for arch_prctl functions.
-
-Patch 3: x86/arch_prctl: Add do_arch_prctl_common
-- Updated commit message.
-
-Patch 4: x86/syscalls/32: Wire up arch_prctl on x86-32
-- Updated commit message.
-
-Patch 5: x86/cpufeature: Detect CPUID faulting support
-- Link to document on bugzilla.kernel.org.
-- X86_FEATURE_CPUID_FAULT value changed.
-- Detection code moved to intel.c, and is broken out into
-  init_intel_misc_features_enables().
-- PLATINFO_CPUID_FAULT is now MSR_PLATFORM_INFO_CPUID_FAULT.
-
-Patch 6: x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
-- msr_misc_features_enable_shadow definition and initialization moved to
-  intel.c
-- Initializes MSR_MISC_FEATURES_ENABLES to 0.
-- CPUID_FAULT_ENABLE[_BIT] is now MSR_MISC_FEATURES_ENABLES_CPUID_FAULT[_BIT].
-- Fixed checkpatch.pl errors for fork()s inside the test file.
-- Removed unnecessary comment in set_cpuid_mode.
-
-Patch 7: KVM: x86: virtualize cpuid faulting
-- Added Reviewed-By David Matlack.
-- Changed various MSR constants to match patches 5 and 6.
+base-commit: bc33b0ca11e3df467777a4fa7639ba488c9d4911
+-- 
+2.10.2
 
 
