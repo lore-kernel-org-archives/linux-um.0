@@ -1,16 +1,16 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v13 4/8] x86/syscalls/32: Wire up arch_prctl on x86-32
-Date: Sun, 27 Nov 2016 19:05:17 -0800
-Message-Id: <20161128030521.4423-5-khuey@kylehuey.com>
-In-Reply-To: <20161128030521.4423-1-khuey@kylehuey.com>
-References: <20161128030521.4423-1-khuey@kylehuey.com>
+Subject: [PATCH v9 4/7] x86/syscalls/32: Wire up arch_prctl on x86-32
+Date: Sun,  6 Nov 2016 12:57:39 -0800
+Message-Id: <20161106205742.4042-5-khuey@kylehuey.com>
+In-Reply-To: <20161106205742.4042-1-khuey@kylehuey.com>
+References: <20161106205742.4042-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, Andi Kleen <andi@firstfloor.org>
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hook up arch_prctl to call do_arch_prctl() on x86-32, and in 32 bit compat
+Hook up arch_prctl to call do_arch_prctl on x86-32, and in 32 bit compat
 mode on x86-64. This allows us to have arch_prctls that are not specific to
 64 bits.
 
@@ -156,7 +156,7 @@ index 0000000..ccf0598
 +	return -EINVAL;
 +}
 diff --git a/include/linux/compat.h b/include/linux/compat.h
-index 6360939..0ddfc2ba 100644
+index 6360939..500cdb3 100644
 --- a/include/linux/compat.h
 +++ b/include/linux/compat.h
 @@ -716,16 +716,18 @@ int __compat_save_altstack(compat_stack_t __user *, unsigned long);
@@ -168,7 +168,7 @@ index 6360939..0ddfc2ba 100644
  asmlinkage long compat_sys_fanotify_mark(int, unsigned int, __u32, __u32,
  					    int, const char __user *);
  
-+asmlinkage long compat_sys_arch_prctl(int code, unsigned long arg2);
++asmlinkage long compat_sys_arch_prctl(int, unsigned long);
 +
  /*
   * For most but not all architectures, "am I in a compat syscall?" and
