@@ -1,23 +1,21 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1c42JH-0001D1-4s
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1c3sR3-0007Vt-Ow
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2016 09:03:15 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92]
-	helo=www.kot-begemot.co.uk)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1c42JG-0006lI-4F
+	Mon, 07 Nov 2016 22:30:37 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1c3sR2-0001D4-0H
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Tue, 08 Nov 2016 09:03:15 +0000
+	Mon, 07 Nov 2016 22:30:37 +0000
 References: <1475218410-32852-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-	<ede78dee-1dd5-8d5c-d86b-cf7ae7e54e9a@nod.at>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <4db13914-e866-77c7-4a8d-6cd3bae739bc@kot-begemot.co.uk>
-Date: Tue, 8 Nov 2016 08:33:13 +0000
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <ede78dee-1dd5-8d5c-d86b-cf7ae7e54e9a@nod.at>
+Date: Mon, 7 Nov 2016 23:30:28 +0100
 MIME-Version: 1.0
-In-Reply-To: <ede78dee-1dd5-8d5c-d86b-cf7ae7e54e9a@nod.at>
+In-Reply-To: <1475218410-32852-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
 Subject: Re: [uml-devel] [PATCH v2] UBD Improvements Phase 1
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,43 +29,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+To: anton.ivanov@kot-begemot.co.uk, user-mode-linux-devel@lists.sourceforge.net
 Cc: Daniel Walter <sahne@sigma-star.at>, Anton Ivanov <aivanov@kot-begemot.co.uk>
 
-I will sort out the whitespace and resubmit tonight. Tomorrow morning 
-latest.
+Anton,
 
-Apologies (I thought I had the environment set-up so it does not produce 
-whitespace issues).
+On 30.09.2016 08:53, anton.ivanov@kot-begemot.co.uk wrote:
+> From: Anton Ivanov <aivanov@kot-begemot.co.uk>
+> 
+> UBD at present is extremely slow because it handles only
+> one request at a time in the IO thread and IRQ handler.
+> 
+> The single request at a time is replaced by handling multiple
+> requests as well as necessary workarounds for short reads/writes.
+> 
+> Resulting performance improvement in disk IO - 30%
+> 
+> Signed-off-by: Anton Ivanov <aivanov@kot-begemot.co.uk>
 
-Brgds,
+In general I think we can merge this in 4.10.
+But please run checkpatch.pl and fix all the whitespace issues. :-)
 
-A.
+Daniel, can you apply your blk-mq work on top of this patch?
 
-On 07/11/16 22:30, Richard Weinberger wrote:
-> Anton,
->
-> On 30.09.2016 08:53, anton.ivanov@kot-begemot.co.uk wrote:
->> From: Anton Ivanov <aivanov@kot-begemot.co.uk>
->>
->> UBD at present is extremely slow because it handles only
->> one request at a time in the IO thread and IRQ handler.
->>
->> The single request at a time is replaced by handling multiple
->> requests as well as necessary workarounds for short reads/writes.
->>
->> Resulting performance improvement in disk IO - 30%
->>
->> Signed-off-by: Anton Ivanov <aivanov@kot-begemot.co.uk>
-> In general I think we can merge this in 4.10.
-> But please run checkpatch.pl and fix all the whitespace issues. :-)
->
-> Daniel, can you apply your blk-mq work on top of this patch?
->
-> Thanks,
-> //richard
->
-
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Developer Access Program for Intel Xeon Phi Processors
