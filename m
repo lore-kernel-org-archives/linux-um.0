@@ -1,23 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <james_mcmechan@hotmail.com>) id 1c4VQ7-0005UP-8F
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1c4ONg-0000Di-Db
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Nov 2016 16:08:15 +0000
-Received: from blu004-omc4s17.hotmail.com ([65.55.111.156])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1c4VQ4-0006Rv-N9
+	Wed, 09 Nov 2016 08:37:16 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92]
+	helo=www.kot-begemot.co.uk)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1c4ONe-0006bR-Rd
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Nov 2016 16:08:15 +0000
-From: James McMechan <james_mcmechan@hotmail.com>
-Date: Wed, 9 Nov 2016 16:08:05 +0000
-Message-ID: <CY4PR10MB1960E4B5113ADDFD5739EC1BE2B90@CY4PR10MB1960.namprd10.prod.outlook.com>
-References: <1478680606-476779-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <1478680606-476779-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH v3] UBD Improvements Phase 1
+	Wed, 09 Nov 2016 08:37:16 +0000
+From: anton.ivanov@kot-begemot.co.uk
+Date: Wed,  9 Nov 2016 08:36:46 +0000
+Message-Id: <1478680606-476779-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+Subject: [uml-devel] [PATCH v3] UBD Improvements Phase 1
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -27,213 +24,326 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "anton.ivanov@kot-begemot.co.uk" <anton.ivanov@kot-begemot.co.uk>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
-Cc: "richard@nod.at" <richard@nod.at>, Anton Ivanov <aivanov@brocade.com>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard@nod.at, Anton Ivanov <aivanov@brocade.com>
 
-Hi
+From: Anton Ivanov <aivanov@brocade.com>
 
-I am not clear on the remainder/remainder_size would not a single offset pa=
-rameter work? rather than copying it off and back?
-also max_recs does not seem to used except to calculate max buffer size so =
-would not using a buffer size be easier?
-something like bulk_req_read( int fd, struct io_thread_req *buf, size_t len=
-, size_t *offset)
+UBD at present is extremely slow because it handles only
+one request at a time in the IO thread and IRQ handler.
 
+The single request at a time is replaced by handling multiple
+requests as well as necessary workarounds for short reads/writes.
+
+Resulting performance improvement in disk IO - 30%
+
+Signed-off-by: Anton Ivanov <aivanov@brocade.com>
+---
+ arch/um/drivers/ubd.h      |   5 ++
+ arch/um/drivers/ubd_kern.c | 167 ++++++++++++++++++++++++++++++++++++++-------
+ arch/um/drivers/ubd_user.c |  21 +++++-
+ 3 files changed, 166 insertions(+), 27 deletions(-)
+
+diff --git a/arch/um/drivers/ubd.h b/arch/um/drivers/ubd.h
+index 3b48cd2..cc1cc85 100644
+--- a/arch/um/drivers/ubd.h
++++ b/arch/um/drivers/ubd.h
+@@ -11,5 +11,10 @@ extern int start_io_thread(unsigned long sp, int *fds_out);
+ extern int io_thread(void *arg);
+ extern int kernel_fd;
+ 
++extern int ubd_read_poll(int timeout);
++extern int ubd_write_poll(int timeout);
++
++#define UBD_REQ_BUFFER_SIZE 64
++
+ #endif
+ 
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index f354027..7007ee3 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2015-2016 Anton Ivanov (aivanov@brocade.com)
+  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
+  * Licensed under the GPL
+  */
+@@ -58,6 +59,17 @@ struct io_thread_req {
+ 	int error;
+ };
+ 
++
++static struct io_thread_req * (*irq_req_buffer)[];
++static struct io_thread_req *irq_remainder;
++static int irq_remainder_size;
++
++static struct io_thread_req * (*io_req_buffer)[];
++static struct io_thread_req *io_remainder;
++static int io_remainder_size;
++
++
++
+ static inline int ubd_test_bit(__u64 bit, unsigned char *data)
+ {
+ 	__u64 n;
+@@ -442,29 +454,90 @@ static void do_ubd_request(struct request_queue * q);
+ static int thread_fd = -1;
+ static LIST_HEAD(restart);
+ 
+-/* XXX - move this inside ubd_intr. */
++/* Function to read several request pointers at a time
++* handling fractional reads if (and as) needed
++*/
++
 +static int bulk_req_safe_read(
-+=A0=A0=A0=A0=A0=A0 int fd,
-+=A0=A0=A0=A0=A0=A0 struct io_thread_req * (*request_buffer)[],
-+=A0=A0=A0=A0=A0=A0 struct io_thread_req **remainder,
-+=A0=A0=A0=A0=A0=A0 int *remainder_size,
-+=A0=A0=A0=A0=A0=A0 int max_recs
-+=A0=A0=A0=A0=A0=A0 )
++	int fd,
++	struct io_thread_req * (*request_buffer)[],
++	struct io_thread_req **remainder,
++	int *remainder_size,
++	int max_recs
++	)
 +{
-+=A0=A0=A0=A0=A0=A0 int n =3D 0;
-+=A0=A0=A0=A0=A0=A0 int res =3D 0;
++	int n = 0;
++	int res = 0;
 +
-+=A0=A0=A0=A0=A0=A0 if (*remainder_size > 0) {
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 memmove(
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (char *=
-) request_buffer,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 (char *=
-) remainder, *remainder_size
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 );
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 n =3D *remainder_size;
-+=A0=A0=A0=A0=A0=A0 }
++	if (*remainder_size > 0) {
++		memmove(
++			(char *) request_buffer,
++			(char *) remainder, *remainder_size
++		);
++		n = *remainder_size;
++	}
 +
-+=A0=A0=A0=A0=A0=A0 res =3D os_read_file(
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 fd,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ((char =
-*) request_buffer) + *remainder_size,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sizeof(=
-struct io_thread_req *)*max_recs
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 - *remainder_size
-
-then here it would be
-res =3D os_read_file(fd, buf+*offset,len-*offset)
-Note that if this is ever multithreaded buf and offset or request_buffer/re=
-mainder/remainder_size need to be kept separate
-
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 );
-+=A0=A0=A0=A0=A0=A0 if (res > 0) {
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 n +=3D res;
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if ((n % sizeof(struct io_threa=
-d_req *)) > 0) {
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /*
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 * Read =
-somehow returned not a multiple of dword
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 * theor=
-etically possible, but never observed in the
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 * wild,=
- so read routine must be able to handle it
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 */
-
-maybe this should have a WARN_ON since it should never occur?
-
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 *remain=
-der_size =3D n % sizeof(struct io_thread_req *);
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 memmove(
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 remainder,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 ((char *) request_buffer) +
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 n/sizeof(struct io_thread_req *),
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 *remainder_size
-
-I am pretty sure the 2nd parameter is off. I think it should be:
-((char *) request_buffer) +(n/sizeof(struct io_thread_req *))*sizeof(struct=
- io_thread_req *)
-also copying it off to a shared static buffer?
-
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 );
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 n =3D n=
- - *remainder_size;
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }
-+=A0=A0=A0=A0=A0=A0 } else {
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 n =3D res;
-+=A0=A0=A0=A0=A0=A0 }
-+=A0=A0=A0=A0=A0=A0 return n;
++	res = os_read_file(
++			fd,
++			((char *) request_buffer) + *remainder_size,
++			sizeof(struct io_thread_req *)*max_recs
++				- *remainder_size
++		);
++	if (res > 0) {
++		n += res;
++		if ((n % sizeof(struct io_thread_req *)) > 0) {
++			/*
++			* Read somehow returned not a multiple of dword
++			* theoretically possible, but never observed in the
++			* wild, so read routine must be able to handle it
++			*/
++			*remainder_size = n % sizeof(struct io_thread_req *);
++			memmove(
++				remainder,
++				((char *) request_buffer) +
++					n/sizeof(struct io_thread_req *),
++				*remainder_size
++			);
++			n = n - *remainder_size;
++		}
++	} else {
++		n = res;
++	}
++	return n;
 +}
 +
-=A0/* Called without dev->lock held, and only in interrupt context. */
-=A0static void ubd_handler(void)
-=A0{
--=A0=A0=A0=A0=A0=A0 struct io_thread_req *req;
-=A0=A0=A0=A0=A0=A0=A0=A0 struct ubd *ubd;
-=A0=A0=A0=A0=A0=A0=A0=A0 struct list_head *list, *next_ele;
-=A0=A0=A0=A0=A0=A0=A0=A0 unsigned long flags;
-=A0=A0=A0=A0=A0=A0=A0=A0 int n;
-+=A0=A0=A0=A0=A0=A0 int count;
-=A0
-=A0=A0=A0=A0=A0=A0=A0=A0 while(1){
--=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 n =3D os_read_file(thread_fd, &=
-req,
--=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 sizeof(struct io_thread_req *));
--=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if(n !=3D sizeof(req)){
-
-if it is being rewritten n could just be the number of complete buffers for=
- the for loop below
-
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 n =3D bulk_req_safe_read(
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 thread_=
-fd,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 irq_req=
-_buffer,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &irq_re=
-mainder,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &irq_re=
-mainder_size,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 UBD_REQ=
-_BUFFER_SIZE
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 );
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (n < 0) {
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if=
-(n =3D=3D -EAGAIN)
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 break;
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 pr=
-intk(KERN_ERR "spurious interrupt in ubd_handler, "
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 "err =3D %d\n", -n);
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 re=
-turn;
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }
+ /* Called without dev->lock held, and only in interrupt context. */
+ static void ubd_handler(void)
+ {
+-	struct io_thread_req *req;
+ 	struct ubd *ubd;
+ 	struct list_head *list, *next_ele;
+ 	unsigned long flags;
+ 	int n;
++	int count;
+ 
+ 	while(1){
+-		n = os_read_file(thread_fd, &req,
+-				 sizeof(struct io_thread_req *));
+-		if(n != sizeof(req)){
++		n = bulk_req_safe_read(
++			thread_fd,
++			irq_req_buffer,
++			&irq_remainder,
++			&irq_remainder_size,
++			UBD_REQ_BUFFER_SIZE
++		);
++		if (n < 0) {
+ 			if(n == -EAGAIN)
+ 				break;
+ 			printk(KERN_ERR "spurious interrupt in ubd_handler, "
+ 			       "err = %d\n", -n);
+ 			return;
+ 		}
 -
--=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 blk_end_request(req->req, 0, re=
-q->length);
--=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 kfree(req);
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 for (count =3D 0; count < n/siz=
-eof(struct io_thread_req *); count++) {
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 blk_end=
-_request(
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 (*irq_req_buffer)[count]->req,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 0,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 (*irq_req_buffer)[count]->length
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 );
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 kfree((=
-*irq_req_buffer)[count]);
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }
-=A0=A0=A0=A0=A0=A0=A0=A0 }
-=A0=A0=A0=A0=A0=A0=A0=A0 reactivate_fd(thread_fd, UBD_IRQ);
-=A0
+-		blk_end_request(req->req, 0, req->length);
+-		kfree(req);
++		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
++			blk_end_request(
++				(*irq_req_buffer)[count]->req,
++				0,
++				(*irq_req_buffer)[count]->length
++			);
++			kfree((*irq_req_buffer)[count]);
++		}
+ 	}
+ 	reactivate_fd(thread_fd, UBD_IRQ);
+ 
 @@ -1064,6 +1137,28 @@ static int __init ubd_init(void)
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (register_blkdev(fake_m=
-ajor, "ubd"))
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 re=
-turn -1;
-=A0=A0=A0=A0=A0=A0=A0=A0 }
+ 		if (register_blkdev(fake_major, "ubd"))
+ 			return -1;
+ 	}
 +
-+=A0=A0=A0=A0=A0=A0 irq_req_buffer =3D kmalloc(
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sizeof(=
-struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 GFP_KER=
-NEL
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 );
-+=A0=A0=A0=A0=A0=A0 irq_remainder =3D 0;
++	irq_req_buffer = kmalloc(
++			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
++			GFP_KERNEL
++		);
++	irq_remainder = 0;
 +
-+=A0=A0=A0=A0=A0=A0 if (irq_req_buffer =3D=3D NULL) {
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 printk(KERN_ERR "Failed to init=
-ialize ubd buffering\n");
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -1;
-+=A0=A0=A0=A0=A0=A0 }
-
-Ok, I am really not tracking this, the same buffer allocated twice?
-
-+=A0=A0=A0=A0=A0=A0 io_req_buffer =3D kmalloc(
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sizeof(=
-struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 GFP_KER=
-NEL
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 );
++	if (irq_req_buffer == NULL) {
++		printk(KERN_ERR "Failed to initialize ubd buffering\n");
++		return -1;
++	}
++	io_req_buffer = kmalloc(
++			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
++			GFP_KERNEL
++		);
 +
-+=A0=A0=A0=A0=A0=A0 io_remainder =3D 0;
++	io_remainder = 0;
 +
-+=A0=A0=A0=A0=A0=A0 if (io_req_buffer =3D=3D NULL) {
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 printk(KERN_ERR "Failed to init=
-ialize ubd buffering\n");
-+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -1;
-+=A0=A0=A0=A0=A0=A0 }
-=A0=A0=A0=A0=A0=A0=A0=A0 platform_driver_register(&ubd_driver);
-=A0=A0=A0=A0=A0=A0=A0=A0 mutex_lock(&ubd_lock);
-=A0=A0=A0=A0=A0=A0=A0=A0 for (i =3D 0; i < MAX_DEV; i++){
++	if (io_req_buffer == NULL) {
++		printk(KERN_ERR "Failed to initialize ubd buffering\n");
++		return -1;
++	}
+ 	platform_driver_register(&ubd_driver);
+ 	mutex_lock(&ubd_lock);
+ 	for (i = 0; i < MAX_DEV; i++){
+@@ -1458,31 +1553,51 @@ static int io_count = 0;
+ 
+ int io_thread(void *arg)
+ {
+-	struct io_thread_req *req;
+-	int n;
++	int n, count, written, res;
+ 
+ 	os_fix_helper_signals();
+ 
+ 	while(1){
+-		n = os_read_file(kernel_fd, &req,
+-				 sizeof(struct io_thread_req *));
+-		if(n != sizeof(struct io_thread_req *)){
+-			if(n < 0)
++		n = bulk_req_safe_read(
++			kernel_fd,
++			io_req_buffer,
++			&io_remainder,
++			&io_remainder_size,
++			UBD_REQ_BUFFER_SIZE
++		);
++		if (n < 0) {
++			if (n == -EAGAIN) {
++				ubd_read_poll(-1);
++				continue;
++			} else {
+ 				printk("io_thread - read failed, fd = %d, "
+-				       "err = %d\n", kernel_fd, -n);
+-			else {
+-				printk("io_thread - short read, fd = %d, "
+-				       "length = %d\n", kernel_fd, n);
++				       "err = %d,"
++				       "reminder = %d\n",
++				       kernel_fd, -n, io_remainder_size);
+ 			}
+-			continue;
+ 		}
+-		io_count++;
+-		do_io(req);
+-		n = os_write_file(kernel_fd, &req,
+-				  sizeof(struct io_thread_req *));
+-		if(n != sizeof(struct io_thread_req *))
+-			printk("io_thread - write failed, fd = %d, err = %d\n",
+-			       kernel_fd, -n);
++
++		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
++			io_count++;
++			do_io((*io_req_buffer)[count]);
++		}
++
++		written = 0;
++
++		do {
++			res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
++			if (res > 0) {
++				written += res;
++			} else {
++				if (res != -EAGAIN) {
++					printk("io_thread - read failed, fd = %d, "
++					       "err = %d\n", kernel_fd, -n);
++				}
++			}
++			if (written < n) {
++				ubd_write_poll(-1);
++			}
++		} while (written < n);
+ 	}
+ 
+ 	return 0;
+diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
+index e376f9b..6f74479 100644
+--- a/arch/um/drivers/ubd_user.c
++++ b/arch/um/drivers/ubd_user.c
+@@ -1,4 +1,5 @@
+-/* 
++/*
++ * Copyright (C) 2016 Anton Ivanov (aivanov@brocade.com)
+  * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
+  * Copyright (C) 2001 Ridgerun,Inc (glonnon@ridgerun.com)
+  * Licensed under the GPL
+@@ -20,6 +21,9 @@
+ 
+ #include "ubd.h"
+ #include <os.h>
++#include <poll.h>
++
++struct pollfd kernel_pollfd;
+ 
+ int start_io_thread(unsigned long sp, int *fd_out)
+ {
+@@ -32,9 +36,12 @@ int start_io_thread(unsigned long sp, int *fd_out)
+ 	}
+ 
+ 	kernel_fd = fds[0];
++	kernel_pollfd.fd = kernel_fd;
++	kernel_pollfd.events = POLLIN;
+ 	*fd_out = fds[1];
+ 
+ 	err = os_set_fd_block(*fd_out, 0);
++	err = os_set_fd_block(kernel_fd, 0);
+ 	if (err) {
+ 		printk("start_io_thread - failed to set nonblocking I/O.\n");
+ 		goto out_close;
+@@ -57,3 +64,15 @@ int start_io_thread(unsigned long sp, int *fd_out)
+  out:
+ 	return err;
+ }
++
++int ubd_read_poll(int timeout)
++{
++	kernel_pollfd.events = POLLIN;
++	return poll(&kernel_pollfd, 1, timeout);
++}
++int ubd_write_poll(int timeout)
++{
++	kernel_pollfd.events = POLLOUT;
++	return poll(&kernel_pollfd, 1, timeout);
++}
++
+-- 
+2.1.4
 
 
-
-Sorry of the poor email I am using a web interface and it keeps dropping ch=
-ars...
-
-Jim
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Developer Access Program for Intel Xeon Phi Processors
 Access to Intel Xeon Phi processor-based developer platforms.
 With one year of Intel Parallel Studio XE.
