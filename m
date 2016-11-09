@@ -1,129 +1,357 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v12 5/7] x86/cpufeature: Detect CPUID faulting support
-Date: Wed, 16 Nov 2016 18:06:08 -0800
-Message-Id: <20161117020610.5302-6-khuey@kylehuey.com>
-In-Reply-To: <20161117020610.5302-1-khuey@kylehuey.com>
-References: <20161117020610.5302-1-khuey@kylehuey.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1c4Zim-0000JM-Rc
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Nov 2016 20:43:48 +0000
+Received: from ivanoab4.miniserver.com ([78.31.104.92]
+	helo=www.kot-begemot.co.uk)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1c4Zij-0001e6-3G
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 09 Nov 2016 20:43:48 +0000
+From: anton.ivanov@kot-begemot.co.uk
+Date: Wed,  9 Nov 2016 20:43:25 +0000
+Message-Id: <1478724205-489230-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
+Subject: [uml-devel] [PATCH v4] UBD Improvements
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard@nod.at, Anton Ivanov <aivanov@kot-begemot.co.uk>
 
-Intel supports faulting on the CPUID instruction beginning with Ivy Bridge.
-When enabled, the processor will fault on attempts to execute the CPUID
-instruction with CPL>0. This will allow a ptracer to emulate the CPUID
-instruction.
+From: Anton Ivanov <aivanov@kot-begemot.co.uk>
 
-Bit 31 of MSR_PLATFORM_INFO advertises support for this feature. It is
-documented in detail in Section 2.3.2 of
-https://bugzilla.kernel.org/attachment.cgi?id=243991
+UBD at present is extremely slow because it handles only
+one request at a time in the IO thread and IRQ handler.
 
-Detect support for this feature and expose it as X86_FEATURE_CPUID_FAULT.
+The single request at a time is replaced by handling multiple
+requests as well as necessary workarounds for short reads/writes.
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+Resulting performance improvement in disk IO - 30%
+
+Signed-off-by: Anton Ivanov <aivanov@kot-begemot.co.uk>
 ---
- arch/x86/include/asm/cpufeatures.h |  1 +
- arch/x86/include/asm/msr-index.h   |  2 ++
- arch/x86/kernel/cpu/intel.c        | 12 ++++++++++++
- 3 files changed, 15 insertions(+)
+ arch/um/drivers/ubd.h      |   5 ++
+ arch/um/drivers/ubd_kern.c | 168 ++++++++++++++++++++++++++++++++++++++-------
+ arch/um/drivers/ubd_user.c |  21 +++++-
+ 3 files changed, 167 insertions(+), 27 deletions(-)
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index a396292..85f853f 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -182,16 +182,17 @@
+diff --git a/arch/um/drivers/ubd.h b/arch/um/drivers/ubd.h
+index 3b48cd2..cc1cc85 100644
+--- a/arch/um/drivers/ubd.h
++++ b/arch/um/drivers/ubd.h
+@@ -11,5 +11,10 @@ extern int start_io_thread(unsigned long sp, int *fds_out);
+ extern int io_thread(void *arg);
+ extern int kernel_fd;
  
- /*
-  * Auxiliary flags: Linux defined - For features scattered in various
-  * CPUID levels like 0x6, 0xA etc, word 7.
-  *
-  * Reuse free bits when adding new feature flags!
-  */
- 
-+#define X86_FEATURE_CPUID_FAULT ( 7*32+ 0) /* Intel CPUID faulting */
- #define X86_FEATURE_CPB		( 7*32+ 2) /* AMD Core Performance Boost */
- #define X86_FEATURE_EPB		( 7*32+ 3) /* IA32_ENERGY_PERF_BIAS support */
- 
- #define X86_FEATURE_HW_PSTATE	( 7*32+ 8) /* AMD HW-PState */
- #define X86_FEATURE_PROC_FEEDBACK ( 7*32+ 9) /* AMD ProcFeedbackInterface */
- 
- #define X86_FEATURE_INTEL_PT	( 7*32+15) /* Intel Processor Trace */
- #define X86_FEATURE_AVX512_4VNNIW (7*32+16) /* AVX-512 Neural Network Instructions */
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 78f3760..3ac0acf 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -36,16 +36,18 @@
- #define EFER_LMSLE		(1<<_EFER_LMSLE)
- #define EFER_FFXSR		(1<<_EFER_FFXSR)
- 
- /* Intel MSRs. Some also available on other CPUs */
- #define MSR_IA32_PERFCTR0		0x000000c1
- #define MSR_IA32_PERFCTR1		0x000000c2
- #define MSR_FSB_FREQ			0x000000cd
- #define MSR_PLATFORM_INFO		0x000000ce
-+#define MSR_PLATFORM_INFO_CPUID_FAULT_BIT	31
-+#define MSR_PLATFORM_INFO_CPUID_FAULT		BIT_ULL(MSR_PLATFORM_INFO_CPUID_FAULT_BIT)
- 
- #define MSR_NHM_SNB_PKG_CST_CFG_CTL	0x000000e2
- #define NHM_C3_AUTO_DEMOTE		(1UL << 25)
- #define NHM_C1_AUTO_DEMOTE		(1UL << 26)
- #define ATM_LNC_C6_AUTO_DEMOTE		(1UL << 25)
- #define SNB_C1_AUTO_UNDEMOTE		(1UL << 27)
- #define SNB_C3_AUTO_UNDEMOTE		(1UL << 28)
- 
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index fcd484d..19b56b5 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -447,16 +447,26 @@ static void intel_bsp_resume(struct cpuinfo_x86 *c)
- {
- 	/*
- 	 * MSR_IA32_ENERGY_PERF_BIAS is lost across suspend/resume,
- 	 * so reinitialize it properly like during bootup:
- 	 */
- 	init_intel_energy_perf(c);
- }
- 
-+static void init_intel_misc_features_enables(struct cpuinfo_x86 *c)
-+{
-+	u64 msr;
++extern int ubd_read_poll(int timeout);
++extern int ubd_write_poll(int timeout);
 +
-+	if (!rdmsrl_safe(MSR_PLATFORM_INFO, &msr)) {
-+		if (msr & MSR_PLATFORM_INFO_CPUID_FAULT)
-+			set_cpu_cap(c, X86_FEATURE_CPUID_FAULT);
++#define UBD_REQ_BUFFER_SIZE 64
++
+ #endif
+ 
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index f354027..8541027 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1,4 +1,5 @@
+ /*
++ * Copyright (C) 2015-2016 Anton Ivanov (aivanov@brocade.com)
+  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
+  * Licensed under the GPL
+  */
+@@ -58,6 +59,17 @@ struct io_thread_req {
+ 	int error;
+ };
+ 
++
++static struct io_thread_req * (*irq_req_buffer)[];
++static struct io_thread_req *irq_remainder;
++static int irq_remainder_size;
++
++static struct io_thread_req * (*io_req_buffer)[];
++static struct io_thread_req *io_remainder;
++static int io_remainder_size;
++
++
++
+ static inline int ubd_test_bit(__u64 bit, unsigned char *data)
+ {
+ 	__u64 n;
+@@ -442,29 +454,91 @@ static void do_ubd_request(struct request_queue * q);
+ static int thread_fd = -1;
+ static LIST_HEAD(restart);
+ 
+-/* XXX - move this inside ubd_intr. */
++/* Function to read several request pointers at a time
++* handling fractional reads if (and as) needed
++*/
++
++static int bulk_req_safe_read(
++	int fd,
++	struct io_thread_req * (*request_buffer)[],
++	struct io_thread_req **remainder,
++	int *remainder_size,
++	int max_recs
++	)
++{
++	int n = 0;
++	int res = 0;
++
++	if (*remainder_size > 0) {
++		memmove(
++			(char *) request_buffer,
++			(char *) remainder, *remainder_size
++		);
++		n = *remainder_size;
 +	}
++
++	res = os_read_file(
++			fd,
++			((char *) request_buffer) + *remainder_size,
++			sizeof(struct io_thread_req *)*max_recs
++				- *remainder_size
++		);
++	if (res > 0) {
++		n += res;
++		if ((n % sizeof(struct io_thread_req *)) > 0) {
++			/*
++			* Read somehow returned not a multiple of dword
++			* theoretically possible, but never observed in the
++			* wild, so read routine must be able to handle it
++			*/
++			*remainder_size = n % sizeof(struct io_thread_req *);
++			WARN(*remainder_size > 0, "UBD IPC read returned a partial result");
++			memmove(
++				remainder,
++				((char *) request_buffer) +
++					(n/sizeof(struct io_thread_req *))*sizeof(struct io_thread_req *),
++				*remainder_size
++			);
++			n = n - *remainder_size;
++		}
++	} else {
++		n = res;
++	}
++	return n;
 +}
 +
- static void init_intel(struct cpuinfo_x86 *c)
+ /* Called without dev->lock held, and only in interrupt context. */
+ static void ubd_handler(void)
  {
- 	unsigned int l2 = 0;
+-	struct io_thread_req *req;
+ 	struct ubd *ubd;
+ 	struct list_head *list, *next_ele;
+ 	unsigned long flags;
+ 	int n;
++	int count;
  
- 	early_init_intel(c);
+ 	while(1){
+-		n = os_read_file(thread_fd, &req,
+-				 sizeof(struct io_thread_req *));
+-		if(n != sizeof(req)){
++		n = bulk_req_safe_read(
++			thread_fd,
++			irq_req_buffer,
++			&irq_remainder,
++			&irq_remainder_size,
++			UBD_REQ_BUFFER_SIZE
++		);
++		if (n < 0) {
+ 			if(n == -EAGAIN)
+ 				break;
+ 			printk(KERN_ERR "spurious interrupt in ubd_handler, "
+ 			       "err = %d\n", -n);
+ 			return;
+ 		}
+-
+-		blk_end_request(req->req, 0, req->length);
+-		kfree(req);
++		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
++			blk_end_request(
++				(*irq_req_buffer)[count]->req,
++				0,
++				(*irq_req_buffer)[count]->length
++			);
++			kfree((*irq_req_buffer)[count]);
++		}
+ 	}
+ 	reactivate_fd(thread_fd, UBD_IRQ);
  
- 	intel_workarounds(c);
- 
-@@ -560,16 +570,18 @@ static void init_intel(struct cpuinfo_x86 *c)
- 
- 	/* Work around errata */
- 	srat_detect_node(c);
- 
- 	if (cpu_has(c, X86_FEATURE_VMX))
- 		detect_vmx_virtcap(c);
- 
- 	init_intel_energy_perf(c);
+@@ -1064,6 +1138,28 @@ static int __init ubd_init(void)
+ 		if (register_blkdev(fake_major, "ubd"))
+ 			return -1;
+ 	}
 +
-+	init_intel_misc_features_enables(c);
- }
++	irq_req_buffer = kmalloc(
++			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
++			GFP_KERNEL
++		);
++	irq_remainder = 0;
++
++	if (irq_req_buffer == NULL) {
++		printk(KERN_ERR "Failed to initialize ubd buffering\n");
++		return -1;
++	}
++	io_req_buffer = kmalloc(
++			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
++			GFP_KERNEL
++		);
++
++	io_remainder = 0;
++
++	if (io_req_buffer == NULL) {
++		printk(KERN_ERR "Failed to initialize ubd buffering\n");
++		return -1;
++	}
+ 	platform_driver_register(&ubd_driver);
+ 	mutex_lock(&ubd_lock);
+ 	for (i = 0; i < MAX_DEV; i++){
+@@ -1458,31 +1554,51 @@ static int io_count = 0;
  
- #ifdef CONFIG_X86_32
- static unsigned int intel_size_cache(struct cpuinfo_x86 *c, unsigned int size)
+ int io_thread(void *arg)
  {
- 	/*
- 	 * Intel PIII Tualatin. This comes in two flavours.
- 	 * One has 256kb of cache, the other 512. We have no way
+-	struct io_thread_req *req;
+-	int n;
++	int n, count, written, res;
+ 
+ 	os_fix_helper_signals();
+ 
+ 	while(1){
+-		n = os_read_file(kernel_fd, &req,
+-				 sizeof(struct io_thread_req *));
+-		if(n != sizeof(struct io_thread_req *)){
+-			if(n < 0)
++		n = bulk_req_safe_read(
++			kernel_fd,
++			io_req_buffer,
++			&io_remainder,
++			&io_remainder_size,
++			UBD_REQ_BUFFER_SIZE
++		);
++		if (n < 0) {
++			if (n == -EAGAIN) {
++				ubd_read_poll(-1);
++				continue;
++			} else {
+ 				printk("io_thread - read failed, fd = %d, "
+-				       "err = %d\n", kernel_fd, -n);
+-			else {
+-				printk("io_thread - short read, fd = %d, "
+-				       "length = %d\n", kernel_fd, n);
++				       "err = %d,"
++				       "reminder = %d\n",
++				       kernel_fd, -n, io_remainder_size);
+ 			}
+-			continue;
+ 		}
+-		io_count++;
+-		do_io(req);
+-		n = os_write_file(kernel_fd, &req,
+-				  sizeof(struct io_thread_req *));
+-		if(n != sizeof(struct io_thread_req *))
+-			printk("io_thread - write failed, fd = %d, err = %d\n",
+-			       kernel_fd, -n);
++
++		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
++			io_count++;
++			do_io((*io_req_buffer)[count]);
++		}
++
++		written = 0;
++
++		do {
++			res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
++			if (res > 0) {
++				written += res;
++			} else {
++				if (res != -EAGAIN) {
++					printk("io_thread - read failed, fd = %d, "
++					       "err = %d\n", kernel_fd, -n);
++				}
++			}
++			if (written < n) {
++				ubd_write_poll(-1);
++			}
++		} while (written < n);
+ 	}
+ 
+ 	return 0;
+diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
+index e376f9b..6f74479 100644
+--- a/arch/um/drivers/ubd_user.c
++++ b/arch/um/drivers/ubd_user.c
+@@ -1,4 +1,5 @@
+-/* 
++/*
++ * Copyright (C) 2016 Anton Ivanov (aivanov@brocade.com)
+  * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
+  * Copyright (C) 2001 Ridgerun,Inc (glonnon@ridgerun.com)
+  * Licensed under the GPL
+@@ -20,6 +21,9 @@
+ 
+ #include "ubd.h"
+ #include <os.h>
++#include <poll.h>
++
++struct pollfd kernel_pollfd;
+ 
+ int start_io_thread(unsigned long sp, int *fd_out)
+ {
+@@ -32,9 +36,12 @@ int start_io_thread(unsigned long sp, int *fd_out)
+ 	}
+ 
+ 	kernel_fd = fds[0];
++	kernel_pollfd.fd = kernel_fd;
++	kernel_pollfd.events = POLLIN;
+ 	*fd_out = fds[1];
+ 
+ 	err = os_set_fd_block(*fd_out, 0);
++	err = os_set_fd_block(kernel_fd, 0);
+ 	if (err) {
+ 		printk("start_io_thread - failed to set nonblocking I/O.\n");
+ 		goto out_close;
+@@ -57,3 +64,15 @@ int start_io_thread(unsigned long sp, int *fd_out)
+  out:
+ 	return err;
+ }
++
++int ubd_read_poll(int timeout)
++{
++	kernel_pollfd.events = POLLIN;
++	return poll(&kernel_pollfd, 1, timeout);
++}
++int ubd_write_poll(int timeout)
++{
++	kernel_pollfd.events = POLLOUT;
++	return poll(&kernel_pollfd, 1, timeout);
++}
++
 -- 
-2.10.2
+2.1.4
 
+
+------------------------------------------------------------------------------
+Developer Access Program for Intel Xeon Phi Processors
+Access to Intel Xeon Phi processor-based developer platforms.
+With one year of Intel Parallel Studio XE.
+Training and support from Colfax.
+Order your platform today. http://sdm.link/xeonphi
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
