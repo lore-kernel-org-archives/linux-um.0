@@ -1,71 +1,89 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Tue, 15 Nov 2016 17:39:02 -0500
-From: Keno Fischer <keno@juliacomputing.com>
-Subject: [PATCH v2] gpio: Remove GPIO_DEVRES option
-Message-ID: <20161115223902.GA8347@juliacomputing.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From: Kyle Huey <me@kylehuey.com>
+Subject: [PATCH v11 3/7] x86/arch_prctl: Add do_arch_prctl_common
+Date: Thu, 10 Nov 2016 15:40:51 -0800
+Message-Id: <20161110234055.8654-4-khuey@kylehuey.com>
+In-Reply-To: <20161110234055.8654-1-khuey@kylehuey.com>
+References: <20161110234055.8654-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: linus.walleij@linaro.org, gnurou@gmail.com, linux-gpio@vger.kernel.org, jdike@addtoit.com, richard@nod.at, user-mode-linux-devel@lists.sourceforge.net, shawn.guo@linaro.org, acourbot@nvidia.com
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This option was added in 6a89a314ab107a12af08c71420c19a37a30fc2d3 to allow use
-of the devm_gpio_* functions without CONFIG_GPIOLIB. However, only a few months
-later in b69ac52449c658b7ac40034dc3c5f5f4a71a723d, CONFIG_GPIOLIB, was added
-as a dependency, defeating the original purpose of this option. Instead of
-that patch, the original commit could have just been reverted (and in fact
-was partially so in 403c1d0be5ccbd750d25c59d8358843a81e52e3b). Further,
-since this option has a dependency on HAS_IOMEM, even though it does not
-require it, it causes build failures when !HAS_IOMEM (e.g. in a uml build).
-Fix that by completely removing the option, in essence completing the
-reversion of the original commit.
+Add do_arch_prctl_common() to handle arch_prctls that are not specific to 64
+bit mode. Call it from the syscall entry point, but not any of the other
+callsites in the kernel, which all want one of the existing 64 bit only
+arch_prctls.
+
+Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
+ arch/x86/include/asm/proto.h | 2 ++
+ arch/x86/kernel/process.c    | 5 +++++
+ arch/x86/kernel/process_64.c | 8 +++++++-
+ 3 files changed, 14 insertions(+), 1 deletion(-)
 
-In the original version of this patch (http://marc.info/?l=linux-gpio&m=147874300313315&w=2),
-I had kept the option, and just fixed the build failure. However,
-Linus Walleij pointed out (and the git history agrees) that this
-option is now obsolete and should just be removed.
-
-Also, while here I should note that there was a `might_sleep();` in the
-stub for `devm_gpio_free`, that was not reintroduced when the stub was
-brought back. Not sure this makes a difference, it felt worth pointing
-out to the maintainers.
-
- drivers/gpio/Kconfig  | 4 ----
- drivers/gpio/Makefile | 2 +-
- 2 files changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index d011cb8..ed37e59 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -22,10 +22,6 @@ menuconfig GPIOLIB
+diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
+index f8e9194..fa66909 100644
+--- a/arch/x86/include/asm/proto.h
++++ b/arch/x86/include/asm/proto.h
+@@ -26,9 +26,11 @@ void entry_SYSCALL_compat(void);
+ void entry_INT80_compat(void);
+ #endif
  
- if GPIOLIB
+ void x86_configure_nx(void);
+ void x86_report_nx(void);
  
--config GPIO_DEVRES
--	def_bool y
--	depends on HAS_IOMEM
--
- config OF_GPIO
- 	def_bool y
- 	depends on OF
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index ab28a2d..d074c22 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -2,7 +2,7 @@
+ extern int reboot_force;
  
- ccflags-$(CONFIG_DEBUG_GPIO)	+= -DDEBUG
++long do_arch_prctl_common(struct task_struct *task, int code, unsigned long arg2);
++
+ #endif /* _ASM_X86_PROTO_H */
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 0888a87..d0126b2 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -579,8 +579,13 @@ unsigned long get_wchan(struct task_struct *p)
+ 		}
+ 		fp = READ_ONCE_NOCHECK(*(unsigned long *)fp);
+ 	} while (count++ < 16 && p->state != TASK_RUNNING);
  
--obj-$(CONFIG_GPIO_DEVRES)	+= devres.o
-+obj-$(CONFIG_GPIOLIB)		+= devres.o
- obj-$(CONFIG_GPIOLIB)		+= gpiolib.o
- obj-$(CONFIG_GPIOLIB)		+= gpiolib-legacy.o
- obj-$(CONFIG_OF_GPIO)		+= gpiolib-of.o
+ out:
+ 	put_task_stack(p);
+ 	return ret;
+ }
++
++long do_arch_prctl_common(struct task_struct *task, int code, unsigned long arg2)
++{
++	return -EINVAL;
++}
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index 611df20..bf75d26 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -612,15 +612,21 @@ long do_arch_prctl_64(struct task_struct *task, int code, unsigned long arg2)
+ 		break;
+ 	}
+ 
+ 	return ret;
+ }
+ 
+ SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
+ {
+-	return do_arch_prctl_64(current, code, arg2);
++	long ret;
++
++	ret = do_arch_prctl_64(current, code, arg2);
++	if (ret == -EINVAL)
++		ret = do_arch_prctl_common(current, code, arg2);
++
++	return ret;
+ }
+ 
+ unsigned long KSTK_ESP(struct task_struct *task)
+ {
+ 	return task_pt_regs(task)->sp;
+ }
 -- 
-2.9.3
+2.10.2
 
 
