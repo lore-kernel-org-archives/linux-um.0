@@ -1,184 +1,107 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v12 4/7] x86/syscalls/32: Wire up arch_prctl on x86-32
-Date: Wed, 16 Nov 2016 18:06:07 -0800
-Message-Id: <20161117020610.5302-5-khuey@kylehuey.com>
-In-Reply-To: <20161117020610.5302-1-khuey@kylehuey.com>
-References: <20161117020610.5302-1-khuey@kylehuey.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1c5X35-0003O8-AK
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Nov 2016 12:04:43 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1c5X33-0001ri-PT
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Nov 2016 12:04:43 +0000
+Received: from [95.222.27.215] (helo=linux)
+	by www17.your-server.de with esmtpsa
+	(TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256) (Exim 4.85_2)
+	(envelope-from <thomas@m3y3r.de>) id 1c5Wma-0000R5-SP
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Sat, 12 Nov 2016 12:47:40 +0100
+Message-ID: <1478951260.265331.11.camel@m3y3r.de>
+From: Thomas Meyer <thomas@m3y3r.de>
+Date: Sat, 12 Nov 2016 12:47:40 +0100
+Mime-Version: 1.0
+Subject: [uml-devel] vma-merge warning
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Hook up arch_prctl to call do_arch_prctl() on x86-32, and in 32 bit compat
-mode on x86-64. This allows us to have arch_prctls that are not specific to
-64 bits.
+Hi,
 
-On UML, simply stub out this syscall.
+my kernel log is full with those messages:
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
----
- arch/x86/entry/syscalls/syscall_32.tbl | 1 +
- arch/x86/kernel/process_32.c           | 7 +++++++
- arch/x86/kernel/process_64.c           | 7 +++++++
- arch/x86/um/Makefile                   | 2 +-
- arch/x86/um/syscalls_32.c              | 7 +++++++
- include/linux/compat.h                 | 2 ++
- 6 files changed, 25 insertions(+), 1 deletion(-)
- create mode 100644 arch/x86/um/syscalls_32.c
+any ideas? I have CONFIG_LOCKDEP=y set.
 
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 2b36185..d78c6b5 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -384,8 +384,9 @@
- 375	i386	membarrier		sys_membarrier
- 376	i386	mlock2			sys_mlock2
- 377	i386	copy_file_range		sys_copy_file_range
- 378	i386	preadv2			sys_preadv2			compat_sys_preadv2
- 379	i386	pwritev2		sys_pwritev2			compat_sys_pwritev2
- 380	i386	pkey_mprotect		sys_pkey_mprotect
- 381	i386	pkey_alloc		sys_pkey_alloc
- 382	i386	pkey_free		sys_pkey_free
-+385	i386	arch_prctl		sys_arch_prctl			compat_sys_arch_prctl
-diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
-index bd7be8e..95d3adc 100644
---- a/arch/x86/kernel/process_32.c
-+++ b/arch/x86/kernel/process_32.c
-@@ -30,16 +30,17 @@
- #include <linux/ptrace.h>
- #include <linux/personality.h>
- #include <linux/percpu.h>
- #include <linux/prctl.h>
- #include <linux/ftrace.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <linux/kdebug.h>
-+#include <linux/syscalls.h>
- 
- #include <asm/pgtable.h>
- #include <asm/ldt.h>
- #include <asm/processor.h>
- #include <asm/fpu/internal.h>
- #include <asm/desc.h>
- #ifdef CONFIG_MATH_EMULATION
- #include <asm/math_emu.h>
-@@ -49,16 +50,17 @@
- 
- #include <asm/tlbflush.h>
- #include <asm/cpu.h>
- #include <asm/idle.h>
- #include <asm/syscalls.h>
- #include <asm/debugreg.h>
- #include <asm/switch_to.h>
- #include <asm/vm86.h>
-+#include <asm/proto.h>
- 
- void __show_regs(struct pt_regs *regs, int all)
- {
- 	unsigned long cr0 = 0L, cr2 = 0L, cr3 = 0L, cr4 = 0L;
- 	unsigned long d0, d1, d2, d3, d6, d7;
- 	unsigned long sp;
- 	unsigned short ss, gs;
- 
-@@ -296,8 +298,13 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
- 		lazy_load_gs(next->gs);
- 
- 	switch_fpu_finish(next_fpu, fpu_switch);
- 
- 	this_cpu_write(current_task, next_p);
- 
- 	return prev_p;
- }
-+
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
-+{
-+	return do_arch_prctl_common(current, code, arg2);
-+}
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index bf75d26..3a2a84d 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -621,12 +621,19 @@ SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
- 
- 	ret = do_arch_prctl_64(current, code, arg2);
- 	if (ret == -EINVAL)
- 		ret = do_arch_prctl_common(current, code, arg2);
- 
- 	return ret;
- }
- 
-+#ifdef CONFIG_IA32_EMULATION
-+COMPAT_SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
-+{
-+	return do_arch_prctl_common(current, code, arg2);
-+}
-+#endif
-+
- unsigned long KSTK_ESP(struct task_struct *task)
- {
- 	return task_pt_regs(task)->sp;
- }
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index e7e7055..69f0827 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -11,17 +11,17 @@ endif
- obj-y = bug.o bugs_$(BITS).o delay.o fault.o ldt.o \
- 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
- 	stub_$(BITS).o stub_segv.o \
- 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
- 	mem_$(BITS).o subarch.o os-$(OS)/
- 
- ifeq ($(CONFIG_X86_32),y)
- 
--obj-y += checksum_32.o
-+obj-y += checksum_32.o syscalls_32.o
- obj-$(CONFIG_ELF_CORE) += elfcore.o
- 
- subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
- subarch-$(CONFIG_RWSEM_XCHGADD_ALGORITHM) += ../lib/rwsem.o
- 
- else
- 
- obj-y += syscalls_64.o vdso/
-diff --git a/arch/x86/um/syscalls_32.c b/arch/x86/um/syscalls_32.c
-new file mode 100644
-index 0000000..ccf0598
---- /dev/null
-+++ b/arch/x86/um/syscalls_32.c
-@@ -0,0 +1,7 @@
-+#include <linux/syscalls.h>
-+#include <os.h>
-+
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
-+{
-+	return -EINVAL;
-+}
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index 6360939..500cdb3 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -716,16 +716,18 @@ int __compat_save_altstack(compat_stack_t __user *, unsigned long);
- } while (0);
- 
- asmlinkage long compat_sys_sched_rr_get_interval(compat_pid_t pid,
- 						 struct compat_timespec __user *interval);
- 
- asmlinkage long compat_sys_fanotify_mark(int, unsigned int, __u32, __u32,
- 					    int, const char __user *);
- 
-+asmlinkage long compat_sys_arch_prctl(int, unsigned long);
-+
- /*
-  * For most but not all architectures, "am I in a compat syscall?" and
-  * "am I a compat task?" are the same question.  For architectures on which
-  * they aren't the same question, arch code can override in_compat_syscall.
-  */
- 
- #ifndef in_compat_syscall
- static inline bool in_compat_syscall(void) { return is_compat_task(); }
--- 
-2.10.2
+[ 3237.220000] ------------[ cut here ]------------
+[ 3237.220000] WARNING: CPU: 0 PID: 1445 at mm/mmap.c:1110 vma_merge+0x323/0x3c0
+[ 3237.220000] Modules linked in:
+[ 3237.220000] CPU: 0 PID: 1445 Comm: mdadm Tainted: G        W       4.9.0-rc3-00262-g53886f5 #277
+[ 3237.220000] Stack:
+[ 3237.220000]  ae8d5a40 600c3024 00000009 00000000
+[ 3237.220000]  6014fb9c 00000000 ae8d5a50 604d4aac
+[ 3237.220000]  ae8d5ab0 6006606e 456ae8d5a70 60193b13
+[ 3237.220000] Call Trace:
+[ 3237.220000]  [<60193b13>] ? [ 3237.220000] vma_merge+0x323/0x3c0
+ [<6014fb9c>] ? [ 3237.220000] printk+0x0/0x94
+ [<60043b29>] [ 3237.220000] show_stack+0x129/0x190
+ [<600c3024>] ? [ 3237.220000] dump_stack_print_info+0xe4/0xf0
+ [<6014fb9c>] ? [ 3237.220000] printk+0x0/0x94
+ [<604d4aac>] [ 3237.220000] dump_stack+0x2a/0x2e
+ [<6006606e>] [ 3237.220000] __warn+0x11e/0x150
+ [<60193b13>] ? [ 3237.220000] vma_merge+0x323/0x3c0
+ [<607fa224>] ? [ 3237.220000] _raw_spin_unlock_irqrestore+0x54/0x80
+ [<600661ef>] [ 3237.220000] warn_slowpath_null+0x1f/0x30
+ [<60193b13>] [ 3237.220000] vma_merge+0x323/0x3c0
+ [<601951f0>] ? [ 3237.220000] may_expand_vm+0x0/0x170
+ [<6019783d>] [ 3237.220000] mprotect_fixup+0x14d/0x2e0
+ [<601cb87c>] [ 3237.220000] setup_arg_pages+0x10c/0x470
+ [<6023f3d5>] [ 3237.220000] load_elf_binary+0x475/0xfa0
+ [<6005a288>] ? [ 3237.220000] set_signals+0x28/0x50
+ [<600b7be6>] ? [ 3237.220000] lock_release+0x736/0x7f0
+ [<600b7463>] ? [ 3237.220000] lock_acquire+0x203/0x250
+ [<600b1e2e>] ? [ 3237.220000] lock_acquired+0x4ae/0x530
+ [<601ccfb4>] ? [ 3237.220000] search_binary_handler+0xa4/0x290
+ [<600e98a0>] ? [ 3237.220000] try_module_get+0x0/0x1d0
+ [<600e98a0>] ? [ 3237.220000] try_module_get+0x0/0x1d0
+ [<601ccf9b>] [ 3237.220000] search_binary_handler+0x8b/0x290
+ [<6008ecf5>] ? [ 3237.220000] __task_pid_nr_ns+0x225/0x240
+ [<600c8b90>] ? [ 3237.220000] debug_lockdep_rcu_enabled+0x0/0x40
+ [<601cb220>] ? [ 3237.220000] copy_strings+0x0/0x500
+ [<600c8b90>] ? [ 3237.220000] debug_lockdep_rcu_enabled+0x0/0x40
+ [<6043a658>] [ 3237.220000] exec_binprm+0x18c/0x364
+ [<601cb220>] ? [ 3237.220000] copy_strings+0x0/0x500
+ [<601cde98>] [ 3237.220000] do_execveat_common+0x6d8/0x8c0
+ [<601ce436>] [ 3237.220000] SyS_execve+0x36/0x40
+ [<60046288>] [ 3237.220000] handle_syscall+0x98/0xc0
+ [<6005d662>] [ 3237.220000] userspace+0x3c2/0x4d0
+ [<60058c1f>] ? [ 3237.220000] save_registers+0x1f/0x50
+ [<60060c77>] ? [ 3237.220000] arch_prctl+0x117/0x1e0
+ [<600422e5>] [ 3237.220000] fork_handler+0x85/0x90
+[ 3237.220000] 
+[ 3237.220000] ---[ end trace 3d18ccfe26aa207a ]---
+[ 3237.270000] reboot: System halted
 
+with kind regards
+thomas
+
+
+------------------------------------------------------------------------------
+Developer Access Program for Intel Xeon Phi Processors
+Access to Intel Xeon Phi processor-based developer platforms.
+With one year of Intel Parallel Studio XE.
+Training and support from Colfax.
+Order your platform today. http://sdm.link/xeonphi
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
