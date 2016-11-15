@@ -1,356 +1,56 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1c4ONg-0000Di-Db
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Nov 2016 08:37:16 +0000
-Received: from ivanoab4.miniserver.com ([78.31.104.92]
-	helo=www.kot-begemot.co.uk)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1c4ONe-0006bR-Rd
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 09 Nov 2016 08:37:16 +0000
-From: anton.ivanov@kot-begemot.co.uk
-Date: Wed,  9 Nov 2016 08:36:46 +0000
-Message-Id: <1478680606-476779-1-git-send-email-anton.ivanov@kot-begemot.co.uk>
-Subject: [uml-devel] [PATCH v3] UBD Improvements Phase 1
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-gpio-owner@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: richard@nod.at, Anton Ivanov <aivanov@brocade.com>
+In-Reply-To: <20161110015638.GA51357@juliacomputing.com>
+References: <20161110015638.GA51357@juliacomputing.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 15 Nov 2016 10:10:53 +0100
+Message-ID: <CACRpkdZ00bkzWOad520398gNELPhN3zqwMke6bwH+Cwb5FS8JQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: Guard devm_* functions behind CONFIG_GPIO_DEVRES
+ not CONFIG_GPIOLIB
+Content-Type: text/plain; charset=UTF-8
+Sender: linux-gpio-owner@vger.kernel.org
+To: Keno Fischer <keno@juliacomputing.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Alexandre Courbot <gnurou@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, jdike@addtoit.com, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Anton Ivanov <aivanov@brocade.com>
+On Thu, Nov 10, 2016 at 2:56 AM, Keno Fischer <keno@juliacomputing.com> wrote:
 
-UBD at present is extremely slow because it handles only
-one request at a time in the IO thread and IRQ handler.
+> These functions are defined in devres.c, which only gets compiled with
+> CONFIG_GPIO_DEVRES (in addition to CONFIG_GPIOLIB). However, in the
+> header files, the difference between the declaration and the inline
+> stub was only guarded by CONFIG_GPIOLIB, not CONFIG_GPIO_DEVRES,
+> causing undefined symbol problems in modpost.
+>
+> Signed-off-by: Keno Fischer <keno@juliacomputing.com>
+> ---
+>
+> I encountered this while trying to build uml in an attempt to debug some kernel
+> behavior I don't understand. To be as close to my actual kernel as possible,
+> I used the same .config, which of course tried to build a bunch of drivers.
+> Arguably I should just not build those, but this seems correct nonetheless
+> and allows the build to go through.
 
-The single request at a time is replaced by handling multiple
-requests as well as necessary workarounds for short reads/writes.
+Ha! Good point. But it's the wrong solution.
 
-Resulting performance improvement in disk IO - 30%
+The culprit is this:
 
-Signed-off-by: Anton Ivanov <aivanov@brocade.com>
----
- arch/um/drivers/ubd.h      |   5 ++
- arch/um/drivers/ubd_kern.c | 167 ++++++++++++++++++++++++++++++++++++++-------
- arch/um/drivers/ubd_user.c |  21 +++++-
- 3 files changed, 166 insertions(+), 27 deletions(-)
+if GPIOLIB
 
-diff --git a/arch/um/drivers/ubd.h b/arch/um/drivers/ubd.h
-index 3b48cd2..cc1cc85 100644
---- a/arch/um/drivers/ubd.h
-+++ b/arch/um/drivers/ubd.h
-@@ -11,5 +11,10 @@ extern int start_io_thread(unsigned long sp, int *fds_out);
- extern int io_thread(void *arg);
- extern int kernel_fd;
- 
-+extern int ubd_read_poll(int timeout);
-+extern int ubd_write_poll(int timeout);
-+
-+#define UBD_REQ_BUFFER_SIZE 64
-+
- #endif
- 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index f354027..7007ee3 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright (C) 2015-2016 Anton Ivanov (aivanov@brocade.com)
-  * Copyright (C) 2000 Jeff Dike (jdike@karaya.com)
-  * Licensed under the GPL
-  */
-@@ -58,6 +59,17 @@ struct io_thread_req {
- 	int error;
- };
- 
-+
-+static struct io_thread_req * (*irq_req_buffer)[];
-+static struct io_thread_req *irq_remainder;
-+static int irq_remainder_size;
-+
-+static struct io_thread_req * (*io_req_buffer)[];
-+static struct io_thread_req *io_remainder;
-+static int io_remainder_size;
-+
-+
-+
- static inline int ubd_test_bit(__u64 bit, unsigned char *data)
- {
- 	__u64 n;
-@@ -442,29 +454,90 @@ static void do_ubd_request(struct request_queue * q);
- static int thread_fd = -1;
- static LIST_HEAD(restart);
- 
--/* XXX - move this inside ubd_intr. */
-+/* Function to read several request pointers at a time
-+* handling fractional reads if (and as) needed
-+*/
-+
-+static int bulk_req_safe_read(
-+	int fd,
-+	struct io_thread_req * (*request_buffer)[],
-+	struct io_thread_req **remainder,
-+	int *remainder_size,
-+	int max_recs
-+	)
-+{
-+	int n = 0;
-+	int res = 0;
-+
-+	if (*remainder_size > 0) {
-+		memmove(
-+			(char *) request_buffer,
-+			(char *) remainder, *remainder_size
-+		);
-+		n = *remainder_size;
-+	}
-+
-+	res = os_read_file(
-+			fd,
-+			((char *) request_buffer) + *remainder_size,
-+			sizeof(struct io_thread_req *)*max_recs
-+				- *remainder_size
-+		);
-+	if (res > 0) {
-+		n += res;
-+		if ((n % sizeof(struct io_thread_req *)) > 0) {
-+			/*
-+			* Read somehow returned not a multiple of dword
-+			* theoretically possible, but never observed in the
-+			* wild, so read routine must be able to handle it
-+			*/
-+			*remainder_size = n % sizeof(struct io_thread_req *);
-+			memmove(
-+				remainder,
-+				((char *) request_buffer) +
-+					n/sizeof(struct io_thread_req *),
-+				*remainder_size
-+			);
-+			n = n - *remainder_size;
-+		}
-+	} else {
-+		n = res;
-+	}
-+	return n;
-+}
-+
- /* Called without dev->lock held, and only in interrupt context. */
- static void ubd_handler(void)
- {
--	struct io_thread_req *req;
- 	struct ubd *ubd;
- 	struct list_head *list, *next_ele;
- 	unsigned long flags;
- 	int n;
-+	int count;
- 
- 	while(1){
--		n = os_read_file(thread_fd, &req,
--				 sizeof(struct io_thread_req *));
--		if(n != sizeof(req)){
-+		n = bulk_req_safe_read(
-+			thread_fd,
-+			irq_req_buffer,
-+			&irq_remainder,
-+			&irq_remainder_size,
-+			UBD_REQ_BUFFER_SIZE
-+		);
-+		if (n < 0) {
- 			if(n == -EAGAIN)
- 				break;
- 			printk(KERN_ERR "spurious interrupt in ubd_handler, "
- 			       "err = %d\n", -n);
- 			return;
- 		}
--
--		blk_end_request(req->req, 0, req->length);
--		kfree(req);
-+		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
-+			blk_end_request(
-+				(*irq_req_buffer)[count]->req,
-+				0,
-+				(*irq_req_buffer)[count]->length
-+			);
-+			kfree((*irq_req_buffer)[count]);
-+		}
- 	}
- 	reactivate_fd(thread_fd, UBD_IRQ);
- 
-@@ -1064,6 +1137,28 @@ static int __init ubd_init(void)
- 		if (register_blkdev(fake_major, "ubd"))
- 			return -1;
- 	}
-+
-+	irq_req_buffer = kmalloc(
-+			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
-+			GFP_KERNEL
-+		);
-+	irq_remainder = 0;
-+
-+	if (irq_req_buffer == NULL) {
-+		printk(KERN_ERR "Failed to initialize ubd buffering\n");
-+		return -1;
-+	}
-+	io_req_buffer = kmalloc(
-+			sizeof(struct io_thread_req *) * UBD_REQ_BUFFER_SIZE,
-+			GFP_KERNEL
-+		);
-+
-+	io_remainder = 0;
-+
-+	if (io_req_buffer == NULL) {
-+		printk(KERN_ERR "Failed to initialize ubd buffering\n");
-+		return -1;
-+	}
- 	platform_driver_register(&ubd_driver);
- 	mutex_lock(&ubd_lock);
- 	for (i = 0; i < MAX_DEV; i++){
-@@ -1458,31 +1553,51 @@ static int io_count = 0;
- 
- int io_thread(void *arg)
- {
--	struct io_thread_req *req;
--	int n;
-+	int n, count, written, res;
- 
- 	os_fix_helper_signals();
- 
- 	while(1){
--		n = os_read_file(kernel_fd, &req,
--				 sizeof(struct io_thread_req *));
--		if(n != sizeof(struct io_thread_req *)){
--			if(n < 0)
-+		n = bulk_req_safe_read(
-+			kernel_fd,
-+			io_req_buffer,
-+			&io_remainder,
-+			&io_remainder_size,
-+			UBD_REQ_BUFFER_SIZE
-+		);
-+		if (n < 0) {
-+			if (n == -EAGAIN) {
-+				ubd_read_poll(-1);
-+				continue;
-+			} else {
- 				printk("io_thread - read failed, fd = %d, "
--				       "err = %d\n", kernel_fd, -n);
--			else {
--				printk("io_thread - short read, fd = %d, "
--				       "length = %d\n", kernel_fd, n);
-+				       "err = %d,"
-+				       "reminder = %d\n",
-+				       kernel_fd, -n, io_remainder_size);
- 			}
--			continue;
- 		}
--		io_count++;
--		do_io(req);
--		n = os_write_file(kernel_fd, &req,
--				  sizeof(struct io_thread_req *));
--		if(n != sizeof(struct io_thread_req *))
--			printk("io_thread - write failed, fd = %d, err = %d\n",
--			       kernel_fd, -n);
-+
-+		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
-+			io_count++;
-+			do_io((*io_req_buffer)[count]);
-+		}
-+
-+		written = 0;
-+
-+		do {
-+			res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
-+			if (res > 0) {
-+				written += res;
-+			} else {
-+				if (res != -EAGAIN) {
-+					printk("io_thread - read failed, fd = %d, "
-+					       "err = %d\n", kernel_fd, -n);
-+				}
-+			}
-+			if (written < n) {
-+				ubd_write_poll(-1);
-+			}
-+		} while (written < n);
- 	}
- 
- 	return 0;
-diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
-index e376f9b..6f74479 100644
---- a/arch/um/drivers/ubd_user.c
-+++ b/arch/um/drivers/ubd_user.c
-@@ -1,4 +1,5 @@
--/* 
-+/*
-+ * Copyright (C) 2016 Anton Ivanov (aivanov@brocade.com)
-  * Copyright (C) 2000, 2001, 2002 Jeff Dike (jdike@karaya.com)
-  * Copyright (C) 2001 Ridgerun,Inc (glonnon@ridgerun.com)
-  * Licensed under the GPL
-@@ -20,6 +21,9 @@
- 
- #include "ubd.h"
- #include <os.h>
-+#include <poll.h>
-+
-+struct pollfd kernel_pollfd;
- 
- int start_io_thread(unsigned long sp, int *fd_out)
- {
-@@ -32,9 +36,12 @@ int start_io_thread(unsigned long sp, int *fd_out)
- 	}
- 
- 	kernel_fd = fds[0];
-+	kernel_pollfd.fd = kernel_fd;
-+	kernel_pollfd.events = POLLIN;
- 	*fd_out = fds[1];
- 
- 	err = os_set_fd_block(*fd_out, 0);
-+	err = os_set_fd_block(kernel_fd, 0);
- 	if (err) {
- 		printk("start_io_thread - failed to set nonblocking I/O.\n");
- 		goto out_close;
-@@ -57,3 +64,15 @@ int start_io_thread(unsigned long sp, int *fd_out)
-  out:
- 	return err;
- }
-+
-+int ubd_read_poll(int timeout)
-+{
-+	kernel_pollfd.events = POLLIN;
-+	return poll(&kernel_pollfd, 1, timeout);
-+}
-+int ubd_write_poll(int timeout)
-+{
-+	kernel_pollfd.events = POLLOUT;
-+	return poll(&kernel_pollfd, 1, timeout);
-+}
-+
--- 
-2.1.4
+config GPIO_DEVRES
+        def_bool y
+        depends on HAS_IOMEM
 
+But devres has no dependency on HAS_IOMEM whatsoever.
 
-------------------------------------------------------------------------------
-Developer Access Program for Intel Xeon Phi Processors
-Access to Intel Xeon Phi processor-based developer platforms.
-With one year of Intel Parallel Studio XE.
-Training and support from Colfax.
-Order your platform today. http://sdm.link/xeonphi
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+And certainly UML should have access to the devres variants
+of the calls.
 
+The proper patch is to remove the Kconfig option GPIO_DEVRES
+altogether, make it compulsory, and remove *all* ifdefs for
+CONFIG_GPIO_DEVRES and alter the Makefile so that it
+is compiled-in for CONFIG_GPIOLIB.
+
+Do you wanna take a stab at patching this or should I do it?
+
+Yours,
+Linus Walleij
