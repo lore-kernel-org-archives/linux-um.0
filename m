@@ -1,43 +1,33 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v13 0/8] x86/arch_prctl Add ARCH_[GET|SET]_CPUID for controlling the CPUID instruction
-Date: Sun, 27 Nov 2016 19:05:13 -0800
-Message-Id: <20161128030521.4423-1-khuey@kylehuey.com>
+MIME-Version: 1.0
+In-Reply-To: <20161115223902.GA8347@juliacomputing.com>
+References: <20161115223902.GA8347@juliacomputing.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 16 Nov 2016 20:49:45 +0100
+Message-ID: <CACRpkdZQ+XnX7bYDbBpixzDE2Hnv68snp42XO-T=nFN+k6BQzw@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: Remove GPIO_DEVRES option
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, Andi Kleen <andi@firstfloor.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
+To: Keno Fischer <keno@juliacomputing.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Alexandre Courbot <gnurou@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, jdike@addtoit.com, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, Shawn Guo <shawn.guo@linaro.org>, Alexandre Courbot <acourbot@nvidia.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-rr (http://rr-project.org/), a userspace record-and-replay reverse-
-execution debugger, would like to trap and emulate the CPUID instruction.
-This would allow us to a) mask away certain hardware features that rr does
-not support (e.g. RDRAND) and b) enable trace portability across machines
-by providing constant results.
+On Tue, Nov 15, 2016 at 11:39 PM, Keno Fischer <keno@juliacomputing.com> wrote:
 
-Newer Intel CPUs (Ivy Bridge and later) can fault when CPUID is executed at
-CPL > 0. Expose this capability to userspace as a new pair of arch_prctls,
-ARCH_GET_CPUID and ARCH_SET_CPUID.
+> This option was added in 6a89a314ab107a12af08c71420c19a37a30fc2d3 to allow use
+> of the devm_gpio_* functions without CONFIG_GPIOLIB. However, only a few months
+> later in b69ac52449c658b7ac40034dc3c5f5f4a71a723d, CONFIG_GPIOLIB, was added
+> as a dependency, defeating the original purpose of this option. Instead of
+> that patch, the original commit could have just been reverted (and in fact
+> was partially so in 403c1d0be5ccbd750d25c59d8358843a81e52e3b). Further,
+> since this option has a dependency on HAS_IOMEM, even though it does not
+> require it, it causes build failures when !HAS_IOMEM (e.g. in a uml build).
+> Fix that by completely removing the option, in essence completing the
+> reversion of the original commit.
 
-Since v12:
-Patch 4: x86/syscalls/32: Wire up arch_prctl on x86-32
-- compat_sys_arch_prctl prototype has argument names.
+I split up this terse commit message a bit and added your
+Signed-off-by and applied for fixes.
 
-Patch 5: x86/cpufeature: Detect CPUID faulting support
-- s/init_intel_misc_features_enables/init_intel_misc_features/.
-- Added Reviewed-by Borislav.
-
-Patch 6: x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
-- Selftest was split out into Patch 7.
-- s/msr_misc_features_enables_shadow/msr_misc_features_shadow/.
-- ARCH_GET_CPUID now returns its value directly, not in an outparam.
-- ARCH_SET_CPUID now takes a simple 0/1 value, ARCH_CPUID_ENABLE and
-  ARCH_CPUID_SIGSEGV are gone.
-- ARCH_[GET|SET]_CPUID now operate on the enabledness of the CPUID
-  instruction, not the CPUID faulting bit. Thus the default return
-  value of ARCH_GET_CPUID is 1, and calling ARCH_SET_CPUID with 0
-  activates CPUID faulting (and thus disabling the CPUID instruction).
-
-Patch 7: x86/arch_prctl: Selftest for ARCH_[GET|SET]_CPUID
-- The self test was updated for the API changes.
-
+Yours,
+Linus Walleij
 
