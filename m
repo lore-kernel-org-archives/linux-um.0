@@ -1,10 +1,10 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v11 0/7] x86/arch_prctl Add ARCH_[GET|SET]_CPUID for controlling the CPUID instruction
-Date: Thu, 10 Nov 2016 15:40:48 -0800
-Message-Id: <20161110234055.8654-1-khuey@kylehuey.com>
+Subject: [PATCH v12 0/7] x86/arch_prctl Add ARCH_[GET|SET]_CPUID for controlling the CPUID instruction
+Date: Wed, 16 Nov 2016 18:06:03 -0800
+Message-Id: <20161117020610.5302-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
@@ -18,6 +18,14 @@ Newer Intel CPUs (Ivy Bridge and later) can fault when CPUID is executed at
 CPL > 0. Expose this capability to userspace as a new pair of arch_prctls,
 ARCH_GET_CPUID and ARCH_SET_CPUID, with two values, ARCH_CPUID_ENABLE and
 ARCH_CPUID_SIGSEGV.
+
+Since v11:
+Patch 6: x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
+- Moved msr_misc_features_enable_shadow definition back to process.c to
+  allow building without CONFIG_CPU_SUP_INTEL.
+
+Patch 7: KVM: x86: virtualize cpuid faulting
+- Added cpuid faulting support to em_cpuid() as suggested by Nadav Amit.
 
 Since v10:
 Patch 1: x86/arch_prctl/64: Use SYSCALL_DEFINE2 to define sys_arch_prctl
@@ -49,7 +57,7 @@ Patch 6: x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
 - Fixed checkpatch.pl errors for fork()s inside the test file.
 - Removed unnecessary comment in set_cpuid_mode.
 
-Patch 7:
+Patch 7: KVM: x86: virtualize cpuid faulting
 - Added Reviewed-By David Matlack.
 - Changed various MSR constants to match patches 5 and 6.
 
