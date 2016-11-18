@@ -1,62 +1,97 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 21 Nov 2016 09:27:21 +0100
-From: Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v12 6/7] x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
-Message-ID: <20161121082721.GA22520@gmail.com>
-References: <20161117020610.5302-1-khuey@kylehuey.com>
- <20161117020610.5302-7-khuey@kylehuey.com>
- <20161118081444.GC15912@gmail.com>
- <alpine.DEB.2.20.1611180942100.3615@nanos>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.20.1611180942100.3615@nanos>
+In-Reply-To: <20161118081444.GC15912@gmail.com>
+References: <20161117020610.5302-1-khuey@kylehuey.com> <20161117020610.5302-7-khuey@kylehuey.com>
+ <20161118081444.GC15912@gmail.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Fri, 18 Nov 2016 09:32:46 -0800
+Message-ID: <CALCETrX5SZh7=p1wk3yo8=vdg=veJmLwexMFGE=86bK1G6HkGQ@mail.gmail.com>
+Subject: Re: [PATCH v12 6/7] x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Kyle Huey <me@kylehuey.com>, Robert O'Callahan <robert@ocallahan.org>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>, =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>, "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Dmitry Safonov <dsafonov@virtuozzo.com>, Nadav Amit <nadav.amit@gmail.com>, Alexander Viro <viro@zeniv.linux.org.uk>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Linux FS Devel <linux-fsdevel@vger.kernel.org>, kvm list <kvm@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, X86 ML <x86@kernel.org>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>, Paolo Bonzini <pbonzini@redhat.com>, Kyle Huey <me@kylehuey.com>, Dave Hansen <dave.hansen@linux.intel.com>, Robert O'Callahan <robert@ocallahan.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Shuah Khan <shuah@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Matlack <dmatlack@google.com>, Borislav Petkov <bp@suse.de>, Len Brown <len.brown@intel.com>, Richard Weinberger <richard@nod.at>, "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+On Nov 18, 2016 12:14 AM, "Ingo Molnar" <mingo@kernel.org> wrote:
+>
+>
+> * Kyle Huey <me@kylehuey.com> wrote:
+>
+> > Intel supports faulting on the CPUID instruction beginning with Ivy Bridge.
+> > When enabled, the processor will fault on attempts to execute the CPUID
+> > instruction with CPL>0. Exposing this feature to userspace will allow a
+> > ptracer to trap and emulate the CPUID instruction.
+> >
+> > When supported, this feature is controlled by toggling bit 0 of
+> > MSR_MISC_FEATURES_ENABLES. It is documented in detail in Section 2.3.2 of
+> > https://bugzilla.kernel.org/attachment.cgi?id=243991
+> >
+> > Implement a new pair of arch_prctls, available on both x86-32 and x86-64.
+> >
+> > ARCH_GET_CPUID: Returns the current CPUID faulting state, either
+> >   ARCH_CPUID_ENABLE or ARCH_CPUID_SIGSEGV. arg2 must be 0.
+> >
+> > ARCH_SET_CPUID: Set the CPUID faulting state to arg2, which must be either
+> >   ARCH_CPUID_ENABLE or ARCH_CPUID_SIGSEGV. Returns EINVAL if arg2 is
+> >   another value or CPUID faulting is not supported on this system.
+>
+> So the interface is:
+>
+> > +#define ARCH_GET_CPUID 0x1005
+> > +#define ARCH_SET_CPUID 0x1006
+> > +#define ARCH_CPUID_ENABLE 1
+> > +#define ARCH_CPUID_SIGSEGV 2
+>
+> Which maps to:
+>
+>    prctl(ARCH_SET_CPUID, 0); /* -EINVAL */
+>    prctl(ARCH_SET_CPUID, 1); /* enable CPUID [i.e. make it work without faulting] */
+>    prctl(ARCH_SET_CPUID, 2); /* disable CPUID [i.e. make it fault] */
+>
+>    ret = prctl(ARCH_GET_CPUID, 0); /* return current state: 1==on, 2==off */
+>
+> This is a very broken interface that makes very little sense.
+>
+> It would be much better to use a more natural interface where 1/0 means on/off and
+> where ARCH_GET_CPUID returns the current natural state:
+>
+>    prctl(ARCH_SET_CPUID, 0); /* disable CPUID [i.e. make it fault] */
+>    prctl(ARCH_SET_CPUID, 1); /* enable CPUID [i.e. make it work without faulting] */
+>
+>    ret = prctl(ARCH_GET_CPUID); /* 1==enabled, 0==disabled */
+>
+> See how natural it is? The use of the ARCH_CPUID_SIGSEGV/ENABLED symbols can be
+> avoided altogether. This will cut down on some of the ugliness in the kernel code
+> as well - and clean up the argument name as well: instead of naming it 'int arg2'
+> it can be named the more natural 'int cpuid_enabled'.
+>
+> > The state of the CPUID faulting flag is propagated across forks, but reset
+> > upon exec.
+>
+> I don't think this is the natural API for propagating settings across exec().
+> We should reset the flag on exec() only if security considerations require it -
+> i.e. like perf events are cleared.
+>
+> If binaries that assume a working CPUID are exec()-ed then CPUID can be enabled
+> explicitly.
 
-* Thomas Gleixner <tglx@linutronix.de> wrote:
+I disagree.  I'd rather not create more weird state that's carried
+across exec.  We already have the iopl screwup IIRC.  I think exec
+should stay as close to just working as possible.
 
-> On Fri, 18 Nov 2016, Ingo Molnar wrote:
-> > * Kyle Huey <me@kylehuey.com> wrote:
-> > > +	if (test_tsk_thread_flag(prev_p, TIF_NOCPUID) ^
-> > > +	    test_tsk_thread_flag(next_p, TIF_NOCPUID)) {
-> > > +		set_cpuid_faulting(test_tsk_thread_flag(next_p, TIF_NOCPUID));
-> > > +	}
-> > > +
-> > 
-> > Why not cache the required MSR value in the task struct instead?
-> > 
-> > That would allow something much more obvious and much faster, like:
-> > 
-> > 	if (prev_p->thread.misc_features_val != next_p->thread.misc_features_val)
-> > 		wrmsrl(MSR_MISC_FEATURES_ENABLES, next_p->thread.misc_features_val);
-> > 
-> > (The TIF flag maintenance is still required to get into __switch_to_xtra().)
-> > 
-> > It would also be easy to extend without extra overhead, should any other feature 
-> > bit be added to the MSR in the future.
-> 
-> I doubt that. There are feature enable bits coming up which are not related to 
-> tasks.
+Also, if we keep it disabled across exec, we have to come up with a
+usable API that respects security considerations.  We could use
+no_new_privs or we could auto-clear it on privilege changes.  The
+former is IMO overcomplicated and the latter is really ugly especially
+when LSMs are involved.
 
-Any inefficiencies resulting from such features should IMHO be carried by those 
-features, not by per task features - but:
+>
+> Clearing it automatically loses the ability of a pure no-CPUID environment to
+> exec() a CPUID-safe binary.
 
-> [...] So if we have switches enabling/disabling global features, then we would 
-> be forced to chase all threads in order to update all misc_features thread 
-> variables. Surely not what we want to do.
+If we really want this, let's wait until a user appears and add a
+"sticky" no-CPUID mode that requires no_new_privs to enable.
 
-What switches would those be? We generally don't twiddle global CPU features post 
-bootup - we pick a model on bootup and go with that.
-
-I'd really like to see code (prototype patches are OK - or the person doing it can 
-send it to me privately as well if it's not production quality or public yet), or 
-some careful description of the features involved.
-
-Thanks,
-
-	Ingo
+--Andy
 
