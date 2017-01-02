@@ -1,30 +1,20 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Tue, 3 Jan 2017 09:20:04 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 Subject: Re: [PATCH] mtd: nand: oxnas_nand: fix build errors on arch/um,
  require HAS_IOMEM
-Message-ID: <20170103092004.6edd6e3e@bbrezillon>
-In-Reply-To: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
 References: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
+From: Neil Armstrong <narmstrong@baylibre.com>
+Message-ID: <271b3ede-b784-07f2-8028-19be4ea7fcbd@baylibre.com>
+Date: Mon, 2 Jan 2017 09:33:27 +0100
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <8a756f24-4c18-690c-b898-03ecf3d71c84@infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: user-mode-linux-devel@lists.sourceforge.net, Neil Armstrong <narmstrong@baylibre.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org, kbuild test robot <fengguang.wu@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Randy Dunlap <rdunlap@infradead.org>, LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
+Cc: kbuild test robot <fengguang.wu@intel.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sun, 1 Jan 2017 18:58:27 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
+On 01/02/2017 03:58 AM, Randy Dunlap wrote:
 > From: Randy Dunlap <rdunlap@infradead.org>
 > 
 > Fix build errors on arch/um, which does not support HAS_IOMEM,
@@ -36,14 +26,6 @@ Randy Dunlap <rdunlap@infradead.org> wrote:
 > or (built-in build:)
 > drivers/built-in.o: In function `oxnas_nand_probe':
 > drivers/mtd/nand/oxnas_nand.c:102: undefined reference to `devm_ioremap_resource'
-
-Applied to nand/fixes. It should appear in one of the next -rc
-(probably not -rc3 though).
-
-Thanks,
-
-Boris
-
 > 
 > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 > Reported-by: kbuild test robot <fengguang.wu@intel.com>
@@ -67,9 +49,9 @@ Boris
 >  	help
 >  	  This enables the NAND flash controller on Oxford Semiconductor SoCs.
 >  
+> 
 
+Thanks Randy,
 
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
 
