@@ -1,55 +1,34 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: [PATCH 5/5] um: ubd: Improve size determinations in do_ubd_request()
-References: <c10b7f33-f573-aa9f-239e-ccca5540f264@users.sourceforge.net>
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Message-ID: <8a539d85-ff17-296c-75be-913731c2febc@users.sourceforge.net>
-Date: Wed, 18 Jan 2017 23:00:08 +0100
+Return-Path: <arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] auxdisplay: img-ascii-lcd: don't build without HAS_IOMEM
+Date: Mon, 02 Jan 2017 09:32:15 +0100
+Message-ID: <2271567.NkZGHHkdue@wuerfel>
+In-Reply-To: <81455897-f6c1-79c1-7410-eff7656c1a0f@infradead.org>
+References: <81455897-f6c1-79c1-7410-eff7656c1a0f@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <c10b7f33-f573-aa9f-239e-ccca5540f264@users.sourceforge.net>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Anton Ivanov <aivanov@kot-begemot.co.uk>, Dan Williams <dan.j.williams@intel.com>, Hannes Reinecke <hare@suse.com>, Jeff Dike <jdike@addtoit.com>, Jens Axboe <axboe@fb.com>, Richard Weinberger <richard@nod.at>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, kbuild test robot <fengguang.wu@intel.com>, Paul Burton <paul.burton@imgtec.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, Lee Jones <lee.jones@linaro.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 18 Jan 2017 22:38:04 +0100
+On Sunday, January 1, 2017 6:42:38 PM CET Randy Dunlap wrote:
+> --- lnx-410-rc2.orig/drivers/auxdisplay/Kconfig
+> +++ lnx-410-rc2/drivers/auxdisplay/Kconfig
+> @@ -121,6 +121,7 @@ config CFAG12864B_RATE
+>  
+>  config IMG_ASCII_LCD
+>         tristate "Imagination Technologies ASCII LCD Display"
+> +       depends on HAS_IOMEM
+>         default y if MIPS_MALTA || MIPS_SEAD3
+>         select SYSCON
+>         help
 
-Replace the specification of data structures by pointer dereferences
-as the parameter for the operator "sizeof" to make the corresponding size
-determination a bit safer.
+Maybe "depends on MIPS || COMPILE_TEST" instead?
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- arch/um/drivers/ubd_kern.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+That hides the symbol for most people that don't really want the driver
+anyway, and it takes care of HAS_IOMEM for UML as well.
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 6d686f735538..50327d5a9a01 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1386,8 +1386,7 @@ static void do_ubd_request(struct request_queue *q)
- 		req = dev->request;
- 
- 		if (req_op(req) == REQ_OP_FLUSH) {
--			io_req = kmalloc(sizeof(struct io_thread_req),
--					 GFP_ATOMIC);
-+			io_req = kmalloc(sizeof(*io_req), GFP_ATOMIC);
- 			if (io_req == NULL) {
- 				if (list_empty(&dev->restart))
- 					list_add(&dev->restart, &restart);
-@@ -1401,8 +1400,7 @@ static void do_ubd_request(struct request_queue *q)
- 		while(dev->start_sg < dev->end_sg){
- 			struct scatterlist *sg = &dev->sg[dev->start_sg];
- 
--			io_req = kmalloc(sizeof(struct io_thread_req),
--					 GFP_ATOMIC);
-+			io_req = kmalloc(sizeof(*io_req), GFP_ATOMIC);
- 			if(io_req == NULL){
- 				if(list_empty(&dev->restart))
- 					list_add(&dev->restart, &restart);
--- 
-2.11.0
+	Arnd
 
 
