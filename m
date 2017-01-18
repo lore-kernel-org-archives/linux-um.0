@@ -1,10 +1,10 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: [PATCH 1/5] um: port: Move an assignment for the variable "fd" in
- port_wait()
+Subject: [PATCH 4/5] um: ubd: Move two assignments for the variable "err" in
+ ubd_remove()
 References: <c10b7f33-f573-aa9f-239e-ccca5540f264@users.sourceforge.net>
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Message-ID: <4940ae24-c7ae-66ce-4c2a-5283607a5549@users.sourceforge.net>
-Date: Wed, 18 Jan 2017 22:56:17 +0100
+Message-ID: <be4864d2-53be-f8b9-52a0-17a3e0837910@users.sourceforge.net>
+Date: Wed, 18 Jan 2017 22:59:23 +0100
 MIME-Version: 1.0
 In-Reply-To: <c10b7f33-f573-aa9f-239e-ccca5540f264@users.sourceforge.net>
 Content-Type: text/plain; charset=windows-1252
@@ -15,37 +15,50 @@ Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 18 Jan 2017 21:40:29 +0100
+Date: Wed, 18 Jan 2017 22:23:18 +0100
 
-A local variable was set to an error code in one case before a concrete
-error situation was detected. Thus move the corresponding assignment into
-an if branch to indicate a software failure there.
+A local variable was set to an error code in two cases before a concrete
+error situation was detected. Thus move the corresponding assignments into
+if branches to indicate a software failure there.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- arch/um/drivers/port_kern.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/um/drivers/ubd_kern.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/port_kern.c b/arch/um/drivers/port_kern.c
-index 40ca5cc275e9..b2bbda21c5f3 100644
---- a/arch/um/drivers/port_kern.c
-+++ b/arch/um/drivers/port_kern.c
-@@ -230,10 +230,10 @@ int port_wait(void *data)
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 85410279beab..6d686f735538 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1049,19 +1049,21 @@ static int ubd_remove(int n, char **error_out)
+ {
+ 	struct gendisk *disk = ubd_gendisk[n];
+ 	struct ubd *ubd_dev;
+-	int err = -ENODEV;
++	int err;
  
- 	atomic_inc(&port->wait_count);
- 	while (1) {
--		fd = -ERESTARTSYS;
--		if (wait_for_completion_interruptible(&port->done))
-+		if (wait_for_completion_interruptible(&port->done)) {
-+			fd = -ERESTARTSYS;
- 			goto out;
+ 	mutex_lock(&ubd_lock);
+ 
+ 	ubd_dev = &ubd_devs[n];
 -
-+		}
- 		spin_lock(&port->lock);
+-	if(ubd_dev->file == NULL)
++	if (!ubd_dev->file) {
++		err = -ENODEV;
+ 		goto out;
++	}
  
- 		conn = list_entry(port->connections.next, struct connection,
+ 	/* you cannot remove a open disk */
+-	err = -EBUSY;
+-	if(ubd_dev->count > 0)
++	if (ubd_dev->count > 0) {
++		err = -EBUSY;
+ 		goto out;
++	}
+ 
+ 	ubd_gendisk[n] = NULL;
+ 	if(disk != NULL){
 -- 
 2.11.0
 
