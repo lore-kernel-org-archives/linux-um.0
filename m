@@ -1,48 +1,55 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Subject: [PATCH 5/5] um: ubd: Improve size determinations in do_ubd_request()
+References: <c10b7f33-f573-aa9f-239e-ccca5540f264@users.sourceforge.net>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Message-ID: <8a539d85-ff17-296c-75be-913731c2febc@users.sourceforge.net>
+Date: Wed, 18 Jan 2017 23:00:08 +0100
 MIME-Version: 1.0
-From: Enjoy Mindful <enjoymindful@gmail.com>
-Date: Wed, 4 Jan 2017 21:54:28 +0800
-Message-ID: <CAHCz1Oisn=m92hCgr28G2ek93BGrXZifcO2O_v5em-1dquZWHw@mail.gmail.com>
-Subject: [uml-devel] Archive of UML mailing list
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <c10b7f33-f573-aa9f-239e-ccca5540f264@users.sourceforge.net>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Anton Ivanov <aivanov@kot-begemot.co.uk>, Dan Williams <dan.j.williams@intel.com>, Hannes Reinecke <hare@suse.com>, Jeff Dike <jdike@addtoit.com>, Jens Axboe <axboe@fb.com>, Richard Weinberger <richard@nod.at>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 18 Jan 2017 22:38:04 +0100
 
-https://marc.info/?l=user-mode-linux-devel
-https://marc.info/?l=user-mode-linux-user
-https://sourceforge.net/p/user-mode-linux/mailman/user-mode-linux-user/
+Replace the specification of data structures by pointer dereferences
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer.
 
-I'm looking for archive tar balls for user-mode-linux-devel and
-user-mode-linux-user mailing
-list. Unfortunately, those three web pages do not provide archive for
-download. It is really
-painful and annoying to search in those pages. I'd prefer to have a
-copy of the archives on my
-computer, so I can read and search with text editor and grep.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ arch/um/drivers/ubd_kern.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Reading the *ancient* mails since 1999, should be a good way for
-understanding how
-UML works.
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 6d686f735538..50327d5a9a01 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1386,8 +1386,7 @@ static void do_ubd_request(struct request_queue *q)
+ 		req = dev->request;
+ 
+ 		if (req_op(req) == REQ_OP_FLUSH) {
+-			io_req = kmalloc(sizeof(struct io_thread_req),
+-					 GFP_ATOMIC);
++			io_req = kmalloc(sizeof(*io_req), GFP_ATOMIC);
+ 			if (io_req == NULL) {
+ 				if (list_empty(&dev->restart))
+ 					list_add(&dev->restart, &restart);
+@@ -1401,8 +1400,7 @@ static void do_ubd_request(struct request_queue *q)
+ 		while(dev->start_sg < dev->end_sg){
+ 			struct scatterlist *sg = &dev->sg[dev->start_sg];
+ 
+-			io_req = kmalloc(sizeof(struct io_thread_req),
+-					 GFP_ATOMIC);
++			io_req = kmalloc(sizeof(*io_req), GFP_ATOMIC);
+ 			if(io_req == NULL){
+ 				if(list_empty(&dev->restart))
+ 					list_add(&dev->restart, &restart);
+-- 
+2.11.0
 
-Thanks
-
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most 
-engaging tech sites, SlashDot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
