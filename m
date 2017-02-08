@@ -1,81 +1,308 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] Documentation: Update path to sysrq.txt
-Date: Fri, 24 Feb 2017 10:42:14 +0200
-Message-Id: <20170224084214.6889-1-krzk@kernel.org>
+From: Kyle Huey <me@kylehuey.com>
+Subject: [PATCH v14 7/9] x86/arch_prctl: Selftest for ARCH_[GET|SET]_CPUID
+Date: Wed,  8 Feb 2017 00:09:15 -0800
+Message-Id: <20170208080917.24320-8-khuey@kylehuey.com>
+In-Reply-To: <20170208080917.24320-1-khuey@kylehuey.com>
+References: <20170208080917.24320-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@kernel.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Jonathan Corbet <corbet@lwn.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, linux-doc@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, Andi Kleen <andi@firstfloor.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Commit 9d85025b0418 ("docs-rst: create an user's manual book") moved the
-sysrq.txt leaving old paths in the kernel docs.
+Test disabling and reenabling the cpuid instruction via the new arch_prctl
+ARCH_SET_CPUID, retrieving the current state via ARCH_GET_CPUID, and the
+expected behaviors across fork() and exec().
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
- Documentation/media/v4l-drivers/bttv.rst          | 2 +-
- Documentation/s390/Debugging390.txt               | 2 +-
- Documentation/sysctl/kernel.txt                   | 2 +-
- Documentation/virtual/uml/UserModeLinux-HOWTO.txt | 6 +++---
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ tools/testing/selftests/x86/Makefile      |   4 +-
+ tools/testing/selftests/x86/cpuid_fault.c | 251 ++++++++++++++++++++++++++++++
+ 2 files changed, 253 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/x86/cpuid_fault.c
 
-diff --git a/Documentation/media/v4l-drivers/bttv.rst b/Documentation/media/v4l-drivers/bttv.rst
-index bc63b12efafd..195ccaac2816 100644
---- a/Documentation/media/v4l-drivers/bttv.rst
-+++ b/Documentation/media/v4l-drivers/bttv.rst
-@@ -312,7 +312,7 @@ information out of a register+stack dump printed by the kernel on
- protection faults (so-called "kernel oops").
+diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
+index 8c1cb423cfe6..131c5f266d84 100644
+--- a/tools/testing/selftests/x86/Makefile
++++ b/tools/testing/selftests/x86/Makefile
+@@ -1,17 +1,17 @@
+-all:
++ll:
  
- If you run into some kind of deadlock, you can try to dump a call trace
--for each process using sysrq-t (see Documentation/sysrq.txt).
-+for each process using sysrq-t (see Documentation/admin-guide/sysrq.rst).
- This way it is possible to figure where *exactly* some process in "D"
- state is stuck.
+ include ../lib.mk
  
-diff --git a/Documentation/s390/Debugging390.txt b/Documentation/s390/Debugging390.txt
-index 3df8babcdc41..5ae7f868a007 100644
---- a/Documentation/s390/Debugging390.txt
-+++ b/Documentation/s390/Debugging390.txt
-@@ -2116,7 +2116,7 @@ The sysrq key reading is very picky ( I have to type the keys in an
- This is particularly useful for syncing disks unmounting & rebooting
- if the machine gets partially hung.
+ .PHONY: all all_32 all_64 warn_32bit_failure clean
  
--Read Documentation/sysrq.txt for more info
-+Read Documentation/admin-guide/sysrq.rst for more info
+ TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt ptrace_syscall test_mremap_vdso \
+ 			check_initial_reg_state sigreturn ldt_gdt iopl \
+-			protection_keys test_vdso
++			protection_keys test_vdso cpuid_fault
+ TARGETS_C_32BIT_ONLY := entry_from_vm86 syscall_arg_fault test_syscall_vdso unwind_vdso \
+ 			test_FCMOV test_FCOMI test_FISTTP \
+ 			vdso_restorer
+ TARGETS_C_64BIT_ONLY := fsgsbase
  
- References:
- ===========
-diff --git a/Documentation/sysctl/kernel.txt b/Documentation/sysctl/kernel.txt
-index a32b4b748644..bac23c198360 100644
---- a/Documentation/sysctl/kernel.txt
-+++ b/Documentation/sysctl/kernel.txt
-@@ -85,7 +85,7 @@ show up in /proc/sys/kernel:
- - softlockup_all_cpu_backtrace
- - soft_watchdog
- - stop-a                      [ SPARC only ]
--- sysrq                       ==> Documentation/sysrq.txt
-+- sysrq                       ==> Documentation/admin-guide/sysrq.rst
- - sysctl_writes_strict
- - tainted
- - threads-max
-diff --git a/Documentation/virtual/uml/UserModeLinux-HOWTO.txt b/Documentation/virtual/uml/UserModeLinux-HOWTO.txt
-index f4099ca6b483..87b80f589e1c 100644
---- a/Documentation/virtual/uml/UserModeLinux-HOWTO.txt
-+++ b/Documentation/virtual/uml/UserModeLinux-HOWTO.txt
-@@ -2401,9 +2401,9 @@
- 
-   This takes one argument, which is a single letter.  It calls the
-   generic kernel's SysRq driver, which does whatever is called for by
--  that argument.  See the SysRq documentation in Documentation/sysrq.txt
--  in your favorite kernel tree to see what letters are valid and what
--  they do.
-+  that argument.  See the SysRq documentation in
-+  Documentation/admin-guide/sysrq.rst in your favorite kernel tree to
-+  see what letters are valid and what they do.
- 
- 
- 
+ TARGETS_C_32BIT_ALL := $(TARGETS_C_BOTHBITS) $(TARGETS_C_32BIT_ONLY)
+ TARGETS_C_64BIT_ALL := $(TARGETS_C_BOTHBITS) $(TARGETS_C_64BIT_ONLY)
+ BINARIES_32 := $(TARGETS_C_32BIT_ALL:%=%_32)
+diff --git a/tools/testing/selftests/x86/cpuid_fault.c b/tools/testing/selftests/x86/cpuid_fault.c
+new file mode 100644
+index 000000000000..d061abde85e8
+--- /dev/null
++++ b/tools/testing/selftests/x86/cpuid_fault.c
+@@ -0,0 +1,251 @@
++
++/*
++ * Tests for arch_prctl(ARCH_GET_CPUID, ...) / arch_prctl(ARCH_SET_CPUID, ...)
++ *
++ * Basic test to test behaviour of ARCH_GET_CPUID and ARCH_SET_CPUID
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <signal.h>
++#include <inttypes.h>
++#include <cpuid.h>
++#include <err.h>
++#include <errno.h>
++#include <sys/wait.h>
++
++#include <sys/prctl.h>
++#include <linux/prctl.h>
++
++/*
++#define ARCH_GET_CPUID 0x1005
++#define ARCH_SET_CPUID 0x1006
++#ifdef __x86_64__
++#define SYS_arch_prctl 158
++#else
++#define SYS_arch_prctl 385
++#endif
++*/
++
++const char *cpuid_names[] = {
++	[0] = "[cpuid disabled]",
++	[1] = "[cpuid enabled]",
++};
++
++int arch_prctl(int code, unsigned long arg2)
++{
++	return syscall(SYS_arch_prctl, code, arg2);
++}
++
++int cpuid(unsigned int *eax, unsigned int *ebx, unsigned int *ecx,
++	  unsigned int *edx)
++{
++	return __get_cpuid(0, eax, ebx, ecx, edx);
++}
++
++int do_child_exec_test(int eax, int ebx, int ecx, int edx)
++{
++	int cpuid_val = 0, child = 0, status = 0;
++
++	printf("arch_prctl(ARCH_GET_CPUID); ");
++
++	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
++	if (cpuid_val < 0)
++		errx(1, "ARCH_GET_CPUID fails now, but not before?");
++
++	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
++	if (cpuid_val != 0)
++		errx(1, "How did cpuid get re-enabled on fork?");
++
++	child = fork();
++	if (child == 0) {
++		cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
++		if (cpuid_val < 0)
++			errx(1, "ARCH_GET_CPUID fails now, but not before?");
++
++		printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
++		if (cpuid_val != 0)
++			errx(1, "How did cpuid get re-enabled on fork?");
++
++		printf("exec\n");
++		execl("/proc/self/exe", "cpuid-fault", "-early-return", NULL);
++	}
++
++	if (child != waitpid(child, &status, 0))
++		errx(1, "waitpid failed!?");
++
++	if (WEXITSTATUS(status) != 0)
++		errx(1, "Execed child exited abnormally");
++
++	return 0;
++}
++
++int child_received_signal;
++
++void child_sigsegv_cb(int sig)
++{
++	int cpuid_val = 0;
++
++	child_received_signal = 1;
++	printf("[ SIG_SEGV ]\n");
++	printf("arch_prctl(ARCH_GET_CPUID); ");
++
++	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
++	if (cpuid_val < 0)
++		errx(1, "ARCH_GET_CPUID fails now, but not before?");
++
++	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
++	printf("arch_prctl(ARCH_SET_CPUID, 1)\n");
++	if (arch_prctl(ARCH_SET_CPUID, 1) != 0)
++		exit(errno);
++
++	printf("cpuid() == ");
++}
++
++int do_child_test(void)
++{
++	unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
++
++	signal(SIGSEGV, child_sigsegv_cb);
++
++	/* the child starts out with cpuid disabled, the signal handler
++	 * attempts to enable and retry
++	 */
++	printf("cpuid() == ");
++	cpuid(&eax, &ebx, &ecx, &edx);
++	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
++	return child_received_signal ? 0 : 42;
++}
++
++int signal_count;
++
++void sigsegv_cb(int sig)
++{
++	int cpuid_val = 0;
++
++	signal_count++;
++	printf("[ SIG_SEGV ]\n");
++	printf("arch_prctl(ARCH_GET_CPUID); ");
++
++	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
++	if (cpuid_val < 0)
++		errx(1, "ARCH_GET_CPUID fails now, but not before?");
++
++	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
++	printf("arch_prctl(ARC_SET_CPUID, 1)\n");
++	if (arch_prctl(ARCH_SET_CPUID, 1) != 0)
++		errx(1, "ARCH_SET_CPUID failed!");
++
++	printf("cpuid() == ");
++}
++
++int main(int argc, char **argv)
++{
++	int cpuid_val = 0, child = 0, status = 0;
++	unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
++
++	signal(SIGSEGV, sigsegv_cb);
++	setvbuf(stdout, NULL, _IONBF, 0);
++
++	cpuid(&eax, &ebx, &ecx, &edx);
++	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
++	printf("arch_prctl(ARCH_GET_CPUID); ");
++
++	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
++	if (cpuid_val < 0) {
++		if (errno == EINVAL) {
++			printf("ARCH_GET_CPUID is unsupported on this kernel.\n");
++			fflush(stdout);
++			exit(0); /* no ARCH_GET_CPUID on this system */
++		} else if (errno == ENODEV) {
++			printf("ARCH_GET_CPUID is unsupported on this hardware.\n");
++			fflush(stdout);
++			exit(0); /* no ARCH_GET_CPUID on this system */
++		} else {
++			errx(errno, "ARCH_GET_CPUID failed unexpectedly!");
++		}
++	}
++
++	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
++	cpuid(&eax, &ebx, &ecx, &edx);
++	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
++	printf("arch_prctl(ARCH_SET_CPUID, 1)\n");
++
++	if (arch_prctl(ARCH_SET_CPUID, 1) != 0) {
++		if (errno == EINVAL) {
++			printf("ARCH_SET_CPUID is unsupported on this kernel.");
++			exit(0); /* no ARCH_SET_CPUID on this system */
++		} else if (errno == ENODEV) {
++			printf("ARCH_SET_CPUID is unsupported on this hardware.");
++			exit(0); /* no ARCH_SET_CPUID on this system */
++		} else {
++			errx(errno, "ARCH_SET_CPUID failed unexpectedly!");
++		}
++	}
++
++
++	cpuid(&eax, &ebx, &ecx, &edx);
++	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
++	printf("arch_prctl(ARCH_SET_CPUID, 0)\n");
++	fflush(stdout);
++
++	if (arch_prctl(ARCH_SET_CPUID, 0) == -1)
++		errx(1, "ARCH_SET_CPUID failed!");
++
++	printf("cpuid() == ");
++	eax = ebx = ecx = edx = 0;
++	cpuid(&eax, &ebx, &ecx, &edx);
++	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
++	printf("arch_prctl(ARCH_SET_CPUID, 0)\n");
++
++	if (signal_count != 1)
++		errx(1, "cpuid didn't fault!");
++
++	if (arch_prctl(ARCH_SET_CPUID, 0) == -1)
++		errx(1, "ARCH_SET_CPUID failed!");
++
++	if (argc > 1)
++		exit(0); /* Don't run the whole test again if we were execed */
++
++	printf("do_child_test\n");
++	child = fork();
++	if (child == 0)
++		return do_child_test();
++
++	if (child != waitpid(child, &status, 0))
++		errx(1, "waitpid failed!?");
++
++	if (WEXITSTATUS(status) != 0)
++		errx(1, "Child exited abnormally!");
++
++	/* The child enabling cpuid should not have affected us */
++	printf("cpuid() == ");
++	eax = ebx = ecx = edx = 0;
++	cpuid(&eax, &ebx, &ecx, &edx);
++	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
++	printf("arch_prctl(ARCH_SET_CPUID, 0)\n");
++
++	if (signal_count != 2)
++		errx(1, "cpuid didn't fault!");
++
++	if (arch_prctl(ARCH_SET_CPUID, 0) == -1)
++		errx(1, "ARCH_SET_CPUID failed!");
++
++	/* Our ARCH_CPUID_SIGSEGV should not propagate through exec */
++	printf("do_child_exec_test\n");
++	fflush(stdout);
++
++	child = fork();
++	if (child == 0)
++		return do_child_exec_test(eax, ebx, ecx, edx);
++
++	if (child != waitpid(child, &status, 0))
++		errx(1, "waitpid failed!?");
++
++	if (WEXITSTATUS(status) != 0)
++		errx(1, "Child exited abnormally!");
++
++	printf("All tests passed!\n");
++	exit(EXIT_SUCCESS);
++}
 -- 
-2.9.3
+2.11.0
 
 
