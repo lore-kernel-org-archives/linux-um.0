@@ -1,8 +1,8 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v14 8/9] KVM: x86: virtualize cpuid faulting
-Date: Wed,  8 Feb 2017 00:09:16 -0800
-Message-Id: <20170208080917.24320-9-khuey@kylehuey.com>
+Subject: [PATCH v14 5/9] x86/cpufeature: Detect CPUID faulting support
+Date: Wed,  8 Feb 2017 00:09:13 -0800
+Message-Id: <20170208080917.24320-6-khuey@kylehuey.com>
 In-Reply-To: <20170208080917.24320-1-khuey@kylehuey.com>
 References: <20170208080917.24320-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -10,220 +10,120 @@ To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.d
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hardware support for faulting on the cpuid instruction is not required to
-emulate it, because cpuid triggers a VM exit anyways. KVM handles the relevant
-MSRs (MSR_PLATFORM_INFO and MSR_MISC_FEATURES_ENABLE) and upon a
-cpuid-induced VM exit checks the cpuid faulting state and the CPL.
-kvm_require_cpl is even kind enough to inject the GP fault for us.
+Intel supports faulting on the CPUID instruction beginning with Ivy Bridge.
+When enabled, the processor will fault on attempts to execute the CPUID
+instruction with CPL>0. This will allow a ptracer to emulate the CPUID
+instruction.
+
+Bit 31 of MSR_PLATFORM_INFO advertises support for this feature. It is
+documented in detail in Section 2.3.2 of
+https://bugzilla.kernel.org/attachment.cgi?id=243991
+
+Detect support for this feature and expose it as X86_FEATURE_CPUID_FAULT.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-Reviewed-by: David Matlack <dmatlack@google.com>
+Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
- arch/x86/include/asm/kvm_host.h |  2 ++
- arch/x86/kvm/cpuid.c            |  3 +++
- arch/x86/kvm/cpuid.h            | 11 +++++++++++
- arch/x86/kvm/emulate.c          |  7 +++++++
- arch/x86/kvm/x86.c              | 26 ++++++++++++++++++++++++++
- 5 files changed, 49 insertions(+)
+ arch/x86/include/asm/cpufeatures.h |  1 +
+ arch/x86/include/asm/msr-index.h   |  2 ++
+ arch/x86/kernel/cpu/intel.c        | 12 ++++++++++++
+ 3 files changed, 15 insertions(+)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index a7066dc1a7e9..a0d6f0c47440 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -601,16 +601,18 @@ struct kvm_vcpu_arch {
- 	u64 pat;
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index eafee3161d1c..c70cab24f648 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -182,16 +182,17 @@
  
- 	unsigned switch_db_regs;
- 	unsigned long db[KVM_NR_DB_REGS];
- 	unsigned long dr6;
- 	unsigned long dr7;
- 	unsigned long eff_db[KVM_NR_DB_REGS];
- 	unsigned long guest_debug_dr7;
-+	u64 msr_platform_info;
-+	u64 msr_misc_features_enables;
+ /*
+  * Auxiliary flags: Linux defined - For features scattered in various
+  * CPUID levels like 0x6, 0xA etc, word 7.
+  *
+  * Reuse free bits when adding new feature flags!
+  */
  
- 	u64 mcg_cap;
- 	u64 mcg_status;
- 	u64 mcg_ctl;
- 	u64 mcg_ext_ctl;
- 	u64 *mce_banks;
++#define X86_FEATURE_CPUID_FAULT ( 7*32+ 0) /* Intel CPUID faulting */
+ #define X86_FEATURE_CPB		( 7*32+ 2) /* AMD Core Performance Boost */
+ #define X86_FEATURE_EPB		( 7*32+ 3) /* IA32_ENERGY_PERF_BIAS support */
+ #define X86_FEATURE_CAT_L3	( 7*32+ 4) /* Cache Allocation Technology L3 */
+ #define X86_FEATURE_CAT_L2	( 7*32+ 5) /* Cache Allocation Technology L2 */
+ #define X86_FEATURE_CDP_L3	( 7*32+ 6) /* Code and Data Prioritization L3 */
  
- 	/* Cache MMIO info */
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index e85f6bd7b9d5..588ac8ae0a60 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -877,16 +877,19 @@ void kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx, u32 *ecx, u32 *edx)
- 	trace_kvm_cpuid(function, *eax, *ebx, *ecx, *edx);
- }
- EXPORT_SYMBOL_GPL(kvm_cpuid);
+ #define X86_FEATURE_HW_PSTATE	( 7*32+ 8) /* AMD HW-PState */
+ #define X86_FEATURE_PROC_FEEDBACK ( 7*32+ 9) /* AMD ProcFeedbackInterface */
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 710273c617b8..8192b3111c84 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -40,16 +40,18 @@
  
- int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
+ #define MSR_PPIN_CTL			0x0000004e
+ #define MSR_PPIN			0x0000004f
+ 
+ #define MSR_IA32_PERFCTR0		0x000000c1
+ #define MSR_IA32_PERFCTR1		0x000000c2
+ #define MSR_FSB_FREQ			0x000000cd
+ #define MSR_PLATFORM_INFO		0x000000ce
++#define MSR_PLATFORM_INFO_CPUID_FAULT_BIT	31
++#define MSR_PLATFORM_INFO_CPUID_FAULT		BIT_ULL(MSR_PLATFORM_INFO_CPUID_FAULT_BIT)
+ 
+ #define MSR_NHM_SNB_PKG_CST_CFG_CTL	0x000000e2
+ #define NHM_C3_AUTO_DEMOTE		(1UL << 25)
+ #define NHM_C1_AUTO_DEMOTE		(1UL << 26)
+ #define ATM_LNC_C6_AUTO_DEMOTE		(1UL << 25)
+ #define SNB_C1_AUTO_UNDEMOTE		(1UL << 27)
+ #define SNB_C3_AUTO_UNDEMOTE		(1UL << 28)
+ 
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 203f860d2ab3..3d9e11b2b41a 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -442,16 +442,26 @@ static void intel_bsp_resume(struct cpuinfo_x86 *c)
  {
- 	u32 eax, ebx, ecx, edx;
- 
-+	if (cpuid_fault_enabled(vcpu) && !kvm_require_cpl(vcpu, 0))
-+		return;
-+
- 	eax = kvm_register_read(vcpu, VCPU_REGS_RAX);
- 	ecx = kvm_register_read(vcpu, VCPU_REGS_RCX);
- 	kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx);
- 	kvm_register_write(vcpu, VCPU_REGS_RAX, eax);
- 	kvm_register_write(vcpu, VCPU_REGS_RBX, ebx);
- 	kvm_register_write(vcpu, VCPU_REGS_RCX, ecx);
- 	kvm_register_write(vcpu, VCPU_REGS_RDX, edx);
- 	return kvm_skip_emulated_instruction(vcpu);
-diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index 35058c2c0eea..a6fd40aade7c 100644
---- a/arch/x86/kvm/cpuid.h
-+++ b/arch/x86/kvm/cpuid.h
-@@ -200,9 +200,20 @@ static inline int guest_cpuid_stepping(struct kvm_vcpu *vcpu)
- 
- 	best = kvm_find_cpuid_entry(vcpu, 0x1, 0);
- 	if (!best)
- 		return -1;
- 
- 	return x86_stepping(best->eax);
+ 	/*
+ 	 * MSR_IA32_ENERGY_PERF_BIAS is lost across suspend/resume,
+ 	 * so reinitialize it properly like during bootup:
+ 	 */
+ 	init_intel_energy_perf(c);
  }
  
-+static inline bool supports_cpuid_fault(struct kvm_vcpu *vcpu)
++static void init_intel_misc_features(struct cpuinfo_x86 *c)
 +{
-+	return vcpu->arch.msr_platform_info & MSR_PLATFORM_INFO_CPUID_FAULT;
-+}
++	u64 msr;
 +
-+static inline bool cpuid_fault_enabled(struct kvm_vcpu *vcpu)
-+{
-+	return vcpu->arch.msr_misc_features_enables &
-+		  MSR_MISC_FEATURES_ENABLES_CPUID_FAULT;
-+}
-+
- #endif
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index cedbba0f3402..8b4b5566c365 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -3848,16 +3848,23 @@ static int em_sti(struct x86_emulate_ctxt *ctxt)
- 	ctxt->interruptibility = KVM_X86_SHADOW_INT_STI;
- 	ctxt->eflags |= X86_EFLAGS_IF;
- 	return X86EMUL_CONTINUE;
- }
- 
- static int em_cpuid(struct x86_emulate_ctxt *ctxt)
- {
- 	u32 eax, ebx, ecx, edx;
-+	u64 msr = 0;
-+
-+	ctxt->ops->get_msr(ctxt, MSR_MISC_FEATURES_ENABLES, &msr);
-+	if (msr & MSR_MISC_FEATURES_ENABLES_CPUID_FAULT &&
-+	    ctxt->ops->cpl(ctxt)) {
-+		return emulate_gp(ctxt, 0);
++	if (!rdmsrl_safe(MSR_PLATFORM_INFO, &msr)) {
++		if (msr & MSR_PLATFORM_INFO_CPUID_FAULT)
++			set_cpu_cap(c, X86_FEATURE_CPUID_FAULT);
 +	}
- 
- 	eax = reg_read(ctxt, VCPU_REGS_RAX);
- 	ecx = reg_read(ctxt, VCPU_REGS_RCX);
- 	ctxt->ops->get_cpuid(ctxt, &eax, &ebx, &ecx, &edx);
- 	*reg_write(ctxt, VCPU_REGS_RAX) = eax;
- 	*reg_write(ctxt, VCPU_REGS_RBX) = ebx;
- 	*reg_write(ctxt, VCPU_REGS_RCX) = ecx;
- 	*reg_write(ctxt, VCPU_REGS_RDX) = edx;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index e52c9088660f..1951b460da47 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -998,16 +998,18 @@ static u32 emulated_msrs[] = {
- 
- 	MSR_IA32_TSC_ADJUST,
- 	MSR_IA32_TSCDEADLINE,
- 	MSR_IA32_MISC_ENABLE,
- 	MSR_IA32_MCG_STATUS,
- 	MSR_IA32_MCG_CTL,
- 	MSR_IA32_MCG_EXT_CTL,
- 	MSR_IA32_SMBASE,
-+	MSR_PLATFORM_INFO,
-+	MSR_MISC_FEATURES_ENABLES,
- };
- 
- static unsigned num_emulated_msrs;
- 
- bool kvm_valid_efer(struct kvm_vcpu *vcpu, u64 efer)
- {
- 	if (efer & efer_reserved_bits)
- 		return false;
-@@ -2285,16 +2287,31 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			return 1;
- 		vcpu->arch.osvw.length = data;
- 		break;
- 	case MSR_AMD64_OSVW_STATUS:
- 		if (!guest_cpuid_has_osvw(vcpu))
- 			return 1;
- 		vcpu->arch.osvw.status = data;
- 		break;
-+	case MSR_PLATFORM_INFO:
-+		if (!msr_info->host_initiated ||
-+		    data & ~MSR_PLATFORM_INFO_CPUID_FAULT ||
-+		    (!(data & MSR_PLATFORM_INFO_CPUID_FAULT) &&
-+		     cpuid_fault_enabled(vcpu)))
-+			return 1;
-+		vcpu->arch.msr_platform_info = data;
-+		break;
-+	case MSR_MISC_FEATURES_ENABLES:
-+		if (data & ~MSR_MISC_FEATURES_ENABLES_CPUID_FAULT ||
-+		    (data & MSR_MISC_FEATURES_ENABLES_CPUID_FAULT &&
-+		     !supports_cpuid_fault(vcpu)))
-+			return 1;
-+		vcpu->arch.msr_misc_features_enables = data;
-+		break;
- 	default:
- 		if (msr && (msr == vcpu->kvm->arch.xen_hvm_config.msr))
- 			return xen_hvm_config(vcpu, data);
- 		if (kvm_pmu_is_valid_msr(vcpu, msr))
- 			return kvm_pmu_set_msr(vcpu, msr_info);
- 		if (!ignore_msrs) {
- 			vcpu_debug_ratelimited(vcpu, "unhandled wrmsr: 0x%x data 0x%llx\n",
- 				    msr, data);
-@@ -2499,16 +2516,22 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			return 1;
- 		msr_info->data = vcpu->arch.osvw.length;
- 		break;
- 	case MSR_AMD64_OSVW_STATUS:
- 		if (!guest_cpuid_has_osvw(vcpu))
- 			return 1;
- 		msr_info->data = vcpu->arch.osvw.status;
- 		break;
-+	case MSR_PLATFORM_INFO:
-+		msr_info->data = vcpu->arch.msr_platform_info;
-+		break;
-+	case MSR_MISC_FEATURES_ENABLES:
-+		msr_info->data = vcpu->arch.msr_misc_features_enables;
-+		break;
- 	default:
- 		if (kvm_pmu_is_valid_msr(vcpu, msr_info->index))
- 			return kvm_pmu_get_msr(vcpu, msr_info->index, &msr_info->data);
- 		if (!ignore_msrs) {
- 			vcpu_debug_ratelimited(vcpu, "unhandled rdmsr: 0x%x\n",
- 					       msr_info->index);
- 			return 1;
- 		} else {
-@@ -7613,16 +7636,19 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 
- 	kvm_clear_async_pf_completion_queue(vcpu);
- 	kvm_async_pf_hash_reset(vcpu);
- 	vcpu->arch.apf.halted = false;
- 
- 	if (!init_event) {
- 		kvm_pmu_reset(vcpu);
- 		vcpu->arch.smbase = 0x30000;
++}
 +
-+		vcpu->arch.msr_platform_info = MSR_PLATFORM_INFO_CPUID_FAULT;
-+		vcpu->arch.msr_misc_features_enables = 0;
- 	}
+ static void init_intel(struct cpuinfo_x86 *c)
+ {
+ 	unsigned int l2 = 0;
  
- 	memset(vcpu->arch.regs, 0, sizeof(vcpu->arch.regs));
- 	vcpu->arch.regs_avail = ~0;
- 	vcpu->arch.regs_dirty = ~0;
+ 	early_init_intel(c);
  
- 	kvm_x86_ops->vcpu_reset(vcpu, init_event);
+ 	intel_workarounds(c);
+ 
+@@ -555,16 +565,18 @@ static void init_intel(struct cpuinfo_x86 *c)
+ 
+ 	/* Work around errata */
+ 	srat_detect_node(c);
+ 
+ 	if (cpu_has(c, X86_FEATURE_VMX))
+ 		detect_vmx_virtcap(c);
+ 
+ 	init_intel_energy_perf(c);
++
++	init_intel_misc_features(c);
  }
+ 
+ #ifdef CONFIG_X86_32
+ static unsigned int intel_size_cache(struct cpuinfo_x86 *c, unsigned int size)
+ {
+ 	/*
+ 	 * Intel PIII Tualatin. This comes in two flavours.
+ 	 * One has 256kb of cache, the other 512. We have no way
 -- 
 2.11.0
 
