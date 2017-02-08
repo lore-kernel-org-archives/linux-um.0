@@ -1,8 +1,8 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v14 1/9] x86/arch_prctl/64: Use SYSCALL_DEFINE2 to define sys_arch_prctl
-Date: Wed,  8 Feb 2017 00:09:09 -0800
-Message-Id: <20170208080917.24320-2-khuey@kylehuey.com>
+Subject: [PATCH v14 3/9] x86/arch_prctl: Add do_arch_prctl_common
+Date: Wed,  8 Feb 2017 00:09:11 -0800
+Message-Id: <20170208080917.24320-4-khuey@kylehuey.com>
 In-Reply-To: <20170208080917.24320-1-khuey@kylehuey.com>
 References: <20170208080917.24320-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -10,96 +10,81 @@ To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.d
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Use the SYSCALL_DEFINE2 macro instead of manually defining it.
+Add do_arch_prctl_common() to handle arch_prctls that are not specific to 64
+bit mode. Call it from the syscall entry point, but not any of the other
+callsites in the kernel, which all want one of the existing 64 bit only
+arch_prctls.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
- arch/x86/kernel/process_64.c | 3 ++-
- arch/x86/um/syscalls_64.c    | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/proto.h | 3 +++
+ arch/x86/kernel/process.c    | 6 ++++++
+ arch/x86/kernel/process_64.c | 8 +++++++-
+ 3 files changed, 16 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
+index f8e9194e100c..99836d9a893a 100644
+--- a/arch/x86/include/asm/proto.h
++++ b/arch/x86/include/asm/proto.h
+@@ -26,9 +26,12 @@ void entry_SYSCALL_compat(void);
+ void entry_INT80_compat(void);
+ #endif
+ 
+ void x86_configure_nx(void);
+ void x86_report_nx(void);
+ 
+ extern int reboot_force;
+ 
++long do_arch_prctl_common(struct task_struct *task, int code,
++			  unsigned long cpuid_enabled);
++
+ #endif /* _ASM_X86_PROTO_H */
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 4f76b17045cc..edf645e331d0 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -519,8 +519,14 @@ unsigned long get_wchan(struct task_struct *p)
+ 		}
+ 		fp = READ_ONCE_NOCHECK(*(unsigned long *)fp);
+ 	} while (count++ < 16 && p->state != TASK_RUNNING);
+ 
+ out:
+ 	put_task_stack(p);
+ 	return ret;
+ }
++
++long do_arch_prctl_common(struct task_struct *task, int code,
++			  unsigned long cpuid_enabled)
++{
++	return -EINVAL;
++}
 diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index a61e141b6891..c0ecc237bd9b 100644
+index 83e011566db0..4db1ebcf18e0 100644
 --- a/arch/x86/kernel/process_64.c
 +++ b/arch/x86/kernel/process_64.c
-@@ -30,16 +30,17 @@
- #include <linux/ptrace.h>
- #include <linux/notifier.h>
- #include <linux/kprobes.h>
- #include <linux/kdebug.h>
- #include <linux/prctl.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <linux/ftrace.h>
-+#include <linux/syscalls.h>
- 
- #include <asm/pgtable.h>
- #include <asm/processor.h>
- #include <asm/fpu/internal.h>
- #include <asm/mmu_context.h>
- #include <asm/prctl.h>
- #include <asm/desc.h>
- #include <asm/proto.h>
-@@ -614,17 +615,17 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
- 	default:
- 		ret = -EINVAL;
+@@ -619,15 +619,21 @@ long do_arch_prctl_64(struct task_struct *task, int code, unsigned long arg2)
  		break;
  	}
  
  	return ret;
  }
  
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
+ SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
  {
- 	return do_arch_prctl(current, code, addr);
+-	return do_arch_prctl_64(current, code, arg2);
++	long ret;
++
++	ret = do_arch_prctl_64(current, code, arg2);
++	if (ret == -EINVAL)
++		ret = do_arch_prctl_common(current, code, arg2);
++
++	return ret;
  }
  
  unsigned long KSTK_ESP(struct task_struct *task)
  {
  	return task_pt_regs(task)->sp;
  }
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index e6552275320b..ab3f7f426279 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -1,16 +1,17 @@
- /*
-  * Copyright (C) 2003 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Copyright 2003 PathScale, Inc.
-  *
-  * Licensed under the GPL
-  */
- 
- #include <linux/sched.h>
-+#include <linux/syscalls.h>
- #include <linux/uaccess.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
- 
- long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- {
- 	unsigned long *ptr = addr, tmp;
- 	long ret;
-@@ -67,17 +68,17 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- 	case ARCH_GET_GS:
- 		ret = put_user(tmp, addr);
- 		break;
- 	}
- 
- 	return ret;
- }
- 
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
- {
- 	return arch_prctl(current, code, (unsigned long __user *) addr);
- }
- 
- void arch_switch_to(struct task_struct *to)
- {
- 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
- 		return;
 -- 
 2.11.0
 
