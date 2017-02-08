@@ -1,8 +1,8 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v14 7/9] x86/arch_prctl: Selftest for ARCH_[GET|SET]_CPUID
-Date: Wed,  8 Feb 2017 00:09:15 -0800
-Message-Id: <20170208080917.24320-8-khuey@kylehuey.com>
+Subject: [PATCH v14 8/9] KVM: x86: virtualize cpuid faulting
+Date: Wed,  8 Feb 2017 00:09:16 -0800
+Message-Id: <20170208080917.24320-9-khuey@kylehuey.com>
 In-Reply-To: <20170208080917.24320-1-khuey@kylehuey.com>
 References: <20170208080917.24320-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -10,298 +10,220 @@ To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.d
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Test disabling and reenabling the cpuid instruction via the new arch_prctl
-ARCH_SET_CPUID, retrieving the current state via ARCH_GET_CPUID, and the
-expected behaviors across fork() and exec().
+Hardware support for faulting on the cpuid instruction is not required to
+emulate it, because cpuid triggers a VM exit anyways. KVM handles the relevant
+MSRs (MSR_PLATFORM_INFO and MSR_MISC_FEATURES_ENABLE) and upon a
+cpuid-induced VM exit checks the cpuid faulting state and the CPL.
+kvm_require_cpl is even kind enough to inject the GP fault for us.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+Reviewed-by: David Matlack <dmatlack@google.com>
 ---
- tools/testing/selftests/x86/Makefile      |   4 +-
- tools/testing/selftests/x86/cpuid_fault.c | 251 ++++++++++++++++++++++++++++++
- 2 files changed, 253 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/x86/cpuid_fault.c
+ arch/x86/include/asm/kvm_host.h |  2 ++
+ arch/x86/kvm/cpuid.c            |  3 +++
+ arch/x86/kvm/cpuid.h            | 11 +++++++++++
+ arch/x86/kvm/emulate.c          |  7 +++++++
+ arch/x86/kvm/x86.c              | 26 ++++++++++++++++++++++++++
+ 5 files changed, 49 insertions(+)
 
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 8c1cb423cfe6..131c5f266d84 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -1,17 +1,17 @@
--all:
-+ll:
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index a7066dc1a7e9..a0d6f0c47440 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -601,16 +601,18 @@ struct kvm_vcpu_arch {
+ 	u64 pat;
  
- include ../lib.mk
+ 	unsigned switch_db_regs;
+ 	unsigned long db[KVM_NR_DB_REGS];
+ 	unsigned long dr6;
+ 	unsigned long dr7;
+ 	unsigned long eff_db[KVM_NR_DB_REGS];
+ 	unsigned long guest_debug_dr7;
++	u64 msr_platform_info;
++	u64 msr_misc_features_enables;
  
- .PHONY: all all_32 all_64 warn_32bit_failure clean
+ 	u64 mcg_cap;
+ 	u64 mcg_status;
+ 	u64 mcg_ctl;
+ 	u64 mcg_ext_ctl;
+ 	u64 *mce_banks;
  
- TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt ptrace_syscall test_mremap_vdso \
- 			check_initial_reg_state sigreturn ldt_gdt iopl \
--			protection_keys test_vdso
-+			protection_keys test_vdso cpuid_fault
- TARGETS_C_32BIT_ONLY := entry_from_vm86 syscall_arg_fault test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
- 			vdso_restorer
- TARGETS_C_64BIT_ONLY := fsgsbase
+ 	/* Cache MMIO info */
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index e85f6bd7b9d5..588ac8ae0a60 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -877,16 +877,19 @@ void kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx, u32 *ecx, u32 *edx)
+ 	trace_kvm_cpuid(function, *eax, *ebx, *ecx, *edx);
+ }
+ EXPORT_SYMBOL_GPL(kvm_cpuid);
  
- TARGETS_C_32BIT_ALL := $(TARGETS_C_BOTHBITS) $(TARGETS_C_32BIT_ONLY)
- TARGETS_C_64BIT_ALL := $(TARGETS_C_BOTHBITS) $(TARGETS_C_64BIT_ONLY)
- BINARIES_32 := $(TARGETS_C_32BIT_ALL:%=%_32)
-diff --git a/tools/testing/selftests/x86/cpuid_fault.c b/tools/testing/selftests/x86/cpuid_fault.c
-new file mode 100644
-index 000000000000..d061abde85e8
---- /dev/null
-+++ b/tools/testing/selftests/x86/cpuid_fault.c
-@@ -0,0 +1,251 @@
+ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
+ {
+ 	u32 eax, ebx, ecx, edx;
+ 
++	if (cpuid_fault_enabled(vcpu) && !kvm_require_cpl(vcpu, 0))
++		return;
 +
-+/*
-+ * Tests for arch_prctl(ARCH_GET_CPUID, ...) / arch_prctl(ARCH_SET_CPUID, ...)
-+ *
-+ * Basic test to test behaviour of ARCH_GET_CPUID and ARCH_SET_CPUID
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <inttypes.h>
-+#include <cpuid.h>
-+#include <err.h>
-+#include <errno.h>
-+#include <sys/wait.h>
-+
-+#include <sys/prctl.h>
-+#include <linux/prctl.h>
-+
-+/*
-+#define ARCH_GET_CPUID 0x1005
-+#define ARCH_SET_CPUID 0x1006
-+#ifdef __x86_64__
-+#define SYS_arch_prctl 158
-+#else
-+#define SYS_arch_prctl 385
-+#endif
-+*/
-+
-+const char *cpuid_names[] = {
-+	[0] = "[cpuid disabled]",
-+	[1] = "[cpuid enabled]",
-+};
-+
-+int arch_prctl(int code, unsigned long arg2)
+ 	eax = kvm_register_read(vcpu, VCPU_REGS_RAX);
+ 	ecx = kvm_register_read(vcpu, VCPU_REGS_RCX);
+ 	kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx);
+ 	kvm_register_write(vcpu, VCPU_REGS_RAX, eax);
+ 	kvm_register_write(vcpu, VCPU_REGS_RBX, ebx);
+ 	kvm_register_write(vcpu, VCPU_REGS_RCX, ecx);
+ 	kvm_register_write(vcpu, VCPU_REGS_RDX, edx);
+ 	return kvm_skip_emulated_instruction(vcpu);
+diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+index 35058c2c0eea..a6fd40aade7c 100644
+--- a/arch/x86/kvm/cpuid.h
++++ b/arch/x86/kvm/cpuid.h
+@@ -200,9 +200,20 @@ static inline int guest_cpuid_stepping(struct kvm_vcpu *vcpu)
+ 
+ 	best = kvm_find_cpuid_entry(vcpu, 0x1, 0);
+ 	if (!best)
+ 		return -1;
+ 
+ 	return x86_stepping(best->eax);
+ }
+ 
++static inline bool supports_cpuid_fault(struct kvm_vcpu *vcpu)
 +{
-+	return syscall(SYS_arch_prctl, code, arg2);
++	return vcpu->arch.msr_platform_info & MSR_PLATFORM_INFO_CPUID_FAULT;
 +}
 +
-+int cpuid(unsigned int *eax, unsigned int *ebx, unsigned int *ecx,
-+	  unsigned int *edx)
++static inline bool cpuid_fault_enabled(struct kvm_vcpu *vcpu)
 +{
-+	return __get_cpuid(0, eax, ebx, ecx, edx);
++	return vcpu->arch.msr_misc_features_enables &
++		  MSR_MISC_FEATURES_ENABLES_CPUID_FAULT;
 +}
 +
-+int do_child_exec_test(int eax, int ebx, int ecx, int edx)
-+{
-+	int cpuid_val = 0, child = 0, status = 0;
+ #endif
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index cedbba0f3402..8b4b5566c365 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -3848,16 +3848,23 @@ static int em_sti(struct x86_emulate_ctxt *ctxt)
+ 	ctxt->interruptibility = KVM_X86_SHADOW_INT_STI;
+ 	ctxt->eflags |= X86_EFLAGS_IF;
+ 	return X86EMUL_CONTINUE;
+ }
+ 
+ static int em_cpuid(struct x86_emulate_ctxt *ctxt)
+ {
+ 	u32 eax, ebx, ecx, edx;
++	u64 msr = 0;
 +
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
-+
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0)
-+		errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	if (cpuid_val != 0)
-+		errx(1, "How did cpuid get re-enabled on fork?");
-+
-+	child = fork();
-+	if (child == 0) {
-+		cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+		if (cpuid_val < 0)
-+			errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+		printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+		if (cpuid_val != 0)
-+			errx(1, "How did cpuid get re-enabled on fork?");
-+
-+		printf("exec\n");
-+		execl("/proc/self/exe", "cpuid-fault", "-early-return", NULL);
++	ctxt->ops->get_msr(ctxt, MSR_MISC_FEATURES_ENABLES, &msr);
++	if (msr & MSR_MISC_FEATURES_ENABLES_CPUID_FAULT &&
++	    ctxt->ops->cpl(ctxt)) {
++		return emulate_gp(ctxt, 0);
 +	}
+ 
+ 	eax = reg_read(ctxt, VCPU_REGS_RAX);
+ 	ecx = reg_read(ctxt, VCPU_REGS_RCX);
+ 	ctxt->ops->get_cpuid(ctxt, &eax, &ebx, &ecx, &edx);
+ 	*reg_write(ctxt, VCPU_REGS_RAX) = eax;
+ 	*reg_write(ctxt, VCPU_REGS_RBX) = ebx;
+ 	*reg_write(ctxt, VCPU_REGS_RCX) = ecx;
+ 	*reg_write(ctxt, VCPU_REGS_RDX) = edx;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index e52c9088660f..1951b460da47 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -998,16 +998,18 @@ static u32 emulated_msrs[] = {
+ 
+ 	MSR_IA32_TSC_ADJUST,
+ 	MSR_IA32_TSCDEADLINE,
+ 	MSR_IA32_MISC_ENABLE,
+ 	MSR_IA32_MCG_STATUS,
+ 	MSR_IA32_MCG_CTL,
+ 	MSR_IA32_MCG_EXT_CTL,
+ 	MSR_IA32_SMBASE,
++	MSR_PLATFORM_INFO,
++	MSR_MISC_FEATURES_ENABLES,
+ };
+ 
+ static unsigned num_emulated_msrs;
+ 
+ bool kvm_valid_efer(struct kvm_vcpu *vcpu, u64 efer)
+ {
+ 	if (efer & efer_reserved_bits)
+ 		return false;
+@@ -2285,16 +2287,31 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 			return 1;
+ 		vcpu->arch.osvw.length = data;
+ 		break;
+ 	case MSR_AMD64_OSVW_STATUS:
+ 		if (!guest_cpuid_has_osvw(vcpu))
+ 			return 1;
+ 		vcpu->arch.osvw.status = data;
+ 		break;
++	case MSR_PLATFORM_INFO:
++		if (!msr_info->host_initiated ||
++		    data & ~MSR_PLATFORM_INFO_CPUID_FAULT ||
++		    (!(data & MSR_PLATFORM_INFO_CPUID_FAULT) &&
++		     cpuid_fault_enabled(vcpu)))
++			return 1;
++		vcpu->arch.msr_platform_info = data;
++		break;
++	case MSR_MISC_FEATURES_ENABLES:
++		if (data & ~MSR_MISC_FEATURES_ENABLES_CPUID_FAULT ||
++		    (data & MSR_MISC_FEATURES_ENABLES_CPUID_FAULT &&
++		     !supports_cpuid_fault(vcpu)))
++			return 1;
++		vcpu->arch.msr_misc_features_enables = data;
++		break;
+ 	default:
+ 		if (msr && (msr == vcpu->kvm->arch.xen_hvm_config.msr))
+ 			return xen_hvm_config(vcpu, data);
+ 		if (kvm_pmu_is_valid_msr(vcpu, msr))
+ 			return kvm_pmu_set_msr(vcpu, msr_info);
+ 		if (!ignore_msrs) {
+ 			vcpu_debug_ratelimited(vcpu, "unhandled wrmsr: 0x%x data 0x%llx\n",
+ 				    msr, data);
+@@ -2499,16 +2516,22 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 			return 1;
+ 		msr_info->data = vcpu->arch.osvw.length;
+ 		break;
+ 	case MSR_AMD64_OSVW_STATUS:
+ 		if (!guest_cpuid_has_osvw(vcpu))
+ 			return 1;
+ 		msr_info->data = vcpu->arch.osvw.status;
+ 		break;
++	case MSR_PLATFORM_INFO:
++		msr_info->data = vcpu->arch.msr_platform_info;
++		break;
++	case MSR_MISC_FEATURES_ENABLES:
++		msr_info->data = vcpu->arch.msr_misc_features_enables;
++		break;
+ 	default:
+ 		if (kvm_pmu_is_valid_msr(vcpu, msr_info->index))
+ 			return kvm_pmu_get_msr(vcpu, msr_info->index, &msr_info->data);
+ 		if (!ignore_msrs) {
+ 			vcpu_debug_ratelimited(vcpu, "unhandled rdmsr: 0x%x\n",
+ 					       msr_info->index);
+ 			return 1;
+ 		} else {
+@@ -7613,16 +7636,19 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 
+ 	kvm_clear_async_pf_completion_queue(vcpu);
+ 	kvm_async_pf_hash_reset(vcpu);
+ 	vcpu->arch.apf.halted = false;
+ 
+ 	if (!init_event) {
+ 		kvm_pmu_reset(vcpu);
+ 		vcpu->arch.smbase = 0x30000;
 +
-+	if (child != waitpid(child, &status, 0))
-+		errx(1, "waitpid failed!?");
-+
-+	if (WEXITSTATUS(status) != 0)
-+		errx(1, "Execed child exited abnormally");
-+
-+	return 0;
-+}
-+
-+int child_received_signal;
-+
-+void child_sigsegv_cb(int sig)
-+{
-+	int cpuid_val = 0;
-+
-+	child_received_signal = 1;
-+	printf("[ SIG_SEGV ]\n");
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
-+
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0)
-+		errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	printf("arch_prctl(ARCH_SET_CPUID, 1)\n");
-+	if (arch_prctl(ARCH_SET_CPUID, 1) != 0)
-+		exit(errno);
-+
-+	printf("cpuid() == ");
-+}
-+
-+int do_child_test(void)
-+{
-+	unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
-+
-+	signal(SIGSEGV, child_sigsegv_cb);
-+
-+	/* the child starts out with cpuid disabled, the signal handler
-+	 * attempts to enable and retry
-+	 */
-+	printf("cpuid() == ");
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	return child_received_signal ? 0 : 42;
-+}
-+
-+int signal_count;
-+
-+void sigsegv_cb(int sig)
-+{
-+	int cpuid_val = 0;
-+
-+	signal_count++;
-+	printf("[ SIG_SEGV ]\n");
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
-+
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0)
-+		errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	printf("arch_prctl(ARC_SET_CPUID, 1)\n");
-+	if (arch_prctl(ARCH_SET_CPUID, 1) != 0)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	printf("cpuid() == ");
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int cpuid_val = 0, child = 0, status = 0;
-+	unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
-+
-+	signal(SIGSEGV, sigsegv_cb);
-+	setvbuf(stdout, NULL, _IONBF, 0);
-+
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
-+
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0) {
-+		if (errno == EINVAL) {
-+			printf("ARCH_GET_CPUID is unsupported on this kernel.\n");
-+			fflush(stdout);
-+			exit(0); /* no ARCH_GET_CPUID on this system */
-+		} else if (errno == ENODEV) {
-+			printf("ARCH_GET_CPUID is unsupported on this hardware.\n");
-+			fflush(stdout);
-+			exit(0); /* no ARCH_GET_CPUID on this system */
-+		} else {
-+			errx(errno, "ARCH_GET_CPUID failed unexpectedly!");
-+		}
-+	}
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, 1)\n");
-+
-+	if (arch_prctl(ARCH_SET_CPUID, 1) != 0) {
-+		if (errno == EINVAL) {
-+			printf("ARCH_SET_CPUID is unsupported on this kernel.");
-+			exit(0); /* no ARCH_SET_CPUID on this system */
-+		} else if (errno == ENODEV) {
-+			printf("ARCH_SET_CPUID is unsupported on this hardware.");
-+			exit(0); /* no ARCH_SET_CPUID on this system */
-+		} else {
-+			errx(errno, "ARCH_SET_CPUID failed unexpectedly!");
-+		}
-+	}
-+
-+
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, 0)\n");
-+	fflush(stdout);
-+
-+	if (arch_prctl(ARCH_SET_CPUID, 0) == -1)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	printf("cpuid() == ");
-+	eax = ebx = ecx = edx = 0;
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, 0)\n");
-+
-+	if (signal_count != 1)
-+		errx(1, "cpuid didn't fault!");
-+
-+	if (arch_prctl(ARCH_SET_CPUID, 0) == -1)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	if (argc > 1)
-+		exit(0); /* Don't run the whole test again if we were execed */
-+
-+	printf("do_child_test\n");
-+	child = fork();
-+	if (child == 0)
-+		return do_child_test();
-+
-+	if (child != waitpid(child, &status, 0))
-+		errx(1, "waitpid failed!?");
-+
-+	if (WEXITSTATUS(status) != 0)
-+		errx(1, "Child exited abnormally!");
-+
-+	/* The child enabling cpuid should not have affected us */
-+	printf("cpuid() == ");
-+	eax = ebx = ecx = edx = 0;
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, 0)\n");
-+
-+	if (signal_count != 2)
-+		errx(1, "cpuid didn't fault!");
-+
-+	if (arch_prctl(ARCH_SET_CPUID, 0) == -1)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	/* Our ARCH_CPUID_SIGSEGV should not propagate through exec */
-+	printf("do_child_exec_test\n");
-+	fflush(stdout);
-+
-+	child = fork();
-+	if (child == 0)
-+		return do_child_exec_test(eax, ebx, ecx, edx);
-+
-+	if (child != waitpid(child, &status, 0))
-+		errx(1, "waitpid failed!?");
-+
-+	if (WEXITSTATUS(status) != 0)
-+		errx(1, "Child exited abnormally!");
-+
-+	printf("All tests passed!\n");
-+	exit(EXIT_SUCCESS);
-+}
++		vcpu->arch.msr_platform_info = MSR_PLATFORM_INFO_CPUID_FAULT;
++		vcpu->arch.msr_misc_features_enables = 0;
+ 	}
+ 
+ 	memset(vcpu->arch.regs, 0, sizeof(vcpu->arch.regs));
+ 	vcpu->arch.regs_avail = ~0;
+ 	vcpu->arch.regs_dirty = ~0;
+ 
+ 	kvm_x86_ops->vcpu_reset(vcpu, init_event);
+ }
 -- 
 2.11.0
 
