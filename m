@@ -1,91 +1,68 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v14 3/9] x86/arch_prctl: Add do_arch_prctl_common
-Date: Wed,  8 Feb 2017 00:09:11 -0800
-Message-Id: <20170208080917.24320-4-khuey@kylehuey.com>
-In-Reply-To: <20170208080917.24320-1-khuey@kylehuey.com>
-References: <20170208080917.24320-1-khuey@kylehuey.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, Andi Kleen <andi@firstfloor.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <natale.patriciello@gmail.com>) id 1cdzgj-0005Fa-24
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Feb 2017 13:32:05 +0000
+Received: from mail-wm0-f54.google.com ([74.125.82.54])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1cdzgi-0002cG-8f
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Wed, 15 Feb 2017 13:32:05 +0000
+Received: by mail-wm0-f54.google.com with SMTP id r141so40671614wmg.1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Wed, 15 Feb 2017 05:32:04 -0800 (PST)
+Received: from localhost (81.61.180.6.dyn.user.ono.com. [81.61.180.6])
+	by smtp.gmail.com with ESMTPSA id
+	p62sm5402559wmb.25.2017.02.15.05.31.57
+	for <user-mode-linux-devel@lists.sourceforge.net>
+	(version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+	Wed, 15 Feb 2017 05:31:57 -0800 (PST)
+Date: Wed, 15 Feb 2017 15:31:53 +0100
+From: Natale Patriciello <natale.patriciello@gmail.com>
+Message-ID: <20170215143153.4h3uwrkpt4odkavr@judith.localdomain>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [uml-devel] FPU patches broke UML on i7-7700 CPU
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-Add do_arch_prctl_common() to handle arch_prctls that are not specific to 64
-bit mode. Call it from the syscall entry point, but not any of the other
-callsites in the kernel, which all want one of the existing 64 bit only
-arch_prctls.
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
----
- arch/x86/include/asm/proto.h | 3 +++
- arch/x86/kernel/process.c    | 6 ++++++
- arch/x86/kernel/process_64.c | 8 +++++++-
- 3 files changed, 16 insertions(+), 1 deletion(-)
+Hello,
 
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index f8e9194e100c..99836d9a893a 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -26,9 +26,12 @@ void entry_SYSCALL_compat(void);
- void entry_INT80_compat(void);
- #endif
- 
- void x86_configure_nx(void);
- void x86_report_nx(void);
- 
- extern int reboot_force;
- 
-+long do_arch_prctl_common(struct task_struct *task, int code,
-+			  unsigned long cpuid_enabled);
-+
- #endif /* _ASM_X86_PROTO_H */
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 4f76b17045cc..edf645e331d0 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -519,8 +519,14 @@ unsigned long get_wchan(struct task_struct *p)
- 		}
- 		fp = READ_ONCE_NOCHECK(*(unsigned long *)fp);
- 	} while (count++ < 16 && p->state != TASK_RUNNING);
- 
- out:
- 	put_task_stack(p);
- 	return ret;
- }
-+
-+long do_arch_prctl_common(struct task_struct *task, int code,
-+			  unsigned long cpuid_enabled)
-+{
-+	return -EINVAL;
-+}
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 83e011566db0..4db1ebcf18e0 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -619,15 +619,21 @@ long do_arch_prctl_64(struct task_struct *task, int code, unsigned long arg2)
- 		break;
- 	}
- 
- 	return ret;
- }
- 
- SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
- {
--	return do_arch_prctl_64(current, code, arg2);
-+	long ret;
-+
-+	ret = do_arch_prctl_64(current, code, arg2);
-+	if (ret == -EINVAL)
-+		ret = do_arch_prctl_common(current, code, arg2);
-+
-+	return ret;
- }
- 
- unsigned long KSTK_ESP(struct task_struct *task)
- {
- 	return task_pt_regs(task)->sp;
- }
--- 
-2.11.0
+as I've reported here [1], by changing the work station I've got the
+same UML guest not working anymore. I investigated and the problem root
+is in the code added in this patchset [2] (add extended processor state
+save/restore support). In particular, the ptrace returns < 0 and the
+errno is set to 14. Reverting the code to use the functions
+*_i387_registers () makes everything to work correctly.
 
+There is something I can do for further debugging the issue? Or should I
+live with a modified kernel tree with a reverse patch applied ?
+
+Thank you
+
+
+[1] https://sourceforge.net/p/user-mode-linux/mailman/message/35663374/
+[2] https://sourceforge.net/p/user-mode-linux/mailman/message/34911221/
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, SlashDot.org! http://sdm.link/slashdot
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
