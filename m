@@ -1,8 +1,8 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v15 3/9] x86/arch_prctl: Add do_arch_prctl_common
-Date: Sat, 11 Mar 2017 11:46:56 -0800
-Message-Id: <20170311194702.28754-4-khuey@kylehuey.com>
+Subject: [PATCH v15 4/9] x86/syscalls/32: Wire up arch_prctl on x86-32
+Date: Sat, 11 Mar 2017 11:46:57 -0800
+Message-Id: <20170311194702.28754-5-khuey@kylehuey.com>
 In-Reply-To: <20170311194702.28754-1-khuey@kylehuey.com>
 References: <20170311194702.28754-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
@@ -10,81 +10,174 @@ To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.d
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Add do_arch_prctl_common() to handle arch_prctls that are not specific to 64
-bit mode. Call it from the syscall entry point, but not any of the other
-callsites in the kernel, which all want one of the existing 64 bit only
-arch_prctls.
+Hook up arch_prctl to call do_arch_prctl() on x86-32, and in 32 bit compat
+mode on x86-64. This allows us to have arch_prctls that are not specific to
+64 bits.
+
+On UML, simply stub out this syscall.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
- arch/x86/include/asm/proto.h | 3 +++
- arch/x86/kernel/process.c    | 6 ++++++
- arch/x86/kernel/process_64.c | 8 +++++++-
- 3 files changed, 16 insertions(+), 1 deletion(-)
+ arch/x86/entry/syscalls/syscall_32.tbl | 1 +
+ arch/x86/kernel/process_32.c           | 7 +++++++
+ arch/x86/kernel/process_64.c           | 7 +++++++
+ arch/x86/um/Makefile                   | 2 +-
+ arch/x86/um/syscalls_32.c              | 7 +++++++
+ include/linux/compat.h                 | 2 ++
+ 6 files changed, 25 insertions(+), 1 deletion(-)
+ create mode 100644 arch/x86/um/syscalls_32.c
 
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index f8e9194e100c..99836d9a893a 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -26,9 +26,12 @@ void entry_SYSCALL_compat(void);
- void entry_INT80_compat(void);
- #endif
+diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
+index 9ba050fe47f3..0af59fa789ea 100644
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@ -385,8 +385,9 @@
+ 376	i386	mlock2			sys_mlock2
+ 377	i386	copy_file_range		sys_copy_file_range
+ 378	i386	preadv2			sys_preadv2			compat_sys_preadv2
+ 379	i386	pwritev2		sys_pwritev2			compat_sys_pwritev2
+ 380	i386	pkey_mprotect		sys_pkey_mprotect
+ 381	i386	pkey_alloc		sys_pkey_alloc
+ 382	i386	pkey_free		sys_pkey_free
+ 383	i386	statx			sys_statx
++384	i386	arch_prctl		sys_arch_prctl			compat_sys_arch_prctl
+diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
+index 4c818f8bc135..cead0bd41678 100644
+--- a/arch/x86/kernel/process_32.c
++++ b/arch/x86/kernel/process_32.c
+@@ -32,16 +32,17 @@
+ #include <linux/ptrace.h>
+ #include <linux/personality.h>
+ #include <linux/percpu.h>
+ #include <linux/prctl.h>
+ #include <linux/ftrace.h>
+ #include <linux/uaccess.h>
+ #include <linux/io.h>
+ #include <linux/kdebug.h>
++#include <linux/syscalls.h>
  
- void x86_configure_nx(void);
- void x86_report_nx(void);
+ #include <asm/pgtable.h>
+ #include <asm/ldt.h>
+ #include <asm/processor.h>
+ #include <asm/fpu/internal.h>
+ #include <asm/desc.h>
+ #ifdef CONFIG_MATH_EMULATION
+ #include <asm/math_emu.h>
+@@ -51,16 +52,17 @@
  
- extern int reboot_force;
+ #include <asm/tlbflush.h>
+ #include <asm/cpu.h>
+ #include <asm/syscalls.h>
+ #include <asm/debugreg.h>
+ #include <asm/switch_to.h>
+ #include <asm/vm86.h>
+ #include <asm/intel_rdt.h>
++#include <asm/proto.h>
  
-+long do_arch_prctl_common(struct task_struct *task, int code,
-+			  unsigned long cpuid_enabled);
-+
- #endif /* _ASM_X86_PROTO_H */
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 366db7782fc6..25bf542dfcdd 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -540,8 +540,14 @@ unsigned long get_wchan(struct task_struct *p)
- 		}
- 		fp = READ_ONCE_NOCHECK(*(unsigned long *)fp);
- 	} while (count++ < 16 && p->state != TASK_RUNNING);
+ void __show_regs(struct pt_regs *regs, int all)
+ {
+ 	unsigned long cr0 = 0L, cr2 = 0L, cr3 = 0L, cr4 = 0L;
+ 	unsigned long d0, d1, d2, d3, d6, d7;
+ 	unsigned long sp;
+ 	unsigned short ss, gs;
  
- out:
- 	put_task_stack(p);
- 	return ret;
+@@ -299,8 +301,13 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
+ 
+ 	this_cpu_write(current_task, next_p);
+ 
+ 	/* Load the Intel cache allocation PQR MSR. */
+ 	intel_rdt_sched_in();
+ 
+ 	return prev_p;
  }
 +
-+long do_arch_prctl_common(struct task_struct *task, int code,
-+			  unsigned long cpuid_enabled)
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
 +{
-+	return -EINVAL;
++	return do_arch_prctl_common(current, code, arg2);
 +}
 diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 4c139922c2fb..beec7d70acf2 100644
+index beec7d70acf2..e6749cb2c96d 100644
 --- a/arch/x86/kernel/process_64.c
 +++ b/arch/x86/kernel/process_64.c
-@@ -621,15 +621,21 @@ long do_arch_prctl_64(struct task_struct *task, int code, unsigned long arg2)
- 		break;
- 	}
+@@ -630,12 +630,19 @@ SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
+ 
+ 	ret = do_arch_prctl_64(current, code, arg2);
+ 	if (ret == -EINVAL)
+ 		ret = do_arch_prctl_common(current, code, arg2);
  
  	return ret;
  }
  
- SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
- {
--	return do_arch_prctl_64(current, code, arg2);
-+	long ret;
++#ifdef CONFIG_IA32_EMULATION
++COMPAT_SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
++{
++	return do_arch_prctl_common(current, code, arg2);
++}
++#endif
 +
-+	ret = do_arch_prctl_64(current, code, arg2);
-+	if (ret == -EINVAL)
-+		ret = do_arch_prctl_common(current, code, arg2);
-+
-+	return ret;
- }
- 
  unsigned long KSTK_ESP(struct task_struct *task)
  {
  	return task_pt_regs(task)->sp;
  }
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index e7e7055a8658..69f0827d5f53 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -11,17 +11,17 @@ endif
+ obj-y = bug.o bugs_$(BITS).o delay.o fault.o ldt.o \
+ 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
+ 	stub_$(BITS).o stub_segv.o \
+ 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
+ 	mem_$(BITS).o subarch.o os-$(OS)/
+ 
+ ifeq ($(CONFIG_X86_32),y)
+ 
+-obj-y += checksum_32.o
++obj-y += checksum_32.o syscalls_32.o
+ obj-$(CONFIG_ELF_CORE) += elfcore.o
+ 
+ subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
+ subarch-$(CONFIG_RWSEM_XCHGADD_ALGORITHM) += ../lib/rwsem.o
+ 
+ else
+ 
+ obj-y += syscalls_64.o vdso/
+diff --git a/arch/x86/um/syscalls_32.c b/arch/x86/um/syscalls_32.c
+new file mode 100644
+index 000000000000..ccf0598c3fc0
+--- /dev/null
++++ b/arch/x86/um/syscalls_32.c
+@@ -0,0 +1,7 @@
++#include <linux/syscalls.h>
++#include <os.h>
++
++SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, arg2)
++{
++	return -EINVAL;
++}
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index aef47be2a5c1..890f4284a5fd 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -718,16 +718,18 @@ int __compat_save_altstack(compat_stack_t __user *, unsigned long);
+ } while (0);
+ 
+ asmlinkage long compat_sys_sched_rr_get_interval(compat_pid_t pid,
+ 						 struct compat_timespec __user *interval);
+ 
+ asmlinkage long compat_sys_fanotify_mark(int, unsigned int, __u32, __u32,
+ 					    int, const char __user *);
+ 
++asmlinkage long compat_sys_arch_prctl(int code, unsigned long arg2);
++
+ /*
+  * For most but not all architectures, "am I in a compat syscall?" and
+  * "am I a compat task?" are the same question.  For architectures on which
+  * they aren't the same question, arch code can override in_compat_syscall.
+  */
+ 
+ #ifndef in_compat_syscall
+ static inline bool in_compat_syscall(void) { return is_compat_task(); }
 -- 
 2.11.0
 
