@@ -1,71 +1,33 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Nicolai Stange <nicstange@gmail.com>
-Subject: [PATCH] um/time: set ->min_delta_ticks and ->max_delta_ticks
-Date: Thu, 30 Mar 2017 21:59:42 +0200
-Message-Id: <20170330195942.7946-1-nicstange@gmail.com>
-In-Reply-To: <20170326134403.16226-1-nicstange@gmail.com>
-References: <20170326134403.16226-1-nicstange@gmail.com>
+From: Kyle Huey <me@kylehuey.com>
+Subject: [PATCH v15 0/9] x86/arch_prctl Add ARCH_[GET|SET]_CPUID for controlling the CPUID instruction  
+Date: Sat, 11 Mar 2017 11:46:53 -0800
+Message-Id: <20170311194702.28754-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>
-Cc: John Stultz <john.stultz@linaro.org>, linux-kernel@vger.kernel.org, Nicolai Stange <nicstange@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, user-mode-linux-devel@lists.sourceforge.net
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, Andi Kleen <andi@firstfloor.org>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-In preparation for making the clockevents core NTP correction aware,
-all clockevent device drivers must set ->min_delta_ticks and
-->max_delta_ticks rather than ->min_delta_ns and ->max_delta_ns: a
-clockevent device's rate is going to change dynamically and thus, the
-ratio of ns to ticks ceases to stay invariant.
 
-Make the uml arch's clockevent driver initialize these fields properly.
+rr (http://rr-project.org/), a userspace record-and-replay reverse-
+execution debugger, would like to trap and emulate the CPUID instruction.
+This would allow us to a) mask away certain hardware features that rr does
+not support (e.g. RDRAND) and b) enable trace portability across machines
+by providing constant results.
 
-This patch alone doesn't introduce any change in functionality as the
-clockevents core still looks exclusively at the (untouched) ->min_delta_ns
-and ->max_delta_ns. As soon as this has changed, a followup patch will
-purge the initialization of ->min_delta_ns and ->max_delta_ns from this
-driver.
+Newer Intel CPUs (Ivy Bridge and later) can fault when CPUID is executed at
+CPL > 0. Expose this capability to userspace as a new pair of arch_prctls,
+ARCH_GET_CPUID and ARCH_SET_CPUID.
 
-Signed-off-by: Nicolai Stange <nicstange@gmail.com>
----
+Since v14:
+All: rebased onto x86/process, which contains the switch_to_xtra
+improvements
 
-Notes:
-    This prerequisite patch is part of a larger effort to feed NTP
-    corrections into the clockevent devices' frequencies and thus
-    avoiding their notion of time to diverge from the system's
-    one. If you're interested, the current state of the whole series
-    can be found at [1].
-    
-    If you haven't got any objections and these prerequisites get
-    merged by 4.12 everywhere, I'll proceed with the remainder of
-    this series in 4.13.
-    
-    Applicable to next-20170324 as well as to John' Stultz tree [2].
-    
-    [1]
-      git://nicst.de/linux.git cev-freq-adj.v10.fortglx-4.12-time
-      https://nicst.de/git/?p=linux.git;a=shortlog;h=refs/heads/cev-freq-adj.v10.fortglx-4.12-time
-    
-    [2]
-      https://git.linaro.org/people/john.stultz/linux.git fortglx/4.12/time
+Patch 4: x86/syscalls/32: Wire up arch_prctl on x86-32
+- the new arch_prctl is now syscall number 384, because that was
+  available
 
- arch/um/kernel/time.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index ba87a27d6715..0b034ebbda2a 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -65,7 +65,9 @@ static struct clock_event_device timer_clockevent = {
- 	.set_next_event		= itimer_next_event,
- 	.shift			= 0,
- 	.max_delta_ns		= 0xffffffff,
--	.min_delta_ns		= TIMER_MIN_DELTA, //microsecond resolution should be enough for anyone, same as 640K RAM
-+	.max_delta_ticks	= 0xffffffff,
-+	.min_delta_ns		= TIMER_MIN_DELTA,
-+	.min_delta_ticks	= TIMER_MIN_DELTA, // microsecond resolution should be enough for anyone, same as 640K RAM
- 	.irq			= 0,
- 	.mult			= 1,
- };
--- 
-2.12.0
-
+Patch 5: x86/cpufeature: Detect CPUID faulting support
+- the newly added probe_xeon_phi_r3mwait is called from
+  init_intel_misc_features
 
