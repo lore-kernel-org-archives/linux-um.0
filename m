@@ -1,106 +1,44 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v15 1/9] x86/arch_prctl/64: Use SYSCALL_DEFINE2 to define sys_arch_prctl
-Date: Sat, 11 Mar 2017 11:46:54 -0800
-Message-Id: <20170311194702.28754-2-khuey@kylehuey.com>
-In-Reply-To: <20170311194702.28754-1-khuey@kylehuey.com>
-References: <20170311194702.28754-1-khuey@kylehuey.com>
+From: "H. Peter Anvin" <hpa@zytor.com>
+Message-Id: <201703150911.v2F9BsT1004205@mail.zytor.com>
+Date: Wed, 15 Mar 2017 02:11:48 -0700
+In-Reply-To: <CALCETrXrjDKosaVbq=oBLz-dWLLFom771zMSyZWsCFXxKN__RQ@mail.gmail.com>
+References: <20161108183956.4521-1-khuey@kylehuey.com> <20161108183956.4521-7-khuey@kylehuey.com> <30f2ec3e-d0c8-8dd2-837f-3380237d843c@zytor.com> <CALCETrXrjDKosaVbq=oBLz-dWLLFom771zMSyZWsCFXxKN__RQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Subject: Re: [PATCH v10 6/7] x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, Andi Kleen <andi@firstfloor.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Kyle Huey <me@kylehuey.com>, Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>, Linux.FS.Devel@zytor.com
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Use the SYSCALL_DEFINE2 macro instead of manually defining it.
+<linux-fsdevel@vger.kernel.org>,"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,kvm list <kvm@vger.kernel.org>
+From: hpa@zytor.com
+Message-ID: <E47D06A9-AFDA-4A9D-8539-9CC5AB19B395@zytor.com>
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
----
- arch/x86/kernel/process_64.c | 3 ++-
- arch/x86/um/syscalls_64.c    | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+On March 14, 2017 12:23:40 PM PDT, Andy Lutomirski <luto@amacapital.net> wrote:
+>On Tue, Mar 14, 2017 at 12:01 PM, H. Peter Anvin <hpa@zytor.com> wrote:
+>> and at least theoretically we
+>> could be indirecting though the ->stack pointer for every one if gcc
+>> can't tell it won't have changed (we really need to get thread_info
+>> moved into the task_struct allocation and away from the kernel stack,
+>> especially since on x86 the pointer is the same size as the vestigial
+>> structure it points to.)
+>
+>Solved by use of time machine:
+>
+>commit 15f4eae70d365bba26854c90b6002aaabb18c8aa
+>Author: Andy Lutomirski <luto@kernel.org>
+>Date:   Tue Sep 13 14:29:25 2016 -0700
+>
+>    x86: Move thread_info into task_struct
+>
+>
+>:)
 
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index d6b784a5520d..9a72612b25ee 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -32,16 +32,17 @@
- #include <linux/ptrace.h>
- #include <linux/notifier.h>
- #include <linux/kprobes.h>
- #include <linux/kdebug.h>
- #include <linux/prctl.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
- #include <linux/ftrace.h>
-+#include <linux/syscalls.h>
- 
- #include <asm/pgtable.h>
- #include <asm/processor.h>
- #include <asm/fpu/internal.h>
- #include <asm/mmu_context.h>
- #include <asm/prctl.h>
- #include <asm/desc.h>
- #include <asm/proto.h>
-@@ -616,17 +617,17 @@ long do_arch_prctl(struct task_struct *task, int code, unsigned long addr)
- 	default:
- 		ret = -EINVAL;
- 		break;
- 	}
- 
- 	return ret;
- }
- 
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
- {
- 	return do_arch_prctl(current, code, addr);
- }
- 
- unsigned long KSTK_ESP(struct task_struct *task)
- {
- 	return task_pt_regs(task)->sp;
- }
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index 10d907098c26..2041acd77e73 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -2,16 +2,17 @@
-  * Copyright (C) 2003 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  * Copyright 2003 PathScale, Inc.
-  *
-  * Licensed under the GPL
-  */
- 
- #include <linux/sched.h>
- #include <linux/sched/mm.h>
-+#include <linux/syscalls.h>
- #include <linux/uaccess.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
- 
- long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- {
- 	unsigned long *ptr = addr, tmp;
- 	long ret;
-@@ -68,17 +69,17 @@ long arch_prctl(struct task_struct *task, int code, unsigned long __user *addr)
- 	case ARCH_GET_GS:
- 		ret = put_user(tmp, addr);
- 		break;
- 	}
- 
- 	return ret;
- }
- 
--long sys_arch_prctl(int code, unsigned long addr)
-+SYSCALL_DEFINE2(arch_prctl, int, code, unsigned long, addr)
- {
- 	return arch_prctl(current, code, (unsigned long __user *) addr);
- }
- 
- void arch_switch_to(struct task_struct *to)
- {
- 	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
- 		return;
+My apologies, -ESTALEBRAINCACHE...
 -- 
-2.11.0
-
+Sent from my Android device with K-9 Mail. Please excuse my brevity.
 
