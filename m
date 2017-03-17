@@ -1,52 +1,63 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1cow5c-0005zD-LP
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Mar 2017 17:55:00 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1cow5b-0007IZ-Oy
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Mar 2017 17:55:00 +0000
+References: <0fbc8e03-783e-eed6-8e2e-100f8da6d36e@kot-begemot.co.uk>
+	<CAFLxGvx0zpqgbp49DxQ_V8bxLGRKw6ziYstqK7hzcqUUvXuajQ@mail.gmail.com>
+	<92e57cd0-8ef6-445d-ec61-a79a6f7a6da8@kot-begemot.co.uk>
+	<9f1f1741-76ac-bff7-276b-76167c2bca51@nod.at>
+	<5b5d5162-13b0-be10-ab12-7e5b32e7f032@kot-begemot.co.uk>
 From: Richard Weinberger <richard@nod.at>
-Subject: Re: WARNING: CPU: 0 PID: 1 at mm/mmap.c:1110 vma_merge+0x9a/0x2c8
-References: <b579ab24-7032-9322-fc8d-671c25d802d6@nod.at>
- <20170317183635.GC28995@redhat.com>
-Message-ID: <0f49aa0a-0249-8be2-6010-dc816afb40d0@nod.at>
-Date: Fri, 17 Mar 2017 23:51:43 +0100
+Message-ID: <a7678c4b-d0fe-1ce5-ad70-f08fc20a0298@nod.at>
+Date: Fri, 17 Mar 2017 18:54:53 +0100
 MIME-Version: 1.0
-In-Reply-To: <20170317183635.GC28995@redhat.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <5b5d5162-13b0-be10-ab12-7e5b32e7f032@kot-begemot.co.uk>
+Subject: Re: [uml-devel] UML regression with latest RC 4.11-rc2
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrea Arcangeli <aarcange@redhat.com>
-Cc: adityam@microsoft.com, Rik van Riel <riel@redhat.com>, hughd@google.com, mgorman@techsingularity.net, janvorli@microsoft.com, akpm@linux-foundation.org, Linus Torvalds <torvalds@linux-foundation.org>, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-[re-sending with mailinglists]
+Anton,
 
-Andrea,
-
-Am 17.03.2017 um 19:36 schrieb Andrea Arcangeli:
-> I think the problem is in setup_arg_pages that is making an assumption
-> non true in UML (and only UML) case, i.e. that there are no vmas below
-> bprm->vma by the time mprotect_fixup is executed. That is not the case
-> for UML as you likely installed vmas below bprm->vma before calling
-> mprotect_fixup in setup_arg_pages. The fix should be just to change
-> setup_arg_pages to find the correct "prev" vma, then this code will
-> pick "area" as prev->vm_next which is bprm->vma as expected:
+Am 17.03.2017 um 18:44 schrieb Anton Ivanov:
+>> But you have to enable VM debugging to see it.
 > 
-> 	if (prev)
-> 		next = prev->vm_next;
-> 	else
-> 		next = mm->mmap;
-> 	area = next;
+> I have most debugging enabled to make sure I do not introduce any
+> re-entrancy in the IRQ handlers and/or have any allocations of the wrong
+> type where they do not belong.
 > 
-> *prev == NULL tells vma_merge that the only vma that there is is
-> mm->mmap so it uses that as "area" but for you mm->mmap is prev or
-> prev->prev or something like that, not the "area". To make it find the
-> right area you need to pass the right *prev to mprotect_fixup if there
-> are real "prev" vmas not just bprm->vma instantiated.
+> We should probably submit a short patch #ifdef to turn this WARN() off
+> for UML
 
-I think you are right, thanks for the great explanation!
-
-UML installs this vma very early and as of now I'm not sure why we can't
-install it a bit later just like we do for the vDSO.
-So far it did not explode. :)
-This solution would be better than finding a pre-existing vma before
-calling mprotect_fixup().
+Not before we understand the root cause. :)
 
 Thanks,
 //richard
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
