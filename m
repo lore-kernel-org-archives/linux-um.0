@@ -1,25 +1,32 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1covBJ-0003aI-Dm
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1con9e-00062M-T4
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2017 16:56:49 +0000
-Received: from mail-ot0-f170.google.com ([74.125.82.170])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1covBH-0007zN-Is
+	Fri, 17 Mar 2017 08:22:34 +0000
+Received: from ivanoab5.miniserver.com ([78.31.111.25]
+	helo=www.kot-begemot.co.uk)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1con9d-0007Mz-Sg
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2017 16:56:49 +0000
-Received: by mail-ot0-f170.google.com with SMTP id i1so97977248ota.3
-	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Fri, 17 Mar 2017 09:56:47 -0700 (PDT)
+	Fri, 17 Mar 2017 08:22:34 +0000
+Received: from tun5.smaug.kot-begemot.co.uk ([192.168.18.6]
+	helo=smaug.kot-begemot.co.uk) by www.kot-begemot.co.uk with esmtps
+	(TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.84_2)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1comfL-0007UN-Lh
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Mar 2017 07:51:15 +0000
+Received: from monstrousnightmare.kot-begemot.co.uk ([192.168.3.80])
+	by smaug.kot-begemot.co.uk with esmtp (Exim 4.84_2)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1comfL-0000Ae-Ei
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Fri, 17 Mar 2017 07:51:15 +0000
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <0fbc8e03-783e-eed6-8e2e-100f8da6d36e@kot-begemot.co.uk>
+Date: Fri, 17 Mar 2017 07:51:15 +0000
 MIME-Version: 1.0
-In-Reply-To: <0fbc8e03-783e-eed6-8e2e-100f8da6d36e@kot-begemot.co.uk>
-References: <0fbc8e03-783e-eed6-8e2e-100f8da6d36e@kot-begemot.co.uk>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Fri, 17 Mar 2017 17:56:41 +0100
-Message-ID: <CAFLxGvx0zpqgbp49DxQ_V8bxLGRKw6ziYstqK7hzcqUUvXuajQ@mail.gmail.com>
-Subject: Re: [uml-devel] UML regression with latest RC 4.11-rc2
+Subject: [uml-devel] UML regression with latest RC 4.11-rc2
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,23 +39,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Anton,
+Hi list, hi Richard
 
-On Fri, Mar 17, 2017 at 8:51 AM, Anton Ivanov
-<anton.ivanov@kot-begemot.co.uk> wrote:
-> Hi list, hi Richard
->
-> There is an extra check in mm/mmap.c which now throws a WARN on every
-> page in making UML unusable with the latest 4.11-rc2
+There is an extra check in mm/mmap.c which now throws a WARN on every 
+page in making UML unusable with the latest 4.11-rc2
 
-Which WARN? Can you find the offending commit?
+A.
 
--- 
-Thanks,
-//richard
 
 ------------------------------------------------------------------------------
 Check out the vibrant tech community on one of the world's most
