@@ -1,59 +1,44 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1con9e-00062M-T4
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2017 08:22:34 +0000
-Received: from ivanoab5.miniserver.com ([78.31.111.25]
-	helo=www.kot-begemot.co.uk)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1con9d-0007Mz-Sg
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2017 08:22:34 +0000
-Received: from tun5.smaug.kot-begemot.co.uk ([192.168.18.6]
-	helo=smaug.kot-begemot.co.uk) by www.kot-begemot.co.uk with esmtps
-	(TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.84_2)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1comfL-0007UN-Lh
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2017 07:51:15 +0000
-Received: from monstrousnightmare.kot-begemot.co.uk ([192.168.3.80])
-	by smaug.kot-begemot.co.uk with esmtp (Exim 4.84_2)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1comfL-0000Ae-Ei
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 17 Mar 2017 07:51:15 +0000
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <0fbc8e03-783e-eed6-8e2e-100f8da6d36e@kot-begemot.co.uk>
-Date: Fri, 17 Mar 2017 07:51:15 +0000
-MIME-Version: 1.0
-Subject: [uml-devel] UML regression with latest RC 4.11-rc2
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Kyle Huey <me@kylehuey.com>
+Subject: [PATCH v16 0/10] x86/arch_prctl Add ARCH_[GET|SET]_CPUID for controlling the CPUID instruction
+Date: Mon, 20 Mar 2017 01:16:18 -0700
+Message-Id: <20170320081628.18952-1-khuey@kylehuey.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, Andi Kleen <andi@firstfloor.org>, Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi list, hi Richard
+rr (http://rr-project.org/), a userspace record-and-replay reverse-
+execution debugger, would like to trap and emulate the CPUID instruction.
+This would allow us to a) mask away certain hardware features that rr does
+not support (e.g. RDRAND) and b) enable trace portability across machines
+by providing constant results.
 
-There is an extra check in mm/mmap.c which now throws a WARN on every 
-page in making UML unusable with the latest 4.11-rc2
+Newer Intel CPUs (Ivy Bridge and later) can fault when CPUID is executed at
+CPL > 0. Expose this capability to userspace as a new pair of arch_prctls,
+ARCH_GET_CPUID and ARCH_SET_CPUID.
 
-A.
+Since v15:
+All: Patch 1 is new, and patch 2 is what was previously patch 9. What were
+patches 1-8 are now 3-10, in the same order.
 
+Patch 1: (NEW) x86/msr: Rename MISC_FEATURE_ENABLES
+- While fixing the conflicts with the ring3 mwait feature, I noticed it
+  introduced MSR_MISC_FEATURE_ENABLES, not MSR_MISC_FEATURES_ENABLES.
+  This is corrected.
 
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Patch 2: x86/arch_prctl: Rename 'code' argument to 'option'
+- Previously patch 9/9, now moved to precede all other arch_prctl patches.
+- Fixed a stale file location comment in arch/um/include/shared/os.h.
+
+Patch 7: x86/cpufeature: Detect CPUID faulting support
+- Split cpuid faulting code into a separate init_cpuid_fault.
+- Gate calling both init_cpuid_fault and probe_xeon_phi_r3mwait on
+  a successful rdmsrl_safe(MSR_MISC_FEATURES_ENABLES).
+
+Patch 8: x86/arch_prctl: Add ARCH_[GET|SET]_CPUID
+- Fix the bug with ring 3 mwait interactions that tglx noted by
+  teaching probe_xeon_phi_r3mwait about the new MSR_MISC_FEATURES_ENABLES
+  shadow, making init_intel_misc_features responsible for all MSR writes.
+
 
