@@ -1,307 +1,101 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Kyle Huey <me@kylehuey.com>
-Subject: [PATCH v15 7/9] x86/arch_prctl: Selftest for ARCH_[GET|SET]_CPUID
-Date: Sat, 11 Mar 2017 11:47:00 -0800
-Message-Id: <20170311194702.28754-8-khuey@kylehuey.com>
-In-Reply-To: <20170311194702.28754-1-khuey@kylehuey.com>
-References: <20170311194702.28754-1-khuey@kylehuey.com>
+Subject: [PATCH v16 07/10] x86/cpufeature: Detect CPUID faulting support
+Date: Mon, 20 Mar 2017 01:16:25 -0700
+Message-Id: <20170320081628.18952-8-khuey@kylehuey.com>
+In-Reply-To: <20170320081628.18952-1-khuey@kylehuey.com>
+References: <20170320081628.18952-1-khuey@kylehuey.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, Andi Kleen <andi@firstfloor.org>
-Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
+To: Robert O'Callahan <robert@ocallahan.org>, Thomas Gleixner <tglx@linutronix.de>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Alexander Viro <viro@zeniv.linux.org.uk>, Shuah Khan <shuah@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@suse.de>, Peter Zijlstra <peterz@infradead.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Len Brown <len.brown@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Dmitry Safonov <dsafonov@virtuozzo.com>, David Matlack <dmatlack@google.com>, Nadav Amit <nadav.amit@gmail.com>, Andi Kleen <andi@firstfloor.org>, Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Test disabling and reenabling the cpuid instruction via the new arch_prctl
-ARCH_SET_CPUID, retrieving the current state via ARCH_GET_CPUID, and the
-expected behaviors across fork() and exec().
+Intel supports faulting on the CPUID instruction beginning with Ivy Bridge.
+When enabled, the processor will fault on attempts to execute the CPUID
+instruction with CPL>0. This will allow a ptracer to emulate the CPUID
+instruction.
+
+Bit 31 of MSR_PLATFORM_INFO advertises support for this feature. It is
+documented in detail in Section 2.3.2 of
+https://bugzilla.kernel.org/attachment.cgi?id=243991
+
+Detect support for this feature and expose it as X86_FEATURE_CPUID_FAULT.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
- tools/testing/selftests/x86/Makefile      |   4 +-
- tools/testing/selftests/x86/cpuid_fault.c | 251 ++++++++++++++++++++++++++++++
- 2 files changed, 253 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/x86/cpuid_fault.c
+ arch/x86/include/asm/cpufeatures.h |  1 +
+ arch/x86/include/asm/msr-index.h   |  2 ++
+ arch/x86/kernel/cpu/intel.c        | 24 +++++++++++++++++++++++-
+ 3 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 38e0a9ca5d71..642df3b40ef9 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -1,17 +1,17 @@
--all:
-+ll:
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index b04bb6dfed7f..0fe00446f9ca 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -187,6 +187,7 @@
+  * Reuse free bits when adding new feature flags!
+  */
+ #define X86_FEATURE_RING3MWAIT	( 7*32+ 0) /* Ring 3 MONITOR/MWAIT */
++#define X86_FEATURE_CPUID_FAULT ( 7*32+ 1) /* Intel CPUID faulting */
+ #define X86_FEATURE_CPB		( 7*32+ 2) /* AMD Core Performance Boost */
+ #define X86_FEATURE_EPB		( 7*32+ 3) /* IA32_ENERGY_PERF_BIAS support */
+ #define X86_FEATURE_CAT_L3	( 7*32+ 4) /* Cache Allocation Technology L3 */
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index f429b70ebaef..b1f75daca34b 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -45,6 +45,8 @@
+ #define MSR_IA32_PERFCTR1		0x000000c2
+ #define MSR_FSB_FREQ			0x000000cd
+ #define MSR_PLATFORM_INFO		0x000000ce
++#define MSR_PLATFORM_INFO_CPUID_FAULT_BIT	31
++#define MSR_PLATFORM_INFO_CPUID_FAULT		BIT_ULL(MSR_PLATFORM_INFO_CPUID_FAULT_BIT)
  
- include ../lib.mk
+ #define MSR_PKG_CST_CONFIG_CONTROL	0x000000e2
+ #define NHM_C3_AUTO_DEMOTE		(1UL << 25)
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index e229318d7230..a07f8295c9ed 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -488,6 +488,28 @@ static void intel_bsp_resume(struct cpuinfo_x86 *c)
+ 	init_intel_energy_perf(c);
+ }
  
- .PHONY: all all_32 all_64 warn_32bit_failure clean
- 
- TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt ptrace_syscall test_mremap_vdso \
- 			check_initial_reg_state sigreturn ldt_gdt iopl mpx-mini-test ioperm \
--			protection_keys test_vdso
-+			protection_keys test_vdso cpuid_fault
- TARGETS_C_32BIT_ONLY := entry_from_vm86 syscall_arg_fault test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
- 			vdso_restorer
- TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip
- 
- TARGETS_C_32BIT_ALL := $(TARGETS_C_BOTHBITS) $(TARGETS_C_32BIT_ONLY)
- TARGETS_C_64BIT_ALL := $(TARGETS_C_BOTHBITS) $(TARGETS_C_64BIT_ONLY)
- BINARIES_32 := $(TARGETS_C_32BIT_ALL:%=%_32)
-diff --git a/tools/testing/selftests/x86/cpuid_fault.c b/tools/testing/selftests/x86/cpuid_fault.c
-new file mode 100644
-index 000000000000..36963e170fed
---- /dev/null
-+++ b/tools/testing/selftests/x86/cpuid_fault.c
-@@ -0,0 +1,251 @@
-+
-+/*
-+ * Tests for arch_prctl(ARCH_GET_CPUID, ...) / arch_prctl(ARCH_SET_CPUID, ...)
-+ *
-+ * Basic test to test behaviour of ARCH_GET_CPUID and ARCH_SET_CPUID
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <inttypes.h>
-+#include <cpuid.h>
-+#include <err.h>
-+#include <errno.h>
-+#include <sys/wait.h>
-+
-+#include <sys/prctl.h>
-+#include <linux/prctl.h>
-+
-+/*
-+#define ARCH_GET_CPUID 0x1005
-+#define ARCH_SET_CPUID 0x1006
-+#ifdef __x86_64__
-+#define SYS_arch_prctl 158
-+#else
-+#define SYS_arch_prctl 384
-+#endif
-+*/
-+
-+const char *cpuid_names[] = {
-+	[0] = "[cpuid disabled]",
-+	[1] = "[cpuid enabled]",
-+};
-+
-+int arch_prctl(int code, unsigned long arg2)
++static void init_cpuid_fault(struct cpuinfo_x86 *c)
 +{
-+	return syscall(SYS_arch_prctl, code, arg2);
-+}
++	u64 msr;
 +
-+int cpuid(unsigned int *eax, unsigned int *ebx, unsigned int *ecx,
-+	  unsigned int *edx)
-+{
-+	return __get_cpuid(0, eax, ebx, ecx, edx);
-+}
-+
-+int do_child_exec_test(int eax, int ebx, int ecx, int edx)
-+{
-+	int cpuid_val = 0, child = 0, status = 0;
-+
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
-+
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0)
-+		errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	if (cpuid_val != 0)
-+		errx(1, "How did cpuid get re-enabled on fork?");
-+
-+	child = fork();
-+	if (child == 0) {
-+		cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+		if (cpuid_val < 0)
-+			errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+		printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+		if (cpuid_val != 0)
-+			errx(1, "How did cpuid get re-enabled on fork?");
-+
-+		printf("exec\n");
-+		execl("/proc/self/exe", "cpuid-fault", "-early-return", NULL);
++	if (!rdmsrl_safe(MSR_PLATFORM_INFO, &msr)) {
++		if (msr & MSR_PLATFORM_INFO_CPUID_FAULT)
++			set_cpu_cap(c, X86_FEATURE_CPUID_FAULT);
 +	}
-+
-+	if (child != waitpid(child, &status, 0))
-+		errx(1, "waitpid failed!?");
-+
-+	if (WEXITSTATUS(status) != 0)
-+		errx(1, "Execed child exited abnormally");
-+
-+	return 0;
 +}
 +
-+int child_received_signal;
-+
-+void child_sigsegv_cb(int sig)
++static void init_intel_misc_features(struct cpuinfo_x86 *c)
 +{
-+	int cpuid_val = 0;
++	u64 msr;
 +
-+	child_received_signal = 1;
-+	printf("[ SIG_SEGV ]\n");
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
++	if (rdmsrl_safe(MSR_MISC_FEATURES_ENABLES, &msr))
++		return;
 +
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0)
-+		errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	printf("arch_prctl(ARCH_SET_CPUID, 1)\n");
-+	if (arch_prctl(ARCH_SET_CPUID, 1) != 0)
-+		exit(errno);
-+
-+	printf("cpuid() == ");
++	/* Check features and update capabilities */
++	init_cpuid_fault(c);
++	probe_xeon_phi_r3mwait(c);
 +}
 +
-+int do_child_test(void)
-+{
-+	unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
-+
-+	signal(SIGSEGV, child_sigsegv_cb);
-+
-+	/* the child starts out with cpuid disabled, the signal handler
-+	 * attempts to enable and retry
-+	 */
-+	printf("cpuid() == ");
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	return child_received_signal ? 0 : 42;
-+}
-+
-+int signal_count;
-+
-+void sigsegv_cb(int sig)
-+{
-+	int cpuid_val = 0;
-+
-+	signal_count++;
-+	printf("[ SIG_SEGV ]\n");
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
-+
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0)
-+		errx(1, "ARCH_GET_CPUID fails now, but not before?");
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	printf("arch_prctl(ARC_SET_CPUID, 1)\n");
-+	if (arch_prctl(ARCH_SET_CPUID, 1) != 0)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	printf("cpuid() == ");
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int cpuid_val = 0, child = 0, status = 0;
-+	unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
-+
-+	signal(SIGSEGV, sigsegv_cb);
-+	setvbuf(stdout, NULL, _IONBF, 0);
-+
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_GET_CPUID); ");
-+
-+	cpuid_val = arch_prctl(ARCH_GET_CPUID, 0);
-+	if (cpuid_val < 0) {
-+		if (errno == EINVAL) {
-+			printf("ARCH_GET_CPUID is unsupported on this kernel.\n");
-+			fflush(stdout);
-+			exit(0); /* no ARCH_GET_CPUID on this system */
-+		} else if (errno == ENODEV) {
-+			printf("ARCH_GET_CPUID is unsupported on this hardware.\n");
-+			fflush(stdout);
-+			exit(0); /* no ARCH_GET_CPUID on this system */
-+		} else {
-+			errx(errno, "ARCH_GET_CPUID failed unexpectedly!");
-+		}
-+	}
-+
-+	printf("cpuid_val == %s\n", cpuid_names[cpuid_val]);
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, 1)\n");
-+
-+	if (arch_prctl(ARCH_SET_CPUID, 1) != 0) {
-+		if (errno == EINVAL) {
-+			printf("ARCH_SET_CPUID is unsupported on this kernel.");
-+			exit(0); /* no ARCH_SET_CPUID on this system */
-+		} else if (errno == ENODEV) {
-+			printf("ARCH_SET_CPUID is unsupported on this hardware.");
-+			exit(0); /* no ARCH_SET_CPUID on this system */
-+		} else {
-+			errx(errno, "ARCH_SET_CPUID failed unexpectedly!");
-+		}
-+	}
-+
-+
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("cpuid() == {%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, 0)\n");
-+	fflush(stdout);
-+
-+	if (arch_prctl(ARCH_SET_CPUID, 0) == -1)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	printf("cpuid() == ");
-+	eax = ebx = ecx = edx = 0;
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, 0)\n");
-+
-+	if (signal_count != 1)
-+		errx(1, "cpuid didn't fault!");
-+
-+	if (arch_prctl(ARCH_SET_CPUID, 0) == -1)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	if (argc > 1)
-+		exit(0); /* Don't run the whole test again if we were execed */
-+
-+	printf("do_child_test\n");
-+	child = fork();
-+	if (child == 0)
-+		return do_child_test();
-+
-+	if (child != waitpid(child, &status, 0))
-+		errx(1, "waitpid failed!?");
-+
-+	if (WEXITSTATUS(status) != 0)
-+		errx(1, "Child exited abnormally!");
-+
-+	/* The child enabling cpuid should not have affected us */
-+	printf("cpuid() == ");
-+	eax = ebx = ecx = edx = 0;
-+	cpuid(&eax, &ebx, &ecx, &edx);
-+	printf("{%x, %x, %x, %x}\n", eax, ebx, ecx, edx);
-+	printf("arch_prctl(ARCH_SET_CPUID, 0)\n");
-+
-+	if (signal_count != 2)
-+		errx(1, "cpuid didn't fault!");
-+
-+	if (arch_prctl(ARCH_SET_CPUID, 0) == -1)
-+		errx(1, "ARCH_SET_CPUID failed!");
-+
-+	/* Our ARCH_CPUID_SIGSEGV should not propagate through exec */
-+	printf("do_child_exec_test\n");
-+	fflush(stdout);
-+
-+	child = fork();
-+	if (child == 0)
-+		return do_child_exec_test(eax, ebx, ecx, edx);
-+
-+	if (child != waitpid(child, &status, 0))
-+		errx(1, "waitpid failed!?");
-+
-+	if (WEXITSTATUS(status) != 0)
-+		errx(1, "Child exited abnormally!");
-+
-+	printf("All tests passed!\n");
-+	exit(EXIT_SUCCESS);
-+}
+ static void init_intel(struct cpuinfo_x86 *c)
+ {
+ 	unsigned int l2 = 0;
+@@ -602,7 +624,7 @@ static void init_intel(struct cpuinfo_x86 *c)
+ 
+ 	init_intel_energy_perf(c);
+ 
+-	probe_xeon_phi_r3mwait(c);
++	init_intel_misc_features(c);
+ }
+ 
+ #ifdef CONFIG_X86_32
 -- 
 2.11.0
 
