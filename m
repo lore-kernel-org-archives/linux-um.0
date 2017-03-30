@@ -1,79 +1,71 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1cn0Vg-0001nx-Ck
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Mar 2017 10:13:56 +0000
-Received: from mail.sigma-star.at ([95.130.255.111])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1cn0Vf-0000jJ-5B for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 12 Mar 2017 10:13:56 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Sun, 12 Mar 2017 11:13:40 +0100
-Message-Id: <20170312101340.21681-1-richard@nod.at>
-Subject: [uml-devel] [PATCH] um: Fix _print_addr()
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Vegard Nossum <vegard.nossum@oracle.com>, stable@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Nicolai Stange <nicstange@gmail.com>
+Subject: [PATCH] um/time: set ->min_delta_ticks and ->max_delta_ticks
+Date: Thu, 30 Mar 2017 21:59:42 +0200
+Message-Id: <20170330195942.7946-1-nicstange@gmail.com>
+In-Reply-To: <20170326134403.16226-1-nicstange@gmail.com>
+References: <20170326134403.16226-1-nicstange@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>
+Cc: John Stultz <john.stultz@linaro.org>, linux-kernel@vger.kernel.org, Nicolai Stange <nicstange@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Recent changes to printk() broke UML's stack trace
-output. Kill the root of the problem by using a single
-printk() statement.
+In preparation for making the clockevents core NTP correction aware,
+all clockevent device drivers must set ->min_delta_ticks and
+->max_delta_ticks rather than ->min_delta_ns and ->max_delta_ns: a
+clockevent device's rate is going to change dynamically and thus, the
+ratio of ns to ticks ceases to stay invariant.
 
-Fixes: 4bcc595ccd80decb ("printk: reinstate KERN_CONT for printing
-continuation lines")
-Cc: stable@vger.kernel.org
-Cc: Vegard Nossum <vegard.nossum@oracle.com>
-Tested-by: Vegard Nossum <vegard.nossum@oracle.com>
-Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Make the uml arch's clockevent driver initialize these fields properly.
 
+This patch alone doesn't introduce any change in functionality as the
+clockevents core still looks exclusively at the (untouched) ->min_delta_ns
+and ->max_delta_ns. As soon as this has changed, a followup patch will
+purge the initialization of ->min_delta_ns and ->max_delta_ns from this
+driver.
+
+Signed-off-by: Nicolai Stange <nicstange@gmail.com>
 ---
- arch/um/kernel/sysrq.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
-index a76295f7ede9..961be4a51511 100644
---- a/arch/um/kernel/sysrq.c
-+++ b/arch/um/kernel/sysrq.c
-@@ -20,10 +20,8 @@
- 
- static void _print_addr(void *data, unsigned long address, int reliable)
- {
--	pr_info(" [<%08lx>]", address);
--	pr_cont(" %s", reliable ? "" : "? ");
--	print_symbol("%s", address);
--	pr_cont("\n");
-+	pr_info(" [<%08lx>] %s%pB\n", address, reliable ? "" : "? ",
-+		(void *)address);
- }
- 
- static const struct stacktrace_ops stackops = {
+Notes:
+    This prerequisite patch is part of a larger effort to feed NTP
+    corrections into the clockevent devices' frequencies and thus
+    avoiding their notion of time to diverge from the system's
+    one. If you're interested, the current state of the whole series
+    can be found at [1].
+    
+    If you haven't got any objections and these prerequisites get
+    merged by 4.12 everywhere, I'll proceed with the remainder of
+    this series in 4.13.
+    
+    Applicable to next-20170324 as well as to John' Stultz tree [2].
+    
+    [1]
+      git://nicst.de/linux.git cev-freq-adj.v10.fortglx-4.12-time
+      https://nicst.de/git/?p=linux.git;a=shortlog;h=refs/heads/cev-freq-adj.v10.fortglx-4.12-time
+    
+    [2]
+      https://git.linaro.org/people/john.stultz/linux.git fortglx/4.12/time
+
+ arch/um/kernel/time.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index ba87a27d6715..0b034ebbda2a 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -65,7 +65,9 @@ static struct clock_event_device timer_clockevent = {
+ 	.set_next_event		= itimer_next_event,
+ 	.shift			= 0,
+ 	.max_delta_ns		= 0xffffffff,
+-	.min_delta_ns		= TIMER_MIN_DELTA, //microsecond resolution should be enough for anyone, same as 640K RAM
++	.max_delta_ticks	= 0xffffffff,
++	.min_delta_ns		= TIMER_MIN_DELTA,
++	.min_delta_ticks	= TIMER_MIN_DELTA, // microsecond resolution should be enough for anyone, same as 640K RAM
+ 	.irq			= 0,
+ 	.mult			= 1,
+ };
 -- 
-2.10.2
+2.12.0
 
-
-------------------------------------------------------------------------------
-Announcing the Oxford Dictionaries API! The API offers world-renowned
-dictionary content that is easy and intuitive to access. Sign up for an
-account today to start using our lexical data to power your apps and
-projects. Get started today and enter our developer competition.
-http://sdm.link/oxford
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
