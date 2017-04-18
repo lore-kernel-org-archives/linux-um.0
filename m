@@ -1,47 +1,70 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [RFC PATCH 1/7] um: Use printk instead of printf in make_uml_dir
-Date: Fri, 28 Apr 2017 19:21:01 +0900
-Message-Id: <149337485165.14717.463075225620641986.stgit@devbox>
-In-Reply-To: <149337478135.14717.16640886389891283.stgit@devbox>
-References: <149337478135.14717.16640886389891283.stgit@devbox>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <f0499858-1c3c-5a51-27c6-d3f5e82d1173@nod.at>
+References: <20170403195458.112185-1-mka@chromium.org> <20170417203738.GQ28657@google.com>
+ <f0499858-1c3c-5a51-27c6-d3f5e82d1173@nod.at>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 18 Apr 2017 17:17:16 +0900
+Message-ID: <CAK7LNAR_i3UW2TH1QB7Wq62cp+O7WRSgUk3Syc7M8oG6J++HzA@mail.gmail.com>
+Subject: Re: [PATCH] um: Include kbuild.h instead of duplicating its macros
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>
+Cc: Matthias Kaehlcke <mka@chromium.org>, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Since this function will be called after printk buffer
-initialized, use printk as other functions do.
+2017-04-18 16:44 GMT+09:00 Richard Weinberger <richard@nod.at>:
+> Matthias,
+>
+> Am 17.04.2017 um 22:37 schrieb Matthias Kaehlcke:
+>> El Mon, Apr 03, 2017 at 12:54:58PM -0700 Matthias Kaehlcke ha dit:
+>>
+>>> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+>>> ---
+>>>  arch/x86/um/shared/sysdep/kernel-offsets.h | 9 +--------
+>>>  1 file changed, 1 insertion(+), 8 deletions(-)
+>>>
+>>> diff --git a/arch/x86/um/shared/sysdep/kernel-offsets.h b/arch/x86/um/shared/sysdep/kernel-offsets.h
+>>> index 46a9df99f3c5..7e1d35b6ad5c 100644
+>>> --- a/arch/x86/um/shared/sysdep/kernel-offsets.h
+>>> +++ b/arch/x86/um/shared/sysdep/kernel-offsets.h
+>>> @@ -2,16 +2,9 @@
+>>>  #include <linux/sched.h>
+>>>  #include <linux/elf.h>
+>>>  #include <linux/crypto.h>
+>>> +#include <linux/kbuild.h>
+>>>  #include <asm/mman.h>
+>>>
+>>> -#define DEFINE(sym, val) \
+>>> -    asm volatile("\n->" #sym " %0 " #val : : "i" (val))
+>>> -
+>>> -#define BLANK() asm volatile("\n->" : : )
+>>> -
+>>> -#define OFFSET(sym, str, mem) \
+>>> -    DEFINE(sym, offsetof(struct str, mem));
+>>> -
+>>>  void foo(void)
+>>>  {
+>>>  #include <common-offsets.h>
+>>> --
+>>
+>> Ping, any comment on this patch?
+>
+> Looks good, nothing exploded while a quick test.
+> I'll queue it for the next merge window. :-)
+>
+> Thanks,
+> //richard
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/um/os-Linux/umid.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
-index c1dc892..b94a416 100644
---- a/arch/um/os-Linux/umid.c
-+++ b/arch/um/os-Linux/umid.c
-@@ -50,13 +50,15 @@ static int __init make_uml_dir(void)
- 	err = -ENOMEM;
- 	uml_dir = malloc(strlen(dir) + 1);
- 	if (uml_dir == NULL) {
--		printf("make_uml_dir : malloc failed, errno = %d\n", errno);
-+		printk(UM_KERN_ERR "make_uml_dir : malloc failed, "
-+			"errno = %d\n", errno);
- 		goto err;
- 	}
- 	strcpy(uml_dir, dir);
- 
- 	if ((mkdir(uml_dir, 0777) < 0) && (errno != EEXIST)) {
--	        printf("Failed to mkdir '%s': %s\n", uml_dir, strerror(errno));
-+		printk(UM_KERN_ERR "Failed to mkdir '%s': %s\n",
-+			uml_dir, strerror(errno));
- 		err = -errno;
- 		goto err_free;
- 	}
+If not too late, please feel free to add my
 
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
 
