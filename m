@@ -1,80 +1,64 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [RFC PATCH 5/7] um: Print out fatal error in stderr
-Date: Fri, 28 Apr 2017 19:25:39 +0900
-Message-Id: <149337512938.14717.12152115985265749215.stgit@devbox>
-In-Reply-To: <149337478135.14717.16640886389891283.stgit@devbox>
-References: <149337478135.14717.16640886389891283.stgit@devbox>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1d3s8P-0005pe-37
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 Apr 2017 22:43:37 +0000
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1d3s8M-0000m0-JP
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Thu, 27 Apr 2017 22:43:37 +0000
+References: <149326283034.18877.3371130154502733533.stgit@devbox>
+	<149326290055.18877.8217119813162466170.stgit@devbox>
+	<5ca2f3ce-eba3-d306-b52f-061361c59bb1@nod.at>
+	<20170428070414.50ace979df068df258ba92ce@kernel.org>
+	<20170428074039.7b95c958b7e156594db1f096@kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <45e67cbb-077e-ffdd-a363-511e71f6ad1a@nod.at>
+Date: Fri, 28 Apr 2017 00:43:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20170428074039.7b95c958b7e156594db1f096@kernel.org>
+Subject: Re: [uml-devel] [PATCH] um: Fix to call read_initrd after
+	init_bootmem
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jeff Dike <jdike@addtoit.com>, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Print out fatal error in stderr as same as fatal() does.
+Masami,
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/um/kernel/physmem.c |    8 ++++----
- arch/um/kernel/um_arch.c |    2 +-
- arch/um/os-Linux/main.c  |    4 ++--
- 3 files changed, 7 insertions(+), 7 deletions(-)
+Am 28.04.2017 um 00:40 schrieb Masami Hiramatsu:
+> Finally, git bisect shows that below commit caused this issue.
+> 
+> b63236972e1344b247750451e2be0a06cd125f21 is the first bad commit
+> commit b63236972e1344b247750451e2be0a06cd125f21
+> Author: Richard Weinberger <richard@nod.at>
 
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index 4c9861b..7f95329 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -89,8 +89,8 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 	offset = uml_reserved - uml_physmem;
- 	map_size = len - offset;
- 	if(map_size <= 0) {
--		printf("Too few physical memory! Needed=%d, given=%d\n",
--		       offset, len);
-+		fprintf(stderr, "Too few physical memory! Needed=%d, "
-+			"given=%d\n", offset, len);
- 		exit(1);
- 	}
- 
-@@ -99,8 +99,8 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 	err = os_map_memory((void *) uml_reserved, physmem_fd, offset,
- 			    map_size, 1, 1, 1);
- 	if (err < 0) {
--		printf("setup_physmem - mapping %ld bytes of memory at 0x%p "
--		       "failed - errno = %d\n", map_size,
-+		fprintf(stderr, "setup_physmem - mapping %ld bytes of memory "
-+			"at 0x%p failed - errno = %d\n", map_size,
- 		       (void *) uml_reserved, err);
- 		exit(1);
- 	}
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index b3b28db..01817d6 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -34,7 +34,7 @@ static char __initdata command_line[COMMAND_LINE_SIZE] = { 0 };
- static void __init add_arg(char *arg)
- {
- 	if (strlen(command_line) + strlen(arg) + 1 > COMMAND_LINE_SIZE) {
--		printf("add_arg: Too many command line arguments!\n");
-+		fprintf(stderr, "add_arg: Too many command line arguments!\n");
- 		exit(1);
- 	}
- 	if (strlen(command_line) > 0)
-diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
-index 659fee3..09b44f1 100644
---- a/arch/um/os-Linux/main.c
-+++ b/arch/um/os-Linux/main.c
-@@ -74,8 +74,8 @@ static void install_fatal_handler(int sig)
- 	action.sa_restorer = NULL;
- 	action.sa_handler = last_ditch_exit;
- 	if (sigaction(sig, &action, NULL) < 0) {
--		printf("failed to install handler for signal %d - errno = %d\n",
--		       sig, errno);
-+		fprintf(stderr, "failed to install handler for signal %d "
-+			"- errno = %d\n", sig, errno);
- 		exit(1);
- 	}
- }
+Meh, it's always me. ;-)
 
+> 
+> For the stable, any kernel later than v4.8 has this issue.
+
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
