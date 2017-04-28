@@ -1,8 +1,10 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [RFC PATCH 0/7] um: Fix printf usage and support quiet option
-Date: Fri, 28 Apr 2017 19:19:51 +0900
-Message-Id: <149337478135.14717.16640886389891283.stgit@devbox>
+Subject: [RFC PATCH 6/7] um: Suppress non-fatal messages when quiet
+Date: Fri, 28 Apr 2017 19:26:48 +0900
+Message-Id: <149337519863.14717.14783366681891976827.stgit@devbox>
+In-Reply-To: <149337478135.14717.16640886389891283.stgit@devbox>
+References: <149337478135.14717.16640886389891283.stgit@devbox>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -11,42 +13,51 @@ To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hello,
+Suppress non-fatal boot messages when "quiet" kernel
+parameter is given.
 
-This series fixes some boot time printf output to stderr
-by default, and support "quiet" option to suppress non-
-fatal error (or warning) messages in user-mode-linux.
-Also the last one allows user to pass "console=" option
-to kernel.
-
-
-
-Thank you,
-
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+ arch/um/os-Linux/util.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-Masami Hiramatsu (7):
-      um: Use printk instead of printf in make_uml_dir
-      um: Use non_fatal() in check_coredump_limit
-      um: Make non_fatal non-static for other files
-      um: Use non_fatal() for non-fatal information/warning messages
-      um: Print out fatal error in stderr
-      um: Suppress non-fatal messages when quiet
-      um: console: Ignore console= option
+diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
+index 8745f23..7afcb41 100644
+--- a/arch/um/os-Linux/util.c
++++ b/arch/um/os-Linux/util.c
+@@ -13,6 +13,7 @@
+ #include <wait.h>
+ #include <sys/mman.h>
+ #include <sys/utsname.h>
++#include <init.h>
+ #include <os.h>
+ 
+ void stack_protections(unsigned long address)
+@@ -153,10 +154,25 @@ void um_early_printk(const char *s, unsigned int n)
+ 	printf("%.*s", n, s);
+ }
+ 
++static int quiet_non_fatal;
++
++static int __init quiet_cmd_param(char *str, int *add)
++{
++	quiet_non_fatal = 1;
++	return 0;
++}
++
++__uml_setup("quiet", quiet_cmd_param,
++"quiet\n"
++"    Turns off non-fatal message during boot.\n\n");
++
+ void non_fatal(const char *fmt, ...)
+ {
+ 	va_list list;
+ 
++	if (quiet_non_fatal)
++		return;
++
+ 	va_start(list, fmt);
+ 	vfprintf(stderr, fmt, list);
+ 	va_end(list);
 
-
- arch/um/drivers/stdio_console.c |    3 +++
- arch/um/include/shared/os.h     |    1 +
- arch/um/kernel/physmem.c        |    8 ++++----
- arch/um/kernel/um_arch.c        |   16 +++++++++-------
- arch/um/kernel/umid.c           |    4 ++--
- arch/um/os-Linux/main.c         |   10 +++++-----
- arch/um/os-Linux/mem.c          |   24 ++++++++++++------------
- arch/um/os-Linux/start_up.c     |   23 ++++++++---------------
- arch/um/os-Linux/umid.c         |   14 ++++++++------
- arch/um/os-Linux/util.c         |   25 +++++++++++++++++++++++++
- 10 files changed, 77 insertions(+), 51 deletions(-)
-
---
-Masami Hiramatsu <mhiramat@kernel.org>
 
