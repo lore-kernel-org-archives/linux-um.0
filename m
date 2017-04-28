@@ -1,40 +1,52 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [RFC PATCH 0/7] um: Fix printf usage and support quiet option
+Date: Fri, 28 Apr 2017 19:19:51 +0900
+Message-Id: <149337478135.14717.16640886389891283.stgit@devbox>
 MIME-Version: 1.0
-In-Reply-To: <005a0edf-6d5e-e9c0-6f93-3d08a41cb24a@oracle.com>
-References: <20170312093820.12044-1-vegard.nossum@oracle.com>
- <bc946709-df33-5c5b-5af6-d889f25087ce@nod.at> <005a0edf-6d5e-e9c0-6f93-3d08a41cb24a@oracle.com>
-From: Vegard Nossum <vegard.nossum@gmail.com>
-Date: Tue, 11 Apr 2017 11:36:16 +0200
-Message-ID: <CAOMGZ=Fwjcfm=ceD7K2CFZu68U9TUGSii5mrJcX9bjrZgMyJjw@mail.gmail.com>
-Subject: Re: [PATCH] um: use KERN_CONT in stack dump
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vegard Nossum <vegard.nossum@oracle.com>
-Cc: Richard Weinberger <richard@nod.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 12 March 2017 at 10:47, Vegard Nossum <vegard.nossum@oracle.com> wrote:
-> On 12/03/2017 10:45, Richard Weinberger wrote:
->> diff --git a/arch/um/kernel/sysrq.c b/arch/um/kernel/sysrq.c
->> index aa1b56f5ac68..18eddf677ec6 100644
->> --- a/arch/um/kernel/sysrq.c
->> +++ b/arch/um/kernel/sysrq.c
->> @@ -17,10 +17,8 @@
->>
->>  static void _print_addr(void *data, unsigned long address, int reliable)
->>  {
->> -       pr_info(" [<%08lx>]", address);
->> -       pr_cont(" %s", reliable ? "" : "? ");
->> -       print_symbol("%s", address);
->> -       pr_cont("\n");
->> +       pr_info(" [<%08lx>] %s%pB\n", address, reliable ? "" : "? ",
->> +               (void *)address);
->>  }
->
-> Tested-by: Vegard Nossum <vegard.nossum@oracle.com>
+Hello,
 
-Just a heads up, this still appears unfixed in Linus's repo.
+This series fixes some boot time printf output to stderr
+by default, and support "quiet" option to suppress non-
+fatal error (or warning) messages in user-mode-linux.
+Also the last one allows user to pass "console=" option
+to kernel.
 
 
-Vegard
+
+Thank you,
+
+---
+
+Masami Hiramatsu (7):
+      um: Use printk instead of printf in make_uml_dir
+      um: Use non_fatal() in check_coredump_limit
+      um: Make non_fatal non-static for other files
+      um: Use non_fatal() for non-fatal information/warning messages
+      um: Print out fatal error in stderr
+      um: Suppress non-fatal messages when quiet
+      um: console: Ignore console= option
+
+
+ arch/um/drivers/stdio_console.c |    3 +++
+ arch/um/include/shared/os.h     |    1 +
+ arch/um/kernel/physmem.c        |    8 ++++----
+ arch/um/kernel/um_arch.c        |   16 +++++++++-------
+ arch/um/kernel/umid.c           |    4 ++--
+ arch/um/os-Linux/main.c         |   10 +++++-----
+ arch/um/os-Linux/mem.c          |   24 ++++++++++++------------
+ arch/um/os-Linux/start_up.c     |   23 ++++++++---------------
+ arch/um/os-Linux/umid.c         |   14 ++++++++------
+ arch/um/os-Linux/util.c         |   25 +++++++++++++++++++++++++
+ 10 files changed, 77 insertions(+), 51 deletions(-)
+
+--
+Masami Hiramatsu <mhiramat@kernel.org>
 
