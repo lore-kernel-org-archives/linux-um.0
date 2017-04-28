@@ -1,8 +1,8 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [RFC PATCH 3/7] um: Make non_fatal non-static for other files
-Date: Fri, 28 Apr 2017 19:23:20 +0900
-Message-Id: <149337499005.14717.4318763004043656817.stgit@devbox>
+Subject: [RFC PATCH 7/7] um: console: Ignore console= option
+Date: Fri, 28 Apr 2017 19:27:58 +0900
+Message-Id: <149337526798.14717.4167125770768748331.stgit@devbox>
 In-Reply-To: <149337478135.14717.16640886389891283.stgit@devbox>
 References: <149337478135.14717.16640886389891283.stgit@devbox>
 MIME-Version: 1.0
@@ -13,64 +13,30 @@ To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Move non_fatal() to util.c and make it global so that
-it can be used from other files.
+Ignore linux kernel's console= option at uml's console
+option handler. Since uml's con= option is only for
+setting up new console, and Linux kernel's console=
+option specify to which console kernel output its
+message, we can use both option for different purpose.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- arch/um/include/shared/os.h |    1 +
- arch/um/os-Linux/start_up.c |    9 ---------
- arch/um/os-Linux/util.c     |    9 +++++++++
- 3 files changed, 10 insertions(+), 9 deletions(-)
+ arch/um/drivers/stdio_console.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index de5d572..49185f4 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -242,6 +242,7 @@ extern void setup_hostinfo(char *buf, int len);
- extern void os_dump_core(void) __attribute__ ((noreturn));
- extern void um_early_printk(const char *s, unsigned int n);
- extern void os_fix_helper_signals(void);
-+extern void non_fatal(const char *fmt, ...);
+diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
+index 7b361f3..43b12a5 100644
+--- a/arch/um/drivers/stdio_console.c
++++ b/arch/um/drivers/stdio_console.c
+@@ -192,6 +192,9 @@ __uml_exitcall(console_exit);
  
- /* time.c */
- extern void os_idle_sleep(unsigned long long nsecs);
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 5052817..f97cd36 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -81,15 +81,6 @@ static void fatal(char *fmt, ...)
- 	exit(1);
- }
- 
--static void non_fatal(char *fmt, ...)
--{
--	va_list list;
--
--	va_start(list, fmt);
--	vfprintf(stderr, fmt, list);
--	va_end(list);
--}
--
- static int start_ptraced_child(void)
+ static int console_chan_setup(char *str)
  {
- 	int pid, n, status;
-diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
-index faee55e..8745f23 100644
---- a/arch/um/os-Linux/util.c
-+++ b/arch/um/os-Linux/util.c
-@@ -152,3 +152,12 @@ void um_early_printk(const char *s, unsigned int n)
- {
- 	printf("%.*s", n, s);
++	if (!strncmp(str, "sole=", 5))	/* This may passed to tty */
++		return 0;
++
+ 	line_setup(vt_conf, MAX_TTYS, &def_conf, str, "console");
+ 	return 1;
  }
-+
-+void non_fatal(const char *fmt, ...)
-+{
-+	va_list list;
-+
-+	va_start(list, fmt);
-+	vfprintf(stderr, fmt, list);
-+	va_end(list);
-+}
 
 
