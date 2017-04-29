@@ -1,57 +1,96 @@
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20170331224157.12922-1-richard@nod.at>
-References: <20170331224157.12922-1-richard@nod.at>
-Date: Sat, 1 Apr 2017 14:58:08 +0200
-Message-ID: <CAMuHMdWghRdE6JCQQLuLqO=cCa8igVdZ1FXHm3jUGVASQKoG7A@mail.gmail.com>
-Subject: Re: [PATCH] um: Fix PTRACE_POKEUSER on x86_64
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-To: Richard Weinberger <richard@nod.at>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, stable <stable@vger.kernel.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Sat, 29 Apr 2017 20:26:17 +0900
+From: Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [RFC PATCH 5/7] um: Print out fatal error in stderr
+Message-Id: <20170429202617.df4a855dff629441161c4871@kernel.org>
+In-Reply-To: <149337512938.14717.12152115985265749215.stgit@devbox>
+References: <149337478135.14717.16640886389891283.stgit@devbox>
+        <149337512938.14717.12152115985265749215.stgit@devbox>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Hi Richard,
+On Fri, 28 Apr 2017 19:25:39 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-On Sat, Apr 1, 2017 at 12:41 AM, Richard Weinberger <richard@nod.at> wrote:
-> This is broken since ever but sadly nobody noticed.
-> Recent versions of GDB set DR_CONTROL unconditionally and
-> UML dies due to a heap corruption. It turns out that
-> the PTRACE_POKEUSER was copy&pasted from i386 and assumes
-> that addresses are 4 bytes long.
->
-> Fix that by using 8 as address size in the calculation.
->
-> Cc: <stable@vger.kernel.org>
-> Reported-by: jie cao <cj3054@gmail.com>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Print out fatal error in stderr as same as fatal() does.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 > ---
->  arch/x86/um/ptrace_64.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/um/ptrace_64.c b/arch/x86/um/ptrace_64.c
-> index a5c9910d234f..09a085bde0d4 100644
-> --- a/arch/x86/um/ptrace_64.c
-> +++ b/arch/x86/um/ptrace_64.c
-> @@ -125,7 +125,7 @@ int poke_user(struct task_struct *child, long addr, long data)
->         else if ((addr >= offsetof(struct user, u_debugreg[0])) &&
->                 (addr <= offsetof(struct user, u_debugreg[7]))) {
->                 addr -= offsetof(struct user, u_debugreg[0]);
-> -               addr = addr >> 2;
-> +               addr = addr >> 3;
+>  arch/um/kernel/physmem.c |    8 ++++----
+>  arch/um/kernel/um_arch.c |    2 +-
+>  arch/um/os-Linux/main.c  |    4 ++--
+>  3 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+> index 4c9861b..7f95329 100644
+> --- a/arch/um/kernel/physmem.c
+> +++ b/arch/um/kernel/physmem.c
+> @@ -89,8 +89,8 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+>  	offset = uml_reserved - uml_physmem;
+>  	map_size = len - offset;
+>  	if(map_size <= 0) {
+> -		printf("Too few physical memory! Needed=%d, given=%d\n",
+> -		       offset, len);
+> +		fprintf(stderr, "Too few physical memory! Needed=%d, "
+> +			"given=%d\n", offset, len);
 
-While at it:
+Oops, I've missed to include something for using fprintf here.
+Anyway, I think we need something like um_fatal() for handling
+these errors.
+I'll resend v2.
 
-        addr >>= 3;
+Thanks,
 
-Gr{oetje,eeting}s,
+>  		exit(1);
+>  	}
+>  
+> @@ -99,8 +99,8 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+>  	err = os_map_memory((void *) uml_reserved, physmem_fd, offset,
+>  			    map_size, 1, 1, 1);
+>  	if (err < 0) {
+> -		printf("setup_physmem - mapping %ld bytes of memory at 0x%p "
+> -		       "failed - errno = %d\n", map_size,
+> +		fprintf(stderr, "setup_physmem - mapping %ld bytes of memory "
+> +			"at 0x%p failed - errno = %d\n", map_size,
+>  		       (void *) uml_reserved, err);
+>  		exit(1);
+>  	}
+> diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+> index b3b28db..01817d6 100644
+> --- a/arch/um/kernel/um_arch.c
+> +++ b/arch/um/kernel/um_arch.c
+> @@ -34,7 +34,7 @@ static char __initdata command_line[COMMAND_LINE_SIZE] = { 0 };
+>  static void __init add_arg(char *arg)
+>  {
+>  	if (strlen(command_line) + strlen(arg) + 1 > COMMAND_LINE_SIZE) {
+> -		printf("add_arg: Too many command line arguments!\n");
+> +		fprintf(stderr, "add_arg: Too many command line arguments!\n");
+>  		exit(1);
+>  	}
+>  	if (strlen(command_line) > 0)
+> diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+> index 659fee3..09b44f1 100644
+> --- a/arch/um/os-Linux/main.c
+> +++ b/arch/um/os-Linux/main.c
+> @@ -74,8 +74,8 @@ static void install_fatal_handler(int sig)
+>  	action.sa_restorer = NULL;
+>  	action.sa_handler = last_ditch_exit;
+>  	if (sigaction(sig, &action, NULL) < 0) {
+> -		printf("failed to install handler for signal %d - errno = %d\n",
+> -		       sig, errno);
+> +		fprintf(stderr, "failed to install handler for signal %d "
+> +			"- errno = %d\n", sig, errno);
+>  		exit(1);
+>  	}
+>  }
+> 
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
 
