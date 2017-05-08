@@ -1,47 +1,63 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [RFC PATCH v2 0/6] um: Output messages to stderr and support quiet option
+Date: Mon,  8 May 2017 15:15:21 +0900
+Message-Id: <149422411127.11101.13017249012576512464.stgit@devbox>
 MIME-Version: 1.0
-In-Reply-To: <8EF94724-26BB-423D-B75F-1CF6646F72C3@m3y3r.de>
-References: <8EF94724-26BB-423D-B75F-1CF6646F72C3@m3y3r.de>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 7 May 2017 16:11:36 +0200
-Message-ID: <CAFLxGvyHNTgYm6FP1LUFV4TSTna4aHTfV+4rEfv55-s0W_9uxA@mail.gmail.com>
-Subject: Re: [uml-devel] [uml-user] UML on WSL
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Thomas Meyer <thomas@m3y3r.de>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Thomas,
+Hello,
 
-On Sun, May 7, 2017 at 1:44 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
-> Hi,
->
-> Did anybody try to run UML on the new Windows 10 subsystem for Linux? I
-> wonder what missing functions may hinder to run UML on WSL?
+Here is version 2 of um-quiet series.
 
-No idea.
-Can you try? I don't have access to a Windows 10 system right now
-where I could test.
+This series fixes some boot time printf output to stderr
+by adding os_info() and os_warn(). The information-level
+messages via os_info() are suppressed when "quiet" kernel
+option is specified.
+Also the last one allows user to pass "console=" option
+to kernel.
 
--- 
-Thanks,
-//richard
+Note that the output of --help and --version are still
+sent to stdout since they are intentionally shown by
+the user.
 
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Changes from v1:
+ - Introduce os_info() and os_warn() to replace most of
+   printf() instead of reusing non_fatal().
+ - Replace fprintf(stderr, ...) with os_warn() for error
+   messages.
+
+Thank you,
+
+---
+
+Masami Hiramatsu (6):
+      um: Use printk instead of printf in make_uml_dir
+      um: Add os_info() for pre-boot information messages
+      um: Use os_info for the messages on normal path
+      um: Add os_warn() for pre-boot warning/error messages
+      um: Use os_warn to print out pre-boot warning/error messages
+      um: console: Ignore console= option
+
+
+ arch/um/drivers/stdio_console.c |    3 +++
+ arch/um/include/shared/os.h     |    4 ++++
+ arch/um/kernel/physmem.c        |   10 +++++-----
+ arch/um/kernel/um_arch.c        |   16 +++++++++-------
+ arch/um/kernel/umid.c           |    4 ++--
+ arch/um/os-Linux/execvp.c       |    2 +-
+ arch/um/os-Linux/main.c         |    9 ++++-----
+ arch/um/os-Linux/mem.c          |   28 ++++++++++++++--------------
+ arch/um/os-Linux/start_up.c     |   28 +++++++++++++++-------------
+ arch/um/os-Linux/umid.c         |   19 +++++++++++--------
+ arch/um/os-Linux/util.c         |   34 ++++++++++++++++++++++++++++++++++
+ 11 files changed, 102 insertions(+), 55 deletions(-)
+
+--
+Masami Hiramatsu <mhiramat@kernel.org>
 
