@@ -1,25 +1,26 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard.weinberger@gmail.com>) id 1d61IF-0007kO-ME
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1d7npw-0003MH-9c
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 May 2017 20:54:39 +0000
-Received: from mail-io0-f194.google.com ([209.85.223.194])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1d61IE-0008QD-VF
+	Mon, 08 May 2017 18:56:48 +0000
+Received: from mail-oi0-f44.google.com ([209.85.218.44])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1d7nps-0007AE-K2
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 03 May 2017 20:54:39 +0000
-Received: by mail-io0-f194.google.com with SMTP id x86so38271418ioe.3
+	Mon, 08 May 2017 18:56:48 +0000
+Received: by mail-oi0-f44.google.com with SMTP id w10so61806903oif.0
 	for <user-mode-linux-devel@lists.sourceforge.net>;
-	Wed, 03 May 2017 13:54:38 -0700 (PDT)
+	Mon, 08 May 2017 11:56:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170331224157.12922-1-richard@nod.at>
-References: <20170331224157.12922-1-richard@nod.at>
+In-Reply-To: <097f2658-86f0-b138-c29a-a60101549c20@kot-begemot.co.uk>
+References: <1494187593.2984.2.camel@m3y3r.de>
+	<097f2658-86f0-b138-c29a-a60101549c20@kot-begemot.co.uk>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 3 May 2017 22:54:33 +0200
-Message-ID: <CAFLxGvxyHYyU8BKb8O3fwd9143VQHLQ-B=+jKc8-2mJGJOGB-Q@mail.gmail.com>
-Subject: Re: [uml-devel] [PATCH] um: Fix PTRACE_POKEUSER on x86_64
+Date: Mon, 8 May 2017 20:56:38 +0200
+Message-ID: <CAFLxGvwbqEqom53NGgq7-jHYfYKxZZYg13SeJAAzMZSqL8y_wg@mail.gmail.com>
+Subject: Re: [uml-devel] warning at vma_merge
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -32,40 +33,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Weinberger <richard@nod.at>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, LKML <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-On Sat, Apr 1, 2017 at 12:41 AM, Richard Weinberger <richard@nod.at> wrote:
-> This is broken since ever but sadly nobody noticed.
-> Recent versions of GDB set DR_CONTROL unconditionally and
-> UML dies due to a heap corruption. It turns out that
-> the PTRACE_POKEUSER was copy&pasted from i386 and assumes
-> that addresses are 4 bytes long.
->
-> Fix that by using 8 as address size in the calculation.
->
-> Cc: <stable@vger.kernel.org>
-> Reported-by: jie cao <cj3054@gmail.com>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  arch/x86/um/ptrace_64.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/um/ptrace_64.c b/arch/x86/um/ptrace_64.c
-> index a5c9910d234f..09a085bde0d4 100644
-> --- a/arch/x86/um/ptrace_64.c
-> +++ b/arch/x86/um/ptrace_64.c
-> @@ -125,7 +125,7 @@ int poke_user(struct task_struct *child, long addr, long data)
->         else if ((addr >= offsetof(struct user, u_debugreg[0])) &&
->                 (addr <= offsetof(struct user, u_debugreg[7]))) {
->                 addr -= offsetof(struct user, u_debugreg[0]);
-> -               addr = addr >> 2;
-> +               addr = addr >> 3;
->                 if ((addr == 4) || (addr == 5))
->                         return -EIO;
->                 child->thread.arch.debugregs[addr] = data;
+Anton, Thomas,
 
-Applied.
+On Sun, May 7, 2017 at 10:27 PM, Anton Ivanov
+<anton.ivanov@kot-begemot.co.uk> wrote:
+> Have a look at the list archive, this was covered a couple of weeks ago.
+>
+> I believe Richard is working on a fix.
+
+Yep, this reminds me that I have to ping mm folks about this.
+Please see: http://lkml.iu.edu/hypermail/linux/kernel/1703.2/02256.html
 
 -- 
 Thanks,
