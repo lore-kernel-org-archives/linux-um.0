@@ -1,23 +1,12 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1d7kDy-0003XQ-8S
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 May 2017 15:05:22 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1d7kDw-0001e5-3Q
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Mon, 08 May 2017 15:05:22 +0000
+Date: Mon, 08 May 2017 17:02:35 +0200
+Message-ID: <20170508170235.Horde.YC-JKHq_morEKrQOv2d0DV3@webmail.your-server.de>
+From: Thomas Meyer <thomas@m3y3r.de>
 References: <8EF94724-26BB-423D-B75F-1CF6646F72C3@m3y3r.de>
 	<CAFLxGvyHNTgYm6FP1LUFV4TSTna4aHTfV+4rEfv55-s0W_9uxA@mail.gmail.com>
-	<20170508170235.Horde.YC-JKHq_morEKrQOv2d0DV3@webmail.your-server.de>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <d46e744a-da30-fe81-fb4d-2a4648550a27@nod.at>
-Date: Mon, 8 May 2017 17:05:10 +0200
+In-Reply-To: <CAFLxGvyHNTgYm6FP1LUFV4TSTna4aHTfV+4rEfv55-s0W_9uxA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20170508170235.Horde.YC-JKHq_morEKrQOv2d0DV3@webmail.your-server.de>
+Content-Disposition: inline
 Subject: Re: [uml-devel] [uml-user] UML on WSL
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -31,25 +20,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Thomas Meyer <thomas@m3y3r.de>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 Cc: user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
 
-Thomas,
 
-Am 08.05.2017 um 17:02 schrieb Thomas Meyer:
-> Sadly, UML executable bails out very early. it Looks like WSL is missing some PTRACE stuff:
-> 
-> thomas@DESKTOP-DQBDJ0U:/mnt/c/Users/thomas/Downloads$ ./linux
-> Core dump limits :
->         soft - NONE
->         hard - NONE
-> Checking that ptrace can change system call numbers...check_ptrace: PTRACE_OLDSETOPTIONS failed: Invalid Argument
+Zitat von Richard Weinberger <richard.weinberger@gmail.com>:
 
-We could figure how to report issues to WSL, create self-hosting unit tests and ask them to add/fix
-these features.
+> Thomas,
+>
+> On Sun, May 7, 2017 at 1:44 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
+>> Hi,
 
-Thanks,
-//richard
+Hi,
+
+>>
+>> Did anybody try to run UML on the new Windows 10 subsystem for Linux? I
+>> wonder what missing functions may hinder to run UML on WSL?
+>
+> No idea.
+> Can you try? I don't have access to a Windows 10 system right now
+> where I could test.
+
+Sadly, UML executable bails out very early. it Looks like WSL is  
+missing some PTRACE stuff:
+
+thomas@DESKTOP-DQBDJ0U:/mnt/c/Users/thomas/Downloads$ ./linux
+Core dump limits :
+         soft - NONE
+         hard - NONE
+Checking that ptrace can change system call numbers...check_ptrace:  
+PTRACE_OLDSETOPTIONS failed: Invalid Argument
+
+>
+> --
+> Thanks,
+> //richard
+>
+> ------------------------------------------------------------------------------
+> Check out the vibrant tech community on one of the world's most
+> engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+
+
 
 ------------------------------------------------------------------------------
 Check out the vibrant tech community on one of the world's most
