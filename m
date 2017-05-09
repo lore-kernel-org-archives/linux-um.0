@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1d9v4X-0008LB-3b
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 May 2017 15:04:37 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1d9v4V-0000jD-AZ
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 May 2017 15:04:37 +0000
-Received: from [95.222.29.91] (helo=localhost.localdomain)
-	by www17.your-server.de with esmtpsa
-	(TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256) (Exim 4.85_2)
-	(envelope-from <thomas@m3y3r.de>) id 1d9v4O-0003r3-QR
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Sun, 14 May 2017 17:04:28 +0200
-Message-ID: <1494774209.13299.5.camel@m3y3r.de>
+Date: Tue, 09 May 2017 19:25:08 +0200
+Message-ID: <20170509192508.Horde.q9LPitc8upyg8NEM65B6nWV@webmail.your-server.de>
 From: Thomas Meyer <thomas@m3y3r.de>
-Date: Sun, 14 May 2017 17:03:30 +0200
-Mime-Version: 1.0
-Subject: [uml-devel] [PATCH 2/3] um: Add kerneldoc for segv_handler
+References: <8EF94724-26BB-423D-B75F-1CF6646F72C3@m3y3r.de>
+	<CAFLxGvyHNTgYm6FP1LUFV4TSTna4aHTfV+4rEfv55-s0W_9uxA@mail.gmail.com>
+	<20170508170235.Horde.YC-JKHq_morEKrQOv2d0DV3@webmail.your-server.de>
+	<d46e744a-da30-fe81-fb4d-2a4648550a27@nod.at>
+	<76397EFF-15DB-4F55-B402-DBE7BA1FB02D@m3y3r.de>
+	<3f832424-0ae6-1009-cf87-c94794e919ef@nod.at>
+	<0419DC3A-B4B7-4005-B068-EF0583433B92@m3y3r.de>
+	<D39536F2-909A-40FB-B47F-44A31C56D286@m3y3r.de>
+	<66f46b90-6312-449f-2c52-d12fc53f18f6@nod.at>
+	<20170509101536.Horde.EnvMo4uaHVafhqi80MdUNWc@webmail.your-server.de>
+	<0c36ac98-761a-bf07-a6ef-13f0f7b7b561@nod.at>
+In-Reply-To: <0c36ac98-761a-bf07-a6ef-13f0f7b7b561@nod.at>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: Re: [uml-devel] [uml-user] UML on WSL
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
@@ -30,293 +26,359 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5991173170565579929=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
-
-
---===============5991173170565579929==
-Content-Type: multipart/alternative; boundary="=-nlQBpO2yzmtsWlqpTHFb"
-
-
---=-nlQBpO2yzmtsWlqpTHFb
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-
-Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
----
- arch/um/kernel/trap.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index 5915887..4e6fcb3 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -183,6 +183,16 @@ void fatal_sigsegv(void)
- 	os_dump_core();
- }
- 
-+/**
-+ * segv_handler() - the SIGSEGV handler
-+ * @sig:	the signal number
-+ * @unused_si:	the signal info struct; unused in this handler
-+ * @regs:	the ptrace register information
-+ *
-+ * The handler first extracts the faultinfo from the UML ptrace regs
-struct.
-+ * If the userfault did not happen in an UML userspace process,
-bad_segv is called.
-+ * Otherwise the signal did happen in a cloned userspace process,
-handle it.
-+ */
- void segv_handler(int sig, struct siginfo *unused_si, struct
-uml_pt_regs *regs)
- {
- 	struct faultinfo * fi = UPT_FAULTINFO(regs);
---=-nlQBpO2yzmtsWlqpTHFb
-Content-Type: text/html; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-<html><head><style id=3D"-x-evo-quote-style" type=3D"text/css">.-x-evo-quot=
-ed { -webkit-user-select: none; }</style><style id=3D"-x-evo-style-a" type=
-=3D"text/css">a { cursor: text; }</style><style id=3D"-x-evo-a-color-style"=
- type=3D"text/css">a { color: #2a76c6; }</style><style id=3D"-x-evo-a-color=
--style-visited" type=3D"text/css">a.-x-evo-visited-link { color: #2e3436; }=
-</style><style id=3D"-x-evo-composer-sheet" media=3D"screen" type=3D"text/c=
-ss">body {
-  font-family: 'Monospace';
-  font-size: 11pt;
-  font-weight: 400;
-  font-style: normal;
- -webkit-line-break: after-white-space;
- -webkit-font-smoothing: antialiased;
-}
-pre,code,.pre {
-  font-family: 'Monospace';
-  font-size: 11pt;
-  font-weight: 400;
-  font-style: normal;
-}p,pre,code,address {
-  margin: 0;
-}
-h1,h2,h3,h4,h5,h6 {
-  margin-top: 0.2em;
-  margin-bottom: 0.2em;
-}
-td:before {
- content: "=E2=80=8B";}
-img {
-  height: inherit;=20
-  width: inherit;=20
-}
-span.-x-evo-resizable-wrapper:hover {
-  outline: 1px dashed red;=20
-  resize: both;=20
-  overflow: hidden;=20
-  display: inline-block;=20
-}
-td:hover {
-  outline: 1px dotted red;
-}
-body[data-evo-plain-text] {
-  font-family: Monospace;=20
-}
-body[data-evo-plain-text] img.-x-evo-smiley-img, body:not([data-evo-plain-t=
-ext]) span.-x-evo-smiley-text {
-  display: none=20
-}
-[data-evo-paragraph] {
-  white-space: pre-wrap;=20
-}
-body[data-evo-plain-text] [data-evo-paragraph] {
-  word-wrap: break-word;=20
-  word-break: break-word;=20
-}
-.-x-evo-plaintext-table {
-  border-collapse: collapse;
-  width: 71ch;
-}
-.-x-evo-plaintext-table td {
-  vertical-align: top;
-}
-td > * {
-  display : inline-block;
-}
-body[data-evo-plain-text] ul {
-  list-style: outside none;
-  -webkit-padding-start: 3ch;=20
-}
-body[data-evo-plain-text] ul > li {
-  list-style-position: outside;
-  text-indent: -2ch;
-}
-body[data-evo-plain-text] ul > li::before {
-  content: "*=C2=A0";
-}
-body[data-evo-plain-text] ul.-x-evo-indented {
-  -webkit-padding-start: 3ch;=20
-}
-body:not([data-evo-plain-text]) ul > li.-x-evo-align-center,ol > li.-x-evo-=
-align-center {
-  list-style-position: inside;
-}
-body:not([data-evo-plain-text]) ul > li.-x-evo-align-right, ol > li.-x-evo-=
-align-right {
-  list-style-position: inside;
-}
-ol {
-  -webkit-padding-start: 6ch;=20
-}
-ol.-x-evo-indented {
-  -webkit-padding-start: 3ch;=20
-}
-.-x-evo-align-left {
-  text-align: left;=20
-}
-.-x-evo-align-center {
-  text-align: center;=20
-}
-.-x-evo-align-right {
-  text-align: right;=20
-}
-ol,ul {
-  -webkit-margin-before: 0em;=20
-  -webkit-margin-after: 0em;=20
-}
-blockquote {
-  -webkit-margin-before: 0em;=20
-  -webkit-margin-after: 0em;=20
-}
-a {
-  word-wrap: break-word;=20
-  word-break: break-all;=20
-}
-blockquote[type=3Dcite] {
-  padding: 0.0ex 0ex;
-  margin: 0ex;
-  -webkit-margin-start: 0em;=20
-  -webkit-margin-end : 0em;=20
-  color: #737373 !important;=20
-}
-.-x-evo-quote-character {
-  color: rgb(114,159,207);
-}
-.-x-evo-quote-character+.-x-evo-quote-character{
-  color: rgb(173,127,168);
-}
-.-x-evo-quote-character+.-x-evo-quote-character+.-x-evo-quote-character{
-  color: rgb(138,226,52);
-}
-.-x-evo-quote-character+.-x-evo-quote-character+.-x-evo-quote-character+.-x=
--evo-quote-character{
-  color: rgb(252,175,62);
-}
-.-x-evo-quote-character+.-x-evo-quote-character+.-x-evo-quote-character+.-x=
--evo-quote-character+.-x-evo-quote-character{
-  color: rgb(233,185,110);
-}
-body:not([data-evo-plain-text]) blockquote[type=3Dcite] {
-  padding: 0ch 1ch 0ch 1ch;
-  margin: 0ch;
-  border-width: 0px 2px 0px 2px;
-  border-style: none solid none solid;
-  border-radius: 2px;
-}
-body:not([data-evo-plain-text]) blockquote[type=3Dcite] {
-  border-color: rgb(114,159,207);
-}
-body:not([data-evo-plain-text]) blockquote[type=3Dcite] blockquote[type=3Dc=
-ite] {
-  border-color: rgb(173,127,168);
-}
-body:not([data-evo-plain-text]) blockquote[type=3Dcite] blockquote[type=3Dc=
-ite] blockquote[type=3Dcite] {
-  border-color: rgb(138,226,52);
-}
-body:not([data-evo-plain-text]) blockquote[type=3Dcite] blockquote[type=3Dc=
-ite] blockquote[type=3Dcite] blockquote[type=3Dcite] {
-  border-color: rgb(252,175,62);
-}
-body:not([data-evo-plain-text]) blockquote[type=3Dcite] blockquote[type=3Dc=
-ite] blockquote[type=3Dcite] blockquote[type=3Dcite] blockquote[type=3Dcite=
-] {
-  border-color: rgb(233,185,110);
-}
-</style></head><body data-evo-plain-text=3D"" bgcolor=3D"#ffffff" text=3D"#=
-2e3436" link=3D"#2a76c6" vlink=3D"#2e3436" data-evo-draft=3D""><div data-ev=
-o-paragraph=3D"" class=3D"" style=3D"width: 71ch;"><span id=3D"-x-evo-selec=
-tion-start-marker" data-anchor=3D""></span><span id=3D"-x-evo-selection-end=
--marker"></span>Signed-off-by: Thomas Meyer &lt;<a href=3D"mailto:thomas@m3=
-y3r.de">thomas@m3y3r.de</a>&gt;</div><div data-evo-paragraph=3D"" class=3D"=
-" style=3D"width: 71ch;">---</div><div data-evo-paragraph=3D"" class=3D"" s=
-tyle=3D"width: 71ch;">&nbsp;arch/um/kernel/trap.c | 10 ++++++++++</div><div=
- data-evo-paragraph=3D"" class=3D"" style=3D"width: 71ch;">&nbsp;1 file cha=
-nged, 10 insertions(+)</div><div data-evo-paragraph=3D"" class=3D"" style=
-=3D"width: 71ch;"><br></div><div data-evo-paragraph=3D"" class=3D"" style=
-=3D"width: 71ch;">diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.=
-c</div><div data-evo-paragraph=3D"" class=3D"" style=3D"width: 71ch;">index=
- 5915887..4e6fcb3 100644</div><div data-evo-paragraph=3D"" class=3D"" style=
-=3D"width: 71ch;">--- a/arch/um/kernel/trap.c</div><div data-evo-paragraph=
-=3D"" class=3D"" style=3D"width: 71ch;">+++ b/arch/um/kernel/trap.c</div><d=
-iv data-evo-paragraph=3D"" class=3D"" style=3D"width: 71ch;">@@ -183,6 +183=
-,16 @@ void fatal_sigsegv(void)</div><div data-evo-paragraph=3D"" class=3D"=
-" style=3D"width: 71ch;">&nbsp;<span class=3D"Apple-tab-span" style=3D"whit=
-e-space:pre">	</span>os_dump_core();</div><div data-evo-paragraph=3D"" clas=
-s=3D"" style=3D"width: 71ch;">&nbsp;}</div><div data-evo-paragraph=3D"" cla=
-ss=3D"" style=3D"width: 71ch;">&nbsp;</div><div data-evo-paragraph=3D"" cla=
-ss=3D"" style=3D"width: 71ch;">+/**</div><div data-evo-paragraph=3D"" class=
-=3D"" style=3D"width: 71ch;">+ * segv_handler() - the SIGSEGV handler</div>=
-<div data-evo-paragraph=3D"" class=3D"" style=3D"width: 71ch;">+ * @sig:<sp=
-an class=3D"Apple-tab-span" style=3D"white-space:pre">	</span>the signal nu=
-mber</div><div data-evo-paragraph=3D"" class=3D"" style=3D"width: 71ch;">+ =
-* @unused_si:<span class=3D"Apple-tab-span" style=3D"white-space:pre">	</sp=
-an>the signal info struct; unused in this handler</div><div data-evo-paragr=
-aph=3D"" class=3D"" style=3D"width: 71ch;">+ * @regs:<span class=3D"Apple-t=
-ab-span" style=3D"white-space:pre">	</span>the ptrace register information<=
-/div><div data-evo-paragraph=3D"" class=3D"" style=3D"width: 71ch;">+ *</di=
-v><div data-evo-paragraph=3D"" class=3D"" style=3D"width: 71ch;">+ * The ha=
-ndler first extracts the faultinfo from the UML ptrace regs<span data-hidde=
-n-space=3D""></span><br class=3D"-x-evo-wrap-br">struct.</div><div data-evo=
--paragraph=3D"" class=3D"" style=3D"width: 71ch;">+ * If the userfault did =
-not happen in an UML userspace process,<span data-hidden-space=3D""></span>=
-<br class=3D"-x-evo-wrap-br">bad_segv is called.</div><div data-evo-paragra=
-ph=3D"" class=3D"" style=3D"width: 71ch;">+ * Otherwise the signal did happ=
-en in a cloned userspace process,<span data-hidden-space=3D""></span><br cl=
-ass=3D"-x-evo-wrap-br">handle it.</div><div data-evo-paragraph=3D"" class=
-=3D"" style=3D"width: 71ch;">+ */</div><div data-evo-paragraph=3D"" class=
-=3D"" style=3D"width: 71ch;">&nbsp;void segv_handler(int sig, struct siginf=
-o *unused_si, struct<span data-hidden-space=3D""></span><br class=3D"-x-evo=
--wrap-br">uml_pt_regs *regs)</div><div data-evo-paragraph=3D"" class=3D"" s=
-tyle=3D"width: 71ch;">&nbsp;{</div><div data-evo-paragraph=3D"" class=3D"" =
-style=3D"width: 71ch;">&nbsp;<span class=3D"Apple-tab-span" style=3D"white-=
-space:pre">	</span>struct faultinfo * fi =3D UPT_FAULTINFO(regs);</div><div=
- class=3D"-x-evo-signature-wrapper"><span class=3D"-x-evo-signature" id=3D"=
-none"></span></div></body></html>
---=-nlQBpO2yzmtsWlqpTHFb--
-
-
-
---===============5991173170565579929==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+
+
+Zitat von Richard Weinberger <richard@nod.at>:
+
+> Thomas,
+>
+> Am 09.05.2017 um 10:15 schrieb Thomas Meyer:
+>> attached patch work correctly under Linux. But no change under WSL.  
+>> As stated in the relevant GH issue, there seems to be far more road  
+>> blockers to make UML work under WSL.
+>>
+>> With you patch I get under WSL:
+>>
+>> thomas@DESKTOP-DQBDJ0U:/mnt/c/Users/thomas/VmShare$ ./linux
+>> Core dump limits :
+>>         soft - NONE
+>>         hard - NONE
+>> Checking that ptrace can change system call numbers...check_ptrace  
+>> : failed to modify system call: Invalid Argument
+>
+> Okay, now it fails later.
+> UML needs to cancel  syscalls on the host side, it does so by  
+> turning them into a getpid() which has no side
+> effects and, on non-ancient systems, by using PTRACE_SYSEMU.
+> Let's figure whether they support PTRACE_SYSEMU, can you test the  
+> attached patch?
+
+okay, it now proceeds even more:
+
+thomas@DESKTOP-DQBDJ0U:/mnt/c/Users/thomas/VmShare$ ./linux mem=128m
+Core dump limits :
+         soft - NONE
+         hard - NONE
+Checking syscall emulation patch for ptrace...missing
+Checking environment variables for a tempdir...none found
+Checking if /dev/shm is on tmpfs...OK
+Checking PROT_EXEC mmap in /dev/shm...OK
+Adding 3665920 bytes to physical memory to account for exec-shield gap
+kmsg_dump:
+<3>[    2.050000] Slab cache with size 1056 has lost its name
+<3>[    2.050000] Slab cache with size 160 has lost its name
+<3>[    2.050000] Slab cache with size 1440 has lost its name
+<3>[    2.050000] Slab cache with size 168 has lost its name
+<3>[    2.050000] Slab cache with size 432 has lost its name
+<3>[    2.050000] Slab cache with size 984 has lost its name
+<3>[    2.050000] Slab cache with size 320 has lost its name
+<3>[    2.050000] Slab cache with size 72 has lost its name
+<3>[    2.050000] Slab cache with size 72 has lost its name
+<3>[    2.050000] Slab cache with size 112 has lost its name
+<3>[    2.050000] Slab cache with size 296 has lost its name
+<3>[    2.050000] Slab cache with size 104 has lost its name
+<3>[    2.050000] Slab cache with size 56 has lost its name
+<3>[    2.050000] Slab cache with size 184 has lost its name
+<3>[    2.050000] Slab cache with size 1464 has lost its name
+<3>[    2.050000] Slab cache with size 776 has lost its name
+<3>[    2.050000] Slab cache with size 1408 has lost its name
+<3>[    2.050000] Slab cache with size 2216 has lost its name
+<3>[    2.050000] Slab cache with size 6000 has lost its name
+<3>[    2.050000] Slab cache with size 80 has lost its name
+<3>[    2.050000] Slab cache with size 176 has lost its name
+<3>[    2.050000] Slab cache with size 40 has lost its name
+<3>[    2.050000] Slab cache with size 88 has lost its name
+<3>[    2.050000] Slab cache with size 48 has lost its name
+<3>[    2.050000] Slab cache with size 576 has lost its name
+<3>[    2.050000] Slab cache with size 616 has lost its name
+<3>[    2.050000] Slab cache with size 8192 has lost its name
+<3>[    2.050000] Slab cache with size 4096 has lost its name
+<3>[    2.050000] Slab cache with size 2048 has lost its name
+<3>[    2.050000] Slab cache with size 1024 has lost its name
+<3>[    2.050000] Slab cache with size 512 has lost its name
+<3>[    2.050000] Slab cache with size 256 has lost its name
+<3>[    2.050000] Slab cache with size 192 has lost its name
+<3>[    2.050000] Slab cache with size 128 has lost its name
+<3>[    2.050000] Slab cache with size 96 has lost its name
+<3>[    2.050000] Slab cache with size 64 has lost its name
+<3>[    2.050000] Slab cache with size 32 has lost its name
+<3>[    2.050000] Slab cache with size 16 has lost its name
+<3>[    2.050000] Slab cache with size 8 has lost its name
+<3>[    2.050000] Slab cache with size 128 has lost its name
+<3>[    2.050000] Slab cache with size 200 has lost its name
+<7>[    2.050000] SELinux:  Registering netfilter hooks
+<6>[    2.050000] cryptomgr_test (23) used greatest stack depth: 6216  
+bytes left
+<6>[    2.050000] jitterentropy: Initialization failed with host not  
+compliant with requirements: 2
+<6>[    2.050000] io scheduler noop registered
+<6>[    2.050000] io scheduler deadline registered (default)
+<3>[    2.050000] Slab cache with size 1416 has lost its name
+<3>[    2.050000] Slab cache with size 1304 has lost its name
+<3>[    2.050000] Slab cache with size 464 has lost its name
+<3>[    2.050000] Slab cache with size 1344 has lost its name
+<3>[    2.050000] Slab cache with size 1784 has lost its name
+<3>[    2.050000] Slab cache with size 800 has lost its name
+<3>[    2.050000] Slab cache with size 1032 has lost its name
+<3>[    2.050000] Slab cache with size 1288 has lost its name
+<3>[    2.050000] Slab cache with size 32 has lost its name
+<3>[    2.050000] Slab cache with size 1040 has lost its name
+<3>[    2.050000] Slab cache with size 48 has lost its name
+<3>[    2.050000] Slab cache with size 112 has lost its name
+<3>[    2.050000] Slab cache with size 16 has lost its name
+<3>[    2.050000] Slab cache with size 32 has lost its name
+<3>[    2.050000] Slab cache with size 2152 has lost its name
+<3>[    2.050000] Slab cache with size 128 has lost its name
+<3>[    2.050000] Slab cache with size 168 has lost its name
+<3>[    2.050000] Slab cache with size 64 has lost its name
+<3>[    2.050000] Slab cache with size 40 has lost its name
+<3>[    2.050000] Slab cache with size 56 has lost its name
+<3>[    2.050000] Slab cache with size 24 has lost its name
+<3>[    2.050000] Slab cache with size 96 has lost its name
+<3>[    2.050000] Slab cache with size 768 has lost its name
+<3>[    2.050000] Slab cache with size 440 has lost its name
+<3>[    2.050000] Slab cache with size 144 has lost its name
+<3>[    2.050000] Slab cache with size 696 has lost its name
+<3>[    2.050000] Slab cache with size 280 has lost its name
+<3>[    2.050000] Slab cache with size 1824 has lost its name
+<3>[    2.050000] Slab cache with size 296 has lost its name
+<3>[    2.050000] Slab cache with size 280 has lost its name
+<3>[    2.050000] Slab cache with size 352 has lost its name
+<3>[    2.050000] Slab cache with size 2704 has lost its name
+<3>[    2.050000] Slab cache with size 416 has lost its name
+<3>[    2.050000] Slab cache with size 152 has lost its name
+<3>[    2.050000] Slab cache with size 2112 has lost its name
+<3>[    2.050000] Slab cache with size 216 has lost its name
+<3>[    2.050000] Slab cache with size 1032 has lost its name
+<3>[    2.050000] Slab cache with size 272 has lost its name
+<3>[    2.050000] Slab cache with size 120 has lost its name
+<3>[    2.050000] Slab cache with size 6056 has lost its name
+<3>[    2.050000] Slab cache with size 1208 has lost its name
+<3>[    2.050000] Slab cache with size 136 has lost its name
+<3>[    2.050000] Slab cache with size 328 has lost its name
+<3>[    2.050000] Slab cache with size 1056 has lost its name
+<3>[    2.050000] Slab cache with size 160 has lost its name
+<3>[    2.050000] Slab cache with size 1440 has lost its name
+<3>[    2.050000] Slab cache with size 168 has lost its name
+<3>[    2.050000] Slab cache with size 432 has lost its name
+<3>[    2.050000] Slab cache with size 984 has lost its name
+<3>[    2.050000] Slab cache with size 320 has lost its name
+<3>[    2.050000] Slab cache with size 72 has lost its name
+<3>[    2.050000] Slab cache with size 72 has lost its name
+<3>[    2.050000] Slab cache with size 112 has lost its name
+<3>[    2.050000] Slab cache with size 296 has lost its name
+<3>[    2.050000] Slab cache with size 104 has lost its name
+<3>[    2.050000] Slab cache with size 56 has lost its name
+<3>[    2.050000] Slab cache with size 184 has lost its name
+<3>[    2.050000] Slab cache with size 1464 has lost its name
+<3>[    2.050000] Slab cache with size 776 has lost its name
+<3>[    2.050000] Slab cache with size 1408 has lost its name
+<3>[    2.050000] Slab cache with size 2216 has lost its name
+<3>[    2.050000] Slab cache with size 6000 has lost its name
+<3>[    2.050000] Slab cache with size 80 has lost its name
+<3>[    2.050000] Slab cache with size 176 has lost its name
+<3>[    2.050000] Slab cache with size 40 has lost its name
+<3>[    2.050000] Slab cache with size 88 has lost its name
+<3>[    2.050000] Slab cache with size 48 has lost its name
+<3>[    2.050000] Slab cache with size 576 has lost its name
+<3>[    2.050000] Slab cache with size 616 has lost its name
+<3>[    2.050000] Slab cache with size 8192 has lost its name
+<3>[    2.050000] Slab cache with size 4096 has lost its name
+<3>[    2.050000] Slab cache with size 2048 has lost its name
+<3>[    2.050000] Slab cache with size 1024 has lost its name
+<3>[    2.050000] Slab cache with size 512 has lost its name
+<3>[    2.050000] Slab cache with size 256 has lost its name
+<3>[    2.050000] Slab cache with size 192 has lost its name
+<3>[    2.050000] Slab cache with size 128 has lost its name
+<3>[    2.050000] Slab cache with size 96 has lost its name
+<3>[    2.050000] Slab cache with size 64 has lost its name
+<3>[    2.050000] Slab cache with size 32 has lost its name
+<3>[    2.050000] Slab cache with size 16 has lost its name
+<3>[    2.050000] Slab cache with size 8 has lost its name
+<3>[    2.050000] Slab cache with size 128 has lost its name
+<3>[    2.050000] Slab cache with size 200 has lost its name
+<3>[    2.050000] Slab cache with size 240 has lost its name
+<3>[    2.050000] Slab cache with size 1416 has lost its name
+<3>[    2.050000] Slab cache with size 1304 has lost its name
+<3>[    2.050000] Slab cache with size 464 has lost its name
+<3>[    2.050000] Slab cache with size 1344 has lost its name
+<3>[    2.050000] Slab cache with size 1784 has lost its name
+<3>[    2.050000] Slab cache with size 800 has lost its name
+<3>[    2.050000] Slab cache with size 1032 has lost its name
+<3>[    2.050000] Slab cache with size 1288 has lost its name
+<3>[    2.050000] Slab cache with size 32 has lost its name
+<3>[    2.050000] Slab cache with size 1040 has lost its name
+<3>[    2.050000] Slab cache with size 48 has lost its name
+<3>[    2.050000] Slab cache with size 112 has lost its name
+<3>[    2.050000] Slab cache with size 16 has lost its name
+<3>[    2.050000] Slab cache with size 32 has lost its name
+<3>[    2.050000] Slab cache with size 2152 has lost its name
+<3>[    2.050000] Slab cache with size 128 has lost its name
+<3>[    2.050000] Slab cache with size 168 has lost its name
+<3>[    2.050000] Slab cache with size 64 has lost its name
+<3>[    2.050000] Slab cache with size 40 has lost its name
+<3>[    2.050000] Slab cache with size 56 has lost its name
+<3>[    2.050000] Slab cache with size 24 has lost its name
+<3>[    2.050000] Slab cache with size 96 has lost its name
+<3>[    2.050000] Slab cache with size 768 has lost its name
+<3>[    2.050000] Slab cache with size 440 has lost its name
+<3>[    2.050000] Slab cache with size 144 has lost its name
+<3>[    2.050000] Slab cache with size 696 has lost its name
+<3>[    2.050000] Slab cache with size 280 has lost its name
+<3>[    2.050000] Slab cache with size 1824 has lost its name
+<3>[    2.050000] Slab cache with size 296 has lost its name
+<3>[    2.050000] Slab cache with size 280 has lost its name
+<3>[    2.050000] Slab cache with size 352 has lost its name
+<3>[    2.050000] Slab cache with size 2704 has lost its name
+<3>[    2.050000] Slab cache with size 416 has lost its name
+<3>[    2.050000] Slab cache with size 152 has lost its name
+<3>[    2.050000] Slab cache with size 2112 has lost its name
+<3>[    2.050000] Slab cache with size 216 has lost its name
+<3>[    2.050000] Slab cache with size 1032 has lost its name
+<3>[    2.050000] Slab cache with size 272 has lost its name
+<3>[    2.050000] Slab cache with size 120 has lost its name
+<3>[    2.050000] Slab cache with size 6056 has lost its name
+<3>[    2.050000] Slab cache with size 1208 has lost its name
+<3>[    2.050000] Slab cache with size 136 has lost its name
+<3>[    2.050000] Slab cache with size 328 has lost its name
+<3>[    2.050000] Slab cache with size 1056 has lost its name
+<3>[    2.050000] Slab cache with size 160 has lost its name
+<3>[    2.050000] Slab cache with size 1440 has lost its name
+<3>[    2.050000] Slab cache with size 168 has lost its name
+<3>[    2.050000] Slab cache with size 432 has lost its name
+<3>[    2.050000] Slab cache with size 984 has lost its name
+<3>[    2.050000] Slab cache with size 320 has lost its name
+<3>[    2.050000] Slab cache with size 72 has lost its name
+<3>[    2.050000] Slab cache with size 72 has lost its name
+<3>[    2.050000] Slab cache with size 112 has lost its name
+<3>[    2.050000] Slab cache with size 296 has lost its name
+<3>[    2.050000] Slab cache with size 104 has lost its name
+<3>[    2.050000] Slab cache with size 56 has lost its name
+<3>[    2.050000] Slab cache with size 184 has lost its name
+<3>[    2.050000] Slab cache with size 1464 has lost its name
+<3>[    2.050000] Slab cache with size 776 has lost its name
+<3>[    2.050000] Slab cache with size 1408 has lost its name
+<3>[    2.050000] Slab cache with size 2216 has lost its name
+<3>[    2.050000] Slab cache with size 6000 has lost its name
+<3>[    2.050000] Slab cache with size 80 has lost its name
+<3>[    2.050000] Slab cache with size 176 has lost its name
+<3>[    2.050000] Slab cache with size 40 has lost its name
+<3>[    2.050000] Slab cache with size 88 has lost its name
+<3>[    2.050000] Slab cache with size 48 has lost its name
+<3>[    2.050000] Slab cache with size 576 has lost its name
+<3>[    2.050000] Slab cache with size 616 has lost its name
+<3>[    2.050000] Slab cache with size 8192 has lost its name
+<3>[    2.050000] Slab cache with size 4096 has lost its name
+<3>[    2.050000] Slab cache with size 2048 has lost its name
+<3>[    2.050000] Slab cache with size 1024 has lost its name
+<3>[    2.050000] Slab cache with size 512 has lost its name
+<3>[    2.050000] Slab cache with size 256 has lost its name
+<3>[    2.050000] Slab cache with size 192 has lost its name
+<3>[    2.050000] Slab cache with size 128 has lost its name
+<3>[    2.050000] Slab cache with size 96 has lost its name
+<3>[    2.050000] Slab cache with size 64 has lost its name
+<3>[    2.050000] Slab cache with size 32 has lost its name
+<3>[    2.050000] Slab cache with size 16 has lost its name
+<3>[    2.050000] Slab cache with size 8 has lost its name
+<3>[    2.050000] Slab cache with size 128 has lost its name
+<3>[    2.050000] Slab cache with size 200 has lost its name
+<6>[    2.050000] io scheduler cfq registered
+<6>[    2.050000] io scheduler mq-deadline registered
+<4>[    2.050000]
+<4>[    2.050000] Modules linked in:
+<6>[    2.050000] Pid: 1, comm: swapper Not tainted  
+4.11.0-00007-g594e0e4-dirty
+<6>[    2.050000] RIP: 0033:[<00007f2e5b961eae>]
+<6>[    2.050000] RSP: 0000000067c87c38  EFLAGS: 00010202
+<6>[    2.050000] RAX: 0000000068842000 RBX: 0000000067dabae0 RCX:  
+0000000000000001
+<6>[    2.050000] RDX: 0000000000008000 RSI: 000000006884a000 RDI:  
+0000000068842020
+<6>[    2.050000] RBP: 0000000067c87c70 R08: 0000000067dabae7 R09:  
+0000000067f73000
+<6>[    2.050000] R10: 0000000000000000 R11: 0000000000000000 R12:  
+0000000060040ae0
+<6>[    2.050000] R13: 0000000000000000 R14: 00000000604e7e90 R15:  
+0000000060886700
+<0>[    2.050000] Kernel panic - not syncing: Segfault with no mm
+<4>[    2.050000] CPU: 0 PID: 1 Comm: swapper Not tainted  
+4.11.0-00007-g594e0e4-dirty #5
+<6>[    2.050000] Stack:
+<4>[    2.050000]  604e65b1 200000001 678085d8 67e35000
+<4>[    2.050000]  678085c0 604e38b0 678085c0 67c87cf0
+<4>[    2.050000]  604e3f02 00400000 678085c0 00000200
+<6>[    2.050000] Call Trace:
+<6>[    2.050000]  [<604e65b1>] ? check_partition+0x181/0x2c0
+<6>[    2.050000]  [<604e38b0>] ? add_partition+0x0/0x5b0
+<6>[    2.050000]  [<604e3f02>] rescan_partitions+0xa2/0x470
+<6>[    2.050000]  [<604e1bd0>] ? get_gendisk+0x0/0x110
+<6>[    2.050000]  [<60228842>] __blkdev_get+0x262/0x610
+<6>[    2.050000]  [<601fe3cb>] ? unlock_new_inode+0x8b/0x90
+<6>[    2.050000]  [<6027dba0>] ? sysfs_create_link+0x0/0x50
+<6>[    2.050000]  [<6022907d>] blkdev_get+0x48d/0x5d0
+<6>[    2.050000]  [<60513758>] ? refcount_dec_and_test+0x18/0x20
+<6>[    2.050000]  [<604f6d1d>] ? kobject_put+0x5d/0x260
+<6>[    2.050000]  [<6027dba0>] ? sysfs_create_link+0x0/0x50
+<6>[    2.050000]  [<604e22a1>] device_add_disk+0x3b1/0x610
+<6>[    2.050000]  [<604e2925>] ? alloc_disk+0x15/0x20
+<6>[    2.050000]  [<604e1ef0>] ? device_add_disk+0x0/0x610
+<6>[    2.050000]  [<60030d82>] 0x60030d82
+<6>[    2.050000]  [<60030cb0>] ? 0x60030cb0
+<6>[    2.050000]  [<60041520>] ? do_one_initcall+0x0/0x1a0
+<6>[    2.050000]  [<600415da>] do_one_initcall+0xba/0x1a0
+<6>[    2.050000]  [<600928f2>] ? parse_args+0x402/0x6f0
+<6>[    2.050000]  [<60041520>] ? do_one_initcall+0x0/0x1a0
+<6>[    2.050000]  [<60001fe3>] 0x60001fe3
+<6>[    2.050000]  [<6015c8e6>] ? printk+0x0/0x94
+<6>[    2.050000]  [<60835037>] kernel_init+0x27/0x150
+<6>[    2.050000]  [<60043221>] new_thread_handler+0x81/0xb0
+<6>[    2.050000]
+Abgebrochen (Speicherabzug geschrieben)
+
+>
+> Also please test segv1.c, it tests whether WSL allows us to handle  
+> page faults in userspace.
+> It should output this:
+> SIGSEGV at 0xdeadbeef, fixing up
+> x=3, &x=0xdeadbeef
+>
+> IOW we write to 0xdeadbeef, catch the fault and fix it.
+
+I get this:
+thomas@DESKTOP-DQBDJ0U:/mnt/c/Users/thomas/VmShare$ ./segtest
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+SIGSEGV at 0x0, fixing up
+[...]
+
+>
+> Thanks,
+> //richard
+
+
+
 
 ------------------------------------------------------------------------------
 Check out the vibrant tech community on one of the world's most
 engaging tech sites, Slashdot.org! http://sdm.link/slashdot
---===============5991173170565579929==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============5991173170565579929==--
-
-
 
