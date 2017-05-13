@@ -1,22 +1,24 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1d9UDY-0006If-5n
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1d9Tv5-0003qw-33
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 13 May 2017 10:24:08 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1d9UDX-0006vy-7c
+	Sat, 13 May 2017 10:05:03 +0000
+Received: from mail-oi0-f41.google.com ([209.85.218.41])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1d9Tv4-000492-2I
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Sat, 13 May 2017 10:24:08 +0000
-References: <20170513101046.Horde.P7MZvg1O0xNi0CnTODsXRIH@webmail.your-server.de>
-	<CAFLxGvyoYQU0e+_pHMZ2k0S3mxNJt9xshN_hrNMAYiTVBLkmMA@mail.gmail.com>
-From: Thomas Meyer <thomas@m3y3r.de>
-Message-ID: <7ac6769e-9907-7c1d-d4c5-e70724a73866@m3y3r.de>
-Date: Sat, 13 May 2017 12:24:04 +0200
+	Sat, 13 May 2017 10:05:03 +0000
+Received: by mail-oi0-f41.google.com with SMTP id b204so89604971oii.1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Sat, 13 May 2017 03:05:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvyoYQU0e+_pHMZ2k0S3mxNJt9xshN_hrNMAYiTVBLkmMA@mail.gmail.com>
+In-Reply-To: <20170513101046.Horde.P7MZvg1O0xNi0CnTODsXRIH@webmail.your-server.de>
+References: <20170513101046.Horde.P7MZvg1O0xNi0CnTODsXRIH@webmail.your-server.de>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Sat, 13 May 2017 12:04:56 +0200
+Message-ID: <CAFLxGvyoYQU0e+_pHMZ2k0S3mxNJt9xshN_hrNMAYiTVBLkmMA@mail.gmail.com>
 Subject: Re: [uml-devel] userfaultfd for UML userspace processes
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
@@ -30,51 +32,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Richard Weinberger <richard.weinberger@gmail.com>
+To: Thomas Meyer <thomas@m3y3r.de>
 Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Am 13.05.2017 um 12:04 schrieb Richard Weinberger:
-> Thomas,
+Thomas,
 
-Hi,
+On Sat, May 13, 2017 at 10:10 AM, Thomas Meyer <thomas@m3y3r.de> wrote:
+>
+> Hi,
+>
+> after looking into using userfaultfd for the userspace UML process
+> page fault handling, I come to the conclusion that userfaultfd
+> *cannot* be used for above goal as it only operates on mmaped memory
+> areas.
+> Am I missing something? What do you think about it?
 
-> On Sat, May 13, 2017 at 10:10 AM, Thomas Meyer <thomas@m3y3r.de> wrote:
->>
->> Hi,
->>
->> after looking into using userfaultfd for the userspace UML process
->> page fault handling, I come to the conclusion that userfaultfd
->> *cannot* be used for above goal as it only operates on mmaped memory
->> areas.
->> Am I missing something? What do you think about it?
-> 
-> See: https://lkml.org/lkml/2015/5/20/541
-Cool! Thanks for the hint. I don't follow LKML, so...
+See: https://lkml.org/lkml/2015/5/20/541
 
-But Andrea wrote:
-
-"Alternatively once we extend the handle_userfault to tmpfs you could
-map the page in two virtual mappings and track the faults in one
-mapping (where the tracked app runs) and read/write the page contents
-in the other mapping that isn't tracked by the userfault."
-
-I think this is now the case with 4.11, isn't it?
-
-As I understand this we must do the following:
-
-kernel process: Map a tmpfs region for each userspace process with 
-read/write.
-userspace process: Map the same tmpfs for the current process and 
-userfaultfd the whole address space, and give the userfaultfd fd to the 
-kernel somehow and process the page fault there and fill/copy the 
-faulted page accordingly.
-
-so each userspace process would be backed by a tmpfs mmap region? sound 
-complicated.
-
-with kind regards
-thomas
-
+-- 
+Thanks,
+//richard
 
 ------------------------------------------------------------------------------
 Check out the vibrant tech community on one of the world's most
