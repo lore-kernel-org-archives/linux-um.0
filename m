@@ -1,121 +1,80 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [RFC][PATCH] um: Remove proc command from mconsole
-Date: Sun, 21 May 2017 23:19:03 +0200
-Message-Id: <1495401543-6314-1-git-send-email-richard@nod.at>
+From: Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH v3 2/6] um: Add os_info() for pre-boot information messages
+Date: Thu, 18 May 2017 02:16:05 +0900
+Message-Id: <149504135558.2543.14483185173508886326.stgit@devbox>
+In-Reply-To: <149504121868.2543.16105153409840504430.stgit@devbox>
+References: <149504121868.2543.16105153409840504430.stgit@devbox>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, hch@lst.de, Richard Weinberger <richard@nod.at>
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This feature is another abuser of set_fs().
-Reading proc files from the host side is a debugging feature
-with no security checks at all. The path is not sanitized, therefore
-any file could be read.
-Let's get rid of it.
+Add os_info() for printing out pre-boot information
+level messages in stderr. The messages via os_info()
+are suppressed by "quiet" kernel command line.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
-Hi!
+ arch/um/include/shared/os.h |    2 ++
+ arch/um/os-Linux/util.c     |   25 +++++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-Unless I miss something is feature is not ABI since it was addeded for
-debugging UML only. It is broken wrt. security and abuses set_fs().
-I think we can just remove it.
-
-mconsole_proc anyone? ;)
-
-Thanks,
-//richard
-
----
-
- arch/um/drivers/mconsole_kern.c | 52 -----------------------------------------
- arch/um/drivers/mconsole_user.c |  1 -
- 2 files changed, 53 deletions(-)
-
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index af326fb6510d..b7fedf77f9f3 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -122,57 +122,6 @@ void mconsole_log(struct mc_request *req)
- 	mconsole_reply(req, "", 0, 0);
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index cd1fa97..9e95bce 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -242,6 +242,8 @@ extern void setup_hostinfo(char *buf, int len);
+ extern void os_dump_core(void) __attribute__ ((noreturn));
+ extern void um_early_printk(const char *s, unsigned int n);
+ extern void os_fix_helper_signals(void);
++extern void os_info(const char *fmt, ...)
++	__attribute__ ((format (printf, 1, 2)));
+ 
+ /* time.c */
+ extern void os_idle_sleep(unsigned long long nsecs);
+diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
+index faee55e..c9bad1b 100644
+--- a/arch/um/os-Linux/util.c
++++ b/arch/um/os-Linux/util.c
+@@ -13,6 +13,7 @@
+ #include <wait.h>
+ #include <sys/mman.h>
+ #include <sys/utsname.h>
++#include <init.h>
+ #include <os.h>
+ 
+ void stack_protections(unsigned long address)
+@@ -152,3 +153,27 @@ void um_early_printk(const char *s, unsigned int n)
+ {
+ 	printf("%.*s", n, s);
  }
- 
--void mconsole_proc(struct mc_request *req)
--{
--	struct vfsmount *mnt = task_active_pid_ns(current)->proc_mnt;
--	char *buf;
--	int len;
--	struct file *file;
--	int first_chunk = 1;
--	char *ptr = req->request.data;
--
--	ptr += strlen("proc");
--	ptr = skip_spaces(ptr);
--
--	file = file_open_root(mnt->mnt_root, mnt, ptr, O_RDONLY, 0);
--	if (IS_ERR(file)) {
--		mconsole_reply(req, "Failed to open file", 1, 0);
--		printk(KERN_ERR "open /proc/%s: %ld\n", ptr, PTR_ERR(file));
--		goto out;
--	}
--
--	buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
--	if (buf == NULL) {
--		mconsole_reply(req, "Failed to allocate buffer", 1, 0);
--		goto out_fput;
--	}
--
--	do {
--		loff_t pos = file->f_pos;
--		mm_segment_t old_fs = get_fs();
--		set_fs(KERNEL_DS);
--		len = vfs_read(file, buf, PAGE_SIZE - 1, &pos);
--		set_fs(old_fs);
--		file->f_pos = pos;
--		if (len < 0) {
--			mconsole_reply(req, "Read of file failed", 1, 0);
--			goto out_free;
--		}
--		/* Begin the file content on his own line. */
--		if (first_chunk) {
--			mconsole_reply(req, "\n", 0, 1);
--			first_chunk = 0;
--		}
--		buf[len] = '\0';
--		mconsole_reply(req, buf, 0, (len > 0));
--	} while (len > 0);
-- out_free:
--	kfree(buf);
-- out_fput:
--	fput(file);
-- out: ;
--}
--
- #define UML_MCONSOLE_HELPTEXT \
- "Commands: \n\
-     version - Get kernel version \n\
-@@ -188,7 +137,6 @@ void mconsole_proc(struct mc_request *req)
-     stop - pause the UML; it will do nothing until it receives a 'go' \n\
-     go - continue the UML after a 'stop' \n\
-     log <string> - make UML enter <string> into the kernel log\n\
--    proc <file> - returns the contents of the UML's /proc/<file>\n\
-     stack <pid> - returns the stack of the specified pid\n\
- "
- 
-diff --git a/arch/um/drivers/mconsole_user.c b/arch/um/drivers/mconsole_user.c
-index 99209826adb1..59d81d7ead58 100644
---- a/arch/um/drivers/mconsole_user.c
-+++ b/arch/um/drivers/mconsole_user.c
-@@ -30,7 +30,6 @@ static struct mconsole_command commands[] = {
- 	{ "stop", mconsole_stop, MCONSOLE_PROC },
- 	{ "go", mconsole_go, MCONSOLE_INTR },
- 	{ "log", mconsole_log, MCONSOLE_INTR },
--	{ "proc", mconsole_proc, MCONSOLE_PROC },
- 	{ "stack", mconsole_stack, MCONSOLE_INTR },
- };
- 
--- 
-2.7.3
++
++static int quiet_info;
++
++static int __init quiet_cmd_param(char *str, int *add)
++{
++	quiet_info = 1;
++	return 0;
++}
++
++__uml_setup("quiet", quiet_cmd_param,
++"quiet\n"
++"    Turns off information messages during boot.\n\n");
++
++void os_info(const char *fmt, ...)
++{
++	va_list list;
++
++	if (quiet_info)
++		return;
++
++	va_start(list, fmt);
++	vfprintf(stderr, fmt, list);
++	va_end(list);
++}
 
 
