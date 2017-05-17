@@ -1,8 +1,8 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v3 2/6] um: Add os_info() for pre-boot information messages
-Date: Thu, 18 May 2017 02:16:05 +0900
-Message-Id: <149504135558.2543.14483185173508886326.stgit@devbox>
+Subject: [PATCH v3 4/6] um: Add os_warn() for pre-boot warning/error messages
+Date: Thu, 18 May 2017 02:18:22 +0900
+Message-Id: <149504149247.2543.13383504719985646493.stgit@devbox>
 In-Reply-To: <149504121868.2543.16105153409840504430.stgit@devbox>
 References: <149504121868.2543.16105153409840504430.stgit@devbox>
 MIME-Version: 1.0
@@ -13,64 +13,41 @@ To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Add os_info() for printing out pre-boot information
-level messages in stderr. The messages via os_info()
-are suppressed by "quiet" kernel command line.
+Add os_warn() for printing out pre-boot warning/error
+messages in stderr. The messages via os_warn() are not
+suppressed by quiet option.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
  arch/um/include/shared/os.h |    2 ++
- arch/um/os-Linux/util.c     |   25 +++++++++++++++++++++++++
- 2 files changed, 27 insertions(+)
+ arch/um/os-Linux/util.c     |    9 +++++++++
+ 2 files changed, 11 insertions(+)
 
 diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index cd1fa97..9e95bce 100644
+index 9e95bce..574e03f 100644
 --- a/arch/um/include/shared/os.h
 +++ b/arch/um/include/shared/os.h
-@@ -242,6 +242,8 @@ extern void setup_hostinfo(char *buf, int len);
- extern void os_dump_core(void) __attribute__ ((noreturn));
- extern void um_early_printk(const char *s, unsigned int n);
+@@ -244,6 +244,8 @@ extern void um_early_printk(const char *s, unsigned int n);
  extern void os_fix_helper_signals(void);
-+extern void os_info(const char *fmt, ...)
+ extern void os_info(const char *fmt, ...)
+ 	__attribute__ ((format (printf, 1, 2)));
++extern void os_warn(const char *fmt, ...)
 +	__attribute__ ((format (printf, 1, 2)));
  
  /* time.c */
  extern void os_idle_sleep(unsigned long long nsecs);
 diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
-index faee55e..c9bad1b 100644
+index c9bad1b..8cc8b26 100644
 --- a/arch/um/os-Linux/util.c
 +++ b/arch/um/os-Linux/util.c
-@@ -13,6 +13,7 @@
- #include <wait.h>
- #include <sys/mman.h>
- #include <sys/utsname.h>
-+#include <init.h>
- #include <os.h>
- 
- void stack_protections(unsigned long address)
-@@ -152,3 +153,27 @@ void um_early_printk(const char *s, unsigned int n)
- {
- 	printf("%.*s", n, s);
+@@ -177,3 +177,12 @@ void os_info(const char *fmt, ...)
+ 	vfprintf(stderr, fmt, list);
+ 	va_end(list);
  }
 +
-+static int quiet_info;
-+
-+static int __init quiet_cmd_param(char *str, int *add)
-+{
-+	quiet_info = 1;
-+	return 0;
-+}
-+
-+__uml_setup("quiet", quiet_cmd_param,
-+"quiet\n"
-+"    Turns off information messages during boot.\n\n");
-+
-+void os_info(const char *fmt, ...)
++void os_warn(const char *fmt, ...)
 +{
 +	va_list list;
-+
-+	if (quiet_info)
-+		return;
 +
 +	va_start(list, fmt);
 +	vfprintf(stderr, fmt, list);
