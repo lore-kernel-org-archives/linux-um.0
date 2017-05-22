@@ -1,142 +1,171 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH] um: Avoid longjmp/setjmp symbol clashes with libpthread.a
-Date: Tue, 23 May 2017 14:08:13 -0700
-Message-Id: <20170523210813.22816-1-f.fainelli@gmail.com>
+References: <1495059066.27187.2.camel@m3y3r.de> <CAFLxGvxC2eRKjottu5rW4vSb-keSOwESw2-MLUUz6HhFVMoXvw@mail.gmail.com> <7A5DDA50-2F78-4DF2-9D0B-FC6E8A49D6F8@m3y3r.de> <d7195d6f-4bfc-d564-e011-1ea86d199649@nod.at> <56E4E4A4-1D68-4A1F-A80C-D924BA907BC7@m3y3r.de> <226aeb10-87bc-f891-e709-1125e4d6011c@nod.at>
+Mime-Version: 1.0 (1.0)
+In-Reply-To: <226aeb10-87bc-f891-e709-1125e4d6011c@nod.at>
+Content-Type: multipart/signed;
+        micalg=sha1;
+        boundary=Apple-Mail-CA7F1B08-FA0B-4944-B44C-9CA5D62724CB;
+        protocol="application/pkcs7-signature"
+Content-Transfer-Encoding: 7bit
+Message-Id: <614EDA29-4BC8-4DE8-BEFA-8D251FF68C6C@m3y3r.de>
+From: Thomas Meyer <thomas@m3y3r.de>
+Subject: Re: [uml-devel] [PATCH] um: Add mark_rodata_ro support.
+Date: Mon, 22 May 2017 22:40:07 +0200
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, "open list:USER-MODE LINUX" <user-mode-linux-devel@lists.sourceforge.net>, , "open list:USER-MODE LINUX" <user-mode-linux-user@lists.sourceforge.net>, 
+To: Richard Weinberger <richard@nod.at>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Building a statically linked UML kernel on a Centos 6.9 host resulted in
-the following linking failure (GCC 4.4, glibc-2.12):
 
-/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
-In function `siglongjmp':
-(.text+0x8490): multiple definition of `longjmp'
-arch/x86/um/built-in.o:/local/users/fainelli/openwrt/trunk/build_dir/target-x86_64_musl/linux-uml/linux-4.4.69/arch/x86/um/setjmp_64.S:44:
-first defined here
-/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
-In function `sem_open':
-(.text+0x77cd): warning: the use of `mktemp' is dangerous, better use
-`mkstemp'
-collect2: ld returned 1 exit status
-make[4]: *** [vmlinux] Error 1
+--Apple-Mail-CA7F1B08-FA0B-4944-B44C-9CA5D62724CB
+Content-Type: text/plain;
+	charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 
-Adopt a solution similar to the one done for vmap where we define
-longjmp/setjmp to be kernel_longjmp/setjmp. In the process, make sure we
-do rename the functions in arch/x86/um/setjmp_*.S accordingly.
 
-Fixes: a7df4716d195 ("um: link with -lpthread")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/um/Makefile        |  4 ++++
- arch/x86/um/setjmp_32.S | 16 ++++++++--------
- arch/x86/um/setjmp_64.S | 16 ++++++++--------
- 3 files changed, 20 insertions(+), 16 deletions(-)
+> Am 22.05.2017 um 21:37 schrieb Richard Weinberger <richard@nod.at>:
+>=20
+> Thomas,
+>=20
+>> Am 22.05.2017 um 21:18 schrieb Thomas Meyer:
+>>=20
+>>> Am 22.05.2017 um 20:34 schrieb Richard Weinberger <richard@nod.at>:
+>>>=20
+>>> Thomas,
+>>>=20
+>>>> Am 22.05.2017 um 20:14 schrieb Thomas Meyer:
+>>>> It's purely cosmetic; to get rid of the boot message: "This architectur=
+e does not have kernel memory protection." in init/main.c
+>>>>=20
+>>>> Which isn't true for UML as all read only stuff should end up in a read=
+ only ELF section. Shouldn't it?
+>>>=20
+>>> Hmm, reading /proc/<pid of uml>/maps tells a different story on my host.=
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 0ca46ededfc7..6ca4f66085c1 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -59,10 +59,14 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
- # Same things for in6addr_loopback and mktime - found in libc. For these two we
- # only get link-time error, luckily.
- #
-+# -Dlongjmp=kernel_longjmp prevents anything from referencing the libpthread.a
-+# embedded copy of longjmp, same thing for setjmp.
-+#
- # These apply to USER_CFLAGS to.
- 
- KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
- 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
-+	-Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
- 	-Din6addr_loopback=kernel_in6addr_loopback \
- 	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
- 
-diff --git a/arch/x86/um/setjmp_32.S b/arch/x86/um/setjmp_32.S
-index b766792c9933..16ccb6492e16 100644
---- a/arch/x86/um/setjmp_32.S
-+++ b/arch/x86/um/setjmp_32.S
-@@ -16,9 +16,9 @@
- 
- 	.text
- 	.align 4
--	.globl setjmp
--	.type setjmp, @function
--setjmp:
-+	.globl kernel_setjmp
-+	.type kernel_setjmp, @function
-+kernel_setjmp:
- #ifdef _REGPARM
- 	movl %eax,%edx
- #else
-@@ -35,13 +35,13 @@ setjmp:
- 	movl %ecx,20(%edx)		# Return address
- 	ret
- 
--	.size setjmp,.-setjmp
-+	.size kernel_setjmp,.-kernel_setjmp
- 
- 	.text
- 	.align 4
--	.globl longjmp
--	.type longjmp, @function
--longjmp:
-+	.globl kernel_jongjmp
-+	.type kernel_jongjmp, @function
-+kernel_jongjmp:
- #ifdef _REGPARM
- 	xchgl %eax,%edx
- #else
-@@ -55,4 +55,4 @@ longjmp:
- 	movl 16(%edx),%edi
- 	jmp *20(%edx)
- 
--	.size longjmp,.-longjmp
-+	.size kernel_jongjmp,.-kernel_jongjmp
-diff --git a/arch/x86/um/setjmp_64.S b/arch/x86/um/setjmp_64.S
-index 45f547b4043e..eeb39352897a 100644
---- a/arch/x86/um/setjmp_64.S
-+++ b/arch/x86/um/setjmp_64.S
-@@ -18,9 +18,9 @@
- 
- 	.text
- 	.align 4
--	.globl setjmp
--	.type setjmp, @function
--setjmp:
-+	.globl kernel_setjmp
-+	.type kernel_setjmp, @function
-+kernel_setjmp:
- 	pop  %rsi			# Return address, and adjust the stack
- 	xorl %eax,%eax			# Return value
- 	movq %rbx,(%rdi)
-@@ -34,13 +34,13 @@ setjmp:
- 	movq %rsi,56(%rdi)		# Return address
- 	ret
- 
--	.size setjmp,.-setjmp
-+	.size kernel_setjmp,.-kernel_setjmp
- 
- 	.text
- 	.align 4
--	.globl longjmp
--	.type longjmp, @function
--longjmp:
-+	.globl kernel_jongjmp
-+	.type kernel_jongjmp, @function
-+kernel_jongjmp:
- 	movl %esi,%eax			# Return value (int)
- 	movq (%rdi),%rbx
- 	movq 8(%rdi),%rsp
-@@ -51,4 +51,4 @@ longjmp:
- 	movq 48(%rdi),%r15
- 	jmp *56(%rdi)
- 
--	.size longjmp,.-longjmp
-+	.size kernel_jongjmp,.-kernel_jongjmp
--- 
-2.12.2
+>>> Did you check?
+>>=20
+>> No... I may should have done so...
+>>=20
+>> Okay, but it should be possible to mprotect those regions ?
+>=20
+> Yes, it should.
+> Can you give it a try?
 
+Will do so!
+
+>=20
+> Thanks,
+> //richard
+>=20
+> --------------------------------------------------------------------------=
+----
+> Check out the vibrant tech community on one of the world's most
+> engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+
+--Apple-Mail-CA7F1B08-FA0B-4944-B44C-9CA5D62724CB
+Content-Type: application/pkcs7-signature;
+	name=smime.p7s
+Content-Disposition: attachment;
+	filename=smime.p7s
+Content-Transfer-Encoding: base64
+
+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
+PeLMnEm7tRjvT6lNp81SDvaRGPbrU4BZ1k/FGHiV+XitX0bypL12DS64bKo8OEgN4IMYYg3dXg9u
++gpn0rc8/l7AUrKUk0IlcvKrnvhNpxQ3xWxr7YeYANUny6Z5XVgLAkgaLmbF6J7Dl1VuAxjTve2S
+1k2PNUQ/dnJmNCCR/bjjqTW69An093a5Z7/zrgunfPWQCNXtTtfKkQlPSVplOasg1m47e7uBj4bF
+dNvBwZ641Aev4xEKqg9WMMK3Vy03LmbZa0IK48Vg1FP4XDmZeqBRKAooVbb5iQIDAQABo4IBbTCC
+AWkwGgYDVR0RBBMwEYEPdGhvbWFzQG0zeTNyLmRlMA4GA1UdDwEB/wQEAwIGwDATBgNVHSUEDDAK
+BggrBgEFBQcDBDBCBgNVHR8EOzA5MDegNaAzhjFodHRwOi8vdm9sa3N2ZXJzY2hsdWVzc2VsdW5n
+LmRlL2NybC9wcml2YXRlY2EuY3JsMH4GCCsGAQUFBwEBBHIwcDA8BggrBgEFBQcwAoYwaHR0cDov
+L3ZvbGtzdmVyc2NobHVlc3NlbHVuZy5kZS9jYS9wcml2YXRlY2EuY3J0MDAGCCsGAQUFBzABhiRo
+dHRwOi8vb2NzcC52b2xrc3ZlcnNjaGx1ZXNzZWx1bmcuZGUwFAYDVR0gBA0wCzAJBgcrJA8JAQEB
+MB0GA1UdDgQWBBQ6nNQ4hduFPYI2tI0+IcC/wTZSSDAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaA
+FEJzCOU+QLR+x4VXEHf9EQ9FhKfdMA0GCSqGSIb3DQEBCwUAA4ICAQCDrepf05Bm93sh+Db4Vgee
+W2GweWJDGhHj1vuWowuaXoRgSz0G+QQWs4OBljzU9e6/W63jFrXqCM495tS4LbpcRqNzvN8mVEuF
+8mYw9ZM7YG9Nx+Y3Pt7IDrOgWpw8hmEFNAfb8/dTMaMDHkPGYqLOvJA2rgk8rK5eJ2cSZ3TFAc5Z
+lz/Tq1PB59Jl/nzIabBo6x7tvhjiqSL/R0fg/oi9nRvevNrCEWe/JjBoOST51HWV/91PaasDLEG/
+OFG1lWsy7m0kYx4mHgxlsRVznIE9V1IguNi+1bY2k44mRNscufUNgVezto4JBARIEuLhFgIXQ8Vv
+5r0ynhpsDtIfuI/NejqUlenSNe99FssF0GOluZ6qovSLb+f5GcLhcEf8OV0tUaAhEryL5w7rh4Hq
+ca1IZ1OxDkTNxgQVOr9qihZhQblH6HWYzi3C2nFvWdVqcQV+ZAppZqF7HD1A23FiFOter5V5CDy8
+19dZc9Dwu0MowmVZiOlh2mhPk1ID2vCSGtM2KGq/ZnJH9gnjzN3B0WJg0dmVQdtggCgj4Caq7f4V
+tY9K1oIIyIuo6mpjBk+LFtgI+kWdDpsU6fzEyq3PmTW/0/cYzI1kJvUztj+0AHNyCBij4F3Yf3mi
+Ob88vCPJPZg6Rhry9hxwX13zHbEE6FfiWRcxWihkwFXmEckbUR5YFDCCBoIwggRqoAMCAQICCA7P
+iiLFnseHMA0GCSqGSIb3DQEBCwUAME4xJjAkBgNVBAMMHVZvbGtzdmVyc2NobHVlc3NlbHVuZyBS
+b290IENBMRcwFQYDVQQKDA5GcmF1bmhvZmVyIFNJVDELMAkGA1UEBhMCREUwHhcNMTYwNTA5MTQw
+OTEzWhcNMjEwNTEwMTQwOTEzWjBRMSkwJwYDVQQDDCBWb2xrc3ZlcnNjaGx1ZXNzZWx1bmcgUHJp
+dmF0ZSBDQTEXMBUGA1UECgwORnJhdW5ob2ZlciBTSVQxCzAJBgNVBAYTAkRFMIICIjANBgkqhkiG
+9w0BAQEFAAOCAg8AMIICCgKCAgEAzNfyQJBPr3f99kqZCdW9r9U2EKFTXg6IuLh8LWKsZHo8XiRE
+BarheOkdxdSKW9FTUEZUdwWk1uwpuDYnIfEcKrTAOiItrdRJc98h2yhD6tlZgSLY/B9Vjw2LQIZZ
+WVnsYVvBOxYznfaveDY7HfowbXgERxv30sQqNZP+KhUB3JjQ1pVAVyLZxK+j8a7k1bFH955kkJ6G
++AoTzZzHj5Bn9LUTFvP7RsB2rNPy+GBZ52EvdlqrGEi7JKvM9M8jffA6RZ8OzXS1utng5jWj+efw
+Hg5Wr4JC3YZs/TpNogPVyw4vDjCF/RI56mrSUQBXm1IVjuWM8qUhphBR2gRZN0sATWCj8pWG1pLl
+Mz02Ddg/AbZ7V9C6MwH4I6nGQ1XxhNSkWSrUQUnXYrOoA8T0IH/6AuY7ukMrj+KLJtTlM1Y+sOXR
+Zyk/QFSgVP/5AbT82ErsVZW1q7JDLkaEdwrPDFXQNqfrlIsYI3FYrgB6rVJG3tZ/3LMmFHNQVnTX
+hCiy6mUFpogdAl1QxXeNMWAdVLMBBm/iY9IZwtqb9G/Gxt19QmHLpLwyo4nVX1F7Got+yLYzfrLf
+0toMk3Kjj7uhlndhpkoeFwDKMioi1dsUn3zxRK6dwaPzkKsphj8ybXFBr3s68A4+xKmaQxR7gcg9
+tPKB/pTyC8vtkAl1lfNU14IV2ikCAwEAAaOCAV8wggFbMEkGCCsGAQUFBwEBBD0wOzA5BggrBgEF
+BQcwAoYtaHR0cDovL3ZvbGtzdmVyc2NobHVlc3NlbHVuZy5kZS9jYS9yb290Y2EuY3J0MB0GA1Ud
+DgQWBBRCcwjlPkC0fseFVxB3/REPRYSn3TASBgNVHRMBAf8ECDAGAQH/AgEAMB8GA1UdIwQYMBaA
+FBeNp8XO7dqGdP5+TYW2xuL7R78PMBEGA1UdIAQKMAgwBgYEVR0gADCBlgYDVR0fBIGOMIGLMIGI
+oDKgMIYuaHR0cDovL3ZvbGtzdmVyc2NobHVlc3NlbHVuZy5kZS9jcmwvcm9vdGNhLmNybKJSpFAw
+TjEmMCQGA1UEAwwdVm9sa3N2ZXJzY2hsdWVzc2VsdW5nIFJvb3QgQ0ExFzAVBgNVBAoMDkZyYXVu
+aG9mZXIgU0lUMQswCQYDVQQGEwJERTAOBgNVHQ8BAf8EBAMCAQYwDQYJKoZIhvcNAQELBQADggIB
+AFlX5ruAA0T3RL9Z+NQo7syDNwv3n1p1eSIloJlKGkIlHdNUJNxfjvzpLvm1n47sUsbHlZOW7MDK
+P2ODo94i5yHKEB2TPQF4NMJBsiH60xQuFQDgKd5nawBOgs1hVJR0ijGlMipwrYwfdNvyrXCHGew0
+PDuRcRa53VRR3vE1vxhHYpbyPOdq3s2Q+TfvF3ihr+WkvujnSQocg65bY/Tj4+ARjdt1odI4HzHw
+gDPc3SfUPgOEedte23oU8Y2LRpKpb9eHeb0hH32hQ+QOToULISE42ymiG5MOi4hxKUUZrGIK+BQ9
+r/dABOsbskFA7j7rL/k5+v2j73oLals47S1BRHsIU3pX7K5XfVnDTVu5vSlLCjEV+C9pqHv0pDB5
+fhQb6ZImjWJfkFdvFry+EYbbpogMr+seUytfUmd+8cz05d1ncTUN926iiY6AGxSKCRvHbrtQdVFJ
+IX4jlKIpnDg4DH9Xlatlr/K/zNAIxiiNXrQND+UmhEgf2Rb0Ba3whIc9moXGQEjZdrt4qLJjtccq
+OcOgvNszFuFIvhzpdH69+twIZtM4fBP1AjVfRxRhhNmAzz701bcAGv2vRgYURHsQ+GoedTGnhgAi
+WjwSoIkQlD7mjjB7/ayUWCCbQ4AW0/Wjja2B9ahRQkQwSn3F1eBeuXRHM5Jk54/yq6uT7rnZG93n
+MYICwzCCAr8CAQEwXTBRMSkwJwYDVQQDDCBWb2xrc3ZlcnNjaGx1ZXNzZWx1bmcgUHJpdmF0ZSBD
+QTEXMBUGA1UECgwORnJhdW5ob2ZlciBTSVQxCzAJBgNVBAYTAkRFAggSgbEVWeufUzAJBgUrDgMC
+GgUAoIIBOzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xNzA1MjIy
+MDQwMDdaMCMGCSqGSIb3DQEJBDEWBBTtNWFryBmU/pu9ULPVXJXPsULv4jBsBgkrBgEEAYI3EAQx
+XzBdMFExKTAnBgNVBAMMIFZvbGtzdmVyc2NobHVlc3NlbHVuZyBQcml2YXRlIENBMRcwFQYDVQQK
+DA5GcmF1bmhvZmVyIFNJVDELMAkGA1UEBhMCREUCCBKBsRVZ659TMG4GCyqGSIb3DQEJEAILMV+g
+XTBRMSkwJwYDVQQDDCBWb2xrc3ZlcnNjaGx1ZXNzZWx1bmcgUHJpdmF0ZSBDQTEXMBUGA1UECgwO
+RnJhdW5ob2ZlciBTSVQxCzAJBgNVBAYTAkRFAggSgbEVWeufUzANBgkqhkiG9w0BAQEFAASCAQAJ
+P+EShXM22poocttyOyfpqzSBfhe3dlvR7G6+ZVmuTe2kKcBh9IM3nAetWZJrl7Z1Bei0dajQrY/j
+XV1RqDERR8vLGZ5TkUY1uoyuRjBlSGmxDKMUTh7MSBqqHi6A+evi0ZT6Pl55/eU3v/maejYE0UZK
+R1qVqWdepvBfuxDwu/1VYczOc710EEBTUNDq19QEDz03tMOh5yCF3zAm4pYj4mK8tz6mc/91GzV3
+RASIUTLqRRCPrU+u+vqztLC7p084SBaHgFmxfzZdk2kjvor1Q8dL+QCoyo1yZ4LKltEd5J2r/9Y4
+zgL+is16kH+u8P4MMPwcYRToHE7WKReqb+0cAAAAAAAA
+--Apple-Mail-CA7F1B08-FA0B-4944-B44C-9CA5D62724CB--
 
