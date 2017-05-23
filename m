@@ -1,43 +1,62 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: Multiple longjmp definitions with STATIC_LINKING=y
-Message-ID: <4999b293-42a6-bf88-ef0b-af5e0fc3729c@gmail.com>
-Date: Mon, 22 May 2017 20:28:01 -0700
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+	helo=mx.sourceforge.net)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard.weinberger@gmail.com>) id 1dDFWU-0006kz-Gw
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 May 2017 19:31:14 +0000
+Received: from mail-oi0-f45.google.com ([209.85.218.45])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1dDFWT-0000AD-Gs
+	for user-mode-linux-devel@lists.sourceforge.net;
+	Tue, 23 May 2017 19:31:14 +0000
+Received: by mail-oi0-f45.google.com with SMTP id b204so215028450oii.1
+	for <user-mode-linux-devel@lists.sourceforge.net>;
+	Tue, 23 May 2017 12:31:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+In-Reply-To: <E1dDE2Y-0002Kh-4L@www17.your-server.de>
+References: <E1dDE2Y-0002Kh-4L@www17.your-server.de>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Tue, 23 May 2017 21:31:07 +0200
+Message-ID: <CAFLxGvxNH0JM1STW6wRuLCPYeDya3c9j0S6z2g2BVWUegmWDNg@mail.gmail.com>
+Subject: Re: [uml-devel] um: prinft patches from Masami Hiramatsu
+List-Id: The user-mode Linux development list
+	<user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
+	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, jdike@addtoit.com, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Thomas Meyer <thomas@m3y3r.de>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
 
-Hi Richard,
+On Tue, May 23, 2017 at 7:56 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
+> Hi,
+>
+>
+>
+> did you see those patches?
+>
+>
+>
+> https://marc.info/?l=linux-kernel&m=149337486632399&w=2
 
-I have been playing with UML again and trying to get it to statically
-link on a CentOS 6.9 host that has:
+Yes, they are on my TODO.
 
-glibc-2.12-static
-gcc-4.4
-
-installed results in the following:
-
-/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
-In function `siglongjmp':
-(.text+0x8490): multiple definition of `longjmp'
-arch/x86/um/built-in.o:/local/users/fainelli/openwrt/trunk/build_dir/target-x86_64_musl/linux-uml/linux-4.4.69/arch/x86/um/setjmp_64.S:44:
-first defined here
-/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
-In function `sem_open':
-(.text+0x77cd): warning: the use of `mktemp' is dangerous, better use
-`mkstemp'
-collect2: ld returned 1 exit status
-make[4]: *** [vmlinux] Error 1
-
-Should we have some linker script magic not to export this symbol and
-prevent a clash with libpthread.a pulling its own version?
-
-Thanks!
 -- 
-Florian
+Thanks,
+//richard
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
