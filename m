@@ -1,39 +1,28 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-References: <1495663252-22434-1-git-send-email-logang@deltatee.com>
- <20170524220510.GF390@ZenIV.linux.org.uk>
-From: Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <b8de9b34-0f7c-1486-3a64-5b727cef7925@deltatee.com>
-Date: Wed, 24 May 2017 16:09:06 -0600
-MIME-Version: 1.0
-In-Reply-To: <20170524220510.GF390@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Date: Wed, 24 May 2017 23:05:10 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
 Subject: Re: [PATCH] um: add dummy ioremap and iounmap functions
+Message-ID: <20170524220510.GF390@ZenIV.linux.org.uk>
+References: <1495663252-22434-1-git-send-email-logang@deltatee.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1495663252-22434-1-git-send-email-logang@deltatee.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Al Viro <viro@ZenIV.linux.org.uk>
+To: Logan Gunthorpe <logang@deltatee.com>
 Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Stephen Bates <sbates@raithlin.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-
-
-On 24/05/17 04:05 PM, Al Viro wrote:
->> I have designs to use these functions in scatterlist.c where they'd
->> almost certainly never be called on the um architecture but it does need
->> to compile.
+On Wed, May 24, 2017 at 04:00:52PM -0600, Logan Gunthorpe wrote:
+> The user mode architecture does not provide ioremap or iounmap, and
+> because of this, the arch won't build when the functions are used in some
+> core libraries.
 > 
-> Then make it fail there.
+> I have designs to use these functions in scatterlist.c where they'd
+> almost certainly never be called on the um architecture but it does need
+> to compile.
 
-Ok, will do. I'll send a v2 patch shortly.
+Then make it fail there.
 
-> Incidentally, s390 has ioremap() only when CONFIG_PCI is set.
-
-Hmm, ok, I'll take a peek. The kbuild robot never reported any build
-issues with that architecture. I did see exactly this on the tile
-architecture which I sent another patch for (that your feedback also
-applies to).
-
-Thanks for the quick review and feedback,
-
-Logan
-
+Incidentally, s390 has ioremap() only when CONFIG_PCI is set.
 
