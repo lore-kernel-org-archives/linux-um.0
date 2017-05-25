@@ -1,42 +1,43 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v3 6/6] um: console: Ignore console= option
-Date: Thu, 18 May 2017 02:20:39 +0900
-Message-Id: <149504162935.2543.7607268470355629384.stgit@devbox>
-In-Reply-To: <149504121868.2543.16105153409840504430.stgit@devbox>
-References: <149504121868.2543.16105153409840504430.stgit@devbox>
+Subject: Re: [PATCH v2] um: Allow building and running on older hosts
+References: <20170525183627.9375-1-f.fainelli@gmail.com>
+ <B6DC63CC-D5A9-4A56-9832-DD6BD1720CBC@m3y3r.de>
+ <82371937-3efc-06e7-8394-2acbb8d38d3a@gmail.com>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <39e78e3c-553a-a8a6-ffc4-9e6c0098b78c@nod.at>
+Date: Fri, 26 May 2017 00:34:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <82371937-3efc-06e7-8394-2acbb8d38d3a@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Florian Fainelli <f.fainelli@gmail.com>, Thomas Meyer <thomas@m3y3r.de>
+Cc: linux-kernel@vger.kernel.org, elicooper@gmx.com, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Ignore linux kernel's console= option at uml's console
-option handler. Since uml's con= option is only for
-setting up new console, and Linux kernel's console=
-option specify to which console kernel output its
-message, we can use both option for different purpose.
+Thomas, Florian,
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/um/drivers/stdio_console.c |    3 +++
- 1 file changed, 3 insertions(+)
+Am 26.05.2017 um 00:28 schrieb Florian Fainelli:
+> On 05/25/2017 12:51 PM, Thomas Meyer wrote:
+>>
+>>> Am 25.05.2017 um 20:36 schrieb Florian Fainelli <f.fainelli@gmail.com>:
+>>>
+>>> Commit a78ff1112263 ("um: add extended processor state save/restore
+>>> support") and b6024b21fec8 ("um: extend fpstate to _xstate to support
+>>> YMM registers") forced the use of the x86 FP _xstate and
+>>> PTRACE_GETREGSET/SETREGSET. On older hosts, we would neither be able to
+>>> build UML nor run it anymore with these two commits applied because we
+>>> don't have definitions for struct _xstate nor these two ptrace requests.
+>>
+>> Btw. what soy you mean with older host? I need to revert two commits to make an UML kernel work again on a Fedora 25 installation.
+> 
+> This is centos 6.9, so kernel 2.6.32 and glibc 2.12, this neither has
+> xstate nor PTRACE_GETREGSET/SETREGSET, hence this patch.
 
-diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
-index 7b361f3..c90817b 100644
---- a/arch/um/drivers/stdio_console.c
-+++ b/arch/um/drivers/stdio_console.c
-@@ -192,6 +192,9 @@ __uml_exitcall(console_exit);
- 
- static int console_chan_setup(char *str)
- {
-+	if (!strncmp(str, "sole=", 5))	/* console= option specifies tty */
-+		return 0;
-+
- 	line_setup(vt_conf, MAX_TTYS, &def_conf, str, "console");
- 	return 1;
- }
+Commits a78ff1112263 and b6024b21fec8 are broken.
+You see two different issues.
+Eli, please have a look too.
 
+Thanks,
+//richard
 
