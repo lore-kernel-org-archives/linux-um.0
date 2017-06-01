@@ -1,79 +1,48 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+Subject: Re: [PATCH v2] um: Allow building and running on older hosts
+References: <20170525183627.9375-1-f.fainelli@gmail.com>
+ <B6DC63CC-D5A9-4A56-9832-DD6BD1720CBC@m3y3r.de>
+ <82371937-3efc-06e7-8394-2acbb8d38d3a@gmail.com>
+ <39e78e3c-553a-a8a6-ffc4-9e6c0098b78c@nod.at>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <6cda703d-f128-12c7-1437-7f73ae46adca@gmail.com>
+Date: Thu, 1 Jun 2017 13:40:10 -0700
 MIME-Version: 1.0
-In-Reply-To: <149326290055.18877.8217119813162466170.stgit@devbox>
-References: <149326283034.18877.3371130154502733533.stgit@devbox> <149326290055.18877.8217119813162466170.stgit@devbox>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 3 May 2017 22:53:44 +0200
-Message-ID: <CAFLxGvxTE7Gsqeu71=0jyYOX7F6hoSiNNVPSq1tFGCp7_9ZqGA@mail.gmail.com>
-Subject: Re: [PATCH] um: Fix to call read_initrd after init_bootmem
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <39e78e3c-553a-a8a6-ffc4-9e6c0098b78c@nod.at>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+To: Richard Weinberger <richard@nod.at>, Thomas Meyer <thomas@m3y3r.de>, elicooper@gmx.com
+Cc: linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Apr 27, 2017 at 5:15 AM, Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> Since read_initrd() invokes alloc_bootmem() for allocating
-> memory to load initrd image, it must be called after init_bootmem.
->
-> This makes read_initrd() called directly from setup_arch()
-> after init_bootmem() and mem_total_pages().
->
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  arch/um/kernel/initrd.c  |    4 +---
->  arch/um/kernel/um_arch.c |    6 ++++++
->  2 files changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/um/kernel/initrd.c b/arch/um/kernel/initrd.c
-> index 48bae81..6f6e789 100644
-> --- a/arch/um/kernel/initrd.c
-> +++ b/arch/um/kernel/initrd.c
-> @@ -14,7 +14,7 @@
->  static char *initrd __initdata = NULL;
->  static int load_initrd(char *filename, void *buf, int size);
->
-> -static int __init read_initrd(void)
-> +int __init read_initrd(void)
->  {
->         void *area;
->         long long size;
-> @@ -46,8 +46,6 @@ static int __init read_initrd(void)
->         return 0;
->  }
->
-> -__uml_postsetup(read_initrd);
-> -
->  static int __init uml_initrd_setup(char *line, int *add)
->  {
->         initrd = line;
-> diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-> index 4b85acd..64a1fd0 100644
-> --- a/arch/um/kernel/um_arch.c
-> +++ b/arch/um/kernel/um_arch.c
-> @@ -338,11 +338,17 @@ int __init linux_main(int argc, char **argv)
->         return start_uml();
->  }
->
-> +int __init __weak read_initrd(void)
-> +{
-> +       return 0;
-> +}
-> +
->  void __init setup_arch(char **cmdline_p)
->  {
->         stack_protections((unsigned long) &init_thread_info);
->         setup_physmem(uml_physmem, uml_reserved, physmem_size, highmem);
->         mem_total_pages(physmem_size, iomem_size, highmem);
-> +       read_initrd();
->
->         paging_init();
->         strlcpy(boot_command_line, command_line, COMMAND_LINE_SIZE);
->
+On 05/25/2017 03:34 PM, Richard Weinberger wrote:
+> Thomas, Florian,
+> 
+> Am 26.05.2017 um 00:28 schrieb Florian Fainelli:
+>> On 05/25/2017 12:51 PM, Thomas Meyer wrote:
+>>>
+>>>> Am 25.05.2017 um 20:36 schrieb Florian Fainelli <f.fainelli@gmail.com>:
+>>>>
+>>>> Commit a78ff1112263 ("um: add extended processor state save/restore
+>>>> support") and b6024b21fec8 ("um: extend fpstate to _xstate to support
+>>>> YMM registers") forced the use of the x86 FP _xstate and
+>>>> PTRACE_GETREGSET/SETREGSET. On older hosts, we would neither be able to
+>>>> build UML nor run it anymore with these two commits applied because we
+>>>> don't have definitions for struct _xstate nor these two ptrace requests.
+>>>
+>>> Btw. what soy you mean with older host? I need to revert two commits to make an UML kernel work again on a Fedora 25 installation.
+>>
+>> This is centos 6.9, so kernel 2.6.32 and glibc 2.12, this neither has
+>> xstate nor PTRACE_GETREGSET/SETREGSET, hence this patch.
+> 
+> Commits a78ff1112263 and b6024b21fec8 are broken.
+> You see two different issues.
+> Eli, please have a look too.
 
-Applied.
-
+Eli, can we get an answer here? And Thomas what's that problem that
+Richard is referring to?
 -- 
-Thanks,
-//richard
+Florian
 
