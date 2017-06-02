@@ -13,33 +13,67 @@ References: <20170524003232.14319-1-f.fainelli@gmail.com>
  <8dd50867-312d-8af9-0993-4b5d5c181a58@gmail.com>
  <e53ebfee-0b8a-0fe6-c2d3-eb6fb4aa9e2c@nod.at>
  <1496352322.9072.1.camel@m3y3r.de>
- <3672f56d-da81-1114-f06a-ac99d3680661@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <0effc7cf-7a86-bed6-58cf-d8fd6d3febd6@nod.at>
-Date: Fri, 2 Jun 2017 09:38:45 +0200
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <3672f56d-da81-1114-f06a-ac99d3680661@gmail.com>
+Date: Thu, 1 Jun 2017 22:49:03 -0700
 MIME-Version: 1.0
-In-Reply-To: <3672f56d-da81-1114-f06a-ac99d3680661@gmail.com>
+In-Reply-To: <1496352322.9072.1.camel@m3y3r.de>
 Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: Florian Fainelli <f.fainelli@gmail.com>, Thomas Meyer <thomas@m3y3r.de>, linux-kernel@vger.kernel.org
+To: Thomas Meyer <thomas@m3y3r.de>, Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
 Cc: Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Thomas,
 
-Am 02.06.2017 um 07:49 schrieb Florian Fainelli:
->> the put_fp_registers fails with errno 4 if I recall correctly.
+
+On 06/01/2017 02:25 PM, Thomas Meyer wrote:
+> Am Donnerstag, den 01.06.2017, 22:58 +0200 schrieb Richard Weinberger:
 >>
->> I didn't investigate yet further, why the the xstate ptrace call fails.
+>> Sorry, I thought you are CC'ed.
+>> Thomas please speak up. AFAIR UML fails to boot on one of your new
+>> Laptops.
 > 
-> Which of the branches is put_fp_registers() taking? The
-> restore_fpx_registers() or restore_fp_registers()? 4 would be EINTR...
-> What kernel version is used on your host running the UML binary?
+> Hi,
+> 
+> yes, the first userspace process failes here:
+> 
+> void userspace(struct uml_pt_regs *regs)
+> {
+>         int err, status, op, pid = userspace_pid[0];
+>         /* To prevent races if using_sysemu changes under us.*/
+>         int local_using_sysemu;
+>         siginfo_t si;
+> 
+>         /* Handle any immediate reschedules or signals */
+>         interrupt_end();
+> 
+>         while (1) {
+> 
+>                 /*
+>                  * This can legitimately fail if the process loads a
+>                  * bogus value into a segment register.  It will
+>                  * segfault and PTRACE_GETREGS will read that value
+>                  * out of the process.  However, PTRACE_SETREGS will
+>                  * fail.  In this case, there is nothing to do but
+>                  * just kill the process.
+>                  */
+>                 if (ptrace(PTRACE_SETREGS, pid, 0, regs->gp))
+>                         fatal_sigsegv();
+> 
+>                 if (put_fp_registers(pid, regs->fp))
+> ->                        fatal_sigsegv();
+> 
+> the put_fp_registers fails with errno 4 if I recall correctly.
+> 
+> I didn't investigate yet further, why the the xstate ptrace call fails.
 
-Another question, is this x86_64 UML on a x86_64 host?
-Or i386 on x86_64, i386 on i386?
+Which of the branches is put_fp_registers() taking? The
+restore_fpx_registers() or restore_fp_registers()? 4 would be EINTR...
+What kernel version is used on your host running the UML binary?
 
-Thanks,
-//richard
+Thanks
+-- 
+Florian
 
