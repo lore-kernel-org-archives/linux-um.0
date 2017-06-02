@@ -1,9 +1,9 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Message-ID: <1496409482.10119.1.camel@m3y3r.de>
+Message-ID: <1496394957.19754.1.camel@m3y3r.de>
 Subject: Re: [PATCH v2] um: Avoid longjmp/setjmp symbol clashes with
  libpthread.a
 From: Thomas Meyer <thomas@m3y3r.de>
-Date: Fri, 02 Jun 2017 15:18:02 +0200
+Date: Fri, 02 Jun 2017 11:15:57 +0200
 In-Reply-To: <f85d278d-0f10-163a-c289-a66254a1670c@nod.at>
 References: <20170524003232.14319-1-f.fainelli@gmail.com>
          <e2c13a8b-d0c3-74d1-dd1b-53a56f609c76@nod.at>
@@ -66,17 +66,66 @@ Am Freitag, den 02.06.2017, 10:30 +0200 schrieb Richard Weinberger:
 > > [    0.000000] CPUID[0d, 00]: eax=00000007 ebx=00000440
 > > ecx=00000440 edx=00000000
 > 
-> Does this also happen with a mainline kernel? 
+> Does this also happen with a mainline kernel? Also on KVM or bare
+> metal?
 
-Yes, same error on current master on bare metal:
+Hi,
+I just booted into bare metal, same machine, but host is Fedora 26
+"Linux localhost.localdomain 4.11.3-300.fc26.x86_64 #1 SMP Thu May 25 18:43:57 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux"
 
-[    5.300000] Key type encrypted registered
-[    5.300000] This architecture does not have kernel memory protection.
-[    5.300000] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+kernel log from host:
 
-* master                3b1e342be265 Merge tag 'nfsd-4.12-1' of git://linux-nfs.org/~bfields/linux
+[    0.000000] Linux version 4.11.3-300.fc26.x86_64 (mockbuild@bkernel02.phx2.fedoraproject.org) (gcc version 7.1.1 20170503 (Red Hat 7.1.1-1) (GCC) ) #1 SMP Thu May 25 18:43:57 UTC 2017
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating point registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x002: 'SSE registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x004: 'AVX registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x008: 'MPX bounds registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x010: 'MPX CSR'
+[    0.000000] x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]:  256
+[    0.000000] x86/fpu: xstate_offset[3]:  832, xstate_sizes[3]:   64
+[    0.000000] x86/fpu: xstate_offset[4]:  896, xstate_sizes[4]:   64
+[    0.000000] x86/fpu: Enabled xstate features 0x1f, context size is 960 bytes, using 'compacted' format.
 
-> Also on KVM or bare metal?
+The same error happens in restore_fp_registers() with errno 4.
+
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 142
+model name      : Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz
+stepping        : 9
+microcode       : 0x38
+cpu MHz         : 499.853
+cache size      : 4096 KB
+physical id     : 0
+siblings        : 4
+core id         : 0
+cpu cores       : 2
+apicid          : 0
+initial apicid  : 0
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 22
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge
+mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe
+syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts
+rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni
+pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 sdbg fma cx16 xtpr
+pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes
+xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb intel_pt tpr_shadow
+vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms
+invpcid mpx rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves
+dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp
+bugs            :
+bogomips        : 5808.00
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 39 bits physical, 48 bits virtual
+power management:
+
+I'll try a host kernel from master, once I find some time.
+
 > Not that UML fails because of this and we're hunting a ghost...
 > 
 > Thanks,
