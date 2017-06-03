@@ -2,158 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 Subject: Re: [PATCH v2] um: Avoid longjmp/setjmp symbol clashes with
  libpthread.a
 References: <20170524003232.14319-1-f.fainelli@gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <cda59c31-1487-4c9d-8a6f-152caf93e1d3@gmail.com>
-Date: Mon, 5 Jun 2017 12:32:18 -0700
+ <e2c13a8b-d0c3-74d1-dd1b-53a56f609c76@nod.at>
+ <9f58b41d-ebe4-62a6-1aa4-e9222372ce86@gmail.com>
+ <408132c9-6d55-7cba-e09a-f532d7fb9c6f@gmail.com>
+ <9617f203-cee2-96cf-aa76-8f42b1a4a9f6@nod.at>
+ <2c362d49-9907-7a66-67ef-e196dddea32a@gmail.com>
+ <85f8b8c0-cf0e-3c67-c237-be4b045c617b@nod.at>
+ <f57b5906-30cc-0fdf-893c-39e4f5202d1b@gmail.com>
+ <07b61d6a-33af-be0a-b57c-843196d0d151@nod.at>
+ <8dd50867-312d-8af9-0993-4b5d5c181a58@gmail.com>
+ <e53ebfee-0b8a-0fe6-c2d3-eb6fb4aa9e2c@nod.at>
+ <1496352322.9072.1.camel@m3y3r.de>
+ <3672f56d-da81-1114-f06a-ac99d3680661@gmail.com>
+ <0effc7cf-7a86-bed6-58cf-d8fd6d3febd6@nod.at>
+ <1496525157.10119.3.camel@m3y3r.de>
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <38b531f3-8a67-13be-be29-84c0c46f076d@nod.at>
+Date: Sat, 3 Jun 2017 23:36:12 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170524003232.14319-1-f.fainelli@gmail.com>
+In-Reply-To: <1496525157.10119.3.camel@m3y3r.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>
+To: Thomas Meyer <thomas@m3y3r.de>, Florian Fainelli <f.fainelli@gmail.com>, linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 05/23/2017 05:32 PM, Florian Fainelli wrote:
-> Building a statically linked UML kernel on a Centos 6.9 host resulted in
-> the following linking failure (GCC 4.4, glibc-2.12):
-> 
-> /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
-> In function `siglongjmp':
-> (.text+0x8490): multiple definition of `longjmp'
-> arch/x86/um/built-in.o:/local/users/fainelli/openwrt/trunk/build_dir/target-x86_64_musl/linux-uml/linux-4.4.69/arch/x86/um/setjmp_64.S:44:
-> first defined here
-> /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
-> In function `sem_open':
-> (.text+0x77cd): warning: the use of `mktemp' is dangerous, better use
-> `mkstemp'
-> collect2: ld returned 1 exit status
-> make[4]: *** [vmlinux] Error 1
-> 
-> Adopt a solution similar to the one done for vmap where we define
-> longjmp/setjmp to be kernel_longjmp/setjmp. In the process, make sure we
-> do rename the functions in arch/x86/um/setjmp_*.S accordingly.
-> 
-> Fixes: a7df4716d195 ("um: link with -lpthread")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Thomas,
 
-Richard, we are kind of hijacking this thread now that was originally
-about statically linking UML, is this particular patch okay?
-
-> ---
-> Changes in v2:
-> - fix typo introduced on longjmp
+Am 03.06.2017 um 23:25 schrieb Thomas Meyer:
+> ptrace(PTRACE_CONT, 21664, NULL, SIG_0) = 0
+> --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_TRAPPED, si_pid=21664, si_uid=1000, si_status=SIGTRAP, si_utime=0, si_stime=0} ---
+> wait4(21664, [{WIFSTOPPED(s) && WSTOPSIG(s) == SIGTRAP}], WSTOPPED|__WALL, NULL) = 21664
+> ptrace(PTRACE_SETREGS, 21664, NULL, 0x60f7fa20) = 0
+> ptrace(PTRACE_CONT, 21664, NULL, SIG_0) = 0
+> --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_TRAPPED, si_pid=21664, si_uid=1000, si_status=SIGTRAP, si_utime=0, si_stime=0} ---
+> wait4(21664, [{WIFSTOPPED(s) && WSTOPSIG(s) == SIGTRAP}], WSTOPPED|__WALL, NULL) = 21664
+> ptrace(PTRACE_SETREGS, 21664, NULL, 0xb18bc4e0) = 0 
+> ptrace(PTRACE_SETREGSET, 21664, NT_X86_XSTATE, [{iov_base=0xb18bc5b8, iov_len=832}]) = -1 EFAULT (Bad address)
+> ioctl(1, TCGETS, {B38400 -opost -isig -icanon -echo ...}) = 0
 > 
->  arch/um/Makefile        |  4 ++++
->  arch/x86/um/setjmp_32.S | 16 ++++++++--------
->  arch/x86/um/setjmp_64.S | 16 ++++++++--------
->  3 files changed, 20 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/um/Makefile b/arch/um/Makefile
-> index 0ca46ededfc7..6ca4f66085c1 100644
-> --- a/arch/um/Makefile
-> +++ b/arch/um/Makefile
-> @@ -59,10 +59,14 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
->  # Same things for in6addr_loopback and mktime - found in libc. For these two we
->  # only get link-time error, luckily.
->  #
-> +# -Dlongjmp=kernel_longjmp prevents anything from referencing the libpthread.a
-> +# embedded copy of longjmp, same thing for setjmp.
-> +#
->  # These apply to USER_CFLAGS to.
->  
->  KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
->  	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
-> +	-Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
->  	-Din6addr_loopback=kernel_in6addr_loopback \
->  	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
->  
-> diff --git a/arch/x86/um/setjmp_32.S b/arch/x86/um/setjmp_32.S
-> index b766792c9933..39053192918d 100644
-> --- a/arch/x86/um/setjmp_32.S
-> +++ b/arch/x86/um/setjmp_32.S
-> @@ -16,9 +16,9 @@
->  
->  	.text
->  	.align 4
-> -	.globl setjmp
-> -	.type setjmp, @function
-> -setjmp:
-> +	.globl kernel_setjmp
-> +	.type kernel_setjmp, @function
-> +kernel_setjmp:
->  #ifdef _REGPARM
->  	movl %eax,%edx
->  #else
-> @@ -35,13 +35,13 @@ setjmp:
->  	movl %ecx,20(%edx)		# Return address
->  	ret
->  
-> -	.size setjmp,.-setjmp
-> +	.size kernel_setjmp,.-kernel_setjmp
->  
->  	.text
->  	.align 4
-> -	.globl longjmp
-> -	.type longjmp, @function
-> -longjmp:
-> +	.globl kernel_longjmp
-> +	.type kernel_longjmp, @function
-> +kernel_longjmp:
->  #ifdef _REGPARM
->  	xchgl %eax,%edx
->  #else
-> @@ -55,4 +55,4 @@ longjmp:
->  	movl 16(%edx),%edi
->  	jmp *20(%edx)
->  
-> -	.size longjmp,.-longjmp
-> +	.size kernel_longjmp,.-kernel_longjmp
-> diff --git a/arch/x86/um/setjmp_64.S b/arch/x86/um/setjmp_64.S
-> index 45f547b4043e..c56942e1a38c 100644
-> --- a/arch/x86/um/setjmp_64.S
-> +++ b/arch/x86/um/setjmp_64.S
-> @@ -18,9 +18,9 @@
->  
->  	.text
->  	.align 4
-> -	.globl setjmp
-> -	.type setjmp, @function
-> -setjmp:
-> +	.globl kernel_setjmp
-> +	.type kernel_setjmp, @function
-> +kernel_setjmp:
->  	pop  %rsi			# Return address, and adjust the stack
->  	xorl %eax,%eax			# Return value
->  	movq %rbx,(%rdi)
-> @@ -34,13 +34,13 @@ setjmp:
->  	movq %rsi,56(%rdi)		# Return address
->  	ret
->  
-> -	.size setjmp,.-setjmp
-> +	.size kernel_setjmp,.-kernel_setjmp
->  
->  	.text
->  	.align 4
-> -	.globl longjmp
-> -	.type longjmp, @function
-> -longjmp:
-> +	.globl kernel_longjmp
-> +	.type kernel_longjmp, @function
-> +kernel_longjmp:
->  	movl %esi,%eax			# Return value (int)
->  	movq (%rdi),%rbx
->  	movq 8(%rdi),%rsp
-> @@ -51,4 +51,4 @@ longjmp:
->  	movq 48(%rdi),%r15
->  	jmp *56(%rdi)
->  
-> -	.size longjmp,.-longjmp
-> +	.size kernel_longjmp,.-kernel_longjmp
-> 
+> don't know why gdb shows errno as 4...
 
+Interesting. This makes much more sense than -EINTR.
+I've allocated an i7 machine at $dayjob and hope to be able to able reproduce soon.
+Let's gets resolved that mess and apply all the fixes. :-)
 
--- 
-Florian
+Thanks,
+//richard
 
