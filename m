@@ -1,54 +1,49 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: Re: [PATCH v2] um: Avoid longjmp/setjmp symbol clashes with
- libpthread.a
-From: Florian Fainelli <f.fainelli@gmail.com>
-References: <20170524003232.14319-1-f.fainelli@gmail.com>
- <e2c13a8b-d0c3-74d1-dd1b-53a56f609c76@nod.at>
- <9f58b41d-ebe4-62a6-1aa4-e9222372ce86@gmail.com>
-Message-ID: <408132c9-6d55-7cba-e09a-f532d7fb9c6f@gmail.com>
-Date: Thu, 1 Jun 2017 12:38:03 -0700
+Return-Path: <arndbergmann@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9f58b41d-ebe4-62a6-1aa4-e9222372ce86@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>
+Sender: arndbergmann@gmail.com
+In-Reply-To: <20170610164351.7sxzvj4ojj3fbc7h@kozik-lap>
+References: <20170608160836.12196-1-krzk@kernel.org> <CAK8P3a3bUeC3H2oNfdBedVY4UTCe8OgKbWmv46d5xfu8tC7tAg@mail.gmail.com>
+ <20170610164351.7sxzvj4ojj3fbc7h@kozik-lap>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 12 Jun 2017 11:54:51 +0200
+Message-ID: <CAK8P3a3YN+5aJdqxwnpZaVpuucsmQUE3BuEpAf+q7uPXa1dgZw@mail.gmail.com>
+Subject: Re: [PATCH 00/35] defconfig: Cleanup from old entries
+Content-Type: text/plain; charset="UTF-8"
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <kernel@pengutronix.de>, Kukjin Kim <kgene@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Joachim Eastwood <manabian@gmail.com>, Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Steven Miao <realmz6@gmail.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Richard Kuo <rkuo@codeaurora.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, David Howells <dhowells@redhat.com>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Chen Liqin <liqin.linux@gmail.com>, Lennox Wu <lennox.wu@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, linux-alpha@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" <linux-samsung-soc@vger.kernel.org>, linux-omap@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, linux-am33-list@redhat.com, "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>, openrisc@lists.librecores.org, Parisc List <linux-parisc@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-sh@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 05/24/2017 09:19 AM, Florian Fainelli wrote:
-> On 05/24/2017 12:02 AM, Richard Weinberger wrote:
->> Florian,
+On Sat, Jun 10, 2017 at 6:43 PM, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> On Fri, Jun 09, 2017 at 09:59:48PM +0200, Arnd Bergmann wrote:
+>> On Thu, Jun 8, 2017 at 6:08 PM, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>> > Hi,
+>> >
+>> > While cleaning Samsung ARM defconfigs with savedefconfig, I encountered
+>> > similar obsolete entries in other files.
+>> >
+>> > Except the ARM, no dependencies.
+>> > For ARM, the rest of patches depend on the first change (otherwise
+>> > it might not apply cleanly).
 >>
->> Am 24.05.2017 um 02:32 schrieb Florian Fainelli:
->>> Building a statically linked UML kernel on a Centos 6.9 host resulted in
->>> the following linking failure (GCC 4.4, glibc-2.12):
->>>
->>> /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
->>> In function `siglongjmp':
->>> (.text+0x8490): multiple definition of `longjmp'
->>> arch/x86/um/built-in.o:/local/users/fainelli/openwrt/trunk/build_dir/target-x86_64_musl/linux-uml/linux-4.4.69/arch/x86/um/setjmp_64.S:44:
->>> first defined here
->>> /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
->>> In function `sem_open':
->>> (.text+0x77cd): warning: the use of `mktemp' is dangerous, better use
->>> `mkstemp'
->>> collect2: ld returned 1 exit status
->>> make[4]: *** [vmlinux] Error 1
->>>
->>> Adopt a solution similar to the one done for vmap where we define
->>> longjmp/setjmp to be kernel_longjmp/setjmp. In the process, make sure we
->>> do rename the functions in arch/x86/um/setjmp_*.S accordingly.
+>> Great work!
 >>
->> What is not so clear to me, why are you facing this build issue and other users, including me,
->> not?
-> 
-> Presumably because we are not using the same glibc version? The one I
-> have installed on this machine is glibc-2.12, do you want me to attach a
-> copy of it?
+>> I looked at all the ARM patches, and everything looks good to me (the
+>> changlog linewrapping may be suboptimal for readability in some cases,
+>> if I had to say anything negative ;-) ).
+>>
+>> Please add my Acked-by to the ARM patches and send a pull request.
+>
+> Thanks, I'll send you ARM part in pull request.
 
-Richard, what do we do with this?
--- 
-Florian
+Ok
+
+> As for the rest, I think respective arch/platform maintainers should
+> take it.
+
+I suspect most will apply the patches, but some architectures maintainers
+are not very active. If you are motivated, you could resend the ones
+that missed out to Andrew Morton, or you just leave the architectures
+to bitrot more. ;-)
+
+     Arnd
 
