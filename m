@@ -1,49 +1,65 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 22/35] um: defconfig: Cleanup from old Kconfig options
-Date: Thu,  8 Jun 2017 18:10:33 +0200
-Message-Id: <20170608161049.12421-22-krzk@kernel.org>
-In-Reply-To: <20170608160836.12196-1-krzk@kernel.org>
-References: <20170608160836.12196-1-krzk@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Krzysztof Kozlowski <krzk@kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Return-Path: <linux-arch-owner@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <20170609052417.561-5-npiggin@gmail.com>
+References: <20170609052417.561-1-npiggin@gmail.com> <20170609052417.561-5-npiggin@gmail.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Mon, 19 Jun 2017 15:21:00 +0900
+Message-ID: <CAK7LNAT4v3h=eaG5nyCCZCP1o9yPkJWAXny9zvSa+Z0Q89=9Zw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] x86/um: thin archives build fix
+Content-Type: text/plain; charset="UTF-8"
+Sender: linux-arch-owner@vger.kernel.org
+To: Nicholas Piggin <npiggin@gmail.com>
+Cc: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, Michal Marek <mmarek@suse.com>, Linus Torvalds <torvalds@linux-foundation.org>, Stephen Rothwell <sfr@canb.auug.org.au>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Remove old, dead Kconfig option INET_LRO. It is gone since
-commit 7bbf3cae65b6 ("ipv4: Remove inet_lro library").
+2017-06-09 14:24 GMT+09:00 Nicholas Piggin <npiggin@gmail.com>:
+> The linker does not like vdso-syms.lds in input archive files.
+> Make it an extra-y instead.
+>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: user-mode-linux-devel@lists.sourceforge.net
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>
+> Arch maintainers please give an ack if we can take this through
+> the kbuild tree.
+>
+> Thanks,
+> Nick
+>
+>  arch/x86/um/vdso/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
+> index d72dec406ccb..329406224330 100644
+> --- a/arch/x86/um/vdso/Makefile
+> +++ b/arch/x86/um/vdso/Makefile
+> @@ -53,7 +53,7 @@ CFLAGS_REMOVE_vdso-note.o = -pg -fprofile-arcs -ftest-coverage
+>  CFLAGS_REMOVE_um_vdso.o = -pg -fprofile-arcs -ftest-coverage
+>
+>  targets += vdso-syms.lds
+> -obj-$(VDSO64-y)                        += vdso-syms.lds
+> +extra-$(VDSO64-y)                      += vdso-syms.lds
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/um/configs/i386_defconfig   | 1 -
- arch/um/configs/x86_64_defconfig | 1 -
- 2 files changed, 2 deletions(-)
 
-diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
-index 5636221b8785..8f114e3b0a7a 100644
---- a/arch/um/configs/i386_defconfig
-+++ b/arch/um/configs/i386_defconfig
-@@ -53,7 +53,6 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--# CONFIG_INET_LRO is not set
- # CONFIG_IPV6 is not set
- CONFIG_UML_NET=y
- CONFIG_UML_NET_ETHERTAP=y
-diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
-index 7a67b7ac1a7e..5d0875fc0db2 100644
---- a/arch/um/configs/x86_64_defconfig
-+++ b/arch/um/configs/x86_64_defconfig
-@@ -51,7 +51,6 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--# CONFIG_INET_LRO is not set
- # CONFIG_IPV6 is not set
- CONFIG_UML_NET=y
- CONFIG_UML_NET_ETHERTAP=y
+I agree this line is weird, but where is vdso-syms.lds used?
+
+
+I removed the following, but it still built successfully.
+
+
+targets += vdso-syms.lds
+obj-$(VDSO64-y)                        += vdso-syms.lds
+
+$(obj)/%-syms.lds: $(obj)/%.so.dbg FORCE
+       $(call if_changed,vdsosym)
+
+
+
+
+
 -- 
-2.9.3
-
+Best Regards
+Masahiro Yamada
 
