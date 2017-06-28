@@ -1,63 +1,58 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1dQTpU-0003O8-Ml
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2017 07:25:32 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1dQTpS-0005Xx-Cr
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 29 Jun 2017 07:25:32 +0000
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Subject: Re: [PATCH v2] um: Avoid longjmp/setjmp symbol clashes with
+ libpthread.a
 References: <20170524003232.14319-1-f.fainelli@gmail.com>
-	<cda59c31-1487-4c9d-8a6f-152caf93e1d3@gmail.com>
-	<dbebd37c-bcae-14d9-445c-9f624008f9fb@nod.at>
-	<6ca6b4d6-29e2-19bb-64ef-963d88e89bed@gmail.com>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <9d355537-0b43-9284-c88f-5b68422b2fd2@nod.at>
-Date: Thu, 29 Jun 2017 09:25:18 +0200
+ <cda59c31-1487-4c9d-8a6f-152caf93e1d3@gmail.com>
+ <dbebd37c-bcae-14d9-445c-9f624008f9fb@nod.at>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <6ca6b4d6-29e2-19bb-64ef-963d88e89bed@gmail.com>
+Date: Wed, 28 Jun 2017 15:40:03 -0700
 MIME-Version: 1.0
-In-Reply-To: <6ca6b4d6-29e2-19bb-64ef-963d88e89bed@gmail.com>
+In-Reply-To: <dbebd37c-bcae-14d9-445c-9f624008f9fb@nod.at>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Subject: Re: [uml-devel] [PATCH v2] um: Avoid longjmp/setjmp symbol clashes
- with libpthread.a
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Florian Fainelli <f.fainelli@gmail.com>, linux-kernel@vger.kernel.org
-Cc: "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Ingo Molnar <mingo@redhat.com>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>, "H. Peter Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Florian,
-
-Am 29.06.2017 um 00:40 schrieb Florian Fainelli:
->> Hehe, yes.
->> This patch is good, I like it. :)
->> It will part of the next pull request.
+On 06/05/2017 12:34 PM, Richard Weinberger wrote:
+> Florian,
 > 
-> Humm okay, did you apply the patch in one of your kernel trees on
-> git.kernel.org or somewhere else?
+> Am 05.06.2017 um 21:32 schrieb Florian Fainelli:
+>> On 05/23/2017 05:32 PM, Florian Fainelli wrote:
+>>> Building a statically linked UML kernel on a Centos 6.9 host resulted in
+>>> the following linking failure (GCC 4.4, glibc-2.12):
+>>>
+>>> /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
+>>> In function `siglongjmp':
+>>> (.text+0x8490): multiple definition of `longjmp'
+>>> arch/x86/um/built-in.o:/local/users/fainelli/openwrt/trunk/build_dir/target-x86_64_musl/linux-uml/linux-4.4.69/arch/x86/um/setjmp_64.S:44:
+>>> first defined here
+>>> /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64/libpthread.a(libpthread.o):
+>>> In function `sem_open':
+>>> (.text+0x77cd): warning: the use of `mktemp' is dangerous, better use
+>>> `mkstemp'
+>>> collect2: ld returned 1 exit status
+>>> make[4]: *** [vmlinux] Error 1
+>>>
+>>> Adopt a solution similar to the one done for vmap where we define
+>>> longjmp/setjmp to be kernel_longjmp/setjmp. In the process, make sure we
+>>> do rename the functions in arch/x86/um/setjmp_*.S accordingly.
+>>>
+>>> Fixes: a7df4716d195 ("um: link with -lpthread")
+>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>>
+>> Richard, we are kind of hijacking this thread now that was originally
+>> about statically linking UML, is this particular patch okay?
+> 
+> Hehe, yes.
+> This patch is good, I like it. :)
+> It will part of the next pull request.
 
-Will happen soon since the merge window is near where I will post
-a pull request...
-
-Thanks,
-//richard
-
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Humm okay, did you apply the patch in one of your kernel trees on
+git.kernel.org or somewhere else?
+-- 
+Florian
 
