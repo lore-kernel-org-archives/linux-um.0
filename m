@@ -1,24 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1dSsUa-00081x-EU
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <thomas@m3y3r.de>) id 1dSsRx-0001em-Oa
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Jul 2017 22:09:52 +0000
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1dSsUZ-0002UK-4T
+	Wed, 05 Jul 2017 22:07:09 +0000
+Received: from www17.your-server.de ([213.133.104.17])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1dSsRv-0000js-Mq
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 05 Jul 2017 22:09:52 +0000
+	Wed, 05 Jul 2017 22:07:09 +0000
+Message-ID: <1499292398.5422.1.camel@m3y3r.de>
+From: Thomas Meyer <thomas@m3y3r.de>
+Date: Thu, 06 Jul 2017 00:06:38 +0200
+In-Reply-To: <CAFLxGvyRDv0mBNm0bXpq+UKhgtaVq6yQoN-wkw51GYSZ1NG2EQ@mail.gmail.com>
 References: <1495579510.11734.2.camel@m3y3r.de>
 	<CAFLxGvyRDv0mBNm0bXpq+UKhgtaVq6yQoN-wkw51GYSZ1NG2EQ@mail.gmail.com>
-	<1499292398.5422.1.camel@m3y3r.de>
-From: Richard Weinberger <richard@nod.at>
-Message-ID: <5a1195d4-f36c-efb6-1900-435409404e95@nod.at>
-Date: Thu, 6 Jul 2017 00:09:42 +0200
-MIME-Version: 1.0
-In-Reply-To: <1499292398.5422.1.camel@m3y3r.de>
-Content-Language: en-US
+Mime-Version: 1.0
 Subject: Re: [uml-devel] [PATCH] um: userspace - be more verbose in ptrace
  set regs error
 List-Id: The user-mode Linux development list
@@ -33,22 +31,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Thomas Meyer <thomas@m3y3r.de>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>
 
-Thomas,
-
-Am 06.07.2017 um 00:06 schrieb Thomas Meyer:
->> This patch is also malformed. :-(
+Am Mittwoch, den 05.07.2017, 23:34 +0200 schrieb Richard Weinberger:
+> Thomas,
 > 
-> I wonder why evolution is messing up my emails...
+> On Wed, May 24, 2017 at 12:45 AM, Thomas Meyer <thomas@m3y3r.de>
+> wrote:
+> > When ptrace fails to set GP/FP regs for the target process,
+> > log the error before crashing the UML kernel.
+> > 
+> > Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+> > ---
+> >  arch/um/os-Linux/skas/process.c | 10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-
+> > Linux/skas/process.c
+> > index 4530867..819d686 100644
+> > --- a/arch/um/os-Linux/skas/process.c
+> > +++ b/arch/um/os-Linux/skas/process.c
+> > @@ -352,11 +352,17 @@ void userspace(struct uml_pt_regs *regs)
+> >                  * fail.  In this case, there is nothing to do but
+> >                  * just kill the process.
+> >                  */
+> > -               if (ptrace(PTRACE_SETREGS, pid, 0, regs->gp))
+> > +               if (ptrace(PTRACE_SETREGS, pid, 0, regs->gp)) {
+> > +                       printk(UM_KERN_ERR "userspace - ptrace set
+> > regs "
+> > +                              "failed, errno = %d\n", errno);
+> >                         fatal_sigsegv();
+> > +               }
+> > 
+> > -               if (put_fp_registers(pid, regs->fp))
+> > +               if (put_fp_registers(pid, regs->fp)) {
+> > +                       printk(UM_KERN_ERR "userspace - ptrace set
+> > fp regs "
+> > +                              "failed, errno = %d\n", errno);
+> >                         fatal_sigsegv();
+> > +               }
+> > 
+> >                 /* Now we set local_using_sysemu to be used for one
+> > loop */
+> >                 local_using_sysemu = get_using_sysemu();
+> > 
+> > -----------------------------------------------------------------
+> > -------------
+> > Check out the vibrant tech community on one of the world's most
+> > engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+> > _______________________________________________
+> > User-mode-linux-devel mailing list
+> > User-mode-linux-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 > 
-> will check and resend...
+> This patch is also malformed. :-(
 
-Just use git send-email :)
+I wonder why evolution is messing up my emails...
 
-Thanks,
-//richard
+will check and resend...
+
+sorry and kind regards
+thomas
+
+> 
 
 ------------------------------------------------------------------------------
 Check out the vibrant tech community on one of the world's most
