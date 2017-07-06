@@ -1,29 +1,38 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20170706073527.12006-1-richard@nod.at>
-References: <20170706073527.12006-1-richard@nod.at>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Fri, 7 Jul 2017 11:34:26 +0200
-Message-ID: <CAFLxGvz13cuyOA+VrnSRsqsySUMcow2TpVo_a1gYq=KFrAPDaw@mail.gmail.com>
-Subject: Re: [PATCH] um: Correctly check for PTRACE_GETRESET/SETREGSET
-Content-Type: text/plain; charset="UTF-8"
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH] um: Correctly check for PTRACE_GETRESET/SETREGSET
+Date: Thu,  6 Jul 2017 09:35:27 +0200
+Message-Id: <20170706073527.12006-1-richard@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>
-Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Florian Fainelli <f.fainelli@gmail.com>, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: Richard Weinberger <richard@nod.at>, Florian Fainelli <f.fainelli@gmail.com>, Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Thu, Jul 6, 2017 at 9:35 AM, Richard Weinberger <richard@nod.at> wrote:
-> When checking for PTRACE_GETRESET/SETREGSET, make sure that
-> the correct header file is included. We need linux/ptrace.h
-> which contains all ptrace UAPI related defines.
-> Otherwise #if defined(PTRACE_GETRESET) is always false.
->
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+When checking for PTRACE_GETRESET/SETREGSET, make sure that
+the correct header file is included. We need linux/ptrace.h
+which contains all ptrace UAPI related defines.
+Otherwise #if defined(PTRACE_GETRESET) is always false.
 
-Applied.
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ arch/x86/um/user-offsets.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
+index 8af0fb5d2780..ae4cd58c0c7a 100644
+--- a/arch/x86/um/user-offsets.c
++++ b/arch/x86/um/user-offsets.c
+@@ -5,7 +5,7 @@
+ #include <sys/mman.h>
+ #include <sys/user.h>
+ #define __FRAME_OFFSETS
+-#include <asm/ptrace.h>
++#include <linux/ptrace.h>
+ #include <asm/types.h>
+ 
+ #ifdef __i386__
 -- 
-Thanks,
-//richard
+2.12.3
+
 
