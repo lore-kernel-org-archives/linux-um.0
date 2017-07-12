@@ -1,126 +1,43 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 13 Jul 2017 16:19:30 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH] um: Re-enable verbose panic()
-Message-ID: <201707131500.vZ4SZfFx%fengguang.wu@intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="Dxnq1zWXvFF0Q93v"
-Content-Disposition: inline
-In-Reply-To: <20170712205356.23042-1-richard@nod.at>
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH] um: Re-enable verbose panic()
+Date: Wed, 12 Jul 2017 22:53:56 +0200
+Message-Id: <20170712205356.23042-1-richard@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Weinberger <richard@nod.at>
-Cc: kbuild-all@01.org, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@redhat.com>
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@redhat.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+Commit 9a93848fe787 ("x86/debug: Implement __WARN() using UD0")
+rightfully removed GENERIC_BUG from UML because UML didn't use
+that feature.
+A side effect of this is that DEBUG_BUGVERBOSE no longer
+set and therefore panic() doesn't print a stack trace.
 
---Dxnq1zWXvFF0Q93v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Let's select DEBUG_BUGVERBOSE manually to have a verbose panic()
+again.
 
-Hi Richard,
-
-[auto build test WARNING on uml/linux-next]
-[also build test WARNING on v4.12 next-20170713]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Richard-Weinberger/um-Re-enable-verbose-panic/20170713-094737
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git linux-next
-config: um-allnoconfig (attached as .config)
-compiler: gcc-6 (Debian 6.2.0-3) 6.2.0 20160901
-reproduce:
-        # save the attached .config to linux build tree
-        make ARCH=um 
-
-All warnings (new ones prefixed by >>):
-
-warning: (UML) selects DEBUG_BUGVERBOSE which has unmet direct dependencies (BUG && (GENERIC_BUG || HAVE_DEBUG_BUGVERBOSE))
-
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+ arch/um/Kconfig.common | 2 ++
+ 1 file changed, 2 insertions(+)
 
---Dxnq1zWXvFF0Q93v
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+index 85f6dd204ab6..3cb6cd80ee4c 100644
+--- a/arch/um/Kconfig.common
++++ b/arch/um/Kconfig.common
+@@ -13,6 +13,8 @@ config UML
+ 	select GENERIC_CLOCKEVENTS
+ 	select HAVE_GCC_PLUGINS
+ 	select TTY # Needed for line.c
++	select HAVE_DEBUG_BUGVERBOSE
++	select DEBUG_BUGVERBOSE
+ 
+ config MMU
+ 	bool
+-- 
+2.12.3
 
-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
-
---Dxnq1zWXvFF0Q93v--
 
