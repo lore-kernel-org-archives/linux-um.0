@@ -1,19 +1,19 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <richard@nod.at>) id 1dVNhE-0001F5-Vk
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <richard@nod.at>) id 1dVN9h-0004KD-Bk
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jul 2017 19:53:16 +0000
+	Wed, 12 Jul 2017 19:18:37 +0000
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1dVNhD-0004gA-Sk
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1dVN9f-0001aq-PK
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Wed, 12 Jul 2017 19:53:16 +0000
+	Wed, 12 Jul 2017 19:18:37 +0000
 References: <c99c3170-53a6-4038-9033-5a3680b1e5db@email.android.com>
 From: Richard Weinberger <richard@nod.at>
-Message-ID: <ce74d61d-8abe-e77d-f96a-d2a7651a5053@nod.at>
-Date: Wed, 12 Jul 2017 21:53:07 +0200
+Message-ID: <261315a5-f93a-9c1a-cfca-bd41f5b20dc6@nod.at>
+Date: Wed, 12 Jul 2017 21:18:26 +0200
 MIME-Version: 1.0
 In-Reply-To: <c99c3170-53a6-4038-9033-5a3680b1e5db@email.android.com>
 Content-Language: en-US
@@ -36,128 +36,48 @@ Cc: user-mode-linux-devel@lists.sourceforge.net
 
 Thomas,
 
-what about something like that? (untested)
-Still not very pretty but IMHO better.
+Am 12.07.2017 um 17:11 schrieb Thomas Meyer:
+> Am 10.07.2017 9:06 nachm. schrieb Richard Weinberger <richard@nod.at>:
+> 
+>     Thomas,
+> 
+>     Am 10.07.2017 um 00:33 schrieb Thomas Meyer:
+>     > Hard code max size. Taken from
+>     > https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=gdb/common/x86-xstate.h
+>     >
+>     > v3: use static fp_regs for get_skas_faultinfo
+>     >
+>     > Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+>     > ---
+>     >  arch/um/os-Linux/skas/process.c  |  7 ++++---
+>     >  arch/x86/um/os-Linux/registers.c | 18 ++++++++++++------
+>     >  arch/x86/um/user-offsets.c       |  2 +-
+>     >  3 files changed, 17 insertions(+), 10 deletions(-)
+>     >
+>     > diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+>     > index 03b3c4cc7735..b5fdef795985 100644
+>     > --- a/arch/um/os-Linux/skas/process.c
+>     > +++ b/arch/um/os-Linux/skas/process.c
+>     > @@ -88,12 +88,13 @@ void wait_stub_done(int pid)
+>     > 
+>     >  extern unsigned long current_stub_stack(void);
+>     > 
+>     > +static unsigned long skas_faultinfo_fpregs[FP_SIZE];
+>     > +
+> 
+>     Uhmm, are you sure that this does not race with other userspace() instances?
+> 
+> Oh, is it really possible that a task gets schedule while we are in userspace signal handling from ptrace?
 
-diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
-index 053baff03674..9300f7630d2a 100644
---- a/arch/um/include/asm/thread_info.h
-+++ b/arch/um/include/asm/thread_info.h
-@@ -11,6 +11,7 @@
- #include <asm/types.h>
- #include <asm/page.h>
- #include <asm/segment.h>
-+#include <sysdep/ptrace_user.h>
+I hoped that you'd double check. ;)
+From my knowledge it is not possible, but this code was not written by me and UML internal
+semantics are more than tricky.
+Let's postpone this patch for -rc2 and check again.
 
- struct thread_info {
- 	struct task_struct	*task;		/* main task structure */
-@@ -22,6 +23,8 @@ struct thread_info {
- 					 	   0-0xBFFFFFFF for user
- 						   0-0xFFFFFFFF for kernel */
- 	struct thread_info	*real_thread;    /* Points to non-IRQ stack */
-+	unsigned long aux_fp_regs[FP_SIZE];	/* auxiliary fp_regs to save/restore
-+						   them out-of-band */
- };
+> Another question: when malloc a memory area in userspace: when does a userspace process end in userspace function!? Where would you free the malloced memory?
 
- #define INIT_THREAD_INFO(tsk)			\
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index cd1fa97776c3..c1d4b6fbc919 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -274,7 +274,7 @@ extern int protect(struct mm_id * mm_idp, unsigned long addr,
- extern int is_skas_winch(int pid, int fd, void *data);
- extern int start_userspace(unsigned long stub_stack);
- extern int copy_context_skas0(unsigned long stack, int pid);
--extern void userspace(struct uml_pt_regs *regs);
-+extern void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs);
- extern int map_stub_pages(int fd, unsigned long code, unsigned long data,
- 			  unsigned long stack);
- extern void new_thread(void *stack, jmp_buf *buf, void (*handler)(void));
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 2c7f721eccbc..691b83b10649 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -131,7 +131,7 @@ void new_thread_handler(void)
- 	 * callback returns only if the kernel thread execs a process
- 	 */
- 	n = fn(arg);
--	userspace(&current->thread.regs.regs);
-+	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
- }
-
- /* Called magically, see new_thread_handler above */
-@@ -150,7 +150,7 @@ void fork_handler(void)
-
- 	current->thread.prev_sched = NULL;
-
--	userspace(&current->thread.regs.regs);
-+	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
- }
-
- int copy_thread(unsigned long clone_flags, unsigned long sp,
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 03b3c4cc7735..d92a0240dce4 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -88,12 +88,11 @@ void wait_stub_done(int pid)
-
- extern unsigned long current_stub_stack(void);
-
--static void get_skas_faultinfo(int pid, struct faultinfo *fi)
-+static void get_skas_faultinfo(int pid, struct faultinfo *fi, unsigned long *aux_fp_regs)
- {
- 	int err;
--	unsigned long fpregs[FP_SIZE];
-
--	err = get_fp_registers(pid, fpregs);
-+	err = get_fp_registers(pid, aux_fp_regs);
- 	if (err < 0) {
- 		printk(UM_KERN_ERR "save_fp_registers returned %d\n",
- 		       err);
-@@ -113,7 +112,7 @@ static void get_skas_faultinfo(int pid, struct faultinfo *fi)
- 	 */
- 	memcpy(fi, (void *)current_stub_stack(), sizeof(*fi));
-
--	err = put_fp_registers(pid, fpregs);
-+	err = put_fp_registers(pid, aux_fp_regs);
- 	if (err < 0) {
- 		printk(UM_KERN_ERR "put_fp_registers returned %d\n",
- 		       err);
-@@ -121,9 +120,9 @@ static void get_skas_faultinfo(int pid, struct faultinfo *fi)
- 	}
- }
-
--static void handle_segv(int pid, struct uml_pt_regs * regs)
-+static void handle_segv(int pid, struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- {
--	get_skas_faultinfo(pid, &regs->faultinfo);
-+	get_skas_faultinfo(pid, &regs->faultinfo, aux_fp_regs);
- 	segv(regs->faultinfo, 0, 1, NULL);
- }
-
-@@ -303,7 +302,7 @@ int start_userspace(unsigned long stub_stack)
- 	return err;
- }
-
--void userspace(struct uml_pt_regs *regs)
-+void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- {
- 	int err, status, op, pid = userspace_pid[0];
- 	/* To prevent races if using_sysemu changes under us.*/
-@@ -372,11 +371,11 @@ void userspace(struct uml_pt_regs *regs)
- 			case SIGSEGV:
- 				if (PTRACE_FULL_FAULTINFO) {
- 					get_skas_faultinfo(pid,
--							   &regs->faultinfo);
-+							   &regs->faultinfo, aux_fp_regs);
- 					(*sig_info[SIGSEGV])(SIGSEGV, (struct siginfo *)&si,
- 							     regs);
- 				}
--				else handle_segv(pid, regs);
-+				else handle_segv(pid, regs, aux_fp_regs);
- 				break;
- 			case SIGTRAP + 0x80:
- 			        handle_trap(pid, regs, local_using_sysemu);
+It ends via handle_trap() when userspac does an exit syscall.
+I agree this is tricky to catch and needs more effort.
 
 Thanks,
 //richard
