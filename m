@@ -1,65 +1,84 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1dTaWH-0006yv-1s
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Jul 2017 21:10:33 +0000
-Received: from www17.your-server.de ([213.133.104.17])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1dTaWG-0000me-Bd
-	for user-mode-linux-devel@lists.sourceforge.net;
-	Fri, 07 Jul 2017 21:10:33 +0000
-From: Thomas Meyer <thomas@m3y3r.de>
-Date: Fri,  7 Jul 2017 23:10:13 +0200
-Message-Id: <20170707211013.17956-1-thomas@m3y3r.de>
-In-Reply-To: <CAFLxGvypP43dRGJDkMU+4OojDDrwC+7eX3uq0pH+9He6EEBfKQ@mail.gmail.com>
-References: <CAFLxGvypP43dRGJDkMU+4OojDDrwC+7eX3uq0pH+9He6EEBfKQ@mail.gmail.com>
-Subject: [uml-devel] [PATCH] um: Fix gcc-plugins dependency
-List-Id: The user-mode Linux development list
-	<user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
-	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [GIT PULL] UML updates for 4.13-rc1
+Message-ID: <8e7e782b-c155-63b0-072d-56a010b55adb@nod.at>
+Date: Sat, 15 Jul 2017 15:54:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net, richard.weinberger@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Ensure to build the gcc-plugins for user-offsets.s
+Linus,
 
-Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
----
- arch/um/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The following changes since commit 32c1431eea4881a6b17bd7c639315010aeefa452:
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 0ca46ededfc7..7cb04d9da544 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -146,7 +146,7 @@ archclean:
- 
- # Generated files
- 
--$(HOST_DIR)/um/user-offsets.s: __headers FORCE
-+$(HOST_DIR)/um/user-offsets.s: gcc-plugins __headers FORCE
- 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um $@
- 
- define filechk_gen-asm-offsets
--- 
-2.13.0
+  Linux 4.12-rc5 (2017-06-11 16:48:20 -0700)
 
+are available in the git repository at:
 
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.13-rc1
+
+for you to fetch changes up to 61e8d462457f202bf0c6393133425ad387825e22:
+
+  um: Correctly check for PTRACE_GETRESET/SETREGSET (2017-07-10 22:58:06 +0200)
+
+----------------------------------------------------------------
+This pull request contains mostly fixes for UML:
+- First round of fixes for PTRACE_GETRESET/SETREGSET
+- A printf vs. printk cleanup
+- Minor improvements
+
+----------------------------------------------------------------
+Florian Fainelli (2):
+      um: Avoid longjmp/setjmp symbol clashes with libpthread.a
+      um: Allow building and running on older hosts
+
+Logan Gunthorpe (1):
+      um: add dummy ioremap and iounmap functions
+
+Masami Hiramatsu (6):
+      um: Use printk instead of printf in make_uml_dir
+      um: Add os_info() for pre-boot information messages
+      um: Use os_info for the messages on normal path
+      um: Add os_warn() for pre-boot warning/error messages
+      um: Use os_warn to print out pre-boot warning/error messages
+      um: console: Ignore console= option
+
+Richard Weinberger (1):
+      um: Correctly check for PTRACE_GETRESET/SETREGSET
+
+Thomas Meyer (5):
+      um: userspace - be more verbose in ptrace set regs error
+      um: stub-data.h: remove superfluous include
+      um: Add kerneldoc for segv_handler
+      um: Add kerneldoc for userspace_tramp() and start_userspace()
+      um: v2: Use generic NOTES macro
+
+ arch/um/Makefile                        |  4 ++++
+ arch/um/drivers/stdio_console.c         |  3 +++
+ arch/um/include/asm/common.lds.S        |  2 +-
+ arch/um/include/asm/io.h                | 17 ++++++++++++++
+ arch/um/include/shared/os.h             |  4 ++++
+ arch/um/include/shared/skas/stub-data.h |  2 --
+ arch/um/kernel/physmem.c                | 10 ++++----
+ arch/um/kernel/trap.c                   | 10 ++++++++
+ arch/um/kernel/um_arch.c                | 16 +++++++------
+ arch/um/kernel/umid.c                   |  4 ++--
+ arch/um/os-Linux/execvp.c               |  2 +-
+ arch/um/os-Linux/main.c                 |  9 ++++----
+ arch/um/os-Linux/mem.c                  | 28 +++++++++++-----------
+ arch/um/os-Linux/skas/process.c         | 41 ++++++++++++++++++++++++++++++---
+ arch/um/os-Linux/start_up.c             | 28 +++++++++++-----------
+ arch/um/os-Linux/umid.c                 | 19 ++++++++-------
+ arch/um/os-Linux/util.c                 | 34 +++++++++++++++++++++++++++
+ arch/x86/um/os-Linux/registers.c        | 12 ++++++----
+ arch/x86/um/setjmp_32.S                 | 16 ++++++-------
+ arch/x86/um/setjmp_64.S                 | 16 ++++++-------
+ arch/x86/um/user-offsets.c              |  6 ++++-
+ 21 files changed, 201 insertions(+), 82 deletions(-)
+ create mode 100644 arch/um/include/asm/io.h
 
