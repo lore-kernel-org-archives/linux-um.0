@@ -2,18 +2,24 @@ Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <thomas@m3y3r.de>) id 1dTDwl-0002uc-M0
+	(envelope-from <thomas@m3y3r.de>) id 1dXD7w-0002jq-NG
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2017 21:04:23 +0000
+	Mon, 17 Jul 2017 21:00:24 +0000
 Received: from www17.your-server.de ([213.133.104.17])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1dTDwk-0002Ee-Nd
+	(Exim 4.76) id 1dXD7t-0002ID-3o
 	for user-mode-linux-devel@lists.sourceforge.net;
-	Thu, 06 Jul 2017 21:04:23 +0000
+	Mon, 17 Jul 2017 21:00:24 +0000
+Date: Mon, 17 Jul 2017 22:59:52 +0200
 From: Thomas Meyer <thomas@m3y3r.de>
-Date: Thu,  6 Jul 2017 23:04:04 +0200
-Message-Id: <20170706210404.18253-1-thomas@m3y3r.de>
-Subject: [uml-devel] [PATCH] um: Fix FP register size for XSTATE/XSAVE
+Message-ID: <20170717154505.GA17661@localhost.localdomain>
+References: <c99c3170-53a6-4038-9033-5a3680b1e5db@email.android.com>
+	<261315a5-f93a-9c1a-cfca-bd41f5b20dc6@nod.at>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <261315a5-f93a-9c1a-cfca-bd41f5b20dc6@nod.at>
+Subject: Re: [uml-devel] [PATCH] um: v3: Fix FP register size for
+ XSTATE/XSAVE
 List-Id: The user-mode Linux development list
 	<user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>,
@@ -23,76 +29,70 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>,
 	<mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 
-Hard code max size. Taken from
-https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=gdb/common/x86-xstate.h
+On Wed, Jul 12, 2017 at 09:18:26PM +0200, Richard Weinberger wrote:
+> Thomas,
+> 
+> Am 12.07.2017 um 17:11 schrieb Thomas Meyer:
+> > Am 10.07.2017 9:06 nachm. schrieb Richard Weinberger <richard@nod.at>:
+> > 
+> >     Thomas,
+> > 
+> >     Am 10.07.2017 um 00:33 schrieb Thomas Meyer:
+> >     > Hard code max size. Taken from
+> >     > https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=gdb/common/x86-xstate.h
+> >     >
+> >     > v3: use static fp_regs for get_skas_faultinfo
+> >     >
+> >     > Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
+> >     > ---
+> >     >  arch/um/os-Linux/skas/process.c  |  7 ++++---
+> >     >  arch/x86/um/os-Linux/registers.c | 18 ++++++++++++------
+> >     >  arch/x86/um/user-offsets.c       |  2 +-
+> >     >  3 files changed, 17 insertions(+), 10 deletions(-)
+> >     >
+> >     > diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+> >     > index 03b3c4cc7735..b5fdef795985 100644
+> >     > --- a/arch/um/os-Linux/skas/process.c
+> >     > +++ b/arch/um/os-Linux/skas/process.c
+> >     > @@ -88,12 +88,13 @@ void wait_stub_done(int pid)
+> >     > 
+> >     >  extern unsigned long current_stub_stack(void);
+> >     > 
+> >     > +static unsigned long skas_faultinfo_fpregs[FP_SIZE];
+> >     > +
+> > 
+> >     Uhmm, are you sure that this does not race with other userspace() instances?
+> > 
+> > Oh, is it really possible that a task gets schedule while we are in userspace signal handling from ptrace?
+> 
+> I hoped that you'd double check. ;)
 
-Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
----
- arch/x86/um/os-Linux/registers.c | 9 ++++-----
- arch/x86/um/user-offsets.c       | 2 +-
- 2 files changed, 5 insertions(+), 6 deletions(-)
+I just did write a little test program, which seems to survive this
+patch. Please have a look at this test program. As far as I understand
+the problem, the test program should cover above test case.
 
-diff --git a/arch/x86/um/os-Linux/registers.c b/arch/x86/um/os-Linux/registers.c
-index 00f54a91bb4b..7265511d8e3b 100644
---- a/arch/x86/um/os-Linux/registers.c
-+++ b/arch/x86/um/os-Linux/registers.c
-@@ -30,7 +30,7 @@ int save_fp_registers(int pid, unsigned long *fp_regs)
- 
- 	if (have_xstate_support) {
- 		iov.iov_base = fp_regs;
--		iov.iov_len = sizeof(struct _xstate);
-+		iov.iov_len = FP_SIZE * sizeof(unsigned long);
- 		if (ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov) < 0)
- 			return -errno;
- 		return 0;
-@@ -49,10 +49,9 @@ int restore_i387_registers(int pid, unsigned long *fp_regs)
- int restore_fp_registers(int pid, unsigned long *fp_regs)
- {
- 	struct iovec iov;
--
- 	if (have_xstate_support) {
- 		iov.iov_base = fp_regs;
--		iov.iov_len = sizeof(struct _xstate);
-+		iov.iov_len = FP_SIZE * sizeof(unsigned long);
- 		if (ptrace(PTRACE_SETREGSET, pid, NT_X86_XSTATE, &iov) < 0)
- 			return -errno;
- 		return 0;
-@@ -122,11 +121,11 @@ int put_fp_registers(int pid, unsigned long *regs)
- 
- void arch_init_registers(int pid)
- {
--	struct _xstate fp_regs;
-+	unsigned long fp_regs[FP_SIZE];
- 	struct iovec iov;
- 
- 	iov.iov_base = &fp_regs;
--	iov.iov_len = sizeof(struct _xstate);
-+	iov.iov_len = FP_SIZE * sizeof(unsigned long);
- 	if (ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov) == 0)
- 		have_xstate_support = 1;
- }
-diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
-index cb3c22370cf5..c0111f093361 100644
---- a/arch/x86/um/user-offsets.c
-+++ b/arch/x86/um/user-offsets.c
-@@ -50,7 +50,7 @@ void foo(void)
- 	DEFINE(HOST_GS, GS);
- 	DEFINE(HOST_ORIG_AX, ORIG_EAX);
- #else
--	DEFINE(HOST_FP_SIZE, sizeof(struct _xstate) / sizeof(unsigned long));
-+	DEFINE_LONGS(HOST_FP_SIZE, 2696);
- 	DEFINE_LONGS(HOST_BX, RBX);
- 	DEFINE_LONGS(HOST_CX, RCX);
- 	DEFINE_LONGS(HOST_DI, RDI);
--- 
-2.13.0
+Feel free to have a look at it:
+https://github.com/thomasmey/xmm-test/
 
+> From my knowledge it is not possible, but this code was not written by me and UML internal
+> semantics are more than tricky.
+> Let's postpone this patch for -rc2 and check again.
+> 
+> > Another question: when malloc a memory area in userspace: when does a userspace process end in userspace function!? Where would you free the malloced memory?
+> 
+> It ends via handle_trap() when userspac does an exit syscall.
+> I agree this is tricky to catch and needs more effort.
+
+Ah, okay, that makes sense!
+> 
+> Thanks,
+> //richard
 
 ------------------------------------------------------------------------------
 Check out the vibrant tech community on one of the world's most
