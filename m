@@ -1,21 +1,20 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: Re: [Jfs-discussion] [PATCH] fs: convert a pile of fsync routines to
- errseq_t based reporting
+Return-Path: <linux-fbdev-owner@vger.kernel.org>
+Date: Mon, 31 Jul 2017 09:25:17 +0200
+From: Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] fs: convert a pile of fsync routines to errseq_t based
+ reporting
+Message-ID: <20170731072517.GB18621@quack2.suse.cz>
 References: <20170728142321.11492-1-jlayton@kernel.org>
-From: Dave Kleikamp <dave.kleikamp@oracle.com>
-Message-ID: <4f54d61f-ef1f-fdbe-6c3b-8bf7e50f0c3f@oracle.com>
-Date: Mon, 31 Jul 2017 12:43:27 -0500
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20170728142321.11492-1-jlayton@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Layton <jlayton@kernel.org>, Christoph Hellwig <hch@lst.de>, jack@suse.cz, viro@zeniv.linux.org.uk
-Cc: devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org, linux-fbdev@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org, v9fs-developer@lists.sourceforge.net, akpm@linux-foundation.org, reiserfs-devel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-afs@lists.infradead.org, jfs-discussion@lists.sourceforge.net, lustre-devel@lists.lustre.org
+Sender: linux-fbdev-owner@vger.kernel.org
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, jack@suse.cz, viro@zeniv.linux.org.uk, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, lustre-devel@lists.lustre.org, devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org, v9fs-developer@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net, linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org, akpm@linux-foundation.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 07/28/2017 09:23 AM, Jeff Layton wrote:
+On Fri 28-07-17 10:23:21, Jeff Layton wrote:
 > From: Jeff Layton <jlayton@redhat.com>
 > 
 > This patch converts most of the in-kernel filesystems that do writeback
@@ -33,8 +32,12 @@ On 07/28/2017 09:23 AM, Jeff Layton wrote:
 > 
 > Signed-off-by: Jeff Layton <jlayton@redhat.com>
 
-Acked-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-(for jfs)
+This all looks rather obvious. Feel free to add:
+
+Acked-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 
 > ---
 >  arch/powerpc/platforms/cell/spufs/file.c   | 2 +-
@@ -372,5 +375,9 @@ Acked-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 >  	if (err)
 >  		return err;
 >  	inode_lock(inode);
+> -- 
+> 2.13.3
 > 
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
