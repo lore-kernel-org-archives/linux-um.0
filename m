@@ -1,35 +1,36 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Thomas Meyer <thomas@m3y3r.de>
-Subject: [PATCH 1/2] um: link vmlinux with -no-pie
-Date: Sun, 20 Aug 2017 13:26:04 +0200
-Message-Id: <20170820112605.19883-1-thomas@m3y3r.de>
+Subject: [PATCH] um: Fix CONFIG_GCOV for modules.
+Date: Sun, 13 Aug 2017 14:51:12 +0200
+Message-Id: <20170813125112.15375-1-thomas@m3y3r.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 Cc: Thomas Meyer <thomas@m3y3r.de>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Debian's gcc defaults to pie. The global Makefile already defines the -fno-pie option.
-Link UML dynamic kernel image also with -no-pie to fix the build.
+Explicitly export symbols so modpost doesn't complain.
 
 Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
 ---
- arch/um/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/kernel/gmon_syms.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index f1c9269b2c2a..8e3ae6d0c810 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -121,7 +121,7 @@ archheaders:
- archprepare: include/generated/user_constants.h
+diff --git a/arch/um/kernel/gmon_syms.c b/arch/um/kernel/gmon_syms.c
+index 1bf61266da8e..f138a4a0db99 100644
+--- a/arch/um/kernel/gmon_syms.c
++++ b/arch/um/kernel/gmon_syms.c
+@@ -7,3 +7,10 @@
  
- LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
--LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib
-+LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib $(call cc-option, -no-pie)
- 
- CFLAGS_NO_HARDENING := $(call cc-option, -fno-PIC,) $(call cc-option, -fno-pic,) \
- 	$(call cc-option, -fno-stack-protector,) \
+ extern void __bb_init_func(void *)  __attribute__((weak));
+ EXPORT_SYMBOL(__bb_init_func);
++
++extern void __gcov_init(void *)  __attribute__((weak));
++EXPORT_SYMBOL(__gcov_init);
++extern void __gcov_merge_add(void *, unsigned int)  __attribute__((weak));
++EXPORT_SYMBOL(__gcov_merge_add);
++extern void __gcov_exit(void)  __attribute__((weak));
++EXPORT_SYMBOL(__gcov_exit);
 -- 
-2.11.0
+2.13.4
 
 
