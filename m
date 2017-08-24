@@ -1,71 +1,81 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: Re: [PATCH] um: Fix check for _xstate for older hosts
-References: <20170718234347.21560-1-f.fainelli@gmail.com>
- <CAFLxGvyD8YGYSSx=J__F=kzTzu729VzAqHDc9v+E7+VOCskxQA@mail.gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7e61844a-800e-bee4-d06b-6037d0f7e38b@gmail.com>
-Date: Fri, 18 Aug 2017 14:40:36 -0700
+Subject: Re: kselftests results under uml
+References: <c1eef43f-fac4-49b7-a069-6922f641ddfc@email.android.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Message-ID: <db3b0a6c-d1f5-56f8-0ef5-7422085b1336@osg.samsung.com>
+Date: Thu, 24 Aug 2017 14:20:25 -0600
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvyD8YGYSSx=J__F=kzTzu729VzAqHDc9v+E7+VOCskxQA@mail.gmail.com>
+In-Reply-To: <c1eef43f-fac4-49b7-a069-6922f641ddfc@email.android.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-devel@lists.sourceforge.net>, "open list:USER-MODE LINUX (UML)" <user-mode-linux-user@lists.sourceforge.net>
+To: Thomas Meyer <lkml@m3y3r.de>
+Cc: Thomas Meyer <thomas@m3y3r.de>, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Shuah Khan <shuahkh@osg.samsung.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On 07/24/2017 05:46 AM, Richard Weinberger wrote:
-> On Wed, Jul 19, 2017 at 1:43 AM, Florian Fainelli <f.fainelli@gmail.com> wrote:
->> Commit 0a987645672e ("um: Allow building and running on older
->> hosts") attempted to check for PTRACE_{GET,SET}REGSET under the premise
->> that these ptrace(2) parameters were directly linked with the presence
->> of the _xstate structure.
->>
->> After Richard's commit 61e8d462457f ("um: Correctly check for
->> PTRACE_GETRESET/SETREGSET") which properly included linux/ptrace.h
->> instead of asm/ptrace.h, we could get into the original build failure
->> that I reported:
->>
->> arch/x86/um/user-offsets.c: In function 'foo':
->> arch/x86/um/user-offsets.c:54: error: invalid application of 'sizeof' to
->> incomplete type 'struct _xstate'
->>
->> On this particular host, we do have PTRACE_GETREGSET and
->> PTRACE_SETREGSET defined in linux/ptrace.h, but not the structure
->> _xstate that should be pulled from the following include chain: signal.h
->> -> bits/sigcontext.h.
->>
->> Correctly fix this by checking for FP_XSTATE_MAGIC1 which is the correct
->> way to see if struct _xstate is available or not on the host.
->>
->> Fixes: 61e8d462457f ("um: Correctly check for PTRACE_GETRESET/SETREGSET")
->> Fixes: 0a987645672e ("um: Allow building and running on older hosts")
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->> ---
->>  arch/x86/um/user-offsets.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
->> index ae4cd58c0c7a..02250b2633b8 100644
->> --- a/arch/x86/um/user-offsets.c
->> +++ b/arch/x86/um/user-offsets.c
->> @@ -50,7 +50,7 @@ void foo(void)
->>         DEFINE(HOST_GS, GS);
->>         DEFINE(HOST_ORIG_AX, ORIG_EAX);
->>  #else
->> -#if defined(PTRACE_GETREGSET) && defined(PTRACE_SETREGSET)
->> +#ifdef FP_XSTATE_MAGIC1
->>         DEFINE(HOST_FP_SIZE, sizeof(struct _xstate) / sizeof(unsigned long));
->>  #else
->>         DEFINE(HOST_FP_SIZE, sizeof(struct _fpstate) / sizeof(unsigned long));
->> --
->> 2.9.3
->>
+On 08/24/2017 02:06 PM, Thomas Meyer wrote:
+> Am 24.08.2017 9:34 nachm. schrieb Shuah Khan <shuahkh@osg.samsung.com>:
 > 
-> Applied, thanks for fixing!
+>     Hi Thomas,
+> 
+>     On 08/24/2017 01:12 PM, Thomas Meyer wrote:
+>     > Hi,
+>     >
+>     > I am writing a script which bundles all kselftests and run them under an UML
+>     > kernel.
+> 
+>     Nice!
+> 
+>     >
+>     > The script is available here:
+>     > https://github.com/thomasmey/uml/blob/master/uml-fedora-kselftest.sh
+>     >
+>     > kselftests needed some fixing on debian. See the commits here:
+>     > https://github.com/thomasmey/linux/commits/devel
+> 
+>     I will take a look at these. Would you be interested in sending upstream
+>     patches for these fixes?
+> 
+> I did send all um fixes upstream. Regarding https://github.com/thomasmey/linux/commit/6b0ed22e4a0990e4990f95b5aa98c19d14367bd7
+> 
+> I would like to send it upstream bit I don't know how to tell clang to include the glibc headers in a portable way (is this maybe an Debian bug?!)
+> 
 
-Can you submit this to Linus before v4.13 is released? Thank you!
--- 
-Florian
+I am not sure. I don't use clang.
+
+> 
+>     >
+>     > The results are against 4.13.0-rc5-00220-g770414c23190-dirty
+>     >
+>     > Is anybody interested in those results? If so I can try to further automate
+>     > these runs.
+> 
+>     Yes. Please send them to me and cc linux-kselftest@vger.kernel.org as you
+>     have done for this message.
+> 
+> Okay I'll work some more on this then.
+> 
+> 
+>     >
+>     > Some tests fails because either the distro used still misses
+>     > some packages, or the uml is buggy, or the tests are buggy. It's on my todo
+>     > list to look at all errors in details.
+> 
+>     Probably both. There are some tests that fail instead of skip when config
+>     isn't enabled. We have been fixing them as we find them. You can find fixes
+>     and enhancements slated for 4.14-rc1 in linux-kselftest next.
+> 
+> One question regarding modules:
+> As my kernel uses an allmodconfig, some test seems to modprobe the modules they need by itself, some fail when a necessary module is not loaded, what's your opinion on that?
+> 
+
+Right. Several tests fail the test if modules isn't loaded which isn't correct.
+Doing a dry-run and skip the test as opposed failing is the desired behavior.
+Please see lib/printf.sh for the correct way to handle it.
+
+Several tests that use modprobe need fixing.
+
+thanks,
+-- Shuah
 
