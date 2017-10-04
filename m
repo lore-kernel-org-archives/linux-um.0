@@ -1,20 +1,20 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
  helo=mx.sourceforge.net)
- by sfs-ml-2.v29.ch3.sourceforge.com with esmtps (TLSv1:DHE-RSA-AES256-SHA:256)
+ by sfs-ml-4.v29.ch3.sourceforge.com with esmtps (TLSv1:DHE-RSA-AES256-SHA:256)
  (Exim 4.89) (envelope-from <anton.ivanov@kot-begemot.co.uk>)
- id 1e2CKf-0004rC-QU for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 11 Oct 2017 08:25:37 +0000
+ id 1dzksH-00067m-5r for user-mode-linux-devel@lists.sourceforge.net;
+ Wed, 04 Oct 2017 14:42:13 +0000
 Received: from ivanoab5.miniserver.com ([78.31.111.25]
  helo=www.kot-begemot.co.uk)
- by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
- (Exim 4.76) id 1e2CKe-0006MN-5D
+ by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+ (Exim 4.76) id 1dzksE-0006tL-MF
  for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 11 Oct 2017 08:25:37 +0000
+ Wed, 04 Oct 2017 14:42:13 +0000
 From: anton.ivanov@kot-begemot.co.uk
-Date: Wed, 11 Oct 2017 09:25:24 +0100
-Message-Id: <20171011082526.30692-1-anton.ivanov@kot-begemot.co.uk>
-Subject: [uml-devel] PATCH v7
+Date: Wed,  4 Oct 2017 15:41:58 +0100
+Message-Id: <20171004144200.24816-1-anton.ivanov@kot-begemot.co.uk>
+Subject: [uml-devel] PATCH v4
 List-Id: The user-mode Linux development list
  <user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
@@ -31,18 +31,27 @@ Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: user-mode-linux-devel@lists.sourceforge.net
 Cc: richard.weinberger@gmail.com
 
-This is hopefully the final parking position. It has been cleaned up,
-updated to fit the current netdev warning/info message conventions
-and no longer hangs if the underlying network hard xmit misbehaves.
+This update cleans up the code and simplifies the xmit routines to
+share some of the code. It also brings tap up to date to do scatter
+gather and TSO on transmit. The result is ... drum roll... 4.5Gbit+
+on iperf on my laptop. As a reference QEMU+kvm with all bells and
+whistles does under 1GBit and LXC with vEth does ~ 20GBit.
 
-The issue with raw sockets is a definitive BUG - I have gone through
-it with a comb several times, including sticking debug into the
-actual host af_packet itself. If you try to give af_packet.c a TSO
-frame it does something to it which makes the TSO capable underlying
-device drop it. The same frame passes tap with flying colors.
-Go figure.
+TSO on RX is still not implemented - this is XMIT only.
+
+The same code should also work for raw, but it does not. It looks
+like a BUG in the actual linux af_packet.c raw socket implementation.
+I am probably going to implement TSO on RX so I have a full frame
+of reference to see if the RX TSO in raw sockets is broken (or not)
+next. So for the time being raw does only checksums.
+
+I will try to find some time to add Geneve and VXLAN to this. It will
+be after I figure out RAW and TSO on RX for RAW and TAP.
+
+Brgds,
 
 A.
+
 
 
 ------------------------------------------------------------------------------
