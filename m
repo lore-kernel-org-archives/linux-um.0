@@ -1,23 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
  helo=mx.sourceforge.net)
- by sfs-ml-2.v29.ch3.sourceforge.com with esmtps (TLSv1:DHE-RSA-AES256-SHA:256)
+ by sfs-ml-1.v29.ch3.sourceforge.com with esmtps (TLSv1:DHE-RSA-AES256-SHA:256)
  (Exim 4.89) (envelope-from <anton.ivanov@kot-begemot.co.uk>)
- id 1e0aFu-00020O-Du for user-mode-linux-devel@lists.sourceforge.net;
- Fri, 06 Oct 2017 21:34:02 +0000
+ id 1dzksR-0001fZ-EI for user-mode-linux-devel@lists.sourceforge.net;
+ Wed, 04 Oct 2017 14:42:23 +0000
 Received: from ivanoab5.miniserver.com ([78.31.111.25]
  helo=www.kot-begemot.co.uk)
  by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
- (Exim 4.76) id 1e0aFp-00039O-AV
+ (Exim 4.76) id 1dzksM-0005iG-5S
  for user-mode-linux-devel@lists.sourceforge.net;
- Fri, 06 Oct 2017 21:34:02 +0000
+ Wed, 04 Oct 2017 14:42:23 +0000
 From: anton.ivanov@kot-begemot.co.uk
-Date: Fri,  6 Oct 2017 22:33:38 +0100
-Message-Id: <20171006213339.78822-3-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <20171006213339.78822-1-anton.ivanov@kot-begemot.co.uk>
-References: <20171006213339.78822-1-anton.ivanov@kot-begemot.co.uk>
-Subject: [uml-devel] [PATCH v5-redo 2/3] High Performance Vector Network
- Driver
+Date: Wed,  4 Oct 2017 15:42:00 +0100
+Message-Id: <20171004144200.24816-3-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <20171004144200.24816-1-anton.ivanov@kot-begemot.co.uk>
+References: <20171004144200.24816-1-anton.ivanov@kot-begemot.co.uk>
+Subject: [uml-devel] [PATCH 2/2] High Performance Vector Network Driver
 List-Id: The user-mode Linux development list
  <user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
