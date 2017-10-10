@@ -1,74 +1,98 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Rob Herring <robh@kernel.org>
-Subject: [PATCH] kconfig: kill off GENERIC_IO option
-Date: Mon, 16 Oct 2017 17:16:31 -0500
-Message-Id: <20171016221631.23472-1-robh@kernel.org>
+Date: Tue, 10 Oct 2017 11:14:01 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [thomas@m3y3r.de: Re: [PATCH] um: Fix kcov crash before kernel
+ is started.]
+Message-ID: <20171010101401.GG27659@leverpostej>
+References: <20171009163710.o5z5xjnlvmo3mi52@olymp>
+ <CACT4Y+Y2BfbjaqR1DTXxZftuZVN66H+=2Sj1a=DsbCrFKTY=LA@mail.gmail.com>
+ <20171009191646.GA2277@maria>
+ <CACT4Y+Ye1Yw3SPCy80_JAqNGdqtSFTMVMc02-rbfJv1omT5Qhw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+Ye1Yw3SPCy80_JAqNGdqtSFTMVMc02-rbfJv1omT5Qhw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-mtd@lists.infradead.org
+To: Dmitry Vyukov <dvyukov@google.com>
+Cc: Thomas Meyer <thomas@m3y3r.de>, syzkaller <syzkaller@googlegroups.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The GENERIC_IO option is set for every architecture except tile and score
-as those define NO_IOMEM. The option only controls visibility of
-CONFIG_MTD which doesn't appear to be necessary for any reason, so let's
-just remove GENERIC_IO.
+Hi,
 
-Signed-off-by: Rob Herring <robh@kernel.org>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
-Cc: linux-mtd@lists.infradead.org
----
- arch/um/Kconfig.common | 1 -
- drivers/mtd/Kconfig    | 1 -
- lib/Kconfig            | 4 ----
- 3 files changed, 6 deletions(-)
+On Tue, Oct 10, 2017 at 10:59:23AM +0200, 'Dmitry Vyukov' via syzkaller wrote:
+> On Mon, Oct 9, 2017 at 9:16 PM, Thomas Meyer <thomas@m3y3r.de> wrote:
+> >> > Date: Sun, 8 Oct 2017 13:18:24 +0200
+> >> > From: Thomas Meyer <thomas@m3y3r.de>
+> >> > To: Richard Weinberger <richard@nod.at>
+> >> > Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+> >> > Subject: Re: [PATCH] um: Fix kcov crash before kernel is started.
+> >> > User-Agent: NeoMutt/20170113 (1.7.2)
+> >> >
+> >> > On Sun, Oct 08, 2017 at 12:44:12PM +0200, Richard Weinberger wrote:
+> >> >> Am Sonntag, 8. Oktober 2017, 12:31:58 CEST schrieb Thomas Meyer:
+> >> >> > UMLs current_thread_info() unconditionally assumes that the top of the stack
+> >> >> > contains the thread_info structure. But on UML the __sanitizer_cov_trace_pc
+> >> >> > function is called for *all* functions! This results in an early crash:
+> >> >> >
+> >> >> > Prevent kcov from using invalid curent_thread_info() data by checking
+> >> >> > the system_state.
+> >> >> >
+> >> >> > Signed-off-by: Thomas Meyer <thomas@m3y3r.de>
 
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index 85f6dd204ab6..5514ec52108f 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -9,7 +9,6 @@ config UML
- 	select HAVE_DEBUG_KMEMLEAK
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
--	select GENERIC_IO
- 	select GENERIC_CLOCKEVENTS
- 	select HAVE_GCC_PLUGINS
- 	select TTY # Needed for line.c
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 5a2d71729b9a..2a8ac6829d42 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -1,6 +1,5 @@
- menuconfig MTD
- 	tristate "Memory Technology Device (MTD) support"
--	depends on GENERIC_IO
- 	help
- 	  Memory Technology Devices are flash, RAM and similar chips, often
- 	  used for solid state file systems on embedded devices. This option
-diff --git a/lib/Kconfig b/lib/Kconfig
-index b1445b22a6de..994fa37a1d96 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -46,10 +46,6 @@ config GENERIC_IOMAP
- 	bool
- 	select GENERIC_PCI_IOMAP
- 
--config GENERIC_IO
--	bool
--	default n
--
- config STMP_DEVICE
- 	bool
- 
--- 
-2.11.0
+[...]
 
+> >> Yes, kcov can have some issues with early bootstrap code, because it
+> >> accesses current and it can also conflict with say, per-cpu setup code
+> >> (at least it was the case for x86). For x86 and arm64 we just bulk
+> >> blacklist instrumentation of arch code involved in early bootstrap.
+> >> See e.g. KCOV_INSTRUMENT in arch/x86/boot/Makefile. I think you need
+> >> to do the same for um. Start with bulk ignoring as much as possible
+> >> until you get it booting and then bisect back from there.
+> >
+> > oh, arch/um/* already contains the Makefile exception settings!
+> > I guess CONFIG_KCOV_INSTRUMENT_ALL overrides the the Makefile settings?
+> > Or doesn't it? I looked at scripts/Makefile.lib but failed to understand
+> > what config options has precedens in that case.
+> 
+> Then, I guess, boot code calls into some common instrumented code,
+> which gets into kcov and crashes.
+> 
+> This check helps, right?
+> 
+> +#ifdef CONFIG_UML
+> +   if(!(system_state == SYSTEM_SCHEDULING ||
+> +        system_state == SYSTEM_RUNNING))
+> +           return;
+> +#endif
+> 
+> Which means we somehow get here during boot. Is it possible to get a
+> stack trace for the return statement?
+> 
+> There is no common recipe. I think x86/arm64 are somewhat fragile in
+> this aspect as well, but somehow work. First of all we need to
+> understand how we get into the instrumentation callback during boot.
+
+Small info dump below. I *think* arm64 is mostly ok.
+
+On arm64, our get_current() reads a system register that we setup in
+early assembly with a pointer to our task struct. Our thread_info is
+embedded in our task_struct.
+
+That's setup in {primary,secondary}_switched, before we execute most C
+code, including early init code like kasan_early_init and
+kaslr_early_init, so it's safe to use current_thread_info() even in
+those early bootstrap functions.
+
+The only exception that I'm aware of is the EFI stub. However, that
+isn't permitted to make calls to most kernel functions, and in its
+makefile we (try to) enforce that it only calls into uninstrumented
+position-independent functions. So any problems should be apparent at
+build time.
+
+There are a few special files (e.g. the out-of-line LL/SC atomics) which
+we need to disable instrumentation for, which I intend to send patches
+for at some point soon.
+
+Thanks,
+Mark.
 
