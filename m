@@ -1,34 +1,56 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: Re: [GIT PULL] UBI/UBIFS updates for 4.15-rc1
-Date: Fri, 24 Nov 2017 10:46:37 +0100
-Message-ID: <4300266.OpBMifGIty@blindfold>
-In-Reply-To: <CA+55aFw-NJXZ9O9JJigeTdK2V6y7zpQfmE3rmsB1Zi=8kMJuZA@mail.gmail.com>
-References: <2342271.CoAPh78JdH@blindfold> <CA+55aFw-NJXZ9O9JJigeTdK2V6y7zpQfmE3rmsB1Zi=8kMJuZA@mail.gmail.com>
+Date: Wed, 15 Nov 2017 12:22:14 +0100
+From: Krzysztof Mazur <krzysiek@podlesie.net>
+Subject: Re: [PATCH] um: use POSIX ucontext_t instead of struct ucontext
+Message-ID: <20171115112214.GA12121@shrek.podlesie.net>
+References: <20171115101239.4882-1-krzysiek@podlesie.net>
+ <1518438.KRCSCszYuI@blindfold>
+ <20171115110416.GA29538@shrek.podlesie.net>
+ <1828554.ETQJSmL9mu@blindfold>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1828554.ETQJSmL9mu@blindfold>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, user-mode-linux-devel@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>
+Cc: Jeff Dike <jdike@addtoit.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Linus,
-
-Am Freitag, 24. November 2017, 04:41:37 CET schrieb Linus Torvalds:
-> On Thu, Nov 23, 2017 at 4:37 AM, Richard Weinberger <richard@nod.at> wrote:
-> >   git://git.infradead.org/linux-ubifs.git tags/upstream-4.15-rc1
+On Wed, Nov 15, 2017 at 12:15:00PM +0100, Richard Weinberger wrote:
+> Am Mittwoch, 15. November 2017, 12:04:16 CET schrieb Krzysztof Mazur:
+> > On Wed, Nov 15, 2017 at 11:19:41AM +0100, Richard Weinberger wrote:
+> > > Am Mittwoch, 15. November 2017, 11:12:39 CET schrieb Krzysztof Mazur:
+> > > > glibc 2.26 removed the 'struct ucontext' to "improve" POSIX compliance
+> > > > and break programs, including User Mode Linux. Fix User Mode Linux
+> > > > by using POSIX ucontext_t.
+> > > > 
+> > > > This fixes:
+> > > > 
+> > > > arch/um/os-Linux/signal.c: In function 'hard_handler':
+> > > > arch/um/os-Linux/signal.c:163:22: error: dereferencing pointer to
+> > > > incomplete type 'struct ucontext' mcontext_t *mc = &uc->uc_mcontext;
+> > > > arch/x86/um/stub_segv.c: In function 'stub_segv_handler':
+> > > > arch/x86/um/stub_segv.c:16:13: error: dereferencing pointer to
+> > > > incomplete
+> > > > type 'struct ucontext' &uc->uc_mcontext);
+> > > 
+> > > Do all older glibcs have ucontext_t?
+> > > Otherwise this patch will break other stuff.
+> > 
+> > Yes, ucontext_t typedef was always available. They changed:
+> > 
+> > typedef struct ucontext { ... } ucontex_t;
+> > 
+> > to
+> > 
+> > typedef struct ucontext_t { ... } ucontex_t;
+> > 
+> > https://sourceware.org/glibc/wiki/Release/2.26#Removal_of_.27struct_ucontext
+> > .27
 > 
-> Similarly to the arch/um case, none of this seems to have been in
-> linux-next, and is sent late in the merge window, so I'm skipping it.
+> Okay, then we can mark your patch as stable and hope for the best. ;-)
 
-It is since next-20171120 in linux-next.
-I'm sorry for being late, will do a better job next time.
+Thanks
 
-If you don't mind I'll send you a PR with bug fixes for 4.15-rc2.
-Same for UML.
-
-Thanks,
-//richard
-
+Krzysiek
 
