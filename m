@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.194]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.191]
  helo=mx.sourceforge.net)
- by sfs-ml-2.v29.ch3.sourceforge.com with esmtps
+ by sfs-ml-4.v29.ch3.sourceforge.com with esmtps
  (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- (envelope-from <fengguang.wu@intel.com>) id 1eHTER-0008WO-Vw
+ (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1eGhJa-0001Tz-1o
  for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 22 Nov 2017 11:30:19 +0000
-Received: from mga03.intel.com ([134.134.136.65])
- by sfi-mx-4.v28.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- id 1eHTEM-0002rK-1L for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 22 Nov 2017 11:30:19 +0000
-Date: Wed, 22 Nov 2017 19:29:38 +0800
-From: kbuild test robot <fengguang.wu@intel.com>
-Message-ID: <201711221925.s3l41rEv%fengguang.wu@intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="0F1p//8PRICkK4MW"
-Content-Disposition: inline
-Subject: [uml-devel] [uml:for-linus-4.15-rc1 6/6]
- vector_user.c:(.text+0x397): warning: Using 'getaddrinfo' in statically
- linked applications requires at runtime the shared libraries from the glibc
- version used for linking
+ Mon, 20 Nov 2017 08:20:26 +0000
+Received: from ivanoab5.miniserver.com ([78.31.111.25]
+ helo=www.kot-begemot.co.uk)
+ by sfi-mx-1.v28.ch3.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.89)
+ id 1eGhJW-0002Qv-P8 for user-mode-linux-devel@lists.sourceforge.net;
+ Mon, 20 Nov 2017 08:20:25 +0000
+From: anton.ivanov@kot-begemot.co.uk
+Date: Mon, 20 Nov 2017 07:39:24 +0000
+Message-Id: <20171120073925.32715-2-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <20171120073925.32715-1-anton.ivanov@kot-begemot.co.uk>
+References: <20171120073925.32715-1-anton.ivanov@kot-begemot.co.uk>
+Subject: [uml-devel] [PATCH v9 1/2] Epoll based IRQ controller
 List-Id: The user-mode Linux development list
  <user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
@@ -30,437 +27,1068 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
  <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Richard Weinberger <richard@nod.at>, kbuild-all@01.org, user-mode-linux-devel@lists.sourceforge.net
-
-
---0F1p//8PRICkK4MW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.15-rc1
-head:   ad1f62ab2bd43b962127af760d59a25ae1c93681
-commit: ad1f62ab2bd43b962127af760d59a25ae1c93681 [6/6] High Performance UML Vector Network Driver
-config: um-allyesconfig (attached as .config)
-compiler: gcc-6 (Debian 6.4.0-9) 6.4.0 20171026
-reproduce:
-        git checkout ad1f62ab2bd43b962127af760d59a25ae1c93681
-        # save the attached .config to linux build tree
-        make ARCH=um 
-
-All warnings (new ones prefixed by >>):
-
-   arch/um/drivers/vde.o: In function `vde_open_real':
-   (.text+0x951): warning: Using 'getgrnam' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-   (.text+0x79c): warning: Using 'getpwuid' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-   arch/um/drivers/vector_user.o: In function `user_init_socket_fds':
->> vector_user.c:(.text+0x397): warning: Using 'getaddrinfo' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-   arch/um/drivers/pcap.o: In function `pcap_nametoaddr':
-   (.text+0xdef5): warning: Using 'gethostbyname' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-   arch/um/drivers/pcap.o: In function `pcap_nametonetaddr':
-   (.text+0xdf95): warning: Using 'getnetbyname' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-   arch/um/drivers/pcap.o: In function `pcap_nametoproto':
-   (.text+0xe1b5): warning: Using 'getprotobyname' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-   arch/um/drivers/pcap.o: In function `pcap_nametoport':
-   (.text+0xdfe7): warning: Using 'getservbyname' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
-   drivers/auxdisplay/img-ascii-lcd.o: In function `img_ascii_lcd_probe':
-   img-ascii-lcd.c:(.text+0x771): undefined reference to `devm_ioremap_resource'
-   collect2: error: ld returned 1 exit status
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
-
---0F1p//8PRICkK4MW
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-KvJVxZOAuXKYM5Hd11mjEaD/Bx0LRNvqKwEA
-
---0F1p//8PRICkK4MW
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: richard.weinberger@gmail.com, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
+1. Removes the need to walk the IRQ/Device list to determine
+who triggered the IRQ.
+2. Improves scalability (up to several times performance
+improvement for cases with 10s of devices).
+3. Improves UML baseline IO performance for one disk + one NIC
+use case by up to 10%.
+4. Introduces write poll triggered IRQs.
+5. Prerequisite for introducing high performance mmesg family
+of functions in network IO.
+6. Fixes RNG shutdown which was leaking a file descriptor
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/drivers/chan_kern.c       |  53 +----
+ arch/um/drivers/line.c            |   2 +-
+ arch/um/drivers/random.c          |  11 +-
+ arch/um/drivers/ubd_kern.c        |   4 +-
+ arch/um/include/shared/irq_user.h |  12 +-
+ arch/um/include/shared/os.h       |  17 +-
+ arch/um/kernel/irq.c              | 460 ++++++++++++++++++++++++--------------
+ arch/um/os-Linux/irq.c            | 202 +++++++++--------
+ 8 files changed, 444 insertions(+), 317 deletions(-)
+
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index acbe6c67afba..05588f9466c7 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -171,56 +171,19 @@ int enable_chan(struct line *line)
+ 	return err;
+ }
+ 
+-/* Items are added in IRQ context, when free_irq can't be called, and
+- * removed in process context, when it can.
+- * This handles interrupt sources which disappear, and which need to
+- * be permanently disabled.  This is discovered in IRQ context, but
+- * the freeing of the IRQ must be done later.
+- */
+-static DEFINE_SPINLOCK(irqs_to_free_lock);
+-static LIST_HEAD(irqs_to_free);
+-
+-void free_irqs(void)
+-{
+-	struct chan *chan;
+-	LIST_HEAD(list);
+-	struct list_head *ele;
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&irqs_to_free_lock, flags);
+-	list_splice_init(&irqs_to_free, &list);
+-	spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+-
+-	list_for_each(ele, &list) {
+-		chan = list_entry(ele, struct chan, free_list);
+-
+-		if (chan->input && chan->enabled)
+-			um_free_irq(chan->line->driver->read_irq, chan);
+-		if (chan->output && chan->enabled)
+-			um_free_irq(chan->line->driver->write_irq, chan);
+-		chan->enabled = 0;
+-	}
+-}
+-
+ static void close_one_chan(struct chan *chan, int delay_free_irq)
+ {
+-	unsigned long flags;
+-
+ 	if (!chan->opened)
+ 		return;
+ 
+-	if (delay_free_irq) {
+-		spin_lock_irqsave(&irqs_to_free_lock, flags);
+-		list_add(&chan->free_list, &irqs_to_free);
+-		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+-	}
+-	else {
+-		if (chan->input && chan->enabled)
+-			um_free_irq(chan->line->driver->read_irq, chan);
+-		if (chan->output && chan->enabled)
+-			um_free_irq(chan->line->driver->write_irq, chan);
+-		chan->enabled = 0;
+-	}
++    /* we can safely call free now - it will be marked
++     *  as free and freed once the IRQ stopped processing
++     */
++	if (chan->input && chan->enabled)
++		um_free_irq(chan->line->driver->read_irq, chan);
++	if (chan->output && chan->enabled)
++		um_free_irq(chan->line->driver->write_irq, chan);
++	chan->enabled = 0;
+ 	if (chan->ops->close != NULL)
+ 		(*chan->ops->close)(chan->fd, chan->data);
+ 
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index 366e57f5e8d6..8d80b27502e6 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -284,7 +284,7 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
+ 	if (err)
+ 		return err;
+ 	if (output)
+-		err = um_request_irq(driver->write_irq, fd, IRQ_WRITE,
++		err = um_request_irq(driver->write_irq, fd, IRQ_NONE,
+ 				     line_write_interrupt, IRQF_SHARED,
+ 				     driver->write_irq_name, data);
+ 	return err;
+diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
+index 37c51a6be690..778a0e52d5a5 100644
+--- a/arch/um/drivers/random.c
++++ b/arch/um/drivers/random.c
+@@ -13,6 +13,7 @@
+ #include <linux/miscdevice.h>
+ #include <linux/delay.h>
+ #include <linux/uaccess.h>
++#include <init.h>
+ #include <irq_kern.h>
+ #include <os.h>
+ 
+@@ -154,7 +155,14 @@ static int __init rng_init (void)
+ /*
+  * rng_cleanup - shutdown RNG module
+  */
+-static void __exit rng_cleanup (void)
++
++static void cleanup(void)
++{
++	free_irq_by_fd(random_fd);
++	os_close_file(random_fd);
++}
++
++static void __exit rng_cleanup(void)
+ {
+ 	os_close_file(random_fd);
+ 	misc_deregister (&rng_miscdev);
+@@ -162,6 +170,7 @@ static void __exit rng_cleanup (void)
+ 
+ module_init (rng_init);
+ module_exit (rng_cleanup);
++__uml_exitcall(cleanup);
+ 
+ MODULE_DESCRIPTION("UML Host Random Number Generator (RNG) driver");
+ MODULE_LICENSE("GPL");
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index b55fe9bf5d3e..d4e8c497ae86 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1587,11 +1587,11 @@ int io_thread(void *arg)
+ 
+ 		do {
+ 			res = os_write_file(kernel_fd, ((char *) io_req_buffer) + written, n);
+-			if (res > 0) {
++			if (res >= 0) {
+ 				written += res;
+ 			} else {
+ 				if (res != -EAGAIN) {
+-					printk("io_thread - read failed, fd = %d, "
++					printk("io_thread - write failed, fd = %d, "
+ 					       "err = %d\n", kernel_fd, -n);
+ 				}
+ 			}
+diff --git a/arch/um/include/shared/irq_user.h b/arch/um/include/shared/irq_user.h
+index df5633053957..a7a6120f19d5 100644
+--- a/arch/um/include/shared/irq_user.h
++++ b/arch/um/include/shared/irq_user.h
+@@ -7,6 +7,7 @@
+ #define __IRQ_USER_H__
+ 
+ #include <sysdep/ptrace.h>
++#include <stdbool.h>
+ 
+ struct irq_fd {
+ 	struct irq_fd *next;
+@@ -15,10 +16,17 @@ struct irq_fd {
+ 	int type;
+ 	int irq;
+ 	int events;
+-	int current_events;
++	bool active;
++	bool pending;
++	bool purge;
+ };
+ 
+-enum { IRQ_READ, IRQ_WRITE };
++#define IRQ_READ  0
++#define IRQ_WRITE 1
++#define IRQ_NONE 2
++#define MAX_IRQ_TYPE (IRQ_NONE + 1)
++
++
+ 
+ struct siginfo;
+ extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 574e03fc7ba2..edbe6563d5c5 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -290,15 +290,16 @@ extern void halt_skas(void);
+ extern void reboot_skas(void);
+ 
+ /* irq.c */
+-extern int os_waiting_for_events(struct irq_fd *active_fds);
+-extern int os_create_pollfd(int fd, int events, void *tmp_pfd, int size_tmpfds);
+-extern void os_free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg,
+-		struct irq_fd *active_fds, struct irq_fd ***last_irq_ptr2);
+-extern void os_free_irq_later(struct irq_fd *active_fds,
+-		int irq, void *dev_id);
+-extern int os_get_pollfd(int i);
+-extern void os_set_pollfd(int i, int fd);
++extern int os_waiting_for_events_epoll(void);
++extern void *os_epoll_get_data_pointer(int index);
++extern int os_epoll_triggered(int index, int events);
++extern int os_event_mask(int irq_type);
++extern int os_setup_epoll(void);
++extern int os_add_epoll_fd(int events, int fd, void *data);
++extern int os_mod_epoll_fd(int events, int fd, void *data);
++extern int os_del_epoll_fd(int fd);
+ extern void os_set_ioignore(void);
++extern void os_close_epoll_fd(void);
+ 
+ /* sigio.c */
+ extern int add_sigio_fd(int fd);
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 23cb9350d47e..980148d56537 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -1,4 +1,6 @@
+ /*
++ * Copyright (C) 2017 - Cambridge Greys Ltd
++ * Copyright (C) 2011 - 2014 Cisco Systems Inc
+  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  * Derived (i.e. mostly copied) from arch/i386/kernel/irq.c:
+@@ -16,243 +18,361 @@
+ #include <as-layout.h>
+ #include <kern_util.h>
+ #include <os.h>
++#include <irq_user.h>
+ 
+-/*
+- * This list is accessed under irq_lock, except in sigio_handler,
+- * where it is safe from being modified.  IRQ handlers won't change it -
+- * if an IRQ source has vanished, it will be freed by free_irqs just
+- * before returning from sigio_handler.  That will process a separate
+- * list of irqs to free, with its own locking, coming back here to
+- * remove list elements, taking the irq_lock to do so.
++
++/* When epoll triggers we do not know why it did so
++ * we can also have different IRQs for read and write.
++ * This is why we keep a small irq_fd array for each fd -
++ * one entry per IRQ type
+  */
+-static struct irq_fd *active_fds = NULL;
+-static struct irq_fd **last_irq_ptr = &active_fds;
+ 
+-extern void free_irqs(void);
++struct irq_entry {
++	struct irq_entry *next;
++	int fd;
++	struct irq_fd *irq_array[MAX_IRQ_TYPE + 1];
++};
++
++static struct irq_entry *active_fds;
++
++static DEFINE_SPINLOCK(irq_lock);
++
++static void irq_io_loop(struct irq_fd *irq, struct uml_pt_regs *regs)
++{
++/*
++ * irq->active guards against reentry
++ * irq->pending accumulates pending requests
++ * if pending is raised the irq_handler is re-run
++ * until pending is cleared
++ */
++	if (irq->active) {
++		irq->active = false;
++		do {
++			irq->pending = false;
++			do_IRQ(irq->irq, regs);
++		} while (irq->pending && (!irq->purge));
++		if (!irq->purge)
++			irq->active = true;
++	} else {
++		irq->pending = true;
++	}
++}
+ 
+ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ {
+-	struct irq_fd *irq_fd;
+-	int n;
++	struct irq_entry *irq_entry;
++	struct irq_fd *irq;
++
++	int n, i, j;
+ 
+ 	while (1) {
+-		n = os_waiting_for_events(active_fds);
++		/* This is now lockless - epoll keeps back-referencesto the irqs
++		 * which have trigger it so there is no need to walk the irq
++		 * list and lock it every time. We avoid locking by turning off
++		 * IO for a specific fd by executing os_del_epoll_fd(fd) before
++		 * we do any changes to the actual data structures
++		 */
++		n = os_waiting_for_events_epoll();
++
+ 		if (n <= 0) {
+ 			if (n == -EINTR)
+ 				continue;
+-			else break;
++			else
++				break;
+ 		}
+ 
+-		for (irq_fd = active_fds; irq_fd != NULL;
+-		     irq_fd = irq_fd->next) {
+-			if (irq_fd->current_events != 0) {
+-				irq_fd->current_events = 0;
+-				do_IRQ(irq_fd->irq, regs);
++		for (i = 0; i < n ; i++) {
++			/* Epoll back reference is the entry with 3 irq_fd
++			 * leaves - one for each irq type.
++			 */
++			irq_entry = (struct irq_entry *)
++				os_epoll_get_data_pointer(i);
++			for (j = 0; j < MAX_IRQ_TYPE ; j++) {
++				irq = irq_entry->irq_array[j];
++				if (irq == NULL)
++					continue;
++				if (os_epoll_triggered(i, irq->events) > 0)
++					irq_io_loop(irq, regs);
++				if (irq->purge) {
++					irq_entry->irq_array[j] = NULL;
++					kfree(irq);
++				}
+ 			}
+ 		}
+ 	}
++}
++
++static int assign_epoll_events_to_irq(struct irq_entry *irq_entry)
++{
++	int i;
++	int events = 0;
++	struct irq_fd *irq;
+ 
+-	free_irqs();
++	for (i = 0; i < MAX_IRQ_TYPE ; i++) {
++		irq = irq_entry->irq_array[i];
++		if (irq != NULL)
++			events = irq->events | events;
++	}
++	if (events > 0) {
++	/* os_add_epoll will call os_mod_epoll if this already exists */
++		return os_add_epoll_fd(events, irq_entry->fd, irq_entry);
++	}
++	/* No events - delete */
++	return os_del_epoll_fd(irq_entry->fd);
+ }
+ 
+-static DEFINE_SPINLOCK(irq_lock);
++
+ 
+ static int activate_fd(int irq, int fd, int type, void *dev_id)
+ {
+-	struct pollfd *tmp_pfd;
+-	struct irq_fd *new_fd, *irq_fd;
++	struct irq_fd *new_fd;
++	struct irq_entry *irq_entry;
++	int i, err, events;
+ 	unsigned long flags;
+-	int events, err, n;
+ 
+ 	err = os_set_fd_async(fd);
+ 	if (err < 0)
+ 		goto out;
+ 
+-	err = -ENOMEM;
+-	new_fd = kmalloc(sizeof(struct irq_fd), GFP_KERNEL);
+-	if (new_fd == NULL)
+-		goto out;
++	spin_lock_irqsave(&irq_lock, flags);
+ 
+-	if (type == IRQ_READ)
+-		events = UM_POLLIN | UM_POLLPRI;
+-	else events = UM_POLLOUT;
+-	*new_fd = ((struct irq_fd) { .next  		= NULL,
+-				     .id 		= dev_id,
+-				     .fd 		= fd,
+-				     .type 		= type,
+-				     .irq 		= irq,
+-				     .events 		= events,
+-				     .current_events 	= 0 } );
++	/* Check if we have an entry for this fd */
+ 
+ 	err = -EBUSY;
+-	spin_lock_irqsave(&irq_lock, flags);
+-	for (irq_fd = active_fds; irq_fd != NULL; irq_fd = irq_fd->next) {
+-		if ((irq_fd->fd == fd) && (irq_fd->type == type)) {
+-			printk(KERN_ERR "Registering fd %d twice\n", fd);
+-			printk(KERN_ERR "Irqs : %d, %d\n", irq_fd->irq, irq);
+-			printk(KERN_ERR "Ids : 0x%p, 0x%p\n", irq_fd->id,
+-			       dev_id);
++	for (irq_entry = active_fds;
++		irq_entry != NULL; irq_entry = irq_entry->next) {
++		if (irq_entry->fd == fd)
++			break;
++	}
++
++	if (irq_entry == NULL) {
++		/* This needs to be atomic as it may be called from an
++		 * IRQ context.
++		 */
++		irq_entry = kmalloc(sizeof(struct irq_entry), GFP_ATOMIC);
++		if (irq_entry == NULL) {
++			printk(KERN_ERR
++				"Failed to allocate new IRQ entry\n");
+ 			goto out_unlock;
+ 		}
++		irq_entry->fd = fd;
++		for (i = 0; i < MAX_IRQ_TYPE; i++)
++			irq_entry->irq_array[i] = NULL;
++		irq_entry->next = active_fds;
++		active_fds = irq_entry;
+ 	}
+ 
+-	if (type == IRQ_WRITE)
+-		fd = -1;
+-
+-	tmp_pfd = NULL;
+-	n = 0;
++	/* Check if we are trying to re-register an interrupt for a
++	 * particular fd
++	 */
+ 
+-	while (1) {
+-		n = os_create_pollfd(fd, events, tmp_pfd, n);
+-		if (n == 0)
+-			break;
++	if (irq_entry->irq_array[type] != NULL) {
++		printk(KERN_ERR
++			"Trying to reregister IRQ %d FD %d TYPE %d ID %p\n",
++			irq, fd, type, dev_id
++		);
++		goto out_unlock;
++	} else {
++		/* New entry for this fd */
++
++		err = -ENOMEM;
++		new_fd = kmalloc(sizeof(struct irq_fd), GFP_ATOMIC);
++		if (new_fd == NULL)
++			goto out_unlock;
+ 
+-		/*
+-		 * n > 0
+-		 * It means we couldn't put new pollfd to current pollfds
+-		 * and tmp_fds is NULL or too small for new pollfds array.
+-		 * Needed size is equal to n as minimum.
+-		 *
+-		 * Here we have to drop the lock in order to call
+-		 * kmalloc, which might sleep.
+-		 * If something else came in and changed the pollfds array
+-		 * so we will not be able to put new pollfd struct to pollfds
+-		 * then we free the buffer tmp_fds and try again.
++		events = os_event_mask(type);
++
++		*new_fd = ((struct irq_fd) {
++			.id		= dev_id,
++			.irq		= irq,
++			.type		= type,
++			.events		= events,
++			.active		= true,
++			.pending	= false,
++			.purge		= false
++		});
++		/* Turn off any IO on this fd - allows us to
++		 * avoid locking the IRQ loop
+ 		 */
+-		spin_unlock_irqrestore(&irq_lock, flags);
+-		kfree(tmp_pfd);
+-
+-		tmp_pfd = kmalloc(n, GFP_KERNEL);
+-		if (tmp_pfd == NULL)
+-			goto out_kfree;
+-
+-		spin_lock_irqsave(&irq_lock, flags);
++		os_del_epoll_fd(irq_entry->fd);
++		irq_entry->irq_array[type] = new_fd;
+ 	}
+ 
+-	*last_irq_ptr = new_fd;
+-	last_irq_ptr = &new_fd->next;
+-
++	/* Turn back IO on with the correct (new) IO event mask */
++	assign_epoll_events_to_irq(irq_entry);
+ 	spin_unlock_irqrestore(&irq_lock, flags);
+-
+-	/*
+-	 * This calls activate_fd, so it has to be outside the critical
+-	 * section.
+-	 */
+-	maybe_sigio_broken(fd, (type == IRQ_READ));
++	maybe_sigio_broken(fd, (type != IRQ_NONE));
+ 
+ 	return 0;
+-
+- out_unlock:
++out_unlock:
+ 	spin_unlock_irqrestore(&irq_lock, flags);
+- out_kfree:
+-	kfree(new_fd);
+- out:
++out:
+ 	return err;
+ }
+ 
+-static void free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg)
++/*
++ * Walk the IRQ list and dispose of any unused entries.
++ * Should be done under irq_lock.
++ */
++
++static void garbage_collect_irq_entries(void)
+ {
+-	unsigned long flags;
++	int i;
++	bool reap;
++	struct irq_entry *walk;
++	struct irq_entry *previous = NULL;
++	struct irq_entry *to_free;
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
+-	os_free_irq_by_cb(test, arg, active_fds, &last_irq_ptr);
+-	spin_unlock_irqrestore(&irq_lock, flags);
++	if (active_fds == NULL)
++		return;
++	walk = active_fds;
++	while (walk != NULL) {
++		reap = true;
++		for (i = 0; i < MAX_IRQ_TYPE ; i++) {
++			if (walk->irq_array[i] != NULL) {
++				reap = false;
++				break;
++			}
++		}
++		if (reap) {
++			if (previous == NULL)
++				active_fds = walk->next;
++			else
++				previous->next = walk->next;
++			to_free = walk;
++		} else {
++			to_free = NULL;
++		}
++		walk = walk->next;
++		if (to_free != NULL)
++			kfree(to_free);
++	}
+ }
+ 
+-struct irq_and_dev {
+-	int irq;
+-	void *dev;
+-};
++/*
++ * Walk the IRQ list and get the descriptor for our FD
++ */
+ 
+-static int same_irq_and_dev(struct irq_fd *irq, void *d)
++static struct irq_entry *get_irq_entry_by_fd(int fd)
+ {
+-	struct irq_and_dev *data = d;
++	struct irq_entry *walk = active_fds;
+ 
+-	return ((irq->irq == data->irq) && (irq->id == data->dev));
++	while (walk != NULL) {
++		if (walk->fd == fd)
++			return walk;
++		walk = walk->next;
++	}
++	return NULL;
+ }
+ 
+-static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
+-{
+-	struct irq_and_dev data = ((struct irq_and_dev) { .irq  = irq,
+-							  .dev  = dev });
+ 
+-	free_irq_by_cb(same_irq_and_dev, &data);
+-}
++/*
++ * Walk the IRQ list and dispose of an entry for a specific
++ * device, fd and number. Note - if sharing an IRQ for read
++ * and writefor the same FD it will be disposed in either case.
++ * If this behaviour is undesirable use different IRQ ids.
++ */
+ 
+-static int same_fd(struct irq_fd *irq, void *fd)
+-{
+-	return (irq->fd == *((int *)fd));
+-}
++#define IGNORE_IRQ 1
++#define IGNORE_DEV (1<<1)
+ 
+-void free_irq_by_fd(int fd)
++static void do_free_by_irq_and_dev(
++	struct irq_entry *irq_entry,
++	unsigned int irq,
++	void *dev,
++	int flags
++)
+ {
+-	free_irq_by_cb(same_fd, &fd);
++	int i;
++	struct irq_fd *to_free;
++
++	for (i = 0; i < MAX_IRQ_TYPE ; i++) {
++		if (irq_entry->irq_array[i] != NULL) {
++			if (
++			((flags & IGNORE_IRQ) ||
++				(irq_entry->irq_array[i]->irq == irq)) &&
++			((flags & IGNORE_DEV) ||
++				(irq_entry->irq_array[i]->id == dev))
++			) {
++				/* Turn off any IO on this fd - allows us to
++				 * avoid locking the IRQ loop
++				 */
++				os_del_epoll_fd(irq_entry->fd);
++				to_free = irq_entry->irq_array[i];
++				irq_entry->irq_array[i] = NULL;
++				assign_epoll_events_to_irq(irq_entry);
++				if (to_free->active)
++					to_free->purge = true;
++				else
++					kfree(to_free);
++			}
++		}
++	}
+ }
+ 
+-/* Must be called with irq_lock held */
+-static struct irq_fd *find_irq_by_fd(int fd, int irqnum, int *index_out)
++void free_irq_by_fd(int fd)
+ {
+-	struct irq_fd *irq;
+-	int i = 0;
+-	int fdi;
++	struct irq_entry *to_free;
++	unsigned long flags;
+ 
+-	for (irq = active_fds; irq != NULL; irq = irq->next) {
+-		if ((irq->fd == fd) && (irq->irq == irqnum))
+-			break;
+-		i++;
+-	}
+-	if (irq == NULL) {
+-		printk(KERN_ERR "find_irq_by_fd doesn't have descriptor %d\n",
+-		       fd);
+-		goto out;
+-	}
+-	fdi = os_get_pollfd(i);
+-	if ((fdi != -1) && (fdi != fd)) {
+-		printk(KERN_ERR "find_irq_by_fd - mismatch between active_fds "
+-		       "and pollfds, fd %d vs %d, need %d\n", irq->fd,
+-		       fdi, fd);
+-		irq = NULL;
+-		goto out;
++	spin_lock_irqsave(&irq_lock, flags);
++	to_free = get_irq_entry_by_fd(fd);
++	if (to_free != NULL) {
++		do_free_by_irq_and_dev(
++			to_free,
++			-1,
++			NULL,
++			IGNORE_IRQ | IGNORE_DEV
++		);
+ 	}
+-	*index_out = i;
+- out:
+-	return irq;
++	garbage_collect_irq_entries();
++	spin_unlock_irqrestore(&irq_lock, flags);
+ }
+ 
+-void reactivate_fd(int fd, int irqnum)
++static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
+ {
+-	struct irq_fd *irq;
++	struct irq_entry *to_free;
+ 	unsigned long flags;
+-	int i;
+ 
+ 	spin_lock_irqsave(&irq_lock, flags);
+-	irq = find_irq_by_fd(fd, irqnum, &i);
+-	if (irq == NULL) {
+-		spin_unlock_irqrestore(&irq_lock, flags);
+-		return;
++	to_free = active_fds;
++	while (to_free != NULL) {
++		do_free_by_irq_and_dev(
++			to_free,
++			irq,
++			dev,
++			0
++		);
++		to_free = to_free->next;
+ 	}
+-	os_set_pollfd(i, irq->fd);
++	garbage_collect_irq_entries();
+ 	spin_unlock_irqrestore(&irq_lock, flags);
++}
+ 
+-	add_sigio_fd(fd);
++
++void reactivate_fd(int fd, int irqnum)
++{
++	/** NOP - we do auto-EOI now **/
+ }
+ 
+ void deactivate_fd(int fd, int irqnum)
+ {
+-	struct irq_fd *irq;
++	struct irq_entry *to_free;
+ 	unsigned long flags;
+-	int i;
+ 
++	os_del_epoll_fd(fd);
+ 	spin_lock_irqsave(&irq_lock, flags);
+-	irq = find_irq_by_fd(fd, irqnum, &i);
+-	if (irq == NULL) {
+-		spin_unlock_irqrestore(&irq_lock, flags);
+-		return;
++	to_free = get_irq_entry_by_fd(fd);
++	if (to_free != NULL) {
++		do_free_by_irq_and_dev(
++			to_free,
++			irqnum,
++			NULL,
++			IGNORE_DEV
++		);
+ 	}
+-
+-	os_set_pollfd(i, -1);
++	garbage_collect_irq_entries();
+ 	spin_unlock_irqrestore(&irq_lock, flags);
+-
+ 	ignore_sigio_fd(fd);
+ }
+ EXPORT_SYMBOL(deactivate_fd);
+@@ -265,17 +385,28 @@ EXPORT_SYMBOL(deactivate_fd);
+  */
+ int deactivate_all_fds(void)
+ {
+-	struct irq_fd *irq;
+-	int err;
++	unsigned long flags;
++	struct irq_entry *to_free;
+ 
+-	for (irq = active_fds; irq != NULL; irq = irq->next) {
+-		err = os_clear_fd_async(irq->fd);
+-		if (err)
+-			return err;
+-	}
+-	/* If there is a signal already queued, after unblocking ignore it */
++	spin_lock_irqsave(&irq_lock, flags);
++	/* Stop IO. The IRQ loop has no lock so this is our
++	 * only way of making sure we are safe to dispose
++	 * of all IRQ handlers
++	 */
+ 	os_set_ioignore();
+-
++	to_free = active_fds;
++	while (to_free != NULL) {
++		do_free_by_irq_and_dev(
++			to_free,
++			-1,
++			NULL,
++			IGNORE_IRQ | IGNORE_DEV
++		);
++		to_free = to_free->next;
++	}
++	garbage_collect_irq_entries();
++	spin_unlock_irqrestore(&irq_lock, flags);
++	os_close_epoll_fd();
+ 	return 0;
+ }
+ 
+@@ -353,8 +484,11 @@ void __init init_IRQ(void)
+ 
+ 	irq_set_chip_and_handler(TIMER_IRQ, &SIGVTALRM_irq_type, handle_edge_irq);
+ 
++
+ 	for (i = 1; i < NR_IRQS; i++)
+ 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
++	/* Initialize EPOLL Loop */
++	os_setup_epoll();
+ }
+ 
+ /*
+diff --git a/arch/um/os-Linux/irq.c b/arch/um/os-Linux/irq.c
+index b9afb74b79ad..365823010346 100644
+--- a/arch/um/os-Linux/irq.c
++++ b/arch/um/os-Linux/irq.c
+@@ -1,135 +1,147 @@
+ /*
++ * Copyright (C) 2017 - Cambridge Greys Ltd
++ * Copyright (C) 2011 - 2014 Cisco Systems Inc
+  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  * Licensed under the GPL
+  */
+ 
+ #include <stdlib.h>
+ #include <errno.h>
+-#include <poll.h>
++#include <sys/epoll.h>
+ #include <signal.h>
+ #include <string.h>
+ #include <irq_user.h>
+ #include <os.h>
+ #include <um_malloc.h>
+ 
++/* Epoll support */
++
++static int epollfd = -1;
++
++#define MAX_EPOLL_EVENTS 64
++
++static struct epoll_event epoll_events[MAX_EPOLL_EVENTS];
++
++/* Helper to return an Epoll data pointer from an epoll event structure.
++ * We need to keep this one on the userspace side to keep includes separate
++ */
++
++void *os_epoll_get_data_pointer(int index)
++{
++	return epoll_events[index].data.ptr;
++}
++
++/* Helper to compare events versus the events in the epoll structure.
++ * Same as above - needs to be on the userspace side
++ */
++
++
++int os_epoll_triggered(int index, int events)
++{
++	return epoll_events[index].events & events;
++}
++/* Helper to set the event mask.
++ * The event mask is opaque to the kernel side, because it does not have
++ * access to the right includes/defines for EPOLL constants.
++ */
++
++int os_event_mask(int irq_type)
++{
++	if (irq_type == IRQ_READ)
++		return EPOLLIN | EPOLLPRI;
++	if (irq_type == IRQ_WRITE)
++		return EPOLLOUT;
++	return 0;
++}
++
+ /*
+- * Locked by irq_lock in arch/um/kernel/irq.c.  Changed by os_create_pollfd
+- * and os_free_irq_by_cb, which are called under irq_lock.
++ * Initial Epoll Setup
+  */
+-static struct pollfd *pollfds = NULL;
+-static int pollfds_num = 0;
+-static int pollfds_size = 0;
++int os_setup_epoll(void)
++{
++	epollfd = epoll_create(MAX_EPOLL_EVENTS);
++	return epollfd;
++}
+ 
+-int os_waiting_for_events(struct irq_fd *active_fds)
++/*
++ * Helper to run the actual epoll_wait
++ */
++int os_waiting_for_events_epoll(void)
+ {
+-	struct irq_fd *irq_fd;
+-	int i, n, err;
++	int n, err;
+ 
+-	n = poll(pollfds, pollfds_num, 0);
++	n = epoll_wait(epollfd,
++		(struct epoll_event *) &epoll_events, MAX_EPOLL_EVENTS, 0);
+ 	if (n < 0) {
+ 		err = -errno;
+ 		if (errno != EINTR)
+-			printk(UM_KERN_ERR "os_waiting_for_events:"
+-			       " poll returned %d, errno = %d\n", n, errno);
++			printk(
++				UM_KERN_ERR "os_waiting_for_events:"
++				" epoll returned %d, error = %s\n", n,
++				strerror(errno)
++			);
+ 		return err;
+ 	}
+-
+-	if (n == 0)
+-		return 0;
+-
+-	irq_fd = active_fds;
+-
+-	for (i = 0; i < pollfds_num; i++) {
+-		if (pollfds[i].revents != 0) {
+-			irq_fd->current_events = pollfds[i].revents;
+-			pollfds[i].fd = -1;
+-		}
+-		irq_fd = irq_fd->next;
+-	}
+ 	return n;
+ }
+ 
+-int os_create_pollfd(int fd, int events, void *tmp_pfd, int size_tmpfds)
+-{
+-	if (pollfds_num == pollfds_size) {
+-		if (size_tmpfds <= pollfds_size * sizeof(pollfds[0])) {
+-			/* return min size needed for new pollfds area */
+-			return (pollfds_size + 1) * sizeof(pollfds[0]);
+-		}
+-
+-		if (pollfds != NULL) {
+-			memcpy(tmp_pfd, pollfds,
+-			       sizeof(pollfds[0]) * pollfds_size);
+-			/* remove old pollfds */
+-			kfree(pollfds);
+-		}
+-		pollfds = tmp_pfd;
+-		pollfds_size++;
+-	} else
+-		kfree(tmp_pfd);	/* remove not used tmp_pfd */
+-
+-	pollfds[pollfds_num] = ((struct pollfd) { .fd		= fd,
+-						  .events	= events,
+-						  .revents	= 0 });
+-	pollfds_num++;
+-
+-	return 0;
+-}
+ 
+-void os_free_irq_by_cb(int (*test)(struct irq_fd *, void *), void *arg,
+-		struct irq_fd *active_fds, struct irq_fd ***last_irq_ptr2)
++/*
++ * Helper to add a fd to epoll
++ */
++int os_add_epoll_fd(int events, int fd, void *data)
+ {
+-	struct irq_fd **prev;
+-	int i = 0;
+-
+-	prev = &active_fds;
+-	while (*prev != NULL) {
+-		if ((*test)(*prev, arg)) {
+-			struct irq_fd *old_fd = *prev;
+-			if ((pollfds[i].fd != -1) &&
+-			    (pollfds[i].fd != (*prev)->fd)) {
+-				printk(UM_KERN_ERR "os_free_irq_by_cb - "
+-				       "mismatch between active_fds and "
+-				       "pollfds, fd %d vs %d\n",
+-				       (*prev)->fd, pollfds[i].fd);
+-				goto out;
+-			}
+-
+-			pollfds_num--;
+-
+-			/*
+-			 * This moves the *whole* array after pollfds[i]
+-			 * (though it doesn't spot as such)!
+-			 */
+-			memmove(&pollfds[i], &pollfds[i + 1],
+-			       (pollfds_num - i) * sizeof(pollfds[0]));
+-			if (*last_irq_ptr2 == &old_fd->next)
+-				*last_irq_ptr2 = prev;
+-
+-			*prev = (*prev)->next;
+-			if (old_fd->type == IRQ_WRITE)
+-				ignore_sigio_fd(old_fd->fd);
+-			kfree(old_fd);
+-			continue;
+-		}
+-		prev = &(*prev)->next;
+-		i++;
+-	}
+- out:
+-	return;
++	struct epoll_event event;
++	int result;
++
++	event.data.ptr = data;
++	event.events = events | EPOLLET;
++	result = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event);
++	if ((result) && (errno == EEXIST))
++		result = os_mod_epoll_fd(events, fd, data);
++	if (result)
++		printk("epollctl add err fd %d, %s\n", fd, strerror(errno));
++	return result;
+ }
+ 
+-int os_get_pollfd(int i)
++/*
++ * Helper to mod the fd event mask and/or data backreference
++ */
++int os_mod_epoll_fd(int events, int fd, void *data)
+ {
+-	return pollfds[i].fd;
++	struct epoll_event event;
++	int result;
++
++	event.data.ptr = data;
++	event.events = events;
++	result = epoll_ctl(epollfd, EPOLL_CTL_MOD, fd, &event);
++	if (result)
++		printk(UM_KERN_ERR
++			"epollctl mod err fd %d, %s\n", fd, strerror(errno));
++	return result;
+ }
+ 
+-void os_set_pollfd(int i, int fd)
++/*
++ * Helper to delete the epoll fd
++ */
++int os_del_epoll_fd(int fd)
+ {
+-	pollfds[i].fd = fd;
++	struct epoll_event event;
++	int result;
++	/* This is quiet as we use this as IO ON/OFF - so it is often
++	 * invoked on a non-existent fd
++	 */
++	result = epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, &event);
++	return result;
+ }
+ 
+ void os_set_ioignore(void)
+ {
+ 	signal(SIGIO, SIG_IGN);
+ }
++
++void os_close_epoll_fd(void)
++{
++	/* Needed so we do not leak an fd when rebooting */
++	os_close_file(epollfd);
++}
+-- 
+2.11.0
+
 
 ------------------------------------------------------------------------------
 Check out the vibrant tech community on one of the world's most
 engaging tech sites, Slashdot.org! http://sdm.link/slashdot
---0F1p//8PRICkK4MW
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 User-mode-linux-devel mailing list
 User-mode-linux-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---0F1p//8PRICkK4MW--
-
 
