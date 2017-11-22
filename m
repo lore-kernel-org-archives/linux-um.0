@@ -1,23 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.193]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.194]
  helo=mx.sourceforge.net)
- by sfs-ml-4.v29.ch3.sourceforge.com with esmtps
+ by sfs-ml-3.v29.ch3.sourceforge.com with esmtps
  (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1eHUmP-0005xq-Vm
+ (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1eHTet-0000Ke-8K
  for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 22 Nov 2017 13:09:29 +0000
+ Wed, 22 Nov 2017 11:57:39 +0000
 Received: from ivanoab5.miniserver.com ([78.31.111.25]
  helo=www.kot-begemot.co.uk)
- by sfi-mx-3.v28.ch3.sourceforge.com with esmtps
+ by sfi-mx-4.v28.ch3.sourceforge.com with esmtps
  (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.89)
- id 1eHUmN-00062u-Lf for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 22 Nov 2017 13:09:29 +0000
+ id 1eHTeq-0004GK-Uu for user-mode-linux-devel@lists.sourceforge.net;
+ Wed, 22 Nov 2017 11:57:39 +0000
 From: anton.ivanov@kot-begemot.co.uk
-Date: Wed, 22 Nov 2017 13:09:12 +0000
-Message-Id: <20171122130913.22234-2-anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <20171122130913.22234-1-anton.ivanov@kot-begemot.co.uk>
-References: <20171122130913.22234-1-anton.ivanov@kot-begemot.co.uk>
-Subject: [uml-devel] [PATCH v11-2 1/2] Epoll based IRQ controller
+Date: Wed, 22 Nov 2017 11:57:22 +0000
+Message-Id: <20171122115723.12010-2-anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <20171122115723.12010-1-anton.ivanov@kot-begemot.co.uk>
+References: <20171122115723.12010-1-anton.ivanov@kot-begemot.co.uk>
+Subject: [uml-devel] [PATCH v11 1/2] Epoll based IRQ controller
 List-Id: The user-mode Linux development list
  <user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
@@ -228,7 +228,7 @@ index df5633053957..a7a6120f19d5 100644
  struct siginfo;
  extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
 diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index d8ddaf9790d2..048ae37eb5aa 100644
+index 574e03fc7ba2..edbe6563d5c5 100644
 --- a/arch/um/include/shared/os.h
 +++ b/arch/um/include/shared/os.h
 @@ -290,15 +290,16 @@ extern void halt_skas(void);
