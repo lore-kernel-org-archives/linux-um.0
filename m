@@ -1,49 +1,31 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.193]
- helo=mx.sourceforge.net)
- by sfs-ml-2.v29.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1eGhJR-0002FX-1e
- for user-mode-linux-devel@lists.sourceforge.net;
- Mon, 20 Nov 2017 08:20:17 +0000
-Received: from ivanoab5.miniserver.com ([78.31.111.25]
- helo=www.kot-begemot.co.uk)
- by sfi-mx-3.v28.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.89)
- id 1eGhJO-0005JP-Fm for user-mode-linux-devel@lists.sourceforge.net;
- Mon, 20 Nov 2017 08:20:16 +0000
-From: anton.ivanov@kot-begemot.co.uk
-Date: Mon, 20 Nov 2017 07:39:23 +0000
-Message-Id: <20171120073925.32715-1-anton.ivanov@kot-begemot.co.uk>
-Subject: [uml-devel] PATCH v9
-List-Id: The user-mode Linux development list
- <user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: richard.weinberger@gmail.com
+In-Reply-To: <3587814.WJtjhAiasP@blindfold>
+References: <3587814.WJtjhAiasP@blindfold>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 23 Nov 2017 17:40:07 -1000
+Message-ID: <CA+55aFzB5M2pgwf4OC21Fux-wURLEbP=BSDuqqwHevCu0NEZPg@mail.gmail.com>
+Subject: Re: [GIT PULL] UML updates for 4.15-rc1
+Content-Type: text/plain; charset="UTF-8"
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>
+Cc: uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This is (hopefully) the final version of the epoll + vector IO
-patch. It incorporates the TSO fixes for raw and minor errata
-for POLL_CONTROLLER.
+On Thu, Nov 23, 2017 at 4:36 AM, Richard Weinberger <richard@nod.at> wrote:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git for-linus-4.15-rc1
 
-A.
+I asked people to send me their pull requests early before I was
+traveling, and this second week I'm only taking fixes, or things that
+were in linux-next.
 
+I _should_ do that every release, just to make sure people actually do
+put things in linux-next, but this release I'm doing it because I want
+to know it's independently gone through the build tests etc and isn't
+some random last-minute stuff.
 
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+As far as I can tell, none of this was in linux-next 20171117.
+
+            Linus
 
