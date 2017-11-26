@@ -1,48 +1,119 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Wed, 29 Nov 2017 22:46:51 +0100
-From: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] [RFC] um: Convert ubd driver to blk-mq
-Message-ID: <20171129214651.GA5846@lst.de>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.192]
+ helo=mx.sourceforge.net)
+ by sfs-ml-1.v29.ch3.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
+ (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1eIy8k-0002v4-KX
+ for user-mode-linux-devel@lists.sourceforge.net;
+ Sun, 26 Nov 2017 14:42:38 +0000
+Received: from ivanoab5.miniserver.com ([78.31.111.25]
+ helo=www.kot-begemot.co.uk)
+ by sfi-mx-2.v28.ch3.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.89)
+ id 1eIy8i-0006NQ-On for user-mode-linux-devel@lists.sourceforge.net;
+ Sun, 26 Nov 2017 14:42:38 +0000
 References: <20171126131053.32300-1-richard@nod.at>
+ <281c725e-336f-8745-b3c5-0e57421d6335@kot-begemot.co.uk>
+ <2279424.kI4kpP6Uiy@blindfold>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <c463ba61-440f-b8b6-9ece-5b625dab9e23@kot-begemot.co.uk>
+Date: Sun, 26 Nov 2017 14:42:27 +0000
 MIME-Version: 1.0
+In-Reply-To: <2279424.kI4kpP6Uiy@blindfold>
+Content-Language: en-US
+Subject: Re: [uml-devel] [PATCH] [RFC] um: Convert ubd driver to blk-mq
+List-Id: The user-mode Linux development list
+ <user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20171126131053.32300-1-richard@nod.at>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, axboe@fb.com, anton.ivanov@cambridgegreys.com, hch@lst.de, linux-block@vger.kernel.org
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Cc: Jens Axboe <axboe@fb.com>, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, user-mode-linux-devel <user-mode-linux-devel@lists.sourceforge.net>, "hch@lst.de" <hch@lst.de>
 
-On Sun, Nov 26, 2017 at 02:10:53PM +0100, Richard Weinberger wrote:
-> MAX_SG is 64, used for blk_queue_max_segments(). This comes from
-> a0044bdf60c2 ("uml: batch I/O requests"). Is this still a good/sane
-> value for blk-mq?
-
-blk-mq itself doesn't change the tradeoff.
-
-> The driver does IO batching, for each request it issues many UML struct
-> io_thread_req request to the IO thread on the host side.
-> One io_thread_req per SG page.
-> Before the conversion the driver used blk_end_request() to indicate that
-> a part of the request is done.
-> blk_mq_end_request() does not take a length parameter, therefore we can
-> only mark the whole request as done. See the new is_last property on the
-> driver.
-> Maybe there is a way to partially end requests too in blk-mq?
-
-You can, take a look at scsi_end_request which handles this for blk-mq
-and the legacy layer.  That being said I wonder if batching really
-makes that much sene if you execute each segment separately?
-
-> Another obstacle with IO batching is that UML IO thread requests can
-> fail. Not only due to OOM, also because the pipe between the UML kernel
-> process and the host IO thread can return EAGAIN.
-> In this case the driver puts the request into a list and retried later
-> again when the pipe turns writable.
-> I’m not sure whether this restart logic makes sense with blk-mq, maybe
-> there is a way in blk-mq to put back a (partial) request?
-
-blk_mq_requeue_request requeues requests that have been partially
-exectuted (or not at all for that matter).
+T24gMjYvMTEvMTcgMTM6NTYsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPiBBbnRvbiwKPgo+
+IHBsZWFzZSBkb24ndCBjcm9wIHRoZSBDQyBsaXN0LgoKQXBvbG9naWVzLCBJIHdhbnRlZCB0byBr
+ZWVwIHRoZSBkaXNjdXNzaW9uIFVNTCBzaWRlIHVudGlsIHdlIGhhdmUgY29tZQp1cCB3aXRoIHNv
+bWV0aGluZy4KCldpbGwgbm90IGRvIGl0IGFnYWluLgoKPgo+IEFtIFNvbm50YWcsIDI2LiBOb3Zl
+bWJlciAyMDE3LCAxNDo0MToxMiBDRVQgc2NocmllYiBBbnRvbiBJdmFub3Y6Cj4+IEkgbmVlZCB0
+byBkbyBzb21lIHJlYWRpbmcgb24gdGhpcy4KPj4KPj4gRmlyc3Qgb2YgYWxsIC0gYSBzdHVwaWQg
+cXVlc3Rpb246IG1xJ3MgcHJpbWFyeSBhZHZhbnRhZ2UgaXMgaW4KPj4gbXVsdGktY29yZSBzeXN0
+ZW1zIGFzIGl0IGltcHJvdmVzIGlvIGFuZCBjb3JlIHV0aWxpemF0aW9uLiBXZSBhcmUgc3RpbGwK
+Pj4gc2luZ2xlLWNvcmUgaW4gVU1MIGFuZCBBRkFJSyB0aGlzIGlzIGxpa2VseSB0byBzdGF5IHRo
+YXQgd2F5LCByaWdodD8KPiBXZWxsLCBzb21lZGF5IGJsay1tcSBzaG91bGQgY29tcGxldGVseSBy
+ZXBsYWNlIHRoZSBsZWdhY3kgYmxvY2sgaW50ZXJmYWNlLgo+IENocmlzdG9waCBhc2tlZCBtZSBj
+b252ZXJ0IHRoZSBVTUwgZHJpdmVyLgo+IEFsc28gZG8gZmluZCBjb3JuZXIgY2FzZXMgaW4gYmxr
+LW1xLgo+ICAKPj4gT24gMjYvMTEvMTcgMTM6MTAsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToK
+Pj4+IFRoaXMgaXMgdGhlIGZpcnN0IGF0dGVtcHQgdG8gY29udmVydCB0aGUgVXNlck1vZGVMaW51
+eCBibG9jayBkcml2ZXIKPj4+IChVQkQpIHRvIGJsay1tcS4KPj4+IFdoaWxlIHRoZSBjb252ZXJz
+aW9uIGl0c2VsZiBpcyByYXRoZXIgdHJpdmlhbCwgYSBmZXcgcXVlc3Rpb25zCj4+PiBwb3BwZWQg
+dXAgaW4gbXkgaGVhZC4gTWF5YmUgeW91IGNhbiBoZWxwIG1lIHdpdGggdGhlbS4KPj4+Cj4+PiBN
+QVhfU0cgaXMgNjQsIHVzZWQgZm9yIGJsa19xdWV1ZV9tYXhfc2VnbWVudHMoKS4gVGhpcyBjb21l
+cyBmcm9tCj4+PiBhMDA0NGJkZjYwYzIgKCJ1bWw6IGJhdGNoIEkvTyByZXF1ZXN0cyIpLiBJcyB0
+aGlzIHN0aWxsIGEgZ29vZC9zYW5lCj4+PiB2YWx1ZSBmb3IgYmxrLW1xPwo+Pj4KPj4+IFRoZSBk
+cml2ZXIgZG9lcyBJTyBiYXRjaGluZywgZm9yIGVhY2ggcmVxdWVzdCBpdCBpc3N1ZXMgbWFueSBV
+TUwgc3RydWN0Cj4+PiBpb190aHJlYWRfcmVxIHJlcXVlc3QgdG8gdGhlIElPIHRocmVhZCBvbiB0
+aGUgaG9zdCBzaWRlLgo+Pj4gT25lIGlvX3RocmVhZF9yZXEgcGVyIFNHIHBhZ2UuCj4+PiBCZWZv
+cmUgdGhlIGNvbnZlcnNpb24gdGhlIGRyaXZlciB1c2VkIGJsa19lbmRfcmVxdWVzdCgpIHRvIGlu
+ZGljYXRlIHRoYXQKPj4+IGEgcGFydCBvZiB0aGUgcmVxdWVzdCBpcyBkb25lLgo+Pj4gYmxrX21x
+X2VuZF9yZXF1ZXN0KCkgZG9lcyBub3QgdGFrZSBhIGxlbmd0aCBwYXJhbWV0ZXIsIHRoZXJlZm9y
+ZSB3ZSBjYW4KPj4+IG9ubHkgbWFyayB0aGUgd2hvbGUgcmVxdWVzdCBhcyBkb25lLiBTZWUgdGhl
+IG5ldyBpc19sYXN0IHByb3BlcnR5IG9uIHRoZQo+Pj4gZHJpdmVyLgo+Pj4gTWF5YmUgdGhlcmUg
+aXMgYSB3YXkgdG8gcGFydGlhbGx5IGVuZCByZXF1ZXN0cyB0b28gaW4gYmxrLW1xPwo+Pj4KPj4+
+IEFub3RoZXIgb2JzdGFjbGUgd2l0aCBJTyBiYXRjaGluZyBpcyB0aGF0IFVNTCBJTyB0aHJlYWQg
+cmVxdWVzdHMgY2FuCj4+PiBmYWlsLiBOb3Qgb25seSBkdWUgdG8gT09NLCBhbHNvIGJlY2F1c2Ug
+dGhlIHBpcGUgYmV0d2VlbiB0aGUgVU1MIGtlcm5lbAo+Pj4gcHJvY2VzcyBhbmQgdGhlIGhvc3Qg
+SU8gdGhyZWFkIGNhbiByZXR1cm4gRUFHQUlOLgo+Pj4gSW4gdGhpcyBjYXNlIHRoZSBkcml2ZXIg
+cHV0cyB0aGUgcmVxdWVzdCBpbnRvIGEgbGlzdCBhbmQgcmV0cmllZCBsYXRlcgo+Pj4gYWdhaW4g
+d2hlbiB0aGUgcGlwZSB0dXJucyB3cml0YWJsZS4KPj4+IEnigJltIG5vdCBzdXJlIHdoZXRoZXIg
+dGhpcyByZXN0YXJ0IGxvZ2ljIG1ha2VzIHNlbnNlIHdpdGggYmxrLW1xLCBtYXliZQo+Pj4gdGhl
+cmUgaXMgYSB3YXkgaW4gYmxrLW1xIHRvIHB1dCBiYWNrIGEgKHBhcnRpYWwpIHJlcXVlc3Q/Cj4+
+IFRoaXMgYWxsIHNvdW5kcyB0byBtZSBhcyBibGstbXEgcmVxdWVzdHMgbmVlZCBkaWZmZXJlbnQg
+aW50ZXItdGhyZWFkCj4+IElQQy4gV2UgcHJlc2VudGx5IHJlbHkgb24gdGhlIGZhY3QgdGhhdCBl
+YWNoIHJlcXVlc3QgdG8gdGhlIElPIHRocmVhZCBpcwo+PiBmaXhlZCBzaXplIGFuZCB0aGVyZSBp
+cyBubyBuYXR1cmFsIHJlcXVlc3QgZ3JvdXBpbmcgY29taW5nIGZyb20gdXBwZXIKPj4gbGF5ZXJz
+Lgo+Pgo+PiBVbmxlc3MgSSBhbSBtaXNzaW5nIHNvbWV0aGluZywgdGhpcyBsb29rcyBsaWtlIHdl
+IGFyZSBub3cgZ2V0dGluZyBncm91cAo+PiByZXF1ZXN0cywgcmlnaHQ/IFdlIG5lZWQgdG8gc2Vu
+ZCBhIGdyb3VwIGF0IGEgdGltZSB3aGljaCBpcyBub3QKPj4gcHJvY2Vzc2VkIHVudGlsIHRoZSB3
+aG9sZSBncm91cCBoYXMgYmVlbiByZWNlaXZlZCBpbiB0aGUgSU8gdGhyZWFkLiBXZQo+PiBjYW5z
+IHN0aWxsIGJhdGNoIGdyb3VwcyB0aG91Z2gsIGJ1dCBzaG91bGQgbm90IGJhdGNoIGluZGl2aWR1
+YWwKPj4gcmVxdWVzdHMsIHJpZ2h0Pwo+IFRoZSBxdWVzdGlvbiBpcywgZG8gd2UgcmVhbGx5IG5l
+ZWQgYmF0Y2hpbmcgYXQgYWxsIHdpdGggYmxrLW1xPwo+IEplZmYgaW1wbGVtZW50ZWQgdGhhdCAx
+MCB5ZWFycyBhZ28uCgpXZWxsLCBidXQgaW4gdGhhdCBjYXNlIHdlIG5lZWQgdG8gbWF0Y2ggb3Vy
+IElQQyB0byB0aGUgZXhpc3RpbmcgYmF0Y2hpbmcKaW4gdGhlIGJsY2sgcXVldWUsIHJpZ2h0PwoK
+U28gbXkgcHJvcG9zYWwgc3RpbGwgc3RhbmRzIC0gSSBzdWdnZXN0IHdlIHJvbGwgYmFjayBteSBi
+YXRjaGluZyBwYXRjaAp3aGljaCBpcyBubyBsb25nZXIgbmVlZGVkIGFuZCBjaGFuZ2UgdGhlIElQ
+QyB0byBtYXRjaCB3aGF0IGlzIGNvbWluZyBvdXQKb2YgYmxrLW1xIDopCgo+Cj4+IE15IGZpcnN0
+IHN0ZXAgKGJlZm9yZSBtb3ZpbmcgdG8gbXEpIHdvdWxkIGhhdmUgYmVlbiB0byBzd2l0Y2ggdG8g
+YSB1bml4Cj4+IGRvbWFpbiBzb2NrZXQgcGFpciBwcm9iYWJseSB1c2luZyBTT0NLX1NFUVBBQ0tF
+VCBvciBTT0NLX0RHUkFNLiBUaGUKPj4gbGF0dGVyIGZvciBhIHNvY2tldCBwYWlyIHdpbGwgcmV0
+dXJuIEVOT0JVRiBpZiB5b3UgdHJ5IHRvIHB1c2ggbW9yZSB0aGFuCj4+IHRoZSByZWNlaXZpbmcg
+c2lkZSBjYW4gaGFuZGxlIHNvIHdlIHNob3VsZCBub3QgaGF2ZSBJUEMgbWVzc2FnZSBsb3NzLgo+
+PiBUaGlzIHdheSwgd2UgY2FuIHB1c2ggcmVxdWVzdCBncm91cHMgbmF0dXJhbGx5IGluc3RlYWQg
+b2YgcmVseWluZyBvbiBhCj4+ICJsYXN0IiBmbGFnIGFuZCBrZWVwaW5nIHRyYWNrIG9mIHRoYXQg
+Zm9yICJlbmQgb2YgcmVxdWVzdCIuCj4gVGhlIHBpcGUgaXMgY3VycmVudGx5IGEgc29ja2V0cGFp
+ci4gVU1MIGp1c3QgY2FsbHMgaXQgInBpcGUiLiA6LSgKCkkga2VlcCBmb3JnZXR0aW5nIGlmIHdl
+IGFwcGxpZWQgdGhhdCBwYXRjaCBvciBub3QgOikKCkl0IHdhcyBhIHBpcGUgb25jZSB1cG9uIGEg
+dGltZSBhbmQgSSBzdWdnZXN0ZWQgd2UgY2hhbmdlIGl0IHNvY2tldCBwYWlyCmR1ZSB0byBiZXR0
+ZXIgYnVmZmVyaW5nIGJlaGF2aW9yIGZvciBsb3RzIG9mIHNtYWxsIHJlcXVlc3RzLgoKPgo+PiBJ
+dCB3aWxsIGJlIGVhc2llciB0byByb2xsIGJhY2sgdGhlIGJhdGNoaW5nIGJlZm9yZSB3ZSBkbyB0
+aGF0LiBGZWVsIGZyZWUKPj4gdG8gcm9sbCBiYWNrIHRoYXQgY29tbWl0Lgo+Pgo+PiBPbmNlIHRo
+YXQgaXMgaW4sIHRoZSB3aG9sZSBiYXRjaGluZyB3aWxsIG5lZWQgdG8gYmUgcmVkb25lIGFzIGl0
+IHNob3VsZAo+PiBhY2NvdW50IGZvciB2YXJpYWJsZSBJUEMgcmVjb3JkIHNpemUgYW5kIHVzZSBz
+ZW5kbW1zZy9yZWN2bW1zZyBwYWlyIC0KPj4gc2FtZSBhcyBpbiB0aGUgdmVjdG9yIElPLiBJIGFt
+IGhhcHB5IHRvIGRvIHRoZSBob25vcnMgb24gdGhhdCBvbmUgOikKPiBMZXQncyBzZWUgd2hhdCBi
+bG9jayBndXlzIHNheS4KCkFjay4KCkEuCgo+Cj4gVGhhbmtzLAo+IC8vcmljaGFyZAo+CgoKLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCkNoZWNrIG91dCB0aGUgdmlicmFudCB0ZWNoIGNvbW11bml0eSBv
+biBvbmUgb2YgdGhlIHdvcmxkJ3MgbW9zdAplbmdhZ2luZyB0ZWNoIHNpdGVzLCBTbGFzaGRvdC5v
+cmchIGh0dHA6Ly9zZG0ubGluay9zbGFzaGRvdApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVz
+ZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5z
+b3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
