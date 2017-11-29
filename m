@@ -1,54 +1,48 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH v5 12/27] x86: um, annotate data appropriatelly
-Date: Thu, 30 Nov 2017 15:46:38 +0100
-Message-Id: <20171130144653.23688-13-jslaby@suse.cz>
-In-Reply-To: <20171130144653.23688-1-jslaby@suse.cz>
-References: <20171130144653.23688-1-jslaby@suse.cz>
+Date: Wed, 29 Nov 2017 22:46:51 +0100
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] [RFC] um: Convert ubd driver to blk-mq
+Message-ID: <20171129214651.GA5846@lst.de>
+References: <20171126131053.32300-1-richard@nod.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20171126131053.32300-1-richard@nod.at>
 Sender: linux-kernel-owner@vger.kernel.org
-To: mingo@redhat.com
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+To: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, axboe@fb.com, anton.ivanov@cambridgegreys.com, hch@lst.de, linux-block@vger.kernel.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Use the new SYM_DATA_START and SYM_DATA_END_LABEL macros for vdso_start.
+On Sun, Nov 26, 2017 at 02:10:53PM +0100, Richard Weinberger wrote:
+> MAX_SG is 64, used for blk_queue_max_segments(). This comes from
+> a0044bdf60c2 ("uml: batch I/O requests"). Is this still a good/sane
+> value for blk-mq?
 
-We get:
-  0000  2376 OBJECT  GLOBAL DEFAULT    4 vdso_start
-  0948     0 OBJECT  GLOBAL DEFAULT    4 vdso_end
+blk-mq itself doesn't change the tradeoff.
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Cc: user-mode-linux-user@lists.sourceforge.net
----
- arch/x86/um/vdso/vdso.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> The driver does IO batching, for each request it issues many UML struct
+> io_thread_req request to the IO thread on the host side.
+> One io_thread_req per SG page.
+> Before the conversion the driver used blk_end_request() to indicate that
+> a part of the request is done.
+> blk_mq_end_request() does not take a length parameter, therefore we can
+> only mark the whole request as done. See the new is_last property on the
+> driver.
+> Maybe there is a way to partially end requests too in blk-mq?
 
-diff --git a/arch/x86/um/vdso/vdso.S b/arch/x86/um/vdso/vdso.S
-index a4a3870dc059..a6eaf293a73b 100644
---- a/arch/x86/um/vdso/vdso.S
-+++ b/arch/x86/um/vdso/vdso.S
-@@ -1,11 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #include <linux/init.h>
-+#include <linux/linkage.h>
- 
- __INITDATA
- 
--	.globl vdso_start, vdso_end
--vdso_start:
-+SYM_DATA_START(vdso_start)
- 	.incbin "arch/x86/um/vdso/vdso.so"
--vdso_end:
-+SYM_DATA_END_LABEL(vdso_start, SYM_L_GLOBAL, vdso_end)
- 
- __FINIT
--- 
-2.15.0
+You can, take a look at scsi_end_request which handles this for blk-mq
+and the legacy layer.  That being said I wonder if batching really
+makes that much sene if you execute each segment separately?
 
+> Another obstacle with IO batching is that UML IO thread requests can
+> fail. Not only due to OOM, also because the pipe between the UML kernel
+> process and the host IO thread can return EAGAIN.
+> In this case the driver puts the request into a list and retried later
+> again when the pipe turns writable.
+> I’m not sure whether this restart logic makes sense with blk-mq, maybe
+> there is a way in blk-mq to put back a (partial) request?
+
+blk_mq_requeue_request requeues requests that have been partially
+exectuted (or not at all for that matter).
 
