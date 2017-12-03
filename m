@@ -1,335 +1,95 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: [PATCH] um: Convert ubd driver to blk-mq
-Date: Sun,  3 Dec 2017 22:49:23 +0100
-Message-Id: <20171203214923.29541-1-richard@nod.at>
+Subject: Re: [PATCH] [RFC] um: Convert ubd driver to blk-mq
+References: <20171126131053.32300-1-richard@nod.at>
+ <20171129214651.GA5846@lst.de> <2026565.M1KEqJdkSY@blindfold>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <e4283e17-3feb-25bb-e132-6460730c8e0e@cambridgegreys.com>
+Date: Sun, 3 Dec 2017 22:23:25 +0000
+MIME-Version: 1.0
+In-Reply-To: <2026565.M1KEqJdkSY@blindfold>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org, axboe@fb.com, anton.ivanov@cambridgegreys.com, hch@lst.de, linux-block@vger.kernel.org, david@sigma-star.at, Richard Weinberger <richard@nod.at>
+To: Richard Weinberger <richard@nod.at>, Christoph Hellwig <hch@lst.de>
+Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, axboe@fb.com, linux-block@vger.kernel.org, david@sigma-star.at
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Convert the driver to the modern blk-mq framework.
-As byproduct we get rid of our open coded restart logic and let
-blk-mq handle it.
+On 03/12/17 21:54, Richard Weinberger wrote:
+> Christoph,
+>
+> Am Mittwoch, 29. November 2017, 22:46:51 CET schrieb Christoph Hellwig:
+>> On Sun, Nov 26, 2017 at 02:10:53PM +0100, Richard Weinberger wrote:
+>>> MAX_SG is 64, used for blk_queue_max_segments(). This comes from
+>>> a0044bdf60c2 ("uml: batch I/O requests"). Is this still a good/sane
+>>> value for blk-mq?
+>> blk-mq itself doesn't change the tradeoff.
+>>
+>>> The driver does IO batching, for each request it issues many UML struct
+>>> io_thread_req request to the IO thread on the host side.
+>>> One io_thread_req per SG page.
+>>> Before the conversion the driver used blk_end_request() to indicate that
+>>> a part of the request is done.
+>>> blk_mq_end_request() does not take a length parameter, therefore we can
+>>> only mark the whole request as done. See the new is_last property on the
+>>> driver.
+>>> Maybe there is a way to partially end requests too in blk-mq?
+>> You can, take a look at scsi_end_request which handles this for blk-mq
+>> and the legacy layer.  That being said I wonder if batching really
+>> makes that much sene if you execute each segment separately?
+> Anton did a lot of performance improvements in this area.
+> He has all the details.
+> AFAIK batching brings us more throughput because in UML all IO is done by
+> a different thread and the IPC has a certain overhead. 
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- arch/um/drivers/ubd_kern.c | 178 +++++++++++++++++++++++----------------------
- 1 file changed, 93 insertions(+), 85 deletions(-)
+The current UML disk IO is executed in a different thread using a pipe
+as an IPC.
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index b55fe9bf5d3e..deceb8022a28 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -23,6 +23,7 @@
- #include <linux/module.h>
- #include <linux/init.h>
- #include <linux/blkdev.h>
-+#include <linux/blk-mq.h>
- #include <linux/ata.h>
- #include <linux/hdreg.h>
- #include <linux/cdrom.h>
-@@ -142,7 +143,6 @@ struct cow {
- #define MAX_SG 64
- 
- struct ubd {
--	struct list_head restart;
- 	/* name (and fd, below) of the file opened for writing, either the
- 	 * backing or the cow file. */
- 	char *file;
-@@ -156,9 +156,12 @@ struct ubd {
- 	struct cow cow;
- 	struct platform_device pdev;
- 	struct request_queue *queue;
-+	struct blk_mq_tag_set tag_set;
- 	spinlock_t lock;
-+};
-+
-+struct ubd_pdu {
- 	struct scatterlist sg[MAX_SG];
--	struct request *request;
- 	int start_sg, end_sg;
- 	sector_t rq_pos;
- };
-@@ -182,10 +185,6 @@ struct ubd {
- 	.shared =		0, \
- 	.cow =			DEFAULT_COW, \
- 	.lock =			__SPIN_LOCK_UNLOCKED(ubd_devs.lock), \
--	.request =		NULL, \
--	.start_sg =		0, \
--	.end_sg =		0, \
--	.rq_pos =		0, \
- }
- 
- /* Protected by ubd_lock */
-@@ -196,6 +195,12 @@ static int fake_ide = 0;
- static struct proc_dir_entry *proc_ide_root = NULL;
- static struct proc_dir_entry *proc_ide = NULL;
- 
-+static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
-+				 const struct blk_mq_queue_data *bd);
-+static int ubd_init_request(struct blk_mq_tag_set *set,
-+			    struct request *req, unsigned int hctx_idx,
-+			    unsigned int numa_node);
-+
- static void make_proc_ide(void)
- {
- 	proc_ide_root = proc_mkdir("ide", NULL);
-@@ -448,11 +453,8 @@ __uml_help(udb_setup,
- "    in the boot output.\n\n"
- );
- 
--static void do_ubd_request(struct request_queue * q);
--
- /* Only changed by ubd_init, which is an initcall. */
- static int thread_fd = -1;
--static LIST_HEAD(restart);
- 
- /* Function to read several request pointers at a time
- * handling fractional reads if (and as) needed
-@@ -510,9 +512,6 @@ static int bulk_req_safe_read(
- /* Called without dev->lock held, and only in interrupt context. */
- static void ubd_handler(void)
- {
--	struct ubd *ubd;
--	struct list_head *list, *next_ele;
--	unsigned long flags;
- 	int n;
- 	int count;
- 
-@@ -532,23 +531,17 @@ static void ubd_handler(void)
- 			return;
- 		}
- 		for (count = 0; count < n/sizeof(struct io_thread_req *); count++) {
--			blk_end_request(
--				(*irq_req_buffer)[count]->req,
--				BLK_STS_OK,
--				(*irq_req_buffer)[count]->length
--			);
--			kfree((*irq_req_buffer)[count]);
-+			struct io_thread_req *io_req = (*irq_req_buffer)[count];
-+			int err = io_req->error ? BLK_STS_IOERR : BLK_STS_OK;
-+
-+			if (!blk_update_request(io_req->req, err, io_req->length))
-+				__blk_mq_end_request(io_req->req, err);
-+
-+			kfree(io_req);
- 		}
- 	}
--	reactivate_fd(thread_fd, UBD_IRQ);
- 
--	list_for_each_safe(list, next_ele, &restart){
--		ubd = container_of(list, struct ubd, restart);
--		list_del_init(&ubd->restart);
--		spin_lock_irqsave(&ubd->lock, flags);
--		do_ubd_request(ubd->queue);
--		spin_unlock_irqrestore(&ubd->lock, flags);
--	}
-+	reactivate_fd(thread_fd, UBD_IRQ);
- }
- 
- static irqreturn_t ubd_intr(int irq, void *dev)
-@@ -869,6 +862,7 @@ static void ubd_device_release(struct device *dev)
- 	struct ubd *ubd_dev = dev_get_drvdata(dev);
- 
- 	blk_cleanup_queue(ubd_dev->queue);
-+	blk_mq_free_tag_set(&ubd_dev->tag_set);
- 	*ubd_dev = ((struct ubd) DEFAULT_UBD);
- }
- 
-@@ -911,6 +905,11 @@ static int ubd_disk_register(int major, u64 size, int unit,
- 
- #define ROUND_BLOCK(n) ((n + ((1 << 9) - 1)) & (-1 << 9))
- 
-+static const struct blk_mq_ops ubd_mq_ops = {
-+	.queue_rq = ubd_queue_rq,
-+	.init_request = ubd_init_request,
-+};
-+
- static int ubd_add(int n, char **error_out)
- {
- 	struct ubd *ubd_dev = &ubd_devs[n];
-@@ -927,15 +926,24 @@ static int ubd_add(int n, char **error_out)
- 
- 	ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
- 
--	INIT_LIST_HEAD(&ubd_dev->restart);
--	sg_init_table(ubd_dev->sg, MAX_SG);
-+	ubd_dev->tag_set.ops = &ubd_mq_ops;
-+	ubd_dev->tag_set.queue_depth = 64;
-+	ubd_dev->tag_set.numa_node = NUMA_NO_NODE;
-+	ubd_dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
-+	ubd_dev->tag_set.cmd_size = sizeof(struct ubd_pdu);
-+	ubd_dev->tag_set.driver_data = ubd_dev;
-+	ubd_dev->tag_set.nr_hw_queues = 1;
- 
--	err = -ENOMEM;
--	ubd_dev->queue = blk_init_queue(do_ubd_request, &ubd_dev->lock);
--	if (ubd_dev->queue == NULL) {
--		*error_out = "Failed to initialize device queue";
-+	err = blk_mq_alloc_tag_set(&ubd_dev->tag_set);
-+	if (err)
- 		goto out;
-+
-+	ubd_dev->queue = blk_mq_init_queue(&ubd_dev->tag_set);
-+	if (IS_ERR(ubd_dev->queue)) {
-+		err = PTR_ERR(ubd_dev->queue);
-+		goto out_cleanup;
- 	}
-+
- 	ubd_dev->queue->queuedata = ubd_dev;
- 	blk_queue_write_cache(ubd_dev->queue, true, false);
- 
-@@ -943,7 +951,7 @@ static int ubd_add(int n, char **error_out)
- 	err = ubd_disk_register(UBD_MAJOR, ubd_dev->size, n, &ubd_gendisk[n]);
- 	if(err){
- 		*error_out = "Failed to register device";
--		goto out_cleanup;
-+		goto out_cleanup_tags;
- 	}
- 
- 	if (fake_major != UBD_MAJOR)
-@@ -961,6 +969,8 @@ static int ubd_add(int n, char **error_out)
- out:
- 	return err;
- 
-+out_cleanup_tags:
-+	blk_mq_free_tag_set(&ubd_dev->tag_set);
- out_cleanup:
- 	blk_cleanup_queue(ubd_dev->queue);
- 	goto out;
-@@ -1345,80 +1355,78 @@ static void prepare_flush_request(struct request *req,
- 	io_req->op = UBD_FLUSH;
- }
- 
--static bool submit_request(struct io_thread_req *io_req, struct ubd *dev)
-+static void submit_request(struct io_thread_req *io_req, struct ubd *dev)
- {
- 	int n = os_write_file(thread_fd, &io_req,
- 			     sizeof(io_req));
-+
- 	if (n != sizeof(io_req)) {
- 		if (n != -EAGAIN)
--			printk("write to io thread failed, "
--			       "errno = %d\n", -n);
--		else if (list_empty(&dev->restart))
--			list_add(&dev->restart, &restart);
-+			pr_err("write to io thread failed: %d\n", -n);
- 
-+		blk_mq_requeue_request(io_req->req, true);
- 		kfree(io_req);
--		return false;
- 	}
--	return true;
- }
- 
--/* Called with dev->lock held */
--static void do_ubd_request(struct request_queue *q)
-+static blk_status_t ubd_queue_rq(struct blk_mq_hw_ctx *hctx,
-+				 const struct blk_mq_queue_data *bd)
- {
-+	struct request *req = bd->rq;
-+	struct ubd *dev = hctx->queue->queuedata;
-+	struct ubd_pdu *pdu = blk_mq_rq_to_pdu(req);
- 	struct io_thread_req *io_req;
--	struct request *req;
- 
--	while(1){
--		struct ubd *dev = q->queuedata;
--		if(dev->request == NULL){
--			struct request *req = blk_fetch_request(q);
--			if(req == NULL)
--				return;
-+	blk_mq_start_request(req);
-+
-+	pdu->rq_pos = blk_rq_pos(req);
-+	pdu->start_sg = 0;
-+	pdu->end_sg = blk_rq_map_sg(req->q, req, pdu->sg);
- 
--			dev->request = req;
--			dev->rq_pos = blk_rq_pos(req);
--			dev->start_sg = 0;
--			dev->end_sg = blk_rq_map_sg(q, req, dev->sg);
-+	if (req_op(req) == REQ_OP_FLUSH) {
-+		io_req = kmalloc(sizeof(struct io_thread_req), GFP_ATOMIC);
-+		if (io_req == NULL) {
-+			blk_mq_requeue_request(req, true);
-+			goto done;
- 		}
-+		prepare_flush_request(req, io_req);
-+		submit_request(io_req, dev);
- 
--		req = dev->request;
-+		goto done;
-+	}
- 
--		if (req_op(req) == REQ_OP_FLUSH) {
--			io_req = kmalloc(sizeof(struct io_thread_req),
--					 GFP_ATOMIC);
--			if (io_req == NULL) {
--				if (list_empty(&dev->restart))
--					list_add(&dev->restart, &restart);
--				return;
--			}
--			prepare_flush_request(req, io_req);
--			if (submit_request(io_req, dev) == false)
--				return;
-+	while (pdu->start_sg < pdu->end_sg) {
-+		struct scatterlist *sg = &pdu->sg[pdu->start_sg];
-+
-+		io_req = kmalloc(sizeof(struct io_thread_req),
-+				 GFP_ATOMIC);
-+		if (io_req == NULL) {
-+			blk_mq_requeue_request(req, true);
-+			goto done;
- 		}
-+		prepare_request(req, io_req,
-+				(unsigned long long)pdu->rq_pos << 9,
-+				sg->offset, sg->length, sg_page(sg));
- 
--		while(dev->start_sg < dev->end_sg){
--			struct scatterlist *sg = &dev->sg[dev->start_sg];
-+		submit_request(io_req, dev);
- 
--			io_req = kmalloc(sizeof(struct io_thread_req),
--					 GFP_ATOMIC);
--			if(io_req == NULL){
--				if(list_empty(&dev->restart))
--					list_add(&dev->restart, &restart);
--				return;
--			}
--			prepare_request(req, io_req,
--					(unsigned long long)dev->rq_pos << 9,
--					sg->offset, sg->length, sg_page(sg));
-+		pdu->rq_pos += sg->length >> 9;
-+		pdu->start_sg++;
-+	}
- 
--			if (submit_request(io_req, dev) == false)
--				return;
-+done:
-+	return BLK_STS_OK;
-+}
- 
--			dev->rq_pos += sg->length >> 9;
--			dev->start_sg++;
--		}
--		dev->end_sg = 0;
--		dev->request = NULL;
--	}
-+static int ubd_init_request(struct blk_mq_tag_set *set,
-+			    struct request *req, unsigned int hctx_idx,
-+			    unsigned int numa_node)
-+{
-+	struct ubd_pdu *pdu = blk_mq_rq_to_pdu(req);
-+
-+	sg_init_table(pdu->sg, MAX_SG);
-+
-+	return 0;
- }
- 
- static int ubd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+What batching helps with is the number of context switches and numbers
+of syscalls per IO operation.
+
+The non-batching code used 6 syscalls per disk io operation: UML write
+to IPC, disk thread read from IPC, actual disk IO, disk thread write to
+IPC, (e)poll in UML IRQ controller emulation, UML read from IPC.
+
+With batching this is reduced to 5 calls per batch + number of IO ops
+batched. Under load the batches grow to usually 10-30 in size which
+yields a syscall reduction of 3-5 times. My code sets the batch size
+limit to 64 and you can hit that on some synthetic benchmarks like
+dd-ing raw disks.
+
+There is further gains from latency reduction. The "round-trip" over the
+IPC to tell the disk io thread to perform an IO operation and to confirm
+the results is also reduced if you manage to pass multiple events in one go.
+
+All in all, the difference between batched and non-batched for heavy IO
+load is several times for the old blk code in UML. I need to do some
+reading to get a better understanding of the new code and if needs
+batching and how to match it to the actual blk-mq semantics.
+
+A.
+
+>
+>>> Another obstacle with IO batching is that UML IO thread requests can
+>>> fail. Not only due to OOM, also because the pipe between the UML kernel
+>>> process and the host IO thread can return EAGAIN.
+>>> In this case the driver puts the request into a list and retried later
+>>> again when the pipe turns writable.
+>>> I’m not sure whether this restart logic makes sense with blk-mq, maybe
+>>> there is a way in blk-mq to put back a (partial) request?
+>> blk_mq_requeue_request requeues requests that have been partially
+>> exectuted (or not at all for that matter).
+> Thanks this is what I needed.
+> BTW: How can I know which blk functions are not usable in blk-mq?
+> I didn't realize that I can use blk_update_request().
+>
+> Thanks,
+> //richard
+>
+>
+
 -- 
-2.13.6
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
 
 
