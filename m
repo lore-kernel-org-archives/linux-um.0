@@ -1,63 +1,106 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] [RFC] um: Convert ubd driver to blk-mq
-Date: Sun, 03 Dec 2017 22:54:43 +0100
-Message-ID: <2026565.M1KEqJdkSY@blindfold>
-In-Reply-To: <20171129214651.GA5846@lst.de>
-References: <20171126131053.32300-1-richard@nod.at> <20171129214651.GA5846@lst.de>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.193]
+ helo=mx.sourceforge.net)
+ by sfs-ml-4.v29.ch3.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
+ (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1eOKVq-0003aQ-86
+ for user-mode-linux-devel@lists.sourceforge.net;
+ Mon, 11 Dec 2017 09:36:38 +0000
+Received: from ivanoab5.miniserver.com ([78.31.111.25]
+ helo=www.kot-begemot.co.uk)
+ by sfi-mx-3.v28.ch3.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.89)
+ id 1eOKVo-0006YY-HW for user-mode-linux-devel@lists.sourceforge.net;
+ Mon, 11 Dec 2017 09:36:38 +0000
+References: <20171209114940.fsi7jbxd7zbhhu74@mwanda>
+ <54b3ee94-6afd-7907-3764-e2413f231209@cambridgegreys.com>
+ <3254171.LO6pLlHuPk@blindfold>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <c70fd135-f105-5c39-d2ef-da249578120b@kot-begemot.co.uk>
+Date: Mon, 11 Dec 2017 09:36:29 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Sender: linux-kernel-owner@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, axboe@fb.com, anton.ivanov@cambridgegreys.com, linux-block@vger.kernel.org, david@sigma-star.at
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <3254171.LO6pLlHuPk@blindfold>
+Content-Language: en-US
+Subject: Re: [uml-devel] [PATCH 1/2] um: vector_kern: Unlock on error in
+ vector_net_open()
+List-Id: The user-mode Linux development list
+ <user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: dan.carpenter@oracle.com
 
-Christoph,
+Both are correct - omissions on my side
 
-Am Mittwoch, 29. November 2017, 22:46:51 CET schrieb Christoph Hellwig:
-> On Sun, Nov 26, 2017 at 02:10:53PM +0100, Richard Weinberger wrote:
-> > MAX_SG is 64, used for blk_queue_max_segments(). This comes from
-> > a0044bdf60c2 ("uml: batch I/O requests"). Is this still a good/sane
-> > value for blk-mq?
-> 
-> blk-mq itself doesn't change the tradeoff.
-> 
-> > The driver does IO batching, for each request it issues many UML struct
-> > io_thread_req request to the IO thread on the host side.
-> > One io_thread_req per SG page.
-> > Before the conversion the driver used blk_end_request() to indicate that
-> > a part of the request is done.
-> > blk_mq_end_request() does not take a length parameter, therefore we can
-> > only mark the whole request as done. See the new is_last property on the
-> > driver.
-> > Maybe there is a way to partially end requests too in blk-mq?
-> 
-> You can, take a look at scsi_end_request which handles this for blk-mq
-> and the legacy layer.  That being said I wonder if batching really
-> makes that much sene if you execute each segment separately?
+Please apply.
 
-Anton did a lot of performance improvements in this area.
-He has all the details.
-AFAIK batching brings us more throughput because in UML all IO is done by
-a different thread and the IPC has a certain overhead. 
+A.
 
-> > Another obstacle with IO batching is that UML IO thread requests can
-> > fail. Not only due to OOM, also because the pipe between the UML kernel
-> > process and the host IO thread can return EAGAIN.
-> > In this case the driver puts the request into a list and retried later
-> > again when the pipe turns writable.
-> > I’m not sure whether this restart logic makes sense with blk-mq, maybe
-> > there is a way in blk-mq to put back a (partial) request?
-> 
-> blk_mq_requeue_request requeues requests that have been partially
-> exectuted (or not at all for that matter).
 
-Thanks this is what I needed.
-BTW: How can I know which blk functions are not usable in blk-mq?
-I didn't realize that I can use blk_update_request().
+On 12/11/17 09:33, Richard Weinberger wrote:
+> Anton,
+>
+> Am Samstag, 9. Dezember 2017, 18:09:17 CET schrieb Anton Ivanov:
+>> Thanks,
+>>
+>> I guess I missed that one.
+>>
+>> A.
+>>
+>> On 09/12/17 11:49, Dan Carpenter wrote:
+>>> We need to unlock and restore IRQs on this error path.
+>>>
+>>> Fixes: ad1f62ab2bd4 ("High Performance UML Vector Network Driver")
+>>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>>>
+>>> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+>>> index d1d53015d572..bb83a2d22ac2 100644
+>>> --- a/arch/um/drivers/vector_kern.c
+>>> +++ b/arch/um/drivers/vector_kern.c
+>>> @@ -1156,8 +1156,10 @@ static int vector_net_open(struct net_device *dev)
+>>>
+>>>   	struct vector_device *vdevice;
+>>>   	
+>>>   	spin_lock_irqsave(&vp->lock, flags);
+>>>
+>>> -	if (vp->opened)
+>>> +	if (vp->opened) {
+>>> +		spin_unlock_irqrestore(&vp->lock, flags);
+>>>
+>>>   		return -ENXIO;
+>>>
+>>> +	}
+>>>
+>>>   	vp->opened = true;
+>>>   	spin_unlock_irqrestore(&vp->lock, flags);
+> Please review/ack these patches.
+>
+> Thanks,
+> //richard
+>
+> ------------------------------------------------------------------------------
+> Check out the vibrant tech community on one of the world's most
+> engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+> _______________________________________________
+> User-mode-linux-devel mailing list
+> User-mode-linux-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+>
 
-Thanks,
-//richard
 
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
