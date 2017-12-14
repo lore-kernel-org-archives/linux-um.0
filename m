@@ -1,49 +1,66 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.193]
- helo=mx.sourceforge.net)
- by sfs-ml-4.v29.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1eHUmJ-0005xG-Uj
- for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 22 Nov 2017 13:09:23 +0000
-Received: from ivanoab5.miniserver.com ([78.31.111.25]
- helo=www.kot-begemot.co.uk)
- by sfi-mx-3.v28.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.89)
- id 1eHUmI-00062U-IT for user-mode-linux-devel@lists.sourceforge.net;
- Wed, 22 Nov 2017 13:09:23 +0000
-From: anton.ivanov@kot-begemot.co.uk
-Date: Wed, 22 Nov 2017 13:09:11 +0000
-Message-Id: <20171122130913.22234-1-anton.ivanov@kot-begemot.co.uk>
-Subject: [uml-devel] PATCH v11-2
-List-Id: The user-mode Linux development list
- <user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: richard.weinberger@gmail.com
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH] arch/um: compile with modern headers
+Date: Thu, 14 Dec 2017 03:23:37 +0100
+Message-Id: <20171214022337.29183-1-Jason@zx2c4.com>
+In-Reply-To: <3173108.m2qnmkuYxR@blindfold>
+References: <3173108.m2qnmkuYxR@blindfold>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, jdike@addtoit.com, richard@nod.at, user-mode-linux-devel@lists.sourceforge.net
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, stable@vger.kernel.org
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Resending patchset v11 versus Linux Next 20171121
+Recent libcs have gotten a bit more strict, so we actually need to
+include the right headers and use the right types. This enables UML to
+compile again.
 
-Best Regards,
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Cc: stable@vger.kernel.org
+---
+Rebased on linux-next, by request.
 
-A.
+ arch/um/os-Linux/file.c   | 1 +
+ arch/um/os-Linux/signal.c | 1 +
+ arch/x86/um/stub_segv.c   | 1 +
+ 3 files changed, 3 insertions(+)
 
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index 2db18cbbb0ea..c0197097c86e 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -12,6 +12,7 @@
+ #include <sys/mount.h>
+ #include <sys/socket.h>
+ #include <sys/stat.h>
++#include <sys/sysmacros.h>
+ #include <sys/un.h>
+ #include <sys/types.h>
+ #include <os.h>
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index a5c0c909c48b..bf0acb8aad8b 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -16,6 +16,7 @@
+ #include <os.h>
+ #include <sysdep/mcontext.h>
+ #include <um_malloc.h>
++#include <sys/ucontext.h>
+ 
+ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
+ 	[SIGTRAP]	= relay_signal,
+diff --git a/arch/x86/um/stub_segv.c b/arch/x86/um/stub_segv.c
+index fd6825537b97..27361cbb7ca9 100644
+--- a/arch/x86/um/stub_segv.c
++++ b/arch/x86/um/stub_segv.c
+@@ -6,6 +6,7 @@
+ #include <sysdep/stub.h>
+ #include <sysdep/faultinfo.h>
+ #include <sysdep/mcontext.h>
++#include <sys/ucontext.h>
+ 
+ void __attribute__ ((__section__ (".__syscall_stub")))
+ stub_segv_handler(int sig, siginfo_t *info, void *p)
+-- 
+2.15.1
 
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
