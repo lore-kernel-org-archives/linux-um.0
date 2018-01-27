@@ -1,26 +1,23 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.193]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.194]
  helo=mx.sourceforge.net)
  by sfs-ml-1.v29.ch3.sourceforge.com with esmtps
  (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1efOsL-0008G6-OU
+ (envelope-from <christophe.jaillet@wanadoo.fr>) id 1efOPf-0003e5-JU
  for user-mode-linux-devel@lists.sourceforge.net;
- Sat, 27 Jan 2018 11:42:25 +0000
-Received: from ivanoab5.miniserver.com ([78.31.111.25]
- helo=www.kot-begemot.co.uk)
- by sfi-mx-3.v28.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.89)
- id 1efOsK-0000xl-Oh for user-mode-linux-devel@lists.sourceforge.net;
- Sat, 27 Jan 2018 11:42:25 +0000
-References: <20180127105510.2782-1-christophe.jaillet@wanadoo.fr>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <7f9f4ba3-5b3f-c5c5-7d63-d9032848a517@kot-begemot.co.uk>
-Date: Sat, 27 Jan 2018 11:42:17 +0000
+ Sat, 27 Jan 2018 11:12:47 +0000
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
+ helo=smtp.smtpout.orange.fr)
+ by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:DHE-RSA-AES128-SHA:128)
+ (Exim 4.89) id 1efOPe-0004LT-FK
+ for user-mode-linux-devel@lists.sourceforge.net;
+ Sat, 27 Jan 2018 11:12:47 +0000
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Sat, 27 Jan 2018 11:55:10 +0100
+Message-Id: <20180127105510.2782-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <20180127105510.2782-1-christophe.jaillet@wanadoo.fr>
-Content-Language: en-US
-Subject: Re: [uml-devel] [PATCH 2/2] um: vector: Fix an error handling path
- in 'vector_parse()'
+Subject: [uml-devel] [PATCH 2/2] um: vector: Fix an error handling path in
+ 'vector_parse()'
 List-Id: The user-mode Linux development list
  <user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
@@ -30,80 +27,47 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
  <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Richard Weinberger <richard@nod.at>
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, user-mode-linux-user@lists.sourceforge.net
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, kernel-janitors@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Thanks, looks correct, +1
-
-Richard, can you add it to the next pull.
-
-Thanks in advance,
-
-A.
-
-
-
-On 27/01/18 10:55, Christophe JAILLET wrote:
-> If 'find_device()' finds something, we set '*error_out' and we should
-> return an error. However, 'err' is known to be 0 at this point.
->
-> Explicitly return -EINVAL instead.
->
-> While at it, remove the initialization of 'err' at the beginning of the
-> function and also explicitly return an error code if the first check
-> fails.
->
-> Fixes: ad1f62ab2bd4 ("High Performance UML Vector Network Driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Not sure if correct, but it looks spurious to set 'error_out' and return
-> 0 (i.e. success)
-> ---
->  arch/um/drivers/vector_kern.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> index 3c1e6ad91016..6fab02a126e6 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -677,7 +677,7 @@ static struct vector_device *find_device(int n)
->  static int vector_parse(char *str, int *index_out, char **str_out,
->  			char **error_out)
->  {
-> -	int n, len, err = -EINVAL;
-> +	int n, len, err;
->  	char *start = str;
->  
->  	len = strlen(str);
-> @@ -686,7 +686,7 @@ static int vector_parse(char *str, int *index_out, char **str_out,
->  		str++;
->  	if (*str != ':') {
->  		*error_out = "Expected ':' after device number";
-> -		return err;
-> +		return -EINVAL;
->  	}
->  	*str = '\0';
->  
-> @@ -699,7 +699,7 @@ static int vector_parse(char *str, int *index_out, char **str_out,
->  	str++;
->  	if (find_device(n)) {
->  		*error_out = "Device already configured";
-> -		return err;
-> +		return -EINVAL;
->  	}
->  
->  	*index_out = n;
-
-
-
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+SWYgJ2ZpbmRfZGV2aWNlKCknIGZpbmRzIHNvbWV0aGluZywgd2Ugc2V0ICcqZXJyb3Jfb3V0JyBh
+bmQgd2Ugc2hvdWxkCnJldHVybiBhbiBlcnJvci4gSG93ZXZlciwgJ2VycicgaXMga25vd24gdG8g
+YmUgMCBhdCB0aGlzIHBvaW50LgoKRXhwbGljaXRseSByZXR1cm4gLUVJTlZBTCBpbnN0ZWFkLgoK
+V2hpbGUgYXQgaXQsIHJlbW92ZSB0aGUgaW5pdGlhbGl6YXRpb24gb2YgJ2VycicgYXQgdGhlIGJl
+Z2lubmluZyBvZiB0aGUKZnVuY3Rpb24gYW5kIGFsc28gZXhwbGljaXRseSByZXR1cm4gYW4gZXJy
+b3IgY29kZSBpZiB0aGUgZmlyc3QgY2hlY2sKZmFpbHMuCgpGaXhlczogYWQxZjYyYWIyYmQ0ICgi
+SGlnaCBQZXJmb3JtYW5jZSBVTUwgVmVjdG9yIE5ldHdvcmsgRHJpdmVyIikKU2lnbmVkLW9mZi1i
+eTogQ2hyaXN0b3BoZSBKQUlMTEVUIDxjaHJpc3RvcGhlLmphaWxsZXRAd2FuYWRvby5mcj4KLS0t
+Ck5vdCBzdXJlIGlmIGNvcnJlY3QsIGJ1dCBpdCBsb29rcyBzcHVyaW91cyB0byBzZXQgJ2Vycm9y
+X291dCcgYW5kIHJldHVybgowIChpLmUuIHN1Y2Nlc3MpCi0tLQogYXJjaC91bS9kcml2ZXJzL3Zl
+Y3Rvcl9rZXJuLmMgfCA2ICsrKy0tLQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwg
+MyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4u
+YyBiL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jCmluZGV4IDNjMWU2YWQ5MTAxNi4uNmZh
+YjAyYTEyNmU2IDEwMDY0NAotLS0gYS9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYworKysg
+Yi9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYwpAQCAtNjc3LDcgKzY3Nyw3IEBAIHN0YXRp
+YyBzdHJ1Y3QgdmVjdG9yX2RldmljZSAqZmluZF9kZXZpY2UoaW50IG4pCiBzdGF0aWMgaW50IHZl
+Y3Rvcl9wYXJzZShjaGFyICpzdHIsIGludCAqaW5kZXhfb3V0LCBjaGFyICoqc3RyX291dCwKIAkJ
+CWNoYXIgKiplcnJvcl9vdXQpCiB7Ci0JaW50IG4sIGxlbiwgZXJyID0gLUVJTlZBTDsKKwlpbnQg
+biwgbGVuLCBlcnI7CiAJY2hhciAqc3RhcnQgPSBzdHI7CiAKIAlsZW4gPSBzdHJsZW4oc3RyKTsK
+QEAgLTY4Niw3ICs2ODYsNyBAQCBzdGF0aWMgaW50IHZlY3Rvcl9wYXJzZShjaGFyICpzdHIsIGlu
+dCAqaW5kZXhfb3V0LCBjaGFyICoqc3RyX291dCwKIAkJc3RyKys7CiAJaWYgKCpzdHIgIT0gJzon
+KSB7CiAJCSplcnJvcl9vdXQgPSAiRXhwZWN0ZWQgJzonIGFmdGVyIGRldmljZSBudW1iZXIiOwot
+CQlyZXR1cm4gZXJyOworCQlyZXR1cm4gLUVJTlZBTDsKIAl9CiAJKnN0ciA9ICdcMCc7CiAKQEAg
+LTY5OSw3ICs2OTksNyBAQCBzdGF0aWMgaW50IHZlY3Rvcl9wYXJzZShjaGFyICpzdHIsIGludCAq
+aW5kZXhfb3V0LCBjaGFyICoqc3RyX291dCwKIAlzdHIrKzsKIAlpZiAoZmluZF9kZXZpY2Uobikp
+IHsKIAkJKmVycm9yX291dCA9ICJEZXZpY2UgYWxyZWFkeSBjb25maWd1cmVkIjsKLQkJcmV0dXJu
+IGVycjsKKwkJcmV0dXJuIC1FSU5WQUw7CiAJfQogCiAJKmluZGV4X291dCA9IG47Ci0tIAoyLjE0
+LjEKCgotLS0KTCdhYnNlbmNlIGRlIHZpcnVzIGRhbnMgY2UgY291cnJpZXIgw6lsZWN0cm9uaXF1
+ZSBhIMOpdMOpIHbDqXJpZmnDqWUgcGFyIGxlIGxvZ2ljaWVsIGFudGl2aXJ1cyBBdmFzdC4KaHR0
+cHM6Ly93d3cuYXZhc3QuY29tL2FudGl2aXJ1cwoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDaGVj
+ayBvdXQgdGhlIHZpYnJhbnQgdGVjaCBjb21tdW5pdHkgb24gb25lIG9mIHRoZSB3b3JsZCdzIG1v
+c3QKZW5nYWdpbmcgdGVjaCBzaXRlcywgU2xhc2hkb3Qub3JnISBodHRwOi8vc2RtLmxpbmsvc2xh
+c2hkb3QKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNl
+ci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
+c3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
