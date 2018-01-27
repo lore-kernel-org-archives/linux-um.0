@@ -1,26 +1,22 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.194]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.193]
  helo=mx.sourceforge.net)
- by sfs-ml-1.v29.ch3.sourceforge.com with esmtps
+ by sfs-ml-3.v29.ch3.sourceforge.com with esmtps
  (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- (envelope-from <anton.ivanov@kot-begemot.co.uk>) id 1efOrn-0008Dd-SJ
+ (envelope-from <christophe.jaillet@wanadoo.fr>) id 1efOOS-00071K-PB
  for user-mode-linux-devel@lists.sourceforge.net;
- Sat, 27 Jan 2018 11:41:51 +0000
-Received: from ivanoab5.miniserver.com ([78.31.111.25]
- helo=www.kot-begemot.co.uk)
- by sfi-mx-4.v28.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.89)
- id 1efOrm-0005Uu-CL for user-mode-linux-devel@lists.sourceforge.net;
- Sat, 27 Jan 2018 11:41:51 +0000
-References: <20180127105357.2728-1-christophe.jaillet@wanadoo.fr>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <2ef83bee-fd4d-93c0-d5d6-59025c4406bf@kot-begemot.co.uk>
-Date: Sat, 27 Jan 2018 11:41:42 +0000
+ Sat, 27 Jan 2018 11:11:32 +0000
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
+ helo=smtp.smtpout.orange.fr)
+ by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:DHE-RSA-AES128-SHA:128)
+ (Exim 4.89) id 1efOOR-00089w-A1
+ for user-mode-linux-devel@lists.sourceforge.net;
+ Sat, 27 Jan 2018 11:11:32 +0000
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Sat, 27 Jan 2018 11:53:57 +0100
+Message-Id: <20180127105357.2728-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <20180127105357.2728-1-christophe.jaillet@wanadoo.fr>
-Content-Language: en-US
-Subject: Re: [uml-devel] [PATCH 1/2] um: vector: Fix a memory allocation
- check
+Subject: [uml-devel] [PATCH 1/2] um: vector: Fix a memory allocation check
 List-Id: The user-mode Linux development list
  <user-mode-linux-devel.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
@@ -30,52 +26,34 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
  <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: Richard Weinberger <richard@nod.at>
+To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, user-mode-linux-user@lists.sourceforge.net
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, kernel-janitors@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 
-Thanks, looks correct, +1
-
-Richard, can you add it to the next pull.
-
-Thanks in advance,
-
-A.
-
-On 27/01/18 10:53, Christophe JAILLET wrote:
-> Checking the result of the previous 'kstrdup()' call is expected here, so
-> we should test 'params' and not 'str' (which is known to be non-NULL at
-> this point)
->
-> Fixes: ad1f62ab2bd4 ("High Performance UML Vector Network Driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  arch/um/drivers/vector_kern.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> index d1d53015d572..3c1e6ad91016 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -723,7 +723,7 @@ static int vector_config(char *str, char **error_out)
->  	 */
->  
->  	params = kstrdup(params, GFP_KERNEL);
-> -	if (str == NULL) {
-> +	if (params == NULL) {
->  		*error_out = "vector_config failed to strdup string";
->  		return -ENOMEM;
->  	}
-
-
-
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Q2hlY2tpbmcgdGhlIHJlc3VsdCBvZiB0aGUgcHJldmlvdXMgJ2tzdHJkdXAoKScgY2FsbCBpcyBl
+eHBlY3RlZCBoZXJlLCBzbwp3ZSBzaG91bGQgdGVzdCAncGFyYW1zJyBhbmQgbm90ICdzdHInICh3
+aGljaCBpcyBrbm93biB0byBiZSBub24tTlVMTCBhdAp0aGlzIHBvaW50KQoKRml4ZXM6IGFkMWY2
+MmFiMmJkNCAoIkhpZ2ggUGVyZm9ybWFuY2UgVU1MIFZlY3RvciBOZXR3b3JrIERyaXZlciIpClNp
+Z25lZC1vZmYtYnk6IENocmlzdG9waGUgSkFJTExFVCA8Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFk
+b28uZnI+Ci0tLQogYXJjaC91bS9kcml2ZXJzL3ZlY3Rvcl9rZXJuLmMgfCAyICstCiAxIGZpbGUg
+Y2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9hcmNo
+L3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYyBiL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5j
+CmluZGV4IGQxZDUzMDE1ZDU3Mi4uM2MxZTZhZDkxMDE2IDEwMDY0NAotLS0gYS9hcmNoL3VtL2Ry
+aXZlcnMvdmVjdG9yX2tlcm4uYworKysgYi9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYwpA
+QCAtNzIzLDcgKzcyMyw3IEBAIHN0YXRpYyBpbnQgdmVjdG9yX2NvbmZpZyhjaGFyICpzdHIsIGNo
+YXIgKiplcnJvcl9vdXQpCiAJICovCiAKIAlwYXJhbXMgPSBrc3RyZHVwKHBhcmFtcywgR0ZQX0tF
+Uk5FTCk7Ci0JaWYgKHN0ciA9PSBOVUxMKSB7CisJaWYgKHBhcmFtcyA9PSBOVUxMKSB7CiAJCSpl
+cnJvcl9vdXQgPSAidmVjdG9yX2NvbmZpZyBmYWlsZWQgdG8gc3RyZHVwIHN0cmluZyI7CiAJCXJl
+dHVybiAtRU5PTUVNOwogCX0KLS0gCjIuMTQuMQoKCi0tLQpMJ2Fic2VuY2UgZGUgdmlydXMgZGFu
+cyBjZSBjb3VycmllciDDqWxlY3Ryb25pcXVlIGEgw6l0w6kgdsOpcmlmacOpZSBwYXIgbGUgbG9n
+aWNpZWwgYW50aXZpcnVzIEF2YXN0LgpodHRwczovL3d3dy5hdmFzdC5jb20vYW50aXZpcnVzCgoK
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tCkNoZWNrIG91dCB0aGUgdmlicmFudCB0ZWNoIGNvbW11bml0
+eSBvbiBvbmUgb2YgdGhlIHdvcmxkJ3MgbW9zdAplbmdhZ2luZyB0ZWNoIHNpdGVzLCBTbGFzaGRv
+dC5vcmchIGh0dHA6Ly9zZG0ubGluay9zbGFzaGRvdApfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0
+ClVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0
+cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
