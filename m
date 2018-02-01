@@ -1,133 +1,72 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 00/23] kconfig: move compiler capability tests to Kconfig
-Date: Sat, 17 Feb 2018 03:38:28 +0900
-Message-Id: <1518806331-7101-1-git-send-email-yamada.masahiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kbuild@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>, Randy Dunlap <rdunlap@infradead.org>, Ulf Magnusson <ulfalizer@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, Michal Marek <michal.lkml@markovi.net>, Masahiro Yamada <yamada.masahiro@socionext.com>, Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, kernel-hardening@lists.openwall.com, Jonathan Corbet <corbet@lwn.net>, sparclinux@vger.kernel.org, linux-sh@vger.kernel.org, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>, "H. Peter Anvin" <hpa@zytor.com>, user-mode-linux-devel@lists.sourceforge.net, Yoshinori Sato <ysato@users.sourceforge.jp>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>, user-mode-linux-user@lists.sourceforge.net, Ingo Molnar <mingo@redhat.com>, "David S. Miller" <davem@davemloft.net>, Michael Ellerman <mpe@ellerman.id.au>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Emese Revfy <re.emese@gmail.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.193]
+ helo=mx.sourceforge.net)
+ by sfs-ml-2.v29.ch3.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
+ (envelope-from <jesse.brandeburg@intel.com>) id 1ehOPS-0000Ja-Hq
+ for user-mode-linux-devel@lists.sourceforge.net;
+ Thu, 01 Feb 2018 23:36:50 +0000
+Received: from mga18.intel.com ([134.134.136.126])
+ by sfi-mx-3.v28.ch3.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
+ id 1ehOPO-0002A5-DZ for user-mode-linux-devel@lists.sourceforge.net;
+ Thu, 01 Feb 2018 23:36:50 +0000
+From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Date: Thu,  1 Feb 2018 15:36:40 -0800
+Message-Id: <20180201233640.46414-1-jesse.brandeburg@intel.com>
+MIME-Version: 1.0
+Subject: [uml-devel] [PATCH] um: fix user mode linux build
+List-Id: The user-mode Linux development list
+ <user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
 
-I brushed up the implementation in this version.
-
-In the previous RFC, CC_HAS_ was described by using 'option shell=',
-like this:
-
-config CC_HAS_STACKPROTECTOR
-        bool
-        option shell="$CC -Werror -fstack-protector -c -x c /dev/null"
-
-After I thought a bit more, the following syntax is more grammatical,
-and flexible.
-
-config CC_HAS_STACKPROTECTOR
-        bool
-        default $(shell $CC -Werror -fstack-protector -c -x c /dev/null)
-
-This version supports cc-option, so it can be written as:
-
-config CC_HAS_STACKPROTECTOR
-        bool
-        default $(cc-option -fstack-protector)
-
-To support this in a clean way, I introduced a new concept 'function'
-like we see in Makefiles.
-
-$(shell ...) is a built-in function.  $(cc-option ...) is implemented
-as macro (user-defined function).
-
-I also try cleaning of stack-protector, gcc-plugins since the Makefile
-is so dirty.
-
-Current limitations:
-
-Dependency on outside scripts.
-  For example, scripts/gcc-x86_64-has-stack-protecter.sh is run from
-  Kconfig.  When the shell script is updated, should Kconfig be re-run
-  automatically?
-
-Inter-option dependency:
-  $(call cc-option,...) in Makefile accumulates added options to
-  KBUILD_CFLAGS, but it is difficult to do it in Kconfig.
-  If a compiler option check is dependent on another option,
-  this is a difficult case.  Let's see how significant it is.
-
-Functions are evaluated statically:
-  Functions are only expanded when parsing the Kconfig.  So, it can
-  not refelect user configuration.  If this is required, $(shell )
-  must be dynamically re-calculated depending on other symbols.
-  But, this is difficult, and may cause performance issue.
-
-
-
-Masahiro Yamada (22):
-  kbuild: remove kbuild cache
-  kbuild: remove CONFIG_CROSS_COMPILE support
-  kconfig: add xstrdup() helper
-  kconfig: set SYMBOL_AUTO to the symbol marked with defconfig_list
-  kconfig: move and rename sym_expand_string_value()
-  kconfig: reference environments directly and remove 'option env='
-    syntax
-  kconfig: add function support and implement 'shell' function
-  kconfig: add 'macro' keyword to support user-defined function
-  kconfig: add 'cc-option' macro
-  stack-protector: test compiler capability in Kconfig and drop AUTO
-    mode
-  kconfig: add 'shell-stdout' function
-  kconfig: replace $UNAME_RELEASE with function call
-  kconfig: expand environments/functions in (main)menu, comment, prompt
-  kconfig: show compiler version text in the top comment
-  kconfig: add CC_IS_GCC and GCC_VERSION
-  kconfig: add CC_IS_CLANG and CLANG_VERSION
-  gcov: remove CONFIG_GCOV_FORMAT_AUTODETECT
-  kcov: imply GCC_PLUGINS and GCC_PLUGIN_SANCOV instead of select'ing
-    them
-  gcc-plugins: always build plugins with C++
-  gcc-plugins: move GCC version check for PowerPC to Kconfig
-  gcc-plugins: test GCC plugin support in Kconfig
-  gcc-plugins: enable GCC_PLUGINS for COMPILE_TEST
-
-Sami Tolvanen (1):
-  kbuild: add clang-version.sh
-
- Documentation/kbuild/kconfig-language.txt |   8 -
- Kconfig                                   |   4 +-
- Makefile                                  | 103 ++----------
- arch/Kconfig                              |  43 +++--
- arch/powerpc/Kconfig                      |   2 +-
- arch/sh/Kconfig                           |   4 +-
- arch/sparc/Kconfig                        |   4 +-
- arch/tile/Kconfig                         |   2 +-
- arch/um/Kconfig.common                    |   4 -
- arch/x86/Kconfig                          |  12 +-
- arch/x86/um/Kconfig                       |   4 +-
- init/Kconfig                              |  44 +++---
- kernel/gcov/Kconfig                       |  18 +--
- kernel/gcov/Makefile                      |   2 -
- lib/Kconfig.debug                         |   7 +-
- scripts/Kbuild.include                    | 101 ++----------
- scripts/Makefile.gcc-plugins              |  95 ++++-------
- scripts/clang-version.sh                  |  31 ++++
- scripts/gcc-plugin.sh                     |  37 +----
- scripts/gcc-plugins/Makefile              |  15 +-
- scripts/gcc-x86_32-has-stack-protector.sh |   7 +-
- scripts/gcc-x86_64-has-stack-protector.sh |   5 -
- scripts/kconfig/confdata.c                |  33 +---
- scripts/kconfig/function.c                | 251 ++++++++++++++++++++++++++++++
- scripts/kconfig/kconf_id.c                |   2 +-
- scripts/kconfig/kxgettext.c               |   2 +-
- scripts/kconfig/lkc.h                     |   6 +-
- scripts/kconfig/lkc_proto.h               |   7 +-
- scripts/kconfig/menu.c                    |   6 +-
- scripts/kconfig/symbol.c                  | 139 +++--------------
- scripts/kconfig/util.c                    | 186 ++++++++++++++++++++--
- scripts/kconfig/zconf.l                   |  40 ++++-
- scripts/kconfig/zconf.y                   |  48 +++---
- 33 files changed, 687 insertions(+), 585 deletions(-)
- create mode 100755 scripts/clang-version.sh
- create mode 100644 scripts/kconfig/function.c
-
--- 
-2.7.4
-
+Tm90IHN1cmUgd2hlbiBpdCBnb3QgYnJva2VuLCBidXQgd2l0aG91dCB0aGlzIHBhdGNoIHRoZSBj
+b21tYW5kCm1ha2UgQVJDSD11bSBkZWZjb25maWcKbWFrZSBBUkNIPXVtCgpmYWlscyBkdWUgdG8g
+c3RydWN0IHVjb250ZXh0IGJlaW5nIHVuZGVmaW5lZC4KYXJjaC91bS9vcy1MaW51eC9zaWduYWwu
+YzogSW4gZnVuY3Rpb24g4oCYaGFyZF9oYW5kbGVy4oCZOgphcmNoL3VtL29zLUxpbnV4L3NpZ25h
+bC5jOjE2MzoyMjogZXJyb3I6IGRlcmVmZXJlbmNpbmcgcG9pbnRlciB0byBpbmNvbXBsZXRlIHR5
+cGUg4oCYc3RydWN0IHVjb250ZXh04oCZCiAgbWNvbnRleHRfdCAqbWMgPSAmdWMtPnVjX21jb250
+ZXh0Owo8dGhlcmUgYXJlIHR3byBlcnJvcnMgbGlrZSB0aGUgYWJvdmU+CgpUaGUgZml4IHNlZW1z
+IGZhaXJseSBzaW1wbGUsIHRoYXQgdGhlIGNvZGUganVzdCBuZWVkcyB0byB1c2UKdWNvbnRleHRf
+dCBkZWZpbmUgaW5zdGVhZC4KCkkgZGlkbid0IHZlcmlmeSB0aGF0IHVzZXItbW9kZS1saW51eCBp
+cyB3b3JraW5nIGFmdGVyIHRoaXMgY2hhbmdlLApqdXN0IHRoYXQgaXQgYnVpbGRzIHN1Y2Nlc3Nm
+dWxseS4KCkNjOiBKZWZmIERpa2UgPGpkaWtlQGFkZHRvaXQuY29tPgpDYzogUmljaGFyZCBXZWlu
+YmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KQ2M6IHVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQKU2lnbmVkLW9mZi1ieTogSmVzc2UgQnJhbmRlYnVyZyA8amVzc2UuYnJh
+bmRlYnVyZ0BpbnRlbC5jb20+Ci0tLQogYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYyB8IDIgKy0K
+IGFyY2gveDg2L3VtL3N0dWJfc2Vndi5jICAgfCAyICstCiAyIGZpbGVzIGNoYW5nZWQsIDIgaW5z
+ZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL3VtL29zLUxpbnV4
+L3NpZ25hbC5jIGIvYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYwppbmRleCBhODZkN2NjMmMyZDgu
+LmE1YzBjOTA5YzQ4YiAxMDA2NDQKLS0tIGEvYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYworKysg
+Yi9hcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jCkBAIC0xNTksNyArMTU5LDcgQEAgc3RhdGljIHZv
+aWQgKCpoYW5kbGVyc1tfTlNJR10pKGludCBzaWcsIHN0cnVjdCBzaWdpbmZvICpzaSwgbWNvbnRl
+eHRfdCAqbWMpID0gewogCiBzdGF0aWMgdm9pZCBoYXJkX2hhbmRsZXIoaW50IHNpZywgc2lnaW5m
+b190ICpzaSwgdm9pZCAqcCkKIHsKLQlzdHJ1Y3QgdWNvbnRleHQgKnVjID0gcDsKKwl1Y29udGV4
+dF90ICp1YyA9IHA7CiAJbWNvbnRleHRfdCAqbWMgPSAmdWMtPnVjX21jb250ZXh0OwogCXVuc2ln
+bmVkIGxvbmcgcGVuZGluZyA9IDFVTCA8PCBzaWc7CiAKZGlmZiAtLWdpdCBhL2FyY2gveDg2L3Vt
+L3N0dWJfc2Vndi5jIGIvYXJjaC94ODYvdW0vc3R1Yl9zZWd2LmMKaW5kZXggMTUxOGQyODA1YWU4
+Li5mZDY4MjU1MzdiOTcgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L3VtL3N0dWJfc2Vndi5jCisrKyBi
+L2FyY2gveDg2L3VtL3N0dWJfc2Vndi5jCkBAIC0xMCw3ICsxMCw3IEBACiB2b2lkIF9fYXR0cmli
+dXRlX18gKChfX3NlY3Rpb25fXyAoIi5fX3N5c2NhbGxfc3R1YiIpKSkKIHN0dWJfc2Vndl9oYW5k
+bGVyKGludCBzaWcsIHNpZ2luZm9fdCAqaW5mbywgdm9pZCAqcCkKIHsKLQlzdHJ1Y3QgdWNvbnRl
+eHQgKnVjID0gcDsKKwl1Y29udGV4dF90ICp1YyA9IHA7CiAKIAlHRVRfRkFVTFRJTkZPX0ZST01f
+TUMoKigoc3RydWN0IGZhdWx0aW5mbyAqKSBTVFVCX0RBVEEpLAogCQkJICAgICAgJnVjLT51Y19t
+Y29udGV4dCk7Ci0tIAoyLjE0LjMKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ2hlY2sgb3V0IHRo
+ZSB2aWJyYW50IHRlY2ggY29tbXVuaXR5IG9uIG9uZSBvZiB0aGUgd29ybGQncyBtb3N0CmVuZ2Fn
+aW5nIHRlY2ggc2l0ZXMsIFNsYXNoZG90Lm9yZyEgaHR0cDovL3NkbS5saW5rL3NsYXNoZG90Cl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1s
+aW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91
+c2VyLW1vZGUtbGludXgtZGV2ZWwK
 
