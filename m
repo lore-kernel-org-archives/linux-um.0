@@ -1,72 +1,39 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.193]
- helo=mx.sourceforge.net)
- by sfs-ml-2.v29.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- (envelope-from <jesse.brandeburg@intel.com>) id 1ehOPS-0000Ja-Hq
- for user-mode-linux-devel@lists.sourceforge.net;
- Thu, 01 Feb 2018 23:36:50 +0000
-Received: from mga18.intel.com ([134.134.136.126])
- by sfi-mx-3.v28.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- id 1ehOPO-0002A5-DZ for user-mode-linux-devel@lists.sourceforge.net;
- Thu, 01 Feb 2018 23:36:50 +0000
-From: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Date: Thu,  1 Feb 2018 15:36:40 -0800
-Message-Id: <20180201233640.46414-1-jesse.brandeburg@intel.com>
+Return-Path: <linux-fbdev-owner@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] Kconfig : Remove HAS_IOMEM dependency for Graphics
+ support
+From: Christian Borntraeger <borntraeger@de.ibm.com>
+References: <cover.1517508744.git.alifm@linux.vnet.ibm.com>
+ <CGME20180202080007epcas5p306896fe66e4bbf4bf5f8d91306a5d016@epcas5p3.samsung.com>
+ <246f92c9-15dc-223f-59d9-b2f0756cdf5e@de.ibm.com>
+ <1610039.4trOurtpys@amdc3058>
+ <2324e2cc-ff55-4d57-2807-c7f72f9ea0ca@de.ibm.com>
+Date: Thu, 15 Feb 2018 12:02:18 +0100
 MIME-Version: 1.0
-Subject: [uml-devel] [PATCH] um: fix user mode linux build
-List-Id: The user-mode Linux development list
- <user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
+In-Reply-To: <2324e2cc-ff55-4d57-2807-c7f72f9ea0ca@de.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <b1a3933e-6a8f-bd24-3629-5da730398f32@de.ibm.com>
+Sender: linux-fbdev-owner@vger.kernel.org
+To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Farhan Ali <alifm@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, linux-fbdev@vger.kernel.org, geert@linux-m68k.org, stefan.kristiansson@saunalahti.fi, tomi.valkeinen@ti.com, schwidefsky@de.ibm.com, dri-devel@lists.freedesktop.org, Chen Liqin <liqin.linux@gmail.com>, Lennox Wu <lennox.wu@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Tm90IHN1cmUgd2hlbiBpdCBnb3QgYnJva2VuLCBidXQgd2l0aG91dCB0aGlzIHBhdGNoIHRoZSBj
-b21tYW5kCm1ha2UgQVJDSD11bSBkZWZjb25maWcKbWFrZSBBUkNIPXVtCgpmYWlscyBkdWUgdG8g
-c3RydWN0IHVjb250ZXh0IGJlaW5nIHVuZGVmaW5lZC4KYXJjaC91bS9vcy1MaW51eC9zaWduYWwu
-YzogSW4gZnVuY3Rpb24g4oCYaGFyZF9oYW5kbGVy4oCZOgphcmNoL3VtL29zLUxpbnV4L3NpZ25h
-bC5jOjE2MzoyMjogZXJyb3I6IGRlcmVmZXJlbmNpbmcgcG9pbnRlciB0byBpbmNvbXBsZXRlIHR5
-cGUg4oCYc3RydWN0IHVjb250ZXh04oCZCiAgbWNvbnRleHRfdCAqbWMgPSAmdWMtPnVjX21jb250
-ZXh0Owo8dGhlcmUgYXJlIHR3byBlcnJvcnMgbGlrZSB0aGUgYWJvdmU+CgpUaGUgZml4IHNlZW1z
-IGZhaXJseSBzaW1wbGUsIHRoYXQgdGhlIGNvZGUganVzdCBuZWVkcyB0byB1c2UKdWNvbnRleHRf
-dCBkZWZpbmUgaW5zdGVhZC4KCkkgZGlkbid0IHZlcmlmeSB0aGF0IHVzZXItbW9kZS1saW51eCBp
-cyB3b3JraW5nIGFmdGVyIHRoaXMgY2hhbmdlLApqdXN0IHRoYXQgaXQgYnVpbGRzIHN1Y2Nlc3Nm
-dWxseS4KCkNjOiBKZWZmIERpa2UgPGpkaWtlQGFkZHRvaXQuY29tPgpDYzogUmljaGFyZCBXZWlu
-YmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KQ2M6IHVzZXItbW9kZS1saW51eC1kZXZlbEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQKU2lnbmVkLW9mZi1ieTogSmVzc2UgQnJhbmRlYnVyZyA8amVzc2UuYnJh
-bmRlYnVyZ0BpbnRlbC5jb20+Ci0tLQogYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYyB8IDIgKy0K
-IGFyY2gveDg2L3VtL3N0dWJfc2Vndi5jICAgfCAyICstCiAyIGZpbGVzIGNoYW5nZWQsIDIgaW5z
-ZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL3VtL29zLUxpbnV4
-L3NpZ25hbC5jIGIvYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYwppbmRleCBhODZkN2NjMmMyZDgu
-LmE1YzBjOTA5YzQ4YiAxMDA2NDQKLS0tIGEvYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYworKysg
-Yi9hcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jCkBAIC0xNTksNyArMTU5LDcgQEAgc3RhdGljIHZv
-aWQgKCpoYW5kbGVyc1tfTlNJR10pKGludCBzaWcsIHN0cnVjdCBzaWdpbmZvICpzaSwgbWNvbnRl
-eHRfdCAqbWMpID0gewogCiBzdGF0aWMgdm9pZCBoYXJkX2hhbmRsZXIoaW50IHNpZywgc2lnaW5m
-b190ICpzaSwgdm9pZCAqcCkKIHsKLQlzdHJ1Y3QgdWNvbnRleHQgKnVjID0gcDsKKwl1Y29udGV4
-dF90ICp1YyA9IHA7CiAJbWNvbnRleHRfdCAqbWMgPSAmdWMtPnVjX21jb250ZXh0OwogCXVuc2ln
-bmVkIGxvbmcgcGVuZGluZyA9IDFVTCA8PCBzaWc7CiAKZGlmZiAtLWdpdCBhL2FyY2gveDg2L3Vt
-L3N0dWJfc2Vndi5jIGIvYXJjaC94ODYvdW0vc3R1Yl9zZWd2LmMKaW5kZXggMTUxOGQyODA1YWU4
-Li5mZDY4MjU1MzdiOTcgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L3VtL3N0dWJfc2Vndi5jCisrKyBi
-L2FyY2gveDg2L3VtL3N0dWJfc2Vndi5jCkBAIC0xMCw3ICsxMCw3IEBACiB2b2lkIF9fYXR0cmli
-dXRlX18gKChfX3NlY3Rpb25fXyAoIi5fX3N5c2NhbGxfc3R1YiIpKSkKIHN0dWJfc2Vndl9oYW5k
-bGVyKGludCBzaWcsIHNpZ2luZm9fdCAqaW5mbywgdm9pZCAqcCkKIHsKLQlzdHJ1Y3QgdWNvbnRl
-eHQgKnVjID0gcDsKKwl1Y29udGV4dF90ICp1YyA9IHA7CiAKIAlHRVRfRkFVTFRJTkZPX0ZST01f
-TUMoKigoc3RydWN0IGZhdWx0aW5mbyAqKSBTVFVCX0RBVEEpLAogCQkJICAgICAgJnVjLT51Y19t
-Y29udGV4dCk7Ci0tIAoyLjE0LjMKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ2hlY2sgb3V0IHRo
-ZSB2aWJyYW50IHRlY2ggY29tbXVuaXR5IG9uIG9uZSBvZiB0aGUgd29ybGQncyBtb3N0CmVuZ2Fn
-aW5nIHRlY2ggc2l0ZXMsIFNsYXNoZG90Lm9yZyEgaHR0cDovL3NkbS5saW5rL3NsYXNoZG90Cl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClVzZXItbW9kZS1s
-aW51eC1kZXZlbCBtYWlsaW5nIGxpc3QKVXNlci1tb2RlLWxpbnV4LWRldmVsQGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby91
-c2VyLW1vZGUtbGludXgtZGV2ZWwK
+An even simpler approach would be:
+
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index cbe1d978693a..35b7aba4b6a0 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -952,6 +952,10 @@ config S390_HYPFS_FS
+ 
+ source "arch/s390/kvm/Kconfig"
+ 
++config DUMMY_CONSOLE
++       bool
++       default y
++
+ config S390_GUEST
+        def_bool y
+        prompt "s390 support for virtio devices"
 
