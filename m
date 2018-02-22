@@ -1,73 +1,42 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.194]
- helo=mx.sourceforge.net)
- by sfs-ml-1.v29.ch3.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.89)
- (envelope-from <christophe.jaillet@wanadoo.fr>) id 1efOPf-0003e5-JU
- for user-mode-linux-devel@lists.sourceforge.net;
- Sat, 27 Jan 2018 11:12:47 +0000
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
- helo=smtp.smtpout.orange.fr)
- by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:DHE-RSA-AES128-SHA:128)
- (Exim 4.89) id 1efOPe-0004LT-FK
- for user-mode-linux-devel@lists.sourceforge.net;
- Sat, 27 Jan 2018 11:12:47 +0000
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Date: Sat, 27 Jan 2018 11:55:10 +0100
-Message-Id: <20180127105510.2782-1-christophe.jaillet@wanadoo.fr>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 00/23] kconfig: move compiler capability tests to Kconfig
+In-Reply-To: <CAK7LNAR3OMh9Q9ZfaBq=FpSJ-+DT5-RH_20ohV-iu34pX9hFKw@mail.gmail.com>
+References: <1518806331-7101-1-git-send-email-yamada.masahiro@socionext.com> <20180218221352.GA6651@ravnborg.org> <CAFkk2KT1krKuDkWt0eHcasfC61fTVQNf-1kqw7icLP9OYGYkXQ@mail.gmail.com> <CAK7LNAQH0WD3A3T97gce0xmZpMy0zWxTO2StfNWaDbiqjQg8gg@mail.gmail.com> <CAK8P3a2BOQt5Y0B4271WqaJvvWqfxHxD3S6r1i1xONvb+CJ5Dg@mail.gmail.com> <CAK7LNARtZcW1v53ridFJK1MULmj8tQT4s+DoRhKj9PrbMri5rQ@mail.gmail.com> <CAK8P3a1DrhxWXaEs6E85W5HEhvFr23E-GDsu=0X-sG0pX+PLag@mail.gmail.com> <CAK7LNAR3OMh9Q9ZfaBq=FpSJ-+DT5-RH_20ohV-iu34pX9hFKw@mail.gmail.com>
+Date: Thu, 22 Feb 2018 14:22:02 +1100
+Message-ID: <87efldr9np.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
-Subject: [uml-devel] [PATCH 2/2] um: vector: Fix an error handling path in
- 'vector_parse()'
-List-Id: The user-mode Linux development list
- <user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com, user-mode-linux-user@lists.sourceforge.net
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, kernel-janitors@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Content-Type: text/plain
+Sender: linux-kernel-owner@vger.kernel.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>, Arnd Bergmann <arnd@arndb.de>
+Cc: Rich Felker <dalias@libc.org>, Kernel Hardening <kernel-hardening@lists.openwall.com>, X86 ML <x86@kernel.org>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Jonathan Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>, Linux-sh list <linux-sh@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@redhat.com>, Emese Revfy <re.emese@gmail.com>, Kees Cook <keescook@chromium.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Peter Oberparleiter <oberpar@linux.vnet.ibm.com>, Jeff Dike <jdike@addtoit.com>, user-mode-linux-user@lists.sourceforge.net, Thomas Gleixner <tglx@linutronix.de>, Michal Marek <michal.lkml@markovi.net>, Ulf Magnusson <ulfalizer@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "David S. Miller" <davem@davemloft.net>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-SWYgJ2ZpbmRfZGV2aWNlKCknIGZpbmRzIHNvbWV0aGluZywgd2Ugc2V0ICcqZXJyb3Jfb3V0JyBh
-bmQgd2Ugc2hvdWxkCnJldHVybiBhbiBlcnJvci4gSG93ZXZlciwgJ2VycicgaXMga25vd24gdG8g
-YmUgMCBhdCB0aGlzIHBvaW50LgoKRXhwbGljaXRseSByZXR1cm4gLUVJTlZBTCBpbnN0ZWFkLgoK
-V2hpbGUgYXQgaXQsIHJlbW92ZSB0aGUgaW5pdGlhbGl6YXRpb24gb2YgJ2VycicgYXQgdGhlIGJl
-Z2lubmluZyBvZiB0aGUKZnVuY3Rpb24gYW5kIGFsc28gZXhwbGljaXRseSByZXR1cm4gYW4gZXJy
-b3IgY29kZSBpZiB0aGUgZmlyc3QgY2hlY2sKZmFpbHMuCgpGaXhlczogYWQxZjYyYWIyYmQ0ICgi
-SGlnaCBQZXJmb3JtYW5jZSBVTUwgVmVjdG9yIE5ldHdvcmsgRHJpdmVyIikKU2lnbmVkLW9mZi1i
-eTogQ2hyaXN0b3BoZSBKQUlMTEVUIDxjaHJpc3RvcGhlLmphaWxsZXRAd2FuYWRvby5mcj4KLS0t
-Ck5vdCBzdXJlIGlmIGNvcnJlY3QsIGJ1dCBpdCBsb29rcyBzcHVyaW91cyB0byBzZXQgJ2Vycm9y
-X291dCcgYW5kIHJldHVybgowIChpLmUuIHN1Y2Nlc3MpCi0tLQogYXJjaC91bS9kcml2ZXJzL3Zl
-Y3Rvcl9rZXJuLmMgfCA2ICsrKy0tLQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwg
-MyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4u
-YyBiL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jCmluZGV4IDNjMWU2YWQ5MTAxNi4uNmZh
-YjAyYTEyNmU2IDEwMDY0NAotLS0gYS9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYworKysg
-Yi9hcmNoL3VtL2RyaXZlcnMvdmVjdG9yX2tlcm4uYwpAQCAtNjc3LDcgKzY3Nyw3IEBAIHN0YXRp
-YyBzdHJ1Y3QgdmVjdG9yX2RldmljZSAqZmluZF9kZXZpY2UoaW50IG4pCiBzdGF0aWMgaW50IHZl
-Y3Rvcl9wYXJzZShjaGFyICpzdHIsIGludCAqaW5kZXhfb3V0LCBjaGFyICoqc3RyX291dCwKIAkJ
-CWNoYXIgKiplcnJvcl9vdXQpCiB7Ci0JaW50IG4sIGxlbiwgZXJyID0gLUVJTlZBTDsKKwlpbnQg
-biwgbGVuLCBlcnI7CiAJY2hhciAqc3RhcnQgPSBzdHI7CiAKIAlsZW4gPSBzdHJsZW4oc3RyKTsK
-QEAgLTY4Niw3ICs2ODYsNyBAQCBzdGF0aWMgaW50IHZlY3Rvcl9wYXJzZShjaGFyICpzdHIsIGlu
-dCAqaW5kZXhfb3V0LCBjaGFyICoqc3RyX291dCwKIAkJc3RyKys7CiAJaWYgKCpzdHIgIT0gJzon
-KSB7CiAJCSplcnJvcl9vdXQgPSAiRXhwZWN0ZWQgJzonIGFmdGVyIGRldmljZSBudW1iZXIiOwot
-CQlyZXR1cm4gZXJyOworCQlyZXR1cm4gLUVJTlZBTDsKIAl9CiAJKnN0ciA9ICdcMCc7CiAKQEAg
-LTY5OSw3ICs2OTksNyBAQCBzdGF0aWMgaW50IHZlY3Rvcl9wYXJzZShjaGFyICpzdHIsIGludCAq
-aW5kZXhfb3V0LCBjaGFyICoqc3RyX291dCwKIAlzdHIrKzsKIAlpZiAoZmluZF9kZXZpY2Uobikp
-IHsKIAkJKmVycm9yX291dCA9ICJEZXZpY2UgYWxyZWFkeSBjb25maWd1cmVkIjsKLQkJcmV0dXJu
-IGVycjsKKwkJcmV0dXJuIC1FSU5WQUw7CiAJfQogCiAJKmluZGV4X291dCA9IG47Ci0tIAoyLjE0
-LjEKCgotLS0KTCdhYnNlbmNlIGRlIHZpcnVzIGRhbnMgY2UgY291cnJpZXIgw6lsZWN0cm9uaXF1
-ZSBhIMOpdMOpIHbDqXJpZmnDqWUgcGFyIGxlIGxvZ2ljaWVsIGFudGl2aXJ1cyBBdmFzdC4KaHR0
-cHM6Ly93d3cuYXZhc3QuY29tL2FudGl2aXJ1cwoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDaGVj
-ayBvdXQgdGhlIHZpYnJhbnQgdGVjaCBjb21tdW5pdHkgb24gb25lIG9mIHRoZSB3b3JsZCdzIG1v
-c3QKZW5nYWdpbmcgdGVjaCBzaXRlcywgU2xhc2hkb3Qub3JnISBodHRwOi8vc2RtLmxpbmsvc2xh
-c2hkb3QKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KVXNl
-ci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgtZGV2ZWxAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+Masahiro Yamada <yamada.masahiro@socionext.com> writes:
+>
+<snip>
+>
+> (Case 3)
+> Compiler flag -foo is sensitive to endian-ness.
+>
+>
+> config CC_NEEDS_BIG_ENDIAN
+>           def_bool $(cc-option -mbig-endian) && CPU_BIG_ENDIAN
+>
+> config CC_NEEDS_LITTLE_ENDIAN
+>           def_bool $(cc-option -mlittle-endian) && CPU_LITTLE_ENDIAN
+>
+> config CC_HAS_FOO
+>          bool
+>          default $(cc-option -mbig-endian -foo) if CC_NEEDS_BIG_ENDIAN
+>          default $(cc-option -mlittle-endian -foo) if CC_NEEDS_LITTLE_ENDIAN
+>          default $(cc-option -foo)
+
+We may do something like this on powerpc, where we have 32/64-bit and
+big/little endian (on 64-bit) and then some ABI options that we
+set/unset depending on endian.
+
+The above looks like it could work though.
+
+cheers
 
