@@ -1,91 +1,55 @@
-Return-Path: <b.zolnierkie@samsung.com>
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v2 1/3] Kconfig : Remove HAS_IOMEM dependency for
- Graphics support
-Date: Thu, 08 Feb 2018 14:11:53 +0100
-Message-id: <1610039.4trOurtpys@amdc3058>
-In-reply-to: <246f92c9-15dc-223f-59d9-b2f0756cdf5e@de.ibm.com>
-MIME-version: 1.0
-Content-transfer-encoding: 7Bit
-Content-type: text/plain; charset="us-ascii"
-References: <cover.1517508744.git.alifm@linux.vnet.ibm.com>
-	<CGME20180202080007epcas5p306896fe66e4bbf4bf5f8d91306a5d016@epcas5p3.samsung.com>
-	<246f92c9-15dc-223f-59d9-b2f0756cdf5e@de.ibm.com>
-To: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Farhan Ali <alifm@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, linux-fbdev@vger.kernel.org, geert@linux-m68k.org, stefan.kristiansson@saunalahti.fi, tomi.valkeinen@ti.com, schwidefsky@de.ibm.com, dri-devel@lists.freedesktop.org, Chen Liqin <liqin.linux@gmail.com>, Lennox Wu <lennox.wu@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Andi Kleen <andi@firstfloor.org>
+Subject: [PATCH] uml: Fix build with recent glibc
+Date: Wed, 28 Feb 2018 19:08:44 -0800
+Message-Id: <20180301030844.23448-1-andi@firstfloor.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: richard@nod.at
+Cc: linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, Andi Kleen <ak@linux.intel.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
+From: Andi Kleen <ak@linux.intel.com>
 
-Hi,
+Newer glibc did some include namespace "cleanups" and removed
+struct ucontext and friends. This already broke a lot of software,
+and UML seems to be the latest victim.
 
-[ dri-devel ML & arch/[score,um] Maintainers added to Cc: ]
+Use the typedefs which are still available. They also work on
+older glibcs.
 
-On Friday, February 02, 2018 08:59:57 AM Christian Borntraeger wrote:
-> On 02/01/2018 07:41 PM, Farhan Ali wrote:
-> > The 'commit e25df1205f37 ("[S390] Kconfig: menus with depends on HAS_IOMEM.")'
-> > added the HAS_IOMEM dependecy for "Graphics support". This disabled the
-> > "Graphics support" menu for S390. But if we enable VT layer for S390,
-> > we would also need to enable the dummy console. So let's remove the
-> > HAS_IOMEM dependency.
-> >
-> > Move this dependency to Opencores framebuffer driver which would fail to build
-> > with CONFIG_HAS_IOMEM disabled:
-> > 
-> > ERROR: "devm_ioremap_resource" [drivers/video/fbdev/ocfb.ko] undefined!
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+---
+ arch/um/os-Linux/signal.c | 2 +-
+ arch/x86/um/stub_segv.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-"Graphics support" menu covers other things (i.e. DRM), I assume that
-they were also checked to not break due to this change?
-
-Moreover it seems that after this change "Graphics support" menu will
-be also enabled (besides s390) for score, tile and um architectures,
-I assume that this is okay?
-
-> > Signed-off-by: Farhan Ali <alifm@linux.vnet.ibm.com>
-> > Tested-by: Dong Jia Shi <bjsdjshi@linux.vnet.ibm.com>
-> 
-> This also enables several PCI based graphic device driver on s390.
-> This makes no sense but they all compile fine so I guess this is ok.
-> 
-> I think patch 2 and 3 are clearly for the s390 tree, patch 1 seems trivial
-> Also ccing Bart. Can we maybe get an ack to carry this patch also via the s390
-> tree?
-> 
-> 
-> > ---
-> >  drivers/video/Kconfig       | 1 -
-> >  drivers/video/fbdev/Kconfig | 2 +-
-> >  2 files changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
-> > index 3c20af9..41e7ba9 100644
-> > --- a/drivers/video/Kconfig
-> > +++ b/drivers/video/Kconfig
-> > @@ -3,7 +3,6 @@
-> >  #
-> > 
-> >  menu "Graphics support"
-> > -	depends on HAS_IOMEM
-> > 
-> >  config HAVE_FB_ATMEL
-> >  	bool
-> > diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-> > index 2f615b7..ec9c9ce 100644
-> > --- a/drivers/video/fbdev/Kconfig
-> > +++ b/drivers/video/fbdev/Kconfig
-> > @@ -966,7 +966,7 @@ config FB_PVR2
-> > 
-> >  config FB_OPENCORES
-> >  	tristate "OpenCores VGA/LCD core 2.0 framebuffer support"
-> > -	depends on FB && HAS_DMA
-> > +	depends on FB && HAS_DMA && HAS_IOMEM
-> >  	select FB_CFB_FILLRECT
-> >  	select FB_CFB_COPYAREA
-> >  	select FB_CFB_IMAGEBLIT
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index a86d7cc2c2d8..a5c0c909c48b 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -159,7 +159,7 @@ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
+ 
+ static void hard_handler(int sig, siginfo_t *si, void *p)
+ {
+-	struct ucontext *uc = p;
++	ucontext_t *uc = p;
+ 	mcontext_t *mc = &uc->uc_mcontext;
+ 	unsigned long pending = 1UL << sig;
+ 
+diff --git a/arch/x86/um/stub_segv.c b/arch/x86/um/stub_segv.c
+index 1518d2805ae8..fd6825537b97 100644
+--- a/arch/x86/um/stub_segv.c
++++ b/arch/x86/um/stub_segv.c
+@@ -10,7 +10,7 @@
+ void __attribute__ ((__section__ (".__syscall_stub")))
+ stub_segv_handler(int sig, siginfo_t *info, void *p)
+ {
+-	struct ucontext *uc = p;
++	ucontext_t *uc = p;
+ 
+ 	GET_FAULTINFO_FROM_MC(*((struct faultinfo *) STUB_DATA),
+ 			      &uc->uc_mcontext);
+-- 
+2.14.3
 
 
