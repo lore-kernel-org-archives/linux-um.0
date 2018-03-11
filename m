@@ -1,29 +1,68 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Richard Weinberger <richard@nod.at>
-Subject: Re: [RFC PATCH 25/35] hostfs: rename do_rmdir() to hostfs_do_rmdir()
-Date: Sun, 11 Mar 2018 12:19:21 +0100
-Message-ID: <3779476.NRYLIFElLR@blindfold>
-In-Reply-To: <20180311105557.20807-26-linux@dominikbrodowski.net>
-References: <20180311105557.20807-1-linux@dominikbrodowski.net> <20180311105557.20807-26-linux@dominikbrodowski.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: [RFC PATCH 25/35] hostfs: rename do_rmdir() to hostfs_do_rmdir()
+Date: Sun, 11 Mar 2018 11:55:47 +0100
+Message-Id: <20180311105557.20807-26-linux@dominikbrodowski.net>
+In-Reply-To: <20180311105557.20807-1-linux@dominikbrodowski.net>
+References: <20180311105557.20807-1-linux@dominikbrodowski.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: linux-kernel@vger.kernel.org, luto@kernel.org, torvalds@linux-foundation.org, mingo@kernel.org, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org, luto@kernel.org, torvalds@linux-foundation.org, mingo@kernel.org, viro@zeniv.linux.org.uk, akpm@linux-foundation.org
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Am Sonntag, 11. M=EF=BF=BDrz 2018, 11:55:47 CET schrieb Dominik Brodowski:
-> do_rmdir() is used in the VFS layer at fs/namei.c, so use a different
-> name in hostfs.
->=20
-> CC: Jeff Dike <jdike@addtoit.com>
-> CC: Richard Weinberger <richard@nod.at>
-> CC: user-mode-linux-devel@lists.sourceforge.net
-> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+do_rmdir() is used in the VFS layer at fs/namei.c, so use a different
+name in hostfs.
 
-Acked-by: Richard Weinberger <richard@nod.at>
+CC: Jeff Dike <jdike@addtoit.com>
+CC: Richard Weinberger <richard@nod.at>
+CC: user-mode-linux-devel@lists.sourceforge.net
+Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+---
+ fs/hostfs/hostfs.h      | 2 +-
+ fs/hostfs/hostfs_kern.c | 2 +-
+ fs/hostfs/hostfs_user.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Thanks,
-//richard
+diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
+index ffaec2e7526c..cb8374af08a6 100644
+--- a/fs/hostfs/hostfs.h
++++ b/fs/hostfs/hostfs.h
+@@ -84,7 +84,7 @@ extern int set_attr(const char *file, struct hostfs_iattr *attrs, int fd);
+ extern int make_symlink(const char *from, const char *to);
+ extern int unlink_file(const char *file);
+ extern int do_mkdir(const char *file, int mode);
+-extern int do_rmdir(const char *file);
++extern int hostfs_do_rmdir(const char *file);
+ extern int do_mknod(const char *file, int mode, unsigned int major,
+ 		    unsigned int minor);
+ extern int link_file(const char *from, const char *to);
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index c148e7f4f451..3cd85eb5bbb1 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -706,7 +706,7 @@ static int hostfs_rmdir(struct inode *ino, struct dentry *dentry)
+ 
+ 	if ((file = dentry_name(dentry)) == NULL)
+ 		return -ENOMEM;
+-	err = do_rmdir(file);
++	err = hostfs_do_rmdir(file);
+ 	__putname(file);
+ 	return err;
+ }
+diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
+index 9c1e0f019880..5ecc4706172b 100644
+--- a/fs/hostfs/hostfs_user.c
++++ b/fs/hostfs/hostfs_user.c
+@@ -304,7 +304,7 @@ int do_mkdir(const char *file, int mode)
+ 	return 0;
+ }
+ 
+-int do_rmdir(const char *file)
++int hostfs_do_rmdir(const char *file)
+ {
+ 	int err;
+ 
+-- 
+2.16.2
+
 
