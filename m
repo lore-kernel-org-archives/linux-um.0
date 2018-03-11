@@ -1,52 +1,29 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 15/16] sh: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sat, 24 Mar 2018 13:44:57 -0400
-Message-Id: <20180324174458.26423-16-shea@shealevy.com>
-In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
-References: <20180324174458.26423-1-shea@shealevy.com>
+From: Richard Weinberger <richard@nod.at>
+Subject: Re: [RFC PATCH 25/35] hostfs: rename do_rmdir() to hostfs_do_rmdir()
+Date: Sun, 11 Mar 2018 12:19:21 +0100
+Message-ID: <3779476.NRYLIFElLR@blindfold>
+In-Reply-To: <20180311105557.20807-26-linux@dominikbrodowski.net>
+References: <20180311105557.20807-1-linux@dominikbrodowski.net> <20180311105557.20807-26-linux@dominikbrodowski.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-Cc: Shea Levy <shea@shealevy.com>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: linux-kernel@vger.kernel.org, luto@kernel.org, torvalds@linux-foundation.org, mingo@kernel.org, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Signed-off-by: Shea Levy <shea@shealevy.com>
----
- arch/sh/Kconfig   | 1 +
- arch/sh/mm/init.c | 7 -------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+Am Sonntag, 11. M=EF=BF=BDrz 2018, 11:55:47 CET schrieb Dominik Brodowski:
+> do_rmdir() is used in the VFS layer at fs/namei.c, so use a different
+> name in hostfs.
+>=20
+> CC: Jeff Dike <jdike@addtoit.com>
+> CC: Richard Weinberger <richard@nod.at>
+> CC: user-mode-linux-devel@lists.sourceforge.net
+> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 97fe29316476..b6f80dad2152 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -50,6 +50,7 @@ config SUPERH
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_NMI
-+	select INITRAMFS_GENERIC_UNLOAD
- 	help
- 	  The SuperH is a RISC processor targeted for use in embedded systems
- 	  and consumer electronics; it was also used in the Sega Dreamcast
-diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-index ce0bbaa7e404..7451459d0725 100644
---- a/arch/sh/mm/init.c
-+++ b/arch/sh/mm/init.c
-@@ -477,13 +477,6 @@ void free_initmem(void)
- 	free_initmem_default(-1);
- }
- 
--#ifdef CONFIG_BLK_DEV_INITRD
--void free_initrd_mem(unsigned long start, unsigned long end)
--{
--	free_reserved_area((void *)start, (void *)end, -1, "initrd");
--}
--#endif
--
- #ifdef CONFIG_MEMORY_HOTPLUG
- int arch_add_memory(int nid, u64 start, u64 size, struct vmem_altmap *altmap,
- 		bool want_memblock)
--- 
-2.16.2
+Acked-by: Richard Weinberger <richard@nod.at>
 
+Thanks,
+//richard
 
