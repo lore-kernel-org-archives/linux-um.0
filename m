@@ -1,52 +1,45 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 08/16] m32r: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sat, 24 Mar 2018 13:44:50 -0400
-Message-Id: <20180324174458.26423-9-shea@shealevy.com>
-In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
-References: <20180324174458.26423-1-shea@shealevy.com>
+Subject: [PATCH 4/9] um/drivers/vector_user: Delete an unnecessary check
+ before kfree() in user_init_socket_fds()
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+References: <e21083ff-0ba7-42ad-e3f0-d84da9c93208@users.sourceforge.net>
+Message-ID: <16c0e64e-01f1-4275-51cc-b56401f6f91d@users.sourceforge.net>
+Date: Sun, 11 Mar 2018 16:19:08 +0100
+MIME-Version: 1.0
+In-Reply-To: <e21083ff-0ba7-42ad-e3f0-d84da9c93208@users.sourceforge.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-Cc: Shea Levy <shea@shealevy.com>
+To: user-mode-linux-devel@lists.sourceforge.net, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-user@lists.sourceforge.net, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Signed-off-by: Shea Levy <shea@shealevy.com>
----
- arch/m32r/Kconfig   |  1 +
- arch/m32r/mm/init.c | 11 -----------
- 2 files changed, 1 insertion(+), 11 deletions(-)
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 11 Mar 2018 14:00:09 +0100
 
-diff --git a/arch/m32r/Kconfig b/arch/m32r/Kconfig
-index dd84ee194579..010a2b999181 100644
---- a/arch/m32r/Kconfig
-+++ b/arch/m32r/Kconfig
-@@ -21,6 +21,7 @@ config M32R
- 	select CPU_NO_EFFICIENT_FFS
- 	select DMA_DIRECT_OPS
- 	select ARCH_NO_COHERENT_DMA_MMAP if !MMU
-+	select INITRAMFS_GENERIC_UNLOAD
+The kfree() function tests whether its argument is NULL and then
+returns immediately. Thus the test around the call is not needed.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ arch/um/drivers/vector_user.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index 9cc4651990e3..e831bd85cad4 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -422,8 +422,7 @@ static struct vector_fds *user_init_socket_fds(struct arglist *ifspec, int id)
+ 	if (fd >= 0)
+ 		os_close_file(fd);
+ 	if (result != NULL) {
+-		if (result->remote_addr != NULL)
+-			kfree(result->remote_addr);
++		kfree(result->remote_addr);
+ 		kfree(result);
+ 	}
  
- config SBUS
- 	bool
-diff --git a/arch/m32r/mm/init.c b/arch/m32r/mm/init.c
-index 93abc8c3a46e..e2b5f09209ee 100644
---- a/arch/m32r/mm/init.c
-+++ b/arch/m32r/mm/init.c
-@@ -139,14 +139,3 @@ void free_initmem(void)
- {
- 	free_initmem_default(-1);
- }
--
--#ifdef CONFIG_BLK_DEV_INITRD
--/*======================================================================*
-- * free_initrd_mem() :
-- * orig : arch/sh/mm/init.c
-- *======================================================================*/
--void free_initrd_mem(unsigned long start, unsigned long end)
--{
--	free_reserved_area((void *)start, (void *)end, -1, "initrd");
--}
--#endif
 -- 
 2.16.2
 
