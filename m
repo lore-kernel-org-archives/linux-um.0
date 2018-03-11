@@ -1,51 +1,46 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 11/16] nios2: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sat, 24 Mar 2018 13:44:53 -0400
-Message-Id: <20180324174458.26423-12-shea@shealevy.com>
-In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
-References: <20180324174458.26423-1-shea@shealevy.com>
+Subject: [PATCH 9/9] um/drivers/vector_user: Delete an unnecessary variable
+ initialisation in user_init_tap_fds()
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+References: <e21083ff-0ba7-42ad-e3f0-d84da9c93208@users.sourceforge.net>
+Message-ID: <ed22974c-5c72-9a56-f67a-1ffab61f0646@users.sourceforge.net>
+Date: Sun, 11 Mar 2018 16:24:58 +0100
+MIME-Version: 1.0
+In-Reply-To: <e21083ff-0ba7-42ad-e3f0-d84da9c93208@users.sourceforge.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-Cc: Shea Levy <shea@shealevy.com>
+To: user-mode-linux-devel@lists.sourceforge.net, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-user@lists.sourceforge.net, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Signed-off-by: Shea Levy <shea@shealevy.com>
----
- arch/nios2/Kconfig   | 1 +
- arch/nios2/mm/init.c | 7 -------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 11 Mar 2018 15:50:29 +0100
 
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index 3d4ec88f1db1..d3b72d5c8967 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -19,6 +19,7 @@ config NIOS2
- 	select SPARSE_IRQ
- 	select USB_ARCH_HAS_HCD if USB_SUPPORT
- 	select CPU_NO_EFFICIENT_FFS
-+	select INITRAMFS_GENERIC_UNLOAD
- 
- config GENERIC_CSUM
- 	def_bool y
-diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index c92fe4234009..3df75ff8c768 100644
---- a/arch/nios2/mm/init.c
-+++ b/arch/nios2/mm/init.c
-@@ -82,13 +82,6 @@ void __init mmu_init(void)
- 	flush_tlb_all();
- }
- 
--#ifdef CONFIG_BLK_DEV_INITRD
--void __init free_initrd_mem(unsigned long start, unsigned long end)
--{
--	free_reserved_area((void *)start, (void *)end, -1, "initrd");
--}
--#endif
--
- void __ref free_initmem(void)
+The local variable "fd" will eventually be set to an appropriate value
+a bit later. Thus omit the explicit initialisation at the beginning.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ arch/um/drivers/vector_user.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index bd625034a0f0..3bd510eded58 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -119,9 +119,8 @@ struct arglist *uml_parse_vector_ifspec(char *arg)
+ static struct vector_fds *user_init_tap_fds(struct arglist *ifspec)
  {
- 	free_initmem_default(-1);
+ 	struct ifreq ifr;
+-	int fd = -1;
+ 	struct sockaddr_ll sock;
+-	int err = -ENOMEM, offload;
++	int err = -ENOMEM, fd, offload;
+ 	char *iface;
+ 	struct vector_fds *result;
+ 
 -- 
 2.16.2
 
