@@ -1,48 +1,67 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 09/16] m68k: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sat, 24 Mar 2018 13:44:51 -0400
-Message-Id: <20180324174458.26423-10-shea@shealevy.com>
-In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
-References: <20180324174458.26423-1-shea@shealevy.com>
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: [PATCH v2 25/36] hostfs: rename do_rmdir() to hostfs_do_rmdir()
+Date: Thu, 15 Mar 2018 20:05:18 +0100
+Message-Id: <20180315190529.20943-26-linux@dominikbrodowski.net>
+In-Reply-To: <20180315190529.20943-1-linux@dominikbrodowski.net>
+References: <20180315190529.20943-1-linux@dominikbrodowski.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-Cc: Shea Levy <shea@shealevy.com>
+To: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk
+Cc: luto@kernel.org, mingo@kernel.org, akpm@linux-foundation.org, arnd@arndb.de, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Signed-off-by: Shea Levy <shea@shealevy.com>
----
- arch/m68k/Kconfig   | 1 +
- arch/m68k/mm/init.c | 7 -------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+do_rmdir() is used in the VFS layer at fs/namei.c, so use a different
+name in hostfs.
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 785612b576f7..47913a68529e 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -24,6 +24,7 @@ config M68K
- 	select MODULES_USE_ELF_RELA
- 	select OLD_SIGSUSPEND3
- 	select OLD_SIGACTION
-+	select INITRAMFS_GENERIC_UNLOAD
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Acked-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+---
+ fs/hostfs/hostfs.h      | 2 +-
+ fs/hostfs/hostfs_kern.c | 2 +-
+ fs/hostfs/hostfs_user.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
+index ffaec2e7526c..cb8374af08a6 100644
+--- a/fs/hostfs/hostfs.h
++++ b/fs/hostfs/hostfs.h
+@@ -84,7 +84,7 @@ extern int set_attr(const char *file, struct hostfs_iattr *attrs, int fd);
+ extern int make_symlink(const char *from, const char *to);
+ extern int unlink_file(const char *file);
+ extern int do_mkdir(const char *file, int mode);
+-extern int do_rmdir(const char *file);
++extern int hostfs_do_rmdir(const char *file);
+ extern int do_mknod(const char *file, int mode, unsigned int major,
+ 		    unsigned int minor);
+ extern int link_file(const char *from, const char *to);
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index c148e7f4f451..3cd85eb5bbb1 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -706,7 +706,7 @@ static int hostfs_rmdir(struct inode *ino, struct dentry *dentry)
  
- config CPU_BIG_ENDIAN
- 	def_bool y
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index e85acd131fa8..e20bef09258c 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -172,10 +172,3 @@ void __init mem_init(void)
- 	mem_init_print_info(NULL);
- 	print_memmap();
+ 	if ((file = dentry_name(dentry)) == NULL)
+ 		return -ENOMEM;
+-	err = do_rmdir(file);
++	err = hostfs_do_rmdir(file);
+ 	__putname(file);
+ 	return err;
  }
--
--#ifdef CONFIG_BLK_DEV_INITRD
--void free_initrd_mem(unsigned long start, unsigned long end)
--{
--	free_reserved_area((void *)start, (void *)end, -1, "initrd");
--}
--#endif
+diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
+index 9c1e0f019880..5ecc4706172b 100644
+--- a/fs/hostfs/hostfs_user.c
++++ b/fs/hostfs/hostfs_user.c
+@@ -304,7 +304,7 @@ int do_mkdir(const char *file, int mode)
+ 	return 0;
+ }
+ 
+-int do_rmdir(const char *file)
++int hostfs_do_rmdir(const char *file)
+ {
+ 	int err;
+ 
 -- 
 2.16.2
 
