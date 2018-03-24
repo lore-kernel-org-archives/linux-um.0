@@ -1,11 +1,10 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH v2 07/16] h8300: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sun, 25 Mar 2018 18:18:44 -0400
-Message-Id: <20180325221853.10839-8-shea@shealevy.com>
-In-Reply-To: <20180325221853.10839-1-shea@shealevy.com>
+Subject: [PATCH 07/16] h8300: Use INITRAMFS_GENERIC_UNLOAD
+Date: Sat, 24 Mar 2018 13:44:49 -0400
+Message-Id: <20180324174458.26423-8-shea@shealevy.com>
+In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
 References: <20180324174458.26423-1-shea@shealevy.com>
- <20180325221853.10839-1-shea@shealevy.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 Cc: Shea Levy <shea@shealevy.com>
