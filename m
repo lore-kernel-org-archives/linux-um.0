@@ -1,68 +1,53 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: [PATCH 073/109] hostfs: rename do_rmdir() to hostfs_do_rmdir()
-Date: Thu, 29 Mar 2018 13:23:50 +0200
-Message-Id: <20180329112426.23043-74-linux@dominikbrodowski.net>
-In-Reply-To: <20180329112426.23043-1-linux@dominikbrodowski.net>
-References: <20180329112426.23043-1-linux@dominikbrodowski.net>
+From: Shea Levy <shea@shealevy.com>
+Subject: [PATCH v2 05/16] c6x: Use INITRAMFS_GENERIC_UNLOAD
+Date: Sun, 25 Mar 2018 18:18:42 -0400
+Message-Id: <20180325221853.10839-6-shea@shealevy.com>
+In-Reply-To: <20180325221853.10839-1-shea@shealevy.com>
+References: <20180324174458.26423-1-shea@shealevy.com>
+ <20180325221853.10839-1-shea@shealevy.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: viro@ZenIV.linux.org.uk, torvalds@linux-foundation.org, arnd@arndb.de, linux-arch@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Shea Levy <shea@shealevy.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-do_rmdir() is used in the VFS layer at fs/namei.c, so use a different
-name in hostfs.
-
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Acked-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Signed-off-by: Shea Levy <shea@shealevy.com>
 ---
- fs/hostfs/hostfs.h      | 2 +-
- fs/hostfs/hostfs_kern.c | 2 +-
- fs/hostfs/hostfs_user.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/c6x/Kconfig   | 1 +
+ arch/c6x/mm/init.c | 7 -------
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
-index ffaec2e7526c..cb8374af08a6 100644
---- a/fs/hostfs/hostfs.h
-+++ b/fs/hostfs/hostfs.h
-@@ -84,7 +84,7 @@ extern int set_attr(const char *file, struct hostfs_iattr *attrs, int fd);
- extern int make_symlink(const char *from, const char *to);
- extern int unlink_file(const char *file);
- extern int do_mkdir(const char *file, int mode);
--extern int do_rmdir(const char *file);
-+extern int hostfs_do_rmdir(const char *file);
- extern int do_mknod(const char *file, int mode, unsigned int major,
- 		    unsigned int minor);
- extern int link_file(const char *from, const char *to);
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index c148e7f4f451..3cd85eb5bbb1 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -706,7 +706,7 @@ static int hostfs_rmdir(struct inode *ino, struct dentry *dentry)
+diff --git a/arch/c6x/Kconfig b/arch/c6x/Kconfig
+index c6b4dd1418b4..857f95f9a6a4 100644
+--- a/arch/c6x/Kconfig
++++ b/arch/c6x/Kconfig
+@@ -19,6 +19,7 @@ config C6X
+ 	select GENERIC_CLOCKEVENTS
+ 	select MODULES_USE_ELF_RELA
+ 	select ARCH_NO_COHERENT_DMA_MMAP
++	select INITRAMFS_GENERIC_UNLOAD
  
- 	if ((file = dentry_name(dentry)) == NULL)
- 		return -ENOMEM;
--	err = do_rmdir(file);
-+	err = hostfs_do_rmdir(file);
- 	__putname(file);
- 	return err;
- }
-diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
-index 9c1e0f019880..5ecc4706172b 100644
---- a/fs/hostfs/hostfs_user.c
-+++ b/fs/hostfs/hostfs_user.c
-@@ -304,7 +304,7 @@ int do_mkdir(const char *file, int mode)
- 	return 0;
+ config MMU
+ 	def_bool n
+diff --git a/arch/c6x/mm/init.c b/arch/c6x/mm/init.c
+index 4cc72b0d1c1d..a11cb657182a 100644
+--- a/arch/c6x/mm/init.c
++++ b/arch/c6x/mm/init.c
+@@ -66,13 +66,6 @@ void __init mem_init(void)
+ 	mem_init_print_info(NULL);
  }
  
--int do_rmdir(const char *file)
-+int hostfs_do_rmdir(const char *file)
+-#ifdef CONFIG_BLK_DEV_INITRD
+-void __init free_initrd_mem(unsigned long start, unsigned long end)
+-{
+-	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+-}
+-#endif
+-
+ void __init free_initmem(void)
  {
- 	int err;
- 
+ 	free_initmem_default(-1);
 -- 
-2.16.3
+2.16.2
 
 
