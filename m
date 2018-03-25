@@ -1,10 +1,11 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 07/16] h8300: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sat, 24 Mar 2018 13:44:49 -0400
-Message-Id: <20180324174458.26423-8-shea@shealevy.com>
-In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
+Subject: [PATCH v2 03/16] alpha: Use INITRAMFS_GENERIC_UNLOAD
+Date: Sun, 25 Mar 2018 18:18:40 -0400
+Message-Id: <20180325221853.10839-4-shea@shealevy.com>
+In-Reply-To: <20180325221853.10839-1-shea@shealevy.com>
 References: <20180324174458.26423-1-shea@shealevy.com>
+ <20180325221853.10839-1-shea@shealevy.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 Cc: Shea Levy <shea@shealevy.com>
@@ -12,40 +13,38 @@ List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 Signed-off-by: Shea Levy <shea@shealevy.com>
 ---
- arch/h8300/Kconfig   | 1 +
- arch/h8300/mm/init.c | 7 -------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ arch/alpha/Kconfig   | 1 +
+ arch/alpha/mm/init.c | 8 --------
+ 2 files changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index 091d6d04b5e5..58c9b6b1df16 100644
---- a/arch/h8300/Kconfig
-+++ b/arch/h8300/Kconfig
-@@ -24,6 +24,7 @@ config H8300
- 	select HAVE_ARCH_HASH
- 	select CPU_NO_EFFICIENT_FFS
- 	select DMA_DIRECT_OPS
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index e96adcbcab41..238d743ae8f2 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -27,6 +27,7 @@ config ALPHA
+ 	select ODD_RT_SIGACTION
+ 	select OLD_SIGSUSPEND
+ 	select CPU_NO_EFFICIENT_FFS if !ALPHA_EV67
 +	select INITRAMFS_GENERIC_UNLOAD
- 
- config CPU_BIG_ENDIAN
- 	def_bool y
-diff --git a/arch/h8300/mm/init.c b/arch/h8300/mm/init.c
-index 015287ac8ce8..37574332b202 100644
---- a/arch/h8300/mm/init.c
-+++ b/arch/h8300/mm/init.c
-@@ -102,13 +102,6 @@ void __init mem_init(void)
+ 	help
+ 	  The Alpha is a 64-bit general-purpose processor designed and
+ 	  marketed by the Digital Equipment Corporation of blessed memory,
+diff --git a/arch/alpha/mm/init.c b/arch/alpha/mm/init.c
+index 9d74520298ab..55f7c8efa962 100644
+--- a/arch/alpha/mm/init.c
++++ b/arch/alpha/mm/init.c
+@@ -291,11 +291,3 @@ free_initmem(void)
+ {
+ 	free_initmem_default(-1);
  }
- 
- 
+-
 -#ifdef CONFIG_BLK_DEV_INITRD
--void free_initrd_mem(unsigned long start, unsigned long end)
+-void
+-free_initrd_mem(unsigned long start, unsigned long end)
 -{
 -	free_reserved_area((void *)start, (void *)end, -1, "initrd");
 -}
 -#endif
--
- void
- free_initmem(void)
- {
 -- 
 2.16.2
 
