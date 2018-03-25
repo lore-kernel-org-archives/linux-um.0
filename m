@@ -1,10 +1,11 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 01/16] initrd: Add generic code path for common initrd unloading logic.
-Date: Sat, 24 Mar 2018 13:44:43 -0400
-Message-Id: <20180324174458.26423-2-shea@shealevy.com>
-In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
+Subject: [PATCH v2 07/16] h8300: Use INITRAMFS_GENERIC_UNLOAD
+Date: Sun, 25 Mar 2018 18:18:44 -0400
+Message-Id: <20180325221853.10839-8-shea@shealevy.com>
+In-Reply-To: <20180325221853.10839-1-shea@shealevy.com>
 References: <20180324174458.26423-1-shea@shealevy.com>
+ <20180325221853.10839-1-shea@shealevy.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
 Cc: Shea Levy <shea@shealevy.com>
@@ -12,40 +13,40 @@ List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
 Signed-off-by: Shea Levy <shea@shealevy.com>
 ---
- init/initramfs.c | 7 +++++++
- usr/Kconfig      | 4 ++++
- 2 files changed, 11 insertions(+)
+ arch/h8300/Kconfig   | 1 +
+ arch/h8300/mm/init.c | 7 -------
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/init/initramfs.c b/init/initramfs.c
-index 7e99a0038942..de5ce873eb5a 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -526,6 +526,13 @@ extern unsigned long __initramfs_size;
- #include <linux/initrd.h>
- #include <linux/kexec.h>
+diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
+index 091d6d04b5e5..58c9b6b1df16 100644
+--- a/arch/h8300/Kconfig
++++ b/arch/h8300/Kconfig
+@@ -24,6 +24,7 @@ config H8300
+ 	select HAVE_ARCH_HASH
+ 	select CPU_NO_EFFICIENT_FFS
+ 	select DMA_DIRECT_OPS
++	select INITRAMFS_GENERIC_UNLOAD
  
-+#ifdef CONFIG_INITRAMFS_GENERIC_UNLOAD
-+void free_initrd_mem(unsigned long start, unsigned long end)
-+{
-+       free_reserved_area((void *)start, (void *)end, -1, "initrd");
-+}
-+#endif
-+
- static void __init free_initrd(void)
+ config CPU_BIG_ENDIAN
+ 	def_bool y
+diff --git a/arch/h8300/mm/init.c b/arch/h8300/mm/init.c
+index 015287ac8ce8..37574332b202 100644
+--- a/arch/h8300/mm/init.c
++++ b/arch/h8300/mm/init.c
+@@ -102,13 +102,6 @@ void __init mem_init(void)
+ }
+ 
+ 
+-#ifdef CONFIG_BLK_DEV_INITRD
+-void free_initrd_mem(unsigned long start, unsigned long end)
+-{
+-	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+-}
+-#endif
+-
+ void
+ free_initmem(void)
  {
- #ifdef CONFIG_KEXEC_CORE
-diff --git a/usr/Kconfig b/usr/Kconfig
-index 43658b8a975e..fd79d4d6fa26 100644
---- a/usr/Kconfig
-+++ b/usr/Kconfig
-@@ -233,3 +233,7 @@ config INITRAMFS_COMPRESSION
- 	default ".lzma" if RD_LZMA
- 	default ".bz2"  if RD_BZIP2
- 	default ""
-+
-+# Arches can select this for a generic initrd unloading codepath
-+config INITRAMFS_GENERIC_UNLOAD
-+	bool
 -- 
 2.16.2
 
