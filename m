@@ -1,27 +1,53 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Date: Wed, 28 Mar 2018 05:04:40 -0700
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 01/16] initrd: Add generic code path for common initrd
- unloading logic.
-Message-ID: <20180328120440.GB1838@infradead.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Shea Levy <shea@shealevy.com>
+Subject: [PATCH v2 01/16] initrd: Add generic code path for common initrd unloading logic.
+Date: Sun, 25 Mar 2018 18:18:38 -0400
+Message-Id: <20180325221853.10839-2-shea@shealevy.com>
+In-Reply-To: <20180325221853.10839-1-shea@shealevy.com>
 References: <20180324174458.26423-1-shea@shealevy.com>
- <20180324174458.26423-2-shea@shealevy.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180324174458.26423-2-shea@shealevy.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Shea Levy <shea@shealevy.com>
-Cc: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+ <20180325221853.10839-1-shea@shealevy.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Shea Levy <shea@shealevy.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-> +#ifdef CONFIG_INITRAMFS_GENERIC_UNLOAD
-> +void free_initrd_mem(unsigned long start, unsigned long end)
-> +{
-> +       free_reserved_area((void *)start, (void *)end, -1, "initrd");
-> +}
-> +#endif
+Signed-off-by: Shea Levy <shea@shealevy.com>
+---
+ init/initramfs.c | 7 +++++++
+ usr/Kconfig      | 4 ++++
+ 2 files changed, 11 insertions(+)
 
-Given how trivial this is and how many architectures can use it I'd
-reverse the polarity and add a CONFIG_HAVE_ARCH_FREE_INITRD_MEM
-instead.
+diff --git a/init/initramfs.c b/init/initramfs.c
+index 7e99a0038942..5f2e3dba4822 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -526,6 +526,13 @@ extern unsigned long __initramfs_size;
+ #include <linux/initrd.h>
+ #include <linux/kexec.h>
+ 
++#ifdef CONFIG_INITRAMFS_GENERIC_UNLOAD
++void __init free_initrd_mem(unsigned long start, unsigned long end)
++{
++       free_reserved_area((void *)start, (void *)end, -1, "initrd");
++}
++#endif
++
+ static void __init free_initrd(void)
+ {
+ #ifdef CONFIG_KEXEC_CORE
+diff --git a/usr/Kconfig b/usr/Kconfig
+index 43658b8a975e..fd79d4d6fa26 100644
+--- a/usr/Kconfig
++++ b/usr/Kconfig
+@@ -233,3 +233,7 @@ config INITRAMFS_COMPRESSION
+ 	default ".lzma" if RD_LZMA
+ 	default ".bz2"  if RD_BZIP2
+ 	default ""
++
++# Arches can select this for a generic initrd unloading codepath
++config INITRAMFS_GENERIC_UNLOAD
++	bool
+-- 
+2.16.2
+
+
