@@ -1,57 +1,52 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: [PATCH 5/9] um/drivers/vector_user: Delete two unnecessary checks
- before freeaddrinfo() in user_init_socket_fds()
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-References: <e21083ff-0ba7-42ad-e3f0-d84da9c93208@users.sourceforge.net>
-Message-ID: <cccfbd35-ddea-dd71-2538-7230d5f2b543@users.sourceforge.net>
-Date: Sun, 11 Mar 2018 16:20:24 +0100
-MIME-Version: 1.0
-In-Reply-To: <e21083ff-0ba7-42ad-e3f0-d84da9c93208@users.sourceforge.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+From: Shea Levy <shea@shealevy.com>
+Subject: [PATCH v2 16/16] um: Use INITRAMFS_GENERIC_UNLOAD
+Date: Sun, 25 Mar 2018 18:18:53 -0400
+Message-Id: <20180325221853.10839-17-shea@shealevy.com>
+In-Reply-To: <20180325221853.10839-1-shea@shealevy.com>
+References: <20180324174458.26423-1-shea@shealevy.com>
+ <20180325221853.10839-1-shea@shealevy.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: user-mode-linux-devel@lists.sourceforge.net, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-user@lists.sourceforge.net, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
+Cc: Shea Levy <shea@shealevy.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 11 Mar 2018 14:20:46 +0100
-
-The implementation returns from this function if a null pointer
-was detected in the local variable "gairesult". Thus the check
-before two calls of the function "freeaddrinfo" is not needed.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Shea Levy <shea@shealevy.com>
 ---
- arch/um/drivers/vector_user.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ arch/um/Kconfig.common | 1 +
+ arch/um/kernel/mem.c   | 7 -------
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index e831bd85cad4..2dee1e183387 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -384,9 +384,7 @@ static struct vector_fds *user_init_socket_fds(struct arglist *ifspec, int id)
- 		goto cleanup;
- 	}
+diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+index c68add8df3ae..1cb8a023938b 100644
+--- a/arch/um/Kconfig.common
++++ b/arch/um/Kconfig.common
+@@ -13,6 +13,7 @@ config UML
+ 	select GENERIC_CLOCKEVENTS
+ 	select HAVE_GCC_PLUGINS
+ 	select TTY # Needed for line.c
++	select INITRAMFS_GENERIC_UNLOAD
  
--	if (gairesult != NULL)
--		freeaddrinfo(gairesult);
+ config MMU
+ 	bool
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 3c0e470ea646..2d26eec92126 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -170,13 +170,6 @@ void free_initmem(void)
+ {
+ }
+ 
+-#ifdef CONFIG_BLK_DEV_INITRD
+-void free_initrd_mem(unsigned long start, unsigned long end)
+-{
+-	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+-}
+-#endif
 -
-+	freeaddrinfo(gairesult);
- 	gairesult = NULL;
+ /* Allocate and free page tables. */
  
- 	gairet = getaddrinfo(dst, dstport, &dsthints, &gairesult);
-@@ -416,8 +414,7 @@ static struct vector_fds *user_init_socket_fds(struct arglist *ifspec, int id)
- 	freeaddrinfo(gairesult);
- 	return result;
- cleanup:
--	if (gairesult != NULL)
--		freeaddrinfo(gairesult);
-+	freeaddrinfo(gairesult);
- 
- 	if (fd >= 0)
- 		os_close_file(fd);
+ pgd_t *pgd_alloc(struct mm_struct *mm)
 -- 
 2.16.2
 
