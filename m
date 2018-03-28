@@ -1,46 +1,42 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: [PATCH 4/9] um/drivers/vector_user: Delete an unnecessary check
- before kfree() in user_init_socket_fds()
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-References: <e21083ff-0ba7-42ad-e3f0-d84da9c93208@users.sourceforge.net>
-Message-ID: <16c0e64e-01f1-4275-51cc-b56401f6f91d@users.sourceforge.net>
-Date: Sun, 11 Mar 2018 16:19:08 +0100
 MIME-Version: 1.0
-In-Reply-To: <e21083ff-0ba7-42ad-e3f0-d84da9c93208@users.sourceforge.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: user-mode-linux-devel@lists.sourceforge.net, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-user@lists.sourceforge.net, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20180328120440.GB1838@infradead.org>
+References: <20180324174458.26423-1-shea@shealevy.com>
+	<20180324174458.26423-2-shea@shealevy.com>
+	<20180328120440.GB1838@infradead.org>
+Date: Wed, 28 Mar 2018 14:23:47 +0200
+Message-ID: <CAMuHMdXwEL-gLxiVJwuxwRtkyhR=vEm3GP4dzJMpc1nS8AKxKQ@mail.gmail.com>
+Subject: Re: [PATCH 01/16] initrd: Add generic code path for common initrd
+ unloading logic.
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Shea Levy <shea@shealevy.com>, alpha <linux-alpha@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, linux-m68k <linux-m68k@lists.linux-m68k.org>, nios2-dev@lists.rocketboards.org, Openrisc <openrisc@lists.librecores.org>, Parisc List <linux-parisc@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, Linux-sh list <linux-sh@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 11 Mar 2018 14:00:09 +0100
+On Wed, Mar 28, 2018 at 2:04 PM, Christoph Hellwig <hch@infradead.org> wrote:
+>> +#ifdef CONFIG_INITRAMFS_GENERIC_UNLOAD
+>> +void free_initrd_mem(unsigned long start, unsigned long end)
+>> +{
+>> +       free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>> +}
+>> +#endif
+>
+> Given how trivial this is and how many architectures can use it I'd
+> reverse the polarity and add a CONFIG_HAVE_ARCH_FREE_INITRD_MEM
+> instead.
 
-The kfree() function tests whether its argument is NULL and then
-returns immediately. Thus the test around the call is not needed.
+And while adding "special" functionality to the generic version, more and more
+users of CONFIG_HAVE_ARCH_FREE_INITRD_MEM will be removed.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- arch/um/drivers/vector_user.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
-index 9cc4651990e3..e831bd85cad4 100644
---- a/arch/um/drivers/vector_user.c
-+++ b/arch/um/drivers/vector_user.c
-@@ -422,8 +422,7 @@ static struct vector_fds *user_init_socket_fds(struct arglist *ifspec, int id)
- 	if (fd >= 0)
- 		os_close_file(fd);
- 	if (result != NULL) {
--		if (result->remote_addr != NULL)
--			kfree(result->remote_addr);
-+		kfree(result->remote_addr);
- 		kfree(result);
- 	}
- 
+                        Geert
+
 -- 
-2.16.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
