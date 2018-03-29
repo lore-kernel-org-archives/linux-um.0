@@ -1,68 +1,53 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Thu, 29 Mar 2018 16:55:26 +0200
 From: Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: [PATCH v2 25/36] hostfs: rename do_rmdir() to hostfs_do_rmdir()
-Date: Thu, 15 Mar 2018 20:05:18 +0100
-Message-Id: <20180315190529.20943-26-linux@dominikbrodowski.net>
-In-Reply-To: <20180315190529.20943-1-linux@dominikbrodowski.net>
-References: <20180315190529.20943-1-linux@dominikbrodowski.net>
+Subject: Re: [PATCH 000/109] remove in-kernel calls to syscalls
+Message-ID: <20180329145526.GA1414@isilmar-4.linta.de>
+References: <20180329112426.23043-1-linux@dominikbrodowski.net>
+ <20180329142027.GA24860@bombadil.infradead.org>
+ <20180329144209.GA25559@isilmar-4.linta.de>
+ <07438b1e94ff42a184adb7134a680069@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <07438b1e94ff42a184adb7134a680069@AcuMS.aculab.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk
-Cc: luto@kernel.org, mingo@kernel.org, akpm@linux-foundation.org, arnd@arndb.de, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
+To: David Laight <David.Laight@ACULAB.COM>
+Cc: Matthew Wilcox <willy@infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "viro@ZenIV.linux.org.uk" <viro@ZenIV.linux.org.uk>, "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>, "arnd@arndb.de" <arnd@arndb.de>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "hmclauchlan@fb.com" <hmclauchlan@fb.com>, "tautschn@amazon.co.uk" <tautschn@amazon.co.uk>, Amir Goldstein <amir73il@gmail.com>, Andi Kleen <ak@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, Darren Hart <dvhart@infradead.org>, "David S . Miller" <davem@davemloft.net>, "Eric W . Biederman" <ebiederm@xmission.com>, "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>, Jaswinder Singh <jaswinder@infradead.org>, Jeff Dike <jdike@addtoit.com>, Jiri Slaby <jslaby@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "Luis R . Rodriguez" <mcgrof@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "x86@kernel.org" <x86@kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-do_rmdir() is used in the VFS layer at fs/namei.c, so use a different
-name in hostfs.
+On Thu, Mar 29, 2018 at 02:46:44PM +0000, David Laight wrote:
+> From: Dominik Brodowski
+> > Sent: 29 March 2018 15:42
+> > On Thu, Mar 29, 2018 at 07:20:27AM -0700, Matthew Wilcox wrote:
+> > > On Thu, Mar 29, 2018 at 01:22:37PM +0200, Dominik Brodowski wrote:
+> > > > At least on 64-bit x86, it will likely be a hard requirement from v4.17
+> > > > onwards to not call system call functions in the kernel: It is better to
+> > > > use use a different calling convention for system calls there, where
+> > > > struct pt_regs is decoded on-the-fly in a syscall wrapper which then hands
+> > > > processing over to the actual syscall function. This means that only those
+> > > > parameters which are actually needed for a specific syscall are passed on
+> > > > during syscall entry, instead of filling in six CPU registers with random
+> > > > user space content all the time (which may cause serious trouble down the
+> > > > call chain).[*]
+> > >
+> > > How do we stop new ones from springing up?  Some kind of linker trick
+> > > like was used to, er, "dissuade" people from using gets()?
+> > 
+> > Once the patches which modify the syscall calling convention are merged,
+> > it won't compile on 64-bit x86, but bark loudly. That should frighten anyone.
+> > Meow.
+> 
+> Should be pretty easy to ensure the prototypes aren't in any normal header.
 
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Acked-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
----
- fs/hostfs/hostfs.h      | 2 +-
- fs/hostfs/hostfs_kern.c | 2 +-
- fs/hostfs/hostfs_user.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+That's exactly why the compile will fail.
 
-diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
-index ffaec2e7526c..cb8374af08a6 100644
---- a/fs/hostfs/hostfs.h
-+++ b/fs/hostfs/hostfs.h
-@@ -84,7 +84,7 @@ extern int set_attr(const char *file, struct hostfs_iattr *attrs, int fd);
- extern int make_symlink(const char *from, const char *to);
- extern int unlink_file(const char *file);
- extern int do_mkdir(const char *file, int mode);
--extern int do_rmdir(const char *file);
-+extern int hostfs_do_rmdir(const char *file);
- extern int do_mknod(const char *file, int mode, unsigned int major,
- 		    unsigned int minor);
- extern int link_file(const char *from, const char *to);
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index c148e7f4f451..3cd85eb5bbb1 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -706,7 +706,7 @@ static int hostfs_rmdir(struct inode *ino, struct dentry *dentry)
- 
- 	if ((file = dentry_name(dentry)) == NULL)
- 		return -ENOMEM;
--	err = do_rmdir(file);
-+	err = hostfs_do_rmdir(file);
- 	__putname(file);
- 	return err;
- }
-diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
-index 9c1e0f019880..5ecc4706172b 100644
---- a/fs/hostfs/hostfs_user.c
-+++ b/fs/hostfs/hostfs_user.c
-@@ -304,7 +304,7 @@ int do_mkdir(const char *file, int mode)
- 	return 0;
- }
- 
--int do_rmdir(const char *file)
-+int hostfs_do_rmdir(const char *file)
- {
- 	int err;
- 
--- 
-2.16.2
+> Renaming the global symbols (to not match the function name) will make it
+> much harder to call them as well.
 
+That still depends on the exact design of the patchset, which is still under
+review.
+
+Thanks,
+	Dominik
 
