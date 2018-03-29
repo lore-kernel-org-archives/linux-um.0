@@ -1,52 +1,68 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 12/16] openrisc: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sat, 24 Mar 2018 13:44:54 -0400
-Message-Id: <20180324174458.26423-13-shea@shealevy.com>
-In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
-References: <20180324174458.26423-1-shea@shealevy.com>
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: [PATCH 073/109] hostfs: rename do_rmdir() to hostfs_do_rmdir()
+Date: Thu, 29 Mar 2018 13:23:50 +0200
+Message-Id: <20180329112426.23043-74-linux@dominikbrodowski.net>
+In-Reply-To: <20180329112426.23043-1-linux@dominikbrodowski.net>
+References: <20180329112426.23043-1-linux@dominikbrodowski.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-Cc: Shea Levy <shea@shealevy.com>
+To: linux-kernel@vger.kernel.org
+Cc: viro@ZenIV.linux.org.uk, torvalds@linux-foundation.org, arnd@arndb.de, linux-arch@vger.kernel.org, Jeff Dike <jdike@addtoit.com>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Signed-off-by: Shea Levy <shea@shealevy.com>
----
- arch/openrisc/Kconfig   | 1 +
- arch/openrisc/mm/init.c | 7 -------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+do_rmdir() is used in the VFS layer at fs/namei.c, so use a different
+name in hostfs.
 
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index dfb6a79ba7ff..0f8d2132baa5 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -36,6 +36,7 @@ config OPENRISC
- 	select OMPIC if SMP
- 	select ARCH_WANT_FRAME_POINTERS
- 	select GENERIC_IRQ_MULTI_HANDLER
-+	select INITRAMFS_GENERIC_UNLOAD
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Acked-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+---
+ fs/hostfs/hostfs.h      | 2 +-
+ fs/hostfs/hostfs_kern.c | 2 +-
+ fs/hostfs/hostfs_user.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
+index ffaec2e7526c..cb8374af08a6 100644
+--- a/fs/hostfs/hostfs.h
++++ b/fs/hostfs/hostfs.h
+@@ -84,7 +84,7 @@ extern int set_attr(const char *file, struct hostfs_iattr *attrs, int fd);
+ extern int make_symlink(const char *from, const char *to);
+ extern int unlink_file(const char *file);
+ extern int do_mkdir(const char *file, int mode);
+-extern int do_rmdir(const char *file);
++extern int hostfs_do_rmdir(const char *file);
+ extern int do_mknod(const char *file, int mode, unsigned int major,
+ 		    unsigned int minor);
+ extern int link_file(const char *from, const char *to);
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index c148e7f4f451..3cd85eb5bbb1 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -706,7 +706,7 @@ static int hostfs_rmdir(struct inode *ino, struct dentry *dentry)
  
- config CPU_BIG_ENDIAN
- 	def_bool y
-diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
-index 6972d5d6f23f..c1a3dcf9ad40 100644
---- a/arch/openrisc/mm/init.c
-+++ b/arch/openrisc/mm/init.c
-@@ -222,13 +222,6 @@ void __init mem_init(void)
- 	return;
+ 	if ((file = dentry_name(dentry)) == NULL)
+ 		return -ENOMEM;
+-	err = do_rmdir(file);
++	err = hostfs_do_rmdir(file);
+ 	__putname(file);
+ 	return err;
+ }
+diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
+index 9c1e0f019880..5ecc4706172b 100644
+--- a/fs/hostfs/hostfs_user.c
++++ b/fs/hostfs/hostfs_user.c
+@@ -304,7 +304,7 @@ int do_mkdir(const char *file, int mode)
+ 	return 0;
  }
  
--#ifdef CONFIG_BLK_DEV_INITRD
--void free_initrd_mem(unsigned long start, unsigned long end)
--{
--	free_reserved_area((void *)start, (void *)end, -1, "initrd");
--}
--#endif
--
- void free_initmem(void)
+-int do_rmdir(const char *file)
++int hostfs_do_rmdir(const char *file)
  {
- 	free_initmem_default(-1);
+ 	int err;
+ 
 -- 
-2.16.2
+2.16.3
 
 
