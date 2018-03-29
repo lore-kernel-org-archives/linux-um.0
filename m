@@ -1,42 +1,44 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH v5 16/16] um: Switch to generic free_initrd_mem.
-Date: Thu, 29 Mar 2018 07:32:07 -0400
-Message-Id: <20180329113207.30674-16-shea@shealevy.com>
-In-Reply-To: <20180329113207.30674-1-shea@shealevy.com>
-References: <20180328203659.18692-1-shea@shealevy.com>
- <20180329113207.30674-1-shea@shealevy.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Shea Levy <shea@shealevy.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net
+Return-Path: <richard@nod.at>
+From: Richard Weinberger <richard@nod.at>
+Subject: Re: [uml-devel] UML hangs with hrtimer test module
+Date: Thu, 29 Mar 2018 22:34:46 +0200
+Message-ID: <5210954.RitFgLWNVY@blindfold>
+In-Reply-To: <CAD=GYpbAfqdEquXWdvHwrxaPQwi8Dyh=j9+6=SpwZ3zqnKSq0Q@mail.gmail.com>
+References: <CAD=GYpatpGo=6mwhkw+RCQX=TNxX9jyfsq67srFc6+FhYtxaWg@mail.gmail.com> <CAMuHMdUVJtweuB1GVhyaiK2ak3AG+oE5JR-D78xJ75ARpcV=jA@mail.gmail.com> <CAD=GYpbAfqdEquXWdvHwrxaPQwi8Dyh=j9+6=SpwZ3zqnKSq0Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+To: Joel Fernandes <agnel.joel@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Jeff Dike <jdike@addtoit.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-The generic implementation is functionally identical.
+Am Donnerstag, 29. M=E4rz 2018, 22:20:47 CEST schrieb Joel Fernandes:
+> Thanks a lot! I am wondering why the same compiler works when running
+> the test for a regular image. Maybe different compiler flags. Anyway
+> good to learn this.
+>=20
+> Also one more slightly OT question, why is UML only doing UP ? Is it
+> extremely hard to do SMP for UML?
 
-Signed-off-by: Shea Levy <shea@shealevy.com>
----
- arch/um/kernel/mem.c | 7 -------
- 1 file changed, 7 deletions(-)
+Long story short, nobody implemented SMP so far. :-)
+Because SKAS3/0 we had a SMP implementation of TT mode.
 
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 3c0e470ea646..2d26eec92126 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -170,13 +170,6 @@ void free_initmem(void)
- {
- }
- 
--#ifdef CONFIG_BLK_DEV_INITRD
--void free_initrd_mem(unsigned long start, unsigned long end)
--{
--	free_reserved_area((void *)start, (void *)end, -1, "initrd");
--}
--#endif
--
- /* Allocate and free page tables. */
- 
- pgd_t *pgd_alloc(struct mm_struct *mm)
--- 
-2.16.2
+In terms of UML implementing SMP means having multiple threads
+that handle the userspace loop in arch/um/os-Linux/skas/process.c.
 
+We could also do a poor man's SMP implementation first, where only user=20
+processes run in parallel.
+IOW userspace() in arch/um/os-Linux/skas/process.c is still a single thread=
+=20
+but it let's run up to N user space thread and only if the call into the=20
+kernel we degrade to UP.
+
+Adding SMP is not extremely hard but it requires a lot of re-work of the UM=
+L=20
+core and introduces tons of new issues.
+
+That said, volunteers are welcome!
+
+Thanks,
+//richard
 
