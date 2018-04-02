@@ -1,130 +1,32 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Fri, 20 Apr 2018 09:38:09 -0500
-Message-Id: <20180420143811.9994-20-ebiederm@xmission.com>
-In-Reply-To: <87604mhrnb.fsf@xmission.com>
-References: <87604mhrnb.fsf@xmission.com>
-Subject: [REVIEW][PATCH 20/22] signal/um: Use force_sig_fault where appropriate
-Sender: linux-arch-owner@vger.kernel.org
-To: linux-arch@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+Return-Path: <mingo.kernel.org@gmail.com>
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Mon, 2 Apr 2018 07:59:33 +0200
+From: Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] Extract initrd free logic from arch-specific code.
+Message-ID: <20180402055933.zbpyorktot2owzzu@gmail.com>
+References: <20180325221853.10839-1-shea@shealevy.com>
+ <20180328152714.6103-1-shea@shealevy.com>
+ <20180330111517.rrx6gs2skkgk336j@gmail.com>
+ <87bmf3rmq6.fsf@xps13.shealevy.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87bmf3rmq6.fsf@xps13.shealevy.com>
+To: Shea Levy <shea@shealevy.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <jacquiot.aurelien@gmail.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, James Hogan <jhogan@kernel.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Palmer Dabbelt <palmer@sifive.com>, Albert Ou <albert@sifive.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Chen Liqin <liqin.linux@gmail.com>, Lennox Wu <lennox.wu@gmail.com>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>, Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, Al Viro <viro@zeniv.linux.org.uk>, Vladimir Murzin <vladimir.murzin@arm.com>, Linus Walleij <linus.walleij@linaro.org>, Michal Hocko <mhocko@suse.com>, Andrew Morton <akpm@linux-foundation.org>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Marc Zyngier <marc.zyngier@arm.com>, Rob Herring <robh@kernel.org>, Kees Cook <keescook@chromium.org>, Vlastimil Babka <vbabka@suse.cz>, Balbir Singh <bsingharora@gmail.com>, Christophe Leroy <christophe.leroy@c-s.fr>, Joe Perches <joe@perches.com>, Oliver O'Halloran <oohall@gmail.com>, Dan Williams <dan.j.williams@intel.com>, Wei Yang <richard.weiyang@gmail.com>, Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Arnd Bergmann <arnd@arndb.de>, Deepa Dinamani <deepa.kernel@gmail.com>, Daniel Thompson <daniel.thompson@linaro.org>, Rob Landley <rob@landley.net>, Florian Fainelli <f.fainelli@gmail.com>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-xtensa@linux-xtensa.org
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Filling in struct siginfo before calling force_sig_info a tedious and
-error prone process, where once in a great while the wrong fields
-are filled out, and siginfo has been inconsistently cleared.
 
-Simplify this process by using the helper force_sig_fault.  Which
-takes as a parameters all of the information it needs, ensures
-all of the fiddly bits of filling in struct siginfo are done properly
-and then calls force_sig_info.
+* Shea Levy <shea@shealevy.com> wrote:
 
-In short about a 5 line reduction in code for every time force_sig_info
-is called, which makes the calling function clearer.
+> > Please also put it into Documentation/features/.
+> 
+> I switched this patch series (the latest revision v6 was just posted) to
+> using weak symbols instead of Kconfig. Does it still warrant documentation?
 
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: user-mode-linux-devel@lists.sourceforge.net
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- arch/um/kernel/ptrace.c | 13 +++----------
- arch/um/kernel/trap.c   | 26 ++++++++------------------
- 2 files changed, 11 insertions(+), 28 deletions(-)
+Probably not.
 
-diff --git a/arch/um/kernel/ptrace.c b/arch/um/kernel/ptrace.c
-index bc2a516c190f..1a1d88a4d940 100644
---- a/arch/um/kernel/ptrace.c
-+++ b/arch/um/kernel/ptrace.c
-@@ -115,17 +115,10 @@ long arch_ptrace(struct task_struct *child, long request,
- static void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs,
- 		  int error_code)
- {
--	struct siginfo info;
--
--	memset(&info, 0, sizeof(info));
--	info.si_signo = SIGTRAP;
--	info.si_code = TRAP_BRKPT;
--
--	/* User-mode eip? */
--	info.si_addr = UPT_IS_USER(regs) ? (void __user *) UPT_IP(regs) : NULL;
--
- 	/* Send us the fake SIGTRAP */
--	force_sig_info(SIGTRAP, &info, tsk);
-+	force_sig_fault(SIGTRAP, TRAP_BRKPT,
-+			/* User-mode eip? */
-+			UPT_IS_USER(regs) ? (void __user *) UPT_IP(regs) : NULL, tsk);
- }
- 
- /*
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index 5f0ff17cd790..48b70dcb6963 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -162,14 +162,9 @@ static void show_segv_info(struct uml_pt_regs *regs)
- 
- static void bad_segv(struct faultinfo fi, unsigned long ip)
- {
--	struct siginfo si;
--
--	clear_siginfo(&si);
--	si.si_signo = SIGSEGV;
--	si.si_code = SEGV_ACCERR;
--	si.si_addr = (void __user *) FAULT_ADDRESS(fi);
- 	current->thread.arch.faultinfo = fi;
--	force_sig_info(SIGSEGV, &si, current);
-+	force_sig_fault(SIGSEGV, SEGV_ACCERR, (void __user *) FAULT_ADDRESS(fi),
-+			current);
- }
- 
- void fatal_sigsegv(void)
-@@ -215,13 +210,12 @@ void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 		   struct uml_pt_regs *regs)
- {
--	struct siginfo si;
- 	jmp_buf *catcher;
-+	int si_code;
- 	int err;
- 	int is_write = FAULT_WRITE(fi);
- 	unsigned long address = FAULT_ADDRESS(fi);
- 
--	clear_siginfo(&si);
- 	if (!is_user && regs)
- 		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
- 
-@@ -241,7 +235,7 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 
- 	if (SEGV_IS_FIXABLE(&fi))
- 		err = handle_page_fault(address, ip, is_write, is_user,
--					&si.si_code);
-+					&si_code);
- 	else {
- 		err = -EFAULT;
- 		/*
-@@ -273,18 +267,14 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 	show_segv_info(regs);
- 
- 	if (err == -EACCES) {
--		si.si_signo = SIGBUS;
--		si.si_errno = 0;
--		si.si_code = BUS_ADRERR;
--		si.si_addr = (void __user *)address;
- 		current->thread.arch.faultinfo = fi;
--		force_sig_info(SIGBUS, &si, current);
-+		force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)address,
-+				current);
- 	} else {
- 		BUG_ON(err != -EFAULT);
--		si.si_signo = SIGSEGV;
--		si.si_addr = (void __user *) address;
- 		current->thread.arch.faultinfo = fi;
--		force_sig_info(SIGSEGV, &si, current);
-+		force_sig_fault(SIGSEGV, si_code, (void __user *) address,
-+				current);
- 	}
- 
- out:
--- 
-2.14.1
+Thanks,
 
+	Ingo
 
