@@ -1,10 +1,10 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Sasha Levin <Alexander.Levin@microsoft.com>
-Subject: [PATCH AUTOSEL for 4.4 094/162] x86/um: thin archives build fix
-Date: Mon, 9 Apr 2018 00:28:53 +0000
-Message-ID: <20180409002738.163941-94-alexander.levin@microsoft.com>
-References: <20180409002738.163941-1-alexander.levin@microsoft.com>
-In-Reply-To: <20180409002738.163941-1-alexander.levin@microsoft.com>
+Subject: [PATCH AUTOSEL for 3.18 059/101] x86/um: thin archives build fix
+Date: Mon, 9 Apr 2018 00:41:22 +0000
+Message-ID: <20180409004042.164920-9-alexander.levin@microsoft.com>
+References: <20180409004042.164920-1-alexander.levin@microsoft.com>
+In-Reply-To: <20180409004042.164920-1-alexander.levin@microsoft.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
