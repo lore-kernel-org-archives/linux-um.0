@@ -1,10 +1,10 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Sasha Levin <Alexander.Levin@microsoft.com>
-Subject: [PATCH AUTOSEL for 4.9 187/293] x86/um: thin archives build fix
-Date: Mon, 9 Apr 2018 00:25:20 +0000
-Message-ID: <20180409002239.163177-187-alexander.levin@microsoft.com>
-References: <20180409002239.163177-1-alexander.levin@microsoft.com>
-In-Reply-To: <20180409002239.163177-1-alexander.levin@microsoft.com>
+Subject: [PATCH AUTOSEL for 4.4 094/162] x86/um: thin archives build fix
+Date: Mon, 9 Apr 2018 00:28:53 +0000
+Message-ID: <20180409002738.163941-94-alexander.levin@microsoft.com>
+References: <20180409002738.163941-1-alexander.levin@microsoft.com>
+In-Reply-To: <20180409002738.163941-1-alexander.levin@microsoft.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -32,10 +32,10 @@ Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-index d72dec406ccb..329406224330 100644
+index 6c803ca49b5d..486f62c3bd04 100644
 --- a/arch/x86/um/vdso/Makefile
 +++ b/arch/x86/um/vdso/Makefile
-@@ -53,7 +53,7 @@ CFLAGS_REMOVE_vdso-note.o =3D -pg -fprofile-arcs -ftest-c=
+@@ -50,7 +50,7 @@ CFLAGS_REMOVE_vdso-note.o =3D -pg -fprofile-arcs -ftest-c=
 overage
  CFLAGS_REMOVE_um_vdso.o =3D -pg -fprofile-arcs -ftest-coverage
 =20
