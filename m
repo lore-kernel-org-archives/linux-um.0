@@ -1,62 +1,53 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH v3] mm/page_owner: ignore everything below the IRQ entry
- point
-Reply-To: maninder1.s@samsung.com
-From: Maninder Singh <maninder1.s@samsung.com>
-In-Reply-To: <201803272356.6XjvciDF%fengguang.wu@intel.com>
-Message-ID: <20180416054459epcms5p85f343635408abccfd12080d7fc322911@epcms5p8>
-Date: Mon, 16 Apr 2018 11:14:59 +0530
-Content-Transfer-Encoding: quoted-printable
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+Received: from [172.30.20.202] (helo=mx.sourceforge.net)
+ by sfs-ml-2.v29.lw.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
+ (envelope-from <richard@nod.at>) id 1f6VuT-0007Wg-Gr
+ for user-mode-linux-devel@lists.sourceforge.net;
+ Thu, 12 Apr 2018 06:40:41 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by sfi-mx-4.v28.lw.sourceforge.com with esmtps
+ (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
+ id 1f6VuR-009oZp-Fg for user-mode-linux-devel@lists.sourceforge.net;
+ Thu, 12 Apr 2018 06:40:41 +0000
+From: Richard Weinberger <richard@nod.at>
+Date: Thu, 12 Apr 2018 08:40:30 +0200
+Message-ID: <9086376.yYHLv4WMPf@blindfold>
+In-Reply-To: <20180329204559.14113-1-richard@nod.at>
+References: <20180329204559.14113-1-richard@nod.at>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] [PATCH] um: Fix return value of start_idle_thread
+List-Id: The user-mode Linux development list
+ <user-mode-linux-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="utf-8"
-References: <201803272356.6XjvciDF%fengguang.wu@intel.com>
-        <1522150907-33547-1-git-send-email-maninder1.s@samsung.com>
-        <CGME20180327160057epcas5p30597e515a359dc6a5d54767a8bcb78a7@epcms5p8>
-Sender: linux-arch-owner@vger.kernel.org
-To: "dvyukov@google.com" <dvyukov@google.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "vbabka@suse.cz" <vbabka@suse.cz>, "arnd@arndb.de" <arnd@arndb.de>
-Cc: kbuild test robot <lkp@intel.com>, "kbuild-all@01.org" <kbuild-all@01.org>, "aryabinin@virtuozzo.com" <aryabinin@virtuozzo.com>, "glider@google.com" <glider@google.com>, "kstewart@linuxfoundation.org" <kstewart@linuxfoundation.org>, "tglx@linutronix.de" <tglx@linutronix.de>, "pombredanne@nexb.com" <pombredanne@nexb.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, "mhocko@suse.com" <mhocko@suse.com>, "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>, "gomonovych@gmail.com" <gomonovych@gmail.com>, Ayush Mittal <ayush.m@samsung.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>, AMIT SAHRAWAT <a.sahrawat@samsung.com>, PANKAJ MISHRA <pankaj.m@samsung.com>, Vaneet Narang <v.narang@samsung.com>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "jdike@addtoit.com" <jdike@addtoit.com>, "richard@nod.at" <richard@nod.at>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, "user-mode-linux-user@lists.sourceforge.net" <user-mode-linux-user@lists.sourceforge.net>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Content-Transfer-Encoding: base64
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: user-mode-linux-devel@lists.sourceforge.net
+Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org
 
-=C2=A0=0D=0AHi=20Arnd,=0D=0A=0D=0A=0D=0AWe=20sent=20one=20patch=20for=20ign=
-oring=20entries=20below=20IRQ=20point=20in=20page_onwer=20using=20stackdepo=
-t.=0D=0A=0D=0AV2:-=20https://lkml.org/lkml/2018/3/26/178=0D=0A=0D=0AV3:-=20=
-https://lkml.org/lkml/2018/3/27/357=0D=0A=0D=0ABut=20it's=20breaking=20buil=
-d=20for=20um=20target=20with=20below=20reason.=0D=0A=0D=0A=0D=0A=C2=A0=C2=
-=A0=C2=A0kernel/stacktrace.o:=C2=A0In=C2=A0function=C2=A0=60filter_irq_stac=
-ks':=0D=0A>>=C2=A0stacktrace.c:(.text+0x20e):=C2=A0undefined=C2=A0reference=
-=C2=A0to=C2=A0=60__irqentry_text_start'=0D=0A>>=C2=A0stacktrace.c:(.text+0x=
-218):=C2=A0undefined=C2=A0reference=C2=A0to=C2=A0=60__irqentry_text_end'=0D=
-=0A>>=C2=A0stacktrace.c:(.text+0x222):=C2=A0undefined=C2=A0reference=C2=A0t=
-o=C2=A0=60__softirqentry_text_start'=0D=0A>>=C2=A0stacktrace.c:(.text+0x22c=
-):=C2=A0undefined=C2=A0reference=C2=A0to=C2=A0=60__softirqentry_text_end'=
-=0D=0A=C2=A0=C2=A0=C2=A0collect2:=C2=A0error:=C2=A0ld=C2=A0returned=C2=A01=
-=C2=A0exit=C2=A0status=0D=0A=0D=0ASo=20can=20we=20add=20below=20fix=20for=
-=20this=20build=20break,=20can=20you=20suggest=20if=20it=20is=20ok=20or=20w=
-e=20need=20to=20find=0D=0Asome=20other=20way:-=0D=0A=0D=0Adiff=20--git=20a/=
-include/asm-generic/vmlinux.lds.h=20b/include/asm-generic/vmlinux.lds.h=0D=
-=0Aindex=2076b63f5..0f3b7f8=20100644=0D=0A---=20a/include/asm-generic/vmlin=
-ux.lds.h=0D=0A+++=20b/include/asm-generic/vmlinux.lds.h=0D=0A=40=40=20-460,=
-6=20+460,10=20=40=40=0D=0A=20=20*=20to=20use=20=22..=22=20first.=0D=0A=20=
-=20*/=0D=0A=20=23define=20TEXT_TEXT=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=5C=0D=0A+=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20VMLINUX_SYMBOL(__irqentry_text_start)=20=3D=
-=20.;=20=20=20=20=20=20=20=20=20=20=20=20=20=20=5C=0D=0A+=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20VMLINUX_SYMBOL(__irqentry_text_end)=20=3D=20.;=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=5C=0D=0A+=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20VMLINUX_SYMBOL(__softirqentry_text_start)=20=
-=3D=20.;=20=20=20=20=20=20=20=20=20=20=5C=0D=0A+=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20VMLINUX_SYMBOL(__softirqentry_text_end)=20=3D=20.;=20=20=
-=20=20=20=20=20=20=20=20=20=20=5C=0D=0A=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20ALIGN_FUNCTION();=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=5C=
-=0D=0A=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20*(.text.hot=20TEXT_MA=
-IN=20.text.fixup=20.text.unlikely)=20=20=20=20=20=20=20=5C=0D=0A=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20*(.text..refcount)=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=5C=0D=0Adiff=20--git=20a/include/linux/kallsyms.h=20b=
-/include/linux/kallsyms.h=0D=0A=0D=0A=0D=0ATo=20make=20solution=20generic=
-=20for=20all=20architecture=20we=20declared=204=20dummy=20variables=20which=
-=20we=20used=20in=20our=20patch.=0D=0A=0D=0A=0D=0AThanks=20,=0D=0AManinder=
-=20Singh
+QW0gRG9ubmVyc3RhZywgMjkuIE3DpHJ6IDIwMTgsIDIyOjQ1OjU5IENFU1Qgc2NocmllYiBSaWNo
+YXJkIFdlaW5iZXJnZXI6Cj4gV2hpbGUgdGhlIGZ1bmN0aW9uIHdpbGwgbmV2ZXIgcmV0dXJucywg
+Z2NjIHdpbGwgd2FybnMuCj4gQWRkIGEgcmV0dXJuIHN0YXRlbWVudCB0byBtYWtlIGdjYyBoYXBw
+eS4KPiBCZWZvcmUgZjQ0ZjFlN2RhN2M4IHdlIG5ldmVyIG5vdGljZWQgYmVjYXVzZSBnY2Mga25v
+d3MgdGhhdCBsb25nam1wIGRvZXMKPiBub3QgcmV0dXJuLgo+IAo+IGFyY2gvdW0vb3MtTGludXgv
+c2thcy9wcm9jZXNzLmM6IEluIGZ1bmN0aW9uIOKAmHN0YXJ0X2lkbGVfdGhyZWFk4oCZOgo+IGFy
+Y2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNzLmM6NjEzOjE6IHdhcm5pbmc6IGNvbnRyb2wgcmVh
+Y2hlcyBlbmQgb2Ygbm9uLXZvaWQgZnVuY3Rpb24gWy1XcmV0dXJuLXR5cGVdCj4gCj4gRml4ZXM6
+IGY0NGYxZTdkYTdjOCAoInVtOiBBdm9pZCBsb25nam1wL3NldGptcCBzeW1ib2wgY2xhc2hlcyB3
+aXRoIGxpYnB0aHJlYWQuYSIpCj4gU2lnbmVkLW9mZi1ieTogUmljaGFyZCBXZWluYmVyZ2VyIDxy
+aWNoYXJkQG5vZC5hdD4KCkFwcGxpZWQuCgpUaGFua3MsCi8vcmljaGFyZAoKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCkNoZWNrIG91dCB0aGUgdmlicmFudCB0ZWNoIGNvbW11bml0eSBvbiBvbmUgb2Yg
+dGhlIHdvcmxkJ3MgbW9zdAplbmdhZ2luZyB0ZWNoIHNpdGVzLCBTbGFzaGRvdC5vcmchIGh0dHA6
+Ly9zZG0ubGluay9zbGFzaGRvdApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1s
+aW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
 
