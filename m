@@ -1,56 +1,40 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Sat, 28 Apr 2018 09:07:00 -0500
-Message-Id: <20180428140702.3925-3-ebiederm@xmission.com>
-In-Reply-To: <87zi1nctut.fsf_-_@xmission.com>
-References: <87zi1nctut.fsf_-_@xmission.com>
-Subject: [REVIEW][PATCH 3/5] signal: Remove unncessary #ifdef SEGV_PKUERR in 32bit compat code
-Sender: linux-kernel-owner@vger.kernel.org
-To: Linux-Arch <linux-arch@vger.kernel.org>
-Cc: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, =?UTF-8?q?Martin=20P=C3=A4rtel?= <martin.partel@gmail.com>, "Eric W. Biederman" <ebiederm@xmission.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: linux-um-request@lists.infradead.org
+Subject: confirm 7e592a0457322973d8c07f39f052281468968b7e
+Reply-To: linux-um-request@lists.infradead.org
+Message-ID: <mailman.0.1524056081.14661.linux-um@lists.infradead.org>
+Date: Wed, 18 Apr 2018 05:54:41 -0700
+List-Id: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: geert@linux-m68k.org
 
-The only architecture that does not support SEGV_PKUERR is ia64 and
-ia64 has not had 32bit support since some time in 2008.  Therefore
-copy_siginfo_to_user32 and copy_siginfo_from_user32 do not need to
-include support for a missing SEGV_PKUERR.
+Mailing list subscription confirmation notice for mailing list
+linux-um
 
-Compile test on ia64.
+We have received a request from 84.194.111.163 for subscription of
+your email address, "geert@linux-m68k.org", to the
+linux-um@lists.infradead.org mailing list.  To confirm that you want
+to be added to this mailing list, simply reply to this message,
+keeping the Subject: header intact.  Or visit this web page:
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/signal.c | 5 -----
- 1 file changed, 5 deletions(-)
+    http://lists.infradead.org/mailman/confirm/linux-um/7e592a0457322973d8c07f39f052281468968b7e
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index b87a9c21f698..376b42f26e6d 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2888,12 +2888,9 @@ int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
- 			new.si_lower = ptr_to_compat(from->si_lower);
- 			new.si_upper = ptr_to_compat(from->si_upper);
- 		}
--#ifdef SEGV_PKUERR
- 		if ((from->si_signo == SIGSEGV) &&
- 		    (from->si_code == SEGV_PKUERR))
- 			new.si_pkey = from->si_pkey;
--#endif
--
- 		break;
- 	case SIL_CHLD:
- 		new.si_pid    = from->si_pid;
-@@ -2968,10 +2965,8 @@ int copy_siginfo_from_user32(struct siginfo *to,
- 			to->si_lower = compat_ptr(from.si_lower);
- 			to->si_upper = compat_ptr(from.si_upper);
- 		}
--#ifdef SEGV_PKUERR
- 		if ((from.si_signo == SIGSEGV) && (from.si_code == SEGV_PKUERR))
- 			to->si_pkey = from.si_pkey;
--#endif
- 		break;
- 	case SIL_CHLD:
- 		to->si_pid    = from.si_pid;
--- 
-2.14.1
 
+Or include the following line -- and only the following line -- in a
+message to linux-um-request@lists.infradead.org:
+
+    confirm 7e592a0457322973d8c07f39f052281468968b7e
+
+Note that simply sending a `reply' to this message should work from
+most mail readers, since that usually leaves the Subject: line in the
+right form (additional "Re:" text in the Subject: is okay).
+
+If you do not wish to be subscribed to this list, please simply
+disregard this message.  If you think you are being maliciously
+subscribed to the list, or have any other questions, send them to
+linux-um-owner@lists.infradead.org.
 
