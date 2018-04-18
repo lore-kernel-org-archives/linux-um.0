@@ -1,58 +1,48 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ozlabs.org ([203.11.71.1])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f93EO-00058Z-3L
- for linux-um@lists.infradead.org; Thu, 19 Apr 2018 06:39:45 +0000
-Subject: Re: Please add linux-um to patchwork
-References: <1557282.EYFWsrxxre@blindfold>
-From: Jeremy Kerr <jk@ozlabs.org>
-Message-ID: <5dc213f5-fdbe-d01d-3d38-bb537794bcc5@ozlabs.org>
-Date: Thu, 19 Apr 2018 14:39:26 +0800
 MIME-Version: 1.0
-In-Reply-To: <1557282.EYFWsrxxre@blindfold>
-Content-Language: en-US
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Subject: Welcome to the "linux-um" mailing list
+From: linux-um-request@lists.infradead.org
+Message-ID: <mailman.0.1524056153.21094.linux-um@lists.infradead.org>
+Date: Wed, 18 Apr 2018 05:55:53 -0700
+List-Id: <linux-um.lists.infradead.org>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@sigma-star.at>
-Cc: linux-um@lists.infradead.org
+To: geert@linux-m68k.org
 
-Hi Richard,
+Welcome to the linux-um@lists.infradead.org mailing list!
 
-> can you please create a linux-um project on patchwork and subscribe
-> to our new mailing list[0]?
-> My user name in patchwork is "rw".
+To post to this list, send your message to:
 
-Sure, can do. To set up an project for you, I'll just need the
-following:
+  linux-um@lists.infradead.org
 
- - the URL name for the project; I'd suggest just 'linux-um'
+General information about the mailing list is at:
 
- - the human-readable name; "User-mode Linux development" ?
+  http://lists.infradead.org/mailman/listinfo/linux-um
 
- - the patchwork usernames of any folks who should be designated as
-   maintainers - just 'rw' for now?
+If you ever want to unsubscribe or change your options (eg, switch to
+or from digest mode, change your password, etc.), visit your
+subscription page at:
 
-Also, if you can subscribe incoming@patchwork.ozlabs.org to your list
-(without requiring confirmation), then that makes things a little easier
-for me.
-
-Thanks!
+  http://lists.infradead.org/mailman/options/linux-um/geert%40linux-m68k.org
 
 
-Jeremy
+You can also make such adjustments via email by sending a message to:
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+  linux-um-request@lists.infradead.org
+
+with the word `help' in the subject or body (don't include the
+quotes), and you will get back a message with instructions.
+
+You must know your password to change your options (including changing
+the password, itself) or to unsubscribe without confirmation.  It is:
+
+  baonwoum
+
+Normally, Mailman will remind you of your lists.infradead.org mailing
+list passwords once every month, although you can disable this if you
+prefer.  This reminder will also include instructions on how to
+unsubscribe or change your account options.  There is also a button on
+your options page that will email your current password to you.
 
