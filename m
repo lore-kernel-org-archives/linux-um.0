@@ -1,64 +1,95 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Maninder Singh <maninder1.s@samsung.com>
-Subject: [PATCH 1/1] um: add IRQENTRY and SOFTIRQENTRY points.
-Date: Fri, 20 Apr 2018 14:37:10 +0530
-Message-Id: <1524215230-44763-1-git-send-email-maninder1.s@samsung.com>
-Content-Type: text/plain; charset="utf-8"
-References: <CGME20180420090931epcas5p47799b0f1aef5b1bb70e33118bc167c84@epcas5p4.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: jdike@addtoit.com, richard@nod.at, kstewart@linuxfoundation.org, tglx@linutronix.de, gregkh@linuxfoundation.org, pombredanne@nexb.com
-Cc: user-mode-linux-devel@lists.sourceforge.net, user-mode-linux-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, a.sahrawat@samsung.com, pankaj.m@samsung.com, v.narang@samsung.com, Maninder Singh <maninder1.s@samsung.com>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Fri, 20 Apr 2018 09:38:08 -0500
+Message-Id: <20180420143811.9994-19-ebiederm@xmission.com>
+In-Reply-To: <87604mhrnb.fsf@xmission.com>
+References: <87604mhrnb.fsf@xmission.com>
+Subject: [REVIEW][PATCH 19/22] signal/um: Use force_sig_fault in relay_signal.
+Sender: linux-arch-owner@vger.kernel.org
+To: linux-arch@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-This patchs add sections for IRQENTRY and SOFTIRQENTRY.
-Initially added by below kernel patch for all architecture,
-but missed in um.
+Today user mode linux only works on x86 and x86_64 and this allows
+simplifications of relay_signal.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git/commit/?id=be7635e7287e0e8013af3c89a6354a9e0182594c
+- x86 always set si_errno to 0 in fault handlers.
+- x86 does not implement si_trapno.
+- Only si_codes between SI_USER and SI_KERNEL have a fault address.
 
-We need to add both sections because if someone has to use
-stackdepot feature for stacktrace and want to filter IRQ stack
-entries, it will break build for um.
+Therefore warn if si_errno is set (it should never be).
+Use force_sig_info in the case where we know we have a good fault.
 
-Below patch is breaking build break for um.
-mm/page_owner: ignore everything below the IRQ entry point.
-V2:- https://lkml.org/lkml/2018/3/26/178
-V3:- https://lkml.org/lkml/2018/3/27/357
+For signals whose content it is not clear how to relay use plain
+force_sig and let the signal sending code come up with an
+appropriate generic siginfo.
 
-Signed-off-by: Vaneet Narang <v.narang@samsung.com>
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- arch/um/kernel/dyn.lds.S | 2 ++
- arch/um/kernel/uml.lds.S | 2 ++
- 2 files changed, 4 insertions(+)
+ arch/um/kernel/trap.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index d417e38..0fb2d3a 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -71,6 +71,8 @@ SECTIONS
-     SCHED_TEXT
-     CPUIDLE_TEXT
-     LOCK_TEXT
-+    IRQENTRY_TEXT
-+    SOFTIRQENTRY_TEXT
-     *(.fixup)
-     *(.stub .text.* .gnu.linkonce.t.*)
-     /* .gnu.warning sections are handled specially by elf32.em.  */
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index 3d6ed6b..f12b856 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -31,6 +31,8 @@ SECTIONS
-     SCHED_TEXT
-     CPUIDLE_TEXT
-     LOCK_TEXT
-+    IRQENTRY_TEXT
-+    SOFTIRQENTRY_TEXT
-     *(.fixup)
-     /* .gnu.warning sections are handled specially by elf32.em.  */
-     *(.gnu.warning)
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index d4d38520c4c6..5f0ff17cd790 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -296,9 +296,6 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 
+ void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs)
+ {
+-	struct faultinfo *fi;
+-	struct siginfo clean_si;
+-
+ 	if (!UPT_IS_USER(regs)) {
+ 		if (sig == SIGBUS)
+ 			printk(KERN_ERR "Bus error - the host /dev/shm or /tmp "
+@@ -308,29 +305,30 @@ void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs)
+ 
+ 	arch_examine_signal(sig, regs);
+ 
+-	clear_siginfo(&clean_si);
+-	clean_si.si_signo = si->si_signo;
+-	clean_si.si_errno = si->si_errno;
+-	clean_si.si_code = si->si_code;
++	if (unlikely(si->si_errno)) {
++		printk(KERN_ERR "Attempted to relay signal %d (si_code = %d) with errno %d\n",
++		       sig, si->si_code, si->si_errno);
++	}
+ 	switch (sig) {
+ 	case SIGILL:
+ 	case SIGFPE:
+ 	case SIGSEGV:
+ 	case SIGBUS:
+ 	case SIGTRAP:
+-		fi = UPT_FAULTINFO(regs);
+-		clean_si.si_addr = (void __user *) FAULT_ADDRESS(*fi);
+-		current->thread.arch.faultinfo = *fi;
+-#ifdef __ARCH_SI_TRAPNO
+-		clean_si.si_trapno = si->si_trapno;
+-#endif
+-		break;
++		if ((si->si_code > SI_USER) && (si->si_code < SI_KERNEL)) {
++			struct faultinfo *fi = UPT_FAULTINFO(regs);
++			current->thread.arch.faultinfo = *fi;
++			force_sig_fault(sig, si->si_code,
++					(void __user *)FAULT_ADDRESS(*fi),
++					current);
++			break;
++		}
+ 	default:
+ 		printk(KERN_ERR "Attempted to relay unknown signal %d (si_code = %d)\n",
+ 			sig, si->si_code);
+ 	}
+ 
+-	force_sig_info(sig, &clean_si, current);
++	force_sig(sig, current);
+ }
+ 
+ void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs)
 -- 
-1.9.1
+2.14.1
 
 
