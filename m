@@ -1,53 +1,130 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from [172.30.20.202] (helo=mx.sourceforge.net)
- by sfs-ml-2.v29.lw.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
- (envelope-from <richard@nod.at>) id 1f6VuT-0007Wg-Gr
- for user-mode-linux-devel@lists.sourceforge.net;
- Thu, 12 Apr 2018 06:40:41 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by sfi-mx-4.v28.lw.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
- id 1f6VuR-009oZp-Fg for user-mode-linux-devel@lists.sourceforge.net;
- Thu, 12 Apr 2018 06:40:41 +0000
-From: Richard Weinberger <richard@nod.at>
-Date: Thu, 12 Apr 2018 08:40:30 +0200
-Message-ID: <9086376.yYHLv4WMPf@blindfold>
-In-Reply-To: <20180329204559.14113-1-richard@nod.at>
-References: <20180329204559.14113-1-richard@nod.at>
-MIME-Version: 1.0
-Subject: Re: [uml-devel] [PATCH] um: Fix return value of start_idle_thread
-List-Id: The user-mode Linux development list
- <user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: user-mode-linux-devel@lists.sourceforge.net
-Cc: jdike@addtoit.com, linux-kernel@vger.kernel.org
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Fri, 20 Apr 2018 09:38:09 -0500
+Message-Id: <20180420143811.9994-20-ebiederm@xmission.com>
+In-Reply-To: <87604mhrnb.fsf@xmission.com>
+References: <87604mhrnb.fsf@xmission.com>
+Subject: [REVIEW][PATCH 20/22] signal/um: Use force_sig_fault where appropriate
+Sender: linux-arch-owner@vger.kernel.org
+To: linux-arch@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-QW0gRG9ubmVyc3RhZywgMjkuIE3DpHJ6IDIwMTgsIDIyOjQ1OjU5IENFU1Qgc2NocmllYiBSaWNo
-YXJkIFdlaW5iZXJnZXI6Cj4gV2hpbGUgdGhlIGZ1bmN0aW9uIHdpbGwgbmV2ZXIgcmV0dXJucywg
-Z2NjIHdpbGwgd2FybnMuCj4gQWRkIGEgcmV0dXJuIHN0YXRlbWVudCB0byBtYWtlIGdjYyBoYXBw
-eS4KPiBCZWZvcmUgZjQ0ZjFlN2RhN2M4IHdlIG5ldmVyIG5vdGljZWQgYmVjYXVzZSBnY2Mga25v
-d3MgdGhhdCBsb25nam1wIGRvZXMKPiBub3QgcmV0dXJuLgo+IAo+IGFyY2gvdW0vb3MtTGludXgv
-c2thcy9wcm9jZXNzLmM6IEluIGZ1bmN0aW9uIOKAmHN0YXJ0X2lkbGVfdGhyZWFk4oCZOgo+IGFy
-Y2gvdW0vb3MtTGludXgvc2thcy9wcm9jZXNzLmM6NjEzOjE6IHdhcm5pbmc6IGNvbnRyb2wgcmVh
-Y2hlcyBlbmQgb2Ygbm9uLXZvaWQgZnVuY3Rpb24gWy1XcmV0dXJuLXR5cGVdCj4gCj4gRml4ZXM6
-IGY0NGYxZTdkYTdjOCAoInVtOiBBdm9pZCBsb25nam1wL3NldGptcCBzeW1ib2wgY2xhc2hlcyB3
-aXRoIGxpYnB0aHJlYWQuYSIpCj4gU2lnbmVkLW9mZi1ieTogUmljaGFyZCBXZWluYmVyZ2VyIDxy
-aWNoYXJkQG5vZC5hdD4KCkFwcGxpZWQuCgpUaGFua3MsCi8vcmljaGFyZAoKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCkNoZWNrIG91dCB0aGUgdmlicmFudCB0ZWNoIGNvbW11bml0eSBvbiBvbmUgb2Yg
-dGhlIHdvcmxkJ3MgbW9zdAplbmdhZ2luZyB0ZWNoIHNpdGVzLCBTbGFzaGRvdC5vcmchIGh0dHA6
-Ly9zZG0ubGluay9zbGFzaGRvdApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpVc2VyLW1vZGUtbGludXgtZGV2ZWwgbWFpbGluZyBsaXN0ClVzZXItbW9kZS1s
-aW51eC1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vdXNlci1tb2RlLWxpbnV4LWRldmVsCg==
+Filling in struct siginfo before calling force_sig_info a tedious and
+error prone process, where once in a great while the wrong fields
+are filled out, and siginfo has been inconsistently cleared.
+
+Simplify this process by using the helper force_sig_fault.  Which
+takes as a parameters all of the information it needs, ensures
+all of the fiddly bits of filling in struct siginfo are done properly
+and then calls force_sig_info.
+
+In short about a 5 line reduction in code for every time force_sig_info
+is called, which makes the calling function clearer.
+
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ arch/um/kernel/ptrace.c | 13 +++----------
+ arch/um/kernel/trap.c   | 26 ++++++++------------------
+ 2 files changed, 11 insertions(+), 28 deletions(-)
+
+diff --git a/arch/um/kernel/ptrace.c b/arch/um/kernel/ptrace.c
+index bc2a516c190f..1a1d88a4d940 100644
+--- a/arch/um/kernel/ptrace.c
++++ b/arch/um/kernel/ptrace.c
+@@ -115,17 +115,10 @@ long arch_ptrace(struct task_struct *child, long request,
+ static void send_sigtrap(struct task_struct *tsk, struct uml_pt_regs *regs,
+ 		  int error_code)
+ {
+-	struct siginfo info;
+-
+-	memset(&info, 0, sizeof(info));
+-	info.si_signo = SIGTRAP;
+-	info.si_code = TRAP_BRKPT;
+-
+-	/* User-mode eip? */
+-	info.si_addr = UPT_IS_USER(regs) ? (void __user *) UPT_IP(regs) : NULL;
+-
+ 	/* Send us the fake SIGTRAP */
+-	force_sig_info(SIGTRAP, &info, tsk);
++	force_sig_fault(SIGTRAP, TRAP_BRKPT,
++			/* User-mode eip? */
++			UPT_IS_USER(regs) ? (void __user *) UPT_IP(regs) : NULL, tsk);
+ }
+ 
+ /*
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index 5f0ff17cd790..48b70dcb6963 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -162,14 +162,9 @@ static void show_segv_info(struct uml_pt_regs *regs)
+ 
+ static void bad_segv(struct faultinfo fi, unsigned long ip)
+ {
+-	struct siginfo si;
+-
+-	clear_siginfo(&si);
+-	si.si_signo = SIGSEGV;
+-	si.si_code = SEGV_ACCERR;
+-	si.si_addr = (void __user *) FAULT_ADDRESS(fi);
+ 	current->thread.arch.faultinfo = fi;
+-	force_sig_info(SIGSEGV, &si, current);
++	force_sig_fault(SIGSEGV, SEGV_ACCERR, (void __user *) FAULT_ADDRESS(fi),
++			current);
+ }
+ 
+ void fatal_sigsegv(void)
+@@ -215,13 +210,12 @@ void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 		   struct uml_pt_regs *regs)
+ {
+-	struct siginfo si;
+ 	jmp_buf *catcher;
++	int si_code;
+ 	int err;
+ 	int is_write = FAULT_WRITE(fi);
+ 	unsigned long address = FAULT_ADDRESS(fi);
+ 
+-	clear_siginfo(&si);
+ 	if (!is_user && regs)
+ 		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
+ 
+@@ -241,7 +235,7 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 
+ 	if (SEGV_IS_FIXABLE(&fi))
+ 		err = handle_page_fault(address, ip, is_write, is_user,
+-					&si.si_code);
++					&si_code);
+ 	else {
+ 		err = -EFAULT;
+ 		/*
+@@ -273,18 +267,14 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 	show_segv_info(regs);
+ 
+ 	if (err == -EACCES) {
+-		si.si_signo = SIGBUS;
+-		si.si_errno = 0;
+-		si.si_code = BUS_ADRERR;
+-		si.si_addr = (void __user *)address;
+ 		current->thread.arch.faultinfo = fi;
+-		force_sig_info(SIGBUS, &si, current);
++		force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)address,
++				current);
+ 	} else {
+ 		BUG_ON(err != -EFAULT);
+-		si.si_signo = SIGSEGV;
+-		si.si_addr = (void __user *) address;
+ 		current->thread.arch.faultinfo = fi;
+-		force_sig_info(SIGSEGV, &si, current);
++		force_sig_fault(SIGSEGV, si_code, (void __user *) address,
++				current);
+ 	}
+ 
+ out:
+-- 
+2.14.1
+
 
