@@ -1,53 +1,54 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: Richard Weinberger <richard@nod.at>
-Date: Wed, 18 Apr 2018 14:27:21 +0200
-Message-Id: <20180418122721.21818-1-richard@nod.at>
-Subject: [uml-devel] [PATCH] um: Update mailing list address
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fAhlA-0002g2-GQ
+ for linux-um@lists.infradead.org; Mon, 23 Apr 2018 20:08:26 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lilium.sigma-star.at (Postfix) with ESMTP id 5FFEE18186368
+ for <linux-um@lists.infradead.org>; Mon, 23 Apr 2018 22:08:10 +0200 (CEST)
+From: Richard Weinberger <richard@sigma-star.at>
+Subject: Patchwork usage
+Date: Mon, 23 Apr 2018 22:08:08 +0200
+Message-ID: <1708117.Q62ykoCA5g@blindfold>
 MIME-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
 
-We have a new mailing list, so update the MAINTAINERS file.
+Hi!
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- MAINTAINERS | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+To keep track of UML related patches I'm using patchwork now.
+Using the following link[0] you can observe the state of patches.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b60179d948bb..4834d1551248 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14768,8 +14768,7 @@ F:	drivers/media/usb/zr364xx/
- USER-MODE LINUX (UML)
- M:	Jeff Dike <jdike@addtoit.com>
- M:	Richard Weinberger <richard@nod.at>
--L:	user-mode-linux-devel@lists.sourceforge.net
--L:	user-mode-linux-user@lists.sourceforge.net
-+L:	linux-um@lists.infradead.org
- W:	http://user-mode-linux.sourceforge.net
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
- S:	Maintained
+If a patch is marked as "accepted" I've pushed it into one of my local queues
+and will show up in -next soon. I push my local queues to kernel.org after I found time to
+did basic testing and a few patches summed up.
+Please note that material for the next merge window might show up in linux-next only
+1-2 weeks before the merge window opens.
+
+As always, if I forget a patch feel free to shout at me.
+
+Thanks,
+//richard
+
+[0] https://patchwork.ozlabs.org/project/linux-um/list/?series=&submitter=&state=*&q=&archive=&delegate=
+
 -- 
-2.13.6
+sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
+ATU66964118 - FN 374287y
 
-
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
 _______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
