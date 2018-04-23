@@ -1,49 +1,87 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Shea Levy <shea@shealevy.com>
-Subject: [PATCH 04/16] arc: Use INITRAMFS_GENERIC_UNLOAD
-Date: Sat, 24 Mar 2018 13:44:46 -0400
-Message-Id: <20180324174458.26423-5-shea@shealevy.com>
-In-Reply-To: <20180324174458.26423-1-shea@shealevy.com>
-References: <20180324174458.26423-1-shea@shealevy.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-Cc: Shea Levy <shea@shealevy.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-wr0-x22a.google.com ([2a00:1450:400c:c0c::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fAhbt-0007hQ-50
+ for linux-um@lists.infradead.org; Mon, 23 Apr 2018 19:58:50 +0000
+Received: by mail-wr0-x22a.google.com with SMTP id d1-v6so44496557wrj.13
+ for <linux-um@lists.infradead.org>; Mon, 23 Apr 2018 12:58:37 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <cd8ac381-6cc2-fe89-2b1f-88344fffd707@cambridgegreys.com>
+References: <1557282.EYFWsrxxre@blindfold>
+ <5dc213f5-fdbe-d01d-3d38-bb537794bcc5@ozlabs.org>
+ <3753422.7oXRp7dgpL@blindfold>
+ <cd8ac381-6cc2-fe89-2b1f-88344fffd707@cambridgegreys.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 23 Apr 2018 21:58:35 +0200
+Message-ID: <CAFLxGvy8BLkvrAA28bysgC5g7itRadCYz6trg-0buuzcCg+z6g@mail.gmail.com>
+Subject: Re: Please add linux-um to patchwork
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
 
-Signed-off-by: Shea Levy <shea@shealevy.com>
----
- arch/arc/Kconfig   | 1 +
- arch/arc/mm/init.c | 7 -------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+Anton,
 
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index d76bf4a83740..2844ce5b910c 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -44,6 +44,7 @@ config ARC
- 	select HAVE_GENERIC_DMA_COHERENT
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZMA
-+	select INITRAMFS_GENERIC_UNLOAD
- 
- config MIGHT_HAVE_PCI
- 	bool
-diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
-index ba145065c579..7bcf23ab1756 100644
---- a/arch/arc/mm/init.c
-+++ b/arch/arc/mm/init.c
-@@ -229,10 +229,3 @@ void __ref free_initmem(void)
- {
- 	free_initmem_default(-1);
- }
--
--#ifdef CONFIG_BLK_DEV_INITRD
--void __init free_initrd_mem(unsigned long start, unsigned long end)
--{
--	free_reserved_area((void *)start, (void *)end, -1, "initrd");
--}
--#endif
+On Thu, Apr 19, 2018 at 9:29 AM, Anton Ivanov
+<anton.ivanov@cambridgegreys.com> wrote:
+>
+>
+> On 04/19/18 07:46, Richard Weinberger wrote:
+>>
+>> Jeremy,
+>>
+>> Am Donnerstag, 19. April 2018, 08:39:26 CEST schrieb Jeremy Kerr:
+>>>
+>>> Hi Richard,
+>>>
+>>>> can you please create a linux-um project on patchwork and subscribe
+>>>> to our new mailing list[0]?
+>>>> My user name in patchwork is "rw".
+>>>
+>>> Sure, can do. To set up an project for you, I'll just need the
+>>> following:
+>>>
+>>>   - the URL name for the project; I'd suggest just 'linux-um'
+>>
+>> linux-um is good.
+>>
+>>>
+>>>   - the human-readable name; "User-mode Linux development" ?
+>>
+>> Yes.
+>>
+>>>   - the patchwork usernames of any folks who should be designated as
+>>>     maintainers - just 'rw' for now?
+>>
+>> For now just me.
+>> Hopefully there will be more maintainers/reviewers at some point.
+>> /me looks at Anton.
+>
+>
+> Sure. I think I can do it for the IO. I still do not understand the mm part
+> of uml till this day though :)
+
+Cool! Just reply with a Reviewed-by for patches you feel good with.
+If you still like your role after a few moths I'll add you to the
+MAINTAINERS file
+as official reviewer.
+
 -- 
-2.16.2
+Thanks,
+//richard
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
