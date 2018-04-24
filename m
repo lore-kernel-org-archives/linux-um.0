@@ -1,15 +1,14 @@
 Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-From: ebiederm@xmission.com (Eric W. Biederman)
 References: <87604mhrnb.fsf@xmission.com>
  <20180420143811.9994-19-ebiederm@xmission.com>
  <7074fe36-27c5-ee82-9659-da703cfc91fe@kot-begemot.co.uk>
  <CAFLxGvyM+Kru=ERDvccjVuMjSPbu+FQzjbUbMwSyEbL1rVGkBQ@mail.gmail.com>
- <7ddd238f-88a8-ed03-fe9e-0f4e5f2a490d@kot-begemot.co.uk>
-Date: Tue, 24 Apr 2018 10:59:46 -0500
-In-Reply-To: <7ddd238f-88a8-ed03-fe9e-0f4e5f2a490d@kot-begemot.co.uk> (Anton
- Ivanov's message of "Tue, 24 Apr 2018 09:44:22 +0100")
-Message-ID: <87zi1sd28d.fsf@xmission.com>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <7ddd238f-88a8-ed03-fe9e-0f4e5f2a490d@kot-begemot.co.uk>
+Date: Tue, 24 Apr 2018 09:44:22 +0100
 MIME-Version: 1.0
+In-Reply-To: <CAFLxGvyM+Kru=ERDvccjVuMjSPbu+FQzjbUbMwSyEbL1rVGkBQ@mail.gmail.com>
+Content-Language: en-US
 Subject: Re: [uml-devel] [REVIEW][PATCH 19/22] signal/um: Use
  force_sig_fault in relay_signal.
 List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
@@ -19,52 +18,49 @@ List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
 List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
  <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Cc: Linux-Arch <linux-arch@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Martin =?utf-8?Q?P=C3=A4rt?= =?utf-8?Q?el?= <martin.partel@gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: Linux-Arch <linux-arch@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, "Eric W. Biederman" <ebiederm@xmission.com>
 List-ID: <linux-um.lists.infradead.org>
 
-U2lnaCBJIHNob3VsZCBoYXZlIENjJ2QgTWFydGluIFBhcnRlbCBhcyB3ZWxsIGFzIHRoaXMgYml0
-IGlzIGhpcwpvcmlnaW5hbCBjb2RlLgoKQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAa290LWJl
-Z2Vtb3QuY28udWs+IHdyaXRlczoKCj4gSGkgUmljaGFyZCwKPgo+IFRoZXJlIHdhcyBhIHBvc3Qg
-dG8gdW1sLWRldmVsIGR1cmluZyB0aGUgZGF5cyB3aGVuIHRoZSBzb3VyY2Vmb3JnZSBtYWlsaW5n
-IGxpc3QKPiB3YXMgd29ya2luZyBpbiByYW5kb20gZHJvcCBtb2RlIHdoaWNoIGNsYWltZWQgdGhh
-dCAidGhpcyBmaXhlcyB0aGUgYXJtIGJ1aWxkIi4KPgo+IEkgaGF2ZSBub3Qga2VwdCBpdCBsb2Nh
-bGx5IGFuZCBJIGRvIG5vdCBzZWUgaXQgdGhlIGFyY2hpdmUgKEkgZG8gbm90IHNlZSBhIGZldwo+
-IG90aGVyIHBvc3RzIHRoZXJlIGVpdGhlciAtIGluY2x1ZGluZyBzb21lIG9mIG1pbmUpLgo+Cj4g
-VGhlIGpveXMgb2YgaGF2aW5nIGEgYnJva2VuIGxpc3QgOigKPgo+IFdob2V2ZXIgcG9zdGVkIGl0
-LCBpZiB5b3UgYXJlIHJlYWRpbmcgaXQsIHBsZWFzZSByZS1wb3N0IGFnYWluIHNvIHdlIGNhbiBo
-YXZlIGEKPiBsb29rLgo+Cj4gSW4gdGhlIG1lYW50aW1lIHdlIGFyZSBhcyB5b3Ugc2FpZCAtIHg4
-NiBvbmx5LgoKVGhlIG9ubHkgY2FzZSBJIGNhbiBzZWUgbXkgY2hhbmdlZCByZWxheV9zaWduYWwg
-YWZmZWN0aW5nIG9uIGFybSBpcyB0aGUKbmFzdHkgaGFjaCB3aGVyZSBlcnJubyBpcyBzZXQgaW4g
-Y29uanVuY3Rpb24gd2l0aCB0cmFwX3RyYWNlLgoKSGF2aW5nIGEgc2Vjb25kIGxvb2sgSSByZWFs
-bHkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IHJlbGF5X3NpZ25hbCBpcwp0cnlpbmcgdG8gZG8uCgpU
-aGUgZnVuY3Rpb24gcmVsYXlfc2lnbmFsIGRvZXMgbm90IHBhc3Mgc2lnaW5mbyB0aHJvdWdoIHVu
-Y2hhbmdlZC4KVGhlIGZ1bmN0aW9uIHJlbGF5X3NpZ25hbCBkb2VzIG5vdCBoYW5kbGUgY2FzZXMg
-d2hlcmUgc2lfY29kZSBpcwpub3QgU0lfVVNFUiBvciBTSV9LRVJORUwsIG9yIGFueSBvZiB0aGUg
-b3RoZXIgc2lnbmFsIGluZGVwZW5kZW50CnNpX2NvZGVzLgoKSW4gbXkgY2hhbmdlIEkgYmVsaWV2
-ZSBJIGhhdmUgcHJlc2VydmVkIHRoZSBjaGFyYWN0ZXIgb2YgcmVsYXlfc2lnbmFsIG9mCmp1c3Qg
-cGFzc2luZyB0aHJvdWdoIHRoZSBmYXVsdC4KClN0aWxsIGV2ZW4gYWZ0ZXIgcmVhZGluZyB0aGUg
-Y29tbWl0IHRoYXQgdXBncmFkZWQgcmVsYXlfc2lnbmFsIHRvCnByZXNlcnZlIHNpX2NvZGUgYW5k
-IHNpX2FkZHIgSSByZWFsbHkgZG9uJ3QgdW5kZXJzdGFuZCB0aGUgaW50ZW5kZWQKbG9naWMuCgpB
-bSBJIG1pc3Npbmcgc29tZXRoaW5nIHN1YnRsZSBvciBoYXZlIHRoZSBzdWJ0bGUgZGV0YWlscyBv
-ZiBzaWdpbmZvIGp1c3QKYWx3YXlzIGJlZW4gaWdub3JlZD8KCmNvbW1pdCBkM2MxY2ZjZGI0M2Uw
-MjNhYjFiMWM3YTU1NWNkOWU5MjkwMjY1MDBhCkF1dGhvcjogTWFydGluIFDDpHJ0ZWwgPG1hcnRp
-bi5wYXJ0ZWxAZ21haWwuY29tPgpEYXRlOiAgIFRodSBBdWcgMiAwMDo0OToxNyAyMDEyICswMjAw
-CgogICAgdW06IHBhc3Mgc2lnaW5mbyB0byBndWVzdCBwcm9jZXNzCiAgICAKICAgIFVNTCBndWVz
-dCBwcm9jZXNzZXMgbm93IGdldCBjb3JyZWN0IHNpZ2luZm9fdCBmb3IgU0lHVFJBUCwgU0lHRlBF
-LAogICAgU0lHSUxMIGFuZCBTSUdCVVMuIFNwZWNpZmljYWxseSwgc2lfYWRkciBhbmQgc2lfY29k
-ZSBhcmUgbm93IGNvcnJlY3QKICAgIHdoZXJlIHByZXZpb3VzbHkgdGhleSB3ZXJlIHNpX2FkZHIg
-PSBOVUxMIGFuZCBzaV9jb2RlID0gMTI4LgogICAgCiAgICBTaWduZWQtb2ZmLWJ5OiBNYXJ0aW4g
-UMOkcnRlbCA8bWFydGluLnBhcnRlbEBnbWFpbC5jb20+CiAgICBTaWduZWQtb2ZmLWJ5OiBSaWNo
-YXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgoKRXJpYwoKCi0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQpDaGVjayBvdXQgdGhlIHZpYnJhbnQgdGVjaCBjb21tdW5pdHkgb24gb25lIG9mIHRoZSB3
-b3JsZCdzIG1vc3QKZW5nYWdpbmcgdGVjaCBzaXRlcywgU2xhc2hkb3Qub3JnISBodHRwOi8vc2Rt
-Lmxpbmsvc2xhc2hkb3QKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgt
-ZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0
-L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
+Hi Richard,
+
+There was a post to uml-devel during the days when the sourceforge 
+mailing list was working in random drop mode which claimed that "this 
+fixes the arm build".
+
+I have not kept it locally and I do not see it the archive (I do not see 
+a few other posts there either - including some of mine).
+
+The joys of having a broken list :(
+
+Whoever posted it, if you are reading it, please re-post again so we can 
+have a look.
+
+In the meantime we are as you said - x86 only.
+
+A.
+
+On 04/24/18 09:32, Richard Weinberger wrote:
+> On Fri, Apr 20, 2018 at 6:06 PM, Anton Ivanov
+> <anton.ivanov@kot-begemot.co.uk> wrote:
+>> On 04/20/18 15:38, Eric W. Biederman wrote:
+>>> Today user mode linux only works on x86 and x86_64 and this allows
+>>> simplifications of relay_signal.
+>>
+>> I believe someone recently fixed the ARM port. I have not had the time to
+>> try the fixes though.
+> Huh? UML is for ages x86 only.
+>
+
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
