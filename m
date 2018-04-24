@@ -1,52 +1,70 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ua0-x241.google.com ([2607:f8b0:400c:c08::241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fB62R-0003bS-Fb
- for linux-um@lists.infradead.org; Tue, 24 Apr 2018 22:03:52 +0000
-Received: by mail-ua0-x241.google.com with SMTP id v4so13623877uaj.3
- for <linux-um@lists.infradead.org>; Tue, 24 Apr 2018 15:03:40 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAMD8JhwgcWCp6c=O4-spNW1VdY5M-eAjr7M5PieeAfeTSe_4yw@mail.gmail.com>
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+From: ebiederm@xmission.com (Eric W. Biederman)
 References: <87604mhrnb.fsf@xmission.com>
  <20180420143811.9994-19-ebiederm@xmission.com>
  <7074fe36-27c5-ee82-9659-da703cfc91fe@kot-begemot.co.uk>
  <CAFLxGvyM+Kru=ERDvccjVuMjSPbu+FQzjbUbMwSyEbL1rVGkBQ@mail.gmail.com>
  <7ddd238f-88a8-ed03-fe9e-0f4e5f2a490d@kot-begemot.co.uk>
- <87zi1sd28d.fsf@xmission.com>
- <CAMD8JhwgcWCp6c=O4-spNW1VdY5M-eAjr7M5PieeAfeTSe_4yw@mail.gmail.com>
-From: =?UTF-8?Q?Martin_P=C3=A4rtel?= <martin.partel@gmail.com>
-Date: Wed, 25 Apr 2018 01:03:39 +0300
-Message-ID: <CAMD8JhxHwcuXh68o1=fbZ_t6DH7x_dO_0nEMqL=cHXBfZXub=w@mail.gmail.com>
-Subject: Re: [uml-devel] [REVIEW][PATCH 19/22] signal/um: Use force_sig_fault
- in relay_signal.
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Date: Tue, 24 Apr 2018 10:59:46 -0500
+In-Reply-To: <7ddd238f-88a8-ed03-fe9e-0f4e5f2a490d@kot-begemot.co.uk> (Anton
+ Ivanov's message of "Tue, 24 Apr 2018 09:44:22 +0100")
+Message-ID: <87zi1sd28d.fsf@xmission.com>
+MIME-Version: 1.0
+Subject: Re: [uml-devel] [REVIEW][PATCH 19/22] signal/um: Use
+ force_sig_fault in relay_signal.
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Linux-Arch <linux-arch@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Cc: Linux-Arch <linux-arch@vger.kernel.org>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Martin =?utf-8?Q?P=C3=A4rt?= =?utf-8?Q?el?= <martin.partel@gmail.com>
+List-ID: <linux-um.lists.infradead.org>
 
-QW5kIG9uY2UgbW9yZSBpbiBwbGFpbiB0ZXh0Li4KCk9uIDI1IEFwcmlsIDIwMTggYXQgMDE6MDAs
-IE1hcnRpbiBQw6RydGVsIDxtYXJ0aW4ucGFydGVsQGdtYWlsLmNvbT4gd3JvdGU6Cj4KPiBIaSBh
-bGwsCj4KPiBUaGlzIHdhcyBhZ2VzIGFnbywgYnV0IGZyb20gd2hhdCBJIHJlbWVtYmVyLi4uCj4K
-Pj4KPj4gSGF2aW5nIGEgc2Vjb25kIGxvb2sgSSByZWFsbHkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0
-IHJlbGF5X3NpZ25hbCBpcwo+PiB0cnlpbmcgdG8gZG8uCj4+Cj4+IFRoZSBmdW5jdGlvbiByZWxh
-eV9zaWduYWwgZG9lcyBub3QgcGFzcyBzaWdpbmZvIHRocm91Z2ggdW5jaGFuZ2VkLgo+Cj4KPiBK
-dXN0IGNvcHlpbmcgdGhlIGVudGlyZSBzdHJ1Y3Qgd291bGQgZG8gdGhlIHdyb25nIHRoaW5nLiBJ
-dCB3YXMgZGlzY3Vzc2VkIGhlcmU6Cj4gaHR0cHM6Ly9tYXJjLmluZm8vP2w9dXNlci1tb2RlLWxp
-bnV4LWRldmVsJm09MTMzOTEwNzA3OTExOTk5Jnc9Mgo+Cj4+Cj4+IEFtIEkgbWlzc2luZyBzb21l
-dGhpbmcgc3VidGxlIG9yIGhhdmUgdGhlIHN1YnRsZSBkZXRhaWxzIG9mIHNpZ2luZm8ganVzdAo+
-PiBhbHdheXMgYmVlbiBpZ25vcmVkPwo+Cj4KPiBNeSBndWVzcyBpcyB0aGV5IGhhdmUuIEkgd2Fz
-IGFsbW9zdCBjZXJ0YWlubHkgb2JsaXZpb3VzIHRvIHN1Y2ggc3VidGxldGllcyB3aGVuIHdyaXRp
-bmcgbXkgY29tbWl0Lgo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+U2lnaCBJIHNob3VsZCBoYXZlIENjJ2QgTWFydGluIFBhcnRlbCBhcyB3ZWxsIGFzIHRoaXMgYml0
+IGlzIGhpcwpvcmlnaW5hbCBjb2RlLgoKQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZAa290LWJl
+Z2Vtb3QuY28udWs+IHdyaXRlczoKCj4gSGkgUmljaGFyZCwKPgo+IFRoZXJlIHdhcyBhIHBvc3Qg
+dG8gdW1sLWRldmVsIGR1cmluZyB0aGUgZGF5cyB3aGVuIHRoZSBzb3VyY2Vmb3JnZSBtYWlsaW5n
+IGxpc3QKPiB3YXMgd29ya2luZyBpbiByYW5kb20gZHJvcCBtb2RlIHdoaWNoIGNsYWltZWQgdGhh
+dCAidGhpcyBmaXhlcyB0aGUgYXJtIGJ1aWxkIi4KPgo+IEkgaGF2ZSBub3Qga2VwdCBpdCBsb2Nh
+bGx5IGFuZCBJIGRvIG5vdCBzZWUgaXQgdGhlIGFyY2hpdmUgKEkgZG8gbm90IHNlZSBhIGZldwo+
+IG90aGVyIHBvc3RzIHRoZXJlIGVpdGhlciAtIGluY2x1ZGluZyBzb21lIG9mIG1pbmUpLgo+Cj4g
+VGhlIGpveXMgb2YgaGF2aW5nIGEgYnJva2VuIGxpc3QgOigKPgo+IFdob2V2ZXIgcG9zdGVkIGl0
+LCBpZiB5b3UgYXJlIHJlYWRpbmcgaXQsIHBsZWFzZSByZS1wb3N0IGFnYWluIHNvIHdlIGNhbiBo
+YXZlIGEKPiBsb29rLgo+Cj4gSW4gdGhlIG1lYW50aW1lIHdlIGFyZSBhcyB5b3Ugc2FpZCAtIHg4
+NiBvbmx5LgoKVGhlIG9ubHkgY2FzZSBJIGNhbiBzZWUgbXkgY2hhbmdlZCByZWxheV9zaWduYWwg
+YWZmZWN0aW5nIG9uIGFybSBpcyB0aGUKbmFzdHkgaGFjaCB3aGVyZSBlcnJubyBpcyBzZXQgaW4g
+Y29uanVuY3Rpb24gd2l0aCB0cmFwX3RyYWNlLgoKSGF2aW5nIGEgc2Vjb25kIGxvb2sgSSByZWFs
+bHkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IHJlbGF5X3NpZ25hbCBpcwp0cnlpbmcgdG8gZG8uCgpU
+aGUgZnVuY3Rpb24gcmVsYXlfc2lnbmFsIGRvZXMgbm90IHBhc3Mgc2lnaW5mbyB0aHJvdWdoIHVu
+Y2hhbmdlZC4KVGhlIGZ1bmN0aW9uIHJlbGF5X3NpZ25hbCBkb2VzIG5vdCBoYW5kbGUgY2FzZXMg
+d2hlcmUgc2lfY29kZSBpcwpub3QgU0lfVVNFUiBvciBTSV9LRVJORUwsIG9yIGFueSBvZiB0aGUg
+b3RoZXIgc2lnbmFsIGluZGVwZW5kZW50CnNpX2NvZGVzLgoKSW4gbXkgY2hhbmdlIEkgYmVsaWV2
+ZSBJIGhhdmUgcHJlc2VydmVkIHRoZSBjaGFyYWN0ZXIgb2YgcmVsYXlfc2lnbmFsIG9mCmp1c3Qg
+cGFzc2luZyB0aHJvdWdoIHRoZSBmYXVsdC4KClN0aWxsIGV2ZW4gYWZ0ZXIgcmVhZGluZyB0aGUg
+Y29tbWl0IHRoYXQgdXBncmFkZWQgcmVsYXlfc2lnbmFsIHRvCnByZXNlcnZlIHNpX2NvZGUgYW5k
+IHNpX2FkZHIgSSByZWFsbHkgZG9uJ3QgdW5kZXJzdGFuZCB0aGUgaW50ZW5kZWQKbG9naWMuCgpB
+bSBJIG1pc3Npbmcgc29tZXRoaW5nIHN1YnRsZSBvciBoYXZlIHRoZSBzdWJ0bGUgZGV0YWlscyBv
+ZiBzaWdpbmZvIGp1c3QKYWx3YXlzIGJlZW4gaWdub3JlZD8KCmNvbW1pdCBkM2MxY2ZjZGI0M2Uw
+MjNhYjFiMWM3YTU1NWNkOWU5MjkwMjY1MDBhCkF1dGhvcjogTWFydGluIFDDpHJ0ZWwgPG1hcnRp
+bi5wYXJ0ZWxAZ21haWwuY29tPgpEYXRlOiAgIFRodSBBdWcgMiAwMDo0OToxNyAyMDEyICswMjAw
+CgogICAgdW06IHBhc3Mgc2lnaW5mbyB0byBndWVzdCBwcm9jZXNzCiAgICAKICAgIFVNTCBndWVz
+dCBwcm9jZXNzZXMgbm93IGdldCBjb3JyZWN0IHNpZ2luZm9fdCBmb3IgU0lHVFJBUCwgU0lHRlBF
+LAogICAgU0lHSUxMIGFuZCBTSUdCVVMuIFNwZWNpZmljYWxseSwgc2lfYWRkciBhbmQgc2lfY29k
+ZSBhcmUgbm93IGNvcnJlY3QKICAgIHdoZXJlIHByZXZpb3VzbHkgdGhleSB3ZXJlIHNpX2FkZHIg
+PSBOVUxMIGFuZCBzaV9jb2RlID0gMTI4LgogICAgCiAgICBTaWduZWQtb2ZmLWJ5OiBNYXJ0aW4g
+UMOkcnRlbCA8bWFydGluLnBhcnRlbEBnbWFpbC5jb20+CiAgICBTaWduZWQtb2ZmLWJ5OiBSaWNo
+YXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgoKRXJpYwoKCi0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQpDaGVjayBvdXQgdGhlIHZpYnJhbnQgdGVjaCBjb21tdW5pdHkgb24gb25lIG9mIHRoZSB3
+b3JsZCdzIG1vc3QKZW5nYWdpbmcgdGVjaCBzaXRlcywgU2xhc2hkb3Qub3JnISBodHRwOi8vc2Rt
+Lmxpbmsvc2xhc2hkb3QKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KVXNlci1tb2RlLWxpbnV4LWRldmVsIG1haWxpbmcgbGlzdApVc2VyLW1vZGUtbGludXgt
+ZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0
+L2xpc3RzL2xpc3RpbmZvL3VzZXItbW9kZS1saW51eC1kZXZlbAo=
 
