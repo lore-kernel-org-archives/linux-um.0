@@ -1,54 +1,56 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAhlA-0002g2-GQ
- for linux-um@lists.infradead.org; Mon, 23 Apr 2018 20:08:26 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lilium.sigma-star.at (Postfix) with ESMTP id 5FFEE18186368
- for <linux-um@lists.infradead.org>; Mon, 23 Apr 2018 22:08:10 +0200 (CEST)
-From: Richard Weinberger <richard@sigma-star.at>
-Subject: Patchwork usage
-Date: Mon, 23 Apr 2018 22:08:08 +0200
-Message-ID: <1708117.Q62ykoCA5g@blindfold>
-MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Sat, 28 Apr 2018 09:07:00 -0500
+Message-Id: <20180428140702.3925-3-ebiederm@xmission.com>
+In-Reply-To: <87zi1nctut.fsf_-_@xmission.com>
+References: <87zi1nctut.fsf_-_@xmission.com>
+Subject: [REVIEW][PATCH 3/5] signal: Remove unncessary #ifdef SEGV_PKUERR in 32bit compat code
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linux-Arch <linux-arch@vger.kernel.org>
+Cc: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, =?UTF-8?q?Martin=20P=C3=A4rtel?= <martin.partel@gmail.com>, "Eric W. Biederman" <ebiederm@xmission.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Hi!
+The only architecture that does not support SEGV_PKUERR is ia64 and
+ia64 has not had 32bit support since some time in 2008.  Therefore
+copy_siginfo_to_user32 and copy_siginfo_from_user32 do not need to
+include support for a missing SEGV_PKUERR.
 
-To keep track of UML related patches I'm using patchwork now.
-Using the following link[0] you can observe the state of patches.
+Compile test on ia64.
 
-If a patch is marked as "accepted" I've pushed it into one of my local queues
-and will show up in -next soon. I push my local queues to kernel.org after I found time to
-did basic testing and a few patches summed up.
-Please note that material for the next merge window might show up in linux-next only
-1-2 weeks before the merge window opens.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ kernel/signal.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-As always, if I forget a patch feel free to shout at me.
-
-Thanks,
-//richard
-
-[0] https://patchwork.ozlabs.org/project/linux-um/list/?series=&submitter=&state=*&q=&archive=&delegate=
-
+diff --git a/kernel/signal.c b/kernel/signal.c
+index b87a9c21f698..376b42f26e6d 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2888,12 +2888,9 @@ int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+ 			new.si_lower = ptr_to_compat(from->si_lower);
+ 			new.si_upper = ptr_to_compat(from->si_upper);
+ 		}
+-#ifdef SEGV_PKUERR
+ 		if ((from->si_signo == SIGSEGV) &&
+ 		    (from->si_code == SEGV_PKUERR))
+ 			new.si_pkey = from->si_pkey;
+-#endif
+-
+ 		break;
+ 	case SIL_CHLD:
+ 		new.si_pid    = from->si_pid;
+@@ -2968,10 +2965,8 @@ int copy_siginfo_from_user32(struct siginfo *to,
+ 			to->si_lower = compat_ptr(from.si_lower);
+ 			to->si_upper = compat_ptr(from.si_upper);
+ 		}
+-#ifdef SEGV_PKUERR
+ 		if ((from.si_signo == SIGSEGV) && (from.si_code == SEGV_PKUERR))
+ 			to->si_pkey = from.si_pkey;
+-#endif
+ 		break;
+ 	case SIL_CHLD:
+ 		to->si_pid    = from.si_pid;
 -- 
-sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
-ATU66964118 - FN 374287y
+2.14.1
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
