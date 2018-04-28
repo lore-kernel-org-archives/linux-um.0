@@ -1,126 +1,76 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-References: <87604mhrnb.fsf@xmission.com>
- <20180420143811.9994-19-ebiederm@xmission.com>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Message-ID: <7074fe36-27c5-ee82-9659-da703cfc91fe@kot-begemot.co.uk>
-Date: Fri, 20 Apr 2018 17:06:10 +0100
-MIME-Version: 1.0
-In-Reply-To: <20180420143811.9994-19-ebiederm@xmission.com>
-Content-Language: en-US
-Subject: Re: [uml-devel] [REVIEW][PATCH 19/22] signal/um: Use
- force_sig_fault in relay_signal.
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "Eric W. Biederman" <ebiederm@xmission.com>, linux-arch@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Sat, 28 Apr 2018 09:06:59 -0500
+Message-Id: <20180428140702.3925-2-ebiederm@xmission.com>
+In-Reply-To: <87zi1nctut.fsf_-_@xmission.com>
+References: <87zi1nctut.fsf_-_@xmission.com>
+Subject: [REVIEW][PATCH 2/5] signal/signalfd: Add support for SIGSYS
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linux-Arch <linux-arch@vger.kernel.org>
+Cc: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, =?UTF-8?q?Martin=20P=C3=A4rtel?= <martin.partel@gmail.com>, "Eric W. Biederman" <ebiederm@xmission.com>
 List-ID: <linux-um.lists.infradead.org>
 
+I don't know why signalfd has never grown support for SIGSYS but grow it now.
 
-On 04/20/18 15:38, Eric W. Biederman wrote:
-> Today user mode linux only works on x86 and x86_64 and this allows
-> simplifications of relay_signal.
+This corrects an oversight and removes a need for a default in the
+switch statement.  Allowing gcc to warn when future members are added
+to the enum siginfo_layout, and signalfd does not handle them.
 
-I believe someone recently fixed the ARM port. I have not had the time 
-to try the fixes though.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ fs/signalfd.c                 | 6 +++++-
+ include/uapi/linux/signalfd.h | 6 +++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-I have added the new list we are migrating to the cc list.
+diff --git a/fs/signalfd.c b/fs/signalfd.c
+index 31e960209a08..f652249f59f9 100644
+--- a/fs/signalfd.c
++++ b/fs/signalfd.c
+@@ -134,7 +134,6 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
+ 		new.ssi_stime  = kinfo->si_stime;
+ 		break;
+ 	case SIL_RT:
+-	default:
+ 		/*
+ 		 * This case catches also the signals queued by sigqueue().
+ 		 */
+@@ -143,6 +142,11 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
+ 		new.ssi_ptr = (long) kinfo->si_ptr;
+ 		new.ssi_int = kinfo->si_int;
+ 		break;
++	case SIL_SYS:
++		new.ssi_call_addr = (long) kinfo->si_call_addr;
++		new.ssi_syscall   = kinfo->si_syscall;
++		new.ssi_arch      = kinfo->si_arch;
++		break;
+ 	}
+ 
+ 	if (copy_to_user(uinfo, &new, sizeof(struct signalfd_siginfo)))
+diff --git a/include/uapi/linux/signalfd.h b/include/uapi/linux/signalfd.h
+index 6f0da42fc5ef..83429a05b698 100644
+--- a/include/uapi/linux/signalfd.h
++++ b/include/uapi/linux/signalfd.h
+@@ -35,6 +35,10 @@ struct signalfd_siginfo {
+ 	__u64 ssi_stime;
+ 	__u64 ssi_addr;
+ 	__u16 ssi_addr_lsb;
++	__u16 __pad2;
++	__s32 ssi_syscall;
++	__u64 ssi_call_addr;
++	__u32 ssi_arch;
+ 
+ 	/*
+ 	 * Pad strcture to 128 bytes. Remember to update the
+@@ -45,7 +49,7 @@ struct signalfd_siginfo {
+ 	 * comes out of a read(2) and we really don't want to have
+ 	 * a compat on read(2).
+ 	 */
+-	__u8 __pad[46];
++	__u8 __pad[28];
+ };
+ 
+ 
+-- 
+2.14.1
 
-A.
-
-
-
->
-> - x86 always set si_errno to 0 in fault handlers.
-> - x86 does not implement si_trapno.
-> - Only si_codes between SI_USER and SI_KERNEL have a fault address.
->
-> Therefore warn if si_errno is set (it should never be).
-> Use force_sig_info in the case where we know we have a good fault.
->
-> For signals whose content it is not clear how to relay use plain
-> force_sig and let the signal sending code come up with an
-> appropriate generic siginfo.
->
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: user-mode-linux-devel@lists.sourceforge.net
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->   arch/um/kernel/trap.c | 28 +++++++++++++---------------
->   1 file changed, 13 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-> index d4d38520c4c6..5f0ff17cd790 100644
-> --- a/arch/um/kernel/trap.c
-> +++ b/arch/um/kernel/trap.c
-> @@ -296,9 +296,6 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
->   
->   void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs)
->   {
-> -	struct faultinfo *fi;
-> -	struct siginfo clean_si;
-> -
->   	if (!UPT_IS_USER(regs)) {
->   		if (sig == SIGBUS)
->   			printk(KERN_ERR "Bus error - the host /dev/shm or /tmp "
-> @@ -308,29 +305,30 @@ void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs)
->   
->   	arch_examine_signal(sig, regs);
->   
-> -	clear_siginfo(&clean_si);
-> -	clean_si.si_signo = si->si_signo;
-> -	clean_si.si_errno = si->si_errno;
-> -	clean_si.si_code = si->si_code;
-> +	if (unlikely(si->si_errno)) {
-> +		printk(KERN_ERR "Attempted to relay signal %d (si_code = %d) with errno %d\n",
-> +		       sig, si->si_code, si->si_errno);
-> +	}
->   	switch (sig) {
->   	case SIGILL:
->   	case SIGFPE:
->   	case SIGSEGV:
->   	case SIGBUS:
->   	case SIGTRAP:
-> -		fi = UPT_FAULTINFO(regs);
-> -		clean_si.si_addr = (void __user *) FAULT_ADDRESS(*fi);
-> -		current->thread.arch.faultinfo = *fi;
-> -#ifdef __ARCH_SI_TRAPNO
-> -		clean_si.si_trapno = si->si_trapno;
-> -#endif
-> -		break;
-> +		if ((si->si_code > SI_USER) && (si->si_code < SI_KERNEL)) {
-> +			struct faultinfo *fi = UPT_FAULTINFO(regs);
-> +			current->thread.arch.faultinfo = *fi;
-> +			force_sig_fault(sig, si->si_code,
-> +					(void __user *)FAULT_ADDRESS(*fi),
-> +					current);
-> +			break;
-> +		}
->   	default:
->   		printk(KERN_ERR "Attempted to relay unknown signal %d (si_code = %d)\n",
->   			sig, si->si_code);
->   	}
->   
-> -	force_sig_info(sig, &clean_si, current);
-> +	force_sig(sig, current);
->   }
->   
->   void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs)
-
-
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
