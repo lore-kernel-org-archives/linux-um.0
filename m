@@ -1,127 +1,199 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAg4n-0000rp-Kk
- for linux-um@lists.infradead.org; Mon, 23 Apr 2018 18:20:35 +0000
-Received: by mail-wr0-x242.google.com with SMTP id p18-v6so24647019wrm.1
- for <linux-um@lists.infradead.org>; Mon, 23 Apr 2018 11:20:21 -0700 (PDT)
-Date: Mon, 23 Apr 2018 21:20:17 +0300
-From: Alexander Pateenok <pateenoc@gmail.com>
-Subject: [PATCH] um: remove uml initcalls
-Message-ID: <20180423182017.oxlfhnsrekk34q3b@K55DR>
-MIME-Version: 1.0
-Content-Disposition: inline
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Sat, 28 Apr 2018 09:07:01 -0500
+Message-Id: <20180428140702.3925-4-ebiederm@xmission.com>
+In-Reply-To: <87zi1nctut.fsf_-_@xmission.com>
+References: <87zi1nctut.fsf_-_@xmission.com>
+Subject: [REVIEW][PATCH 4/5] signal: Extend siginfo_layout with SIL_FAULT_{MCEERR|BNDERR|PKUERR}
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linux-Arch <linux-arch@vger.kernel.org>
+Cc: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, =?UTF-8?q?Martin=20P=C3=A4rtel?= <martin.partel@gmail.com>, "Eric W. Biederman" <ebiederm@xmission.com>
+List-ID: <linux-um.lists.infradead.org>
 
-__uml_initcall() is not used and .uml.initcall.init section is empty:
+Update the siginfo_layout function and enum siginfo_layout to represent
+all of the possible field layouts of struct siginfo.
 
-$ grep -r '__uml_initcall('
-arch/um/include/shared/init.h:#define __uml_initcall(fn)	\
-$ readelf -s ../umobj/linux | grep __uml_initcall
- 23214: 00000000603b75d8     0 NOTYPE  GLOBAL DEFAULT   32 __uml_initcall_start
- 25337: 00000000603b75d8     0 NOTYPE  GLOBAL DEFAULT   32 __uml_initcall_end
+This allows the uses of siginfo_layout in um and arm64 where they are testing
+for SIL_FAULT to be more accurate as this rules out the other cases.
 
-So it is unnecessary.
+Further this allows the switch statements on siginfo_layout to be simpler
+if perhaps a little more wordy.  Making it easier to understand what is
+actually going on.
 
-Signed-off-by: Alexander Pateenok <pateenoc@gmail.com>
+As SIL_FAULT_BNDERR and SIL_FAULT_PKUERR are never expected to appear
+in signalfd just treat them as SIL_FAULT.  To include them would take
+20 extra bytes an pretty much fill up what is left of
+signalfd_siginfo.
+
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- arch/um/include/asm/common.lds.S |  6 ------
- arch/um/include/shared/init.h    |  5 -----
- arch/um/os-Linux/main.c          | 12 ------------
- 3 files changed, 23 deletions(-)
+ fs/signalfd.c          | 24 ++++++++++-----
+ include/linux/signal.h |  3 ++
+ kernel/signal.c        | 81 ++++++++++++++++++++++++++++++++++----------------
+ 3 files changed, 75 insertions(+), 33 deletions(-)
 
-diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
-index b30d73ca29d0..7adb4e6b658a 100644
---- a/arch/um/include/asm/common.lds.S
-+++ b/arch/um/include/asm/common.lds.S
-@@ -53,12 +53,6 @@
- 	CON_INITCALL
-   }
- 
--  .uml.initcall.init : {
--	__uml_initcall_start = .;
--	*(.uml.initcall.init)
--	__uml_initcall_end = .;
--  }
--
-   SECURITY_INIT
- 
-   .exitcall : {
-diff --git a/arch/um/include/shared/init.h b/arch/um/include/shared/init.h
-index b3f5865a92c9..c66de434a983 100644
---- a/arch/um/include/shared/init.h
-+++ b/arch/um/include/shared/init.h
-@@ -64,14 +64,10 @@ struct uml_param {
-         int (*setup_func)(char *, int *);
- };
- 
--extern initcall_t __uml_initcall_start, __uml_initcall_end;
- extern initcall_t __uml_postsetup_start, __uml_postsetup_end;
- extern const char *__uml_help_start, *__uml_help_end;
+diff --git a/fs/signalfd.c b/fs/signalfd.c
+index f652249f59f9..cbb42f77a2bd 100644
+--- a/fs/signalfd.c
++++ b/fs/signalfd.c
+@@ -112,19 +112,27 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
+ 		new.ssi_band = kinfo->si_band;
+ 		new.ssi_fd   = kinfo->si_fd;
+ 		break;
++	case SIL_FAULT_BNDERR:
++	case SIL_FAULT_PKUERR:
++		/*
++		 * Fall through to the SIL_FAULT case.  Both SIL_FAULT_BNDERR
++		 * and SIL_FAULT_PKUERR are only generated by faults that
++		 * deliver them synchronously to userspace.  In case someone
++		 * injects one of these signals and signalfd catches it treat
++		 * it as SIL_FAULT.
++		 */
+ 	case SIL_FAULT:
+ 		new.ssi_addr = (long) kinfo->si_addr;
+ #ifdef __ARCH_SI_TRAPNO
+ 		new.ssi_trapno = kinfo->si_trapno;
  #endif
- 
--#define __uml_initcall(fn)					  	\
--	static initcall_t __uml_initcall_##fn __uml_init_call = fn
--
- #define __uml_exitcall(fn)						\
- 	static exitcall_t __uml_exitcall_##fn __uml_exit_call = fn
- 
-@@ -108,7 +104,6 @@ extern struct uml_param __uml_setup_start, __uml_setup_end;
-  */
- #define __uml_init_setup	__used __section(.uml.setup.init)
- #define __uml_setup_help	__used __section(.uml.help.init)
--#define __uml_init_call		__used __section(.uml.initcall.init)
- #define __uml_postsetup_call	__used __section(.uml.postsetup.init)
- #define __uml_exit_call		__used __section(.uml.exitcall.exit)
- 
-diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
-index 5f970ece5ac3..f1fee2b91239 100644
---- a/arch/um/os-Linux/main.c
-+++ b/arch/um/os-Linux/main.c
-@@ -40,17 +40,6 @@ static void set_stklim(void)
- 	}
- }
- 
--static __init void do_uml_initcalls(void)
--{
--	initcall_t *call;
--
--	call = &__uml_initcall_start;
--	while (call < &__uml_initcall_end) {
--		(*call)();
--		call++;
--	}
--}
--
- static void last_ditch_exit(int sig)
- {
- 	uml_cleanup();
-@@ -151,7 +140,6 @@ int __init main(int argc, char **argv, char **envp)
- 	scan_elf_aux(envp);
+-		/*
+-		 * Other callers might not initialize the si_lsb field,
+-		 * so check explicitly for the right codes here.
+-		 */
+-		if (kinfo->si_signo == SIGBUS &&
+-		    ((kinfo->si_code == BUS_MCEERR_AR) ||
+-		     (kinfo->si_code == BUS_MCEERR_AO)))
+-			new.ssi_addr_lsb = (short) kinfo->si_addr_lsb;
++		break;
++	case SIL_FAULT_MCEERR:
++		new.ssi_addr = (long) kinfo->si_addr;
++#ifdef __ARCH_SI_TRAPNO
++		new.ssi_trapno = kinfo->si_trapno;
++#endif
++		new.ssi_addr_lsb = (short) kinfo->si_addr_lsb;
+ 		break;
+ 	case SIL_CHLD:
+ 		new.ssi_pid    = kinfo->si_pid;
+diff --git a/include/linux/signal.h b/include/linux/signal.h
+index a9bc7e1b077e..3c5200137b24 100644
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -28,6 +28,9 @@ enum siginfo_layout {
+ 	SIL_TIMER,
+ 	SIL_POLL,
+ 	SIL_FAULT,
++	SIL_FAULT_MCEERR,
++	SIL_FAULT_BNDERR,
++	SIL_FAULT_PKUERR,
+ 	SIL_CHLD,
+ 	SIL_RT,
+ 	SIL_SYS,
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 376b42f26e6d..8a85da8aaa7c 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2820,8 +2820,19 @@ enum siginfo_layout siginfo_layout(int sig, int si_code)
+ 			[SIGPOLL] = { NSIGPOLL, SIL_POLL },
+ 			[SIGSYS]  = { NSIGSYS,  SIL_SYS },
+ 		};
+-		if ((sig < ARRAY_SIZE(filter)) && (si_code <= filter[sig].limit))
++		if ((sig < ARRAY_SIZE(filter)) && (si_code <= filter[sig].limit)) {
+ 			layout = filter[sig].layout;
++			/* Handle the exceptions */
++			if ((sig == SIGBUS) &&
++			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
++				layout = SIL_FAULT_MCEERR;
++			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
++				layout = SIL_FAULT_BNDERR;
++#ifdef SEGV_PKUERR
++			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
++				layout = SIL_FAULT_PKUERR;
++#endif
++		}
+ 		else if (si_code <= NSIGPOLL)
+ 			layout = SIL_POLL;
+ 	} else {
+@@ -2878,19 +2889,28 @@ int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+ #ifdef __ARCH_SI_TRAPNO
+ 		new.si_trapno = from->si_trapno;
  #endif
- 
--	do_uml_initcalls();
- 	change_sig(SIGPIPE, 0);
- 	ret = linux_main(argc, argv);
- 
+-		if ((from->si_signo == SIGBUS) &&
+-		    ((from->si_code == BUS_MCEERR_AR) ||
+-		     (from->si_code == BUS_MCEERR_AO)))
+-			new.si_addr_lsb = from->si_addr_lsb;
+-
+-		if ((from->si_signo == SIGSEGV) &&
+-		    (from->si_code == SEGV_BNDERR)) {
+-			new.si_lower = ptr_to_compat(from->si_lower);
+-			new.si_upper = ptr_to_compat(from->si_upper);
+-		}
+-		if ((from->si_signo == SIGSEGV) &&
+-		    (from->si_code == SEGV_PKUERR))
+-			new.si_pkey = from->si_pkey;
++		break;
++	case SIL_FAULT_MCEERR:
++		new.si_addr = ptr_to_compat(from->si_addr);
++#ifdef __ARCH_SI_TRAPNO
++		new.si_trapno = from->si_trapno;
++#endif
++		new.si_addr_lsb = from->si_addr_lsb;
++		break;
++	case SIL_FAULT_BNDERR:
++		new.si_addr = ptr_to_compat(from->si_addr);
++#ifdef __ARCH_SI_TRAPNO
++		new.si_trapno = from->si_trapno;
++#endif
++		new.si_lower = ptr_to_compat(from->si_lower);
++		new.si_upper = ptr_to_compat(from->si_upper);
++		break;
++	case SIL_FAULT_PKUERR:
++		new.si_addr = ptr_to_compat(from->si_addr);
++#ifdef __ARCH_SI_TRAPNO
++		new.si_trapno = from->si_trapno;
++#endif
++		new.si_pkey = from->si_pkey;
+ 		break;
+ 	case SIL_CHLD:
+ 		new.si_pid    = from->si_pid;
+@@ -2956,17 +2976,28 @@ int copy_siginfo_from_user32(struct siginfo *to,
+ #ifdef __ARCH_SI_TRAPNO
+ 		to->si_trapno = from.si_trapno;
+ #endif
+-		if ((from.si_signo == SIGBUS) &&
+-		    ((from.si_code == BUS_MCEERR_AR) ||
+-		     (from.si_code == BUS_MCEERR_AO)))
+-			to->si_addr_lsb = from.si_addr_lsb;
+-
+-		if ((from.si_signo == SIGSEGV) && (from.si_code == SEGV_BNDERR)) {
+-			to->si_lower = compat_ptr(from.si_lower);
+-			to->si_upper = compat_ptr(from.si_upper);
+-		}
+-		if ((from.si_signo == SIGSEGV) && (from.si_code == SEGV_PKUERR))
+-			to->si_pkey = from.si_pkey;
++		break;
++	case SIL_FAULT_MCEERR:
++		to->si_addr = compat_ptr(from.si_addr);
++#ifdef __ARCH_SI_TRAPNO
++		to->si_trapno = from.si_trapno;
++#endif
++		to->si_addr_lsb = from.si_addr_lsb;
++		break;
++	case SIL_FAULT_BNDERR:
++		to->si_addr = compat_ptr(from.si_addr);
++#ifdef __ARCH_SI_TRAPNO
++		to->si_trapno = from.si_trapno;
++#endif
++		to->si_lower = compat_ptr(from.si_lower);
++		to->si_upper = compat_ptr(from.si_upper);
++		break;
++	case SIL_FAULT_PKUERR:
++		to->si_addr = compat_ptr(from.si_addr);
++#ifdef __ARCH_SI_TRAPNO
++		to->si_trapno = from.si_trapno;
++#endif
++		to->si_pkey = from.si_pkey;
+ 		break;
+ 	case SIL_CHLD:
+ 		to->si_pid    = from.si_pid;
 -- 
-2.16.3
+2.14.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
