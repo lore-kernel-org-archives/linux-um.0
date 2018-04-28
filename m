@@ -1,199 +1,83 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Sat, 28 Apr 2018 09:07:01 -0500
-Message-Id: <20180428140702.3925-4-ebiederm@xmission.com>
-In-Reply-To: <87zi1nctut.fsf_-_@xmission.com>
-References: <87zi1nctut.fsf_-_@xmission.com>
-Subject: [REVIEW][PATCH 4/5] signal: Extend siginfo_layout with SIL_FAULT_{MCEERR|BNDERR|PKUERR}
-Sender: linux-kernel-owner@vger.kernel.org
+Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
+From: ebiederm@xmission.com (Eric W. Biederman)
+References: <87604mhrnb.fsf@xmission.com>
+ <20180420143811.9994-19-ebiederm@xmission.com>
+ <7074fe36-27c5-ee82-9659-da703cfc91fe@kot-begemot.co.uk>
+ <CAFLxGvyM+Kru=ERDvccjVuMjSPbu+FQzjbUbMwSyEbL1rVGkBQ@mail.gmail.com>
+ <7ddd238f-88a8-ed03-fe9e-0f4e5f2a490d@kot-begemot.co.uk>
+ <87zi1sd28d.fsf@xmission.com>
+ <CAMD8JhwgcWCp6c=O4-spNW1VdY5M-eAjr7M5PieeAfeTSe_4yw@mail.gmail.com>
+ <CAMD8JhxHwcuXh68o1=fbZ_t6DH7x_dO_0nEMqL=cHXBfZXub=w@mail.gmail.com>
+ <87lgdc1bvr.fsf@xmission.com>
+ <CAMD8JhxzzCCjo_OLs8wS7ggOh4NqdxeRAGhcvuEJSUZZLO6NDA@mail.gmail.com>
+Date: Sat, 28 Apr 2018 09:02:02 -0500
+In-Reply-To: <CAMD8JhxzzCCjo_OLs8wS7ggOh4NqdxeRAGhcvuEJSUZZLO6NDA@mail.gmail.com>
+ ("Martin \=\?utf-8\?Q\?P\=C3\=A4rtel\=22's\?\= message of "Thu,
+ 26 Apr 2018 02:05:44 +0300")
+Message-ID: <87zi1nctut.fsf_-_@xmission.com>
+MIME-Version: 1.0
+Subject: [uml-devel] [REVIEW][PATCH 0/5] Improving siginfo_layout and fixing
+ uml's relay_signal
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
+List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
+ <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
 To: Linux-Arch <linux-arch@vger.kernel.org>
-Cc: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, =?UTF-8?q?Martin=20P=C3=A4rtel?= <martin.partel@gmail.com>, "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Richard Weinberger <richard.weinberger@gmail.com>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Martin =?utf-8?Q?P=C3=A4rt?= =?utf-8?Q?el?= <martin.partel@gmail.com>
 List-ID: <linux-um.lists.infradead.org>
 
-Update the siginfo_layout function and enum siginfo_layout to represent
-all of the possible field layouts of struct siginfo.
 
-This allows the uses of siginfo_layout in um and arm64 where they are testing
-for SIL_FAULT to be more accurate as this rules out the other cases.
+This patchset is a respin of my latest patch to relay_signal for uml.
 
-Further this allows the switch statements on siginfo_layout to be simpler
-if perhaps a little more wordy.  Making it easier to understand what is
-actually going on.
+As I understand relay_signal it very carefully scrubs the signal
+information it gets from the host kernel before passing it on.
+Basically making certain it recognizes what it is dealing with.
 
-As SIL_FAULT_BNDERR and SIL_FAULT_PKUERR are never expected to appear
-in signalfd just treat them as SIL_FAULT.  To include them would take
-20 extra bytes an pretty much fill up what is left of
-signalfd_siginfo.
+This patchset updates siginfo_layout so that relay_signal and arm64's
+force_signal_inject can reliably use it to verify the kind of signal
+being processed, by recognizing the specializations of SIL_FAULT as
+separate cases.
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- fs/signalfd.c          | 24 ++++++++++-----
- include/linux/signal.h |  3 ++
- kernel/signal.c        | 81 ++++++++++++++++++++++++++++++++++----------------
- 3 files changed, 75 insertions(+), 33 deletions(-)
+To make the siginfo_layout changes clean.  signalfd is first brought
+into the modern world of using a single copy_to_user, no default case
+statement (so gcc will flag missing cases), and handling SIGSYS for
+seccomp.
 
-diff --git a/fs/signalfd.c b/fs/signalfd.c
-index f652249f59f9..cbb42f77a2bd 100644
---- a/fs/signalfd.c
-+++ b/fs/signalfd.c
-@@ -112,19 +112,27 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
- 		new.ssi_band = kinfo->si_band;
- 		new.ssi_fd   = kinfo->si_fd;
- 		break;
-+	case SIL_FAULT_BNDERR:
-+	case SIL_FAULT_PKUERR:
-+		/*
-+		 * Fall through to the SIL_FAULT case.  Both SIL_FAULT_BNDERR
-+		 * and SIL_FAULT_PKUERR are only generated by faults that
-+		 * deliver them synchronously to userspace.  In case someone
-+		 * injects one of these signals and signalfd catches it treat
-+		 * it as SIL_FAULT.
-+		 */
- 	case SIL_FAULT:
- 		new.ssi_addr = (long) kinfo->si_addr;
- #ifdef __ARCH_SI_TRAPNO
- 		new.ssi_trapno = kinfo->si_trapno;
- #endif
--		/*
--		 * Other callers might not initialize the si_lsb field,
--		 * so check explicitly for the right codes here.
--		 */
--		if (kinfo->si_signo == SIGBUS &&
--		    ((kinfo->si_code == BUS_MCEERR_AR) ||
--		     (kinfo->si_code == BUS_MCEERR_AO)))
--			new.ssi_addr_lsb = (short) kinfo->si_addr_lsb;
-+		break;
-+	case SIL_FAULT_MCEERR:
-+		new.ssi_addr = (long) kinfo->si_addr;
-+#ifdef __ARCH_SI_TRAPNO
-+		new.ssi_trapno = kinfo->si_trapno;
-+#endif
-+		new.ssi_addr_lsb = (short) kinfo->si_addr_lsb;
- 		break;
- 	case SIL_CHLD:
- 		new.ssi_pid    = kinfo->si_pid;
-diff --git a/include/linux/signal.h b/include/linux/signal.h
-index a9bc7e1b077e..3c5200137b24 100644
---- a/include/linux/signal.h
-+++ b/include/linux/signal.h
-@@ -28,6 +28,9 @@ enum siginfo_layout {
- 	SIL_TIMER,
- 	SIL_POLL,
- 	SIL_FAULT,
-+	SIL_FAULT_MCEERR,
-+	SIL_FAULT_BNDERR,
-+	SIL_FAULT_PKUERR,
- 	SIL_CHLD,
- 	SIL_RT,
- 	SIL_SYS,
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 376b42f26e6d..8a85da8aaa7c 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2820,8 +2820,19 @@ enum siginfo_layout siginfo_layout(int sig, int si_code)
- 			[SIGPOLL] = { NSIGPOLL, SIL_POLL },
- 			[SIGSYS]  = { NSIGSYS,  SIL_SYS },
- 		};
--		if ((sig < ARRAY_SIZE(filter)) && (si_code <= filter[sig].limit))
-+		if ((sig < ARRAY_SIZE(filter)) && (si_code <= filter[sig].limit)) {
- 			layout = filter[sig].layout;
-+			/* Handle the exceptions */
-+			if ((sig == SIGBUS) &&
-+			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
-+				layout = SIL_FAULT_MCEERR;
-+			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
-+				layout = SIL_FAULT_BNDERR;
-+#ifdef SEGV_PKUERR
-+			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
-+				layout = SIL_FAULT_PKUERR;
-+#endif
-+		}
- 		else if (si_code <= NSIGPOLL)
- 			layout = SIL_POLL;
- 	} else {
-@@ -2878,19 +2889,28 @@ int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
- #ifdef __ARCH_SI_TRAPNO
- 		new.si_trapno = from->si_trapno;
- #endif
--		if ((from->si_signo == SIGBUS) &&
--		    ((from->si_code == BUS_MCEERR_AR) ||
--		     (from->si_code == BUS_MCEERR_AO)))
--			new.si_addr_lsb = from->si_addr_lsb;
--
--		if ((from->si_signo == SIGSEGV) &&
--		    (from->si_code == SEGV_BNDERR)) {
--			new.si_lower = ptr_to_compat(from->si_lower);
--			new.si_upper = ptr_to_compat(from->si_upper);
--		}
--		if ((from->si_signo == SIGSEGV) &&
--		    (from->si_code == SEGV_PKUERR))
--			new.si_pkey = from->si_pkey;
-+		break;
-+	case SIL_FAULT_MCEERR:
-+		new.si_addr = ptr_to_compat(from->si_addr);
-+#ifdef __ARCH_SI_TRAPNO
-+		new.si_trapno = from->si_trapno;
-+#endif
-+		new.si_addr_lsb = from->si_addr_lsb;
-+		break;
-+	case SIL_FAULT_BNDERR:
-+		new.si_addr = ptr_to_compat(from->si_addr);
-+#ifdef __ARCH_SI_TRAPNO
-+		new.si_trapno = from->si_trapno;
-+#endif
-+		new.si_lower = ptr_to_compat(from->si_lower);
-+		new.si_upper = ptr_to_compat(from->si_upper);
-+		break;
-+	case SIL_FAULT_PKUERR:
-+		new.si_addr = ptr_to_compat(from->si_addr);
-+#ifdef __ARCH_SI_TRAPNO
-+		new.si_trapno = from->si_trapno;
-+#endif
-+		new.si_pkey = from->si_pkey;
- 		break;
- 	case SIL_CHLD:
- 		new.si_pid    = from->si_pid;
-@@ -2956,17 +2976,28 @@ int copy_siginfo_from_user32(struct siginfo *to,
- #ifdef __ARCH_SI_TRAPNO
- 		to->si_trapno = from.si_trapno;
- #endif
--		if ((from.si_signo == SIGBUS) &&
--		    ((from.si_code == BUS_MCEERR_AR) ||
--		     (from.si_code == BUS_MCEERR_AO)))
--			to->si_addr_lsb = from.si_addr_lsb;
--
--		if ((from.si_signo == SIGSEGV) && (from.si_code == SEGV_BNDERR)) {
--			to->si_lower = compat_ptr(from.si_lower);
--			to->si_upper = compat_ptr(from.si_upper);
--		}
--		if ((from.si_signo == SIGSEGV) && (from.si_code == SEGV_PKUERR))
--			to->si_pkey = from.si_pkey;
-+		break;
-+	case SIL_FAULT_MCEERR:
-+		to->si_addr = compat_ptr(from.si_addr);
-+#ifdef __ARCH_SI_TRAPNO
-+		to->si_trapno = from.si_trapno;
-+#endif
-+		to->si_addr_lsb = from.si_addr_lsb;
-+		break;
-+	case SIL_FAULT_BNDERR:
-+		to->si_addr = compat_ptr(from.si_addr);
-+#ifdef __ARCH_SI_TRAPNO
-+		to->si_trapno = from.si_trapno;
-+#endif
-+		to->si_lower = compat_ptr(from.si_lower);
-+		to->si_upper = compat_ptr(from.si_upper);
-+		break;
-+	case SIL_FAULT_PKUERR:
-+		to->si_addr = compat_ptr(from.si_addr);
-+#ifdef __ARCH_SI_TRAPNO
-+		to->si_trapno = from.si_trapno;
-+#endif
-+		to->si_pkey = from.si_pkey;
- 		break;
- 	case SIL_CHLD:
- 		to->si_pid    = from.si_pid;
--- 
-2.14.1
+The net is a simpler relay_signal is also more careful about which
+signals it relays.
 
+Eric
+
+The changes are also available at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git siginfo-review3
+
+Eric W. Biederman (5):
+      signal/signalfd: Remove __put_user from signalfd_copyinfo
+      signal/signalfd: Add support for SIGSYS
+      signal: Remove unncessary #ifdef SEGV_PKUERR in 32bit compat code
+      signal: Extend siginfo_layout with SIL_FAULT_{MCEERR|BNDERR|PKUERR}
+      signal/um: More carefully relay signals in relay_signal.
+
+ arch/um/kernel/trap.c         | 38 ++++++++------------
+ fs/signalfd.c                 | 84 +++++++++++++++++++++++++------------------
+ include/linux/signal.h        |  3 ++
+ include/uapi/linux/signalfd.h |  6 +++-
+ kernel/signal.c               | 82 +++++++++++++++++++++++++++---------------
+ 5 files changed, 125 insertions(+), 88 deletions(-)
+
+
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
+_______________________________________________
+User-mode-linux-devel mailing list
+User-mode-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
 
