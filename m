@@ -2,16 +2,13 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab5.miniserver.com ([78.31.111.25]
  helo=www.kot-begemot.co.uk)
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fDVeo-0003dL-RE
- for linux-um@lists.infradead.org; Tue, 01 May 2018 13:49:27 +0000
-Subject: Re: Question about process.c
-References: <e58ff1a0-df76-7213-08d5-1f796a6a3956@cambridgegreys.com>
- <1708862.d7yAjbcJLQ@blindfold>
+ id 1fDVYV-0003Zo-C9
+ for linux-um@lists.infradead.org; Tue, 01 May 2018 13:42:56 +0000
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <40d875d4-8071-85e1-bad9-83995c9ebf8b@cambridgegreys.com>
-Date: Tue, 1 May 2018 14:48:48 +0100
+Subject: Question about process.c
+Message-ID: <e58ff1a0-df76-7213-08d5-1f796a6a3956@cambridgegreys.com>
+Date: Tue, 1 May 2018 14:01:54 +0100
 MIME-Version: 1.0
-In-Reply-To: <1708862.d7yAjbcJLQ@blindfold>
 Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,58 +18,31 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@sigma-star.at>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>, linux-um@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: Richard Weinberger <richard.weinberger@gmail.com>
 
-YXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jIGxpbmUgMTQwIGludm9rZXMgZm9yY2VfZmx1c2hfYWxs
-KCk7Cgp3aGljaCBkb2VzIGEgZnVsbCB0bGIgZmx1c2ggd2l0aCB0aGUgZm9yY2UgZmxhZyBzZXQu
-CgpJIGRpZCBhIHF1aWNrIHRlc3QgYW5kIEkgZGlkIG5vdCBub3RpY2UgYW55IGJyZWFrYWdlIGlm
-IHdlIHJlcGxhY2UgdGhhdCAKd2l0aCBhIHF1aWNrbHkgaGFja2VkIHRvZ2V0aGVyIG5ldyBmdW5j
-dGlvbiBjYWxsZWQgZ2VudGxlX2ZsdXNoX2FsbCgpIAp3aGljaCBkb2VzIHRoZSBzYW1lIGJ1dCB3
-aXRob3V0IHNldHRpbmcgdGhlIGZvcmNlIGZsYWcgaW4gdGhlIHRsYiByb3V0aW5lcy4KCkF0IHRo
-ZSBzYW1lIHRpbWUgSSBnb3QgMTAlIG9yIGJldHRlciBzcGVlZHVwIGZvciBmb3JrLWhlYXZ5IHRo
-aW5ncyBsaWtlIApzdGFydHVwLCBldGMuCgpJbiBmYWN0LCB0aGlzIGlzIG9uZSBvZiB0aGUgbGFz
-dCByZW1haW5pbmcgbWFqb3IgcGVyZm9ybWFuY2UgYnVnYmVhcnMuIApXZSBnb3QgbW9zdCBvZiB0
-aGUgb3RoZXIgc3R1ZmYgdG8gYSB2ZXJ5IHJlYXNvbmFibGUgc3RhbmRhcmQgLSAKbmV0d29ya2lu
-ZywgZGlzaywgZXRjIGlzIG5vdCB0aGF0IGZhciBvZmYgZnJvbSBsZXQncyBzYXkgcWVtdSBhbmQg
-dGhlIApvdmVyYWxsICJzbG93bmVzcyIgaXMgbm93IG1vc3RseSBkb3duIHRvIHRoZSBodWdlIGNv
-c3Qgb2YgZm9yay9leGVjLgoKRXhhbXBsZSAoYWIpdXNpbmcgYnVzeWJveC4gQnVzeWJveCBleGVj
-dXRlcyBjYXQgcGFzc2VkIGFzIHRoZSBmaW5kIC1leGVjIAphcmd1bWVudCBpbnRlcm5hbGx5IHNo
-b3J0Y3V0dGluZyB0byBpdHMgYXBwbGV0LiBBcyBhIHJlc3VsdCB0aGVyZSBpcyBubyAKY29zdCBv
-ZiBmb3JrL2V4ZWMgaW5jdXJyZWQgd2hlbiB3ZSBydW4gYSBmaW5kIC1leGVjIGNhdCB7fSB2aWEg
-YnVzeWJveC4gCk5vcm1hbCBmaW5kIGV4ZWN1dGVzIC9iaW4vY2F0IGluc3RlYWQuCgpUaGlzIGFs
-bG93cyB1cyB0byBjb21wYXJlIGFuZCBhdHRyaWJ1dGUgdGhlIGNvc3Qgb2YgZm9yay9leGVjIGlu
-IHNjcmlwdHMgCmFzIHdlbGwgYXMgZ2l2ZXMgdXMgYSBiZW5jaG1hcmsgdG8gc2VlIHRoZSBlZmZl
-Y3Qgb2YgYW55IGNoYW5nZXMuCgpCYXJlIG1ldGFsOgoKYWl2YW5vdkBhbWlzdGFkOi92YXIvYXV0
-b2ZzL2xvY2FsL3NyYy9saW51eC13b3JrL2xpbnV4LXN1Ym1pdCQgdGltZSAKYnVzeWJveCBmaW5k
-IC9tbnQvdXNyIC10eXBlIGYgLWV4ZWMgY2F0IHt9ID4gL2Rldi9udWxsIFw7CgpyZWFswqDCoMKg
-IDBtMTYuNTExcwp1c2VywqDCoMKgIDBtMTIuNjcycwpzeXPCoMKgwqAgMG00LjAwMXMKYWl2YW5v
-dkBhbWlzdGFkOi92YXIvYXV0b2ZzL2xvY2FsL3NyYy9saW51eC13b3JrL2xpbnV4LXN1Ym1pdCQg
-dGltZSBmaW5kIAovbW50L3VzciAtdHlwZSBmIC1leGVjIGNhdCB7fSA+IC9kZXYvbnVsbCBcOwoK
-cmVhbMKgwqDCoCAwbTI1LjMyOXMKdXNlcsKgwqDCoCAwbTE2LjM5N3MKc3lzwqDCoMKgIDBtOS4x
-ODVzCgpVTUw6Cgpyb290QHVtbC1zd2l0Y2g6fiMgdGltZSBidXN5Ym94IGZpbmQgL3VzciAtdHlw
-ZSBmIC1leGVjIGNhdCB7fSA+IAovZGV2L251bGwgXDsKCnJlYWzCoMKgwqAgMG0xMS40NDdzCnVz
-ZXLCoMKgwqAgMG0wLjAwMHMKc3lzwqDCoMKgIDBtOC44MjBzCnJvb3RAdW1sLXN3aXRjaDp+IyB0
-aW1lIGZpbmQgL3VzciAtdHlwZSBmIC1leGVjIGNhdCB7fSA+IC9kZXYvbnVsbCBcOwoKcmVhbMKg
-wqDCoCA3bTguMjI4cwp1c2VywqDCoMKgIDBtMC4wMDBzCnN5c8KgwqDCoCA2bTQyLjc4MHMKClRo
-ZSBmaWxlc3lzdGVtIGlzIGlkZW50aWNhbCBpbiBib3RoIGNhc2VzLiBUaGUgZXhwZXJpbWVudCBp
-cyBub3QgCnBlcmZlY3RseSAiY2xlYW4iIGFzIGkgYW0gZG9pbmcgb3RoZXIgc3R1ZmYgb24gbXkg
-bGFwdG9wLCBidXQgaXQgaXMgCnJlYXNvbmFibHkgaW5kaWNhdGl2ZQoKSW4gZmFjdCwgaW4gdGhl
-IGxvbmdlciB0ZXJtIEkgd291bGQgcmVhbGx5IGxpa2UgdG8gc29tZWhvdyBzcGVlZC11cCBtb3N0
-IApvZiB0aGUgc3R1ZmYgdGxiLmMgSXQgaXMgcGFpbmZ1bGx5IHNsb3cgYXQgcHJlc2VudC4KCkEu
-CgpPbiAwNS8wMS8xOCAxNDoyMSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIERpZW5z
-dGFnLCAxLiBNYWkgMjAxOCwgMTU6MDE6NTQgQ0VTVCBzY2hyaWViIEFudG9uIEl2YW5vdjoKPj4g
-SGkgYWxsLCBoaSBSaWNoYXJkLAo+Pgo+PiBJIGhhdmUgYSBxdWVzdGlvbiAtIGlzIGl0IHJlYWxs
-eSBuZWNlc3NhcnkgdG8gcGFzcyBhICJmb3JjZSIgZmxhZyB0byBhCj4+IHRsYiBmbHVzaCBiZWZv
-cmUgZG9pbmcgYSBmb3JrIChpbiBwcm9jZXNzLmMpPwo+IFdoZXJlIGV4YWN0bHk/Cj4KPiBUaGFu
-a3MsCj4gLy9yaWNoYXJkCj4KCi0tIApBbnRvbiBSLiBJdmFub3YKCkNhbWJyaWRnZSBHcmV5cyBM
-aW1pdGVkLCBFbmdsYW5kIGFuZCBXYWxlcyBjb21wYW55IE5vIDEwMjczNjYxCmh0dHA6Ly93d3cu
-Y2FtYnJpZGdlZ3JleXMuY29tLwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-dW0K
+Hi all, hi Richard,
+
+I have a question - is it really necessary to pass a "force" flag to a 
+tlb flush before doing a fork (in process.c)?
+
+If the flush is not forced, the fork becomes significantly less 
+expensive. I tried running a couple of crude tests and did not notice 
+anything broken if the flush there is done without a "force" flag.
+
+-- 
+Anton R. Ivanov
+
+Cambridge Greys Limited, England and Wales company No 10273661
+http://www.cambridgegreys.com/	
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
