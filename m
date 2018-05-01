@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fDWOV-0006rq-Fx
- for linux-um@lists.infradead.org; Tue, 01 May 2018 14:36:41 +0000
-From: Richard Weinberger <richard@sigma-star.at>
+Received: from ivanoab5.miniserver.com ([78.31.111.25]
+ helo=www.kot-begemot.co.uk)
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fDVeo-0003dL-RE
+ for linux-um@lists.infradead.org; Tue, 01 May 2018 13:49:27 +0000
 Subject: Re: Question about process.c
-Date: Tue, 01 May 2018 16:36:24 +0200
-Message-ID: <4362422.B3hMBL5bEi@blindfold>
-In-Reply-To: <40d875d4-8071-85e1-bad9-83995c9ebf8b@cambridgegreys.com>
 References: <e58ff1a0-df76-7213-08d5-1f796a6a3956@cambridgegreys.com>
  <1708862.d7yAjbcJLQ@blindfold>
- <40d875d4-8071-85e1-bad9-83995c9ebf8b@cambridgegreys.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <40d875d4-8071-85e1-bad9-83995c9ebf8b@cambridgegreys.com>
+Date: Tue, 1 May 2018 14:48:48 +0100
 MIME-Version: 1.0
+In-Reply-To: <1708862.d7yAjbcJLQ@blindfold>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,87 +21,58 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+To: Richard Weinberger <richard@sigma-star.at>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>, linux-um@lists.infradead.org
 
-Anton,
-
-Am Dienstag, 1. Mai 2018, 15:48:48 CEST schrieb Anton Ivanov:
-> arch/um/kernel/process.c line 140 invokes force_flush_all();
-> 
-> which does a full tlb flush with the force flag set.
-> 
-> I did a quick test and I did not notice any breakage if we replace that 
-> with a quickly hacked together new function called gentle_flush_all() 
-> which does the same but without setting the force flag in the tlb routines.
-> 
-> At the same time I got 10% or better speedup for fork-heavy things like 
-> startup, etc.
-> 
-> In fact, this is one of the last remaining major performance bugbears. 
-> We got most of the other stuff to a very reasonable standard - 
-> networking, disk, etc is not that far off from let's say qemu and the 
-> overall "slowness" is now mostly down to the huge cost of fork/exec.
-> 
-> Example (ab)using busybox. Busybox executes cat passed as the find -exec 
-> argument internally shortcutting to its applet. As a result there is no 
-> cost of fork/exec incurred when we run a find -exec cat {} via busybox. 
-> Normal find executes /bin/cat instead.
-> 
-> This allows us to compare and attribute the cost of fork/exec in scripts 
-> as well as gives us a benchmark to see the effect of any changes.
-> 
-> Bare metal:
-> 
-> aivanov@amistad:/var/autofs/local/src/linux-work/linux-submit$ time 
-> busybox find /mnt/usr -type f -exec cat {} > /dev/null \;
-> 
-> real    0m16.511s
-> user    0m12.672s
-> sys    0m4.001s
-> aivanov@amistad:/var/autofs/local/src/linux-work/linux-submit$ time find 
-> /mnt/usr -type f -exec cat {} > /dev/null \;
-> 
-> real    0m25.329s
-> user    0m16.397s
-> sys    0m9.185s
-> 
-> UML:
-> 
-> root@uml-switch:~# time busybox find /usr -type f -exec cat {} > 
-> /dev/null \;
-> 
-> real    0m11.447s
-> user    0m0.000s
-> sys    0m8.820s
-> root@uml-switch:~# time find /usr -type f -exec cat {} > /dev/null \;
-> 
-> real    7m8.228s
-> user    0m0.000s
-> sys    6m42.780s
-> 
-> The filesystem is identical in both cases. The experiment is not 
-> perfectly "clean" as i am doing other stuff on my laptop, but it is 
-> reasonably indicative
-> 
-> In fact, in the longer term I would really like to somehow speed-up most 
-> of the stuff tlb.c It is painfully slow at present.
-
-Hmmm, not sure. I fear without going deep into the UML history we cannot know.
-I think we have to do a full flush for security reasons.
-
-Thanks,
-//richard
-
--- 
-sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
-ATU66964118 - FN 374287y
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+YXJjaC91bS9rZXJuZWwvcHJvY2Vzcy5jIGxpbmUgMTQwIGludm9rZXMgZm9yY2VfZmx1c2hfYWxs
+KCk7Cgp3aGljaCBkb2VzIGEgZnVsbCB0bGIgZmx1c2ggd2l0aCB0aGUgZm9yY2UgZmxhZyBzZXQu
+CgpJIGRpZCBhIHF1aWNrIHRlc3QgYW5kIEkgZGlkIG5vdCBub3RpY2UgYW55IGJyZWFrYWdlIGlm
+IHdlIHJlcGxhY2UgdGhhdCAKd2l0aCBhIHF1aWNrbHkgaGFja2VkIHRvZ2V0aGVyIG5ldyBmdW5j
+dGlvbiBjYWxsZWQgZ2VudGxlX2ZsdXNoX2FsbCgpIAp3aGljaCBkb2VzIHRoZSBzYW1lIGJ1dCB3
+aXRob3V0IHNldHRpbmcgdGhlIGZvcmNlIGZsYWcgaW4gdGhlIHRsYiByb3V0aW5lcy4KCkF0IHRo
+ZSBzYW1lIHRpbWUgSSBnb3QgMTAlIG9yIGJldHRlciBzcGVlZHVwIGZvciBmb3JrLWhlYXZ5IHRo
+aW5ncyBsaWtlIApzdGFydHVwLCBldGMuCgpJbiBmYWN0LCB0aGlzIGlzIG9uZSBvZiB0aGUgbGFz
+dCByZW1haW5pbmcgbWFqb3IgcGVyZm9ybWFuY2UgYnVnYmVhcnMuIApXZSBnb3QgbW9zdCBvZiB0
+aGUgb3RoZXIgc3R1ZmYgdG8gYSB2ZXJ5IHJlYXNvbmFibGUgc3RhbmRhcmQgLSAKbmV0d29ya2lu
+ZywgZGlzaywgZXRjIGlzIG5vdCB0aGF0IGZhciBvZmYgZnJvbSBsZXQncyBzYXkgcWVtdSBhbmQg
+dGhlIApvdmVyYWxsICJzbG93bmVzcyIgaXMgbm93IG1vc3RseSBkb3duIHRvIHRoZSBodWdlIGNv
+c3Qgb2YgZm9yay9leGVjLgoKRXhhbXBsZSAoYWIpdXNpbmcgYnVzeWJveC4gQnVzeWJveCBleGVj
+dXRlcyBjYXQgcGFzc2VkIGFzIHRoZSBmaW5kIC1leGVjIAphcmd1bWVudCBpbnRlcm5hbGx5IHNo
+b3J0Y3V0dGluZyB0byBpdHMgYXBwbGV0LiBBcyBhIHJlc3VsdCB0aGVyZSBpcyBubyAKY29zdCBv
+ZiBmb3JrL2V4ZWMgaW5jdXJyZWQgd2hlbiB3ZSBydW4gYSBmaW5kIC1leGVjIGNhdCB7fSB2aWEg
+YnVzeWJveC4gCk5vcm1hbCBmaW5kIGV4ZWN1dGVzIC9iaW4vY2F0IGluc3RlYWQuCgpUaGlzIGFs
+bG93cyB1cyB0byBjb21wYXJlIGFuZCBhdHRyaWJ1dGUgdGhlIGNvc3Qgb2YgZm9yay9leGVjIGlu
+IHNjcmlwdHMgCmFzIHdlbGwgYXMgZ2l2ZXMgdXMgYSBiZW5jaG1hcmsgdG8gc2VlIHRoZSBlZmZl
+Y3Qgb2YgYW55IGNoYW5nZXMuCgpCYXJlIG1ldGFsOgoKYWl2YW5vdkBhbWlzdGFkOi92YXIvYXV0
+b2ZzL2xvY2FsL3NyYy9saW51eC13b3JrL2xpbnV4LXN1Ym1pdCQgdGltZSAKYnVzeWJveCBmaW5k
+IC9tbnQvdXNyIC10eXBlIGYgLWV4ZWMgY2F0IHt9ID4gL2Rldi9udWxsIFw7CgpyZWFswqDCoMKg
+IDBtMTYuNTExcwp1c2VywqDCoMKgIDBtMTIuNjcycwpzeXPCoMKgwqAgMG00LjAwMXMKYWl2YW5v
+dkBhbWlzdGFkOi92YXIvYXV0b2ZzL2xvY2FsL3NyYy9saW51eC13b3JrL2xpbnV4LXN1Ym1pdCQg
+dGltZSBmaW5kIAovbW50L3VzciAtdHlwZSBmIC1leGVjIGNhdCB7fSA+IC9kZXYvbnVsbCBcOwoK
+cmVhbMKgwqDCoCAwbTI1LjMyOXMKdXNlcsKgwqDCoCAwbTE2LjM5N3MKc3lzwqDCoMKgIDBtOS4x
+ODVzCgpVTUw6Cgpyb290QHVtbC1zd2l0Y2g6fiMgdGltZSBidXN5Ym94IGZpbmQgL3VzciAtdHlw
+ZSBmIC1leGVjIGNhdCB7fSA+IAovZGV2L251bGwgXDsKCnJlYWzCoMKgwqAgMG0xMS40NDdzCnVz
+ZXLCoMKgwqAgMG0wLjAwMHMKc3lzwqDCoMKgIDBtOC44MjBzCnJvb3RAdW1sLXN3aXRjaDp+IyB0
+aW1lIGZpbmQgL3VzciAtdHlwZSBmIC1leGVjIGNhdCB7fSA+IC9kZXYvbnVsbCBcOwoKcmVhbMKg
+wqDCoCA3bTguMjI4cwp1c2VywqDCoMKgIDBtMC4wMDBzCnN5c8KgwqDCoCA2bTQyLjc4MHMKClRo
+ZSBmaWxlc3lzdGVtIGlzIGlkZW50aWNhbCBpbiBib3RoIGNhc2VzLiBUaGUgZXhwZXJpbWVudCBp
+cyBub3QgCnBlcmZlY3RseSAiY2xlYW4iIGFzIGkgYW0gZG9pbmcgb3RoZXIgc3R1ZmYgb24gbXkg
+bGFwdG9wLCBidXQgaXQgaXMgCnJlYXNvbmFibHkgaW5kaWNhdGl2ZQoKSW4gZmFjdCwgaW4gdGhl
+IGxvbmdlciB0ZXJtIEkgd291bGQgcmVhbGx5IGxpa2UgdG8gc29tZWhvdyBzcGVlZC11cCBtb3N0
+IApvZiB0aGUgc3R1ZmYgdGxiLmMgSXQgaXMgcGFpbmZ1bGx5IHNsb3cgYXQgcHJlc2VudC4KCkEu
+CgpPbiAwNS8wMS8xOCAxNDoyMSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+IEFtIERpZW5z
+dGFnLCAxLiBNYWkgMjAxOCwgMTU6MDE6NTQgQ0VTVCBzY2hyaWViIEFudG9uIEl2YW5vdjoKPj4g
+SGkgYWxsLCBoaSBSaWNoYXJkLAo+Pgo+PiBJIGhhdmUgYSBxdWVzdGlvbiAtIGlzIGl0IHJlYWxs
+eSBuZWNlc3NhcnkgdG8gcGFzcyBhICJmb3JjZSIgZmxhZyB0byBhCj4+IHRsYiBmbHVzaCBiZWZv
+cmUgZG9pbmcgYSBmb3JrIChpbiBwcm9jZXNzLmMpPwo+IFdoZXJlIGV4YWN0bHk/Cj4KPiBUaGFu
+a3MsCj4gLy9yaWNoYXJkCj4KCi0tIApBbnRvbiBSLiBJdmFub3YKCkNhbWJyaWRnZSBHcmV5cyBM
+aW1pdGVkLCBFbmdsYW5kIGFuZCBXYWxlcyBjb21wYW55IE5vIDEwMjczNjYxCmh0dHA6Ly93d3cu
+Y2FtYnJpZGdlZ3JleXMuY29tLwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+dW0K
 
