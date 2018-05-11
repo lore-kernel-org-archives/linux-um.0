@@ -1,61 +1,72 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <1621114.mSmC2JOP5I@blindfold>
+References: <CAK7LNAQREY=32tX7m8dbJ6a_AhXLF_y-n5VLFBBcvXWaRvTmHg@mail.gmail.com>
+ <1621114.mSmC2JOP5I@blindfold>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 3/3] x86/build: vdso: put generated linker scripts to $(obj)/
-Date: Tue, 15 May 2018 11:52:24 +0900
-Message-Id: <1526352744-28229-4-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1526352744-28229-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1526352744-28229-1-git-send-email-yamada.masahiro@socionext.com>
+Date: Fri, 11 May 2018 12:48:50 +0900
+Message-ID: <CAK7LNAQXwKKM9Czkz0CnGm-OFqsM1AB7Run3dT9CdCTkCz=eiA@mail.gmail.com>
+Subject: Re: [UML] Question about arch/x86/um/vdso/vdso-syms.lds
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
-To: Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, "H. Peter Anvin" <hpa@zytor.com>, user-mode-linux-user@lists.sourceforge.net, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@amacapital.net>, Jeff Dike <jdike@addtoit.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Jeff Dike <jdike@addtoit.com>, Nicholas Piggin <npiggin@gmail.com>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Let's put generated files to $(obj)/ rather than $(src)/ although
-this is just a matter of taste because both are the same.
+Richard,
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
 
- arch/x86/entry/vdso/Makefile | 4 ++--
- arch/x86/um/vdso/Makefile    | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+2018-05-09 15:36 GMT+09:00 Richard Weinberger <richard@nod.at>:
+> Masahiro,
+>
+> Am Mittwoch, 9. Mai 2018, 05:36:18 CEST schrieb Masahiro Yamada:
+>> Hi Richard,
+>>
+>>
+>> Please let me ask a question about vdso-syms.lds
+>> under arch/x86/um/vdso/.
+>>
+>> This file exists since:
+>>
+>> commit f1c2bb8b9964ed31de988910f8b1cfb586d30091
+>> Author: Richard Weinberger <richard@nod.at>
+>> Date:   Mon Jul 25 17:12:54 2011 -0700
+>>
+>>     um: implement a x86_64 vDSO
+>>
+>>
+>> So, I think you are the right person
+>> to reach out to.
+>>
+>>
+>> Originally, vdso-syms.lds was linked to vmlinux,
+>> but it is not since:
+>>
+>> commit 827880ec260ba048f95fe646b96a205c394fa0f0
+>> Author: Nicholas Piggin <npiggin@gmail.com>
+>> Date:   Fri Jun 9 15:24:16 2017 +1000
+>>
+>>     x86/um: thin archives build fix
+>>
+>>
+>>
+>> Something may be missing from my thought,
+>> but I wonder what vdso-syms.lds is used for.
+>
+> Hmm, I think we can kill it. In 2011 I used the x86 vdso
+> code as "template" this is how the file made it into UML.
+> AFAICT it was forgotten after all the vdso related refactoring
+> in um and x86.
+>
+> Thanks,
+> //richard
 
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 690df4c..261802b 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -51,7 +51,7 @@ VDSO_LDFLAGS_vdso.lds = -m64 -Wl,-soname=linux-vdso.so.1 \
- 			-Wl,-z,max-page-size=4096 -Wl,-z,common-page-size=4096 \
- 			$(DISABLE_LTO)
- 
--$(obj)/vdso64.so.dbg: $(src)/vdso.lds $(vobjs) FORCE
-+$(obj)/vdso64.so.dbg: $(obj)/vdso.lds $(vobjs) FORCE
- 	$(call if_changed,vdso)
- 
- HOST_EXTRACFLAGS += -I$(srctree)/tools/include -I$(srctree)/include/uapi -I$(srctree)/arch/$(SUBARCH)/include/uapi
-@@ -119,7 +119,7 @@ $(obj)/%.so: OBJCOPYFLAGS := -S
- $(obj)/%.so: $(obj)/%.so.dbg
- 	$(call if_changed,objcopy)
- 
--$(obj)/vdsox32.so.dbg: $(src)/vdsox32.lds $(vobjx32s) FORCE
-+$(obj)/vdsox32.so.dbg: $(obj)/vdsox32.lds $(vobjx32s) FORCE
- 	$(call if_changed,vdso)
- 
- CPPFLAGS_vdso32.lds = $(CPPFLAGS_vdso.lds)
-diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-index 3af55cd..822ccdb 100644
---- a/arch/x86/um/vdso/Makefile
-+++ b/arch/x86/um/vdso/Makefile
-@@ -30,7 +30,7 @@ VDSO_LDFLAGS_vdso.lds = -m64 -Wl,-soname=linux-vdso.so.1 \
- 
- $(obj)/vdso.o: $(src)/vdso.S $(obj)/vdso.so
- 
--$(obj)/vdso.so.dbg: $(src)/vdso.lds $(vobjs) FORCE
-+$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(vobjs) FORCE
- 	$(call if_changed,vdso)
- 
- $(obj)/%.so: OBJCOPYFLAGS := -S
+
+OK, I have sent a patch to the UML ML.
+Thanks.
+
+
 -- 
-2.7.4
-
+Best Regards
+Masahiro Yamada
 
