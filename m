@@ -1,72 +1,88 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from [172.30.20.202] (helo=mx.sourceforge.net)
- by sfs-ml-1.v29.lw.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
- (envelope-from <richard.weinberger@gmail.com>) id 1fPOSV-0003AY-H3
- for user-mode-linux-devel@lists.sourceforge.net;
- Sun, 03 Jun 2018 08:33:51 +0000
-Received: from mail-wr0-f193.google.com ([209.85.128.193])
- by sfi-mx-1.v28.lw.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.90_1)
- id 1fPOST-00Aq2H-E2 for user-mode-linux-devel@lists.sourceforge.net;
- Sun, 03 Jun 2018 08:33:51 +0000
-Received: by mail-wr0-f193.google.com with SMTP id o12-v6so9003967wrm.12
- for <user-mode-linux-devel@lists.sourceforge.net>;
- Sun, 03 Jun 2018 01:33:49 -0700 (PDT)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNASfiRcPVb0Bs_KWuAL3mtzdQfWwATVLkit8MkXeWtgrRQ@mail.gmail.com>
+In-Reply-To: <1526351878-24961-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1526351878-24961-1-git-send-email-yamada.masahiro@socionext.com>
- <CAK7LNASfiRcPVb0Bs_KWuAL3mtzdQfWwATVLkit8MkXeWtgrRQ@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 3 Jun 2018 10:33:42 +0200
-Message-ID: <CAFLxGvwmm_tXv0mMoKVSRRC1_hvT7rbm7hVBFwD6fBAQAADrUQ@mail.gmail.com>
-Subject: Re: [uml-devel] [PATCH RESEND] um: vdso: remove unused vdso-syms.lds
-List-Id: The user-mode Linux development list
- <user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Sun, 3 Jun 2018 11:37:21 +0900
+Message-ID: <CAK7LNASfiRcPVb0Bs_KWuAL3mtzdQfWwATVLkit8MkXeWtgrRQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND] um: vdso: remove unused vdso-syms.lds
+Content-Type: text/plain; charset="UTF-8"
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Masahiro Yamada <yamada.masahiro@socionext.com>
+List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-On Sun, Jun 3, 2018 at 4:37 AM, Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
-> Hi UML maintainers,
->
-> 2018-05-15 11:37 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
->> This file contains symbol values, and was originally linked into
->> vmlinux, but I have no idea what it was actually used for.
->>
->> Since commit 827880ec260b ("x86/um: thin archives build fix"), it is
->> not even linked.  Now it is completely orphan, and no problem has
->> been reported.  It is a proof that this file was not needed in the
->> first place.
->>
->> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
->> Acked-by: Ingo Molnar <mingo@kernel.org>
->> ---
->
->
-> Could you take a look at this patch, please?
+Hi UML maintainers,
 
-Acked-by: Richard Weinberger <richard@nod.at>
+2018-05-15 11:37 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
+> This file contains symbol values, and was originally linked into
+> vmlinux, but I have no idea what it was actually used for.
+>
+> Since commit 827880ec260b ("x86/um: thin archives build fix"), it is
+> not even linked.  Now it is completely orphan, and no problem has
+> been reported.  It is a proof that this file was not needed in the
+> first place.
+>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Acked-by: Ingo Molnar <mingo@kernel.org>
+> ---
+
+
+Could you take a look at this patch, please?
+
+Thanks.
+
+
+> The previous post has gone to the moderator
+> due to too many recipients.
+> I am resending this.
+> I hope this is reaching UML maintainers.
+>
+>  arch/x86/um/vdso/.gitignore |  1 -
+>  arch/x86/um/vdso/Makefile   | 16 ----------------
+>  2 files changed, 17 deletions(-)
+>
+> diff --git a/arch/x86/um/vdso/.gitignore b/arch/x86/um/vdso/.gitignore
+> index 9cac6d0..f8b69d8 100644
+> --- a/arch/x86/um/vdso/.gitignore
+> +++ b/arch/x86/um/vdso/.gitignore
+> @@ -1,2 +1 @@
+> -vdso-syms.lds
+>  vdso.lds
+> diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
+> index 1000335..426681e 100644
+> --- a/arch/x86/um/vdso/Makefile
+> +++ b/arch/x86/um/vdso/Makefile
+> @@ -53,22 +53,6 @@ $(vobjs): KBUILD_CFLAGS += $(CFL)
+>  CFLAGS_REMOVE_vdso-note.o = -pg -fprofile-arcs -ftest-coverage
+>  CFLAGS_REMOVE_um_vdso.o = -pg -fprofile-arcs -ftest-coverage
+>
+> -targets += vdso-syms.lds
+> -extra-$(VDSO64-y)                      += vdso-syms.lds
+> -
+> -#
+> -# Match symbols in the DSO that look like VDSO*; produce a file of constants.
+> -#
+> -sed-vdsosym := -e 's/^00*/0/' \
+> -       -e 's/^\([0-9a-fA-F]*\) . \(VDSO[a-zA-Z0-9_]*\)$$/\2 = 0x\1;/p'
+> -quiet_cmd_vdsosym = VDSOSYM $@
+> -define cmd_vdsosym
+> -       $(NM) $< | LC_ALL=C sed -n $(sed-vdsosym) | LC_ALL=C sort > $@
+> -endef
+> -
+> -$(obj)/%-syms.lds: $(obj)/%.so.dbg FORCE
+> -       $(call if_changed,vdsosym)
+> -
+>  #
+>  # The DSO images are built using a special linker script.
+>  #
+> --
+> 2.7.4
+>
+
+
 
 -- 
-Thanks,
-//richard
-
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
-_______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
+Best Regards
+Masahiro Yamada
 
