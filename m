@@ -1,18 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from userp2120.oracle.com ([156.151.31.85])
+Received: from ivanoab5.miniserver.com ([78.31.111.25]
+ helo=www.kot-begemot.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQA3m-0007Wg-4B
- for linux-um@lists.infradead.org; Tue, 05 Jun 2018 11:23:32 +0000
-Date: Tue, 5 Jun 2018 14:22:54 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
+ id 1fQ9ug-0002Mo-Kn
+ for linux-um@lists.infradead.org; Tue, 05 Jun 2018 11:14:09 +0000
 Subject: Re: [PATCH] Fix initialization of vector queues in UML
-Message-ID: <20180605112254.gsbkecaiqiyfniqc@mwanda>
 References: <20180605082730.30919-1-anton.ivanov@cambridgegreys.com>
  <20180605084355.se5krnea6wrdmmez@mwanda>
- <bb4ec858-6dce-abf9-6ed3-cf654fedad92@cambridgegreys.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <bb4ec858-6dce-abf9-6ed3-cf654fedad92@cambridgegreys.com>
+Date: Tue, 5 Jun 2018 12:13:50 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <bb4ec858-6dce-abf9-6ed3-cf654fedad92@cambridgegreys.com>
+In-Reply-To: <20180605084355.se5krnea6wrdmmez@mwanda>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +21,60 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
 Cc: richard.weinberger@gmail.com, linux-um@lists.infradead.org
 
-On Tue, Jun 05, 2018 at 12:13:50PM +0100, Anton Ivanov wrote:
-> =
-
-> =
-
-> On 06/05/18 09:43, Dan Carpenter wrote:
-> > That's a good start but there are still issues:
-> > =
-
-> >     473          /* deallocate matching IOV structures including header=
- buffs */
-> >     474          if (qi->mmsg_vector !=3D NULL) {
-> >     475                  mmsg_vector =3D qi->mmsg_vector;
-> >     476                  for (i =3D 0; i < qi->max_depth; i++) {
-> >     477                          iov =3D mmsg_vector->msg_hdr.msg_iov;
-> >     478                          if (iov !=3D NULL) {
-> >     479                                  if ((vp->header_size > 0) &&
-> >     480                                          (iov->iov_base !=3D NU=
-LL))
-> >     481                                          kfree(iov->iov_base);
-> >     482                                  kfree(iov);
-> >     483                          }
-> >     484                          mmsg_vector++;
-> >     485                  }
-> >     486                  kfree(qi->mmsg_vector);
-> >     487          }
-> > =
-
-> > =
-
-> > mmsg_vector is a pointer to within the result->mmsg_vector array.  It
-> > starts at the begining and iterates through the whole array.  The
-> > problem is that we maybe didn't initialize the last half of the array so
-> > now iov is pointing to random memory.
-> =
-
-> That array is initialized at lines 522-529=A0 for all elements
-> unconditionally.
->
-
-Oh, yeah.  You're right.
-
-regards,
-dan carpenter
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CgpPbiAwNi8wNS8xOCAwOTo0MywgRGFuIENhcnBlbnRlciB3cm90ZToKPiBUaGF0J3MgYSBnb29k
+IHN0YXJ0IGJ1dCB0aGVyZSBhcmUgc3RpbGwgaXNzdWVzOgo+Cj4gICAgIDQ3MyAgICAgICAgICAv
+KiBkZWFsbG9jYXRlIG1hdGNoaW5nIElPViBzdHJ1Y3R1cmVzIGluY2x1ZGluZyBoZWFkZXIgYnVm
+ZnMgKi8KPiAgICAgNDc0ICAgICAgICAgIGlmIChxaS0+bW1zZ192ZWN0b3IgIT0gTlVMTCkgewo+
+ICAgICA0NzUgICAgICAgICAgICAgICAgICBtbXNnX3ZlY3RvciA9IHFpLT5tbXNnX3ZlY3RvcjsK
+PiAgICAgNDc2ICAgICAgICAgICAgICAgICAgZm9yIChpID0gMDsgaSA8IHFpLT5tYXhfZGVwdGg7
+IGkrKykgewo+ICAgICA0NzcgICAgICAgICAgICAgICAgICAgICAgICAgIGlvdiA9IG1tc2dfdmVj
+dG9yLT5tc2dfaGRyLm1zZ19pb3Y7Cj4gICAgIDQ3OCAgICAgICAgICAgICAgICAgICAgICAgICAg
+aWYgKGlvdiAhPSBOVUxMKSB7Cj4gICAgIDQ3OSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBpZiAoKHZwLT5oZWFkZXJfc2l6ZSA+IDApICYmCj4gICAgIDQ4MCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChpb3YtPmlvdl9iYXNlICE9IE5VTEwpKQo+ICAg
+ICA0ODEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBrZnJlZShpb3Yt
+Pmlvdl9iYXNlKTsKPiAgICAgNDgyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtm
+cmVlKGlvdik7Cj4gICAgIDQ4MyAgICAgICAgICAgICAgICAgICAgICAgICAgfQo+ICAgICA0ODQg
+ICAgICAgICAgICAgICAgICAgICAgICAgIG1tc2dfdmVjdG9yKys7Cj4gICAgIDQ4NSAgICAgICAg
+ICAgICAgICAgIH0KPiAgICAgNDg2ICAgICAgICAgICAgICAgICAga2ZyZWUocWktPm1tc2dfdmVj
+dG9yKTsKPiAgICAgNDg3ICAgICAgICAgIH0KPgo+Cj4gbW1zZ192ZWN0b3IgaXMgYSBwb2ludGVy
+IHRvIHdpdGhpbiB0aGUgcmVzdWx0LT5tbXNnX3ZlY3RvciBhcnJheS4gIEl0Cj4gc3RhcnRzIGF0
+IHRoZSBiZWdpbmluZyBhbmQgaXRlcmF0ZXMgdGhyb3VnaCB0aGUgd2hvbGUgYXJyYXkuICBUaGUK
+PiBwcm9ibGVtIGlzIHRoYXQgd2UgbWF5YmUgZGlkbid0IGluaXRpYWxpemUgdGhlIGxhc3QgaGFs
+ZiBvZiB0aGUgYXJyYXkgc28KPiBub3cgaW92IGlzIHBvaW50aW5nIHRvIHJhbmRvbSBtZW1vcnku
+CgpUaGF0IGFycmF5IGlzIGluaXRpYWxpemVkIGF0IGxpbmVzIDUyMi01MjnCoCBmb3IgYWxsIGVs
+ZW1lbnRzIAp1bmNvbmRpdGlvbmFsbHkuCgogwqDCoMKgIGZvciAoaSA9IDA7IGkgPCBtYXhfc2l6
+ZTsgaSsrKSB7CiDCoMKgwqAgwqDCoMKgIC8qIENsZWFyIGFsbCBwb2ludGVycyAtIHdlIHVzZSBu
+b24tTlVMTCBhcyBtYXJraW5nIG9uCiDCoMKgwqAgwqDCoMKgIMKgKiB3aGF0IHRvIGZyZWUgb24g
+ZGVzdHJ1Y3Rpb24KIMKgwqDCoCDCoMKgwqAgwqAqLwogwqDCoMKgIMKgwqDCoCAqKHJlc3VsdC0+
+c2tidWZmX3ZlY3RvciArIGkpID0gTlVMTDsKIMKgwqDCoCDCoMKgwqAgbW1zZ192ZWN0b3ItPm1z
+Z19oZHIubXNnX2lvdiA9IE5VTEw7CiDCoMKgwqAgwqDCoMKgIG1tc2dfdmVjdG9yKys7CiDCoMKg
+wqAgfQoKSXQgaXMgYWZ0ZXIgdGhhdCAibG9hZGVkIiBpbiBhIHNlcGFyYXRlIGxvb3AgYXQgbGlu
+ZXMgNTMyLTU2My4KClNvLCB1bmxlc3MgSSBhbSBtaXNzaW5nIHNvbWV0aGluZyBpdCBzaG91bGQg
+YmUgc2FmZSB0byBiZSBwYXNzZWQgdG8gCmRlc3Ryb3lfcXVldWUoKS4KClRoZSBpZGVhIHdhcyB0
+byB0cnkgdG8gdGFrZSBhcyBtdWNoIGFkdmFudGFnZSBhcyBwb3NzaWJsZSBvZiB0aGUgZmFjdCAK
+dGhhdCByZWN2bW1zZy9zZW5kbW1zZyBhcmUgdG9sZXJhbnQgdG8gaG9sZXMgaW4gdGhlIHZlY3Rv
+ci4KCkFzIGEgcmVzdWx0LCB0aGUgdmVjdG9yIGNhbiBhbmQgZG9lcyBkZXZlbG9wIGhvbGVzIGlu
+IGl0cyBkYXRhIHBvcnRpb24gCndoaWNoIGFyZSAiaGVhbGVkIiBhcyBpdCBpcyByZWFsbG9jYXRl
+ZCBsYXRlciBvbi4gU28gYXQgYSBwb2ludCB3aGVyZSBpdCAKaXMgcGFzc2VkIHRvIGRlc3Ryb3lf
+cXVldWUgaXQgbWF5IGhhdmUgcXVpdGUgYSBmZXcgb2YgdGhlbS4KClRoYXQgaXMgd2h5IEkgdHJp
+ZWQgdG8gd3JpdGUgdGhlIGNvZGUgc28gaXQgY2FuIGRlYWwgd2l0aCBhcyBtYW55IE5VTExzIAph
+cm91bmQgdGhlIGRhdGEgc3RydWN0dXJlcyBhcyBwb3NzaWJsZSBpbnN0ZWFkIG9mIHRoZSB1c3Vh
+bCBnb3RvIApmYWlsX1RZUEUgcGF0dGVybiAobWFraW5nIGEgaGFzaCBvZiBpdCBpbiBhIGNvdXBs
+ZSBvZiBwbGFjZXMpLgoKQmVzdCBSZWdhcmRzLAo+Cj4gcmVnYXJkcywKPiBkYW4gY2FycGVudGVy
+Cj4KPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+PiBsaW51eC11bSBtYWlsaW5nIGxpc3QKPiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4g
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo+Cgot
+LSAKQW50b24gUi4gSXZhbm92CgpDYW1icmlkZ2UgR3JleXMgTGltaXRlZCwgRW5nbGFuZCBhbmQg
+V2FsZXMgY29tcGFueSBObyAxMDI3MzY2MQpodHRwOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8K
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11
+bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
