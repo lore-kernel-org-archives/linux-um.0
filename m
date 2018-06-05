@@ -1,108 +1,86 @@
-Return-Path: <user-mode-linux-devel-bounces@lists.sourceforge.net>
-Received: from [172.30.20.202] (helo=mx.sourceforge.net)
- by sfs-ml-2.v29.lw.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
- (envelope-from <ppessolani@hotmail.com>) id 1fGnn3-0006pd-VG
- for user-mode-linux-devel@lists.sourceforge.net;
- Thu, 10 May 2018 15:47:34 +0000
-Received: from mail-oln040092000096.outbound.protection.outlook.com
- ([40.92.0.96] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
- by sfi-mx-2.v28.lw.sourceforge.com with esmtps
- (TLSv1.2:ECDHE-RSA-AES256-SHA384:256) (Exim 4.90_1)
- id 1fGnn1-00D13e-BC for user-mode-linux-devel@lists.sourceforge.net;
- Thu, 10 May 2018 15:47:33 +0000
-From: Pablo Pessolani <ppessolani@hotmail.com>
-Date: Thu, 10 May 2018 15:47:24 +0000
-Message-ID: <BN6PR2001MB17779B46F4C6C714B15FD50ECF980@BN6PR2001MB1777.namprd20.prod.outlook.com>
-Content-Language: es-AR
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab5.miniserver.com ([78.31.111.25]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fQAMI-0001zd-MO
+ for linux-um@lists.infradead.org; Tue, 05 Jun 2018 11:42:40 +0000
+From: anton.ivanov@cambridgegreys.com
+Subject: [PATCH] Fix initialization of vector queues in UML
+Date: Tue,  5 Jun 2018 09:27:30 +0100
+Message-Id: <20180605082730.30919-1-anton.ivanov@cambridgegreys.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Subject: [uml-devel] SKAS3 mode patch - newbie
-List-Id: The user-mode Linux development list
- <user-mode-linux-devel.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=user-mode-linux-devel>
-List-Post: <mailto:user-mode-linux-devel@lists.sourceforge.net>
-List-Help: <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel>, 
- <mailto:user-mode-linux-devel-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0901725611945748805=="
-Errors-To: user-mode-linux-devel-bounces@lists.sourceforge.net
-To: "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>
-
---===============0901725611945748805==
-Content-Language: es-AR
-Content-Type: multipart/alternative;
-	boundary="_000_BN6PR2001MB17779B46F4C6C714B15FD50ECF980BN6PR2001MB1777_"
-
---_000_BN6PR2001MB17779B46F4C6C714B15FD50ECF980BN6PR2001MB1777_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Hi:
-
-   I am a  UML newbie .
-
-   Is SKAS3 mode now included into the Linux kernel or it should be applied=
- as a patch?
-
-   Thanks in advance.
-
-PAP
-
-
---_000_BN6PR2001MB17779B46F4C6C714B15FD50ECF980BN6PR2001MB1777_
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
-1">
-<style type=3D"text/css" style=3D"display:none;"><!-- P {margin-top:0;margi=
-n-bottom:0;} --></style>
-</head>
-<body dir=3D"ltr">
-<div id=3D"divtagdefaultwrapper" style=3D"font-size:12pt;color:#000000;font=
--family:Calibri,Helvetica,sans-serif;" dir=3D"ltr">
-<p style=3D"margin-top:0;margin-bottom:0">Hi:</p>
-<p style=3D"margin-top:0;margin-bottom:0">&nbsp; &nbsp;I am a&nbsp; UML&nbs=
-p;newbie .</p>
-<p style=3D"margin-top:0;margin-bottom:0">&nbsp; &nbsp;Is SKAS3 mode now in=
-cluded into the Linux&nbsp;kernel or<span>&nbsp;it should be applied as a p=
-atch?</span></p>
-<p style=3D"margin-top:0;margin-bottom:0"><span>&nbsp; &nbsp;Thanks in adva=
-nce.</span></p>
-<p style=3D"margin-top:0;margin-bottom:0"><span>PAP</span></p>
-<p style=3D"margin-top:0;margin-bottom:0"><span><br>
-</span></p>
-</div>
-</body>
-</html>
-
---_000_BN6PR2001MB17779B46F4C6C714B15FD50ECF980BN6PR2001MB1777_--
-
-
---===============0901725611945748805==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: richard.weinberger@gmail.com, dan.carpenter@oracle.com, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-------------------------------------------------------------------------------
-Check out the vibrant tech community on one of the world's most
-engaging tech sites, Slashdot.org! http://sdm.link/slashdot
---===============0901725611945748805==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
+UML vector drivers could derefence uninitialized memory
+when cleaning up after a queue allocation failure.
+
+Reported by Dan Capenter dan.carpenter@oracle.com
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/drivers/vector_kern.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index 02168fe25105..8b852928959b 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -504,15 +504,19 @@ static struct vector_queue *create_queue(
+ 
+ 	result = kmalloc(sizeof(struct vector_queue), GFP_KERNEL);
+ 	if (result == NULL)
+-		goto out_fail;
++		return NULL;
+ 	result->max_depth = max_size;
+ 	result->dev = vp->dev;
+ 	result->mmsg_vector = kmalloc(
+ 		(sizeof(struct mmsghdr) * max_size), GFP_KERNEL);
++	if (result->mmsg_vector == NULL)
++		goto out_mmsg_fail;
+ 	result->skbuff_vector = kmalloc(
+ 		(sizeof(void *) * max_size), GFP_KERNEL);
+-	if (result->mmsg_vector == NULL || result->skbuff_vector == NULL)
+-		goto out_fail;
++	if (result->skbuff_vector == NULL)
++		goto out_skb_fail;
++
++	/* further failures can be handled safely by destroy_queue*/
+ 
+ 	mmsg_vector = result->mmsg_vector;
+ 	for (i = 0; i < max_size; i++) {
+@@ -563,6 +567,11 @@ static struct vector_queue *create_queue(
+ 	result->head = 0;
+ 	result->tail = 0;
+ 	return result;
++out_skb_fail:
++	kfree(result->mmsg_vector);
++out_mmsg_fail:
++	kfree(result);
++	return NULL;
+ out_fail:
+ 	destroy_queue(result);
+ 	return NULL;
+-- 
+2.11.0
+
 
 _______________________________________________
-User-mode-linux-devel mailing list
-User-mode-linux-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/user-mode-linux-devel
-
---===============0901725611945748805==--
-
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
