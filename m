@@ -1,25 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl0-x22d.google.com ([2607:f8b0:400e:c01::22d])
+Received: from mail-pg0-x236.google.com ([2607:f8b0:400e:c05::236])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTO61-0002pZ-Q7
- for linux-um@lists.infradead.org; Thu, 14 Jun 2018 08:59:31 +0000
-Received: by mail-pl0-x22d.google.com with SMTP id b14-v6so3167058pls.5
- for <linux-um@lists.infradead.org>; Thu, 14 Jun 2018 01:58:59 -0700 (PDT)
+ id 1fTKcf-0007fT-7A
+ for linux-um@lists.infradead.org; Thu, 14 Jun 2018 05:16:39 +0000
+Received: by mail-pg0-x236.google.com with SMTP id z1-v6so2342160pgv.12
+ for <linux-um@lists.infradead.org>; Wed, 13 Jun 2018 22:16:26 -0700 (PDT)
 Received: from priyasi ([27.34.106.60])
- by smtp.gmail.com with ESMTPSA id v15-v6sm8809702pfk.12.2018.06.14.01.58.56
+ by smtp.gmail.com with ESMTPSA id c191-v6sm6862382pfg.48.2018.06.13.22.16.24
  for <linux-um@lists.infradead.org>
  (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Thu, 14 Jun 2018 01:58:56 -0700 (PDT)
+ Wed, 13 Jun 2018 22:16:24 -0700 (PDT)
 Received: from localhost.localdomain ([::1] helo=localhost)
  by priyasi with esmtp (Exim 4.91)
- (envelope-from <rrs@researchut.com>) id 1fTO5l-0002VZ-Ty
- for linux-um@lists.infradead.org; Thu, 14 Jun 2018 14:43:53 +0545
-Message-ID: <d5c8646bf909902b1f4a0f593ab3832ed399f9c1.camel@researchut.com>
-Subject: Re: UML fails to build on arch i386
+ (envelope-from <rrs@researchut.com>) id 1fTKcQ-0004ME-5A
+ for linux-um@lists.infradead.org; Thu, 14 Jun 2018 11:01:22 +0545
+Message-ID: <eabf7e000bc0227fa6a7a74a23512cc11b84206a.camel@researchut.com>
+Subject: UML fails to build on arch i386
 From: Ritesh Raj Sarraf <rrs@researchut.com>
-Date: Thu, 14 Jun 2018 14:43:53 +0545
-In-Reply-To: <eabf7e000bc0227fa6a7a74a23512cc11b84206a.camel@researchut.com>
-References: <eabf7e000bc0227fa6a7a74a23512cc11b84206a.camel@researchut.com>
+Date: Thu, 14 Jun 2018 11:01:21 +0545
 Mime-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -30,40 +28,42 @@ List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Reply-To: rrs@researchut.com
-Content-Type: multipart/mixed; boundary="===============4065873077705668536=="
+Content-Type: multipart/mixed; boundary="===============6000565885708335025=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-um@lists.infradead.org
 
 
---===============4065873077705668536==
+--===============6000565885708335025==
 Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-AtCww6EsVLunie0XTTJF"
+	protocol="application/pgp-signature"; boundary="=-BKEVTfVXs+I/+5I+5wwv"
 
 
---=-AtCww6EsVLunie0XTTJF
+--=-BKEVTfVXs+I/+5I+5wwv
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2018-06-14 at 11:01 +0545, Ritesh Raj Sarraf wrote:
->   CC      arch/um/kernel/skas/clone.o
-> In file included from ./arch/x86/um/shared/sysdep/ptrace.h:42:0,
->                  from ./arch/um/include/shared/as-layout.h:38,
->                  from arch/um/kernel/skas/clone.c:11:
-> ./arch/x86/um/shared/sysdep/ptrace_32.h:16:23:=20
->                        ^
 
-This log missed the main error line:
+Hello Richard/UML Team,
 
+In preparing the 4.16 UML build, the code fails to build from source on
+i386. It build successfully on arch amd64.
+
+Full build log is available at:
+https://buildd.debian.org/status/fetch.php?pkg=3Duser-mode-linux&arch=3Di38
+6&ver=3D4.16-1um-1&stamp=3D1528784216&raw=3D0
+
+  CC      arch/um/kernel/tlb.o
+  CC      arch/um/kernel/trap.o
+  CC      arch/um/kernel/um_arch.o
+  CC      arch/um/kernel/umid.o
   CC      arch/um/kernel/maccess.o
   CC      arch/um/kernel/kmsg_dump.o
   CC      arch/um/kernel/skas/clone.o
 In file included from ./arch/x86/um/shared/sysdep/ptrace.h:42:0,
                  from ./arch/um/include/shared/as-layout.h:38,
                  from arch/um/kernel/skas/clone.c:11:
-./arch/x86/um/shared/sysdep/ptrace_32.h:16:23: error: expected identifier b=
-efore numeric constant
- #define PTRACE_SYSEMU 31
+./arch/x86/um/shared/sysdep/ptrace_32.h:16:23:=20
                        ^
 scripts/Makefile.build:329: recipe for target 'arch/um/kernel/skas/clone.o'=
  failed
@@ -81,38 +81,41 @@ status 2
 -----
 Build finished at 2018-06-12T06:16:48Z
 
+Finished
+--------
+
 
 --=20
 Ritesh Raj Sarraf
 RESEARCHUT - http://www.researchut.com
 "Necessity is the mother of invention."
---=-AtCww6EsVLunie0XTTJF
+--=-BKEVTfVXs+I/+5I+5wwv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAlsiLk0ACgkQpjpYo/Lh
-dWm0lRAAhV1cAAD0s3Bk//8OIs3Qo7Mm/JmAz0d72h0bETLsXZyXGfiDXhUlunwU
-+UnnmcbklZRygrHzezTFtDLLLNRKTIRQHjGMoLfcmju2nNOI9xCwtpiiU6MVF0Fh
-RKfjf8eoAQYkt/AoxP7wVyTXLnPpdfHHgLAoW+kyB9GkpH4TOXErfve/b/Ou/xvT
-aN+TKVx6nt0SuG3bGL/bFyD0uNKzASIedY866X55TMdurZeTPkM9EEQmVjr/xYvU
-IGRg5hsciKJIz6EUphF0FEvFINLJD7xr07ppdlqIB2hgnTF7//ylWNK+ELRALTdL
-va62B5Pu5cnM9/W5mC+9VDy6PWz6pFlCFAVqdbKjrzxir5LG4HuBrYSW2I1xFaRX
-Ufx+MJj/yJOc1vTatdPnLIeh6VB4iA9pA3sDdR555DCnr5bkbeUBdhR04h9Uzw6b
-NVbasl+sbO7nvGSnZXmg3A7D4lSgkqcKG+M7wG1m6tg8maJoVL+IRrQdTLBxG51M
-ckJkAa0j8G6jbHh9SKv3y0TXyhGHFUFFY7PluDWuFlX6TkfqdWMMSgJ6NNI+XetG
-84xErSH6zuBYrkSfsor20iwlrE4i824pjhUZ3KheMZhxcGQzOb+jnNhRWj4CPSDw
-r0Be/deqInW58flS4djkA4IduOiSrc30mE4AIktJ4FXSHf3Q1bg=
-=4LKC
+iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAlsh+iUACgkQpjpYo/Lh
+dWkjUw//Tu27qI/0xHCam3BU2rPs6yNSJQeOsYkaj04oTOX9x45j6eezYBp8Nzy5
+1MtyABOD2Qf805zv/i/Plt63CpelZe4Qs1W8+QiT9HRiN2E8G3p43i58BfzFlhHI
++0CwMjgmyy86cYdMfq4Ur+Dp0+2NWxeg/GyBexcJw95StPebyuJFL2uxTwEMfGpv
+8MgxbSKyYERAi9B7m4cQwJ8vGGrCXpALi8EVlpxOVg/XupSToSJL9SWv975x85lE
+ywwUf+c3Qn/XA83Z3esMwAEFTfcyKb7QeFm4HFtwRXW9LA5dm+MsVWKqNovKifja
+zFReWgY+3aCaQ2Jzn04s89svEhUq55zXqFOjRpvhZgb1bduLcg2LZNgGIUrXS0f4
+WQ3fQt0kUt5Ivp/yfD2oYHeEFO2j+Q+C0vXH5YWgHl+aV86EhLY6Q2MGW447aUg7
+e2GPh/T9NKAjNCGd50qof/WgeRyfUyG8VhAkVUJejtR3erheIoDhNDL7YAkdEfSu
+HBGli4V1+Ug+49OQFR+5W5/gXstihmIICPOP1ANaHVb2tmxlloekh3qnSBy1D917
+M6EDHcmeID/SRffSCaFoi+4pfIUE5ZTioZtezPHcbsWilsCqD4DnoF6Omju0Qlfo
+JCNv3N0GJJ/79FTW7ZoWS8hOTttjzXAXVaTZddqNUZJgMWZ6Zx8=
+=cJ5l
 -----END PGP SIGNATURE-----
 
---=-AtCww6EsVLunie0XTTJF--
+--=-BKEVTfVXs+I/+5I+5wwv--
 
 
 
---===============4065873077705668536==
+--===============6000565885708335025==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -123,7 +126,7 @@ linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
 
---===============4065873077705668536==--
+--===============6000565885708335025==--
 
 
 
