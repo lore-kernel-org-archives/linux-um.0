@@ -1,236 +1,141 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-MIME-Version: 1.0
-Date: Tue, 26 Jun 2018 00:23:59 -0700
-Message-Id: <20180626072359.185217-1-mpratt@google.com>
-Subject: [PATCH] fs: disallow empty path in default getname_kernel
-From: Michael Pratt <mpratt@google.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf0-x229.google.com ([2607:f8b0:400e:c00::229])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fTnNn-0000ey-70
+ for linux-um@lists.infradead.org; Fri, 15 Jun 2018 11:59:20 +0000
+Received: by mail-pf0-x229.google.com with SMTP id a63-v6so4789197pfl.1
+ for <linux-um@lists.infradead.org>; Fri, 15 Jun 2018 04:59:00 -0700 (PDT)
+Message-ID: <cfa706bc44986339492f32b63adad36257b43f93.camel@researchut.com>
+Subject: Re: UML fails to build on arch i386
+From: Ritesh Raj Sarraf <rrs@researchut.com>
+Date: Fri, 15 Jun 2018 17:43:55 +0545
+In-Reply-To: <2534439.LyGaCr9OWm@blindfold>
+References: <eabf7e000bc0227fa6a7a74a23512cc11b84206a.camel@researchut.com>
+ <2135572.4iMtKPa2p5@blindfold>
+ <503aeaef9da5dbb58f2c1fb9793eb25cb5ce0bc9.camel@researchut.com>
+ <2534439.LyGaCr9OWm@blindfold>
+Mime-Version: 1.0
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: rrs@researchut.com
+Content-Type: multipart/mixed; boundary="===============6602410206268147459=="
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Richard Weinberger <richard@sigma-star.at>
+Cc: linux-um@lists.infradead.org
+
+
+--===============6602410206268147459==
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-CySwRPXddhIYzDkB9HNw"
+
+
+--=-CySwRPXddhIYzDkB9HNw
 Content-Type: text/plain; charset="UTF-8"
-Sender: linux-kernel-owner@vger.kernel.org
-To: Michael Pratt <mpratt@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>, Kees Cook <keescook@chromium.org>, David Drysdale <drysdale@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mateusz Jurczyk <mjurczyk@google.com>, Kate Stewart <kstewart@linuxfoundation.org>
-List-ID: <linux-um.lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
 
-getname and getname_flags return ENOENT for an empty path in the common
-case (without LOOKUP_EMPTY). However, getname_kernel currently allows empty
-paths in all cases, which can lead to surprising behavior in code that does
-not perform its own empty path check.
+On Fri, 2018-06-15 at 08:43 +0200, Richard Weinberger wrote:
+> Okay, as expected, the ptrace SYSEMU request code is now an enum.
+> Changed by in glibc:
+> commit c48831d0eebf876d986919baf2d9240a79192837
+> Author: Dmitry V. Levin <ldv@altlinux.org>
+> Date:   Wed Dec 27 00:54:38 2017 +0000
+>=20
+>     linux/x86: sync sys/ptrace.h with Linux 4.14 [BZ #22433]
+>    =20
+>     Clone generic linux/sys/ptrace.h, add the following x86-specific
+>     __ptrace_request constants: PTRACE_GET_THREAD_AREA,
+>     PTRACE_SET_THREAD_AREA, PTRACE_ARCH_PRCTL, PTRACE_SYSEMU,
+>     PTRACE_SYSEMU_SINGLESTEP, and PTRACE_SINGLEBLOCK.
+>    =20
+>     [BZ #22433]
+>     * sysdeps/unix/sysv/linux/x86/sys/ptrace.h: New file.
+>=20
+> Does this change make UML build on your host?
+>=20
+> diff --git a/arch/x86/um/shared/sysdep/ptrace_32.h
+> b/arch/x86/um/shared/sysdep/ptrace_32.h
+> index b94a108de1dc..ae00d22bce02 100644
+> --- a/arch/x86/um/shared/sysdep/ptrace_32.h
+> +++ b/arch/x86/um/shared/sysdep/ptrace_32.h
+> @@ -10,20 +10,10 @@
+> =20
+>  static inline void update_debugregs(int seq) {}
+> =20
+> -/* syscall emulation path in ptrace */
+> -
+> -#ifndef PTRACE_SYSEMU
+> -#define PTRACE_SYSEMU 31
+> -#endif
+> -
+>  void set_using_sysemu(int value);
+>  int get_using_sysemu(void);
+>  extern int sysemu_supported;
+> =20
+> -#ifndef PTRACE_SYSEMU_SINGLESTEP
+> -#define PTRACE_SYSEMU_SINGLESTEP 32
+> -#endif
+> -
+>  #define UPT_SYSCALL_ARG1(r) UPT_BX(r)
+>  #define UPT_SYSCALL_ARG2(r) UPT_CX(r)
+>  #define UPT_SYSCALL_ARG3(r) UPT_DX(r)
+>=20
 
-For example, if you attempt to exec an ELF with a PT_INTERP section
-containing only 2 NUL bytes, fs/exec.c:open_exec will actually open the
-working directory via do_filp_open(AT_FDCWD, "") and only bail out with
-EACCES because only regular files can't be exec'd. One would expect it to
-fail with ENOENT or perhaps ENOEXEC.
+Thank you Richard.
 
-Many transitive callers of getname_kernel check that the first byte of the
-path != '\0', but other parts of the kernel simply happen to be protected
-by the difficulty of getting an empty string to them. e.g.,
-fs/ext4/super.c:handle_mount_opt Opt_journal_path would open the cwd if
-passed an empty path, but the mount option parsing code doesn't allow empty
-arguments.
+That does fix the build. I built and verified it on i386 and amd64.
 
-Beyond the ELF case above, I've not found any explicitly incorrect behavior
-due to this.
+Thanks,
+Ritesh
 
-The only user that clearly intends to open an empty path is
-fs/fhandle.c:do_handle_open, which is reopening a specific dentry. So add
-getname_kernel_flags like getname_flags for use by do_handle_open, while
-all other users disallow empty paths.
+--=20
+Ritesh Raj Sarraf
+RESEARCHUT - http://www.researchut.com
+"Necessity is the mother of invention."
+--=-CySwRPXddhIYzDkB9HNw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Michael Pratt <mpratt@google.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: David Drysdale <drysdale@google.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Mateusz Jurczyk <mjurczyk@google.com>
-Cc: Kate Stewart <kstewart@linuxfoundation.org>
----
-I discovered the odd behavior with ELF loading and considered simply adding a
-NUL-check in open_exec, but it seems better to fix this in the central
-getname_kernel where it can help prevent similar oddness in other areas of the
-kernel.
+-----BEGIN PGP SIGNATURE-----
 
- arch/um/drivers/mconsole_kern.c |  2 +-
- fs/coredump.c                   |  2 +-
- fs/fhandle.c                    |  3 ++-
- fs/namei.c                      | 17 ++++++++++++++---
- fs/open.c                       | 13 +++++++------
- include/linux/fs.h              |  3 ++-
- kernel/sysctl_binary.c          |  2 +-
- 7 files changed, 28 insertions(+), 14 deletions(-)
+iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAlsjqf8ACgkQpjpYo/Lh
+dWnMlQ//Y0QL+3WWAiSBRPmG7ZECHSlRw82M4Ut8iMQ/4CWINvBu59UYFK0x9j8x
+ggIVEMn0TLwRIGrBUT5HP++2BkTB2BOsjoFr54mjETcXAZ48FhccapmTvgdMZ8sN
+O/t6wScaly0Uba92t2OO9+aGry1q9Kl8KCpICZUMuvsFYMgIMJgL6Wl7vFbV8PNU
+bMYdnuQ8h6EX97KSwh39ik4NTuN2fhx+INkVWVDhR0xdH2jlgRBjXDg+v1qN/jJS
+bfceSUQ8Fub6hQOZxFQ35qHaI+AtwS06Qv1tDsVcE+6B7DAS79534TYutoGKSI7U
+ZyNM9IbPkFWKOoMqvVugvrsZsh1QNaqmfGNrt9Ixg3g/gJUJHI3TilbFOtn6oTs6
+reIgMpF2cAPJ+KIWPgieUP9YktgE1+lFoEOqcsihEg0KMmzEiiZM7YXajX9qC9Rx
+9++gKJRfy/F7/yOZwEnDYMonGXT0iFnaCI4c3YEEg6+CYWaZuupjVNNFcsflhUnD
+H05pf807UqUeEjAZhJvnp2MuXdw0cS+kG4PJPDV/hOZFxYEcS1fAcYlMZkkoNTn4
+AuEd3Vy6Xe6YqGQ/rf3ep9ovSg8z9L5/fpsWBIS8Dxi+Hejqf4KmnpImmV4tgtTj
+aDnRpl1vlp0xs90Ov0/JnhyEsjYkBPVCa9Kln0gzUK/zdEsDMt4=
+=u0vo
+-----END PGP SIGNATURE-----
 
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index d5f9a2d1da1b..7f1638c81ea4 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -135,7 +135,7 @@ void mconsole_proc(struct mc_request *req)
- 	ptr += strlen("proc");
- 	ptr = skip_spaces(ptr);
- 
--	file = file_open_root(mnt->mnt_root, mnt, ptr, O_RDONLY, 0);
-+	file = file_open_root(mnt->mnt_root, mnt, ptr, O_RDONLY, 0, 0);
- 	if (IS_ERR(file)) {
- 		mconsole_reply(req, "Failed to open file", 1, 0);
- 		printk(KERN_ERR "open /proc/%s: %ld\n", ptr, PTR_ERR(file));
-diff --git a/fs/coredump.c b/fs/coredump.c
-index 1e2c87acac9b..c689eee11dcd 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -711,7 +711,7 @@ void do_coredump(const siginfo_t *siginfo)
- 			get_fs_root(init_task.fs, &root);
- 			task_unlock(&init_task);
- 			cprm.file = file_open_root(root.dentry, root.mnt,
--				cn.corename, open_flags, 0600);
-+				cn.corename, open_flags, 0600, 0);
- 			path_put(&root);
- 		} else {
- 			cprm.file = filp_open(cn.corename, open_flags, 0600);
-diff --git a/fs/fhandle.c b/fs/fhandle.c
-index 0ee727485615..c854f06b318a 100644
---- a/fs/fhandle.c
-+++ b/fs/fhandle.c
-@@ -229,7 +229,8 @@ static long do_handle_open(int mountdirfd, struct file_handle __user *ufh,
- 		path_put(&path);
- 		return fd;
- 	}
--	file = file_open_root(path.dentry, path.mnt, "", open_flag, 0);
-+	file = file_open_root(path.dentry, path.mnt, "", open_flag, 0,
-+			      LOOKUP_EMPTY);
- 	if (IS_ERR(file)) {
- 		put_unused_fd(fd);
- 		retval =  PTR_ERR(file);
-diff --git a/fs/namei.c b/fs/namei.c
-index 734cef54fdf8..636ed5d47ac4 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -212,7 +212,7 @@ getname(const char __user * filename)
- }
- 
- struct filename *
--getname_kernel(const char * filename)
-+getname_kernel_flags(const char * filename, int flags)
- {
- 	struct filename *result;
- 	int len = strlen(filename) + 1;
-@@ -221,7 +221,12 @@ getname_kernel(const char * filename)
- 	if (unlikely(!result))
- 		return ERR_PTR(-ENOMEM);
- 
--	if (len <= EMBEDDED_NAME_MAX) {
-+	if (unlikely(len == 1)) {
-+		if (!(flags & LOOKUP_EMPTY)) {
-+			__putname(result);
-+			return ERR_PTR(-ENOENT);
-+		}
-+	} else if (len <= EMBEDDED_NAME_MAX) {
- 		result->name = (char *)result->iname;
- 	} else if (len <= PATH_MAX) {
- 		const size_t size = offsetof(struct filename, iname[1]);
-@@ -247,6 +252,12 @@ getname_kernel(const char * filename)
- 	return result;
- }
- 
-+struct filename *
-+getname_kernel(const char * filename)
-+{
-+	return getname_kernel_flags(filename, 0);
-+}
-+
- void putname(struct filename *name)
- {
- 	BUG_ON(name->refcnt <= 0);
-@@ -3594,7 +3605,7 @@ struct file *do_file_open_root(struct dentry *dentry, struct vfsmount *mnt,
- 	if (d_is_symlink(dentry) && op->intent & LOOKUP_OPEN)
- 		return ERR_PTR(-ELOOP);
- 
--	filename = getname_kernel(name);
-+	filename = getname_kernel_flags(name, op->lookup_flags);
- 	if (IS_ERR(filename))
- 		return ERR_CAST(filename);
- 
-diff --git a/fs/open.c b/fs/open.c
-index d0e955b558ad..cf580f5cd326 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -939,9 +939,9 @@ struct file *dentry_open(const struct path *path, int flags,
- }
- EXPORT_SYMBOL(dentry_open);
- 
--static inline int build_open_flags(int flags, umode_t mode, struct open_flags *op)
-+static inline int build_open_flags(int flags, umode_t mode, int lookup_flags,
-+				   struct open_flags *op)
- {
--	int lookup_flags = 0;
- 	int acc_mode = ACC_MODE(flags);
- 
- 	/*
-@@ -1024,7 +1024,7 @@ static inline int build_open_flags(int flags, umode_t mode, struct open_flags *o
- struct file *file_open_name(struct filename *name, int flags, umode_t mode)
- {
- 	struct open_flags op;
--	int err = build_open_flags(flags, mode, &op);
-+	int err = build_open_flags(flags, mode, 0, &op);
- 	return err ? ERR_PTR(err) : do_filp_open(AT_FDCWD, name, &op);
- }
- 
-@@ -1053,10 +1053,11 @@ struct file *filp_open(const char *filename, int flags, umode_t mode)
- EXPORT_SYMBOL(filp_open);
- 
- struct file *file_open_root(struct dentry *dentry, struct vfsmount *mnt,
--			    const char *filename, int flags, umode_t mode)
-+			    const char *filename, int flags, umode_t mode,
-+			    int lookup_flags)
- {
- 	struct open_flags op;
--	int err = build_open_flags(flags, mode, &op);
-+	int err = build_open_flags(flags, mode, lookup_flags, &op);
- 	if (err)
- 		return ERR_PTR(err);
- 	return do_file_open_root(dentry, mnt, filename, &op);
-@@ -1086,7 +1087,7 @@ EXPORT_SYMBOL(filp_clone_open);
- long do_sys_open(int dfd, const char __user *filename, int flags, umode_t mode)
- {
- 	struct open_flags op;
--	int fd = build_open_flags(flags, mode, &op);
-+	int fd = build_open_flags(flags, mode, 0, &op);
- 	struct filename *tmp;
- 
- 	if (fd)
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 5c91108846db..c985825291d5 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2420,12 +2420,13 @@ extern long do_sys_open(int dfd, const char __user *filename, int flags,
- extern struct file *file_open_name(struct filename *, int, umode_t);
- extern struct file *filp_open(const char *, int, umode_t);
- extern struct file *file_open_root(struct dentry *, struct vfsmount *,
--				   const char *, int, umode_t);
-+				   const char *, int, umode_t, int);
- extern struct file * dentry_open(const struct path *, int, const struct cred *);
- extern int filp_close(struct file *, fl_owner_t id);
- 
- extern struct filename *getname_flags(const char __user *, int, int *);
- extern struct filename *getname(const char __user *);
-+extern struct filename *getname_kernel_flags(const char *, int);
- extern struct filename *getname_kernel(const char *);
- extern void putname(struct filename *name);
- 
-diff --git a/kernel/sysctl_binary.c b/kernel/sysctl_binary.c
-index 07148b497451..d3e1cbfa6cdb 100644
---- a/kernel/sysctl_binary.c
-+++ b/kernel/sysctl_binary.c
-@@ -1302,7 +1302,7 @@ static ssize_t binary_sysctl(const int *name, int nlen,
- 	}
- 
- 	mnt = task_active_pid_ns(current)->proc_mnt;
--	file = file_open_root(mnt->mnt_root, mnt, pathname, flags, 0);
-+	file = file_open_root(mnt->mnt_root, mnt, pathname, flags, 0, 0);
- 	result = PTR_ERR(file);
- 	if (IS_ERR(file))
- 		goto out_putname;
--- 
-2.18.0.rc2.346.g013aa6912e-goog
+--=-CySwRPXddhIYzDkB9HNw--
+
+
+
+--===============6602410206268147459==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============6602410206268147459==--
+
 
 
