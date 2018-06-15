@@ -1,17 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-pf0-x244.google.com ([2607:f8b0:400e:c00::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTiSn-0004Af-Th
- for linux-um@lists.infradead.org; Fri, 15 Jun 2018 06:44:04 +0000
-From: Richard Weinberger <richard@sigma-star.at>
+ id 1fTiKN-0000Wu-53
+ for linux-um@lists.infradead.org; Fri, 15 Jun 2018 06:35:21 +0000
+Received: by mail-pf0-x244.google.com with SMTP id a11-v6so4396152pff.8
+ for <linux-um@lists.infradead.org>; Thu, 14 Jun 2018 23:35:08 -0700 (PDT)
+Message-ID: <503aeaef9da5dbb58f2c1fb9793eb25cb5ce0bc9.camel@researchut.com>
 Subject: Re: UML fails to build on arch i386
-Date: Fri, 15 Jun 2018 08:43:46 +0200
-Message-ID: <2534439.LyGaCr9OWm@blindfold>
-In-Reply-To: <503aeaef9da5dbb58f2c1fb9793eb25cb5ce0bc9.camel@researchut.com>
+From: Ritesh Raj Sarraf <rrs@researchut.com>
+Date: Fri, 15 Jun 2018 12:20:02 +0545
+In-Reply-To: <2135572.4iMtKPa2p5@blindfold>
 References: <eabf7e000bc0227fa6a7a74a23512cc11b84206a.camel@researchut.com>
+ <CAFLxGvw8_HJGLHuaPxT0wxr6fCa3w5GkTjfrkUyVY+ZG0NoE6g@mail.gmail.com>
+ <fb137ebf865a1160b06ac92cfb601fd68533c787.camel@researchut.com>
  <2135572.4iMtKPa2p5@blindfold>
- <503aeaef9da5dbb58f2c1fb9793eb25cb5ce0bc9.camel@researchut.com>
-MIME-Version: 1.0
+Mime-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +23,107 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: rrs@researchut.com
+Content-Type: multipart/mixed; boundary="===============0718592122124116224=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: rrs@researchut.com
-Cc: linux-um@lists.infradead.org
+To: Richard Weinberger <richard@sigma-star.at>, linux-um@lists.infradead.org
 
-QW0gRnJlaXRhZywgMTUuIEp1bmkgMjAxOCwgMDg6MzU6MDIgQ0VTVCBzY2hyaWViIFJpdGVzaCBS
-YWogU2FycmFmOgo+IEhlbGxvIFJpY2hhcmQsCj4gCj4gT24gVGh1LCAyMDE4LTA2LTE0IGF0IDIw
-OjQxICswMjAwLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4gPiA+IAo+ID4gPiAjaWZkZWYg
-X194ODZfNjRfXwo+ID4gPiAgICAvKiBBY2Nlc3MgVExTIGRhdGEuICAqLwo+ID4gPiAgICBQVFJB
-Q0VfQVJDSF9QUkNUTCA9IDMwLAo+ID4gPiAjIGRlZmluZSBQVF9BUkNIX1BSQ1RMIFBUUkFDRV9B
-UkNIX1BSQ1RMCj4gPiA+ICNlbmRpZgo+ID4gPiAKPiA+ID4gICAgLyogQ29udGludWUgYW5kIHN0
-b3AgYXQgdGhlIG5leHQgc3lzY2FsbCwgaXQgd2lsbCBub3QgYmUKPiA+ID4gZXhlY3V0ZWQuICAq
-Lwo+ID4gPiAgICBQVFJBQ0VfU1lTRU1VID0gMzEsCj4gPiA+ICNkZWZpbmUgUFRfU1lTRU1VIFBU
-UkFDRV9TWVNFTVUKPiA+IAo+ID4gT2theSwgUFRSQUNFX1NZU0VNVSBzZWVtcyB0byBiZSBwYXJ0
-IG9mIGFuIGVudW0sIHRoYXQncyB3aHkgVU1MJ3MKPiA+ICNpZm5kZWYgZG9lcyBub3QKPiA+IG5v
-dCBwcm90ZWN0IHRoZSAjZGVmaW5lLgo+ID4gCj4gPiBXaGF0IGxpYmMgaXMgdGhpcz8KPiAKPiBU
-aGlzIGlzIGdsaWJjIDIuMjcgZnJvbSBEZWJpYW4uCj4gCj4gcnJzQHByaXlhc2k6fiQgZHBrZyAt
-UyAvdXNyL2luY2x1ZGUveDg2XzY0LWxpbnV4LWdudS9zeXMvcHRyYWNlLmggCj4gbGliYzYtZGV2
-OmFtZDY0OiAvdXNyL2luY2x1ZGUveDg2XzY0LWxpbnV4LWdudS9zeXMvcHRyYWNlLmgKPiAxMjox
-OSDimZLimZLimZIgICDimLog8J+YhCAgICAKPiBycnNAcHJpeWFzaTp+JCBhcHQgcG9saWN5IGxp
-YmM2LWRldgo+IGxpYmM2LWRldjoKPiAgIEluc3RhbGxlZDogMi4yNy0zCj4gICBDYW5kaWRhdGU6
-IDIuMjctMwo+ICAgVmVyc2lvbiB0YWJsZToKPiAgKioqIDIuMjctMyA5MDAKPiAgICAgICAgIDkw
-MCBodHRwOi8vZGViLmRlYmlhbi5vcmcvZGViaWFuIHRlc3RpbmcvbWFpbiBhbWQ2NCBQYWNrYWdl
-cwo+ICAgICAgICAgNTAwIGh0dHA6Ly9kZWIuZGViaWFuLm9yZy9kZWJpYW4gdW5zdGFibGUvbWFp
-biBhbWQ2NCBQYWNrYWdlcwo+ICAgICAgICAgMTAwIC92YXIvbGliL2Rwa2cvc3RhdHVzCj4gMTI6
-MTkg4pmS4pmS4pmSICAg4pi6IPCfmIQgICAgCgpPa2F5LCBhcyBleHBlY3RlZCwgdGhlIHB0cmFj
-ZSBTWVNFTVUgcmVxdWVzdCBjb2RlIGlzIG5vdyBhbiBlbnVtLgpDaGFuZ2VkIGJ5IGluIGdsaWJj
-Ogpjb21taXQgYzQ4ODMxZDBlZWJmODc2ZDk4NjkxOWJhZjJkOTI0MGE3OTE5MjgzNwpBdXRob3I6
-IERtaXRyeSBWLiBMZXZpbiA8bGR2QGFsdGxpbnV4Lm9yZz4KRGF0ZTogICBXZWQgRGVjIDI3IDAw
-OjU0OjM4IDIwMTcgKzAwMDAKCiAgICBsaW51eC94ODY6IHN5bmMgc3lzL3B0cmFjZS5oIHdpdGgg
-TGludXggNC4xNCBbQlogIzIyNDMzXQogICAgCiAgICBDbG9uZSBnZW5lcmljIGxpbnV4L3N5cy9w
-dHJhY2UuaCwgYWRkIHRoZSBmb2xsb3dpbmcgeDg2LXNwZWNpZmljCiAgICBfX3B0cmFjZV9yZXF1
-ZXN0IGNvbnN0YW50czogUFRSQUNFX0dFVF9USFJFQURfQVJFQSwKICAgIFBUUkFDRV9TRVRfVEhS
-RUFEX0FSRUEsIFBUUkFDRV9BUkNIX1BSQ1RMLCBQVFJBQ0VfU1lTRU1VLAogICAgUFRSQUNFX1NZ
-U0VNVV9TSU5HTEVTVEVQLCBhbmQgUFRSQUNFX1NJTkdMRUJMT0NLLgogICAgCiAgICBbQlogIzIy
-NDMzXQogICAgKiBzeXNkZXBzL3VuaXgvc3lzdi9saW51eC94ODYvc3lzL3B0cmFjZS5oOiBOZXcg
-ZmlsZS4KCkRvZXMgdGhpcyBjaGFuZ2UgbWFrZSBVTUwgYnVpbGQgb24geW91ciBob3N0PwoKZGlm
-ZiAtLWdpdCBhL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvcHRyYWNlXzMyLmggYi9hcmNoL3g4
-Ni91bS9zaGFyZWQvc3lzZGVwL3B0cmFjZV8zMi5oCmluZGV4IGI5NGExMDhkZTFkYy4uYWUwMGQy
-MmJjZTAyIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni91bS9zaGFyZWQvc3lzZGVwL3B0cmFjZV8zMi5o
-CisrKyBiL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvcHRyYWNlXzMyLmgKQEAgLTEwLDIwICsx
-MCwxMCBAQAogCiBzdGF0aWMgaW5saW5lIHZvaWQgdXBkYXRlX2RlYnVncmVncyhpbnQgc2VxKSB7
-fQogCi0vKiBzeXNjYWxsIGVtdWxhdGlvbiBwYXRoIGluIHB0cmFjZSAqLwotCi0jaWZuZGVmIFBU
-UkFDRV9TWVNFTVUKLSNkZWZpbmUgUFRSQUNFX1NZU0VNVSAzMQotI2VuZGlmCi0KIHZvaWQgc2V0
-X3VzaW5nX3N5c2VtdShpbnQgdmFsdWUpOwogaW50IGdldF91c2luZ19zeXNlbXUodm9pZCk7CiBl
-eHRlcm4gaW50IHN5c2VtdV9zdXBwb3J0ZWQ7CiAKLSNpZm5kZWYgUFRSQUNFX1NZU0VNVV9TSU5H
-TEVTVEVQCi0jZGVmaW5lIFBUUkFDRV9TWVNFTVVfU0lOR0xFU1RFUCAzMgotI2VuZGlmCi0KICNk
-ZWZpbmUgVVBUX1NZU0NBTExfQVJHMShyKSBVUFRfQlgocikKICNkZWZpbmUgVVBUX1NZU0NBTExf
-QVJHMihyKSBVUFRfQ1gocikKICNkZWZpbmUgVVBUX1NZU0NBTExfQVJHMyhyKSBVUFRfRFgocikK
-ClRoYW5rcywKLy9yaWNoYXJkCgotLSAKc2lnbWEgc3RhciBnbWJoIC0gRWR1YXJkLUJvZGVtLUdh
-c3NlIDYgLSA2MDIwIElubnNicnVjayAtIEF1c3RyaWEKQVRVNjY5NjQxMTggLSBGTiAzNzQyODd5
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11
-bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+
+--===============0718592122124116224==
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-8ocpbnS3cf49dxGID5Rn"
+
+
+--=-8ocpbnS3cf49dxGID5Rn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hello Richard,
+
+On Thu, 2018-06-14 at 20:41 +0200, Richard Weinberger wrote:
+> >=20
+> > #ifdef __x86_64__
+> >    /* Access TLS data.  */
+> >    PTRACE_ARCH_PRCTL =3D 30,
+> > # define PT_ARCH_PRCTL PTRACE_ARCH_PRCTL
+> > #endif
+> >=20
+> >    /* Continue and stop at the next syscall, it will not be
+> > executed.  */
+> >    PTRACE_SYSEMU =3D 31,
+> > #define PT_SYSEMU PTRACE_SYSEMU
+>=20
+> Okay, PTRACE_SYSEMU seems to be part of an enum, that's why UML's
+> #ifndef does not
+> not protect the #define.
+>=20
+> What libc is this?
+
+This is glibc 2.27 from Debian.
+
+rrs@priyasi:~$ dpkg -S /usr/include/x86_64-linux-gnu/sys/ptrace.h=20
+libc6-dev:amd64: /usr/include/x86_64-linux-gnu/sys/ptrace.h
+12:19 =E2=99=92=E2=99=92=E2=99=92   =E2=98=BA =F0=9F=98=84   =20
+rrs@priyasi:~$ apt policy libc6-dev
+libc6-dev:
+  Installed: 2.27-3
+  Candidate: 2.27-3
+  Version table:
+ *** 2.27-3 900
+        900 http://deb.debian.org/debian testing/main amd64 Packages
+        500 http://deb.debian.org/debian unstable/main amd64 Packages
+        100 /var/lib/dpkg/status
+12:19 =E2=99=92=E2=99=92=E2=99=92   =E2=98=BA =F0=9F=98=84   =20
+
+
+
+>=20
+> I think we can remove UML's define check and just assume that every
+> system has PTRACE_SYSEMU
+> properly defined.
+--=20
+Ritesh Raj Sarraf
+RESEARCHUT - http://www.researchut.com
+"Necessity is the mother of invention."
+--=-8ocpbnS3cf49dxGID5Rn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEQCVDstmIVAB/Yn02pjpYo/LhdWkFAlsjXhYACgkQpjpYo/Lh
+dWltdw//djH+iWlNoxo1BkLwSrFbfxJ/G9B3WF5Xyhq72oPjxzZqU711mFfUjpD8
+ILRM7Kkq0z8Wb2FhXlO6+4fJ8DiRtyalVf+a2LXDdIxOfBZGrPT6fB2oNgE+WPy1
+mxJSqMN9Xi2vyiFZKB6x9XGYF2kt+nVAKGx2lTju5eyCBM04kPfGxBpz4PCv0HYd
+9ujqCUUJI7TIWKlU/bgYg8pjthV/fpUikObKc6RZS2wGJcd80VFDWayA4LVNNb3u
+QwnROUfDXKba1eyK6iEFIP6+BWxnuOc454LqzFSQ5q7wIZWCGPBmClxara7rMdjE
+OKKvK7EuPgWtnRNh5blr3ZU57z/RUYBJDLtLbvN0eYHzWiwMK2ZkIsVYo5BlQLNP
+77XWJUsJY8eqL/HhA6DuCL7bpFpLzrsJVYruwYIz6VNWIBAf4vtRUC6qoN+H5e2V
+dtzgcVbf+3kdr/S93Yt2STOpVKHyq18APKpeZCHXwUU0G1C5CFA0iXb+S/oTa53b
+xzkENMG2uju9uiDgwyuDef1WGSqI2VSWNBQNwhAuKurYQ2rTB+WO+bpUyxjY/9lN
+OyhU6+QN22Kipq7bWaNFtDk4pvOGvbNEXOq+y45xMoa5YrJlD/4hvwmEeYTDAxOb
+7wkjMo7Yozdq6Exz50BolMYyh2nI9WAvat+T2cnxZtRzDuefd64=
+=qEM9
+-----END PGP SIGNATURE-----
+
+--=-8ocpbnS3cf49dxGID5Rn--
+
+
+
+--===============0718592122124116224==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============0718592122124116224==--
+
+
 
