@@ -1,69 +1,60 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab5.miniserver.com ([78.31.111.25]
- helo=www.kot-begemot.co.uk)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQtKR-0000eS-Eb
- for linux-um@lists.infradead.org; Thu, 07 Jun 2018 11:43:53 +0000
-From: anton.ivanov@cambridgegreys.com
-Subject: [PATCH] Fix the RAW interface options for UML
-Date: Thu,  7 Jun 2018 12:43:15 +0100
-Message-Id: <20180607114315.8103-1-anton.ivanov@cambridgegreys.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: Richard Weinberger <richard@nod.at>
+Subject: [PATCH 1/3] um: Drop own definition of PTRACE_SYSEMU/_SINGLESTEP
+Date: Fri, 15 Jun 2018 16:42:54 +0200
+Message-Id: <20180615144256.13343-1-richard@nod.at>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-um@lists.infradead.org
-Cc: richard.weinberger@gmail.com, dan.carpenter@oracle.com, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, stable@vger.kernel.org, Ritesh Raj Sarraf <rrs@researchut.com>
+List-ID: <linux-um.lists.infradead.org>
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+32bit UML used to define PTRACE_SYSEMU and PTRACE_SYSEMU_SINGLESTEP
+own its own because many years ago not all libcs had these request codes
+in their UAPI.
+These days PTRACE_SYSEMU/_SINGLESTEP is well known and part of glibc
+and our own define becomes problematic.
 
-Raw interface initialization needs QDISC_BYPASS. Otherwise
-it sees its own packets when transmitting.
+With change c48831d0eebf ("linux/x86: sync sys/ptrace.h with Linux 4.14
+[BZ #22433]") glibc turned PTRACE_SYSEMU/_SINGLESTEP into a enum and
+UML failed to build.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Let's drop our define and rely on the fact that every libc has
+PTRACE_SYSEMU/_SINGLESTEP.
+
+Cc: <stable@vger.kernel.org>
+Cc: Ritesh Raj Sarraf <rrs@researchut.com>
+Reported-and-tested-by: Ritesh Raj Sarraf <rrs@researchut.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/drivers/vector_kern.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/x86/um/shared/sysdep/ptrace_32.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 8b852928959b..cf9bf9b43ec3 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -188,7 +188,7 @@ static int get_transport_options(struct arglist *def)
- 	if (strncmp(transport, TRANS_TAP, TRANS_TAP_LEN) == 0)
- 		return (vec_rx | VECTOR_BPF);
- 	if (strncmp(transport, TRANS_RAW, TRANS_RAW_LEN) == 0)
--		return (vec_rx | vec_tx);
-+		return (vec_rx | vec_tx | VECTOR_QDISC_BYPASS);
- 	return (vec_rx | vec_tx);
- }
+diff --git a/arch/x86/um/shared/sysdep/ptrace_32.h b/arch/x86/um/shared/sysdep/ptrace_32.h
+index b94a108de1dc..ae00d22bce02 100644
+--- a/arch/x86/um/shared/sysdep/ptrace_32.h
++++ b/arch/x86/um/shared/sysdep/ptrace_32.h
+@@ -10,20 +10,10 @@
  
-@@ -1241,9 +1241,8 @@ static int vector_net_open(struct net_device *dev)
+ static inline void update_debugregs(int seq) {}
  
- 	if ((vp->options & VECTOR_QDISC_BYPASS) != 0) {
- 		if (!uml_raw_enable_qdisc_bypass(vp->fds->rx_fd))
--			vp->options = vp->options | VECTOR_BPF;
-+			vp->options |= VECTOR_BPF;
- 	}
+-/* syscall emulation path in ptrace */
 -
- 	if ((vp->options & VECTOR_BPF) != 0)
- 		vp->bpf = uml_vector_default_bpf(vp->fds->rx_fd, dev->dev_addr);
+-#ifndef PTRACE_SYSEMU
+-#define PTRACE_SYSEMU 31
+-#endif
+-
+ void set_using_sysemu(int value);
+ int get_using_sysemu(void);
+ extern int sysemu_supported;
  
+-#ifndef PTRACE_SYSEMU_SINGLESTEP
+-#define PTRACE_SYSEMU_SINGLESTEP 32
+-#endif
+-
+ #define UPT_SYSCALL_ARG1(r) UPT_BX(r)
+ #define UPT_SYSCALL_ARG2(r) UPT_CX(r)
+ #define UPT_SYSCALL_ARG3(r) UPT_DX(r)
 -- 
-2.11.0
+2.13.6
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
