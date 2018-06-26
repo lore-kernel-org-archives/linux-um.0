@@ -1,49 +1,236 @@
-Return-Path: <linux-sh-owner@vger.kernel.org>
-Date: Wed, 27 Jun 2018 14:37:05 +0200
-From: Michal =?UTF-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>
-Subject: due to kconfig changes kernel config file is no longer sufficient
- for configuring the kernel
-Message-ID: <20180627143705.5a1fed1c@kitsune.suse.cz>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Sender: linux-sh-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>, Andreas Schwab <schwab@suse.de>, Michal Kubecek <mkubecek@suse.cz>, Masahiro Yamada <yamada.masahiro@socionext.com>, Michal Marek <michal.lkml@markovi.net>, Jonathan Corbet <corbet@lwn.net>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, Kees Cook <keescook@chromium.org>, Philippe Ombredanne <pombredanne@nexb.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ulf Magnusson <ulfalizer@gmail.com>, Jeff Mahoney <jeffm@suse.com>, "Peter Zijlstra," <peterz@infradead.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Frederic Weisbecker <frederic@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Dominik Brodowski <linux@dominikbrodowski.net>, Nicholas Piggin <npiggin@gmail.com>, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, Michal =?UTF-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>
+Date: Tue, 26 Jun 2018 00:23:59 -0700
+Message-Id: <20180626072359.185217-1-mpratt@google.com>
+Subject: [PATCH] fs: disallow empty path in default getname_kernel
+From: Michael Pratt <mpratt@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Sender: linux-kernel-owner@vger.kernel.org
+To: Michael Pratt <mpratt@google.com>, Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>, Kees Cook <keescook@chromium.org>, David Drysdale <drysdale@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mateusz Jurczyk <mjurczyk@google.com>, Kate Stewart <kstewart@linuxfoundation.org>
 List-ID: <linux-um.lists.infradead.org>
 
-Hello,
+getname and getname_flags return ENOENT for an empty path in the common
+case (without LOOKUP_EMPTY). However, getname_kernel currently allows empty
+paths in all cases, which can lead to surprising behavior in code that does
+not perform its own empty path check.
 
-in the x86 Kconfig we have this:
+For example, if you attempt to exec an ELF with a PT_INTERP section
+containing only 2 NUL bytes, fs/exec.c:open_exec will actually open the
+working directory via do_filp_open(AT_FDCWD, "") and only bail out with
+EACCES because only regular files can't be exec'd. One would expect it to
+fail with ENOENT or perhaps ENOEXEC.
 
-# Select 32 or 64 bit
-config 64BIT
-        bool "64-bit kernel" if "$(ARCH)" = "x86"
-        default "$(ARCH)" != "i386"
-        ---help---
-          Say yes to build a 64-bit kernel - formerly known as x86_64
-          Say no to build a 32-bit kernel - formerly known as i386
+Many transitive callers of getname_kernel check that the first byte of the
+path != '\0', but other parts of the kernel simply happen to be protected
+by the difficulty of getting an empty string to them. e.g.,
+fs/ext4/super.c:handle_mount_opt Opt_journal_path would open the cwd if
+passed an empty path, but the mount option parsing code doesn't allow empty
+arguments.
 
-Since commit 104daea149c4 ("kconfig: reference environment variables
-directly and remove 'option env='") the value of ARCH is not saved in
-the kernel config. Since commit f467c5640c29 ("kconfig: only write '#
-CONFIG_FOO is not set' for visible symbols") the value of 64BIT is not
-saved if the ARCH is set i386 or x86_64 because the symbol is not
-visible.
+Beyond the ELF case above, I've not found any explicitly incorrect behavior
+due to this.
 
-There is a number of ways to hack this particular case to work.
+The only user that clearly intends to open an empty path is
+fs/fhandle.c:do_handle_open, which is reopening a specific dentry. So add
+getname_kernel_flags like getname_flags for use by do_handle_open, while
+all other users disallow empty paths.
 
-However, there is a more general problem with this. Some config options
-may depend on the environment, may not be saved, and the environment is
-not saved either. So in the end all the infrastructure with symlinks
-from module directory pointing to the kernel source and object
-directory is useless. To interpret the config stored there you need the
-environment and that is not saved anywhere. So if you try to build
-out-of-tree module it might end up reconfiguring your kernel and
-producing useless modules.
+Signed-off-by: Michael Pratt <mpratt@google.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: David Drysdale <drysdale@google.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Mateusz Jurczyk <mjurczyk@google.com>
+Cc: Kate Stewart <kstewart@linuxfoundation.org>
+---
+I discovered the odd behavior with ELF loading and considered simply adding a
+NUL-check in open_exec, but it seems better to fix this in the central
+getname_kernel where it can help prevent similar oddness in other areas of the
+kernel.
 
-Is there any plan to fix this?
+ arch/um/drivers/mconsole_kern.c |  2 +-
+ fs/coredump.c                   |  2 +-
+ fs/fhandle.c                    |  3 ++-
+ fs/namei.c                      | 17 ++++++++++++++---
+ fs/open.c                       | 13 +++++++------
+ include/linux/fs.h              |  3 ++-
+ kernel/sysctl_binary.c          |  2 +-
+ 7 files changed, 28 insertions(+), 14 deletions(-)
 
-Thanks
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index d5f9a2d1da1b..7f1638c81ea4 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -135,7 +135,7 @@ void mconsole_proc(struct mc_request *req)
+ 	ptr += strlen("proc");
+ 	ptr = skip_spaces(ptr);
+ 
+-	file = file_open_root(mnt->mnt_root, mnt, ptr, O_RDONLY, 0);
++	file = file_open_root(mnt->mnt_root, mnt, ptr, O_RDONLY, 0, 0);
+ 	if (IS_ERR(file)) {
+ 		mconsole_reply(req, "Failed to open file", 1, 0);
+ 		printk(KERN_ERR "open /proc/%s: %ld\n", ptr, PTR_ERR(file));
+diff --git a/fs/coredump.c b/fs/coredump.c
+index 1e2c87acac9b..c689eee11dcd 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -711,7 +711,7 @@ void do_coredump(const siginfo_t *siginfo)
+ 			get_fs_root(init_task.fs, &root);
+ 			task_unlock(&init_task);
+ 			cprm.file = file_open_root(root.dentry, root.mnt,
+-				cn.corename, open_flags, 0600);
++				cn.corename, open_flags, 0600, 0);
+ 			path_put(&root);
+ 		} else {
+ 			cprm.file = filp_open(cn.corename, open_flags, 0600);
+diff --git a/fs/fhandle.c b/fs/fhandle.c
+index 0ee727485615..c854f06b318a 100644
+--- a/fs/fhandle.c
++++ b/fs/fhandle.c
+@@ -229,7 +229,8 @@ static long do_handle_open(int mountdirfd, struct file_handle __user *ufh,
+ 		path_put(&path);
+ 		return fd;
+ 	}
+-	file = file_open_root(path.dentry, path.mnt, "", open_flag, 0);
++	file = file_open_root(path.dentry, path.mnt, "", open_flag, 0,
++			      LOOKUP_EMPTY);
+ 	if (IS_ERR(file)) {
+ 		put_unused_fd(fd);
+ 		retval =  PTR_ERR(file);
+diff --git a/fs/namei.c b/fs/namei.c
+index 734cef54fdf8..636ed5d47ac4 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -212,7 +212,7 @@ getname(const char __user * filename)
+ }
+ 
+ struct filename *
+-getname_kernel(const char * filename)
++getname_kernel_flags(const char * filename, int flags)
+ {
+ 	struct filename *result;
+ 	int len = strlen(filename) + 1;
+@@ -221,7 +221,12 @@ getname_kernel(const char * filename)
+ 	if (unlikely(!result))
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	if (len <= EMBEDDED_NAME_MAX) {
++	if (unlikely(len == 1)) {
++		if (!(flags & LOOKUP_EMPTY)) {
++			__putname(result);
++			return ERR_PTR(-ENOENT);
++		}
++	} else if (len <= EMBEDDED_NAME_MAX) {
+ 		result->name = (char *)result->iname;
+ 	} else if (len <= PATH_MAX) {
+ 		const size_t size = offsetof(struct filename, iname[1]);
+@@ -247,6 +252,12 @@ getname_kernel(const char * filename)
+ 	return result;
+ }
+ 
++struct filename *
++getname_kernel(const char * filename)
++{
++	return getname_kernel_flags(filename, 0);
++}
++
+ void putname(struct filename *name)
+ {
+ 	BUG_ON(name->refcnt <= 0);
+@@ -3594,7 +3605,7 @@ struct file *do_file_open_root(struct dentry *dentry, struct vfsmount *mnt,
+ 	if (d_is_symlink(dentry) && op->intent & LOOKUP_OPEN)
+ 		return ERR_PTR(-ELOOP);
+ 
+-	filename = getname_kernel(name);
++	filename = getname_kernel_flags(name, op->lookup_flags);
+ 	if (IS_ERR(filename))
+ 		return ERR_CAST(filename);
+ 
+diff --git a/fs/open.c b/fs/open.c
+index d0e955b558ad..cf580f5cd326 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -939,9 +939,9 @@ struct file *dentry_open(const struct path *path, int flags,
+ }
+ EXPORT_SYMBOL(dentry_open);
+ 
+-static inline int build_open_flags(int flags, umode_t mode, struct open_flags *op)
++static inline int build_open_flags(int flags, umode_t mode, int lookup_flags,
++				   struct open_flags *op)
+ {
+-	int lookup_flags = 0;
+ 	int acc_mode = ACC_MODE(flags);
+ 
+ 	/*
+@@ -1024,7 +1024,7 @@ static inline int build_open_flags(int flags, umode_t mode, struct open_flags *o
+ struct file *file_open_name(struct filename *name, int flags, umode_t mode)
+ {
+ 	struct open_flags op;
+-	int err = build_open_flags(flags, mode, &op);
++	int err = build_open_flags(flags, mode, 0, &op);
+ 	return err ? ERR_PTR(err) : do_filp_open(AT_FDCWD, name, &op);
+ }
+ 
+@@ -1053,10 +1053,11 @@ struct file *filp_open(const char *filename, int flags, umode_t mode)
+ EXPORT_SYMBOL(filp_open);
+ 
+ struct file *file_open_root(struct dentry *dentry, struct vfsmount *mnt,
+-			    const char *filename, int flags, umode_t mode)
++			    const char *filename, int flags, umode_t mode,
++			    int lookup_flags)
+ {
+ 	struct open_flags op;
+-	int err = build_open_flags(flags, mode, &op);
++	int err = build_open_flags(flags, mode, lookup_flags, &op);
+ 	if (err)
+ 		return ERR_PTR(err);
+ 	return do_file_open_root(dentry, mnt, filename, &op);
+@@ -1086,7 +1087,7 @@ EXPORT_SYMBOL(filp_clone_open);
+ long do_sys_open(int dfd, const char __user *filename, int flags, umode_t mode)
+ {
+ 	struct open_flags op;
+-	int fd = build_open_flags(flags, mode, &op);
++	int fd = build_open_flags(flags, mode, 0, &op);
+ 	struct filename *tmp;
+ 
+ 	if (fd)
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 5c91108846db..c985825291d5 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2420,12 +2420,13 @@ extern long do_sys_open(int dfd, const char __user *filename, int flags,
+ extern struct file *file_open_name(struct filename *, int, umode_t);
+ extern struct file *filp_open(const char *, int, umode_t);
+ extern struct file *file_open_root(struct dentry *, struct vfsmount *,
+-				   const char *, int, umode_t);
++				   const char *, int, umode_t, int);
+ extern struct file * dentry_open(const struct path *, int, const struct cred *);
+ extern int filp_close(struct file *, fl_owner_t id);
+ 
+ extern struct filename *getname_flags(const char __user *, int, int *);
+ extern struct filename *getname(const char __user *);
++extern struct filename *getname_kernel_flags(const char *, int);
+ extern struct filename *getname_kernel(const char *);
+ extern void putname(struct filename *name);
+ 
+diff --git a/kernel/sysctl_binary.c b/kernel/sysctl_binary.c
+index 07148b497451..d3e1cbfa6cdb 100644
+--- a/kernel/sysctl_binary.c
++++ b/kernel/sysctl_binary.c
+@@ -1302,7 +1302,7 @@ static ssize_t binary_sysctl(const int *name, int nlen,
+ 	}
+ 
+ 	mnt = task_active_pid_ns(current)->proc_mnt;
+-	file = file_open_root(mnt->mnt_root, mnt, pathname, flags, 0);
++	file = file_open_root(mnt->mnt_root, mnt, pathname, flags, 0, 0);
+ 	result = PTR_ERR(file);
+ 	if (IS_ERR(file))
+ 		goto out_putname;
+-- 
+2.18.0.rc2.346.g013aa6912e-goog
 
-Michal
+
