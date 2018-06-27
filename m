@@ -1,92 +1,119 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYcCx-0006rO-3I
- for linux-um@lists.infradead.org; Thu, 28 Jun 2018 19:04:06 +0000
-Date: Thu, 28 Jun 2018 11:16:23 +0200
-From: Michal =?UTF-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>
-Subject: Re: due to kconfig changes kernel config file is no longer
- sufficient for configuring the kernel
-Message-ID: <20180628111623.3807fe9b@naga.suse.cz>
-In-Reply-To: <CAK7LNARVPNx_uC5xTrS_p9T4nMRTC79BO51T4Lytv2eU1c-ynw@mail.gmail.com>
-References: <20180627143705.5a1fed1c@kitsune.suse.cz>
- <CAK7LNARVPNx_uC5xTrS_p9T4nMRTC79BO51T4Lytv2eU1c-ynw@mail.gmail.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Michal Kubecek <mkubecek@suse.cz>, Rich Felker <dalias@libc.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Jeff Mahoney <jeffm@suse.com>, Dominik Brodowski <linux@dominikbrodowski.net>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Jonathan Corbet <corbet@lwn.net>, Linux-sh list <linux-sh@vger.kernel.org>, Andreas Schwab <schwab@suse.de>, X86 ML <x86@kernel.org>, "Peter Zijlstra, " <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Frederic Weisbecker <frederic@kernel.org>, Kees Cook <keescook@chromium.org>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, Richard Weinberger <richard@nod.at>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Thomas Gleixner <tglx@linutronix.de>, Michal Marek <michal.lkml@markovi.net>, Ulf Magnusson <ulfalizer@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Philippe Ombredanne <pombredanne@nexb.com>, "David S. Miller" <davem@davemloft.net>
+In-Reply-To: <20180627143705.5a1fed1c@kitsune.suse.cz>
+References: <20180627143705.5a1fed1c@kitsune.suse.cz>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 27 Jun 2018 23:07:21 +0900
+Message-ID: <CAK7LNARVPNx_uC5xTrS_p9T4nMRTC79BO51T4Lytv2eU1c-ynw@mail.gmail.com>
+Subject: Re: due to kconfig changes kernel config file is no longer sufficient
+ for configuring the kernel
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Andreas Schwab <schwab@suse.de>, Michal Kubecek <mkubecek@suse.cz>, Michal Marek <michal.lkml@markovi.net>, Jonathan Corbet <corbet@lwn.net>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>, Philippe Ombredanne <pombredanne@nexb.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ulf Magnusson <ulfalizer@gmail.com>, Jeff Mahoney <jeffm@suse.com>, "Peter Zijlstra," <peterz@infradead.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Frederic Weisbecker <frederic@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Dominik Brodowski <linux@dominikbrodowski.net>, Nicholas Piggin <npiggin@gmail.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
-T24gV2VkLCAyNyBKdW4gMjAxOCAyMzowNzoyMSArMDkwMApNYXNhaGlybyBZYW1hZGEgPHlhbWFk
-YS5tYXNhaGlyb0Bzb2Npb25leHQuY29tPiB3cm90ZToKCj4gSGkuCj4gCj4gCj4gMjAxOC0wNi0y
-NyAyMTozNyBHTVQrMDk6MDAgTWljaGFsIFN1Y2jDoW5layA8bXN1Y2hhbmVrQHN1c2UuZGU+Ogo+
-ID4gSGVsbG8sCj4gPgo+ID4gaW4gdGhlIHg4NiBLY29uZmlnIHdlIGhhdmUgdGhpczoKPiA+Cj4g
-PiAjIFNlbGVjdCAzMiBvciA2NCBiaXQKPiA+IGNvbmZpZyA2NEJJVAo+ID4gICAgICAgICBib29s
-ICI2NC1iaXQga2VybmVsIiBpZiAiJChBUkNIKSIgPSAieDg2Igo+ID4gICAgICAgICBkZWZhdWx0
-ICIkKEFSQ0gpIiAhPSAiaTM4NiIKPiA+ICAgICAgICAgLS0taGVscC0tLQo+ID4gICAgICAgICAg
-IFNheSB5ZXMgdG8gYnVpbGQgYSA2NC1iaXQga2VybmVsIC0gZm9ybWVybHkga25vd24gYXMKPiA+
-IHg4Nl82NCBTYXkgbm8gdG8gYnVpbGQgYSAzMi1iaXQga2VybmVsIC0gZm9ybWVybHkga25vd24g
-YXMgaTM4Ngo+ID4KPiA+IFNpbmNlIGNvbW1pdCAxMDRkYWVhMTQ5YzQgKCJrY29uZmlnOiByZWZl
-cmVuY2UgZW52aXJvbm1lbnQgdmFyaWFibGVzCj4gPiBkaXJlY3RseSBhbmQgcmVtb3ZlICdvcHRp
-b24gZW52PSciKSB0aGUgdmFsdWUgb2YgQVJDSCBpcyBub3Qgc2F2ZWQKPiA+IGluIHRoZSBrZXJu
-ZWwgY29uZmlnLiAgCj4gCj4gSSB0aGluayB0aGlzIGNvbW1pdCBpcyB1bnJlbGF0ZWQuICBJdCB3
-YXMganVzdCBhIHN5bnRheCBjaGFuZ2UuCgpUaGlzIGRvZXMgbm90IGxvb2sgbGlrZSBzeW50YXgg
-b25seSBjaGFuZ2UgdG8gbWU6CgpkaWZmIC0tZ2l0IGEvaW5pdC9LY29uZmlnIGIvaW5pdC9LY29u
-ZmlnCmluZGV4IDE1YWFlMzJlMDcxOS4uMTIxN2ZjNjJjYTYxIDEwMDY0NAotLS0gYS9pbml0L0tj
-b25maWcKKysrIGIvaW5pdC9LY29uZmlnCkBAIC0xLDIwICsxLDEyIEBACi1jb25maWcgQVJDSAot
-ICAgICAgIHN0cmluZwotICAgICAgIG9wdGlvbiBlbnY9IkFSQ0giCi0KLWNvbmZpZyBLRVJORUxW
-RVJTSU9OCi0gICAgICAgc3RyaW5nCi0gICAgICAgb3B0aW9uIGVudj0iS0VSTkVMVkVSU0lPTiIK
-LQoKPiAKPiBVbmxlc3MgSSBhbSBtaXNzaW5nIHNvbWV0aGluZywKPiB3ZSBoYXZlIG5ldmVyIHNh
-dmVkIEFSQ0ggaW4gdGhlIC5jb25maWcgaW4gdGhlIHBhc3QuCgpUaGVyZSB3YXMgYSBjb25maWcg
-c3ltYm9sIGRlZmluZWQgZm9yIGl0IGJlZm9yZSB0aGUgY29tbWl0IHJlbW92ZWQgaXQuCgo+IAo+
-IAo+ID4gU2luY2UgY29tbWl0IGY0NjdjNTY0MGMyOSAoImtjb25maWc6IG9ubHkgd3JpdGUgJyMK
-PiA+IENPTkZJR19GT08gaXMgbm90IHNldCcgZm9yIHZpc2libGUgc3ltYm9scyIpIHRoZSB2YWx1
-ZSBvZiA2NEJJVCBpcwo+ID4gbm90IHNhdmVkIGlmIHRoZSBBUkNIIGlzIHNldCBpMzg2IG9yIHg4
-Nl82NCBiZWNhdXNlIHRoZSBzeW1ib2wgaXMKPiA+IG5vdCB2aXNpYmxlLiAgCj4gCj4gVGhpcyBp
-cyBjb3JyZWN0Lgo+IAo+IEl0IHdhcyBkaXNjdXNzZWQgYSBmZXcgd2Vla3MgYWdvLgo+IAo+IGh0
-dHBzOi8vbGttbC5vcmcvbGttbC8yMDE4LzYvNS84NDcKPiAKPiAKPiA+IFRoZXJlIGlzIGEgbnVt
-YmVyIG9mIHdheXMgdG8gaGFjayB0aGlzIHBhcnRpY3VsYXIgY2FzZSB0byB3b3JrLgo+ID4KPiA+
-IEhvd2V2ZXIsIHRoZXJlIGlzIGEgbW9yZSBnZW5lcmFsIHByb2JsZW0gd2l0aCB0aGlzLiBTb21l
-IGNvbmZpZwo+ID4gb3B0aW9ucyBtYXkgZGVwZW5kIG9uIHRoZSBlbnZpcm9ubWVudCwgbWF5IG5v
-dCBiZSBzYXZlZCwgYW5kIHRoZQo+ID4gZW52aXJvbm1lbnQgaXMgbm90IHNhdmVkIGVpdGhlci4g
-IAo+IAo+IFdoaWNoIGVudmlyb25tZW50IHZhcmlhYmxlcyBpbiBwYXJ0aWN1bGFyIGFyZSBpbiB5
-b3VyIG1pbmQ/CgpBbnkgdGhhdCBpcyB1c2VkIGluIEtjb25maWcuCgo+IAo+IEFzIGZvciBBUkNI
-LCB5b3UgbmVlZCB0byBwYXNzIHRoZSBzYW1lIEFSQ0ggYXMgeW91IHVzZWQgZm9yIGJ1aWxkaW5n
-Cj4gdGhlIGtlcm5lbC4gKEZvciBuYXRpdmUgYnVpbGRpbmcsIHlvdSBkbyBub3QgaGF2ZSB0byBw
-YXNzIEFSQ0gKPiBleHBsaWNpdGx5LCB0aG91Z2guKQoKRXhjZXB0IGlmIHlvdSBkbyBwYXNzIGl0
-IHRvIG1ha2UgY29uZmlnIHlvdSBtYXkgbmVlZCB0byBwYXNzIGl0IHRvIHRvCm1ha2UgbGF0ZXIg
-YXMgd2VsbC4KCj4gCj4gQXMgZm9yIENDLCBIT1NUQ0MsIGV0Yy4KPiB5ZXMsIHRoZXNlIGFyZSBu
-ZXcgJ3Vuc2F2ZWQnIGVudmlyb25tZW50cy4KPiAKPiBDT05GSUcgb3B0aW9ucyBub3cgZGVwZW5k
-IG9uIHRoZSBjb21waWxlci4KPiBUaGlzIGlzIHRoZSBjb25jZXB0IHN1Z2dlc3RlZCBieSBMaW51
-cyBUb3J2YWxkcy4KPiAKPiAKPiA+IFNvIGluIHRoZSBlbmQgYWxsIHRoZSBpbmZyYXN0cnVjdHVy
-ZSB3aXRoIHN5bWxpbmtzCj4gPiBmcm9tIG1vZHVsZSBkaXJlY3RvcnkgcG9pbnRpbmcgdG8gdGhl
-IGtlcm5lbCBzb3VyY2UgYW5kIG9iamVjdAo+ID4gZGlyZWN0b3J5IGlzIHVzZWxlc3MuIFRvIGlu
-dGVycHJldCB0aGUgY29uZmlnIHN0b3JlZCB0aGVyZSB5b3UgbmVlZAo+ID4gdGhlIGVudmlyb25t
-ZW50IGFuZCB0aGF0IGlzIG5vdCBzYXZlZCBhbnl3aGVyZS4gU28gaWYgeW91IHRyeSB0bwo+ID4g
-YnVpbGQgb3V0LW9mLXRyZWUgbW9kdWxlIGl0IG1pZ2h0IGVuZCB1cCByZWNvbmZpZ3VyaW5nIHlv
-dXIga2VybmVsCj4gPiBhbmQgcHJvZHVjaW5nIHVzZWxlc3MgbW9kdWxlcy4gIAo+IAo+IE5vLiBv
-dXQtb2YtdHJlZSBtb2R1bGUgYnVpbGRpbmcgbmV2ZXIgZXZlciByZS1jb25maWd1cmVzIHRoZSBr
-ZXJuZWwuCgpJdCBkb2VzIGltcGxpY2l0bHkgYmVjYXVzZSB0aGUgY29uZmlnIHZhbHVlcyBkZXBl
-bmQgb24gZW52aXJvbm1lbnQgdGhhdAppcyBub3Qgc2F2ZWQgYW5kIHRoZSB2YWx1ZXMgdGhlbXNl
-bHZlcyBhcmUgbm90IHNhdmVkIGVpdGhlci4gSWYgdGhhdApoYXBwZW5zIHRvIGV4cG9zZSBhIG5l
-dyB2YXJpYWJsZSBpdCBpcyBldmVuIGV4cGxpY2l0bHkgcmVjb25maWd1cmVkLgoKPiAKPiBvdXQt
-b2YtdHJlZSBtb2R1bGVzIGFyZSBidWlsdCB3aXRoIGV4YWN0bHkgdGhlIHNhbWUgY29uZmlndXJh
-dGlvbgo+IGFzIHVzZWQgZm9yIHRoZSBrZXJuZWwuCgpJdCBpcyBub3QgdHJ1ZS4gQW5kIHRoYXQg
-aXMgdGhlIHByb2JsZW0uIFlvdSBuZWVkIHRoZSBjb25maWcgZmlsZSBhbmQKZHVtcCBvZiB0aGUg
-ZW52aXJvbm1lbnQgcGFzc2VkIHRvIHRoZSBtYWtlIGNvbW1hbmQgYXQgY29uZmlndXJhdGlvbgp0
-aW1lIHRvIGdldCB0aGUgZXhhY3Qgc2FtZSBjb25maWd1cmF0aW9uLiBUaGUgZW52aXJvbm1lbnQg
-aXMgbm90IHNhdmVkCmFueXdoZXJlLCB0aG91Z2guCgpUaGFua3MKCk1pY2hhbAoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBs
-aXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+Hi.
+
+
+2018-06-27 21:37 GMT+09:00 Michal Such=C3=A1nek <msuchanek@suse.de>:
+> Hello,
+>
+> in the x86 Kconfig we have this:
+>
+> # Select 32 or 64 bit
+> config 64BIT
+>         bool "64-bit kernel" if "$(ARCH)" =3D "x86"
+>         default "$(ARCH)" !=3D "i386"
+>         ---help---
+>           Say yes to build a 64-bit kernel - formerly known as x86_64
+>           Say no to build a 32-bit kernel - formerly known as i386
+>
+> Since commit 104daea149c4 ("kconfig: reference environment variables
+> directly and remove 'option env=3D'") the value of ARCH is not saved in
+> the kernel config.
+
+I think this commit is unrelated.  It was just a syntax change.
+
+Unless I am missing something,
+we have never saved ARCH in the .config in the past.
+
+
+> Since commit f467c5640c29 ("kconfig: only write '#
+> CONFIG_FOO is not set' for visible symbols") the value of 64BIT is not
+> saved if the ARCH is set i386 or x86_64 because the symbol is not
+> visible.
+
+This is correct.
+
+It was discussed a few weeks ago.
+
+https://lkml.org/lkml/2018/6/5/847
+
+
+> There is a number of ways to hack this particular case to work.
+>
+> However, there is a more general problem with this. Some config options
+> may depend on the environment, may not be saved, and the environment is
+> not saved either.
+
+Which environment variables in particular are in your mind?
+
+As for ARCH, you need to pass the same ARCH as you used for building the ke=
+rnel.
+(For native building, you do not have to pass ARCH explicitly, though.)
+
+As for CC, HOSTCC, etc.
+yes, these are new 'unsaved' environments.
+
+CONFIG options now depend on the compiler.
+This is the concept suggested by Linus Torvalds.
+
+
+> So in the end all the infrastructure with symlinks
+> from module directory pointing to the kernel source and object
+> directory is useless. To interpret the config stored there you need the
+> environment and that is not saved anywhere. So if you try to build
+> out-of-tree module it might end up reconfiguring your kernel and
+> producing useless modules.
+
+No. out-of-tree module building never ever re-configures the kernel.
+
+out-of-tree modules are built with exactly the same configuration
+as used for the kernel.
+
+
+There is one more assumption here.
+
+Greg-KH said:
+  We don't ever support the system of loading a module built with anything
+  other than the _exact_ same compiler than the kernel was.
+
+(https://lkml.org/lkml/2017/10/4/496)
+
+
+
+Based on that statement,
+CONFIG options depending on 'CC' are valid for out-of-tree modules as well.
+
+
+
+
+> Is there any plan to fix this?
+>
+> Thanks
+>
+> Michal
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kbuild" i=
+n
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
