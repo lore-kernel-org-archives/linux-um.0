@@ -1,25 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fhxHs-0006Ad-C2
- for linux-um@lists.infradead.org; Tue, 24 Jul 2018 13:23:38 +0000
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- w6ODIdHU061049
- for <linux-um@lists.infradead.org>; Tue, 24 Jul 2018 09:23:24 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2ke1y28maa-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-um@lists.infradead.org>; Tue, 24 Jul 2018 09:23:23 -0400
-Received: from localhost
- by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
- Tue, 24 Jul 2018 14:23:21 +0100
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 0/2] um: switch to NO_BOOTMEM
-Date: Tue, 24 Jul 2018 16:23:12 +0300
-Message-Id: <1532438594-4530-1-git-send-email-rppt@linux.vnet.ibm.com>
+ id 1faATa-0003g0-D9
+ for linux-um@lists.infradead.org; Tue, 03 Jul 2018 01:51:32 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 1/2] x86/build/vdso: remove unused vdso-syms.lds
+Date: Tue,  3 Jul 2018 10:50:13 +0900
+Message-Id: <1530582614-5173-2-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1530582614-5173-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1530582614-5173-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -33,22 +22,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-mm@kvack.org, Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>
+To: Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, "H. Peter Anvin" <hpa@zytor.com>
 
-Hi,
+This file contains symbol values, and was originally linked into
+vmlinux, but I have no idea what it was actually used for.
 
-These patches convert UML to use NO_BOOTMEM.
-Tested on x86-64.
+Since commit 827880ec260b ("x86/um: thin archives build fix"), it is
+not even linked.  Now it is completely orphan, and no problem has
+been reported.  It is a proof that this file was not needed in the
+first place.
 
-Mike Rapoport (2):
-  um: setup_physmem: stop using global variables
-  um: switch to NO_BOOTMEM
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Richard Weinberger <richard@nod.at>
+Acked-by: Ingo Molnar <mingo@kernel.org>
+---
 
- arch/um/Kconfig.common   |  2 ++
- arch/um/kernel/physmem.c | 22 ++++++++++------------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ arch/x86/um/vdso/.gitignore |  1 -
+ arch/x86/um/vdso/Makefile   | 16 ----------------
+ 2 files changed, 17 deletions(-)
 
+diff --git a/arch/x86/um/vdso/.gitignore b/arch/x86/um/vdso/.gitignore
+index 9cac6d0..f8b69d8 100644
+--- a/arch/x86/um/vdso/.gitignore
++++ b/arch/x86/um/vdso/.gitignore
+@@ -1,2 +1 @@
+-vdso-syms.lds
+ vdso.lds
+diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
+index b2d6967..822ccdb 100644
+--- a/arch/x86/um/vdso/Makefile
++++ b/arch/x86/um/vdso/Makefile
+@@ -53,22 +53,6 @@ $(vobjs): KBUILD_CFLAGS += $(CFL)
+ CFLAGS_REMOVE_vdso-note.o = -pg -fprofile-arcs -ftest-coverage
+ CFLAGS_REMOVE_um_vdso.o = -pg -fprofile-arcs -ftest-coverage
+ 
+-targets += vdso-syms.lds
+-extra-$(VDSO64-y)			+= vdso-syms.lds
+-
+-#
+-# Match symbols in the DSO that look like VDSO*; produce a file of constants.
+-#
+-sed-vdsosym := -e 's/^00*/0/' \
+-	-e 's/^\([0-9a-fA-F]*\) . \(VDSO[a-zA-Z0-9_]*\)$$/\2 = 0x\1;/p'
+-quiet_cmd_vdsosym = VDSOSYM $@
+-define cmd_vdsosym
+-	$(NM) $< | LC_ALL=C sed -n $(sed-vdsosym) | LC_ALL=C sort > $@
+-endef
+-
+-$(obj)/%-syms.lds: $(obj)/%.so.dbg FORCE
+-	$(call if_changed,vdsosym)
+-
+ #
+ # The DSO images are built using a special linker script.
+ #
 -- 
 2.7.4
 
