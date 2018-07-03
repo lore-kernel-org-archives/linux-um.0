@@ -1,41 +1,51 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: include architecture Kconfig files from top-level Kconfig v2
-Date: Sun,  8 Jul 2018 08:19:55 -0700
-Message-Id: <20180708152004.21679-1-hch@lst.de>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Tue, 3 Jul 2018 09:57:37 +0200
+From: Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 0/2] x86/build/vdso: a little more Makefile cleanups
+Message-ID: <20180703075737.GA18934@gmail.com>
+References: <1530582614-5173-1-git-send-email-yamada.masahiro@socionext.com>
+ <2251685.NraJYuIFmt@blindfold>
+ <20180703073533.GA6573@gmail.com>
+ <5699106.FCe4rGpKHi@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Richard Weinberger <richard@nod.at>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5699106.FCe4rGpKHi@blindfold>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Weinberger <richard@nod.at>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>, Jeff Dike <jdike@addtoit.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Hi Masahiro,
 
-what do you think about the series below, which moves the includes
-of all the architecture independ Kconfig files to the top-level
-Kconfig instead of duplicating the includes in all architectures?
+* Richard Weinberger <richard@nod.at> wrote:
 
-Note that this only handles the low-hanging fruite, there are a lot
-of other bits that should probably be cleaned up to be common,
-but those will be not entirely trivial.
+> Am Dienstag, 3. Juli 2018, 09:35:33 CEST schrieb Ingo Molnar:
+> > 
+> > * Richard Weinberger <richard@nod.at> wrote:
+> > 
+> > > Masahiro,
+> > > 
+> > > Am Dienstag, 3. Juli 2018, 03:50:12 CEST schrieb Masahiro Yamada:
+> > > > 
+> > > > At first, I sent the first patch to UML ML,
+> > > > but they did not pick it up.
+> > > > Instead, I was able to get Acked-by from Richard,
+> > > > one of the UML maintainers.
+> > > > 
+> > > > https://patchwork.kernel.org/patch/10399787/
+> > > > 
+> > > > I am resending it to x86 ML.
+> > > 
+> > > Uhh, I thought you want to carry this via your tree?
+> > > I don't mind picking up these patches.
+> > 
+> > I already picked them up, as one of them affects the x86 tree.
+> > 
+> > Is that OK?
+> 
+> Perfectly fine with me.
 
-Changes since v1:
- - add back a remove source statement from arch/arm/Kconfig
- - various fixes from Randy
- - various UML patches to be able to use the common Kconfig
+Thanks! Timing for upstream merge would be v4.18.
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+	Ingo
 
