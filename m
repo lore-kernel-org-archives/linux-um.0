@@ -1,14 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-08.nifty.com ([210.131.2.75])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiCAv-0006gZ-CD
- for linux-um@lists.infradead.org; Wed, 25 Jul 2018 05:17:27 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 2/2] kbuild: do not redirect the first prerequisite for filechk
-Date: Wed, 25 Jul 2018 14:16:11 +0900
-Message-Id: <1532495771-10255-2-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1532495771-10255-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1532495771-10255-1-git-send-email-yamada.masahiro@socionext.com>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 7/9] arch/Kconfig: use a menu to reduce clutter
+Date: Sun,  8 Jul 2018 08:20:02 -0700
+Message-Id: <20180708152004.21679-8-hch@lst.de>
+In-Reply-To: <20180708152004.21679-1-hch@lst.de>
+References: <20180708152004.21679-1-hch@lst.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,104 +18,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: linux-s390@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>, Heiko Carstens <heiko.carstens@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Hendrik Brueckner <brueckner@linux.vnet.ibm.com>, Richard Weinberger <richard@nod.at>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Sam Ravnborg <sam@ravnborg.org>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Richard Weinberger <richard@nod.at>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
 
-Currently, filechk unconditionally opens the first prerequisite and
-redirects it as the stdin of a filechk_* rule.  Hence, every target
-using $(call filechk,...) must list something as the first prerequisite
-even if it is unneeded.
+From: Randy Dunlap <rdunlap@infradead.org>
 
-'< $<' is actually unneeded in most cases.  Each rule can explicitly
-adds it if necessary.
+Put everything in arch/Kconfig into a General options menu
+so that they don't clutter up the main/major/primary list of
+menu options.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
+ arch/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- Makefile                           | 2 +-
- arch/s390/kernel/syscalls/Makefile | 6 +++---
- arch/um/Makefile                   | 2 +-
- scripts/Kbuild.include             | 2 +-
- scripts/Makefile.lib               | 2 +-
- 5 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 67d9d20..af863f1 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1116,7 +1116,7 @@ define filechk_version.h
- 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))';)
- endef
+diff --git a/arch/Kconfig b/arch/Kconfig
+index cddd0faae4cb..6cf1b17a8df2 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -9,6 +9,8 @@
+ #
+ source "arch/$(SRCARCH)/Kconfig"
  
--$(version_h): $(srctree)/Makefile FORCE
-+$(version_h): FORCE
- 	$(call filechk,version.h)
- 	$(Q)rm -f $(old_version_h)
++menu "General architecture-dependent options"
++
+ config CRASH_CORE
+ 	bool
  
-diff --git a/arch/s390/kernel/syscalls/Makefile b/arch/s390/kernel/syscalls/Makefile
-index 8ff96c0..4d929ed 100644
---- a/arch/s390/kernel/syscalls/Makefile
-+++ b/arch/s390/kernel/syscalls/Makefile
-@@ -25,15 +25,15 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)') \
- 	  $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
+@@ -981,3 +983,5 @@ config REFCOUNT_FULL
+ 	  security flaw exploits.
  
- define filechk_syshdr
--	$(CONFIG_SHELL) '$(systbl)' -H -a $(syshdr_abi_$(basetarget)) -f "$2"
-+	$(CONFIG_SHELL) '$(systbl)' -H -a $(syshdr_abi_$(basetarget)) -f "$2" < $<
- endef
- 
- define filechk_sysnr
--	$(CONFIG_SHELL) '$(systbl)' -N -a $(sysnr_abi_$(basetarget))
-+	$(CONFIG_SHELL) '$(systbl)' -N -a $(sysnr_abi_$(basetarget)) < $<
- endef
- 
- define filechk_syscalls
--	$(CONFIG_SHELL) '$(systbl)' -S
-+	$(CONFIG_SHELL) '$(systbl)' -S < $<
- endef
- 
- syshdr_abi_unistd_32 := common,32
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index e54dda8..8c35261 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -169,7 +169,7 @@ define filechk_gen-asm-offsets
-          echo " *"; \
-          echo " */"; \
-          echo ""; \
--         sed -ne "/^->/{s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; s:->::; p;}"; \
-+         sed -ne "/^->/{s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; s:->::; p;}" < $<; \
-          echo ""; )
- endef
- 
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index 86321f0..0bee89c 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -56,7 +56,7 @@ kecho := $($(quiet)kecho)
- define filechk
- 	$(Q)set -e;				\
- 	mkdir -p $(dir $@);			\
--	$(filechk_$(1)) < $< > $@.tmp;		\
-+	$(filechk_$(1)) > $@.tmp;		\
- 	if [ -r $@ ] && cmp -s $@ $@.tmp; then	\
- 		rm -f $@.tmp;			\
- 	else					\
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 1bb594f..4b2f89f 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -416,7 +416,7 @@ define filechk_offsets
- 	 echo " * This file was generated by Kbuild"; \
- 	 echo " */"; \
- 	 echo ""; \
--	 sed -ne $(sed-offsets); \
-+	 sed -ne $(sed-offsets) < $<; \
- 	 echo ""; \
- 	 echo "#endif" )
- endef
+ source "kernel/gcov/Kconfig"
++
++endmenu
 -- 
-2.7.4
+2.18.0
 
 
 _______________________________________________
