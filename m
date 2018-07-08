@@ -1,66 +1,109 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 0/6] kbuild: clean-up and rename LDFLAGS to KBUILD_LDFLAGS
-Date: Thu, 12 Jul 2018 17:01:30 +0900
-Message-Id: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kbuild@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, "Kirill A . Shutemov" <kirill@shutemov.name>, Masahiro Yamada <yamada.masahiro@socionext.com>
-List-ID: <linux-um.lists.infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Subject: Re: [PATCH 5/9] Kconfig: consolidate the "Kernel hacking" menu
+References: <20180708152004.21679-1-hch@lst.de>
+ <20180708152004.21679-6-hch@lst.de>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fd8c89be-1270-a54e-a69b-350105a04eca@infradead.org>
+Date: Sun, 8 Jul 2018 09:34:29 -0700
+MIME-Version: 1.0
+In-Reply-To: <20180708152004.21679-6-hch@lst.de>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Christoph Hellwig <hch@lst.de>, Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+
+On 07/08/2018 08:20 AM, Christoph Hellwig wrote:
+> Move the source of lib/Kconfig.debug and arch/$(ARCH)/Kconfig.debug to
+> the top-level Kconfig.  For two architectures that means moving their
+> arch-specific symbols in that menu into a new arch Kconfig.debug file,
+> and for a few more creating a dummy file so that we can include it
+> unconditionally.
+> 
+> Also move the actual 'Kernel hacking' menu to lib/Kconfig.debug, where
+> it belongs.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
 
 
-This series renames LDFLAGS to KBUILD_LDFLAGS
-after some Makefile cleanups.
+> ---
+>  Kconfig                       |  2 ++
+>  arch/alpha/Kconfig            |  2 --
+>  arch/alpha/Kconfig.debug      |  5 ----
+>  arch/arc/Kconfig              |  1 -
+>  arch/arc/Kconfig.debug        |  5 ----
+>  arch/arm/Kconfig              |  2 --
+>  arch/arm/Kconfig.debug        |  5 ----
+>  arch/arm64/Kconfig            |  2 --
+>  arch/arm64/Kconfig.debug      |  5 ----
+>  arch/c6x/Kconfig              | 15 ------------
+>  arch/c6x/Kconfig.debug        | 11 +++++++++
+>  arch/h8300/Kconfig            |  6 -----
+>  arch/h8300/Kconfig.debug      |  1 +
+>  arch/hexagon/Kconfig          |  4 ----
+>  arch/hexagon/Kconfig.debug    |  1 +
+>  arch/ia64/Kconfig             |  2 --
+>  arch/ia64/Kconfig.debug       |  5 ----
+>  arch/m68k/Kconfig             |  2 --
+>  arch/m68k/Kconfig.debug       |  5 ----
+>  arch/microblaze/Kconfig       |  2 --
+>  arch/microblaze/Kconfig.debug |  6 -----
+>  arch/mips/Kconfig             |  2 --
+>  arch/mips/Kconfig.debug       |  5 ----
+>  arch/nds32/Kconfig            |  4 ----
+>  arch/nds32/Kconfig.debug      |  1 +
+>  arch/nios2/Kconfig            |  2 --
+>  arch/nios2/Kconfig.debug      |  5 ----
+>  arch/openrisc/Kconfig         |  6 -----
+>  arch/openrisc/Kconfig.debug   |  1 +
+>  arch/parisc/Kconfig           |  2 --
+>  arch/parisc/Kconfig.debug     |  5 ----
+>  arch/powerpc/Kconfig          |  2 --
+>  arch/powerpc/Kconfig.debug    |  5 ----
+>  arch/riscv/Kconfig            | 45 -----------------------------------
+>  arch/riscv/Kconfig.debug      | 37 ++++++++++++++++++++++++++++
+>  arch/s390/Kconfig             |  2 --
+>  arch/s390/Kconfig.debug       |  5 ----
+>  arch/sh/Kconfig               |  2 --
+>  arch/sh/Kconfig.debug         |  5 ----
+>  arch/sparc/Kconfig            |  2 --
+>  arch/sparc/Kconfig.debug      |  5 ----
+>  arch/um/Kconfig               |  2 --
+>  arch/um/Kconfig.debug         |  5 ----
+>  arch/unicore32/Kconfig        |  2 --
+>  arch/unicore32/Kconfig.debug  |  5 ----
+>  arch/x86/Kconfig              |  2 --
+>  arch/x86/Kconfig.debug        |  5 ----
+>  arch/xtensa/Kconfig           |  2 --
+>  arch/xtensa/Kconfig.debug     |  5 ----
+>  lib/Kconfig.debug             |  6 +++++
+>  50 files changed, 60 insertions(+), 206 deletions(-)
+>  create mode 100644 arch/c6x/Kconfig.debug
+>  create mode 100644 arch/h8300/Kconfig.debug
+>  create mode 100644 arch/hexagon/Kconfig.debug
+>  create mode 100644 arch/nds32/Kconfig.debug
+>  create mode 100644 arch/openrisc/Kconfig.debug
+>  create mode 100644 arch/riscv/Kconfig.debug
 
-Currently, the last patch does not apply to Linus' tree
-due to missing pre-requisite patches.
-
-I will resolve conflicts as needed.
-
-
-
-Masahiro Yamada (6):
-  um: remove redundant 'export LDFLAGS' in arch/x86/Makefile.um
-  ARM: vfp: clean-up arch/arm/vfp/Makefile
-  kbuild: remove redundant LDFLAGS clearing in arch/*/Makefile
-  kbuild: replace $(LDFLAGS) $(ldflags-y) with $(ld_flags)
-  kbuild: change ld_flags to contain LDFLAGS_$(@F)
-  kbuild: rename LDFLAGS to KBUILD_LDFLAGS
-
- Makefile                           | 6 +++---
- arch/arc/Makefile                  | 2 +-
- arch/arm/Makefile                  | 7 ++-----
- arch/arm/vfp/Makefile              | 5 +----
- arch/arm64/Makefile                | 4 ++--
- arch/c6x/Makefile                  | 3 +--
- arch/h8300/Makefile                | 2 +-
- arch/hexagon/Makefile              | 4 +---
- arch/m68k/Makefile                 | 2 +-
- arch/microblaze/Makefile           | 4 ++--
- arch/mips/Makefile                 | 2 +-
- arch/mips/boot/compressed/Makefile | 2 +-
- arch/mips/lasat/image/Makefile     | 2 +-
- arch/nds32/Makefile                | 4 ++--
- arch/openrisc/Makefile             | 1 -
- arch/powerpc/Makefile              | 6 +++---
- arch/riscv/Makefile                | 5 ++---
- arch/s390/Makefile                 | 2 +-
- arch/sh/Makefile                   | 4 ++--
- arch/sparc/Makefile                | 4 ++--
- arch/um/Makefile                   | 2 +-
- arch/um/drivers/Makefile           | 4 ++--
- arch/x86/Makefile                  | 4 ++--
- arch/x86/Makefile.um               | 4 +---
- arch/x86/boot/compressed/Makefile  | 6 +++---
- arch/xtensa/Makefile               | 2 +-
- arch/xtensa/boot/boot-elf/Makefile | 2 +-
- scripts/Kbuild.include             | 4 ++--
- scripts/Makefile.build             | 4 ++--
- scripts/Makefile.lib               | 5 ++---
- scripts/Makefile.modpost           | 2 +-
- 31 files changed, 48 insertions(+), 62 deletions(-)
 
 -- 
-2.7.4
+~Randy
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
