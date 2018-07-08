@@ -1,337 +1,499 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 3/9] um: create a proper drivers Kconfig
-Date: Sun,  8 Jul 2018 08:19:58 -0700
-Message-Id: <20180708152004.21679-4-hch@lst.de>
+Subject: [PATCH 2/9] um: cleanup Kconfig files
+Date: Sun,  8 Jul 2018 08:19:57 -0700
+Message-Id: <20180708152004.21679-3-hch@lst.de>
 In-Reply-To: <20180708152004.21679-1-hch@lst.de>
 References: <20180708152004.21679-1-hch@lst.de>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Richard Weinberger <richard@nod.at>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>, Richard Weinberger <richard@nod.at>, linux-kbuild@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Merge arch/um/Kconfig.char and arch/um/Kconfig.net into a new
-arch/um/drivers/Kconfig.  This fits the way Kconfig files are placed
-elsewhere in the kernel tree.
+We can handle all not architecture specific UM configuration directly in
+the newly added arch/um/Kconfig.  Do so by merging the Kconfig.common,
+Kconfig.rest and Kconfig.um files into arch/um/Kconfig, and move the main
+UML menu as well.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/um/Kconfig                          |   4 +-
- arch/um/Kconfig.char                     | 124 ----------------------
- arch/um/{Kconfig.net => drivers/Kconfig} | 125 ++++++++++++++++++++++-
- 3 files changed, 125 insertions(+), 128 deletions(-)
- delete mode 100644 arch/um/Kconfig.char
- rename arch/um/{Kconfig.net => drivers/Kconfig} (66%)
+ arch/um/Kconfig        | 210 +++++++++++++++++++++++++++++++++++++++++
+ arch/um/Kconfig.common |  60 ------------
+ arch/um/Kconfig.rest   |  22 -----
+ arch/um/Kconfig.um     | 124 ------------------------
+ arch/x86/um/Kconfig    |  10 --
+ 5 files changed, 210 insertions(+), 216 deletions(-)
+ delete mode 100644 arch/um/Kconfig.common
+ delete mode 100644 arch/um/Kconfig.rest
+ delete mode 100644 arch/um/Kconfig.um
 
 diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 1f605a7281cc..fc17718fbe0e 100644
+index 24607af202dc..1f605a7281cc 100644
 --- a/arch/um/Kconfig
 +++ b/arch/um/Kconfig
-@@ -194,14 +194,12 @@ source "init/Kconfig"
- 
- source "kernel/Kconfig.freezer"
- 
--source "arch/um/Kconfig.char"
-+source "arch/um/drivers/Kconfig"
- 
- source "drivers/Kconfig"
- 
- source "net/Kconfig"
- 
--source "arch/um/Kconfig.net"
--
- source "fs/Kconfig"
- 
- source "security/Kconfig"
-diff --git a/arch/um/Kconfig.char b/arch/um/Kconfig.char
-deleted file mode 100644
-index f184bde7030e..000000000000
---- a/arch/um/Kconfig.char
-+++ /dev/null
-@@ -1,124 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--menu "UML Character Devices"
--
--config STDERR_CONSOLE
--	bool "stderr console"
--	default y
--	help
--	  console driver which dumps all printk messages to stderr.
--
--config SSL
--	bool "Virtual serial line"
--	help
--          The User-Mode Linux environment allows you to create virtual serial
--          lines on the UML that are usually made to show up on the host as
--          ttys or ptys.
--
--          See <http://user-mode-linux.sourceforge.net/old/input.html> for more
--          information and command line examples of how to use this facility.
--
--          Unless you have a specific reason for disabling this, say Y.
--
--config NULL_CHAN
--	bool "null channel support"
--	help
--          This option enables support for attaching UML consoles and serial
--          lines to a device similar to /dev/null.  Data written to it disappears
--          and there is never any data to be read.
--
--config PORT_CHAN
--	bool "port channel support"
--	help
--          This option enables support for attaching UML consoles and serial
--          lines to host portals.  They may be accessed with 'telnet <host>
--          <port number>'.  Any number of consoles and serial lines may be
--          attached to a single portal, although what UML device you get when
--          you telnet to that portal will be unpredictable.
--          It is safe to say 'Y' here.
--
--config PTY_CHAN
--	bool "pty channel support"
--	help
--          This option enables support for attaching UML consoles and serial
--          lines to host pseudo-terminals.  Access to both traditional
--          pseudo-terminals (/dev/pty*) and pts pseudo-terminals are controlled
--          with this option.  The assignment of UML devices to host devices
--          will be announced in the kernel message log.
--          It is safe to say 'Y' here.
--
--config TTY_CHAN
--	bool "tty channel support"
--	help
--          This option enables support for attaching UML consoles and serial
--          lines to host terminals.  Access to both virtual consoles
--          (/dev/tty*) and the slave side of pseudo-terminals (/dev/ttyp* and
--          /dev/pts/*) are controlled by this option.
--          It is safe to say 'Y' here.
--
--config XTERM_CHAN
--	bool "xterm channel support"
--	help
--          This option enables support for attaching UML consoles and serial
--          lines to xterms.  Each UML device so assigned will be brought up in
--          its own xterm.
--          It is safe to say 'Y' here.
--
--config NOCONFIG_CHAN
--	bool
--	default !(XTERM_CHAN && TTY_CHAN && PTY_CHAN && PORT_CHAN && NULL_CHAN)
--
--config CON_ZERO_CHAN
--	string "Default main console channel initialization"
--	default "fd:0,fd:1"
--	help
--          This is the string describing the channel to which the main console
--          will be attached by default.  This value can be overridden from the
--          command line.  The default value is "fd:0,fd:1", which attaches the
--          main console to stdin and stdout.
--          It is safe to leave this unchanged.
--
--config CON_CHAN
--	string "Default console channel initialization"
--	default "xterm"
--	help
--          This is the string describing the channel to which all consoles
--          except the main console will be attached by default.  This value can
--          be overridden from the command line.  The default value is "xterm",
--          which brings them up in xterms.
--          It is safe to leave this unchanged, although you may wish to change
--          this if you expect the UML that you build to be run in environments
--          which don't have X or xterm available.
--
--config SSL_CHAN
--	string "Default serial line channel initialization"
--	default "pty"
--	help
--          This is the string describing the channel to which the serial lines
--          will be attached by default.  This value can be overridden from the
--          command line.  The default value is "pty", which attaches them to
--          traditional pseudo-terminals.
--          It is safe to leave this unchanged, although you may wish to change
--          this if you expect the UML that you build to be run in environments
--          which don't have a set of /dev/pty* devices.
--
--config UML_SOUND
--	tristate "Sound support"
--	help
--          This option enables UML sound support.  If enabled, it will pull in
--          soundcore and the UML hostaudio relay, which acts as a intermediary
--          between the host's dsp and mixer devices and the UML sound system.
--          It is safe to say 'Y' here.
--
--config SOUND
--	tristate
--	default UML_SOUND
--
--config SOUND_OSS_CORE
--	bool
--	default UML_SOUND
--
--config HOSTAUDIO
--	tristate
--	default UML_SOUND
--
--endmenu
-diff --git a/arch/um/Kconfig.net b/arch/um/drivers/Kconfig
-similarity index 66%
-rename from arch/um/Kconfig.net
-rename to arch/um/drivers/Kconfig
-index c390f3deb0dc..2b1aaf7755aa 100644
---- a/arch/um/Kconfig.net
-+++ b/arch/um/drivers/Kconfig
-@@ -1,5 +1,129 @@
+@@ -1,3 +1,213 @@
  # SPDX-License-Identifier: GPL-2.0
  
-+menu "UML Character Devices"
++menu "UML-specific options"
 +
-+config STDERR_CONSOLE
-+	bool "stderr console"
++config UML
++	bool
++	default y
++	select ARCH_HAS_KCOV
++	select HAVE_ARCH_AUDITSYSCALL
++	select HAVE_ARCH_SECCOMP_FILTER
++	select HAVE_UID16
++	select HAVE_FUTEX_CMPXCHG if FUTEX
++	select HAVE_DEBUG_KMEMLEAK
++	select GENERIC_IRQ_SHOW
++	select GENERIC_CPU_DEVICES
++	select GENERIC_CLOCKEVENTS
++	select HAVE_GCC_PLUGINS
++	select TTY # Needed for line.c
++
++config MMU
++	bool
++	default y
++
++config NO_IOMEM
++	def_bool y
++
++config ISA
++	bool
++
++config SBUS
++	bool
++
++config PCI
++	bool
++
++config PCMCIA
++	bool
++
++config TRACE_IRQFLAGS_SUPPORT
++	bool
++	default y
++
++config LOCKDEP_SUPPORT
++	bool
++	default y
++
++config STACKTRACE_SUPPORT
++	bool
++	default y
++	select STACKTRACE
++
++config GENERIC_CALIBRATE_DELAY
++	bool
++	default y
++
++config HZ
++	int
++	default 100
++
++config NR_CPUS
++	int
++	range 1 1
++	default 1
++
+ source "arch/$(SUBARCH)/um/Kconfig"
++
++config STATIC_LINK
++	bool "Force a static link"
++	default n
++	help
++	  This option gives you the ability to force a static link of UML.
++	  Normally, UML is linked as a shared binary.  This is inconvenient for
++	  use in a chroot jail.  So, if you intend to run UML inside a chroot,
++	  you probably want to say Y here.
++	  Additionally, this option enables using higher memory spaces (up to
++	  2.75G) for UML.
++
++source "mm/Kconfig"
++
++config LD_SCRIPT_STATIC
++	bool
++	default y
++	depends on STATIC_LINK
++
++config LD_SCRIPT_DYN
++	bool
++	default y
++	depends on !LD_SCRIPT_STATIC
++        select MODULE_REL_CRCS if MODVERSIONS
++
++source "fs/Kconfig.binfmt"
++
++config HOSTFS
++	tristate "Host filesystem"
++	help
++          While the User-Mode Linux port uses its own root file system for
++          booting and normal file access, this module lets the UML user
++          access files stored on the host.  It does not require any
++          network connection between the Host and UML.  An example use of
++          this might be:
++
++          mount none /tmp/fromhost -t hostfs -o /tmp/umlshare
++
++          where /tmp/fromhost is an empty directory inside UML and
++          /tmp/umlshare is a directory on the host with files the UML user
++          wishes to access.
++
++          For more information, see
++          <http://user-mode-linux.sourceforge.net/hostfs.html>.
++
++          If you'd like to be able to work with files stored on the host,
++          say Y or M here; otherwise say N.
++
++config MCONSOLE
++	bool "Management console"
++	depends on PROC_FS
 +	default y
 +	help
-+	  console driver which dumps all printk messages to stderr.
++          The user mode linux management console is a low-level interface to
++          the kernel, somewhat like the i386 SysRq interface.  Since there is
++          a full-blown operating system running under every user mode linux
++          instance, there is much greater flexibility possible than with the
++          SysRq mechanism.
 +
-+config SSL
-+	bool "Virtual serial line"
-+	help
-+          The User-Mode Linux environment allows you to create virtual serial
-+          lines on the UML that are usually made to show up on the host as
-+          ttys or ptys.
++          If you answer 'Y' to this option, to use this feature, you need the
++          mconsole client (called uml_mconsole) which is present in CVS in
++          2.4.5-9um and later (path /tools/mconsole), and is also in the
++          distribution RPM package in 2.4.6 and later.
 +
-+          See <http://user-mode-linux.sourceforge.net/old/input.html> for more
-+          information and command line examples of how to use this facility.
-+
-+          Unless you have a specific reason for disabling this, say Y.
-+
-+config NULL_CHAN
-+	bool "null channel support"
-+	help
-+          This option enables support for attaching UML consoles and serial
-+          lines to a device similar to /dev/null.  Data written to it disappears
-+          and there is never any data to be read.
-+
-+config PORT_CHAN
-+	bool "port channel support"
-+	help
-+          This option enables support for attaching UML consoles and serial
-+          lines to host portals.  They may be accessed with 'telnet <host>
-+          <port number>'.  Any number of consoles and serial lines may be
-+          attached to a single portal, although what UML device you get when
-+          you telnet to that portal will be unpredictable.
 +          It is safe to say 'Y' here.
 +
-+config PTY_CHAN
-+	bool "pty channel support"
++config MAGIC_SYSRQ
++	bool "Magic SysRq key"
++	depends on MCONSOLE
 +	help
-+          This option enables support for attaching UML consoles and serial
-+          lines to host pseudo-terminals.  Access to both traditional
-+          pseudo-terminals (/dev/pty*) and pts pseudo-terminals are controlled
-+          with this option.  The assignment of UML devices to host devices
-+          will be announced in the kernel message log.
-+          It is safe to say 'Y' here.
++	  If you say Y here, you will have some control over the system even
++	  if the system crashes for example during kernel debugging (e.g., you
++	  will be able to flush the buffer cache to disk, reboot the system
++	  immediately or dump some status information). A key for each of the
++	  possible requests is provided.
 +
-+config TTY_CHAN
-+	bool "tty channel support"
++	  This is the feature normally accomplished by pressing a key
++	  while holding SysRq (Alt+PrintScreen).
++
++	  On UML, this is accomplished by sending a "sysrq" command with
++	  mconsole, followed by the letter for the requested command.
++
++	  The keys are documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say Y
++	  unless you really know what this hack does.
++
++config KERNEL_STACK_ORDER
++	int "Kernel stack size order"
++	default 1 if 64BIT
++	range 1 10 if 64BIT
++	default 0 if !64BIT
 +	help
-+          This option enables support for attaching UML consoles and serial
-+          lines to host terminals.  Access to both virtual consoles
-+          (/dev/tty*) and the slave side of pseudo-terminals (/dev/ttyp* and
-+          /dev/pts/*) are controlled by this option.
-+          It is safe to say 'Y' here.
++	  This option determines the size of UML kernel stacks.  They will
++	  be 1 << order pages.  The default is OK unless you're running Valgrind
++	  on UML, in which case, set this to 3.
 +
-+config XTERM_CHAN
-+	bool "xterm channel support"
++config MMAPPER
++	tristate "iomem emulation driver"
 +	help
-+          This option enables support for attaching UML consoles and serial
-+          lines to xterms.  Each UML device so assigned will be brought up in
-+          its own xterm.
-+          It is safe to say 'Y' here.
++	  This driver allows a host file to be used as emulated IO memory inside
++	  UML.
 +
-+config NOCONFIG_CHAN
-+	bool
-+	default !(XTERM_CHAN && TTY_CHAN && PTY_CHAN && PORT_CHAN && NULL_CHAN)
++config NO_DMA
++	def_bool y
 +
-+config CON_ZERO_CHAN
-+	string "Default main console channel initialization"
-+	default "fd:0,fd:1"
-+	help
-+          This is the string describing the channel to which the main console
-+          will be attached by default.  This value can be overridden from the
-+          command line.  The default value is "fd:0,fd:1", which attaches the
-+          main console to stdin and stdout.
-+          It is safe to leave this unchanged.
++config PGTABLE_LEVELS
++	int
++	default 3 if 3_LEVEL_PGTABLES
++	default 2
 +
-+config CON_CHAN
-+	string "Default console channel initialization"
-+	default "xterm"
-+	help
-+          This is the string describing the channel to which all consoles
-+          except the main console will be attached by default.  This value can
-+          be overridden from the command line.  The default value is "xterm",
-+          which brings them up in xterms.
-+          It is safe to leave this unchanged, although you may wish to change
-+          this if you expect the UML that you build to be run in environments
-+          which don't have X or xterm available.
++config SECCOMP
++	def_bool y
++	prompt "Enable seccomp to safely compute untrusted bytecode"
++	---help---
++	  This kernel feature is useful for number crunching applications
++	  that may need to compute untrusted bytecode during their
++	  execution. By using pipes or other transports made available to
++	  the process as file descriptors supporting the read/write
++	  syscalls, it's possible to isolate those applications in
++	  their own address space using seccomp. Once seccomp is
++	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
++	  and the task is only allowed to execute a few safe syscalls
++	  defined by each seccomp mode.
 +
-+config SSL_CHAN
-+	string "Default serial line channel initialization"
-+	default "pty"
-+	help
-+          This is the string describing the channel to which the serial lines
-+          will be attached by default.  This value can be overridden from the
-+          command line.  The default value is "pty", which attaches them to
-+          traditional pseudo-terminals.
-+          It is safe to leave this unchanged, although you may wish to change
-+          this if you expect the UML that you build to be run in environments
-+          which don't have a set of /dev/pty* devices.
-+
-+config UML_SOUND
-+	tristate "Sound support"
-+	help
-+          This option enables UML sound support.  If enabled, it will pull in
-+          soundcore and the UML hostaudio relay, which acts as a intermediary
-+          between the host's dsp and mixer devices and the UML sound system.
-+          It is safe to say 'Y' here.
-+
-+config SOUND
-+	tristate
-+	default UML_SOUND
-+
-+config SOUND_OSS_CORE
-+	bool
-+	default UML_SOUND
-+
-+config HOSTAUDIO
-+	tristate
-+	default UML_SOUND
++	  If unsure, say Y.
 +
 +endmenu
 +
- menu "UML Network Devices"
- 	depends on NET
- 
-@@ -211,4 +335,3 @@ config UML_NET_SLIRP
-         Startup example: "eth0=slirp,FE:FD:01:02:03:04,/usr/local/bin/slirp"
- 
- endmenu
++source "init/Kconfig"
++
++source "kernel/Kconfig.freezer"
++
++source "arch/um/Kconfig.char"
++
++source "drivers/Kconfig"
++
++source "net/Kconfig"
++
++source "arch/um/Kconfig.net"
++
++source "fs/Kconfig"
++
++source "security/Kconfig"
++
++source "crypto/Kconfig"
++
++source "lib/Kconfig"
++
++source "arch/um/Kconfig.debug"
+diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+deleted file mode 100644
+index 07f84c842cc3..000000000000
+--- a/arch/um/Kconfig.common
++++ /dev/null
+@@ -1,60 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-config UML
+-	bool
+-	default y
+-	select ARCH_HAS_KCOV
+-	select HAVE_ARCH_AUDITSYSCALL
+-	select HAVE_ARCH_SECCOMP_FILTER
+-	select HAVE_UID16
+-	select HAVE_FUTEX_CMPXCHG if FUTEX
+-	select HAVE_DEBUG_KMEMLEAK
+-	select GENERIC_IRQ_SHOW
+-	select GENERIC_CPU_DEVICES
+-	select GENERIC_CLOCKEVENTS
+-	select HAVE_GCC_PLUGINS
+-	select TTY # Needed for line.c
 -
+-config MMU
+-	bool
+-	default y
+-
+-config NO_IOMEM
+-	def_bool y
+-
+-config ISA
+-	bool
+-
+-config SBUS
+-	bool
+-
+-config PCI
+-	bool
+-
+-config PCMCIA
+-	bool
+-
+-config TRACE_IRQFLAGS_SUPPORT
+-	bool
+-	default y
+-
+-config LOCKDEP_SUPPORT
+-	bool
+-	default y
+-
+-config STACKTRACE_SUPPORT
+-	bool
+-	default y
+-	select STACKTRACE
+-
+-config GENERIC_CALIBRATE_DELAY
+-	bool
+-	default y
+-
+-config HZ
+-	int
+-	default 100
+-
+-config NR_CPUS
+-	int
+-	range 1 1
+-	default 1
+diff --git a/arch/um/Kconfig.rest b/arch/um/Kconfig.rest
+deleted file mode 100644
+index 08327b9c0cbe..000000000000
+--- a/arch/um/Kconfig.rest
++++ /dev/null
+@@ -1,22 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-source "init/Kconfig"
+-
+-source "kernel/Kconfig.freezer"
+-
+-source "arch/um/Kconfig.char"
+-
+-source "drivers/Kconfig"
+-
+-source "net/Kconfig"
+-
+-source "arch/um/Kconfig.net"
+-
+-source "fs/Kconfig"
+-
+-source "security/Kconfig"
+-
+-source "crypto/Kconfig"
+-
+-source "lib/Kconfig"
+-
+-source "arch/um/Kconfig.debug"
+diff --git a/arch/um/Kconfig.um b/arch/um/Kconfig.um
+deleted file mode 100644
+index 20da5a8ca949..000000000000
+--- a/arch/um/Kconfig.um
++++ /dev/null
+@@ -1,124 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-config STATIC_LINK
+-	bool "Force a static link"
+-	default n
+-	help
+-	  This option gives you the ability to force a static link of UML.
+-	  Normally, UML is linked as a shared binary.  This is inconvenient for
+-	  use in a chroot jail.  So, if you intend to run UML inside a chroot,
+-	  you probably want to say Y here.
+-	  Additionally, this option enables using higher memory spaces (up to
+-	  2.75G) for UML.
+-
+-source "mm/Kconfig"
+-
+-config LD_SCRIPT_STATIC
+-	bool
+-	default y
+-	depends on STATIC_LINK
+-
+-config LD_SCRIPT_DYN
+-	bool
+-	default y
+-	depends on !LD_SCRIPT_STATIC
+-        select MODULE_REL_CRCS if MODVERSIONS
+-
+-source "fs/Kconfig.binfmt"
+-
+-config HOSTFS
+-	tristate "Host filesystem"
+-	help
+-          While the User-Mode Linux port uses its own root file system for
+-          booting and normal file access, this module lets the UML user
+-          access files stored on the host.  It does not require any
+-          network connection between the Host and UML.  An example use of
+-          this might be:
+-
+-          mount none /tmp/fromhost -t hostfs -o /tmp/umlshare
+-
+-          where /tmp/fromhost is an empty directory inside UML and
+-          /tmp/umlshare is a directory on the host with files the UML user
+-          wishes to access.
+-
+-          For more information, see
+-          <http://user-mode-linux.sourceforge.net/hostfs.html>.
+-
+-          If you'd like to be able to work with files stored on the host,
+-          say Y or M here; otherwise say N.
+-
+-config MCONSOLE
+-	bool "Management console"
+-	depends on PROC_FS
+-	default y
+-	help
+-          The user mode linux management console is a low-level interface to
+-          the kernel, somewhat like the i386 SysRq interface.  Since there is
+-          a full-blown operating system running under every user mode linux
+-          instance, there is much greater flexibility possible than with the
+-          SysRq mechanism.
+-
+-          If you answer 'Y' to this option, to use this feature, you need the
+-          mconsole client (called uml_mconsole) which is present in CVS in
+-          2.4.5-9um and later (path /tools/mconsole), and is also in the
+-          distribution RPM package in 2.4.6 and later.
+-
+-          It is safe to say 'Y' here.
+-
+-config MAGIC_SYSRQ
+-	bool "Magic SysRq key"
+-	depends on MCONSOLE
+-	help
+-	  If you say Y here, you will have some control over the system even
+-	  if the system crashes for example during kernel debugging (e.g., you
+-	  will be able to flush the buffer cache to disk, reboot the system
+-	  immediately or dump some status information). A key for each of the
+-	  possible requests is provided.
+-
+-	  This is the feature normally accomplished by pressing a key
+-	  while holding SysRq (Alt+PrintScreen).
+-
+-	  On UML, this is accomplished by sending a "sysrq" command with
+-	  mconsole, followed by the letter for the requested command.
+-
+-	  The keys are documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say Y
+-	  unless you really know what this hack does.
+-
+-config KERNEL_STACK_ORDER
+-	int "Kernel stack size order"
+-	default 1 if 64BIT
+-	range 1 10 if 64BIT
+-	default 0 if !64BIT
+-	help
+-	  This option determines the size of UML kernel stacks.  They will
+-	  be 1 << order pages.  The default is OK unless you're running Valgrind
+-	  on UML, in which case, set this to 3.
+-
+-config MMAPPER
+-	tristate "iomem emulation driver"
+-	help
+-	  This driver allows a host file to be used as emulated IO memory inside
+-	  UML.
+-
+-config NO_DMA
+-	def_bool y
+-
+-config PGTABLE_LEVELS
+-	int
+-	default 3 if 3_LEVEL_PGTABLES
+-	default 2
+-
+-config SECCOMP
+-	def_bool y
+-	prompt "Enable seccomp to safely compute untrusted bytecode"
+-	---help---
+-	  This kernel feature is useful for number crunching applications
+-	  that may need to compute untrusted bytecode during their
+-	  execution. By using pipes or other transports made available to
+-	  the process as file descriptors supporting the read/write
+-	  syscalls, it's possible to isolate those applications in
+-	  their own address space using seccomp. Once seccomp is
+-	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
+-	  and the task is only allowed to execute a few safe syscalls
+-	  defined by each seccomp mode.
+-
+-	  If unsure, say Y.
+diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
+index 7e509c83d80d..f518b4744ff8 100644
+--- a/arch/x86/um/Kconfig
++++ b/arch/x86/um/Kconfig
+@@ -1,9 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-source "arch/um/Kconfig.common"
+-
+-menu "UML-specific options"
+-
+ menu "Host processor type and features"
+ 
+ source "arch/x86/Kconfig.cpu"
+@@ -61,9 +57,3 @@ config ARCH_REUSE_HOST_VSYSCALL_AREA
+ 
+ config GENERIC_HWEIGHT
+ 	def_bool y
+-
+-source "arch/um/Kconfig.um"
+-
+-endmenu
+-
+-source "arch/um/Kconfig.rest"
 -- 
 2.18.0
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
