@@ -1,11 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 05/10] kconfig: include common Kconfig files from top-level
- Kconfig
-Date: Tue, 31 Jul 2018 13:39:30 +0200
-Message-Id: <20180731113935.6105-6-hch@lst.de>
-In-Reply-To: <20180731113935.6105-1-hch@lst.de>
-References: <20180731113935.6105-1-hch@lst.de>
+Subject: [PATCH] um: remove unused AIO code
+Date: Wed, 11 Jul 2018 09:32:39 +0200
+Message-Id: <20180711073239.31875-1-hch@lst.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,1386 +16,473 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-arch@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-kbuild@vger.kernel.org, Richard Weinberger <richard@nod.at>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Ley Foon Tan <lftan@altera.com>
-
-Instead of duplicating the source statements in every architecture just
-do it once in the toplevel Kconfig file.
-
-Note that with this the inclusion of arch/$(SRCARCH/Kconfig moves out of
-the top-level Kconfig into arch/Kconfig so that don't violate ordering
-constraits while keeping a sensible menu structure.
+To: richard@nod.at
+Cc: linux-um@lists.infradead.org
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- Kconfig                 | 22 +++++++++++++++++++++-
- arch/Kconfig            |  6 ++++++
- arch/alpha/Kconfig      | 20 --------------------
- arch/arc/Kconfig        | 16 ----------------
- arch/arm/Kconfig        | 23 -----------------------
- arch/arm64/Kconfig      | 23 -----------------------
- arch/c6x/Kconfig        | 24 ------------------------
- arch/h8300/Kconfig      | 24 ------------------------
- arch/hexagon/Kconfig    | 16 ----------------
- arch/ia64/Kconfig       | 20 --------------------
- arch/m68k/Kconfig       | 24 ------------------------
- arch/microblaze/Kconfig | 24 ------------------------
- arch/mips/Kconfig       | 24 ------------------------
- arch/nds32/Kconfig      | 16 ----------------
- arch/nios2/Kconfig      | 24 ------------------------
- arch/openrisc/Kconfig   | 23 -----------------------
- arch/parisc/Kconfig     | 24 ------------------------
- arch/powerpc/Kconfig    | 19 -------------------
- arch/riscv/Kconfig      | 24 ------------------------
- arch/s390/Kconfig       | 24 ------------------------
- arch/sh/Kconfig         | 22 ----------------------
- arch/sh/mm/Kconfig      |  2 --
- arch/sparc/Kconfig      | 24 ------------------------
- arch/um/Kconfig         | 20 --------------------
- arch/unicore32/Kconfig  | 24 ------------------------
- arch/x86/Kconfig        | 22 +---------------------
- arch/xtensa/Kconfig     | 25 -------------------------
- init/Kconfig            |  4 ++--
- 28 files changed, 30 insertions(+), 533 deletions(-)
+ arch/um/include/shared/aio.h |  28 ---
+ arch/um/os-Linux/Makefile    |   8 +-
+ arch/um/os-Linux/aio.c       | 390 -----------------------------------
+ 3 files changed, 2 insertions(+), 424 deletions(-)
+ delete mode 100644 arch/um/include/shared/aio.h
+ delete mode 100644 arch/um/os-Linux/aio.c
 
-diff --git a/Kconfig b/Kconfig
-index a90d9f9e268b..1a5c0a5d4ea1 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -9,4 +9,24 @@ comment "Compiler: $(CC_VERSION_TEXT)"
- 
- source "scripts/Kconfig.include"
- 
--source "arch/$(SRCARCH)/Kconfig"
-+source "init/Kconfig"
-+
-+source "kernel/Kconfig.freezer"
-+
-+menu "Executable file formats"
-+source "fs/Kconfig.binfmt"
-+endmenu
-+
-+source "mm/Kconfig"
-+
-+source "net/Kconfig"
-+
-+source "drivers/Kconfig"
-+
-+source "fs/Kconfig"
-+
-+source "security/Kconfig"
-+
-+source "crypto/Kconfig"
-+
-+source "lib/Kconfig"
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 1aa59063f1fd..09a561a70168 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -3,6 +3,12 @@
- # General architecture dependent options
- #
- 
-+#
-+# Note: arch/$(SRCARCH)/Kconfig needs to be included first so that it can
-+# override the default values in this file.
-+#
-+source "arch/$(SRCARCH)/Kconfig"
-+
- config CRASH_CORE
- 	bool
- 
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index 04a4a138ed13..50676152babd 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -74,9 +74,6 @@ config PGTABLE_LEVELS
- 	int
- 	default 3
- 
--source "init/Kconfig"
--source "kernel/Kconfig.freezer"
--
- config AUDIT_ARCH
- 	bool
- 
-@@ -573,8 +570,6 @@ config ARCH_DISCONTIGMEM_ENABLE
- 	  or have huge holes in the physical address space for other reasons.
- 	  See <file:Documentation/vm/numa.rst> for more.
- 
--source "mm/Kconfig"
--
- config NUMA
- 	bool "NUMA Support (EXPERIMENTAL)"
- 	depends on DISCONTIGMEM && BROKEN
-@@ -713,16 +708,8 @@ config SRM_ENV
- 	  This driver is also available as a module and will be called
- 	  srm_env then.
- 
--source "fs/Kconfig.binfmt"
--
- endmenu
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
- source "arch/alpha/Kconfig.debug"
- 
- # DUMMY_CONSOLE may be defined in drivers/video/console/Kconfig
-@@ -731,10 +718,3 @@ config DUMMY_CONSOLE
- 	bool
- 	depends on VGA_HOSE
- 	default y
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
--
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 9cf59fc60eab..e4024cc4c51e 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -94,9 +94,6 @@ config HAVE_ARCH_TRANSPARENT_HUGEPAGE
- 	def_bool y
- 	depends on ARC_MMU_V4
- 
--source "init/Kconfig"
--source "kernel/Kconfig.freezer"
--
- menu "ARC Architecture Configuration"
- 
- menu "ARC Platform/SoC/Board"
-@@ -550,22 +547,13 @@ config ARC_BUILTIN_DTB_NAME
- 
- source "kernel/Kconfig.preempt"
- 
--menu "Executable file formats"
--source "fs/Kconfig.binfmt"
--endmenu
--
- endmenu	 # "ARC Architecture Configuration"
- 
--source "mm/Kconfig"
--
- config FORCE_MAX_ZONEORDER
- 	int "Maximum zone order"
- 	default "12" if ARC_HUGEPAGE_16M
- 	default "11"
- 
--source "net/Kconfig"
--source "drivers/Kconfig"
--
- menu "Bus Support"
- 
- config PCI
-@@ -586,9 +574,5 @@ source "drivers/pci/Kconfig"
- 
- endmenu
- 
--source "fs/Kconfig"
- source "arch/arc/Kconfig.debug"
--source "security/Kconfig"
--source "crypto/Kconfig"
--source "lib/Kconfig"
- source "kernel/power/Kconfig"
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 843edfd000be..46ee6669204b 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -298,10 +298,6 @@ config PGTABLE_LEVELS
- 	default 3 if ARM_LPAE
- 	default 2
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- menu "System Type"
- 
- config MMU
-@@ -1721,8 +1717,6 @@ config ARM_MODULE_PLTS
- 	  Disabling this is usually safe for small single-platform
- 	  configurations. If unsure, say y.
- 
--source "mm/Kconfig"
--
- config FORCE_MAX_ZONEORDER
- 	int "Maximum zone order"
- 	default "12" if SOC_AM33XX
-@@ -2175,12 +2169,6 @@ config KERNEL_MODE_NEON
- 
- endmenu
- 
--menu "Userspace binary formats"
--
--source "fs/Kconfig.binfmt"
--
--endmenu
--
- menu "Power management options"
- 
- source "kernel/power/Kconfig"
-@@ -2201,23 +2189,12 @@ config ARCH_HIBERNATION_POSSIBLE
- 
- endmenu
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
- source "drivers/firmware/Kconfig"
- 
--source "fs/Kconfig"
--
- source "arch/arm/Kconfig.debug"
- 
--source "security/Kconfig"
--
--source "crypto/Kconfig"
- if CRYPTO
- source "arch/arm/crypto/Kconfig"
- endif
- 
--source "lib/Kconfig"
--
- source "arch/arm/kvm/Kconfig"
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 42c090cf0292..fabd797c8645 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -267,10 +267,6 @@ config ARCH_PROC_KCORE_TEXT
- config MULTI_IRQ_HANDLER
- 	def_bool y
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- source "arch/arm64/Kconfig.platforms"
- 
- menu "Bus support"
-@@ -791,8 +787,6 @@ config ARCH_WANT_HUGE_PMD_SHARE
- config ARCH_HAS_CACHE_LINE_SIZE
- 	def_bool y
- 
--source "mm/Kconfig"
--
- config SECCOMP
- 	bool "Enable seccomp to safely compute untrusted bytecode"
- 	---help---
-@@ -1273,10 +1267,6 @@ config DMI
- 
- endmenu
- 
--menu "Userspace binary formats"
--
--source "fs/Kconfig.binfmt"
--
- config COMPAT
- 	bool "Kernel support for 32-bit EL0"
- 	depends on ARM64_4K_PAGES || EXPERT
-@@ -1300,8 +1290,6 @@ config SYSVIPC_COMPAT
- 	def_bool y
- 	depends on COMPAT && SYSVIPC
- 
--endmenu
--
- menu "Power management options"
- 
- source "kernel/power/Kconfig"
-@@ -1327,25 +1315,14 @@ source "drivers/cpufreq/Kconfig"
- 
- endmenu
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
- source "drivers/firmware/Kconfig"
- 
- source "drivers/acpi/Kconfig"
- 
--source "fs/Kconfig"
--
- source "arch/arm64/kvm/Kconfig"
- 
- source "arch/arm64/Kconfig.debug"
- 
--source "security/Kconfig"
--
--source "crypto/Kconfig"
- if CRYPTO
- source "arch/arm64/crypto/Kconfig"
- endif
--
--source "lib/Kconfig"
-diff --git a/arch/c6x/Kconfig b/arch/c6x/Kconfig
-index bf59855628ac..441bbe089b96 100644
---- a/arch/c6x/Kconfig
-+++ b/arch/c6x/Kconfig
-@@ -53,12 +53,8 @@ config C6X_BIG_KERNEL
- 
- 	  If unsure, say N.
- 
--source "init/Kconfig"
--
- # Use the generic interrupt handling code in kernel/irq/
- 
--source "kernel/Kconfig.freezer"
--
- config CMDLINE_BOOL
- 	bool "Default bootloader kernel arguments"
- 
-@@ -114,32 +110,12 @@ config KERNEL_RAM_BASE_ADDRESS
- 	default 0xe0000000 if SOC_TMS320C6472
- 	default 0x80000000
- 
--source "mm/Kconfig"
--
- source "kernel/Kconfig.preempt"
- 
- source "kernel/Kconfig.hz"
- 
- endmenu
- 
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
--endmenu
--
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
--
- menu "Kernel hacking"
- 
- source "lib/Kconfig.debug"
-diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index 091d6d04b5e5..e23cd887f8f9 100644
---- a/arch/h8300/Kconfig
-+++ b/arch/h8300/Kconfig
-@@ -48,40 +48,16 @@ config NR_CPUS
- 	int
- 	default 1
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- source "arch/h8300/Kconfig.cpu"
- 
- menu "Kernel Features"
- 
- source "kernel/Kconfig.preempt"
- 
--source "mm/Kconfig"
--
--endmenu
--
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
- endmenu
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
- menu "Kernel hacking"
- 
- source "lib/Kconfig.debug"
- 
- endmenu
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-index 37adb2003033..d2851f46a64b 100644
---- a/arch/hexagon/Kconfig
-+++ b/arch/hexagon/Kconfig
-@@ -146,26 +146,10 @@ config PAGE_SIZE_256KB
- 
- endchoice
- 
--source "mm/Kconfig"
--
- source "kernel/Kconfig.hz"
- 
- endmenu
- 
--source "init/Kconfig"
--source "kernel/Kconfig.freezer"
--source "drivers/Kconfig"
--source "fs/Kconfig"
--
--menu "Executable File Formats"
--source "fs/Kconfig.binfmt"
--endmenu
--
--source "net/Kconfig"
--source "security/Kconfig"
--source "crypto/Kconfig"
--source "lib/Kconfig"
--
- menu "Kernel hacking"
- source "lib/Kconfig.debug"
- endmenu
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index ff861420b8f5..6015d66fa521 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -4,10 +4,6 @@ config PGTABLE_LEVELS
- 	range 3 4 if !IA64_PAGE_SIZE_64KB
- 	default 3
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- menu "Processor type and features"
- 
- config IA64
-@@ -370,8 +366,6 @@ config FORCE_CPEI_RETARGET
- 
- source "kernel/Kconfig.preempt"
- 
--source "mm/Kconfig"
--
- config ARCH_SELECT_MEMORY_MODEL
- 	def_bool y
- 
-@@ -532,8 +526,6 @@ config CRASH_DUMP
- 
- source "drivers/firmware/Kconfig"
- 
--source "fs/Kconfig.binfmt"
--
- endmenu
- 
- menu "Power management and ACPI options"
-@@ -574,10 +566,6 @@ endmenu
- 
- endif
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
- source "arch/ia64/hp/sim/Kconfig"
- 
- config MSPEC
-@@ -589,12 +577,4 @@ config MSPEC
- 	  operations support (formerly known as fetchop), say Y here,
- 	  otherwise say N.
- 
--source "fs/Kconfig"
--
- source "arch/ia64/Kconfig.debug"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 785612b576f7..f76fb7bb371f 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -75,10 +75,6 @@ config PGTABLE_LEVELS
- 	default 2 if SUN3 || COLDFIRE
- 	default 3
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- config MMU
- 	bool "MMU-based Paged Memory Management Support"
- 	default y
-@@ -137,14 +133,6 @@ if COLDFIRE
- source "kernel/Kconfig.preempt"
- endif
- 
--source "mm/Kconfig"
--
--endmenu
--
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
- endmenu
- 
- if !MMU
-@@ -158,18 +146,6 @@ config PM
- endmenu
- endif
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
- source "arch/m68k/Kconfig.devices"
- 
--source "fs/Kconfig"
--
- source "arch/m68k/Kconfig.debug"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-index cc139d1b1284..fc31e047a43a 100644
---- a/arch/microblaze/Kconfig
-+++ b/arch/microblaze/Kconfig
-@@ -83,10 +83,6 @@ config STACKTRACE_SUPPORT
- config LOCKDEP_SUPPORT
- 	def_bool y
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- source "arch/microblaze/Kconfig.platform"
- 
- menu "Processor type and features"
-@@ -266,14 +262,6 @@ config MICROBLAZE_64K_PAGES
- 
- endchoice
- 
--source "mm/Kconfig"
--
--endmenu
--
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
- endmenu
- 
- menu "Bus Options"
-@@ -298,16 +286,4 @@ source "drivers/pci/Kconfig"
- 
- endmenu
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
- source "arch/microblaze/Kconfig.debug"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 08c10c518f83..f586a3259f7f 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2641,8 +2641,6 @@ config HW_PERF_EVENTS
- 	  Enable hardware performance counter support for perf events. If
- 	  disabled, perf events will use software events only.
- 
--source "mm/Kconfig"
--
- config SMP
- 	bool "Multi-Processing support"
- 	depends on SYS_SUPPORTS_SMP
-@@ -2994,10 +2992,6 @@ config PGTABLE_LEVELS
- 	default 3 if 64BIT && !PAGE_SIZE_64KB
- 	default 2
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- menu "Bus options (PCI, PCMCIA, EISA, ISA, TC)"
- 
- config HW_HAS_EISA
-@@ -3127,10 +3121,6 @@ source "drivers/rapidio/Kconfig"
- 
- endmenu
- 
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
- config TRAD_SIGNALS
- 	bool
- 
-@@ -3176,8 +3166,6 @@ config BINFMT_ELF32
- 	default y if MIPS32_O32 || MIPS32_N32
- 	select ELFCORE
- 
--endmenu
--
- menu "Power management options"
- 
- config ARCH_HIBERNATION_POSSIBLE
-@@ -3205,20 +3193,8 @@ source "drivers/cpuidle/Kconfig"
- 
- endmenu
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
- source "drivers/firmware/Kconfig"
- 
--source "fs/Kconfig"
--
- source "arch/mips/Kconfig.debug"
- 
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
--
- source "arch/mips/kvm/Kconfig"
-diff --git a/arch/nds32/Kconfig b/arch/nds32/Kconfig
-index 34f7222c5efe..b67679edc2aa 100644
---- a/arch/nds32/Kconfig
-+++ b/arch/nds32/Kconfig
-@@ -71,8 +71,6 @@ config FIX_EARLYCON_MEM
- config PGTABLE_LEVELS
- 	default 2
- 
--source "init/Kconfig"
--
- menu "System Type"
- source "arch/nds32/Kconfig.cpu"
- config NR_CPUS
-@@ -91,23 +89,9 @@ endmenu
- 
- menu "Kernel Features"
- source "kernel/Kconfig.preempt"
--source "kernel/Kconfig.freezer"
--source "mm/Kconfig"
- source "kernel/Kconfig.hz"
- endmenu
- 
--menu "Executable file formats"
--source "fs/Kconfig.binfmt"
--endmenu
--
--source "net/Kconfig"
--source "drivers/Kconfig"
--source "fs/Kconfig"
--
- menu "Kernel hacking"
- source "lib/Kconfig.debug"
- endmenu
--
--source "security/Kconfig"
--source "crypto/Kconfig"
--source "lib/Kconfig"
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index 3f9d4ef8b20f..2d813dfdb8cb 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -45,18 +45,12 @@ config RWSEM_GENERIC_SPINLOCK
- config TRACE_IRQFLAGS_SUPPORT
- 	def_bool n
- 
--source "init/Kconfig"
--
- menu "Kernel features"
- 
- source "kernel/Kconfig.preempt"
- 
--source "kernel/Kconfig.freezer"
--
- source "kernel/Kconfig.hz"
- 
--source "mm/Kconfig"
--
- config FORCE_MAX_ZONEORDER
- 	int "Maximum zone order"
- 	range 9 20
-@@ -194,22 +188,4 @@ config NIOS2_IO_REGION_BASE
- 
- endmenu
- 
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
--endmenu
--
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
- source "arch/nios2/Kconfig.debug"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index 9ecad05bfc73..eb9f503c8972 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -72,10 +72,6 @@ config LOCKDEP_SUPPORT
- config MULTI_IRQ_HANDLER
- 	def_bool y
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- menu "Processor type and features"
- 
- choice
-@@ -148,7 +144,6 @@ config SMP
- 
- source kernel/Kconfig.hz
- source kernel/Kconfig.preempt
--source "mm/Kconfig"
- 
- config OPENRISC_NO_SPR_SR_DSX
- 	bool "use SPR_SR_DSX software emulation" if OR1K_1200
-@@ -207,24 +202,6 @@ endmenu
- 
- endmenu
- 
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
--endmenu
--
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
--
- menu "Kernel hacking"
- 
- source "lib/Kconfig.debug"
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 17526bebcbd2..64b832a19bdf 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -129,10 +129,6 @@ config PGTABLE_LEVELS
- config SYS_SUPPORTS_HUGETLBFS
- 	def_bool y if PA20
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- 
- menu "Processor type and features"
- 
-@@ -329,7 +325,6 @@ config NODES_SHIFT
- 
- source "kernel/Kconfig.preempt"
- source "kernel/Kconfig.hz"
--source "mm/Kconfig"
- 
- config COMPAT
- 	def_bool y
-@@ -354,19 +349,6 @@ endmenu
- 
- source "drivers/parisc/Kconfig"
- 
--
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
--endmenu
--
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
- source "arch/parisc/Kconfig.debug"
- 
- config SECCOMP
-@@ -384,9 +366,3 @@ config SECCOMP
- 	  defined by each seccomp mode.
- 
- 	  If unsure, say Y. Only embedded should say N here.
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 9f2b75fe2c2d..131132f161e5 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -383,10 +383,6 @@ config PGTABLE_LEVELS
- 	default 3 if PPC_64K_PAGES && !PPC_BOOK3S_64
- 	default 4
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- source "arch/powerpc/sysdev/Kconfig"
- source "arch/powerpc/platforms/Kconfig"
- 
-@@ -398,7 +394,6 @@ config HIGHMEM
- 
- source kernel/Kconfig.hz
- source kernel/Kconfig.preempt
--source "fs/Kconfig.binfmt"
- 
- config HUGETLB_PAGE_SIZE_VARIABLE
- 	bool
-@@ -641,8 +636,6 @@ config ILLEGAL_POINTER_VALUE
- 	default 0x5deadbeef0000000 if PPC64
- 	default 0
- 
--source "mm/Kconfig"
--
- config ARCH_MEMORY_PROBE
- 	def_bool y
- 	depends on MEMORY_HOTPLUG
-@@ -1201,20 +1194,8 @@ endif
- config	ARCH_RANDOM
- 	def_bool n
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
--source "lib/Kconfig"
--
- source "arch/powerpc/Kconfig.debug"
- 
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
- config PPC_LIB_RHEAP
- 	bool
- 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 4764fdeb4f1f..082486cddf31 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -212,8 +212,6 @@ endmenu
- 
- menu "Kernel type"
- 
--source "mm/Kconfig"
--
- source "kernel/Kconfig.preempt"
- 
- source "kernel/Kconfig.hz"
-@@ -242,28 +240,12 @@ source "drivers/pci/Kconfig"
- 
- endmenu
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
--endmenu
--
- menu "Power management options"
- 
- source kernel/power/Kconfig
- 
- endmenu
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
- menu "Kernel hacking"
- 
- config CMDLINE_BOOL
-@@ -308,9 +290,3 @@ source "lib/Kconfig.debug"
- config CMDLINE_BOOL
- 	bool
- endmenu
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 8a1863d9ed53..6c8d5b60eddb 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -184,10 +184,6 @@ config PGTABLE_LEVELS
- 	int
- 	default 5
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- source "kernel/livepatch/Kconfig"
- 
- menu "Processor type and features"
-@@ -627,8 +623,6 @@ config FORCE_MAX_ZONEORDER
- 	int
- 	default "9"
- 
--source "mm/Kconfig"
--
- config MAX_PHYSMEM_BITS
- 	int "Maximum size of supported physical memory in bits (42-53)"
- 	range 42 53
-@@ -798,10 +792,6 @@ config CRASH_DUMP
- 
- endmenu
- 
--menu "Executable file formats / Emulations"
--
--source "fs/Kconfig.binfmt"
--
- config SECCOMP
- 	def_bool y
- 	prompt "Enable seccomp to safely compute untrusted bytecode"
-@@ -819,8 +809,6 @@ config SECCOMP
- 
- 	  If unsure, say Y.
- 
--endmenu
--
- menu "Power Management"
- 
- config ARCH_HIBERNATION_POSSIBLE
-@@ -830,30 +818,18 @@ source "kernel/power/Kconfig"
- 
- endmenu
- 
--source "net/Kconfig"
--
- config PCMCIA
- 	def_bool n
- 
- config CCW
- 	def_bool y
- 
--source "drivers/Kconfig"
--
- config HAVE_PNETID
- 	tristate
- 	default (SMC || CCWGROUP)
- 
--source "fs/Kconfig"
--
- source "arch/s390/Kconfig.debug"
- 
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
--
- menu "Virtualization"
- 
- config PFAULT
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index dd4f3d3e644f..f291d2568cd4 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -168,10 +168,6 @@ config PGTABLE_LEVELS
- 	default 3 if X2TLB
- 	default 2
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- menu "System type"
- 
- #
-@@ -882,12 +878,6 @@ source "drivers/pcmcia/Kconfig"
- 
- endmenu
- 
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
--endmenu
--
- menu "Power management options (EXPERIMENTAL)"
- 
- source "kernel/power/Kconfig"
-@@ -896,16 +886,4 @@ source "drivers/cpuidle/Kconfig"
- 
- endmenu
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
- source "arch/sh/Kconfig.debug"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/sh/mm/Kconfig b/arch/sh/mm/Kconfig
-index 50cdd1349015..02ed2df25a54 100644
---- a/arch/sh/mm/Kconfig
-+++ b/arch/sh/mm/Kconfig
-@@ -225,8 +225,6 @@ config HUGETLB_PAGE_SIZE_512MB
- 
- endchoice
- 
--source "mm/Kconfig"
--
- config SCHED_MC
- 	bool "Multi-core scheduler support"
- 	depends on SMP
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 0f535debf802..8a1e44d2e112 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -155,10 +155,6 @@ config PGTABLE_LEVELS
- config ARCH_SUPPORTS_UPROBES
- 	def_bool y if SPARC64
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- menu "Processor type and features"
- 
- config SMP
-@@ -331,8 +327,6 @@ config FORCE_MAX_ZONEORDER
- 	  This config option is actually maximum order plus one. For example,
- 	  a value of 13 means that the largest free memory block is 2^12 pages.
- 
--source "mm/Kconfig"
--
- if SPARC64
- source "kernel/power/Kconfig"
- endif
-@@ -556,10 +550,6 @@ config SPARC64_PCI_MSI
- 
- endmenu
- 
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
- config COMPAT
- 	bool
- 	depends on SPARC64
-@@ -574,20 +564,6 @@ config SYSVIPC_COMPAT
- 	depends on COMPAT && SYSVIPC
- 	default y
- 
--endmenu
--
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
- source "drivers/sbus/char/Kconfig"
- 
--source "fs/Kconfig"
--
- source "arch/sparc/Kconfig.debug"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index ea35bf91fc0f..a5cc2b19a960 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -75,8 +75,6 @@ config STATIC_LINK
- 	  Additionally, this option enables using higher memory spaces (up to
- 	  2.75G) for UML.
- 
--source "mm/Kconfig"
--
- config LD_SCRIPT_STATIC
- 	bool
- 	default y
-@@ -88,8 +86,6 @@ config LD_SCRIPT_DYN
- 	depends on !LD_SCRIPT_STATIC
-         select MODULE_REL_CRCS if MODVERSIONS
- 
--source "fs/Kconfig.binfmt"
--
- config HOSTFS
- 	tristate "Host filesystem"
- 	help
-@@ -190,22 +186,6 @@ config SECCOMP
- 
- endmenu
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- source "arch/um/drivers/Kconfig"
- 
--source "drivers/Kconfig"
--
--source "net/Kconfig"
--
--source "fs/Kconfig"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
--
- source "arch/um/Kconfig.debug"
-diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
-index 03f991e44288..7fa7e61eb19f 100644
---- a/arch/unicore32/Kconfig
-+++ b/arch/unicore32/Kconfig
-@@ -63,10 +63,6 @@ config ARCH_MAY_HAVE_PC_FDC
- config ZONE_DMA
- 	def_bool y
- 
--source "init/Kconfig"
--
--source "kernel/Kconfig.freezer"
--
- menu "System Type"
- 
- config MMU
-@@ -143,8 +139,6 @@ source "kernel/Kconfig.preempt"
- 
- source "kernel/Kconfig.hz"
- 
--source "mm/Kconfig"
--
- config LEDS
- 	def_bool y
- 	depends on GPIOLIB
-@@ -181,12 +175,6 @@ config CMDLINE_FORCE
- 
- endmenu
- 
--menu "Userspace binary formats"
--
--source "fs/Kconfig.binfmt"
--
--endmenu
--
- menu "Power management options"
- 
- source "kernel/power/Kconfig"
-@@ -201,8 +189,6 @@ config ARCH_HIBERNATION_POSSIBLE
- 
- endmenu
- 
--source "net/Kconfig"
--
- if ARCH_PUV3
- 
- config PUV3_GPIO
-@@ -237,14 +223,4 @@ endif
- 
- endif
- 
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
- source "arch/unicore32/Kconfig.debug"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 887d3a7bb646..f2e4dc9fd270 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -345,8 +345,6 @@ config PGTABLE_LEVELS
- 	default 3 if X86_PAE
- 	default 2
- 
--source "init/Kconfig"
--
- config CC_HAS_SANE_STACKPROTECTOR
- 	bool
- 	default $(success,$(srctree)/scripts/gcc-x86_64-has-stack-protector.sh $(CC)) if 64BIT
-@@ -355,8 +353,6 @@ config CC_HAS_SANE_STACKPROTECTOR
- 	   We have to make sure stack protector is unconditionally disabled if
- 	   the compiler produces broken code.
- 
--source "kernel/Kconfig.freezer"
--
- menu "Processor type and features"
- 
- config ZONE_DMA
-@@ -1638,8 +1634,6 @@ config ILLEGAL_POINTER_VALUE
-        default 0 if X86_32
-        default 0xdead000000000000 if X86_64
- 
--source "mm/Kconfig"
--
- config X86_PMEM_LEGACY_DEVICE
- 	bool
- 
-@@ -2865,9 +2859,7 @@ config X86_SYSFB
- endmenu
- 
- 
--menu "Executable file formats / Emulations"
--
--source "fs/Kconfig.binfmt"
-+menu "Binary Emulations"
- 
- config IA32_EMULATION
- 	bool "IA32 Emulation"
-@@ -2937,20 +2929,8 @@ config X86_DMA_REMAP
- config HAVE_GENERIC_GUP
- 	def_bool y
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
- source "drivers/firmware/Kconfig"
- 
--source "fs/Kconfig"
--
- source "arch/x86/Kconfig.debug"
- 
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
- source "arch/x86/kvm/Kconfig"
--
--source "lib/Kconfig"
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index d575e8701955..d8bac8be3a33 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -60,9 +60,6 @@ config HZ
- 	int
- 	default 100
- 
--source "init/Kconfig"
--source "kernel/Kconfig.freezer"
--
- config LOCKDEP_SUPPORT
- 	def_bool y
- 
-@@ -491,8 +488,6 @@ config SIMDISK1_FILENAME
- 	  Another simulated disk in a host file for a buildroot-independent
- 	  storage.
- 
--source "mm/Kconfig"
--
- config FORCE_MAX_ZONEORDER
- 	int "Maximum zone order"
- 	default "11"
-@@ -567,30 +562,10 @@ config XTFPGA_LCD_8BIT_ACCESS
- 
- endmenu
- 
--menu "Executable file formats"
--
--source "fs/Kconfig.binfmt"
--
--endmenu
--
- menu "Power management options"
- 
- source "kernel/power/Kconfig"
- 
- endmenu
- 
--source "net/Kconfig"
--
--source "drivers/Kconfig"
--
--source "fs/Kconfig"
--
- source "arch/xtensa/Kconfig.debug"
--
--source "security/Kconfig"
--
--source "crypto/Kconfig"
--
--source "lib/Kconfig"
--
--
-diff --git a/init/Kconfig b/init/Kconfig
-index 1e69f93b809e..283f6bc796b1 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1721,10 +1721,10 @@ config PROFILING
- config TRACEPOINTS
- 	bool
- 
--source "arch/Kconfig"
--
- endmenu		# General setup
- 
-+source "arch/Kconfig"
-+
- config RT_MUTEXES
- 	bool
- 
+diff --git a/arch/um/include/shared/aio.h b/arch/um/include/shared/aio.h
+deleted file mode 100644
+index 423bae9153f8..000000000000
+--- a/arch/um/include/shared/aio.h
++++ /dev/null
+@@ -1,28 +0,0 @@
+-/*
+- * Copyright (C) 2004 Jeff Dike (jdike@karaya.com)
+- * Licensed under the GPL
+- */
+-
+-#ifndef AIO_H__
+-#define AIO_H__
+-
+-enum aio_type { AIO_READ, AIO_WRITE, AIO_MMAP };
+-
+-struct aio_thread_reply {
+-	void *data;
+-	int err;
+-};
+-
+-struct aio_context {
+-	int reply_fd;
+-	struct aio_context *next;
+-};
+-
+-#define INIT_AIO_CONTEXT { .reply_fd	= -1, \
+-			   .next	= NULL }
+-
+-extern int submit_aio(enum aio_type type, int fd, char *buf, int len,
+-		      unsigned long long offset, int reply_fd,
+-                      struct aio_context *aio);
+-
+-#endif
+diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
+index ada473bf6f46..455b500afe97 100644
+--- a/arch/um/os-Linux/Makefile
++++ b/arch/um/os-Linux/Makefile
+@@ -6,18 +6,14 @@
+ # Don't instrument UML-specific code
+ KCOV_INSTRUMENT                := n
+ 
+-obj-y = aio.o execvp.o file.o helper.o irq.o main.o mem.o process.o \
++obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 	registers.o sigio.o signal.o start_up.o time.o tty.o \
+ 	umid.o user_syms.o util.o drivers/ skas/
+ 
+ obj-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
+ 
+-USER_OBJS := $(user-objs-y) aio.o elf_aux.o execvp.o file.o helper.o irq.o \
++USER_OBJS := $(user-objs-y) elf_aux.o execvp.o file.o helper.o irq.o \
+ 	main.o mem.o process.o registers.o sigio.o signal.o start_up.o time.o \
+ 	tty.o umid.o util.o
+ 
+-HAVE_AIO_ABI := $(shell [ -r /usr/include/linux/aio_abi.h ] && \
+-	echo -DHAVE_AIO_ABI )
+-CFLAGS_aio.o += $(HAVE_AIO_ABI)
+-
+ include arch/um/scripts/Makefile.rules
+diff --git a/arch/um/os-Linux/aio.c b/arch/um/os-Linux/aio.c
+deleted file mode 100644
+index 014eb35fd13b..000000000000
+--- a/arch/um/os-Linux/aio.c
++++ /dev/null
+@@ -1,390 +0,0 @@
+-/*
+- * Copyright (C) 2004 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- * Licensed under the GPL
+- */
+-
+-#include <unistd.h>
+-#include <sched.h>
+-#include <signal.h>
+-#include <errno.h>
+-#include <sys/time.h>
+-#include <asm/unistd.h>
+-#include <aio.h>
+-#include <init.h>
+-#include <kern_util.h>
+-#include <os.h>
+-
+-struct aio_thread_req {
+-	enum aio_type type;
+-	int io_fd;
+-	unsigned long long offset;
+-	char *buf;
+-	int len;
+-	struct aio_context *aio;
+-};
+-
+-#if defined(HAVE_AIO_ABI)
+-#include <linux/aio_abi.h>
+-
+-/*
+- * If we have the headers, we are going to build with AIO enabled.
+- * If we don't have aio in libc, we define the necessary stubs here.
+- */
+-
+-#if !defined(HAVE_AIO_LIBC)
+-
+-static long io_setup(int n, aio_context_t *ctxp)
+-{
+-	return syscall(__NR_io_setup, n, ctxp);
+-}
+-
+-static long io_submit(aio_context_t ctx, long nr, struct iocb **iocbpp)
+-{
+-	return syscall(__NR_io_submit, ctx, nr, iocbpp);
+-}
+-
+-static long io_getevents(aio_context_t ctx_id, long min_nr, long nr,
+-			 struct io_event *events, struct timespec *timeout)
+-{
+-	return syscall(__NR_io_getevents, ctx_id, min_nr, nr, events, timeout);
+-}
+-
+-#endif
+-
+-/*
+- * The AIO_MMAP cases force the mmapped page into memory here
+- * rather than in whatever place first touches the data.  I used
+- * to do this by touching the page, but that's delicate because
+- * gcc is prone to optimizing that away.  So, what's done here
+- * is we read from the descriptor from which the page was
+- * mapped.  The caller is required to pass an offset which is
+- * inside the page that was mapped.  Thus, when the read
+- * returns, we know that the page is in the page cache, and
+- * that it now backs the mmapped area.
+- */
+-
+-static int do_aio(aio_context_t ctx, enum aio_type type, int fd, char *buf,
+-		  int len, unsigned long long offset, struct aio_context *aio)
+-{
+-	struct iocb *iocbp = & ((struct iocb) {
+-				    .aio_data       = (unsigned long) aio,
+-				    .aio_fildes     = fd,
+-				    .aio_buf        = (unsigned long) buf,
+-				    .aio_nbytes     = len,
+-				    .aio_offset     = offset
+-			     });
+-	char c;
+-
+-	switch (type) {
+-	case AIO_READ:
+-		iocbp->aio_lio_opcode = IOCB_CMD_PREAD;
+-		break;
+-	case AIO_WRITE:
+-		iocbp->aio_lio_opcode = IOCB_CMD_PWRITE;
+-		break;
+-	case AIO_MMAP:
+-		iocbp->aio_lio_opcode = IOCB_CMD_PREAD;
+-		iocbp->aio_buf = (unsigned long) &c;
+-		iocbp->aio_nbytes = sizeof(c);
+-		break;
+-	default:
+-		printk(UM_KERN_ERR "Bogus op in do_aio - %d\n", type);
+-		return -EINVAL;
+-	}
+-
+-	return (io_submit(ctx, 1, &iocbp) > 0) ? 0 : -errno;
+-}
+-
+-/* Initialized in an initcall and unchanged thereafter */
+-static aio_context_t ctx = 0;
+-
+-static int aio_thread(void *arg)
+-{
+-	struct aio_thread_reply reply;
+-	struct io_event event;
+-	int err, n, reply_fd;
+-
+-	os_fix_helper_signals();
+-	while (1) {
+-		n = io_getevents(ctx, 1, 1, &event, NULL);
+-		if (n < 0) {
+-			if (errno == EINTR)
+-				continue;
+-			printk(UM_KERN_ERR "aio_thread - io_getevents failed, "
+-			       "errno = %d\n", errno);
+-		}
+-		else {
+-			reply = ((struct aio_thread_reply)
+-				{ .data = (void *) (long) event.data,
+-						.err	= event.res });
+-			reply_fd = ((struct aio_context *) reply.data)->reply_fd;
+-			err = write(reply_fd, &reply, sizeof(reply));
+-			if (err != sizeof(reply))
+-				printk(UM_KERN_ERR "aio_thread - write failed, "
+-				       "fd = %d, err = %d\n", reply_fd, errno);
+-		}
+-	}
+-	return 0;
+-}
+-
+-#endif
+-
+-static int do_not_aio(struct aio_thread_req *req)
+-{
+-	char c;
+-	unsigned long long actual;
+-	int n;
+-
+-	actual = lseek64(req->io_fd, req->offset, SEEK_SET);
+-	if (actual != req->offset)
+-		return -errno;
+-
+-	switch (req->type) {
+-	case AIO_READ:
+-		n = read(req->io_fd, req->buf, req->len);
+-		break;
+-	case AIO_WRITE:
+-		n = write(req->io_fd, req->buf, req->len);
+-		break;
+-	case AIO_MMAP:
+-		n = read(req->io_fd, &c, sizeof(c));
+-		break;
+-	default:
+-		printk(UM_KERN_ERR "do_not_aio - bad request type : %d\n",
+-		       req->type);
+-		return -EINVAL;
+-	}
+-
+-	if (n < 0)
+-		return -errno;
+-	return 0;
+-}
+-
+-/* These are initialized in initcalls and not changed */
+-static int aio_req_fd_r = -1;
+-static int aio_req_fd_w = -1;
+-static int aio_pid = -1;
+-static unsigned long aio_stack;
+-
+-static int not_aio_thread(void *arg)
+-{
+-	struct aio_thread_req req;
+-	struct aio_thread_reply reply;
+-	int err;
+-
+-	os_fix_helper_signals();
+-	while (1) {
+-		err = read(aio_req_fd_r, &req, sizeof(req));
+-		if (err != sizeof(req)) {
+-			if (err < 0)
+-				printk(UM_KERN_ERR "not_aio_thread - "
+-				       "read failed, fd = %d, err = %d\n",
+-				       aio_req_fd_r,
+-				       errno);
+-			else {
+-				printk(UM_KERN_ERR "not_aio_thread - short "
+-				       "read, fd = %d, length = %d\n",
+-				       aio_req_fd_r, err);
+-			}
+-			continue;
+-		}
+-		err = do_not_aio(&req);
+-		reply = ((struct aio_thread_reply) { .data 	= req.aio,
+-						     .err	= err });
+-		err = write(req.aio->reply_fd, &reply, sizeof(reply));
+-		if (err != sizeof(reply))
+-			printk(UM_KERN_ERR "not_aio_thread - write failed, "
+-			       "fd = %d, err = %d\n", req.aio->reply_fd, errno);
+-	}
+-
+-	return 0;
+-}
+-
+-static int init_aio_24(void)
+-{
+-	int fds[2], err;
+-
+-	err = os_pipe(fds, 1, 1);
+-	if (err)
+-		goto out;
+-
+-	aio_req_fd_w = fds[0];
+-	aio_req_fd_r = fds[1];
+-
+-	err = os_set_fd_block(aio_req_fd_w, 0);
+-	if (err)
+-		goto out_close_pipe;
+-
+-	err = run_helper_thread(not_aio_thread, NULL,
+-				CLONE_FILES | CLONE_VM, &aio_stack);
+-	if (err < 0)
+-		goto out_close_pipe;
+-
+-	aio_pid = err;
+-	goto out;
+-
+-out_close_pipe:
+-	close(fds[0]);
+-	close(fds[1]);
+-	aio_req_fd_w = -1;
+-	aio_req_fd_r = -1;
+-out:
+-#ifndef HAVE_AIO_ABI
+-	printk(UM_KERN_INFO "/usr/include/linux/aio_abi.h not present during "
+-	       "build\n");
+-#endif
+-	printk(UM_KERN_INFO "2.6 host AIO support not used - falling back to "
+-	       "I/O thread\n");
+-	return 0;
+-}
+-
+-#ifdef HAVE_AIO_ABI
+-#define DEFAULT_24_AIO 0
+-static int init_aio_26(void)
+-{
+-	int err;
+-
+-	if (io_setup(256, &ctx)) {
+-		err = -errno;
+-		printk(UM_KERN_ERR "aio_thread failed to initialize context, "
+-		       "err = %d\n", errno);
+-		return err;
+-	}
+-
+-	err = run_helper_thread(aio_thread, NULL,
+-				CLONE_FILES | CLONE_VM, &aio_stack);
+-	if (err < 0)
+-		return err;
+-
+-	aio_pid = err;
+-
+-	printk(UM_KERN_INFO "Using 2.6 host AIO\n");
+-	return 0;
+-}
+-
+-static int submit_aio_26(enum aio_type type, int io_fd, char *buf, int len,
+-			 unsigned long long offset, struct aio_context *aio)
+-{
+-	struct aio_thread_reply reply;
+-	int err;
+-
+-	err = do_aio(ctx, type, io_fd, buf, len, offset, aio);
+-	if (err) {
+-		reply = ((struct aio_thread_reply) { .data = aio,
+-					 .err  = err });
+-		err = write(aio->reply_fd, &reply, sizeof(reply));
+-		if (err != sizeof(reply)) {
+-			err = -errno;
+-			printk(UM_KERN_ERR "submit_aio_26 - write failed, "
+-			       "fd = %d, err = %d\n", aio->reply_fd, -err);
+-		}
+-		else err = 0;
+-	}
+-
+-	return err;
+-}
+-
+-#else
+-#define DEFAULT_24_AIO 1
+-static int init_aio_26(void)
+-{
+-	return -ENOSYS;
+-}
+-
+-static int submit_aio_26(enum aio_type type, int io_fd, char *buf, int len,
+-			 unsigned long long offset, struct aio_context *aio)
+-{
+-	return -ENOSYS;
+-}
+-#endif
+-
+-/* Initialized in an initcall and unchanged thereafter */
+-static int aio_24 = DEFAULT_24_AIO;
+-
+-static int __init set_aio_24(char *name, int *add)
+-{
+-	aio_24 = 1;
+-	return 0;
+-}
+-
+-__uml_setup("aio=2.4", set_aio_24,
+-"aio=2.4\n"
+-"    This is used to force UML to use 2.4-style AIO even when 2.6 AIO is\n"
+-"    available.  2.4 AIO is a single thread that handles one request at a\n"
+-"    time, synchronously.  2.6 AIO is a thread which uses the 2.6 AIO \n"
+-"    interface to handle an arbitrary number of pending requests.  2.6 AIO \n"
+-"    is not available in tt mode, on 2.4 hosts, or when UML is built with\n"
+-"    /usr/include/linux/aio_abi.h not available.  Many distributions don't\n"
+-"    include aio_abi.h, so you will need to copy it from a kernel tree to\n"
+-"    your /usr/include/linux in order to build an AIO-capable UML\n\n"
+-);
+-
+-static int init_aio(void)
+-{
+-	int err;
+-
+-	if (!aio_24) {
+-		err = init_aio_26();
+-		if (err && (errno == ENOSYS)) {
+-			printk(UM_KERN_INFO "2.6 AIO not supported on the "
+-			       "host - reverting to 2.4 AIO\n");
+-			aio_24 = 1;
+-		}
+-		else return err;
+-	}
+-
+-	if (aio_24)
+-		return init_aio_24();
+-
+-	return 0;
+-}
+-
+-/*
+- * The reason for the __initcall/__uml_exitcall asymmetry is that init_aio
+- * needs to be called when the kernel is running because it calls run_helper,
+- * which needs get_free_page.  exit_aio is a __uml_exitcall because the generic
+- * kernel does not run __exitcalls on shutdown, and can't because many of them
+- * break when called outside of module unloading.
+- */
+-__initcall(init_aio);
+-
+-static void exit_aio(void)
+-{
+-	if (aio_pid != -1) {
+-		os_kill_process(aio_pid, 1);
+-		free_stack(aio_stack, 0);
+-	}
+-}
+-
+-__uml_exitcall(exit_aio);
+-
+-static int submit_aio_24(enum aio_type type, int io_fd, char *buf, int len,
+-			 unsigned long long offset, struct aio_context *aio)
+-{
+-	struct aio_thread_req req = { .type 		= type,
+-				      .io_fd		= io_fd,
+-				      .offset		= offset,
+-				      .buf		= buf,
+-				      .len		= len,
+-				      .aio		= aio,
+-	};
+-	int err;
+-
+-	err = write(aio_req_fd_w, &req, sizeof(req));
+-	if (err == sizeof(req))
+-		err = 0;
+-	else err = -errno;
+-
+-	return err;
+-}
+-
+-int submit_aio(enum aio_type type, int io_fd, char *buf, int len,
+-	       unsigned long long offset, int reply_fd,
+-	       struct aio_context *aio)
+-{
+-	aio->reply_fd = reply_fd;
+-	if (aio_24)
+-		return submit_aio_24(type, io_fd, buf, len, offset, aio);
+-	else
+-		return submit_aio_26(type, io_fd, buf, len, offset, aio);
+-}
 -- 
 2.18.0
 
