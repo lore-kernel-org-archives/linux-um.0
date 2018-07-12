@@ -1,64 +1,62 @@
-Return-Path: <linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org>
-MIME-Version: 1.0
-In-Reply-To: <20180712140539.4b5xdraq34i5dbii@kshutemo-mobl1>
-References: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
- <20180712140539.4b5xdraq34i5dbii@kshutemo-mobl1>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 19 Jul 2018 08:41:04 +0900
-Message-ID: <CAK7LNAThEpLsFgD_pv4ZgLWfbXcNPBiPEU7qZ5ah_R=x8LQA0w@mail.gmail.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fdcEG-0007FI-J9
+ for linux-um@lists.infradead.org; Thu, 12 Jul 2018 14:05:57 +0000
+Received: by mail-pf0-x243.google.com with SMTP id b17-v6so20663547pfi.0
+ for <linux-um@lists.infradead.org>; Thu, 12 Jul 2018 07:05:46 -0700 (PDT)
+Date: Thu, 12 Jul 2018 17:05:40 +0300
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
 Subject: Re: [PATCH 0/6] kbuild: clean-up and rename LDFLAGS to KBUILD_LDFLAGS
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>, 
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Message-ID: <20180712140539.4b5xdraq34i5dbii@kshutemo-mobl1>
+References: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, X86 ML <x86@kernel.org>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Russell King <rmk+kernel@armlinux.org.uk>, openrisc@lists.librecores.org, linux-riscv@lists.infradead.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-List-ID: <linux-um.lists.infradead.org>
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-kbuild@vger.kernel.org, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>, openrisc@lists.librecores.org, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 
-2018-07-12 23:05 GMT+09:00 Kirill A. Shutemov <kirill@shutemov.name>:
-> On Thu, Jul 12, 2018 at 05:01:30PM +0900, Masahiro Yamada wrote:
->>
->> This series renames LDFLAGS to KBUILD_LDFLAGS
->> after some Makefile cleanups.
->>
->> Currently, the last patch does not apply to Linus' tree
->> due to missing pre-requisite patches.
->>
->> I will resolve conflicts as needed.
->>
->>
->>
->> Masahiro Yamada (6):
->>   um: remove redundant 'export LDFLAGS' in arch/x86/Makefile.um
->>   ARM: vfp: clean-up arch/arm/vfp/Makefile
->>   kbuild: remove redundant LDFLAGS clearing in arch/*/Makefile
->>   kbuild: replace $(LDFLAGS) $(ldflags-y) with $(ld_flags)
->>   kbuild: change ld_flags to contain LDFLAGS_$(@F)
->>   kbuild: rename LDFLAGS to KBUILD_LDFLAGS
->
-> Thanks! Looks sane to me
->
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->
+On Thu, Jul 12, 2018 at 05:01:30PM +0900, Masahiro Yamada wrote:
+> 
+> This series renames LDFLAGS to KBUILD_LDFLAGS
+> after some Makefile cleanups.
+> 
+> Currently, the last patch does not apply to Linus' tree
+> due to missing pre-requisite patches.
+> 
+> I will resolve conflicts as needed.
+> 
+> 
+> 
+> Masahiro Yamada (6):
+>   um: remove redundant 'export LDFLAGS' in arch/x86/Makefile.um
+>   ARM: vfp: clean-up arch/arm/vfp/Makefile
+>   kbuild: remove redundant LDFLAGS clearing in arch/*/Makefile
+>   kbuild: replace $(LDFLAGS) $(ldflags-y) with $(ld_flags)
+>   kbuild: change ld_flags to contain LDFLAGS_$(@F)
+>   kbuild: rename LDFLAGS to KBUILD_LDFLAGS
 
+Thanks! Looks sane to me
 
-Patch 1, 3, 4, 5 applied to linux-kbuild.
-
-
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
 -- 
-Best Regards
-Masahiro Yamada
+ Kirill A. Shutemov
 
 _______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
