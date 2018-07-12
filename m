@@ -1,10 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 1/9] um: stop abusing KBUILD_KCONFIG
-Date: Sun,  8 Jul 2018 08:19:56 -0700
-Message-Id: <20180708152004.21679-2-hch@lst.de>
-In-Reply-To: <20180708152004.21679-1-hch@lst.de>
-References: <20180708152004.21679-1-hch@lst.de>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 2/6] ARM: vfp: clean-up arch/arm/vfp/Makefile
+Date: Thu, 12 Jul 2018 17:01:32 +0900
+Message-Id: <1531382496-3719-3-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,58 +18,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Richard Weinberger <richard@nod.at>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+To: linux-kbuild@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Russell King <rmk+kernel@armlinux.org.uk>, openrisc@lists.librecores.org, "Kirill A . Shutemov" <kirill@shutemov.name>, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 
-Instead create a arch/um/Kconfig file that just includes the actual
-per-arch Kconfig file.
+Since commit 799c43415442 ("kbuild: thin archives make default for
+all archs"), $(AR) is used instead of $(LD) to combine object files.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+  LDFLAGS         +=--no-warn-mismatch
+
+... is unused code now.
+
+arch/arm/Makefile already guards arch/arm/vfp/ by a boolean symbol,
+CONFIG_VFP, like this:
+
+  core-$(CONFIG_VFP)              += arch/arm/vfp/
+
+..., so $(CONFIG_VFP) is always evaluated to y in arch/arm/vfp/Makefile.
+
+Also, there is no point to use pseudo object, vfp.o, which never becomes
+a module.  Add all objects directly to obj-y.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
- arch/um/Kconfig     | 3 +++
- arch/um/Makefile    | 2 --
- arch/x86/um/Kconfig | 5 -----
- 3 files changed, 3 insertions(+), 7 deletions(-)
- create mode 100644 arch/um/Kconfig
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-new file mode 100644
-index 000000000000..24607af202dc
---- /dev/null
-+++ b/arch/um/Kconfig
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+source "arch/$(SUBARCH)/um/Kconfig"
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index e54dda8a0363..0207f6316d71 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -113,8 +113,6 @@ define archhelp
-   echo '		   find in the kernel root.'
- endef
+ arch/arm/vfp/Makefile | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/arch/arm/vfp/Makefile b/arch/arm/vfp/Makefile
+index a81404c..94516c4 100644
+--- a/arch/arm/vfp/Makefile
++++ b/arch/arm/vfp/Makefile
+@@ -8,8 +8,5 @@
+ # asflags-y := -DDEBUG
  
--KBUILD_KCONFIG := $(HOST_DIR)/um/Kconfig
--
- archheaders:
- 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.asm-generic \
- 	            kbuild-file=$(HOST_DIR)/include/asm/Kbuild \
-diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
-index 9d529f22fd9d..7e509c83d80d 100644
---- a/arch/x86/um/Kconfig
-+++ b/arch/x86/um/Kconfig
-@@ -1,9 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--mainmenu "User Mode Linux/$(SUBARCH) $(KERNELVERSION) Kernel Configuration"
--
--comment "Compiler: $(CC_VERSION_TEXT)"
--
--source "scripts/Kconfig.include"
+ KBUILD_AFLAGS	:=$(KBUILD_AFLAGS:-msoft-float=-Wa,-mfpu=softvfp+vfp -mfloat-abi=soft)
+-LDFLAGS		+=--no-warn-mismatch
  
- source "arch/um/Kconfig.common"
- 
+-obj-y			+= vfp.o
+-
+-vfp-$(CONFIG_VFP)	+= vfpmodule.o entry.o vfphw.o vfpsingle.o vfpdouble.o
++obj-y		+= vfpmodule.o entry.o vfphw.o vfpsingle.o vfpdouble.o
 -- 
-2.18.0
+2.7.4
 
 
 _______________________________________________
