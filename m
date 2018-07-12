@@ -1,35 +1,54 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 0/2] x86/build/vdso: a little more Makefile cleanups
-Date: Tue,  3 Jul 2018 10:50:12 +0900
-Message-Id: <1530582614-5173-1-git-send-email-yamada.masahiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, "H. Peter Anvin" <hpa@zytor.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Andy Lutomirski <luto@kernel.org>, Jeff Dike <jdike@addtoit.com>
-List-ID: <linux-um.lists.infradead.org>
+Subject: [PATCH 1/6] um: remove redundant 'export LDFLAGS' in
+ arch/x86/Makefile.um
+Date: Thu, 12 Jul 2018 17:01:31 +0900
+Message-Id: <1531382496-3719-2-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kbuild@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Russell King <rmk+kernel@armlinux.org.uk>, openrisc@lists.librecores.org, "Kirill A . Shutemov" <kirill@shutemov.name>, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 
+This is already exported by the top-level Makefile.
 
-At first, I sent the first patch to UML ML,
-but they did not pick it up.
-Instead, I was able to get Acked-by from Richard,
-one of the UML maintainers.
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-https://patchwork.kernel.org/patch/10399787/
+ arch/x86/Makefile.um | 2 --
+ 1 file changed, 2 deletions(-)
 
-I am resending it to x86 ML.
-
-
-
-Masahiro Yamada (2):
-  x86/build/vdso: remove unused vdso-syms.lds
-  x86/build/vdso: simplify cmd_vdso2c
-
- arch/x86/entry/vdso/Makefile |  4 +---
- arch/x86/um/vdso/.gitignore  |  1 -
- arch/x86/um/vdso/Makefile    | 16 ----------------
- 3 files changed, 1 insertion(+), 20 deletions(-)
-
+diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
+index 45af199..5296f8c 100644
+--- a/arch/x86/Makefile.um
++++ b/arch/x86/Makefile.um
+@@ -13,8 +13,6 @@ KBUILD_CFLAGS		+= $(call cc-option,-m32)
+ KBUILD_AFLAGS		+= $(call cc-option,-m32)
+ LINK-y			+= $(call cc-option,-m32)
+ 
+-export LDFLAGS
+-
+ LDS_EXTRA		:= -Ui386
+ export LDS_EXTRA
+ 
 -- 
 2.7.4
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
