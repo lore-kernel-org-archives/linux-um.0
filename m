@@ -1,10 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: Christoph Hellwig <hch@lst.de>
 Subject: [PATCH 03/10] um: create a proper drivers Kconfig
-Date: Tue, 31 Jul 2018 13:39:28 +0200
-Message-Id: <20180731113935.6105-4-hch@lst.de>
-In-Reply-To: <20180731113935.6105-1-hch@lst.de>
-References: <20180731113935.6105-1-hch@lst.de>
+Date: Tue, 24 Jul 2018 19:56:39 +0200
+Message-Id: <20180724175646.3621-4-hch@lst.de>
+In-Reply-To: <20180724175646.3621-1-hch@lst.de>
+References: <20180724175646.3621-1-hch@lst.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,7 +19,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-arch@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-kbuild@vger.kernel.org, Richard Weinberger <richard@nod.at>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Ley Foon Tan <lftan@altera.com>
+Cc: Michal Simek <monstr@monstr.eu>, linux-kbuild@vger.kernel.org, Richard Weinberger <richard@nod.at>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arch@lists.infradead.org, Ley Foon Tan <lftan@altera.com>
 
 Merge arch/um/Kconfig.char and arch/um/Kconfig.net into a new
 arch/um/drivers/Kconfig.  This fits the way Kconfig files are placed
@@ -36,7 +36,7 @@ Acked-by: Richard Weinberger <richard@nod.at>
  rename arch/um/{Kconfig.net => drivers/Kconfig} (66%)
 
 diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 69fa01a4a81b..ea35bf91fc0f 100644
+index 1f605a7281cc..fc17718fbe0e 100644
 --- a/arch/um/Kconfig
 +++ b/arch/um/Kconfig
 @@ -194,14 +194,12 @@ source "init/Kconfig"
