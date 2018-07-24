@@ -1,10 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 2/6] ARM: vfp: clean-up arch/arm/vfp/Makefile
-Date: Thu, 12 Jul 2018 17:01:32 +0900
-Message-Id: <1531382496-3719-3-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
+From: Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 08/10] kconfig: use a menu in arch/Kconfig to reduce clutter
+Date: Tue, 24 Jul 2018 19:56:44 +0200
+Message-Id: <20180724175646.3621-9-hch@lst.de>
+In-Reply-To: <20180724175646.3621-1-hch@lst.de>
+References: <20180724175646.3621-1-hch@lst.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,48 +18,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Russell King <rmk+kernel@armlinux.org.uk>, openrisc@lists.librecores.org, "Kirill A . Shutemov" <kirill@shutemov.name>, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Michal Simek <monstr@monstr.eu>, linux-kbuild@vger.kernel.org, Richard Weinberger <richard@nod.at>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arch@lists.infradead.org, Ley Foon Tan <lftan@altera.com>
 
-Since commit 799c43415442 ("kbuild: thin archives make default for
-all archs"), $(AR) is used instead of $(LD) to combine object files.
+From: Randy Dunlap <rdunlap@infradead.org>
 
-  LDFLAGS         +=--no-warn-mismatch
+Put everything in arch/Kconfig into a General options menu
+so that they don't clutter up the main/major/primary list of
+menu options.
 
-... is unused code now.
-
-arch/arm/Makefile already guards arch/arm/vfp/ by a boolean symbol,
-CONFIG_VFP, like this:
-
-  core-$(CONFIG_VFP)              += arch/arm/vfp/
-
-..., so $(CONFIG_VFP) is always evaluated to y in arch/arm/vfp/Makefile.
-
-Also, there is no point to use pseudo object, vfp.o, which never becomes
-a module.  Add all objects directly to obj-y.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
+ arch/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- arch/arm/vfp/Makefile | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/arch/arm/vfp/Makefile b/arch/arm/vfp/Makefile
-index a81404c..94516c4 100644
---- a/arch/arm/vfp/Makefile
-+++ b/arch/arm/vfp/Makefile
-@@ -8,8 +8,5 @@
- # asflags-y := -DDEBUG
+diff --git a/arch/Kconfig b/arch/Kconfig
+index cddd0faae4cb..6cf1b17a8df2 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -9,6 +9,8 @@
+ #
+ source "arch/$(SRCARCH)/Kconfig"
  
- KBUILD_AFLAGS	:=$(KBUILD_AFLAGS:-msoft-float=-Wa,-mfpu=softvfp+vfp -mfloat-abi=soft)
--LDFLAGS		+=--no-warn-mismatch
++menu "General architecture-dependent options"
++
+ config CRASH_CORE
+ 	bool
  
--obj-y			+= vfp.o
--
--vfp-$(CONFIG_VFP)	+= vfpmodule.o entry.o vfphw.o vfpsingle.o vfpdouble.o
-+obj-y		+= vfpmodule.o entry.o vfphw.o vfpsingle.o vfpdouble.o
+@@ -981,3 +983,5 @@ config REFCOUNT_FULL
+ 	  security flaw exploits.
+ 
+ source "kernel/gcov/Kconfig"
++
++endmenu
 -- 
-2.7.4
+2.18.0
 
 
 _______________________________________________
