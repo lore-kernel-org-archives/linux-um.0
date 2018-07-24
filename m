@@ -1,29 +1,28 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
+ helo=mx0a-001b2d01.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkUrR-0005PW-3z
- for linux-um@lists.infradead.org; Tue, 31 Jul 2018 13:38:50 +0000
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- w6VDJFEm005903
- for <linux-um@lists.infradead.org>; Tue, 31 Jul 2018 09:38:36 -0400
+ id 1fhxHy-0006BB-8p
+ for linux-um@lists.infradead.org; Tue, 24 Jul 2018 13:23:43 +0000
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+ by mx0b-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ w6ODJRsS116313
+ for <linux-um@lists.infradead.org>; Tue, 24 Jul 2018 09:23:30 -0400
 Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2kjnsy7w8a-1
+ by mx0b-001b2d01.pphosted.com with ESMTP id 2ke1x28987-1
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-um@lists.infradead.org>; Tue, 31 Jul 2018 09:38:35 -0400
+ for <linux-um@lists.infradead.org>; Tue, 24 Jul 2018 09:23:29 -0400
 Received: from localhost
  by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
- Tue, 31 Jul 2018 14:38:33 +0100
-Date: Tue, 31 Jul 2018 16:38:27 +0300
+ Tue, 24 Jul 2018 14:23:28 +0100
 From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH 0/2] um: switch to NO_BOOTMEM
-References: <1532438594-4530-1-git-send-email-rppt@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
+Subject: [PATCH 2/2] um: switch to NO_BOOTMEM
+Date: Tue, 24 Jul 2018 16:23:14 +0300
 In-Reply-To: <1532438594-4530-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <20180731133827.GC23494@rapoport-lnx>
+References: <1532438594-4530-1-git-send-email-rppt@linux.vnet.ibm.com>
+Message-Id: <1532438594-4530-3-git-send-email-rppt@linux.vnet.ibm.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -32,36 +31,92 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-mm@kvack.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>
+Cc: linux-mm@kvack.org, Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>
 
-Any comments on this?
+Replace bootmem initialization with memblock_add and memblock_reserve calls
+and explicit initialization of {min,max}_low_pfn.
 
-On Tue, Jul 24, 2018 at 04:23:12PM +0300, Mike Rapoport wrote:
-> Hi,
-> 
-> These patches convert UML to use NO_BOOTMEM.
-> Tested on x86-64.
-> 
-> Mike Rapoport (2):
->   um: setup_physmem: stop using global variables
->   um: switch to NO_BOOTMEM
-> 
->  arch/um/Kconfig.common   |  2 ++
->  arch/um/kernel/physmem.c | 22 ++++++++++------------
->  2 files changed, 12 insertions(+), 12 deletions(-)
-> 
-> -- 
-> 2.7.4
-> 
+Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+---
+ arch/um/Kconfig.common   |  2 ++
+ arch/um/kernel/physmem.c | 20 +++++++++-----------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
+diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
+index 07f84c8..1487957 100644
+--- a/arch/um/Kconfig.common
++++ b/arch/um/Kconfig.common
+@@ -8,6 +8,8 @@ config UML
+ 	select HAVE_UID16
+ 	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_DEBUG_KMEMLEAK
++	select HAVE_MEMBLOCK
++	select NO_BOOTMEM
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_CLOCKEVENTS
+diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+index 0eaec0e..296a91a 100644
+--- a/arch/um/kernel/physmem.c
++++ b/arch/um/kernel/physmem.c
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/bootmem.h>
++#include <linux/memblock.h>
+ #include <linux/mm.h>
+ #include <linux/pfn.h>
+ #include <asm/page.h>
+@@ -80,23 +81,18 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+ 			  unsigned long len, unsigned long long highmem)
+ {
+ 	unsigned long reserve = reserve_end - start;
+-	unsigned long pfn = PFN_UP(__pa(reserve_end));
+-	unsigned long delta = (len - reserve) >> PAGE_SHIFT;
+-	unsigned long offset, bootmap_size;
+-	long map_size;
++	long map_size = len - reserve;
+ 	int err;
+ 
+-	offset = reserve_end - start;
+-	map_size = len - offset;
+ 	if(map_size <= 0) {
+ 		os_warn("Too few physical memory! Needed=%lu, given=%lu\n",
+-			offset, len);
++			reserve, len);
+ 		exit(1);
+ 	}
+ 
+ 	physmem_fd = create_mem_file(len + highmem);
+ 
+-	err = os_map_memory((void *) reserve_end, physmem_fd, offset,
++	err = os_map_memory((void *) reserve_end, physmem_fd, reserve,
+ 			    map_size, 1, 1, 1);
+ 	if (err < 0) {
+ 		os_warn("setup_physmem - mapping %ld bytes of memory at 0x%p "
+@@ -113,9 +109,11 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+ 	os_write_file(physmem_fd, __syscall_stub_start, PAGE_SIZE);
+ 	os_fsync_file(physmem_fd);
+ 
+-	bootmap_size = init_bootmem(pfn, pfn + delta);
+-	free_bootmem(__pa(reserve_end) + bootmap_size,
+-		     len - bootmap_size - reserve);
++	memblock_add(__pa(start), len + highmem);
++	memblock_reserve(__pa(start), reserve);
++
++	min_low_pfn = PFN_UP(__pa(reserve_end));
++	max_low_pfn = min_low_pfn + (map_size >> PAGE_SHIFT);
+ }
+ 
+ int phys_mapping(unsigned long phys, unsigned long long *offset_out)
 -- 
-Sincerely yours,
-Mike.
+2.7.4
 
 
 _______________________________________________
