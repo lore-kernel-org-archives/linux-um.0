@@ -1,10 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 04/10] kconfig: remove duplicate SWAP symbol defintions
-Date: Tue, 31 Jul 2018 13:39:29 +0200
-Message-Id: <20180731113935.6105-5-hch@lst.de>
-In-Reply-To: <20180731113935.6105-1-hch@lst.de>
-References: <20180731113935.6105-1-hch@lst.de>
+Received: from conuserg-08.nifty.com ([210.131.2.75])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fiCAv-0006gZ-CD
+ for linux-um@lists.infradead.org; Wed, 25 Jul 2018 05:17:27 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 2/2] kbuild: do not redirect the first prerequisite for filechk
+Date: Wed, 25 Jul 2018 14:16:11 +0900
+Message-Id: <1532495771-10255-2-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1532495771-10255-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1532495771-10255-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,87 +22,104 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-arch@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-kbuild@vger.kernel.org, Richard Weinberger <richard@nod.at>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Ley Foon Tan <lftan@altera.com>
+To: linux-kbuild@vger.kernel.org
+Cc: linux-s390@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>, Heiko Carstens <heiko.carstens@de.ibm.com>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Hendrik Brueckner <brueckner@linux.vnet.ibm.com>, Richard Weinberger <richard@nod.at>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Sam Ravnborg <sam@ravnborg.org>
 
-microblaze and nios2 define their own always n SWAP symbols.  Remove those
-and let the generic defintion do the right thing by adding a new symbol
-to disable swap entirely.
+Currently, filechk unconditionally opens the first prerequisite and
+redirects it as the stdin of a filechk_* rule.  Hence, every target
+using $(call filechk,...) must list something as the first prerequisite
+even if it is unneeded.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+'< $<' is actually unneeded in most cases.  Each rule can explicitly
+adds it if necessary.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
- arch/microblaze/Kconfig | 4 +---
- arch/nios2/Kconfig      | 4 +---
- init/Kconfig            | 9 ++++++++-
- 3 files changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-index d14782100088..cc139d1b1284 100644
---- a/arch/microblaze/Kconfig
-+++ b/arch/microblaze/Kconfig
-@@ -1,5 +1,6 @@
- config MICROBLAZE
- 	def_bool y
-+	select ARCH_NO_SWAP
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_NO_COHERENT_DMA_MMAP if !MMU
-@@ -52,9 +53,6 @@ config CPU_LITTLE_ENDIAN
+ Makefile                           | 2 +-
+ arch/s390/kernel/syscalls/Makefile | 6 +++---
+ arch/um/Makefile                   | 2 +-
+ scripts/Kbuild.include             | 2 +-
+ scripts/Makefile.lib               | 2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 67d9d20..af863f1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1116,7 +1116,7 @@ define filechk_version.h
+ 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))';)
+ endef
  
- endchoice
+-$(version_h): $(srctree)/Makefile FORCE
++$(version_h): FORCE
+ 	$(call filechk,version.h)
+ 	$(Q)rm -f $(old_version_h)
  
--config SWAP
--	def_bool n
--
- config RWSEM_GENERIC_SPINLOCK
- 	def_bool y
+diff --git a/arch/s390/kernel/syscalls/Makefile b/arch/s390/kernel/syscalls/Makefile
+index 8ff96c0..4d929ed 100644
+--- a/arch/s390/kernel/syscalls/Makefile
++++ b/arch/s390/kernel/syscalls/Makefile
+@@ -25,15 +25,15 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)') \
+ 	  $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
  
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index 3d4ec88f1db1..3f9d4ef8b20f 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- config NIOS2
- 	def_bool y
-+	select ARCH_NO_SWAP
- 	select TIMER_OF
- 	select GENERIC_ATOMIC64
- 	select GENERIC_CLOCKEVENTS
-@@ -38,9 +39,6 @@ config HAS_DMA
- config FPU
- 	def_bool n
+ define filechk_syshdr
+-	$(CONFIG_SHELL) '$(systbl)' -H -a $(syshdr_abi_$(basetarget)) -f "$2"
++	$(CONFIG_SHELL) '$(systbl)' -H -a $(syshdr_abi_$(basetarget)) -f "$2" < $<
+ endef
  
--config SWAP
--	def_bool n
--
- config RWSEM_GENERIC_SPINLOCK
- 	def_bool y
+ define filechk_sysnr
+-	$(CONFIG_SHELL) '$(systbl)' -N -a $(sysnr_abi_$(basetarget))
++	$(CONFIG_SHELL) '$(systbl)' -N -a $(sysnr_abi_$(basetarget)) < $<
+ endef
  
-diff --git a/init/Kconfig b/init/Kconfig
-index 041f3a022122..1e69f93b809e 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -218,9 +218,16 @@ config DEFAULT_HOSTNAME
- 	  but you may wish to use a different default here to make a minimal
- 	  system more usable with less configuration.
+ define filechk_syscalls
+-	$(CONFIG_SHELL) '$(systbl)' -S
++	$(CONFIG_SHELL) '$(systbl)' -S < $<
+ endef
  
-+#
-+# For some reason microblaze and nios2 hard code SWAP=n.  Hopefully we can
-+# add proper SWAP support to them, in which case this can be remove.
-+#
-+config ARCH_NO_SWAP
-+	bool
-+
- config SWAP
- 	bool "Support for paging of anonymous memory (swap)"
--	depends on MMU && BLOCK
-+	depends on MMU && BLOCK && !ARCH_NO_SWAP
- 	default y
- 	help
- 	  This option allows you to choose whether you want to have support
+ syshdr_abi_unistd_32 := common,32
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index e54dda8..8c35261 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -169,7 +169,7 @@ define filechk_gen-asm-offsets
+          echo " *"; \
+          echo " */"; \
+          echo ""; \
+-         sed -ne "/^->/{s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; s:->::; p;}"; \
++         sed -ne "/^->/{s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; s:->::; p;}" < $<; \
+          echo ""; )
+ endef
+ 
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index 86321f0..0bee89c 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -56,7 +56,7 @@ kecho := $($(quiet)kecho)
+ define filechk
+ 	$(Q)set -e;				\
+ 	mkdir -p $(dir $@);			\
+-	$(filechk_$(1)) < $< > $@.tmp;		\
++	$(filechk_$(1)) > $@.tmp;		\
+ 	if [ -r $@ ] && cmp -s $@ $@.tmp; then	\
+ 		rm -f $@.tmp;			\
+ 	else					\
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 1bb594f..4b2f89f 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -416,7 +416,7 @@ define filechk_offsets
+ 	 echo " * This file was generated by Kbuild"; \
+ 	 echo " */"; \
+ 	 echo ""; \
+-	 sed -ne $(sed-offsets); \
++	 sed -ne $(sed-offsets) < $<; \
+ 	 echo ""; \
+ 	 echo "#endif" )
+ endef
 -- 
-2.18.0
+2.7.4
 
 
 _______________________________________________
