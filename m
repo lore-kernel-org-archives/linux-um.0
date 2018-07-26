@@ -1,152 +1,99 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fk39m-00023y-5z
- for linux-um@lists.infradead.org; Mon, 30 Jul 2018 08:03:56 +0000
-Received: from mail-ua0-f180.google.com (mail-ua0-f180.google.com
- [209.85.217.180]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id w6U83PRE026255
- for <linux-um@lists.infradead.org>; Mon, 30 Jul 2018 17:03:25 +0900
-Received: by mail-ua0-f180.google.com with SMTP id w7-v6so7233544uan.9
- for <linux-um@lists.infradead.org>; Mon, 30 Jul 2018 01:03:25 -0700 (PDT)
-MIME-Version: 1.0
+Return-Path: <linux-sh-owner@vger.kernel.org>
+Date: Thu, 26 Jul 2018 10:33:54 +0200
+From: Michal =?UTF-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>
+Subject: Re: due to kconfig changes kernel config file is no longer
+ sufficient for configuring the kernel
+Message-ID: <20180726103354.111f2d61@naga.suse.cz>
 In-Reply-To: <20180628111623.3807fe9b@naga.suse.cz>
 References: <20180627143705.5a1fed1c@kitsune.suse.cz>
- <CAK7LNARVPNx_uC5xTrS_p9T4nMRTC79BO51T4Lytv2eU1c-ynw@mail.gmail.com>
- <20180628111623.3807fe9b@naga.suse.cz>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Mon, 30 Jul 2018 17:02:42 +0900
-Message-ID: <CAK7LNARRKU7Mfa8ZBu1qPFYFRr-5k69sjVyERM2bYcnWoBDN8g@mail.gmail.com>
-Subject: Re: due to kconfig changes kernel config file is no longer sufficient
- for configuring the kernel
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+        <CAK7LNARVPNx_uC5xTrS_p9T4nMRTC79BO51T4Lytv2eU1c-ynw@mail.gmail.com>
+        <20180628111623.3807fe9b@naga.suse.cz>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc: Michal Kubecek <mkubecek@suse.cz>, Rich Felker <dalias@libc.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Jeff Mahoney <jeffm@suse.com>, Dominik Brodowski <linux@dominikbrodowski.net>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Jonathan Corbet <corbet@lwn.net>, Linux-sh list <linux-sh@vger.kernel.org>, Andreas Schwab <schwab@suse.de>, X86 ML <x86@kernel.org>, "Peter Zijlstra, " <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Frederic Weisbecker <frederic@kernel.org>, Kees Cook <keescook@chromium.org>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, Richard Weinberger <richard@nod.at>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Thomas Gleixner <tglx@linutronix.de>, Michal Marek <michal.lkml@markovi.net>, Ulf Magnusson <ulfalizer@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Philippe Ombredanne <pombredanne@nexb.com>, "David S. Miller" <davem@davemloft.net>
+Content-Transfer-Encoding: 8bit
+Sender: linux-sh-owner@vger.kernel.org
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Andreas Schwab <schwab@suse.de>, Michal Kubecek <mkubecek@suse.cz>, Michal Marek <michal.lkml@markovi.net>, Jonathan Corbet <corbet@lwn.net>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>, Philippe Ombredanne <pombredanne@nexb.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ulf Magnusson <ulfalizer@gmail.com>, Jeff Mahoney <jeffm@suse.com>, "Peter Zijlstra," <peterz@infradead.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Frederic Weisbecker <frederic@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, Dominik Brodowski <linux@dominikbrodowski.net>, Nicholas Piggin <npiggin@gmail.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um@lists.infradead.org, jslaby@suse.com
+List-ID: <linux-um.lists.infradead.org>
 
-MjAxOC0wNi0yOCAxODoxNiBHTVQrMDk6MDAgTWljaGFsIFN1Y2jDoW5layA8bXN1Y2hhbmVrQHN1
-c2UuZGU+Ogo+IE9uIFdlZCwgMjcgSnVuIDIwMTggMjM6MDc6MjEgKzA5MDAKPiBNYXNhaGlybyBZ
-YW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQuY29tPiB3cm90ZToKPgo+PiBIaS4KPj4K
-Pj4KPj4gMjAxOC0wNi0yNyAyMTozNyBHTVQrMDk6MDAgTWljaGFsIFN1Y2jDoW5layA8bXN1Y2hh
-bmVrQHN1c2UuZGU+Ogo+PiA+IEhlbGxvLAo+PiA+Cj4+ID4gaW4gdGhlIHg4NiBLY29uZmlnIHdl
-IGhhdmUgdGhpczoKPj4gPgo+PiA+ICMgU2VsZWN0IDMyIG9yIDY0IGJpdAo+PiA+IGNvbmZpZyA2
-NEJJVAo+PiA+ICAgICAgICAgYm9vbCAiNjQtYml0IGtlcm5lbCIgaWYgIiQoQVJDSCkiID0gIng4
-NiIKPj4gPiAgICAgICAgIGRlZmF1bHQgIiQoQVJDSCkiICE9ICJpMzg2Igo+PiA+ICAgICAgICAg
-LS0taGVscC0tLQo+PiA+ICAgICAgICAgICBTYXkgeWVzIHRvIGJ1aWxkIGEgNjQtYml0IGtlcm5l
-bCAtIGZvcm1lcmx5IGtub3duIGFzCj4+ID4geDg2XzY0IFNheSBubyB0byBidWlsZCBhIDMyLWJp
-dCBrZXJuZWwgLSBmb3JtZXJseSBrbm93biBhcyBpMzg2Cj4+ID4KPj4gPiBTaW5jZSBjb21taXQg
-MTA0ZGFlYTE0OWM0ICgia2NvbmZpZzogcmVmZXJlbmNlIGVudmlyb25tZW50IHZhcmlhYmxlcwo+
-PiA+IGRpcmVjdGx5IGFuZCByZW1vdmUgJ29wdGlvbiBlbnY9JyIpIHRoZSB2YWx1ZSBvZiBBUkNI
-IGlzIG5vdCBzYXZlZAo+PiA+IGluIHRoZSBrZXJuZWwgY29uZmlnLgo+Pgo+PiBJIHRoaW5rIHRo
-aXMgY29tbWl0IGlzIHVucmVsYXRlZC4gIEl0IHdhcyBqdXN0IGEgc3ludGF4IGNoYW5nZS4KPgo+
-IFRoaXMgZG9lcyBub3QgbG9vayBsaWtlIHN5bnRheCBvbmx5IGNoYW5nZSB0byBtZToKPgo+IGRp
-ZmYgLS1naXQgYS9pbml0L0tjb25maWcgYi9pbml0L0tjb25maWcKPiBpbmRleCAxNWFhZTMyZTA3
-MTkuLjEyMTdmYzYyY2E2MSAxMDA2NDQKPiAtLS0gYS9pbml0L0tjb25maWcKPiArKysgYi9pbml0
-L0tjb25maWcKPiBAQCAtMSwyMCArMSwxMiBAQAo+IC1jb25maWcgQVJDSAo+IC0gICAgICAgc3Ry
-aW5nCj4gLSAgICAgICBvcHRpb24gZW52PSJBUkNIIgo+IC0KPiAtY29uZmlnIEtFUk5FTFZFUlNJ
-T04KPiAtICAgICAgIHN0cmluZwo+IC0gICAgICAgb3B0aW9uIGVudj0iS0VSTkVMVkVSU0lPTiIK
-PiAtCgpUaGlzIGlzIGp1c3Qgc3ludGF4IGNoYW5nZS4KCidvcHRpb24gZW52PScgd2FzIHVzZWQg
-dG8gcmVmZXJlbmNlIGFuIGVudmlyb25tZW50IHZhcmlhYmxlLgoKTm93LCAkKEFSQ0gpLCAkKEtF
-Uk5FTFZFUlNJT04pIGFyZSBzaW1wbGVyIGZvcm1zLgoKCj4+Cj4+IFVubGVzcyBJIGFtIG1pc3Np
-bmcgc29tZXRoaW5nLAo+PiB3ZSBoYXZlIG5ldmVyIHNhdmVkIEFSQ0ggaW4gdGhlIC5jb25maWcg
-aW4gdGhlIHBhc3QuCj4KPiBUaGVyZSB3YXMgYSBjb25maWcgc3ltYm9sIGRlZmluZWQgZm9yIGl0
-IGJlZm9yZSB0aGUgY29tbWl0IHJlbW92ZWQgaXQuCgpOby4KCkNPTkZJRyBzeW1ib2xzIHdpdGgn
-b3B0aW9uIGVudj0nCmFyZSBub3Qgd3JpdHRlbiBvdXQgdG8gdGhlIC5jb25maWcgZmlsZS4KCldl
-IGhhdmUgbmV2ZXIgaGFkIENPTkZJR19BUkNIIG9yIENPTkZJR19LRVJORUxWRVJTSU9OLgoKCgoK
-Pj4KPj4KPj4gPiBTaW5jZSBjb21taXQgZjQ2N2M1NjQwYzI5ICgia2NvbmZpZzogb25seSB3cml0
-ZSAnIwo+PiA+IENPTkZJR19GT08gaXMgbm90IHNldCcgZm9yIHZpc2libGUgc3ltYm9scyIpIHRo
-ZSB2YWx1ZSBvZiA2NEJJVCBpcwo+PiA+IG5vdCBzYXZlZCBpZiB0aGUgQVJDSCBpcyBzZXQgaTM4
-NiBvciB4ODZfNjQgYmVjYXVzZSB0aGUgc3ltYm9sIGlzCj4+ID4gbm90IHZpc2libGUuCj4+Cj4+
-IFRoaXMgaXMgY29ycmVjdC4KPj4KPj4gSXQgd2FzIGRpc2N1c3NlZCBhIGZldyB3ZWVrcyBhZ28u
-Cj4+Cj4+IGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDE4LzYvNS84NDcKPj4KPj4KPj4gPiBUaGVy
-ZSBpcyBhIG51bWJlciBvZiB3YXlzIHRvIGhhY2sgdGhpcyBwYXJ0aWN1bGFyIGNhc2UgdG8gd29y
-ay4KPj4gPgo+PiA+IEhvd2V2ZXIsIHRoZXJlIGlzIGEgbW9yZSBnZW5lcmFsIHByb2JsZW0gd2l0
-aCB0aGlzLiBTb21lIGNvbmZpZwo+PiA+IG9wdGlvbnMgbWF5IGRlcGVuZCBvbiB0aGUgZW52aXJv
-bm1lbnQsIG1heSBub3QgYmUgc2F2ZWQsIGFuZCB0aGUKPj4gPiBlbnZpcm9ubWVudCBpcyBub3Qg
-c2F2ZWQgZWl0aGVyLgo+Pgo+PiBXaGljaCBlbnZpcm9ubWVudCB2YXJpYWJsZXMgaW4gcGFydGlj
-dWxhciBhcmUgaW4geW91ciBtaW5kPwo+Cj4gQW55IHRoYXQgaXMgdXNlZCBpbiBLY29uZmlnLgoK
-VGhleSBhcmUgcHJvdmlkZWQgZnJvbSBvdXRzaWRlIG9mIEtjb25maWcuClRoaXMgaXMgdGhlIGJl
-aGF2aW9yIHdlIGtlZXAgc2luY2UgYSBsb25nIHRpbWUgYWdvLgoKQVJDSCBpcyBnaXZlbiBieSB0
-aGUgZW52aXJvbm1lbnQgdmFyaWFibGUgb3IgdGhlIGNvbW1hbmQgbGluZS4KS0VSTkVMVkVSU0lP
-TiBpcyBzdXBwbGllZCBieSB0aGUgdG9wIE1ha2VmaWxlLgoKCgoKPj4KPj4gQXMgZm9yIEFSQ0gs
-IHlvdSBuZWVkIHRvIHBhc3MgdGhlIHNhbWUgQVJDSCBhcyB5b3UgdXNlZCBmb3IgYnVpbGRpbmcK
-Pj4gdGhlIGtlcm5lbC4gKEZvciBuYXRpdmUgYnVpbGRpbmcsIHlvdSBkbyBub3QgaGF2ZSB0byBw
-YXNzIEFSQ0gKPj4gZXhwbGljaXRseSwgdGhvdWdoLikKPgo+IEV4Y2VwdCBpZiB5b3UgZG8gcGFz
-cyBpdCB0byBtYWtlIGNvbmZpZyB5b3UgbWF5IG5lZWQgdG8gcGFzcyBpdCB0byB0bwo+IG1ha2Ug
-bGF0ZXIgYXMgd2VsbC4KClJpZ2h0LgoKRm9yIGV4bWFwbGUgJ21ha2UgQVJDSD1hcm0gY29uZmln
-JyB3aWxsIGNyZWF0ZSB0aGUgY29uZmlnIHN1aXRhYmxlCm9ubHkgZm9yIEFSTSBhcmNoaXRlY3R1
-cmUuClRoZW4sIHlvdSBuZWVkIHRvIGRvICdtYWtlIEFSQ0g9YXJtJyB0byBidWlsZCB0aGUga2Vy
-bmVsLgoKSWYgaXQgaXMgdGVkaW91cyB0byBnaXZlICdBUkNIPWFybScgdG8gZXZlcnkgbWFrZSBj
-b21tYW5kLAp5b3UgY2FuIGRvICdleHBvcnQgQVJDSD1hcm0nIGluIHlvdXIgc2hlbGwuCgpBZ2Fp
-biwgdGhpcyBpcyB0aGUgYmVoYXZpb3Igd2UgaGF2ZSBmb3IgYSBsb25nIHRpbWUuCgoKCj4+Cj4+
-IEFzIGZvciBDQywgSE9TVENDLCBldGMuCj4+IHllcywgdGhlc2UgYXJlIG5ldyAndW5zYXZlZCcg
-ZW52aXJvbm1lbnRzLgo+Pgo+PiBDT05GSUcgb3B0aW9ucyBub3cgZGVwZW5kIG9uIHRoZSBjb21w
-aWxlci4KPj4gVGhpcyBpcyB0aGUgY29uY2VwdCBzdWdnZXN0ZWQgYnkgTGludXMgVG9ydmFsZHMu
-Cj4+Cj4+Cj4+ID4gU28gaW4gdGhlIGVuZCBhbGwgdGhlIGluZnJhc3RydWN0dXJlIHdpdGggc3lt
-bGlua3MKPj4gPiBmcm9tIG1vZHVsZSBkaXJlY3RvcnkgcG9pbnRpbmcgdG8gdGhlIGtlcm5lbCBz
-b3VyY2UgYW5kIG9iamVjdAo+PiA+IGRpcmVjdG9yeSBpcyB1c2VsZXNzLiBUbyBpbnRlcnByZXQg
-dGhlIGNvbmZpZyBzdG9yZWQgdGhlcmUgeW91IG5lZWQKPj4gPiB0aGUgZW52aXJvbm1lbnQgYW5k
-IHRoYXQgaXMgbm90IHNhdmVkIGFueXdoZXJlLiBTbyBpZiB5b3UgdHJ5IHRvCj4+ID4gYnVpbGQg
-b3V0LW9mLXRyZWUgbW9kdWxlIGl0IG1pZ2h0IGVuZCB1cCByZWNvbmZpZ3VyaW5nIHlvdXIga2Vy
-bmVsCj4+ID4gYW5kIHByb2R1Y2luZyB1c2VsZXNzIG1vZHVsZXMuCj4+Cj4+IE5vLiBvdXQtb2Yt
-dHJlZSBtb2R1bGUgYnVpbGRpbmcgbmV2ZXIgZXZlciByZS1jb25maWd1cmVzIHRoZSBrZXJuZWwu
-Cj4KPiBJdCBkb2VzIGltcGxpY2l0bHkgYmVjYXVzZSB0aGUgY29uZmlnIHZhbHVlcyBkZXBlbmQg
-b24gZW52aXJvbm1lbnQgdGhhdAo+IGlzIG5vdCBzYXZlZCBhbmQgdGhlIHZhbHVlcyB0aGVtc2Vs
-dmVzIGFyZSBub3Qgc2F2ZWQgZWl0aGVyLiBJZiB0aGF0Cj4gaGFwcGVucyB0byBleHBvc2UgYSBu
-ZXcgdmFyaWFibGUgaXQgaXMgZXZlbiBleHBsaWNpdGx5IHJlY29uZmlndXJlZC4KCgpZb3Ugc2hv
-dWxkIGhhdmUgYSBidWlsdCBrZXJuZWwgdHJlZQpiZWZvcmUgYnVpbGRpbmcgZXh0ZXJuYWwgbW9k
-dWxlcy4KClRoZSAuY29uZmlnIGlzIGFscmVhZHkgdGhlcmUuCgpUaGUgLmNvbmZpZyB3b3JrcyBm
-b3IgZXh0ZXJuYWwgbW9kdWxlcywgZ2l2ZW4gdGhhdAoKICAtIEFSQ0ggaXMgdGhlIHNhbWUKICAt
-IHRoZSBjb21waWxlciBpcyB0aGUgc2FtZQoKCgo+Pgo+PiBvdXQtb2YtdHJlZSBtb2R1bGVzIGFy
-ZSBidWlsdCB3aXRoIGV4YWN0bHkgdGhlIHNhbWUgY29uZmlndXJhdGlvbgo+PiBhcyB1c2VkIGZv
-ciB0aGUga2VybmVsLgo+Cj4gSXQgaXMgbm90IHRydWUuIEFuZCB0aGF0IGlzIHRoZSBwcm9ibGVt
-LiBZb3UgbmVlZCB0aGUgY29uZmlnIGZpbGUgYW5kCj4gZHVtcCBvZiB0aGUgZW52aXJvbm1lbnQg
-cGFzc2VkIHRvIHRoZSBtYWtlIGNvbW1hbmQgYXQgY29uZmlndXJhdGlvbgo+IHRpbWUgdG8gZ2V0
-IHRoZSBleGFjdCBzYW1lIGNvbmZpZ3VyYXRpb24uIFRoZSBlbnZpcm9ubWVudCBpcyBub3Qgc2F2
-ZWQKPiBhbnl3aGVyZSwgdGhvdWdoLgoKCldoeSBkdW1wIG9mIHRoZSBlbnZpcm9ubWVudD8KCgpJ
-ZiB5b3UgYXJlIGJ1aWxkaW5nIGV4dGVybmFsIG1vZHVsZXMgbmF0aXZlbHkKeW91ciBkaXN0cmli
-dXRpb24gcHJvdmlkZXMgL2xpYi9tb2R1bGVzLyQodW5hbWUgLXIpL2J1aWxkLAp3aGljaCBjb250
-YWlucyBmaWxlcyBlbm91Z2ggZm9yIGJ1aWxkaW5nIGV4dGVybmFsIG1vZHVsZXMuCgpZb3UgY2Fu
-IHBhc3MgdGhlIGRpcmVjdG9yeSBwYXRoIHRvIE09Li4uIHBhcmFtZXRlci4gIFRoYXQncyBpdC4K
-CgoKSWYgeW91IGFyZSBjcm9zcy1idWlsZGluZyBleHRlcm5hbCBtb2R1bGVzLAp5b3UgYWxzbyBu
-ZWVkIHRvCgogLSBwYXNzIEFSQ0g9CiAtIHVzZSB0aGUgc2FtZSBjb21waWxlciB3aXRoIENST1NT
-X0NPTVBJTEU9CgpZb3Ugc2hvdWxkIGtub3cgYm90aApiZWNhdXNlIHlvdSBoYXZlIGJ1aWx0IHRo
-ZSBrZXJuZWwgYnkgeW91ciBzZWxmLgoKWW91IGRvIG5vdCBuZWVkIGFueSBvdGhlciBpbmZvcm1h
-dGlvbiwgZG8geW91PwoKCgoKPiBBbmQgaXQgd2VudCBub3doZXJlLgo+Cj4gQW55d2F5LCB0aGUg
-b2JzZXJ2ZWQgaXNzdWUgd2l0aCBDT05GSUdfNjRCSVQgb24geDg2IGlzIHRoZSB0aXAgb2YgYQo+
-IGxhcmdlciBwcm9ibGVtIHdoaWNoIHdhcyB1bm5vdGljZWQgZm9yIGFnZXMuIFRoZSAuY29uZmln
-IHNpbXBseSBkb2VzCj4gbm90IGNvbnRhaW4gdGhlIHdob2xlIGtlcm5lbCBjb25maWd1cmF0aW9u
-LiBpZS4gbWFrZSBvbGRjb25maWcgKGFuZAo+IG1ha2Ugc3luY2NvbmZpZykgaXMgKm5vdCogZXhw
-ZWN0ZWQgdG8ganVzdCB3b3JrLiBJdCB1c2VkIHRvIHdvcmsganVzdCBieQo+IGx1Y2sgdW50aWwg
-ZjQ2N2M1NjQwYzI5ICgia2NvbmZpZzogb25seSB3cml0ZSAnIyBDT05GSUdfRk9PIGlzIG5vdCBz
-ZXQnCj4gZm9yIHZpc2libGUgc3ltYm9scyIpIGZpbmFsbHkgZXhwb3NlZCB0aGUgcHJvYmxlbS4K
-CklmIHlvdSB3YW50IHRvIGJ1aWxkIHRoZSBrZXJuZWwgZm9yIGFuIGFyY2hpdGVjdHVyZQpvdGhl
-ciB0aGFuIHRoZSBob3N0IG1hY2hpbmUgYXJjaGl0ZWN0dXJlLCB5b3UgbmVlZCB0byBwYXNzIEFS
-Q0g9LgoKQnVpbGRpbmcgdGhlIGkzODYga2VybmVsIG9uIGEgeDg2XzY0IG1hY2hpbmUsIGl0IGlz
-IGEgX2tpbmRfIG9mIGNyb3NzLWNvbXBpbGluZy4KU28sIHBhc3NpbmcgQVJDSD1pMzg2IGlzIG5v
-dCBzbyB3ZWlyZC4KCgo+IFNvIGlzIC5jb25maWcgc3VwcG9zZWQgdG8gY29udGFpbiB0aGUga2Vy
-bmVsIGNvbmZpZ3VyYXRpb24gb3IgaXMgaXQKPiBqdXN0IHNvbWUgYnlwcm9kdWN0IG9mIHRoZSBr
-ZXJuZWwgYnVpbGQgd2hpY2ggaXMgbWVhbmluZ2xlc3Mgb3V0c2lkZSBvZgo+IHlvdXIgYnVpbGQg
-ZW52aXJvbm1lbnQgKHRoZSBvYmplY3QgdHJlZSwgc2hlbGwgZW52aXJvbm1lbnQsIGV0YykuCgpU
-aGUgLmNvbmZpZyBpcyBzdXBwb3NlZCB0byBjb250YWluIHRoZSBrZXJuZWwgY29uZmlndXJhdGlv
-biwKJ0FSQ0gnIGFuZCB0aGUgY29tcGlsZXIgYXJlIGV4Y2VwdGlvbnMuCgonQVJDSCcgbXVzdCBi
-ZSBwYXNzZWQgc2VwYXJhdGVseS4KClRoZSAuY29uZmlnIG5vdyBkZXBlbmRzIG9uIHRoZSBjb21w
-aWxlci4gIFNvLCBpZiB5b3UgcGFzcyB5b3VyIC5jb25maWcKdG8gc29tZWJvZHkgZWxzZSwgc29t
-ZSBzeW1ib2xzIHRoYXQgZGVwZW5kIG9uIHRoZSBjb21waWxlciBzdXBwb3J0Cm1pZ2h0IGJlIGNv
-bmZpZ3VyZWQgZGlmZmVyZW50bHkuCgonbWFrZSBzeW5jY29uZmlnJyB3aWxsIG5vdGljZSB0aGUg
-Y29tcGlsZXIgZGlmZmVyZW5jZSwKYW5kIHNob3cgcHJvbXB0cyBmb3IgdXNlciBpbnB1dCBhcyBu
-ZWVkZWQuCgoKCgoKLS0gCkJlc3QgUmVnYXJkcwpNYXNhaGlybyBZYW1hZGEKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlz
-dApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+On Thu, 28 Jun 2018 11:16:23 +0200
+Michal Suchánek <msuchanek@suse.de> wrote:
 
+> On Wed, 27 Jun 2018 23:07:21 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> 
+> > Hi.
+> > 
+> > 
+> > 2018-06-27 21:37 GMT+09:00 Michal Suchánek <msuchanek@suse.de>:  
+> > > Hello,
+> > >
+> > > in the x86 Kconfig we have this:
+> > >
+> > > # Select 32 or 64 bit
+> > > config 64BIT
+> > >         bool "64-bit kernel" if "$(ARCH)" = "x86"
+> > >         default "$(ARCH)" != "i386"
+> > >         ---help---
+> > >           Say yes to build a 64-bit kernel - formerly known as
+> > > x86_64 Say no to build a 32-bit kernel - formerly known as i386
+> > >
+> > > Since commit 104daea149c4 ("kconfig: reference environment
+> > > variables directly and remove 'option env='") the value of ARCH
+> > > is not saved in the kernel config.    
+> > 
+> > I think this commit is unrelated.  It was just a syntax change.  
+> 
+> This does not look like syntax only change to me:
+> 
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 15aae32e0719..1217fc62ca61 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1,20 +1,12 @@
+> -config ARCH
+> -       string
+> -       option env="ARCH"
+> -
+> -config KERNELVERSION
+> -       string
+> -       option env="KERNELVERSION"
+> -
+> 
+> > 
+> > Unless I am missing something,
+> > we have never saved ARCH in the .config in the past.  
+> 
+> There was a config symbol defined for it before the commit removed it.
+
+nonetheless its value was not saved anyway.
+> 
+> > 
+> >   
+> > > Since commit f467c5640c29 ("kconfig: only write '#
+> > > CONFIG_FOO is not set' for visible symbols") the value of 64BIT is
+> > > not saved if the ARCH is set i386 or x86_64 because the symbol is
+> > > not visible.    
+> > 
+> > This is correct.
+> > 
+> > It was discussed a few weeks ago.
+> > 
+> > https://lkml.org/lkml/2018/6/5/847
+
+And it went nowhere.
+
+Anyway, the observed issue with CONFIG_64BIT on x86 is the tip of a
+larger problem which was unnoticed for ages. The .config simply does
+not contain the whole kernel configuration. ie. make oldconfig (and
+make syncconfig) is *not* expected to just work. It used to work just by
+luck until f467c5640c29 ("kconfig: only write '# CONFIG_FOO is not set'
+for visible symbols") finally exposed the problem.
+
+So is .config supposed to contain the kernel configuration or is it
+just some byproduct of the kernel build which is meaningless outside of
+your build environment (the object tree, shell environment, etc).
+
+Thanks
+
+Michal
