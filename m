@@ -1,549 +1,152 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fk39m-00023y-5z
+ for linux-um@lists.infradead.org; Mon, 30 Jul 2018 08:03:56 +0000
+Received: from mail-ua0-f180.google.com (mail-ua0-f180.google.com
+ [209.85.217.180]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id w6U83PRE026255
+ for <linux-um@lists.infradead.org>; Mon, 30 Jul 2018 17:03:25 +0900
+Received: by mail-ua0-f180.google.com with SMTP id w7-v6so7233544uan.9
+ for <linux-um@lists.infradead.org>; Mon, 30 Jul 2018 01:03:25 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20180628111623.3807fe9b@naga.suse.cz>
+References: <20180627143705.5a1fed1c@kitsune.suse.cz>
+ <CAK7LNARVPNx_uC5xTrS_p9T4nMRTC79BO51T4Lytv2eU1c-ynw@mail.gmail.com>
+ <20180628111623.3807fe9b@naga.suse.cz>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 6/6] kbuild: rename LDFLAGS to KBUILD_LDFLAGS
-Date: Thu, 12 Jul 2018 17:01:36 +0900
-Message-Id: <1531382496-3719-7-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1531382496-3719-1-git-send-email-yamada.masahiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kbuild@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org, Jeff Dike <jdike@addtoit.com>, "Kirill A . Shutemov" <kirill@shutemov.name>, Masahiro Yamada <yamada.masahiro@socionext.com>
-List-ID: <linux-um.lists.infradead.org>
+Date: Mon, 30 Jul 2018 17:02:42 +0900
+Message-ID: <CAK7LNARRKU7Mfa8ZBu1qPFYFRr-5k69sjVyERM2bYcnWoBDN8g@mail.gmail.com>
+Subject: Re: due to kconfig changes kernel config file is no longer sufficient
+ for configuring the kernel
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc: Michal Kubecek <mkubecek@suse.cz>, Rich Felker <dalias@libc.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Jeff Mahoney <jeffm@suse.com>, Dominik Brodowski <linux@dominikbrodowski.net>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux <sparclinux@vger.kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Jonathan Corbet <corbet@lwn.net>, Linux-sh list <linux-sh@vger.kernel.org>, Andreas Schwab <schwab@suse.de>, X86 ML <x86@kernel.org>, "Peter Zijlstra, " <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Frederic Weisbecker <frederic@kernel.org>, Kees Cook <keescook@chromium.org>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, Richard Weinberger <richard@nod.at>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Thomas Gleixner <tglx@linutronix.de>, Michal Marek <michal.lkml@markovi.net>, Ulf Magnusson <ulfalizer@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Philippe Ombredanne <pombredanne@nexb.com>, "David S. Miller" <davem@davemloft.net>
 
-Commit a0f97e06a43c ("kbuild: enable 'make CFLAGS=...' to add
-additional options to CC") renamed CFLAGS to KBUILD_CFLAGS.
-
-Commit 222d394d30e7 ("kbuild: enable 'make AFLAGS=...' to add
-additional options to AS") renamed AFLAGS to KBUILD_AFLAGS.
-
-Commit 06c5040cdb13 ("kbuild: enable 'make CPPFLAGS=...' to add
-additional options to CPP") renamed CPPFLAGS to KBUILD_CPPFLAGS.
-
-For some reason, LDFLAGS was not renamed.
-
-Using a well-known variable like LDFLAGS may result in accidental
-override of the variable.
-
-Kbuild generally uses KBUILD_ prefixed variables for the internally
-appended options, so here is one more conversion to sanitize the
-naming convention.
-
-I did not touch Makefiles under tools/ since the tools build system
-is a different world.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
- Makefile                           | 6 +++---
- arch/arc/Makefile                  | 2 +-
- arch/arm/Makefile                  | 4 ++--
- arch/arm64/Makefile                | 4 ++--
- arch/c6x/Makefile                  | 3 +--
- arch/h8300/Makefile                | 2 +-
- arch/hexagon/Makefile              | 4 +---
- arch/m68k/Makefile                 | 2 +-
- arch/microblaze/Makefile           | 4 ++--
- arch/mips/Makefile                 | 2 +-
- arch/mips/boot/compressed/Makefile | 2 +-
- arch/mips/lasat/image/Makefile     | 2 +-
- arch/nds32/Makefile                | 4 ++--
- arch/powerpc/Makefile              | 6 +++---
- arch/riscv/Makefile                | 4 ++--
- arch/s390/Makefile                 | 2 +-
- arch/sh/Makefile                   | 4 ++--
- arch/sparc/Makefile                | 4 ++--
- arch/um/Makefile                   | 2 +-
- arch/x86/Makefile                  | 4 ++--
- arch/x86/Makefile.um               | 2 +-
- arch/x86/boot/compressed/Makefile  | 6 +++---
- arch/xtensa/Makefile               | 2 +-
- arch/xtensa/boot/boot-elf/Makefile | 2 +-
- scripts/Kbuild.include             | 4 ++--
- scripts/Makefile.build             | 4 ++--
- scripts/Makefile.lib               | 2 +-
- scripts/Makefile.modpost           | 2 +-
- 28 files changed, 44 insertions(+), 47 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 925c55f..9eaa9b7 100644
---- a/Makefile
-+++ b/Makefile
-@@ -426,7 +426,7 @@ KBUILD_CFLAGS_KERNEL :=
- KBUILD_AFLAGS_MODULE  := -DMODULE
- KBUILD_CFLAGS_MODULE  := -DMODULE
- KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
--LDFLAGS :=
-+KBUILD_LDFLAGS :=
- GCC_PLUGINS_CFLAGS :=
- 
- export ARCH SRCARCH CONFIG_SHELL HOSTCC HOSTCFLAGS CROSS_COMPILE AS LD CC
-@@ -434,7 +434,7 @@ export CPP AR NM STRIP OBJCOPY OBJDUMP HOSTLDFLAGS HOST_LOADLIBES
- export MAKE LEX YACC AWK GENKSYMS INSTALLKERNEL PERL PYTHON PYTHON2 PYTHON3 UTS_MACHINE
- export HOSTCXX HOSTCXXFLAGS LDFLAGS_MODULE CHECK CHECKFLAGS
- 
--export KBUILD_CPPFLAGS NOSTDINC_FLAGS LINUXINCLUDE OBJCOPYFLAGS LDFLAGS
-+export KBUILD_CPPFLAGS NOSTDINC_FLAGS LINUXINCLUDE OBJCOPYFLAGS KBUILD_LDFLAGS
- export KBUILD_CFLAGS CFLAGS_KERNEL CFLAGS_MODULE
- export CFLAGS_KASAN CFLAGS_KASAN_NOSANITIZE CFLAGS_UBSAN
- export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
-@@ -997,7 +997,7 @@ ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
- 
- # Final link of vmlinux with optional arch pass after final link
- cmd_link-vmlinux =                                                 \
--	$(CONFIG_SHELL) $< $(LD) $(LDFLAGS) $(LDFLAGS_vmlinux) ;    \
-+	$(CONFIG_SHELL) $< $(LD) $(KBUILD_LDFLAGS) $(LDFLAGS_vmlinux) ;    \
- 	$(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) $@, true)
- 
- vmlinux: scripts/link-vmlinux.sh autoksyms_recursive $(vmlinux-deps) FORCE
-diff --git a/arch/arc/Makefile b/arch/arc/Makefile
-index d37f49d..5aecb8b 100644
---- a/arch/arc/Makefile
-+++ b/arch/arc/Makefile
-@@ -95,7 +95,7 @@ KBUILD_CFLAGS_MODULE	+= -mlong-calls -mno-millicode
- # Finally dump eveything into kernel build system
- KBUILD_CFLAGS	+= $(cflags-y)
- KBUILD_AFLAGS	+= $(KBUILD_CFLAGS)
--LDFLAGS		+= $(ldflags-y)
-+KBUILD_LDFLAGS	+= $(ldflags-y)
- 
- head-y		:= arch/arc/kernel/head.o
- 
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index e7d703d..360f80a 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -43,12 +43,12 @@ ifeq ($(CONFIG_CPU_BIG_ENDIAN),y)
- KBUILD_CPPFLAGS	+= -mbig-endian
- CHECKFLAGS	+= -D__ARMEB__
- AS		+= -EB
--LDFLAGS		+= -EB
-+KBUILD_LDFLAGS	+= -EB
- else
- KBUILD_CPPFLAGS	+= -mlittle-endian
- CHECKFLAGS	+= -D__ARMEL__
- AS		+= -EL
--LDFLAGS		+= -EL
-+KBUILD_LDFLAGS	+= -EL
- endif
- 
- #
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 7976d2d..ae064d1 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -60,13 +60,13 @@ ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
- KBUILD_CPPFLAGS	+= -mbig-endian
- CHECKFLAGS	+= -D__AARCH64EB__
- AS		+= -EB
--LDFLAGS		+= -EB -maarch64elfb
-+KBUILD_LDFLAGS	+= -EB -maarch64elfb
- UTS_MACHINE	:= aarch64_be
- else
- KBUILD_CPPFLAGS	+= -mlittle-endian
- CHECKFLAGS	+= -D__AARCH64EL__
- AS		+= -EL
--LDFLAGS		+= -EL -maarch64elf
-+KBUILD_LDFLAGS	+= -EL -maarch64elf
- UTS_MACHINE	:= aarch64
- endif
- 
-diff --git a/arch/c6x/Makefile b/arch/c6x/Makefile
-index 6ab942e..3fe8a94 100644
---- a/arch/c6x/Makefile
-+++ b/arch/c6x/Makefile
-@@ -23,8 +23,7 @@ ifdef CONFIG_CPU_BIG_ENDIAN
- KBUILD_CFLAGS   += -mbig-endian
- KBUILD_AFLAGS   += -mbig-endian
- LINKFLAGS       += -mbig-endian
--KBUILD_LDFLAGS  += -mbig-endian
--LDFLAGS += -EB
-+KBUILD_LDFLAGS  += -mbig-endian -EB
- CHECKFLAGS	+= -D_BIG_ENDIAN
- endif
- 
-diff --git a/arch/h8300/Makefile b/arch/h8300/Makefile
-index e1c02ca..f9cbbb1 100644
---- a/arch/h8300/Makefile
-+++ b/arch/h8300/Makefile
-@@ -20,7 +20,7 @@ KBUILD_CFLAGS += -mint32 -fno-builtin
- KBUILD_CFLAGS += -D__linux__
- KBUILD_CFLAGS += -DUTS_SYSNAME=\"uClinux\"
- KBUILD_AFLAGS += $(aflags-y)
--LDFLAGS += $(ldflags-y)
-+KBUILD_LDFLAGS += $(ldflags-y)
- 
- ifeq ($(CROSS_COMPILE),)
- CROSS_COMPILE := h8300-unknown-linux-
-diff --git a/arch/hexagon/Makefile b/arch/hexagon/Makefile
-index 2efaa18..4c5858b 100644
---- a/arch/hexagon/Makefile
-+++ b/arch/hexagon/Makefile
-@@ -22,9 +22,7 @@ ldflags-y += $(call cc-option,-mv${CONFIG_HEXAGON_ARCH_VERSION})
- 
- KBUILD_CFLAGS += $(cflags-y)
- KBUILD_AFLAGS += $(aflags-y)
--
--#  no KBUILD_LDFLAGS?
--LDFLAGS += $(ldflags-y)
-+KBUILD_LDFLAGS += $(ldflags-y)
- 
- # Thread-info register will be r19.  This value is not configureable;
- # it is hard-coded in several files.
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index f0dd9fc..997c9f2 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -69,7 +69,7 @@ KBUILD_CFLAGS += -D__uClinux__
- KBUILD_AFLAGS += -D__uClinux__
- endif
- 
--LDFLAGS := -m m68kelf
-+KBUILD_LDFLAGS := -m m68kelf
- KBUILD_LDFLAGS_MODULE += -T $(srctree)/arch/m68k/kernel/module.lds
- 
- ifdef CONFIG_SUN3
-diff --git a/arch/microblaze/Makefile b/arch/microblaze/Makefile
-index 7333036..4f3ab57 100644
---- a/arch/microblaze/Makefile
-+++ b/arch/microblaze/Makefile
-@@ -40,11 +40,11 @@ CPUFLAGS-$(CONFIG_XILINX_MICROBLAZE0_USE_PCMP_INSTR) += -mxl-pattern-compare
- ifdef CONFIG_CPU_BIG_ENDIAN
- KBUILD_CFLAGS += -mbig-endian
- KBUILD_AFLAGS += -mbig-endian
--LDFLAGS += -EB
-+KBUILD_LDFLAGS += -EB
- else
- KBUILD_CFLAGS += -mlittle-endian
- KBUILD_AFLAGS += -mlittle-endian
--LDFLAGS += -EL
-+KBUILD_LDFLAGS += -EL
- endif
- 
- CPUFLAGS-1 += $(call cc-option,-mcpu=v$(CPU_VER))
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index e2122cc..0d1b5e6 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -303,7 +303,7 @@ endif
- # instead of .eh_frame so we don't discard them.
- KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
- 
--LDFLAGS			+= -m $(ld-emul)
-+KBUILD_LDFLAGS		+= -m $(ld-emul)
- 
- ifdef CONFIG_MIPS
- CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index abe77ad..3c453a1 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -92,7 +92,7 @@ UIMAGE_LOADADDR = $(VMLINUZ_LOAD_ADDRESS)
- vmlinuzobjs-y += $(obj)/piggy.o
- 
- quiet_cmd_zld = LD      $@
--      cmd_zld = $(LD) $(LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T $< $(vmlinuzobjs-y) -o $@
-+      cmd_zld = $(LD) $(KBUILD_LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T $< $(vmlinuzobjs-y) -o $@
- quiet_cmd_strip = STRIP	  $@
-       cmd_strip = $(STRIP) -s $@
- vmlinuz: $(src)/ld.script $(vmlinuzobjs-y) $(obj)/calc_vmlinuz_load_addr
-diff --git a/arch/mips/lasat/image/Makefile b/arch/mips/lasat/image/Makefile
-index 9ab1326..78ce4cf 100644
---- a/arch/mips/lasat/image/Makefile
-+++ b/arch/mips/lasat/image/Makefile
-@@ -38,7 +38,7 @@ $(obj)/rom.bin: $(obj)/rom
- 
- # Rule to make the bootloader
- $(obj)/rom: $(addprefix $(obj)/,$(OBJECTS))
--	$(LD) $(LDFLAGS) $(LDSCRIPT) -o $@ $^
-+	$(LD) $(KBUILD_LDFLAGS) $(LDSCRIPT) -o $@ $^
- 
- $(obj)/%.o: $(obj)/%.gz
- 	$(LD) -r -o $@ -b binary $<
-diff --git a/arch/nds32/Makefile b/arch/nds32/Makefile
-index 513bb2e..b1321c4 100644
---- a/arch/nds32/Makefile
-+++ b/arch/nds32/Makefile
-@@ -33,11 +33,11 @@ endif
- ifdef CONFIG_CPU_LITTLE_ENDIAN
- KBUILD_CFLAGS   += $(call cc-option, -EL)
- KBUILD_AFLAGS   += $(call cc-option, -EL)
--LDFLAGS         += $(call cc-option, -EL)
-+KBUILD_LDFLAGS  += $(call cc-option, -EL)
- else
- KBUILD_CFLAGS   += $(call cc-option, -EB)
- KBUILD_AFLAGS   += $(call cc-option, -EB)
--LDFLAGS         += $(call cc-option, -EB)
-+KBUILD_LDFLAGS  += $(call cc-option, -EB)
- endif
- 
- boot := arch/nds32/boot
-diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-index 2ea575c..3d157fc 100644
---- a/arch/powerpc/Makefile
-+++ b/arch/powerpc/Makefile
-@@ -76,14 +76,14 @@ endif
- 
- ifeq ($(CONFIG_CPU_LITTLE_ENDIAN),y)
- KBUILD_CFLAGS	+= -mlittle-endian
--LDFLAGS		+= -EL
-+KBUILD_LDFLAGS	+= -EL
- LDEMULATION	:= lppc
- GNUTARGET	:= powerpcle
- MULTIPLEWORD	:= -mno-multiple
- KBUILD_CFLAGS_MODULE += $(call cc-option,-mno-save-toc-indirect)
- else
- KBUILD_CFLAGS += $(call cc-option,-mbig-endian)
--LDFLAGS		+= -EB
-+KBUILD_LDFLAGS	+= -EB
- LDEMULATION	:= ppc
- GNUTARGET	:= powerpc
- MULTIPLEWORD	:= -mmultiple
-@@ -108,7 +108,7 @@ aflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= -mlittle-endian
- ifeq ($(HAS_BIARCH),y)
- KBUILD_CFLAGS	+= -m$(BITS)
- KBUILD_AFLAGS	+= -m$(BITS) -Wl,-a$(BITS)
--LDFLAGS		+= -m elf$(BITS)$(LDEMULATION)
-+KBUILD_LDFLAGS	+= -m elf$(BITS)$(LDEMULATION)
- KBUILD_ARFLAGS	+= --target=elf$(BITS)-$(GNUTARGET)
- endif
- 
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 2627e48..71b5741 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -26,7 +26,7 @@ ifeq ($(CONFIG_ARCH_RV64I),y)
- 	KBUILD_CFLAGS += -mabi=lp64
- 	KBUILD_AFLAGS += -mabi=lp64
- 	KBUILD_MARCH = rv64im
--	LDFLAGS += -melf64lriscv
-+	KBUILD_LDFLAGS += -melf64lriscv
- else
- 	BITS := 32
- 	UTS_MACHINE := riscv32
-@@ -34,7 +34,7 @@ else
- 	KBUILD_CFLAGS += -mabi=ilp32
- 	KBUILD_AFLAGS += -mabi=ilp32
- 	KBUILD_MARCH = rv32im
--	LDFLAGS += -melf32lriscv
-+	KBUILD_LDFLAGS += -melf32lriscv
- endif
- 
- KBUILD_CFLAGS += -Wall
-diff --git a/arch/s390/Makefile b/arch/s390/Makefile
-index 68a6904..60120b6 100644
---- a/arch/s390/Makefile
-+++ b/arch/s390/Makefile
-@@ -11,7 +11,7 @@
- #
- 
- LD_BFD		:= elf64-s390
--LDFLAGS		:= -m elf64_s390
-+KBUILD_LDFLAGS	:= -m elf64_s390
- KBUILD_AFLAGS_MODULE += -fPIC
- KBUILD_CFLAGS_MODULE += -fPIC
- KBUILD_CFLAGS	+= -m64
-diff --git a/arch/sh/Makefile b/arch/sh/Makefile
-index 65300193..c521ade 100644
---- a/arch/sh/Makefile
-+++ b/arch/sh/Makefile
-@@ -122,11 +122,11 @@ endif
- ifdef CONFIG_CPU_LITTLE_ENDIAN
- ld-bfd			:= elf32-$(UTS_MACHINE)-linux
- LDFLAGS_vmlinux		+= --defsym jiffies=jiffies_64 --oformat $(ld-bfd)
--LDFLAGS			+= -EL
-+KBUILD_LDFLAGS		+= -EL
- else
- ld-bfd			:= elf32-$(UTS_MACHINE)big-linux
- LDFLAGS_vmlinux		+= --defsym jiffies=jiffies_64+4 --oformat $(ld-bfd)
--LDFLAGS			+= -EB
-+KBUILD_LDFLAGS		+= -EB
- endif
- 
- export ld-bfd BITS
-diff --git a/arch/sparc/Makefile b/arch/sparc/Makefile
-index 966a13d..8ece494 100644
---- a/arch/sparc/Makefile
-+++ b/arch/sparc/Makefile
-@@ -21,7 +21,7 @@ ifeq ($(CONFIG_SPARC32),y)
- #
- 
- CHECKFLAGS     += -D__sparc__
--LDFLAGS        := -m elf32_sparc
-+KBUILD_LDFLAGS := -m elf32_sparc
- export BITS    := 32
- UTS_MACHINE    := sparc
- 
-@@ -40,7 +40,7 @@ else
- #
- 
- CHECKFLAGS    += -D__sparc__ -D__sparc_v9__ -D__arch64__
--LDFLAGS       := -m elf64_sparc
-+KBUILD_LDFLAGS := -m elf64_sparc
- export BITS   := 64
- UTS_MACHINE   := sparc64
- 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index e54dda8..6c4aed1 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -142,7 +142,7 @@ export LDS_ELF_FORMAT := $(ELF_FORMAT)
- # The wrappers will select whether using "malloc" or the kernel allocator.
- LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
- 
--LD_FLAGS_CMDLINE = $(foreach opt,$(LDFLAGS),-Wl,$(opt))
-+LD_FLAGS_CMDLINE = $(foreach opt,$(KBUILD_LDFLAGS),-Wl,$(opt))
- 
- # Used by link-vmlinux.sh which has special support for um link
- export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index a08e828..9129a96 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -224,7 +224,7 @@ sha256_ni_instr :=$(call as-instr,sha256msg1 %xmm0$(comma)%xmm1,-DCONFIG_AS_SHA2
- KBUILD_AFLAGS += $(cfi) $(cfi-sigframe) $(cfi-sections) $(asinstr) $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr)
- KBUILD_CFLAGS += $(cfi) $(cfi-sigframe) $(cfi-sections) $(asinstr) $(avx_instr) $(avx2_instr) $(avx512_instr) $(sha1_ni_instr) $(sha256_ni_instr)
- 
--LDFLAGS := -m elf_$(UTS_MACHINE)
-+KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
- 
- #
- # The 64-bit kernel must be aligned to 2MB.  Pass -z max-page-size=0x200000 to
-@@ -232,7 +232,7 @@ LDFLAGS := -m elf_$(UTS_MACHINE)
- # by the linker.
- #
- ifdef CONFIG_X86_64
--LDFLAGS += $(call ld-option, -z max-page-size=0x200000)
-+KBUILD_LDFLAGS += $(call ld-option, -z max-page-size=0x200000)
- endif
- 
- # Speed up the build
-diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-index 5296f8c..0d347ee 100644
---- a/arch/x86/Makefile.um
-+++ b/arch/x86/Makefile.um
-@@ -4,7 +4,7 @@ core-y += arch/x86/crypto/
- ifeq ($(CONFIG_X86_32),y)
- START := 0x8048000
- 
--LDFLAGS			+= -m elf_i386
-+KBUILD_LDFLAGS		+= -m elf_i386
- ELF_ARCH		:= i386
- ELF_FORMAT 		:= elf32-i386
- CHECKFLAGS	+= -D__i386__
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index fa42f89..e1dc356 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -42,16 +42,16 @@ KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
- GCOV_PROFILE := n
- UBSAN_SANITIZE :=n
- 
--LDFLAGS := -m elf_$(UTS_MACHINE)
-+KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
- # Compressed kernel should be built as PIE since it may be loaded at any
- # address by the bootloader.
- ifeq ($(CONFIG_X86_32),y)
--LDFLAGS += $(call ld-option, -pie) $(call ld-option, --no-dynamic-linker)
-+KBUILD_LDFLAGS += $(call ld-option, -pie) $(call ld-option, --no-dynamic-linker)
- else
- # To build 64-bit compressed kernel as PIE, we disable relocation
- # overflow check to avoid relocation overflow error with a new linker
- # command-line option, -z noreloc-overflow.
--LDFLAGS += $(shell $(LD) --help 2>&1 | grep -q "\-z noreloc-overflow" \
-+KBUILD_LDFLAGS += $(shell $(LD) --help 2>&1 | grep -q "\-z noreloc-overflow" \
- 	&& echo "-z noreloc-overflow -pie --no-dynamic-linker")
- endif
- LDFLAGS_vmlinux := -T
-diff --git a/arch/xtensa/Makefile b/arch/xtensa/Makefile
-index 3a934b7..295c120 100644
---- a/arch/xtensa/Makefile
-+++ b/arch/xtensa/Makefile
-@@ -49,7 +49,7 @@ KBUILD_CFLAGS += $(call cc-option,-mno-serialize-volatile,)
- KBUILD_AFLAGS += -mlongcalls -mtext-section-literals
- 
- ifneq ($(CONFIG_LD_NO_RELAX),)
--LDFLAGS := --no-relax
-+KBUILD_LDFLAGS := --no-relax
- endif
- 
- ifeq ($(shell echo __XTENSA_EB__ | $(CC) -E - | grep -v "\#"),1)
-diff --git a/arch/xtensa/boot/boot-elf/Makefile b/arch/xtensa/boot/boot-elf/Makefile
-index 5214719..12ae1e9 100644
---- a/arch/xtensa/boot/boot-elf/Makefile
-+++ b/arch/xtensa/boot/boot-elf/Makefile
-@@ -25,7 +25,7 @@ $(obj)/Image.o: vmlinux.bin $(OBJS)
- 		$(OBJS) $@
- 
- $(obj)/../Image.elf: $(obj)/Image.o $(obj)/boot.lds
--	$(Q)$(LD) $(LDFLAGS) $(LDFLAGS_vmlinux) \
-+	$(Q)$(LD) $(KBUILD_LDFLAGS) $(LDFLAGS_vmlinux) \
- 		-T $(obj)/boot.lds \
- 		--build-id=none \
- 		-o $@ $(obj)/Image.o
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index c8156d6..feb918f 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -163,8 +163,8 @@ cc-ldoption = $(call try-run,\
- 	$(CC) $(1) $(KBUILD_CPPFLAGS) $(CC_OPTION_CFLAGS) -nostdlib -x c /dev/null -o "$$TMP",$(1),$(2))
- 
- # ld-option
--# Usage: LDFLAGS += $(call ld-option, -X)
--ld-option = $(call try-run, $(LD) $(LDFLAGS) $(1) -v,$(1),$(2))
-+# Usage: KBUILD_LDFLAGS += $(call ld-option, -X)
-+ld-option = $(call try-run, $(LD) $(KBUILD_LDFLAGS) $(1) -v,$(1),$(2))
- 
- # ar-option
- # Usage: KBUILD_ARFLAGS := $(call ar-option,D)
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index e7889f4..42d61c1 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -197,7 +197,7 @@ cmd_modversions_c =								\
- 		$(call cmd_gensymtypes_c,$(KBUILD_SYMTYPES),$(@:.o=.symtypes))	\
- 		    > $(@D)/.tmp_$(@F:.o=.ver);					\
- 										\
--		$(LD) $(LDFLAGS) -r -o $@ $(@D)/.tmp_$(@F) 			\
-+		$(LD) $(KBUILD_LDFLAGS) -r -o $@ $(@D)/.tmp_$(@F) 		\
- 			-T $(@D)/.tmp_$(@F:.o=.ver);				\
- 		rm -f $(@D)/.tmp_$(@F) $(@D)/.tmp_$(@F:.o=.ver);		\
- 	else									\
-@@ -404,7 +404,7 @@ cmd_modversions_S =								\
- 		$(call cmd_gensymtypes_S,$(KBUILD_SYMTYPES),$(@:.o=.symtypes))	\
- 		    > $(@D)/.tmp_$(@F:.o=.ver);					\
- 										\
--		$(LD) $(LDFLAGS) -r -o $@ $(@D)/.tmp_$(@F) 			\
-+		$(LD) $(KBUILD_LDFLAGS) -r -o $@ $(@D)/.tmp_$(@F) 		\
- 			-T $(@D)/.tmp_$(@F:.o=.ver);				\
- 		rm -f $(@D)/.tmp_$(@F) $(@D)/.tmp_$(@F:.o=.ver);		\
- 	else									\
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index f56bb4b..193c551 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -162,7 +162,7 @@ a_flags        = -Wp,-MD,$(depfile) $(NOSTDINC_FLAGS) $(LINUXINCLUDE)     \
- cpp_flags      = -Wp,-MD,$(depfile) $(NOSTDINC_FLAGS) $(LINUXINCLUDE)     \
- 		 $(__cpp_flags)
- 
--ld_flags       = $(LDFLAGS) $(ldflags-y) $(LDFLAGS_$(@F))
-+ld_flags       = $(KBUILD_LDFLAGS) $(ldflags-y) $(LDFLAGS_$(@F))
- 
- DTC_INCLUDE    := $(srctree)/scripts/dtc/include-prefixes
- 
-diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-index df41744..fa00c61 100644
---- a/scripts/Makefile.modpost
-+++ b/scripts/Makefile.modpost
-@@ -120,7 +120,7 @@ ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
- # Step 6), final link of the modules with optional arch pass after final link
- quiet_cmd_ld_ko_o = LD [M]  $@
-       cmd_ld_ko_o =                                                     \
--	$(LD) -r $(LDFLAGS)                                             \
-+	$(LD) -r $(KBUILD_LDFLAGS)                                      \
-                  $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)             \
-                  -o $@ $(filter-out FORCE,$^) ;                         \
- 	$(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) $@, true)
--- 
-2.7.4
-
+MjAxOC0wNi0yOCAxODoxNiBHTVQrMDk6MDAgTWljaGFsIFN1Y2jDoW5layA8bXN1Y2hhbmVrQHN1
+c2UuZGU+Ogo+IE9uIFdlZCwgMjcgSnVuIDIwMTggMjM6MDc6MjEgKzA5MDAKPiBNYXNhaGlybyBZ
+YW1hZGEgPHlhbWFkYS5tYXNhaGlyb0Bzb2Npb25leHQuY29tPiB3cm90ZToKPgo+PiBIaS4KPj4K
+Pj4KPj4gMjAxOC0wNi0yNyAyMTozNyBHTVQrMDk6MDAgTWljaGFsIFN1Y2jDoW5layA8bXN1Y2hh
+bmVrQHN1c2UuZGU+Ogo+PiA+IEhlbGxvLAo+PiA+Cj4+ID4gaW4gdGhlIHg4NiBLY29uZmlnIHdl
+IGhhdmUgdGhpczoKPj4gPgo+PiA+ICMgU2VsZWN0IDMyIG9yIDY0IGJpdAo+PiA+IGNvbmZpZyA2
+NEJJVAo+PiA+ICAgICAgICAgYm9vbCAiNjQtYml0IGtlcm5lbCIgaWYgIiQoQVJDSCkiID0gIng4
+NiIKPj4gPiAgICAgICAgIGRlZmF1bHQgIiQoQVJDSCkiICE9ICJpMzg2Igo+PiA+ICAgICAgICAg
+LS0taGVscC0tLQo+PiA+ICAgICAgICAgICBTYXkgeWVzIHRvIGJ1aWxkIGEgNjQtYml0IGtlcm5l
+bCAtIGZvcm1lcmx5IGtub3duIGFzCj4+ID4geDg2XzY0IFNheSBubyB0byBidWlsZCBhIDMyLWJp
+dCBrZXJuZWwgLSBmb3JtZXJseSBrbm93biBhcyBpMzg2Cj4+ID4KPj4gPiBTaW5jZSBjb21taXQg
+MTA0ZGFlYTE0OWM0ICgia2NvbmZpZzogcmVmZXJlbmNlIGVudmlyb25tZW50IHZhcmlhYmxlcwo+
+PiA+IGRpcmVjdGx5IGFuZCByZW1vdmUgJ29wdGlvbiBlbnY9JyIpIHRoZSB2YWx1ZSBvZiBBUkNI
+IGlzIG5vdCBzYXZlZAo+PiA+IGluIHRoZSBrZXJuZWwgY29uZmlnLgo+Pgo+PiBJIHRoaW5rIHRo
+aXMgY29tbWl0IGlzIHVucmVsYXRlZC4gIEl0IHdhcyBqdXN0IGEgc3ludGF4IGNoYW5nZS4KPgo+
+IFRoaXMgZG9lcyBub3QgbG9vayBsaWtlIHN5bnRheCBvbmx5IGNoYW5nZSB0byBtZToKPgo+IGRp
+ZmYgLS1naXQgYS9pbml0L0tjb25maWcgYi9pbml0L0tjb25maWcKPiBpbmRleCAxNWFhZTMyZTA3
+MTkuLjEyMTdmYzYyY2E2MSAxMDA2NDQKPiAtLS0gYS9pbml0L0tjb25maWcKPiArKysgYi9pbml0
+L0tjb25maWcKPiBAQCAtMSwyMCArMSwxMiBAQAo+IC1jb25maWcgQVJDSAo+IC0gICAgICAgc3Ry
+aW5nCj4gLSAgICAgICBvcHRpb24gZW52PSJBUkNIIgo+IC0KPiAtY29uZmlnIEtFUk5FTFZFUlNJ
+T04KPiAtICAgICAgIHN0cmluZwo+IC0gICAgICAgb3B0aW9uIGVudj0iS0VSTkVMVkVSU0lPTiIK
+PiAtCgpUaGlzIGlzIGp1c3Qgc3ludGF4IGNoYW5nZS4KCidvcHRpb24gZW52PScgd2FzIHVzZWQg
+dG8gcmVmZXJlbmNlIGFuIGVudmlyb25tZW50IHZhcmlhYmxlLgoKTm93LCAkKEFSQ0gpLCAkKEtF
+Uk5FTFZFUlNJT04pIGFyZSBzaW1wbGVyIGZvcm1zLgoKCj4+Cj4+IFVubGVzcyBJIGFtIG1pc3Np
+bmcgc29tZXRoaW5nLAo+PiB3ZSBoYXZlIG5ldmVyIHNhdmVkIEFSQ0ggaW4gdGhlIC5jb25maWcg
+aW4gdGhlIHBhc3QuCj4KPiBUaGVyZSB3YXMgYSBjb25maWcgc3ltYm9sIGRlZmluZWQgZm9yIGl0
+IGJlZm9yZSB0aGUgY29tbWl0IHJlbW92ZWQgaXQuCgpOby4KCkNPTkZJRyBzeW1ib2xzIHdpdGgn
+b3B0aW9uIGVudj0nCmFyZSBub3Qgd3JpdHRlbiBvdXQgdG8gdGhlIC5jb25maWcgZmlsZS4KCldl
+IGhhdmUgbmV2ZXIgaGFkIENPTkZJR19BUkNIIG9yIENPTkZJR19LRVJORUxWRVJTSU9OLgoKCgoK
+Pj4KPj4KPj4gPiBTaW5jZSBjb21taXQgZjQ2N2M1NjQwYzI5ICgia2NvbmZpZzogb25seSB3cml0
+ZSAnIwo+PiA+IENPTkZJR19GT08gaXMgbm90IHNldCcgZm9yIHZpc2libGUgc3ltYm9scyIpIHRo
+ZSB2YWx1ZSBvZiA2NEJJVCBpcwo+PiA+IG5vdCBzYXZlZCBpZiB0aGUgQVJDSCBpcyBzZXQgaTM4
+NiBvciB4ODZfNjQgYmVjYXVzZSB0aGUgc3ltYm9sIGlzCj4+ID4gbm90IHZpc2libGUuCj4+Cj4+
+IFRoaXMgaXMgY29ycmVjdC4KPj4KPj4gSXQgd2FzIGRpc2N1c3NlZCBhIGZldyB3ZWVrcyBhZ28u
+Cj4+Cj4+IGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDE4LzYvNS84NDcKPj4KPj4KPj4gPiBUaGVy
+ZSBpcyBhIG51bWJlciBvZiB3YXlzIHRvIGhhY2sgdGhpcyBwYXJ0aWN1bGFyIGNhc2UgdG8gd29y
+ay4KPj4gPgo+PiA+IEhvd2V2ZXIsIHRoZXJlIGlzIGEgbW9yZSBnZW5lcmFsIHByb2JsZW0gd2l0
+aCB0aGlzLiBTb21lIGNvbmZpZwo+PiA+IG9wdGlvbnMgbWF5IGRlcGVuZCBvbiB0aGUgZW52aXJv
+bm1lbnQsIG1heSBub3QgYmUgc2F2ZWQsIGFuZCB0aGUKPj4gPiBlbnZpcm9ubWVudCBpcyBub3Qg
+c2F2ZWQgZWl0aGVyLgo+Pgo+PiBXaGljaCBlbnZpcm9ubWVudCB2YXJpYWJsZXMgaW4gcGFydGlj
+dWxhciBhcmUgaW4geW91ciBtaW5kPwo+Cj4gQW55IHRoYXQgaXMgdXNlZCBpbiBLY29uZmlnLgoK
+VGhleSBhcmUgcHJvdmlkZWQgZnJvbSBvdXRzaWRlIG9mIEtjb25maWcuClRoaXMgaXMgdGhlIGJl
+aGF2aW9yIHdlIGtlZXAgc2luY2UgYSBsb25nIHRpbWUgYWdvLgoKQVJDSCBpcyBnaXZlbiBieSB0
+aGUgZW52aXJvbm1lbnQgdmFyaWFibGUgb3IgdGhlIGNvbW1hbmQgbGluZS4KS0VSTkVMVkVSU0lP
+TiBpcyBzdXBwbGllZCBieSB0aGUgdG9wIE1ha2VmaWxlLgoKCgoKPj4KPj4gQXMgZm9yIEFSQ0gs
+IHlvdSBuZWVkIHRvIHBhc3MgdGhlIHNhbWUgQVJDSCBhcyB5b3UgdXNlZCBmb3IgYnVpbGRpbmcK
+Pj4gdGhlIGtlcm5lbC4gKEZvciBuYXRpdmUgYnVpbGRpbmcsIHlvdSBkbyBub3QgaGF2ZSB0byBw
+YXNzIEFSQ0gKPj4gZXhwbGljaXRseSwgdGhvdWdoLikKPgo+IEV4Y2VwdCBpZiB5b3UgZG8gcGFz
+cyBpdCB0byBtYWtlIGNvbmZpZyB5b3UgbWF5IG5lZWQgdG8gcGFzcyBpdCB0byB0bwo+IG1ha2Ug
+bGF0ZXIgYXMgd2VsbC4KClJpZ2h0LgoKRm9yIGV4bWFwbGUgJ21ha2UgQVJDSD1hcm0gY29uZmln
+JyB3aWxsIGNyZWF0ZSB0aGUgY29uZmlnIHN1aXRhYmxlCm9ubHkgZm9yIEFSTSBhcmNoaXRlY3R1
+cmUuClRoZW4sIHlvdSBuZWVkIHRvIGRvICdtYWtlIEFSQ0g9YXJtJyB0byBidWlsZCB0aGUga2Vy
+bmVsLgoKSWYgaXQgaXMgdGVkaW91cyB0byBnaXZlICdBUkNIPWFybScgdG8gZXZlcnkgbWFrZSBj
+b21tYW5kLAp5b3UgY2FuIGRvICdleHBvcnQgQVJDSD1hcm0nIGluIHlvdXIgc2hlbGwuCgpBZ2Fp
+biwgdGhpcyBpcyB0aGUgYmVoYXZpb3Igd2UgaGF2ZSBmb3IgYSBsb25nIHRpbWUuCgoKCj4+Cj4+
+IEFzIGZvciBDQywgSE9TVENDLCBldGMuCj4+IHllcywgdGhlc2UgYXJlIG5ldyAndW5zYXZlZCcg
+ZW52aXJvbm1lbnRzLgo+Pgo+PiBDT05GSUcgb3B0aW9ucyBub3cgZGVwZW5kIG9uIHRoZSBjb21w
+aWxlci4KPj4gVGhpcyBpcyB0aGUgY29uY2VwdCBzdWdnZXN0ZWQgYnkgTGludXMgVG9ydmFsZHMu
+Cj4+Cj4+Cj4+ID4gU28gaW4gdGhlIGVuZCBhbGwgdGhlIGluZnJhc3RydWN0dXJlIHdpdGggc3lt
+bGlua3MKPj4gPiBmcm9tIG1vZHVsZSBkaXJlY3RvcnkgcG9pbnRpbmcgdG8gdGhlIGtlcm5lbCBz
+b3VyY2UgYW5kIG9iamVjdAo+PiA+IGRpcmVjdG9yeSBpcyB1c2VsZXNzLiBUbyBpbnRlcnByZXQg
+dGhlIGNvbmZpZyBzdG9yZWQgdGhlcmUgeW91IG5lZWQKPj4gPiB0aGUgZW52aXJvbm1lbnQgYW5k
+IHRoYXQgaXMgbm90IHNhdmVkIGFueXdoZXJlLiBTbyBpZiB5b3UgdHJ5IHRvCj4+ID4gYnVpbGQg
+b3V0LW9mLXRyZWUgbW9kdWxlIGl0IG1pZ2h0IGVuZCB1cCByZWNvbmZpZ3VyaW5nIHlvdXIga2Vy
+bmVsCj4+ID4gYW5kIHByb2R1Y2luZyB1c2VsZXNzIG1vZHVsZXMuCj4+Cj4+IE5vLiBvdXQtb2Yt
+dHJlZSBtb2R1bGUgYnVpbGRpbmcgbmV2ZXIgZXZlciByZS1jb25maWd1cmVzIHRoZSBrZXJuZWwu
+Cj4KPiBJdCBkb2VzIGltcGxpY2l0bHkgYmVjYXVzZSB0aGUgY29uZmlnIHZhbHVlcyBkZXBlbmQg
+b24gZW52aXJvbm1lbnQgdGhhdAo+IGlzIG5vdCBzYXZlZCBhbmQgdGhlIHZhbHVlcyB0aGVtc2Vs
+dmVzIGFyZSBub3Qgc2F2ZWQgZWl0aGVyLiBJZiB0aGF0Cj4gaGFwcGVucyB0byBleHBvc2UgYSBu
+ZXcgdmFyaWFibGUgaXQgaXMgZXZlbiBleHBsaWNpdGx5IHJlY29uZmlndXJlZC4KCgpZb3Ugc2hv
+dWxkIGhhdmUgYSBidWlsdCBrZXJuZWwgdHJlZQpiZWZvcmUgYnVpbGRpbmcgZXh0ZXJuYWwgbW9k
+dWxlcy4KClRoZSAuY29uZmlnIGlzIGFscmVhZHkgdGhlcmUuCgpUaGUgLmNvbmZpZyB3b3JrcyBm
+b3IgZXh0ZXJuYWwgbW9kdWxlcywgZ2l2ZW4gdGhhdAoKICAtIEFSQ0ggaXMgdGhlIHNhbWUKICAt
+IHRoZSBjb21waWxlciBpcyB0aGUgc2FtZQoKCgo+Pgo+PiBvdXQtb2YtdHJlZSBtb2R1bGVzIGFy
+ZSBidWlsdCB3aXRoIGV4YWN0bHkgdGhlIHNhbWUgY29uZmlndXJhdGlvbgo+PiBhcyB1c2VkIGZv
+ciB0aGUga2VybmVsLgo+Cj4gSXQgaXMgbm90IHRydWUuIEFuZCB0aGF0IGlzIHRoZSBwcm9ibGVt
+LiBZb3UgbmVlZCB0aGUgY29uZmlnIGZpbGUgYW5kCj4gZHVtcCBvZiB0aGUgZW52aXJvbm1lbnQg
+cGFzc2VkIHRvIHRoZSBtYWtlIGNvbW1hbmQgYXQgY29uZmlndXJhdGlvbgo+IHRpbWUgdG8gZ2V0
+IHRoZSBleGFjdCBzYW1lIGNvbmZpZ3VyYXRpb24uIFRoZSBlbnZpcm9ubWVudCBpcyBub3Qgc2F2
+ZWQKPiBhbnl3aGVyZSwgdGhvdWdoLgoKCldoeSBkdW1wIG9mIHRoZSBlbnZpcm9ubWVudD8KCgpJ
+ZiB5b3UgYXJlIGJ1aWxkaW5nIGV4dGVybmFsIG1vZHVsZXMgbmF0aXZlbHkKeW91ciBkaXN0cmli
+dXRpb24gcHJvdmlkZXMgL2xpYi9tb2R1bGVzLyQodW5hbWUgLXIpL2J1aWxkLAp3aGljaCBjb250
+YWlucyBmaWxlcyBlbm91Z2ggZm9yIGJ1aWxkaW5nIGV4dGVybmFsIG1vZHVsZXMuCgpZb3UgY2Fu
+IHBhc3MgdGhlIGRpcmVjdG9yeSBwYXRoIHRvIE09Li4uIHBhcmFtZXRlci4gIFRoYXQncyBpdC4K
+CgoKSWYgeW91IGFyZSBjcm9zcy1idWlsZGluZyBleHRlcm5hbCBtb2R1bGVzLAp5b3UgYWxzbyBu
+ZWVkIHRvCgogLSBwYXNzIEFSQ0g9CiAtIHVzZSB0aGUgc2FtZSBjb21waWxlciB3aXRoIENST1NT
+X0NPTVBJTEU9CgpZb3Ugc2hvdWxkIGtub3cgYm90aApiZWNhdXNlIHlvdSBoYXZlIGJ1aWx0IHRo
+ZSBrZXJuZWwgYnkgeW91ciBzZWxmLgoKWW91IGRvIG5vdCBuZWVkIGFueSBvdGhlciBpbmZvcm1h
+dGlvbiwgZG8geW91PwoKCgoKPiBBbmQgaXQgd2VudCBub3doZXJlLgo+Cj4gQW55d2F5LCB0aGUg
+b2JzZXJ2ZWQgaXNzdWUgd2l0aCBDT05GSUdfNjRCSVQgb24geDg2IGlzIHRoZSB0aXAgb2YgYQo+
+IGxhcmdlciBwcm9ibGVtIHdoaWNoIHdhcyB1bm5vdGljZWQgZm9yIGFnZXMuIFRoZSAuY29uZmln
+IHNpbXBseSBkb2VzCj4gbm90IGNvbnRhaW4gdGhlIHdob2xlIGtlcm5lbCBjb25maWd1cmF0aW9u
+LiBpZS4gbWFrZSBvbGRjb25maWcgKGFuZAo+IG1ha2Ugc3luY2NvbmZpZykgaXMgKm5vdCogZXhw
+ZWN0ZWQgdG8ganVzdCB3b3JrLiBJdCB1c2VkIHRvIHdvcmsganVzdCBieQo+IGx1Y2sgdW50aWwg
+ZjQ2N2M1NjQwYzI5ICgia2NvbmZpZzogb25seSB3cml0ZSAnIyBDT05GSUdfRk9PIGlzIG5vdCBz
+ZXQnCj4gZm9yIHZpc2libGUgc3ltYm9scyIpIGZpbmFsbHkgZXhwb3NlZCB0aGUgcHJvYmxlbS4K
+CklmIHlvdSB3YW50IHRvIGJ1aWxkIHRoZSBrZXJuZWwgZm9yIGFuIGFyY2hpdGVjdHVyZQpvdGhl
+ciB0aGFuIHRoZSBob3N0IG1hY2hpbmUgYXJjaGl0ZWN0dXJlLCB5b3UgbmVlZCB0byBwYXNzIEFS
+Q0g9LgoKQnVpbGRpbmcgdGhlIGkzODYga2VybmVsIG9uIGEgeDg2XzY0IG1hY2hpbmUsIGl0IGlz
+IGEgX2tpbmRfIG9mIGNyb3NzLWNvbXBpbGluZy4KU28sIHBhc3NpbmcgQVJDSD1pMzg2IGlzIG5v
+dCBzbyB3ZWlyZC4KCgo+IFNvIGlzIC5jb25maWcgc3VwcG9zZWQgdG8gY29udGFpbiB0aGUga2Vy
+bmVsIGNvbmZpZ3VyYXRpb24gb3IgaXMgaXQKPiBqdXN0IHNvbWUgYnlwcm9kdWN0IG9mIHRoZSBr
+ZXJuZWwgYnVpbGQgd2hpY2ggaXMgbWVhbmluZ2xlc3Mgb3V0c2lkZSBvZgo+IHlvdXIgYnVpbGQg
+ZW52aXJvbm1lbnQgKHRoZSBvYmplY3QgdHJlZSwgc2hlbGwgZW52aXJvbm1lbnQsIGV0YykuCgpU
+aGUgLmNvbmZpZyBpcyBzdXBwb3NlZCB0byBjb250YWluIHRoZSBrZXJuZWwgY29uZmlndXJhdGlv
+biwKJ0FSQ0gnIGFuZCB0aGUgY29tcGlsZXIgYXJlIGV4Y2VwdGlvbnMuCgonQVJDSCcgbXVzdCBi
+ZSBwYXNzZWQgc2VwYXJhdGVseS4KClRoZSAuY29uZmlnIG5vdyBkZXBlbmRzIG9uIHRoZSBjb21w
+aWxlci4gIFNvLCBpZiB5b3UgcGFzcyB5b3VyIC5jb25maWcKdG8gc29tZWJvZHkgZWxzZSwgc29t
+ZSBzeW1ib2xzIHRoYXQgZGVwZW5kIG9uIHRoZSBjb21waWxlciBzdXBwb3J0Cm1pZ2h0IGJlIGNv
+bmZpZ3VyZWQgZGlmZmVyZW50bHkuCgonbWFrZSBzeW5jY29uZmlnJyB3aWxsIG5vdGljZSB0aGUg
+Y29tcGlsZXIgZGlmZmVyZW5jZSwKYW5kIHNob3cgcHJvbXB0cyBmb3IgdXNlciBpbnB1dCBhcyBu
+ZWVkZWQuCgoKCgoKLS0gCkJlc3QgUmVnYXJkcwpNYXNhaGlybyBZYW1hZGEKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlz
+dApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
