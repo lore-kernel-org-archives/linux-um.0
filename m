@@ -1,88 +1,56 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fkZw4-0004wL-I5
+ for linux-um@lists.infradead.org; Tue, 31 Jul 2018 19:03:58 +0000
+From: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 0/2] um: switch to NO_BOOTMEM
+Date: Tue, 31 Jul 2018 21:03:35 +0200
+Message-ID: <1574741.Uvo42kyWiX@blindfold>
+In-Reply-To: <20180731133827.GC23494@rapoport-lnx>
+References: <1532438594-4530-1-git-send-email-rppt@linux.vnet.ibm.com>
+ <20180731133827.GC23494@rapoport-lnx>
 MIME-Version: 1.0
-In-Reply-To: <1526351878-24961-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1526351878-24961-1-git-send-email-yamada.masahiro@socionext.com>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Sun, 3 Jun 2018 11:37:21 +0900
-Message-ID: <CAK7LNASfiRcPVb0Bs_KWuAL3mtzdQfWwATVLkit8MkXeWtgrRQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND] um: vdso: remove unused vdso-syms.lds
-Content-Type: text/plain; charset="UTF-8"
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, uml-devel <user-mode-linux-devel@lists.sourceforge.net>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Masahiro Yamada <yamada.masahiro@socionext.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: linux-mm@kvack.org, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>
 
-Hi UML maintainers,
+Am Dienstag, 31. Juli 2018, 15:38:27 CEST schrieb Mike Rapoport:
+> Any comments on this?
+> 
+> On Tue, Jul 24, 2018 at 04:23:12PM +0300, Mike Rapoport wrote:
+> > Hi,
+> > 
+> > These patches convert UML to use NO_BOOTMEM.
+> > Tested on x86-64.
+> > 
+> > Mike Rapoport (2):
+> >   um: setup_physmem: stop using global variables
+> >   um: switch to NO_BOOTMEM
+> > 
+> >  arch/um/Kconfig.common   |  2 ++
+> >  arch/um/kernel/physmem.c | 22 ++++++++++------------
+> >  2 files changed, 12 insertions(+), 12 deletions(-)
 
-2018-05-15 11:37 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
-> This file contains symbol values, and was originally linked into
-> vmlinux, but I have no idea what it was actually used for.
->
-> Since commit 827880ec260b ("x86/um: thin archives build fix"), it is
-> not even linked.  Now it is completely orphan, and no problem has
-> been reported.  It is a proof that this file was not needed in the
-> first place.
->
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Acked-by: Ingo Molnar <mingo@kernel.org>
-> ---
+Acked-by: Richard Weinberger <richard@nod.at>
 
-
-Could you take a look at this patch, please?
-
-Thanks.
-
-
-> The previous post has gone to the moderator
-> due to too many recipients.
-> I am resending this.
-> I hope this is reaching UML maintainers.
->
->  arch/x86/um/vdso/.gitignore |  1 -
->  arch/x86/um/vdso/Makefile   | 16 ----------------
->  2 files changed, 17 deletions(-)
->
-> diff --git a/arch/x86/um/vdso/.gitignore b/arch/x86/um/vdso/.gitignore
-> index 9cac6d0..f8b69d8 100644
-> --- a/arch/x86/um/vdso/.gitignore
-> +++ b/arch/x86/um/vdso/.gitignore
-> @@ -1,2 +1 @@
-> -vdso-syms.lds
->  vdso.lds
-> diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-> index 1000335..426681e 100644
-> --- a/arch/x86/um/vdso/Makefile
-> +++ b/arch/x86/um/vdso/Makefile
-> @@ -53,22 +53,6 @@ $(vobjs): KBUILD_CFLAGS += $(CFL)
->  CFLAGS_REMOVE_vdso-note.o = -pg -fprofile-arcs -ftest-coverage
->  CFLAGS_REMOVE_um_vdso.o = -pg -fprofile-arcs -ftest-coverage
->
-> -targets += vdso-syms.lds
-> -extra-$(VDSO64-y)                      += vdso-syms.lds
-> -
-> -#
-> -# Match symbols in the DSO that look like VDSO*; produce a file of constants.
-> -#
-> -sed-vdsosym := -e 's/^00*/0/' \
-> -       -e 's/^\([0-9a-fA-F]*\) . \(VDSO[a-zA-Z0-9_]*\)$$/\2 = 0x\1;/p'
-> -quiet_cmd_vdsosym = VDSOSYM $@
-> -define cmd_vdsosym
-> -       $(NM) $< | LC_ALL=C sed -n $(sed-vdsosym) | LC_ALL=C sort > $@
-> -endef
-> -
-> -$(obj)/%-syms.lds: $(obj)/%.so.dbg FORCE
-> -       $(call if_changed,vdsosym)
-> -
->  #
->  # The DSO images are built using a special linker script.
->  #
-> --
-> 2.7.4
->
+Thanks,
+//richard
 
 
-
--- 
-Best Regards
-Masahiro Yamada
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
