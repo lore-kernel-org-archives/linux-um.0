@@ -1,14 +1,32 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from conuserg-11.nifty.com ([210.131.2.78])
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
+ helo=mx0a-001b2d01.pphosted.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1floTn-0001xZ-5P
- for linux-um@lists.infradead.org; Sat, 04 Aug 2018 04:47:52 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 1/3] um: fix parallel building with O= option
-Date: Sat,  4 Aug 2018 13:47:01 +0900
-Message-Id: <1533358023-5801-2-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1533358023-5801-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1533358023-5801-1-git-send-email-yamada.masahiro@socionext.com>
+ id 1fkqS5-0001oC-2J
+ for linux-um@lists.infradead.org; Wed, 01 Aug 2018 12:42:06 +0000
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ w71CeoBJ020450
+ for <linux-um@lists.infradead.org>; Wed, 1 Aug 2018 08:41:53 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2kkbhgvgpe-1
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <linux-um@lists.infradead.org>; Wed, 01 Aug 2018 08:41:53 -0400
+Received: from localhost
+ by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
+ Wed, 1 Aug 2018 13:41:51 +0100
+Date: Wed, 1 Aug 2018 15:41:45 +0300
+From: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH 0/2] um: switch to NO_BOOTMEM
+References: <1532438594-4530-1-git-send-email-rppt@linux.vnet.ibm.com>
+ <20180731133827.GC23494@rapoport-lnx>
+ <1574741.Uvo42kyWiX@blindfold>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1574741.Uvo42kyWiX@blindfold>
+Message-Id: <20180801124144.GF24836@rapoport-lnx>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,78 +35,46 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: Michal Marek <michal.lkml@markovi.net>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Ravnborg <sam@ravnborg.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mm@kvack.org, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>
 
-Randy Dunlap reports UML occasionally fails to build with -j<N> and
-O=<builddir> options.
+Hi Richard,
 
-  make[1]: Entering directory '/home/rdunlap/mmotm-2018-0802-1529/UM64'
-    UPD     include/generated/uapi/linux/version.h
-    WRAP    arch/x86/include/generated/asm/dma-contiguous.h
-    WRAP    arch/x86/include/generated/asm/export.h
-    WRAP    arch/x86/include/generated/asm/early_ioremap.h
-    WRAP    arch/x86/include/generated/asm/mcs_spinlock.h
-    WRAP    arch/x86/include/generated/asm/mm-arch-hooks.h
-    WRAP    arch/x86/include/generated/uapi/asm/bpf_perf_event.h
-    WRAP    arch/x86/include/generated/uapi/asm/poll.h
-    GEN     ./Makefile
-  make[2]: *** No rule to make target 'archheaders'.  Stop.
-  arch/um/Makefile:119: recipe for target 'archheaders' failed
-  make[1]: *** [archheaders] Error 2
-  make[1]: *** Waiting for unfinished jobs....
-    UPD     include/config/kernel.release
-  make[1]: *** wait: No child processes.  Stop.
-  Makefile:146: recipe for target 'sub-make' failed
-  make: *** [sub-make] Error 2
+On Tue, Jul 31, 2018 at 09:03:35PM +0200, Richard Weinberger wrote:
+> Am Dienstag, 31. Juli 2018, 15:38:27 CEST schrieb Mike Rapoport:
+> > Any comments on this?
+> > 
+> > On Tue, Jul 24, 2018 at 04:23:12PM +0300, Mike Rapoport wrote:
+> > > Hi,
+> > > 
+> > > These patches convert UML to use NO_BOOTMEM.
+> > > Tested on x86-64.
+> > > 
+> > > Mike Rapoport (2):
+> > >   um: setup_physmem: stop using global variables
+> > >   um: switch to NO_BOOTMEM
+> > > 
+> > >  arch/um/Kconfig.common   |  2 ++
+> > >  arch/um/kernel/physmem.c | 22 ++++++++++------------
+> > >  2 files changed, 12 insertions(+), 12 deletions(-)
+> 
+> Acked-by: Richard Weinberger <richard@nod.at>
 
-The cause of the problem is the use of '$(MAKE) KBUILD_SRC=',
-which recurses to the top Makefile via the $(objtree)/Makefile
-generated by scripts/mkmakefile.
+Thanks!
 
-When you run "make -j<N> O=<builddir> ARCH=um", Make can execute
-'archheaders' and 'outputmakefile' targets simultaneously because
-there is no dependency between them.
-
-If it happens,
-
-  $(Q)$(MAKE) KBUILD_SRC= ARCH=$(HEADER_ARCH) archheaders
-
-... tries to run $(objtree)/Makefile that is being updated.
-
-The correct way for the recursion is
-
-  $(Q)$(MAKE) -f $(srctree)/Makefile ARCH=$(HEADER_ARCH) archheaders
-
-..., which does not rely on the generated Makefile.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
- arch/um/Makefile | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index e54dda8..de340e4 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -122,8 +122,7 @@ archheaders:
- 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.asm-generic \
- 	            kbuild-file=$(HOST_DIR)/include/uapi/asm/Kbuild \
- 		    obj=$(HOST_DIR)/include/generated/uapi/asm
--	$(Q)$(MAKE) KBUILD_SRC= ARCH=$(HEADER_ARCH) archheaders
--
-+	$(Q)$(MAKE) -f $(srctree)/Makefile ARCH=$(HEADER_ARCH) archheaders
+Can you please merge this through the uml tree?
  
- archprepare: include/generated/user_constants.h
- 
+> Thanks,
+> //richard
+> 
+
 -- 
-2.7.4
+Sincerely yours,
+Mike.
 
 
 _______________________________________________
