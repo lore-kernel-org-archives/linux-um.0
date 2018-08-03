@@ -1,32 +1,27 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkqS5-0001oC-2J
- for linux-um@lists.infradead.org; Wed, 01 Aug 2018 12:42:06 +0000
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+ id 1flgEa-0006j1-Vs
+ for linux-um@lists.infradead.org; Fri, 03 Aug 2018 19:59:38 +0000
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
  by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- w71CeoBJ020450
- for <linux-um@lists.infradead.org>; Wed, 1 Aug 2018 08:41:53 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2kkbhgvgpe-1
+ w73Jx4VB099065
+ for <linux-um@lists.infradead.org>; Fri, 3 Aug 2018 15:59:25 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2kmvdttr39-1
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-um@lists.infradead.org>; Wed, 01 Aug 2018 08:41:53 -0400
+ for <linux-um@lists.infradead.org>; Fri, 03 Aug 2018 15:59:25 -0400
 Received: from localhost
- by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
- Wed, 1 Aug 2018 13:41:51 +0100
-Date: Wed, 1 Aug 2018 15:41:45 +0300
+ Fri, 3 Aug 2018 20:59:22 +0100
 From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH 0/2] um: switch to NO_BOOTMEM
-References: <1532438594-4530-1-git-send-email-rppt@linux.vnet.ibm.com>
- <20180731133827.GC23494@rapoport-lnx>
- <1574741.Uvo42kyWiX@blindfold>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1574741.Uvo42kyWiX@blindfold>
-Message-Id: <20180801124144.GF24836@rapoport-lnx>
+Subject: [PATCH 7/7] unicore32: switch to NO_BOOTMEM
+Date: Fri,  3 Aug 2018 22:58:50 +0300
+In-Reply-To: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
+References: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
+Message-Id: <1533326330-31677-8-git-send-email-rppt@linux.vnet.ibm.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -35,46 +30,116 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mm@kvack.org, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-hexagon@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, nios2-dev@lists.rocketboards.org, Richard Weinberger <richard@nod.at>, Ley Foon Tan <lftan@altera.com>, Richard Kuo <rkuo@codeaurora.org>, Guan Xuetao <gxt@pku.edu.cn>
 
-Hi Richard,
+The unicore32 already supports memblock and uses it for some early memory
+reservations, e.g initrd and the page tables.
 
-On Tue, Jul 31, 2018 at 09:03:35PM +0200, Richard Weinberger wrote:
-> Am Dienstag, 31. Juli 2018, 15:38:27 CEST schrieb Mike Rapoport:
-> > Any comments on this?
-> > 
-> > On Tue, Jul 24, 2018 at 04:23:12PM +0300, Mike Rapoport wrote:
-> > > Hi,
-> > > 
-> > > These patches convert UML to use NO_BOOTMEM.
-> > > Tested on x86-64.
-> > > 
-> > > Mike Rapoport (2):
-> > >   um: setup_physmem: stop using global variables
-> > >   um: switch to NO_BOOTMEM
-> > > 
-> > >  arch/um/Kconfig.common   |  2 ++
-> > >  arch/um/kernel/physmem.c | 22 ++++++++++------------
-> > >  2 files changed, 12 insertions(+), 12 deletions(-)
-> 
-> Acked-by: Richard Weinberger <richard@nod.at>
+At some point unicore32 allocates the bootmem bitmap from the memblock and
+then hands over the memory reservations from memblock to bootmem.
 
-Thanks!
+This patch removes the bootmem initialization and leaves memblock as the
+only boot time memory manager for unicore32.
 
-Can you please merge this through the uml tree?
+Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Acked-by: Guan Xuetao <gxt@pku.edu.cn>
+---
+ arch/unicore32/Kconfig   |  1 +
+ arch/unicore32/mm/init.c | 54 +-----------------------------------------------
+ 2 files changed, 2 insertions(+), 53 deletions(-)
+
+diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
+index 03f991e..cff4b9d 100644
+--- a/arch/unicore32/Kconfig
++++ b/arch/unicore32/Kconfig
+@@ -5,6 +5,7 @@ config UNICORE32
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+ 	select ARCH_MIGHT_HAVE_PC_SERIO
+ 	select HAVE_MEMBLOCK
++	select NO_BOOTMEM
+ 	select HAVE_GENERIC_DMA_COHERENT
+ 	select HAVE_KERNEL_GZIP
+ 	select HAVE_KERNEL_BZIP2
+diff --git a/arch/unicore32/mm/init.c b/arch/unicore32/mm/init.c
+index f4950fb..44ccc15 100644
+--- a/arch/unicore32/mm/init.c
++++ b/arch/unicore32/mm/init.c
+@@ -84,58 +84,6 @@ static void __init find_limits(unsigned long *min, unsigned long *max_low,
+ 	}
+ }
  
-> Thanks,
-> //richard
-> 
-
+-static void __init uc32_bootmem_init(unsigned long start_pfn,
+-	unsigned long end_pfn)
+-{
+-	struct memblock_region *reg;
+-	unsigned int boot_pages;
+-	phys_addr_t bitmap;
+-	pg_data_t *pgdat;
+-
+-	/*
+-	 * Allocate the bootmem bitmap page.  This must be in a region
+-	 * of memory which has already been mapped.
+-	 */
+-	boot_pages = bootmem_bootmap_pages(end_pfn - start_pfn);
+-	bitmap = memblock_alloc_base(boot_pages << PAGE_SHIFT, L1_CACHE_BYTES,
+-				__pfn_to_phys(end_pfn));
+-
+-	/*
+-	 * Initialise the bootmem allocator, handing the
+-	 * memory banks over to bootmem.
+-	 */
+-	node_set_online(0);
+-	pgdat = NODE_DATA(0);
+-	init_bootmem_node(pgdat, __phys_to_pfn(bitmap), start_pfn, end_pfn);
+-
+-	/* Free the lowmem regions from memblock into bootmem. */
+-	for_each_memblock(memory, reg) {
+-		unsigned long start = memblock_region_memory_base_pfn(reg);
+-		unsigned long end = memblock_region_memory_end_pfn(reg);
+-
+-		if (end >= end_pfn)
+-			end = end_pfn;
+-		if (start >= end)
+-			break;
+-
+-		free_bootmem(__pfn_to_phys(start), (end - start) << PAGE_SHIFT);
+-	}
+-
+-	/* Reserve the lowmem memblock reserved regions in bootmem. */
+-	for_each_memblock(reserved, reg) {
+-		unsigned long start = memblock_region_reserved_base_pfn(reg);
+-		unsigned long end = memblock_region_reserved_end_pfn(reg);
+-
+-		if (end >= end_pfn)
+-			end = end_pfn;
+-		if (start >= end)
+-			break;
+-
+-		reserve_bootmem(__pfn_to_phys(start),
+-			(end - start) << PAGE_SHIFT, BOOTMEM_DEFAULT);
+-	}
+-}
+-
+ static void __init uc32_bootmem_free(unsigned long min, unsigned long max_low,
+ 	unsigned long max_high)
+ {
+@@ -232,7 +180,7 @@ void __init bootmem_init(void)
+ 
+ 	find_limits(&min, &max_low, &max_high);
+ 
+-	uc32_bootmem_init(min, max_low);
++	node_set_online(0);
+ 
+ #ifdef CONFIG_SWIOTLB
+ 	swiotlb_init(1);
 -- 
-Sincerely yours,
-Mike.
+2.7.4
 
 
 _______________________________________________
