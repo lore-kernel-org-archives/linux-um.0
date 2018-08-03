@@ -1,131 +1,88 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH v6 4/4] MIPS: Workaround GCC __builtin_unreachable reordering bug
-Date: Thu,  9 Aug 2018 10:44:44 -0700
-Message-Id: <20180809174444.31705-5-paul.burton@mips.com>
-In-Reply-To: <20180809174444.31705-1-paul.burton@mips.com>
-References: <20180809174444.31705-1-paul.burton@mips.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
+ helo=mx0a-001b2d01.pphosted.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1flgEK-0006co-U2
+ for linux-um@lists.infradead.org; Fri, 03 Aug 2018 19:59:22 +0000
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
+ w73Jx5Nx026261
+ for <linux-um@lists.infradead.org>; Fri, 3 Aug 2018 15:59:17 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 2kmuj3mmnc-1
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+ for <linux-um@lists.infradead.org>; Fri, 03 Aug 2018 15:59:16 -0400
+Received: from localhost
+ by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
+ Fri, 3 Aug 2018 20:59:14 +0100
+From: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: [PATCH 5/7] um: setup_physmem: stop using global variables
+Date: Fri,  3 Aug 2018 22:58:48 +0300
+In-Reply-To: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
+References: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
+Message-Id: <1533326330-31677-6-git-send-email-rppt@linux.vnet.ibm.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain
-Sender: linux-arch-owner@vger.kernel.org
-To: linux-mips@linux-mips.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-um@lists.infradead.org, Paul Burton <paul.burton@mips.com>
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-hexagon@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, nios2-dev@lists.rocketboards.org, Richard Weinberger <richard@nod.at>, Ley Foon Tan <lftan@altera.com>, Richard Kuo <rkuo@codeaurora.org>, Guan Xuetao <gxt@pku.edu.cn>
 
-Older versions of GCC for the MIPS architecture suffer from a bug which
-can lead to instructions from beyond an unreachable statement being
-incorrectly reordered into earlier branch delay slots if the unreachable
-statement is the only content of a case in a switch statement. This can
-lead to seemingly random behaviour, such as invalid memory accesses from
-incorrectly reordered loads or stores, and link failures on microMIPS
-builds.
+The setup_physmem() function receives uml_physmem and uml_reserved as
+parameters and still used these global variables. Replace such usage with
+local variables.
 
-See this potential GCC fix for details:
-
-    https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
-
-This bug can be worked around by placing a volatile asm statement, which
-GCC is prevented from reordering past, prior to the
-__builtin_unreachable call.
-
-This was actually done already for other reasons by commit 173a3efd3edb
-("bug.h: work around GCC PR82365 in BUG()"), but without the MIPS
-specific .insn, which broke microMIPS builds on newer GCC 7.2 toolchains
-with errors like the following:
-
-    arch/mips/mm/dma-default.s:3265: Error: branch to a symbol in another ISA mode
-    arch/mips/mm/dma-default.s:5027: Error: branch to a symbol in another ISA mode
-
-Add a MIPS-specific definition of barrier_before_unreachable() which
-includes the .insn directive in order to satisfy the assembler that
-branch targets are in fact code.
-
-The original bug affects at least a maltasmvp_defconfig kernel built
-from the v4.4 tag using GCC 4.9.2 (from a Codescape SDK 2015.06-05
-toolchain), with the result being an address exception taken after log
-messages about the L1 caches (during probe of the L2 cache):
-
-    Initmem setup node 0 [mem 0x0000000080000000-0x000000009fffffff]
-    VPE topology {2,2} total 4
-    Primary instruction cache 64kB, VIPT, 4-way, linesize 32 bytes.
-    Primary data cache 64kB, 4-way, PIPT, no aliases, linesize 32 bytes
-    <AdEL exception here>
-
-This is early enough that the kernel exception vectors are not in use,
-so any further output depends upon the bootloader. This is reproducible
-in QEMU where no further output occurs - ie. the system hangs here.
-Given the nature of the bug it may potentially be hit with differing
-symptoms.
-
-Fixes: 173a3efd3edb ("bug.h: work around GCC PR82365 in BUG()")
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-[jhogan@kernel.org: Forward port and use asm/compiler.h instead of
- asm/compiler-gcc.h]
-Signed-off-by: James Hogan <jhogan@kernel.org>
-Reviewed-by: Paul Burton <paul.burton@mips.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-mips@linux-mips.org
-
+Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Acked-by: Richard Weinberger <richard@nod.at>
 ---
+ arch/um/kernel/physmem.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Changes in v6: None
-Changes in v5:
-- Comment & commit message tweaks.
-
-Changes in v4: None
-Changes in v3:
-- Forward port to v4.17-rc and update commit message.
-- Drop stable tag for now.
-
-Changes in v2:
-- Remove generic-y entry.
-
- arch/mips/include/asm/compiler.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/arch/mips/include/asm/compiler.h b/arch/mips/include/asm/compiler.h
-index e081a265f422..1e9548faf9c7 100644
---- a/arch/mips/include/asm/compiler.h
-+++ b/arch/mips/include/asm/compiler.h
-@@ -8,6 +8,36 @@
- #ifndef _ASM_COMPILER_H
- #define _ASM_COMPILER_H
+diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+index f02596e..0eaec0e 100644
+--- a/arch/um/kernel/physmem.c
++++ b/arch/um/kernel/physmem.c
+@@ -86,7 +86,7 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+ 	long map_size;
+ 	int err;
  
-+/*
-+ * With GCC v4.5 onwards can use __builtin_unreachable to indicate to the
-+ * compiler that a particular code path will never be hit. This allows it to be
-+ * optimised out of the generated binary.
-+ *
-+ * Unfortunately GCC from at least v4.9.2 to current head of tree as of May
-+ * 2016 suffer from a bug that can lead to instructions from beyond an
-+ * unreachable statement being incorrectly reordered into earlier delay slots
-+ * if the unreachable statement is the only content of a case in a switch
-+ * statement. This can lead to seemingly random behaviour, such as invalid
-+ * memory accesses from incorrectly reordered loads or stores. See this
-+ * potential GCC fix for details:
-+ *
-+ *   https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
-+ *
-+ * GCC also handles stack allocation suboptimally when calling noreturn
-+ * functions or calling __builtin_unreachable():
-+ *
-+ *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82365
-+ *
-+ * We work around both of these issues by placing a volatile asm statement,
-+ * which GCC is prevented from reordering past, prior to __builtin_unreachable
-+ * calls.
-+ *
-+ * The .insn statement is required to ensure that any branches to the
-+ * statement, which sadly must be kept due to the asm statement, are known to
-+ * be branches to code and satisfy linker requirements for microMIPS kernels.
-+ */
-+#define barrier_before_unreachable() asm volatile(".insn")
-+
- #if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)
- #define GCC_IMM_ASM() "n"
- #define GCC_REG_ACCUM "$0"
+-	offset = uml_reserved - uml_physmem;
++	offset = reserve_end - start;
+ 	map_size = len - offset;
+ 	if(map_size <= 0) {
+ 		os_warn("Too few physical memory! Needed=%lu, given=%lu\n",
+@@ -96,12 +96,12 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+ 
+ 	physmem_fd = create_mem_file(len + highmem);
+ 
+-	err = os_map_memory((void *) uml_reserved, physmem_fd, offset,
++	err = os_map_memory((void *) reserve_end, physmem_fd, offset,
+ 			    map_size, 1, 1, 1);
+ 	if (err < 0) {
+ 		os_warn("setup_physmem - mapping %ld bytes of memory at 0x%p "
+ 			"failed - errno = %d\n", map_size,
+-			(void *) uml_reserved, err);
++			(void *) reserve_end, err);
+ 		exit(1);
+ 	}
+ 
 -- 
-2.18.0
+2.7.4
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
