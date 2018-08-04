@@ -1,97 +1,67 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH v6 1/4] alpha: Use OPTIMIZE_INLINING instead of asm/compiler.h
-Date: Thu,  9 Aug 2018 10:44:41 -0700
-Message-Id: <20180809174444.31705-2-paul.burton@mips.com>
-In-Reply-To: <20180809174444.31705-1-paul.burton@mips.com>
-References: <20180809174444.31705-1-paul.burton@mips.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from conuserg-11.nifty.com ([210.131.2.78])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1floTn-0001xY-5O
+ for linux-um@lists.infradead.org; Sat, 04 Aug 2018 04:47:54 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 3/3] um: clean up archheaders recipe
+Date: Sat,  4 Aug 2018 13:47:03 +0900
+Message-Id: <1533358023-5801-4-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1533358023-5801-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1533358023-5801-1-git-send-email-yamada.masahiro@socionext.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain
-Sender: linux-arch-owner@vger.kernel.org
-To: linux-mips@linux-mips.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-um@lists.infradead.org, Paul Burton <paul.burton@mips.com>
-List-ID: <linux-um.lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kbuild@vger.kernel.org
+Cc: Michal Marek <michal.lkml@markovi.net>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Ravnborg <sam@ravnborg.org>
 
-From: James Hogan <jhogan@kernel.org>
+Now that '%asm-generic' is added to no-dot-config-targets,
+'make asm-generic' does not include the kernel configuration.
 
-Use CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING and CONFIG_OPTIMIZE_INLINING
-instead of undefining the inline macros in the alpha specific
-asm/compiler.h. This is to allow asm/compiler.h to become a general
-header that can be used for overriding linux/compiler*.h.
+You can simply do 'make asm-generic' in the recursed top Makefile
+without bothering syncconfig.
 
-A build of alpha's defconfig on GCC 7.3 before and after this series
-(i.e. this commit and "compiler.h: Allow arch-specific overrides" which
-includes asm/compiler.h from linux/compiler_types.h) results in the
-following size differences, which appear harmless to me:
-
-$ ./scripts/bloat-o-meter vmlinux.1 vmlinux.2
-add/remove: 1/1 grow/shrink: 3/0 up/down: 264/-348 (-84)
-Function                                     old     new   delta
-cap_bprm_set_creds                          1496    1664    +168
-cap_issubset                                   -      68     +68
-flex_array_put                               328     344     +16
-cap_capset                                   488     500     +12
-nonroot_raised_pE.constprop                  348       -    -348
-Total: Before=5823709, After=5823625, chg -0.00%
-
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: James Hogan <jhogan@kernel.org>
-Acked-by: Matt Turner <mattst88@gmail.com>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: linux-alpha@vger.kernel.org
-
-Signed-off-by: Paul Burton <paul.burton@mips.com>
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3:
-- New patch in v3.
+ arch/um/Makefile | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
- arch/alpha/Kconfig                |  6 ++++++
- arch/alpha/include/asm/compiler.h | 11 -----------
- 2 files changed, 6 insertions(+), 11 deletions(-)
-
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index 04a4a138ed13..649b41621520 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -74,6 +74,12 @@ config PGTABLE_LEVELS
- 	int
- 	default 3
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index de340e4..1a47f9c 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -116,13 +116,7 @@ endef
+ KBUILD_KCONFIG := $(HOST_DIR)/um/Kconfig
  
-+config ARCH_SUPPORTS_OPTIMIZED_INLINING
-+	def_bool y
-+
-+config OPTIMIZE_INLINING
-+	def_bool y
-+
- source "init/Kconfig"
- source "kernel/Kconfig.freezer"
+ archheaders:
+-	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.asm-generic \
+-	            kbuild-file=$(HOST_DIR)/include/asm/Kbuild \
+-		    obj=$(HOST_DIR)/include/generated/asm
+-	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.asm-generic \
+-	            kbuild-file=$(HOST_DIR)/include/uapi/asm/Kbuild \
+-		    obj=$(HOST_DIR)/include/generated/uapi/asm
+-	$(Q)$(MAKE) -f $(srctree)/Makefile ARCH=$(HEADER_ARCH) archheaders
++	$(Q)$(MAKE) -f $(srctree)/Makefile ARCH=$(HEADER_ARCH) asm-generic archheaders
  
-diff --git a/arch/alpha/include/asm/compiler.h b/arch/alpha/include/asm/compiler.h
-index 5159ba259d65..ae645959018a 100644
---- a/arch/alpha/include/asm/compiler.h
-+++ b/arch/alpha/include/asm/compiler.h
-@@ -4,15 +4,4 @@
+ archprepare: include/generated/user_constants.h
  
- #include <uapi/asm/compiler.h>
- 
--/* Some idiots over in <linux/compiler.h> thought inline should imply
--   always_inline.  This breaks stuff.  We'll include this file whenever
--   we run into such problems.  */
--
--#include <linux/compiler.h>
--#undef inline
--#undef __inline__
--#undef __inline
--#undef __always_inline
--#define __always_inline		inline __attribute__((always_inline))
--
- #endif /* __ALPHA_COMPILER_H */
 -- 
-2.18.0
+2.7.4
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
