@@ -1,28 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
+Received: from conuserg-11.nifty.com ([210.131.2.78])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flgEX-0006gO-Cy
- for linux-um@lists.infradead.org; Fri, 03 Aug 2018 19:59:35 +0000
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- w73Jx492041809
- for <linux-um@lists.infradead.org>; Fri, 3 Aug 2018 15:59:21 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2kmvrwhvsp-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-um@lists.infradead.org>; Fri, 03 Aug 2018 15:59:20 -0400
-Received: from localhost
- by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
- Fri, 3 Aug 2018 20:59:18 +0100
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 6/7] um: switch to NO_BOOTMEM
-Date: Fri,  3 Aug 2018 22:58:49 +0300
-In-Reply-To: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
-References: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <1533326330-31677-7-git-send-email-rppt@linux.vnet.ibm.com>
+ id 1floTn-0001xa-5N
+ for linux-um@lists.infradead.org; Sat, 04 Aug 2018 04:47:54 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH 2/3] kbuild: add %asm-generic to no-dot-config-targets
+Date: Sat,  4 Aug 2018 13:47:02 +0900
+Message-Id: <1533358023-5801-3-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1533358023-5801-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1533358023-5801-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -36,86 +22,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-hexagon@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, nios2-dev@lists.rocketboards.org, Richard Weinberger <richard@nod.at>, Ley Foon Tan <lftan@altera.com>, Richard Kuo <rkuo@codeaurora.org>, Guan Xuetao <gxt@pku.edu.cn>
+To: linux-kbuild@vger.kernel.org
+Cc: Michal Marek <michal.lkml@markovi.net>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, Randy Dunlap <rdunlap@infradead.org>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Ravnborg <sam@ravnborg.org>
 
-Replace bootmem initialization with memblock_add and memblock_reserve calls
-and explicit initialization of {min,max}_low_pfn.
+asm-generic and uapi-asm-generic do not depend on the kernel
+configuration.  In fact, uapi-asm-generic is the prerequisite of
+headers_{install,check}, hence it should not require the .config file.
 
-Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Acked-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
- arch/um/Kconfig.common   |  2 ++
- arch/um/kernel/physmem.c | 20 +++++++++-----------
- 2 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/um/Kconfig.common b/arch/um/Kconfig.common
-index 07f84c8..1487957 100644
---- a/arch/um/Kconfig.common
-+++ b/arch/um/Kconfig.common
-@@ -8,6 +8,8 @@ config UML
- 	select HAVE_UID16
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_DEBUG_KMEMLEAK
-+	select HAVE_MEMBLOCK
-+	select NO_BOOTMEM
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_CLOCKEVENTS
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index 0eaec0e..296a91a 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -5,6 +5,7 @@
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 85f3481..5cf87a18 100644
+--- a/Makefile
++++ b/Makefile
+@@ -224,7 +224,7 @@ clean-targets := %clean mrproper cleandocs
+ no-dot-config-targets := $(clean-targets) \
+ 			 cscope gtags TAGS tags help% %docs check% coccicheck \
+ 			 $(version_h) headers_% archheaders archscripts \
+-			 kernelversion %src-pkg
++			 %asm-generic kernelversion %src-pkg
  
- #include <linux/module.h>
- #include <linux/bootmem.h>
-+#include <linux/memblock.h>
- #include <linux/mm.h>
- #include <linux/pfn.h>
- #include <asm/page.h>
-@@ -80,23 +81,18 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 			  unsigned long len, unsigned long long highmem)
- {
- 	unsigned long reserve = reserve_end - start;
--	unsigned long pfn = PFN_UP(__pa(reserve_end));
--	unsigned long delta = (len - reserve) >> PAGE_SHIFT;
--	unsigned long offset, bootmap_size;
--	long map_size;
-+	long map_size = len - reserve;
- 	int err;
- 
--	offset = reserve_end - start;
--	map_size = len - offset;
- 	if(map_size <= 0) {
- 		os_warn("Too few physical memory! Needed=%lu, given=%lu\n",
--			offset, len);
-+			reserve, len);
- 		exit(1);
- 	}
- 
- 	physmem_fd = create_mem_file(len + highmem);
- 
--	err = os_map_memory((void *) reserve_end, physmem_fd, offset,
-+	err = os_map_memory((void *) reserve_end, physmem_fd, reserve,
- 			    map_size, 1, 1, 1);
- 	if (err < 0) {
- 		os_warn("setup_physmem - mapping %ld bytes of memory at 0x%p "
-@@ -113,9 +109,11 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 	os_write_file(physmem_fd, __syscall_stub_start, PAGE_SIZE);
- 	os_fsync_file(physmem_fd);
- 
--	bootmap_size = init_bootmem(pfn, pfn + delta);
--	free_bootmem(__pa(reserve_end) + bootmap_size,
--		     len - bootmap_size - reserve);
-+	memblock_add(__pa(start), len + highmem);
-+	memblock_reserve(__pa(start), reserve);
-+
-+	min_low_pfn = PFN_UP(__pa(reserve_end));
-+	max_low_pfn = min_low_pfn + (map_size >> PAGE_SHIFT);
- }
- 
- int phys_mapping(unsigned long phys, unsigned long long *offset_out)
+ config-targets := 0
+ mixed-targets  := 0
 -- 
 2.7.4
 
