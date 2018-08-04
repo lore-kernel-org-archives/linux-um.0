@@ -1,28 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]
- helo=mx0a-001b2d01.pphosted.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flgEX-0006bD-3W
- for linux-um@lists.infradead.org; Fri, 03 Aug 2018 19:59:34 +0000
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
- by mx0b-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- w73Jx5Iw186745
- for <linux-um@lists.infradead.org>; Fri, 3 Aug 2018 15:59:10 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
- by mx0b-001b2d01.pphosted.com with ESMTP id 2kmt6sfp89-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-um@lists.infradead.org>; Fri, 03 Aug 2018 15:59:10 -0400
-Received: from localhost
- by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
- Fri, 3 Aug 2018 20:59:08 +0100
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 3/7] nios2: use generic early_init_dt_add_memory_arch
-Date: Fri,  3 Aug 2018 22:58:46 +0300
-In-Reply-To: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
-References: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <1533326330-31677-4-git-send-email-rppt@linux.vnet.ibm.com>
+Subject: Re: kbuild: ARCH=um archheaders failed
+References: <be4f41de-c27a-abac-4b23-369c400e016e@infradead.org>
+ <861c26a6-294c-755d-2396-e5d18b9bbcbf@infradead.org>
+ <CAK7LNARdoeKCNYV7Kp6YLNsJ4rjrjXRWMsf4op58-JzRYUNVtg@mail.gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <29f9908d-06e5-8e88-4433-9bd7935a0d1f@infradead.org>
+Date: Sat, 4 Aug 2018 08:47:20 -0700
+MIME-Version: 1.0
+In-Reply-To: <CAK7LNARdoeKCNYV7Kp6YLNsJ4rjrjXRWMsf4op58-JzRYUNVtg@mail.gmail.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -31,81 +17,66 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-hexagon@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, nios2-dev@lists.rocketboards.org, Richard Weinberger <richard@nod.at>, Ley Foon Tan <lftan@altera.com>, Richard Kuo <rkuo@codeaurora.org>, Guan Xuetao <gxt@pku.edu.cn>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>
 
-All we have to do is to enable memblock, the generic FDT code will take
-care of the rest.
+On 08/03/2018 07:23 PM, Masahiro Yamada wrote:
+> 2018-08-04 0:41 GMT+09:00 Randy Dunlap <rdunlap@infradead.org>:
+>> On 08/02/2018 05:13 PM, Randy Dunlap wrote:
+>>> Hi Yamada-san,
+>>>
+>>> I see this every few weeks.  It's not reproducible (it depends
+>>> on the moon, Mars, etc.).
+>>>
+>>> I'm using O=builddir.  The build log is short (below).
+>>>
+>>> Do you see a makefile problem here?  (nothing to do with mmotm;
+>>> I see it more frequently with linux-next since I do many daily
+>>> builds with it)
+>>
+>> BTW, this is just um defconfig with -j4.
+>>
+>> --
+>> ~Randy
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-kbuild" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> 
+> 
+> I will send a patch with commit description later
+> after more testing,
+> but the following patch should fix the issue.
+> 
+> 
+> diff --git a/arch/um/Makefile b/arch/um/Makefile
+> index d3975e7..1cec053 100644
+> --- a/arch/um/Makefile
+> +++ b/arch/um/Makefile
+> @@ -120,7 +120,7 @@ archheaders:
+>         $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.asm-generic \
+>                     kbuild-file=$(HOST_DIR)/include/uapi/asm/Kbuild \
+>                     obj=$(HOST_DIR)/include/generated/uapi/asm
+> -       $(Q)$(MAKE) KBUILD_SRC= ARCH=$(HEADER_ARCH) archheaders
+> +       $(Q)$(MAKE) -f $(srctree)/Makefile ARCH=$(HEADER_ARCH) archheaders
+> 
+> 
+>  archprepare: include/generated/user_constants.h
+> 
+> 
+> 
 
-Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Acked-by: Ley Foon Tan <ley.foon.tan@intel.com>
----
- arch/nios2/Kconfig        |  1 +
- arch/nios2/kernel/prom.c  | 10 ----------
- arch/nios2/kernel/setup.c |  2 ++
- 3 files changed, 3 insertions(+), 10 deletions(-)
+I tested this patch and it works.  :)
+but then it's difficult to reproduce the problem.
 
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index 3d4ec88..5db8fa1 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -19,6 +19,7 @@ config NIOS2
- 	select SPARSE_IRQ
- 	select USB_ARCH_HAS_HCD if USB_SUPPORT
- 	select CPU_NO_EFFICIENT_FFS
-+	select HAVE_MEMBLOCK
- 
- config GENERIC_CSUM
- 	def_bool y
-diff --git a/arch/nios2/kernel/prom.c b/arch/nios2/kernel/prom.c
-index 8d7446a..ba96a49 100644
---- a/arch/nios2/kernel/prom.c
-+++ b/arch/nios2/kernel/prom.c
-@@ -32,16 +32,6 @@
- 
- #include <asm/sections.h>
- 
--void __init early_init_dt_add_memory_arch(u64 base, u64 size)
--{
--	u64 kernel_start = (u64)virt_to_phys(_text);
--
--	if (!memory_size &&
--	    (kernel_start >= base) && (kernel_start < (base + size)))
--		memory_size = size;
--
--}
--
- int __init early_init_dt_reserve_memory_arch(phys_addr_t base, phys_addr_t size,
- 					     bool nomap)
- {
-diff --git a/arch/nios2/kernel/setup.c b/arch/nios2/kernel/setup.c
-index 926a02b..0946840 100644
---- a/arch/nios2/kernel/setup.c
-+++ b/arch/nios2/kernel/setup.c
-@@ -17,6 +17,7 @@
- #include <linux/sched/task.h>
- #include <linux/console.h>
- #include <linux/bootmem.h>
-+#include <linux/memblock.h>
- #include <linux/initrd.h>
- #include <linux/of_fdt.h>
- #include <linux/screen_info.h>
-@@ -147,6 +148,7 @@ void __init setup_arch(char **cmdline_p)
- 
- 	console_verbose();
- 
-+	memory_size = memblock_phys_mem_size();
- 	memory_start = PAGE_ALIGN((unsigned long)__pa(_end));
- 	memory_end = (unsigned long) CONFIG_NIOS2_MEM_BASE + memory_size;
- 
+Thanks!
 -- 
-2.7.4
-
+~Randy
 
 _______________________________________________
 linux-um mailing list
