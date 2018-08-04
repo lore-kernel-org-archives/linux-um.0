@@ -1,114 +1,116 @@
-Return-Path: <linux-arch-owner@vger.kernel.org>
-From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH v6 0/4] MIPS: Override barrier_before_unreachable() to fix microMIPS
-Date: Thu,  9 Aug 2018 10:44:40 -0700
-Message-Id: <20180809174444.31705-1-paul.burton@mips.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ivanoab5.miniserver.com ([78.31.111.25]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1flzdb-0004S6-9b
+ for linux-um@lists.infradead.org; Sat, 04 Aug 2018 16:42:45 +0000
+Subject: Re: [PATCH] um: NULL check before kfree is not needed
+References: <20180803063911.23384-1-yuehaibing@huawei.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <3b72e9da-c4ac-cee0-1833-7c2b346fcc28@cambridgegreys.com>
+Date: Sat, 4 Aug 2018 17:05:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-Sender: linux-arch-owner@vger.kernel.org
-To: linux-mips@linux-mips.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-um@lists.infradead.org, Paul Burton <paul.burton@mips.com>
-List-ID: <linux-um.lists.infradead.org>
+In-Reply-To: <20180803063911.23384-1-yuehaibing@huawei.com>
+Content-Language: en-US
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: YueHaibing <yuehaibing@huawei.com>, jdike@addtoit.com, richard@nod.at, christophe.jaillet@wanadoo.fr, keescook@chromium.org
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-This series overrides barrier_before_unreachable() for MIPS to add a
-.insn assembler directive.
+On 03/08/18 07:39, YueHaibing wrote:
 
-Due to the subsequent __builtin_unreachable(), the assembler can't tell
-that a label on the empty inline asm is code rather than data, so any
-microMIPS branches targeting it (which sadly can't be removed) raise
-errors due to the mismatching ISA mode, Adding the .insn in patch 4
-tells the assembler that it should be treated as code.
+> kfree(NULL) is safe,so this removes NULL check before freeing the mem
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>   arch/um/drivers/vector_kern.c | 15 +++++----------
+>   arch/um/drivers/vector_user.c |  6 ++----
+>   arch/um/kernel/irq.c          |  3 +--
+>   3 files changed, 8 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> index 50ee3bb..c84133c 100644
+> --- a/arch/um/drivers/vector_kern.c
+> +++ b/arch/um/drivers/vector_kern.c
+> @@ -1118,16 +1118,11 @@ static int vector_net_close(struct net_device *dev)
+>   		os_close_file(vp->fds->tx_fd);
+>   		vp->fds->tx_fd = -1;
+>   	}
+> -	if (vp->bpf != NULL)
+> -		kfree(vp->bpf);
+> -	if (vp->fds->remote_addr != NULL)
+> -		kfree(vp->fds->remote_addr);
+> -	if (vp->transport_data != NULL)
+> -		kfree(vp->transport_data);
+> -	if (vp->header_rxbuffer != NULL)
+> -		kfree(vp->header_rxbuffer);
+> -	if (vp->header_txbuffer != NULL)
+> -		kfree(vp->header_txbuffer);
+> +	kfree(vp->bpf);
+> +	kfree(vp->fds->remote_addr);
+> +	kfree(vp->transport_data);
+> +	kfree(vp->header_rxbuffer);
+> +	kfree(vp->header_txbuffer);
+>   	if (vp->rx_queue != NULL)
+>   		destroy_queue(vp->rx_queue);
+>   	if (vp->tx_queue != NULL)
+> diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+> index 4d6a78e..3d8cdbd 100644
+> --- a/arch/um/drivers/vector_user.c
+> +++ b/arch/um/drivers/vector_user.c
+> @@ -267,8 +267,7 @@ static struct vector_fds *user_init_raw_fds(struct arglist *ifspec)
+>   		os_close_file(rxfd);
+>   	if (txfd >= 0)
+>   		os_close_file(txfd);
+> -	if (result != NULL)
+> -		kfree(result);
+> +	kfree(result);
+>   	return NULL;
+>   }
+>   
+> @@ -434,8 +433,7 @@ static struct vector_fds *user_init_socket_fds(struct arglist *ifspec, int id)
+>   	if (fd >= 0)
+>   		os_close_file(fd);
+>   	if (result != NULL) {
+> -		if (result->remote_addr != NULL)
+> -			kfree(result->remote_addr);
+> +		kfree(result->remote_addr);
+>   		kfree(result);
+>   	}
+>   	return NULL;
+> diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+> index 6b7f382..8360fa3 100644
+> --- a/arch/um/kernel/irq.c
+> +++ b/arch/um/kernel/irq.c
+> @@ -244,8 +244,7 @@ static void garbage_collect_irq_entries(void)
+>   			to_free = NULL;
+>   		}
+>   		walk = walk->next;
+> -		if (to_free != NULL)
+> -			kfree(to_free);
+> +		kfree(to_free);
+>   	}
+>   }
+>   
+kfree in both slab and slob check for NULLs before freeing so this is 
+correct. Thanks for noticing.
 
-To do this we add a new standard asm/compiler.h for architecture
-overrides in patch 3. There are a few existing asm/compiler.h files
-already existing, most of which are fairly simple and don't include
-anything else (arm, arm64, mips). Unfortunately the alpha one includes
-linux/compiler.h though, so it can undefine some inline macros. On
-Arnd's suggestion this is converted to use OPTIMIZE_INLINING instead in
-patch 1. A build of alpha's defconfig on GCC 7.3 before and after this
-series results in the following size differences, which appear harmless
-to me:
+Richard, please apply,
 
-$ ./scripts/bloat-o-meter vmlinux.1 vmlinux.2
-add/remove: 1/1 grow/shrink: 3/0 up/down: 264/-348 (-84)
-Function                                     old     new   delta
-cap_bprm_set_creds                          1496    1664    +168
-cap_issubset                                   -      68     +68
-flex_array_put                               328     344     +16
-cap_capset                                   488     500     +12
-nonroot_raised_pE.constprop                  348       -    -348
-Total: Before=5823709, After=5823625, chg -0.00%
+A.
 
-Also um needs the generated/ include directory adding to the include
-paths in patch 2 so that an asm-generic wrapper asm/compiler.h can be
-included from automatically included headers.
-
-Applies cleanly atop v4.18-rc8.
-
-Changes in v6 (Paul):
-- Fix patch 2 to find the generated headers in $(objtree).
-- Remove CC's for defunct MIPS email addresses (Matthew & Robert).
-- CC linux-um@lists.infradead.org.
-
-Changes in v5 (Paul):
-- Rebase atop v4.18-rc8.
-- Comment & commit message tweaks.
-- Add SPDX-License-Identifier to asm-generic/compiler.h.
-
-Changes in v4 (James):
-- Fix asm-generic/compiler.h include from check, compiler_types.h is
-  included on the command line so linux/compiler.h may not be included
-  (kbuild test robot).
-- New patch 2 to fix um (kbuild test robot).
-
-Changes in v3 (James):
-- New patch 1.
-- Rebase after 4.17 arch removal and update commit messages.
-- Use asm/compiler.h instead of compiler-gcc.h (Arnd).
-- Drop stable tag for now.
-
-Changes in v2 (Paul):
-- Add generic-y entries to arch Kbuild files. Oops!
-
-James Hogan (2):
-  alpha: Use OPTIMIZE_INLINING instead of asm/compiler.h
-  um: Add generated/ to MODE_INCLUDE
-
-Paul Burton (2):
-  compiler.h: Allow arch-specific overrides
-  MIPS: Workaround GCC __builtin_unreachable reordering bug
-
- arch/alpha/Kconfig                 |  6 ++++++
- arch/alpha/include/asm/compiler.h  | 11 -----------
- arch/arc/include/asm/Kbuild        |  1 +
- arch/c6x/include/asm/Kbuild        |  1 +
- arch/h8300/include/asm/Kbuild      |  1 +
- arch/hexagon/include/asm/Kbuild    |  1 +
- arch/ia64/include/asm/Kbuild       |  1 +
- arch/m68k/include/asm/Kbuild       |  1 +
- arch/microblaze/include/asm/Kbuild |  1 +
- arch/mips/include/asm/compiler.h   | 30 ++++++++++++++++++++++++++++++
- arch/nds32/include/asm/Kbuild      |  1 +
- arch/nios2/include/asm/Kbuild      |  1 +
- arch/openrisc/include/asm/Kbuild   |  1 +
- arch/parisc/include/asm/Kbuild     |  1 +
- arch/powerpc/include/asm/Kbuild    |  1 +
- arch/riscv/include/asm/Kbuild      |  1 +
- arch/s390/include/asm/Kbuild       |  1 +
- arch/sh/include/asm/Kbuild         |  1 +
- arch/sparc/include/asm/Kbuild      |  1 +
- arch/um/Makefile                   |  1 +
- arch/um/include/asm/Kbuild         |  1 +
- arch/unicore32/include/asm/Kbuild  |  1 +
- arch/x86/include/asm/Kbuild        |  1 +
- arch/xtensa/include/asm/Kbuild     |  1 +
- include/asm-generic/compiler.h     | 10 ++++++++++
- include/linux/compiler-gcc.h       |  2 ++
- include/linux/compiler_types.h     |  3 +++
- 27 files changed, 72 insertions(+), 11 deletions(-)
- create mode 100644 include/asm-generic/compiler.h
-
--- 
-2.18.0
-
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
