@@ -1,45 +1,57 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH] um: remove -fno-unit-at-a-time workaround for pre-4.0 GCC
-Date: Mon, 27 Aug 2018 13:03:04 +0900
-Message-Id: <1535342584-22174-1-git-send-email-yamada.masahiro@socionext.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, user-mode-linux-devel@lists.sourceforge.net
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: Paul Burton <paul.burton@mips.com>
+Subject: [PATCH v5 2/4] um: Add generated/ to MODE_INCLUDE
+Date: Wed,  8 Aug 2018 15:52:23 -0700
+Message-Id: <20180808225225.24450-3-paul.burton@mips.com>
+In-Reply-To: <20180808225225.24450-1-paul.burton@mips.com>
+References: <20180808225225.24450-1-paul.burton@mips.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Sender: linux-arch-owner@vger.kernel.org
+To: linux-mips@linux-mips.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org, Paul Burton <paul.burton@mips.com>
 List-ID: <user-mode-linux-devel.lists.sourceforge.net>
 
-Commit cafa0010cd51 ("Raise the minimum required gcc version to 4.6")
-bumped the minimum GCC version to 4.6 for all architectures.
+From: James Hogan <jhogan@kernel.org>
 
-'$(call cc-option,-fno-unit-at-a-time)' is now dead code since
-'$(cc-version) -lt 0400' is always false.
+Add the um specific generated includes directory to MODE_INCLUDE so that
+asm/compiler.h can be used for overriding linux/compiler*.h which is
+included automatically, with um using a generated asm-generic wrapper at
+arch/um/include/generated/asm/compiler.h.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: James Hogan <jhogan@kernel.org>
+Signed-off-by: Paul Burton <paul.burton@mips.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
 ---
+I've been unable to reproduce the error the kbuild test robot reported
+for v4 [1], so I'm hoping it may disappear with the rebased series or at
+least give me more information if not...
 
- arch/x86/Makefile.um | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+[1] https://www.linux-mips.org/archives/linux-mips/2018-05/msg00094.html
 
-diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-index 91085a0..577976b 100644
---- a/arch/x86/Makefile.um
-+++ b/arch/x86/Makefile.um
-@@ -26,12 +26,8 @@ cflags-y += $(call cc-option,-mpreferred-stack-boundary=2)
- # an unresolved reference.
- cflags-y += -ffreestanding
+Changes in v5: None
+Changes in v4:
+- New patch in v4.
+
+ arch/um/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index e54dda8a0363..543d12d230ab 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -30,6 +30,7 @@ core-y			+= $(ARCH_DIR)/kernel/		\
+ 			   $(ARCH_DIR)/os-$(OS)/
  
--# Disable unit-at-a-time mode on pre-gcc-4.0 compilers, it makes gcc use
--# a lot more stack due to the lack of sharing of stacklots.  Also, gcc
--# 4.3.0 needs -funit-at-a-time for extern inline functions.
--KBUILD_CFLAGS += $(shell if [ $(cc-version) -lt 0400 ] ; then \
--			echo $(call cc-option,-fno-unit-at-a-time); \
--			else echo $(call cc-option,-funit-at-a-time); fi ;)
-+# gcc 4.3.0 needs -funit-at-a-time for extern inline functions.
-+KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
+ MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
++MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/generated
  
- KBUILD_CFLAGS += $(cflags-y)
+ HEADER_ARCH 	:= $(SUBARCH)
  
 -- 
-2.7.4
+2.18.0
 
 
