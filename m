@@ -1,51 +1,57 @@
 Return-Path: <linux-arch-owner@vger.kernel.org>
+From: Paul Burton <paul.burton@mips.com>
+Subject: [PATCH v6 2/4] um: Add generated/ to MODE_INCLUDE
+Date: Thu,  9 Aug 2018 10:44:42 -0700
+Message-Id: <20180809174444.31705-3-paul.burton@mips.com>
+In-Reply-To: <20180809174444.31705-1-paul.burton@mips.com>
+References: <20180809174444.31705-1-paul.burton@mips.com>
 MIME-Version: 1.0
-In-Reply-To: <20180731113935.6105-1-hch@lst.de>
-References: <20180731113935.6105-1-hch@lst.de>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Thu, 2 Aug 2018 08:10:00 +0900
-Message-ID: <CAK7LNASpOWQqNREQ_XN22QQM6Jx4F1Lrf76=_WHupPCFmOB2gA@mail.gmail.com>
-Subject: Re: include architecture Kconfig files from top-level Kconfig v4
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-arch-owner@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: Randy Dunlap <rdunlap@infradead.org>, Richard Weinberger <richard@nod.at>, Ley Foon Tan <lftan@altera.com>, Michal Simek <monstr@monstr.eu>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, linux-um@lists.infradead.org, linux-arch <linux-arch@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: linux-mips@linux-mips.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-um@lists.infradead.org, Paul Burton <paul.burton@mips.com>
 List-ID: <linux-um.lists.infradead.org>
 
-2018-07-31 20:39 GMT+09:00 Christoph Hellwig <hch@lst.de>:
-> Hi Masahiro,
->
-> what do you think about the series below, which moves the includes
-> of all the architecture independ Kconfig files to the top-level
-> Kconfig instead of duplicating the includes in all architectures?
->
-> Note that this only handles the low-hanging fruite, there are a lot
-> of other bits that should probably be cleaned up to be common,
-> but those will be not entirely trivial.
->
-> Changes since v3:
->  - don't allow to select PREEMPT_COUNT for architectures that don't
->    implement it
->  - fix usage of SUBARCH=i386 and SUBARCH=x86_64 for um
->
-> Changes since v2:
->  - fix the missing sh conversion
->  - handle the lack of CONFIG_SWAP support in microblaze and nios2
->    properly
->
-> Changes since v1:
->  - add back a remove source statement from arch/arm/Kconfig
->  - various fixes from Randy
->  - various UML patches to be able to use the common Kconfig
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kbuild" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+From: James Hogan <jhogan@kernel.org>
 
+Add the um specific generated includes directory to MODE_INCLUDE so that
+asm/compiler.h can be used for overriding linux/compiler*.h which is
+included automatically, with um using a generated asm-generic wrapper at
+arch/um/include/generated/asm/compiler.h.
 
-Applied.  Thanks!
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: James Hogan <jhogan@kernel.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: user-mode-linux-devel@lists.sourceforge.net
+Cc: linux-um@lists.infradead.org
 
+Signed-off-by: Paul Burton <paul.burton@mips.com>
+---
+
+Changes in v6:
+- s/srctree/objtree/ to fix build issues when building out of tree.
+
+Changes in v5: None
+Changes in v4:
+- New patch in v4.
+
+ arch/um/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index e54dda8a0363..fec1252160db 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -30,6 +30,7 @@ core-y			+= $(ARCH_DIR)/kernel/		\
+ 			   $(ARCH_DIR)/os-$(OS)/
+ 
+ MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
++MODE_INCLUDE	+= -I$(objtree)/$(ARCH_DIR)/include/generated
+ 
+ HEADER_ARCH 	:= $(SUBARCH)
+ 
 -- 
-Best Regards
-Masahiro Yamada
+2.18.0
+
 
