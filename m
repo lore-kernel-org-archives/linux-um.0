@@ -1,61 +1,114 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: kbuild: ARCH=um archheaders failed
-Message-ID: <be4f41de-c27a-abac-4b23-369c400e016e@infradead.org>
-Date: Thu, 2 Aug 2018 17:13:59 -0700
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: Paul Burton <paul.burton@mips.com>
+Subject: [PATCH v6 0/4] MIPS: Override barrier_before_unreachable() to fix microMIPS
+Date: Thu,  9 Aug 2018 10:44:40 -0700
+Message-Id: <20180809174444.31705-1-paul.burton@mips.com>
 MIME-Version: 1.0
-Content-Language: en-US
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kbuild <linux-kbuild@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
+Content-Type: text/plain
+Sender: linux-arch-owner@vger.kernel.org
+To: linux-mips@linux-mips.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-um@lists.infradead.org, Paul Burton <paul.burton@mips.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Hi Yamada-san,
+This series overrides barrier_before_unreachable() for MIPS to add a
+.insn assembler directive.
 
-I see this every few weeks.  It's not reproducible (it depends
-on the moon, Mars, etc.).
+Due to the subsequent __builtin_unreachable(), the assembler can't tell
+that a label on the empty inline asm is code rather than data, so any
+microMIPS branches targeting it (which sadly can't be removed) raise
+errors due to the mismatching ISA mode, Adding the .insn in patch 4
+tells the assembler that it should be treated as code.
 
-I'm using O=builddir.  The build log is short (below).
+To do this we add a new standard asm/compiler.h for architecture
+overrides in patch 3. There are a few existing asm/compiler.h files
+already existing, most of which are fairly simple and don't include
+anything else (arm, arm64, mips). Unfortunately the alpha one includes
+linux/compiler.h though, so it can undefine some inline macros. On
+Arnd's suggestion this is converted to use OPTIMIZE_INLINING instead in
+patch 1. A build of alpha's defconfig on GCC 7.3 before and after this
+series results in the following size differences, which appear harmless
+to me:
 
-Do you see a makefile problem here?  (nothing to do with mmotm;
-I see it more frequently with linux-next since I do many daily
-builds with it)
+$ ./scripts/bloat-o-meter vmlinux.1 vmlinux.2
+add/remove: 1/1 grow/shrink: 3/0 up/down: 264/-348 (-84)
+Function                                     old     new   delta
+cap_bprm_set_creds                          1496    1664    +168
+cap_issubset                                   -      68     +68
+flex_array_put                               328     344     +16
+cap_capset                                   488     500     +12
+nonroot_raised_pE.constprop                  348       -    -348
+Total: Before=5823709, After=5823625, chg -0.00%
 
+Also um needs the generated/ include directory adding to the include
+paths in patch 2 so that an asm-generic wrapper asm/compiler.h can be
+included from automatically included headers.
 
-thanks.
+Applies cleanly atop v4.18-rc8.
+
+Changes in v6 (Paul):
+- Fix patch 2 to find the generated headers in $(objtree).
+- Remove CC's for defunct MIPS email addresses (Matthew & Robert).
+- CC linux-um@lists.infradead.org.
+
+Changes in v5 (Paul):
+- Rebase atop v4.18-rc8.
+- Comment & commit message tweaks.
+- Add SPDX-License-Identifier to asm-generic/compiler.h.
+
+Changes in v4 (James):
+- Fix asm-generic/compiler.h include from check, compiler_types.h is
+  included on the command line so linux/compiler.h may not be included
+  (kbuild test robot).
+- New patch 2 to fix um (kbuild test robot).
+
+Changes in v3 (James):
+- New patch 1.
+- Rebase after 4.17 arch removal and update commit messages.
+- Use asm/compiler.h instead of compiler-gcc.h (Arnd).
+- Drop stable tag for now.
+
+Changes in v2 (Paul):
+- Add generic-y entries to arch Kbuild files. Oops!
+
+James Hogan (2):
+  alpha: Use OPTIMIZE_INLINING instead of asm/compiler.h
+  um: Add generated/ to MODE_INCLUDE
+
+Paul Burton (2):
+  compiler.h: Allow arch-specific overrides
+  MIPS: Workaround GCC __builtin_unreachable reordering bug
+
+ arch/alpha/Kconfig                 |  6 ++++++
+ arch/alpha/include/asm/compiler.h  | 11 -----------
+ arch/arc/include/asm/Kbuild        |  1 +
+ arch/c6x/include/asm/Kbuild        |  1 +
+ arch/h8300/include/asm/Kbuild      |  1 +
+ arch/hexagon/include/asm/Kbuild    |  1 +
+ arch/ia64/include/asm/Kbuild       |  1 +
+ arch/m68k/include/asm/Kbuild       |  1 +
+ arch/microblaze/include/asm/Kbuild |  1 +
+ arch/mips/include/asm/compiler.h   | 30 ++++++++++++++++++++++++++++++
+ arch/nds32/include/asm/Kbuild      |  1 +
+ arch/nios2/include/asm/Kbuild      |  1 +
+ arch/openrisc/include/asm/Kbuild   |  1 +
+ arch/parisc/include/asm/Kbuild     |  1 +
+ arch/powerpc/include/asm/Kbuild    |  1 +
+ arch/riscv/include/asm/Kbuild      |  1 +
+ arch/s390/include/asm/Kbuild       |  1 +
+ arch/sh/include/asm/Kbuild         |  1 +
+ arch/sparc/include/asm/Kbuild      |  1 +
+ arch/um/Makefile                   |  1 +
+ arch/um/include/asm/Kbuild         |  1 +
+ arch/unicore32/include/asm/Kbuild  |  1 +
+ arch/x86/include/asm/Kbuild        |  1 +
+ arch/xtensa/include/asm/Kbuild     |  1 +
+ include/asm-generic/compiler.h     | 10 ++++++++++
+ include/linux/compiler-gcc.h       |  2 ++
+ include/linux/compiler_types.h     |  3 +++
+ 27 files changed, 72 insertions(+), 11 deletions(-)
+ create mode 100644 include/asm-generic/compiler.h
+
 -- 
-make[1]: Entering directory '/home/rdunlap/mmotm-2018-0802-1529/UM64'
-  UPD     include/generated/uapi/linux/version.h
-  WRAP    arch/x86/include/generated/asm/dma-contiguous.h
-  WRAP    arch/x86/include/generated/asm/export.h
-  WRAP    arch/x86/include/generated/asm/early_ioremap.h
-  WRAP    arch/x86/include/generated/asm/mcs_spinlock.h
-  WRAP    arch/x86/include/generated/asm/mm-arch-hooks.h
-  WRAP    arch/x86/include/generated/uapi/asm/bpf_perf_event.h
-  WRAP    arch/x86/include/generated/uapi/asm/poll.h
-  GEN     ./Makefile
-make[2]: *** No rule to make target 'archheaders'.  Stop.
-arch/um/Makefile:119: recipe for target 'archheaders' failed
-make[1]: *** [archheaders] Error 2
-make[1]: *** Waiting for unfinished jobs....
-  UPD     include/config/kernel.release
-make[1]: *** wait: No child processes.  Stop.
-Makefile:146: recipe for target 'sub-make' failed
-make: *** [sub-make] Error 2
+2.18.0
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
