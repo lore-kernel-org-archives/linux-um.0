@@ -1,149 +1,97 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flgEa-0006j1-Vs
- for linux-um@lists.infradead.org; Fri, 03 Aug 2018 19:59:38 +0000
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- w73Jx4VB099065
- for <linux-um@lists.infradead.org>; Fri, 3 Aug 2018 15:59:25 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2kmvdttr39-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-um@lists.infradead.org>; Fri, 03 Aug 2018 15:59:25 -0400
-Received: from localhost
- by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
- Fri, 3 Aug 2018 20:59:22 +0100
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 7/7] unicore32: switch to NO_BOOTMEM
-Date: Fri,  3 Aug 2018 22:58:50 +0300
-In-Reply-To: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
-References: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <1533326330-31677-8-git-send-email-rppt@linux.vnet.ibm.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Return-Path: <linux-arch-owner@vger.kernel.org>
+From: Paul Burton <paul.burton@mips.com>
+Subject: [PATCH v6 1/4] alpha: Use OPTIMIZE_INLINING instead of asm/compiler.h
+Date: Thu,  9 Aug 2018 10:44:41 -0700
+Message-Id: <20180809174444.31705-2-paul.burton@mips.com>
+In-Reply-To: <20180809174444.31705-1-paul.burton@mips.com>
+References: <20180809174444.31705-1-paul.burton@mips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-hexagon@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, nios2-dev@lists.rocketboards.org, Richard Weinberger <richard@nod.at>, Ley Foon Tan <lftan@altera.com>, Richard Kuo <rkuo@codeaurora.org>, Guan Xuetao <gxt@pku.edu.cn>
+Content-Type: text/plain
+Sender: linux-arch-owner@vger.kernel.org
+To: linux-mips@linux-mips.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-alpha@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-arch@vger.kernel.org, linux-um@lists.infradead.org, Paul Burton <paul.burton@mips.com>
+List-ID: <linux-um.lists.infradead.org>
 
-The unicore32 already supports memblock and uses it for some early memory
-reservations, e.g initrd and the page tables.
+From: James Hogan <jhogan@kernel.org>
 
-At some point unicore32 allocates the bootmem bitmap from the memblock and
-then hands over the memory reservations from memblock to bootmem.
+Use CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING and CONFIG_OPTIMIZE_INLINING
+instead of undefining the inline macros in the alpha specific
+asm/compiler.h. This is to allow asm/compiler.h to become a general
+header that can be used for overriding linux/compiler*.h.
 
-This patch removes the bootmem initialization and leaves memblock as the
-only boot time memory manager for unicore32.
+A build of alpha's defconfig on GCC 7.3 before and after this series
+(i.e. this commit and "compiler.h: Allow arch-specific overrides" which
+includes asm/compiler.h from linux/compiler_types.h) results in the
+following size differences, which appear harmless to me:
 
-Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Acked-by: Guan Xuetao <gxt@pku.edu.cn>
+$ ./scripts/bloat-o-meter vmlinux.1 vmlinux.2
+add/remove: 1/1 grow/shrink: 3/0 up/down: 264/-348 (-84)
+Function                                     old     new   delta
+cap_bprm_set_creds                          1496    1664    +168
+cap_issubset                                   -      68     +68
+flex_array_put                               328     344     +16
+cap_capset                                   488     500     +12
+nonroot_raised_pE.constprop                  348       -    -348
+Total: Before=5823709, After=5823625, chg -0.00%
+
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: James Hogan <jhogan@kernel.org>
+Acked-by: Matt Turner <mattst88@gmail.com>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: linux-alpha@vger.kernel.org
+
+Signed-off-by: Paul Burton <paul.burton@mips.com>
 ---
- arch/unicore32/Kconfig   |  1 +
- arch/unicore32/mm/init.c | 54 +-----------------------------------------------
- 2 files changed, 2 insertions(+), 53 deletions(-)
 
-diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
-index 03f991e..cff4b9d 100644
---- a/arch/unicore32/Kconfig
-+++ b/arch/unicore32/Kconfig
-@@ -5,6 +5,7 @@ config UNICORE32
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
- 	select HAVE_MEMBLOCK
-+	select NO_BOOTMEM
- 	select HAVE_GENERIC_DMA_COHERENT
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_BZIP2
-diff --git a/arch/unicore32/mm/init.c b/arch/unicore32/mm/init.c
-index f4950fb..44ccc15 100644
---- a/arch/unicore32/mm/init.c
-+++ b/arch/unicore32/mm/init.c
-@@ -84,58 +84,6 @@ static void __init find_limits(unsigned long *min, unsigned long *max_low,
- 	}
- }
+Changes in v6: None
+Changes in v5: None
+Changes in v4: None
+Changes in v3:
+- New patch in v3.
+
+ arch/alpha/Kconfig                |  6 ++++++
+ arch/alpha/include/asm/compiler.h | 11 -----------
+ 2 files changed, 6 insertions(+), 11 deletions(-)
+
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index 04a4a138ed13..649b41621520 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -74,6 +74,12 @@ config PGTABLE_LEVELS
+ 	int
+ 	default 3
  
--static void __init uc32_bootmem_init(unsigned long start_pfn,
--	unsigned long end_pfn)
--{
--	struct memblock_region *reg;
--	unsigned int boot_pages;
--	phys_addr_t bitmap;
--	pg_data_t *pgdat;
--
--	/*
--	 * Allocate the bootmem bitmap page.  This must be in a region
--	 * of memory which has already been mapped.
--	 */
--	boot_pages = bootmem_bootmap_pages(end_pfn - start_pfn);
--	bitmap = memblock_alloc_base(boot_pages << PAGE_SHIFT, L1_CACHE_BYTES,
--				__pfn_to_phys(end_pfn));
--
--	/*
--	 * Initialise the bootmem allocator, handing the
--	 * memory banks over to bootmem.
--	 */
--	node_set_online(0);
--	pgdat = NODE_DATA(0);
--	init_bootmem_node(pgdat, __phys_to_pfn(bitmap), start_pfn, end_pfn);
--
--	/* Free the lowmem regions from memblock into bootmem. */
--	for_each_memblock(memory, reg) {
--		unsigned long start = memblock_region_memory_base_pfn(reg);
--		unsigned long end = memblock_region_memory_end_pfn(reg);
--
--		if (end >= end_pfn)
--			end = end_pfn;
--		if (start >= end)
--			break;
--
--		free_bootmem(__pfn_to_phys(start), (end - start) << PAGE_SHIFT);
--	}
--
--	/* Reserve the lowmem memblock reserved regions in bootmem. */
--	for_each_memblock(reserved, reg) {
--		unsigned long start = memblock_region_reserved_base_pfn(reg);
--		unsigned long end = memblock_region_reserved_end_pfn(reg);
--
--		if (end >= end_pfn)
--			end = end_pfn;
--		if (start >= end)
--			break;
--
--		reserve_bootmem(__pfn_to_phys(start),
--			(end - start) << PAGE_SHIFT, BOOTMEM_DEFAULT);
--	}
--}
--
- static void __init uc32_bootmem_free(unsigned long min, unsigned long max_low,
- 	unsigned long max_high)
- {
-@@ -232,7 +180,7 @@ void __init bootmem_init(void)
++config ARCH_SUPPORTS_OPTIMIZED_INLINING
++	def_bool y
++
++config OPTIMIZE_INLINING
++	def_bool y
++
+ source "init/Kconfig"
+ source "kernel/Kconfig.freezer"
  
- 	find_limits(&min, &max_low, &max_high);
+diff --git a/arch/alpha/include/asm/compiler.h b/arch/alpha/include/asm/compiler.h
+index 5159ba259d65..ae645959018a 100644
+--- a/arch/alpha/include/asm/compiler.h
++++ b/arch/alpha/include/asm/compiler.h
+@@ -4,15 +4,4 @@
  
--	uc32_bootmem_init(min, max_low);
-+	node_set_online(0);
+ #include <uapi/asm/compiler.h>
  
- #ifdef CONFIG_SWIOTLB
- 	swiotlb_init(1);
+-/* Some idiots over in <linux/compiler.h> thought inline should imply
+-   always_inline.  This breaks stuff.  We'll include this file whenever
+-   we run into such problems.  */
+-
+-#include <linux/compiler.h>
+-#undef inline
+-#undef __inline__
+-#undef __inline
+-#undef __always_inline
+-#define __always_inline		inline __attribute__((always_inline))
+-
+ #endif /* __ALPHA_COMPILER_H */
 -- 
-2.7.4
+2.18.0
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
