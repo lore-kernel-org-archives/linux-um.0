@@ -1,27 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+Received: from mail-dm3nam05on072f.outbound.protection.outlook.com
+ ([2a01:111:f400:fe51::72f]
+ helo=NAM05-DM3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flgEL-0006ao-4S
- for linux-um@lists.infradead.org; Fri, 03 Aug 2018 19:59:22 +0000
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- w73Jx4nK071672
- for <linux-um@lists.infradead.org>; Fri, 3 Aug 2018 15:59:08 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
- by mx0a-001b2d01.pphosted.com with ESMTP id 2kmtce7300-1
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-um@lists.infradead.org>; Fri, 03 Aug 2018 15:59:07 -0400
-Received: from localhost
- by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-um@lists.infradead.org> from <rppt@linux.vnet.ibm.com>;
- Fri, 3 Aug 2018 20:59:03 +0100
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH 1/7] hexagon: switch to NO_BOOTMEM
-Date: Fri,  3 Aug 2018 22:58:44 +0300
-In-Reply-To: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
-References: <1533326330-31677-1-git-send-email-rppt@linux.vnet.ibm.com>
-Message-Id: <1533326330-31677-2-git-send-email-rppt@linux.vnet.ibm.com>
+ id 1foArN-00051e-2s
+ for linux-um@lists.infradead.org; Fri, 10 Aug 2018 17:05:59 +0000
+From: Paul Burton <paul.burton@mips.com>
+Subject: [PATCH v7 4/4] MIPS: Workaround GCC __builtin_unreachable reordering
+ bug
+Date: Fri, 10 Aug 2018 10:05:11 -0700
+Message-Id: <20180810170511.10621-1-paul.burton@mips.com>
+In-Reply-To: <20180809185604.qqamyfd3etdacy3a@pburton-laptop>
+References: <20180809185604.qqamyfd3etdacy3a@pburton-laptop>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -30,102 +21,134 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-hexagon@vger.kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, nios2-dev@lists.rocketboards.org, Richard Weinberger <richard@nod.at>, Ley Foon Tan <lftan@altera.com>, Richard Kuo <rkuo@codeaurora.org>, Guan Xuetao <gxt@pku.edu.cn>
+To: linux-mips@linux-mips.org, Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, James Hogan <jhogan@kernel.org>, Jeff Dike <jdike@addtoit.com>, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Richard Weinberger <richard@nod.at>, Matt Turner <mattst88@gmail.com>, Richard Henderson <rth@twiddle.net>
 
-This patch adds registration of the system memory with memblock, eliminates
-bootmem initialization and converts early memory reservations from bootmem
-to memblock.
+Some versions of GCC for the MIPS architecture suffer from a bug which
+can lead to instructions from beyond an unreachable statement being
+incorrectly reordered into earlier branch delay slots if the unreachable
+statement is the only content of a case in a switch statement. This can
+lead to seemingly random behaviour, such as invalid memory accesses from
+incorrectly reordered loads or stores, and link failures on microMIPS
+builds.
 
-Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Acked-by: Richard Kuo <rkuo@codeaurora.org>
+See this potential GCC fix for details:
+
+    https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
+
+This bug can be worked around by placing a volatile asm statement, which
+GCC is prevented from reordering past, prior to the
+__builtin_unreachable call.
+
+This was actually done already for other reasons by commit 173a3efd3edb
+("bug.h: work around GCC PR82365 in BUG()"), but without the MIPS
+specific .insn, which broke microMIPS builds on newer GCC 7.2 toolchains
+with errors like the following:
+
+    arch/mips/mm/dma-default.s:3265: Error: branch to a symbol in another ISA mode
+    arch/mips/mm/dma-default.s:5027: Error: branch to a symbol in another ISA mode
+
+Add a MIPS-specific definition of barrier_before_unreachable() which
+includes the .insn directive in order to satisfy the assembler that
+branch targets are in fact code.
+
+The original bug affects at least a maltasmvp_defconfig kernel built
+from the v4.4 tag using GCC 4.9.2 (from a Codescape SDK 2015.06-05
+toolchain), with the result being an address exception taken after log
+messages about the L1 caches (during probe of the L2 cache):
+
+    Initmem setup node 0 [mem 0x0000000080000000-0x000000009fffffff]
+    VPE topology {2,2} total 4
+    Primary instruction cache 64kB, VIPT, 4-way, linesize 32 bytes.
+    Primary data cache 64kB, 4-way, PIPT, no aliases, linesize 32 bytes
+    <AdEL exception here>
+
+This is early enough that the kernel exception vectors are not in use,
+so any further output depends upon the bootloader. This is reproducible
+in QEMU where no further output occurs - ie. the system hangs here.
+Given the nature of the bug it may potentially be hit with differing
+symptoms.
+
+Fixes: 173a3efd3edb ("bug.h: work around GCC PR82365 in BUG()")
+Signed-off-by: Paul Burton <paul.burton@mips.com>
+[jhogan@kernel.org: Forward port and use asm/compiler.h instead of
+ asm/compiler-gcc.h]
+Signed-off-by: James Hogan <jhogan@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-mips@linux-mips.org
+
 ---
- arch/hexagon/Kconfig   |  3 +++
- arch/hexagon/mm/init.c | 20 ++++++++------------
- 2 files changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-index 37adb20..66fb2d5 100644
---- a/arch/hexagon/Kconfig
-+++ b/arch/hexagon/Kconfig
-@@ -28,6 +28,9 @@ config HEXAGON
- 	select GENERIC_CLOCKEVENTS_BROADCAST
- 	select MODULES_USE_ELF_RELA
- 	select GENERIC_CPU_DEVICES
-+	select HAVE_MEMBLOCK
-+	select ARCH_DISCARD_MEMBLOCK
-+	select NO_BOOTMEM
- 	---help---
- 	  Qualcomm Hexagon is a processor architecture designed for high
- 	  performance and low power across a wide variety of applications.
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index 1495d45..d789b9c 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -21,6 +21,7 @@
- #include <linux/init.h>
- #include <linux/mm.h>
- #include <linux/bootmem.h>
-+#include <linux/memblock.h>
- #include <asm/atomic.h>
- #include <linux/highmem.h>
- #include <asm/tlb.h>
-@@ -176,7 +177,6 @@ size_t hexagon_coherent_pool_size = (size_t) (DMA_RESERVE << 22);
+Changes in v7:
+- Elaborate on affected GCC versions in comment.
+
+Changes in v6: None
+Changes in v5:
+- Comment & commit message tweaks.
+
+Changes in v4: None
+Changes in v3:
+- Forward port to v4.17-rc and update commit message.
+- Drop stable tag for now.
+
+Changes in v2:
+- Remove generic-y entry.
+
+ arch/mips/include/asm/compiler.h | 34 ++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+diff --git a/arch/mips/include/asm/compiler.h b/arch/mips/include/asm/compiler.h
+index e081a265f422..4c06b41cd258 100644
+--- a/arch/mips/include/asm/compiler.h
++++ b/arch/mips/include/asm/compiler.h
+@@ -8,6 +8,40 @@
+ #ifndef _ASM_COMPILER_H
+ #define _ASM_COMPILER_H
  
- void __init setup_arch_memory(void)
- {
--	int bootmap_size;
- 	/*  XXX Todo: this probably should be cleaned up  */
- 	u32 *segtable = (u32 *) &swapper_pg_dir[0];
- 	u32 *segtable_end;
-@@ -195,18 +195,22 @@ void __init setup_arch_memory(void)
- 	bootmem_lastpg = PFN_DOWN((bootmem_lastpg << PAGE_SHIFT) &
- 		~((BIG_KERNEL_PAGE_SIZE) - 1));
- 
-+	memblock_add(PHYS_OFFSET,
-+		     (bootmem_lastpg - ARCH_PFN_OFFSET) << PAGE_SHIFT);
++/*
++ * With GCC 4.5 onwards can use __builtin_unreachable to indicate to the
++ * compiler that a particular code path will never be hit. This allows it to be
++ * optimised out of the generated binary.
++ *
++ * Unfortunately at least GCC 4.6.3 through 7.3.0 inclusive suffer from a bug
++ * that can lead to instructions from beyond an unreachable statement being
++ * incorrectly reordered into earlier delay slots if the unreachable statement
++ * is the only content of a case in a switch statement. This can lead to
++ * seemingly random behaviour, such as invalid memory accesses from incorrectly
++ * reordered loads or stores. See this potential GCC fix for details:
++ *
++ *   https://gcc.gnu.org/ml/gcc-patches/2015-09/msg00360.html
++ *
++ * It is unclear whether GCC 8 onwards suffer from the same issue - nothing
++ * relevant is mentioned in GCC 8 release notes and nothing obviously relevant
++ * stands out in GCC commit logs, but these newer GCC versions generate very
++ * different code for the testcase which doesn't exhibit the bug.
++ *
++ * GCC also handles stack allocation suboptimally when calling noreturn
++ * functions or calling __builtin_unreachable():
++ *
++ *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82365
++ *
++ * We work around both of these issues by placing a volatile asm statement,
++ * which GCC is prevented from reordering past, prior to __builtin_unreachable
++ * calls.
++ *
++ * The .insn statement is required to ensure that any branches to the
++ * statement, which sadly must be kept due to the asm statement, are known to
++ * be branches to code and satisfy linker requirements for microMIPS kernels.
++ */
++#define barrier_before_unreachable() asm volatile(".insn")
 +
-+	/* Reserve kernel text/data/bss */
-+	memblock_reserve(PHYS_OFFSET,
-+			 (bootmem_startpg - ARCH_PFN_OFFSET) << PAGE_SHIFT);
- 	/*
- 	 * Reserve the top DMA_RESERVE bytes of RAM for DMA (uncached)
- 	 * memory allocation
- 	 */
--
- 	max_low_pfn = bootmem_lastpg - PFN_DOWN(DMA_RESERVED_BYTES);
- 	min_low_pfn = ARCH_PFN_OFFSET;
--	bootmap_size =  init_bootmem_node(NODE_DATA(0), bootmem_startpg, min_low_pfn, max_low_pfn);
-+	memblock_reserve(PFN_PHYS(max_low_pfn), DMA_RESERVED_BYTES);
- 
- 	printk(KERN_INFO "bootmem_startpg:  0x%08lx\n", bootmem_startpg);
- 	printk(KERN_INFO "bootmem_lastpg:  0x%08lx\n", bootmem_lastpg);
--	printk(KERN_INFO "bootmap_size:  %d\n", bootmap_size);
- 	printk(KERN_INFO "min_low_pfn:  0x%08lx\n", min_low_pfn);
- 	printk(KERN_INFO "max_low_pfn:  0x%08lx\n", max_low_pfn);
- 
-@@ -257,14 +261,6 @@ void __init setup_arch_memory(void)
- #endif
- 
- 	/*
--	 * Free all the memory that wasn't taken up by the bootmap, the DMA
--	 * reserve, or kernel itself.
--	 */
--	free_bootmem(PFN_PHYS(bootmem_startpg) + bootmap_size,
--		     PFN_PHYS(bootmem_lastpg - bootmem_startpg) - bootmap_size -
--		     DMA_RESERVED_BYTES);
--
--	/*
- 	 *  The bootmem allocator seemingly just lives to feed memory
- 	 *  to the paging system
- 	 */
+ #if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)
+ #define GCC_IMM_ASM() "n"
+ #define GCC_REG_ACCUM "$0"
 -- 
-2.7.4
+2.18.0
 
 
 _______________________________________________
